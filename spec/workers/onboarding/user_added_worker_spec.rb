@@ -3,9 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Onboarding::UserAddedWorker, '#perform', feature_category: :onboarding do
-  let_it_be(:namespace) { create(:group) }
-
-  subject { described_class.new.perform(namespace.id) }
-
-  it_behaves_like 'does not record an onboarding progress action'
+  specify do
+    expect { described_class.new.perform(non_existing_record_id) }.not_to raise_error
+  end
 end

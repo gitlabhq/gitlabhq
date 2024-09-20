@@ -205,6 +205,12 @@ See [Recommended process for adding a new document type](#recommended-process-fo
 
 ### Create the index
 
+NOTE
+All new indexes must have:
+
+- `project_id` and `namespace_id` fields (if available). One of the fields must be used for routing.
+- A `traversal_ids` field for efficient global and group search. Populate the field with `object.namespace.elastic_namespace_ancestry`
+
 1. Create a `Search::Elastic::Types::` class in `ee/lib/search/elastic/types/`.
 1. Define the following class methods:
    - `index_name`: in the format `gitlab-<env>-<type>` (for example, `gitlab-production-work_items`).
@@ -335,6 +341,15 @@ For `ActiveRecord` objects, the `ApplicationVersionedSearch` concern can be incl
 Always check for `Gitlab::CurrentSettings.elasticsearch_indexing?` and `use_elasticsearch?` because some self-managed instances do not have Elasticsearch enabled and [namespace limiting](../integration/advanced_search/elasticsearch.md#limit-the-amount-of-namespace-and-project-data-to-index) can be enabled.
 
 Also check that the index is able to handle the index request. For example, check that the index exists if it was added in the current major release by verifying that the migration to add the index was completed: `Elastic::DataMigrationService.migration_has_finished?`.
+
+#### Transfers and deletes
+
+Project and group transfers and deletes must make updates to the index to avoid orphaned data. 
+
+Indexes that contain a `project_id` field must use the [`Search::Elastic::DeleteWorker`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/workers/search/elastic/delete_worker.rb). Indexes that contain a `namespace_id` field but no `project_id` field must use [`Search::ElasticGroupAssociationDeleteWorker`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/workers/search/elastic_group_association_deletion_worker.rb).
+
+1. Add the indexed class to `excluded_classes` in [`ElasticDeleteProjectWorker`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/workers/elastic_delete_project_worker.rb)
+1. Update the worker to remove documents from the index
 
 ### Recommended process for adding a new document type
 
@@ -672,7 +687,7 @@ Requires `source_branch` field. Query with `source_branch` or `not_source_branch
 
 ##### `by_search_level_and_membership`
 
-Requires `project_id` or `traversal_id` fields. Supports feature `*_access_level` fields. Query with `search_level`
+Requires `project_id` and `traversal_id` fields. Supports feature `*_access_level` fields. Query with `search_level`
  and optionally `project_ids`, `group_ids`, `features`, and `current_user` in options.
 
 Filtering is applied for:

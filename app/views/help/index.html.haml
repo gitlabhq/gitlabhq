@@ -38,7 +38,7 @@
       .card-header
         = _('Quick help')
       %ul.content-list
-        %li= link_to _('See our website for help'), support_url, { class: '!gl-text-blue-600' }
+        %li= link_to _('See our website for help'), support_url, { class: '!gl-text-link' }
         %li
           %button.btn-blank.btn-link.gl-button.js-trigger-search-bar{ type: 'button' }
             = _('Use the search bar on the top of this page')
@@ -46,5 +46,5 @@
           %button.btn-blank.btn-link.gl-button.js-trigger-shortcut{ type: 'button' }
             = _('Use shortcuts')
         - unless Gitlab::CurrentSettings.help_page_hide_commercial_content?
-          %li= link_to _('Get a support subscription'), "#{ApplicationHelper.promo_url}/pricing/", { class: '!gl-text-blue-600' }
-          %li= link_to _('Compare GitLab editions'), "#{ApplicationHelper.promo_url}/features/#compare", { class: '!gl-text-blue-600' }
+          %li= link_to _('Get a support subscription'), "#{ApplicationHelper.promo_url}/pricing/", { class: '!gl-text-link' }
+          %li= link_to _('Compare GitLab editions'), "#{ApplicationHelper.promo_url}/features/#compare", { class: '!gl-text-link' }

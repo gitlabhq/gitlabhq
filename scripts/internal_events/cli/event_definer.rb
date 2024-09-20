@@ -117,7 +117,7 @@ module InternalEventsCli
       available_props = [:label, :property, :value]
 
       while available_props.any?
-        disabled = format_warning('(already defined)')
+        disabled = format_help('(already defined)')
 
         # rubocop:disable Rails/NegateInclude -- this isn't Rails
         options = [
@@ -144,7 +144,8 @@ module InternalEventsCli
           "Which additional property do you want to add to the event?",
           options,
           help: format_help("(will reprompt for multiple)"),
-          **select_opts
+          **select_opts,
+          &disabled_format_callback
         )
 
         if selected_property == :none

@@ -23,7 +23,7 @@ To fork a sample project and create a Pages website:
 1. View the sample projects by navigating to the [GitLab Pages examples](https://gitlab.com/pages) group.
 1. Select the name of the project you want to [fork](../../repository/forking_workflow.md#create-a-fork).
 1. In the upper-right corner, select **Fork**, then choose a namespace to fork to.
-1. For your project, on the left sidebar, select **Build > Pipelines** and then **Run pipeline**.
+1. For your project, on the left sidebar, select **Build > Pipelines** and then **New pipeline**.
    GitLab CI/CD builds and deploys your site.
 
 The site can take approximately 30 minutes to deploy.

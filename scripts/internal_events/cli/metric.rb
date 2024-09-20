@@ -129,7 +129,7 @@ module InternalEventsCli
 
     def event_params(action, filter = nil)
       params = { 'name' => action }
-      params['unique'] = "#{identifier.value}.id" if identifier.value
+      params['unique'] = identifier.reference if identifier.value
       params['filter'] = filter if filter&.any?
 
       params
@@ -156,23 +156,24 @@ module InternalEventsCli
       filters.expected?
     end
 
+    # Automatically prepended to all new descriptions
+    # ex) Total count of
+    # ex) Weekly/Monthly count of unique
     def description_prefix
-      [time_frame.description, identifier.description].join(' ')
+      [
+        time_frame.description,
+        identifier.prefix,
+        *(identifier.plural if identifier.default?)
+      ].join(' ')
     end
 
     # Provides simplified but technically accurate description
+    # to be used before the user has provided a description
     def technical_description
       event_name = actions.first if events.length == 1 && !filtered?
       event_name ||= 'the selected events'
 
-      case identifier.value
-      when 'user'
-        "#{description_prefix} who triggered #{event_name}"
-      when 'project', 'namespace'
-        "#{description_prefix} where #{event_name} occurred"
-      else
-        "#{description_prefix} #{event_name} occurrences"
-      end
+      "#{time_frame.description} #{identifier.description % event_name}"
     end
 
     def bulk_assign(key_value_pairs)
@@ -203,16 +204,48 @@ module InternalEventsCli
     end
 
     Identifier = Struct.new(:value) do
+      # returns a description of the identifier with appropriate
+      # grammer to interpolate a description of events
       def description
+        if value.nil?
+          "#{prefix} %s occurrences"
+        elsif value == 'user'
+          "#{prefix} users who triggered %s"
+        elsif %w[project namespace].include?(value)
+          "#{prefix} #{plural} where %s occurred"
+        else
+          "#{prefix} #{plural} from %s occurrences"
+        end
+      end
+
+      # handles generic pluralization for unknown indentifers
+      def plural
+        default? ? "#{value}s" : "values for '#{value}'"
+      end
+
+      def prefix
         if value
-          "count of unique #{value}s"
+          "count of unique"
         else
           "count of"
         end
       end
 
+      # returns a slug which can be used in the
+      # metric's key_path and filepath
       def key_path
-        value ? "distinct_#{value}_id_from" : 'total'
+        value ? "distinct_#{reference.tr('.', '_')}_from" : 'total'
+      end
+
+      # Returns the identifier string that will be included in the yml
+      def reference
+        default? ? "#{value}.id" : value
+      end
+
+      # Refers to the top-level identifiers not included in
+      # additional_properties
+      def default?
+        %w[user project namespace].include?(value)
       end
     end
 

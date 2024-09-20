@@ -624,15 +624,6 @@
   :weight: 1
   :idempotent: false
   :tags: []
-- :name: cronjob:merge_requests_ensure_prepared
-  :worker_name: MergeRequests::EnsurePreparedWorker
-  :feature_category: :code_review_workflow
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
 - :name: cronjob:metrics_global_metrics_update
   :worker_name: Metrics::GlobalMetricsUpdateWorker
   :feature_category: :metrics

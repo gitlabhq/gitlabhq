@@ -12,7 +12,7 @@ module StatAnchorsHelper
   private
 
   def button_attribute(anchor)
-    anchor.class_modifier || 'btn-link gl-button !gl-text-blue-500'
+    anchor.class_modifier || 'btn-link gl-button !gl-text-link'
   end
 
   def extra_classes(anchor)

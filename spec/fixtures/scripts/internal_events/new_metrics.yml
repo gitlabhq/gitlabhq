@@ -315,7 +315,7 @@
     - "1\n" # Enum-select: Single event -- count occurrences of a specific event or user interaction
     - "internal_events_cli_used" # Filters to this event
     - "\n" # Select: config/events/internal_events_cli_used.yml
-    - "\e[B" # Arrow down to: Weekly count of unique users where label/value is...
+    - "\e[B\e[B\e[B" # Arrow down to: Weekly count of unique users where label/value is...
     - "\n" # Select: Weekly count of unique users where label/value is...
     - "failure, incomplete\n" # Input multiple values for "label" filter
     - "\n" # Skip "value" filter
@@ -344,7 +344,7 @@
     - "1\n" # Enum-select: Single event -- count occurrences of a specific event or user interaction
     - "internal_events_cli_used" # Filters to this event
     - "\n" # Select: config/events/internal_events_cli_used.yml
-    - "\e[B" # Arrow down to: Weekly count of unique users where label/value is...
+    - "\e[B\e[B\e[B" # Arrow down to: Weekly count of unique users where label/value is...
     - "\n" # Select: Weekly count of unique users where label/value is...
     - "failure, incomplete\n" # Input multiple values for "label" filter
     - "metrics, events\n" # Input multiple values for "property" filter
@@ -429,3 +429,28 @@
     files:
     - path: config/metrics/counts_all/count_total_cli_interactions.yml
       content: spec/fixtures/scripts/internal_events/metrics/total_multiple_events_with_rename.yml
+
+- description: Create weekly/monthly metrics for a single event unique by 'label'
+  inputs:
+    files:
+    - path: config/events/internal_events_cli_used.yml
+      content: spec/fixtures/scripts/internal_events/events/event_with_additional_properties.yml
+    keystrokes:
+    - "2\n" # Enum-select: New Metric -- calculate how often one or more existing events occur over time
+    - "1\n" # Enum-select: Single event -- count occurrences of a specific event or user interaction
+    - "internal_events_cli_used" # Filters to this event
+    - "\n" # Select: config/events/internal_events_cli_used.yml
+    - "\e[A\e[A\e[A\e[A" # Arrow up to: Weekly count of unique values for label
+    - "\n" # Select: Weekly count of unique values for label
+    - "values provided for label\n" # Input description
+    - "\n" # Submit monthly description for weekly
+    - "1\n" # Enum-select: Copy & continue
+    - "y\n" # Create file
+    - "y\n" # Create file
+    - "5\n" # Exit
+  outputs:
+    files:
+    - path: config/metrics/counts_28d/count_distinct_label_from_internal_events_cli_used_monthly.yml
+      content: spec/fixtures/scripts/internal_events/metrics/label_28d_single_event_additional_props.yml
+    - path: config/metrics/counts_7d/count_distinct_label_from_internal_events_cli_used_weekly.yml
+      content: spec/fixtures/scripts/internal_events/metrics/label_7d_single_event_additional_props.yml

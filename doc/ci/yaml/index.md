@@ -2875,7 +2875,7 @@ Use `interruptible` to configure the [auto-cancel redundant pipelines](../pipeli
 feature to cancel a job before it completes if a new pipeline on the same ref starts for a newer commit. If the feature
 is disabled, the keyword has no effect. The new pipeline must be for a commit with new changes. For example,
 the **Auto-cancel redundant pipelines** feature has no effect
-if you select **Run pipeline** in the UI to run a pipeline for the same commit.
+if you select **New pipeline** in the UI to run a pipeline for the same commit.
 
 The behavior of the **Auto-cancel redundant pipelines** feature can be controlled by
 the [`workflow:auto_cancel:on_new_commit`](#workflowauto_cancelon_new_commit) setting.
@@ -5841,7 +5841,7 @@ pipeline based on branch names or pipeline types.
   | `schedules`              | For [scheduled pipelines](../pipelines/schedules.md). |
   | `tags`                   | When the Git reference for a pipeline is a tag. |
   | `triggers`               | For pipelines created by using a [trigger token](../triggers/index.md#configure-cicd-jobs-to-run-in-triggered-pipelines). |
-  | `web`                    | For pipelines created by selecting **Run pipeline** in the GitLab UI, from the project's **Build > Pipelines** section. |
+  | `web`                    | For pipelines created by selecting **New pipeline** in the GitLab UI, from the project's **Build > Pipelines** section. |
 
 **Example of `only:refs` and `except:refs`**:
 

@@ -91,7 +91,7 @@ To execute a pipeline manually:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Build > Pipelines**.
-1. Select **Run pipeline**.
+1. Select **New pipeline**.
 1. In the **Run for branch name or tag** field, select the branch or tag to run the pipeline for.
 1. Enter any [CI/CD variables](../variables/index.md) required for the pipeline to run.
    You can set specific variables to have their [values prefilled in the form](#prefill-variables-in-manual-pipelines).
@@ -108,7 +108,7 @@ information such as what the variable is used for, and what the acceptable value
 
 Job-level variables cannot be pre-filled.
 
-In manually-triggered pipelines, the **Run pipeline** page displays all pipeline-level variables
+In manually-triggered pipelines, the **New pipeline** page displays all pipeline-level variables
 that have a `description` defined in the `.gitlab-ci.yml` file. The description displays
 below the variable.
 
@@ -131,9 +131,9 @@ variables:
 
 In this example:
 
-- `DEPLOY_CREDENTIALS` is listed in the **Run pipeline** page, but with no value set.
+- `DEPLOY_CREDENTIALS` is listed in the **New pipeline** page, but with no value set.
   The user is expected to define the value each time the pipeline is run manually.
-- `DEPLOY_ENVIRONMENT` is pre-filled in the **Run pipeline** page with `canary` as the default value,
+- `DEPLOY_ENVIRONMENT` is pre-filled in the **New pipeline** page with `canary` as the default value,
   and the message explains the other options.
 
 NOTE:
@@ -149,7 +149,7 @@ when running a pipeline manually. To workaround this issue,
 > - The variables list sometimes did not populate correctly due to [a bug](https://gitlab.com/gitlab-org/gitlab/-/issues/386245), which was resolved in GitLab 15.9.
 
 You can define an array of CI/CD variable values the user can select from when running a pipeline manually.
-These values are in a dropdown list in the **Run pipeline** page. Add the list of
+These values are in a dropdown list in the **New pipeline** page. Add the list of
 value options to `options` and set the default value with `value`. The string in `value`
 must also be included in the `options` list.
 
@@ -168,9 +168,9 @@ variables:
 
 ### Run a pipeline by using a URL query string
 
-You can use a query string to pre-populate the **Run Pipeline** page. For example, the query string
+You can use a query string to pre-populate the **New pipeline** page. For example, the query string
 `.../pipelines/new?ref=my_branch&var[foo]=bar&file_var[file_foo]=file_bar` pre-populates the
-**Run Pipeline** page with:
+**New pipeline** page with:
 
 - **Run for** field: `my_branch`.
 - **Variables** section:

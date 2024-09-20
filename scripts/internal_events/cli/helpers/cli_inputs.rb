@@ -87,6 +87,11 @@ module InternalEventsCli
         }
       end
 
+      # For use when menu options are disabled by being grayed out
+      def disabled_format_callback
+        proc { |menu| menu.symbols(cross: format_help("✘")) }
+      end
+
       # Help text to use with required, multiline cli#ask prompts.
       # Otherwise, prefer #prompt_for_text.
       def input_required_text

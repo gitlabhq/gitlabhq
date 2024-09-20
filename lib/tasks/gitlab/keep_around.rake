@@ -95,18 +95,16 @@ namespace :gitlab do
       end
     end
 
-    def add_sent_notification_shas(project, refs)
-      logger.info "Checking sent notification shas..."
-      notifications = SentNotification.where(project: project).where.not(commit_id: nil).select(:id, :commit_id)
-      notifications.find_each do |notification|
-        add_match(refs, notification.commit_id)
-      end
+    def add_sent_notification_shas(_project, _refs)
+      logger.warn "Sent notifications will not be included."
     end
 
     def add_todo_shas(project, refs)
       logger.info "Checking todo shas..."
-      Todo.where(project: project).where.not(commit_id: nil).select(:id, :commit_id).find_each do |todo|
-        add_match(refs, todo.commit_id)
+      Todo.where(project: project).each_batch(of: 1000) do |b|
+        b.where.not(commit_id: nil).select(:commit_id).each do |todo|
+          add_match(refs, todo.commit_id)
+        end
       end
     end
 

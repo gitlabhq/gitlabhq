@@ -449,12 +449,12 @@ li.note {
 }
 
 .ref-container {
-  color: var(--blue-500, $blue-500) !important;
+  @apply gl-text-link #{!important};
   background-color: var(--blue-50, $blue-50);
 }
 
 .commit-sha-container {
-  color: var(--gray-700, $gray-700) !important;
+  @apply gl-text-subtle #{!important};
   background-color: var(--gray-50, $gray-50);
 }
 

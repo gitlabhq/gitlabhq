@@ -80,7 +80,7 @@ module Ci
     end
 
     def tag_list_cache_set?
-      strong_memoized?(:tag_list) && tag_list.any?
+      strong_memoized?(:tag_list)
     end
 
     def save_tags

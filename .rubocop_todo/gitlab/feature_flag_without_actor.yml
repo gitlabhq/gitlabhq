@@ -93,7 +93,6 @@ Gitlab/FeatureFlagWithoutActor:
     - 'app/workers/delete_user_worker.rb'
     - 'app/workers/loose_foreign_keys/cleanup_worker.rb'
     - 'app/workers/members/expiring_worker.rb'
-    - 'app/workers/merge_requests/ensure_prepared_worker.rb'
     - 'app/workers/packages/debian/cleanup_dangling_package_files_worker.rb'
     - 'app/workers/projects/refresh_build_artifacts_size_statistics_worker.rb'
     - 'app/workers/prune_old_events_worker.rb'

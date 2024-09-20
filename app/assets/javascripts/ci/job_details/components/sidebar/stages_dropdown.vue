@@ -102,7 +102,7 @@ export default {
         <template #id>
           <gl-link
             :href="pipeline.path"
-            class="js-pipeline-path link-commit !gl-text-blue-500"
+            class="js-pipeline-path link-commit !gl-text-link"
             data-testid="pipeline-path"
             >#{{ pipeline.id }}</gl-link
           >
@@ -117,7 +117,7 @@ export default {
         <template #mrId>
           <gl-link
             :href="pipeline.merge_request.path"
-            class="link-commit !gl-text-blue-500"
+            class="link-commit !gl-text-link"
             data-testid="mr-link"
             >!{{ pipeline.merge_request.iid }}</gl-link
           >

@@ -495,6 +495,24 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
       end
     end
 
+    context 'when unique key is an additional property' do
+      let(:event_selection_rules) do
+        [
+          Gitlab::Usage::EventSelectionRule.new(name: event_name, time_framed: false),
+          Gitlab::Usage::EventSelectionRule.new(name: event_name, time_framed: true),
+          Gitlab::Usage::EventSelectionRule.new(name: event_name, time_framed: true, unique_identifier_name: :label)
+        ]
+      end
+
+      it 'is used when logging to RedisHLL', :aggregate_failures do
+        described_class.track_event(event_name, user: user, project: project, label: 'label')
+
+        expect_redis_tracking
+        expect_redis_hll_tracking('label'.hash, :label)
+        expect_snowplow_tracking
+      end
+    end
+
     context 'when send_snowplow_event is false' do
       it 'logs to Redis and RedisHLL but not Snowplow' do
         described_class.track_event(event_name, send_snowplow_event: false, user: user, project: project)

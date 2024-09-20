@@ -18,9 +18,9 @@
 
   %td
     - if can?(current_user, :read_build, job)
-      = link_to job.name, project_job_path(job.project, job), class: '!gl-text-blue-600'
+      = link_to job.name, project_job_path(job.project, job), class: '!gl-text-link'
     - else
-      %span{ class: '!gl-text-blue-600' }
+      %span{ class: '!gl-text-link' }
         = job.name
 
   %td.branch-commit.gl-text-gray-900

@@ -24,7 +24,7 @@ describe('Pipelines Nav Controls', () => {
     createComponent(mockData);
 
     const runPipelineButton = findRunPipelineButton();
-    expect(runPipelineButton.text()).toContain('Run pipeline');
+    expect(runPipelineButton.text()).toContain('New pipeline');
     expect(runPipelineButton.attributes('href')).toBe(mockData.newPipelinePath);
   });
 

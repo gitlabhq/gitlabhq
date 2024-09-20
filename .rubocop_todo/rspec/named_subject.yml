@@ -3503,7 +3503,6 @@ RSpec/NamedSubject:
     - 'spec/workers/merge_request_mergeability_check_worker_spec.rb'
     - 'spec/workers/merge_requests/close_issue_worker_spec.rb'
     - 'spec/workers/merge_requests/create_pipeline_worker_spec.rb'
-    - 'spec/workers/merge_requests/ensure_prepared_worker_spec.rb'
     - 'spec/workers/merge_requests/mergeability_check_batch_worker_spec.rb'
     - 'spec/workers/merge_requests/update_head_pipeline_worker_spec.rb'
     - 'spec/workers/merge_worker_spec.rb'

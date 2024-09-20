@@ -749,6 +749,8 @@
   - 1
 - - search_zoekt_indexing_task
   - 1
+- - search_zoekt_initial_indexing_event
+  - 1
 - - search_zoekt_namespace_indexer
   - 1
 - - search_zoekt_namespace_initial_indexing

@@ -105,14 +105,3 @@ $type-scale: (
 .gl-last-of-type-border-b-0:last-of-type {
   border-bottom-width: 0;
 }
-
-// stylelint-disable-next-line gitlab/no-gl-class
-.gl-pl-12 {
-  padding-left: $gl-spacing-scale-12;
-}
-
-
-// stylelint-disable-next-line gitlab/no-gl-class
-.gl-min-w-12 {
-  min-width: $gl-spacing-scale-12;
-}

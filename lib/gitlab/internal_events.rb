@@ -94,7 +94,7 @@ module Gitlab
           if event_selection_rule.total_counter?
             update_total_counter(event_selection_rule)
           else
-            update_unique_counter(event_selection_rule, kwargs)
+            update_unique_counter(event_selection_rule, **kwargs, **additional_properties)
           end
         end
       end
@@ -110,16 +110,17 @@ module Gitlab
         increment(event_selection_rule.redis_key_for_date, expiry: expiry)
       end
 
-      def update_unique_counter(event_selection_rule, kwargs)
+      def update_unique_counter(event_selection_rule, properties)
         identifier_name = event_selection_rule.unique_identifier_name
 
-        unless kwargs[identifier_name]
+        unless properties[identifier_name]
           message = "#{event_selection_rule.name} should be triggered with a named parameter '#{identifier_name}'."
           Gitlab::AppJsonLogger.warn(message: message)
           return
         end
 
-        unique_value = kwargs[identifier_name].id
+        # Use id for ActiveRecord objects, else normalize size of stored value
+        unique_value = properties[identifier_name].try(:id) || properties[identifier_name].hash
 
         # Overrides for legacy keys of unique counters are handled in `event_selection_rule.redis_key_for_date`
         Gitlab::Redis::HLL.add(

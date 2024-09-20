@@ -201,7 +201,7 @@ export default {
         <gl-link
           v-gl-tooltip
           :href="environment.environmentPath"
-          class="gl-truncate gl-text-blue-500"
+          class="gl-truncate"
           :class="{ 'gl-font-bold': visible }"
           :title="name"
         >
