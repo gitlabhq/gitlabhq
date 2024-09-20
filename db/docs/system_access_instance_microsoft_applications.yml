@@ -1,0 +1,9 @@
+table_name: system_access_instance_microsoft_applications
+classes:
+- SystemAccess::InstanceMicrosoftApplication
+feature_categories:
+- system_access
+description: Integration with Microsoft Azure application for self-managed
+milestone: 17.5
+gitlab_schema: gitlab_main_cell
+exempt_from_sharding: true

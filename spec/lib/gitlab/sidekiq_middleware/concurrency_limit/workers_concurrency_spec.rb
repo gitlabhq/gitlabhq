@@ -47,12 +47,12 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersConcurrency, 
       end
     end
 
-    context 'with cache' do
+    context 'with cache', :clean_gitlab_redis_cache do
       let(:skip_cache) { false }
       let(:cached_value) { { "TestConcurrencyLimitWorker" => 20 } }
 
       before do
-        allow(Rails.cache).to receive(:fetch).and_return(cached_value)
+        cache_setup!(tally: cached_value, lease: true)
       end
 
       it 'returns cached current_for' do
@@ -87,18 +87,60 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersConcurrency, 
       end
     end
 
-    context 'with cache' do
+    context 'with cache', :clean_gitlab_redis_cache do
       let(:skip_cache) { false }
       let(:cached_value) { { "TestConcurrencyLimitWorker" => 20 } }
+      let(:actual_tally) { { "TestConcurrencyLimitWorker" => 15 } }
 
       before do
-        allow(Rails.cache).to receive(:fetch).and_return(cached_value)
+        cache_setup!(tally: cached_value, lease: lease)
       end
 
-      it 'returns cached workers' do
-        expect(described_class).not_to receive(:workers_uncached)
+      context 'when lease is not held by another process' do
+        let(:lease) { false }
 
-        expect(workers).to eq(cached_value)
+        it 'returns the current concurrency' do
+          expect(described_class).to receive(:workers_uncached).and_return(actual_tally)
+
+          expect(workers).to eq(actual_tally)
+        end
+      end
+
+      context 'when lease is held by another process' do
+        let(:lease) { true }
+
+        it 'returns cached workers' do
+          expect(described_class).not_to receive(:workers_uncached)
+
+          expect(workers).to eq(cached_value)
+        end
+      end
+
+      context 'when lease is held by another process but the cache is empty' do
+        let(:lease) { true }
+        let(:cached_value) { nil }
+
+        it 'returns the current concurrency' do
+          expect(described_class).to receive(:workers_uncached).and_return(actual_tally)
+
+          expect(workers).to eq(actual_tally)
+        end
+      end
+    end
+  end
+
+  def cache_setup!(tally:, lease:)
+    Gitlab::Redis::Cache.with do |redis|
+      if tally
+        redis.set(described_class::CACHE_KEY, tally.to_json)
+      else
+        redis.del(described_class::CACHE_KEY)
+      end
+
+      if lease
+        redis.set(described_class::LEASE_KEY, 1)
+      else
+        redis.del(described_class::LEASE_KEY)
       end
     end
   end

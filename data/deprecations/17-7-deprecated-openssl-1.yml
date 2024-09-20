@@ -1,12 +1,12 @@
-- title: 'TLS 1.0 and 1.1 are deprecated' # (required) Clearly explain the change, or planned change. For example, "The `confidential` field for a `Note` is deprecated" or "CI/CD job names will be limited to 250 characters."
+- title: 'TLS 1.0 and 1.1 no longer supported' # (required) Clearly explain the change, or planned change. For example, "The `confidential` field for a `Note` is deprecated" or "CI/CD job names will be limited to 250 characters."
   announcement_milestone: '17.4' # (required) The milestone when this feature was first announced as deprecated.
-  removal_milestone: '17.5' # (required) The milestone when this feature is planned to be removed
+  removal_milestone: '17.7' # (required) The milestone when this feature is planned to be removed
   breaking_change: false # (required) Change to false if this is not a breaking change.
   reporter: dorrino # (required) GitLab username of the person reporting the change
   stage: systems # (required) String value of the stage that the feature was created in. e.g., Growth
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164512
   body: | # (required) Do not modify this line, instead modify the lines below.
-    Long term support (LTS) for [OpenSSL version 1.1.1 ended in September 2023](https://endoflife.date/openssl). Therefore, OpenSSL 3 will be the default in GitLab 17.5.
+    Long term support (LTS) for [OpenSSL version 1.1.1 ended in September 2023](https://endoflife.date/openssl). Therefore, OpenSSL 3 will be the default in GitLab 17.7.
 
     With the upgrade to OpenSSL 3:
 

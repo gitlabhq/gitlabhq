@@ -7162,6 +7162,10 @@ No changes.
 
 - [Add remediation badge to vulnerability report](gitlab-org/gitlab@e6236197509eae1bb27edf8fb2c63ccf769c2642) ([merge request](gitlab-org/gitlab!142455))
 
+## 16.8.10 (2024-09-20)
+
+No changes.
+
 ## 16.8.9 (2024-07-23)
 
 ### Added (1 change)
@@ -7758,6 +7762,10 @@ No changes.
 - [Finalize merge_request_diffs.project_id backfill](gitlab-org/gitlab@26aded629ba0a944e9c1ef138d9d5563de0d86ac) ([merge request](gitlab-org/gitlab!139726))
 - [Bump the finalize_after date of backfill migration](gitlab-org/gitlab@770ab7faa2048bfeb8bddd506e6f37fe18bb4d06) ([merge request](gitlab-org/gitlab!140109))
 - [Remove code_suggestions_completion_api feature](gitlab-org/gitlab@988e2f57f9635ed9cc3896b15965b608fce54756) ([merge request](gitlab-org/gitlab!138174)) **GitLab Enterprise Edition**
+
+## 16.7.10 (2024-09-20)
+
+No changes.
 
 ## 16.7.9 (2024-07-23)
 

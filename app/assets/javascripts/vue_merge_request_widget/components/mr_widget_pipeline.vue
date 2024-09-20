@@ -128,6 +128,10 @@ export default {
       required: false,
       default: false,
     },
+    sourceProjectFullPath: {
+      type: String,
+      required: true,
+    },
     targetProjectFullPath: {
       type: String,
       required: true,
@@ -305,7 +309,7 @@ export default {
                   <pipeline-mini-graph
                     v-if="isGraphQLPipelineMiniGraph && pipelineMiniGraphQueryId"
                     :iid="pipelineMiniGraphQueryId"
-                    :full-path="targetProjectFullPath"
+                    :full-path="sourceProjectFullPath"
                     :is-merge-train="isMergeTrain"
                     :pipeline-etag="pipelineEtag"
                   />

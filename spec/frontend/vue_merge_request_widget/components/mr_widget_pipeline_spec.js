@@ -49,6 +49,7 @@ describe('MRWidgetPipeline', () => {
     ciTroubleshootingDocsPath: 'ci-help',
     targetProjectId: 1,
     iid: 1,
+    sourceProjectFullPath: 'gitlab-org2/gitlab',
     targetProjectFullPath: 'gitlab-org/gitlab',
   };
 
@@ -216,9 +217,21 @@ describe('MRWidgetPipeline', () => {
     });
 
     describe('feature flag behavior', () => {
-      it('should render the graphql pipeline mini graph', () => {
+      beforeEach(() => {
         createWrapper({}, shallowMount, true);
+      });
+
+      it('should render the correct pipeline mini graph component', () => {
+        expect(findLegacyPipelineMiniGraph().exists()).toBe(false);
         expect(findPipelineMiniGraph().exists()).toBe(true);
+      });
+
+      it('sends the correct props', () => {
+        expect(findPipelineMiniGraph().props()).toMatchObject({
+          fullPath: defaultProps.sourceProjectFullPath,
+          iid: defaultProps.pipelineIid.toString(),
+          pipelineEtag: defaultProps.pipelineEtag,
+        });
       });
     });
   });

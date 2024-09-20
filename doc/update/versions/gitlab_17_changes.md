@@ -179,7 +179,7 @@ For more information, see [issue 480328](https://gitlab.com/gitlab-org/gitlab/-/
    agent_configs_to_remove.delete_all
    ```
 
-## 17.5.0
+## 17.7.0
 
 - The [Linux Package](https://docs.gitlab.com/omnibus/) upgrades OpenSSL from v1.1.1w to v3.0.0.
 
@@ -205,6 +205,11 @@ will fail to connect to a service that uses a certificate signed with insufficie
 bits with a `certificate key too weak` error message.
 
 Check the [GitLab documentation for the upgrade to OpenSSL 3](https://docs.gitlab.com/omnibus/settings/ssl/openssl_3.html) to ensure compatibility with your instance.
+
+## 17.5.0
+
+NOTE:
+The OpenSSL 3 upgrade has been postponed to GitLab 17.7.0.
 
 ## 17.4.0
 

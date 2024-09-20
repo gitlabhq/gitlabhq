@@ -22,6 +22,7 @@ query getState($projectPath: ID!, $iid: String!) {
       mergeableDiscussionsState
       headPipeline {
         id
+        iid
         status
         warnings
       }
