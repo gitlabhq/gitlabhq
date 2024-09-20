@@ -8756,4 +8756,53 @@ RSpec.describe User, feature_category: :user_profile do
       it { is_expected.to be_truthy }
     end
   end
+
+  context 'banned user normalized email reuse check' do
+    let_it_be(:existing_user) { create(:user) }
+
+    shared_examples 'does not perform the check' do
+      specify do
+        expect(::Users::BannedUser).not_to receive(:by_detumbled_email)
+
+        subject
+      end
+    end
+
+    context 'when email has other validation errors' do
+      subject(:new_user) { build(:user, email: existing_user.email).tap(&:valid?) }
+
+      it_behaves_like 'does not perform the check'
+    end
+
+    context 'when email has no other validation errors' do
+      let(:error_message) { 'Email is not allowed. Please enter a different email address and try again.' }
+      let(:tumbled_email) { 'person+inbox1@test.com' }
+      let(:normalized_email) { 'person@test.com' }
+      let!(:banned_user) { create(:user, :banned, email: normalized_email) }
+
+      subject(:new_user) { build(:user, email: tumbled_email).tap(&:valid?) }
+
+      it 'performs the check and adds an error' do
+        subject
+
+        expect(new_user.errors.full_messages).to include(error_message)
+      end
+
+      context 'and does not match normalized email of a banned user' do
+        let(:tumbled_email) { 'unique+tumbled@email.com' }
+
+        it 'does not add an error' do
+          expect(new_user.errors.full_messages).not_to include(error_message)
+        end
+      end
+
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(block_banned_user_normalized_email_reuse: false)
+        end
+
+        it_behaves_like 'does not perform the check'
+      end
+    end
+  end
 end

@@ -1249,6 +1249,15 @@ class User < ApplicationRecord
 
       errors.add(:email, _('is linked to an account pending deletion.'), help_page_url: help_page_url)
     end
+
+    banned_user_email_reuse_check unless errors.include?(:email)
+  end
+
+  def banned_user_email_reuse_check
+    return unless ::Feature.enabled?(:block_banned_user_normalized_email_reuse, ::Feature.current_request)
+    return unless ::Users::BannedUser.by_detumbled_email(email).exists?
+
+    errors.add(:email, _('is not allowed. Please enter a different email address and try again.'))
   end
 
   def commit_email_or_default

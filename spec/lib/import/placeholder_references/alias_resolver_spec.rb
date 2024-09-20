@@ -37,6 +37,29 @@ RSpec.describe Import::PlaceholderReferences::AliasResolver, feature_category: :
       end
     end
 
+    it 'contains deletion exclusions for un-indexed columns', :aggregate_failures do
+      def failure_message(model, column)
+        <<-MSG
+          ALIASES["#{model}"] contains a user reference without a database index. This can cause
+          performance issues when checking for placeholder contributions. Please update
+          the `columns_ignored_on_deletion` field on ALIASES["#{model}"] to include '#{column}'.
+        MSG
+      end
+
+      described_class.aliases.each_value.flat_map(&:values).each do |model_alias|
+        model = model_alias[:model]
+        indexes = ApplicationRecord.connection.indexes(model.table_name).map { |i| i.columns.first }.uniq
+
+        model_alias[:columns].each_value do |column|
+          next if Gitlab::ImportExport::Base::RelationFactory::USER_REFERENCES.exclude?(column)
+          next if indexes.include?(column)
+
+          expect(model_alias[:columns_ignored_on_deletion].to_a).to include(column),
+            failure_message(model_alias[:model], column)
+        end
+      end
+    end
+
     shared_examples 'define aliases' do
       def relation_class(relation_key)
         relation_key.to_s.classify.constantize
@@ -299,11 +322,14 @@ RSpec.describe Import::PlaceholderReferences::AliasResolver, feature_category: :
     end
   end
 
-  describe ".models_with_columns" do
-    subject(:models_with_columns) { described_class.models_with_columns }
+  describe ".models_with_data" do
+    subject(:models_with_data) { described_class.models_with_data }
 
     it "returns models with all their columns" do
-      expect(models_with_columns).to include([Approval, ["user_id"]])
+      expect(models_with_data).to include([Approval, {
+        model: Approval,
+        columns: { "user_id" => "user_id" }
+      }])
     end
 
     context "when there are multiple versions for a key" do
@@ -327,8 +353,11 @@ RSpec.describe Import::PlaceholderReferences::AliasResolver, feature_category: :
       end
 
       it "only includes the last version" do
-        expect(models_with_columns).to include([Note, ["user_id"]])
-        expect(models_with_columns).not_to include([Note, ["author_id"]])
+        _model, data = models_with_data.first
+        columns = data[:columns].values
+
+        expect(columns).to include('user_id')
+        expect(columns).not_to include('author_id')
       end
     end
   end

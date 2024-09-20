@@ -12,7 +12,6 @@ gem 'capybara-screenshot', '~> 1.0.26'
 gem 'rake', '~> 13', '>= 13.2.1'
 gem 'rspec', '~> 3.13'
 gem 'selenium-webdriver', '= 4.24.0'
-gem 'airborne', '~> 0.3.7', require: false # airborne is messing with rspec sandboxed mode so not requiring by default
 gem 'rest-client', '~> 2.1.0'
 gem 'rspec_junit_formatter', '~> 0.6.0'
 gem 'faker', '~> 3.4', '>= 3.4.2'

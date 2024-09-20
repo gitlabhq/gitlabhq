@@ -14201,6 +14201,9 @@ msgstr ""
 msgid "ComplianceReport|Approved by committer"
 msgstr ""
 
+msgid "ComplianceReport|Avoid creating new compliance pipelines and use pipeline execution policies instead. %{linkStart}Pipeline execution policies%{linkEnd} provide the ability to enforce CI/CD jobs, execute security scans, and better manage compliance enforcement in pipelines."
+msgstr ""
+
 msgid "ComplianceReport|Avoid creating new compliance pipelines and use pipeline execution policy actions instead. %{linkStart}Pipeline execution policy%{linkEnd} actions provide the ability to enforce CI/CD jobs, execute security scans, and better manage compliance."
 msgstr ""
 
@@ -14226,6 +14229,9 @@ msgid "ComplianceReport|Do you want to refresh the filtered results to include y
 msgstr ""
 
 msgid "ComplianceReport|Edit the framework"
+msgstr ""
+
+msgid "ComplianceReport|For more information, see %{linkStart}how to migrate from compliance pipelines to pipeline execution policies%{linkEnd}."
 msgstr ""
 
 msgid "ComplianceReport|For more information, see %{linkStart}how to migrate from compliance pipelines to pipeline execution policy actions%{linkEnd}."
@@ -57703,9 +57709,6 @@ msgstr ""
 msgid "Try all GitLab has to offer for 30 days. No credit card required."
 msgstr ""
 
-msgid "Try changing or removing filters."
-msgstr ""
-
 msgid "Try grouping with different labels"
 msgstr ""
 
@@ -57866,9 +57869,6 @@ msgid "Unable to collect CPU information"
 msgstr ""
 
 msgid "Unable to collect memory information"
-msgstr ""
-
-msgid "Unable to complete your request. Please enter a different email address and try again."
 msgstr ""
 
 msgid "Unable to connect to server: %{error}"
@@ -63607,9 +63607,6 @@ msgstr ""
 msgid "Your resource access tokens will expire in %{days_to_expire} or less"
 msgstr ""
 
-msgid "Your search didn't match any commits."
-msgstr ""
-
 msgid "Your search didn't match any commits. Try a different query."
 msgstr ""
 
@@ -64053,6 +64050,9 @@ msgstr[1] ""
 msgid "ci secure files"
 msgstr ""
 
+msgid "ciReport|%{criticalStart}critical%{criticalEnd}, %{highStart}high%{highEnd} and %{otherStart}other%{otherEnd} vulnerabilities detected."
+msgstr ""
+
 msgid "ciReport|%{criticalStart}critical%{criticalEnd}, %{highStart}high%{highEnd} and %{otherStart}others%{otherEnd}"
 msgstr ""
 
@@ -64261,6 +64261,9 @@ msgstr ""
 msgid "ciReport|Resolve with scanner suggestion"
 msgstr ""
 
+msgid "ciReport|Runs against latest tags only"
+msgstr ""
+
 msgid "ciReport|SAST"
 msgstr ""
 
@@ -64324,6 +64327,9 @@ msgid "ciReport|View all pipeline findings"
 msgstr ""
 
 msgid "ciReport|View full report"
+msgstr ""
+
+msgid "ciReport|View vulnerabilities"
 msgstr ""
 
 msgid "ciReport|in"
@@ -64775,6 +64781,9 @@ msgid "is not allowed for this project."
 msgstr ""
 
 msgid "is not allowed to point to itself"
+msgstr ""
+
+msgid "is not allowed. Please enter a different email address and try again."
 msgstr ""
 
 msgid "is not allowed. Please use your regular email address."

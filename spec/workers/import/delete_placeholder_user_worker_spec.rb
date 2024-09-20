@@ -51,6 +51,12 @@ RSpec.describe Import::DeletePlaceholderUserWorker, feature_category: :importers
     it_behaves_like 'does not delete the placeholder_user and logs the issue'
   end
 
+  context 'when another table references the user with an ignored column' do
+    let!(:note) { create(:note, resolved_by: placeholder_user) }
+
+    it_behaves_like 'deletes the placeholder user'
+  end
+
   context 'when an issue_id happens to equal the placeholder user ID' do
     let!(:issue_assignee) { create(:issue_assignee, issue_id: issue.id) }
 

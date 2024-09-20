@@ -18,7 +18,7 @@ module QA
           # Ruby's URI module automatically encodes query parameters:
           # https://github.com/ruby/uri/blob/f4999b61daa40f2c99fdc7159e2c85c036b22c67/lib/uri/generic.rb#L849
           #
-          # This gets automatically used with HTTParty, Airborne, and other clients. We
+          # This gets automatically used with HTTParty and other clients. We
           # have to construct a malformed URL by building the request ourselves.
           uri = URI.parse(address.address)
 

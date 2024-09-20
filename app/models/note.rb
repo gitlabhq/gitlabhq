@@ -534,24 +534,31 @@ class Note < ApplicationRecord
   # overkill for just updating the timestamps. To work around this we manually
   # touch the data so we can SELECT only the columns we need.
   def touch_noteable
-    # Commits are not stored in the DB so we can't touch them.
-    return if for_commit?
+    Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModification.temporary_ignore_tables_in_transaction(
+      %w[
+        vulnerabilities
+        notes
+      ], url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/486472'
+    ) do
+      # Commits are not stored in the DB so we can't touch them.
+      return if for_commit? # rubocop:disable Cop/AvoidReturnFromBlocks -- Temporary for cross join allowance
 
-    assoc = association(:noteable)
+      assoc = association(:noteable)
 
-    noteable_object =
-      if assoc.loaded?
-        noteable
-      else
-        # If the object is not loaded (e.g. when notes are loaded async) we
-        # _only_ want the data we actually need.
-        assoc.scope.select(:id, :updated_at).take
-      end
+      noteable_object =
+        if assoc.loaded?
+          noteable
+        else
+          # If the object is not loaded (e.g. when notes are loaded async) we
+          # _only_ want the data we actually need.
+          assoc.scope.select(:id, :updated_at).take
+        end
 
-    noteable_object&.touch
+      noteable_object&.touch
 
-    # We return the noteable object so we can re-use it in EE for Elasticsearch.
-    noteable_object
+      # We return the noteable object so we can re-use it in EE for Elasticsearch.
+      noteable_object
+    end
   end
 
   def notify_after_create

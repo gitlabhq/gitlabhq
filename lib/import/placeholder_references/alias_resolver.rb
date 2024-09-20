@@ -9,6 +9,7 @@ module Import
 
       NOTE_COLUMNS = { "author_id" => "author_id", "updated_by_id" => "updated_by_id",
                        "resolved_by_id" => "resolved_by_id" }.freeze
+      NOTE_EXCLUSIONS = %w[updated_by_id resolved_by_id].freeze
 
       # A new version for a model should be defined when new entries must be
       # mapped in a different way to data that already exists in the database.
@@ -59,13 +60,15 @@ module Import
         "DiffNote" => {
           1 => {
             model: DiffNote,
-            columns: NOTE_COLUMNS
+            columns: NOTE_COLUMNS,
+            columns_ignored_on_deletion: NOTE_EXCLUSIONS
           }
         },
         "DiscussionNote" => {
           1 => {
             model: DiscussionNote,
-            columns: NOTE_COLUMNS
+            columns: NOTE_COLUMNS,
+            columns_ignored_on_deletion: NOTE_EXCLUSIONS
           }
         },
         "Event" => {
@@ -78,7 +81,8 @@ module Import
           1 => {
             model: Epic,
             columns: { "author_id" => "author_id", "assignee_id" => "assignee_id", "updated_by_id" => "updated_by_id",
-                       "last_edited_by_id" => "last_edited_by_id", "closed_by_id" => "closed_by_id" }
+                       "last_edited_by_id" => "last_edited_by_id", "closed_by_id" => "closed_by_id" },
+            columns_ignored_on_deletion: %w[updated_by_id]
           }
         },
         "GenericCommitStatus" => {
@@ -90,7 +94,8 @@ module Import
         "LegacyDiffNote" => {
           1 => {
             model: LegacyDiffNote,
-            columns: NOTE_COLUMNS
+            columns: NOTE_COLUMNS,
+            columns_ignored_on_deletion: NOTE_EXCLUSIONS
           }
         },
         "Issue" => {
@@ -116,7 +121,8 @@ module Import
           1 => {
             model: MergeRequest,
             columns: { "author_id" => "author_id", "updated_by_id" => "updated_by_id",
-                       "last_edited_by_id" => "last_edited_by_id", "merge_user_id" => "merge_user_id" }
+                       "last_edited_by_id" => "last_edited_by_id", "merge_user_id" => "merge_user_id" },
+            columns_ignored_on_deletion: %w[last_edited_by_id]
           }
         },
         "MergeRequest::Metrics" => {
@@ -140,7 +146,8 @@ module Import
         "Note" => {
           1 => {
             model: Note,
-            columns: NOTE_COLUMNS
+            columns: NOTE_COLUMNS,
+            columns_ignored_on_deletion: NOTE_EXCLUSIONS
           }
         },
         "ProtectedTag::CreateAccessLevel" => {
@@ -237,10 +244,10 @@ module Import
         column
       end
 
-      def models_with_columns
+      def models_with_data
         aliases.values
           .map { |versions| versions[versions.keys.max] }
-          .map { |data| [data[:model], data[:columns].values] }
+          .map { |data| [data[:model], data] }
       end
 
       private_class_method def self.track_error_for_missing(model:, column: nil, version: nil)

@@ -35,12 +35,6 @@ GEM
       tzinfo (~> 2.0)
     addressable (2.8.7)
       public_suffix (>= 2.0.2, < 7.0)
-    airborne (0.3.7)
-      activesupport
-      rack
-      rack-test (>= 1.1.0, < 2.0)
-      rest-client (>= 2.0.2, < 3.0)
-      rspec (~> 3.8)
     allure-rspec (2.25.0)
       allure-ruby-commons (= 2.25.0)
       rspec-core (>= 3.8, < 4)
@@ -365,7 +359,6 @@ PLATFORMS
 
 DEPENDENCIES
   activesupport (~> 7.0.8.4)
-  airborne (~> 0.3.7)
   allure-rspec (~> 2.25.0)
   capybara (~> 3.40.0)
   capybara-screenshot (~> 1.0.26)

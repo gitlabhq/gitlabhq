@@ -32,6 +32,35 @@ RSpec.describe RegistrationsController, :with_current_organization, type: :reque
         expect { request }.to change { UserDetail.count }.by(1)
       end
     end
+
+    describe 'email reuse check' do
+      context 'when new user\'s normalized email matches a banned user\'s normalized email' do
+        let(:tumbled_email) { 'person+inbox1@test.com' }
+        let(:normalized_email) { 'person@test.com' }
+        let(:user_attrs) { super().merge({ email: tumbled_email }) }
+
+        let!(:banned_user) { create(:user, :banned, email: normalized_email) }
+
+        it 'renders new action with correct error message', :aggregate_failures do
+          request
+
+          expect(response.body).to include(_('is not allowed. Please enter a different email address and try again.'))
+          expect(response).to render_template(:new)
+        end
+
+        context 'when feature flag is disabled' do
+          before do
+            stub_feature_flags(block_banned_user_normalized_email_reuse: false)
+          end
+
+          it 'does not re-render the form' do
+            request
+
+            expect(response).not_to render_template(:new)
+          end
+        end
+      end
+    end
   end
 
   describe '#destroy' do

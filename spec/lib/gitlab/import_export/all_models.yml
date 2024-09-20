@@ -348,7 +348,6 @@ ci_pipelines:
 - job_artifacts
 - vulnerabilities_finding_pipelines
 - vulnerability_findings
-- vulnerability_state_transitions
 - pipeline_config
 - security_scans
 - security_findings
