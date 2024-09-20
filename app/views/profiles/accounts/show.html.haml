@@ -13,7 +13,7 @@
     alert_options: { class: 'gl-my-5' },
     close_button_options: { class: 'js-close-2fa-enabled-success-alert' }) do |c|
     - c.with_body do
-      = html_escape(_('You have set up 2FA for your account! If you lose access to your 2FA device, you can use your recovery codes to access your account. Alternatively, if you upload an SSH key, you can %{anchorOpen}use that key to generate additional recovery codes%{anchorClose}.')) % { anchorOpen: '<a href="%{href}">'.html_safe % { href: help_page_path('user/profile/account/two_factor_authentication_troubleshooting', anchor: 'generate-new-recovery-codes-using-ssh') }, anchorClose: '</a>'.html_safe }
+      = html_escape(_('You have set up 2FA for your account! If you lose access to your 2FA device, you can use your recovery codes to access your account. Alternatively, if you upload an SSH key, you can %{anchorOpen}use that key to generate additional recovery codes%{anchorClose}.')) % { anchorOpen: '<a href="%{href}">'.html_safe % { href: help_page_path('user/profile/account/two_factor_authentication_troubleshooting.md', anchor: 'generate-new-recovery-codes-using-ssh') }, anchorClose: '</a>'.html_safe }
 
 .settings-section.js-search-settings-section
   .settings-sticky-header
@@ -53,7 +53,7 @@
     %p.gl-text-secondary
       = s_('Profiles|Changing your username can have unintended side effects.')
       = succeed '.' do
-        = link_to _('Learn more'), help_page_path('user/profile/index', anchor: 'change-your-username'), target: '_blank', rel: 'noopener noreferrer'
+        = link_to _('Learn more'), help_page_path('user/profile/index.md', anchor: 'change-your-username'), target: '_blank', rel: 'noopener noreferrer'
     - data = { initial_username: current_user.username, root_url: root_url, action_url: update_username_profile_path(format: :json) }
     #update-username{ data: data }
 

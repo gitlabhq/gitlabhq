@@ -3,6 +3,6 @@
 - if group.linked_to_subscription?
   = render Pajamas::AlertComponent.new(variant: :tip, dismissible: false, alert_options: { class: 'gl-mb-5', data: { testid: 'group-has-linked-subscription-alert' }}) do |c|
     - c.with_body do
-      = html_escape(_("This group can't be removed because it is linked to a subscription. To remove this group, %{linkStart}link the subscription%{linkEnd} with a different group.")) % { linkStart: "<a href=\"#{help_page_path('subscriptions/gitlab_com/index', anchor: 'change-the-linked-group')}\">".html_safe, linkEnd: '</a>'.html_safe }
+      = html_escape(_("This group can't be removed because it is linked to a subscription. To remove this group, %{linkStart}link the subscription%{linkEnd} with a different group.")) % { linkStart: "<a href=\"#{help_page_path('subscriptions/gitlab_com/index.md', anchor: 'change-the-linked-group')}\">".html_safe, linkEnd: '</a>'.html_safe }
 
 .js-confirm-danger{ data: group_confirm_modal_data(group: group, remove_form_id: remove_form_id) }

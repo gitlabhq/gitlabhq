@@ -1652,7 +1652,7 @@ GEM
       prism (>= 0.29.0, < 0.31)
       rbs (>= 3, < 4)
       sorbet-runtime (>= 0.5.10782)
-    ruby-lsp-rails (0.3.14)
+    ruby-lsp-rails (0.3.15)
       ruby-lsp (>= 0.17.12, < 0.18.0)
     ruby-lsp-rspec (0.1.12)
       ruby-lsp (~> 0.17.0)

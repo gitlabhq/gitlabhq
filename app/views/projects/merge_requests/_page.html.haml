@@ -4,7 +4,7 @@
 - page_title "#{@merge_request.title} (#{@merge_request.to_reference})", _("Merge requests")
 - page_description @merge_request.description_html
 - page_card_attributes @merge_request.card_attributes
-- suggest_changes_help_path = help_page_path('user/project/merge_requests/reviews/suggestions')
+- suggest_changes_help_path = help_page_path('user/project/merge_requests/reviews/suggestions.md')
 - mr_action = j(params[:tab].presence || 'show')
 - add_issuable_stylesheet
 - add_page_specific_style 'page_bundles/design_management'

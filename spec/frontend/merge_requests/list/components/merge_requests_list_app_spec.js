@@ -37,6 +37,7 @@ import MergeRequestsListApp from '~/merge_requests/list/components/merge_request
 import getMergeRequestsQuery from '~/merge_requests/list/queries/get_merge_requests.query.graphql';
 import getMergeRequestsCountQuery from '~/merge_requests/list/queries/get_merge_requests_counts.query.graphql';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
+import issuableEventHub from '~/issues/list/eventhub';
 
 Vue.use(VueApollo);
 Vue.use(VueRouter);
@@ -48,6 +49,7 @@ let getCountsQueryResponseMock;
 
 const findIssuableList = () => wrapper.findComponent(IssuableList);
 const findNewMrButton = () => wrapper.findByTestId('new-merge-request-button');
+const findBulkEditButton = () => wrapper.findByTestId('bulk-edit');
 
 function createComponent({
   provide = {},
@@ -79,6 +81,7 @@ function createComponent({
       email: '',
       exportCsvPath: '',
       rssUrl: '',
+      canBulkUpdate: true,
       ...provide,
     },
     apolloProvider,
@@ -362,5 +365,59 @@ describe('Merge requests list app', () => {
     expect(wrapper.findComponent(ApprovalCount).props('mergeRequest')).toEqual(
       getQueryResponse.data.project.mergeRequests.nodes[0],
     );
+  });
+
+  describe('bulk edit', () => {
+    it('renders when user has permissions', () => {
+      createComponent({ provide: { canBulkUpdate: true }, mountFn: mountExtended });
+
+      expect(findBulkEditButton().exists()).toBe(true);
+    });
+
+    it('does not render when user does not have permissions', () => {
+      createComponent({ provide: { canBulkUpdate: false }, mountFn: mountExtended });
+
+      expect(findBulkEditButton().exists()).toBe(false);
+    });
+
+    it('emits "issuables:enableBulkEdit" event to legacy bulk edit class', async () => {
+      createComponent({ provide: { canBulkUpdate: true }, mountFn: mountExtended });
+      jest.spyOn(issuableEventHub, '$emit');
+
+      findBulkEditButton().vm.$emit('click');
+      await waitForPromises();
+
+      expect(issuableEventHub.$emit).toHaveBeenCalledWith('issuables:enableBulkEdit');
+    });
+
+    describe.each([true, false])(
+      'when "issuables:toggleBulkEdit" event is received with payload `%s`',
+      (isBulkEdit) => {
+        beforeEach(() => {
+          createComponent();
+
+          issuableEventHub.$emit('issuables:toggleBulkEdit', isBulkEdit);
+        });
+
+        it(`${isBulkEdit ? 'enables' : 'disables'} bulk edit`, () => {
+          expect(findIssuableList().props('showBulkEditSidebar')).toBe(isBulkEdit);
+        });
+      },
+    );
+
+    describe('when "update-legacy-bulk-edit" event is emitted by IssuableList', () => {
+      beforeEach(() => {
+        createComponent();
+        jest.spyOn(issuableEventHub, '$emit');
+      });
+
+      it('emits an "issuables:updateBulkEdit" event to the legacy bulk edit class', async () => {
+        findIssuableList().vm.$emit('update-legacy-bulk-edit');
+
+        await nextTick();
+
+        expect(issuableEventHub.$emit).toHaveBeenCalledWith('issuables:updateBulkEdit');
+      });
+    });
   });
 });

@@ -9,6 +9,6 @@
   expanded: expanded) do |c|
   - c.with_description do
     = _('Display alerts from all configured monitoring tools.')
-    = link_to _('Learn more.'), help_page_path('operations/incident_management/integrations'), target: '_blank', rel: 'noopener noreferrer'
+    = link_to _('Learn more.'), help_page_path('operations/incident_management/integrations.md'), target: '_blank', rel: 'noopener noreferrer'
   - c.with_body do
     .js-alerts-settings{ data: alerts_settings_data }

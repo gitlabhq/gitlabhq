@@ -1,6 +1,6 @@
 - service_ping_enabled = Gitlab::CurrentSettings.usage_ping_enabled
 
 - if !service_ping_enabled
-  #js-devops-service-ping-disabled{ data: { is_admin: current_user&.admin.to_s, empty_state_svg_path: image_path('illustrations/empty-state/empty-devops-md.svg'), enable_service_ping_path: metrics_and_profiling_admin_application_settings_path(anchor: 'js-usage-settings'), docs_link: help_page_path('development/internal_analytics/service_ping/index') } }
+  #js-devops-service-ping-disabled{ data: { is_admin: current_user&.admin.to_s, empty_state_svg_path: image_path('illustrations/empty-state/empty-devops-md.svg'), enable_service_ping_path: metrics_and_profiling_admin_application_settings_path(anchor: 'js-usage-settings'), docs_link: help_page_path('development/internal_analytics/service_ping/index.md') } }
 - else
   #js-devops-score{ data: { devops_score_metrics: devops_score_metrics(@metric).to_json, no_data_image_path: image_path('illustrations/empty-state/empty-devops-md.svg'), devops_score_intro_image_path: image_path('illustrations/chart-bar-sm.svg') } }

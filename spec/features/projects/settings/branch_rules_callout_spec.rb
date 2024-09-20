@@ -23,7 +23,7 @@ RSpec.describe 'Branch rule callout', feature_category: :source_code_management 
     it 'displays callout on repository settings page' do
       expect(page).to have_content callout_message
       expect(page).to have_link('How to use branch rules',
-        href: help_page_path('user/project/repository/branches/index', anchor: 'create-a-branch-rule'))
+        href: help_page_path('user/project/repository/branches/index.md', anchor: 'create-a-branch-rule'))
     end
 
     context 'when callout is dismissed', :js do

@@ -34,8 +34,8 @@
             = _('You can also upload existing files from your computer using the instructions below.')
           .git-empty.js-git-empty
             %h3.gl-text-lg= _('Configure your Git identity')
-            - git_get_started_doc = link_to('', help_page_path('topics/git/get_started'), target: '_blank', rel: 'noopener noreferrer')
-            - git_config_doc = link_to('', help_page_path('topics/git/how_to_install_git/index', anchor: 'configure-git'), target: '_blank', rel: 'noopener noreferrer')
+            - git_get_started_doc = link_to('', help_page_path('topics/git/get_started.md'), target: '_blank', rel: 'noopener noreferrer')
+            - git_config_doc = link_to('', help_page_path('topics/git/how_to_install_git/index.md', anchor: 'configure-git'), target: '_blank', rel: 'noopener noreferrer')
             %p= safe_format(_("%{get_started}Get started with Git%{get_started_end} and learn %{git_config}how to configure it%{git_config_end}."), tag_pair(git_get_started_doc, :get_started, :get_started_end), tag_pair(git_config_doc, :git_config, :git_config_end))
             .scrolling-tabs-container.inner-page-scroll-tabs
             = gl_tabs_nav({ class: 'js-configure-git-tabs' }) do

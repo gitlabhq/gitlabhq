@@ -13,5 +13,6 @@ class ReleasePolicy < BasePolicy
     prevent :create_release
     prevent :update_release
     prevent :destroy_release
+    prevent :publish_catalog_version
   end
 end

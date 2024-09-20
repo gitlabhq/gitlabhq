@@ -3,5 +3,5 @@
   alert_options: { class: 'js-branch-rules-tip-callout gl-mt-5', data: { feature_id: Users::CalloutsHelper::BRANCH_RULES_TIP_CALLOUT, dismiss_endpoint: callouts_path, defer_links: 'true' }},
   close_button_options: { data: { testid: 'close-branch-rules-callout' }}) do |c|
   - c.with_body do
-    - docs_link = link_to('', help_page_path('user/project/repository/branches/index',  anchor: 'create-a-branch-rule'), target: '_blank', rel: 'noopener noreferrer')
+    - docs_link = link_to('', help_page_path('user/project/repository/branches/index.md',  anchor: 'create-a-branch-rule'), target: '_blank', rel: 'noopener noreferrer')
     = safe_format(s_('BranchRules|Edit branch protections, approval rules, and status checks from a single page. %{docs_link_start} How to use branch rules?%{docs_link_end}'), tag_pair(docs_link, :docs_link_start, :docs_link_end))

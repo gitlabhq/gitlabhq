@@ -8,14 +8,14 @@
     .gl-flex.gl-grow
       %h4.gl-text-base.gl-leading-24.gl-m-0= _('Transfer project')
     %p.gl-text-subtle.gl-text-sm.gl-m-0
-      - link = link_to('', help_page_path('user/project/settings/migrate_projects', anchor: 'transfer-a-project-to-another-namespace'), target: '_blank', rel: 'noopener noreferrer')
+      - link = link_to('', help_page_path('user/project/settings/migrate_projects.md', anchor: 'transfer-a-project-to-another-namespace'), target: '_blank', rel: 'noopener noreferrer')
       = safe_format(_("Transfer your project into another namespace. %{link_start}Learn more.%{link_end}"), tag_pair(link, :link_start, :link_end))
 
   - c.with_body do
     = form_for @project, url: transfer_project_path(@project), method: :put, html: { class: 'js-project-transfer-form', id: form_id } do |f|
       .form-group.gl-mb-0
         %p
-          - link = link_to('', help_page_path('user/project/working_with_projects', anchor: 'rename-a-repository'), target: '_blank', rel: 'noopener noreferrer')
+          - link = link_to('', help_page_path('user/project/working_with_projects.md', anchor: 'rename-a-repository'), target: '_blank', rel: 'noopener noreferrer')
           = safe_format(_("A project’s repository name defines its URL (the one you use to access the project via a browser) and its place on the file disk where GitLab is installed. %{link_start}Learn more.%{link_end}"), tag_pair(link, :link_start, :link_end))
         %p= _('When you transfer your project to a group, you can easily manage multiple projects, view usage quotas for storage, compute minutes, and users, and start a trial or upgrade to a paid tier.')
         %p

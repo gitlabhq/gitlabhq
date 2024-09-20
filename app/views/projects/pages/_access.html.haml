@@ -18,7 +18,7 @@
 
     - unless @project.public_pages?
       - c.with_footer do
-        - help_page = help_page_path('user/project/pages/pages_access_control')
+        - help_page = help_page_path('user/project/pages/pages_access_control.md')
         - link_start = '<a href="%{url}" target="_blank" class="gl-alert-link" rel="noopener noreferrer">'.html_safe % { url: help_page }
         - link_end = '</a>'.html_safe
         = html_escape_once(s_('GitLabPages|Access Control is enabled for this Pages website; only authorized users will be able to access it. To make your website publicly available, navigate to your project\'s %{strong_start}Settings &gt; General &gt; Visibility%{strong_end} and select %{strong_start}Everyone%{strong_end} in pages section. Read the %{link_start}documentation%{link_end} for more information.')).html_safe % { link_start: link_start, link_end: link_end, strong_start: '<strong>'.html_safe, strong_end: '</strong>'.html_safe }

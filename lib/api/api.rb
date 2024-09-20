@@ -230,6 +230,7 @@ module API
         mount ::API::Badges
         mount ::API::Branches
         mount ::API::BulkImports
+        mount ::API::Ci::Catalog
         mount ::API::Ci::JobArtifacts
         mount ::API::Groups
         mount ::API::Ci::Jobs

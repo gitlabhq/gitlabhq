@@ -185,20 +185,6 @@ $comparison-empty-state-height: 62px;
   }
 }
 
-.limit-container-width {
-  .merge-request-tabs-container {
-    max-width: $limited-layout-width;
-    margin-left: auto;
-    margin-right: auto;
-
-    .inner-page-scroll-tabs {
-      background-color: var(--white, $white);
-      margin-left: -$gl-padding;
-      padding-left: $gl-padding;
-    }
-  }
-}
-
 .merge-request-tabs-container {
   @include media-breakpoint-down(xs) {
     .discussion-filter-container {
@@ -245,12 +231,6 @@ $comparison-empty-state-height: 62px;
       flex-direction: column-reverse;
       align-items: flex-start;
     }
-  }
-}
-
-.limit-container-width:not(.container-limited) {
-  .merge-request-tabs-holder .merge-request-tabs-container {
-    max-width: $limited-layout-width - ($gl-padding * 2);
   }
 }
 

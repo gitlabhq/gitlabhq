@@ -11,7 +11,7 @@
   - c.with_body do
     = form_for group, url: transfer_group_path(group), method: :put, html: { id: form_id, class: 'js-group-transfer-form' } do |f|
       %ul
-        - learn_more_link = help_page_url('user/project/repository/index', anchor: 'repository-path-changes')
+        - learn_more_link = help_page_url('user/project/repository/index.md', anchor: 'repository-path-changes')
         - learn_more_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: learn_more_link }
         - warning_text = s_("GroupSettings|Be careful. Changing a group's parent can have unintended side effects. %{learn_more_link_start}Learn more.%{learn_more_link_end}") % { learn_more_link_start: learn_more_link_start, learn_more_link_end: '</a>'.html_safe }
         %li= warning_text.html_safe
@@ -21,5 +21,5 @@
       - if group.paid?
         = render Pajamas::AlertComponent.new(variant: :tip, dismissible: false, alert_options: { class: 'gl-mb-5' }) do |c|
           - c.with_body do
-            = html_escape(_("This group can't be transferred because it is linked to a subscription. To transfer this group, %{linkStart}link the subscription%{linkEnd} with a different group.")) % { linkStart: "<a href=\"#{help_page_path('subscriptions/gitlab_com/index', anchor: 'change-the-linked-group')}\">".html_safe, linkEnd: '</a>'.html_safe }
+            = html_escape(_("This group can't be transferred because it is linked to a subscription. To transfer this group, %{linkStart}link the subscription%{linkEnd} with a different group.")) % { linkStart: "<a href=\"#{help_page_path('subscriptions/gitlab_com/index.md', anchor: 'change-the-linked-group')}\">".html_safe, linkEnd: '</a>'.html_safe }
       .js-transfer-group-form{ data: initial_data }

@@ -26,7 +26,7 @@ module SystemCheck
 
     def check_gitlab_shell_self_test
       gitlab_shell_repo_base = gitlab_shell_path
-      check_cmd = File.expand_path('bin/check', gitlab_shell_repo_base)
+      check_cmd = File.expand_path('bin/gitlab-shell-check', gitlab_shell_repo_base)
       $stdout.puts "Running #{check_cmd}"
 
       if system(check_cmd, chdir: gitlab_shell_repo_base)

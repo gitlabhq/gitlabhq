@@ -3,5 +3,5 @@
 .text-content
   %h4.text-center= _('There are no packages yet')
   %p
-    - link = link_to('', help_page_path('administration/packages/index'), target: '_blank', rel: 'noopener noreferrer')
+    - link = link_to('', help_page_path('administration/packages/index.md'), target: '_blank', rel: 'noopener noreferrer')
     = safe_format(_('Learn how to %{no_packages_link_start}publish and share your packages%{no_packages_link_end} with GitLab.'), tag_pair(link, :no_packages_link_start, :no_packages_link_end))

@@ -22,7 +22,7 @@
           = render Pajamas::CheckboxTagComponent.new(name: 'merge_request[squash]', checked: project.squash_enabled_by_default?, value: '1', checkbox_options: { class: 'js-form-update', disabled: true }) do |c|
             - c.with_label do
               = _("Squash commits when merge request is accepted.")
-              = link_to sprite_icon('question-o'), help_page_path('user/project/merge_requests/squash_and_merge'), target: '_blank', rel: 'noopener noreferrer'
+              = link_to sprite_icon('question-o'), help_page_path('user/project/merge_requests/squash_and_merge.md'), target: '_blank', rel: 'noopener noreferrer'
             - c.with_help_text do
               = _('Required in this project.')
         - else
@@ -30,4 +30,4 @@
           = render Pajamas::CheckboxTagComponent.new(name: 'merge_request[squash]', checked: issuable_squash_option?(issuable, project), value: '1', checkbox_options: { class: 'js-form-update' }) do |c|
             - c.with_label do
               = _("Squash commits when merge request is accepted.")
-              = link_to sprite_icon('question-o'), help_page_path('user/project/merge_requests/squash_and_merge'), target: '_blank', rel: 'noopener noreferrer'
+              = link_to sprite_icon('question-o'), help_page_path('user/project/merge_requests/squash_and_merge.md'), target: '_blank', rel: 'noopener noreferrer'

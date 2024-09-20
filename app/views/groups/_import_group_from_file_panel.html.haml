@@ -10,14 +10,14 @@
       alert_options: { class: 'gl-mb-5' },
       dismissible: false) do |c|
       - c.with_body do
-        - docs_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/group/import/index') }
+        - docs_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/group/import/index.md') }
         - link_end = '</a>'.html_safe
         = s_('GroupsNew|This feature is deprecated and replaced by group migration by direct transfer. %{docs_link_start}Learn more%{docs_link_end}.').html_safe % { docs_link_start: docs_link_start, docs_link_end: link_end }
     = render 'shared/groups/group_name_and_path_fields', f: f
     .form-group
       = f.label :file, s_('GroupsNew|Upload file')
       .gl-font-normal
-        - import_export_link_start = '<a href="%{url}" target="_blank">'.html_safe % { url: help_page_path('user/project/settings/import_export', anchor: 'migrate-groups-by-uploading-an-export-file-deprecated') }
+        - import_export_link_start = '<a href="%{url}" target="_blank">'.html_safe % { url: help_page_path('user/project/settings/import_export.md', anchor: 'migrate-groups-by-uploading-an-export-file-deprecated') }
         = s_('GroupsNew|To import a group, navigate to the group settings for the GitLab source instance, %{link_start}generate an export file%{link_end}, and upload it here.').html_safe % { link_start: import_export_link_start, link_end: '</a>'.html_safe }
       .gl-mt-3
         = render 'shared/file_picker_button', f: f, field: :file, help_text: nil

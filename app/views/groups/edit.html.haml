@@ -14,7 +14,7 @@
     expanded: true) do |c|
     - c.with_description do
       = _('Update your group name, description, avatar, and visibility.')
-      = link_to _('Learn more about groups.'), help_page_path('user/group/index')
+      = link_to _('Learn more about groups.'), help_page_path('user/group/index.md')
     - c.with_body do
       = render 'groups/settings/general'
 
@@ -39,7 +39,7 @@
     expanded: expanded) do |c|
     - c.with_description do
       = s_('GroupSettings|Customize this group\'s badges.')
-      = link_to s_('GroupSettings|What are badges?'), help_page_path('user/project/badges')
+      = link_to s_('GroupSettings|What are badges?'), help_page_path('user/project/badges.md')
     - c.with_body do
       = render 'shared/badges/badge_settings'
 

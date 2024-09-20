@@ -48,7 +48,7 @@
           %strong
             = s_('JiraService|Using Jira for issue tracking?')
         %p.gl-text-center.gl-mb-0
-          - jira_docs_link_url = help_page_url('integration/jira/configure', anchor: 'view-jira-issues')
+          - jira_docs_link_url = help_page_url('integration/jira/configure.md', anchor: 'view-jira-issues')
           - jira_docs_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: jira_docs_link_url }
           = html_escape(s_('JiraService|%{jira_docs_link_start}Enable the Jira integration%{jira_docs_link_end} to view your Jira issues in GitLab.')) % { jira_docs_link_start: jira_docs_link_start.html_safe, jira_docs_link_end: '</a>'.html_safe }
         %p.gl-text-center.gl-mb-0.gl-text-gray-500

@@ -4,7 +4,7 @@
     dismissible: false,
     alert_options: { class: 'gl-mt-5 js-hide-when-nothing-matches-search', data: { testid: "slack-notifications-deprecation" } }) do |c|
     - c.with_body do
-      - help_page_link = help_page_url('user/project/integrations/gitlab_slack_application')
+      - help_page_link = help_page_url('user/project/integrations/gitlab_slack_application.md')
       - learn_more_link = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_link }
 
       = html_escape(s_('The Slack notifications integration is deprecated and will be removed in a future release. To continue to receive notifications from Slack, use the GitLab for Slack app instead. %{learn_more_link_start}Learn more%{link_end}.')) % { learn_more_link_start: learn_more_link, link_end: '</a>'.html_safe }
@@ -14,7 +14,7 @@
     dismissible: false,
     alert_options: { class: 'gl-mt-5 js-hide-when-nothing-matches-search', data: { testid: "slack-notifications-deprecation" } }) do |c|
     - c.with_body do
-      - help_page_link = help_page_url('user/project/integrations/gitlab_slack_application')
+      - help_page_link = help_page_url('user/project/integrations/gitlab_slack_application.md')
       - learn_more_link = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_link }
 
       = html_escape(s_('Slack notifications will be brought into the GitLab for Slack app so you can manage both integrations from one place. %{learn_more_link_start}Learn more%{link_end}.')) % { learn_more_link_start: learn_more_link, link_end: '</a>'.html_safe }

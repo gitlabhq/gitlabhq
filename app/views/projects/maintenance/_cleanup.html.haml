@@ -6,7 +6,7 @@
   - help_link_title = _('What happens during repository cleanup?')
   = _("Upload a text file of objects, and then GitLab removes internal Git references to these objects. Use %{git_filter_link_start}git filter-repo%{git_filter_link_end} on the repository to generate the list of objects to remove as a commit-map file.").html_safe % { git_filter_link_start: git_filter_link_start, git_filter_link_end: link_end }
   = link_to sprite_icon('question-o'),
-    help_page_path('user/project/repository/reducing_the_repo_size_using_git',
+    help_page_path('user/project/repository/reducing_the_repo_size_using_git.md',
     anchor: 'repository-cleanup'),
     title: help_link_title,
     aria: { label: help_link_title },

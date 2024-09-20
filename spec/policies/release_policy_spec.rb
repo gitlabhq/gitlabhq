@@ -19,6 +19,7 @@ RSpec.describe ReleasePolicy, :request_store do
       is_expected.to be_allowed(:create_release)
       is_expected.to be_allowed(:update_release)
       is_expected.to be_allowed(:destroy_release)
+      is_expected.to be_allowed(:publish_catalog_version)
     end
   end
 
@@ -29,6 +30,7 @@ RSpec.describe ReleasePolicy, :request_store do
       is_expected.to be_disallowed(:create_release)
       is_expected.to be_disallowed(:update_release)
       is_expected.to be_disallowed(:destroy_release)
+      is_expected.to be_disallowed(:publish_catalog_version)
     end
   end
 end

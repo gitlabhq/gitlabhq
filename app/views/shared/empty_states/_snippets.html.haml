@@ -14,7 +14,7 @@
 
     - c.with_description do
       = s_('SnippetsEmptyState|Store, share, and embed small pieces of code and text.')
-      = link_to _('Learn more.'), help_page_path('user/snippets'), target: '_blank', rel: 'noopener noreferrer', class: 'gl-underline'
+      = link_to _('Learn more.'), help_page_path('user/snippets.md'), target: '_blank', rel: 'noopener noreferrer', class: 'gl-underline'
 
 - else
   = render Pajamas::EmptyStateComponent.new(svg_path: illustration,

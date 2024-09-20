@@ -49,7 +49,9 @@ describe('Role details drawer utils', () => {
         await callRoleUpdateApi(member, role);
 
         expect(mockAxios.history.put).toHaveLength(1);
-        expect(mockAxios.history.put[0].data).toBe(JSON.stringify({ [propertyName]: 10 }));
+        expect(mockAxios.history.put[0].data).toBe(
+          JSON.stringify({ [propertyName]: 10, member_role_id: null }),
+        );
       },
     );
   });

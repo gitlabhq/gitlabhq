@@ -5,7 +5,7 @@
     = f.label :visibility_level, _('Visibility level'), class: 'label-bold gl-mb-0'
     %p
       = _('Who can see this group?')
-      - link = link_to('', help_page_path('user/public_access'), target: '_blank', rel: 'noopener noreferrer')
+      - link = link_to('', help_page_path('user/public_access.md'), target: '_blank', rel: 'noopener noreferrer')
       = safe_format(_('%{docs_link_start}Learn about visibility levels.%{docs_link_end}'), tag_pair(link, :docs_link_start, :docs_link_end))
   - if can_change_visibility_level
     = render('shared/visibility_radios', model_method: :visibility_level, form: f, selected_level: visibility_level, form_model: form_model)

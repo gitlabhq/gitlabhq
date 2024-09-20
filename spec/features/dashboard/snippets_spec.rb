@@ -59,7 +59,7 @@ RSpec.describe 'Dashboard snippets', :js, feature_category: :source_code_managem
 
     it 'shows documentation button in main comment area' do
       parent_element = page.find('.gl-empty-state')
-      expect(parent_element).to have_link('Learn more', href: help_page_path('user/snippets'))
+      expect(parent_element).to have_link('Learn more', href: help_page_path('user/snippets.md'))
     end
 
     it 'passes axe automated accessibility testing' do

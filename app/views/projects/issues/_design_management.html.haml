@@ -1,6 +1,6 @@
 - return if @issue.work_item_type&.incident?
 
-- requirements_link_url = help_page_path('user/project/issues/design_management', anchor: 'prerequisites')
+- requirements_link_url = help_page_path('user/project/issues/design_management.md', anchor: 'prerequisites')
 - requirements_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: requirements_link_url }
 - link_end = '</a>'.html_safe
 - enable_lfs_message = s_("DesignManagement|To upload designs, you'll need to enable LFS and have an admin enable hashed storage. %{requirements_link_start}More information%{requirements_link_end}").html_safe % { requirements_link_start: requirements_link_start, requirements_link_end: link_end }

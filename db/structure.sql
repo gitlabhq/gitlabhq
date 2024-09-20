@@ -20156,6 +20156,26 @@ CREATE SEQUENCE vulnerability_issue_links_id_seq
 
 ALTER SEQUENCE vulnerability_issue_links_id_seq OWNED BY vulnerability_issue_links.id;
 
+CREATE TABLE vulnerability_management_policy_rules (
+    id bigint NOT NULL,
+    security_policy_id bigint NOT NULL,
+    security_policy_management_project_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    rule_index smallint NOT NULL,
+    type smallint NOT NULL,
+    content jsonb DEFAULT '{}'::jsonb NOT NULL
+);
+
+CREATE SEQUENCE vulnerability_management_policy_rules_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE vulnerability_management_policy_rules_id_seq OWNED BY vulnerability_management_policy_rules.id;
+
 CREATE TABLE vulnerability_merge_request_links (
     id bigint NOT NULL,
     vulnerability_id bigint NOT NULL,
@@ -22658,6 +22678,8 @@ ALTER TABLE ONLY vulnerability_historical_statistics ALTER COLUMN id SET DEFAULT
 ALTER TABLE ONLY vulnerability_identifiers ALTER COLUMN id SET DEFAULT nextval('vulnerability_identifiers_id_seq'::regclass);
 
 ALTER TABLE ONLY vulnerability_issue_links ALTER COLUMN id SET DEFAULT nextval('vulnerability_issue_links_id_seq'::regclass);
+
+ALTER TABLE ONLY vulnerability_management_policy_rules ALTER COLUMN id SET DEFAULT nextval('vulnerability_management_policy_rules_id_seq'::regclass);
 
 ALTER TABLE ONLY vulnerability_merge_request_links ALTER COLUMN id SET DEFAULT nextval('vulnerability_merge_request_links_id_seq'::regclass);
 
@@ -25452,6 +25474,9 @@ ALTER TABLE ONLY vulnerability_identifiers
 
 ALTER TABLE ONLY vulnerability_issue_links
     ADD CONSTRAINT vulnerability_issue_links_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY vulnerability_management_policy_rules
+    ADD CONSTRAINT vulnerability_management_policy_rules_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY vulnerability_merge_request_links
     ADD CONSTRAINT vulnerability_merge_request_links_pkey PRIMARY KEY (id);
@@ -30911,6 +30936,10 @@ CREATE UNIQUE INDEX index_vuln_findings_on_uuid_including_vuln_id_1 ON vulnerabi
 
 CREATE UNIQUE INDEX index_vuln_historical_statistics_on_project_id_and_date ON vulnerability_historical_statistics USING btree (project_id, date);
 
+CREATE INDEX index_vuln_mgmt_policy_rules_on_policy_mgmt_project_id ON vulnerability_management_policy_rules USING btree (security_policy_management_project_id);
+
+CREATE UNIQUE INDEX index_vuln_mgmt_policy_rules_on_unique_policy_rule_index ON vulnerability_management_policy_rules USING btree (security_policy_id, rule_index);
+
 CREATE INDEX index_vuln_namespace_historical_statistics_on_namespace_id ON vulnerability_namespace_historical_statistics USING btree (namespace_id);
 
 CREATE UNIQUE INDEX index_vuln_namespace_historical_statistics_traversal_ids_date ON vulnerability_namespace_historical_statistics USING btree (traversal_ids, date);
@@ -35589,6 +35618,9 @@ ALTER TABLE ONLY epic_issues
 ALTER TABLE ONLY packages_nuget_symbols
     ADD CONSTRAINT fk_rails_5df972da14 FOREIGN KEY (package_id) REFERENCES packages_packages(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY vulnerability_management_policy_rules
+    ADD CONSTRAINT fk_rails_5e6b6e1b2c FOREIGN KEY (security_policy_management_project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY resource_weight_events
     ADD CONSTRAINT fk_rails_5eb5cb92a1 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
 
@@ -35708,6 +35740,9 @@ ALTER TABLE ONLY ml_experiment_metadata
 
 ALTER TABLE ONLY error_tracking_errors
     ADD CONSTRAINT fk_rails_6b41f837ba FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY vulnerability_management_policy_rules
+    ADD CONSTRAINT fk_rails_6b815ed813 FOREIGN KEY (security_policy_id) REFERENCES security_policies(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY ml_model_version_metadata
     ADD CONSTRAINT fk_rails_6b8fcb2af1 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

@@ -769,6 +769,8 @@
   - 1
 - - security_delete_orchestration_configuration
   - 1
+- - security_delete_security_policy
+  - 1
 - - security_generate_policy_violation_comment
   - 1
 - - security_orchestration_configuration_create_bot
@@ -806,6 +808,8 @@
 - - security_scans
   - 2
 - - security_scans_purge_by_job_id
+  - 1
+- - security_sync_policy
   - 1
 - - security_sync_policy_violation_comment
   - 1

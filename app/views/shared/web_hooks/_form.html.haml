@@ -72,12 +72,12 @@
           help_text: s_('Webhooks|A release is created, updated, or deleted.')
     - if Feature.enabled?(:emoji_webhooks, hook.parent)
       %li.gl-pb-3
-        - emoji_help_link = link_to s_('Which emoji events trigger webhooks'), help_page_path('user/project/integrations/webhook_events', anchor: 'emoji-events')
+        - emoji_help_link = link_to s_('Which emoji events trigger webhooks'), help_page_path('user/project/integrations/webhook_events.md', anchor: 'emoji-events')
         = form.gitlab_ui_checkbox_component :emoji_events,
             integration_webhook_event_human_name(:emoji_events),
             help_text: s_('Webhooks|An emoji is awarded or revoked. %{help_link}?').html_safe % { help_link: emoji_help_link }
     %li.gl-pb-3
-      - access_token_help_link = link_to s_('Which project or group access token events trigger webhooks'), help_page_path('user/project/integrations/webhook_events', anchor: 'project-and-group-access-token-events')
+      - access_token_help_link = link_to s_('Which project or group access token events trigger webhooks'), help_page_path('user/project/integrations/webhook_events.md', anchor: 'project-and-group-access-token-events')
       = form.gitlab_ui_checkbox_component :resource_access_token_events,
           integration_webhook_event_human_name(:resource_access_token_events),
           help_text: s_('Webhooks|An access token is going to expire in the next 7 days. %{help_link}?').html_safe % { help_link: access_token_help_link }
@@ -87,7 +87,7 @@
   = form.label :custom_webhook_template, s_('Webhooks|Custom webhook template (optional)'), class: 'label-bold'
   = form.text_area :custom_webhook_template, value: hook.custom_webhook_template, class: 'form-control gl-form-input gl-form-input-xl', rows: 8, maxlength: 4096
   %p.form-text.text-muted
-    = link_to s_('Webhooks|How to create a custom webhook template?'), help_page_path('user/project/integrations/webhooks', anchor: 'custom-webhook-template')
+    = link_to s_('Webhooks|How to create a custom webhook template?'), help_page_path('user/project/integrations/webhooks.md', anchor: 'custom-webhook-template')
 
 .form-group
   = form.label :enable_ssl_verification, s_('Webhooks|SSL verification'), class: 'label-bold checkbox'

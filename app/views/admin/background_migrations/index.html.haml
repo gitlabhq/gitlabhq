@@ -1,6 +1,6 @@
 - page_title s_('BackgroundMigrations|Background migrations')
 - @breadcrumb_link = admin_background_migrations_path(database: params[:database])
-- learnmore_link = help_page_path('update/background_migrations')
+- learnmore_link = help_page_path('update/background_migrations.md')
 - learnmore_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: learnmore_link }
 - page_description = html_escape(s_('BackgroundMigrations|Background migrations are used to perform data migrations when a migration exceeds the time limits set by GitLab. %{linkStart}Learn more%{linkEnd}')) % { linkStart: learnmore_link_start, linkEnd: '</a>'.html_safe }
 

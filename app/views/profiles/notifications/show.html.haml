@@ -25,7 +25,7 @@
 
       .form-group.global-notification-setting.gl-mb-3
         - if @global_notification_setting
-          .js-vue-notification-dropdown{ data: { dropdown_items: notification_dropdown_items(@global_notification_setting).to_json, notification_level: @global_notification_setting.level, help_page_path: help_page_path('user/profile/notifications'), show_label: 'true' } }
+          .js-vue-notification-dropdown{ data: { dropdown_items: notification_dropdown_items(@global_notification_setting).to_json, notification_level: @global_notification_setting.level, help_page_path: help_page_path('user/profile/notifications.md'), show_label: 'true' } }
 
       = gitlab_ui_form_for @user, url: profile_notifications_path, method: :put do |f|
         .form-group

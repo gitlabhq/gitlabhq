@@ -30,7 +30,7 @@
     = render Pajamas::ButtonComponent.new(href: add_to_slack_link(integration.parent, slack_app_id), disabled: inherited, button_options: { data: { testid: 'install-slack-app-button' } }) do
       = s_('SlackIntegration|Reinstall GitLab for Slack app…')
   %p
-    = html_escape(s_('SlackIntegration|You may need to reinstall the GitLab for Slack app when we %{linkStart}make updates or change permissions%{linkEnd}.')) % { linkStart: %(<a href="#{help_page_path('user/project/integrations/gitlab_slack_application', anchor: 'reinstall-the-gitlab-for-slack-app')}">).html_safe, linkEnd: '</a>'.html_safe}
+    = html_escape(s_('SlackIntegration|You may need to reinstall the GitLab for Slack app when we %{linkStart}make updates or change permissions%{linkEnd}.')) % { linkStart: %(<a href="#{help_page_path('user/project/integrations/gitlab_slack_application.md', anchor: 'reinstall-the-gitlab-for-slack-app')}">).html_safe, linkEnd: '</a>'.html_safe}
 - else
   = render Pajamas::ButtonComponent.new(href: add_to_slack_link(integration.parent, slack_app_id), button_options: { data: { testid: 'install-slack-app-button' } }) do
     = s_('SlackIntegration|Install GitLab for Slack app…')

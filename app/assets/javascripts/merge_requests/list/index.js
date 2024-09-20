@@ -32,6 +32,7 @@ export async function mountMergeRequestListsApp() {
     exportCsvPath,
     rssUrl,
     releasesEndpoint,
+    canBulkUpdate,
   } = el.dataset;
 
   return new Vue({
@@ -61,6 +62,7 @@ export async function mountMergeRequestListsApp() {
       exportCsvPath,
       rssUrl,
       releasesEndpoint,
+      canBulkUpdate: parseBoolean(canBulkUpdate),
     },
     render: (createComponent) => createComponent(MergeRequestsListApp),
   });

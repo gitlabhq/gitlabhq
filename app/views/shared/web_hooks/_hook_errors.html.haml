@@ -13,7 +13,7 @@
     - c.with_body do
       = safe_format(s_('Webhooks|The webhook failed to connect, and is disabled. To re-enable it, check %{strong_start}Recent events%{strong_end} for error details, then test your settings below.'), strong)
 - elsif hook.temporarily_disabled?
-  - help_link = link_to('', help_page_path('user/project/integrations/webhooks', anchor: 'auto-disabled-webhooks'), target: '_blank', rel: 'noopener noreferrer')
+  - help_link = link_to('', help_page_path('user/project/integrations/webhooks.md', anchor: 'auto-disabled-webhooks'), target: '_blank', rel: 'noopener noreferrer')
   - retry_time = { retry_time: time_interval_in_words(hook.disabled_until - Time.now) }
   = render Pajamas::AlertComponent.new(title: s_('Webhooks|Webhook fails to connect'),
     variant: :warning) do |c|

@@ -48,5 +48,9 @@ fragment MergeRequestFragment on MergeRequest {
   commitCount
   sourceBranchExists
   targetBranchExists
+  taskCompletionStatus {
+    completedCount
+    count
+  }
   ...MergeRequestApprovalFragment
 }

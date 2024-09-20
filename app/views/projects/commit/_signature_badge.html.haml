@@ -19,17 +19,17 @@
   - elsif signature.x509?
     = render partial: "projects/commit/x509/certificate_details", locals: { signature: signature }
 
-    = link_to(_('Learn more about X.509 signed commits'), help_page_path('user/project/repository/signed_commits/x509'), class: 'gl-link gl-block')
+    = link_to(_('Learn more about X.509 signed commits'), help_page_path('user/project/repository/signed_commits/x509.md'), class: 'gl-link gl-block')
   - elsif signature.ssh?
     = _('SSH key fingerprint:')
     %span.gl-font-monospace= signature.key_fingerprint_sha256 || _('Unknown')
 
-    = link_to(_('Learn about signing commits with SSH keys.'), help_page_path('user/project/repository/signed_commits/ssh'), class: 'gl-link gl-block gl-mt-3')
+    = link_to(_('Learn about signing commits with SSH keys.'), help_page_path('user/project/repository/signed_commits/ssh.md'), class: 'gl-link gl-block gl-mt-3')
   - else
     = _('GPG Key ID:')
     %span.gl-font-monospace= signature.gpg_key_primary_keyid
 
-    = link_to(_('Learn about signing commits'), help_page_path('user/project/repository/signed_commits/index'), class: 'gl-link gl-block gl-mt-3')
+    = link_to(_('Learn about signing commits'), help_page_path('user/project/repository/signed_commits/index.md'), class: 'gl-link gl-block gl-mt-3')
 
 %a.signature-badge.gl-inline-block.gl-ml-4{ role: 'button', tabindex: 0, data: { toggle: 'popover', html: 'true', placement: 'top', title: title, content: content } }
   = gl_badge_tag label, variant: variant

@@ -3,6 +3,6 @@
     = s_('UserMapping|You might have already accepted or rejected the reassignment, or it might have been canceled by the group owner.')
   - c.with_actions do
     = render Pajamas::ButtonComponent.new(variant: :default,
-      href: help_page_path('user/project/import/index', anchor: 'accept-contribution-reassignment'),
+      href: help_page_path('user/project/import/index.md', anchor: 'accept-contribution-reassignment'),
       button_options: { class: 'deferred-link gl-alert-action', rel: 'noreferrer noopener' }, target: '_blank') do
       = _('Learn more')

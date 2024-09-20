@@ -2,4 +2,4 @@
   = render Pajamas::AlertComponent.new(variant: :warning, dismissible: false, alert_options: { class: 'gl-hidden sm:gl-block' }) do |c|
     - c.with_body do
       = _('Possible LFS configuration issue. This project contains LFS objects but there is no .gitattributes file. You can ignore this message if you recently added a `.gitattributes` file.')
-      = link_to('Learn more.', help_page_path('topics/git/lfs/index'), target: '_blank', rel: 'noopener noreferrer')
+      = link_to('Learn more.', help_page_path('topics/git/lfs/index.md'), target: '_blank', rel: 'noopener noreferrer')

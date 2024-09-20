@@ -7,7 +7,7 @@
         s_('GitLabPages|Force HTTPS (requires valid certificates)'),
         checkbox_options: { disabled: pages_https_only_disabled? },
         label_options: { class: 'label-bold' }
-      - docs_link_start = "<a href='#{help_page_path('user/project/pages/custom_domains_ssl_tls_certification/index', anchor: 'force-https-for-gitlab-pages-websites')}' target='_blank' rel='noopener noreferrer'>".html_safe
+      - docs_link_start = "<a href='#{help_page_path('user/project/pages/custom_domains_ssl_tls_certification/index.md', anchor: 'force-https-for-gitlab-pages-websites')}' target='_blank' rel='noopener noreferrer'>".html_safe
       - link_end = '</a>'.html_safe
       %p.gl-pl-6
         = s_("GitLabPages|When enabled, all attempts to visit your website through HTTP are automatically redirected to HTTPS using a response with status code 301. Requires a valid certificate for all domains. %{docs_link_start}Learn more.%{link_end}").html_safe % { docs_link_start: docs_link_start, link_end: link_end }
@@ -28,7 +28,7 @@
           label_options: { class: 'label-bold' }
         %p.gl-pl-6
           = safe_format(s_("GitLabPages|When enabled, you can create parallel deployments of your pages site. %{docs_link_start}Learn more.%{link_end}"),
-              tag_pair(tag.a(href: help_page_path('user/project/pages/index', anchor: 'parallel-deployments'), target: '_blank'),
+              tag_pair(tag.a(href: help_page_path('user/project/pages/index.md', anchor: 'parallel-deployments'), target: '_blank'),
               :docs_link_start, :link_end))
 
   .gl-mt-3

@@ -12,7 +12,7 @@
 - ffOnly = s_('ProjectSettings|Fast-forward merges only.')
 - ffConflictRebase = s_('ProjectSettings|When there is a merge conflict, the user is given the option to rebase.')
 - ffTrains = s_('ProjectSettings|If merge trains are enabled, merging is only possible if the branch can be rebased without conflicts.')
-- ffTrainsHelp = link_to s_('ProjectSettings|What are merge trains?'), help_page_path('ci/pipelines/merge_trains', anchor: 'enable-merge-trains'), target: '_blank', rel: 'noopener noreferrer'
+- ffTrainsHelp = link_to s_('ProjectSettings|What are merge trains?'), help_page_path('ci/pipelines/merge_trains.md', anchor: 'enable-merge-trains'), target: '_blank', rel: 'noopener noreferrer'
 
 - ffTrainsHelpFullHelpText = (noMergeCommit + "<br />" + ffOnly + "<br />" + ffConflictRebase + "<br />" + ffTrains + " " + ffTrainsHelp).html_safe
 
@@ -20,7 +20,7 @@
   %b= s_('ProjectSettings|Merge method')
   %p.text-secondary
     = s_('ProjectSettings|Determine what happens to the commit history when you merge a merge request.')
-    = link_to s_('ProjectSettings|How do they differ?'), help_page_path('user/project/merge_requests/methods/index'), target: '_blank', rel: 'noopener noreferrer'
+    = link_to s_('ProjectSettings|How do they differ?'), help_page_path('user/project/merge_requests/methods/index.md'), target: '_blank', rel: 'noopener noreferrer'
   = form.gitlab_ui_radio_component :merge_method,
     :merge,
     labelMerge,

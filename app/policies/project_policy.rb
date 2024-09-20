@@ -537,6 +537,7 @@ class ProjectPolicy < BasePolicy
     enable :create_release
     enable :update_release
     enable :destroy_release
+    enable :publish_catalog_version
     enable :read_alert_management_alert
     enable :update_alert_management_alert
     enable :read_terraform_state

@@ -44,7 +44,7 @@
       = render Pajamas::AlertComponent.new(dismissible: false,
         variant: :success) do |c|
         - c.with_body do
-          - help_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/profile/index', anchor: 'add-details-to-your-profile-with-a-readme') }
+          - help_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/profile/index.md', anchor: 'add-details-to-your-profile-with-a-readme') }
           = html_escape(_('%{project_path} is a project that you can use to add a README to your GitLab profile. Create a public project and initialize the repository with a README to get started. %{help_link_start}Learn more%{help_link_end}.')) % { project_path: "<strong>#{current_user.username} / #{current_user.username}</strong>".html_safe, help_link_start: help_link_start, help_link_end: '</a>'.html_safe }
 
 - if include_description
@@ -67,7 +67,7 @@
 .form-group.gl-form-group
   = f.label :visibility_level, class: 'label-bold' do
     = s_('ProjectsNew|Visibility Level')
-    = link_to sprite_icon('question-o'), help_page_path('user/public_access'), aria: { label: 'Documentation for Visibility Level' }, target: '_blank', rel: 'noopener noreferrer'
+    = link_to sprite_icon('question-o'), help_page_path('user/public_access.md'), aria: { label: 'Documentation for Visibility Level' }, target: '_blank', rel: 'noopener noreferrer'
   = render 'shared/visibility_level', f: f, visibility_level: visibility_level.to_i, can_change_visibility_level: true, form_model: @project, with_label: false, data: { testid: 'visibility-radios'}
 
 - if !hide_init_with_readme
@@ -90,7 +90,7 @@
         = s_('ProjectsNew|Enable Static Application Security Testing (SAST)')
       - c.with_help_text do
         = s_('ProjectsNew|Analyze your source code for known security vulnerabilities.')
-        = link_to _('Learn more.'), help_page_path('user/application_security/sast/index'), target: '_blank', rel: 'noopener noreferrer', data: { track_action: 'followed' }
+        = link_to _('Learn more.'), help_page_path('user/application_security/sast/index.md'), target: '_blank', rel: 'noopener noreferrer', data: { track_action: 'followed' }
 
   - if display_sha256_repository
     #js-experimental-setting-accordion.form-group.gl-mb-6

@@ -45,7 +45,7 @@
 
           %li.droplab-item-ignore.gl-ml-3.gl-mr-3.gl-mt-5
             - if can_create_confidential_merge_request?
-              #js-forked-project{ data: { namespace_path: @project.namespace.full_path, project_path: @project.full_path, new_fork_path: new_project_fork_path(@project), help_page_path: help_page_path('user/project/merge_requests/index') } }
+              #js-forked-project{ data: { namespace_path: @project.namespace.full_path, project_path: @project.full_path, new_fork_path: new_project_fork_path(@project), help_page_path: help_page_path('user/project/merge_requests/index.md') } }
             .form-group
               %label{ for: 'new-branch-name' }
                 = _('Branch name')

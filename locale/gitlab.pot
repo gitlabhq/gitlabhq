@@ -3266,6 +3266,9 @@ msgstr ""
 msgid "Add environment"
 msgstr ""
 
+msgid "Add exclusion"
+msgstr ""
+
 msgid "Add exclusions"
 msgstr ""
 
@@ -7151,7 +7154,7 @@ msgstr ""
 msgid "Approvals|Rule cannot be approved"
 msgstr ""
 
-msgid "Approvals|Section: %section"
+msgid "Approvals|Section: %{section}"
 msgstr ""
 
 msgid "Approvals|The number of people who need to approve this is more than those who are allowed to. Please ask the project owner to update %{securityPolicy}."
@@ -27412,7 +27415,7 @@ msgstr ""
 msgid "IDE|Confirm"
 msgstr ""
 
-msgid "IDE|Contact your administrator or try to open the Web IDE again with another domain."
+msgid "IDE|Contact your administrator or try to open the Web IDE again with another domain. %{linkStart}How can an administrator resolve the issue%{linkEnd}?"
 msgstr ""
 
 msgid "IDE|Could not find a callback URL entry for %{expectedCallbackUrl}."
@@ -48842,16 +48845,64 @@ msgstr ""
 msgid "SecurityDescription|The linked group refers to the groups that are linked to security policy projects. Security policy projects store your organization's security policies. They are identified when policies are created, or when a project is linked as a security policy project. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
+msgid "SecurityExclusions|Add Exclusion"
+msgstr ""
+
 msgid "SecurityExclusions|Add exclusion"
+msgstr ""
+
+msgid "SecurityExclusions|Description"
+msgstr ""
+
+msgid "SecurityExclusions|Disable"
+msgstr ""
+
+msgid "SecurityExclusions|Enable"
 msgstr ""
 
 msgid "SecurityExclusions|Enforcement"
 msgstr ""
 
+msgid "SecurityExclusions|Enter one or more paths to exclude, separated by line breaks."
+msgstr ""
+
+msgid "SecurityExclusions|Enter one or more raw values to ignore, separated by line breaks."
+msgstr ""
+
+msgid "SecurityExclusions|Enter one or more rules to ignore, separated by line breaks."
+msgstr ""
+
+msgid "SecurityExclusions|Exclusion has been created successfully"
+msgstr ""
+
+msgid "SecurityExclusions|File or directory location"
+msgstr ""
+
 msgid "SecurityExclusions|Modified"
 msgstr ""
 
+msgid "SecurityExclusions|Path"
+msgstr ""
+
+msgid "SecurityExclusions|Provide context for why the content is being excluded."
+msgstr ""
+
+msgid "SecurityExclusions|Raw value"
+msgstr ""
+
+msgid "SecurityExclusions|Rule"
+msgstr ""
+
+msgid "SecurityExclusions|Scanner rule identifier"
+msgstr ""
+
 msgid "SecurityExclusions|Secret push protection"
+msgstr ""
+
+msgid "SecurityExclusions|Select the secret detection methods this exclusion should apply to."
+msgstr ""
+
+msgid "SecurityExclusions|Select which type of content to exclude"
 msgstr ""
 
 msgid "SecurityExclusions|Specify file paths, raw values, and regex that should be excluded by secret detection in this project."
@@ -48860,13 +48911,33 @@ msgstr ""
 msgid "SecurityExclusions|Status"
 msgstr ""
 
+msgid "SecurityExclusions|The following error occured while saving the exclusion:"
+msgid_plural "SecurityExclusions|The following errors occured while saving the exclusion:"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "SecurityExclusions|Toggle exclusion"
 msgstr ""
 
 msgid "SecurityExclusions|Type"
 msgstr ""
 
+msgid "SecurityExclusions|Unprocessed data"
+msgstr ""
+
 msgid "SecurityExclusions|Value"
+msgstr ""
+
+msgid "SecurityExclusions|ex: This secret is used for testing"
+msgstr ""
+
+msgid "SecurityExclusions|ex: gitlab_personal_access_token"
+msgstr ""
+
+msgid "SecurityExclusions|ex: glpat-1234567890"
+msgstr ""
+
+msgid "SecurityExclusions|ex: spec/**/*.rb"
 msgstr ""
 
 msgid "SecurityOrchestration| and "
@@ -64641,6 +64712,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "has already been linked to another vulnerability"
+msgstr ""
+
+msgid "has already been published"
 msgstr ""
 
 msgid "has already been taken"

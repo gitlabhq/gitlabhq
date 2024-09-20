@@ -722,7 +722,7 @@ To implement LLM-specific logging, use the `Gitlab::Llm::Logger` class.
 ### Feature Flag
 
 A feature flag named `expanded_ai_logging` controls the logging of sensitive data.
-Use the `info_or_debug` helper method for conditional logging based on the feature flag status:
+Use the `conditional_info` helper method for conditional logging based on the feature flag status:
 
 - If the feature flag is enabled for the current user, it logs the information on `info` level (logs are accessible in Kibana).
 - If the feature flag is disabled for the current user, it logs the information on `debug` level (logs are not accessible in Kibana).
@@ -733,7 +733,7 @@ When implementing logging for LLM features, consider the following:
 
 - Identify critical information for debugging purposes.
 - Ensure compliance with privacy requirements by not logging sensitive user data without proper authorization.
-- Use the `info_or_debug` helper method to respect the `expanded_ai_logging` feature flag.
+- Use the `conditional_info` helper method to respect the `expanded_ai_logging` feature flag.
 - Structure your logs to provide meaningful insights for troubleshooting and analysis.
 
 ### Example Usage
@@ -743,7 +743,7 @@ When implementing logging for LLM features, consider the following:
 Gitlab::Llm::Logger.build.info("LLM feature initialized")
 
 # Logging potentially sensitive information
-Gitlab::Llm::Logger.build.info_or_debug(user, message:"User prompt processed: #{sanitized_prompt}")
+Gitlab::Llm::Logger.build.conditional_info(user, message:"User prompt processed: #{sanitized_prompt}")
 
 # Logging application error information
 Gitlab::Llm::Logger.build.error(user, message: "System application error: #{sanitized_error_message}")

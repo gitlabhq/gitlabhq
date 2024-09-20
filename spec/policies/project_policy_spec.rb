@@ -2480,6 +2480,26 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     end
   end
 
+  describe 'publish_catalog_version' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:role, :allowed) do
+      :owner      | true
+      :maintainer | true
+      :developer  | true
+      :reporter   | false
+      :guest      | false
+    end
+
+    with_them do
+      let(:current_user) { public_send(role) }
+
+      it do
+        expect(subject.can?(:publish_catalog_version)).to be(allowed)
+      end
+    end
+  end
+
   describe 'infrastructure feature' do
     using RSpec::Parameterized::TableSyntax
 

@@ -9,7 +9,7 @@
         %h4.gl-text-base.gl-leading-24.gl-m-0= s_('GroupSettings|Change group URL')
       %p.gl-text-subtle.gl-text-sm.gl-m-0
         = s_("GroupSettings|Changing a group's URL can have unintended side effects.")
-        #{link_to _('Learn more'), help_page_path('user/group/manage', anchor: 'change-a-groups-path'), target: '_blank', rel: 'noopener noreferrer'}.
+        #{link_to _('Learn more'), help_page_path('user/group/manage.md', anchor: 'change-a-groups-path'), target: '_blank', rel: 'noopener noreferrer'}.
 
     - c.with_body do
       = gitlab_ui_form_for @group, html: { multipart: true, class: 'gl-show-field-errors' }, authenticity_token: true do |f|

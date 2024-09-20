@@ -1,5 +1,5 @@
-- more_info_link = link_to _('Learn more.'), help_page_path('user/project/clusters/add_existing_cluster'), target: '_blank', rel: 'noopener noreferrer'
-- rbac_help_link = link_to _('Learn more.'), help_page_path('user/project/clusters/cluster_access'), target: '_blank', rel: 'noopener noreferrer'
+- more_info_link = link_to _('Learn more.'), help_page_path('user/project/clusters/add_existing_cluster.md'), target: '_blank', rel: 'noopener noreferrer'
+- rbac_help_link = link_to _('Learn more.'), help_page_path('user/project/clusters/cluster_access.md'), target: '_blank', rel: 'noopener noreferrer'
 
 - api_url_help_text = s_('ClusterIntegration|The URL used to access the Kubernetes API.')
 - ca_cert_help_text = s_('ClusterIntegration|The Kubernetes certificate used to authenticate to the cluster.')
@@ -58,7 +58,7 @@
       = field.label :managed, s_('ClusterIntegration|GitLab-managed cluster'), class: 'form-check-label label-bold'
     .form-text.text-muted
       = s_('ClusterIntegration|Allow GitLab to manage namespaces and service accounts for this cluster.')
-      = link_to _('Learn more.'), help_page_path('user/project/clusters/gitlab_managed_clusters'), target: '_blank', rel: 'noopener noreferrer'
+      = link_to _('Learn more.'), help_page_path('user/project/clusters/gitlab_managed_clusters.md'), target: '_blank', rel: 'noopener noreferrer'
 
   .form-group
     .form-check
@@ -66,7 +66,7 @@
       = field.label :namespace_per_environment, s_('ClusterIntegration|Namespace per environment'), class: 'form-check-label label-bold'
     .form-text.text-muted
       = s_('ClusterIntegration|Deploy each environment to its own namespace. Otherwise, environments within a project share a project-wide namespace. Note that anyone who can trigger a deployment of a namespace can read its secrets. If modified, existing environments will use their current namespaces until the cluster cache is cleared.')
-      = link_to _('Learn more.'), help_page_path('user/project/clusters/deploy_to_cluster', anchor: 'custom-namespace'), target: '_blank', rel: 'noopener noreferrer'
+      = link_to _('Learn more.'), help_page_path('user/project/clusters/deploy_to_cluster.md', anchor: 'custom-namespace'), target: '_blank', rel: 'noopener noreferrer'
 
   = field.fields_for :platform_kubernetes, @user_cluster.platform_kubernetes do |platform_kubernetes_field|
     - if @user_cluster.allow_user_defined_namespace?

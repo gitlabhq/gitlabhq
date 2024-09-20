@@ -4,7 +4,7 @@
     - c.with_title { _('Naming, visibility') }
     - c.with_description do
       = _('Update your group name, description, avatar, and visibility.')
-      = link_to _('Learn more about groups.'), help_page_path('user/group/index')
+      = link_to _('Learn more about groups.'), help_page_path('user/group/index.md')
     - c.with_body do
       = render 'shared/groups/group_name_and_path_fields', f: f
       = render 'shared/group_form_description', f: f

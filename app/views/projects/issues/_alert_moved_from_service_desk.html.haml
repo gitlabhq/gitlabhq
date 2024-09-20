@@ -1,5 +1,5 @@
 - return unless show_moved_service_desk_issue_warning?(issue)
-- service_desk_link_url = help_page_path('user/project/service_desk/index')
+- service_desk_link_url = help_page_path('user/project/service_desk/index.md')
 - service_desk_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: service_desk_link_url }
 
 = render Pajamas::AlertComponent.new(variant: :warning,

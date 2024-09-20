@@ -67,6 +67,7 @@ import {
 } from '~/issues/list/constants';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import setSortPreferenceMutation from '~/issues/list/queries/set_sort_preference.mutation.graphql';
+import issuableEventHub from '~/issues/list/eventhub';
 import { i18n } from '../constants';
 import getMergeRequestsQuery from '../queries/get_merge_requests.query.graphql';
 import getMergeRequestsCountsQuery from '../queries/get_merge_requests_counts.query.graphql';
@@ -115,6 +116,7 @@ export default {
     'isSignedIn',
     'newMergeRequestPath',
     'releasesEndpoint',
+    'canBulkUpdate',
   ],
   data() {
     return {
@@ -127,6 +129,7 @@ export default {
       sortKey: CREATED_DESC,
       state: STATUS_OPEN,
       pageSize: DEFAULT_PAGE_SIZE,
+      showBulkEditSidebar: false,
     };
   },
   apollo: {
@@ -422,10 +425,19 @@ export default {
     isOpenTab() {
       return this.state === STATUS_OPEN;
     },
+    isBulkEditButtonDisabled() {
+      return this.showBulkEditSidebar || !this.mergeRequests.length;
+    },
   },
   created() {
     this.updateData(this.initialSort);
     this.autocompleteCache = new AutocompleteCache();
+  },
+  mounted() {
+    issuableEventHub.$on('issuables:toggleBulkEdit', this.toggleBulkEditSidebar);
+  },
+  beforeDestroy() {
+    issuableEventHub.$off('issuables:toggleBulkEdit', this.toggleBulkEditSidebar);
   },
   methods: {
     fetchBranches(search) {
@@ -560,6 +572,26 @@ export default {
         mergeRequest.conflicts
       );
     },
+    toggleBulkEditSidebar(showBulkEditSidebar) {
+      this.showBulkEditSidebar = showBulkEditSidebar;
+    },
+    async handleBulkUpdateClick() {
+      if (!this.hasInitBulkEdit) {
+        const bulkUpdateSidebar = await import('~/issuable');
+        bulkUpdateSidebar.initBulkUpdateSidebar('issuable_');
+
+        this.hasInitBulkEdit = true;
+      }
+
+      issuableEventHub.$emit('issuables:enableBulkEdit');
+    },
+    handleUpdateLegacyBulkEdit() {
+      // If "select all" checkbox was checked, wait for all checkboxes
+      // to be checked before updating IssuableBulkUpdateSidebar class
+      this.$nextTick(() => {
+        issuableEventHub.$emit('issuables:updateBulkEdit');
+      });
+    },
   },
   STATUS_OPEN,
 };
@@ -587,14 +619,27 @@ export default {
     use-keyset-pagination
     :has-next-page="pageInfo.hasNextPage"
     :has-previous-page="pageInfo.hasPreviousPage"
+    issuable-item-class="merge-request"
+    :show-bulk-edit-sidebar="showBulkEditSidebar"
     @click-tab="handleClickTab"
     @next-page="handleNextPage"
     @previous-page="handlePreviousPage"
     @sort="handleSort"
     @filter="handleFilter"
+    @update-legacy-bulk-edit="handleUpdateLegacyBulkEdit"
   >
     <template #nav-actions>
       <div class="gl-flex gl-gap-3">
+        <gl-button
+          v-if="canBulkUpdate"
+          class="gl-grow"
+          :disabled="isBulkEditButtonDisabled"
+          data-testid="bulk-edit"
+          @click="handleBulkUpdateClick"
+        >
+          {{ __('Bulk edit') }}
+        </gl-button>
+
         <gl-button
           v-if="newMergeRequestPath"
           variant="confirm"

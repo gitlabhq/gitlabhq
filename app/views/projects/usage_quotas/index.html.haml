@@ -9,7 +9,7 @@
   = safe_format(s_('UsageQuota|Usage of project resources across the %{strong_start}%{project_name}%{strong_end} project.'),
     { project_name: @project.name },
     tag_pair(tag.strong, :strong_start, :strong_end))
-  %a{ href: help_page_path('user/usage_quotas'), target: '_blank', rel: 'noopener noreferrer' }
+  %a{ href: help_page_path('user/usage_quotas.md'), target: '_blank', rel: 'noopener noreferrer' }
     = s_('UsageQuota|Learn more about usage quotas.')
 
 - content_for :usage_quotas_tabs do

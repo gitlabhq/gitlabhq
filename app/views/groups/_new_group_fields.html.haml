@@ -9,7 +9,7 @@
       = _('Visibility level')
     %p
       = _('Who will be able to see this group?')
-      = link_to _('View the documentation'), help_page_path("user/public_access"), target: '_blank', rel: 'noopener noreferrer'
+      = link_to _('View the documentation'), help_page_path("user/public_access.md"), target: '_blank', rel: 'noopener noreferrer'
     = render 'shared/visibility_level', f: f, visibility_level: default_group_visibility, can_change_visibility_level: true, form_model: @group, with_label: false
 
 - unless parent

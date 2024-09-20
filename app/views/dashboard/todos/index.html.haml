@@ -107,7 +107,7 @@
           %p
             = (s_("Todos|Not sure where to go next? Take a look at your %{strongStart}%{assignedIssuesLinkStart}assigned issues%{assignedIssuesLinkEnd}%{strongEnd} or %{strongStart}%{mergeRequestLinkStart}merge requests%{mergeRequestLinkEnd}%{mergeRequestLinkEnd}%{strongEnd}.") % { strongStart: '<strong>', strongEnd: '</strong>', assignedIssuesLinkStart: "<a href=\"#{issues_dashboard_path(assignee_username: current_user.username)}\">", assignedIssuesLinkEnd: '</a>', mergeRequestLinkStart: "<a href=\"#{merge_requests_dashboard_path(assignee_username: current_user.username)}\">", mergeRequestLinkEnd: '</a>' }).html_safe
           %p
-            = link_to s_("Todos| What actions create to-do items?"), help_page_path('user/todos', anchor: 'actions-that-create-to-do-items'), target: '_blank', rel: 'noopener noreferrer'
+            = link_to s_("Todos| What actions create to-do items?"), help_page_path('user/todos.md', anchor: 'actions-that-create-to-do-items'), target: '_blank', rel: 'noopener noreferrer'
 
         - elsif todos_has_filtered_results?
           %p

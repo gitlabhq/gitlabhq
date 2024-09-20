@@ -17,7 +17,7 @@
         %h4.gl-mt-0
           = _('Add new pipeline trigger token')
         = render Pajamas::AlertComponent.new(variant: :danger, alert_options: { class:  'gl-mb-5 gl-pb-2' }, dismissible: false) do |c|
-          - keep_tokens_secure_link = link_to(s_('PipelineTriggerTokens|How can I keep my tokens secure?'), help_page_path('security/tokens/index', anchor: 'security-considerations'), target: '_blank', rel: 'noopener noreferrer')
+          - keep_tokens_secure_link = link_to(s_('PipelineTriggerTokens|How can I keep my tokens secure?'), help_page_path('security/tokens/index.md', anchor: 'security-considerations'), target: '_blank', rel: 'noopener noreferrer')
           - c.with_body do
             %p
               = s_('PipelineTriggerTokens|It is a security risk to save tokens in plain text in your project, or store them in a way that malicious users could access them. A leaked trigger token could be used to force an unscheduled deployment, attempt to access CI/CD variables, or other malicious uses. %{keep_tokens_secure_link}').html_safe % { keep_tokens_secure_link: keep_tokens_secure_link }

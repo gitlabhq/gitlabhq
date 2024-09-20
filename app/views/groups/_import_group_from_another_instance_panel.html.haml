@@ -25,11 +25,11 @@
       = render Pajamas::AlertComponent.new(dismissible: false,
         variant: :warning) do |c|
         - c.with_body do
-          - docs_link = link_to('', help_page_path('user/group/import/migrated_items', anchor: 'migrated-group-items'), target: '_blank', rel: 'noopener noreferrer')
+          - docs_link = link_to('', help_page_path('user/group/import/migrated_items.md', anchor: 'migrated-group-items'), target: '_blank', rel: 'noopener noreferrer')
           = safe_format(s_('GroupsNew|Not all group items are migrated. %{docs_link_start}What items are migrated%{docs_link_end}?'), tag_pair(docs_link, :docs_link_start, :docs_link_end))
 
     %p.gl-mt-5.gl-mb-3
-      - url_link = link_to('', help_page_path('user/group/import/direct_transfer_migrations', anchor: 'connect-the-source-gitlab-instance'), target: '_blank', rel: 'noopener noreferrer')
+      - url_link = link_to('', help_page_path('user/group/import/direct_transfer_migrations.md', anchor: 'connect-the-source-gitlab-instance'), target: '_blank', rel: 'noopener noreferrer')
       = safe_format(s_('GroupsNew|Provide credentials for the %{url_link_start}source instance%{url_link_end} to import from. You can provide this instance as a source to move groups within this instance.'), tag_pair(url_link, :url_link_start, :url_link_end))
     .form-group.gl-form-group.gl-flex.gl-flex-col
       = f.label :bulk_import_gitlab_url, s_('GroupsNew|GitLab source instance base URL'), for: 'import_gitlab_url'
@@ -43,8 +43,8 @@
     .form-group.gl-form-group.gl-flex.gl-flex-col
       = f.label :bulk_import_gitlab_access_token, s_('GroupsNew|Personal access token'), for: 'import_gitlab_token', class: 'col-form-label'
       .gl-font-normal
-        - pat_link = link_to('', help_page_path('user/profile/personal_access_tokens'), target: '_blank')
-        - short_living_link = link_to('', help_page_path('security/tokens/index', anchor: 'security-considerations'), target: '_blank')
+        - pat_link = link_to('', help_page_path('user/profile/personal_access_tokens.md'), target: '_blank')
+        - short_living_link = link_to('', help_page_path('security/tokens/index.md', anchor: 'security-considerations'), target: '_blank')
         = safe_format(s_('GroupsNew|Create a token with %{code_start}api%{code_end} and %{code_start}read_repository%{code_end} scopes in the %{pat_link_start}user settings%{pat_link_end} of the source GitLab instance. For %{short_living_link_start}security reasons%{short_living_link_end}, set a short expiration date for the token. Keep in mind that large migrations take more time.'), tag_pair('<code></code>'.html_safe, :code_start , :code_end), tag_pair(pat_link, :pat_link_start, :pat_link_end), tag_pair(short_living_link, :short_living_link_start, :short_living_link_end))
       = f.password_field :bulk_import_gitlab_access_token, placeholder: s_('GroupsNew|e.g. h8d3f016698e...'), class: 'gl-form-input gl-mt-3 col-xs-12 col-sm-8',
         required: true,

@@ -3,4 +3,4 @@
 .js-invite-members-modal{ data: { is_project: 'true',
   access_levels: ProjectMember.permissible_access_level_roles(current_user, project).to_json,
   reload_page_on_submit: current_path?('project_members#index').to_s,
-  help_link: help_page_url('user/permissions') }.merge(common_invite_modal_dataset(project)).merge(users_filter_data(project.group)) }
+  help_link: help_page_url('user/permissions.md') }.merge(common_invite_modal_dataset(project)).merge(users_filter_data(project.group)) }

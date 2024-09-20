@@ -71,7 +71,8 @@ module Ci
 
             {
               name: component_name,
-              spec: components_project.extract_spec(blob.data)
+              spec: components_project.extract_spec(blob.data),
+              component_type: 'template'
             }
           end
 
@@ -88,6 +89,7 @@ module Ci
               name: metadata[:name],
               project: version.project,
               spec: metadata[:spec],
+              resource_type: metadata[:component_type], # https://gitlab.com/gitlab-org/gitlab/-/issues/490377
               version: version,
               catalog_resource: version.catalog_resource,
               created_at: Time.current
@@ -96,6 +98,10 @@ module Ci
             return component if component.valid?
 
             error("Build component error: #{component.errors.full_messages.join(', ')}")
+          rescue ArgumentError => e
+            # In Rails 7.1, we'll have a better way to handle this error; https://github.com/rails/rails/pull/49100
+            # Ci::Catalog::Resources::Component: `enum resource_type: { template: 1 }, validate: true`
+            error(e.message)
           end
 
           def error(message)

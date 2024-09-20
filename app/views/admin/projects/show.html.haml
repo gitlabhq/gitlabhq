@@ -106,7 +106,7 @@
                 = _('Git LFS status:')
               %strong
                 = project_lfs_status(@project)
-                = link_to sprite_icon('question-o'), help_page_path('topics/git/lfs/index')
+                = link_to sprite_icon('question-o'), help_page_path('topics/git/lfs/index.md')
           - else
             %li{ class: '!gl-px-5' }
               %span.light
@@ -160,7 +160,7 @@
             - else
               = _("This repository was last checked %{last_check_timestamp}. The check passed.") % { last_check_timestamp: @project.last_repository_check_at.to_fs(:medium) }
 
-            = link_to sprite_icon('question-o'), help_page_path('administration/repository_checks')
+            = link_to sprite_icon('question-o'), help_page_path('administration/repository_checks.md')
 
           .form-group
             = f.submit _('Trigger repository check'), pajamas_button: true

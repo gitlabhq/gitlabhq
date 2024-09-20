@@ -21,8 +21,8 @@
     testid: 'autodevops-settings-content',
     expanded: expanded) do |c|
     - c.with_description do
-      - auto_devops_url = help_page_path('topics/autodevops/index')
-      - quickstart_url = help_page_path('topics/autodevops/cloud_deployments/auto_devops_with_gke')
+      - auto_devops_url = help_page_path('topics/autodevops/index.md')
+      - quickstart_url = help_page_path('topics/autodevops/cloud_deployments/auto_devops_with_gke.md')
       - auto_devops_link = link_to('', auto_devops_url, target: '_blank', rel: 'noopener noreferrer')
       - quickstart_link = link_to('', quickstart_url, target: '_blank', rel: 'noopener noreferrer')
       = safe_format(s_('AutoDevOps|%{auto_devops_start}Automate building, testing, and deploying%{auto_devops_end} your applications based on your continuous integration and delivery configuration. %{quickstart_start}How do I get started?%{quickstart_end}'), tag_pair(auto_devops_link, :auto_devops_start, :auto_devops_end), tag_pair(quickstart_link, :quickstart_start, :quickstart_end))
@@ -51,7 +51,7 @@
       - c.with_description do
         = _("A job artifact is an archive of files and directories saved by a job when it finishes.")
       - c.with_body do
-        #js-artifacts-settings-app{ data: { full_path: @project.full_path, help_page_path: help_page_path('ci/jobs/job_artifacts', anchor: 'keep-artifacts-from-most-recent-successful-jobs') } }
+        #js-artifacts-settings-app{ data: { full_path: @project.full_path, help_page_path: help_page_path('ci/jobs/job_artifacts.md', anchor: 'keep-artifacts-from-most-recent-successful-jobs') } }
 
 - if can?(current_user, :admin_cicd_variables, @project)
   = render ::Layouts::SettingsBlockComponent.new(_('Variables'),
@@ -69,7 +69,7 @@
     expanded: expanded) do |c|
     - c.with_description do
       = _("Trigger a pipeline for a branch or tag by generating a trigger token and using it with an API call. The token impersonates a user's project access and permissions.")
-      = link_to _('Learn more.'), help_page_path('ci/triggers/index'), target: '_blank', rel: 'noopener noreferrer'
+      = link_to _('Learn more.'), help_page_path('ci/triggers/index.md'), target: '_blank', rel: 'noopener noreferrer'
     - c.with_body do
       = render 'projects/triggers/index'
 
@@ -80,7 +80,7 @@
       id: 'js-deploy-freeze-settings',
       expanded: expanded) do |c|
       - c.with_description do
-        - freeze_period_docs = help_page_path('user/project/releases/index', anchor: 'prevent-unintentional-releases-by-setting-a-deploy-freeze')
+        - freeze_period_docs = help_page_path('user/project/releases/index.md', anchor: 'prevent-unintentional-releases-by-setting-a-deploy-freeze')
         - freeze_period_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: freeze_period_docs }
         = html_escape(s_('DeployFreeze|Add a freeze period to prevent unintended releases during a period of time for a given environment. You must update the deployment jobs in %{filename} according to the deploy freezes added here. %{freeze_period_link_start}Learn more.%{freeze_period_link_end}')) % { freeze_period_link_start: freeze_period_link_start, freeze_period_link_end: '</a>'.html_safe, filename: tag.code('.gitlab-ci.yml') }
 
@@ -104,6 +104,6 @@
       expanded: expanded) do |c|
       - c.with_description do
         = _("Use secure files to store files used by your pipelines such as Android keystores, or Apple provisioning profiles and signing certificates.")
-        = link_to _('Learn more'), help_page_path('ci/secure_files/index'), target: '_blank', rel: 'noopener noreferrer'
+        = link_to _('Learn more'), help_page_path('ci/secure_files/index.md'), target: '_blank', rel: 'noopener noreferrer'
       - c.with_body do
         #js-ci-secure-files{ data: { project_id: @project.id, admin: can?(current_user, :admin_secure_files, @project).to_s, file_size_limit: Ci::SecureFile::FILE_SIZE_LIMIT.to_mb } }

@@ -30,7 +30,7 @@
           selected: @cluster.management_project_id } }
       %p.text-muted.-gl-mt-5
         = html_escape(s_('ClusterIntegration|A cluster management project can be used to run deployment jobs with Kubernetes %{code_open}cluster-admin%{code_close} privileges.')) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
-        = link_to _('More information'), help_page_path('user/clusters/management_project'), target: '_blank', rel: 'noopener noreferrer'
+        = link_to _('More information'), help_page_path('user/clusters/management_project.md'), target: '_blank', rel: 'noopener noreferrer'
       = field.submit _('Save changes'), pajamas_button: true
 
   .sub-section.form-group

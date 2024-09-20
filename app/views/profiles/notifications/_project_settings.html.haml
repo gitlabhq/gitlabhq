@@ -11,4 +11,4 @@
 
     .gl-flex.gl-gap-3.gl-flex-wrap
       - if setting
-        .js-vue-notification-dropdown{ data: { disabled: emails_disabled.to_s, dropdown_items: notification_dropdown_items(setting).to_json, notification_level: setting.level, help_page_path: help_page_path('user/profile/notifications'), project_id: project.id, container_class: 'gl-mr-3', show_label: "true" } }
+        .js-vue-notification-dropdown{ data: { disabled: emails_disabled.to_s, dropdown_items: notification_dropdown_items(setting).to_json, notification_level: setting.level, help_page_path: help_page_path('user/profile/notifications.md'), project_id: project.id, container_class: 'gl-mr-3', show_label: "true" } }

@@ -1,7 +1,7 @@
 = render Pajamas::BannerComponent.new(banner_options: {class: 'js-service-desk-callout', data: {uid: 'promote_service_desk_dismissed'}, id: 'promote_service_desk'},
   close_options: {'aria-label' => s_('Promotions|Dismiss Service Desk promotion'), class: 'js-close-callout'},
   svg_path: 'illustrations/service-desk-sm.svg',
-  button_text: s_('Promotions|Configure Service Desk'), button_link: help_page_path('user/project/service_desk/configure')) do |c|
+  button_text: s_('Promotions|Configure Service Desk'), button_link: help_page_path('user/project/service_desk/configure.md')) do |c|
   - c.with_title do
     = _('Improve customer support with Service Desk')
   %p
