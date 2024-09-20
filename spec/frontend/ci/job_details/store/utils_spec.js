@@ -53,7 +53,7 @@ describe('Jobs Store Utils', () => {
             ],
             lineNumber: 1,
             offset: 0,
-            time: '12:43:46Z',
+            time: '12:43:46',
           },
           {
             content: [{ text: ' on docker-auto-scale-com 8a6210b8' }],

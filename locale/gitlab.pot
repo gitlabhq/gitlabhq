@@ -1049,6 +1049,9 @@ msgstr ""
 msgid "%{linkStart}Advanced search%{linkEnd} is enabled."
 msgstr ""
 
+msgid "%{link_start}Communication Preference Center%{link_end}."
+msgstr ""
+
 msgid "%{link}How to use SSH keys%{link_end}?"
 msgstr ""
 
@@ -5098,7 +5101,13 @@ msgstr ""
 msgid "AiPowered|Direct connections"
 msgstr ""
 
+msgid "AiPowered|Early Access Program banner dismissed. You will not see it again for 7 days."
+msgstr ""
+
 msgid "AiPowered|Enabling these features is your acceptance of the %{linkStart}GitLab Testing Agreement%{linkEnd}."
+msgstr ""
+
+msgid "AiPowered|Enroll in the Early Access Program"
 msgstr ""
 
 msgid "AiPowered|Features are available. However, any group, subgroup, or project can turn them off."
@@ -5108,6 +5117,9 @@ msgid "AiPowered|Features are not available and cannot be turned on for any grou
 msgstr ""
 
 msgid "AiPowered|Features are not available. However, any group, subgroup, or project can turn them on."
+msgstr ""
+
+msgid "AiPowered|Help make the next releases of GitLab better. As a member of the GitLab Early Access Program, you can take part in shaping GitLab by letting us know what you think of GitLab Duo experimental and beta features. How does this program work?"
 msgstr ""
 
 msgid "AiPowered|Ideal for lowest latency. An IDE must be able to connect to https://gitlab.com:443."
@@ -5126,6 +5138,9 @@ msgid "AiPowered|Off by default"
 msgstr ""
 
 msgid "AiPowered|On by default"
+msgstr ""
+
+msgid "AiPowered|Participate in the Early Access Program and help make GitLab better"
 msgstr ""
 
 msgid "AiPowered|Setting unavailable"
@@ -10313,6 +10328,9 @@ msgstr ""
 msgid "By default, all projects and groups use the global notifications setting."
 msgstr ""
 
+msgid "By enrolling in the Early access program, you agree that GitLab may contact you by email and telephone about products, services, and events related to the Early Access Program. You may opt-out at any time by unsubscribing in emails or visiting our "
+msgstr ""
+
 msgid "By month"
 msgstr ""
 
@@ -14657,10 +14675,16 @@ msgstr ""
 msgid "Confirm"
 msgstr ""
 
+msgid "Confirm Enrollement"
+msgstr ""
+
 msgid "Confirm approval"
 msgstr ""
 
 msgid "Confirm destroy application"
+msgstr ""
+
+msgid "Confirm enrollment in the Early Access Program"
 msgstr ""
 
 msgid "Confirm new password"
@@ -15152,7 +15176,7 @@ msgstr ""
 msgid "ContainerRegistry|Tags with names that match this regex pattern are removed. %{linkStart}View regex examples.%{linkEnd}"
 msgstr ""
 
-msgid "ContainerRegistry|The %{linkStart}next-generation container registry%{linkEnd} is now available for upgrade and testing on self-managed instances as a Beta feature. This upgraded registry supports online garbage collection, and has significant performance and reliability improvements."
+msgid "ContainerRegistry|The %{linkStart}next-generation container registry%{linkEnd} is now available for upgrade on self-managed instances. This upgraded registry supports online garbage collection, and has significant performance and reliability improvements."
 msgstr ""
 
 msgid "ContainerRegistry|The cleanup policy timed out before it could delete all tags. An administrator can %{adminLinkStart}run cleanup now manually%{adminLinkEnd} or you can wait for the next scheduled run of the cleanup policy. %{docLinkStart}More information%{docLinkEnd}"
@@ -30983,6 +31007,9 @@ msgid "Job|Job has been erased by %{userLink}"
 msgstr ""
 
 msgid "Job|Keep"
+msgstr ""
+
+msgid "Job|Log timestamps in UTC."
 msgstr ""
 
 msgid "Job|Manual"
@@ -53947,9 +53974,6 @@ msgstr ""
 msgid "TagsPage|Repository has no tags yet"
 msgstr ""
 
-msgid "TagsPage|Sorry, your filter produced no results"
-msgstr ""
-
 msgid "TagsPage|Tags"
 msgstr ""
 
@@ -63047,6 +63071,9 @@ msgstr ""
 msgid "You have been added to ticket #%{issue_iid}."
 msgstr ""
 
+msgid "You have been enrolled in the Early Access Program. Thank you for helping make GitLab better. You will receive an email with more details about the program."
+msgstr ""
+
 msgid "You have been granted access to the %{source_name} %{source_type} with the following role: %{role_name}."
 msgstr ""
 
@@ -65524,6 +65551,12 @@ msgid "must match one of the following file types: %{extension_list}"
 msgstr ""
 
 msgid "must match the parent organization's ID"
+msgstr ""
+
+msgid "must not be a placeholder email"
+msgstr ""
+
+msgid "must not be a placeholder user"
 msgstr ""
 
 msgid "must not be an owner of the namespace"

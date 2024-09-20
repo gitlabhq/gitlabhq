@@ -22,13 +22,13 @@ const TIME_START = 11;
 const TIME_END = 19;
 /**
  * Shortens timestamps in the form "2024-05-22T12:43:46.962646Z"
- * and extracts the time from them, example: "12:43:46Z"
+ * and extracts the time from them, example: "12:43:46"
  *
  * If the timestamp appears malformed the full string is returned.
  */
 const extractTime = (timestamp) => {
   if (timestamp.length === TIMESTAMP_LENGTH) {
-    return `${timestamp.substring(TIME_START, TIME_END)}Z`;
+    return `${timestamp.substring(TIME_START, TIME_END)}`;
   }
   return timestamp;
 };

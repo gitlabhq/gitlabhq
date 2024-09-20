@@ -204,6 +204,11 @@ a certificate signed with an RSA key can use RSA-2048 but not RSA-1024. GitLab
 will fail to connect to a service that uses a certificate signed with insufficient
 bits with a `certificate key too weak` error message.
 
+SSH keys are not affected by this upgrade. OpenSSL sets
+security requirements for TLS, not SSH. [OpenSSH](https://www.openssh.com/) and
+[`gitlab-sshd`](../../administration/operations/gitlab_sshd.md) have their
+own configuration settings for the allowed cryptographic algorithms.
+
 Check the [GitLab documentation for the upgrade to OpenSSL 3](https://docs.gitlab.com/omnibus/settings/ssl/openssl_3.html) to ensure compatibility with your instance.
 
 ## 17.5.0

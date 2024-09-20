@@ -9,6 +9,11 @@ module Gitlab
       delegate :import_type, :namespace, :source_user_identifier, :source_name, :source_username, to: :source_user,
         private: true
 
+      def self.placeholder_email_pattern
+        import_type_matcher = ::Import::HasImportSource::IMPORT_SOURCES.except(:none).keys.join('|')
+        ::Gitlab::UntrustedRegexp.new("(#{import_type_matcher})(_[0-9A-Fa-f]+_[0-9]+@#{Settings.gitlab.host})")
+      end
+
       def initialize(source_user)
         @source_user = source_user
       end

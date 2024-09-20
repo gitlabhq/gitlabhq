@@ -11,7 +11,7 @@ class ProfilesController < Profiles::ApplicationController
   end
 
   feature_category :user_profile, [:reset_incoming_email_token, :reset_feed_token,
-    :reset_static_object_token, :update_username, :join_early_access_program]
+    :reset_static_object_token, :update_username]
 
   def reset_incoming_email_token
     Users::UpdateService.new(current_user, user: @user).execute! do |user|
@@ -116,4 +116,4 @@ class ProfilesController < Profiles::ApplicationController
   end
 end
 
-ProfilesController.prepend_mod_with('ProfilesController')
+ProfilesController.prepend_mod

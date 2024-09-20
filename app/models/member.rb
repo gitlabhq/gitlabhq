@@ -58,6 +58,7 @@ class Member < ApplicationRecord
     },
     if: :project_bot?
   validate :access_level_inclusion
+  validate :user_is_not_placeholder
 
   scope :with_invited_user_state, -> do
     joins('LEFT JOIN users as invited_user ON invited_user.email = members.invite_email')
@@ -609,6 +610,14 @@ class Member < ApplicationRecord
     return if access_level.in?(Gitlab::Access.all_values)
 
     errors.add(:access_level, "is not included in the list")
+  end
+
+  def user_is_not_placeholder
+    if Gitlab::Import::PlaceholderUserCreator.placeholder_email_pattern.match?(invite_email)
+      errors.add(:invite_email, _('must not be a placeholder email'))
+    elsif user&.placeholder?
+      errors.add(:user_id, _("must not be a placeholder user"))
+    end
   end
 
   def send_invite

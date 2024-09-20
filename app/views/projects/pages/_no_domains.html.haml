@@ -1,7 +1,7 @@
 - can_add_new_domain = can_create_pages_custom_domains?(current_user, @project)
 
 - if can?(current_user, :update_pages, @project)
-  = render ::Layouts::CrudComponent.new(s_('GitLabPages|Domains')) do |c|
+  = render ::Layouts::CrudComponent.new(s_('GitLabPages|Domains'), options: { class: 'gl-mt-5' }) do |c|
     - c.with_actions do
       - if can_add_new_domain
         = render Pajamas::ButtonComponent.new(variant: :confirm, href: new_project_pages_domain_path(@project)) do

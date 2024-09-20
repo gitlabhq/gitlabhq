@@ -24,8 +24,8 @@
 - add_page_specific_style 'page_bundles/commit_description'
 
 %li{ class: ["commit flex-row", ("js-toggle-container" if collapsible)], id: "commit-#{commit.short_id}" }
-  .avatar-cell.gl-hidden.sm:gl-block
-    = author_avatar(commit, size: 40, has_tooltip: false)
+  .avatar-cell.gl-my-2
+    = author_avatar(commit, size: 32, has_tooltip: false, css_class: 'gl-inline-block')
 
   .commit-detail.flex-list.gl-flex.gl-justify-between.gl-items-center.gl-grow.gl-min-w-0
     .commit-content{ data: { testid: 'commit-content' } }
@@ -40,13 +40,13 @@
         = render Pajamas::ButtonComponent.new(icon: 'ellipsis_h',
           button_options: { class: 'button-ellipsis-horizontal text-expander js-toggle-button', data: { toggle: 'tooltip', container: 'body', collapse_title: toggle_commit_message, expand_title: toggle_commit_message }, title: toggle_commit_message, aria: { label: toggle_commit_message }})
 
-      .committer
+      .committer.gl-text-sm
         - commit_author_link = commit_author_link(commit, avatar: false, size: 24)
         - commit_authored_timeago = time_ago_with_tooltip(commit.authored_date, placement: 'bottom')
         - if commit.different_committer? && commit.committer
           - commit_committer_link = commit_committer_link(commit)
           - commit_committer_timeago = time_ago_with_tooltip(commit.committed_date, placement: 'bottom')
-          - commit_committer_avatar = commit_committer_avatar(commit.committer, size: 18, has_tooltip: false)
+          - commit_committer_avatar = commit_committer_avatar(commit.committer, size: 16, has_tooltip: false)
           - commit_text =  _('%{commit_author_link} authored %{commit_authored_timeago} and %{commit_committer_avatar} %{commit_committer_link} committed %{commit_committer_timeago}') % { commit_author_link: commit_author_link, commit_authored_timeago: commit_authored_timeago, commit_committer_avatar: commit_committer_avatar, commit_committer_link: commit_committer_link, commit_committer_timeago: commit_committer_timeago }
         - else
           - commit_text =  _('%{commit_author_link} authored %{commit_authored_timeago}') % { commit_author_link: commit_author_link, commit_authored_timeago: commit_authored_timeago }

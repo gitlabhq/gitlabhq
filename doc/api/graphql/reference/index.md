@@ -38119,6 +38119,7 @@ Values for the project secrets manager status.
 
 | Value | Description |
 | ----- | ----------- |
+| <a id="projectsecretsmanagerstatusactive"></a>`ACTIVE` | Secrets manager has been provisioned. |
 | <a id="projectsecretsmanagerstatusprovisioning"></a>`PROVISIONING` | Secrets manager is being provisioned. |
 
 ### `ProjectSort`

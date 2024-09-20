@@ -12,7 +12,6 @@ resource :profile, only: [] do
     put :reset_feed_token
     put :reset_static_object_token
     put :update_username
-    post :join_early_access_program
   end
 
   scope module: :profiles do

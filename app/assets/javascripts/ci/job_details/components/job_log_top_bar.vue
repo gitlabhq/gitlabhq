@@ -88,6 +88,9 @@ export default {
     };
   },
   computed: {
+    hasJobLogTimestampsEnabled() {
+      return this.jobLog.length > 0 && this.jobLog[0].time;
+    },
     jobLogSize() {
       return sprintf(s__('Job|Showing last %{size} of log.'), {
         size: numberToHumanSize(this.size),
@@ -186,29 +189,34 @@ export default {
 </script>
 <template>
   <div class="top-bar gl-flex gl-items-center gl-justify-between">
-    <!-- truncated log information -->
-    <div class="gl-hidden gl-truncate sm:gl-block" data-testid="showing-last">
-      <template v-if="isJobLogSizeVisible">
-        {{ jobLogSize }}
-        <gl-sprintf
-          v-if="rawPath && isComplete && logViewerPath"
-          :message="
-            s__(
-              'Job|%{rawLinkStart}View raw%{rawLinkEnd} or %{fullLinkStart}full log%{fullLinkEnd}.',
-            )
-          "
-        >
-          <template #rawLink="{ content }">
-            <gl-link :href="rawPath">{{ content }}</gl-link>
-          </template>
-          <template #fullLink="{ content }">
-            <gl-link :href="logViewerPath"> {{ content }}</gl-link>
-          </template>
-        </gl-sprintf>
-        <gl-link v-else-if="rawPath" :href="rawPath">{{ s__('Job|View raw') }}</gl-link>
-      </template>
+    <div class="gl-hidden gl-truncate sm:gl-block">
+      <!-- truncated log information -->
+      <span data-testid="showing-last">
+        <template v-if="isJobLogSizeVisible">
+          {{ jobLogSize }}
+          <gl-sprintf
+            v-if="rawPath && isComplete && logViewerPath"
+            :message="
+              s__(
+                'Job|%{rawLinkStart}View raw%{rawLinkEnd} or %{fullLinkStart}full log%{fullLinkEnd}.',
+              )
+            "
+          >
+            <template #rawLink="{ content }">
+              <gl-link :href="rawPath">{{ content }}</gl-link>
+            </template>
+            <template #fullLink="{ content }">
+              <gl-link :href="logViewerPath"> {{ content }}</gl-link>
+            </template>
+          </gl-sprintf>
+          <gl-link v-else-if="rawPath" :href="rawPath">{{ s__('Job|View raw') }}</gl-link>
+        </template>
+      </span>
+      <!-- eo truncated log information -->
+      <span v-if="hasJobLogTimestampsEnabled">
+        {{ s__('Job|Log timestamps in UTC.') }}
+      </span>
     </div>
-    <!-- eo truncated log information -->
 
     <div class="controllers">
       <slot name="controllers"> </slot>

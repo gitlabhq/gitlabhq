@@ -154,4 +154,29 @@ RSpec.describe Gitlab::Import::PlaceholderUserCreator, feature_category: :import
       end
     end
   end
+
+  describe '.placeholder_email_pattern' do
+    subject(:placeholder_email_pattern) { described_class.placeholder_email_pattern }
+
+    ::Import::HasImportSource::IMPORT_SOURCES.except(:none).each_key do |import_type|
+      it "matches the emails created for placeholder users imported from #{import_type}" do
+        import_source_user = create(:import_source_user, import_type: import_type)
+        placeholder_user = described_class.new(import_source_user).execute
+
+        expect(placeholder_email_pattern === placeholder_user.email).to eq(true)
+      end
+    end
+
+    it 'does not match emails without an import source' do
+      email = 'email_12e4ab78_1@gitlab.com'
+
+      expect(placeholder_email_pattern === email).to eq(false)
+    end
+
+    it 'does not match emails with domains other than the host' do
+      email = "github_12e4ab78_2@not#{Settings.gitlab.host}"
+
+      expect(placeholder_email_pattern === email).to eq(false)
+    end
+  end
 end

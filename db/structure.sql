@@ -19204,7 +19204,7 @@ CREATE TABLE upcoming_reconciliations (
     display_alert_from date NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    organization_id bigint DEFAULT 1 NOT NULL
+    organization_id bigint NOT NULL
 );
 
 CREATE SEQUENCE upcoming_reconciliations_id_seq

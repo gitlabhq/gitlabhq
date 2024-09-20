@@ -55,6 +55,12 @@ RSpec.describe Member, feature_category: :groups_and_projects do
 
         expect(member).not_to be_valid
       end
+
+      it 'must not be a placeholder email' do
+        member.invite_email = "gitlab_migration_5c34ae6b9_1@#{Settings.gitlab.host}"
+
+        expect(member).not_to be_valid
+      end
     end
 
     context 'when an invite email is not provided' do
@@ -62,6 +68,12 @@ RSpec.describe Member, feature_category: :groups_and_projects do
 
       it 'requires a user' do
         member.user = nil
+
+        expect(member).not_to be_valid
+      end
+
+      it 'does not allow placeholder users to be members' do
+        member.user = create(:user, :placeholder)
 
         expect(member).not_to be_valid
       end
