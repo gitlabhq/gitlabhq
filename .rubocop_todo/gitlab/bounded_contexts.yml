@@ -3656,6 +3656,7 @@ Gitlab/BoundedContexts:
     - 'ee/app/workers/system_access/saml_microsoft_group_sync_worker.rb'
     - 'ee/app/workers/todos_destroyer/confidential_epic_worker.rb'
     - 'ee/app/workers/update_all_mirrors_worker.rb'
+    - 'ee/app/workers/usage_events/dump_write_buffer_cron_worker.rb'
     - 'ee/app/workers/vulnerability_exports/export_deletion_worker.rb'
     - 'ee/app/workers/vulnerability_exports/export_worker.rb'
     - 'ee/app/workers/vulnerability_external_issue_links/update_vulnerability_read.rb'

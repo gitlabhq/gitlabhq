@@ -52661,7 +52661,7 @@ msgstr ""
 msgid "Started escalation for this incident."
 msgstr ""
 
-msgid "Starting with GitLab 17.5, OpenSSL 3 will be used. All TLS connections require TLS 1.2 or higher. Weaker ciphers are no longer supported. Encryption must have at least of 112 bits of security. %{link_start}Learn more%{link_end}."
+msgid "Starting with GitLab 17.7, OpenSSL 3 will be used. All TLS connections require TLS 1.2 or higher. Weaker ciphers are no longer supported. Encryption must have at least of 112 bits of security. %{link_start}Learn more%{link_end}."
 msgstr ""
 
 msgid "Starting..."

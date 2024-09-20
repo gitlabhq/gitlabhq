@@ -57,7 +57,6 @@ module Gitlab
         {
           counts: {
             assignee_lists: count(List.assignee),
-            ci_builds: count(::Ci::Build),
             ci_external_pipelines: count(::Ci::Pipeline.external),
             ci_pipeline_config_auto_devops: count(::Ci::Pipeline.auto_devops_source),
             ci_pipeline_config_repository: count(::Ci::Pipeline.repository_source),

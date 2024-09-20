@@ -110,7 +110,6 @@ GraphQL/GraphqlName:
     - 'ee/app/graphql/mutations/member_roles/base.rb'
     - 'ee/app/graphql/mutations/requirements_management/base_requirement.rb'
     - 'ee/app/graphql/types/ai/base_method_input_type.rb'
-    - 'ee/app/graphql/types/analytics/ai_metrics.rb'
     - 'ee/app/graphql/types/analytics/cycle_analytics/aggregation_status_type.rb'
     - 'ee/app/graphql/types/analytics/value_stream_analytics_type.rb'
     - 'ee/app/graphql/types/boards/board_epic_input_type.rb'

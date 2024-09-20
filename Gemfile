@@ -39,6 +39,10 @@ gem 'activerecord-gitlab', path: 'gems/activerecord-gitlab' # rubocop:todo Gemfi
 
 gem 'bootsnap', '~> 1.18.3', require: false # rubocop:todo Gemfile/MissingFeatureCategory
 
+# Avoid the precompiled native gems because Omnibus needs to build this to ensure
+# LD_LIBRARY_PATH is correct: https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/7730
+gem 'ffi', '~> 1.17', force_ruby_platform: true, feature_category: :shared
+
 gem 'openssl', '~> 3.0' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'ipaddr', '~> 1.2.5' # rubocop:todo Gemfile/MissingFeatureCategory
 

@@ -30,6 +30,8 @@
 #     not_aimed_for_deletion: boolean
 #     full_paths: string[]
 #     organization: Scope the groups to the Organizations::Organization
+#     language: int
+#     language_name: string
 #
 class ProjectsFinder < UnionFinder
   include CustomAttributesFilter
@@ -259,11 +261,10 @@ class ProjectsFinder < UnionFinder
   end
 
   def by_language(items)
-    if params[:language].present?
-      items.with_programming_language_id(params[:language])
-    else
-      items
-    end
+    return items.with_programming_language_id(params[:language]) if params[:language].present?
+    return items.with_programming_language(params[:language_name]) if params[:language_name].present?
+
+    items
   end
 
   def sort(items)

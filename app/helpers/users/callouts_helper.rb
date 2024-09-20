@@ -55,7 +55,7 @@ module Users
 
     def show_openssl_callout?
       return false unless Gitlab.version_info >= Gitlab::VersionInfo.new(17, 1) &&
-        Gitlab.version_info < Gitlab::VersionInfo.new(17, 5)
+        Gitlab.version_info < Gitlab::VersionInfo.new(17, 7)
 
       current_user&.can_admin_all_resources? &&
         !user_dismissed?(OPENSSL_CALLOUT) &&

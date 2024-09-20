@@ -4,7 +4,9 @@ key_path: counts.ci_builds
 description: Unique builds in project
 product_group: pipeline_execution
 value_type: number
-status: active
+status: removed
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166524
+milestone_removed: '17.5'
 time_frame: all
 data_source: database
 distribution:
@@ -14,7 +16,5 @@ tier:
 - free
 - premium
 - ultimate
-performance_indicator_type:
-- customer_health_score
 milestone: "<13.9"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/54332

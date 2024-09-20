@@ -8,7 +8,7 @@ RSpec.describe 'OpenSSL callout', :do_not_mock_admin_mode_setting, feature_categ
   let_it_be(:non_admin) { create(:user) }
   let_it_be(:callout_title) { _('OpenSSL version 3') }
 
-  context 'when GitLab version is >= 17.1 and < 17.5' do
+  context 'when GitLab version is >= 17.1 and < 17.7' do
     before do
       stub_version('17.4.99', 'abcdefg')
     end
@@ -66,9 +66,9 @@ RSpec.describe 'OpenSSL callout', :do_not_mock_admin_mode_setting, feature_categ
     end
   end
 
-  context 'when GitLab version is >= 17.5' do
+  context 'when GitLab version is >= 17.7' do
     before do
-      stub_version('17.5.0', 'abcdefg')
+      stub_version('17.7.0', 'abcdefg')
       sign_in(admin)
     end
 

@@ -1097,6 +1097,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_30209d0fba3e() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "alert_management_alerts"
+  WHERE "alert_management_alerts"."id" = NEW."alert_management_alert_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_3691f9f6a69f() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -1906,6 +1922,22 @@ IF NEW."project_id" IS NULL THEN
   INTO NEW."project_id"
   FROM "protected_tags"
   WHERE "protected_tags"."id" = NEW."protected_tag_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
+CREATE FUNCTION trigger_b046dd50c711() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "incident_management_oncall_schedules"
+  WHERE "incident_management_oncall_schedules"."id" = NEW."oncall_schedule_id";
 END IF;
 
 RETURN NEW;
@@ -5263,7 +5295,8 @@ CREATE TABLE alert_management_alert_user_mentions (
     note_id bigint,
     mentioned_users_ids bigint[],
     mentioned_projects_ids bigint[],
-    mentioned_groups_ids bigint[]
+    mentioned_groups_ids bigint[],
+    project_id bigint
 );
 
 CREATE SEQUENCE alert_management_alert_user_mentions_id_seq
@@ -11982,6 +12015,7 @@ CREATE TABLE incident_management_oncall_rotations (
     ends_at timestamp with time zone,
     active_period_start time without time zone,
     active_period_end time without time zone,
+    project_id bigint,
     CONSTRAINT check_5209fb5d02 CHECK ((char_length(name) <= 200))
 );
 
@@ -27215,6 +27249,8 @@ CREATE INDEX index_alert_management_alert_metric_images_on_alert_id ON alert_man
 
 CREATE INDEX index_alert_management_alert_metric_images_on_project_id ON alert_management_alert_metric_images USING btree (project_id);
 
+CREATE INDEX index_alert_management_alert_user_mentions_on_project_id ON alert_management_alert_user_mentions USING btree (project_id);
+
 CREATE INDEX index_alert_management_alerts_on_domain ON alert_management_alerts USING btree (domain);
 
 CREATE INDEX index_alert_management_alerts_on_environment_id ON alert_management_alerts USING btree (environment_id) WHERE (environment_id IS NOT NULL);
@@ -28776,6 +28812,8 @@ CREATE UNIQUE INDEX index_inc_mgmnt_oncall_rotations_on_oncall_schedule_id_and_i
 CREATE UNIQUE INDEX index_inc_mgmnt_oncall_rotations_on_oncall_schedule_id_and_name ON incident_management_oncall_rotations USING btree (oncall_schedule_id, name);
 
 CREATE INDEX index_incident_management_escalation_rules_on_project_id ON incident_management_escalation_rules USING btree (project_id);
+
+CREATE INDEX index_incident_management_oncall_rotations_on_project_id ON incident_management_oncall_rotations USING btree (project_id);
 
 CREATE INDEX index_incident_management_oncall_schedules_on_project_id ON incident_management_oncall_schedules USING btree (project_id);
 
@@ -33119,6 +33157,8 @@ CREATE TRIGGER trigger_25fe4f7da510 BEFORE INSERT OR UPDATE ON vulnerability_iss
 
 CREATE TRIGGER trigger_2b8fdc9b4a4e BEFORE INSERT OR UPDATE ON ml_experiment_metadata FOR EACH ROW EXECUTE FUNCTION trigger_2b8fdc9b4a4e();
 
+CREATE TRIGGER trigger_30209d0fba3e BEFORE INSERT OR UPDATE ON alert_management_alert_user_mentions FOR EACH ROW EXECUTE FUNCTION trigger_30209d0fba3e();
+
 CREATE TRIGGER trigger_3691f9f6a69f BEFORE INSERT OR UPDATE ON remote_development_agent_configs FOR EACH ROW EXECUTE FUNCTION trigger_3691f9f6a69f();
 
 CREATE TRIGGER trigger_3d1a58344b29 BEFORE INSERT OR UPDATE ON alert_management_alert_assignees FOR EACH ROW EXECUTE FUNCTION trigger_3d1a58344b29();
@@ -33218,6 +33258,8 @@ CREATE TRIGGER trigger_a4e4fb2451d9 BEFORE INSERT OR UPDATE ON epic_user_mention
 CREATE TRIGGER trigger_a7e0fb195210 BEFORE INSERT OR UPDATE ON vulnerability_finding_evidences FOR EACH ROW EXECUTE FUNCTION trigger_a7e0fb195210();
 
 CREATE TRIGGER trigger_af3f17817e4d BEFORE INSERT OR UPDATE ON protected_tag_create_access_levels FOR EACH ROW EXECUTE FUNCTION trigger_af3f17817e4d();
+
+CREATE TRIGGER trigger_b046dd50c711 BEFORE INSERT OR UPDATE ON incident_management_oncall_rotations FOR EACH ROW EXECUTE FUNCTION trigger_b046dd50c711();
 
 CREATE TRIGGER trigger_b2612138515d BEFORE INSERT OR UPDATE ON project_relation_exports FOR EACH ROW EXECUTE FUNCTION trigger_b2612138515d();
 
@@ -34068,6 +34110,9 @@ ALTER TABLE ONLY sprints
 ALTER TABLE ONLY alert_management_alert_metric_images
     ADD CONSTRAINT fk_80b75a6094 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY alert_management_alert_user_mentions
+    ADD CONSTRAINT fk_8175238264 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY related_epic_links
     ADD CONSTRAINT fk_8257080565 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -34538,6 +34583,9 @@ ALTER TABLE ONLY incident_management_escalation_rules
 
 ALTER TABLE ONLY packages_dependencies
     ADD CONSTRAINT fk_cea1124da7 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY incident_management_oncall_rotations
+    ADD CONSTRAINT fk_cecf1b51f9 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY compliance_framework_security_policies
     ADD CONSTRAINT fk_cf3c0ac207 FOREIGN KEY (policy_configuration_id) REFERENCES security_orchestration_policy_configurations(id) ON DELETE CASCADE;

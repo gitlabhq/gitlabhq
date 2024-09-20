@@ -147,4 +147,21 @@ RSpec.describe 'getting a collection of projects', feature_category: :source_cod
       end
     end
   end
+
+  context 'when providing the programming_language_name argument' do
+    let_it_be(:project) { projects.first }
+    let_it_be(:ruby) { create(:programming_language, name: 'Ruby') }
+    let_it_be(:repository_language) do
+      create(:repository_language, project: project, programming_language: ruby, share: 1)
+    end
+
+    let(:filters) { { programming_language_name: 'ruby' } }
+
+    it 'returns the expected projects' do
+      post_graphql(query, current_user: current_user)
+
+      expect(graphql_data_at(:projects, :nodes))
+        .to contain_exactly(a_graphql_entity_for(project))
+    end
+  end
 end

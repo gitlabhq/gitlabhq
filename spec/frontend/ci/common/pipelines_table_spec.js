@@ -206,6 +206,16 @@ describe('Pipelines Table', () => {
             projectPath: 'frontend-fixtures/pipelines-project',
           });
         });
+
+        it('applies correct class to row', () => {
+          findTableRows().wrappers.forEach((row) => {
+            if (row.attributes('class').includes('details')) {
+              expect(row.attributes('class')).not.toContain('!gl-border-b');
+            } else {
+              expect(row.attributes('class')).toContain('!gl-border-b');
+            }
+          });
+        });
       });
 
       describe('and `useFailedJobsWidget` value is not provided', () => {

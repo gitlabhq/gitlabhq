@@ -957,6 +957,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="queryprojectsmembership"></a>`membership` | [`Boolean`](#boolean) | Return only projects that the current user is a member of. |
 | <a id="queryprojectsminaccesslevel"></a>`minAccessLevel` | [`AccessLevelEnum`](#accesslevelenum) | Return only projects where current user has at least the specified access level. |
 | <a id="queryprojectspersonal"></a>`personal` | [`Boolean`](#boolean) | Return only personal projects. |
+| <a id="queryprojectsprogramminglanguagename"></a>`programmingLanguageName` | [`String`](#string) | Filter projects by programming language name (case insensitive). For example: "css" or "ruby". |
 | <a id="queryprojectssearch"></a>`search` | [`String`](#string) | Search query, which can be for the project name, a path, or a description. |
 | <a id="queryprojectssearchnamespaces"></a>`searchNamespaces` | [`Boolean`](#boolean) | Include namespace in project search. |
 | <a id="queryprojectssort"></a>`sort` | [`String`](#string) | Sort order of results. Format: `<field_name>_<sort_direction>`, for example: `id_desc` or `name_asc`. |
@@ -28438,6 +28439,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="organizationprojectsmembership"></a>`membership` | [`Boolean`](#boolean) | Return only projects that the current user is a member of. |
 | <a id="organizationprojectsminaccesslevel"></a>`minAccessLevel` | [`AccessLevelEnum`](#accesslevelenum) | Return only projects where current user has at least the specified access level. |
 | <a id="organizationprojectspersonal"></a>`personal` | [`Boolean`](#boolean) | Return only personal projects. |
+| <a id="organizationprojectsprogramminglanguagename"></a>`programmingLanguageName` | [`String`](#string) | Filter projects by programming language name (case insensitive). For example: "css" or "ruby". |
 | <a id="organizationprojectssearch"></a>`search` | [`String`](#string) | Search query, which can be for the project name, a path, or a description. |
 | <a id="organizationprojectssearchnamespaces"></a>`searchNamespaces` | [`Boolean`](#boolean) | Include namespace in project search. |
 | <a id="organizationprojectssort"></a>`sort` | [`String`](#string) | Sort order of results. Format: `<field_name>_<sort_direction>`, for example: `id_desc` or `name_asc`. |

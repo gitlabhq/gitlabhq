@@ -611,7 +611,7 @@ GEM
     fast_blank (1.0.1)
     fast_gettext (2.3.0)
     ffaker (2.23.0)
-    ffi (1.15.5)
+    ffi (1.17.0)
     ffi-compiler (1.0.1)
       ffi (>= 1.0.0)
       rake
@@ -2035,6 +2035,7 @@ DEPENDENCIES
   faraday_middleware-aws-sigv4 (~> 1.0.1)
   fast_blank (~> 1.0.1)
   ffaker (~> 2.23)
+  ffi (~> 1.17)
   flipper (~> 0.26.2)
   flipper-active_record (~> 0.26.2)
   flipper-active_support_cache_store (~> 0.26.2)

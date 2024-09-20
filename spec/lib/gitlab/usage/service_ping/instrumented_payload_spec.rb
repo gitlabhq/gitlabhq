@@ -42,8 +42,8 @@ RSpec.describe Gitlab::Usage::ServicePing::InstrumentedPayload do
 
   context 'when missing instrumentation class' do
     it 'returns empty hash' do
-      expect(described_class.new(['counts.ci_builds'], :with_instrumentation).build).to eq({})
-      expect(described_class.new(['counts.ci_builds'], :with_value).build).to eq({})
+      expect(described_class.new(['counts.ci_triggers'], :with_instrumentation).build).to eq({})
+      expect(described_class.new(['counts.ci_triggers'], :with_value).build).to eq({})
     end
   end
 
