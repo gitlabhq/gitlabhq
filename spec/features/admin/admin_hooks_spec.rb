@@ -84,7 +84,7 @@ RSpec.describe 'Admin::Hooks', feature_category: :webhooks do
     end
 
     context 'removes existing hook' do
-      it 'from hooks list page', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/451295' do
+      it 'from hooks list page' do
         visit admin_hooks_path
 
         accept_gl_confirm(button_text: 'Delete webhook') { click_link 'Delete' }

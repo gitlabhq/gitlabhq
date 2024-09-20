@@ -364,7 +364,6 @@ Lint/RedundantCopDisableDirective:
     - 'sidekiq_cluster/cli.rb'
     - 'sidekiq_cluster/sidekiq_cluster.rb'
     - 'spec/components/previews/pajamas/banner_component_preview.rb'
-    - 'spec/controllers/concerns/preferred_language_switcher_spec.rb'
     - 'spec/controllers/groups/milestones_controller_spec.rb'
     - 'spec/controllers/profiles/two_factor_auths_controller_spec.rb'
     - 'spec/controllers/projects/milestones_controller_spec.rb'

@@ -18,6 +18,10 @@ module QA
           element 'canary-badge-link'
         end
 
+        view 'app/assets/javascripts/super_sidebar/components/brand_logo.vue' do
+          element 'brand-header-default-logo'
+        end
+
         view 'app/assets/javascripts/super_sidebar/components/user_menu.vue' do
           element 'user-dropdown', required: !Runtime::Env.phone_layout?
           element 'user-avatar-content', required: !Runtime::Env.phone_layout?
@@ -63,7 +67,8 @@ module QA
         end
 
         def go_to_workspaces
-          click_element('nav-item-link', submenu_item: 'Workspaces')
+          # skip_finished_loading_check in case there are workspaces currently being terminated
+          click_element('nav-item-link', submenu_item: 'Workspaces', skip_finished_loading_check: true)
         end
 
         def go_to_menu_dropdown_option(option_name)
@@ -72,6 +77,10 @@ module QA
 
         def go_to_todos
           click_element('todos-shortcut-button')
+        end
+
+        def go_to_homepage
+          click_element('brand-header-default-logo')
         end
 
         def signed_in?

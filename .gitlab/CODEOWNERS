@@ -101,7 +101,7 @@ config/bounded_contexts.yml @fabiopitino @grzesiek @stanhu @cwoolley-gitlab @tku
 /ee/spec/finders/
 /rubocop/rubocop-migrations.yml
 
-[Pipeline configuration] @gl-quality/eng-prod
+[Pipeline configuration] @gl-quality/eng-prod @acunskis @ddavison @mlapierre
 /.gitlab-ci.yml
 /.gitlab/ci/
 /.gitlab/ci/docs.gitlab-ci.yml @gl-quality/eng-prod @gl-docsteam

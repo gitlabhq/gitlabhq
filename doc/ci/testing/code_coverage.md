@@ -71,7 +71,8 @@ coverage in the tool's output:
 | excoveralls | Elixir | None | `/\[TOTAL\]\s+(\d+\.\d+)%/` |
 | mix | Elixir | `mix test --cover` | `/\d+.\d+\%\s+\|\s+Total/` |
 | JaCoCo | Java/Kotlin | None | `/Total.*?([0-9]{1,3})%/` |
-| go test | Go | `go test -cover` | `/coverage: \d+.\d+% of statements/` |
+| go test (single package) | Go | `go test -cover` | `/coverage: \d+.\d+% of statements/` |
+| go test (whole project) | Go | `go test -coverprofile=cover.profile && go tool cover -func cover.profile` | `/total:\s+\(statements\)\s+\d+.\d+%/` |
 | OpenCover | .NET | None | `/(Visited Points).*\((.*)\)/` |
 | dotnet test ([MSBuild](https://github.com/coverlet-coverage/coverlet/blob/master/Documentation/MSBuildIntegration.md)) | .NET | `dotnet test` | `/Total\s*\|\s*(\d+(?:\.\d+)?)/` |
 | tarpaulin | Rust | None | `/^\d+.\d+% coverage/` |

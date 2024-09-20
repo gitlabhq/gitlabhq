@@ -2488,7 +2488,6 @@ Style/InlineDisableAnnotation:
     - 'spec/config/application_spec.rb'
     - 'spec/controllers/concerns/content_security_policy_patch_spec.rb'
     - 'spec/controllers/concerns/continue_params_spec.rb'
-    - 'spec/controllers/concerns/preferred_language_switcher_spec.rb'
     - 'spec/controllers/groups/milestones_controller_spec.rb'
     - 'spec/controllers/omniauth_callbacks_controller_spec.rb'
     - 'spec/controllers/profiles/two_factor_auths_controller_spec.rb'

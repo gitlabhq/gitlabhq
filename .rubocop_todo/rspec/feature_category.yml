@@ -1229,7 +1229,6 @@ RSpec/FeatureCategory:
     - 'spec/controllers/concerns/issuable_actions_spec.rb'
     - 'spec/controllers/concerns/issuable_collections_spec.rb'
     - 'spec/controllers/concerns/page_limiter_spec.rb'
-    - 'spec/controllers/concerns/preferred_language_switcher_spec.rb'
     - 'spec/controllers/concerns/project_unauthorized_spec.rb'
     - 'spec/controllers/concerns/redirects_for_missing_path_on_tree_spec.rb'
     - 'spec/controllers/concerns/renders_commits_spec.rb'

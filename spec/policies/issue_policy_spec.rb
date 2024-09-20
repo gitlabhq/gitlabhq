@@ -25,10 +25,6 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
     described_class.new(user, issue)
   end
 
-  before do
-    stub_feature_flags(enforce_check_group_level_work_items_license: true)
-  end
-
   shared_examples 'support bot with service desk enabled' do
     before do
       allow(::Gitlab::Email::IncomingEmail).to receive(:enabled?) { true }

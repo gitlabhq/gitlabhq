@@ -97,7 +97,7 @@ module Gitlab
         # Returns true if the pool was disconnected, false if not.
         def try_disconnect
           if pool.connections.none?(&:in_use?)
-            pool.disconnect!
+            pool_disconnect!
             return true
           end
 
@@ -105,7 +105,15 @@ module Gitlab
         end
 
         def force_disconnect!
-          pool.disconnect!
+          pool_disconnect!
+        end
+
+        def pool_disconnect!
+          if Feature.enabled?(:load_balancing_disconnect_without_verify)
+            pool.disconnect_without_verify!
+          else
+            pool.disconnect!
+          end
         end
 
         def offline!
@@ -117,7 +125,7 @@ module Gitlab
           )
 
           @online = false
-          @pool.disconnect!
+          pool_disconnect!
         end
 
         # Returns true if the host is online.

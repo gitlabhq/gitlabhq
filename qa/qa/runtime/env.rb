@@ -485,6 +485,10 @@ module QA
         ENV.fetch("WORKSPACES_OAUTH_SIGNING_KEY")
       end
 
+      def workspaces_proxy_version
+        ENV.fetch("WORKSPACES_PROXY_VERSION", '0.1.12')
+      end
+
       def workspaces_proxy_domain
         ENV.fetch("WORKSPACES_PROXY_DOMAIN")
       end
@@ -571,7 +575,7 @@ module QA
       end
 
       def gitlab_agentk_version
-        ENV.fetch('GITLAB_AGENTK_VERSION', 'v16.10.0')
+        ENV.fetch('GITLAB_AGENTK_VERSION', 'latest')
       end
 
       def transient_trials

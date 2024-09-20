@@ -21,7 +21,7 @@ ENV BUNDLE_APP_CONFIG=/home/gitlab/.bundle
 # Install system libs
 #
 RUN apt-get update \
-    && apt-get install -y xvfb unzip \
+    && apt-get install -y xvfb unzip google-cloud-sdk-gke-gcloud-auth-plugin \
     && apt-get -yq autoremove \
     && apt-get clean -yqq \
     && rm -rf /var/lib/apt/lists/*

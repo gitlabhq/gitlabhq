@@ -1218,7 +1218,6 @@ RSpec/NamedSubject:
     - 'spec/controllers/concerns/check_rate_limit_spec.rb'
     - 'spec/controllers/concerns/graceful_timeout_handling_spec.rb'
     - 'spec/controllers/concerns/page_limiter_spec.rb'
-    - 'spec/controllers/concerns/preferred_language_switcher_spec.rb'
     - 'spec/controllers/concerns/product_analytics_tracking_spec.rb'
     - 'spec/controllers/concerns/renders_commits_spec.rb'
     - 'spec/controllers/concerns/routable_actions_spec.rb'

@@ -49,10 +49,7 @@ class IssuePolicy < IssuablePolicy
   # group level issues license for now is equivalent to epics license. We'll have to migrate epics license to
   # work items context once epics are fully migrated to work items.
   condition(:group_level_issues_license_available) do
-    # group level issues license is available if
-    # - checking the license is not enforced, i.e. `!enforce_check_group_level_work_items_license` -> true
-    # - or if license is available, e.g. EE, i.e. `epics_license_available?` -> true
-    Feature.disabled?(:enforce_check_group_level_work_items_license) || epics_license_available?
+    epics_license_available?
   end
   # rubocop:enable Gitlab/FeatureFlagWithoutActor
 
