@@ -102,7 +102,7 @@ follow these steps to avoid unnecessary data loss:
    [what is excluded](../planned_failover.md#not-all-data-is-automatically-replicated).
 
    1. If you are manually replicating any
-      [data not managed by Geo](../../replication/datatypes.md#limitations-on-replicationverification),
+      [data not managed by Geo](../../replication/datatypes.md#replicated-data-types),
       trigger the final replication process now.
    1. On the **primary** site:
       1. On the left sidebar, at the bottom, select **Admin**.

@@ -41,6 +41,7 @@ The Repository X-Ray searches a maximum of two directory levels from the reposit
 | ---------- |-----------------| -------------------- | -------------- |
 | C++        | Conan           | `conanfile.py`       | 17.5 or later  |
 | C++        | Conan           | `conanfile.txt`      | 17.4 or later  |
+| C#         | NuGet           | `*.csproj`           | 17.5 or later  |
 | Go         | Go Modules      | `go.mod`             | 17.4 or later  |
 | Java       | Gradle          | `build.gradle`       | 17.4 or later  |
 | Java       | Maven           | `pom.xml`            | 17.4 or later  |

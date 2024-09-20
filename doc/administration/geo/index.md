@@ -230,9 +230,10 @@ This list of limitations only reflects the latest version of GitLab. If you are 
 - Git clone and fetch requests with option `--depth` over SSH against a secondary site does not work and hangs indefinitely if the secondary site is not up to date at the time the request is initiated. This is due to problems related to translating Git SSH to Git https during proxying. For more information, see [issue 391980](https://gitlab.com/gitlab-org/gitlab/-/issues/391980). A new workflow that does not involve the aforementioned translation step is now available for Linux-packaged GitLab Geo secondary sites which can be enabled with a feature flag. For more details, see [comment in issue 454707](https://gitlab.com/gitlab-org/gitlab/-/issues/454707#note_2102067451). The fix for Cloud Native GitLab Geo secondary sites is tracked in [issue 5641](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/5641).
 - Some customers have reported that `git fetch` over SSH when the secondary site is out of date hangs and/or times out and fails. `git clone` requests over SSH are not impacted. For more information, see [issue 454707](https://gitlab.com/gitlab-org/gitlab/-/issues/454707). A fix available for Linux-packaged GitLab Geo secondary sites which can be enabled with a feature flag. For more details, see [comment in issue 454707](https://gitlab.com/gitlab-org/gitlab/-/issues/454707#note_2102067451). The fix for Cloud Native GitLab Geo secondary sites is tracked in [issue 5641](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/5641).
 
-### Limitations on replication/verification
+### Replicated data types
 
-There is a complete list of all GitLab [data types](replication/datatypes.md) and [existing support for replication and verification](replication/datatypes.md#limitations-on-replicationverification).
+There is a complete list of all GitLab [data types](replication/datatypes.md) and 
+[replicated data types](replication/datatypes.md#replicated-data-types).
 
 ## Setup instructions
 

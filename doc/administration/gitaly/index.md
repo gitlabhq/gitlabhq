@@ -271,7 +271,7 @@ Gitaly Cluster and [Geo](../geo/index.md) both provide redundancy. However the r
   not aware when Gitaly Cluster is used.
 - Geo provides [replication](../geo/index.md) and [disaster recovery](../geo/disaster_recovery/index.md) for
   an entire instance of GitLab. Users know when they are using Geo for
-  [replication](../geo/index.md). Geo [replicates multiple data types](../geo/replication/datatypes.md#limitations-on-replicationverification),
+  [replication](../geo/index.md). Geo [replicates multiple data types](../geo/replication/datatypes.md#replicated-data-types),
   including Git data.
 
 The following table outlines the major differences between Gitaly Cluster and Geo:

@@ -49,11 +49,11 @@ html {
   }
 }
 
-.alert-wrapper {
-  &:not(:empty) {
-    @apply gl-mt-3;
-  }
+.alert-wrapper-top-space:not(:empty) {
+  @apply gl-mt-3;
+}
 
+.alert-wrapper {
   .alert-link-group {
     float: right;
   }

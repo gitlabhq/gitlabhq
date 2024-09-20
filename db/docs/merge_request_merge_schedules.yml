@@ -6,7 +6,7 @@ feature_categories:
 - code_review_workflow
 description: Stores timestamps for scheduled merges
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165092
-milestone: '17.4'
+milestone: '17.5'
 gitlab_schema: gitlab_main_cell
 sharding_key:
   project_id: projects

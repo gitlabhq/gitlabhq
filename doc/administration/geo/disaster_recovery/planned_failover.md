@@ -30,10 +30,10 @@ have a high degree of confidence in being able to perform them accurately.
 
 ## Not all data is automatically replicated
 
-If you are using any GitLab features that Geo [doesn't support](../replication/datatypes.md#limitations-on-replicationverification),
+If you are using any GitLab features that Geo doesn't support,
 you must make separate provisions to ensure that the **secondary** site has an
 up-to-date copy of any data associated with that feature. This may extend the
-required scheduled maintenance period significantly.
+required scheduled maintenance period significantly. A list of features supported by Geo can be found in the [replicated data types table](../replication/datatypes.md#replicated-data-types).
 
 A common strategy for keeping this period as short as possible for data stored
 in files is to use `rsync` to transfer the data. An initial `rsync` can be

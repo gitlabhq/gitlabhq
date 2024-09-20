@@ -753,15 +753,6 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
         end
 
         it_behaves_like 'successfully returning the file'
-
-        context 'when the FF allow_anyone_to_pull_public_maven_packages_on_group_level disabled' do
-          before do
-            stub_feature_flags(allow_anyone_to_pull_public_maven_packages_on_group_level: false)
-            stub_feature_flags(maven_central_request_forwarding: false)
-          end
-
-          it_behaves_like 'returning response status', :not_found
-        end
       end
     end
 

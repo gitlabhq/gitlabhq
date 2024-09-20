@@ -20,7 +20,7 @@
       = yield :group_invite_members_banner
 
     -# Alerts
-    .alert-wrapper.gl-flex.gl-flex-col.gl-gap-3.container-fluid{ class: alert_class }
+    .alert-wrapper.alert-wrapper-top-space.gl-flex.gl-flex-col.gl-gap-3.container-fluid{ class: alert_class }
       = dispensable_render 'shared/outdated_browser'
       = dispensable_render_if_exists "layouts/header/licensed_user_count_threshold"
       = dispensable_render_if_exists "layouts/header/token_expiry_notification"

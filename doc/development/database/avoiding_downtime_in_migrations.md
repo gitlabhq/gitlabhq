@@ -148,10 +148,6 @@ The steps:
 1. [Add a post-deployment migration](#add-a-post-deployment-migration-release-m) (release M)
 1. [Remove the ignore rule](#remove-the-ignore-rule-release-m1) (release M+1)
 
-NOTE:
-It's not possible to rename columns with default values. For more details, see
-[this merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52032#default-values).
-
 ### Add the regular migration (release M)
 
 First we need to create the regular migration. This migration should use

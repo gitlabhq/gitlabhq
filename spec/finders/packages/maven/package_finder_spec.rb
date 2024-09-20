@@ -125,16 +125,6 @@ RSpec.describe ::Packages::Maven::PackageFinder, feature_category: :package_regi
       end
 
       it_behaves_like 'handling valid and invalid paths'
-
-      context 'when the FF allow_anyone_to_pull_public_maven_packages_on_group_level disabled' do
-        let(:param_path) { package.maven_metadatum.path }
-
-        before do
-          stub_feature_flags(allow_anyone_to_pull_public_maven_packages_on_group_level: false)
-        end
-
-        it { is_expected.to be_empty }
-      end
     end
   end
 

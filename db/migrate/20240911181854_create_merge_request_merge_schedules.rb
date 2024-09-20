@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class CreateMergeRequestMergeSchedules < Gitlab::Database::Migration[2.2]
-  milestone '17.4'
+  milestone '17.5'
 
   def change
     create_table :merge_request_merge_schedules do |t| # rubocop:disable Migration/EnsureFactoryForTable -- factory exists in spec/factories/merge_request_merge_schedule.rb

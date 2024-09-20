@@ -872,7 +872,7 @@ GEM
     google-cloud-storage_transfer-v1 (0.8.0)
       gapic-common (>= 0.20.0, < 2.a)
       google-cloud-errors (~> 1.0)
-    google-protobuf (3.25.4)
+    google-protobuf (3.25.5)
     googleapis-common-protos (1.4.0)
       google-protobuf (~> 3.14)
       googleapis-common-protos-types (~> 1.2)

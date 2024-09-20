@@ -553,6 +553,17 @@ If Git fetch fails at exactly three hours while syncing a Git repository:
    sudo gitlab-ctl reconfigure
    ```
 
+### Error `Failed to open TCP connection to localhost:5000` on secondary when configuring registry replication
+
+You may face the following error when configuring container registry replication on the secondary site:
+
+```plaintext
+Failed to open TCP connection to localhost:5000 (Connection refused - connect(2) for \"localhost\" port 5000)"
+```
+
+It happens if the container registry is not enabled on the secondary site. To fix it, check that the container registry
+is [enabled on the secondary site](../../../packages/container_registry.md#enable-the-container-registry). Note that if [Let’s Encrypt integration is disabled](https://docs.gitlab.com/omnibus/settings/ssl/#configure-https-manually), container registry is disabled as well, and you must [configure it manually](../../../packages/container_registry.md#configure-container-registry-under-its-own-domain).
+
 ## Investigate causes of database replication lag
 
 If the output of `sudo gitlab-rake geo:status` shows that `Database replication lag` remains significantly high over time, the primary node in database replication can be checked to determine the status of lag for
