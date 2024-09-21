@@ -39940,6 +39940,9 @@ msgstr ""
 msgid "PipelineSchedules|Inactive"
 msgstr ""
 
+msgid "PipelineSchedules|Interval"
+msgstr ""
+
 msgid "PipelineSchedules|Interval Pattern"
 msgstr ""
 

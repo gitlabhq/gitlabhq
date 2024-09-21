@@ -11,11 +11,13 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Status:** Generally Available
 
-Use GitLab Mobile DevOps to quickly build, sign, and release native and cross-platform mobile apps
-for Android and iOS using GitLab CI/CD. Mobile DevOps is an experimental feature developed by
-[GitLab Incubation Engineering](https://handbook.gitlab.com/handbook/engineering/development/incubation/).
+Use GitLab Mobile DevOps to build, sign, and release native and cross-platform mobile apps
+for Android and iOS using GitLab CI/CD on-premise or on GitLab.com. Mobile DevOps implements
+tools and best practice workflows that use the capabilities of the GitLab one DevSecOps platform.
 
-Mobile DevOps is still in development, but you can:
+The GitLab Mobile DevOps suite of tools and services was developed and curated by the
+[GitLab Incubation Engineering team](https://handbook.gitlab.com/handbook/engineering/development/incubation/).
+The [GitLab CI Section](https://about.gitlab.com/direction/ci/) owns and maintains this feature set:
 
 - [Request a feature](https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/feedback/-/issues/new?issuable_template=feature_request).
 - [Report a bug](https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/feedback/-/issues/new?issuable_template=report_bug).
