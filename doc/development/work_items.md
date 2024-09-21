@@ -7,7 +7,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 # Work items development
 
 - Work item lists are only available at group level `http://gdk.test:3000/groups/flightjs/-/work_items`,
-  they are enabled with feature flags: `namespace_level_work_items` and `work_item_epics_rollout`.
+  they are enabled with feature flags: `namespace_level_work_items`
 - The new work item UI is available at project level `http://gdk.test:3000/flightjs/Flight/-/work_items/new`
   after enabling the `work_items_alpha` feature flag.
 - The view/edit work item UI is available at project level `http://gdk.test:3000/flightjs/Flight/-/work_items/:iid`

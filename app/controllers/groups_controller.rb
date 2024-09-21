@@ -41,7 +41,7 @@ class GroupsController < Groups::ApplicationController
     push_force_frontend_feature_flag(:work_items_beta, group.work_items_beta_feature_flag_enabled?)
     push_force_frontend_feature_flag(:work_items_alpha, group.work_items_alpha_feature_flag_enabled?)
     push_frontend_feature_flag(:issues_grid_view)
-    push_force_frontend_feature_flag(:namespace_level_work_items, group.namespace_work_items_enabled?(current_user))
+    push_force_frontend_feature_flag(:namespace_level_work_items, group.namespace_work_items_enabled?)
   end
 
   before_action only: :merge_requests do

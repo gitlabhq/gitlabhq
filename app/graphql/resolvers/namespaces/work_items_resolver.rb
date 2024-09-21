@@ -15,7 +15,7 @@ module Resolvers
         description: 'Include work items from descendant groups and projects.'
 
       def ready?(**args)
-        super && resource_parent.namespace_work_items_enabled?(current_user)
+        super && resource_parent.namespace_work_items_enabled?
       end
 
       private

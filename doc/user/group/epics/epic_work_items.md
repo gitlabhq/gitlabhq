@@ -52,7 +52,6 @@ Because this is an experimental feature,
 | `work_item_epics`                             | Consolidated flag that contains all the changes needed to get epic work items to work for a given group. | Group | **Required** | 17.2 |
 | `work_items_rolledup_dates`                   | Calculates the start and due dates in a hierarchy for work items.                                        | Group | **Required** | 17.2 |
 | `epic_and_work_item_associations_unification` | Delegates other epic and work item associations.                                                         | Group | **Required** | 17.2 |
-| `work_item_epics_rollout`                     | Feature flag per user to enable or disable the new work item view as the default experience.             | User  | **Required** | 17.3 |
 
 ## Feedback
 

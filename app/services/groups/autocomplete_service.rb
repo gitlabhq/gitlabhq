@@ -11,7 +11,7 @@ module Groups
       finder_params[:issue_types] = issue_types if issue_types.present?
 
       finder_class =
-        if group.namespace_work_items_enabled?(current_user)
+        if group.namespace_work_items_enabled?
           finder_params[:include_descendants] = true
           WorkItems::WorkItemsFinder
         else
