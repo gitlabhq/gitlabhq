@@ -11,7 +11,6 @@ Rails/FindEach:
     - 'db/post_migrate/20231003045342_migrate_sidekiq_namespaced_jobs.rb'
     - 'ee/app/workers/compliance_management/merge_requests/compliance_violations_consistency_worker.rb'
     - 'ee/lib/ee/gitlab/background_migration/create_compliance_standards_adherence.rb'
-    - 'ee/spec/elastic/migrate/20231005103449_reindex_and_remove_leftover_merge_request_in_main_index_spec.rb'
     - 'ee/spec/frontend/fixtures/runner.rb'
     - 'ee/spec/lib/ee/gitlab/usage_data_spec.rb'
     - 'ee/spec/requests/api/graphql/ci/jobs_spec.rb'
