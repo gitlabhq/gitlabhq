@@ -34,6 +34,7 @@ RSpec.describe Note, feature_category: :team_planning do
 
     it { is_expected.to have_one(:note_metadata).inverse_of(:note).class_name('Notes::NoteMetadata') }
     it { is_expected.to belong_to(:review).inverse_of(:notes) }
+    it { is_expected.to have_many(:events) }
   end
 
   describe 'modules' do

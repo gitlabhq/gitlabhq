@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Gitlab::Backup::Cli::SourceContext do
-  subject(:context) { described_class.new }
-
+RSpec.shared_examples "context exposing all common configuration methods" do
   let(:fake_gitlab_basepath) { Pathname.new(Dir.mktmpdir('gitlab', temp_path)) }
 
   before do
@@ -275,30 +273,10 @@ RSpec.describe Gitlab::Backup::Cli::SourceContext do
     end
   end
 
-  describe '#env' do
-    it 'returns content from RAILS_ENV when its defined' do
-      stub_const('ENV', { 'RAILS_ENV' => 'railstest', 'RACK_ENV' => 'racktest' })
-
-      expect(context.env).to eq('railstest')
-    end
-
-    it 'returns content from RACK_ENV when its the next one defined' do
-      stub_const('ENV', { 'RACK_ENV' => 'racktest' })
-
-      expect(context.env).to eq('racktest')
-    end
-
-    it 'returns the default value when no other ENV is defined' do
-      stub_const('ENV', {})
-
-      expect(context.env).to eq('development')
-    end
-  end
-
   describe '#gitlab_shared_path' do
     context 'with shared path not configured in gitlab.yml' do
       it 'returns the default value' do
-        FileUtils.touch(fake_gitlab_basepath.join('config/gitlab.yml'))
+        use_gitlab_config_fixture('gitlab-empty.yml')
 
         expect(context.send(:gitlab_shared_path)).to eq(Pathname('shared'))
       end

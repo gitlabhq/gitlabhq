@@ -2,6 +2,7 @@
 
 require 'fast_spec_helper'
 require 'oj'
+require_relative '../../../../app/models/concerns/checksummable'
 
 RSpec.describe Gitlab::Ci::Ansi2html, feature_category: :continuous_integration do
   subject { described_class }

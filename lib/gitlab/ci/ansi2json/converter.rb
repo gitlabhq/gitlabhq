@@ -10,9 +10,9 @@ module Gitlab
         # - stream number: 1 byte (2 hex chars) stream number
         # - stream type: E/O (Err or Out)
         # - full line type: `+` if line is continuation of previous line, ` ` otherwise
-        TIMESTAMP_REGEX = /(\d{4}-[01][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]\.[0-9]{6}Z) [0-9a-f]{2}[EO][+ ]/
-        RFC3339_DATETIME_LENGTH = 27
-        TIMESTAMP_PREFIX_LENGTH = RFC3339_DATETIME_LENGTH + 5
+        TIMESTAMP_HEADER_REGEX = Gitlab::Ci::Trace::Stream::TIMESTAMP_HEADER_REGEX
+        TIMESTAMP_HEADER_DATETIME_LENGTH = Gitlab::Ci::Trace::Stream::TIMESTAMP_HEADER_DATETIME_LENGTH
+        TIMESTAMP_HEADER_LENGTH = Gitlab::Ci::Trace::Stream::TIMESTAMP_HEADER_LENGTH
 
         def convert(stream, new_state)
           @lines = []
@@ -79,11 +79,11 @@ module Gitlab
         def handle_line(line, next_line, current_line_buffer)
           if line.nil?
             # First line, initialize check for timestamps
-            @has_timestamps = next_line.match?(TIMESTAMP_REGEX)
+            @has_timestamps = next_line.match?(TIMESTAMP_HEADER_REGEX)
             return
           end
 
-          is_continued = @has_timestamps && next_line&.at(TIMESTAMP_PREFIX_LENGTH - 1) == '+'
+          is_continued = @has_timestamps && next_line&.at(TIMESTAMP_HEADER_LENGTH - 1) == '+'
 
           # Continued lines contain an ignored \n character at the end, so we can chop it off
           line.delete_suffix!("\n") if is_continued
@@ -92,9 +92,9 @@ module Gitlab
             current_line_buffer = line
           else
             # Store timestamp from continued line
-            @state.current_line.add_timestamp(line[0..RFC3339_DATETIME_LENGTH - 1])
+            @state.current_line.add_timestamp(line[0..TIMESTAMP_HEADER_DATETIME_LENGTH - 1])
 
-            current_line_buffer << line[TIMESTAMP_PREFIX_LENGTH..]
+            current_line_buffer << line[TIMESTAMP_HEADER_LENGTH..]
           end
 
           return current_line_buffer if is_continued
@@ -141,20 +141,20 @@ module Gitlab
 
         def has_timestamp_prefix?(line)
           # Avoid regex on timestamps for performance
-          return unless @has_timestamps && line && line.length >= TIMESTAMP_PREFIX_LENGTH
+          return unless @has_timestamps && line && line.length >= TIMESTAMP_HEADER_LENGTH
 
-          line[RFC3339_DATETIME_LENGTH - 1] == 'Z' &&
+          line[TIMESTAMP_HEADER_DATETIME_LENGTH - 1] == 'Z' &&
             line[4] == '-' && line[7] == '-' && line[10] == 'T' && line[13] == ':'
         end
 
         def get_timestamp(scanner)
           return unless @has_timestamps
 
-          line = scanner.peek(TIMESTAMP_PREFIX_LENGTH + 1)
+          line = scanner.peek(TIMESTAMP_HEADER_LENGTH + 1)
           return unless has_timestamp_prefix?(line)
 
-          scanner.pos += TIMESTAMP_PREFIX_LENGTH
-          line[0..RFC3339_DATETIME_LENGTH - 1]
+          scanner.pos += TIMESTAMP_HEADER_LENGTH
+          line[0..TIMESTAMP_HEADER_DATETIME_LENGTH - 1]
         end
 
         def scan_token(scanner, match, consume: true)
@@ -180,7 +180,7 @@ module Gitlab
 
         def handle_timestamp(timestamp)
           @state.current_line.add_timestamp(timestamp)
-          @state.offset += TIMESTAMP_PREFIX_LENGTH
+          @state.offset += TIMESTAMP_HEADER_LENGTH
         end
 
         def handle_section(scanner)
@@ -244,12 +244,12 @@ module Gitlab
           if hard_flush
             # Account for timestamps in line continuations plus the chopped \n at each preceding continued line
             continuation_line_count = current_line.timestamps.count - 1
-            @state.offset += (TIMESTAMP_PREFIX_LENGTH + 1) * continuation_line_count if continuation_line_count > 0
+            @state.offset += (TIMESTAMP_HEADER_LENGTH + 1) * continuation_line_count if continuation_line_count > 0
             @state.new_line!
           else
             new_line_offset = @state.offset
             # Discount offset from timestamp content if we're still at the beginning of the line
-            new_line_offset -= TIMESTAMP_PREFIX_LENGTH if current_line.empty? && current_line.timestamps.any?
+            new_line_offset -= TIMESTAMP_HEADER_LENGTH if current_line.empty? && current_line.timestamps.any?
             # Preserve timestamps from current line, since this is a soft flush
             @state.new_line!(offset: new_line_offset, timestamps: @state.current_line.timestamps)
           end

@@ -11,7 +11,7 @@ module Gitlab
       class RestoreExecutor
         attr_reader :context, :backup_id, :workdir, :archive_directory
 
-        # @param [Gitlab::Backup::Cli::SourceContext] context
+        # @param [Context::SourceContext|Context::OmnibusContext] context
         # @param [String] backup_id
         def initialize(context:, backup_id:)
           @context = context

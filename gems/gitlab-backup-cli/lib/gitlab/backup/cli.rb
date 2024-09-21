@@ -13,6 +13,7 @@ module Gitlab
     module Cli
       autoload :BackupExecutor, 'gitlab/backup/cli/backup_executor'
       autoload :Commands, 'gitlab/backup/cli/commands'
+      autoload :Context, 'gitlab/backup/cli/context'
       autoload :Dependencies, 'gitlab/backup/cli/dependencies'
       autoload :Errors, 'gitlab/backup/cli/errors'
       autoload :GitlabConfig, 'gitlab/backup/cli/gitlab_config'
@@ -20,7 +21,6 @@ module Gitlab
       autoload :Output, 'gitlab/backup/cli/output'
       autoload :RestoreExecutor, 'gitlab/backup/cli/restore_executor'
       autoload :Runner, 'gitlab/backup/cli/runner'
-      autoload :SourceContext, 'gitlab/backup/cli/source_context'
       autoload :Shell, 'gitlab/backup/cli/shell'
       autoload :Targets, 'gitlab/backup/cli/targets'
       autoload :Tasks, 'gitlab/backup/cli/tasks'

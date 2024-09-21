@@ -56,9 +56,7 @@ module Gitlab
           private
 
           def build_context
-            # TODO: When we have more then one context we need to auto-detect which one to use
-            # https://gitlab.com/gitlab-org/gitlab/-/issues/454530
-            Gitlab::Backup::Cli::SourceContext.new
+            ::Gitlab::Backup::Cli::Context.build
           end
 
           def measure_duration

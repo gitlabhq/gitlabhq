@@ -1,0 +1,7 @@
+
+version: 1
+installation_type: "omnibus"
+gitlab:
+  config_path: /var/opt/gitlab/gitlab-rails/etc/gitlab.yml
+database:
+  config_path: /var/opt/gitlab/gitlab-rails/etc/database.yml

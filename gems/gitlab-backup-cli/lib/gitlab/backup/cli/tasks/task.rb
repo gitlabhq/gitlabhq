@@ -69,7 +69,7 @@ module Gitlab
           end
 
           def config
-            Gitlab::Backup::Cli::SourceContext.new.config(id)
+            context.config(id)
           end
 
           def object_storage?

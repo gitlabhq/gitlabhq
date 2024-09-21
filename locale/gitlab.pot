@@ -49373,6 +49373,9 @@ msgstr ""
 msgid "SecurityOrchestration|Logic error"
 msgstr ""
 
+msgid "SecurityOrchestration|Maximum action limit for scan execution policies will be enabled in 18.0"
+msgstr ""
+
 msgid "SecurityOrchestration|Merge request approval"
 msgstr ""
 
@@ -49471,6 +49474,9 @@ msgstr ""
 msgid "SecurityOrchestration|Policy changes may take some time to be applied."
 msgstr ""
 
+msgid "SecurityOrchestration|Policy contains %{linkStart}deprecated syntax%{linkEnd} (%{deprecatedProperties})."
+msgstr ""
+
 msgid "SecurityOrchestration|Policy definition"
 msgstr ""
 
@@ -49537,6 +49543,9 @@ msgstr ""
 msgid "SecurityOrchestration|Save changes"
 msgstr ""
 
+msgid "SecurityOrchestration|Scan actions exceed the limit of %{maxScanExecutionPolicyActions} actions per policy."
+msgstr ""
+
 msgid "SecurityOrchestration|Scan execution"
 msgstr ""
 
@@ -49577,6 +49586,9 @@ msgid "SecurityOrchestration|Security policy projects store your organization's 
 msgstr ""
 
 msgid "SecurityOrchestration|Security policy scheduled scans maximum concurrency"
+msgstr ""
+
+msgid "SecurityOrchestration|SecurityOrchestration|Scan execution policies with more than %{maxCount} actions detected. Those policies will not work after GitLab 18.0 (May 15, 2025). Before then you must edit these policies to reduce the number of actions."
 msgstr ""
 
 msgid "SecurityOrchestration|Select a project to store your security policies in. %{linkStart}More information.%{linkEnd}"

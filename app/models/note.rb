@@ -84,6 +84,10 @@ class Note < ApplicationRecord
   has_one :note_diff_file, inverse_of: :diff_note, foreign_key: :diff_note_id
   has_many :diff_note_positions
 
+  # rubocop:disable Cop/ActiveRecordDependent -- polymorphic association
+  has_many :events, as: :target, dependent: :delete_all
+  # rubocop:enable Cop/ActiveRecordDependent
+
   delegate :gfm_reference, :local_reference, to: :noteable
   delegate :name, to: :project, prefix: true
   delegate :title, to: :noteable, allow_nil: true

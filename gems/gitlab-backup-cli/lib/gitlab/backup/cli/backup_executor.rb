@@ -14,7 +14,7 @@ module Gitlab
         attr_reader :context, :metadata, :workdir, :archive_directory, :backup_bucket, :wait_for_completion,
           :registry_bucket, :service_account_file
 
-        # @param [Gitlab::Backup::Cli::SourceContext] context
+        # @param [Context::SourceContext, Context::OmnibusContext] context
         def initialize(context:, backup_options: {})
           @context = context
           @metadata = build_metadata

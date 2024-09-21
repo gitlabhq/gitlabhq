@@ -45,11 +45,21 @@ module Gitlab
           load!
         end
 
+        def loaded?
+          @config.present?
+        end
+
+        private
+
         def load!
           yaml = ActiveSupport::ConfigurationFile.parse(@source)
           all_configs = yaml.deep_stringify_keys
 
           @config = all_configs
+        rescue Errno::ENOENT
+          Gitlab::Backup::Cli::Output.error "GitLab configuration file: #{@source} does not exist"
+        rescue Errno::EACCES
+          Gitlab::Backup::Cli::Output.error "GitLab configuration file: #{@source} can't be read (permission denied)"
         end
       end
     end
