@@ -14,7 +14,7 @@ module Types
     field :id, GraphQL::Types::ID, null: false,
       description: 'ID of the milestone.'
 
-    field :iid, GraphQL::Types::ID, null: false,
+    field :iid, GraphQL::Types::ID, null: false, # rubocop:disable Graphql/IDType -- Legacy argument using ID type kept for backwards compatibility
       description: "Internal ID of the milestone."
 
     field :title, GraphQL::Types::String, null: false,

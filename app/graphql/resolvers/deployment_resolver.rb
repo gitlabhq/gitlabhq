@@ -2,7 +2,7 @@
 
 module Resolvers
   class DeploymentResolver < BaseResolver
-    argument :iid,
+    argument :iid, # rubocop:disable Graphql/IDType -- Legacy argument using ID type kept for backwards compatibility
       GraphQL::Types::ID,
       required: true,
       description: 'Project-level internal ID of the Deployment.'

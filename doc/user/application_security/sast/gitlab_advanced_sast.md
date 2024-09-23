@@ -50,6 +50,8 @@ GitLab Advanced SAST includes the following features:
 - Cross-file analysis: Tracks data flow across different files, discovering vulnerabilities at a deeper level.
 - Sanitizer detection: Avoid false positive results in case the user input is properly sanitized.
 
+For a product tour, see the [GitLab Advanced SAST product tour](https://gitlab.navattic.com/advanced-sast).
+
 ## Supported languages
 
 GitLab Advanced SAST supports the following languages with cross-function and cross-file taint analysis:
