@@ -21,6 +21,12 @@ The `check` Praefect sub-command runs a series of checks to determine the health
 gitlab-ctl praefect check
 ```
 
+If Praefect is deployed by using the Praefect chart, run the binary directly.
+
+```shell
+/usr/local/bin/praefect check
+```
+
 The following sections describe the checks that are run.
 
 ### Praefect migrations

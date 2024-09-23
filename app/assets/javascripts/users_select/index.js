@@ -637,7 +637,7 @@ function UsersSelect(currentUser, els, options = {}) {
             )}</a></li>`;
           } else {
             // 0 margin, because it's now handled by a wrapper
-            img = `<img src='${avatar}' class='avatar avatar-inline !gl-m-0' width='32' />`;
+            img = `<img src='${avatar}' alt='' class='avatar avatar-inline !gl-m-0' width='32' />`;
           }
 
           return userSelect.renderRow(
@@ -728,7 +728,7 @@ UsersSelect.prototype.renderRow = function (
           </strong>
           ${
             username
-              ? `<span class="dropdown-menu-user-username gl-text-gray-400">${escape(
+              ? `<span class="dropdown-menu-user-username gl-text-subtle">${escape(
                   username,
                 )}</span>`
               : ''

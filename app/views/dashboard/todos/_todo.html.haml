@@ -1,7 +1,7 @@
 %li.todo.gl-border-t.gl-border-gray-50.hover:gl-border-blue-200.hover:gl-bg-blue-50.hover:gl-cursor-pointer.gl-relative{ class: "hover:gl-z-1 todo-#{todo.done? ? 'done' : 'pending'}", id: dom_id(todo) }
   .gl-flex.gl-flex-col.sm:gl-flex-row.sm:gl-items-center
     .todo-item.gl-overflow-hidden.gl-overflow-x-auto.gl-self-center.gl-w-full{ data: { testid: "todo-item-container" } }
-      .todo-title.gl-pt-2.gl-pb-3.gl-px-2.gl-md-mb-1.gl-text-sm.gl-text-secondary
+      .todo-title.gl-pt-2.gl-pb-3.gl-px-2.gl-md-mb-1.gl-text-sm.gl-text-subtle
 
         = todo_target_state_pill(todo)
 
@@ -16,7 +16,7 @@
 
         %span.todo-label
           - if todo.target
-            = link_to todo_target_name(todo), todo_target_path(todo), class: 'todo-target-link !gl-text-secondary !gl-no-underline', :'aria-describedby' => dom_id(todo) + "_describer", :'aria-label' => todo_target_aria_label(todo)
+            = link_to todo_target_name(todo), todo_target_path(todo), class: 'todo-target-link !gl-text-subtle !gl-no-underline', :'aria-describedby' => dom_id(todo) + "_describer", :'aria-label' => todo_target_aria_label(todo)
           - else
             = _("(removed)")
 
@@ -48,7 +48,7 @@
             = first_line_in_markdown(todo, :body, 125, project: todo.project, group: todo.group)
 
     .todo-timestamp.gl-whitespace-nowrap.sm:gl-ml-3.gl-mt-2.gl-mb-2.gl-sm-my-0.gl-px-2.gl-sm-px-0
-      %span.todo-timestamp.gl-text-sm.gl-text-secondary
+      %span.todo-timestamp.gl-text-sm.gl-text-subtle
         = todo_due_date(todo)
         #{time_ago_with_tooltip(todo.created_at)}
 

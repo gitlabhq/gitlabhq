@@ -60729,6 +60729,9 @@ msgstr ""
 msgid "Vulnerability|Image:"
 msgstr ""
 
+msgid "Vulnerability|Image: %{linkStart}%{image}%{linkEnd}"
+msgstr ""
+
 msgid "Vulnerability|Information related to how the vulnerability was discovered and its impact on the system."
 msgstr ""
 
