@@ -7,4 +7,5 @@ gemspec
 
 group :development, :test do
   gem 'gitlab-rspec', path: '../gitlab-rspec'
+  gem 'pry'
 end

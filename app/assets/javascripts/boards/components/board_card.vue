@@ -143,7 +143,7 @@ export default {
         'multi-select gl-border-blue-200 gl-bg-blue-50': multiSelectVisible,
         'gl-cursor-grab': isDraggable,
         'is-disabled': isDisabled,
-        'is-active gl-bg-blue-50': isActive,
+        'is-active gl-bg-blue-50 hover:!gl-bg-blue-50': isActive,
         'gl-cursor-not-allowed gl-bg-gray-10': item.isLoading,
         'gl-border-l-4 gl-pl-4 gl-border-l-solid': itemColor,
       },
@@ -154,7 +154,7 @@ export default {
     :data-item-path="item.referencePath"
     :style="cardStyle"
     data-testid="board-card"
-    class="board-card gl-border gl-relative gl-mb-3 gl-rounded-base gl-p-4 gl-leading-normal"
+    class="board-card gl-border gl-relative gl-mb-3 gl-rounded-base gl-p-4 gl-leading-normal hover:gl-bg-gray-10"
     @click="toggleIssue($event)"
   >
     <board-card-inner

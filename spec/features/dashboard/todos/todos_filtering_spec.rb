@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-# covered by ./accessibility_spec.rb
-
 require 'spec_helper'
 
 RSpec.describe 'Dashboard > User filters todos', :js, feature_category: :team_planning do

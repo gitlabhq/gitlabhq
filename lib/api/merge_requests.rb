@@ -11,7 +11,7 @@ module API
     before { authenticate_non_get! }
 
     allow_access_with_scope :ai_workflows, if: ->(request) do
-      request.get? || request.head?
+      request.get? || request.head? || request.put?
     end
 
     rescue_from ActiveRecord::QueryCanceled do |_e|

@@ -11,12 +11,27 @@ exports[`WorkItemRelationshipList renders linked item list 1`] = `
   >
     Blocking
   </h3>
-  <ul
-    class="content-list work-items-list"
+  <draggable-stub
+    animation="0"
+    class="content-list gl-cursor-grab sortable-container work-items-list"
+    clone="[Function]"
+    data-relationship-type="blocks"
+    delay="100"
+    delayontouchonly="true"
+    element="div"
+    fallbackclass="is-dragging"
+    fallbacktolerance="1"
+    forcefallback="true"
+    ghostclass="is-ghost"
+    group="work-item-linked-items"
+    move="[Function]"
+    tag="ul"
+    value="[object Object]"
   >
     <li
-      class="!gl-border-b-1 !gl-border-solid !gl-border-t-0 !gl-border-x-0 !gl-px-0 !gl-py-2 last:!gl-border-b-0"
+      class="!gl-border-b-1 !gl-border-solid !gl-border-t-0 !gl-border-x-0 !gl-px-0 !gl-py-2 last:!gl-border-b-0 linked-item"
       data-testid="link-child-contents-container"
+      data-work-item-id="gid://gitlab/WorkItem/675"
     >
       <work-item-link-child-contents-stub
         canupdate="true"
@@ -26,6 +41,6 @@ exports[`WorkItemRelationshipList renders linked item list 1`] = `
         workitemfullpath="test-project-path"
       />
     </li>
-  </ul>
+  </draggable-stub>
 </div>
 `;

@@ -399,6 +399,8 @@ gitlab_rails['omniauth_providers'] = [
 
 For Helm installations:
 
+Add the [provider's configuration](https://docs.gitlab.com/charts/charts/globals.html#providers) in a YAML file (for example, `provider.yaml`):
+
 ::Tabs
 
 :::TabTitle Azure OAuth 2.0

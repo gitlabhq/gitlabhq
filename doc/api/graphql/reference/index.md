@@ -21892,6 +21892,7 @@ Events that describe the history and progress of a Duo Workflow.
 | <a id="duoworkfloweventmetadata"></a>`metadata` | [`JsonString`](#jsonstring) | Metadata associated with the event. |
 | <a id="duoworkfloweventparenttimestamp"></a>`parentTimestamp` | [`Time`](#time) | Time of the parent event. |
 | <a id="duoworkfloweventtimestamp"></a>`timestamp` | [`Time`](#time) | Time of the event. |
+| <a id="duoworkfloweventworkflowstatus"></a>`workflowStatus` | [`DuoWorkflowStatus`](#duoworkflowstatus) | Status of the workflow. |
 
 ### `EgressNode`
 
@@ -36824,6 +36825,18 @@ All possible ways that DORA metrics can be aggregated.
 | <a id="dorametricbucketingintervalall"></a>`ALL` | All data points are combined into a single value. |
 | <a id="dorametricbucketingintervaldaily"></a>`DAILY` | Data points are combined into chunks by day. |
 | <a id="dorametricbucketingintervalmonthly"></a>`MONTHLY` | Data points are combined into chunks by month. |
+
+### `DuoWorkflowStatus`
+
+The status of the workflow.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="duoworkflowstatuscreated"></a>`CREATED` | The workflow is created. |
+| <a id="duoworkflowstatusfailed"></a>`FAILED` | The workflow is failed. |
+| <a id="duoworkflowstatusfinished"></a>`FINISHED` | The workflow is finished. |
+| <a id="duoworkflowstatuspaused"></a>`PAUSED` | The workflow is paused. |
+| <a id="duoworkflowstatusrunning"></a>`RUNNING` | The workflow is running. |
 
 ### `EntryType`
 

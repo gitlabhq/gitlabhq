@@ -98,31 +98,87 @@ RSpec.describe BulkImports::Common::Pipelines::MembersPipeline, feature_category
 
         before do
           allow(context).to receive(:importer_user_mapping_enabled?).and_return(true)
-
-          first_page = extracted_data(id: import_source_user.source_user_identifier, has_next_page: true)
-          second_page = extracted_data(id: reassigned_import_source_user.source_user_identifier, has_next_page: true)
-          last_page = extracted_data(id: 103)
-
           allow_next_instance_of(BulkImports::Common::Extractors::GraphqlExtractor) do |extractor|
-            allow(extractor).to receive(:extract).and_return(first_page, second_page, last_page)
+            allow(extractor).to receive(:extract).and_return(page)
           end
         end
 
-        it 'finds and creates source users and creates membership for the reassigned users' do
-          expect { pipeline.run }.to change { portable.members.count }.by(1).and(
-            change { Import::SourceUser.count }.by(1)
-          )
+        context 'when an import source user with a source_user_identifier equal to the source member user ID exists' do
+          let(:page) { extracted_data(id: import_source_user.source_user_identifier) }
 
-          expect(Import::SourceUser.last).to have_attributes(
-            source_user_identifier: '103',
-            namespace: context.portable.root_ancestor,
-            source_hostname: bulk_import.configuration.source_hostname,
-            import_type: Import::SOURCE_DIRECT_TRANSFER.to_s
-          )
+          it 'does not create an import source user and creates a placeholder membership' do
+            expect { pipeline.run }.to change { Import::Placeholders::Membership.count }.by(1)
+              .and not_change { Import::SourceUser.count }
+              .and not_change { portable.members.count }
 
-          expect(members).to contain_exactly(
-            { user_id: reassigned_import_source_user.reassign_to_user.id, access_level: 30 }
-          )
+            expect(Import::Placeholders::Membership.last).to have_attributes(
+              source_user_id: import_source_user.id,
+              access_level: 30,
+              expires_at: nil,
+              project_id: portable.is_a?(Project) ? portable.id : nil,
+              group_id: portable.is_a?(Group) ? portable.id : nil
+            )
+          end
+        end
+
+        context 'when an import source user with a source_user_identifier equal to the source member user ID does not ' \
+          'exist' do
+          let(:page) { extracted_data(id: 103) }
+
+          it 'creates an import source user and creates a placeholder membership' do
+            expect { pipeline.run }.to change { Import::Placeholders::Membership.count }.by(1)
+              .and change { Import::SourceUser.count }.by(1)
+              .and not_change { portable.members.count }
+
+            import_source_user = Import::SourceUser.last
+
+            expect(import_source_user).to have_attributes(
+              source_user_identifier: '103',
+              namespace: context.portable.root_ancestor,
+              source_hostname: bulk_import.configuration.source_hostname,
+              import_type: Import::SOURCE_DIRECT_TRANSFER.to_s
+            )
+
+            expect(Import::Placeholders::Membership.last).to have_attributes(
+              source_user_id: import_source_user.id,
+              access_level: 30,
+              expires_at: nil,
+              project_id: portable.is_a?(Project) ? portable.id : nil,
+              group_id: portable.is_a?(Group) ? portable.id : nil
+            )
+          end
+        end
+
+        context 'when placeholder membership fails to be created' do
+          let(:page) { extracted_data(id: import_source_user.source_user_identifier) }
+
+          before do
+            allow_next_instance_of(Import::PlaceholderMemberships::CreateService) do |service|
+              allow(service).to receive(:execute).and_return(ServiceResponse.error(message: 'Error!'))
+            end
+          end
+
+          it 'does not create a placeholder membership and logs the import failure' do
+            expect { pipeline.run }.to not_change { Import::Placeholders::Membership.count }
+              .and change { BulkImports::Failure.count }.by(1)
+
+            expect(BulkImports::Failure.last).to have_attributes(
+              exception_message: 'Error!'
+            )
+          end
+        end
+
+        context 'when import source user is mapped to a user' do
+          let(:page) { extracted_data(id: reassigned_import_source_user.source_user_identifier) }
+
+          it 'creates membership for the reassigned user' do
+            expect { pipeline.run }.to change { portable.members.count }.by(1)
+              .and not_change { Import::Placeholders::Membership.count }
+
+            expect(members).to contain_exactly(
+              { user_id: reassigned_import_source_user.reassign_to_user.id, access_level: 30 }
+            )
+          end
         end
       end
     end
@@ -200,6 +256,32 @@ RSpec.describe BulkImports::Common::Pipelines::MembersPipeline, feature_category
 
             expect { pipeline.load(context, data) }.not_to change(portable_with_parent.members, :count)
           end
+        end
+      end
+
+      context 'when source_user key is present' do
+        let(:source_user) { build(:import_source_user) }
+        let(:data) do
+          {
+            source_user: source_user,
+            access_level: 30,
+            expires_at: '2020-01-01T00:00:00Z',
+            group: portable.is_a?(Group) ? portable : nil,
+            project: portable.is_a?(Project) ? portable : nil
+          }
+        end
+
+        it 'creates a placeholder user membership' do
+          expect_next_instance_of(Import::PlaceholderMemberships::CreateService,
+            source_user: source_user,
+            access_level: 30,
+            expires_at: '2020-01-01T00:00:00Z',
+            group: portable.is_a?(Group) ? portable : nil,
+            project: portable.is_a?(Project) ? portable : nil) do |service|
+              expect(service).to receive(:execute).and_return(ServiceResponse.success)
+            end
+
+          pipeline.load(context, data)
         end
       end
     end

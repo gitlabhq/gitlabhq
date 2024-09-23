@@ -65,6 +65,7 @@ describe('BoardContent', () => {
         boardLists: mockListsById,
         listQueryVariables,
         addColumnFormVisible: false,
+        useWorkItemDrawer: workItemDrawerEnabled,
         ...props,
       },
       provide: {
@@ -76,9 +77,6 @@ describe('BoardContent', () => {
         isGroupBoard: true,
         disabled: false,
         fullPath: 'project-path',
-        glFeatures: {
-          issuesListDrawer: workItemDrawerEnabled,
-        },
       },
       stubs: {
         BoardContentSidebar: stubComponent(BoardContentSidebar, {

@@ -91,8 +91,14 @@ RSpec.describe Import::BulkImports::Common::Transformers::SourceUserMemberAttrib
         )
       end
 
-      it 'retuns nil' do
-        expect(subject.transform(context, data)).to eq(nil)
+      it 'returns placeholder membership hash' do
+        expect(subject.transform(context, data)).to eq(
+          source_user: Import::SourceUser.last,
+          access_level: 30,
+          expires_at: nil,
+          group: entity.group,
+          project: entity.project
+        )
       end
 
       context 'when importer_user_mapping is disabled' do
@@ -115,8 +121,14 @@ RSpec.describe Import::BulkImports::Common::Transformers::SourceUserMemberAttrib
         expect { subject.transform(context, data) }.not_to change { Import::SourceUser.count }
       end
 
-      it 'retuns nil' do
-        expect(subject.transform(context, data)).to eq(nil)
+      it 'returns placeholder membership hash' do
+        expect(subject.transform(context, data)).to eq(
+          source_user: import_source_user,
+          access_level: 30,
+          expires_at: nil,
+          group: entity.group,
+          project: entity.project
+        )
       end
     end
 

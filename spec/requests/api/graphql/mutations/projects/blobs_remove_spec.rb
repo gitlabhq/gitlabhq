@@ -9,12 +9,17 @@ RSpec.describe "projectBlobsRemove", feature_category: :source_code_management d
   let_it_be(:current_user) { create(:user, owner_of: project) }
   let_it_be(:repo) { project.repository }
 
+  let(:async_rewrite_history) { false }
   let(:project_path) { project.full_path }
   let(:mutation_params) { { project_path: project_path, blob_oids: blob_oids } }
   let(:mutation) { graphql_mutation(:project_blobs_remove, mutation_params) }
   let(:blob_oids) { ['53855584db773c3df5b5f61f72974cb298822fbb'] }
 
   subject(:post_mutation) { post_graphql_mutation(mutation, current_user: current_user) }
+
+  before do
+    stub_feature_flags(async_rewrite_history: async_rewrite_history)
+  end
 
   describe 'Removing blobs:' do
     before do
@@ -43,6 +48,20 @@ RSpec.describe "projectBlobsRemove", feature_category: :source_code_management d
       end
 
       expect { post_mutation }.not_to change { AuditEvent.count }
+    end
+
+    context 'when async_rewrite_history is enabled' do
+      let(:async_rewrite_history) { true }
+
+      it 'processes text redaction asynchoronously' do
+        expect(Repositories::RewriteHistoryWorker).to receive(:perform_async).with(
+          project_id: project.id, user_id: current_user.id, blob_oids: blob_oids, redactions: []
+        )
+
+        post_mutation
+
+        expect(graphql_mutation_response(:project_blobs_remove)['errors']).not_to be_present
+      end
     end
   end
 

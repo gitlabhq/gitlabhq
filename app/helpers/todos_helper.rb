@@ -235,7 +235,7 @@ module TodosHelper
     is_overdue = todo.target.overdue?
     css_class =
       if is_due_today
-        'gl-text-warning'
+        'text-warning'
       elsif is_overdue
         'gl-text-danger'
       else

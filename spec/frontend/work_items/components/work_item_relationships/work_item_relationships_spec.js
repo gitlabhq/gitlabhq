@@ -256,4 +256,24 @@ describe('WorkItemRelationships', () => {
       },
     );
   });
+
+  it('updates linked item relationship type in UI', async () => {
+    await createComponent();
+    const relationshipLists = findAllWorkItemRelationshipListComponents();
+    const blockingList = relationshipLists.at(0);
+    const blockedByList = relationshipLists.at(1);
+
+    expect(blockingList.props('linkedItems')).toHaveLength(1);
+    expect(blockedByList.props('linkedItems')).toHaveLength(1);
+
+    blockingList.vm.$emit('updateLinkedItem', {
+      linkedItem: blockingList.props('linkedItems')[0],
+      fromRelationshipType: 'blocks',
+      toRelationshipType: 'is_blocked_by',
+    });
+
+    await nextTick();
+
+    expect(blockedByList.props('linkedItems')).toHaveLength(2);
+  });
 });

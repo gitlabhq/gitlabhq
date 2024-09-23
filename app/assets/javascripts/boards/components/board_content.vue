@@ -81,6 +81,10 @@ export default {
       type: Boolean,
       required: true,
     },
+    useWorkItemDrawer: {
+      type: Boolean,
+      required: true,
+    },
   },
   data() {
     return {
@@ -126,9 +130,6 @@ export default {
     closedListId() {
       const closedList = this.boardListsToUse.find((list) => list.listType === ListType.closed);
       return closedList?.id || '';
-    },
-    issuesDrawerEnabled() {
-      return this.glFeatures.issuesListDrawer;
     },
     namespace() {
       return this.isGroupBoard ? BoardType.group : BoardType.project;
@@ -330,7 +331,7 @@ export default {
       </div>
     </epics-swimlanes>
     <board-drawer-wrapper
-      v-if="issuesDrawerEnabled"
+      v-if="useWorkItemDrawer"
       :backlog-list-id="backlogListId"
       :closed-list-id="closedListId"
     >

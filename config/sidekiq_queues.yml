@@ -699,6 +699,8 @@
   - 1
 - - remote_mirror_notification
   - 2
+- - repositories_rewrite_history
+  - 1
 - - repository_check
   - 1
 - - repository_cleanup

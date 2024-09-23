@@ -4071,6 +4071,15 @@
   :weight: 2
   :idempotent: false
   :tags: []
+- :name: repositories_rewrite_history
+  :worker_name: Repositories::RewriteHistoryWorker
+  :feature_category: :source_code_management
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: repository_cleanup
   :worker_name: RepositoryCleanupWorker
   :feature_category: :source_code_management

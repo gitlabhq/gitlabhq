@@ -132,4 +132,38 @@ RSpec.describe Repositories::RewriteHistoryService, feature_category: :source_co
       end
     end
   end
+
+  describe '#async_execute', :aggregate_failures do
+    subject(:async_execute) { service.async_execute(blob_oids: blob_oids, redactions: redactions) }
+
+    let(:blob_oids) { ['53855584db773c3df5b5f61f72974cb298822fbb'] }
+    let(:redactions) { ['p455w0rd'] }
+
+    it 'triggers a RewriteHistoryWorker job' do
+      expect(Repositories::RewriteHistoryWorker).to receive(:perform_async).with(
+        project_id: project.id, user_id: user.id, blob_oids: blob_oids, redactions: redactions
+      )
+
+      is_expected.to be_success
+    end
+
+    context 'when user does not have permissions' do
+      let(:user) { create(:user, maintainer_of: project) }
+
+      it 'returns an error' do
+        is_expected.to be_error
+        expect(async_execute.message).to eq('Access Denied')
+      end
+    end
+
+    context 'when none of arguments are set' do
+      let(:blob_oids) { [] }
+      let(:redactions) { [] }
+
+      it 'returns an error' do
+        is_expected.to be_error
+        expect(async_execute.message).to eq('not enough arguments')
+      end
+    end
+  end
 end

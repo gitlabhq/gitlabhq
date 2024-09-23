@@ -16963,6 +16963,7 @@ CREATE TABLE project_settings (
     require_reauthentication_to_approve boolean,
     observability_alerts_enabled boolean DEFAULT true NOT NULL,
     spp_repository_pipeline_access boolean,
+    max_number_of_vulnerabilities integer,
     CONSTRAINT check_1a30456322 CHECK ((char_length(pages_unique_domain) <= 63)),
     CONSTRAINT check_3a03e7557a CHECK ((char_length(previous_default_branch) <= 4096)),
     CONSTRAINT check_3ca5cbffe6 CHECK ((char_length(issue_branch_template) <= 255)),

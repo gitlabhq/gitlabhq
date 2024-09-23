@@ -19,7 +19,7 @@ on your GitLab instance. When enabled, only authenticated
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For a demonstration, see [Pages access controls](https://www.youtube.com/watch?v=tSPAr5mQYc8).
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > General**.
 1. Expand **Visibility, project features, permissions**.
 1. Toggle the **Pages** button to enable the access control. If you don't see the toggle button,

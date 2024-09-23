@@ -52,11 +52,14 @@
   }
 }
 
-.tree-item.is-dragging {
-  border-top: 0;
+.tree-item,
+.linked-item {
+  &.is-dragging {
+    border-top: 0;
 
-  .item-body {
-    background-color: $white;
-    border: 2px solid $gray-200;
+    .item-body {
+      background-color: $white;
+      border: 2px solid $gray-200;
+    }
   }
 }

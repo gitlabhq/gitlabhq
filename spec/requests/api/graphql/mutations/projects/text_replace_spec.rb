@@ -9,6 +9,7 @@ RSpec.describe "projectTextReplace", feature_category: :source_code_management d
   let_it_be(:current_user) { create(:user, owner_of: project) }
   let_it_be(:repo) { project.repository }
 
+  let(:async_rewrite_history) { false }
   let(:project_path) { project.full_path }
   let(:mutation_params) { { project_path: project_path, replacements: replacements } }
   let(:mutation) { graphql_mutation(:project_text_replace, mutation_params) }
@@ -29,6 +30,10 @@ RSpec.describe "projectTextReplace", feature_category: :source_code_management d
   end
 
   subject(:post_mutation) { post_graphql_mutation(mutation, current_user: current_user) }
+
+  before do
+    stub_feature_flags(async_rewrite_history: async_rewrite_history)
+  end
 
   describe 'Replacing text' do
     before do
@@ -57,6 +62,20 @@ RSpec.describe "projectTextReplace", feature_category: :source_code_management d
       end
 
       expect { post_mutation }.not_to change { AuditEvent.count }
+    end
+
+    context 'when async_rewrite_history is enabled' do
+      let(:async_rewrite_history) { true }
+
+      it 'processes text redaction asynchoronously' do
+        expect(Repositories::RewriteHistoryWorker).to receive(:perform_async).with(
+          project_id: project.id, user_id: current_user.id, redactions: literal_replacements, blob_oids: []
+        )
+
+        post_mutation
+
+        expect(graphql_mutation_response(:project_text_replace)['errors']).not_to be_present
+      end
     end
   end
 

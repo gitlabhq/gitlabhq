@@ -2037,7 +2037,6 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
       end
 
       context 'with oauth token that has ai_workflows scope' do
-        let(:user) { create(:user) }
         let(:token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
 
         it "allows access" do
@@ -3011,6 +3010,19 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
     let(:project) { create(:project, :repository, namespace: user.namespace) }
     let(:merge_request) { create(:merge_request, :simple, author: user, source_project: project, source_branch: 'markdown', title: 'Test') }
     let(:pipeline) { create(:ci_pipeline, project: project) }
+
+    context 'with oauth token that has ai_workflows scope' do
+      let(:token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
+
+      it "allows access" do
+        put api(
+          "/projects/#{project.id}/merge_requests/#{merge_request.iid}?title=new_title",
+          oauth_access_token: token
+        )
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
 
     it "returns merge_request in case of success" do
       expect { put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user) }

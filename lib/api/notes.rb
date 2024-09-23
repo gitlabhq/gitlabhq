@@ -8,7 +8,9 @@ module API
 
     before { authenticate! }
 
-    allow_access_with_scope :ai_workflows
+    allow_access_with_scope :ai_workflows, if: ->(request) do
+      request.get? || request.head? || request.post?
+    end
 
     urgency :low, [
       '/projects/:id/merge_requests/:noteable_id/notes',

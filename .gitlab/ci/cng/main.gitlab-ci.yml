@@ -69,10 +69,17 @@ include:
     CACHE_BUSTER: "false"
     # link component version shas to current project instead of default CI_PIPELINE_CREATED_AT which forces rebuilds on each pipeline run
     CONTAINER_VERSION_SUFFIX: "${CI_PROJECT_NAME}"
-    # skip no-op final-list pipeline stage
-    SKIP_JOB_REGEX: final-list
+    # skip no-op final-images-listing job
+    SKIP_JOB_REGEX: /final-images-listing/
     # disable buildx cluster while it's not supported on mirrors
     DISABLE_BUILDX_CLUSTER: "true"
+    # disable external gem caching and rely on docker layer caching
+    RAILS_DISABLE_VENDOR_CACHE: "true"
+    # skip short lived dev image signing and verification to save time
+    SKIP_IMAGE_SIGNING: "true"
+    SKIP_IMAGE_VERIFICATION: "true"
+    # set specific arch list
+    ARCH_LIST: amd64
   trigger:
     project: '${CI_PROJECT_NAMESPACE}/$[[ inputs.cng_path ]]'
     branch: $TRIGGER_BRANCH

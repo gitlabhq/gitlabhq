@@ -297,6 +297,12 @@ export const LINKED_CATEGORIES_MAP = {
   BLOCKS: 'blocks',
 };
 
+export const RELATIONSHIP_TYPE_ENUM = {
+  relates_to: 'RELATED',
+  blocks: 'BLOCKS',
+  is_blocked_by: 'BLOCKED_BY',
+};
+
 export const LINKED_ITEM_TYPE_VALUE = {
   RELATED: 'RELATED',
   BLOCKED_BY: 'BLOCKED_BY',
