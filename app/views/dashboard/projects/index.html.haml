@@ -10,7 +10,7 @@
 = render "projects/last_push"
 
 - if Feature.enabled?(:your_work_projects_vue, current_user)
-  #js-your-work-projects-app
+  #js-your-work-projects-app{ data: { app_data: dashboard_projects_app_data } }
 - else
   - if show_projects?(@projects, params)
     = render 'dashboard/projects_head'

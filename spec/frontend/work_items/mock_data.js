@@ -2738,6 +2738,32 @@ export const mockMilestoneWidgetResponse = {
   title: 'v4.0',
 };
 
+export const mockEmptyAncestorWidgetResponse = {
+  data: {
+    workItemUpdate: {
+      workItem: {
+        id: 'gid://gitlab/WorkItem/2733',
+        title: 'Objective progress child 1',
+        widgets: [
+          {
+            type: 'HIERARCHY',
+            hasParent: false,
+            parent: null,
+            ancestors: {
+              nodes: [],
+              __typename: 'WorkItemConnection',
+            },
+            __typename: 'WorkItemWidgetHierarchy',
+          },
+        ],
+        __typename: 'WorkItem',
+      },
+      errors: [],
+      __typename: 'WorkItemUpdatePayload',
+    },
+  },
+};
+
 export const mockParentWidgetResponse = {
   id: 'gid://gitlab/WorkItem/716',
   iid: '122',
@@ -2751,6 +2777,101 @@ export const mockParentWidgetResponse = {
     __typename: 'WorkItemType',
   },
   __typename: 'WorkItem',
+};
+
+export const mockAncestorWidgetResponse = {
+  data: {
+    workItemUpdate: {
+      workItem: {
+        id: 'gid://gitlab/WorkItem/2733',
+        title: 'Objective progress child 1',
+        widgets: [
+          {
+            type: 'HIERARCHY',
+            hasParent: true,
+            parent: {
+              id: 'gid://gitlab/WorkItem/1296',
+              iid: '149',
+              title: 'Objective 333',
+              confidential: false,
+              webUrl: 'http://gdk.test:3000/gitlab-org/gitlab-test/-/work_items/149',
+              workItemType: {
+                id: 'gid://gitlab/WorkItems::Type/6',
+                name: 'Objective',
+                iconName: 'issue-type-objective',
+                __typename: 'WorkItemType',
+              },
+              __typename: 'WorkItem',
+            },
+            ancestors: {
+              nodes: [
+                {
+                  id: 'gid://gitlab/WorkItem/663',
+                  iid: '71',
+                  confidential: false,
+                  workItemType: {
+                    id: 'gid://gitlab/WorkItems::Type/6',
+                    name: 'Objective',
+                    iconName: 'issue-type-objective',
+                    __typename: 'WorkItemType',
+                  },
+                  title: 'Objective 3',
+                  state: 'OPEN',
+                  reference: 'gitlab-org/gitlab-test#71',
+                  createdAt: '2023-04-24T10:48:19Z',
+                  closedAt: null,
+                  webUrl: 'http://gdk.test:3000/gitlab-org/gitlab-test/-/work_items/71',
+                  widgets: [
+                    {
+                      type: 'HIERARCHY',
+                      hasParent: false,
+                      parent: null,
+                      __typename: 'WorkItemWidgetHierarchy',
+                    },
+                  ],
+                  __typename: 'WorkItem',
+                },
+                {
+                  id: 'gid://gitlab/WorkItem/1296',
+                  iid: '149',
+                  confidential: false,
+                  workItemType: {
+                    id: 'gid://gitlab/WorkItems::Type/6',
+                    name: 'Objective',
+                    iconName: 'issue-type-objective',
+                    __typename: 'WorkItemType',
+                  },
+                  title: 'Objective 333',
+                  state: 'OPEN',
+                  reference: 'gitlab-org/gitlab-test#149',
+                  createdAt: '2023-12-18T16:54:47Z',
+                  closedAt: null,
+                  webUrl: 'http://gdk.test:3000/gitlab-org/gitlab-test/-/work_items/149',
+                  widgets: [
+                    {
+                      type: 'HIERARCHY',
+                      hasParent: true,
+                      parent: {
+                        id: 'gid://gitlab/WorkItem/663',
+                        __typename: 'WorkItem',
+                      },
+                      __typename: 'WorkItemWidgetHierarchy',
+                    },
+                  ],
+                  __typename: 'WorkItem',
+                },
+              ],
+              __typename: 'WorkItemConnection',
+            },
+            __typename: 'WorkItemWidgetHierarchy',
+          },
+        ],
+        __typename: 'WorkItem',
+      },
+      errors: [],
+      __typename: 'WorkItemUpdatePayload',
+    },
+  },
 };
 
 export const projectMilestonesResponse = {

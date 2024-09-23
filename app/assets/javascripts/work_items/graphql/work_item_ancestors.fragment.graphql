@@ -8,6 +8,15 @@ fragment WorkItemAncestors on WorkItem {
       hasParent
       parent {
         id
+        iid
+        title
+        confidential
+        webUrl
+        workItemType {
+          id
+          name
+          iconName
+        }
       }
       ancestors {
         nodes {

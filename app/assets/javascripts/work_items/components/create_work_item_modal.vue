@@ -152,7 +152,14 @@ export default {
         action: {
           text: __('View details'),
           onClick: () => {
-            visitUrl(workItem.webUrl);
+            if (
+              this.$router &&
+              this.$router.options.routes.some((route) => route.name === 'workItem')
+            ) {
+              this.$router.push({ name: 'workItem', params: { iid: workItem.iid } });
+            } else {
+              visitUrl(workItem.webUrl);
+            }
           },
         },
       });

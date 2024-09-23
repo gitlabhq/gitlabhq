@@ -100,6 +100,13 @@ The following table shows what type of aggregation is used for each search perio
 | More than one hour and less than 72 hours | Hourly |
 | More than 72 hours | Daily |
 
+### Metrics ingestion limits
+
+Metrics ingest a maximum of 102,400 bytes per minute.
+When the limit is exceeded, a `429 Too Many Requests` response is returned.
+
+To request a limit increase to 1,048,576 bytes per minute, contact [GitLab support](https://about.gitlab.com/support/).
+
 ### Data retention
 
 GitLab has a retention limit of 30 days for all ingested metrics.

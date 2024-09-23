@@ -24,6 +24,16 @@ RSpec.describe 'User views issue designs', :js, feature_category: :design_manage
     end
   end
 
+  def add_reply(text)
+    page.within(find('.image-notes')) do
+      find_by_testid('discussion-reply-tab').click
+      find('.note-textarea').send_keys(text)
+
+      find_by_testid('save-comment-button').click
+      wait_for_requests
+    end
+  end
+
   def remove_diff_note_emoji(diff_note, emoji_name)
     page.within(first(".image-notes li#note_#{diff_note.id}.design-note")) do
       page.find(".awards button[data-emoji-name='#{emoji_name}']").click
@@ -86,16 +96,22 @@ RSpec.describe 'User views issue designs', :js, feature_category: :design_manage
     expect(page.find('.image-notes .design-note .note-text')).to have_content(note.note)
   end
 
+  it 'highlights the current user in a comment' do
+    click_link design.filename
+
+    add_reply("@#{user.username} comment")
+
+    page.within(find('.image-notes')) do
+      expect(page).to have_selector '.gfm-project_member.current-user', text: user.username
+    end
+  end
+
   it 'allows toggling the replies on unresolved comment' do
     click_link design.filename
 
+    add_reply('Reply to comment')
+
     page.within(find('.image-notes')) do
-      find_by_testid('discussion-reply-tab').click
-      find('.note-textarea').send_keys('Reply to comment')
-
-      find_by_testid('save-comment-button').click
-      wait_for_requests
-
       expect(page).to have_content('Reply to comment')
 
       expect(find_by_testid('toggle-comments-wrapper')).to have_content('Collapse replies')

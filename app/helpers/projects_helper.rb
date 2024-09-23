@@ -660,6 +660,13 @@ module ProjectsHelper
     }.to_json
   end
 
+  def dashboard_projects_app_data
+    {
+      initial_sort: project_list_sort_by,
+      programming_languages: programming_languages
+    }.to_json
+  end
+
   private
 
   def visibility_level_name(project)

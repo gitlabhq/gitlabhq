@@ -1,6 +1,5 @@
 - if @work_item.present?
   = render 'shared/work_item_metadata', work_item: @work_item
-  - add_work_item_show_breadcrumb(@project, @work_item.iid)
 - add_page_specific_style 'page_bundles/issues_show'
 - add_work_items_stylesheet
 - add_page_specific_style 'page_bundles/design_management'

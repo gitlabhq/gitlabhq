@@ -41,6 +41,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { expect(setting.group_projects_api_limit).to eq(600) }
     it { expect(setting.group_shared_groups_api_limit).to eq(60) }
     it { expect(setting.groups_api_limit).to eq(200) }
+    it { expect(setting.create_organization_api_limit).to eq(10) }
     it { expect(setting.project_api_limit).to eq(400) }
     it { expect(setting.project_invited_groups_api_limit).to eq(60) }
     it { expect(setting.projects_api_limit).to eq(2000) }
@@ -237,6 +238,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
           package_registry_cleanup_policies_worker_capacity
           packages_cleanup_package_file_worker_capacity
           pipeline_limit_per_project_user_sha
+          create_organization_api_limit
           project_api_limit
           projects_api_limit
           projects_api_rate_limit_unauthenticated

@@ -19,6 +19,11 @@
       "minimum": 1,
       "description": "Maximum number of simultaneous import jobs for GitHub importer"
     },
+    "create_organization_api_limit": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of requests allowed to the POST /api/v4/organizations API."
+    },
     "group_api_limit": {
       "type": "integer",
       "minimum": 0,

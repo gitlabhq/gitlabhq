@@ -202,7 +202,7 @@ module API
     end
 
     def find_organization!(id)
-      organization = Organizations::Organization.find_by_id(id)
+      organization = ::Organizations::Organization.find_by_id(id)
       check_organization_access(organization)
     end
 

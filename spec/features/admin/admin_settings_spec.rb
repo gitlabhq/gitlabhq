@@ -878,6 +878,20 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
         end
       end
 
+      describe 'organizations API rate limits' do
+        let_it_be(:network_settings_section) { 'organizations-api-limits-settings' }
+
+        context 'for POST /organizations API requests' do
+          let(:rate_limit_field) do
+            format(_('Maximum requests to the %{api_name} API per %{timeframe} per user'), api_name: 'POST /organizations', timeframe: 'minute')
+          end
+
+          let(:application_setting_key) { :create_organization_api_limit }
+
+          it_behaves_like 'API rate limit setting'
+        end
+      end
+
       describe 'groups API rate limits' do
         let_it_be(:network_settings_section) { 'groups-api-limits-settings' }
 

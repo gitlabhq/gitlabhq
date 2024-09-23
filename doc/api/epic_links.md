@@ -30,7 +30,7 @@ GET /groups/:id/epics/:epic_iid/epics
 
 | Attribute  | Type           | Required | Description                                                                                                   |
 | ---------- | -------------- | -------- | ------------------------------------------------------------------------------------------------------------- |
-| `id`       | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`       | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
 | `epic_iid` | integer        | yes      | The internal ID of the epic.                                                                                  |
 
 ```shell
@@ -84,7 +84,7 @@ POST /groups/:id/epics/:epic_iid/epics/:child_epic_id
 
 | Attribute       | Type           | Required | Description                                                                                                        |
 | --------------- | -------------- | -------- | ------------------------------------------------------------------------------------------------------------------ |
-| `id`            | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) owned by the authenticated user      |
+| `id`            | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding)      |
 | `epic_iid`      | integer        | yes      | The internal ID of the epic.                                                                                       |
 | `child_epic_id` | integer        | yes      | The global ID of the child epic. Internal ID can't be used because they can conflict with epics from other groups. |
 
@@ -137,7 +137,7 @@ POST /groups/:id/epics/:epic_iid/epics
 
 | Attribute       | Type           | Required | Description                                                                                                        |
 | --------------- | -------------- | -------- | ------------------------------------------------------------------------------------------------------------------ |
-| `id`            | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) owned by the authenticated user      |
+| `id`            | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding)      |
 | `epic_iid`      | integer        | yes      | The internal ID of the (future parent) epic.                                                                       |
 | `title`         | string         | yes      | The title of a newly created epic.                                                                                 |
 | `confidential`  | boolean        | no       | Whether the epic should be confidential. Parameter is ignored if `confidential_epics` feature flag is disabled. Defaults to the confidentiality state of the parent epic.  |
@@ -171,7 +171,7 @@ PUT /groups/:id/epics/:epic_iid/epics/:child_epic_id
 
 | Attribute        | Type           | Required | Description                                                                                                        |
 | ---------------- | -------------- | -------- | ------------------------------------------------------------------------------------------------------------------ |
-| `id`             | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) owned by the authenticated user.     |
+| `id`             | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding).     |
 | `epic_iid`       | integer        | yes      | The internal ID of the epic.                                                                                       |
 | `child_epic_id`  | integer        | yes      | The global ID of the child epic. Internal ID can't be used because they can conflict with epics from other groups. |
 | `move_before_id` | integer        | no       | The global ID of a sibling epic that should be placed before the child epic.                                       |
@@ -228,7 +228,7 @@ DELETE /groups/:id/epics/:epic_iid/epics/:child_epic_id
 
 | Attribute       | Type           | Required | Description                                                                                                        |
 | --------------- | -------------- | -------- | ------------------------------------------------------------------------------------------------------------------ |
-| `id`            | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) owned by the authenticated user.     |
+| `id`            | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding).     |
 | `epic_iid`      | integer        | yes      | The internal ID of the epic.                                                                                       |
 | `child_epic_id` | integer        | yes      | The global ID of the child epic. Internal ID can't be used because they can conflict with epics from other groups. |
 

@@ -17,8 +17,6 @@ export const NEW_BRANCH_IN_FORK = __(
 export const COMMIT_MESSAGE_SUBJECT_MAX_LENGTH = 52;
 export const COMMIT_MESSAGE_BODY_MAX_LENGTH = 72;
 
-export const LIMITED_CONTAINER_WIDTH_CLASS = 'limit-container-width';
-
 export const I18N_COMMIT_DATA_FETCH_ERROR = __('An error occurred while fetching commit data.');
 
 export const PDF_MAX_FILE_SIZE = 10000000; // 10 MB

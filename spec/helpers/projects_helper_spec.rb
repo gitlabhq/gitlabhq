@@ -1956,4 +1956,15 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
       )
     end
   end
+
+  describe '#dashboard_projects_app_data' do
+    it 'returns expected json' do
+      expect(Gitlab::Json.parse(helper.dashboard_projects_app_data)).to eq(
+        {
+          'initial_sort' => 'created_desc',
+          'programming_languages' => ProgrammingLanguage.most_popular
+        }
+      )
+    end
+  end
 end

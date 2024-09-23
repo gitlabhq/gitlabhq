@@ -430,6 +430,12 @@ func configureRoutes(u *upstream) {
 		u.route("PUT",
 			newRoute(apiPattern+`v4/groups/[^/]+\z`, "api_groups", railsBackend), tempfileMultipartProxy),
 
+		// Organization Avatar
+		u.route("POST",
+			newRoute(apiPattern+`v4/organizations\z`, "api_organizations", railsBackend), tempfileMultipartProxy),
+		u.route("PUT",
+			newRoute(apiPattern+`v4/organizations/[0-9]+\z`, "api_organizations", railsBackend), tempfileMultipartProxy),
+
 		// User Avatar
 		u.route("PUT",
 			newRoute(apiPattern+`v4/user/avatar\z`, "api_user_avatar", railsBackend), tempfileMultipartProxy),

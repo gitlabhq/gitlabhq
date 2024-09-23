@@ -1,6 +1,7 @@
 <script>
 import { GlButton, GlLink, GlTooltipDirective } from '@gitlab/ui';
 import { s__ } from '~/locale';
+import highlightCurrentUser from '~/behaviors/markdown/highlight_current_user';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import DesignNotePin from '~/vue_shared/components/design_management/design_note_pin.vue';
 import { isLoggedIn } from '~/lib/utils/common_utils';
@@ -79,6 +80,16 @@ export default {
     isDiscussionActive() {
       return this.discussion.notes.some(({ id }) => id === this.activeDesignDiscussion.id);
     },
+  },
+  mounted() {
+    this.$nextTick(() => {
+      highlightCurrentUser(this.$el.querySelectorAll('.gfm-project_member'));
+    });
+  },
+  updated() {
+    this.$nextTick(() => {
+      highlightCurrentUser(this.$el.querySelectorAll('.gfm-project_member'));
+    });
   },
   methods: {
     shouldScrollToDiscussion(activeDesignDiscussion) {

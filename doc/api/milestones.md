@@ -33,7 +33,7 @@ Parameters:
 
 | Attribute                         | Type   | Required | Description |
 | ----------------------------      | ------ | -------- | ----------- |
-| `id`                              | integer or string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`                              | integer or string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
 | `iids[]`                          | integer array | no | Return only the milestones having the given `iid`. Ignored if `include_ancestors` is `true`.  |
 | `state`                           | string | no | Return only `active` or `closed` milestones |
 | `title`                           | string | no | Return only the milestones having the given `title` |
@@ -79,7 +79,7 @@ Parameters:
 
 | Attribute      | Type           | Required | Description                                                                                                     |
 |----------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------|
-| `id`           | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`           | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
 | `milestone_id` | integer        | yes      | The ID of the project's milestone                                                                               |
 
 ## Create new milestone
@@ -94,7 +94,7 @@ Parameters:
 
 | Attribute     | Type           | Required | Description                                                                                                     |
 |---------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------|
-| `id`          | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`          | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
 | `title`       | string         | yes      | The title of a milestone                                                                                        |
 | `description` | string         | no       | The description of the milestone                                                                                |
 | `due_date`    | string         | no       | The due date of the milestone (`YYYY-MM-DD`)                                                                    |
@@ -112,7 +112,7 @@ Parameters:
 
 | Attribute      | Type           | Required | Description                                                                                                     |
 |----------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------|
-| `id`           | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`           | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
 | `milestone_id` | integer        | yes      | The ID of the project's milestone                                                                               |
 | `title`        | string         | no       | The title of a milestone                                                                                        |
 | `description`  | string         | no       | The description of the milestone                                                                                |
@@ -134,7 +134,7 @@ Parameters:
 
 | Attribute      | Type           | Required | Description                                                                                                     |
 |----------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------|
-| `id`           | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`           | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
 | `milestone_id` | integer        | yes      | The ID of the project's milestone                                                                               |
 
 ## Get all issues assigned to a single milestone
@@ -149,7 +149,7 @@ Parameters:
 
 | Attribute      | Type           | Required | Description                                                                                                     |
 |----------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------|
-| `id`           | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`           | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
 | `milestone_id` | integer        | yes      | The ID of the project's milestone                                                                               |
 
 ## Get all merge requests assigned to a single milestone
@@ -164,7 +164,7 @@ Parameters:
 
 | Attribute      | Type           | Required | Description                                                                                                     |
 |----------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------|
-| `id`           | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`           | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
 | `milestone_id` | integer        | yes      | The ID of the project's milestone                                                                               |
 
 ## Promote project milestone to a group milestone
@@ -181,7 +181,7 @@ Parameters:
 
 | Attribute      | Type           | Required | Description                                                                                                     |
 |----------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------|
-| `id`           | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`           | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
 | `milestone_id` | integer        | yes      | The ID of the project's milestone                                                                               |
 
 ## Get all burndown chart events for a single milestone
@@ -200,5 +200,5 @@ Parameters:
 
 | Attribute      | Type           | Required | Description                                                                                                     |
 |----------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------|
-| `id`           | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`           | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
 | `milestone_id` | integer        | yes      | The ID of the project's milestone                                                                               |

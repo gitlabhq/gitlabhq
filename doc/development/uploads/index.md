@@ -131,3 +131,5 @@ Most uploads receive assistance from Workhorse in some way.
   where GitLab accepts the file but has not yet processed it.
 - With direct upload, Workhorse can both pre-process the file and upload it to object storage.
   Uploading a large file to object storage takes time; by doing this in Workhorse we avoid the Puma request timeout.
+
+For additional information about uploads, see [Workhorse handlers](../workhorse/handlers.md).

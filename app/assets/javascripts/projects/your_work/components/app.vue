@@ -1,9 +1,22 @@
 <script>
-import { GlTabs, GlTab, GlBadge } from '@gitlab/ui';
+import { GlTabs, GlTab, GlBadge, GlFilteredSearchToken } from '@gitlab/ui';
+import { isEqual } from 'lodash';
 import { __ } from '~/locale';
 import { TIMESTAMP_TYPE_UPDATED_AT } from '~/vue_shared/components/resource_lists/constants';
 import { numberToMetricPrefix } from '~/lib/utils/number_utils';
 import { createAlert } from '~/alert';
+import FilteredSearchAndSort from '~/groups_projects/components/filtered_search_and_sort.vue';
+import { RECENT_SEARCHES_STORAGE_KEY_PROJECTS } from '~/filtered_search/recent_searches_storage_keys';
+import { OPERATORS_IS } from '~/vue_shared/components/filtered_search_bar/constants';
+import { ACCESS_LEVEL_OWNER_INTEGER } from '~/access_level/constants';
+import {
+  SORT_OPTIONS,
+  SORT_DIRECTION_ASC,
+  SORT_DIRECTION_DESC,
+  SORT_OPTION_UPDATED,
+  FILTERED_SEARCH_TERM_KEY,
+  FILTERED_SEARCH_NAMESPACE,
+} from '~/projects/filtered_search_and_sort/constants';
 import {
   CONTRIBUTED_TAB,
   CUSTOM_DASHBOARD_ROUTE_NAMES,
@@ -20,12 +33,20 @@ export default {
     heading: __('Projects'),
     projectCountError: __('An error occurred loading the project counts.'),
   },
+  filteredSearchAndSort: {
+    sortOptions: SORT_OPTIONS,
+    namespace: FILTERED_SEARCH_NAMESPACE,
+    recentSearchesStorageKey: RECENT_SEARCHES_STORAGE_KEY_PROJECTS,
+    searchTermKey: FILTERED_SEARCH_TERM_KEY,
+  },
   components: {
     GlTabs,
     GlTab,
     GlBadge,
     TabView,
+    FilteredSearchAndSort,
   },
+  inject: ['initialSort', 'programmingLanguages'],
   data() {
     return {
       activeTabIndex: this.initActiveTabIndex(),
@@ -65,8 +86,65 @@ export default {
       };
     },
   },
+  computed: {
+    filteredSearchTokens() {
+      return [
+        {
+          type: 'language',
+          icon: 'lock',
+          title: __('Language'),
+          token: GlFilteredSearchToken,
+          unique: true,
+          operators: OPERATORS_IS,
+          options: this.programmingLanguages.map(({ id, name }) => ({
+            // Cast to string so it matches value from query string
+            value: id.toString(),
+            title: name,
+          })),
+        },
+        {
+          type: 'min_access_level',
+          icon: 'user',
+          title: __('Role'),
+          token: GlFilteredSearchToken,
+          unique: true,
+          operators: OPERATORS_IS,
+          options: [
+            {
+              // Cast to string so it matches value from query string
+              value: ACCESS_LEVEL_OWNER_INTEGER.toString(),
+              title: __('Owner'),
+            },
+          ],
+        },
+      ];
+    },
+    sortQuery() {
+      return this.$route.query.sort;
+    },
+    sort() {
+      if (this.sortQuery) {
+        return this.sortQuery;
+      }
+
+      return this.initialSort || `${SORT_OPTION_UPDATED.value}_${SORT_DIRECTION_ASC}`;
+    },
+    activeSortOption() {
+      return SORT_OPTIONS.find((sortItem) => this.sort.includes(sortItem.value));
+    },
+    isAscending() {
+      return this.sort.endsWith(SORT_DIRECTION_ASC);
+    },
+  },
   methods: {
     numberToMetricPrefix,
+    pushQuery(query) {
+      if (isEqual(this.$route.query, query)) {
+        return;
+      }
+
+      this.$router.push({ query });
+    },
     initActiveTabIndex() {
       return CUSTOM_DASHBOARD_ROUTE_NAMES.includes(this.$route.name)
         ? 0
@@ -87,6 +165,23 @@ export default {
     },
     shouldShowCountBadge(tab) {
       return this.tabCount(tab) !== undefined;
+    },
+    onSortDirectionChange(isAscending) {
+      const sort = `${this.activeSortOption.value}_${
+        isAscending ? SORT_DIRECTION_ASC : SORT_DIRECTION_DESC
+      }`;
+
+      this.pushQuery({ ...this.$route.query, sort });
+    },
+    onSortByChange(sortBy) {
+      const sort = `${sortBy}_${this.isAscending ? SORT_DIRECTION_ASC : SORT_DIRECTION_DESC}`;
+
+      this.pushQuery({ ...this.$route.query, sort });
+    },
+    onFilter(filters) {
+      const { sort } = this.$route.query;
+
+      this.pushQuery({ sort, ...filters });
     },
   },
 };
@@ -110,6 +205,27 @@ export default {
         <tab-view v-if="tab.query" :tab="tab" />
         <template v-else>{{ tab.text }}</template>
       </gl-tab>
+
+      <template #tabs-end>
+        <li class="gl-w-full">
+          <filtered-search-and-sort
+            class="gl-border-b-0"
+            :filtered-search-namespace="$options.filteredSearchAndSort.namespace"
+            :filtered-search-tokens="filteredSearchTokens"
+            :filtered-search-term-key="$options.filteredSearchAndSort.searchTermKey"
+            :filtered-search-recent-searches-storage-key="
+              $options.filteredSearchAndSort.recentSearchesStorageKey
+            "
+            :filtered-search-query="$route.query"
+            :is-ascending="isAscending"
+            :sort-options="$options.filteredSearchAndSort.sortOptions"
+            :active-sort-option="activeSortOption"
+            @filter="onFilter"
+            @sort-direction-change="onSortDirectionChange"
+            @sort-by-change="onSortByChange"
+          />
+        </li>
+      </template>
     </gl-tabs>
   </div>
 </template>

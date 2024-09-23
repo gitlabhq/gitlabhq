@@ -228,7 +228,7 @@ Supported attributes:
 | Attribute           | Type           | Required                    | Description                           |
 |---------------------|----------------|-----------------------------|---------------------------------------|
 | `epic_iid`          | integer        | Yes      | Internal ID of a group's epic.        |
-| `id`                | integer/string | Yes      | ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`                | integer/string | Yes      | ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding). |
 | `target_epic_iid`   | integer/string | Yes      | Internal ID of a target group's epic. |
 | `target_group_id`   | integer/string | Yes      | ID or [URL-encoded path of the target group](rest/index.md#namespaced-path-encoding). |
 | `link_type`         | string         | No      | Type of the relation (`relates_to`, `blocks`, `is_blocked_by`), defaults to `relates_to`. |
@@ -349,7 +349,7 @@ Supported attributes:
 | Attribute                | Type           | Required                    | Description                           |
 |--------------------------|----------------|-----------------------------|---------------------------------------|
 | `epic_iid`               | integer        | Yes      | Internal ID of a group's epic.        |
-| `id`                     | integer/string | Yes      | ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`                     | integer/string | Yes      | ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding). |
 | `related_epic_link_id`   | integer/string | Yes      | Internal ID of a related epic link. |
 
 Example request:

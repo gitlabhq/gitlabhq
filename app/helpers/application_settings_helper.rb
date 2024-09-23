@@ -515,6 +515,7 @@ module ApplicationSettingsHelper
       :project_api_limit,
       :project_invited_groups_api_limit,
       :projects_api_limit,
+      :create_organization_api_limit,
       :user_contributed_projects_api_limit,
       :user_projects_api_limit,
       :user_starred_projects_api_limit,

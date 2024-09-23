@@ -24,6 +24,13 @@ GitLab supports centralized application and infrastructure logs collection, stor
 GitLab Logging provides insight about the operational health of monitored systems.
 Use logs to learn more about your systems and applications in a given range of time.
 
+## Logs ingestion limits
+
+Logs ingest a maximum of 102,400 bytes per minute.
+When the limit is exceeded, a `429 Too Many Requests` response is returned.
+
+To request a limit increase to 1,048,576 bytes per minute, contact [GitLab support](https://about.gitlab.com/support/).
+
 ## Configure logging
 
 Configure logging to enable it for a project.

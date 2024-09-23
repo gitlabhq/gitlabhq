@@ -18,23 +18,33 @@ export default {
     workItemType: {
       default: null,
     },
-    epicsListPath: {
+    listPath: {
       default: null,
+    },
+    isGroup: {
+      default: false,
     },
   },
   computed: {
     isEpicsList() {
       return this.workItemType === WORK_ITEM_TYPE_ENUM_EPIC;
     },
+    listName() {
+      if (this.isEpicsList) {
+        return __('Epics');
+      }
+
+      return this.isGroup ? s__('WorkItem|Work items') : __('Issues');
+    },
     crumbs() {
       const indexCrumb = {
-        text: this.isEpicsList ? __('Epics') : s__('WorkItem|Work items'),
+        text: this.listName,
       };
 
       if (this.glFeatures.workItemEpicsList) {
         indexCrumb.to = { name: ROUTES.index, query: this.$route.query };
       } else {
-        indexCrumb.href = this.epicsListPath;
+        indexCrumb.href = this.listPath;
       }
 
       const crumbs = [indexCrumb];

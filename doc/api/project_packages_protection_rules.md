@@ -33,7 +33,7 @@ Supported attributes:
 
 | Attribute                     | Type            | Required | Description                    |
 |-------------------------------|-----------------|----------|--------------------------------|
-| `id`                          | integer/string  | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`                          | integer/string  | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 
 If successful, returns [`200`](rest/index.md#status-codes) and a list of package protection rules.
 
@@ -84,7 +84,7 @@ Supported attributes:
 
 | Attribute                             | Type            | Required | Description                    |
 |---------------------------------------|-----------------|----------|--------------------------------|
-| `id`                                  | integer/string  | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`                                  | integer/string  | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 | `package_name_pattern`                | string          | Yes      | Package name protected by the protection rule. For example `@my-scope/my-package-*`. Wildcard character `*` allowed. |
 | `package_type`                        | string          | Yes      | Package type protected by the protection rule. For example `npm`. |
 | `minimum_access_level_for_push`       | string          | Yes      | Minimum GitLab access level able to push a package. Must be at least `maintainer`. For example `maintainer`, `owner` or `admin`. |
@@ -126,7 +126,7 @@ Supported attributes:
 
 | Attribute                             | Type            | Required | Description                    |
 |---------------------------------------|-----------------|----------|--------------------------------|
-| `id`                                  | integer/string  | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`                                  | integer/string  | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 | `package_protection_rule_id`          | integer         | Yes      | ID of the package protection rule to be updated. |
 | `package_name_pattern`                | string          | No       | Package name protected by the protection rule. For example `@my-scope/my-package-*`. Wildcard character `*` allowed. |
 | `package_type`                        | string          | No       | Package type protected by the protection rule. For example `npm`. |
@@ -167,7 +167,7 @@ Supported attributes:
 
 | Attribute                     | Type            | Required | Description                    |
 |-------------------------------|-----------------|----------|--------------------------------|
-| `id`                          | integer/string  | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`                          | integer/string  | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 | `package_protection_rule_id`  | integer         | Yes      | ID of the package protection rule to be deleted. |
 
 If successful, returns [`204 No Content`](rest/index.md#status-codes).

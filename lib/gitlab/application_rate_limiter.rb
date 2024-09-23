@@ -34,6 +34,7 @@ module Gitlab
           group_projects_api: { threshold: -> { application_settings.group_projects_api_limit }, interval: 1.minute },
           groups_api: { threshold: -> { application_settings.groups_api_limit }, interval: 1.minute },
           project_api: { threshold: -> { application_settings.project_api_limit }, interval: 1.minute },
+          create_organization_api: { threshold: -> { application_settings.create_organization_api_limit }, interval: 1.minute },
           project_invited_groups_api: { threshold: -> { application_settings.project_invited_groups_api_limit }, interval: 1.minute },
           projects_api: { threshold: -> { application_settings.projects_api_limit }, interval: 10.minutes },
           user_contributed_projects_api: { threshold: -> { application_settings.user_contributed_projects_api_limit }, interval: 1.minute },

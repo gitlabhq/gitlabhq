@@ -4,7 +4,7 @@ import { GlLink, GlIcon, GlPopover } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { s__ } from '~/locale';
 import WorkItemSidebarDropdownWidget from '~/work_items/components/shared/work_item_sidebar_dropdown_widget.vue';
-import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
+import updateParentMutation from '~/work_items/graphql/update_parent.mutation.graphql';
 import { isValidURL } from '~/lib/utils/url_utility';
 
 import { updateParent } from '../graphql/cache_utils';
@@ -208,7 +208,7 @@ export default {
             workItemUpdate: { errors },
           },
         } = await this.$apollo.mutate({
-          mutation: updateWorkItemMutation,
+          mutation: updateParentMutation,
           variables: {
             input: {
               id: this.workItemId,

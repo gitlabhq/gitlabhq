@@ -3892,6 +3892,9 @@ msgstr ""
 msgid "AdminSelfHostedModels|An error occurred while loading self-hosted models. Please try again."
 msgstr ""
 
+msgid "AdminSelfHostedModels|An error occurred while updating the sefl-hosted model, please try again."
+msgstr ""
+
 msgid "AdminSelfHostedModels|By enabling self-hosted models, you accept the %{link_start}GitLab Testing Agreement%{link_end}."
 msgstr ""
 
@@ -3965,6 +3968,9 @@ msgid "AdminSelfHostedModels|Self-hosted models"
 msgstr ""
 
 msgid "AdminSelfHostedModels|Self-hosted models are an experimental feature."
+msgstr ""
+
+msgid "AdminSelfHostedModels|Successfully updated %{mainFeature} / %{title}"
 msgstr ""
 
 msgid "AdminSelfHostedModels|There was an error saving the self-hosted model. Please try again."
@@ -33107,6 +33113,9 @@ msgstr ""
 msgid "Maximum requests to the %{api_name} API per %{timeframe} per IP address for unauthenticated requests"
 msgstr ""
 
+msgid "Maximum requests to the %{api_name} API per %{timeframe} per user"
+msgstr ""
+
 msgid "Maximum requests to the %{api_name} API per %{timeframe} per user for authenticated requests"
 msgstr ""
 
@@ -38013,6 +38022,9 @@ msgid "Organization"
 msgstr ""
 
 msgid "Organizations"
+msgstr ""
+
+msgid "Organizations API rate limits"
 msgstr ""
 
 msgid "Organization|%{linkStart}Organizations%{linkEnd} are a top-level container to hold your groups and projects."
@@ -51202,6 +51214,9 @@ msgid "Set the per-user rate limit for getting a user by ID via the API."
 msgstr ""
 
 msgid "Set the per-user rate limit for notes created by web or API requests."
+msgstr ""
+
+msgid "Set the per-user rate limits for the requests to Organizations API."
 msgstr ""
 
 msgid "Set this issue as blocked by %{target}."

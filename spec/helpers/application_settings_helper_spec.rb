@@ -71,6 +71,7 @@ RSpec.describe ApplicationSettingsHelper do
           group_shared_groups_api_limit
           group_invited_groups_api_limit
           project_invited_groups_api_limit
+          create_organization_api_limit
         ])
     end
 
