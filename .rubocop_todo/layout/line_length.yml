@@ -4311,7 +4311,6 @@ Layout/LineLength:
     - 'spec/services/search/global_service_spec.rb'
     - 'spec/services/search/group_service_spec.rb'
     - 'spec/services/search/snippet_service_spec.rb'
-    - 'spec/services/search_service_spec.rb'
     - 'spec/services/security/ci_configuration/sast_create_service_spec.rb'
     - 'spec/services/security/merge_reports_service_spec.rb'
     - 'spec/services/snippets/create_service_spec.rb'

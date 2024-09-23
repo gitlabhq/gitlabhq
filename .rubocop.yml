@@ -531,6 +531,11 @@ Gitlab/AvoidGitlabInstanceChecks:
     - 'db/post_migrate/*.rb'
     - 'ee/db/fixtures/**/*'
 
+Gitlab/EeOnlyClass:
+  Enabled: true
+  Include:
+    - 'ee/**/ee/**/*.rb'
+
 # See https://gitlab.com/gitlab-org/gitlab/-/issues/373194
 Gitlab/RSpec/AvoidSetup:
   Enabled: true

@@ -2578,7 +2578,6 @@ RSpec/ContextWording:
     - 'spec/services/search/global_service_spec.rb'
     - 'spec/services/search/group_service_spec.rb'
     - 'spec/services/search/snippet_service_spec.rb'
-    - 'spec/services/search_service_spec.rb'
     - 'spec/services/security/ci_configuration/sast_parser_service_spec.rb'
     - 'spec/services/security/merge_reports_service_spec.rb'
     - 'spec/services/service_ping/submit_service_ping_service_spec.rb'

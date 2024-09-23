@@ -11,6 +11,7 @@ import { makeLoadVersionsErrorMessage } from '~/ml/model_registry/translations';
 import ModelVersionDetail from '../components/model_version_detail.vue';
 import LoadOrErrorOrShow from '../components/load_or_error_or_show.vue';
 import ModelVersionActionsDropdown from '../components/model_version_actions_dropdown.vue';
+import ModelVersionEdit from '../components/model_version_edit.vue';
 
 export default {
   name: 'ShowMlModelVersionApp',
@@ -19,6 +20,7 @@ export default {
     ModelVersionDetail,
     ModelVersionActionsDropdown,
     TitleArea,
+    ModelVersionEdit,
   },
   provide() {
     return {
@@ -27,6 +29,7 @@ export default {
       importPath: this.importPath,
       versionName: this.versionName,
       maxAllowedFileSize: this.maxAllowedFileSize,
+      markdownPreviewPath: this.markdownPreviewPath,
     };
   },
   props: {
@@ -64,6 +67,10 @@ export default {
     },
     maxAllowedFileSize: {
       type: Number,
+      required: true,
+    },
+    markdownPreviewPath: {
+      type: String,
       required: true,
     },
   },
@@ -168,6 +175,10 @@ export default {
         <title-area :title="title" />
       </div>
       <div class="gl-mt-3 gl-flex gl-items-start gl-gap-3">
+        <model-version-edit
+          v-if="modelVersion && canWriteModelRegistry"
+          :model-with-version="modelWithModelVersion"
+        />
         <model-version-actions-dropdown @delete-model-version="deleteModelVersion" />
       </div>
     </div>

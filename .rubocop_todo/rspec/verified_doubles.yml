@@ -835,7 +835,6 @@ RSpec/VerifiedDoubles:
     - 'spec/services/projects/update_repository_storage_service_spec.rb'
     - 'spec/services/projects/update_service_spec.rb'
     - 'spec/services/repositories/changelog_service_spec.rb'
-    - 'spec/services/search_service_spec.rb'
     - 'spec/services/snippets/update_repository_storage_service_spec.rb'
     - 'spec/services/spam/akismet_mark_as_spam_service_spec.rb'
     - 'spec/services/spam/akismet_service_spec.rb'

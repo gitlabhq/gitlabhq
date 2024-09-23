@@ -236,6 +236,30 @@ export const editModelResponses = {
   },
 };
 
+export const editModelVersionResponses = {
+  success: {
+    data: {
+      mlModelVersionEdit: {
+        modelVersion: {
+          id: 'gid://gitlab/Ml::ModelVersion/1',
+          _links: {
+            showPath: '/some/project/-/ml/models/1',
+          },
+        },
+        errors: [],
+      },
+    },
+  },
+  validationFailure: {
+    data: {
+      mlModelVersionEdit: {
+        modelVersion: null,
+        errors: ['Unable to update model version'],
+      },
+    },
+  },
+};
+
 export const destroyModelResponses = {
   success: {
     data: {
@@ -312,6 +336,11 @@ export const modelDetailQuery = {
   data: {
     mlModel: model,
   },
+};
+
+export const modelWithVersion = {
+  ...model,
+  version: modelVersionWithCandidate,
 };
 
 export const modelsQuery = (

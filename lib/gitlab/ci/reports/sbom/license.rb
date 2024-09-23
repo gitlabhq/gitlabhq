@@ -5,10 +5,10 @@ module Gitlab
     module Reports
       module Sbom
         class License
-          attr_accessor :id, :name, :url
+          attr_accessor :spdx_identifier, :name, :url
 
-          def initialize(id: nil, name: nil, url: nil)
-            @id = id
+          def initialize(spdx_identifier: nil, name: nil, url: nil)
+            @spdx_identifier = spdx_identifier
             @name = name
             @url = url
           end

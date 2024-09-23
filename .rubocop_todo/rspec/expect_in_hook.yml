@@ -381,7 +381,6 @@ RSpec/ExpectInHook:
     - 'spec/services/projects/update_pages_service_spec.rb'
     - 'spec/services/projects/update_remote_mirror_service_spec.rb'
     - 'spec/services/projects/update_repository_storage_service_spec.rb'
-    - 'spec/services/search_service_spec.rb'
     - 'spec/services/snippets/update_repository_storage_service_spec.rb'
     - 'spec/services/suggestions/apply_service_spec.rb'
     - 'spec/services/suggestions/create_service_spec.rb'

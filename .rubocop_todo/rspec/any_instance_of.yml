@@ -266,7 +266,6 @@ RSpec/AnyInstanceOf:
     - 'spec/services/projects/update_remote_mirror_service_spec.rb'
     - 'spec/services/projects/update_service_spec.rb'
     - 'spec/services/projects/update_statistics_service_spec.rb'
-    - 'spec/services/search_service_spec.rb'
     - 'spec/services/snippets/create_service_spec.rb'
     - 'spec/services/todo_service_spec.rb'
     - 'spec/services/users/destroy_service_spec.rb'

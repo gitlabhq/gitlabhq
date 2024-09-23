@@ -7,6 +7,7 @@ import { createAlert } from '~/alert';
 import { ShowMlModelVersion } from '~/ml/model_registry/apps';
 import ModelVersionDetail from '~/ml/model_registry/components/model_version_detail.vue';
 import ModelVersionActionsDropdown from '~/ml/model_registry/components/model_version_actions_dropdown.vue';
+import ModeldVersionEdit from '~/ml/model_registry/components/model_version_edit.vue';
 import deleteModelVersionMutation from '~/ml/model_registry/graphql/mutations/delete_model_version.mutation.graphql';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import LoadOrErrorOrShow from '~/ml/model_registry/components/load_or_error_or_show.vue';
@@ -43,6 +44,7 @@ describe('ml/model_registry/apps/show_model_version.vue', () => {
   const createWrapper = (
     resolver = jest.fn().mockResolvedValue(modelVersionQuery),
     deleteResolver = jest.fn().mockResolvedValue(deleteModelVersionResponses.success),
+    canWriteModelRegistry = true,
   ) => {
     const requestHandlers = [
       [getModelVersionQuery, resolver],
@@ -57,10 +59,11 @@ describe('ml/model_registry/apps/show_model_version.vue', () => {
         modelId: 1,
         modelVersionId: 2,
         projectPath: 'path/to/project',
-        canWriteModelRegistry: true,
+        canWriteModelRegistry,
         importPath: 'path/to/import',
         modelPath: 'path/to/model',
         maxAllowedFileSize: 99999,
+        markdownPreviewPath: 'path/to/preview',
       },
       apolloProvider,
       stubs: {
@@ -73,6 +76,7 @@ describe('ml/model_registry/apps/show_model_version.vue', () => {
   const findModelVersionDetail = () => wrapper.findComponent(ModelVersionDetail);
   const findModelVersionActionsDropdown = () => wrapper.findComponent(ModelVersionActionsDropdown);
   const findLoadOrErrorOrShow = () => wrapper.findComponent(LoadOrErrorOrShow);
+  const findEditButton = () => wrapper.findComponent(ModeldVersionEdit);
 
   it('renders the title', () => {
     createWrapper();
@@ -179,5 +183,17 @@ describe('ml/model_registry/apps/show_model_version.vue', () => {
         tags: { vue_component: 'show_ml_model_version' },
       },
     );
+  });
+
+  it('Does not display the edit button when user is not allowed to write', async () => {
+    createWrapper(undefined, undefined, false);
+    await waitForPromises();
+    expect(findEditButton().exists()).toBe(false);
+  });
+
+  it('Displays the edit button when user is allowed to write', async () => {
+    createWrapper(undefined, undefined, true);
+    await waitForPromises();
+    expect(findEditButton().exists()).toBe(true);
   });
 });

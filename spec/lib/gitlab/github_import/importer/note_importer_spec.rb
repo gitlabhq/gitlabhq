@@ -164,6 +164,27 @@ RSpec.describe Gitlab::GithubImport::Importer::NoteImporter, feature_category: :
 
       expect(project.notes.take).to be_valid
     end
+
+    context 'when the description has user mentions' do
+      let(:note_body) { 'You can ask @knejad by emailing xyz@gitlab.com' }
+
+      it 'adds backticks to the username' do
+        issue_row = create(:issue, project: project, iid: 1)
+
+        allow(importer)
+          .to receive(:find_noteable_id)
+          .and_return(issue_row.id)
+
+        allow(importer.user_finder)
+          .to receive(:author_id_for)
+          .with(github_note)
+          .and_return([user.id, true])
+
+        importer.execute
+
+        expect(project.notes.last.note).to eq("You can ask `@knejad` by emailing xyz@gitlab.com")
+      end
+    end
   end
 
   describe '#find_noteable_id' do

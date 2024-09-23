@@ -1245,6 +1245,44 @@ We recommend that you use the most recent version of all containers, and the mos
 
 Do not override the `reports.html.destination` or `reports.html.outputLocation` properties when generating an HTML dependency report for Gradle projects. Doing so prevents Dependency Scanning from functioning correctly.
 
+### Maven Projects
+
+In isolated networks, if the central repository is a private registry (explicitly set with the `<mirror>` directive), Maven builds may fail to find the `gemnasium-maven-plugin` dependency. This issue occurs because Maven doesn't search the local repository (`/root/.m2`) by default and attempts to fetch from the central repository. The result is an error about the missing dependency.
+
+#### Workaround
+
+To resolve this issue, add a `<pluginRepositories>` section to your `settings.xml` file. This allows Maven to find plugins in the local repository.
+
+Before you begin, consider the following:
+
+- This workaround is only for environments where the default Maven central repository is mirrored to a private registry.
+- After applying this workaround, Maven searches the local repository for plugins, which may have security implications in some environments. Make sure this aligns with your organization's security policies.
+
+Follow these steps to modify the `settings.xml` file:
+
+1. Locate your Maven `settings.xml` file. This file is typically found in one of these locations:
+
+   - `/root/.m2/settings.xml` for the root user.
+   - `~/.m2/settings.xml` for a regular user.
+   - `${maven.home}/conf/settings.xml` global settings.
+
+1. Check if there's an existing `<pluginRepositories>` section in the file.
+
+1. If a `<pluginRepositories>` section already exists, add only the following `<pluginRepository>` element inside it.
+Otherwise, add the entire `<pluginRepositories>` section:
+
+      ```xml
+        <pluginRepositories>
+          <pluginRepository>
+              <id>local2</id>
+              <name>local repository</name>
+              <url>file:///root/.m2/repository/</url>
+          </pluginRepository>
+        </pluginRepositories>
+      ```
+
+1. Run your Maven build or dependency scanning process again.
+
 ### Python projects
 
 Extra care needs to be taken when using the [`PIP_EXTRA_INDEX_URL`](https://pipenv.pypa.io/en/latest/indexes.html)

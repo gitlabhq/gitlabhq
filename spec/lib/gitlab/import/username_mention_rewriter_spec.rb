@@ -33,16 +33,16 @@ RSpec.describe Gitlab::Import::UsernameMentionRewriter, feature_category: :impor
     end
   end
 
-  describe '#update_text' do
+  describe '#wrap_mentions_in_backticks' do
     context 'when text is nil' do
       it 'returns nil' do
-        expect(instance.update_text(nil)).to be_nil
+        expect(instance.wrap_mentions_in_backticks(nil)).to be_nil
       end
     end
 
     context 'when the text is empty' do
       it 'returns an empty string' do
-        expect(instance.update_text('')).to eq('')
+        expect(instance.wrap_mentions_in_backticks('')).to eq('')
       end
     end
 
@@ -51,7 +51,7 @@ RSpec.describe Gitlab::Import::UsernameMentionRewriter, feature_category: :impor
       let(:expected_text) { "I said to `@sam_allen.greg` the code should follow `@bob`'s advice. `@.ali-ce/group#9`?" }
 
       it 'wraps them in backticks preserving punctuation' do
-        expect(instance.update_text(original_text)).to eq(expected_text)
+        expect(instance.wrap_mentions_in_backticks(original_text)).to eq(expected_text)
       end
     end
 
@@ -71,7 +71,7 @@ RSpec.describe Gitlab::Import::UsernameMentionRewriter, feature_category: :impor
       end
 
       it 'wraps username mentions only if they are outside code-formatted text' do
-        expect(instance.update_text(original_text)).to eq(expected_text)
+        expect(instance.wrap_mentions_in_backticks(original_text)).to eq(expected_text)
       end
     end
 
@@ -89,7 +89,7 @@ RSpec.describe Gitlab::Import::UsernameMentionRewriter, feature_category: :impor
       end
 
       it 'does not insert backticks before @ characters' do
-        expect(instance.update_text(original_text)).to eq(expected_text)
+        expect(instance.wrap_mentions_in_backticks(original_text)).to eq(expected_text)
       end
     end
   end

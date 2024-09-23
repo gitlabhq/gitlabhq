@@ -19,7 +19,7 @@ RSpec.describe Gitlab::Ci::Parsers::Sbom::License, feature_category: :dependency
       it "sets the expected values" do
         is_expected.to be_kind_of(::Gitlab::Ci::Reports::Sbom::License)
 
-        expect(license.id).to eq("Apache-2.0")
+        expect(license.spdx_identifier).to eq("Apache-2.0")
         expect(license.url).to eq("https://www.apache.org/licenses/LICENSE-2.0.txt")
       end
     end

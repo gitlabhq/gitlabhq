@@ -142,19 +142,38 @@ The [Product Analytics group's dashboard](https://gitlab.com/gitlab-org/analytic
 ## Data availability
 
 For GitLab there is an essential difference in analytics setup between GitLab.com and self-managed or GitLab Dedicated instances.
-On our SaaS instance both individual events and pre-computed metrics are available for analysis.
-Additionally for SaaS, page views are automatically instrumented.
-On self-managed, only the metrics that were instrumented until the version the instance is running are available. For example, if a metric is instrumented during the development of version 16.9, it will be available on instances running versions equal to or bigger than 16.9 but not on instances running previous versions such as 16.8.
 
-### Events
+### Self-Managed and Dedicated
 
-Events are collected in real-time. In Product Analytics they are available within minutes after being fired.
-In Tableau and the underlying Snowflake data warehouse, events are processed in an asynchronous manner. These events may take up to 48 hours to become available after being fired.
+For Self-Managed and Dedicated instances only pre-computed metrics are available. These are computed once per week on a randomly chosen day and forwarded to our [version app](https://version.gitlab.com) via a process called Service Ping.
+Only the metrics that were instrumented until the version the instance is running are available. For example, if a metric is instrumented during the development of version 16.9, it will be available on instances running versions equal to or bigger than 16.9 but not on instances running previous versions such as 16.8.
+The received payloads are imported into our Data Warehouse once per day.
 
-### Metrics
+### GitLab.com
 
-Metrics are being computed and sent once per week for every instance. On GitLab.com this happens on Sunday and newest values become available throughout Monday.
-On self-managed this depends on the particular instance. In general, only the metrics instrumented for the installed GitLab version will be sent.
+On our GitLab.com instance both individual events and pre-computed metrics are available for analysis. Additionally, page views are automatically instrumented.
+
+#### Individual events & page views
+
+Individual events and page views are forwarded directly to our collection infrastructure and from there into our data warehouse.
+However, at this stage the data is in a raw format that is difficult to query. For this reason the data is cleaned and propagated through the warehouse until it is available in the tables and diagrams pointed out in the [data discovery section](#data-discovery).
+
+The propagation process takes multiple hours to complete. The following diagram illustrates the availability of events:
+
+![A timeline of event collection and propagation on GitLab.com](https://lucid.app/publicSegments/view/17761ac4-85cf-42c2-8f6c-f36192224e6c/image.png)
+
+[Source](https://lucid.app/lucidchart/fec2d72c-89d9-45a0-b40c-1d81ca13f671/edit?page=OCha14OI0mRw)
+
+#### Pre-computed metrics
+
+Metrics are computed once per week like on Self-Managed, with the only difference being that most of the computation takes place within the Warehouse rathern than within the instance.
+For GitLab.com this process is started on Monday morning and computes metrics for the time-frame from Sunday 23:59 UTC and this Sunday 23:59 UTC.
+
+The following diagram illustrates the process:
+
+![A timeline of Service Ping Computation on GitLab.com](https://lucid.app/publicSegments/view/4459bc54-2cb0-4376-b247-ebfe1957b56d/image.png)
+
+[Source](https://lucid.app/lucidchart/fec2d72c-89d9-45a0-b40c-1d81ca13f671/edit?page=0_0)
 
 ## Data flow
 

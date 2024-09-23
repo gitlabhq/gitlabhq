@@ -34708,6 +34708,9 @@ msgstr ""
 msgid "MlModelRegistry|Deleting this model version will delete the associated artifacts."
 msgstr ""
 
+msgid "MlModelRegistry|Description"
+msgstr ""
+
 msgid "MlModelRegistry|Drop or %{linkStart}select%{linkEnd} artifacts to attach"
 msgstr ""
 
@@ -34715,6 +34718,12 @@ msgid "MlModelRegistry|Drop to start upload"
 msgstr ""
 
 msgid "MlModelRegistry|Edit model"
+msgstr ""
+
+msgid "MlModelRegistry|Edit model version"
+msgstr ""
+
+msgid "MlModelRegistry|Edit version"
 msgstr ""
 
 msgid "MlModelRegistry|Enter a model description"

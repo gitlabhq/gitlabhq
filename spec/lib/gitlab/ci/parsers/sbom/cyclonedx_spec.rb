@@ -214,7 +214,7 @@ RSpec.describe Gitlab::Ci::Parsers::Sbom::Cyclonedx, feature_category: :dependen
 
       it 'adds component with license information' do
         expected_license = an_object_having_attributes(
-          id: license_id,
+          spdx_identifier: license_id,
           name: nil,
           url: license_url)
 

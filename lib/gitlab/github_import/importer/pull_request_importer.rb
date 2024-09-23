@@ -5,6 +5,7 @@ module Gitlab
     module Importer
       class PullRequestImporter
         include Gitlab::Import::MergeRequestHelpers
+        include Gitlab::Import::UsernameMentionRewriter
 
         attr_reader :pull_request, :project, :client, :user_finder,
           :milestone_finder, :issuable_finder
@@ -44,7 +45,8 @@ module Gitlab
         def create_merge_request
           author_id, author_found = user_finder.author_id_for(pull_request)
 
-          description = MarkdownText.format(pull_request.description, pull_request.author, author_found)
+          description = wrap_mentions_in_backticks(pull_request.description)
+          description = MarkdownText.format(description, pull_request.author, author_found)
 
           attributes = {
             iid: pull_request.iid,

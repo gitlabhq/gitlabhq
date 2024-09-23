@@ -13,6 +13,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitla
   let(:source_commit) { project.repository.commit('feature') }
   let(:target_commit) { project.repository.commit('master') }
   let(:milestone) { create(:milestone, project: project) }
+  let(:description) { 'This is my pull request' }
   let(:state) { :closed }
   let_it_be(:imported_from) { ::Import::HasImportSource::IMPORT_SOURCES[:github] }
 
@@ -22,7 +23,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitla
     Gitlab::GithubImport::Representation::PullRequest.new(
       iid: 42,
       title: 'My Pull Request',
-      description: 'This is my pull request',
+      description: description,
       source_branch: 'feature',
       source_branch_sha: source_commit.id,
       target_branch: 'master',
@@ -134,6 +135,19 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitla
 
         expect(mr).to be_instance_of(MergeRequest)
         expect(exists).to eq(false)
+      end
+
+      context 'when the description has user mentions' do
+        let(:description) { 'You can ask @knejad by emailing xyz@gitlab.com' }
+
+        it 'adds backticks to the username' do
+          expect(importer).to receive(:insert_and_return_id).with(
+            a_hash_including(description: "You can ask `@knejad` by emailing xyz@gitlab.com"),
+            project.merge_requests
+          ).and_call_original
+
+          importer.create_merge_request
+        end
       end
 
       context 'when the source and target branch are identical' do
