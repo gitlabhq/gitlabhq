@@ -270,7 +270,7 @@ module API
         user = find_user(params[:user_id])
         not_found!('User') unless user
 
-        contributed_projects = ContributedProjectsFinder.new(user).execute(current_user).joined(user)
+        contributed_projects = ContributedProjectsFinder.new(user: user, current_user: current_user).execute.joined(user)
         present_projects contributed_projects
       end
 

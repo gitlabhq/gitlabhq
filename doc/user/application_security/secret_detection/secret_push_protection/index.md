@@ -54,7 +54,7 @@ If secret push protection does not detect any secrets in your commits, no messag
 
 ## Detected secrets
 
-GitLab maintains a [set of rules](detected_secrets.md) that are used for blocking secrets from being pushed to GitLab.
+GitLab maintains a [set of rules](../detected_secrets.md) that are used for blocking secrets from being pushed to GitLab.
 
 Scanning against low-confidence patterns can potentially lead to a timeout or the push check failing. Therefore, we chose to include only high-confidence patterns to ensure a performant experience when pushing your code, and to reduce the number of false alerts.
 

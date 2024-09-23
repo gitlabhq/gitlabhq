@@ -346,7 +346,8 @@ export default {
     {
       key: 'size',
       label: I18N_SIZE,
-      thClass: 'gl-w-3/20 gl-text-right',
+      thAlignRight: true,
+      thClass: 'gl-w-3/20',
       tdClass: 'gl-text-right',
     },
     {

@@ -38,7 +38,6 @@ RSpec.describe Banzai::Filter::VideoLinkFilter, feature_category: :team_planning
       expect(video['src']).to eq src
       expect(video['height']).to eq height if height
       expect(video['width']).to eq width if width
-      expect(video['width']).to eq '400' unless width || height
       expect(video['preload']).to eq 'metadata'
 
       expect(link.name).to eq 'a'

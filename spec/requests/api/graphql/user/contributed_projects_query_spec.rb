@@ -290,6 +290,47 @@ RSpec.describe 'Getting contributedProjects of the user', feature_category: :gro
     end
   end
 
+  describe 'min_access_level' do
+    let_it_be(:project_with_owner_access) { create(:project, :private) }
+
+    let(:user_fields_with_min_access_level) do
+      "contributedProjects(minAccessLevel: #{min_access_level}) { nodes { id } }"
+    end
+
+    let(:query_with_min_access_level) { graphql_query_for(:user, user_params, user_fields_with_min_access_level) }
+
+    before_all do
+      project_with_owner_access.add_owner(user)
+      project_with_owner_access.add_owner(current_user)
+      travel_to(4.hours.from_now) { create(:push_event, project: project_with_owner_access, author: user) }
+    end
+
+    context 'when min_access_level is OWNER' do
+      let(:min_access_level) { :OWNER }
+
+      it 'returns only projects user has owner access to' do
+        post_graphql(query_with_min_access_level, current_user: current_user)
+
+        expect(graphql_data_at(*path))
+          .to contain_exactly(a_graphql_entity_for(project_with_owner_access))
+      end
+    end
+
+    context 'when min_access_level is DEVELOPER' do
+      let(:min_access_level) { :DEVELOPER }
+
+      it 'returns only projects user has developer or higher access to' do
+        post_graphql(query_with_min_access_level, current_user: current_user)
+
+        expect(graphql_data_at(*path))
+          .to contain_exactly(
+            a_graphql_entity_for(project_with_owner_access),
+            a_graphql_entity_for(private_project)
+          )
+      end
+    end
+  end
+
   describe 'accessible' do
     context 'when user profile is public' do
       context 'when a logged in user with membership in the private project' do

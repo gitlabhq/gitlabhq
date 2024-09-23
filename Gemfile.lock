@@ -904,7 +904,7 @@ GEM
       grape (~> 2.0)
       rake (> 12)
       ruby2_keywords (~> 0.0.2)
-    grape-swagger (2.1.0)
+    grape-swagger (2.1.1)
       grape (>= 1.7, < 3.0)
       rack-test (~> 2)
     grape-swagger-entity (0.5.5)

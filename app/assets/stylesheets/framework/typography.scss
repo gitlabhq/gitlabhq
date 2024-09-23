@@ -39,6 +39,10 @@
     display: inline-flex;
     flex-direction: column;
     margin-bottom: $gl-spacing-scale-2;
+
+    video {
+      max-width: 100%;
+    }
   }
 
   img {

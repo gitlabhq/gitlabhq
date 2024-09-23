@@ -88,6 +88,7 @@ export const TOKEN_TITLE_CREATED = __('Created date');
 export const TOKEN_TITLE_CLOSED = __('Closed date');
 export const TOKEN_TITLE_DEPLOYED_BEFORE = __('Deployed-before');
 export const TOKEN_TITLE_DEPLOYED_AFTER = __('Deployed-after');
+export const TOKEN_TITLE_ASSIGNED_SEAT = __('Assigned seat');
 
 export const TOKEN_TYPE_APPROVED_BY = 'approved-by';
 export const TOKEN_TYPE_MERGE_USER = 'merge-user';
@@ -99,6 +100,7 @@ export const TOKEN_TYPE_DRAFT = 'draft';
 export const TOKEN_TYPE_GROUP = 'group';
 export const TOKEN_TYPE_GROUP_INVITE = 'group-invite';
 export const TOKEN_TYPE_EPIC = 'epic';
+export const TOKEN_TYPE_ASSIGNED_SEAT = 'assigned-seat';
 // As health status gets reused between issue lists and boards
 // this is in the shared constants. Until we have not decoupled the EE filtered search bar
 // from the CE component, we need to keep this in the CE code.

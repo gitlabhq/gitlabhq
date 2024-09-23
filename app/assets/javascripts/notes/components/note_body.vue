@@ -18,6 +18,8 @@ export default {
     NoteAttachment,
     NoteForm,
     Suggestions,
+    DuoCodeReviewFeedback: () =>
+      import('ee_component/notes/components/duo_code_review_feedback.vue'),
   },
   directives: {
     SafeHtml,
@@ -172,6 +174,13 @@ export default {
       @removeFromBatch="removeSuggestionFromBatch"
     />
     <div v-else v-safe-html:[$options.safeHtmlConfig]="note.note_html" class="note-text md"></div>
+    {{ note.author.user_type }}
+    {{ note.type }}
+    <duo-code-review-feedback
+      v-if="note.author.user_type === 'duo_code_review_bot' && note.type !== 'DiffNote'"
+      class="gl-mt-3"
+      data-testid="code-review-feedback"
+    />
     <note-form
       v-if="isEditing"
       ref="noteForm"

@@ -2892,7 +2892,7 @@ CREATE TABLE p_ci_finished_build_ch_sync_events (
     partition bigint DEFAULT 1 NOT NULL,
     build_finished_at timestamp without time zone NOT NULL,
     processed boolean DEFAULT false NOT NULL,
-    project_id bigint DEFAULT '-1'::integer NOT NULL
+    project_id bigint NOT NULL
 )
 PARTITION BY LIST (partition);
 

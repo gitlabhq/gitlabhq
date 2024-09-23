@@ -317,7 +317,6 @@ SidekiqLoadBalancing/WorkerDataConsistency:
     - 'ee/app/workers/dependencies/export_worker.rb'
     - 'ee/app/workers/deployments/auto_rollback_worker.rb'
     - 'ee/app/workers/dora/daily_metrics/refresh_worker.rb'
-    - 'ee/app/workers/elastic/migration_worker.rb'
     - 'ee/app/workers/elastic_association_indexer_worker.rb'
     - 'ee/app/workers/elastic_cluster_reindexing_cron_worker.rb'
     - 'ee/app/workers/elastic_commit_indexer_worker.rb'

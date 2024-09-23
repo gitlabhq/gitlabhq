@@ -5,5 +5,5 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163792
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/480273
 milestone: '17.4'
 group: group::anti-abuse
-type: worker
-default_enabled: false
+type: ops
+default_enabled: true

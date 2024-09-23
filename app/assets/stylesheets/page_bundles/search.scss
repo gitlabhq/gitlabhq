@@ -8,6 +8,8 @@ $search-avatar-size: 16px;
 $search-sidebar-min-width: 240px;
 $search-sidebar-max-width: 300px;
 $language-filter-max-height: 20rem;
+$white-divider: #d9d9d9;
+$black-divider: #666;
 
 .search-results {
   .search-result-row {
@@ -41,6 +43,22 @@ $language-filter-max-height: 20rem;
       background-color: $white-highlight !important;
       color: $dark-highlight-color !important;
     }
+  }
+
+  .multimatch-divider-dark {
+    border-color: $black-divider !important;
+    border-bottom: 1px solid;
+    border-left: 0;
+    border-right: 0;
+    border-top: 0;
+  }
+
+  .multimatch-divider-light {
+    border-color: $white-divider !important;
+    border-bottom: 1px solid;
+    border-left: 0;
+    border-right: 0;
+    border-top: 0;
   }
 }
 

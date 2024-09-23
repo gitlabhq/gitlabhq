@@ -110,3 +110,14 @@ with the deployed staging AI Gateway. To do this:
 1. Find the newly purchased subscription card, and select from the three dots menu the option `Buy GitLab Duo Pro`
 1. Purchase the GitLab Duo Pro add-on using the same test credit card from the above steps
 1. Go back to <https://staging.gitlab.com> and verify that your group has access to Duo Pro by navigating to `Settings > GitLab Duo` and managing seats
+
+### Video demonstrations of installing and using Code Suggestions in IDEs
+
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For more guidance, see the following video demonstrations of installing
+and using Code Suggestions in:
+
+- [VS Code](https://www.youtube.com/watch?v=bJ7g9IEa48I).
+  <!-- Video published on 2024-09-03 -->
+- [IntelliJ IDEA](https://www.youtube.com/watch?v=WE9agcnGT6A).
+  <!-- Video published on 2024-09-03 -->

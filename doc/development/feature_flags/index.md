@@ -797,9 +797,9 @@ We want to avoid introducing a changelog when features are not accessible by an 
 
   ```mermaid
   flowchart LR
-    FDOFF(Flag is currently\n`default: off`)
-    FDON(Flag is currently\n`default: on`)
-    CDO{Change to\n`default: on`}
+    FDOFF(Flag is currently<br>'default: off')
+    FDON(Flag is currently<br>'default: on')
+    CDO{Change to<br>'default: on'}
     ACF(added / changed / fixed / '...')
     RF{Remove flag}
     RF2{Remove flag}

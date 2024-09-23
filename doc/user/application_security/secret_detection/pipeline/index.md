@@ -33,9 +33,8 @@ With GitLab Ultimate, pipeline secret detection results are also processed so yo
 
 ## Detected secrets
 
-GitLab maintains the detection rules used in pipeline secret detection.
-The [default ruleset](../pipeline/detected_secrets.md)
-contains more than 100 patterns.
+GitLab maintains the detection rules used in pipeline secret detection. The default ruleset contains
+more than 100 patterns.
 
 Most pipeline secret detection patterns search for specific types of secrets.
 Many services add prefixes or other structural details to their secrets so they can be identified if they're leaked.
@@ -554,7 +553,7 @@ For more information on the passthrough syntax to use, see [Schema](../pipeline/
 
 #### Extend the default ruleset
 
-You can also extend the [default ruleset](../pipeline/detected_secrets.md) configuration with additional rules as appropriate. This can be helpful when you would still like to benefit from the high-confidence predefined rules maintained by GitLab in the default ruleset, but also want to add rules for types of secrets that may be used in your own projects and namespaces.
+You can also extend the [default ruleset](../detected_secrets.md) configuration with additional rules as appropriate. This can be helpful when you would still like to benefit from the high-confidence predefined rules maintained by GitLab in the default ruleset, but also want to add rules for types of secrets that may be used in your own projects and namespaces.
 
 ##### With a local ruleset
 

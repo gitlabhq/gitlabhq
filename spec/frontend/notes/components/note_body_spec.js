@@ -37,6 +37,9 @@ const createComponent = ({
       isEditing: false,
       ...props,
     },
+    stubs: {
+      DuoCodeReviewFeedback: true,
+    },
   });
 };
 
@@ -136,5 +139,24 @@ describe('issue_note_body component', () => {
         '*** branch /path name user user userton abc 1 1 Co-authored-by: ...',
       );
     });
+  });
+
+  describe('duo code review feedback', () => {
+    it.each`
+      userType                 | type                | exists   | existsText
+      ${'duo_code_review_bot'} | ${null}             | ${true}  | ${'renders'}
+      ${'duo_code_review_bot'} | ${'DiscussionNote'} | ${true}  | ${'renders'}
+      ${'duo_code_review_bot'} | ${'DiffNote'}       | ${false} | ${'does not render'}
+      ${'human'}               | ${null}             | ${false} | ${'does not render'}
+    `(
+      '$existsText code review feedback component when author type is "$userType" and note type is "$type"',
+      ({ userType, type, exists }) => {
+        wrapper = createComponent({
+          props: { note: { ...note, type, author: { ...note.author, user_type: userType } } },
+        });
+
+        expect(wrapper.findByTestId('code-review-feedback').exists()).toBe(exists);
+      },
+    );
   });
 });

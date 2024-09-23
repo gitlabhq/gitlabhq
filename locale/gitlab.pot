@@ -7154,9 +7154,6 @@ msgstr ""
 msgid "Approvals are optional."
 msgstr ""
 
-msgid "Approvals required"
-msgstr ""
-
 msgid "Approvals|%{count} of %{total}"
 msgstr ""
 
@@ -7599,6 +7596,9 @@ msgid "Assigned merge requests"
 msgstr ""
 
 msgid "Assigned projects"
+msgstr ""
+
+msgid "Assigned seat"
 msgstr ""
 
 msgid "Assigned to %{assigneeName}"
@@ -44203,6 +44203,9 @@ msgstr ""
 msgid "ProtectedEnvironments|Approvals required"
 msgstr ""
 
+msgid "ProtectedEnvironments|Approvers"
+msgstr ""
+
 msgid "ProtectedEnvironments|Create approval rule"
 msgstr ""
 
@@ -44726,6 +44729,9 @@ msgid "RapidDiffs|Original line"
 msgstr ""
 
 msgid "RapidDiffs|Original line number"
+msgstr ""
+
+msgid "Rate Duo Code Review"
 msgstr ""
 
 msgid "Rate Limits"

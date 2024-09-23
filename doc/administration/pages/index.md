@@ -104,11 +104,6 @@ IPv6 address. If you don't have IPv6, you can omit the `AAAA` record.
 > - [Changed](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/1111) implementation from NGINX to the GitLab Pages codebase in GitLab 17.2.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/483365) in GitLab 17.4.
 
-Prerequisites:
-
-- Your instance must use the Linux package installation method.
-- Your installation must use the default `auth_redirect_uri`.
-
 If you need support for namespace in the URL path to remove the requirement for wildcard DNS:
 
 1. Enable the GitLab Pages flag for this feature by adding
@@ -202,7 +197,6 @@ because the GitLab Pages daemon doesn't listen to the outside world.
 
 Prerequisites:
 
-- Your instance must use the Linux package installation method.
 - You have configured DNS setup
   [without a wildcard](#for-namespace-in-url-path-without-wildcard-dns).
 
@@ -282,7 +276,6 @@ then run `gitlab-ctl reconfigure`. For more information, read
 
 Prerequisites:
 
-- Your instance must use the Linux package installation method.
 - You have configured DNS setup
   [without a wildcard](#for-namespace-in-url-path-without-wildcard-dns).
 - You have a TLS certificate that covers your domain (like `example.io`).
@@ -378,7 +371,7 @@ control over how the Pages daemon runs and serves content in your environment.
 | `artifacts_server`                      | Enable viewing [artifacts](../job_artifacts.md) in GitLab Pages.                                                                                                                                                                                                                                           |
 | `artifacts_server_timeout`              | Timeout (in seconds) for a proxied request to the artifacts server.                                                                                                                                                                                                                                        |
 | `artifacts_server_url`                  | API URL to proxy artifact requests to. Defaults to GitLab `external URL` + `/api/v4`, for example `https://gitlab.com/api/v4`. When running a [separate Pages server](#running-gitlab-pages-on-a-separate-server), this URL must point to the main GitLab server's API.                                    |
-| `auth_redirect_uri`                     | Callback URL for authenticating with GitLab. Defaults to project's subdomain of `pages_external_url` + `/auth`, for example `https://projects.example.io/auth`. When `namespace_in_path` is enabled, defaults to `pages_external_url` + `/projects/auth`, for example `https://example.io/projects/auth`.  |
+| `auth_redirect_uri`                     | Callback URL for authenticating with GitLab. URL should be subdomain of `pages_external_url` + `/auth`. Defaults to project's subdomain of `pages_external_url` + `/auth`, for example `https://projects.example.io/auth`. When `namespace_in_path` is enabled, defaults to `pages_external_url` + `/projects/auth`, for example `https://example.io/projects/auth`.  |
 | `auth_secret`                           | Secret key for signing authentication requests. Leave blank to pull automatically from GitLab during OAuth registration.                                                                                                                                                                                   |
 | `client_cert`                           | Client certificate used for mutual TLS with the GitLab API. See [Support mutual TLS when calling the GitLab API](#support-mutual-tls-when-calling-the-gitlab-api) for details.                                                                                                                             |
 | `client_key`                            | Client key used for mutual TLS with the GitLab API. See [Support mutual TLS when calling the GitLab API](#support-mutual-tls-when-calling-the-gitlab-api) for details.                                                                                                                                     |

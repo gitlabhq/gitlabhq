@@ -620,7 +620,7 @@ The following criteria must be met:
   - Personal access token
   - Group access token
   - Project access token
-  - Group Deploy Token
+  - Group deploy token
   - User feed token
 
 This feature is gated by the :group_agnostic_token_revocation feature flag.
