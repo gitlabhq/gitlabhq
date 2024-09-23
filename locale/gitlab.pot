@@ -14225,9 +14225,6 @@ msgstr ""
 msgid "ComplianceReport|Avoid creating new compliance pipelines and use pipeline execution policies instead. %{linkStart}Pipeline execution policies%{linkEnd} provide the ability to enforce CI/CD jobs, execute security scans, and better manage compliance enforcement in pipelines."
 msgstr ""
 
-msgid "ComplianceReport|Avoid creating new compliance pipelines and use pipeline execution policy actions instead. %{linkStart}Pipeline execution policy%{linkEnd} actions provide the ability to enforce CI/CD jobs, execute security scans, and better manage compliance."
-msgstr ""
-
 msgid "ComplianceReport|Choose one bulk action"
 msgstr ""
 
@@ -48505,13 +48502,13 @@ msgstr ""
 msgid "Secret token."
 msgstr ""
 
+msgid "SecretDetection|Action unavailable"
+msgstr ""
+
 msgid "SecretDetection|Add exclusion"
 msgstr ""
 
 msgid "SecretDetection|Configure Secret Detection"
-msgstr ""
-
-msgid "SecretDetection|Feature not available"
 msgstr ""
 
 msgid "SecretDetection|No exclusions yet"

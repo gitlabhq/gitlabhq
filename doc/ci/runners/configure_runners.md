@@ -32,7 +32,7 @@ Prerequisites:
 
 - You must be an administrator.
 
-You can override the job timeout for instance runners on self-managed GitLab installations only. 
+You can override the job timeout for instance runners on self-managed GitLab installations only.
 
 On GitLab.com, you cannot override the job timeout for GitLab hosted instance runners and must use the [project defined timeout](../pipelines/settings.md#set-a-limit-for-how-long-jobs-can-run) instead.
 
@@ -471,7 +471,7 @@ globally or for individual jobs:
 - [`CACHE_REQUEST_TIMEOUT`](#artifact-and-cache-settings) (cache request timeout)
 - [`RUNNER_SCRIPT_TIMEOUT`](#set-script-and-after_script-timeouts)
 - [`RUNNER_AFTER_SCRIPT_TIMEOUT`](#set-script-and-after_script-timeouts)
-- [`AFTER_SCRIPT_IGNORE_ERRORS`](#Ignore errors in `after_script`)
+- [`AFTER_SCRIPT_IGNORE_ERRORS`](#ignore-errors-in-after_script)
 
 You can also use variables to configure how many times a runner
 [attempts certain stages of job execution](#job-stages-attempts).

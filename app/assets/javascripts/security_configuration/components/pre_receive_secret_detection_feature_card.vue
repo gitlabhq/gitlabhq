@@ -139,7 +139,7 @@ export default {
     notEnabled: s__('SecurityConfiguration|Not enabled'),
     availableWith: s__('SecurityConfiguration|Available with Ultimate'),
     learnMore: __('Learn more'),
-    tooltipTitle: s__('SecretDetection|Feature not available'),
+    tooltipTitle: s__('SecretDetection|Action unavailable'),
     tooltipDescription: s__(
       'SecretDetection|This feature has been disabled at the instance level. Please reach out to your instance administrator to request activation.',
     ),

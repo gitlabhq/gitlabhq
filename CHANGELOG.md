@@ -11934,6 +11934,10 @@ No changes.
 - [Fix test pollution in count_deployments_metric_spec](gitlab-org/gitlab@610e6a033fe9b20aabc237b18837cddf150d4d1b) ([merge request](gitlab-org/gitlab!126808))
 - [Update BulkImports::PipelineBatchWorker resource boundary](gitlab-org/gitlab@7d2477d81bcc2d035be26587802706f7098b6e44) ([merge request](gitlab-org/gitlab!126696))
 
+## 16.2.11 (2024-09-23)
+
+No changes.
+
 ## 16.2.10 (2024-07-23)
 
 ### Added (1 change)
@@ -12781,6 +12785,10 @@ No changes.
 - [Accept period_time as string on DORA executor](gitlab-org/gitlab@7d0792288be02cd3300410144067ea947da4846a) ([merge request](gitlab-org/gitlab!123975)) **GitLab Enterprise Edition**
 - [Add schema_version in the commits index mapping](gitlab-org/gitlab@e75b94903b69e1e1588e251217926882875555a8) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123435)) **GitLab Enterprise Edition**
 - [Allow to set labels for Redis calls](gitlab-org/gitlab@8ccfff9e2d250eb22afaa7d0243e707b536a5436) ([merge request](gitlab-org/gitlab!122340))
+
+## 16.1.8 (2024-09-23)
+
+No changes.
 
 ## 16.1.7 (2024-07-23)
 
@@ -13816,6 +13824,10 @@ No changes.
 - [Remove use_traversal_ids_for_ancestor_scopes feature flag](gitlab-org/gitlab@f65d0b8212759de7686d4b02f8c45fea615c52a3) ([merge request](gitlab-org/gitlab!120559))
 - [Migrate custom CSS to utility classes](gitlab-org/gitlab@a67999317bec111d523c763fc865665d4ded0aaf) ([merge request](gitlab-org/gitlab!120745)) **GitLab Enterprise Edition**
 - [Remove the vsa_group_and_project_parity FF](gitlab-org/gitlab@d090818bdedb0e220928d8e456cf36c8bce81f42) ([merge request](gitlab-org/gitlab!120727)) **GitLab Enterprise Edition**
+
+## 16.0.10 (2024-09-23)
+
+No changes.
 
 ## 16.0.9 (2024-07-23)
 

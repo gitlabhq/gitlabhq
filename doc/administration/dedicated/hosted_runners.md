@@ -38,9 +38,9 @@ Hosted runners for GitLab Dedicated are configured as such:
 - Inbound communication from the public internet to the ephemeral VM is not allowed.
 - Firewall rules do not permit communication between VMs.
 - The only internal communication allowed to the ephemeral VMs is from the runner manager.
-- Ephemeral runner VMs will only serve a single job and will be deleted right after the job execution.
+- Ephemeral runner VMs only serve a single job and are deleted after the job execution.
 
-In addition, you can also [configure a private connection](#configure-outbound-private-link) from the hosted runners to your AWS account that bypasses the public internet.
+You can also [enable private connections](#outbound-private-link) from the hosted runners to your AWS account.
 
 For more information, see the architecture diagram for [Hosted runners for GitLab Dedicated](index.md#hosted-runners-for-gitlab-dedicated).
 
@@ -153,17 +153,23 @@ Any changes to the runner description and the runner tags are not controlled by 
 By default, hosted runners are available for all projects and groups in your GitLab Dedicated instance.
 GitLab maintainers can disable hosted runners for a [project](../../ci/runners/runners_scope.md#disable-instance-runners-for-a-project) or a [group](../../ci/runners/runners_scope.md#disable-instance-runners-for-a-group).
 
-## Configure outbound private link
+## Outbound private link
 
-Outbound private link allows hosted runners for GitLab Dedicated to securely communicate with services running in your VPC on AWS without exposing any traffic to the public internet.
+Outbound private link creates a secure connection between hosted runners for GitLab Dedicated and services in your AWS VPC.
+This connection doesn't expose any traffic to the public internet and allows hosted runners to:
 
-This type of connection allows GitLab-hosted runners connection to:
+- Access private services, such as custom secrets managers.
+- Retrieve artifacts or job images stored in your infrastructure.
+- Deploy to your infrastructure.
 
-- access private services, such as custom secrets managers
-- artifacts or job images stored in your infrastructure
-- deployments into your infrastructure
+Two outbound private links exist by default for all runners in the GitLab-managed runner account:
 
-For more information on how to configure Outbound Private Link for hosted runners for GitLab Dedicated, read [Outbound Private Link](../../administration/dedicated/configure_instance.md#outbound-private-link).
+- A link to your GitLab instance
+- A link to a GitLab-controlled Prometheus instance
+
+These links are pre-configured and cannot be modified. The tenant's Prometheus instance is managed by GitLab and is not accessible to users.
+
+To use an outbound private link with other VPC services, manual configuration is required. For more information, see [Outbound private link](../../administration/dedicated/configure_instance.md#outbound-private-link).
 
 ## IP ranges
 
