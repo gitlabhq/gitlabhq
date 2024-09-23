@@ -8820,6 +8820,8 @@ CREATE TABLE ci_runners (
     creator_id bigint,
     creation_state smallint DEFAULT 0 NOT NULL,
     allowed_plan_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
+    CONSTRAINT check_46c685e76f CHECK ((char_length((description)::text) <= 1024)),
+    CONSTRAINT check_91230910ec CHECK ((char_length((name)::text) <= 256)),
     CONSTRAINT check_ce275cee06 CHECK ((char_length(maintainer_note) <= 1024))
 );
 
@@ -9385,24 +9387,6 @@ CREATE SEQUENCE commit_user_mentions_id_seq
     CACHE 1;
 
 ALTER SEQUENCE commit_user_mentions_id_seq OWNED BY commit_user_mentions.id;
-
-CREATE TABLE compliance_checks (
-    id bigint NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
-    requirement_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    check_name smallint NOT NULL
-);
-
-CREATE SEQUENCE compliance_checks_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE compliance_checks_id_seq OWNED BY compliance_checks.id;
 
 CREATE TABLE compliance_framework_security_policies (
     id bigint NOT NULL,
@@ -18782,6 +18766,24 @@ CREATE SEQUENCE subscription_add_ons_id_seq
 
 ALTER SEQUENCE subscription_add_ons_id_seq OWNED BY subscription_add_ons.id;
 
+CREATE TABLE subscription_seat_assignments (
+    id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    last_activity_on timestamp with time zone,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL
+);
+
+CREATE SEQUENCE subscription_seat_assignments_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE subscription_seat_assignments_id_seq OWNED BY subscription_seat_assignments.id;
+
 CREATE TABLE subscription_user_add_on_assignments (
     id bigint NOT NULL,
     add_on_purchase_id bigint NOT NULL,
@@ -21807,8 +21809,6 @@ ALTER TABLE ONLY clusters_kubernetes_namespaces ALTER COLUMN id SET DEFAULT next
 
 ALTER TABLE ONLY commit_user_mentions ALTER COLUMN id SET DEFAULT nextval('commit_user_mentions_id_seq'::regclass);
 
-ALTER TABLE ONLY compliance_checks ALTER COLUMN id SET DEFAULT nextval('compliance_checks_id_seq'::regclass);
-
 ALTER TABLE ONLY compliance_framework_security_policies ALTER COLUMN id SET DEFAULT nextval('compliance_framework_security_policies_id_seq'::regclass);
 
 ALTER TABLE ONLY compliance_management_frameworks ALTER COLUMN id SET DEFAULT nextval('compliance_management_frameworks_id_seq'::regclass);
@@ -22576,6 +22576,8 @@ ALTER TABLE ONLY status_page_settings ALTER COLUMN project_id SET DEFAULT nextva
 ALTER TABLE ONLY subscription_add_on_purchases ALTER COLUMN id SET DEFAULT nextval('subscription_add_on_purchases_id_seq'::regclass);
 
 ALTER TABLE ONLY subscription_add_ons ALTER COLUMN id SET DEFAULT nextval('subscription_add_ons_id_seq'::regclass);
+
+ALTER TABLE ONLY subscription_seat_assignments ALTER COLUMN id SET DEFAULT nextval('subscription_seat_assignments_id_seq'::regclass);
 
 ALTER TABLE ONLY subscription_user_add_on_assignments ALTER COLUMN id SET DEFAULT nextval('subscription_user_add_on_assignments_id_seq'::regclass);
 
@@ -23630,17 +23632,11 @@ ALTER TABLE workspaces
 ALTER TABLE vulnerability_scanners
     ADD CONSTRAINT check_37608c9db5 CHECK ((char_length(vendor) <= 255)) NOT VALID;
 
-ALTER TABLE ci_runners
-    ADD CONSTRAINT check_46c685e76f CHECK ((char_length((description)::text) <= 1024)) NOT VALID;
-
 ALTER TABLE ci_job_variables
     ADD CONSTRAINT check_567d1ccb72 CHECK ((project_id IS NOT NULL)) NOT VALID;
 
 ALTER TABLE p_ci_pipeline_variables
     ADD CONSTRAINT check_6e932dbabf CHECK ((project_id IS NOT NULL)) NOT VALID;
-
-ALTER TABLE ci_runners
-    ADD CONSTRAINT check_91230910ec CHECK ((char_length((name)::text) <= 256)) NOT VALID;
 
 ALTER TABLE ci_deleted_objects
     ADD CONSTRAINT check_98f90d6c53 CHECK ((project_id IS NOT NULL)) NOT VALID;
@@ -23896,9 +23892,6 @@ ALTER TABLE ONLY clusters
 
 ALTER TABLE ONLY commit_user_mentions
     ADD CONSTRAINT commit_user_mentions_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY compliance_checks
-    ADD CONSTRAINT compliance_checks_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY compliance_framework_security_policies
     ADD CONSTRAINT compliance_framework_security_policies_pkey PRIMARY KEY (id);
@@ -25288,6 +25281,9 @@ ALTER TABLE ONLY subscription_add_on_purchases
 
 ALTER TABLE ONLY subscription_add_ons
     ADD CONSTRAINT subscription_add_ons_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY subscription_seat_assignments
+    ADD CONSTRAINT subscription_seat_assignments_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY subscription_user_add_on_assignments
     ADD CONSTRAINT subscription_user_add_on_assignments_pkey PRIMARY KEY (id);
@@ -28148,8 +28144,6 @@ CREATE INDEX index_clusters_on_user_id ON clusters USING btree (user_id);
 
 CREATE UNIQUE INDEX index_commit_user_mentions_on_note_id ON commit_user_mentions USING btree (note_id);
 
-CREATE INDEX index_compliance_checks_on_namespace_id ON compliance_checks USING btree (namespace_id);
-
 CREATE INDEX index_compliance_framework_security_policies_on_namespace_id ON compliance_framework_security_policies USING btree (namespace_id);
 
 CREATE INDEX index_compliance_framework_security_policies_on_project_id ON compliance_framework_security_policies USING btree (project_id);
@@ -30636,6 +30630,8 @@ CREATE UNIQUE INDEX index_subscription_add_ons_on_name ON subscription_add_ons U
 
 CREATE INDEX index_subscription_addon_purchases_on_expires_on ON subscription_add_on_purchases USING btree (expires_on);
 
+CREATE INDEX index_subscription_seat_assignments_on_user_id ON subscription_seat_assignments USING btree (user_id);
+
 CREATE INDEX index_subscription_user_add_on_assignments_on_organization_id ON subscription_user_add_on_assignments USING btree (organization_id);
 
 CREATE INDEX index_subscription_user_add_on_assignments_on_user_id ON subscription_user_add_on_assignments USING btree (user_id);
@@ -31390,8 +31386,6 @@ CREATE INDEX tmp_index_vulnerability_overlong_title_html ON vulnerabilities USIN
 
 CREATE INDEX tmp_index_vulnerability_reads_where_state_is_detected ON vulnerability_reads USING btree (id) WHERE (state = 1);
 
-CREATE UNIQUE INDEX u_compliance_checks_for_requirement ON compliance_checks USING btree (requirement_id, check_name);
-
 CREATE UNIQUE INDEX u_compliance_requirements_for_framework ON compliance_requirements USING btree (framework_id, name);
 
 CREATE UNIQUE INDEX u_project_compliance_standards_adherence_for_reporting ON project_compliance_standards_adherence USING btree (project_id, check_name, standard);
@@ -31415,6 +31409,8 @@ CREATE UNIQUE INDEX uniq_idx_security_policy_requirements_on_requirement_and_pol
 CREATE UNIQUE INDEX uniq_idx_streaming_destination_id_and_namespace_id ON audit_events_streaming_instance_namespace_filters USING btree (external_streaming_destination_id, namespace_id);
 
 CREATE UNIQUE INDEX uniq_idx_streaming_group_destination_id_and_namespace_id ON audit_events_streaming_group_namespace_filters USING btree (external_streaming_destination_id, namespace_id);
+
+CREATE UNIQUE INDEX uniq_idx_subscription_seat_assignments_on_namespace_and_user ON subscription_seat_assignments USING btree (namespace_id, user_id);
 
 CREATE UNIQUE INDEX uniq_idx_user_add_on_assignments_on_add_on_purchase_and_user ON subscription_user_add_on_assignments USING btree (add_on_purchase_id, user_id);
 
@@ -33483,6 +33479,9 @@ ALTER TABLE ONLY dast_sites
 ALTER TABLE ONLY project_saved_replies
     ADD CONSTRAINT fk_0ace76afbb FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE NOT VALID;
 
+ALTER TABLE ONLY subscription_seat_assignments
+    ADD CONSTRAINT fk_0b6bc63773 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY approval_group_rules_protected_branches
     ADD CONSTRAINT fk_0b85e6c388 FOREIGN KEY (protected_branch_id) REFERENCES protected_branches(id) ON DELETE CASCADE;
 
@@ -33809,9 +33808,6 @@ ALTER TABLE ONLY wiki_page_slugs
 
 ALTER TABLE ONLY security_orchestration_policy_rule_schedules
     ADD CONSTRAINT fk_3e78b9a150 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY compliance_checks
-    ADD CONSTRAINT fk_3fbfa4295c FOREIGN KEY (requirement_id) REFERENCES compliance_requirements(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY abuse_reports
     ADD CONSTRAINT fk_3fe6467b93 FOREIGN KEY (assignee_id) REFERENCES users(id) ON DELETE SET NULL;
@@ -34227,6 +34223,9 @@ ALTER TABLE ONLY work_item_dates_sources
 ALTER TABLE ONLY bulk_import_exports
     ADD CONSTRAINT fk_8c6f33cebe FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY subscription_seat_assignments
+    ADD CONSTRAINT fk_8d214f4142 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY raw_usage_data
     ADD CONSTRAINT fk_8e21125854 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
@@ -34598,9 +34597,6 @@ ALTER TABLE ONLY bulk_import_exports
 
 ALTER TABLE ONLY personal_access_tokens
     ADD CONSTRAINT fk_c951fbf57e FOREIGN KEY (previous_personal_access_token_id) REFERENCES personal_access_tokens(id) ON DELETE SET NULL;
-
-ALTER TABLE ONLY compliance_checks
-    ADD CONSTRAINT fk_c9683a794f FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY jira_tracker_data
     ADD CONSTRAINT fk_c98abcd54c FOREIGN KEY (integration_id) REFERENCES integrations(id) ON DELETE CASCADE;

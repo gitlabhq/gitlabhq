@@ -21,7 +21,7 @@ The following reference architectures are available as recommended starting poin
 The architectures are named in terms of peak load, based on user count or requests per second (RPS). RPS is calculated based on average real data.
 
 NOTE:
-Each architecture is designed to be [scalable and elastic](#scaling-an-environment). They can be adjusted accordingly based on your workload. For example, some known heavy scenarios such as using [large monorepos](#large-monorepos) or notable [additional workloads](#additional-workloads).
+Each architecture is designed to be [scalable and elastic](#scaling-an-environment). They can be adjusted accordingly based on your workload, upwards or downwards. For example, some known heavy scenarios such as using [large monorepos](#large-monorepos) or notable [additional workloads](#additional-workloads).
 
 For details about what each reference architecture is tested against, see the **Testing Methodology** section of each page.
 
@@ -29,24 +29,24 @@ For details about what each reference architecture is tested against, see the **
 
 The following is the list of Linux package based reference architectures:
 
-- [Up to 20 RPS or 1,000 users](1k_users.md) <span style="color: darkgrey;">_API: 20 RPS, Web: 2 RPS, Git (Pull): 2 RPS, Git (Push): 1 RPS_</span>
-- [Up to 40 RPS or 2,000 users](2k_users.md) <span style="color: darkgrey;">_API: 40 RPS, Web: 4 RPS, Git (Pull): 4 RPS, Git (Push): 1 RPS_</span>
-- [Up to 60 RPS or 3,000 users](3k_users.md) <span style="color: darkgrey;">_API: 60 RPS, Web: 6 RPS, Git (Pull): 6 RPS, Git (Push): 1 RPS_</span>
-- [Up to 100 RPS or 5,000 users](5k_users.md) <span style="color: darkgrey;">_API: 100 RPS, Web: 10 RPS, Git (Pull): 10 RPS, Git (Push): 2 RPS_</span>
-- [Up to 200 RPS or 10,000 users](10k_users.md) <span style="color: darkgrey;">_API: 200 RPS, Web: 20 RPS, Git (Pull): 20 RPS, Git (Push): 4 RPS_</span>
-- [Up to 500 RPS or 25,000 users](25k_users.md) <span style="color: darkgrey;">_API: 500 RPS, Web: 50 RPS, Git (Pull): 50 RPS, Git (Push): 10 RPS_</span>
-- [Up to 1000 RPS or 50,000 users](50k_users.md) <span style="color: darkgrey;">_API: 1000 RPS, Web: 100 RPS, Git (Pull): 100 RPS, Git (Push): 20 RPS_</span>
+- [Up to 20 RPS or 1,000 users](1k_users.md) <span style="color: #74717A;">_API: 20 RPS, Web: 2 RPS, Git (Pull): 2 RPS, Git (Push): 1 RPS_</span>
+- [Up to 40 RPS or 2,000 users](2k_users.md) <span style="color: #74717A;">_API: 40 RPS, Web: 4 RPS, Git (Pull): 4 RPS, Git (Push): 1 RPS_</span>
+- [Up to 60 RPS or 3,000 users](3k_users.md) <span style="color: #74717A;">_API: 60 RPS, Web: 6 RPS, Git (Pull): 6 RPS, Git (Push): 1 RPS_</span>
+- [Up to 100 RPS or 5,000 users](5k_users.md) <span style="color: #74717A;">_API: 100 RPS, Web: 10 RPS, Git (Pull): 10 RPS, Git (Push): 2 RPS_</span>
+- [Up to 200 RPS or 10,000 users](10k_users.md) <span style="color: #74717A;">_API: 200 RPS, Web: 20 RPS, Git (Pull): 20 RPS, Git (Push): 4 RPS_</span>
+- [Up to 500 RPS or 25,000 users](25k_users.md) <span style="color: #74717A;">_API: 500 RPS, Web: 50 RPS, Git (Pull): 50 RPS, Git (Push): 10 RPS_</span>
+- [Up to 1000 RPS or 50,000 users](50k_users.md) <span style="color: #74717A;">_API: 1000 RPS, Web: 100 RPS, Git (Pull): 100 RPS, Git (Push): 20 RPS_</span>
 
 ### Cloud native hybrid
 
 The following is a list of Cloud Native Hybrid reference architectures, where select recommended components can be run in Kubernetes:
 
-- [Up to 40 RPS or 2,000 users](2k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) <span style="color: darkgrey;">_API: 40 RPS, Web: 4 RPS, Git (Pull): 4 RPS, Git (Push): 1 RPS_</span>
-- [Up to 60 RPS or 3,000 users](3k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) <span style="color: darkgrey;">_API: 60 RPS, Web: 6 RPS, Git (Pull): 6 RPS, Git (Push): 1 RPS_</span>
-- [Up to 100 RPS or 5,000 users](5k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) <span style="color: darkgrey;">_API: 100 RPS, Web: 10 RPS, Git (Pull): 10 RPS, Git (Push): 2 RPS_</span>
-- [Up to 200 RPS or 10,000 users](10k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) <span style="color: darkgrey;">_API: 200 RPS, Web: 20 RPS, Git (Pull): 20 RPS, Git (Push): 4 RPS_</span>
-- [Up to 500 RPS or 25,000 users](25k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) <span style="color: darkgrey;">_API: 500 RPS, Web: 50 RPS, Git (Pull): 50 RPS, Git (Push): 10 RPS_</span>
-- [Up to 1000 RPS or 50,000 users](50k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) <span style="color: darkgrey;">_API: 1000 RPS, Web: 100 RPS, Git (Pull): 100 RPS, Git (Push): 20 RPS_</span>
+- [Up to 40 RPS or 2,000 users](2k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) <span style="color: #74717A;">_API: 40 RPS, Web: 4 RPS, Git (Pull): 4 RPS, Git (Push): 1 RPS_</span>
+- [Up to 60 RPS or 3,000 users](3k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) <span style="color: #74717A;">_API: 60 RPS, Web: 6 RPS, Git (Pull): 6 RPS, Git (Push): 1 RPS_</span>
+- [Up to 100 RPS or 5,000 users](5k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) <span style="color: #74717A;">_API: 100 RPS, Web: 10 RPS, Git (Pull): 10 RPS, Git (Push): 2 RPS_</span>
+- [Up to 200 RPS or 10,000 users](10k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) <span style="color: #74717A;">_API: 200 RPS, Web: 20 RPS, Git (Pull): 20 RPS, Git (Push): 4 RPS_</span>
+- [Up to 500 RPS or 25,000 users](25k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) <span style="color: #74717A;">_API: 500 RPS, Web: 50 RPS, Git (Pull): 50 RPS, Git (Push): 10 RPS_</span>
+- [Up to 1000 RPS or 50,000 users](50k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) <span style="color: #74717A;">_API: 1000 RPS, Web: 100 RPS, Git (Pull): 100 RPS, Git (Push): 20 RPS_</span>
 
 ## Before you start
 
@@ -72,26 +72,106 @@ This section explains the things to consider when picking a reference architectu
 
 ### Expected load (RPS or user count)
 
-First, check the expected peak load you want your environment to serve.
+The right architecture size depends primarily on your environment's expected peak load. The most objective measure of this load is through peak Requests per Second (RPS) coming into the environment.
 
-Each architecture is described in terms of peak RPS or user count load. Each architecture is tested
-against its listed RPS for each endpoint type (API, Web, Git). The typical peak load corresponds to given user count, including both manual and automated interactions.
-These detailed are described in the **Testing Methodology** section on each page.
+Each architecture is designed to handle specific RPS targets for different types of requests (API, Web, Git). These details are described in the **Testing Methodology** section on each page.
 
-To determine expected load, find out what peak RPS you want your environment to handle across endpoint types through existing metrics. Then, select the corresponding architecture.
-
-Finding out the RPS can depend greatly on the specific environment setup and monitoring stack. Some potential options include using:
+Finding out the RPS can depend notably on the specific environment setup and monitoring stack. Some potential options include:
 
 - [GitLab Prometheus](../monitoring/prometheus/index.md#sample-prometheus-queries) with queries like `sum(irate(gitlab_transaction_duration_seconds_count{controller!~'HealthController|MetricsController|'}[1m])) by (controller, action)`.
 - Other monitoring solutions.
 - Load Balancer statistics.
 
-Contact our [Support team](https://about.gitlab.com/support/) for further guidance if required.
+If you can't determine your RPS, we provide an alternative sizing method based on equivalent User Count by Load Category. This count is mapped to typical RPS values, considering both manual and automated usage.
 
-#### If in doubt, pick the closest user count and scale accordingly
+#### Initial Sizing Guide
 
-If you are not able to find out the expected peak RPS, then select the architecture based on user count to start with. You can then monitor the environment
-closely to confirm the RPS, whether the architecture is performing and [scale accordingly](#scaling-an-environment) as necessary.
+See initial sizing guide table below for guidance on what architecture to pick for the expected load:
+
+<table class="ra-table">
+  <col>
+  <tr>
+    <th style="text-align: center" rowspan="2"><br/>Load Category</th>
+    <th style="text-align: center" colspan="4" scope="colgroup">Requests per Second (RPS)</th>
+    <th rowspan="2" style="text-align: center"><br/>Typical User Count</th>
+    <th rowspan="2" style="text-align: center"><br/>Reference Architecture</th>
+  </tr>
+  <tr>
+    <th scope="col" style="text-align: center">API</th>
+    <th scope="col" style="text-align: center">Web</th>
+    <th scope="col" style="text-align: center">Git Pull</th>
+    <th scope="col" style="text-align: center">Git Push</th>
+  </tr>
+  <tr>
+    <td>X Small</td>
+    <td>20</td>
+    <td>2</td>
+    <td>2</td>
+    <td>1</td>
+    <td>1,000</td>
+    <th scope="row"><a href="https://docs.gitlab.com/ee/administration/reference_architectures/1k_users.html">Up to 20 RPS or 1,000 users</a></th>
+  </tr>
+  <tr>
+    <td>Small</td>
+    <td>40</td>
+    <td>4</td>
+    <td>4</td>
+    <td>1</td>
+    <td>2,000</td>
+    <th scope="row"><a href="https://docs.gitlab.com/ee/administration/reference_architectures/2k_users.html">Up to 40 RPS or 2,000 users</a></th>
+  </tr>
+  <tr>
+    <td>Medium</td>
+    <td>60</td>
+    <td>6</td>
+    <td>6</td>
+    <td>1</td>
+    <td>3,000</td>
+    <th scope="row"><a href="https://docs.gitlab.com/ee/administration/reference_architectures/3k_users.html">Up to 60 RPS or 3,000 users</a></th>
+  </tr>
+  <tr>
+    <td>Large</td>
+    <td>100</td>
+    <td>10</td>
+    <td>10</td>
+    <td>2</td>
+    <td>5,000</td>
+    <th scope="row"><a href="https://docs.gitlab.com/ee/administration/reference_architectures/5k_users.html">Up to 100 RPS or 5,000 users</a></th>
+  </tr>
+  <tr>
+    <td>X Large</td>
+    <td>200</td>
+    <td>20</td>
+    <td>20</td>
+    <td>4</td>
+    <td>10,000</td>
+    <th scope="row"><a href="https://docs.gitlab.com/ee/administration/reference_architectures/10k_users.html">Up to 200 RPS or 10,000 users</a></th>
+  </tr>
+  <tr>
+    <td>2X Large</td>
+    <td>500</td>
+    <td>50</td>
+    <td>50</td>
+    <td>10</td>
+    <td>25,000</td>
+    <th scope="row"><a href="https://docs.gitlab.com/ee/administration/reference_architectures/25k_users.html">Up to 500 RPS or 25,000 users</a></th>
+  </tr>
+  <tr>
+    <td>3X Large</td>
+    <td>1000</td>
+    <td>100</td>
+    <td>100</td>
+    <td>20</td>
+    <td>50,000</td>
+    <th scope="row"><a href="https://docs.gitlab.com/ee/administration/reference_architectures/50k_users.html">Up to 1000 RPS or 50,000 users</a></th>
+  </tr>
+</table>
+
+NOTE:
+Before selecting an initial Reference Architecture, we recommended reviewing this section thoroughly to consider other factors such as High Availability (HA) or the use of Large Monorepos, as these may impact the choice beyond just RPS or user count.
+
+NOTE:
+After selecting an initial Reference Architecture, it's possible to then [scale up and down](#scaling-an-environment) accordingly to your needs if metrics support.
 
 ### Standalone (non-HA)
 
@@ -175,18 +255,18 @@ Below you can find the above guidance in the form of a decision tree. It's recom
 %%{init: { 'theme': 'base' } }%%
 graph TD
    L0A(<b>What Reference Architecture should I use?</b>)
-   L1A(<b>What is your <a href=#expected-load-rps>expected load</a>?</b>)
+   L1A(<b>What is your <a href=#expected-load-rps--user-count>expected load</a>?</b>)
 
-   L2A("Equivalent to <a href=3k_users.md#testing-methodology>3,000 users</a> or more?")
-   L2B("Equivalent to <a href=2k_users.md#testing-methodology>2,000 users</a> or less?")
+   L2A("60 RPS / 3,000 users or more?")
+   L2B("40 RPS / 2,000 users or less?")
 
    L3A("<a href=#do-you-need-high-availability-ha>Do you need HA?</a><br>(or zero-downtime upgrades)")
    L3B[Do you have experience with<br/>and want additional resilience<br/>with select components in Kubernetes?]
 
-   L4A><b>Recommendation</b><br><br>60 RPS / 3K users architecture with HA<br>and supported reductions]
-   L4B><b>Recommendation</b><br><br>Architecture closest to user<br>count with HA]
-   L4C><b>Recommendation</b><br><br>Cloud Native Hybrid architecture<br>closest to user count]
-   L4D>"<b>Recommendation</b><br><br>Standalone 20 RPS / 1K users or 40 RPS / 2K users<br/>architecture with Backups"]
+   L4A><b>Recommendation</b><br><br>60 RPS / 3,000 user architecture with HA<br>and supported reductions]
+   L4B><b>Recommendation</b><br><br>Architecture closest to <a href=#expected-load-rps--user-count>expected load</a> with HA]
+   L4C><b>Recommendation</b><br><br>Cloud Native Hybrid architecture<br>closest to <a href=#expected-load-rps--user-count>expected load</a>]
+   L4D>"<b>Recommendation</b><br><br>Standalone 20 RPS / 1,000 user or 40 RPS / 2,000 user<br/>architecture with Backups"]
 
    L0A --> L1A
    L1A --> L2A
@@ -262,6 +342,8 @@ The reference architectures were tested with repositories of varying sizes that 
 
 **However, [large monorepos](../../user/project/repository/monorepos/index.md) (several gigabytes or more) can significantly impact the performance of Git and in turn the environment itself.**
 Their presence, and how they are used, can put a significant strain on the entire system from Gitaly through to the underlying infrastructure.
+
+The performance implications are largely software in nature. Additional hardware resources lead to diminishing returns.
 
 WARNING:
 If this applies to you, we strongly recommended referring to the linked documentation and reaching out to your [Customer Success Manager](https://handbook.gitlab.com/job-families/sales/customer-success-management/) or our [Support team](https://about.gitlab.com/support/) for further guidance.
@@ -552,28 +634,12 @@ Testing is done publicly, and all results are shared.
 
 The following table details the testing done against the reference architectures along with the frequency and results. Additional testing is continuously evaluated, and the table is updated accordingly.
 
-<style>
-table.test-coverage td {
-    border-top: 1px solid #dbdbdb;
-    border-left: 1px solid #dbdbdb;
-    border-right: 1px solid #dbdbdb;
-    border-bottom: 1px solid #dbdbdb;
-}
-
-table.test-coverage th {
-    border-top: 1px solid #dbdbdb;
-    border-left: 1px solid #dbdbdb;
-    border-right: 1px solid #dbdbdb;
-    border-bottom: 1px solid #dbdbdb;
-}
-</style>
-
-<table class="test-coverage">
+<table class="ra-table">
   <col>
   <colgroup span="2"></colgroup>
   <colgroup span="2"></colgroup>
   <tr>
-    <th rowspan="2">Reference<br/>Architecture</th>
+    <th rowspan="2"><br/>Reference Architecture</th>
     <th style="text-align: center" colspan="2" scope="colgroup">GCP (* also proxy for Bare-Metal)</th>
     <th style="text-align: center" colspan="2" scope="colgroup">AWS</th>
     <th style="text-align: center" colspan="2" scope="colgroup">Azure</th>
@@ -586,7 +652,7 @@ table.test-coverage th {
     <th scope="col">Linux package</th>
   </tr>
     <tr>
-    <th scope="row">1k</th>
+    <th scope="row"><a href="https://docs.gitlab.com/ee/administration/reference_architectures/1k_users.html">Up to 20 RPS or 1,000 users</a></th>
     <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/1k">Weekly</a></td>
     <td style="background-color:lightgrey"></td>
     <td style="background-color:lightgrey"></td>
@@ -594,7 +660,7 @@ table.test-coverage th {
     <td style="background-color:lightgrey"></td>
   </tr>
   <tr>
-    <th scope="row">2k</th>
+    <th scope="row"><a href="https://docs.gitlab.com/ee/administration/reference_architectures/2k_users.html">Up to 40 RPS or 2,000 users</a></th>
     <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/2k">Weekly</a></td>
     <td style="background-color:lightgrey"></td>
     <td style="background-color:lightgrey"></td>
@@ -602,7 +668,7 @@ table.test-coverage th {
     <td><i>Planned</i></td>
   </tr>
   <tr>
-    <th scope="row">3k</th>
+    <th scope="row"><a href="https://docs.gitlab.com/ee/administration/reference_architectures/3k_users.html">Up to 60 RPS or 3,000 users</a></th>
     <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/3k">Weekly</a></td>
     <td style="background-color:lightgrey"></td>
     <td style="background-color:lightgrey"></td>
@@ -610,7 +676,7 @@ table.test-coverage th {
     <td style="background-color:lightgrey"></td>
   </tr>
   <tr>
-    <th scope="row">5k</th>
+    <th scope="row"><a href="https://docs.gitlab.com/ee/administration/reference_architectures/5k_users.html">Up to 100 RPS or 5,000 users</a></th>
     <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/5k">Weekly</a></td>
     <td style="background-color:lightgrey"></td>
     <td style="background-color:lightgrey"></td>
@@ -618,7 +684,7 @@ table.test-coverage th {
     <td style="background-color:lightgrey"></td>
   </tr>
   <tr>
-    <th scope="row">10k</th>
+    <th scope="row"><a href="https://docs.gitlab.com/ee/administration/reference_architectures/10k_users.html">Up to 200 RPS or 10,000 users</a></th>
     <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/10k">Daily</a></td>
     <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/10k_hybrid">Weekly</a></td>
     <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/10k_aws">Weekly</a></td>
@@ -626,7 +692,7 @@ table.test-coverage th {
     <td style="background-color:lightgrey"></td>
   </tr>
   <tr>
-    <th scope="row">25k</th>
+    <th scope="row"><a href="https://docs.gitlab.com/ee/administration/reference_architectures/25k_users.html">Up to 500 RPS or 25,000 users</a></th>
     <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/25k">Weekly</a></td>
     <td style="background-color:lightgrey"></td>
     <td style="background-color:lightgrey"></td>
@@ -634,7 +700,7 @@ table.test-coverage th {
     <td style="background-color:lightgrey"></td>
   </tr>
   <tr>
-    <th scope="row">50k</th>
+    <th scope="row"><a href="https://docs.gitlab.com/ee/administration/reference_architectures/50k_users.html">Up to 1000 RPS or 50,000 users</a></th>
     <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/50k">Weekly</a></td>
     <td style="background-color:lightgrey"></td>
     <td style="background-color:lightgrey"></td>
@@ -657,12 +723,12 @@ However, be aware of the following caveats:
 
 To get an accurate estimate of costs for your specific environment you must take the closest template and adjust it accordingly to match the specs and your expected usage.
 
-<table class="test-coverage">
+<table class="ra-table">
   <col>
   <colgroup span="2"></colgroup>
   <colgroup span="2"></colgroup>
   <tr>
-    <th rowspan="2">Reference<br/>Architecture</th>
+    <th rowspan="2"><br/>Reference Architecture</th>
     <th style="text-align: center" scope="colgroup">GCP</th>
     <th style="text-align: center" scope="colgroup">AWS</th>
     <th style="text-align: center" scope="colgroup">Azure</th>
@@ -673,43 +739,43 @@ To get an accurate estimate of costs for your specific environment you must take
     <th scope="col">Linux package</th>
   </tr>
     <tr>
-    <th scope="row">1k</th>
+    <th scope="row"><a href="https://docs.gitlab.com/ee/administration/reference_architectures/1k_users.html">Up to 20 RPS or 1,000 users</a></th>
     <td><a href="https://cloud.google.com/products/calculator/estimate-preview/02846ea4-635b-422f-a636-a5eff9bf9a2f?hl=en">Calculated cost</a></td>
     <td><a href="https://calculator.aws/#/estimate?id=b51f178f4403b69a63f6eb33ea425f82de3bf249">Calculated cost</a></td>
     <td><a href="https://azure.microsoft.com/en-us/pricing/calculator/?shared-estimate=1adf30bef7e34ceba9efa97c4470417b">Calculated cost</a></td>
   </tr>
   <tr>
-    <th scope="row">2k</th>
+    <th scope="row"><a href="https://docs.gitlab.com/ee/administration/reference_architectures/2k_users.html">Up to 40 RPS or 2,000 users</a></th>
     <td><a href="https://cloud.google.com/products/calculator/estimate-preview/017fa74b-7b2c-4334-b537-5201d4fc2de4?hl=en">Calculated cost</a></td>
     <td><a href="https://calculator.aws/#/estimate?id=3b3e3b81953737132789591d3a5179521943f1c0">Calculated cost</a></td>
     <td><a href="https://azure.microsoft.com/en-us/pricing/calculator/?shared-estimate=25f66c35ba454bb98fb4034a8a50bb8c">Calculated cost</a></td>
   </tr>
   <tr>
-    <th scope="row">3k</th>
+    <th scope="row"><a href="https://docs.gitlab.com/ee/administration/reference_architectures/3k_users.html">Up to 60 RPS or 3,000 users</a></th>
     <td><a href="https://cloud.google.com/products/calculator/estimate-preview/bc5c06ca-6d6b-423f-a923-27bafa8ac3da?hl=en">Calculated cost</a></td>
     <td><a href="https://calculator.aws/#/estimate?id=7e94eb8712f6845fdeb05e61f459598a91dac3cb">Calculated cost</a></td>
     <td><a href="https://azure.microsoft.com/en-us/pricing/calculator/?shared-estimate=24ac11fd947a4985ae9c9a5142649ad3">Calculated cost</a></td>
   </tr>
   <tr>
-    <th scope="row">5k</th>
+    <th scope="row"><a href="https://docs.gitlab.com/ee/administration/reference_architectures/5k_users.html">Up to 100 RPS or 5,000 users</a></th>
     <td><a href="https://cloud.google.com/products/calculator/estimate-preview/ec788d9c-1377-4d03-b0e3-0f7950391a27?hl=en">Calculated cost</a></td>
     <td><a href="https://calculator.aws/#/estimate?id=ad4c9db623a214c92d780cd9dff33f444d62cf02">Calculated cost</a></td>
     <td><a href="https://azure.microsoft.com/en-us/pricing/calculator/?shared-estimate=bcf23017ddfd40649fdc885cacd08d0c">Calculated cost</a></td>
   </tr>
   <tr>
-    <th scope="row">10k</th>
+    <th scope="row"><a href="https://docs.gitlab.com/ee/administration/reference_architectures/10k_users.html">Up to 200 RPS or 10,000 users</a></th>
     <td><a href="https://cloud.google.com/products/calculator/estimate-preview/9ef6f849-833b-4f2f-911e-979f5a491366?hl=en">Calculated cost</a></td>
     <td><a href="https://calculator.aws/#/estimate?id=3e2970f919915a6337acea76a9f07655a1ecda4a">Calculated cost</a></td>
     <td><a href="https://azure.microsoft.com/en-us/pricing/calculator/?shared-estimate=5748068be4864af6a34efb1cde685fa1">Calculated cost</a></td>
   </tr>
   <tr>
-    <th scope="row">25k</th>
+    <th scope="row"><a href="https://docs.gitlab.com/ee/administration/reference_architectures/25k_users.html">Up to 500 RPS or 25,000 users</a></th>
     <td><a href="https://cloud.google.com/products/calculator/estimate-preview/6655e1d7-42ae-4f01-98cb-f3a29cf62a15?hl=en">Calculated cost</a></td>
     <td><a href="https://calculator.aws/#/estimate?id=32acaeaa93366110cd5fbf98a66a8a141db7adcb">Calculated cost</a></td>
     <td><a href="https://azure.microsoft.com/en-us/pricing/calculator/?shared-estimate=24f878f20ee64b5cb64de459d34c8128">Calculate cost</a></td>
   </tr>
   <tr>
-    <th scope="row">50k</th>
+    <th scope="row"><a href="https://docs.gitlab.com/ee/administration/reference_architectures/50k_users.html">Up to 1000 RPS or 50,000 users</a></th>
     <td><a href="https://cloud.google.com/products/calculator/estimate-preview/9128a9e9-25a2-459e-9480-edc0264d4b18?hl=en">Calculated cost</a></td>
     <td><a href="https://calculator.aws/#/estimate?id=5a0bba1338e3577d627ec97833dbc80ac9615562">Calculated cost</a></td>
     <td><a href="https://azure.microsoft.com/en-us/pricing/calculator/?shared-estimate=4dd065eea2194d70b44d6d897e81f460">Calculated cost</a></td>
@@ -916,3 +982,19 @@ You can find a full history of changes [on the GitLab project](https://gitlab.co
 - [2021-02-12](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/51928): Add documentation for setting up Gitaly Cluster for the 10k Reference Architecture.
 - [2021-02-09](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52249): Add the first iteration of the 10k Cloud Native Hybrid reference architecture.
 - [2021-01-07](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50573): Add documentation for using Patroni as PostgreSQL replication manager.
+
+<style>
+table.ra-table td {
+  border-top: 1px solid #dbdbdb;
+  border-left: 1px solid #dbdbdb;
+  border-right: 1px solid #dbdbdb;
+  border-bottom: 1px solid #dbdbdb;
+}
+
+table.ra-table th {
+  border-top: 1px solid #dbdbdb;
+  border-left: 1px solid #dbdbdb;
+  border-right: 1px solid #dbdbdb;
+  border-bottom: 1px solid #dbdbdb;
+}
+</style>

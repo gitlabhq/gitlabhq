@@ -8,7 +8,6 @@ module Mutations
       NON_NULLABLE_ARGS = [
         :extensions_marketplace_opt_in_status,
         :organization_groups_projects_display,
-        :use_web_ide_extension_marketplace,
         :visibility_pipeline_id_type,
         :use_work_items_view
       ].freeze
@@ -19,9 +18,6 @@ module Mutations
       argument :issues_sort, Types::IssueSortEnum,
         required: false,
         description: 'Sort order for issue lists.'
-      argument :use_web_ide_extension_marketplace, GraphQL::Types::Boolean,
-        required: false,
-        description: 'Whether Web IDE Extension Marketplace is enabled for the user.'
       argument :use_work_items_view, GraphQL::Types::Boolean,
         required: false,
         description: 'Use work item view instead of legacy issue view.'

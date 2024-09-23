@@ -870,7 +870,6 @@ project:
 - design_management_repository_state
 - compliance_standards_adherence
 - compliance_requirements
-- compliance_checks
 - scan_result_policy_reads
 - scan_result_policy_violations
 - project_state

@@ -1,6 +1,6 @@
 import getStateKey from 'ee_else_ce/vue_merge_request_widget/stores/get_state_key';
 import { STATUS_CLOSED, STATUS_MERGED, STATUS_OPEN } from '~/issues/constants';
-import { formatDate, getTimeago, timeagoLanguageCode } from '~/lib/utils/datetime_utility';
+import { formatDate, getTimeago, newDate, timeagoLanguageCode } from '~/lib/utils/datetime_utility';
 import { machine } from '~/lib/utils/finite_state_machine';
 import { badgeState } from '~/merge_requests/components/merge_request_header.vue';
 import {
@@ -351,7 +351,7 @@ export default class MergeRequestStore {
       return '';
     }
 
-    return format(date, timeagoLanguageCode);
+    return format(newDate(date), timeagoLanguageCode);
   }
 
   static getPreferredAutoMergeStrategy(availableAutoMergeStrategies) {

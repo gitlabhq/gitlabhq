@@ -8,7 +8,7 @@ import {
   GlBadge,
   GlLink,
 } from '@gitlab/ui';
-import { localeDateFormat } from '~/lib/utils/datetime_utility';
+import { localeDateFormat, newDate } from '~/lib/utils/datetime_utility';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { n__ } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
@@ -126,7 +126,7 @@ export default {
       return this.tag.publishedAt || this.tag.createdAt;
     },
     publishedDateTime() {
-      return localeDateFormat.asDateTimeFull.format(this.publishDateTime);
+      return localeDateFormat.asDateTimeFull.format(newDate(this.publishDateTime));
     },
     formattedRevision() {
       // to be removed when API response is adjusted
