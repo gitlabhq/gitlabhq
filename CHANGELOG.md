@@ -2,6 +2,19 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 17.4.1 (2024-09-24)
+
+### Fixed (2 changes)
+
+- [Fix incorrect gitlab-shell-check filename](https://gitlab.com/gitlab-org/security/gitlab/-/commit/27d061512878b35507d1228188f33774193c90d4)
+- [Check commit message for issue close pattern setting](https://gitlab.com/gitlab-org/security/gitlab/-/commit/6f475e9255dcb23478ae1401320d4bf74d2523b0)
+
+### Security (3 changes)
+
+- [Implement input sanitization for SummarizeComments](https://gitlab.com/gitlab-org/security/gitlab/-/commit/907bbbae5d84d2505bc9aeaaa2276a9d6662014b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4474))
+- [Hide system notes with invalid references](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f349ddc9dcff2e5a7d9c496a86ce8a5b8f2192f3) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4482))
+- [Reset dependency proxy maven credentials when registry url is changed](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7770dcc609ec9fe6f51ba36cbc085c1ab97a6560) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4472))
+
 ## 17.4.0 (2024-09-18)
 
 ### Added (202 changes)
