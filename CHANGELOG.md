@@ -2,6 +2,14 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 17.3.4 (2024-09-24)
+
+### Security (3 changes)
+
+- [Implement input sanitization for SummarizeComments](https://gitlab.com/gitlab-org/security/gitlab/-/commit/034f25d7a760c8027f3c7426ca57ee49459f866f) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4411))
+- [Hide system notes with invalid references](https://gitlab.com/gitlab-org/security/gitlab/-/commit/484a80474d1f262b45923de365e288140605333e) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4483))
+- [Reset dependency proxy maven credentials when registry url is changed](https://gitlab.com/gitlab-org/security/gitlab/-/commit/74a4ae92cbb1e74e9e1e6858d6d3b0cf9daa4d09) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4458))
+
 ## 17.3.3 (2024-09-16)
 
 No changes.
