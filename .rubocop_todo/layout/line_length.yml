@@ -992,7 +992,6 @@ Layout/LineLength:
     - 'ee/app/workers/concerns/elastic/migration_backfill_helper.rb'
     - 'ee/app/workers/concerns/elastic/migration_obsolete.rb'
     - 'ee/app/workers/elastic/migration_worker.rb'
-    - 'ee/app/workers/elastic_commit_indexer_worker.rb'
     - 'ee/app/workers/elastic_delete_project_worker.rb'
     - 'ee/app/workers/elastic_namespace_rollout_worker.rb'
     - 'ee/app/workers/geo/destroy_worker.rb'

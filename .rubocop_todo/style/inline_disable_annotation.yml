@@ -1517,7 +1517,6 @@ Style/InlineDisableAnnotation:
     - 'ee/app/workers/elastic_full_index_worker.rb'
     - 'ee/app/workers/elastic_index_bulk_cron_worker.rb'
     - 'ee/app/workers/elastic_index_initial_bulk_cron_worker.rb'
-    - 'ee/app/workers/elastic_namespace_indexer_worker.rb'
     - 'ee/app/workers/elastic_namespace_rollout_worker.rb'
     - 'ee/app/workers/emails/abandoned_trial_emails_cron_worker.rb'
     - 'ee/app/workers/epics/new_epic_issue_worker.rb'

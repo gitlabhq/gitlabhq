@@ -1114,7 +1114,6 @@ RSpec/NamedSubject:
     - 'ee/spec/workers/ee/repository_check/batch_worker_spec.rb'
     - 'ee/spec/workers/elastic/migration_worker_spec.rb'
     - 'ee/spec/workers/elastic/namespace_update_worker_spec.rb'
-    - 'ee/spec/workers/elastic_commit_indexer_worker_spec.rb'
     - 'ee/spec/workers/elastic_full_index_worker_spec.rb'
     - 'ee/spec/workers/elastic_indexing_control_worker_spec.rb'
     - 'ee/spec/workers/elastic_namespace_rollout_worker_spec.rb'

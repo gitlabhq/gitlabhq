@@ -84,8 +84,6 @@ Gitlab/NoFindInWorkers:
     - 'ee/app/workers/dependencies/export_worker.rb'
     - 'ee/app/workers/elastic/namespace_update_worker.rb'
     - 'ee/app/workers/elastic/project_transfer_worker.rb'
-    - 'ee/app/workers/elastic_association_indexer_worker.rb'
-    - 'ee/app/workers/elastic_namespace_indexer_worker.rb'
     - 'ee/app/workers/gitlab/export/segmented_export_finalisation_worker.rb'
     - 'ee/app/workers/gitlab/export/segmented_export_worker.rb'
     - 'ee/app/workers/group_wikis/git_garbage_collect_worker.rb'

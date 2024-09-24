@@ -33,7 +33,7 @@ To set up infrastructure for workspaces:
    1. Install an Ingress controller of your choice (for example, `ingress-nginx`).
    1. [Install](../clusters/agent/install/index.md) and [configure](gitlab_agent_configuration.md) the GitLab agent.
    1. Point [`dns_zone`](gitlab_agent_configuration.md#dns_zone) and `*.<dns_zone>`
-      to the load balancer exposed by the Ingress controller.
+      to the load balancer exposed by the Ingress controller. This load balancer must support WebSockets.
    1. [Set up the GitLab workspaces proxy](set_up_workspaces_proxy.md).
 1. Optional. [Configure sudo access for workspace](#configure-sudo-access-for-workspace).
 
