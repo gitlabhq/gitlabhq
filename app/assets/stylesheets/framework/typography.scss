@@ -895,4 +895,11 @@ wbr {
       margin-block-end: 0;
      }
   }
+  
+  // prevent backref character from rendering as emoji
+  .footnote-backref gl-emoji {
+    font-family: inherit; 
+    font-size: 0.875em;
+    pointer-events: none;
+  }
 }

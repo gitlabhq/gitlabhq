@@ -349,10 +349,6 @@ instructions and a demonstration of how to use the Vulnerability-Check Migration
 
 When working with security policies, consider these troubleshooting tips:
 
-- Confirm that scanners are properly configured and producing results for the latest branch.
-  Security Policies are designed to require approval when there are no results (no security report),
-  as this ensures that no vulnerabilities are introduced. We cannot know if there are any
-  vulnerabilities unless the scans enforced by the policy complete successfully and are evaluated.
 - You should not link a security policy project to both a development project and the group or
   subgroup the development project belongs to. Linking this way results in approval
   rules from the merge request approval policies not being applied to merge requests in the development project.

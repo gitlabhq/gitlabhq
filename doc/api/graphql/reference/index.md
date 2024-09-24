@@ -21885,6 +21885,7 @@ A Duo Workflow.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="duoworkflowcreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the workflow was created. |
+| <a id="duoworkflowgoal"></a>`goal` | [`String`](#string) | Goal of the workflow. |
 | <a id="duoworkflowhumanstatus"></a>`humanStatus` | [`String!`](#string) | Human-readable status of the workflow. |
 | <a id="duoworkflowid"></a>`id` | [`ID!`](#id) | ID of the workflow. |
 | <a id="duoworkflowprojectid"></a>`projectId` | [`ProjectID!`](#projectid) | ID of the project. |
@@ -21904,6 +21905,7 @@ Events that describe the history and progress of a Duo Workflow.
 | <a id="duoworkfloweventmetadata"></a>`metadata` | [`JsonString`](#jsonstring) | Metadata associated with the event. |
 | <a id="duoworkfloweventparenttimestamp"></a>`parentTimestamp` | [`Time`](#time) | Time of the parent event. |
 | <a id="duoworkfloweventtimestamp"></a>`timestamp` | [`Time`](#time) | Time of the event. |
+| <a id="duoworkfloweventworkflowgoal"></a>`workflowGoal` | [`String`](#string) | Goal of the workflow. |
 | <a id="duoworkfloweventworkflowstatus"></a>`workflowStatus` | [`DuoWorkflowStatus`](#duoworkflowstatus) | Status of the workflow. |
 
 ### `EgressNode`

@@ -230,8 +230,8 @@ Project permissions for [tasks](tasks.md):
 | View tasks        |   ✓   |    ✓     |     ✓     |     ✓      |   ✓   |       |
 | Create tasks      |   ✓   |    ✓     |     ✓     |     ✓      |   ✓   | Guest users can create tasks for issues they authored. Authors and assignees can modify the title and description even if they don't have the Reporter role. |
 | Add a linked item |   ✓   |    ✓     |     ✓     |     ✓      |   ✓   |       |
+| Remove from issue |   ✓   |    ✓     |     ✓     |     ✓      |   ✓   |       |
 | Edit tasks        |       |    ✓     |     ✓     |     ✓      |   ✓   |       |
-| Remove from issue |       |    ✓     |     ✓     |     ✓      |   ✓   |       |
 | Delete tasks      |       |          |           |            |   ✓   | Authors of tasks can delete them even if they don't have the Owner role. |
 
 Project permissions for [OKRs](okrs.md):

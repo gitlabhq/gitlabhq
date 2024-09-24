@@ -73,19 +73,6 @@ module Ci
       true
     end
 
-    def manual_confirmation_message
-      return unless config_options && config_options[:manual_confirmation]
-
-      variables = config_variables_to_hash
-      config_options[:manual_confirmation].gsub(/\$[A-Za-z]\w*/) do |match|
-        name = match.delete_prefix('$')
-        value = variables[name]
-        next match unless value
-
-        "$#{name}=#{value}"
-      end
-    end
-
     private
 
     def set_build_project
@@ -122,13 +109,6 @@ module Ci
 
     def runner_timeout_set?
       build.runner&.maximum_timeout.to_i > 0
-    end
-
-    def config_variables_to_hash
-      config_variables.each_with_object({}) do |item, hash|
-        hash[item[:key]] = item[:value]
-        hash
-      end
     end
   end
 end

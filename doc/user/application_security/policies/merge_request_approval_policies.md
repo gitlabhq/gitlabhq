@@ -53,8 +53,9 @@ following when implementing a merge request approval policy:
 
 - A merge request approval policy evaluates completed pipeline jobs, ignoring manual jobs. When the
   manual jobs are run, the policy re-evaluates the merge request's jobs.
-- All configured scanners must be present in the merge request's latest pipeline. If not, approvals
-  are required even if some vulnerability criteria have not been met.
+- For a merge request approval policy that evaluates the results of security scanners, all specified
+  scanners must have output a security report. If not, approvals are enforced to minimize the risk
+  of vulnerabilities being introduced.
 - The pipeline must produce artifacts for all enabled scanners, for both the source and target
   branches. If not, there's no basis for comparison and so the policy can't be evaluated. You should
   use a scan execution policy to enforce this requirement.

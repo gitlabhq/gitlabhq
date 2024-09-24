@@ -10621,7 +10621,9 @@ CREATE TABLE duo_workflows_workflows (
     project_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    status smallint DEFAULT 0 NOT NULL
+    status smallint DEFAULT 0 NOT NULL,
+    goal text,
+    CONSTRAINT check_5aedde451d CHECK ((char_length(goal) <= 4096))
 );
 
 CREATE SEQUENCE duo_workflows_workflows_id_seq

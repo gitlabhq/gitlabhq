@@ -73,13 +73,13 @@ RSpec.describe Banzai::Pipeline::FullPipeline, feature_category: :team_planning 
         <section data-footnotes class="footnotes">
         <ol>
         <li id="fn-1-#{identifier}">
-        <p>one <a href="#fnref-1-#{identifier}" data-footnote-backref data-footnote-backref-idx="1" aria-label="Back to reference 1" class="footnote-backref"><gl-emoji title="leftwards arrow with hook" data-name="leftwards_arrow_with_hook" data-unicode-version="1.1">↩</gl-emoji></a></p>
+        <p>one <a href="#fnref-1-#{identifier}" data-footnote-backref data-footnote-backref-idx="1" aria-label="Back to reference 1" title="Back to reference 1" class="footnote-backref">↩</a></p>
         </li>
         <li id="fn-%F0%9F%98%84second-#{identifier}">
-        <p>two <a href="#fnref-%F0%9F%98%84second-#{identifier}" data-footnote-backref data-footnote-backref-idx="2" aria-label="Back to reference 2" class="footnote-backref"><gl-emoji title="leftwards arrow with hook" data-name="leftwards_arrow_with_hook" data-unicode-version="1.1">↩</gl-emoji></a></p>
+        <p>two <a href="#fnref-%F0%9F%98%84second-#{identifier}" data-footnote-backref data-footnote-backref-idx="2" aria-label="Back to reference 2" title="Back to reference 2" class="footnote-backref">↩</a></p>
         </li>
         <li id="fn-_twenty-#{identifier}">
-        <p>twenty <a href="#fnref-_twenty-#{identifier}" data-footnote-backref data-footnote-backref-idx="3" aria-label="Back to reference 3" class="footnote-backref"><gl-emoji title="leftwards arrow with hook" data-name="leftwards_arrow_with_hook" data-unicode-version="1.1">↩</gl-emoji></a></p>
+        <p>twenty <a href="#fnref-_twenty-#{identifier}" data-footnote-backref data-footnote-backref-idx="3" aria-label="Back to reference 3" title="Back to reference 3" class="footnote-backref">↩</a></p>
         </li>
         </ol>
         </section>

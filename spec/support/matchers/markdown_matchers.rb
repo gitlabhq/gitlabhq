@@ -41,7 +41,7 @@ module MarkdownMatchers
     set_default_markdown_messages
 
     match do |actual|
-      expect(actual).to have_selector('gl-emoji', count: 12)
+      expect(actual).to have_selector('gl-emoji', count: 10)
 
       emoji_element = actual.at_css('gl-emoji')
       expect(emoji_element['data-name'].to_s).not_to be_empty

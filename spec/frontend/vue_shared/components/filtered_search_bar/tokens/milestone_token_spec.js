@@ -21,6 +21,7 @@ import {
   mockMilestones,
   mockRegularMilestone,
   projectMilestonesResponse,
+  mockDuplicateMilestones,
 } from '../mock_data';
 
 Vue.use(VueApollo);
@@ -90,6 +91,23 @@ describe('MilestoneToken', () => {
         await nextTick();
 
         expect(findBaseToken().props('suggestionsLoading')).toBe(true);
+      });
+
+      describe('when there are duplicate milestones in the data', () => {
+        it('only shows the milestone title once in results', async () => {
+          wrapper = createComponent({
+            config: {
+              fetchMilestones: jest.fn().mockResolvedValue({
+                data: mockDuplicateMilestones,
+              }),
+            },
+          });
+
+          await triggerFetchMilestones();
+
+          expect(findBaseToken().props('suggestions')).toHaveLength(1);
+          expect(findBaseToken().props('suggestions')[0].title).toEqual('99.0');
+        });
       });
 
       describe('when config.shouldSkipSort is true', () => {

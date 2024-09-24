@@ -74,6 +74,19 @@ export const mockEscapedMilestone = {
   title: '5.0 RC1',
 };
 
+export const mockDuplicateMilestones = [
+  {
+    id: 99,
+    name: '99.0',
+    title: '99.0',
+  },
+  {
+    id: 100,
+    name: '99.0',
+    title: '99.0',
+  },
+];
+
 export const mockMilestones = [
   {
     id: 2,
