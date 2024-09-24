@@ -4,14 +4,13 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Pagination::OffsetPagination do
   let(:resource) { Project.all }
+  let(:request_context) { double("request_context") }
   let(:custom_port) { 8080 }
   let(:incoming_api_projects_url) { "#{Gitlab.config.gitlab.url}:#{custom_port}/api/v4/projects" }
 
   before do
     stub_config_setting(port: custom_port)
   end
-
-  let(:request_context) { double("request_context") }
 
   subject(:paginator) do
     described_class.new(request_context)
@@ -234,6 +233,30 @@ RSpec.describe Gitlab::Pagination::OffsetPagination do
             end
 
             paginator.paginate(resource, without_count: true)
+          end
+
+          context 'when resources count is more than MAX_COUNT_LIMIT' do
+            before do
+              stub_const("::Kaminari::ActiveRecordRelationMethods::MAX_COUNT_LIMIT", 2)
+            end
+
+            it 'does not return the X-Total and X-Total-Pages headers' do
+              expect_no_header('X-Total')
+              expect_no_header('X-Total-Pages')
+              expect_header('X-Per-Page', '2')
+              expect_header('X-Page', '1')
+              expect_header('X-Next-Page', '2')
+              expect_header('X-Prev-Page', '')
+
+              expect_header('Link', anything) do |_key, val|
+                expect(val).to include(%(<#{incoming_api_projects_url}?#{query.merge(page: 1).to_query}>; rel="first"))
+                expect(val).to include(%(<#{incoming_api_projects_url}?#{query.merge(page: 2).to_query}>; rel="next"))
+                expect(val).not_to include('rel="last"')
+                expect(val).not_to include('rel="prev"')
+              end
+
+              subject.paginate(resource)
+            end
           end
         end
       end

@@ -3631,6 +3631,7 @@ Gitlab/BoundedContexts:
     - 'ee/app/workers/new_epic_worker.rb'
     - 'ee/app/workers/okrs/checkin_reminder_emails_cron_worker.rb'
     - 'ee/app/workers/package_metadata/advisories_sync_worker.rb'
+    - 'ee/app/workers/package_metadata/cve_enrichment_sync_worker.rb'
     - 'ee/app/workers/package_metadata/global_advisory_scan_worker.rb'
     - 'ee/app/workers/package_metadata/licenses_sync_worker.rb'
     - 'ee/app/workers/personal_access_tokens/groups/policy_worker.rb'

@@ -138,7 +138,6 @@ RSpec/ScatteredLet:
     - 'spec/lib/gitlab/metrics/subscribers/external_http_spec.rb'
     - 'spec/lib/gitlab/middleware/memory_report_spec.rb'
     - 'spec/lib/gitlab/pagination/keyset/page_spec.rb'
-    - 'spec/lib/gitlab/pagination/offset_pagination_spec.rb'
     - 'spec/lib/gitlab/patch/database_config_spec.rb'
     - 'spec/lib/gitlab/path_regex_spec.rb'
     - 'spec/lib/gitlab/relative_positioning/item_context_spec.rb'

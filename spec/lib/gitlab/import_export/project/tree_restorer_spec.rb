@@ -64,6 +64,14 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, feature_category: :i
           expect(Project.find_by_path('project').description).to eq('Nisi et repellendus ut enim quo accusamus vel magnam.')
         end
 
+        it 'has the project merge commit message template' do
+          expect(Project.find_by_path('project').merge_commit_template).to eq('merge commit message template')
+        end
+
+        it 'has the project squash commit message template' do
+          expect(Project.find_by_path('project').squash_commit_template).to eq('squash commit message template')
+        end
+
         it 'has the same label associated to two issues' do
           expect(ProjectLabel.find_by_title('test2').issues.count).to eq(2)
         end

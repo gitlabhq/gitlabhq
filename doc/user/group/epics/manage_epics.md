@@ -170,11 +170,11 @@ This feature is available for testing, but not ready for production use.
 When this feature is enabled, when you select an epic from the list or epic board, it opens in a drawer.
 You can then edit the epic or create comments.
 
-To open the epic in full view:
+To open the epic in full view, either:
 
-- Open the epic in a new tab. From the list of epics, either:
+- Open the epic in a new tab. From the list of epics, you can either:
   - Right-click the epic and open it in a new browser tab.
-  - Hold <kbd>Cmd</kbd> or <kbd>Ctrl</kbd> and click the epic.
+  - Hold <kbd>Cmd</kbd> or <kbd>Ctrl</kbd> and select the epic.
 - From the drawer, in the top-left corner, select **Open in full view**.
 
 ![Epic opened in a drawer.](img/epic_drawer_v17_4.png)

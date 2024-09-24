@@ -1123,15 +1123,6 @@ msgstr ""
 msgid "%{number_commits_behind} commits behind %{default_branch}, %{number_commits_ahead} commits ahead"
 msgstr ""
 
-msgid "%{oneMonthAgo} - %{today}"
-msgstr ""
-
-msgid "%{oneWeekAgo} - %{today}"
-msgstr ""
-
-msgid "%{oneYearAgo} - %{today}"
-msgstr ""
-
 msgid "%{openedEpics} open, %{closedEpics} closed"
 msgstr ""
 

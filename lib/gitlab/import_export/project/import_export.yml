@@ -751,6 +751,8 @@ included_attributes:
     - :security_and_compliance_enabled
     - :allow_merge_on_skipped_pipeline
     - :squash_option
+    - :merge_commit_template
+    - :squash_commit_template
   resource_milestone_events:
     - :user_id
     - :action
@@ -1122,6 +1124,8 @@ methods:
   project:
     - :allow_merge_on_skipped_pipeline
     - :squash_option
+    - :merge_commit_template
+    - :squash_commit_template
   notes:
     - :type
   commit_notes:

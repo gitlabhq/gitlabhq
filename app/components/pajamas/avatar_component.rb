@@ -9,6 +9,8 @@ module Pajamas
   class AvatarComponent < Pajamas::Component
     include Gitlab::Utils::StrongMemoize
 
+    SIZE_OPTIONS = [16, 24, 32, 48, 64, 96].freeze
+
     # @param item [User, Project, Group, AvatarEmail, String]
     # @param alt [String] text for the alt attribute
     # @param class [String] custom CSS class(es)
@@ -21,8 +23,6 @@ module Pajamas
       @size = filter_attribute(size.to_i, SIZE_OPTIONS, default: 64)
       @avatar_options = avatar_options
     end
-
-    SIZE_OPTIONS = [16, 24, 32, 48, 64, 96].freeze
 
     private
 

@@ -67,9 +67,9 @@ describe('Contributor area chart', () => {
     it('shows the tooltip with the formatted chart data', async () => {
       await setTooltipData('01-01-2000', 10);
 
-      expect(findTooltipTitle()).toEqual('Jan 01, 2000');
-      expect(findTooltipLabel()).toEqual(defaultProps.option.yAxis.name);
-      expect(findTooltipValue()).toEqual('10');
+      expect(findTooltipTitle()).toBe('Jan 1, 2000');
+      expect(findTooltipLabel()).toBe(defaultProps.option.yAxis.name);
+      expect(findTooltipValue()).toBe('10');
     });
   });
 

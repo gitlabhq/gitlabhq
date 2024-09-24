@@ -1,6 +1,6 @@
 import { isEmpty } from 'lodash';
 import { STATUS_CLOSED, STATUS_MERGED, STATUS_OPEN, STATUS_REOPENED } from '~/issues/constants';
-import { formatDate } from '~/lib/utils/datetime_utility';
+import { localeDateFormat, newDate } from '~/lib/utils/datetime_utility';
 import { __ } from '~/locale';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 
@@ -162,10 +162,10 @@ const mixins = {
       return this.createdAt ? this.timeFormatted(this.createdAt) : '';
     },
     createdAtTimestamp() {
-      return this.createdAt ? formatDate(new Date(this.createdAt)) : '';
+      return this.createdAt ? localeDateFormat.asDateTimeFull.format(newDate(this.createdAt)) : '';
     },
     mergedAtTimestamp() {
-      return this.mergedAt ? formatDate(new Date(this.mergedAt)) : '';
+      return this.mergedAt ? localeDateFormat.asDateTimeFull.format(newDate(this.mergedAt)) : '';
     },
     mergedAtInWords() {
       return this.mergedAt ? this.timeFormatted(this.mergedAt) : '';
@@ -174,7 +174,7 @@ const mixins = {
       return this.closedAt ? this.timeFormatted(this.closedAt) : '';
     },
     closedAtTimestamp() {
-      return this.closedAt ? formatDate(new Date(this.closedAt)) : '';
+      return this.closedAt ? localeDateFormat.asDateTimeFull.format(newDate(this.closedAt)) : '';
     },
     stateText() {
       if (this.isMerged) {

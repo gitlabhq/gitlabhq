@@ -112,7 +112,7 @@ class EventsFinder
   end
 
   def paginated_filtered_by_user_visibility(events)
-    events_count = events.count
+    events_count = events.limit(Kaminari::ActiveRecordRelationMethods::MAX_COUNT_LIMIT + 1).count
     events = events.with_associations if params[:with_associations]
     limited_events = events.page(page).per(per_page)
     visible_events = limited_events.select { |event| event.visible_to_user?(current_user) }

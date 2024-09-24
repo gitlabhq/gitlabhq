@@ -2,17 +2,6 @@
 # Cop supports --autocorrect.
 Layout/ClassStructure:
   Exclude:
-    - 'app/components/pajamas/accordion_item_component.rb'
-    - 'app/components/pajamas/alert_component.rb'
-    - 'app/components/pajamas/avatar_component.rb'
-    - 'app/components/pajamas/badge_component.rb'
-    - 'app/components/pajamas/banner_component.rb'
-    - 'app/components/pajamas/button_component.rb'
-    - 'app/components/pajamas/progress_component.rb'
-    - 'app/components/pajamas/spinner_component.rb'
-    - 'app/controllers/jira_connect/app_descriptor_controller.rb'
-    - 'app/controllers/projects/environments_controller.rb'
-    - 'app/finders/ci/group_variables_finder.rb'
     - 'app/finders/clusters/knative_services_finder.rb'
     - 'app/finders/group_members_finder.rb'
     - 'app/finders/groups/environment_scopes_finder.rb'

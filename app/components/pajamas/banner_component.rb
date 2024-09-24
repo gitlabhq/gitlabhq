@@ -2,6 +2,8 @@
 
 module Pajamas
   class BannerComponent < Pajamas::Component
+    VARIANT_OPTIONS = [:introduction, :promotion].freeze
+
     # @param [String] button_text
     # @param [String] button_link
     # @param [Symbol] variant
@@ -26,8 +28,6 @@ module Pajamas
       @button_options = button_options
       @close_options = format_options(options: close_options, css_classes: %w[js-close gl-banner-close])
     end
-
-    VARIANT_OPTIONS = [:introduction, :promotion].freeze
 
     private
 

@@ -75,6 +75,7 @@ gitlab-advanced-sast:
         - '**/*.cjs'
         - '**/*.mjs'
         - '**/*.cs'
+        - '**/*.rb'
 
 bandit-sast:
   extends: .sast-analyzer
@@ -180,7 +181,7 @@ semgrep-sast:
           $SAST_EXCLUDED_ANALYZERS !~ /gitlab-advanced-sast/ &&
           ($GITLAB_ADVANCED_SAST_ENABLED == 'true' || $GITLAB_ADVANCED_SAST_ENABLED == '1')
       variables:
-        SAST_EXCLUDED_PATHS: "$DEFAULT_SAST_EXCLUDED_PATHS, **/*.py, **/*.go, **/*.java, **/*.js, **/*.jsx, **/*.ts, **/*.tsx, **/*.cjs, **/*.mjs, **/*.cs"
+        SAST_EXCLUDED_PATHS: "$DEFAULT_SAST_EXCLUDED_PATHS, **/*.py, **/*.go, **/*.java, **/*.js, **/*.jsx, **/*.ts, **/*.tsx, **/*.cjs, **/*.mjs, **/*.cs, **/*.rb"
       exists:
         - '**/*.c'
         - '**/*.cc'
@@ -195,7 +196,6 @@ semgrep-sast:
         - '**/*.php'
         - '**/*.swift'
         - '**/*.m'
-        - '**/*.rb'
         - '**/*.kt'
     ## In case gitlab-advanced-sast already covers all the files that semgrep-sast would have scanned
     - if: $CI_COMMIT_BRANCH &&

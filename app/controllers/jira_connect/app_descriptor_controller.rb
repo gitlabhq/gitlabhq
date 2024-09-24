@@ -5,6 +5,9 @@
 # https://developer.atlassian.com/cloud/jira/platform/app-descriptor/
 
 class JiraConnect::AppDescriptorController < JiraConnect::ApplicationController
+  HOME_URL = 'https://gitlab.com'
+  DOC_URL = 'https://docs.gitlab.com/ee/integration/jira/'
+
   skip_before_action :verify_atlassian_jwt!
 
   def show
@@ -39,9 +42,6 @@ class JiraConnect::AppDescriptorController < JiraConnect::ApplicationController
   end
 
   private
-
-  HOME_URL = 'https://gitlab.com'
-  DOC_URL = 'https://docs.gitlab.com/ee/integration/jira/'
 
   def modules
     modules = {

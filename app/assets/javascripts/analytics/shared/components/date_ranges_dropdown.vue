@@ -2,15 +2,13 @@
 import { GlCollapsibleListbox, GlIcon, GlTooltipDirective } from '@gitlab/ui';
 
 import { isString } from 'lodash';
-import { isValidDate } from '~/lib/utils/datetime_utility';
+import { isValidDate, localeDateFormat } from '~/lib/utils/datetime_utility';
 import {
   DATE_RANGE_CUSTOM_VALUE,
-  dateFormats,
   DEFAULT_DROPDOWN_DATE_RANGES,
   NUMBER_OF_DAYS_SELECTED,
 } from '~/analytics/shared/constants';
 import { __ } from '~/locale';
-import dateFormat from '~/lib/dateformat';
 
 export default {
   name: 'DateRangesDropdown',
@@ -113,10 +111,7 @@ export default {
       }
     },
     formatDateRangeString(startDate, endDate) {
-      const start = dateFormat(startDate, dateFormats.defaultDate);
-      const end = dateFormat(endDate, dateFormats.defaultDate);
-
-      return `${start} - ${end}`;
+      return localeDateFormat.asDate.formatRange(startDate, endDate);
     },
   },
   customDateRangeItem: {

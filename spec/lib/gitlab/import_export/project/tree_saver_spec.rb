@@ -40,7 +40,14 @@ RSpec.describe Gitlab::ImportExport::Project::TreeSaver, :with_license, feature_
       end
 
       context 'with project root' do
-        it { is_expected.to include({ 'description' => 'description', 'visibility_level' => 20 }) }
+        it do
+          is_expected.to include({
+            'description' => 'description',
+            'visibility_level' => 20,
+            'merge_commit_template' => 'merge commit message template',
+            'squash_commit_template' => 'squash commit message template'
+          })
+        end
 
         it { is_expected.not_to include("runners_token" => 'token') }
 
@@ -501,7 +508,9 @@ RSpec.describe Gitlab::ImportExport::Project::TreeSaver, :with_license, feature_
       description: 'description',
       releases: [release],
       group: group,
-      approvals_before_merge: 1)
+      approvals_before_merge: 1,
+      merge_commit_template: 'merge commit message template',
+      squash_commit_template: 'squash commit message template')
 
     issue = create(:issue, :task, assignees: [user], project: project)
     snippet = create(:project_snippet, project: project)

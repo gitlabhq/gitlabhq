@@ -9,7 +9,8 @@ module Enums
 
     DATA_TYPES = {
       advisories: 1,
-      licenses: 2
+      licenses: 2,
+      cve_enrichment: 3
     }.with_indifferent_access.freeze
 
     VERSION_FORMATS = {

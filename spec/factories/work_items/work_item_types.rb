@@ -23,6 +23,7 @@ FactoryBot.define do
     # specific specs
     trait :non_default do
       default { false }
+      sequence(:id, 100) { |n| n }
     end
 
     trait :issue do

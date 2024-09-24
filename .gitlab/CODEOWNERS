@@ -555,7 +555,7 @@ lib/gitlab/checks/**
 /doc/administration/custom_html_header_tags.md @eread
 /doc/administration/custom_project_templates.md @brendan777
 /doc/administration/dedicated/ @lyspin
-/doc/administration/dedicated/hosted_runners.md @ashrafkhamis
+/doc/administration/dedicated/hosted_runners.md @rsarangadharan
 /doc/administration/diff_limits.md @brendan777
 /doc/administration/docs_self_host.md @axil
 /doc/administration/encrypted_configuration.md @axil
@@ -585,7 +585,7 @@ lib/gitlab/checks/**
 /doc/administration/issue_closing_pattern.md @aqualls
 /doc/administration/job_artifacts.md @marcel.amirault @lyspin
 /doc/administration/job_artifacts_troubleshooting.md @marcel.amirault @lyspin
-/doc/administration/job_logs.md @ashrafkhamis
+/doc/administration/job_logs.md @rsarangadharan
 /doc/administration/labels.md @msedlakjakubowski
 /doc/administration/lfs/ @brendan777
 /doc/administration/libravatar.md @axil
@@ -827,7 +827,7 @@ lib/gitlab/checks/**
 /doc/api/resource_state_events.md @msedlakjakubowski
 /doc/api/resource_weight_events.md @msedlakjakubowski
 /doc/api/rest/ @ashrafkhamis
-/doc/api/runners.md @ashrafkhamis
+/doc/api/runners.md @rsarangadharan
 /doc/api/saml.md @jglassman1
 /doc/api/scim.md @jglassman1
 /doc/api/search.md @ashrafkhamis
@@ -863,26 +863,26 @@ lib/gitlab/checks/**
 /doc/ci/chatops/ @phillipwells
 /doc/ci/cloud_deployment/ @phillipwells
 /doc/ci/cloud_services/ @marcel.amirault
-/doc/ci/docker/using_docker_images.md @ashrafkhamis
+/doc/ci/docker/using_docker_images.md @rsarangadharan
 /doc/ci/environments/ @phillipwells
 /doc/ci/examples/deployment/ @phillipwells
 /doc/ci/examples/semantic-release.md @phillipwells
 /doc/ci/gitlab_google_cloud_integration/ @marcel.amirault
-/doc/ci/interactive_web_terminal/ @ashrafkhamis
+/doc/ci/interactive_web_terminal/ @rsarangadharan
 /doc/ci/jobs/ci_job_token.md @marcel.amirault
 /doc/ci/jobs/ssh_keys.md @marcel.amirault
 /doc/ci/pipelines/pipeline_security.md @marcel.amirault
 /doc/ci/resource_groups/ @phillipwells
-/doc/ci/runners/ @ashrafkhamis
+/doc/ci/runners/ @rsarangadharan
 /doc/ci/runners/git_submodules.md @marcel.amirault @lyspin
 /doc/ci/secrets/ @marcel.amirault
 /doc/ci/secure_files/ @marcel.amirault
-/doc/ci/services/ @ashrafkhamis
-/doc/ci/steps/ @ashrafkhamis
+/doc/ci/services/ @rsarangadharan
+/doc/ci/steps/ @rsarangadharan
 /doc/ci/test_cases/ @msedlakjakubowski
 /doc/ci/testing/code_quality.md @rdickenson @phillipwells
 /doc/ci/testing/code_quality_troubleshooting.md @rdickenson @phillipwells
-/doc/ci/yaml/ci_job_log_timestamps.md @ashrafkhamis
+/doc/ci/yaml/ci_job_log_timestamps.md @rsarangadharan
 /doc/ci/yaml/signing_examples.md @marcel.amirault
 /doc/development/advanced_search.md @gitlab-org/search-team/migration-maintainers
 /doc/development/ai_architecture.md @gitlab-org/ai-powered
@@ -924,7 +924,7 @@ lib/gitlab/checks/**
 /doc/install/ @axil
 /doc/integration/ @jglassman1
 /doc/integration/advanced_search/ @ashrafkhamis
-/doc/integration/datadog.md @ashrafkhamis
+/doc/integration/datadog.md @rsarangadharan
 /doc/integration/diffblue_cover.md @marcel.amirault @lyspin
 /doc/integration/exact_code_search/ @ashrafkhamis
 /doc/integration/external-issue-tracker.md @ashrafkhamis
@@ -956,10 +956,10 @@ lib/gitlab/checks/**
 /doc/tutorials/ @kpaizee
 /doc/tutorials/boards_for_teams/ @msedlakjakubowski
 /doc/tutorials/compliance_pipeline/ @eread
-/doc/tutorials/configure_gitlab_runner_to_use_gke/ @ashrafkhamis
+/doc/tutorials/configure_gitlab_runner_to_use_gke/ @rsarangadharan
 /doc/tutorials/container_scanning/ @rdickenson @phillipwells
 /doc/tutorials/convert_personal_namespace_to_group/ @lciutacu
-/doc/tutorials/create_register_first_runner/ @ashrafkhamis
+/doc/tutorials/create_register_first_runner/ @rsarangadharan
 /doc/tutorials/dependency_scanning.md @rdickenson @phillipwells
 /doc/tutorials/export_sbom.md @rdickenson @phillipwells
 /doc/tutorials/fuzz_testing/ @rdickenson @phillipwells
@@ -976,7 +976,7 @@ lib/gitlab/checks/**
 /doc/tutorials/scan_execution_policy/ @rdickenson
 /doc/tutorials/scan_result_policy/ @rdickenson
 /doc/tutorials/scrum_events/ @msedlakjakubowski
-/doc/tutorials/setup_steps/ @ashrafkhamis
+/doc/tutorials/setup_steps/ @rsarangadharan
 /doc/tutorials/update_commit_messages/ @brendan777
 /doc/tutorials/update_git_remote_url/ @brendan777
 /doc/tutorials/website_project_with_analytics/ @lciutacu
@@ -1029,7 +1029,7 @@ lib/gitlab/checks/**
 /doc/user/group/value_stream_analytics/ @lciutacu
 /doc/user/infrastructure/ @phillipwells
 /doc/user/infrastructure/clusters/manage/management_project_applications/ @phillipwells
-/doc/user/infrastructure/clusters/manage/management_project_applications/runner.md @ashrafkhamis
+/doc/user/infrastructure/clusters/manage/management_project_applications/runner.md @rsarangadharan
 /doc/user/markdown.md @msedlakjakubowski
 /doc/user/namespace/ @lciutacu
 /doc/user/okrs.md @msedlakjakubowski

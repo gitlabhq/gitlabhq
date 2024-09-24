@@ -79,6 +79,7 @@ gitlab-advanced-sast:
         - '**/*.cjs'
         - '**/*.mjs'
         - '**/*.cs'
+        - '**/*.rb'
     - if: $CI_OPEN_MERGE_REQUESTS  # Don't add it to a *branch* pipeline if it's already in a merge request pipeline.
       when: never
     # If there's no open merge request, add it to a *branch* pipeline instead.
@@ -96,6 +97,7 @@ gitlab-advanced-sast:
         - '**/*.cjs'
         - '**/*.mjs'
         - '**/*.cs'
+        - '**/*.rb'
 
 .static-reachability-rules:
   rules:
@@ -296,7 +298,7 @@ semgrep-sast:
           $SAST_EXCLUDED_ANALYZERS !~ /gitlab-advanced-sast/ &&
           ($GITLAB_ADVANCED_SAST_ENABLED == 'true' || $GITLAB_ADVANCED_SAST_ENABLED == '1')
       variables:
-        SAST_EXCLUDED_PATHS: "$DEFAULT_SAST_EXCLUDED_PATHS, **/*.py, **/*.go, **/*.java, **/*.js, **/*.jsx, **/*.ts, **/*.tsx, **/*.cjs, **/*.mjs, **/*.cs"
+        SAST_EXCLUDED_PATHS: "$DEFAULT_SAST_EXCLUDED_PATHS, **/*.py, **/*.go, **/*.java, **/*.js, **/*.jsx, **/*.ts, **/*.tsx, **/*.cjs, **/*.mjs, **/*.cs, **/*.rb"
       exists:
         - '**/*.c'
         - '**/*.cc'
@@ -311,7 +313,6 @@ semgrep-sast:
         - '**/*.php'
         - '**/*.swift'
         - '**/*.m'
-        - '**/*.rb'
         - '**/*.kt'
     ## In case gitlab-advanced-sast already covers all the files that semgrep-sast would have scanned
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" &&
@@ -355,7 +356,7 @@ semgrep-sast:
           $SAST_EXCLUDED_ANALYZERS !~ /gitlab-advanced-sast/ &&
           ($GITLAB_ADVANCED_SAST_ENABLED == 'true' || $GITLAB_ADVANCED_SAST_ENABLED == '1')
       variables:
-        SAST_EXCLUDED_PATHS: "$DEFAULT_SAST_EXCLUDED_PATHS, **/*.py, **/*.go, **/*.java, **/*.js, **/*.jsx, **/*.ts, **/*.tsx, **/*.cjs, **/*.mjs, **/*.cs"
+        SAST_EXCLUDED_PATHS: "$DEFAULT_SAST_EXCLUDED_PATHS, **/*.py, **/*.go, **/*.java, **/*.js, **/*.jsx, **/*.ts, **/*.tsx, **/*.cjs, **/*.mjs, **/*.cs, **/*.rb"
       exists:
         - '**/*.c'
         - '**/*.cc'
@@ -370,7 +371,6 @@ semgrep-sast:
         - '**/*.php'
         - '**/*.swift'
         - '**/*.m'
-        - '**/*.rb'
         - '**/*.kt'
     ## In case gitlab-advanced-sast already covers all the files that semgrep-sast would have scanned
     - if: $CI_COMMIT_BRANCH &&

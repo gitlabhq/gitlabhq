@@ -1,10 +1,8 @@
 <script>
 import { GlAlert, GlSkeletonLoader } from '@gitlab/ui';
 import { GlColumnChart, GlChartSeriesLabel } from '@gitlab/ui/dist/charts';
-import dateFormat from '~/lib/dateformat';
-import { getDateInPast } from '~/lib/utils/datetime_utility';
-import { __, s__, sprintf } from '~/locale';
-import { dateFormats } from '~/analytics/shared/constants';
+import { getDateInPast, localeDateFormat } from '~/lib/utils/datetime_utility';
+import { __, s__ } from '~/locale';
 import CiCdAnalyticsCharts from '~/vue_shared/components/ci_cd_analytics/ci_cd_analytics_charts.vue';
 import {
   DEFAULT,
@@ -303,22 +301,12 @@ export default {
     lastYear: __('Last year'),
   },
   get chartRanges() {
-    const today = dateFormat(new Date(), dateFormats.defaultDate);
-    const pastDate = (timeScale) =>
-      dateFormat(getDateInPast(new Date(), timeScale), dateFormats.defaultDate);
+    const today = new Date();
+    const pastDate = (timeScale) => getDateInPast(today, timeScale);
     return {
-      lastWeekRange: sprintf(__('%{oneWeekAgo} - %{today}'), {
-        oneWeekAgo: pastDate(ONE_WEEK_AGO_DAYS),
-        today,
-      }),
-      lastMonthRange: sprintf(__('%{oneMonthAgo} - %{today}'), {
-        oneMonthAgo: pastDate(ONE_MONTH_AGO_DAYS),
-        today,
-      }),
-      lastYearRange: sprintf(__('%{oneYearAgo} - %{today}'), {
-        oneYearAgo: pastDate(ONE_YEAR_AGO_DAYS),
-        today,
-      }),
+      lastWeekRange: localeDateFormat.asDate.formatRange(pastDate(ONE_WEEK_AGO_DAYS), today),
+      lastMonthRange: localeDateFormat.asDate.formatRange(pastDate(ONE_MONTH_AGO_DAYS), today),
+      lastYearRange: localeDateFormat.asDate.formatRange(pastDate(ONE_YEAR_AGO_DAYS), today),
     };
   },
 };

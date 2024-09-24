@@ -22743,8 +22743,6 @@ ALTER TABLE ONLY work_item_parent_links ALTER COLUMN id SET DEFAULT nextval('wor
 
 ALTER TABLE ONLY work_item_related_link_restrictions ALTER COLUMN id SET DEFAULT nextval('work_item_related_link_restrictions_id_seq'::regclass);
 
-ALTER TABLE ONLY work_item_types ALTER COLUMN id SET DEFAULT nextval('work_item_types_id_seq'::regclass);
-
 ALTER TABLE ONLY work_item_widget_definitions ALTER COLUMN id SET DEFAULT nextval('work_item_widget_definitions_id_seq'::regclass);
 
 ALTER TABLE ONLY workspace_variables ALTER COLUMN id SET DEFAULT nextval('workspace_variables_id_seq'::regclass);
@@ -34666,9 +34664,6 @@ ALTER TABLE ONLY environments
 ALTER TABLE p_ci_builds
     ADD CONSTRAINT fk_d3130c9a7f_p FOREIGN KEY (partition_id, commit_id) REFERENCES p_ci_pipelines(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
 
-ALTER TABLE ONLY ci_builds
-    ADD CONSTRAINT fk_d3130c9a7f_p_tmp FOREIGN KEY (partition_id, commit_id) REFERENCES p_ci_pipelines(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE NOT VALID;
-
 ALTER TABLE ONLY boards_epic_user_preferences
     ADD CONSTRAINT fk_d32c3d693c FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -35467,6 +35462,9 @@ ALTER TABLE ONLY packages_dependency_links
 ALTER TABLE ONLY work_item_related_link_restrictions
     ADD CONSTRAINT fk_rails_4513f0061c FOREIGN KEY (target_type_id) REFERENCES work_item_types(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY ci_builds
+    ADD CONSTRAINT fk_rails_4540ead625_p FOREIGN KEY (upstream_pipeline_partition_id, upstream_pipeline_id) REFERENCES p_ci_pipelines(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE NOT VALID;
+
 ALTER TABLE ONLY project_auto_devops
     ADD CONSTRAINT fk_rails_45436b12b2 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -35487,6 +35485,9 @@ ALTER TABLE ONLY vulnerability_feedback
 
 ALTER TABLE ONLY user_custom_attributes
     ADD CONSTRAINT fk_rails_47b91868a8 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ci_builds
+    ADD CONSTRAINT fk_rails_494e57ee78_p FOREIGN KEY (auto_canceled_by_partition_id, auto_canceled_by_id) REFERENCES p_ci_pipelines(partition_id, id) ON UPDATE CASCADE ON DELETE SET NULL NOT VALID;
 
 ALTER TABLE ONLY upcoming_reconciliations
     ADD CONSTRAINT fk_rails_497b4938ac FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
@@ -35532,6 +35533,9 @@ ALTER TABLE ONLY resource_iteration_events
 
 ALTER TABLE ONLY status_page_settings
     ADD CONSTRAINT fk_rails_506e5ba391 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ci_pipeline_variables
+    ADD CONSTRAINT fk_rails_507416c33a_p FOREIGN KEY (partition_id, pipeline_id) REFERENCES p_ci_pipelines(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY ci_pipeline_metadata
     ADD CONSTRAINT fk_rails_50c1e9ea10_p FOREIGN KEY (partition_id, pipeline_id) REFERENCES p_ci_pipelines(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
@@ -35634,6 +35638,9 @@ ALTER TABLE ONLY reviews
 
 ALTER TABLE ONLY ci_running_builds
     ADD CONSTRAINT fk_rails_5ca491d360 FOREIGN KEY (runner_id) REFERENCES ci_runners(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ci_stages
+    ADD CONSTRAINT fk_rails_5d4d96d44b_p FOREIGN KEY (partition_id, pipeline_id) REFERENCES p_ci_pipelines(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY epic_issues
     ADD CONSTRAINT fk_rails_5d942936b4 FOREIGN KEY (epic_id) REFERENCES epics(id) ON DELETE CASCADE;
@@ -36525,6 +36532,9 @@ ALTER TABLE p_ci_job_annotations
 
 ALTER TABLE ONLY packages_rpm_repository_files
     ADD CONSTRAINT fk_rails_d545cfaed2 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ci_builds
+    ADD CONSTRAINT fk_rails_d739f46384_p FOREIGN KEY (partition_id, commit_id) REFERENCES p_ci_pipelines(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY packages_rpm_metadata
     ADD CONSTRAINT fk_rails_d79f02264b FOREIGN KEY (package_id) REFERENCES packages_packages(id) ON DELETE CASCADE;

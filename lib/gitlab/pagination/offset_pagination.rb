@@ -66,7 +66,12 @@ module Gitlab
       end
 
       def data_without_counts?(paginated_data)
-        paginated_data.is_a?(Kaminari::PaginatableWithoutCount)
+        paginated_data.is_a?(Kaminari::PaginatableWithoutCount) || paginatable_array_exceeds_count?(paginated_data)
+      end
+
+      def paginatable_array_exceeds_count?(paginated_data)
+        paginated_data.is_a?(Kaminari::PaginatableArray) &&
+          paginated_data.total_count >= Kaminari::ActiveRecordRelationMethods::MAX_COUNT_LIMIT
       end
 
       def total_count(paginated_data)

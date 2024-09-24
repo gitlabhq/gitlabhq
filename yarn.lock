@@ -1959,10 +1959,10 @@
   resolved "https://registry.yarnpkg.com/@remirror/core-constants/-/core-constants-2.0.2.tgz#f05eccdc69e3a65e7d524b52548f567904a11a1a"
   integrity sha512-dyHY+sMF0ihPus3O27ODd4+agdHMEmuRdyiZJ2CCWjPV5UFmn17ZbElvk6WOGVE4rdCJKZQCrPV2BcikOMLUGQ==
 
-"@rollup/plugin-graphql@^2.0.4":
-  version "2.0.4"
-  resolved "https://registry.yarnpkg.com/@rollup/plugin-graphql/-/plugin-graphql-2.0.4.tgz#240aee16b4be10f3e9f879b6146af689cc10e07c"
-  integrity sha512-TfaqbbK71VHodCDCoRbPnv2+Tsnlvad2OsGEviURHFl+ZBUyf5wfXgXc9RqZ+xKxSl87Z3YbPhD0z6eWYjuByw==
+"@rollup/plugin-graphql@^2.0.5":
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/@rollup/plugin-graphql/-/plugin-graphql-2.0.5.tgz#79f92e3a65f5ecab5c01edab943e95cf3e5ca5d6"
+  integrity sha512-NMx9uVIheYMOQHV9Aann0sk/2+henT8T5JUbHneOvbD3iUrVUC7AaZ1B1ELJ/1vhqUe2OQIkRtGHzOQwBLoCvg==
   dependencies:
     "@rollup/pluginutils" "^5.0.1"
     graphql-tag "^2.12.6"
@@ -14341,10 +14341,10 @@ vite-plugin-ruby@^5.1.0:
     debug "^4.3.4"
     fast-glob "^3.3.2"
 
-vite@^5.4.6:
-  version "5.4.6"
-  resolved "https://registry.yarnpkg.com/vite/-/vite-5.4.6.tgz#85a93a1228a7fb5a723ca1743e337a2588ed008f"
-  integrity sha512-IeL5f8OO5nylsgzd9tq4qD2QqI0k2CQLGrWD0rCN0EQJZpBK5vJAx0I+GDkMOXxQX/OfFHMuLIx6ddAxGX/k+Q==
+vite@^5.4.7:
+  version "5.4.7"
+  resolved "https://registry.yarnpkg.com/vite/-/vite-5.4.7.tgz#d226f57c08b61379e955f3836253ed3efb2dcf00"
+  integrity sha512-5l2zxqMEPVENgvzTuBpHer2awaetimj2BGkhBPdnwKbPNOlHsODU+oiazEZzLK7KhAnOrO+XGYJYn4ZlUhDtDQ==
   dependencies:
     esbuild "^0.21.3"
     postcss "^8.4.43"

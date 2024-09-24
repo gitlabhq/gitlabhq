@@ -942,6 +942,9 @@ Gitlab.ee do
   Settings.cron_jobs['usage_events_dump_write_buffer_cron_worker'] ||= {}
   Settings.cron_jobs['usage_events_dump_write_buffer_cron_worker']['cron'] ||= "*/5 * * * *"
   Settings.cron_jobs['usage_events_dump_write_buffer_cron_worker']['job_class'] = 'UsageEvents::DumpWriteBufferCronWorker'
+  Settings.cron_jobs['package_metadata_cve_enrichment_sync_worker'] ||= {}
+  Settings.cron_jobs['package_metadata_cve_enrichment_sync_worker']['cron'] ||= "*/5 * * * *"
+  Settings.cron_jobs['package_metadata_cve_enrichment_sync_worker']['job_class'] = 'PackageMetadata::CveEnrichmentSyncWorker'
 
   Gitlab.com do
     Settings.cron_jobs['disable_legacy_open_source_license_for_inactive_projects'] ||= {}

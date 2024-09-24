@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 class Projects::EnvironmentsController < Projects::ApplicationController
+  include ProductAnalyticsTracking
+  include KasCookie
+
   MIN_SEARCH_LENGTH = 3
   ACTIVE_STATES = %i[available stopping].freeze
   SCOPES_TO_STATES = { "active" => ACTIVE_STATES, "stopped" => %i[stopped] }.freeze
-
-  include ProductAnalyticsTracking
-  include KasCookie
 
   layout 'project'
 

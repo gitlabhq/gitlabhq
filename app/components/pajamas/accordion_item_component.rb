@@ -3,16 +3,16 @@
 # Renders a accordion component
 module Pajamas
   class AccordionItemComponent < Pajamas::Component
+    delegate :sprite_icon, to: :helpers
+
+    STATE_OPTIONS = [:opened, :closed].freeze
+
     # @param [String] title
     # @param [Symbol] state
     def initialize(title: nil, state: :closed)
       @title = title
       @state = filter_attribute(state.to_sym, STATE_OPTIONS)
     end
-
-    delegate :sprite_icon, to: :helpers
-
-    STATE_OPTIONS = [:opened, :closed].freeze
 
     def icon
       @state == :opened ? "chevron-down" : "chevron-right"
