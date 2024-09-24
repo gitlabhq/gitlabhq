@@ -3,6 +3,8 @@ redirect_to: '../documentation/styleguide/availability_details.md'
 remove_date: '2024-11-02'
 ---
 
+<!-- markdownlint-disable -->
+
 This document was moved to [another location](../documentation/styleguide/availability_details.md).
 
 <!-- This redirect file can be deleted after <2024-11-02>. -->

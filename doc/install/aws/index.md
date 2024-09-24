@@ -5,8 +5,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 description: Read through the GitLab installation methods.
 ---
 
-{::options parse_block_html="true" /}
-
 # Installing a GitLab POC on Amazon Web Services (AWS)
 
 DETAILS:

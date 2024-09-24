@@ -3,6 +3,8 @@ redirect_to: 'custom_rulesets_schema.md'
 remove_date: '2024-10-23'
 ---
 
+<!-- markdownlint-disable -->
+
 This document was moved to [another location](custom_rulesets_schema.md).
 
 <!-- This redirect file can be deleted after <2024-10-23>. -->

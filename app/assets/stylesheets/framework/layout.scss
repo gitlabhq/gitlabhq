@@ -49,8 +49,10 @@ html {
   }
 }
 
-.alert-wrapper-top-space:not(:empty) {
-  @apply gl-mt-3;
+.alert-wrapper-top-space {
+  .gl-alert:first-child {
+    @apply gl-mt-3;
+  }
 }
 
 .alert-wrapper {

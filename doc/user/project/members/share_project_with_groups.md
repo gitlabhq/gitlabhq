@@ -3,6 +3,8 @@ redirect_to: 'sharing_projects_groups.md'
 remove_date: '2024-11-10'
 ---
 
+<!-- markdownlint-disable -->
+
 This document was moved to [another location](sharing_projects_groups.md).
 
 <!-- This redirect file can be deleted after <2024-11-10>. -->

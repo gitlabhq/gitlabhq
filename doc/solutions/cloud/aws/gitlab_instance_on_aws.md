@@ -4,8 +4,6 @@ group: Solutions Architecture
 info: This page is owned by the Solutions Architecture team.
 ---
 
-{::options parse_block_html="true" /}
-
 # Provision GitLab Instances on AWS
 
 ## Available Infrastructure as Code for GitLab Instance Installation on AWS

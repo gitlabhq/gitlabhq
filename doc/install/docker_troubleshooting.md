@@ -3,6 +3,8 @@ redirect_to: 'docker/troubleshooting.md'
 remove_date: '2024-11-15'
 ---
 
+<!-- markdownlint-disable -->
+
 This document was moved to [another location](docker/troubleshooting.md).
 
 <!-- This redirect file can be deleted after <2024-11-15>. -->

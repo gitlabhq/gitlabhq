@@ -4,6 +4,8 @@ group: Composition Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
+# Dependency Scanning
+
 <style>
 table.ds-table tr:nth-child(even) {
     background-color: transparent;
@@ -40,8 +42,6 @@ table.no-vertical-table-lines tr {
     border-top: none;
 }
 </style>
-
-# Dependency Scanning
 
 DETAILS:
 **Tier:** Ultimate

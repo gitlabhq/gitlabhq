@@ -291,6 +291,9 @@ export default {
     isNotClosed() {
       return this.mr.state !== STATUS_CLOSED;
     },
+    isMerged() {
+      return this.mr.state === STATUS_MERGED;
+    },
     isNeitherClosedNorMerged() {
       return this.mr.state !== STATUS_CLOSED && this.mr.state !== STATUS_MERGED;
     },
@@ -325,15 +328,12 @@ export default {
         this.mr.state === 'readyToMerge'
       );
     },
-    sourceBranchDeletedText() {
-      const isPreMerge = this.mr.state !== STATUS_MERGED;
-
-      if (isPreMerge) {
-        return this.mr.shouldRemoveSourceBranch
-          ? __('Source branch will be deleted.')
-          : __('Source branch will not be deleted.');
-      }
-
+    sourceBranchPreMergeText() {
+      return this.removeSourceBranch
+        ? __('Source branch will be deleted.')
+        : __('Source branch will not be deleted.');
+    },
+    sourceBranchMergedText() {
       return this.mr.sourceBranchRemoved
         ? __('Deleted the source branch.')
         : __('Did not delete the source branch.');
@@ -535,6 +535,10 @@ export default {
       this.commitMessage = `${this.commitMessage}\n\n${val}`;
       this.commitMessageIsTouched = true;
     },
+    updateRemoveSourceBranchSettings(checked) {
+      this.removeSourceBranch = checked;
+      this.mr.setRemoveSourceBranch(checked);
+    },
   },
   i18n: {
     mergeCommitTemplateHintText: s__(
@@ -583,10 +587,11 @@ export default {
                 <gl-form-checkbox
                   v-if="canRemoveSourceBranch"
                   id="remove-source-branch-input"
-                  v-model="removeSourceBranch"
                   :disabled="isRemoveSourceBranchButtonDisabled"
+                  :checked="removeSourceBranch"
                   class="js-remove-source-branch-checkbox gl-mr-5 gl-flex gl-items-center"
                   data-testid="delete-source-branch-checkbox"
+                  @change="updateRemoveSourceBranchSettings"
                 >
                   {{ __('Delete source branch') }}
                 </gl-form-checkbox>
@@ -805,7 +810,7 @@ export default {
                   class="gl-leading-normal"
                   data-testid="source-branch-deleted-text"
                 >
-                  {{ sourceBranchDeletedText }}
+                  {{ isMerged ? sourceBranchMergedText : sourceBranchPreMergeText }}
                 </li>
                 <li v-if="mr.relatedLinks" class="gl-leading-normal">
                   <related-links

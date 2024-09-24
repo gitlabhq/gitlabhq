@@ -5,9 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 description: 'Learn how to use and administer GitLab, the most scalable Git-based fully integrated platform for software development.'
 ---
 
-<!-- markdownlint-disable MD044 -->
-<!-- MD044/proper-names test disabled after this line to make page compatible with markdownlint-cli 0.29.0. -->
-<!-- See https://docs.gitlab.com/ee/development/documentation/testing/markdownlint.html#disable-markdownlint-tests -->
+<!-- markdownlint-disable MD041 MD044-->
 
 <div class="d-none">
   <h3>Visit <a href="https://docs.gitlab.com/ee/">docs.gitlab.com</a> for the latest version

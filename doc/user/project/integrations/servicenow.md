@@ -3,6 +3,8 @@ redirect_to: '../../../solutions/integrations/servicenow.md'
 remove_date: '2024-11-16'
 ---
 
+<!-- markdownlint-disable -->
+
 This document was moved to [Servicenow in Solutions Integrations](../../../solutions/integrations/servicenow.md).
 
 <!-- This redirect file can be deleted after <2024-11-16>. -->

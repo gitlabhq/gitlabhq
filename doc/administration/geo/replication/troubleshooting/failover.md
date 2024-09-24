@@ -3,6 +3,8 @@ redirect_to: '../../disaster_recovery/failover_troubleshooting.md'
 remove_date: '2025-08-02'
 ---
 
+<!-- markdownlint-disable -->
+
 This document was moved to [another location](../../disaster_recovery/failover_troubleshooting.md).
 
 <!-- This redirect file can be deleted after <YYYY-MM-DD>. -->

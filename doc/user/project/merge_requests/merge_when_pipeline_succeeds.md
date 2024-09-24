@@ -3,6 +3,8 @@ redirect_to: 'auto_merge.md'
 remove_date: '2024-10-02'
 ---
 
+<!-- markdownlint-disable -->
+
 This document was moved to [another location](auto_merge.md).
 
 <!-- This redirect file can be deleted after <2024-10-02>. -->

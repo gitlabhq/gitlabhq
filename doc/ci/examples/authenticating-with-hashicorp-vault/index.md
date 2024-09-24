@@ -3,6 +3,8 @@ redirect_to: '../../secrets/hashicorp_vault.md'
 remove_date: '2024-12-05'
 ---
 
+<!-- markdownlint-disable -->
+
 This document was moved to [another location](../../secrets/hashicorp_vault.md).
 
 <!-- This redirect file can be deleted after <2024-12-05>. -->

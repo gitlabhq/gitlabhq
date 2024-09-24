@@ -4,8 +4,6 @@ group: Solutions Architecture
 info: This page is owned by the Solutions Architecture team.
 ---
 
-{::options parse_block_html="true" /}
-
 # Provision GitLab on a single EC2 instance in AWS
 
 DETAILS:

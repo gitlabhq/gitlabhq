@@ -15591,7 +15591,8 @@ CREATE TABLE pages_domains (
     wildcard boolean DEFAULT false NOT NULL,
     usage smallint DEFAULT 0 NOT NULL,
     scope smallint DEFAULT 2 NOT NULL,
-    auto_ssl_failed boolean DEFAULT false NOT NULL
+    auto_ssl_failed boolean DEFAULT false NOT NULL,
+    CONSTRAINT check_790fbb64fa CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE pages_domains_id_seq

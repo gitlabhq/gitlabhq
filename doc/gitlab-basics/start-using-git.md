@@ -3,6 +3,8 @@ redirect_to: '../topics/git/commands.md'
 remove_date: '2024-11-20'
 ---
 
+<!-- markdownlint-disable -->
+
 This document was moved to [another location](../topics/git/commands.md).
 
 <!-- This redirect file can be deleted after <2024-11-20>. -->

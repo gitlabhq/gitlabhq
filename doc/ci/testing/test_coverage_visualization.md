@@ -3,6 +3,8 @@ redirect_to: 'test_coverage_visualization/index.md'
 remove_date: '2024-11-15'
 ---
 
+<!-- markdownlint-disable -->
+
 This document was moved to [another location](test_coverage_visualization/index.md).
 
 <!-- This redirect file can be deleted after <2024-11-15>. -->

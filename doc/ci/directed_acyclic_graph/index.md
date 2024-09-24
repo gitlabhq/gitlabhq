@@ -3,6 +3,8 @@ redirect_to: '../yaml/needs.md'
 remove_date: '2024-12-18'
 ---
 
+<!-- markdownlint-disable -->
+
 This document was moved to [another location](../yaml/needs.md).
 
 <!-- This redirect file can be deleted after <2024-12-18>. -->

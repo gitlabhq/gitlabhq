@@ -3,6 +3,8 @@ redirect_to: '../jobs/ssh_keys.md'
 remove_date: '2024-12-04'
 ---
 
+<!-- markdownlint-disable -->
+
 This document was moved to [another location](../jobs/ssh_keys.md).
 
 <!-- This redirect file can be deleted after <2024-12-04>. -->

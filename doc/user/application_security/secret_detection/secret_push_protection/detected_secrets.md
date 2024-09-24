@@ -3,6 +3,8 @@ redirect_to: '../detected_secrets.md'
 remove_date: '2024-12-23'
 ---
 
+<!-- markdownlint-disable -->
+
 This document was moved to [another location](../detected_secrets.md).
 
 <!-- This redirect file can be deleted after <2024-12-23>. -->

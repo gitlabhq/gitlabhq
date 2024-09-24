@@ -387,6 +387,10 @@ export default class MergeRequestStore {
     this.setState();
   }
 
+  setRemoveSourceBranch(removeSourceBranch) {
+    this.shouldRemoveSourceBranch = removeSourceBranch;
+  }
+
   // eslint-disable-next-line class-methods-use-this
   get hasMergeChecksFailed() {
     return false;

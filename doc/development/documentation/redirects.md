@@ -70,6 +70,8 @@ To redirect a page to another page in the same repository:
      remove_date: 'YYYY-MM-DD'
      ---
 
+     <!-- markdownlint-disable -->
+
      This document was moved to [another location](../newpath/to/file/index.md).
 
      <!-- This redirect file can be deleted after <YYYY-MM-DD>. -->

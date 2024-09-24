@@ -3,6 +3,8 @@ redirect_to: '../application_security/dependency_list/index.md'
 remove_date: '2024-09-28'
 ---
 
+<!-- markdownlint-disable -->
+
 This document was moved to [another location](../application_security/dependency_list/index.md).
 
 <!-- This redirect file can be deleted after <2024-09-28->. -->

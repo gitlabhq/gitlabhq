@@ -103,6 +103,7 @@ the following sections and tables provide an alternative.
 FLAG:
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
+
 | Field | Type | Required | Possible values | Description |
 |-------|------|----------|-----------------|-------------|
 | `name` | `string` | true |  | Name of the policy. Maximum of 255 characters.|

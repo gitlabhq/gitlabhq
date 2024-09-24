@@ -3,6 +3,8 @@ redirect_to: 'index.md'
 remove_date: '2024-11-19'
 ---
 
+<!-- markdownlint-disable -->
+
 This content was removed since Chemlab is no longer used in GitLab E2E tests. For more information, see [E2E testing](index.md) at GitLab.
 
 <!-- This redirect file can be deleted after <2024-11-19>. -->

@@ -3,6 +3,8 @@ redirect_to: 'files/csv.md'
 remove_date: '2024-09-27'
 ---
 
+<!-- markdownlint-disable -->
+
 This document was moved to [another location](files/csv.md).
 
 <!-- This redirect file can be deleted after <2024-09-27>. -->

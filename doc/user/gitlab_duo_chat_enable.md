@@ -3,6 +3,8 @@ redirect_to: '../user/gitlab_duo_chat/turn_on_off.md'
 remove_date: '2025-06-11'
 ---
 
+<!-- markdownlint-disable -->
+
 This document was moved to [another location](../user/gitlab_duo_chat/turn_on_off.md).
 
 <!-- This redirect file can be deleted after <2025-06-11>. -->

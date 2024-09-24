@@ -1,3 +1,5 @@
+import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
+import { nextTick } from 'vue';
 import mockDeploymentFixture from 'test_fixtures/graphql/deployments/graphql/queries/deployment.query.graphql.json';
 import mockEnvironmentFixture from 'test_fixtures/graphql/deployments/graphql/queries/environment.query.graphql.json';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
@@ -17,6 +19,12 @@ const {
 
 describe('~/deployments/components/deployment_header.vue', () => {
   let wrapper;
+
+  const findSidebarToggleButton = () => wrapper.findByTestId('deployment-sidebar-toggle-button');
+  const findSidebar = () => wrapper.findByTestId('deployment-sidebar');
+  const findSidebarItems = () => wrapper.findByTestId('deployment-sidebar-items');
+  const findUrlButtonWrapper = () => wrapper.findByTestId('deployment-url-button-wrapper');
+  const findTriggererItem = () => wrapper.findByTestId('deployment-triggerer-item');
 
   const createComponent = ({ propsData = {} } = {}) => {
     wrapper = mountExtended(DeploymentAside, {
@@ -110,6 +118,279 @@ describe('~/deployments/components/deployment_header.vue', () => {
       const ref = wrapper.findByTestId('deployment-ref');
 
       expect(ref.find('span').text()).toBe('Tag');
+    });
+  });
+
+  describe('toggle button', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    it('is exist', () => {
+      const button = findSidebarToggleButton();
+
+      expect(button.exists()).toBe(true);
+      expect(button.classes()).toContain('lg:gl-hidden');
+    });
+
+    describe('on mobile', () => {
+      describe('when the sidebar is collapsed', () => {
+        beforeEach(() => {
+          jest.spyOn(bp, 'isDesktop').mockReturnValue(false);
+
+          createComponent();
+        });
+
+        it('has correct attributes', () => {
+          const button = findSidebarToggleButton();
+
+          expect(button.attributes('title')).toBe('Expand sidebar');
+          expect(button.attributes('aria-label')).toBe('Expand sidebar');
+          expect(button.props('category')).toBe('secondary');
+          expect(wrapper.findByTestId('chevron-double-lg-left-icon').isVisible()).toBe(true);
+        });
+
+        it('expands the sidebar on click', async () => {
+          let sidebarItems = findSidebarItems();
+
+          expect(sidebarItems.exists()).toBe(false);
+
+          const button = findSidebarToggleButton();
+          button.trigger('click');
+          await nextTick();
+
+          sidebarItems = findSidebarItems();
+
+          expect(sidebarItems.exists()).toBe(true);
+        });
+      });
+
+      describe('when the sidebar is expanded', () => {
+        let button;
+
+        beforeEach(async () => {
+          jest.spyOn(bp, 'isDesktop').mockReturnValue(false);
+
+          createComponent();
+
+          button = findSidebarToggleButton();
+          button.trigger('click');
+          await nextTick();
+        });
+
+        it('has correct attributes', () => {
+          expect(button.attributes('title')).toBe('Collapse sidebar');
+          expect(button.attributes('aria-label')).toBe('Collapse sidebar');
+          expect(button.props('category')).toBe('tertiary');
+          expect(wrapper.findByTestId('chevron-double-lg-right-icon').isVisible()).toBe(true);
+        });
+
+        it('collapses the sidebar on click', async () => {
+          button.trigger('click');
+          await nextTick();
+
+          const sidebarItems = findSidebarItems();
+
+          expect(sidebarItems.exists()).toBe(false);
+        });
+      });
+    });
+  });
+
+  describe('sidebar', () => {
+    describe('on desktop', () => {
+      it('has correct CSS classes', () => {
+        createComponent();
+
+        const sidebarItems = findSidebar();
+
+        expect(sidebarItems.classes()).not.toContain('right-sidebar');
+        expect(sidebarItems.classes()).not.toContain('right-sidebar-expanded');
+        expect(sidebarItems.classes()).not.toContain('gl-shadow-md');
+        expect(sidebarItems.classes()).not.toContain('gl-fixed');
+        expect(sidebarItems.classes()).not.toContain('gl-right-0');
+      });
+    });
+
+    describe('on mobile', () => {
+      let button;
+
+      beforeEach(async () => {
+        jest.spyOn(bp, 'isDesktop').mockReturnValue(false);
+
+        createComponent();
+
+        button = findSidebarToggleButton();
+        button.trigger('click');
+        await nextTick();
+      });
+
+      describe('when the sidebar is expanded', () => {
+        it('has correct CSS classes', () => {
+          const sidebarItems = findSidebar();
+
+          expect(sidebarItems.classes()).toContain('right-sidebar');
+          expect(sidebarItems.classes()).toContain('right-sidebar-expanded');
+          expect(sidebarItems.classes()).toContain('gl-shadow-md');
+          expect(sidebarItems.classes()).not.toContain('gl-fixed');
+          expect(sidebarItems.classes()).not.toContain('gl-right-0');
+        });
+      });
+
+      describe('when the sidebar is collapsed', () => {
+        it('has correct CSS classes', async () => {
+          button.trigger('click');
+          await nextTick();
+
+          const sidebarItems = findSidebar();
+
+          expect(sidebarItems.classes()).not.toContain('right-sidebar');
+          expect(sidebarItems.classes()).not.toContain('right-sidebar-expanded');
+          expect(sidebarItems.classes()).not.toContain('gl-shadow-md');
+          expect(sidebarItems.classes()).toContain('gl-fixed');
+          expect(sidebarItems.classes()).toContain('gl-right-0');
+        });
+      });
+    });
+  });
+
+  describe('sidebar items', () => {
+    describe('on desktop', () => {
+      beforeEach(() => {
+        createComponent();
+      });
+
+      it('shows the sidebar items', () => {
+        const sidebarItems = findSidebarItems();
+
+        expect(sidebarItems.exists()).toBe(true);
+      });
+
+      it('does not have CSS classes', () => {
+        const sidebarItems = findSidebarItems();
+
+        expect(sidebarItems.classes()).not.toContain('gl-border-t-1');
+        expect(sidebarItems.classes()).not.toContain('gl-mt-5');
+        expect(sidebarItems.classes()).not.toContain('gl-border-gray-100');
+        expect(sidebarItems.classes()).not.toContain('gl-border-t-solid');
+      });
+    });
+
+    describe('on mobile', () => {
+      beforeEach(() => {
+        jest.spyOn(bp, 'isDesktop').mockReturnValue(false);
+      });
+
+      it('hides the sidebar items by default', () => {
+        createComponent();
+
+        const sidebarItems = findSidebarItems();
+
+        expect(sidebarItems.exists()).toBe(false);
+      });
+
+      it('has correct CSS classes when the sidebar is expanded', async () => {
+        createComponent();
+
+        const button = findSidebarToggleButton();
+        button.trigger('click');
+        await nextTick();
+
+        const sidebarItems = findSidebarItems();
+
+        expect(sidebarItems.classes()).toContain('gl-border-t');
+        expect(sidebarItems.classes()).toContain('gl-mt-5');
+      });
+    });
+  });
+
+  describe('url button wrapper', () => {
+    describe('on desktop', () => {
+      it('does not have CSS classes', () => {
+        createComponent();
+
+        const urlButtonWrapper = findUrlButtonWrapper();
+
+        expect(urlButtonWrapper.classes()).not.toContain('gl-mt-5');
+        expect(urlButtonWrapper.classes()).not.toContain('gl-border-b-1');
+        expect(urlButtonWrapper.classes()).not.toContain('gl-border-gray-100');
+        expect(urlButtonWrapper.classes()).not.toContain('gl-pb-5');
+        expect(urlButtonWrapper.classes()).not.toContain('gl-border-b-solid');
+      });
+    });
+
+    describe('on mobile', () => {
+      it('has correct CSS classes', async () => {
+        jest.spyOn(bp, 'isDesktop').mockReturnValue(false);
+
+        createComponent();
+
+        const button = findSidebarToggleButton();
+        button.trigger('click');
+        await nextTick();
+
+        const urlButtonWrapper = findUrlButtonWrapper();
+
+        expect(urlButtonWrapper.classes()).toContain('gl-mt-5');
+        expect(urlButtonWrapper.classes()).toContain('gl-border-b');
+        expect(urlButtonWrapper.classes()).toContain('gl-pb-5');
+      });
+    });
+  });
+
+  describe('triggerer item', () => {
+    describe('on desktop', () => {
+      it('has correct CSS classes', () => {
+        createComponent();
+
+        const triggererItem = findTriggererItem();
+
+        expect(triggererItem.classes()).toContain('gl-mt-8');
+        expect(triggererItem.classes()).toContain('gl-border-subtle');
+        expect(triggererItem.classes()).toContain('gl-border-b');
+        expect(triggererItem.classes()).not.toContain('gl-mt-5');
+      });
+    });
+
+    describe('on mobile', () => {
+      it('has correct CSS classes', async () => {
+        jest.spyOn(bp, 'isDesktop').mockReturnValue(false);
+
+        createComponent();
+
+        const button = findSidebarToggleButton();
+        button.trigger('click');
+        await nextTick();
+
+        const triggererItem = findTriggererItem();
+
+        expect(triggererItem.classes()).toContain('gl-mt-5');
+        expect(triggererItem.classes()).toContain('gl-border-b');
+        expect(triggererItem.classes()).not.toContain('gl-mt-8');
+        expect(triggererItem.classes()).not.toContain('gl-border-subtle');
+      });
+    });
+  });
+
+  describe('on window resize after transition from mobile to desktop', () => {
+    beforeEach(() => {
+      jest.spyOn(bp, 'isDesktop').mockReturnValue(false);
+
+      createComponent();
+    });
+
+    it('the sidebar is visible', async () => {
+      let sidebarItems = findSidebarItems();
+
+      expect(sidebarItems.exists()).toBe(false);
+
+      jest.spyOn(bp, 'isDesktop').mockReturnValue(true);
+      window.dispatchEvent(new Event('resize'));
+      await nextTick();
+
+      sidebarItems = findSidebarItems();
+
+      expect(sidebarItems.exists()).toBe(true);
     });
   });
 });

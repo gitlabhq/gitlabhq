@@ -197,6 +197,7 @@ To view the Value Streams Dashboard:
 ### View the Value Streams Dashboard for a project
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137483) in GitLab 16.7 [with a flag](../../administration/feature_flags.md) named `project_analytics_dashboard_dynamic_vsd`. Disabled by default.
+> - Feature flag `project_analytics_dashboard_dynamic_vsd` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/441207) in GitLab 17.5.
 
 Prerequisites:
 

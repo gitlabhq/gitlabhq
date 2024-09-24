@@ -3,6 +3,8 @@ redirect_to: 'observability_java_tutorial.md'
 remove_date: '2024-10-25'
 ---
 
+<!-- markdownlint-disable -->
+
 This document was moved to [another location](observability_java_tutorial.md).
 
 <!-- This redirect file can be deleted after <2024-10-25>. -->

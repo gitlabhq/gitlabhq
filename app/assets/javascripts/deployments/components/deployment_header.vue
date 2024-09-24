@@ -121,7 +121,7 @@ export default {
     </gl-skeleton-loader>
   </div>
   <div v-else>
-    <div class="gl-mb-3 gl-flex gl-items-center gl-gap-3">
+    <div class="gl-mb-3 gl-flex gl-flex-wrap gl-items-center gl-gap-3">
       <deployment-status-link :status="status" :deployment-job="job" />
       <gl-badge v-if="needsApproval" variant="warning">
         {{ $options.i18n.needsApproval }}

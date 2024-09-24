@@ -3,6 +3,8 @@ redirect_to: '../index.md'
 remove_date: '2024-12-11'
 ---
 
+<!-- markdownlint-disable -->
+
 This document was moved to [another location](../index.md).
 
 <!-- This redirect file can be deleted after <2024-12-11>. -->

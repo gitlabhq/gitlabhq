@@ -3,7 +3,7 @@
 class DeleteInvalidPagesDomainsRecords < Gitlab::Database::Migration[2.2]
   disable_ddl_transaction!
   restrict_gitlab_migration gitlab_schema: :gitlab_main
-  milestone '17.4'
+  milestone '17.5'
 
   BATCH_SIZE = 1000
 

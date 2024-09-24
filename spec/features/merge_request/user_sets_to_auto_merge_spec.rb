@@ -40,6 +40,15 @@ RSpec.describe 'Merge request > User sets to auto-merge', :js, feature_category:
       expect(page).to have_content "canceled the automatic merge"
     end
 
+    it 'changes the source branch text' do
+      check('Delete source branch')
+      click_button "Set to auto-merge"
+
+      wait_for_requests
+
+      expect(page).to have_content "Source branch will be deleted"
+    end
+
     describe 'setting to auto-merge true' do
       shared_examples 'Set to auto-merge activator' do
         it 'activates auto-merge feature' do

@@ -5,15 +5,18 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 ignore_in_report: true
 ---
 
-WARNING:
-This runbook is an [experiment](../../../../policy/experiment-beta-support.md#experiment). For complete, production-ready documentation, see the
-[disaster recovery documentation](../index.md).
-
 # Disaster Recovery (Geo) promotion runbooks
 
 DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** Self-managed
+**Status:** Experiment
+
+Disaster Recovery (Geo) promotion runbooks.
+
+WARNING:
+This runbook is an [experiment](../../../../policy/experiment-beta-support.md#experiment). For complete, production-ready documentation, see the
+[disaster recovery documentation](../index.md).
 
 ## Geo planned failover for a multi-node configuration
 
