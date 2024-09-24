@@ -14790,21 +14790,7 @@ CREATE TABLE packages_conan_metadata (
     updated_at timestamp with time zone NOT NULL,
     package_username character varying(255) NOT NULL,
     package_channel character varying(255) NOT NULL,
-    project_id bigint,
-    os text,
-    architecture text,
-    build_type text,
-    compiler text,
-    compiler_version text,
-    compiler_libcxx text,
-    compiler_cppstd text,
-    CONSTRAINT check_15f3356ff2 CHECK ((char_length(architecture) <= 32)),
-    CONSTRAINT check_3dc474bc51 CHECK ((char_length(compiler_version) <= 16)),
-    CONSTRAINT check_52abd85dde CHECK ((char_length(compiler_libcxx) <= 32)),
-    CONSTRAINT check_535bd0bf5b CHECK ((char_length(os) <= 32)),
-    CONSTRAINT check_a0b998cb1b CHECK ((char_length(build_type) <= 32)),
-    CONSTRAINT check_e57d0def27 CHECK ((char_length(compiler_cppstd) <= 32)),
-    CONSTRAINT check_e7f03884b8 CHECK ((char_length(compiler) <= 32))
+    project_id bigint
 );
 
 CREATE SEQUENCE packages_conan_metadata_id_seq
@@ -14815,6 +14801,27 @@ CREATE SEQUENCE packages_conan_metadata_id_seq
     CACHE 1;
 
 ALTER SEQUENCE packages_conan_metadata_id_seq OWNED BY packages_conan_metadata.id;
+
+CREATE TABLE packages_conan_package_references (
+    id bigint NOT NULL,
+    package_id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    recipe_revision_id bigint,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    reference bytea NOT NULL,
+    info jsonb DEFAULT '{}'::jsonb NOT NULL,
+    CONSTRAINT chk_conan_references_info_length CHECK ((char_length((info)::text) <= 20000))
+);
+
+CREATE SEQUENCE packages_conan_package_references_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE packages_conan_package_references_id_seq OWNED BY packages_conan_package_references.id;
 
 CREATE TABLE packages_conan_recipe_revisions (
     id bigint NOT NULL,
@@ -19775,6 +19782,7 @@ CREATE TABLE virtual_registries_packages_maven_cached_responses (
     object_storage_key text NOT NULL,
     upstream_etag text,
     content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
+    status smallint DEFAULT 0 NOT NULL,
     CONSTRAINT check_28c64d513d CHECK ((char_length(object_storage_key) <= 255)),
     CONSTRAINT check_30b7e853d9 CHECK ((char_length(upstream_etag) <= 255)),
     CONSTRAINT check_68b105cda6 CHECK ((char_length(file) <= 255)),
@@ -22271,6 +22279,8 @@ ALTER TABLE ONLY packages_conan_file_metadata ALTER COLUMN id SET DEFAULT nextva
 
 ALTER TABLE ONLY packages_conan_metadata ALTER COLUMN id SET DEFAULT nextval('packages_conan_metadata_id_seq'::regclass);
 
+ALTER TABLE ONLY packages_conan_package_references ALTER COLUMN id SET DEFAULT nextval('packages_conan_package_references_id_seq'::regclass);
+
 ALTER TABLE ONLY packages_conan_recipe_revisions ALTER COLUMN id SET DEFAULT nextval('packages_conan_recipe_revisions_id_seq'::regclass);
 
 ALTER TABLE ONLY packages_debian_group_architectures ALTER COLUMN id SET DEFAULT nextval('packages_debian_group_architectures_id_seq'::regclass);
@@ -24735,6 +24745,9 @@ ALTER TABLE ONLY packages_conan_file_metadata
 
 ALTER TABLE ONLY packages_conan_metadata
     ADD CONSTRAINT packages_conan_metadata_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY packages_conan_package_references
+    ADD CONSTRAINT packages_conan_package_references_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY packages_conan_recipe_revisions
     ADD CONSTRAINT packages_conan_recipe_revisions_pkey PRIMARY KEY (id);
@@ -29702,6 +29715,10 @@ CREATE UNIQUE INDEX index_packages_conan_metadata_on_package_id_username_channel
 
 CREATE INDEX index_packages_conan_metadata_on_project_id ON packages_conan_metadata USING btree (project_id);
 
+CREATE INDEX index_packages_conan_package_references_on_project_id ON packages_conan_package_references USING btree (project_id);
+
+CREATE INDEX index_packages_conan_package_references_on_recipe_revision_id ON packages_conan_package_references USING btree (recipe_revision_id);
+
 CREATE INDEX index_packages_conan_recipe_revisions_on_project_id ON packages_conan_recipe_revisions USING btree (project_id);
 
 CREATE INDEX index_packages_debian_group_architectures_on_group_id ON packages_debian_group_architectures USING btree (group_id);
@@ -31399,6 +31416,8 @@ CREATE UNIQUE INDEX uniq_audit_group_event_filters_destination_id_and_event_type
 CREATE UNIQUE INDEX uniq_audit_instance_event_filters_destination_id_and_event_type ON audit_events_instance_streaming_event_type_filters USING btree (external_streaming_destination_id, audit_event_type);
 
 CREATE UNIQUE INDEX uniq_google_cloud_logging_configuration_namespace_id_and_name ON audit_events_google_cloud_logging_configurations USING btree (namespace_id, name);
+
+CREATE UNIQUE INDEX uniq_idx_on_packages_conan_package_references_package_reference ON packages_conan_package_references USING btree (package_id, recipe_revision_id, reference);
 
 CREATE UNIQUE INDEX uniq_idx_packages_packages_on_project_id_name_version_ml_model ON packages_packages USING btree (project_id, name, version) WHERE ((package_type = 14) AND (status <> 4));
 
@@ -34058,6 +34077,9 @@ ALTER TABLE ONLY import_source_users
 ALTER TABLE ONLY integrations
     ADD CONSTRAINT fk_71cce407f9 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY packages_conan_package_references
+    ADD CONSTRAINT fk_7210467bfc FOREIGN KEY (package_id) REFERENCES packages_packages(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY subscription_user_add_on_assignments
     ADD CONSTRAINT fk_724c2df9a8 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
@@ -34472,6 +34494,9 @@ ALTER TABLE ONLY compliance_management_frameworks
 ALTER TABLE ONLY ml_experiment_metadata
     ADD CONSTRAINT fk_b764e76c6c FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY packages_conan_package_references
+    ADD CONSTRAINT fk_b7c05e1b1c FOREIGN KEY (recipe_revision_id) REFERENCES packages_conan_recipe_revisions(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY external_status_checks_protected_branches
     ADD CONSTRAINT fk_b7d788e813 FOREIGN KEY (protected_branch_id) REFERENCES protected_branches(id) ON DELETE CASCADE;
 
@@ -34783,6 +34808,9 @@ ALTER TABLE ONLY namespaces
 
 ALTER TABLE ONLY fork_networks
     ADD CONSTRAINT fk_e7b436b2b5 FOREIGN KEY (root_project_id) REFERENCES projects(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY packages_conan_package_references
+    ADD CONSTRAINT fk_e7b5f3afc7 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY error_tracking_error_events
     ADD CONSTRAINT fk_e84882273e FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

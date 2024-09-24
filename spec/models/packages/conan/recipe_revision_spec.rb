@@ -9,6 +9,11 @@ RSpec.describe Packages::Conan::RecipeRevision, type: :model, feature_category: 
     end
 
     it { is_expected.to belong_to(:project) }
+
+    it do
+      is_expected.to have_many(:conan_package_references).inverse_of(:recipe_revision)
+        .class_name('Packages::Conan::PackageReference')
+    end
   end
 
   describe 'validations' do

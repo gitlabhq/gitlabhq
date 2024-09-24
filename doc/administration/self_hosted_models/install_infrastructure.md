@@ -1,16 +1,16 @@
 ---
 stage: AI-Powered
 group: Custom Models
-description: Setup your self-hosted model deployment infrastructure
+description: Set up your self-hosted model infrastructure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Set up your self-hosted model deployment infrastructure
+# Set up your self-hosted model infrastructure
 
 DETAILS:
 **Tier:** For a limited time, Premium and Ultimate. In the future, [GitLab Duo Enterprise](../../subscriptions/subscription-add-ons.md).
 **Offering:** Self-managed
-**Status:** Experiment
+**Status:** Beta
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12972) in GitLab 17.1 [with a flag](../../administration/feature_flags.md) named `ai_custom_model`. Disabled by default.
 
@@ -18,19 +18,10 @@ FLAG:
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
 
-WARNING:
-This feature is considered [experimental](../../policy/experiment-beta-support.md) and is not intended for customer usage outside of initial design partners. We expect major changes to this feature.
-
-DISCLAIMER:
-This page contains information related to upcoming products, features, and functionality.
-It is important to note that the information presented is for informational purposes only.
-Please do not rely on this information for purchasing or planning purposes.
-The development, release, and timing of any products, features, or functionality may be subject to change or delay and remain at the sole discretion of GitLab Inc.
-
 By self-hosting the model, AI Gateway, and GitLab instance, there are no calls to
 external architecture, ensuring maximum levels of security.
 
-To set up your self-hosted model deployment infrastructure:
+To set up your self-hosted model infrastructure:
 
 1. Install the large language model (LLM) serving infrastructure.
 1. Configure your GitLab instance.

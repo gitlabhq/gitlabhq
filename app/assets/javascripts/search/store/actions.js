@@ -1,3 +1,4 @@
+import { omitBy } from 'lodash';
 import Api from '~/api';
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
@@ -124,7 +125,8 @@ export const setQuery = ({ state, commit, getters }, { key, value }) => {
 };
 
 export const applyQuery = ({ state }) => {
-  visitUrl(setUrlParams({ ...state.query, page: null }, window.location.href, false, true));
+  const query = omitBy(state.query, (item) => item === '');
+  visitUrl(setUrlParams({ ...query, page: null }, window.location.href, true, true));
 };
 
 export const resetQuery = ({ state }) => {

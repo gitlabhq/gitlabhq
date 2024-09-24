@@ -148,6 +148,16 @@ DETAILS:
 
 ## Beta features
 
+### Self-Hosted Models
+
+DETAILS:
+**Tier:** For a limited time, Premium and Ultimate. In the future, [GitLab Duo Enterprise](../../subscriptions/subscription-add-ons.md).
+**Offering:** Self-managed
+**Status:** Beta
+
+- Host a GitLab-approved model that's different from the default.
+- [View documentation](../../administration/self_hosted_models/index.md).
+
 ### Merge Request Summary
 
 DETAILS:

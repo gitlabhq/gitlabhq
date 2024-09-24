@@ -705,7 +705,6 @@ Gitlab/NamespacedClass:
     - 'app/workers/build_queue_worker.rb'
     - 'app/workers/bulk_import_worker.rb'
     - 'app/workers/chat_notification_worker.rb'
-    - 'app/workers/ci_platform_metrics_update_cron_worker.rb'
     - 'app/workers/cleanup_container_repository_worker.rb'
     - 'app/workers/cluster_configure_istio_worker.rb'
     - 'app/workers/cluster_install_app_worker.rb'

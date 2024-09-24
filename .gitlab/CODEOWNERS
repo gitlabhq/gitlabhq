@@ -1436,7 +1436,6 @@ lib/gitlab/checks/**
 /app/uploaders/job_artifact_uploader.rb
 /app/validators/json_schemas/build_metadata_id_tokens.json
 /app/workers/build_queue_worker.rb
-/app/workers/ci_platform_metrics_update_cron_worker.rb
 /app/workers/create_pipeline_worker.rb
 /app/workers/expire_build_artifacts_worker.rb
 /app/workers/pipeline_hooks_worker.rb

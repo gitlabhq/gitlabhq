@@ -301,7 +301,7 @@ class Commit
   end
 
   def lazy_author
-    BatchLoader.for(author_email.downcase).batch do |emails, loader|
+    BatchLoader.for(author_email&.downcase).batch do |emails, loader|
       users = User.by_any_email(emails, confirmed: true).includes(:emails)
 
       emails.each do |email|
@@ -317,7 +317,7 @@ class Commit
       lazy_author&.itself
     end
   end
-  request_cache(:author) { author_email.downcase }
+  request_cache(:author) { author_email&.downcase }
 
   def committer(confirmed: true)
     @committer ||= User.find_by_any_email(committer_email, confirmed: confirmed)

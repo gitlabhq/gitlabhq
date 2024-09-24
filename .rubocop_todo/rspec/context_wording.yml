@@ -828,7 +828,6 @@ RSpec/ContextWording:
     - 'ee/spec/workers/ci/runners/stale_group_runners_prune_cron_worker_spec.rb'
     - 'ee/spec/workers/ci/upstream_projects_subscriptions_cleanup_worker_spec.rb'
     - 'ee/spec/workers/ee/repository_check/batch_worker_spec.rb'
-    - 'ee/spec/workers/elastic/migration_worker_spec.rb'
     - 'ee/spec/workers/elastic_index_bulk_cron_worker_spec.rb'
     - 'ee/spec/workers/elastic_indexing_control_worker_spec.rb'
     - 'ee/spec/workers/geo/prune_event_log_worker_spec.rb'

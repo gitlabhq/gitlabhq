@@ -9,6 +9,7 @@ classes:
 - Packages::Helm::Package
 - Packages::MlModel::Package
 - Packages::Package
+- Packages::Pypi::Package
 - Packages::Rpm::Package
 - Packages::Rubygems::Package
 feature_categories:

@@ -10,22 +10,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 DETAILS:
 **Tier:** For a limited time, Premium and Ultimate. In the future, [GitLab Duo Enterprise](../../subscriptions/subscription-add-ons.md).
 **Offering:** Self-managed
-**Status:** Experiment
+**Status:** Beta
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12972) in GitLab 17.1 [with a flag](../../administration/feature_flags.md) named `ai_custom_model`. Disabled by default.
 
 FLAG:
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
-
-WARNING:
-This feature is considered [experimental](../../policy/experiment-beta-support.md) and is not intended for customer usage outside of initial design partners. We expect major changes to this feature.
-
-DISCLAIMER:
-This page contains information related to upcoming products, features, and functionality.
-It is important to note that the information presented is for informational purposes only.
-Please do not rely on this information for purchasing or planning purposes.
-The development, release, and timing of any products, features, or functionality may be subject to change or delay and remain at the sole discretion of GitLab Inc.
 
 When you deploy a self-hosted model, you can:
 
@@ -59,7 +50,7 @@ feature. For more information about this offering, see
 
 To deploy a self-hosted large language model:
 
-1. [Set up your self-hosted model deployment infrastructure](../../administration/self_hosted_models/install_infrastructure.md) and connect it to your GitLab instance.
+1. [Set up your self-hosted model infrastructure](../../administration/self_hosted_models/install_infrastructure.md) and connect it to your GitLab instance.
 1. [Configure your GitLab instance to access self-hosted models](../../administration/self_hosted_models/configure_duo_features.md) using instance and group settings.
 
 ## Self-hosted models compared to the default GitLab AI vendor architecture

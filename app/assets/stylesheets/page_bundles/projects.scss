@@ -321,6 +321,10 @@
     .description {
       line-height: 1.5;
       max-height: $gl-spacing-scale-8;
+
+      a {
+        word-break: break-all;
+      }
     }
   }
 

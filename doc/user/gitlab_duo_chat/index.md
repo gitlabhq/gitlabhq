@@ -142,17 +142,52 @@ To use GitLab Duo Chat in the GitLab Duo plugin for JetBrains IDEs:
    1. In the JetBrains marketplace, download and install the [GitLab Duo plugin](../../editor_extensions/jetbrains_ide/index.md#download-the-extension).
    1. Configure the [GitLab Duo plugin](../../editor_extensions/jetbrains_ide/index.md#configure-the-extension).
 1. In a JetBrains IDE, open a project.
-1. Open Chat by using one of the following methods:
-   - On the right tool window bar, select **GitLab Duo Chat**.
-   - Use a keyboard shortcut: <kbd>ALT</kbd> + <kbd>d</kbd> on Windows and Linux, or
-     <kbd>Option</kbd> + <kbd>d</kbd> on macOS.
-   - In the file that you have open in the editor:
-     1. Optional. Select some code.
-     1. Right-click and select **GitLab Duo Chat**.
-     1. Select **Open Chat Window**.
-     1. Select **Explain Code**, **Generate Tests**, or **Refactor Code**.
-   - Add keyboard or mouse shortcuts for each action under **Keymap** in the **Settings**.
-1. In the message box, enter your question and press **Enter** or select **Send**.
+1. Open GitLab Duo Chat in either a chat window or an editor window:
+
+### In a chat window
+
+To open GitLab Duo Chat in a chat window, use any of these methods:
+
+- On the right tool window bar, by selecting **GitLab Duo Chat**.
+- From a keyboard shortcut, by pressing:
+  - MacOS: <kbd>Option</kbd> + <kbd>d</kbd>
+  - Windows and Linux: <kbd>ALT</kbd> + <kbd>d</kbd>
+- In the file that you have open in the editor:
+  1. Optional. Select some code.
+  1. Right-click and select **GitLab Duo Chat**.
+  1. Select **Open Chat Window**.
+  1. Select **Explain Code**, **Generate Tests**, or **Refactor Code**.
+- Adding keyboard or mouse shortcuts for each action under **Keymap** in the **Settings**.
+
+After GitLab Duo Chat opens:
+
+1. In the message box, enter your question. The available commands are shown while you enter text:
+   - Enter `/` to display all available commands.
+   - Enter `/re` to display `/refactor` and `/reset`.
+1. To send your question, press **Enter** or select **Send**.
+1. Use the buttons within code blocks in the responses to interact with them.
+
+### In the editor window
+
+> - [Generally available](https://gitlab.com/groups/gitlab-org/editor-extensions/-/epics/80) in GitLab Duo 3.0.0.
+
+To open GitLab Duo Chat in the editor window, use any of these methods:
+
+- From a keyboard shortcut, by pressing:
+  - MacOS: <kbd>Option</kbd> + <kbd>c</kbd>
+  - Windows and Linux: <kbd>ALT</kbd> + <kbd>c</kbd>
+- In the currently open file in your IDE, by selecting some code,
+  then, in the floating toolbar, selecting **GitLab Duo Quick Chat** (**{tanuki-ai}**).
+- Right-clicking, then selecting **GitLab Duo Chat > Open Quick Chat**.
+
+After Quick Chat opens:
+
+1. In the message box, enter your question. The available commands are shown while you enter text:
+   - Enter `/` to display all available commands.
+   - Enter `/re` to display `/refactor` and `/reset`.
+1. To send your question, press **Enter**.
+1. Use the buttons around code blocks in the responses to interact with them.
+1. To exit chat, either select **Escape to close**, or press **Escape** while focused on the chat.
 
 ## Watch a demo and get tips
 

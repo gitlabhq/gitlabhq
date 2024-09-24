@@ -10,6 +10,9 @@ module VirtualRegistries
         belongs_to :group
         belongs_to :upstream, class_name: 'VirtualRegistries::Packages::Maven::Upstream', inverse_of: :cached_responses
 
+        # Used in destroying stale cached responses in DestroyOrphanCachedResponsesWorker
+        enum :status, default: 0, processing: 1, error: 3
+
         validates :group, top_level_group: true, presence: true
         validates :relative_path,
           :object_storage_key,
@@ -34,6 +37,12 @@ module VirtualRegistries
 
         scope :search_by_relative_path, ->(query) do
           fuzzy_search(query, [:relative_path], use_minimum_char_limit: false)
+        end
+        scope :orphan, -> { where(upstream: nil) }
+        scope :pending_destruction, -> { orphan.default }
+
+        def self.next_pending_destruction
+          pending_destruction.lock('FOR UPDATE SKIP LOCKED').take
         end
 
         # create or update a cached response identified by the upstream, group_id and relative_path

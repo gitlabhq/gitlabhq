@@ -48,6 +48,39 @@ RSpec.describe VirtualRegistries::Packages::Maven::CachedResponse, type: :model,
     end
   end
 
+  describe 'scopes' do
+    describe '.orphan' do
+      subject { described_class.orphan }
+
+      let_it_be(:cached_response) { create(:virtual_registries_packages_maven_cached_response) }
+      let_it_be(:orphan_cached_response) { create(:virtual_registries_packages_maven_cached_response, :orphan) }
+
+      it { is_expected.to contain_exactly(orphan_cached_response) }
+    end
+
+    describe '.pending_destruction' do
+      subject { described_class.pending_destruction }
+
+      let_it_be(:cached_response) { create(:virtual_registries_packages_maven_cached_response, :orphan, :processing) }
+      let_it_be(:pending_destruction_cached_response) do
+        create(:virtual_registries_packages_maven_cached_response, :orphan)
+      end
+
+      it { is_expected.to contain_exactly(pending_destruction_cached_response) }
+    end
+  end
+
+  describe '.next_pending_destruction' do
+    subject { described_class.next_pending_destruction }
+
+    let_it_be(:cached_response) { create(:virtual_registries_packages_maven_cached_response) }
+    let_it_be(:pending_destruction_cached_response) do
+      create(:virtual_registries_packages_maven_cached_response, :orphan)
+    end
+
+    it { is_expected.to eq(pending_destruction_cached_response) }
+  end
+
   describe 'object storage key' do
     it 'can not be null' do
       cached_response.object_storage_key = nil

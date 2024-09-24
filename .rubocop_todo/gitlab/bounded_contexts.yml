@@ -1966,7 +1966,6 @@ Gitlab/BoundedContexts:
     - 'app/workers/chaos/leak_mem_worker.rb'
     - 'app/workers/chaos/sleep_worker.rb'
     - 'app/workers/chat_notification_worker.rb'
-    - 'app/workers/ci_platform_metrics_update_cron_worker.rb'
     - 'app/workers/cleanup_container_repository_worker.rb'
     - 'app/workers/click_house/audit_event_partition_sync_worker.rb'
     - 'app/workers/click_house/audit_events_sync_worker.rb'

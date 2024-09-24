@@ -9,6 +9,8 @@ module Packages
 
       has_many :conan_recipe_revisions, inverse_of: :package, class_name: 'Packages::Conan::RecipeRevision'
 
+      has_many :conan_package_references, inverse_of: :package, class_name: 'Packages::Conan::PackageReference'
+
       accepts_nested_attributes_for :conan_metadatum
 
       delegate :recipe, :recipe_path, to: :conan_metadatum, prefix: :conan

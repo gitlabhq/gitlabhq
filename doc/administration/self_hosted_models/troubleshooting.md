@@ -1,7 +1,7 @@
 ---
 stage: AI-Powered
 group: Custom Models
-description: Troubleshooting tips for deploying self-hosted model deployment
+description: Troubleshooting tips for deploying self-hosted models
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 

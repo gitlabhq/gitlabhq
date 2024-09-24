@@ -242,6 +242,15 @@ RSpec.describe Commit, feature_category: :source_code_management do
         expect(recorder.count).to be_zero
       end
     end
+
+    context 'when author_email is nil' do
+      let(:git_commit) { RepoHelpers.sample_commit.tap { |c| c.author_email = nil } }
+      let(:commit) { described_class.new(git_commit, build(:project)) }
+
+      it 'returns nil' do
+        expect(commit.author).to be_nil
+      end
+    end
   end
 
   describe '#committer' do

@@ -796,7 +796,6 @@ Style/InlineDisableAnnotation:
     - 'app/workers/ci/track_failed_build_worker.rb'
     - 'app/workers/ci/unlock_pipelines_in_queue_worker.rb'
     - 'app/workers/ci/update_locked_unknown_artifacts_worker.rb'
-    - 'app/workers/ci_platform_metrics_update_cron_worker.rb'
     - 'app/workers/cluster_configure_istio_worker.rb'
     - 'app/workers/cluster_install_app_worker.rb'
     - 'app/workers/cluster_patch_app_worker.rb'

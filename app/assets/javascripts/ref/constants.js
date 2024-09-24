@@ -9,6 +9,7 @@ export const BRANCH_REF_TYPE = 'heads';
 export const TAG_REF_TYPE = 'tags';
 export const TAG_REF_TYPE_ICON = 'tag';
 export const BRANCH_REF_TYPE_ICON = 'branch';
+export const SEARCH_ICON = 'search';
 export const REF_TYPE_PARAM_NAME = 'ref_type';
 
 export const X_TOTAL_HEADER = 'x-total';

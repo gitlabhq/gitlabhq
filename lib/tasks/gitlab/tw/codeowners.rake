@@ -75,7 +75,7 @@ namespace :tw do
       # CodeOwnerRule.new('Respond', ''),
       CodeOwnerRule.new('Runner', '@rsarangadharan'),
       CodeOwnerRule.new('Hosted Runners', '@rsarangadharan'),
-      CodeOwnerRule.new('Security Policies', '@rdickenson'),
+      CodeOwnerRule.new('Security Policies', '@rlehmann1'),
       CodeOwnerRule.new('Secret Detection', '@rdickenson'),
       CodeOwnerRule.new('Solutions Architecture', '@jfullam @brianwald @Darwinjs'),
       CodeOwnerRule.new('Source Code', '@brendan777'),
@@ -97,7 +97,7 @@ namespace :tw do
         '@gitlab-org/analytics-section/product-analytics/engineers/frontend ' \
         '@gitlab-org/analytics-section/analytics-instrumentation/engineers'),
       CodeOwnerRule.new('Authentication', '@gitlab-org/govern/authentication/approvers'),
-      CodeOwnerRule.new('Authorization', '@gitlab-org/govern/authorization/approvers'),
+      CodeOwnerRule.new('Authorization', '@rlehmann1'),
       CodeOwnerRule.new('Compliance',
         '@gitlab-org/govern/security-policies-frontend @gitlab-org/govern/threat-insights-frontend-team ' \
         '@gitlab-org/govern/threat-insights-backend-team'),

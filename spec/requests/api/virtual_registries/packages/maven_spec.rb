@@ -1008,7 +1008,7 @@ RSpec.describe API::VirtualRegistries::Packages::Maven, :aggregate_failures, fea
           cached_response
             .as_json
             .merge('cached_response_id' => Base64.urlsafe_encode64(cached_response.relative_path))
-            .except('id', 'object_storage_key', 'file_store')
+            .except('id', 'object_storage_key', 'file_store', 'status')
         )
       end
     end

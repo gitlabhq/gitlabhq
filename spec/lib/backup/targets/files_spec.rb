@@ -56,7 +56,7 @@ RSpec.describe Backup::Targets::Files, feature_category: :backup_restore do
 
       it 'moves all necessary files' do
         expect_next_instance_of(Gitlab::Backup::Cli::Shell::Pipeline) do |pipeline|
-          expect(pipeline).to receive(:run_pipeline!).and_return(pipeline_status_success)
+          expect(pipeline).to receive(:run!).and_return(pipeline_status_success)
         end
 
         tmp_dir = backup_basepath.join('tmp', "registry.#{Time.now.to_i}")
@@ -67,7 +67,7 @@ RSpec.describe Backup::Targets::Files, feature_category: :backup_restore do
 
       it 'raises no errors' do
         expect_next_instance_of(Gitlab::Backup::Cli::Shell::Pipeline) do |pipeline|
-          expect(pipeline).to receive(:run_pipeline!).and_return(pipeline_status_success)
+          expect(pipeline).to receive(:run!).and_return(pipeline_status_success)
         end
 
         expect { files.restore('registry.tar.gz', 'backup_id') }.not_to raise_error
@@ -80,7 +80,7 @@ RSpec.describe Backup::Targets::Files, feature_category: :backup_restore do
           expect(tar_cmd.cmd_args).to include('--unlink-first')
           expect(tar_cmd.cmd_args).to include('--recursive-unlink')
 
-          expect(pipeline).to receive(:run_pipeline!).and_return(pipeline_status_success)
+          expect(pipeline).to receive(:run!).and_return(pipeline_status_success)
         end
 
         files.restore('registry.tar.gz', 'backup_id')
@@ -88,7 +88,7 @@ RSpec.describe Backup::Targets::Files, feature_category: :backup_restore do
 
       it 'raises an error on failure' do
         expect_next_instance_of(Gitlab::Backup::Cli::Shell::Pipeline) do |pipeline|
-          expect(pipeline).to receive(:run_pipeline!).and_return(pipeline_status_failed)
+          expect(pipeline).to receive(:run!).and_return(pipeline_status_failed)
         end
 
         expect { files.restore('registry.tar.gz', 'backup_id') }.to raise_error(/Restore operation failed:/)
@@ -99,7 +99,7 @@ RSpec.describe Backup::Targets::Files, feature_category: :backup_restore do
       before do
         FileUtils.touch('registry.tar.gz')
         allow(FileUtils).to receive(:mv).and_raise(Errno::EACCES)
-        allow(files).to receive(:run_pipeline!).and_return([[true, true], ''])
+        allow(files).to receive(:run!).and_return([[true, true], ''])
         allow(files).to receive(:pipeline_succeeded?).and_return(true)
       end
 
@@ -117,7 +117,7 @@ RSpec.describe Backup::Targets::Files, feature_category: :backup_restore do
     describe 'folders that are a mountpoint' do
       before do
         allow(FileUtils).to receive(:mv).and_raise(Errno::EBUSY)
-        allow(files).to receive(:run_pipeline!).and_return([[true, true], ''])
+        allow(files).to receive(:run!).and_return([[true, true], ''])
         allow(files).to receive(:pipeline_succeeded?).and_return(true)
       end
 
@@ -140,7 +140,7 @@ RSpec.describe Backup::Targets::Files, feature_category: :backup_restore do
           decompress_cmd = pipeline.shell_commands[0]
 
           expect(decompress_cmd.cmd_args).to include('tee')
-          expect(pipeline).to receive(:run_pipeline!).and_return(pipeline_status_success)
+          expect(pipeline).to receive(:run!).and_return(pipeline_status_success)
         end
 
         expect do
@@ -166,7 +166,7 @@ RSpec.describe Backup::Targets::Files, feature_category: :backup_restore do
         expect(tar_cmd.cmd_args).to include('--exclude=lost+found')
         expect(tar_cmd.cmd_args).to include('--exclude=./@pages.tmp')
 
-        allow(pipeline).to receive(:run_pipeline!).and_call_original
+        allow(pipeline).to receive(:run!).and_call_original
       end
 
       files.dump('registry.tar.gz', 'backup_id')

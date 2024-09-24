@@ -1009,6 +1009,7 @@ the following are the names of GitLab Duo features:
 - GitLab Duo Merge Request Summary
 - GitLab Duo Product Analytics
 - GitLab Duo Root Cause Analysis
+- GitLab Duo Self-Hosted Models
 - GitLab Duo Test Generation
 - GitLab Duo Vulnerability Explanation
 - GitLab Duo Vulnerability Resolution
@@ -2001,6 +2002,16 @@ However, you can make an exception for **right-click** and **click-through demo*
 Use **self-hosted model** (lowercase) to refer to a language model that's hosted by a customer, rather than GitLab.
 
 The language model might be an LLM (large language model), but it might not be.
+
+## Self-Hosted Models
+
+Use title case for the **GitLab Duo Self-Hosted Models** feature.
+
+On first mention on a page, use **GitLab Duo Self-Hosted Models**.
+Thereafter, use **Self-Hosted Models** by itself.
+
+This phrase applies when specifically referring to the feature name only.
+If you're writing about [self-hosted models](#self-hosted-model), no need to use title case.
 
 ## self-managed
 

@@ -25045,6 +25045,9 @@ msgstr ""
 msgid "GlobalSearch|Archived"
 msgstr ""
 
+msgid "GlobalSearch|Branch not included"
+msgstr ""
+
 msgid "GlobalSearch|Change context %{kbdStart}↵%{kbdEnd}"
 msgstr ""
 
@@ -25168,6 +25171,9 @@ msgstr ""
 msgid "GlobalSearch|No labels found"
 msgstr ""
 
+msgid "GlobalSearch|No matching results"
+msgstr ""
+
 msgid "GlobalSearch|No results found"
 msgstr ""
 
@@ -25217,6 +25223,9 @@ msgid "GlobalSearch|Result count is over limit."
 msgstr ""
 
 msgid "GlobalSearch|Results updated. %{count} results available. Use the up and down arrow keys to navigate search results list, or ENTER to submit."
+msgstr ""
+
+msgid "GlobalSearch|Search"
 msgstr ""
 
 msgid "GlobalSearch|Search %{kbdStart}↵%{kbdEnd}"
@@ -25279,6 +25288,9 @@ msgstr ""
 msgid "GlobalSearch|Snippets"
 msgstr ""
 
+msgid "GlobalSearch|Source branch"
+msgstr ""
+
 msgid "GlobalSearch|The search term must be at least 3 characters long."
 msgstr ""
 
@@ -25286,6 +25298,9 @@ msgid "GlobalSearch|There was an error fetching search autocomplete suggestions.
 msgstr ""
 
 msgid "GlobalSearch|Tip:"
+msgstr ""
+
+msgid "GlobalSearch|Toggle if results have source branch included or excluded"
 msgstr ""
 
 msgid "GlobalSearch|Type %{kbdOpen}/%{kbdClose} to search"
@@ -26527,9 +26542,6 @@ msgid "GroupSettings|Namespace setting"
 msgstr ""
 
 msgid "GroupSettings|Organizations and contacts can be created and associated with issues."
-msgstr ""
-
-msgid "GroupSettings|Participate in the %{link_start}GitLab Early Access Program%{link_end}."
 msgstr ""
 
 msgid "GroupSettings|Please choose a group URL with no special characters or spaces."
@@ -48908,6 +48920,9 @@ msgstr ""
 msgid "SecurityExclusions|Add exclusion"
 msgstr ""
 
+msgid "SecurityExclusions|Delete exclusion"
+msgstr ""
+
 msgid "SecurityExclusions|Description"
 msgstr ""
 
@@ -48929,7 +48944,22 @@ msgstr ""
 msgid "SecurityExclusions|Enter one or more rules to ignore, separated by line breaks."
 msgstr ""
 
+msgid "SecurityExclusions|Exclusion deleted successfully."
+msgstr ""
+
+msgid "SecurityExclusions|Exclusion disabled successfully."
+msgstr ""
+
+msgid "SecurityExclusions|Exclusion enabled successfully."
+msgstr ""
+
 msgid "SecurityExclusions|Exclusion has been created successfully"
+msgstr ""
+
+msgid "SecurityExclusions|Failed to delete the exclusion:"
+msgstr ""
+
+msgid "SecurityExclusions|Failed to update the exclusion:"
 msgstr ""
 
 msgid "SecurityExclusions|File or directory location"
@@ -48983,6 +49013,9 @@ msgid "SecurityExclusions|Unprocessed data"
 msgstr ""
 
 msgid "SecurityExclusions|Value"
+msgstr ""
+
+msgid "SecurityExclusions|You are about to delete the %{type} `%{value}` from the secret detection exclusions. Are you sure you want to continue?"
 msgstr ""
 
 msgid "SecurityExclusions|ex: This secret is used for testing"
@@ -64511,6 +64544,9 @@ msgid "complete"
 msgstr ""
 
 msgid "compliance violation has already been recorded"
+msgstr ""
+
+msgid "conaninfo is too large. Maximum size is %{max_size} characters"
 msgstr ""
 
 msgid "contacts can only be added to root groups"

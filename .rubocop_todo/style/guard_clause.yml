@@ -320,7 +320,6 @@ Style/GuardClause:
     - 'ee/app/validators/user_existence_validator.rb'
     - 'ee/app/workers/ee/ci/build_finished_worker.rb'
     - 'ee/app/workers/ee/post_receive.rb'
-    - 'ee/app/workers/elastic/migration_worker.rb'
     - 'ee/app/workers/elastic_namespace_rollout_worker.rb'
     - 'ee/app/workers/epics/new_epic_issue_worker.rb'
     - 'ee/app/workers/geo/scheduler/scheduler_worker.rb'

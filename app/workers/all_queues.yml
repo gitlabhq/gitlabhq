@@ -300,15 +300,6 @@
   :weight: 1
   :idempotent: true
   :tags: []
-- :name: cronjob:ci_platform_metrics_update_cron
-  :worker_name: CiPlatformMetricsUpdateCronWorker
-  :feature_category: :continuous_integration
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :cpu
-  :weight: 1
-  :idempotent: false
-  :tags: []
 - :name: cronjob:ci_runners_reconcile_existing_runner_versions_cron
   :worker_name: Ci::Runners::ReconcileExistingRunnerVersionsCronWorker
   :feature_category: :fleet_visibility
@@ -1031,6 +1022,15 @@
   :tags: []
 - :name: dependency_proxy_blob:dependency_proxy_cleanup_blob
   :worker_name: DependencyProxy::CleanupBlobWorker
+  :feature_category: :virtual_registry
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: dependency_proxy_blob:virtual_registries_packages_destroy_orphan_cached_responses
+  :worker_name: VirtualRegistries::Packages::DestroyOrphanCachedResponsesWorker
   :feature_category: :virtual_registry
   :has_external_dependencies: false
   :urgency: :low

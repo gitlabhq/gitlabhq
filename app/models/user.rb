@@ -805,6 +805,8 @@ class User < ApplicationRecord
     # @param emails [String, Array<String>] email addresses to check
     # @param confirmed [Boolean] Only return users where the primary email is confirmed
     def by_any_email(emails, confirmed: false)
+      return none if Array(emails).all?(&:nil?)
+
       from_users = by_user_email(emails)
       from_users = from_users.confirmed if confirmed
 
