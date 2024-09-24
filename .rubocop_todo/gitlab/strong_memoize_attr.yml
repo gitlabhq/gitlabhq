@@ -257,7 +257,7 @@ Gitlab/StrongMemoizeAttr:
     - 'ee/app/helpers/ee/preferences_helper.rb'
     - 'ee/app/helpers/ee/timeboxes_helper.rb'
     - 'ee/app/helpers/subscriptions_helper.rb'
-    - 'ee/app/helpers/trials_helper.rb'
+    - 'ee/app/helpers/gitlab_subscriptions/trials_helper.rb'
     - 'ee/app/models/approval_merge_request_rule.rb'
     - 'ee/app/models/approval_state.rb'
     - 'ee/app/models/approval_wrapped_any_approver_rule.rb'

@@ -24,8 +24,8 @@
 - add_page_specific_style 'page_bundles/commit_description'
 
 %li{ class: ["commit flex-row", ("js-toggle-container" if collapsible)], id: "commit-#{commit.short_id}" }
-  .avatar-cell.gl-my-2
-    = author_avatar(commit, size: 32, has_tooltip: false, css_class: 'gl-inline-block')
+  .gl-self-start.gl-hidden.sm:gl-block
+    = author_avatar(commit, size: 40, has_tooltip: false)
 
   .commit-detail.flex-list.gl-flex.gl-justify-between.gl-items-center.gl-grow.gl-min-w-0
     .commit-content{ data: { testid: 'commit-content' } }

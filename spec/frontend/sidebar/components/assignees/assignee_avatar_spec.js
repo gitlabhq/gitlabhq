@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+import { GlAvatar } from '@gitlab/ui';
 import { TEST_HOST } from 'helpers/test_constants';
 import AssigneeAvatar from '~/sidebar/components/assignees/assignee_avatar.vue';
 import userDataMock from '../../user_data_mock';
@@ -26,7 +27,7 @@ describe('AssigneeAvatar', () => {
     window.gon = { default_avatar_url: TEST_DEFAULT_AVATAR_URL };
   });
 
-  const findImg = () => wrapper.find('img');
+  const findAvatar = () => wrapper.findComponent(GlAvatar);
 
   it('does not show warning icon if assignee can merge', () => {
     createComponent();
@@ -65,6 +66,6 @@ describe('AssigneeAvatar', () => {
       },
     });
 
-    expect(findImg().element.src).toEqual(expected);
+    expect(findAvatar().props('src')).toEqual(expected);
   });
 });

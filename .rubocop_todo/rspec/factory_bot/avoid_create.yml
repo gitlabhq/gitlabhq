@@ -70,7 +70,7 @@ RSpec/FactoryBot/AvoidCreate:
     - 'ee/spec/helpers/security_helper_spec.rb'
     - 'ee/spec/helpers/subscriptions_helper_spec.rb'
     - 'ee/spec/helpers/timeboxes_helper_spec.rb'
-    - 'ee/spec/helpers/trials_helper_spec.rb'
+    - 'ee/spec/helpers/gitlab_subscriptions/trials_helper_spec.rb'
     - 'ee/spec/helpers/users/identity_verification_helper_spec.rb'
     - 'ee/spec/helpers/users_helper_spec.rb'
     - 'ee/spec/helpers/vulnerabilities_helper_spec.rb'

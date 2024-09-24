@@ -1,3 +1,4 @@
+import ScrollParent from 'scrollparent';
 import { contentTop } from './common_utils';
 
 const interactionEvents = ['mousedown', 'touchstart', 'keydown', 'wheel'];
@@ -26,18 +27,23 @@ export function createResizeObserver() {
 export function scrollToTargetOnResize({
   targetId = window.location.hash.slice(1),
   container = '#content-body',
-  containerId,
 } = {}) {
   if (!targetId) return null;
 
+  const scrollContainer =
+    ScrollParent(document.getElementById(targetId)) || document.documentElement;
+  const scrollContainerIsDocument = scrollContainer === document.documentElement;
+
   const ro = createResizeObserver();
-  const containerEl =
-    document.querySelector(`#${containerId}`) || document.querySelector(container);
+  // if we are scrolling document, add the resizeobserver to container el instead - we don't
+  // want to observe the whole document
+  const containerEl = scrollContainerIsDocument
+    ? document.querySelector(container)
+    : scrollContainer;
   let interactionListenersAdded = false;
 
-  function keepTargetAtTop(evt) {
+  function keepTargetAtTop() {
     const anchorEl = document.getElementById(targetId);
-    const scrollContainer = containerId ? evt.target : document.documentElement;
 
     if (!anchorEl) return;
 

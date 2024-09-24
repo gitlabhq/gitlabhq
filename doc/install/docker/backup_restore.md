@@ -28,7 +28,7 @@ WARNING:
 [Backing up the GitLab secrets file](../../administration/backup_restore/backup_gitlab.md#storing-configuration-files) is required
 to avoid [complicated steps](../../administration/backup_restore/troubleshooting_backup_gitlab.md#when-the-secrets-file-is-lost) when recovering
 GitLab from backup. The secrets file is stored at `/etc/gitlab/gitlab-secrets.json` inside the container, or
-`$GITLAB_HOME/config/gitlab-secrets.json` [on the container host](installation.md#set-up-the-volumes-location).
+`$GITLAB_HOME/config/gitlab-secrets.json` [on the container host](installation.md#create-a-directory-for-the-volumes).
 
 ## Create a database backup
 
@@ -39,6 +39,6 @@ docker exec -t <container name> gitlab-backup create SKIP=artifacts,repositories
 ```
 
 The backup is written to `/var/opt/gitlab/backups` which should be on a
-[volume mounted by Docker](installation.md#set-up-the-volumes-location).
+[volume mounted by Docker](installation.md#create-a-directory-for-the-volumes).
 
 For more information on using the backup to roll back an upgrade, see [Downgrade GitLab](upgrade.md#downgrade-gitlab).

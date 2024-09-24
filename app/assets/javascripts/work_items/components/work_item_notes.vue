@@ -3,7 +3,6 @@ import { GlModal } from '@gitlab/ui';
 import { uniqueId } from 'lodash';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { __ } from '~/locale';
-import { scrollToTargetOnResize } from '~/lib/utils/resize_observer';
 import { TYPENAME_DISCUSSION, TYPENAME_NOTE } from '~/graphql_shared/constants';
 import SystemNote from '~/work_items/components/notes/system_note.vue';
 import WorkItemNotesLoading from '~/work_items/components/notes/work_item_notes_loading.vue';
@@ -215,12 +214,6 @@ export default {
         this.isLoadingMore = false;
         if (this.hasNextPage) {
           this.fetchMoreNotes();
-        } else if (this.targetNoteHash) {
-          if (this.isModal) {
-            this.$emit('has-notes');
-          } else {
-            scrollToTargetOnResize();
-          }
         }
       },
       subscribeToMore: [

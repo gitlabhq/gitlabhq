@@ -12,9 +12,9 @@ DETAILS:
 
 This table lists the secrets detected by:
 
-- Pipeline secret detection ([Source](https://gitlab.com/gitlab-org/security-products/analyzers/secrets/-/blob/master/gitleaks.toml))
-- Client-side secret detection ([Source](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/lib/utils/secret_detection_patterns.js))
-- Secret push protection ([Source](https://gitlab.com/gitlab-org/gitlab/-/blob/master/gems/gitlab-secret_detection/lib/gitleaks.toml))
+- Pipeline secret detection
+- Client-side secret detection
+- Secret push protection
 
 <!-- markdownlint-disable MD034 -->
 <!-- markdownlint-disable MD044 -->
@@ -71,7 +71,7 @@ This table lists the secrets detected by:
 | GitLab Agent for Kubernetes token             | gitlab_kubernetes_agent_token                 | **{check-circle}** Yes    | **{check-circle}** Yes       | **{check-circle}** Yes |
 | GitLab CI Build (Job) token                   | gitlab_ci_build_token                         | **{check-circle}** Yes    | **{check-circle}** Yes       | **{dotted-circle}** No |
 | GitLab Deploy Token                           | gitlab_deploy_token                           | **{check-circle}** Yes    | **{check-circle}** Yes       | **{dotted-circle}** No |
-| GitLab Feature Flags Client Token             | **{dotted-circle}** No                        | **{dotted-circle}** No    | **{check-circle}** Yes       | **{dotted-circle}** No |
+| GitLab Feature Flags Client Token             | None                                          | **{dotted-circle}** No    | **{check-circle}** Yes       | **{dotted-circle}** No |
 | GitLab Feed Token                             | gitlab_feed_token                             | **{check-circle}** Yes    | **{dotted-circle}** No       | **{dotted-circle}** No |
 | GitLab Feed Token                             | gitlab_feed_token_v2                          | **{check-circle}** Yes    | **{check-circle}** Yes       | **{check-circle}** Yes |
 | GitLab Incoming email token                   | gitlab_incoming_email_token                   | **{check-circle}** Yes    | **{check-circle}** Yes       | **{check-circle}** Yes |

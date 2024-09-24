@@ -174,7 +174,7 @@ Following the above example, you will be able to reach GitLab from your
 web browser under `<hostIP>:8929` and push using SSH under the port `2424`.
 
 A `docker-compose.yml` example that uses different ports can be found in the
-[Docker compose](installation.md#install-gitlab-using-docker-compose) section.
+[Docker compose](installation.md#install-gitlab-by-using-docker-compose) section.
 
 ## Configure multiple database connections
 
@@ -203,6 +203,6 @@ sudo docker restart gitlab
 
 ## Recommended next steps
 
-After completing your installation, consider taking the
+After configuring your installation, consider taking the
 [recommended next steps](../next_steps.md), including authentication options
 and sign-up restrictions.

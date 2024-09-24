@@ -425,9 +425,6 @@ export default {
       this.error = this.$options.i18n.fetchError;
       document.title = s__('404|Not found');
     },
-    updateHasNotes() {
-      this.$emit('has-notes');
-    },
     updateUrl(modalWorkItem) {
       updateHistory({
         url: setUrlParams({
@@ -758,7 +755,6 @@ export default {
               class="gl-pt-5"
               :use-h2="!isModal"
               @error="updateError = $event"
-              @has-notes="updateHasNotes"
               @openReportAbuse="openReportAbuseModal"
             />
           </div>

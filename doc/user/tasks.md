@@ -172,7 +172,7 @@ The previous URL with `/work_items/` still works.
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- You must have at least the Guest role for the project.
 
 You can remove a task from an issue. The task is not deleted, but the two are no longer connected.
 It's not possible to connect them again.

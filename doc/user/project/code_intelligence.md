@@ -54,8 +54,11 @@ GitLab provides a [CI/CD component](../../ci/components/index.md) to configure c
 in your `.gitlab-ci.yml` file. The component supports these languages:
 
 - Go version 1.21 or later.
-- TypeScript or JavaScript. (To contribute more languages to the component, open a merge request in the
-  [Code intelligence component project](https://gitlab.com/components/code-intelligence).)
+- TypeScript or JavaScript.
+- Java 8, 11, 17, and 21.
+
+To contribute more languages to the component, open a merge request in the
+[Code intelligence component project](https://gitlab.com/components/code-intelligence).
 
 1. Add a GitLab CI/CD component to your project's `.gitlab-ci.yml`. For example, this job generates
    the LSIF artifact for `golang`:

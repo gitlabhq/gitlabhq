@@ -6,6 +6,7 @@ import toast from '~/vue_shared/plugins/global_toast';
 import { __ } from '~/locale';
 import Tracking from '~/tracking';
 import { updateDraft, clearDraft } from '~/lib/utils/autosave';
+import { scrollToTargetOnResize } from '~/lib/utils/resize_observer';
 import { renderMarkdown } from '~/notes/utils';
 import { getLocationHash } from '~/lib/utils/url_utility';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -195,6 +196,11 @@ export default {
     discussionResolvedBy() {
       return this.note.discussion.resolvedBy;
     },
+  },
+  mounted() {
+    if (this.isTarget) {
+      scrollToTargetOnResize();
+    }
   },
   apollo: {
     workItem: {

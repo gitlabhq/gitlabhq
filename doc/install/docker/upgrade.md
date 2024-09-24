@@ -15,7 +15,7 @@ image tag.
 
 ## Upgrade GitLab using Docker Engine
 
-To upgrade GitLab that was [installed using Docker Engine](installation.md#install-gitlab-using-docker-engine):
+To upgrade GitLab that was [installed using Docker Engine](installation.md#install-gitlab-by-using-docker-engine):
 
 1. Take a [backup](backup_restore.md). As a minimum, back up [the database](backup_restore.md#create-a-database-backup) and
    the GitLab secrets file.
@@ -38,14 +38,14 @@ To upgrade GitLab that was [installed using Docker Engine](installation.md#insta
    sudo docker pull gitlab/gitlab-ee:<version>-ee.0
    ```
 
-1. Ensure that the `GITLAB_HOME` environment variable is [defined](installation.md#set-up-the-volumes-location):
+1. Ensure that the `GITLAB_HOME` environment variable is [defined](installation.md#create-a-directory-for-the-volumes):
 
    ```shell
    echo $GITLAB_HOME
    ```
 
 1. Create the container once again with the
-   [previously specified](installation.md#install-gitlab-using-docker-engine) options:
+   [previously specified](installation.md#install-gitlab-by-using-docker-engine) options:
 
    ```shell
    sudo docker run --detach \
@@ -67,7 +67,7 @@ when upgrading between versions.
 
 ## Upgrade GitLab using Docker compose
 
-To upgrade GitLab that was [installed using Docker Compose](installation.md#install-gitlab-using-docker-compose):
+To upgrade GitLab that was [installed using Docker Compose](installation.md#install-gitlab-by-using-docker-compose):
 
 1. Take a [backup](backup_restore.md). As a minimum, back up [the database](backup_restore.md#create-a-database-backup) and
    the GitLab secrets file.

@@ -398,7 +398,7 @@ Layout/LineEndStringConcatenationIndentation:
     - 'ee/spec/requests/api/projects_spec.rb'
     - 'ee/spec/requests/groups/protected_environments_controller_spec.rb'
     - 'ee/spec/requests/gitlab_subscriptions/trials/duo_pro_controller_spec.rb'
-    - 'ee/spec/requests/subscriptions/trials_controller_spec.rb'
+    - 'ee/spec/requests/gitlab_subscriptions/trials_controller_spec.rb'
     - 'ee/spec/requests/users/registrations_identity_verification_controller_spec.rb'
     - 'ee/spec/serializers/integrations/field_entity_spec.rb'
     - 'ee/spec/services/ai/store_repository_xray_service_spec.rb'

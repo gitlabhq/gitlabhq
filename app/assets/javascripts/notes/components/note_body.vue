@@ -174,8 +174,6 @@ export default {
       @removeFromBatch="removeSuggestionFromBatch"
     />
     <div v-else v-safe-html:[$options.safeHtmlConfig]="note.note_html" class="note-text md"></div>
-    {{ note.author.user_type }}
-    {{ note.type }}
     <duo-code-review-feedback
       v-if="note.author.user_type === 'duo_code_review_bot' && note.type !== 'DiffNote'"
       class="gl-mt-3"

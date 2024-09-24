@@ -206,7 +206,7 @@ RSpec/NamedSubject:
     - 'ee/spec/helpers/projects_helper_spec.rb'
     - 'ee/spec/helpers/search_helper_spec.rb'
     - 'ee/spec/helpers/secrets_helper_spec.rb'
-    - 'ee/spec/helpers/trials_helper_spec.rb'
+    - 'ee/spec/helpers/gitlab_subscriptions/trials_helper_spec.rb'
     - 'ee/spec/helpers/users/group_callouts_helper_spec.rb'
     - 'ee/spec/helpers/users_helper_spec.rb'
     - 'ee/spec/helpers/vulnerabilities_helper_spec.rb'

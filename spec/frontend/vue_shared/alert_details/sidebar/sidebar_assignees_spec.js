@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlDropdownItem } from '@gitlab/ui';
+import { GlAvatar, GlDropdownItem } from '@gitlab/ui';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -146,7 +146,7 @@ describe('Alert Details Sidebar Assignees', () => {
         props: { alert: mockAlerts[1] },
       });
 
-      expect(findAssigned().find('img').element.src).toBe('/url');
+      expect(findAssigned().findComponent(GlAvatar).props('src')).toBe('/url');
       expect(findAssigned().find('.dropdown-menu-user-full-name').text()).toBe('root');
       expect(findAssigned().find('.dropdown-menu-user-username').text()).toBe('@root');
     });

@@ -226,8 +226,8 @@ sudo -u git -- /opt/gitlab/embedded/bin/gitaly bundle-uri \
 ```
 
 This command generates the bundle and stores it on the configured storage service.
-Gitaly does not automatically refresh the generated bundle. When want to generate
-a more recent version of a bundle, you must the run command again.
+Gitaly does not automatically refresh the generated bundle. When you want to generate
+a more recent version of a bundle, you must run the command again.
 
 You can schedule this command with a tool like `cron(8)`.
 
@@ -272,5 +272,5 @@ downloaded the bundle from the storage server.
 
 The bundles are made accessible to the client using signed URLs. A signed URL is
 a URL that provides limited permissions and time to make a request. To see if
-your storage service supports sighed URLs, see the documentation of your storage
+your storage service supports signed URLs, see the documentation of your storage
 service.

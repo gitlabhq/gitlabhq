@@ -49,3 +49,17 @@ If you're not receiving notifications to a Slack channel, ensure:
 ## App Home does not display properly
 
 If the [App Home](https://api.slack.com/start/overview#app_home) does not display properly, ensure your [app is up to date](gitlab_slack_application.md#reinstall-the-gitlab-for-slack-app).
+
+## Error: `Validation failed: Alias This alias has already been taken`
+
+You might encounter error `422: The change you requested was rejected` when trying to set up on a new project. The returned Rails error might be:
+
+```plaintext
+"exception.message": "Validation failed: Alias This alias has already been taken"
+```
+
+To resolve this issue:
+
+1. Search in your namespace for projects with similar names and have the GitLab for Slack app enabled.
+1. Check among these projects for those with the same alias name as the failed project.
+1. Edit the alias, make it different, and retry enabling GitLab for Slack app for the failed project.
