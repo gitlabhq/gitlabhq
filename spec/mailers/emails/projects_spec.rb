@@ -140,6 +140,46 @@ RSpec.describe Emails::Projects do
     end
   end
 
+  describe '#repository_rewrite_history_success_email' do
+    let(:recipient) { user }
+
+    subject { Notify.repository_rewrite_history_success_email(project, user) }
+
+    it_behaves_like 'an email sent to a user'
+    it_behaves_like 'an email sent from GitLab'
+    it_behaves_like 'it should not have Gmail Actions links'
+    it_behaves_like 'a user cannot unsubscribe through footer link'
+    it_behaves_like 'appearance header and footer enabled'
+    it_behaves_like 'appearance header and footer not enabled'
+
+    it 'has the correct subject and body' do
+      is_expected.to have_subject("#{project.name} | Project history rewrite has completed")
+      is_expected.to have_body_text(project.full_path)
+      is_expected.to have_body_text("Repository history rewrite succeeded on")
+    end
+  end
+
+  describe '#repository_rewrite_history_failure_email' do
+    let(:recipient) { user }
+    let(:error) { 'Some error' }
+
+    subject { Notify.repository_rewrite_history_failure_email(project, user, error) }
+
+    it_behaves_like 'an email sent to a user'
+    it_behaves_like 'an email sent from GitLab'
+    it_behaves_like 'it should not have Gmail Actions links'
+    it_behaves_like 'a user cannot unsubscribe through footer link'
+    it_behaves_like 'appearance header and footer enabled'
+    it_behaves_like 'appearance header and footer not enabled'
+
+    it 'has the correct subject and body' do
+      is_expected.to have_subject("#{project.name} | Project history rewrite failure")
+      is_expected.to have_body_text(project.full_path)
+      is_expected.to have_body_text("Repository history rewrite failed on")
+      is_expected.to have_body_text(error)
+    end
+  end
+
   describe '.inactive_project_deletion_warning_email' do
     let(:recipient) { user }
     let(:deletion_date) { "2022-01-10" }

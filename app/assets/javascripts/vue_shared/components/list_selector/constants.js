@@ -19,7 +19,7 @@ export const CONFIG = {
   groups: {
     title: __('Groups'),
     icon: 'group',
-    filterKey: 'name',
+    filterKey: 'id',
     showNamespaceDropdown: true,
     component: GroupItem,
   },

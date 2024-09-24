@@ -377,6 +377,8 @@
   - 1
 - - gitlab_subscriptions_add_on_purchases_refresh_user_assignments
   - 1
+- - gitlab_subscriptions_member_management_apply_pending_member_approvals
+  - 1
 - - gitlab_subscriptions_refresh_seats
   - 1
 - - gitlab_subscriptions_trials_apply_trial

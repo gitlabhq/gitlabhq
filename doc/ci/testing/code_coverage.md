@@ -12,18 +12,18 @@ DETAILS:
 
 Use code coverage to provide insights on what source code is being validated by a test suite. Code coverage is one of many test metrics that can determine software performance and quality.
 
-## View Code Coverage results
+## Code coverage results
 
-Code Coverage results are shown in:
+Code coverage results are shown in:
 
 - Merge request widget
 - Project repository analytics
 - Group repository analytics
 - Repository badge
 
-For more information on test coverage visualization in the file diff of the merge request, see [Test Coverage Visualization](test_coverage_visualization/index.md).
+For more information on test coverage visualization in the file diff of the merge request, see [Test coverage visualization](test_coverage_visualization/index.md).
 
-### View code coverage results in the merge request
+### Code coverage results in merge requests
 
 If you use test coverage in your code, you can use a regular expression to
 find coverage results in the job log. You can then include these results
@@ -37,9 +37,9 @@ averaged.
 
 ![Build status coverage](img/pipelines_test_coverage_jobs_v17_3.png)
 
-#### Add test coverage results using `coverage` keyword
+#### Add code coverage results to merge requests
 
-You can display test coverage results in a merge request by adding the
+You can display test coverage results in merge requests by adding the
 [`coverage`](../yaml/index.md#coverage) keyword to your project's `.gitlab-ci.yml` file.
 
 To aggregate multiple test coverage values:
@@ -81,27 +81,32 @@ coverage in the tool's output:
 <!-- vale gitlab_base.Spelling = YES -->
 <!-- markdownlint-enable MD056 -->
 
-### View history of project code coverage
+### View code coverage history
 
-To see the evolution of your project code coverage over time,
-you can view a graph or download a CSV file with this data.
+You can track the evolution of code coverage for your project or group over time.
+
+#### For a project
+
+To view the code coverage history for a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Analyze > Repository analytics**.
-
-The historic data for each job is listed in the dropdown list above the graph.
-
-To view a CSV file of the data, select **Download raw data (`.csv`)**.
+1. From the dropdown list, select the job you want to view historical data for.
+1. Optional. To view a CSV file of the data, select **Download raw data (.csv)**.
 
 ![Code coverage graph of a project over time](img/code_coverage_graph_v13_1.png)
 
-### View history of group code coverage
+#### For a group
 
 DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-To see the all the project's code coverage under a group over time, you can find view [group repository analytics](../../user/group/repositories_analytics/index.md).
+To view the code coverage history for all projects in a group:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Analyze > Repository analytics**.
+1. Optional. To view a CSV file of the data, select **Download historic test coverage data (.csv)**.
 
 ![Code coverage graph of a group over time](img/code_coverage_group_report.png)
 
@@ -110,23 +115,28 @@ To see the all the project's code coverage under a group over time, you can find
 You can use [pipeline badges](../../user/project/badges.md#test-coverage-report-badges) to indicate the pipeline status and
 test coverage of your projects. These badges are determined by the latest successful pipeline.
 
-## Coverage check approval rule
+## Add a coverage check approval rule
 
 DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-You can require specific users or a group to approve merge requests that would reduce the project's test coverage.
+You can require specific users or a group to approve merge requests that reduce the project's test coverage.
+
+Prerequisites:
+
+- Ensure you've [added code coverage results to your merge requests](#add-code-coverage-results-to-merge-requests).
 
 To add a `Coverage-Check` approval rule:
 
-1. [Add test coverage results to a merge request](#add-test-coverage-results-using-coverage-keyword).
 1. Go to your project and select **Settings > Merge requests**.
-1. Under **Merge request approvals**, select **Enable** next to the `Coverage-Check` approval rule.
-1. Select the **Target branch**.
-1. Set the number of **Approvals required** to greater than zero.
-1. Select the users or groups to provide approval.
-1. Select **Add approval rule**.
+1. Under **Merge request approvals**, do one of the following:
+   - Next to the `Coverage-Check` approval rule, select **Enable**.
+   - For manual setup, select **Add approval rule**, then enter the **Rule name**. For example: `Coverage Check`.
+1. Select a **Target branch**.
+1. Set the number of **Required number of approvals**.
+1. Select the **Users** or **Groups** to provide approval.
+1. Select **Save changes**.
 
 ## Troubleshooting
 

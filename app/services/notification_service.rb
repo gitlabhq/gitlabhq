@@ -700,6 +700,18 @@ class NotificationService
     mailer.send(:repository_cleanup_failure_email, project, user, error).deliver_later
   end
 
+  def repository_rewrite_history_success(project, user)
+    return if project.emails_disabled?
+
+    mailer.repository_rewrite_history_success_email(project, user).deliver_later
+  end
+
+  def repository_rewrite_history_failure(project, user, error)
+    return if project.emails_disabled?
+
+    mailer.repository_rewrite_history_failure_email(project, user, error).deliver_later
+  end
+
   def remote_mirror_update_failed(remote_mirror)
     recipients = project_maintainers_recipients(remote_mirror, action: 'update_failed')
 

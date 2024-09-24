@@ -245,7 +245,7 @@ export default {
       return '';
     },
     handleIssuableItemClick(e) {
-      if (e.metaKey || e.ctrlKey || this.showCheckbox) {
+      if (e.metaKey || e.ctrlKey || this.showCheckbox || e.button === 1) {
         return;
       }
       e.preventDefault();

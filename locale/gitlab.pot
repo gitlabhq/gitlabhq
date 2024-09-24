@@ -36914,6 +36914,15 @@ msgstr ""
 msgid "Notify|Remote mirror"
 msgstr ""
 
+msgid "Notify|Repository history rewrite failed on %{project_url}."
+msgstr ""
+
+msgid "Notify|Repository history rewrite succeeded on %{project_url}."
+msgstr ""
+
+msgid "Notify|Repository size is now %{repository_size} MiB."
+msgstr ""
+
 msgid "Notify|Review changes"
 msgstr ""
 

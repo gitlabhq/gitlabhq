@@ -137,14 +137,9 @@ job-artifact-upload-on-timeout:
 
 ## Protecting sensitive information
 
-To avoid exposing sensitive information, you can restrict the usage
-of instance runners on large GitLab instances. This ensures that you
-control access to your GitLab instances and secure [runner executors](https://docs.gitlab.com/runner/executors/).
-
-If certain executors run a job, the file system, the code the runner executes,
-and the runner authentication token may be exposed. This means that anyone who runs jobs
-on an _instance runner_ can access another user's code that runs on the runner.
-Users with access to the runner authentication token can use it to create a clone of
+The security risks are greater when using instance runners as they are available by default to all groups and projects in a GitLab instance. Depending on the runner executor used and the file system, the code that the runner executes
+and the runner authentication token might get exposed to all users who have access to the runner host environment.
+For example, users with access to the runner authentication token can use it to create a clone of
 a runner and submit false jobs in a vector attack. For more information, see [Security Considerations](https://docs.gitlab.com/runner/security/).
 
 ## Configuring long polling

@@ -16,7 +16,7 @@ export const fetchProjectGroups = (projectPath, search) => {
   }).then((data) =>
     data?.map((group) => ({
       text: group.full_name,
-      value: group.name,
+      value: group.id,
       ...convertObjectPropsToCamelCase(group),
     })),
   );
@@ -29,13 +29,17 @@ export const fetchAllGroups = async (apollo, search) => {
       variables: { search },
     })
     .then(({ data }) =>
-      data?.groups.nodes.map((group) => ({
-        text: group.fullName,
-        value: group.name,
-        ...group,
-        id: getIdFromGraphQLId(group.id),
-        type: 'group',
-      })),
+      data?.groups.nodes.map((group) => {
+        const groupId = getIdFromGraphQLId(group.id);
+
+        return {
+          text: group.fullName,
+          value: groupId,
+          ...group,
+          id: groupId,
+          type: 'group',
+        };
+      }),
     );
 };
 
@@ -51,7 +55,7 @@ export const fetchGroupsWithProjectAccess = (projectId, search) => {
     .then(({ data }) =>
       data.map((group) => ({
         text: group.name,
-        value: group.name,
+        value: group.id,
         ...convertObjectPropsToCamelCase(group),
       })),
     );

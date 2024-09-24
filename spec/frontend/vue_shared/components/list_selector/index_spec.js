@@ -198,10 +198,15 @@ describe('List Selector spec', () => {
 
     describe('searching', () => {
       describe('for default all groups', () => {
-        const searchResponse = GROUPS_RESPONSE_MOCK.data.groups.nodes.map((group) => ({
-          ...group,
-          id: getIdFromGraphQLId(group.id),
-        }));
+        const searchResponse = GROUPS_RESPONSE_MOCK.data.groups.nodes.map((group) => {
+          const groupId = getIdFromGraphQLId(group.id);
+
+          return {
+            ...group,
+            id: groupId,
+            value: groupId,
+          };
+        });
 
         const emitSearchInput = async () => {
           findSearchBox().vm.$emit('input', search);
@@ -231,7 +236,7 @@ describe('List Selector spec', () => {
 
         it('emits an event when a search result is selected', () => {
           const firstSearchResult = searchResponse[0];
-          findSearchResultsDropdown().vm.$emit('select', firstSearchResult.name);
+          findSearchResultsDropdown().vm.$emit('select', firstSearchResult.id);
 
           expect(wrapper.emitted('select')).toEqual([
             [
@@ -242,7 +247,7 @@ describe('List Selector spec', () => {
                 id: 33,
                 name: 'Flightjs',
                 text: 'Flightjs',
-                value: 'Flightjs',
+                value: 33,
                 type: 'group',
               },
             ],
@@ -329,10 +334,10 @@ describe('List Selector spec', () => {
 
       it('emits an event when a search result is selected', () => {
         const firstSearchResult = searchResponse[0];
-        findSearchResultsDropdown().vm.$emit('select', firstSearchResult.name);
+        findSearchResultsDropdown().vm.$emit('select', firstSearchResult.id);
 
         expect(wrapper.emitted('select')).toMatchObject([
-          [{ ...firstSearchResult, value: 'Flightjs' }],
+          [{ ...firstSearchResult, value: firstSearchResult.id }],
         ]);
       });
     });

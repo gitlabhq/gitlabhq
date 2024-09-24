@@ -1922,6 +1922,13 @@
   dependencies:
     esbuild "^0.14.14"
 
+"@pinia/testing@^0.1.5":
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/@pinia/testing/-/testing-0.1.5.tgz#3d43de8b0fea102e4bd6188f219ebe4d241a29e5"
+  integrity sha512-AcGzuotkzhRoF00htuxLfIPBBHVE6HjjB3YC5Y3os8vRgKu6ipknK5GBQq9+pduwYQhZ+BcCZDC9TyLAUlUpoQ==
+  dependencies:
+    vue-demi "^0.14.10"
+
 "@pkgjs/parseargs@^0.11.0":
   version "0.11.0"
   resolved "https://registry.yarnpkg.com/@pkgjs/parseargs/-/parseargs-0.11.0.tgz#a77ea742fab25775145434eb1d2328cf5013ac33"

@@ -217,6 +217,8 @@ Example response:
 
 ## Protect repository branches
 
+> - `deploy_key_id` configuration [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166598) in GitLab 17.5.
+
 Protects a single repository branch or several project repository
 branches using a wildcard protected branch.
 
@@ -234,7 +236,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitla
 | `name`                                       | string         | yes | The name of the branch or wildcard. |
 | `allow_force_push`                           | boolean        | no  | When enabled, members who can push to this branch can also force push. (default: `false`) |
 | `allowed_to_merge`                           | array          | no  | Array of merge access levels, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, or `{access_level: integer}`. Premium and Ultimate only. |
-| `allowed_to_push`                            | array          | no  | Array of push access levels, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, or `{access_level: integer}`. Premium and Ultimate only. |
+| `allowed_to_push`                            | array          | no  | Array of push access levels, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, `{deploy_key_id: integer}`, or `{access_level: integer}`. Premium and Ultimate only. |
 | `allowed_to_unprotect`                       | array          | no  | Array of unprotect access levels, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, or `{access_level: integer}`. The access level `No access` is not available for this field. Premium and Ultimate only. |
 | `code_owner_approval_required`               | boolean        | no  | Prevent pushes to this branch if it matches an item in the [`CODEOWNERS` file](../user/project/codeowners/index.md). (defaults: false) Premium and Ultimate only. |
 | `merge_access_level`                         | integer        | no  | Access levels allowed to merge. (defaults: `40`, Maintainer role). |
@@ -365,6 +367,62 @@ Example response:
 }
 ```
 
+### Example with deploy key access
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166598) in GitLab 17.5.
+
+Elements in the `allowed_to_push` array should take the form `{user_id: integer}`, `{group_id: integer}`,
+`{deploy_key_id: integer}`, or `{access_level: integer}`.
+The deploy key must be enabled for your project and it must have write access to your project repository.
+For other requirements, see [Allow deploy keys to push to a protected branch](../user/project/repository/branches/protected.md#allow-deploy-keys-to-push-to-a-protected-branch).
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/protected_branches?name=*-stable&allowed_to_push%5B%5D%5Bdeploy_key_id%5D=1"
+```
+
+Example response:
+
+```json
+{
+  "id": 1,
+  "name": "*-stable",
+  "push_access_levels": [
+    {
+      "id":  1,
+      "access_level": null,
+      "user_id": null,
+      "group_id": null,
+      "deploy_key_id: 1,
+      "access_level_description": "Deploy"
+    }
+  ],
+  "merge_access_levels": [
+    {
+      "id":  1,
+      "access_level": 40,
+      "user_id": null,
+      "group_id": null,
+      "access_level_description": "Maintainers"
+    }
+  ],
+  "unprotect_access_levels": [
+    {
+      "id":  1,
+      "access_level": 40,
+      "user_id": null,
+      "group_id": null,
+      "access_level_description": "Maintainers"
+    }
+  ],
+  "allow_force_push":false,
+  "code_owner_approval_required": false
+}
+```
+
 ### Example with allow to push and allow to merge access
 
 DETAILS:
@@ -456,6 +514,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 ## Update a protected branch
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101903) in GitLab 15.6.
+> - `deploy_key_id` configuration [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166598) in GitLab 17.5.
 
 Updates a protected branch.
 
@@ -473,7 +532,7 @@ curl --request PATCH --header "PRIVATE-TOKEN: <your_access_token>" "https://gitl
 | `name`                                       | string         | yes | The name of the branch or wildcard. |
 | `allow_force_push`                           | boolean        | no  | When enabled, members who can push to this branch can also force push. |
 | `allowed_to_merge`                           | array          | no  | Array of merge access levels, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, or `{access_level: integer}`. Premium and Ultimate only. |
-| `allowed_to_push`                            | array          | no  | Array of push access levels, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, or `{access_level: integer}`. Premium and Ultimate only. |
+| `allowed_to_push`                            | array          | no  | Array of push access levels, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, `{deploy_key_id: integer}`, or `{access_level: integer}`. Premium and Ultimate only. |
 | `allowed_to_unprotect`                       | array          | no  | Array of unprotect access levels, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, `{access_level: integer}`, or `{id: integer, _destroy: true}` to destroy an existing access level. The access level `No access` is not available for this field. Premium and Ultimate only. |
 | `code_owner_approval_required`               | boolean        | no       | Prevent pushes to this branch if it matches an item in the [`CODEOWNERS` file](../user/project/codeowners/index.md). Premium and Ultimate only. |
 
@@ -481,12 +540,15 @@ Elements in the `allowed_to_push`, `allowed_to_merge` and `allowed_to_unprotect`
 `access_level`, and take the form `{user_id: integer}`, `{group_id: integer}` or
 `{access_level: integer}`.
 
+`allowed_to_push` includes an extra element, `deploy_key_id`, that takes the form `{deploy_key_id: integer}`.
+
 To update:
 
 - `user_id`: Ensure the updated user has access to the project. You must also pass the
   `id` of the `access_level` in the respective hash.
 - `group_id`: Ensure the updated group [has this project shared](../user/project/members/sharing_projects_groups.md).
   You must also pass the `id` of the `access_level` in the respective hash.
+- `deploy_key_id`: Ensure the deploy key is enabled for your project and it must have write access to your project repository.
 
 To delete:
 

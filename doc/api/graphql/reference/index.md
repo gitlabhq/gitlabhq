@@ -10848,7 +10848,7 @@ Input type: `WorkItemUpdateInput`
 | <a id="mutationworkitemupdatenoteswidget"></a>`notesWidget` | [`WorkItemWidgetNotesInput`](#workitemwidgetnotesinput) | Input for notes widget. |
 | <a id="mutationworkitemupdatenotificationswidget"></a>`notificationsWidget` | [`WorkItemWidgetNotificationsUpdateInput`](#workitemwidgetnotificationsupdateinput) | Input for notifications widget. |
 | <a id="mutationworkitemupdateprogresswidget"></a>`progressWidget` | [`WorkItemWidgetProgressInput`](#workitemwidgetprogressinput) | Input for progress widget. |
-| <a id="mutationworkitemupdaterolledupdateswidget"></a>`rolledupDatesWidget` **{warning-solid}** | [`WorkItemWidgetRolledupDatesInput`](#workitemwidgetrolledupdatesinput) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 16.9. |
+| <a id="mutationworkitemupdaterolledupdateswidget"></a>`rolledupDatesWidget` **{warning-solid}** | [`WorkItemWidgetRolledupDatesInput`](#workitemwidgetrolledupdatesinput) | **Deprecated:** use StartAndDueDate instead. Deprecated in GitLab 17.5. |
 | <a id="mutationworkitemupdatestartandduedatewidget"></a>`startAndDueDateWidget` | [`WorkItemWidgetStartAndDueDateUpdateInput`](#workitemwidgetstartandduedateupdateinput) | Input for start and due date widget. |
 | <a id="mutationworkitemupdatestateevent"></a>`stateEvent` | [`WorkItemStateEvent`](#workitemstateevent) | Close or reopen a work item. |
 | <a id="mutationworkitemupdatestatuswidget"></a>`statusWidget` | [`StatusInput`](#statusinput) | Input for status widget. |
@@ -35573,7 +35573,13 @@ Represents a start and due date widget.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="workitemwidgetstartandduedateduedate"></a>`dueDate` | [`Date`](#date) | Due date of the work item. |
+| <a id="workitemwidgetstartandduedateduedatesourcingmilestone"></a>`dueDateSourcingMilestone` | [`Milestone`](#milestone) | Indicates which milestone sources the rolled up due date. |
+| <a id="workitemwidgetstartandduedateduedatesourcingworkitem"></a>`dueDateSourcingWorkItem` | [`WorkItem`](#workitem) | Indicates which work_item sources the rolled up due date. |
+| <a id="workitemwidgetstartandduedateisfixed"></a>`isFixed` | [`Boolean!`](#boolean) | Indicates if the work item is using fixed dates. |
+| <a id="workitemwidgetstartandduedaterollup"></a>`rollUp` | [`Boolean!`](#boolean) | Indicates if the work item can use rolled up dates. |
 | <a id="workitemwidgetstartandduedatestartdate"></a>`startDate` | [`Date`](#date) | Start date of the work item. |
+| <a id="workitemwidgetstartandduedatestartdatesourcingmilestone"></a>`startDateSourcingMilestone` | [`Milestone`](#milestone) | Indicates which milestone sources the rolled up start date. |
+| <a id="workitemwidgetstartandduedatestartdatesourcingworkitem"></a>`startDateSourcingWorkItem` | [`WorkItem`](#workitem) | Indicates which work_item sources the rolled up start date. |
 | <a id="workitemwidgetstartandduedatetype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
 
 ### `WorkItemWidgetStatus`
@@ -42293,6 +42299,7 @@ Attributes for value stream stage.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="workitemwidgetstartandduedateupdateinputduedate"></a>`dueDate` | [`Date`](#date) | Due date for the work item. |
+| <a id="workitemwidgetstartandduedateupdateinputisfixed"></a>`isFixed` | [`Boolean`](#boolean) | Indicates if the work item is using fixed dates. |
 | <a id="workitemwidgetstartandduedateupdateinputstartdate"></a>`startDate` | [`Date`](#date) | Start date for the work item. |
 
 ### `WorkItemWidgetTimeTrackingInput`

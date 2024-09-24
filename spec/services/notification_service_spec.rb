@@ -4105,6 +4105,36 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
     end
   end
 
+  describe 'Repository rewrite history', :deliver_mails_inline do
+    let(:user) { create(:user) }
+
+    describe '#repository_rewrite_history_success' do
+      it 'emails the specified user only' do
+        notification.repository_rewrite_history_success(project, user)
+
+        should_email(user)
+      end
+
+      it_behaves_like 'project emails are disabled' do
+        let(:notification_target)  { project }
+        let(:notification_trigger) { notification.repository_rewrite_history_success(project, user) }
+      end
+    end
+
+    describe '#repository_rewrite_history_failure' do
+      it 'emails the specified user only' do
+        notification.repository_rewrite_history_failure(project, user, 'Some error')
+
+        should_email(user)
+      end
+
+      it_behaves_like 'project emails are disabled' do
+        let(:notification_target)  { project }
+        let(:notification_trigger) { notification.repository_rewrite_history_failure(project, user, 'Some error') }
+      end
+    end
+  end
+
   describe 'Repository cleanup', :deliver_mails_inline do
     let(:user) { create(:user) }
 

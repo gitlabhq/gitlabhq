@@ -253,6 +253,7 @@
     "@gitlab/stylelint-config": "6.2.2",
     "@graphql-eslint/eslint-plugin": "3.20.1",
     "@originjs/vite-plugin-commonjs": "^1.0.3",
+    "@pinia/testing": "^0.1.5",
     "@rollup/plugin-graphql": "^2.0.4",
     "@testing-library/dom": "^7.16.2",
     "@types/jest": "^29.5.12",

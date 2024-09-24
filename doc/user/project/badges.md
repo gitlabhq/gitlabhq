@@ -64,7 +64,7 @@ You can access a test coverage report badge image by using the following link:
 https://gitlab.example.com/<namespace>/<project>/badges/<branch>/coverage.svg
 ```
 
-You can define the regular expression for the [coverage report](../../ci/testing/code_coverage.md#view-code-coverage-results-in-the-merge-request)
+You can define the regular expression for the [coverage report](../../ci/testing/code_coverage.md#add-code-coverage-results-to-merge-requests)
 that each job log is matched against.
 This means that each job in the pipeline can have the test coverage percentage value defined.
 

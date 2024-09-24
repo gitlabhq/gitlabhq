@@ -24,21 +24,12 @@ module Ci
       with_reactive_cache(sha, ref) { |result| result }
     end
 
-    # Changing parameters in an `calculate_reactive_cache` method is like changing parameters in a Sidekiq worker.
-    # So, we need to follow the same rules: https://docs.gitlab.com/ee/development/sidekiq/compatibility_across_updates.html#add-an-argument
-    # That's why `ref` is an optional parameter for now.
-    def calculate_reactive_cache(sha, ref = nil) # rubocop:disable Lint/UnusedMethodArgument -- explained above
+    def calculate_reactive_cache(sha, ref)
       config = ::Gitlab::Ci::ProjectConfig.new(project: project, sha: sha)
 
       return {} unless config.exists?
 
-      # Because of the same reason as above, we need to check if `ref` is nil or not for backward compatibility.
-      # In the next iteration, we can remove this check and make `ref` a required parameter.
-      result = if ref.nil?
-                 legacy_calculation(sha, config)
-               else
-                 new_calculation(sha, ref, config)
-               end
+      result = execute_yaml_processor(sha, ref, config)
 
       result.valid? ? result.root_variables_with_prefill_data : {}
     end
@@ -50,20 +41,7 @@ module Ci
 
     private
 
-    def legacy_calculation(sha, config)
-      ref_name = Gitlab::Ci::RefFinder.new(project).find_by_sha(sha)
-
-      Gitlab::Ci::YamlProcessor.new(
-        config.content,
-        project: project,
-        user: current_user,
-        sha: sha,
-        ref: ref_name,
-        verify_project_sha: true
-      ).execute
-    end
-
-    def new_calculation(sha, ref, config)
+    def execute_yaml_processor(sha, ref, config)
       # The `ref` parameter should be branch or tag name. However, the API also accepts a commit SHA and we can't
       # change it to not introduce breaking changes. Instead, here we're checking if a commit SHA is passed
       # as `ref`. If so, we should verify the sha whether it belongs to the project in YamlProcessor.

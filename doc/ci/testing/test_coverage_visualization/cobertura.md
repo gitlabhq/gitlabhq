@@ -37,8 +37,8 @@ of times the line was checked by tests.
 
 Uploading a test coverage report does not enable:
 
-- [Test coverage results in merge requests](../code_coverage.md#view-code-coverage-results-in-the-merge-request).
-- [Code coverage history](../code_coverage.md#view-history-of-project-code-coverage).
+- [Test coverage results in merge requests](../code_coverage.md#code-coverage-results-in-merge-requests).
+- [Code coverage history](../code_coverage.md#view-code-coverage-history).
 
 You must configure these separately.
 
