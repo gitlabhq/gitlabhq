@@ -54,7 +54,7 @@ namespace :tw do
       CodeOwnerRule.new('GitLab Dedicated', '@lyspin'),
       CodeOwnerRule.new('Global Search', '@ashrafkhamis'),
       CodeOwnerRule.new('Remote Development', '@ashrafkhamis'),
-      CodeOwnerRule.new('Import and Integrate', '@eread'),
+      CodeOwnerRule.new('Import and Integrate', '@ashrafkhamis'),
       CodeOwnerRule.new('Infrastructure', '@sselhorn'),
       CodeOwnerRule.new('Knowledge', '@msedlakjakubowski'),
       CodeOwnerRule.new('MLOps', '@sselhorn @jglassman1 @fneill'),

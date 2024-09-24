@@ -398,6 +398,38 @@ RSpec.describe Resolvers::MergeRequestsResolver, feature_category: :code_review_
       end
     end
 
+    context 'when filtering by environment' do
+      let_it_be(:gstg) { create(:environment, project: project, name: 'gstg') }
+      let_it_be(:gprd) { create(:environment, project: project, name: 'gprd') }
+
+      let_it_be(:deploy1) do
+        create(
+          :deployment,
+          :success,
+          deployable: nil,
+          environment: gstg,
+          project: project,
+          sha: merge_request_1.diff_head_sha
+        )
+      end
+
+      before do
+        deploy1.link_merge_requests(MergeRequest.where(id: merge_request_1.id))
+      end
+
+      it 'returns merge requests for a given environment' do
+        result = resolve_mr(project, environment_name: gstg.name)
+
+        expect(result).to contain_exactly(merge_request_1)
+      end
+
+      it 'returns an empty list when no merge requests exist in a given environment' do
+        result = resolve_mr(project, environment_name: gprd.name)
+
+        expect(result).to be_empty
+      end
+    end
+
     context 'with created_after and created_before arguments' do
       before do
         merge_request_1.update!(created_at: 4.days.ago)

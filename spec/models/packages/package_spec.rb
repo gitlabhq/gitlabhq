@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Packages::Package, type: :model, feature_category: :package_registry do
@@ -181,8 +182,10 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
         it { is_expected.not_to allow_value('%2e%2e%2f1.2.3').for(:version) }
       end
 
+      # TODO: Remove with the rollout of the FF pypi_extract_pypi_package_model
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/480692
       context 'pypi package' do
-        subject { create(:pypi_package) }
+        subject { create(:pypi_package_legacy) }
 
         it { is_expected.to allow_value('0.1').for(:version) }
         it { is_expected.to allow_value('2.0').for(:version) }
@@ -641,6 +644,8 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
       it { is_expected.to match_array([package1, package2]) }
     end
 
+    # TODO: Remove with the rollout of the FF pypi_extract_pypi_package_model
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/480692
     describe '.with_normalized_pypi_name' do
       let_it_be(:pypi_package) { create(:pypi_package, name: 'Foo.bAr---BAZ_buz') }
 
@@ -1100,6 +1105,8 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
     end
   end
 
+  # TODO: Remove with the rollout of the FF pypi_extract_pypi_package_model
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/480692
   describe '#normalized_pypi_name' do
     let_it_be(:package) { create(:pypi_package) }
 

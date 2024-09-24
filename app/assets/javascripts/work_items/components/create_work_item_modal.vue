@@ -153,6 +153,7 @@ export default {
           text: __('View details'),
           onClick: () => {
             if (
+              !this.asDropdownItem &&
               this.$router &&
               this.$router.options.routes.some((route) => route.name === 'workItem')
             ) {

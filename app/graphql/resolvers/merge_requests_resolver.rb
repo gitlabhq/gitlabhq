@@ -101,6 +101,10 @@ module Resolvers
     argument :deployment_id, GraphQL::Types::String,
       required: false,
       description: 'ID of the deployment.'
+    argument :environment_name, GraphQL::Types::String,
+      as: :environment,
+      required: false,
+      description: 'Environment merge requests have been deployed to.'
     argument :updated_after, Types::TimeType,
       required: false,
       description: 'Merge requests updated after the timestamp.'

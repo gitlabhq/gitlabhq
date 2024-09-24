@@ -169,7 +169,8 @@ RSpec.describe Gitlab::SlashCommands::Deploy, feature_category: :environment_man
         Time.zone.now - start
       end
 
-      it 'has smaller than linear execution time growth with a malformed "to"', :aggregate_failures do
+      it 'has smaller than linear execution time growth with a malformed "to"', :aggregate_failures,
+        quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/469617' do
         expect do
           Timeout.timeout(3.seconds) do
             sample1 = duration_for { described_class.match("deploy abc t" + ("o" * 100000) + "X") }

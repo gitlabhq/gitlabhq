@@ -114,8 +114,9 @@ module Gitlab
           when *BUILD_MODELS then setup_build
           when :issues then setup_work_item
           when :'Ci::PipelineSchedule' then setup_pipeline_schedule
-          when :'ProtectedBranch::MergeAccessLevel' then setup_protected_branch_access_level
-          when :'ProtectedBranch::PushAccessLevel' then setup_protected_branch_access_level
+          when :'ProtectedBranch::MergeAccessLevel' then setup_protected_ref_access_level
+          when :'ProtectedBranch::PushAccessLevel' then setup_protected_ref_access_level
+          when :'ProtectedTag::CreateAccessLevel' then setup_protected_ref_access_level
           when :ApprovalProjectRulesProtectedBranch then setup_merge_approval_protected_branch
           when :releases then setup_release
           when :merge_requests, :MergeRequest, :merge_request then setup_merge_request
@@ -226,7 +227,7 @@ module Gitlab
           @relation_hash['merge_when_pipeline_succeeds'] = false
         end
 
-        def setup_protected_branch_access_level
+        def setup_protected_ref_access_level
           return if root_group_owner?
           return if @relation_hash['access_level'] == Gitlab::Access::NO_ACCESS
           return if @relation_hash['access_level'] == Gitlab::Access::MAINTAINER

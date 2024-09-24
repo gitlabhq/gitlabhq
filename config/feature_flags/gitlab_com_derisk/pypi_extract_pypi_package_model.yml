@@ -1,0 +1,9 @@
+---
+name: pypi_extract_pypi_package_model
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/435827
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165694
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/480692
+milestone: '17.5'
+group: group::package registry
+type: gitlab_com_derisk
+default_enabled: false

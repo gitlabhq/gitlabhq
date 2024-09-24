@@ -121,7 +121,9 @@ FactoryBot.define do
       end
     end
 
-    factory :pypi_package do
+    # TODO: Remove with the rollout of the FF pypi_extract_pypi_package_model
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/480692
+    factory :pypi_package_legacy do
       sequence(:name) { |n| "pypi-package-#{n}" }
       sequence(:version) { |n| "1.0.#{n}" }
       package_type { :pypi }
@@ -134,7 +136,7 @@ FactoryBot.define do
         create :package_file, :pypi, package: package, file_name: "#{package.name}-#{package.version}.tar.gz"
 
         unless evaluator.without_loaded_metadatum
-          create :pypi_metadatum, package: package
+          create :pypi_metadatum, legacy_package: package, package: nil
         end
       end
     end

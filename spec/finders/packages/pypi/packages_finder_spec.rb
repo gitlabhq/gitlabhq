@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Pypi::PackagesFinder do
+RSpec.describe Packages::Pypi::PackagesFinder, feature_category: :package_registry do
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, group: group) }
@@ -39,6 +39,19 @@ RSpec.describe Packages::Pypi::PackagesFinder do
 
         it { is_expected.to contain_exactly(package2, package3) }
 
+        context 'when pypi_extract_package_model is disabled' do
+          before do
+            stub_feature_flags(pypi_extract_pypi_package_model: false)
+          end
+
+          # rubocop:disable Cop/AvoidBecomes -- implementing inheritance for PyPi packages https://gitlab.com/gitlab-org/gitlab/-/issues/435827
+          it do
+            is_expected
+              .to contain_exactly(package2.becomes(::Packages::Package), package3.becomes(::Packages::Package))
+          end
+          # rubocop:enable Cop/AvoidBecomes
+        end
+
         it_behaves_like 'when no package is found'
         it_behaves_like 'when package_name param is a non-normalized name'
       end
@@ -54,6 +67,16 @@ RSpec.describe Packages::Pypi::PackagesFinder do
           end
 
           it { is_expected.to contain_exactly(package4) }
+
+          context 'when pypi_extract_package_model is disabled' do
+            before do
+              stub_feature_flags(pypi_extract_pypi_package_model: false)
+            end
+
+            # rubocop:disable Cop/AvoidBecomes -- implementing inheritance for PyPi packages https://gitlab.com/gitlab-org/gitlab/-/issues/435827
+            it { is_expected.to contain_exactly(package4.becomes(::Packages::Package)) }
+            # rubocop:enable Cop/AvoidBecomes
+          end
 
           it_behaves_like 'when no package is found'
           it_behaves_like 'when package_name param is a non-normalized name'

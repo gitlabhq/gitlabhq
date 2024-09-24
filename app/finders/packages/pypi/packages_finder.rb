@@ -5,6 +5,14 @@ module Packages
     class PackagesFinder < ::Packages::GroupOrProjectPackageFinder
       extend ::Gitlab::Utils::Override
 
+      def initialize(current_user, project_or_group, params = {})
+        if Feature.enabled?(:pypi_extract_pypi_package_model, Feature.current_request)
+          params[:packages_class] = ::Packages::Pypi::Package
+        end
+
+        super
+      end
+
       def execute
         return packages unless @params[:package_name]
 
@@ -14,7 +22,11 @@ module Packages
       private
 
       def packages
-        base.pypi.has_version
+        if Feature.enabled?(:pypi_extract_pypi_package_model, Feature.current_request)
+          base.has_version
+        else
+          base.pypi.has_version
+        end
       end
 
       override :group_packages

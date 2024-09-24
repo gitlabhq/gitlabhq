@@ -42,6 +42,16 @@ RSpec.describe Packages::Pypi::CreatePackageService, :aggregate_failures, featur
         expect(created_package.package_files.first.file_sha256).to eq sha256
         expect(created_package.package_files.first.file_md5).to eq md5
       end
+
+      context 'when pypi_extract_package_model is disabled' do
+        before do
+          stub_feature_flags(pypi_extract_pypi_package_model: false)
+        end
+
+        it 'creates the package' do
+          expect { execute_service }.to change { Packages::Package.pypi.count }.by(1)
+        end
+      end
     end
 
     context 'with FIPS mode', :fips_mode do

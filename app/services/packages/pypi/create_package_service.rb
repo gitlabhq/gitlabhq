@@ -8,7 +8,6 @@ module Packages
       def execute
         ::Packages::Package.transaction do
           meta = Packages::Pypi::Metadatum.new(
-            package: created_package,
             required_python: params[:requires_python] || '',
             metadata_version: params[:metadata_version],
             author_email: params[:author_email],
@@ -17,6 +16,12 @@ module Packages
             summary: params[:summary],
             keywords: params[:keywords]
           )
+
+          if Feature.enabled?(:pypi_extract_pypi_package_model, Feature.current_request)
+            meta.package = created_package
+          else
+            meta.legacy_package = created_package
+          end
 
           truncate_fields(meta)
 

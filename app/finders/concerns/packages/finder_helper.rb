@@ -10,7 +10,7 @@ module Packages
     private
 
     def packages_for_project(project)
-      project.packages.installable
+      packages_class.for_projects(project).installable
     end
 
     # /!\ This function doesn't check user permissions
@@ -29,13 +29,13 @@ module Packages
     end
 
     def packages_visible_to_user(user, within_group:, with_package_registry_enabled: false)
-      return ::Packages::Package.none unless within_group
-      return ::Packages::Package.none unless Ability.allowed?(user, :read_group, within_group)
+      return packages_class.none unless within_group
+      return packages_class.none unless Ability.allowed?(user, :read_group, within_group)
 
       projects = projects_visible_to_reporters(user, within_group: within_group)
       projects = projects.with_package_registry_enabled if with_package_registry_enabled
 
-      ::Packages::Package.for_projects(projects.select(:id)).installable
+      packages_class.for_projects(projects.select(:id)).installable
     end
 
     def packages_visible_to_user_including_public_registries(user, within_group:)
@@ -113,6 +113,10 @@ module Packages
       raise InvalidStatusError unless Package.statuses.key?(params[:status])
 
       packages.with_status(params[:status])
+    end
+
+    def packages_class
+      ::Packages::Package
     end
   end
 end

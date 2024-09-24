@@ -508,8 +508,6 @@ Layout/EmptyLineAfterMagicComment:
     - 'spec/models/packages/npm_spec.rb'
     - 'spec/models/packages/package_file_build_info_spec.rb'
     - 'spec/models/packages/package_file_spec.rb'
-    - 'spec/models/packages/package_spec.rb'
-    - 'spec/models/packages/pypi/metadatum_spec.rb'
     - 'spec/models/packages/rpm/metadatum_spec.rb'
     - 'spec/models/packages/rpm/repository_file_spec.rb'
     - 'spec/policies/design_management/design_policy_spec.rb'
