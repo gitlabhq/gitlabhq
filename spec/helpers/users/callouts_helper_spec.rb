@@ -123,9 +123,9 @@ RSpec.describe Users::CalloutsHelper, feature_category: :navigation do
     where(:version, :current_user, :user_dismissed, :controller_path, :expected_result) do
       '17.1.0'  | ref(:admin) | false | 'admin'       | true
       '17.1.0'  | ref(:admin) | false | 'admin/users' | true
-      '17.4.99' | ref(:admin) | false | 'admin'       | true
+      '17.6.99' | ref(:admin) | false | 'admin'       | true
       '17.0.0'  | ref(:admin) | false | 'admin'       | false
-      '17.5.0'  | ref(:admin) | false | 'admin'       | false
+      '17.7.0'  | ref(:admin) | false | 'admin'       | false
       '17.1.0'  | ref(:user)  | false | 'admin'       | false
       '17.1.0'  | ref(:admin) | true  | 'admin'       | false
       '17.1.0'  | ref(:admin) | false | 'admin-'      | false
