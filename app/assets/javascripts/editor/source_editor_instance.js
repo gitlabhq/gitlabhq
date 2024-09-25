@@ -19,7 +19,7 @@
 
 import { isEqual } from 'lodash';
 import { editor as monacoEditor } from 'monaco-editor';
-import { getBlobLanguage } from '~/editor/utils';
+import { enableMonacoYamlWorkerForVite, getBlobLanguage } from '~/editor/utils';
 import { logError } from '~/lib/logger';
 import { sprintf } from '~/locale';
 import EditorExtension from './source_editor_extension';
@@ -65,6 +65,8 @@ export default class EditorInstance {
    * @returns {Object} - A Proxy returning props/methods from either registered extensions, or Source Editor instance, or underlying Monaco instance
    */
   constructor(rootInstance = {}, extensionsStore = new Map()) {
+    enableMonacoYamlWorkerForVite();
+
     /** The methods provided by extensions. */
     this.methods = {};
 

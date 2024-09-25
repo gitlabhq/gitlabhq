@@ -27117,8 +27117,6 @@ CREATE INDEX idx_sbom_occurr_on_project_component_version_input_file_path ON sbo
 
 CREATE INDEX idx_sbom_occurrences_on_project_id_and_source_id ON sbom_occurrences USING btree (project_id, source_id);
 
-CREATE UNIQUE INDEX idx_sbom_source_packages_on_name_and_purl_type ON sbom_source_packages USING btree (name, purl_type);
-
 CREATE INDEX idx_scan_result_policies_on_configuration_id_id_updated_at ON scan_result_policies USING btree (security_orchestration_policy_configuration_id, id, updated_at);
 
 CREATE INDEX idx_scan_result_policy_violations_on_policy_id_and_id ON scan_result_policy_violations USING btree (scan_result_policy_id, id);
@@ -30384,8 +30382,6 @@ CREATE UNIQUE INDEX index_saved_replies_on_name_text_pattern_ops ON saved_replie
 CREATE UNIQUE INDEX index_sbom_component_versions_on_component_id_and_version ON sbom_component_versions USING btree (component_id, version);
 
 CREATE INDEX index_sbom_component_versions_on_organization_id ON sbom_component_versions USING btree (organization_id);
-
-CREATE UNIQUE INDEX index_sbom_components_on_component_type_name_and_purl_type ON sbom_components USING btree (name, purl_type, component_type);
 
 CREATE INDEX index_sbom_components_on_organization_id ON sbom_components USING btree (organization_id);
 
