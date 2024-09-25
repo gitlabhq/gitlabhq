@@ -34,7 +34,7 @@ The below reflects the current retention periods of GitLab AI model [Sub-Process
 
 All of these AI providers are under data protection agreements with GitLab that prohibit the use of Customer Content for their own purposes, except to perform their independent legal obligations.
 
-GitLab does not retain input and output data unless customers provide consent through a GitLab [Support Ticket](https://about.gitlab.com/support/portal/).
+GitLab does not retain input and output data unless customers provide consent through a GitLab [Support Ticket](https://about.gitlab.com/support/portal/). Learn more about [AI feature logging](../../administration/logs/index.md).
 
 ## Training data
 

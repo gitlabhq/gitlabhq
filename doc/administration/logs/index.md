@@ -1029,9 +1029,26 @@ DETAILS:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120506) in GitLab 16.0.
 
 The `llm.log` file logs information related to
-[AI features](../../user/ai_features.md).
+[AI features](../../user/ai_features.md). Logging includes information about AI events. 
 
-This file is located at:
+### LLM input and output logging
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13401) in GitLab 17.2 [with a flag](../../administration/feature_flags.md) named `expanded_ai_logging`. Disabled by default.
+
+FLAG:
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
+LLM prompt input and response output can be logged by enabling the `expanded_ai_logging` feature flag.
+This flag is disabled by default and can only be enabled:
+
+- For GitLab.com, when you provide consent through a GitLab [Support Ticket](https://about.gitlab.com/support/portal/).
+- For self-managed, when you enable this feature flag.
+
+By default, the log does not contain LLM prompt input and response output to support [data retention policies](../../user/gitlab_duo/data_usage.md#data-retention) of AI feature data. 
+
+The log file is located at:
 
 - `/var/log/gitlab/gitlab-rails/llm.log` on Linux package installations.
 - `/home/git/gitlab/log/llm.log` on self-compiled installations.

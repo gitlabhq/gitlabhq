@@ -1,5 +1,6 @@
 - add_page_specific_style 'page_bundles/branches'
 - page_title _('Branches')
+- search = params[:search]
 
 -# Possible values for variables passed down from the projects/branches_controller.rb
 -#
@@ -55,9 +56,11 @@
     = render('kaminari/gitlab/without_count', previous_path: @prev_path, next_path: @next_path, event_tracking: nil)
   - else
     = paginate @branches, theme: 'gitlab'
+- elsif search.present?
+  = render ::Layouts::EmptyResultComponent.new(type: :search)
 - else
-  .nothing-here-block
-    = s_('Branches|No branches to show')
+  = render Pajamas::EmptyStateComponent.new(svg_path: 'illustrations/status/status-nothing-md.svg',
+    title: s_('Branches|No branches to show'))
 
 - if can?(current_user, :push_code, @project)
   .js-delete-branch-modal

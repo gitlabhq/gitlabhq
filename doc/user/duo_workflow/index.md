@@ -76,15 +76,15 @@ Instead of running GitLab Workflow in VS Code, you can use a cURL command. See
 1. Start GitLab Workflow in a CI/CD pipeline by using the following cURL request.
 
    ```shell
-        curl POST --verbose \
-        --header 'Authorization: Bearer $YOUR_GITLAB_PAT' \
-        --header 'Content-Type: application/json' \
-        --data '{
-            "project_id": "$PROJECT_ID_FOR_RUNNING_WORKFLOW_AGAINST",
-            "start_workflow": true,
-            "goal": "Fix the pipeline for merge request X in project Y."
-        }' \
-        --location 'https://gitlab.com/api/v4/ai/duo_workflows/workflows'
+   curl POST --verbose \
+      --header "Authorization: Bearer $YOUR_GITLAB_PAT" \
+      --header "Content-Type: application/json" \
+      --data '{
+         "project_id": "$PROJECT_ID_FOR_RUNNING_WORKFLOW_AGAINST",
+         "start_workflow": true,
+         "goal": "Fix the pipeline for merge request X in project Y."
+      }' \
+      --location 'https://gitlab.com/api/v4/ai/duo_workflows/workflows'
     ```
 
 The response should be the pipeline ID. To view the pipeline execution, go to:

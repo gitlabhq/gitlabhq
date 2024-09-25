@@ -2,9 +2,6 @@
 # Cop supports --autocorrect.
 Layout/ArrayAlignment:
   Exclude:
-    - 'config/initializers/0_marginalia.rb'
-    - 'config/initializers/direct_upload_support.rb'
-    - 'ee/app/controllers/admin/push_rules_controller.rb'
     - 'ee/app/controllers/ee/admin/application_settings_controller.rb'
     - 'ee/app/controllers/ee/projects/merge_requests_controller.rb'
     - 'ee/app/controllers/groups/protected_branches_controller.rb'

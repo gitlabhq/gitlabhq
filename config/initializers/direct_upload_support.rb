@@ -2,8 +2,8 @@
 
 class DirectUploadsValidator
   SUPPORTED_DIRECT_UPLOAD_PROVIDERS = [ObjectStorage::Config::GOOGLE_PROVIDER,
-                                       ObjectStorage::Config::AWS_PROVIDER,
-                                       ObjectStorage::Config::AZURE_PROVIDER].freeze
+    ObjectStorage::Config::AWS_PROVIDER,
+    ObjectStorage::Config::AZURE_PROVIDER].freeze
 
   ValidationError = Class.new(StandardError)
 

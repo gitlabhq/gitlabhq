@@ -88,7 +88,7 @@ The storage management and cleanup automation methods described in this page use
 For more information about use cases for the `python-gitlab` library,
 see [Efficient DevSecOps workflows: Hands-on `python-gitlab` API automation](https://about.gitlab.com/blog/2023/02/01/efficient-devsecops-workflows-hands-on-python-gitlab-api-automation/).
 
-For more information about other API client libraries, see [Third-party clients](../api/rest/index.md#third-party-clients).
+For more information about other API client libraries, see [Third-party clients](../api/rest/third_party_clients.md).
 
 NOTE:
 Use [GitLab Duo Code Suggestions](project/repository/code_suggestions/index.md) to write code more efficiently.

@@ -14,7 +14,7 @@ require 'marginalia'
 # coding from working in the development log.
 Marginalia::Comment.prepend_comment = true if Rails.env.production?
 Marginalia::Comment.components = [:application, :correlation_id, :jid, :endpoint_id, :db_config_name,
-                                  :console_hostname, :console_username]
+  :console_hostname, :console_username]
 
 # As mentioned in https://github.com/basecamp/marginalia/pull/93/files,
 # adding :line has some overhead because a regexp on the backtrace has

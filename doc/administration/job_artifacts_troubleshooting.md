@@ -59,7 +59,7 @@ To check if the feature flags are enabled:
    ```ruby
    Feature.enable(:ci_detect_wrongly_expired_artifacts)
    Feature.enable(:ci_update_unlocked_job_artifacts)
-   Feature.enable(:ci_destroy_unlocked_job_artifacts)
+   Feature.enable(:ci_job_artifacts_backlog_work)
    ```
 
 These changes include switching artifacts from `unlocked` to `locked` if

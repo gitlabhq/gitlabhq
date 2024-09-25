@@ -1356,6 +1356,35 @@ Example response:
 ]
 ```
 
+## Delete a merge request dependency
+
+Delete a merge request dependency
+
+```plaintext
+GET /projects/:id/merge_requests/:merge_request_iid/blocks/:block_id
+```
+
+Supported attributes:
+
+| Attribute           | Type           | Required | Description |
+|---------------------|----------------|----------|-------------|
+| `id`                | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `merge_request_iid` | integer        | Yes      | The internal ID of the merge request. |
+| `block_id`          | integer        | Yes      | The internal ID of the block. |
+
+Example request:
+
+```shell
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/merge_requests/1/blocks/1"
+```
+
+Returns:
+
+- `204 No Content` if the dependency is successfully deleted.
+- `403 Forbidden` if the user lacks permissions for updating the merge request.
+- `403 Forbidden` if the user lacks permissions for reading the blocking merge request.
+
 ## Get single merge request changes
 
 WARNING:

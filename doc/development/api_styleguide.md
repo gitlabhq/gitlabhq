@@ -78,7 +78,7 @@ end
 We must not make breaking changes to our REST API v4, even in major GitLab releases.
 
 Our REST API maintains its own versioning independent of GitLab versioning.
-The current REST API version is `4`. [We commit to follow semantic versioning for our REST API](../api/rest/index.md#compatibility-guidelines),
+The current REST API version is `4`. [We commit to follow semantic versioning for our REST API](../api/rest/index.md),
 which means we cannot make breaking changes until a major version change (most likely, `5`).
 
 Because version `5` is not scheduled, we allow rare [exceptions](#exceptions).

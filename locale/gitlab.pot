@@ -3868,13 +3868,22 @@ msgstr ""
 msgid "AdminSelfHostedModels|API Key (optional)"
 msgstr ""
 
+msgid "AdminSelfHostedModels|API token"
+msgstr ""
+
 msgid "AdminSelfHostedModels|API token (if needed)"
 msgstr ""
 
 msgid "AdminSelfHostedModels|Add a new AI model that can be used for GitLab Duo features."
 msgstr ""
 
+msgid "AdminSelfHostedModels|Add and manage models that can be used for GitLab AI features."
+msgstr ""
+
 msgid "AdminSelfHostedModels|Add self-hosted language models to use as backups for GitLab Duo features."
+msgstr ""
+
+msgid "AdminSelfHostedModels|Add self-hosted model"
 msgstr ""
 
 msgid "AdminSelfHostedModels|Add self-hosted models"
@@ -3919,19 +3928,22 @@ msgstr ""
 msgid "AdminSelfHostedModels|Endpoint"
 msgstr ""
 
+msgid "AdminSelfHostedModels|Get started with Self‑hosted models"
+msgstr ""
+
+msgid "AdminSelfHostedModels|Manage AI models that can be used for GitLab AI features."
+msgstr ""
+
 msgid "AdminSelfHostedModels|Model"
 msgstr ""
 
-msgid "AdminSelfHostedModels|Model does not have API key"
+msgid "AdminSelfHostedModels|Model uses an API token"
 msgstr ""
 
-msgid "AdminSelfHostedModels|Model has API key"
+msgid "AdminSelfHostedModels|Name"
 msgstr ""
 
 msgid "AdminSelfHostedModels|Name the deployment (must be unique)"
-msgstr ""
-
-msgid "AdminSelfHostedModels|New model"
 msgstr ""
 
 msgid "AdminSelfHostedModels|New self-hosted model"
@@ -3953,9 +3965,6 @@ msgid "AdminSelfHostedModels|Please select a model."
 msgstr ""
 
 msgid "AdminSelfHostedModels|Select model"
-msgstr ""
-
-msgid "AdminSelfHostedModels|Self-hosted AI models can be used to power GitLab AI features."
 msgstr ""
 
 msgid "AdminSelfHostedModels|Self-hosted models"
@@ -34942,9 +34951,6 @@ msgid "Modal updated"
 msgstr ""
 
 msgid "Modal|Close"
-msgstr ""
-
-msgid "Model"
 msgstr ""
 
 msgid "Model description"
