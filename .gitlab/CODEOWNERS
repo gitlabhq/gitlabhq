@@ -707,6 +707,7 @@ lib/gitlab/checks/**
 /doc/api/epic_issues.md @msedlakjakubowski
 /doc/api/epic_links.md @msedlakjakubowski
 /doc/api/epics.md @msedlakjakubowski
+/doc/api/error_tracking.md @lciutacu
 /doc/api/events.md @eread
 /doc/api/feature_flag_user_lists.md @phillipwells
 /doc/api/feature_flags.md @phillipwells
@@ -908,6 +909,7 @@ lib/gitlab/checks/**
 /doc/development/image_scaling.md @abdwdd @alexpooley @manojmj
 /doc/development/internal_analytics/ @gitlab-org/analytics-section/product-analytics/engineers/frontend @gitlab-org/analytics-section/analytics-instrumentation/engineers
 /doc/development/navigation_sidebar.md @gitlab-org/foundations/engineering
+/doc/development/observability/ @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/development/omnibus.md @gitlab-org/distribution
 /doc/development/organization/ @abdwdd @alexpooley @manojmj
 /doc/development/permissions.md @gitlab-org/govern/authorization/approvers
@@ -918,6 +920,7 @@ lib/gitlab/checks/**
 /doc/development/sec/ @gitlab-org/govern/threat-insights-frontend-team
 /doc/development/sec/gemnasium_analyzer_data.md @gitlab-org/secure/composition-analysis-be @gitlab-org/secure/static-analysis
 /doc/development/software_design.md @gl-quality/eng-prod
+/doc/development/stage_group_observability/ @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/downgrade_ee_to_ce/ @axil
 /doc/drawers/ @ashrafkhamis
 /doc/editor_extensions/ @aqualls
@@ -938,7 +941,8 @@ lib/gitlab/checks/**
 /doc/integration/sourcegraph.md @brendan777
 /doc/integration/trello_power_up.md @ashrafkhamis
 /doc/integration/vault.md @phillipwells
-/doc/operations/ @phillipwells
+/doc/operations/ @lciutacu
+/doc/operations/feature_flags.md @phillipwells
 /doc/policy/ @axil
 /doc/raketasks/ @axil
 /doc/raketasks/spdx.md @rdickenson @phillipwells
@@ -970,6 +974,7 @@ lib/gitlab/checks/**
 /doc/tutorials/kanban/ @msedlakjakubowski
 /doc/tutorials/left_sidebar/ @sselhorn
 /doc/tutorials/move_personal_project_to_group/ @lciutacu
+/doc/tutorials/observability/ @lciutacu
 /doc/tutorials/product_analytics_onboarding_website_project/ @lciutacu
 /doc/tutorials/protected_workflow/ @aqualls
 /doc/tutorials/reviews/ @aqualls
@@ -1002,6 +1007,7 @@ lib/gitlab/checks/**
 /doc/user/enterprise_user/ @jglassman1
 /doc/user/get_started/get_started_managing_code.md @brendan777
 /doc/user/get_started/get_started_managing_infrastructure.md @phillipwells
+/doc/user/get_started/get_started_monitoring.md @lciutacu
 /doc/user/get_started/get_started_planning_work.md @msedlakjakubowski
 /doc/user/get_started/get_started_projects.md @lciutacu
 /doc/user/gitlab_duo/ @sselhorn @jglassman1 @fneill

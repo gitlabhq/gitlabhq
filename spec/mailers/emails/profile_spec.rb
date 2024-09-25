@@ -476,7 +476,7 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
     end
 
     it 'includes a link to the change password documentation' do
-      is_expected.to have_body_text help_page_url('user/profile/user_passwords', anchor: 'change-your-password')
+      is_expected.to have_body_text help_page_url('user/profile/user_passwords.md', anchor: 'change-your-password')
     end
 
     it 'mentions two factor authentication when two factor is not enabled' do
@@ -484,7 +484,7 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
     end
 
     it 'includes a link to two-factor authentication documentation' do
-      is_expected.to have_body_text help_page_url('user/profile/account/two_factor_authentication')
+      is_expected.to have_body_text help_page_url('user/profile/account/two_factor_authentication.md')
     end
 
     context 'when two factor authentication is enabled' do
@@ -526,7 +526,7 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
     end
 
     it 'includes a link to the change password documentation' do
-      is_expected.to have_body_text help_page_url('user/profile/user_passwords', anchor: 'change-your-password')
+      is_expected.to have_body_text help_page_url('user/profile/user_passwords.md', anchor: 'change-your-password')
     end
   end
 

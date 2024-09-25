@@ -13,10 +13,10 @@
       - else
         = render partial: "protected_branches/shared/dropdown", locals: { f: f, toggle_classes: '!gl-w-full gl-form-input-lg' }
       .form-text.text-muted
-        - wildcards_url = help_page_url('user/project/repository/branches/protected', anchor: 'protect-multiple-branches-with-wildcard-rules')
+        - wildcards_url = help_page_url('user/project/repository/branches/protected.md', anchor: 'protect-multiple-branches-with-wildcard-rules')
         - wildcards_link_tag_pair = tag_pair(link_to('', wildcards_url, target: '_blank', rel: 'noopener noreferrer'), :wildcards_link_start, :wildcards_link_end)
 
-        - case_sensitive_url = help_page_url('user/project/repository/branches/protected', anchor: 'branch-names-are-case-sensitive')
+        - case_sensitive_url = help_page_url('user/project/repository/branches/protected.md', anchor: 'branch-names-are-case-sensitive')
         - case_sensitive_link_tag_pair = tag_pair(link_to('', case_sensitive_url, target: '_blank', rel: 'noopener noreferrer'), :case_sensitive_link_start, :case_sensitive_link_end)
 
         - code_tag_pair = tag_pair(tag.code, :code_tag_start, :code_tag_end)
@@ -39,7 +39,7 @@
       = render Pajamas::ToggleComponent.new(classes: 'js-force-push-toggle',
         label: s_("ProtectedBranch|Allowed to force push"),
         label_position: :hidden) do
-        - force_push_docs_url = help_page_url('topics/git/git_rebase', anchor: 'force-pushing')
+        - force_push_docs_url = help_page_url('topics/git/git_rebase.md', anchor: 'force-pushing')
         - force_push_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: force_push_docs_url }
         = (s_("ProtectedBranch|Allow all users with push access to %{tag_start}force push%{tag_end}.") % { tag_start: force_push_link_start, tag_end: '</a>' }).html_safe
   = render_if_exists 'protected_branches/ee/code_owner_approval_form', f: f, protected_branch_entity: protected_branch_entity

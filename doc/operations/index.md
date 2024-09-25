@@ -1,6 +1,6 @@
 ---
 stage: Monitor
-group: Observability
+group: Platform Insights
 description: Track errors, application performance issues, and manage incident response.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---

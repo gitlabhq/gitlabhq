@@ -59,7 +59,6 @@ namespace :tw do
       CodeOwnerRule.new('Knowledge', '@msedlakjakubowski'),
       CodeOwnerRule.new('MLOps', '@sselhorn @jglassman1 @fneill'),
       # CodeOwnerRule.new('Mobile Devops', ''),
-      # CodeOwnerRule.new('Observability', ''),
       CodeOwnerRule.new('Optimize', '@lciutacu'),
       CodeOwnerRule.new('Organization', '@lciutacu'),
       CodeOwnerRule.new('Package Registry', '@phillipwells'),
@@ -67,7 +66,7 @@ namespace :tw do
       CodeOwnerRule.new('Pipeline Authoring', '@marcel.amirault @lyspin'),
       CodeOwnerRule.new('Pipeline Execution', '@marcel.amirault @lyspin'),
       CodeOwnerRule.new('Pipeline Security', '@marcel.amirault'),
-      CodeOwnerRule.new('Product Analytics', '@lciutacu'),
+      CodeOwnerRule.new('Platform Insights', '@lciutacu'),
       CodeOwnerRule.new('Product Planning', '@msedlakjakubowski'),
       CodeOwnerRule.new('Project Management', '@msedlakjakubowski'),
       CodeOwnerRule.new('Provision', '@fneill'),
@@ -113,7 +112,7 @@ namespace :tw do
         '@gitlab-org/maintainers/remote-development/backend @gitlab-org/maintainers/remote-development/frontend'),
       CodeOwnerRule.new('Pipeline Authoring', '@gitlab-org/maintainers/cicd-verify'),
       CodeOwnerRule.new('Pipeline Execution', '@gitlab-org/maintainers/cicd-verify'),
-      CodeOwnerRule.new('Product Analytics', '@gitlab-org/analytics-section/product-analytics/engineers/frontend'),
+      CodeOwnerRule.new('Platform Insights', '@gitlab-org/analytics-section/product-analytics/engineers/frontend'),
       CodeOwnerRule.new('Tenant Scale', '@abdwdd @alexpooley @manojmj'),
       CodeOwnerRule.new('Threat Insights', '@gitlab-org/govern/threat-insights-frontend-team')
     ].freeze

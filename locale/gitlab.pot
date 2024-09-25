@@ -3038,6 +3038,9 @@ msgstr ""
 msgid "Activate Service Desk"
 msgstr ""
 
+msgid "Activate my trial"
+msgstr ""
+
 msgid "Activated"
 msgstr ""
 
@@ -6988,6 +6991,9 @@ msgid "ApprovalRuleSummary|%{count} approval required from %{membersCount}"
 msgid_plural "ApprovalRuleSummary|%{count} approvals required from %{membersCount}"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "ApprovalRules|Define target branch approval rules for new merge requests."
+msgstr ""
 
 msgid "ApprovalRule|A merge request author collaborating with a merge request approver"
 msgstr ""
@@ -20156,7 +20162,7 @@ msgstr ""
 msgid "DuoEnterpriseTrial|Apply your GitLab Duo Enterprise trial to an existing group"
 msgstr ""
 
-msgid "DuoEnterpriseTrial|Congratulations, your free GitLab Duo Enterprise trial is activated and will expire on %{exp_date}. The new license might take a minute to show on the page. To give members access to new GitLab Duo Enterprise features, %{assign_link_start}assign them%{assign_link_end} to GitLab Duo Enterprise seats."
+msgid "DuoEnterpriseTrial|Congratulations, your free Ultimate and GitLab Duo Enterprise trial is activated and will expire on %{exp_date}. The new license might take a minute to show on the page. To give members access to new GitLab Duo Enterprise features, %{assign_link_start}assign them%{assign_link_end} to GitLab Duo Enterprise seats."
 msgstr ""
 
 msgid "DuoEnterpriseTrial|Enhance security and remediate vulnerabilities efficiently"
@@ -44734,9 +44740,6 @@ msgstr ""
 msgid "RapidDiffs|Original line number"
 msgstr ""
 
-msgid "Rate Duo Code Review"
-msgstr ""
-
 msgid "Rate Limits"
 msgstr ""
 
@@ -44747,6 +44750,9 @@ msgid "Rate limit access to specified paths."
 msgstr ""
 
 msgid "Rate limits can help reduce request volume (like from crawlers or abusive bots)."
+msgstr ""
+
+msgid "Rate the review"
 msgstr ""
 
 msgid "Raw blob request rate limit per minute"
@@ -52810,6 +52816,9 @@ msgstr ""
 msgid "Start your Free Ultimate Trial"
 msgstr ""
 
+msgid "Start your Free Ultimate and GitLab Duo Enterprise Trial"
+msgstr ""
+
 msgid "Start your free trial"
 msgstr ""
 
@@ -57745,6 +57754,9 @@ msgstr ""
 msgid "Trials|Upgrade to regain access to powerful features like advanced team management for code, security, and reporting."
 msgstr ""
 
+msgid "Trials|You can apply your Ultimate and GitLab Duo Enterprise trial to a group."
+msgstr ""
+
 msgid "Trials|You can apply your trial to a new group or an existing group."
 msgstr ""
 
@@ -57763,6 +57775,9 @@ msgid "Trial|Activate my trial"
 msgstr ""
 
 msgid "Trial|Allowed characters: +, 0-9, -, and spaces."
+msgstr ""
+
+msgid "Trial|Apply your combined trial to an existing group"
 msgstr ""
 
 msgid "Trial|By clicking \"%{buttonText}\" you accept the %{gitlabSubscriptionAgreement} and acknowledge the %{privacyStatement} and %{cookiePolicy}"
@@ -57799,6 +57814,9 @@ msgid "Trial|You don't need a credit card to start a trial. After the 30-day tri
 msgstr ""
 
 msgid "Trial|Your GitLab Ultimate trial lasts for 30 days, but you can keep your free GitLab account forever. We just need some additional information to activate your trial."
+msgstr ""
+
+msgid "Trial|Your combined Ultimate and GitLab Duo Enterprise trial lasts for 60 days. We just need some additional information to activate it."
 msgstr ""
 
 msgid "Trigger"

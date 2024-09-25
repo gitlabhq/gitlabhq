@@ -47,7 +47,7 @@
       %tbody
         %tr{ style: 'width:100%;' }
           %td{ style: "#{default_style}text-align:center;" }
-            - password_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_url('user/profile/user_passwords', anchor: 'change-your-password') }
+            - password_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_url('user/profile/user_passwords.md', anchor: 'change-your-password') }
             = _('If you recently signed in and recognize the IP address, you may disregard this email.')
 
             - if password_authentication_enabled_for_web?
@@ -57,6 +57,6 @@
 
             - unless @user.two_factor_enabled?
               %p
-                - mfa_url = help_page_url('user/profile/account/two_factor_authentication')
+                - mfa_url = help_page_url('user/profile/account/two_factor_authentication.md')
                 - mfa_link_start = '<a href="%{url}" target="_blank">'.html_safe % { url: mfa_url }
                 = _('To further protect your account, consider configuring a %{mfa_link_start}two-factor authentication%{mfa_link_end} method.').html_safe % { mfa_link_start: mfa_link_start, mfa_link_end: '</a>'.html_safe }
