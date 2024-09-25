@@ -12,6 +12,14 @@ RSpec.describe DeploymentMetrics do
       it { is_expected.to be_falsy }
     end
 
+    context 'when deployment is nil' do
+      let_it_be(:project) { create(:project) }
+
+      subject { described_class.new(project, nil).has_metrics? }
+
+      it { is_expected.to be_falsy }
+    end
+
     context 'when deployment is success' do
       let(:deployment) { create(:deployment, :success) }
 

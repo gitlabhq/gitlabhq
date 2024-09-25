@@ -137,7 +137,7 @@ export const I18N_MAX_WORK_ITEMS_ERROR_MESSAGE = sprintf(
   { MAX_WORK_ITEMS },
 );
 export const I18N_MAX_WORK_ITEMS_NOTE_LABEL = sprintf(
-  s__('WorkItem|Add a maximum of %{MAX_WORK_ITEMS} items at a time.'),
+  s__('WorkItem|Add up to %{MAX_WORK_ITEMS} items at a time.'),
   { MAX_WORK_ITEMS },
 );
 

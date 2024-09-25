@@ -61902,13 +61902,13 @@ msgstr ""
 msgid "WorkItem|Add %{workItemType}s"
 msgstr ""
 
-msgid "WorkItem|Add a maximum of %{MAX_WORK_ITEMS} items at a time."
-msgstr ""
-
 msgid "WorkItem|Add a title"
 msgstr ""
 
 msgid "WorkItem|Add a to do"
+msgstr ""
+
+msgid "WorkItem|Add up to %{MAX_WORK_ITEMS} items at a time."
 msgstr ""
 
 msgid "WorkItem|All activity"
