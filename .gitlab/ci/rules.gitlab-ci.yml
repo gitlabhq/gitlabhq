@@ -1122,6 +1122,9 @@
       when: never
     - <<: *if-not-ee
       when: never
+    # The security mirror doesn't use the package registry
+    - <<: *if-security-schedule
+      when: never
     # That would run for any project that has a "maintenance" pipeline schedule
     # but in fact, the cache package is only uploaded for gitlab.com/gitlab-org/gitlab and jihulab.com/gitlab-cn/gitlab
     - <<: *if-schedule-maintenance

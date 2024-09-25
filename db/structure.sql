@@ -2249,6 +2249,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_eff80ead42ac() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "ci_unit_tests"
+  WHERE "ci_unit_tests"."id" = NEW."unit_test_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_f6c61cdddf31() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -9020,7 +9036,8 @@ CREATE TABLE ci_unit_test_failures (
     failed_at timestamp with time zone NOT NULL,
     unit_test_id bigint NOT NULL,
     build_id bigint NOT NULL,
-    partition_id bigint NOT NULL
+    partition_id bigint NOT NULL,
+    project_id bigint
 );
 
 CREATE SEQUENCE ci_unit_test_failures_id_seq
@@ -28089,6 +28106,8 @@ CREATE INDEX index_ci_unit_test_failures_on_build_id ON ci_unit_test_failures US
 
 CREATE INDEX index_ci_unit_test_failures_on_partition_id_build_id ON ci_unit_test_failures USING btree (partition_id, build_id);
 
+CREATE INDEX index_ci_unit_test_failures_on_project_id ON ci_unit_test_failures USING btree (project_id);
+
 CREATE UNIQUE INDEX index_ci_unit_tests_on_project_id_and_key_hash ON ci_unit_tests USING btree (project_id, key_hash);
 
 CREATE INDEX index_ci_variables_on_key ON ci_variables USING btree (key);
@@ -33366,6 +33385,8 @@ CREATE TRIGGER trigger_e49ab4d904a0 BEFORE INSERT OR UPDATE ON vulnerability_fin
 CREATE TRIGGER trigger_ebab34f83f1d BEFORE INSERT OR UPDATE ON packages_debian_publications FOR EACH ROW EXECUTE FUNCTION trigger_ebab34f83f1d();
 
 CREATE TRIGGER trigger_ec1934755627 BEFORE INSERT OR UPDATE ON alert_management_alert_metric_images FOR EACH ROW EXECUTE FUNCTION trigger_ec1934755627();
+
+CREATE TRIGGER trigger_eff80ead42ac BEFORE INSERT OR UPDATE ON ci_unit_test_failures FOR EACH ROW EXECUTE FUNCTION trigger_eff80ead42ac();
 
 CREATE TRIGGER trigger_f6c61cdddf31 BEFORE INSERT OR UPDATE ON ml_model_metadata FOR EACH ROW EXECUTE FUNCTION trigger_f6c61cdddf31();
 

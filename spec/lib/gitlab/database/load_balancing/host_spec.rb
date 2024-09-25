@@ -463,8 +463,11 @@ RSpec.describe Gitlab::Database::LoadBalancing::Host, feature_category: :databas
         duration = Benchmark.realtime do
           expect(host.replication_lag_time).to be_nil
         end
-
-        expect(duration).to be < (0.2)
+        # This should ideally be roughly < 0.2, since we're setting a 100ms timeout in
+        # query_and_release_fast_timeout, but sometimes in CI the network is exceptionally slow and this flakes.
+        # Set it to a really large number, but still less than the 5 seconds from pg_sleep(5) to prove that the
+        # statement was cancelled.
+        expect(duration).to be < (4)
       end
     end
 

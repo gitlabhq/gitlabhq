@@ -1,0 +1,12 @@
+#import "ee_else_ce/graphql_shared/fragments/project.fragment.graphql"
+
+query getStarredProjects {
+  currentUser {
+    id
+    starredProjects {
+      nodes {
+        ...Project
+      }
+    }
+  }
+}

@@ -5,20 +5,18 @@ description: Seat assignment, GitLab Duo add-on
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Subscription add-ons
+# GitLab Duo add-ons
 
 DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-You can purchase subscription add-ons to give users in your organization access to more GitLab features.
-Subscription add-ons are purchased as additional seats in your subscription.
-Access to features provided by subscription add-ons is managed through seat assignment. Subscription
-add-ons can be assigned to billable users only.
+You can purchase GitLab Duo seats to give users in your organization access to more GitLab features. GitLab Duo is only available for Premium and Ultimate customers.
+Access to features provided by GitLab Duo is managed through seat assignment. GitLab Duo can be assigned to any user in your group namespace or instance.
 
 ## Purchase GitLab Duo seats
 
-You can purchase additional GitLab Duo Pro or GitLab Duo Enterprise seats for your group namespace or self-managed instance. After you complete the purchase, you must assign the seats to billable users so that they can use GitLab Duo.
+You can purchase additional GitLab Duo Pro or GitLab Duo Enterprise seats for your group namespace or self-managed instance. After you complete the purchase, you must assign the seats to users so that they can use GitLab Duo.
 
 To purchase GitLab Duo Pro seats, you can use the Customers Portal, or you can contact the [GitLab Sales team](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/). To purchase GitLab Duo Enterprise, contact the [GitLab Sales team](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/).
 
@@ -39,7 +37,7 @@ Prerequisites:
   - The GitLab Duo Pro add-on is available in GitLab 16.8 and later.
   - The GitLab Duo Enterprise add-on is only available in GitLab 17.3 and later.
 
-After you purchase GitLab Duo, you can assign seats to billable users to grant access to the add-on.
+After you purchase GitLab Duo, you can assign seats to users to grant access to the add-on.
 
 ### For GitLab.com
 

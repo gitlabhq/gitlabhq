@@ -839,7 +839,7 @@ lib/gitlab/checks/**
 /doc/api/snippet_repository_storage_moves.md @brendan777
 /doc/api/snippets.md @brendan777
 /doc/api/statistics.md @jglassman1
-/doc/api/status_checks.md @rdickenson
+/doc/api/status_checks.md @rlehmann1
 /doc/api/suggestions.md @brendan777
 /doc/api/system_hooks.md @ashrafkhamis
 /doc/api/tags.md @brendan777
@@ -912,8 +912,8 @@ lib/gitlab/checks/**
 /doc/development/observability/ @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/development/omnibus.md @gitlab-org/distribution
 /doc/development/organization/ @abdwdd @alexpooley @manojmj
-/doc/development/permissions.md @gitlab-org/govern/authorization/approvers
-/doc/development/permissions/ @gitlab-org/govern/authorization/approvers
+/doc/development/permissions.md @rlehmann1
+/doc/development/permissions/ @rlehmann1
 /doc/development/pipelines/ @gl-quality/eng-prod
 /doc/development/policies.md @gitlab-org/govern/authentication/approvers
 /doc/development/search/ @gitlab-org/search-team/migration-maintainers
@@ -978,8 +978,8 @@ lib/gitlab/checks/**
 /doc/tutorials/product_analytics_onboarding_website_project/ @lciutacu
 /doc/tutorials/protected_workflow/ @aqualls
 /doc/tutorials/reviews/ @aqualls
-/doc/tutorials/scan_execution_policy/ @rdickenson
-/doc/tutorials/scan_result_policy/ @rdickenson
+/doc/tutorials/scan_execution_policy/ @rlehmann1
+/doc/tutorials/scan_result_policy/ @rlehmann1
 /doc/tutorials/scrum_events/ @msedlakjakubowski
 /doc/tutorials/setup_steps/ @rsarangadharan
 /doc/tutorials/update_commit_messages/ @brendan777
@@ -990,7 +990,7 @@ lib/gitlab/checks/**
 /doc/user/analytics/ci_cd_analytics.md @phillipwells
 /doc/user/application_security/ @rdickenson @phillipwells
 /doc/user/application_security/cve_id_request.md @rdickenson
-/doc/user/application_security/policies/ @rdickenson
+/doc/user/application_security/policies/ @rlehmann1
 /doc/user/application_security/secret_detection/ @rdickenson
 /doc/user/application_security/security_dashboard/ @rdickenson
 /doc/user/application_security/vulnerabilities/ @rdickenson
@@ -998,7 +998,7 @@ lib/gitlab/checks/**
 /doc/user/asciidoc.md @brendan777
 /doc/user/clusters/ @phillipwells
 /doc/user/compliance/ @eread
-/doc/user/compliance/license_approval_policies.md @rdickenson
+/doc/user/compliance/license_approval_policies.md @rlehmann1
 /doc/user/compliance/license_scanning_of_cyclonedx_files/ @rdickenson @phillipwells
 /doc/user/crm/ @msedlakjakubowski
 /doc/user/discussions/ @aqualls
@@ -1091,7 +1091,7 @@ lib/gitlab/checks/**
 /doc/user/project/merge_requests/methods/ @brendan777
 /doc/user/project/merge_requests/reviews/data_usage.md @sselhorn @jglassman1 @fneill
 /doc/user/project/merge_requests/squash_and_merge.md @brendan777
-/doc/user/project/merge_requests/status_checks.md @rdickenson
+/doc/user/project/merge_requests/status_checks.md @rlehmann1
 /doc/user/project/milestones/ @msedlakjakubowski
 /doc/user/project/ml/experiment_tracking/ @sselhorn @jglassman1 @fneill
 /doc/user/project/ml/model_registry/ @sselhorn @jglassman1 @fneill

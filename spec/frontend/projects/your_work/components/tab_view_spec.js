@@ -4,15 +4,22 @@ import VueApollo from 'vue-apollo';
 import personalProjectsGraphQlResponse from 'test_fixtures/graphql/projects/your_work/personal_projects.query.graphql.json';
 import membershipProjectsGraphQlResponse from 'test_fixtures/graphql/projects/your_work/membership_projects.query.graphql.json';
 import contributedProjectsGraphQlResponse from 'test_fixtures/graphql/projects/your_work/contributed_projects.query.graphql.json';
+import starredProjectsGraphQlResponse from 'test_fixtures/graphql/projects/your_work/starred_projects.query.graphql.json';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import TabView from '~/projects/your_work/components/tab_view.vue';
 import ProjectsList from '~/vue_shared/components/projects_list/projects_list.vue';
 import contributedProjectsQuery from '~/projects/your_work/graphql/queries/contributed_projects.query.graphql';
 import personalProjectsQuery from '~/projects/your_work/graphql/queries/personal_projects.query.graphql';
 import membershipProjectsQuery from '~/projects/your_work/graphql/queries/membership_projects.query.graphql';
+import starredProjectsQuery from '~/projects/your_work/graphql/queries/starred_projects.query.graphql';
 import { formatGraphQLProjects } from '~/vue_shared/components/projects_list/utils';
 import { createAlert } from '~/alert';
-import { CONTRIBUTED_TAB, PERSONAL_TAB, MEMBER_TAB } from '~/projects/your_work/constants';
+import {
+  CONTRIBUTED_TAB,
+  PERSONAL_TAB,
+  MEMBER_TAB,
+  STARRED_TAB,
+} from '~/projects/your_work/constants';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 
@@ -44,6 +51,7 @@ describe('TabView', () => {
     ${CONTRIBUTED_TAB} | ${[contributedProjectsQuery, jest.fn().mockResolvedValue(contributedProjectsGraphQlResponse)]} | ${contributedProjectsGraphQlResponse.data.currentUser.contributedProjects.nodes}
     ${PERSONAL_TAB}    | ${[personalProjectsQuery, jest.fn().mockResolvedValue(personalProjectsGraphQlResponse)]}       | ${personalProjectsGraphQlResponse.data.projects.nodes}
     ${MEMBER_TAB}      | ${[membershipProjectsQuery, jest.fn().mockResolvedValue(membershipProjectsGraphQlResponse)]}   | ${membershipProjectsGraphQlResponse.data.projects.nodes}
+    ${STARRED_TAB}     | ${[starredProjectsQuery, jest.fn().mockResolvedValue(starredProjectsGraphQlResponse)]}         | ${starredProjectsGraphQlResponse.data.currentUser.starredProjects.nodes}
   `('onMount when route name is $tab.value', ({ tab, handler, expectedProjects }) => {
     describe('when GraphQL request is loading', () => {
       beforeEach(() => {
