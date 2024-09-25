@@ -51,7 +51,7 @@ describe('issue_note_body component', () => {
   });
 
   it('should render the note', () => {
-    expect(wrapper.find('.note-text').html()).toContain(note.note_html);
+    expect(wrapper.text()).toBe(note.note);
   });
 
   it('should render awards list', () => {

@@ -178,6 +178,7 @@ before in a separate merge request, before completing the below.
 | Field | Required | Description |
 | ----- | -------- |--------------|
 | `name` | yes     | Unique, lowercase and underscored name describing the custom ability. Must match the filename. |
+| `title` | yes | Human-readable title of the custom ability. |
 | `description` | yes | Human-readable description of the custom ability. |
 | `feature_category` | yes | Name of the feature category. For example, `vulnerability_management`. |
 | `introduced_by_issue` | yes | Issue URL that proposed the addition of this custom ability. |

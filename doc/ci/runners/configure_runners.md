@@ -146,7 +146,7 @@ a runner and submit false jobs in a vector attack. For more information, see [Se
 
 To reduce job queueing times and load on your GitLab server, configure [long polling](long_polling.md).
 
-### Using instance runners in forked projects
+## Using instance runners in forked projects
 
 When a project is forked, the job settings related to jobs are copied. If you have instance runners
 configured for a project and a user forks that project, the instance runners serve jobs of this project.
@@ -160,7 +160,7 @@ To work around this issue, ensure that the instance runner settings are consiste
 - If instance runners are **enabled** on the forked project, then this should also be **enabled** on the new namespace.
 - If instance runners are **disabled** on the forked project, then this should also be **disabled** on the new namespace.
 
-### Reset the runner registration token for a project (deprecated)
+## Reset the runner registration token for a project (deprecated)
 
 WARNING:
 The ability to pass a runner registration token, and support for certain configuration arguments was
