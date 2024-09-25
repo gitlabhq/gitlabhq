@@ -22,17 +22,3 @@
     color: var(--gl-text-color-default);
   }
 }
-
-.pipeline-info {
-  .status-icon-container {
-    display: inline-block;
-    vertical-align: middle;
-    margin-right: 3px;
-
-    svg {
-      display: block;
-      width: 22px;
-      height: 22px;
-    }
-  }
-}

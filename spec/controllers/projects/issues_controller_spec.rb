@@ -1870,6 +1870,16 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
             get :discussions, params: { namespace_id: project.namespace, project_id: project, id: issue.iid }
           end.not_to exceed_query_limit(control)
         end
+
+        context 'when reference is invalid' do
+          let(:cross_reference) { "mentioned in some/invalid/project#123" }
+
+          it 'does not include the system note' do
+            get :discussions, params: { namespace_id: project.namespace, project_id: project, id: issue.iid }
+
+            expect(json_response.count).to eq(1)
+          end
+        end
       end
 
       context 'private project' do

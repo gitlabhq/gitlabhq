@@ -2,6 +2,19 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 17.4.1 (2024-09-24)
+
+### Fixed (2 changes)
+
+- [Fix incorrect gitlab-shell-check filename](https://gitlab.com/gitlab-org/security/gitlab/-/commit/27d061512878b35507d1228188f33774193c90d4)
+- [Check commit message for issue close pattern setting](https://gitlab.com/gitlab-org/security/gitlab/-/commit/6f475e9255dcb23478ae1401320d4bf74d2523b0)
+
+### Security (3 changes)
+
+- [Implement input sanitization for SummarizeComments](https://gitlab.com/gitlab-org/security/gitlab/-/commit/907bbbae5d84d2505bc9aeaaa2276a9d6662014b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4474))
+- [Hide system notes with invalid references](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f349ddc9dcff2e5a7d9c496a86ce8a5b8f2192f3) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4482))
+- [Reset dependency proxy maven credentials when registry url is changed](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7770dcc609ec9fe6f51ba36cbc085c1ab97a6560) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4472))
+
 ## 17.4.0 (2024-09-18)
 
 ### Added (202 changes)
@@ -859,6 +872,14 @@ entry.
 
 - [Update learn more link and docs formatting](https://gitlab.com/gitlab-org/gitlab/-/commit/6f536fdb20c2d2b96124afe693042c91483a32b2) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164889))
 
+## 17.3.4 (2024-09-24)
+
+### Security (3 changes)
+
+- [Implement input sanitization for SummarizeComments](https://gitlab.com/gitlab-org/security/gitlab/-/commit/034f25d7a760c8027f3c7426ca57ee49459f866f) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4411))
+- [Hide system notes with invalid references](https://gitlab.com/gitlab-org/security/gitlab/-/commit/484a80474d1f262b45923de365e288140605333e) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4483))
+- [Reset dependency proxy maven credentials when registry url is changed](https://gitlab.com/gitlab-org/security/gitlab/-/commit/74a4ae92cbb1e74e9e1e6858d6d3b0cf9daa4d09) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4458))
+
 ## 17.3.3 (2024-09-16)
 
 No changes.
@@ -1640,6 +1661,14 @@ No changes.
 - [Protected packages: Cleanup renaming of protected_up_to_access_level](https://gitlab.com/gitlab-org/gitlab/-/commit/c84c1efb2b0d204765ba121e9ad523d44fdb3712) by @gerardo-navarro ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146173))
 - [Dynamically gets the column type for assertion](https://gitlab.com/gitlab-org/gitlab/-/commit/1389a3daffd104925cce71776903cbf527723222) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159099))
 - [Quarantine a flaky test](https://gitlab.com/gitlab-org/gitlab/-/commit/c94fca35b909440ec66ea35c97ab11aa847dde58) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158180))
+
+## 17.2.8 (2024-09-24)
+
+### Security (3 changes)
+
+- [Implement input sanitization for SummarizeComments](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4bed1f854c5c7014d7486cc404a5da5321c27070) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4412))
+- [Hide system notes with invalid references](https://gitlab.com/gitlab-org/security/gitlab/-/commit/884df0d68bb3f3f2a2029b2851d202949780dd3b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4484))
+- [Reset dependency proxy maven credentials when registry url is changed](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c43c6ab51a2005958414062c23d5d017a9cba57d) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4459))
 
 ## 17.2.7 (2024-09-16)
 

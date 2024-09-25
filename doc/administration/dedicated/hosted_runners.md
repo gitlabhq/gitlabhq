@@ -15,7 +15,7 @@ DETAILS:
 > - [Introduced](https://about.gitlab.com/blog/2024/01/31/hosted-runners-for-gitlab-dedicated-available-in-beta/) as [beta](../../policy/experiment-beta-support.md#beta) on GitLab Dedicated in GitLab on January 31, 2024.
 
 NOTE:
-To use this feature, you must [purchase a subscription](../../subscriptions/subscription-add-ons.md) for Hosted Runners for GitLab Dedicated. To participate in the closed beta of Hosted Runners for Dedicated, reach out to your Customer Success Manager or Account representative.
+To use this feature, you must purchase a subscription for Hosted Runners for GitLab Dedicated. To participate in the closed beta of Hosted Runners for Dedicated, reach out to your Customer Success Manager or Account representative.
 
 You can run your CI/CD jobs on GitLab-hosted [runners](../../ci/runners/index.md). These runners are managed by GitLab and fully integrated with your GitLab Dedicated instance.
 GitLab-hosted runners for Dedicated are autoscaling [instance runners](../../ci/runners/runners_scope.md#instance-runners),

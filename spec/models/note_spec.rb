@@ -973,16 +973,16 @@ RSpec.describe Note, feature_category: :team_planning do
         create :note, noteable: ext_issue, project: ext_proj, note: "mentioned in merge request !1", system: true
       end
 
-      it "returns true for other users" do
-        expect(note.system_note_visible_for?(private_user)).to be_truthy
+      it "returns false" do
+        expect(note.system_note_visible_for?(private_user)).to be_falsey
       end
 
-      it "returns true if user visible reference count set" do
+      it "returns false if user visible reference count set" do
         note.user_visible_reference_count = 0
         note.total_reference_count = 0
 
         expect(note).not_to receive(:reference_mentionables)
-        expect(note.system_note_visible_for?(ext_issue.author)).to be_truthy
+        expect(note.system_note_visible_for?(ext_issue.author)).to be_falsey
       end
     end
   end

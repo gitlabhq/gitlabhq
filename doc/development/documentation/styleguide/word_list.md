@@ -1621,14 +1621,16 @@ Instead of:
 
 Put the word **only** next to the word it modifies.
 
+In the following example, **only** modifies the noun **projects**.
+The meaning is that you can create one type of project--a private project.
+
 - You can create only private projects.
 
-In this example, **only** modifies the noun **projects**. The sentence means you can create one type of project--a private project.
+In the following example, **only** modifies the verb **create**.
+The meaning is that you can't perform other actions,
+like deleting private projects, or adding users to them.
 
 - You can only create private projects.
-
-In this example, **only** modifies the verb **create**. This sentence means that you can't perform other actions,
-like deleting private projects, or adding users to them.
 
 ## override
 
