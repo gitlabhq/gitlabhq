@@ -4562,7 +4562,6 @@ Layout/LineLength:
     - 'spec/views/notify/push_to_merge_request_email.text.haml_spec.rb'
     - 'spec/views/projects/commits/_commit.html.haml_spec.rb'
     - 'spec/views/projects/imports/new.html.haml_spec.rb'
-    - 'spec/views/projects/jobs/_build.html.haml_spec.rb'
     - 'spec/views/projects/jobs/_generic_commit_status.html.haml_spec.rb'
     - 'spec/views/projects/merge_requests/creations/_new_submit.html.haml_spec.rb'
     - 'spec/views/projects/pages_domains/show.html.haml_spec.rb'

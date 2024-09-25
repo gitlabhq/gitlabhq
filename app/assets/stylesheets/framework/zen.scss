@@ -27,8 +27,6 @@
 
     .zen-control-leave {
       display: block;
-      position: absolute;
-      top: 0;
     }
   }
 }
@@ -42,13 +40,6 @@
 
 .zen-control-leave {
   display: none;
-  color: $gl-text-color;
   position: absolute;
-  right: 10px;
-  padding: 5px;
-  font-size: 36px;
-
-  &:hover {
-    color: $black;
-  }
+  @apply gl-right-3 gl-top-3 gl-leading-0 sm:gl-p-3 sm:gl-text-base #{!important};
 }

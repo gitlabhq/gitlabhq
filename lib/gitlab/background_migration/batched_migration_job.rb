@@ -6,7 +6,7 @@ module Gitlab
     # method as the entry point for the job's execution.
     #
     # Job arguments needed must be defined explicitly,
-    # see https://docs.gitlab.com/ee/development/database/batched_background_migrations.html#job-arguments.
+    # see https://docs.gitlab.com/ee/development/database/batched_background_migrations.html#use-job-arguments.
     # rubocop:disable Metrics/ClassLength
     # rubocop:disable Metrics/ParameterLists
     class BatchedMigrationJob

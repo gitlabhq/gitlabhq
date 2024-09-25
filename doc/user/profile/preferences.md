@@ -400,17 +400,21 @@ You must be the administrator of the GitLab instance to configure GitLab with So
 
 ### Integrate with the extension marketplace
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151352) in GitLab 17.0 [with flags](../../administration/feature_flags.md) named `web_ide_oauth` and `web_ide_extensions_marketplace`. Disabled by default.
+DETAILS:
+**Offering:** GitLab.com
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151352) as a [beta](../../policy/experiment-beta-support.md#beta) in GitLab 17.0 [with flags](../../administration/feature_flags.md) named `web_ide_oauth` and `web_ide_extensions_marketplace`. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/11769) in GitLab 17.4.
 
 FLAG:
 The availability of this feature is controlled by feature flags.
 For more information, see the history.
 
-You can use the [extension marketplace](../project/web_ide/index.md#extension-marketplace)
-to search and manage extensions for the Web IDE.
+You can use the [extension marketplace](../project/web_ide/index.md#extension-marketplace) to search and
+manage extensions for the [Web IDE](../project/web_ide/index.md) and [workspaces](../workspace/index.md).
 For third-party extensions, you must enable the marketplace in user preferences.
 
-To enable the extension marketplace for the Web IDE:
+To enable the extension marketplace for the Web IDE and workspaces:
 
 1. On the left sidebar, select your avatar.
 1. Select **Preferences**.

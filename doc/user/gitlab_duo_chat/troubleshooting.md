@@ -68,7 +68,7 @@ You might get an error that states
 
 This error occurs when you try to access a tool of GitLab Duo Chat that is not bundled in your GitLab Duo subscription tier.
 
-Ensure your [GitLab Duo subscription tier](https://about.gitlab.com/gitlab-duo/) includes the selected tool.
+Ensure your [GitLab Duo subscription tier](https://about.gitlab.com/gitlab-duo/#pricing) includes the selected tool.
 
 ## `Error M4000`
 

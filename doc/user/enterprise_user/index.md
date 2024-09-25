@@ -193,16 +193,18 @@ To disable 2FA:
 
 ### Enable the extension marketplace for the Web IDE and workspaces
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161819) in GitLab 17.4 [with flags](../../administration/feature_flags.md) named `web_ide_oauth` and `web_ide_extensions_marketplace`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161819) as a [beta](../../policy/experiment-beta-support.md#beta) in GitLab 17.0 [with flags](../../administration/feature_flags.md) named `web_ide_oauth` and `web_ide_extensions_marketplace`. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/11769) in GitLab 17.4.
 
 FLAG:
 The availability of this feature is controlled by feature flags.
 For more information, see the history.
 
-If you have the Owner role for a top-level group, you can
-enable the extension marketplace for enterprise users.
+If you have the Owner role for a top-level group, you can enable the
+[extension marketplace](../project/web_ide/index.md#extension-marketplace) for enterprise users.
 
-To enable the extension marketplace for the Web IDE and workspaces:
+To enable the extension marketplace for the
+[Web IDE](../project/web_ide/index.md) and [workspaces](../workspace/index.md):
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.

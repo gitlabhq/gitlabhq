@@ -11,19 +11,46 @@ module Resolvers
       authorize :read_ci_cd_analytics
       extras [:lookahead]
 
-      STATUS_GROUPS = %i[success failed other].freeze
+      alias_method :project, :object
 
-      def resolve(lookahead: nil)
-        weekly_stats = Gitlab::Ci::Charts::WeekChart.new(object, selected_statuses(lookahead, :week))
-        monthly_stats = Gitlab::Ci::Charts::MonthChart.new(object, selected_statuses(lookahead, :month))
-        yearly_stats = Gitlab::Ci::Charts::YearChart.new(object, selected_statuses(lookahead, :year))
+      argument :from_time, Types::TimeType,
+        required: false,
+        description: 'Start of the requested time frame. Defaults to the pipelines started in the past week.',
+        alpha: { milestone: '17.5' }
 
-        result = {
-          week_pipelines: weekly_stats,
-          month_pipelines: monthly_stats,
-          year_pipelines: yearly_stats
-        }
+      argument :to_time, Types::TimeType,
+        required: false,
+        description: 'End of the requested time frame. Defaults to pipelines started before the current date.',
+        alpha: { milestone: '17.5' }
 
+      def resolve(lookahead:, from_time: nil, to_time: nil)
+        result = legacy_fields(lookahead)
+
+        if any_field_selected?(lookahead, :aggregate)
+          response =
+            ::Ci::CollectPipelineAnalyticsService.new(
+              current_user: context[:current_user], project: project, from_time: from_time, to_time: to_time,
+              status_groups: selected_status_groups(lookahead)
+            ).execute
+
+          raise_resource_not_available_error! response.message if response.error?
+
+          result[:aggregate] = response.payload[:aggregate]
+        end
+
+        result
+      end
+
+      private
+
+      def legacy_fields(lookahead)
+        # NOTE: The fields below will eventually be deprecated once we move to using the new `aggregate`
+        # and `graph` fields (see https://gitlab.com/gitlab-org/gitlab/-/issues/444468/#proposed-api-layout)
+        weekly_stats = Gitlab::Ci::Charts::WeekChart.new(project, selected_period_statuses(lookahead, :week))
+        monthly_stats = Gitlab::Ci::Charts::MonthChart.new(project, selected_period_statuses(lookahead, :month))
+        yearly_stats = Gitlab::Ci::Charts::YearChart.new(project, selected_period_statuses(lookahead, :year))
+
+        result = {}
         if any_field_selected?(lookahead, :week_pipelines_labels, :week_pipelines_totals, :week_pipelines_successful)
           result.merge!(
             week_pipelines_labels: weekly_stats.labels,
@@ -46,7 +73,7 @@ module Resolvers
         end
 
         if any_field_selected?(lookahead, :pipeline_times_labels, :pipeline_times_values)
-          pipeline_times = Gitlab::Ci::Charts::PipelineTime.new(object, [])
+          pipeline_times = Gitlab::Ci::Charts::PipelineTime.new(project, [])
           result.merge!(
             pipeline_times_labels: pipeline_times.labels,
             pipeline_times_values: pipeline_times.pipeline_times)
@@ -55,20 +82,28 @@ module Resolvers
         result
       end
 
-      private
-
       def any_field_selected?(lookahead, *fields)
         fields.any? { |field| lookahead&.selects?(field) }
       end
 
-      def selected_statuses(lookahead, period)
-        selected = []
-        return selected unless lookahead
+      def selected_status_groups(lookahead)
+        return [] unless lookahead
 
-        selected << :success if lookahead.selects?(:"#{period}_pipelines_successful")
-        selected += STATUS_GROUPS.filter do |status|
+        selection = ::Ci::CollectPipelineAnalyticsService::STATUS_GROUPS.filter do |status|
+          lookahead.selection(:aggregate).selects?(:count, arguments: { status: status })
+        end
+        selection << :all if lookahead.selection(:aggregate).selects?(:count, arguments: nil)
+
+        selection
+      end
+
+      def selected_period_statuses(lookahead, period)
+        return [] unless lookahead
+
+        selected = ::Ci::CollectPipelineAnalyticsService::STATUS_GROUPS.filter do |status|
           lookahead.selection(:"#{period}_pipelines").selects?(:totals, arguments: { status: status })
         end
+        selected << :success if lookahead.selects?(:"#{period}_pipelines_successful")
 
         selected.sort.uniq
       end

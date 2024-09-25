@@ -107,19 +107,14 @@ describe('list item', () => {
         const tooltip = getBinding(findToggleDetailsButton().element, 'gl-tooltip');
 
         expect(tooltip).toBeDefined();
-        expect(findToggleDetailsButton().attributes('title')).toBe(
-          component.i18n.toggleDetailsLabel,
-        );
+        expect(findToggleDetailsButton().attributes('title')).toBe('Show details');
       });
 
       it('has correct attributes and props', () => {
-        expect(findToggleDetailsButton().props()).toMatchObject({
-          selected: false,
-        });
-
         expect(findToggleDetailsButton().attributes()).toMatchObject({
-          title: component.i18n.toggleDetailsLabel,
-          'aria-label': component.i18n.toggleDetailsLabel,
+          'aria-label': 'Show details',
+          icon: 'chevron-down',
+          title: 'Show details',
         });
       });
 
@@ -127,14 +122,11 @@ describe('list item', () => {
         findToggleDetailsButton().vm.$emit('click');
         await nextTick();
 
-        expect(findToggleDetailsButton().props()).toMatchObject({
-          selected: true,
-        });
-
         expect(findToggleDetailsButton().attributes()).toMatchObject({
-          title: component.i18n.toggleDetailsLabel,
-          'aria-label': component.i18n.toggleDetailsLabel,
           'aria-expanded': 'true',
+          'aria-label': 'Hide details',
+          icon: 'chevron-up',
+          title: 'Hide details',
         });
       });
     });

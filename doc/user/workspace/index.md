@@ -191,13 +191,17 @@ For more information, see [GitLab Workflow extension for VS Code](https://gitlab
 
 ## Extension marketplace
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438491) in GitLab 16.9 [with a flag](../../administration/feature_flags.md) named `allow_extensions_marketplace_in_workspace`. Disabled by default.
+DETAILS:
+**Status:** Beta
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438491) as a [beta](../../policy/experiment-beta-support.md#beta) in GitLab 16.9 [with a flag](../../administration/feature_flags.md) named `allow_extensions_marketplace_in_workspace`. Disabled by default.
 
 FLAG:
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
 
-When `allow_extensions_marketplace_in_workspace` is enabled, you can use the extension marketplace in workspaces.
+When `allow_extensions_marketplace_in_workspace` is enabled, you can use the
+[extension marketplace](../project/web_ide/index.md#extension-marketplace) in workspaces.
 An administrator can enable or disable the flag for top-level groups only.
 
 The extension marketplace connects to the [Open VSX Registry](https://open-vsx.org/).

@@ -29109,17 +29109,15 @@ Returns [`TestSuite`](#testsuite).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="pipelineanalyticsmonthpipelines"></a>`monthPipelines` **{warning-solid}** | [`PipelineAnalyticsPeriod`](#pipelineanalyticsperiod) | **Introduced** in GitLab 17.2. **Status**: Experiment. Pipeline analytics for the last month. |
+| <a id="pipelineanalyticsaggregate"></a>`aggregate` **{warning-solid}** | [`PipelineAnalyticsPeriod`](#pipelineanalyticsperiod) | **Introduced** in GitLab 17.5. **Status**: Experiment. Pipeline analytics for the specified filter. |
 | <a id="pipelineanalyticsmonthpipelineslabels"></a>`monthPipelinesLabels` | [`[String!]`](#string) | Labels for the monthly pipeline count. |
 | <a id="pipelineanalyticsmonthpipelinessuccessful"></a>`monthPipelinesSuccessful` | [`[Int!]`](#int) | Total monthly successful pipeline count. |
 | <a id="pipelineanalyticsmonthpipelinestotals"></a>`monthPipelinesTotals` | [`[Int!]`](#int) | Total monthly pipeline count. |
 | <a id="pipelineanalyticspipelinetimeslabels"></a>`pipelineTimesLabels` | [`[String!]`](#string) | Pipeline times labels. |
 | <a id="pipelineanalyticspipelinetimesvalues"></a>`pipelineTimesValues` | [`[Int!]`](#int) | Pipeline times. |
-| <a id="pipelineanalyticsweekpipelines"></a>`weekPipelines` **{warning-solid}** | [`PipelineAnalyticsPeriod`](#pipelineanalyticsperiod) | **Introduced** in GitLab 17.2. **Status**: Experiment. Pipeline analytics for the last week. |
 | <a id="pipelineanalyticsweekpipelineslabels"></a>`weekPipelinesLabels` | [`[String!]`](#string) | Labels for the weekly pipeline count. |
 | <a id="pipelineanalyticsweekpipelinessuccessful"></a>`weekPipelinesSuccessful` | [`[Int!]`](#int) | Total weekly successful pipeline count. |
 | <a id="pipelineanalyticsweekpipelinestotals"></a>`weekPipelinesTotals` | [`[Int!]`](#int) | Total weekly pipeline count. |
-| <a id="pipelineanalyticsyearpipelines"></a>`yearPipelines` **{warning-solid}** | [`PipelineAnalyticsPeriod`](#pipelineanalyticsperiod) | **Introduced** in GitLab 17.2. **Status**: Experiment. Pipeline analytics for the last year. |
 | <a id="pipelineanalyticsyearpipelineslabels"></a>`yearPipelinesLabels` | [`[String!]`](#string) | Labels for the yearly pipeline count. |
 | <a id="pipelineanalyticsyearpipelinessuccessful"></a>`yearPipelinesSuccessful` | [`[Int!]`](#int) | Total yearly successful pipeline count. |
 | <a id="pipelineanalyticsyearpipelinestotals"></a>`yearPipelinesTotals` | [`[Int!]`](#int) | Total yearly pipeline count. |
@@ -29130,21 +29128,25 @@ Returns [`TestSuite`](#testsuite).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="pipelineanalyticsperiodlabels"></a>`labels` | [`[String!]`](#string) | Labels for the pipeline count. |
+| <a id="pipelineanalyticsperiodlabel"></a>`label` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.5. **Status**: Experiment. Label for the data point. |
 
 #### Fields with arguments
 
-##### `PipelineAnalyticsPeriod.totals`
+##### `PipelineAnalyticsPeriod.count`
 
-Total pipeline count, optionally filtered by status.
+Pipeline count, optionally filtered by status.
 
-Returns [`[Int!]`](#int).
+DETAILS:
+**Introduced** in GitLab 17.5.
+**Status**: Experiment.
+
+Returns [`BigInt`](#bigint).
 
 ###### Arguments
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="pipelineanalyticsperiodtotalsstatus"></a>`status` | [`PipelineAnalyticsJobStatus`](#pipelineanalyticsjobstatus) | Filter totals by status. If not provided, the totals for all pipelines are returned. |
+| <a id="pipelineanalyticsperiodcountstatus"></a>`status` | [`PipelineAnalyticsJobStatus`](#pipelineanalyticsjobstatus) | Filter totals by status. If not provided, the totals for all pipelines are returned. |
 
 ### `PipelineArtifactRegistry`
 
@@ -29575,7 +29577,6 @@ Project-level settings for product analytics provider.
 | <a id="projectpathlocks"></a>`pathLocks` | [`PathLockConnection`](#pathlockconnection) | The project's path locks. (see [Connections](#connections)) |
 | <a id="projectpendingmemberapprovals"></a>`pendingMemberApprovals` **{warning-solid}** | [`MemberApprovalConnection`](#memberapprovalconnection) | **Introduced** in GitLab 17.3. **Status**: Experiment. Pending member promotions of the project. |
 | <a id="projectpermanentdeletiondate"></a>`permanentDeletionDate` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.11. **Status**: Experiment. Date when project will be deleted if delayed project deletion is enabled. |
-| <a id="projectpipelineanalytics"></a>`pipelineAnalytics` | [`PipelineAnalytics`](#pipelineanalytics) | Pipeline analytics. |
 | <a id="projectpipelinetriggers"></a>`pipelineTriggers` **{warning-solid}** | [`PipelineTriggerConnection`](#pipelinetriggerconnection) | **Introduced** in GitLab 16.3. **Status**: Experiment. List of pipeline trigger tokens. |
 | <a id="projectpreventmergewithoutjiraissueenabled"></a>`preventMergeWithoutJiraIssueEnabled` | [`Boolean!`](#boolean) | Indicates if an associated issue from Jira is required. |
 | <a id="projectprintingmergerequestlinkenabled"></a>`printingMergeRequestLinkEnabled` | [`Boolean`](#boolean) | Indicates if a link to create or view a merge request should display after a push to Git repositories of the project from the command line. |
@@ -30847,6 +30848,19 @@ Returns [`Pipeline`](#pipeline).
 | <a id="projectpipelineid"></a>`id` | [`CiPipelineID`](#cipipelineid) | Global ID of the Pipeline. For example, "gid://gitlab/Ci::Pipeline/314". |
 | <a id="projectpipelineiid"></a>`iid` | [`ID`](#id) | IID of the Pipeline. For example, "1". |
 | <a id="projectpipelinesha"></a>`sha` | [`String`](#string) | SHA of the Pipeline. For example, "dyd0f15ay83993f5ab66k927w28673882x99100b". |
+
+##### `Project.pipelineAnalytics`
+
+Pipeline analytics.
+
+Returns [`PipelineAnalytics`](#pipelineanalytics).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectpipelineanalyticsfromtime"></a>`fromTime` **{warning-solid}** | [`Time`](#time) | **Introduced** in GitLab 17.5. **Status**: Experiment. Start of the requested time frame. Defaults to the pipelines started in the past week. |
+| <a id="projectpipelineanalyticstotime"></a>`toTime` **{warning-solid}** | [`Time`](#time) | **Introduced** in GitLab 17.5. **Status**: Experiment. End of the requested time frame. Defaults to pipelines started before the current date. |
 
 ##### `Project.pipelineCounts`
 

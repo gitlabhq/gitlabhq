@@ -55,14 +55,15 @@ exports[`Snippet Description Edit component rendering matches the snapshot 1`] =
           </div>
         </div>
         <a
-          aria-label="Leave zen mode"
-          class="gl-text-gray-500 js-zen-leave zen-control zen-control-leave"
+          aria-label="Exit full screen"
+          class="btn-default-tertiary btn-icon btn-sm gl-button js-zen-leave zen-control zen-control-leave"
           href="#"
+          title="Exit full screen"
         >
           <gl-icon-stub
             name="minimize"
-            size="16"
-            variant="current"
+            size="24"
+            variant="subtle"
           />
         </a>
         <markdown-toolbar-stub

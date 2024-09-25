@@ -17993,9 +17993,6 @@ msgstr ""
 msgid "DelayedJobs|Are you sure you want to run %{jobName} immediately? Otherwise this job will run automatically after its timer finishes."
 msgstr ""
 
-msgid "DelayedJobs|Are you sure you want to run %{job_name} immediately? This job will run automatically after it's timer finishes."
-msgstr ""
-
 msgid "DelayedJobs|Are you sure you want to run %{job_name} immediately? This job will run automatically after its timer finishes."
 msgstr ""
 
@@ -18006,9 +18003,6 @@ msgid "DelayedJobs|Start now"
 msgstr ""
 
 msgid "DelayedJobs|Unschedule"
-msgstr ""
-
-msgid "DelayedJobs|delayed"
 msgstr ""
 
 msgid "Delete"
@@ -22380,6 +22374,9 @@ msgid "Existing projects may be moved into a group"
 msgstr ""
 
 msgid "Existing projects will be able to use cleanup policies. Avoid enabling this if an external Container Registry is being used, as there is a performance risk if many images exist on one project."
+msgstr ""
+
+msgid "Exit full screen"
 msgstr ""
 
 msgid "Expand"
@@ -30751,16 +30748,10 @@ msgstr ""
 msgid "Job has wrong arguments format."
 msgstr ""
 
-msgid "Job is stuck. Check runners."
-msgstr ""
-
 msgid "Job logs and artifacts"
 msgstr ""
 
 msgid "Job token permissions"
-msgstr ""
-
-msgid "Job was retried"
 msgstr ""
 
 msgid "JobAssistant|Add job"
@@ -31999,9 +31990,6 @@ msgid "Leave group"
 msgstr ""
 
 msgid "Leave project"
-msgstr ""
-
-msgid "Leave zen mode"
 msgstr ""
 
 msgid "Legacy Prometheus integrations cannot currently be removed"
@@ -57200,9 +57188,6 @@ msgstr ""
 msgid "Toggle commit list"
 msgstr ""
 
-msgid "Toggle details"
-msgstr ""
-
 msgid "Toggle emoji reaction"
 msgstr ""
 
@@ -63970,9 +63955,6 @@ msgstr ""
 msgid "all protected branches"
 msgstr ""
 
-msgid "allowed to fail"
-msgstr ""
-
 msgid "already assigned to an epic"
 msgstr ""
 
@@ -65116,9 +65098,6 @@ msgstr ""
 msgid "main"
 msgstr ""
 
-msgid "manual"
-msgstr ""
-
 msgid "math|Display anyway"
 msgstr ""
 
@@ -66135,9 +66114,6 @@ msgid "total must be less than or equal to %{size}"
 msgstr ""
 
 msgid "trigger token"
-msgstr ""
-
-msgid "triggered"
 msgstr ""
 
 msgid "two-factor authentication settings"

@@ -22,8 +22,16 @@ Automate tasks and help increase productivity in your development workflow by us
 GitLab Duo Workflow, as part of your IDE, takes the information you provide
 and uses AI to walk you through an implementation plan.
 
-For the first release, there is only one supported Workflow: write or update code to fix a broken pipeline on a merge request.
-You can do this from VS Code or by running a cURL command.
+GitLab Duo Workflow supports a wide variety of use cases. Here are a few examples:
+
+- Bootstrapping a new project
+- Writing tests
+- Fixing a failed pipeline
+- Implementing a proof of concept for an existing issue
+- Commenting on a Merge Request with suggestions
+- Optimize GitLab CI
+
+These are examples of known GitLab Duo Workflow that have successfully executed, but it can be used for many more use cases.
 
 ## Prerequisites
 
@@ -103,9 +111,6 @@ In addition, Duo Workflow has read-only access to:
 Duo Workflow has the following limitations:
 
 - No copy and paste functionality. For details, see [issue 380](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/issues/380).
-- Execution steps not displayed in UI.
-- Cannot push changes automatically.
-- Manual entry of merge request and project IDs required.
 - No theme support.
 - Project-specific workflow execution only.
 

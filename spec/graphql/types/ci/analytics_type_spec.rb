@@ -5,9 +5,7 @@ require 'spec_helper'
 RSpec.describe Types::Ci::AnalyticsType, feature_category: :fleet_visibility do
   it 'exposes the expected fields' do
     expected_fields = %i[
-      weekPipelines
-      monthPipelines
-      yearPipelines
+      aggregate
 
       weekPipelinesTotals
       weekPipelinesLabels

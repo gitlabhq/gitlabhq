@@ -6,12 +6,8 @@ module Types
     class AnalyticsType < BaseObject
       graphql_name 'PipelineAnalytics'
 
-      field :month_pipelines, Types::Ci::AnalyticsPeriodType, null: true,
-        description: 'Pipeline analytics for the last month.', alpha: { milestone: '17.2' }
-      field :week_pipelines, Types::Ci::AnalyticsPeriodType, null: true,
-        description: 'Pipeline analytics for the last week.', alpha: { milestone: '17.2' }
-      field :year_pipelines, Types::Ci::AnalyticsPeriodType, null: true,
-        description: 'Pipeline analytics for the last year.', alpha: { milestone: '17.2' }
+      field :aggregate, Types::Ci::AnalyticsPeriodType, null: true,
+        description: 'Pipeline analytics for the specified filter.', alpha: { milestone: '17.5' }
 
       field :month_pipelines_labels, [GraphQL::Types::String], null: true,
         description: 'Labels for the monthly pipeline count.'

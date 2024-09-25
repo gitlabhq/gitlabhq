@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Deploy a self-hosted large language model
 
 DETAILS:
-**Tier:** For a limited time, Premium and Ultimate. In the future, [GitLab Duo Enterprise](../../subscriptions/subscription-add-ons.md).
+**Tier:** For a limited time, Premium and Ultimate. On October 17, 2024, [GitLab Duo Enterprise](https://about.gitlab.com/gitlab-duo/#pricing).
 **Offering:** Self-managed
 **Status:** Beta
 
