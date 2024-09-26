@@ -1234,7 +1234,7 @@ class User < ApplicationRecord
   def unique_email
     email_taken = errors.added?(:email, _('has already been taken'))
 
-    if !email_taken && !emails.exists?(email: email) && Email.exists?(email: email)
+    if !email_taken && Email.where.not(user: self).where(email: email).exists?
       errors.add(:email, _('has already been taken'))
       email_taken = true
     end

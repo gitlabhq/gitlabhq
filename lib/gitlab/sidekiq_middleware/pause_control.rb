@@ -10,7 +10,8 @@ module Gitlab
       STRATEGIES = {
         click_house_migration: ::Gitlab::SidekiqMiddleware::PauseControl::Strategies::ClickHouseMigration,
         zoekt: ::Gitlab::SidekiqMiddleware::PauseControl::Strategies::Zoekt,
-        none: ::Gitlab::SidekiqMiddleware::PauseControl::Strategies::None
+        none: ::Gitlab::SidekiqMiddleware::PauseControl::Strategies::None,
+        deprecated: ::Gitlab::SidekiqMiddleware::PauseControl::Strategies::Deprecated
       }.freeze
 
       def self.for(name)

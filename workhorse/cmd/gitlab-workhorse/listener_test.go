@@ -67,7 +67,7 @@ func TestNewListener_TLS(t *testing.T) {
 
 	cfg := config.ListenerConfig{Addr: "127.0.0.1:0",
 		Network: "tcp",
-		Tls: &config.TLSConfig{
+		TLS: &config.TLSConfig{
 			Certificate: certFile,
 			Key:         keyFile,
 		},

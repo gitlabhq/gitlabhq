@@ -1,0 +1,36 @@
+# frozen_string_literal: true
+
+module QA
+  include Support::API
+
+  RSpec.shared_context 'Web IDE test prep' do
+    before do
+      Flow::Login.sign_in
+      project.visit!
+    end
+
+    after(:context) do
+      clear_settings_sync_data
+    end
+
+    def load_web_ide(file_name = 'README.md')
+      Page::Project::Show.perform(&:open_web_ide!)
+      Page::Project::WebIDE::VSCode.perform do |ide|
+        ide.wait_for_ide_to_load(file_name)
+      end
+    end
+
+    private
+
+    def clear_settings_sync_data
+      # why: since the same user is used to run QA tests, the Web IDE settings can grow significantly.
+      # For example: The Web IDE keeps track of recently opened files with no upper limit set.
+      # https://gitlab.com/gitlab-org/gitlab-web-ide/-/issues/389
+      token = Resource::PersonalAccessToken.fabricate!.token
+      url = "#{Runtime::Scenario.gitlab_address}/api/v4/vscode/settings_sync/v1/collection"
+      Support::API.delete(url, {
+        headers: { Authorization: "Bearer #{token}" }
+      })
+    end
+  end
+end

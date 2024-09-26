@@ -15,13 +15,13 @@ import (
 	redis "github.com/redis/go-redis/v9"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
-	_ "gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
 )
 
 var (
 	// found in https://github.com/redis/go-redis/blob/c7399b6a17d7d3e2a57654528af91349f2468529/sentinel.go#L626
-	errSentinelMasterAddr error = errors.New("redis: all sentinels specified in configuration are unreachable")
+	errSentinelMasterAddr = errors.New("redis: all sentinels specified in configuration are unreachable")
 
+	// TotalConnections tracks the total number of Redis connections opened by workhorse.
 	TotalConnections = promauto.NewCounter(
 		prometheus.CounterOpts{
 			Name: "gitlab_workhorse_redis_total_connections",
@@ -29,6 +29,7 @@ var (
 		},
 	)
 
+	// ErrorCounter counts different types of Redis errors by type and destination (redis or sentinel).
 	ErrorCounter = promauto.NewCounterVec(
 		prometheus.CounterOpts{
 			Name: "gitlab_workhorse_redis_errors",
@@ -107,10 +108,8 @@ func createDialer(sentinels []string, tlsConfig *tls.Config) func(ctx context.Co
 
 		if err != nil {
 			ErrorCounter.WithLabelValues("dial", destination).Inc()
-		} else {
-			if !isSentinel {
-				TotalConnections.Inc()
-			}
+		} else if !isSentinel {
+			TotalConnections.Inc()
 		}
 
 		return conn, err
@@ -131,12 +130,14 @@ func (s sentinelInstrumentationHook) DialHook(next redis.DialHook) redis.DialHoo
 	}
 }
 
+// ProcessHook is a no-op hook for Redis command processing.
 func (s sentinelInstrumentationHook) ProcessHook(next redis.ProcessHook) redis.ProcessHook {
 	return func(ctx context.Context, cmd redis.Cmder) error {
 		return next(ctx, cmd)
 	}
 }
 
+// ProcessPipelineHook is a no-op hook for Redis pipeline command processing.
 func (s sentinelInstrumentationHook) ProcessPipelineHook(next redis.ProcessPipelineHook) redis.ProcessPipelineHook {
 	return func(ctx context.Context, cmds []redis.Cmder) error {
 		return next(ctx, cmds)

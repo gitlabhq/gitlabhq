@@ -1,3 +1,5 @@
+// Package config provides configuration management for object storage,
+// including support for S3, Azure Blob Storage, and Google Cloud Storage.
 package config
 
 import (
@@ -24,6 +26,7 @@ import (
 	"golang.org/x/oauth2/google"
 )
 
+// Megabyte constant for size calculations
 const Megabyte = 1 << 20
 
 // TLSVersions contains a mapping of textual TLS versions to tls.Version* constants
@@ -35,34 +38,41 @@ var TLSVersions = map[string]uint16{
 	"tls1.3": tls.VersionTLS13,
 }
 
+// TomlURL wraps url.URL for TOML unmarshalling
 type TomlURL struct {
 	url.URL
 }
 
+// UnmarshalText parses a TOML text representation into a TomlURL
 func (u *TomlURL) UnmarshalText(text []byte) error {
 	temp, err := url.Parse(string(text))
 	u.URL = *temp
 	return err
 }
 
+// MarshalText converts a TomlURL back to TOML text representation
 func (u *TomlURL) MarshalText() ([]byte, error) {
 	return []byte(u.String()), nil
 }
 
+// TomlDuration wraps time.Duration for TOML unmarshalling
 type TomlDuration struct {
 	time.Duration
 }
 
+// UnmarshalText parses a TOML text representation into a TomlDuration
 func (d *TomlDuration) UnmarshalText(text []byte) error {
 	temp, err := time.ParseDuration(string(text))
 	d.Duration = temp
 	return err
 }
 
+// MarshalText converts a TomlDuration back to TOML text representation
 func (d TomlDuration) MarshalText() ([]byte, error) {
 	return []byte(d.String()), nil
 }
 
+// ObjectStorageCredentials holds credentials for various object storage providers
 type ObjectStorageCredentials struct {
 	Provider string
 
@@ -71,16 +81,19 @@ type ObjectStorageCredentials struct {
 	GoogleCredentials GoogleCredentials `toml:"google" json:"google"`
 }
 
+// ObjectStorageConfig contains the URLMux for object storage configuration
 type ObjectStorageConfig struct {
 	URLMux *blob.URLMux `toml:"-"`
 }
 
+// S3Credentials holds AWS S3 credentials
 type S3Credentials struct {
 	AwsAccessKeyID     string `toml:"aws_access_key_id" json:"aws_access_key_id"`
 	AwsSecretAccessKey string `toml:"aws_secret_access_key" json:"aws_secret_access_key"`
 	AwsSessionToken    string `toml:"aws_session_token" json:"aws_session_token"`
 }
 
+// S3Config holds S3-specific configuration options
 type S3Config struct {
 	Region               string `toml:"-"`
 	Bucket               string `toml:"-"`
@@ -92,21 +105,25 @@ type S3Config struct {
 	AwsSDK               string `toml:"-"` // Use "v1" to force using AWS SDK v1. Default is v2.
 }
 
+// GoCloudConfig holds GoCloud-specific configuration
 type GoCloudConfig struct {
 	URL string `toml:"-"`
 }
 
+// AzureCredentials holds Azure Blob Storage credentials
 type AzureCredentials struct {
 	AccountName string `toml:"azure_storage_account_name" json:"azure_storage_account_name"`
 	AccountKey  string `toml:"azure_storage_access_key" json:"azure_storage_access_key"`
 }
 
+// GoogleCredentials holds Google Cloud Storage credentials
 type GoogleCredentials struct {
 	ApplicationDefault bool   `toml:"google_application_default" json:"google_application_default"`
 	JSONKeyString      string `toml:"google_json_key_string" json:"google_json_key_string"`
 	JSONKeyLocation    string `toml:"google_json_key_location" json:"google_json_key_location"`
 }
 
+// RedisConfig holds configuration for Redis
 type RedisConfig struct {
 	URL              TomlURL
 	Sentinel         []TomlURL
@@ -124,16 +141,19 @@ type SentinelConfig struct {
 	TLS *TLSConfig `toml:"tls" json:"tls"`
 }
 
+// ImageResizerConfig holds configuration for the image resizer
 type ImageResizerConfig struct {
 	MaxScalerProcs uint32 `toml:"max_scaler_procs" json:"max_scaler_procs"`
 	MaxScalerMem   uint64 `toml:"max_scaler_mem" json:"max_scaler_mem"`
 	MaxFilesize    uint64 `toml:"max_filesize" json:"max_filesize"`
 }
 
+// MetadataConfig holds configuration for metadata processing
 type MetadataConfig struct {
 	ZipReaderLimitBytes int64 `toml:"zip_reader_limit_bytes"`
 }
 
+// TLSConfig holds TLS configuration settings
 type TLSConfig struct {
 	Certificate   string `toml:"certificate" json:"certificate"`
 	Key           string `toml:"key" json:"key"`
@@ -142,12 +162,14 @@ type TLSConfig struct {
 	MaxVersion    string `toml:"max_version" json:"max_version"`
 }
 
+// ListenerConfig holds configuration for network listeners
 type ListenerConfig struct {
 	Network string     `toml:"network" json:"network"`
 	Addr    string     `toml:"addr" json:"addr"`
-	Tls     *TLSConfig `toml:"tls" json:"tls"`
+	TLS     *TLSConfig `toml:"tls" json:"tls"`
 }
 
+// Config holds the overall application configuration
 type Config struct {
 	ConfigCommand                string                   `toml:"config_command,omitempty" json:"config_command"`
 	Redis                        *RedisConfig             `toml:"redis" json:"redis"`
@@ -177,15 +199,18 @@ type Config struct {
 	Sentinel                     *SentinelConfig          `toml:"Sentinel" json:"Sentinel"`
 }
 
+// DefaultImageResizerConfig contains default settings for the image resizer
 var DefaultImageResizerConfig = ImageResizerConfig{
 	MaxScalerProcs: uint32(math.Max(2, float64(runtime.NumCPU())/2)),
 	MaxFilesize:    250 * 1000, // 250kB,
 }
 
+// DefaultMetadataConfig contains default settings for metadata processing
 var DefaultMetadataConfig = MetadataConfig{
 	ZipReaderLimitBytes: 100 * Megabyte,
 }
 
+// NewDefaultConfig creates a new configuration with default values
 func NewDefaultConfig() *Config {
 	return &Config{
 		ImageResizerConfig: DefaultImageResizerConfig,
@@ -193,6 +218,7 @@ func NewDefaultConfig() *Config {
 	}
 }
 
+// LoadConfigFromFile reads configuration from a specified file
 func LoadConfigFromFile(file *string) (*Config, error) {
 	tomlData := ""
 
@@ -207,6 +233,7 @@ func LoadConfigFromFile(file *string) (*Config, error) {
 	return LoadConfig(tomlData)
 }
 
+// LoadConfig loads configuration from a TOML string
 func LoadConfig(data string) (*Config, error) {
 	cfg := NewDefaultConfig()
 
@@ -234,15 +261,13 @@ func LoadConfig(data string) (*Config, error) {
 	return cfg, nil
 }
 
+// RegisterGoCloudURLOpeners registers URL openers for GoCloud storage providers
 func (c *Config) RegisterGoCloudURLOpeners() error {
 	c.ObjectStorageConfig.URLMux = new(blob.URLMux)
 
 	creds := c.ObjectStorageCredentials
 	if strings.EqualFold(creds.Provider, "AzureRM") && creds.AzureCredentials.AccountName != "" && creds.AzureCredentials.AccountKey != "" {
-		urlOpener, err := creds.AzureCredentials.getURLOpener()
-		if err != nil {
-			return err
-		}
+		urlOpener := creds.AzureCredentials.getURLOpener()
 		c.ObjectStorageConfig.URLMux.RegisterBucket(azureblob.Scheme, urlOpener)
 	}
 
@@ -257,7 +282,7 @@ func (c *Config) RegisterGoCloudURLOpeners() error {
 	return nil
 }
 
-func (creds *AzureCredentials) getURLOpener() (*azureblob.URLOpener, error) {
+func (creds *AzureCredentials) getURLOpener() *azureblob.URLOpener {
 	serviceURLOptions := azureblob.ServiceURLOptions{
 		AccountName: creds.AccountName,
 	}
@@ -274,7 +299,7 @@ func (creds *AzureCredentials) getURLOpener() (*azureblob.URLOpener, error) {
 	return &azureblob.URLOpener{
 		MakeClient:        clientFunc,
 		ServiceURLOptions: serviceURLOptions,
-	}, nil
+	}
 }
 
 func (creds *GoogleCredentials) getURLOpener() (*gcsblob.URLOpener, error) {

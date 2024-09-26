@@ -1,3 +1,4 @@
+// Package redis provides a mechanism for watching Redis key changes.
 package redis
 
 import (
@@ -16,6 +17,7 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/log"
 )
 
+// KeyWatcher is responsible for watching keys in Redis and notifying subscribers.
 type KeyWatcher struct {
 	mu               sync.Mutex
 	subscribers      map[string][]chan string
@@ -25,6 +27,7 @@ type KeyWatcher struct {
 	conn             *redis.PubSub
 }
 
+// NewKeyWatcher initializes a KeyWatcher for managing Redis key subscriptions.
 func NewKeyWatcher(redisConn *redis.Client) *KeyWatcher {
 	return &KeyWatcher{
 		shutdown: make(chan struct{}),
@@ -39,24 +42,28 @@ func NewKeyWatcher(redisConn *redis.Client) *KeyWatcher {
 }
 
 var (
+	// KeyWatchers tracks the number of keys being actively watched by GitLab Workhorse.
 	KeyWatchers = promauto.NewGauge(
 		prometheus.GaugeOpts{
 			Name: "gitlab_workhorse_keywatcher_keywatchers",
 			Help: "The number of keys that is being watched by gitlab-workhorse",
 		},
 	)
+	// RedisSubscriptions tracks the current number of active Redis pubsub subscriptions.
 	RedisSubscriptions = promauto.NewGauge(
 		prometheus.GaugeOpts{
 			Name: "gitlab_workhorse_keywatcher_redis_subscriptions",
 			Help: "Current number of keywatcher Redis pubsub subscriptions",
 		},
 	)
+	// TotalMessages counts the total number of messages received by GitLab Workhorse on Redis pubsub channels.
 	TotalMessages = promauto.NewCounter(
 		prometheus.CounterOpts{
 			Name: "gitlab_workhorse_keywatcher_total_messages",
 			Help: "How many messages gitlab-workhorse has received in total on pubsub.",
 		},
 	)
+	// TotalActions counts various keywatcher actions like adding or removing key watchers.
 	TotalActions = promauto.NewCounterVec(
 		prometheus.CounterOpts{
 			Name: "gitlab_workhorse_keywatcher_actions_total",
@@ -64,6 +71,7 @@ var (
 		},
 		[]string{"action"},
 	)
+	// ReceivedBytes tracks the total number of bytes received by GitLab Workhorse in Redis pubsub messages.
 	ReceivedBytes = promauto.NewCounter(
 		prometheus.CounterOpts{
 			Name: "gitlab_workhorse_keywatcher_received_bytes_total",
@@ -87,7 +95,7 @@ func (kw *KeyWatcher) receivePubSubStream(ctx context.Context, pubsub *redis.Pub
 	defer func() {
 		kw.mu.Lock()
 		defer kw.mu.Unlock()
-		kw.conn.Close()
+		kw.conn.Close() // nolint:errcheck,gosec // ignore errors
 		kw.conn = nil
 
 		// Reset kw.subscribers because it is tied to Redis server side state of
@@ -117,7 +125,7 @@ func (kw *KeyWatcher) receivePubSubStream(ctx context.Context, pubsub *redis.Pub
 			TotalMessages.Inc()
 			ReceivedBytes.Add(float64(len(msg.Payload)))
 			if strings.HasPrefix(msg.Channel, channelPrefix) {
-				kw.notifySubscribers(msg.Channel[len(channelPrefix):], string(msg.Payload))
+				kw.notifySubscribers(msg.Channel[len(channelPrefix):], msg.Payload)
 			}
 		default:
 			log.WithError(fmt.Errorf("keywatcher: unknown: %T", msg)).Error()
@@ -126,6 +134,7 @@ func (kw *KeyWatcher) receivePubSubStream(ctx context.Context, pubsub *redis.Pub
 	}
 }
 
+// Process listens for pub/sub events and reconnects if needed.
 func (kw *KeyWatcher) Process() {
 	log.Info("keywatcher: starting process loop")
 
@@ -147,6 +156,7 @@ func (kw *KeyWatcher) Process() {
 	}
 }
 
+// Shutdown gracefully stops the KeyWatcher.
 func (kw *KeyWatcher) Shutdown() {
 	log.Info("keywatcher: shutting down")
 
@@ -229,7 +239,7 @@ func (kw *KeyWatcher) delSubscription(ctx context.Context, key string, notify ch
 		delete(kw.subscribers, key)
 		countAction("delete-subscription")
 		if kw.conn != nil {
-			kw.conn.Unsubscribe(ctx, channelPrefix+key)
+			kw.conn.Unsubscribe(ctx, channelPrefix+key) // nolint:errcheck,gosec // ignore errors
 		}
 	}
 }
@@ -249,6 +259,7 @@ const (
 	WatchKeyStatusNoChange
 )
 
+// WatchKey watches a Redis key for changes and returns the change status.
 func (kw *KeyWatcher) WatchKey(ctx context.Context, key, value string, timeout time.Duration) (WatchKeyStatus, error) {
 	notify := make(chan string, 1)
 	if err := kw.addSubscription(ctx, key, notify); err != nil {

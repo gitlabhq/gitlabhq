@@ -1145,6 +1145,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_3e067fa9bfe3() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "incident_management_timeline_event_tags"
+  WHERE "incident_management_timeline_event_tags"."id" = NEW."timeline_event_tag_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_3fe922f4db67() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -12109,7 +12125,8 @@ CREATE TABLE incident_management_timeline_event_tag_links (
     id bigint NOT NULL,
     timeline_event_id bigint NOT NULL,
     timeline_event_tag_id bigint NOT NULL,
-    created_at timestamp with time zone NOT NULL
+    created_at timestamp with time zone NOT NULL,
+    project_id bigint
 );
 
 CREATE SEQUENCE incident_management_timeline_event_tag_links_id_seq
@@ -26969,6 +26986,8 @@ CREATE INDEX idx_import_placeholder_memberships_on_source_user_id_and_id ON impo
 
 CREATE UNIQUE INDEX idx_import_placeholder_memberships_on_source_user_project_id ON import_placeholder_memberships USING btree (source_user_id, project_id);
 
+CREATE INDEX idx_incident_management_timeline_event_tag_links_on_project_id ON incident_management_timeline_event_tag_links USING btree (project_id);
+
 CREATE INDEX idx_installable_conan_pkgs_on_project_id_id ON packages_packages USING btree (project_id, id) WHERE ((package_type = 3) AND (status = ANY (ARRAY[0, 1])));
 
 CREATE INDEX idx_installable_helm_pkgs_on_project_id_id ON packages_packages USING btree (project_id, id);
@@ -33247,6 +33266,8 @@ CREATE TRIGGER trigger_3691f9f6a69f BEFORE INSERT OR UPDATE ON remote_developmen
 
 CREATE TRIGGER trigger_3d1a58344b29 BEFORE INSERT OR UPDATE ON alert_management_alert_assignees FOR EACH ROW EXECUTE FUNCTION trigger_3d1a58344b29();
 
+CREATE TRIGGER trigger_3e067fa9bfe3 BEFORE INSERT OR UPDATE ON incident_management_timeline_event_tag_links FOR EACH ROW EXECUTE FUNCTION trigger_3e067fa9bfe3();
+
 CREATE TRIGGER trigger_3fe922f4db67 BEFORE INSERT OR UPDATE ON vulnerability_merge_request_links FOR EACH ROW EXECUTE FUNCTION trigger_3fe922f4db67();
 
 CREATE TRIGGER trigger_41eaf23bf547 BEFORE INSERT OR UPDATE ON release_links FOR EACH ROW EXECUTE FUNCTION trigger_41eaf23bf547();
@@ -33585,6 +33606,9 @@ ALTER TABLE ONLY approval_group_rules
 
 ALTER TABLE ONLY ldap_group_links
     ADD CONSTRAINT fk_14a86de4b3 FOREIGN KEY (member_role_id) REFERENCES member_roles(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY incident_management_timeline_event_tag_links
+    ADD CONSTRAINT fk_152216ca4f FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY catalog_resource_versions
     ADD CONSTRAINT fk_15376d917e FOREIGN KEY (release_id) REFERENCES releases(id) ON DELETE CASCADE;

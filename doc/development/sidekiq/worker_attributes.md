@@ -366,6 +366,10 @@ class PausedWorker
 end
 ```
 
+WARNING:
+In case you want to remove the middleware for a worker, please set the strategy to `:deprecated` to disable it and wait until
+a required stop before removing it completely. That ensures that all paused jobs are resumed correctly.
+
 ## Concurrency limit
 
 With the `concurrency_limit` property, you can limit the worker's concurrency. It will put the jobs that are over this limit in

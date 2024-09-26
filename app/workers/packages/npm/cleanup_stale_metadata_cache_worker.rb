@@ -13,7 +13,6 @@ module Packages
       queue_namespace :package_cleanup
       feature_category :package_registry
 
-      deduplicate :until_executed
       idempotent!
 
       def max_running_jobs
@@ -23,7 +22,7 @@ module Packages
       private
 
       def model
-        Packages::Npm::MetadataCache
+        ::Packages::Npm::MetadataCache
       end
 
       def log_metadata(npm_metadata_cache)
