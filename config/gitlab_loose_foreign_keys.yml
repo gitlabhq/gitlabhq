@@ -199,6 +199,13 @@ dast_pre_scan_verifications:
   - table: projects
     column: project_id
     on_delete: async_delete
+dast_profile_schedules:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
+  - table: users
+    column: user_id
+    on_delete: async_nullify
 dast_profiles:
   - table: projects
     column: project_id

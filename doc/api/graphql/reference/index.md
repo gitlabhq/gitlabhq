@@ -4820,6 +4820,7 @@ Input type: `EnvironmentCreateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationenvironmentcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationenvironmentcreateclusteragentid"></a>`clusterAgentId` | [`ClustersAgentID`](#clustersagentid) | Cluster agent of the environment. |
+| <a id="mutationenvironmentcreatedescription"></a>`description` | [`String`](#string) | Description of the environment. |
 | <a id="mutationenvironmentcreateexternalurl"></a>`externalUrl` | [`String`](#string) | External URL of the environment. |
 | <a id="mutationenvironmentcreatefluxresourcepath"></a>`fluxResourcePath` | [`String`](#string) | Flux resource path of the environment. |
 | <a id="mutationenvironmentcreatekubernetesnamespace"></a>`kubernetesNamespace` | [`String`](#string) | Kubernetes namespace of the environment. |
@@ -4889,6 +4890,7 @@ Input type: `EnvironmentUpdateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationenvironmentupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationenvironmentupdateclusteragentid"></a>`clusterAgentId` | [`ClustersAgentID`](#clustersagentid) | Cluster agent of the environment. |
+| <a id="mutationenvironmentupdatedescription"></a>`description` | [`String`](#string) | Description of the environment. |
 | <a id="mutationenvironmentupdateexternalurl"></a>`externalUrl` | [`String`](#string) | External URL of the environment. |
 | <a id="mutationenvironmentupdatefluxresourcepath"></a>`fluxResourcePath` | [`String`](#string) | Flux resource path of the environment. |
 | <a id="mutationenvironmentupdateid"></a>`id` | [`EnvironmentID!`](#environmentid) | Global ID of the environment to update. |
@@ -21994,6 +21996,8 @@ Describes where code is deployed for a project.
 | <a id="environmentcreatedat"></a>`createdAt` | [`Time`](#time) | When the environment was created. |
 | <a id="environmentdeployfreezes"></a>`deployFreezes` | [`[CiFreezePeriod!]`](#cifreezeperiod) | Deployment freeze periods of the environment. |
 | <a id="environmentdeploymentsdisplaycount"></a>`deploymentsDisplayCount` | [`String`](#string) | Number of deployments in the environment for display. Returns the precise number up to 999, and "999+" for counts exceeding this limit. |
+| <a id="environmentdescription"></a>`description` | [`String`](#string) | Description of the environment. |
+| <a id="environmentdescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `description`. |
 | <a id="environmentenvironmenttype"></a>`environmentType` | [`String`](#string) | Folder name of the environment. |
 | <a id="environmentexternalurl"></a>`externalUrl` | [`String`](#string) | External URL of the environment. |
 | <a id="environmentfluxresourcepath"></a>`fluxResourcePath` | [`String`](#string) | Flux resource path of the environment. |

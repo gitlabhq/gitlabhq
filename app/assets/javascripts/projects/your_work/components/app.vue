@@ -70,15 +70,13 @@ export default {
             inactive,
           } = response;
 
-          return Object.entries({ contributed, starred, personal, member, inactive }).reduce(
-            (accumulator, [tab, item]) => {
-              return {
-                ...accumulator,
-                [tab]: item.count,
-              };
-            },
-            {},
-          );
+          return {
+            contributed: contributed.count,
+            starred: starred.count,
+            personal: personal.count,
+            member: member.count,
+            inactive: inactive.count,
+          };
         },
         error(error) {
           createAlert({ message: this.$options.i18n.projectCountError, error, captureError: true });
@@ -138,6 +136,9 @@ export default {
   },
   methods: {
     numberToMetricPrefix,
+    createSortQuery({ sortBy, isAscending }) {
+      return `${sortBy}_${isAscending ? SORT_DIRECTION_ASC : SORT_DIRECTION_DESC}`;
+    },
     pushQuery(query) {
       if (isEqual(this.$route.query, query)) {
         return;
@@ -167,14 +168,12 @@ export default {
       return this.tabCount(tab) !== undefined;
     },
     onSortDirectionChange(isAscending) {
-      const sort = `${this.activeSortOption.value}_${
-        isAscending ? SORT_DIRECTION_ASC : SORT_DIRECTION_DESC
-      }`;
+      const sort = this.createSortQuery({ sortBy: this.activeSortOption.value, isAscending });
 
       this.pushQuery({ ...this.$route.query, sort });
     },
     onSortByChange(sortBy) {
-      const sort = `${sortBy}_${this.isAscending ? SORT_DIRECTION_ASC : SORT_DIRECTION_DESC}`;
+      const sort = this.createSortQuery({ sortBy, isAscending: this.isAscending });
 
       this.pushQuery({ ...this.$route.query, sort });
     },

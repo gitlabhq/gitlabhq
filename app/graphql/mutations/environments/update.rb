@@ -13,6 +13,11 @@ module Mutations
         required: true,
         description: 'Global ID of the environment to update.'
 
+      argument :description,
+        GraphQL::Types::String,
+        required: false,
+        description: 'Description of the environment.'
+
       argument :external_url,
         GraphQL::Types::String,
         required: false,

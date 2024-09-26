@@ -3,6 +3,8 @@
 module Gitlab
   module Sessions
     class RedisStore < ActionDispatch::Session::RedisStore
+      DELIMITER = '-'
+
       attr_reader :session_cookie_token_prefix
 
       def initialize(app, options = {})
@@ -12,7 +14,8 @@ module Gitlab
       end
 
       def generate_sid
-        Rack::Session::SessionId.new(session_cookie_token_prefix + super.public_id)
+        delimiter = session_cookie_token_prefix.empty? ? '' : DELIMITER
+        Rack::Session::SessionId.new(session_cookie_token_prefix + delimiter + super.public_id)
       end
     end
   end

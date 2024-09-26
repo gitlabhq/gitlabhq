@@ -10839,8 +10839,13 @@ CREATE TABLE environments (
     cluster_agent_id bigint,
     kubernetes_namespace text,
     flux_resource_path text,
+    description text,
+    description_html text,
+    cached_markdown_version integer,
     CONSTRAINT check_23b1eb18a2 CHECK ((char_length(flux_resource_path) <= 255)),
-    CONSTRAINT check_b5373a1804 CHECK ((char_length(kubernetes_namespace) <= 63))
+    CONSTRAINT check_ad5e1ed5e1 CHECK ((char_length(description) <= 10000)),
+    CONSTRAINT check_b5373a1804 CHECK ((char_length(kubernetes_namespace) <= 63)),
+    CONSTRAINT check_d26221226f CHECK ((char_length(description_html) <= 50000))
 );
 
 CREATE SEQUENCE environments_id_seq
@@ -34090,9 +34095,6 @@ ALTER TABLE ONLY ml_models
 ALTER TABLE ONLY projects
     ADD CONSTRAINT fk_6ca23af0a3 FOREIGN KEY (project_namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY dast_profile_schedules
-    ADD CONSTRAINT fk_6cca0d8800 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY compliance_framework_security_policies
     ADD CONSTRAINT fk_6d3bd0c9f1 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -34470,9 +34472,6 @@ ALTER TABLE ONLY ml_experiments
 
 ALTER TABLE ONLY merge_request_metrics
     ADD CONSTRAINT fk_ae440388cc FOREIGN KEY (latest_closed_by_id) REFERENCES users(id) ON DELETE SET NULL;
-
-ALTER TABLE ONLY dast_profile_schedules
-    ADD CONSTRAINT fk_aef03d62e5 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY analytics_cycle_analytics_group_stages
     ADD CONSTRAINT fk_analytics_cycle_analytics_group_stages_group_value_stream_id FOREIGN KEY (group_value_stream_id) REFERENCES analytics_cycle_analytics_group_value_streams(id) ON DELETE CASCADE;

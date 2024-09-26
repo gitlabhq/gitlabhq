@@ -1,1 +1,4 @@
-= render partial: 'dashboard/projects/shared/common', locals: {page_title: _('Starred Projects'), empty_page: 'starred_empty_state'}
+- if Feature.enabled?(:your_work_projects_vue, current_user)
+  #js-your-work-projects-app{ data: { app_data: dashboard_projects_app_data } }
+- else
+  = render partial: 'dashboard/projects/shared/common', locals: {page_title: _('Starred Projects'), empty_page: 'starred_empty_state'}

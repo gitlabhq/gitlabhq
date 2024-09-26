@@ -316,7 +316,8 @@ the value can contain only:
 
 Masking a variable automatically masks the value anywhere in a job log. If another
 variable has the same value, that value is also masked, including when a variable
-references a masked variable.
+references a masked variable. The string `[MASKED]` is shown instead of the value,
+possibly with some trailing `x` characters.
 
 Different versions of [GitLab Runner](../runners/index.md) have different masking limitations:
 
@@ -909,7 +910,7 @@ When the runner executes the job:
 You can list all variables available to a script with the `export` command
 in Bash or `dir env:` in PowerShell. This exposes the values of **all** available
 variables, which can be a [security risk](#cicd-variable-security).
-[Masked variables](#mask-a-cicd-variable) display as `[masked]`.
+[Masked variables](#mask-a-cicd-variable) display as `[MASKED]`.
 
 For example, with Bash:
 
@@ -926,13 +927,13 @@ export CI_JOB_ID="50"
 export CI_COMMIT_SHA="1ecfd275763eff1d6b4844ea3168962458c9f27a"
 export CI_COMMIT_SHORT_SHA="1ecfd275"
 export CI_COMMIT_REF_NAME="main"
-export CI_REPOSITORY_URL="https://gitlab-ci-token:[masked]@example.com/gitlab-org/gitlab.git"
+export CI_REPOSITORY_URL="https://gitlab-ci-token:[MASKED]@example.com/gitlab-org/gitlab.git"
 export CI_COMMIT_TAG="1.0.0"
 export CI_JOB_NAME="spec:other"
 export CI_JOB_STAGE="test"
 export CI_JOB_MANUAL="true"
 export CI_JOB_TRIGGERED="true"
-export CI_JOB_TOKEN="[masked]"
+export CI_JOB_TOKEN="[MASKED]"
 export CI_PIPELINE_ID="1000"
 export CI_PIPELINE_IID="10"
 export CI_PAGES_DOMAIN="gitlab.io"

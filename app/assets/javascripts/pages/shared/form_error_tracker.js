@@ -8,19 +8,29 @@ export default class FormErrorTracker {
     this.trackErrorOnEmptyField = FormErrorTracker.trackErrorOnEmptyField.bind(this);
 
     this.elements.forEach((element) => {
-      // on input change
-      element.addEventListener('input', this.trackErrorOnChange);
+      // https://gitlab.com/gitlab-org/gitlab/-/issues/494329 to revert this condition when
+      // blocker is implemented
+      const actionItem = element.hasChildNodes() ? element.firstElementChild : element;
 
-      // on invalid input - adding separately to track submit click without
-      // changing any input field
-      element.addEventListener('invalid', this.trackErrorOnEmptyField);
+      if (actionItem) {
+        // on item change
+        actionItem.addEventListener('input', this.trackErrorOnChange);
+
+        // on invalid item - adding separately to track submit click without
+        // changing any field
+        actionItem.addEventListener('invalid', this.trackErrorOnEmptyField);
+      }
     });
   }
 
   destroy() {
     this.elements.forEach((element) => {
-      element.removeEventListener('input', this.trackErrorOnChange);
-      element.removeEventListener('invalid', this.trackErrorOnEmptyField);
+      const actionItem = element.hasChildNodes() ? element.firstElementChild : element;
+
+      if (actionItem) {
+        actionItem.removeEventListener('input', this.trackErrorOnChange);
+        actionItem.removeEventListener('invalid', this.trackErrorOnEmptyField);
+      }
     });
   }
 

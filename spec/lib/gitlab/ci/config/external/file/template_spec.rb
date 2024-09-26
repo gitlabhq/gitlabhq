@@ -63,7 +63,18 @@ RSpec.describe Gitlab::Ci::Config::External::File::Template, feature_category: :
 
       it 'returns false' do
         expect(valid?).to be_falsy
-        expect(template_file.error_message).to include('`xxxxxxxxxxxxxx.yml` is not a valid location!')
+        expect(template_file.error_message).to include('`[MASKED]xxxxxx.yml` is not a valid location!')
+      end
+
+      context 'when consistent_ci_variable_masking feature is disabled' do
+        before do
+          stub_feature_flags(consistent_ci_variable_masking: false)
+        end
+
+        it 'returns false with the variable masked in the old style' do
+          expect(valid?).to be_falsy
+          expect(template_file.error_message).to include('`xxxxxxxxxxxxxx.yml` is not a valid location!')
+        end
       end
     end
 

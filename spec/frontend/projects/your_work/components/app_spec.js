@@ -107,7 +107,7 @@ describe('YourWorkProjectsApp', () => {
         createComponent();
       });
 
-      it('does not count badges', () => {
+      it('does not show count badges', () => {
         expect(wrapper.findComponent(GlBadge).exists()).toBe(false);
       });
     });
@@ -141,6 +141,10 @@ describe('YourWorkProjectsApp', () => {
           error,
           captureError: true,
         });
+      });
+
+      it('does not show count badges', () => {
+        expect(wrapper.findComponent(GlBadge).exists()).toBe(false);
       });
     });
 

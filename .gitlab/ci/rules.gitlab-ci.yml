@@ -117,6 +117,9 @@
 .if-merge-request-labels-run-cs-evaluation: &if-merge-request-labels-run-cs-evaluation
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-CS-evaluation/'
 
+.if-merge-request-labels-skip-rspec-fail-fast: &if-merge-request-labels-skip-rspec-fail-fast
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:skip-rspec-fail-fast/'
+
 .if-merge-request-labels-skip-undercoverage: &if-merge-request-labels-skip-undercoverage
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:skip-undercoverage/'
 
@@ -2398,6 +2401,8 @@
   rules:
     - <<: *if-not-ee
       when: never
+    - <<: *if-merge-request-labels-skip-rspec-fail-fast
+      when: never
     - <<: *if-security-merge-request
       changes: *code-backstage-patterns
     - <<: *if-dot-com-gitlab-org-merge-request
@@ -2406,6 +2411,8 @@
 .rails:rules:fail-pipeline-early:
   rules:
     - <<: *if-not-ee
+      when: never
+    - <<: *if-merge-request-labels-skip-rspec-fail-fast
       when: never
     - <<: *if-security-merge-request
       changes: *code-backstage-patterns

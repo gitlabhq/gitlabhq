@@ -98,8 +98,10 @@ module API
       end
 
       def automatically_mergeable?(merge_when_pipeline_succeeds, merge_request)
-        pipeline_active = merge_request.head_pipeline_active? || merge_request.diff_head_pipeline_active?
-        merge_when_pipeline_succeeds && merge_request.mergeable_state?(skip_ci_check: true) && pipeline_active
+        available_strategies = AutoMergeService.new(merge_request.project,
+          current_user).available_strategies(merge_request)
+
+        merge_when_pipeline_succeeds && available_strategies.include?(merge_request.default_auto_merge_strategy)
       end
 
       def immediately_mergeable?(merge_when_pipeline_succeeds, merge_request)
@@ -709,7 +711,7 @@ module API
 
         not_allowed! if !immediately_mergeable && !automatically_mergeable
 
-        render_api_error!('Branch cannot be merged', 422) unless merge_request.mergeable?(skip_ci_check: automatically_mergeable)
+        render_api_error!('Branch cannot be merged', 422) unless automatically_mergeable || merge_request.mergeable?(skip_ci_check: automatically_mergeable)
 
         check_sha_param!(params, merge_request)
 

@@ -27,12 +27,10 @@ resource :dashboard, controller: 'dashboard', only: [] do
 
     resources :projects, only: [:index] do
       collection do
-        ## TODO: Migrate this over to to: 'projects#index' as part of `:your_work_projects_vue` FF rollout
+        ## TODO: Migrate `starred` route to 'projects#index' when removing `:your_work_projects_vue` FF
         ## https://gitlab.com/gitlab-org/gitlab/-/issues/465889
         get :starred
-        get :contributed, to: 'projects#index'
-        get :personal, to: 'projects#index'
-        get :member, to: 'projects#index'
+        get :contributed, :personal, :member, :inactive, to: 'projects#index'
       end
     end
   end

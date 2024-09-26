@@ -302,7 +302,7 @@ end ; nil
 ## Find repository check failures in a Geo secondary site
 
 NOTE:
-All repositories data types have been migrated to the Geo Self-Service Framework in GitLab 16.3. There is an [issue to implement this functionality back in the Geo Self-Service Framework](https://gitlab.com/gitlab-org/gitlab/-/issues/364729).
+All repositories data types have been migrated to the Geo Self-Service Framework in GitLab 16.3. There is an [issue to implement this functionality back in the Geo Self-Service Framework](https://gitlab.com/gitlab-org/gitlab/-/issues/426659).
 
 For GitLab 16.2 and earlier:
 

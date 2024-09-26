@@ -33,6 +33,9 @@ module Types
     field :external_url, GraphQL::Types::String, null: true,
       description: 'External URL of the environment.'
 
+    field :description, GraphQL::Types::String, null: true,
+      description: 'Description of the environment.'
+
     field :kubernetes_namespace, GraphQL::Types::String, null: true,
       description: 'Kubernetes namespace of the environment.'
 
@@ -90,6 +93,8 @@ module Types
       null: true do
       extension ::Gitlab::Graphql::Limit::FieldCallCount, limit: 1
     end
+
+    markdown_field :description_html, null: true
 
     def tier
       object.tier.to_sym

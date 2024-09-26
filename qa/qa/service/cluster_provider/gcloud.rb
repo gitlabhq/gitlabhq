@@ -50,7 +50,6 @@ module QA
             helm upgrade --install gitlab-agent gitlab/gitlab-agent
               --namespace "#{agent_name}"
               --create-namespace
-              --set image.tag=#{Runtime::Env.gitlab_agentk_version}
               --set config.token=#{agent_token}
               --set config.kasAddress=#{kas_address}
               --set config.kasHeaders="{Cookie: gitlab_canary=#{target_canary?}}"

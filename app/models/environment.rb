@@ -3,6 +3,7 @@
 class Environment < ApplicationRecord
   include Gitlab::Utils::StrongMemoize
   include ReactiveCaching
+  include CacheMarkdownField
   include FastDestroyAll::Helpers
   include Presentable
   include NullifyIfBlank
@@ -15,12 +16,14 @@ class Environment < ApplicationRecord
   self.reactive_cache_hard_limit = 10.megabytes
   self.reactive_cache_work_type = :external_dependency
 
+  cache_markdown_field :description
+
   belongs_to :project, optional: false
   belongs_to :merge_request, optional: true
   belongs_to :cluster_agent, class_name: 'Clusters::Agent', optional: true, inverse_of: :environments
 
   use_fast_destroy :all_deployments
-  nullify_if_blank :external_url, :kubernetes_namespace, :flux_resource_path
+  nullify_if_blank :external_url, :kubernetes_namespace, :flux_resource_path, :description
 
   has_many :all_deployments, class_name: 'Deployment'
   has_many :deployments, -> { visible }
@@ -69,6 +72,16 @@ class Environment < ApplicationRecord
   validates :external_url,
     length: { maximum: 255 },
     allow_nil: true
+
+  validates :description,
+    length: { maximum: 10000 },
+    allow_nil: true,
+    if: :description_changed?
+
+  validates :description_html,
+    length: { maximum: 50000 },
+    allow_nil: true,
+    if: :description_html_changed?
 
   validates :kubernetes_namespace,
     allow_nil: true,

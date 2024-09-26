@@ -569,3 +569,4 @@ describe('DeleteApplication', () => {
 Apart from the GitLab codebase, we are using Internal Events for the systems listed below.
 
 1. [AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/internal_events.md?ref_type=heads)
+1. [Switchboard](https://gitlab.com/gitlab-com/gl-infra/gitlab-dedicated/switchboard/-/blob/main/docs/internal_events.md)

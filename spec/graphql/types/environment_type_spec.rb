@@ -20,7 +20,7 @@ RSpec.describe GitlabSchema.types['Environment'] do
 
   context 'when there is an environment' do
     let_it_be(:project) { create(:project) }
-    let_it_be(:environment) { create(:environment, project: project, external_url: 'https://gitlab.com') }
+    let_it_be(:environment) { create(:environment, project: project, external_url: 'https://gitlab.com', description: '_description_') }
     let_it_be(:user) { create(:user) }
 
     subject { GitlabSchema.execute(query, context: { current_user: user }).as_json }
@@ -32,6 +32,7 @@ RSpec.describe GitlabSchema.types['Environment'] do
             environment(name: "#{environment.name}") {
               name
               path
+              description
               externalUrl
               state
             }
@@ -46,6 +47,10 @@ RSpec.describe GitlabSchema.types['Environment'] do
 
     it 'returns an environment' do
       expect(subject['data']['project']['environment']['name']).to eq(environment.name)
+    end
+
+    it 'returns the description of the environment' do
+      expect(subject['data']['project']['environment']['description']).to eq(environment.description)
     end
 
     it 'returns the path to the environment' do

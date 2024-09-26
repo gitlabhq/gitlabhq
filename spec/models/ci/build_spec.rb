@@ -1656,7 +1656,15 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       let(:data) { "new #{project.runners_token} data" }
       let(:allow_runner_registration_token) { true }
 
-      it { is_expected.to match(/^new x+ data$/) }
+      it { is_expected.to match(/^new \[MASKED\]x+ data$/) }
+
+      context 'when consistent_ci_variable_masking feature is disabled' do
+        before do
+          stub_feature_flags(consistent_ci_variable_masking: false)
+        end
+
+        it { is_expected.to match(/^new x+ data$/) }
+      end
 
       it 'increments trace mutation metric' do
         build.hide_secrets(data, metrics)
@@ -1672,7 +1680,15 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
       let(:data) { "new #{build.token} data" }
 
-      it { is_expected.to match(/^new x+ data$/) }
+      it { is_expected.to match(/^new \[MASKED\]x+ data$/) }
+
+      context 'when consistent_ci_variable_masking feature is disabled' do
+        before do
+          stub_feature_flags(consistent_ci_variable_masking: false)
+        end
+
+        it { is_expected.to match(/^new x+ data$/) }
+      end
 
       it 'increments trace mutation metric' do
         build.hide_secrets(data, metrics)

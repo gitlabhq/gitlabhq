@@ -41,10 +41,15 @@ because we do not currently have interfaces in place to self-service this.
 - For GitLab Dedicated and self-managed GitLab instances, the CustomersDot is the **JWT issuer**.
 - For GitLab.com deployment, GitLab.com is the **JWT issuer**, because it's able to [self-sign and create JWTs](architecture.md#gitlabcom) for every request to a Cloud Connector feature.
 
-##### Register new feature for Self Managed and Dedicated customers
+##### Register new feature for Self-Managed, Dedicated and GitLab.com customers
 
 Because the CustomersDot is the **JWT issuer** for GitLab Dedicated and self-managed GitLab instances,
 to register new feature, we need to update [CustomersDot configuration](configuration.md#customersdot-configuration).
+
+Since the GitLab.com is the **JWT issuer**, because it's able to [self-sign and create JWTs](architecture.md#gitlabcom),
+to register new feature, we need to update [GitLab.com configuration](configuration.md#gitlabcom-configuration) as well.
+
+So, in total, you need to open two separate merge requests: one to [CustomersDot](https://gitlab.com/gitlab-org/customers-gitlab-com) and another to [GitLab.com](https://gitlab.com/gitlab-org/gitlab). No synchronization between when they are merged is needed.  
 
 The new feature needs to be added as a new **unit primitive**, so you can include it in the **JWT** (Service Access token).
 
@@ -76,7 +81,7 @@ As an example, the new feature is:
 - Delivered as part of the existing `duo chat` service and accessible only through the Duo Chat window
 - Sold only through the `duo_enterprise` add-on
 
-Update [`cloud_connector.yml`](https://gitlab.com/gitlab-org/customers-gitlab-com/-/blob/main/config/cloud_connector.yml),
+Update [`cloud_connector.yml`](https://gitlab.com/gitlab-org/customers-gitlab-com/-/blob/main/config/cloud_connector.yml) (for Self-Managed and Dedicated) and [`access_data.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/cloud_connector/access_data.yml) (for GitLab.com),
 by registering the `new_feature_up` **unit primitive** under the `duo chat` service:
 
 ```diff
@@ -120,7 +125,7 @@ As an example, the new feature is:
 - Should not be accessible for free.
 - Minimum required GitLab version is 17.1.
 
-Update [`cloud_connector.yml`](https://gitlab.com/gitlab-org/customers-gitlab-com/-/blob/main/config/cloud_connector.yml)
+Update [`cloud_connector.yml`](https://gitlab.com/gitlab-org/customers-gitlab-com/-/blob/main/config/cloud_connector.yml) (for Self-Managed and Dedicated) and [`access_data.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/cloud_connector/access_data.yml) (for GitLab.com)
 by registering the `new_feature` as a `service`. See [configuration](configuration.md).
 
 ```diff
@@ -157,7 +162,7 @@ As an example, the new feature is:
 - Also delivered as a stand-alone service. That is, it is also used outside of Duo Chat through its own interface.
 - Sold only through the `duo_enterprise` add-on.
 
-  Update [`cloud_connector.yml`](https://gitlab.com/gitlab-org/customers-gitlab-com/-/blob/main/config/cloud_connector.yml):
+  Update [`cloud_connector.yml`](https://gitlab.com/gitlab-org/customers-gitlab-com/-/blob/main/config/cloud_connector.yml) (for Self-Managed and Dedicated) and [`access_data.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/cloud_connector/access_data.yml) (for GitLab.com):
 
 ```diff
 defaults: &defaults
@@ -187,19 +192,6 @@ defaults: &defaults
   **bundled with** only for `duo_enterprise` add-on for both services.
 
 See [configuration](configuration.md) for more information about configuration structure.
-
-#### Register new feature for GitLab.com
-
-Since the GitLab.com is the **JWT issuer**, because it's able to [self-sign and create JWTs](architecture.md#gitlabcom),
-to register new feature, we need to update [GitLab.com configuration](configuration.md#gitlabcom-configuration) as well.
-
-The new feature needs to be added as a new **unit primitive**, so it could be included in the **JWT** service access token.
-
-Repeat the steps from the [previous section](#register-new-feature-for-self-managed-and-dedicated-customers)
-by updating the [`access_data.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/cloud_connector/access_data.yml)
-to match the [CustomersDot configuration](https://gitlab.com/gitlab-org/customers-gitlab-com/-/blob/main/config/cloud_connector.yml).
-
-The GitLab.com configuration should be almost the same as the [CustomersDot configuration](configuration.md#customersdot-configuration).
 
 #### Implement Permission checks in GitLab Rails
 

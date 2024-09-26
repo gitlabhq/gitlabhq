@@ -145,10 +145,22 @@ RSpec.describe Gitlab::Ci::Config::External::File::Artifact, feature_category: :
                   end
 
                   let(:expected_error) do
-                    'File `xxxxxxxxxxxx/generated.yml` is empty!'
+                    'File `[MASKED]xxxx/generated.yml` is empty!'
                   end
 
                   it_behaves_like 'is invalid'
+
+                  context 'when consistent_ci_variable_masking feature is disabled' do
+                    before do
+                      stub_feature_flags(consistent_ci_variable_masking: false)
+                    end
+
+                    let(:expected_error) do
+                      'File `xxxxxxxxxxxx/generated.yml` is empty!'
+                    end
+
+                    it_behaves_like 'is invalid'
+                  end
                 end
 
                 context 'when file is not empty' do
@@ -188,10 +200,22 @@ RSpec.describe Gitlab::Ci::Config::External::File::Artifact, feature_category: :
 
         context 'when job does not exist in the parent pipeline' do
           let(:expected_error) do
-            'Job `xxxxxxxxxxxxxxxxxxxxxxx` not found in parent pipeline or does not have artifacts!'
+            'Job `[MASKED]xxxxxxxxxxxxxxx` not found in parent pipeline or does not have artifacts!'
           end
 
           it_behaves_like 'is invalid'
+
+          context 'when consistent_ci_variable_masking feature is disabled' do
+            before do
+              stub_feature_flags(consistent_ci_variable_masking: false)
+            end
+
+            let(:expected_error) do
+              'Job `xxxxxxxxxxxxxxxxxxxxxxx` not found in parent pipeline or does not have artifacts!'
+            end
+
+            it_behaves_like 'is invalid'
+          end
         end
       end
     end
@@ -225,9 +249,25 @@ RSpec.describe Gitlab::Ci::Config::External::File::Artifact, feature_category: :
           context_sha: nil,
           type: :artifact,
           location: 'generated.yml',
-          extra: { job_name: 'xxxxxxxxxxxxxxxxxxxxxxx' }
+          extra: { job_name: '[MASKED]xxxxxxxxxxxxxxx' }
         )
       }
+
+      context 'when consistent_ci_variable_masking feature is disabled' do
+        before do
+          stub_feature_flags(consistent_ci_variable_masking: false)
+        end
+
+        it {
+          is_expected.to eq(
+            context_project: project.full_path,
+            context_sha: nil,
+            type: :artifact,
+            location: 'generated.yml',
+            extra: { job_name: 'xxxxxxxxxxxxxxxxxxxxxxx' }
+          )
+        }
+      end
     end
   end
 

@@ -10,11 +10,12 @@ RSpec.describe Gitlab::Sessions::RedisStore, feature_category: :cell do
       described_class.new(Rails.application, { session_cookie_token_prefix: session_cookie_token_prefix })
     end
 
-    context 'when passing session_cookie_token_prefix in options' do
+    context 'when passing `session_cookie_token_prefix` in options' do
       where(:prefix, :calculated_prefix) do
         nil              | ''
         ''               | ''
-        'random_prefix_' | 'random_prefix_'
+        'random_prefix_' | 'random_prefix_-'
+        '_random_prefix' | '_random_prefix-'
       end
 
       with_them do
@@ -23,13 +24,12 @@ RSpec.describe Gitlab::Sessions::RedisStore, feature_category: :cell do
         it 'generates sid that is prefixed with the configured prefix' do
           generated_sid = redis_store.generate_sid
           expect(generated_sid).to be_a Rack::Session::SessionId
-          expect(generated_sid.public_id).to start_with calculated_prefix
-          expect(generated_sid.public_id).to match(/[a-z0-9]{32}$/)
+          expect(generated_sid.public_id).to match(/^#{calculated_prefix}[a-z0-9]{32}$/)
         end
       end
     end
 
-    context 'when not passing session_cookie_token_prefix in options' do
+    context 'when not passing `session_cookie_token_prefix` in options' do
       let(:redis_store) { described_class.new(Rails.application) }
 
       it 'generates sid that is not prefixed' do

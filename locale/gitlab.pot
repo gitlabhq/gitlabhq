@@ -14036,6 +14036,9 @@ msgstr ""
 msgid "ComplianceFrameworks|A compliance frameworks CSV export for the group %{group_link} is attached to this email."
 msgstr ""
 
+msgid "ComplianceFrameworks|Action"
+msgstr ""
+
 msgid "ComplianceFrameworks|Add framework"
 msgstr ""
 
@@ -14105,9 +14108,6 @@ msgstr ""
 msgid "ComplianceFrameworks|Invalid format"
 msgstr ""
 
-msgid "ComplianceFrameworks|Linked"
-msgstr ""
-
 msgid "ComplianceFrameworks|Multiple frameworks"
 msgstr ""
 
@@ -14147,9 +14147,6 @@ msgstr ""
 msgid "ComplianceFrameworks|Project name"
 msgstr ""
 
-msgid "ComplianceFrameworks|Project path"
-msgstr ""
-
 msgid "ComplianceFrameworks|Projects"
 msgstr ""
 
@@ -14175,6 +14172,9 @@ msgid "ComplianceFrameworks|Set basic information for the compliance framework."
 msgstr ""
 
 msgid "ComplianceFrameworks|Set compliance pipeline configuration for projects that use this framework. %{linkStart}How do I create the configuration?%{linkEnd}"
+msgstr ""
+
+msgid "ComplianceFrameworks|Subgroup"
 msgstr ""
 
 msgid "ComplianceFrameworks|Summary"
@@ -61851,7 +61851,7 @@ msgstr ""
 msgid "With custom notification levels you receive notifications for the same events as in the Participate level, with additional selected events. For more information, see %{notificationLinkStart}notification emails%{notificationLinkEnd}."
 msgstr ""
 
-msgid "With requirements, you can set criteria to check your products against."
+msgid "With requirements, you can set criteria to check your products against"
 msgstr ""
 
 msgid "Withdraw Access Request"

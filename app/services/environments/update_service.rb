@@ -2,7 +2,8 @@
 
 module Environments
   class UpdateService < BaseService
-    ALLOWED_ATTRIBUTES = %i[external_url tier cluster_agent kubernetes_namespace flux_resource_path].freeze
+    ALLOWED_ATTRIBUTES = %i[description external_url tier cluster_agent kubernetes_namespace
+      flux_resource_path].freeze
 
     def execute(environment)
       unless can?(current_user, :update_environment, environment)
