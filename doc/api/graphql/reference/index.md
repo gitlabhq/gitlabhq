@@ -38670,6 +38670,8 @@ Sort options for todos.
 | <a id="todotargetenumepic"></a>`EPIC` | An Epic. |
 | <a id="todotargetenumissue"></a>`ISSUE` | Issue. |
 | <a id="todotargetenummergerequest"></a>`MERGEREQUEST` | Merge request. |
+| <a id="todotargetenumnamespace"></a>`NAMESPACE` | Namespace. |
+| <a id="todotargetenumproject"></a>`PROJECT` | Project. |
 | <a id="todotargetenumworkitem"></a>`WORKITEM` | Work item. |
 
 ### `TrainingUrlRequestStatus`

@@ -677,7 +677,7 @@ The `gemnasium` analyzer scans supports JavaScript projects for vendored librari
 #### Go
 
 Multiple files are supported. When a `go.mod` file is detected, the analyzer attempts to generate a [build list](https://go.dev/ref/mod#glos-build-list) using
-[Minimal Version Selection](https://go.dev/ref/mod#glos-minimal-version-selection).
+[Minimal Version Selection](https://go.dev/ref/mod#glos-minimal-version-selection). If this fails, the analyzer instead attempts to parse the dependencies within the `go.mod` file.
 
 As a requirement, the `go.mod` file should be cleaned up using the command `go mod tidy` to ensure proper management of dependencies. The process is repeated for every detected `go.mod` file.
 

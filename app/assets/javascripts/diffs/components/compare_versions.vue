@@ -1,5 +1,13 @@
 <script>
-import { GlTooltipDirective, GlIcon, GlLink, GlButtonGroup, GlButton, GlSprintf } from '@gitlab/ui';
+import {
+  GlTooltipDirective,
+  GlIcon,
+  GlLink,
+  GlButtonGroup,
+  GlButton,
+  GlSprintf,
+  GlAnimatedSidebarIcon,
+} from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { __ } from '~/locale';
@@ -22,6 +30,7 @@ export default {
     GlButtonGroup,
     GlButton,
     GlSprintf,
+    GlAnimatedSidebarIcon,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -117,14 +126,15 @@ export default {
         v-if="toggleFileTreeVisible"
         v-gl-tooltip.html="toggleFileBrowserTooltip"
         variant="default"
-        icon="sidebar"
         class="js-toggle-tree-list btn-icon gl-mr-3"
         data-testid="file-tree-button"
         :aria-label="toggleFileBrowserTitle"
         :aria-keyshortcuts="toggleFileBrowserShortcutKey"
         :selected="showTreeList"
         @click="setShowTreeList({ showTreeList: !showTreeList })"
-      />
+      >
+        <gl-animated-sidebar-icon :is-on="showTreeList" />
+      </gl-button>
       <div v-if="commit">
         {{ __('Viewing commit') }}
         <gl-link :href="commit.commit_url" class="monospace">{{ commit.short_id }}</gl-link>

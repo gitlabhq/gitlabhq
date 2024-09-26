@@ -78,8 +78,26 @@ track_internal_event(
 
 Additional properties can be passed when tracking events. They can be used to save additional data related to given event.
 
-Tracking classes have built-in properties with keys `label` (string), `property` (string) and `value`(numeric). It's recommended
-to use these properties first.
+Tracking classes already have three built-in properties:
+
+- `label` (string)
+- `property` (string)
+- `value`(numeric)
+
+The arbitrary naming and typing of the these three properties is due to constraints from the data extraction process.
+It's recommended to use these properties first, even if their name does not match with the data you want to track.
+This recommendation is particularly important if you want to leverage these attributes as
+[metric filters](metric_definition_guide.md#filters). You can further describe what is the actual data being tracked
+by using the `description` property in the YAML definition of the event. For an example, see
+[`create_ci_internal_pipeline.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/537ea367dab731e886e6040d8399c430fdb67ab7/config/events/create_ci_internal_pipeline.yml):
+
+```ruby
+additional_properties:
+  label:
+    description: The source of the pipeline, e.g. a push, a schedule or similar.
+  property:
+    description: The source of the config, e.g. the repository, auto_devops or similar.
+```
 
 Additional properties are passed by including the `additional_properties` hash in the `#track_event` call:
 
@@ -88,8 +106,8 @@ track_internal_event(
   "create_ci_build",
   user: user,
   additional_properties: {
-    label: 'scheduled',
-    value: 20
+    label: source, # The label is tracking the source of the pipeline
+    property: config_source # The property is tracking the source of the configuration
   }
 )
 ```
@@ -100,10 +118,9 @@ If you need to pass more than three additional properties, you can use the `addi
 track_internal_event(
   "code_suggestion_accepted",
   user: user,
-  additional_properties: {
-    label: 'vsc',
-    property: 'automatic',
-    value: 200,
+    label: editor_name,
+    property: suggestion_type,
+    value: suggestion_shown_duration
     lang: 'ruby',
     custom_key: 'custom_value'
   }
