@@ -27,7 +27,7 @@ PATH
   remote: gems/gitlab-backup-cli
   specs:
     gitlab-backup-cli (0.0.1)
-      activesupport (~> 7.0.8.4)
+      activesupport (>= 7)
       addressable (~> 2.8)
       concurrent-ruby (~> 1.1)
       faraday (~> 2)

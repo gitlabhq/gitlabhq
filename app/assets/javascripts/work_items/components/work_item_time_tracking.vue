@@ -171,7 +171,7 @@ export default {
           <template #estimate="{ content }">
             <gl-button
               v-gl-modal="$options.setTimeEstimateModalId"
-              class="gl-align-baseline"
+              class="gl-align-baseline !gl-text-sm"
               variant="link"
             >
               {{ content }}
@@ -180,7 +180,7 @@ export default {
           <template #timeSpent="{ content }">
             <gl-button
               v-gl-modal="$options.createTimelogModalId"
-              class="gl-align-baseline"
+              class="gl-align-baseline !gl-text-sm"
               variant="link"
             >
               {{ content }}

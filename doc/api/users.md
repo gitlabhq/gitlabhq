@@ -10,9 +10,8 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-This documentation has information on API calls, parameters and responses for the Users API.
-
-For information on user activities that update the user event timestamps, see [get user activities](#get-user-activities).
+You can [manage your account](../user/profile/index.md) and
+[manage other users](../user/profile/account/create_accounts.md) by using the REST API.
 
 ## List users
 
@@ -880,9 +879,13 @@ parameters:
 - `provisioned_by_group_id`
 - `using_license_seat`
 
-## Get user status
+## Get your user status
 
-Get the status of the authenticated user.
+Get your user status.
+
+Prerequisites:
+
+- You must be authenticated.
 
 ```plaintext
 GET /user/status
@@ -938,9 +941,13 @@ Example response:
 }
 ```
 
-## Set user status
+## Set your user status
 
-Set the status of the current user.
+Set your user status.
+
+Prerequisites:
+
+- You must be authenticated.
 
 ```plaintext
 PUT /user/status
@@ -955,10 +962,10 @@ Supported attributes:
 | `message`            | string | no       | Message to set as a status. It can also contain emoji codes. Cannot exceed 100 characters. |
 | `clear_status_after` | string | no       | Automatically clean up the status after a given time interval, allowed values: `30_minutes`, `3_hours`, `8_hours`, `1_day`, `3_days`, `7_days`, `30_days` |
 
-Difference between `PUT` and `PATCH`
+Difference between `PUT` and `PATCH`:
 
-When using `PUT` any parameters that are not passed are set to `null` and therefore cleared. When using `PATCH` any
-parameters that are not passed are ignored. Explicitly pass `null` to clear a field.
+- When using `PUT` any parameters that are not passed are set to `null` and therefore cleared.
+- When using `PATCH` any parameters that are not passed are ignored. Explicitly pass `null` to clear a field.
 
 Example request:
 
@@ -978,9 +985,13 @@ Example response:
 }
 ```
 
-## Get user preferences
+## Get your user preferences
 
-Get a list of the authenticated user's preferences.
+Get your user preferences.
+
+Prerequisites:
+
+- You must be authenticated.
 
 ```plaintext
 GET /user/preferences
@@ -998,9 +1009,13 @@ Example response:
 }
 ```
 
-## User preference modification
+## Update your user preferences
 
-Update the current user's preferences.
+Update your user preferences.
+
+Prerequisites:
+
+- You must be authenticated.
 
 ```plaintext
 PUT /user/preferences
@@ -1024,23 +1039,17 @@ Supported attributes:
 | `show_whitespace_in_diffs`       | Yes      | Flag indicating the user sees whitespace changes in diffs. |
 | `pass_user_identities_to_ci_jwt` | Yes      | Flag indicating the user passes their external identities as CI information. This attribute does not contain enough information to identify or authorize the user in an external system. The attribute is internal to GitLab, and must not be passed to third-party services. For more information and examples, see [Token Payload](../ci/secrets/id_token_authentication.md#token-payload). |
 
-## User follow
+## User following
 
 You can [follow and unfollow a user](../user/profile/index.md#follow-users) by using the REST API. You can also get the
 details of who a user is following, and who is following them.
 
-### Follow and unfollow a user
+### Follow a user
 
 Follow a user.
 
 ```plaintext
 POST /users/:id/follow
-```
-
-Unfollow a user.
-
-```plaintext
-POST /users/:id/unfollow
 ```
 
 Supported attributes:
@@ -1069,7 +1078,27 @@ Example response:
 }
 ```
 
-### Get details of followers of a user and who's following them
+### Unfollow a user
+
+Unfollow a user.
+
+```plaintext
+POST /users/:id/unfollow
+```
+
+Supported attributes:
+
+| Attribute | Type    | Required | Description |
+|:----------|:--------|:---------|:------------|
+| `id`      | integer | yes      | ID of the user to unfollow |
+
+Example request:
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/users/3/unfollow"
+```
+
+### Get the followers of a user
 
 Get the followers of a user.
 
@@ -1077,17 +1106,11 @@ Get the followers of a user.
 GET /users/:id/followers
 ```
 
-Get the list of users being followed.
-
-```plaintext
-GET /users/:id/following
-```
-
 Supported attributes:
 
 | Attribute | Type    | Required | Description |
 |:----------|:--------|:---------|:------------|
-| `id`      | integer | yes      | ID of the user to follow |
+| `id`      | integer | yes      | ID of the user |
 
 Example request:
 
@@ -1120,9 +1143,33 @@ Example response:
 ]
 ```
 
-## User counts
+### Get the users that a user is following
 
-Get the counts (same as in the upper-left menu) of the authenticated user.
+Get the list of users being followed by a user.
+
+```plaintext
+GET /users/:id/following
+```
+
+Supported attributes:
+
+| Attribute | Type    | Required | Description |
+|:----------|:--------|:---------|:------------|
+| `id`      | integer | yes      | ID of the user |
+
+Example request:
+
+```shell
+curl --request GET --header "PRIVATE-TOKEN: <your_access_token>"  "https://gitlab.example.com/users/3/following"
+```
+
+## Get a count of your assigned issues, merge requests, and reviews
+
+Get a count of your assigned issues, merge requests, and reviews.
+
+Prerequisites:
+
+- You must be authenticated.
 
 Supported attributes:
 
@@ -1156,13 +1203,9 @@ Example response:
 }
 ```
 
-## List user projects
+## Get a count of a user's projects, groups, issues, and merge requests
 
-See the [list of user projects](projects.md#list-a-users-projects).
-
-## List associations count for user
-
-Get a list of a specified user's count of:
+Get a list of a user's count of:
 
 - Projects.
 - Groups.
@@ -1192,7 +1235,7 @@ Example response:
 }
 ```
 
-## Get user activities
+## Get a list of a user's activity
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -1255,13 +1298,13 @@ Example response:
 
 `last_activity_at` is deprecated. Use `last_activity_on` instead.
 
-## User memberships
+## Get a list of projects and groups that a user is a member of
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed, GitLab Dedicated
 
-Pre-requisite:
+Prerequisites:
 
 - You must be an administrator.
 
@@ -1314,7 +1357,7 @@ Returns:
 - `403 Forbidden` when not requested by an administrator.
 - `400 Bad Request` when requested type is not supported.
 
-## Disable two-factor authentication
+## Disable two-factor authentication for a user
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -1322,7 +1365,7 @@ DETAILS:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/295260) in GitLab 15.2.
 
-Pre-requisite:
+Prerequisites:
 
 - You must be an administrator.
 
@@ -1408,11 +1451,15 @@ Example response:
 }
 ```
 
-## Upload a current user avatar
+## Upload an avatar for yourself
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148130) in GitLab 17.0.
 
-Upload an avatar to current user.
+Upload an avatar for yourself.
+
+Prerequisites:
+
+- You must be authenticated.
 
 ```plaintext
 PUT /user/avatar

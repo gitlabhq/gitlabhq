@@ -1,8 +1,9 @@
-import { set } from 'lodash';
+import { set, isEmpty } from 'lodash';
 import { produce } from 'immer';
 import { findWidget } from '~/issues/list/utils';
 import { pikadayToString } from '~/lib/utils/datetime_utility';
-import { newWorkItemFullPath } from '../utils';
+import { updateDraft } from '~/lib/utils/autosave';
+import { getNewWorkItemAutoSaveKey, newWorkItemFullPath } from '../utils';
 import {
   WIDGET_TYPE_ASSIGNEES,
   WIDGET_TYPE_COLOR,
@@ -116,6 +117,16 @@ export const updateNewWorkItemCache = (input, cache) => {
       if (confidential !== undefined) draftData.workspace.workItem.confidential = confidential;
     }),
   );
+
+  const newData = cache.readQuery({ query, variables });
+
+  const autosaveKey = getNewWorkItemAutoSaveKey(fullPath, workItemType);
+
+  const isQueryDataValid = !isEmpty(newData) && newData?.workspace?.workItem;
+
+  if (isQueryDataValid && autosaveKey) {
+    updateDraft(autosaveKey, JSON.stringify(newData));
+  }
 };
 
 export const workItemBulkEdit = (input) => {

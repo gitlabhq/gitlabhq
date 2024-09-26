@@ -135,14 +135,6 @@ export default {
     hideModal() {
       this.$emit('hideModal');
       this.isVisible = false;
-      if (this.workItemTypes && this.workItemTypes[0]) {
-        setNewWorkItemCache(
-          this.fullPath,
-          this.workItemTypes[0]?.widgetDefinitions,
-          this.workItemTypeName,
-          this.workItemTypes[0]?.id,
-        );
-      }
     },
     showModal() {
       this.isVisible = true;
@@ -165,6 +157,14 @@ export default {
         },
       });
       this.$emit('workItemCreated', workItem);
+      if (this.workItemTypes && this.workItemTypes[0]) {
+        setNewWorkItemCache(
+          this.fullPath,
+          this.workItemTypes[0]?.widgetDefinitions,
+          this.workItemTypeName,
+          this.workItemTypes[0]?.id,
+        );
+      }
       this.hideModal();
     },
   },
@@ -186,11 +186,11 @@ export default {
     </template>
     <gl-modal
       modal-id="create-work-item-modal"
+      modal-class="create-work-item-modal"
       :visible="isVisible"
       :title="newWorkItemText"
       size="lg"
       hide-footer
-      no-focus-on-show
       @hide="hideModal"
     >
       <create-work-item

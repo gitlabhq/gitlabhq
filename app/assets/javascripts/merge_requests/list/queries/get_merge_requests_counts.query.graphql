@@ -6,6 +6,7 @@ query getMergeRequestsCount(
   $milestoneWildcardId: MilestoneWildcardId
   $deployedBefore: Time
   $deployedAfter: Time
+  $environmentName: String
   $not: MergeRequestsResolverNegatedParams
 ) {
   project(fullPath: $fullPath) {
@@ -18,6 +19,7 @@ query getMergeRequestsCount(
       milestoneWildcardId: $milestoneWildcardId
       deployedBefore: $deployedBefore
       deployedAfter: $deployedAfter
+      environmentName: $environmentName
       not: $not
     ) {
       count
@@ -30,6 +32,7 @@ query getMergeRequestsCount(
       milestoneWildcardId: $milestoneWildcardId
       deployedBefore: $deployedBefore
       deployedAfter: $deployedAfter
+      environmentName: $environmentName
       not: $not
     ) {
       count
@@ -42,6 +45,7 @@ query getMergeRequestsCount(
       milestoneWildcardId: $milestoneWildcardId
       deployedBefore: $deployedBefore
       deployedAfter: $deployedAfter
+      environmentName: $environmentName
       not: $not
     ) {
       count
@@ -54,6 +58,7 @@ query getMergeRequestsCount(
       milestoneWildcardId: $milestoneWildcardId
       deployedBefore: $deployedBefore
       deployedAfter: $deployedAfter
+      environmentName: $environmentName
       not: $not
     ) {
       count

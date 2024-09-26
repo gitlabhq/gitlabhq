@@ -172,7 +172,7 @@ The administrator is notified that 2FA has been disabled.
 #### Non-administrators
 
 In GitLab 15.2 and later, you can use either the Rails console or the
-[API endpoint](../api/users.md#disable-two-factor-authentication) to disable 2FA
+[API endpoint](../api/users.md#disable-two-factor-authentication-for-a-user) to disable 2FA
 for a non-administrator.
 
 You can disable 2FA for your own account.

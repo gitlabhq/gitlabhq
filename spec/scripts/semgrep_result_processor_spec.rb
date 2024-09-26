@@ -71,7 +71,7 @@ RSpec.describe SemgrepResultProcessor, feature_category: :tooling do
         {
           "id" => 1933334610,
           "type" => "DiffNote",
-          "body" => "Deserializing user-controlled objects can cause vulnerabilities.\n\n\n\u003csmall\u003e\nThis AppSec automation is currently under testing.\nUse ~\"appsec-sast::helpful\" or ~\"appsec-sast::unhelpful\" for quick feedback.\nFor any detailed feedback, [add a comment here](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/issues/38).\n\u003c/small\u003e\n\n\n/label ~\"appsec-sast::commented\"",
+          "body" => "Deserializing user-controlled objects can cause vulnerabilities.\n\n\n\u003csmall\u003e\nThis AppSec automation is currently under testing.\nUse ~\"appsec-sast::helpful\" or ~\"appsec-sast::unhelpful\" for quick feedback.\nFor any detailed feedback, [add a comment here](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/issues/38).\n\u003c/small\u003e\n\n",
           "author" => {
             "id" => 21564538
           },

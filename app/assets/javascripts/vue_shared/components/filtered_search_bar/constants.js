@@ -89,6 +89,7 @@ export const TOKEN_TITLE_CLOSED = __('Closed date');
 export const TOKEN_TITLE_DEPLOYED_BEFORE = __('Deployed-before');
 export const TOKEN_TITLE_DEPLOYED_AFTER = __('Deployed-after');
 export const TOKEN_TITLE_ASSIGNED_SEAT = __('Assigned seat');
+export const TOKEN_TITLE_ENVIRONMENT = __('Environment');
 
 export const TOKEN_TYPE_APPROVED_BY = 'approved-by';
 export const TOKEN_TYPE_MERGE_USER = 'merge-user';
@@ -126,3 +127,4 @@ export const TOKEN_TYPE_CREATED = 'created';
 export const TOKEN_TYPE_CLOSED = 'closed';
 export const TOKEN_TYPE_DEPLOYED_BEFORE = 'deployed-before';
 export const TOKEN_TYPE_DEPLOYED_AFTER = 'deployed-after';
+export const TOKEN_TYPE_ENVIRONMENT = 'environment';

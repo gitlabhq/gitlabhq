@@ -31143,6 +31143,8 @@ CREATE INDEX index_vulnerability_reads_common_attrs_and_detection_for_groups ON 
 
 CREATE INDEX index_vulnerability_reads_common_finder_query_2 ON vulnerability_reads USING btree (project_id, state, report_type, severity, vulnerability_id DESC, dismissal_reason);
 
+CREATE INDEX index_vulnerability_reads_for_filtered_removal ON vulnerability_reads USING btree (project_id, resolved_on_default_branch);
+
 CREATE INDEX index_vulnerability_reads_for_vulnerability_export ON vulnerability_reads USING btree (traversal_ids, vulnerability_id) WHERE (archived = false);
 
 CREATE INDEX index_vulnerability_reads_on_cluster_agent_id ON vulnerability_reads USING btree (cluster_agent_id) WHERE (report_type = 7);

@@ -55323,6 +55323,9 @@ msgstr ""
 msgid "There was a problem fetching emoji."
 msgstr ""
 
+msgid "There was a problem fetching environments."
+msgstr ""
+
 msgid "There was a problem fetching epics."
 msgstr ""
 

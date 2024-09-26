@@ -238,3 +238,8 @@ export const getShowLabelsFromLocalStorage = (showLabelsLocalStorageKey, default
   }
   return null;
 };
+
+export const getNewWorkItemAutoSaveKey = (fullPath, workItemType) => {
+  if (!workItemType || !fullPath) return '';
+  return `new-${fullPath}-${workItemType.toLowerCase()}-draft`;
+};

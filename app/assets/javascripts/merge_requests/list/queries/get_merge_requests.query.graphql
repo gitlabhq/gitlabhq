@@ -24,6 +24,7 @@ query getMergeRequests(
   $targetBranches: [String!]
   $deployedBefore: Time
   $deployedAfter: Time
+  $environmentName: String
   $not: MergeRequestsResolverNegatedParams
   $beforeCursor: String
   $afterCursor: String
@@ -52,6 +53,7 @@ query getMergeRequests(
       targetBranches: $targetBranches
       deployedBefore: $deployedBefore
       deployedAfter: $deployedAfter
+      environmentName: $environmentName
       not: $not
       before: $beforeCursor
       after: $afterCursor

@@ -45,6 +45,8 @@ import {
   TOKEN_TYPE_DEPLOYED_BEFORE,
   TOKEN_TITLE_DEPLOYED_AFTER,
   TOKEN_TYPE_DEPLOYED_AFTER,
+  TOKEN_TYPE_ENVIRONMENT,
+  TOKEN_TITLE_ENVIRONMENT,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import { AutocompleteCache } from '~/issues/dashboard/utils';
 import {
@@ -84,6 +86,7 @@ const MilestoneToken = () =>
 const LabelToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/label_token.vue');
 const ReleaseToken = () => import('./tokens/release_client_search_token.vue');
+const EnvironmentToken = () => import('./tokens/environment_token.vue');
 const EmojiToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/emoji_token.vue');
 const DateToken = () => import('~/vue_shared/components/filtered_search_bar/tokens/date_token.vue');
@@ -117,6 +120,7 @@ export default {
     'newMergeRequestPath',
     'releasesEndpoint',
     'canBulkUpdate',
+    'environmentNamesPath',
   ],
   data() {
     return {
@@ -342,6 +346,16 @@ export default {
           token: ReleaseToken,
           operators: OPERATORS_IS_NOT,
           releasesEndpoint: this.releasesEndpoint,
+        },
+        {
+          type: TOKEN_TYPE_ENVIRONMENT,
+          title: TOKEN_TITLE_ENVIRONMENT,
+          icon: 'environment',
+          token: EnvironmentToken,
+          operators: OPERATORS_IS,
+          multiselect: false,
+          unique: true,
+          environmentsEndpoint: this.environmentNamesPath,
         },
         {
           type: TOKEN_TYPE_DEPLOYED_BEFORE,

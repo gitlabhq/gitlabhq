@@ -3,6 +3,7 @@ import contributedProjectsQuery from './graphql/queries/contributed_projects.que
 import personalProjectsQuery from './graphql/queries/personal_projects.query.graphql';
 import membershipProjectsQuery from './graphql/queries/membership_projects.query.graphql';
 import starredProjectsQuery from './graphql/queries/starred_projects.query.graphql';
+import inactiveProjectsQuery from './graphql/queries/inactive_projects.query.graphql';
 
 export const CONTRIBUTED_TAB = {
   text: __('Contributed'),
@@ -35,6 +36,8 @@ export const MEMBER_TAB = {
 export const INACTIVE_TAB = {
   text: __('Inactive'),
   value: 'inactive',
+  query: inactiveProjectsQuery,
+  queryPath: 'projects',
 };
 
 export const PROJECT_DASHBOARD_TABS = [

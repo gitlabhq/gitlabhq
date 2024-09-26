@@ -37,6 +37,7 @@ import {
   TOKEN_TYPE_CLOSED,
   TOKEN_TYPE_DEPLOYED_BEFORE,
   TOKEN_TYPE_DEPLOYED_AFTER,
+  TOKEN_TYPE_ENVIRONMENT,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 
 export const ISSUE_REFERENCE = /^#\d+$/;
@@ -478,6 +479,16 @@ export const filtersMap = {
       },
       [OPERATOR_BEFORE]: {
         [NORMAL_FILTER]: 'closed_before',
+      },
+    },
+  },
+  [TOKEN_TYPE_ENVIRONMENT]: {
+    [API_PARAM]: {
+      [NORMAL_FILTER]: 'environmentName',
+    },
+    [URL_PARAM]: {
+      [OPERATOR_IS]: {
+        [NORMAL_FILTER]: 'environment',
       },
     },
   },

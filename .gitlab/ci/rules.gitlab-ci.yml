@@ -1623,6 +1623,8 @@
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-schedule
       allow_failure: true
+    - <<: *if-default-branch-schedule-nightly
+      allow_failure: true
     # Rules to support .qa:rules:test-on-omnibus-ee
     - <<: *if-merge-request
       changes: *dependency-patterns

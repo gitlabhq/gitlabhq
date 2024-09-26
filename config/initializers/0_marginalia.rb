@@ -30,6 +30,7 @@ if Gitlab.dev_or_test_env?
       lib/gitlab/marginalia/
       gems/
       lib/gitlab/database/load_balancing/connection_proxy.rb
+      app/models/concerns/use_sql_function_for_primary_key_lookups.rb
     ])
 end
 

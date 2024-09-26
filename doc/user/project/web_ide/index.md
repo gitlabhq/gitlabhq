@@ -198,6 +198,24 @@ To change the color theme in the Web IDE:
 
 The active color theme is stored in the [user settings](#edit-settings).
 
+## Configure sync settings
+
+To configure sync settings in the Web IDE:
+
+1. Press <kbd>Shift</kbd>+<kbd>Command</kbd>+<kbd>P</kbd>.
+1. In the search box, enter `Settings Sync: Configure`.
+1. Select or clear the checkbox for:
+   - **Settings**
+   - **Keyboard shortcuts**
+   - **User snippets**
+   - **User tasks**
+   - **UI state**
+   - **Extensions**
+   - **Profiles**
+
+These settings are synced automatically across multiple Web IDE instances.
+You cannot sync user profiles or go back to an earlier version of synced settings.
+
 ## View missed notifications
 
 When you perform actions in the Web IDE, notifications appear in the lower right.

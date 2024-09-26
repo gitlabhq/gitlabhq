@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+def next?
+  File.basename(__FILE__) == "Gemfile.next"
+end
+
 source "https://rubygems.org"
 
 # Specify your gem's dependencies in gitlab-backup-cli.gemspec
@@ -8,4 +12,10 @@ gemspec
 group :development, :test do
   gem 'gitlab-rspec', path: '../gitlab-rspec'
   gem 'pry'
+end
+
+if next?
+  gem 'activesupport', '~> 7.1.4'
+else
+  gem 'activesupport', '~> 7.0.8'
 end

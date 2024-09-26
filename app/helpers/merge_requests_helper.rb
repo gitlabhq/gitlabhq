@@ -248,7 +248,8 @@ module MergeRequestsHelper
       export_csv_path: export_csv_project_merge_requests_path(project, request.query_parameters),
       rss_url: url_for(safe_params.merge(rss_url_options)),
       releases_endpoint: project_releases_path(project, format: :json),
-      can_bulk_update: can?(current_user, :admin_merge_request, project).to_s
+      can_bulk_update: can?(current_user, :admin_merge_request, project).to_s,
+      environment_names_path: unfoldered_environment_names_project_path(project, :json)
     }
   end
 

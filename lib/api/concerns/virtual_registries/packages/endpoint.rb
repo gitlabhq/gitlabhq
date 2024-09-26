@@ -45,12 +45,18 @@ module API
               end
 
               def workhorse_upload_url(url:, upstream:)
+                allow_localhost = Gitlab.dev_or_test_env? ||
+                  Gitlab::CurrentSettings.allow_local_requests_from_web_hooks_and_services?
+                allowed_uris = ObjectStoreSettings.enabled_endpoint_uris
                 send_workhorse_headers(
                   Gitlab::Workhorse.send_dependency(
                     upstream.headers,
                     url,
                     response_headers: NO_BROWSER_EXECUTION_RESPONSE_HEADERS,
-                    upload_config: { headers: { UPSTREAM_GID_HEADER => upstream.to_global_id.to_s } }
+                    upload_config: { headers: { UPSTREAM_GID_HEADER => upstream.to_global_id.to_s } },
+                    allow_localhost: allow_localhost,
+                    allowed_uris: allowed_uris,
+                    ssrf_filter: true
                   )
                 )
               end

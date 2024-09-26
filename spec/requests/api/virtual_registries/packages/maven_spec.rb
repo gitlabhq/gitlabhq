@@ -1228,6 +1228,16 @@ RSpec.describe API::VirtualRegistries::Packages::Maven, :aggregate_failures, fea
 
     shared_examples 'returning the workhorse send_dependency response' do
       it 'returns a workhorse send_url response' do
+        expect(Gitlab::Workhorse).to receive(:send_dependency).with(
+          an_instance_of(Hash),
+          an_instance_of(String),
+          a_hash_including(
+            allow_localhost: true,
+            ssrf_filter: true,
+            allowed_uris: ObjectStoreSettings.enabled_endpoint_uris
+          )
+        ).and_call_original
+
         request
 
         expect(response).to have_gitlab_http_status(:ok)

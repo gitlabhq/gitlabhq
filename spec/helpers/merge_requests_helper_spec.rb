@@ -347,7 +347,8 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
         export_csv_path: '/csv-url',
         rss_url: '/rss-url',
         releases_endpoint: project_releases_path(project, format: :json),
-        can_bulk_update: 'true'
+        can_bulk_update: 'true',
+        environment_names_path: unfoldered_environment_names_project_path(project, format: :json)
       }
 
       expect(subject).to eq(expected_data)

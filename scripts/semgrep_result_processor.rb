@@ -20,8 +20,6 @@ class SemgrepResultProcessor
   For any detailed feedback, [add a comment here](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/issues/38).
   </small>
 
-
-  /label ~"appsec-sast::commented"
   FOOTER
 
   def initialize(report_path = "#{ENV['CI_PROJECT_DIR']}/gl-sast-report.json")
