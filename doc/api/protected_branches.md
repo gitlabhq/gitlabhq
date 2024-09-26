@@ -396,7 +396,7 @@ Example response:
       "access_level": null,
       "user_id": null,
       "group_id": null,
-      "deploy_key_id: 1,
+      "deploy_key_id": 1,
       "access_level_description": "Deploy"
     }
   ],

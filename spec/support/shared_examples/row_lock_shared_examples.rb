@@ -4,7 +4,7 @@
 # Ensure a transaction also occurred.
 # Be careful! This form of spec is not foolproof, but better than nothing.
 
-RSpec.shared_examples 'locked row' do |nowait: false|
+RSpec.shared_examples 'locked row' do |timeout: false|
   it "has locked row" do
     table_name = row.class.table_name
     ids_regex = /SELECT.*FROM.*#{table_name}.*"#{table_name}"."id" = #{row.id}.+FOR NO KEY UPDATE/m
@@ -12,11 +12,11 @@ RSpec.shared_examples 'locked row' do |nowait: false|
     expect(recorded_queries.log).to include a_string_matching 'SAVEPOINT'
     expect(recorded_queries.log).to include a_string_matching ids_regex
 
-    expect(recorded_queries.log).to include a_string_matching 'NOWAIT' if nowait
+    expect(recorded_queries.log).to include a_string_matching 'LOCK_TIMEOUT' if timeout
   end
 end
 
-RSpec.shared_examples 'locked rows' do |nowait: false|
+RSpec.shared_examples 'locked rows' do |timeout: false|
   it "has locked rows" do
     table_name = rows.first.class.table_name
 
@@ -26,6 +26,6 @@ RSpec.shared_examples 'locked rows' do |nowait: false|
     expect(recorded_queries.log).to include a_string_matching 'SAVEPOINT'
     expect(recorded_queries.log).to include a_string_matching ids_regex
 
-    expect(recorded_queries.log).to include a_string_matching 'NOWAIT' if nowait
+    expect(recorded_queries.log).to include a_string_matching 'LOCK_TIMEOUT' if timeout
   end
 end

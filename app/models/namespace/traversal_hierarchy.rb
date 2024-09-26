@@ -13,6 +13,10 @@
 #
 class Namespace
   class TraversalHierarchy
+    include Transactions
+
+    LOCK_TIMEOUT = '500ms'
+
     attr_accessor :root
 
     def self.for_namespace(namespace)
@@ -26,6 +30,7 @@ class Namespace
     end
 
     # Update all traversal_ids in the current namespace hierarchy.
+    # rubocop:disable Database/RescueQueryCanceled -- Measuring specific query timeouts
     def sync_traversal_ids!
       # An issue in Rails since 2013 prevents this kind of join based update in
       # ActiveRecord. https://github.com/rails/rails/issues/13496
@@ -46,17 +51,20 @@ class Namespace
         %w[namespaces], url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/424279'
       ) do
         Namespace.transaction do
-          lock_options = 'FOR NO KEY UPDATE'
-          lock_options += ' NOWAIT' if Feature.enabled?(:sync_traversal_ids_nowait, Feature.current_request)
-
-          @root.lock!(lock_options)
+          if sync_traversal_ids_nowait?
+            Gitlab::Database::Transaction::Settings.with('LOCK_TIMEOUT', LOCK_TIMEOUT) do
+              @root.lock!('FOR NO KEY UPDATE')
+            end
+          else
+            @root.lock!('FOR NO KEY UPDATE')
+          end
 
           Namespace.connection.exec_query(sql)
         end
       end
-    rescue ActiveRecord::LockWaitTimeout => e
-      if e.message.starts_with? 'PG::LockNotAvailable'
-        db_nowait_counter.increment(source: 'Namespace#sync_traversal_ids!')
+    rescue ActiveRecord::QueryCanceled => e
+      if e.message.include?("canceling statement due to statement timeout")
+        db_query_timeout_counter.increment(source: 'Namespace#sync_traversal_ids!')
       end
 
       raise
@@ -71,6 +79,7 @@ class Namespace
         .joins("INNER JOIN (#{recursive_traversal_ids}) as cte ON namespaces.id = cte.id")
         .where('namespaces.traversal_ids::bigint[] <> cte.traversal_ids')
     end
+    # rubocop:enable Database/RescueQueryCanceled
 
     private
 
@@ -105,12 +114,16 @@ class Namespace
         .find_by(parent_id: nil)
     end
 
-    def db_nowait_counter
-      Gitlab::Metrics.counter(:db_nowait, 'Counts the times we triggered NOWAIT on a database lock operation')
+    def db_query_timeout_counter
+      Gitlab::Metrics.counter(:db_query_timeout, 'Counts the times the query timed out')
     end
 
     def db_deadlock_counter
       Gitlab::Metrics.counter(:db_deadlock, 'Counts the times we have deadlocked in the database')
+    end
+
+    def sync_traversal_ids_nowait?
+      Feature.enabled?(:sync_traversal_ids_nowait, Feature.current_request)
     end
   end
 end
