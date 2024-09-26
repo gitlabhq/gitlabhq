@@ -4272,7 +4272,7 @@ any subkeys. All additional details and related topics are the same.
 
 **Possible inputs**:
 
-- An array of file paths. File paths can include [CI/CD variables](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
+- See the possible inputs for `rules:changes` above.
 
 **Example of `rules:changes:paths`**:
 

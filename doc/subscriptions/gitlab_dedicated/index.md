@@ -149,13 +149,21 @@ Custom hostnames for GitLab Pages are not supported. If you use GitLab Pages, th
 
 GitLab leverages [weekly maintenance windows](../../administration/dedicated/create_instance.md#maintenance-window) to keep your instance up to date, fix security issues, and ensure the overall reliability and performance of your environment.
 
-#### Upgrades
+#### Upgrades and patches
 
-GitLab performs monthly upgrades to your instance with the latest patch release during your preferred [maintenance window](../../administration/dedicated/create_instance.md#maintenance-window) tracking one release behind the latest GitLab release. For example, if the latest version of GitLab available is 16.8, GitLab Dedicated runs on 16.7.
+Your GitLab Dedicated instance receives regular upgrades during your preferred maintenance window. These upgrades include the latest patch release for the minor version that is one version behind the current GitLab release. For example, if the latest GitLab version is 16.8, your GitLab Dedicated instance runs on 16.7.
+For more information, see the [GitLab release and maintenance policy](../../policy/maintenance.md).
 
-#### Unscheduled maintenance
+Monthly updates include:
 
-GitLab may conduct [unscheduled maintenance](../../administration/dedicated/create_instance.md#emergency-maintenance) to address high-severity issues affecting the security, availability, or reliability of your instance.
+- One minor release
+- Two patch releases
+
+To view details about your instance, including upcoming scheduled maintenance and the current GitLab version, sign in to Switchboard.
+
+#### Emergency maintenance
+
+GitLab performs [emergency maintenance](../../administration/dedicated/create_instance.md#emergency-maintenance) to address high-severity issues that affect your instance's security, availability, or reliability. When critical patch releases are available, GitLab Dedicated instances are upgraded as soon as possible using emergency maintenance procedures.
 
 ### Application
 
