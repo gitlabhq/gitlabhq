@@ -12,7 +12,7 @@ class GitlabPerformanceBarStatsWorker
   STATS_KEY = 'performance_bar_stats:pending_request_ids'
   STATS_KEY_EXPIRE = 30.minutes.to_i
 
-  feature_category :metrics
+  feature_category :observability
   idempotent!
 
   # _uuid is kept for backward compatibility, but it's not used anymore

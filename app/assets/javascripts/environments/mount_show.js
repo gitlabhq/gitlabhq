@@ -37,9 +37,10 @@ export const initHeader = () => {
         autoStopAt: dataset.autoStopAt,
         onSingleEnvironmentPage: true,
         // TODO: These two props are snake_case because the environments_mixin file uses
-        // them and the mixin is imported in several files. It would be nice to conver them to camelCase.
+        // them and the mixin is imported in several files. It would be nice to convert them to camelCase.
         stop_path: dataset.environmentStopPath,
         delete_path: dataset.environmentDeletePath,
+        descriptionHtml: dataset.descriptionHtml,
       };
 
       return {

@@ -14,7 +14,7 @@ class ErrorTrackingIssueLinkWorker # rubocop:disable Scalability/IdempotentWorke
   include ExclusiveLeaseGuard
   include Gitlab::Utils::StrongMemoize
 
-  feature_category :error_tracking
+  feature_category :observability
   worker_has_external_dependencies!
 
   LEASE_TIMEOUT = 15.minutes

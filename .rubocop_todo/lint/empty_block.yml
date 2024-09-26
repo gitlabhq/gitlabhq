@@ -47,8 +47,6 @@ Lint/EmptyBlock:
     - 'qa/spec/specs/helpers/context_selector_spec.rb'
     - 'qa/spec/specs/helpers/feature_flag_spec.rb'
     - 'qa/spec/specs/helpers/quarantine_spec.rb'
-    - 'scripts/lib/glfm/update_example_snapshots.rb'
-    - 'scripts/lib/glfm/update_specification.rb'
     - 'spec/controllers/application_controller_spec.rb'
     - 'spec/controllers/projects/artifacts_controller_spec.rb'
     - 'spec/controllers/projects/feature_flags_controller_spec.rb'

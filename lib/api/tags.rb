@@ -119,6 +119,7 @@ module API
       desc 'Delete a repository tag' do
         success code: 204
         failure [
+          { code: 400, message: 'Bad request' },
           { code: 403, message: 'Unauthenticated' },
           { code: 404, message: 'Not found' },
           { code: 412, message: 'Precondition failed' }
@@ -129,16 +130,14 @@ module API
         requires :tag_name, type: String, desc: 'The name of the tag'
       end
       delete ':id/repository/tags/:tag_name', requirements: TAG_ENDPOINT_REQUIREMENTS, feature_category: :source_code_management do
-        authorize_admin_tag
-
         tag = user_project.repository.find_tag(params[:tag_name])
         not_found!('Tag') unless tag
+        authorize!(:delete_tag, tag)
 
         commit = user_project.repository.commit(tag.dereferenced_target)
 
         destroy_conditionally!(commit, last_updated: commit.authored_date) do
-          result = ::Tags::DestroyService.new(user_project, current_user)
-                    .execute(params[:tag_name])
+          result = ::Tags::DestroyService.new(user_project, current_user).execute(params[:tag_name], skip_find: true)
 
           if result[:status] != :success
             render_api_error!(result[:message], result[:return_code])

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Usage::Metrics::Instrumentations::CountProjectsWithMonitorEnabledMetric,
-  feature_category: :metrics do
+  feature_category: :observability do
   let_it_be(:projects) { create_list(:project, 3) }
 
   let(:expected_value) { 2 }

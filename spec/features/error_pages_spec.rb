@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Error Pages', :js, feature_category: :error_tracking do
+RSpec.describe 'Error Pages', :js, feature_category: :observability do
   let(:user) { create(:user) }
   let(:project) { create(:project, :public) }
 

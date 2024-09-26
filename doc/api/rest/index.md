@@ -29,56 +29,50 @@ notice:
   [experimental or beta](../../policy/experiment-beta-support.md).
 - Fields behind a feature flag and disabled by default.
 
-## How to use the API
+## Make a REST API request
 
-API requests must include both `api` and the API version. The API
-version is defined in [`lib/api.rb`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/api/api.rb).
-For example, the root of the v4 API is at `/api/v4`.
+To make a REST API request:
 
-### Valid API request
+- Submit a request to an API endpoint by using a REST API client.
+- The GitLab instance responds to the request. It returns a status code and if applicable, the requested data. The status code indicates the outcome of the request and is useful when [troubleshooting](#troubleshooting).
 
-The following is a basic example of a request to the fictional `gitlab.example.com` endpoint:
+A REST API request must start with the root endpoint and the path.
 
-```shell
-curl "https://gitlab.example.com/api/v4/projects"
-```
+- The root endpoint is the GitLab host name.
+- The path must start with `/api/v4` (`v4` represents the API version).
 
-The API uses JSON to serialize data. You don't need to specify `.json` at the
-end of the API URL.
-
-NOTE:
-In the example above, replace `gitlab.example.com` with `gitlab.com` to query GitLab.com (GitLab SaaS).
-Access can be denied due to authentication. For more information, see [Authentication](#authentication).
-
-### API request to expose HTTP response headers
-
-If you want to expose HTTP response headers, use the `--include` option:
+In the following example, the API request retrieves the list of all projects on GitLab host
+`example.com`:
 
 ```shell
-curl --include "https://gitlab.example.com/api/v4/projects"
-HTTP/2 200
-...
+curl "https://example.com/api/v4/projects"
 ```
 
-This request can help you investigate an unexpected response.
+Access to some endpoints require authentication. For more information, see
+[Authentication](#authentication).
 
-### API request that includes the exit code
+## Rate limits
 
-If you want to expose the HTTP exit code, include the `--fail` option:
+REST API requests are subject to rate limit settings. These settings reduce the risk of a GitLab
+instance being overloaded.
 
-```shell
-curl --fail "https://gitlab.example.com/api/v4/does-not-exist"
-curl: (22) The requested URL returned error: 404
-```
+- For details, see [Rate limits](../../security/rate_limits.md).
+- For details of the rate limit settings used by
+GitLab.com, see
+  [GitLab.com-specific rate limits](../../user/gitlab_com/index.md#gitlabcom-specific-rate-limits).
 
-The HTTP exit code can help you diagnose the success or failure of your REST request.
+## Response format
+
+REST API responses are returned in JSON format. Some API endpoints also support
+plain text format. To confirm which content type an endpoint supports, see the
+[REST API resources](../api_resources.md).
 
 ## Authentication
 
-Most API requests require authentication, or only return public data when
-authentication isn't provided. When authentication is not required, the documentation
-for each endpoint specifies this. For example, the
-[`/projects/:id` endpoint](../projects.md#get-a-single-project) does not require authentication.
+Most API requests require authentication, or return only public data when authentication isn't
+provided. When authentication is not required, the documentation for each endpoint specifies this.
+For example, the [`/projects/:id` endpoint](../projects.md#get-a-single-project) does not require
+authentication.
 
 You can authenticate with the GitLab API in several ways:
 
@@ -94,14 +88,14 @@ Project access tokens are supported by:
 - Self-managed GitLab: Free, Premium, and Ultimate.
 - GitLab SaaS: Premium and Ultimate.
 
-If you are an administrator, you or your application can authenticate as a specific user.
-To do so, use:
+If you are an administrator, you or your application can authenticate as a specific user, using
+either:
 
 - [Impersonation tokens](#impersonation-tokens)
 - [Sudo](#sudo)
 
-If authentication information is not valid or is missing, GitLab returns an error
-message with a status code of `401`:
+If authentication information is not valid or is missing, GitLab returns an error message with a
+status code of `401`:
 
 ```json
 {
@@ -115,8 +109,8 @@ Deploy tokens can't be used with the GitLab public API. For details, see
 
 ### OAuth 2.0 tokens
 
-You can use an [OAuth 2.0 token](../oauth2.md) to authenticate with the API by passing
-it in either the `access_token` parameter or the `Authorization` header.
+You can use an [OAuth 2.0 token](../oauth2.md) to authenticate with the API by passing it in either
+the `access_token` parameter or the `Authorization` header.
 
 Example of using the OAuth 2.0 token in a parameter:
 
@@ -133,15 +127,14 @@ curl --header "Authorization: Bearer OAUTH-TOKEN" "https://gitlab.example.com/ap
 Read more about [GitLab as an OAuth 2.0 provider](../oauth2.md).
 
 NOTE:
-All OAuth access tokens are valid for two hours after they are created. You can
-use the `refresh_token` parameter to refresh tokens. See
-[OAuth 2.0 token](../oauth2.md) documentation for how to request a new access
-token using a refresh token.
+All OAuth access tokens are valid for two hours after they are created. You can use the
+`refresh_token` parameter to refresh tokens. See [OAuth 2.0 token](../oauth2.md) documentation for
+how to request a new access token using a refresh token.
 
 ### Personal/project/group access tokens
 
-You can use access tokens to authenticate with the API by passing it in either
-the `private_token` parameter or the `PRIVATE-TOKEN` header.
+You can use access tokens to authenticate with the API by passing it in either the `private_token`
+parameter or the `PRIVATE-TOKEN` header.
 
 Example of using the personal, project, or group access token in a parameter:
 
@@ -164,8 +157,8 @@ curl --header "Authorization: Bearer <your_access_token>" "https://gitlab.exampl
 ### Job tokens
 
 You can use job tokens to authenticate with [specific API endpoints](../../ci/jobs/ci_job_token.md)
-by passing the token in the `job_token` parameter or the `JOB-TOKEN` header.
-To pass the token in GitLab CI/CD jobs, use the `CI_JOB_TOKEN` variable.
+by passing the token in the `job_token` parameter or the `JOB-TOKEN` header. To pass the token in
+GitLab CI/CD jobs, use the `CI_JOB_TOKEN` variable.
 
 Example of using the job token in a parameter:
 
@@ -181,19 +174,19 @@ curl --header "JOB-TOKEN:$CI_JOB_TOKEN" "https://gitlab.example.com/api/v4/proje
 
 ### Session cookie
 
-Signing in to the main GitLab application sets a `_gitlab_session` cookie. The
-API uses this cookie for authentication if it's present. Using the API to
-generate a new session cookie isn't supported.
+Signing in to the main GitLab application sets a `_gitlab_session` cookie. The API uses this cookie
+for authentication if it's present. Using the API to generate a new session cookie isn't supported.
 
-The primary user of this authentication method is the web frontend of GitLab
-itself. The web frontend can use the API as the authenticated user to get a
-list of projects without explicitly passing an access token.
+The primary user of this authentication method is the web frontend of GitLab itself. The web
+frontend can use the API as the authenticated user to get a list of projects without explicitly
+passing an access token.
 
 ### Impersonation tokens
 
-Impersonation tokens are a type of [personal access token](../../user/profile/personal_access_tokens.md).
-They can be created only by an administrator, and are used to authenticate with the
-API as a specific user.
+Impersonation tokens are a type of
+[personal access token](../../user/profile/personal_access_tokens.md).
+They can be created only by an administrator, and are used to authenticate with the API as a
+specific user.
 
 Use impersonation tokens as an alternative to:
 
@@ -201,12 +194,11 @@ Use impersonation tokens as an alternative to:
 - The [Sudo](#sudo) feature. The user's or administrator's password or token
   may not be known, or may change over time.
 
-For more information, see the
+For more details, see the
 [User tokens API](../user_tokens.md#create-an-impersonation-token) documentation.
 
-Impersonation tokens are used exactly like regular personal access tokens, and
-can be passed in either the `private_token` parameter or the `PRIVATE-TOKEN`
-header.
+Impersonation tokens are used exactly like regular personal access tokens, and can be passed in
+either the `private_token` parameter or the `PRIVATE-TOKEN` header.
 
 #### Disable impersonation
 
@@ -239,23 +231,21 @@ By default, impersonation is enabled. To disable impersonation:
 
 ::EndTabs
 
-To re-enable impersonation, remove this configuration and reconfigure GitLab (Linux package installations) or restart
-GitLab (self-compiled installations).
+To re-enable impersonation, remove this configuration and reconfigure GitLab (Linux package
+installations) or restart GitLab (self-compiled installations).
 
 ### Sudo
 
-All API requests support performing an API request as if you were another user,
-provided you're authenticated as an administrator with an OAuth or personal
-access token that has the `sudo` scope. The API requests are executed with the
-permissions of the impersonated user.
+All API requests support performing an API request as if you were another user, provided you're
+authenticated as an administrator with an OAuth or personal access token that has the `sudo` scope.
+The API requests are executed with the permissions of the impersonated user.
 
-As an [administrator](../../user/permissions.md), pass the `sudo` parameter either
-by using query string or a header with an ID or username (case insensitive) of
-the user you want to perform the operation as. If passed as a header, the header
-name must be `Sudo`.
+As an [administrator](../../user/permissions.md), pass the `sudo` parameter either by using query
+string or a header with an ID or username (case insensitive) of the user you want to perform the
+operation as. If passed as a header, the header name must be `Sudo`.
 
-If a non administrative access token is provided, GitLab returns an error
-message with a status code of `403`:
+If a non administrative access token is provided, GitLab returns an error message with a status code
+of `403`:
 
 ```json
 {
@@ -263,8 +253,8 @@ message with a status code of `403`:
 }
 ```
 
-If an access token without the `sudo` scope is provided, an error message is
-returned with a status code of `403`:
+If an access token without the `sudo` scope is provided, an error message is returned with a status
+code of `403`:
 
 ```json
 {
@@ -274,8 +264,8 @@ returned with a status code of `403`:
 }
 ```
 
-If the sudo user ID or username cannot be found, an error message is
-returned with a status code of `404`:
+If the sudo user ID or username cannot be found, an error message is returned with a status code of
+`404`:
 
 ```json
 {
@@ -294,8 +284,7 @@ GET /projects?private_token=<your_access_token>&sudo=username
 curl --header "PRIVATE-TOKEN: <your_access_token>" --header "Sudo: username" "https://gitlab.example.com/api/v4/projects"
 ```
 
-Example of a valid API request and a request using cURL with sudo request,
-providing an ID:
+Example of a valid API request and a request using cURL with sudo request, providing an ID:
 
 ```plaintext
 GET /projects?private_token=<your_access_token>&sudo=23
@@ -304,43 +293,6 @@ GET /projects?private_token=<your_access_token>&sudo=23
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" --header "Sudo: 23" "https://gitlab.example.com/api/v4/projects"
 ```
-
-## Status codes
-
-The API is designed to return different status codes according to context and
-action. This way, if a request results in an error, you can get
-insight into what went wrong.
-
-The following table gives an overview of how the API functions generally behave.
-
-| Request type            | Description                                                                                                                     |
-|:------------------------|:--------------------------------------------------------------------------------------------------------------------------------|
-| `GET`                   | Access one or more resources and return the result as JSON.                                                                     |
-| `POST`                  | Return `201 Created` if the resource is successfully created and return the newly created resource as JSON.                     |
-| `GET` / `PUT` / `PATCH` | Return `200 OK` if the resource is accessed or modified successfully. The (modified) result is returned as JSON.                |
-| `DELETE`                | Returns `204 No Content` if the resource was deleted successfully or `202 Accepted` if the resource is scheduled to be deleted. |
-
-The following table shows the possible return codes for API requests.
-
-| Return values             | Description                                                                                                                                              |
-|:--------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `200 OK`                  | The `GET`, `PUT`, `PATCH` or `DELETE` request was successful, and the resource itself is returned as JSON.                                                        |
-| `201 Created`             | The `POST` request was successful, and the resource is returned as JSON.                                                                                 |
-| `202 Accepted`            | The `GET`, `PUT` or `DELETE` request was successful, and the resource is scheduled for processing.                                                       |
-| `204 No Content`          | The server has successfully fulfilled the request, and there is no additional content to send in the response payload body.                              |
-| `301 Moved Permanently`   | The resource has been definitively moved to the URL given by the `Location` headers.                                                                     |
-| `304 Not Modified`        | The resource hasn't been modified since the last request.                                                                                                |
-| `400 Bad Request`         | A required attribute of the API request is missing. For example, the title of an issue is not given.                                                     |
-| `401 Unauthorized`        | The user isn't authenticated. A valid [user token](#authentication) is necessary.                                                                        |
-| `403 Forbidden`           | The request isn't allowed. For example, the user isn't allowed to delete a project.                                                                      |
-| `404 Not Found`           | A resource couldn't be accessed. For example, an ID for a resource couldn't be found, or the user isn't authorized to access the resource.               |
-| `405 Method Not Allowed`  | The request isn't supported.                                                                                                                             |
-| `409 Conflict`            | A conflicting resource already exists. For example, creating a project with a name that already exists.                                                  |
-| `412 Precondition Failed` | The request was denied. This can happen if the `If-Unmodified-Since` header is provided when trying to delete a resource, which was modified in between. |
-| `422 Unprocessable`       | The entity couldn't be processed.                                                                                                                        |
-| `429 Too Many Requests`   | The user exceeded the [application rate limits](../../administration/instance_limits.md#rate-limits).                                                    |
-| `500 Server Error`        | While handling the request, something went wrong on the server.                                                                                          |
-| `503 Service Unavailable` | The server cannot handle the request because the server is temporarily overloaded.                                                                               |
 
 ## Redirects
 
@@ -701,7 +653,99 @@ GitLab treats `null` values in boolean fields the same as `false`.
 
 In boolean arguments, you should only set `true` or `false` values (not `null`).
 
-## Data validation and error reporting
+## Encoding `+` in ISO 8601 dates
+
+If you need to include a `+` in a query parameter, you may need to use `%2B`
+instead, due to a [W3 recommendation](https://www.w3.org/Addressing/URL/4_URI_Recommentations.html)
+that causes a `+` to be interpreted as a space. For example, in an ISO 8601 date,
+you may want to include a specific time in ISO 8601 format, such as:
+
+```plaintext
+2017-10-17T23:11:13.000+05:30
+```
+
+The correct encoding for the query parameter would be:
+
+```plaintext
+2017-10-17T23:11:13.000%2B05:30
+```
+
+## Resolve requests detected as spam
+
+REST API requests can be detected as spam. If a request is detected as spam and:
+
+- A CAPTCHA service is not configured, an error response is returned. For example:
+
+  ```json
+  {"message":{"error":"Your snippet has been recognized as spam and has been discarded."}}
+  ```
+
+- A CAPTCHA service is configured, you receive a response with:
+  - `needs_captcha_response` set to `true`.
+  - The `spam_log_id` and `captcha_site_key` fields set.
+
+  For example:
+
+  ```json
+  {"needs_captcha_response":true,"spam_log_id":42,"captcha_site_key":"REDACTED","message":{"error":"Your snippet has been recognized as spam. Please, change the content or solve the reCAPTCHA to proceed."}}
+  ```
+
+- Use the `captcha_site_key` to obtain a CAPTCHA response value using the appropriate CAPTCHA API.
+  Only [Google reCAPTCHA v2](https://developers.google.com/recaptcha/docs/display) is supported.
+- Resubmit the request with the `X-GitLab-Captcha-Response` and `X-GitLab-Spam-Log-Id` headers set.
+
+  ```shell
+  export CAPTCHA_RESPONSE="<CAPTCHA response obtained from CAPTCHA service>"
+  export SPAM_LOG_ID="<spam_log_id obtained from initial REST response>"
+  curl --request POST --header "PRIVATE-TOKEN: $PRIVATE_TOKEN" --header "X-GitLab-Captcha- 
+  Response: $CAPTCHA_RESPONSE" --header "X-GitLab-Spam-Log-Id: $SPAM_LOG_ID" 
+  "https://gitlab.example.com/api/v4/snippets? 
+  title=Title&file_name=FileName&content=Content&visibility=public"
+  ```
+
+## Troubleshooting
+
+When working with the REST API, you might encounter an issue.
+
+To troubleshoot, refer to the REST API status codes. It might also help to include the HTTP response headers and exit code.
+
+### Status codes
+
+The GitLab REST API returns a status code with every response, according to context and action. The
+status code returned by a request can be useful when troubleshooting.
+
+The following table gives an overview of how the API functions generally behave.
+
+| Request type            | Description |
+|:------------------------|:------------|
+| `GET`                   | Access one or more resources and return the result as JSON. |
+| `POST`                  | Returns `201 Created` if the resource is successfully created and return the newly created resource as JSON. |
+| `GET` / `PUT` / `PATCH` | Returns `200 OK` if the resource is accessed or modified successfully. The (modified) result is returned as JSON. |
+| `DELETE`                | Returns `204 No Content` if the resource was deleted successfully or `202 Accepted` if the resource is scheduled to be deleted. |
+
+The following table shows the possible return codes for API requests.
+
+| Return values             | Description |
+|:--------------------------|:------------|
+| `200 OK`                  | The `GET`, `PUT`, `PATCH` or `DELETE` request was successful, and the resource itself is returned as JSON. |
+| `201 Created`             | The `POST` request was successful, and the resource is returned as JSON. |
+| `202 Accepted`            | The `GET`, `PUT` or `DELETE` request was successful, and the resource is scheduled for processing. |
+| `204 No Content`          | The server has successfully fulfilled the request, and there is no additional content to send in the response payload body. |
+| `301 Moved Permanently`   | The resource has been definitively moved to the URL given by the `Location` headers. |
+| `304 Not Modified`        | The resource hasn't been modified since the last request. |
+| `400 Bad Request`         | A required attribute of the API request is missing. For example, the title of an issue is not given. |
+| `401 Unauthorized`        | The user isn't authenticated. A valid [user token](#authentication) is necessary. |
+| `403 Forbidden`           | The request isn't allowed. For example, the user isn't allowed to delete a project. |
+| `404 Not Found`           | A resource couldn't be accessed. For example, an ID for a resource couldn't be found, or the user isn't authorized to access the resource. |
+| `405 Method Not Allowed`  | The request isn't supported. |
+| `409 Conflict`            | A conflicting resource already exists. For example, creating a project with a name that already exists. |
+| `412 Precondition Failed` | The request was denied. This can happen if the `If-Unmodified-Since` header is provided when trying to delete a resource, which was modified in between. |
+| `422 Unprocessable`       | The entity couldn't be processed. |
+| `429 Too Many Requests`   | The user exceeded the [application rate limits](../../administration/instance_limits.md#rate-limits). |
+| `500 Server Error`        | While handling the request, something went wrong on the server. |
+| `503 Service Unavailable` | The server cannot handle the request because the server is temporarily overloaded. |
+
+#### Status code 400
 
 When working with the API you may encounter validation errors, in which case
 the API returns an HTTP `400` error.
@@ -760,76 +804,25 @@ follows:
 }
 ```
 
-## Unknown route
+### Include HTTP response headers
 
-When you attempt to access an API URL that doesn't exist, you receive a
-404 Not Found message.
+The HTTP response headers can provide extra information when troubleshooting.
 
-```http
-HTTP/1.1 404 Not Found
-Content-Type: application/json
-{
-    "error": "404 Not Found"
-}
-```
-
-## Encoding `+` in ISO 8601 dates
-
-If you need to include a `+` in a query parameter, you may need to use `%2B`
-instead, due to a [W3 recommendation](https://www.w3.org/Addressing/URL/4_URI_Recommentations.html)
-that causes a `+` to be interpreted as a space. For example, in an ISO 8601 date,
-you may want to include a specific time in ISO 8601 format, such as:
-
-```plaintext
-2017-10-17T23:11:13.000+05:30
-```
-
-The correct encoding for the query parameter would be:
-
-```plaintext
-2017-10-17T23:11:13.000%2B05:30
-```
-
-## Rate limits
-
-For administrator documentation on rate limit settings, see
-[Rate limits](../../security/rate_limits.md). To find the settings that are
-specifically used by GitLab.com, see
-[GitLab.com-specific rate limits](../../user/gitlab_com/index.md#gitlabcom-specific-rate-limits).
-
-## Content type
-
-The GitLab API supports the `application/json` content type by default, though
-some API endpoints also support `text/plain`.
-
-API endpoints do not support `text/plain` by default, unless it's explicitly documented.
-
-## Resolve requests detected as spam
-
-REST API requests can be detected as spam. If a request is detected as spam and:
-
-- A CAPTCHA service is not configured, an error response is returned. For example:
-
-  ```json
-  {"message":{"error":"Your snippet has been recognized as spam and has been discarded."}}
-  ```
-
-- A CAPTCHA service is configured, you receive a response with:
-  - `needs_captcha_response` set to `true`.
-  - The `spam_log_id` and `captcha_site_key` fields set.
-
-  For example:
-
-  ```json
-  {"needs_captcha_response":true,"spam_log_id":42,"captcha_site_key":"REDACTED","message":{"error":"Your snippet has been recognized as spam. Please, change the content or solve the reCAPTCHA to proceed."}}
-  ```
-
-- Use the `captcha_site_key` to obtain a CAPTCHA response value using the appropriate CAPTCHA API.
-  Only [Google reCAPTCHA v2](https://developers.google.com/recaptcha/docs/display) is supported.
-- Resubmit the request with the `X-GitLab-Captcha-Response` and `X-GitLab-Spam-Log-Id` headers set.
+To include HTTP response headers in the response, use the `--include` option:
 
 ```shell
-export CAPTCHA_RESPONSE="<CAPTCHA response obtained from CAPTCHA service>"
-export SPAM_LOG_ID="<spam_log_id obtained from initial REST response>"
-curl --request POST --header "PRIVATE-TOKEN: $PRIVATE_TOKEN" --header "X-GitLab-Captcha-Response: $CAPTCHA_RESPONSE" --header "X-GitLab-Spam-Log-Id: $SPAM_LOG_ID" "https://gitlab.example.com/api/v4/snippets?title=Title&file_name=FileName&content=Content&visibility=public"
+curl --include "https://gitlab.example.com/api/v4/projects"
+HTTP/2 200
+...
+```
+
+### Include HTTP exit code
+
+The HTTP exit code in the API response can provide extra information when troubleshooting.
+
+To include the HTTP exit code, include the `--fail` option:
+
+```shell
+curl --fail "https://gitlab.example.com/api/v4/does-not-exist"
+curl: (22) The requested URL returned error: 404
 ```

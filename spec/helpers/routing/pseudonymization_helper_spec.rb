@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Routing::PseudonymizationHelper, feature_category: :product_analytics_data_management do
+RSpec.describe ::Routing::PseudonymizationHelper, feature_category: :product_analytics do
   let_it_be(:group) { create(:group) }
   let_it_be(:subgroup) { create(:group, parent: group) }
   let_it_be(:project) { create(:project, group: group) }

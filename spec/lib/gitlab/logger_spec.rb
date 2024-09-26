@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Logger, feature_category: :logging do
+RSpec.describe Gitlab::Logger, feature_category: :observability do
   describe '.build' do
     before do
       allow(described_class).to receive(:file_name_noext).and_return('log')

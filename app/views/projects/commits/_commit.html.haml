@@ -15,6 +15,7 @@
 - ref               = local_assigns.fetch(:ref) { merge_request&.source_branch }
 - commit            = commit.present(current_user: current_user)
 - commit_status     = commit.detailed_status_for(ref)
+- show_legacy_ci_icon = local_assigns.fetch(:show_legacy_ci_icon, true)
 - tags              = commit.tags_for_display
 - collapsible       = local_assigns.fetch(:collapsible, true)
 - link_data_attrs   = local_assigns.fetch(:link_data_attrs, {})
@@ -71,7 +72,7 @@
       - else
         = render partial: 'projects/commit/ajax_signature', locals: { commit: commit }
 
-      - if commit_status
+      - if show_legacy_ci_icon && commit_status
         = render_commit_status(commit, commit_status, ref: ref)
 
       .js-commit-pipeline-status{ data: { endpoint: pipelines_project_commit_path(project, commit.id, ref: ref) } }

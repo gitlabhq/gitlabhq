@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Usage::Metrics::Instrumentations::ObservabilityFeaturesFfMetric, feature_category: :product_analytics_data_management do
+RSpec.describe Gitlab::Usage::Metrics::Instrumentations::ObservabilityFeaturesFfMetric, feature_category: :product_analytics do
   context 'with FF enabled globally' do
     it_behaves_like 'a correct instrumented metric value', { time_frame: 'none', data_source: 'database' } do
       let(:expected_value) { -1 }

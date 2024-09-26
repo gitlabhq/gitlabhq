@@ -38,7 +38,7 @@ Run this command to include this project with
 [`packadd`](https://neovim.io/doc/user/repeat.html#%3Apackadd) on startup:
 
 ```shell
-git clone git@gitlab.com:gitlab-org/editor-extensions/gitlab.vim.git ~/.local/share/nvim/site/pack/gitlab/start/gitlab.vim
+git clone https://gitlab.com/gitlab-org/editor-extensions/gitlab.vim.git ~/.local/share/nvim/site/pack/gitlab/start/gitlab.vim
 ```
 
 :::TabTitle `lazy.nvim`

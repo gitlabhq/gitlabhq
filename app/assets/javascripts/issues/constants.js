@@ -51,3 +51,40 @@ export const issuableTypeText = {
   [WORK_ITEM_TYPE_VALUE_OBJECTIVE]: __('objective'),
   [WORK_ITEM_TYPE_VALUE_TASK]: __('task'),
 };
+
+const SHIFT_KEY = 16;
+const CTRL_KEY = 17;
+const ALT_KEY = 18;
+const ESC_KEY = 27;
+const LEFT_ARROW_KEY = 37;
+const UP_ARROW_KEY = 38;
+const RIGHT_ARROW_KEY = 39;
+const DOWN_ARROW_KEY = 40;
+const WIN_CMD_KEY = 91;
+const CONTEXT_MENU_KEY = 93;
+
+export const NON_INPUT_KEY_EVENTS = [
+  { keyCode: SHIFT_KEY, label: 'shift' },
+  { keyCode: CTRL_KEY, label: 'control' },
+  { keyCode: ALT_KEY, label: 'alt' },
+  { keyCode: ESC_KEY, label: 'escape' },
+  { keyCode: LEFT_ARROW_KEY, label: 'left' },
+  { keyCode: UP_ARROW_KEY, label: 'up' },
+  { keyCode: RIGHT_ARROW_KEY, label: 'right' },
+  { keyCode: DOWN_ARROW_KEY, label: 'down' },
+  { keyCode: WIN_CMD_KEY, label: 'Windows/Command' },
+  { keyCode: CONTEXT_MENU_KEY, label: 'ContextMenu' },
+];
+
+export const NON_INPUT_KEYS = [
+  SHIFT_KEY,
+  CTRL_KEY,
+  ALT_KEY,
+  ESC_KEY,
+  LEFT_ARROW_KEY,
+  UP_ARROW_KEY,
+  RIGHT_ARROW_KEY,
+  DOWN_ARROW_KEY,
+  WIN_CMD_KEY,
+  CONTEXT_MENU_KEY,
+];

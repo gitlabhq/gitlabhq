@@ -445,7 +445,7 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
     end
   end
 
-  describe 'PUT #reset_error_tracking_access_token', feature_category: :error_tracking do
+  describe 'PUT #reset_error_tracking_access_token', feature_category: :observability do
     before do
       sign_in(admin)
     end

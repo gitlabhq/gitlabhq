@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ErrorTracking::IssueUpdateService, feature_category: :error_tracking do
+RSpec.describe ErrorTracking::IssueUpdateService, feature_category: :observability do
   include_context 'sentry error tracking context'
 
   let(:arguments) { { issue_id: non_existing_record_id, status: 'resolved' } }

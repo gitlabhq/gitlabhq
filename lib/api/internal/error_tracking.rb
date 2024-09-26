@@ -5,7 +5,7 @@ module API
     class ErrorTracking < ::API::Base
       GITLAB_ERROR_TRACKING_TOKEN_HEADER = "Gitlab-Error-Tracking-Token"
 
-      feature_category :error_tracking
+      feature_category :observability
 
       helpers do
         def verify_error_tracking_token!

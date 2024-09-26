@@ -179,6 +179,7 @@
     "MergeRequest",
     "Namespace",
     "Project",
+    "Vulnerability",
     "WorkItem"
   ],
   "User": [

@@ -6,7 +6,7 @@ module API
 
     ERROR_TRACKING_CLIENT_KEYS_TAGS = %w[error_tracking_client_keys].freeze
 
-    feature_category :error_tracking
+    feature_category :observability
     urgency :low
 
     params do

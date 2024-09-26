@@ -26,8 +26,6 @@ Performance/RegexpMatch:
     - 'qa/qa/service/cluster_provider/k3d.rb'
     - 'qa/qa/tools/ci/ff_changes.rb'
     - 'scripts/failed_tests.rb'
-    - 'scripts/lib/glfm/parse_examples.rb'
-    - 'scripts/lib/glfm/update_specification.rb'
     - 'scripts/lint-docs-blueprints.rb'
     - 'scripts/perf/query_limiting_report.rb'
     - 'scripts/qa/testcases-check'

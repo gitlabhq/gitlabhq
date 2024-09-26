@@ -3,7 +3,7 @@ table_name: metrics_users_starred_dashboards
 classes:
 - Metrics::UsersStarredDashboard
 feature_categories:
-- metrics
+- observability
 description: TODO
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/29912
 milestone: '13.0'

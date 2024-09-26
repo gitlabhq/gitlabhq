@@ -52,23 +52,7 @@ class ProtectedBranch < ApplicationRecord
   end
 
   def self.allow_force_push?(project, ref_name)
-    if allow_protected_branches_for_group?(project.group)
-      protected_branches = project.all_protected_branches.matching(ref_name)
-
-      project_protected_branches, group_protected_branches = protected_branches.partition(&:project_id)
-
-      # Group owner can be able to enforce the settings
-      return group_protected_branches.any?(&:allow_force_push) if group_protected_branches.present?
-      return project_protected_branches.any?(&:allow_force_push) if project_protected_branches.present?
-
-      false
-    else
-      project.protected_branches.allowing_force_push.matching(ref_name).any?
-    end
-  end
-
-  def self.allow_protected_branches_for_group?(group)
-    Feature.enabled?(:group_protected_branches, group) || Feature.enabled?(:allow_protected_branches_for_group, group)
+    project.all_protected_branches.allowing_force_push.matching(ref_name).any?
   end
 
   def self.any_protected?(project, ref_names)

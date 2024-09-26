@@ -764,7 +764,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     end
   end
 
-  describe 'read_grafana', feature_category: :metrics do
+  describe 'read_grafana', feature_category: :observability do
     using RSpec::Parameterized::TableSyntax
 
     let(:policy) { :read_grafana }
@@ -793,7 +793,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     end
   end
 
-  describe 'read_prometheus', feature_category: :metrics do
+  describe 'read_prometheus', feature_category: :observability do
     using RSpec::Parameterized::TableSyntax
 
     before do

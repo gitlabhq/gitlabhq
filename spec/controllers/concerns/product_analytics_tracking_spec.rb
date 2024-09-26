@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe ProductAnalyticsTracking, :snowplow, feature_category: :product_analytics_data_management do
+RSpec.describe ProductAnalyticsTracking, :snowplow, feature_category: :product_analytics do
   include TrackingHelpers
   include SnowplowHelpers
 

@@ -32,6 +32,7 @@ module EnvironmentHelper
       environment_terminal_path: terminal_project_environment_path(project, environment),
       has_terminals: environment.has_terminals?,
       is_environment_available: environment.available?,
+      description_html: markdown_field(environment, :description),
       auto_stop_at: environment.auto_stop_at,
       graphql_etag_key: environment.etag_cache_key
     }

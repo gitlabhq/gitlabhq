@@ -18,8 +18,6 @@ import {
   NOT_AVAILABLE_TEXT,
   NOT_AVAILABLE_SIZE,
   COPY_IMAGE_PATH_TITLE,
-  OCI_INDEX_TOOLTIP,
-  DOCKER_MANIFEST_LIST_TOOLTIP,
 } from '~/packages_and_registries/container_registry/explorer/constants';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import DetailsRow from '~/vue_shared/components/registry/details_row.vue';
@@ -45,13 +43,14 @@ describe('tags list row', () => {
   const findDetailsRows = () => wrapper.findAllComponents(DetailsRow);
   const findPublishedDateDetail = () => wrapper.findByTestId('published-date-detail');
   const findManifestDetail = () => wrapper.findByTestId('manifest-detail');
+  const findManifestMediaType = () => wrapper.findByTestId('manifest-media-type');
   const findConfigurationDetail = () => wrapper.findByTestId('configuration-detail');
   const findSignaturesDetails = () => wrapper.findAllByTestId('signatures-detail');
   const findWarningIcon = () => wrapper.findComponent(GlIcon);
   const findAdditionalActionsMenu = () => wrapper.findComponent(GlDisclosureDropdown);
   const findDeleteButton = () => wrapper.findComponent(GlDisclosureDropdownItem);
   const findSignedBadge = () => wrapper.findComponent(GlBadge);
-  const findLabelsIcon = () => wrapper.findByTestId('labels-icon');
+  const findIndexBadge = () => wrapper.findByTestId('index-badge');
   const findSignatureDetailsModal = () => wrapper.findComponent(SignatureDetailsModal);
   const getTooltipFor = (component) => getBinding(component.element, 'gl-tooltip');
 
@@ -370,17 +369,19 @@ describe('tags list row', () => {
         name                       | finderFunction             | text                                                                                                            | icon            | clipboard
         ${'published date detail'} | ${findPublishedDateDetail} | ${'Published to the gitlab-org/gitlab-test/rails-12009 image repository on November 5, 2020 at 1:29:38 PM GMT'} | ${'clock'}      | ${false}
         ${'manifest detail'}       | ${findManifestDetail}      | ${'Manifest digest: sha256:2cf3d2fdac1b04a14301d47d51cb88dcd26714c74f91440eeee99ce399089062'}                   | ${'log'}        | ${true}
+        ${'manifest media type'}   | ${findManifestMediaType}   | ${'Manifest media type: application/vnd.docker.distribution.manifest.list.v2+json'}                             | ${'media'}      | ${false}
         ${'configuration detail'}  | ${findConfigurationDetail} | ${'Configuration digest: sha256:c2613843ab33aabf847965442b13a8b55a56ae28837ce182627c0716eb08c02b'}              | ${'cloud-gear'} | ${true}
       `('$name details row', ({ finderFunction, text, icon, clipboard }) => {
+        const props = { ...defaultProps, tag: tagWithListMediaType };
         it(`has ${text} as text`, async () => {
-          mountComponent();
+          mountComponent(props);
           await nextTick();
 
           expect(finderFunction().text()).toMatchInterpolatedText(text);
         });
 
         it(`has the ${icon} icon`, async () => {
-          mountComponent();
+          mountComponent(props);
           await nextTick();
 
           expect(finderFunction().props('icon')).toBe(icon);
@@ -388,14 +389,14 @@ describe('tags list row', () => {
 
         if (clipboard) {
           it(`clipboard button exist`, async () => {
-            mountComponent();
+            mountComponent(props);
             await nextTick();
 
             expect(finderFunction().findComponent(ClipboardButton).exists()).toBe(clipboard);
           });
 
           it('is disabled when the component is disabled', async () => {
-            mountComponent({ ...defaultProps, disabled: true });
+            mountComponent({ ...props, disabled: true });
             await nextTick();
 
             expect(finderFunction().findComponent(ClipboardButton).attributes().disabled).toBe(
@@ -535,24 +536,19 @@ describe('tags list row', () => {
   });
 
   describe('media type', () => {
-    it('without media type', () => {
-      mountComponent();
+    it.each`
+      description                               | image                   | expectedIndexBadge | expectedSize
+      ${'without media type'}                   | ${tag}                  | ${false}           | ${true}
+      ${'with OCI index media type'}            | ${tagWithOCIMediaType}  | ${true}            | ${false}
+      ${'with Docker manifest list media type'} | ${tagWithListMediaType} | ${true}            | ${false}
+    `('$description', ({ image, expectedIndexBadge, expectedSize }) => {
+      mountComponent({ ...defaultProps, tag: image });
 
-      expect(findLabelsIcon().exists()).toBe(false);
-    });
-
-    it('with OCI index media type', () => {
-      mountComponent({ ...defaultProps, tag: tagWithOCIMediaType });
-
-      expect(findLabelsIcon().exists()).toBe(true);
-      expect(getTooltipFor(findLabelsIcon()).value).toBe(OCI_INDEX_TOOLTIP);
-    });
-
-    it('with Docker manifest list media type', () => {
-      mountComponent({ ...defaultProps, tag: tagWithListMediaType });
-
-      expect(findLabelsIcon().exists()).toBe(true);
-      expect(getTooltipFor(findLabelsIcon()).value).toBe(DOCKER_MANIFEST_LIST_TOOLTIP);
+      expect(findIndexBadge().exists()).toBe(expectedIndexBadge);
+      if (expectedIndexBadge) {
+        expect(findIndexBadge().text()).toBe('index');
+      }
+      expect(findSize().exists()).toBe(expectedSize);
     });
   });
 });

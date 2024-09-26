@@ -570,7 +570,7 @@ RSpec.describe ProtectedBranch, feature_category: :source_code_management do
 
       where(:group_level_value, :project_level_value, :result) do
         true    | false    | true
-        false   | true     | false
+        false   | true     | true
         true    | nil      | true
         false   | nil      | false
         nil     | nil      | false

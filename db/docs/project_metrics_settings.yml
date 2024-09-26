@@ -3,7 +3,7 @@ table_name: project_metrics_settings
 classes:
 - ProjectMetricsSetting
 feature_categories:
-- metrics
+- observability
 description: TODO
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/bb13ae974c295718eb80c14a179b721ba192a089
 milestone: '11.11'

@@ -883,6 +883,9 @@ msgstr ""
 msgid "%{group_name}&%{epic_iid} &middot; created %{epic_created} by %{author}"
 msgstr ""
 
+msgid "%{group_name}&%{work_item_iid} &middot; created %{work_item_created} by %{author}"
+msgstr ""
+
 msgid "%{groupsLength} group"
 msgid_plural "%{groupsLength} groups"
 msgstr[0] ""
@@ -6530,9 +6533,6 @@ msgid "Analytics|Use ClickHouse for supported analytics reports. Available when 
 msgstr ""
 
 msgid "Analytics|Use the visualization designer to create custom visualizations. After you save a visualization, you can add it to a dashboard."
-msgstr ""
-
-msgid "Analytics|Value Streams Dashboard"
 msgstr ""
 
 msgid "Analytics|View available dashboards"
@@ -15051,6 +15051,9 @@ msgstr ""
 msgid "ContainerRegistry|Manifest digest: %{digest}"
 msgstr ""
 
+msgid "ContainerRegistry|Manifest media type: %{mediaType}"
+msgstr ""
+
 msgid "ContainerRegistry|Minimum access level for delete"
 msgstr ""
 
@@ -15236,12 +15239,6 @@ msgstr ""
 msgid "ContainerRegistry|This project's cleanup policy for tags is not enabled."
 msgstr ""
 
-msgid "ContainerRegistry|This tag points to a Docker manifest list, which references multiple container images"
-msgstr ""
-
-msgid "ContainerRegistry|This tag points to a OCI index, which references multiple container images"
-msgstr ""
-
 msgid "ContainerRegistry|To widen your search, change or remove the filters above."
 msgstr ""
 
@@ -15273,6 +15270,9 @@ msgid "ContainerRegistry|You are about to remove %{item}. Are you sure?"
 msgstr ""
 
 msgid "ContainerRegistry|You can add an image to this registry with the following commands:"
+msgstr ""
+
+msgid "ContainerRegistry|index"
 msgstr ""
 
 msgid "Containers"
@@ -21490,6 +21490,9 @@ msgstr ""
 msgid "Environments|Synced"
 msgstr ""
 
+msgid "Environments|The description is displayed to anyone who can see this environment."
+msgstr ""
+
 msgid "Environments|There are no deployments for this environment yet. %{linkStart}Learn more about setting up deployments.%{linkEnd}"
 msgstr ""
 
@@ -21515,6 +21518,9 @@ msgid "Environments|Updating"
 msgstr ""
 
 msgid "Environments|View logs"
+msgstr ""
+
+msgid "Environments|Write a description or drag your files here…"
 msgstr ""
 
 msgid "Environments|by %{avatar}"
@@ -32084,6 +32090,16 @@ msgstr ""
 
 msgid "LicenseCompliance|Learn more about %{linkStart}License Approvals%{linkEnd}"
 msgstr ""
+
+msgid "LicenseCompliance|License Compliance detected %d license"
+msgid_plural "LicenseCompliance|License Compliance detected %d licenses"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "LicenseCompliance|License Compliance detected %d license and policy violation"
+msgid_plural "LicenseCompliance|License Compliance detected %d licenses and policy violations"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "LicenseCompliance|License Compliance detected %d license and policy violation for the source branch only"
 msgid_plural "LicenseCompliance|License Compliance detected %d licenses and policy violations for the source branch only"
@@ -49118,7 +49134,13 @@ msgstr ""
 msgid "SecurityOrchestration|Actions"
 msgstr ""
 
+msgid "SecurityOrchestration|Add a numeric suffix to ensure unique job names."
+msgstr ""
+
 msgid "SecurityOrchestration|Add action"
+msgstr ""
+
+msgid "SecurityOrchestration|Add job name suffix %{suffixEditor} %{suffixIcon}"
 msgstr ""
 
 msgid "SecurityOrchestration|Add new action"
@@ -49451,6 +49473,9 @@ msgstr ""
 msgid "SecurityOrchestration|Merge request approval policy syntax changes"
 msgstr ""
 
+msgid "SecurityOrchestration|Never"
+msgstr ""
+
 msgid "SecurityOrchestration|New merge request approval policy"
 msgstr ""
 
@@ -49494,6 +49519,9 @@ msgid "SecurityOrchestration|Non-existing tags have been detected in the policy 
 msgstr ""
 
 msgid "SecurityOrchestration|Not enabled"
+msgstr ""
+
+msgid "SecurityOrchestration|On conflict"
 msgstr ""
 
 msgid "SecurityOrchestration|On runners with tag:"
@@ -49667,6 +49695,9 @@ msgid "SecurityOrchestration|Select scan type"
 msgstr ""
 
 msgid "SecurityOrchestration|Select security policy project"
+msgstr ""
+
+msgid "SecurityOrchestration|Select suffix"
 msgstr ""
 
 msgid "SecurityOrchestration|Send a bot message when the conditions match."

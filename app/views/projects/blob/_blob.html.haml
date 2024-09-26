@@ -10,7 +10,7 @@
 .info-well.gl-hidden.sm:gl-block
   .well-segment
     %ul.blob-commit-info
-      = render 'projects/commits/commit', commit: @last_commit, project: @project, ref: @ref
+      = render 'projects/commits/commit', commit: @last_commit, project: @project, ref: @ref, show_legacy_ci_icon: false
 
   - if project.licensed_feature_available?(:code_owners)
     #js-code-owners{ data: { blob_path: blob.path, project_path: @project.full_path, branch: @ref, can_view_branch_rules: can_view_branch_rules?, branch_rules_path: branch_rules_path } }

@@ -16,6 +16,7 @@ import {
   humanizeBranchValidationErrors,
 } from '~/lib/utils/text_utility';
 import api from '~/api';
+import { NON_INPUT_KEYS } from './constants';
 
 // Todo: Remove this when fixing issue in input_setter plugin
 const InputSetter = { ...ISetter };
@@ -378,6 +379,17 @@ export default class CreateMergeRequestDropdown {
   }
 
   onChangeInput(event) {
+    // If the user was holding a meta key, released a meta key, or released or pressed esc, do nothing.
+    if (
+      event.altKey ||
+      event.ctrlKey ||
+      event.metaKey ||
+      event.shiftKey ||
+      NON_INPUT_KEYS.includes(event.keyCode)
+    ) {
+      return undefined;
+    }
+
     this.disable();
     let target;
     let value;

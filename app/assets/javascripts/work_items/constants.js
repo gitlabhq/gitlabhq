@@ -349,7 +349,7 @@ export const NEW_WORK_ITEM_IID = 'new-work-item-iid';
 
 export const NEW_WORK_ITEM_GID = 'gid://gitlab/WorkItem/new';
 
-export const NEW_EPIC_FEEDBACK_PROMPT_EXPIRY = '2024-11-01';
+export const NEW_EPIC_FEEDBACK_PROMPT_EXPIRY = '2024-12-31';
 export const FEATURE_NAME = 'work_item_epic_feedback';
 
 export const CLEAR_VALUE = 'CLEAR_VALUE';

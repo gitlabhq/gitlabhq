@@ -65,12 +65,8 @@ export const MISSING_MANIFEST_WARNING_TOOLTIP = s__(
   'ContainerRegistry|Invalid tag: missing manifest digest',
 );
 
-export const OCI_INDEX_TOOLTIP = s__(
-  'ContainerRegistry|This tag points to a OCI index, which references multiple container images',
-);
-
-export const DOCKER_MANIFEST_LIST_TOOLTIP = s__(
-  'ContainerRegistry|This tag points to a Docker manifest list, which references multiple container images',
+export const MANIFEST_MEDIA_TYPE_ROW_TEXT = s__(
+  'ContainerRegistry|Manifest media type: %{mediaType}',
 );
 
 export const CREATED_AT = s__('ContainerRegistry|Created %{time}');

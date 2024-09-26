@@ -3,7 +3,7 @@ table_name: grafana_integrations
 classes:
 - GrafanaIntegration
 feature_categories:
-- metrics
+- observability
 description: TODO
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17234
 milestone: '12.4'

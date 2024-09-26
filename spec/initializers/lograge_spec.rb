@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'lograge', type: :request, feature_category: :logging do
+RSpec.describe 'lograge', type: :request, feature_category: :observability do
   let(:headers) { { 'X-Request-ID' => 'new-correlation-id' } }
 
   let(:large_params) do

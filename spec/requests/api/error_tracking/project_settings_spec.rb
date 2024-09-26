@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::ErrorTracking::ProjectSettings, feature_category: :error_tracking do
+RSpec.describe API::ErrorTracking::ProjectSettings, feature_category: :observability do
   let_it_be(:project) { create(:project) }
   let_it_be(:setting) { create(:project_error_tracking_setting, project: project) }
   let_it_be(:project_without_setting) { create(:project) }

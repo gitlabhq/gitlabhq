@@ -20,6 +20,9 @@
         - if @scope == 'projects'
           .term
             = render 'shared/projects/list', projects: @search_objects, pipeline_status: false
+        - elsif @scope === 'epics' && should_show_work_items_as_epics_in_results?
+          - @search_objects.each_with_index do |work_item, index|
+            = render partial: "search/results/work_item", locals: { work_item: work_item, index: index }
         - elsif @scope === 'users'
           %table.table.b-table.gl-table.b-table-stacked-md{ role: 'table' }
             %thead

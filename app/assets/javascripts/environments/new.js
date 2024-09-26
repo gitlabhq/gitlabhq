@@ -11,7 +11,7 @@ export default (el) => {
     return null;
   }
 
-  const { projectEnvironmentsPath, projectPath, kasTunnelUrl } = el.dataset;
+  const { projectEnvironmentsPath, projectPath, markdownPreviewPath, kasTunnelUrl } = el.dataset;
 
   return new Vue({
     el,
@@ -19,6 +19,7 @@ export default (el) => {
     provide: {
       projectEnvironmentsPath,
       projectPath,
+      markdownPreviewPath,
       kasTunnelUrl: removeLastSlashInUrlPath(kasTunnelUrl),
     },
     render(h) {

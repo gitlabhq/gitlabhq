@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe Gitlab::InternalEvents::EventDefinitions, feature_category: :product_analytics_data_management do
+RSpec.describe Gitlab::InternalEvents::EventDefinitions, feature_category: :product_analytics do
   around do |example|
     described_class.instance_variable_set(:@events, nil)
     example.run

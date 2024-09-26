@@ -202,7 +202,7 @@ Here's an example of an algorithm to analyze multiple subgroups and projects:
 The shell approach with `glab` might be more suitable for smaller analyses. For larger analyses, you should use a script that
 uses the API client libraries. This type of script can improve readability, data storage, flow control, testing, and reusability.
 
-To ensure the script doesn't reach [API rate limits](../api/rest/index.md#rate-limits), the following
+To ensure the script doesn't reach [API rate limits](../security/rate_limits.md), the following
 example code is not optimized for parallel API requests.
 
 To implement this algorithm:

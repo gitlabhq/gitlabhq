@@ -96,20 +96,6 @@ RSpec.describe LooseForeignKeys::CleanerService, feature_category: :database do
           issue.reload
           expect(issue[target_column]).to eq(target_value)
         end
-
-        context 'when loose_foreign_keys_update_column_to is disabled' do
-          before do
-            stub_feature_flags(loose_foreign_keys_update_column_to: false)
-          end
-
-          it 'does not perform UPDATE query' do
-            allow(ApplicationRecord.connection).to receive(:execute).and_call_original
-            expect(ApplicationRecord.connection).not_to receive(:execute).with(update_query)
-            expect(Sidekiq.logger).to receive(:error).with('Invalid on_delete argument: update_column_to')
-
-            cleaner_service.execute
-          end
-        end
       end
     end
 

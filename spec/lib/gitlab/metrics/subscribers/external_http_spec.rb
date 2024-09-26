@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Metrics::Subscribers::ExternalHttp, :request_store, feature_category: :logging do
+RSpec.describe Gitlab::Metrics::Subscribers::ExternalHttp, :request_store, feature_category: :observability do
   let(:transaction) { Gitlab::Metrics::WebTransaction.new({}) }
   let(:subscriber) { described_class.new }
 

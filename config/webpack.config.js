@@ -132,6 +132,7 @@ const alias = {
   test_helpers: path.join(ROOT_PATH, 'spec/frontend_integration/test_helpers'),
   public: path.join(ROOT_PATH, 'public'),
   storybook_addons: path.resolve(ROOT_PATH, 'storybook/config/addons'),
+  storybook_helpers: path.resolve(ROOT_PATH, 'storybook/helpers'),
 };
 
 if (IS_EE) {

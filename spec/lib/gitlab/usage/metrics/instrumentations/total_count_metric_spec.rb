@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Usage::Metrics::Instrumentations::TotalCountMetric, :clean_gitlab_redis_shared_state,
-  feature_category: :product_analytics_data_management do
+  feature_category: :product_analytics do
   before do
     allow(Gitlab::Tracking::EventDefinition).to receive(:internal_event_exists?).and_return(true)
 

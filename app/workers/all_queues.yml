@@ -527,7 +527,7 @@
   :tags: []
 - :name: cronjob:gitlab_performance_bar_stats
   :worker_name: GitlabPerformanceBarStatsWorker
-  :feature_category: :metrics
+  :feature_category: :observability
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :cpu
@@ -617,7 +617,7 @@
   :tags: []
 - :name: cronjob:metrics_global_metrics_update
   :worker_name: Metrics::GlobalMetricsUpdateWorker
-  :feature_category: :metrics
+  :feature_category: :observability
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -3173,7 +3173,7 @@
   :tags: []
 - :name: error_tracking_issue_link
   :worker_name: ErrorTrackingIssueLinkWorker
-  :feature_category: :error_tracking
+  :feature_category: :observability
   :has_external_dependencies: true
   :urgency: :low
   :resource_boundary: :unknown

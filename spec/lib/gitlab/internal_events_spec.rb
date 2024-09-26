@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_analytics_data_management do
+RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_analytics do
   include TrackingHelpers
   include SnowplowHelpers
 

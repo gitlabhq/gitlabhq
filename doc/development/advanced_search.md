@@ -450,6 +450,43 @@ Requires `type` field. Query with `doc_type` in options.
 }
 ```
 
+##### `by_group_level_confidentiality`
+
+Requires `current_user` and `group_ids` fields. Query based on the permissions to user to read confidential group entities.
+
+```json
+{
+  "bool": {
+    "must": [
+      {
+        "term": {
+          "confidential": {
+            "value": true,
+            "_name": "confidential:true"
+          }
+        }
+      },
+      {
+        "terms": {
+          "namespace_id": [
+            1
+          ],
+          "_name": "groups:can:read_confidential_work_items"
+        }
+      }
+    ]
+  },
+  "should": {
+    "term": {
+      "confidential": {
+        "value": false,
+        "_name": "confidential:false"
+      }
+    }
+  }
+}
+```
+
 ##### `by_confidentiality`
 
 Requires `confidential`, `author_id`, `assignee_id`, `project_id` fields. Query with `confidential` in options.
@@ -683,6 +720,171 @@ Requires `source_branch` field. Query with `source_branch` or `not_source_branch
     "minimum_should_match": 1
   }
 }
+```
+
+##### `by_group_level_authorization`
+
+Requires `current_user`, `group_ids`, `traversal_id`, `search_level` fields. Query with `search_level` and 
+filter on `namespace_visibility_level` based on permissions user has for each group.
+
+NOTE:
+Examples are shown for a logged in user. The JSON may be different for users with authorizations, admins, external, or anonymous users
+
+###### global
+
+```json
+{
+  "bool": {
+    "should": [
+      {
+        "bool": {
+          "filter": [
+            {
+              "term": {
+                "namespace_visibility_level": {
+                  "value": 20,
+                  "_name": "filters:namespace_visibility_level:public"
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "bool": {
+          "filter": [
+            {
+              "term": {
+                "namespace_visibility_level": {
+                  "value": 10,
+                  "_name": "filters:namespace_visibility_level:internal"
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "bool": {
+          "filter": [
+            {
+              "term": {
+                "namespace_visibility_level": {
+                  "value": 0,
+                  "_name": "filters:namespace_visibility_level:private"
+                }
+              }
+            },
+            {
+              "terms": {
+                "namespace_id": [
+                  33,
+                  22
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "minimum_should_match": 1
+  }
+}
+```
+
+###### group
+
+```json
+[
+  {
+    "bool": {
+      "_name": "filters:level:group",
+      "minimum_should_match": 1,
+      "should": [
+        {
+          "prefix": {
+            "traversal_ids": {
+              "_name": "filters:level:group:ancestry_filter:descendants",
+              "value": "22-"
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "bool": {
+      "should": [
+        {
+          "bool": {
+            "filter": [
+              {
+                "term": {
+                  "namespace_visibility_level": {
+                    "value": 20,
+                    "_name": "filters:namespace_visibility_level:public"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "bool": {
+            "filter": [
+              {
+                "term": {
+                  "namespace_visibility_level": {
+                    "value": 10,
+                    "_name": "filters:namespace_visibility_level:internal"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "bool": {
+            "filter": [
+              {
+                "term": {
+                  "namespace_visibility_level": {
+                    "value": 0,
+                    "_name": "filters:namespace_visibility_level:private"
+                  }
+                }
+              },
+              {
+                "terms": {
+                  "namespace_id": [
+                    22
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "minimum_should_match": 1
+    }
+  },
+  {
+    "bool": {
+      "_name": "filters:level:group",
+      "minimum_should_match": 1,
+      "should": [
+        {
+          "prefix": {
+            "traversal_ids": {
+              "_name": "filters:level:group:ancestry_filter:descendants",
+              "value": "22-"
+            }
+          }
+        }
+      ]
+    }
+  }
+]
 ```
 
 ##### `by_search_level_and_membership`

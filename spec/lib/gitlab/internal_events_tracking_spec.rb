@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::InternalEventsTracking, feature_category: :product_analytics_data_management do
+RSpec.describe Gitlab::InternalEventsTracking, feature_category: :product_analytics do
   before do
     stub_const('TestModule::ClassThatTracks', Class.new do
       include Gitlab::InternalEventsTracking

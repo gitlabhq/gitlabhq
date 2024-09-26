@@ -17,6 +17,7 @@ const environment = {
   id: '1',
   name: 'foo',
   externalUrl: 'https://foo.example.com',
+  description: 'this is description',
   clusterAgent: null,
   kubernetesNamespace: null,
   fluxResourcePath: null,
@@ -78,6 +79,7 @@ describe('~/environments/components/edit.vue', () => {
   const findForm = () => wrapper.findByRole('form', { name: 'Edit environment' });
 
   const showsLoading = () => wrapper.findComponent(GlLoadingIcon).exists();
+  const showsFormLoading = () => wrapper.findByTestId('save-environment').props('loading');
 
   describe('default', () => {
     it('performs the environment apollo query', () => {
@@ -127,11 +129,11 @@ describe('~/environments/components/edit.vue', () => {
       });
 
       it('shows loader after form is submitted', async () => {
-        expect(showsLoading()).toBe(false);
+        expect(showsFormLoading()).toBe(false);
 
         await findForm().trigger('submit');
 
-        expect(showsLoading()).toBe(true);
+        expect(showsFormLoading()).toBe(true);
       });
 
       it('submits the updated environment on submit', async () => {
@@ -154,7 +156,7 @@ describe('~/environments/components/edit.vue', () => {
         await waitForPromises();
 
         expect(createAlert).toHaveBeenCalledWith({ message: 'uh oh!' });
-        expect(showsLoading()).toBe(false);
+        expect(showsFormLoading()).toBe(false);
       });
     });
   });

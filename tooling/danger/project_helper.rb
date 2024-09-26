@@ -17,10 +17,6 @@ module Tooling
 
       # First-match win, so be sure to put more specific regex at the top...
       CATEGORIES = {
-        # GitLab Flavored Markdown Specification files. See more context at: https://docs.gitlab.com/ee/development/gitlab_flavored_markdown/specification_guide/#specification-files
-        %r{\Aglfm_specification/.+prosemirror_json\.yml} => [:frontend],
-        %r{\Aglfm_specification/.+\.yml} => [:frontend, :backend],
-
         # API auto generated doc files and schema (must come before generic docs regex)
         %r{\Adoc/api/graphql/reference/} => [:docs, :backend],
         %r{\Adoc/api/openapi/.*\.yaml\z} => [:docs, :backend],
