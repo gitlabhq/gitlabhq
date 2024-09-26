@@ -10,13 +10,12 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed
 
-## Error: `HTTP Basic: Access denied. The provided password or token ...`
+## Error: `HTTP Basic: Access denied. If a password was provided for Git authentication ...`
 
 When making a request, you can receive the following error:
 
 ```plaintext
-HTTP Basic: Access denied. The provided password or token is incorrect or your account has 2FA enabled and you must use a personal
-access token instead of a password.
+HTTP Basic: Access denied. If a password was provided for Git authentication, the password was incorrect or you're required to use a token instead of a password. If a token was provided, it was either incorrect, expired, or improperly scoped.
 ```
 
 This error occurs in the following scenarios:

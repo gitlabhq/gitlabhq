@@ -71,6 +71,10 @@ module Types
       description: 'Access type of access request to-do items.',
       null: true
 
+    field :snoozed_until, Types::TimeType,
+      description: 'The time until when the todo is snoozed.',
+      null: true
+
     def project
       Gitlab::Graphql::Loaders::BatchModelLoader.new(Project, object.project_id).find
     end

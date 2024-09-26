@@ -317,7 +317,7 @@ Valid values for `older_than` (days until tags are automatically removed) when u
 - `30d`
 - `90d`
 
-See the API documentation for further details: [Edit project API](../../../api/projects.md#edit-project).
+See the API documentation for further details: [Edit project API](../../../api/projects.md#edit-a-project).
 
 ### Use with external container registries
 

@@ -886,4 +886,4 @@ Example response:
 
 ## Give a group access to a project
 
-See [share project with group](projects.md#share-project-with-group)
+See [share project with group](projects.md#share-a-project-with-a-group)

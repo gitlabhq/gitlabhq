@@ -13,38 +13,33 @@ DETAILS:
 Interact with [projects](../user/project/index.md) by using the REST API.
 
 NOTE:
-Users with any [default role](../user/permissions.md#roles) can read project properties with the Projects API. Only users with the Owner or Maintainer role can edit project properties in the UI or with the API.
+Users with any [default role](../user/permissions.md#roles) can read project properties with the Projects API. Only
+users with the Owner or Maintainer role can edit project properties in the UI or with the API.
 
 ## Project visibility level
 
-A project in GitLab can be private, internal, or public.
+A project in GitLab can have a visibility level of either:
+
+- Private
+- Internal
+- Public
+
 The visibility level is determined by the `visibility` field in the project.
 
-For details, see [Project visibility](../user/public_access.md).
+For more information, see [Project visibility](../user/public_access.md).
 
 The fields returned in responses vary based on the [permissions](../user/permissions.md) of the authenticated user.
 
-## Removals in API v5
+## Deprecated attributes
 
-These attributes are deprecated, and are scheduled to be removed in v5 of the API:
+These attributes are deprecated and could be removed in a future version of the REST API.
+Use the alternative attributes instead.
 
-- `tag_list`: Use the `topics` attribute instead.
-- `marked_for_deletion_at`: Use the `marked_for_deletion_on` attribute instead.
-  Available only to [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/).
-- `approvals_before_merge`: Use the [Merge request approvals API](merge_request_approvals.md) instead.
-  Available only to [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/).
-
-## Project merge method
-
-The `merge_method` can use these options:
-
-- `merge`: a merge commit is created for every merge, and merging is allowed if
-  no conflicts are present.
-- `rebase_merge`: a merge commit is created for every merge, but merging is only
-  allowed if fast-forward merge is possible. You can make sure that the target
-  branch would build after this merge request builds and merges.
-- `ff`: no merge commits are created and all merges are fast-forwarded. Merging
-  is only allowed if the branch could be fast-forwarded.
+| Deprecated attribute     | Alternative |
+|:-------------------------|:------------|
+| `tag_list`               | `topics` attribute |
+| `marked_for_deletion_at` | `marked_for_deletion_on`. Premium and Ultimate tier only. |
+| `approvals_before_merge` | [Merge request approvals API](merge_request_approvals.md). Premium and Ultimate tier only. |
 
 ## List all projects
 
@@ -57,6 +52,8 @@ are returned.
 ```plaintext
 GET /projects
 ```
+
+Supported attributes:
 
 | Attribute                     | Type     | Required | Description |
 |:------------------------------|:---------|:---------|:------------|
@@ -92,8 +89,7 @@ GET /projects
 | `with_programming_language`   | string   | No       | Limit by projects which use the given programming language. |
 | `marked_for_deletion_on`      | date     | No       | Filter by date when project was marked for deletion. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/463939) in GitLab 17.1. Premium and Ultimate only. |
 
-This endpoint supports [keyset pagination](rest/index.md#keyset-based-pagination)
-for selected `order_by` options.
+This endpoint supports [keyset pagination](rest/index.md#keyset-based-pagination) for selected `order_by` options.
 
 When `simple=true` or the user is unauthenticated this returns something like:
 
@@ -146,7 +142,7 @@ Example response:
   }
 ```
 
-When the user is authenticated and `simple` is not set this returns something like:
+When the user is authenticated and `simple` is not set, this endpoint returns something like:
 
 ```json
 [
@@ -293,7 +289,8 @@ When the user is authenticated and `simple` is not set this returns something li
 ```
 
 NOTE:
-`last_activity_at` is updated based on [project activity](../user/project/working_with_projects.md#view-project-activity) and [project events](events.md). `updated_at` is updated whenever the project record is changed in the database.
+`last_activity_at` is updated based on [project activity](../user/project/working_with_projects.md#view-project-activity)
+and [project events](events.md). `updated_at` is updated whenever the project record is changed in the database.
 
 You can filter by [custom attributes](custom_attributes.md) with:
 
@@ -309,14 +306,13 @@ curl --globoff --request GET "https://gitlab.example.com/api/v4/projects?custom_
 
 ### Pagination limits
 
-[Offset-based pagination](rest/index.md#offset-based-pagination)
-is [limited to 50,000 records](https://gitlab.com/gitlab-org/gitlab/-/issues/34565).
-[Keyset pagination](rest/index.md#keyset-based-pagination) is required to retrieve
-projects beyond this limit.
+You can use [offset-based pagination](rest/index.md#offset-based-pagination) to access
+[up to 50,000 projects](https://gitlab.com/gitlab-org/gitlab/-/issues/34565).
 
+Use [keyset pagination](rest/index.md#keyset-based-pagination) to retrieve projects beyond this limit.
 Keyset pagination supports only `order_by=id`. Other sorting options aren't available.
 
-## List user projects
+## List a user's projects
 
 Get a list of visible projects owned by the given user. When accessed without
 authentication, only public projects are returned.
@@ -334,6 +330,8 @@ for selected `order_by` options.
 ```plaintext
 GET /users/:user_id/projects
 ```
+
+Supported attributes:
 
 | Attribute                     | Type     | Required | Description |
 |:------------------------------|:---------|:---------|:------------|
@@ -357,6 +355,8 @@ GET /users/:user_id/projects
 | `with_issues_enabled`         | boolean  | No       | Limit by enabled issues feature. |
 | `with_merge_requests_enabled` | boolean  | No       | Limit by enabled merge requests feature. |
 | `with_programming_language`   | string   | No       | Limit by projects which use the given programming language. |
+
+Example response:
 
 ```json
 [
@@ -445,7 +445,7 @@ GET /users/:user_id/projects
     "merge_commit_template": null,
     "squash_commit_template": null,
     "issue_branch_template": "gitlab/%{id}-%{title}",
-    "marked_for_deletion_at": "2020-04-03", // Deprecated and will be removed in API v5 in favor of marked_for_deletion_on
+    "marked_for_deletion_at": "2020-04-03", // Deprecated in favor of marked_for_deletion_on. Planned for removal in a future version of the REST API.
     "marked_for_deletion_on": "2020-04-03",
     "statistics": {
       "commit_count": 37,
@@ -617,12 +617,16 @@ Get a list of visible projects a given user has contributed to.
 GET /users/:user_id/contributed_projects
 ```
 
+Supported attributes:
+
 | Attribute  | Type    | Required | Description |
 |:-----------|:--------|:---------|:------------|
 | `user_id`  | string  | Yes      | The ID or username of the user. |
 | `order_by` | string  | No       | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, `star_count`, or `last_activity_at` fields. Default is `created_at`. |
 | `simple`   | boolean | No       | Return only limited fields for each project. Without authentication, this operation is a no-op; only simple fields are returned. |
 | `sort`     | string  | No       | Return projects sorted in `asc` or `desc` order. Default is `desc`. |
+
+Example request:
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/users/5/contributed_projects"
@@ -862,6 +866,8 @@ authentication, only public projects are returned.
 GET /users/:user_id/starred_projects
 ```
 
+Supported attributes:
+
 | Attribute                     | Type     | Required | Description |
 |:------------------------------|:---------|:---------|:------------|
 | `user_id`                     | string   | Yes      | The ID or username of the user. |
@@ -881,6 +887,8 @@ GET /users/:user_id/starred_projects
 | `with_custom_attributes`      | boolean  | No       | Include [custom attributes](custom_attributes.md) in response. _(administrator only)_ |
 | `with_issues_enabled`         | boolean  | No       | Limit by enabled issues feature. |
 | `with_merge_requests_enabled` | boolean  | No       | Limit by enabled merge requests feature. |
+
+Example request:
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/users/5/starred_projects"
@@ -1111,7 +1119,7 @@ Example response:
 ]
 ```
 
-## Get single project
+## Get a single project
 
 Get a specific project. This endpoint can be accessed without authentication if
 the project is publicly accessible.
@@ -1120,12 +1128,16 @@ the project is publicly accessible.
 GET /projects/:id
 ```
 
+Supported attributes:
+
 | Attribute                | Type              | Required | Description |
 |:-------------------------|:------------------|:---------|:------------|
 | `id`                     | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 | `license`                | boolean           | No       | Include project license data. |
 | `statistics`             | boolean           | No       | Include project statistics. Available only to users with at least the Reporter role. |
 | `with_custom_attributes` | boolean           | No       | Include [custom attributes](custom_attributes.md) in response. _(administrators only)_ |
+
+Example response:
 
 ```json
 {
@@ -1269,7 +1281,7 @@ GET /projects/:id
   "merge_commit_template": null,
   "squash_commit_template": null,
   "issue_branch_template": "gitlab/%{id}-%{title}",
-  "marked_for_deletion_at": "2020-04-03", // Deprecated and will be removed in API v5 in favor of marked_for_deletion_on
+  "marked_for_deletion_at": "2020-04-03", // Deprecated in favor of marked_for_deletion_on. Planned for removal in a future version of the REST API.
   "marked_for_deletion_on": "2020-04-03",
   "compliance_frameworks": [ "sox" ],
   "warn_about_potentially_unwanted_characters": true,
@@ -1386,7 +1398,7 @@ can also see the `issues_template` and `merge_requests_template` parameters for 
 }
 ```
 
-## Get project users
+## Get a project's users
 
 Get the users list of a project.
 
@@ -1394,11 +1406,15 @@ Get the users list of a project.
 GET /projects/:id/users
 ```
 
+Supported attributes:
+
 | Attribute    | Type              | Required | Description |
 |:-------------|:------------------|:---------|:------------|
 | `id`         | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 | `search`     | string            | No       | Search for specific users. |
 | `skip_users` | integer array     | No       | Filter out users with the specified IDs. |
+
+Example response:
 
 ```json
 [
@@ -1429,6 +1445,8 @@ Get a list of ancestor groups for this project.
 GET /projects/:id/groups
 ```
 
+Supported attributes:
+
 | Attribute                 | Type              | Required | Description |
 |:--------------------------|:------------------|:---------|:------------|
 | `id`                      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
@@ -1437,6 +1455,8 @@ GET /projects/:id/groups
 | `shared_visible_only`     | boolean           | No       | Limit to shared groups user has access to. |
 | `skip_groups`             | array of integers | No       | Skip the group IDs passed. |
 | `with_shared`             | boolean           | No       | Include projects shared with this group. Default is `false`. |
+
+Example response:
 
 ```json
 [
@@ -1467,10 +1487,14 @@ Get a list of groups that can be shared with a project
 GET /projects/:id/share_locations
 ```
 
+Supported attributes:
+
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
 | `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 | `search`  | string            | No       | Search for specific groups. |
+
+Example response:
 
 ```json
 [
@@ -1493,7 +1517,7 @@ GET /projects/:id/share_locations
 ]
 ```
 
-## Create project
+## Create a project
 
 > - `operations_access_level` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/385798) in GitLab 16.0.
 > - `model_registry_access_level` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412734) in GitLab 16.7.
@@ -1508,17 +1532,7 @@ where `password` is a public access key with the `api` scope enabled.
 POST /projects
 ```
 
-Example request:
-
-```shell
-curl --request POST --header "PRIVATE-TOKEN: <your-token>" \
-     --header "Content-Type: application/json" --data '{
-        "name": "new_project", "description": "New Project", "path": "new_project",
-        "namespace_id": "42", "initialize_with_readme": "true"}' \
-     --url "https://gitlab.example.com/api/v4/projects/"
-```
-
-General project attributes:
+Supported general project attributes:
 
 | Attribute                                          | Type    | Required                       | Description |
 |:---------------------------------------------------|:--------|:-------------------------------|:------------|
@@ -1548,7 +1562,7 @@ General project attributes:
 | `issues_enabled`                                   | boolean | No                             | _(Deprecated)_ Enable issues for this project. Use `issues_access_level` instead. |
 | `jobs_enabled`                                     | boolean | No                             | _(Deprecated)_ Enable jobs for this project. Use `builds_access_level` instead. |
 | `lfs_enabled`                                      | boolean | No                             | Enable LFS. |
-| `merge_method`                                     | string  | No                             | Set the [merge method](#project-merge-method) used. |
+| `merge_method`                                     | string  | No                             | Set the project's [merge method](../user/project/merge_requests/methods/index.md). Can be `merge` (merge commit), `rebase_merge` (merge commit with semi-linear history), or `ff` (fast-forward merge). |
 | `merge_pipelines_enabled`                          | boolean | No                             | Enable or disable merged results pipelines. |
 | `merge_requests_enabled`                           | boolean | No                             | _(Deprecated)_ Enable merge requests for this project. Use `merge_requests_access_level` instead. |
 | `merge_trains_enabled`                             | boolean | No                             | Enable or disable merge trains. |
@@ -1609,7 +1623,17 @@ settings with access control options can be one of:
 | `snippets_access_level`                | string | No       | Set visibility of [snippets](../user/snippets.md#change-default-visibility-of-snippets). |
 | `wiki_access_level`                    | string | No       | Set visibility of [wiki](../user/project/wiki/index.md#enable-or-disable-a-project-wiki). |
 
-## Create project for user
+Example request:
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your-token>" \
+     --header "Content-Type: application/json" --data '{
+        "name": "new_project", "description": "New Project", "path": "new_project",
+        "namespace_id": "42", "initialize_with_readme": "true"}' \
+     --url "https://gitlab.example.com/api/v4/projects/"
+```
+
+## Create a project for a user
 
 > - `operations_access_level` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/385798) in GitLab 16.0.
 > - `model_registry_access_level` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412734) in GitLab 16.7.
@@ -1624,7 +1648,7 @@ where `password` is a public access key with the `api` scope enabled.
 POST /projects/user/:user_id
 ```
 
-General project attributes:
+Supported general project attributes:
 
 | Attribute                                          | Type    | Required | Description |
 |:---------------------------------------------------|:--------|:---------|:------------|
@@ -1656,7 +1680,7 @@ General project attributes:
 | `jobs_enabled`                                     | boolean | No       | _(Deprecated)_ Enable jobs for this project. Use `builds_access_level` instead. |
 | `lfs_enabled`                                      | boolean | No       | Enable LFS. |
 | `merge_commit_template`                            | string  | No       | [Template](../user/project/merge_requests/commit_templates.md) used to create merge commit message in merge requests. |
-| `merge_method`                                     | string  | No       | Set the [merge method](#project-merge-method) used. |
+| `merge_method`                                     | string  | No       | Set the project's [merge method](../user/project/merge_requests/methods/index.md). Can be `merge` (merge commit), `rebase_merge` (merge commit with semi-linear history), or `ff` (fast-forward merge). |
 | `merge_requests_enabled`                           | boolean | No       | _(Deprecated)_ Enable merge requests for this project. Use `merge_requests_access_level` instead. |
 | `mirror_trigger_builds`                            | boolean | No       | Pull mirroring triggers builds. Premium and Ultimate only. |
 | `mirror`                                           | boolean | No       | Enables pull mirroring in a project. Premium and Ultimate only. |
@@ -1717,7 +1741,7 @@ settings with access control options can be one of:
 | `snippets_access_level`                | string | No       | Set visibility of [snippets](../user/snippets.md#change-default-visibility-of-snippets). |
 | `wiki_access_level`                    | string | No       | Set visibility of [wiki](../user/project/wiki/index.md#enable-or-disable-a-project-wiki). |
 
-## Edit project
+## Edit a project
 
 > - `operations_access_level` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/385798) in GitLab 16.0.
 > - `model_registry_access_level` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412734) in GitLab 16.7.
@@ -1732,16 +1756,7 @@ where `password` is a public access key with the `api` scope enabled.
 PUT /projects/:id
 ```
 
-For example, to toggle the setting for
-[shared runners on a GitLab.com project](../ci/runners/index.md):
-
-```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your-token>" \
-     --url "https://gitlab.com/api/v4/projects/<your-project-ID>" \
-     --data "shared_runners_enabled=true" # to turn off: "shared_runners_enabled=false"
-```
-
-General project attributes:
+Supported general project attributes:
 
 | Attribute                                          | Type              | Required | Description |
 |:---------------------------------------------------|:------------------|:---------|:------------|
@@ -1782,7 +1797,7 @@ General project attributes:
 | `keep_latest_artifact`                             | boolean           | No       | Disable or enable the ability to keep the latest artifact for this project. |
 | `lfs_enabled`                                      | boolean           | No       | Enable LFS. |
 | `merge_commit_template`                            | string            | No       | [Template](../user/project/merge_requests/commit_templates.md) used to create merge commit message in merge requests. |
-| `merge_method`                                     | string            | No       | Set the [merge method](#project-merge-method) used. |
+| `merge_method`                                     | string            | No       | Set the project's [merge method](../user/project/merge_requests/methods/index.md). Can be `merge` (merge commit), `rebase_merge` (merge commit with semi-linear history), or `ff` (fast-forward merge). |
 | `merge_pipelines_enabled`                          | boolean           | No       | Enable or disable merged results pipelines. |
 | `merge_requests_enabled`                           | boolean           | No       | _(Deprecated)_ Enable merge requests for this project. Use `merge_requests_access_level` instead. |
 | `merge_requests_template`                          | string            | No       | Default description for merge requests. Description is parsed with GitLab Flavored Markdown. See [Templates for issues and merge requests](#templates-for-issues-and-merge-requests). Premium and Ultimate only. |
@@ -1821,6 +1836,14 @@ General project attributes:
 | `warn_about_potentially_unwanted_characters`       | boolean           | No       | Enable warnings about usage of potentially unwanted characters in this project. |
 | `wiki_enabled`                                     | boolean           | No       | _(Deprecated)_ Enable wiki for this project. Use `wiki_access_level` instead. |
 
+For example, to toggle the setting for [shared runners on a GitLab.com project](../ci/runners/index.md):
+
+```shell
+curl --request PUT --header "PRIVATE-TOKEN: <your-token>" \
+     --url "https://gitlab.com/api/v4/projects/<your-project-ID>" \
+     --data "shared_runners_enabled=true" # to turn off: "shared_runners_enabled=false"
+```
+
 [Project feature visibility](../user/public_access.md#change-the-visibility-of-individual-features-in-a-project)
 settings with access control options can be one of:
 
@@ -1850,7 +1873,7 @@ settings with access control options can be one of:
 | `snippets_access_level`                | string | No       | Set visibility of [snippets](../user/snippets.md#change-default-visibility-of-snippets). |
 | `wiki_access_level`                    | string | No       | Set visibility of [wiki](../user/project/wiki/index.md#enable-or-disable-a-project-wiki). |
 
-## Fork project
+## Fork a project
 
 Forks a project into the user namespace of the authenticated user or the one provided.
 
@@ -1884,6 +1907,8 @@ forked relationship with the specified project
 GET /projects/:id/forks
 ```
 
+Supported attributes:
+
 | Attribute                     | Type              | Required | Description |
 |:------------------------------|:------------------|:---------|:------------|
 | `id`                          | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
@@ -1903,6 +1928,8 @@ GET /projects/:id/forks
 | `with_custom_attributes`      | boolean           | No       | Include [custom attributes](custom_attributes.md) in response. _(administrators only)_ |
 | `with_issues_enabled`         | boolean           | No       | Limit by enabled issues feature. |
 | `with_merge_requests_enabled` | boolean           | No       | Limit by enabled merge requests feature. |
+
+Example request:
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/forks"
@@ -2002,9 +2029,13 @@ starred.
 POST /projects/:id/star
 ```
 
+Supported attributes:
+
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
 | `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+
+Example request:
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/star"
@@ -2108,7 +2139,11 @@ This endpoint is rate-limited to 60 requests per minute per user (for authentica
 
 By default, this request returns 20 results at a time because the API results [are paginated](rest/index.md#pagination).
 
-Parameters:
+```plaintext
+GET /projects/:id/invited_groups
+```
+
+Supported attributes:
 
 | Attribute                | Type             | Required | Description |
 |:-------------------------|:-----------------|:---------|:------------|
@@ -2117,10 +2152,6 @@ Parameters:
 | `min_access_level`       | integer          | no       | Limit to groups where current user has at least the specified [role (`access_level`)](members.md#roles) |
 | `relation`               | array of strings | no       | Filter the groups by relation (direct or inherited) |
 | `with_custom_attributes` | boolean          | no       | Include [custom attributes](custom_attributes.md) in response (administrators only) |
-
-```plaintext
-GET /projects/:id/invited_groups
-```
 
 Example response:
 
@@ -2145,9 +2176,13 @@ Unstars a given project. Returns status code `304` if the project is not starred
 POST /projects/:id/unstar
 ```
 
+Supported attributes:
+
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
 | `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+
+Example request:
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/unstar"
@@ -2244,7 +2279,7 @@ Example response:
 }
 ```
 
-## List starrers of a project
+## List users who starred a project
 
 List the users who starred the specified project.
 
@@ -2252,10 +2287,14 @@ List the users who starred the specified project.
 GET /projects/:id/starrers
 ```
 
+Supported attributes:
+
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
 | `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 | `search`  | string            | No       | Search for specific users. |
+
+Example request:
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/starrers"
@@ -2298,9 +2337,13 @@ Get languages used in a project with percentage value.
 GET /projects/:id/languages
 ```
 
+Supported attributes:
+
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
 | `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+
+Example request:
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/languages"
@@ -2327,9 +2370,13 @@ does not change the project.
 POST /projects/:id/archive
 ```
 
+Supported attributes:
+
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
 | `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+
+Example request:
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/archive"
@@ -2461,9 +2508,13 @@ doesn't change the project.
 POST /projects/:id/unarchive
 ```
 
+Supported attributes:
+
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
 | `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+
+Example request:
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/unarchive"
@@ -2585,7 +2636,7 @@ Example response:
 }
 ```
 
-## Delete project
+## Delete a project
 
 This endpoint:
 
@@ -2603,16 +2654,19 @@ This endpoint:
   [default deletion delay](../administration/settings/visibility_and_access_controls.md#deletion-protection).
 
 WARNING:
-The option to delete projects immediately from deletion protection settings in the **Admin** area was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/389557) in GitLab 15.9 and removed in GitLab 16.0.
+The option to delete projects immediately from deletion protection settings in the **Admin** area was
+[deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/389557) in GitLab 15.9 and removed in GitLab 16.0.
 
 ```plaintext
 DELETE /projects/:id
 ```
 
+Supported attributes:
+
 | Attribute            | Type              | Required | Description |
 |:---------------------|:------------------|:---------|:------------|
 | `id`                 | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
-| `full_path`          | string            | no       | Full path of project to use with `permanently_remove`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396500) in GitLab 15.11. To find the project path, use `path_with_namespace` from [get single project](projects.md#get-single-project). Premium and Ultimate only. |
+| `full_path`          | string            | no       | Full path of project to use with `permanently_remove`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396500) in GitLab 15.11. To find the project path, use `path_with_namespace` from [get single project](projects.md#get-a-single-project). Premium and Ultimate only. |
 | `permanently_remove` | boolean/string    | no       | Immediately deletes a project if it is marked for deletion. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396500) in GitLab 15.11. Premium and Ultimate only. |
 
 ## Restore project marked for deletion
@@ -2627,6 +2681,8 @@ Restores project marked for deletion.
 POST /projects/:id/restore
 ```
 
+Supported attributes:
+
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
 | `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
@@ -2638,6 +2694,8 @@ Uploads an avatar to the specified project.
 ```plaintext
 PUT /projects/:id
 ```
+
+Supported atrributes:
 
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
@@ -2656,7 +2714,7 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
      --form "avatar=@dk.png" "https://gitlab.example.com/api/v4/projects/5"
 ```
 
-Returned object:
+Example response:
 
 ```json
 {
@@ -2675,11 +2733,13 @@ You can access this endpoint without authentication if the project is publicly a
 GET /projects/:id/avatar
 ```
 
+Supported attributes:
+
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
 | `id`      | integer or string | yes      | ID or [URL-encoded path](rest/index.md#namespaced-path-encoding) of the project. |
 
-Example:
+Example request:
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/4/avatar"
@@ -2698,13 +2758,15 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
      --data "avatar=" "https://gitlab.example.com/api/v4/projects/5"
 ```
 
-## Share project with group
+## Share a project with a group
 
-Allow to share project with group.
+Share a project with a group.
 
 ```plaintext
 POST /projects/:id/share
 ```
+
+Supported attributes:
 
 | Attribute      | Type              | Required | Description |
 |:---------------|:------------------|:---------|:------------|
@@ -2721,10 +2783,14 @@ Unshare the project from the group. Returns `204` and no content on success.
 DELETE /projects/:id/share/:group_id
 ```
 
+Supported attributes:
+
 | Attribute  | Type              | Required | Description |
 |:-----------|:------------------|:---------|:------------|
 | `group_id` | integer           | Yes      | The ID of the group. |
 | `id`       | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+
+Example request:
 
 ```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/share/17"
@@ -2743,10 +2809,14 @@ If the importing member's role for the target project is:
 POST /projects/:id/import_project_members/:project_id
 ```
 
+Supported attributes:
+
 | Attribute    | Type              | Required | Description |
 |:-------------|:------------------|:---------|:------------|
 | `id`         | integer or string | Yes      | The ID or [URL-encoded path](rest/index.md#namespaced-path-encoding) of the target project to receive the members. |
 | `project_id` | integer or string | Yes      | The ID or [URL-encoded path](rest/index.md#namespaced-path-encoding) of the source project to import the members from. |
+
+Example request:
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/import_project_members/32"
@@ -2796,6 +2866,8 @@ Available only for project owners and administrators.
 POST /projects/:id/fork/:forked_from_id
 ```
 
+Supported attributes:
+
 | Attribute        | Type              | Required | Description |
 |:-----------------|:------------------|:---------|:------------|
 | `forked_from_id` | ID                | Yes      | The ID of the project that was forked from. |
@@ -2806,6 +2878,8 @@ POST /projects/:id/fork/:forked_from_id
 ```plaintext
 DELETE /projects/:id/fork
 ```
+
+Supported attributes:
 
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
@@ -2821,11 +2895,15 @@ accessible.
 GET /projects
 ```
 
+Example attributes:
+
 | Attribute  | Type   | Required | Description |
 |:-----------|:-------|:---------|:------------|
 | `search`   | string | Yes      | A string contained in the project name. |
 | `order_by` | string | No       | Return requests ordered by `id`, `name`, `created_at`, `star_count`, or `last_activity_at` fields. |
 | `sort`     | string | No       | Return requests sorted in `asc` or `desc` order. |
+
+Example request:
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects?search=test"
@@ -2836,6 +2914,8 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 ```plaintext
 POST /projects/:id/housekeeping
 ```
+
+Supported attributes:
 
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
@@ -2851,6 +2931,8 @@ Retrieve a list of groups to which the user can transfer a project.
 ```plaintext
 GET /projects/:id/transfer_locations
 ```
+
+Supported attributes:
 
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
@@ -2894,6 +2976,8 @@ for prerequisites to transfer a project.
 ```plaintext
 PUT /projects/:id/transfer
 ```
+
+Supported attributes:
 
 | Attribute   | Type              | Required | Description |
 |:------------|:------------------|:---------|:------------|
@@ -3123,15 +3207,18 @@ DETAILS:
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/381667) in GitLab 16.0.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/410354) in GitLab 16.2. Feature flag `mirror_only_branches_match_regex` removed.
 
-Configure pull mirroring while [creating a new project](#create-project)
-or [updating an existing project](#edit-project) using the API
-if the remote repository is publicly accessible
-or via `username:token` authentication.
+Configure pull mirroring while [creating a new project](#create-a-project)
+or [updating an existing project](#edit-a-project) using the API
+if the remote repository is accessible publicly or by using
+`username:token` authentication.
+
 In case your HTTP repository is not publicly accessible,
 you can add the authentication information to the URL:
 `https://username:token@gitlab.company.com/group/project.git`,
 where `token` is a [personal access token](../user/profile/personal_access_tokens.md)
 with the API scope enabled.
+
+Supported attributes:
 
 | Attribute                        | Type    | Required | Description |
 |:---------------------------------|:--------|:---------|:------------|
@@ -3177,15 +3264,17 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - Moved to GitLab Premium in 13.9.
-
 ```plaintext
 POST /projects/:id/mirror/pull
 ```
 
+Supported attributes:
+
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
 | `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+
+Example request:
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/:id/mirror/pull"
@@ -3206,6 +3295,8 @@ snapshot may allow some of the data to be retrieved.
 GET /projects/:id/snapshot
 ```
 
+Supported attributes:
+
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
 | `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
@@ -3221,6 +3312,8 @@ Available for administrators only.
 ```plaintext
 GET /projects/:id/storage
 ```
+
+Supported attributes:
 
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|

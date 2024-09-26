@@ -48,7 +48,7 @@ namespace :ci do
 
       files_pattern = "{#{test_paths.join(',')}}"
 
-    elsif tests && tests.split(' ').size > 50
+    elsif tests && tests.split(' ').size > 15
       # When number of QA_TESTS exceeds threshold, set KNAPSACK_FILE_PATTERN for parallel execution
       files_pattern = "{#{tests.split(' ').join(',')}}"
     end

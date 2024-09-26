@@ -78,7 +78,7 @@ The HTTP exit code can help you diagnose the success or failure of your REST req
 Most API requests require authentication, or only return public data when
 authentication isn't provided. When authentication is not required, the documentation
 for each endpoint specifies this. For example, the
-[`/projects/:id` endpoint](../projects.md#get-single-project) does not require authentication.
+[`/projects/:id` endpoint](../projects.md#get-a-single-project) does not require authentication.
 
 You can authenticate with the GitLab API in several ways:
 

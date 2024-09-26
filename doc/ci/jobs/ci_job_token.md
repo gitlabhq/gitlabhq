@@ -215,7 +215,7 @@ The job token has the same access permissions as the user that started the job.
 Job tokens from other [projects or groups in the allowlist](#add-a-group-or-project-to-the-job-token-allowlist)
 cannot push to the repository in your project.
 
-You can also control this setting with the [`ci_push_repository_for_job_token_allowed`](../../api/projects.md#edit-project)
+You can also control this setting with the [`ci_push_repository_for_job_token_allowed`](../../api/projects.md#edit-a-project)
 parameter in the `projects` REST API endpoint.
 
 ## Use a job token

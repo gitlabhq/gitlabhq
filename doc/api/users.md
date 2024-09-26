@@ -1158,7 +1158,7 @@ Example response:
 
 ## List user projects
 
-See the [list of user projects](projects.md#list-user-projects).
+See the [list of user projects](projects.md#list-a-users-projects).
 
 ## List associations count for user
 

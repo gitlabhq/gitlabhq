@@ -3910,7 +3910,7 @@ msgstr ""
 msgid "AdminSelfHostedModels|Define your set of self-hosted models"
 msgstr ""
 
-msgid "AdminSelfHostedModels|Delete model"
+msgid "AdminSelfHostedModels|Delete self-hosted model"
 msgstr ""
 
 msgid "AdminSelfHostedModels|Deployment name"
@@ -7361,6 +7361,9 @@ msgid "Are you sure you want to lose your issue information?"
 msgstr ""
 
 msgid "Are you sure you want to merge immediately?"
+msgstr ""
+
+msgid "Are you sure you want to proceed?"
 msgstr ""
 
 msgid "Are you sure you want to re-deploy this environment?"
@@ -26937,7 +26940,7 @@ msgstr ""
 msgid "HTTP Archive (HAR)"
 msgstr ""
 
-msgid "HTTP Basic: Access denied. The provided password or token is incorrect or your account has 2FA enabled and you must use a personal access token instead of a password. See %{help_page_url}"
+msgid "HTTP Basic: Access denied. If a password was provided for Git authentication, the password was incorrect or you're required to use a token instead of a password. If a token was provided, it was either incorrect, expired, or improperly scoped. See %{help_page_url}"
 msgstr ""
 
 msgid "HTTPS"

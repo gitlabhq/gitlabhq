@@ -315,6 +315,11 @@ domains:
     feature_categories:
       - infrastructure_as_code
 
+  Todos:
+    description: User todos management
+    feature_categories:
+      - notifications
+
   Users:
     description: Behavior related to user lifecycle and profile settings. Feature specific behavior must not go here.
     feature_categories:

@@ -792,7 +792,7 @@ You can limit the ability to override variables to only users with at least the 
 When other users try to run a pipeline with overridden variables, they receive the
 `Insufficient permissions to set pipeline variables` error message.
 
-Enable this feature by using [the projects API](../../api/projects.md#edit-project)
+Enable this feature by using [the projects API](../../api/projects.md#edit-a-project)
 to enable the `restrict_user_defined_variables` setting. The setting is `disabled` by default.
 
 If you [store your CI/CD configurations in a different repository](../../ci/pipelines/settings.md#specify-a-custom-cicd-configuration-file),
@@ -806,7 +806,7 @@ When the `restrict_user_defined_variables` option is enabled, you can specify wh
 [roles](../../user/permissions.md#roles) can override variables with the
 `ci_pipeline_variables_minimum_override_role` setting.
 
-To change the setting, use [the projects API](../../api/projects.md#edit-project)
+To change the setting, use [the projects API](../../api/projects.md#edit-a-project)
 to modify `ci_pipeline_variables_minimum_override_role` to one of:
 
 - `owner`: Only users with the Owner role can override variables. You must have the Owner
