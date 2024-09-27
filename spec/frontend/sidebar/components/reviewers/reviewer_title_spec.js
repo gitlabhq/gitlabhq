@@ -2,9 +2,7 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlLoadingIcon } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { mockTracking, triggerEvent } from 'helpers/tracking_helper';
-import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import Component from '~/sidebar/components/reviewers/reviewer_title.vue';
 import getMergeRequestReviewers from '~/sidebar/queries/get_merge_request_reviewers.query.graphql';
@@ -16,7 +14,6 @@ describe('ReviewerTitle component', () => {
   let wrapper;
 
   const findEditButton = () => wrapper.findByTestId('reviewers-edit-button');
-  const findDrawerToggle = () => wrapper.findByTestId('drawer-toggle');
 
   const createComponent = (props, { reviewerAssignDrawer = false } = {}) => {
     const apolloProvider = createMockApollo([
@@ -125,45 +122,5 @@ describe('ReviewerTitle component', () => {
     );
 
     expect(findEditButton().attributes('title')).toBe('Change reviewer');
-  });
-
-  describe('when reviewerAssignDrawer is enabled', () => {
-    beforeEach(() => {
-      setHTMLFixture('<div id="js-reviewer-drawer-portal"></div>');
-    });
-
-    afterEach(() => {
-      resetHTMLFixture();
-    });
-
-    it('sets title for drawer toggle as `Add or edit reviewers`', async () => {
-      wrapper = createComponent(
-        {
-          editable: true,
-        },
-        { reviewerAssignDrawer: true },
-      );
-
-      await waitForPromises();
-
-      expect(findDrawerToggle().attributes('title')).toBe('Add or edit reviewers');
-    });
-
-    it('clicking toggle opens reviewer drawer', async () => {
-      wrapper = createComponent(
-        {
-          editable: true,
-        },
-        { reviewerAssignDrawer: true },
-      );
-
-      expect(document.querySelector('.gl-drawer')).toBe(null);
-
-      findDrawerToggle().vm.$emit('click');
-
-      await waitForPromises();
-
-      expect(document.querySelector('.gl-drawer')).not.toBe(null);
-    });
   });
 });

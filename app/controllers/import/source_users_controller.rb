@@ -4,7 +4,6 @@ module Import
   class SourceUsersController < ApplicationController
     prepend_before_action :check_feature_flag!
 
-    before_action :source_user
     before_action :check_source_user_valid!
 
     respond_to :html
@@ -53,7 +52,7 @@ module Import
     strong_memoize_attr :source_user
 
     def check_feature_flag!
-      not_found unless Feature.enabled?(:importer_user_mapping, current_user)
+      not_found unless Feature.enabled?(:importer_user_mapping, source_user.reassigned_by_user)
     end
 
     def banner(partial)

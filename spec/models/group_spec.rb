@@ -938,17 +938,19 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       group.destroy!
     end
 
-    let!(:group_1) { create(:group, name: 'Y group') }
-    let!(:group_2) { create(:group, name: 'J group', created_at: 2.days.ago, updated_at: 1.day.ago) }
-    let!(:group_3) { create(:group, name: 'A group') }
-    let!(:group_4) { create(:group, name: 'F group', created_at: 1.day.ago, updated_at: 1.day.ago) }
+    let!(:group_1) { create(:group, id: 10, name: 'Y group') }
+    let!(:group_2) { create(:group, id: 11, name: 'J group', created_at: 2.days.ago, updated_at: 1.day.ago) }
+    let!(:group_3) { create(:group, id: 12, name: 'A group') }
+    let!(:group_4) { create(:group, id: 13, name: 'F group', created_at: 1.day.ago, updated_at: 1.day.ago) }
 
     subject { described_class.with_statistics.with_route.sort_by_attribute(sort) }
 
-    context 'when sort by is not provided (id desc by default)' do
+    context 'when sort by is not provided' do
       let(:sort) { nil }
 
-      it { is_expected.to eq([group_1, group_2, group_3, group_4]) }
+      it 'results are not ordered' do
+        is_expected.to contain_exactly(group_1, group_2, group_3, group_4)
+      end
     end
 
     context 'when sort by name_asc' do
@@ -975,28 +977,16 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       it { is_expected.to eq([group_1, group_2, group_3, group_4].sort_by(&:path).reverse) }
     end
 
-    context 'when sort by recently_created' do
+    context 'when sort by created_desc' do
       let(:sort) { 'created_desc' }
 
       it { is_expected.to eq([group_3, group_1, group_4, group_2]) }
     end
 
-    context 'when sort by oldest_created' do
+    context 'when sort by created_asc' do
       let(:sort) { 'created_asc' }
 
       it { is_expected.to eq([group_2, group_4, group_1, group_3]) }
-    end
-
-    context 'when sort by latest_activity' do
-      let(:sort) { 'latest_activity_desc' }
-
-      it { is_expected.to eq([group_1, group_2, group_3, group_4]) }
-    end
-
-    context 'when sort by oldest_activity' do
-      let(:sort) { 'latest_activity_asc' }
-
-      it { is_expected.to eq([group_1, group_2, group_3, group_4]) }
     end
 
     context 'when sort by storage_size_desc' do

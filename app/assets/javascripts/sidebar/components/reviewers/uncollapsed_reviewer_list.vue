@@ -122,7 +122,7 @@ export default {
       this.loadingStates[userId] = LOADING_STATE;
       this.$emit('remove-reviewer', {
         userId,
-        callback: () => this.requestRemovalComplete(userId),
+        done: () => this.requestRemovalComplete(userId),
       });
     },
     requestReviewComplete(userId, success) {

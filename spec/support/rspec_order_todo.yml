@@ -2072,7 +2072,6 @@
 - './ee/spec/services/boards/lists/update_service_spec.rb'
 - './ee/spec/services/boards/update_service_spec.rb'
 - './ee/spec/services/boards/user_preferences/update_service_spec.rb'
-- './ee/spec/services/branches/delete_service_spec.rb'
 - './ee/spec/services/ci/audit_variable_change_service_spec.rb'
 - './ee/spec/services/ci_cd/github_integration_setup_service_spec.rb'
 - './ee/spec/services/ci_cd/github_setup_service_spec.rb'

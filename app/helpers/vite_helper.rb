@@ -38,6 +38,8 @@ module ViteHelper
       options[:host] = URI::HTTP.build(host: ViteRuby.config.host, port: ViteRuby.config.port).to_s
     end
 
+    options[:extname] = false
+
     stylesheet_link_tag(
       ViteRuby.instance.manifest.path_for("stylesheets/styles.#{path}.scss", type: :stylesheet),
       **options

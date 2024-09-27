@@ -19,7 +19,7 @@ To enable debug logs in JetBrains:
 1. On the top bar, go to **Help > Diagnostic Tools > Debug Log Settings**, or
    search for the action by going to **Help > Find Action > Debug log settings**.
 1. Add this line: `com.gitlab.plugin`
-1. Select **OK**.
+1. Select **OK** or **Save**.
 
 The debug logs are available in the `idea.log` log file.
 
@@ -66,8 +66,7 @@ To do this:
 1. Confirm your default browser trusts the **URL to GitLab instance** you're using.
 1. Enable the **Ignore certificate errors** option.
 1. Select **Verify setup**.
-1. Select **Apply**.
-1. Select **OK**.
+1. Select **OK** or **Save**.
 
 ## Error: `Failed to check token`
 
@@ -79,4 +78,4 @@ GitLab Language Server process are invalid. To re-enable Code Suggestions:
 1. Under **Connection**, select **Verify setup**.
 1. Update your **Connection** details as needed.
 1. Select **Verify setup**, and confirm that authentication succeeds.
-1. Select **OK**.
+1. Select **OK** or **Save**.

@@ -19,8 +19,11 @@ These options are in lowercase.
 
 ### Target Types
 
+> - Support for epics [introduced](https://gitlab.com/groups/gitlab-org/-/epics/13056) in GitLab 17.3.
+
 Available target types for the `target_type` parameter are:
 
+- `epic`
 - `issue`
 - `milestone`
 - `merge_request`
@@ -31,7 +34,7 @@ Available target types for the `target_type` parameter are:
 - `user`
 
 These options are in lowercase.
-Events associated with epics are not available using the API.
+Some epic features like child items, linked items, start dates, due dates, and health statuses are not available using the API.
 Some discussions on merge requests may be of type `DiscussionNote`. These are not available using the API.
 
 ### Date formatting

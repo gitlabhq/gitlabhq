@@ -1087,7 +1087,6 @@ RSpec/FeatureCategory:
     - 'ee/spec/services/boards/lists/update_service_spec.rb'
     - 'ee/spec/services/boards/update_service_spec.rb'
     - 'ee/spec/services/boards/user_preferences/update_service_spec.rb'
-    - 'ee/spec/services/branches/delete_service_spec.rb'
     - 'ee/spec/services/external_status_checks/create_service_spec.rb'
     - 'ee/spec/services/projects/alerting/notify_service_spec.rb'
     - 'ee/spec/services/projects/cleanup_service_spec.rb'

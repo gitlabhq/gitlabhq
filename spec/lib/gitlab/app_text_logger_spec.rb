@@ -9,7 +9,7 @@ RSpec.describe Gitlab::AppTextLogger do
   let(:string_message) { 'Information' }
 
   it 'logs a hash as string' do
-    expect(subject.format_message('INFO', Time.now, nil, hash_message )).to include(hash_message.to_s)
+    expect(subject.format_message('INFO', Time.now, nil, hash_message)).to include(hash_message.to_s)
   end
 
   it 'logs a string unchanged' do

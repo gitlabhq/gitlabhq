@@ -127,7 +127,7 @@ They can be added per project by navigating to the project's **Settings** > **CI
 To the field **KEY**, add the name `SSH_PRIVATE_KEY`, and to the **VALUE** field, paste the private key you've copied earlier.
 We'll use this variable in the `.gitlab-ci.yml` later, to easily connect to our remote server as the deployer user without entering its password.
 
-![variables page](img/variables_page.png)
+![variables page](img/variables_page_v11_6.png)
 
 We also need to add the public key to **Project** > **Settings** > **Repository** as a [deploy key](../../../user/project/deploy_keys/index.md), which gives us the ability to access our repository from the server through the SSH protocol.
 
@@ -140,7 +140,7 @@ cat ~/.ssh/id_rsa.pub
 
 To the field **Title**, add any name you want, and paste the public key into the **Key** field.
 
-![deploy keys page](img/deploy_keys_page.png)
+![deploy keys page](img/deploy_keys_page_v10.png)
 
 Now, let's clone our repository on the server just to make sure the `deployer` user has access to the repository.
 
@@ -442,7 +442,7 @@ Now that we have our `Dockerfile` let's build and push it to our [GitLab contain
 
 In your GitLab project repository, go to the **Registry** tab.
 
-![container registry page empty image](img/container_registry_page_empty_image.png)
+![container registry page empty image](img/container_registry_page_empty_image_v10.png)
 
 You may need to enable the container registry for your project to see this tab. You'll find it under your project's **Settings > General > Visibility, project features, permissions**.
 
@@ -464,7 +464,7 @@ docker push registry.gitlab.com/<USERNAME>/laravel-sample
 
 Congratulations! You just pushed the first Docker image to the GitLab Registry, and if you refresh the page you should be able to see it:
 
-![container registry page with image](img/container_registry_page_with_image.jpg)
+![container registry page with image](img/container_registry_page_with_image_v10.jpg)
 
 You can also [use GitLab CI/CD](https://about.gitlab.com/blog/2016/05/23/gitlab-container-registry/#use-with-gitlab-ci) to build and push your Docker images, rather than doing that on your machine.
 
@@ -624,41 +624,41 @@ You may also want to add another job for [staging environment](https://about.git
 We have prepared everything we need to test and deploy our app with GitLab CI/CD.
 To do that, commit and push `.gitlab-ci.yml` to the `main` branch. It will trigger a pipeline, which you can watch live under your project's **Pipelines**.
 
-![pipelines page](img/pipelines_page.png)
+![pipelines page](img/pipelines_page_v10.png)
 
 Here we see our **Test** and **Deploy** stages.
 The **Test** stage has the `unit_test` build running.
 Select it to see the runner's output.
 
-![pipeline page](img/pipeline_page.png)
+![pipeline page](img/pipeline_page_v10.png)
 
 After our code passed through the pipeline successfully, we can deploy to our production server by selecting **Run** (**{play}**) on the right side.
 
-![pipelines page deploy button](img/pipelines_page_deploy_button.png)
+![pipelines page deploy button](img/pipelines_page_deploy_button_v10.png)
 
 After the deploy pipeline passes successfully, go to **Pipelines > Environments**.
 
-![environments page](img/environments_page.png)
+![environments page](img/environments_page_v10.png)
 
 If something doesn't work as expected, you can roll back to the latest working version of your app.
 
-![environment page](img/environment_page.png)
+![environment page](img/environment_page_v10.png)
 
 By selecting the external link icon specified on the right side, GitLab opens the production website.
 Our deployment successfully was done and we can see the application is live.
 
-![Laravel welcome page](img/laravel_welcome_page.png)
+![Laravel welcome page](img/laravel_welcome_page_v10.png)
 
 In the case that you're interested to know how is the application directory structure on the production server after deployment, here are three directories named `current`, `releases` and `storage`.
 As you know, the `current` directory is a symbolic link that points to the latest release.
 The `.env` file consists of our Laravel environment variables.
 
-![production server app directory](img/production_server_app_directory.png)
+![production server app directory](img/production_server_app_directory_v10.png)
 
 If you go to the `current` directory, you should see the application's content.
 As you see, the `.env` is pointing to the `/var/www/app/.env` file and also `storage` is pointing to the `/var/www/app/storage/` directory.
 
-![production server current directory](img/production_server_current_directory.png)
+![production server current directory](img/production_server_current_directory_v10.png)
 
 ## Conclusion
 

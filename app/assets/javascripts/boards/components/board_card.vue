@@ -91,6 +91,11 @@ export default {
       // Don't do anything if this happened on a no trigger element
       if (e.target.closest('.js-no-trigger')) return;
 
+      if (e.target.closest('.js-no-trigger-title') && (e.ctrlKey || e.metaKey || e.button === 1)) {
+        return;
+      }
+      e.preventDefault();
+
       const isMultiSelect = e.ctrlKey || e.metaKey;
       if (isMultiSelect && gon?.features?.boardMultiSelect) {
         this.toggleBoardItemMultiSelection(this.item);

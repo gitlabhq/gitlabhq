@@ -114,15 +114,6 @@ This extension brings the GitLab features you use every day directly into your V
 
 For detailed information on these features, refer to the [GitLab Workflow extension documentation](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/blob/main/README.md).
 
-## Troubleshooting
-
-If you encounter any issues or have feature requests:
-
-1. Check the [extension documentation](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/blob/main/README.md)
-   for known issues and solutions.
-1. Report bugs or request features in the
-   [`gitlab-vscode-extension` issue queue](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues).
-
 ## Related topics
 
 - [Download the GitLab Workflow extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow)

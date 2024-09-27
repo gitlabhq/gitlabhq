@@ -108,11 +108,9 @@ you might write something like:
 AI is non-deterministic, so you may not get the same suggestion every time with the same input.
 To generate quality code, write clear, descriptive, specific tasks.
 
-### Best practice examples
-
 For use cases and best practices, follow the [GitLab Duo examples documentation](../../../gitlab_duo_examples.md).
 
-#### Use open tabs as context
+## Open tabs as context
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/464767) in GitLab 17.2 [with a flag](../../../../administration/feature_flags.md) named `advanced_context_resolver`. Disabled by default.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462750) in GitLab 17.2 [with a flag](../../../../administration/feature_flags.md) named `code_suggestions_context`. Disabled by default.
@@ -125,49 +123,80 @@ FLAG:
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
 
-For better results from GitLab Duo Code Suggestions, ensure that Open Tabs Context is enabled in your IDE settings.
-This feature uses the contents of the files currently open in your IDE to get more
-accurate and relevant results from Code Suggestions. Like prompt engineering, these files
+To get more accurate and relevant results from Code Suggestions and code generation, you can use
+the contents of the files open in tabs in your IDE. Similar to prompt engineering, these files
 give GitLab Duo more information about the standards and practices in your code project.
 
-To get the most benefit from using your open tabs as context, open the files relevant to the code
-you want to create, including configuration files. When you start work in a new file,
-Code Suggestions offers you suggestions in the new file.
+### Enable open tabs as context
+
+By default, Code Suggestions uses the open files in your IDE for context when making suggestions.
 
 Prerequisites:
 
-- Requires GitLab 17.2 and later. Earlier GitLab versions that support Code Suggestions
-  cannot weight the content of open tabs more heavily than other files in your project.
-- Requires a [supported code language](#advanced-context-supported-languages).
+- You must have GitLab 17.2 or later. Earlier GitLab versions that support Code Suggestions
+  cannot weigh the content of open tabs more heavily than other files in your project.
+- GitLab Duo Code Suggestions must be enabled for your project.
+- Use a [supported code language](#advanced-context-supported-languages):
+  - Code completion: All configured languages.
+  - Code generation: Go, Java, JavaScript, Kotlin, Python, Ruby, Rust, TypeScript (`.ts` and `.tsx` files),
+    Vue, and YAML.
+- For Visual Studio Code, you must have GitLab Workflow extension version 4.14.2 or later.
 
-1. Open the files you want to provide for context. Advanced Context uses the most recently
-   opened or changed files for context. If you don’t want a file sent as additional context, close it.
-1. To fine-tune your Code Generation results, add code comments to your file that explain
-   what you want to build. Code Generation treats your code comments like chat. Your code comments
-   update the `user_instruction`, and then improve the next results you receive.
+To confirm that open tabs are used as context:
 
-As you work, GitLab Duo provides Code Suggestions that use your other open files
-(within [truncation limits](#truncation-of-file-content))
-as extra context.
+::Tabs
+
+:::TabTitle Visual Studio Code
+
+1. On the top bar, go to **Code > Settings > Extensions**.
+1. Search for GitLab Workflow in the list, and select the gear icon.
+1. Select **Extension Settings**.
+1. In your **User** settings, under **GitLab › Duo Code Suggestions: Open Tabs Context**,
+   select **Enable Open Tabs Context to improve Code Suggestions by sharing context across open tabs**.
+
+:::TabTitle JetBrains IDEs
+
+1. Go to your IDE's top menu bar and select **Settings**.
+1. On the left sidebar, expand **Tools**, then select **GitLab Duo**.
+1. Expand **GitLab Language Server**.
+1. Under **Code Completion**, select **Send open tabs as context**.
+1. Select **OK** or **Save**.
+
+::EndTabs
+
+### Use open tabs as context
+
+Open the files you want to provide for context:
+
+- Open tabs uses the most recently opened or changed files.
+- If you do not want a file used as additional context, close that file.
+
+When you start working in a file, GitLab Duo uses your open files
+as extra context, within [truncation limits](#truncation-of-file-content).
+
+You can adjust your code generation results by adding code comments to your file
+that explain what you want to build. Code generation treats your code comments
+like chat. Your code comments update the `user_instruction`, and then improve
+the next results you receive.
 
 To learn about the code that builds the prompt, see these files:
 
-- **Code Generation**:
+- **Code generation**:
   [`ee/lib/api/code_suggestions.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/api/code_suggestions.rb#L76)
   in the `gitlab` repository.
-- **Code Completion**:
+- **Code completion**:
   [`ai_gateway/code_suggestions/processing/completions.py`](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/fcb3f485a8f047a86a8166aad81f93b6d82106a7/ai_gateway/code_suggestions/processing/completions.py#L273)
   in the `modelops` repository.
 
-We'd love your feedback about the Advanced Context feature in
+Provide feedback about this feature in
 [issue 258](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/issues/258).
 
-### Advanced Context supported languages
+## Advanced Context supported languages
 
 The Advanced Context feature supports these languages:
 
-- Code Completion: all configured languages.
-- Code Generation: Go, Java, JavaScript, Kotlin, Python, Ruby, Rust, TypeScript (`.ts` and `.tsx` files), Vue, and YAML.
+- Code completion: all configured languages.
+- Code generation: Go, Java, JavaScript, Kotlin, Python, Ruby, Rust, TypeScript (`.ts` and `.tsx` files), Vue, and YAML.
 
 ## Response time
 

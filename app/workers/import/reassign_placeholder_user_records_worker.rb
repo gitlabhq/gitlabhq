@@ -19,11 +19,6 @@ module Import
     def perform(import_source_user_id, _params = {})
       @import_source_user = Import::SourceUser.find_by_id(import_source_user_id)
 
-      return unless Feature.enabled?(
-        :importer_user_mapping,
-        User.actor_from_id(import_source_user&.reassigned_by_user_id)
-      )
-
       return unless import_source_user_valid?
 
       Import::ReassignPlaceholderUserRecordsService.new(import_source_user).execute

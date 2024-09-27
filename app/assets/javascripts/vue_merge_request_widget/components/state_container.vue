@@ -103,17 +103,17 @@ export default {
           class="media-body gl-leading-normal"
         >
           <slot></slot>
-          <div
-            :class="{
-              'state-container-action-buttons gl-flex-wrap lg:gl-justify-end': !actions.length,
-              'gl-pt-3 md:gl-pt-0': hasActionsSlot,
-            }"
-            class="gl-font-size-0 gl-flex gl-gap-3"
-          >
-            <slot name="actions">
-              <actions v-if="actions.length" :tertiary-buttons="actions" />
-            </slot>
-          </div>
+        </div>
+        <div
+          :class="{
+            'state-container-action-buttons gl-flex-wrap lg:gl-justify-end': !actions.length,
+            'gl-pt-3 md:gl-pt-0': hasActionsSlot,
+          }"
+          class="gl-font-size-0 gl-flex gl-gap-3"
+        >
+          <slot name="actions">
+            <actions v-if="actions.length" :tertiary-buttons="actions" />
+          </slot>
         </div>
         <div
           v-if="isCollapsible"

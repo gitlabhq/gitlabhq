@@ -5,7 +5,6 @@ import produce from 'immer';
 import Draggable from 'vuedraggable';
 import BoardAddNewColumn from 'ee_else_ce/boards/components/board_add_new_column.vue';
 import BoardAddNewColumnTrigger from '~/boards/components/board_add_new_column_trigger.vue';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import WorkItemDrawer from '~/work_items/components/work_item_drawer.vue';
 import { s__ } from '~/locale';
 import { defaultSortableOptions, DRAG_DELAY } from '~/sortable/constants';
@@ -39,7 +38,6 @@ export default {
     GlAlert,
     WorkItemDrawer,
   },
-  mixins: [glFeatureFlagsMixin()],
   inject: [
     'boardType',
     'canAdminList',

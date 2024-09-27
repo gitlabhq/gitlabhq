@@ -96,12 +96,24 @@ describe('Board card', () => {
   });
 
   describe('when GlLabel is clicked in BoardCardInner', () => {
-    it("doesn't call setSelectedBoardItemsMutation", () => {
+    it("doesn't call setSelectedBoardItemsMutation", async () => {
       mountComponent();
 
-      wrapper.findComponent(GlLabel).trigger('mouseup');
+      await wrapper.findComponent(GlLabel).trigger('mouseup');
 
       expect(mockSetSelectedBoardItemsResolver).toHaveBeenCalledTimes(0);
+    });
+  });
+
+  describe('when issuable title is clicked in BoardCardInner and issuesListDrawer feature is enabled', () => {
+    it('calls mockSetSelectedBoardItemsResolver', async () => {
+      mountComponent({ provide: { glFeatures: { issuesListDrawer: true } } });
+
+      await wrapper.findByTestId('board-card-title-link').trigger('click');
+
+      await waitForPromises();
+
+      expect(mockSetActiveBoardItemResolver).toHaveBeenCalledTimes(1);
     });
   });
 

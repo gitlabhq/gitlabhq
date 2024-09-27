@@ -12,6 +12,8 @@ export const COMPONENTS = {
     import('ee_component/vue_merge_request_widget/components/checks/locked_paths.vue'),
   locked_lfs_files: () =>
     import('ee_component/vue_merge_request_widget/components/checks/locked_paths.vue'),
+  not_approved: () =>
+    import('ee_component/vue_merge_request_widget/components/checks/not_approved.vue'),
 };
 
 export const FAILURE_REASONS = {
