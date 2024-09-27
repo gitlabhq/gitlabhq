@@ -46,6 +46,18 @@ module API
             present result.payload[:model_version], with: Entities::Ml::Mlflow::ModelVersion, root: :model_version
           end
 
+          desc 'Fetch the download URI for the model version.' do
+            success Entities::Ml::Mlflow::GetDownload
+            detail 'Returns version in MLflow format "mlflow-artifacts:<version>" https://mlflow.org/docs/2.6.0/rest-api.html#get-download-uri-for-modelversion-artifacts'
+          end
+          params do
+            requires :name, type: String, desc: 'Model version name'
+            requires :version, type: Integer, desc: 'Model version ID'
+          end
+          get 'get-download-uri' do
+            present params[:version], with: Entities::Ml::Mlflow::GetDownload
+          end
+
           desc 'Fetch model version by name and version' do
             success Entities::Ml::Mlflow::ModelVersion
             detail 'https://mlflow.org/docs/2.6.0/rest-api.html#get-modelversion'

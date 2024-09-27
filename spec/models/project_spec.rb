@@ -9665,4 +9665,23 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       expect(described_class.by_any_overlap_with_traversal_ids(project_1.namespace_id)).to contain_exactly(project_1, project_2)
     end
   end
+
+  describe '#crm_group' do
+    context 'when project does not belong to group' do
+      let(:project) { build(:project) }
+
+      it 'returns nil' do
+        expect(project.crm_group).to be_nil
+      end
+    end
+
+    context 'when project belongs to a group' do
+      let(:group) { build(:group) }
+      let(:project) { build(:project, group: group) }
+
+      it 'returns the group.crm_group' do
+        expect(project.crm_group).to be(group.crm_group)
+      end
+    end
+  end
 end

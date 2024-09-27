@@ -18,10 +18,10 @@ class IssuePolicy < IssuablePolicy
     @user && (@user.admin? || can?(:reporter_access) || assignee_or_author?) # rubocop:disable Cop/UserAdmin
   end
 
-  desc "Project belongs to a group, crm is enabled and user can read contacts in the root group"
+  desc "Project belongs to a group, crm is enabled and user can read contacts in source group"
   condition(:can_read_crm_contacts, scope: :subject) do
     subject_container&.crm_enabled? &&
-      (@user&.can?(:read_crm_contact, subject_container.root_ancestor) || @user&.support_bot?)
+      (@user&.can?(:read_crm_contact, subject_container.crm_group) || @user&.support_bot?)
   end
 
   desc "Issue is confidential"

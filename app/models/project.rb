@@ -3343,6 +3343,12 @@ class Project < ApplicationRecord
     group.crm_enabled?
   end
 
+  def crm_group
+    return unless group
+
+    group.crm_group
+  end
+
   def supports_lock_on_merge?
     group&.supports_lock_on_merge? || ::Feature.enabled?(:enforce_locked_labels_on_merge, self, type: :ops)
   end

@@ -519,13 +519,12 @@ class Issue < ApplicationRecord
     self.duplicated_to_id = nil
   end
 
-  def can_move?(user, to_project = nil)
-    if to_project
-      return false unless user.can?(:admin_issue, to_project)
+  def can_move?(user, to_namespace = nil)
+    if to_namespace
+      return false unless user.can?(:admin_issue, to_namespace)
     end
 
-    !moved? && persisted? &&
-      user.can?(:admin_issue, self.project)
+    !moved? && persisted? && user.can?(:admin_issue, self)
   end
   alias_method :can_clone?, :can_move?
 

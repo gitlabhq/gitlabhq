@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe CustomerRelations::IssueContact do
+RSpec.describe CustomerRelations::IssueContact, feature_category: :team_planning do
   let_it_be(:issue_contact, reload: true) { create(:issue_customer_relations_contact) }
   let_it_be(:group) { create(:group) }
   let_it_be(:subgroup) { create(:group, parent: group) }
@@ -58,6 +58,18 @@ RSpec.describe CustomerRelations::IssueContact do
 
     it 'succeeds when the contact belongs to a root group and it is an ancestor of the issue group' do
       built = build(:issue_customer_relations_contact, issue: create(:issue, project: subgroup_project), contact: create(:contact, group: group))
+
+      expect(built).to be_valid
+    end
+
+    it 'succeeds when the contact belongs to the issue CRM group that is not an ancestor' do
+      new_contact = create(:contact)
+      new_group = create(:group)
+      create(:crm_settings, group: new_group, source_group: new_contact.group)
+      new_project = build_stubbed(:project, group: new_group)
+      new_issue = build_stubbed(:issue, project: new_project)
+
+      built = build(:issue_customer_relations_contact, issue: new_issue, contact: new_contact)
 
       expect(built).to be_valid
     end

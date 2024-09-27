@@ -14,6 +14,12 @@ module Resolvers
         default_value: false,
         description: 'Include work items from descendant groups and projects.'
 
+      argument :exclude_projects, GraphQL::Types::Boolean,
+        required: false,
+        default_value: false,
+        description: 'Exclude work items from projects within the group.',
+        alpha: { milestone: '17.5' }
+
       def ready?(**args)
         super && resource_parent.namespace_work_items_enabled?
       end

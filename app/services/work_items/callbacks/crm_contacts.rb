@@ -52,7 +52,7 @@ module WorkItems
       end
 
       def group
-        @group ||= work_item.resource_parent.root_ancestor
+        @group ||= work_item.resource_parent.crm_group
       end
 
       def operation_mode_attribute

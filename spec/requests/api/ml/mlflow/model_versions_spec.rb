@@ -210,4 +210,19 @@ RSpec.describe API::Ml::Mlflow::ModelVersions, feature_category: :mlops do
       it_behaves_like 'MLflow|a read/write model registry resource'
     end
   end
+
+  describe 'GET /projects/:id/ml/mlflow/api/2.0/mlflow/model-versions/get-download-uri' do
+    let(:route) do
+      "/projects/#{project_id}/ml/mlflow/api/2.0/mlflow/model-versions/get-download-uri?name=#{name}
+&version=#{model_version.id}"
+    end
+
+    it 'returns the download-uri', :aggregate_failures do
+      is_expected.to have_gitlab_http_status(:ok)
+      expect(json_response).not_to be_nil
+      expect(json_response.keys).to contain_exactly('artifact_uri')
+      expect(json_response['artifact_uri']).not_to be_nil
+      expect(json_response['artifact_uri']).to eq("mlflow-artifacts:/#{model_version.id}")
+    end
+  end
 end

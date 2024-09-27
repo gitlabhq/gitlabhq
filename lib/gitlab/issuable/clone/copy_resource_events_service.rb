@@ -83,7 +83,7 @@ module Gitlab
         end
 
         def entity_key
-          new_entity.class.name.underscore.foreign_key
+          new_entity.class.base_class.name.underscore.foreign_key
         end
 
         def milestone_events_supported?

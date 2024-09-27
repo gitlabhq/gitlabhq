@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe CustomerRelations::Organization, type: :model do
+RSpec.describe CustomerRelations::Organization, type: :model, feature_category: :team_planning do
   let_it_be(:group) { create(:group) }
 
   describe 'associations' do
@@ -17,19 +17,34 @@ RSpec.describe CustomerRelations::Organization, type: :model do
     it { is_expected.to validate_uniqueness_of(:name).case_insensitive.scoped_to([:group_id]) }
     it { is_expected.to validate_length_of(:name).is_at_most(255) }
     it { is_expected.to validate_length_of(:description).is_at_most(1024) }
-  end
 
-  describe '#root_group' do
     context 'when root group' do
       subject { build(:crm_organization, group: group) }
 
       it { is_expected.to be_valid }
+
+      context 'with group.source_group_id' do
+        let(:crm_settings) { build(:crm_settings, source_group_id: group.id) }
+        let(:root_group) { build(:group, crm_settings: crm_settings) }
+
+        subject { build(:crm_organization, group: root_group) }
+
+        it { is_expected.to be_invalid }
+      end
     end
 
     context 'when subgroup' do
-      subject { build(:crm_organization, group: create(:group, parent: group)) }
+      subject { build(:crm_organization, group: build(:group, parent: group)) }
 
       it { is_expected.to be_invalid }
+
+      context 'with group.crm_targets' do
+        let(:target_group) { build(:group, crm_targets: [build(:crm_settings)], parent: group) }
+
+        subject { build(:crm_organization, group: target_group) }
+
+        it { is_expected.to be_valid }
+      end
     end
   end
 

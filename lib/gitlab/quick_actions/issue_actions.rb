@@ -299,7 +299,7 @@ module Gitlab
         types Issue
         condition do
           current_user.can?(:set_issue_crm_contacts, quick_action_target) &&
-            CustomerRelations::Contact.exists_for_group?(quick_action_target.resource_parent.root_ancestor)
+            CustomerRelations::Contact.exists_for_group?(quick_action_target.resource_parent.crm_group)
         end
         execution_message do
           _('One or more contacts were successfully added.')

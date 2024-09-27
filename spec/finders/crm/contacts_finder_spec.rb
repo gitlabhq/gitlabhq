@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Crm::ContactsFinder do
+RSpec.describe Crm::ContactsFinder, feature_category: :team_planning do
   let_it_be(:user) { create(:user) }
 
   describe '#execute' do

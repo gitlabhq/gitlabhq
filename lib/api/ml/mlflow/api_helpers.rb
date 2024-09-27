@@ -151,6 +151,18 @@ module API
           ::Ml::ModelVersions::GetModelVersionService.new(project, name, version).execute || resource_not_found!
         end
 
+        def find_model_artifact(project, version, file_path)
+          package = ::Ml::ModelVersion.by_project_id_and_id(project, version).package
+          ::Packages::PackageFileFinder.new(package, file_path).execute || resource_not_found!
+        end
+
+        def list_model_artifacts(project, version)
+          model_version = ::Ml::ModelVersion.by_project_id_and_id(project, version)
+          resource_not_found! unless model_version && model_version.package
+
+          model_version.package.installable_package_files
+        end
+
         def model
           @model ||= find_model(user_project, params[:name])
         end

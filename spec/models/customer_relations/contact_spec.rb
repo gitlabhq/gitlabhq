@@ -28,6 +28,35 @@ RSpec.describe CustomerRelations::Contact, type: :model, feature_category: :team
     it { is_expected.to validate_uniqueness_of(:email).case_insensitive.scoped_to(:group_id) }
 
     it_behaves_like 'an object with RFC3696 compliant email-formatted attributes', :email
+
+    context 'when root group' do
+      subject { build(:contact, group: group) }
+
+      it { is_expected.to be_valid }
+
+      context 'with group.source_group_id' do
+        let(:crm_settings) { build(:crm_settings, source_group_id: group.id) }
+        let(:root_group) { build(:group, crm_settings: crm_settings) }
+
+        subject { build(:contact, group: root_group) }
+
+        it { is_expected.to be_invalid }
+      end
+    end
+
+    context 'when subgroup' do
+      subject { build(:contact, group: build(:group, parent: group)) }
+
+      it { is_expected.to be_invalid }
+
+      context 'with group.crm_targets' do
+        let(:target_group) { build(:group, crm_targets: [build(:crm_settings)], parent: group) }
+
+        subject { build(:contact, group: target_group) }
+
+        it { is_expected.to be_valid }
+      end
+    end
   end
 
   describe '.reference_prefix' do
@@ -40,20 +69,6 @@ RSpec.describe CustomerRelations::Contact, type: :model, feature_category: :team
 
   describe '.reference_postfix' do
     it { expect(described_class.reference_postfix).to eq(']') }
-  end
-
-  describe '#root_group' do
-    context 'when root group' do
-      subject { build(:contact, group: group) }
-
-      it { is_expected.to be_valid }
-    end
-
-    context 'when subgroup' do
-      subject { build(:contact, group: create(:group, parent: group)) }
-
-      it { is_expected.to be_invalid }
-    end
   end
 
   describe '#before_validation' do

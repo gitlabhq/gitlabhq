@@ -14,7 +14,7 @@ module Namespaces
     has_one :project, inverse_of: :project_namespace
 
     delegate :execute_hooks, :execute_integrations, :group, to: :project, allow_nil: true
-    delegate :external_references_supported?, :default_issues_tracker?, to: :project
+    delegate :external_references_supported?, :default_issues_tracker?, :pending_delete?, to: :project
 
     def self.sti_name
       'Project'

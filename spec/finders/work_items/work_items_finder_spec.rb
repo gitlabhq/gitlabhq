@@ -118,6 +118,16 @@ RSpec.describe WorkItems::WorkItemsFinder, feature_category: :team_planning do
           )
         end
       end
+
+      context 'when exclude_projects is true' do
+        before do
+          params[:exclude_projects] = true
+        end
+
+        it 'does not include work items from projects' do
+          expect(items).to contain_exactly(group_work_item, subgroup_work_item)
+        end
+      end
     end
 
     context 'when include_ancestors is true' do

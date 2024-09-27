@@ -3,6 +3,8 @@
 module WorkItems
   module Widgets
     class Base
+      include Gitlab::Utils::StrongMemoize
+
       def self.type
         name.demodulize.underscore.to_sym
       end
@@ -28,6 +30,17 @@ module WorkItems
           nil
         end
       end
+
+      def self.sync_data_callback_class
+        ::WorkItems::DataSync::Widgets.const_get(name.demodulize, false)
+      rescue NameError
+        nil
+      end
+
+      def sync_data_callback_class
+        self.class.sync_data_callback_class
+      end
+      strong_memoize_attr :sync_data_callback_class
 
       def type
         self.class.type

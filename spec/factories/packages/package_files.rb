@@ -366,6 +366,13 @@ FactoryBot.define do
       file_store { Packages::PackageFileUploader::Store::REMOTE }
     end
 
+    trait(:ml_model) do
+      package
+      file_fixture { 'spec/fixtures/packages/ml_model/MLmodel' }
+      file_name { 'MLmodel' }
+      size { 527.bytes }
+    end
+
     factory :package_file_with_file, traits: [:jar]
   end
 end
