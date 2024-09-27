@@ -78,11 +78,6 @@
     @apply gl-bg-default;
 
     // stylelint-disable-next-line gitlab/no-gl-class
-    .gl-dark & {
-      @apply gl-bg-subtle;
-    }
-
-    // stylelint-disable-next-line gitlab/no-gl-class
     .gl-dark .modal-body & {
       @apply gl-bg-strong;
     }

@@ -20213,6 +20213,18 @@ msgstr ""
 msgid "DuoEnterpriseTrial|We just need some additional information to activate your trial."
 msgstr ""
 
+msgid "DuoFreeAccessEndingBanner|Buy Duo Pro"
+msgstr ""
+
+msgid "DuoFreeAccessEndingBanner|Dismiss Free Access Ending banner"
+msgstr ""
+
+msgid "DuoFreeAccessEndingBanner|Free access to GitLab Duo is ending on %{date}"
+msgstr ""
+
+msgid "DuoFreeAccessEndingBanner|Starting %{date}, all GitLab Duo features, including Duo Chat, %{link_start}require a paid add-on subscription.%{link_end} To ensure uninterrupted access to Code Suggestions and Chat, buy Duo Pro and assign seats to your users. Or, for Duo Enterprise options, contact Sales."
+msgstr ""
+
 msgid "DuoProDiscover|Accelerate your path to market"
 msgstr ""
 

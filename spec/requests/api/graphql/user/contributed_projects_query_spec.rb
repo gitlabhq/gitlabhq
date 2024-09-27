@@ -9,22 +9,25 @@ RSpec.describe 'Getting contributedProjects of the user', feature_category: :gro
   let(:user_params) { { username: user.username } }
   let(:user_fields) { 'contributedProjects { nodes { id } }' }
 
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user) { create(:user, :with_namespace) }
   let_it_be(:current_user) { create(:user) }
 
   let_it_be(:public_project) { create(:project, :public) }
   let_it_be(:private_project) { create(:project, :private) }
   let_it_be(:internal_project) { create(:project, :internal) }
+  let_it_be(:personal_project) { create(:project, namespace: user.namespace) }
 
   let(:path) { %i[user contributed_projects nodes] }
 
   before_all do
     private_project.add_developer(user)
     private_project.add_developer(current_user)
+    personal_project.add_developer(current_user)
 
     travel_to(4.hours.from_now) { create(:push_event, project: private_project, author: user) }
     travel_to(3.hours.from_now) { create(:push_event, project: internal_project, author: user) }
     travel_to(2.hours.from_now) { create(:push_event, project: public_project, author: user) }
+    travel_to(2.hours.from_now) { create(:push_event, project: personal_project, author: user) }
   end
 
   it_behaves_like 'a working graphql query' do
@@ -407,6 +410,37 @@ RSpec.describe 'Getting contributedProjects of the user', feature_category: :gro
           )
         end
       end
+    end
+  end
+
+  context 'when include_personal argument is false' do
+    it 'does not include personal projects' do
+      post_graphql(query, current_user: current_user)
+
+      expect(graphql_data_at(*path))
+      .to contain_exactly(
+        a_graphql_entity_for(private_project),
+        a_graphql_entity_for(internal_project),
+        a_graphql_entity_for(public_project)
+      )
+    end
+  end
+
+  context 'when include_personal argument is true' do
+    let(:query_with_include_personal) do
+      graphql_query_for(:user, user_params, 'contributedProjects(includePersonal: true) { nodes { id } }')
+    end
+
+    it 'includes personal projects' do
+      post_graphql(query_with_include_personal, current_user: current_user)
+
+      expect(graphql_data_at(*path))
+        .to contain_exactly(
+          a_graphql_entity_for(private_project),
+          a_graphql_entity_for(internal_project),
+          a_graphql_entity_for(public_project),
+          a_graphql_entity_for(personal_project)
+        )
     end
   end
 

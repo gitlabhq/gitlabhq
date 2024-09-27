@@ -93,7 +93,8 @@ module Users
       period_in_terraform_state_name_alert: 91,
       work_item_epic_feedback: 92, # EE-only
       branch_rules_tip_callout: 93,
-      openssl_callout: 94
+      openssl_callout: 94,
+      duo_free_access_ending_banner: 95 # EE-only
     }
 
     validates :feature_name,

@@ -32,7 +32,7 @@ This should enable everyone to see locally any change in an IDE being sent to th
 
 1. Main Application (GDK):
    1. Install the [GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/index.md#one-line-installation).
-   1. Enable Feature Flag ```ai_duo_code_suggestions_switch```:
+   1. Enable Feature Flag `ai_duo_code_suggestions_switch`:
       1. In your terminal, go to your `gitlab-development-kit` > `gitlab` directory.
       1. Run `gdk rails console` or `bundle exec rails c` to start a Rails console.
       1. [Enable the Feature Flag](../../administration/feature_flags.md#enable-or-disable-the-feature) for the Code Suggestions tokens API by calling `Feature.enable(:ai_duo_code_suggestions_switch)` from the console.
@@ -63,7 +63,7 @@ with the deployed staging AI Gateway. To do this:
 1. Add a **GitLab Ultimate Self-Managed** subscription with a [Duo Pro subscription add-on](../../subscriptions/subscription-add-ons.md) to your GDK instance.
 
    1. Sign in to the [staging Customers Portal](https://customers.staging.gitlab.com) by selecting the **Continue with GitLab.com account** button.
-   If you do not have an existing account, you are prompted to create one.
+      If you do not have an existing account, you are prompted to create one.
    1. If you do not have an existing cloud activation code, visit the **Ultimate Self-Managed Subscription** page using the [buy subscription flow link](https://gitlab.com/gitlab-org/customers-gitlab-com/-/blob/8aa922840091ad5c5d96ada43d0065a1b6198841/doc/flows/buy_subscription.md).
    1. Purchase the subscription using [a test credit card](https://gitlab.com/gitlab-org/customers-gitlab-com/#testing-credit-card-information).
    1. Once you have a subscription, on the subscription card, select the ellipse menu **...** > **Buy Duo Pro add-on**.
@@ -81,13 +81,13 @@ with the deployed staging AI Gateway. To do this:
       export GITLAB_SIMULATE_SAAS=0
       ```
 
-   On a non-GDK instance, you can set the variables using `gitlab_rails['env']` in the `gitlab.rb` file:
+      On a non-GDK instance, you can set the variables using `gitlab_rails['env']` in the `gitlab.rb` file:
 
       ```shell
       gitlab_rails['env'] = {
-      'GITLAB_LICENSE_MODE' => 'test',
-      'CUSTOMER_PORTAL_URL' => 'https://customers.staging.gitlab.com',
-      'AI_GATEWAY_URL' => 'https://cloud.staging.gitlab.com/ai'
+        'GITLAB_LICENSE_MODE' => 'test',
+        'CUSTOMER_PORTAL_URL' => 'https://customers.staging.gitlab.com',
+        'AI_GATEWAY_URL' => 'https://cloud.staging.gitlab.com/ai'
       }
       ```
 
@@ -97,19 +97,19 @@ with the deployed staging AI Gateway. To do this:
    1. Add the new activation code.
 
 1. Inside your GDK, navigate to **Admin area** > **GitLab Duo Pro**, go to `/admin/code_suggestions`
-1. Filter users to find `root` and click the toggle to assign a GitLab Duo Pro add-on seat to the root user
+1. Filter users to find `root` and click the toggle to assign a GitLab Duo Pro add-on seat to the root user.
 
 ### Setup instructions to use the Duo Pro add-on with a **staging** GitLab.com account
 
-1. Have your account ready at <https://staging.gitlab.com>
-1. [Create a new group](../../user/group/index.md#create-a-group) or use an existing one as the namespace which will receive the Duo Pro access
-1. Navigate to `Settings > Billing`
-1. Initiate the purchase flow for the Ultimate plan by clicking on `Upgrade to Ultimate`
-1. After being redirected to <https://customers.staging.gitlab.com>, click on `Continue with your Gitlab.com account`
-1. Purchase the SaaS Ultimate subscription using [a test credit card](https://gitlab.com/gitlab-org/customers-gitlab-com#testing-credit-card-information)
-1. Find the newly purchased subscription card, and select from the three dots menu the option `Buy GitLab Duo Pro`
-1. Purchase the GitLab Duo Pro add-on using the same test credit card from the above steps
-1. Go back to <https://staging.gitlab.com> and verify that your group has access to Duo Pro by navigating to `Settings > GitLab Duo` and managing seats
+1. Have your account ready at <https://staging.gitlab.com>.
+1. [Create a new group](../../user/group/index.md#create-a-group) or use an existing one as the namespace which will receive the Duo Pro access.
+1. Navigate to `Settings > Billing`.
+1. Initiate the purchase flow for the Ultimate plan by clicking on `Upgrade to Ultimate`.
+1. After being redirected to <https://customers.staging.gitlab.com>, click on `Continue with your Gitlab.com account`.
+1. Purchase the SaaS Ultimate subscription using [a test credit card](https://gitlab.com/gitlab-org/customers-gitlab-com#testing-credit-card-information).
+1. Find the newly purchased subscription card, and select from the three dots menu the option `Buy GitLab Duo Pro`.
+1. Purchase the GitLab Duo Pro add-on using the same test credit card from the above steps.
+1. Go back to <https://staging.gitlab.com> and verify that your group has access to Duo Pro by navigating to `Settings > GitLab Duo` and managing seats.
 
 ### Video demonstrations of installing and using Code Suggestions in IDEs
 

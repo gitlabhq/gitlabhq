@@ -1200,6 +1200,26 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
         it_behaves_like 'failed command', 'Could not apply unassign_reviewer command.'
       end
 
+      context 'with a not-yet-persisted merge request and a preceding assign_reviewer command' do
+        let(:content) do
+          <<-QUICKACTION
+/assign_reviewer #{developer.to_reference}
+/unassign_reviewer #{developer.to_reference}
+          QUICKACTION
+        end
+
+        let(:issuable) { build(:merge_request) }
+
+        it 'adds and then removes a single reviewer in a single step' do
+          _, updates, message = service.execute(content, issuable)
+          translated_string = _("Assigned %{developer_to_reference} as reviewer. Removed reviewer %{developer_to_reference}.")
+          formatted_message = format(translated_string, developer_to_reference: developer.to_reference.to_s)
+
+          expect(updates).to eq(reviewer_ids: [])
+          expect(message).to eq(formatted_message)
+        end
+      end
+
       context 'with anything after the command' do
         let(:content) { '/unassign_reviewer supercalifragilisticexpialidocious' }
 
