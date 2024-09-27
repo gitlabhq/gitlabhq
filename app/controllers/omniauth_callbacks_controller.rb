@@ -200,7 +200,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     end
   end
 
-  # Overrided in EE
+  # Overridden in EE
   def set_session_active_since(id); end
 
   def sign_in_user_flow(auth_user_class)

@@ -1,9 +1,0 @@
----
-name: ai_custom_models_prompts_migration
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/473156
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160050
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/473358
-milestone: '17.3'
-group: group::custom models
-type: development
-default_enabled: true

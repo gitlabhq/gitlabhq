@@ -39,6 +39,7 @@ Example response:
     "id": 1,
     "name": "review/fix-foo",
     "slug": "review-fix-foo-dfjre3",
+    "description": "This is review environment",
     "external_url": "https://review-fix-foo-dfjre3.gitlab.example.com",
     "state": "available",
     "tier": "development",
@@ -75,6 +76,7 @@ Example of response
   "id": 1,
   "name": "review/fix-foo",
   "slug": "review-fix-foo-dfjre3",
+  "description": "This is review environment",
   "external_url": "https://review-fix-foo-dfjre3.gitlab.example.com",
   "state": "available",
   "tier": "development",
@@ -200,6 +202,7 @@ POST /projects/:id/environments
 |------------------------|----------------|----------|---------------------------------------------------------------------------------------------------------------------|
 | `id`                   | integer/string | yes      | The ID or [URL-encoded path](rest/index.md#namespaced-path-encoding) of the project.                                |
 | `name`                 | string         | yes      | The name of the environment.                                                                                        |
+| `description`          | string         | no       | The description of the environment.                                                                                        |
 | `external_url`         | string         | no       | Place to link to for this environment.                                                                              |
 | `tier`                 | string         | no       | The tier of the new environment. Allowed values are `production`, `staging`, `testing`, `development`, and `other`. |
 | `cluster_agent_id`     | integer        | no       | The cluster agent to associate with this environment.                                                               |
@@ -218,6 +221,7 @@ Example response:
   "id": 1,
   "name": "deploy",
   "slug": "deploy",
+  "description": null,
   "external_url": "https://deploy.gitlab.example.com",
   "state": "available",
   "tier": "production",
@@ -244,6 +248,7 @@ PUT /projects/:id/environments/:environments_id
 |------------------------|-----------------|----------|---------------------------------------------------------------------------------------------------------------------|
 | `id`                   | integer/string  | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding).                                |
 | `environment_id`       | integer         | yes      | The ID of the environment.                                                                                          |
+| `description`          | string          | no       | The description of the environment.                                                                                        |
 | `external_url`         | string          | no       | The new `external_url`.                                                                                             |
 | `tier`                 | string          | no       | The tier of the new environment. Allowed values are `production`, `staging`, `testing`, `development`, and `other`. |
 | `cluster_agent_id`     | integer or null | no       | The cluster agent to associate with this environment or `null` to remove it.                                        |
@@ -262,6 +267,7 @@ Example response:
   "id": 1,
   "name": "staging",
   "slug": "staging",
+  "description": null,
   "external_url": "https://staging.gitlab.example.com",
   "state": "available",
   "tier": "staging",

@@ -196,7 +196,10 @@
   },
   "definitions": {
     "artifacts": {
-      "type": "object",
+      "type": [
+        "object",
+        "null"
+      ],
       "markdownDescription": "Used to specify a list of files and directories that should be attached to the job if it succeeds. Artifacts are sent to Gitlab where they can be downloaded. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#artifacts).",
       "additionalProperties": false,
       "properties": {

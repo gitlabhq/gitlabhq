@@ -283,6 +283,9 @@ export default {
             @setAddColumnFormVisibility="$emit('setAddColumnFormVisibility', $event)"
           />
         </div>
+      </transition>
+
+      <transition mode="out-in" name="slide" @after-enter="afterFormEnters">
         <board-add-new-column
           v-if="addColumnFormVisible"
           :board-id="boardId"

@@ -5,7 +5,7 @@ class PostReceive
 
   idempotent!
   deduplicate :none
-  data_consistency :always
+  data_consistency :sticky, feature_flag: :load_balanacing_for_sticky_post_receive_worker
 
   sidekiq_options retry: 3
   include Gitlab::Experiment::Dsl

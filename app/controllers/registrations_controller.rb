@@ -28,7 +28,7 @@ class RegistrationsController < Devise::RegistrationsController
 
   feature_category :instance_resiliency
 
-  helper_method :arkose_labs_enabled?, :registration_path_params, :preregistration_tracking_label
+  helper_method :arkose_labs_enabled?, :preregistration_tracking_label
 
   def new
     @resource = build_resource
@@ -154,11 +154,6 @@ class RegistrationsController < Devise::RegistrationsController
 
   def allow_flash_content?(user)
     user.blocked_pending_approval? || onboarding_status.single_invite?
-  end
-
-  # overridden in EE
-  def registration_path_params
-    {}
   end
 
   def track_successful_user_creation(user)

@@ -7,6 +7,21 @@ RSpec.describe Onboarding::Status, feature_category: :onboarding do
   let_it_be(:user) { member.user }
   let_it_be(:source) { member.group }
 
+  describe '.registration_path_params' do
+    let(:params) { { some: 'thing' } }
+    let(:extra_params) { { another_extra: 'param' } }
+
+    subject { described_class.registration_path_params(params: params) }
+
+    it { is_expected.to eq({}) }
+
+    context 'when extra params are passed' do
+      subject { described_class.registration_path_params(params: params, extra_params: extra_params) }
+
+      it { is_expected.to eq({}) }
+    end
+  end
+
   describe '#single_invite?' do
     subject { described_class.new(nil, nil, user).single_invite? }
 

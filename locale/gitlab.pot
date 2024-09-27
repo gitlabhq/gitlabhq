@@ -3895,6 +3895,9 @@ msgstr ""
 msgid "AdminSelfHostedModels|An API key is set"
 msgstr ""
 
+msgid "AdminSelfHostedModels|An error occurred while deleting your self-hosted model. Please try again."
+msgstr ""
+
 msgid "AdminSelfHostedModels|An error occurred while loading self-hosted models. Please try again."
 msgstr ""
 
@@ -3980,6 +3983,9 @@ msgid "AdminSelfHostedModels|Successfully updated %{mainFeature} / %{title}"
 msgstr ""
 
 msgid "AdminSelfHostedModels|There was an error saving the self-hosted model. Please try again."
+msgstr ""
+
+msgid "AdminSelfHostedModels|Your self-hosted model was successfully deleted."
 msgstr ""
 
 msgid "AdminSettings|%{generate_manually_link_start}Generate%{generate_manually_link_end} Service Ping to preview and download service usage data payload."
@@ -38323,6 +38329,9 @@ msgid "Organization|my-organization"
 msgstr ""
 
 msgid "Orphaned member"
+msgstr ""
+
+msgid "Orphaned request"
 msgstr ""
 
 msgid "Other"

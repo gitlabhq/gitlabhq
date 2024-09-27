@@ -24,11 +24,6 @@
   .gl-card {
     min-width: 75%;
   }
-
-  // stylelint-disable-next-line gitlab/no-gl-class
-  &.gl-modal .modal-md {
-    max-width: 640px;
-  }
 }
 
 //// Copied from roadmaps.scss - adapted for on-call schedules

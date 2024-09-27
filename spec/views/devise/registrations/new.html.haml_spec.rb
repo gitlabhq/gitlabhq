@@ -11,10 +11,12 @@ RSpec.describe 'devise/registrations/new', feature_category: :system_access do
   before do
     allow(view).to receive(:resource).and_return(resource)
     allow(view).to receive(:resource_name).and_return(:user)
-    allow(view).to receive(:glm_tracking_params).and_return({})
-    allow(view).to receive(:registration_path_params).and_return({})
     allow(view).to receive(:preregistration_tracking_label).and_return(tracking_label)
     allow(view).to receive(:arkose_labs_enabled?)
+  end
+
+  context 'for password form' do
+    it { is_expected.to have_css('form[action="/users"]') }
   end
 
   context 'for omniauth provider buttons' do
