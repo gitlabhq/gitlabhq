@@ -21,22 +21,34 @@ RSpec.describe Gitlab::Patch::ActiveRecordConnectionPool, feature_category: :sha
   subject(:pool) { ActiveRecord::ConnectionAdapters::ConnectionPool.new(pool_config) }
 
   describe '#disconnect_without_verify!' do
-    it 'does not call verify!' do
-      expect(done_connection).not_to receive(:verify!)
+    unless Gitlab.next_rails?
+      it 'does not call verify!' do
+        expect(done_connection).not_to receive(:verify!)
 
-      pool.disconnect_without_verify!
+        pool.disconnect_without_verify!
 
-      expect(pool.connections.count).to eq(0)
+        expect(pool.connections.count).to eq(0)
+      end
     end
   end
 
   describe '#disconnect!' do
-    it 'calls verify on the connection' do
-      expect(done_connection).to receive(:verify!).and_call_original
+    if Gitlab.next_rails?
+      it 'does not call verify on the connection' do
+        expect(done_connection).not_to receive(:verify!)
 
-      pool.disconnect!
+        pool.disconnect!
 
-      expect(pool.connections.count).to eq(0)
+        expect(pool.connections.count).to eq(0)
+      end
+    else
+      it 'calls verify on the connection' do
+        expect(done_connection).to receive(:verify!).and_call_original
+
+        pool.disconnect!
+
+        expect(pool.connections.count).to eq(0)
+      end
     end
   end
 end

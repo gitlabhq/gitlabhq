@@ -12636,6 +12636,7 @@ CREATE TABLE issues (
     start_date date,
     tmp_epic_id bigint,
     imported_from smallint DEFAULT 0 NOT NULL,
+    correct_work_item_type_id bigint DEFAULT 0 NOT NULL,
     CONSTRAINT check_2addf801cd CHECK ((work_item_type_id IS NOT NULL)),
     CONSTRAINT check_c33362cd43 CHECK ((namespace_id IS NOT NULL)),
     CONSTRAINT check_fba63f706d CHECK ((lock_version IS NOT NULL))

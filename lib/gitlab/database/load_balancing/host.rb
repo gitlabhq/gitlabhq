@@ -111,11 +111,10 @@ module Gitlab
         end
 
         def pool_disconnect!
-          if Feature.enabled?(:load_balancing_disconnect_without_verify)
-            pool.disconnect_without_verify!
-          else
-            pool.disconnect!
-          end
+          return pool.disconnect! if ::Gitlab.next_rails?
+          return pool.disconnect_without_verify! if Feature.enabled?(:load_balancing_disconnect_without_verify)
+
+          pool.disconnect!
         end
 
         def offline!

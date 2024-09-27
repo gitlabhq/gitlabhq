@@ -115,10 +115,21 @@ module Gitlab
         "#{Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA}.#{partition_name}"
       end
 
+      def table_for_list_partition(partition_name)
+        "#{current_schema}.#{partition_name}"
+      end
+
       def create_range_partition(partition_name, table_name, lower_bound, upper_bound)
         execute(<<~SQL)
           CREATE TABLE #{table_for_range_partition(partition_name)} PARTITION OF #{table_name}
           FOR VALUES FROM (#{lower_bound}) TO (#{upper_bound})
+        SQL
+      end
+
+      def create_list_partition(partition_name, table_name, partition_values)
+        execute(<<~SQL)
+          CREATE TABLE #{table_for_list_partition(partition_name)} PARTITION OF #{table_name}
+          FOR VALUES IN (#{Array.wrap(partition_values).join(', ')})
         SQL
       end
 

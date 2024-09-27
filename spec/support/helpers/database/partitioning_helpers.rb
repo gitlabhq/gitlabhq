@@ -17,6 +17,14 @@ module Database
       expect(definition['condition']).to eq("FOR VALUES FROM (#{min_value}) TO (#{max_value})")
     end
 
+    def expect_list_partition_of(partition_name, table_name, partition, schema: :public)
+      definition = find_partition_definition(partition_name, schema: schema)
+
+      expect(definition).not_to be_nil
+      expect(definition['base_table']).to eq(table_name.to_s)
+      expect(definition['condition']).to eq("FOR VALUES IN (#{partition})")
+    end
+
     def expect_total_partitions(table_name, count, schema: Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA)
       partitions = find_partitions(table_name, schema: schema)
 
@@ -38,6 +46,17 @@ module Database
       expect(definition).not_to be_nil
       expect(definition['base_table']).to eq(table_name.to_s)
       expect(definition['condition']).to eq("FOR VALUES WITH (modulus #{modulus}, remainder #{remainder})")
+    end
+
+    def expect_list_partitions_for(table_name, partitions, partition_name_format: nil, schema: :public)
+      partition_name_format ||= "%{table_name}_%{partition_name}"
+
+      partitions.each do |partition_name, partition|
+        partition_name = format(partition_name_format, table_name: table_name, partition_name: partition_name)
+        expect_list_partition_of(partition_name, table_name, partition, schema: schema)
+      end
+
+      expect_total_partitions(table_name, partitions.size, schema: schema)
     end
 
     private

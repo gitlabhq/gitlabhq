@@ -117,7 +117,7 @@ RSpec.describe 'Database schema', feature_category: :database do
     gitlab_subscription_histories: %w[gitlab_subscription_id hosted_plan_id namespace_id],
     identities: %w[user_id],
     import_failures: %w[project_id],
-    issues: %w[last_edited_by_id state_id],
+    issues: %w[last_edited_by_id state_id correct_work_item_type_id], # correct_work_item_type_id is a temp column
     issue_emails: %w[email_message_id],
     jira_tracker_data: %w[jira_issue_transition_id],
     keys: %w[user_id],

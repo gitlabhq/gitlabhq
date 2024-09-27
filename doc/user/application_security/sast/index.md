@@ -62,19 +62,17 @@ For more information, see [Features](#features).
 
 The following table lists the GitLab tiers in which each feature is available.
 
-| Feature                                                                                   | In Free & Premium      | In Ultimate            |
-|:------------------------------------------------------------------------------------------|:-----------------------|:-----------------------|
-| Automatically scan code with [appropriate analyzers](#supported-languages-and-frameworks) | **{check-circle}** Yes | **{check-circle}** Yes |
-| [Configure SAST scanners](#configuration)                                                 | **{check-circle}** Yes | **{check-circle}** Yes |
-| [Customize SAST settings](#available-cicd-variables)                                      | **{check-circle}** Yes | **{check-circle}** Yes |
-| Download [SAST output](#output)                                                           | **{check-circle}** Yes | **{check-circle}** Yes |
-| See new findings in merge request widget                                                  | **{dotted-circle}** No | **{check-circle}** Yes |
-| See new findings in merge request changes                                                 | **{dotted-circle}** No | **{check-circle}** Yes |
-| [Manage vulnerabilities](../vulnerabilities/index.md)                                     | **{dotted-circle}** No | **{check-circle}** Yes |
-| [Access the Security Dashboard](../security_dashboard/index.md)                           | **{dotted-circle}** No | **{check-circle}** Yes |
-| [Configure SAST by using the UI](#configure-sast-by-using-the-ui)                         | **{dotted-circle}** No | **{check-circle}** Yes |
-| [Customize SAST rulesets](customize_rulesets.md)                                          | **{dotted-circle}** No | **{check-circle}** Yes |
-| [Track moved vulnerabilities](#advanced-vulnerability-tracking)                           | **{dotted-circle}** No | **{check-circle}** Yes |
+| Feature                                                                                  | In Free & Premium      | In Ultimate            |
+|:-----------------------------------------------------------------------------------------|:-----------------------|:-----------------------|
+| Basic scanning with [open-source analyzers](#supported-languages-and-frameworks)         | **{check-circle}** Yes | **{check-circle}** Yes |
+| Downloadable [SAST JSON report](#output)                                                 | **{check-circle}** Yes | **{check-circle}** Yes |
+| Cross-file, cross-function scanning with [GitLab Advanced SAST](gitlab_advanced_sast.md) | **{dotted-circle}** No | **{check-circle}** Yes |
+| New findings in [merge request widget](#merge-request-widget)                            | **{dotted-circle}** No | **{check-circle}** Yes |
+| New findings in [merge request changes view](#merge-request-changes-view)                | **{dotted-circle}** No | **{check-circle}** Yes |
+| [Vulnerability Management](../vulnerabilities/index.md)                                  | **{dotted-circle}** No | **{check-circle}** Yes |
+| [UI-based scanner configuration](#configure-sast-by-using-the-ui)                        | **{dotted-circle}** No | **{check-circle}** Yes |
+| [Ruleset customization](customize_rulesets.md)                                           | **{dotted-circle}** No | **{check-circle}** Yes |
+| [Advanced Vulnerability Tracking](#advanced-vulnerability-tracking)                      | **{dotted-circle}** No | **{check-circle}** Yes |
 
 ## Requirements
 
