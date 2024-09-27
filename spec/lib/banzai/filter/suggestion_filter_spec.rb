@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::Filter::SuggestionFilter, feature_category: :team_planning do
+RSpec.describe Banzai::Filter::SuggestionFilter, feature_category: :markdown do
   include FilterSpecHelper
 
   let(:input) { %(<pre class="code highlight js-syntax-highlight language-suggestion"><code>foo\n</code></pre>) }

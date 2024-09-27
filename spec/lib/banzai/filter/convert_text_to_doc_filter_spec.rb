@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::Filter::ConvertTextToDocFilter, feature_category: :team_planning do
+RSpec.describe Banzai::Filter::ConvertTextToDocFilter, feature_category: :markdown do
   include FilterSpecHelper
 
   it 'returns a nokogiri doc' do

@@ -217,6 +217,33 @@ RSpec.describe Packages::GroupPackagesFinder, feature_category: :package_registr
         end
       end
 
+      context 'within public registry in private group/project' do
+        let(:add_user_to_group) { false }
+        let(:params) { { within_public_package_registry: true } }
+
+        before do
+          project.update_column(:visibility_level, Gitlab::VisibilityLevel::PRIVATE)
+          project.project_feature.update!(package_registry_access_level: ProjectFeature::PUBLIC)
+        end
+
+        it { is_expected.to match_array([package1, package2]) }
+
+        context 'with public registry in a different group' do
+          before do
+            package3.project.update_column(:visibility_level, Gitlab::VisibilityLevel::PRIVATE)
+            package3.project.project_feature.update!(package_registry_access_level: ProjectFeature::PUBLIC)
+          end
+
+          it { is_expected.to match_array([package1, package2]) }
+        end
+
+        context 'when within_public_package_registry is false' do
+          let(:params) { { within_public_package_registry: false } }
+
+          it { is_expected.to be_empty }
+        end
+      end
+
       it_behaves_like 'concerning versionless param'
       it_behaves_like 'concerning package statuses'
       it_behaves_like 'disabling package registry for project' do

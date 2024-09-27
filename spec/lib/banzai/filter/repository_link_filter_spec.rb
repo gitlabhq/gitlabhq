@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::Filter::RepositoryLinkFilter, feature_category: :team_planning do
+RSpec.describe Banzai::Filter::RepositoryLinkFilter, feature_category: :markdown do
   include RepoHelpers
 
   def filter(doc, contexts = {})

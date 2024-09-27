@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::Filter::ImageLinkFilter, feature_category: :team_planning do
+RSpec.describe Banzai::Filter::ImageLinkFilter, feature_category: :markdown do
   include FilterSpecHelper
 
   let(:path) { '/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg' }

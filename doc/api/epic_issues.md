@@ -10,6 +10,11 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
+WARNING:
+The Epics REST API was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/460668) in GitLab 17.0
+and is planned for removal in v5 of the API. Use the [Work Items API](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/work_items/) instead.
+This change is a breaking change.
+
 Every API call to the epic issues API endpoint must be authenticated.
 
 If a user is not a member of a group and the group is private, a `GET` request on that group

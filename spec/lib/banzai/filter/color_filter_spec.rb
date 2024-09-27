@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::Filter::ColorFilter, feature_category: :team_planning, lib: true do
+RSpec.describe Banzai::Filter::ColorFilter, feature_category: :markdown, lib: true do
   include FilterSpecHelper
 
   let(:color) { '#F00' }

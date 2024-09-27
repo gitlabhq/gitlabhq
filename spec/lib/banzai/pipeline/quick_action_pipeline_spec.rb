@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::Pipeline::QuickActionPipeline, feature_category: :team_planning do
+RSpec.describe Banzai::Pipeline::QuickActionPipeline, feature_category: :markdown do
   using RSpec::Parameterized::TableSyntax
 
   it 'does not detect a quick action' do

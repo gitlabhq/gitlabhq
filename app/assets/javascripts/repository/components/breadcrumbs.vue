@@ -131,6 +131,15 @@ export default {
     };
   },
   computed: {
+    currentDirectoryPath() {
+      const splitPath = this.currentPath.split('/').filter((p) => p);
+
+      if (this.isBlobPath) {
+        splitPath.pop();
+      }
+
+      return joinPaths(...splitPath);
+    },
     pathLinks() {
       return this.currentPath
         .split('/')
@@ -274,7 +283,7 @@ export default {
 <template>
   <nav
     :aria-label="__('Files breadcrumb')"
-    :data-current-path="currentPath"
+    :data-current-path="currentDirectoryPath"
     class="js-repo-breadcrumbs"
   >
     <ol class="breadcrumb repo-breadcrumb">

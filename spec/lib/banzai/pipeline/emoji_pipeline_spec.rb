@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::Pipeline::EmojiPipeline, feature_category: :team_planning do
+RSpec.describe Banzai::Pipeline::EmojiPipeline, feature_category: :markdown do
   let(:emoji) { TanukiEmoji.find_by_alpha_code('100') }
 
   def parse(text)

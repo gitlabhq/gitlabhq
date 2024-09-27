@@ -480,6 +480,11 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
+WARNING:
+The Epics REST API was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/460668) in GitLab 17.0
+and is planned for removal in v5 of the API. Use the [Work Items API](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/work_items/) instead.
+This change is a breaking change.
+
 ### List all epic notes
 
 Gets a list of all notes for a single epic. Epic notes are comments users can post to an epic.

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe "GitLab Flavored Markdown", feature_category: :team_planning do
+RSpec.describe "GitLab Flavored Markdown", feature_category: :markdown do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
   let(:issue) { create(:issue, project: project) }

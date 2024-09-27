@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::Filter::FootnoteFilter, feature_category: :team_planning do
+RSpec.describe Banzai::Filter::FootnoteFilter, feature_category: :markdown do
   include FilterSpecHelper
   using RSpec::Parameterized::TableSyntax
 

@@ -45,18 +45,30 @@ module Packages
       # according to project_policy.rb
       # access to packages is ruled by:
       # - project is public or the current user has access to it with at least the reporter level
+      # - project has a public package registry if the within_public_package_registry param is true
       # - the repository feature is available to the current_user
       projects = if current_user.is_a?(DeployToken)
                    current_user.accessible_projects
                  else
-                   ::Project
-                     .in_namespace(groups)
-                     .public_or_visible_to_user(current_user, Gitlab::Access::REPORTER)
+                   visible_projects
                      .with_feature_available_for_user(:repository, current_user)
+                     .in_namespace(groups)
                  end
 
       projects = projects.with_package_registry_enabled if params[:with_package_registry_enabled]
       projects
+    end
+
+    def visible_projects
+      public_or_visible = ::Project.public_or_visible_to_user(current_user, Gitlab::Access::REPORTER)
+
+      return public_or_visible.or(with_public_package_registry) if params[:within_public_package_registry]
+
+      public_or_visible
+    end
+
+    def with_public_package_registry
+      ::ProjectFeature.with_feature_access_level(:package_registry, ::ProjectFeature::PUBLIC)
     end
 
     def groups

@@ -13,6 +13,11 @@ DETAILS:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352493) in GitLab 14.9 [with a flag](../administration/feature_flags.md) named `related_epics_widget`. Enabled by default.
 > - [Feature flag `related_epics_widget`](https://gitlab.com/gitlab-org/gitlab/-/issues/357089) removed in GitLab 15.0.
 
+WARNING:
+The Epics REST API was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/460668) in GitLab 17.0
+and is planned for removal in v5 of the API. Use the [Work Items API](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/work_items/) instead.
+This change is a breaking change.
+
 If the Related Epics feature is not available in your GitLab plan, a `403` status code is returned.
 
 ## List related epic links from a group

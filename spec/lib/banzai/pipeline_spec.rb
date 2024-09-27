@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Banzai::Pipeline, feature_category: :team_planning do
+RSpec.describe Banzai::Pipeline, feature_category: :markdown do
   describe '.[]' do
     subject { described_class[name] }
 

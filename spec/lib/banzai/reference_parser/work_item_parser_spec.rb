@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::ReferenceParser::WorkItemParser, feature_category: :team_planning do
+RSpec.describe Banzai::ReferenceParser::WorkItemParser, feature_category: :markdown do
   include ReferenceParserHelpers
 
   let_it_be(:group) { create(:group, :public) }

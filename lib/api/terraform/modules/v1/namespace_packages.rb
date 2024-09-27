@@ -52,6 +52,8 @@ module API
                 exact_name: true
               }.tap do |finder_params|
                 finder_params[:package_version] = params[:module_version] if params.has_key?(:module_version)
+                finder_params[:within_public_package_registry] =
+                  ::Feature.enabled?(:allow_anyone_to_pull_public_terraform_modules_on_group_level, module_namespace)
               end
             end
 

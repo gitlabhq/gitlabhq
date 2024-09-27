@@ -7,7 +7,7 @@ require 'spec_helper'
 # issue: https://gitlab.com/gitlab-org/gitlab/-/issues/454601
 # rubocop:disable RSpec/ContextWording -- legacy code
 # rubocop:disable Layout/LineLength -- legacy code
-RSpec.describe Banzai::Filter::TableOfContentsTagLegacyFilter, feature_category: :team_planning do
+RSpec.describe Banzai::Filter::TableOfContentsTagLegacyFilter, feature_category: :markdown do
   include FilterSpecHelper
 
   let_it_be(:context) { { markdown_engine: Banzai::Filter::MarkdownFilter::CMARK_ENGINE } }

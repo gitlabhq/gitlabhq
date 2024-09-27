@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::Filter::NormalizeSourceFilter, feature_category: :team_planning do
+RSpec.describe Banzai::Filter::NormalizeSourceFilter, feature_category: :markdown do
   include FilterSpecHelper
 
   it 'removes the UTF8 BOM from the beginning of the text' do

@@ -98,7 +98,7 @@ POST /groups/:id/variables
 | `id`                                  | integer/string | Yes      | The ID of a group or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding). |
 | `key`                                 | string         | Yes      | The `key` of a variable; must have no more than 255 characters; only `A-Z`, `a-z`, `0-9`, and `_` are allowed. |
 | `value`                               | string         | Yes      | The `value` of a variable. |
-| `description`                         | string         | No       | The `description` of the variable. Default: `null`. |
+| `description`                         | string         | No       | The `description` of the variable; must have no more than 255 characters. Default: `null`. |
 | `environment_scope`                   | string         | No       | The [environment scope](../ci/environments/index.md#limit-the-environment-scope-of-a-cicd-variable) of a variable. Premium and Ultimate only. |
 | `masked`                              | boolean        | No       | Whether the variable is masked. |
 | `protected`                           | boolean        | No       | Whether the variable is protected. |

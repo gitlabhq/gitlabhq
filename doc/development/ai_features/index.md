@@ -68,6 +68,16 @@ In SaaS mode, membership to a group with Duo features enabled is what enables
 many AI features. Make sure that your test user is a member of the group with
 Duo features enabled (`test-group-name`).
 
+This Rake task creates Duo Enterprise add-on attached to that group.
+
+In case you need Duo Pro add-on attached, please use:
+
+```shell
+GITLAB_SIMULATE_SAAS=1 bundle exec 'rake gitlab:duo:setup[test-group-name,duo_pro]'
+```
+
+Duo Pro add-on serves smaller scope of features. Usage of add-on depends on what features you want to use.
+
 #### Option B: in Self-managed Mode
 
 **Why:** If you want to test something specific to self-managed, such as Custom
@@ -78,12 +88,22 @@ Models.
 Run the Rake task to set up Duo features for the instance:
 
 ```shell
-GITLAB_SIMULATE_SAAS=0 bundle exec 'rake gitlab:duo:setup'
+GITLAB_SIMULATE_SAAS=0 bundle exec 'rake gitlab:duo:setup_instance'
 ```
 
 ```shell
 gdk restart
 ```
+
+This Rake task creates Duo Enterprise add-on attached to your instance.
+
+In case you need Duo Pro add-on attached, please use:
+
+```shell
+GITLAB_SIMULATE_SAAS=0 bundle exec 'rake gitlab:duo:setup_instance[duo_pro]'
+```
+
+Duo Pro add-on serves smaller scope of features. Usage of add-on depends on what features you want to use.
 
 ### Recommended: Set `CLOUD_CONNECTOR_SELF_SIGN_TOKENS` environment variable
 

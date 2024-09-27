@@ -9,7 +9,7 @@ module API
 
     before { authenticate! if Feature.enabled?(:authenticate_markdown_api, type: :ops) }
 
-    feature_category :team_planning
+    feature_category :markdown
 
     params do
       requires :text, type: String, desc: "The Markdown text to render"

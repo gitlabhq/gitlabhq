@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::Filter::KrokiFilter, feature_category: :team_planning do
+RSpec.describe Banzai::Filter::KrokiFilter, feature_category: :markdown do
   include FilterSpecHelper
 
   it 'replaces nomnoml pre tag with img tag if kroki is enabled' do

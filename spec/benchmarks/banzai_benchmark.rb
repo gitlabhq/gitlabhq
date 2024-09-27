@@ -24,7 +24,7 @@ require 'benchmark/ips'
 #   FILTER=MathFilter rake benchmark:banzai
 #
 # rubocop: disable RSpec/TopLevelDescribePath
-RSpec.describe 'GitLab Markdown Benchmark', :aggregate_failures, feature_category: :team_planning do
+RSpec.describe 'GitLab Markdown Benchmark', :aggregate_failures, feature_category: :markdown do
   include MarkupHelper
 
   let_it_be(:feature)       { MarkdownFeature.new }

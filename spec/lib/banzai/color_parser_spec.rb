@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Banzai::ColorParser, feature_category: :team_planning do
+RSpec.describe Banzai::ColorParser, feature_category: :markdown do
   describe '.parse' do
     context 'HEX format' do
       [

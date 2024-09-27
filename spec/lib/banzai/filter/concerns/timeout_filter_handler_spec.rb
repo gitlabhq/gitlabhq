@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::Filter::Concerns::TimeoutFilterHandler, feature_category: :team_planning do
+RSpec.describe Banzai::Filter::Concerns::TimeoutFilterHandler, feature_category: :markdown do
   include FilterSpecHelper
 
   context 'when subclassed from HTML filter' do

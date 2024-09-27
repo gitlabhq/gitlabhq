@@ -244,23 +244,23 @@ gem 'faraday_middleware-aws-sigv4', '~> 1.0.1', feature_category: :global_search
 gem 'typhoeus', '~> 1.4.0', feature_category: :global_search
 
 # Markdown and HTML processing
-gem 'html-pipeline', '~> 2.14.3', feature_category: :team_planning
-gem 'deckar01-task_list', '2.3.4', feature_category: :team_planning
-gem 'gitlab-markup', '~> 1.9.0', require: 'github/markup' # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'commonmarker', '~> 0.23.10', feature_category: :team_planning
-gem 'kramdown', '~> 2.3.1' # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'RedCloth', '~> 4.3.3' # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'org-ruby', '~> 0.9.12' # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'creole', '~> 0.5.0' # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'wikicloth', '0.8.1' # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'asciidoctor', '~> 2.0.18' # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'asciidoctor-include-ext', '~> 0.4.0', require: false # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'asciidoctor-plantuml', '~> 0.0.16' # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'asciidoctor-kroki', '~> 0.10.0', require: false # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'html-pipeline', '~> 2.14.3', feature_category: :markdown
+gem 'deckar01-task_list', '2.3.4', feature_category: :markdown
+gem 'gitlab-markup', '~> 1.9.0', require: 'github/markup', feature_category: :markdown
+gem 'commonmarker', '~> 0.23.10', feature_category: :markdown
+gem 'kramdown', '~> 2.3.1', feature_category: :markdown
+gem 'RedCloth', '~> 4.3.3', feature_category: :markdown
+gem 'org-ruby', '~> 0.9.12', feature_category: :markdown
+gem 'creole', '~> 0.5.0', feature_category: :markdown
+gem 'wikicloth', '0.8.1', feature_category: :markdown
+gem 'asciidoctor', '~> 2.0.18', feature_category: :markdown
+gem 'asciidoctor-include-ext', '~> 0.4.0', require: false, feature_category: :markdown
+gem 'asciidoctor-plantuml', '~> 0.0.16', feature_category: :markdown
+gem 'asciidoctor-kroki', '~> 0.10.0', require: false, feature_category: :markdown
 gem 'rouge', '~> 4.3.0', feature_category: :shared
-gem 'truncato', '~> 0.7.12' # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'nokogiri', '~> 1.16' # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'gitlab-glfm-markdown', '~> 0.0.20', feature_category: :team_planning
+gem 'truncato', '~> 0.7.12', feature_category: :team_planning
+gem 'nokogiri', '~> 1.16', feature_category: :shared
+gem 'gitlab-glfm-markdown', '~> 0.0.20', feature_category: :markdown
 
 # Calendar rendering
 gem 'icalendar', '~> 2.10.1', feature_category: :system_access

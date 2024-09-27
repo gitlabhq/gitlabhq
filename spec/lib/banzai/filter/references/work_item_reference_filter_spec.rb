@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::Filter::References::WorkItemReferenceFilter, feature_category: :team_planning do
+RSpec.describe Banzai::Filter::References::WorkItemReferenceFilter, feature_category: :markdown do
   include FilterSpecHelper
 
   let_it_be(:group)           { create(:group) }
@@ -211,7 +211,7 @@ RSpec.describe Banzai::Filter::References::WorkItemReferenceFilter, feature_cate
       expect(doc.to_html).to match(%r{\(<a.+>#{Regexp.escape(work_item.to_reference(project))}</a>\.\)})
     end
 
-    it 'links with adjacent text' do
+    it 'links with adjacent text', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/478370' do
       doc = reference_filter("Fixed (#{reference}.)")
 
       expect(doc.to_html).to match(%r{\(<a.+>#{Regexp.escape(work_item.to_reference(project))} \(comment 123\)</a>\.\)})

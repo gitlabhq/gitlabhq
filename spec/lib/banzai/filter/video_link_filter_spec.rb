@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::Filter::VideoLinkFilter, feature_category: :team_planning do
+RSpec.describe Banzai::Filter::VideoLinkFilter, feature_category: :markdown do
   def filter(doc, contexts = {})
     contexts.reverse_merge!({
       project: project

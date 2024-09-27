@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::Filter::TaskListFilter, feature_category: :team_planning do
+RSpec.describe Banzai::Filter::TaskListFilter, feature_category: :markdown do
   include FilterSpecHelper
 
   it 'adds `<task-button></task-button>` to every list item' do

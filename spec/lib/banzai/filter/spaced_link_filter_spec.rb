@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::Filter::SpacedLinkFilter, feature_category: :team_planning do
+RSpec.describe Banzai::Filter::SpacedLinkFilter, feature_category: :markdown do
   include FilterSpecHelper
 
   let(:link)  { '[example](page slug)' }

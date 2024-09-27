@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::ObjectRenderer, feature_category: :team_planning do
+RSpec.describe Banzai::ObjectRenderer, feature_category: :markdown do
   let(:project) { create(:project, :repository) }
   let(:user) { project.first_owner }
   let(:renderer) do

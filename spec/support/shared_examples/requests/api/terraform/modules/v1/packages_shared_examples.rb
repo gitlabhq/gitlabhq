@@ -474,3 +474,22 @@ RSpec.shared_examples 'accessing a public/internal project with another project\
     end
   end
 end
+
+RSpec.shared_examples 'allowing anyone to pull public terraform modules' do |status = :success|
+  let(:headers) { {} }
+
+  before do
+    [group, project].each { |e| e.update_column(:visibility_level, Gitlab::VisibilityLevel::PRIVATE) }
+    project.project_feature.update!(package_registry_access_level: ProjectFeature::PUBLIC)
+  end
+
+  it_behaves_like 'returning response status', status
+
+  context 'when allow_anyone_to_pull_public_terraform_modules_on_group_level FF is disabled' do
+    before do
+      stub_feature_flags(allow_anyone_to_pull_public_terraform_modules_on_group_level: false)
+    end
+
+    it_behaves_like 'rejects terraform module packages access', :anonymous, :unauthorized
+  end
+end

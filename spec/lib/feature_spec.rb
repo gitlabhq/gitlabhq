@@ -55,6 +55,29 @@ RSpec.describe Feature, :clean_gitlab_redis_feature_flag, stub_feature_flags: fa
     end
   end
 
+  describe '.current_pod' do
+    it 'returns a FlipperPod with a flipper_id' do
+      expect(described_class.current_pod).to respond_to(:flipper_id)
+    end
+
+    it 'is the same flipper_id within a process' do
+      previous_id = described_class.current_pod.flipper_id
+
+      expect(previous_id).to eq(described_class.current_pod.flipper_id)
+    end
+
+    it 'is a different flipper_id in a new host' do
+      previous_id = described_class.current_pod.flipper_id
+
+      # Simulate a new process by changing host,
+      previous_host = Socket.gethostname
+      allow(Socket).to receive(:gethostname).and_return("#{previous_host}-1")
+
+      new_id = Feature::FlipperPod.new.flipper_id # Bypass caching
+      expect(previous_id).not_to eq(new_id)
+    end
+  end
+
   describe '.gitlab_instance' do
     it 'returns a FlipperGitlabInstance with a flipper_id' do
       flipper_request = described_class.gitlab_instance
@@ -404,6 +427,35 @@ RSpec.describe Feature, :clean_gitlab_redis_feature_flag, stub_feature_flags: fa
         described_class.enable(:enabled_feature_flag, :instance)
 
         expect(described_class.enabled?(:enabled_feature_flag, :instance)).to be_truthy
+      end
+    end
+
+    context 'with :pod actor' do
+      before do
+        stub_feature_flag_definition(:enabled_feature_flag)
+      end
+
+      it 'returns the same value in the same host' do
+        described_class.enable(:enabled_feature_flag, :current_pod)
+
+        expect(described_class.enabled?(:enabled_feature_flag, :current_pod)).to be_truthy
+      end
+
+      it 'returns different values in different hosts' do
+        number_of_times = 1_000
+        percentage = 50
+        described_class.enable_percentage_of_actors(:enabled_feature_flag, percentage)
+        results = { true => 0, false => 0 }
+        original_hostname = Socket.gethostname
+        number_of_times.times do |i|
+          allow(Socket).to receive(:gethostname).and_return("#{original_hostname}-#{i}")
+          flipper_thing = Feature::FlipperPod.new # Create a new one to bypass caching, we are simulating many different pods
+          result = described_class.enabled?(:enabled_feature_flag, flipper_thing)
+          results[result] += 1
+        end
+
+        percent_true = (results[true].to_f / (results[true] + results[false])) * 100
+        expect(percent_true).to be_within(5).of(percentage)
       end
     end
 

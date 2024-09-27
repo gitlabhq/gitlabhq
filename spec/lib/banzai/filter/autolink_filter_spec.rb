@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::Filter::AutolinkFilter, feature_category: :team_planning do
+RSpec.describe Banzai::Filter::AutolinkFilter, feature_category: :markdown do
   include FilterSpecHelper
 
   let_it_be(:context) { { markdown_engine: Banzai::Filter::MarkdownFilter::CMARK_ENGINE } }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::Filter::QuickActionFilter, feature_category: :team_planning do
+RSpec.describe Banzai::Filter::QuickActionFilter, feature_category: :markdown do
   let(:result) { {} }
 
   it 'detects action in paragraph' do

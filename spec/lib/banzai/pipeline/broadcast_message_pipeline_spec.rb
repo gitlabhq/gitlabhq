@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::Pipeline::BroadcastMessagePipeline, feature_category: :team_planning do
+RSpec.describe Banzai::Pipeline::BroadcastMessagePipeline, feature_category: :markdown do
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, group: group) }
 

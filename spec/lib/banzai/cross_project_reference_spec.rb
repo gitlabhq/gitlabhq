@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::CrossProjectReference, feature_category: :team_planning do
+RSpec.describe Banzai::CrossProjectReference, feature_category: :markdown do
   let(:including_class) { Class.new.include(described_class).new }
   let(:reference_cache) { Banzai::Filter::References::ReferenceCache.new(including_class, {}, {}) }
 

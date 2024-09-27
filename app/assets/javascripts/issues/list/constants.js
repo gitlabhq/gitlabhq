@@ -12,6 +12,7 @@ import {
   OPERATOR_AFTER,
   OPERATOR_BEFORE,
   TOKEN_TYPE_APPROVED_BY,
+  TOKEN_TYPE_APPROVER,
   TOKEN_TYPE_ASSIGNEE,
   TOKEN_TYPE_REVIEWER,
   TOKEN_TYPE_AUTHOR,
@@ -164,6 +165,16 @@ export const filtersMap = {
       },
       [OPERATOR_NOT]: {
         [NORMAL_FILTER]: 'not[approved_by_usernames][]',
+      },
+    },
+  },
+  [TOKEN_TYPE_APPROVER]: {
+    [API_PARAM]: {
+      [NORMAL_FILTER]: 'approver',
+    },
+    [URL_PARAM]: {
+      [OPERATOR_IS]: {
+        [NORMAL_FILTER]: 'approver[]',
       },
     },
   },

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::Filter::Concerns::PipelineTimingCheck, feature_category: :team_planning do
+RSpec.describe Banzai::Filter::Concerns::PipelineTimingCheck, feature_category: :markdown do
   context 'when pipeline_timing' do
     before do
       stub_const('Banzai::Filter::Concerns::PipelineTimingCheck::MAX_PIPELINE_SECONDS', 1)

@@ -310,7 +310,7 @@ To configure SAST for a project you can:
 
 You can enable SAST across many projects by [enforcing scan execution](../index.md#enforce-scan-execution).
 
-To configure Advanced SAST (for Ultimate tier) please also follow these [instructions](gitlab_advanced_sast.md#configuration).
+To configure Advanced SAST (available in GitLab Ultimate only), follow these [instructions](gitlab_advanced_sast.md#configuration).
 
 ### Configure SAST in your CI/CD YAML
 
@@ -632,6 +632,7 @@ Some analyzers can be customized with CI/CD variables.
 
 | CI/CD variable              | Analyzer   | Description                                                                                                                                                                                                                        |
 |-----------------------------|------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `GITLAB_ADVANCED_SAST_ENABLED` | GitLab Advanced SAST | Set to `true` to enable [Advanced SAST](gitlab_advanced_sast.md) scanning (available in GitLab Ultimate only). Default: `false`. |
 | `SCAN_KUBERNETES_MANIFESTS` | Kubesec    | Set to `"true"` to scan Kubernetes manifests.                                                                                                                                                                                      |
 | `KUBESEC_HELM_CHARTS_PATH`  | Kubesec    | Optional path to Helm charts that `helm` uses to generate a Kubernetes manifest that `kubesec` scans. If dependencies are defined, `helm dependency build` should be ran in a `before_script` to fetch the necessary dependencies. |
 | `KUBESEC_HELM_OPTIONS`      | Kubesec    | Additional arguments for the `helm` executable.                                                                                                                                                                                    |
