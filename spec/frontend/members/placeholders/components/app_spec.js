@@ -23,6 +23,7 @@ import {
   PLACEHOLDER_USER_STATUS,
   PLACEHOLDER_SORT_STATUS_ASC,
   PLACEHOLDER_SORT_SOURCE_NAME_DESC,
+  PLACEHOLDER_STATUS_KEPT_AS_PLACEHOLDER,
 } from '~/import_entities/import_groups/constants';
 import { mockSourceUsersQueryResponse, mockSourceUsers, pagination } from '../mock_data';
 
@@ -138,6 +139,10 @@ describe('PlaceholdersTabApp', () => {
         createComponent();
       });
 
+      it('shows the "Unassigned" tab', () => {
+        expect(findTabs().props('value')).toBe(0);
+      });
+
       it('passes props to table', () => {
         expect(findUnassignedTable().props()).toMatchObject({
           querySearch: 'foo',
@@ -170,6 +175,25 @@ describe('PlaceholdersTabApp', () => {
         expect(window.location.search).toBe(
           `?tab=placeholders&status=failed&search=foo&sort=SOURCE_NAME_DESC`,
         );
+      });
+    });
+
+    describe('with reassigned status present on load', () => {
+      beforeEach(() => {
+        setWindowLocation('?status=keep_as_placeholder&search=foo&sort=STATUS_ASC');
+        createComponent();
+      });
+
+      it('shows the "Reassigned" tab', () => {
+        expect(findTabs().props('value')).toBe(1);
+      });
+
+      it('passes props to reassigned table', () => {
+        expect(findReassignedTable().props()).toMatchObject({
+          querySearch: 'foo',
+          queryStatuses: [PLACEHOLDER_STATUS_KEPT_AS_PLACEHOLDER],
+          querySort: PLACEHOLDER_SORT_STATUS_ASC,
+        });
       });
     });
   });

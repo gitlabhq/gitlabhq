@@ -39,6 +39,27 @@ RSpec.describe DiffNote do
       subject { build(:diff_note_on_commit, project: project, commit_id: commit_id, position: position) }
     end
 
+    it 'traces the line_code when no line_code is not already set' do
+      note = build(:diff_note_on_merge_request, project: project, position: position, noteable: merge_request)
+
+      expect(note.position).to receive(:line_code).and_return('new_line_code')
+
+      note.valid?
+
+      expect(note.line_code).to eq('new_line_code')
+    end
+
+    it 'does not trace the line code when already set' do
+      note = build(:diff_note_on_merge_request, project: project, position: position, noteable: merge_request,
+        line_code: 'test_line_code')
+
+      expect(note.position).not_to receive(:line_code)
+
+      note.valid?
+
+      expect(note.line_code).to eq('test_line_code')
+    end
+
     it "is not valid when noteable is empty" do
       note = build(:diff_note_on_merge_request, project: project, noteable: nil)
 

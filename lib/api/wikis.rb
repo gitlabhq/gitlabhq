@@ -62,7 +62,7 @@ module API
           optional :version, type: String, desc: 'The version hash of a wiki page'
           optional :render_html, type: Boolean, default: false, desc: 'Render content to HTML'
         end
-        get ':id/wikis/:slug', urgency: :low do
+        get ':id/wikis/:slug', requirements: { slug: /.+/ }, urgency: :low do
           authorize! :read_wiki, container
 
           options = {
@@ -122,7 +122,7 @@ module API
           use :common_wiki_page_params
           at_least_one_of :content, :title, :format
         end
-        put ':id/wikis/:slug' do
+        put ':id/wikis/:slug', requirements: { slug: /.+/ } do
           authorize! :create_wiki, container
 
           response = WikiPages::UpdateService
@@ -148,7 +148,7 @@ module API
         params do
           requires :slug, type: String, desc: 'The slug of a wiki page'
         end
-        delete ':id/wikis/:slug' do
+        delete ':id/wikis/:slug', requirements: { slug: /.+/ } do
           authorize! :admin_wiki, container
 
           response = WikiPages::DestroyService

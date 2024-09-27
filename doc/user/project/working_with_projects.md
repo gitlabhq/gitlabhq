@@ -156,6 +156,7 @@ After you delete a project:
 Prerequisites:
 
 - You must have the Owner role for a project.
+- Owners must be [allowed to delete projects](../../administration/settings/visibility_and_access_controls.md#restrict-project-deletion-to-administrators).
 
 To delete a project:
 

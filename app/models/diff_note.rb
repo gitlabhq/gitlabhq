@@ -173,7 +173,7 @@ class DiffNote < Note
   end
 
   def set_line_code
-    self.line_code = self.position.line_code(repository)
+    self.line_code = self.line_code.presence || self.position.line_code(repository)
   end
 
   def verify_supported

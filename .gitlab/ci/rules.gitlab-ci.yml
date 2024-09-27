@@ -304,6 +304,10 @@
 .python-patterns: &python-patterns
   - '{Pipfile,*/Pipfile,*/*/Pipfile}'
 
+.ruby-dependency-patterns: &ruby-dependency-patterns
+  - '{Gemfile.lock,*/Gemfile.lock,*/*/Gemfile.lock}'
+  - '{Gemfile.next.lock,*/Gemfile.next.lock,*/*/Gemfile.next.lock}'
+
 .dependency-patterns: &dependency-patterns
   - '{Gemfile.lock,*/Gemfile.lock,*/*/Gemfile.lock}'
   - '{Gemfile.next.lock,*/Gemfile.next.lock,*/*/Gemfile.next.lock}'
@@ -2498,6 +2502,11 @@
     - <<: *if-default-branch-refs
       changes: *code-backstage-patterns
       when: always
+
+.rails:rules:rails-next-dependency-check:
+  rules:
+    - <<: *if-merge-request
+      changes: *ruby-dependency-patterns
 
 #########################
 # Static analysis rules #

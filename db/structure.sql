@@ -5257,8 +5257,10 @@ CREATE TABLE ai_self_hosted_models (
     name text NOT NULL,
     encrypted_api_token bytea,
     encrypted_api_token_iv bytea,
+    identifier text,
     CONSTRAINT check_a28005edb2 CHECK ((char_length(endpoint) <= 2048)),
-    CONSTRAINT check_cccb37e0de CHECK ((char_length(name) <= 255))
+    CONSTRAINT check_cccb37e0de CHECK ((char_length(name) <= 255)),
+    CONSTRAINT check_d1e593d04d CHECK ((char_length(identifier) <= 255))
 );
 
 CREATE SEQUENCE ai_self_hosted_models_id_seq
