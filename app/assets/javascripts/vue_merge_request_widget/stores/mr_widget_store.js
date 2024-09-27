@@ -141,6 +141,7 @@ export default class MergeRequestStore {
     this.isPipelineSkipped = this.ciStatus === 'skipped';
     this.pipelineDetailedStatus = pipelineStatus;
     this.isPipelineActive = data.pipeline ? data.pipeline.active : false;
+    this.pipelineIid = data.pipeline?.iid;
     this.isPipelineBlocked =
       data.only_allow_merge_if_pipeline_succeeds && pipelineStatus?.group === 'manual';
     this.faviconOverlayPath = data.favicon_overlay_path;
@@ -181,7 +182,6 @@ export default class MergeRequestStore {
 
   setGraphqlData(project) {
     const { mergeRequest } = project;
-    const pipeline = mergeRequest.headPipeline;
 
     this.updateStatusState(mergeRequest.state);
 
@@ -193,11 +193,6 @@ export default class MergeRequestStore {
     this.autoMergeEnabled = mergeRequest.autoMergeEnabled;
     this.canBeMerged = mergeRequest.mergeStatus === 'can_be_merged';
     this.canMerge = mergeRequest.userPermissions.canMerge;
-    this.ciStatus = pipeline?.status.toLowerCase();
-
-    if (pipeline?.warnings && this.ciStatus === 'success') {
-      this.ciStatus = `${this.ciStatus}-with-warnings`;
-    }
 
     this.commitsCount = mergeRequest.commitCount;
     this.branchMissing =
@@ -213,7 +208,6 @@ export default class MergeRequestStore {
     this.draft = mergeRequest.draft;
     this.mergeRequestState = mergeRequest.state;
     this.detailedMergeStatus = mergeRequest.detailedMergeStatus;
-    this.pipelineIid = pipeline?.iid;
 
     this.setState();
   }

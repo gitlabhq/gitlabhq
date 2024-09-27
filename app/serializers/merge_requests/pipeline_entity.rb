@@ -4,6 +4,7 @@ class MergeRequests::PipelineEntity < Grape::Entity
   include RequestAwareEntity
 
   expose :id
+  expose :iid
   expose :active?, as: :active
   expose :name
 

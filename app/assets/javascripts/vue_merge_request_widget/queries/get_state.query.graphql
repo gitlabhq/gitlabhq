@@ -20,12 +20,6 @@ query getState($projectPath: ID!, $iid: String!) {
       mergeStatus
       mergeable
       mergeableDiscussionsState
-      headPipeline {
-        id
-        iid
-        status
-        warnings
-      }
       shouldBeRebased
       sourceBranchExists
       state

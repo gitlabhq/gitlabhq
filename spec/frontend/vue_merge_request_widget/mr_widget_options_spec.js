@@ -347,7 +347,7 @@ describe('MrWidgetOptions', () => {
           jest.spyOn(notify, 'notifyMe').mockImplementation(() => {});
           const logoFilename = 'logo.png';
           await createComponent({
-            updatedMrData: { gitlabLogo: logoFilename },
+            updatedMrData: { gitlabLogo: logoFilename, ci_status: 'failed' },
           });
           eventHub.$emit('MRWidgetUpdateRequested');
           await waitForPromises();
@@ -522,10 +522,10 @@ describe('MrWidgetOptions', () => {
           beforeEach(() => {
             mock
               .onGet(mockData.merge_request_widget_path)
-              .reply(HTTP_STATUS_OK, { ...mockData, ...updatedMrData });
+              .reply(HTTP_STATUS_OK, { ...mockData, ...updatedMrData, ci_status: 'failed' });
             mock
               .onGet(mockData.merge_request_cached_widget_path)
-              .reply(HTTP_STATUS_OK, { ...mockData, ...updatedMrData });
+              .reply(HTTP_STATUS_OK, { ...mockData, ...updatedMrData, ci_status: 'failed' });
           });
 
           it('should call notifyMe', async () => {

@@ -334,15 +334,3 @@ Geo::ProjectRegistry.where(last_repository_check_failed: true).count
 ```ruby
 Geo::ProjectRegistry.where(last_repository_check_failed: true)
 ```
-
-### Recheck repositories that failed the repository check
-
-When you run this, `fsck` is executed against each failed repository.
-
-The [`fsck` Rake command](../../../raketasks/check.md#check-project-code-repositories) can be used on the secondary site to understand why the repository check might be failing.
-
-```ruby
-Geo::ProjectRegistry.where(last_repository_check_failed: true).each do |pr|
-  RepositoryCheck::SingleRepositoryWorker.new.perform(pr.project_id)
-end
-```

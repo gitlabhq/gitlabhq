@@ -204,7 +204,8 @@ RSpec.describe 'Database schema', feature_category: :database do
     software_license_policies: %w[approval_policy_rule_id],
     ai_testing_terms_acceptances: %w[user_id], # testing terms only have 1 entry, and if the user is deleted the record should remain
     namespace_settings: %w[early_access_program_joined_by_id], # isn't used inside product itself. Only through Snowflake
-    workspaces_agent_config_versions: %w[item_id] # polymorphic associations
+    workspaces_agent_config_versions: %w[item_id], # polymorphic associations
+    work_item_types: %w[correct_id] # temporary column that is not a foreign key
   }.with_indifferent_access.freeze
 
   context 'for table' do

@@ -41,5 +41,6 @@
 .zen-control-leave {
   display: none;
   position: absolute;
-  @apply gl-right-3 gl-top-3 gl-leading-0 sm:gl-p-3 sm:gl-text-base #{!important};
+  @apply sm:gl-p-3 sm:gl-text-base gl-leading-0 #{!important};
+  @apply gl-right-3 gl-top-3;
 }

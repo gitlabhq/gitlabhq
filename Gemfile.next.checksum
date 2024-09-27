@@ -1,6 +1,6 @@
 [
 {"name":"CFPropertyList","version":"3.0.5","platform":"ruby","checksum":"a78551cd4768d78ebca98488c27e33652ef818be64697a54676d34e6434674a4"},
-{"name":"RedCloth","version":"4.3.3","platform":"ruby","checksum":"d941b8ac96e2730d2d9326d97dda9fcf64cb73532b3f902d91c18970c5f4632d"},
+{"name":"RedCloth","version":"4.3.4","platform":"ruby","checksum":"5231b2fdd91a933915cba330e5fd1a74025e77b56f57b7404c7191ebf2812297"},
 {"name":"acme-client","version":"2.0.18","platform":"ruby","checksum":"3feab341926ffc16eb65babe51ba4dad8180c13e21e774871344e0b3502ef275"},
 {"name":"actioncable","version":"7.1.4","platform":"ruby","checksum":"8443dfe12129cf6d7c93b16a5f0be83bf0d3f686875d7ff5e1110c884c3e8fbc"},
 {"name":"actionmailbox","version":"7.1.4","platform":"ruby","checksum":"30be3b404290ef19c477aab19ee48cbcb6b409cc3f377f732c7b907998e6f36f"},
