@@ -121,3 +121,75 @@ Code suggestion requests will be sent to your GitLab instance.
 
 The indirect connection through your GitLab instance is about 100 ms slower, but otherwise works the same.
 This issue is often caused by network connection problems, like with your LAN firewall or proxy settings.
+
+## HTTPS project cloning works but SSH cloning fails
+
+This problem happens in VS Code when your SSH URL host or path is different from your HTTPS path. The GitLab Workflow extension uses:
+
+- The host to match the account that you set up.
+- The path to get the namespace and project name.
+
+For example, the VS Code extension's URLs are:
+
+- SSH: `git@gitlab.com:gitlab-org/gitlab-vscode-extension.git`
+- HTTPS: `https://gitlab.com/gitlab-org/gitlab-vscode-extension.git`
+
+Both have the `gitlab.com` and `gitlab-org/gitlab-vscode-extension` path.
+
+To fix this problem, check if your SSH URL is on a different host, or if it has extra segments in a path.
+If either is true, you can manually assign a Git repository to a GitLab project:
+
+1. In VS Code, on the left sidebar, select **GitLab Workflow** (**{tanuki}**).
+1. Select the project marked `(no GitLab project)`, then select **Manually assign GitLab project**:
+   ![Assign GitLab project manually](img/manually_assign_v15_3.png)
+1. Select the correct project from the list.
+
+For more information about simplifying this process, see
+[issue 577](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues/577)
+in the `gitlab-vscode-extension` project.
+
+## Error: `can't access the OS Keychain`
+
+Error messages like these can occur on both MacOS and Ubuntu:
+
+```plaintext
+GitLab Workflow can't access the OS Keychain.
+If you use Ubuntu, see this existing issue.
+```
+
+```plaintext
+Error: Cannot get password
+at I.$getPassword (vscode-file://vscode-app/snap/code/97/usr/share/code/resources/app/out/vs/workbench/workbench.desktop.main.js:1712:49592)
+```
+
+For more information about these errors, see:
+
+- [Extension issue 580](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues/580)
+- [Upstream `microsoft/vscode` issue 147515](https://github.com/microsoft/vscode/issues/147515)
+
+### MacOS workaround
+
+A workaround exists for MacOS:
+
+1. On your machine, open **Keychain Access** and search for `vscodegitlab.gitlab-workflow`.
+1. Delete `vscodegitlab.gitlab-workflow` from your keychain.
+1. Remove the corrupted account from VS Code using the `GitLab: Remove Account from VS Code` command.
+1. To add the account again, run either `Gitlab: Add Account to VS Code` or `GitLab: Authenticate to GitLab.com`.
+
+### Ubuntu workaround
+
+When VS Code is installed with `snap` in Ubuntu 20.04 and 22.04, it can't read passwords from the OS keychain that extension versions 3.44.0
+and later use for secure token storage.
+
+A workaround exists for Ubuntu users who use versions of VS Code earlier than 1.68.0:
+
+- You can downgrade the GitLab Workflow extension to version 3.43.1.
+- You can install VS Code from the `.deb` package, rather than `snap`:
+  1. Uninstall the `snap` VS Code.
+  1. Install VS Code from the [`.deb` package](https://code.visualstudio.com/Download).
+  1. Go to Ubuntu's **Password & Keys**, find the `vscodegitlab.workflow/gitlab-tokens` entry, and remove it.
+  1. In VS Code, run `Gitlab: Remove Your Account` to remove the account with missing credentials.
+  1. To add the account again, run either `Gitlab: Add Account to VS Code` or `GitLab: Authenticate to GitLab.com`.
+
+If you use VS Code version 1.68.0 or later, re-installation might not be possible. However, you can still run
+the last three steps to re-authenticate.
