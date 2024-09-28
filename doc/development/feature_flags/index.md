@@ -413,8 +413,8 @@ command. For example:
 
 ## Toggle a feature flag
 
-See [rolling out changes](controls.md#rolling-out-changes) for more information about toggling
-feature flags.
+See [rolling out changes](controls.md#rolling-out-changes) for more information
+about toggling feature flags.
 
 ## Delete a feature flag
 
@@ -588,7 +588,7 @@ return unless Feature.enabled?(:feature_flag, project)
 project.update!(column: value)
 ```
 
-See [Feature flags in the development of GitLab](controls.md#process) for details on how to use ChatOps
+See [Use ChatOps to enable and disable feature flags](controls.md#process) for details on how to use ChatOps
 to selectively enable or disable feature flags in GitLab-provided environments, like staging and production.
 
 Flag state is not inherited from a group by its subgroups or projects.
