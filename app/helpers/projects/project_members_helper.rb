@@ -10,9 +10,9 @@ module Projects::ProjectMembersHelper
       share_project_description(project)
     else
       ERB::Util.html_escape(_("Members can be added by project " \
-                  "%{i_open}Maintainers%{i_close} or %{i_open}Owners%{i_close}")) % {
-                    i_open: '<i>'.html_safe, i_close: '</i>'.html_safe
-                  }
+        "%{i_open}Maintainers%{i_close} or %{i_open}Owners%{i_close}")) % {
+          i_open: '<i>'.html_safe, i_close: '</i>'.html_safe
+        }
     end
   end
 

@@ -14,7 +14,7 @@ module Types
           argument :spent_at, Types::TimeType,
             required: false,
             description: 'Timestamp of when the time tracked was spent at, ' \
-                         'if not provided would be set to current timestamp.'
+              'if not provided would be set to current timestamp.'
 
           argument :summary, GraphQL::Types::String,
             required: false,

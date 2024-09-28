@@ -76,15 +76,15 @@ module ApplicationSettingsHelper
     restricted_visibility_levels_help_text = {
       Gitlab::VisibilityLevel::PUBLIC => s_(
         'AdminSettings|If selected, only administrators are able to create public groups, projects, ' \
-        'and snippets. Also, profiles are only visible to authenticated users.'
+          'and snippets. Also, profiles are only visible to authenticated users.'
       ),
       Gitlab::VisibilityLevel::INTERNAL => s_(
         'AdminSettings|If selected, only administrators are able to create internal groups, projects, and ' \
-        'snippets.'
+          'snippets.'
       ),
       Gitlab::VisibilityLevel::PRIVATE => s_(
         'AdminSettings|If selected, only administrators are able to create private groups, projects, and ' \
-        'snippets.'
+          'snippets.'
       )
     }
 
@@ -162,7 +162,7 @@ module ApplicationSettingsHelper
 
   def external_authorization_description
     s_("ExternalAuthorization|Access to projects is validated on an external service "\
-        "using their classification label.")
+      "using their classification label.")
   end
 
   def external_authorization_allow_token_help_text
@@ -171,7 +171,7 @@ module ApplicationSettingsHelper
 
   def external_authorization_timeout_help_text
     s_("ExternalAuthorization|Period GitLab waits for a response from the external "\
-        "service. If there is no response, access is denied. Default: 0.5 seconds.")
+      "service. If there is no response, access is denied. Default: 0.5 seconds.")
   end
 
   def external_authorization_url_help_text
@@ -182,17 +182,17 @@ module ApplicationSettingsHelper
 
   def external_authorization_client_certificate_help_text
     s_("ExternalAuthorization|Certificate used to authenticate with the external authorization service. "\
-        "If blank, the server certificate is validated when accessing over HTTPS.")
+      "If blank, the server certificate is validated when accessing over HTTPS.")
   end
 
   def external_authorization_client_key_help_text
     s_("ExternalAuthorization|Private key of client authentication certificate. "\
-        "Encrypted when stored.")
+      "Encrypted when stored.")
   end
 
   def external_authorization_client_pass_help_text
     s_("ExternalAuthorization|Passphrase required to decrypt the private key. "\
-        "Encrypted when stored.")
+      "Encrypted when stored.")
   end
 
   def external_authorization_client_url_help_text

@@ -23,8 +23,8 @@ module StorageHelper
 
     _(
       "Repository: %{counter_repositories} / Wikis: %{counter_wikis} / Build Artifacts: %{counter_build_artifacts} / " \
-      "Pipeline Artifacts: %{counter_pipeline_artifacts} / LFS: %{counter_lfs_objects} / " \
-      "Snippets: %{counter_snippets} / Packages: %{counter_packages} / Uploads: %{counter_uploads}"
+        "Pipeline Artifacts: %{counter_pipeline_artifacts} / LFS: %{counter_lfs_objects} / " \
+        "Snippets: %{counter_snippets} / Packages: %{counter_packages} / Uploads: %{counter_uploads}"
     ) % counters
   end
 end
