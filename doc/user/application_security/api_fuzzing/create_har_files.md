@@ -236,4 +236,4 @@ intact.
 The following example demonstrates use of [Visual Studio Code](https://code.visualstudio.com/) text
 editor to edit an Authorization token found in a header.
 
-![Authorization token edited in Visual Studio Code](img/vscode_har_edit_auth_header.png)
+![Authorization token edited in Visual Studio Code](img/vscode_har_edit_auth_header_v13_12.png)

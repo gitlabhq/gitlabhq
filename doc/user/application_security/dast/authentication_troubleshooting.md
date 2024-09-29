@@ -44,7 +44,7 @@ An authentication report can be saved as a CI/CD job artifact to assist with und
 
 The report contains steps performed during the login process, HTTP requests and responses, the Document Object Model (DOM) and screenshots.
 
-![dast-auth-report](img/dast_auth_report.jpg)
+![dast-auth-report](img/dast_auth_report_v14_0.jpg)
 
 An example configuration where the authentication debug report is exported may look like the following:
 

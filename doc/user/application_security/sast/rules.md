@@ -11,10 +11,21 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 GitLab SAST uses a set of [analyzers](analyzers.md) to scan code for potential vulnerabilities.
-Each analyzer processes the code then uses rules to find possible weaknesses in source code.
-The rules determine what types of weaknesses the analyzer reports.
+It automatically chooses which analyzers to run based on which programming languages are found in the repository.
+
+Each analyzer processes the code, then uses rules to find possible weaknesses in source code.
+The analyzer's rules determine what types of weaknesses it reports.
 
 ## Source of rules
+
+### Advanced SAST
+
+DETAILS:
+**Tier:** Ultimate
+
+GitLab creates, maintains, and supports the rules for [Advanced SAST](gitlab_advanced_sast.md).
+Its rules are custom-built to leverage the Advanced SAST scanning engine's cross-file, cross-function analysis capabilities.
+The Advanced SAST ruleset is not open source, and is not the same ruleset as any other analyzer.
 
 ### Semgrep-based analyzer
 
@@ -23,7 +34,7 @@ This analyzer scans [many languages](index.md#supported-languages-and-frameworks
 It combines:
 
 - the Semgrep open-source engine.
-- GitLab-managed detection rules.
+- a GitLab-managed detection ruleset, which is managed in [the GitLab-managed open source `sast-rules` project](https://gitlab.com/gitlab-org/security-products/sast-rules).
 - GitLab proprietary technology for [vulnerability tracking](index.md#advanced-vulnerability-tracking).
 
 ### Other analyzers
@@ -38,9 +49,6 @@ Rules are released as part of the container image for each analyzer.
 You automatically receive updated analyzers and rules unless you [manually pin analyzers to a specific version](index.md#pinning-to-minor-image-version).
 
 Analyzers and their rules are updated [at least monthly](../index.md#vulnerability-scanner-maintenance) if relevant updates are available.
-
-The GitLab ruleset for the Semgrep-based analyzer is managed in [the GitLab-managed open-source `sast-rules` project](https://gitlab.com/gitlab-org/security-products/sast-rules).
-When rules are updated, they're released as part of the [Semgrep-based analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep)'s container image.
 
 ### Rule update policies
 

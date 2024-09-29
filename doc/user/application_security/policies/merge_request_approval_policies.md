@@ -482,7 +482,7 @@ Merge request approval policies do not extend beyond that scope to reach into ar
 
 Lock file tampering, for example, is outside of the scope of security policy management, but may be mitigated through use of [Code owners](../../project/codeowners/index.md#codeowners-file) or [external status checks](../../project/merge_requests/status_checks.md). For more information, see [issue 433029](https://gitlab.com/gitlab-org/gitlab/-/issues/433029).
 
-![Evaluating scan result findings](img/scan_results_evaluation_white-bg.png)
+![Evaluating scan result findings](img/scan_results_evaluation_white-bg_v16_8.png)
 
 ### Filter out policy violations with the attributes "Fix Available" or "False Positive"
 

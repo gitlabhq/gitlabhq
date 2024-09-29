@@ -63,7 +63,7 @@ Dashboard:
      across the chart.
    - To reset to the original range, select **Remove Selection** (**{redo}**).
 
-![Project Security Dashboard](img/project_security_dashboard.png)
+![Project Security Dashboard](img/project_security_dashboard_v16_6.png)
 
 #### Downloading the vulnerability chart
 
@@ -106,7 +106,7 @@ To view group security dashboard:
    - You can see how many vulnerabilities of a particular severity are found in a project
    - You can select a project's name to directly access its project security dashboard
 
-![Group Security Dashboard](img/group_security_dashboard.png)
+![Group Security Dashboard](img/group_security_dashboard_v16_6.png)
 
 ## Security Center
 
