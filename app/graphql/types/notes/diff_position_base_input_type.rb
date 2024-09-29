@@ -14,7 +14,7 @@ module Types
         Types::DiffPathsInputType,
         required: true,
         description: 'The paths of the file that was changed. ' \
-                     'Both of the properties of this input are optional, but at least one of them is required'
+          'Both of the properties of this input are optional, but at least one of them is required'
     end
   end
 end
