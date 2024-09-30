@@ -2015,6 +2015,8 @@
   rules:
     - if: '$DISABLE_DB_MULTI_VERSION_UPGRADE =~ /true|yes|1/i'
       when: never
+    - <<: *if-merge-request-targeting-stable-branch
+      when: never
     - !reference [".rails:rules:ee-and-foss-migration", rules]
 
 .rails:rules:db-backup:
