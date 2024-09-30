@@ -51,8 +51,10 @@ db:migrate:multi-version-upgrade:
     - .single-db
     - .db-job-base
     - .rails:rules:db:migrate:multi-version-upgrade
+  variables:
+    UPGRADE_STOP_DUMP_URL: "https://gitlab.com/gitlab-org/quality/pg-dump-generator/-/raw/main/pg_dumps/ee/latest_upgrade_stop.gz"
   script:
-    - curl -o latest_upgrade_stop.gz https://gitlab.com/gitlab-org/quality/pg-dump-generator/-/raw/main/pg_dumps/ee/latest_upgrade_stop.gz
+    - curl -o latest_upgrade_stop.gz $UPGRADE_STOP_DUMP_URL
     - gunzip -c latest_upgrade_stop.gz > gitlabhq_production
     - bundle exec rake db:drop db:create
     - apt-get update -qq && apt-get install -y -qq postgresql-client
