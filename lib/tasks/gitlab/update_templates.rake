@@ -155,7 +155,7 @@ namespace :gitlab do
   # - Dir.entries returns also the entries '.' and '..'
   def remove_unneeded_files(directory, regex)
     Dir.foreach(directory) do |file|
-      FileUtils.rm_rf(File.join(directory, file)) unless file =~ regex
+      FileUtils.rm_rf(File.join(directory, file)) unless regex.match?(file)
     end
   end
 

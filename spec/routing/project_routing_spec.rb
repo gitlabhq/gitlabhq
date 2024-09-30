@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'project routing' do
+RSpec.describe 'project routing', feature_category: :groups_and_projects do
   let(:base_params) { { namespace_id: 'gitlab', project_id: 'gitlabhq' } }
 
   before do

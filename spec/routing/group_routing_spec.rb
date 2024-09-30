@@ -75,7 +75,7 @@ RSpec.shared_examples 'groups routing' do
   end
 end
 
-RSpec.describe "Groups", "routing" do
+RSpec.describe "Groups", "routing", feature_category: :groups_and_projects do
   context 'complex group path with dot' do
     include_examples 'groups routing' do
       let(:group_path) { 'complex.group-namegit' }

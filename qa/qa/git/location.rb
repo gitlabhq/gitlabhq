@@ -14,7 +14,7 @@ module QA
       def initialize(git_uri)
         @git_uri = git_uri
         @uri =
-          if git_uri =~ %r{\A(?:ssh|http|https)://}
+          if %r{\A(?:ssh|http|https)://}.match?(git_uri)
             URI.parse(git_uri)
           else
             *rest, path = git_uri.split(':')

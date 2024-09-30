@@ -117,7 +117,7 @@ module QA
           body = extract_graphql_body(graphql_response)
 
           unless graphql_response.code == HTTP_STATUS_OK && (body[:errors].nil? || body[:errors].empty?)
-            action = post_body =~ /mutation {\s+destroy/ ? 'Deletion' : 'Fabrication'
+            action = /mutation {\s+destroy/.match?(post_body) ? 'Deletion' : 'Fabrication'
             raise(ResourceFabricationFailedError, <<~MSG.strip)
               #{action} of #{self.class.name} using the API failed (#{graphql_response.code}) with `#{graphql_response}`.
               #{QA::Support::Loglinking.failure_metadata(graphql_response.headers[:x_request_id])}

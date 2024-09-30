@@ -6,7 +6,7 @@ module API
       module BulkImports
         class DestinationSlugPath < Grape::Validations::Validators::Base
           def validate_param!(attr_name, params)
-            return if params[attr_name] =~ Gitlab::Regex.oci_repository_path_regex
+            return if Gitlab::Regex.oci_repository_path_regex.match?(params[attr_name])
 
             raise Grape::Exceptions::Validation.new(
               params: [@scope.full_name(attr_name)],

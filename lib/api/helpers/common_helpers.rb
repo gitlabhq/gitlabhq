@@ -27,7 +27,7 @@ module API
         options[:route_options][:params].map do |key, val|
           param_type = val[:type]
           # Search for parameters with Array types (e.g. "[String]", "[Integer]", etc.)
-          if param_type =~ %r{\[\w*\]}
+          if %r{\[\w*\]}.match?(param_type)
             key
           end
         end.compact.to_set

@@ -157,7 +157,7 @@ module Banzai
                   next
                 end
 
-                if link =~ link_pattern_anchor
+                if link_pattern_anchor.match?(link)
                   replace_link_node_with_href(node, index, link) do
                     object_link_filter(link, link_pattern_anchor, link_content: inner_html, link_reference: true)
                   end

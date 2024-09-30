@@ -40,7 +40,7 @@ module Banzai
     #
     # Returns the recognized color String or nil if none was found.
     def self.parse(text)
-      text if COLOR_FORMAT =~ text
+      text if COLOR_FORMAT.match?(text)
     end
   end
 end

@@ -40,7 +40,7 @@ module Feature
         raise Feature::InvalidFeatureFlagError, "Feature flag is missing name"
       end
 
-      unless VALID_FEATURE_NAME =~ name
+      unless VALID_FEATURE_NAME.match?(name)
         raise Feature::InvalidFeatureFlagError, "Feature flag '#{name}' is invalid"
       end
 
