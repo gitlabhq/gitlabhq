@@ -11,4 +11,4 @@ GITLAB_PATH = File.expand_path('../', __dir__)
 require_relative '../config/boot'
 require 'gitlab/backup/cli'
 
-Gitlab::Backup::Cli::Runner.start(ARGV)
+Gitlab::Backup::Cli.start(ARGV)

@@ -487,7 +487,7 @@ Requires `current_user` and `group_ids` fields. Query based on the permissions t
 }
 ```
 
-##### `by_confidentiality`
+##### `by_project_confidentiality`
 
 Requires `confidential`, `author_id`, `assignee_id`, `project_id` fields. Query with `confidential` in options.
 

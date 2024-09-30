@@ -55,12 +55,10 @@ Install one of the following GitLab-approved LLM models:
 
 ### Use a serving architecture
 
-You should use one of the following serving architectures with your
-installed LLM:
+To host your models, you should use:
 
-- [vLLM](https://docs.vllm.ai/en/stable/)
-- [TensorRT-LLM](https://docs.mistral.ai/deployment/self-deployment/overview/)
-- [Ollama and litellm](litellm_proxy_setup.md)
+- For non-cloud on-premise deployments, [vLLM](https://docs.vllm.ai/en/stable/).
+- For cloud deployments, AWS Bedrock as a cloud provider.
 
 ## Configure your GitLab instance
 
@@ -128,15 +126,7 @@ Find the GitLab official Docker image at:
 - [Release process for self-hosted AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/release.md).
 
 Use the image tag that corresponds to your GitLab version. For example, if the
-GitLab version is `v17.4.0`, use `self-hosted-v17.4.0-ee` tag.
-
-For version `v17.3.0-ee`, use image tag `gitlab-v17.3.0`.
-
-WARNING:
-Docker for Windows is not officially supported. There are known issues with volume
-permissions, and potentially other unknown issues. If you are trying to run on Docker
-for Windows, see the [getting help page](https://about.gitlab.com/get-help/) for links
-to community resources (such as IRC or forums) to seek help from other users.
+GitLab version is `v17.5.0`, use `self-hosted-v17.5.0-ee` tag.
 
 #### Set up the volumes location
 
@@ -151,76 +141,18 @@ sudo mkdir -p /srv/gitlab-agw
 If you're running Docker with a user other than `root`, ensure appropriate
 permissions have been granted to that directory.
 
-#### Optional: Download documentation index
-
-NOTE:
-This only applies to AI Gateway image tag `gitlab-17.3.0-ee` and earlier. For images with tag `self-hosted-v17.4.0-ee` and later, documentation search is embedded into the Docker image.
-
-To improve results when asking GitLab Duo Chat questions about GitLab, you can
-index GitLab documentation and provide it as a file to the AI Gateway.
-
-To index the documentation in your local installation, run:
-
-```shell
-pip install requests langchain langchain_text_splitters
-python3 scripts/custom_models/create_index.py -o <path_to_created_index/docs.db>
-```
-
-This creates a file `docs.db` at the specified path.
-
-You can also create an index for a specific GitLab version:
-
-```shell
-python3 scripts/custom_models/create_index.py --version_tag="{gitlab-version}"
-```
-
 #### Start a container from the image
 
 For Docker images with version `self-hosted-17.4.0-ee` and later, run the following:
 
 ```shell
-docker run -e AIGW_GITLAB_URL=<your_gitlab_instance> <image>
+docker run -e AIGW_GITLAB_URL=<your_gitlab_instance> \
+ -e AIGW_GITLAB_API_URL=https://<your_gitlab_domain>/api/v4/ \
+ <image>
 ```
 
-For Docker images with version `gitlab-17.3.0-ee` and `gitlab-17.2.0`, run:
-
-```shell
-docker run -e AIGW_CUSTOM_MODELS__ENABLED=true \
-   -v path/to/created/index/docs.db:/app/tmp/docs.db \
-   -e AIGW_FASTAPI__OPENAPI_URL="/openapi.json" \
-   -e AIGW_AUTH__BYPASS_EXTERNAL=true \
-   -e AIGW_FASTAPI__DOCS_URL="/docs"\
-   -e AIGW_FASTAPI__API_PORT=5052 \
-   <image>
-```
-
-The arguments `AIGW_FASTAPI__OPENAPI_URL` and `AIGW_FASTAPI__DOCS_URL` are not
-mandatory, but are useful for debugging. From the host, accessing `http://localhost:5052/docs`
+From the container host, accessing `http://localhost:5052/docs`
 should open the AI Gateway API documentation.
-
-### Install by using Docker Engine
-
-1. For the AI Gateway to access the API, it must know where the GitLab instance
-   is located. To do this, set the environment variables `AIGW_GITLAB_URL` and
-   `AIGW_GITLAB_API_URL`:
-
-   ```shell
-   AIGW_GITLAB_URL=https://<your_gitlab_domain>
-   AIGW_GITLAB_API_URL=https://<your_gitlab_domain>/api/v4/
-   ```
-
-1. [Configure the GitLab instance](#configure-your-gitlab-instance).
-
-1. After you've set up the environment variables, [run the image](#start-a-container-from-the-image).
-
-1. Track the initialization process:
-
-   ```shell
-   sudo docker logs -f gitlab-aigw
-   ```
-
-After starting the container, visit `gitlab-aigw.example.com`. It might take
-a while before the Docker container starts to respond to queries.
 
 ### Install by using the AI Gateway Helm chart
 

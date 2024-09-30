@@ -44,6 +44,17 @@ DETAILS:
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=ZQBAuf-CTAY&list=PLFGfElNsQthYDx0A_FaNNfUm9NHsK6zED)
 - [View documentation](../gitlab_duo_chat/index.md).
 
+### Discussion Summary
+
+DETAILS:
+**Tier:** For a limited time, Ultimate. On October 17, 2024, Ultimate with [GitLab Duo Enterprise](https://about.gitlab.com/gitlab-duo/#pricing).
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+
+- Helps everyone get up to speed by summarizing the lengthy conversations in an issue.
+- LLM: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=IcdxLfTIUgc)
+- [View documentation](../discussions/index.md#summarize-issue-discussions-with-duo-chat).
+
 ### Code Suggestions
 
 DETAILS:
@@ -136,17 +147,6 @@ DETAILS:
 - Compare the performance of teams that are using AI against teams that are not using AI.
 - Track the progress of AI adoption.
 - [View documentation](../analytics/ai_impact_analytics.md).
-
-### Discussion summary
-
-DETAILS:
-**Tier:** For a limited time, Ultimate. On October 17, 2024, Ultimate with [GitLab Duo Enterprise](https://about.gitlab.com/gitlab-duo/#pricing).
-**Offering:** GitLab.com, Self-managed
-
-- Helps everyone get up to speed by summarizing the lengthy conversations in an issue.
-- LLM: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=IcdxLfTIUgc)
-- [View documentation](../discussions/index.md#summarize-issue-discussions-with-duo-chat).
 
 ## Beta features
 

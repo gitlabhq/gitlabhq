@@ -53,6 +53,10 @@ Code generation requests take longer than code completion requests, but provide 
 [View a click-through demo](https://gitlab.navattic.com/code-suggestions).
 <!-- Video published on 2023-12-09 --> <!-- Demo published on 2024-02-01 -->
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+[View a code completion vs. code generation comparison demo](https://www.youtube.com/watch?v=9dsyqMt9yg4).
+  <!-- Video published on 2024-09-26 -->
+
 ## Use Code Suggestions
 
 Prerequisites:

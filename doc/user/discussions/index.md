@@ -319,7 +319,7 @@ such as move unresolved threads to an issue or prevent merging until all threads
 
 DETAILS:
 **Tier:** For a limited time, Ultimate. On October 17, 2024, Ultimate with [GitLab Duo Enterprise](https://about.gitlab.com/gitlab-duo/#pricing).
-**Offering:** GitLab.com, Self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10344) in GitLab 16.0 as an [experiment](../../policy/experiment-beta-support.md#experiment).
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/454550) to GitLab Duo and promoted to [beta](../../policy/experiment-beta-support.md#beta) in GitLab 17.3 [with a flag](../../administration/feature_flags.md) named `summarize_notes_with_duo`. Disabled by default.
@@ -329,7 +329,6 @@ Generate a summary of discussions on an issue.
 
 Prerequisites:
 
-- You must belong to at least one group with the [experiment and beta features setting](../gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features) enabled.
 - You must have permission to view the issue.
 
 To generate a summary of issue discussions:
@@ -339,8 +338,6 @@ To generate a summary of issue discussions:
 
 The comments in the issue are summarized in as many as 10 list items.
 You can ask follow up questions based on the response.
-
-Provide feedback on this beta feature in [issue 407779](https://gitlab.com/gitlab-org/gitlab/-/issues/407779).
 
 **Data usage**: When you use this feature, the text of all comments on the issue are sent to
 the large [language model listed on the GitLab Duo page](../gitlab_duo/index.md#discussion-summary).

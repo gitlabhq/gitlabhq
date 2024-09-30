@@ -18,6 +18,7 @@ FactoryBot.define do
     factory :note_on_personal_snippet,   traits: [:on_personal_snippet]
     factory :note_on_design,             traits: [:on_design]
     factory :note_on_alert,              traits: [:on_alert]
+    factory :note_on_wiki_page,          traits: [:on_wiki_page]
     factory :system_note, traits: [:system]
 
     factory :discussion_note, class: 'DiscussionNote'
@@ -38,6 +39,8 @@ FactoryBot.define do
     factory :discussion_note_on_personal_snippet, traits: [:on_personal_snippet], class: 'DiscussionNote'
 
     factory :discussion_note_on_project_snippet, traits: [:on_project_snippet], class: 'DiscussionNote'
+
+    factory :discussion_note_on_wiki_page, traits: [:on_wiki_page], class: 'DiscussionNote'
 
     factory :legacy_diff_note_on_commit, traits: [:on_commit, :legacy_diff_note], class: 'LegacyDiffNote'
 
@@ -140,6 +143,10 @@ FactoryBot.define do
       noteable { association(:work_item, :group_level) }
     end
 
+    trait :on_project_level_wiki do
+      noteable { association(:wiki_page_meta, project: project) }
+    end
+
     trait :on_merge_request do
       noteable { association(:merge_request, source_project: project) }
     end
@@ -169,6 +176,10 @@ FactoryBot.define do
 
     trait :on_alert do
       noteable { association(:alert_management_alert, project: project) }
+    end
+
+    trait :on_wiki_page do
+      noteable { association(:wiki_page_meta, project: project) }
     end
 
     trait :resolved do

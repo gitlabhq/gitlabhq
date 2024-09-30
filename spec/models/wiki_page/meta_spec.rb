@@ -10,6 +10,15 @@ RSpec.describe WikiPage::Meta, feature_category: :wiki do
     it { is_expected.to belong_to(:project) }
     it { is_expected.to have_many(:slugs) }
     it { is_expected.to have_many(:events) }
+    it { is_expected.to have_many(:notes) }
+
+    it do
+      is_expected
+        .to have_many(:user_mentions)
+        .class_name('Wikis::UserMention')
+        .with_foreign_key('wiki_page_meta_id')
+        .inverse_of('wiki_page_meta')
+    end
 
     it 'can find slugs' do
       meta = create(:wiki_page_meta)

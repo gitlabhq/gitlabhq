@@ -28,6 +28,8 @@ module Gitlab
 
           desc 'all', 'Creates a backup including repositories, database and local files'
           def all
+            Gitlab::Backup::Cli.update_process_title!('backup all')
+
             duration = measure_duration do
               Gitlab::Backup::Cli::Output.info("Initializing environment...")
               Gitlab::Backup::Cli.rails_environment!

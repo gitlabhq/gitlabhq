@@ -29,6 +29,21 @@ module Gitlab
 
       Error = Class.new(StandardError)
 
+      # Entrypoint for the application
+      # Run any initialization logic from here
+      def self.start(argv)
+        # Set a custom process name
+        update_process_title!
+
+        Gitlab::Backup::Cli::Runner.start(argv)
+      end
+
+      def self.update_process_title!(status_message = nil)
+        process_title = status_message ? "gitlab-backup-cli: #{status_message}" : "gitlab-backup-cli"
+
+        Process.setproctitle(process_title)
+      end
+
       def self.rails_environment!
         require File.join(GITLAB_PATH, 'config/application')
 

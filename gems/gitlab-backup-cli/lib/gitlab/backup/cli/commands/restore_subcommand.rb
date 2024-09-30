@@ -9,6 +9,8 @@ module Gitlab
 
           desc 'all BACKUP_ID', 'Restores a backup including repositories, database and local files'
           def all(backup_id)
+            Gitlab::Backup::Cli.update_process_title!("restore all from #{backup_id}")
+
             duration = measure_duration do
               Gitlab::Backup::Cli::Output.info("Initializing environment...")
               Gitlab::Backup::Cli.rails_environment!

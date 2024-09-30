@@ -80,6 +80,22 @@ RSpec.describe Gitlab::UrlBuilder do
       end
     end
 
+    context 'when passing a wiki note' do
+      let_it_be(:wiki_page_slug) { create(:wiki_page_slug, canonical: true) }
+      let(:wiki_page_meta) { wiki_page_slug.reload.wiki_page_meta }
+      let(:note) { build_stubbed(:note, noteable: wiki_page_meta, project: wiki_page_meta.project) }
+
+      let(:path) { "/#{note.project.full_path}/-/wikis/#{note.noteable.canonical_slug}#note_#{note.id}" }
+
+      it 'returns the full URL' do
+        expect(subject.build(note)).to eq("#{Gitlab.config.gitlab.url}#{path}")
+      end
+
+      it 'returns only the path if only_path is given' do
+        expect(subject.build(note, only_path: true)).to eq(path)
+      end
+    end
+
     context 'when passing a compare' do
       # NOTE: The Compare requires an actual repository, which isn't available
       # with the `build_stubbed` strategy used by the table tests above

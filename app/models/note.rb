@@ -361,6 +361,10 @@ class Note < ApplicationRecord
     noteable.is_a?(PersonalSnippet)
   end
 
+  def for_wiki_page?
+    noteable_type == "WikiPage::Meta"
+  end
+
   def for_project_noteable?
     !(for_personal_snippet? || for_abuse_report? || group_level_issue?)
   end
