@@ -84,7 +84,7 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType } = {}) => {
     },
   });
 
-  if (gon.features.workItemsViewPreference) {
+  if (gon.features.workItemsViewPreference && !isGroup) {
     import(/* webpackChunkName: 'work_items_feedback' */ '~/work_items_feedback')
       .then(({ initWorkItemsFeedback }) => {
         initWorkItemsFeedback();

@@ -90,7 +90,7 @@ To run a health check:
 
 ### Health check tests
 
-The health check performs the following tests to verify if your instance meets the requirements to use GitLab Duo. 
+The health check performs the following tests to verify if your instance meets the requirements to use GitLab Duo.
 
 | Test | Description |
 |-----------------|-------------|

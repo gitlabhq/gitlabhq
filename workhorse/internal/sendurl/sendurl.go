@@ -113,9 +113,8 @@ func (e *entry) Inject(w http.ResponseWriter, r *http.Request, sendData string) 
 		fail.Request(w, r, fmt.Errorf("SendURL: unpack sendData: %v", err))
 		return
 	}
-	if params.Method == "" {
-		params.Method = http.MethodGet
-	}
+
+	setDefaultMethod(&params)
 
 	log.WithContextFields(r.Context(), log.Fields{
 		"url":  mask.URL(params.URL),
@@ -128,12 +127,46 @@ func (e *entry) Inject(w http.ResponseWriter, r *http.Request, sendData string) 
 		return
 	}
 
-	// create new request and copy range headers
+	newReq, err := e.createNewRequest(w, r, &params)
+	if err != nil {
+		return // Error handling is done in createNewRequest
+	}
+
+	resp, err := cachedClient(params).Do(newReq) //nolint:errcheck
+	if err != nil {
+		e.handleRequestError(w, r, err, &params)
+		return
+	}
+	e.copyResponseHeaders(w, resp, params.ResponseHeaders)
+	w.WriteHeader(resp.StatusCode)
+
+	defer func() {
+		if err = resp.Body.Close(); err != nil {
+			fmt.Printf("Error closing response body: %v\n", err)
+		}
+	}()
+
+	if err := e.streamResponse(w, resp.Body); err != nil {
+		sendURLRequestsRequestFailed.Inc()
+		log.WithRequest(r).WithError(fmt.Errorf("SendURL: Copy response: %v", err)).Error()
+		return
+	}
+
+	sendURLRequestsSucceeded.Inc()
+}
+
+func setDefaultMethod(params *entryParams) {
+	if params.Method == "" {
+		params.Method = http.MethodGet
+	}
+}
+
+func (e *entry) createNewRequest(w http.ResponseWriter, r *http.Request, params *entryParams) (*http.Request, error) {
 	newReq, err := http.NewRequest(params.Method, params.URL, strings.NewReader(params.Body))
 	if err != nil {
 		sendURLRequestsInvalidData.Inc()
 		fail.Request(w, r, fmt.Errorf("SendURL: NewRequest: %v", err))
-		return
+		return nil, err
 	}
 	newReq = newReq.WithContext(r.Context())
 
@@ -147,61 +180,43 @@ func (e *entry) Inject(w http.ResponseWriter, r *http.Request, sendData string) 
 		}
 	}
 
-	// execute new request
-	resp, err := cachedClient(params).Do(newReq)
-	if err != nil {
-		status := http.StatusInternalServerError
+	return newReq, nil
+}
 
-		if params.TimeoutResponseStatus != 0 && os.IsTimeout(err) {
-			status = params.TimeoutResponseStatus
-		} else if params.ErrorResponseStatus != 0 {
-			status = params.ErrorResponseStatus
-		}
+func (e *entry) handleRequestError(w http.ResponseWriter, r *http.Request, err error, params *entryParams) {
+	status := http.StatusInternalServerError
 
-		sendURLRequestsRequestFailed.Inc()
-		fail.Request(w, r, fmt.Errorf("SendURL: Do request: %v", err), fail.WithStatus(status))
-		return
+	if params.TimeoutResponseStatus != 0 && os.IsTimeout(err) {
+		status = params.TimeoutResponseStatus
+	} else if params.ErrorResponseStatus != 0 {
+		status = params.ErrorResponseStatus
 	}
 
-	// Prevent Go from adding a Content-Length header automatically
+	sendURLRequestsRequestFailed.Inc()
+	fail.Request(w, r, fmt.Errorf("SendURL: Do request: %v", err), fail.WithStatus(status))
+}
+
+func (e *entry) copyResponseHeaders(w http.ResponseWriter, resp *http.Response, responseHeaders map[string][]string) {
 	w.Header().Del("Content-Length")
 
-	// copy response headers and body, except the headers from preserveHeaderKeys
 	for key, value := range resp.Header {
 		if !preserveHeaderKeys[key] {
 			w.Header()[key] = value
 		}
 	}
 
-	// set response headers sent by rails
-	for key, values := range params.ResponseHeaders {
+	for key, values := range responseHeaders {
 		w.Header().Del(key)
 		for _, value := range values {
 			w.Header().Add(key, value)
 		}
 	}
+}
 
-	w.WriteHeader(resp.StatusCode)
-
-	defer func() {
-		if err = resp.Body.Close(); err != nil {
-			fmt.Printf("Error closing response body: %v\n", err)
-		}
-	}()
-
-	// Flushes the response right after it received.
-	// Important for streaming responses, where content delivered in chunks.
-	// Without flushing the body gets buffered by the HTTP server's internal buffer.
-	n, err := io.Copy(newFlushingResponseWriter(w), resp.Body)
+func (e *entry) streamResponse(w http.ResponseWriter, body io.Reader) error {
+	n, err := io.Copy(newFlushingResponseWriter(w), body)
 	sendURLBytes.Add(float64(n))
-
-	if err != nil {
-		sendURLRequestsRequestFailed.Inc()
-		log.WithRequest(r).WithError(fmt.Errorf("SendURL: Copy response: %v", err)).Error()
-		return
-	}
-
-	sendURLRequestsSucceeded.Inc()
+	return err
 }
 
 func cachedClient(params entryParams) *http.Client {
@@ -245,7 +260,7 @@ func cachedClient(params entryParams) *http.Client {
 func newFlushingResponseWriter(w http.ResponseWriter) *httpFlushingResponseWriter {
 	return &httpFlushingResponseWriter{
 		ResponseWriter: w,
-		controller:     http.NewResponseController(w),
+		controller:     http.NewResponseController(w), //nolint:bodyclose
 	}
 }
 

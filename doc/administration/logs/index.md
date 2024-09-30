@@ -1029,7 +1029,7 @@ DETAILS:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120506) in GitLab 16.0.
 
 The `llm.log` file logs information related to
-[AI features](../../user/ai_features.md). Logging includes information about AI events. 
+[AI features](../../user/ai_features.md). Logging includes information about AI events.
 
 ### LLM input and output logging
 
@@ -1046,7 +1046,7 @@ This flag is disabled by default and can only be enabled:
 - For GitLab.com, when you provide consent through a GitLab [Support Ticket](https://about.gitlab.com/support/portal/).
 - For self-managed, when you enable this feature flag.
 
-By default, the log does not contain LLM prompt input and response output to support [data retention policies](../../user/gitlab_duo/data_usage.md#data-retention) of AI feature data. 
+By default, the log does not contain LLM prompt input and response output to support [data retention policies](../../user/gitlab_duo/data_usage.md#data-retention) of AI feature data.
 
 The log file is located at:
 

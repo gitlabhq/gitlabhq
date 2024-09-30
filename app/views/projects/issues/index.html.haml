@@ -12,6 +12,9 @@
   issues_path: project_issues_path(@project),
   project_path: @project.full_path } }
 
-.js-issues-list-root{ data: project_issues_list_data(@project, current_user) }
-- if can?(current_user, :admin_issue, @project)
-  = render 'shared/issuable/bulk_update_sidebar', type: :issues
+- if Feature.enabled?(:work_items_view_preference, current_user) && current_user&.user_preference&.use_work_items_view
+  #js-work-items{ data: work_items_show_data(@project, current_user) }
+- else
+  .js-issues-list-root{ data: project_issues_list_data(@project, current_user) }
+  - if can?(current_user, :admin_issue, @project)
+    = render 'shared/issuable/bulk_update_sidebar', type: :issues

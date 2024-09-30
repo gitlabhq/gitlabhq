@@ -40,7 +40,7 @@ Pages domains are `*.gitlab.io`.
 | Project pages owned by a subgroup | `acmecorp/documentation/product-manual` | `http(s)://acmecorp.example.io/documentation/product-manual`|
 
 When the **Use unique domain** setting is enabled, Pages builds a unique domain name from
-the flattened project name and a six-character unique ID. Users receive a `308 Permanent Redirect` status 
+the flattened project name and a six-character unique ID. Users receive a `308 Permanent Redirect` status
 redirecting the browser to these unique domain URLs. Browsers might cache this redirect:
 
 | Type of GitLab Pages              | Example path of a project in GitLab     | Website URL |

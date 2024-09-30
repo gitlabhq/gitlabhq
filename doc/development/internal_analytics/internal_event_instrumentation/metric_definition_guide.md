@@ -105,7 +105,7 @@ Example: Count of distinct users who opted to filter out anonymous users on the 
 ```yaml
 key_path: count_distinct_user_id_from_exclude_anonymised_users_28d
 description: Count of distinct users who opted to filter out anonymous users on the analytics dashboard view in the last 28 days.
-product_group: product_analytics
+product_group: platform_insights
 performance_indicator_type: []
 value_type: number
 status: active

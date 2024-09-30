@@ -344,7 +344,7 @@ Also check that the index is able to handle the index request. For example, chec
 
 #### Transfers and deletes
 
-Project and group transfers and deletes must make updates to the index to avoid orphaned data. 
+Project and group transfers and deletes must make updates to the index to avoid orphaned data.
 
 Indexes that contain a `project_id` field must use the [`Search::Elastic::DeleteWorker`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/workers/search/elastic/delete_worker.rb). Indexes that contain a `namespace_id` field but no `project_id` field must use [`Search::ElasticGroupAssociationDeleteWorker`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/workers/search/elastic_group_association_deletion_worker.rb).
 
@@ -724,7 +724,7 @@ Requires `source_branch` field. Query with `source_branch` or `not_source_branch
 
 ##### `by_group_level_authorization`
 
-Requires `current_user`, `group_ids`, `traversal_id`, `search_level` fields. Query with `search_level` and 
+Requires `current_user`, `group_ids`, `traversal_id`, `search_level` fields. Query with `search_level` and
 filter on `namespace_visibility_level` based on permissions user has for each group.
 
 NOTE:
@@ -894,7 +894,7 @@ Requires `project_id` and `traversal_id` fields. Supports feature `*_access_leve
 
 Filtering is applied for:
 
-- search level for global, group, or project 
+- search level for global, group, or project
 - membership for direct membership to groups and projects or shared membership through direct access to a group
 - any feature access levels passed through `features`
 

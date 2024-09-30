@@ -3,6 +3,7 @@ import { GlLink, GlDrawer, GlButton, GlTooltipDirective, GlOutsideDirective } fr
 import { escapeRegExp } from 'lodash';
 import { __ } from '~/locale';
 import deleteWorkItemMutation from '~/work_items/graphql/delete_work_item.mutation.graphql';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { TYPE_EPIC, TYPE_ISSUE } from '~/issues/constants';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { visitUrl } from '~/lib/utils/url_utility';
@@ -19,7 +20,8 @@ export default {
     GlButton,
     WorkItemDetail: () => import('~/work_items/components/work_item_detail.vue'),
   },
-  inject: ['fullPath'],
+  mixins: [glFeatureFlagMixin()],
+  inject: ['fullPath', 'isGroup'],
   inheritAttrs: false,
   props: {
     open: {
@@ -65,6 +67,13 @@ export default {
       const path = this.activeItemFullPath.substring(this.activeItemFullPath.lastIndexOf('/') + 1);
       return `${path}#${this.activeItem.iid}`;
     },
+    issueAsWorkItem() {
+      return (
+        !this.isGroup &&
+        this.glFeatures.workItemsViewPreference &&
+        gon.current_user_use_work_items_view
+      );
+    },
   },
   methods: {
     async deleteWorkItem({ workItemId }) {
@@ -93,7 +102,7 @@ export default {
       const regex = new RegExp(`groups\/${escapedFullPath}\/-\/(work_items|epics)\/\\d+`);
       const isWorkItemPath = regex.test(workItem.webUrl);
 
-      if (isWorkItemPath) {
+      if (isWorkItemPath || this.issueAsWorkItem) {
         this.$router.push({
           name: 'workItem',
           params: {

@@ -8,9 +8,9 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 ## Prerequisites
 
-- Anthropic API access
-  - Complete an [access request](https://gitlab.com/gitlab-com/team-member-epics/access-requests/-/issues/new?issuable_template=AI_Access_Request).
-  - Sign up for an Anthropic account and [create an API key](https://docs.anthropic.com/en/docs/getting-access-to-claude).
+- Vertex API access
+  - You need access to the `ai-enablement-dev-69497ba7` project in
+    GCP. This should by available to all engineers at GitLab.
 - Docker
   - See which Docker tooling is approved for GitLab team members in the [handbook](https://handbook.gitlab.com/handbook/tools-and-tips/mac/#docker-desktop).
 
@@ -77,10 +77,23 @@ info: Any user with at least the Maintainer role can merge updates to this conte
    cp .env.example .env
    ```
 
-1. Enter your Anthropic API key in the `.env` file.
+1. Setup [`gcloud`](https://cloud.google.com/sdk/docs/install) on your system.
+1. Login using your GitLab Google account by running:
 
-   ```dotenv
-   ANTHROPIC_API_KEY=<YOUR_API_KEY>
+   ```shell
+   gcloud auth login
+   ```
+
+1. Set the `ai-enablement-dev-69497ba7` as active project by running:
+
+   ```shell
+   gcloud config set project ai-enablement-dev-69497ba7
+   ```
+
+1. Create the credentials for the application to use
+
+   ```shell
+   gcloud auth application-default login --disable-quota-project
    ```
 
 1. Optional: You can disable auth for local development in the `.env` file. This disables authentication or the gRPC connection between the Duo Workflow Service and Duo Workflow Executor but a token will still be required for requests to your local GitLab instance.
@@ -93,6 +106,15 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
    ```shell
    poetry run python -m duo_workflow_service.server
+   ```
+
+1. If you can correctly connect to vertex, you should see something
+   like this in the output
+
+   ```shell
+   2024-09-06 17:16:54 [info     ] Connected to model: claude-3-sonnet-20240229: You're talking to Claude, an AI assistant created by Anthropic.
+   2024-09-06 17:16:54 [info     ] Starting server on port 50052
+   2024-09-06 17:16:54 [info     ] Started server
    ```
 
 ## Set up the Duo Workflow Executor

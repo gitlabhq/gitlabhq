@@ -11,7 +11,10 @@ import WorkItemDetail from '~/work_items/components/work_item_detail.vue';
 import deleteWorkItemMutation from '~/work_items/graphql/delete_work_item.mutation.graphql';
 import workspacePermissionsQuery from '~/work_items/graphql/workspace_permissions.query.graphql';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { visitUrl } from '~/lib/utils/url_utility';
 import { mockProjectPermissionsQueryResponse } from '../mock_data';
+
+jest.mock('~/lib/utils/url_utility');
 
 Vue.use(VueApollo);
 
@@ -26,16 +29,22 @@ describe('WorkItemDrawer', () => {
   let wrapper;
 
   const mockListener = jest.fn();
+  const mockRouterPush = jest.fn();
 
   const findGlDrawer = () => wrapper.findComponent(GlDrawer);
   const findWorkItem = () => wrapper.findComponent(WorkItemDetail);
+  const findLinkButton = () => wrapper.findByTestId('work-item-drawer-link-button');
 
   const createComponent = ({
     open = false,
     activeItem = { iid: '1', webUrl: 'test', fullPath: 'gitlab-org/gitlab' },
     issuableType = TYPE_ISSUE,
     clickOutsideExcludeSelector = undefined,
+    isGroup = true,
+    workItemsViewPreference = false,
   } = {}) => {
+    window.gon.current_user_use_work_items_view = true;
+
     wrapper = shallowMountExtended(WorkItemDrawer, {
       propsData: {
         activeItem,
@@ -47,10 +56,19 @@ describe('WorkItemDrawer', () => {
         customEvent: mockListener,
       },
       provide: {
-        fullPath: '/gitlab-org',
+        fullPath: 'gitlab-org/gitlab',
         reportAbusePath: '',
         groupPath: '',
         hasSubepicsFeature: false,
+        isGroup,
+        glFeatures: {
+          workItemsViewPreference,
+        },
+      },
+      mocks: {
+        $router: {
+          push: mockRouterPush,
+        },
       },
       apolloProvider: createMockApollo([
         [deleteWorkItemMutation, deleteWorkItemMutationHandler],
@@ -214,5 +232,37 @@ describe('WorkItemDrawer', () => {
     createComponent({ issuableType: TYPE_EPIC });
 
     expect(findWorkItem().props('modalIsGroup')).toBe(true);
+  });
+
+  describe('when redirecting to full screen view', () => {
+    it('calls `visitUrl` when link is not a work item path', () => {
+      createComponent();
+      findLinkButton().vm.$emit('click', new MouseEvent('click'));
+
+      expect(visitUrl).toHaveBeenCalledWith('test');
+    });
+
+    it('calls `router.push` when link is a work item path', () => {
+      createComponent({
+        activeItem: {
+          iid: '1',
+          webUrl: '/groups/gitlab-org/gitlab/-/work_items/1',
+          fullPath: 'gitlab-org/gitlab',
+        },
+      });
+      findLinkButton().vm.$emit('click', new MouseEvent('click'));
+
+      expect(visitUrl).not.toHaveBeenCalled();
+      expect(mockRouterPush).toHaveBeenCalledWith({ name: 'workItem', params: { iid: '1' } });
+    });
+
+    it('calls `router.push` when issue as work item view is enabled', () => {
+      createComponent({ isGroup: false, workItemsViewPreference: true });
+
+      findLinkButton().vm.$emit('click', new MouseEvent('click'));
+
+      expect(visitUrl).not.toHaveBeenCalled();
+      expect(mockRouterPush).toHaveBeenCalledWith({ name: 'workItem', params: { iid: '1' } });
+    });
   });
 });

@@ -72,3 +72,4 @@
 - UploaderFinder
 - UserGroupNotificationSettingsFinder
 - UserGroupsCounter
+- Ai::FeatureSettings::FeatureSettingFinder

@@ -421,7 +421,7 @@ func TestFailedOriginServer(t *testing.T) {
 
 	uploadHandler := &fakeUploadHandler{
 		handler: func(_ http.ResponseWriter, _ *http.Request) {
-			assert.FailNow(t, "the error response must not be uploaded")
+			t.Error("the error response must not be uploaded")
 		},
 	}
 
@@ -448,7 +448,7 @@ func TestLongUploadRequest(t *testing.T) {
 	defer originResourceServer.Close()
 
 	// the server receiving the upload request
-	// it makes the upload request artifically long with a sleep
+	// it makes the upload request artificially long with a sleep
 	uploadServer := httptest.NewServer(http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {
 		time.Sleep(40 * time.Millisecond)
 	}))

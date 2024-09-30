@@ -634,7 +634,7 @@ Reason:
 end of file reached
 ```
 
-It might happen if the incorrect URL to the primary site was specified in the setting. To troubleshoot it, 
+It might happen if the incorrect URL to the primary site was specified in the setting. To troubleshoot it,
 run the following commands in [the Rails Console](../../../operations/rails_console.md):
 
 ```ruby

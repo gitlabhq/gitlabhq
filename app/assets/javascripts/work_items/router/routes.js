@@ -25,7 +25,7 @@ function getRoutes(isGroup) {
     },
   ];
 
-  if (isGroup) {
+  if (isGroup || (gon.features.workItemsViewPreference && gon.current_user_use_work_items_view)) {
     routes.unshift({
       path: '/:type(issues|epics|work_items)',
       name: ROUTES.index,

@@ -1,7 +1,7 @@
 ---
 key_path: settings.observability_features_ff
 description: Count of groups with the observability_features feature flag enabled, where the flag is disabled globally
-product_group: observability
+product_group: platform_insights
 value_type: boolean
 status: active
 milestone: "17.3"

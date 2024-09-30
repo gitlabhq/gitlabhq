@@ -311,6 +311,26 @@ Once a lifetime for access tokens is set, GitLab:
   allowed lifetime. Three hours is given to allow administrators to change the allowed lifetime,
   or remove it, before revocation takes place.
 
+## User OAuth applications setting
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
+
+Prerequisites:
+
+You must be an administrator.
+
+The **User OAuth applications** setting controls whether users can register applications to use GitLab as an OAuth provider. This setting affects user-owned OAuth application, but does not affect group-level OAuth applications.
+
+To toggle on or off the **User OAuth applications** setting:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > General**.
+1. Expand the **Account and limit** section.
+1. Select or clear the **User OAuth applications** checkbox.
+1. Select **Save changes**.
+
 ## Disable user profile name changes
 
 DETAILS:

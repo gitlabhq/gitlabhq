@@ -460,7 +460,7 @@ class Projects::IssuesController < Projects::ApplicationController
   def create_vulnerability_issue_feedback(issue); end
 
   def redirect_if_work_item
-    return unless use_work_items_path?(issue)
+    return unless use_work_items_path?(issue) && !show_work_item?
 
     redirect_to project_work_item_path(project, issue.iid, params: request.query_parameters)
   end

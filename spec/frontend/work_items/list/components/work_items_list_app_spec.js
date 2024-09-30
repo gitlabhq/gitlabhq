@@ -75,7 +75,15 @@ describeSkipVue3(skipReason, () => {
     provide = {},
     queryHandler = defaultQueryHandler,
     sortPreferenceMutationResponse = mutationHandler,
+    workItemsViewPreference = false,
   } = {}) => {
+    window.gon = {
+      ...window.gon,
+      features: {
+        workItemsViewPreference,
+      },
+      current_user_use_work_items_view: true,
+    };
     wrapper = shallowMount(WorkItemsListApp, {
       router: createRouter({ fullPath: '/work_item' }),
       apolloProvider: createMockApollo([
@@ -146,14 +154,16 @@ describeSkipVue3(skipReason, () => {
     });
 
     it('calls query to fetch work items', () => {
-      expect(defaultQueryHandler).toHaveBeenCalledWith({
-        fullPath: 'full/path',
-        includeDescendants: true,
-        sort: CREATED_DESC,
-        state: STATUS_OPEN,
-        firstPageSize: 20,
-        types: ['ISSUE', 'INCIDENT', 'TASK'],
-      });
+      expect(defaultQueryHandler).toHaveBeenCalledWith(
+        expect.objectContaining({
+          fullPath: 'full/path',
+          includeDescendants: true,
+          sort: CREATED_DESC,
+          state: STATUS_OPEN,
+          firstPageSize: 20,
+          types: ['ISSUE', 'INCIDENT', 'TASK'],
+        }),
+      );
     });
   });
 
@@ -177,17 +187,21 @@ describeSkipVue3(skipReason, () => {
   });
 
   describe('when workItemType is provided', () => {
-    it('filters work items by workItemType', () => {
+    it('filters work items by workItemType', async () => {
       const type = 'EPIC';
       mountComponent({ provide: { workItemType: type } });
 
-      expect(defaultQueryHandler).toHaveBeenCalledWith({
-        fullPath: 'full/path',
-        includeDescendants: true,
-        sort: CREATED_DESC,
-        state: STATUS_OPEN,
-        types: type,
-      });
+      await waitForPromises();
+
+      expect(defaultQueryHandler).toHaveBeenCalledWith(
+        expect.objectContaining({
+          fullPath: 'full/path',
+          includeDescendants: true,
+          sort: CREATED_DESC,
+          state: STATUS_OPEN,
+          types: type,
+        }),
+      );
     });
   });
 
@@ -216,6 +230,7 @@ describeSkipVue3(skipReason, () => {
     describe('when eeCreatedWorkItemsCount is updated', () => {
       it('refetches work items', async () => {
         mountComponent();
+        await waitForPromises();
 
         expect(defaultQueryHandler).toHaveBeenCalledTimes(1);
 
@@ -308,17 +323,13 @@ describeSkipVue3(skipReason, () => {
         ]);
         await nextTick();
 
-        expect(defaultQueryHandler).toHaveBeenCalledWith({
-          fullPath: 'full/path',
-          includeDescendants: true,
-          sort: CREATED_DESC,
-          state: STATUS_OPEN,
-          search: 'find issues',
-          authorUsername: 'homer',
-          in: 'TITLE',
-          firstPageSize: 20,
-          types: ['ISSUE', 'INCIDENT', 'TASK'],
-        });
+        expect(defaultQueryHandler).toHaveBeenCalledWith(
+          expect.objectContaining({
+            search: 'find issues',
+            authorUsername: 'homer',
+            in: 'TITLE',
+          }),
+        );
       });
     });
 
@@ -480,7 +491,7 @@ describeSkipVue3(skipReason, () => {
         });
 
         it('refetches and resets when work item is deleted', async () => {
-          expect(defaultQueryHandler).toHaveBeenCalledTimes(2);
+          expect(defaultQueryHandler).toHaveBeenCalledTimes(1);
 
           findDrawer().vm.$emit('workItemDeleted');
 
@@ -488,11 +499,11 @@ describeSkipVue3(skipReason, () => {
 
           checkThatDrawerPropsAreEmpty();
 
-          expect(defaultQueryHandler).toHaveBeenCalledTimes(3);
+          expect(defaultQueryHandler).toHaveBeenCalledTimes(2);
         });
 
         it('refetches when the selected work item is closed', async () => {
-          expect(defaultQueryHandler).toHaveBeenCalledTimes(2);
+          expect(defaultQueryHandler).toHaveBeenCalledTimes(1);
 
           // component displays open work items by default
           findDrawer().vm.$emit('work-item-updated', {
@@ -501,7 +512,7 @@ describeSkipVue3(skipReason, () => {
 
           await nextTick();
 
-          expect(defaultQueryHandler).toHaveBeenCalledTimes(3);
+          expect(defaultQueryHandler).toHaveBeenCalledTimes(2);
         });
       });
     });

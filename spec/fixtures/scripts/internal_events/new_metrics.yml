@@ -319,6 +319,7 @@
     - "\n" # Select: Weekly count of unique users where label/value is...
     - "failure, incomplete\n" # Input multiple values for "label" filter
     - "\n" # Skip "value" filter
+    - "\n" # Skip "Add extra property" filter
     - "who tried and failed to define an internal event using the CLI\n" # Input description
     - "failed_usage_attempts\n" # Input metric key path
     - "\n" # Submit monthly description for weekly

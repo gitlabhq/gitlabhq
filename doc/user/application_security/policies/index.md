@@ -49,7 +49,7 @@ may require up to 10 minutes before the policy changes take effect.
 
 ## Policy design guidelines
 
-When designing your policies, your goals should be:
+When designing your policies, your goals should be to:
 
 - Design policy enforcement for minimum overhead but maximum coverage
 - Ensure separation of duties
@@ -60,10 +60,15 @@ To maximize policy coverage, link a security policy project at the highest level
 level, subgroup level, or project level. Enforcement at the highest level minimizes the number of
 security policy projects and therefore the management overhead. Policies cascade down from each level to a project, such that policies may be enforced from the group level, each subgroup above it, and then for any policies created at the project level itself.
 
-Policy inheritance of policies not only ensures maximum coverage with the minimum
+Policy inheritance not only ensures maximum coverage with the minimum
 number of security policy projects, but also helps when implementing policy changes. For example, to test a policy change
 you could copy an existing policy and enforce the modified policy first to a project, then to a
 subgroup, and, if applicable, to a group.
+
+Policies enforced on an existing group or subgroup are automatically enforced in any new subgroups and projects created under them, provided that all of the following are true:
+
+- The new subgroups and projects are included in the scope definition of the policy (for example, the scope includes all projects in this group).
+- The existing group or subgroup is already linked to the security policy project.
 
 NOTE:
 GitLab SaaS users may enforce policies against their top-level group or across subgroups, but cannot enforce policies across GitLab SaaS top-level groups. GitLab self-managed users can enforce policies across multiple top-level groups in their instance.

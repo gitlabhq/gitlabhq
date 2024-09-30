@@ -16,6 +16,7 @@ import { isExternal, setUrlFragment, visitUrl } from '~/lib/utils/url_utility';
 import { __, n__, sprintf } from '~/locale';
 import IssuableAssignees from '~/issuable/components/issue_assignees.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import WorkItemPrefetch from '~/work_items/components/work_item_prefetch.vue';
 import { STATE_OPEN, STATE_CLOSED } from '~/work_items/constants';
@@ -36,7 +37,12 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [timeagoMixin],
+  mixins: [timeagoMixin, glFeatureFlagMixin()],
+  inject: {
+    isGroup: {
+      default: false,
+    },
+  },
   props: {
     hasScopedLabelsFeature: {
       type: Boolean,
@@ -214,6 +220,13 @@ export default {
       // eslint-disable-next-line no-underscore-dangle
       return this.issuable.__typename === 'MergeRequest';
     },
+    issueAsWorkItem() {
+      return (
+        !this.isGroup &&
+        this.glFeatures.workItemsViewPreference &&
+        gon.current_user_use_work_items_view
+      );
+    },
   },
   methods: {
     hasSlotContents(slotName) {
@@ -269,7 +282,7 @@ export default {
       const regex = new RegExp(`groups\/${escapedFullPath}\/-\/(work_items|epics)\/\\d+`);
       const isWorkItemPath = regex.test(this.issuableLinkHref);
 
-      if (isWorkItemPath) {
+      if (isWorkItemPath || this.issueAsWorkItem) {
         this.$router.push({
           name: 'workItem',
           params: {

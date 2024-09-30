@@ -177,7 +177,7 @@ func TestSendFileResponseWriterFlushable(t *testing.T) {
 	rw := httptest.NewRecorder()
 	sfrw := sendFileResponseWriter{rw: rw}
 
-	rc := http.NewResponseController(&sfrw)
+	rc := http.NewResponseController(&sfrw) //nolint:errcheck
 
 	err := rc.Flush()
 	require.NoError(t, err, "the underlying response writer is not flushable")

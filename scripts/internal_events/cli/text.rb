@@ -178,7 +178,7 @@ module InternalEventsCli
       - Service Ping: filter metrics to a specific subset of events
       - Snowflake: view/sort/group individual events from GitLab.com
 
-      There are a few specific attributes are available for recording the context of each event. These include 2 strings and 1 numeric value.
+      A few specific attributes are available for recording the context of each event. These include 2 strings and 1 numeric value.
 
       ex) For an event like 'change_merge_request_status', we might want to include:
 
@@ -186,6 +186,16 @@ module InternalEventsCli
           Description: Status of merge request after update (one of opened, merged, closed)
 
           This would enable us to create a metric like: Monthly count of unique users who changed an MR status to "closed"
+
+    TEXT
+
+    ADDITIONAL_PROPERTIES_ADD_MORE_HELP = <<~TEXT.freeze
+      #{format_warning('Required. Must be unique within the event context. Must use only letters/numbers/underscores.')}
+
+      #{format_info('It should not be named any of the following:')}
+      - property#{' '}
+      - label
+      - value
 
     TEXT
 

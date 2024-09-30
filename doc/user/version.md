@@ -15,7 +15,7 @@ Prerequisites:
 
 - You must be an authenticated user.
 
-To find the version for self-managed GitLab: 
+To find the version for self-managed GitLab:
 
 - On the left sidebar, at the bottom, select **Help > Help**.
 

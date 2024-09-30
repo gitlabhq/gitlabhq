@@ -232,7 +232,7 @@ This list of limitations only reflects the latest version of GitLab. If you are 
 
 ### Replicated data types
 
-There is a complete list of all GitLab [data types](replication/datatypes.md) and 
+There is a complete list of all GitLab [data types](replication/datatypes.md) and
 [replicated data types](replication/datatypes.md#replicated-data-types).
 
 ## Setup instructions

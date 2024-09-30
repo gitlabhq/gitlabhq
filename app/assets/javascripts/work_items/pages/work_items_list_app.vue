@@ -144,17 +144,24 @@ export default {
         return this.queryVariables;
       },
       update(data) {
-        return data?.group.workItems.nodes ?? [];
+        return data?.[this.namespace].workItems.nodes ?? [];
+      },
+      skip() {
+        return isEmpty(this.pageParams);
       },
       result({ data }) {
-        this.pageInfo = data?.group.workItems.pageInfo ?? {};
+        this.pageInfo = data?.[this.namespace].workItems.pageInfo ?? {};
 
-        if (data?.group) {
-          const rootBreadcrumbName =
-            this.workItemType === WORK_ITEM_TYPE_ENUM_EPIC
-              ? __('Epics')
-              : s__('WorkItem|Work items');
-          document.title = `${rootBreadcrumbName} · ${data.group.name} · GitLab`;
+        if (data?.[this.namespace]) {
+          if (this.isGroup) {
+            const rootBreadcrumbName =
+              this.workItemType === WORK_ITEM_TYPE_ENUM_EPIC
+                ? __('Epics')
+                : s__('WorkItem|Work items');
+            document.title = `${rootBreadcrumbName} · ${data.group.name} · GitLab`;
+          } else {
+            document.title = `Issues · ${data.project.name} · GitLab`;
+          }
         }
       },
       error(error) {
@@ -170,10 +177,13 @@ export default {
         return this.queryVariables;
       },
       update(data) {
-        return data?.group.workItemStateCounts ?? {};
+        return data?.[this.namespace].workItemStateCounts ?? {};
+      },
+      skip() {
+        return isEmpty(this.pageParams);
       },
       result({ data }) {
-        const { all } = data?.group.workItemStateCounts ?? {};
+        const { all } = data?.[this.namespace].workItemStateCounts ?? {};
 
         if (!this.isInitialLoadComplete) {
           this.hasAnyIssues = Boolean(all);
@@ -225,6 +235,7 @@ export default {
         ...this.pageParams,
         includeDescendants: !this.apiFilterParams.fullPath,
         types: this.apiFilterParams.types || this.workItemType || this.defaultWorkItemTypes,
+        isGroup: this.isGroup,
       };
     },
     searchQuery() {
@@ -269,15 +280,6 @@ export default {
           preloadedUsers,
         },
         {
-          type: TOKEN_TYPE_GROUP,
-          icon: 'group',
-          title: TOKEN_TITLE_GROUP,
-          unique: true,
-          token: GroupToken,
-          operators: OPERATORS_IS,
-          fullPath: this.fullPath,
-        },
-        {
           type: TOKEN_TYPE_LABEL,
           title: TOKEN_TITLE_LABEL,
           icon: 'labels',
@@ -310,6 +312,18 @@ export default {
           ],
         },
       ];
+
+      if (this.isGroup) {
+        tokens.push({
+          type: TOKEN_TYPE_GROUP,
+          icon: 'group',
+          title: TOKEN_TITLE_GROUP,
+          unique: true,
+          token: GroupToken,
+          operators: OPERATORS_IS,
+          fullPath: this.fullPath,
+        });
+      }
 
       if (!this.workItemType) {
         tokens.push({
