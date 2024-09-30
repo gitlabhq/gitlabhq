@@ -82,6 +82,10 @@ The **Storage** tab of the **Usage Quotas** page displays the following:
 - Projects that are read-only because purchased storage available is zero. Read-only projects are
   marked with an information icon (**{information-o}**) beside their name.
 
+The total storage includes the free and excess storage purchased.
+The remaining excess storage is expressed as a percentage and calculated as:
+100 % - ((excess storage used - excess storage purchased) * 100).
+
 ### Excess storage example
 
 The following example describes an excess storage scenario for projects in a namespace:
@@ -99,17 +103,21 @@ example, no additional storage has yet been purchased.
 
 To remove the read-only state from the Red and Green projects, 50 GiB additional storage is purchased.
 
-Assuming the Green and Red projects' repositories and LFS grow past the 10 GiB quota, the purchased storage
-available decreases. All projects no longer have the read-only status because 40 GiB purchased storage is available:
-50 GiB (purchased storage) - 10 GiB (total excess storage used).
+If some projects' repositories and LFS grow past the 10 GiB quota, the available purchased storage decreases.
 
 | Repository | Storage used | Excess storage | Quota   | Status            |
 |------------|--------------|----------------|---------|-------------------|
-| Red        | 15 GiB        | 5 GiB           | 10 GiB   | Not read-only     |
-| Blue       | 14 GiB        | 4 GiB           | 10 GiB   | Not read-only     |
-| Green      | 11 GiB        | 1 GiB           | 10 GiB   | Not read-only     |
-| Yellow     | 5 GiB         | 0 GiB           | 10 GiB   | Not read-only     |
-| **Totals** | **45 GiB**    | **10 GiB**      | -       | -                 |
+| Red        | 15 GiB        | 5 GiB         | 10 GiB  | Not read-only     |
+| Blue       | 14 GiB        | 4 GiB         | 10 GiB  | Not read-only     |
+| Green      | 11 GiB        | 1 GiB         | 10 GiB  | Not read-only     |
+| Yellow     | 5 GiB         | 0 GiB         | 10 GiB  | Not read-only     |
+| **Totals** | **45 GiB**    | **10 GiB**    | -       | -                 |
+
+In this example:
+
+- Available purchased storage is 40 GiB: 50 GiB (purchased storage) - 10 GiB (total excess storage used). Consequently, the projects are no longer read-only.
+- Excess storage usage is 20%: 10 GiB / 50 GiB * 100.
+- Remaining purchased storage is 80%.
 
 ## Manage storage usage
 

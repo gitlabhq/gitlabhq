@@ -5096,3 +5096,103 @@ export const mockUserPreferences = (useWorkItemsView = true) => ({
     },
   },
 });
+
+export const mockProjectPermissionsQueryResponse = ({ createDesign = true } = {}) => ({
+  data: {
+    workspace: {
+      id: 'gid://gitlab/Project/1',
+      userPermissions: {
+        createDesign,
+        __typename: 'ProjectPermissions',
+      },
+      __typename: 'Project',
+    },
+  },
+});
+
+export const mockUploadDesignMutationResponse = {
+  data: {
+    designManagementUpload: {
+      designs: [
+        {
+          id: 'gid://gitlab/DesignManagement::Design/10',
+          event: 'CREATION',
+          filename: 'Screenshot_2024-09-16_at_12.08.41_PM.png',
+          notesCount: 0,
+          image:
+            'http://127.0.0.1:3000/gitlab-org/gitlab-shell/-/design_management/designs/10/316e83ef399ac9ec00250426f7e2ae01fffa8133/raw_image',
+          imageV432x230: null,
+          description: null,
+          descriptionHtml: '',
+          fullPath: 'designs/issue-41/Screenshot_2024-09-16_at_12.08.41_PM.png',
+          currentUserTodos: {
+            nodes: [],
+            __typename: 'TodoConnection',
+          },
+          __typename: 'Design',
+          imported: false,
+          diffRefs: {
+            baseSha: '2ac26f2354eb7f4a18f69db273017393f41bd840',
+            startSha: '2ac26f2354eb7f4a18f69db273017393f41bd840',
+            headSha: '316e83ef399ac9ec00250426f7e2ae01fffa8133',
+            __typename: 'DiffRefs',
+          },
+          discussions: {
+            nodes: [],
+            __typename: 'DiscussionConnection',
+          },
+          versions: {
+            nodes: [
+              {
+                id: 'gid://gitlab/DesignManagement::Version/10',
+                sha: '316e83ef399ac9ec00250426f7e2ae01fffa8133',
+                createdAt: '2024-09-16T23:33:27Z',
+                author: {
+                  id: 'gid://gitlab/User/1',
+                  name: 'Administrator',
+                  avatarUrl:
+                    'https://www.gravatar.com/avatar/f7da9a67cfc0e7a1927ea66dd241a7a31e1df50bb91b0fcd8f6d5fb20fb2f4c3?s=80&d=identicon',
+                  __typename: 'UserCore',
+                },
+                __typename: 'DesignVersion',
+              },
+            ],
+            __typename: 'DesignVersionConnection',
+          },
+        },
+      ],
+      skippedDesigns: [],
+      errors: [],
+      __typename: 'DesignManagementUploadPayload',
+    },
+  },
+};
+
+export const mockUploadSkippedDesignMutationResponse = {
+  data: {
+    designManagementUpload: {
+      designs: [],
+      skippedDesigns: [
+        {
+          id: 'gid://gitlab/DesignManagement::Design/14',
+          filename: 'Version_test_1.png',
+          __typename: 'Design',
+        },
+      ],
+      errors: [],
+      __typename: 'DesignManagementUploadPayload',
+    },
+  },
+};
+
+export const mockUploadErrorDesignMutationResponse = {
+  errors: [
+    {
+      message:
+        "The resource that you are attempting to access does not exist or you don't have permission to perform this action",
+    },
+  ],
+  data: {
+    designManagementUpload: null,
+  },
+};

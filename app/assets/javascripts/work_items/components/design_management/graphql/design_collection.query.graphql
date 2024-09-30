@@ -1,3 +1,5 @@
+#import "./fragments/version.fragment.graphql"
+
 query getWorkItemDesignList($id: WorkItemID!, $atVersion: DesignManagementVersionID) {
   workItem(id: $id) {
     id
@@ -27,14 +29,7 @@ query getWorkItemDesignList($id: WorkItemID!, $atVersion: DesignManagementVersio
           }
           versions {
             nodes {
-              id
-              sha
-              createdAt
-              author {
-                id
-                name
-                avatarUrl
-              }
+              ...VersionListItem
             }
           }
         }

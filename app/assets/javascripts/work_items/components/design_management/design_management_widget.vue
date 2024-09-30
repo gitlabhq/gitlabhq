@@ -29,6 +29,11 @@ export default {
       required: false,
       default: null,
     },
+    uploadError: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   apollo: {
     designCollection: {
@@ -90,6 +95,12 @@ export default {
         : null;
     },
   },
+  methods: {
+    dismissError() {
+      this.error = undefined;
+      this.$emit('dismissError');
+    },
+  },
   i18n: {
     designLoadingError: __('An error occurred while loading designs. Please try again.'),
   },
@@ -105,13 +116,13 @@ export default {
     class="gl-mt-5"
     is-collapsible
   >
-    <template #title>
+    <template #count>
       <design-version-dropdown :all-versions="allVersions" />
     </template>
 
     <template #default>
-      <gl-alert v-if="error" variant="danger" @dismiss="error = undefined">
-        {{ error }}
+      <gl-alert v-if="error || uploadError" variant="danger" @dismiss="dismissError()">
+        {{ error || uploadError }}
       </gl-alert>
 
       <ol class="list-unstyled row -gl-my-1 gl-flex gl-gap-y-5 gl-p-3">

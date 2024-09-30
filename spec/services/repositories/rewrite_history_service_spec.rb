@@ -88,7 +88,7 @@ RSpec.describe Repositories::RewriteHistoryService, feature_category: :source_co
       end
     end
 
-    context 'when repostory is already read only' do
+    context 'when repository is already read only' do
       before do
         project.set_repository_read_only!
       end

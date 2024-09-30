@@ -11,9 +11,11 @@ import DesignPresentation from '~/work_items/components/design_management/design
 import DesignToolbar from '~/work_items/components/design_management/design_preview/design_toolbar.vue';
 import DesignSidebar from '~/work_items/components/design_management/design_preview/design_sidebar.vue';
 import DesignScaler from '~/work_items/components/design_management/design_preview/design_scaler.vue';
-import { DESIGN_NOT_FOUND_ERROR } from '~/work_items/components/design_management/error_messages';
 import * as utils from '~/work_items/components/design_management/utils';
-import { DESIGN_DETAIL_LAYOUT_CLASSLIST } from '~/work_items/components/design_management/constants';
+import {
+  DESIGN_DETAIL_LAYOUT_CLASSLIST,
+  DESIGN_NOT_FOUND_ERROR,
+} from '~/work_items/components/design_management/constants';
 
 import { getDesignResponse } from '../mock_data';
 

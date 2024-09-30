@@ -8586,6 +8586,9 @@ msgstr ""
 msgid "BillingPlans|Compliance automation"
 msgstr ""
 
+msgid "BillingPlans|Congratulations, your free Ultimate and GitLab Duo Enterprise trial is activated and will expire on %{exp_date}. The new licenses might take a minute to show on the page. To give members access to new GitLab Duo Enterprise features, %{assign_link_start}assign them%{assign_link_end} to GitLab Duo Enterprise seats."
+msgstr ""
+
 msgid "BillingPlans|Congratulations, your free trial is activated."
 msgstr ""
 
@@ -19115,6 +19118,9 @@ msgstr[1] ""
 msgid "DesignManagement|Add a description"
 msgstr ""
 
+msgid "DesignManagement|Add design"
+msgstr ""
+
 msgid "DesignManagement|Adding a design with the same filename replaces the file in a new version."
 msgstr ""
 
@@ -19163,6 +19169,9 @@ msgstr ""
 msgid "DesignManagement|Could not delete comment. Please try again."
 msgstr ""
 
+msgid "DesignManagement|Could not find design."
+msgstr ""
+
 msgid "DesignManagement|Could not update comment. Please try again."
 msgstr ""
 
@@ -19209,6 +19218,9 @@ msgid "DesignManagement|Go to previous design"
 msgstr ""
 
 msgid "DesignManagement|Hide comments"
+msgstr ""
+
+msgid "DesignManagement|Requested design version does not exist."
 msgstr ""
 
 msgid "DesignManagement|Requested design version does not exist. Showing latest version instead"
@@ -20178,7 +20190,7 @@ msgstr ""
 msgid "DuoEnterpriseTrial|Apply your GitLab Duo Enterprise trial to an existing group"
 msgstr ""
 
-msgid "DuoEnterpriseTrial|Congratulations, your free Ultimate and GitLab Duo Enterprise trial is activated and will expire on %{exp_date}. The new license might take a minute to show on the page. To give members access to new GitLab Duo Enterprise features, %{assign_link_start}assign them%{assign_link_end} to GitLab Duo Enterprise seats."
+msgid "DuoEnterpriseTrial|Congratulations, your free GitLab Duo Enterprise trial is activated and will expire on %{exp_date}. The new license might take a minute to show on the page. To give members access to new GitLab Duo Enterprise features, %{assign_link_start}assign them%{assign_link_end} to GitLab Duo Enterprise seats."
 msgstr ""
 
 msgid "DuoEnterpriseTrial|Enhance security and remediate vulnerabilities efficiently"

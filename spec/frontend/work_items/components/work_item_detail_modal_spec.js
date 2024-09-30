@@ -7,8 +7,13 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import { stubComponent } from 'helpers/stub_component';
 import WorkItemDetailModal from '~/work_items/components/work_item_detail_modal.vue';
 import deleteWorkItemMutation from '~/work_items/graphql/delete_work_item.mutation.graphql';
+import workspacePermissionsQuery from '~/work_items/graphql/workspace_permissions.query.graphql';
 import WorkItemDetail from '~/work_items/components/work_item_detail.vue';
-import { deleteWorkItemMutationErrorResponse, deleteWorkItemResponse } from '../mock_data';
+import {
+  deleteWorkItemMutationErrorResponse,
+  deleteWorkItemResponse,
+  mockProjectPermissionsQueryResponse,
+} from '../mock_data';
 
 describe('WorkItemDetailModal component', () => {
   let wrapper;
@@ -32,11 +37,16 @@ describe('WorkItemDetailModal component', () => {
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findWorkItemDetail = () => wrapper.findComponent(WorkItemDetail);
 
+  const workspacePermissionsHandler = jest
+    .fn()
+    .mockResolvedValue(mockProjectPermissionsQueryResponse());
+
   const createComponent = ({
     deleteWorkItemMutationHandler = jest.fn().mockResolvedValue(deleteWorkItemResponse),
   } = {}) => {
     const apolloProvider = createMockApollo([
       [deleteWorkItemMutation, deleteWorkItemMutationHandler],
+      [workspacePermissionsQuery, workspacePermissionsHandler],
     ]);
 
     wrapper = shallowMount(WorkItemDetailModal, {

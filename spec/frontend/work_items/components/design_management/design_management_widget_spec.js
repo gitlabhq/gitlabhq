@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { GlAlert } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -38,10 +39,12 @@ describe('DesignWidget', () => {
 
   const findWidgetWrapper = () => wrapper.findComponent(CrudComponent);
   const findAllDesignItems = () => wrapper.findAllComponents(DesignItem);
+  const findAlert = () => wrapper.findComponent(GlAlert);
 
   function createComponent({
     designCollectionQueryHandler = oneDesignQueryHandler,
     routeArg = MOCK_ROUTE,
+    uploadError = null,
   } = {}) {
     wrapper = shallowMountExtended(DesignWidget, {
       apolloProvider: createMockApollo([
@@ -49,6 +52,7 @@ describe('DesignWidget', () => {
       ]),
       propsData: {
         workItemId,
+        uploadError,
       },
       mocks: {
         $route: routeArg,
@@ -101,5 +105,15 @@ describe('DesignWidget', () => {
 
     expect(queryHandler).toHaveBeenCalled();
     expect(findAllDesignItems().length).toBe(length);
+  });
+
+  it('dismisses error passed as prop', async () => {
+    createComponent({ uploadError: 'Error uploading a new design. Please try again.' });
+    await waitForPromises();
+
+    expect(findAlert().exists()).toBe(true);
+    findAlert().vm.$emit('dismiss');
+
+    expect(wrapper.emitted('dismissError')).toHaveLength(1);
   });
 });

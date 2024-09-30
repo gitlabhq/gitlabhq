@@ -30,10 +30,7 @@ module Mutations
                    .new(current_user, args.except(:user_ids, source_id_param_name))
                    .execute(@updatable_members)
 
-        {
-          source_members_key => result[:members],
-          errors: Array.wrap(result[:message])
-        }
+        present_result(result)
       rescue Gitlab::Access::AccessDeniedError
         {
           errors: ["Unable to update members, please check user permissions."]
@@ -80,9 +77,18 @@ module Mutations
         source_type.name.downcase
       end
 
+      def present_result(result)
+        {
+          source_members_key => result[:members],
+          errors: Array.wrap(result[:message])
+        }
+      end
+
       def source_type
         raise NotImplementedError
       end
     end
   end
 end
+
+Mutations::Members::BulkUpdateBase.prepend_mod

@@ -1,0 +1,10 @@
+fragment VersionListItem on DesignVersion {
+  id
+  sha
+  createdAt
+  author {
+    id
+    name
+    avatarUrl
+  }
+}

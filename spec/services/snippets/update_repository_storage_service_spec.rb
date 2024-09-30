@@ -53,7 +53,7 @@ RSpec.describe Snippets::UpdateRepositoryStorageService, feature_category: :sour
         expect(Gitlab::GitalyClient).to receive(:filesystem_id).twice.and_return(SecureRandom.uuid)
       end
 
-      it 'updates the database without trying to move the repostory', :aggregate_failures do
+      it 'updates the database without trying to move the repository', :aggregate_failures do
         result = subject.execute
         snippet.reload
 

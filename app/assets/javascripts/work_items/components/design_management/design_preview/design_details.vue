@@ -8,8 +8,11 @@ import { keysFor, ISSUE_CLOSE_DESIGN } from '~/behaviors/shortcuts/keybindings';
 import { ROUTES } from '../../../constants';
 import getDesignQuery from '../graphql/design_details.query.graphql';
 import { extractDesign, extractDiscussions, getPageLayoutElement } from '../utils';
-import { DESIGN_DETAIL_LAYOUT_CLASSLIST } from '../constants';
-import { DESIGN_NOT_FOUND_ERROR, DESIGN_VERSION_NOT_EXIST_ERROR } from '../error_messages';
+import {
+  DESIGN_DETAIL_LAYOUT_CLASSLIST,
+  DESIGN_NOT_FOUND_ERROR,
+  DESIGN_VERSION_NOT_EXIST_ERROR,
+} from '../constants';
 import DesignPresentation from './design_presentation.vue';
 import DesignToolbar from './design_toolbar.vue';
 import DesignSidebar from './design_sidebar.vue';

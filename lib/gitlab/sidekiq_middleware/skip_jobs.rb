@@ -76,6 +76,8 @@ module Gitlab
       end
 
       def defer_job_by_database_health_signal?(job, worker_class)
+        # ActionMailer's ActiveJob pushes a job hash with class: ActiveJob::QueueAdapters::SidekiqAdapter::JobWrapper
+        # which won't be having :defer_on_database_health_signal? defined
         unless worker_class.respond_to?(:defer_on_database_health_signal?) &&
             worker_class.defer_on_database_health_signal?
           return false

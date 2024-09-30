@@ -9,13 +9,18 @@ import { TYPE_EPIC, TYPE_ISSUE } from '~/issues/constants';
 import WorkItemDrawer from '~/work_items/components/work_item_drawer.vue';
 import WorkItemDetail from '~/work_items/components/work_item_detail.vue';
 import deleteWorkItemMutation from '~/work_items/graphql/delete_work_item.mutation.graphql';
+import workspacePermissionsQuery from '~/work_items/graphql/workspace_permissions.query.graphql';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { mockProjectPermissionsQueryResponse } from '../mock_data';
 
 Vue.use(VueApollo);
 
 const deleteWorkItemMutationHandler = jest
   .fn()
   .mockResolvedValue({ data: { workItemDelete: { errors: [] } } });
+const workspacePermissionsHandler = jest
+  .fn()
+  .mockResolvedValue(mockProjectPermissionsQueryResponse());
 
 describe('WorkItemDrawer', () => {
   let wrapper;
@@ -47,7 +52,10 @@ describe('WorkItemDrawer', () => {
         groupPath: '',
         hasSubepicsFeature: false,
       },
-      apolloProvider: createMockApollo([[deleteWorkItemMutation, deleteWorkItemMutationHandler]]),
+      apolloProvider: createMockApollo([
+        [deleteWorkItemMutation, deleteWorkItemMutationHandler],
+        [workspacePermissionsQuery, workspacePermissionsHandler],
+      ]),
     });
   };
 

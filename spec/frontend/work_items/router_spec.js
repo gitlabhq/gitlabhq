@@ -6,6 +6,7 @@ import {
   currentUserResponse,
   workItemByIidResponseFactory,
   allowedChildrenTypesResponse,
+  mockProjectPermissionsQueryResponse,
 } from 'jest/work_items/mock_data';
 import currentUserQuery from '~/graphql_shared/queries/current_user.query.graphql';
 import App from '~/work_items/components/app.vue';
@@ -15,6 +16,7 @@ import WorkItemsRoot from '~/work_items/pages/work_item_root.vue';
 import { createRouter } from '~/work_items/router';
 import workItemUpdatedSubscription from '~/work_items/graphql/work_item_updated.subscription.graphql';
 import getAllowedWorkItemChildTypes from '~/work_items/graphql/work_item_allowed_children.query.graphql';
+import workspacePermissionsQuery from '~/work_items/graphql/workspace_permissions.query.graphql';
 
 jest.mock('~/behaviors/markdown/render_gfm');
 
@@ -31,6 +33,9 @@ describe('Work items router', () => {
     .fn()
     .mockResolvedValue({ data: { workItemUpdated: null } });
   const allowedChildrenTypesHandler = jest.fn().mockResolvedValue(allowedChildrenTypesResponse);
+  const workspacePermissionsHandler = jest
+    .fn()
+    .mockResolvedValue(mockProjectPermissionsQueryResponse());
 
   const createComponent = async (routeArg) => {
     const router = createRouter({ fullPath: '/work_item' });
@@ -43,6 +48,7 @@ describe('Work items router', () => {
       [currentUserQuery, currentUserQueryHandler],
       [workItemUpdatedSubscription, workItemUpdatedSubscriptionHandler],
       [getAllowedWorkItemChildTypes, allowedChildrenTypesHandler],
+      [workspacePermissionsQuery, workspacePermissionsHandler],
     ];
 
     wrapper = mount(App, {

@@ -35,7 +35,19 @@ import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql
 import workItemByIdQuery from '../graphql/work_item_by_id.query.graphql';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
 import getAllowedWorkItemChildTypes from '../graphql/work_item_allowed_children.query.graphql';
+import workspacePermissionsQuery from '../graphql/workspace_permissions.query.graphql';
 import { findHierarchyWidgetDefinition } from '../utils';
+
+import getWorkItemDesignListQuery from './design_management/graphql/design_collection.query.graphql';
+import uploadDesignMutation from './design_management/graphql/upload_design.mutation.graphql';
+import { designUploadOptimisticResponse } from './design_management/utils';
+import { updateStoreAfterUploadDesign } from './design_management/cache_updates';
+import {
+  MAXIMUM_FILE_UPLOAD_LIMIT,
+  MAXIMUM_FILE_UPLOAD_LIMIT_REACHED,
+  designUploadSkippedWarning,
+  UPLOAD_DESIGN_ERROR_MESSAGE,
+} from './design_management/constants';
 
 import WorkItemTree from './work_item_links/work_item_tree.vue';
 import WorkItemActions from './work_item_actions.vue';
@@ -54,6 +66,7 @@ import WorkItemTitle from './work_item_title.vue';
 import WorkItemLoading from './work_item_loading.vue';
 import WorkItemAbuseModal from './work_item_abuse_modal.vue';
 import DesignWidget from './design_management/design_management_widget.vue';
+import DesignUploadButton from './design_management/upload_button.vue';
 
 export default {
   name: 'WorkItemDetail',
@@ -64,6 +77,7 @@ export default {
   isLoggedIn: isLoggedIn(),
   components: {
     DesignWidget,
+    DesignUploadButton,
     GlAlert,
     GlButton,
     GlEmptyState,
@@ -140,6 +154,12 @@ export default {
       editMode: false,
       draftData: {},
       hasChildren: false,
+      filesToBeSaved: [],
+      allowedChildTypes: [],
+      designUploadError: null,
+      workspacePermissions: {
+        createDesign: false,
+      },
     };
   },
   apollo: {
@@ -202,7 +222,6 @@ export default {
         },
       },
     },
-    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     allowedChildTypes: {
       query: getAllowedWorkItemChildTypes,
       variables() {
@@ -215,6 +234,20 @@ export default {
       },
       update(data) {
         return findHierarchyWidgetDefinition(data.workItem)?.allowedChildTypes?.nodes || [];
+      },
+    },
+    workspacePermissions: {
+      query: workspacePermissionsQuery,
+      variables() {
+        return {
+          fullPath: this.workItemFullPath,
+        };
+      },
+      skip() {
+        return this.isGroupWorkItem;
+      },
+      update(data) {
+        return data.workspace.userPermissions;
       },
     },
   },
@@ -299,6 +332,9 @@ export default {
     hasDesignWidget() {
       return this.isWidgetPresent(WIDGET_TYPE_DESIGNS) && this.$router;
     },
+    showUploadDesign() {
+      return this.hasDesignWidget && this.workspacePermissions.createDesign;
+    },
     workItemNotificationsSubscribed() {
       return Boolean(this.isWidgetPresent(WIDGET_TYPE_NOTIFICATIONS)?.subscribed);
     },
@@ -369,6 +405,15 @@ export default {
     },
     isGroupWorkItem() {
       return Boolean(this.modalIsGroup ?? this.workItem.namespace?.id.includes(TYPENAME_GROUP));
+    },
+    isSaving() {
+      return this.filesToBeSaved.length > 0;
+    },
+    designCollectionQueryBody() {
+      return {
+        query: getWorkItemDesignListQuery,
+        variables: { id: this.workItem.id, atVersion: null },
+      };
     },
   },
   mounted() {
@@ -513,6 +558,69 @@ export default {
     cancelEditing() {
       this.draftData = {};
       this.editMode = false;
+    },
+    isValidDesignUpload(files) {
+      if (!this.workspacePermissions.createDesign) return false;
+
+      if (files.length > MAXIMUM_FILE_UPLOAD_LIMIT) {
+        this.designUploadError = MAXIMUM_FILE_UPLOAD_LIMIT_REACHED;
+
+        return false;
+      }
+      return true;
+    },
+    onUploadDesign(files) {
+      // Redirect to latest version before uploading to avoid cache reading errors
+      if (this.$route?.query?.version) {
+        this.$router.push({
+          path: this.$route.path,
+          query: {},
+        });
+      }
+
+      // convert to Array so that we have Array methods (.map, .some, etc.)
+      this.filesToBeSaved = Array.from(files);
+      if (!this.isValidDesignUpload(this.filesToBeSaved)) return null;
+
+      const mutationPayload = {
+        optimisticResponse: designUploadOptimisticResponse(this.filesToBeSaved),
+        variables: {
+          files: this.filesToBeSaved,
+          projectPath: this.fullPath,
+          iid: this.workItemIid,
+        },
+        context: {
+          hasUpload: true,
+        },
+        mutation: uploadDesignMutation,
+        update: this.afterUploadDesign,
+      };
+
+      return this.$apollo
+        .mutate(mutationPayload)
+        .then((res) => this.onUploadDesignDone(res))
+        .catch(() => this.onUploadDesignError());
+    },
+    afterUploadDesign(store, { data: { designManagementUpload } }) {
+      updateStoreAfterUploadDesign(store, designManagementUpload, this.designCollectionQueryBody);
+    },
+    resetFilesToBeSaved() {
+      this.filesToBeSaved = [];
+    },
+    onUploadDesignDone(res) {
+      // display any warnings, if necessary
+      const skippedFiles = res?.data?.designManagementUpload?.skippedDesigns || [];
+      const skippedWarningMessage = designUploadSkippedWarning(this.filesToBeSaved, skippedFiles);
+      if (skippedWarningMessage) {
+        this.designUploadError = skippedWarningMessage;
+      }
+
+      // reset state
+      this.resetFilesToBeSaved();
+    },
+    onUploadDesignError() {
+      this.resetFilesToBeSaved();
+      this.designUploadError = UPLOAD_DESIGN_ERROR_MESSAGE;
     },
   },
   WORK_ITEM_TYPE_VALUE_OBJECTIVE,
@@ -681,15 +789,23 @@ export default {
                 @cancelEditing="cancelEditing"
                 @error="updateError = $event"
               />
-              <work-item-award-emoji
-                v-if="workItemAwardEmoji"
-                :work-item-id="workItem.id"
-                :work-item-fullpath="workItemFullPath"
-                :award-emoji="workItemAwardEmoji.awardEmoji"
-                :work-item-iid="workItemIid"
-                @error="updateError = $event"
-                @emoji-updated="$emit('work-item-emoji-updated', $event)"
-              />
+              <div class="gl-flex gl-flex-col gl-flex-wrap sm:gl-flex-row sm:gl-gap-5">
+                <work-item-award-emoji
+                  v-if="workItemAwardEmoji"
+                  :work-item-id="workItem.id"
+                  :work-item-fullpath="workItemFullPath"
+                  :award-emoji="workItemAwardEmoji.awardEmoji"
+                  :work-item-iid="workItemIid"
+                  @error="updateError = $event"
+                  @emoji-updated="$emit('work-item-emoji-updated', $event)"
+                />
+                <design-upload-button
+                  v-if="showUploadDesign"
+                  :is-saving="isSaving"
+                  data-testid="design-upload-button"
+                  @upload="onUploadDesign"
+                />
+              </div>
             </section>
             <aside
               data-testid="work-item-overview-right-sidebar"
@@ -712,6 +828,8 @@ export default {
               :class="{ 'gl-mt-0': isDrawer }"
               :work-item-id="workItem.id"
               :work-item-iid="workItemIid"
+              :upload-error="designUploadError"
+              @dismissError="designUploadError = null"
             />
 
             <work-item-tree
