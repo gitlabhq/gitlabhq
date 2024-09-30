@@ -31,7 +31,7 @@ RSpec.describe 'Issue Boards', :js, feature_category: :portfolio_management do
     end
 
     it 'has un-ordered issue as last issue' do
-      page.within(find('.board:nth-child(2)')) do
+      page.within(find('[data-testid="board-list"]:nth-child(2)')) do
         expect(all('.board-card').last).to have_content(issue4.title)
       end
     end
@@ -41,7 +41,7 @@ RSpec.describe 'Issue Boards', :js, feature_category: :portfolio_management do
 
       wait_for_requests
 
-      page.within(find('.board:nth-child(2)')) do
+      page.within(find('[data-testid="board-list"]:nth-child(2)')) do
         expect(first('.board-card')).to have_content(issue4.title)
       end
     end
@@ -62,7 +62,7 @@ RSpec.describe 'Issue Boards', :js, feature_category: :portfolio_management do
     it 'orders issues by closed_at' do
       wait_for_requests
 
-      page.within(find('.board:nth-child(3)')) do
+      page.within(find('[data-testid="board-list"]:nth-child(3)')) do
         first, second, third = all('.board-card').to_a
 
         expect(first).to have_content(issue7.title)
@@ -140,7 +140,7 @@ RSpec.describe 'Issue Boards', :js, feature_category: :portfolio_management do
     it 'moves to end of list', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/410100' do
       expect(all('.board-card').first).to have_content(issue3.title)
 
-      page.within(find('.board:nth-child(2)')) do
+      page.within(find('[data-testid="board-list"]:nth-child(2)')) do
         first('.board-card').hover
         move_to_position.click
 
@@ -153,7 +153,7 @@ RSpec.describe 'Issue Boards', :js, feature_category: :portfolio_management do
     it 'moves to start of list', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/410100' do
       expect(all('.board-card').last).to have_content(issue1.title)
 
-      page.within(find('.board:nth-child(2)')) do
+      page.within(find('[data-testid="board-list"]:nth-child(2)')) do
         all('.board-card').last.hover
         move_to_position.click
 
@@ -183,7 +183,7 @@ RSpec.describe 'Issue Boards', :js, feature_category: :portfolio_management do
 
       wait_for_requests
 
-      expect(find('.board:nth-child(2)')).to have_selector('.board-card', count: 2)
+      expect(find('[data-testid="board-list"]:nth-child(2)')).to have_selector('.board-card', count: 2)
       expect(all('.board')[2]).to have_selector('.board-card', count: 4)
 
       page.within(all('.board')[2]) do
@@ -196,7 +196,7 @@ RSpec.describe 'Issue Boards', :js, feature_category: :portfolio_management do
 
       wait_for_requests
 
-      expect(find('.board:nth-child(2)')).to have_selector('.board-card', count: 2)
+      expect(find('[data-testid="board-list"]:nth-child(2)')).to have_selector('.board-card', count: 2)
       expect(all('.board')[2]).to have_selector('.board-card', count: 4)
 
       page.within(all('.board')[2]) do
@@ -209,7 +209,7 @@ RSpec.describe 'Issue Boards', :js, feature_category: :portfolio_management do
 
       wait_for_requests
 
-      expect(find('.board:nth-child(2)')).to have_selector('.board-card', count: 2)
+      expect(find('[data-testid="board-list"]:nth-child(2)')).to have_selector('.board-card', count: 2)
       expect(all('.board')[2]).to have_selector('.board-card', count: 4)
 
       page.within(all('.board')[2]) do

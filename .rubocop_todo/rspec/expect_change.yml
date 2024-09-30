@@ -160,7 +160,6 @@ RSpec/ExpectChange:
     - 'ee/spec/workers/concerns/update_orchestration_policy_configuration_spec.rb'
     - 'ee/spec/workers/ee/issuable_export_csv_worker_spec.rb'
     - 'ee/spec/workers/geo/destroy_worker_spec.rb'
-    - 'ee/spec/workers/groups/create_event_worker_spec.rb'
     - 'ee/spec/workers/import_software_licenses_worker_spec.rb'
     - 'ee/spec/workers/sync_seat_link_request_worker_spec.rb'
     - 'ee/spec/workers/vulnerabilities/mark_dropped_as_resolved_worker_spec.rb'

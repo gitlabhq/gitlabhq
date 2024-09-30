@@ -10,6 +10,10 @@ module Mutations
           required: true,
           description: 'Global ID of the issue board to mutate.'
 
+        argument :position, GraphQL::Types::Int,
+          required: false,
+          description: 'Position of the list.'
+
         field :list,
           Types::BoardListType,
           null: true,

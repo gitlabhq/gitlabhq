@@ -64,17 +64,6 @@
   border-color: $gray-800;
 }
 
-.gl-avatar:not(.gl-avatar-identicon),
-.avatar-container,
-.avatar {
-  background: rgba($gray-950, 0.04);
-}
-
-.gl-avatar {
-  border-style: none;
-  box-shadow: inset 0 0 0 1px rgba($gray-950, $gl-avatar-border-opacity);
-}
-
 aside.right-sidebar:not(.right-sidebar-merge-requests) {
   background-color: $gray-10;
 }

@@ -518,6 +518,8 @@ RSpec.describe Resolvers::MergeRequestsResolver, feature_category: :code_review_
       end
     end
 
+    # subscribed filtering handled in request spec, spec/requests/api/graphql/merge_requests/merge_requests_spec.rb
+
     describe 'combinations' do
       it 'requires all filters' do
         create(:merge_request, :closed, **common_attrs, source_branch: merge_request_4.source_branch)

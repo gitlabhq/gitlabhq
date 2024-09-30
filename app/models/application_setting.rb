@@ -648,7 +648,8 @@ class ApplicationSetting < ApplicationRecord
     throttle_unauthenticated_git_http_period_in_seconds: [:integer, { default: 3600 }]
 
   jsonb_accessor :importers,
-    silent_admin_exports_enabled: [:boolean, { default: false }]
+    silent_admin_exports_enabled: [:boolean, { default: false }],
+    allow_contribution_mapping_to_admins: [:boolean, { default: false }]
 
   validates :rate_limits, json_schema: { filename: "application_setting_rate_limits" }
 

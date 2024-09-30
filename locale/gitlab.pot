@@ -4004,6 +4004,9 @@ msgstr ""
 msgid "AdminSettings|All new projects can use instance runners by default."
 msgstr ""
 
+msgid "AdminSettings|Allow contribution mapping to administrators %{allow_contribution_mapping_to_admins_link_start}%{icon}%{allow_contribution_mapping_to_admins_link_end}"
+msgstr ""
+
 msgid "AdminSettings|Allow migrating GitLab groups and projects by direct transfer"
 msgstr ""
 
@@ -28265,9 +28268,6 @@ msgid "Import|Must only contain the base URL of the source GitLab instance."
 msgstr ""
 
 msgid "Import|No import details"
-msgstr ""
-
-msgid "Import|Only active regular, auditor, or administrator users can be assigned"
 msgstr ""
 
 msgid "Import|Partially completed"
@@ -59628,6 +59628,12 @@ msgid "UserMapping|Upload reviewed and completed CSV file."
 msgstr ""
 
 msgid "UserMapping|Use a CSV file to reassign contributions from placeholder users to existing group members. This can be done in a few steps. %{linkStart}Learn more about matching users by CSV%{linkEnd}."
+msgstr ""
+
+msgid "UserMapping|You can assign only active users with regular or auditor access. To assign users with administrator access, ask your GitLab administrator to enable the \"Allow contribution mapping to admins\" setting."
+msgstr ""
+
+msgid "UserMapping|You can assign users with regular, auditor, or administrator access only."
 msgstr ""
 
 msgid "UserMapping|You have approved the reassignment of contributions from %{strong_open}%{source_user_name} (@%{source_username})%{strong_close} on %{strong_open}%{source_hostname}%{strong_close} to yourself on the group %{strong_open}%{destination_group}%{strong_close}. Reassignment processing is in progress."

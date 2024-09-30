@@ -14,6 +14,7 @@ module Boards
       scope :destroyable, -> { where(list_type: list_types.slice(*destroyable_types).values) }
       scope :movable, -> { where(list_type: list_types.slice(*movable_types).values) }
       scope :with_types, ->(list_types) { where(list_type: list_types) }
+      scope :positioned_at_or_after, ->(position) { where('position >= ?', position) }
 
       class << self
         def preload_preferences_for_user(lists, user)

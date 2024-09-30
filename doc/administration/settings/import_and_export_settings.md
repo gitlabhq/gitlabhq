@@ -83,6 +83,19 @@ To enable silent admin project and group file exports:
 1. Scroll to **Silent exports by admins**.
 1. Select the **Enabled** checkbox.
 
+## Allow contribution mapping to administrators
+
+> - Introduced in GitLab 17.5 [with flag](../../administration/feature_flags.md) named `importer_user_mapping`. Disabled by default.
+
+Allow mapping of imported user contributions to administrators.
+
+To allow mapping of imported user contributions to administrators:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > General**, then expand **Import and export settings**.
+1. Scroll to **Allow contribution mapping to administrators**.
+1. Select the **Enabled** checkbox.
+
 ## Max export size
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86124) in GitLab 15.0.

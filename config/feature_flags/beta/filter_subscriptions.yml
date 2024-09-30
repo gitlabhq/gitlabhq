@@ -1,0 +1,8 @@
+---
+name: filter_subscriptions
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134807
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/430074
+milestone: '17.5'
+type: beta
+group: group::project management
+default_enabled: false

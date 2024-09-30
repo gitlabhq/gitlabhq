@@ -241,6 +241,9 @@ starting.
 Reassigning contributions and membership to an incorrect user poses a security threat, because the user becomes a member
 of your group. They can, therefore, view information they should not be able to see.
 
+Reassigning contributions to users with administrator access is disabled by default, but you can
+[enable](../../../administration/settings/import_and_export_settings.md#allow-contribution-mapping-to-administrators) it.
+
 #### Request reassignment in UI
 
 Prerequisites:

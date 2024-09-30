@@ -1,5 +1,6 @@
 import { nextTick } from 'vue';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import ThResizable from '~/glql/components/common/th_resizable.vue';
 import IssuablePresenter from '~/glql/components/presenters/issuable.vue';
 import StatePresenter from '~/glql/components/presenters/state.vue';
 import TablePresenter from '~/glql/components/presenters/table.vue';
@@ -11,28 +12,29 @@ import { MOCK_FIELDS, MOCK_ISSUES } from '../../mock_data';
 describe('TablePresenter', () => {
   let wrapper;
 
-  const createWrapper = ({ data, config, ...moreProps }, mountFn = shallowMountExtended) => {
+  const createWrapper = async ({ data, config, ...moreProps }, mountFn = shallowMountExtended) => {
     wrapper = mountFn(TablePresenter, {
       provide: {
         presenter: new Presenter().init({ data, config }),
       },
       propsData: { data, config, ...moreProps },
     });
+
+    await nextTick();
   };
 
   const getCells = (row) => row.findAll('td').wrappers.map((td) => td.text());
 
-  it('renders header rows with sentence cased field names', () => {
-    createWrapper({ data: MOCK_ISSUES, config: { fields: MOCK_FIELDS } });
+  it('renders header rows with sentence cased field names', async () => {
+    await createWrapper({ data: MOCK_ISSUES, config: { fields: MOCK_FIELDS } });
 
-    const headerRow = wrapper.find('thead tr');
-    const headerCells = headerRow.findAll('th').wrappers.map((th) => th.text());
+    const headerCells = wrapper.findAllComponents(ThResizable).wrappers.map((th) => th.text());
 
     expect(headerCells).toEqual(['Title', 'Author', 'State', 'Description']);
   });
 
-  it('renders a row of items presented by appropriate presenters', () => {
-    createWrapper({ data: MOCK_ISSUES, config: { fields: MOCK_FIELDS } }, mountExtended);
+  it('renders a row of items presented by appropriate presenters', async () => {
+    await createWrapper({ data: MOCK_ISSUES, config: { fields: MOCK_FIELDS } }, mountExtended);
 
     const tableRow1 = wrapper.findByTestId('table-row-0');
     const tableRow2 = wrapper.findByTestId('table-row-1');
@@ -69,8 +71,8 @@ describe('TablePresenter', () => {
     ]);
   });
 
-  it('shows a "No data" message if the list of items provided is empty', () => {
-    createWrapper({ data: { nodes: [] }, config: { fields: MOCK_FIELDS } });
+  it('shows a "No data" message if the list of items provided is empty', async () => {
+    await createWrapper({ data: { nodes: [] }, config: { fields: MOCK_FIELDS } });
 
     expect(wrapper.text()).toContain('No data found for this query');
   });
@@ -102,7 +104,7 @@ describe('TablePresenter', () => {
     };
 
     beforeEach(async () => {
-      createWrapper({ data: MOCK_ISSUES, config: { fields: MOCK_FIELDS } }, mountExtended);
+      await createWrapper({ data: MOCK_ISSUES, config: { fields: MOCK_FIELDS } }, mountExtended);
 
       await triggerClick();
     });

@@ -89,6 +89,11 @@ RSpec.describe 'getting an issue list at root level', feature_category: :team_pl
   # we need to always provide at least one filter to the query so it doesn't fail
   let_it_be(:base_params) { { iids: issues.map { |issue| issue.iid.to_s } } }
 
+  let_it_be(:subscription) { create(:subscription, subscribable: issue_a, user: current_user, subscribed: true) }
+  let_it_be(:unsubscription) do
+    create(:subscription, subscribable: issue_b, user: current_user, subscribed: false)
+  end
+
   let(:issue_filter_params) { {} }
   let(:all_query_params) { base_params.merge(**issue_filter_params) }
   let(:fields) do
@@ -173,6 +178,8 @@ RSpec.describe 'getting an issue list at root level', feature_category: :team_pl
     let(:confidential_issues) { [issue_c, issue_e] }
     let(:non_confidential_issues) { [issue_a, issue_b, issue_d] }
     let(:public_non_confidential_issues) { [issue_a] }
+    let(:subscribed_issues) { [issue_a] }
+    let(:unsubscribed_issues) { [issue_b] }
 
     # sorting
     let(:data_path) { [:issues] }

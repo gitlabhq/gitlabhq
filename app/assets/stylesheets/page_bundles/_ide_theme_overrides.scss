@@ -179,7 +179,7 @@
       .avatar {
         color: var(--ide-text-color, $gl-text-color);
         background-color: var(--ide-highlight-background, $white);
-        border-color: var(--ide-highlight-background, rgba($black, $gl-avatar-border-opacity));
+        border-color: var(--ide-highlight-background, var(--gl-avatar-border-color-default));
       }
     }
   }

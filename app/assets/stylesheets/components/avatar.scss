@@ -68,7 +68,7 @@ $avatar-sizes: (
 .avatar-container {
   float: left;
   margin-right: $gl-padding;
-  border-radius: $avatar-radius;
+  border-radius: 50%;
 
   @each $size, $size-config in $avatar-sizes {
     &.s#{$size} {

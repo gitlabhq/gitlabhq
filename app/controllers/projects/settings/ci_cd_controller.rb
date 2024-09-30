@@ -8,8 +8,9 @@ module Projects
       NUMBER_OF_RUNNERS_PER_PAGE = 20
 
       layout 'project_settings'
-      before_action :authorize_admin_pipeline!, except: :show
+      before_action :authorize_admin_pipeline!, except: [:reset_cache, :show]
       before_action :authorize_show_cicd_settings!, only: :show
+      before_action :authorize_reset_cache!, only: :reset_cache
       before_action :check_builds_available!
       before_action :define_variables
 
@@ -78,6 +79,15 @@ module Projects
       end
 
       private
+
+      def authorize_reset_cache!
+        return if can_any?(current_user, [
+          :admin_pipeline,
+          :admin_runner
+        ], project)
+
+        access_denied!
+      end
 
       def authorize_show_cicd_settings!
         return if can_any?(current_user, [

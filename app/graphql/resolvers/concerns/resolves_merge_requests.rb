@@ -16,6 +16,7 @@ module ResolvesMergeRequests
       args[:include_subgroups] = true
     end
 
+    args.delete(:subscribed) if Feature.disabled?(:filter_subscriptions, current_user)
     rewrite_param_name(args, :reviewer_wildcard_id, :reviewer_id)
     rewrite_param_name(args, :assignee_wildcard_id, :assignee_id)
 

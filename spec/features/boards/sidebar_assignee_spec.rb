@@ -17,7 +17,7 @@ RSpec.describe 'Project issue boards sidebar assignee', :js,
   let!(:issue2)           { create(:labeled_issue, project: project, labels: [development, stretch], relative_position: 1) }
   let(:board)             { create(:board, project: project) }
   let!(:list)             { create(:list, board: board, label: development, position: 0) }
-  let(:card)              { find('.board:nth-child(2)').first('.board-card') }
+  let(:card)              { find('[data-testid="board-list"]:nth-child(2)').first('.board-card') }
 
   before do
     stub_licensed_features(multiple_issue_assignees: false)
@@ -56,7 +56,7 @@ RSpec.describe 'Project issue boards sidebar assignee', :js,
     end
 
     it 'removes the assignee' do
-      card_two = find('.board:nth-child(2)').find('.board-card:nth-child(2)')
+      card_two = find('[data-testid="board-list"]:nth-child(2)').find('.board-card:nth-child(2)')
       click_card(card_two)
 
       page.within(assignees_widget) do
@@ -107,7 +107,7 @@ RSpec.describe 'Project issue boards sidebar assignee', :js,
         expect(page).to have_content(assignee)
       end
 
-      page.within(find('.board:nth-child(2)')) do
+      page.within(find('[data-testid="board-list"]:nth-child(2)')) do
         find('.board-card:nth-child(2)').click
       end
 

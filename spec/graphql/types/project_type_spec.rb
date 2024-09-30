@@ -371,7 +371,8 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
         :milestone_title,
         :milestone_wildcard_id,
         :not,
-        :sort
+        :sort,
+        :subscribed
       )
     end
   end

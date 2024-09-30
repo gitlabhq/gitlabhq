@@ -242,6 +242,9 @@ export default {
           }),
       );
     },
+    isLastList(index) {
+      return this.boardListsToUse.length - 1 === index;
+    },
   },
 };
 </script>
@@ -269,14 +272,19 @@ export default {
         :highlighted-lists="highlightedLists"
         :data-draggable-item-type="$options.draggableItemTypes.list"
         :class="{ '!gl-hidden sm:!gl-inline-block': addColumnFormVisible }"
+        :last="isLastList(index)"
+        :list-query-variables="listQueryVariables"
+        :lists="boardListsById"
+        :can-admin-list="canAdminList"
+        @highlight-list="highlightList"
         @setActiveList="$emit('setActiveList', $event)"
         @setFilters="$emit('setFilters', $event)"
+        @addNewListAfter="$emit('setAddColumnFormVisibility', $event)"
       />
 
       <transition mode="out-in" name="slide" @after-enter="afterFormEnters">
-        <div v-if="!addColumnFormVisible" class="gl-inline-block gl-pl-2">
+        <div v-if="!addColumnFormVisible && canAdminList" class="gl-inline-block gl-pl-2">
           <board-add-new-column-trigger
-            v-if="canAdminList"
             :is-new-list-showing="addColumnFormVisible"
             @setAddColumnFormVisibility="$emit('setAddColumnFormVisibility', $event)"
           />

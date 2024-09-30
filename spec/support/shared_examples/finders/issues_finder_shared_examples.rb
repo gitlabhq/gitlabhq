@@ -821,6 +821,52 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
         end
       end
 
+      context 'filtering by subscribed' do
+        let_it_be(:subscribed_item) { create(factory, project: project1) }
+        let_it_be(:unsubscribed_item) { create(factory, project: project1) }
+        let_it_be(:regular_item) { create(factory, project: project1) }
+        let_it_be(:subscription) { create(:subscription, subscribable: subscribed_item, user: user, subscribed: true) }
+        let_it_be(:unsubscription) do
+          create(:subscription, subscribable: unsubscribed_item, user: user, subscribed: false)
+        end
+
+        context 'no filtering' do
+          it 'returns all items' do
+            expect(items)
+              .to contain_exactly(item1, item2, item3, item4, item5, subscribed_item, unsubscribed_item, regular_item)
+          end
+        end
+
+        context 'user filters for subscribed items' do
+          let(:params) { { subscribed: :explicitly_subscribed } }
+
+          it 'returns only subscribed items' do
+            expect(items).to contain_exactly(subscribed_item)
+          end
+        end
+
+        context 'user filters out subscribed items' do
+          let(:params) { { subscribed: :explicitly_unsubscribed } }
+
+          it 'returns only unsubscribed items' do
+            expect(items).to contain_exactly(unsubscribed_item)
+          end
+        end
+
+        context 'when filter_subscriptions FF is disabled' do
+          let(:params) { { subscribed: :explicitly_subscribed } }
+
+          before do
+            stub_feature_flags(filter_subscriptions: false)
+          end
+
+          it 'does not apply filter' do
+            expect(items)
+              .to contain_exactly(item1, item2, item3, item4, item5, subscribed_item, unsubscribed_item, regular_item)
+          end
+        end
+      end
+
       context 'filtering by item type' do
         let_it_be(:incident_item) { create(factory, :incident, project: project1) }
         let_it_be(:objective) { create(factory, :objective, project: project1) }

@@ -43,7 +43,7 @@ RSpec.describe 'User adds lists', :js, feature_category: :team_planning do
       select_label(group_label)
 
       expect(page).to have_selector('.board', text: group_label.title)
-      expect(find('.board:nth-child(2) .board-card')).to have_content(issue.title)
+      expect(find('[data-testid="board-list"]:nth-child(2) .board-card')).to have_content(issue.title)
     end
 
     it 'creates new list for Backlog and closed labels' do
@@ -60,9 +60,9 @@ RSpec.describe 'User adds lists', :js, feature_category: :team_planning do
       wait_for_requests
 
       expect(page).to have_selector('.board', text: closed.title)
-      expect(find('.board:nth-child(2) .board-header')).to have_content(backlog.title)
-      expect(find('.board:nth-child(3) .board-header')).to have_content(closed.title)
-      expect(find('.board:nth-child(4) .board-header')).to have_content('Closed')
+      expect(find('[data-testid="board-list"]:nth-child(2) .board-header')).to have_content(backlog.title)
+      expect(find('[data-testid="board-list"]:nth-child(3) .board-header')).to have_content(closed.title)
+      expect(find('[data-testid="board-list"]:nth-child(4) .board-header')).to have_content('Closed')
     end
   end
 

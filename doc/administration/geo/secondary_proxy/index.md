@@ -79,12 +79,12 @@ routing configurations. To create a traffic policy:
    1. Select **Connect to**, then select **New endpoint**.
    1. Choose **Type** `value` and fill it in with `<your **secondary** IP address>`.
 
-   ![Add traffic policy endpoints](img/single_url_add_traffic_policy_endpoints.png)
+   ![Add traffic policy endpoints](img/single_url_add_traffic_policy_endpoints_v14_5.png)
 
 1. Select **Create traffic policy**.
 1. Fill in **Policy record DNS name** with `gitlab`.
 
-   ![Create policy records with traffic policy](img/single_url_create_policy_records_with_traffic_policy.png)
+   ![Create policy records with traffic policy](img/single_url_create_policy_records_with_traffic_policy_v14_5.png)
 
 1. Select **Create policy records**.
 

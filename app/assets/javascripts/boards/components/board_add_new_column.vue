@@ -43,6 +43,11 @@ export default {
       type: Object,
       required: true,
     },
+    position: {
+      type: Number,
+      required: false,
+      default: null,
+    },
   },
   data() {
     return {
@@ -91,13 +96,14 @@ export default {
     },
   },
   methods: {
-    async createList({ labelId }) {
+    async createList({ labelId, position }) {
       try {
         await this.$apollo.mutate({
           mutation: createListMutations[this.issuableType].mutation,
           variables: {
             labelId,
             boardId: this.boardId,
+            position,
           },
           update: (
             store,
@@ -111,8 +117,20 @@ export default {
               query: listsQuery[this.issuableType].query,
               variables: this.listQueryVariables,
             });
-            const data = produce(sourceData, (draftData) => {
-              draftData[this.boardType].board.lists.nodes.push(list);
+            const data = produce(sourceData, (draft) => {
+              const lists = draft[this.boardType].board.lists.nodes;
+              if (position === null) {
+                lists.push({ ...list, position: lists.length });
+              } else {
+                const updatedLists = lists.map((l) => {
+                  if (l.position >= position) {
+                    return { ...l, position: l.position + 1 };
+                  }
+                  return l;
+                });
+                updatedLists.splice(position, 0, list);
+                draft[this.boardType].board.lists.nodes = updatedLists;
+              }
             });
             store.writeQuery({
               query: listsQuery[this.issuableType].query,
@@ -129,7 +147,7 @@ export default {
         });
       }
     },
-    addList() {
+    async addList() {
       if (!this.selectedLabel) {
         this.selectedIdValid = false;
         return;
@@ -141,8 +159,7 @@ export default {
         return;
       }
 
-      this.createList({ labelId: this.selectedId });
-
+      await this.createList({ labelId: this.selectedId, position: this.position });
       this.$emit('setAddColumnFormVisibility', false);
     },
 

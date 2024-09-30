@@ -244,6 +244,50 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
     end
   end
 
+  context 'when filtering by subscribed' do
+    let_it_be(:subscribed_item) { create(:work_item, project: project) }
+    let_it_be(:unsubscribed_item) { create(:work_item, project: project) }
+    let_it_be(:subscription) do
+      create(:subscription, subscribable: subscribed_item, user: current_user, subscribed: true)
+    end
+
+    let_it_be(:unsubscription) do
+      create(:subscription, subscribable: unsubscribed_item, user: current_user, subscribed: false)
+    end
+
+    it 'returns only subscribed items' do
+      post_graphql(query(subscribed: :EXPLICITLY_SUBSCRIBED), current_user: current_user)
+
+      expect(item_ids).to match_array([subscribed_item.to_global_id.to_s])
+    end
+
+    it 'returns only unsubscribed items' do
+      post_graphql(query(subscribed: :EXPLICITLY_UNSUBSCRIBED), current_user: current_user)
+
+      expect(item_ids).to match_array([unsubscribed_item.to_global_id.to_s])
+    end
+
+    it 'does not filter subscribed items' do
+      post_graphql(query, current_user: current_user)
+
+      expect(item_ids).to match_array([subscribed_item.to_global_id.to_s, unsubscribed_item.to_global_id.to_s,
+        item1.to_global_id.to_s, item2.to_global_id.to_s])
+    end
+
+    context 'when feature flag is disabled' do
+      before do
+        stub_feature_flags(filter_subscriptions: false)
+      end
+
+      it 'ignores the filter' do
+        post_graphql(query(subscribed: :EXPLICITLY_SUBSCRIBED), current_user: current_user)
+
+        expect(item_ids).to match_array([subscribed_item.to_global_id.to_s, unsubscribed_item.to_global_id.to_s,
+          item1.to_global_id.to_s, item2.to_global_id.to_s])
+      end
+    end
+  end
+
   describe 'sorting and pagination' do
     let(:data_path) { [:project, :work_items] }
 

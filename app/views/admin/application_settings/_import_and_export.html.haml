@@ -22,6 +22,12 @@
       - silent_admin_exports_label_text = safe_format(s_('AdminSettings|Silent exports by admins %{silent_admin_exports_link_start}%{icon}%{silent_admin_exports_link_end}'), tag_pair_silent_admin_exports, icon: sprite_icon('question-o'))
       = f.label :silent_admin_exports_enabled, silent_admin_exports_label_text, class: 'gl-font-bold'
       = f.gitlab_ui_checkbox_component :silent_admin_exports_enabled, s_('AdminSettings|Enabled')
+    - if Feature.enabled?(:importer_user_mapping, current_user)
+      .form-group
+        - tag_pair_allow_contribution_mapping_to_admins = tag_pair(link_to('', help_page_path('administration/settings/import_and_export_settings.md', anchor: 'allow-contribution-mapping-to-administrators'), target: '_blank', rel: 'noopener noreferrer'), :allow_contribution_mapping_to_admins_link_start, :allow_contribution_mapping_to_admins_link_end)
+        - allow_contribution_mapping_to_admins_label_text = safe_format(s_('AdminSettings|Allow contribution mapping to administrators %{allow_contribution_mapping_to_admins_link_start}%{icon}%{allow_contribution_mapping_to_admins_link_end}'), tag_pair_allow_contribution_mapping_to_admins, icon: sprite_icon('question-o'))
+        = f.label :allow_contribution_mapping_to_admins, allow_contribution_mapping_to_admins_label_text, class: 'gl-font-bold'
+        = f.gitlab_ui_checkbox_component :allow_contribution_mapping_to_admins, s_('AdminSettings|Enabled')
     .form-group
       = f.label :max_export_size, _('Maximum export size (MiB)'), class: 'label-light'
       = f.number_field :max_export_size, class: 'form-control gl-form-input', title: _('Maximum size of export files.'), data: { toggle: 'tooltip', container: 'body' }
