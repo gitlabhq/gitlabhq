@@ -312,6 +312,7 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
     let_it_be_with_refind(:project_runner) do
       create(
         :ci_runner, :project, :paused, :offline,
+        projects: [project1],
         description: 'Runner 3',
         locked: false,
         access_level: 1,
@@ -702,7 +703,7 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
   describe 'for multiple runners' do
     let_it_be(:project2) { create(:project, :test_repo) }
     let_it_be(:project_runner1) { create(:ci_runner, :project, projects: [project1, project2], description: 'Runner 1') }
-    let_it_be(:project_runner2) { create(:ci_runner, :project, projects: [], description: 'Runner 2') }
+    let_it_be(:project_runner2) { create(:ci_runner, :project, :without_projects, description: 'Runner 2') }
 
     let!(:job) { create(:ci_build, runner: project_runner1) }
 

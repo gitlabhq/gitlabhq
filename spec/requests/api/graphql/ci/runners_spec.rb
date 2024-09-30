@@ -9,7 +9,7 @@ RSpec.describe 'Query.runners', feature_category: :fleet_visibility do
   def create_ci_runner(version:, revision: nil, ip_address: nil, **args)
     runner_manager_args = { version: version, revision: revision, ip_address: ip_address }.compact
 
-    create(:ci_runner, :project, **args).tap do |runner|
+    create(:ci_runner, **args).tap do |runner|
       create(:ci_runner_machine, runner: runner, **runner_manager_args)
     end
   end
@@ -186,7 +186,7 @@ RSpec.describe 'Query.runners', feature_category: :fleet_visibility do
 
       context 'when filtered by creator' do
         let_it_be(:user) { create(:user) }
-        let_it_be(:runner_created_by_user) { create(:ci_runner, :project, creator: user) }
+        let_it_be(:runner_created_by_user) { create(:ci_runner, creator: user) }
 
         let(:query) do
           %(
@@ -202,7 +202,7 @@ RSpec.describe 'Query.runners', feature_category: :fleet_visibility do
           let(:creator) { user }
 
           before do
-            create(:ci_runner, :project, creator: create(:user)) # Should not be returned
+            create(:ci_runner, creator: create(:user)) # Should not be returned
           end
 
           it_behaves_like 'a working graphql query returning expected runners' do

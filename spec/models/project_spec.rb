@@ -8555,12 +8555,15 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   end
 
   shared_examples 'all_runners' do
-    let_it_be_with_refind(:project) { create(:project, group: create(:group)) }
+    let_it_be(:group) { create(:group) }
+    let_it_be_with_refind(:project) { create(:project, group: group) }
+    let_it_be(:other_group) { create(:group) }
+    let_it_be(:other_project) { create(:project) }
     let_it_be(:instance_runner) { create(:ci_runner, :instance) }
-    let_it_be(:group_runner) { create(:ci_runner, :group, groups: [project.group]) }
-    let_it_be(:other_group_runner) { create(:ci_runner, :group) }
+    let_it_be(:group_runner) { create(:ci_runner, :group, groups: [group]) }
+    let_it_be(:other_group_runner) { create(:ci_runner, :group, groups: [other_group]) }
     let_it_be(:project_runner) { create(:ci_runner, :project, projects: [project]) }
-    let_it_be(:other_project_runner) { create(:ci_runner, :project) }
+    let_it_be(:other_project_runner) { create(:ci_runner, :project, projects: [other_project]) }
 
     subject { project.all_runners }
 

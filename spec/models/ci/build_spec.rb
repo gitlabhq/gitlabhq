@@ -5565,7 +5565,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
     context 'when build has a project runner assigned' do
       before do
-        build.runner = create(:ci_runner, :project)
+        build.runner = create(:ci_runner, :project, projects: [project])
       end
 
       it 'is not a shared runner build' do

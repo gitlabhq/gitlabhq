@@ -5,6 +5,9 @@ require 'spec_helper'
 RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
   include StubGitlabCalls
 
+  let_it_be(:group) { create(:group) }
+  let_it_be(:project) { create(:project, group: group) }
+
   it_behaves_like 'having unique enum values'
 
   it_behaves_like 'it has loose foreign keys' do
@@ -24,7 +27,7 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
     # validate that at least groups association does not generate cross-DB
     # queries.
     it 'does not create a cross-database query' do
-      runner = create(:ci_runner, :group)
+      runner = create(:ci_runner, :group, groups: [group])
 
       with_cross_joins_prevented do
         expect(runner.groups.count).to eq(1)
@@ -34,7 +37,7 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
 
   describe '#owner_runner_namespace' do
     it 'considers the first group' do
-      runner = create(:ci_runner, :group)
+      runner = create(:ci_runner, :group, groups: [group])
 
       with_cross_joins_prevented do
         expect(runner.owner_runner_namespace.namespace_id).to eq(runner.groups.first.id)
@@ -43,7 +46,7 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
   end
 
   describe 'projects association' do
-    let(:runner) { create(:ci_runner, :project) }
+    let(:runner) { create(:ci_runner, :project, projects: [project]) }
 
     it 'does not create a cross-database query' do
       with_cross_joins_prevented do
@@ -126,11 +129,10 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
     end
 
     describe '#exactly_one_group' do
-      let(:group) { create(:group) }
       let(:runner) { create(:ci_runner, :group, groups: [group]) }
 
       it 'disallows assigning group if already assigned to a group' do
-        runner.runner_namespaces << create(:ci_runner_namespace)
+        runner.runner_namespaces << create(:ci_runner_namespace, runner: runner)
 
         expect(runner).not_to be_valid
         expect(runner.errors.full_messages).to include('Runner needs to be assigned to exactly one group')
@@ -138,11 +140,8 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
     end
 
     context 'runner_type validations' do
-      let_it_be(:group) { create(:group) }
-      let_it_be(:project) { create(:project) }
-
       it 'disallows assigning group to project_type runner' do
-        project_runner = build(:ci_runner, :project, groups: [group])
+        project_runner = build(:ci_runner, :project, :without_projects, groups: [group])
 
         expect(project_runner).not_to be_valid
         expect(project_runner.errors.full_messages).to include('Runner cannot have groups assigned')
@@ -222,7 +221,7 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
       end
 
       context 'when runner is not an instance type' do
-        let(:runner) { create(:ci_runner, :group) }
+        let(:runner) { create(:ci_runner, :group, groups: [group]) }
 
         subject { runner.allowed_plan_ids = [default_plan.id] }
 
@@ -269,8 +268,6 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
   end
 
   describe '.instance_type' do
-    let(:group) { create(:group) }
-    let(:project) { create(:project) }
     let!(:group_runner) { create(:ci_runner, :group, groups: [group]) }
     let!(:project_runner) { create(:ci_runner, :project, projects: [project]) }
     let!(:shared_runner) { create(:ci_runner, :instance) }
@@ -436,8 +433,7 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
   end
 
   describe '#only_for' do
-    let_it_be_with_reload(:runner) { create(:ci_runner, :project) }
-    let_it_be(:project) { runner.projects.first }
+    let_it_be_with_reload(:runner) { create(:ci_runner, :project, projects: [project]) }
 
     subject { runner.only_for?(project) }
 
@@ -460,15 +456,15 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
   end
 
   describe '#assign_to' do
-    let(:project) { create(:project) }
+    let_it_be(:project) { create(:project) }
 
-    subject { runner.assign_to(project) }
+    subject(:assign_to) { runner.assign_to(project) }
 
-    context 'with shared_runner' do
+    context 'with instance runner' do
       let(:runner) { create(:ci_runner, :instance) }
 
       it 'raises an error' do
-        expect { subject }
+        expect { assign_to }
           .to raise_error(ArgumentError, 'Transitioning an instance runner to a project runner is not supported')
       end
     end
@@ -478,17 +474,18 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
       let(:runner) { create(:ci_runner, :group, groups: [group]) }
 
       it 'raises an error' do
-        expect { subject }
+        expect { assign_to }
           .to raise_error(ArgumentError, 'Transitioning a group runner to a project runner is not supported')
       end
     end
 
     context 'with project runner' do
-      let(:other_project) { create(:project) }
+      let_it_be(:other_project) { create(:project) }
+
       let(:runner) { create(:ci_runner, :project, projects: [other_project]) }
 
       it 'assigns runner to project' do
-        expect(subject).to be_truthy
+        expect(assign_to).to be_truthy
 
         expect(runner).to be_project_type
         expect(runner.runner_projects.pluck(:project_id)).to contain_exactly(project.id, other_project.id)
@@ -1343,7 +1340,7 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
     context 'deduplicates on runner_type' do
       before do
         create_list(:ci_runner, 2, :instance)
-        create_list(:ci_runner, 2, :project)
+        create_list(:ci_runner, 2, :project, projects: [project])
       end
 
       it 'creates two matchers' do
@@ -2054,7 +2051,7 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
     subject { described_class.with_runner_type(runner_type) }
 
     let_it_be(:instance_runner) { create(:ci_runner, :instance) }
-    let_it_be(:group_runner) { create(:ci_runner, :group) }
+    let_it_be(:group_runner) { create(:ci_runner, :group, groups: [group]) }
     let_it_be(:project_runner) { create(:ci_runner, :project, :without_projects) }
 
     context 'with instance_type' do

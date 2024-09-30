@@ -64883,9 +64883,7 @@ msgid "function name"
 msgstr ""
 
 msgid "group"
-msgid_plural "groups"
-msgstr[0] ""
-msgstr[1] ""
+msgstr ""
 
 msgid "group access token"
 msgstr ""

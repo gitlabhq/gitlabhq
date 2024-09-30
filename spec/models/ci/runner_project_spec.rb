@@ -14,7 +14,8 @@ RSpec.describe Ci::RunnerProject, feature_category: :runner do
   context 'loose foreign key on ci_runner_projects.project_id' do
     it_behaves_like 'cleanup by a loose foreign key' do
       let!(:parent) { create(:project) }
-      let!(:model) { create(:ci_runner_project, project: parent) }
+      let!(:runner) { create(:ci_runner, :project, projects: [parent]) }
+      let(:model) { runner.runner_projects.first }
     end
   end
 
@@ -23,7 +24,7 @@ RSpec.describe Ci::RunnerProject, feature_category: :runner do
       create(:ci_runner, :project, projects: [create(:project)])
     end
 
-    it { is_expected.to validate_presence_of(:project).on([:create, :update]) }
+    it { is_expected.to validate_presence_of(:project) }
     it { is_expected.to validate_presence_of :runner }
     it { is_expected.to validate_uniqueness_of(:runner_id).scoped_to(:project_id) }
   end

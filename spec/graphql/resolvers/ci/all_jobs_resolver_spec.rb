@@ -84,8 +84,10 @@ RSpec.describe Resolvers::Ci::AllJobsResolver, feature_category: :continuous_int
             )
           end
 
+          let_it_be(:group) { create(:group) }
+          let_it_be(:group_runner) { create(:ci_runner, :group, groups: [group]) }
           let_it_be(:running_job_with_group_runner) do
-            create(:ci_build, :running, name: 'running_job_with_instance_runner', runner: create(:ci_runner, :group))
+            create(:ci_build, :running, name: 'running_job_with_instance_runner', runner: group_runner)
           end
 
           context 'with feature flag :admin_jobs_filter_runner_type enabled' do
