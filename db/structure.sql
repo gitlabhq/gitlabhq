@@ -16955,6 +16955,11 @@ CREATE SEQUENCE project_security_settings_project_id_seq
 
 ALTER SEQUENCE project_security_settings_project_id_seq OWNED BY project_security_settings.project_id;
 
+CREATE TABLE project_security_statistics (
+    project_id bigint NOT NULL,
+    vulnerability_count integer DEFAULT 0 NOT NULL
+);
+
 CREATE TABLE project_settings (
     project_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -25056,6 +25061,9 @@ ALTER TABLE ONLY project_security_exclusions
 
 ALTER TABLE ONLY project_security_settings
     ADD CONSTRAINT project_security_settings_pkey PRIMARY KEY (project_id);
+
+ALTER TABLE ONLY project_security_statistics
+    ADD CONSTRAINT project_security_statistics_pkey PRIMARY KEY (project_id);
 
 ALTER TABLE ONLY project_settings
     ADD CONSTRAINT project_settings_pkey PRIMARY KEY (project_id);

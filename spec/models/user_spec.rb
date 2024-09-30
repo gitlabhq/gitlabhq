@@ -1405,6 +1405,14 @@ RSpec.describe User, feature_category: :user_profile do
       end
     end
 
+    describe '.by_detumbled_emails' do
+      it 'finds the users with the same detumbled email address' do
+        user = create(:user, email: 'user+gitlab@example.com')
+
+        expect(described_class.by_detumbled_emails('user@example.com')).to contain_exactly(user)
+      end
+    end
+
     describe '.with_personal_access_tokens_expired_today' do
       let_it_be(:user1) { create(:user) }
       let_it_be(:expired_today) { create(:personal_access_token, user: user1, expires_at: Date.current) }
@@ -4058,6 +4066,18 @@ RSpec.describe User, feature_category: :user_profile do
         confirmed_email.email,
         original_email
       )
+    end
+  end
+
+  describe '#verified_detumbled_emails' do
+    let_it_be(:user) { create(:user, email: 'user+1@example.com') }
+
+    it 'returns only confirmed unique detumbled emails' do
+      create(:email, :confirmed,  email: 'user+2@example.com', user: user)
+      create(:email, :confirmed,  email: 'other_user+1@example.com', user: user)
+      create(:email, user: user)
+
+      expect(user.verified_detumbled_emails).to contain_exactly('user@example.com', 'other_user@example.com')
     end
   end
 

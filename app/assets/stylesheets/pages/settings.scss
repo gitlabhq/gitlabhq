@@ -72,7 +72,7 @@ $sticky-header-z-index: 98;
 .settings-sticky-footer {
   position: sticky;
   z-index: $sticky-header-z-index;
-  background: $body-bg;
+  @apply gl-bg-default;
 }
 
 .settings-sticky-header {
@@ -84,7 +84,7 @@ $sticky-header-z-index: 98;
     height: $gl-padding-8;
     position: sticky;
     top: calc(#{$calc-application-header-height} + 36px);
-    box-shadow: 0 1px 0 $gray-100;
+    box-shadow: 0 1px 0 var(--gl-border-color-default);
   }
 }
 
@@ -92,13 +92,13 @@ $sticky-header-z-index: 98;
   position: sticky;
   padding: $gl-padding-12 $gl-padding $gl-padding-8;
   margin: #{-$gl-padding} #{-$gl-padding} 0;
-  background: $body-bg;
+  @apply gl-bg-default;
 }
 
 .settings-sticky-footer {
   bottom: 0;
   padding: $gl-padding-8 0;
-  box-shadow: 0 -1px 0 $gray-100;
+  box-shadow: 0 -1px 0 var(--gl-border-color-default);
 }
 
 // Header shouldn't be sticky if only one section on page

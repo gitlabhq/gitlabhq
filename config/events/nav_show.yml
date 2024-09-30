@@ -1,0 +1,18 @@
+---
+description: tracks when a user sees the sidebar navigation.
+action: nav_show
+product_group: personal_productivity
+milestone: '16.2'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124194
+distributions:
+  - ce
+  - ee
+tiers:
+  - free
+  - premium
+  - ultimate
+additional_properties:
+  label:
+    description: Label on how sidebar is shown with browser resize, toggle button etc.
+  property:
+    description: name of the sidebar(nav_sidebar).

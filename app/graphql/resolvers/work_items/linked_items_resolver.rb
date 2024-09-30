@@ -10,8 +10,8 @@ module Resolvers
       argument :filter, Types::WorkItems::RelatedLinkTypeEnum,
         required: false,
         description: "Filter by link type. " \
-                     "Supported values: #{Types::WorkItems::RelatedLinkTypeEnum.values.keys.to_sentence}. " \
-                     'Returns all types if omitted.'
+          "Supported values: #{Types::WorkItems::RelatedLinkTypeEnum.values.keys.to_sentence}. " \
+          'Returns all types if omitted.'
 
       type Types::WorkItems::LinkedItemType.connection_type, null: true
 

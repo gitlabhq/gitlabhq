@@ -97,9 +97,12 @@ module QA
         def push_test_metrics_to_gcs
           init_gcs_client! # init client and exit early if mandatory configuration is missing
           retry_on_exception(sleep_interval: 30, message: 'Failed to push test metrics to GCS') do
-            gcs_client.put_object(gcs_bucket, metrics_file_name(prefix: 'test',
-              postfix: "-#{env('CI_PIPELINE_ID') || 'local'}"), execution_data.to_json,
-              force: true, content_type: 'application/json')
+            gcs_client.put_object(
+              gcs_bucket,
+              metrics_file_name(prefix: 'test', postfix: metrics_filename_postfix),
+              execution_data.to_json,
+              force: true, content_type: 'application/json'
+            )
 
             log(:info, "Pushed #{execution_data.length} test execution entries to GCS")
           end
@@ -140,10 +143,12 @@ module QA
         def push_fabrication_metrics_gcs(data)
           init_gcs_client! # init client and exit early if mandatory configuration is missing
           retry_on_exception(sleep_interval: 30, message: 'Failed to push resource fabrication metrics to GCS') do
-            gcs_client.put_object(gcs_bucket,
-              metrics_file_name(prefix: 'fabrication',
-                postfix: "-#{env('CI_PIPELINE_ID') || 'local'}"),
-              data.to_json, force: true, content_type: 'application/json')
+            gcs_client.put_object(
+              gcs_bucket,
+              metrics_file_name(prefix: 'fabrication', postfix: metrics_filename_postfix),
+              data.to_json, force: true,
+              content_type: 'application/json'
+            )
 
             log(:info, "Pushed #{data.length} resource fabrication entries to GCS")
           end
@@ -184,6 +189,17 @@ module QA
         def metrics_file_name(prefix:, postfix: '')
           "#{prefix}-metrics-#{env('CI_JOB_NAME_SLUG') || 'local'}" \
             "#{retry_failed_specs? ? "-retry-#{rspec_retried?}" : ''}#{postfix}.json"
+        end
+
+        # Postfix for metrics filenames
+        #
+        # @return [String]
+        def metrics_filename_postfix
+          @metrics_filename_postfix ||= if QA::Runtime::Env.parallel_run?
+                                          "-#{Process.pid}-#{env('CI_PIPELINE_ID') || 'local'}"
+                                        else
+                                          "-#{env('CI_PIPELINE_ID') || 'local'}"
+                                        end
         end
 
         # Transform example to influxdb compatible metrics data

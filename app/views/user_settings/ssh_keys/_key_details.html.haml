@@ -50,8 +50,8 @@
           %tbody
             %tr
               %th= _('MD5')
-              %td.gl-font-monospace.key-fingerprint= @key.fingerprint
+              %td.gl-font-monospace= @key.fingerprint
             - if @key.fingerprint_sha256.present?
               %tr
                 %th= _('SHA256')
-                %td.gl-font-monospace.key-fingerprint= @key.fingerprint_sha256
+                %td.gl-font-monospace= @key.fingerprint_sha256

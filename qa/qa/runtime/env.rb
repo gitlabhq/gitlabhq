@@ -2,6 +2,7 @@
 
 require 'active_support/deprecation'
 require 'uri'
+require 'etc'
 
 module QA
   module Runtime
@@ -732,6 +733,16 @@ module QA
       # @return [Boolean]
       def rspec_retried?
         enabled?(ENV['QA_RSPEC_RETRIED'], default: false)
+      end
+
+      def parallel_processes
+        ENV.fetch('QA_PARALLEL_PROCESSES') do
+          [Etc.nprocessors / 2, 1].max
+        end.to_i
+      end
+
+      def parallel_run?
+        enabled?(ENV["QA_PARALLEL_RUN"], default: false)
       end
 
       private

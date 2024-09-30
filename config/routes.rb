@@ -270,11 +270,14 @@ InitializerConnections.raise_if_new_database_connection do
 
     resources :groups, only: [:index, :new, :create]
 
+    get '/-/g/:id' => 'groups/redirect#redirect_from_id'
+
     draw :group
 
     resources :projects, only: [:index, :new, :create]
 
     get '/projects/:id' => 'projects/redirect#redirect_from_id'
+    get '/-/p/:id' => 'projects/redirect#redirect_from_id'
 
     draw :git_http
     draw :api

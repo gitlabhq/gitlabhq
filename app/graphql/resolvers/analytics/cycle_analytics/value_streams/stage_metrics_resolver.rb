@@ -10,7 +10,7 @@ module Resolvers
           argument :timeframe, Types::TimeframeInputType,
             required: true,
             description: 'Aggregation timeframe. Filters the issue or the merge request creation time for FOSS ' \
-                         'projects, and the end event timestamp for licensed projects or groups.'
+              'projects, and the end event timestamp for licensed projects or groups.'
 
           argument :assignee_usernames, [GraphQL::Types::String],
             required: false,

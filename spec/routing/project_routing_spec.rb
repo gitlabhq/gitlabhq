@@ -75,6 +75,7 @@ RSpec.describe 'project routing', feature_category: :groups_and_projects do
   describe Projects::RedirectController, 'routing' do
     it 'to #redirect_from_id' do
       expect(get('/projects/1')).to route_to('projects/redirect#redirect_from_id', id: '1')
+      expect(get('/-/p/1')).to route_to('projects/redirect#redirect_from_id', id: '1')
     end
   end
 

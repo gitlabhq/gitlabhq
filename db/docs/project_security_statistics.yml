@@ -1,0 +1,12 @@
+---
+table_name: project_security_statistics
+classes:
+- Security::ProjectStatistics
+feature_categories:
+- vulnerability_management
+description: Stores security-related statistics
+introduced_by_url:
+milestone: '17.5'
+gitlab_schema: gitlab_sec
+sharding_key:
+  project_id: projects

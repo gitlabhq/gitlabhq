@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, Self-managed
 **Status:** Beta
 
 > - Introduced in GitLab 15.4 as an [experiment](../../policy/experiment-beta-support.md#experiment) feature [with a flag](../../administration/feature_flags.md) named `cube_api_proxy`. Disabled by default.
@@ -23,6 +23,7 @@ DETAILS:
 > - [Enabled on self-managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/444345) in GitLab 16.11.
 > - Feature flag `product_analytics_dashboards` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/454059) in GitLab 17.1.
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167192) to beta and feature flag `product_analytics_admin_settings` added in GitLab 17.5.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167296) to beta and feature flag `product_analytics_features` added in GitLab 17.5.
 
 FLAG:
 The availability of this feature is controlled by a feature flag.

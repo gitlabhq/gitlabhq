@@ -6,13 +6,15 @@ RSpec.describe "Projects::RedirectController requests", feature_category: :group
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:private_project) { create(:project, :private) }
+  let_it_be(:private_project2) { create(:project, :private) }
   let_it_be(:public_project) { create(:project, :public) }
   let_it_be(:user) { create(:user, developer_of: private_project) }
 
-  describe 'GET redirect_from_id' do
+  shared_examples 'project redirect' do |endpoint_format|
     where(:authenticated, :project, :is_found) do
       true  | ref(:private_project)        | true
       false | ref(:private_project)        | false
+      true  | ref(:private_project2)       | false
       true  | ref(:public_project)         | true
       false | ref(:public_project)         | true
       true  | build(:project, id: 0)       | false
@@ -22,7 +24,7 @@ RSpec.describe "Projects::RedirectController requests", feature_category: :group
       before do
         sign_in(user) if authenticated
 
-        get "/projects/#{project.id}"
+        get format(endpoint_format, id: project.id)
       end
 
       if params[:is_found]
@@ -36,6 +38,11 @@ RSpec.describe "Projects::RedirectController requests", feature_category: :group
         end
       end
     end
+  end
+
+  describe 'GET redirect_from_id' do
+    it_behaves_like 'project redirect', '/projects/%{id}'
+    it_behaves_like 'project redirect', '/-/p/%{id}'
   end
 
   # This is a regression test for https://gitlab.com/gitlab-org/gitlab/-/issues/351058

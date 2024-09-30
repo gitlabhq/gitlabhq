@@ -22,6 +22,7 @@ module Resolvers
         Gitlab::IssuablesCountForState.new(
           finder(args),
           resource_parent,
+          fast_fail: true,
           store_in_redis_cache: true
         )
       end

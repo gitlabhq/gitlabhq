@@ -13,7 +13,7 @@ module Mutations
                TodoableID,
                required: false,
                description: "Global ID of the to-do item's parent. Issues, merge requests, designs, and epics are supported. " \
-                            "If argument is omitted, all pending to-do items of the current user are marked as done."
+                 "If argument is omitted, all pending to-do items of the current user are marked as done."
 
       field :todos, [::Types::TodoType],
             null: false,

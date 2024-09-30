@@ -57,7 +57,7 @@ RSpec.describe Import::PendingReassignmentAlertPresenter, :aggregate_failures, f
 
     it 'presents the import values' do
       expect(presenter.show_alert?).to eq(true)
-      expect(presenter.group_links).to eq("<a href=\"/groups/blink/-/group_members\">blink</a>")
+      expect(presenter.group_links).to eq("<a href=\"/groups/blink/-/group_members?tab=placeholders\">blink</a>")
       expect(presenter.groups_awaiting_placeholder_assignment).to match_array(namespaces)
       expect(presenter.group_names).to eq('blink')
       expect(presenter.source_hostname).to eq('gitlab.example')
@@ -86,9 +86,9 @@ RSpec.describe Import::PendingReassignmentAlertPresenter, :aggregate_failures, f
     it 'presents the import values' do
       expect(presenter.show_alert?).to eq(true)
       expect(presenter.group_links).to eq(
-        "<a href=\"/groups/blink/-/group_members\">blink</a>, " \
-          "<a href=\"/groups/marquee/-/group_members\">marquee</a>, " \
-          "and <a href=\"/groups/details/-/group_members\">details</a>"
+        "<a href=\"/groups/blink/-/group_members?tab=placeholders\">blink</a>, " \
+          "<a href=\"/groups/marquee/-/group_members?tab=placeholders\">marquee</a>, " \
+          "and <a href=\"/groups/details/-/group_members?tab=placeholders\">details</a>"
       )
       expect(presenter.groups_awaiting_placeholder_assignment).to match_array(namespaces)
       expect(presenter.group_names).to eq('blink, marquee, and details')

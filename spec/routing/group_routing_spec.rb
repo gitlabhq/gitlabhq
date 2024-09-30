@@ -153,4 +153,10 @@ RSpec.describe "Groups", "routing", feature_category: :groups_and_projects do
       end
     end
   end
+
+  describe Groups::RedirectController, 'routing' do
+    it 'to #redirect_from_id' do
+      expect(get('/-/g/1')).to route_to('groups/redirect#redirect_from_id', id: '1')
+    end
+  end
 end

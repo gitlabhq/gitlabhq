@@ -32,7 +32,7 @@ module Resolvers
         GraphQL::Types::Boolean,
         required: false,
         description: 'Filter for confidential issues. If "false", excludes confidential issues. ' \
-                     'If "true", returns only confidential issues.'
+          'If "true", returns only confidential issues.'
       argument :created_after, Types::TimeType,
         required: false,
         description: 'Issues created after the date.'
@@ -69,7 +69,7 @@ module Resolvers
       argument :my_reaction_emoji, GraphQL::Types::String,
         required: false,
         description: 'Filter by reaction emoji applied by the current user. ' \
-                     'Wildcard values "NONE" and "ANY" are supported.'
+          'Wildcard values "NONE" and "ANY" are supported.'
       argument :not, Types::Issues::NegatedIssueFilterInputType,
         description: 'Negated arguments.',
         required: false

@@ -199,7 +199,7 @@ client.get_latest_versions(model_name)
 **Notes**
 
 - Argument `stages` is ignored.
-- Versions are ordered by last created.
+- Versions are ordered by highest semantic version.
 
 #### Loading a model version
 

@@ -613,6 +613,9 @@ class User < ApplicationRecord
   end
   scope :by_user_email, ->(emails) { iwhere(email: Array(emails)) }
   scope :by_emails, ->(emails) { joins(:emails).where(emails: { email: Array(emails).map(&:downcase) }) }
+  scope :by_detumbled_emails, ->(detumbled_emails) do
+    joins(:emails).where(emails: { detumbled_email: Array(detumbled_emails) })
+  end
   scope :for_todos, ->(todos) { where(id: todos.select(:user_id).distinct) }
   scope :with_emails, -> { preload(:emails) }
   scope :with_dashboard, ->(dashboard) { where(dashboard: dashboard) }
@@ -1733,6 +1736,10 @@ class User < ApplicationRecord
     verified_emails << private_commit_email if include_private_email
     verified_emails.concat(emails.confirmed.pluck(:email))
     verified_emails.uniq
+  end
+
+  def verified_detumbled_emails
+    emails.distinct.confirmed.pluck(:detumbled_email).compact
   end
 
   def public_verified_emails

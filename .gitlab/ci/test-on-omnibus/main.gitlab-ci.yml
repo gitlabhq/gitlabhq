@@ -513,6 +513,21 @@ ai-gateway-no-license:
     - if: $QA_SUITES =~ /Test::Integration::AiGatewayNoLicense/
     - !reference [.rules:test:manual, rules]
 
+# ========== continuous-vulnerability-scanning ===========
+
+continuous-vulnerabiity-scanning:
+  extends:
+    - .qa
+    - .failure-videos
+  variables:
+    QA_SCENARIO: Test::Integration::ContinuousVulnerabilityScanning
+    QA_MOCK_GITHUB: "true"
+  rules:
+    - !reference [.rules:test:ee-only, rules]
+    - !reference [.rules:test:qa, rules]
+    - if: $QA_SUITES =~ /Test::Integration::ContinuousVulnerabilityScanning/
+    - !reference [.rules:test:manual, rules]
+
 # ------------------------------------------
 # Update jobs
 # ------------------------------------------

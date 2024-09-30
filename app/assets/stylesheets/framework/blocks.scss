@@ -53,7 +53,7 @@
   }
 
   &.content-component-block {
-    background-color: $body-bg;
+    @apply gl-bg-default;
   }
 
   .title {

@@ -2424,6 +2424,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: anti_abuse_ban_duplicate_users
+  :worker_name: AntiAbuse::BanDuplicateUsersWorker
+  :feature_category: :instance_resiliency
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: anti_abuse_spam_abuse_events
   :worker_name: AntiAbuse::SpamAbuseEventsWorker
   :feature_category: :instance_resiliency

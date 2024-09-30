@@ -2,6 +2,7 @@
 
 require 'rspec/core'
 require 'rspec/expectations'
+require 'tempfile'
 
 module QA
   module Specs
@@ -47,51 +48,57 @@ module QA
       end
 
       def perform
-        args = []
-        args.push('--tty') if tty
-        args.push(rspec_tags)
-        args.push(options)
+        args = build_initial_args
+        # use options from default .rspec file for metadata only runs
+        configure_default_formatters!(args) unless metadata_run?
+        args.push(DEFAULT_TEST_PATH_ARGS) unless custom_test_paths?
 
-        unless Runtime::Env.knapsack? || options.any? { |opt| opt.include?('features') }
-          args.push(DEFAULT_TEST_PATH_ARGS)
+        run_rspec(args)
+      end
+
+      private
+
+      delegate :rspec_retried?, :parallel_run?, to: Runtime::Env
+
+      def build_initial_args
+        [].tap do |args|
+          args.push('--tty') if tty
+          args.push(rspec_tags)
+          args.push(options)
         end
+      end
 
-        if Runtime::Env.knapsack?
-          KnapsackRunner.run(args.flatten) { |status| abort if status.nonzero? }
-        elsif Runtime::Scenario.attributes[:parallel]
-          ParallelRunner.run(args.flatten)
-        elsif Runtime::Scenario.attributes[:loop]
-          LoopRunner.run(args.flatten)
-        elsif Runtime::Scenario.attributes[:count_examples_only]
+      def run_rspec(args)
+        if Runtime::Scenario.attributes[:count_examples_only]
           count_examples_only(args)
         elsif Runtime::Scenario.attributes[:test_metadata_only]
           test_metadata_only(args)
+        elsif Runtime::Env.knapsack?
+          KnapsackRunner.run(args.flatten, parallel: parallel_run?) { |status| abort if status.nonzero? }
+        elsif !rspec_retried? && parallel_run?
+          ParallelRunner.run(args.flatten)
+        elsif Runtime::Scenario.attributes[:loop]
+          LoopRunner.run(args.flatten)
         else
           RSpec::Core::Runner.run(args.flatten, *DEFAULT_STD_ARGS).tap { |status| abort if status.nonzero? }
         end
       end
 
-      private
-
       def count_examples_only(args)
         args.unshift('--dry-run')
         out = StringIO.new
+        err = StringIO.new
 
-        RSpec::Core::Runner.run(args.flatten, $stderr, out).tap do |status|
-          abort if status.nonzero?
+        total_examples = Tempfile.open('test-metadata.json') do |file|
+          RSpec.configure { |config| config.add_formatter(QA::Support::JsonFormatter, file.path) }
+          RSpec::Core::Runner.run(args.flatten, err, out).tap { |status| abort if status.nonzero? }
+
+          JSON.load_file(file, symbolize_names: true).dig(:summary, :example_count)
         end
 
-        begin
-          total_examples = out.string.match(/(\d+) examples?,/)[1]
-        rescue StandardError
-          raise RegexMismatchError, 'Rspec output did not match regex'
-        end
-
-        filename = build_filename
-
-        File.open(filename, 'w') { |f| f.write(total_examples) } if total_examples.to_i > 0
-
-        $stdout.puts total_examples
+        puts total_examples
+      rescue StandardError => e
+        raise e, "Failed to detect example count, error: '#{e}'.\nOut: '#{out.string}'\nErr: #{err.string}"
       end
 
       def test_metadata_only(args)
@@ -111,23 +118,28 @@ module QA
         $stdout.puts "Saved to file: #{output_file}"
       end
 
-      def build_filename
-        filename = Runtime::Scenario.klass.split('::').last(3).join('_').downcase
+      def configure_default_formatters!(args)
+        default_formatter_file_name = "tmp/rspec-#{ENV['CI_JOB_ID'] || 'local'}-retried-#{rspec_retried?}"
+        filename = if parallel_run?
+                     rspec_retried? ? default_formatter_file_name : "#{default_formatter_file_name}-$TEST_ENV_NUMBER"
+                   else
+                     default_formatter_file_name
+                   end
 
-        tags = []
-        tag_opts = %w[--tag -t]
-        options.reduce do |before, after|
-          tags << after if tag_opts.include?(before)
-          after
+        args.push("--format", "documentation") unless args.flatten.include?("documentation")
+        { "QA::Support::JsonFormatter" => "json", "RspecJunitFormatter" => "xml" }.each do |formatter, extension|
+          next if args.flatten.include?(formatter)
+
+          args.push("--format", formatter, "--out", "#{filename}.#{extension}")
         end
-        tags = tags.compact.join('_')
+      end
 
-        filename.concat("_#{tags}") unless tags.empty?
+      def custom_test_paths?
+        Runtime::Env.knapsack? || options.any? { |opt| opt.include?('features') }
+      end
 
-        filename.concat('.txt')
-
-        FileUtils.mkdir_p('no_of_examples')
-        File.join('no_of_examples', filename)
+      def metadata_run?
+        Runtime::Scenario.attributes[:count_examples_only] || Runtime::Scenario.attributes[:test_metadata_only]
       end
     end
   end

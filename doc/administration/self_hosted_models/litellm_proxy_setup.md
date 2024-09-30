@@ -4,6 +4,7 @@ group: Custom Models
 description: Self Hosted model setup with an OpenAI Proxy Server (LiteLLM)
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
+
 # Set up a self-hosted large language model with LiteLLM
 
 [LiteLLM](https://www.litellm.ai/) is an OpenAI proxy server. You can use LiteLLM to simplify the integration with different large language models (LLMs) by leveraging the OpenAI API spec. Use LiteLLM to easily switch between different LLMs.

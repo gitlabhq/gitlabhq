@@ -92,6 +92,19 @@ RSpec.describe UserCustomAttribute, feature_category: :user_profile do
     end
   end
 
+  describe '.set_auto_banned_by' do
+    let_it_be(:user) { create(:user) }
+
+    subject { described_class.set_auto_banned_by(user: user, reason: 'testing') }
+
+    it 'adds the auto_banned_by key to user custom attributes' do
+      subject
+
+      custom_attribute = user.custom_attributes.by_key(UserCustomAttribute::AUTO_BANNED_BY).first
+      expect(custom_attribute.value).to eq('testing')
+    end
+  end
+
   describe '#upsert_custom_attributes' do
     subject { described_class.upsert_custom_attributes(custom_attributes) }
 

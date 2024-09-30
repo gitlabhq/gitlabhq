@@ -47,6 +47,7 @@ The Repository X-Ray searches a maximum of two directory levels from the reposit
 | Java       | Gradle          | `build.gradle`                   | 17.4 or later  |
 | Java       | Maven           | `pom.xml`                        | 17.4 or later  |
 | Kotlin     | Gradle          | `build.gradle.kts`               | 17.5 or later  |
+| PHP        | Composer        | `composer.lock`                  | 17.5 or later  |
 | Python     | Conda           | `environment.yml`                | 17.5 or later  |
 | Python     | Pip             | `requirements.txt`               | 17.5 or later  |
 | Python     | Poetry          | `poetry.lock`, `pyproject.toml`  | 17.5 or later  |

@@ -1,0 +1,18 @@
+---
+description: tracks when a user hovers over or partially opens the sidebar to preview its contents without fully expanding it.
+action: nav_peek
+product_group: personal_productivity
+milestone: '16.2'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124194
+distributions:
+  - ce
+  - ee
+tiers:
+  - free
+  - premium
+  - ultimate
+additional_properties:
+  label:
+    description: nav_hover
+  property:
+    description: name of the sidebar(nav_sidebar).

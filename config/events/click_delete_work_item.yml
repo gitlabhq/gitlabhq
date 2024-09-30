@@ -1,0 +1,13 @@
+---
+description: tracks when a user deletes the work item.
+action: click_delete_work_item
+product_group: project_management
+milestone: '15.0'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86128
+distributions:
+  - ce
+  - ee
+tiers:
+  - free
+  - premium
+  - ultimate

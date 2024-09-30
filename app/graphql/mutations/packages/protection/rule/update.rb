@@ -7,8 +7,8 @@ module Mutations
         class Update < ::Mutations::BaseMutation
           graphql_name 'UpdatePackagesProtectionRule'
           description 'Updates a package protection rule to restrict access to project packages. ' \
-                      'You can prevent users without certain permissions from altering packages. ' \
-                      'Available only when feature flag `packages_protected_packages` is enabled.'
+            'You can prevent users without certain permissions from altering packages. ' \
+            'Available only when feature flag `packages_protected_packages` is enabled.'
 
           authorize :admin_package
 
@@ -24,7 +24,7 @@ module Mutations
             alpha: { milestone: '16.6' },
             description:
             'Package name protected by the protection rule. For example, `@my-scope/my-package-*`. ' \
-            'Wildcard character `*` allowed.'
+              'Wildcard character `*` allowed.'
 
           argument :package_type,
             Types::Packages::Protection::RulePackageTypeEnum,

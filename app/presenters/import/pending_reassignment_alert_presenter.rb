@@ -55,7 +55,7 @@ module Import
       groups_awaiting_placeholder_assignment.collect do |namespace|
         placeholders << "%{group_#{namespace.id}_link_start}#{namespace.name}%{group_#{namespace.id}_link_end}"
         tag_pairs << tag_pair(
-          tag.a(href: group_group_members_path(namespace)),
+          tag.a(href: group_group_members_path(namespace, tab: 'placeholders')),
           :"group_#{namespace.id}_link_start",
           :"group_#{namespace.id}_link_end"
         )

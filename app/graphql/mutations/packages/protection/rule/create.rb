@@ -7,7 +7,7 @@ module Mutations
         class Create < ::Mutations::BaseMutation
           graphql_name 'CreatePackagesProtectionRule'
           description 'Creates a protection rule to restrict access to project packages. ' \
-                      'Available only when feature flag `packages_protected_packages` is enabled.'
+            'Available only when feature flag `packages_protected_packages` is enabled.'
 
           include FindsProject
 

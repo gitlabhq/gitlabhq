@@ -46,7 +46,7 @@ $diff-file-header: 41px;
         left: -11px;
         width: 10px;
         height: calc(100% + 1px);
-        background: $body-bg;
+        @apply gl-bg-default;
         pointer-events: none;
       }
 
