@@ -200,7 +200,7 @@ Prerequisites:
 WARNING:
 If you remove a fork relationship, you can't send merge requests to the source.
 If anyone has forked your project, their fork also loses the relationship.
-To restore the fork relationship, [use the API](../../../api/projects.md#create-a-forked-fromto-relation-between-existing-projects).
+To restore the fork relationship, [use the API](../../../api/projects.md#create-a-fork-relationship-between-projects).
 
 To remove a fork relationship:
 

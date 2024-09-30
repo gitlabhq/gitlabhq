@@ -10,11 +10,12 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-Interact with [projects](../user/project/index.md) by using the REST API.
+Manage [projects](../user/project/index.md) by using the REST API.
 
-NOTE:
-Users with any [default role](../user/permissions.md#roles) can read project properties with the Projects API. Only
-users with the Owner or Maintainer role can edit project properties in the UI or with the API.
+Users with:
+
+- Any [default role](../user/permissions.md#roles) on a project can read the project's properties.
+- The Owner or Maintainer role on a project can also edit the project's properties.
 
 ## Project visibility level
 
@@ -1524,9 +1525,9 @@ Example response:
 
 Creates a new project owned by the authenticated user.
 
-If your HTTP repository isn't publicly accessible, add authentication information
-to the URL `https://username:password@gitlab.company.com/group/project.git`,
-where `password` is a public access key with the `api` scope enabled.
+If your HTTP repository isn't publicly accessible, add authentication information to the URL
+`https://username:password@gitlab.company.com/group/project.git`, where `password` is a public access key with the `api`
+scope enabled.
 
 ```plaintext
 POST /projects
@@ -1585,9 +1586,9 @@ Supported general project attributes:
 | `show_default_award_emojis`                        | boolean | No                             | Show default emoji reactions. |
 | `snippets_enabled`                                 | boolean | No                             | _(Deprecated)_ Enable snippets for this project. Use `snippets_access_level` instead. |
 | `squash_option`                                    | string  | No                             | One of `never`, `always`, `default_on`, or `default_off`. |
-| `tag_list`                                         | array   | No                             | _([Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/328226) in GitLab 14.0)_ The list of tags for a project; put array of tags, that should be finally assigned to a project. Use `topics` instead. |
+| `tag_list`                                         | array   | No                             | The list of tags for a project; put array of tags, that should be finally assigned to a project. [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/328226) in GitLab 14.0. Use `topics` instead. |
 | `template_name`                                    | string  | No                             | When used without `use_custom_template`, name of a [built-in project template](../user/project/index.md#create-a-project-from-a-built-in-template). When used with `use_custom_template`, name of a custom project template. |
-| `template_project_id`                              | integer | No                             | When used with `use_custom_template`, project ID of a custom project template. Using a project ID is preferable to using `template_name` since `template_name` may be ambiguous. Premium and Ultimate only. |
+| `template_project_id`                              | integer | No                             | When used with `use_custom_template`, project ID of a custom project template. Using a project ID is preferable to using `template_name` because `template_name` can be ambiguous. Premium and Ultimate only. |
 | `topics`                                           | array   | No                             | The list of topics for a project; put array of topics, that should be finally assigned to a project. |
 | `use_custom_template`                              | boolean | No                             | Use either custom [instance](../administration/custom_project_templates.md) or [group](../user/group/custom_project_templates.md) (with `group_with_project_templates_id`) project template. Premium and Ultimate only. |
 | `visibility`                                       | string  | No                             | See [project visibility level](#project-visibility-level). |
@@ -1638,11 +1639,15 @@ curl --request POST --header "PRIVATE-TOKEN: <your-token>" \
 > - `operations_access_level` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/385798) in GitLab 16.0.
 > - `model_registry_access_level` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412734) in GitLab 16.7.
 
-Creates a new project owned by the specified user. Available only for administrators.
+Create a project for a user.
 
-If your HTTP repository isn't publicly accessible, add authentication information
-to the URL `https://username:password@gitlab.company.com/group/project.git`,
-where `password` is a public access key with the `api` scope enabled.
+Prerequisites:
+
+- You must be an administrator.
+
+If your HTTP repository isn't publicly accessible, add authentication information to the URL. For example,
+`https://username:password@gitlab.company.com/group/project.git` where `password` is a public access key with the `api`
+scope enabled.
 
 ```plaintext
 POST /projects/user/:user_id
@@ -1746,7 +1751,7 @@ settings with access control options can be one of:
 > - `operations_access_level` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/385798) in GitLab 16.0.
 > - `model_registry_access_level` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412734) in GitLab 16.7.
 
-Updates an existing project.
+Update an existing project.
 
 If your HTTP repository isn't publicly accessible, add authentication information
 to the URL `https://username:password@gitlab.company.com/group/project.git`,
@@ -1851,6 +1856,8 @@ settings with access control options can be one of:
 - `private`: Enable and set the feature to **Only project members**.
 - `enabled`: Enable and set the feature to **Everyone with access**.
 
+Supported project visibility attributes:
+
 | Attribute                              | Type   | Required | Description |
 |:---------------------------------------|:-------|:---------|:------------|
 | `analytics_access_level`               | string | No       | Set visibility of [analytics](../user/analytics/index.md). |
@@ -1875,7 +1882,11 @@ settings with access control options can be one of:
 
 ## Fork a project
 
-Forks a project into the user namespace of the authenticated user or the one provided.
+Fork a project into your personal namespace or the namespace provided.
+
+Prerequisites:
+
+- You must be authenticated.
 
 The forking operation for a project is asynchronous and is completed in a
 background job. The request returns immediately. To determine whether the
@@ -1900,8 +1911,7 @@ POST /projects/:id/fork
 
 ## List forks of a project
 
-List the projects accessible to the calling user that have an established,
-forked relationship with the specified project
+List the projects accessible to you that have an established forked relationship with the specified project.
 
 ```plaintext
 GET /projects/:id/forks
@@ -2020,10 +2030,46 @@ Example responses:
 ]
 ```
 
+## Create a fork relationship between projects
+
+Create a fork relationship between projects.
+
+Prerequisites:
+
+- You must be an administrator or be assigned the Owner role on the project.
+
+```plaintext
+POST /projects/:id/fork/:forked_from_id
+```
+
+Supported attributes:
+
+| Attribute        | Type              | Required | Description |
+|:-----------------|:------------------|:---------|:------------|
+| `forked_from_id` | ID                | Yes      | The ID of the project that was forked from. |
+| `id`             | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+
+## Delete a fork relationship between projects
+
+Delete a fork relationship between projects.
+
+Prerequisites:
+
+- You must be an administrator or be assigned the Owner role on the project.
+
+```plaintext
+DELETE /projects/:id/fork
+```
+
+Supported attributes:
+
+| Attribute | Type              | Required | Description |
+|:----------|:------------------|:---------|:------------|
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+
 ## Star a project
 
-Stars a given project. Returns status code `304` if the project is already
-starred.
+Star a project.
 
 ```plaintext
 POST /projects/:id/star
@@ -2132,45 +2178,11 @@ Example response:
 }
 ```
 
-## List a project's invited groups
-
-Get a list of invited groups in the given project. When accessed without authentication, only public invited groups are returned.
-This endpoint is rate-limited to 60 requests per minute per user (for authenticated users) or IP (for unauthenticated users).
-
-By default, this request returns 20 results at a time because the API results [are paginated](rest/index.md#pagination).
-
-```plaintext
-GET /projects/:id/invited_groups
-```
-
-Supported attributes:
-
-| Attribute                | Type             | Required | Description |
-|:-------------------------|:-----------------|:---------|:------------|
-| `id`                     | integer/string   | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
-| `search`                 | string           | no       | Return the list of authorized groups matching the search criteria |
-| `min_access_level`       | integer          | no       | Limit to groups where current user has at least the specified [role (`access_level`)](members.md#roles) |
-| `relation`               | array of strings | no       | Filter the groups by relation (direct or inherited) |
-| `with_custom_attributes` | boolean          | no       | Include [custom attributes](custom_attributes.md) in response (administrators only) |
-
-Example response:
-
-```json
-[
-  {
-    "id": 35,
-    "web_url": "https://gitlab.example.com/groups/twitter",
-    "name": "Twitter",
-    "avatar_url": null,
-    "full_name": "Twitter",
-    "full_path": "twitter"
-  }
-]
-```
+Returns status code `304` if the project is already starred.
 
 ## Unstar a project
 
-Unstars a given project. Returns status code `304` if the project is not starred.
+Unstar a project.
 
 ```plaintext
 POST /projects/:id/unstar
@@ -2279,9 +2291,11 @@ Example response:
 }
 ```
 
+Returns status code `304` if the project is not starred.
+
 ## List users who starred a project
 
-List the users who starred the specified project.
+List the users who starred a project.
 
 ```plaintext
 GET /projects/:id/starrers
@@ -2329,9 +2343,48 @@ Example responses:
 ]
 ```
 
-## Languages
+## List a project's invited groups
 
-Get languages used in a project with percentage value.
+Get a list of invited groups in a project. When accessed without authentication, only public invited groups are returned.
+This endpoint is rate-limited to 60 requests per minute per:
+
+- User for authenticated users.
+- IP address for unauthenticated users.
+
+By default, this request returns 20 results at a time because the API results [are paginated](rest/index.md#pagination).
+
+```plaintext
+GET /projects/:id/invited_groups
+```
+
+Supported attributes:
+
+| Attribute                | Type             | Required | Description |
+|:-------------------------|:-----------------|:---------|:------------|
+| `id`                     | integer/string   | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
+| `search`                 | string           | no       | Return the list of authorized groups matching the search criteria |
+| `min_access_level`       | integer          | no       | Limit to groups where current user has at least the specified [role (`access_level`)](members.md#roles) |
+| `relation`               | array of strings | no       | Filter the groups by relation (direct or inherited) |
+| `with_custom_attributes` | boolean          | no       | Include [custom attributes](custom_attributes.md) in response (administrators only) |
+
+Example response:
+
+```json
+[
+  {
+    "id": 35,
+    "web_url": "https://gitlab.example.com/groups/twitter",
+    "name": "Twitter",
+    "avatar_url": null,
+    "full_name": "Twitter",
+    "full_path": "twitter"
+  }
+]
+```
+
+## Get a list of programming languages used in a project
+
+Get the list and usage percentage of programming languages used in a project.
 
 ```plaintext
 GET /projects/:id/languages
@@ -2362,9 +2415,13 @@ Example response:
 
 ## Archive a project
 
-Archives the project if the user is either an administrator or the owner of this
-project. This action is idempotent, thus archiving an already archived project
-does not change the project.
+Archive a project.
+
+Prerequisites:
+
+- You must be an administrator or be assigned the Owner role on the project.
+
+This endpoint is idempotent. Archiving an already-archived project does not change the project.
 
 ```plaintext
 POST /projects/:id/archive
@@ -2500,9 +2557,13 @@ Example response:
 
 ## Unarchive a project
 
-Unarchives the project if the user is either an administrator or the owner of
-this project. This action is idempotent, thus unarchiving a non-archived project
-doesn't change the project.
+Unarchive a project.
+
+Prerequisites:
+
+- You must be an administrator or be assigned the Owner role on the project.
+
+This endpoint is idempotent. Unarchiving a project that isn't archived doesn't change the project.
 
 ```plaintext
 POST /projects/:id/unarchive
@@ -2638,16 +2699,16 @@ Example response:
 
 ## Delete a project
 
-This endpoint:
+Delete a project. This endpoint:
 
-- Deletes a project including all associated resources (including issues and
-  merge requests).
+- Deletes a project including all associated resources, including issues and merge requests.
 - On [Premium or Ultimate](https://about.gitlab.com/pricing/) tiers,
   [delayed project deletion](../user/project/working_with_projects.md#delayed-project-deletion)
   is applied if enabled.
 - From [GitLab 15.11](https://gitlab.com/gitlab-org/gitlab/-/issues/396500) on
-  [Premium or Ultimate](https://about.gitlab.com/pricing/) tiers, deletes a project immediately if the project is already
-  marked for deletion, and the `permanently_remove` and `full_path` parameters are passed.
+  [Premium or Ultimate](https://about.gitlab.com/pricing/) tiers, deletes a project immediately if:
+  - The project is already marked for deletion.
+  - The `permanently_remove` and `full_path` parameters are passed.
 - From [GitLab 16.0](https://gitlab.com/gitlab-org/gitlab/-/issues/220382) on
   [Premium or Ultimate](https://about.gitlab.com/pricing/) tiers, delayed project deletion is enabled by default.
   The deletion happens after the number of days specified in the
@@ -2669,13 +2730,13 @@ Supported attributes:
 | `full_path`          | string            | no       | Full path of project to use with `permanently_remove`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396500) in GitLab 15.11. To find the project path, use `path_with_namespace` from [get single project](projects.md#get-a-single-project). Premium and Ultimate only. |
 | `permanently_remove` | boolean/string    | no       | Immediately deletes a project if it is marked for deletion. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396500) in GitLab 15.11. Premium and Ultimate only. |
 
-## Restore project marked for deletion
+## Restore a project that is marked for deletion
 
 DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-Restores project marked for deletion.
+Restore a project that is marked for deletion.
 
 ```plaintext
 POST /projects/:id/restore
@@ -2689,13 +2750,13 @@ Supported attributes:
 
 ## Upload a project avatar
 
-Uploads an avatar to the specified project.
+Upload an avatar to the specified project.
 
 ```plaintext
 PUT /projects/:id
 ```
 
-Supported atrributes:
+Supported attributes:
 
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
@@ -2726,8 +2787,7 @@ Example response:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144039) in GitLab 16.9.
 
-Get a project avatar.
-You can access this endpoint without authentication if the project is publicly accessible.
+Download a project avatar. You can access this endpoint without authentication if the project is publicly accessible.
 
 ```plaintext
 GET /projects/:id/avatar
@@ -2830,66 +2890,35 @@ Returns:
 
 Example responses:
 
-When all emails were successfully sent (`200` HTTP status code):
+- When all emails were successfully sent (`200` HTTP status code):
 
-```json
-{  "status":  "success"  }
-```
+  ```json
+  {  "status":  "success"  }
+  ```
 
-When there was any error importing 1 or more members (`200` HTTP status code):
+- When there was any error importing 1 or more members (`200` HTTP status code):
 
-```json
-{
-  "status": "error",
-  "message": {
-               "john_smith": "Some individual error message",
-               "jane_smith": "Some individual error message"
-             },
-  "total_members_count": 3
-}
-```
+  ```json
+  {
+    "status": "error",
+    "message": {
+                 "john_smith": "Some individual error message",
+                 "jane_smith": "Some individual error message"
+               },
+    "total_members_count": 3
+  }
+  ```
 
-When there is a system error (`404` and `422` HTTP status codes):
+- When there is a system error (`404` and `422` HTTP status codes):
 
-```json
-{  "message":  "Import failed"  }
-```
-
-## Fork relationship
-
-Allows modification of the forked relationship between existing projects.
-Available only for project owners and administrators.
-
-### Create a forked from/to relation between existing projects
-
-```plaintext
-POST /projects/:id/fork/:forked_from_id
-```
-
-Supported attributes:
-
-| Attribute        | Type              | Required | Description |
-|:-----------------|:------------------|:---------|:------------|
-| `forked_from_id` | ID                | Yes      | The ID of the project that was forked from. |
-| `id`             | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
-
-### Delete an existing forked from relationship
-
-```plaintext
-DELETE /projects/:id/fork
-```
-
-Supported attributes:
-
-| Attribute | Type              | Required | Description |
-|:----------|:------------------|:---------|:------------|
-| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+  ```json
+  {  "message":  "Import failed"  }
+  ```
 
 ## Search for projects by name
 
-Search for projects by name which are accessible to the authenticated user. This
-endpoint can be accessed without authentication if the project is publicly
-accessible.
+Search for projects by name that are accessible to the authenticated user. If this endpoint is accessed without
+authentication, it lists projects that are publicly accessible.
 
 ```plaintext
 GET /projects
@@ -2909,7 +2938,9 @@ Example request:
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects?search=test"
 ```
 
-## Start the Housekeeping task for a project
+## Start the housekeeping task for a project
+
+Start the [housekeeping task](../administration/housekeeping.md) for a project.
 
 ```plaintext
 POST /projects/:id/housekeeping
@@ -2970,8 +3001,10 @@ Example response:
 
 ## Transfer a project to a new namespace
 
-See the [Project documentation](../user/project/settings/migrate_projects.md#transfer-a-project-to-another-namespace)
-for prerequisites to transfer a project.
+Transfer a project to a new namespace.
+
+For information on prerequisites for transferring a project, see
+[Transfer a project to another namespace](../user/project/settings/migrate_projects.md#transfer-a-project-to-another-namespace).
 
 ```plaintext
 PUT /projects/:id/transfer
@@ -3165,7 +3198,7 @@ DETAILS:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/354506) in GitLab 15.6.
 
-Returns the details of the project's pull mirror.
+Return the details of a project's [pull mirror](../user/project/repository/mirror/index.md).
 
 ```plaintext
 GET /projects/:id/mirror/pull
@@ -3207,16 +3240,12 @@ DETAILS:
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/381667) in GitLab 16.0.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/410354) in GitLab 16.2. Feature flag `mirror_only_branches_match_regex` removed.
 
-Configure pull mirroring while [creating a new project](#create-a-project)
-or [updating an existing project](#edit-a-project) using the API
-if the remote repository is accessible publicly or by using
-`username:token` authentication.
+Configure pull mirroring while [creating a new project](#create-a-project) or [updating an existing project](#edit-a-project)
+by using the API if the remote repository is accessible publicly or by using `username:token` authentication.
 
-In case your HTTP repository is not publicly accessible,
-you can add the authentication information to the URL:
-`https://username:token@gitlab.company.com/group/project.git`,
-where `token` is a [personal access token](../user/profile/personal_access_tokens.md)
-with the API scope enabled.
+If your HTTP repository is not publicly accessible, you can add the authentication information to the URL. For example,
+`https://username:token@gitlab.company.com/group/project.git` where `token` is a
+[personal access token](../user/profile/personal_access_tokens.md) with the `api` scope enabled.
 
 Supported attributes:
 
@@ -3258,11 +3287,13 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
  --data "mirror=false"
 ```
 
-## Start the pull mirroring process for a Project
+## Start the pull mirroring process for a project
 
 DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
+
+Start the pull mirroring process for a project.
 
 ```plaintext
 POST /projects/:id/mirror/pull
