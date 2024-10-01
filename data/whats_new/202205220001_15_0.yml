@@ -58,7 +58,7 @@
   release: 15.0  # XX.Y
 - name: Link external organizations and contacts to issues  # Match the release post entry
   description: |   # Do not modify this line, instead modify the lines below.
-    GitLab 15.0 introduces the first [MVC](https://about.gitlab.com/handbook/product/product-principles/#the-minimal-viable-change-mvc) toward [managing and billing external customers from GitLab](https://gitlab.com/groups/gitlab-org/-/epics/5323). With the customer relations management (CRM) feature, you can:
+    GitLab 15.0 introduces the first [MVC](https://about.gitlab.com/handbook/product/product-principles/#the-minimal-valuable-change-mvc) toward [managing and billing external customers from GitLab](https://gitlab.com/groups/gitlab-org/-/epics/5323). With the customer relations management (CRM) feature, you can:
 
     - Create organizations and contacts.
     - Set a default bill rate for an organization.

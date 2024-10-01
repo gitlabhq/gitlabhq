@@ -285,7 +285,7 @@ To decide if the service is available or visible to the end user, we need to:
     # Returns true if service is allowed to be used.
     #
     # For provided user, it will check if user is assigned to a proper seat.
-    CloudConnector::AvailableServices.find_by_name(:new_feature).allowed_for?(current_user)
+    current_user.allowed_to_use?(:new_feature)
   ```
 
 ###### Example
@@ -306,22 +306,10 @@ Add a new policy rule in [ee/global_policy.rb](https://gitlab.com/gitlab-org/git
   end
 
   condition(:user_allowed_to_use_new_feature) do
-    # Returns whether the service is free to access (no addon purchases is required)
-    if new_feature_service_data.free_access?
-      # optionally check if the experimental (beta) toggle is enabled for SM
-      # check if the feature is enabled for a group/project
-    else
-      # Returns true if service is allowed to be used.
-      # For provided user, it will check if user is assigned to a proper seat.
-      new_feature_service_data.allowed_for?(@user)
-    end
+    @user.allowed_to_use?(:new_feature)
   end
 
   rule { new_feature_licensed & user_allowed_to_use_new_feature }.enable :access_new_feature
-
-  def new_feature_service_data
-    CloudConnector::AvailableServices.find_by_name(:new_feature)
-  end
 ```
 
 The request

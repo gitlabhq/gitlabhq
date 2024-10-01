@@ -3,7 +3,7 @@
 module QA
   RSpec.describe 'Configure', :orchestrated, :mattermost, product_group: :tenant_scale do
     describe 'Mattermost support' do
-      it 'user creates a group with a mattermost team',
+      it 'user creates a group with a mattermost team', :blocking,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347890' do
         Flow::Login.sign_in
         Page::Main::Menu.perform(&:go_to_groups)

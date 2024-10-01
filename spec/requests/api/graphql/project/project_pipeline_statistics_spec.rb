@@ -72,7 +72,7 @@ RSpec.describe 'rendering project pipeline statistics', :aggregate_failures, :cl
     end
   end
 
-  describe 'aggregate' do
+  describe 'aggregate', :aggregate_failures do
     subject(:aggregate) do
       perform_request
 
@@ -86,6 +86,9 @@ RSpec.describe 'rendering project pipeline statistics', :aggregate_failures, :cl
     end
 
     it "contains expected data for the last week" do
+      perform_request
+
+      expect_graphql_errors_to_be_empty
       expect(aggregate).to eq({
         'label' => nil,
         'all' => '0',
@@ -97,6 +100,9 @@ RSpec.describe 'rendering project pipeline statistics', :aggregate_failures, :cl
 
     context 'when there are pipelines in last week', time_travel_to: Time.utc(2024, 5, 11) do
       it "contains expected data for the last week" do
+        perform_request
+
+        expect_graphql_errors_to_be_empty
         expect(aggregate).to eq({
           'label' => nil,
           'all' => '4',
@@ -112,6 +118,9 @@ RSpec.describe 'rendering project pipeline statistics', :aggregate_failures, :cl
       let(:to_time) { '2024-05-11T00:00:00+00:00' }
 
       it "contains expected data for the period" do
+        perform_request
+
+        expect_graphql_errors_to_be_empty
         expect(aggregate).to eq({
           'label' => nil,
           'all' => '2',
@@ -119,6 +128,35 @@ RSpec.describe 'rendering project pipeline statistics', :aggregate_failures, :cl
           'failed' => '0',
           'other' => '0'
         })
+      end
+
+      context 'with time window spanning less than 1 year' do
+        let(:from_time) { '2023-05-11T00:00:00+00:00' }
+        let(:to_time) { '2024-05-10T23:59:59+00:00' }
+
+        it "contains expected data for the period" do
+          perform_request
+
+          expect_graphql_errors_to_be_empty
+          expect(aggregate).to eq({
+            'label' => nil,
+            'all' => '5',
+            'success' => '1',
+            'failed' => '2',
+            'other' => '1'
+          })
+        end
+      end
+
+      context 'with time window spanning 1 year' do
+        let(:from_time) { '2024-01-01T00:00:00+02:00' }
+        let(:to_time) { '2025-01-01T00:00:00+02:00' }
+
+        it "contains expected data for the period" do
+          perform_request
+
+          expect_graphql_errors_to_include("Maximum of 366 days can be requested")
+        end
       end
     end
   end

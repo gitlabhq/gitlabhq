@@ -18,7 +18,7 @@ module Types
         null: true,
         extras: [:parent],
         description: 'The URL of the design resized to fit within the bounds of 432x230. ' \
-                     'This will be `null` if the image has not been generated'
+          'This will be `null` if the image has not been generated'
       field :diff_refs, Types::DiffRefsType,
         null: false,
         calls_gitaly: true,

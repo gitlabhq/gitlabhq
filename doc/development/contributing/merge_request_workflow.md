@@ -78,7 +78,7 @@ For a walkthrough of the contribution process, see [Tutorial: Make a GitLab cont
 
 *Live by smaller iterations.* Keep the amount of changes in a single MR **as small as possible**.
 If you want to contribute a large feature, think very carefully about what the
-[minimum viable change](https://handbook.gitlab.com/handbook/product/product-principles/#the-minimal-viable-change-mvc)
+[minimum valuable change](https://handbook.gitlab.com/handbook/product/product-principles/#the-minimal-valuable-change-mvc)
 is. Can you split the functionality into two smaller MRs? Can you submit only the
 backend/API code? Can you start with a very simple UI? Can you do just a part of the
 refactor?

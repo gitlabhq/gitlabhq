@@ -4,6 +4,14 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
   module Models
     module Ci
       class FinishedPipelinesBase < ClickHouse::Models::BaseModel
+        def self.time_window_valid?(from_time, to_time)
+          raise NotImplementedError, "subclasses of #{self.class.name} must implement #{__method__}"
+        end
+
+        def self.validate_time_window(from_time, to_time)
+          raise NotImplementedError, "subclasses of #{self.class.name} must implement #{__method__}"
+        end
+
         def self.for_project(project)
           new.for_project(project)
         end

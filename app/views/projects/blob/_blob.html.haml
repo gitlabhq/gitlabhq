@@ -7,6 +7,9 @@
 - if blob.rich_viewer && blob.extension != 'geojson'
   - add_page_startup_api_call local_assigns.fetch(:viewer_url) { url_for(safe_params.merge(viewer: blob.rich_viewer.type, format: :json)) }
 
+- if project.forked?
+  #js-fork-info{ data: vue_fork_divergence_data(project, ref) }
+
 .info-well.gl-hidden.sm:gl-block
   .well-segment
     %ul.blob-commit-info
@@ -15,9 +18,6 @@
   - if project.licensed_feature_available?(:code_owners)
     #js-code-owners{ data: { blob_path: blob.path, project_path: @project.full_path, branch: @ref, can_view_branch_rules: can_view_branch_rules?, branch_rules_path: branch_rules_path } }
   = render "projects/blob/auxiliary_viewer", blob: blob, ref: @ref
-
-- if project.forked?
-  #js-fork-info{ data: vue_fork_divergence_data(project, ref) }
 
 #blob-content-holder.blob-content-holder.js-per-page{ data: { blame_per_page: Gitlab::Git::BlamePagination::PAGINATION_PER_PAGE } }
   - if @code_navigation_path

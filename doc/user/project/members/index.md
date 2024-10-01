@@ -102,9 +102,8 @@ To add a user to a project:
    seven days before their access expires.
 
    WARNING:
-   If you give a member the Maintainer role and select an expiration date, that member
-   has full permissions for the time they are in the role. This includes the ability
-   to extend their own time in the Maintainer role.
+   Maintainers have full permissions until their role expires, including the ability to
+   extend their own access expiration date.
 
 1. Select **Invite**.
    If you invited the user using their:
@@ -206,8 +205,8 @@ To remove a member from a project:
 
 ## Ensure removed users cannot invite themselves back
 
-Malicious users with the Maintainer or Owner role could exploit a race condition that allows
-them to invite themselves back to a group or project that a GitLab administrator has removed them from.
+Users with the Maintainer or Owner role could exploit a race condition that allows
+them to rejoin groups or projects after an administrator removes them.
 
 To avoid this problem, GitLab administrators can:
 
@@ -275,8 +274,7 @@ Up to ten project Maintainers or Owners are notified.
 Any project Owner or Maintainer can approve or decline the request.
 Project Maintainers cannot approve Owner role access requests.
 
-If a project does not have any direct Owners or Maintainers, the notification is sent to the
-most recently active Owners of the project's parent group.
+If a project does not have any direct Owners or Maintainers, the most recently active Owners of the project's parent group receive the notification.
 
 ### Withdraw an access request to a project
 

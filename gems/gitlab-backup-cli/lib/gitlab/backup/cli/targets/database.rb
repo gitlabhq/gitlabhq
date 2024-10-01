@@ -5,10 +5,6 @@ module Gitlab
     module Cli
       module Targets
         class Database < Target
-          # TODO: Refactor to remove coupling with compress and decompress commands
-          # https://gitlab.com/gitlab-org/gitlab/-/issues/454830
-          include ::Backup::Helper
-
           attr_reader :force, :errors
 
           IGNORED_ERRORS = [
@@ -117,7 +113,8 @@ module Gitlab
               pg_env = backup_connection.database_configuration.pg_env_variables
               success = with_transient_pg_env(pg_env) do
                 decompress_rd, decompress_wr = IO.pipe
-                decompress_pid = spawn(decompress_cmd, out: decompress_wr, in: db_file_name)
+
+                decompress_pid = spawn(decompression_cmd, out: decompress_wr, in: db_file_name)
                 decompress_wr.close
 
                 status, tracked_errors =
@@ -195,6 +192,10 @@ module Gitlab
           end
 
           private
+
+          def decompression_cmd
+            Utils::Compression.decompression_command.cmd_args.flatten.first
+          end
 
           def report_success(success)
             Gitlab::Backup::Cli::Output.print_tag(success ? :success : :failure)

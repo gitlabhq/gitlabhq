@@ -11,7 +11,7 @@ module Types
 
     expose_permissions Types::PermissionTypes::Environment,
       description: 'Permissions for the current user on the resource. '\
-                   'This field can only be resolved for one environment in any single request.' do
+        'This field can only be resolved for one environment in any single request.' do
       extension ::Gitlab::Graphql::Limit::FieldCallCount, limit: 1
     end
 
@@ -62,7 +62,7 @@ module Types
 
     field :deployments_display_count, GraphQL::Types::String, null: true,
       description: 'Number of deployments in the environment for display. '\
-                   'Returns the precise number up to 999, and "999+" for counts exceeding this limit.'
+        'Returns the precise number up to 999, and "999+" for counts exceeding this limit.'
 
     field :latest_opened_most_severe_alert,
       Types::AlertManagement::AlertType,

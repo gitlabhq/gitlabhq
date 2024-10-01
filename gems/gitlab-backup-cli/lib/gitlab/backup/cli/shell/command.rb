@@ -25,7 +25,7 @@ module Gitlab
           SinglePipelineResult = Struct.new(:stderr, :status, :duration, keyword_init: true)
 
           # @example Usage
-          #   Shell.new('echo', 'Some amazing output').capture
+          #   Shell::Command.new('echo', 'Some amazing output').capture
           # @param [Array<String>] cmd_args
           # @param [Hash<String,String>] env
           def initialize(*cmd_args, env: {})

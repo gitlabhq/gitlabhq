@@ -2,8 +2,6 @@
 
 module Ci
   class CollectPipelineAnalyticsService
-    TIME_BUCKETS_LIMIT = 1.week.in_hours + 1 # +1 to add some error margin
-
     STATUS_GROUP_TO_STATUSES = { success: %w[success], failed: %w[failed], other: %w[canceled skipped] }.freeze
     STATUS_GROUPS = STATUS_GROUP_TO_STATUSES.keys.freeze
     STATUS_TO_STATUS_GROUP = STATUS_GROUP_TO_STATUSES.flat_map { |k, v| v.product([k]) }.to_h
@@ -25,9 +23,8 @@ module Ci
 
       return ServiceResponse.error(message: 'Not allowed') unless allowed?
 
-      if (@to_time - @from_time) / 1.hour > TIME_BUCKETS_LIMIT
-        return ServiceResponse.error(message: "Maximum of #{TIME_BUCKETS_LIMIT} 1-hour intervals can be requested")
-      end
+      error_message = clickhouse_model.validate_time_window(@from_time, @to_time)
+      return ServiceResponse.error(message: error_message) if error_message
 
       ServiceResponse.success(payload: { aggregate: calculate_aggregate })
     end
@@ -39,7 +36,11 @@ module Ci
     end
 
     def clickhouse_model
-      ::ClickHouse::Models::Ci::FinishedPipelinesHourly
+      if ::ClickHouse::Models::Ci::FinishedPipelinesHourly.time_window_valid?(@from_time, @to_time)
+        return ::ClickHouse::Models::Ci::FinishedPipelinesHourly
+      end
+
+      ::ClickHouse::Models::Ci::FinishedPipelinesDaily
     end
 
     def calculate_aggregate

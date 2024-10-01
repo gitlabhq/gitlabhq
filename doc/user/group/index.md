@@ -27,6 +27,8 @@ For more information about creating and managing your groups, see [Manage groups
 The way to set up a group depends on your use cases, team size, and access requirements.
 The following table describes the most common models of structuring groups.
 
+<!-- vale gitlab_base.Simplicity = NO -->
+
 | Model | Structure | Use cases |
 | ----- | --------- | --------- |
 | Simple | One group for all your projects. | Work in a small team or on specific solutions (for example, a marketing website) that require seamless collaboration and access to resources. |
@@ -34,15 +36,17 @@ The following table describes the most common models of structuring groups.
 | Client | One group for each client. | Provide custom solutions for multiple clients that require different resources and access levels. |
 | Functionality | One group or subgroup for one type of functionality (for example, AI/ML). | Develop complex products where one functionality requires specific resources and collaboration of subject-matter experts. |
 
+<!-- vale gitlab_base.Simplicity = YES -->
+
 NOTE:
 On self-managed GitLab, if you want to see an overview of your entire organization, you should create one top-level group.
 For more information about efforts to create an organization view of all groups,
 [see epic 9266](https://gitlab.com/groups/gitlab-org/-/epics/9266).
-A single top-level group provides insights in your entire organization through a complete
+A top-level group offers insights in your entire organization through a complete
 [Security Dashboard and Center](../application_security/security_dashboard/index.md),
-[Vulnerability](../application_security/vulnerability_report/index.md#vulnerability-report) and
-[Compliance center](../compliance/compliance_center/index.md), and
-[Value stream analytics](../group/value_stream_analytics/index.md).
+[Vulnerability Report](../application_security/vulnerability_report/index.md#vulnerability-report),
+[compliance center](../compliance/compliance_center/index.md), and
+[value stream analytics](../group/value_stream_analytics/index.md).
 
 ## Group visibility
 
@@ -117,6 +121,8 @@ To view the activity of a group:
 
 To create a group:
 
+<!-- vale gitlab_base.FutureTense = NO -->
+
 1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New group**.
 1. Select **Create group**.
 1. In the **Group name** text box, enter the name of the group. For a list of words that cannot be used as group names, see
@@ -129,6 +135,8 @@ To create a group:
    - From the **What will you use this group for?** dropdown list, select an option.
 1. Optional. To invite members to the group, in the **Email 1** text box, enter the email address of the user you want to invite. To invite more users, select **Invite another member** and enter the user's email address.
 1. Select **Create group**.
+
+<!-- vale gitlab_base.FutureTense = YES -->
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For details about groups, watch [GitLab Namespaces (users, groups and subgroups)](https://youtu.be/r0sJgjR2f5A).
@@ -189,7 +197,7 @@ You can also delete a group from the groups dashboard:
 
 On GitLab [Premium](https://about.gitlab.com/pricing/premium/) and [Ultimate](https://about.gitlab.com/pricing/ultimate/), this action adds a background job to mark a group for deletion. By default, the job schedules the deletion seven days in the future. You can modify this retention period through the [instance settings](../../administration/settings/visibility_and_access_controls.md#deletion-protection).
 
-If the user who set up the deletion is removed from the group before the deletion happens, the job is cancelled, and the group is no longer scheduled for deletion.
+If the user who set up the deletion is removed from the group before the deletion occurs, the group deletion job is canceled.
 
 ### View groups pending deletion
 
@@ -355,9 +363,8 @@ Prerequisites:
    seven days before their access expires.
 
    WARNING:
-   If you give a member the Maintainer role and enter an expiration date, that member
-   has full permissions as long as they are in the role. These permissions include the member's ability
-   to extend their own time in the Maintainer role.
+   Maintainers have full permissions until their role expires, including the ability to
+   extend their own access expiration date.
 
 1. Select **Invite**.
    If you invite the user by their:

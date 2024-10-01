@@ -105,6 +105,7 @@ RSpec.describe ::Ci::CollectPipelineAnalyticsService, :click_house, :enable_admi
 
     context 'when requesting statistics starting one second before beginning of week' do
       let(:from_time) { 1.second.before(starting_time) }
+      let(:to_time) { 1.second.before(ending_time) }
 
       it 'does not include job starting 1 second before start of week' do
         expect(result.errors).to eq([])
@@ -115,6 +116,7 @@ RSpec.describe ::Ci::CollectPipelineAnalyticsService, :click_house, :enable_admi
 
     context 'when requesting statistics starting one hour before beginning of week' do
       let(:from_time) { 1.hour.before(starting_time) }
+      let(:to_time) { 1.second.before(ending_time) }
 
       it 'includes job starting 1 second before start of week' do
         expect(result.errors).to eq([])
@@ -123,12 +125,11 @@ RSpec.describe ::Ci::CollectPipelineAnalyticsService, :click_house, :enable_admi
       end
     end
 
-    context 'when requesting hourly statistics that span more than one week' do
-      let(:from_time) { (1.hour + 1.second).before(starting_time) }
+    context 'when requesting statistics that span more than one year' do
+      let(:from_time) { (366.days + 1.second).before(starting_time) }
 
       it 'returns an error' do
-        expect(result.errors).to contain_exactly(
-          "Maximum of #{described_class::TIME_BUCKETS_LIMIT} 1-hour intervals can be requested")
+        expect(result.errors).to contain_exactly("Maximum of 366 days can be requested")
         expect(result.error?).to eq(true)
       end
     end

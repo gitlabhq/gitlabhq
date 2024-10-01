@@ -623,6 +623,24 @@ The options to skip GitGuardian secret detection, `[skip secret detection]` and 
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
+### Replace GraphQL field `take_ownership_pipeline_schedule` with `admin_pipeline_schedule` in PipelineSchedulePermissions
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">15.9</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/391941).
+
+</div>
+
+The GraphQL field `take_ownership_pipeline_schedule` will be deprecated. To
+determine if a user can take ownership of a pipeline schedule, use the
+`admin_pipeline_schedule` field instead.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
 ### Replace `add_on_purchase` GraphQL field with `add_on_purchases`
 
 <div class="deprecation-notes">
