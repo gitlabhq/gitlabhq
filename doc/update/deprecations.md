@@ -1081,6 +1081,7 @@ See the [GitLab 17.5 changes](https://docs.gitlab.com/ee/update/versions/gitlab_
 
 Grouping the vulnerability report by OWASP top 10 2017 is deprecated, replaced by grouping by OWASP top 10 2021.
 In the future we will support the most recent version of OWASP top 10 for grouping on the vulnerability report.
+Along with this change we are also deprecating and removing the 2017 GraphQL API enums which the feature uses. Additional details are included in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/488433).
 
 </div>
 

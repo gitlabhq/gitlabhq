@@ -9,13 +9,13 @@ module QA
       class CoverbandFormatter < ::RSpec::Core::Formatters::BaseFormatter
         include Support::API
 
-        COVERAGE_API_PATH = '/api/v4/internal/coverage'
-
         def initialize(output)
           super
+
           @test_mapping = Hash.new { |hsh, key| hsh[key] = [] }
           @logger = Runtime::Logger.logger
           @headers_access_token = { "PRIVATE-TOKEN" => Runtime::Env.admin_personal_access_token }
+          @cov_api_endpoint = "#{Runtime::Scenario.gitlab_address}/api/v4/internal/coverage"
         end
 
         ::RSpec::Core::Formatters.register(
@@ -30,45 +30,49 @@ module QA
         # @param [RSpec::Core::Notifications::ExamplesNotification] notification
         # @return [void]
         def stop(_notification)
-          logger.info("Saving test coverage mapping json file")
-
           save_test_mapping
         end
 
         # Example start event
-        def example_started(_example_notification)
-          QA::Support::Retrier.retry_until(max_attempts: 5, sleep_interval: 1, message: "Retry clear coverage") do
-            resp = delete("#{Runtime::Scenario.gitlab_address}#{COVERAGE_API_PATH}",
-              headers: headers_access_token)
+        def example_started(example_notification)
+          return if example_notification.example.metadata[:skip]
 
-            logger.error("Failed to clear coverage, code: #{resp.code}, body: #{resp.body}") if resp.code != 200
+          response = nil
+          QA::Support::Retrier.retry_until(max_attempts: 5, sleep_interval: 1) do
+            response = delete(cov_api_endpoint, headers: headers_access_token)
+            next true if response.code == 200
 
-            resp.code == 200
+            logger.debug("Failed to clear coverage, code: #{response.code}, body: #{response.body}")
+            false
           end
-          logger.debug("Cleared coverage data before example starts")
-        rescue StandardError => e
-          logger.error("Failed to clear coverage. Exception trace: #{e}")
+          logger.info("Cleared coverage data")
+        rescue StandardError
+          logger.error("Failed to clear coverage, code: #{response.code}, body: #{response.body}")
         end
 
         # Example finish event
         def example_finished(example_notification)
-          cov_resp = nil
-          QA::Support::Retrier.retry_until(max_attempts: 10, sleep_interval: 2, message: "Retry fetch coverage") do
-            cov_resp = get("#{Runtime::Scenario.gitlab_address}/api/v4/internal/coverage",
-              headers: headers_access_token)
+          return if example_notification.example.metadata[:skip] || example_failed?(example_notification)
 
-            if cov_resp.code != 200
-              logger.error("Fetching coverage data failed, code: #{cov_resp.code}, body: #{cov_resp.body}")
+          response = nil
+          QA::Support::Retrier.retry_until(max_attempts: 10, sleep_interval: 2) do
+            response = get(cov_api_endpoint, headers: headers_access_token)
+            coverage = JSON.parse(response.body)
+            next true if response.code == 200 && coverage.any?
+
+            if response.code != 200
+              logger.debug("Fetching coverage data failed, code: #{response.code}, body: #{response.body}")
             end
 
-            cov_resp.code == 200 && !JSON.parse(cov_resp.body).empty?
+            logger.debug("Fetching coverage data failed, no coverage data available") if coverage.empty?
+            false
           end
 
           example_path = example_notification.example.metadata[:location]
-          test_mapping[example_path] = JSON.parse(cov_resp.body) unless example_failed?(example_notification)
-          logger.debug("Coverage paths were stored in mapping hash")
-        rescue StandardError => e
-          logger.error("Failed to fetch coverage mapping. Trace: #{e}")
+          test_mapping[example_path] = JSON.parse(response.body)
+          logger.info("Fetched coverage data")
+        rescue StandardError
+          logger.error("Failed to fetch coverage data, code: #{response.code}, body: #{response.body}")
         end
 
         def example_failed?(example_notification)
@@ -83,14 +87,14 @@ module QA
           # To write two different files in case of failed specs being retried
 
           File.write(file, test_mapping.to_json)
-          logger.debug("Saved test code paths mapping to #{file}")
+          logger.info("Saved test coverage mapping data to #{file}")
         rescue StandardError => e
-          logger.error("Failed to save test code paths mapping, error: #{e}")
+          logger.error("Failed to save test coverage mapping data, error: #{e}")
         end
 
         private
 
-        attr_reader :test_mapping, :logger, :headers_access_token
+        attr_reader :test_mapping, :logger, :headers_access_token, :cov_api_endpoint
       end
     end
   end

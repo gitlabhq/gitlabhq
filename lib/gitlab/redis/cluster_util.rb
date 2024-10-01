@@ -36,6 +36,12 @@ module Gitlab
           end.flatten
         end
 
+        def batch_entries(entries)
+          entries.each_slice(pipeline_batch_size).flat_map do |subset|
+            yield subset
+          end
+        end
+
         def batch(entries, redis)
           entries.each_slice(pipeline_batch_size).flat_map do |subset|
             redis.pipelined do |pipeline|
