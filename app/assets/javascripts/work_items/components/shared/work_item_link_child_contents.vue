@@ -16,7 +16,7 @@ import RichTimestampTooltip from '~/vue_shared/components/rich_timestamp_tooltip
 import WorkItemLinkChildMetadata from 'ee_else_ce/work_items/components/shared/work_item_link_child_metadata.vue';
 import WorkItemTypeIcon from '../work_item_type_icon.vue';
 import WorkItemStateBadge from '../work_item_state_badge.vue';
-import { findLinkedItemsWidget } from '../../utils';
+import { findLinkedItemsWidget, getDisplayReference } from '../../utils';
 import { STATE_OPEN, WIDGET_TYPE_ASSIGNEES, WIDGET_TYPE_LABELS } from '../../constants';
 import WorkItemRelationshipIcons from './work_item_relationship_icons.vue';
 
@@ -54,15 +54,14 @@ export default {
       type: Boolean,
       required: true,
     },
+    workItemFullPath: {
+      type: String,
+      required: true,
+    },
     showLabels: {
       type: Boolean,
       required: false,
       default: true,
-    },
-    workItemFullPath: {
-      type: String,
-      required: false,
-      default: '',
     },
     showWeight: {
       type: Boolean,
@@ -103,6 +102,15 @@ export default {
     childItemType() {
       return this.childItem.workItemType.name;
     },
+    childItemIid() {
+      return this.childItem.iid;
+    },
+    childItemWebUrl() {
+      return this.childItem.webUrl;
+    },
+    childItemFullPath() {
+      return this.childItem.namespace?.fullPath;
+    },
     stateTimestamp() {
       return this.isChildItemOpen ? this.childItem.createdAt : this.childItem.closedAt;
     },
@@ -116,12 +124,7 @@ export default {
       return this.showLabels && this.labels.length;
     },
     displayReference() {
-      // The reference is replaced by work item fullpath in case the project and group are same.
-      // e.g., gitlab-org/gitlab-test#45 will be shown as #45
-      if (new RegExp(`${this.workItemFullPath}#`, 'g').test(this.childItem.reference)) {
-        return this.childItem.reference.replace(new RegExp(`${this.workItemFullPath}`, 'g'), '');
-      }
-      return this.childItem.reference;
+      return getDisplayReference(this.workItemFullPath, this.childItem.reference);
     },
     linkedChildWorkItems() {
       return findLinkedItemsWidget(this.childItem).linkedItems?.nodes || [];
@@ -190,6 +193,9 @@ export default {
             v-if="isChildItemOpen && linkedChildWorkItems.length"
             :work-item-type="childItemType"
             :linked-work-items="linkedChildWorkItems"
+            :work-item-full-path="childItemFullPath"
+            :work-item-iid="childItemIid"
+            :work-item-web-url="childItemWebUrl"
           />
           <span
             :id="`statusIcon-${childItem.id}`"

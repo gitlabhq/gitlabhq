@@ -626,6 +626,49 @@ Example response:
 }
 ```
 
+NOTE:
+
+When the ability to **Manage Non-Billable Promotions** is enabled, the newly added member will be pending administrator approval if the role is billable. To enable **Manage Non-Billable Promotions**:
+
+1. Enable `enable_member_promotion_management` Application Setting
+1. Enable `member_promotion_management` Feature Flag
+
+Example of queueing a single user:
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+     --data "user_id=1&access_level=30" "https://gitlab.example.com/api/v4/groups/:id/members"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+     --data "user_id=1&access_level=30" "https://gitlab.example.com/api/v4/projects/:id/members"
+```
+
+```json
+{
+  "message":{
+    "username_1":"Request queued for administrator approval."
+  }
+}
+```
+
+Example of queueing multiple users:
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+     --data "user_id=1,2&access_level=30" "https://gitlab.example.com/api/v4/groups/:id/members"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+     --data "user_id=1,2&access_level=30" "https://gitlab.example.com/api/v4/projects/:id/members"
+```
+
+```json
+{
+  "queued_users": {
+    "username_1": "Request queued for administrator approval.",
+    "username_2": "Request queued for administrator approval."
+  },
+  "status": "success"
+}
+```
+
 ## Edit a member of a group or project
 
 Updates a member of a group or project.
@@ -671,6 +714,23 @@ Example response:
   "access_level": 40,
   "email": "john@example.com",
   "group_saml_identity": null
+}
+```
+
+NOTE:
+
+When the ability to **Manage Non-Billable Promotions** is enabled, if the role is changed to a billable one, the request will be sent to administrator approval. To enable **Manage Non-Billable Promotions**:
+
+1. Enable `enable_member_promotion_management` Application Setting
+1. Enable `member_promotion_management` Feature Flag
+
+Example response:
+
+```json
+{
+  "message":{
+    "username_1":"Request queued for administrator approval."
+  }
 }
 ```
 

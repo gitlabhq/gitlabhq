@@ -30,7 +30,7 @@ can be used for inter-process communication in cases where [PostgreSQL](sql.md)
 is less appropriate. For example, transient state or data that is written much
 more often than it is read.
 
-If [Geo](geo.md) is enabled, each Geo node gets its own, independent Redis
+If [Geo](geo.md) is enabled, each Geo site gets its own, independent Redis
 database.
 
 We have [development documentation on adding a new Redis instance](redis/new_redis_instance.md).

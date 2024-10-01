@@ -35,7 +35,7 @@ module Mutations
       argument :time_estimate, GraphQL::Types::String,
         required: false,
         description: 'Estimated time to complete the issue. ' \
-                     'Use `null` or `0` to remove the current estimate.'
+          'Use `null` or `0` to remove the current estimate.'
 
       def resolve(project_path:, iid:, **args)
         issue = authorized_find!(project_path: project_path, iid: iid)

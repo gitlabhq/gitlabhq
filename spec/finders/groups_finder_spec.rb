@@ -409,7 +409,7 @@ RSpec.describe GroupsFinder, feature_category: :groups_and_projects do
           )
         end
 
-        it "returns project's parent group if user is member of project" do
+        it "returns project's ancestor groups if user is member of project" do
           project = create(:project, :private, namespace: private_sub_subgroup)
           project.add_developer(user)
 
@@ -419,7 +419,8 @@ RSpec.describe GroupsFinder, feature_category: :groups_and_projects do
             public_subgroup2,
             internal_sub_subgroup,
             public_sub_subgroup,
-            private_sub_subgroup
+            private_sub_subgroup,
+            private_subgroup2
           )
         end
 

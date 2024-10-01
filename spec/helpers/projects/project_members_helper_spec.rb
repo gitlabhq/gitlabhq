@@ -32,7 +32,7 @@ RSpec.describe Projects::ProjectMembersHelper, feature_category: :groups_and_pro
             access_requests: present_members(access_requests),
             include_relations: [:inherited, :direct],
             search: nil,
-            pending_members: []
+            pending_members_count: []
           )
         )
       end
@@ -142,7 +142,7 @@ RSpec.describe Projects::ProjectMembersHelper, feature_category: :groups_and_pro
                 access_requests: present_members(access_requests),
                 include_relations: include_relations,
                 search: nil,
-                pending_members: []
+                pending_members_count: []
               )
             )
           end

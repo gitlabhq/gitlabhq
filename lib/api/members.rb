@@ -152,13 +152,7 @@ module API
             .new(current_user, declared_params(include_missing: false))
             .execute(member)
 
-          updated_member = result[:members].first
-
-          if result[:status] == :success
-            present_members updated_member
-          else
-            render_validation_error!(updated_member)
-          end
+          present_put_membership_response(result)
         end
         # rubocop: enable CodeReuse/ActiveRecord
 

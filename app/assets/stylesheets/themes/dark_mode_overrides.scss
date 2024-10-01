@@ -82,11 +82,6 @@
   background-color: mix($gray-50, $orange-50, 75%) !important;
 }
 
-.gl-dark .issue-sticky-header-text .badge-muted {
-  background-color: var(--gray-100);
-  color: var(--gray-700);
-}
-
 .gl-dark  {
   .gl-filtered-search-suggestion-active {
     background-color: $gray-100;

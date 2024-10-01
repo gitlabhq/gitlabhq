@@ -577,8 +577,8 @@ module API
       render_api_error!('201 Created', 201)
     end
 
-    def accepted!
-      render_api_error!('202 Accepted', 202)
+    def accepted!(message = '202 Accepted')
+      render_api_error!(message, 202)
     end
 
     def render_validation_error!(models, status = 400)

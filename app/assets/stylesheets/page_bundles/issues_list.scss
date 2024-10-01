@@ -22,27 +22,10 @@
     .title {
       margin-bottom: 2px;
     }
-
-    .icon-merge-request-unmerged {
-      height: 13px;
-      margin-bottom: 3px;
-    }
   }
 }
 
 .is-ghost {
   opacity: 0.3;
   pointer-events: none;
-}
-
-.work-item-labels {
-  // stylelint-disable-next-line gitlab/no-gl-class
-  .gl-token {
-    padding-left: $gl-spacing-scale-1;
-  }
-
-  // stylelint-disable-next-line gitlab/no-gl-class
-  .gl-token-close {
-    display: none;
-  }
 }

@@ -47,7 +47,7 @@ RSpec.describe 'Merge request > User sees diff', :js, feature_category: :code_re
       visit "#{diffs_project_merge_request_path(project, merge_request)}##{line_code}"
     end
 
-    it 'shows the linked line' do
+    it 'shows the linked line', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/496702' do
       expect(page).to have_selector("[id='#{line_code}']", visible: true, obscured: false)
     end
   end

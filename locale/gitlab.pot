@@ -37282,6 +37282,9 @@ msgstr ""
 msgid "ObservabilityMetrics|Error: Failed to load metrics details. Try reloading the page."
 msgstr ""
 
+msgid "ObservabilityMetrics|Error: Unable to create metric snapshot image."
+msgstr ""
+
 msgid "ObservabilityMetrics|Failed to load metrics."
 msgstr ""
 
@@ -61999,6 +62002,11 @@ msgstr[1] ""
 
 msgid "WorkItem|%{workItemType} is blocked by 1 item"
 msgid_plural "WorkItem|%{workItemType} is blocked by %{itemCount} items"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "WorkItem|+%d more item"
+msgid_plural "WorkItem|+%d more items"
 msgstr[0] ""
 msgstr[1] ""
 

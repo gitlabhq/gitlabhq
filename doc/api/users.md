@@ -547,196 +547,7 @@ You can include the user's [custom attributes](custom_attributes.md) in the resp
 GET /users/:id?with_custom_attributes=true
 ```
 
-## Create a user
-
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
-
-> - Ability to create an auditor user was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366404) in GitLab 15.3.
-
-Create a user.
-
-Prerequisites:
-
-- You must be an administrator.
-
-When you create a user, you must specify at least one of the following:
-
-- `password`
-- `reset_password`
-- `force_random_password`
-
-If `reset_password` and `force_random_password` are both `false`, then `password` is required.
-
-`force_random_password` and `reset_password` take priority over `password`. Also, `reset_password` and
-`force_random_password` can be used together.
-
-NOTE:
-`private_profile` defaults to the value of the
-[Set profiles of new users to private by default](../administration/settings/account_and_limit_settings.md#set-profiles-of-new-users-to-private-by-default) setting.
-`bio` defaults to `""` instead of `null`.
-
-```plaintext
-POST /users
-```
-
-Supported attributes:
-
-| Attribute                            | Required | Description |
-|:-------------------------------------|:---------|:------------|
-| `admin`                              | No       | User is an administrator. Valid values are `true` or `false`. Defaults to false. |
-| `auditor`                            | No       | User is an auditor. Valid values are `true` or `false`. Defaults to false. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366404) in GitLab 15.3. Premium and Ultimate only. |
-| `avatar`                             | No       | Image file for user's avatar |
-| `bio`                                | No       | User's biography |
-| `can_create_group`                   | No       | User can create top-level groups - true or false |
-| `color_scheme_id`                    | No       | User's color scheme for the file viewer (for more information, see the [user preference documentation](../user/profile/preferences.md#change-the-syntax-highlighting-theme)) |
-| `commit_email`                       | No       | User's commit email address |
-| `email`                              | Yes      | Email       |
-| `extern_uid`                         | No       | External UID |
-| `external`                           | No       | Flags the user as external - true or false (default) |
-| `extra_shared_runners_minutes_limit` | No       | Can be set by administrators only. Additional compute minutes for this user. Premium and Ultimate only. |
-| `force_random_password`              | No       | Set user password to a random value - true or false (default) |
-| `group_id_for_saml`                  | No       | ID of group where SAML has been configured |
-| `linkedin`                           | No       | LinkedIn    |
-| `location`                           | No       | User's location |
-| `name`                               | Yes      | Name        |
-| `note`                               | No       | Administrator notes for this user |
-| `organization`                       | No       | Organization name |
-| `password`                           | No       | Password    |
-| `private_profile`                    | No       | User's profile is private - true or false. The default value is determined by [this](../administration/settings/account_and_limit_settings.md#set-profiles-of-new-users-to-private-by-default) setting. |
-| `projects_limit`                     | No       | Number of projects user can create |
-| `pronouns`                           | No       | User's pronouns |
-| `provider`                           | No       | External provider name |
-| `public_email`                       | No       | User's public email address |
-| `reset_password`                     | No       | Send user password reset link - true or false(default) |
-| `shared_runners_minutes_limit`       | No       | Can be set by administrators only. Maximum number of monthly compute minutes for this user. Can be `nil` (default; inherit system default), `0` (unlimited), or `> 0`. Premium and Ultimate only. |
-| `skip_confirmation`                  | No       | Skip confirmation - true or false (default) |
-| `skype`                              | No       | Skype ID    |
-| `theme_id`                           | No       | GitLab theme for the user (for more information, see the [user preference documentation](../user/profile/preferences.md#change-the-color-theme) for more information) |
-| `twitter`                            | No       | X (formerly Twitter) account |
-| `discord`                            | No       | Discord account |
-| `username`                           | Yes      | Username    |
-| `view_diffs_file_by_file`            | No       | Flag indicating the user sees only one file diff per page |
-| `website_url`                        | No       | Website URL |
-
-## Modify a user
-
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
-
-> - Ability to modify an auditor user was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366404) in GitLab 15.3.
-
-Modify an existing user.
-
-Prerequisites:
-
-- You must be an administrator.
-
-The `email` field is the user's primary email address. You can only change this field to an already-added secondary
-email address for that user. To add more email addresses to the same user, use the [add email endpoint](user_email_addresses.md#add-an-email-address).
-
-```plaintext
-PUT /users/:id
-```
-
-Supported attributes:
-
-| Attribute                            | Required | Description |
-|:-------------------------------------|:---------|:------------|
-| `admin`                              | No       | User is an administrator. Valid values are `true` or `false`. Defaults to false. |
-| `auditor`                            | No       | User is an auditor. Valid values are `true` or `false`. Defaults to false. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366404) in GitLab 15.3.(default) Premium and Ultimate only. |
-| `avatar`                             | No       | Image file for user's avatar |
-| `bio`                                | No       | User's biography |
-| `can_create_group`                   | No       | User can create groups - true or false |
-| `color_scheme_id`                    | No       | User's color scheme for the file viewer (for more information, see the [user preference documentation](../user/profile/preferences.md#change-the-syntax-highlighting-theme) for more information) |
-| `commit_email`                       | No       | User's commit email. Set to `_private` to use the private commit email. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375148) in GitLab 15.5. |
-| `email`                              | No       | Email       |
-| `extern_uid`                         | No       | External UID |
-| `external`                           | No       | Flags the user as external - true or false (default) |
-| `extra_shared_runners_minutes_limit` | No       | Can be set by administrators only. Additional compute minutes for this user. Premium and Ultimate only. |
-| `group_id_for_saml`                  | No       | ID of group where SAML has been configured |
-| `id`                                 | Yes      | ID of the user |
-| `linkedin`                           | No       | LinkedIn    |
-| `location`                           | No       | User's location |
-| `name`                               | No       | Name        |
-| `note`                               | No       | Administration notes for this user |
-| `organization`                       | No       | Organization name |
-| `password`                           | No       | Password    |
-| `private_profile`                    | No       | User's profile is private - true or false. |
-| `projects_limit`                     | No       | Limit projects each user can create |
-| `pronouns`                           | No       | Pronouns    |
-| `provider`                           | No       | External provider name |
-| `public_email`                       | No       | Public email of the user (must be already verified) |
-| `shared_runners_minutes_limit`       | No       | Can be set by administrators only. Maximum number of monthly compute minutes for this user. Can be `nil` (default; inherit system default), `0` (unlimited) or `> 0`. Premium and Ultimate only. |
-| `skip_reconfirmation`                | No       | Skip reconfirmation - true or false (default) |
-| `skype`                              | No       | Skype ID    |
-| `theme_id`                           | No       | GitLab theme for the user (for more information, see the [user preference documentation](../user/profile/preferences.md#change-the-color-theme) for more information) |
-| `twitter`                            | No       | X (formerly Twitter) account |
-| `discord`                            | No       | Discord account |
-| `username`                           | No       | Username    |
-| `view_diffs_file_by_file`            | No       | Flag indicating the user sees only one file diff per page |
-| `website_url`                        | No       | Website URL |
-
-If you update a user's password, they are forced to change it when they next sign in.
-
-Returns a `404` error, even in cases where a `409` (Conflict) would be more appropriate.
-For example, when renaming the email address to an existing one.
-
-## Delete authentication identity from a user
-
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
-
-Delete a user's authentication identity using the provider name associated with that identity.
-
-Prerequisites:
-
-- You must be an administrator.
-
-```plaintext
-DELETE /users/:id/identities/:provider
-```
-
-Supported attributes:
-
-| Attribute  | Type    | Required | Description |
-|:-----------|:--------|:---------|:------------|
-| `id`       | integer | yes      | ID of a user |
-| `provider` | string  | yes      | External provider name |
-
-## Delete a user
-
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
-
-Delete a user.
-
-Prerequisites:
-
-- You must be an administrator.
-
-Returns:
-
-- `204 No Content` status code if the operation was successful.
-- `404` if the resource was not found.
-- `409` if the user cannot be soft deleted.
-
-```plaintext
-DELETE /users/:id
-```
-
-Supported attributes:
-
-| Attribute     | Type    | Required | Description |
-|:--------------|:--------|:---------|:------------|
-| `id`          | integer | yes      | ID of a user |
-| `hard_delete` | boolean | no       | If true, contributions that would usually be [moved to Ghost User](../user/profile/account/delete_account.md#associated-records) are deleted instead, as well as groups owned solely by this user. |
-
-## List the current user
+## Get the current user
 
 Get the current user.
 
@@ -878,6 +689,172 @@ parameters:
 - `is_auditor`
 - `provisioned_by_group_id`
 - `using_license_seat`
+
+## Create a user
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed, GitLab Dedicated
+
+> - Ability to create an auditor user was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366404) in GitLab 15.3.
+
+Create a user.
+
+Prerequisites:
+
+- You must be an administrator.
+
+When you create a user, you must specify at least one of the following:
+
+- `password`
+- `reset_password`
+- `force_random_password`
+
+If `reset_password` and `force_random_password` are both `false`, then `password` is required.
+
+`force_random_password` and `reset_password` take priority over `password`. Also, `reset_password` and
+`force_random_password` can be used together.
+
+NOTE:
+`private_profile` defaults to the value of the
+[Set profiles of new users to private by default](../administration/settings/account_and_limit_settings.md#set-profiles-of-new-users-to-private-by-default) setting.
+`bio` defaults to `""` instead of `null`.
+
+```plaintext
+POST /users
+```
+
+Supported attributes:
+
+| Attribute                            | Required | Description |
+|:-------------------------------------|:---------|:------------|
+| `admin`                              | No       | User is an administrator. Valid values are `true` or `false`. Defaults to false. |
+| `auditor`                            | No       | User is an auditor. Valid values are `true` or `false`. Defaults to false. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366404) in GitLab 15.3. Premium and Ultimate only. |
+| `avatar`                             | No       | Image file for user's avatar |
+| `bio`                                | No       | User's biography |
+| `can_create_group`                   | No       | User can create top-level groups - true or false |
+| `color_scheme_id`                    | No       | User's color scheme for the file viewer (for more information, see the [user preference documentation](../user/profile/preferences.md#change-the-syntax-highlighting-theme)) |
+| `commit_email`                       | No       | User's commit email address |
+| `email`                              | Yes      | Email       |
+| `extern_uid`                         | No       | External UID |
+| `external`                           | No       | Flags the user as external - true or false (default) |
+| `extra_shared_runners_minutes_limit` | No       | Can be set by administrators only. Additional compute minutes for this user. Premium and Ultimate only. |
+| `force_random_password`              | No       | Set user password to a random value - true or false (default) |
+| `group_id_for_saml`                  | No       | ID of group where SAML has been configured |
+| `linkedin`                           | No       | LinkedIn    |
+| `location`                           | No       | User's location |
+| `name`                               | Yes      | Name        |
+| `note`                               | No       | Administrator notes for this user |
+| `organization`                       | No       | Organization name |
+| `password`                           | No       | Password    |
+| `private_profile`                    | No       | User's profile is private - true or false. The default value is determined by [a setting](../administration/settings/account_and_limit_settings.md#set-profiles-of-new-users-to-private-by-default). |
+| `projects_limit`                     | No       | Number of projects user can create |
+| `pronouns`                           | No       | User's pronouns |
+| `provider`                           | No       | External provider name |
+| `public_email`                       | No       | User's public email address |
+| `reset_password`                     | No       | Send user password reset link - true or false(default) |
+| `shared_runners_minutes_limit`       | No       | Can be set by administrators only. Maximum number of monthly compute minutes for this user. Can be `nil` (default; inherit system default), `0` (unlimited), or `> 0`. Premium and Ultimate only. |
+| `skip_confirmation`                  | No       | Skip confirmation - true or false (default) |
+| `skype`                              | No       | Skype ID    |
+| `theme_id`                           | No       | GitLab theme for the user (for more information, see the [user preference documentation](../user/profile/preferences.md#change-the-color-theme) for more information) |
+| `twitter`                            | No       | X (formerly Twitter) account |
+| `discord`                            | No       | Discord account |
+| `username`                           | Yes      | Username    |
+| `view_diffs_file_by_file`            | No       | Flag indicating the user sees only one file diff per page |
+| `website_url`                        | No       | Website URL |
+
+## Modify a user
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed, GitLab Dedicated
+
+> - Ability to modify an auditor user was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366404) in GitLab 15.3.
+
+Modify an existing user.
+
+Prerequisites:
+
+- You must be an administrator.
+
+The `email` field is the user's primary email address. You can only change this field to an already-added secondary
+email address for that user. To add more email addresses to the same user, use the [add email endpoint](user_email_addresses.md#add-an-email-address).
+
+```plaintext
+PUT /users/:id
+```
+
+Supported attributes:
+
+| Attribute                            | Required | Description |
+|:-------------------------------------|:---------|:------------|
+| `admin`                              | No       | User is an administrator. Valid values are `true` or `false`. Defaults to false. |
+| `auditor`                            | No       | User is an auditor. Valid values are `true` or `false`. Defaults to false. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366404) in GitLab 15.3.(default) Premium and Ultimate only. |
+| `avatar`                             | No       | Image file for user's avatar |
+| `bio`                                | No       | User's biography |
+| `can_create_group`                   | No       | User can create groups - true or false |
+| `color_scheme_id`                    | No       | User's color scheme for the file viewer (for more information, see the [user preference documentation](../user/profile/preferences.md#change-the-syntax-highlighting-theme) for more information) |
+| `commit_email`                       | No       | User's commit email. Set to `_private` to use the private commit email. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375148) in GitLab 15.5. |
+| `email`                              | No       | Email       |
+| `extern_uid`                         | No       | External UID |
+| `external`                           | No       | Flags the user as external - true or false (default) |
+| `extra_shared_runners_minutes_limit` | No       | Can be set by administrators only. Additional compute minutes for this user. Premium and Ultimate only. |
+| `group_id_for_saml`                  | No       | ID of group where SAML has been configured |
+| `id`                                 | Yes      | ID of the user |
+| `linkedin`                           | No       | LinkedIn    |
+| `location`                           | No       | User's location |
+| `name`                               | No       | Name        |
+| `note`                               | No       | Administration notes for this user |
+| `organization`                       | No       | Organization name |
+| `password`                           | No       | Password    |
+| `private_profile`                    | No       | User's profile is private - true or false. |
+| `projects_limit`                     | No       | Limit projects each user can create |
+| `pronouns`                           | No       | Pronouns    |
+| `provider`                           | No       | External provider name |
+| `public_email`                       | No       | Public email of the user (must be already verified) |
+| `shared_runners_minutes_limit`       | No       | Can be set by administrators only. Maximum number of monthly compute minutes for this user. Can be `nil` (default; inherit system default), `0` (unlimited) or `> 0`. Premium and Ultimate only. |
+| `skip_reconfirmation`                | No       | Skip reconfirmation - true or false (default) |
+| `skype`                              | No       | Skype ID    |
+| `theme_id`                           | No       | GitLab theme for the user (for more information, see the [user preference documentation](../user/profile/preferences.md#change-the-color-theme) for more information) |
+| `twitter`                            | No       | X (formerly Twitter) account |
+| `discord`                            | No       | Discord account |
+| `username`                           | No       | Username    |
+| `view_diffs_file_by_file`            | No       | Flag indicating the user sees only one file diff per page |
+| `website_url`                        | No       | Website URL |
+
+If you update a user's password, they are forced to change it when they next sign in.
+
+Returns a `404` error, even in cases where a `409` (Conflict) would be more appropriate.
+For example, when renaming the email address to an existing one.
+
+## Delete a user
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed, GitLab Dedicated
+
+Delete a user.
+
+Prerequisites:
+
+- You must be an administrator.
+
+Returns:
+
+- `204 No Content` status code if the operation was successful.
+- `404` if the resource was not found.
+- `409` if the user cannot be soft deleted.
+
+```plaintext
+DELETE /users/:id
+```
+
+Supported attributes:
+
+| Attribute     | Type    | Required | Description |
+|:--------------|:--------|:---------|:------------|
+| `id`          | integer | yes      | ID of a user |
+| `hard_delete` | boolean | no       | If true, contributions that would usually be [moved to Ghost User](../user/profile/account/delete_account.md#associated-records) are deleted instead, and also groups owned solely by this user. |
 
 ## Get your user status
 
@@ -1039,6 +1016,52 @@ Supported attributes:
 | `show_whitespace_in_diffs`       | Yes      | Flag indicating the user sees whitespace changes in diffs. |
 | `pass_user_identities_to_ci_jwt` | Yes      | Flag indicating the user passes their external identities as CI information. This attribute does not contain enough information to identify or authorize the user in an external system. The attribute is internal to GitLab, and must not be passed to third-party services. For more information and examples, see [Token Payload](../ci/secrets/id_token_authentication.md#token-payload). |
 
+## Upload an avatar for yourself
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148130) in GitLab 17.0.
+
+Upload an avatar for yourself.
+
+Prerequisites:
+
+- You must be authenticated.
+
+```plaintext
+PUT /user/avatar
+```
+
+Supported attributes:
+
+| Attribute | Type   | Required | Description |
+|:----------|:-------|:---------|:------------|
+| `avatar`  | string | Yes      | The file to be uploaded. The ideal image size is 192 x 192 pixels. The maximum file size allowed is 200 KiB. |
+
+To upload an avatar from your file system, use the `--form` argument. This causes
+cURL to post data using the header `Content-Type: multipart/form-data`. The
+`file=` parameter must point to an image file on your file system and be
+preceded by `@`. For example:
+
+Example request:
+
+```shell
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
+     --form "avatar=@avatar.png" \
+     --url "https://gitlab.example.com/api/v4/user/avatar"
+```
+
+Example response:
+
+```json
+{
+  "avatar_url": "http://gdk.test:3000/uploads/-/system/user/avatar/76/avatar.png",
+}
+```
+
+Returns:
+
+- `200` if successful.
+- `400 Bad Request` for file sizes greater than 200 KiB.
+
 ## Get a count of your assigned issues, merge requests, and reviews
 
 Get a count of your assigned issues, merge requests, and reviews.
@@ -1111,7 +1134,7 @@ Example response:
 }
 ```
 
-## Get a list of a user's activity
+## List a user's activity
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -1174,7 +1197,7 @@ Example response:
 
 `last_activity_at` is deprecated. Use `last_activity_on` instead.
 
-## Get a list of projects and groups that a user is a member of
+## List projects and groups that a user is a member of
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -1327,48 +1350,25 @@ Example response:
 }
 ```
 
-## Upload an avatar for yourself
+## Delete authentication identity from a user
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148130) in GitLab 17.0.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed, GitLab Dedicated
 
-Upload an avatar for yourself.
+Delete a user's authentication identity using the provider name associated with that identity.
 
 Prerequisites:
 
-- You must be authenticated.
+- You must be an administrator.
 
 ```plaintext
-PUT /user/avatar
+DELETE /users/:id/identities/:provider
 ```
 
 Supported attributes:
 
-| Attribute | Type   | Required | Description |
-|:----------|:-------|:---------|:------------|
-| `avatar`  | string | Yes      | The file to be uploaded. The ideal image size is 192 x 192 pixels. The maximum file size allowed is 200 KiB. |
-
-To upload an avatar from your file system, use the `--form` argument. This causes
-cURL to post data using the header `Content-Type: multipart/form-data`. The
-`file=` parameter must point to an image file on your file system and be
-preceded by `@`. For example:
-
-Example request:
-
-```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
-     --form "avatar=@avatar.png" \
-     --url "https://gitlab.example.com/api/v4/user/avatar"
-```
-
-Example response:
-
-```json
-{
-  "avatar_url": "http://gdk.test:3000/uploads/-/system/user/avatar/76/avatar.png",
-}
-```
-
-Returns:
-
-- `200` if successful.
-- `400 Bad Request` for file sizes greater than 200 KiB.
+| Attribute  | Type    | Required | Description |
+|:-----------|:--------|:---------|:------------|
+| `id`       | integer | yes      | ID of a user |
+| `provider` | string  | yes      | External provider name |

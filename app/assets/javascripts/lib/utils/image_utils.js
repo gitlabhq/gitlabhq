@@ -1,3 +1,4 @@
+import { domToBlob } from 'modern-screenshot';
 import vector from './vector';
 import { readFileAsDataURL } from './file_utility';
 
@@ -64,3 +65,7 @@ export const getRetinaDimensions = async (pngFile) => {
     return null;
   }
 };
+
+export function domElementToBlob(domElement) {
+  return domToBlob(domElement);
+}

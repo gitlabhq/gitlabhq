@@ -189,8 +189,8 @@ you use to provision and register new values.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30942) in GitLab 15.3 [with a flag](../../administration/feature_flags.md) named `enforce_runner_token_expires_at`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/377902) in GitLab 15.5. Feature flag `enforce_runner_token_expires_at` removed.
 
-Each runner has an [runner authentication token](../../api/runners.md#registration-and-authentication-tokens)
-to connect with the GitLab instance.
+Each runner uses a [runner authentication token](../../api/runners.md#registration-and-authentication-tokens)
+to connect to and authenticate with a GitLab instance.
 
 To help prevent the token from being compromised, you can have the
 token rotate automatically at specified intervals. When the tokens are rotated,

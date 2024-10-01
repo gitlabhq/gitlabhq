@@ -10,6 +10,7 @@ const PROJECT_IMPORT_MEMBERS_PATH = '/api/:version/projects/:id/import_project_m
 const PROJECT_REPOSITORY_SIZE_PATH = '/api/:version/projects/:id/repository_size';
 const PROJECT_TRANSFER_LOCATIONS_PATH = 'api/:version/projects/:id/transfer_locations';
 const PROJECT_SHARE_LOCATIONS_PATH = 'api/:version/projects/:id/share_locations';
+const PROJECT_UPLOADS_PATH = '/api/:version/projects/:id/uploads';
 
 export function getProjects(query, options, callback = () => {}) {
   const url = buildApiUrl(PROJECTS_PATH);
@@ -91,3 +92,30 @@ export const getProjectShareLocations = (projectId, params = {}, axiosOptions = 
 
   return axios.get(url, { params: { ...defaultParams, ...params }, ...axiosOptions });
 };
+
+/**
+ * Uploads an image to a project and returns the share URL.
+ *
+ * @param {Object} options - The options for uploading the image.
+ * @param {string} options.filename - The name of the file to be uploaded.
+ * @param {Blob} options.blobData - The blob data of the image to be uploaded.
+ * @param {string} options.projectId - The ID of the project.
+ * @returns {Promise<string>} The share URL of the uploaded image
+ */
+
+export async function uploadImageToProject({ filename, blobData, projectId }) {
+  const url = buildApiUrl(PROJECT_UPLOADS_PATH).replace(':id', projectId);
+
+  const formData = new FormData();
+  formData.append('file', blobData, filename);
+
+  const result = await axios.post(url, formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
+
+  if (!result.data?.full_path) {
+    return Promise.reject(new Error(`Image failed to upload`));
+  }
+
+  return new URL(result.data.full_path, document.baseURI).href;
+}

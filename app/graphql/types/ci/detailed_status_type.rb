@@ -28,7 +28,7 @@ module Types
         description: 'Icon of the status.',
         deprecated: {
           reason: 'The `icon` attribute is deprecated. Use `name` to ' \
-                  'identify the status to display instead',
+            'identify the status to display instead',
           milestone: '16.4'
         }
       field :id, GraphQL::Types::String, null: false,

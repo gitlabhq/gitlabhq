@@ -13,12 +13,12 @@
       url: registration_path(resource_name, ::Onboarding::Status.registration_path_params(params: params)),
       button_text: _('Continue')
 
-    - if omniauth_enabled? && button_based_providers_enabled?
+    - if signup_button_based_providers_enabled?
       .gl-text-center.gl-pt-5
         %label.gl-font-normal
           = _('Continue with:')
         .gl-flex.gl-flex-col.gl-gap-3
-          - enabled_button_based_providers.each do |provider|
+          - enabled_button_based_providers_for_signup.each do |provider|
             = render 'devise/shared/omniauth_provider_button',
               href: omniauth_authorize_path(:user, provider, ::Onboarding::Status.registration_path_params(params: params)),
               provider: provider,

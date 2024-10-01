@@ -153,6 +153,15 @@ export const markdownPreviewPath = ({ fullPath, iid, isGroup = false }) => {
   return `${domain}/${basePath}/-/preview_markdown?target_type=WorkItem&target_id=${iid}`;
 };
 
+export const getDisplayReference = (workItemFullPath, workitemReference) => {
+  // The reference is replaced by work item fullpath in case the project and group are same.
+  // e.g., gitlab-org/gitlab-test#45 will be shown as #45
+  if (new RegExp(`${workItemFullPath}#`, 'g').test(workitemReference)) {
+    return workitemReference.replace(new RegExp(`${workItemFullPath}`, 'g'), '');
+  }
+  return workitemReference;
+};
+
 export const isReference = (input) => {
   /**
    * The regular expression checks if the `value` is

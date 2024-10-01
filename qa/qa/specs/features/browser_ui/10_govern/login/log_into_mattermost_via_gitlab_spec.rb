@@ -3,7 +3,7 @@
 module QA
   RSpec.describe 'Govern', :orchestrated, :mattermost, product_group: :authentication do
     describe 'Mattermost login' do
-      it 'user logs into Mattermost using GitLab OAuth',
+      it 'user logs into Mattermost using GitLab OAuth', :blocking,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347891' do
         Flow::Login.sign_in
 

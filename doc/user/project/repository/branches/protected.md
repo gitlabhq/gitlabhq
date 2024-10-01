@@ -37,17 +37,13 @@ When a branch is protected, the default behavior enforces these restrictions on 
 |:-------------------------|:----------------------------------------|
 | Protect a branch         | At least the Maintainer role.           |
 | Push to the branch       | Anyone with **Allowed** permission. (1) |
-| Force push to the branch | No one. (3)                             |
+| Force push to the branch | No one.                                 |
 | Delete the branch        | No one. (2)                             |
 
 1. Users with the Developer role can create a project in a group, but might not be allowed to
    initially push to the [default branch](default.md).
 1. No one can delete a protected branch using Git commands, however, users with at least Maintainer
    role can [delete a protected branch from the UI or API](#delete-a-protected-branch).
-1. If the `group_protected_branches` feature flag is enabled _and_ the same branch is
-   protected at both the group and project levels, force push settings configured
-   for that branch at the project level are ignored. All other protections continue
-   to use project level settings.
 
 You can implement a [merge request approval policy](../../../application_security/policies/merge_request_approval_policies.md#approval_settings)
 to prevent protected branches being unprotected or deleted.
@@ -136,10 +132,7 @@ To make it available, an administrator can
 named `group_protected_branches`. On GitLab.com and GitLab Dedicated, this feature is not available.
 
 Group owners can create protected branches for a group. These settings are inherited
-by all projects in the group and can't be overridden by project settings. If a
-specific branch is configured with **Allowed to force push** settings at both the
-group and project levels, the **Allowed to force push** setting at the _project_ level
-is ignored in favor of the group level setting.
+by all projects in the group and can't be overridden by project settings.
 
 Prerequisites:
 
@@ -309,11 +302,6 @@ As the most permissive option determines the behavior, the resulting permissions
 - **Allow force push:** Of the three settings, `Yes` is most permissive,
   and controls branch behavior as a result. Even though the branch also matched `v1.x` and `v*`
   (which each have stricter permissions), any user that can push to this branch can also force push.
-
-NOTE:
-Force push settings for a branch at the project level are overridden by group level settings
-if the `group_protected_branches` feature flag is enabled and a group owner has set
-[group level protection for the same branch](#for-all-projects-in-a-group).
 
 ## Require Code Owner approval on a protected branch
 

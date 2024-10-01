@@ -94,6 +94,10 @@ RSpec.describe API::GroupMilestones, feature_category: :team_planning do
           let(:user) { create(:user) }
 
           before do
+            # When a group has a project, users that have access to the group will get access to ancestor groups
+            # See https://gitlab.com/groups/gitlab-org/-/epics/9424
+            group.projects.delete_all
+
             group.add_guest(user)
           end
 

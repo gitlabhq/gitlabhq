@@ -5,6 +5,43 @@ require "spec_helper"
 RSpec.describe AuthHelper, feature_category: :system_access do
   include LoginHelpers
 
+  describe "#enabled_button_based_providers_for_signup" do
+    [[true, %w[github gitlab]],
+      [false, []],
+      [['github'], ['github']],
+      [[], []]].each do |(allow_single_sign_on, result)|
+      context "when allow_single_sign_on is #{allow_single_sign_on}" do
+        before do
+          allow(helper).to receive(:enabled_button_based_providers) { %w[github gitlab] }
+          stub_omniauth_config(allow_single_sign_on: allow_single_sign_on)
+        end
+
+        it "returns #{result}" do
+          expect(helper.enabled_button_based_providers_for_signup).to eq(result)
+        end
+      end
+    end
+  end
+
+  describe "#signup_button_based_providers_enabled?" do
+    [[true, true, true],
+      [true, ['github'], true],
+      [false, true, false],
+      [true, false, false],
+      [true, [], false]].each do |(omniauth_enable, allow_single_sign_on, result)|
+      context "when omniauth is #{omniauth_enable} and allow_single_sign_on is #{allow_single_sign_on}" do
+        before do
+          allow(Gitlab::Auth).to receive(:omniauth_enabled?).and_return(omniauth_enable)
+          stub_omniauth_config(allow_single_sign_on: allow_single_sign_on)
+        end
+
+        it "returns #{result}" do
+          expect(helper.signup_button_based_providers_enabled?).to eq(result)
+        end
+      end
+    end
+  end
+
   describe "button_based_providers" do
     it 'returns all enabled providers from devise' do
       allow(helper).to receive(:auth_providers) { [:twitter, :github] }

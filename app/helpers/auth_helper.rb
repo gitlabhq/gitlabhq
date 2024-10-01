@@ -33,6 +33,20 @@ module AuthHelper
     Gitlab::Auth.omniauth_enabled?
   end
 
+  def enabled_button_based_providers_for_signup
+    if Gitlab.config.omniauth.allow_single_sign_on.is_a?(Array)
+      enabled_button_based_providers & Gitlab.config.omniauth.allow_single_sign_on
+    elsif Gitlab.config.omniauth.allow_single_sign_on
+      enabled_button_based_providers
+    else
+      []
+    end
+  end
+
+  def signup_button_based_providers_enabled?
+    omniauth_enabled? && enabled_button_based_providers_for_signup.any?
+  end
+
   def provider_has_custom_icon?(name)
     icon_for_provider(name.to_s)
   end

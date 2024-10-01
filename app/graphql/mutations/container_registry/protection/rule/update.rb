@@ -7,8 +7,8 @@ module Mutations
         class Update < ::Mutations::BaseMutation
           graphql_name 'UpdateContainerRegistryProtectionRule'
           description 'Updates a container registry protection rule to restrict access to project containers. ' \
-                      'You can prevent users without certain roles from altering containers. ' \
-                      'Available only when feature flag `container_registry_protected_containers` is enabled.'
+            'You can prevent users without certain roles from altering containers. ' \
+            'Available only when feature flag `container_registry_protected_containers` is enabled.'
 
           authorize :admin_container_image
 

@@ -1,14 +1,15 @@
 <script>
-import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
+import { GlIcon } from '@gitlab/ui';
 import { n__, sprintf } from '~/locale';
 import { LINKED_CATEGORIES_MAP, sprintfWorkItem } from '../../constants';
+import workItemLinkedItemsQuery from '../../graphql/work_item_linked_items.query.graphql';
+import { findLinkedItemsWidget } from '../../utils';
+import WorkItemRelationshipPopover from './work_item_relationship_popover.vue';
 
 export default {
   components: {
     GlIcon,
-  },
-  directives: {
-    GlTooltip: GlTooltipDirective,
+    WorkItemRelationshipPopover,
   },
   props: {
     linkedWorkItems: {
@@ -19,6 +20,46 @@ export default {
       type: String,
       required: true,
     },
+    workItemWebUrl: {
+      type: String,
+      required: true,
+    },
+    workItemFullPath: {
+      type: String,
+      required: true,
+    },
+    workItemIid: {
+      type: String,
+      required: true,
+    },
+  },
+  apollo: {
+    childItemLinkedItems: {
+      skip() {
+        return this.skipQuery;
+      },
+      query() {
+        return workItemLinkedItemsQuery;
+      },
+      variables() {
+        return {
+          fullPath: this.workItemFullPath,
+          iid: this.workItemIid,
+        };
+      },
+      update({ workspace }) {
+        if (!workspace?.workItem) return [];
+
+        this.skipQuery = true;
+        return findLinkedItemsWidget(workspace.workItem).linkedItems?.nodes || [];
+      },
+    },
+  },
+  data() {
+    return {
+      skipQuery: true,
+      childItemLinkedItems: [],
+    };
   },
   computed: {
     itemsBlockedBy() {
@@ -30,6 +71,12 @@ export default {
       return this.linkedWorkItems.filter((item) => {
         return item.linkType === LINKED_CATEGORIES_MAP.BLOCKS;
       });
+    },
+    itemsBlockedByIconId() {
+      return `relationship-blocked-by-icon-${this.workItemIid}`;
+    },
+    itemsBlocksIconId() {
+      return `relationship-blocks-icon-${this.workItemIid}`;
     },
     blockedByLabel() {
       const message = sprintf(
@@ -53,33 +100,74 @@ export default {
       );
       return sprintfWorkItem(message, this.workItemType);
     },
+    isLoading() {
+      return this.$apollo.queries.childItemLinkedItems.loading;
+    },
+    childBlockedByItems() {
+      return this.childItemLinkedItems.filter((item) => {
+        return item.linkType === LINKED_CATEGORIES_MAP.IS_BLOCKED_BY;
+      });
+    },
+    childBlocksItems() {
+      return this.childItemLinkedItems.filter((item) => {
+        return item.linkType === LINKED_CATEGORIES_MAP.BLOCKS;
+      });
+    },
+  },
+  methods: {
+    handleMouseEnter() {
+      this.skipQuery = false;
+    },
   },
 };
 </script>
 
 <template>
   <span class="gl-flex gl-gap-3">
-    <span
-      v-if="itemsBlockedBy.length"
-      v-gl-tooltip
-      :title="blockedByLabel"
-      :aria-label="blockedByLabel"
-      class="gl-text-sm gl-text-secondary"
-      data-testid="relationship-blocked-by-icon"
-    >
-      <gl-icon name="entity-blocked" class="gl-text-red-500" />
-      {{ itemsBlockedBy.length }}
-    </span>
-    <span
-      v-if="itemsBlocks.length"
-      v-gl-tooltip
-      :title="blocksLabel"
-      :aria-label="blocksLabel"
-      class="gl-text-sm gl-text-secondary"
-      data-testid="relationship-blocks-icon"
-    >
-      <gl-icon name="entity-blocking" class="gl-text-orange-500" />
-      {{ itemsBlocks.length }}
-    </span>
+    <template v-if="itemsBlockedBy.length > 0">
+      <span
+        :id="itemsBlockedByIconId"
+        :aria-label="blockedByLabel"
+        tabIndex="0"
+        class="gl-cursor-pointer gl-text-sm gl-text-secondary"
+        data-testid="relationship-blocked-by-icon"
+        @mouseenter="handleMouseEnter"
+      >
+        <gl-icon name="entity-blocked" class="gl-text-red-500" />
+        {{ itemsBlockedBy.length }}
+      </span>
+      <work-item-relationship-popover
+        :target="itemsBlockedByIconId"
+        :title="s__('WorkItem|Blocked by')"
+        :loading="isLoading"
+        :linked-work-items="childBlockedByItems"
+        :work-item-full-path="workItemFullPath"
+        :work-item-web-url="workItemWebUrl"
+        :work-item-type="workItemType"
+      />
+    </template>
+
+    <template v-if="itemsBlocks.length > 0">
+      <span
+        :id="itemsBlocksIconId"
+        :aria-label="blocksLabel"
+        tabIndex="0"
+        class="gl-cursor-pointer gl-text-sm gl-text-secondary"
+        data-testid="relationship-blocks-icon"
+        @mouseenter="handleMouseEnter"
+      >
+        <gl-icon name="entity-blocking" class="gl-text-orange-500" />
+        {{ itemsBlocks.length }}
+      </span>
+      <work-item-relationship-popover
+        :target="itemsBlocksIconId"
+        :title="s__('WorkItem|Blocking')"
+        :loading="isLoading"
+        :linked-work-items="childBlocksItems"
+        :work-item-full-path="workItemFullPath"
+        :work-item-web-url="workItemWebUrl"
+        :work-item-type="workItemType"
+      />
+    </template>
   </span>
 </template>

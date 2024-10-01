@@ -73,6 +73,24 @@ When there was any error sending the email:
 }
 ```
 
+NOTE:
+
+When the ability to **Manage Non-Billable Promotions** is enabled, the newly invited member will be pending administrator approval if the role is billable. To enable **Manage Non-Billable Promotions**:
+
+1. Enable `enable_member_promotion_management` Application Setting
+1. Enable `member_promotion_management` Feature Flag
+
+Example response:
+
+```json
+{
+  "queued_users": {
+    "username_1": "Request queued for administrator approval."
+  },
+  "status": "success"
+}
+```
+
 ## List all invitations pending for a group or project
 
 Gets a list of invited group or project members viewable by the authenticated user.

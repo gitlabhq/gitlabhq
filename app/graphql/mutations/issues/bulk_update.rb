@@ -10,23 +10,23 @@ module Mutations
       MAX_ISSUES = 100
 
       description 'Allows updating several properties for a set of issues. ' \
-                  'Does nothing if the `bulk_update_issues_mutation` feature flag is disabled.'
+        'Does nothing if the `bulk_update_issues_mutation` feature flag is disabled.'
 
       argument :parent_id, ::Types::GlobalIDType[::IssueParent],
         required: true,
         description: 'Global ID of the parent to which the bulk update will be scoped. ' \
-                     'The parent can be a project. The parent can also be a group (Premium and Ultimate only). ' \
-                     'Example `IssueParentID` are `"gid://gitlab/Project/1"` and `"gid://gitlab/Group/1"`.'
+          'The parent can be a project. The parent can also be a group (Premium and Ultimate only). ' \
+          'Example `IssueParentID` are `"gid://gitlab/Project/1"` and `"gid://gitlab/Group/1"`.'
 
       argument :ids, [::Types::GlobalIDType[::Issue]],
         required: true,
         description: 'Global ID array of the issues that will be updated. ' \
-                     "IDs that the user can\'t update will be ignored. A max of #{MAX_ISSUES} can be provided."
+          "IDs that the user can\'t update will be ignored. A max of #{MAX_ISSUES} can be provided."
 
       argument :assignee_ids, [::Types::GlobalIDType[::User]],
         required: false,
         description: 'Global ID array of the users that will be assigned to the given issues. ' \
-                     'Existing assignees will be replaced with the ones on this list.'
+          'Existing assignees will be replaced with the ones on this list.'
 
       argument :milestone_id, ::Types::GlobalIDType[::Milestone],
         required: false,
