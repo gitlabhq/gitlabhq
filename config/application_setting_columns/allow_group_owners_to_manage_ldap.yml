@@ -1,0 +1,13 @@
+---
+api_type: boolean
+attr: allow_group_owners_to_manage_ldap
+clusterwide: false
+column: allow_group_owners_to_manage_ldap
+db_type: boolean
+default: 'true'
+description: Set to `true` to allow group owners to manage LDAP. Premium and Ultimate
+  only.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

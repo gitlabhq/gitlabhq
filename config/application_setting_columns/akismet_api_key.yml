@@ -1,0 +1,12 @@
+---
+api_type: string
+attr: akismet_api_key
+clusterwide: false
+column: encrypted_akismet_api_key
+db_type: text
+default:
+description: API key for Akismet spam protection.
+encrypted: true
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

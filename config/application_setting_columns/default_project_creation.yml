@@ -1,0 +1,13 @@
+---
+api_type: integer
+attr: default_project_creation
+clusterwide:
+column: default_project_creation
+db_type: integer
+default: '2'
+description: 'Default project creation protection. Can take: `0` _(No one)_, `1` _(Maintainers)_
+  or `2` _(Developers + Maintainers)_'
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

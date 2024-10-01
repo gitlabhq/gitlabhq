@@ -45,7 +45,6 @@ Gitlab/NoFindInWorkers:
     - 'app/workers/merge_worker.rb'
     - 'app/workers/namespaces/root_statistics_worker.rb'
     - 'app/workers/namespaces/schedule_aggregation_worker.rb'
-    - 'app/workers/onboarding/user_added_worker.rb'
     - 'app/workers/packages/go/sync_packages_worker.rb'
     - 'app/workers/packages/npm/deprecate_package_worker.rb'
     - 'app/workers/project_destroy_worker.rb'

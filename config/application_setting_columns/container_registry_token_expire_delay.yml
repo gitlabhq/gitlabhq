@@ -1,0 +1,12 @@
+---
+api_type: integer
+attr: container_registry_token_expire_delay
+clusterwide: false
+column: container_registry_token_expire_delay
+db_type: integer
+default: '5'
+description: Container registry token duration in minutes.
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

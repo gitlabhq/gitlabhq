@@ -1,0 +1,12 @@
+---
+api_type: string
+attr: asset_proxy_url
+clusterwide: true
+column: asset_proxy_url
+db_type: character
+default:
+description: URL of the asset proxy server. GitLab restart is required to apply changes.
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

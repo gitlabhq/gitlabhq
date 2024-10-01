@@ -1,0 +1,15 @@
+---
+api_type: integer
+attr: max_personal_access_token_lifetime
+clusterwide:
+column: max_personal_access_token_lifetime
+db_type: integer
+default:
+description: Maximum allowable lifetime for access tokens in days. When left blank,
+  default value of 365 is applied. When set, value must be 365 or less. When changed,
+  existing access tokens with an expiration date beyond the maximum allowable lifetime
+  are revoked. Self-managed, Ultimate only.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: false

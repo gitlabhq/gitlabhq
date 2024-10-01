@@ -1,0 +1,12 @@
+---
+api_type:
+attr: vertex_ai_access_token
+clusterwide:
+column: encrypted_vertex_ai_access_token
+db_type: bytea
+default:
+description:
+encrypted: true
+gitlab_com_different_than_default: false
+jihu: false
+not_null: false

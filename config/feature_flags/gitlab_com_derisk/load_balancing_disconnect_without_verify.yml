@@ -1,9 +1,0 @@
----
-name: load_balancing_disconnect_without_verify
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/490211
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166231
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/490104
-milestone: '17.5'
-group: infrastructure
-type: gitlab_com_derisk
-default_enabled: false

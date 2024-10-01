@@ -1,0 +1,12 @@
+---
+api_type:
+attr: container_registry_data_repair_detail_worker_max_concurrency
+clusterwide: false
+column: container_registry_data_repair_detail_worker_max_concurrency
+db_type: integer
+default: '2'
+description:
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: true

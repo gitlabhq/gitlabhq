@@ -136,16 +136,16 @@ module Projects
         case product
         when :postgres
           s_('CloudSeed|Cloud SQL instances are fully managed, relational PostgreSQL databases. '\
-             'Google handles replication, patch management, and database management '\
-             'to ensure availability and performance.')
+            'Google handles replication, patch management, and database management '\
+            'to ensure availability and performance.')
         when :mysql
           s_('Cloud SQL instances are fully managed, relational MySQL databases. '\
-             'Google handles replication, patch management, and database management '\
-             'to ensure availability and performance.')
+            'Google handles replication, patch management, and database management '\
+            'to ensure availability and performance.')
         else
           s_('Cloud SQL instances are fully managed, relational SQL Server databases. ' \
-             'Google handles replication, patch management, and database management ' \
-             'to ensure availability and performance.')
+            'Google handles replication, patch management, and database management ' \
+            'to ensure availability and performance.')
         end
       end
     end

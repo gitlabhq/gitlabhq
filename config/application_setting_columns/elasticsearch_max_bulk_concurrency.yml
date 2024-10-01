@@ -1,0 +1,13 @@
+---
+api_type: integer
+attr: elasticsearch_max_bulk_concurrency
+clusterwide: false
+column: elasticsearch_max_bulk_concurrency
+db_type: smallint
+default: '10'
+description: Maximum concurrency of Elasticsearch bulk requests per indexing operation.
+  This only applies to repository indexing operations. Premium and Ultimate only.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

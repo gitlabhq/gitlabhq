@@ -1,0 +1,14 @@
+---
+api_type: boolean
+attr: check_namespace_plan
+clusterwide: true
+column: check_namespace_plan
+db_type: boolean
+default: 'false'
+description: Enabling this makes only licensed EE features available to projects if
+  the project namespace's plan includes the feature or if the project is public. Premium
+  and Ultimate only.
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: true

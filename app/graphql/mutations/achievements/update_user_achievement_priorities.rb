@@ -14,7 +14,7 @@ module Mutations
         [::Types::GlobalIDType[::Achievements::UserAchievement]],
         required: true,
         description: 'Global IDs of the user achievements being prioritized, ' \
-                     'ordered from highest to lowest priority.'
+          'ordered from highest to lowest priority.'
 
       def resolve(args)
         user_achievements = args.delete(:user_achievement_ids).map { |id| find_object(id) }

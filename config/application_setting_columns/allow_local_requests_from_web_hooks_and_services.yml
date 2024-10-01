@@ -1,0 +1,12 @@
+---
+api_type: boolean
+attr: allow_local_requests_from_web_hooks_and_services
+clusterwide: false
+column: allow_local_requests_from_web_hooks_and_services
+db_type: boolean
+default: 'false'
+description: Allow requests to the local network from webhooks and integrations.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

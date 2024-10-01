@@ -1,0 +1,13 @@
+---
+api_type: boolean
+attr: allow_project_creation_for_guest_and_below
+clusterwide: false
+column: allow_project_creation_for_guest_and_below
+db_type: boolean
+default: 'true'
+description: Indicates whether users assigned up to the Guest role can create groups
+  and personal projects. Defaults to `true`.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

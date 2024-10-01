@@ -1,0 +1,13 @@
+---
+api_type: boolean
+attr: container_expiration_policies_enable_historic_entries
+clusterwide: true
+column: container_expiration_policies_enable_historic_entries
+db_type: boolean
+default: 'false'
+description: Enable [cleanup policies](../user/packages/container_registry/reduce_container_registry_storage.md#enable-the-cleanup-policy)
+  for all projects.
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: true

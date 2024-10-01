@@ -1,0 +1,12 @@
+---
+api_type: string
+attr: elasticsearch_aws_access_key
+clusterwide: false
+column: elasticsearch_aws_access_key
+db_type: character
+default:
+description: AWS IAM access key. Premium and Ultimate only.
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

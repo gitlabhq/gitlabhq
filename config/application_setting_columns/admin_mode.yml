@@ -1,0 +1,13 @@
+---
+api_type: boolean
+attr: admin_mode
+clusterwide: false
+column: admin_mode
+db_type: boolean
+default: 'false'
+description: Require administrators to enable Admin Mode by re-authenticating for
+  administrative tasks.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

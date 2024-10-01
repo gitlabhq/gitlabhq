@@ -139,3 +139,43 @@ You might get an error that states
 
 This is a fallback error that occurs when there is a problem with GitLab Duo Chat.
 Please try a more specific request, enter `/clear` to start a new chat, or leave feedback to help us improve.
+
+## Header mismatch issue
+
+You might get an error that states `I'm sorry, I can't generate a response. Please try again`, without a specific error code.
+
+Check the Sidekiq logs to see if you find the following error:`Header mismatch 'X-Gitlab-Instance-Id'`.
+
+If you see this error, then to resolve it, contact the GitLab support team and ask them to send you a new activation code for the license.
+
+For more information, see [issue 103](https://gitlab.com/gitlab-com/enablement-sub-department/section-enable-request-for-help/-/issues/103).
+
+## Check the health of the Cloud Connector 
+
+We have created a script that verifies the status of various components related to the Cloud Connector, such as:
+
+- Access data
+- Tokens
+- Licenses
+- Host connectivity
+- Feature accessibility
+
+You can run this script in debug mode for more detailed output and to generate a report file.
+
+1. SSH into your single node instance and download the script:
+
+   ```shell
+   wget https://gitlab.com/gitlab-org/gitlab/-/snippets/3734617/raw/main/health_check.rb
+   ```
+
+1. Use Rails Runner to execute the script.
+
+   Ensure that you use the full path to the script.
+
+   ```ruby
+   Usage: gitlab-rails runner full_path/to/health_check.rb
+          --debug                     Enable debug mode
+          --output-file <file_path>   Write a report to a specified file
+          --username <username>       Provide a username to test seat assignments
+          --skip [CHECK]              Skip specific checks (options: access_data, token, license, host, features, end_to_end)
+   ```

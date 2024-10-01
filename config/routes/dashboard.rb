@@ -5,7 +5,7 @@ resource :dashboard, controller: 'dashboard', only: [] do
   get :issues
   get :merge_requests
   get :activity
-  get 'merge_requests/search', to: 'dashboard#merge_requests'
+  get 'merge_requests/search', to: 'dashboard#search_merge_requests'
 
   scope module: :dashboard do
     resources :milestones, only: [:index]

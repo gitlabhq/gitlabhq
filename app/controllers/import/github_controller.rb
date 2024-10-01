@@ -261,7 +261,7 @@ class Import::GithubController < Import::BaseController
     alert_message = safe_format(
       s_(
         "GithubImport|Your GitHub personal access token does not have the required scope to import. " \
-        "%{link_start}Learn More%{link_end}."
+          "%{link_start}Learn More%{link_end}."
       ),
       tag_pair_docs_link
     )

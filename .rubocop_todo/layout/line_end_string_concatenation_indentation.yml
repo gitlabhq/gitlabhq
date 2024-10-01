@@ -2,12 +2,6 @@
 # Cop supports --autocorrect.
 Layout/LineEndStringConcatenationIndentation:
   Exclude:
-    - 'app/components/diffs/overflow_warning_component.rb'
-    - 'app/controllers/concerns/controller_with_cross_project_access_check.rb'
-    - 'app/controllers/import/github_controller.rb'
-    - 'app/controllers/projects/google_cloud/databases_controller.rb'
-    - 'app/controllers/projects/merge_requests/conflicts_controller.rb'
-    - 'app/graphql/mutations/achievements/update_user_achievement_priorities.rb'
     - 'app/graphql/mutations/award_emojis/toggle.rb'
     - 'app/graphql/mutations/boards/issues/issue_move_list.rb'
     - 'app/graphql/mutations/ci/job_token_scope/add_project.rb'

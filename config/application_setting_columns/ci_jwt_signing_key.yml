@@ -1,0 +1,12 @@
+---
+api_type:
+attr: ci_jwt_signing_key
+clusterwide: true
+column: encrypted_ci_jwt_signing_key
+db_type: text
+default:
+description:
+encrypted: true
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

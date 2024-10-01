@@ -1,0 +1,14 @@
+---
+api_type: string or array of strings
+attr: asset_proxy_whitelist
+clusterwide: true
+column: asset_proxy_whitelist
+db_type: text
+default:
+description: "(Deprecated: Use `asset_proxy_allowlist` instead) Assets that match
+  these domains are **not** proxied. Wildcards allowed. Your GitLab installation URL
+  is automatically allowlisted. GitLab restart is required to apply changes."
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

@@ -1,0 +1,13 @@
+---
+api_type: integer
+attr: container_registry_delete_tags_service_timeout
+clusterwide: false
+column: container_registry_delete_tags_service_timeout
+db_type: integer
+default: '250'
+description: The maximum time, in seconds, that the cleanup process can take to delete
+  a batch of tags for [cleanup policies](../user/packages/container_registry/reduce_container_registry_storage.md#set-cleanup-limits-to-conserve-resources).
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

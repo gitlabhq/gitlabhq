@@ -6,10 +6,28 @@
     = render_if_exists 'admin/users/admin_export_user_permissions'
     = render Pajamas::ButtonComponent.new(variant: :confirm, href: new_admin_user_path) do
       = s_('AdminUsers|New user')
-
 .top-area
   = render 'tabs'
 
 .tab-content
   .tab-pane.active
+    .gl-grid.gl-gap-5.gl-mt-4.md:gl-grid-cols-3
+      = render Pajamas::CardComponent.new do |c|
+        - c.with_body do
+          %div
+            = render Pajamas::SingleStatComponent.new(title: s_('AdminUsers|Pending approval'), stat_value: limited_counter_with_delimiter(User.blocked_pending_approval))
+            = render Pajamas::ButtonComponent.new(size: :small, button_options: { class: 'gl-w-max' }, variant: :link, block: false, href: admin_users_path(filter: "blocked_pending_approval")) do
+              = s_('AdminUsers|Filter list')
+      = render Pajamas::CardComponent.new do |c|
+        - c.with_body do
+          %div
+            = render Pajamas::SingleStatComponent.new(title: s_('AdminUsers|Without two-factor authentication'), stat_value: limited_counter_with_delimiter(User.without_two_factor))
+            = render Pajamas::ButtonComponent.new(size: :small, button_options: { class: 'gl-w-max' }, variant: :link, block: false, href: admin_users_path(filter: "two_factor_disabled")) do
+              = s_('AdminUsers|Filter list')
+      = render Pajamas::CardComponent.new do |c|
+        - c.with_body do
+          %div
+            = render Pajamas::SingleStatComponent.new(title: s_('AdminUsers|Administrators'), stat_value: limited_counter_with_delimiter(User.admins))
+            = render Pajamas::ButtonComponent.new(size: :small, button_options: { class: 'gl-w-max' }, variant: :link, block: false, href: admin_users_path(filter: "admins")) do
+              = s_('AdminUsers|Filter list')
     = render 'users'

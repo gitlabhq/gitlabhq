@@ -1,0 +1,13 @@
+---
+api_type: boolean
+attr: auto_devops_enabled
+clusterwide: true
+column: auto_devops_enabled
+db_type: boolean
+default: 'true'
+description: Enable Auto DevOps for projects by default. It automatically builds,
+  tests, and deploys applications based on a predefined CI/CD configuration.
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: true

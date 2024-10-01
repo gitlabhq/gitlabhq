@@ -20,8 +20,7 @@ module Gitlab
               event: :host_list_limit_exceeded,
               message: "Host list length exceeds max_replica_pools so random hosts will be chosen.",
               max_replica_pools: @max_replica_pools,
-              total_host_list_length: addresses.count,
-              randomization_seed: @seed
+              total_host_list_length: addresses.count
             )
 
             # First sort them in case the ordering from DNS server changes

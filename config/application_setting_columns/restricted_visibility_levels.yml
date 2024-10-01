@@ -1,0 +1,16 @@
+---
+api_type: array of strings
+attr: restricted_visibility_levels
+clusterwide: false
+column: restricted_visibility_levels
+db_type: text
+default:
+description: 'Selected levels cannot be used by non-Administrator users for groups,
+  projects or snippets. Can take `private`, `internal` and `public` as a parameter.
+  Default is `null` which means there is no restriction.[Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131203)
+  in GitLab 16.4: cannot select levels that are set as `default_project_visibility`
+  and `default_group_visibility`.'
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

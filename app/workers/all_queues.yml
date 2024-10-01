@@ -3711,42 +3711,6 @@
   :weight: 2
   :idempotent: false
   :tags: []
-- :name: onboarding_issue_created
-  :worker_name: Onboarding::IssueCreatedWorker
-  :feature_category: :onboarding
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
-- :name: onboarding_pipeline_created
-  :worker_name: Onboarding::PipelineCreatedWorker
-  :feature_category: :onboarding
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
-- :name: onboarding_progress
-  :worker_name: Onboarding::ProgressWorker
-  :feature_category: :onboarding
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :cpu
-  :weight: 1
-  :idempotent: true
-  :tags: []
-- :name: onboarding_user_added
-  :worker_name: Onboarding::UserAddedWorker
-  :feature_category: :onboarding
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
 - :name: pages
   :worker_name: PagesWorker
   :feature_category: :pages

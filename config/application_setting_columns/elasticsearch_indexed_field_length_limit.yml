@@ -1,0 +1,14 @@
+---
+api_type: integer
+attr: elasticsearch_indexed_field_length_limit
+clusterwide: false
+column: elasticsearch_indexed_field_length_limit
+db_type: integer
+default: '0'
+description: Maximum size of text fields to index by Elasticsearch. 0 value means
+  no limit. This does not apply to repository and wiki indexing. Premium and Ultimate
+  only.
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: true

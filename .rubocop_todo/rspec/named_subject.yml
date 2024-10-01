@@ -3506,7 +3506,6 @@ RSpec/NamedSubject:
     - 'spec/workers/object_pool/destroy_worker_spec.rb'
     - 'spec/workers/object_pool/join_worker_spec.rb'
     - 'spec/workers/object_storage/delete_stale_direct_uploads_worker_spec.rb'
-    - 'spec/workers/onboarding/issue_created_worker_spec.rb'
     - 'spec/workers/packages/cleanup/delete_orphaned_dependencies_worker_spec.rb'
     - 'spec/workers/packages/cleanup_package_file_worker_spec.rb'
     - 'spec/workers/packages/debian/cleanup_dangling_package_files_worker_spec.rb'

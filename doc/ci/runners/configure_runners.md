@@ -203,11 +203,11 @@ For more information about token rotation, see
 If you need to manually update the runner authentication token, you can run a
 command to [reset the token](https://docs.gitlab.com/runner/commands/#gitlab-runner-reset-token).
 
-### Reset the runner authentication token
+### Reset the runner configuration authentication token
 
-If a runner authentication token is revealed, an attacker could use the token to [clone a runner](https://docs.gitlab.com/runner/security/#cloning-a-runner).
+If a runner's authentication token is exposed, an attacker could use it to [clone the runner](https://docs.gitlab.com/runner/security/#cloning-a-runner).
 
-To reset the runner authentication token:
+To reset the runner configuration authentication token:
 
 1. Delete the runner:
    - [Delete an instance runner](runners_scope.md#delete-instance-runners).

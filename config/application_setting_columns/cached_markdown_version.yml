@@ -1,0 +1,12 @@
+---
+api_type:
+attr: cached_markdown_version
+clusterwide: false
+column: cached_markdown_version
+db_type: integer
+default:
+description:
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: false

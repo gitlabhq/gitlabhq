@@ -18,10 +18,10 @@ module QA
           # have to construct a malformed URL by building the request ourselves.
           uri = URI.parse(address.address)
 
-          http = Net::HTTP.new(uri.host + uri.path, uri.port)
+          http = Net::HTTP.new(uri.host, uri.port)
           http.use_ssl = (uri.scheme == 'https')
 
-          request = Net::HTTP::Get.new(path)
+          request = Net::HTTP::Get.new(uri.path + path)
           response = http.request(request)
 
           # URL normalization in live environments can result in a 302

@@ -358,6 +358,10 @@
 .lib-gitlab-patterns: &lib-gitlab-patterns
   - "{,ee/,jh/}lib/{,ee/,jh/}gitlab/**/*"
 
+.db-docs-patterns: &db-docs-patterns
+  - "{,ee/,jh/}{app/models}/**/*"
+  - "db/docs/**/*"
+
 # Patterns to match pure Ruby code
 .ruby-patterns: &ruby-patterns
   - "**/Rakefile"
@@ -929,6 +933,19 @@
       changes: *code-backstage-patterns
     - !reference [".rails:rules:predictive-default-rules", rules]
     - !reference [".rails:rules:system:predictive-default-rules", rules]
+
+######################
+# DB rules #
+######################
+.db:rules:docs-up-to-date:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-merge-request-labels-pipeline-expedite
+      when: never
+    - <<: *if-merge-request-labels-run-all-rspec
+    - <<: *if-merge-request
+      changes: *db-docs-patterns
 
 ################
 # Shared rules #

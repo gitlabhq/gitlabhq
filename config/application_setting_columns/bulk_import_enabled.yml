@@ -1,0 +1,14 @@
+---
+api_type: boolean
+attr: bulk_import_enabled
+clusterwide: false
+column: bulk_import_enabled
+db_type: boolean
+default: 'false'
+description: Enable migrating GitLab groups by direct transfer. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383268)
+  in GitLab 15.8. Setting also [available](../administration/settings/import_and_export_settings.md#enable-migration-of-groups-and-projects-by-direct-transfer)
+  in the **Admin** area.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

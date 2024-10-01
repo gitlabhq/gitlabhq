@@ -1,0 +1,12 @@
+---
+api_type:
+attr: error_tracking_access_token_encrypted
+clusterwide:
+column: error_tracking_access_token_encrypted
+db_type: text
+default:
+description:
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

@@ -1,0 +1,13 @@
+---
+api_type: boolean
+attr: allow_account_deletion
+clusterwide: false
+column: allow_account_deletion
+db_type: boolean
+default: 'true'
+description: Set to `true` to allow users to delete their accounts. Premium and Ultimate
+  only.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

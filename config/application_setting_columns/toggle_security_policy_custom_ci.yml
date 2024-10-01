@@ -1,0 +1,12 @@
+---
+api_type:
+attr: toggle_security_policy_custom_ci
+clusterwide: false
+column: toggle_security_policy_custom_ci
+db_type: boolean
+default: 'false'
+description: This column is currently ignored.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

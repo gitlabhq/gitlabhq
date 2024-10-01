@@ -7,7 +7,7 @@
     - c.with_body do
       = render 'shared/registration_features_discovery_message', feature_title: s_('RegistrationFeatures|send emails to users')
 
-.gl-flex.gl-items-start.gl-flex-wrap.md:gl-flex-nowrap.gl-gap-4.row-content-block.gl-border-0{ data: { testid: "filtered-search-block" } }
+.gl-flex.gl-items-start.gl-flex-wrap.md:gl-flex-nowrap.gl-gap-4.gl-py-4.gl-border-0{ data: { testid: "filtered-search-block" } }
   #js-admin-users-filter-app
   .gl-shrink-0
     = gl_redirect_listbox_tag admin_users_sort_options(filter: params[:filter], search_query: params[:search_query]), @sort,  data: { placement: 'right' }

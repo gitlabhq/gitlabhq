@@ -1,0 +1,14 @@
+---
+api_type: boolean
+attr: elasticsearch_requeue_workers
+clusterwide: false
+column: elasticsearch_requeue_workers
+db_type: boolean
+default: 'false'
+description: Enable automatic requeuing of indexing workers. This improves non-code
+  indexing throughput by enqueuing Sidekiq jobs until all documents are processed.
+  Premium and Ultimate only.
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: true

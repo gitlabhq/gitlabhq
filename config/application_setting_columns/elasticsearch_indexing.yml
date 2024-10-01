@@ -1,0 +1,12 @@
+---
+api_type: boolean
+attr: elasticsearch_indexing
+clusterwide: false
+column: elasticsearch_indexing
+db_type: boolean
+default: 'false'
+description: Enable Elasticsearch indexing. Premium and Ultimate only.
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: true
