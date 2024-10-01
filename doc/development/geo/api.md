@@ -29,7 +29,7 @@ Supported attributes:
 |--------------------------|----------|----------|-----------------------|
 | `gl_repository`          | string   | Yes      | The `gl_repository` ID of the repository to query |
 
-If successful, returns [`200`](../../api/rest/index.md#status-codes) and the following
+If successful, returns [`200`](../../api/rest/troubleshooting.md#status-codes) and the following
 response attributes:
 
 | Attribute                | Type     | Description           |

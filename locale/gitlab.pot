@@ -18131,6 +18131,9 @@ msgstr ""
 msgid "Delete label: %{labelName}"
 msgstr ""
 
+msgid "Delete offline nodes automatically after %{label}"
+msgstr ""
+
 msgid "Delete pipeline"
 msgstr ""
 
@@ -31626,7 +31629,7 @@ msgstr ""
 msgid "Labels"
 msgstr ""
 
-msgid "Labels can be applied to issues and merge requests to categorize them."
+msgid "Labels can be applied to issues and merge requests to categorize them"
 msgstr ""
 
 msgid "Labels can be applied to issues and merge requests. Group labels are available for any project within the group."

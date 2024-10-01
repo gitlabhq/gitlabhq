@@ -70,7 +70,7 @@ RSpec.describe 'User reverts a merge request', :js, feature_category: :code_revi
       project.update!(merge_requests_ff_only_enabled: true)
     end
 
-    it 'reverts a merge request', :sidekiq_might_not_need_inline do
+    it 'reverts a merge request', :sidekiq_might_not_need_inline, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/454303' do
       revert_commit
 
       Sidekiq::Worker.skipping_transaction_check do

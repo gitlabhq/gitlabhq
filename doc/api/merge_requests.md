@@ -276,7 +276,7 @@ Supported attributes:
 | `with_labels_details`           | boolean        | No       | If `true`, response returns more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. |
 | `with_merge_status_recheck`     | boolean        | No       | If `true`, this projection requests (but does not guarantee) the asynchronous recalculation of the `merge_status` field. Default is `false`. In GitLab 15.11 and later, enable the `restrict_merge_status_recheck` feature [flag](../administration/feature_flags.md) to ignore this attribute when requested by users without at least the Developer role. |
 
-If successful, returns [`200 OK`](rest/index.md#status-codes) and the following
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following
 response attributes:
 
 | Attribute                          | Type     | Description |
@@ -1032,7 +1032,7 @@ Supported attributes:
 | `id`                | integer or string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 | `merge_request_iid` | integer           | Yes      | Internal ID of the merge request. |
 
-If successful, returns [`200 OK`](rest/index.md#status-codes) and the following
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following
 response attributes:
 
 | Attribute                     | Type         | Description |
@@ -1546,7 +1546,7 @@ Supported attributes:
 | `per_page`          | integer           | No       | The number of results per page. Defaults to 20. |
 | `unidiff`           | boolean           | No       | Present diffs in the [unified diff](https://www.gnu.org/software/diffutils/manual/html_node/Detailed-Unified.html) format. Default is false. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130610) in GitLab 16.5. |
 
-If successful, returns [`200 OK`](rest/index.md#status-codes) and the
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the
 following response attributes:
 
 | Attribute      | Type    | Description |
@@ -2510,7 +2510,7 @@ Supported attributes:
 | `id`                | integer or string | Yes   | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 | `merge_request_iid` | integer        | Yes      | Internal ID of the merge request. |
 
-If successful, returns [`200 OK`](rest/index.md#status-codes) and the following
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following
 response attributes when you use the GitLab issue tracker:
 
 | Attribute                   | Type     | Description                                                                                                                       |
@@ -2545,7 +2545,7 @@ response attributes when you use the GitLab issue tracker:
 | `[].web_url`                | string   | Web URL of the issue.                                                                                                             |
 | `[].weight`                 | integer  | Weight of the issue.                                                                                                              |
 
-If successful, returns [`200 OK`](rest/index.md#status-codes) and the following
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following
 response attributes when you use an external issue tracker, like Jira:
 
 | Attribute                   | Type     | Description                                                                                                                       |
@@ -3263,7 +3263,7 @@ Supported attributes:
 | `version_id`        | integer | Yes      | ID of the merge request diff version. |
 | `unidiff`           | boolean | No       | Present diffs in the [unified diff](https://www.gnu.org/software/diffutils/manual/html_node/Detailed-Unified.html) format. Default is false. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130610) in GitLab 16.5.      |
 
-If successful, returns [`200 OK`](rest/index.md#status-codes) and the following
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following
 response attributes:
 
 | Attribute                     | Type         | Description |

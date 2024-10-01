@@ -83,7 +83,7 @@ Example request:
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/uploads/1"
 ```
 
-If successful, returns [`200`](rest/index.md#status-codes) and the uploaded file in the response body.
+If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the uploaded file in the response body.
 
 ## Download an uploaded file by secret and filename
 
@@ -109,7 +109,7 @@ Example request:
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/uploads/648d97c6eef5fc5df8d1004565b3ee5a/sample.jpg"
 ```
 
-If successful, returns [`200`](rest/index.md#status-codes) and the uploaded file in the response body.
+If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the uploaded file in the response body.
 
 ## Delete an uploaded file by ID
 
@@ -134,7 +134,7 @@ Example request:
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/uploads/1"
 ```
 
-If successful, returns [`204`](rest/index.md#status-codes) status code without any response body.
+If successful, returns [`204`](rest/troubleshooting.md#status-codes) status code without any response body.
 
 ## Delete an uploaded file by secret and filename
 
@@ -160,4 +160,4 @@ Example request:
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/uploads/648d97c6eef5fc5df8d1004565b3ee5a/sample.jpg"
 ```
 
-If successful, returns [`204`](rest/index.md#status-codes) status code without any response body.
+If successful, returns [`204`](rest/troubleshooting.md#status-codes) status code without any response body.

@@ -127,9 +127,11 @@ To set up GitLab and its components to accommodate up to 40 RPS or 2,000 users:
 1. [Configure the external load balancing node](#configure-the-external-load-balancer)
    to handle the load balancing of the GitLab application services nodes.
 1. [Configure PostgreSQL](#configure-postgresql), the database for GitLab.
-1. [Configure Redis](#configure-redis).
+1. [Configure Redis](#configure-redis), which stores session data, temporary
+cache information, and background job queues.
 1. [Configure Gitaly](#configure-gitaly), which provides access to the Git
    repositories.
+1. [Configure Sidekiq](#configure-sidekiq) for background job processing.
 1. [Configure the main GitLab Rails application](#configure-gitlab-rails)
    to run Puma, Workhorse, GitLab Shell, and to serve all frontend
    requests (which include UI, API, and Git over HTTP/SSH).

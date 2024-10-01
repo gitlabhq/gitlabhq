@@ -192,3 +192,56 @@ Sample response:
   },
 ...
 ```
+
+## Events Tracking API
+
+Tracks internal events in GitLab. Requires a personal access token with the `api` or `ai_workflows` scope.
+
+To track events to Snowplow, set the `send_to_snowplow` parameter to `true`.
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+     --header "Content-Type: application/json" \
+     --request POST \
+     --data '{
+       "event": "mr_name_changed",
+       "send_to_snowplow": true,
+       "namespace_id": 1,
+       "project_id": 1,
+       "additional_properties": {
+         "lang": "eng"
+       }
+     }' \
+     "https://gitlab.example.com/api/v4/usage_data/track_event"
+```
+
+If multiple events tracking is required, send an array of events to the `/track_events` endpoint:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+     --header "Content-Type: application/json" \
+     --request POST \
+     --data '{
+       "events": [
+         {
+           "event": "mr_name_changed",
+           "namespace_id": 1,
+           "project_id": 1,
+           "additional_properties": {
+             "lang": "eng"
+           }
+         },
+         {
+           "event": "mr_name_changed",
+           "namespace_id": 2,
+           "project_id": 2,
+           "additional_properties": {
+             "lang": "eng"
+           }
+         }
+       ]
+     }' \
+     "https://gitlab.example.com/api/v4/usage_data/track_events"
+```

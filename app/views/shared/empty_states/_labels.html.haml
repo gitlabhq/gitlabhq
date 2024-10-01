@@ -1,14 +1,11 @@
-.row.empty-state.labels
-  .col-12
-    .svg-content.svg-150{ data: { testid: 'label-svg-content' } }
-      = image_tag 'illustrations/empty-state/empty-labels-md.svg'
-  .col-12
-    .text-content
-      %h4= _("Labels can be applied to issues and merge requests to categorize them.")
-      %p= _("You can also star a label to make it a priority label.")
-      .text-center
-        - if can?(current_user, :admin_label, @project)
-          = link_button_to _('New label'), new_project_label_path(@project), title: _('New label'), id: 'new_label_link', variant: :confirm
-          = link_button_to _('Generate a default set of labels'), generate_project_labels_path(@project), method: :post, title: _('Generate a default set of labels'), id: 'generate_labels_link', variant: :confirm, category: :secondary
-        - if can?(current_user, :admin_label, @group)
-          = link_button_to _('New label'), new_group_label_path(@group), title: _('New label'), id: 'new_label_link', variant: :confirm
+= render Pajamas::EmptyStateComponent.new(svg_path: 'illustrations/empty-state/empty-labels-add-md.svg',
+  title: _("Labels can be applied to issues and merge requests to categorize them")) do |c|
+
+  - c.with_description do
+    = _("You can also star a label to make it a priority label.")
+    .gl-mt-5.gl-flex.gl-gap-3.gl-flex-wrap.gl-justify-center
+      - if can?(current_user, :admin_label, @project)
+        = link_button_to _('New label'), new_project_label_path(@project), title: _('New label'), id: 'new_label_link', variant: :confirm
+        = link_button_to _('Generate a default set of labels'), generate_project_labels_path(@project), method: :post, title: _('Generate a default set of labels'), id: 'generate_labels_link', variant: :confirm, category: :secondary
+      - if can?(current_user, :admin_label, @group)
+        = link_button_to _('New label'), new_group_label_path(@group), title: _('New label'), id: 'new_label_link', variant: :confirm

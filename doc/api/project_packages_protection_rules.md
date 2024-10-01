@@ -35,7 +35,7 @@ Supported attributes:
 |-------------------------------|-----------------|----------|--------------------------------|
 | `id`                          | integer/string  | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 
-If successful, returns [`200`](rest/index.md#status-codes) and a list of package protection rules.
+If successful, returns [`200`](rest/troubleshooting.md#status-codes) and a list of package protection rules.
 
 Can return the following status codes:
 
@@ -89,7 +89,7 @@ Supported attributes:
 | `package_type`                        | string          | Yes      | Package type protected by the protection rule. For example `npm`. |
 | `minimum_access_level_for_push`       | string          | Yes      | Minimum GitLab access level able to push a package. Must be at least `maintainer`. For example `maintainer`, `owner` or `admin`. |
 
-If successful, returns [`201`](rest/index.md#status-codes) and the created package protection rule.
+If successful, returns [`201`](rest/troubleshooting.md#status-codes) and the created package protection rule.
 
 Can return the following status codes:
 
@@ -132,7 +132,7 @@ Supported attributes:
 | `package_type`                        | string          | No       | Package type protected by the protection rule. For example `npm`. |
 | `minimum_access_level_for_push`       | string          | No       | Minimum GitLab access level able to push a package. Must be at least `maintainer`. For example `maintainer`, `owner` or `admin`. |
 
-If successful, returns [`200`](rest/index.md#status-codes) and the updated package protection rule.
+If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the updated package protection rule.
 
 Can return the following status codes:
 
@@ -170,7 +170,7 @@ Supported attributes:
 | `id`                          | integer/string  | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 | `package_protection_rule_id`  | integer         | Yes      | ID of the package protection rule to be deleted. |
 
-If successful, returns [`204 No Content`](rest/index.md#status-codes).
+If successful, returns [`204 No Content`](rest/troubleshooting.md#status-codes).
 
 Can return the following status codes:
 

@@ -30,7 +30,7 @@ Supported attributes:
 |:------------------|:--------|:---------|:----------------------|
 | `id`              | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths) |
 
-If successful, returns [`200`](rest/index.md#status-codes) and the following
+If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the following
 response attributes:
 
 | Attribute    | Type   | Description               |
@@ -180,7 +180,7 @@ Supported attributes:
 |:----------|:---------------|:---------|:------------|
 | `id`      | integer/string | yes      | ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
 
-If successful, returns [`200`](rest/index.md#status-codes) and the following response attributes:
+If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the following response attributes:
 
 | Attribute           | Type    | Description |
 |:--------------------|:--------|:------------|
@@ -226,7 +226,7 @@ Supported attributes:
 | `id`              | integer/string | yes      | ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
 | `saml_group_name` | string         | yes      | Name of the SAML group. |
 
-If successful, returns [`200`](rest/index.md#status-codes) and the following response attributes:
+If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the following response attributes:
 
 | Attribute        | Type    | Description |
 |:-----------------|:--------|:------------|
@@ -267,7 +267,7 @@ Supported attributes:
 | `access_level`    | integer           | yes      | [Role (`access_level`)](members.md#roles) for members of the SAML group. |
 | `member_role_id`  | integer           | no       | [Member Role ID (`member_role_id`)](member_roles.md) for members of the SAML group. |
 
-If successful, returns [`201`](rest/index.md#status-codes) and the following response attributes:
+If successful, returns [`201`](rest/troubleshooting.md#status-codes) and the following response attributes:
 
 | Attribute        | Type    | Description |
 |:-----------------|:--------|:------------|
@@ -312,4 +312,4 @@ Example request:
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/saml_group_links/saml-group-1"
 ```
 
-If successful, returns [`204`](rest/index.md#status-codes) status code without any response body.
+If successful, returns [`204`](rest/troubleshooting.md#status-codes) status code without any response body.

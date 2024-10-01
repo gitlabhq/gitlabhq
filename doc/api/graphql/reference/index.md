@@ -29540,7 +29540,8 @@ Response of security policy creation.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="policyprojectcreatederrormessage"></a>`errorMessage` | [`String`](#string) | Error message in case status is :error. |
+| <a id="policyprojectcreatederrormessage"></a>`errorMessage` **{warning-solid}** | [`String`](#string) | **Deprecated** in GitLab 17.5. Use errors instead. |
+| <a id="policyprojectcreatederrors"></a>`errors` | [`[String!]`](#string) | Error messages in case status is :error. |
 | <a id="policyprojectcreatedproject"></a>`project` | [`Project`](#project) | Security Policy Project that was created. |
 | <a id="policyprojectcreatedstatus"></a>`status` | [`PolicyProjectCreatedStatus`](#policyprojectcreatedstatus) | Status of the creation of the security policy project. |
 

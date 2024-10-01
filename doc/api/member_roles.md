@@ -176,7 +176,7 @@ Supported attributes:
 |:----------|:--------|:---------|:-------------------------------------|
 | `member_role_id` | integer | yes   | The ID of the member role. |
 
-If successful, returns [`204`](rest/index.md#status-codes) and an empty response.
+If successful, returns [`204`](rest/troubleshooting.md#status-codes) and an empty response.
 
 Example request:
 
@@ -368,7 +368,7 @@ DELETE /groups/:id/member_roles/:member_role_id
 | `id`      | integer/string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths) of the group. |
 | `member_role_id` | integer | yes   | The ID of the member role. |
 
-If successful, returns [`204`](rest/index.md#status-codes) and an empty response.
+If successful, returns [`204`](rest/troubleshooting.md#status-codes) and an empty response.
 
 Example request:
 

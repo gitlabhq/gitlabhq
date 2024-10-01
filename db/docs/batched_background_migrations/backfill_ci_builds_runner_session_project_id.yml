@@ -1,0 +1,9 @@
+---
+migration_job_name: BackfillCiBuildsRunnerSessionProjectId
+description: Backfills sharding key `ci_builds_runner_session.project_id` from `p_ci_builds`.
+feature_category: runner
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167634
+milestone: '17.5'
+queued_migration_version: 20240930144643
+finalize_after: '2024-10-22'
+finalized_by: # version of the migration that finalized this BBM

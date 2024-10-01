@@ -1372,7 +1372,7 @@ curl --request DELETE \
   --url "https://gitlab.example.com/api/v4/projects/4/issues/85"
 ```
 
-If successful, returns [`204 No Content`](rest/index.md#status-codes).
+If successful, returns [`204 No Content`](rest/troubleshooting.md#status-codes).
 
 ## Reorder an issue
 

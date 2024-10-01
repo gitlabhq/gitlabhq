@@ -206,6 +206,35 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
     end
   end
 
+  context 'when querying WorkItemWidgetStartAndDueDate' do
+    let(:fields) do
+      <<~GRAPHQL
+        nodes {
+          widgets {
+            type
+            ... on WorkItemWidgetStartAndDueDate {
+              dueDate
+              startDate
+            }
+          }
+        }
+      GRAPHQL
+    end
+
+    it 'avoids N+1 queries when we create more work items' do
+      post_graphql(query, current_user: current_user) # warm-up
+
+      control = ActiveRecord::QueryRecorder.new do
+        post_graphql(query, current_user: current_user)
+      end
+
+      create_list(:work_item, 3, project: project)
+
+      expect { post_graphql(query, current_user: current_user) }
+        .not_to exceed_query_limit(control)
+    end
+  end
+
   context 'when the user does not have access to the item' do
     before do
       project.project_feature.update!(issues_access_level: ProjectFeature::PRIVATE)

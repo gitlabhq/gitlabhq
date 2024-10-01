@@ -200,7 +200,7 @@ Supported attributes:
 | `id`        | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 | `mirror_id` | Integer           | Yes      | The remote mirror ID.                                                                |
 
-If successful, returns [`204`](rest/index.md#status-codes).
+If successful, returns [`204`](rest/troubleshooting.md#status-codes).
 
 Example request:
 

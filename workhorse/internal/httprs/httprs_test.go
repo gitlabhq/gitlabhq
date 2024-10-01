@@ -10,7 +10,7 @@ import (
 	"testing"
 	"time"
 
-	. "github.com/smartystreets/goconvey/convey"
+	"github.com/stretchr/testify/require"
 )
 
 type fakeResponseWriter struct {
@@ -57,7 +57,6 @@ func (f *fakeRoundTripper) RoundTrip(r *http.Request) (*http.Response, error) {
 	}
 
 	if f.downgradeZeroToNoRange {
-		// There are implementations that downgrades bytes=0- to a normal un-ranged GET
 		if r.Header.Get("Range") == "bytes=0-" {
 			r.Header.Del("Range")
 		}
@@ -82,7 +81,7 @@ func newRSFactory(flags int) RSFactory {
 		if err != nil {
 			return nil
 		}
-		if removeErr := os.Remove(tmp.Name()); removeErr != nil {
+		if os.Remove(tmp.Name()) != nil {
 			return nil
 		}
 
@@ -109,38 +108,35 @@ func newRSFactory(flags int) RSFactory {
 }
 
 func TestHttpWebServer(t *testing.T) {
-	Convey("Scenario: testing WebServer", t, func() {
-		dir := t.TempDir()
+	dir := t.TempDir()
 
-		err := os.WriteFile(filepath.Join(dir, "file"), make([]byte, 10000), 0755)
-		So(err, ShouldBeNil)
+	err := os.WriteFile(filepath.Join(dir, "file"), make([]byte, 10000), 0755)
+	require.NoError(t, err)
 
-		server := httptest.NewServer(http.FileServer(http.Dir(dir)))
+	server := httptest.NewServer(http.FileServer(http.Dir(dir)))
+	defer server.Close()
 
-		Convey("When requesting /file", func() {
-			res, err := http.Get(server.URL + "/file")
-			defer func() { _ = res.Body.Close() }()
-			So(err, ShouldBeNil)
+	res, err := http.Get(server.URL + "/file")
+	require.NoError(t, err)
+	defer res.Body.Close()
 
-			stream := NewHTTPReadSeeker(res)
-			So(stream, ShouldNotBeNil)
+	stream := NewHTTPReadSeeker(res)
+	require.NotNil(t, stream)
 
-			Convey("Can read 100 bytes from start of file", func() {
+	t.Run("Can read 100 bytes from start of file", func(t *testing.T) {
+		n, err := stream.Read(make([]byte, 100))
+		require.NoError(t, err)
+		require.Equal(t, 100, n)
+
+		t.Run("When seeking 4KiB forward", func(t *testing.T) {
+			pos, err := stream.Seek(4096, io.SeekCurrent)
+			require.NoError(t, err)
+			require.Equal(t, int64(4096+100), pos)
+
+			t.Run("Can read 100 bytes", func(t *testing.T) {
 				n, err := stream.Read(make([]byte, 100))
-				So(err, ShouldBeNil)
-				So(n, ShouldEqual, 100)
-
-				Convey("When seeking 4KiB forward", func() {
-					pos, err := stream.Seek(4096, io.SeekCurrent)
-					So(err, ShouldBeNil)
-					So(pos, ShouldEqual, 4096+100)
-
-					Convey("Can read 100 bytes", func() {
-						n, err := stream.Read(make([]byte, 100))
-						So(err, ShouldBeNil)
-						So(n, ShouldEqual, 100)
-					})
-				})
+				require.NoError(t, err)
+				require.Equal(t, 100, n)
 			})
 		})
 	})
@@ -165,98 +161,109 @@ func TestHttpReaderSeeker(t *testing.T) {
 }
 
 func testHTTPReaderSeeker(t *testing.T, newRS RSFactory) {
-	Convey("Scenario: testing HttpReaderSeeker", t, func() {
-		Convey("Read should start at the beginning", func() {
-			r := newRS()
-			So(r, ShouldNotBeNil)
-			defer r.Close()
-			buf := make([]byte, 4)
-			n, err := io.ReadFull(r, buf)
-			So(n, ShouldEqual, 4)
-			So(err, ShouldBeNil)
-			So(string(buf), ShouldEqual, "0000")
-		})
+	t.Run("Read should start at the beginning", func(t *testing.T) {
+		r := newRS()
+		require.NotNil(t, r)
+		defer r.Close()
 
-		Convey("Seek w SEEK_SET should seek to right offset", func() {
-			r := newRS()
-			So(r, ShouldNotBeNil)
-			defer r.Close()
-			s, err := r.Seek(4*64, io.SeekStart)
-			So(s, ShouldEqual, 4*64)
-			So(err, ShouldBeNil)
-			buf := make([]byte, 4)
-			n, err := io.ReadFull(r, buf)
-			So(n, ShouldEqual, 4)
-			So(err, ShouldBeNil)
-			So(string(buf), ShouldEqual, "0064")
-		})
+		buf := make([]byte, 4)
+		n, err := io.ReadFull(r, buf)
+		require.NoError(t, err)
+		require.Equal(t, 4, n)
+		require.Equal(t, "0000", string(buf))
+	})
 
-		Convey("Read + Seek w SEEK_CUR should seek to right offset", func() {
-			r := newRS()
-			So(r, ShouldNotBeNil)
-			defer r.Close()
-			buf := make([]byte, 4)
-			io.ReadFull(r, buf)
-			s, err := r.Seek(4*64, io.SeekCurrent)
-			So(s, ShouldEqual, 4*64+4)
-			So(err, ShouldBeNil)
-			n, err := io.ReadFull(r, buf)
-			So(n, ShouldEqual, 4)
-			So(err, ShouldBeNil)
-			So(string(buf), ShouldEqual, "0065")
-		})
+	t.Run("Seek w SEEK_SET should seek to right offset", func(t *testing.T) {
+		r := newRS()
+		require.NotNil(t, r)
+		defer r.Close()
 
-		Convey("Seek w SEEK_END should seek to right offset", func() {
-			r := newRS()
-			So(r, ShouldNotBeNil)
-			defer r.Close()
-			buf := make([]byte, 4)
-			io.ReadFull(r, buf)
-			s, err := r.Seek(4, io.SeekEnd)
-			So(s, ShouldEqual, SZ*4-4)
-			So(err, ShouldBeNil)
-			n, err := io.ReadFull(r, buf)
-			So(n, ShouldEqual, 4)
-			So(err, ShouldBeNil)
-			So(string(buf), ShouldEqual, fmt.Sprintf("%04d", SZ-1))
-		})
+		s, err := r.Seek(4*64, io.SeekStart)
+		require.NoError(t, err)
+		require.Equal(t, int64(4*64), s)
 
-		Convey("Short seek should consume existing request", func() {
-			r := newRS()
-			So(r, ShouldNotBeNil)
-			defer r.Close()
-			buf := make([]byte, 4)
-			So(r.Requests, ShouldEqual, 0)
-			io.ReadFull(r, buf)
-			So(r.Requests, ShouldEqual, 1)
-			s, err := r.Seek(shortSeekBytes, io.SeekCurrent)
-			So(r.Requests, ShouldEqual, 1)
-			So(s, ShouldEqual, shortSeekBytes+4)
-			So(err, ShouldBeNil)
-			n, err := io.ReadFull(r, buf)
-			So(n, ShouldEqual, 4)
-			So(err, ShouldBeNil)
-			So(string(buf), ShouldEqual, "0257")
-			So(r.Requests, ShouldEqual, 1)
-		})
+		buf := make([]byte, 4)
+		n, err := io.ReadFull(r, buf)
+		require.NoError(t, err)
+		require.Equal(t, 4, n)
+		require.Equal(t, "0064", string(buf))
+	})
 
-		Convey("Long seek should do a new request", func() {
-			r := newRS()
-			So(r, ShouldNotBeNil)
-			defer r.Close()
-			buf := make([]byte, 4)
-			So(r.Requests, ShouldEqual, 0)
-			io.ReadFull(r, buf)
-			So(r.Requests, ShouldEqual, 1)
-			s, err := r.Seek(shortSeekBytes+1, io.SeekCurrent)
-			So(r.Requests, ShouldEqual, 1)
-			So(s, ShouldEqual, shortSeekBytes+4+1)
-			So(err, ShouldBeNil)
-			n, err := io.ReadFull(r, buf)
-			So(n, ShouldEqual, 4)
-			So(err, ShouldBeNil)
-			So(string(buf), ShouldEqual, "2570")
-			So(r.Requests, ShouldEqual, 2)
-		})
+	t.Run("Read + Seek w SEEK_CUR should seek to right offset", func(t *testing.T) {
+		r := newRS()
+		require.NotNil(t, r)
+		defer r.Close()
+
+		buf := make([]byte, 4)
+		io.ReadFull(r, buf)
+
+		s, err := r.Seek(4*64, io.SeekCurrent)
+		require.NoError(t, err)
+		require.Equal(t, int64(4*64+4), s)
+
+		n, err := io.ReadFull(r, buf)
+		require.NoError(t, err)
+		require.Equal(t, 4, n)
+		require.Equal(t, "0065", string(buf))
+	})
+
+	t.Run("Seek w SEEK_END should seek to right offset", func(t *testing.T) {
+		r := newRS()
+		require.NotNil(t, r)
+		defer r.Close()
+
+		buf := make([]byte, 4)
+		io.ReadFull(r, buf)
+
+		s, err := r.Seek(4, io.SeekEnd)
+		require.NoError(t, err)
+		require.Equal(t, int64(SZ*4-4), s)
+
+		n, err := io.ReadFull(r, buf)
+		require.NoError(t, err)
+		require.Equal(t, 4, n)
+		require.Equal(t, fmt.Sprintf("%04d", SZ-1), string(buf))
+	})
+
+	t.Run("Short seek should consume existing request", func(t *testing.T) {
+		r := newRS()
+		require.NotNil(t, r)
+		defer r.Close()
+
+		buf := make([]byte, 4)
+		require.Equal(t, 0, r.Requests)
+		io.ReadFull(r, buf)
+		require.Equal(t, 1, r.Requests)
+
+		s, err := r.Seek(shortSeekBytes, io.SeekCurrent)
+		require.NoError(t, err)
+		require.Equal(t, int64(shortSeekBytes+4), s)
+
+		n, err := io.ReadFull(r, buf)
+		require.NoError(t, err)
+		require.Equal(t, 4, n)
+		require.Equal(t, "0257", string(buf))
+		require.Equal(t, 1, r.Requests)
+	})
+
+	t.Run("Long seek should do a new request", func(t *testing.T) {
+		r := newRS()
+		require.NotNil(t, r)
+		defer r.Close()
+
+		buf := make([]byte, 4)
+		require.Equal(t, 0, r.Requests)
+		io.ReadFull(r, buf)
+		require.Equal(t, 1, r.Requests)
+
+		s, err := r.Seek(shortSeekBytes+1, io.SeekCurrent)
+		require.NoError(t, err)
+		require.Equal(t, int64(shortSeekBytes+4+1), s)
+
+		n, err := io.ReadFull(r, buf)
+		require.NoError(t, err)
+		require.Equal(t, 4, n)
+		require.Equal(t, "2570", string(buf))
+		require.Equal(t, 2, r.Requests)
 	})
 }

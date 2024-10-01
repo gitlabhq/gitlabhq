@@ -280,6 +280,75 @@ RSpec.describe API::UsageData, feature_category: :service_ping do
           end
         end
       end
+
+      describe 'send_to_snowplow param' do
+        it 'does not send the event to snowplow when send_to_snowplow is false' do
+          expect(Gitlab::InternalEvents).to receive(:track_event)
+            .with(
+              known_event,
+              send_snowplow_event: false,
+              user: user,
+              namespace: namespace,
+              project: project,
+              additional_properties: additional_properties
+            )
+
+          post api(endpoint, user), params: {
+            event: known_event,
+            namespace_id: namespace.id,
+            project_id: project.id,
+            additional_properties: additional_properties,
+            send_to_snowplow: false
+          }
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+
+        it 'sends event to Snowplow when send_to_snowplow is true' do
+          expect(Gitlab::InternalEvents).to receive(:track_event)
+            .with(
+              known_event,
+              send_snowplow_event: true,
+              user: user,
+              namespace: namespace,
+              project: project,
+              additional_properties: additional_properties
+            )
+
+          post api(endpoint, user), params:
+            {
+              event: known_event,
+              namespace_id: namespace.id,
+              project_id: project.id,
+              additional_properties: additional_properties,
+              send_to_snowplow: true
+            }
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+
+        it 'does not send event to Snowplow by default' do
+          expect(Gitlab::InternalEvents).to receive(:track_event)
+            .with(
+              known_event,
+              send_snowplow_event: false,
+              user: user,
+              namespace: namespace,
+              project: project,
+              additional_properties: additional_properties
+            )
+
+          post api(endpoint, user), params:
+            {
+              event: known_event,
+              namespace_id: namespace.id,
+              project_id: project.id,
+              additional_properties: additional_properties
+            }
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
     end
   end
 
@@ -305,16 +374,12 @@ RSpec.describe API::UsageData, feature_category: :service_ping do
     end
 
     context 'with the amount events greater than the limit' do
-      let(:params) do
-        {
-          events: Array.new(API::UsageData::MAXIMUM_TRACKED_EVENTS * 2) { { event: event } }
-        }
-      end
+      let(:params) { { events: Array.new(API::UsageData::MAXIMUM_TRACKED_EVENTS * 2) { { event: event } } } }
 
       it 'returns bad request' do
         expect(Gitlab::InternalEvents).not_to receive(:track_event)
 
-        post(api(endpoint, user), params: params)
+        post api(endpoint, user), params: params
 
         expect(response).to have_gitlab_http_status(:bad_request)
       end

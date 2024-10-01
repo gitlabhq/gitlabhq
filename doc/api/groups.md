@@ -1561,7 +1561,7 @@ Parameters:
 | `include_service_accounts` | boolean        | yes (see description)  | Include service account users. Either this value or `include_saml_users` must be `true`. |
 | `search`                   | string         | no                        | Search users by name, email, username.                                         |
 
-If successful, returns [`200 OK`](../api/rest/index.md#status-codes) and the
+If successful, returns [`200 OK`](../api/rest/troubleshooting.md#status-codes) and the
 following response attributes:
 
 Example response:
@@ -1724,7 +1724,7 @@ POST /groups/:id/tokens/revoke
 | `id`        | integer or string | Yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
 | `token` | string | Yes  | The plaintext token. |
 
-If successful, returns [`200 OK`](rest/index.md#status-codes) and
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and
 a JSON representation of the token. The attributes returned will vary by
 token type.
 

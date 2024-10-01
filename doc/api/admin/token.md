@@ -46,7 +46,7 @@ Supported attributes:
 |--------------|---------|----------|----------------------------------|
 | `token`      | string  | Yes      | Token that should be identified. |
 
-If successful, returns [`200`](../rest/index.md#status-codes) and information about the token.
+If successful, returns [`200`](../rest/troubleshooting.md#status-codes) and information about the token.
 
 Can return the following status codes:
 

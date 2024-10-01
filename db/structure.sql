@@ -1177,6 +1177,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_388de55cd36c() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "p_ci_builds"
+  WHERE "p_ci_builds"."id" = NEW."build_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_3d1a58344b29() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -8169,7 +8185,8 @@ CREATE TABLE ci_builds_runner_session (
     certificate character varying,
     "authorization" character varying,
     build_id bigint NOT NULL,
-    partition_id bigint NOT NULL
+    partition_id bigint NOT NULL,
+    project_id bigint
 );
 
 CREATE SEQUENCE ci_builds_runner_session_id_seq
@@ -27892,6 +27909,8 @@ CREATE UNIQUE INDEX index_ci_builds_runner_session_on_build_id ON ci_builds_runn
 
 CREATE UNIQUE INDEX index_ci_builds_runner_session_on_partition_id_build_id ON ci_builds_runner_session USING btree (partition_id, build_id);
 
+CREATE INDEX index_ci_builds_runner_session_on_project_id ON ci_builds_runner_session USING btree (project_id);
+
 CREATE INDEX index_ci_daily_build_group_report_results_on_group_id ON ci_daily_build_group_report_results USING btree (group_id);
 
 CREATE INDEX index_ci_daily_build_group_report_results_on_last_pipeline_id ON ci_daily_build_group_report_results USING btree (last_pipeline_id);
@@ -33419,6 +33438,8 @@ CREATE TRIGGER trigger_2b8fdc9b4a4e BEFORE INSERT OR UPDATE ON ml_experiment_met
 CREATE TRIGGER trigger_30209d0fba3e BEFORE INSERT OR UPDATE ON alert_management_alert_user_mentions FOR EACH ROW EXECUTE FUNCTION trigger_30209d0fba3e();
 
 CREATE TRIGGER trigger_3691f9f6a69f BEFORE INSERT OR UPDATE ON remote_development_agent_configs FOR EACH ROW EXECUTE FUNCTION trigger_3691f9f6a69f();
+
+CREATE TRIGGER trigger_388de55cd36c BEFORE INSERT OR UPDATE ON ci_builds_runner_session FOR EACH ROW EXECUTE FUNCTION trigger_388de55cd36c();
 
 CREATE TRIGGER trigger_3d1a58344b29 BEFORE INSERT OR UPDATE ON alert_management_alert_assignees FOR EACH ROW EXECUTE FUNCTION trigger_3d1a58344b29();
 

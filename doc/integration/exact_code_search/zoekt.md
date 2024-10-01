@@ -56,6 +56,23 @@ To enable [exact code search](../../user/search/exact_code_search.md) in GitLab:
 1. Select the **Enable indexing for exact code search** and **Enable exact code search** checkboxes.
 1. Select **Save changes**.
 
+## Delete offline nodes automatically
+
+Prerequisites:
+
+- You must have administrator access to the instance.
+
+You can automatically delete Zoekt nodes that are offline for more than 12 hours
+and their related indices, repositories, and tasks.
+
+To delete offline nodes automatically:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > Search**.
+1. Expand **Exact code search configuration**.
+1. Select the **Delete offline nodes automatically after 12 hours** checkbox.
+1. Select **Save changes**.
+
 ## Index root namespaces automatically
 
 Prerequisites:

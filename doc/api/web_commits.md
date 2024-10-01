@@ -22,7 +22,7 @@ Get the GitLab public key for signing web commits.
 GET /web_commits/public_key
 ```
 
-If successful, returns [`200`](rest/index.md#status-codes) and the following
+If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the following
 response attribute:
 
 | Attribute    | Type   | Description                                 |

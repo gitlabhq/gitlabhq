@@ -42,7 +42,7 @@ Supported attributes:
 |:------------------|:--------|:---------|:----------------------|
 | `id`      | integer/string | Yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths) |
 
-If successful, returns [`200`](rest/index.md#status-codes) and the following
+If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the following
 response attributes:
 
 | Attribute    | Type    | Description               |

@@ -38,7 +38,7 @@ GET /projects/:id/releases
 | `sort`        | string         | no       | The direction of the order. Either `desc` (default) for descending order or `asc` for ascending order. |
 | `include_html_description` | boolean        | no       | If `true`, a response includes HTML rendered Markdown of the release description.   |
 
-If successful, returns [`200 OK`](../../api/rest/index.md#status-codes) and the following
+If successful, returns [`200 OK`](../../api/rest/troubleshooting.md#status-codes) and the following
 response attributes:
 
 | Attribute                             | Type   | Description                                      |
@@ -263,7 +263,7 @@ GET /projects/:id/releases/:tag_name
 | `tag_name`                 | string         | yes      | The Git tag the release is associated with.                                         |
 | `include_html_description` | boolean        | no       | If `true`, a response includes HTML rendered Markdown of the release description.   |
 
-If successful, returns [`200 OK`](../../api/rest/index.md#status-codes) and the following
+If successful, returns [`200 OK`](../../api/rest/troubleshooting.md#status-codes) and the following
 response attributes:
 
 | Attribute                             | Type   | Description                                      |

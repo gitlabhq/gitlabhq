@@ -564,6 +564,11 @@ describe('DeleteApplication', () => {
 });
 ```
 
+### Using Internal Events API
+
+You can also use our API to track events from other systems connected to a GitLab instance.
+See the [Usage Data API documentation](../../../api/usage_data.md#events-tracking-api) for more information.
+
 ### Internal Events on other systems
 
 Apart from the GitLab codebase, we are using Internal Events for the systems listed below.

@@ -132,7 +132,7 @@ Supported attributes:
 | `id`        | integer or string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 | `upload_id` | integer           | Yes      | ID of the upload. |
 
-If successful, returns [`200`](rest/index.md#status-codes) and the uploaded file in the response body.
+If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the uploaded file in the response body.
 
 Example request:
 
@@ -162,7 +162,7 @@ Supported attributes:
 | `secret`   | string            | Yes      | 32-character secret of the upload. |
 | `filename` | string            | Yes      | Filename of the upload. |
 
-If successful, returns [`200`](rest/index.md#status-codes) and the uploaded file in the response body.
+If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the uploaded file in the response body.
 
 Example request:
 
@@ -191,7 +191,7 @@ Supported attributes:
 | `id`        | integer or string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 | `upload_id` | integer           | Yes      | ID of the upload. |
 
-If successful, returns [`204`](rest/index.md#status-codes) status code without any response body.
+If successful, returns [`204`](rest/troubleshooting.md#status-codes) status code without any response body.
 
 Example request:
 
@@ -221,7 +221,7 @@ Supported attributes:
 | `secret`   | string            | Yes      | 32-character secret of the upload. |
 | `filename` | string            | Yes      | Filename of the upload. |
 
-If successful, returns [`204`](rest/index.md#status-codes) status code without any response body.
+If successful, returns [`204`](rest/troubleshooting.md#status-codes) status code without any response body.
 
 Example request:
 

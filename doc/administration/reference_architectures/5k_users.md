@@ -180,13 +180,14 @@ To set up GitLab and its components to accommodate up to 100 RPS or 5,000 users:
    to handle the load balancing of the GitLab application services nodes.
 1. [Configure the internal load balancer](#configure-the-internal-load-balancer)
    to handle the load balancing of GitLab application internal connections.
-1. [Configure Consul](#configure-consul).
+1. [Configure Consul](#configure-consul) for service discovery and health checking.
 1. [Configure PostgreSQL](#configure-postgresql), the database for GitLab.
-1. [Configure PgBouncer](#configure-pgbouncer).
-1. [Configure Redis](#configure-redis).
+1. [Configure PgBouncer](#configure-pgbouncer) for database connection pooling and management.
+1. [Configure Redis](#configure-redis), which stores session data, temporary
+cache information, and background job queues.
 1. [Configure Gitaly Cluster](#configure-gitaly-cluster),
    provides access to the Git repositories.
-1. [Configure Sidekiq](#configure-sidekiq).
+1. [Configure Sidekiq](#configure-sidekiq) for background job processing.
 1. [Configure the main GitLab Rails application](#configure-gitlab-rails)
    to run Puma, Workhorse, GitLab Shell, and to serve all frontend
    requests (which include UI, API, and Git over HTTP/SSH).

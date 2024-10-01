@@ -1,0 +1,9 @@
+---
+name: prompt_migration_fix_code
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/475047
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167399
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/496750
+milestone: '17.5'
+group: group::custom models
+type: experiment
+default_enabled: false

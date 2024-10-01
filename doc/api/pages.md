@@ -54,7 +54,7 @@ Supported attributes:
 | --------- | -------------- | -------- | ---------------------------------------- |
 | `id`      | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
 
-If successful, returns [`200`](rest/index.md#status-codes) and the following
+If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the following
 response attributes:
 
 | Attribute                                 | Type       | Description                                                                                                                  |
@@ -123,7 +123,7 @@ Supported attributes:
 | `pages_unique_domain_enabled`   | boolean        | No       | Whether to use unique domain                                                                                        |
 | `pages_https_only`              | boolean        | No       | Whether to force HTTPs                                                                                              |
 
-If successful, returns [`200`](rest/index.md#status-codes) and the following
+If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the following
 response attributes:
 
 | Attribute                                 | Type       | Description                                                                                                                  |

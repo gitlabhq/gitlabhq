@@ -363,5 +363,5 @@ onError(error) {
 ```
 
 Note that this prefixing must not be used for API responses. Instead follow the
-[REST API](../../../api/rest/index.md#status-code-400),
+[REST API](../../../api/rest/troubleshooting.md#status-code-400),
 or [GraphQL guides](../../api_graphql_styleguide.md#error-handling) on how to consume error objects.
