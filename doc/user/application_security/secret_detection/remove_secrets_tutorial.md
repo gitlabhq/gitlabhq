@@ -28,9 +28,9 @@ Make sure you have the following before you complete this tutorial:
 
 ## Commit a secret
 
-In GitLab, most secrets consist of a standard prefix followed by a string of random characters.
-The prefix makes it easier to identify secrets. For example, the fake secret `glpat-12345678901234567890`
-is a personal access token because it has the prefix `glpat-`.
+GitLab identifies secrets by matching specific patterns of letters, digits, and symbols. These patterns
+are also used to identify the type of secret. For example, the fake secret `glpat-12345678901234567890`
+is a personal access token because it begins with the string `glpat-`.
 
 Although many secrets can be identified by format, you might accidentally commit a secret while you're working in a repository.
 Let's simulate accidentally committing a secret:

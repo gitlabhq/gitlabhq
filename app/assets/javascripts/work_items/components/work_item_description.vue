@@ -283,7 +283,7 @@ export default {
         this.isSubmittingWithKeydown = true;
       }
 
-      this.$emit('updateWorkItem');
+      this.$emit('updateWorkItem', { clearDraft: () => clearDraft(this.autosaveKey) });
 
       this.conflictedDescription = '';
       this.initialDescriptionText = this.descriptionText;

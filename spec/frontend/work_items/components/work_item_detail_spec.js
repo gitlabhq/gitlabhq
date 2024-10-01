@@ -353,6 +353,37 @@ describe('WorkItemDetail component', () => {
 
       expect(findWorkItemDescription().exists()).toBe(true);
     });
+
+    it('calls clearDraft when description is successfully updated', async () => {
+      const clearDraftSpy = jest.fn();
+      const mutationHandler = jest.fn().mockResolvedValue({
+        data: {
+          workItemUpdate: {
+            workItem: workItemByIidQueryResponse.data.workspace.workItem,
+            errors: [],
+          },
+        },
+      });
+      createComponent({ mutationHandler });
+      await waitForPromises();
+
+      findWorkItemDescription().vm.$emit('updateWorkItem', { clearDraft: clearDraftSpy });
+      await waitForPromises();
+
+      expect(clearDraftSpy).toHaveBeenCalled();
+    });
+
+    it('does not call clearDraft when description is unsuccessfully updated', async () => {
+      const clearDraftSpy = jest.fn();
+      const mutationHandler = jest.fn().mockRejectedValue(new Error('oh no!'));
+      createComponent({ mutationHandler });
+      await waitForPromises();
+
+      findWorkItemDescription().vm.$emit('updateWorkItem', { clearDraft: clearDraftSpy });
+      await waitForPromises();
+
+      expect(clearDraftSpy).not.toHaveBeenCalled();
+    });
   });
 
   describe('ancestors widget', () => {

@@ -7,6 +7,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import EditedAt from '~/issues/show/components/edited.vue';
 import { updateDraft } from '~/lib/utils/autosave';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
+import { ENTER_KEY } from '~/lib/utils/keys';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import WorkItemDescription from '~/work_items/components/work_item_description.vue';
 import WorkItemDescriptionRendered from '~/work_items/components/work_item_description_rendered.vue';
@@ -242,18 +243,30 @@ describe('WorkItemDescription', () => {
   });
 
   describe('when edit mode is active', () => {
-    beforeEach(() => {
-      createComponent({ editMode: true });
-    });
-
     it('shows markdown editor in edit mode only when the correct props are passed', () => {
+      createComponent({ editMode: true });
+
       expect(findMarkdownEditor().exists()).toBe(true);
     });
 
-    it('emits the `updateDraft` event when clicked on submit button in edit mode', () => {
+    it('emits the `updateDraft` event when the description is updated', () => {
+      createComponent({ editMode: true });
       const updatedDesc = 'updated desc with inline editing disabled';
+
       findMarkdownEditor().vm.$emit('input', updatedDesc);
+
       expect(wrapper.emitted('updateDraft')).toEqual([[updatedDesc]]);
+    });
+
+    it('emits the `updateWorkItem` event when submitting the description', async () => {
+      await createComponent({ isEditing: true });
+      editDescription('updated description');
+      findMarkdownEditor().vm.$emit(
+        'keydown',
+        new KeyboardEvent('keydown', { key: ENTER_KEY, ctrlKey: true }),
+      );
+
+      expect(wrapper.emitted('updateWorkItem')).toEqual([[{ clearDraft: expect.any(Function) }]]);
     });
 
     describe('when description has conflicts', () => {
