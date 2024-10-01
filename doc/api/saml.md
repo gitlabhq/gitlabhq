@@ -28,7 +28,7 @@ Supported attributes:
 
 | Attribute         | Type    | Required | Description           |
 |:------------------|:--------|:---------|:----------------------|
-| `id`              | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
+| `id`              | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths) |
 
 If successful, returns [`200`](rest/index.md#status-codes) and the following
 response attributes:
@@ -67,7 +67,7 @@ Supported attributes:
 
 | Attribute | Type           | Required | Description               |
 | --------- | -------------- | -------- | ------------------------- |
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths) |
 | `uid`     | string         | yes      | External UID of the user. |
 
 Example request:
@@ -101,7 +101,7 @@ Supported attributes:
 
 | Attribute | Type   | Required | Description               |
 | --------- | ------ | -------- | ------------------------- |
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths) |
 | `uid`     | string | yes      | External UID of the user. |
 
 Example request:
@@ -124,7 +124,7 @@ Supported attributes:
 
 | Attribute | Type    | Required | Description               |
 | --------- | ------- | -------- | ------------------------- |
-| `id`      | integer | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding). |
+| `id`      | integer | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
 | `uid`     | string  | yes      | External UID of the user. |
 
 Example request:
@@ -178,7 +178,7 @@ Supported attributes:
 
 | Attribute | Type           | Required | Description |
 |:----------|:---------------|:---------|:------------|
-| `id`      | integer/string | yes      | ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding). |
+| `id`      | integer/string | yes      | ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
 
 If successful, returns [`200`](rest/index.md#status-codes) and the following response attributes:
 
@@ -223,7 +223,7 @@ Supported attributes:
 
 | Attribute         | Type           | Required | Description |
 |:------------------|:---------------|:---------|:------------|
-| `id`              | integer/string | yes      | ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding). |
+| `id`              | integer/string | yes      | ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
 | `saml_group_name` | string         | yes      | Name of the SAML group. |
 
 If successful, returns [`200`](rest/index.md#status-codes) and the following response attributes:
@@ -262,7 +262,7 @@ Supported attributes:
 
 | Attribute         | Type              | Required | Description |
 |:------------------|:------------------|:---------|:------------|
-| `id`              | integer or string | yes      | ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding). |
+| `id`              | integer or string | yes      | ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
 | `saml_group_name` | string            | yes      | Name of the SAML group. |
 | `access_level`    | integer           | yes      | [Role (`access_level`)](members.md#roles) for members of the SAML group. |
 | `member_role_id`  | integer           | no       | [Member Role ID (`member_role_id`)](member_roles.md) for members of the SAML group. |
@@ -303,7 +303,7 @@ Supported attributes:
 
 | Attribute         | Type           | Required | Description |
 |:------------------|:---------------|:---------|:------------|
-| `id`              | integer/string | yes      | ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding). |
+| `id`              | integer/string | yes      | ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
 | `saml_group_name` | string         | yes      | Name of the SAML group. |
 
 Example request:

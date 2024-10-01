@@ -10,7 +10,7 @@ import {
   injectRegexSearch,
 } from '~/search/store/utils';
 
-import { PROJECT_DATA, SCOPE_BLOB } from '~/search/sidebar/constants';
+import { SCOPE_BLOB } from '~/search/sidebar/constants';
 import { GROUPS_LOCAL_STORAGE_KEY, PROJECTS_LOCAL_STORAGE_KEY, ICON_MAP } from './constants';
 
 const queryLabelFilters = (state) => state?.query?.[LABEL_FILTER_PARAM] || [];
@@ -96,4 +96,4 @@ export const navigationItems = (state) =>
     items: [],
   }));
 
-export const hasProjectContext = (state) => !state.query?.[PROJECT_DATA.queryParam];
+export const hasMissingProjectContext = (state) => !state?.projectInitialJson?.id;

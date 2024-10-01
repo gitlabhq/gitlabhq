@@ -31,7 +31,7 @@ GET /projects/:id/protected_tags
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer or string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `id` | integer or string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -72,7 +72,7 @@ GET /projects/:id/protected_tags/:name
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer or string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `id` | integer or string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 | `name` | string | yes | The name of the tag or wildcard. |
 
 ```shell
@@ -124,7 +124,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer or string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `id` | integer or string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 | `name` | string | yes | The name of the tag or wildcard. |
 | `allowed_to_create`   | array  | no | Array of access levels allowed to create tags, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, `{deploy_key_id: integer}`, or `{access_level: integer}`. Premium and Ultimate only. |
 | `create_access_level` | string | no | Access levels allowed to create. Default: `40`, for Maintainer role. |
@@ -159,7 +159,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer or string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `id` | integer or string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 | `name` | string | yes | The name of the tag. |
 
 ## Related topics

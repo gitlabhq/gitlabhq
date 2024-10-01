@@ -276,6 +276,20 @@ RSpec.describe Import::ReassignPlaceholderUserRecordsService, feature_category: 
         end
       end
 
+      context 'when user has existing same level INHERITED membership' do
+        before_all do
+          namespace.add_reporter(real_user)
+        end
+
+        it 'still creates the project membership' do
+          expect { service.execute }.to change { project.reload.members.count }.to(1)
+        end
+
+        it 'still creates the group membership' do
+          expect { service.execute }.to change { subgroup.reload.members.count }.to(1)
+        end
+      end
+
       context 'when user has existing higher level INHERITED membership' do
         before_all do
           namespace.add_owner(real_user)
@@ -293,7 +307,7 @@ RSpec.describe Import::ReassignPlaceholderUserRecordsService, feature_category: 
 
         it 'does not create the project membership, and logs' do
           expect_skipped_membership_log(
-            'Existing membership of same or higher access level found for user, skipping',
+            'Existing membership of higher access level found for user, skipping',
             { 'project_id' => project.id }, existing_membership_logged_params
           )
 
@@ -302,7 +316,7 @@ RSpec.describe Import::ReassignPlaceholderUserRecordsService, feature_category: 
 
         it 'does not create the group membership, and logs' do
           expect_skipped_membership_log(
-            'Existing membership of same or higher access level found for user, skipping',
+            'Existing membership of higher access level found for user, skipping',
             { 'group_id' => subgroup.id }, existing_membership_logged_params
           )
 
@@ -317,13 +331,37 @@ RSpec.describe Import::ReassignPlaceholderUserRecordsService, feature_category: 
 
         it 'does not create a new membership, and logs' do
           expect_skipped_membership_log(
-            'Existing direct membership of lower access level found for user, skipping',
+            'Existing direct membership of lower or equal access level found for user, skipping',
             {
               'project_id' => project.id
             },
             {
               'id' => real_user.members.first.id,
               'access_level' => Gitlab::Access::GUEST,
+              'source_id' => project.id,
+              'source_type' => 'Project',
+              'user_id' => real_user.id
+            }
+          )
+
+          expect { service.execute }.not_to change { project.reload.members.count }
+        end
+      end
+
+      context 'when user has existing same level DIRECT membership' do
+        before_all do
+          project.add_developer(real_user)
+        end
+
+        it 'does not create a new membership, and logs' do
+          expect_skipped_membership_log(
+            'Existing direct membership of lower or equal access level found for user, skipping',
+            {
+              'project_id' => project.id
+            },
+            {
+              'id' => real_user.members.first.id,
+              'access_level' => Gitlab::Access::DEVELOPER,
               'source_id' => project.id,
               'source_type' => 'Project',
               'user_id' => real_user.id

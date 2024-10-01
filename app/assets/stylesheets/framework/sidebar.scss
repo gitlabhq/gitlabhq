@@ -108,7 +108,7 @@
 }
 
 .right-sidebar {
-  border-left: 1px solid $border-color;
+  @apply gl-border-l;
 
   &.right-sidebar-merge-requests {
     @include media-breakpoint-up(lg) {
@@ -320,7 +320,7 @@
   position: fixed;
   bottom: calc(#{$calc-application-footer-height} + var(--mr-review-bar-height));
   right: 0;
-  background-color: $white;
+  @apply gl-bg-default;
   z-index: 200;
   overflow: hidden;
   @apply gl-transition-width;

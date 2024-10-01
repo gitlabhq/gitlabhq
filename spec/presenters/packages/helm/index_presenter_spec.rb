@@ -11,7 +11,13 @@ RSpec.describe Packages::Helm::IndexPresenter do
   let_it_be(:package_files3_2) { create(:helm_package_file, package: packages[2], file_sha256: '3_2', file_name: 'file3_2') }
   let_it_be(:package_files4_1) { create(:helm_package_file, package: packages[3], file_sha256: '4_1', file_name: 'file4_1') }
   let_it_be(:package_files4_2) { create(:helm_package_file, package: packages[3], file_sha256: '4_2', file_name: 'file4_2') }
-  let_it_be(:package_files4_3) { create(:helm_package_file, package: packages[3], file_sha256: '4_3', file_name: 'file4_3') }
+  let_it_be(:package_files4_3) do
+    create(:helm_package_file,
+      package: packages[3],
+      file_sha256: '4_3',
+      file_name: 'file4_3',
+      app_version: '1234e004')
+  end
 
   let(:project_id_param) { project.id }
   let(:channel) { 'stable' }
@@ -34,6 +40,12 @@ RSpec.describe Packages::Helm::IndexPresenter do
         expect(raw['created']).to eq(file.created_at.utc.strftime('%Y-%m-%dT%H:%M:%S.%NZ'))
         expect(raw['digest']).to eq(file.file_sha256)
         expect(raw['urls']).to eq(["charts/#{file.file_name}"])
+
+        if file.helm_file_metadatum.metadata['appVersion']
+          expect(raw['appVersion']).to eq("\"1234e004\"")
+        else
+          expect(raw).not_to have_key('appVersion')
+        end
       end
     end
 

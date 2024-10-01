@@ -291,7 +291,7 @@ Parameters:
 
 | Attribute     | Type           | Required | Description                                                                                         |
 |---------------|----------------|----------|-----------------------------------------------------------------------------------------------------|
-| `project_id`  | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding)                 |
+| `project_id`  | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths)                 |
 | `action`      | string         | no       | Include only events of a particular [action type](#actions)                                         |
 | `target_type` | string         | no       | Include only events of a particular [target type](#target-types)                                    |
 | `before`      | date           | no       | Include only events created before a particular date. [View how to format dates](#date-formatting). |

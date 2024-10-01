@@ -197,7 +197,7 @@ Supported attributes:
 
 | Attribute   | Type              | Required | Description                                                                          |
 |-------------|-------------------|----------|--------------------------------------------------------------------------------------|
-| `id`        | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `id`        | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 | `mirror_id` | Integer           | Yes      | The remote mirror ID.                                                                |
 
 If successful, returns [`204`](rest/index.md#status-codes).

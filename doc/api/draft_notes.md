@@ -28,7 +28,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/draft_notes
 
 | Attribute           | Type              | Required | Description |
 |---------------------|-------------------|----------|-------------|
-| `id`                | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
+| `id`                | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
 | `merge_request_iid` | integer           | yes      | The IID of a project merge request |
 
 ```json
@@ -71,7 +71,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/draft_notes/:draft_note_id
 
 | Attribute           | Type              | Required | Description |
 |---------------------|-------------------|----------|-------------|
-| `id`                | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `id`                | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 | `draft_note_id`     | integer           | yes      | The ID of a draft note. |
 | `merge_request_iid` | integer           | yes      | The IID of a project merge request. |
 
@@ -115,7 +115,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/draft_notes
 
 | Attribute                                | Type              | Required    | Description           |
 | ---------------------------------------- | ----------------- | ----------- | --------------------- |
-| `id`                                     | integer or string | yes         | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `id`                                     | integer or string | yes         | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 | `merge_request_iid`                      | integer           | yes         | The IID of a project merge request. |
 | `note`                                   | string            | yes         | The content of a note. |
 | `commit_id`                              | string            | no          | The SHA of a commit to associate the draft note to. |
@@ -151,7 +151,7 @@ PUT /projects/:id/merge_requests/:merge_request_iid/draft_notes/:draft_note_id
 
 | Attribute                                | Type              | Required    | Description           |
 | -------------------                      | ----------------- | ----------- | --------------------- |
-| `id`                                     | integer or string | yes         | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `id`                                     | integer or string | yes         | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 | `draft_note_id`                          | integer           | yes         | The ID of a draft note. |
 | `merge_request_iid`                      | integer           | yes         | The IID of a project merge request. |
 | `note`                                   | string            | no          | The content of a note. |
@@ -187,7 +187,7 @@ DELETE /projects/:id/merge_requests/:merge_request_iid/draft_notes/:draft_note_i
 | Attribute           | Type             | Required    | Description           |
 | ------------------- | ---------------- | ----------- | --------------------- |
 | `draft_note_id`     | integer           | yes        | The ID of a draft note. |
-| `id`                | integer or string | yes        | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `id`                | integer or string | yes        | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 | `merge_request_iid` | integer           | yes        | The IID of a project merge request. |
 
 ```shell
@@ -207,7 +207,7 @@ PUT /projects/:id/merge_requests/:merge_request_iid/draft_notes/:draft_note_id/p
 | Attribute           | Type             | Required    | Description           |
 | ------------------- | ---------------- | ----------- | --------------------- |
 | `draft_note_id`     | integer           | yes        | The ID of a draft note. |
-| `id`                | integer or string | yes        | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `id`                | integer or string | yes        | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 | `merge_request_iid` | integer           | yes        | The IID of a project merge request. |
 
 ```shell
@@ -226,7 +226,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/draft_notes/bulk_publish
 
 | Attribute           | Type              | Required | Description |
 |---------------------|-------------------|----------|-------------|
-| `id`                | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `id`                | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 | `merge_request_iid` | integer           | yes      | The IID of a project merge request. |
 
 ```shell

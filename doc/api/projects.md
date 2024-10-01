@@ -1133,7 +1133,7 @@ Supported attributes:
 
 | Attribute                | Type              | Required | Description |
 |:-------------------------|:------------------|:---------|:------------|
-| `id`                     | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `id`                     | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 | `license`                | boolean           | No       | Include project license data. |
 | `statistics`             | boolean           | No       | Include project statistics. Available only to users with at least the Reporter role. |
 | `with_custom_attributes` | boolean           | No       | Include [custom attributes](custom_attributes.md) in response. _(administrators only)_ |
@@ -1411,7 +1411,7 @@ Supported attributes:
 
 | Attribute    | Type              | Required | Description |
 |:-------------|:------------------|:---------|:------------|
-| `id`         | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `id`         | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 | `search`     | string            | No       | Search for specific users. |
 | `skip_users` | integer array     | No       | Filter out users with the specified IDs. |
 
@@ -1450,7 +1450,7 @@ Supported attributes:
 
 | Attribute                 | Type              | Required | Description |
 |:--------------------------|:------------------|:---------|:------------|
-| `id`                      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `id`                      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 | `search`                  | string            | No       | Search for specific groups. |
 | `shared_min_access_level` | integer           | No       | Limit to shared groups with at least this [role (`access_level`)](members.md#roles). |
 | `shared_visible_only`     | boolean           | No       | Limit to shared groups user has access to. |
@@ -1492,7 +1492,7 @@ Supported attributes:
 
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
-| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 | `search`  | string            | No       | Search for specific groups. |
 
 Example response:
@@ -1765,7 +1765,7 @@ Supported general project attributes:
 
 | Attribute                                          | Type              | Required | Description |
 |:---------------------------------------------------|:------------------|:---------|:------------|
-| `id`                                               | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `id`                                               | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 | `allow_merge_on_skipped_pipeline`                  | boolean           | No       | Set whether or not merge requests can be merged with skipped jobs. |
 | `allow_pipeline_trigger_approve_deployment`        | boolean           | No       | Set whether or not a pipeline triggerer is allowed to approve deployments. Premium and Ultimate only. |
 | `only_allow_merge_if_all_status_checks_passed`     | boolean           | No       | Indicates that merges of merge requests should be blocked unless all status checks have passed. Defaults to false.<br/><br/>[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369859) in GitLab 15.5 with feature flag `only_allow_merge_if_all_status_checks_passed` disabled by default. The feature flag was enabled by default in GitLab 15.9. Ultimate only. |
@@ -1898,7 +1898,7 @@ POST /projects/:id/fork
 
 | Attribute                | Type              | Required | Description |
 |:-------------------------|:------------------|:---------|:------------|
-| `id`                     | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `id`                     | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 | `branches`               | string            | No       | Branches to fork (empty for all branches). |
 | `description`            | string            | No       | The description assigned to the resultant project after forking. |
 | `mr_default_target_self` | boolean           | No       | For forked projects, target merge requests to this project. If `false`, the target is the upstream project. |
@@ -1921,7 +1921,7 @@ Supported attributes:
 
 | Attribute                     | Type              | Required | Description |
 |:------------------------------|:------------------|:---------|:------------|
-| `id`                          | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `id`                          | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 | `archived`                    | boolean           | No       | Limit by archived status. |
 | `membership`                  | boolean           | No       | Limit by projects that the current user is a member of. |
 | `min_access_level`            | integer           | No       | Limit by current user minimal [role (`access_level`)](members.md#roles). |
@@ -2047,7 +2047,7 @@ Supported attributes:
 | Attribute        | Type              | Required | Description |
 |:-----------------|:------------------|:---------|:------------|
 | `forked_from_id` | ID                | Yes      | The ID of the project that was forked from. |
-| `id`             | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `id`             | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 
 ## Delete a fork relationship between projects
 
@@ -2065,7 +2065,7 @@ Supported attributes:
 
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
-| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 
 ## Star a project
 
@@ -2079,7 +2079,7 @@ Supported attributes:
 
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
-| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 
 Example request:
 
@@ -2178,8 +2178,6 @@ Example response:
 }
 ```
 
-Returns status code `304` if the project is already starred.
-
 ## Unstar a project
 
 Unstar a project.
@@ -2192,7 +2190,7 @@ Supported attributes:
 
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
-| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 
 Example request:
 
@@ -2305,7 +2303,7 @@ Supported attributes:
 
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
-| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 | `search`  | string            | No       | Search for specific users. |
 
 Example request:
@@ -2361,7 +2359,7 @@ Supported attributes:
 
 | Attribute                | Type             | Required | Description |
 |:-------------------------|:-----------------|:---------|:------------|
-| `id`                     | integer/string   | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
+| `id`                     | integer/string   | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths) |
 | `search`                 | string           | no       | Return the list of authorized groups matching the search criteria |
 | `min_access_level`       | integer          | no       | Limit to groups where current user has at least the specified [role (`access_level`)](members.md#roles) |
 | `relation`               | array of strings | no       | Filter the groups by relation (direct or inherited) |
@@ -2394,7 +2392,7 @@ Supported attributes:
 
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
-| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 
 Example request:
 
@@ -2431,7 +2429,7 @@ Supported attributes:
 
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
-| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 
 Example request:
 
@@ -2573,7 +2571,7 @@ Supported attributes:
 
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
-| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 
 Example request:
 
@@ -2726,7 +2724,7 @@ Supported attributes:
 
 | Attribute            | Type              | Required | Description |
 |:---------------------|:------------------|:---------|:------------|
-| `id`                 | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `id`                 | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 | `full_path`          | string            | no       | Full path of project to use with `permanently_remove`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396500) in GitLab 15.11. To find the project path, use `path_with_namespace` from [get single project](projects.md#get-a-single-project). Premium and Ultimate only. |
 | `permanently_remove` | boolean/string    | no       | Immediately deletes a project if it is marked for deletion. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396500) in GitLab 15.11. Premium and Ultimate only. |
 
@@ -2746,7 +2744,7 @@ Supported attributes:
 
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
-| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 
 ## Upload a project avatar
 
@@ -2761,7 +2759,7 @@ Supported attributes:
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
 | `avatar`  | string            | Yes      | The file to be uploaded. |
-| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 
 To upload an avatar from your file system, use the `--form` argument. This causes
 cURL to post data using the header `Content-Type: multipart/form-data`. The
@@ -2797,7 +2795,7 @@ Supported attributes:
 
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
-| `id`      | integer or string | yes      | ID or [URL-encoded path](rest/index.md#namespaced-path-encoding) of the project. |
+| `id`      | integer or string | yes      | ID or [URL-encoded path](rest/index.md#namespaced-paths) of the project. |
 
 Example request:
 
@@ -2832,7 +2830,7 @@ Supported attributes:
 |:---------------|:------------------|:---------|:------------|
 | `group_access` | integer           | Yes      | The [role (`access_level`)](members.md#roles) to grant the group. |
 | `group_id`     | integer           | Yes      | The ID of the group to share with. |
-| `id`           | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `id`           | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 | `expires_at`   | string            | No       | Share expiration date in ISO 8601 format. For example, `2016-09-26`. |
 
 ## Delete a shared project link within a group
@@ -2848,7 +2846,7 @@ Supported attributes:
 | Attribute  | Type              | Required | Description |
 |:-----------|:------------------|:---------|:------------|
 | `group_id` | integer           | Yes      | The ID of the group. |
-| `id`       | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `id`       | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 
 Example request:
 
@@ -2873,8 +2871,8 @@ Supported attributes:
 
 | Attribute    | Type              | Required | Description |
 |:-------------|:------------------|:---------|:------------|
-| `id`         | integer or string | Yes      | The ID or [URL-encoded path](rest/index.md#namespaced-path-encoding) of the target project to receive the members. |
-| `project_id` | integer or string | Yes      | The ID or [URL-encoded path](rest/index.md#namespaced-path-encoding) of the source project to import the members from. |
+| `id`         | integer or string | Yes      | The ID or [URL-encoded path](rest/index.md#namespaced-paths) of the target project to receive the members. |
+| `project_id` | integer or string | Yes      | The ID or [URL-encoded path](rest/index.md#namespaced-paths) of the source project to import the members from. |
 
 Example request:
 
@@ -2911,9 +2909,9 @@ Example responses:
 
 - When there is a system error (`404` and `422` HTTP status codes):
 
-  ```json
-  {  "message":  "Import failed"  }
-  ```
+```json
+{  "message":  "Import failed"  }
+```
 
 ## Search for projects by name
 
@@ -2950,7 +2948,7 @@ Supported attributes:
 
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
-| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 | `task`    | string            | No       | `prune` to trigger manual prune of unreachable objects or `eager` to trigger eager housekeeping. |
 
 ## Get groups to which a user can transfer a project
@@ -2967,7 +2965,7 @@ Supported attributes:
 
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
-| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 | `search`  | string            | No       | The group names to search for. |
 
 Example request:
@@ -3014,7 +3012,7 @@ Supported attributes:
 
 | Attribute   | Type              | Required | Description |
 |:------------|:------------------|:---------|:------------|
-| `id`        | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `id`        | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 | `namespace` | integer or string | Yes      | The ID or path of the namespace to transfer to project to. |
 
 Example request:
@@ -3155,7 +3153,7 @@ Supported attributes:
 
 | Attribute | Type              | Required | Description |
 |-----------|-------------------|----------|-------------|
-| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 
 Example request:
 
@@ -3208,7 +3206,7 @@ Supported attributes:
 
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
-| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 
 Example request:
 
@@ -3303,7 +3301,7 @@ Supported attributes:
 
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
-| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 
 Example request:
 
@@ -3330,7 +3328,7 @@ Supported attributes:
 
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
-| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 | `wiki`    | boolean           | No       | Whether to download the wiki, rather than project, repository. |
 
 ## Get the path to repository storage
@@ -3348,7 +3346,7 @@ Supported attributes:
 
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
-| `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 
 ```json
 [

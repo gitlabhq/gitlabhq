@@ -41,7 +41,8 @@ To create an OAuth application on your self-managed instance:
 1. Clear the **Trusted** and **Confidential** checkboxes.
 
    NOTE:
-   You must clear these checkboxes to avoid errors.
+   You must clear these checkboxes to avoid [errors](jira_cloud_app_troubleshooting.md#error-failed-to-sign-in-to-gitlab).
+
 1. In **Scopes**, select the `api` checkbox only.
 1. Select **Save application**.
 1. Copy the **Application ID** value.

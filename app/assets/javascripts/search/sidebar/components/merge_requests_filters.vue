@@ -15,11 +15,11 @@ export default {
     SourceBranchFilter,
   },
   computed: {
-    ...mapGetters(['hasProjectContext']),
+    ...mapGetters(['hasMissingProjectContext']),
     ...mapState(['groupInitialJson']),
     shouldShowSourceBranchFilter() {
       // this will be changed https://gitlab.com/gitlab-org/gitlab/-/issues/480740
-      return !this.hasProjectContext || this.groupInitialJson?.id;
+      return !this.hasMissingProjectContext || this.groupInitialJson?.id;
     },
   },
 };
@@ -28,7 +28,7 @@ export default {
 <template>
   <filters-template>
     <status-filter class="gl-mb-5" />
-    <archived-filter v-if="hasProjectContext" class="gl-mb-5" />
+    <archived-filter v-if="hasMissingProjectContext" class="gl-mb-5" />
     <source-branch-filter v-if="shouldShowSourceBranchFilter" class="gl-mb-5" />
   </filters-template>
 </template>

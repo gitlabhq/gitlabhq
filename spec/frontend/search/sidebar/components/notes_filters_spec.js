@@ -12,7 +12,7 @@ describe('GlobalSearch ProjectsFilters', () => {
   let wrapper;
 
   const defaultGetters = {
-    hasProjectContext: () => true,
+    hasMissingProjectContext: () => true,
   };
 
   const createComponent = () => {
@@ -41,9 +41,9 @@ describe('GlobalSearch ProjectsFilters', () => {
     });
   });
 
-  describe('hasProjectContext getter', () => {
+  describe('hasMissingProjectContext getter', () => {
     beforeEach(() => {
-      defaultGetters.hasProjectContext = () => false;
+      defaultGetters.hasMissingProjectContext = () => false;
       createComponent();
     });
 

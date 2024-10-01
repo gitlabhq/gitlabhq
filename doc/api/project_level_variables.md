@@ -20,7 +20,7 @@ GET /projects/:id/variables
 
 | Attribute | Type           | Required | Description |
 |-----------|----------------|----------|-------------|
-| `id`      | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
+| `id`      | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
 
 Example request:
 
@@ -66,7 +66,7 @@ GET /projects/:id/variables/:key
 
 | Attribute | Type           | Required | Description |
 |-----------|----------------|----------|-------------|
-| `id`      | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
+| `id`      | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
 | `key`     | string         | Yes      | The `key` of a variable |
 | `filter`  | hash           | No       | Available filters: `[environment_scope]`. See the [`filter` parameter details](#the-filter-parameter). |
 
@@ -103,7 +103,7 @@ POST /projects/:id/variables
 
 | Attribute           | Type           | Required | Description |
 |---------------------|----------------|----------|-------------|
-| `id`                | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
+| `id`                | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
 | `key`               | string         | Yes      | The `key` of a variable; must have no more than 255 characters; only `A-Z`, `a-z`, `0-9`, and `_` are allowed |
 | `value`             | string         | Yes      | The `value` of a variable |
 | `description`       | string         | No       | The description of the variable. Default: `null`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/409641) in GitLab 16.2. |
@@ -146,7 +146,7 @@ PUT /projects/:id/variables/:key
 
 | Attribute           | Type           | Required | Description |
 |---------------------|----------------|----------|-------------|
-| `id`                | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
+| `id`                | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
 | `key`               | string         | Yes      | The `key` of a variable |
 | `value`             | string         | Yes      | The `value` of a variable |
 | `description`       | string         | No       | The description of the variable. Default: `null`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/409641) in GitLab 16.2. |
@@ -190,7 +190,7 @@ DELETE /projects/:id/variables/:key
 
 | Attribute | Type           | Required | Description |
 |-----------|----------------|----------|-------------|
-| `id`      | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
+| `id`      | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
 | `key`     | string         | Yes      | The `key` of a variable |
 | `filter`  | hash           | No       | Available filters: `[environment_scope]`. See the [`filter` parameter details](#the-filter-parameter). |
 

@@ -179,7 +179,7 @@ After you change a path, you must update the existing URL in the following resou
 
 - [Include statements](../../../ci/yaml/includes.md) except [`include:component`](../../../ci/components/index.md),
   otherwise pipelines fail with a syntax error. CI/CD component references can follow redirects.
-- Namespaced API calls that use the [encoded path](../../../api/rest/index.md#namespaced-path-encoding)
+- Namespaced API calls that use the [encoded path](../../../api/rest/index.md#namespaced-paths)
   instead of the numeric namespace and project IDs.
 - [Docker image references](../../../ci/yaml/index.md#image).
 - Variables that specify a project or namespace.

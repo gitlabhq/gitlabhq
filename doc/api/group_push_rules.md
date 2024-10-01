@@ -26,7 +26,7 @@ Supported attributes:
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID of the group or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding). |
+| `id` | integer/string | yes | The ID of the group or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
 
 Example request:
 
@@ -70,7 +70,7 @@ Supported attribues:
 
 | Attribute                                     | Type           | Required | Description |
 | --------------------------------------------- | -------------- | -------- | ----------- |
-| `id`                                          | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding). |
+| `id`                                          | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
 | `deny_delete_tag`                             | boolean        | no       | Deny deleting a tag. |
 | `member_check`                                | boolean        | no       | Allow only GitLab users to author commits. |
 | `prevent_secrets`                             | boolean        | no       | Reject files that are likely to [contain secrets](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/checks/files_denylist.yml). |
@@ -127,7 +127,7 @@ PUT /groups/:id/push_rule
 
 | Attribute                                     | Type           | Required | Description |
 | --------------------------------------------- | -------------- | -------- | ----------- |
-| `id`                                          | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding). |
+| `id`                                          | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
 | `deny_delete_tag`                             | boolean        | no       | Deny deleting a tag. |
 | `member_check`                                | boolean        | no       | Allow only GitLab users to author commits. |
 | `prevent_secrets`                             | boolean        | no       | Reject files that are likely to [contain secrets](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/checks/files_denylist.yml). |
@@ -184,7 +184,7 @@ Supported attribues:
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding). |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
 
 Example request:
 

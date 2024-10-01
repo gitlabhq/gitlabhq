@@ -154,7 +154,7 @@ GET /namespaces/:id
 
 | Attribute | Type           | Required | Description |
 | --------- | -------------- | -------- | ----------- |
-| `id`      | integer/string | yes      | ID or [URL-encoded path of the namespace](rest/index.md#namespaced-path-encoding) |
+| `id`      | integer/string | yes      | ID or [URL-encoded path of the namespace](rest/index.md#namespaced-paths) |
 
 Example request:
 

@@ -35,7 +35,7 @@ Supported attributes:
 
 | Attribute   | Type           | Required | Description |
 | :---------- | :------------- | :------- | :---------- |
-| `id`        | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `id`        | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 | `page_token` | string        | no       | The tree record ID at which to fetch the next page. Used only with keyset pagination. |
 | `pagination` | string        | no       | If `keyset`, use the [keyset-based pagination method](rest/index.md#keyset-based-pagination). |
 | `path`      | string         | no       | The path inside the repository. Used to get content of subdirectories. |
@@ -111,7 +111,7 @@ Supported attributes:
 
 | Attribute | Type           | Required | Description |
 | :-------- | :------------- | :------- | :---------- |
-| `id`      | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `id`      | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 | `sha`     | string         | yes      | The blob SHA. |
 
 ## Raw blob content
@@ -127,7 +127,7 @@ Supported attributes:
 
 | Attribute | Type     | Required | Description |
 | :-------- | :------- | :------- | :---------- |
-| `id`      | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `id`      | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 | `sha`     | string | yes      | The blob SHA. |
 
 ## Get file archive
@@ -158,7 +158,7 @@ Supported attributes:
 
 | Attribute   | Type           | Required | Description           |
 |:------------|:---------------|:---------|:----------------------|
-| `id`        | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `id`        | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 | `path`      | string         | no       | The subpath of the repository to download. If an empty string, defaults to the whole repository.  |
 | `sha`       | string         | no       | The commit SHA to download. A tag, branch reference, or SHA can be used. If not specified, defaults to the tip of the default branch. |
 
@@ -183,7 +183,7 @@ Supported attributes:
 
 | Attribute         | Type           | Required | Description |
 | :---------        | :------------- | :------- | :---------- |
-| `id`              | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `id`              | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 | `from`            | string         | yes      | The commit SHA or branch name. |
 | `to`              | string         | yes      | The commit SHA or branch name. |
 | `from_project_id` | integer        | no       | The ID to compare from. |
@@ -247,7 +247,7 @@ Supported attributes:
 
 | Attribute  | Type           | Required | Description |
 | :--------- | :------------- | :------- | :---------- |
-| `id`       | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `id`       | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 | `ref`      | string         | no       | The name of a repository branch or tag. If not given, the default branch. |
 | `order_by` | string         | no       | Return contributors ordered by `name`, `email`, or `commits` (orders by commit date) fields. Default is `commits`. |
 | `sort`     | string         | no       | Return contributors sorted in `asc` or `desc` order. Default is `asc`. |
@@ -287,7 +287,7 @@ GET /projects/:id/repository/merge_base
 
 | Attribute | Type           | Required | Description |
 | --------- | -------------- | -------- | ---------------------------------------------------------------------------------- |
-| `id`      | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `id`      | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 | `refs`    | array          | yes      | The refs to find the common ancestor of. Accepts multiple refs.                    |
 
 Example request, with the refs truncated for readability:

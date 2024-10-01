@@ -191,7 +191,7 @@ GET /groups/:id/audit_events
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths) |
 | `created_after` | string | no | Return group audit events created on or after the given time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ)`  |
 | `created_before` | string | no | Return group audit events created on or before the given time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`) |
 
@@ -255,7 +255,7 @@ GET /groups/:id/audit_events/:audit_event_id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths) |
 | `audit_event_id` | integer | yes | The ID of the audit event |
 
 ```shell
@@ -301,7 +301,7 @@ GET /projects/:id/audit_events
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
 | `created_after` | string | no | Return project audit events created on or after the given time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`)  |
 | `created_before` | string | no | Return project audit events created on or before the given time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`) |
 
@@ -369,7 +369,7 @@ GET /projects/:id/audit_events/:audit_event_id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
 | `audit_event_id` | integer | yes | The ID of the audit event |
 
 ```shell

@@ -224,7 +224,7 @@ RSpec.describe Resolvers::TimelogResolver, feature_category: :team_planning do
     end
   end
 
-  shared_examples 'with a user' do
+  shared_examples 'with the current user' do
     let_it_be(:short_time_ago) { 5.days.ago.beginning_of_day }
     let_it_be(:medium_time_ago) { 15.days.ago.beginning_of_day }
 
@@ -235,8 +235,8 @@ RSpec.describe Resolvers::TimelogResolver, feature_category: :team_planning do
     let_it_be(:timelog2) { create(:issue_timelog, issue: issue, user: create(:user)) }
     let_it_be(:timelog3) { create(:merge_request_timelog, merge_request: merge_request, user: current_user) }
 
-    it 'blah' do
-      if user_found
+    it 'returns the expected records' do
+      if timelogs_found
         expect(timelogs).to contain_exactly(timelog1, timelog3)
       else
         expect(timelogs).to be_empty
@@ -276,9 +276,9 @@ RSpec.describe Resolvers::TimelogResolver, feature_category: :team_planning do
     let(:object) { current_user }
     let(:extra_args) { {} }
     let(:args) { {} }
-    let(:user_found) { true }
+    let(:timelogs_found) { true }
 
-    it_behaves_like 'with a user'
+    it_behaves_like 'with the current user'
   end
 
   context 'with a user filter' do
@@ -287,16 +287,19 @@ RSpec.describe Resolvers::TimelogResolver, feature_category: :team_planning do
 
     context 'when the user has timelogs' do
       let(:extra_args) { { username: current_user.username } }
-      let(:user_found) { true }
+      let(:timelogs_found) { true }
 
-      it_behaves_like 'with a user'
+      it_behaves_like 'with the current user'
     end
 
     context 'when the user doest not have timelogs' do
-      let(:extra_args) { { username: 'not_existing_user' } }
-      let(:user_found) { false }
+      let(:user) { create(:user) }
 
-      it_behaves_like 'with a user'
+      let(:extra_args) { { username: user.username } }
+      let(:args) { { user: user } }
+      let(:timelogs_found) { false }
+
+      it_behaves_like 'with the current user'
     end
   end
 
@@ -306,7 +309,10 @@ RSpec.describe Resolvers::TimelogResolver, feature_category: :team_planning do
     let(:extra_args) { {} }
 
     it 'generates an error' do
-      expect_graphql_error_to_be_created(error_class, /Provide at least one argument/) do
+      expect_graphql_error_to_be_created(
+        error_class,
+        /Non-admin users must provide a group_id, project_id, or current username/
+      ) do
         timelogs
       end
     end

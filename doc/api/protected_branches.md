@@ -35,7 +35,7 @@ GET /projects/:id/protected_branches
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
 | `search` | string | no | Name or part of the name of protected branches to be searched for |
 
 ```shell
@@ -151,7 +151,7 @@ GET /projects/:id/protected_branches/:name
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
 | `name` | string | yes | The name of the branch or wildcard |
 
 ```shell
@@ -232,7 +232,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitla
 
 | Attribute                                    | Type | Required | Description |
 | -------------------------------------------- | ---- | -------- | ----------- |
-| `id`                                         | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `id`                                         | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 | `name`                                       | string         | yes | The name of the branch or wildcard. |
 | `allow_force_push`                           | boolean        | no  | When enabled, members who can push to this branch can also force push. (default: `false`) |
 | `allowed_to_merge`                           | array          | no  | Array of merge access levels, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, or `{access_level: integer}`. Premium and Ultimate only. |
@@ -508,7 +508,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
 | `name` | string | yes | The name of the branch |
 
 ## Update a protected branch
@@ -528,7 +528,7 @@ curl --request PATCH --header "PRIVATE-TOKEN: <your_access_token>" "https://gitl
 
 | Attribute                                    | Type           | Required | Description |
 | -------------------------------------------- | ---- | -------- | ----------- |
-| `id`                                         | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `id`                                         | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 | `name`                                       | string         | yes | The name of the branch or wildcard. |
 | `allow_force_push`                           | boolean        | no  | When enabled, members who can push to this branch can also force push. |
 | `allowed_to_merge`                           | array          | no  | Array of merge access levels, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, or `{access_level: integer}`. Premium and Ultimate only. |

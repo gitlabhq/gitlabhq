@@ -47,7 +47,7 @@ PUT /projects/:id/packages/generic/:package_name/:package_version/:file_name?sta
 
 | Attribute         | Type           | Required | Description |
 |-------------------|----------------|----------|-------------|
-| `id`              | integer/string | yes      | The ID or [URL-encoded path of the project](../../../api/rest/index.md#namespaced-path-encoding). |
+| `id`              | integer/string | yes      | The ID or [URL-encoded path of the project](../../../api/rest/index.md#namespaced-paths). |
 | `package_name`    | string         | yes      | The package name. It can contain only lowercase letters (`a-z`), uppercase letter (`A-Z`), numbers (`0-9`), dots (`.`), hyphens (`-`), or underscores (`_`). |
 | `package_version` | string         | yes      | The package version. The following regex validates this: `\A(\.?[\w\+-]+\.?)+\z`. You can test your version strings on [Rubular](https://rubular.com/r/aNCV0wG5K14uq8). |
 | `file_name`       | string         | yes      | The filename. It can contain only lowercase letters (`a-z`), uppercase letter (`A-Z`), numbers (`0-9`), dots (`.`), hyphens (`-`), underscores (`_`), or slashes (`/`). |
@@ -161,7 +161,7 @@ GET /projects/:id/packages/generic/:package_name/:package_version/:file_name
 
 | Attribute         | Type           | Required | Description |
 |-------------------|----------------|----------|-------------|
-| `id`              | integer/string | yes      | The ID or [URL-encoded path of the project](../../../api/rest/index.md#namespaced-path-encoding). |
+| `id`              | integer/string | yes      | The ID or [URL-encoded path of the project](../../../api/rest/index.md#namespaced-paths). |
 | `package_name`    | string         | yes      | The package name. |
 | `package_version` | string         | yes      | The package version. |
 | `file_name`       | string         | yes      | The filename. |

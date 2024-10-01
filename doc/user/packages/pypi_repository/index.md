@@ -53,7 +53,7 @@ password = <your_personal_access_token>
 ```
 
 The `<project_id>` is either the project's
-[URL-encoded](../../../api/rest/index.md#namespaced-path-encoding)
+[URL-encoded](../../../api/rest/index.md#namespaced-paths)
 path (for example, `group%2Fproject`), or the project's ID (for example `42`).
 
 ### Authenticate with a deploy token
@@ -72,7 +72,7 @@ password = <deploy token>
 ```
 
 The `<project_id>` is either the project's
-[URL-encoded](../../../api/rest/index.md#namespaced-path-encoding)
+[URL-encoded](../../../api/rest/index.md#namespaced-paths)
 path (for example, `group%2Fproject`), or the project's ID (for example `42`).
 
 ### Authenticate with a CI job token
@@ -224,7 +224,7 @@ pip install --index-url https://<personal_access_token_name>:<personal_access_to
 - `<package_name>` is the package name.
 - `<personal_access_token_name>` is a personal access token name with the `read_api` scope.
 - `<personal_access_token>` is a personal access token with the `read_api` scope.
-- `<project_id>` is either the project's [URL-encoded](../../../api/rest/index.md#namespaced-path-encoding)
+- `<project_id>` is either the project's [URL-encoded](../../../api/rest/index.md#namespaced-paths)
   path (for example, `group%2Fproject`), or the project's ID (for example `42`).
 
 In these commands, you can use `--extra-index-url` instead of `--index-url`. However, using

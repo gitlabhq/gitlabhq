@@ -20,7 +20,7 @@ GET /projects/:id/resource_groups
 
 | Attribute | Type    | Required | Description         |
 |-----------|---------|----------|---------------------|
-| `id`      | integer/string     | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
+| `id`      | integer/string     | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/resource_groups"
@@ -48,7 +48,7 @@ GET /projects/:id/resource_groups/:key
 
 | Attribute | Type    | Required | Description         |
 |-----------|---------|----------|---------------------|
-| `id`      | integer/string     | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
+| `id`      | integer/string     | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
 | `key`     | string  | yes      | The key of the resource group |
 
 ```shell
@@ -75,7 +75,7 @@ GET /projects/:id/resource_groups/:key/upcoming_jobs
 
 | Attribute | Type    | Required | Description         |
 |-----------|---------|----------|---------------------|
-| `id`      | integer/string     | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
+| `id`      | integer/string     | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
 | `key`     | string  | yes      | The key of the resource group |
 
 ```shell
@@ -174,7 +174,7 @@ PUT /projects/:id/resource_groups/:key
 
 | Attribute       | Type    | Required                          | Description                      |
 | --------------- | ------- | --------------------------------- | -------------------------------  |
-| `id`            | integer/string | yes                        | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding)            |
+| `id`            | integer/string | yes                        | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths)            |
 | `key`           | string  | yes                               | The key of the resource group |
 | `process_mode`  | string  | no                                | The process mode of the resource group. One of `unordered`, `oldest_first` or `newest_first`. Read [process modes](../ci/resource_groups/index.md#process-modes) for more information. |
 

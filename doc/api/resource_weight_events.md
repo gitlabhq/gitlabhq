@@ -26,7 +26,7 @@ GET /projects/:id/issues/:issue_iid/resource_weight_events
 
 | Attribute   | Type           | Required | Description                                                                     |
 | ----------- | -------------- | -------- | ------------------------------------------------------------------------------- |
-| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
 | `issue_iid` | integer        | yes      | The IID of an issue                                                             |
 
 Example request:
@@ -82,7 +82,7 @@ Parameters:
 
 | Attribute                     | Type           | Required | Description                                                                     |
 | ----------------------------- | -------------- | -------- | ------------------------------------------------------------------------------- |
-| `id`                          | integer/string | yes      | The ID or [URL-encoded path](rest/index.md#namespaced-path-encoding) of the project |
+| `id`                          | integer/string | yes      | The ID or [URL-encoded path](rest/index.md#namespaced-paths) of the project |
 | `issue_iid`                   | integer        | yes      | The IID of an issue                                                             |
 | `resource_weight_event_id`    | integer        | yes      | The ID of a weight event                                                     |
 

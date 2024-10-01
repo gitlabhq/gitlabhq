@@ -30,7 +30,7 @@ GET /projects/:id/jobs/:job_id/artifacts
 
 | Attribute                     | Type           | Required | Description |
 |-------------------------------|----------------|----------|-------------|
-| `id`                          | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `id`                          | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 | `job_id`                      | integer        | Yes      | ID of a job. |
 | `job_token`                   | string         | No       | To be used with [triggers](../ci/jobs/job_artifacts.md#with-a-cicd-job-token) for multi-project pipelines. It should be invoked only in a CI/CD job defined in the `.gitlab-ci.yml` file. The value is always `$CI_JOB_TOKEN`. The job associated with the `$CI_JOB_TOKEN` must be running when this token is used. Premium and Ultimate only. |
 
@@ -103,7 +103,7 @@ Parameters
 
 | Attribute                     | Type           | Required | Description |
 |-------------------------------|----------------|----------|-------------|
-| `id`                          | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `id`                          | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 | `job`                         | string         | Yes      | The name of the job. |
 | `ref_name`                    | string         | Yes      | Branch or tag name in repository. HEAD or SHA references are not supported. |
 | `job_token`                   | string         | No       | To be used with [triggers](../ci/jobs/job_artifacts.md#with-a-cicd-job-token) for multi-project pipelines. It should be invoked only in a CI/CD job defined in the `.gitlab-ci.yml` file. The value is always `$CI_JOB_TOKEN`. The job associated with the `$CI_JOB_TOKEN` must be running when this token is used. Premium and Ultimate only. |
@@ -167,7 +167,7 @@ Parameters
 | Attribute                     | Type           | Required | Description |
 |-------------------------------|----------------|----------|-------------|
 | `artifact_path`               | string         | Yes      | Path to a file inside the artifacts archive. |
-| `id`                          | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `id`                          | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 | `job_id`                      | integer        | Yes      | The unique job identifier. |
 | `job_token`                   | string         | No       | To be used with [triggers](../ci/jobs/job_artifacts.md#with-a-cicd-job-token) for multi-project pipelines. It should be invoked only in a CI/CD job defined in the `.gitlab-ci.yml` file. The value is always `$CI_JOB_TOKEN`. The job associated with the `$CI_JOB_TOKEN` must be running when this token is used. Premium and Ultimate only. |
 
@@ -213,7 +213,7 @@ Parameters:
 | Attribute                     | Type           | Required | Description |
 |-------------------------------|----------------|----------|-------------|
 | `artifact_path`               | string         | Yes      | Path to a file inside the artifacts archive. |
-| `id`                          | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `id`                          | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 | `job`                         | string         | Yes      | The name of the job. |
 | `ref_name`                    | string         | Yes      | Branch or tag name in repository. `HEAD` or `SHA` references are not supported. |
 | `job_token`                   | string         | No       | To be used with [triggers](../ci/jobs/job_artifacts.md#with-a-cicd-job-token) for multi-project pipelines. It should be invoked only in a CI/CD job defined in the `.gitlab-ci.yml` file. The value is always `$CI_JOB_TOKEN`. The job associated with the `$CI_JOB_TOKEN` must be running when this token is used. Premium and Ultimate only. |
@@ -247,7 +247,7 @@ Parameters
 
 | Attribute | Type           | Required | Description |
 |-----------|----------------|----------|-------------|
-| `id`      | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `id`      | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 | `job_id`  | integer        | Yes      | ID of a job. |
 
 Example request:
@@ -304,7 +304,7 @@ DELETE /projects/:id/jobs/:job_id/artifacts
 
 | Attribute | Type           | Required | Description |
 |-----------|----------------|----------|-------------|
-| `id`      | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `id`      | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 | `job_id`  | integer        | Yes      | ID of a job. |
 
 Example request:
@@ -341,7 +341,7 @@ DELETE /projects/:id/artifacts
 
 | Attribute | Type           | Required | Description |
 |-----------|----------------|----------|-------------|
-| `id`      | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `id`      | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 
 Example request:
 

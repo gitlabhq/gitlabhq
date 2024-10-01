@@ -318,3 +318,15 @@ To resolve this issue, ensure all prerequisites for your installation method hav
 
 - [Prerequisites for connecting the GitLab for Jira Cloud app](jira_cloud_app.md#prerequisites)
 - [Prerequisites for installing the GitLab for Jira Cloud app manually](jira_cloud_app.md#prerequisites-1)
+
+## Error: `Failed to sign in to GitLab`
+
+When you sign in to the GitLab for Jira Cloud app after you point the app
+to your self-managed instance, you might get the following error:
+
+```plaintext
+Failed to sign in to GitLab
+```
+
+To resolve this issue, ensure the **Trusted** and **Confidential** checkboxes are cleared in
+the [OAuth application](jira_cloud_app.md#set-up-oauth-authentication) created for the app.

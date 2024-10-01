@@ -221,8 +221,8 @@ To reset the runner authentication token:
 
 ### Automatically rotate runner authentication tokens
 
-You can specify an interval for runner authentication tokens to rotate.
-This rotation helps ensure the security of the tokens assigned to your runners.
+You can specify an interval to rotate runner authentication tokens.
+Regularly rotating runner authentication tokens helps minimize the risk of unauthorized access to your GitLab instance through compromised tokens.
 
 Prerequisites:
 

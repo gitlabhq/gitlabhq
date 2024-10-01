@@ -27,7 +27,7 @@ GET /groups/:id/uploads
 
 | Attribute | Type              | Required | Description |
 |-----------|-------------------|----------|-------------|
-| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding). |
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
 
 Example request:
 
@@ -74,7 +74,7 @@ Supported attributes:
 
 | Attribute   | Type              | Required | Description |
 |-------------|-------------------|----------|-------------|
-| `id`        | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding). |
+| `id`        | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
 | `upload_id` | integer           | Yes      | The ID of the upload. |
 
 Example request:
@@ -99,7 +99,7 @@ Supported attributes:
 
 | Attribute   | Type              | Required | Description |
 |-------------|-------------------|----------|-------------|
-| `id`        | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding). |
+| `id`        | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
 | `secret`    | string            | Yes      | The 32-character secret of the upload. |
 | `filename`  | string            | Yes      | The filename of the upload. |
 
@@ -125,7 +125,7 @@ Supported attributes:
 
 | Attribute   | Type              | Required | Description |
 |-------------|-------------------|----------|-------------|
-| `id`        | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding). |
+| `id`        | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
 | `upload_id` | integer           | Yes      | The ID of the upload. |
 
 Example request:
@@ -150,7 +150,7 @@ Supported attributes:
 
 | Attribute   | Type              | Required | Description |
 |-------------|-------------------|----------|-------------|
-| `id`        | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding). |
+| `id`        | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
 | `secret`    | string            | Yes      | The 32-character secret of the upload. |
 | `filename`  | string            | Yes      | The filename of the upload. |
 

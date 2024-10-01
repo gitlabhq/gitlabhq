@@ -46,7 +46,7 @@ GET /groups/:id/protected_branches
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer or string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding). |
+| `id` | integer or string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
 | `search` | string | no | Name or part of the name of protected branches to be searched for. |
 
 ```shell
@@ -120,7 +120,7 @@ GET /groups/:id/protected_branches/:name
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer or string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding). |
+| `id` | integer or string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
 | `name` | string | yes | The name of the branch or wildcard. |
 
 ```shell
@@ -172,7 +172,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 
 | Attribute                                    | Type | Required | Description |
 | -------------------------------------------- | ---- | -------- | ----------- |
-| `id`                                         | integer or string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding). |
+| `id`                                         | integer or string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
 | `name`                                       | string         | yes | The name of the branch or wildcard. |
 | `allow_force_push`                           | boolean        | no  | Allow all users with push access to force push. Default: `false`. |
 | `allowed_to_merge`                           | array          | no  | Array of access levels allowed to merge, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, or `{access_level: integer}`. |
@@ -352,7 +352,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer or string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding). |
+| `id` | integer or string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
 | `name` | string | yes | The name of the branch. |
 
 Example response:
@@ -387,7 +387,7 @@ curl --request PATCH --header "PRIVATE-TOKEN: <your_access_token>" \
 
 | Attribute                                    | Type           | Required | Description                                                                                                                          |
 | -------------------------------------------- | ---- | -------- | ----------- |
-| `id`                                         | integer or string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding).                       |
+| `id`                                         | integer or string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths).                       |
 | `name`                                       | string         | yes      | The name of the branch.                                                                                                               |
 | `allow_force_push`                           | boolean        | no       | When enabled, members who can push to this branch can also force push.                                                               |
 | `allowed_to_push`                            | array          | no       | Array of push access levels, with each described by a hash.                                                                          |

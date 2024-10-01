@@ -17,7 +17,7 @@ describe('GlobalSearch IssuesFilters', () => {
 
   const defaultGetters = {
     currentScope: () => 'issues',
-    hasProjectContext: () => true,
+    hasMissingProjectContext: () => true,
   };
 
   const createComponent = ({ initialState = {} } = {}) => {
@@ -83,9 +83,9 @@ describe('GlobalSearch IssuesFilters', () => {
     });
   });
 
-  describe('hasProjectContext getter', () => {
+  describe('hasMissingProjectContext getter', () => {
     beforeEach(() => {
-      defaultGetters.hasProjectContext = () => false;
+      defaultGetters.hasMissingProjectContext = () => false;
       createComponent();
     });
 

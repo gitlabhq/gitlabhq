@@ -87,7 +87,7 @@ Parameters:
 
 | Attribute | Type           | Required | Description |
 | --------- | -------------- | -------- | ----------- |
-| `id`      | integer/string | yes      | ID or [URL-encoded path of the namespace](../../api/rest/index.md#namespaced-path-encoding) |
+| `id`      | integer/string | yes      | ID or [URL-encoded path of the namespace](../../api/rest/index.md#namespaced-paths) |
 
 Example request:
 
@@ -132,7 +132,7 @@ Parameters:
 
 | Attribute | Type           | Required | Description |
 | --------- | -------------- | -------- | ----------- |
-| `id`      | integer/string | yes      | ID or [URL-encoded path of the namespace](../../api/rest/index.md#namespaced-path-encoding) |
+| `id`      | integer/string | yes      | ID or [URL-encoded path of the namespace](../../api/rest/index.md#namespaced-paths) |
 | `shared_runners_minutes_limit` | integer | no | Compute minutes quota |
 | `extra_shared_runners_minutes_limit` |  integer | no | Extra compute minutes |
 | `additional_purchased_storage_size` |  integer | no | Additional storage size |
