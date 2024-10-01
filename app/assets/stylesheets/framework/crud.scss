@@ -8,6 +8,10 @@ $crud-header-min-height: px-to-rem(49px);
   min-height: $crud-header-min-height;
 }
 
+.crud-count .gl-badge {
+  @apply -gl-ml-2 -gl-my-1;
+}
+
 .crud-body:has(.gl-table) {
   margin-block: -1px;
   margin-inline: 0;

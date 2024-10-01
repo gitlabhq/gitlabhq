@@ -253,6 +253,35 @@ You can limit GitLab access to a subset of the LDAP users on your LDAP server.
 
 See the [documentation on setting up an LDAP user filter](../auth/ldap/index.md#set-up-ldap-user-filter) for more information.
 
+## Enable role promotion approval
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** Self-managed, GitLab Dedicated
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/433166) in GitLab 16.9 [with a flag](../feature_flags.md) named `member_promotion_management`.
+
+FLAG:
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
+In the **Ultimate** tier, [non billable roles](../../subscriptions/gitlab_com/index.md#billable-users), can be promoted to a billable role in any Project or Group, resulting in the increase of billable seats, without admins having any control on this promotion.
+To prevent existing users of the subscription from being promoted to a billable role, you can enable role promotion approval.
+
+When this setting is enabled, any existing user of the subscription when added to a [group](../../user/group/index.md#add-users-to-a-group) or [project](../../user/project/members/index.md#add-users-to-a-project) on a [billable role](../../subscriptions/gitlab_com/index.md#billable-users) will be [pending administrator approval](../moderate_users.md#view-users-pending-role-promotion).
+
+Promotions or updates of user roles for users that already occupy a billable seat do not require administrator approval.
+
+If the user is added to a group or project by an administrator, any membership requests for this user to any other group or project will be approved automatically.
+
+To enable role promotion approval:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > General**.
+1. Expand **Sign-up restrictions**.
+1. In the **Seat controls** section, select **Approve role promotions**.
+
 <!-- ## Troubleshooting
 
 Include any troubleshooting steps that you can foresee. If you know beforehand what issues

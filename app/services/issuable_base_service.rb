@@ -7,6 +7,7 @@ class IssuableBaseService < ::BaseContainerService
     [
       Issuable::Callbacks::Description,
       Issuable::Callbacks::Milestone,
+      Issuable::Callbacks::Labels,
       Issuable::Callbacks::TimeTracking
     ].freeze
   end
@@ -66,12 +67,6 @@ class IssuableBaseService < ::BaseContainerService
 
   def filter_params(issuable)
     unless can_set_issuable_metadata?(issuable)
-      params.delete(:labels)
-      params.delete(:add_label_ids)
-      params.delete(:add_labels)
-      params.delete(:remove_label_ids)
-      params.delete(:remove_labels)
-      params.delete(:label_ids)
       params.delete(:assignee_ids)
       params.delete(:assignee_id)
       params.delete(:add_assignee_ids)
@@ -87,7 +82,6 @@ class IssuableBaseService < ::BaseContainerService
     params.delete(:confidential) unless can_set_confidentiality?(issuable)
     filter_contact_params(issuable)
     filter_assignees(issuable)
-    filter_labels
     filter_severity(issuable)
     filter_escalation_status(issuable)
   end
@@ -126,26 +120,6 @@ class IssuableBaseService < ::BaseContainerService
     can?(user, ability_name, issuable.resource_parent)
   end
 
-  def filter_labels
-    label_ids_to_filter(:add_label_ids, :add_labels, false)
-    label_ids_to_filter(:remove_label_ids, :remove_labels, true)
-    label_ids_to_filter(:label_ids, :labels, false)
-  end
-
-  def label_ids_to_filter(label_id_key, label_key, find_only)
-    if params[label_id_key]
-      params[label_id_key] = labels_service.filter_labels_ids_in_param(label_id_key)
-    elsif params[label_key]
-      params[label_id_key] = labels_service.find_or_create_by_titles(label_key, find_only: find_only).map(&:id)
-    end
-
-    params.delete(label_key) if params[label_key].nil?
-  end
-
-  def labels_service
-    @labels_service ||= ::Labels::AvailableLabelsService.new(current_user, parent, params)
-  end
-
   def filter_severity(issuable)
     severity = params.delete(:severity)
     return unless severity && issuable.supports_severity?
@@ -170,31 +144,6 @@ class IssuableBaseService < ::BaseContainerService
     return unless result.success? && result[:escalation_status].present?
 
     params[:incident_management_issuable_escalation_status_attributes] = result[:escalation_status]
-  end
-
-  def process_label_ids(attributes, issuable:, existing_label_ids: nil, extra_label_ids: []) # rubocop:disable Lint/UnusedMethodArgument
-    label_ids = attributes.delete(:label_ids)
-    add_label_ids = attributes.delete(:add_label_ids)
-    remove_label_ids = attributes.delete(:remove_label_ids)
-
-    new_label_ids = label_ids || existing_label_ids || []
-    new_label_ids |= extra_label_ids
-
-    new_label_ids |= add_label_ids if add_label_ids
-    new_label_ids -= remove_label_ids if remove_label_ids
-
-    filter_locked_labels(issuable, new_label_ids.uniq, existing_label_ids)
-  end
-
-  # Filter out any locked labels that are attempting to be removed
-  def filter_locked_labels(issuable, ids, existing_label_ids)
-    return ids unless issuable.supports_lock_on_merge?
-    return ids unless existing_label_ids.present?
-
-    removed_label_ids = existing_label_ids - ids
-    removed_locked_label_ids = labels_service.filter_locked_label_ids(removed_label_ids)
-
-    ids + removed_locked_label_ids
   end
 
   def process_assignee_ids(attributes, existing_assignee_ids: nil, extra_assignee_ids: [])
@@ -245,7 +194,6 @@ class IssuableBaseService < ::BaseContainerService
     filter_params(issuable)
 
     params.delete(:state_event)
-    params[:label_ids] = process_label_ids(params, issuable: issuable, extra_label_ids: issuable.label_ids.to_a)
 
     if issuable.respond_to?(:assignee_ids)
       params[:assignee_ids] = process_assignee_ids(params, extra_assignee_ids: issuable.assignee_ids.to_a)
@@ -344,7 +292,6 @@ class IssuableBaseService < ::BaseContainerService
 
     change_additional_attributes(issuable)
 
-    assign_requested_labels(issuable)
     assign_requested_assignees(issuable)
     assign_requested_crm_contacts(issuable)
     widget_params = filter_widget_params
@@ -546,14 +493,6 @@ class IssuableBaseService < ::BaseContainerService
     end
   end
   # rubocop: enable CodeReuse/ActiveRecord
-
-  def assign_requested_labels(issuable)
-    label_ids = process_label_ids(params, issuable: issuable, existing_label_ids: issuable.label_ids)
-    return unless ids_changing?(issuable.label_ids, label_ids)
-
-    params[:label_ids] = label_ids
-    issuable.touch
-  end
 
   def assign_requested_crm_contacts(issuable)
     add_crm_contact_emails = params.delete(:add_contacts)

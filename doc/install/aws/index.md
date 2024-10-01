@@ -515,7 +515,7 @@ From the EC2 dashboard:
 
 1. Use the section below titled "[Find official GitLab-created AMI IDs on AWS](#find-official-gitlab-created-ami-ids-on-aws)" to find the correct AMI and select **Launch**.
 1. In the **Name and tags** section, set the **Name** to `GitLab`.
-1. In the **Instance type** dropdown list, select an instance type based on your workload. Consult the [hardware requirements](../../install/requirements.md#hardware) to choose one that fits your needs (at least `c5.2xlarge`, which is sufficient to accommodate 100 users).
+1. In the **Instance type** dropdown list, select an instance type based on your workload. Consult the [hardware requirements](../../install/requirements.md) to choose one that fits your needs (at least `c5.2xlarge`, which is sufficient to accommodate 100 users).
 1. In the **Key pair** section, select **Create new key pair**.
    1. Give the key pair a name (we use `gitlab`) and save the `gitlab.pem` file for later use.
 1. In the **Network settings** section:

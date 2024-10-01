@@ -208,7 +208,7 @@ InitializerConnections.raise_if_new_database_connection do
 
       resources :sent_notifications, only: [], constraints: { id: /\h{32}/ } do
         member do
-          get :unsubscribe
+          match :unsubscribe, via: [:get, :post]
         end
       end
 

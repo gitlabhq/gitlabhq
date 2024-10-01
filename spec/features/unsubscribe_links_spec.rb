@@ -15,16 +15,16 @@ RSpec.describe 'Unsubscribe links', :sidekiq_inline, feature_category: :shared d
   let(:mail) { ActionMailer::Base.deliveries.last }
   let(:body) { Capybara::Node::Simple.new(mail.default_part_body.to_s) }
   let(:header_link) { mail.header['List-Unsubscribe'].to_s[1..-2] } # Strip angle brackets
-  let(:body_link) { body.find_link('Unsubscribe')['href'] }
+  let(:link) { body.find_link('Unsubscribe')['href'] }
 
   before do
     perform_enqueued_jobs { issue }
   end
 
   context 'when logged out' do
-    context 'when visiting the link from the body' do
+    shared_examples 'unsubscribes via confirmation page' do
       it 'shows the unsubscribe confirmation page and redirects to root path when confirming' do
-        visit body_link
+        visit link
 
         expect(page).to have_current_path unsubscribe_sent_notification_path(SentNotification.last), ignore_query: true
         expect(page).to have_text(%(Unsubscribe from issue))
@@ -38,7 +38,7 @@ RSpec.describe 'Unsubscribe links', :sidekiq_inline, feature_category: :shared d
       end
 
       it 'shows the unsubscribe confirmation page and redirects to root path when canceling' do
-        visit body_link
+        visit link
 
         expect(page).to have_current_path unsubscribe_sent_notification_path(SentNotification.last), ignore_query: true
         expect(issue.subscribed?(recipient, project)).to be_truthy
@@ -50,11 +50,17 @@ RSpec.describe 'Unsubscribe links', :sidekiq_inline, feature_category: :shared d
       end
     end
 
-    it 'unsubscribes from the issue when visiting the link from the header' do
-      visit header_link
+    context 'when visiting the link from the body' do
+      it_behaves_like 'unsubscribes via confirmation page'
+    end
 
-      expect(page).to have_text('unsubscribed')
-      expect(issue.subscribed?(recipient, project)).to be_falsey
+    context 'when visiting the link from the header' do
+      let(:link) { header_link }
+
+      # It's the same link for both body and header.
+      # To comply with RFC8058 the header link needs to be
+      # called via a POST request to directly unsubscribe.
+      it_behaves_like 'unsubscribes via confirmation page'
     end
   end
 
@@ -64,7 +70,7 @@ RSpec.describe 'Unsubscribe links', :sidekiq_inline, feature_category: :shared d
     end
 
     it 'unsubscribes from the issue when visiting the link from the email body' do
-      visit body_link
+      visit link
 
       expect(page).to have_text('unsubscribed')
       expect(issue.subscribed?(recipient, project)).to be_falsey

@@ -224,6 +224,7 @@ module Ci
     scope :with_creator, -> { preload(:creator) }
 
     validate :tag_constraints
+    validates :sharding_key_id, presence: true, on: :create, unless: :instance_type?
     validates :name, length: { maximum: 256 }, if: :name_changed?
     validates :description, length: { maximum: 1024 }, if: :description_changed?
     validates :access_level, presence: true
@@ -231,6 +232,7 @@ module Ci
     validates :registration_type, presence: true
 
     validate :no_projects, unless: :project_type?
+    validate :no_sharding_key_id, if: :instance_type?
     validate :no_groups, unless: :group_type?
     validate :any_project, if: :project_type?
     validate :exactly_one_group, if: :group_type?
@@ -354,6 +356,7 @@ module Ci
 
       begin
         transaction do
+          self.sharding_key_id = project.id if self.runner_projects.empty?
           self.runner_projects << ::Ci::RunnerProject.new(project: project, runner: self)
           self.save!
         end
@@ -568,6 +571,12 @@ module Ci
       if tag_list_changed? && tag_list.count > TAG_LIST_MAX_LENGTH
         errors.add(:tags_list,
           "Too many tags specified. Please limit the number of tags to #{TAG_LIST_MAX_LENGTH}")
+      end
+    end
+
+    def no_sharding_key_id
+      if sharding_key_id
+        errors.add(:runner, 'cannot have sharding_key_id assigned')
       end
     end
 

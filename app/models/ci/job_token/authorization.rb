@@ -19,8 +19,6 @@ module Ci
 
       # Record in SafeRequestStore a cross-project access attempt
       def self.capture(origin_project:, accessed_project:)
-        return if Feature.disabled?(:ci_job_token_authorizations_log, accessed_project)
-
         # Skip self-referential accesses as they are always allowed and don't need
         # to be logged neither added to the allowlist.
         return if origin_project == accessed_project
@@ -44,8 +42,6 @@ module Ci
         return unless authorizations
 
         accessed_project_id = authorizations[:accessed_project_id]
-        return if Feature.disabled?(:ci_job_token_authorizations_log, Project.actor_from_id(accessed_project_id))
-
         Ci::JobToken::LogAuthorizationWorker # rubocop:disable CodeReuse/Worker -- This method is called from a middleware and it's better tested
           .perform_in(CAPTURE_DELAY, accessed_project_id, authorizations[:origin_project_id])
       end

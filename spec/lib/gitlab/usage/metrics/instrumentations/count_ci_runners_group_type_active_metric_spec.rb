@@ -7,10 +7,7 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::CountCiRunnersGroupType
   let(:expected_value) { 1 }
 
   before do
-    create(:ci_runner,
-      :group,
-      groups: [group]
-    )
+    create(:ci_runner, :group, groups: [group])
   end
 
   it_behaves_like 'a correct instrumented metric value', { time_frame: 'all', data_source: 'database' }

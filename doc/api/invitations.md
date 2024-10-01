@@ -74,11 +74,12 @@ When there was any error sending the email:
 ```
 
 NOTE:
+When the setting **Manage non-billable promotions** is enabled, new invited members with billable roles must be approved by an administrator.
 
-When the ability to **Manage Non-Billable Promotions** is enabled, the newly invited member will be pending administrator approval if the role is billable. To enable **Manage Non-Billable Promotions**:
+To enable **Manage non-billable promotions**:
 
-1. Enable `enable_member_promotion_management` Application Setting
-1. Enable `member_promotion_management` Feature Flag
+1. Enable the `enable_member_promotion_management` application setting.
+1. Enable the `member_promotion_management` feature flag.
 
 Example response:
 

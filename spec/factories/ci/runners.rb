@@ -20,10 +20,12 @@ FactoryBot.define do
     end
 
     after(:build) do |runner, evaluator|
+      runner.sharding_key_id ||= evaluator.projects.first&.id if runner.project_type?
       evaluator.projects.each do |proj|
         runner.runner_projects << build(:ci_runner_project, runner: runner, project: proj)
       end
 
+      runner.sharding_key_id ||= evaluator.groups.first&.id if runner.group_type?
       evaluator.groups.each do |group|
         runner.runner_namespaces << build(:ci_runner_namespace, runner: runner, namespace: group)
       end
@@ -107,6 +109,15 @@ FactoryBot.define do
       transient do
         without_projects { true }
       end
+
+      after(:build) do |runner, evaluator|
+        next if runner.sharding_key_id
+
+        # Point to a "no longer existing" project ID, as a project runner must always have been created
+        # with a sharding key id
+        runner.sharding_key_id = (2**63) - 1
+      end
+
       after(:create) do |runner, evaluator|
         runner.runner_projects.delete_all
       end

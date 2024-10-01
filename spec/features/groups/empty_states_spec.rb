@@ -59,10 +59,7 @@ RSpec.describe 'Group empty states', feature_category: :groups_and_projects do
 
             wait_for_all_requests
 
-            within_testid('issuable-empty-state') do
-              empty_state_title = issuable == :issue ? "Sorry, your filter produced no results" : "No results found"
-              expect(page).to have_content(empty_state_title)
-            end
+            expect(page.find('.gl-empty-state')).to have_content("No results found")
           end
 
           it "displays conditional text when no closed #{issuable} is found", :js do

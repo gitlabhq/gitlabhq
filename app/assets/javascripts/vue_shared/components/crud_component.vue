@@ -164,7 +164,7 @@ export default {
 
           <span
             v-if="displayedCount || $scopedSlots.count"
-            class="gl-inline-flex gl-items-center gl-gap-2 gl-self-start gl-text-sm gl-text-subtle"
+            class="crud-count gl-inline-flex gl-items-center gl-gap-2 gl-self-start gl-text-sm gl-text-subtle"
             data-testid="crud-count"
           >
             <template v-if="displayedCount">

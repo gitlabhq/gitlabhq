@@ -38,6 +38,7 @@ import {
   TOKEN_TYPE_CREATED,
   TOKEN_TYPE_CLOSED,
 } from '~/vue_shared/components/filtered_search_bar/constants';
+import EmptyResult from '~/vue_shared/components/empty_result.vue';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import {
   emptyIssuesQueryResponse,
@@ -86,6 +87,7 @@ describe('IssuesDashboardApp component', () => {
   const findCalendarButton = () => wrapper.findByRole('link', { name: 'Subscribe to calendar' });
   const findDisclosureDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
+  const findEmptyResult = () => wrapper.findComponent(EmptyResult);
   const findIssuableList = () => wrapper.findComponent(IssuableList);
   const findIssueCardStatistics = () => wrapper.findComponent(IssueCardStatistics);
   const findIssueCardTimeInfo = () => wrapper.findComponent(IssueCardTimeInfo);
@@ -225,11 +227,7 @@ describe('IssuesDashboardApp component', () => {
         });
 
         it('renders empty state', () => {
-          expect(findEmptyState().props()).toMatchObject({
-            description: 'To widen your search, change or remove filters above',
-            svgPath: defaultProvide.emptyStateWithFilterSvgPath,
-            title: 'Sorry, your filter produced no results',
-          });
+          expect(findEmptyResult().exists()).toBe(true);
         });
       });
     });
@@ -249,8 +247,7 @@ describe('IssuesDashboardApp component', () => {
 
       it('renders empty state', () => {
         expect(findEmptyState().props()).toMatchObject({
-          description: null,
-          svgPath: defaultProvide.emptyStateWithoutFilterSvgPath,
+          svgPath: defaultProvide.emptyStateWithFilterSvgPath,
           title: 'Please select at least one filter to see results',
         });
       });

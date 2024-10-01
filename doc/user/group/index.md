@@ -336,6 +336,8 @@ You can give a user access to all projects in a group.
 Prerequisites:
 
 - You must have the Owner role for the group.
+- If [sign-up is disabled](../../administration/settings/sign_up_restrictions.md#disable-new-sign-ups), an administrator must add the user by email first.
+- If [promotion management](../../administration/settings/sign_up_restrictions.md#enable-role-promotion-approval) is enabled, an administrator must approve the invite.
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Manage > Members**.
@@ -371,6 +373,18 @@ This tab includes users who:
 - Have not yet accepted the invitation.
 - Are waiting for [approval from an administrator](../../administration/moderate_users.md).
 - [Exceed the group user cap](manage.md#user-cap-for-groups).
+
+### View users pending promotion
+
+When [promotion management](../../administration/settings/sign_up_restrictions.md#enable-role-promotion-approval) is enabled, an administrator must approve the membership requests of users who would become billable users in the subscription.
+
+To view users pending promotion:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Manage > Members**.
+1. Select the **Promotions** tab.
+
+If the **Promotions** tab is not displayed, the group has no pending promotions.
 
 ## Remove a member from the group
 

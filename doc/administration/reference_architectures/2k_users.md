@@ -278,7 +278,7 @@ If you use a third party external service:
 
 1. The HA Linux package PostgreSQL setup encompasses PostgreSQL, PgBouncer and Consul. All of these components would no longer be required when using a third party external service.
 1. Set up PostgreSQL according to the
-   [database requirements document](../../install/requirements.md#database).
+   [database requirements document](../../install/requirements.md#postgresql).
 1. Set up a `gitlab` username with a password of your choice. The `gitlab` user
    needs privileges to create the `gitlabhq_production` database.
 1. Configure the GitLab application servers with the appropriate details.

@@ -20,7 +20,7 @@ separate from the Linux package.
 If you use a cloud-managed service, or provide your own PostgreSQL instance:
 
 1. Set up PostgreSQL according to the
-   [database requirements document](../../install/requirements.md#database).
+   [database requirements document](../../install/requirements.md#postgresql).
 1. Set up a `gitlab` user with a password of your choice, create the `gitlabhq_production` database, and make the user an
    owner of the database. You can see an example of this setup in the
    [self-compiled installation documentation](../../install/installation.md#7-database).
@@ -73,6 +73,6 @@ pg_dump: error: Error message from server: SSL SYSCALL error: EOF detected
 
 To resolve this error, ensure that you are meeting the
 [minimum PostgreSQL requirements](../../install/requirements.md#postgresql). After
-upgrading your RDS instance to a [supported version](../../install/requirements.md#database),
+upgrading your RDS instance to a [supported version](../../install/requirements.md#postgresql),
 you should be able to perform a backup without this error.
 See [issue 64763](https://gitlab.com/gitlab-org/gitlab/-/issues/364763) for more information.

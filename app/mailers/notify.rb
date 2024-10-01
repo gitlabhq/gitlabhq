@@ -231,7 +231,9 @@ class Notify < ApplicationMailer
   def add_unsubscription_headers_and_links
     return unless !@labels_url && @sent_notification && @sent_notification.unsubscribable?
 
-    list_unsubscribe_methods = [unsubscribe_sent_notification_url(@sent_notification, force: true)]
+    @unsubscribe_url = unsubscribe_sent_notification_url(@sent_notification)
+
+    list_unsubscribe_methods = [@unsubscribe_url]
     if Gitlab::Email::IncomingEmail.enabled? && Gitlab::Email::IncomingEmail.supports_wildcard?
       list_unsubscribe_methods << "mailto:#{Gitlab::Email::IncomingEmail.unsubscribe_address(reply_key)}"
     end
@@ -241,7 +243,6 @@ class Notify < ApplicationMailer
     # be signalled with using the List-Unsubscribe-Post header
     # See https://datatracker.ietf.org/doc/html/rfc8058
     headers['List-Unsubscribe-Post'] = 'List-Unsubscribe=One-Click'
-    @unsubscribe_url = unsubscribe_sent_notification_url(@sent_notification)
   end
 
   def email_with_layout(to:, subject:, layout: 'mailer')

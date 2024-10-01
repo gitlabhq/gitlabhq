@@ -1,0 +1,9 @@
+---
+migration_job_name: BackfillApprovalProjectRulesProtectedBranchesProjectId
+description: Backfills sharding key `approval_project_rules_protected_branches.project_id` from `approval_project_rules`.
+feature_category: source_code_management
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167648
+milestone: '17.5'
+queued_migration_version: 20240930160027
+finalize_after: '2024-10-22'
+finalized_by: # version of the migration that finalized this BBM

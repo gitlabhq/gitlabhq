@@ -82,6 +82,7 @@ Prerequisites:
 - You must have the Owner or Maintainer role.
 - [Group membership lock](../../group/access_and_permissions.md#prevent-members-from-being-added-to-projects-in-a-group) must be disabled.
 - If [sign-up is disabled](../../../administration/settings/sign_up_restrictions.md#disable-new-sign-ups), an administrator must add the user by email first.
+- If [promotion management](../../../administration/settings/sign_up_restrictions.md#enable-role-promotion-approval) is enabled, an administrator must approve the invite.
 
 To add a user to a project:
 
@@ -122,6 +123,18 @@ role for the group. For example, the maximum role you can set is:
 - Maintainer (`40`), if you have the Maintainer role on the project.
 
 The Owner [role](../../permissions.md#project-members-permissions) can be added for the group only.
+
+### View users pending promotion
+
+When [promotion management](../../../administration/settings/sign_up_restrictions.md#enable-role-promotion-approval) is enabled, an administrator must approve the membership requests of users who would become billable users in the subscription.
+
+To view users pending promotion:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Manage > Members**.
+1. Select **Promotions** tab.
+
+If the **Promotions** tab is not displayed, the project has no pending promotions.
 
 ## Updating expiration and role
 

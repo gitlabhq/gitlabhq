@@ -1,5 +1,6 @@
 <script>
 import { GlAlert, GlBadge, GlKeysetPagination, GlSkeletonLoader, GlPagination } from '@gitlab/ui';
+import EmptyResult from '~/vue_shared/components/empty_result.vue';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import PageSizeSelector from '~/vue_shared/components/page_size_selector.vue';
 import { updateHistory, setUrlParams } from '~/lib/utils/url_utility';
@@ -40,6 +41,7 @@ export default {
     VueDraggable,
     PageSizeSelector,
     LocalStorageSync,
+    EmptyResult,
   },
   mixins: [glFeatureFlagMixin()],
   props: {
@@ -424,6 +426,7 @@ export default {
       <div v-else-if="issuables.length > 0 && isGridView">
         <issuable-grid />
       </div>
+      <empty-result v-else-if="initialFilterValue.length > 0" />
       <slot v-else-if="!error" name="empty-state"></slot>
     </template>
 

@@ -225,18 +225,6 @@ RSpec.describe Ci::JobToken::Scope, feature_category: :continuous_integration, f
             accessed_project_id: fully_accessible_project.id,
             origin_project_id: current_project.id)
         end
-
-        context 'when feature flag ci_job_token_authorizations_log is disabled' do
-          before do
-            stub_feature_flags(ci_job_token_authorizations_log: false)
-          end
-
-          it 'does not log authorizations', :request_store do
-            scope.accessible?(fully_accessible_project)
-
-            expect(Ci::JobToken::Authorization.captured_authorizations).to be_nil
-          end
-        end
       end
     end
   end

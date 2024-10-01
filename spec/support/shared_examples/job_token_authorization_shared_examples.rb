@@ -16,24 +16,6 @@ RSpec.shared_examples 'logs inbound authorizations via job token' do |success_st
 
       expect(response).to have_gitlab_http_status(success_status)
     end
-
-    context 'when feature flag ci_job_token_authorizations_log is disabled' do
-      before do
-        stub_feature_flags(ci_job_token_authorizations_log: false)
-      end
-
-      it 'does not capture neither log authorizations' do
-        expect(::Gitlab::SafeRequestStore).to receive(:fetch).at_least(:once).and_call_original
-        expect(::Gitlab::SafeRequestStore)
-          .not_to receive(:fetch).with(::Ci::JobToken::Authorization::REQUEST_CACHE_KEY)
-
-        expect(Ci::JobToken::LogAuthorizationWorker).not_to receive(:perform_in)
-
-        perform_request
-
-        expect(response).to have_gitlab_http_status(success_status)
-      end
-    end
   end
 
   shared_examples 'does not attempt to capture authorization' do |response_status|

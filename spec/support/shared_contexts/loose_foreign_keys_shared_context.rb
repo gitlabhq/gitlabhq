@@ -18,7 +18,7 @@ RSpec.shared_context 'for loose foreign keys' do
     # handle overridden primary key (eg: Vulnerabilities::Read)
     model_reported_primary_key = model.class.primary_key
     if model_reported_primary_key && primary_keys.exclude?(model_reported_primary_key)
-      return query.where(model_reported_primary_key => model.public_send(model_reported_primary_key)).first
+      primary_keys = Array.wrap(model_reported_primary_key)
     end
 
     primary_keys.each do |primary_key|

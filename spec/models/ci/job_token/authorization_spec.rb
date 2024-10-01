@@ -25,17 +25,6 @@ RSpec.describe Ci::JobToken::Authorization, feature_category: :secrets_managemen
           accessed_project_id: accessed_project.id)
       end
 
-      context 'when feature flag ci_job_token_authorizations_log is disabled' do
-        before do
-          stub_feature_flags(ci_job_token_authorizations_log: false)
-        end
-
-        it 'does not capture the authorization' do
-          capture
-          expect(described_class.captured_authorizations).to be_nil
-        end
-      end
-
       context 'when origin project is the same as the accessed project' do
         let(:accessed_project) { origin_project }
 
@@ -78,14 +67,6 @@ RSpec.describe Ci::JobToken::Authorization, feature_category: :secrets_managemen
 
       context 'when authorization is self-referential' do
         let(:accessed_project) { origin_project }
-
-        it_behaves_like 'does not log the authorization'
-      end
-
-      context 'when feature flag ci_job_token_authorization is disabled' do
-        before do
-          stub_feature_flags(ci_job_token_authorizations_log: false)
-        end
 
         it_behaves_like 'does not log the authorization'
       end

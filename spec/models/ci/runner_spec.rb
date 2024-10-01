@@ -101,29 +101,89 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
     it { is_expected.to validate_presence_of(:access_level) }
     it { is_expected.to validate_presence_of(:runner_type) }
     it { is_expected.to validate_presence_of(:registration_type) }
+    it { is_expected.to validate_presence_of(:sharding_key_id).on(:create) }
+
+    context 'when runner is instance type' do
+      let(:runner) { build(:ci_runner, :instance_type) }
+
+      it { expect(runner).to be_valid }
+
+      context 'when sharding_key_id is present' do
+        let(:runner) { build(:ci_runner, :instance_type, sharding_key_id: non_existing_record_id) }
+
+        it 'is invalid' do
+          expect(runner).to be_invalid
+          expect(runner.errors.full_messages).to contain_exactly('Runner cannot have sharding_key_id assigned')
+        end
+      end
+    end
 
     context 'when runner is not allowed to pick untagged jobs' do
       context 'when runner does not have tags' do
         let(:runner) { build(:ci_runner, tag_list: [], run_untagged: false) }
 
-        it 'is not valid' do
-          expect(runner).to be_invalid
-        end
+        it { expect(runner).to be_invalid }
       end
 
       context 'when runner has too many tags' do
         let(:runner) { build(:ci_runner, tag_list: (1..::Ci::Runner::TAG_LIST_MAX_LENGTH + 1).map { |i| "tag#{i}" }, run_untagged: false) }
 
-        it 'is not valid' do
-          expect(runner).to be_invalid
-        end
+        it { expect(runner).to be_invalid }
       end
 
       context 'when runner has tags' do
         let(:runner) { build(:ci_runner, tag_list: ['tag'], run_untagged: false) }
 
-        it 'is valid' do
-          expect(runner).to be_valid
+        it { expect(runner).to be_valid }
+      end
+    end
+
+    context 'shading_key_id validations' do
+      context 'with instance runner' do
+        let(:runner) { build(:ci_runner, :instance) }
+
+        it { expect(runner).to be_valid }
+
+        context 'when sharding_key_id is not present' do
+          before do
+            runner.sharding_key_id = nil
+          end
+
+          it { expect(runner).to be_valid }
+        end
+      end
+
+      context 'with group runner' do
+        let(:runner) { build(:ci_runner, :group, groups: [group]) }
+
+        it { expect(runner).to be_valid }
+
+        context 'when sharding_key_id is not present' do
+          before do
+            runner.sharding_key_id = nil
+          end
+
+          it 'adds error to model', :aggregate_failures do
+            expect(runner).not_to be_valid
+            expect(runner.errors[:sharding_key_id]).to contain_exactly("can't be blank")
+          end
+        end
+      end
+
+      context 'with project runner' do
+        let(:runner) { build(:ci_runner, :project, projects: [project]) }
+
+        it { expect(runner).to be_valid }
+
+        context 'when sharding_key_id is not present' do
+          before do
+            runner.sharding_key_id = nil
+          end
+
+          it 'adds error to model', :aggregate_failures do
+            expect(runner).not_to be_valid
+            expect(runner.errors[:sharding_key_id]).to contain_exactly("can't be blank")
+          end
         end
       end
     end
@@ -489,6 +549,10 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
 
         expect(runner).to be_project_type
         expect(runner.runner_projects.pluck(:project_id)).to contain_exactly(project.id, other_project.id)
+      end
+
+      it 'does not change sharding_key_id' do
+        expect { assign_to }.not_to change { runner.sharding_key_id }.from(other_project.id)
       end
     end
   end

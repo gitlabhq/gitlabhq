@@ -23774,6 +23774,9 @@ msgstr ""
 msgid "Free Trial of GitLab.com Ultimate"
 msgstr ""
 
+msgid "Free Ultimate Trial with GitLab Duo Enterprise"
+msgstr ""
+
 msgid "Free groups are limited to %{free_user_limit} member and the remaining members will get a status of over-limit and lose access to the group."
 msgid_plural "Free groups are limited to %{free_user_limit} members and the remaining members will get a status of over-limit and lose access to the group."
 msgstr[0] ""
@@ -24435,6 +24438,9 @@ msgid "Geo|secondary"
 msgstr ""
 
 msgid "Get a support subscription"
+msgstr ""
+
+msgid "Get access to all Ultimate and GitLab Duo AI-powered features, free for 60 days. No credit card required."
 msgstr ""
 
 msgid "Get free trial"
@@ -46007,7 +46013,7 @@ msgstr ""
 msgid "Repository has more than one branch."
 msgstr ""
 
-msgid "Repository has no locks."
+msgid "Repository has no locks"
 msgstr ""
 
 msgid "Repository has tags."

@@ -29,6 +29,10 @@ On GitLab.com, it takes seven days from when you delete your own account to when
 
 - That user is [blocked](../../../administration/moderate_users.md#block-a-user).
 - You cannot create a new account with the same username.
+
+  NOTE:
+  After the seven day time period is finished, any user can create a user account with that previously used username. Therefore, you should not assume that you will be able to create a new account with that username after the seven days, because it might be taken.
+
   You can [create a new account with the same email address](#create-a-new-account-with-the-same-email-address)
   if you remove that email address from your account first.
 

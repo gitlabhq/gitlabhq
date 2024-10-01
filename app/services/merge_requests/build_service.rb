@@ -66,16 +66,12 @@ module MergeRequests
       # merge_request.assign_attributes(...) below is a Rails
       # method that only work if all the params it is passed have
       # corresponding fields in the database. As there are no fields
-      # in the database for :add_label_ids, :remove_label_ids,
-      # :add_assignee_ids and :remove_assignee_ids, we
+      # in the database for :add_assignee_ids and :remove_assignee_ids, we
       # need to remove them from the params before the call to
       # merge_request.assign_attributes(...)
       #
-      # IssuableBaseService#process_label_ids and
-      # IssuableBaseService#process_assignee_ids take care
+      # IssuableBaseService#process_assignee_ids takes care
       # of the removal.
-      params[:label_ids] = process_label_ids(params, issuable: merge_request, extra_label_ids: merge_request.label_ids.to_a)
-
       params[:assignee_ids] = process_assignee_ids(params, extra_assignee_ids: merge_request.assignee_ids.to_a)
 
       merge_request.assign_attributes(params.to_h.compact)
@@ -92,7 +88,6 @@ module MergeRequests
       filter_params(merge_request)
 
       # Filter out the following from params:
-      #  - :add_label_ids and :remove_label_ids
       #  - :add_assignee_ids and :remove_assignee_ids
       filter_id_params
     end
