@@ -65692,6 +65692,9 @@ msgstr ""
 msgid "must be false when email confirmation setting is off"
 msgstr ""
 
+msgid "must be greater than or equal to 0"
+msgstr ""
+
 msgid "must be greater than start date"
 msgstr ""
 
@@ -65705,6 +65708,9 @@ msgid "must be inside the fork network"
 msgstr ""
 
 msgid "must be less than the limit of %{tag_limit} tags"
+msgstr ""
+
+msgid "must be no greater than the number of agent config versions"
 msgstr ""
 
 msgid "must be one of: %{values}"
@@ -65741,6 +65747,9 @@ msgid "must have a repository"
 msgstr ""
 
 msgid "must have a valid format and be greater than or equal to zero."
+msgstr ""
+
+msgid "must have an associated workspaces agent config"
 msgstr ""
 
 msgid "must have the 'enabled' flag set to true"

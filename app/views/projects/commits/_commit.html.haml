@@ -62,9 +62,9 @@
       - if tags.present?
         = gl_badge_tag(variant: :neutral, icon: 'tag', class: 'gl-font-monospace') do
           - if tags.size > 1
-            = link_to _('%{count} tags') % { count: tags.size } , project_commit_path(project, commit.id)
+            = link_to _('%{count} tags') % { count: tags.size } , project_commit_path(project, commit.id), class: 'has-tooltip', title: tags.join(', ')
           - else
-            = link_to tags.first, project_commits_path(project, tags.first, ref_type: 'tags'), class: 'gl-truncate gl-max-w-15'
+            = link_to tags.first, project_commits_path(project, tags.first, ref_type: 'tags'), class: 'gl-truncate gl-max-w-12 sm:gl-max-w-15 md:gl-max-w-28 lg:gl-max-w-34 xl:gl-max-w-48 has-tooltip', title: tags.first
 
       - if request.xhr?
         - if commit.has_signature?

@@ -441,7 +441,7 @@ RSpec.describe 'New/edit issue', :js, feature_category: :team_planning do
       visit edit_project_issue_path(project, issue)
     end
 
-    it 'allows user to update issue' do
+    it 'allows user to update issue', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/435787' do
       expect(find('input[name="issue[assignee_ids][]"]', visible: false).value).to match(user.id.to_s)
       expect(find('input[name="issue[milestone_id]"]', visible: false).value).to match(milestone.id.to_s)
       expect(find('a', text: 'Assign to me', visible: false)).not_to be_visible

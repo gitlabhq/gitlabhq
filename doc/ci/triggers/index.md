@@ -157,7 +157,7 @@ curl --request POST \
 CI/CD variables in triggered pipelines display on each job's page, but only
 users with the Owner and Maintainer role can view the values.
 
-![Job variables in UI](img/trigger_variables.png)
+![Job variables in UI](img/trigger_variables_v11_6.png)
 
 ## Revoke a pipeline trigger token
 
@@ -191,7 +191,7 @@ in pipelines triggered with a pipeline trigger token.
 You can see which pipeline trigger token caused a job to run by visiting the single job page.
 A part of the trigger token displays on the right of the page, under the job details:
 
-![Marked as triggered on a single job page](img/trigger_single_job.png)
+![Marked as triggered on a single job page](img/trigger_single_job_v8.png)
 
 In pipelines triggered with a trigger token, jobs are labeled as `triggered` in
 **Build > Jobs**.
