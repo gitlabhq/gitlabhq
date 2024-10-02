@@ -7,8 +7,7 @@ module WebIde
     # @return [Boolean]
     def self.feature_enabled_for_any_user?
       feature_flag_enabled_for_any_actor?(:web_ide_extensions_marketplace) &&
-        feature_flag_enabled_for_any_actor?(:vscode_web_ide) &&
-        feature_flag_enabled_for_any_actor?(:web_ide_oauth)
+        feature_flag_enabled_for_any_actor?(:vscode_web_ide)
     end
 
     # This returns true if the extensions marketplace feature is available to the given user
@@ -17,8 +16,7 @@ module WebIde
     # @return [Boolean]
     def self.feature_enabled?(user:)
       Feature.enabled?(:web_ide_extensions_marketplace, user) &&
-        Feature.enabled?(:vscode_web_ide, user) &&
-        Feature.enabled?(:web_ide_oauth, user)
+        Feature.enabled?(:vscode_web_ide, user)
     end
 
     # This value is used when the end-user is accepting the third-party extension marketplace integration.

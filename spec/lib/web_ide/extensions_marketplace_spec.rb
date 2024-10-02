@@ -19,19 +19,17 @@ RSpec.describe WebIde::ExtensionsMarketplace, feature_category: :web_ide do
   end
 
   describe 'feature enabled methods' do
-    where(:vscode_web_ide, :web_ide_extensions_marketplace, :web_ide_oauth, :expectation) do
-      ref(:current_user) | ref(:current_user) | ref(:current_user) | true
-      ref(:current_user) | false              | ref(:current_user) | false
-      ref(:current_user) | ref(:current_user) | false              | false
-      false              | ref(:current_user) | false              | false
+    where(:vscode_web_ide, :web_ide_extensions_marketplace, :expectation) do
+      ref(:current_user) | ref(:current_user) | true
+      ref(:current_user) | false              | false
+      false              | ref(:current_user) | false
     end
 
     with_them do
       before do
         stub_feature_flags(
           vscode_web_ide: vscode_web_ide,
-          web_ide_extensions_marketplace: web_ide_extensions_marketplace,
-          web_ide_oauth: web_ide_oauth
+          web_ide_extensions_marketplace: web_ide_extensions_marketplace
         )
       end
 
@@ -72,7 +70,6 @@ RSpec.describe WebIde::ExtensionsMarketplace, feature_category: :web_ide do
       before do
         stub_feature_flags(
           web_ide_extensions_marketplace: current_user,
-          web_ide_oauth: current_user,
           vscode_web_ide: current_user
         )
       end

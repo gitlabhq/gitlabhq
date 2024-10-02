@@ -44,26 +44,46 @@ RSpec.shared_examples 'does not render usage overview background aggregation not
   end
 end
 
-RSpec.shared_examples 'renders metrics comparison table' do
-  let(:metric_table) { find_by_testid('panel-dora-chart') }
+RSpec.shared_examples 'renders metrics comparison tables' do
+  let(:metric_tables) { page.all("[data-testid='panel-dora-chart']") }
+  let(:lifecycle_metrics_table) { metric_tables[0] }
+  let(:dora_metrics_table) { metric_tables[1] }
+  let(:security_metrics_table) { metric_tables[2] }
 
-  it "renders the available metrics" do
+  def expect_row_content(id, name, values)
+    row = find_by_testid("dora-chart-metric-#{id}")
+
+    expect(row).to be_visible
+    expect(row).to have_content name
+    expect(row).to have_content values
+  end
+
+  before do
     wait_for_all_requests
+  end
 
-    expect(metric_table).to be_visible
-    expect(metric_table).to have_content format(_("Metrics comparison for %{title}"), title: panel_title)
+  it 'renders the Lifecycle metrics table' do
+    expect(lifecycle_metrics_table).to be_visible
+    expect(lifecycle_metrics_table).to have_content format(_("Lifecycle metrics: %{title}"), title: panel_title)
     [
-      ['lead-time-for-changes', _('Lead time for changes'), '3.0 d 40.0% 1.0 d 66.7% 0.0 d'],
-      ['time-to-restore-service', _('Time to restore service'), '3.0 d 57.1% 5.0 d 66.7% 0.0 d'],
       ['lead-time', _('Lead time'), '4.0 d 33.3% 2.0 d 50.0% -'],
       ['cycle-time', _('Cycle time'), '3.0 d 50.0% 1.0 d 66.7% -'],
       ['issues', _('Issues created'), '1 66.7% 2 100.0% -'],
       ['issues-completed', _('Issues closed'), '1 66.7% 2 100.0% -'],
       ['deploys', _('Deploys'), '10 25.0% 5 50.0% -'],
       ['merge-request-throughput', _('Merge request throughput'), '1 50.0% 3 200.0% -'],
-      ['median-time-to-merge', _('Median time to merge'), '- - -'],
-      ['vulnerability-critical', _('Critical vulnerabilities over time'), '5 3 -'],
-      ['vulnerability-high', _('High vulnerabilities over time'), '4 2 -'],
+      ['median-time-to-merge', _('Median time to merge'), '- - -']
+    ].each do |id, name, values|
+      expect_row_content(id, name, values)
+    end
+  end
+
+  it 'renders the DORA metrics table' do
+    expect(dora_metrics_table).to be_visible
+    expect(dora_metrics_table).to have_content format(_("DORA metrics: %{title}"), title: panel_title)
+    [
+      ['lead-time-for-changes', _('Lead time for changes'), '3.0 d 40.0% 1.0 d 66.7% 0.0 d'],
+      ['time-to-restore-service', _('Time to restore service'), '3.0 d 57.1% 5.0 d 66.7% 0.0 d'],
 
       # The values of these metrics are dependent on the length of the month they are in. Due to the high
       # flake risk associated with them, we only validate the expected structure of the table row instead
@@ -71,11 +91,18 @@ RSpec.shared_examples 'renders metrics comparison table' do
       ['deployment-frequency', _('Deployment frequency'), %r{ 0\.\d+/d \d+\.\d% 0\.\d+/d \d+\.\d% 0\.0/d}],
       ['change-failure-rate', _('Change failure rate'), %r{0\.0% \d+\.\d% \d+\.\d% \d+\.\d% \d+\.\d%}]
     ].each do |id, name, values|
-      row = find_by_testid("dora-chart-metric-#{id}")
+      expect_row_content(id, name, values)
+    end
+  end
 
-      expect(row).to be_visible
-      expect(row).to have_content name
-      expect(row).to have_content values
+  it 'renders the Security metrics table' do
+    expect(security_metrics_table).to be_visible
+    expect(security_metrics_table).to have_content format(_("Security metrics: %{title}"), title: panel_title)
+    [
+      ['vulnerability-critical', _('Critical vulnerabilities over time'), '5 3 -'],
+      ['vulnerability-high', _('High vulnerabilities over time'), '4 2 -']
+    ].each do |id, name, values|
+      expect_row_content(id, name, values)
     end
   end
 end
