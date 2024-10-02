@@ -985,6 +985,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_1c0f1ca199a3() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "ci_resource_groups"
+  WHERE "ci_resource_groups"."id" = NEW."resource_group_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_1ed40f4d5f4e() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -8860,7 +8876,8 @@ CREATE TABLE ci_resources (
     updated_at timestamp with time zone NOT NULL,
     resource_group_id bigint NOT NULL,
     build_id bigint,
-    partition_id bigint
+    partition_id bigint,
+    project_id bigint
 );
 
 CREATE SEQUENCE ci_resources_id_seq
@@ -28149,6 +28166,8 @@ CREATE INDEX index_ci_resources_on_build_id ON ci_resources USING btree (build_i
 
 CREATE INDEX index_ci_resources_on_partition_id_build_id ON ci_resources USING btree (partition_id, build_id);
 
+CREATE INDEX index_ci_resources_on_project_id ON ci_resources USING btree (project_id);
+
 CREATE UNIQUE INDEX index_ci_resources_on_resource_group_id_and_build_id ON ci_resources USING btree (resource_group_id, build_id);
 
 CREATE INDEX index_ci_runner_machines_on_contacted_at_desc_and_id_desc ON ci_runner_machines USING btree (contacted_at DESC, id DESC);
@@ -33406,6 +33425,8 @@ CREATE TRIGGER trigger_158ac875f254 BEFORE INSERT OR UPDATE ON approval_group_ru
 CREATE TRIGGER trigger_174b23fa3dfb BEFORE INSERT OR UPDATE ON approval_project_rules_users FOR EACH ROW EXECUTE FUNCTION trigger_174b23fa3dfb();
 
 CREATE TRIGGER trigger_18bc439a6741 BEFORE INSERT OR UPDATE ON packages_conan_metadata FOR EACH ROW EXECUTE FUNCTION trigger_18bc439a6741();
+
+CREATE TRIGGER trigger_1c0f1ca199a3 BEFORE INSERT OR UPDATE ON ci_resources FOR EACH ROW EXECUTE FUNCTION trigger_1c0f1ca199a3();
 
 CREATE TRIGGER trigger_1ed40f4d5f4e BEFORE INSERT OR UPDATE ON packages_maven_metadata FOR EACH ROW EXECUTE FUNCTION trigger_1ed40f4d5f4e();
 

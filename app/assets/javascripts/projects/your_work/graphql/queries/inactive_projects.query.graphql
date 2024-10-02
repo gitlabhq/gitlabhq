@@ -1,9 +1,20 @@
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
 #import "ee_else_ce/graphql_shared/fragments/project.fragment.graphql"
 
-query getInactiveProjects {
-  projects(archived: ONLY, membership: true) {
+query getInactiveProjects($first: Int, $last: Int, $before: String, $after: String) {
+  projects(
+    archived: ONLY
+    membership: true
+    first: $first
+    last: $last
+    before: $before
+    after: $after
+  ) {
     nodes {
       ...Project
+    }
+    pageInfo {
+      ...PageInfo
     }
   }
 }

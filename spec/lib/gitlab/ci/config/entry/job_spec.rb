@@ -65,19 +65,6 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job, feature_category: :pipeline_compo
       end
 
       it { is_expected.to be_truthy }
-
-      context 'when pipeline_run_keyword feature flag is disabled' do
-        before do
-          stub_feature_flags(pipeline_run_keyword: false)
-        end
-
-        context 'when config has run key' do
-          let(:name) { :rspec }
-          let(:config) { { run: [{ name: 'step1', step: 'some reference' }] } }
-
-          it { is_expected.to be_falsey }
-        end
-      end
     end
 
     context 'when config is a bridge job' do
@@ -967,16 +954,6 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job, feature_category: :pipeline_compo
             it 'is valid' do
               expect(entry).to be_valid
             end
-          end
-        end
-
-        context 'when feature flag is disabled' do
-          before do
-            stub_feature_flags(pipeline_run_keyword: false)
-          end
-
-          it 'return nil for run value' do
-            expect(entry.value[:run]).to be_nil
           end
         end
       end

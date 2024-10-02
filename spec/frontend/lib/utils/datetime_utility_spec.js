@@ -316,29 +316,15 @@ describe('formatTime', () => {
 });
 
 describe('datefix', () => {
-  describe('pad', () => {
-    it('should add a 0 when length is smaller than 2', () => {
-      expect(datetimeUtility.pad(2)).toEqual('02');
-    });
-
-    it('should not add a zero when length matches the default', () => {
-      expect(datetimeUtility.pad(12)).toEqual('12');
-    });
-
-    it('should add a 0 when length is smaller than the provided', () => {
-      expect(datetimeUtility.pad(12, 3)).toEqual('012');
-    });
-  });
-
   describe('parsePikadayDate', () => {
     it('should return a UTC date', () => {
       expect(datetimeUtility.parsePikadayDate('2020-01-29')).toEqual(new Date(2020, 0, 29));
     });
   });
 
-  describe('pikadayToString', () => {
-    it('should format a UTC date into yyyy-mm-dd format', () => {
-      expect(datetimeUtility.pikadayToString(new Date('2020-01-29:00:00'))).toEqual('2020-01-29');
+  describe('toISODateFormat', () => {
+    it('should format a Date object into yyyy-mm-dd format', () => {
+      expect(datetimeUtility.toISODateFormat(new Date('2020-01-29:00:00'))).toEqual('2020-01-29');
     });
   });
 });

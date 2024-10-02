@@ -14,9 +14,11 @@ import (
 
 	"gitlab.com/gitlab-org/labkit/log"
 
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper/fail"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/senddata"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/transport"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload"
 )
 
 const dialTimeout = 10 * time.Second
@@ -36,7 +38,7 @@ var httpClients sync.Map
 // Injector provides functionality for injecting dependencies
 type Injector struct {
 	senddata.Prefix
-	uploadHandler http.Handler
+	uploadHandler upload.BodyUploadHandler
 }
 
 type entryParams struct {
@@ -50,9 +52,33 @@ type entryParams struct {
 }
 
 type uploadConfig struct {
-	Headers http.Header
-	Method  string
-	URL     string
+	Headers                  http.Header
+	Method                   string
+	URL                      string
+	AuthorizedUploadResponse authorizeUploadResponse
+}
+
+type authorizeUploadResponse struct {
+	TempPath            string
+	RemoteObject        api.RemoteObject
+	MaximumSize         int64
+	UploadHashFunctions []string
+}
+
+func (u *uploadConfig) ExtractUploadAuthorizeFields() *api.Response {
+	tempPath := u.AuthorizedUploadResponse.TempPath
+	remoteID := u.AuthorizedUploadResponse.RemoteObject.RemoteTempObjectID
+
+	if tempPath == "" && remoteID == "" {
+		return nil
+	}
+
+	return &api.Response{
+		TempPath:            tempPath,
+		RemoteObject:        u.AuthorizedUploadResponse.RemoteObject,
+		MaximumSize:         u.AuthorizedUploadResponse.MaximumSize,
+		UploadHashFunctions: u.AuthorizedUploadResponse.UploadHashFunctions,
+	}
 }
 
 type nullResponseWriter struct {
@@ -80,7 +106,7 @@ func NewInjector() *Injector {
 }
 
 // SetUploadHandler sets the upload handler for the Injector
-func (p *Injector) SetUploadHandler(uploadHandler http.Handler) {
+func (p *Injector) SetUploadHandler(uploadHandler upload.BodyUploadHandler) {
 	p.uploadHandler = uploadHandler
 }
 
@@ -135,7 +161,12 @@ func (p *Injector) Inject(w http.ResponseWriter, r *http.Request, sendData strin
 	saveFileRequest.ContentLength = dependencyResponse.ContentLength
 
 	nrw := &nullResponseWriter{header: make(http.Header)}
-	p.uploadHandler.ServeHTTP(nrw, saveFileRequest)
+	apiResponse := params.UploadConfig.ExtractUploadAuthorizeFields()
+	if apiResponse != nil {
+		p.uploadHandler.ServeHTTPWithAPIResponse(nrw, saveFileRequest, apiResponse)
+	} else {
+		p.uploadHandler.ServeHTTP(nrw, saveFileRequest)
+	}
 
 	if nrw.status != http.StatusOK {
 		fields := log.Fields{"code": nrw.status}
@@ -213,14 +244,14 @@ func (p *Injector) unpackParams(sendData string) (*entryParams, error) {
 		return nil, fmt.Errorf("dependency proxy: unpack sendData: %w", err)
 	}
 
-	if err := p.validateParams(params); err != nil {
+	if err := p.validateParams(&params); err != nil {
 		return nil, fmt.Errorf("dependency proxy: invalid params: %w", err)
 	}
 
 	return &params, nil
 }
 
-func (p *Injector) validateParams(params entryParams) error {
+func (p *Injector) validateParams(params *entryParams) error {
 	var uploadMethod = params.UploadConfig.Method
 	if uploadMethod != "" && uploadMethod != http.MethodPost && uploadMethod != http.MethodPut {
 		return fmt.Errorf("invalid upload method %s", uploadMethod)

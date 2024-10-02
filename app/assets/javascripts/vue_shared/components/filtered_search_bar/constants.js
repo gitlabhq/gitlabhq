@@ -130,3 +130,13 @@ export const TOKEN_TYPE_CLOSED = 'closed';
 export const TOKEN_TYPE_DEPLOYED_BEFORE = 'deployed-before';
 export const TOKEN_TYPE_DEPLOYED_AFTER = 'deployed-after';
 export const TOKEN_TYPE_ENVIRONMENT = 'environment';
+
+// Due to the i18n eslint rule we can't have a capitalized string even if it is a case-aware URL param
+/* eslint-disable @gitlab/require-i18n-strings */
+export const ENTITY_TYPES = {
+  USER: 'User',
+  AUTHOR: 'Author',
+  GROUP: 'Group',
+  PROJECT: 'Project',
+};
+/* eslint-enable @gitlab/require-i18n-strings */

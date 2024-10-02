@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import Pikaday from 'pikaday';
-import { parsePikadayDate, pikadayToString } from '~/lib/utils/datetime_utility';
+import { parsePikadayDate, toISODateFormat } from '~/lib/utils/datetime_utility';
 
 export default function initDatePickers() {
   $('.datepicker').each(function initPikaday() {
@@ -13,7 +13,7 @@ export default function initDatePickers() {
       format: 'yyyy-mm-dd',
       container: $datePicker.parent().get(0),
       parse: (dateString) => parsePikadayDate(dateString),
-      toString: (date) => pikadayToString(date),
+      toString: (date) => toISODateFormat(date),
       onSelect(dateText) {
         $datePicker.val(calendar.toString(dateText));
       },

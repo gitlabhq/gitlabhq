@@ -59,6 +59,8 @@ const defaultProvide = {
 };
 
 const searchTerm = 'foo bar';
+const mockEndCursor = 'mockEndCursor';
+const mockStartCursor = 'mockStartCursor';
 
 describe('YourWorkProjectsApp', () => {
   let wrapper;
@@ -89,6 +91,7 @@ describe('YourWorkProjectsApp', () => {
     wrapper.findAllByRole('tab').wrappers.find((tab) => tab.text().includes(name));
   const getTabCount = (tabName) => findTabByName(tabName).findComponent(GlBadge).text();
   const findFilteredSearchAndSort = () => wrapper.findComponent(FilteredSearchAndSort);
+  const findTabView = () => wrapper.findComponent(TabView);
 
   afterEach(() => {
     router = null;
@@ -273,7 +276,7 @@ describe('YourWorkProjectsApp', () => {
 
     if (expectedTab.query) {
       it('renders `TabView` component and passes `tab` prop', () => {
-        expect(wrapper.findComponent(TabView).props('tab')).toMatchObject(expectedTab);
+        expect(findTabView().props('tab')).toMatchObject(expectedTab);
       });
     }
   });
@@ -338,6 +341,58 @@ describe('YourWorkProjectsApp', () => {
 
         expect(router.options.base).toBe('/gitlab');
         expect(router.push).toHaveBeenCalledWith({ name: PROJECT_DASHBOARD_TABS[3].value });
+      });
+    });
+  });
+
+  describe('when page is changed', () => {
+    describe('when going to next page', () => {
+      beforeEach(async () => {
+        createComponent({
+          route: defaultRoute,
+        });
+
+        await nextTick();
+
+        findTabView().vm.$emit('page-change', {
+          endCursor: mockEndCursor,
+          startCursor: null,
+          hasPreviousPage: true,
+        });
+      });
+
+      it('sets `end_cursor` query string', () => {
+        expect(router.currentRoute.query).toMatchObject({
+          end_cursor: mockEndCursor,
+        });
+      });
+    });
+
+    describe('when going to previous page', () => {
+      beforeEach(async () => {
+        createComponent({
+          route: {
+            ...defaultRoute,
+            query: {
+              start_cursor: mockStartCursor,
+              end_cursor: mockEndCursor,
+            },
+          },
+        });
+
+        await nextTick();
+
+        findTabView().vm.$emit('page-change', {
+          endCursor: null,
+          startCursor: mockStartCursor,
+          hasPreviousPage: true,
+        });
+      });
+
+      it('sets `start_cursor` query string', () => {
+        expect(router.currentRoute.query).toMatchObject({
+          start_cursor: mockStartCursor,
+        });
       });
     });
   });

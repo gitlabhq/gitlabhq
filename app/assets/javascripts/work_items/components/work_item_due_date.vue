@@ -3,7 +3,7 @@ import { GlButton, GlDatepicker, GlFormGroup, GlOutsideDirective as Outside } fr
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { s__ } from '~/locale';
 import Tracking from '~/tracking';
-import { formatDate, newDate, pikadayToString } from '~/lib/utils/datetime_utility';
+import { formatDate, newDate, toISODateFormat } from '~/lib/utils/datetime_utility';
 import { Mousetrap } from '~/lib/mousetrap';
 import { keysFor, SIDEBAR_CLOSE_WIDGET } from '~/behaviors/shortcuts/keybindings';
 import {
@@ -124,8 +124,8 @@ export default {
               ),
               {
                 ...workItemDatesWidget,
-                dueDate: this.dirtyDueDate ? pikadayToString(this.dirtyDueDate) : null,
-                startDate: this.dirtyStartDate ? pikadayToString(this.dirtyStartDate) : null,
+                dueDate: this.dirtyDueDate ? toISODateFormat(this.dirtyDueDate) : null,
+                startDate: this.dirtyStartDate ? toISODateFormat(this.dirtyStartDate) : null,
               },
             ],
           },
@@ -181,8 +181,8 @@ export default {
             input: {
               id: this.workItemId,
               startAndDueDateWidget: {
-                dueDate: this.dirtyDueDate ? pikadayToString(this.dirtyDueDate) : null,
-                startDate: this.dirtyStartDate ? pikadayToString(this.dirtyStartDate) : null,
+                dueDate: this.dirtyDueDate ? toISODateFormat(this.dirtyDueDate) : null,
+                startDate: this.dirtyStartDate ? toISODateFormat(this.dirtyStartDate) : null,
               },
             },
           },

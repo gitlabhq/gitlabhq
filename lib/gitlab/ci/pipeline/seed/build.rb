@@ -97,7 +97,7 @@ module Gitlab
           delegate :logger, to: :@context
 
           def build_execution_config_attribute
-            return {} unless ::Feature.enabled?(:pipeline_run_keyword, @pipeline.project) && @execution_config_attribute
+            return {} unless @execution_config_attribute
 
             execution_config = @context.find_or_build_execution_config(@execution_config_attribute)
             { execution_config: execution_config }

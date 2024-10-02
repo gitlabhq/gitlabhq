@@ -917,6 +917,8 @@ Use `detailed_merge_status` instead of `merge_status` to account for all potenti
   - `requested_changes`: The merge request has reviewers who have requested changes.
   - `security_policy_evaluation`: All security policies must be evaluated.
     Requires the `policy_mergability_check` feature flag to be enabled.
+  - `security_policy_violations`: All security policies must be satisfied.
+    Requires the `policy_mergability_check` feature flag to be enabled.
   - `status_checks_must_pass`: All status checks must pass before merge.
   - `unchecked`: Git has not yet tested if a valid merge is possible.
   - `locked_paths`: Paths locked by other users must be unlocked before merging to default branch.

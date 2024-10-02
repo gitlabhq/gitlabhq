@@ -147,11 +147,7 @@ module Gitlab
             :allow_failure, :publish, :pages, :manual_confirmation, :run
 
           def self.matching?(name, config)
-            if ::Gitlab::Ci::Config::FeatureFlags.enabled?(:pipeline_run_keyword, type: :gitlab_com_derisk)
-              !name.to_s.start_with?('.') && config.is_a?(Hash) && (config.key?(:script) || config.key?(:run))
-            else
-              !name.to_s.start_with?('.') && config.is_a?(Hash) && config.key?(:script)
-            end
+            !name.to_s.start_with?('.') && config.is_a?(Hash) && (config.key?(:script) || config.key?(:run))
           end
 
           def self.visible?
@@ -189,7 +185,7 @@ module Gitlab
               publish: publish,
               pages: pages,
               manual_confirmation: self.manual_confirmation,
-              run: ::Gitlab::Ci::Config::FeatureFlags.enabled?(:pipeline_run_keyword, type: :gitlab_com_derisk) ? run : nil
+              run: run
             ).compact
           end
 

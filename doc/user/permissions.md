@@ -133,10 +133,10 @@ Project Owners can perform any listed action, and can delete pipelines:
 | Manage job triggers                                                                                                            |            |       |          |           |     ✓      |       |
 | Manage project CI/CD variables                                                                                                 |            |       |          |           |     ✓      |       |
 | Manage project [Secure Files](../api/secure_files.md)                                                                          |            |       |          |           |     ✓      |       |
-| View [agents for Kubernetes](clusters/agent/index.md)                                                                          |            |       | ✓        |     ✓     |     ✓      |       |
-| Manage [agents for Kubernetes](clusters/agent/index.md)                                                                        |            |       |          |     ✓     |     ✓      |       |
-| Read [Terraform](infrastructure/index.md) state                                                                                |            |       | ✓        |     ✓     |     ✓      |       |
-| Manage [Terraform](infrastructure/index.md) state                                                                              |            |       |          |     ✓     |     ✓      |       |
+| View [agents for Kubernetes](clusters/agent/index.md)                                                                          |            |       |          |     ✓     |     ✓      |       |
+| Manage [agents for Kubernetes](clusters/agent/index.md)                                                                        |            |       |          |           |     ✓      |       |
+| Read [Terraform](infrastructure/index.md) state                                                                                |            |       |          |     ✓     |     ✓      |       |
+| Manage [Terraform](infrastructure/index.md) state                                                                              |            |       |          |           |     ✓      |       |
 
 This table shows granted privileges for jobs triggered by specific roles.
 

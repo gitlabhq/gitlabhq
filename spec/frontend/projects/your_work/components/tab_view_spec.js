@@ -1,14 +1,15 @@
 import Vue from 'vue';
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlLoadingIcon, GlKeysetPagination } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
+import starredProjectsGraphQlResponse from 'test_fixtures/graphql/projects/your_work/starred_projects.query.graphql.json';
+import inactiveProjectsGraphQlResponse from 'test_fixtures/graphql/projects/your_work/inactive_projects.query.graphql.json';
 import personalProjectsGraphQlResponse from 'test_fixtures/graphql/projects/your_work/personal_projects.query.graphql.json';
 import membershipProjectsGraphQlResponse from 'test_fixtures/graphql/projects/your_work/membership_projects.query.graphql.json';
 import contributedProjectsGraphQlResponse from 'test_fixtures/graphql/projects/your_work/contributed_projects.query.graphql.json';
-import starredProjectsGraphQlResponse from 'test_fixtures/graphql/projects/your_work/starred_projects.query.graphql.json';
-import inactiveProjectsGraphQlResponse from 'test_fixtures/graphql/projects/your_work/inactive_projects.query.graphql.json';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import TabView from '~/projects/your_work/components/tab_view.vue';
 import ProjectsList from '~/vue_shared/components/projects_list/projects_list.vue';
+import { DEFAULT_PER_PAGE } from '~/api';
 import contributedProjectsQuery from '~/projects/your_work/graphql/queries/contributed_projects.query.graphql';
 import personalProjectsQuery from '~/projects/your_work/graphql/queries/personal_projects.query.graphql';
 import membershipProjectsQuery from '~/projects/your_work/graphql/queries/membership_projects.query.graphql';
@@ -25,6 +26,7 @@ import {
 } from '~/projects/your_work/constants';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { pageInfoMultiplePages } from './mock_data';
 
 jest.mock('~/alert');
 
@@ -44,6 +46,7 @@ describe('TabView', () => {
   };
 
   const findProjectsList = () => wrapper.findComponent(ProjectsList);
+  const findPagination = () => wrapper.findComponent(GlKeysetPagination);
 
   afterEach(() => {
     mockApollo = null;
@@ -71,6 +74,17 @@ describe('TabView', () => {
       beforeEach(async () => {
         createComponent({ handler, propsData: { tab } });
         await waitForPromises();
+      });
+
+      it('calls GraphQL query with correct variables', async () => {
+        await waitForPromises();
+
+        expect(handler[1]).toHaveBeenCalledWith({
+          last: null,
+          first: DEFAULT_PER_PAGE,
+          before: null,
+          after: null,
+        });
       });
 
       it('passes projects to `ProjectsList` component', () => {
@@ -106,6 +120,117 @@ describe('TabView', () => {
           message: 'An error occurred loading the projects. Please refresh the page to try again.',
           error,
           captureError: true,
+        });
+      });
+    });
+  });
+
+  describe('pagination', () => {
+    const propsData = { tab: PERSONAL_TAB };
+
+    describe('when there is one page of projects', () => {
+      beforeEach(async () => {
+        createComponent({
+          handler: [
+            personalProjectsQuery,
+            jest.fn().mockResolvedValue(personalProjectsGraphQlResponse),
+          ],
+          propsData,
+        });
+        await waitForPromises();
+      });
+
+      it('does not render pagination', () => {
+        expect(findPagination().exists()).toBe(false);
+      });
+    });
+
+    describe('when there are multiple pages of projects', () => {
+      const mockEndCursor = 'mockEndCursor';
+      const mockStartCursor = 'mockStartCursor';
+      const handler = [
+        personalProjectsQuery,
+        jest.fn().mockResolvedValue({
+          data: {
+            projects: {
+              nodes: personalProjectsGraphQlResponse.data.projects.nodes,
+              pageInfo: pageInfoMultiplePages,
+            },
+          },
+        }),
+      ];
+
+      beforeEach(async () => {
+        createComponent({
+          handler,
+          propsData,
+        });
+        await waitForPromises();
+      });
+
+      it('renders pagination', () => {
+        expect(findPagination().exists()).toBe(true);
+      });
+
+      describe('when next button is clicked', () => {
+        beforeEach(() => {
+          findPagination().vm.$emit('next', mockEndCursor);
+        });
+
+        it('emits `page-change` event', () => {
+          expect(wrapper.emitted('page-change')[0]).toEqual([
+            {
+              endCursor: mockEndCursor,
+              startCursor: null,
+            },
+          ]);
+        });
+      });
+
+      describe('when `endCursor` prop is changed', () => {
+        beforeEach(async () => {
+          wrapper.setProps({ endCursor: mockEndCursor });
+          await waitForPromises();
+        });
+
+        it('calls query with correct variables', () => {
+          expect(handler[1]).toHaveBeenCalledWith({
+            after: mockEndCursor,
+            before: null,
+            first: DEFAULT_PER_PAGE,
+            last: null,
+          });
+        });
+      });
+
+      describe('when previous button is clicked', () => {
+        beforeEach(() => {
+          findPagination().vm.$emit('prev', mockStartCursor);
+        });
+
+        it('emits `page-change` event', () => {
+          expect(wrapper.emitted('page-change')[0]).toEqual([
+            {
+              endCursor: null,
+              startCursor: mockStartCursor,
+            },
+          ]);
+        });
+      });
+
+      describe('when `startCursor` prop is changed', () => {
+        beforeEach(async () => {
+          wrapper.setProps({ startCursor: mockStartCursor });
+          await waitForPromises();
+        });
+
+        it('calls query with correct variables', () => {
+          expect(handler[1]).toHaveBeenCalledWith({
+            after: null,
+            before: mockStartCursor,
+            first: null,
+            last: DEFAULT_PER_PAGE,
+          });
         });
       });
     });

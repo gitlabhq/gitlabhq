@@ -6,16 +6,15 @@ import GroupsView from '~/organizations/shared/components/groups_view.vue';
 import ProjectsView from '~/organizations/shared/components/projects_view.vue';
 import NewGroupButton from '~/organizations/shared/components/new_group_button.vue';
 import NewProjectButton from '~/organizations/shared/components/new_project_button.vue';
-import { onPageChange } from '~/organizations/shared/utils';
+import { calculateGraphQLPaginationQueryParams } from '~/graphql_shared/utils';
 import {
   RESOURCE_TYPE_GROUPS,
   RESOURCE_TYPE_PROJECTS,
-  QUERY_PARAM_END_CURSOR,
-  QUERY_PARAM_START_CURSOR,
   SORT_DIRECTION_ASC,
   SORT_DIRECTION_DESC,
   SORT_ITEM_NAME,
 } from '~/organizations/shared/constants';
+import { QUERY_PARAM_END_CURSOR, QUERY_PARAM_START_CURSOR } from '~/graphql_shared/constants';
 import FilteredSearchAndSort from '~/groups_projects/components/filtered_search_and_sort.vue';
 import {
   RECENT_SEARCHES_STORAGE_KEY_GROUPS,
@@ -172,7 +171,9 @@ export default {
       });
     },
     onPageChange(pagination) {
-      this.pushQuery(onPageChange({ ...pagination, routeQuery: this.$route.query }));
+      this.pushQuery(
+        calculateGraphQLPaginationQueryParams({ ...pagination, routeQuery: this.$route.query }),
+      );
     },
     async userPreferencesUpdateMutate(input) {
       try {

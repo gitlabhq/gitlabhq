@@ -49,6 +49,7 @@ export default {
         action: [],
         sort: `${SORT_OPTIONS[0].value}_DESC`,
       },
+      alert: null,
     };
   },
   apollo: {
@@ -67,7 +68,7 @@ export default {
         return nodes;
       },
       error(error) {
-        createAlert({ message: s__('Todos|Something went wrong. Please try again.') });
+        this.alert = createAlert({ message: s__('Todos|Something went wrong. Please try again.') });
         Sentry.captureException(error);
       },
     },
@@ -140,6 +141,7 @@ export default {
       };
     },
     handleFiltersChanged(data) {
+      this.alert?.dismiss();
       this.queryFilterValues = { ...data };
     },
   },

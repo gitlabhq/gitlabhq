@@ -2,7 +2,7 @@ import $ from 'jquery';
 import Pikaday from 'pikaday';
 import GfmAutoComplete from 'ee_else_ce/gfm_auto_complete';
 import Autosave from '~/autosave';
-import { parsePikadayDate, pikadayToString } from '~/lib/utils/datetime_utility';
+import { parsePikadayDate, toISODateFormat } from '~/lib/utils/datetime_utility';
 import { queryToObject, objectToQuery } from '~/lib/utils/url_utility';
 import UsersSelect from '~/users_select';
 import ZenMode from '~/zen_mode';
@@ -114,7 +114,7 @@ export default class IssuableForm {
         format: 'yyyy-mm-dd',
         container: $issuableDueDate.parent().get(0),
         parse: (dateString) => parsePikadayDate(dateString),
-        toString: (date) => pikadayToString(date),
+        toString: (date) => toISODateFormat(date),
         onSelect: (dateText) => {
           $issuableDueDate.val(calendar.toString(dateText));
           if (this.autosaves.has('due_date')) this.autosaves.get('due_date').save();

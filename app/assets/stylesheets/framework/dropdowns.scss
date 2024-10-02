@@ -752,7 +752,7 @@
 
 .dropdown-toggle-text {
   &.is-default {
-    color: $gl-text-color-secondary;
+    color: var(--gl-text-color-subtle);
   }
 }
 

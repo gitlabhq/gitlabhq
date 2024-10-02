@@ -1,5 +1,3 @@
-export const pad = (val, len = 2) => `0${val}`.slice(-len);
-
 /**
  * Formats dates in Pickaday
  * @param {String} dateString Date in yyyy-mm-dd format
@@ -12,17 +10,4 @@ export const parsePikadayDate = (dateString) => {
   const day = parseInt(parts[2], 10);
 
   return new Date(year, month, day);
-};
-
-/**
- * Used `onSelect` method in pickaday
- * @param {Date} date UTC format
- * @return {String} Date formatted in yyyy-mm-dd
- */
-export const pikadayToString = (date) => {
-  const day = pad(date.getDate());
-  const month = pad(date.getMonth() + 1);
-  const year = date.getFullYear();
-
-  return `${year}-${month}-${day}`;
 };

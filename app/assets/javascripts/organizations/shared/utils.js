@@ -4,12 +4,7 @@ import {
   TIMESTAMP_TYPE_CREATED_AT,
   TIMESTAMP_TYPE_UPDATED_AT,
 } from '~/vue_shared/components/resource_lists/constants';
-import {
-  SORT_CREATED_AT,
-  SORT_UPDATED_AT,
-  QUERY_PARAM_END_CURSOR,
-  QUERY_PARAM_START_CURSOR,
-} from './constants';
+import { SORT_CREATED_AT, SORT_UPDATED_AT } from './constants';
 
 const availableGroupActions = (userPermissions) => {
   const baseActions = [];
@@ -51,28 +46,6 @@ export const formatGroups = (groups) =>
       },
     }),
   );
-
-export const onPageChange = ({
-  startCursor,
-  endCursor,
-  routeQuery: { start_cursor, end_cursor, ...routeQuery },
-}) => {
-  if (startCursor) {
-    return {
-      ...routeQuery,
-      [QUERY_PARAM_START_CURSOR]: startCursor,
-    };
-  }
-
-  if (endCursor) {
-    return {
-      ...routeQuery,
-      [QUERY_PARAM_END_CURSOR]: endCursor,
-    };
-  }
-
-  return routeQuery;
-};
 
 export const timestampType = (sortName) => {
   const SORT_MAP = {

@@ -3,9 +3,11 @@ import { GlTabs, GlTab, GlBadge, GlFilteredSearchToken } from '@gitlab/ui';
 import { isEqual } from 'lodash';
 import { __ } from '~/locale';
 import { TIMESTAMP_TYPE_UPDATED_AT } from '~/vue_shared/components/resource_lists/constants';
+import { QUERY_PARAM_END_CURSOR, QUERY_PARAM_START_CURSOR } from '~/graphql_shared/constants';
 import { numberToMetricPrefix } from '~/lib/utils/number_utils';
 import { createAlert } from '~/alert';
 import FilteredSearchAndSort from '~/groups_projects/components/filtered_search_and_sort.vue';
+import { calculateGraphQLPaginationQueryParams } from '~/graphql_shared/utils';
 import { RECENT_SEARCHES_STORAGE_KEY_PROJECTS } from '~/filtered_search/recent_searches_storage_keys';
 import { OPERATORS_IS } from '~/vue_shared/components/filtered_search_bar/constants';
 import { ACCESS_LEVEL_OWNER_INTEGER } from '~/access_level/constants';
@@ -133,6 +135,12 @@ export default {
     isAscending() {
       return this.sort.endsWith(SORT_DIRECTION_ASC);
     },
+    startCursor() {
+      return this.$route.query[QUERY_PARAM_START_CURSOR];
+    },
+    endCursor() {
+      return this.$route.query[QUERY_PARAM_END_CURSOR];
+    },
   },
   methods: {
     numberToMetricPrefix,
@@ -182,6 +190,11 @@ export default {
 
       this.pushQuery({ sort, ...filters });
     },
+    onPageChange(pagination) {
+      this.pushQuery(
+        calculateGraphQLPaginationQueryParams({ ...pagination, routeQuery: this.$route.query }),
+      );
+    },
   },
 };
 </script>
@@ -201,7 +214,13 @@ export default {
           </div>
         </template>
 
-        <tab-view v-if="tab.query" :tab="tab" />
+        <tab-view
+          v-if="tab.query"
+          :tab="tab"
+          :start-cursor="startCursor"
+          :end-cursor="endCursor"
+          @page-change="onPageChange"
+        />
         <template v-else>{{ tab.text }}</template>
       </gl-tab>
 

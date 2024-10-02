@@ -7,7 +7,7 @@ import {
   getDayName,
   getDayDifference,
   localeDateFormat,
-  pikadayToString,
+  toISODateFormat,
   newDate,
 } from '~/lib/utils/datetime_utility';
 import { n__, s__, __ } from '~/locale';
@@ -117,7 +117,7 @@ export default class ActivityCalendar {
       date.setDate(date.getDate() + i);
 
       const day = date.getDay();
-      const count = timestamps[pikadayToString(date)] || 0;
+      const count = timestamps[toISODateFormat(date)] || 0;
 
       // Create a new group array if this is the first day of the week
       // or if is first object

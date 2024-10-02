@@ -33,7 +33,7 @@ export const MILLISECONDS_IN_DAY = 24 * 60 * 60 * 1000;
  * for UTC-8 timezone.
  *
  * @param {string|number|Date} date
- * @returns {Date|null|undefined}
+ * @returns {Date|null|undefined} A Date object in local time
  */
 export const newDate = (date) => {
   if (date === null) {
@@ -42,6 +42,7 @@ export const newDate = (date) => {
   if (date === undefined) {
     return undefined;
   }
+  // Fix historical bug so we return a local time for `yyyy-mm-dd` date-only strings
   if (typeof date === 'string' && DATE_ONLY_REGEX.test(date)) {
     const parts = date.split('-');
     const year = parseInt(parts[0], 10);
@@ -546,48 +547,6 @@ export const dateAtFirstDayOfMonth = (date) => new Date(cloneDate(date).setDate(
 export const datesMatch = (date1, date2) => differenceInMilliseconds(date1, date2) === 0;
 
 /**
- * A utility function which checks if two date ranges overlap.
- *
- * @param {Object} givenPeriodLeft - the first period to compare.
- * @param {Object} givenPeriodRight - the second period to compare.
- * @returns {Object} { overlap: number of days the overlap is present, overlapStartDate: the start date of the overlap in time format, overlapEndDate: the end date of the overlap in time format }
- * @throws {Error} Uncaught Error: Invalid period
- *
- * @example
- * getOverlappingDaysInPeriods(
- *   { start: new Date(2021, 0, 11), end: new Date(2021, 0, 13) },
- *   { start: new Date(2021, 0, 11), end: new Date(2021, 0, 14) }
- * ) => { daysOverlap: 2, overlapStartDate: 1610323200000, overlapEndDate: 1610496000000 }
- *
- */
-export const getOverlappingDaysInPeriods = (givenPeriodLeft = {}, givenPeriodRight = {}) => {
-  const leftStartTime = new Date(givenPeriodLeft.start).getTime();
-  const leftEndTime = new Date(givenPeriodLeft.end).getTime();
-  const rightStartTime = new Date(givenPeriodRight.start).getTime();
-  const rightEndTime = new Date(givenPeriodRight.end).getTime();
-
-  if (!(leftStartTime <= leftEndTime && rightStartTime <= rightEndTime)) {
-    throw new Error(__('Invalid period'));
-  }
-
-  const isOverlapping = leftStartTime < rightEndTime && rightStartTime < leftEndTime;
-
-  if (!isOverlapping) {
-    return { daysOverlap: 0 };
-  }
-
-  const overlapStartDate = Math.max(leftStartTime, rightStartTime);
-  const overlapEndDate = rightEndTime > leftEndTime ? leftEndTime : rightEndTime;
-  const differenceInMs = overlapEndDate - overlapStartDate;
-
-  return {
-    daysOverlap: Math.ceil(differenceInMs / MILLISECONDS_IN_DAY),
-    overlapStartDate,
-    overlapEndDate,
-  };
-};
-
-/**
  * Mimics the behaviour of the rails distance_of_time_in_words function
  * https://api.rubyonrails.org/classes/ActionView/Helpers/DateHelper.html#method-i-distance_of_time_in_words
  * 0 < -> 29 secs                                         => less than a minute
@@ -632,21 +591,6 @@ export const approximateDuration = (seconds = 0) => {
     return n__('about 1 hour', 'about %d hours', seconds < ONE_HOUR_LIMIT ? 1 : hours);
   }
   return n__('1 day', '%d days', seconds < ONE_DAY_LIMIT ? 1 : days);
-};
-
-/**
- * A utility function which helps creating a date object
- * for a specific date. Accepts the year, month and day
- * returning a date object for the given params.
- *
- * @param {Int} year the full year as a number i.e. 2020
- * @param {Int} month the month index i.e. January => 0
- * @param {Int} day the day as a number i.e. 23
- *
- * @return {Date} the date object from the params
- */
-export const dateFromParams = (year, month, day) => {
-  return new Date(year, month, day);
 };
 
 /**

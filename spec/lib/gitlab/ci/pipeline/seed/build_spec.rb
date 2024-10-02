@@ -73,16 +73,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
         )
       end
 
-      context 'when feature flag is disabled' do
-        before do
-          stub_feature_flags(pipeline_run_keyword: false)
-        end
-
-        it 'does not include execution_config attribute' do
-          expect(subject).not_to include(:execution_config)
-        end
-      end
-
       context 'when job:run attribute is not specified' do
         let(:attributes) do
           {

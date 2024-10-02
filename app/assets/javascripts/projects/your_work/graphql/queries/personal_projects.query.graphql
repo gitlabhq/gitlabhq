@@ -1,9 +1,13 @@
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
 #import "ee_else_ce/graphql_shared/fragments/project.fragment.graphql"
 
-query getPersonalProjects {
-  projects(personal: true) {
+query getPersonalProjects($first: Int, $last: Int, $before: String, $after: String) {
+  projects(personal: true, first: $first, last: $last, before: $before, after: $after) {
     nodes {
       ...Project
+    }
+    pageInfo {
+      ...PageInfo
     }
   }
 }

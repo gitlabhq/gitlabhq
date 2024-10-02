@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::SidekiqMetrics, :aggregate_failures, feature_category: :shared do
+RSpec.describe API::SidekiqMetrics, :clean_gitlab_redis_queues, :aggregate_failures, feature_category: :shared do
   let(:instance_count) { 1 }
   let(:admin) { create(:user, :admin) }
 
@@ -15,6 +15,19 @@ RSpec.describe API::SidekiqMetrics, :aggregate_failures, feature_category: :shar
     end
 
     shared_examples 'GET sidekiq metrics' do
+      before do
+        # ProcessSet looks up running processes in Redis.
+        # To ensure test coverage, stub some data so it actually performs some iteration.
+        Gitlab::SidekiqSharding::Validator.allow_unrouted_sidekiq_calls do
+          Sidekiq.redis do |r|
+            r.sadd('processes', 'teststub')
+            r.hset('teststub',
+              ['info', Sidekiq.dump_json({ started_at: Time.now.to_i }), "busy", 1, "quiet", 1, "rss", 1, "rtt_us", 1]
+            )
+          end
+        end
+      end
+
       it 'defines the `queue_metrics` endpoint' do
         expect(Gitlab::SidekiqConfig).to receive(:routing_queues).exactly(instance_count).times.and_call_original
         get api('/sidekiq/queue_metrics', admin, admin_mode: true)

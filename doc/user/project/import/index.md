@@ -156,10 +156,10 @@ To preserve historical context, the placeholder user name and username are deriv
 
 Prerequisites:
 
-- You must have the Owner role of the group.
+- You must have the Owner role for the group.
 
-Placeholder users are created in the top-level group on the destination instance where a group or project are imported
-to. After the import, to view placeholder users for a group:
+Placeholder users are created on the destination instance while a group or project is imported.
+To view placeholder users created during imports to a top-level group and its subgroups:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Manage > Members**.

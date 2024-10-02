@@ -36990,6 +36990,7 @@ Detailed representation of whether a GitLab merge request can be merged.
 | <a id="detailedmergestatuspreparing"></a>`PREPARING` | Merge request diff is being created. |
 | <a id="detailedmergestatusrequested_changes"></a>`REQUESTED_CHANGES` | Indicates a reviewer has requested changes. |
 | <a id="detailedmergestatussecurity_policies_evaluating"></a>`SECURITY_POLICIES_EVALUATING` | All security policies must be evaluated. |
+| <a id="detailedmergestatussecurity_policies_violations"></a>`SECURITY_POLICIES_VIOLATIONS` | All policy rules must be satisfied. |
 | <a id="detailedmergestatusunchecked"></a>`UNCHECKED` | Merge status has not been checked. |
 
 ### `DiffPositionType`
@@ -37814,6 +37815,7 @@ Representation of mergeability check identifier.
 | <a id="mergeabilitycheckidentifiernot_open"></a>`NOT_OPEN` | Checks whether the merge request is open. |
 | <a id="mergeabilitycheckidentifierrequested_changes"></a>`REQUESTED_CHANGES` | Checks whether the merge request has changes requested. |
 | <a id="mergeabilitycheckidentifiersecurity_policy_evaluation"></a>`SECURITY_POLICY_EVALUATION` | Checks whether the security policies are evaluated. |
+| <a id="mergeabilitycheckidentifiersecurity_policy_violations"></a>`SECURITY_POLICY_VIOLATIONS` | Checks whether the security policies are satisfied. |
 | <a id="mergeabilitycheckidentifierstatus_checks_must_pass"></a>`STATUS_CHECKS_MUST_PASS` | Checks whether the external status checks pass. |
 
 ### `MergeabilityCheckStatus`

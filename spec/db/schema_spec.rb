@@ -90,6 +90,7 @@ RSpec.describe 'Database schema', feature_category: :database do
     ci_pipeline_variables: %w[partition_id pipeline_id project_id],
     ci_pipelines: %w[partition_id auto_canceled_by_partition_id],
     ci_unit_test_failures: %w[project_id],
+    ci_resources: %w[project_id],
     p_ci_pipelines: %w[partition_id auto_canceled_by_partition_id auto_canceled_by_id],
     p_ci_runner_machine_builds: %w[project_id],
     ci_runners: %w[sharding_key_id], # This value is meant to populate the partitioned table, no other usage

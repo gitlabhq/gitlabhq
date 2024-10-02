@@ -69,6 +69,9 @@ module Types
       value 'MERGE_TIME',
         value: :merge_time,
         description: 'Merge request may not be merged until after the specified time.'
+      value 'SECURITY_POLICIES_VIOLATIONS',
+        value: :security_policy_violations,
+        description: 'All policy rules must be satisfied.'
     end
   end
 end

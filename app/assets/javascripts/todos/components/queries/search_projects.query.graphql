@@ -1,0 +1,8 @@
+query searchTodosProjects($search: String) {
+  projects(search: $search, membership: true, first: 20) {
+    nodes {
+      id
+      name
+    }
+  }
+}

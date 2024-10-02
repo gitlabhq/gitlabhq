@@ -33,4 +33,5 @@ export const FAILURE_REASONS = {
   locked_paths: __('All paths must be unlocked'),
   locked_lfs_files: __('All LFS files must be unlocked.'),
   security_policy_evaluation: __('All security policies must be evaluated.'),
+  security_policy_violations: __('All policy rules must be satisfied.'),
 };

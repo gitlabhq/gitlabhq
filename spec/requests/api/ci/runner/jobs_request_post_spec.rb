@@ -505,19 +505,6 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
                 expect(response).to have_gitlab_http_status(:created)
                 expect(json_response['steps']).to be_nil
               end
-
-              context 'when feature flag is disabled' do
-                before do
-                  stub_feature_flags(pipeline_run_keyword: false)
-                end
-
-                it 'returns nil for run steps' do
-                  request_job
-
-                  expect(response).to have_gitlab_http_status(:created)
-                  expect(json_response['run']).to be_nil
-                end
-              end
             end
 
             context 'when job does not have execution config' do
@@ -550,20 +537,6 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
 
                 expect(response).to have_gitlab_http_status(:created)
                 expect(json_response['run']).to be_nil
-              end
-
-              context 'when feature flag is disabled' do
-                before do
-                  stub_feature_flags(pipeline_run_keyword: false)
-                end
-
-                it 'returns nil for run steps' do
-                  request_job
-
-                  expect(response).to have_gitlab_http_status(:created)
-                  expect(json_response['run']).to be_nil
-                  expect(json_response['steps']).to eq(expected_steps)
-                end
               end
             end
           end

@@ -1,11 +1,15 @@
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
 #import "ee_else_ce/graphql_shared/fragments/project.fragment.graphql"
 
-query getStarredProjects {
+query getStarredProjects($first: Int, $last: Int, $before: String, $after: String) {
   currentUser {
     id
-    starredProjects {
+    starredProjects(first: $first, last: $last, before: $before, after: $after) {
       nodes {
         ...Project
+      }
+      pageInfo {
+        ...PageInfo
       }
     }
   }

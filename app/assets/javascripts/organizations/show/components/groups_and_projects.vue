@@ -4,16 +4,15 @@ import { isEqual } from 'lodash';
 import { s__, __ } from '~/locale';
 import GroupsView from '~/organizations/shared/components/groups_view.vue';
 import ProjectsView from '~/organizations/shared/components/projects_view.vue';
-import { onPageChange } from '~/organizations/shared/utils';
+import { calculateGraphQLPaginationQueryParams } from '~/graphql_shared/utils';
 import {
   RESOURCE_TYPE_GROUPS,
   RESOURCE_TYPE_PROJECTS,
-  QUERY_PARAM_END_CURSOR,
-  QUERY_PARAM_START_CURSOR,
   SORT_CREATED_AT,
   SORT_UPDATED_AT,
   SORT_DIRECTION_DESC,
 } from '~/organizations/shared/constants';
+import { QUERY_PARAM_END_CURSOR, QUERY_PARAM_START_CURSOR } from '~/graphql_shared/constants';
 import { GROUPS_AND_PROJECTS_PER_PAGE } from '../constants';
 import { buildDisplayListboxItem } from '../utils';
 
@@ -108,7 +107,9 @@ export default {
       this.pushQuery({ display });
     },
     onPageChange(pagination) {
-      this.pushQuery(onPageChange({ ...pagination, routeQuery: this.$route.query }));
+      this.pushQuery(
+        calculateGraphQLPaginationQueryParams({ ...pagination, routeQuery: this.$route.query }),
+      );
     },
   },
 };

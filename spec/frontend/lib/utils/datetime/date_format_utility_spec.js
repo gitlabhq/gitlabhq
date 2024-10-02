@@ -117,53 +117,75 @@ describe('date_format_utility.js', () => {
       );
     });
   });
-});
 
-describe('formatTimeAsSummary', () => {
-  it.each`
-    unit         | value   | result
-    ${'months'}  | ${1.5}  | ${'1.5 months'}
-    ${'weeks'}   | ${1.25} | ${'1.5 weeks'}
-    ${'days'}    | ${2}    | ${'2 days'}
-    ${'hours'}   | ${10}   | ${'10 hours'}
-    ${'minutes'} | ${20}   | ${'20 minutes'}
-    ${'seconds'} | ${10}   | ${'<1 minute'}
-    ${'seconds'} | ${0}    | ${'-'}
-  `('will format $value $unit to $result', ({ unit, value, result }) => {
-    expect(utils.formatTimeAsSummary({ [unit]: value })).toBe(result);
+  describe('formatTimeAsSummary', () => {
+    it.each`
+      unit         | value   | result
+      ${'months'}  | ${1.5}  | ${'1.5 months'}
+      ${'weeks'}   | ${1.25} | ${'1.5 weeks'}
+      ${'days'}    | ${2}    | ${'2 days'}
+      ${'hours'}   | ${10}   | ${'10 hours'}
+      ${'minutes'} | ${20}   | ${'20 minutes'}
+      ${'seconds'} | ${10}   | ${'<1 minute'}
+      ${'seconds'} | ${0}    | ${'-'}
+    `('will format $value $unit to $result', ({ unit, value, result }) => {
+      expect(utils.formatTimeAsSummary({ [unit]: value })).toBe(result);
+    });
   });
-});
 
-describe('formatUtcOffset', () => {
-  it.each`
-    offset       | expected
-    ${-32400}    | ${'-9'}
-    ${'-12600'}  | ${'-3.5'}
-    ${0}         | ${' 0'}
-    ${'10800'}   | ${'+3'}
-    ${19800}     | ${'+5.5'}
-    ${0}         | ${' 0'}
-    ${[]}        | ${' 0'}
-    ${{}}        | ${' 0'}
-    ${true}      | ${' 0'}
-    ${null}      | ${' 0'}
-    ${undefined} | ${' 0'}
-  `('returns $expected given $offset', ({ offset, expected }) => {
-    expect(utils.formatUtcOffset(offset)).toEqual(expected);
+  describe('formatUtcOffset', () => {
+    it.each`
+      offset       | expected
+      ${-32400}    | ${'-9'}
+      ${'-12600'}  | ${'-3.5'}
+      ${0}         | ${' 0'}
+      ${'10800'}   | ${'+3'}
+      ${19800}     | ${'+5.5'}
+      ${0}         | ${' 0'}
+      ${[]}        | ${' 0'}
+      ${{}}        | ${' 0'}
+      ${true}      | ${' 0'}
+      ${null}      | ${' 0'}
+      ${undefined} | ${' 0'}
+    `('returns $expected given $offset', ({ offset, expected }) => {
+      expect(utils.formatUtcOffset(offset)).toEqual(expected);
+    });
   });
-});
 
-describe('humanTimeframe', () => {
-  it.each`
-    startDate     | dueDate        | returnValue
-    ${'2021-1-1'} | ${'2021-2-28'} | ${'Jan 1 – Feb 28, 2021'}
-    ${'2021-1-1'} | ${'2022-2-28'} | ${'Jan 1, 2021 – Feb 28, 2022'}
-    ${'2021-1-1'} | ${null}        | ${'Jan 1, 2021 – No due date'}
-    ${null}       | ${'2021-2-28'} | ${'No start date – Feb 28, 2021'}
-  `(
-    'returns string "$returnValue" when startDate is $startDate and dueDate is $dueDate',
-    ({ startDate, dueDate, returnValue }) => {
-      expect(utils.humanTimeframe(startDate, dueDate)).toBe(returnValue);
-    },
-  );
+  describe('humanTimeframe', () => {
+    it.each`
+      startDate     | dueDate        | returnValue
+      ${'2021-1-1'} | ${'2021-2-28'} | ${'Jan 1 – Feb 28, 2021'}
+      ${'2021-1-1'} | ${'2022-2-28'} | ${'Jan 1, 2021 – Feb 28, 2022'}
+      ${'2021-1-1'} | ${null}        | ${'Jan 1, 2021 – No due date'}
+      ${null}       | ${'2021-2-28'} | ${'No start date – Feb 28, 2021'}
+    `(
+      'returns string "$returnValue" when startDate is $startDate and dueDate is $dueDate',
+      ({ startDate, dueDate, returnValue }) => {
+        expect(utils.humanTimeframe(startDate, dueDate)).toBe(returnValue);
+      },
+    );
+  });
+
+  describe('formatTimeSpent', () => {
+    describe('with limitToHours false', () => {
+      it('formats 34500 seconds to `1d 1h 35m`', () => {
+        expect(utils.formatTimeSpent(34500)).toEqual('1d 1h 35m');
+      });
+
+      it('formats -34500 seconds to `- 1d 1h 35m`', () => {
+        expect(utils.formatTimeSpent(-34500)).toEqual('- 1d 1h 35m');
+      });
+    });
+
+    describe('with limitToHours true', () => {
+      it('formats 34500 seconds to `9h 35m`', () => {
+        expect(utils.formatTimeSpent(34500, true)).toEqual('9h 35m');
+      });
+
+      it('formats -34500 seconds to `- 9h 35m`', () => {
+        expect(utils.formatTimeSpent(-34500, true)).toEqual('- 9h 35m');
+      });
+    });
+  });
 });

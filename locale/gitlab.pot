@@ -5621,6 +5621,9 @@ msgstr ""
 msgid "All paths must be unlocked"
 msgstr ""
 
+msgid "All policy rules must be satisfied."
+msgstr ""
+
 msgid "All project members"
 msgstr ""
 
@@ -29468,9 +29471,6 @@ msgid "Invalid login or password"
 msgstr ""
 
 msgid "Invalid name %{input} was given for this default stage, allowed names: %{names}"
-msgstr ""
-
-msgid "Invalid period"
 msgstr ""
 
 msgid "Invalid pin code."
@@ -57123,9 +57123,6 @@ msgstr ""
 msgid "Todos|All"
 msgstr ""
 
-msgid "Todos|Any"
-msgstr ""
-
 msgid "Todos|Any Action"
 msgstr ""
 
@@ -57139,6 +57136,9 @@ msgid "Todos|Assigned"
 msgstr ""
 
 msgid "Todos|Build failed"
+msgstr ""
+
+msgid "Todos|Category"
 msgstr ""
 
 msgid "Todos|Could not merge"
@@ -57181,6 +57181,9 @@ msgid "Todos|Filter by group"
 msgstr ""
 
 msgid "Todos|Filter by project"
+msgstr ""
+
+msgid "Todos|Filter to-do items"
 msgstr ""
 
 msgid "Todos|Give yourself a pat on the back!"
@@ -57247,6 +57250,15 @@ msgid "Todos|OKR checkin requested"
 msgstr ""
 
 msgid "Todos|Pipelines"
+msgstr ""
+
+msgid "Todos|Raw text search is not currently supported"
+msgstr ""
+
+msgid "Todos|Raw text search is not currently supported. Please use the available search tokens."
+msgstr ""
+
+msgid "Todos|Reason"
 msgstr ""
 
 msgid "Todos|Removed from Merge Train"
