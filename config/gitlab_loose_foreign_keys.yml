@@ -458,9 +458,6 @@ project_security_statistics:
     column: project_id
     on_delete: async_delete
 projects:
-  - table: organizations
-    column: organization_id
-    on_delete: async_nullify
   - table: users
     column: marked_for_deletion_by_user_id
     on_delete: async_nullify

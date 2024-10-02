@@ -299,6 +299,8 @@ To generate a custom visualization with GitLab Duo using a natural language quer
 
 After you save a visualization, you can add it to a new or existing custom dashboard in the same project.
 
+Provide feedback on this experimental feature in [issue 455363](https://gitlab.com/gitlab-org/gitlab/-/issues/455363).
+
 ### Visualization query builder
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14098) in GitLab 17.1 [with a flag](../../administration/feature_flags.md) named `analytics_visualization_designer_filtering`. Disabled by default.

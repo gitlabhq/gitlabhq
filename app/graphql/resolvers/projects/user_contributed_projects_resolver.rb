@@ -19,6 +19,10 @@ module Resolvers
         required: false,
         default_value: false
 
+      argument :programming_language_name, GraphQL::Types::String,
+        required: false,
+        description: 'Filter projects by programming language name (case insensitive). For example: "css" or "ruby".'
+
       alias_method :user, :object
 
       def resolve(**args)
@@ -27,7 +31,8 @@ module Resolvers
           current_user: current_user,
           params: {
             order_by: args[:sort],
-            min_access_level: args[:min_access_level]
+            min_access_level: args[:min_access_level],
+            programming_language_name: args[:programming_language_name]
           }
         ).execute
 

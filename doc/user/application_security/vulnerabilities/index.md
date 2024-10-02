@@ -130,6 +130,8 @@ To resolve the vulnerability:
 A merge request containing the AI remediation suggestions is opened. Review the suggested changes,
 then process the merge request according to your standard workflow.
 
+Provide feedback on this feature in [issue 476553](https://gitlab.com/gitlab-org/gitlab/-/issues/476553).
+
 ### Limitations of Vulnerability Resolution
 
 Vulnerability Resolution is enabled for the following list of vulnerability classes. If you see that the button is disabled, that means that the CWE is not part of the supported list at this time. We are actively testing and expanding coverage for Vulnerability Resolution to more classes of vulnerabilities.

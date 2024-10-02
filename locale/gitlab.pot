@@ -21419,9 +21419,6 @@ msgstr ""
 msgid "Environments|Edit environment"
 msgstr ""
 
-msgid "Environments|Edit your search and try again"
-msgstr ""
-
 msgid "Environments|Enable Review Apps"
 msgstr ""
 
@@ -21471,9 +21468,6 @@ msgid "Environments|New environment"
 msgstr ""
 
 msgid "Environments|No deployments yet"
-msgstr ""
-
-msgid "Environments|No results found"
 msgstr ""
 
 msgid "Environments|No selection shows all authorized resources in the cluster. %{linkStart}Learn more.%{linkEnd}"
@@ -36238,9 +36232,6 @@ msgid "No matching work item found."
 msgstr ""
 
 msgid "No matching work item found. Make sure you are adding a valid ID and you have access to the item."
-msgstr ""
-
-msgid "No members found"
 msgstr ""
 
 msgid "No memberships found"

@@ -22,16 +22,6 @@
 }
 
 .gl-dark {
-  .gl-datepicker-theme {
-    .is-selected > .pika-button {
-      color: $gray-900;
-    }
-
-    :not(.is-selected) > .pika-button:hover {
-      background-color: $gray-200;
-    }
-  }
-
   .gl-new-dropdown-item {
     &:active,
     &:hover,

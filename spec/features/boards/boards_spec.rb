@@ -322,7 +322,7 @@ RSpec.describe 'Project issue boards', :js, feature_category: :portfolio_managem
 
         it 'filters by milestone' do
           set_filter("milestone", "\"#{milestone.title}")
-          click_on milestone.title
+          click_link milestone.title
           filter_submit.click
 
           wait_for_requests

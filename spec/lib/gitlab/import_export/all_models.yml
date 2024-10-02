@@ -28,6 +28,7 @@ issues:
 - own_resource_label_events
 - own_description_versions
 - own_events
+- own_subscriptions
 - sync_object
 - last_edited_by
 - todos

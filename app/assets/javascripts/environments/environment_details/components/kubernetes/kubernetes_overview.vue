@@ -8,7 +8,7 @@ import {
   GlDisclosureDropdownItem,
   GlModalDirective,
 } from '@gitlab/ui';
-import CLUSTER_EMPTY_SVG from '@gitlab/svgs/dist/illustrations/empty-state/empty-state-clusters.svg?url';
+import CLUSTER_EMPTY_SVG from '@gitlab/svgs/dist/illustrations/empty-state/empty-environment-md.svg';
 import { isEmpty } from 'lodash';
 import { s__, __ } from '~/locale';
 import { createAlert } from '~/alert';

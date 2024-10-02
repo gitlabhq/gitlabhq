@@ -21,6 +21,7 @@ describe('Board list component', () => {
   const findMoveToPositionComponent = () => wrapper.findComponent(BoardCardMoveToPosition);
   const findIntersectionObserver = () => wrapper.findComponent(GlIntersectionObserver);
   const findBoardListCount = () => wrapper.find('.board-list-count');
+  const findBoardCardButtons = () => wrapper.findAll('button.board-card-button');
 
   const maxIssueCountWarningClass = '.gl-bg-red-50';
 
@@ -311,6 +312,31 @@ describe('Board list component', () => {
       it('Board card move to position is not visible', () => {
         expect(findMoveToPositionComponent().exists()).toBe(false);
       });
+    });
+  });
+
+  describe('when using keyboard', () => {
+    beforeEach(async () => {
+      wrapper = createComponent({
+        apolloQueryHandlers: [
+          [
+            listIssuesQuery,
+            jest
+              .fn()
+              .mockResolvedValue(mockGroupIssuesResponse('gid://gitlab/List/1', mockIssuesMore)),
+          ],
+        ],
+        mountOptions: { attachTo: document.body },
+      });
+      await waitForPromises();
+    });
+
+    it('traverses up and down cards in list', async () => {
+      findBoardCardButtons().at(0).trigger('focusin');
+      await findBoardCardButtons().at(0).trigger('keydown.down');
+      expect(document.activeElement).toEqual(findBoardCardButtons().at(1).element);
+      await findBoardCardButtons().at(1).trigger('keydown.up');
+      expect(document.activeElement).toEqual(findBoardCardButtons().at(0).element);
     });
   });
 });

@@ -334,6 +334,26 @@ RSpec.describe 'Getting contributedProjects of the user', feature_category: :gro
     end
   end
 
+  describe 'programming_language_name' do
+    let_it_be(:ruby) { create(:programming_language, name: 'Ruby') }
+    let_it_be(:repository_language) do
+      create(:repository_language, project: internal_project, programming_language: ruby, share: 1)
+    end
+
+    let(:query_with_programming_language_name) do
+      graphql_query_for(:user, user_params, 'contributedProjects(programmingLanguageName: "ruby") { nodes { id } }')
+    end
+
+    it 'returns only projects with ruby programming language' do
+      post_graphql(query_with_programming_language_name, current_user: current_user)
+
+      expect(graphql_data_at(*path))
+        .to contain_exactly(
+          a_graphql_entity_for(internal_project)
+        )
+    end
+  end
+
   describe 'accessible' do
     context 'when user profile is public' do
       context 'when a logged in user with membership in the private project' do

@@ -104,4 +104,25 @@ RSpec.describe ContributedProjectsFinder, feature_category: :groups_and_projects
       end
     end
   end
+
+  context 'with programming_language_name param' do
+    let_it_be(:ruby) { create(:programming_language, name: 'Ruby') }
+    let_it_be(:repository_language) do
+      create(:repository_language, project: internal_project, programming_language: ruby)
+    end
+
+    subject { finder.execute }
+
+    context 'when programming_language_name is set to an existing language' do
+      let(:params) { { programming_language_name: 'ruby' } }
+
+      it { is_expected.to match_array([internal_project]) }
+    end
+
+    context 'when programming_language_name is an empty string' do
+      let(:params) { { programming_language_name: '' } }
+
+      it { is_expected.to match_array(default_ordering) }
+    end
+  end
 end

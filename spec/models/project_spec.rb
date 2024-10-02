@@ -9466,14 +9466,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  context 'with loose foreign key on organization_id' do
-    it_behaves_like 'cleanup by a loose foreign key' do
-      let_it_be(:parent) { create(:organization) }
-      let_it_be(:group) { create(:group, organization: parent) }
-      let_it_be(:model) { create(:project, group: group, organization: parent) }
-    end
-  end
-
   describe 'catalog resource process sync events worker' do
     let_it_be_with_reload(:project) { create(:project, name: 'Test project', description: 'Test description') }
 

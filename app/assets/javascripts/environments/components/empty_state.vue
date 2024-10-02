@@ -2,6 +2,7 @@
 import emptyEnvironmentsSvgPath from '@gitlab/svgs/dist/illustrations/empty-state/empty-environment-md.svg';
 import { GlButton, GlEmptyState, GlLink, GlSprintf } from '@gitlab/ui';
 import { s__ } from '~/locale';
+import EmptyResult from '~/vue_shared/components/empty_result.vue';
 
 export default {
   components: {
@@ -9,6 +10,7 @@ export default {
     GlEmptyState,
     GlLink,
     GlSprintf,
+    EmptyResult,
   },
   inject: ['newEnvironmentPath'],
   props: {
@@ -31,9 +33,7 @@ export default {
     },
   },
   i18n: {
-    searchingTitle: s__('Environments|No results found'),
     title: s__('Environments|Get started with environments'),
-    searchingContent: s__('Environments|Edit your search and try again'),
     content: s__(
       'Environments|Environments are places where code gets deployed, such as staging or production. You can create an environment in the UI or in your .gitlab-ci.yml file. You can also enable review apps, which assist with providing an environment to showcase product changes. %{linkStart}Learn more%{linkEnd} about environments.',
     ),
@@ -44,13 +44,15 @@ export default {
 };
 </script>
 <template>
+  <empty-result v-if="hasTerm" type="search" />
   <gl-empty-state
+    v-else
     class="gl-mx-auto gl-max-w-limited"
-    :title="title"
+    :title="$options.i18n.title"
     :svg-path="$options.emptyEnvironmentsSvgPath"
   >
     <template #description>
-      <gl-sprintf :message="content">
+      <gl-sprintf :message="$options.i18n.content">
         <template #link="{ content: contentToDisplay }">
           <gl-link :href="helpPath">{{ contentToDisplay }}</gl-link>
         </template>

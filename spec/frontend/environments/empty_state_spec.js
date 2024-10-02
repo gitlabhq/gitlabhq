@@ -1,5 +1,6 @@
 import { GlEmptyState, GlLink, GlSprintf } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import EmptyResult from '~/vue_shared/components/empty_result.vue';
 import EmptyState from '~/environments/components/empty_state.vue';
 import { ENVIRONMENTS_SCOPE } from '~/environments/constants';
 
@@ -58,9 +59,8 @@ describe('~/environments/components/empty_state.vue', () => {
       wrapper = createWrapper({ propsData: { hasTerm: true } });
     });
 
-    it('shows text about searching', () => {
-      expect(findEmptyState().props('title')).toBe('No results found');
-      expect(findEmptyState().text()).toBe('Edit your search and try again');
+    it('should show EmptyResult component', () => {
+      expect(wrapper.findComponent(EmptyResult).exists()).toBe(true);
     });
 
     it('hides the documentation link', () => {

@@ -1,50 +1,42 @@
 - add_page_specific_style 'page_bundles/members'
 - page_title _("Members")
+- show_the_header = can_invite_members_for_project?(@project) || project_can_be_shared?
 
-.row.gl-mt-3
-  .col-lg-12
-    .gl-flex.gl-flex-wrap
+- if show_the_header
+  = render ::Layouts::PageHeadingComponent.new(_("Project members")) do |c|
+    - c.with_description do
       - if can_invite_members_for_project?(@project)
-        %h4
-          = _("Project members")
-        %p.gl-w-full.order-md-1
-          = project_member_header_subtext(@project)
+        = project_member_header_subtext(@project)
         - if current_appearance&.member_guidelines?
-          .gl-w-full.order-md-1
-            = brand_member_guidelines
-        .gl-flex.gl-flex-wrap.gl-items-start.gl-ml-auto.md:gl-w-auto.gl-w-full.gl-mt-3
-          - invite_group_top_margin = ''
-          - if can_admin_project_member?(@project)
-            .js-import-project-members-trigger{ data: { classes: 'md:gl-w-auto gl-w-full' } }
-            .js-import-project-members-modal{ data: { project_id: @project.id,
-              project_name: @project.name,
-              reload_page_on_submit: true.to_s }
-              .merge(common_invite_modal_dataset(@project).slice(:users_limit_dataset, :add_seats_href)) }
-            - invite_group_top_margin = 'md:gl-mt-0 gl-mt-3'
-          - if @project.allowed_to_share_with_group?
-            .js-invite-group-trigger{ data: { classes: "md:gl-w-auto gl-w-full md:gl-ml-3 #{invite_group_top_margin}", display_text: _('Invite a group') } }
-            = render 'projects/invite_groups_modal', project: @project, reload_page_on_submit: true
-          - if can_admin_project_member?(@project)
-            .js-invite-members-trigger{ data: { variant: 'confirm',
-              classes: 'md:gl-w-auto gl-w-full md:gl-ml-3 md:gl-mt-0 gl-mt-3',
-              trigger_source: 'project_members_page',
-              display_text: _('Invite members') } }
-      - else
-        - if project_can_be_shared?
-          %h4
-            = _("Project members")
-          - if can?(current_user, :admin_project_member, @project)
-            %p.gl-w-full
-              = project_member_header_subtext(@project)
-          - else
-            %p.gl-w-full
-              = html_escape(_("Members can be added by project %{i_open}Maintainers%{i_close} or %{i_open}Owners%{i_close}")) % { i_open: '<i>'.html_safe, i_close: '</i>'.html_safe }
+          = brand_member_guidelines
+      - elsif project_can_be_shared?
+        - if can?(current_user, :admin_project_member, @project)
+          = project_member_header_subtext(@project)
+        - else
+          = html_escape(_("Members can be added by project %{i_open}Maintainers%{i_close} or %{i_open}Owners%{i_close}")) % { i_open: '<i>'.html_safe, i_close: '</i>'.html_safe }
 
-    .js-project-members-list-app{ data: { members_data: project_members_app_data_json(@project,
-                                                                                      members: @project_members,
-                                                                                      invited: @invited_members,
-                                                                                      access_requests: @requesters,
-                                                                                      include_relations: @include_relations,
-                                                                                      search: params[:search_groups],
-                                                                                      pending_members_count: @pending_promotion_members_count) } }
-      = gl_loading_icon(css_class: 'gl-my-5', size: 'md')
+    - c.with_actions do
+      - if can_invite_members_for_project?(@project)
+        - if can_admin_project_member?(@project)
+          .js-import-project-members-trigger{ data: { classes: 'md:gl-w-auto gl-w-full' } }
+          .js-import-project-members-modal{ data: { project_id: @project.id,
+            project_name: @project.name,
+            reload_page_on_submit: true.to_s }
+            .merge(common_invite_modal_dataset(@project).slice(:users_limit_dataset, :add_seats_href)) }
+        - if @project.allowed_to_share_with_group?
+          .js-invite-group-trigger{ data: { classes: "md:gl-w-auto gl-w-full", display_text: _('Invite a group') } }
+          = render 'projects/invite_groups_modal', project: @project, reload_page_on_submit: true
+        - if can_admin_project_member?(@project)
+          .js-invite-members-trigger{ data: { variant: 'confirm',
+            classes: 'md:gl-w-auto gl-w-full md:gl-mt-0 gl-mt-3',
+            trigger_source: 'project_members_page',
+            display_text: _('Invite members') } }
+
+.js-project-members-list-app{ data: { members_data: project_members_app_data_json(@project,
+                                                                                  members: @project_members,
+                                                                                  invited: @invited_members,
+                                                                                  access_requests: @requesters,
+                                                                                  include_relations: @include_relations,
+                                                                                  search: params[:search_groups],
+                                                                                  pending_members_count: @pending_promotion_members_count) } }
+  = gl_loading_icon(css_class: 'gl-my-5', size: 'md')

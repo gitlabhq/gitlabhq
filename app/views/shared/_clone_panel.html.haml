@@ -1,11 +1,11 @@
 .js-git-clone-holder.input-group.btn-group
   .input-group-prepend
     - if allowed_protocols_present?
-      .input-group-text.clone-dropdown-btn.btn
+      .input-group-text.btn
         %span.js-clone-dropdown-label
           = enabled_protocol_button(container, enabled_protocol)
     - else
-      = render Pajamas::ButtonComponent.new(href: '#', button_options: { id: 'clone-dropdown', class: 'input-group-text btn-icon clone-dropdown-btn', data: { toggle: 'dropdown', testid: 'clone-dropdown' } }) do
+      = render Pajamas::ButtonComponent.new(href: '#', button_options: { id: 'clone-dropdown', class: 'input-group-text btn-icon hover:gl-no-underline gl-text-gray-700', data: { toggle: 'dropdown', testid: 'clone-dropdown' } }) do
         %span.js-clone-dropdown-label
           = default_clone_protocol.upcase
         = sprite_icon('chevron-down', css_class: 'gl-icon')
@@ -19,4 +19,3 @@
   = text_field_tag :clone_url, default_url_to_repo(container), class: "js-select-on-focus gl-form-input form-control", readonly: true, aria: { label: _('Repository clone URL') }, data: { testid: 'clone-url-content' }
   .input-group-append
     = clipboard_button(target: '#clone_url', title: _("Copy URL"), variant: :default, category: :primary, size: :medium)
-

@@ -34556,6 +34556,9 @@ ALTER TABLE ONLY approval_group_rules_users
 ALTER TABLE ONLY import_failures
     ADD CONSTRAINT fk_9a9b9ba21c FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY projects
+    ADD CONSTRAINT fk_9aee26923d FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY deploy_tokens
     ADD CONSTRAINT fk_9b0d2e92a6 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 

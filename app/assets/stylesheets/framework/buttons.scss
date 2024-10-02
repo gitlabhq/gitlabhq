@@ -174,14 +174,6 @@
   }
 }
 
-.clone-dropdown-btn a {
-  color: $gray-700;
-
-  &:hover {
-    text-decoration: none;
-  }
-}
-
 .btn-inverted {
   &-secondary {
     @include btn-outline($white, $blue-500, $blue-500, $blue-100, $blue-700, $blue-500, $blue-200, $blue-600, $blue-800);

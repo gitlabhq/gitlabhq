@@ -282,6 +282,19 @@ In addition to standard logging in the GitLab Rails Monolith instance, specializ
   - Rails: no
   - Sidekiq: yes
 
+### Error response received while categorizing question
+
+  - Description: logged when response returned is not succesful
+  - Class: `Gitlab::Llm::Anthropic::Completions::CategorizeQuestions`
+  - Ai_event_name: error
+  - Level: error
+  - Arguments:
+    - error_type: response.dig('error', 'type')
+  - Part of the system: duo_chat
+  - Expanded logging?: no
+  - Rails: no
+  - Sidekiq: yes
+
 ### Picked tool
 
   - Description: information about tool picked by chat

@@ -68,6 +68,10 @@ import WorkItemAbuseModal from './work_item_abuse_modal.vue';
 import DesignWidget from './design_management/design_management_widget.vue';
 import DesignUploadButton from './design_management/upload_button.vue';
 
+const defaultWorkspacePermissions = {
+  createDesign: false,
+};
+
 export default {
   name: 'WorkItemDetail',
   i18n,
@@ -157,9 +161,7 @@ export default {
       filesToBeSaved: [],
       allowedChildTypes: [],
       designUploadError: null,
-      workspacePermissions: {
-        createDesign: false,
-      },
+      workspacePermissions: defaultWorkspacePermissions,
     };
   },
   apollo: {
@@ -247,7 +249,7 @@ export default {
         return this.isGroupWorkItem;
       },
       update(data) {
-        return data.workspace.userPermissions;
+        return data.workspace?.userPermissions ?? defaultWorkspacePermissions;
       },
     },
   },

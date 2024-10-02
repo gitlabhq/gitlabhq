@@ -75,6 +75,10 @@ export default {
       required: false,
       default: false,
     },
+    columnIndex: {
+      type: Number,
+      required: true,
+    },
   },
   data() {
     return {
@@ -652,9 +656,11 @@ export default {
         'gl-rounded-bl-base gl-rounded-br-base gl-bg-red-50': boardItemsSizeExceedsMax,
         'gl-overflow-hidden': disableScrollingWhenMutationInProgress,
         'gl-overflow-y-auto': !disableScrollingWhenMutationInProgress,
+        'list-empty': !listItemsCount,
+        'list-collapsed': list.collapsed,
       }"
       :draggable="canMoveIssue ? '.board-card' : false"
-      class="board-list gl-mb-0 gl-h-full gl-w-full gl-list-none gl-overflow-x-hidden gl-p-3 gl-pt-0"
+      class="board-list gl-mb-0 gl-h-full gl-w-full gl-list-none gl-overflow-x-hidden gl-p-3 gl-pt-2"
       data-testid="tree-root-wrapper"
       @start="handleDragOnStart"
       @end="handleDragOnEnd"
@@ -666,6 +672,7 @@ export default {
         :index="index"
         :list="list"
         :item="item"
+        :column-index="columnIndex"
         :data-draggable-item-type="$options.draggableItemTypes.card"
         :show-work-item-type-icon="!isEpicBoard"
         @setFilters="$emit('setFilters', $event)"
@@ -689,11 +696,13 @@ export default {
         v-for="(item, index) in afterCutLine"
         ref="issue"
         :key="item.id"
-        :index="index"
+        :index="index + list.maxIssueCount"
         :list="list"
         :item="item"
+        :column-index="columnIndex"
         :data-draggable-item-type="$options.draggableItemTypes.card"
         :show-work-item-type-icon="!isEpicBoard"
+        :list-items-length="boardListItems.length"
         @setFilters="$emit('setFilters', $event)"
       >
         <board-card-move-to-position

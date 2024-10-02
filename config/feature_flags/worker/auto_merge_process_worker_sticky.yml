@@ -1,0 +1,9 @@
+---
+name: auto_merge_process_worker_sticky
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/483008
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167234
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/496567
+milestone: '17.5'
+group: group::ci platform
+type: worker
+default_enabled: false

@@ -22,6 +22,7 @@ export default function createComponent({
     BoardNewItem,
     BoardCard,
   },
+  mountOptions = {},
   issuesCount,
 } = {}) {
   Vue.use(VueApollo);
@@ -67,6 +68,7 @@ export default function createComponent({
       ...provide,
     },
     stubs,
+    ...mountOptions,
     data() {
       return {
         ...data,

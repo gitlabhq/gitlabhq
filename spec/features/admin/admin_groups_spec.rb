@@ -315,7 +315,7 @@ RSpec.describe 'Admin Groups', feature_category: :groups_and_projects do
 
       visit group_group_members_path(group)
 
-      expect(members_table).not_to have_content(current_user.name)
+      expect(page).to have_content('No results found')
     end
   end
 

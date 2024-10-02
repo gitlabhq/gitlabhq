@@ -1,6 +1,6 @@
 <script>
 import { GlLoadingIcon, GlAlert, GlEmptyState, GlSprintf, GlIcon } from '@gitlab/ui';
-import EmptyStateSvg from '@gitlab/svgs/dist/illustrations/Dependency-list-empty-state.svg?url';
+import EmptyStateSvg from '@gitlab/svgs/dist/illustrations/status/status-nothing-md.svg';
 import k8sLogsQuery from '~/environments/graphql/queries/k8s_logs.query.graphql';
 import environmentClusterAgentQuery from '~/environments/graphql/queries/environment_cluster_agent.query.graphql';
 import { createK8sAccessConfiguration } from '~/environments/helpers/k8s_integration_helper';

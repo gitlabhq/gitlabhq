@@ -96,5 +96,22 @@ RSpec.describe 'Group Boards', feature_category: :portfolio_management do
       expect(list1.reload.position).to eq(0)
       expect(list2.reload.position).to eq(1)
     end
+
+    context "when user is navigating via keyboard", :js do
+      it 'allows user to traverse cards forward and backward across board columns' do
+        # Focus issue2 in Open list then move to issue1 in list2 and back
+        click_button 'issue2'
+
+        expect(page).to have_selector('button.board-card-button[data-col-index="0"]', focused: true)
+
+        send_keys :right
+
+        expect(page).to have_selector('button.board-card-button[data-col-index="2"]', focused: true)
+
+        send_keys :left
+
+        expect(page).to have_selector('button.board-card-button[data-col-index="0"]', focused: true)
+      end
+    end
   end
 end
