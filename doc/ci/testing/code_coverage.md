@@ -60,7 +60,7 @@ coverage in the tool's output:
 | Name         | Language     | Command      | Example      |
 |--------------|--------------|--------------|--------------|
 | Simplecov | Ruby | None | `/\(\d+.\d+\%\) covered/` |
-| pytest-cov | Python | None | `/TOTAL.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/` |
+| pytest-cov | Python | None | `/TOTAL.*? (100(?:\.0+)?\%\|[1-9]?\d(?:\.\d+)?\%)$/` |
 | Scoverage | Scala | None | `/(?i)total.*? (100(?:\.0+)?\%\|[1-9]?\d(?:\.\d+)?\%)$/` |
 | pest | PHP | `pest --coverage --colors=never` | `/Statement coverage[A-Za-z\.*]\s*:\s*([^%]+)/` |
 | phpunit | PHP | `phpunit --coverage-text --colors=never` | `/^\s*Lines:\s*\d+.\d+\%/` |

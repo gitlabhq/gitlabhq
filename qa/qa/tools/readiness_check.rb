@@ -9,6 +9,8 @@ module QA
     class ReadinessCheck
       include Support::API
 
+      ReadinessCheckError = Class.new(StandardError)
+
       def self.perform(wait: 60)
         new(wait: wait).perform
       end
@@ -21,22 +23,14 @@ module QA
       #
       # @return [void]
       def perform
-        error = nil
-
         info("Waiting for Gitlab to become ready!")
-        Support::Retrier.retry_until(max_duration: wait, sleep_interval: 1, raise_on_failure: false, log: false) do
-          result = !required_elements_missing?
-          error = nil
+        debug("Checking required element presence on sign-in page")
 
-          result
-        rescue StandardError => e
-          error = "#{error_base} #{e.message}"
-
-          false
-        end
-        raise error if error
+        wait_for_login_page_to_load
 
         info("Gitlab is ready!")
+      rescue StandardError => e
+        raise ReadinessCheckError, "#{error_base} Reason: #{e}"
       end
 
       private
@@ -66,40 +60,23 @@ module QA
         @element_css ||= QA::Page::Main::Login.elements.select(&:required?).map(&:selector_css)
       end
 
-      # Check for missing required elements on sign-in page
+      # Check if sign_in page loads with all required elements
       #
-      # @return [Boolean]
-      def required_elements_missing?
-        debug("Checking for required element presence on '#{url}'")
+      # @return [void]
+      def wait_for_login_page_to_load
         # Do not perform headless request on .com due to cloudfare
-        return rendered_elements_missing? if Runtime::Env.running_on_dot_com?
-
-        response = get(url)
-
-        unless ok_response?(response)
-          msg = "Got unsucessfull response code: #{response.code}"
-          debug(msg) && raise(msg)
+        if Runtime::Env.running_on_dot_com?
+          debug("Checking for required elements via web browser")
+          return Capybara.current_session.using_wait_time(wait) { Runtime::Browser.visit(:gitlab, Page::Main::Login) }
         end
 
-        unless required_elements_present?(response)
-          msg = "Sign in page missing required elements: '#{elements_css}'"
-          debug(msg) && raise(msg)
-        end
+        Support::Retrier.retry_on_exception(max_attempts: wait, sleep_interval: 1, log: false) do
+          response = get(url)
 
+          raise "Got unsucessfull response code from #{url}: #{response.code}" unless ok_response?(response)
+          raise "Sign in page missing required elements: '#{elements_css}'" unless required_elements_present?(response)
+        end
         debug("Required elements are present!")
-        false
-      end
-
-      # Perform check for present elements via web browser
-      #
-      # @return [Boolean]
-      def rendered_elements_missing?
-        debug("Checking for required elements via web browser")
-        Runtime::Browser.visit(:gitlab, Page::Main::Login)
-        false
-      rescue StandardError => e
-        debug("Sign in page did not render fully")
-        raise(e)
       end
 
       # Validate response code is 200

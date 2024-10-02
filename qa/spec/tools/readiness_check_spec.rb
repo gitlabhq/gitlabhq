@@ -5,7 +5,7 @@ RSpec.describe QA::Tools::ReadinessCheck do
 
   let(:url) { "example.com" }
   let(:wait) { 1 }
-  let(:msg_base) { "Gitlab readiness check failed, valid sign_in page did not appear within #{wait} seconds!" }
+  let(:msg_base) { "Gitlab readiness check failed, valid sign_in page did not appear within #{wait} seconds! Reason:" }
   let(:dot_com) { false }
 
   let(:response) { instance_double(RestClient::Response, code: code, body: body) }
@@ -13,6 +13,7 @@ RSpec.describe QA::Tools::ReadinessCheck do
   let(:body) { "" }
 
   before do
+    allow(Capybara).to receive_message_chain("current_session.using_wait_time").and_yield
     allow(QA::Runtime::Env).to receive(:running_on_dot_com?).and_return(dot_com)
     allow(QA::Support::GitlabAddress).to receive(:address_with_port).with(with_default_port: false).and_return(url)
     allow(readiness_check).to receive(:get).with("#{url}/users/sign_in").and_return(response)
@@ -51,7 +52,7 @@ RSpec.describe QA::Tools::ReadinessCheck do
 
     it "raises an error on validation" do
       expect { readiness_check.perform }.to raise_error(
-        "#{msg_base} Got unsucessfull response code: #{code}"
+        "#{msg_base} Got unsucessfull response code from #{url}/users/sign_in: #{code}"
       )
     end
   end

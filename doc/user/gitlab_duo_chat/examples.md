@@ -280,6 +280,9 @@ DETAILS:
 
 You can ask GitLab Duo Chat to determine the root cause of a CI/CD job failure by analyzing the logs.
 
+NOTE:
+The last 100,000 characters of the job log are analyzed.
+
 Prerequisites:
 
 - Have permission to view the CI/CD job.
