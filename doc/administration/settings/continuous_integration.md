@@ -95,7 +95,7 @@ To view the rendered details:
 1. Select **Settings > CI/CD**.
 1. Expand **Runners**.
 
-![Instance runner details example](img/continuous_integration_shared_runner_details_v14_10.png)
+![A project's runner settings shows a message about shared runner guidelines.](img/continuous_integration_shared_runner_details_v14_10.png)
 
 ## Maximum artifacts size
 
@@ -267,7 +267,7 @@ from the **Admin** area:
 By default, a banner displays in merge requests with no pipeline suggesting a
 walkthrough on how to add one.
 
-![Suggest pipeline banner](img/suggest_pipeline_banner_v14_5.png)
+![A banner displays guidance on how to get started with GitLab Pipelines.](img/suggest_pipeline_banner_v14_5.png)
 
 To enable or disable the banner:
 

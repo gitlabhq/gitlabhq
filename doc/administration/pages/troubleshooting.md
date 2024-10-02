@@ -265,7 +265,7 @@ both servers.
 
 If the **pages** job succeeds but the **deploy** job gives the error "is not a recognized provider":
 
-![Pages Deploy Failure](img/pages_deploy_failure_v14_8.png)
+![A GitLab Pages pipeline shows success for the pages job but an error for the deploy job.](img/pages_deploy_failure_v14_8.png)
 
 The error message `is not a recognized provider` could be coming from the `fog` gem that GitLab uses to connect to cloud providers for object storage.
 

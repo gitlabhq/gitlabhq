@@ -1,0 +1,9 @@
+---
+migration_job_name: BackfillPagesDomainAcmeOrdersProjectId
+description: Backfills sharding key `pages_domain_acme_orders.project_id` from `pages_domains`.
+feature_category: pages
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167614
+milestone: '17.5'
+queued_migration_version: 20240930123732
+finalize_after: '2024-10-22'
+finalized_by: # version of the migration that finalized this BBM

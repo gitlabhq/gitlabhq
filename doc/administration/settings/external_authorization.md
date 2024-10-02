@@ -131,7 +131,7 @@ label defined in the [global settings](#configuration) is used.
 
 On all project pages, in the upper-right corner, the label appears.
 
-![classification label on project page](img/classification_label_on_project_page_v14_8.png)
+![A red overridden label with an open lock icon displays in the upper-right corner of a project.](img/classification_label_on_project_page_v14_8.png)
 
 <!-- ## Troubleshooting
 

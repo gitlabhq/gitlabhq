@@ -1,4 +1,4 @@
-import { GlIcon, GlButton } from '@gitlab/ui';
+import { GlButton, GlAnimatedTodoIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
@@ -98,9 +98,9 @@ describe('Sidebar Todo Widget', () => {
     });
 
     it('shows add todo icon', () => {
-      expect(wrapper.findComponent(GlIcon).exists()).toBe(true);
+      expect(wrapper.findComponent(GlAnimatedTodoIcon).exists()).toBe(true);
 
-      expect(wrapper.findComponent(GlIcon).props('name')).toBe('todo-add');
+      expect(wrapper.findComponent(GlAnimatedTodoIcon).props('isOn')).toBe(false);
     });
 
     it('sets default tooltip title', () => {
@@ -113,12 +113,12 @@ describe('Sidebar Todo Widget', () => {
       });
 
       await waitForPromises();
-      expect(wrapper.findComponent(GlIcon).props('name')).toBe('todo-done');
+      expect(wrapper.findComponent(GlAnimatedTodoIcon).props('isOn')).toBe(true);
       expect(wrapper.findComponent(GlButton).attributes('title')).toBe('Mark as done');
     });
 
     it('emits `todoUpdated` event on click on icon', async () => {
-      wrapper.findComponent(GlIcon).vm.$emit('click', event);
+      wrapper.findComponent(GlAnimatedTodoIcon).vm.$emit('click', event);
 
       await nextTick();
       expect(wrapper.emitted('todoUpdated')).toEqual([[false]]);

@@ -34,7 +34,7 @@ module Gitlab
             INNER JOIN (#{subquery.to_sql}) AS duplicates
             ON lfs_objects_projects.project_id = duplicates.project_id
             AND lfs_objects_projects.lfs_object_id = duplicates.lfs_object_id
-            AND lfs_objects_projects.repository_type = duplicates.repository_type
+            AND lfs_objects_projects.repository_type IS NOT DISTINCT FROM duplicates.repository_type
           SQL
 
           duplicated_lfs_objects_projects = LfsObjectsProject.joins(join_query).where.not(

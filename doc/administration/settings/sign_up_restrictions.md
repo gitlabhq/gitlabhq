@@ -245,7 +245,7 @@ To create an email domain allowlist or denylist:
 domains ending in `.io`. Domains must be separated by a whitespace,
 semicolon, comma, or a new line.
 
-   ![Domain Denylist](img/domain_denylist_v14_1.png)
+   ![The domain denylist settings with the options to upload a file or enter the denylist manually.](img/domain_denylist_v14_1.png)
 
 ## Set up LDAP user filter
 

@@ -18,7 +18,7 @@ bulk push event instead.
 For example, if 4 branches are pushed and the limit is set to 3,
 the activity feed displays:
 
-![Bulk push event](img/bulk_push_event_v12_4.png)
+![The activity feed displays that a user pushed to 4 branches with a single event.](img/bulk_push_event_v12_4.png)
 
 With this feature, when a single push includes a lot of changes (for example, 1,000
 branches), only 1 bulk push event is created instead of 1,000 push
@@ -31,9 +31,10 @@ To modify this setting:
   1. On the left sidebar, at the bottom, select **Admin**.
   1. Select **Settings > Network**.
   1. Expand **Performance optimization**.
+  1. Edit the **Push event activities limit** setting. 
 - Through the [Application settings API](../../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls)
   as `push_event_activities_limit`.
 
 The default value is `3`, but the value can be greater than or equal to `0`. Setting this value to `0` does not disable throttling.
 
-![Push event activities limit](img/push_event_activities_limit_v12_4.png)
+![The push event activities limit set to 3.](img/push_event_activities_limit_v12_4.png)

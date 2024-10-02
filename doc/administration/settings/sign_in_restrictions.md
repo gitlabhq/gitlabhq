@@ -167,14 +167,14 @@ After the two-factor authentication is configured as mandatory, users are allowe
 to skip forced configuration of two-factor authentication for the configurable grace
 period in hours.
 
-![Two-factor grace period](img/two_factor_grace_period.png)
+![The two-factor grace period set to 48 hours.](img/two_factor_grace_period.png)
 
 ## Email notification for unknown sign-ins
 
 When enabled, GitLab notifies users of sign-ins from unknown IP addresses or devices. For more information,
 see [Email notification for unknown sign-ins](../../user/profile/notifications.md#notifications-for-unknown-sign-ins).
 
-![Email notification for unknown sign-ins](img/email_notification_for_unknown_sign_ins_v13_2.png)
+![Email notifications enabled for unknown sign-ins.](img/email_notification_for_unknown_sign_ins_v13_2.png)
 
 ## Sign-in information
 

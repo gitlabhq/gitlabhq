@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlIcon, GlTooltipDirective } from '@gitlab/ui';
+import { GlButton, GlTooltipDirective, GlAnimatedTodoIcon } from '@gitlab/ui';
 import { produce } from 'immer';
 import { createAlert } from '~/alert';
 import { TYPE_MERGE_REQUEST } from '~/issues/constants';
@@ -16,8 +16,8 @@ const trackingMixin = Tracking.mixin();
 export default {
   components: {
     GlButton,
-    GlIcon,
     TodoButton,
+    GlAnimatedTodoIcon,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -112,9 +112,6 @@ export default {
       }
       return todoMutationTypes.create;
     },
-    collapsedButtonIcon() {
-      return this.hasTodo ? 'todo-done' : 'todo-add';
-    },
     tootltipTitle() {
       return todoLabel(this.hasTodo);
     },
@@ -203,7 +200,7 @@ export default {
       class="hide-collapsed"
       @click.stop.prevent="toggleTodo"
     >
-      <gl-icon :class="{ 'todo-undone !gl-fill-blue-500': hasTodo }" :name="collapsedButtonIcon" />
+      <gl-animated-todo-icon :class="{ '!gl-text-blue-500': hasTodo }" :is-on="hasTodo" />
     </todo-button>
     <todo-button
       v-else
@@ -224,7 +221,7 @@ export default {
       class="sidebar-collapsed-icon sidebar-collapsed-container !gl-rounded-none !gl-shadow-none"
       @click.stop.prevent="toggleTodo"
     >
-      <gl-icon :class="{ 'todo-undone': hasTodo }" :name="collapsedButtonIcon" />
+      <gl-animated-todo-icon :is-on="hasTodo" />
     </gl-button>
   </div>
 </template>

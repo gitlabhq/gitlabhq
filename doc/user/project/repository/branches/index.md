@@ -133,7 +133,7 @@ GitLab enforces these additional rules on all branches:
 - Branch names are case-sensitive.
 
 Common software packages, like Docker, can enforce
-[additional branch naming restrictions](../../../../administration/packages/container_registry.md#docker-connection-error).
+[additional branch naming restrictions](../../../../administration/packages/container_registry_troubleshooting.md#docker-connection-error).
 
 For the best compatibility with other software packages, use only:
 

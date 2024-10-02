@@ -101,6 +101,12 @@ RSpec.describe ResourceAccessTokens::InactiveTokensDeletionCronWorker, feature_c
         create(:resource_access_token, updated_at: cut_off)
       non_revoked_resource_access_token_updated_after_cut_off =
         create(:personal_access_token, updated_at: cut_off + 1.second)
+      resource_access_token_with_rotated_token_before_cut_off =
+        create(:resource_access_token, :with_rotated_token, rotated_at: cut_off - 1.second)
+      resource_access_token_with_rotated_token_at_cut_off =
+        create(:resource_access_token, :with_rotated_token, rotated_at: cut_off)
+      resource_access_token_with_rotated_token_after_cut_off =
+        create(:resource_access_token, :with_rotated_token, rotated_at: cut_off + 1.second)
 
       tokens_to_keep = [
         active_personal_access_token,
@@ -121,13 +127,18 @@ RSpec.describe ResourceAccessTokens::InactiveTokensDeletionCronWorker, feature_c
         resource_access_token_revoked_after_cut_off,
         non_revoked_resource_access_token_updated_before_cut_off,
         non_revoked_resource_access_token_updated_at_cut_off,
-        non_revoked_resource_access_token_updated_after_cut_off
+        non_revoked_resource_access_token_updated_after_cut_off,
+        resource_access_token_with_rotated_token_at_cut_off,
+        resource_access_token_with_rotated_token_after_cut_off
       ]
       users_to_keep = tokens_to_keep.map(&:user)
 
       tokens_to_delete = [
         resource_access_token_expired_before_cut_off,
-        resource_access_token_revoked_before_cut_off
+        resource_access_token_revoked_before_cut_off,
+        # This token should be kept.
+        # See bug related to https://gitlab.com/gitlab-org/gitlab/-/issues/492871
+        resource_access_token_with_rotated_token_before_cut_off
       ]
       users_to_delete = tokens_to_delete.map(&:user)
 

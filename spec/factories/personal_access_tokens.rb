@@ -47,5 +47,35 @@ FactoryBot.define do
 
   factory :resource_access_token, parent: :personal_access_token do
     user { association :user, :project_bot }
+
+    transient do
+      rotated_at { 6.months.ago }
+      resource { create(:group) } # rubocop:disable RSpec/FactoryBot/InlineAssociation -- this is not direct association of the factory created here
+      access_level { Gitlab::Access::DEVELOPER }
+    end
+
+    after(:create) do |token, evaluator|
+      if Feature.enabled?(:retain_resource_access_token_user_after_revoke, evaluator.resource.root_ancestor)
+        evaluator.resource.add_member(token.user, evaluator.access_level)
+      else
+        evaluator.resource.add_member(token.user, evaluator.access_level, expires_at: token.expires_at)
+      end
+    end
+
+    trait :with_rotated_token do
+      after(:create) do |token, evaluator|
+        rotated_at = evaluator.rotated_at
+        previous_access_token = create( # rubocop:disable RSpec/FactoryBot/StrategyInCallback -- this is not direct association of the factory created here
+          :personal_access_token,
+          :revoked,
+          user: token.user,
+          created_at: rotated_at - 6.months,
+          expires_at: rotated_at,
+          updated_at: rotated_at
+        )
+
+        token.update!(previous_personal_access_token_id: previous_access_token.id)
+      end
+    end
   end
 end

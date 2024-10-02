@@ -1,8 +1,9 @@
 ---
 migration_job_name: BackfillApprovalMergeRequestRuleSourcesProjectId
-description: Backfills sharding key `approval_merge_request_rule_sources.project_id` from `approval_project_rules`.
+description: Backfills sharding key `approval_merge_request_rule_sources.project_id`
+  from `approval_project_rules`.
 feature_category: code_review_workflow
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151629
 milestone: '17.0'
 queued_migration_version: 20240501044238
-finalized_by: # version of the migration that finalized this BBM
+finalized_by: '20241001231957'

@@ -88,14 +88,14 @@ module QA
         request = Runtime::API::Request.new(api_client, path)
         response = get(request.url)
 
-        if response.code == HTTP_STATUS_SERVER_ERROR
-          raise(InternalServerError, <<~MSG.strip)
-            Failed to GET #{request.mask_url} - (#{response.code}): `#{response}`.
-            #{QA::Support::Loglinking.failure_metadata(response.headers[:x_request_id])}
-          MSG
-        elsif response.code != HTTP_STATUS_OK
+        if response.code == HTTP_STATUS_NOT_FOUND
           raise(ResourceNotFoundError, <<~MSG.strip)
             Resource at #{request.mask_url} could not be found (#{response.code}): `#{response}`.
+            #{QA::Support::Loglinking.failure_metadata(response.headers[:x_request_id])}
+          MSG
+        elsif !success?(response.code)
+          raise(InternalServerError, <<~MSG.strip)
+            Failed to GET #{request.mask_url} - (#{response.code}): `#{response}`.
             #{QA::Support::Loglinking.failure_metadata(response.headers[:x_request_id])}
           MSG
         end

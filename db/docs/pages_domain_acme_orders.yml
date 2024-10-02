@@ -4,7 +4,8 @@ classes:
 - PagesDomainAcmeOrder
 feature_categories:
 - pages
-description: Stores ACME order information used in obtaining Let's Encrypt certificates for GitLab Pages domains.
+description: Stores ACME order information used in obtaining Let's Encrypt certificates
+  for GitLab Pages domains.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/14014
 milestone: '12.0'
 gitlab_schema: gitlab_main_cell
@@ -19,3 +20,4 @@ desired_sharding_key:
         table: pages_domains
         sharding_key: project_id
         belongs_to: pages_domain
+desired_sharding_key_migration_job_name: BackfillPagesDomainAcmeOrdersProjectId

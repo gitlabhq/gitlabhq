@@ -157,7 +157,7 @@ on what other GitLab CI patterns are demonstrated are available at the project p
 ### 403 error: "error checking push permissions"
 
 If you receive this error, it might be due to an outside proxy. Setting the `http_proxy`
-and `https_proxy` [environment variables](../../administration/packages/container_registry.md#running-the-docker-daemon-with-a-proxy)
+and `https_proxy` [environment variables](../../administration/packages/container_registry_troubleshooting.md#running-the-docker-daemon-with-a-proxy)
 can fix the problem.
 
 ### Error: kaniko should only be run inside of a container

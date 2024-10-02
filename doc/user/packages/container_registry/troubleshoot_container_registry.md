@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 You must sign in to GitLab with administrator rights to troubleshoot most issues with the GitLab container registry.
 
-You can find [additional troubleshooting information](../../../administration/packages/container_registry.md#troubleshooting) in the GitLab container registry administration documentation.
+You can find [additional troubleshooting information](../../../administration/packages/container_registry_troubleshooting.md) in the GitLab container registry administration documentation.
 
 ## Migrating OCI container images to GitLab container registry
 
