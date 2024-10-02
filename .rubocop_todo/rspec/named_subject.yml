@@ -285,7 +285,6 @@ RSpec/NamedSubject:
     - 'ee/spec/lib/ee/gitlab/background_migration/backfill_iteration_cadence_id_for_boards_spec.rb'
     - 'ee/spec/lib/ee/gitlab/background_migration/delete_invalid_epic_issues_spec.rb'
     - 'ee/spec/lib/ee/gitlab/background_migration/delete_orphaned_transferred_project_approval_rules_spec.rb'
-    - 'ee/spec/lib/ee/gitlab/background_migration/migrate_shared_vulnerability_scanners_spec.rb'
     - 'ee/spec/lib/ee/gitlab/checks/push_rule_check_spec.rb'
     - 'ee/spec/lib/ee/gitlab/checks/push_rules/branch_check_spec.rb'
     - 'ee/spec/lib/ee/gitlab/checks/push_rules/commit_check_spec.rb'

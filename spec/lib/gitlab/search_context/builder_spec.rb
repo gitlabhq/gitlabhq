@@ -85,7 +85,7 @@ RSpec.describe Gitlab::SearchContext::Builder, type: :controller do
 
   describe '#with_snippet' do
     context 'when there is a single snippet' do
-      let(:snippet) { create(:snippet) }
+      let(:snippet) { create(:project_snippet) }
 
       subject { builder.with_snippet(snippet) }
 

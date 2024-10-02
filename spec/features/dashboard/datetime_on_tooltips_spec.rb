@@ -38,7 +38,7 @@ RSpec.describe 'Tooltips on .timeago dates', :js, feature_category: :user_profil
 
   context 'on the snippets tab' do
     before do
-      create(:snippet, author: user, updated_at: created_date, created_at: created_date)
+      create(:project_snippet, author: user, updated_at: created_date, created_at: created_date)
 
       sign_in user
       visit user_snippets_path(user)

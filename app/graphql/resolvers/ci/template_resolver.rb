@@ -9,7 +9,7 @@ module Resolvers
         GraphQL::Types::String,
         required: true,
         description: 'Name of the CI/CD template to search for. ' \
-                     'Template must be formatted as `Name.gitlab-ci.yml`.'
+          'Template must be formatted as `Name.gitlab-ci.yml`.'
 
       alias_method :project, :object
 

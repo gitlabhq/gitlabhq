@@ -184,7 +184,6 @@ Lint/RedundantCopDisableDirective:
     - 'ee/lib/ee/gitlab/background_migration/backfill_dismissal_reason_in_vulnerability_reads.rb'
     - 'ee/lib/ee/gitlab/background_migration/backfill_missing_vulnerability_dismissal_details.rb'
     - 'ee/lib/ee/gitlab/background_migration/create_compliance_standards_adherence.rb'
-    - 'ee/lib/ee/gitlab/background_migration/migrate_shared_vulnerability_scanners.rb'
     - 'ee/lib/ee/gitlab/background_migration/populate_denormalized_columns_for_sbom_occurrences.rb'
     - 'ee/lib/ee/gitlab/background_migration/purge_stale_security_scans.rb'
     - 'ee/lib/ee/gitlab/usage_data.rb'

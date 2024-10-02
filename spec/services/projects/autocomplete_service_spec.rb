@@ -113,6 +113,23 @@ RSpec.describe Projects::AutocompleteService, feature_category: :groups_and_proj
         end
       end
     end
+
+    context 'when search param is given' do
+      let_it_be(:issue_8) { create(:issue, project: project, iid: 8) }
+      let_it_be(:issue_80) { create(:issue, project: project, iid: 80) }
+      let_it_be(:issue_800) { create(:issue, project: project, iid: 800) }
+      let_it_be(:issue_8000) { create(:issue, project: project, iid: 8000) }
+      let_it_be(:issue_80000) { create(:issue, project: project, iid: 80000) }
+      let_it_be(:issue_90000) { create(:issue, project: project, title: 'gitlab issue 8', iid: 90000) }
+
+      it 'returns limited list of matching issues' do
+        autocomplete = described_class.new(project, owner, { search: '8' })
+
+        issue_iids = autocomplete.issues.map(&:iid)
+
+        expect(issue_iids).to eq([90000, 80000, 8000, 800, 80])
+      end
+    end
   end
 
   describe '#milestones' do

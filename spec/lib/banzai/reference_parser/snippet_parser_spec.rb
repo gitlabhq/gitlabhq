@@ -210,7 +210,7 @@ RSpec.describe Banzai::ReferenceParser::SnippetParser, feature_category: :markdo
   end
 
   describe '#referenced_by' do
-    let(:snippet) { create(:snippet, project: project) }
+    let(:snippet) { create(:project_snippet, project: project) }
 
     describe 'when the link has a data-snippet attribute' do
       context 'using an existing snippet ID' do

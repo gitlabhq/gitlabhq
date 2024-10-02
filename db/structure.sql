@@ -6312,8 +6312,6 @@ CREATE TABLE application_settings (
     security_txt_content text,
     encrypted_arkose_labs_data_exchange_key bytea,
     encrypted_arkose_labs_data_exchange_key_iv bytea,
-    toggle_security_policy_custom_ci boolean DEFAULT false NOT NULL,
-    lock_toggle_security_policy_custom_ci boolean DEFAULT false NOT NULL,
     rate_limits jsonb DEFAULT '{}'::jsonb NOT NULL,
     elasticsearch_max_code_indexing_concurrency integer DEFAULT 30 NOT NULL,
     enable_member_promotion_management boolean DEFAULT false NOT NULL,
@@ -6348,6 +6346,7 @@ CREATE TABLE application_settings (
     spp_repository_pipeline_access boolean DEFAULT false NOT NULL,
     lock_spp_repository_pipeline_access boolean DEFAULT false NOT NULL,
     required_instance_ci_template text,
+    enforce_ci_inbound_job_token_scope_enabled boolean DEFAULT false NOT NULL,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_dep_proxy_ttl_policies_worker_capacity_positive CHECK ((dependency_proxy_ttl_group_policy_worker_capacity >= 0)),
     CONSTRAINT app_settings_ext_pipeline_validation_service_url_text_limit CHECK ((char_length(external_pipeline_validation_service_url) <= 255)),
@@ -14211,8 +14210,6 @@ CREATE TABLE namespace_settings (
     product_analytics_enabled boolean DEFAULT false NOT NULL,
     allow_merge_without_pipeline boolean DEFAULT false NOT NULL,
     enforce_ssh_certificates boolean DEFAULT false NOT NULL,
-    toggle_security_policy_custom_ci boolean,
-    lock_toggle_security_policy_custom_ci boolean DEFAULT false NOT NULL,
     math_rendering_limits_enabled boolean,
     lock_math_rendering_limits_enabled boolean DEFAULT false NOT NULL,
     duo_features_enabled boolean,
@@ -19337,22 +19334,6 @@ CREATE SEQUENCE todos_id_seq
 
 ALTER SEQUENCE todos_id_seq OWNED BY todos.id;
 
-CREATE TABLE token_with_ivs (
-    id bigint NOT NULL,
-    hashed_token bytea NOT NULL,
-    hashed_plaintext_token bytea NOT NULL,
-    iv bytea NOT NULL
-);
-
-CREATE SEQUENCE token_with_ivs_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE token_with_ivs_id_seq OWNED BY token_with_ivs.id;
-
 CREATE TABLE topics (
     id bigint NOT NULL,
     name text NOT NULL,
@@ -22817,8 +22798,6 @@ ALTER TABLE ONLY timelogs ALTER COLUMN id SET DEFAULT nextval('timelogs_id_seq':
 
 ALTER TABLE ONLY todos ALTER COLUMN id SET DEFAULT nextval('todos_id_seq'::regclass);
 
-ALTER TABLE ONLY token_with_ivs ALTER COLUMN id SET DEFAULT nextval('token_with_ivs_id_seq'::regclass);
-
 ALTER TABLE ONLY topics ALTER COLUMN id SET DEFAULT nextval('topics_id_seq'::regclass);
 
 ALTER TABLE ONLY trending_projects ALTER COLUMN id SET DEFAULT nextval('trending_projects_id_seq'::regclass);
@@ -25545,9 +25524,6 @@ ALTER TABLE ONLY timelogs
 
 ALTER TABLE ONLY todos
     ADD CONSTRAINT todos_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY token_with_ivs
-    ADD CONSTRAINT token_with_ivs_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY topics
     ADD CONSTRAINT topics_pkey PRIMARY KEY (id);
@@ -30954,10 +30930,6 @@ CREATE INDEX index_todos_on_target_type_and_target_id ON todos USING btree (targ
 CREATE INDEX index_todos_on_user_id_and_id_done ON todos USING btree (user_id, id) WHERE ((state)::text = 'done'::text);
 
 CREATE INDEX index_todos_on_user_id_and_id_pending ON todos USING btree (user_id, id) WHERE ((state)::text = 'pending'::text);
-
-CREATE UNIQUE INDEX index_token_with_ivs_on_hashed_plaintext_token ON token_with_ivs USING btree (hashed_plaintext_token);
-
-CREATE UNIQUE INDEX index_token_with_ivs_on_hashed_token ON token_with_ivs USING btree (hashed_token);
 
 CREATE INDEX index_topics_non_private_projects_count ON topics USING btree (non_private_projects_count DESC, id);
 

@@ -1834,6 +1834,7 @@ Gitlab/BoundedContexts:
     - 'app/services/todos/destroy/unauthorized_features_service.rb'
     - 'app/services/topics/merge_service.rb'
     - 'app/services/two_factor/base_service.rb'
+    - 'app/services/two_factor/destroy_otp_service.rb'
     - 'app/services/two_factor/destroy_service.rb'
     - 'app/services/update_container_registry_info_service.rb'
     - 'app/services/upload_service.rb'

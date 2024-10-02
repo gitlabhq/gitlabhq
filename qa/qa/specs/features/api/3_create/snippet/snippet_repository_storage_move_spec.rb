@@ -7,7 +7,7 @@ module QA
       let(:destination_storage) { { type: :gitaly, name: QA::Runtime::Env.additional_repository_storage } }
 
       let(:snippet) do
-        create(:snippet,
+        create(:project_snippet,
           title: 'Snippet to move storage of',
           file_name: 'original_file',
           file_content: 'Original file content',

@@ -202,64 +202,6 @@ The Advanced Context feature supports these languages:
 - Code completion: all configured languages.
 - Code generation: Go, Java, JavaScript, Kotlin, Python, Ruby, Rust, TypeScript (`.ts` and `.tsx` files), Vue, and YAML.
 
-## Response time
-
-Code Suggestions is powered by a generative AI model.
-
-Your personal access token enables a secure API connection to GitLab.com or to your GitLab instance.
-This API connection securely transmits a context window from your IDE/editor to the [GitLab AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist), a GitLab hosted service. The [gateway](../../../../development/ai_architecture.md) calls the large language model APIs, and then the generated suggestion is transmitted back to your IDE/editor.
-
-- Code completion suggestions are usually low latency.
-- For code generation:
-  - Algorithms or large code blocks might take more than 10 seconds to generate.
-  - Streaming of code generation responses is supported in VS Code, leading to faster average response times. Other supported IDEs offer slower response times and will return the generated code in a single block.
-
-### Use a self-hosted model
-
-Instead of using the default model to manage Code Suggestions requests, you can
-[deploy a self-hosted model](../../../../administration/self_hosted_models/index.md).
-This maximizes security and privacy by making sure nothing is sent to an
-external model.
-
-### Disable direct connections to the AI Gateway
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462791) in GitLab 17.2 [with a flag](../../../../administration/feature_flags.md) named `code_suggestions_direct_access`. Disabled by default.
-
-Prerequisites:
-
-- You must be an administrator for the GitLab self-managed instance.
-
-To minimize latency for code completion requests, these requests are sent from the IDE directly to the AI Gateway.
-For this direct connection to work, the IDE must be able to connect to `https://cloud.gitlab.com:443`. If this is not
-possible (for example, because of network restrictions), you can disable direct connections for all users. If you do this,
-code completion requests are sent indirectly through the GitLab self-managed instance, and might result in your requests
-having higher latency.
-
-::Tabs
-
-:::TabTitle In 17.4 and later
-
-In GitLab 17.4 and later, follow these instructions to disable direct connections to the gateway.
-
-1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > General**.
-1. Expand **GitLab Duo features**.
-1. Under **Connection method** Choose an option:
-   - To minimize latency for code completion requests, select **Direct connections**.
-   - To disable direct connections for all users, select **Indirect connections through the GitLab self-managed instance**.
-1. Select **Save changes**.
-
-:::TabTitle In 17.3 and earlier
-
-In GitLab 17.3 and earlier, follow these instructions to disable direct connections to the gateway.
-
-1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > General**.
-1. Expand **AI-powered features**.
-1. Select the **Disable direct connections for code suggestions** checkbox.
-
-::EndTabs
-
 ## Inference window context
 
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/435271) in GitLab 16.8.
@@ -309,6 +251,67 @@ However, Code Suggestions might generate suggestions that are:
 - Offensive or insensitive.
 
 When using Code Suggestions, [code review best practice](../../../../development/code_review.md) still applies.
+
+## Response time
+
+Code Suggestions is powered by a generative AI model.
+
+Your personal access token enables a secure API connection to GitLab.com or to your GitLab instance.
+This API connection securely transmits a context window from your IDE/editor to the [GitLab AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist), a GitLab hosted service. The [gateway](../../../../development/ai_architecture.md) calls the large language model APIs, and then the generated suggestion is transmitted back to your IDE/editor.
+
+- For code completion, suggestions are usually low latency.
+- For code generation, algorithms or large code blocks might take more than 10 seconds to generate.
+
+### Streaming
+
+Streaming of Code Generation responses is supported in VS Code, leading to faster average response times.
+Other supported IDEs offer slower response times and will return the generated code in a single block.
+
+### Use a self-hosted model
+
+Instead of using the default model to manage Code Suggestions requests, you can
+[deploy a self-hosted model](../../../../administration/self_hosted_models/index.md).
+This maximizes security and privacy by making sure nothing is sent to an
+external model.
+
+### Direct and indirect connections
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462791) in GitLab 17.2 [with a flag](../../../../administration/feature_flags.md) named `code_suggestions_direct_access`. Disabled by default.
+
+By default, code completion requests are sent from the IDE directly to the AI Gateway to minimize the latency.
+For this direct connection to work, the IDE must be able to connect to `https://cloud.gitlab.com:443`. If this is not
+possible (for example, because of network restrictions), you can disable direct connections for all users. If you do this,
+code completion requests are sent indirectly through the GitLab self-managed instance, which in turn sends the requests
+to the AI Gateway. This might result in your requests having higher latency.
+
+#### Configure direct or indirect connections
+
+Prerequisites:
+
+- You must be an administrator for the GitLab self-managed instance.
+
+::Tabs
+
+:::TabTitle In 17.4 and later
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > General**.
+1. Expand **GitLab Duo features**.
+1. Under **Connection method**, choose an option:
+   - To minimize latency for code completion requests, select **Direct connections**.
+   - To disable direct connections for all users, select **Indirect connections through the GitLab self-managed instance**.
+1. Select **Save changes**.
+
+:::TabTitle In 17.3 and earlier
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > General**.
+1. Expand **AI-powered features**.
+1. Choose an option:
+   - To enable direct connections and minimize latency for code completion requests, clear the **Disable direct connections for code suggestions** checkbox.
+   - To disable direct connections, select the **Disable direct connections for code suggestions** checkbox.
+
+::EndTabs
 
 ## Disable Code Suggestions
 

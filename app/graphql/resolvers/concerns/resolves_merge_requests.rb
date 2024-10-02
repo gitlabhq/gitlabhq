@@ -63,6 +63,8 @@ module ResolvesMergeRequests
       diff_stats_summary: [:metrics],
       approved_by: [:approved_by_users],
       merge_after: [:merge_schedule],
+      mergeable: [:merge_schedule],
+      detailed_merge_status: [:merge_schedule],
       milestone: [:milestone],
       security_auto_fix: [:author],
       head_pipeline: [:merge_request_diff, { head_pipeline: [:merge_request] }],

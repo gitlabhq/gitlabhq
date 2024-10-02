@@ -239,7 +239,6 @@ Layout/EmptyLineAfterMagicComment:
     - 'ee/spec/lib/banzai/filter/issuable_reference_expansion_filter_spec.rb'
     - 'ee/spec/lib/banzai/issuable_extractor_spec.rb'
     - 'ee/spec/lib/ee/api/helpers/members_helpers_spec.rb'
-    - 'ee/spec/lib/ee/gitlab/background_migration/migrate_shared_vulnerability_scanners_spec.rb'
     - 'ee/spec/lib/ee/gitlab/git_access_design_spec.rb'
     - 'ee/spec/lib/ee/gitlab/git_access_snippet_spec.rb'
     - 'ee/spec/lib/ee/gitlab/hook_data/group_member_builder_spec.rb'

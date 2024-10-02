@@ -1,5 +1,5 @@
-import { GlAlert, GlModal } from '@gitlab/ui';
-import { mount } from '@vue/test-utils';
+import { GlAlert, GlModal, GlSprintf } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import CanaryUpdateModal from '~/environments/components/canary_update_modal.vue';
@@ -14,7 +14,7 @@ describe('/environments/components/canary_update_modal.vue', () => {
 
   const createComponent = () => {
     mutate = jest.fn().mockResolvedValue();
-    wrapper = mount(CanaryUpdateModal, {
+    wrapper = shallowMount(CanaryUpdateModal, {
       propsData: {
         environment: {
           name: 'staging',
@@ -26,6 +26,7 @@ describe('/environments/components/canary_update_modal.vue', () => {
       mocks: {
         $apollo: { mutate },
       },
+      stubs: { GlSprintf },
     });
     modal = wrapper.findComponent(GlModal);
   };
@@ -88,7 +89,7 @@ describe('/environments/components/canary_update_modal.vue', () => {
     mutate.mockResolvedValue({ data: { environmentsCanaryIngressUpdate: { errors: ['error'] } } });
     modal.vm.$emit('primary');
 
-    await nextTick();
+    await waitForPromises();
 
     expect(findAlert().text()).toBe('error');
   });
@@ -107,7 +108,7 @@ describe('/environments/components/canary_update_modal.vue', () => {
     mutate.mockResolvedValue({ data: { environmentsCanaryIngressUpdate: { errors: ['error'] } } });
     modal.vm.$emit('primary');
 
-    await nextTick();
+    await waitForPromises();
 
     const alert = findAlert();
     alert.vm.$emit('dismiss');

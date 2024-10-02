@@ -68,7 +68,7 @@ RSpec.describe Gitlab::SearchContext::ControllerConcern, type: :controller do
   end
 
   context 'exposing @snippet, @snippets' do
-    let(:snippet) { create(:snippet) }
+    let(:snippet) { create(:project_snippet) }
     let(:snippets) { create_list(:snippet, 3) }
 
     it_behaves_like 'has the proper context'

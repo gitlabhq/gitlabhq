@@ -1322,6 +1322,31 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       it_behaves_like 'a ci_cd_settings predicate method', prefix: 'ci_', default: true do
         let(:delegated_method) { :inbound_job_token_scope_enabled? }
       end
+
+      where(:ci_cd_settings_attrs, :instance_enabled, :expectation) do
+        nil | true | true
+        nil | false | true
+        { inbound_job_token_scope_enabled: true } | true | true
+        { inbound_job_token_scope_enabled: true } | false | true
+        { inbound_job_token_scope_enabled: false } | true | true
+        { inbound_job_token_scope_enabled: false } | false | false
+      end
+
+      with_them do
+        let_it_be(:project) { create(:project) }
+
+        before do
+          if ci_cd_settings_attrs.nil?
+            allow(project).to receive(:ci_cd_settings).and_return(nil)
+          else
+            project.ci_cd_settings.update_attribute(:inbound_job_token_scope_enabled, ci_cd_settings_attrs[:inbound_job_token_scope_enabled])
+          end
+
+          allow(::Gitlab::CurrentSettings).to receive(:enforce_ci_inbound_job_token_scope_enabled?).and_return(instance_enabled)
+        end
+
+        it { expect(project.ci_inbound_job_token_scope_enabled?).to be(expectation) }
+      end
     end
 
     describe '#restrict_user_defined_variables?' do

@@ -57,6 +57,9 @@ You can access a project by using its ID instead of its name at `https://gitlab.
 For example, if in your personal namespace `alex` you have a project `my-project` with the ID `123456`,
 you can access the project either at `https://gitlab.example.com/alex/my-project` or `https://gitlab.example.com/projects/123456`.
 
+NOTE:
+From GitLab 17.5, you can also use `https://gitlab.example.com/-/p/<id>` for this endpoint.
+
 You might also need the project ID if you want to interact with the project using the [GitLab API](../../api/index.md).
 
 To copy the project ID:

@@ -4,7 +4,7 @@ module QA
   RSpec.describe 'Create' do
     describe 'Multiple file snippet', :blocking, product_group: :source_code do
       let(:personal_snippet) do
-        create(:snippet,
+        create(:project_snippet,
           title: 'Personal snippet to delete file from',
           file_name: 'Original file name',
           file_content: 'Original file content',

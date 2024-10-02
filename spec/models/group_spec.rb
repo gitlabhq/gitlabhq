@@ -1102,16 +1102,6 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       it { is_expected.to match_array([private_group]) }
     end
 
-    describe 'with_onboarding_progress' do
-      subject { described_class.with_onboarding_progress }
-
-      it 'joins onboarding_progress' do
-        create(:onboarding_progress, namespace: group)
-
-        expect(subject).to eq([group])
-      end
-    end
-
     describe 'with_non_archived_projects' do
       let_it_be(:project) { create(:project, group: private_group, archived: false) }
 

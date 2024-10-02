@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'shared/snippets/_snippet.html.haml' do
-  let_it_be(:snippet) { create(:snippet) }
+  let_it_be(:snippet) { create(:project_snippet) }
 
   before do
     allow(view).to receive(:current_application_settings).and_return(Gitlab::CurrentSettings.current_application_settings)
@@ -13,7 +13,7 @@ RSpec.describe 'shared/snippets/_snippet.html.haml' do
   end
 
   context 'snippet with statistics' do
-    let_it_be(:snippet) { create(:snippet) }
+    let_it_be(:snippet) { create(:project_snippet) }
 
     it 'renders correct file count and tooltip' do
       snippet.statistics.file_count = 3
@@ -69,7 +69,7 @@ RSpec.describe 'shared/snippets/_snippet.html.haml' do
 
     context 'when the author of the snippet is banned' do
       let_it_be(:banned_user) { create(:user, :banned) }
-      let_it_be(:snippet) { create(:snippet, author: banned_user) }
+      let_it_be(:snippet) { create(:project_snippet, author: banned_user) }
 
       before do
         render 'shared/snippets/snippet', snippet: snippet

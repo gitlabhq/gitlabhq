@@ -1173,7 +1173,7 @@ class User < ApplicationRecord
   end
 
   def disable_two_factor_otp!
-    update(
+    update!(
       otp_required_for_login: false,
       encrypted_otp_secret: nil,
       encrypted_otp_secret_iv: nil,
@@ -1207,6 +1207,10 @@ class User < ApplicationRecord
   end
 
   def needs_new_otp_secret?
+    if Feature.enabled?(:delete_otp_no_webauthn)
+      return !two_factor_otp_enabled? && otp_secret_expired?
+    end
+
     !two_factor_enabled? && otp_secret_expired?
   end
 

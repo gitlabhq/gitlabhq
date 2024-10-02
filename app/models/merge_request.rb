@@ -1297,7 +1297,8 @@ class MergeRequest < ApplicationRecord
       skip_locked_paths_check: merge_when_checks_pass_strat,
       skip_jira_check: merge_when_checks_pass_strat,
       skip_locked_lfs_files_check: merge_when_checks_pass_strat,
-      skip_security_policy_check: merge_when_checks_pass_strat
+      skip_security_policy_check: merge_when_checks_pass_strat,
+      skip_merge_time_check: merge_when_checks_pass_strat
     }
   end
 
@@ -1325,6 +1326,7 @@ class MergeRequest < ApplicationRecord
     #
     [
       ::MergeRequests::Mergeability::CheckOpenStatusService,
+      ::MergeRequests::Mergeability::CheckMergeTimeService,
       ::MergeRequests::Mergeability::CheckDraftStatusService,
       ::MergeRequests::Mergeability::CheckCommitsStatusService,
       ::MergeRequests::Mergeability::CheckDiscussionsStatusService,

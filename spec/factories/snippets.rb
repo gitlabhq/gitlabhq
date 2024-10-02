@@ -47,7 +47,7 @@ FactoryBot.define do
   factory :project_snippet, parent: :snippet, class: :ProjectSnippet do
     project
     author { project.creator }
-    organization { project.organization }
+    organization { nil }
   end
 
   factory :personal_snippet, parent: :snippet, class: :PersonalSnippet do

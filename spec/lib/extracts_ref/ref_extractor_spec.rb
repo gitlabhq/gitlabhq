@@ -6,7 +6,7 @@ RSpec.describe ExtractsRef::RefExtractor, feature_category: :source_code_managem
   include RepoHelpers
 
   let_it_be(:owner) { create(:user) }
-  let_it_be(:container) { create(:snippet, :repository, author: owner) }
+  let_it_be(:container) { create(:project_snippet, :repository, author: owner) }
 
   let(:ref) { sample_commit[:id] }
   let(:path) { sample_commit[:line_code_path] }

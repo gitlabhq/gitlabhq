@@ -173,7 +173,7 @@ To create an application:
 
 1. To start collecting traces, restart the Django server. After refreshing `/animals` a few times, you should see traces in the GitLab UI.
 
-   ![Django traces](img/django_traces.png)
+   ![Django traces](img/django_traces_v17_3.png)
 
 1. Optional. Django will also export certain metrics by default to GitLab, but custom metrics are supported too. For example, to increment a counter metric every time a page is loaded, add the following code:
 
@@ -186,6 +186,6 @@ To create an application:
     work_counter.add(1)
    ```
 
-  ![Django metrics](img/django_metrics.png)
+  ![Django metrics](img/django_metrics_v17_3.png)
 
 <!-- vale gitlab_base.SentenceSpacing = YES -->

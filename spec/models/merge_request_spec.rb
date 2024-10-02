@@ -3945,7 +3945,8 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
           is_expected.to include(skip_approved_check: skip_checks, skip_draft_check: skip_checks,
             skip_blocked_check: skip_checks, skip_discussions_check: skip_checks,
             skip_external_status_check: skip_checks, skip_requested_changes_check: skip_checks,
-            skip_jira_check: skip_checks, skip_security_policy_check: skip_checks)
+            skip_jira_check: skip_checks, skip_security_policy_check: skip_checks,
+            skip_merge_time_check: skip_checks)
         end
       end
     end

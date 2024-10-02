@@ -741,8 +741,18 @@ module QA
         end.to_i
       end
 
+      # Execution was started by parallel runner
+      #
+      # @return [Boolean]
       def parallel_run?
         enabled?(ENV["QA_PARALLEL_RUN"], default: false)
+      end
+
+      # Execute tests in multiple parallel processes
+      #
+      # @return [Boolean]
+      def run_in_parallel?
+        enabled?(ENV["QA_RUN_IN_PARALLEL"], default: false)
       end
 
       private

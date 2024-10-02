@@ -122,25 +122,6 @@ To change this behavior and include additional file types in the default setting
 This feature can use excessive CPU. If you experience an issue, see the
 [Repository Languages: excessive CPU use](files/index.md#repository-languages-excessive-cpu-use) troubleshooting section.
 
-## Repository size
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368150) in GitLab 15.3, feature flags `gitaly_revlist_for_repo_size` and `gitaly_catfile_repo_size` for alternative repository size calculations.
-
-FLAG:
-On self-managed GitLab, by default GitLab uses the `du -sk` command to determine the size of a repository. GitLab can use either
-`git-rev-list` (enabled with feature flag `gitaly_revlist_for_repo_size`) or `git-cat-file` (enabled with feature flag
-`gitaly_catfile_repo_size`) instead. To switch between different calculation methods, an administrator can
-[enable or disable](../../../administration/feature_flags.md) these feature flags.
-
-The **Project overview** page shows the size of all files in the repository. The size is
-updated every 15 minutes. The file size includes repository files, artifacts, and LFS.
-
-The size can differ slightly from one instance to another due to compression, housekeeping, and other factors.
-Administrators can set a [repository size limit](../../../administration/settings/account_and_limit_settings.md#repository-size-limit).
-
-GitLab sets the size limits for GitLab.com.
-For more information, see [Account and limit settings](../../gitlab_com/index.md#account-and-limit-settings).
-
 ## Repository contributor analytics
 
 You can view a line chart with the number of commits to the selected project branch over time,

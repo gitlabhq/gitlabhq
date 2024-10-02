@@ -742,6 +742,10 @@ class ApplicationSetting < ApplicationRecord
 
   validates :pages, json_schema: { filename: "application_setting_pages" }
 
+  validates :enforce_ci_inbound_job_token_scope_enabled,
+    allow_nil: false,
+    inclusion: { in: [true, false], message: N_('must be a boolean value') }
+
   attr_encrypted :asset_proxy_secret_key,
     mode: :per_attribute_iv,
     key: Settings.attr_encrypted_db_key_base_truncated,

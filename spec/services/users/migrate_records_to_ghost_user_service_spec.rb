@@ -130,7 +130,7 @@ RSpec.describe Users::MigrateRecordsToGhostUserService, feature_category: :user_
 
     context 'for snippets' do
       include_examples 'migrating records to the ghost user', Snippet do
-        let(:created_record) { create(:snippet, project: project, author: user) }
+        let(:created_record) { create(:project_snippet, project: project, author: user) }
       end
     end
 

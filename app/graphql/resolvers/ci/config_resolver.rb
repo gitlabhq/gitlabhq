@@ -34,9 +34,9 @@ module Resolvers
         required: false,
         alpha: { milestone: '16.5' },
         description: "If the provided `sha` is found in the project's repository but is not " \
-                     "associated with a Git reference (a detached commit), the verification fails and a " \
-                     "validation error is returned. Otherwise, verification passes, even if the `sha` is " \
-                     "invalid. Set to `true` to skip this verification process."
+          "associated with a Git reference (a detached commit), the verification fails and a " \
+          "validation error is returned. Otherwise, verification passes, even if the `sha` is " \
+          "invalid. Set to `true` to skip this verification process."
 
       def resolve(project_path:, content:, sha: nil, dry_run: false, skip_verify_project_sha: false)
         project = authorized_find!(project_path: project_path)

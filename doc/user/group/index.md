@@ -117,6 +117,22 @@ To view the activity of a group:
    - **Designs**: Designs added, updated, and removed in the group's projects.
    - **Team**: Group members who joined and left the group's projects.
 
+### Access a group by using the group ID
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165889) in GitLab 17.5.
+
+You can access a group by using its ID instead of its name at `https://gitlab.example.com/-/g/<id>`.
+For example, if your group `example-group` has an ID `123456`, you can access the group either at
+`https://gitlab.example.com/example-group` or `https://gitlab.example.com/-/g/123456`.
+
+You might need the group ID if you want to interact with it using the [GitLab API](../../api/index.md).
+
+To copy the Group ID:
+
+1. On the left sidebar, select **Search or go to** and find your Group.
+1. On the Group overview page, in the upper-right corner, select **Actions** (**{ellipsis_v}**).
+1. Select **Copy Group ID**.
+
 ## Create a group
 
 To create a group:
@@ -441,15 +457,3 @@ To change the role that can create projects under a group:
 1. Select **Save changes**.
 
 To change this setting globally, see [Default project creation protection](../../administration/settings/visibility_and_access_controls.md#define-which-roles-can-create-projects).
-
-## Get the group ID
-
-> - Group ID [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/431539) to the Actions menu in GitLab 16.7.
-
-You might need the group ID if you want to interact with it using the [GitLab API](../../api/index.md).
-
-To copy the group ID:
-
-1. On the left sidebar, select **Search or go to** and find your group.
-1. On the group overview page, in the upper-right corner, select **Actions** (**{ellipsis_v})**.
-1. Select **Copy group ID**.

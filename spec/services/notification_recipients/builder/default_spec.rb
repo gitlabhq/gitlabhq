@@ -148,7 +148,7 @@ RSpec.describe NotificationRecipients::Builder::Default, feature_category: :team
         end
 
         context 'without a project or group' do
-          let(:target) { create(:snippet) }
+          let(:target) { create(:project_snippet) }
 
           before do
             create(:notification_setting, source: nil, user: custom_notification_user, level: :custom)

@@ -74,8 +74,8 @@ module QA
         elsif Runtime::Scenario.attributes[:test_metadata_only]
           test_metadata_only(args)
         elsif Runtime::Env.knapsack?
-          KnapsackRunner.run(args.flatten, parallel: parallel_run?) { |status| abort if status.nonzero? }
-        elsif !rspec_retried? && parallel_run?
+          KnapsackRunner.run(args.flatten, parallel: run_in_parallel?) { |status| abort if status.nonzero? }
+        elsif run_in_parallel?
           ParallelRunner.run(args.flatten)
         elsif Runtime::Scenario.attributes[:loop]
           LoopRunner.run(args.flatten)
@@ -101,6 +101,17 @@ module QA
         raise e, "Failed to detect example count, error: '#{e}'.\nOut: '#{out.string}'\nErr: #{err.string}"
       end
 
+      # Trigger tests using parallel runner
+      #
+      # @return [Boolean]
+      def run_in_parallel?
+        return @parallel if defined?(@parallel)
+
+        # Do not use parallel with retry as parallel_tests is not capable to correctly detect
+        # groups of tests when `--only-failures` parameter is used
+        @parallel = (Runtime::Scenario.attributes[:parallel] || Runtime::Env.run_in_parallel?) && !rspec_retried?
+      end
+
       def test_metadata_only(args)
         args.unshift('--dry-run')
 
@@ -120,7 +131,7 @@ module QA
 
       def configure_default_formatters!(args)
         default_formatter_file_name = "tmp/rspec-#{ENV['CI_JOB_ID'] || 'local'}-retried-#{rspec_retried?}"
-        filename = if parallel_run?
+        filename = if run_in_parallel?
                      rspec_retried? ? default_formatter_file_name : "#{default_formatter_file_name}-$TEST_ENV_NUMBER"
                    else
                      default_formatter_file_name

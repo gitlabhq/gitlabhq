@@ -6,13 +6,13 @@ RSpec.describe Search::SnippetService, feature_category: :global_search do
   let_it_be(:author) { create(:author) }
   let_it_be(:project) { create(:project, :public) }
 
-  let_it_be(:public_snippet)   { create(:snippet, :public, title: 'Foo Bar Title') }
-  let_it_be(:internal_snippet) { create(:snippet, :internal, title: 'Foo Bar Title') }
-  let_it_be(:private_snippet)  { create(:snippet, :private, title: 'Foo Bar Title', author: author) }
+  let_it_be(:public_snippet)   { create(:personal_snippet, :public, title: 'Foo Bar Title') }
+  let_it_be(:internal_snippet) { create(:personal_snippet, :internal, title: 'Foo Bar Title') }
+  let_it_be(:private_snippet)  { create(:personal_snippet, :private, title: 'Foo Bar Title', author: author) }
 
-  let_it_be(:project_public_snippet)   { create(:snippet, :public, project: project, title: 'Foo Bar Title') }
-  let_it_be(:project_internal_snippet) { create(:snippet, :internal, project: project, title: 'Foo Bar Title') }
-  let_it_be(:project_private_snippet)  { create(:snippet, :private, project: project, title: 'Foo Bar Title') }
+  let_it_be(:project_public_snippet)   { create(:project_snippet, :public, project: project, title: 'Foo Bar Title') }
+  let_it_be(:project_internal_snippet) { create(:project_snippet, :internal, project: project, title: 'Foo Bar Title') }
+  let_it_be(:project_private_snippet)  { create(:project_snippet, :private, project: project, title: 'Foo Bar Title') }
 
   let_it_be(:user) { create(:user) }
 

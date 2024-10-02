@@ -154,7 +154,7 @@ NOTE:
 The repository size limit includes repository files and LFS, but does not include artifacts, uploads,
 wiki, packages, or snippets. The repository size limit applies to both private and public projects.
 
-For details on manually purging files, see [reducing the repository size using Git](../../user/project/repository/reducing_the_repo_size_using_git.md).
+For details on manually purging files, see [reducing the repository size using Git](../../user/project/repository/repository_size.md#reduce-repository-size).
 
 ## Session duration
 
@@ -487,4 +487,4 @@ Your push has been rejected, because this repository has exceeded its size limit
 To resolve this problem, either of these options helps in the short- to middle-term:
 
 - Increase the [repository size limit](#repository-size-limit).
-- [Reduce the repository size](../../user/project/repository/reducing_the_repo_size_using_git.md).
+- [Reduce the repository size](../../user/project/repository/repository_size.md#reduce-repository-size).

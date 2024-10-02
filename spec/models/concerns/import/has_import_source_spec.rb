@@ -3,12 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe Import::HasImportSource, feature_category: :importers do
-  let_it_be(:snippet_not_imported) { create(:snippet, :repository) }
-  let_it_be(:snippet_imported) { create(:snippet, imported_from: :bitbucket) }
-  let_it_be(:merge_request_imported) { create(:snippet, imported_from: :fogbugz) }
-  let_it_be(:merge_request_imported_bb_cloud) { create(:snippet, imported_from: :bitbucket) }
-  let_it_be(:merge_request_imported_github) { create(:snippet, imported_from: :github) }
-  let_it_be(:merge_request_imported_gitea) { create(:snippet, imported_from: :gitea) }
+  let_it_be(:snippet_not_imported) { create(:project_snippet, :repository) }
+  let_it_be(:snippet_imported) { create(:project_snippet, imported_from: :bitbucket) }
+  let_it_be(:merge_request_imported) { create(:project_snippet, imported_from: :fogbugz) }
+  let_it_be(:merge_request_imported_bb_cloud) { create(:project_snippet, imported_from: :bitbucket) }
+  let_it_be(:merge_request_imported_github) { create(:project_snippet, imported_from: :github) }
+  let_it_be(:merge_request_imported_gitea) { create(:project_snippet, imported_from: :gitea) }
 
   describe '#imported?' do
     it 'returns the correct imported state' do

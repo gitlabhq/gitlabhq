@@ -40,7 +40,7 @@ Next, we'll run the application to ensure that it works.
 1. After cloning the project from GitLab, open it in IntelliJ (or your preferred IDE).
 1. Open `src/main/java/com.example.demo/DemoApplication` and run the application:
 
-   ![Run application screenshot](img/java_start_application.png)
+   ![Run application screenshot](img/java_start_application_v17_3.png)
 
 1. After initialization, the application should be available at `http://localhost:8000`. Test it out, then in the IDE select the **Stop** button.
 
@@ -81,7 +81,7 @@ Use auto-instrumentation to instrument the application:
 
 1. Update dependencies by selecting **Update Maven Changes**:
 
-   ![Maven changes update UI](img/maven_changes.png)
+   ![Maven changes update UI](img/maven_changes_v17_3.png)
 
 1. Download the OpenTelemetry java agent file from the OpenTelemetry repository.
 
@@ -95,11 +95,11 @@ The OpenTelemetry autoconfigure libraries read their configuration from environm
 
 1. From the top-right menu, select **Edit Configurations...**:
 
-   ![Edit configuration](img/java_edit_configuration.png)
+   ![Edit configuration](img/java_edit_configuration_v17_3.png)
 
 1. In the configuration menu, select the icon in the **Environment Variables** field.
 
-   ![Configuration menu](img/java_configuration_menu.png)
+   ![Configuration menu](img/java_configuration_menu_v17_3.png)
 
 1. Add the following set of environment variables, replacing `{{PATH_TO_JAVA_AGENT}}`, `{{PROJECT_ID}}`, `{{PROJECT_ACCESS_TOKEN}}` and `{{SERVICE_NAME}}` with the correct values. If using a self-managed GitLab instance, replace `gitlab.com` with your self-managed instance hostname.
    - `JAVA_TOOL_OPTIONS=-javaagent:{{PATH_TO_JAVA_AGENT}}/opentelemetry-javaagent.jar`

@@ -1009,7 +1009,7 @@ When a secret is detected, you should rotate it immediately. GitLab attempts to
 [automatically revoke](../automatic_response.md) some types of leaked secrets. For those that are not
 automatically revoked, you must do so manually.
 
-[Purging a secret from the repository's history](../../../project/repository/reducing_the_repo_size_using_git.md#purge-files-from-repository-history)
+[Purging a secret from the repository's history](../../../project/repository/repository_size.md#purge-files-from-repository-history)
 does not fully address the leak. The original secret remains in any existing forks or
 clones of the repository.
 

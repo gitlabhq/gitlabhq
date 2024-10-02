@@ -909,6 +909,7 @@ Use `detailed_merge_status` instead of `merge_status` to account for all potenti
     [Require associated Jira issue for merge requests to be merged](../integration/jira/issues.md#require-associated-jira-issue-for-merge-requests-to-be-merged).
   - `mergeable`: The branch can merge cleanly into the target branch.
   - `merge_request_blocked`: Blocked by another merge request.
+  - `merge_time`: May not be merged until after the specified time.
   - `need_rebase`: The merge request must be rebased.
   - `not_approved`: Approval is required before merge.
   - `not_open`: The merge request must be open before merge.
@@ -1384,6 +1385,158 @@ Returns:
 - `204 No Content` if the dependency is successfully deleted.
 - `403 Forbidden` if the user lacks permissions for updating the merge request.
 - `403 Forbidden` if the user lacks permissions for reading the blocking merge request.
+
+## Create a merge request dependency
+
+Create a merge request dependency.
+
+```plaintext
+POST /projects/:id/merge_requests/:merge_request_iid/blocks
+```
+
+Supported attributes:
+
+| Attribute           | Type           | Required | Description |
+|---------------------|----------------|----------|-------------|
+| `id`                | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) owned by the authenticated user. |
+| `merge_request_iid` | integer        | Yes      | The internal ID of the merge request. |
+| `blocking_merge_request_id`          | integer        | Yes      | The internal ID of the blocking merge request. |
+
+Example request:
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/merge_requests/1/blocks?blocking_merge_request_id=2"
+```
+
+Returns:
+
+- `201 Created` if the dependency is successfully created.
+- `400 Bad request` if the blocking merge request fails to save.
+- `403 Forbidden` if the user lacks permissions for reading the blocking merge request.
+- `404 Not found` if the blocking merge request is not found.
+- `409 Conflict` if the block already exists.
+
+Example response:
+
+```json
+[
+  {
+    "id": 1,
+    "blocking_merge_request": {
+      "id": 145,
+      "iid": 12,
+      "project_id": 7,
+      "title": "Interesting MR",
+      "description": "Does interesting things.",
+      "state": "opened",
+      "created_at": "2024-07-05T21:29:11.172Z",
+      "updated_at": "2024-07-05T21:29:11.172Z",
+      "merged_by": null,
+      "merge_user": null,
+      "merged_at": null,
+      "merge_after": "2018-09-07T11:16:00.000Z",
+      "closed_by": null,
+      "closed_at": null,
+      "target_branch": "master",
+      "source_branch": "v2.x",
+      "user_notes_count": 0,
+      "upvotes": 0,
+      "downvotes": 0,
+      "author": {
+        "id": 2,
+        "username": "aiguy123",
+        "name": "AI GUY",
+        "state": "active",
+        "locked": false,
+        "avatar_url": "https://www.gravatar.com/avatar/0?s=80&d=identicon",
+        "web_url": "https://localhost/aiguy123"
+      },
+      "assignees": [
+        {
+          "id": 2,
+          "username": "aiguy123",
+          "name": "AI GUY",
+          "state": "active",
+          "locked": false,
+          "avatar_url": "https://www.gravatar.com/avatar/0?s=80&d=identicon",
+          "web_url": "https://localhost/aiguy123"
+        }
+      ],
+      "assignee": {
+        "id": 2,
+        "username": "aiguy123",
+        "name": "AI GUY",
+        "state": "active",
+        "locked": false,
+        "avatar_url": "https://www.gravatar.com/avatar/0?s=80&d=identicon",
+        "web_url": "https://localhost/aiguy123"
+      },
+      "reviewers": [
+        {
+          "id": 2,
+          "username": "aiguy123",
+          "name": "AI GUY",
+          "state": "active",
+          "locked": false,
+          "avatar_url": "https://www.gravatar.com/avatar/0?s=80&d=identicon",
+          "web_url": "https://localhost/aiguy123"
+        },
+        {
+          "id": 1,
+          "username": "root",
+          "name": "Administrator",
+          "state": "active",
+          "locked": false,
+          "avatar_url": "https://www.gravatar.com/avatar/0?s=80&d=identicon",
+          "web_url": "https://localhost/root"
+        }
+      ],
+      "source_project_id": 7,
+      "target_project_id": 7,
+      "labels": [],
+      "draft": false,
+      "imported": false,
+      "imported_from": "none",
+      "work_in_progress": false,
+      "milestone": null,
+      "merge_when_pipeline_succeeds": false,
+      "merge_status": "unchecked",
+      "detailed_merge_status": "unchecked",
+      "sha": "ce7e4f2d0ce13cb07479bb39dc10ee3b861c08a6",
+      "merge_commit_sha": null,
+      "squash_commit_sha": null,
+      "discussion_locked": null,
+      "should_remove_source_branch": null,
+      "force_remove_source_branch": true,
+      "prepared_at": null,
+      "reference": "!12",
+      "references": {
+        "short": "!12",
+        "relative": "!12",
+        "full": "my-group/my-project!12"
+      },
+      "web_url": "https://localhost/my-group/my-project/-/merge_requests/12",
+      "time_stats": {
+        "time_estimate": 0,
+        "total_time_spent": 0,
+        "human_time_estimate": null,
+        "human_total_time_spent": null
+      },
+      "squash": false,
+      "squash_on_merge": false,
+      "task_completion_status": {
+        "count": 0,
+        "completed_count": 0
+      },
+      "has_conflicts": false,
+      "blocking_discussions_resolved": true,
+      "approvals_before_merge": null
+    },
+    "project_id": 7
+  }
+]
+```
 
 ## Get single merge request changes
 

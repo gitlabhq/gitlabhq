@@ -3165,6 +3165,8 @@ class Project < ApplicationRecord
   def ci_inbound_job_token_scope_enabled?
     return true unless ci_cd_settings
 
+    return true if ::Gitlab::CurrentSettings.enforce_ci_inbound_job_token_scope_enabled?
+
     ci_cd_settings.inbound_job_token_scope_enabled?
   end
 

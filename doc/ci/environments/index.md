@@ -895,7 +895,7 @@ Also, you can still fetch the deployed commit from the repository
 with specifying the commit SHA (for example, `git checkout <deployment-sha>`), even after archive.
 
 NOTE:
-GitLab preserves all commits as [`keep-around` refs](../../user/project/repository/reducing_the_repo_size_using_git.md)
+GitLab preserves all commits as [`keep-around` refs](../../user/project/repository/repository_size.md#reduce-repository-size)
 so that deployed commits are not garbage collected, even if it's not referenced by the deployment refs.
 
 ### Limit the environment scope of a CI/CD variable

@@ -1842,6 +1842,7 @@
         KNAPSACK_GENERATE_REPORT: "true"
         PROCESS_TEST_RESULTS: "true"
         QA_SAVE_TEST_METRICS: "true"
+        QA_RUN_IN_PARALLEL: "false" # disable single job parallelization due to incompatibility with knapsack and coverband
       allow_failure: true
     # - <<: *if-merge-request-targeting-stable-branch
     #   when: never

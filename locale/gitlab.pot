@@ -3857,6 +3857,9 @@ msgstr ""
 msgid "AdminProjects|Delete Project %{projectName}?"
 msgstr ""
 
+msgid "AdminSelfHostedModels|A unique and descriptive name for your deployment."
+msgstr ""
+
 msgid "AdminSelfHostedModels|API Key (optional)"
 msgstr ""
 
@@ -3926,10 +3929,25 @@ msgstr ""
 msgid "AdminSelfHostedModels|Get started with Self‑hosted models"
 msgstr ""
 
+msgid "AdminSelfHostedModels|If necessary, provide the model identifier in the form of provider/model-name"
+msgstr ""
+
+msgid "AdminSelfHostedModels|If required, provide the API token that grants access to your self-hosted model deployment."
+msgstr ""
+
 msgid "AdminSelfHostedModels|Manage AI models that can be used for GitLab AI features."
 msgstr ""
 
 msgid "AdminSelfHostedModels|Model"
+msgstr ""
+
+msgid "AdminSelfHostedModels|Model family"
+msgstr ""
+
+msgid "AdminSelfHostedModels|Model identifier (optional)"
+msgstr ""
+
+msgid "AdminSelfHostedModels|Model identifier must be less than 255 characters."
 msgstr ""
 
 msgid "AdminSelfHostedModels|Model uses an API token"
@@ -3959,6 +3977,9 @@ msgstr ""
 msgid "AdminSelfHostedModels|Please select a model."
 msgstr ""
 
+msgid "AdminSelfHostedModels|Select an appropriate model family from the list of approved GitLab models."
+msgstr ""
+
 msgid "AdminSelfHostedModels|Select model"
 msgstr ""
 
@@ -3966,6 +3987,9 @@ msgid "AdminSelfHostedModels|Self-hosted models"
 msgstr ""
 
 msgid "AdminSelfHostedModels|Self-hosted models are an experimental feature."
+msgstr ""
+
+msgid "AdminSelfHostedModels|Specify the URL endpoint where your self-hosted model is accessible"
 msgstr ""
 
 msgid "AdminSelfHostedModels|Successfully updated %{mainFeature} / %{title}"
@@ -9099,6 +9123,9 @@ msgstr ""
 msgid "Block"
 msgstr ""
 
+msgid "Block already exists"
+msgstr ""
+
 msgid "Block secrets such as keys and API tokens from being pushed to your repositories. Secret push protection is triggered when commits are pushed to a repository. If any secrets are detected, the push is blocked."
 msgstr ""
 
@@ -9126,6 +9153,9 @@ msgid "Blocking epics"
 msgstr ""
 
 msgid "Blocking issues"
+msgstr ""
+
+msgid "Blocking merge request not found"
 msgstr ""
 
 msgid "Blocks"
@@ -18143,6 +18173,9 @@ msgstr ""
 msgid "Delete offline nodes automatically after %{label}"
 msgstr ""
 
+msgid "Delete one-time password authenticator"
+msgstr ""
+
 msgid "Delete pipeline"
 msgstr ""
 
@@ -26545,9 +26578,6 @@ msgstr ""
 msgid "GroupSettings|Emails are not encrypted. Concerned administrators may want to disable diff previews."
 msgstr ""
 
-msgid "GroupSettings|Enable GitLab Duo features for this group. %{link_start}Learn more%{link_end}."
-msgstr ""
-
 msgid "GroupSettings|Enable caching of hierarchical objects (subgroups and projects) to improve the performance of group-level features within a large group."
 msgstr ""
 
@@ -26681,9 +26711,6 @@ msgid "GroupSettings|This setting is applied on %{ancestor_group}. You can overr
 msgstr ""
 
 msgid "GroupSettings|Transfer group"
-msgstr ""
-
-msgid "GroupSettings|Use GitLab Duo features"
 msgstr ""
 
 msgid "GroupSettings|Users can create %{link_start_project}project access tokens%{link_end} and %{link_start_group}group access tokens%{link_end} in this group"
@@ -31680,6 +31707,12 @@ msgstr ""
 msgid "Label|Assignee"
 msgstr ""
 
+msgid "Lacking permissions to the blocking merge request"
+msgstr ""
+
+msgid "Lacking permissions to update the merge request"
+msgstr ""
+
 msgid "Language"
 msgstr ""
 
@@ -35024,6 +35057,9 @@ msgstr ""
 msgid "Model experiments"
 msgstr ""
 
+msgid "Model identifier"
+msgstr ""
+
 msgid "Model registry"
 msgstr ""
 
@@ -37914,6 +37950,9 @@ msgid "One or more of your personal access tokens have expired."
 msgstr ""
 
 msgid "One or more of your personal access tokens will expire in %{days_to_expire} days or less:"
+msgstr ""
+
+msgid "One-time password authenticator has been deleted!"
 msgstr ""
 
 msgid "Online license"
@@ -49168,9 +49207,6 @@ msgstr ""
 msgid "SecurityOrchestration|%{frameworkName} has %{projectLength} %{projects}"
 msgstr ""
 
-msgid "SecurityOrchestration|%{licenses} and %{lastLicense}"
-msgstr ""
-
 msgid "SecurityOrchestration|%{scanners}"
 msgstr ""
 
@@ -50312,6 +50348,9 @@ msgstr ""
 msgid "SecurityReports|Failed updating vulnerabilities with the following IDs: %{ids}"
 msgstr ""
 
+msgid "SecurityReports|GitLab Duo (AI)"
+msgstr ""
+
 msgid "SecurityReports|Group your vulnerabilities by one of the provided categories. Leave feedback or suggestions in %{feedbackIssueStart}this issue%{feedbackIssueEnd}."
 msgstr ""
 
@@ -50552,6 +50591,12 @@ msgid "SecurityReports|Unable to add %{invalidProjectsMessage}: %{errorMessage}"
 msgstr ""
 
 msgid "SecurityReports|Undo dismiss"
+msgstr ""
+
+msgid "SecurityReports|Vulnerability Resolution available"
+msgstr ""
+
+msgid "SecurityReports|Vulnerability Resolution unavailable"
 msgstr ""
 
 msgid "SecurityReports|Vulnerability report"
@@ -56353,6 +56398,9 @@ msgid "This user"
 msgstr ""
 
 msgid "This user cannot be unlocked manually from GitLab"
+msgstr ""
+
+msgid "This user does not have a one-time password authenticator registered."
 msgstr ""
 
 msgid "This user has an unconfirmed email address (%{email}). You may force a confirmation."
@@ -63563,7 +63611,10 @@ msgstr ""
 msgid "You're viewing members of %{strong_start}%{group_name}%{strong_end}."
 msgstr ""
 
-msgid "You've already enabled two-factor authentication using one time password authenticators. In order to register a different device, you must first disable two-factor authentication."
+msgid "You've already enabled two-factor authentication using a one-time password authenticator. In order to register a different device, you must first delete this authenticator."
+msgstr ""
+
+msgid "You've already enabled two-factor authentication using a one-time password authenticator. In order to register a different device, you must first disable two-factor authentication."
 msgstr ""
 
 msgid "You've reached your limit of %{limit} projects created. Contact your GitLab administrator."

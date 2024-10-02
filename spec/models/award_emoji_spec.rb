@@ -96,7 +96,7 @@ RSpec.describe AwardEmoji, feature_category: :team_planning do
       end
 
       context 'with snippet' do
-        let(:awardable) { create(:snippet, project: project) }
+        let(:awardable) { create(:project_snippet, project: project) }
 
         include_examples 'awardable'
       end

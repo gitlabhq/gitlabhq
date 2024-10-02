@@ -1,5 +1,5 @@
 <script>
-import emptyEntironmentsSvgPath from '@gitlab/svgs/dist/illustrations/empty-state/empty-environment-md.svg';
+import emptyEnvironmentsSvgPath from '@gitlab/svgs/dist/illustrations/empty-state/empty-environment-md.svg';
 import { GlButton, GlEmptyState, GlLink, GlSprintf } from '@gitlab/ui';
 import { s__ } from '~/locale';
 
@@ -40,14 +40,14 @@ export default {
     newEnvironmentButtonLabel: s__('Environments|Create an environment'),
     enablingReviewButtonLabel: s__('Environments|Enable review apps'),
   },
-  emptyEntironmentsSvgPath,
+  emptyEnvironmentsSvgPath,
 };
 </script>
 <template>
   <gl-empty-state
     class="gl-mx-auto gl-max-w-limited"
     :title="title"
-    :svg-path="$options.emptyEntironmentsSvgPath"
+    :svg-path="$options.emptyEnvironmentsSvgPath"
   >
     <template #description>
       <gl-sprintf :message="content">
@@ -57,10 +57,19 @@ export default {
       </gl-sprintf>
     </template>
     <template v-if="!hasTerm" #actions>
-      <gl-button class="gl-mx-2 gl-mb-3" :href="newEnvironmentPath" variant="confirm">
+      <gl-button
+        class="gl-mx-2 gl-mb-3"
+        :href="newEnvironmentPath"
+        variant="confirm"
+        data-testid="new-environment-button"
+      >
         {{ $options.i18n.newEnvironmentButtonLabel }}
       </gl-button>
-      <gl-button class="gl-mx-2 gl-mb-3" @click="$emit('enable-review')">
+      <gl-button
+        class="gl-mx-2 gl-mb-3"
+        data-testid="enable-review-button"
+        @click="$emit('enable-review')"
+      >
         {{ $options.i18n.enablingReviewButtonLabel }}
       </gl-button>
     </template>

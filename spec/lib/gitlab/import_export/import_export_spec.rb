@@ -23,7 +23,7 @@ RSpec.describe Gitlab::ImportExport do
   end
 
   describe '#snippet_repo_bundle_filename_for' do
-    let(:snippet) { build(:snippet, id: 1) }
+    let(:snippet) { build(:personal_snippet, id: 1) }
 
     it 'generates the snippet bundle name' do
       expect(described_class.snippet_repo_bundle_filename_for(snippet)).to eq "#{snippet.hexdigest}.bundle"

@@ -7,7 +7,7 @@ RSpec.describe Gitlab::DataBuilder::Emoji, feature_category: :team_planning do
   let_it_be(:user) { create(:user) }
   let_it_be(:issue) { create(:issue, project: project) }
   let_it_be(:merge_request) { create(:merge_request, source_project: project) }
-  let_it_be(:snippet) { create(:snippet, project: project) }
+  let_it_be(:snippet) { create(:project_snippet, project: project) }
   let(:action) { 'award' }
   let(:data) { described_class.build(award_emoji, user, action) }
   let(:award_emoji) { create(:award_emoji, awardable: awardable) }
@@ -52,7 +52,7 @@ RSpec.describe Gitlab::DataBuilder::Emoji, feature_category: :team_planning do
 
     it 'returns the snippet data' do
       expect(awardable).to receive(:hook_attrs)
-      expect(data).to have_key(:snippet)
+      expect(data).to have_key(:project_snippet)
     end
   end
 
@@ -92,7 +92,7 @@ RSpec.describe Gitlab::DataBuilder::Emoji, feature_category: :team_planning do
       it 'returns the note and snippet data' do
         expect(note.noteable).to receive(:hook_attrs)
         expect(data).to have_key(:note)
-        expect(data).to have_key(:snippet)
+        expect(data).to have_key(:project_snippet)
       end
     end
 

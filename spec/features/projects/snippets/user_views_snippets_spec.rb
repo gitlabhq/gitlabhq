@@ -13,7 +13,7 @@ RSpec.describe 'Projects > Snippets > User views snippets', feature_category: :s
 
   context 'snippets list' do
     let!(:project_snippet) { create(:project_snippet, project: project, author: user) }
-    let!(:snippet) { create(:snippet, author: user) }
+    let!(:snippet) { create(:project_snippet, author: user) }
     let(:snippets) { [project_snippet, snippet] } # Used by the shared examples
 
     before do

@@ -209,7 +209,7 @@ RSpec.describe Note, feature_category: :team_planning do
         end
 
         context 'when noteable is not allowed to have confidential notes' do
-          let_it_be(:noteable) { create(:snippet) }
+          let_it_be(:noteable) { create(:project_snippet) }
 
           it 'can not be set confidential' do
             expect(subject).not_to be_valid

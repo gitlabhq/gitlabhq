@@ -17,7 +17,7 @@ RSpec.describe SearchService, feature_category: :global_search do
 
   let_it_be(:inaccessible_project) { create(:project, :repository, :private, name: 'inaccessible_project') }
 
-  let_it_be(:snippet) { create(:snippet, author: user) }
+  let_it_be(:snippet) { create(:personal_snippet, author: user) }
   let_it_be(:group_project) { create(:project, group: accessible_group, name: 'group_project') }
   let_it_be(:public_project) { create(:project, :public, name: 'public_project') }
 

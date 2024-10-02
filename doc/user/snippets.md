@@ -266,7 +266,7 @@ Because versioned snippets are considered as part of the [namespace storage size
 it's recommended to keep snippets' repositories as compact as possible.
 
 For more information about tools to compact repositories,
-see the documentation on [reducing repository size](../user/project/repository/reducing_the_repo_size_using_git.md).
+see the documentation on [reducing repository size](../user/project/repository/repository_size.md#reduce-repository-size).
 
 ### Cannot enter text into the snippet text box
 

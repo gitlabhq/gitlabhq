@@ -161,7 +161,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
         another_user = create(:user)
         another_project = create(:project, :repository, creator: another_user)
         create(:remote_mirror, project: another_project, enabled: false)
-        create(:snippet, author: user)
+        create(:personal_snippet, author: user)
       end
 
       expect(described_class.usage_activity_by_stage_create({})).to include(

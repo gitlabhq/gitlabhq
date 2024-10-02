@@ -181,8 +181,6 @@ class Group < Namespace
 
   scope :with_users, -> { includes(:users) }
 
-  scope :with_onboarding_progress, -> { joins(:onboarding_progress) }
-
   scope :with_non_archived_projects, -> { includes(:non_archived_projects) }
 
   scope :with_non_invite_group_members, -> { includes(:non_invite_group_members) }

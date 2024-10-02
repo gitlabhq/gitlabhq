@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require "parallel_tests"
 require "etc"
 
 module QA
@@ -25,6 +24,8 @@ module QA
           end
 
           args.push("--", *rspec_args) unless rspec_args.empty?
+
+          Runtime::Logger.debug("Using parallel runner to trigger tests with arguments: '#{args}'")
 
           set_environment!
           perform_global_setup!

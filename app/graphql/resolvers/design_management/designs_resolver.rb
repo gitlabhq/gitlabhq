@@ -11,7 +11,7 @@ module Resolvers
       argument :at_version, VersionID,
         required: false,
         description: 'Filters designs to only those that existed at the version. ' \
-                     'If argument is omitted or nil then all designs will reflect the latest version'
+          'If argument is omitted or nil then all designs will reflect the latest version'
       argument :filenames, [GraphQL::Types::String],
         required: false,
         description: 'Filters designs by their filename.'

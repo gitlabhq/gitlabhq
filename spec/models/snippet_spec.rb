@@ -151,7 +151,7 @@ RSpec.describe Snippet, feature_category: :source_code_management do
 
   describe 'callbacks' do
     it 'creates snippet statistics when the snippet is created' do
-      snippet = build(:snippet)
+      snippet = build(:personal_snippet)
       expect(snippet.statistics).to be_nil
 
       snippet.save!
@@ -163,7 +163,7 @@ RSpec.describe Snippet, feature_category: :source_code_management do
   describe '#to_reference' do
     context 'when snippet belongs to a project' do
       let(:project) { build(:project) }
-      let(:snippet) { build(:snippet, id: 1, project: project) }
+      let(:snippet) { build(:project_snippet, id: 1, project: project) }
 
       it 'returns a String reference to the object' do
         expect(snippet.to_reference).to eq "$1"
@@ -176,7 +176,7 @@ RSpec.describe Snippet, feature_category: :source_code_management do
     end
 
     context 'when snippet does not belong to a project' do
-      let(:snippet) { build(:snippet, id: 1, project: nil) }
+      let(:snippet) { build(:personal_snippet, id: 1, project: nil) }
 
       it 'returns a String reference to the object' do
         expect(snippet.to_reference).to eq "$1"
@@ -190,7 +190,7 @@ RSpec.describe Snippet, feature_category: :source_code_management do
   end
 
   describe '#file_name' do
-    let(:snippet) { build(:snippet, file_name: file_name) }
+    let(:snippet) { build(:personal_snippet, file_name: file_name) }
 
     context 'file_name is nil' do
       let(:file_name) { nil }
@@ -210,7 +210,7 @@ RSpec.describe Snippet, feature_category: :source_code_management do
   end
 
   describe "#content_html_invalidated?" do
-    let(:snippet) { create(:snippet, content: "md", content_html: "html", file_name: "foo.md") }
+    let(:snippet) { create(:project_snippet, content: "md", content_html: "html", file_name: "foo.md") }
 
     it "invalidates the HTML cache of content when the filename changes" do
       expect { snippet.file_name = "foo.rb" }.to change { snippet.content_html_invalidated? }.from(false).to(true)
@@ -218,7 +218,7 @@ RSpec.describe Snippet, feature_category: :source_code_management do
   end
 
   describe '.search' do
-    let_it_be(:snippet) { create(:snippet, title: 'test snippet', description: 'description') }
+    let_it_be(:snippet) { create(:project_snippet, title: 'test snippet', description: 'description') }
 
     it 'returns snippets with a matching title' do
       expect(described_class.search(snippet.title)).to eq([snippet])
@@ -276,8 +276,8 @@ RSpec.describe Snippet, feature_category: :source_code_management do
   end
 
   describe '.with_optional_visibility' do
-    let_it_be(:public_snippet) { create(:snippet, :public) }
-    let_it_be(:private_snippet) { create(:snippet, :private) }
+    let_it_be(:public_snippet) { create(:project_snippet, :public) }
+    let_it_be(:private_snippet) { create(:project_snippet, :private) }
 
     context 'when a visibility level is provided' do
       it 'returns snippets with the given visibility' do
@@ -301,7 +301,7 @@ RSpec.describe Snippet, feature_category: :source_code_management do
     it 'returns snippets not associated with any projects' do
       create(:project_snippet)
 
-      snippet = create(:snippet)
+      snippet = create(:personal_snippet)
       snippets = described_class.only_personal_snippets
 
       expect(snippets).to eq([snippet])
@@ -448,9 +448,9 @@ RSpec.describe Snippet, feature_category: :source_code_management do
   describe '.visible_to_or_authored_by' do
     it 'returns snippets visible to the user' do
       user = create(:user)
-      snippet1 = create(:snippet, :public)
-      snippet2 = create(:snippet, :private, author: user)
-      snippet3 = create(:snippet, :private)
+      snippet1 = create(:project_snippet, :public)
+      snippet2 = create(:project_snippet, :private, author: user)
+      snippet3 = create(:project_snippet, :private)
 
       snippets = described_class.visible_to_or_authored_by(user)
 
@@ -460,7 +460,7 @@ RSpec.describe Snippet, feature_category: :source_code_management do
   end
 
   describe '.find_by_project_title_trunc_created_at' do
-    let_it_be(:snippet) { create(:snippet) }
+    let_it_be(:snippet) { create(:project_snippet) }
     let_it_be(:created_at_without_ms) { snippet.created_at.change(usec: 0) }
 
     it 'returns a record if arguments match' do
@@ -508,8 +508,8 @@ RSpec.describe Snippet, feature_category: :source_code_management do
     let_it_be(:user) { create(:user) }
     let_it_be(:banned_user) { create(:user, :banned) }
 
-    let_it_be(:snippet) { create(:snippet, author: user) }
-    let_it_be(:snippet_by_banned_user) { create(:snippet, author: banned_user) }
+    let_it_be(:snippet) { create(:project_snippet, author: user) }
+    let_it_be(:snippet_by_banned_user) { create(:project_snippet, author: banned_user) }
 
     subject(:without_created_by_banned_user) { described_class.without_created_by_banned_user }
 
@@ -520,14 +520,14 @@ RSpec.describe Snippet, feature_category: :source_code_management do
     context 'on organization_id' do
       it_behaves_like 'cleanup by a loose foreign key' do
         let_it_be(:parent) { create(:organization) }
-        let_it_be(:model) { create(:snippet, organization: parent) }
+        let_it_be(:model) { create(:project_snippet, organization: parent) }
       end
     end
   end
 
   describe '#participants' do
     let_it_be(:project) { create(:project, :public) }
-    let_it_be(:snippet) { create(:snippet, content: 'foo', project: project) }
+    let_it_be(:snippet) { create(:project_snippet, content: 'foo', project: project) }
 
     let_it_be(:note1) do
       create(
@@ -553,7 +553,7 @@ RSpec.describe Snippet, feature_category: :source_code_management do
   end
 
   describe '#check_for_spam' do
-    let(:snippet) { create(:snippet, visibility_level: visibility_level) }
+    let(:snippet) { create(:project_snippet, visibility_level: visibility_level) }
 
     subject do
       snippet.assign_attributes(title: title)
@@ -596,7 +596,7 @@ RSpec.describe Snippet, feature_category: :source_code_management do
   end
 
   describe '#blob' do
-    let(:snippet) { build(:snippet) }
+    let(:snippet) { build(:personal_snippet) }
 
     it 'returns a blob representing the snippet data' do
       blob = snippet.blob
@@ -608,7 +608,7 @@ RSpec.describe Snippet, feature_category: :source_code_management do
   end
 
   describe '#all_files' do
-    let(:snippet) { create(:snippet, :repository) }
+    let(:snippet) { create(:project_snippet, :repository) }
     let(:files) { double(:files) }
 
     subject(:all_files) { snippet.all_files }
@@ -624,7 +624,7 @@ RSpec.describe Snippet, feature_category: :source_code_management do
 
   describe '#blobs' do
     context 'when repository does not exist' do
-      let(:snippet) { create(:snippet) }
+      let(:snippet) { create(:project_snippet) }
 
       it 'returns empty array' do
         expect(snippet.blobs).to be_empty
@@ -632,7 +632,7 @@ RSpec.describe Snippet, feature_category: :source_code_management do
     end
 
     context 'when repository exists' do
-      let(:snippet) { create(:snippet, :repository) }
+      let(:snippet) { create(:project_snippet, :repository) }
 
       it 'returns array of blobs' do
         expect(snippet.blobs).to all(be_a(Blob))
@@ -650,7 +650,7 @@ RSpec.describe Snippet, feature_category: :source_code_management do
     end
 
     context 'when some blobs are not retrievable from repository' do
-      let(:snippet) { create(:snippet, :repository) }
+      let(:snippet) { create(:project_snippet, :repository) }
       let(:container) { double(:container) }
       let(:retrievable_filename) { 'retrievable_file' }
       let(:unretrievable_filename) { 'unretrievable_file' }
@@ -668,7 +668,7 @@ RSpec.describe Snippet, feature_category: :source_code_management do
   end
 
   describe '#to_json' do
-    let(:snippet) { build(:snippet) }
+    let(:snippet) { build(:personal_snippet) }
 
     it 'excludes secret_token from generated json' do
       expect(Gitlab::Json.parse(to_json).keys).not_to include("secret_token")
@@ -684,7 +684,7 @@ RSpec.describe Snippet, feature_category: :source_code_management do
   end
 
   describe '#storage' do
-    let(:snippet) { build(:snippet, id: 1) }
+    let(:snippet) { build(:personal_snippet, id: 1) }
 
     it "stores snippet in #{Storage::Hashed::SNIPPET_REPOSITORY_PATH_PREFIX} dir" do
       expect(snippet.storage.disk_path).to start_with Storage::Hashed::SNIPPET_REPOSITORY_PATH_PREFIX
@@ -692,7 +692,7 @@ RSpec.describe Snippet, feature_category: :source_code_management do
   end
 
   describe '#track_snippet_repository' do
-    let(:snippet) { create(:snippet) }
+    let(:snippet) { create(:project_snippet) }
     let(:shard_name) { 'foo' }
 
     subject { snippet.track_snippet_repository(shard_name) }
@@ -713,7 +713,7 @@ RSpec.describe Snippet, feature_category: :source_code_management do
     end
 
     context 'when a tracking entry exists' do
-      let!(:snippet) { create(:snippet, :repository) }
+      let!(:snippet) { create(:project_snippet, :repository) }
       let(:snippet_repository) { snippet.snippet_repository }
       let(:shard_name) { 'bar' }
 
@@ -735,7 +735,7 @@ RSpec.describe Snippet, feature_category: :source_code_management do
   end
 
   describe '#create_repository' do
-    let(:snippet) { create(:snippet) }
+    let(:snippet) { create(:project_snippet) }
 
     subject { snippet.create_repository }
 
@@ -774,7 +774,7 @@ RSpec.describe Snippet, feature_category: :source_code_management do
     end
 
     context 'when repository exists' do
-      let!(:snippet) { create(:snippet, :repository) }
+      let!(:snippet) { create(:project_snippet, :repository) }
 
       it 'does not try to create repository' do
         expect(snippet.repository).not_to receive(:after_create)
@@ -804,7 +804,7 @@ RSpec.describe Snippet, feature_category: :source_code_management do
   end
 
   describe '#repository_storage' do
-    let(:snippet) { create(:snippet) }
+    let(:snippet) { create(:personal_snippet) }
 
     subject { snippet.repository_storage }
 
@@ -875,7 +875,7 @@ RSpec.describe Snippet, feature_category: :source_code_management do
   describe '#can_cache_field?' do
     using RSpec::Parameterized::TableSyntax
 
-    let(:snippet) { create(:snippet, file_name: file_name) }
+    let(:snippet) { create(:project_snippet, file_name: file_name) }
 
     subject { snippet.can_cache_field?(field) }
 
@@ -919,7 +919,7 @@ RSpec.describe Snippet, feature_category: :source_code_management do
   end
 
   describe '#list_files' do
-    let_it_be(:snippet) { create(:snippet, :repository) }
+    let_it_be(:snippet) { create(:project_snippet, :repository) }
 
     let(:ref) { 'test-ref' }
 
@@ -958,26 +958,26 @@ RSpec.describe Snippet, feature_category: :source_code_management do
     subject { snippet.multiple_files? }
 
     context 'when snippet has multiple files' do
-      let(:snippet) { create(:snippet, :repository) }
+      let(:snippet) { create(:project_snippet, :repository) }
 
       it { is_expected.to be_truthy }
     end
 
     context 'when snippet does not have multiple files' do
-      let(:snippet) { create(:snippet, :empty_repo) }
+      let(:snippet) { create(:project_snippet, :empty_repo) }
 
       it { is_expected.to be_falsey }
     end
 
     context 'when the snippet does not have a repository' do
-      let(:snippet) { build(:snippet) }
+      let(:snippet) { build(:personal_snippet) }
 
       it { is_expected.to be_falsey }
     end
   end
 
   describe '#git_transfer_in_progress?' do
-    let(:snippet) { build(:snippet) }
+    let(:snippet) { build(:personal_snippet) }
 
     subject { snippet.git_transfer_in_progress? }
 
@@ -999,11 +999,11 @@ RSpec.describe Snippet, feature_category: :source_code_management do
   end
 
   it_behaves_like 'can move repository storage' do
-    let_it_be(:container) { create(:snippet, :repository) }
+    let_it_be(:container) { create(:project_snippet, :repository) }
   end
 
   describe '#hidden_due_to_author_ban?', feature_category: :insider_threat do
-    let(:snippet) { build(:snippet, author: author) }
+    let(:snippet) { build(:personal_snippet, author: author) }
 
     subject(:hidden_due_to_author_ban) { snippet.hidden_due_to_author_ban? }
 

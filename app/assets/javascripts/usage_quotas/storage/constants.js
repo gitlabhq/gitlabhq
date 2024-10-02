@@ -90,7 +90,7 @@ export const NAMESPACE_STORAGE_TYPES = [
 ];
 
 export const storageTypeHelpPaths = {
-  lfsObjects: helpPagePath('/user/project/repository/reducing_the_repo_size_using_git', {
+  lfsObjects: helpPagePath('/user/project/repository/repository_size', {
     anchor: 'repository-cleanup',
   }),
   containerRegistry: helpPagePath(
@@ -102,7 +102,7 @@ export const storageTypeHelpPaths = {
   packages: helpPagePath('user/packages/package_registry/index.md', {
     anchor: 'reduce-storage-usage',
   }),
-  repository: helpPagePath('user/project/repository/reducing_the_repo_size_using_git'),
+  repository: helpPagePath('user/project/repository/repository_size'),
   snippets: helpPagePath('user/snippets', {
     anchor: 'reduce-snippets-repository-size',
   }),

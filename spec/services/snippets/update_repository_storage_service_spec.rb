@@ -6,7 +6,7 @@ RSpec.describe Snippets::UpdateRepositoryStorageService, feature_category: :sour
   subject { described_class.new(repository_storage_move) }
 
   describe "#execute" do
-    let_it_be_with_reload(:snippet) { create(:snippet, :repository) }
+    let_it_be_with_reload(:snippet) { create(:project_snippet, :repository) }
     let_it_be(:destination) { 'test_second_storage' }
     let_it_be(:checksum) { snippet.repository.checksum }
 

@@ -492,7 +492,6 @@ RSpec/FeatureCategory:
     - 'ee/spec/lib/ee/gitlab/background_migration/migrate_approver_to_approval_rules_check_progress_spec.rb'
     - 'ee/spec/lib/ee/gitlab/background_migration/migrate_approver_to_approval_rules_in_batch_spec.rb'
     - 'ee/spec/lib/ee/gitlab/background_migration/migrate_approver_to_approval_rules_spec.rb'
-    - 'ee/spec/lib/ee/gitlab/background_migration/migrate_shared_vulnerability_scanners_spec.rb'
     - 'ee/spec/lib/ee/gitlab/ci/matching/runner_matcher_spec.rb'
     - 'ee/spec/lib/ee/gitlab/ci/pipeline/chain/validate/external_spec.rb'
     - 'ee/spec/lib/ee/gitlab/ci/pipeline/quota/size_spec.rb'

@@ -4,7 +4,7 @@ classes:
 - Onboarding::Progress
 feature_categories:
 - onboarding
-description: TODO
+description: Keeps track of a new user's namespace as it progresses through different use of different features in GitLab.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50711
 milestone: '13.8'
 gitlab_schema: gitlab_main_cell

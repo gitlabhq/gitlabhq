@@ -3,7 +3,7 @@
 class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
   skip_before_action :check_two_factor_requirement
   before_action :ensure_verified_primary_email, only: [:show, :create]
-  before_action :validate_current_password, only: [:create, :codes, :destroy, :create_webauthn], if: :current_password_required?
+  before_action :validate_current_password, only: [:create, :codes, :destroy, :destroy_otp, :create_webauthn], if: :current_password_required?
   before_action :update_current_user_otp!, only: [:show]
 
   helper_method :current_password_required?
@@ -87,9 +87,21 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
     result = TwoFactor::DestroyService.new(current_user, user: current_user).execute
 
     if result[:status] == :success
-      redirect_to profile_account_path, status: :found, notice: s_('Two-factor authentication has been disabled successfully!')
+      redirect_to profile_account_path, status: :found, notice: _('Two-factor authentication has been disabled successfully!')
     else
       redirect_to profile_account_path, status: :found, alert: result[:message]
+    end
+  end
+
+  def destroy_otp
+    return if Feature.disabled?(:delete_otp_no_webauthn)
+
+    result = TwoFactor::DestroyOtpService.new(current_user, user: current_user).execute
+
+    if result[:status] == :success
+      redirect_to profile_two_factor_auth_path, status: :found, notice: _('One-time password authenticator has been deleted!')
+    else
+      redirect_to profile_two_factor_auth_path, status: :found, alert: result[:message]
     end
   end
 
@@ -123,6 +135,8 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
     error_message = { message: _('You must provide a valid current password.') }
     if params[:action] == 'create_webauthn'
       @webauthn_error = error_message
+    elsif params[:action] == 'destroy_otp'
+      @destroy_error = error_message
     else
       @error = error_message
     end

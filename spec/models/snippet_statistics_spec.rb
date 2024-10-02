@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe SnippetStatistics do
-  let_it_be(:snippet_without_repo) { create(:snippet) }
-  let_it_be(:snippet_with_repo) { create(:snippet, :repository) }
+  let_it_be(:snippet_without_repo) { create(:project_snippet) }
+  let_it_be(:snippet_with_repo) { create(:project_snippet, :repository) }
 
   let(:statistics) { snippet_with_repo.statistics }
 
