@@ -56,6 +56,8 @@ module Gitlab
           @set = args[:set] || []
           @extra_env = args[:env] || []
           @chart_sha = args[:chart_sha]
+          @retry_attempts = args[:retry] || 0
+          @deployment_attempts = 0
         end
 
         # Perform deployment with all the additional setup
@@ -88,7 +90,8 @@ module Gitlab
           :gitlab_domain,
           :timeout,
           :chart_sha,
-          :extra_env
+          :extra_env,
+          :retry_attempts
 
         alias_method :cli_values, :set
 
@@ -186,7 +189,12 @@ module Gitlab
           Helpers::Spinner.spin("running helm deployment") do
             helm.upgrade(name, chart_reference, namespace: namespace, timeout: timeout, values: values, args: args)
           rescue Helm::Client::Error => e
-            handle_deploy_failure(e)
+            @deployment_attempts += 1
+            handle_deploy_failure(e) if @deployment_attempts > retry_attempts
+
+            log("Deployment failed, retrying...", :warn)
+            log("Error: #{e}", :warn)
+            retry
           end
           log("Deployment successful and app is available via: #{configuration.gitlab_url}", :success, bright: true)
         end
@@ -226,7 +234,7 @@ module Gitlab
         # @param [StandardError] error
         # @return [void]
         def handle_deploy_failure(error)
-          log("Helm upgrade failed!", :error)
+          log("Helm deployment failed!", :error)
           log("For more information on troubleshooting failures, see: '#{TROUBLESHOOTING_LINK}'", :warn)
 
           events = get_warning_events

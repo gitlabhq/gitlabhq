@@ -54,5 +54,13 @@ RSpec.describe Packages::TerraformModule::Metadatum, type: :model, feature_categ
         expect(metadatum.errors.to_a).to include('Package type must be Terraform Module')
       end
     end
+
+    context 'when the parent project is destroyed' do
+      let_it_be(:metadatum) { create(:terraform_module_metadatum) }
+
+      it 'desroys the metadatum' do
+        expect { metadatum.project.destroy! }.to change { described_class.count }.by(-1)
+      end
+    end
   end
 end

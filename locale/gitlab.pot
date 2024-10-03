@@ -8751,7 +8751,7 @@ msgstr ""
 msgid "BillingPlans|See all %{plan_name} features"
 msgstr ""
 
-msgid "BillingPlans|Start a GitLab Duo Enterprise trial to try all end-to-end AI capabilities from GitLab. You can try it for free for %{days} days, no credit card required."
+msgid "BillingPlans|Start a GitLab Duo Enterprise trial to try all end-to-end AI capabilities from GitLab. You can try it for free for 60 days, no credit card required."
 msgstr ""
 
 msgid "BillingPlans|Start a free GitLab Duo Enterprise Trial"
@@ -13376,7 +13376,7 @@ msgstr ""
 msgid "CodeSuggestions|Before you can buy GitLab Duo seats, you'll need a Premium or Ultimate subscription."
 msgstr ""
 
-msgid "CodeSuggestions|Boost productivity across the software development life cycle by using Code Suggestions and GitLab Duo Chat as part of the %{duoLinkStart}GitLab Duo Pro%{duoLinkEnd} add-on. You can now try GitLab Duo Pro for free for %{days} days, no credit card required."
+msgid "CodeSuggestions|Boost productivity across the software development life cycle by using Code Suggestions and GitLab Duo Chat as part of the %{duoLinkStart}GitLab Duo Pro%{duoLinkEnd} add-on. You can now try GitLab Duo Pro for free for 60 days, no credit card required."
 msgstr ""
 
 msgid "CodeSuggestions|Code Explanations"
@@ -20241,9 +20241,6 @@ msgstr ""
 msgid "DuoEnterpriseTrial|Apply your GitLab Duo Enterprise trial to an existing group"
 msgstr ""
 
-msgid "DuoEnterpriseTrial|Congratulations, your free GitLab Duo Enterprise trial is activated and will expire on %{exp_date}. The new license might take a minute to show on the page. To give members access to new GitLab Duo Enterprise features, %{assign_link_start}assign them%{assign_link_end} to GitLab Duo Enterprise seats."
-msgstr ""
-
 msgid "DuoEnterpriseTrial|Enhance security and remediate vulnerabilities efficiently"
 msgstr ""
 
@@ -20278,6 +20275,9 @@ msgid "DuoEnterpriseTrial|Stay on top of regulatory requirements with self-hoste
 msgstr ""
 
 msgid "DuoEnterpriseTrial|We just need some additional information to activate your trial."
+msgstr ""
+
+msgid "DuoEnterpriseTrial|You have successfully created a trial subscription from GitLab Duo Enterprise. To get started, enable the GitLab Duo Enterprise add-on for team members on this page by turning on the toggle for each team member. The subscription may take a minute to sync, so refresh the page if it's not visible yet"
 msgstr ""
 
 msgid "DuoFreeAccessEndingBanner|Buy Duo Pro"
@@ -20394,9 +20394,6 @@ msgstr ""
 msgid "DuoProTrial|Code completion and code generation with Code Suggestions"
 msgstr ""
 
-msgid "DuoProTrial|Congratulations, your free GitLab Duo Pro trial is activated and will expire on %{exp_date}. The new license might take a minute to show on the page. To give members access to new GitLab Duo Pro features, %{assign_link_start}assign them%{assign_link_end} to GitLab Duo Pro seats."
-msgstr ""
-
 msgid "DuoProTrial|Day %{daysUsed}/%{duration}"
 msgstr ""
 
@@ -20446,6 +20443,9 @@ msgid "DuoProTrial|We just need some additional information to activate your tri
 msgstr ""
 
 msgid "DuoProTrial|You do not have access to trial GitLab Duo"
+msgstr ""
+
+msgid "DuoProTrial|You have successfully created a trial subscription from GitLab Duo Pro. To get started, enable the GitLab Duo Pro add-on for team members on this page by turning on the toggle for each team member. The subscription may take a minute to sync, so refresh the page if it's not visible yet"
 msgstr ""
 
 msgid "DuoProTrial|You no longer have access to GitLab Duo Pro features"

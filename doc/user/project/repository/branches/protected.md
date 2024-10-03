@@ -226,8 +226,6 @@ Alternatively, you can [create](index.md#create-a-branch-rule) or [edit](index.m
 
 ## Allow deploy keys to push to a protected branch
 
-> - More restrictions on deploy keys [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/425926) in GitLab 16.5 [with a flag](../../../../administration/feature_flags.md) named `check_membership_in_protected_ref_access`. Disabled by default.
-
 You can push to a protected branch with a [deploy key](../../deploy_keys/index.md).
 
 Prerequisites:
@@ -239,8 +237,7 @@ Prerequisites:
 - The deploy key must have [write access](../../deploy_keys/index.md#permissions) to your project
   repository.
 - The owner of the deploy key must have at least read access to the project.
-- If the `check_membership_in_protected_ref_access` feature flag is enabled, the owner of the
-  deploy key must also be a member of the project.
+- The owner of the deploy key must also be a member of the project.
 
 To allow a deploy key to push to a protected branch:
 

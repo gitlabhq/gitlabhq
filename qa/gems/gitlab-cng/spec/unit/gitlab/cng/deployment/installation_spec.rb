@@ -11,7 +11,8 @@ RSpec.describe Gitlab::Cng::Deployment::Installation, :aggregate_failures do
         gitlab_domain: gitlab_domain,
         timeout: "10m",
         chart_sha: chart_sha,
-        env: ["RAILS_ENV_VAR=val"]
+        env: ["RAILS_ENV_VAR=val"],
+        retry: retry_attempts
       )
     end
 
@@ -20,6 +21,7 @@ RSpec.describe Gitlab::Cng::Deployment::Installation, :aggregate_failures do
     let(:chart_sha) { nil }
     let(:chart_reference) { "chart-reference" }
     let(:ci) { false }
+    let(:retry_attempts) { 0 }
 
     let(:kubeclient) do
       instance_double(Gitlab::Cng::Kubectl::Client, create_namespace: "", create_resource: "", execute: "")
@@ -100,12 +102,23 @@ RSpec.describe Gitlab::Cng::Deployment::Installation, :aggregate_failures do
         EVENTS
       end
 
-      it "automatically prints warning events" do
-        expect { expect { installation.create }.to raise_error(SystemExit) }.to output(
-          match("#{warn_event[:involvedObject][:kind]}/#{warn_event[:involvedObject][:name]}")
-          .and(match(warn_event[:message]))
-          .and(match(/For more information on troubleshooting failures, see: \S+/))
-        ).to_stdout
+      context "without retry" do
+        it "automatically prints warning events" do
+          expect { expect { installation.create }.to raise_error(SystemExit) }.to output(
+            match("#{warn_event[:involvedObject][:kind]}/#{warn_event[:involvedObject][:name]}")
+            .and(match(warn_event[:message]))
+            .and(match(/For more information on troubleshooting failures, see: \S+/))
+          ).to_stdout
+        end
+      end
+
+      context "with retry" do
+        let(:retry_attempts) { 1 }
+
+        it "retries deployment" do
+          expect { expect { installation.create }.to raise_error(SystemExit) }.to output.to_stdout
+          expect(helmclient).to have_received(:upgrade).twice
+        end
       end
     end
 
