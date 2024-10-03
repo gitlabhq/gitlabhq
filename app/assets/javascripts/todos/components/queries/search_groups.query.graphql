@@ -1,8 +1,0 @@
-query searchGroups($search: String) {
-  groups(search: $search, first: 20) {
-    nodes {
-      id
-      fullName
-    }
-  }
-}

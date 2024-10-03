@@ -275,6 +275,13 @@ module ObjectStorage
       def file_path
         @file.path
       end
+
+      # CarrierWave#cache! calls filename, which calls original_filename
+      def original_filename
+        return File.basename(file_path) if file_path.present?
+
+        nil
+      end
     end
 
     # allow to configure and overwrite the filename

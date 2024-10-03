@@ -4,7 +4,7 @@ import { createAlert } from '~/alert';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { __ } from '~/locale';
 import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_token.vue';
-import searchGroupsQuery from '../queries/search_groups.query.graphql';
+import searchTodosGroupsQuery from '../queries/search_todos_groups.query.graphql';
 
 export default {
   components: {
@@ -40,10 +40,10 @@ export default {
     fetchGroups(search = '') {
       return this.$apollo
         .query({
-          query: searchGroupsQuery,
+          query: searchTodosGroupsQuery,
           variables: { search },
         })
-        .then(({ data }) => data.groups.nodes);
+        .then(({ data }) => data.currentUser.groups.nodes);
     },
     fetchGroupsBySearchTerm(search) {
       this.loading = true;
@@ -66,7 +66,7 @@ export default {
       return String(this.getGroupIdProperty(group));
     },
     displayValue(group) {
-      return group?.fullName;
+      return group?.name;
     },
     getGroupIdProperty(group) {
       return getIdFromGraphQLId(group.id);

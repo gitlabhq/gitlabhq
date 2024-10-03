@@ -76,7 +76,7 @@ Self-managed GitLab customers and administrators are responsible for the securit
 ### Logs
 
 - [Review the log types and contents produced by GitLab](../administration/logs/index.md).
-- [Review Runner job logs information](../administration/job_logs.md).
+- [Review Runner job logs information](../administration/cicd/job_logs.md).
 - [How to use correlation ID to trace logs](../administration/logs/tracing_correlation_id.md).
 - [Logging configuration and access](https://docs.gitlab.com/omnibus/settings/logs.html).
 - [How to configure audit event streaming](../administration/audit_event_streaming/index.md).

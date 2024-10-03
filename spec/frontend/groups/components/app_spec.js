@@ -49,7 +49,7 @@ describe('AppComponent', () => {
       propsData: {
         store,
         service,
-        containerId: 'js-groups-tree',
+        containerId: 'js-groups-list-with-filtered-search',
         ...propsData,
       },
       scopedSlots: {
@@ -71,7 +71,7 @@ describe('AppComponent', () => {
     setWindowLocation('?filter=foobar');
 
     document.body.innerHTML = `
-      <div id="js-groups-tree">
+      <div id="js-groups-list-with-filtered-search">
         <div class="empty-state hidden" data-testid="legacy-empty-state">
           <p>There are no projects shared with this group yet</p>
         </div>
@@ -411,8 +411,6 @@ describe('AppComponent', () => {
       expect(eventHub.$on).toHaveBeenCalledWith('fetchPage', expect.any(Function));
       expect(eventHub.$on).toHaveBeenCalledWith('toggleChildren', expect.any(Function));
       expect(eventHub.$on).toHaveBeenCalledWith('showLeaveGroupModal', expect.any(Function));
-      expect(eventHub.$on).toHaveBeenCalledWith('updatePagination', expect.any(Function));
-      expect(eventHub.$on).toHaveBeenCalledWith('updateGroups', expect.any(Function));
       expect(eventHub.$on).toHaveBeenCalledWith(
         'fetchFilteredAndSortedGroups',
         expect.any(Function),
@@ -431,8 +429,6 @@ describe('AppComponent', () => {
       expect(eventHub.$off).toHaveBeenCalledWith('fetchPage', expect.any(Function));
       expect(eventHub.$off).toHaveBeenCalledWith('toggleChildren', expect.any(Function));
       expect(eventHub.$off).toHaveBeenCalledWith('showLeaveGroupModal', expect.any(Function));
-      expect(eventHub.$off).toHaveBeenCalledWith('updatePagination', expect.any(Function));
-      expect(eventHub.$off).toHaveBeenCalledWith('updateGroups', expect.any(Function));
       expect(eventHub.$off).toHaveBeenCalledWith(
         'fetchFilteredAndSortedGroups',
         expect.any(Function),

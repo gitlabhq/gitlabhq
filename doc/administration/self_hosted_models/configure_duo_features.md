@@ -42,11 +42,12 @@ To configure a self-hosted model:
 1. Select **New self-hosted model**.
 1. Complete the fields:
    - Enter the model name, for example, `Mistral`.
-   - From the **Model** dropdown list, select the model. Only GitLab-approved models
+   - From the **Model family** dropdown list, select the model. Only GitLab-approved models
      are in this list.
    - For **Endpoint**, select the self-hosted model endpoint. For example, the
      server hosting the model.
    - Optional. For **API token**, add an API key if you need one to access the model.
+   - Optional. For **Model identifier**, enter the cloud provider where the model is hosted, and the name the cloud provider uses for that model (for example: `anthropic/claude-3-5-sonnet-20240620`).
 1. Select **Create model**.
 
 ## Configure GitLab Duo features to use self-hosted models

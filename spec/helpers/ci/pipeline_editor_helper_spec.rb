@@ -28,25 +28,25 @@ RSpec.describe Ci::PipelineEditorHelper, feature_category: :pipeline_composition
       {
         "ci-catalog-path" => explore_catalog_index_path,
         "ci-config-path": project.ci_config_path_or_default,
-        "ci-examples-help-page-path" => help_page_path('ci/examples/index'),
-        "ci-help-page-path" => help_page_path('ci/index'),
+        "ci-examples-help-page-path" => help_page_path('ci/examples/index.md'),
+        "ci-help-page-path" => help_page_path('ci/index.md'),
         "ci-lint-path" => project_ci_lint_path(project),
-        "ci-troubleshooting-path" => help_page_path('ci/troubleshooting', anchor: 'common-cicd-issues'),
+        "ci-troubleshooting-path" => help_page_path('ci/troubleshooting.md', anchor: 'common-cicd-issues'),
         "default-branch" => project.default_branch_or_main,
         "empty-state-illustration-path" => 'illustrations/empty.svg',
         "initial-branch-name" => nil,
-        "includes-help-page-path" => help_page_path('ci/yaml/includes'),
-        "lint-help-page-path" => help_page_path('ci/lint', anchor: 'check-cicd-syntax'),
-        "needs-help-page-path" => help_page_path('ci/yaml/index', anchor: 'needs'),
+        "includes-help-page-path" => help_page_path('ci/yaml/includes.md'),
+        "lint-help-page-path" => help_page_path('ci/lint.md', anchor: 'check-cicd-syntax'),
+        "needs-help-page-path" => help_page_path('ci/yaml/index.md', anchor: 'needs'),
         "new-merge-request-path" => '/mock/project/-/merge_requests/new',
         "pipeline-page-path" => project_pipelines_path(project),
         "project-path" => project.path,
         "project-full-path" => project.full_path,
         "project-namespace" => project.namespace.full_path,
-        "simulate-pipeline-help-page-path" => help_page_path('ci/pipeline_editor/index', anchor: 'simulate-a-cicd-pipeline'),
+        "simulate-pipeline-help-page-path" => help_page_path('ci/pipeline_editor/index.md', anchor: 'simulate-a-cicd-pipeline'),
         "uses-external-config" => 'false',
         "validate-tab-illustration-path" => 'illustrations/validate.svg',
-        "yml-help-page-path" => help_page_path('ci/yaml/index')
+        "yml-help-page-path" => help_page_path('ci/yaml/index.md')
       }
     end
 

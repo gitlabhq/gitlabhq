@@ -232,7 +232,7 @@ export default {
     >
       <gl-animated-notification-icon
         :class="{ '!gl-text-blue-500': subscribed }"
-        :is-on="subscribed"
+        :is-on="!subscribed"
       />
     </gl-button>
     <gl-button
@@ -247,7 +247,7 @@ export default {
     >
       <gl-animated-notification-icon
         :class="{ '!gl-text-blue-500': subscribed }"
-        :is-on="subscribed"
+        :is-on="!subscribed"
       />
     </gl-button>
   </div>

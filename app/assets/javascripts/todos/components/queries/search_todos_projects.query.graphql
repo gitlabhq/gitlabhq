@@ -1,0 +1,9 @@
+query searchTodosProjects($search: String) {
+  projects(search: $search, membership: true, sort: "updated_at_desc", first: 20) {
+    nodes {
+      id
+      name
+      fullPath
+    }
+  }
+}

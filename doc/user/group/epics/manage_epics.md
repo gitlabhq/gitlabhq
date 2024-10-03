@@ -421,6 +421,13 @@ You can always view the issues assigned to the epic if they are in the group's c
 It's possible because the visibility setting of a project must be the same as or less restrictive than
 of its parent group.
 
+<!-- When epics as work items are GA, use the info below in the main body. -->
+
+If your administrator [enabled the new look for epics](epic_work_items.md), this section is named
+**Child items**.
+You can also see any epics, issues, and tasks inherited by descendant items.
+Only epics, issues, and tasks that you can access show on the list.
+
 ### View count and weight of issues in an epic
 
 On the **Child issues and epics** section header, the number of descendant epics and issues and their total
@@ -433,6 +440,12 @@ To see the number of open and closed epics and issues:
 The numbers reflect all child issues and epics associated with the epic, including those you might
 not have permission to view.
 
+<!-- When epics as work items are GA, use the info below in the main body. -->
+
+If your administrator [enabled the new look for epics](epic_work_items.md), this section is named
+**Child items**.
+Tasks are not included in these counts.
+
 ### View epic progress
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5163) in GitLab 17.1.
@@ -441,10 +454,16 @@ On the **Child issues and epics** section header, the epic progress percentage i
 
 To see the completed and total weight of child issues:
 
-1. In the section header, hover over the percentage.
+- In the section header, hover over the percentage.
 
 The weights and progress reflect all issues associated with the epic, including issues you might
 not have permission to view.
+
+<!-- When epics as work items are GA, use the info below in the main body. -->
+
+If your administrator [enabled the new look for epics](epic_work_items.md), this section is named
+**Child items**.
+Tasks are not included in this calculation.
 
 ### Health status
 
@@ -505,7 +524,7 @@ The maximum number of direct child issues and epics is 5000.
 You can add existing issues to an epic, including issues in a project from a [different group hierarchy](index.md#child-issues-from-different-group-hierarchies).
 Newly added issues appear at the top of the list of issues in the **Child issues and epics** section.
 
-An epic contains a list of issues and an issue can be associated with at most one epic.
+An epic contains a list of issues and an issue can be set as a child item of at most one epic.
 When you add a new issue that's already linked to an epic, the issue is automatically unlinked from its
 current parent.
 
@@ -525,6 +544,11 @@ To add an existing issue to an epic:
 
    If there are multiple issues to be added, press <kbd>Space</kbd> and repeat this step.
 1. Select **Add**.
+
+<!-- When epics as work items are GA, use the info below in the main body. -->
+
+If your administrator [enabled the new look for epics](epic_work_items.md), this section is named
+**Child items**.
 
 #### Create an issue from an epic
 
@@ -553,6 +577,11 @@ To create an issue from an epic:
 
 The new issue is assigned to the epic.
 
+<!-- When epics as work items are GA, use the info below in the main body. -->
+
+If your administrator [enabled the new look for epics](epic_work_items.md), this section is named
+**Child items**.
+
 ### Remove an issue from an epic
 
 > - Minimum required role for the project [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382506) from Reporter to Guest in GitLab 15.8.
@@ -576,7 +605,7 @@ To remove an issue from an epic:
 
 > - Minimum required role for the project [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382506) from Reporter to Guest in GitLab 15.8.
 
-New issues appear at the top of the list in the **Child issues and epics** section.
+New issues show at the top of the list in the **Child issues and epics** section.
 You can reorder the list of issues by dragging them.
 
 Prerequisites:
@@ -587,6 +616,11 @@ To reorder issues assigned to an epic:
 
 1. Go to the **Child issues and epics** section.
 1. Drag issues into the desired order.
+
+<!-- When epics as work items are GA, use the info below in the main body. -->
+
+If your administrator [enabled the new look for epics](epic_work_items.md), this section is named
+**Child items**.
 
 ### Move issues between epics
 
@@ -608,6 +642,11 @@ To move an issue to another epic:
 1. Go to the **Child issues and epics** section.
 1. Drag issues into the desired parent epic in the visible hierarchy.
 
+<!-- When epics as work items are GA, use the info below in the main body. -->
+
+If your administrator [enabled the new look for epics](epic_work_items.md), this section is named
+**Child items**.
+
 ### Use an epic template for repeating issues
 
 You can create a spreadsheet template to manage a pattern of consistently repeating issues.
@@ -625,12 +664,13 @@ DETAILS:
 
 You can add any epic that belongs to a group or subgroup of the parent epic's group.
 New child epics appear at the top of the list of epics in the **Child issues and epics** section.
+<!-- When epics as work items are GA, use the info below in the main body. -->
+If your administrator [enabled the new look for epics](epic_work_items.md), this section is named
+**Child items**.
 
 When you add an epic that's already linked to a parent epic, the link to its current parent is removed.
 
 Epics can contain multiple nested child epics, up to a total of 7 levels deep.
-
-The maximum number of direct child epics is 100.
 
 ### Add a parent epic to an epic
 
@@ -684,6 +724,11 @@ To view child epics from the parent:
 
 - In an epic, in the **Child issues and epics** section, select **Roadmap view**.
 
+<!-- When epics as work items are GA, use the info below in the main body. -->
+
+If your administrator [enabled the new look for epics](epic_work_items.md), this section is named
+**Child items**.
+
 ### Add a child epic to an epic
 
 > - Minimum required role for the group [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382503) from Reporter to Guest in GitLab 15.7.
@@ -692,12 +737,21 @@ Prerequisites:
 
 - You must have at least the Guest role for the parent epic's group.
 
+#### New epic
+
 To add a new epic as child epic:
 
 1. In an epic, in the **Child issues and epics** section, select **Add > Add a new epic**.
 1. Select a group from the dropdown list. The epic's group is selected by default.
 1. Enter a title for the new epic.
 1. Select **Create epic**.
+
+<!-- When epics as work items are GA, use the info below in the main body. -->
+
+If your administrator [enabled the new look for epics](epic_work_items.md), this section is named
+**Child items**.
+
+#### Existing epic
 
 To add an existing epic as child epic:
 
@@ -708,6 +762,11 @@ To add an existing epic as child epic:
 
    If there are multiple epics to be added, press <kbd>Space</kbd> and repeat this step.
 1. Select **Add**.
+
+<!-- When epics as work items are GA, use the info below in the main body. -->
+
+If your administrator [enabled the new look for epics](epic_work_items.md), this section is named
+**Child items**.
 
 ### Move child epics between epics
 
@@ -727,6 +786,11 @@ To move child epics to another epic:
 1. Go to the **Child issues and epics** section.
 1. Drag epics into the desired parent epic.
 
+<!-- When epics as work items are GA, use the info below in the main body. -->
+
+If your administrator [enabled the new look for epics](epic_work_items.md), this section is named
+**Child items**.
+
 ### Reorder child epics assigned to an epic
 
 > - Minimum required role for the group [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382503) from Reporter to Guest in GitLab 15.7.
@@ -742,6 +806,11 @@ To reorder child epics assigned to an epic:
 
 1. Go to the **Child issues and epics** section.
 1. Drag epics into the desired order.
+
+<!-- When epics as work items are GA, use the info below in the main body. -->
+
+If your administrator [enabled the new look for epics](epic_work_items.md), this section is named
+**Child items**.
 
 ### Remove a child epic from a parent epic
 

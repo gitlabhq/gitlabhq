@@ -14,7 +14,7 @@ DETAILS:
 Customize and configure your self-managed GitLab installation.
 
 - [Authentication](auth/index.md)
-- [CI/CD](../administration/cicd.md)
+- [CI/CD](../administration/cicd/index.md)
 - [Configuration](../administration/admin_area.md)
 - [Consul](../administration/consul.md)
 - [Environment variables](../administration/environment_variables.md)

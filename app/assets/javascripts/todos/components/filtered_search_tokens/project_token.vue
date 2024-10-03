@@ -4,7 +4,7 @@ import { createAlert } from '~/alert';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { __ } from '~/locale';
 import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_token.vue';
-import searchProjectsQuery from '../queries/search_projects.query.graphql';
+import searchTodosProjectsQuery from '../queries/search_todos_projects.query.graphql';
 
 export default {
   components: {
@@ -40,7 +40,7 @@ export default {
     fetchProjects(search = '') {
       return this.$apollo
         .query({
-          query: searchProjectsQuery,
+          query: searchTodosProjectsQuery,
           variables: { search },
         })
         .then(({ data }) => data.projects.nodes);
@@ -98,7 +98,7 @@ export default {
         :key="project.id"
         :value="getValue(project)"
       >
-        {{ project.name }}
+        {{ project.fullPath }}
       </gl-filtered-search-suggestion>
     </template>
   </base-token>

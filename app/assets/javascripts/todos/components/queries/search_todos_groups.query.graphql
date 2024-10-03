@@ -1,0 +1,12 @@
+query searchTodosGroups($search: String) {
+  currentUser {
+    id
+    groups(search: $search) {
+      nodes {
+        id
+        name
+        fullName
+      }
+    }
+  }
+}

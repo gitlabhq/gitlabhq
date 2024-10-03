@@ -100,7 +100,7 @@ To view the rendered details:
 ## Maximum artifacts size
 
 An administrator can set the maximum size of the
-[job artifacts](../../administration/job_artifacts.md) for:
+[job artifacts](../../administration/cicd/job_artifacts.md) for:
 
 - The entire instance
 - Each project
@@ -131,7 +131,7 @@ The value is in MB, and the default value is 100 MB per job. An administrator ca
 
 ## Default artifacts expiration
 
-The default expiration time of the [job artifacts](../../administration/job_artifacts.md)
+The default expiration time of the [job artifacts](../../administration/cicd/job_artifacts.md)
 can be set in the **Admin** area of your GitLab instance. The syntax of duration is
 described in [`artifacts:expire_in`](../../ci/yaml/index.md#artifactsexpire_in)
 and the default value is `30 days`.
@@ -149,7 +149,7 @@ NOTE:
 Any changes to this setting applies to new artifacts only. The expiration time is not
 be updated for artifacts created before this setting was changed.
 The administrator may need to manually search for and expire previously-created
-artifacts, as described in the [troubleshooting documentation](../../administration/job_artifacts_troubleshooting.md#delete-old-builds-and-artifacts).
+artifacts, as described in the [troubleshooting documentation](../../administration/cicd/job_artifacts_troubleshooting.md#delete-old-builds-and-artifacts).
 
 ## Keep the latest artifacts for all jobs in the latest successful pipelines
 

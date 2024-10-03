@@ -107,7 +107,7 @@ of the child epics from the epic.
 
 If your administrator [enabled the new look for epics](epic_work_items.md):
 
-- On the Child issues and epics section header, select **More actions** (**{ellipsis_v}**) **> View on a roadmap**.
+- On the **Child items** section header, select **More actions** (**{ellipsis_v}**) **> View on a roadmap**.
 
 A roadmap filtered for the parent epic opens.
 

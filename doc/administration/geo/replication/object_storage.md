@@ -56,7 +56,7 @@ For LFS, follow the documentation to
 [set up LFS object storage](../../lfs/index.md#storing-lfs-objects-in-remote-object-storage).
 
 For CI job artifacts, there is similar documentation to configure
-[jobs artifact object storage](../../job_artifacts.md#using-object-storage)
+[jobs artifact object storage](../../cicd/job_artifacts.md#using-object-storage)
 
 For user uploads, there is similar documentation to configure [upload object storage](../../uploads.md#using-object-storage)
 

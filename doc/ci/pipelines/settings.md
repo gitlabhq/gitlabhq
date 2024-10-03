@@ -239,7 +239,7 @@ test coverage of your projects. These badges are determined by the latest succes
 GitLab CI/CD pipelines are enabled by default on all new projects. If you use an external CI/CD server like
 Jenkins or Drone CI, you can disable GitLab CI/CD to avoid conflicts with the commits status API.
 
-You can disable GitLab CI/CD per project or [for all new projects on an instance](../../administration/cicd.md).
+You can disable GitLab CI/CD per project or [for all new projects on an instance](../../administration/cicd/index.md).
 
 When you disable GitLab CI/CD:
 
