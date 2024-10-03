@@ -10,7 +10,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 GitLab Dedicated is a fully isolated, single-tenant SaaS solution that is:
 
 - Hosted and managed by GitLab, Inc.
-- Deployed on AWS in a cloud region of your choice. See [available AWS regions](#available-aws-regions).
+- Deployed on AWS in a cloud [region](data_residency_and_high_availability.md#available-aws-regions) of your choice.
 
 GitLab Dedicated removes the overhead of platform management to increase your operational efficiency, reduce risk, and enhance the speed and agility of your organization. Each GitLab Dedicated instance is highly available with disaster recovery and deployed into the cloud region of your choice. GitLab teams fully manage the maintenance and operations of each isolated instance, so customers can access our latest product improvements while meeting the most complex compliance standards.
 
@@ -18,20 +18,9 @@ It's the offering of choice for enterprises and organizations in highly regulate
 
 ## Available features
 
-### Data residency
-
-GitLab Dedicated allows you to select the cloud region where your data will be stored. Upon [onboarding](../../administration/dedicated/create_instance.md#step-2-create-your-gitlab-dedicated-instance), choose the cloud region where you want to deploy your Dedicated instance. Some AWS regions have limited features and as a result, we are not able to deploy production instances to those regions. See below for the [list of available AWS regions](#available-aws-regions).
-
 ### Advanced search
 
 GitLab Dedicated uses the [advanced search functionality](../../integration/advanced_search/elasticsearch.md).
-
-### Availability and scalability
-
-GitLab Dedicated leverages modified versions of the GitLab [Cloud Native Hybrid reference architectures](../../administration/reference_architectures/index.md#cloud-native-hybrid) with high availability enabled. When [onboarding](../../administration/dedicated/create_instance.md#step-2-create-your-gitlab-dedicated-instance), GitLab will match you to the closest reference architecture size based on your number of users. Learn about the [current Service Level Objective](https://handbook.gitlab.com/handbook/engineering/infrastructure/team/gitlab-dedicated/slas/#current-service-level-objective).
-
-NOTE:
-The published [reference architectures](../../administration/reference_architectures/index.md) act as a starting point in defining the cloud resources deployed inside GitLab Dedicated environments, but they are not comprehensive. GitLab Dedicated leverages additional Cloud Provider services beyond what's included in the standard reference architectures for enhanced security and stability of the environment. Therefore, GitLab Dedicated costs differ from standard reference architecture costs.
 
 #### Zero-downtime upgrades
 
@@ -55,12 +44,6 @@ To notice the effect of an upgrade, a new user of the system should connect for 
 
 NOTE:
 Adopting a caching proxy in the customer network will further reduce this risk.
-
-#### Disaster Recovery
-
-When [onboarding](../../administration/dedicated/create_instance.md#step-2-create-your-gitlab-dedicated-instance) to GitLab Dedicated, you specify a Secondary AWS region in which your data will be stored. This region is used to recover your GitLab Dedicated instance in case of a disaster. Regular backups of all GitLab Dedicated datastores (including Database and Git repositories) are taken and tested regularly and stored in your desired secondary region. GitLab Dedicated also provides the ability to store copies of these backups in a separate cloud region of choice for greater redundancy.
-
-For more information, read about the [recovery plan for GitLab Dedicated](https://handbook.gitlab.com/handbook/engineering/infrastructure/team/gitlab-dedicated/slas/#disaster-recovery-plan) as well as RPO and RTO targets. These targets are available only when both the primary and secondary regions are supported by GitLab Dedicated. See below for a [list of available AWS regions](#available-aws-regions) for GitLab Dedicated.
 
 ### Security
 
@@ -95,10 +78,6 @@ If you would rather send application email using an SMTP server instead of Amazo
 GitLab Dedicated is trusted by highly regulated customers in part due to our ability to transparently demonstrate compliance with various regulations, certifications, and compliance frameworks.
 
 You can view compliance and certification details, and download compliance artifacts from the [GitLab Dedicated Trust Center](https://trust.gitlab.com/?product=gitlab-dedicated).
-
-#### Isolation
-
-As a single-tenant SaaS solution, GitLab Dedicated provides infrastructure-level isolation of your GitLab environment. Your environment is placed into a separate AWS account from other tenants. This AWS account contains all of the underlying infrastructure necessary to host the GitLab application and your data stays within the account boundary. You administer the application while GitLab manages the underlying infrastructure. Tenant environments are also completely isolated from GitLab.com.
 
 #### Access controls
 
@@ -274,25 +253,6 @@ The following operational features are not available:
 - Multiple login providers
 - Support for deploying to non-AWS cloud providers, such as GCP or Azure
 - Observability Dashboard using Switchboard
-
-### Available AWS regions
-
-The following is a list of AWS regions verified for use in GitLab Dedicated. Regions must support io2 volumes and meet other requirements. If there is a region you are interested in that is not on this list, reach out through your account representative or [GitLab Support](https://about.gitlab.com/support/) to inquire about its availability. This list will be updated from time to time as additional regions are verified.
-
-- Asia Pacific (Mumbai)
-- Asia Pacific (Seoul)
-- Asia Pacific (Singapore)
-- Asia Pacific (Sydney)
-- Asia Pacific (Tokyo)
-- Canada (Central)
-- Europe (Frankfurt)
-- Europe (Ireland)
-- Europe (London)
-- Europe (Stockholm)
-- US East (Ohio)
-- US East (N. Virginia)
-- US West (N. California)
-- US West (Oregon)
 
 ## Planned features
 

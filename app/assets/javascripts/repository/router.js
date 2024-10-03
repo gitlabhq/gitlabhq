@@ -5,6 +5,7 @@ import { joinPaths, webIDEUrl } from '~/lib/utils/url_utility';
 import BlobPage from './pages/blob.vue';
 import IndexPage from './pages/index.vue';
 import TreePage from './pages/tree.vue';
+import { getRefType } from './utils/ref_type';
 
 Vue.use(VueRouter);
 
@@ -13,7 +14,7 @@ export default function createRouter(base, baseRef) {
     component: TreePage,
     props: (route) => ({
       path: route.params.path?.replace(/^\//, '') || '/',
-      refType: route.query.ref_type || null,
+      refType: getRefType(route.query.ref_type || null),
     }),
   };
 
@@ -23,7 +24,7 @@ export default function createRouter(base, baseRef) {
       return {
         path: route.params.path,
         projectPath: base,
-        refType: route.query.ref_type || null,
+        refType: getRefType(route.query.ref_type || null),
       };
     },
   };

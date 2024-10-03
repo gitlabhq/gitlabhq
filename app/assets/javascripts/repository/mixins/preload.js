@@ -1,5 +1,6 @@
 import paginatedTreeQuery from 'shared_queries/repository/paginated_tree.query.graphql';
 import projectPathQuery from '../queries/project_path.query.graphql';
+import { getRefType } from '../utils/ref_type';
 import getRefMixin from './get_ref';
 
 export default {
@@ -24,7 +25,7 @@ export default {
           variables: {
             projectPath: this.projectPath,
             ref: this.ref,
-            refType: this.refType?.toUpperCase(),
+            refType: getRefType(this.refType),
             path: this.loadingPath,
             nextPageCursor: '',
             pageSize: 100,

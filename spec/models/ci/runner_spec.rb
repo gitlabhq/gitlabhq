@@ -1711,16 +1711,49 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
   describe '#token' do
     subject(:token) { runner.token }
 
+    let(:runner_type) { :instance_type }
+    let(:attrs) { {} }
+    let(:runner) { create(:ci_runner, runner_type, registration_type: registration_type, **attrs) }
+
     context 'when runner is registered' do
-      let(:runner) { create(:ci_runner) }
+      let(:registration_type) { :registration_token }
 
       it { is_expected.not_to start_with('glrt-') }
+      it { is_expected.to start_with('t1_') }
+
+      context 'when runner is group type' do
+        let(:runner_type) { :group_type }
+        let(:attrs) { { groups: [group] } }
+
+        it { is_expected.to start_with('t2_') }
+      end
+
+      context 'when runner is project type' do
+        let(:runner_type) { :project_type }
+        let(:attrs) { { projects: [project] } }
+
+        it { is_expected.to start_with('t3_') }
+      end
     end
 
     context 'when runner is created via UI' do
-      let(:runner) { create(:ci_runner, registration_type: :authenticated_user) }
+      let(:registration_type) { :authenticated_user }
 
-      it { is_expected.to start_with('glrt-') }
+      it { is_expected.to start_with('glrt-t1_') }
+
+      context 'when runner is group type' do
+        let(:runner_type) { :group_type }
+        let(:attrs) { { groups: [group] } }
+
+        it { is_expected.to start_with('glrt-t2_') }
+      end
+
+      context 'when runner is project type' do
+        let(:runner_type) { :project_type }
+        let(:attrs) { { projects: [project] } }
+
+        it { is_expected.to start_with('glrt-t3_') }
+      end
     end
   end
 

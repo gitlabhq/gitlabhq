@@ -943,6 +943,23 @@ With the [upcoming default behavior change to the CI/CD job token](https://docs.
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
+### `ciUsedMinutes` GraphQL field renamed to `ciDuration`
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.5</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/497364).
+
+</div>
+
+The `ciDuration` field of the `CiRunnerUsage` and `CiRunnerUsageByProject` types replaces the former `ciUsedMinutes` field.
+Update all references to `ciUsedMinutes` from these types to `ciDuration`.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
 ### `require_password_to_approve` field
 
 <div class="deprecation-notes">

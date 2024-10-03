@@ -19607,8 +19607,9 @@ Runner usage.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="cirunnerusagecibuildcount"></a>`ciBuildCount` | [`BigInt!`](#bigint) | Amount of builds executed during the selected period, encoded as a string. |
-| <a id="cirunnerusageciminutesused"></a>`ciMinutesUsed` | [`BigInt!`](#bigint) | Amount of minutes used during the selected period, encoded as a string. |
+| <a id="cirunnerusagecibuildcount"></a>`ciBuildCount` | [`BigInt!`](#bigint) | Amount of builds executed during the selected period. Encoded as a string. |
+| <a id="cirunnerusageciduration"></a>`ciDuration` | [`BigInt!`](#bigint) | Number of minutes spent to process jobs during the selected period. Encoded as a string. |
+| <a id="cirunnerusageciminutesused"></a>`ciMinutesUsed` **{warning-solid}** | [`BigInt!`](#bigint) | **Deprecated** in GitLab 17.5. Use `ciDuration`. |
 | <a id="cirunnerusagerunner"></a>`runner` | [`CiRunner`](#cirunner) | Runner that the usage refers to. Null means "Other runners". |
 
 ### `CiRunnerUsageByProject`

@@ -20,6 +20,7 @@ import { InternalEvents } from '~/tracking';
 import { FIND_FILE_BUTTON_CLICK } from '~/tracking/constants';
 import { updateElementsVisibility } from '../utils/dom';
 import blobControlsQuery from '../queries/blob_controls.query.graphql';
+import { getRefType } from '../utils/ref_type';
 
 export default {
   i18n: {
@@ -46,7 +47,7 @@ export default {
           projectPath: this.projectPath,
           filePath: this.filePath,
           ref: this.ref,
-          refType: this.refType?.toUpperCase(),
+          refType: getRefType(this.refType),
         };
       },
       skip() {

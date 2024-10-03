@@ -161,7 +161,7 @@ information required to create your GitLab Dedicated instance.
 1. Confirm account details: Confirm key attributes of your GitLab Dedicated account:
    - Reference architecture: Corresponds with the number of users you provided to your account team
      when beginning the onboarding process. For more information, see
-     [reference architectures](../../subscriptions/gitlab_dedicated/index.md#availability-and-scalability).
+     [reference architectures](../../subscriptions/gitlab_dedicated/data_residency_and_high_availability.md#availability-and-scalability).
    - Total repository storage size: Corresponds with the storage size you provided to your account
      team when beginning the onboarding process.
    - If you need to make changes to these attributes,
@@ -172,7 +172,7 @@ information required to create your GitLab Dedicated instance.
      `gitlab-dedicated.com`. You choose the subdomain name where your instance is accessible from.
      For example, `customer_name.gitlab-dedicated.com`. You can add a custom hostname in a later step.
    - Desired primary region: Primary AWS region in which your data is stored. Note the
-     [available AWS regions](../../subscriptions/gitlab_dedicated/index.md#available-aws-regions).
+     [available AWS regions](../../subscriptions/gitlab_dedicated/data_residency_and_high_availability.md#available-aws-regions).
    - Desired secondary region: Secondary AWS region in which your data is stored. This region is
      used to recover your GitLab Dedicated instance in case of a disaster.
    - Desired backup region: An AWS region where the primary backups of your data are replicated.
