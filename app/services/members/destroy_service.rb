@@ -91,7 +91,7 @@ module Members
 
     def delete_member_associations(member, skip_subresources, skip_saml_identity)
       if member.request? && member.user != current_user
-        notification_service.decline_access_request(member)
+        Members::AccessDeniedMailer.with(member: member).email.deliver_later # rubocop:disable CodeReuse/ActiveRecord -- false positive
       end
 
       delete_subresources(member) unless skip_subresources

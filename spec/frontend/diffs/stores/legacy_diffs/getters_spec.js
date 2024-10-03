@@ -499,7 +499,7 @@ describe('Diffs Module Getters', () => {
     it('proxies diffFiles state', () => {
       const diffFiles = [getDiffFileMock()];
       store.diffFiles = diffFiles;
-      expect(store.diffFilesFiltered).toBe(diffFiles);
+      expect(store.diffFilesFiltered).toStrictEqual(diffFiles);
     });
 
     it('links the file', () => {
@@ -515,7 +515,7 @@ describe('Diffs Module Getters', () => {
       const linkedFile = getDiffFileMock();
       store.diffFiles = [linkedFile];
       store.linkedFileHash = linkedFile.file_hash;
-      expect(store.linkedFile).toBe(linkedFile);
+      expect(store.linkedFile).toStrictEqual(linkedFile);
     });
 
     it('returns null if no linked file is set', () => {

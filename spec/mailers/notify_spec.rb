@@ -585,36 +585,6 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
       end
     end
 
-    describe 'project access denied' do
-      let_it_be(:project) { create(:project, :public) }
-      let_it_be(:project_member) { create(:project_member, :developer, :access_request, user: user, source: project) }
-
-      subject { described_class.member_access_denied_email('project', project.id, user.id) }
-
-      it_behaves_like 'an email sent from GitLab'
-      it_behaves_like 'it should not have Gmail Actions links'
-      it_behaves_like "a user cannot unsubscribe through footer link"
-      it_behaves_like 'appearance header and footer enabled'
-      it_behaves_like 'appearance header and footer not enabled'
-
-      it 'contains all the useful information' do
-        is_expected.to have_subject "Access to the #{project.full_name} project was denied"
-        is_expected.to have_body_text project.full_name
-        is_expected.to have_body_text project.web_url
-      end
-
-      context 'when user can not read project' do
-        let_it_be(:project) { create(:project, :private) }
-
-        it 'hides project name from subject and body' do
-          is_expected.to have_subject "Access to the Hidden project was denied"
-          is_expected.to have_body_text "Hidden project"
-          is_expected.not_to have_body_text project.full_name
-          is_expected.not_to have_body_text project.web_url
-        end
-      end
-    end
-
     describe 'project access changed' do
       let(:owner) { create(:user, name: "Chang O'Keefe") }
       let(:project) { create(:project, :public, namespace: owner.namespace) }
@@ -1641,39 +1611,6 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
         is_expected.to have_body_text group.name
         is_expected.to have_body_text group_group_members_url(group)
         is_expected.to have_body_text group_member.human_access
-      end
-    end
-
-    describe 'group access denied' do
-      let_it_be(:group) { create(:group, :public) }
-      let_it_be(:group_member) { create(:group_member, :developer, :access_request, user: user, source: group) }
-
-      let(:recipient) { user }
-
-      subject { described_class.member_access_denied_email('group', group.id, user.id) }
-
-      it_behaves_like 'an email sent from GitLab'
-      it_behaves_like 'an email sent to a user'
-      it_behaves_like 'it should not have Gmail Actions links'
-      it_behaves_like "a user cannot unsubscribe through footer link"
-      it_behaves_like 'appearance header and footer enabled'
-      it_behaves_like 'appearance header and footer not enabled'
-
-      it 'contains all the useful information' do
-        is_expected.to have_subject "Access to the #{group.name} group was denied"
-        is_expected.to have_body_text group.name
-        is_expected.to have_body_text group.web_url
-      end
-
-      context 'when user can not read group' do
-        let_it_be(:group) { create(:group, :private) }
-
-        it 'hides group name from subject and body' do
-          is_expected.to have_subject "Access to the Hidden group was denied"
-          is_expected.to have_body_text "Hidden group"
-          is_expected.not_to have_body_text group.name
-          is_expected.not_to have_body_text group.web_url
-        end
       end
     end
 

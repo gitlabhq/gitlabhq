@@ -35,21 +35,6 @@ module Emails
         subject: subject("Access to the #{member_source.human_name} #{member_source.model_name.singular} was granted"))
     end
 
-    def member_access_denied_email(member_source_type, source_id, user_id)
-      @member_source_type = member_source_type
-      @member_source = member_source_class.find(source_id)
-
-      user = User.find(user_id)
-
-      @source_hidden = !member_source.readable_by?(user)
-
-      human_name = @source_hidden ? 'Hidden' : member_source.human_name
-
-      email_with_layout(
-        to: user.notification_email_for(notification_group),
-        subject: subject("Access to the #{human_name} #{member_source.model_name.singular} was denied"))
-    end
-
     def member_invite_accepted_email(member_source_type, member_id)
       @member_source_type = member_source_type
       @member_id = member_id

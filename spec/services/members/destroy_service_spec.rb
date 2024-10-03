@@ -88,10 +88,12 @@ RSpec.describe Members::DestroyService, feature_category: :groups_and_projects d
   shared_examples 'a service destroying an access request of another user' do
     it_behaves_like 'a service destroying a member'
 
-    it 'calls Member#after_decline_request' do
-      expect_any_instance_of(NotificationService).to receive(:decline_access_request).with(member)
+    it 'calls the access denied mailer' do
+      allow(Members::AccessDeniedMailer).to receive(:email).with(member: member).and_call_original
 
-      described_class.new(current_user).execute(member, **opts)
+      expect do
+        described_class.new(current_user).execute(member, **opts)
+      end.to have_enqueued_mail(Members::AccessDeniedMailer, :email)
     end
   end
 
@@ -99,10 +101,10 @@ RSpec.describe Members::DestroyService, feature_category: :groups_and_projects d
     it_behaves_like 'a service destroying a member'
 
     context 'when current user is the member' do
-      it 'does not call Member#after_decline_request' do
-        expect_any_instance_of(NotificationService).not_to receive(:decline_access_request).with(member)
-
-        described_class.new(current_user).execute(member, **opts)
+      it 'does not call the access denied mailer' do
+        expect do
+          described_class.new(current_user).execute(member, **opts)
+        end.not_to have_enqueued_mail(Members::AccessDeniedMailer, :email)
       end
     end
   end

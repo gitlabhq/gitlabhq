@@ -15,6 +15,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     it { is_expected.to have_many(:all_owner_members) }
     it { is_expected.to have_many(:group_members).dependent(:destroy) }
     it { is_expected.to have_many(:non_invite_group_members).class_name('GroupMember') }
+    it { is_expected.to have_many(:request_group_members).class_name('GroupMember').inverse_of(:group) }
     it { is_expected.to have_many(:namespace_members) }
     it { is_expected.to have_many(:users).through(:group_members) }
     it { is_expected.to have_many(:owners).through(:all_owner_members) }
@@ -75,6 +76,21 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
       it 'includes the correct members' do
         expect(group.non_invite_group_members).to contain_exactly(non_invited_member, non_requested_member, non_minimal_access_member)
+      end
+    end
+
+    describe '#request_group_members' do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:requested_member) { create(:group_member, :access_request, group: group) }
+
+      before do
+        create(:group_member, group: group) # regular member
+        create(:group_member, :invited, group: group)
+        create(:group_member, :minimal_access, group: group)
+      end
+
+      it 'includes the correct members' do
+        expect(group.request_group_members).to contain_exactly(requested_member)
       end
     end
 
@@ -893,6 +909,14 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
   end
 
+  describe '#notification_group' do
+    it 'is expected to reference itself' do
+      group = build(:group)
+
+      expect(group.notification_group).to eq(group)
+    end
+  end
+
   describe '.public_or_visible_to_user' do
     let!(:private_group) { create(:group, :private) }
     let!(:private_subgroup) { create(:group, :private, parent: private_group) }
@@ -1120,6 +1144,17 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
       it 'loads the records of non invite group members' do
         associations = subject.map { |group| group.association(:non_invite_group_members) }
+        expect(associations).to all(be_loaded)
+      end
+    end
+
+    describe '.with_request_group_members' do
+      let_it_be(:group_member) { create(:group_member, :access_request, member_namespace: private_group) }
+
+      subject(:with_request_group_members) { described_class.with_request_group_members }
+
+      it 'loads the records of non invite group members' do
+        associations = with_request_group_members.map { |group| group.association(:request_group_members) }
         expect(associations).to all(be_loaded)
       end
     end

@@ -189,6 +189,7 @@ class Project < ApplicationRecord
   belongs_to :creator, class_name: 'User'
   belongs_to :organization, class_name: 'Organizations::Organization'
   belongs_to :group, -> { where(type: Group.sti_name) }, foreign_key: 'namespace_id'
+  alias_method :notification_group, :group
   belongs_to :namespace
   # Sync deletion via DB Trigger to ensure we do not have
   # a project without a project_namespace (or vice-versa)

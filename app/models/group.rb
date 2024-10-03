@@ -40,6 +40,10 @@ class Group < Namespace
   has_many :all_owner_members, -> { non_request.all_owners }, as: :source, class_name: 'GroupMember'
   has_many :group_members, -> { non_request.non_minimal_access }, dependent: :destroy, as: :source # rubocop:disable Cop/ActiveRecordDependent
   has_many :non_invite_group_members, -> { non_request.non_minimal_access.non_invite }, class_name: 'GroupMember', as: :source
+  has_many :request_group_members, -> do
+    request.non_minimal_access
+  end, inverse_of: :group, class_name: 'GroupMember', as: :source
+
   has_many :namespace_members, -> { non_request.non_minimal_access.unscope(where: %i[source_id source_type]) },
     foreign_key: :member_namespace_id, inverse_of: :group, class_name: 'GroupMember'
   alias_method :members, :group_members
@@ -184,6 +188,7 @@ class Group < Namespace
   scope :with_non_archived_projects, -> { includes(:non_archived_projects) }
 
   scope :with_non_invite_group_members, -> { includes(:non_invite_group_members) }
+  scope :with_request_group_members, -> { includes(:request_group_members) }
 
   scope :by_id, ->(groups) { where(id: groups) }
 
@@ -1006,6 +1011,10 @@ class Group < Namespace
     projects.find_by(path: README_PROJECT_PATH)
   end
   strong_memoize_attr :readme_project
+
+  def notification_group
+    self
+  end
 
   def group_readme
     readme_project&.repository&.readme

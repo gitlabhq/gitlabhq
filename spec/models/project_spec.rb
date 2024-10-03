@@ -1023,6 +1023,12 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
   it_behaves_like 'a BulkUsersByEmailLoad model'
 
+  describe '#notification_group' do
+    it 'is expected to be an alias' do
+      expect(build(:project).method(:notification_group).original_name).to eq(:group)
+    end
+  end
+
   describe '#all_pipelines' do
     let_it_be(:project) { create(:project) }
 

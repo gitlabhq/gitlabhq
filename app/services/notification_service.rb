@@ -512,12 +512,6 @@ class NotificationService
     recipients.each { |recipient| deliver_access_request_email(recipient, member) }
   end
 
-  def decline_access_request(member)
-    return true unless member.notifiable?(:subscription)
-
-    mailer.member_access_denied_email(member.real_source_type, member.source_id, member.user_id).deliver_later
-  end
-
   def decline_invite(member)
     # Must always send, regardless of project/namespace configuration since it's a
     # response to the user's action.
