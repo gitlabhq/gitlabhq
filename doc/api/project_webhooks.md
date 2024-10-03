@@ -550,3 +550,40 @@ Supported attributes:
 | `key`     | string            | Yes      | Key of the custom header. |
 
 On success, this endpoint returns the response code `204 No Content`.
+
+## Set a URL variable
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90310) in GitLab 15.2.
+
+```plaintext
+PUT /projects/:id/hooks/:hook_id/url_variables/:key
+```
+
+Supported attributes:
+
+| Attribute | Type              | Required | Description |
+|:----------|:------------------|:---------|:------------|
+| `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `hook_id` | integer           | Yes      | ID of the project webhook. |
+| `key`     | string            | Yes      | Key of the URL variable. |
+| `value`   | string            | Yes      | Value of the URL variable. |
+
+On success, this endpoint returns the response code `204 No Content`.
+
+## Delete a URL variable
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90310) in GitLab 15.2.
+
+```plaintext
+DELETE /projects/:id/hooks/:hook_id/url_variables/:key
+```
+
+Supported attributes:
+
+| Attribute | Type              | Required | Description |
+|:----------|:------------------|:---------|:------------|
+| `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `hook_id` | integer           | Yes      | ID of the project webhook. |
+| `key`     | string            | Yes      | Key of the URL variable. |
+
+On success, this endpoint returns the response code `204 No Content`.

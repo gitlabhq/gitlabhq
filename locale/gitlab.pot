@@ -1254,6 +1254,9 @@ msgid_plural "%{selectedProjectsCount} projects"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%{service_url} is not a valid URL."
+msgstr ""
+
 msgid "%{size} B"
 msgstr ""
 
@@ -8031,10 +8034,10 @@ msgstr ""
 msgid "Authentication via WebAuthn device failed."
 msgstr ""
 
-msgid "Authentication with GitLab Cloud services failed: %{error}"
+msgid "Authentication with the AI gateway services failed: %{error}"
 msgstr ""
 
-msgid "Authentication with GitLab Cloud services succeeded."
+msgid "Authentication with the AI gateway services succeeded."
 msgstr ""
 
 msgid "Author"
@@ -10899,6 +10902,9 @@ msgid "Cannot show preview. For previews on sketch files, they must have the fil
 msgstr ""
 
 msgid "Cannot skip two factor authentication setup"
+msgstr ""
+
+msgid "Cannot validate connection to host because the URL is empty."
 msgstr ""
 
 msgid "Capacity threshold"
@@ -21279,6 +21285,12 @@ msgid "Environment"
 msgstr ""
 
 msgid "Environment scope"
+msgstr ""
+
+msgid "Environment variable %{env_variable_name} is not set."
+msgstr ""
+
+msgid "Environment variable %{env_variable_name} is set to %{url}."
 msgstr ""
 
 msgid "Environment variables on this GitLab instance are configured to be %{help_link_start}protected%{help_link_end} by default."
@@ -32123,6 +32135,15 @@ msgid "License Compliance"
 msgstr ""
 
 msgid "License Compliance| Used by %{dependencies}"
+msgstr ""
+
+msgid "License does not provide access to Code Suggestions."
+msgstr ""
+
+msgid "License includes access to Code Suggestions, but you lack the necessary permissions to use this feature."
+msgstr ""
+
+msgid "License includes access to Code Suggestions."
 msgstr ""
 
 msgid "License key"

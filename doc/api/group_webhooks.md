@@ -742,3 +742,52 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 ```
 
 On success, no message is returned.
+
+## Set a URL variable
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90310) in GitLab 15.2.
+
+```plaintext
+PUT /groups/:id/hooks/:hook_id/url_variables/:key
+```
+
+Supported attributes:
+
+| Attribute | Type              | Required | Description |
+|-----------|-------------------|----------|-------------|
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `hook_id` | integer           | Yes      | The ID of the group hook. |
+| `key`     | string            | Yes      | The key of the URL variable. |
+| `value`   | string            | Yes      | The value of the URL variable. |
+
+Example request:
+
+```shell
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/3/hooks/1/url_variables/my_key?value='my_key_value'"
+```
+
+On success, no message is returned.
+
+## Delete a URL variable
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90310) in GitLab 15.2.
+
+```plaintext
+DELETE /groups/:id/hooks/:hook_id/url_variables/:key
+```
+
+Supported attributes:
+
+| Attribute | Type              | Required | Description |
+|-----------|-------------------|----------|-------------|
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `hook_id` | integer           | Yes      | The ID of the group hook. |
+| `key`     | string            | Yes      | The key of the URL variable. |
+
+Example request:
+
+```shell
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/3/hooks/1/url_variables/my_key"
+```
+
+On success, no message is returned.

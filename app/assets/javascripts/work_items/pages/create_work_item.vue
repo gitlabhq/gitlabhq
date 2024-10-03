@@ -8,6 +8,13 @@ export default {
   components: {
     CreateWorkItem,
   },
+  props: {
+    workItemTypeName: {
+      type: String,
+      required: false,
+      default: null,
+    },
+  },
   methods: {
     workItemCreated(workItem) {
       if (this.$router) {
@@ -24,5 +31,5 @@ export default {
 </script>
 
 <template>
-  <create-work-item @workItemCreated="workItemCreated" />
+  <create-work-item :work-item-type-name="workItemTypeName" @workItemCreated="workItemCreated" />
 </template>

@@ -9,7 +9,8 @@ function deslugify(slug) {
 export function sidebarEntriesToTree(entries) {
   if (!entries.length) return [];
 
-  const rootPath = entries[0].path.replace(new RegExp(`${entries[0].slug}$`), '');
+  const regex = new RegExp(`${entries[0].slug.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')}$`);
+  const rootPath = entries[0].path.replace(regex, '');
   const entriesMap = entries.reduce((acc, entry) => {
     acc[entry.slug] = entry;
     return acc;

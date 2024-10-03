@@ -220,6 +220,14 @@ describe('Create work item component', () => {
 
       expect(findFormTitle().exists()).toBe(false);
     });
+
+    it('filters work item type based on route parameter', async () => {
+      createComponent({ singleWorkItemType: true });
+      await waitForPromises();
+
+      expect(findSelect().exists()).toBe(false);
+      expect(findFormTitle().text()).toBe('New epic');
+    });
   });
 
   describe('Create work item', () => {
@@ -331,7 +339,8 @@ describe('Create work item component', () => {
   describe('Create work item widgets for epic work item type', () => {
     describe('default', () => {
       beforeEach(async () => {
-        await initialiseComponentAndSelectWorkItem();
+        await createComponent({ singleWorkItemType: true });
+        await waitForPromises();
       });
 
       it('renders the work item title widget', () => {
@@ -357,14 +366,19 @@ describe('Create work item component', () => {
 
     it('uses the description prop as the initial description value when defined', async () => {
       const description = 'i am a description';
-      await initialiseComponentAndSelectWorkItem({ props: { description } });
+      await createComponent({
+        singleWorkItemType: true,
+        props: { description },
+      });
+      await waitForPromises();
 
       expect(findDescriptionWidget().props('description')).toBe(description);
     });
 
     it('uses the title prop as the initial title value when defined', async () => {
       const title = 'i am a title';
-      await initialiseComponentAndSelectWorkItem({ props: { title } });
+      await createComponent({ singleWorkItemType: true, props: { title } });
+      await waitForPromises();
 
       expect(findTitleInput().props('title')).toBe(title);
     });

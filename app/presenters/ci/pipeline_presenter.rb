@@ -3,6 +3,7 @@
 module Ci
   class PipelinePresenter < Gitlab::View::Presenter::Delegated
     include Gitlab::Utils::StrongMemoize
+    include SafeFormatHelper
 
     delegator_override_with Gitlab::Utils::StrongMemoize # This module inclusion is expected. See https://gitlab.com/gitlab-org/gitlab/-/issues/352884.
 
@@ -69,18 +70,9 @@ module Ci
 
     def ref_text
       if pipeline.detached_merge_request_pipeline?
-        _("Related merge request %{link_to_merge_request} to merge %{link_to_merge_request_source_branch}")
-          .html_safe % {
-            link_to_merge_request: link_to_merge_request,
-            link_to_merge_request_source_branch: link_to_merge_request_source_branch
-          }
+        safe_format(_("Related merge request %{link_to_merge_request} to merge %{link_to_merge_request_source_branch}"), link_to_merge_request: link_to_merge_request, link_to_merge_request_source_branch: link_to_merge_request_source_branch)
       elsif pipeline.merged_result_pipeline?
-        _("Related merge request %{link_to_merge_request} to merge %{link_to_merge_request_source_branch} into %{link_to_merge_request_target_branch}")
-          .html_safe % {
-            link_to_merge_request: link_to_merge_request,
-            link_to_merge_request_source_branch: link_to_merge_request_source_branch,
-            link_to_merge_request_target_branch: link_to_merge_request_target_branch
-          }
+        safe_format(_("Related merge request %{link_to_merge_request} to merge %{link_to_merge_request_source_branch} into %{link_to_merge_request_target_branch}"), link_to_merge_request: link_to_merge_request, link_to_merge_request_source_branch: link_to_merge_request_source_branch, link_to_merge_request_target_branch: link_to_merge_request_target_branch)
       elsif all_related_merge_requests.any?
         (_("%{count} related %{pluralized_subject}: %{links}") % {
           count: all_related_merge_requests.count,
@@ -88,10 +80,9 @@ module Ci
           links: all_related_merge_request_links.join(', ')
         }).html_safe
       elsif pipeline.ref && pipeline.ref_exists?
-        _("For %{link_to_pipeline_ref}")
-        .html_safe % { link_to_pipeline_ref: link_to_pipeline_ref }
+        safe_format(_("For %{link_to_pipeline_ref}"), link_to_pipeline_ref: link_to_pipeline_ref)
       elsif pipeline.ref
-        _("For %{ref}").html_safe % { ref: plain_ref_name }
+        safe_format(_("For %{ref}"), ref: plain_ref_name)
       end
     end
 

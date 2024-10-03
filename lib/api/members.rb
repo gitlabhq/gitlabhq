@@ -149,7 +149,7 @@ module API
           authorize_update_source_member!(source_type, member)
 
           result = ::Members::UpdateService
-            .new(current_user, declared_params(include_missing: false))
+            .new(current_user, declared_params(include_missing: false).merge({ source: source }))
             .execute(member)
 
           present_put_membership_response(result)

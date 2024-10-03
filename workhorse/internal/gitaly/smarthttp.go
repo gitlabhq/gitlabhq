@@ -10,11 +10,13 @@ import (
 	"gitlab.com/gitlab-org/gitaly/v16/streamio"
 )
 
+// SmartHTTPClient encapsulates the SmartHTTPServiceClient for Gitaly.
 type SmartHTTPClient struct {
 	sidechannelRegistry *gitalyclient.SidechannelRegistry
 	gitalypb.SmartHTTPServiceClient
 }
 
+// InfoRefsResponseReader handles InfoRefs requests and returns an io.Reader for the response.
 func (client *SmartHTTPClient) InfoRefsResponseReader(ctx context.Context, repo *gitalypb.Repository, rpc string, gitConfigOptions []string, gitProtocol string) (io.Reader, error) {
 	rpcRequest := &gitalypb.InfoRefsRequest{
 		Repository:       repo,
@@ -45,6 +47,7 @@ func infoRefsReader(stream infoRefsClient) io.Reader {
 	})
 }
 
+// ReceivePack performs a receive pack operation with Git configuration options.
 func (client *SmartHTTPClient) ReceivePack(ctx context.Context, repo *gitalypb.Repository, glID string, glUsername string, glRepository string, gitConfigOptions []string, clientRequest io.Reader, clientResponse io.Writer, gitProtocol string) error {
 	stream, err := client.PostReceivePack(ctx)
 	if err != nil {
@@ -81,7 +84,7 @@ func (client *SmartHTTPClient) ReceivePack(ctx context.Context, repo *gitalypb.R
 			return stream.Send(&gitalypb.PostReceivePackRequest{Data: data})
 		})
 		_, err := io.Copy(sw, clientRequest)
-		stream.CloseSend()
+		_ = stream.CloseSend()
 		errC <- err
 	}()
 
@@ -94,6 +97,7 @@ func (client *SmartHTTPClient) ReceivePack(ctx context.Context, repo *gitalypb.R
 	return nil
 }
 
+// UploadPack performs an upload pack operation with a sidechannel.
 func (client *SmartHTTPClient) UploadPack(ctx context.Context, repo *gitalypb.Repository, clientRequest io.Reader, clientResponse io.Writer, gitConfigOptions []string, gitProtocol string) (*gitalypb.PostUploadPackWithSidechannelResponse, error) {
 	ctx, waiter := client.sidechannelRegistry.Register(ctx, func(conn gitalyclient.SidechannelConn) error {
 		if _, err := io.Copy(conn, clientRequest); err != nil {
@@ -110,7 +114,7 @@ func (client *SmartHTTPClient) UploadPack(ctx context.Context, repo *gitalypb.Re
 
 		return nil
 	})
-	defer waiter.Close()
+	defer waiter.Close() //nolint:errcheck
 
 	rpcRequest := &gitalypb.PostUploadPackWithSidechannelRequest{
 		Repository:       repo,

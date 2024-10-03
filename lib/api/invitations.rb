@@ -101,7 +101,7 @@ module API
           bad_request! unless update_params.any?
 
           result = ::Members::UpdateService
-            .new(current_user, update_params)
+            .new(current_user, update_params.merge({ source: source }))
             .execute(invite)
 
           updated_member = result[:members].first

@@ -1,3 +1,16 @@
+/*
+Package gitaly provides a comprehensive client for interacting with Gitaly services, facilitating operations on Git repositories. Key features include:
+
+1. Streaming blob data from Gitaly Blob service, suitable for serving content over HTTP.
+2. Retrieving and streaming diffs and patches from Gitaly server.
+3. Managing gRPC connections to Gitaly server with connection caching and metadata handling.
+4. Providing clients for various services including Blob, Repository, and Diff.
+5. Retrieving repository archives and snapshots through the RepositoryService.
+6. Handling Git operations via smart HTTP requests, including InfoRefs, ReceivePack, and UploadPack.
+7. Supporting efficient streaming of request and response data.
+
+This package enhances interaction with Git repositories managed by Gitaly, offering a streamlined interface for version control operations and data retrieval.
+*/
 package gitaly
 
 import (
@@ -60,6 +73,7 @@ var (
 	)
 )
 
+// InitializeSidechannelRegistry creates the side channel registry if it doesn't exist.
 func InitializeSidechannelRegistry(logger *logrus.Logger) {
 	if sidechannelRegistry == nil {
 		sidechannelRegistry = gitalyclient.NewSidechannelRegistry(logrus.NewEntry(logger))
@@ -82,6 +96,7 @@ func withOutgoingMetadata(ctx context.Context, gs api.GitalyServer) context.Cont
 	return metadata.NewOutgoingContext(ctx, md)
 }
 
+// NewSmartHTTPClient is created and returns it with updated context.
 func NewSmartHTTPClient(ctx context.Context, server api.GitalyServer) (context.Context, *SmartHTTPClient, error) {
 	conn, err := getOrCreateConnection(server)
 	if err != nil {
@@ -95,6 +110,7 @@ func NewSmartHTTPClient(ctx context.Context, server api.GitalyServer) (context.C
 	return withOutgoingMetadata(ctx, server), smartHTTPClient, nil
 }
 
+// NewBlobClient is created and returns it with updated context.
 func NewBlobClient(ctx context.Context, server api.GitalyServer) (context.Context, *BlobClient, error) {
 	conn, err := getOrCreateConnection(server)
 	if err != nil {
@@ -104,6 +120,7 @@ func NewBlobClient(ctx context.Context, server api.GitalyServer) (context.Contex
 	return withOutgoingMetadata(ctx, server), &BlobClient{grpcClient}, nil
 }
 
+// NewRepositoryClient is created and returns it with updated context.
 func NewRepositoryClient(ctx context.Context, server api.GitalyServer) (context.Context, *RepositoryClient, error) {
 	conn, err := getOrCreateConnection(server)
 	if err != nil {
@@ -113,6 +130,7 @@ func NewRepositoryClient(ctx context.Context, server api.GitalyServer) (context.
 	return withOutgoingMetadata(ctx, server), &RepositoryClient{grpcClient}, nil
 }
 
+// NewDiffClient is created and returns it with updated context.
 func NewDiffClient(ctx context.Context, server api.GitalyServer) (context.Context, *DiffClient, error) {
 	conn, err := getOrCreateConnection(server)
 	if err != nil {
@@ -156,27 +174,29 @@ func getOrCreateConnection(server api.GitalyServer) (*grpc.ClientConn, error) {
 		return cachedConn, nil
 	}
 
-	conn, err := newConnection(server)
+	newConn, err := newConnection(server)
 	if err != nil {
 		return nil, err
 	}
 
-	cache.connections[key] = conn
+	cache.connections[key] = newConn
 
-	return conn, nil
+	return newConn, nil
 }
 
+// CloseConnections closes all connections in cache.
 func CloseConnections() {
 	cache.Lock()
 	defer cache.Unlock()
 
 	for _, conn := range cache.connections {
-		conn.Close()
+		_ = conn.Close()
 	}
 }
 
 func newConnection(server api.GitalyServer) (*grpc.ClientConn, error) {
-	connOpts := append(gitalyclient.DefaultDialOpts,
+	connOpts := gitalyclient.DefaultDialOpts
+	connOpts = append(connOpts,
 		grpc.WithPerRPCCredentials(gitalyauth.RPCCredentialsV2(server.Token)),
 		grpc.WithChainStreamInterceptor(
 			grpctracing.StreamClientTracingInterceptor(),
@@ -193,7 +213,6 @@ func newConnection(server api.GitalyServer) (*grpc.ClientConn, error) {
 				grpccorrelation.WithClientName("gitlab-workhorse"),
 			),
 		),
-
 		// In https://gitlab.com/groups/gitlab-org/-/epics/8971, we added DNS discovery support to Praefect. This was
 		// done by making two changes:
 		// - Configure client-side round-robin load-balancing in client dial options. We added that as a default option
@@ -216,6 +235,7 @@ func newConnection(server api.GitalyServer) (*grpc.ClientConn, error) {
 	return conn, connErr
 }
 
+// UnmarshalJSON into a protobuf message.
 func UnmarshalJSON(s string, msg proto.Message) error {
 	return protojson.UnmarshalOptions{DiscardUnknown: true}.Unmarshal([]byte(s), msg)
 }

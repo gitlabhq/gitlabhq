@@ -12,6 +12,7 @@ import currentUserQuery from '~/graphql_shared/queries/current_user.query.graphq
 import App from '~/work_items/components/app.vue';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import CreateWorkItem from '~/work_items/pages/create_work_item.vue';
+import { WORK_ITEM_BASE_ROUTE_MAP } from '~/work_items/constants';
 import WorkItemsRoot from '~/work_items/pages/work_item_root.vue';
 import { createRouter } from '~/work_items/router';
 import workItemUpdatedSubscription from '~/work_items/graphql/work_item_updated.subscription.graphql';
@@ -25,6 +26,7 @@ describe('Work items router', () => {
 
   Vue.use(VueApollo);
 
+  const workItemTypes = Object.keys(WORK_ITEM_BASE_ROUTE_MAP);
   const workItemQueryHandler = jest
     .fn()
     .mockResolvedValue(workItemByIidResponseFactory({ hierarchyWidgetPresent: false }));
@@ -80,35 +82,8 @@ describe('Work items router', () => {
     });
   };
 
-  beforeEach(() => {
-    window.gon = {
-      features: {
-        workItemsAlpha: false,
-      },
-    };
-  });
-
   afterEach(() => {
     window.location.hash = '';
-  });
-
-  it('renders work item on `/1` route', async () => {
-    await createComponent('/work_items/1');
-
-    expect(wrapper.findComponent(WorkItemsRoot).exists()).toBe(true);
-  });
-
-  it('does not render create work item page on `/new` route if `workItemsAlpha` feature flag is off', async () => {
-    await createComponent('/work_items/new');
-
-    expect(wrapper.findComponent(CreateWorkItem).exists()).toBe(false);
-  });
-
-  it('renders create work item page on `/new` route', async () => {
-    window.gon.features.workItemsAlpha = true;
-    await createComponent('/work_items/new');
-
-    expect(wrapper.findComponent(CreateWorkItem).exists()).toBe(true);
   });
 
   it('includes relative_url_root', () => {
@@ -124,15 +99,19 @@ describe('Work items router', () => {
     expect(router.options.base).toBe('/groups/work_item/-');
   });
 
-  it('renders work item on `/issues/1` route', async () => {
-    await createComponent('/issues/1');
+  describe.each(workItemTypes)('Create Work Item for type: %s', (type) => {
+    it(`renders create work item page on /${type}/new route`, async () => {
+      await createComponent(`/${type}/new`);
 
-    expect(wrapper.findComponent(WorkItemsRoot).exists()).toBe(true);
+      expect(wrapper.findComponent(CreateWorkItem).exists()).toBe(true);
+    });
   });
 
-  it('renders work item on `/epics/1` route', async () => {
-    await createComponent('/epics/1');
+  describe.each(workItemTypes)('Display Work Item for type: %s', (type) => {
+    it(`renders work item page on /${type}/1 route`, async () => {
+      await createComponent(`/${type}/1`);
 
-    expect(wrapper.findComponent(WorkItemsRoot).exists()).toBe(true);
+      expect(wrapper.findComponent(WorkItemsRoot).exists()).toBe(true);
+    });
   });
 });

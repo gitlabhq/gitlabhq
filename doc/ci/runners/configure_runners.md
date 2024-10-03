@@ -1175,7 +1175,7 @@ An example of provenance metadata that the GitLab Runner might generate is as fo
 To verify compliance with the in-toto specification,
 see the [in-toto statement](https://in-toto.io/Statement/v0.1).
 
-### Staging directory
+## Staging directory
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3403) in GitLab Runner 15.0.
 
@@ -1189,7 +1189,7 @@ To change the directory, set `ARCHIVER_STAGING_DIR` as a variable in your CI job
 The directory you specify is used as the location for downloading artifacts prior to extraction. If the `fastzip` archiver is
 used, this location is also used as scratch space when archiving.
 
-### Configure `fastzip` to improve performance
+## Configure `fastzip` to improve performance
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3130) in GitLab Runner 15.0.
 

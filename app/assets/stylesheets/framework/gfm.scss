@@ -8,7 +8,8 @@
   font-size: 95%;
 }
 
-.gfm-project_member,
+// Increase specificity to ensure that it is applied
+.gfm-project_member.gfm-project_member,
 .md a.gfm-project_member {
   padding: 0 2px;
   color: var(--gl-link-mention-text-color-default);
