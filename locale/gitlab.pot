@@ -3258,9 +3258,6 @@ msgstr ""
 msgid "Add environment"
 msgstr ""
 
-msgid "Add exclusion"
-msgstr ""
-
 msgid "Add exclusions"
 msgstr ""
 
@@ -3587,6 +3584,12 @@ msgstr ""
 msgid "AdminAIPoweredFeatures|Add self-hosted model"
 msgstr ""
 
+msgid "AdminAIPoweredFeatures|An error occurred while loading the AI feature settings. Please try again."
+msgstr ""
+
+msgid "AdminAIPoweredFeatures|Compatible models"
+msgstr ""
+
 msgid "AdminAIPoweredFeatures|Disabled"
 msgstr ""
 
@@ -3600,9 +3603,6 @@ msgid "AdminAIPoweredFeatures|Model name"
 msgstr ""
 
 msgid "AdminAIPoweredFeatures|Select a self-hosted model"
-msgstr ""
-
-msgid "AdminAIPoweredFeatures|Self-hosted models"
 msgstr ""
 
 msgid "AdminAIPoweredFeatures|Sub feature"
@@ -49062,6 +49062,9 @@ msgstr ""
 msgid "SecurityExclusions|Add exclusion"
 msgstr ""
 
+msgid "SecurityExclusions|Created"
+msgstr ""
+
 msgid "SecurityExclusions|Delete exclusion"
 msgstr ""
 
@@ -49087,6 +49090,9 @@ msgid "SecurityExclusions|Enter one or more rules to ignore, separated by line b
 msgstr ""
 
 msgid "SecurityExclusions|Exclusion deleted successfully."
+msgstr ""
+
+msgid "SecurityExclusions|Exclusion details"
 msgstr ""
 
 msgid "SecurityExclusions|Exclusion disabled successfully."
@@ -49122,6 +49128,9 @@ msgstr ""
 msgid "SecurityExclusions|Rule"
 msgstr ""
 
+msgid "SecurityExclusions|Save Changes"
+msgstr ""
+
 msgid "SecurityExclusions|Scanner rule identifier"
 msgstr ""
 
@@ -49152,6 +49161,12 @@ msgid "SecurityExclusions|Type"
 msgstr ""
 
 msgid "SecurityExclusions|Unprocessed data"
+msgstr ""
+
+msgid "SecurityExclusions|Update exclusion"
+msgstr ""
+
+msgid "SecurityExclusions|Updated"
 msgstr ""
 
 msgid "SecurityExclusions|Value"
@@ -50444,9 +50459,6 @@ msgstr ""
 msgid "SecurityReports|No vulnerabilities found"
 msgstr ""
 
-msgid "SecurityReports|No vulnerabilities found for this pipeline"
-msgstr ""
-
 msgid "SecurityReports|Oops, something doesn't seem right."
 msgstr ""
 
@@ -50618,9 +50630,6 @@ msgid "SecurityReports|Vulnerability report"
 msgstr ""
 
 msgid "SecurityReports|Warning parsing security reports"
-msgstr ""
-
-msgid "SecurityReports|While it's rare to have no vulnerabilities for your pipeline, it can happen. In any event, we ask that you double check your settings to make sure all security scanning jobs have passed successfully."
 msgstr ""
 
 msgid "SecurityReports|You do not have sufficient permissions to access this report"

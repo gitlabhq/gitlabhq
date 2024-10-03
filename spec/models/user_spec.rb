@@ -3974,30 +3974,48 @@ RSpec.describe User, feature_category: :user_profile do
           stub_application_setting(allow_project_creation_for_guest_and_below: false)
         end
 
-        [
-          Gitlab::Access::NO_ACCESS,
-          Gitlab::Access::MINIMAL_ACCESS,
-          Gitlab::Access::GUEST
-        ].each do |role|
-          context "when users highest role is #{role}" do
-            it "returns false" do
-              allow(user).to receive(:highest_role).and_return(role)
-              expect(user.can_create_project?).to be_falsey
+        context 'with users having various membership access_levels' do
+          [
+            Gitlab::Access::NO_ACCESS,
+            Gitlab::Access::MINIMAL_ACCESS,
+            Gitlab::Access::GUEST
+          ].each do |role|
+            context "when users highest role is #{role}" do
+              it "returns false" do
+                allow(user).to receive(:highest_role).and_return(role)
+                expect(user.can_create_project?).to be_falsey
+              end
+            end
+          end
+
+          [
+            Gitlab::Access::REPORTER,
+            Gitlab::Access::DEVELOPER,
+            Gitlab::Access::MAINTAINER,
+            Gitlab::Access::OWNER,
+            Gitlab::Access::ADMIN
+          ].each do |role|
+            context "when users highest role is #{role}" do
+              it "returns true" do
+                allow(user).to receive(:highest_role).and_return(role)
+                expect(user.can_create_project?).to be_truthy
+              end
             end
           end
         end
 
-        [
-          Gitlab::Access::REPORTER,
-          Gitlab::Access::DEVELOPER,
-          Gitlab::Access::MAINTAINER,
-          Gitlab::Access::OWNER,
-          Gitlab::Access::ADMIN
-        ].each do |role|
-          context "when users highest role is #{role}" do
+        context 'when user does not have any membership records' do
+          context 'when user is admin', :enable_admin_mode do
+            let(:user) { create(:admin) }
+
             it "returns true" do
-              allow(user).to receive(:highest_role).and_return(role)
               expect(user.can_create_project?).to be_truthy
+            end
+          end
+
+          context 'when user is not admin' do
+            it "returns false" do
+              expect(user.can_create_project?).to be_falsey
             end
           end
         end

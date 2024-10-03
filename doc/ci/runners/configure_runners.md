@@ -41,7 +41,7 @@ To set the maximum job timeout:
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **CI/CD > Runners**.
 1. To the right of the runner, you want to edit, select **Edit** (**{pencil}**).
-1. In the **Maximum job timeout** field, enter a value in seconds. The minimum amount is 600 seconds (10 minutes).
+1. In the **Maximum job timeout** field, enter a value in seconds. The minimum value is 600 seconds (10 minutes).
 1. Select **Save changes**.
 
 ### For a group runner
@@ -55,7 +55,7 @@ To set the maximum job timeout:
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Build > Runners**.
 1. To the right of the runner you want to edit, select **Edit** (**{pencil}**).
-1. In the **Maximum job timeout** field, enter a value in seconds. The minimum amount is 600 seconds (10 minutes).
+1. In the **Maximum job timeout** field, enter a value in seconds. The minimum value is 600 seconds (10 minutes).
 1. Select **Save changes**.
 
 ### For a project runner
@@ -70,7 +70,7 @@ To set the maximum job timeout:
 1. Select **Settings > CI/CD**.
 1. Expand **Runners**.
 1. To the right of the runner you want to edit, select **Edit** (**{pencil}**).
-1. In the **Maximum job timeout** field, enter a value in seconds. The minimum amount is 600 seconds (10 minutes). If not defined, the [job timeout for the project](../pipelines/settings.md#set-a-limit-for-how-long-jobs-can-run) is used instead.
+1. In the **Maximum job timeout** field, enter a value in seconds. The minimum value is 600 seconds (10 minutes). If not defined, the [job timeout for the project](../pipelines/settings.md#set-a-limit-for-how-long-jobs-can-run) is used instead.
 1. Select **Save changes**.
 
 ## How maximum job timeout works

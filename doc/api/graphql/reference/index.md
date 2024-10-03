@@ -35937,6 +35937,7 @@ LLMs supported by the self-hosted model features.
 
 | Value | Description |
 | ----- | ----------- |
+| <a id="aiacceptedselfhostedmodelsclaude_3"></a>`CLAUDE_3` | Claude 3 model family, suitable for code generation and duo chat. |
 | <a id="aiacceptedselfhostedmodelscodegemma"></a>`CODEGEMMA` | CodeGemma Code: Suitable for code suggestions. |
 | <a id="aiacceptedselfhostedmodelscodellama"></a>`CODELLAMA` | Code-Llama Instruct: Suitable for code suggestions. |
 | <a id="aiacceptedselfhostedmodelscodestral"></a>`CODESTRAL` | Codestral: Suitable for code suggestions. |

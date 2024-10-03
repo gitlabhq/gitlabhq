@@ -353,3 +353,17 @@ and GitLab features. For example, restrict the token by:
   that are restricted to a subset of project users.
 - Scoping the JWT to [GitLab protected tags](../../user/project/protected_tags.md),
   that are restricted to a subset of project users.
+
+## Troubleshooting
+
+## `The secrets provider can not be found. Check your CI/CD variables and try again.` message
+
+You might receive this error when attempting to start a job configured to access HashiCorp Vault:
+
+```plaintext
+The secrets provider can not be found. Check your CI/CD variables and try again.
+```
+
+The job can't be created because the required variable is not defined:
+
+- `VAULT_SERVER_URL`

@@ -1477,6 +1477,7 @@ class User < ApplicationRecord
 
   def allow_user_to_create_group_and_project?
     return true if Gitlab::CurrentSettings.allow_project_creation_for_guest_and_below
+    return true if can_admin_all_resources?
 
     highest_role > Gitlab::Access::GUEST
   end
