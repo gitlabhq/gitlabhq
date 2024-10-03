@@ -13,7 +13,7 @@ RSpec.describe Banzai::ObjectRenderer, feature_category: :markdown do
     )
   end
 
-  let(:object) { Note.new(note: 'hello', note_html: '<p dir="auto">hello</p>', cached_markdown_version: Gitlab::MarkdownCache::CACHE_COMMONMARK_VERSION << 16) }
+  let(:object) { Note.new(note: 'hello', note_html: '<p dir="auto">hello</p>', cached_markdown_version: Gitlab::MarkdownCache::CACHE_COMMONMARK_VERSION_SHIFTED) }
 
   describe '#render' do
     context 'with cache' do

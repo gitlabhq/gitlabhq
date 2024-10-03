@@ -20,6 +20,11 @@ To set up the GitLab for Jira Cloud app on your self-managed instance, do one of
 - [Install the GitLab for Jira Cloud app from the Atlassian Marketplace](#install-the-gitlab-for-jira-cloud-app-from-the-atlassian-marketplace) (GitLab 15.7 and later).
 - [Install the GitLab for Jira Cloud app manually](#install-the-gitlab-for-jira-cloud-app-manually).
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an overview, see
+[Configure the GitLab for Jira Cloud app from the Atlassian Marketplace with a self-managed instance](https://www.youtube.com/watch?v=dka9fLoGsno&t=1665s).
+<!-- Video published on 2024-06-27 -->
+
 After you set up the app, you can use the [project toolchain](https://support.atlassian.com/jira-software-cloud/docs/what-is-the-connections-feature/)
 developed and maintained by Atlassian to [link GitLab repositories to Jira projects](https://support.atlassian.com/jira-software-cloud/docs/link-repositories-to-a-project/#Link-repositories-using-the-toolchain-feature).
 The project toolchain does not affect how development information is synced between GitLab and Jira Cloud.

@@ -151,6 +151,26 @@ RSpec.describe Banzai::Renderer, feature_category: :markdown do
     end
   end
 
+  describe '#full_cache_key' do
+    it 'returns nil when no cache_key' do
+      expect(described_class.full_cache_key(nil, :full)).to be_nil
+    end
+
+    it 'returns a valid full cache key' do
+      cache_key = described_class.full_cache_key('my_cache_key', :emoji)
+      markdown_version = Gitlab::MarkdownCache.latest_cached_markdown_version(local_version: nil)
+
+      expect(cache_key).to eq ["banzai", "my_cache_key", :emoji, markdown_version]
+    end
+
+    it 'pipeline name defaults to :full' do
+      cache_key = described_class.full_cache_key('my_cache_key', nil)
+      markdown_version = Gitlab::MarkdownCache.latest_cached_markdown_version(local_version: nil)
+
+      expect(cache_key).to eq ["banzai", "my_cache_key", :full, markdown_version]
+    end
+  end
+
   describe 'instrumentation in render_result' do
     it 'calculates pipeline timing' do
       expect(ActiveSupport::Notifications).to receive(:monotonic_subscribe).with('call_filter.html_pipeline')

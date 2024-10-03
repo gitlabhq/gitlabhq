@@ -2196,7 +2196,9 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
     end
 
     it 'caches the freeze periods' do
-      expect(Gitlab::SafeRequestStore).to receive(:fetch)
+      allow(Gitlab::SafeRequestStore).to receive(:fetch).and_call_original
+
+      expect(Gitlab::SafeRequestStore).to receive(:fetch).with("project:#{project.id}:freeze_periods_for_environments")
         .at_least(:once)
         .and_return([freeze_period])
 

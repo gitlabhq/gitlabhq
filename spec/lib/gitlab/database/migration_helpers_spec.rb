@@ -2255,10 +2255,26 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
     end
   end
 
+  shared_examples 'initializes bigint column conversion' do |expects_table_integer_ids_file_update|
+    it 'creates bigint column(s) and expected trigger(s)' do
+      tmp_columns.each do |tmp_column|
+        expect(model).to receive(:add_column).with(table, tmp_column, :bigint, default: 0, null: false)
+      end
+
+      expect(model).to receive(:install_rename_triggers).with(table, columns, tmp_columns)
+
+      expect(model).to receive(:update_table_integer_ids_file).with({}) if expects_table_integer_ids_file_update
+
+      model.initialize_conversion_of_integer_to_bigint(table, columns)
+    end
+  end
+
   describe '#initialize_conversion_of_integer_to_bigint' do
     let(:table) { :_test_table }
     let(:column) { :id }
+    let(:non_nullable_column) { :non_nullable_column }
     let(:tmp_column) { model.convert_to_bigint_column(column) }
+    let(:tmp_non_nullable_column) { model.convert_to_bigint_column(non_nullable_column) }
 
     before do
       model.create_table table, id: false do |t|
@@ -2287,6 +2303,43 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
       it 'raises an error' do
         expect { model.initialize_conversion_of_integer_to_bigint(table, :this_column_is_not_real) }
           .to raise_error(ArgumentError, "Column this_column_is_not_real does not exist on #{table}")
+      end
+    end
+
+    # This spec can be removed once we convert all integer IDs to bigint
+    # in https://gitlab.com/gitlab-org/gitlab/-/issues/465805
+    context 'when the target table has int IDs' do
+      before do
+        allow(model).to receive(:table_integer_ids).and_return(table_int_ids)
+      end
+
+      let(:table_int_ids) { { table.to_s => [column.to_s, non_nullable_column.to_s] } }
+
+      context 'with milestone less than the enforced version' do
+        before do
+          allow(model).to receive(:milestone).and_return('17.3')
+        end
+
+        it_behaves_like 'initializes bigint column conversion', false do
+          let(:columns) { [column] }
+          let(:tmp_columns) { [tmp_column] }
+        end
+      end
+
+      context 'with milestone greater than the enforced milestone' do
+        before do
+          allow(model).to receive(:milestone).and_return('17.10')
+        end
+
+        it 'raises an error on not initializing all integer IDs' do
+          expect { model.initialize_conversion_of_integer_to_bigint(table, column) }
+            .to raise_error(format(described_class::PENDING_INT_IDS_ERROR_MSG, table: table, int_ids: [non_nullable_column.to_s]))
+        end
+
+        it_behaves_like 'initializes bigint column conversion', true do
+          let(:columns) { [column, non_nullable_column] }
+          let(:tmp_columns) { [tmp_column, tmp_non_nullable_column] }
+        end
       end
     end
 
@@ -2395,6 +2448,29 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
     end
   end
 
+  shared_examples 'reverts initialization of bigint columns' do |expects_table_integer_ids_file_update|
+    it 'removes bigint columns and triggers' do
+      columns = Array(columns)
+      temporary_columns = columns.map { |column| model.convert_to_bigint_column(column) }
+      trigger_name = model.rename_trigger_name(table, columns, temporary_columns)
+
+      if expects_table_integer_ids_file_update
+        integer_ids = model.table_integer_ids
+        integer_ids[table.to_s] = columns.map(&:to_s)
+        expect(model).to receive(:update_table_integer_ids_file).with(integer_ids)
+      end
+
+      model.revert_initialize_conversion_of_integer_to_bigint(table, columns)
+
+      temporary_columns.each do |column|
+        expect(model.column_exists?(table, column)).to eq(false)
+      end
+
+      expect_trigger_not_to_exist(table, trigger_name)
+      expect_function_not_to_exist(trigger_name)
+    end
+  end
+
   describe '#revert_initialize_conversion_of_integer_to_bigint' do
     let(:setup_table) { true }
     let(:table) { :_test_table }
@@ -2419,35 +2495,31 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
       end
     end
 
-    context 'when single column is given' do
-      let(:columns) { :id }
+    context 'with milestone less than the enforced milestone' do
+      before do
+        allow(model).to receive(:milestone).and_return('17.3')
+      end
 
-      it 'removes column, trigger, and function' do
-        temporary_column = model.convert_to_bigint_column(columns)
-        trigger_name = model.rename_trigger_name(table, :id, temporary_column)
+      context 'when single column is given' do
+        it_behaves_like 'reverts initialization of bigint columns', false do
+          let(:columns) { :id }
+        end
+      end
 
-        model.revert_initialize_conversion_of_integer_to_bigint(table, columns)
-
-        expect(model.column_exists?(table, temporary_column)).to eq(false)
-        expect_trigger_not_to_exist(table, trigger_name)
-        expect_function_not_to_exist(trigger_name)
+      context 'when multiple columns are given' do
+        it_behaves_like 'reverts initialization of bigint columns', false do
+          let(:columns) { [:id, :other_id] }
+        end
       end
     end
 
-    context 'when multiple columns are given' do
-      let(:columns) { [:id, :other_id] }
+    context 'with milestone greater than the ENFORCE_INITIALIZE_ALL_INT_IDS_FROM_MILESTONE' do
+      before do
+        allow(model).to receive(:milestone).and_return('17.5')
+      end
 
-      it 'removes column, trigger, and function' do
-        temporary_columns = columns.map { |column| model.convert_to_bigint_column(column) }
-        trigger_name = model.rename_trigger_name(table, columns, temporary_columns)
-
-        model.revert_initialize_conversion_of_integer_to_bigint(table, columns)
-
-        temporary_columns.each do |column|
-          expect(model.column_exists?(table, column)).to eq(false)
-        end
-        expect_trigger_not_to_exist(table, trigger_name)
-        expect_function_not_to_exist(trigger_name)
+      it_behaves_like 'reverts initialization of bigint columns', true do
+        let(:columns) { [:id, :other_id] }
       end
     end
   end

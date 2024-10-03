@@ -1,0 +1,828 @@
+# -- DON'T MANUALLY EDIT --
+# Contains the list of integer IDs which were converted to bigint for new installations in
+# https://gitlab.com/gitlab-org/gitlab/-/issues/438124, but they are still integers for existing instances.
+# On initialize_conversion_of_integer_to_bigint those integer IDs will be removed automatically from here.
+---
+abuse_reports:
+  - assignee_id
+  - id
+  - reporter_id
+  - resolved_by_id
+  - user_id
+alert_management_alert_user_mentions:
+  - mentioned_groups_ids
+  - mentioned_projects_ids
+  - mentioned_users_ids
+alert_management_alerts:
+  - environment_id
+  - prometheus_alert_id
+allowed_email_domains:
+  - group_id
+analytics_cycle_analytics_aggregations:
+  - last_full_issues_id
+  - last_full_merge_requests_id
+  - last_incremental_issues_id
+  - last_incremental_merge_requests_id
+analytics_devops_adoption_segments:
+  - display_namespace_id
+  - namespace_id
+analytics_devops_adoption_snapshots:
+  - namespace_id
+appearances:
+  - id
+application_setting_terms:
+  - id
+application_settings:
+  - custom_project_templates_group_id
+  - file_template_project_id
+  - id
+  - performance_bar_allowed_group_id
+  - usage_stats_set_by_user_id
+  - web_ide_oauth_application_id
+approval_merge_request_rules:
+  - merge_request_id
+approval_merge_request_rules_approved_approvers:
+  - user_id
+approval_merge_request_rules_groups:
+  - group_id
+approval_merge_request_rules_users:
+  - user_id
+approval_project_rules:
+  - project_id
+approval_project_rules_groups:
+  - group_id
+approval_project_rules_users:
+  - user_id
+approvals:
+  - id
+  - merge_request_id
+  - user_id
+approver_groups:
+  - group_id
+  - id
+  - target_id
+approvers:
+  - id
+  - target_id
+  - user_id
+audit_events:
+  - author_id
+  - entity_id
+award_emoji:
+  - id
+  - user_id
+aws_roles:
+  - user_id
+badges:
+  - group_id
+  - id
+  - project_id
+board_assignees:
+  - assignee_id
+  - board_id
+  - id
+board_group_recent_visits:
+  - board_id
+  - group_id
+  - user_id
+board_labels:
+  - board_id
+  - id
+  - label_id
+board_project_recent_visits:
+  - board_id
+  - project_id
+  - user_id
+boards:
+  - group_id
+  - id
+  - milestone_id
+  - project_id
+broadcast_messages:
+  - id
+bulk_import_configurations:
+  - bulk_import_id
+bulk_imports:
+  - user_id
+chat_names:
+  - id
+  - user_id
+chat_teams:
+  - id
+  - namespace_id
+ci_group_variables:
+  - group_id
+  - id
+ci_namespace_mirrors:
+  - namespace_id
+  - traversal_ids
+ci_pending_builds:
+  - namespace_traversal_ids
+  - plan_id
+  - tag_ids
+ci_pipeline_chat_data:
+  - chat_name_id
+ci_pipeline_schedule_variables:
+  - id
+  - pipeline_schedule_id
+ci_pipeline_schedules:
+  - id
+  - owner_id
+  - project_id
+ci_project_mirrors:
+  - namespace_id
+  - project_id
+ci_runner_namespaces:
+  - id
+  - namespace_id
+  - runner_id
+ci_runner_projects:
+  - id
+  - project_id
+  - runner_id
+ci_runners:
+  - allowed_plan_ids
+  - id
+ci_sources_pipelines:
+  - id
+  - project_id
+  - source_project_id
+ci_trigger_requests:
+  - commit_id
+  - id
+  - trigger_id
+ci_triggers:
+  - id
+  - owner_id
+  - project_id
+ci_variables:
+  - id
+  - project_id
+cluster_groups:
+  - cluster_id
+  - group_id
+  - id
+cluster_platforms_kubernetes:
+  - cluster_id
+  - id
+cluster_projects:
+  - cluster_id
+  - id
+  - project_id
+cluster_providers_gcp:
+  - cluster_id
+  - id
+clusters:
+  - id
+  - management_project_id
+  - user_id
+clusters_kubernetes_namespaces:
+  - cluster_id
+  - cluster_project_id
+  - project_id
+commit_user_mentions:
+  - mentioned_groups_ids
+  - mentioned_projects_ids
+  - mentioned_users_ids
+compliance_management_frameworks:
+  - namespace_id
+container_repositories:
+  - id
+  - project_id
+conversational_development_index_metrics:
+  - id
+dast_scanner_profiles:
+  - project_id
+dependency_proxy_blobs:
+  - group_id
+  - id
+dependency_proxy_group_settings:
+  - group_id
+  - id
+deploy_keys_projects:
+  - deploy_key_id
+  - id
+  - project_id
+deploy_tokens:
+  - id
+deployment_clusters:
+  - cluster_id
+  - deployment_id
+deployment_merge_requests:
+  - deployment_id
+  - environment_id
+  - merge_request_id
+deployments:
+  - environment_id
+  - id
+  - project_id
+  - user_id
+description_versions:
+  - epic_id
+  - issue_id
+  - merge_request_id
+design_management_designs:
+  - issue_id
+  - project_id
+design_management_versions:
+  - author_id
+design_user_mentions:
+  - design_id
+  - mentioned_groups_ids
+  - mentioned_projects_ids
+  - mentioned_users_ids
+draft_notes:
+  - author_id
+  - merge_request_id
+elasticsearch_indexed_namespaces:
+  - namespace_id
+elasticsearch_indexed_projects:
+  - project_id
+emails:
+  - id
+  - user_id
+environments:
+  - id
+  - project_id
+epic_issues:
+  - epic_id
+  - id
+  - issue_id
+epic_metrics:
+  - epic_id
+  - id
+epic_user_mentions:
+  - epic_id
+  - mentioned_groups_ids
+  - mentioned_projects_ids
+  - mentioned_users_ids
+epics:
+  - assignee_id
+  - author_id
+  - closed_by_id
+  - due_date_sourcing_epic_id
+  - due_date_sourcing_milestone_id
+  - group_id
+  - id
+  - issue_id
+  - last_edited_by_id
+  - parent_id
+  - start_date_sourcing_epic_id
+  - start_date_sourcing_milestone_id
+  - updated_by_id
+events:
+  - author_id
+  - project_id
+feature_gates:
+  - id
+features:
+  - id
+fork_network_members:
+  - fork_network_id
+  - forked_from_project_id
+  - id
+  - project_id
+fork_networks:
+  - id
+  - root_project_id
+geo_node_namespace_links:
+  - geo_node_id
+  - id
+  - namespace_id
+geo_node_statuses:
+  - geo_node_id
+  - id
+geo_nodes:
+  - id
+  - oauth_application_id
+gitlab_subscription_histories:
+  - hosted_plan_id
+  - namespace_id
+gitlab_subscriptions:
+  - hosted_plan_id
+  - namespace_id
+gpg_key_subkeys:
+  - gpg_key_id
+  - id
+gpg_keys:
+  - id
+  - user_id
+gpg_signatures:
+  - gpg_key_id
+  - gpg_key_subkey_id
+  - id
+  - project_id
+group_custom_attributes:
+  - group_id
+  - id
+historical_data:
+  - id
+identities:
+  - id
+  - saml_provider_id
+  - user_id
+import_export_uploads:
+  - id
+  - project_id
+import_failures:
+  - group_id
+index_statuses:
+  - id
+  - project_id
+insights:
+  - id
+  - namespace_id
+  - project_id
+integrations:
+  - id
+  - project_id
+internal_ids:
+  - namespace_id
+  - project_id
+ip_restrictions:
+  - group_id
+issue_assignees:
+  - issue_id
+  - user_id
+issue_links:
+  - id
+  - source_id
+  - target_id
+issue_metrics:
+  - id
+  - issue_id
+issue_tracker_data:
+  - integration_id
+issue_user_mentions:
+  - issue_id
+  - mentioned_groups_ids
+  - mentioned_projects_ids
+  - mentioned_users_ids
+issues:
+  - author_id
+  - closed_by_id
+  - duplicated_to_id
+  - id
+  - last_edited_by_id
+  - milestone_id
+  - moved_to_id
+  - project_id
+  - promoted_to_epic_id
+  - updated_by_id
+jira_connect_subscriptions:
+  - namespace_id
+jira_tracker_data:
+  - integration_id
+keys:
+  - id
+  - user_id
+label_links:
+  - id
+  - label_id
+  - target_id
+label_priorities:
+  - id
+  - label_id
+  - project_id
+labels:
+  - group_id
+  - id
+  - project_id
+ldap_group_links:
+  - group_id
+  - id
+lfs_file_locks:
+  - id
+  - project_id
+  - user_id
+lfs_objects:
+  - id
+lfs_objects_projects:
+  - id
+  - lfs_object_id
+  - project_id
+licenses:
+  - id
+lists:
+  - board_id
+  - id
+  - label_id
+  - milestone_id
+  - user_id
+members:
+  - created_by_id
+  - id
+  - source_id
+  - user_id
+merge_request_assignees:
+  - merge_request_id
+  - user_id
+merge_request_blocks:
+  - blocked_merge_request_id
+  - blocking_merge_request_id
+merge_request_diff_commits:
+  - merge_request_diff_id
+merge_request_diff_files:
+  - merge_request_diff_id
+merge_request_diffs:
+  - id
+  - merge_request_id
+merge_request_metrics:
+  - latest_closed_by_id
+  - merge_request_id
+  - merged_by_id
+  - target_project_id
+merge_request_user_mentions:
+  - mentioned_groups_ids
+  - mentioned_projects_ids
+  - mentioned_users_ids
+  - merge_request_id
+merge_requests:
+  - assignee_id
+  - author_id
+  - id
+  - last_edited_by_id
+  - latest_merge_request_diff_id
+  - merge_user_id
+  - milestone_id
+  - source_project_id
+  - target_project_id
+  - updated_by_id
+merge_requests_closing_issues:
+  - id
+  - issue_id
+  - merge_request_id
+merge_requests_compliance_violations:
+  - target_project_id
+merge_trains:
+  - merge_request_id
+  - target_project_id
+  - user_id
+milestones:
+  - group_id
+  - id
+  - project_id
+ml_models:
+  - user_id
+namespace_aggregation_schedules:
+  - namespace_id
+namespace_limits:
+  - namespace_id
+namespace_root_storage_statistics:
+  - namespace_id
+namespace_settings:
+  - namespace_id
+namespace_statistics:
+  - id
+  - namespace_id
+namespaces:
+  - custom_project_templates_group_id
+  - file_template_project_id
+  - id
+  - owner_id
+  - parent_id
+  - traversal_ids
+note_diff_files:
+  - id
+notes:
+  - author_id
+  - noteable_id
+  - project_id
+  - resolved_by_id
+  - updated_by_id
+notification_settings:
+  - id
+  - source_id
+  - user_id
+oauth_access_grants:
+  - application_id
+  - id
+  - resource_owner_id
+oauth_access_tokens:
+  - application_id
+  - id
+  - resource_owner_id
+oauth_applications:
+  - id
+  - owner_id
+oauth_openid_requests:
+  - access_grant_id
+  - id
+operations_feature_flags:
+  - project_id
+operations_feature_flags_clients:
+  - project_id
+p_ci_builds_metadata:
+  - project_id
+p_ci_job_artifacts:
+  - project_id
+p_ci_pipelines:
+  - merge_request_id
+  - pipeline_schedule_id
+  - project_id
+  - user_id
+p_ci_stages:
+  - project_id
+packages_build_infos:
+  - package_id
+packages_composer_cache_files:
+  - namespace_id
+packages_packages:
+  - creator_id
+  - project_id
+packages_tags:
+  - package_id
+pages_domain_acme_orders:
+  - pages_domain_id
+pages_domains:
+  - id
+  - project_id
+path_locks:
+  - id
+  - project_id
+  - user_id
+personal_access_tokens:
+  - id
+  - user_id
+plans:
+  - id
+pool_repositories:
+  - shard_id
+  - source_project_id
+programming_languages:
+  - id
+project_alerting_settings:
+  - project_id
+project_aliases:
+  - project_id
+project_authorizations:
+  - project_id
+  - user_id
+project_auto_devops:
+  - id
+  - project_id
+project_ci_cd_settings:
+  - id
+  - project_id
+project_custom_attributes:
+  - id
+  - project_id
+project_daily_statistics:
+  - project_id
+project_deploy_tokens:
+  - deploy_token_id
+  - id
+  - project_id
+project_error_tracking_settings:
+  - project_id
+project_feature_usages:
+  - project_id
+project_features:
+  - id
+  - project_id
+project_group_links:
+  - group_id
+  - id
+  - project_id
+project_import_data:
+  - id
+  - project_id
+project_incident_management_settings:
+  - project_id
+project_metrics_settings:
+  - project_id
+project_mirror_data:
+  - id
+  - project_id
+project_repositories:
+  - project_id
+  - shard_id
+project_settings:
+  - project_id
+project_statistics:
+  - id
+  - namespace_id
+  - project_id
+projects:
+  - creator_id
+  - id
+  - marked_for_deletion_by_user_id
+  - mirror_user_id
+  - namespace_id
+prometheus_alert_events:
+  - project_id
+  - prometheus_alert_id
+prometheus_alerts:
+  - environment_id
+  - id
+  - project_id
+  - prometheus_metric_id
+prometheus_metrics:
+  - id
+  - project_id
+protected_branch_merge_access_levels:
+  - group_id
+  - id
+  - protected_branch_id
+  - user_id
+protected_branch_push_access_levels:
+  - deploy_key_id
+  - group_id
+  - id
+  - protected_branch_id
+  - user_id
+protected_branch_unprotect_access_levels:
+  - group_id
+  - id
+  - protected_branch_id
+  - user_id
+protected_branches:
+  - id
+  - project_id
+protected_environment_deploy_access_levels:
+  - group_id
+  - id
+  - protected_environment_id
+  - user_id
+protected_environments:
+  - id
+  - project_id
+protected_tag_create_access_levels:
+  - deploy_key_id
+  - group_id
+  - id
+  - protected_tag_id
+  - user_id
+protected_tags:
+  - id
+  - project_id
+push_rules:
+  - id
+  - project_id
+redirect_routes:
+  - id
+  - source_id
+release_links:
+  - release_id
+releases:
+  - author_id
+  - id
+  - project_id
+remote_mirrors:
+  - id
+  - project_id
+repository_languages:
+  - programming_language_id
+  - project_id
+requirements:
+  - project_id
+resource_label_events:
+  - epic_id
+  - issue_id
+  - label_id
+  - merge_request_id
+  - user_id
+resource_state_events:
+  - epic_id
+reviews:
+  - author_id
+  - merge_request_id
+  - project_id
+routes:
+  - id
+  - source_id
+saml_providers:
+  - group_id
+  - id
+scim_oauth_access_tokens:
+  - group_id
+  - id
+sent_notifications:
+  - noteable_id
+  - project_id
+  - recipient_id
+shards:
+  - id
+slack_integrations:
+  - id
+  - integration_id
+smartcard_identities:
+  - user_id
+snippet_user_mentions:
+  - mentioned_groups_ids
+  - mentioned_projects_ids
+  - mentioned_users_ids
+  - snippet_id
+snippets:
+  - author_id
+  - id
+  - project_id
+software_license_policies:
+  - id
+  - project_id
+  - software_license_id
+software_licenses:
+  - id
+spam_logs:
+  - id
+  - user_id
+sprints:
+  - iterations_cadence_id
+subscriptions:
+  - id
+  - project_id
+  - subscribable_id
+  - user_id
+taggings:
+  - tag_id
+  - tagger_id
+tags:
+  - id
+term_agreements:
+  - id
+  - term_id
+  - user_id
+timelogs:
+  - id
+  - issue_id
+  - merge_request_id
+  - project_id
+  - user_id
+todos:
+  - author_id
+  - group_id
+  - id
+  - project_id
+  - target_id
+  - user_id
+trending_projects:
+  - id
+  - project_id
+uploads:
+  - id
+  - model_id
+user_agent_details:
+  - id
+  - subject_id
+user_callouts:
+  - id
+  - user_id
+user_custom_attributes:
+  - id
+  - user_id
+user_follow_users:
+  - followee_id
+  - follower_id
+user_preferences:
+  - id
+  - user_id
+user_statuses:
+  - user_id
+user_synced_attributes_metadata:
+  - id
+  - user_id
+users:
+  - accepted_term_id
+  - color_scheme_id
+  - created_by_id
+  - id
+  - managing_group_id
+users_ops_dashboard_projects:
+  - project_id
+  - user_id
+users_star_projects:
+  - id
+  - project_id
+  - user_id
+vulnerability_exports:
+  - group_id
+vulnerability_feedback:
+  - author_id
+  - comment_author_id
+  - id
+  - issue_id
+  - merge_request_id
+  - project_id
+vulnerability_identifiers:
+  - project_id
+vulnerability_merge_request_links:
+  - merge_request_id
+vulnerability_occurrences:
+  - project_id
+vulnerability_scanners:
+  - project_id
+vulnerability_user_mentions:
+  - mentioned_groups_ids
+  - mentioned_projects_ids
+  - mentioned_users_ids
+web_hook_logs:
+  - web_hook_id
+web_hooks:
+  - group_id
+  - id
+  - integration_id
+  - project_id
+wiki_page_meta:
+  - id
+wiki_page_slugs:
+  - id

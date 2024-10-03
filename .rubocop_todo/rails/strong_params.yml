@@ -67,8 +67,6 @@ Rails/StrongParams:
     - 'app/controllers/groups/boards_controller.rb'
     - 'app/controllers/groups/children_controller.rb'
     - 'app/controllers/groups/clusters_controller.rb'
-    - 'app/controllers/groups/dependency_proxy/application_controller.rb'
-    - 'app/controllers/groups/dependency_proxy_for_containers_controller.rb'
     - 'app/controllers/groups/deploy_tokens_controller.rb'
     - 'app/controllers/groups/group_links_controller.rb'
     - 'app/controllers/groups/group_members_controller.rb'

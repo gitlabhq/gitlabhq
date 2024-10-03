@@ -22,7 +22,7 @@ RSpec.describe Gitlab::MarkdownCache::Redis::Extension, :clean_gitlab_redis_cach
     end
   end
 
-  let(:cache_version) { Gitlab::MarkdownCache::CACHE_COMMONMARK_VERSION << 16 }
+  let(:cache_version) { Gitlab::MarkdownCache::CACHE_COMMONMARK_VERSION_SHIFTED }
   let(:thing) { klass.new(title: "`Hello`", description: "`World`") }
   let(:expected_cache_key) { "markdown_cache:cache-key" }
 
