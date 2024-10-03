@@ -115,10 +115,6 @@ class Groups::GroupMembersController < Groups::ApplicationController
     _("group")
   end
 
-  def source
-    group
-  end
-
   def members_page_url
     polymorphic_url([group, :members])
   end

@@ -50378,6 +50378,9 @@ msgstr ""
 msgid "SecurityReports|Hide dismissed"
 msgstr ""
 
+msgid "SecurityReports|Historical view of open vulnerabilities in the default branch. Excludes vulnerabilities that were resolved or dismissed. %{linkStart}Learn more.%{linkEnd}"
+msgstr ""
+
 msgid "SecurityReports|Image"
 msgstr ""
 

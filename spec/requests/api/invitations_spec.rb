@@ -661,15 +661,13 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
     end
   end
 
-  describe 'PUT /groups/:id/invitations' do
-    let(:source) { group }
-
+  shared_examples 'PUT /:source_type/:id/invitations/:email' do |source_type|
     def update_api(source, user, email)
       api("/#{source.model_name.plural}/#{source.id}/invitations/#{email}", user)
     end
 
-    context "with :source_type == 'groups'" do
-      let!(:invite) { invite_member_by_email(source, 'group', developer.email, maintainer) }
+    context "with :source_type == #{source_type.pluralize}" do
+      let!(:invite) { invite_member_by_email(source, source_type, developer.email, maintainer) }
 
       it_behaves_like 'a 404 response when source is private' do
         let(:route) do
@@ -738,7 +736,7 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
       end
 
       context 'updating access expiry date' do
-        subject(:put_request) do
+        subject do
           put update_api(source, maintainer, invite.invite_email), params: { expires_at: expires_at }
         end
 
@@ -746,7 +744,7 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
           let(:expires_at) { 2.days.ago.to_date }
 
           it 'does not update the member' do
-            put_request
+            subject
 
             expect(response).to have_gitlab_http_status(:bad_request)
             expect(json_response['message']).to eq({ 'expires_at' => ['cannot be a date in the past'] })
@@ -757,13 +755,19 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
           let(:expires_at) { 2.days.from_now.to_date }
 
           it 'updates the member' do
-            put_request
+            subject
 
             expect(response).to have_gitlab_http_status(:ok)
             expect(json_response['expires_at']).to eq(expires_at.to_s)
           end
         end
       end
+    end
+  end
+
+  describe 'PUT /groups/:id/invitations' do
+    it_behaves_like 'PUT /:source_type/:id/invitations/:email', 'group' do
+      let(:source) { group }
     end
   end
 end

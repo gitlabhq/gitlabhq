@@ -3,45 +3,48 @@
 - supports_quick_actions = local_assigns.fetch(:supports_quick_actions, false)
 
 = markdown_toolbar_button({ icon: "bold",
-                            css_class: 'haml-markdown-button gl-mr-3',
+                            css_class: 'haml-markdown-button gl-mr-2',
                             data: { "md-tag" => "**", "md-shortcuts": '["mod+b"]' },
                             title: sprintf(s_("MarkdownEditor|Add bold text (%{modifier_key}B)") % { modifier_key: modifier_key }) })
 
 = markdown_toolbar_button({ icon: "italic",
-                            css_class: 'haml-markdown-button gl-mr-3',
+                            css_class: 'haml-markdown-button gl-mr-2',
                             data: { "md-tag" => "_", "md-shortcuts": '["mod+i"]' },
                             title: sprintf(s_("MarkdownEditor|Add italic text (%{modifier_key}I)") % { modifier_key: modifier_key }) })
 
 = markdown_toolbar_button({ icon: "strikethrough",
-                            css_class: 'haml-markdown-button gl-mr-3',
+                            css_class: 'haml-markdown-button gl-mr-2',
                             data: { "md-tag" => "~~", "md-shortcuts": '["mod+shift+x"]' },
                             title: sprintf(s_("MarkdownEditor|Add strikethrough text (%{modifier_key}⇧X)") % { modifier_key: modifier_key }) })
-
-= markdown_toolbar_button({ icon: "quote", css_class: 'haml-markdown-button gl-mr-3', data: { "md-tag" => "> ", "md-prepend" => true }, title: _("Insert a quote") })
-= markdown_toolbar_button({ icon: "code", css_class: 'haml-markdown-button gl-mr-3', data: { "md-tag" => "`", "md-block" => "```" }, title: _("Insert code") })
+.gl-flex.gl-py-2.haml-markdown-button
+  .gl-border-l.gl-ml-2.gl-pl-3
+= markdown_toolbar_button({ icon: "quote", css_class: 'haml-markdown-button gl-mr-2', data: { "md-tag" => "> ", "md-prepend" => true }, title: _("Insert a quote") })
+= markdown_toolbar_button({ icon: "code", css_class: 'haml-markdown-button gl-mr-2', data: { "md-tag" => "`", "md-block" => "```" }, title: _("Insert code") })
 
 = markdown_toolbar_button({ icon: "link",
-                            css_class: 'haml-markdown-button gl-mr-3',
+                            css_class: 'haml-markdown-button gl-mr-2',
                             data: { "md-tag" => "[{text}](url)", "md-select" => "url", "md-shortcuts": '["mod+k"]' },
                             title: sprintf(s_("MarkdownEditor|Add a link (%{modifier_key}K)") % { modifier_key: modifier_key }) })
 
-= markdown_toolbar_button({ icon: "list-bulleted", css_class: 'haml-markdown-button gl-mr-3', data: { "md-tag" => "- ", "md-prepend" => true }, title: _("Add a bullet list") })
-= markdown_toolbar_button({ icon: "list-numbered", css_class: 'haml-markdown-button gl-mr-3', data: { "md-tag" => "1. ", "md-prepend" => true }, title: _("Add a numbered list") })
-= markdown_toolbar_button({ icon: "list-task", css_class: 'haml-markdown-button gl-mr-3', data: { "md-tag" => "- [ ] ", "md-prepend" => true }, title: _("Add a checklist") })
+= markdown_toolbar_button({ icon: "list-bulleted", css_class: 'haml-markdown-button gl-mr-2', data: { "md-tag" => "- ", "md-prepend" => true }, title: _("Add a bullet list") })
+= markdown_toolbar_button({ icon: "list-numbered", css_class: 'haml-markdown-button gl-mr-2', data: { "md-tag" => "1. ", "md-prepend" => true }, title: _("Add a numbered list") })
+= markdown_toolbar_button({ icon: "list-task", css_class: 'haml-markdown-button gl-mr-2', data: { "md-tag" => "- [ ] ", "md-prepend" => true }, title: _("Add a checklist") })
 = markdown_toolbar_button({ icon: "list-indent",
-                            css_class: 'gl-hidden gl-mr-3',
+                            css_class: 'gl-hidden gl-mr-2',
                             data: { "md-command" => 'indentLines', "md-shortcuts": '["mod+]"]' },
                             title: sprintf(s_("MarkdownEditor|Indent line (%{modifier_key}])") % { modifier_key: modifier_key }) })
 = markdown_toolbar_button({ icon: "list-outdent",
-                            css_class: 'gl-hidden gl-mr-3',
+                            css_class: 'gl-hidden gl-mr-2',
                             data: { "md-command" => 'outdentLines', "md-shortcuts": '["mod+["]' },
                             title: sprintf(s_("MarkdownEditor|Outdent line (%{modifier_key}[)") % { modifier_key: modifier_key }) })
 = markdown_toolbar_button({ icon: "details-block",
-                            css_class: 'haml-markdown-button gl-mr-3',
+                            css_class: 'haml-markdown-button gl-mr-2',
                             data: { "md-tag" => "<details><summary>Click to expand</summary>\n{text}\n</details>", "md-prepend" => true, "md-select" => "Click to expand" },
                             title: _("Add a collapsible section") })
-= markdown_toolbar_button({ icon: "table", css_class: 'haml-markdown-button gl-mr-3', data: { "md-tag" => "| header | header |\n| ------ | ------ |\n|        |        |\n|        |        |", "md-prepend" => true }, title: _("Add a table") })
+.gl-flex.gl-py-2.haml-markdown-button
+  .gl-border-l.gl-ml-2.gl-pl-3
+= markdown_toolbar_button({ icon: "table", css_class: 'haml-markdown-button gl-mr-2', data: { "md-tag" => "| header | header |\n| ------ | ------ |\n|        |        |\n|        |        |", "md-prepend" => true }, title: _("Add a table") })
 - if supports_file_upload
-  = render Pajamas::ButtonComponent.new(icon: 'paperclip', category: :tertiary, size: :small, button_options: { 'aria-label': _("Attach a file or image"), class: 'has-tooltip js-attach-file-button haml-markdown-button gl-mr-3', data: { testid: 'button-attach-file', container: 'body' } })
+  = render Pajamas::ButtonComponent.new(icon: 'paperclip', category: :tertiary, size: :small, button_options: { 'aria-label': _("Attach a file or image"), class: 'has-tooltip js-attach-file-button haml-markdown-button gl-mr-2', data: { testid: 'button-attach-file', container: 'body' } })
 - if supports_quick_actions
-  = markdown_toolbar_button({ icon: "quick-actions", css_class: 'haml-markdown-button gl-mr-3', data: { "md-tag" => "/", "md-prepend" => true }, title: _("Add a quick action") })
+  = markdown_toolbar_button({ icon: "quick-actions", css_class: 'haml-markdown-button gl-mr-2', data: { "md-tag" => "/", "md-prepend" => true }, title: _("Add a quick action") })

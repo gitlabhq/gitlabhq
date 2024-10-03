@@ -127,6 +127,7 @@ RSpec.shared_context 'ProjectPolicy context' do
       project.add_reporter(reporter)
       project.add_developer(developer)
       project.add_maintainer(maintainer)
+      project.add_owner(owner)
     end
   end
 end

@@ -39,6 +39,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 1. Set up [GitLab Runner with GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/howto/runner.md) so you can create CI jobs locally to test Workflow.
 1. Create a [personal access token](../../user/profile/personal_access_tokens.md) in your local GitLab instance with the `api` scope. Save this value and use it in the next step.
+1. Run GDK with Ultimate license. Set the **Ultimate** plan on your namespace containing the project.
 1. Manually create a Workflow using the following `curl` request; the output will be a workflow ID that is referred to as `$WORKFLOW_ID` throughout the rest of these docs:
 
    ```shell

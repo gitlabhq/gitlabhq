@@ -2,6 +2,9 @@
 description: When a CI/CD Catalog component is included in a pipeline.
 internal_events: true
 action: ci_catalog_component_included
+additional_properties:
+  label:
+    description: Id of the component being included
 identifiers:
 - project
 - namespace
@@ -16,3 +19,4 @@ tiers:
 - free
 - premium
 - ultimate
+

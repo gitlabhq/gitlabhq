@@ -58,10 +58,6 @@ class Projects::ProjectMembersController < Projects::ApplicationController
     _("project")
   end
 
-  def source
-    project
-  end
-
   def members_page_url
     project_project_members_path(project)
   end

@@ -244,25 +244,6 @@ export const getDateInFuture = (date, daysInFuture) =>
  */
 export const isValidDate = (date) => date instanceof Date && !Number.isNaN(date.getTime());
 
-/**
- * Appending T00:00:00 makes JS assume local time and prevents it from shifting the date
- * to match the user's time zone. We want to display the date in server time for now, to
- * be consistent with the "edit issue -> due date" UI.
- *
- * @param {String} date Date without time, e.g. `2022-03-22`
- * @return {Date} new Date object
- */
-export const newDateAsLocaleTime = (date) => {
-  if (!date || typeof date !== 'string') {
-    return null;
-  }
-  if (date.includes('T')) {
-    return new Date(date);
-  }
-  const suffix = 'T00:00:00';
-  return new Date(`${date}${suffix}`);
-};
-
 export const beginOfDayTime = 'T00:00:00Z';
 export const endOfDayTime = 'T23:59:59Z';
 

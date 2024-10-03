@@ -10,13 +10,15 @@
 
 .md-area.position-relative
   .md-header.gl-px-3.gl-rounded-t-base.gl-border-b.gl-border-gray-100
-    .gl-flex.gl-items-center.gl-flex-wrap.gl-justify-between
+    .gl-flex.gl-items-top.gl-flex-nowrap.gl-justify-between
       .md-header-toolbar.gl-flex.gl-py-3.gl-flex-wrap.gl-gap-y-3
         = render Pajamas::ButtonComponent.new(category: :tertiary, size: :small, button_options: { class: 'js-md-preview-button', value: 'preview' }) do
           = _('Preview')
+        .gl-flex.gl-py-2.haml-markdown-button
+          .gl-border-l.gl-ml-2.gl-pl-3
         = render 'shared/blob/markdown_buttons', supports_quick_actions: supports_quick_actions
-        .full-screen
-          = render Pajamas::ButtonComponent.new(icon: 'maximize', category: :tertiary, size: :small, button_options: { 'tabindex': -1, 'aria-label': _("Go full screen"), class: 'has-tooltip js-zen-enter', data: { container: 'body' } })
+      .full-screen.gl-py-3
+        = render Pajamas::ButtonComponent.new(icon: 'maximize', category: :tertiary, size: :small, button_options: { 'tabindex': -1, 'title': _("Go full screen"), 'aria-label': _("Go full screen"), class: 'has-tooltip js-zen-enter', data: { container: 'body' } })
 
   .md-write-holder
     = yield

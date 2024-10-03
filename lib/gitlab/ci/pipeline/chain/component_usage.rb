@@ -24,8 +24,7 @@ module Gitlab
               project: project,
               user: current_user,
               additional_properties: {
-                label: component.project.full_path,
-                property: "#{component.name}@#{component.version.name}",
+                label: component.id.to_s,
                 value: component.resource_type_before_type_cast
               }
             )

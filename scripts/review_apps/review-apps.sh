@@ -156,7 +156,15 @@ function disable_sign_ups() {
 read -r -d '' multiline_ruby_code <<RUBY
 user = User.find_by_username('root');
 (puts 'Error: Could not find root user. Check that the database was properly seeded'; exit(1)) unless user;
-token = user.personal_access_tokens.create(scopes: [:api], name: 'Token to disable sign-ups', expires_at: 30.days.from_now);
+token = user.personal_access_tokens.create(
+  scopes: [:api],
+  name: 'Token to disable sign-ups',
+  expires_at: 30.days.from_now,
+  organization_id: Gitlab::Current::Organization.new(
+    params: {},
+    user: user,
+  ).organization.id
+);
 token.set_token('${REVIEW_APPS_ROOT_TOKEN}');
 begin;
 token.save!;

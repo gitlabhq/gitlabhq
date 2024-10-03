@@ -13,7 +13,7 @@ RSpec.describe Members::UpdateService, feature_category: :groups_and_projects do
   let_it_be(:access_level) { Gitlab::Access::MAINTAINER }
   let(:members) { source.members_and_requesters.where(user_id: member_users).to_a }
   let(:update_service) { described_class.new(current_user, params) }
-  let(:params) { { access_level: access_level, source: source } }
+  let(:params) { { access_level: access_level } }
   let(:updated_members) { subject[:members] }
 
   before do
@@ -47,7 +47,7 @@ RSpec.describe Members::UpdateService, feature_category: :groups_and_projects do
   end
 
   shared_examples 'returns error status when params are invalid' do
-    let_it_be(:params) { { expires_at: 2.days.ago, source: source } }
+    let_it_be(:params) { { expires_at: 2.days.ago } }
 
     specify do
       expect(subject[:status]).to eq(:error)
@@ -111,20 +111,20 @@ RSpec.describe Members::UpdateService, feature_category: :groups_and_projects do
       end
 
       context 'with Gitlab::Access::GUEST level as a string' do
-        let_it_be(:params) { { access_level: Gitlab::Access::GUEST.to_s, source: source } }
+        let_it_be(:params) { { access_level: Gitlab::Access::GUEST.to_s } }
 
         it_behaves_like 'schedules to delete confidential todos'
       end
 
       context 'with Gitlab::Access::GUEST level as an integer' do
-        let_it_be(:params) { { access_level: Gitlab::Access::GUEST, source: source } }
+        let_it_be(:params) { { access_level: Gitlab::Access::GUEST } }
 
         it_behaves_like 'schedules to delete confidential todos'
       end
     end
 
     context 'when access_level is invalid' do
-      let_it_be(:params) { { access_level: 'invalid', source: source } }
+      let_it_be(:params) { { access_level: 'invalid' } }
 
       it 'raises an error' do
         expect { described_class.new(current_user, params) }
@@ -133,7 +133,7 @@ RSpec.describe Members::UpdateService, feature_category: :groups_and_projects do
     end
 
     context 'when members update results in no change' do
-      let(:params) { { access_level: members.first.access_level, source: source } }
+      let(:params) { { access_level: members.first.access_level } }
 
       it 'does not invoke update! and post_update' do
         expect(update_service).not_to receive(:save!)
@@ -221,7 +221,7 @@ RSpec.describe Members::UpdateService, feature_category: :groups_and_projects do
     end
 
     context 'when project members expiration date is updated with expiry_notified_at' do
-      let_it_be(:params) { { expires_at: 20.days.from_now, source: source } }
+      let_it_be(:params) { { expires_at: 20.days.from_now } }
 
       before do
         group_project.group.add_owner(current_user)
@@ -254,7 +254,7 @@ RSpec.describe Members::UpdateService, feature_category: :groups_and_projects do
     end
 
     context 'when group members expiration date is updated' do
-      let_it_be(:params) { { expires_at: 20.days.from_now, source: source } }
+      let_it_be(:params) { { expires_at: 20.days.from_now } }
       let(:notification_service) { instance_double(NotificationService) }
 
       before do
@@ -271,7 +271,7 @@ RSpec.describe Members::UpdateService, feature_category: :groups_and_projects do
     end
 
     context 'when group members expiration date is updated with expiry_notified_at' do
-      let_it_be(:params) { { expires_at: 20.days.from_now, source: source } }
+      let_it_be(:params) { { expires_at: 20.days.from_now } }
 
       before do
         members.each do |member|
@@ -321,20 +321,11 @@ RSpec.describe Members::UpdateService, feature_category: :groups_and_projects do
     end
   end
 
-  context 'when passing an invalid source' do
-    let_it_be(:source) { Object.new }
-
-    it 'raises a RuntimeError' do
-      expect { update_service.execute([]) }.to raise_error(RuntimeError, 'Unknown source type: Object!')
-    end
-  end
-
   it_behaves_like 'current user cannot update the given members'
   it_behaves_like 'updating a project'
   it_behaves_like 'updating a group'
 
   context 'with a single member' do
-    let_it_be(:source) { group }
     let(:members) { create(:group_member, group: group) }
 
     before do
