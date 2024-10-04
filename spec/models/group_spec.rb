@@ -1194,6 +1194,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
         using RSpec::Parameterized::TableSyntax
 
         where(:restricted_visibility_levels, :expected_groups) do
+          nil                                     | lazy { [private_group, internal_group, group] }
           []                                      | lazy { [private_group, internal_group, group] }
           [private_vis]                           | lazy { [internal_group, group] }
           [internal_vis]                          | lazy { [private_group, internal_group, group] }

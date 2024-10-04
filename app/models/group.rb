@@ -224,7 +224,9 @@ class Group < Namespace
   scope :excluding_restricted_visibility_levels_for_user, ->(user) do
     return all if user.can_admin_all_resources?
 
-    case Gitlab::CurrentSettings.restricted_visibility_levels.sort
+    levels = Array.wrap(Gitlab::CurrentSettings.restricted_visibility_levels).sort
+
+    case levels
     when [Gitlab::VisibilityLevel::PRIVATE, Gitlab::VisibilityLevel::PUBLIC],
          [Gitlab::VisibilityLevel::PRIVATE]
       where.not(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
