@@ -952,7 +952,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
 
     it 'includes project_permissions_settings' do
-      settings = subject.dig(:currentSettings)
+      settings = subject[:currentSettings]
 
       expect(settings).to include(
         packagesEnabled: !!project.packages_enabled,

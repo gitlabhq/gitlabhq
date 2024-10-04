@@ -626,7 +626,7 @@ To work around the issue, give these users the Guest role or higher to any proje
 - [The GitLab principles behind permissions](https://handbook.gitlab.com/handbook/product/gitlab-the-product/#permissions-in-gitlab)
 - [Members](project/members/index.md)
 - Customize permissions on [protected branches](project/repository/branches/protected.md)
-- [LDAP user permissions](group/access_and_permissions.md#manage-group-memberships-via-ldap)
+- [LDAP user permissions](group/access_and_permissions.md#manage-group-memberships-with-ldap)
 - [Value stream analytics permissions](group/value_stream_analytics/index.md#access-permissions-for-value-stream-analytics)
 - [Project aliases](../user/project/working_with_projects.md#project-aliases)
 - [Auditor users](../administration/auditor_users.md)

@@ -36,6 +36,7 @@
 class ProjectsFinder < UnionFinder
   include CustomAttributesFilter
   include UpdatedAtFilter
+  include Projects::SearchFilter
 
   attr_accessor :params
   attr_reader :current_user, :project_ids_relation
@@ -218,18 +219,6 @@ class ProjectsFinder < UnionFinder
     return Project.none unless topic
 
     items.with_topic(topic)
-  end
-
-  def by_search(items)
-    params[:search] ||= params[:name]
-
-    return items if Feature.enabled?(:disable_anonymous_project_search, type: :ops) && current_user.nil?
-
-    if params[:search].present? && params[:minimum_search_length].present? && params[:search].length < params[:minimum_search_length].to_i
-      return items.none
-    end
-
-    items.optionally_search(params[:search], include_namespace: params[:search_namespaces].present?)
   end
 
   def by_not_aimed_for_deletion(items)

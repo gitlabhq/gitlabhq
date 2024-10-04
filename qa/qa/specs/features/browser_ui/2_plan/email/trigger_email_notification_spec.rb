@@ -25,7 +25,7 @@ module QA
 
         expect(page).to have_content("@#{user.username}")
 
-        mailhog_items = mailhog_json.dig('items')
+        mailhog_items = mailhog_json['items']
 
         expect(mailhog_items).to include(an_object_satisfying { |o| mailhog_item_subject(o)&.include?('project was granted') })
       end
@@ -39,8 +39,8 @@ module QA
           mailhog_response = get QA::Runtime::MailHog.api_messages_url
 
           mailhog_data = JSON.parse(mailhog_response.body)
-          total = mailhog_data.dig('total')
-          subjects = mailhog_data.dig('items')
+          total = mailhog_data['total']
+          subjects = mailhog_data['items']
             .map { |item| mailhog_item_subject(item) }
 
           Runtime::Logger.debug(%(Total number of emails: #{total}))

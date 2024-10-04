@@ -424,7 +424,7 @@ You can add compliance frameworks to projects in a group that has a [compliance 
 
 ## Manage project access through LDAP groups
 
-You can [use LDAP to manage group membership](../group/access_and_permissions.md#manage-group-memberships-via-ldap).
+You can [use LDAP to manage group membership](../group/access_and_permissions.md#manage-group-memberships-with-ldap).
 
 You cannot use LDAP groups to manage project access, but you can use the following workaround.
 

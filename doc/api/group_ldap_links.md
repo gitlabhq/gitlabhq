@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** Self-managed
 
-List, add, and delete [LDAP group links](../user/group/access_and_permissions.md#manage-group-memberships-via-ldap).
+List, add, and delete [LDAP group links](../user/group/access_and_permissions.md#manage-group-memberships-with-ldap).
 
 ## List LDAP group links
 

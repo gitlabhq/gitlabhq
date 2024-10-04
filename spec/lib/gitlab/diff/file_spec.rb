@@ -1273,18 +1273,6 @@ RSpec.describe Gitlab::Diff::File do
     end
   end
 
-  describe '#line_side_code' do
-    let(:line) { instance_double(Gitlab::Diff::Line, type: 'old', old_pos: 4, new_pos: 4, added?: false, removed?: true, text: 'First Hunk Removed 1', meta?: false) }
-
-    it 'returns the correct left side ID' do
-      expect(diff_file.line_side_code(line, :old)).to eq("line_#{diff_file.file_hash}_L#{line.old_pos}")
-    end
-
-    it 'returns the correct right side ID' do
-      expect(diff_file.line_side_code(line, :new)).to eq("line_#{diff_file.file_hash}_R#{line.new_pos}")
-    end
-  end
-
   describe '#text_diff' do
     subject(:text_diff) { diff_file.text_diff? }
 
@@ -1309,9 +1297,7 @@ RSpec.describe Gitlab::Diff::File do
     it { expect(lines.last.type).to eq('match') }
   end
 
-  describe '#parallel_diff_lines_with_match_tail' do
-    subject(:lines) { diff_file.parallel_diff_lines_with_match_tail }
-
-    it { expect(lines.last[:left].type).to eq('match') }
+  describe '#viewer_hunks' do
+    it { expect(diff_file.viewer_hunks).to all(be_instance_of(Gitlab::Diff::ViewerHunk)) }
   end
 end

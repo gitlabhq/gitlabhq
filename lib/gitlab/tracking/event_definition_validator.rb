@@ -25,7 +25,7 @@ module Gitlab
 
         return unless additional_props.present?
 
-        extra_props = additional_props - Gitlab::InternalEvents::BASE_ADDITIONAL_PROPERTIES.keys
+        extra_props = additional_props - Gitlab::Tracking::EventValidator::BASE_ADDITIONAL_PROPERTIES.keys
         unused_props = prioritized_properties - additional_props
 
         return unless extra_props.present? && unused_props.present?
@@ -40,7 +40,7 @@ module Gitlab
       end
 
       def prioritized_properties
-        Gitlab::InternalEvents::BASE_ADDITIONAL_PROPERTIES.keys - NOT_VALIDATED_PROPERTIES
+        Gitlab::Tracking::EventValidator::BASE_ADDITIONAL_PROPERTIES.keys - NOT_VALIDATED_PROPERTIES
       end
 
       def validate_schema

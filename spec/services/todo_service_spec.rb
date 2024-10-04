@@ -383,6 +383,12 @@ RSpec.describe TodoService, feature_category: :team_planning do
         expect(second_todo.reload).to be_done
       end
 
+      it 'calls GraphQL.issuable_todo_updated' do
+        expect(GraphqlTriggers).to receive(:issuable_todo_updated).with(issue, john_doe)
+
+        service.resolve_todos_for_target(issue, john_doe)
+      end
+
       describe 'cached counts' do
         it 'updates when todos change' do
           create(:todo, :assigned, user: john_doe, project: project, target: issue, author: author)
@@ -1413,6 +1419,12 @@ RSpec.describe TodoService, feature_category: :team_planning do
         service.resolve_todo(todo, john_doe, resolved_by_action: :mark_done)
         todo.reload
       end.to change { todo.resolved_by_mark_done? }.to(true)
+    end
+
+    it 'calls GraphQL.issuable_todo_updated' do
+      expect(GraphqlTriggers).to receive(:issuable_todo_updated).with(todo.target, john_doe)
+
+      service.resolve_todo(todo, john_doe)
     end
 
     context 'cached counts' do

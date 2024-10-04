@@ -1,0 +1,12 @@
+---
+table_name: custom_field_select_options
+classes:
+- Issuables::CustomFieldSelectOption
+feature_categories:
+- team_planning
+description: Possible values for select / multi-select custom fields
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167591
+milestone: '17.5'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  namespace_id: namespaces

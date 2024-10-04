@@ -111,6 +111,13 @@ describe('work items graphql resolvers', () => {
         const queryResult = await query(WIDGET_TYPE_DESCRIPTION);
         expect(queryResult).toMatchObject({ description: 'Description' });
       });
+
+      it('updates description with empty string as well', async () => {
+        await mutate({ description: '' });
+
+        const queryResult = await query(WIDGET_TYPE_DESCRIPTION);
+        expect(queryResult).toMatchObject({ description: '' });
+      });
     });
 
     describe('with confidential input', () => {

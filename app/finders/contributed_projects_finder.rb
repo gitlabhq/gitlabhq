@@ -7,6 +7,7 @@
 #   user: User to find contributed projects for
 #   current_user: The current user
 #   params:
+#     search: Return only projects that match search filter
 #     ignore_visibility: When true the list of projects will include all contributed
 #                        projects, regardless of their visibility to the current_user.
 #     min_access_level: Return only projects where user has at least the access level.
@@ -15,6 +16,8 @@
 #
 # Returns an ActiveRecord::Relation.
 class ContributedProjectsFinder
+  include Projects::SearchFilter
+
   attr_reader :user, :current_user, :params
 
   def initialize(user:, current_user: nil, params: {})
@@ -57,6 +60,7 @@ class ContributedProjectsFinder
   end
 
   def filter_projects(collection)
+    collection = by_search(collection)
     by_programming_language(collection)
   end
 

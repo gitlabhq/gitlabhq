@@ -112,7 +112,8 @@
     "ApprovalPolicy",
     "PipelineExecutionPolicy",
     "ScanExecutionPolicy",
-    "ScanResultPolicy"
+    "ScanResultPolicy",
+    "VulnerabilityManagementPolicy"
   ],
   "PackageFileMetadata": [
     "ConanFileMetadata",

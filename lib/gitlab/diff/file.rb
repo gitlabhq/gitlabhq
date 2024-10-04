@@ -76,14 +76,6 @@ module Gitlab
         Gitlab::Git.diff_line_code(file_path, line.new_pos, line.old_pos)
       end
 
-      def line_side_code(line, position)
-        return if line.meta?
-
-        prefix = position == :old ? "L" : "R"
-        number = position == :old ? line.old_pos : line.new_pos
-        "line_#{file_hash}_#{prefix}#{number}"
-      end
-
       def line_for_line_code(code)
         diff_lines.find { |line| line_code(line) == code }
       end
@@ -242,6 +234,10 @@ module Gitlab
         end
       end
 
+      def viewer_hunks
+        ViewerHunk.init_from_diff_lines(diff_lines_with_match_tail)
+      end
+
       # Changes diff_lines according to the given position. That is,
       # it checks whether the position requires blob lines into the diff
       # in order to be presented.
@@ -272,10 +268,6 @@ module Gitlab
       # Array[<Hash>] with right/left keys that contains Gitlab::Diff::Line objects which text is highlighted
       def parallel_diff_lines
         @parallel_diff_lines ||= Gitlab::Diff::ParallelDiff.new(self).parallelize
-      end
-
-      def parallel_diff_lines_with_match_tail
-        @parallel_diff_lines_with_match_tail ||= Gitlab::Diff::ParallelDiff.new(self).parallelize(diff_lines_with_match_tail)
       end
 
       def raw_diff

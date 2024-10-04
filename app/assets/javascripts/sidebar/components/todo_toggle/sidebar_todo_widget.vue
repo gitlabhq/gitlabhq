@@ -48,11 +48,11 @@ export default {
   },
   data() {
     return {
+      todoId: null,
       loading: false,
     };
   },
   apollo: {
-    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     todoId: {
       query() {
         return todoQueries[this.issuableType].query;
@@ -84,6 +84,21 @@ export default {
             issuableType: this.issuableType,
           }),
         });
+      },
+      subscribeToMore: {
+        document() {
+          return todoQueries[this.issuableType].subscription;
+        },
+        variables() {
+          return {
+            issuableId: this.issuableId,
+          };
+        },
+        skip() {
+          return (
+            !this.glFeatures.realtimeIssuableTodo || !todoQueries[this.issuableType].subscription
+          );
+        },
       },
     },
   },
@@ -143,7 +158,6 @@ export default {
               query: this.todoIdQuery,
               variables: this.todoIdQueryVariables,
             };
-
             const sourceData = store.readQuery(queryProps);
             const data = produce(sourceData, (draftState) => {
               draftState.workspace.issuable.currentUserTodos.nodes = this.hasTodo ? [] : [todo];

@@ -9,19 +9,22 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::TotalCountMetric, :clea
 
     event_definition = instance_double(
       Gitlab::Tracking::EventDefinition,
-      event_selection_rules: [Gitlab::Usage::EventSelectionRule.new(name: 'my_event', time_framed: false)]
+      event_selection_rules: [Gitlab::Usage::EventSelectionRule.new(name: 'my_event', time_framed: false)],
+      to_h: {}
     )
     allow(Gitlab::Tracking::EventDefinition).to receive(:find).with('my_event').and_return(event_definition)
 
     event_definition1 = instance_double(
       Gitlab::Tracking::EventDefinition,
-      event_selection_rules: [Gitlab::Usage::EventSelectionRule.new(name: 'my_event1', time_framed: false)]
+      event_selection_rules: [Gitlab::Usage::EventSelectionRule.new(name: 'my_event1', time_framed: false)],
+      to_h: {}
     )
     allow(Gitlab::Tracking::EventDefinition).to receive(:find).with('my_event1').and_return(event_definition1)
 
     event_definition2 = instance_double(
       Gitlab::Tracking::EventDefinition,
-      event_selection_rules: [Gitlab::Usage::EventSelectionRule.new(name: 'my_event2', time_framed: false)]
+      event_selection_rules: [Gitlab::Usage::EventSelectionRule.new(name: 'my_event2', time_framed: false)],
+      to_h: {}
     )
     allow(Gitlab::Tracking::EventDefinition).to receive(:find).with('my_event2').and_return(event_definition2)
   end

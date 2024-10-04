@@ -404,19 +404,23 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
       ]
     end
 
-    let(:rake_output) do
-      <<~MSG
-        index_statement_1
-        index_statement_2
-      MSG
-    end
-
     before do
       allow(Gitlab::Schema::Validation::Runner).to receive(:new).and_return(runner)
     end
 
-    it 'prints the inconsistency message' do
-      expect { run_rake_task('gitlab:db:schema_checker:run') }.to output(rake_output).to_stdout
+    it 'prints the inconsistency message along with the log info' do
+      expected_messages = [
+        'index_statement_1',
+        'index_statement_2',
+        'This task is a diagnostic tool to be used under the guidance of GitLab Support. You should not use the task for routine checks as database inconsistencies might be expected.'
+      ]
+
+      expect { run_rake_task('gitlab:db:schema_checker:run') }
+        .to output { |output|
+          expected_messages.each do |message|
+            expect(output).to include(message)
+          end
+        }.to_stdout
     end
   end
 

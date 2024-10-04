@@ -1,4 +1,4 @@
 - index = local_assigns.fetch(:index, nil)
 - position = index + 1
 
-= render 'projects/commits/commit', project: commit.project, commit: commit, ref: nil, show_project_name: @project.nil?, link_data_attrs: { event_tracking: 'click_search_result', event_label: @scope, event_value: position, event_property: @search_term }
+= render 'projects/commits/commit', project: commit.project, commit: commit, ref: nil, show_project_name: @project.nil?, link_data_attrs: { event_tracking: 'click_search_result', event_label: @scope, event_value: position }

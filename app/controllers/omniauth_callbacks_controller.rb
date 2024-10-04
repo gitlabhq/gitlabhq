@@ -9,6 +9,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   include AcceptsPendingInvitations
   include Onboarding::Redirectable
   include InternalRedirect
+  include SafeFormatHelper
 
   ACTIVE_SINCE_KEY = 'active_since'
 
@@ -249,15 +250,20 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   def handle_signup_error
+    redirect_path = new_user_session_path
     label = Gitlab::Auth::OAuth::Provider.label_for(oauth['provider'])
-    message = [_("Signing in using your %{label} account without a pre-existing GitLab account is not allowed.") % { label: label }]
+    simple_url = Settings.gitlab.url.sub(%r{^https?://(www\.)?}i, '')
+    message = [_("Signing in using your %{label} account without a pre-existing account in %{simple_url} is not allowed.") % { label: label, simple_url: simple_url }]
 
     if Gitlab::CurrentSettings.allow_signup?
-      message << (_("Create a GitLab account first, and then connect it to your %{label} account.") % { label: label })
+      redirect_path = new_user_registration_path
+      doc_pair = tag_pair(view_context.link_to('', help_page_path('user/profile/index.md', anchor: 'sign-in-services')), :doc_start, :doc_end)
+      message << safe_format(_("Create an account in %{simple_url} first, and then %{doc_start}connect it to your %{label} account%{doc_end}."), doc_pair, label: label, simple_url: simple_url)
     end
 
-    flash[:alert] = message.join(' ')
-    redirect_to new_user_session_path
+    flash[:alert] = message.join(' ').html_safe # rubocop:disable Rails/OutputSafety -- Generated message is safe
+
+    redirect_to redirect_path
   end
 
   def oauth

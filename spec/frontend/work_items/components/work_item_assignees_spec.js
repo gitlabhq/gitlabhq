@@ -1,7 +1,7 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { cloneDeep } from 'lodash';
-import { sortNameAlphabetically } from '~/work_items/utils';
+import { sortNameAlphabetically, newWorkItemId, newWorkItemFullPath } from '~/work_items/utils';
 import WorkItemAssignees from '~/work_items/components/work_item_assignees.vue';
 import WorkItemSidebarDropdownWidget from '~/work_items/components/shared/work_item_sidebar_dropdown_widget.vue';
 import groupUsersSearchQuery from '~/graphql_shared/queries/group_users_search.query.graphql';
@@ -9,7 +9,9 @@ import usersSearchQuery from '~/graphql_shared/queries/workspace_autocomplete_us
 import currentUserQuery from '~/graphql_shared/queries/current_user.query.graphql';
 import InviteMembersTrigger from '~/invite_members/components/invite_members_trigger.vue';
 import UncollapsedAssigneeList from '~/sidebar/components/assignees/uncollapsed_assignee_list.vue';
+import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
+import { resolvers } from '~/graphql_shared/issuable_client';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import { mockTracking } from 'helpers/tracking_helper';
@@ -21,15 +23,21 @@ import {
   currentUserNullResponse,
   updateWorkItemMutationResponse,
   projectMembersAutocompleteResponseWithNoMatchingUsers,
+  workItemResponseFactory,
 } from 'jest/work_items/mock_data';
-import { i18n, TRACKING_CATEGORY_SHOW } from '~/work_items/constants';
-
-const workItemId = 'gid://gitlab/WorkItem/1';
+import { i18n, TRACKING_CATEGORY_SHOW, NEW_WORK_ITEM_IID } from '~/work_items/constants';
 
 describe('WorkItemAssignees component', () => {
   Vue.use(VueApollo);
 
   let wrapper;
+  const fullPath = 'test-project-path';
+
+  const workItemQueryResponse = workItemResponseFactory({
+    canUpdate: true,
+    canDelete: true,
+    participantsWidgetPresent: false,
+  });
 
   const findInviteMembersTrigger = () => wrapper.findComponent(InviteMembersTrigger);
   const findAssignSelfButton = () => wrapper.findByTestId('assign-self');
@@ -61,7 +69,10 @@ describe('WorkItemAssignees component', () => {
     findSidebarDropdownWidget().vm.$emit('dropdownHidden');
   };
 
+  const newWorkItemPath = newWorkItemFullPath(fullPath, 'task');
+
   const createComponent = ({
+    workItemId = 'gid://gitlab/WorkItem/1',
     mountFn = shallowMountExtended,
     assignees = mockAssignees,
     searchQueryHandler = successSearchQueryHandler,
@@ -70,17 +81,34 @@ describe('WorkItemAssignees component', () => {
     canInviteMembers = false,
     canUpdate = true,
   } = {}) => {
-    const apolloProvider = createMockApollo([
-      [usersSearchQuery, searchQueryHandler],
-      [groupUsersSearchQuery, successGroupSearchQueryHandler],
-      [currentUserQuery, currentUserQueryHandler],
-      [updateWorkItemMutation, successUpdateWorkItemMutationHandler],
-    ]);
+    const apolloProvider = createMockApollo(
+      [
+        [usersSearchQuery, searchQueryHandler],
+        [groupUsersSearchQuery, successGroupSearchQueryHandler],
+        [currentUserQuery, currentUserQueryHandler],
+        [updateWorkItemMutation, successUpdateWorkItemMutationHandler],
+      ],
+      resolvers,
+    );
+
+    apolloProvider.clients.defaultClient.cache.writeQuery({
+      query: workItemByIidQuery,
+      variables: {
+        fullPath: newWorkItemPath,
+        iid: NEW_WORK_ITEM_IID,
+      },
+      data: {
+        workspace: {
+          id: newWorkItemPath,
+          ...workItemQueryResponse.data,
+        },
+      },
+    });
 
     wrapper = mountFn(WorkItemAssignees, {
       propsData: {
         assignees,
-        fullPath: 'test-project-path',
+        fullPath,
         workItemId,
         allowsMultipleAssignees,
         workItemType: 'Task',
@@ -149,7 +177,7 @@ describe('WorkItemAssignees component', () => {
 
       expect(successSearchQueryHandler).toHaveBeenCalledWith({
         isProject: true,
-        fullPath: 'test-project-path',
+        fullPath,
         search: '',
       });
     });
@@ -191,12 +219,28 @@ describe('WorkItemAssignees component', () => {
 
       expect(successUpdateWorkItemMutationHandler).toHaveBeenCalledWith({
         input: {
-          id: workItemId,
+          id: 'gid://gitlab/WorkItem/1',
           assigneesWidget: {
             assigneeIds: [currentUser.id],
           },
         },
       });
+
+      expect(findAssigneeList().props('users')).toHaveLength(1);
+      expect(findAssigneeList().props('users')[0].id).toBe(currentUser.id);
+    });
+
+    it('calls the update work item local mutation for new work items', async () => {
+      createComponent({ workItemId: newWorkItemId('task') });
+
+      await waitForPromises();
+
+      const { currentUser } = currentUserResponse.data;
+      findAssignSelfButton().vm.$emit('click', new MouseEvent('click'));
+      await nextTick();
+
+      expect(findAssigneeList().props('users')).toHaveLength(1);
+      expect(findAssigneeList().props('users')[0].id).toBe(currentUser.id);
     });
   });
 

@@ -1361,10 +1361,10 @@ Example response:
 
 ## Delete a merge request dependency
 
-Delete a merge request dependency
+Delete a merge request dependency.
 
 ```plaintext
-GET /projects/:id/merge_requests/:merge_request_iid/blocks/:block_id
+DELETE /projects/:id/merge_requests/:merge_request_iid/blocks/:block_id
 ```
 
 Supported attributes:

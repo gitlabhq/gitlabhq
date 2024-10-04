@@ -331,7 +331,6 @@ Style/GuardClause:
     - 'ee/lib/ee/api/features.rb'
     - 'ee/lib/ee/api/helpers/projects_helpers.rb'
     - 'ee/lib/ee/api/projects.rb'
-    - 'ee/lib/ee/api/search.rb'
     - 'ee/lib/ee/gitlab/auth/ldap/access.rb'
     - 'ee/lib/ee/gitlab/auth/ldap/sync/group.rb'
     - 'ee/lib/ee/gitlab/auth/o_auth/user.rb'

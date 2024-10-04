@@ -24,7 +24,7 @@ RSpec.describe 'Updating the container expiration policy', feature_category: :co
       :update_container_expiration_policy,
       params,
       <<~QL
-        containerExpirationPolicy {
+        containerTagsExpirationPolicy {
           cadence
           keepN
           nameRegexKeep
@@ -37,7 +37,7 @@ RSpec.describe 'Updating the container expiration policy', feature_category: :co
   end
 
   let(:mutation_response) { graphql_mutation_response(:update_container_expiration_policy) }
-  let(:container_expiration_policy_response) { mutation_response['containerExpirationPolicy'] }
+  let(:container_expiration_policy_response) { mutation_response['containerTagsExpirationPolicy'] }
 
   RSpec.shared_examples 'returning a success' do
     it_behaves_like 'returning response status', :success

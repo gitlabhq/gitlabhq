@@ -318,7 +318,7 @@ You can assign custom roles and permissions to the following:
 You can sync users to custom roles with following authentication providers:
 
 - See [Configure SAML Group Links](group/saml_sso/group_sync.md#configure-saml-group-links).
-- See [Manage group memberships via LDAP](group/access_and_permissions.md#manage-group-memberships-via-ldap).
+- See [Manage group memberships via LDAP](group/access_and_permissions.md#manage-group-memberships-with-ldap).
 
 ## Known issues
 

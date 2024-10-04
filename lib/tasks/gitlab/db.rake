@@ -503,6 +503,8 @@ namespace :gitlab do
 
       desc 'Checks schema inconsistencies'
       task run: :environment do
+        logger = Logger.new($stdout)
+
         database_model = Gitlab::Database.database_base_models[Gitlab::Database::MAIN_DATABASE_NAME]
         database = Gitlab::Schema::Validation::Sources::Database.new(database_model.connection)
 
@@ -519,6 +521,7 @@ namespace :gitlab do
         inconsistencies.each do |inconsistency|
           puts inconsistency.display
         end
+        logger.info "This task is a diagnostic tool to be used under the guidance of GitLab Support. You should not use the task for routine checks as database inconsistencies might be expected."
       end
     end
 

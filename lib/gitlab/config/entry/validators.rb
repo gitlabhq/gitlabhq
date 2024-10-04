@@ -451,7 +451,7 @@ module Gitlab
           end
 
           def services_ports(current_data)
-            current_data.dig(:services).to_a.flat_map { |service| service.is_a?(Hash) ? service[:ports] : nil }
+            current_data[:services].to_a.flat_map { |service| service.is_a?(Hash) ? service[:ports] : nil }
           end
         end
 

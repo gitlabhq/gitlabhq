@@ -1,5 +1,5 @@
 <%- if controller_name != 'sessions' %>
-  <%= link_to _("Sign in"), new_session_path(:user, redirect_to_referer: 'yes'), class: "btn" %><br />
+  <%= link_to _("Sign in"), new_session_path(:user, redirect_to_referer: 'yes'), class: "btn quarantined-deprecated-btn" %><br />
 <% end -%>
 
 <%- if devise_mapping.registerable? && controller_name != 'registrations' && allow_signup? %>
@@ -7,7 +7,7 @@
 <% end -%>
 
 <%- if devise_mapping.recoverable? && controller_name != 'passwords' %>
-<%= link_to _("Forgot your password?"), new_password_path(:user), class: "btn" %><br />
+<%= link_to _("Forgot your password?"), new_password_path(:user), class: "btn quarantined-deprecated-btn" %><br />
 <% end -%>
 
 <%- if devise_mapping.confirmable? && controller_name != 'confirmations' %>

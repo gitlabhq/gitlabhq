@@ -414,6 +414,8 @@ RSpec.describe API::UsageData, feature_category: :service_ping do
       end
 
       it 'triggers internal events and returns status ok' do
+        allow(Gitlab::InternalEvents).to receive(:track_event)
+
         post api(endpoint, user), params: params
 
         expect(response).to have_gitlab_http_status(:ok)

@@ -91,9 +91,9 @@ RSpec.describe 'query Jira import data', feature_category: :importers do
       it 'retuns list of jira imports' do
         jira_proket_keys = jira_imports.map { |ji| ji['jiraProjectKey'] }
         usernames = jira_imports.map { |ji| ji.dig('scheduledBy', 'username') }
-        imported_issues_count = jira_imports.map { |ji| ji.dig('importedIssuesCount') }
-        failed_issues_count = jira_imports.map { |ji| ji.dig('failedToImportCount') }
-        total_issue_count = jira_imports.map { |ji| ji.dig('totalIssueCount') }
+        imported_issues_count = jira_imports.map { |ji| ji['importedIssuesCount'] }
+        failed_issues_count = jira_imports.map { |ji| ji['failedToImportCount'] }
+        total_issue_count = jira_imports.map { |ji| ji['totalIssueCount'] }
 
         expect(jira_imports.size).to eq 2
         expect(jira_proket_keys).to eq %w[BB AA]

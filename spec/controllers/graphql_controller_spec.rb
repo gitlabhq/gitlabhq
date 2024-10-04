@@ -813,7 +813,7 @@ RSpec.describe GraphqlController, feature_category: :integrations do
       post :execute, params: { _json: graphql_queries }
 
       expect(controller).to have_received(:append_info_to_payload)
-      expect(log_payload.dig(:exception_object)).to eq(exception)
+      expect(log_payload[:exception_object]).to eq(exception)
     end
   end
 end

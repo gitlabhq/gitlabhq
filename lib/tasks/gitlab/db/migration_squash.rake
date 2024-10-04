@@ -13,12 +13,9 @@ namespace :gitlab do
 
       new_init_structure_sql = git.show(args[:version], 'db/structure.sql')
       # Delete relevant migrations and specs
-      squasher.files_to_delete.each do |filename|
-        git.remove filename
-        puts "\tDeleting #{filename} from repo".red
-      rescue Git::GitExecuteError
-        puts "#{filename} is not in the current branch"
-      end
+      files_to_delete = squasher.files_to_delete.filter { |f| File.exist?(f) }
+      puts "\tDeleting #{files_to_delete.length} files."
+      git.remove files_to_delete
       puts "\tOverwriting init_structure.sql..."
       File.write('db/init_structure.sql', new_init_structure_sql)
       git.add('db/init_structure.sql')

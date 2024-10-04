@@ -513,8 +513,15 @@ module Types
       resolver: Resolvers::ReleasesResolver.single,
       authorize: :read_release
 
+    field :container_tags_expiration_policy, Types::ContainerRegistry::ContainerTagsExpirationPolicyType,
+      null: true,
+      description: 'Container tags expiration policy of the project.',
+      method: :container_expiration_policy,
+      authorize: :read_container_image
+
     field :container_expiration_policy, Types::ContainerExpirationPolicyType,
       null: true,
+      deprecated: { reason: 'Use `container_tags_expiration_policy`', milestone: '17.5' },
       description: 'Container expiration policy of the project.'
 
     field :container_registry_protection_rules,

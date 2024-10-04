@@ -1,1 +1,8 @@
-= render_parent
+%table
+  %thead.gl-sr-only
+    %tr
+      - column_titles.each do |title|
+        %th= title
+  %tbody
+    - @diff_file.viewer_hunks.each do |hunk|
+      = render RapidDiffs::Viewers::Text::ParallelHunkComponent.new(diff_hunk: hunk, diff_file: @diff_file)

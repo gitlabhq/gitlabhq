@@ -5,7 +5,7 @@
     %span.gl-flex.gl-items-center
       = gl_badge_tag issuable_state_text(issuable), variant: issuable_state_to_badge_class(issuable)
       = sprite_icon('eye-slash', css_class: 'gl-text-secondary gl-ml-2') if issuable.respond_to?(:confidential?) && issuable.confidential?
-      = link_to issuable_path(issuable), data: { event_tracking: 'click_search_result', event_label: @scope, event_value: position, event_property: @search_term }, class: 'gl-w-full' do
+      = link_to issuable_path(issuable), data: { event_tracking: 'click_search_result', event_label: @scope, event_value: position }, class: 'gl-w-full' do
         %span.term.str-truncated.gl-font-bold.gl-ml-2= simple_search_highlight_and_truncate(issuable.title, @search_term)
     .gl-text-secondary.gl-mb-3.gl-mt-2.gl-text-sm
       = issuable_project_reference(issuable)

@@ -67,6 +67,11 @@ module Types
     field :merge_request_diff_generated,
       subscription: Subscriptions::IssuableUpdated, null: true,
       description: 'Triggered when a merge request diff is generated.'
+
+    field :issuable_todo_updated,
+      subscription: Subscriptions::IssuableUpdated, null: true,
+      description: 'Triggered when a todo on an issuable is updated.',
+      alpha: { milestone: '17.5' }
   end
 end
 

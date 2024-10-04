@@ -9,6 +9,10 @@ RSpec.describe 'Internal Events matchers', :clean_gitlab_redis_shared_state, fea
   let_it_be(:group_2) { create(:group) }
   let_it_be(:project_1) { create(:project, namespace: group_1) }
 
+  before do
+    allow(Gitlab::Tracking::EventValidator).to receive_message_chain(:new, :validate!)
+  end
+
   def track_event(event: nil, user: nil, group: nil)
     Gitlab::InternalEvents.track_event(
       event || 'g_edit_by_sfe',

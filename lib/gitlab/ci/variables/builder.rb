@@ -245,7 +245,7 @@ module Gitlab
 
         def ci_node_total_value(job_options)
           parallel = job_options&.dig(:parallel)
-          parallel = parallel.dig(:total) if parallel.is_a?(Hash)
+          parallel = parallel[:total] if parallel.is_a?(Hash)
           parallel || 1
         end
 

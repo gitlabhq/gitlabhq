@@ -336,25 +336,6 @@ export const setNewWorkItemCache = async (
     __typename: 'WorkItemWidgetDescription',
   });
 
-  widgets.push({
-    type: WIDGET_TYPE_PARTICIPANTS,
-    participants: {
-      nodes: [
-        {
-          id: currentUserId,
-          avatarUrl: gon?.current_user_avatar_url,
-          username: gon?.current_username,
-          name: gon?.current_user_fullname,
-          webUrl: `${baseURL}/${gon?.current_username}`,
-          webPath: `/${gon?.current_username}`,
-          __typename: 'UserCore',
-        },
-      ],
-      __typename: 'UserCoreConnection',
-    },
-    __typename: 'WorkItemWidgetParticipants',
-  });
-
   workItemAttributesWrapperOrder.forEach((widgetName) => {
     if (availableWidgets.includes(widgetName)) {
       if (widgetName === WIDGET_TYPE_ASSIGNEES) {

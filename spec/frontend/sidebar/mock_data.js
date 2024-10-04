@@ -868,6 +868,22 @@ export const todosResponse = {
   },
 };
 
+export const noMergeRequestTodosResponse = {
+  data: {
+    workspace: {
+      id: '1',
+      __typename: 'Project',
+      issuable: {
+        __typename: 'MergeRequest',
+        id: 'gid://gitlab/MergeRequest/1',
+        currentUserTodos: {
+          nodes: [],
+        },
+      },
+    },
+  },
+};
+
 export const noTodosResponse = {
   data: {
     workspace: {

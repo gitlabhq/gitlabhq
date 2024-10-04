@@ -213,7 +213,7 @@ export default {
       @primary.prevent="submitForm"
     >
       <upload-dropzone
-        class="gl-h-200! gl-mb-4"
+        class="gl-mb-6 gl-h-26"
         single-file-selection
         :valid-file-mimetypes="$options.validFileMimetypes"
         :is-file-valid="() => true"

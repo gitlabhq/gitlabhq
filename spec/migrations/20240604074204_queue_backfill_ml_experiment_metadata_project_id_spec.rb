@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe QueueBackfillMlExperimentMetadataProjectId, feature_category: :mlops do
+RSpec.describe QueueBackfillMlExperimentMetadataProjectId, migration: :gitlab_main_cell, feature_category: :mlops do
   let!(:batched_migration) { described_class::MIGRATION }
 
   it 'schedules a new batched migration' do

@@ -5,6 +5,10 @@ module Resolvers
     class UserContributedProjectsResolver < BaseResolver
       type Types::ProjectType.connection_type, null: true
 
+      argument :search, GraphQL::Types::String,
+        required: false,
+        description: 'Search query.'
+
       argument :sort, Types::Projects::ProjectSortEnum,
         description: 'Sort contributed projects.',
         required: false,
@@ -30,6 +34,7 @@ module Resolvers
           user: user,
           current_user: current_user,
           params: {
+            search: args[:search],
             order_by: args[:sort],
             min_access_level: args[:min_access_level],
             programming_language_name: args[:programming_language_name]

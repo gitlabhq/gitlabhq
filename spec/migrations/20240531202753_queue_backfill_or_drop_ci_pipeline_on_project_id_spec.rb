@@ -3,7 +3,8 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe QueueBackfillOrDropCiPipelineOnProjectId, migration: :gitlab_ci, feature_category: :continuous_integration do
+RSpec.describe QueueBackfillOrDropCiPipelineOnProjectId, migration: :gitlab_ci,
+  feature_category: :continuous_integration do
   let!(:batched_migration) { described_class::MIGRATION }
 
   it 'schedules a new batched migration' do

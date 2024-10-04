@@ -1,9 +1,0 @@
----
-name: ai_custom_model
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/455590
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152107
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/460254
-milestone: '17.1'
-group: group::custom models
-type: experiment
-default_enabled: false

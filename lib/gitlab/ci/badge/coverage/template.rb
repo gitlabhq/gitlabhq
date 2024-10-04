@@ -24,9 +24,9 @@ module Gitlab::Ci
 
         def initialize(badge)
           @status = badge.status
-          @min_good = badge.customization.dig(:min_good)
-          @min_acceptable = badge.customization.dig(:min_acceptable)
-          @min_medium = badge.customization.dig(:min_medium)
+          @min_good = badge.customization[:min_good]
+          @min_acceptable = badge.customization[:min_acceptable]
+          @min_medium = badge.customization[:min_medium]
           super
         end
 

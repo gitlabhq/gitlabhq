@@ -95,9 +95,7 @@ export default {
     },
   ],
   emptyState: {
-    title: s__(
-      'MlModelRegistry|Manage versions of your machine learning modelManage versions of your machine learning model',
-    ),
+    title: s__('MlModelRegistry|Manage versions of your machine learning model'),
     description: s__('MlModelRegistry|Use versions to track performance, parameters, and metadata'),
     primaryText: s__('MlModelRegistry|Create model version'),
     modalId: MODEL_VERSION_CREATION_MODAL_ID,

@@ -5,9 +5,9 @@ require 'spec_helper'
 RSpec.describe ContributedProjectsFinder, feature_category: :groups_and_projects do
   let_it_be(:user) { create(:user) }
   let_it_be(:user_2) { create(:user) }
-  let_it_be(:public_project) { create(:project, :public) }
-  let_it_be(:private_project) { create(:project, :private) }
-  let_it_be(:internal_project) { create(:project, :internal) }
+  let_it_be(:public_project) { create(:project, :public, name: 'foo') }
+  let_it_be(:private_project) { create(:project, :private, name: 'bar') }
+  let_it_be(:internal_project) { create(:project, :internal, name: 'baz') }
 
   let(:params) { {} }
   let(:source_user) { user }
@@ -73,6 +73,14 @@ RSpec.describe ContributedProjectsFinder, feature_category: :groups_and_projects
 
       expect(projects).to be_empty
     end
+  end
+
+  describe 'with search param' do
+    let(:params) { { search: 'foo' } }
+
+    subject { finder.execute }
+
+    it { is_expected.to eq([public_project]) }
   end
 
   describe 'with min_access_level param' do

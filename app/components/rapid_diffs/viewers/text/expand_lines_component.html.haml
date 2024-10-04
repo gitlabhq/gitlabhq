@@ -1,2 +1,4 @@
-%button
-  = helpers.sprite_icon(icon_name)
+- @directions.each do |direction|
+  %button
+    = helpers.sprite_icon(icon_name(direction))
+

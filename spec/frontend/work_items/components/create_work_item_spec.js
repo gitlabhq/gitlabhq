@@ -19,6 +19,10 @@ import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.grap
 import { resolvers } from '~/graphql_shared/issuable_client';
 import { createWorkItemMutationResponse, createWorkItemQueryResponse } from '../mock_data';
 
+jest.mock('~/work_items/graphql/cache_utils', () => ({
+  setNewWorkItemCache: jest.fn(),
+}));
+
 const namespaceSingleWorkItemTypeQueryResponse = {
   data: {
     workspace: {
@@ -36,6 +40,7 @@ describe('Create work item component', () => {
   /** @type {import('@vue/test-utils').Wrapper} */
   let wrapper;
   let mockApollo;
+
   const workItemTypeEpicId =
     namespaceWorkItemTypesQueryResponse.data.workspace.workItemTypes.nodes.find(
       ({ name }) => name === 'Epic',

@@ -82,7 +82,6 @@ Layout/LineBreakAfterFinalMixin:
     - 'ee/app/workers/analytics/value_stream_dashboard/count_worker.rb'
     - 'ee/app/workers/arkose/blocked_users_report_worker.rb'
     - 'ee/app/workers/elastic_indexing_control_worker.rb'
-    - 'ee/app/workers/emails/abandoned_trial_emails_cron_worker.rb'
     - 'ee/app/workers/geo/metrics_update_worker.rb'
     - 'ee/app/workers/geo/sidekiq_cron_config_worker.rb'
     - 'ee/app/workers/gitlab_subscriptions/notify_seats_exceeded_batch_worker.rb'

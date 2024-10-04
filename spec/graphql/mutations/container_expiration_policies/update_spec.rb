@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Mutations::ContainerExpirationPolicies::Update do
+RSpec.describe Mutations::ContainerExpirationPolicies::Update, feature_category: :container_registry do
   include GraphqlHelpers
   using RSpec::Parameterized::TableSyntax
 
@@ -20,6 +20,7 @@ RSpec.describe Mutations::ContainerExpirationPolicies::Update do
       it 'returns the container expiration policy with no errors' do
         expect(subject).to eq(
           container_expiration_policy: container_expiration_policy,
+          container_tags_expiration_policy: container_expiration_policy,
           errors: []
         )
       end
@@ -43,6 +44,7 @@ RSpec.describe Mutations::ContainerExpirationPolicies::Update do
         it 'returns an error' do
           expect(subject).to eq(
             container_expiration_policy: nil,
+            container_tags_expiration_policy: nil,
             errors: ['Cadence is not included in the list']
           )
         end
@@ -61,6 +63,7 @@ RSpec.describe Mutations::ContainerExpirationPolicies::Update do
         it 'returns an error' do
           expect(subject).to eq(
             container_expiration_policy: nil,
+            container_tags_expiration_policy: nil,
             errors: ['Name regex can\'t be blank']
           )
         end

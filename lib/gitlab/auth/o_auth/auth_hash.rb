@@ -90,7 +90,7 @@ module Gitlab
         # Allow for configuring a custom username claim per provider from
         # the auth hash or use the canonical username or nickname fields
         def gitlab_username_claim
-          provider_args.dig('gitlab_username_claim')&.to_sym
+          provider_args['gitlab_username_claim']&.to_sym
         end
 
         def username_claims

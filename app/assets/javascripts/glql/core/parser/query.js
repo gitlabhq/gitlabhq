@@ -20,7 +20,7 @@ export const parseQuery = async (query, config) => {
   const parser = await initParser();
   parser.fields = uniq([...REQUIRED_QUERY_FIELDS, ...config.fields.map(({ name }) => name)]);
 
-  const { output } = parser.compile(config.target || 'graphql', query, config.limit);
+  const { output } = parser.compile(config.target || 'graphql', query, config);
 
   if (output.toLowerCase().startsWith('error')) throw new Error(output.replace(/^error: /i, ''));
 

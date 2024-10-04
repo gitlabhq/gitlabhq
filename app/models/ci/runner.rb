@@ -411,8 +411,10 @@ module Ci
     def short_sha
       return unless token
 
+      # We want to show the first characters of the hash, so we need to bypass any fixed components of the token,
+      # such as CREATED_RUNNER_TOKEN_PREFIX or partition_id_prefix_in_16_bit_encode
       start_index = authenticated_user_registration_type? ? CREATED_RUNNER_TOKEN_PREFIX.length : 0
-      token[start_index..start_index + RUNNER_SHORT_SHA_LENGTH]
+      token[start_index..start_index + RUNNER_SHORT_SHA_LENGTH].delete_prefix(partition_id_prefix_in_16_bit_encode)
     end
 
     def tag_list

@@ -295,8 +295,8 @@ RSpec.describe Ci::CreatePipelineService, :ci_config_feature_flag_correctness, f
       end
 
       it 'removes exit_codes if allow_failure is specified' do
-        expect(find_job('job-1').options.dig(:allow_failure_criteria)).to be_nil
-        expect(find_job('job-2').options.dig(:allow_failure_criteria)).to be_nil
+        expect(find_job('job-1').options[:allow_failure_criteria]).to be_nil
+        expect(find_job('job-2').options[:allow_failure_criteria]).to be_nil
         expect(find_job('job-3').options.dig(:allow_failure_criteria, :exit_codes)).to eq([42])
       end
     end

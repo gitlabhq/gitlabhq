@@ -25,7 +25,7 @@ module Gitlab
         end
 
         def self.strategy(name, **opts)
-          EntryStrategy.new(name, opts.dig(:class), opts.fetch(:if)).tap do |strategy|
+          EntryStrategy.new(name, opts[:class], opts.fetch(:if)).tap do |strategy|
             strategies.append(strategy)
           end
         end

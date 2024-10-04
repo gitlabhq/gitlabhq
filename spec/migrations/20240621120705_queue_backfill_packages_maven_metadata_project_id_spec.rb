@@ -3,7 +3,8 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe QueueBackfillPackagesMavenMetadataProjectId, feature_category: :package_registry do
+RSpec.describe QueueBackfillPackagesMavenMetadataProjectId, migration: :gitlab_main_cell,
+  feature_category: :package_registry do
   let!(:batched_migration) { described_class::MIGRATION }
 
   it 'schedules a new batched migration' do

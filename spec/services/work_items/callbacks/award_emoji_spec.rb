@@ -16,8 +16,8 @@ RSpec.describe WorkItems::Callbacks::AwardEmoji, feature_category: :team_plannin
         .before_update
     end
 
-    shared_examples 'raises a WidgetError' do
-      it { expect { subject }.to raise_error(::WorkItems::Widgets::BaseService::WidgetError, message) }
+    shared_examples 'raises a callback error' do
+      it { expect { subject }.to raise_error(::Issuable::Callbacks::Base::Error, message) }
     end
 
     context 'when awarding an emoji' do
@@ -45,7 +45,7 @@ RSpec.describe WorkItems::Callbacks::AwardEmoji, feature_category: :team_plannin
         context 'when the name is incorrect' do
           let(:params) { { action: :add, name: 'foo' } }
 
-          it_behaves_like 'raises a WidgetError' do
+          it_behaves_like 'raises a callback error' do
             let(:message) { 'Name is not a valid emoji name' }
           end
         end
@@ -53,7 +53,7 @@ RSpec.describe WorkItems::Callbacks::AwardEmoji, feature_category: :team_plannin
         context 'when the action is incorrect' do
           let(:params) { { action: :foo, name: 'star' } }
 
-          it_behaves_like 'raises a WidgetError' do
+          it_behaves_like 'raises a callback error' do
             let(:message) { 'foo is not a valid action.' }
           end
         end
@@ -81,7 +81,7 @@ RSpec.describe WorkItems::Callbacks::AwardEmoji, feature_category: :team_plannin
         context 'when work item does not have the emoji' do
           let(:params) { { action: :remove, name: 'star' } }
 
-          it_behaves_like 'raises a WidgetError' do
+          it_behaves_like 'raises a callback error' do
             let(:message) { 'User has not awarded emoji of type star on the awardable' }
           end
         end

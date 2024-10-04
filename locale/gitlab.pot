@@ -16113,9 +16113,6 @@ msgstr ""
 msgid "Create New Directory"
 msgstr ""
 
-msgid "Create a GitLab account first, and then connect it to your %{label} account."
-msgstr ""
-
 msgid "Create a Kubernetes cluster"
 msgstr ""
 
@@ -16168,6 +16165,9 @@ msgid "Create a personal access token on your account to pull or push via %{prot
 msgstr ""
 
 msgid "Create a project"
+msgstr ""
+
+msgid "Create an account in %{simple_url} first, and then %{doc_start}connect it to your %{label} account%{doc_end}."
 msgstr ""
 
 msgid "Create an incident. Incidents are created for each alert triggered."
@@ -34908,9 +34908,6 @@ msgstr ""
 msgid "MlModelRegistry|Manage versions of your machine learning model"
 msgstr ""
 
-msgid "MlModelRegistry|Manage versions of your machine learning modelManage versions of your machine learning model"
-msgstr ""
-
 msgid "MlModelRegistry|May not contain spaces."
 msgstr ""
 
@@ -45871,15 +45868,6 @@ msgstr ""
 msgid "Reports|Metrics reports are loading"
 msgstr ""
 
-msgid "Reports|Metrics reports changed on %{numberOfChanges} %{pointsString}"
-msgstr ""
-
-msgid "Reports|Metrics reports did not change"
-msgstr ""
-
-msgid "Reports|Metrics reports failed loading results"
-msgstr ""
-
 msgid "Reports|Metrics reports failed to load results"
 msgstr ""
 
@@ -49248,9 +49236,6 @@ msgstr ""
 msgid "SecurityOrchestration|Add a numeric suffix to ensure unique job names."
 msgstr ""
 
-msgid "SecurityOrchestration|Add action"
-msgstr ""
-
 msgid "SecurityOrchestration|Add job name suffix %{suffixEditor} %{suffixIcon}"
 msgstr ""
 
@@ -51903,7 +51888,7 @@ msgstr ""
 msgid "Signing in using your %{label} account has been disabled for security reasons. Please sign in to your GitLab account using another authentication method and reconnect to your %{label} account."
 msgstr ""
 
-msgid "Signing in using your %{label} account without a pre-existing GitLab account is not allowed."
+msgid "Signing in using your %{label} account without a pre-existing account in %{simple_url} is not allowed."
 msgstr ""
 
 msgid "SilentMode|All outbound communications are blocked. %{link_start}Learn more%{link_end}."
@@ -65978,11 +65963,6 @@ msgstr ""
 
 msgid "pipelineEditorWalkthrough|You can use the file tree to view your pipeline configuration files. %{linkStart}Learn more%{linkEnd}"
 msgstr ""
-
-msgid "point"
-msgid_plural "points"
-msgstr[0] ""
-msgstr[1] ""
 
 msgid "policy"
 msgid_plural "policies"

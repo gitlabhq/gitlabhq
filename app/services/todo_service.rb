@@ -184,6 +184,8 @@ class TodoService
     attributes = attributes_for_target(target)
 
     resolve_todos(pending_todos([current_user], attributes), current_user)
+
+    GraphqlTriggers.issuable_todo_updated(target, current_user)
   end
 
   # Resolves all todos related to target for all users
@@ -211,6 +213,8 @@ class TodoService
     return if todo.done?
 
     todo.update(state: resolution, resolved_by_action: resolved_by_action)
+
+    GraphqlTriggers.issuable_todo_updated(todo.target, current_user)
 
     current_user.update_todos_count_cache
   end

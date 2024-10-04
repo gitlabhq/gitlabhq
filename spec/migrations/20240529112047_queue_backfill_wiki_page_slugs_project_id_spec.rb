@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe QueueBackfillWikiPageSlugsProjectId, feature_category: :wiki do
+RSpec.describe QueueBackfillWikiPageSlugsProjectId, migration: :gitlab_main_cell, feature_category: :wiki do
   let!(:batched_migration) { described_class::MIGRATION }
 
   it 'schedules a new batched migration' do

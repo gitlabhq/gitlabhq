@@ -740,7 +740,7 @@ module API
         namespace: namespace,
         project: project
       )
-    rescue Gitlab::InternalEvents::UnknownEventError => e
+    rescue Gitlab::Tracking::EventValidator::UnknownEventError => e
       Gitlab::ErrorTracking.track_exception(e, event_name: event_name)
 
       # We want to keep the error silent on production to keep the behavior

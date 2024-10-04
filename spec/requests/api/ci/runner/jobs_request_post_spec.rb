@@ -1098,7 +1098,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
                 request_job info: { features: { artifacts_exclude: true } }
 
                 expect(response).to have_gitlab_http_status(:created)
-                expect(json_response.dig('artifacts').first).to include('exclude' => ['cde'])
+                expect(json_response['artifacts'].first).to include('exclude' => ['cde'])
               end
             end
 
@@ -1115,7 +1115,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
             request_job
 
             expect(response).to have_gitlab_http_status(:created)
-            expect(json_response.dig('artifacts').first).not_to have_key('exclude')
+            expect(json_response['artifacts'].first).not_to have_key('exclude')
           end
         end
 

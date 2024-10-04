@@ -3,7 +3,8 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe QueueBackfillSbomOccurrencesTraversalIdsAndArchived, feature_category: :dependency_management do
+RSpec.describe QueueBackfillSbomOccurrencesTraversalIdsAndArchived, migration: :gitlab_sec,
+  feature_category: :dependency_management do
   let!(:batched_migration) { described_class::MIGRATION }
 
   it 'schedules a new batched migration' do

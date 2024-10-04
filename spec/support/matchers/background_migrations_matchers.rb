@@ -65,9 +65,18 @@ RSpec::Matchers.define :be_scheduled_migration_with_multiple_args do |*expected|
   end
 end
 
-RSpec::Matchers.define :have_scheduled_batched_migration do |gitlab_schema: :gitlab_main, table_name: nil, column_name: nil, job_arguments: [], **attributes|
+RSpec::Matchers.define :have_scheduled_batched_migration do |gitlab_schema: nil, table_name: nil, column_name: nil, job_arguments: [], **attributes|
   define_method :matches? do |migration|
     reset_column_information(Gitlab::Database::BackgroundMigration::BatchedMigration)
+
+    if gitlab_schema.nil?
+      expect(described_class.allowed_gitlab_schemas.count).to(
+        be(1),
+        "Please specify a gitlab_schema, since more than one schema is allowed for #{described_class}: " \
+          "#{described_class.allowed_gitlab_schemas}"
+      )
+      gitlab_schema = described_class.allowed_gitlab_schemas.first
+    end
 
     batched_migrations =
       Gitlab::Database::BackgroundMigration::BatchedMigration

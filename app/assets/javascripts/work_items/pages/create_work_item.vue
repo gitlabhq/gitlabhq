@@ -8,6 +8,7 @@ export default {
   components: {
     CreateWorkItem,
   },
+  inject: ['isGroup'],
   props: {
     workItemTypeName: {
       type: String,
@@ -31,5 +32,9 @@ export default {
 </script>
 
 <template>
-  <create-work-item :work-item-type-name="workItemTypeName" @workItemCreated="workItemCreated" />
+  <create-work-item
+    :work-item-type-name="workItemTypeName"
+    :is-group="isGroup"
+    @workItemCreated="workItemCreated"
+  />
 </template>

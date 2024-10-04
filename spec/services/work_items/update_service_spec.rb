@@ -418,16 +418,6 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
           it 'returns validation errors' do
             expect(update_work_item[:message]).to contain_exactly("Title can't be blank")
           end
-
-          it 'does not execute after-update widgets', :aggregate_failures do
-            expect(service).to receive(:update).and_call_original
-            expect(service).not_to receive(:execute_widgets).with(callback: :update, widget_params: widget_params)
-
-            expect do
-              update_work_item
-              work_item.reload
-            end.not_to change(work_item, :description)
-          end
         end
       end
 
@@ -559,14 +549,6 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
 
           it 'returns validation errors' do
             expect(update_work_item[:message]).to contain_exactly("Title can't be blank")
-          end
-
-          it 'does not execute after-update widgets', :aggregate_failures do
-            expect(service).to receive(:update).and_call_original
-            expect(service).not_to receive(:execute_widgets).with(callback: :before_update_in_transaction, widget_params: widget_params)
-            expect(work_item.work_item_children).not_to include(child_work_item)
-
-            update_work_item
           end
         end
       end

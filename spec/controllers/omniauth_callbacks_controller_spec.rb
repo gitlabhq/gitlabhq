@@ -476,9 +476,15 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
 
         context 'for a new user' do
           before do
+            @original_url = Settings.gitlab.url
+            Settings.gitlab.url = 'https://www.example.com:43/gitlab'
             stub_omniauth_setting(enabled: true, auto_link_user: true, allow_single_sign_on: ['atlassian_oauth2'])
 
             user.destroy!
+          end
+
+          after do
+            Settings.gitlab.url = @original_url
           end
 
           it 'denies sign-in if sign-up is enabled, but block_auto_created_users is set' do
@@ -500,7 +506,7 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
 
             post :atlassian_oauth2
 
-            expect(flash[:alert]).to start_with 'Signing in using your Atlassian account without a pre-existing GitLab account is not allowed.'
+            expect(flash[:alert]).to eq('Signing in using your Atlassian account without a pre-existing account in example.com:43/gitlab is not allowed. Create an account in example.com:43/gitlab first, and then <a href="/help/user/profile/index.md#sign-in-services">connect it to your Atlassian account</a>.')
           end
         end
       end
@@ -666,12 +672,34 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
         expect(request.env['warden']).to be_authenticated
       end
 
-      it 'denies login if sign up is not enabled' do
-        stub_omniauth_setting(allow_single_sign_on: false, block_auto_created_users: false)
+      describe 'when registering a new account is allowed' do
+        before do
+          allow(Gitlab::CurrentSettings).to receive(:allow_signup?).and_return(true)
+        end
 
-        post :saml, params: { SAMLResponse: mock_saml_response }
+        it 'denies login if sign up is not enabled' do
+          stub_omniauth_setting(allow_single_sign_on: false, block_auto_created_users: false)
 
-        expect(flash[:alert]).to start_with 'Signing in using your saml account without a pre-existing GitLab account is not allowed.'
+          post :saml, params: { SAMLResponse: mock_saml_response }
+
+          expect(flash[:alert]).to eq('Signing in using your saml account without a pre-existing account in localhost is not allowed. Create an account in localhost first, and then <a href="/help/user/profile/index.md#sign-in-services">connect it to your saml account</a>.')
+          expect(response).to redirect_to(new_user_registration_path)
+        end
+      end
+
+      describe 'when registering a new account is not allowed' do
+        before do
+          allow(Gitlab::CurrentSettings).to receive(:allow_signup?).and_return(false)
+        end
+
+        it 'denies login if sign up is not enabled' do
+          stub_omniauth_setting(allow_single_sign_on: false, block_auto_created_users: false)
+
+          post :saml, params: { SAMLResponse: mock_saml_response }
+
+          expect(flash[:alert]).to eq('Signing in using your saml account without a pre-existing account in localhost is not allowed.')
+          expect(response).to redirect_to(new_user_session_path)
+        end
       end
 
       it 'logs saml_response for debugging' do

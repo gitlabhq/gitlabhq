@@ -108,7 +108,7 @@ export default {
       :class="{
         'issue-token-remove-button gl-flex gl-items-center gl-rounded-br-small gl-rounded-tr-small gl-border-0 gl-px-3 gl-text-gray-500':
           isCondensed,
-        'btn btn-default': !isCondensed,
+        'btn btn-default quarantined-deprecated-btn': !isCondensed,
       }"
       :title="removeButtonLabel"
       :aria-label="removeButtonLabel"

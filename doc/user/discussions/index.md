@@ -296,12 +296,13 @@ To create a thread:
 > - Resolvable threads for issues [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/31114) in GitLab 16.4.
 > - Resolvable threads for issues [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/31114) in GitLab 16.7. Feature flag `resolvable_issue_threads` removed.
 > - Resolvable threads for tasks, objectives, and key results [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/458818) in GitLab 17.3.
+> - Resolvable threads for epics [introduced](https://gitlab.com/groups/gitlab-org/-/epics/458818) in GitLab 17.5. Your administrator must have [enabled the new look for epics](../group/epics/epic_work_items.md).
 
 You can resolve a thread when you want to finish a conversation.
 
 Prerequisites:
 
-- You must be in an issue, task, objective, key result, or merge request.
+- You must be in an epic, issue, task, objective, key result, or merge request. For epics, your administrator must have [enabled the new look for epics](../group/epics/epic_work_items.md).
 - You must have at least the Developer role or be the author of the issue or merge request.
 
 To resolve a thread:

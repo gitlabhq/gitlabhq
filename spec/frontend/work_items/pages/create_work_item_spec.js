@@ -8,24 +8,37 @@ jest.mock('~/lib/utils/url_utility');
 describe('Create work item page component', () => {
   let wrapper;
 
-  const createComponent = ($router = undefined) => {
+  const createComponent = ($router = undefined, isGroup = true) => {
     wrapper = shallowMount(CreateWorkItemPage, {
+      propsData: {
+        workItemTypeName: 'issue',
+      },
       mocks: {
         $router,
       },
       provide: {
         fullPath: 'gitlab-org',
-        isGroup: true,
+        isGroup,
       },
     });
   };
 
+  const findCreateWorkItem = () => wrapper.findComponent(CreateWorkItem);
+
+  it('passes the isGroup prop to the CreateWorkItem component', () => {
+    const pushMock = jest.fn();
+    createComponent({ push: pushMock }, false);
+
+    expect(findCreateWorkItem().props()).toMatchObject({
+      isGroup: false,
+      workItemTypeName: 'issue',
+    });
+  });
+
   it('visits work item detail page after create if router is not present', () => {
     createComponent();
 
-    wrapper
-      .findComponent(CreateWorkItem)
-      .vm.$emit('workItemCreated', { webUrl: '/work_items/1234' });
+    findCreateWorkItem().vm.$emit('workItemCreated', { webUrl: '/work_items/1234' });
 
     expect(visitUrl).toHaveBeenCalledWith('/work_items/1234');
   });

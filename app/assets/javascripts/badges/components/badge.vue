@@ -95,10 +95,10 @@ export default {
     <gl-loading-icon v-show="isLoading" size="sm" :inline="true" />
 
     <div v-show="hasError" class="btn-group">
-      <div class="btn btn-default btn-sm disabled">
+      <div class="btn btn-default btn-sm disabled quarantined-deprecated-btn">
         <gl-icon :size="16" class="gl-ml-3 gl-mr-3" name="doc-image" />
       </div>
-      <div class="btn btn-default btn-sm disabled">
+      <div class="btn btn-default btn-sm disabled quarantined-deprecated-btn">
         <span class="gl-ml-3 gl-mr-3">{{ s__('Badges|No badge image') }}</span>
       </div>
     </div>

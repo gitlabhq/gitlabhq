@@ -2,17 +2,8 @@
 
 module Gitlab
   module InternalEvents
-    UnknownEventError = Class.new(StandardError)
-    InvalidPropertyError = Class.new(StandardError)
-    InvalidPropertyTypeError = Class.new(StandardError)
-
     SNOWPLOW_EMITTER_BUFFER_SIZE = 100
     DEFAULT_BUFFER_SIZE = 1
-    BASE_ADDITIONAL_PROPERTIES = {
-      label: [String],
-      property: [String],
-      value: [Integer, Float]
-    }.freeze
     KEY_EXPIRY_LENGTH = Gitlab::UsageDataCounters::HLLRedisCounter::KEY_EXPIRY_LENGTH
 
     class << self
@@ -24,14 +15,10 @@ module Gitlab
         event_name, category: nil, send_snowplow_event: true,
         additional_properties: {}, **kwargs)
 
+        Gitlab::Tracking::EventValidator.new(event_name, additional_properties, kwargs).validate!
+
         extra = custom_additional_properties(additional_properties)
-        additional_properties = additional_properties.slice(*BASE_ADDITIONAL_PROPERTIES.keys)
-
-        unless Gitlab::Tracking::EventDefinition.internal_event_exists?(event_name)
-          raise UnknownEventError, "Unknown event: #{event_name}"
-        end
-
-        validate_properties!(additional_properties, kwargs)
+        additional_properties = additional_properties.slice(*base_additional_properties.keys)
 
         project = kwargs[:project]
         kwargs[:namespace] ||= project.namespace if project
@@ -59,28 +46,6 @@ module Gitlab
 
       private
 
-      def validate_properties!(additional_properties, kwargs)
-        validate_property!(kwargs, :user, User)
-        validate_property!(kwargs, :namespace, Namespaces::UserNamespace, Group)
-        validate_property!(kwargs, :project, Project)
-        validate_additional_properties!(additional_properties)
-      end
-
-      def validate_property!(hash, key, *class_names)
-        return unless hash.has_key?(key)
-        return if hash[key].nil?
-        return if class_names.include?(hash[key].class)
-
-        raise InvalidPropertyTypeError, "#{key} should be an instance of #{class_names.join(', ')}"
-      end
-
-      def validate_additional_properties!(additional_properties)
-        BASE_ADDITIONAL_PROPERTIES.keys.intersection(additional_properties.keys).each do |key|
-          allowed_classes = BASE_ADDITIONAL_PROPERTIES[key]
-          validate_property!(additional_properties, key, *allowed_classes)
-        end
-      end
-
       def update_redis_values(event_name, additional_properties, kwargs)
         event_definition = Gitlab::Tracking::EventDefinition.find(event_name)
 
@@ -100,7 +65,7 @@ module Gitlab
       end
 
       def custom_additional_properties(additional_properties)
-        additional_properties.except(*BASE_ADDITIONAL_PROPERTIES.keys)
+        additional_properties.except(*base_additional_properties.keys)
       end
 
       def update_total_counter(event_selection_rule)
@@ -194,6 +159,10 @@ module Gitlab
         GitlabSDK::Client.new(app_id: app_id, host: host, buffer_size: buffer_size)
       end
       strong_memoize_attr :gitlab_sdk_client
+
+      def base_additional_properties
+        Gitlab::Tracking::EventValidator::BASE_ADDITIONAL_PROPERTIES
+      end
     end
   end
 end

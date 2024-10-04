@@ -745,6 +745,25 @@ Leader instance**:
    sudo -i
    ```
 
+1. Edit `/etc/gitlab/gitlab.rb` and add the following:
+
+   ```ruby
+   postgresql['max_wal_senders'] = 2 # Use 2 per secondary site (1 temporary slot for initial Patroni replication + 1 reserved slot for a Geo secondary)
+   postgresql['max_replication_slots'] = 2 # Use 2 per secondary site (1 temporary slot for initial Patroni replication + 1 reserved slot for a Geo secondary)
+   ```
+
+1. Reconfigure GitLab:
+
+   ```shell
+   gitlab-ctl reconfigure
+   ```
+
+1. Restart the PostgreSQL service so the new changes take effect:
+
+   ```shell
+   gitlab-ctl restart postgresql
+   ```
+
 1. Start a Database console
 
    ```shell

@@ -18,7 +18,7 @@ export default {
         query: $route.query,
       }"
       :aria-label="s__('DesignManagement|Go back to designs')"
-      class="btn btn-icon gl-mx-3 gl-border-0 gl-px-3"
+      class="btn quarantined-deprecated-btn btn-icon gl-mx-3 gl-border-0 gl-px-3"
     >
       <gl-icon name="close" />
     </router-link>

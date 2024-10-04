@@ -27,7 +27,6 @@ class UpdateFinishStatusForBbmMigrations < Gitlab::Database::Migration[2.2]
     BackfillFindingIdInVulnerabilities
     BackfillFindingInitialPipelineId
     BackfillHasIssuesForExternalIssueLinks
-    BackfillHasMergeRequestOfVulnerabilityReads
     BackfillHasRemediationsOfVulnerabilityReads
     BackfillIssueSearchDataNamespaceId
     BackfillMergeRequestDiffsProjectId

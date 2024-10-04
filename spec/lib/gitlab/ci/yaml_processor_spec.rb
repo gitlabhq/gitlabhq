@@ -1698,7 +1698,7 @@ module Gitlab
             expect(subject.dig(:options, :before_script)).to eq ["bundle install"]
             expect(subject.dig(:options, :script)).to eq %w[rspec]
             expect(subject.dig(:options, :image, :name)).to eq 'image:test'
-            expect(subject.dig(:when)).to eq 'always'
+            expect(subject[:when]).to eq 'always'
           end
         end
       end

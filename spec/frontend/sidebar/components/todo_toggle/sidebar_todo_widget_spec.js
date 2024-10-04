@@ -2,13 +2,16 @@ import { GlButton, GlAnimatedTodoIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
+import { createMockSubscription } from 'mock-apollo-client';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
 import SidebarTodoWidget from '~/sidebar/components/todo_toggle/sidebar_todo_widget.vue';
 import epicTodoQuery from '~/sidebar/queries/epic_todo.query.graphql';
+import mergeRequestTodoQuery from '~/sidebar/queries/merge_request_todo.query.graphql';
+import mergeRequestTodoSubscription from '~/sidebar/queries/merge_request_todo.subscription.graphql';
 import TodoButton from '~/sidebar/components/todo_toggle/todo_button.vue';
-import { todosResponse, noTodosResponse } from '../../mock_data';
+import { todosResponse, noMergeRequestTodosResponse, noTodosResponse } from '../../mock_data';
 
 jest.mock('~/alert');
 
@@ -16,18 +19,17 @@ Vue.use(VueApollo);
 
 describe('Sidebar Todo Widget', () => {
   let wrapper;
-  let fakeApollo;
 
   const findTodoButton = () => wrapper.findComponent(TodoButton);
 
   const createComponent = ({
     todosQueryHandler = jest.fn().mockResolvedValue(noTodosResponse),
     provide = {},
+    propsData = {},
+    apolloProvider = createMockApollo([[epicTodoQuery, todosQueryHandler]]),
   } = {}) => {
-    fakeApollo = createMockApollo([[epicTodoQuery, todosQueryHandler]]);
-
     wrapper = shallowMount(SidebarTodoWidget, {
-      apolloProvider: fakeApollo,
+      apolloProvider,
       provide: {
         canUpdate: true,
         isClassicSidebar: true,
@@ -38,13 +40,10 @@ describe('Sidebar Todo Widget', () => {
         issuableIid: '1',
         issuableId: 'gid://gitlab/Epic/4',
         issuableType: 'epic',
+        ...propsData,
       },
     });
   };
-
-  afterEach(() => {
-    fakeApollo = null;
-  });
 
   describe('when user does not have a todo for the issuable', () => {
     beforeEach(() => {
@@ -141,6 +140,78 @@ describe('Sidebar Todo Widget', () => {
 
       expect(findTodoButton().attributes('loading')).toBeUndefined();
       expect(findTodoButton().attributes().disabled).toBe('true');
+    });
+  });
+
+  describe('for merge request issuable type', () => {
+    let mockSubscription;
+    let subscriptionHandler;
+    let apolloProvider;
+
+    beforeEach(() => {
+      mockSubscription = createMockSubscription();
+      subscriptionHandler = jest.fn().mockReturnValue(mockSubscription);
+      apolloProvider = createMockApollo([
+        [mergeRequestTodoQuery, jest.fn().mockResolvedValue(noMergeRequestTodosResponse)],
+      ]);
+
+      apolloProvider.defaultClient.setRequestHandler(
+        mergeRequestTodoSubscription,
+        subscriptionHandler,
+      );
+    });
+
+    describe('realtimeIssuableTodo feature flag is enabled', () => {
+      beforeEach(() => {
+        createComponent({
+          provide: {
+            glFeatures: { realtimeIssuableTodo: true },
+          },
+          propsData: { issuableType: 'merge_request' },
+          apolloProvider,
+        });
+
+        return nextTick();
+      });
+
+      it('updates todo button to have a new todo when subscription receives data', async () => {
+        mockSubscription.next({
+          data: {
+            issuableTodoUpdated: {
+              __typename: 'MergeRequest',
+              id: 'gid://gitlab/MergeRequest/1',
+              currentUserTodos: {
+                nodes: [{ id: 1 }],
+              },
+            },
+          },
+        });
+
+        await nextTick();
+
+        expect(subscriptionHandler).toHaveBeenCalled();
+        expect(findTodoButton().props('isTodo')).toBe(true);
+      });
+    });
+
+    describe('realtimeIssuableTodo feature flag is disabled', () => {
+      beforeEach(() => {
+        createComponent({
+          provide: {
+            glFeatures: { realtimeIssuableTodo: false },
+          },
+          propsData: { issuableType: 'merge_request' },
+          apolloProvider,
+        });
+
+        return nextTick();
+      });
+
+      it('does not subscribe to more', async () => {
+        await nextTick();
+
+        expect(subscriptionHandler).not.toHaveBeenCalled();
+      });
     });
   });
 });

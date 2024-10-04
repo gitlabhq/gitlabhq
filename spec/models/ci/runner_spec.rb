@@ -1697,6 +1697,7 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
       let(:runner) { create(:ci_runner) }
 
       specify { expect(runner.token).not_to start_with(described_class::CREATED_RUNNER_TOKEN_PREFIX) }
+      it { is_expected.not_to start_with('t1_') }
       it { is_expected.not_to start_with(described_class::CREATED_RUNNER_TOKEN_PREFIX) }
     end
 
@@ -1704,6 +1705,7 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
       let(:runner) { create(:ci_runner, registration_type: :authenticated_user) }
 
       specify { expect(runner.token).to start_with(described_class::CREATED_RUNNER_TOKEN_PREFIX) }
+      it { is_expected.not_to start_with('t1_') }
       it { is_expected.not_to start_with(described_class::CREATED_RUNNER_TOKEN_PREFIX) }
     end
   end

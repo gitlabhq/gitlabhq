@@ -958,7 +958,7 @@ module Ci
     end
 
     def multi_build_steps?
-      options.dig(:release)&.any?
+      options[:release]&.any?
     end
 
     def hide_secrets(data, metrics = ::Gitlab::Ci::Trace::Metrics.new)

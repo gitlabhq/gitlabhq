@@ -1,0 +1,5 @@
+- if visible?
+  %td{ id: id, data: { legacy_id: legacy_id } }
+    = link_to line_number, "##{id}", { data: { line_number: line_number } }
+- else
+  %td

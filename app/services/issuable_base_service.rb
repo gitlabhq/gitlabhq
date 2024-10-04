@@ -190,7 +190,6 @@ class IssuableBaseService < ::BaseContainerService
     set_issuable_author(issuable)
 
     handle_quick_actions(issuable)
-    prepare_create_params(issuable)
     filter_params(issuable)
 
     params.delete(:state_event)
@@ -209,6 +208,7 @@ class IssuableBaseService < ::BaseContainerService
 
     issuable_saved = issuable.with_transaction_returning_status do
       @callbacks.each(&:before_create)
+
       transaction_create(issuable)
     end
 
@@ -261,14 +261,6 @@ class IssuableBaseService < ::BaseContainerService
     # To be overridden by subclasses
   end
 
-  def prepare_update_params(issuable)
-    # To be overridden by subclasses
-  end
-
-  def prepare_create_params(issuable)
-    # To be overridden by subclasses
-  end
-
   def after_update(issuable, old_associations)
     handle_description_updated(issuable)
     handle_label_changes(issuable, old_associations[:labels])
@@ -287,7 +279,6 @@ class IssuableBaseService < ::BaseContainerService
     old_associations = associations_before_update(issuable)
 
     handle_quick_actions(issuable)
-    prepare_update_params(issuable)
     filter_params(issuable)
 
     change_additional_attributes(issuable)

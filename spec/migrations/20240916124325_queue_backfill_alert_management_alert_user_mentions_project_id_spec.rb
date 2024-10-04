@@ -3,7 +3,8 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe QueueBackfillAlertManagementAlertUserMentionsProjectId, feature_category: :incident_management do
+RSpec.describe QueueBackfillAlertManagementAlertUserMentionsProjectId, migration: :gitlab_main_cell,
+  feature_category: :incident_management do
   let!(:batched_migration) { described_class::MIGRATION }
 
   it 'schedules a new batched migration' do

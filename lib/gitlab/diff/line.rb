@@ -128,6 +128,18 @@ module Gitlab
         DiffLineSerializer.new.represent(self)
       end
 
+      def text_content
+        rich_text ? rich_text[1..] : text(prefix: false)
+      end
+
+      def id(file_hash, side)
+        return if meta?
+
+        prefix = side == :old ? "L" : "R"
+        position = side == :old ? old_pos : new_pos
+        "line_#{file_hash}_#{prefix}#{position}"
+      end
+
       private
 
       def calculate_line_code

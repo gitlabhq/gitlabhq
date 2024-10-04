@@ -451,6 +451,13 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
     it { is_expected.to have_graphql_resolver(Resolvers::ReleasesResolver) }
   end
 
+  describe 'container tags expiration policy field' do
+    subject { described_class.fields['containerTagsExpirationPolicy'] }
+
+    it { is_expected.to have_graphql_type(Types::ContainerRegistry::ContainerTagsExpirationPolicyType) }
+    it { expect(subject.instance_variable_get(:@authorize)).to include(:read_container_image) }
+  end
+
   describe 'container expiration policy field' do
     subject { described_class.fields['containerExpirationPolicy'] }
 

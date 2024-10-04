@@ -319,7 +319,6 @@
     AIGW_FASTAPI__OPENAPI_URL: "/openapi.json"
     AIGW_FASTAPI__API_PORT: 5052
     ANTHROPIC_API_KEY: $ANTHROPIC_API_KEY_FOR_SERVICE
-    AIGW_CUSTOM_MODELS__ENABLED: true
     # CI_DEBUG_SERVICES: "true" # Enable this variable when you debug ai-gateway boot failure.
 
 .ai-gateway-services:

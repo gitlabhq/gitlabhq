@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe QueueMyBatchedMigration, feature_category: :database do
+RSpec.describe QueueMyBatchedMigration, migration: :gitlab_?, feature_category: :database do
   # let!(:batched_migration) { described_class::MIGRATION }
 
   # it 'schedules a new batched migration' do
@@ -14,6 +14,7 @@ RSpec.describe QueueMyBatchedMigration, feature_category: :database do
 
   #     migration.after -> {
   #       expect(batched_migration).to have_scheduled_batched_migration(
+  #         gitlab_schema: # :gitlab_main / :gitlab_ci / :gitlab_main_clusterwide / ...
   #         table_name: :projects,
   #         column_name: :id,
   #         interval: described_class::DELAY_INTERVAL,

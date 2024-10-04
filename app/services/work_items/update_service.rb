@@ -22,7 +22,7 @@ module WorkItems
       else
         error(updated_work_item.errors.full_messages, :unprocessable_entity, pass_back: payload(updated_work_item))
       end
-    rescue ::WorkItems::Widgets::BaseService::WidgetError, ::Issuable::Callbacks::Base::Error => e
+    rescue ::Issuable::Callbacks::Base::Error => e
       error(e.message, :unprocessable_entity)
     end
 
@@ -38,34 +38,11 @@ module WorkItems
       GraphqlTriggers.issuable_dates_updated(work_item)
     end
 
-    def prepare_update_params(work_item)
-      execute_widgets(
-        work_item: work_item,
-        callback: :prepare_update_params,
-        widget_params: @widget_params,
-        service_params: params
-      )
-
-      super
-    end
-
-    def before_update(work_item, skip_spam_check: false)
-      execute_widgets(work_item: work_item, callback: :before_update_callback, widget_params: @widget_params)
-
-      super
-    end
-
     override :associations_before_update
     def associations_before_update(work_item)
       super.merge(
         work_item_parent_id: work_item.work_item_parent&.id
       )
-    end
-
-    def transaction_update(work_item, opts = {})
-      execute_widgets(work_item: work_item, callback: :before_update_in_transaction, widget_params: @widget_params)
-
-      super
     end
 
     override :after_update

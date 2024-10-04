@@ -113,6 +113,12 @@ export default {
     },
     currentUser: {
       query: currentUserQuery,
+      result({ data }) {
+        if (!data) {
+          return;
+        }
+        this.localUsers = unionBy(this.localUsers, [data.currentUser], 'id');
+      },
     },
   },
   computed: {
