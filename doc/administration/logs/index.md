@@ -416,7 +416,7 @@ like this example:
   "project_id":8,
   "project_path":"h5bp/html5-boilerplate",
   "message":"Error sending message",
-  "client_url":"http://jira.gitlap.com:8080",
+  "client_url":"http://jira.gitlab.com:8080",
   "error":"execution expired"
 }
 {

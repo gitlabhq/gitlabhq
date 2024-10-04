@@ -282,6 +282,10 @@ To enable role promotion approval:
 1. Expand **Sign-up restrictions**.
 1. In the **Seat controls** section, select **Approve role promotions**.
 
+### Known issues
+
+When you turn on role promotion approval, the billable count can still increase if a user [requests access to a group](../../user/group/index.md) and is approved by the group Owner on a [billable role](../../subscriptions/gitlab_com/index.md#billable-users).
+
 <!-- ## Troubleshooting
 
 Include any troubleshooting steps that you can foresee. If you know beforehand what issues
