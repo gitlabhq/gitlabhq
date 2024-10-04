@@ -592,3 +592,10 @@ export const wildcardMatch = (str, pattern) => {
   const regex = new RegExp(`^${escapedPattern.replace(/\\\*/g, '.*')}$`);
   return regex.test(lowerStr);
 };
+
+export const sha256 = async (str) => {
+  const data = new TextEncoder().encode(str);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
+};

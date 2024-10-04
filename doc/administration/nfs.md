@@ -128,7 +128,6 @@ Here is an example snippet to add to `/etc/fstab`:
 10.1.0.1:/var/opt/gitlab/gitlab-rails/uploads /var/opt/gitlab/gitlab-rails/uploads nfs4 defaults,vers=4.1,hard,rsize=1048576,wsize=1048576,noatime,nofail,_netdev,lookupcache=positive 0 2
 10.1.0.1:/var/opt/gitlab/gitlab-rails/shared /var/opt/gitlab/gitlab-rails/shared nfs4 defaults,vers=4.1,hard,rsize=1048576,wsize=1048576,noatime,nofail,_netdev,lookupcache=positive 0 2
 10.1.0.1:/var/opt/gitlab/gitlab-ci/builds /var/opt/gitlab/gitlab-ci/builds nfs4 defaults,vers=4.1,hard,rsize=1048576,wsize=1048576,noatime,nofail,_netdev,lookupcache=positive 0 2
-10.1.0.1:/var/opt/gitlab/git-data /var/opt/gitlab/git-data nfs4 defaults,vers=4.1,hard,rsize=1048576,wsize=1048576,noatime,nofail,_netdev,lookupcache=positive 0 2
 ```
 
 You can view information and options set for each of the mounted NFS file
@@ -208,7 +207,6 @@ restore of backups without manually moving existing data.
 mountpoint
 └── gitlab-data
     ├── builds
-    ├── git-data
     ├── shared
     └── uploads
 ```
@@ -220,7 +218,6 @@ Mount `/gitlab-nfs` then use the following Linux package
 configuration to move each data location to a subdirectory:
 
 ```ruby
-git_data_dirs({"default" => { "path" => "/gitlab-nfs/gitlab-data/git-data"} })
 gitlab_rails['uploads_directory'] = '/gitlab-nfs/gitlab-data/uploads'
 gitlab_rails['shared_path'] = '/gitlab-nfs/gitlab-data/shared'
 gitlab_ci['builds_directory'] = '/gitlab-nfs/gitlab-data/builds'
@@ -242,7 +239,6 @@ NFS mount point is `/gitlab-nfs`. Then, add the following bind mounts in
 `/etc/fstab`:
 
 ```shell
-/gitlab-nfs/gitlab-data/git-data /var/opt/gitlab/git-data none bind 0 0
 /gitlab-nfs/gitlab-data/.ssh /var/opt/gitlab/.ssh none bind 0 0
 /gitlab-nfs/gitlab-data/uploads /var/opt/gitlab/gitlab-rails/uploads none bind 0 0
 /gitlab-nfs/gitlab-data/shared /var/opt/gitlab/gitlab-rails/shared none bind 0 0
@@ -255,9 +251,9 @@ are empty before attempting a restore. Read more about the
 
 ### Multiple NFS mounts
 
-When using default Linux package configuration, you need to share 4 data locations
+When using default Linux package configuration, you need to share 3 data locations
 between all GitLab cluster nodes. No other locations should be shared. The
-following are the 4 locations need to be shared:
+following are the 3 locations need to be shared:
 
 | Location | Description | Default configuration |
 | -------- | ----------- | --------------------- |

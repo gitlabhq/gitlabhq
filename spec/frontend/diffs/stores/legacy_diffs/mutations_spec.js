@@ -822,6 +822,65 @@ describe('DiffsStoreMutations', () => {
 
         expect(store.diffFiles[0][INLINE_DIFF_LINES_KEY][0].discussionsExpanded).toBe(true);
       });
+
+      it('should keep expanded state when re-adding existing discussions', () => {
+        const diffPosition = {
+          base_sha: 'ed13df29948c41ba367caa757ab3ec4892509910',
+          head_sha: 'b921914f9a834ac47e6fd9420f78db0f83559130',
+          new_line: null,
+          new_path: '500-lines-4.txt',
+          old_line: 5,
+          old_path: '500-lines-4.txt',
+          start_sha: 'ed13df29948c41ba367caa757ab3ec4892509910',
+        };
+
+        store.$patch({
+          latestDiff: true,
+          diffFiles: [
+            {
+              file_hash: 'ABC',
+              discussions: [],
+              [INLINE_DIFF_LINES_KEY]: [
+                {
+                  line_code: 'ABC_1',
+                  discussions: [],
+                },
+              ],
+            },
+          ],
+        });
+        const discussion = {
+          id: 1,
+          line_code: 'ABC_2',
+          line_codes: ['ABC_1'],
+          diff_discussion: true,
+          resolvable: true,
+          original_position: {},
+          position: {},
+          positions: [diffPosition],
+          diff_file: {
+            file_hash: store.diffFiles[0].file_hash,
+          },
+        };
+
+        const diffPositionByLineCode = {
+          ABC_1: diffPosition,
+        };
+
+        store[types.SET_LINE_DISCUSSIONS_FOR_FILE]({
+          discussion,
+          diffPositionByLineCode,
+        });
+
+        store[types.SET_EXPAND_ALL_DIFF_DISCUSSIONS](false);
+
+        store[types.SET_LINE_DISCUSSIONS_FOR_FILE]({
+          discussion,
+          diffPositionByLineCode,
+        });
+
+        expect(store.diffFiles[0][INLINE_DIFF_LINES_KEY][0].discussionsExpanded).toBe(false);
+      });
     });
   });
 

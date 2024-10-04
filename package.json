@@ -273,6 +273,7 @@
     "chalk": "^2.4.1",
     "chokidar": "^3.5.3",
     "commander": "^2.20.3",
+    "crypto": "^1.0.1",
     "custom-jquery-matchers": "^2.1.0",
     "eslint": "8.57.1",
     "eslint-import-resolver-jest": "3.0.2",

@@ -11,14 +11,14 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - Time tracking for tasks [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438577) in GitLab 17.0.
-> - Time tracking for epics [introduced](https://gitlab.com/groups/gitlab-org/-/epics/12396) in GitLab 17.5.
+> - Time tracking for epics [introduced](https://gitlab.com/groups/gitlab-org/-/epics/12396) in GitLab 17.5. Your administrator must have [enabled the new look for epics](../group/epics/epic_work_items.md).
 
 You can estimate and track the time you spend on an item, such as:
 
-- [Epic](../group/epics/index.md)
-- [Issue](issues/index.md)
-- [Task](../tasks.md)
-- [Merge request](merge_requests/index.md)
+- [Epic](../group/epics/index.md). Your administrator must have [enabled the new look for epics](../group/epics/epic_work_items.md).
+- [Issue](issues/index.md).
+- [Task](../tasks.md).
+- [Merge request](merge_requests/index.md).
 
 Then you can [view a report](#view-an-items-time-tracking-report) that shows totals over time.
 

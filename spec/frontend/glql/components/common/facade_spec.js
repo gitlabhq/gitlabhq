@@ -2,6 +2,8 @@ import { GlAlert, GlLoadingIcon } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
+import { stubCrypto } from 'helpers/crypto';
 import GlqlFacade from '~/glql/components/common/facade.vue';
 import { executeAndPresentQuery } from '~/glql/core';
 import Counter from '~/glql/utils/counter';
@@ -10,6 +12,8 @@ jest.mock('~/glql/core');
 
 describe('GlqlFacade', () => {
   let wrapper;
+
+  const { bindInternalEventDocument } = useMockInternalEventsTracking();
   const createComponent = (props = {}) => {
     wrapper = mountExtended(GlqlFacade, {
       propsData: {
@@ -18,6 +22,8 @@ describe('GlqlFacade', () => {
       },
     });
   };
+
+  beforeEach(stubCrypto);
 
   it('renders the query in a code block', () => {
     createComponent();
@@ -41,13 +47,28 @@ describe('GlqlFacade', () => {
     expect(wrapper.emitted()).toHaveProperty('loaded');
   });
 
-  it('renders presenter component after successful query execution', async () => {
+  describe('when the query is successful', () => {
     const MockComponent = { render: (h) => h('div') };
-    executeAndPresentQuery.mockResolvedValue(MockComponent);
-    createComponent();
-    await waitForPromises();
 
-    expect(wrapper.findComponent(MockComponent).exists()).toBe(true);
+    beforeEach(async () => {
+      executeAndPresentQuery.mockResolvedValue(MockComponent);
+      createComponent();
+      await waitForPromises();
+    });
+
+    it('renders presenter component after successful query execution', () => {
+      expect(wrapper.findComponent(MockComponent).exists()).toBe(true);
+    });
+
+    it('tracks GLQL render event', () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        'render_glql_block',
+        { label: '2962e3a32ad4bbe0d402e183b60ba858fe907e125df39f3221a01162959531b8' },
+        undefined,
+      );
+    });
   });
 
   describe('when the query results in an error', () => {

@@ -20298,88 +20298,70 @@ msgstr ""
 msgid "DuoFreeAccessEndingBanner|Starting %{date}, all GitLab Duo features, including Duo Chat, %{link_start}require a paid add-on subscription.%{link_end} To ensure uninterrupted access to Code Suggestions and Chat, buy Duo Pro and assign seats to your users. Or, for Duo Enterprise options, contact Sales."
 msgstr ""
 
-msgid "DuoProDiscover|Accelerate your path to market"
+msgid "DuoProDiscover|A single platform integrates the best AI model for each use case across the entire development workflow."
 msgstr ""
 
-msgid "DuoProDiscover|Access Chat from the GitLab UI or your preferred IDE."
+msgid "DuoProDiscover|Automate mundane tasks"
 msgstr ""
 
-msgid "DuoProDiscover|Adopt AI with guardrails"
+msgid "DuoProDiscover|Boost productivity with smart code assistance"
 msgstr ""
 
-msgid "DuoProDiscover|Automates repetitive tasks and helps catch bugs early."
+msgid "DuoProDiscover|Boost team collaboration"
 msgstr ""
 
-msgid "DuoProDiscover|Automatically generate lines of code, including full functions, from single and multi-line comments as well as comment blocks."
+msgid "DuoProDiscover|Catch bugs early in the workflow by generating tests for the selected content."
 msgstr ""
 
-msgid "DuoProDiscover|Automatically generate new lines of code from a few typed characters."
+msgid "DuoProDiscover|GitLab Duo Chat"
 msgstr ""
 
-msgid "DuoProDiscover|Available in 15 languages, including C++, C#, Go, Java, JavaScript, Python, PHP, Ruby, Rust, Scala, Kotlin, and TypeScript. And you can use your favorite IDE — VS Code, Visual Studio, JetBrains' suite of IDEs, and Neovim are all supported."
+msgid "DuoProDiscover|GitLab Duo Code Suggestions"
 msgstr ""
 
-msgid "DuoProDiscover|Chat from any location"
-msgstr ""
-
-msgid "DuoProDiscover|Code Explanation"
-msgstr ""
-
-msgid "DuoProDiscover|Code Refactoring"
-msgstr ""
-
-msgid "DuoProDiscover|Code Suggestions"
-msgstr ""
-
-msgid "DuoProDiscover|Code completion"
-msgstr ""
-
-msgid "DuoProDiscover|Code generation"
-msgstr ""
-
-msgid "DuoProDiscover|Committed to transparent AI"
-msgstr ""
-
-msgid "DuoProDiscover|Develop and deploy secure software faster with AI in every phase of the software development lifecycle — from planning and code creation to testing, security, and monitoring."
-msgstr ""
-
-msgid "DuoProDiscover|For organizations and teams to trust AI, it must be transparent. GitLab's %{link_start}AI Transparency Center%{link_end} details how we uphold ethics and transparency in our AI-powered features."
-msgstr ""
-
-msgid "DuoProDiscover|Give your developers a single platform that integrates the best AI model for each use case across the entire workflow, from understanding code to fixing security vulnerabilities."
-msgstr ""
-
-msgid "DuoProDiscover|Helps you understand code by explaining it in natural language."
+msgid "DuoProDiscover|GitLab Duo Test generation"
 msgstr ""
 
 msgid "DuoProDiscover|Improve developer experience"
 msgstr ""
 
-msgid "DuoProDiscover|Language and IDE support"
+msgid "DuoProDiscover|Maintain control over the data that's sent to an external large language model (LLM) service. Your organization's proprietary data or code are never used to train external AI models."
 msgstr ""
 
-msgid "DuoProDiscover|Launch Demo"
+msgid "DuoProDiscover|Modernize code faster"
 msgstr ""
 
-msgid "DuoProDiscover|Read documentation"
+msgid "DuoProDiscover|Privacy-first AI"
+msgstr ""
+
+msgid "DuoProDiscover|Real-time guidance"
+msgstr ""
+
+msgid "DuoProDiscover|Refactor code into modern languages with AI-powered GitLab Duo"
 msgstr ""
 
 msgid "DuoProDiscover|Ship software faster and more securely with AI integrated into your entire DevSecOps lifecycle."
 msgstr ""
 
-msgid "DuoProDiscover|Test Generation"
+msgid "DuoProDiscover|Streamline communication, facilitate knowledge sharing, and improve project management."
 msgstr ""
 
-msgid "DuoProDiscover|What's new in GitLab Duo Chat"
+msgid "DuoProDiscover|Streamline the refactoring process with AI-powered recommendations to optimize code structure and improve readability."
 msgstr ""
 
-msgid "DuoProDiscover|Why GitLab Duo?"
+msgid "DuoProDiscover|The GitLab %{link_start}AI Transparency Center%{link_end} details how we uphold ethics and transparency in our AI-powered features."
 msgstr ""
 
-msgid "DuoProDiscover|With GitLab Duo, you control which users, projects, and groups can use AI-powered capabilities. Also, your organization's proprietary code and data aren't used to train AI models."
+msgid "DuoProDiscover|Transparent AI"
 msgstr ""
 
-msgid "DuoProDiscover|Work to improve existing code quality."
+msgid "DuoProDiscover|Use Chat to get up to speed on the status of projects, and quickly learn about GitLab, directly in your IDE or web interface."
+msgstr ""
+
+msgid "DuoProDiscover|Why GitLab Duo Pro?"
+msgstr ""
+
+msgid "DuoProDiscover|Write secure code faster and save time with Code Suggestions in more than 20 languages, available in your favorite IDE."
 msgstr ""
 
 msgid "DuoProTrial|Activate my trial"

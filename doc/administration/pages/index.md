@@ -963,6 +963,17 @@ The following procedure includes steps to back up and edit the
 `gitlab-secrets.json` file. This file contains secrets that control
 database encryption. Proceed with caution.
 
+1. Optionally, to enable [access control](#access-control), add the following to `/etc/gitlab/gitlab.rb` and [reconfigure the **GitLab server**](../restart_gitlab.md#reconfigure-a-linux-package-installation):
+
+   ```ruby
+   gitlab_pages['access_control'] = true
+   ```
+
+   WARNING:
+   If you plan to use GitLab Pages with access control, you must enable it on the first GitLab server before copying `gitlab-secrets.json`.
+   Enabling access control generates a new OAuth application, and information about it propagates to `gitlab-secrets.json`. If it's not done
+   in the correct order, you may face issues with access control.
+
 1. Create a backup of the secrets file on the **GitLab server**:
 
    ```shell
@@ -973,12 +984,6 @@ database encryption. Proceed with caution.
 
    ```ruby
    pages_external_url "http://<pages_server_URL>"
-   ```
-
-1. Optionally, to enable [access control](#access-control), add the following to `/etc/gitlab/gitlab.rb`:
-
-   ```ruby
-   gitlab_pages['access_control'] = true
    ```
 
 1. Set up object storage by either:

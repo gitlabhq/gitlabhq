@@ -26,7 +26,7 @@ Use Pipeline execution policies to enforce CI/CD jobs for all applicable project
 
 The YAML file with pipeline execution policies consists of an array of objects matching pipeline execution
 policy schema nested under the `pipeline_execution_policy` key. You can configure a maximum of five
-policies under the `pipeline_execution_policy` key. Any other policies configured after
+policies under the `pipeline_execution_policy` key per security policy project. Any other policies configured after
 the first five are not applied.
 
 When you save a new policy, GitLab validates its contents against [this JSON schema](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/validators/json_schemas/security_orchestration_policy.json).
