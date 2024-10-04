@@ -11,7 +11,7 @@ RSpec.describe ::Packages::Pypi::SimpleIndexPresenter, :aggregate_failures, feat
   let_it_be(:package1) { create(:pypi_package, project: project, name: package_name, version: '1.0.0') }
   let_it_be(:package2) { create(:pypi_package, project: project, name: package_name, version: '2.0.0') }
 
-  let(:packages) { project.packages }
+  let(:packages) { Packages::Pypi::Package.for_projects(project) }
 
   describe '#body' do
     subject(:presenter) { described_class.new(packages, project_or_group).body }
@@ -44,12 +44,12 @@ RSpec.describe ::Packages::Pypi::SimpleIndexPresenter, :aggregate_failures, feat
 
       it 'avoids n+1 database queries', :use_sql_query_cache do
         control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
-          described_class.new(project.packages.reload, project_or_group).body
+          described_class.new(Packages::Pypi::Package.for_projects(project).reload, project_or_group).body
         end
 
         create_list(:pypi_package, 5, project: project)
 
-        expect { described_class.new(project.packages.reload, project_or_group).body }
+        expect { described_class.new(Packages::Pypi::Package.for_projects(project).reload, project_or_group).body }
           .to issue_same_number_of_queries_as(control)
       end
     end

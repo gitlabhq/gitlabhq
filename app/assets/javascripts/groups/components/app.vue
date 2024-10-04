@@ -161,7 +161,7 @@ export default {
           currentPath,
         );
 
-        this.updateGroups(res);
+        this.updateGroups(res, Boolean(filterGroupsBy));
       });
     },
     toggleChildren(group) {

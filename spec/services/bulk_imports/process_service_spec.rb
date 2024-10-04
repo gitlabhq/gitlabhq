@@ -45,14 +45,54 @@ RSpec.describe BulkImports::ProcessService, feature_category: :importers do
     end
 
     context 'when all entities are processed' do
-      it 'marks bulk import as finished' do
+      before do
         bulk_import.update!(status: 1)
         create(:bulk_import_entity, :finished, bulk_import: bulk_import)
         create(:bulk_import_entity, :failed, bulk_import: bulk_import)
+      end
 
+      it 'marks bulk import as finished' do
         subject.execute
 
         expect(bulk_import.reload.finished?).to eq(true)
+      end
+
+      context 'when placeholder references have not finished being loaded to the database' do
+        before do
+          allow_next_instance_of(Import::PlaceholderReferences::Store) do |store|
+            allow(store).to receive(:empty?).and_return(false)
+            allow(store).to receive(:count).and_return(1)
+          end
+        end
+
+        it 'marks bulk import as finished' do
+          subject.execute
+
+          expect(bulk_import.reload.finished?).to eq(true)
+        end
+
+        context 'when importer_user_mapping_enabled is enabled' do
+          before do
+            allow_next_instance_of(Import::BulkImports::EphemeralData) do |ephemeral_data|
+              allow(ephemeral_data).to receive(:importer_user_mapping_enabled?).and_return(true)
+            end
+          end
+
+          it 'logs and re-enqueues the worker' do
+            expect(BulkImportWorker).to receive(:perform_in).with(described_class::PERFORM_DELAY, bulk_import.id)
+            expect_next_instance_of(BulkImports::Logger) do |logger|
+              expect(logger).to receive(:info).with(
+                message: 'Placeholder references not finished loading to database',
+                bulk_import_id: bulk_import.id,
+                placeholder_reference_store_count: 1
+              )
+            end
+
+            subject.execute
+
+            expect(bulk_import.reload.started?).to eq(true)
+          end
+        end
       end
     end
 

@@ -4,7 +4,7 @@ RSpec.shared_examples 'PyPI package creation' do |user_type, status, add_member 
   RSpec.shared_examples 'creating pypi package files' do
     it 'creates package files' do
       expect { subject }
-          .to change { project.packages.pypi.count }.by(1)
+          .to change { Packages::Pypi::Package.for_projects(project).count }.by(1)
           .and change { Packages::PackageFile.count }.by(1)
           .and change { Packages::Pypi::Metadatum.count }.by(1)
       expect(response).to have_gitlab_http_status(status)
@@ -37,7 +37,7 @@ RSpec.shared_examples 'PyPI package creation' do |user_type, status, add_member 
         create(:package_file, :pypi, package: existing_package, file_name: params[:content].original_filename)
 
         expect { subject }
-            .to change { project.packages.pypi.count }.by(0)
+            .to change { Packages::Pypi::Package.for_projects(project).count }.by(0)
             .and change { Packages::PackageFile.count }.by(0)
             .and change { Packages::Pypi::Metadatum.count }.by(0)
 

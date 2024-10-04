@@ -19,7 +19,7 @@ and password information.
 
 NOTE:
 [Pull mirrors](../user/project/repository/mirror/pull.md) use
-[a different API endpoint](projects.md#configure-pull-mirroring-for-a-project) to
+[a different API endpoint](project_pull_mirroring.md#configure-pull-mirroring-for-a-project) to
 display and update them.
 
 ## List a project's remote mirrors
@@ -89,7 +89,8 @@ Example response:
 
 ## Create a pull mirror
 
-Learn how to [configure a pull mirror](projects.md#configure-pull-mirroring-for-a-project) using the Projects API.
+Learn how to [configure a pull mirror](project_pull_mirroring.md#configure-pull-mirroring-for-a-project) by using the
+project pull mirroring API.
 
 ## Create a push mirror
 

@@ -285,6 +285,7 @@ of the methods below are also supported with the same caveats.
 |--------------------------|-----------------|---------------|----------------------------------------------------------------------------------------------|
 | `get_experiment`         | Yes             | 15.11         |                                                                                              |
 | `get_experiment_by_name` | Yes             | 15.11         |                                                                                              |
+| `delete_experiment`      | Yes             | 17.5          |                                                                                              |
 | `set_experiment`         | Yes             | 15.11         |                                                                                              |
 | `get_run`                | Yes             | 15.11         |                                                                                              |
 | `start_run`              | Yes             | 15.11         | (16.3) If a name is not provided, the candidate receives a random nickname.                  |

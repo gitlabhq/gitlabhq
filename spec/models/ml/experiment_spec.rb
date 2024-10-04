@@ -30,6 +30,7 @@ RSpec.describe Ml::Experiment, feature_category: :mlops do
       experiment = create(:ml_models, project: exp.project).default_experiment
 
       expect { experiment.destroy! }.to raise_error(ActiveRecord::ActiveRecordError)
+      expect(experiment.errors.full_messages).to include('Cannot delete an experiment associated to a model')
     end
   end
 

@@ -9,11 +9,13 @@ module Import
     presents ::BulkImport, as: :bulk_import
 
     def show_alert?
-      Feature.enabled?(:importer_user_mapping, current_user) && groups_awaiting_placeholder_assignment.any?
+      Feature.enabled?(:importer_user_mapping, current_user) &&
+        Feature.enabled?(:bulk_import_importer_user_mapping, current_user) &&
+        groups_awaiting_placeholder_assignment.any?
     end
 
     def groups_awaiting_placeholder_assignment
-      return [] unless bulk_import
+      return [] unless bulk_import&.finished?
 
       namespaces = bulk_import.namespaces_with_unassigned_placeholders
       namespaces.select do |namespace|

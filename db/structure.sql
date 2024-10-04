@@ -1609,6 +1609,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_700f29b1312e() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "packages_packages"
+  WHERE "packages_packages"."id" = NEW."package_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_70d3f0bba1de() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -15644,6 +15660,7 @@ CREATE TABLE packages_rubygems_metadata (
     requirements text,
     rubygems_version text,
     signing_key text,
+    project_id bigint,
     CONSTRAINT check_0154a18c82 CHECK ((char_length(description) <= 1024)),
     CONSTRAINT check_22814c771b CHECK ((char_length(email) <= 255)),
     CONSTRAINT check_242293030e CHECK ((char_length(extensions) <= 255)),
@@ -30051,6 +30068,8 @@ CREATE INDEX index_packages_rpm_metadata_on_project_id ON packages_rpm_metadata 
 
 CREATE INDEX index_packages_rpm_repository_files_on_project_id_and_file_name ON packages_rpm_repository_files USING btree (project_id, file_name);
 
+CREATE INDEX index_packages_rubygems_metadata_on_project_id ON packages_rubygems_metadata USING btree (project_id);
+
 CREATE INDEX index_packages_tags_on_package_id_and_updated_at ON packages_tags USING btree (package_id, updated_at DESC);
 
 CREATE INDEX index_packages_tags_on_project_id ON packages_tags USING btree (project_id);
@@ -33523,6 +33542,8 @@ CREATE TRIGGER trigger_6cdea9559242 BEFORE INSERT OR UPDATE ON issue_links FOR E
 
 CREATE TRIGGER trigger_6d6c79ce74e1 BEFORE INSERT OR UPDATE ON protected_environment_deploy_access_levels FOR EACH ROW EXECUTE FUNCTION trigger_6d6c79ce74e1();
 
+CREATE TRIGGER trigger_700f29b1312e BEFORE INSERT OR UPDATE ON packages_rubygems_metadata FOR EACH ROW EXECUTE FUNCTION trigger_700f29b1312e();
+
 CREATE TRIGGER trigger_70d3f0bba1de BEFORE INSERT OR UPDATE ON compliance_framework_security_policies FOR EACH ROW EXECUTE FUNCTION trigger_70d3f0bba1de();
 
 CREATE TRIGGER trigger_740afa9807b8 BEFORE INSERT OR UPDATE ON subscription_user_add_on_assignments FOR EACH ROW EXECUTE FUNCTION trigger_740afa9807b8();
@@ -34759,6 +34780,9 @@ ALTER TABLE ONLY bulk_import_entities
 
 ALTER TABLE ONLY security_policy_requirements
     ADD CONSTRAINT fk_b6e48e3428 FOREIGN KEY (compliance_framework_security_policy_id) REFERENCES compliance_framework_security_policies(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY packages_rubygems_metadata
+    ADD CONSTRAINT fk_b73c052149 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY compliance_management_frameworks
     ADD CONSTRAINT fk_b74c45b71f FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;

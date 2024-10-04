@@ -114,6 +114,23 @@ module API
 
             {}
           end
+
+          desc 'Delete an experiment.' do
+            summary 'Delete an experiment.'
+
+            detail 'https://mlflow.org/docs/latest/rest-api.html#delete-experiment'
+          end
+          params do
+            requires :experiment_id, type: String, desc: 'ID of the experiment.'
+          end
+          post 'delete', urgency: :low do
+            destroy = ::Ml::DestroyExperimentService.new(experiment).execute
+            if destroy.success?
+              present({})
+            else
+              render_api_error!(destroy.message.first, 400)
+            end
+          end
         end
       end
     end

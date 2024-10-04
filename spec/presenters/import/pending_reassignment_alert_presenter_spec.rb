@@ -6,7 +6,7 @@ RSpec.describe Import::PendingReassignmentAlertPresenter, :aggregate_failures, f
   include SafeFormatHelper
 
   let_it_be(:user) { build_stubbed(:user) }
-  let_it_be(:bulk_import) { build_stubbed(:bulk_import, :with_configuration) }
+  let(:bulk_import) { build_stubbed(:bulk_import, :with_configuration, :finished) }
   let(:presenter) { described_class.new(bulk_import, current_user: user) }
   let_it_be(:namespaces) { [] }
 
@@ -44,7 +44,7 @@ RSpec.describe Import::PendingReassignmentAlertPresenter, :aggregate_failures, f
   context 'with no top level groups' do
     let_it_be(:namespaces) { [] }
 
-    it 'presents the import values' do
+    it 'does not present the import values' do
       expect(presenter.show_alert?).to eq(false)
     end
   end
@@ -68,7 +68,27 @@ RSpec.describe Import::PendingReassignmentAlertPresenter, :aggregate_failures, f
         stub_feature_flags(importer_user_mapping: false)
       end
 
-      it 'presents the import values' do
+      it 'does not present the import values' do
+        expect(presenter.show_alert?).to eq(false)
+      end
+    end
+
+    context 'when bulk_import_importer_user_mapping feature flag is disabled' do
+      before do
+        stub_feature_flags(bulk_import_importer_user_mapping: false)
+      end
+
+      it 'does not present the import values' do
+        expect(presenter.show_alert?).to eq(false)
+      end
+    end
+
+    context 'when import has not finished' do
+      before do
+        bulk_import.status = 1
+      end
+
+      it 'does not present the import values' do
         expect(presenter.show_alert?).to eq(false)
       end
     end

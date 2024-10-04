@@ -165,10 +165,11 @@ describe('AppComponent', () => {
         jest.spyOn(vm, 'updateGroups');
       });
 
-      it('should fetch groups for provided page details and update window state', () => {
+      it('without filter should fetch groups for provided page details, update window state, and call setGroups', () => {
         jest.spyOn(urlUtilities, 'mergeUrlParams');
         jest.spyOn(window.history, 'replaceState').mockImplementation(() => {});
         jest.spyOn(window, 'scrollTo').mockImplementation(() => {});
+        jest.spyOn(vm.store, 'setGroups').mockImplementation(() => {});
 
         const fetchPagePromise = vm.fetchPage({
           page: 2,
@@ -196,7 +197,43 @@ describe('AppComponent', () => {
             expect.any(String),
           );
 
-          expect(vm.updateGroups).toHaveBeenCalled();
+          expect(vm.store.setGroups).toHaveBeenCalledWith(mockGroups);
+        });
+      });
+
+      it('with filter should fetch groups for provided page details, update window state, and call setSearchedGroups', () => {
+        jest.spyOn(urlUtilities, 'mergeUrlParams');
+        jest.spyOn(window.history, 'replaceState').mockImplementation(() => {});
+        jest.spyOn(window, 'scrollTo').mockImplementation(() => {});
+        jest.spyOn(vm.store, 'setSearchedGroups').mockImplementation(() => {});
+
+        const fetchPagePromise = vm.fetchPage({
+          page: 2,
+          filterGroupsBy: 'search',
+          sortBy: null,
+        });
+
+        expect(vm.isLoading).toBe(true);
+        expect(vm.fetchGroups).toHaveBeenCalledWith({
+          page: 2,
+          filterGroupsBy: 'search',
+          sortBy: null,
+          updatePagination: true,
+        });
+
+        return fetchPagePromise.then(() => {
+          expect(vm.isLoading).toBe(false);
+          expect(window.scrollTo).toHaveBeenCalledWith({ behavior: 'smooth', top: 0 });
+          expect(urlUtilities.mergeUrlParams).toHaveBeenCalledWith({ page: 2 }, expect.any(String));
+          expect(window.history.replaceState).toHaveBeenCalledWith(
+            {
+              page: expect.any(String),
+            },
+            expect.any(String),
+            expect.any(String),
+          );
+
+          expect(vm.store.setSearchedGroups).toHaveBeenCalledWith(mockGroups);
         });
       });
     });

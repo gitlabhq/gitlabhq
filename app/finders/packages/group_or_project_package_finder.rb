@@ -51,7 +51,7 @@ module Packages
     end
 
     def packages_class
-      @params.fetch(:packages_class, ::Packages::Package)
+      ::Packages::Package
     end
   end
 end
