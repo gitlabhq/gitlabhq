@@ -1,0 +1,56 @@
+cache-key-invalid-files:
+  script: echo "This job uses a cache."
+  cache:
+    - key:
+        files: package.json # string
+      paths:
+        - vendor/ruby
+        - node_modules
+    - key:
+        files:
+          - Gemfile.lock
+        prefix:
+          - binaries-cache-$CI_JOB_NAME # array
+      paths:
+        - binaries/
+
+cache-invalid-key:
+  script: echo "This job uses a cache."
+  cache:
+    - key: . # single dot
+      paths:
+        - binaries/
+    - key: .. # multiple dots
+      paths:
+        - binaries/
+    - key: binaries-ca/che # included /
+      paths:
+        - binaries/
+
+cache-invalid-path:
+  script: echo "This job uses a cache."
+  cache:
+    - key: binaries-cache
+      paths: binaries/*.apk
+
+cache-invalid-untracked:
+  script: echo "This job uses a cache."
+  cache:
+    - untracked: 'true'
+
+# invalid cache:when
+cache-invalid-when:
+  script: echo "This job uses a cache."
+  cache:
+    - when: 0
+    - when: [always]
+    - when: true
+    - when: 'never'
+
+# invalid cache:policy
+cache-invalid-policy:
+  script: echo "This job uses a cache."
+  cache:
+    - policy: [push]
+    - policy: true
+    - policy: unknown

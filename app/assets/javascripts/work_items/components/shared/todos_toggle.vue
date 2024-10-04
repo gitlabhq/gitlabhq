@@ -1,20 +1,17 @@
 <script>
 import { GlButton, GlTooltipDirective, GlIcon } from '@gitlab/ui';
-import { produce } from 'immer';
 
 import { s__ } from '~/locale';
 import { updateGlobalTodoCount } from '~/sidebar/utils';
-import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
-import createWorkItemTodosMutation from '../graphql/create_work_item_todos.mutation.graphql';
-import markDoneWorkItemTodosMutation from '../graphql/mark_done_work_item_todos.mutation.graphql';
+import createWorkItemTodosMutation from '../../graphql/create_work_item_todos.mutation.graphql';
+import markDoneWorkItemTodosMutation from '../../graphql/mark_done_work_item_todos.mutation.graphql';
 
 import {
   TODO_ADD_ICON,
   TODO_DONE_ICON,
   TODO_PENDING_STATE,
   TODO_DONE_STATE,
-  WIDGET_TYPE_CURRENT_USER_TODOS,
-} from '../constants';
+} from '../../constants';
 
 export default {
   i18n: {
@@ -29,15 +26,7 @@ export default {
     GlButton,
   },
   props: {
-    workItemId: {
-      type: String,
-      required: true,
-    },
-    workItemIid: {
-      type: String,
-      required: true,
-    },
-    workItemFullpath: {
+    itemId: {
       type: String,
       required: true,
     },
@@ -45,6 +34,11 @@ export default {
       type: Array,
       required: false,
       default: () => [],
+    },
+    todosButtonType: {
+      type: String,
+      required: false,
+      default: 'tertiary',
     },
   },
   data() {
@@ -73,7 +67,7 @@ export default {
       this.buttonLabel = '';
       let mutation = createWorkItemTodosMutation;
       let inputVariables = {
-        targetId: this.workItemId,
+        targetId: this.itemId,
       };
       if (this.pendingTodo) {
         mutation = markDoneWorkItemTodosMutation;
@@ -114,11 +108,7 @@ export default {
                 id: todo.id,
               });
             }
-
-            this.updateWorkItemCurrentTodosWidgetCache({
-              cache,
-              todos,
-            });
+            this.$emit('todosUpdated', { cache, todos });
           },
         })
         .then(
@@ -146,26 +136,6 @@ export default {
           this.isLoading = false;
         });
     },
-    updateWorkItemCurrentTodosWidgetCache({ cache, todos }) {
-      const query = {
-        query: workItemByIidQuery,
-        variables: { fullPath: this.workItemFullpath, iid: this.workItemIid },
-      };
-
-      const sourceData = cache.readQuery(query);
-
-      const newData = produce(sourceData, (draftState) => {
-        const { widgets } = draftState.workspace.workItem;
-
-        const widgetCurrentUserTodos = widgets.find(
-          (widget) => widget.type === WIDGET_TYPE_CURRENT_USER_TODOS,
-        );
-
-        widgetCurrentUserTodos.currentUserTodos.nodes = todos;
-      });
-
-      cache.writeQuery({ ...query, data: newData });
-    },
   },
 };
 </script>
@@ -175,7 +145,7 @@ export default {
     v-gl-tooltip.hover
     :disabled="isLoading"
     :title="buttonLabel"
-    category="secondary"
+    :category="todosButtonType"
     class="btn-icon"
     :aria-label="buttonLabel"
     @click="onToggle"

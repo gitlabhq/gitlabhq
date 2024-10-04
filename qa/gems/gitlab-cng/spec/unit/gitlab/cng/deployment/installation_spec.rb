@@ -28,7 +28,7 @@ RSpec.describe Gitlab::Cng::Deployment::Installation, :aggregate_failures do
     end
 
     let(:helmclient) do
-      instance_double(Gitlab::Cng::Helm::Client, add_helm_chart: chart_reference, upgrade: nil)
+      instance_double(Gitlab::Cng::Helm::Client, add_gitlab_helm_chart: chart_reference, upgrade: nil)
     end
 
     let(:configuration) do
@@ -126,7 +126,7 @@ RSpec.describe Gitlab::Cng::Deployment::Installation, :aggregate_failures do
       it "runs setup and helm deployment" do
         expect { installation.create }.to output(/Creating CNG deployment 'gitlab'/).to_stdout
 
-        expect(helmclient).to have_received(:add_helm_chart).with(nil)
+        expect(helmclient).to have_received(:add_gitlab_helm_chart).with(nil)
         expect(helmclient).to have_received(:upgrade).with(
           "gitlab",
           chart_reference,
@@ -157,7 +157,7 @@ RSpec.describe Gitlab::Cng::Deployment::Installation, :aggregate_failures do
       it "runs helm install with correctly merged values and component versions" do
         expect { installation.create }.to output(/Creating CNG deployment 'gitlab'/).to_stdout
 
-        expect(helmclient).to have_received(:add_helm_chart).with(chart_sha)
+        expect(helmclient).to have_received(:add_gitlab_helm_chart).with(chart_sha)
         expect(helmclient).to have_received(:upgrade).with(
           "gitlab",
           chart_reference,

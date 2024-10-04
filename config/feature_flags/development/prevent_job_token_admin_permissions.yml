@@ -1,0 +1,9 @@
+---
+name: prevent_job_token_admin_permissions
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167449
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/474775
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/495627
+milestone: '17.5'
+type: development
+group: group::pipeline security
+default_enabled: false

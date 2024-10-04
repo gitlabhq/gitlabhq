@@ -161,7 +161,7 @@ module Gitlab
         # @return [String] chart reference
         def run_pre_deploy_setup
           Helpers::Spinner.spin("running pre-deployment setup") do
-            chart_reference = helm.add_helm_chart(chart_sha)
+            chart_reference = helm.add_gitlab_helm_chart(chart_sha)
             create_namespace
             create_license
 

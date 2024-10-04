@@ -7,7 +7,7 @@ RSpec.describe Gitlab::Cng::Helm::Client do
     allow(client).to receive(:execute_shell)
   end
 
-  describe "#add_helm_chart" do
+  describe "#add_gitlab_helm_chart" do
     let(:tmpdir) { Dir.mktmpdir("cng") }
 
     before do
@@ -17,8 +17,8 @@ RSpec.describe Gitlab::Cng::Helm::Client do
     context "with default chart" do
       it "adds default chart repo" do
         expect do
-          expect(client.add_helm_chart).to eq("gitlab/gitlab")
-        end.to output(%r{Adding gitlab helm chart 'https://charts.gitlab.io'}).to_stdout
+          expect(client.add_gitlab_helm_chart).to eq("gitlab/gitlab")
+        end.to output(%r{Adding helm chart 'https://charts.gitlab.io'}).to_stdout
 
         expect(client).to have_received(:execute_shell).with(
           %w[helm repo add gitlab https://charts.gitlab.io],
@@ -34,7 +34,7 @@ RSpec.describe Gitlab::Cng::Helm::Client do
           ))
 
         expect do
-          expect(client.add_helm_chart).to eq("gitlab/gitlab")
+          expect(client.add_gitlab_helm_chart).to eq("gitlab/gitlab")
         end.to output(/helm chart repo already exists, updating/).to_stdout
       end
 
@@ -43,7 +43,7 @@ RSpec.describe Gitlab::Cng::Helm::Client do
           .with(%w[helm repo add gitlab https://charts.gitlab.io], stdin_data: nil)
           .and_raise(Gitlab::Cng::Helpers::Shell::CommandFailure.new("something went wrong"))
 
-        expect { expect { client.add_helm_chart }.to raise_error("something went wrong") }.to output.to_stdout
+        expect { expect { client.add_gitlab_helm_chart }.to raise_error("something went wrong") }.to output.to_stdout
       end
     end
 
@@ -62,7 +62,7 @@ RSpec.describe Gitlab::Cng::Helm::Client do
 
       it "packages chart from specific sha" do
         expect do
-          expect(client.add_helm_chart(sha)).to eq(File.join(chart_dir, "gitlab-#{sha}.tgz"))
+          expect(client.add_gitlab_helm_chart(sha)).to eq(File.join(chart_dir, "gitlab-#{sha}.tgz"))
         end.to output(/Packaging chart for git sha '#{sha}'/).to_stdout
 
         expect(client).to have_received(:execute_shell).with(

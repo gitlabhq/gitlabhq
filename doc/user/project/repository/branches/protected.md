@@ -200,7 +200,7 @@ check in directly to a protected branch:
 1. From the **Allowed to push and merge** list, select **No one**.
 1. Select **Protect**.
 
-Alternatively, you can [create](index.md#create-a-branch-rule) or [edit](index.md#edit-a-branch-rule) a branch rule. Then:
+Alternatively, you can [create](branch_rules.md#create-a-branch-rule) or [edit](branch_rules.md#edit-a-branch-rule-target) a branch rule. Then:
 
 1. Select **Edit** in the **Allowed to merge** section.
 1. Select **Developers and Maintainers**.
@@ -218,7 +218,7 @@ You can allow everyone with write access to push to the protected branch.
 1. From the **Allowed to push and merge** list, select **Developers + Maintainers**.
 1. Select **Protect**.
 
-Alternatively, you can [create](index.md#create-a-branch-rule) or [edit](index.md#edit-a-branch-rule) a branch rule. Then:
+Alternatively, you can [create](branch_rules.md#create-a-branch-rule) or [edit](branch_rules.md#edit-a-branch-rule-target) a branch rule. Then:
 
 1. Select **Edit** in the **Allowed to push and merge** section.
 1. Select **Developers and Maintainers**.
@@ -275,7 +275,7 @@ To enable force pushes on branches that are already protected:
 1. Select **Add protected branch**.
 1. In the list of protected branches, next to the branch, turn on the **Allowed to force push** toggle.
 
-Alternatively, you can [create](index.md#create-a-branch-rule) or [edit](index.md#edit-a-branch-rule) a branch rule. Then:
+Alternatively, you can [create](branch_rules.md#create-a-branch-rule) or [edit](branch_rules.md#edit-a-branch-rule-target) a branch rule. Then:
 
 1. In the list of protected branches, next to the branch, turn on the **Allowed to force push** toggle.
 
@@ -329,7 +329,7 @@ To enable Code Owner's approval on branches that are already protected:
 1. Select **Add protected branch**.
 1. In the list of protected branches, next to the branch, turn on the **Code owner approval** toggle.
 
-Alternatively, you can [create](index.md#create-a-branch-rule) or [edit](index.md#edit-a-branch-rule) a branch rule.
+Alternatively, you can [create](branch_rules.md#create-a-branch-rule) or [edit](branch_rules.md#edit-a-branch-rule-target) a branch rule.
 Then, in the list of protected branches, next to the branch,
 turn on the **Code owner approval** toggle.
 

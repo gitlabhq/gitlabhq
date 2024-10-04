@@ -37,6 +37,7 @@ import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
 import getAllowedWorkItemChildTypes from '../graphql/work_item_allowed_children.query.graphql';
 import workspacePermissionsQuery from '../graphql/workspace_permissions.query.graphql';
 import { findHierarchyWidgetDefinition } from '../utils';
+import { updateWorkItemCurrentTodosWidget } from '../graphql/cache_utils';
 
 import getWorkItemDesignListQuery from './design_management/graphql/design_collection.query.graphql';
 import uploadDesignMutation from './design_management/graphql/upload_design.mutation.graphql';
@@ -51,7 +52,7 @@ import {
 
 import WorkItemTree from './work_item_links/work_item_tree.vue';
 import WorkItemActions from './work_item_actions.vue';
-import WorkItemTodos from './work_item_todos.vue';
+import TodosToggle from './shared/todos_toggle.vue';
 import WorkItemNotificationsWidget from './work_item_notifications_widget.vue';
 import WorkItemAttributesWrapper from './work_item_attributes_wrapper.vue';
 import WorkItemCreatedUpdated from './work_item_created_updated.vue';
@@ -86,7 +87,7 @@ export default {
     GlButton,
     GlEmptyState,
     WorkItemActions,
-    WorkItemTodos,
+    TodosToggle,
     WorkItemNotificationsWidget,
     WorkItemCreatedUpdated,
     WorkItemDescription,
@@ -628,6 +629,14 @@ export default {
       this.resetFilesToBeSaved();
       this.designUploadError = UPLOAD_DESIGN_ERROR_MESSAGE;
     },
+    updateWorkItemCurrentTodosWidgetCache({ cache, todos }) {
+      updateWorkItemCurrentTodosWidget({
+        cache,
+        todos,
+        fullPath: this.workItemFullPath,
+        iid: this.workItemIid,
+      });
+    },
   },
   WORK_ITEM_TYPE_VALUE_OBJECTIVE,
   WORKSPACE_PROJECT,
@@ -658,6 +667,7 @@ export default {
       @toggleEditMode="enableEditMode"
       @workItemStateUpdated="$emit('workItemStateUpdated')"
       @toggleReportAbuseModal="toggleReportAbuseModal"
+      @todosUpdated="updateWorkItemCurrentTodosWidgetCache"
     />
     <section class="work-item-view">
       <section v-if="updateError" class="flash-container flash-container-page sticky">
@@ -708,12 +718,12 @@ export default {
               >
                 {{ __('Edit') }}
               </gl-button>
-              <work-item-todos
+              <todos-toggle
                 v-if="showWorkItemCurrentUserTodos"
-                :work-item-id="workItem.id"
-                :work-item-iid="workItemIid"
-                :work-item-fullpath="workItemFullPath"
+                :item-id="workItem.id"
                 :current-user-todos="currentUserTodos"
+                :todos-button-type="'secondary'"
+                @todosUpdated="updateWorkItemCurrentTodosWidgetCache"
                 @error="updateError = $event"
               />
               <work-item-notifications-widget

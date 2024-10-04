@@ -21,7 +21,7 @@ import WorkItemDetailModal from '~/work_items/components/work_item_detail_modal.
 import WorkItemStickyHeader from '~/work_items/components/work_item_sticky_header.vue';
 import WorkItemTitle from '~/work_items/components/work_item_title.vue';
 import WorkItemAbuseModal from '~/work_items/components/work_item_abuse_modal.vue';
-import WorkItemTodos from '~/work_items/components/work_item_todos.vue';
+import TodosToggle from '~/work_items/components/shared/todos_toggle.vue';
 import DesignWidget from '~/work_items/components/design_management/design_management_widget.vue';
 import DesignUploadButton from '~/work_items/components//design_management/upload_button.vue';
 import uploadDesignMutation from '~/work_items/components/design_management/graphql/upload_design.mutation.graphql';
@@ -113,7 +113,7 @@ describe('WorkItemDetail component', () => {
   const findNotesWidget = () => wrapper.findComponent(WorkItemNotes);
   const findModal = () => wrapper.findComponent(WorkItemDetailModal);
   const findWorkItemAbuseModal = () => wrapper.findComponent(WorkItemAbuseModal);
-  const findWorkItemTodos = () => wrapper.findComponent(WorkItemTodos);
+  const findTodosToggle = () => wrapper.findComponent(TodosToggle);
   const findStickyHeader = () => wrapper.findComponent(WorkItemStickyHeader);
   const findWorkItemTwoColumnViewContainer = () => wrapper.findByTestId('work-item-overview');
   const findRightSidebar = () => wrapper.findByTestId('work-item-overview-right-sidebar');
@@ -245,7 +245,7 @@ describe('WorkItemDetail component', () => {
     });
 
     it('renders todos widget if logged in', () => {
-      expect(findWorkItemTodos().exists()).toBe(true);
+      expect(findTodosToggle().exists()).toBe(true);
     });
 
     it('calls the work item updated subscription', () => {
@@ -816,7 +816,7 @@ describe('WorkItemDetail component', () => {
     });
 
     it('does not renders if not logged in', () => {
-      expect(findWorkItemTodos().exists()).toBe(false);
+      expect(findTodosToggle().exists()).toBe(false);
     });
   });
 

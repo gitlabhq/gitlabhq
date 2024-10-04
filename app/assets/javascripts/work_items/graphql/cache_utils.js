@@ -33,6 +33,7 @@ import {
   WIDGET_TYPE_DESCRIPTION,
   WIDGET_TYPE_CRM_CONTACTS,
   NEW_WORK_ITEM_IID,
+  WIDGET_TYPE_CURRENT_USER_TODOS,
 } from '../constants';
 import workItemByIidQuery from './work_item_by_iid.query.graphql';
 import getWorkItemTreeQuery from './work_item_tree.query.graphql';
@@ -264,6 +265,30 @@ export const updateParent = ({ cache, fullPath, iid, workItem }) => {
       if (index >= 0) children.splice(index, 1);
     }),
   });
+};
+
+export const updateWorkItemCurrentTodosWidget = ({ cache, fullPath, iid, todos }) => {
+  const query = {
+    query: workItemByIidQuery,
+    variables: { fullPath, iid },
+  };
+
+  const sourceData = cache.readQuery(query);
+
+  if (!sourceData) {
+    return;
+  }
+
+  const newData = produce(sourceData, (draftState) => {
+    const { widgets } = draftState.workspace.workItem;
+    const widgetCurrentUserTodos = widgets.find(
+      (widget) => widget.type === WIDGET_TYPE_CURRENT_USER_TODOS,
+    );
+
+    widgetCurrentUserTodos.currentUserTodos.nodes = todos;
+  });
+
+  cache.writeQuery({ ...query, data: newData });
 };
 
 export const setNewWorkItemCache = async (

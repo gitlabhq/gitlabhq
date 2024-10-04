@@ -1470,6 +1470,20 @@
     },
     "cache": {
       "markdownDescription": "Use `cache` to specify a list of files and directories to cache between jobs. You can only use paths that are in the local working copy. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#cache)",
+      "oneOf": [
+        {
+          "$ref": "#/definitions/cache_item"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/cache_item"
+          }
+        }
+      ]
+    },
+    "cache_item": {
+      "type": "object",
       "properties": {
         "key": {
           "markdownDescription": "Use the `cache:key` keyword to give each cache a unique identifying key. All jobs that use the same cache key use the same cache, including in different pipelines. Must be used with `cache:path`, or nothing is cached. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#cachekey).",

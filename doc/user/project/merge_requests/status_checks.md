@@ -74,10 +74,6 @@ using the API. You don't need to wait for a merge request webhook payload to be 
 
 ## View status check services
 
-You can see a list of status check services added to a project from the **Merge requests** settings and the **Branch rules** settings.
-
-### From merge request settings
-
 To view a list of status check services added to a project from the merge request settings:
 
 1. On the left sidebar, select **Search or go to** and find your project.
@@ -87,29 +83,7 @@ To view a list of status check services added to a project from the merge reques
 
 ![Status checks list](img/status_checks_list_view_v14_0.png)
 
-### From branch rules settings
-
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12522) in GitLab 17.4 [with a flag](../../../administration/feature_flags.md) named `edit_branch_rules`. Disabled by default.
-> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/454501) in GitLab 17.4.
-
-To view a list of status check services when you [create](../repository/branches/index.md#create-a-branch-rule) or
-[edit](../repository/branches/index.md#edit-a-branch-rule) a branch rule:
-
-1. Go to your project repository settings:
-
-   1. On the left sidebar, select **Search or go to** and find your project.
-   1. Select **Settings > Repository**.
-1. Expand **Branch rules**.
-
-1. Choose one of the following options:
-
-   - To create a branch rule, select **Add branch rule**.
-   - To edit a branch rule, select **View details**.
-
-1. At bottom of the **Branch rule details** page, view the list of **Status checks**.
-   The list displays the service name and the API URL.
-
-![Branch rules status checks](img/branch_rule_status_check.png)
+You can also view a list of status check services from the [Branch rules](../repository/branches/branch_rules.md#add-a-status-check-service) settings.
 
 ## Add or update a status check service
 
