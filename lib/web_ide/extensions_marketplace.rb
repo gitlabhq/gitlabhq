@@ -25,7 +25,7 @@ module WebIde
     end
 
     def self.help_preferences_url
-      ::Gitlab::Routing.url_helpers.help_page_url('user/profile/preferences',
+      ::Gitlab::Routing.url_helpers.help_page_url('user/profile/preferences.md',
         anchor: 'integrate-with-the-extension-marketplace')
     end
 
@@ -74,7 +74,7 @@ module WebIde
     # rubocop:enable Lint/UnusedMethodArgument
 
     def self.help_url
-      ::Gitlab::Routing.url_helpers.help_page_url('user/project/web_ide/index', anchor: 'extension-marketplace')
+      ::Gitlab::Routing.url_helpers.help_page_url('user/project/web_ide/index.md', anchor: 'extension-marketplace')
     end
 
     def self.user_preferences_url

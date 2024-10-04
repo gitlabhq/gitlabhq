@@ -10,8 +10,9 @@ RSpec.describe Gitlab::Database::QueryAnalyzers::LogLargeInLists, query_analyzer
   # Reduce the in list size to 5 to help with testing
   # Reduce the min query size to 50 to help with testing
   before do
-    stub_const("#{described_class}::IN_SIZE_LIMIT", 5)
     stub_const("#{described_class}::MIN_QUERY_SIZE", 50)
+    stub_const("#{described_class}::IN_SIZE_LIMIT", 5)
+    stub_const("#{described_class}::REGEX", /\bIN\s*\((?:\s*\$?\d+\s*,){4,}\s*\$?\d+\s*\)/i)
     allow(analyzer).to receive(:backtrace).and_return([])
     allow(analyzer).to receive(:suppressed?).and_return(true) # bypass suppressed? method to avoid false positives
   end

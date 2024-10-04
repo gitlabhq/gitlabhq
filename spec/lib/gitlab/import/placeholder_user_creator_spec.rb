@@ -36,6 +36,14 @@ RSpec.describe Gitlab::Import::PlaceholderUserCreator, feature_category: :import
       expect(new_placeholder_user.namespace.organization).to eq(namespace.organization)
     end
 
+    it 'does not cache user policies', :request_store do
+      expect { service.execute }.not_to change {
+                                          Gitlab::SafeRequestStore.storage.keys.select do |key|
+                                            key.to_s.include?('User')
+                                          end
+                                        }
+    end
+
     context 'when there are non-unique usernames on the same import source' do
       it 'creates two unique users with different usernames and emails' do
         placeholder_user1 = service.execute

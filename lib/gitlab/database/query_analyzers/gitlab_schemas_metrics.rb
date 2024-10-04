@@ -18,6 +18,9 @@ module Gitlab
           end
 
           def analyze(parsed)
+            # This analyzer requires the PgQuery parsed query to be present
+            return unless parsed.pg
+
             db_config_name = ::Gitlab::Database.db_config_name(parsed.connection)
             return unless db_config_name
 

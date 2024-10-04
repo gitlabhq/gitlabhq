@@ -37,6 +37,9 @@ module Gitlab
           end
 
           def analyze(parsed)
+            # This analyzer requires the PgQuery parsed query to be present
+            return unless parsed.pg
+
             # If list of schemas is empty, we allow only DDL changes
             if self.dml_mode?
               self.restrict_to_dml_only(parsed)

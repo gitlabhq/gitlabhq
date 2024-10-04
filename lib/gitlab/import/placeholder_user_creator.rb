@@ -26,6 +26,7 @@ module Gitlab
           email: placeholder_email
         )
 
+        user.skip_confirmation_notification!
         user.assign_personal_namespace(namespace.organization)
         user.save!
 

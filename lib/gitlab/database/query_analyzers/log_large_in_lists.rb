@@ -9,9 +9,9 @@ module Gitlab
       # The feature flag should prevent sampling going above 1% or 0.01% of queries hitting
       # to avoid performance issues
       class LogLargeInLists < Base
-        REGEX = /\bIN\s*\(([$?\d\s*,]*)\)+/i
         MIN_QUERY_SIZE = 10_000
         IN_SIZE_LIMIT = 2_500
+        REGEX = /\bIN\s*\((?:\s*\$?\d+\s*,){#{IN_SIZE_LIMIT - 1},}\s*\$?\d+\s*\)/i
         EVENT_NAMES = %w[load pluck].freeze
 
         EXCLUDE_FROM_TRACE = %w[
@@ -27,21 +27,21 @@ module Gitlab
 
           # Skips queries containing less than 10000 chars or any other events than +load+ and +pluck+
           def requires_tracking?(parsed)
-            return false if parsed.sql.size < MIN_QUERY_SIZE
+            return false if parsed.raw.size < MIN_QUERY_SIZE
 
             EVENT_NAMES.include?(parsed.event_name)
           end
 
           def analyze(parsed)
-            result = check_argument_size(parsed.sql)
+            result = check_argument_size(parsed.raw)
 
             log(result, parsed.event_name) if result.any?
           end
 
           private
 
-          def check_argument_size(sql)
-            matches = sql.scan(REGEX).flatten
+          def check_argument_size(raw)
+            matches = raw.scan(REGEX).flatten
 
             return [] if matches.empty?
 

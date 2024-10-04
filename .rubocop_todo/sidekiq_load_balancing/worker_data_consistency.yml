@@ -161,7 +161,6 @@ SidekiqLoadBalancing/WorkerDataConsistency:
     - 'app/workers/merge_request_cleanup_refs_worker.rb'
     - 'app/workers/merge_request_mergeability_check_worker.rb'
     - 'app/workers/merge_requests/close_issue_worker.rb'
-    - 'app/workers/merge_requests/create_pipeline_worker.rb'
     - 'app/workers/merge_requests/delete_source_branch_worker.rb'
     - 'app/workers/merge_requests/handle_assignees_change_worker.rb'
     - 'app/workers/merge_requests/resolve_todos_worker.rb'

@@ -19,6 +19,9 @@ module Gitlab
           # @example
           #          CREATE VIEW issues AS SELECT * FROM tickets
           def analyze(parsed)
+            # This analyzer requires the PgQuery parsed query to be present
+            return unless parsed.pg
+
             select_tables = QueryAnalyzerHelpers.dml_from_create_view?(parsed) ? [] : parsed.pg.select_tables
             tables = select_tables + parsed.pg.dml_tables
             table_schemas = ::Gitlab::Database::GitlabSchema.table_schemas!(tables)

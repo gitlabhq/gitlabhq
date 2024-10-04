@@ -11,9 +11,9 @@ module Gitlab
             name: _('Static Application Security Testing (SAST)'),
             short_name: _('SAST'),
             description: _('Analyze your source code for vulnerabilities.'),
-            help_path: Gitlab::Routing.url_helpers.help_page_path('user/application_security/sast/index'),
-            configuration_help_path: Gitlab::Routing.url_helpers.help_page_path('user/application_security/sast/index',
-              anchor: 'configuration'),
+            help_path: Gitlab::Routing.url_helpers.help_page_path('user/application_security/sast/index.md'),
+            configuration_help_path: Gitlab::Routing.url_helpers.help_page_path(
+              'user/application_security/sast/index.md', anchor: 'configuration'),
             type: 'sast'
           },
           sast_advanced: {
@@ -21,9 +21,9 @@ module Gitlab
             short_name: _('Advanced SAST'),
             description: _('Analyze your source code for vulnerabilities with the GitLab Advanced SAST analyzer.'),
             help_path: Gitlab::Routing.url_helpers.help_page_path(
-              'user/application_security/sast/gitlab_advanced_sast'),
+              'user/application_security/sast/gitlab_advanced_sast.md'),
             configuration_help_path: Gitlab::Routing.url_helpers.help_page_path(
-              'user/application_security/sast/gitlab_advanced_sast',
+              'user/application_security/sast/gitlab_advanced_sast.md',
               anchor: 'configuration'),
             type: 'sast_advanced'
           },
@@ -31,9 +31,9 @@ module Gitlab
             name: _('Infrastructure as Code (IaC) Scanning'),
             short_name: s_('ciReport|SAST IaC'),
             description: _('Analyze your infrastructure as code configuration files for known vulnerabilities.'),
-            help_path: Gitlab::Routing.url_helpers.help_page_path('user/application_security/iac_scanning/index'),
+            help_path: Gitlab::Routing.url_helpers.help_page_path('user/application_security/iac_scanning/index.md'),
             configuration_help_path: Gitlab::Routing.url_helpers.help_page_path(
-              'user/application_security/iac_scanning/index',
+              'user/application_security/iac_scanning/index.md',
               anchor: 'configuration'),
             type: 'sast_iac'
           },
@@ -55,9 +55,9 @@ module Gitlab
             description: s_('ciReport|Analyze a deployed version of your web application for known ' \
                             'vulnerabilities by examining it from the outside in. DAST works ' \
                             'by simulating external attacks on your application while it is running.'),
-            help_path: Gitlab::Routing.url_helpers.help_page_path('user/application_security/dast/index'),
-            configuration_help_path: Gitlab::Routing.url_helpers.help_page_path('user/application_security/dast/index',
-              anchor: 'enable-automatic-dast-run'),
+            help_path: Gitlab::Routing.url_helpers.help_page_path('user/application_security/dast/index.md'),
+            configuration_help_path: Gitlab::Routing.url_helpers.help_page_path(
+              'user/application_security/dast/index.md', anchor: 'enable-automatic-dast-run'),
             type: 'dast',
             anchor: 'dast'
           },
@@ -65,9 +65,9 @@ module Gitlab
             name: _('Dependency Scanning'),
             description: _('Analyze your dependencies for known vulnerabilities.'),
             help_path: Gitlab::Routing.url_helpers.help_page_path(
-              'user/application_security/dependency_scanning/index'),
+              'user/application_security/dependency_scanning/index.md'),
             configuration_help_path: Gitlab::Routing.url_helpers.help_page_path(
-              'user/application_security/dependency_scanning/index', anchor: 'configuration'),
+              'user/application_security/dependency_scanning/index.md', anchor: 'configuration'),
             type: 'dependency_scanning',
             anchor: 'dependency-scanning'
           },
@@ -75,16 +75,16 @@ module Gitlab
             name: _('Container Scanning'),
             description: _('Check your Docker images for known vulnerabilities.'),
             help_path: Gitlab::Routing.url_helpers.help_page_path(
-              'user/application_security/container_scanning/index'),
+              'user/application_security/container_scanning/index.md'),
             configuration_help_path: Gitlab::Routing.url_helpers.help_page_path(
-              'user/application_security/container_scanning/index', anchor: 'configuration'),
+              'user/application_security/container_scanning/index.md', anchor: 'configuration'),
             type: 'container_scanning'
           },
           container_scanning_for_registry: {
             name: _('Container Scanning For Registry'),
             description: _('Run container scanning job whenever a container image with the latest tag is pushed.'),
             help_path: Gitlab::Routing.url_helpers.help_page_path(
-              'user/application_security/container_scanning/index', anchor: 'container-scanning-for-registry'),
+              'user/application_security/container_scanning/index.md', anchor: 'container-scanning-for-registry'),
             type: 'container_scanning_for_registry'
           },
           pre_receive_secret_detection: {
@@ -93,32 +93,32 @@ module Gitlab
                            'Secret push protection is triggered when commits are pushed to a repository. ' \
                            'If any secrets are detected, the push is blocked.'),
             help_path: Gitlab::Routing.url_helpers.help_page_path(
-              'user/application_security/secret_detection/secret_push_protection/index'),
+              'user/application_security/secret_detection/secret_push_protection/index.md'),
             type: 'pre_receive_secret_detection'
           },
           secret_detection: {
             name: _('Pipeline Secret Detection'),
             description: _('Analyze your source code and Git history for secrets by using CI/CD pipelines.'),
             help_path: Gitlab::Routing.url_helpers.help_page_path(
-              'user/application_security/secret_detection/pipeline/index'),
+              'user/application_security/secret_detection/pipeline/index.md'),
             configuration_help_path: Gitlab::Routing.url_helpers.help_page_path(
-              'user/application_security/secret_detection/pipeline/index', anchor: 'configuration'),
+              'user/application_security/secret_detection/pipeline/index.md', anchor: 'configuration'),
             type: 'secret_detection'
           },
           api_fuzzing: {
             name: _('API Fuzzing'),
             description: _('Find bugs in your code with API fuzzing.'),
             help_path: Gitlab::Routing.url_helpers.help_page_path(
-              'user/application_security/api_fuzzing/index'),
+              'user/application_security/api_fuzzing/index.md'),
             type: 'api_fuzzing'
           },
           coverage_fuzzing: {
             name: _('Coverage Fuzzing'),
             description: _('Find bugs in your code with coverage-guided fuzzing.'),
             help_path: Gitlab::Routing.url_helpers.help_page_path(
-              'user/application_security/coverage_fuzzing/index'),
+              'user/application_security/coverage_fuzzing/index.md'),
             configuration_help_path: Gitlab::Routing.url_helpers.help_page_path(
-              'user/application_security/coverage_fuzzing/index', anchor: 'enable-coverage-guided-fuzz-testing'),
+              'user/application_security/coverage_fuzzing/index.md', anchor: 'enable-coverage-guided-fuzz-testing'),
             type: 'coverage_fuzzing',
             secondary: {
               type: 'corpus_management',
@@ -141,10 +141,10 @@ module Gitlab
                             'running application by attempting to detect and exploit known vulnerabilities.'),
             name: s_('SecurityConfiguration|Breach and Attack Simulation (BAS)'),
             help_path: Gitlab::Routing.url_helpers.help_page_path(
-              'user/application_security/breach_and_attack_simulation/index'),
+              'user/application_security/breach_and_attack_simulation/index.md'),
             secondary: {
               configuration_help_path: Gitlab::Routing.url_helpers.help_page_path(
-                'user/application_security/breach_and_attack_simulation/index',
+                'user/application_security/breach_and_attack_simulation/index.md',
                 anchor: 'extend-dynamic-application-security-testing-dast'),
               description: s_('SecurityConfiguration|Enable incubating Breach and Attack Simulation focused ' \
                               'features such as callback attacks in your DAST scans.'),

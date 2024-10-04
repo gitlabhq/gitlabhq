@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe WebIde::ExtensionsMarketplace, feature_category: :web_ide do
   using RSpec::Parameterized::TableSyntax
 
-  let(:help_url) { "/help/user/project/web_ide/index#extension-marketplace" }
+  let(:help_url) { "/help/user/project/web_ide/index.md#extension-marketplace" }
   let(:user_preferences_url) { "/-/profile/preferences#integrations" }
 
   let_it_be_with_reload(:current_user) { create(:user) }
@@ -48,13 +48,13 @@ RSpec.describe WebIde::ExtensionsMarketplace, feature_category: :web_ide do
   end
 
   describe '#help_url' do
-    it { expect(help_url).to match('/help/user/project/web_ide/index#extension-marketplace') }
+    it { expect(help_url).to match('/help/user/project/web_ide/index.md#extension-marketplace') }
   end
 
   describe '#help_preferences_url' do
     it do
       expect(described_class.help_preferences_url).to match(
-        '/help/user/profile/preferences#integrate-with-the-extension-marketplace'
+        '/help/user/profile/preferences.md#integrate-with-the-extension-marketplace'
       )
     end
   end
