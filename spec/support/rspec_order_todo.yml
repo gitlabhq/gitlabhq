@@ -250,7 +250,6 @@
 - './ee/spec/features/registrations/combined_registration_spec.rb'
 - './ee/spec/features/registrations/one_trust_spec.rb'
 - './ee/spec/features/search/elastic/global_search_spec.rb'
-- './ee/spec/features/search/elastic/group_search_spec.rb'
 - './ee/spec/features/search/elastic/project_search_spec.rb'
 - './ee/spec/features/search/elastic/snippet_search_spec.rb'
 - './ee/spec/features/search/user_searches_for_epics_spec.rb'

@@ -34743,13 +34743,13 @@ msgstr ""
 msgid "MlModelRegistry|Artifact file is too large"
 msgstr ""
 
-msgid "MlModelRegistry|Artifact uploaded successfully."
-msgstr ""
-
 msgid "MlModelRegistry|Artifact uploads completed with errors."
 msgstr ""
 
 msgid "MlModelRegistry|Artifacts"
+msgstr ""
+
+msgid "MlModelRegistry|Artifacts uploaded successfully."
 msgstr ""
 
 msgid "MlModelRegistry|CI Info"

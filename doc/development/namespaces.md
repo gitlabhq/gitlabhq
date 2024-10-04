@@ -229,7 +229,7 @@ trie = Namespaces::Traversal::TrieNode.build(traversal_ids)
 trie.prefix_search([9970]) # returns [[9970, 123], [9970, 456]] 
 
 trie.covered?([9970]) # returns false
-trie.covered?([9970, 123]) # returns false
+trie.covered?([9970, 123]) # returns true
 trie.covered?([9970, 123, 789]) # returns true
 ```
 

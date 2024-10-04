@@ -3,7 +3,6 @@ import dateFormat from '~/lib/dateformat';
 import { roundToNearestHalf } from '~/lib/utils/common_utils';
 import { sanitize } from '~/lib/dompurify';
 import { s__, n__, __, sprintf } from '~/locale';
-import { parsePikadayDate } from './pikaday_utility';
 
 /**
  * Returns i18n month names array.
@@ -505,12 +504,13 @@ export const formatTimezone = ({ offset, name }) => `[UTC${formatUtcOffset(offse
  * @param {Date} dueDate
  */
 export const humanTimeframe = (startDate, dueDate) => {
-  const start = startDate ? parsePikadayDate(startDate) : null;
-  const due = dueDate ? parsePikadayDate(dueDate) : null;
-
   if (startDate && dueDate) {
-    const startDateInWords = dateInWords(start, true, start.getFullYear() === due.getFullYear());
-    const dueDateInWords = dateInWords(due, true);
+    const startDateInWords = dateInWords(
+      startDate,
+      true,
+      startDate.getFullYear() === dueDate.getFullYear(),
+    );
+    const dueDateInWords = dateInWords(dueDate, true);
 
     return sprintf(__('%{startDate} – %{dueDate}'), {
       startDate: startDateInWords,
@@ -519,12 +519,12 @@ export const humanTimeframe = (startDate, dueDate) => {
   }
   if (startDate && !dueDate) {
     return sprintf(__('%{startDate} – No due date'), {
-      startDate: dateInWords(start, true, false),
+      startDate: dateInWords(startDate, true, false),
     });
   }
   if (!startDate && dueDate) {
     return sprintf(__('No start date – %{dueDate}'), {
-      dueDate: dateInWords(due, true, false),
+      dueDate: dateInWords(dueDate, true, false),
     });
   }
   return '';

@@ -46,10 +46,10 @@ module Namespaces
         end
       end
 
-      # Check if traversal ID is already covered by a broader prefix
+      # Check if traversal ID is already covered by a broader prefix or included in trie
       # If trie contains [9970, 123] and [9970, 456]
       # covered?([9970]) returns false
-      # covered?([9970, 123]) returns false
+      # covered?([9970, 123]) returns true
       # covered?([9970, 123, 789]) returns true
       def covered?(traversal_ids)
         current_node = self
@@ -64,8 +64,7 @@ module Namespaces
           current_node = current_node.children[traversal_id]
         end
 
-        # It's not covered by a broader permission
-        false
+        current_node.end
       end
 
       def to_a

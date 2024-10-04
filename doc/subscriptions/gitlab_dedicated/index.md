@@ -22,29 +22,6 @@ It's the offering of choice for enterprises and organizations in highly regulate
 
 GitLab Dedicated uses the [advanced search functionality](../../integration/advanced_search/elasticsearch.md).
 
-#### Zero-downtime upgrades
-
-Deployments for GitLab Dedicated follow the process for [zero-downtime upgrades](../../update/zero_downtime.md) to ensure [backward compatibility](../../development/multi_version_compatibility.md) of the application during an upgrade. When no infrastructure changes or maintenance tasks require downtime, using the instance during an upgrade is possible and safe.
-
-During a GitLab version update, static assets may change and are only available in one of the two versions. To mitigate this situation, GitLab Dedicated adopts three techniques:
-
-1. Each static asset has a unique name that changes when its content changes.
-1. The browser caches each static asset.
-1. Each request from the same browser is routed to the same server temporarily.
-
-These techniques together give a strong assurance about asset availability:
-
-- During an upgrade, a user routed to a server running the new version will receive assets from the same server, completely removing the risk of receiving a broken page.
-- If routed to the old version, a regular user will have assets cached in their browser.
-- If not cached, they will receive the requested page and assets from the same server.
-- If the specific server is upgraded during the requests, they may still be routed to another server running the same version.
-- If the new server is running the upgraded version, and the requested asset changed, then the page may show some user interface glitches.
-
-To notice the effect of an upgrade, a new user of the system should connect for the first time during a version upgrade and get routed to an old version of the application immediately before its upgrade. The subsequent asset requests should end up in a server running the new version of GitLab, and the requested assets must have changed during this specific version upgrade. If all of this happens, a page refresh is enough to restore it.
-
-NOTE:
-Adopting a caching proxy in the customer network will further reduce this risk.
-
 ### Security
 
 #### Authentication and authorization
@@ -123,26 +100,6 @@ To add a custom hostname after your instance is created, submit a [support ticke
 
 NOTE:
 Custom hostnames for GitLab Pages are not supported. If you use GitLab Pages, the URL to access the Pages site for your GitLab Dedicated instance would be `tenant_name.gitlab-dedicated.site`.
-
-### Maintenance
-
-GitLab leverages [weekly maintenance windows](../../administration/dedicated/create_instance.md#maintenance-window) to keep your instance up to date, fix security issues, and ensure the overall reliability and performance of your environment.
-
-#### Upgrades and patches
-
-Your GitLab Dedicated instance receives regular upgrades during your preferred maintenance window. These upgrades include the latest patch release for the minor version that is one version behind the current GitLab release. For example, if the latest GitLab version is 16.8, your GitLab Dedicated instance runs on 16.7.
-For more information, see the [GitLab release and maintenance policy](../../policy/maintenance.md).
-
-Monthly updates include:
-
-- One minor release
-- Two patch releases
-
-To view details about your instance, including upcoming scheduled maintenance and the current GitLab version, sign in to Switchboard.
-
-#### Emergency maintenance
-
-GitLab performs [emergency maintenance](../../administration/dedicated/create_instance.md#emergency-maintenance) to address high-severity issues that affect your instance's security, availability, or reliability. When critical patch releases are available, GitLab Dedicated instances are upgraded as soon as possible using emergency maintenance procedures.
 
 ### Application
 

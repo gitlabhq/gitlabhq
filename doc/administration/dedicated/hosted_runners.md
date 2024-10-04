@@ -93,7 +93,7 @@ You can create and view hosted runners for your GitLab Dedicated instance using 
 
 Prerequisites:
 
-- You must [purchase a subscription](../../subscriptions/subscription-add-ons.md) for Hosted Runners for GitLab Dedicated.
+- You must purchase a subscription for Hosted Runners for GitLab Dedicated.
 
 ### Create hosted runners in Switchboard
 

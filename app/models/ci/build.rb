@@ -386,13 +386,15 @@ module Ci
       after_transition any => [:failed] do |build|
         next unless build.project
 
-        if build.auto_retry_allowed?
-          begin
-            # rubocop: disable CodeReuse/ServiceClass
-            Ci::RetryJobService.new(build.project, build.user).execute(build)
-            # rubocop: enable CodeReuse/ServiceClass
-          rescue Gitlab::Access::AccessDeniedError => e
-            Gitlab::AppLogger.error "Unable to auto-retry job #{build.id}: #{e}"
+        build.run_after_commit do
+          if build.auto_retry_allowed?
+            begin
+              # rubocop: disable CodeReuse/ServiceClass -- https://gitlab.com/gitlab-org/gitlab/-/issues/494865
+              Ci::RetryJobService.new(build.project, build.user).execute(build)
+              # rubocop: enable CodeReuse/ServiceClass
+            rescue Gitlab::Access::AccessDeniedError => e
+              Gitlab::AppLogger.error "Unable to auto-retry job #{build.id}: #{e}"
+            end
           end
         end
       end

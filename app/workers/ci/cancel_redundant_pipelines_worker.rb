@@ -4,7 +4,7 @@ module Ci
   class CancelRedundantPipelinesWorker
     include ApplicationWorker
 
-    data_consistency :always
+    data_consistency :sticky
     feature_category :continuous_integration
     idempotent!
     deduplicate :until_executed

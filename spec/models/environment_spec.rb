@@ -931,6 +931,24 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
               expect(close_action.reload.processed).to be_truthy
             end
 
+            context "when 'no_locking_for_stop_actions' is disabled" do
+              before do
+                stub_feature_flags(no_locking_for_stop_actions: false)
+                allow(Gitlab::OptimisticLocking).to receive(:retry_lock).and_call_original
+              end
+
+              it 'plays the job with locking' do
+                skip unless factory_type == :ci_build
+                # Since job is droped.
+                expect(close_action.processed).to be_falsey
+                # it encounters the StaleObjectError at first, but reloads the object and runs `job.play`
+                expect { subject }.not_to raise_error
+                expect(Gitlab::OptimisticLocking).to have_received(:retry_lock).exactly(3).times
+                # Now the job should be processed.
+                expect(close_action.reload.processed).to be_truthy
+              end
+            end
+
             it 'does nothing when bridge job' do
               skip unless factory_type == :ci_bridge
 

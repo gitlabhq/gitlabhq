@@ -1,16 +1,37 @@
+import { initEmojiMock } from 'helpers/emoji';
 import { getFrequentlyUsedEmojis, addToFrequentlyUsed } from '~/emoji/components/utils';
 
 describe('getFrequentlyUsedEmojis', () => {
-  it('returns null when no saved emojis set', () => {
-    Storage.prototype.setItem = jest.fn();
-
-    expect(getFrequentlyUsedEmojis()).toBe(null);
+  beforeAll(async () => {
+    await initEmojiMock();
   });
 
-  it('returns frequently used emojis object', () => {
+  it('returns null when no saved emojis set', async () => {
+    Storage.prototype.setItem = jest.fn();
+
+    expect(await getFrequentlyUsedEmojis()).toBe(null);
+  });
+
+  it('returns frequently used emojis object', async () => {
     Storage.prototype.getItem = jest.fn(() => 'thumbsup,thumbsdown');
 
-    expect(getFrequentlyUsedEmojis()).toEqual({
+    const frequentlyUsed = await getFrequentlyUsedEmojis();
+
+    expect(frequentlyUsed).toEqual({
+      frequently_used: {
+        emojis: [['thumbsup', 'thumbsdown']],
+        top: 0,
+        height: 71,
+      },
+    });
+  });
+
+  it('only returns frequently used emojis that are in the possible emoji set', async () => {
+    Storage.prototype.getItem = jest.fn(() => 'thumbsup,thumbsdown,ack');
+
+    const frequentlyUsed = await getFrequentlyUsedEmojis();
+
+    expect(frequentlyUsed).toEqual({
       frequently_used: {
         emojis: [['thumbsup', 'thumbsdown']],
         top: 0,

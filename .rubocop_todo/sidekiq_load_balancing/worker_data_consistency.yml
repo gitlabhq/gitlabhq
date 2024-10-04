@@ -30,7 +30,6 @@ SidekiqLoadBalancing/WorkerDataConsistency:
     - 'app/workers/ci/build_schedule_worker.rb'
     - 'app/workers/ci/build_trace_chunk_flush_worker.rb'
     - 'app/workers/ci/cancel_pipeline_worker.rb'
-    - 'app/workers/ci/cancel_redundant_pipelines_worker.rb'
     - 'app/workers/ci/daily_build_group_report_results_worker.rb'
     - 'app/workers/ci/delete_objects_worker.rb'
     - 'app/workers/ci/delete_unit_tests_worker.rb'

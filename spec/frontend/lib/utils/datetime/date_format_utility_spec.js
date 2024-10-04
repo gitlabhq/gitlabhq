@@ -1,3 +1,4 @@
+import { newDate } from '~/lib/utils/datetime/date_calculation_utility';
 import * as utils from '~/lib/utils/datetime/date_format_utility';
 
 describe('date_format_utility.js', () => {
@@ -154,11 +155,11 @@ describe('date_format_utility.js', () => {
 
   describe('humanTimeframe', () => {
     it.each`
-      startDate     | dueDate        | returnValue
-      ${'2021-1-1'} | ${'2021-2-28'} | ${'Jan 1 – Feb 28, 2021'}
-      ${'2021-1-1'} | ${'2022-2-28'} | ${'Jan 1, 2021 – Feb 28, 2022'}
-      ${'2021-1-1'} | ${null}        | ${'Jan 1, 2021 – No due date'}
-      ${null}       | ${'2021-2-28'} | ${'No start date – Feb 28, 2021'}
+      startDate              | dueDate                 | returnValue
+      ${newDate('2021-1-1')} | ${newDate('2021-2-28')} | ${'Jan 1 – Feb 28, 2021'}
+      ${newDate('2021-1-1')} | ${newDate('2022-2-28')} | ${'Jan 1, 2021 – Feb 28, 2022'}
+      ${newDate('2021-1-1')} | ${null}                 | ${'Jan 1, 2021 – No due date'}
+      ${null}                | ${newDate('2021-2-28')} | ${'No start date – Feb 28, 2021'}
     `(
       'returns string "$returnValue" when startDate is $startDate and dueDate is $dueDate',
       ({ startDate, dueDate, returnValue }) => {

@@ -55,6 +55,10 @@ RSpec.describe Namespaces::Traversal::TrieNode, feature_category: :global_search
       expect(trie.covered?([1, 2, 3])).to be true
     end
 
+    it 'returns true for included traversal ID' do
+      expect(trie.covered?([1, 2])).to be true
+    end
+
     it 'returns false for non-covered traversal ID' do
       expect(trie.covered?([1, 3])).to be false
     end

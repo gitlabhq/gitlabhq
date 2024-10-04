@@ -49,7 +49,7 @@ export default {
     },
     dueDateText() {
       if (this.startDate) {
-        return humanTimeframe(this.startDate, this.dueDate);
+        return humanTimeframe(newDate(this.startDate), newDate(this.dueDate));
       }
       if (this.dueDate) {
         return localeDateFormat.asDate.format(newDate(this.dueDate));

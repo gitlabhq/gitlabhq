@@ -377,15 +377,23 @@ class Environment < ApplicationRecord
     actions = []
 
     stop_actions.each do |stop_action|
-      Gitlab::OptimisticLocking.retry_lock(
-        stop_action,
-        name: 'environment_stop_with_actions'
-      ) do |job|
+      play_job = ->(job) do
         actions << job.play(job.user)
       rescue StateMachines::InvalidTransition
-        # Ci::PlayBuildService rescues an error of StateMachines::InvalidTransition and fall back to retry. However,
-        # Ci::PlayBridgeService doesn't rescue it, so we're ignoring the error if it's not playable.
+        # Ci::PlayBuildService rescues an error of StateMachines::InvalidTransition and fall back to retry.
+        # However, Ci::PlayBridgeService doesn't rescue it, so we're ignoring the error if it's not playable.
         # We should fix this inconsistency in https://gitlab.com/gitlab-org/gitlab/-/issues/420855.
+      end
+
+      if Feature.enabled?(:no_locking_for_stop_actions, stop_action.project)
+        play_job.call(stop_action)
+      else
+        Gitlab::OptimisticLocking.retry_lock(
+          stop_action,
+          name: 'environment_stop_with_actions'
+        ) do |job|
+          play_job.call(job)
+        end
       end
     end
 
