@@ -55,7 +55,6 @@ Layout/ArrayAlignment:
     - 'ee/spec/requests/api/graphql/group/epics_spec.rb'
     - 'ee/spec/requests/api/graphql/mutations/compliance_management/frameworks/create_spec.rb'
     - 'ee/spec/requests/api/graphql/mutations/releases/update_spec.rb'
-    - 'ee/spec/requests/api/ldap_group_links_spec.rb'
     - 'ee/spec/requests/api/license_spec.rb'
     - 'ee/spec/requests/api/members_spec.rb'
     - 'ee/spec/requests/api/saml_group_links_spec.rb'

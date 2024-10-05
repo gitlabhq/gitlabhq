@@ -75,39 +75,51 @@ RSpec.describe Gitlab::Cng::Deployment::Installation, :aggregate_failures do
     end
 
     context "with deployment failure" do
-      let(:warn_event) do
-        {
-          involvedObject: {
-            kind: "HorizontalPodAutoscaler",
-            name: "gitlab-webservice-default"
+      let(:warn_events) do
+        [
+          {
+            involvedObject: {
+              kind: "Pod",
+              name: "gitlab-webservice-default"
+            },
+            kind: "Event",
+            message: "failed to sync secret cache: timed out waiting for the condition",
+            reason: "FailedMount",
+            type: "Warning"
           },
-          kind: "Event",
-          message: "failed to get cpu usage",
-          reason: "FailedGetResourceMetric",
-          type: "Warning"
-        }
+          {
+            involvedObject: {
+              kind: "HorizontalPodAutoscaler",
+              name: "gitlab-webservice-default"
+            },
+            kind: "Event",
+            message: "failed to get cpu usage",
+            reason: "FailedGetResourceMetric",
+            type: "Warning"
+          }
+        ]
       end
+
+      let(:valid_event) { warn_events.first }
+      let(:removed_event) { warn_events.last }
 
       before do
         allow(helmclient).to receive(:upgrade).and_raise(Gitlab::Cng::Helm::Client::Error, "error")
-        allow(kubeclient).to receive(:events).with(json_format: true).and_return(<<~EVENTS)
-          {
-            "items": [
-              #{JSON.pretty_generate(warn_event)},
-              {
-                "type": "Normal"
-              }
-            ]
-          }
-        EVENTS
+        allow(kubeclient).to receive(:events).with(json_format: true).and_return({ items: warn_events }.to_json)
       end
 
       context "without retry" do
-        it "automatically prints warning events" do
+        it "automatically prints warning events and troubleshooting info" do
           expect { expect { installation.create }.to raise_error(SystemExit) }.to output(
-            match("#{warn_event[:involvedObject][:kind]}/#{warn_event[:involvedObject][:name]}")
-            .and(match(warn_event[:message]))
+            match("#{valid_event[:involvedObject][:kind]}/#{valid_event[:involvedObject][:name]}")
+            .and(match(valid_event[:message]))
             .and(match(/For more information on troubleshooting failures, see: \S+/))
+          ).to_stdout
+        end
+
+        it "removes metrics related warning events" do
+          expect { expect { installation.create }.to raise_error(SystemExit) }.not_to output(
+            match("#{removed_event[:involvedObject][:kind]}/#{removed_event[:involvedObject][:name]}")
           ).to_stdout
         end
       end

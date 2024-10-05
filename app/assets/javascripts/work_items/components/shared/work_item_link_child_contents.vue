@@ -17,7 +17,12 @@ import WorkItemLinkChildMetadata from 'ee_else_ce/work_items/components/shared/w
 import WorkItemTypeIcon from '../work_item_type_icon.vue';
 import WorkItemStateBadge from '../work_item_state_badge.vue';
 import { findLinkedItemsWidget, getDisplayReference } from '../../utils';
-import { STATE_OPEN, WIDGET_TYPE_ASSIGNEES, WIDGET_TYPE_LABELS } from '../../constants';
+import {
+  STATE_OPEN,
+  WIDGET_TYPE_ASSIGNEES,
+  WIDGET_TYPE_LABELS,
+  LINKED_CATEGORIES_MAP,
+} from '../../constants';
 import WorkItemRelationshipIcons from './work_item_relationship_icons.vue';
 
 export default {
@@ -126,8 +131,11 @@ export default {
     displayReference() {
       return getDisplayReference(this.workItemFullPath, this.childItem.reference);
     },
-    linkedChildWorkItems() {
-      return findLinkedItemsWidget(this.childItem).linkedItems?.nodes || [];
+    filteredLinkedChildItems() {
+      const linkedChildWorkItems = findLinkedItemsWidget(this.childItem).linkedItems?.nodes || [];
+      return linkedChildWorkItems.filter((item) => {
+        return item.linkType !== LINKED_CATEGORIES_MAP.RELATES_TO;
+      });
     },
   },
   methods: {
@@ -190,9 +198,9 @@ export default {
             </template>
           </gl-avatars-inline>
           <work-item-relationship-icons
-            v-if="isChildItemOpen && linkedChildWorkItems.length"
+            v-if="isChildItemOpen && filteredLinkedChildItems.length"
             :work-item-type="childItemType"
-            :linked-work-items="linkedChildWorkItems"
+            :linked-work-items="filteredLinkedChildItems"
             :work-item-full-path="childItemFullPath"
             :work-item-iid="childItemIid"
             :work-item-web-url="childItemWebUrl"

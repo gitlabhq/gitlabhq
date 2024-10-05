@@ -2,7 +2,7 @@
 
 RSpec.shared_examples 'WikiPages::CreateService#execute' do |container_type|
   let(:container) { create(container_type, :wiki_repo) }
-  let(:user) { create(:user) }
+  let(:user) { create(:user, :with_namespace) }
   let(:page_title) { 'Title' }
   let(:container_key) { container.is_a?(Group) ? :namespace_id : :project_id }
 

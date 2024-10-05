@@ -218,7 +218,7 @@ class EventCreateService
       action = Event.actions[status]
       raise IllegalActionError, "#{status} is not a valid status" if action.nil?
 
-      parent_attrs(record.resource_parent)
+      parent_attrs(record.resource_parent, current_user)
         .merge(base_attrs)
         .merge(action: action, fingerprint: fingerprint, target_id: record.id, target_type: record.class.name)
     end
@@ -271,7 +271,7 @@ class EventCreateService
       action: status,
       author_id: current_user.id
     )
-    attributes.merge!(parent_attrs(resource_parent))
+    attributes.merge!(parent_attrs(resource_parent, current_user))
 
     if attributes[:fingerprint].present?
       Event.safe_find_or_create_by!(attributes)
@@ -280,7 +280,7 @@ class EventCreateService
     end
   end
 
-  def parent_attrs(resource_parent)
+  def parent_attrs(resource_parent, current_user)
     resource_parent_attr = case resource_parent
                            when Project
                              :project_id
@@ -288,7 +288,7 @@ class EventCreateService
                              :group_id
                            end
 
-    return {} unless resource_parent_attr
+    return { personal_namespace_id: current_user.namespace_id }.compact unless resource_parent_attr
 
     { resource_parent_attr => resource_parent.id }
   end

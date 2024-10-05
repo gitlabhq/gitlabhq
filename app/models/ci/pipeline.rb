@@ -324,9 +324,7 @@ module Ci
 
       after_transition any => ::Ci::Pipeline.completed_statuses do |pipeline|
         pipeline.run_after_commit do
-          pipeline.all_merge_requests.each do |merge_request|
-            next unless merge_request.auto_merge_enabled?
-
+          pipeline.all_merge_requests.with_auto_merge_enabled.each do |merge_request|
             AutoMergeProcessWorker.perform_async(merge_request.id)
           end
 

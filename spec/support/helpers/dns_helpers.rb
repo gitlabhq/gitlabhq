@@ -2,6 +2,8 @@
 
 module DnsHelpers
   include ViteHelper
+  # strong_memoize is used in a class method, so we extend it instead of including it.
+  extend Gitlab::Utils::StrongMemoize
 
   def block_dns!
     stub_all_dns!
@@ -57,14 +59,21 @@ module DnsHelpers
     ActiveRecord::Base.configurations.configs_for(env_name: Rails.env).map(&:host).compact.uniq
   end
 
+  def self.redis_hosts
+    # This needs to be a class method so that the memoization sticks across different specs.
+    # Without memoization, this adds a considerable amount of time to each spec execution.
+    strong_memoize(:redis_hosts) do
+      Gitlab::Redis::ALL_CLASSES.flat_map do |redis_instance|
+        redis_instance.params[:host] || redis_instance.params[:nodes]&.map { |n| n[:host] }
+      end.uniq.compact
+    end
+  end
+
   def permit_redis!
     # https://github.com/redis-rb/redis-client/blob/v0.11.2/lib/redis_client/ruby_connection.rb#L51 uses Socket.tcp that
     # calls Addrinfo.getaddrinfo internally.
-    hosts = Gitlab::Redis::ALL_CLASSES.flat_map do |redis_instance|
-      redis_instance.params[:host] || redis_instance.params[:nodes]&.map { |n| n[:host] }
-    end.uniq.compact
 
-    hosts.each do |host|
+    DnsHelpers.redis_hosts.each do |host|
       allow(Addrinfo).to receive(:getaddrinfo).with(host, anything, nil, :STREAM, anything, anything, any_args).and_call_original
     end
   end

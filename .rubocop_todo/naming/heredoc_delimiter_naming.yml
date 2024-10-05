@@ -34,7 +34,6 @@ Naming/HeredocDelimiterNaming:
     - 'lib/gitlab/utils/delegator_override/validator.rb'
     - 'lib/tasks/gitlab/docs/compile_deprecations.rake'
     - 'lib/tasks/gitlab/password.rake'
-    - 'qa/qa/specs/features/browser_ui/5_package/package_registry/generic_repository_spec.rb'
     - 'rubocop/cop/database/multiple_databases.rb'
     - 'rubocop/cop/database/rescue_query_canceled.rb'
     - 'rubocop/cop/database/rescue_statement_timeout.rb'

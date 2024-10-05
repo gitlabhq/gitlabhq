@@ -1801,6 +1801,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_8b39d532224c() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "ci_secure_files"
+  WHERE "ci_secure_files"."id" = NEW."ci_secure_file_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_8ba31bddd655() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -9095,6 +9111,7 @@ CREATE TABLE ci_secure_file_states (
     verification_retry_count smallint,
     verification_checksum bytea,
     verification_failure text,
+    project_id bigint,
     CONSTRAINT check_a79e5a9261 CHECK ((char_length(verification_failure) <= 255))
 );
 
@@ -23986,6 +24003,9 @@ ALTER TABLE sprints
 ALTER TABLE web_hook_logs
     ADD CONSTRAINT check_df72cb58f5 CHECK ((char_length(url_hash) <= 44)) NOT VALID;
 
+ALTER TABLE events
+    ADD CONSTRAINT check_events_sharding_key_is_not_null CHECK (((group_id IS NOT NULL) OR (project_id IS NOT NULL) OR (personal_namespace_id IS NOT NULL))) NOT VALID;
+
 ALTER TABLE projects
     ADD CONSTRAINT check_fa75869cb1 CHECK ((project_namespace_id IS NOT NULL)) NOT VALID;
 
@@ -28378,6 +28398,8 @@ CREATE INDEX index_ci_secure_file_states_failed_verification ON ci_secure_file_s
 CREATE INDEX index_ci_secure_file_states_needs_verification ON ci_secure_file_states USING btree (verification_state) WHERE ((verification_state = 0) OR (verification_state = 3));
 
 CREATE INDEX index_ci_secure_file_states_on_ci_secure_file_id ON ci_secure_file_states USING btree (ci_secure_file_id);
+
+CREATE INDEX index_ci_secure_file_states_on_project_id ON ci_secure_file_states USING btree (project_id);
 
 CREATE INDEX index_ci_secure_file_states_on_verification_state ON ci_secure_file_states USING btree (verification_state);
 
@@ -33688,6 +33710,8 @@ CREATE TRIGGER trigger_84d67ad63e93 BEFORE INSERT OR UPDATE ON wiki_page_slugs F
 CREATE TRIGGER trigger_8a38ce2327de BEFORE INSERT OR UPDATE ON boards_epic_user_preferences FOR EACH ROW EXECUTE FUNCTION trigger_8a38ce2327de();
 
 CREATE TRIGGER trigger_8ac78f164b2d BEFORE INSERT OR UPDATE ON design_management_repositories FOR EACH ROW EXECUTE FUNCTION trigger_8ac78f164b2d();
+
+CREATE TRIGGER trigger_8b39d532224c BEFORE INSERT OR UPDATE ON ci_secure_file_states FOR EACH ROW EXECUTE FUNCTION trigger_8b39d532224c();
 
 CREATE TRIGGER trigger_8ba31bddd655 BEFORE INSERT OR UPDATE ON vulnerability_occurrence_pipelines FOR EACH ROW EXECUTE FUNCTION trigger_8ba31bddd655();
 

@@ -145,8 +145,6 @@ Database/AvoidUsingPluckWithoutLimit:
     - 'ee/app/services/epics/update_dates_service.rb'
     - 'ee/app/services/gitlab_subscriptions/preview_billable_user_change_service.rb'
     - 'ee/app/services/security/merge_request_security_report_generation_service.rb'
-    - 'ee/app/services/security/scan_result_policies/sync_any_merge_request_rules_service.rb'
-    - 'ee/app/services/security/scan_result_policies/update_approvals_service.rb'
     - 'ee/app/services/security/security_orchestration_policies/default_branch_updation_check_service.rb'
     - 'ee/app/services/security/security_orchestration_policies/fetch_policy_approvers_service.rb'
     - 'ee/app/services/security/security_orchestration_policies/policy_branches_service.rb'

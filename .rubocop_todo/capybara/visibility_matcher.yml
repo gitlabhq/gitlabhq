@@ -7,7 +7,6 @@ Capybara/VisibilityMatcher:
     - 'ee/spec/features/epics/update_epic_spec.rb'
     - 'ee/spec/features/groups/analytics/cycle_analytics/filters_and_data_spec.rb'
     - 'ee/spec/features/groups/issues_spec.rb'
-    - 'ee/spec/features/groups/settings/protected_environments_spec.rb'
     - 'ee/spec/features/issues/related_issues_spec.rb'
     - 'ee/spec/features/projects/settings/ee/repository_mirrors_settings_spec.rb'
     - 'ee/spec/features/promotion_spec.rb'

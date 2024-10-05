@@ -2,6 +2,5 @@
 Gitlab/AvoidCurrentOrganization:
   Details: grace period
   Exclude:
-    - 'app/services/snippets/create_service.rb'
     - 'lib/gitlab/current_settings.rb'
     - 'lib/gitlab/github_gists_import/importer/gist_importer.rb'

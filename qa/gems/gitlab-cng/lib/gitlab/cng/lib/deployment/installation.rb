@@ -17,6 +17,12 @@ module Gitlab
         LICENSE_SECRET = "gitlab-license"
         TROUBLESHOOTING_LINK = "https://gitlab.com/gitlab-org/gitlab/-/tree/master/qa/gems/gitlab-cng?ref_type=heads#troubleshooting"
 
+        # Ignore metrics events when logging events on deploy failure,
+        # these get generated on pod startup due to various reasons like pod not ready and don't affect deployment state
+        #
+        # @return [Array]
+        IGNORED_EVENTS = %w[FailedComputeMetricsReplicas FailedGetResourceMetric].freeze
+
         # Delete installation
         #
         # @param [String] name
@@ -254,6 +260,7 @@ module Gitlab
 
           events = items
             .select { |item| item[:kind] == "Event" && item[:type] == "Warning" }
+            .reject { |item| IGNORED_EVENTS.include?(item[:reason]) }
             .map do |item|
               object = item[:involvedObject]
 

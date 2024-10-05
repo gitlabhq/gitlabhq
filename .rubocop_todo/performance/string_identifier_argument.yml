@@ -5,7 +5,6 @@ Performance/StringIdentifierArgument:
     - 'app/controllers/concerns/import/github_oauth.rb'
     - 'app/controllers/import/github_controller.rb'
     - 'app/graphql/types/project_type.rb'
-    - 'app/helpers/namespaces_helper.rb'
     - 'app/models/concerns/atomic_internal_id.rb'
     - 'app/models/concerns/cache_markdown_field.rb'
     - 'app/models/concerns/cascading_namespace_setting_attribute.rb'

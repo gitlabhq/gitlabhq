@@ -98,6 +98,7 @@ events:
 - group
 - target
 - push_event_payload
+- personal_namespace
 notes:
 - award_emoji
 - project

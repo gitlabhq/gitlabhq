@@ -84,7 +84,6 @@ Style/HashEachMethods:
     - 'lib/gitlab/database/load_balancing/configuration.rb'
     - 'lib/gitlab/database/load_balancing/service_discovery/sampler.rb'
     - 'lib/gitlab/dependency_linker/podspec_json_linker.rb'
-    - 'lib/gitlab/internal_events.rb'
     - 'lib/gitlab/language_data.rb'
     - 'lib/gitlab/metrics/samplers/ruby_sampler.rb'
     - 'lib/gitlab/metrics/subscribers/active_record.rb'

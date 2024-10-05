@@ -115,7 +115,6 @@ Lint/AssignmentInCondition:
     - 'ee/app/services/incident_management/pending_escalations/create_service.rb'
     - 'ee/app/services/security/security_orchestration_policies/rule_schedule_service.rb'
     - 'ee/app/services/security/security_orchestration_policies/validate_policy_service.rb'
-    - 'ee/app/services/vulnerabilities/starboard_vulnerability_create_service.rb'
     - 'ee/app/validators/vulnerabilities/cvss_vector_validator.rb'
     - 'ee/db/fixtures/development/20_burndown.rb'
     - 'ee/lib/ee/api/entities/approval_state.rb'

@@ -65,7 +65,6 @@ Gitlab/NoFindInWorkers:
     - 'app/workers/upload_checksum_worker.rb'
     - 'app/workers/wikis/git_garbage_collect_worker.rb'
     - 'app/workers/work_items/import_work_items_csv_worker.rb'
-    - 'ee/app/workers/abuse/new_abuse_report_worker.rb'
     - 'ee/app/workers/adjourned_project_deletion_worker.rb'
     - 'ee/app/workers/admin_emails_worker.rb'
     - 'ee/app/workers/analytics/devops_adoption/create_snapshot_worker.rb'
@@ -93,4 +92,3 @@ Gitlab/NoFindInWorkers:
     - 'ee/app/workers/requirements_management/import_requirements_csv_worker.rb'
     - 'ee/app/workers/search/zoekt/namespace_indexer_worker.rb'
     - 'ee/app/workers/work_items/rolledup_dates/bulk_update_handler.rb'
-    - 'ee/app/workers/work_items/rolledup_dates/update_rolledup_dates_worker.rb'

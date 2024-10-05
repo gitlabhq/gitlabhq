@@ -69,7 +69,6 @@ Layout/SpaceInsideParens:
     - 'spec/models/ml/candidate_metric_spec.rb'
     - 'spec/models/ml/candidate_spec.rb'
     - 'spec/policies/clusters/agent_policy_spec.rb'
-    - 'spec/policies/user_policy_spec.rb'
     - 'spec/presenters/ci/build_presenter_spec.rb'
     - 'spec/presenters/packages/conan/package_presenter_spec.rb'
     - 'spec/requests/jwt_controller_spec.rb'

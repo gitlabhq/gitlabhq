@@ -48,7 +48,6 @@ RSpec/ExampleWording:
     - 'spec/models/deployment_spec.rb'
     - 'spec/models/packages/maven/metadatum_spec.rb'
     - 'spec/models/packages/package_spec.rb'
-    - 'spec/models/packages/pypi/metadatum_spec.rb'
     - 'spec/models/project_spec.rb'
     - 'spec/models/releases/link_spec.rb'
     - 'spec/models/user_spec.rb'
