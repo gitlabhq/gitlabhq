@@ -178,6 +178,29 @@ RSpec.describe Ci::JobArtifacts::DestroyBatchService, feature_category: :job_art
       end
     end
 
+    context 'when an artifact belongs to an orphaned project' do
+      let(:artifacts) { Ci::JobArtifact.where(id: [orphaned_artifact.id]) }
+      let!(:orphaned_artifact) do
+        create(:ci_job_artifact, :zip)
+      end
+
+      before do
+        orphaned_artifact.update!(project_id: 0)
+      end
+
+      it 'deletes the artifact' do
+        expect { subject }.to change { Ci::JobArtifact.count }.by(-1)
+      end
+
+      context 'when skip_projects_on_refresh is set to true' do
+        let(:skip_projects_on_refresh) { true }
+
+        it 'deletes the artifact' do
+          expect { subject }.to change { Ci::JobArtifact.count }.by(-1)
+        end
+      end
+    end
+
     context 'when artifact belongs to a project not undergoing refresh' do
       context 'and skip_projects_on_refresh is set to false (default)' do
         it 'does not log any warnings', :aggregate_failures do
