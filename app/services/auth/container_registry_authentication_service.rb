@@ -323,7 +323,7 @@ module Auth
     end
 
     def repository_path_push_protected?
-      return false if Feature.disabled?(:container_registry_protected_containers, project)
+      return false if Feature.disabled?(:container_registry_protected_containers, project&.root_ancestor)
 
       push_scopes = scopes.select { |scope| scope[:actions].include?('push') || scope[:actions].include?('*') }
 

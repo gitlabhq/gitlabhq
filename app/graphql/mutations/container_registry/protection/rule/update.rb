@@ -53,8 +53,9 @@ module Mutations
 
           def resolve(id:, **kwargs)
             container_registry_protection_rule = authorized_find!(id: id)
+            project = container_registry_protection_rule.project
 
-            if Feature.disabled?(:container_registry_protected_containers, container_registry_protection_rule.project)
+            if Feature.disabled?(:container_registry_protected_containers, project.root_ancestor)
               raise_resource_not_available_error!("'container_registry_protected_containers' feature flag is disabled")
             end
 

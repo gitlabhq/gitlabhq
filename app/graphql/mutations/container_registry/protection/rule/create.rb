@@ -52,7 +52,7 @@ module Mutations
           def resolve(project_path:, **kwargs)
             project = authorized_find!(project_path)
 
-            if Feature.disabled?(:container_registry_protected_containers, project)
+            if Feature.disabled?(:container_registry_protected_containers, project.root_ancestor)
               raise_resource_not_available_error!("'container_registry_protected_containers' feature flag is disabled")
             end
 
