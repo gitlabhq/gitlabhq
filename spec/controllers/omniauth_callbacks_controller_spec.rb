@@ -682,7 +682,7 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
 
           post :saml, params: { SAMLResponse: mock_saml_response }
 
-          expect(flash[:alert]).to eq('Signing in using your saml account without a pre-existing account in localhost is not allowed. Create an account in localhost first, and then <a href="/help/user/profile/index.md#sign-in-services">connect it to your saml account</a>.')
+          expect(flash[:alert]).to eq('Signing in using your SAML account without a pre-existing account in localhost is not allowed. Create an account in localhost first, and then <a href="/help/user/profile/index.md#sign-in-services">connect it to your SAML account</a>.')
           expect(response).to redirect_to(new_user_registration_path)
         end
       end
@@ -697,7 +697,7 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
 
           post :saml, params: { SAMLResponse: mock_saml_response }
 
-          expect(flash[:alert]).to eq('Signing in using your saml account without a pre-existing account in localhost is not allowed.')
+          expect(flash[:alert]).to eq('Signing in using your SAML account without a pre-existing account in localhost is not allowed.')
           expect(response).to redirect_to(new_user_session_path)
         end
       end
