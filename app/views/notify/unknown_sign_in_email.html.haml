@@ -1,5 +1,5 @@
 - default_font = "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;"
-- default_style = "#{default_font}font-size:15px;line-height:1.4;color:#8c8c8c;font-weight:300;padding:14px 0;margin:0;"
+- default_style = "#{default_font}font-size:15px;line-height:1.4;color:#626168;font-weight:300;padding:14px 0;margin:0;"
 - spacer_style = "#{default_font};height:18px;font-size:18px;line-height:18px;"
 
 %tr.alert
@@ -33,6 +33,13 @@
           %td{ style: "#{default_style}color:#333333;font-weight:400;width:75%;padding-left:5px;border-top:1px solid #ededed;" }
             %span.muted{ style: "color:#333333;text-decoration:none;" }
               = @ip
+        - if @city && @country
+          %tr
+            %td{ style: "#{default_style}border-top:1px solid #ededed;" }
+              = _('Location')
+            %td{ style: "#{default_style}color:#333333;font-weight:400;width:75%;padding-left:5px;border-top:1px solid #ededed;" }
+              %span.muted{ style: "color:#333333;text-decoration:none;" }
+                = @city + ", " + @country
         %tr
           %td{ style: "#{default_style}border-top:1px solid #ededed;" }
             = _('Time')

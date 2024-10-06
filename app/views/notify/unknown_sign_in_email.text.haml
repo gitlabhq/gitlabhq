@@ -1,6 +1,9 @@
 = _('Hi %{user_name} (%{user_username})!') % { user_name: sanitize_name(@user.name), user_username: @user.username }
 
-= _('A sign-in to your account has been made from the following IP address: %{ip}') % { ip: @ip }
+- if @city && @country
+  = _('A sign-in to your account has been made from the following IP address: %{ip} (%{city}, %{country})') % { ip: @ip, city: @city, country: @country }
+- else
+  = _('A sign-in to your account has been made from the following IP address: %{ip}') % { ip: @ip }
 
 = _('If you recently signed in and recognize the IP address, you may disregard this email.')
 = _('If you did not recently sign in, you should immediately change your password: %{password_link}.') % { password_link: help_page_url('user/profile/user_passwords.md', anchor: 'change-your-password') }

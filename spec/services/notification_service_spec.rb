@@ -652,11 +652,14 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
   end
 
   describe '#unknown_sign_in' do
-    let_it_be(:user) { create(:user) }
-    let_it_be(:ip) { '127.0.0.1' }
-    let_it_be(:time) { Time.current }
+    let(:user) { create(:user) }
+    let(:ip) { '127.0.0.1' }
+    let(:country) { 'Germany' }
+    let(:city) { 'Frankfurt' }
+    let(:request_info) { Struct.new(:country, :city).new(country, city) }
+    let(:time) { Time.current }
 
-    subject { notification.unknown_sign_in(user, ip, time) }
+    subject { notification.unknown_sign_in(user, ip, time, request_info) }
 
     it 'sends email to the user' do
       expect { subject }.to have_enqueued_email(user, ip, time, mail: 'unknown_sign_in_email')

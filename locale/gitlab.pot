@@ -2124,6 +2124,9 @@ msgstr ""
 msgid "A sign-in to your account has been made from the following IP address: %{ip}"
 msgstr ""
 
+msgid "A sign-in to your account has been made from the following IP address: %{ip} (%{city}, %{country})"
+msgstr ""
+
 msgid "A template for starting a new TYPO3 project"
 msgstr ""
 

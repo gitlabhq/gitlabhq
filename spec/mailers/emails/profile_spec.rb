@@ -443,10 +443,12 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
   end
 
   describe 'user unknown sign in email' do
-    let_it_be(:user) { create(:user) }
-    let_it_be(:ip) { '169.0.0.1' }
-    let_it_be(:current_time) { Time.current }
-    let_it_be(:email) { Notify.unknown_sign_in_email(user, ip, current_time) }
+    let(:user) { create(:user) }
+    let(:ip) { '169.0.0.1' }
+    let(:current_time) { Time.current }
+    let(:country) { 'Germany' }
+    let(:city) { 'Frankfurt' }
+    let(:email) { Notify.unknown_sign_in_email(user, ip, current_time, country: country, city: city) }
 
     subject { email }
 
@@ -485,6 +487,19 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
 
     it 'includes a link to two-factor authentication documentation' do
       is_expected.to have_body_text help_page_url('user/profile/account/two_factor_authentication.md')
+    end
+
+    it 'shows location information' do
+      is_expected.to have_body_text _('Location')
+      is_expected.to have_body_text country
+      is_expected.to have_body_text city
+    end
+
+    context 'when no location information was given' do
+      let(:country) { nil }
+      let(:city) { nil }
+
+      it { is_expected.not_to have_body_text _('Location') }
     end
 
     context 'when two factor authentication is enabled' do
