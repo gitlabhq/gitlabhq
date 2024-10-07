@@ -447,4 +447,83 @@ RSpec.describe AuthHelper, feature_category: :system_access do
       end
     end
   end
+
+  describe '#delete_otp_authenticator_data' do
+    context 'when password is required' do
+      it 'returns data to delete the OTP authenticator' do
+        expect(helper.delete_otp_authenticator_data(true)).to match(a_hash_including({
+          button_text: _('Delete one-time password authenticator'),
+          message: _('Are you sure you want to delete this one-time password authenticator? ' \
+            'Enter your password to continue.'),
+          path: destroy_otp_profile_two_factor_auth_path,
+          password_required: 'true'
+        }))
+      end
+    end
+
+    context 'when password is not required' do
+      it 'returns data to delete the OTP authenticator' do
+        expect(helper.delete_otp_authenticator_data(false)).to match(a_hash_including({
+          button_text: _('Delete one-time password authenticator'),
+          message: _('Are you sure you want to delete this one-time password authenticator?'),
+          path: destroy_otp_profile_two_factor_auth_path,
+          password_required: 'false'
+        }))
+      end
+    end
+  end
+
+  describe '#disable_two_factor_authentication_data' do
+    context 'when password is required' do
+      it 'returns data to disable two-factor authentication' do
+        expect(helper.disable_two_factor_authentication_data(true)).to match(a_hash_including({
+          button_text: _('Disable two-factor authentication'),
+          message: _('Are you sure you want to invalidate your one-time password authenticator and WebAuthn devices? ' \
+            'Enter your password to continue. This action cannot be undone.'),
+          path: profile_two_factor_auth_path,
+          password_required: 'true'
+        }))
+      end
+    end
+
+    context 'when password is not required' do
+      it 'returns data to disable two-factor authentication' do
+        expect(helper.disable_two_factor_authentication_data(false)).to match(a_hash_including({
+          button_text: _('Disable two-factor authentication'),
+          message: _('Are you sure you want to invalidate your one-time password authenticator and WebAuthn devices?'),
+          path: profile_two_factor_auth_path,
+          password_required: 'false'
+        }))
+      end
+    end
+  end
+
+  describe '#codes_two_factor_authentication_data' do
+    context 'when password is required' do
+      it 'returns data to delete the OTP authenticator' do
+        expect(helper.codes_two_factor_authentication_data(true)).to match(a_hash_including({
+          button_text: _('Regenerate recovery codes'),
+          message: _('Are you sure you want to regenerate recovery codes? ' \
+            'Enter your password to continue.'),
+          method: 'post',
+          path: codes_profile_two_factor_auth_path,
+          password_required: 'true',
+          variant: 'default'
+        }))
+      end
+    end
+
+    context 'when password is not required' do
+      it 'returns data to delete the OTP authenticator' do
+        expect(helper.codes_two_factor_authentication_data(false)).to match(a_hash_including({
+          button_text: _('Regenerate recovery codes'),
+          message: _('Are you sure you want to regenerate recovery codes?'),
+          method: 'post',
+          path: codes_profile_two_factor_auth_path,
+          password_required: 'false',
+          variant: 'default'
+        }))
+      end
+    end
+  end
 end

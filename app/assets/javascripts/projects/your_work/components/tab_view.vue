@@ -47,7 +47,7 @@ export default {
       return {
         query: this.tab.query,
         variables() {
-          return this.pagination;
+          return { ...this.pagination, ...this.tab.variables };
         },
         update(response) {
           const { nodes, pageInfo } = get(response, this.tab.queryPath);

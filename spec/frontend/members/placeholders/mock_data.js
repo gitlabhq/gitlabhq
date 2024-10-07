@@ -30,6 +30,7 @@ const createMockSourceUser = (index, { status, reassignToUser = false } = {}) =>
     sourceName: `Old User ${index}`,
     sourceUsername: `old_user_${index}`,
     status,
+    reassignmentError: null,
     placeholderUser: createMockPlaceholderUser(index),
     reassignToUser: reassignToUser ? createMockReassignUser(index) : null,
   };

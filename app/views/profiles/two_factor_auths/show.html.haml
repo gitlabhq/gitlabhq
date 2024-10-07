@@ -19,14 +19,17 @@
         = _('Register a one-time password authenticator')
       %p
         = _('Use a one-time password authenticator on your mobile device or computer to enable two-factor authentication (2FA).')
-    .col-lg-8{ data: { testid: 'otp' } }
+    .col-lg-8
       - if current_user.two_factor_otp_enabled?
         %p
           - if Feature.enabled?(:delete_otp_no_webauthn)
             = _("You've already enabled two-factor authentication using a one-time password authenticator. In order to register a different device, you must first delete this authenticator.")
           - else
             = _("You've already enabled two-factor authentication using a one-time password authenticator. In order to register a different device, you must first disable two-factor authentication.")
-        - if Feature.enabled?(:delete_otp_no_webauthn)
+        - if Feature.enabled?(:delete_otp_no_webauthn) && Feature.enabled?(:two_factor_actions)
+          .gl-inline-block.gl-w-full.sm:gl-w-auto
+            .js-two-factor-action-confirm{ data: delete_otp_authenticator_data(current_password_required?) }
+        - elsif Feature.enabled?(:delete_otp_no_webauthn)
           = gitlab_ui_form_for(:user, url: destroy_otp_profile_two_factor_auth_path, method: :delete, html: { class: 'sm:gl-inline-block' }) do |f|
             - if current_password_required?
               .form-group
@@ -144,7 +147,7 @@
         = _('Disable two-factor authentication')
       %p
         = _('Use this section to disable your one-time password authenticator and WebAuthn devices. You can also generate new recovery codes.')
-    .col-lg-8{ data: { testid: 'disable_two_factor' } }
+    .col-lg-8
       - if current_user.two_factor_enabled?
         %p
           = _('If you lose your recovery codes you can generate new ones, invalidating all previous codes.')
@@ -155,7 +158,14 @@
             dismissible: false) do |c|
             - c.with_body do
               = troubleshooting_link
-        .js-manage-two-factor-form{ data: { current_password_required: current_password_required?.to_s, profile_two_factor_auth_path: profile_two_factor_auth_path, profile_two_factor_auth_method: 'delete', codes_profile_two_factor_auth_path: codes_profile_two_factor_auth_path, codes_profile_two_factor_auth_method: 'post' } }
+        - if Feature.enabled?(:two_factor_actions)
+          .gl-flex.gl-flex-wrap.gl-gap-3
+            .gl-w-full.sm:gl-w-auto
+              .js-two-factor-action-confirm{ data: disable_two_factor_authentication_data(current_password_required?) }
+            .gl-w-full.sm:gl-w-auto
+              .js-two-factor-action-confirm{ data: codes_two_factor_authentication_data(current_password_required?) }
+        - else
+          .js-manage-two-factor-form{ data: { current_password_required: current_password_required?.to_s, profile_two_factor_auth_path: profile_two_factor_auth_path, profile_two_factor_auth_method: 'delete', codes_profile_two_factor_auth_path: codes_profile_two_factor_auth_path, codes_profile_two_factor_auth_method: 'post' } }
       - else
         %p
           = _("Register a one-time password authenticator or a WebAuthn device first.")

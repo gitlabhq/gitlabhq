@@ -66,8 +66,7 @@ The [`stage`](../../ci/yaml/index.md#stage) keyword can be omitted because `test
 
 ### Fail-safe
 
-To be aligned with the [GitLab Security paradigm](https://about.gitlab.com/direction/secure/#security-paradigm),
-scanning jobs should not block the pipeline when they fail,
+By default, scanning jobs do not block the pipeline when they fail,
 so the [`allow_failure`](../../ci/yaml/index.md#allow_failure) parameter should be set to `true`.
 
 ### Artifacts

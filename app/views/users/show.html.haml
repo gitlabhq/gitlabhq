@@ -46,7 +46,7 @@
     .user-profile-content
       - if allowable_actions.any?
         - if Feature.enabled?(:profile_tabs_vue, current_user)
-          #js-profile-tabs{ data: user_profile_tabs_app_data(@user) }
+          #js-user-profile-app{ data: user_profile_app_data(@user) }
         - else
           = render 'users/legacy_tabs', action: @action, endpoint: @endpoint, allowable_actions: allowable_actions
         .loading.hide

@@ -9,13 +9,8 @@ import contributedProjectsGraphQlResponse from 'test_fixtures/graphql/projects/y
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import TabView from '~/projects/your_work/components/tab_view.vue';
 import ProjectsList from '~/vue_shared/components/projects_list/projects_list.vue';
-import { DEFAULT_PER_PAGE } from '~/api';
-import contributedProjectsQuery from '~/projects/your_work/graphql/queries/contributed_projects.query.graphql';
-import personalProjectsQuery from '~/projects/your_work/graphql/queries/personal_projects.query.graphql';
-import membershipProjectsQuery from '~/projects/your_work/graphql/queries/membership_projects.query.graphql';
-import starredProjectsQuery from '~/projects/your_work/graphql/queries/starred_projects.query.graphql';
-import inactiveProjectsQuery from '~/projects/your_work/graphql/queries/inactive_projects.query.graphql';
 import { formatGraphQLProjects } from '~/vue_shared/components/projects_list/utils';
+import { DEFAULT_PER_PAGE } from '~/api';
 import { createAlert } from '~/alert';
 import {
   CONTRIBUTED_TAB,
@@ -53,77 +48,82 @@ describe('TabView', () => {
   });
 
   describe.each`
-    tab                | handler                                                                                        | expectedProjects
-    ${CONTRIBUTED_TAB} | ${[contributedProjectsQuery, jest.fn().mockResolvedValue(contributedProjectsGraphQlResponse)]} | ${contributedProjectsGraphQlResponse.data.currentUser.contributedProjects.nodes}
-    ${PERSONAL_TAB}    | ${[personalProjectsQuery, jest.fn().mockResolvedValue(personalProjectsGraphQlResponse)]}       | ${personalProjectsGraphQlResponse.data.projects.nodes}
-    ${MEMBER_TAB}      | ${[membershipProjectsQuery, jest.fn().mockResolvedValue(membershipProjectsGraphQlResponse)]}   | ${membershipProjectsGraphQlResponse.data.projects.nodes}
-    ${STARRED_TAB}     | ${[starredProjectsQuery, jest.fn().mockResolvedValue(starredProjectsGraphQlResponse)]}         | ${starredProjectsGraphQlResponse.data.currentUser.starredProjects.nodes}
-    ${INACTIVE_TAB}    | ${[inactiveProjectsQuery, jest.fn().mockResolvedValue(inactiveProjectsGraphQlResponse)]}       | ${inactiveProjectsGraphQlResponse.data.projects.nodes}
-  `('onMount when route name is $tab.value', ({ tab, handler, expectedProjects }) => {
-    describe('when GraphQL request is loading', () => {
-      beforeEach(() => {
-        createComponent({ handler, propsData: { tab } });
-      });
-
-      it('shows loading icon', () => {
-        expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
-      });
-    });
-
-    describe('when GraphQL request is successful', () => {
-      beforeEach(async () => {
-        createComponent({ handler, propsData: { tab } });
-        await waitForPromises();
-      });
-
-      it('calls GraphQL query with correct variables', async () => {
-        await waitForPromises();
-
-        expect(handler[1]).toHaveBeenCalledWith({
-          last: null,
-          first: DEFAULT_PER_PAGE,
-          before: null,
-          after: null,
-        });
-      });
-
-      it('passes projects to `ProjectsList` component', () => {
-        expect(findProjectsList().props('projects')).toEqual(
-          formatGraphQLProjects(expectedProjects),
-        );
-      });
-
-      describe('when project delete is complete', () => {
+    tab                | handler                                                                                     | expectedVariables                                             | expectedProjects
+    ${CONTRIBUTED_TAB} | ${[CONTRIBUTED_TAB.query, jest.fn().mockResolvedValue(contributedProjectsGraphQlResponse)]} | ${{ contributed: true, starred: false }}                      | ${contributedProjectsGraphQlResponse.data.currentUser.contributedProjects.nodes}
+    ${PERSONAL_TAB}    | ${[PERSONAL_TAB.query, jest.fn().mockResolvedValue(personalProjectsGraphQlResponse)]}       | ${{ personal: true, membership: false, archived: 'EXCLUDE' }} | ${personalProjectsGraphQlResponse.data.projects.nodes}
+    ${MEMBER_TAB}      | ${[MEMBER_TAB.query, jest.fn().mockResolvedValue(membershipProjectsGraphQlResponse)]}       | ${{ personal: false, membership: true, archived: 'EXCLUDE' }} | ${membershipProjectsGraphQlResponse.data.projects.nodes}
+    ${STARRED_TAB}     | ${[STARRED_TAB.query, jest.fn().mockResolvedValue(starredProjectsGraphQlResponse)]}         | ${{ contributed: false, starred: true }}                      | ${starredProjectsGraphQlResponse.data.currentUser.starredProjects.nodes}
+    ${INACTIVE_TAB}    | ${[INACTIVE_TAB.query, jest.fn().mockResolvedValue(inactiveProjectsGraphQlResponse)]}       | ${{ personal: false, membership: true, archived: 'ONLY' }}    | ${inactiveProjectsGraphQlResponse.data.projects.nodes}
+  `(
+    'onMount when route name is $tab.value',
+    ({ tab, handler, expectedVariables, expectedProjects }) => {
+      describe('when GraphQL request is loading', () => {
         beforeEach(() => {
-          findProjectsList().vm.$emit('delete-complete');
+          createComponent({ handler, propsData: { tab } });
         });
 
-        it('refetches list', () => {
-          expect(handler[1]).toHaveBeenCalledTimes(2);
-        });
-      });
-    });
-
-    describe('when GraphQL request is not successful', () => {
-      const error = new Error();
-
-      beforeEach(async () => {
-        createComponent({
-          handler: [handler[0], jest.fn().mockRejectedValue(error)],
-          propsData: { tab },
-        });
-        await waitForPromises();
-      });
-
-      it('displays error alert', () => {
-        expect(createAlert).toHaveBeenCalledWith({
-          message: 'An error occurred loading the projects. Please refresh the page to try again.',
-          error,
-          captureError: true,
+        it('shows loading icon', () => {
+          expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
         });
       });
-    });
-  });
+
+      describe('when GraphQL request is successful', () => {
+        beforeEach(async () => {
+          createComponent({ handler, propsData: { tab } });
+          await waitForPromises();
+        });
+
+        it('calls GraphQL query with correct variables', async () => {
+          await waitForPromises();
+
+          expect(handler[1]).toHaveBeenCalledWith({
+            last: null,
+            first: DEFAULT_PER_PAGE,
+            before: null,
+            after: null,
+            ...expectedVariables,
+          });
+        });
+
+        it('passes projects to `ProjectsList` component', () => {
+          expect(findProjectsList().props('projects')).toEqual(
+            formatGraphQLProjects(expectedProjects),
+          );
+        });
+
+        describe('when project delete is complete', () => {
+          beforeEach(() => {
+            findProjectsList().vm.$emit('delete-complete');
+          });
+
+          it('refetches list', () => {
+            expect(handler[1]).toHaveBeenCalledTimes(2);
+          });
+        });
+      });
+
+      describe('when GraphQL request is not successful', () => {
+        const error = new Error();
+
+        beforeEach(async () => {
+          createComponent({
+            handler: [handler[0], jest.fn().mockRejectedValue(error)],
+            propsData: { tab },
+          });
+          await waitForPromises();
+        });
+
+        it('displays error alert', () => {
+          expect(createAlert).toHaveBeenCalledWith({
+            message:
+              'An error occurred loading the projects. Please refresh the page to try again.',
+            error,
+            captureError: true,
+          });
+        });
+      });
+    },
+  );
 
   describe('pagination', () => {
     const propsData = { tab: PERSONAL_TAB };
@@ -132,7 +132,7 @@ describe('TabView', () => {
       beforeEach(async () => {
         createComponent({
           handler: [
-            personalProjectsQuery,
+            PERSONAL_TAB.query,
             jest.fn().mockResolvedValue(personalProjectsGraphQlResponse),
           ],
           propsData,
@@ -149,7 +149,7 @@ describe('TabView', () => {
       const mockEndCursor = 'mockEndCursor';
       const mockStartCursor = 'mockStartCursor';
       const handler = [
-        personalProjectsQuery,
+        PERSONAL_TAB.query,
         jest.fn().mockResolvedValue({
           data: {
             projects: {
@@ -199,6 +199,9 @@ describe('TabView', () => {
             before: null,
             first: DEFAULT_PER_PAGE,
             last: null,
+            personal: true,
+            membership: false,
+            archived: 'EXCLUDE',
           });
         });
       });
@@ -230,6 +233,9 @@ describe('TabView', () => {
             before: mockStartCursor,
             first: null,
             last: DEFAULT_PER_PAGE,
+            personal: true,
+            membership: false,
+            archived: 'EXCLUDE',
           });
         });
       });

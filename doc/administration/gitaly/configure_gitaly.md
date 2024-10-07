@@ -99,7 +99,7 @@ The following list depicts the network architecture of Gitaly:
 The following diagram illustrates communication between Gitaly servers and GitLab Rails showing
 the default ports for HTTP and HTTPs communication.
 
-![Two Gitaly servers and a GitLab Rails exchanging information.](img/gitaly_network_13_9.png)
+![Two Gitaly servers and a GitLab Rails exchanging information.](img/gitaly_network_v13_9.png)
 
 WARNING:
 Gitaly servers must not be exposed to the public internet as Gitaly network traffic is unencrypted

@@ -21461,30 +21461,6 @@ CREATE SEQUENCE zoekt_repositories_id_seq
 
 ALTER SEQUENCE zoekt_repositories_id_seq OWNED BY zoekt_repositories.id;
 
-CREATE TABLE zoekt_shards (
-    id bigint NOT NULL,
-    index_base_url text NOT NULL,
-    search_base_url text NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
-    uuid uuid DEFAULT '00000000-0000-0000-0000-000000000000'::uuid NOT NULL,
-    last_seen_at timestamp with time zone DEFAULT '1970-01-01 00:00:00+00'::timestamp with time zone NOT NULL,
-    used_bytes bigint DEFAULT 0 NOT NULL,
-    total_bytes bigint DEFAULT 0 NOT NULL,
-    metadata jsonb DEFAULT '{}'::jsonb NOT NULL,
-    CONSTRAINT check_61794bac26 CHECK ((char_length(search_base_url) <= 1024)),
-    CONSTRAINT check_c65bb85a32 CHECK ((char_length(index_base_url) <= 1024))
-);
-
-CREATE SEQUENCE zoekt_shards_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE zoekt_shards_id_seq OWNED BY zoekt_shards.id;
-
 CREATE SEQUENCE zoekt_tasks_id_seq
     START WITH 1
     INCREMENT BY 1
@@ -23150,8 +23126,6 @@ ALTER TABLE ONLY zoekt_nodes ALTER COLUMN id SET DEFAULT nextval('zoekt_nodes_id
 ALTER TABLE ONLY zoekt_replicas ALTER COLUMN id SET DEFAULT nextval('zoekt_replicas_id_seq'::regclass);
 
 ALTER TABLE ONLY zoekt_repositories ALTER COLUMN id SET DEFAULT nextval('zoekt_repositories_id_seq'::regclass);
-
-ALTER TABLE ONLY zoekt_shards ALTER COLUMN id SET DEFAULT nextval('zoekt_shards_id_seq'::regclass);
 
 ALTER TABLE ONLY zoom_meetings ALTER COLUMN id SET DEFAULT nextval('zoom_meetings_id_seq'::regclass);
 
@@ -26004,9 +25978,6 @@ ALTER TABLE ONLY zoekt_replicas
 
 ALTER TABLE ONLY zoekt_repositories
     ADD CONSTRAINT zoekt_repositories_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY zoekt_shards
-    ADD CONSTRAINT zoekt_shards_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY zoekt_tasks
     ADD CONSTRAINT zoekt_tasks_pkey PRIMARY KEY (id, partition_id);
@@ -31706,12 +31677,6 @@ CREATE INDEX index_zoekt_repositories_on_project_id ON zoekt_repositories USING 
 
 CREATE INDEX index_zoekt_repositories_on_state ON zoekt_repositories USING btree (state);
 
-CREATE UNIQUE INDEX index_zoekt_shards_on_index_base_url ON zoekt_shards USING btree (index_base_url);
-
-CREATE INDEX index_zoekt_shards_on_last_seen_at ON zoekt_shards USING btree (last_seen_at);
-
-CREATE UNIQUE INDEX index_zoekt_shards_on_search_base_url ON zoekt_shards USING btree (search_base_url);
-
 CREATE INDEX index_zoekt_tasks_on_state ON ONLY zoekt_tasks USING btree (state);
 
 CREATE INDEX index_zoekt_tasks_on_zoekt_node_id_and_state_and_perform_at ON ONLY zoekt_tasks USING btree (zoekt_node_id, state, perform_at);
@@ -31967,8 +31932,6 @@ CREATE UNIQUE INDEX unique_user_id_and_setting_type ON vs_code_settings USING bt
 CREATE UNIQUE INDEX unique_vuln_merge_request_link_vuln_id_and_mr_id ON vulnerability_merge_request_links USING btree (vulnerability_id, merge_request_id);
 
 CREATE UNIQUE INDEX unique_zoekt_enabled_namespaces_on_root_namespace_id ON zoekt_enabled_namespaces USING btree (root_namespace_id);
-
-CREATE UNIQUE INDEX unique_zoekt_shards_uuid ON zoekt_shards USING btree (uuid);
 
 CREATE INDEX user_follow_users_followee_id_idx ON user_follow_users USING btree (followee_id);
 

@@ -404,4 +404,34 @@ describe('PlaceholderActions', () => {
       expect(findConfirmButton().exists()).toBe(false);
     });
   });
+
+  describe('when status is FAILED with reassignmentError', () => {
+    const mockSourceUser = mockSourceUsers[1];
+    const reassignmentError = 'Reassignment failed due to error';
+
+    beforeEach(() => {
+      createComponent({
+        props: {
+          sourceUser: {
+            ...mockSourceUser,
+            status: 'FAILED',
+            reassignmentError,
+          },
+        },
+      });
+    });
+
+    it('renders only reassignment error as invalid feedback', () => {
+      expect(wrapper.findByText('This field is required.').exists()).toBe(false);
+      expect(wrapper.findByText(reassignmentError).exists()).toBe(true);
+    });
+
+    it('renders validation message and reassignment error when Confirm button is clicked', async () => {
+      findConfirmButton().vm.$emit('click');
+      await nextTick();
+
+      expect(wrapper.findByText('This field is required.').exists()).toBe(true);
+      expect(wrapper.findByText(reassignmentError).exists()).toBe(true);
+    });
+  });
 });

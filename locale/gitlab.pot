@@ -7371,6 +7371,12 @@ msgstr ""
 msgid "Are you sure you want to delete this device? This action cannot be undone."
 msgstr ""
 
+msgid "Are you sure you want to delete this one-time password authenticator?"
+msgstr ""
+
+msgid "Are you sure you want to delete this one-time password authenticator? Enter your password to continue."
+msgstr ""
+
 msgid "Are you sure you want to delete this pipeline? Doing so will expire all pipeline caches and delete all related objects, such as builds, logs, artifacts, and triggers. This action cannot be undone."
 msgstr ""
 
@@ -7387,6 +7393,12 @@ msgid "Are you sure you want to import %d repository?"
 msgid_plural "Are you sure you want to import %d repositories?"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Are you sure you want to invalidate your one-time password authenticator and WebAuthn devices?"
+msgstr ""
+
+msgid "Are you sure you want to invalidate your one-time password authenticator and WebAuthn devices? Enter your password to continue. This action cannot be undone."
+msgstr ""
 
 msgid "Are you sure you want to lock %{path}?"
 msgstr ""
@@ -7407,6 +7419,12 @@ msgid "Are you sure you want to proceed?"
 msgstr ""
 
 msgid "Are you sure you want to re-deploy this environment?"
+msgstr ""
+
+msgid "Are you sure you want to regenerate recovery codes?"
+msgstr ""
+
+msgid "Are you sure you want to regenerate recovery codes? Enter your password to continue."
 msgstr ""
 
 msgid "Are you sure you want to reindex?"
@@ -49135,6 +49153,9 @@ msgid "SecurityExclusions|The following error occured while saving the exclusion
 msgid_plural "SecurityExclusions|The following errors occured while saving the exclusion:"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "SecurityExclusions|This feature is subject to the %{linkStart}GitLab Testing Agreement%{linkEnd}."
+msgstr ""
 
 msgid "SecurityExclusions|Toggle exclusion"
 msgstr ""

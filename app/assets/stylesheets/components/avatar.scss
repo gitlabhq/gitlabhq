@@ -67,7 +67,7 @@ $avatar-sizes: (
 .avatar,
 .avatar-container {
   float: left;
-  margin-right: $gl-padding;
+  margin-right: $gl-padding-8;
   border-radius: 50%;
 
   @each $size, $size-config in $avatar-sizes {
@@ -79,8 +79,8 @@ $avatar-sizes: (
 
 .avatar {
   transition-property: none;
-  width: 40px;
-  height: 40px;
+  width: 32px;
+  height: 32px;
   padding: 0;
   background: var(--gl-background-color-subtle);
   overflow: hidden;

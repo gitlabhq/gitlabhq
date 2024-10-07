@@ -627,12 +627,10 @@ Example response:
 ```
 
 NOTE:
-When the setting **Manage non-billable promotions** is enabled, new invited members with billable roles must be approved by an administrator.
+When the setting **[Manage non-billable promotions](../administration/settings/sign_up_restrictions.md#enable-role-promotion-approval)** is enabled, new invited members with billable roles must be approved by an administrator.
 
-To enable **Manage Non-Billable Promotions**:
-
-1. Enable the `enable_member_promotion_management` application setting.
-1. Enable the `member_promotion_management` feature flag.
+To enable **Manage Non-Billable Promotions**,
+you must first enable the `enable_member_promotion_management` application setting.
 
 Example of queueing a single user:
 
@@ -719,12 +717,10 @@ Example response:
 ```
 
 NOTE:
-When the setting **Manage non-billable promotions** is enabled, new invited users with billable roles must be approved by an administrator.
+When the setting **[Manage non-billable promotions](../administration/settings/sign_up_restrictions.md#enable-role-promotion-approval)** is enabled, new invited users with billable roles must be approved by an administrator.
 
-To enable **Manage non-billable promotions**:
-
-1. Enable the `enable_member_promotion_management` application setting.
-1. Enable the `member_promotion_management` feature flag.
+To enable **Manage non-billable promotions**,
+you must first enable the `enable_member_promotion_management` application setting.
 
 Example response:
 

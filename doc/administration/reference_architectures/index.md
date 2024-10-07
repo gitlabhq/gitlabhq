@@ -84,9 +84,9 @@ Finding out the RPS can depend notably on the specific environment setup and mon
 
 If you can't determine your RPS, we provide an alternative sizing method based on equivalent User Count by Load Category. This count is mapped to typical RPS values, considering both manual and automated usage.
 
-#### Initial Sizing Guide
+#### Initial sizing guide
 
-See initial sizing guide table below for guidance on what architecture to pick for the expected load:
+To determine which architecture to pick for the expected load, see the following initial sizing guide table:
 
 <table class="ra-table">
   <col>
@@ -168,55 +168,52 @@ See initial sizing guide table below for guidance on what architecture to pick f
 </table>
 
 NOTE:
-Before selecting an initial Reference Architecture, we recommended reviewing this section thoroughly to consider other factors such as High Availability (HA) or the use of Large Monorepos, as these may impact the choice beyond just RPS or user count.
+Before you select an initial architecture, review this section thoroughly. Consider other factors such as High Availability (HA) or use of large monorepos, as they may impact the choice beyond just RPS or user count.
 
 NOTE:
-After selecting an initial Reference Architecture, it's possible to then [scale up and down](#scaling-an-environment) accordingly to your needs if metrics support.
+After you select an initial reference architecture, you can [scale up and down](#scaling-an-environment) according to your needs if metrics support.
 
 ### Standalone (non-HA)
 
-For environments serving 2,000 or fewer users, we generally recommend a standalone approach by deploying a non-highly available single or multi-node environment. With this approach, you can employ strategies such as [automated backups](../../administration/backup_restore/backup_gitlab.md#configuring-cron-to-make-daily-backups) for recovery to provide a good level of RPO / RTO while avoiding the complexities that come with HA.
+For environments serving 2,000 or fewer users, we recommend a standalone approach by deploying a non-HA, single or multi-node environment. With this approach, you can employ strategies such as [automated backups](../../administration/backup_restore/backup_gitlab.md#configuring-cron-to-make-daily-backups) for recovery. These strategies provide a good level of recovery time objective (RPO) or recovery point objective (RTO) while avoiding the complexities that come with HA.
 
-*[RTO]: Recovery time objective
-*[RPO]: Recovery point objective
-
-With standalone setups, especially single node environments, there are [various options available for installation](../../install/index.md) and management including [the ability to deploy directly via select cloud provider marketplaces](https://page.gitlab.com/cloud-partner-marketplaces.html) that reduce the complexity a little further.
+With standalone setups, especially single node environments, various options are available for [installation](../../install/index.md) and management. The options include [the ability to deploy directly by using select cloud provider marketplaces](https://page.gitlab.com/cloud-partner-marketplaces.html) that reduce the complexity a little further.
 
 ### High Availability (HA)
 
 High Availability ensures every component in the GitLab setup can handle failures through various mechanisms. However, to achieve this is complex, and the environments required can be sizable.
 
-For environments serving 3,000 or more users we generally recommend that a HA strategy is used as at this level outages have a bigger impact against more users. All the architectures in this range have HA built in by design for this reason.
+For environments serving 3,000 or more users, we generally recommend using an HA strategy. At this level, outages have a bigger impact against more users. All the architectures in this range have HA built in by design for this reason.
 
 #### Do you need High Availability (HA)?
 
-As mentioned above, achieving HA does come at a cost. The environment requirements are sizable as each component needs to be multiplied, which comes with additional actual and maintenance costs.
+As mentioned previously, achieving HA comes at a cost. The environment requirements are sizable as each component needs to be multiplied, which comes with additional actual and maintenance costs.
 
-For a lot of our customers with fewer than 3,000 users, we've found a backup strategy is sufficient and even preferable. While this does have a slower recovery time, it also means you have a much smaller architecture and less maintenance costs as a result.
+For a lot of our customers with fewer than 3,000 users, we've found that a backup strategy is sufficient and even preferable. While this does have a slower recovery time, it also means you have a much smaller architecture and less maintenance costs as a result.
 
-In general then, we'd only recommend you employ HA in the following scenarios:
+As a general guideline, employ HA only in the following scenarios:
 
 - When you have 3,000 or more users.
 - When GitLab being down would critically impact your workflow.
 
-#### Scaled-down High Availability (HA) approaches
+#### Scaled-down High Availability (HA) approach
 
-If you still need to have HA for a lower number of users, this can be achieved with an adjusted [3K architecture](3k_users.md#supported-modifications-for-lower-user-counts-ha).
+If you still need HA for fewer users, you can achieve it with an adjusted [3K architecture](3k_users.md#supported-modifications-for-lower-user-counts-ha).
 
 #### Zero-downtime upgrades
 
-[Zero-downtime upgrades](../../update/zero_downtime.md) are available for standard Reference Architecture environments with HA (Cloud Native Hybrid is [not supported](https://gitlab.com/groups/gitlab-org/cloud-native/-/epics/52)). This allows for an environment to stay up during an upgrade, but the process is more complex as a result and has some limitations as detailed in the documentation.
+[Zero-downtime upgrades](../../update/zero_downtime.md) are available for standard environments with HA (Cloud Native Hybrid is [not supported](https://gitlab.com/groups/gitlab-org/cloud-native/-/epics/52)). This allows for an environment to stay up during an upgrade. However, this process is more complex as a result and has some limitations as detailed in the documentation.
 
-When going through this process it's worth noting that there may still be brief moments of downtime when the HA mechanisms take effect.
+When going through this process, it's worth noting that there may still be brief moments of downtime when the HA mechanisms take effect.
 
-In most cases the downtime required for doing an upgrade shouldn't be substantial, so this is only recommended if it's a key requirement for you.
+In most cases, the downtime required for doing an upgrade shouldn't be substantial. Use this approach only if it's a key requirement for you.
 
 ### Cloud Native Hybrid (Kubernetes HA)
 
-As an additional layer of HA resilience you can deploy select components in Kubernetes, known as a Cloud Native Hybrid Reference Architecture. For stability
+As an additional layer of HA resilience, you can deploy select components in Kubernetes, known as a Cloud Native Hybrid reference architecture. For stability
 reasons, stateful components such as Gitaly [cannot be deployed in Kubernetes](#stateful-components-in-kubernetes).
 
-This is an alternative and more **advanced** setup compared to a standard Reference Architecture. Running services in Kubernetes is well known to be complex. **This setup is only recommended** if you have strong working knowledge and experience in Kubernetes.
+Cloud Native Hybrid is an alternative and more **advanced** setup compared to a standard reference architecture. Running services in Kubernetes is complex. **Use this setup** only if you have strong working knowledge and experience in Kubernetes.
 
 ### GitLab Geo (Cross Regional Distribution / Disaster Recovery)
 
@@ -229,27 +226,27 @@ requires at least two separate environments:
 
 If the primary site becomes unavailable, you can fail over to one of the secondary sites.
 
-This **advanced and complex** setup should only be undertaken if DR is
+Use this **advanced and complex** setup only if DR is
 a key requirement for your environment. You must also make additional decisions
-on how each site is configured, such as if each secondary site would be the
-same architecture as the primary, or if each site is configured for HA.
+on how each site is configured. For example, if each secondary site would be the
+same architecture as the primary or if each site is configured for HA.
 
 ### Large monorepos / Additional workloads
 
-If you have any [large monorepos](#large-monorepos) or significant [additional workloads](#additional-workloads), these can affect the performance of the environment notably and adjustments may be required depending on the context.
+[Large monorepos](#large-monorepos) or significant [additional workloads](#additional-workloads) can affect the performance of the environment notably. Some adjustments may be required depending on the context.
 
-If either applies to you, it's encouraged for you to reach out to your [Customer Success Manager](https://handbook.gitlab.com/job-families/sales/customer-success-management/) or our [Support team](https://about.gitlab.com/support/)
+If this situation applies to you, reach out to your [Customer Success Manager](https://handbook.gitlab.com/job-families/sales/customer-success-management/) or our [Support team](https://about.gitlab.com/support/)
 for further guidance.
 
 ### Cloud provider services
 
 For all the previously described strategies, you can run select GitLab components on equivalent cloud provider services such as the PostgreSQL database or Redis.
 
-[For more information, see the recommended cloud providers and services](#recommended-cloud-providers-and-services).
+For more information, see the [recommended cloud providers and services](#recommended-cloud-providers-and-services).
 
 ### Decision Tree
 
-Below you can find the above guidance in the form of a decision tree. It's recommended you read through the above guidance in full first before though.
+Read through the above guidance in full first before you refer to the following decision tree.
 
 ```mermaid
 %%{init: { 'theme': 'base' } }%%
@@ -296,75 +293,75 @@ linkStyle default fill:none,stroke:#7759C2
 
 ## Requirements
 
-Before implementing a reference architecture, refer to the following requirements and guidance.
+Before implementing a reference architecture, see the following requirements and guidance.
 
 ### Supported CPUs
 
-The reference architectures are built and tested across various cloud providers, primarily GCP and AWS, with
-CPU targets being the lowest common denominator to ensure the widest range of compatibility:
+The architectures are built and tested across various cloud providers, primarily GCP and AWS.
+To ensure the widest range of compatibility, CPU targets are intentionally set to the lowest common denominator across these platforms:
 
 - The [`n1` series](https://cloud.google.com/compute/docs/general-purpose-machines#n1_machines) for GCP.
 - The [`m5` series](https://aws.amazon.com/ec2/instance-types/) for AWS.
 
-Depending on other requirements such as memory or network bandwidth and cloud provider availability, different machine types are used accordingly throughout the architectures, but it is expected that the target CPUs above should perform well.
+Depending on other requirements such as memory or network bandwidth and cloud provider availability, different machine types are used accordingly throughout the architectures. We expect that the target CPUs above perform well.
 
 If you want, you can select a newer machine type series and have improved performance as a result.
 
-Additionally, ARM CPUs are supported for Linux package environments and for any [Cloud Provider services](#cloud-provider-services) where applicable.
+Additionally, ARM CPUs are supported for Linux package environments and for any [cloud provider services](#cloud-provider-services).
 
 NOTE:
 Any "burstable" instance types are not recommended due to inconsistent performance.
 
 ### Supported disk types
 
-As a general guidance, most standard disk types are expected to work for GitLab, but be aware of the following specific call-outs:
+Most standard disk types are expected to work for GitLab. However, be aware of the following specific call-outs:
 
 - [Gitaly](../gitaly/index.md#disk-requirements) requires at least 8,000 input/output operations per second (IOPS) for read operations, and 2,000 IOPS for write operations.
 - We don't recommend the use of any disk types that are "burstable" due to inconsistent performance.
 
-Outside the above standard, disk types are expected to work for GitLab and the choice of each depends on your specific requirements around areas, such as durability or costs.
+Other disk types are expected to work with GitLab. Choose based on your requirements such as durability or cost.
 
 ### Supported infrastructure
 
-As a general guidance, GitLab should run on most infrastructure such as reputable Cloud Providers (AWS, GCP, Azure) and
+GitLab should run on most infrastructures such as reputable cloud providers (AWS, GCP, Azure) and
 their services, or self-managed (ESXi) that meet both:
 
-- The specifications detailed in each reference architecture.
+- The specifications detailed in each architecture.
 - Any requirements in this section.
 
-However, this does not constitute a guarantee for every potential permutation.
+However, this does not guarantee compatibility with every potential permutation.
 
 See [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services) for more information.
 
 ### Large Monorepos
 
-The reference architectures were tested with repositories of varying sizes that follow best practices.
+The architectures were tested with repositories of varying sizes that follow best practices.
 
 **However, [large monorepos](../../user/project/repository/monorepos/index.md) (several gigabytes or more) can significantly impact the performance of Git and in turn the environment itself.**
-Their presence, and how they are used, can put a significant strain on the entire system from Gitaly through to the underlying infrastructure.
+Their presence and how they are used can put a significant strain on the entire system from Gitaly to the underlying infrastructure.
 
 The performance implications are largely software in nature. Additional hardware resources lead to diminishing returns.
 
 WARNING:
-If this applies to you, we strongly recommended referring to the linked documentation and reaching out to your [Customer Success Manager](https://handbook.gitlab.com/job-families/sales/customer-success-management/) or our [Support team](https://about.gitlab.com/support/) for further guidance.
+If this applies to you, we strongly recommend you follow the linked documentation and reach out to your [Customer Success Manager](https://handbook.gitlab.com/job-families/sales/customer-success-management/) or our [Support team](https://about.gitlab.com/support/) for further guidance.
 
-As such, large monorepos come with notable cost. If you have such a repository we strongly recommend
-the following guidance is followed to ensure the best chance of good performance and to keep costs in check:
+Large monorepos come with notable cost. If you have such a repository,
+follow these guidance to ensure good performance and to keep costs in check:
 
 - [Optimize the large monorepo](../../user/project/repository/monorepos/index.md#optimize-gitlab-settings). Using features such as
   [LFS](../../user/project/repository/monorepos/index.md#use-lfs-for-large-blobs) to not store binaries, and other approaches for reducing repository size, can
   dramatically improve performance and reduce costs.
-- Depending on the monorepo, increased environment specifications may be required to compensate. Gitaly in particular will likely require additional resources along with Praefect, GitLab Rails, and Load Balancers. This depends notably on the monorepo itself and the usage against it.
-- When the monorepo is significantly large (20 gigabytes or more) further additional strategies maybe required such as even further increased specifications or in some cases a separate Gitaly backend for the monorepo alone.
-- Network and disk bandwidth is another potential consideration with large monorepos. In very heavy cases, it's possible to see bandwidth saturation if there's a high amount of concurrent clones (such as with CI). It's strongly recommended [reducing full clones wherever possible](../../user/project/repository/monorepos/index.md#reduce-concurrent-clones-in-cicd) in this scenario. Otherwise, additional environment specifications may be required to increase bandwidth, but this differs between cloud providers.
+- Depending on the monorepo, increased environment specifications may be required to compensate. Gitaly might require additional resources along with Praefect, GitLab Rails, and Load Balancers. This depends on the monorepo itself and its usage.
+- When the monorepo is significantly large (20 gigabytes or more), further additional strategies may be required such as even further increased specifications or in some cases, a separate Gitaly backend for the monorepo alone.
+- Network and disk bandwidth is another potential consideration with large monorepos. In very heavy cases, bandwidth saturation is possible if there's a high amount of concurrent clones (such as with CI). [Reduce full clones wherever possible](../../user/project/repository/monorepos/index.md#reduce-concurrent-clones-in-cicd) in this scenario. Otherwise, additional environment specifications may be required to increase bandwidth. This differs based on cloud providers.
 
 ### Additional workloads
 
-These reference architectures have been [designed and tested](index.md#validation-and-test-results) for standard GitLab
+These architectures have been [designed and tested](index.md#validation-and-test-results) for standard GitLab
 setups based on real data.
 
 However, additional workloads can multiply the impact of operations by triggering follow-up actions.
-You may need to adjust the suggested specifications to compensate if you use, for example:
+You may need to adjust the suggested specifications to compensate if you use:
 
 - Security software on the nodes.
 - Hundreds of concurrent CI jobs for [large repositories](../../user/project/repository/monorepos/index.md).
@@ -373,48 +370,48 @@ You may need to adjust the suggested specifications to compensate if you use, fo
 - [Server hooks](../server_hooks.md).
 - [System hooks](../system_hooks.md).
 
-As a general rule, you should have robust monitoring in place to measure the impact of any additional workloads to
-inform any changes needed to be made. It's also strongly encouraged for you to reach out to your [Customer Success Manager](https://handbook.gitlab.com/job-families/sales/customer-success-management/) or our [Support team](https://about.gitlab.com/support/)
+Generally, you should have robust monitoring in place to measure the impact of any additional workloads to
+inform any changes needed to be made. Reach out to your [Customer Success Manager](https://handbook.gitlab.com/job-families/sales/customer-success-management/) or our [Support team](https://about.gitlab.com/support/)
 for further guidance.
 
 ### Load Balancers
 
-The Reference Architectures make use of up to two Load Balancers depending on the class:
+The architectures make use of up to two load balancers depending on the class:
 
-- External Load Balancer - Serves traffic to any external facing components, primarily Rails.
-- Internal Load Balancer - Serves traffic to select internal components that have been deployed in an HA fashion such as Praefect or PgBouncer.
+- External load balancer - Serves traffic to any external facing components, primarily Rails.
+- Internal load balancer - Serves traffic to select internal components that are deployed in an HA fashion such as Praefect or PgBouncer.
 
 The specifics on which load balancer to use, or its exact configuration is beyond the scope of GitLab documentation. The most common options
-are to set up load balancers on machine nodes or to use a service such as one offered by Cloud Providers. If deploying a Cloud Native Hybrid environment the Charts can handle the set-up of the External Load Balancer via Kubernetes Ingress.
+are to set up load balancers on machine nodes or to use a service such as one offered by cloud providers. If deploying a Cloud Native Hybrid environment, the charts can handle the external load balancer setup by using Kubernetes Ingress.
 
-For each Reference Architecture class a base machine size has given to help get you started if you elect to deploy directly on machines, but these may need to be adjusted accordingly depending on the load balancer used and amount of workload. Of note machines can have varying [network bandwidth](#network-bandwidth) that should also be taken into consideration.
+Each architecture class includes a recommended base machine size to deploy directly on machines. However, they may need adjustment based on factors such as the chosen load balancer and expected workload. Of note machines can have varying [network bandwidth](#network-bandwidth) that should also be taken into consideration.
 
-Note the following sections of additional guidance for Load Balancers.
+The following sections provide additional guidance for load balancers.
 
 #### Balancing algorithm
 
-We recommend that a least-connection-based load balancing algorithm or equivalent is used wherever possible to ensure equal spread of calls to the nodes and good performance.
+To ensure equal spread of calls to the nodes and good performance, use a least-connection-based load balancing algorithm or equivalent wherever possible.
 
-We don’t recommend the use of round-robin algorithms as they are known to not spread connections equally in practice.
+We don't recommend the use of round-robin algorithms as they are known to not spread connections equally in practice.
 
 #### Network Bandwidth
 
-The total network bandwidth available to a load balancer when deployed on a machine can vary notably across Cloud Providers. In particular some Cloud Providers, like [AWS](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-network-bandwidth.html), may operate on a burst system with credits to determine the bandwidth at any time.
+The total network bandwidth available to a load balancer when deployed on a machine can vary notably across cloud providers. Some cloud providers, like [AWS](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-network-bandwidth.html), may operate on a burst system with credits to determine the bandwidth at any time.
 
-The network bandwidth your environment's load balancers will require is dependent on numerous factors such as data shape and workload. The recommended base sizes for each Reference Architecture class have been selected based on real data but in some scenarios, such as consistent clones of [large monorepos](#large-monorepos), the sizes may need to be adjusted accordingly.
+The required network bandwidth for your load balancers depends on factors such as data shape and workload. The recommended base sizes for each architecture class have been selected based on real data. However, in some scenarios such as consistent clones of [large monorepos](#large-monorepos), the sizes may need to be adjusted accordingly.
 
 ### No swap
 
 Swap is not recommended in the reference architectures. It's a failsafe that impacts performance greatly. The
-reference architectures are designed to have enough memory in most cases to avoid needing swap.
+architectures are designed to have enough memory in most cases to avoid the need for swap.
 
 ### Praefect PostgreSQL
 
 [Praefect requires its own database server](../gitaly/praefect.md#postgresql) and
-that to achieve full High Availability, a third-party PostgreSQL database solution is required.
+a third-party PostgreSQL database solution to achieve full HA.
 
-We hope to offer a built-in solution for these restrictions in the future. In the meantime, a non-HA PostgreSQL server
-can be set up using the Linux package as the specifications reflect. Refer to the following issues for more information:
+We hope to offer a built-in solution for these restrictions in the future. In the meantime, you can set up a 
+non-HA PostgreSQL server using the Linux package as the specifications reflect. See the following issues for more information:
 
 - [`omnibus-gitlab#7292`](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7292).
 - [`gitaly#3398`](https://gitlab.com/gitlab-org/gitaly/-/issues/3398).

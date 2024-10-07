@@ -258,13 +258,13 @@ See the [documentation on setting up an LDAP user filter](../auth/ldap/index.md#
 DETAILS:
 **Tier:** Ultimate
 **Offering:** Self-managed, GitLab Dedicated
+**Status:** Beta
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/433166) in GitLab 16.9 [with a flag](../feature_flags.md) named `member_promotion_management`.
+> - Feature flag `member_promotion_management` [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167757/) from `wip` to `beta` and enabled by default in GitLab 17.5.
 
 FLAG:
 The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
 
 In the **Ultimate** tier, [non billable roles](../../subscriptions/gitlab_com/index.md#billable-users), can be promoted to a billable role in any Project or Group, resulting in the increase of billable seats, without admins having any control on this promotion.
 To prevent existing users of the subscription from being promoted to a billable role, you can enable role promotion approval.

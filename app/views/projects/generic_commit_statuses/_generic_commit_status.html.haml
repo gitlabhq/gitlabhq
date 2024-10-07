@@ -49,7 +49,7 @@
         %span.pipeline-id ##{generic_commit_status.pipeline.id}
       %span by
       - if generic_commit_status.pipeline.user
-        = user_avatar(user: generic_commit_status.pipeline.user, size: 20)
+        = user_avatar(user: generic_commit_status.pipeline.user, size: 24)
       - else
         %span.monospace API
 

@@ -58,7 +58,7 @@ RSpec.describe Avatarable, feature_category: :shared do
         expect(project.avatar).to receive(:local_url).twice.and_call_original
 
         expect(project.avatar_path).to eq(avatar_path)
-        expect(project.avatar_path(size: 40)).to eq(avatar_path + "?width=40")
+        expect(project.avatar_path(size: 32)).to eq(avatar_path + "?width=32")
       end
 
       it 'handles unpersisted objects' do

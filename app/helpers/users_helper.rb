@@ -209,7 +209,7 @@ module UsersHelper
     user.public_email.present?
   end
 
-  def user_profile_tabs_app_data(user)
+  def user_profile_app_data(user)
     {
       followees_count: user.followees.count,
       followers_count: user.followers.count,

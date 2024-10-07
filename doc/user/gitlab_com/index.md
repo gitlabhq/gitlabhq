@@ -397,6 +397,7 @@ The following table describes the rate limits for GitLab.com:
 | [Pull mirroring](../project/repository/mirror/pull.md) intervals | 5 minutes                     |
 | API requests from a user to `/api/v4/users/:id`                  | 300 requests per 10 minutes   |
 | GitLab package cloud requests for an IP address ([introduced](https://gitlab.com/gitlab-com/gl-infra/production-engineering/-/issues/24083) in GitLab 16.11) | 3,000 requests per minute |
+| GitLab repository files | 500 requests per minute |
 
 More details are available on the rate limits for
 [protected paths](#protected-paths-throttle) and

@@ -102,7 +102,10 @@ describe('View branch rules', () => {
         canAdminProtectedBranches,
       },
       stubs: {
+        ApprovalRulesApp: true,
+        StatusChecks: true,
         Protection,
+        ProjectRules: true,
         ProtectionToggle,
         BranchRuleModal,
         RuleDrawer,

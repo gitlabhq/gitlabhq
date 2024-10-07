@@ -167,7 +167,7 @@ After the two-factor authentication is configured as mandatory, users are allowe
 to skip forced configuration of two-factor authentication for the configurable grace
 period in hours.
 
-![The two-factor grace period set to 48 hours.](img/two_factor_grace_period.png)
+![The two-factor grace period set to 48 hours.](img/two_factor_grace_period_v12_5.png)
 
 ## Email notification for unknown sign-ins
 

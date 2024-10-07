@@ -1,10 +1,19 @@
 #import "~/graphql_shared/fragments/page_info.fragment.graphql"
 #import "ee_else_ce/graphql_shared/fragments/project.fragment.graphql"
 
-query getInactiveProjects($first: Int, $last: Int, $before: String, $after: String) {
+query getYourWorkProjects(
+  $archived: ProjectArchived = EXCLUDE
+  $membership: Boolean = false
+  $personal: Boolean = false
+  $first: Int
+  $last: Int
+  $before: String
+  $after: String
+) {
   projects(
-    archived: ONLY
-    membership: true
+    archived: $archived
+    membership: $membership
+    personal: $personal
     first: $first
     last: $last
     before: $before

@@ -69,7 +69,7 @@ extension and not be empty. So, the hierarchy should look like this:
 
 Your custom templates are displayed on the dropdown list when a new file is added through the GitLab UI:
 
-![The GitLab UI for creating a new file, with a dropdown list displaying the Dockerfile templates to choose from.](img/file_template_user_dropdown.png)
+![The GitLab UI for creating a new file, with a dropdown list displaying the Dockerfile templates to choose from.](img/file_template_user_dropdown_v11_4.png)
 
 If this feature is disabled or no templates are present,
 no **Custom** section displays in the selection dropdown list.

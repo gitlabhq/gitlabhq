@@ -139,7 +139,7 @@ export default {
 
     <template v-else-if="isCurrentState($options.STATE_READY)">
       <div class="row">
-        <div class="col-md-5">
+        <div class="col-md-5 gl-mb-5">
           <gl-button variant="confirm" @click="onRegister">{{
             $options.I18N_BUTTON_SETUP
           }}</gl-button>

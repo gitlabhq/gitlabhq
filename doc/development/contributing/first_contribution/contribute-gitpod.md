@@ -12,7 +12,7 @@ In this example, I found some UI text I'd like to change.
 In the upper-right corner in GitLab, I selected my avatar and then **Preferences**.
 I want to change `Customize the color of GitLab` to `Customize the color theme of the GitLab UI`:
 
-![UI text](../img/ui_color_theme_before.png)
+![The UI text in GitLab before making the change.](../img/ui_color_theme_before.png)
 
 1. Create a new branch for your changes:
 

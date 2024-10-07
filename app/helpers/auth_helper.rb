@@ -200,6 +200,50 @@ module AuthHelper
     end
   end
 
+  def delete_otp_authenticator_data(password_required)
+    message = if password_required
+                _('Are you sure you want to delete this one-time password authenticator? ' \
+                  'Enter your password to continue.')
+              else
+                _('Are you sure you want to delete this one-time password authenticator?')
+              end
+
+    { button_text: _('Delete one-time password authenticator'),
+      message: message,
+      path: destroy_otp_profile_two_factor_auth_path,
+      password_required: password_required.to_s }
+  end
+
+  def disable_two_factor_authentication_data(password_required)
+    message = if password_required
+                _('Are you sure you want to invalidate your one-time password authenticator and WebAuthn devices? ' \
+                  'Enter your password to continue. This action cannot be undone.')
+              else
+                _('Are you sure you want to invalidate your one-time password authenticator and WebAuthn devices?')
+              end
+
+    { button_text: _('Disable two-factor authentication'),
+      message: message,
+      path: profile_two_factor_auth_path,
+      password_required: password_required.to_s }
+  end
+
+  def codes_two_factor_authentication_data(password_required)
+    message = if password_required
+                _('Are you sure you want to regenerate recovery codes? ' \
+                  'Enter your password to continue.')
+              else
+                _('Are you sure you want to regenerate recovery codes?')
+              end
+
+    { button_text: _('Regenerate recovery codes'),
+      message: message,
+      method: 'post',
+      path: codes_profile_two_factor_auth_path,
+      password_required: password_required.to_s,
+      variant: 'default' }
+  end
+
   extend self
 end
 

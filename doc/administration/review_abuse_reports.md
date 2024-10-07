@@ -83,7 +83,7 @@ After blocking, you can still either:
 The following is an example of a blocked user listed on the **Abuse reports**
 page:
 
-![The block user action is unavailable for an abuse report because the user is already blocked.](img/abuse_report_blocked_user.png)
+![The block user action is unavailable for an abuse report because the user is already blocked.](img/abuse_report_blocked_user_v11_7.png)
 
 ## Related topics
 
