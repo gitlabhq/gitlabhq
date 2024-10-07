@@ -1721,11 +1721,7 @@ Payload example:
 ### A user requests access
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163094) in GitLab 17.4 [with a flag](../../../administration/feature_flags.md) named `group_access_request_webhooks`. Disabled by default.
-
-FLAG:
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/479877) in GitLab 17.5. Feature flag `group_access_request_webhooks` removed.
 
 Request header:
 
@@ -1756,11 +1752,7 @@ Payload example:
 ### An access request is denied
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163094) in GitLab 17.4 [with a flag](../../../administration/feature_flags.md) named `group_access_request_webhooks`. Disabled by default.
-
-FLAG:
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/479877) in GitLab 17.5. Feature flag `group_access_request_webhooks` removed.
 
 Request header:
 

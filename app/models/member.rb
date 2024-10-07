@@ -630,8 +630,6 @@ class Member < ApplicationRecord
   end
 
   def post_create_access_request_hook
-    return if Feature.disabled?(:group_access_request_webhooks, source)
-
     system_hook_service.execute_hooks_for(self, :request)
   end
 
@@ -664,8 +662,6 @@ class Member < ApplicationRecord
   end
 
   def post_destroy_access_request_hook
-    return if Feature.disabled?(:group_access_request_webhooks, source)
-
     system_hook_service.execute_hooks_for(self, :revoke)
   end
 

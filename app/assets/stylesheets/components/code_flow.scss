@@ -1,0 +1,10 @@
+@import '../framework/variables';
+@import '../framework/variables_overrides';
+
+$detail-page-header-height: 46px;
+$vulnerability-page-title-height: $h1-font-size;
+$code-flow-tabs-height: 51px;
+
+.code-flow-content {
+  height: calc(100vh - #{$performance-bar-height} - #{$top-bar-height} - var(--broadcast-message-height, 0px) - #{$detail-page-header-height} - #{$vulnerability-page-title-height} - #{$content-wrapper-padding} - #{$code-flow-tabs-height});
+}
