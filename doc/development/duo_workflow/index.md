@@ -39,7 +39,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 1. Set up [GitLab Runner with GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/howto/runner.md) so you can create CI jobs locally to test Workflow.
 1. Create a [personal access token](../../user/profile/personal_access_tokens.md) in your local GitLab instance with the `api` scope. Save this value and use it in the next step.
-1. Run GDK with Ultimate license. Set the **Ultimate** plan on your namespace containing the project.
+1. Run GDK with an Ultimate license.
 1. Manually create a Workflow using the following `curl` request; the output will be a workflow ID that is referred to as `$WORKFLOW_ID` throughout the rest of these docs:
 
    ```shell
@@ -54,19 +54,19 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 ## Set up the Duo Workflow Service
 
-1. Clone the [Duo Workflow Service respository](https://gitlab.com/gitlab-org/duo-workflow/duo-workflow-service)
++1. Clone the [Duo Workflow Service repository](https://gitlab.com/gitlab-org/duo-workflow/duo-workflow-service).
 
    ```shell
      git clone git@gitlab.com:gitlab-org/duo-workflow/duo-workflow-service.git
    ```
 
-1. Navigate to the Duo Workflow Service directory
+1. Navigate to the Duo Workflow Service directory.
 
    ```shell
    cd duo-workflow-service
    ```
 
-1. Install dependencies
+1. Install dependencies with [poetry](https://python-poetry.org/docs/#installing-with-pipx).
 
    ```shell
    poetry install
@@ -77,6 +77,8 @@ info: Any user with at least the Maintainer role can merge updates to this conte
    ```shell
    cp .env.example .env
    ```
+
+1. Add your `ANTHROPIC_API_KEY` in the `.env` file.
 
 1. Setup [`gcloud`](https://cloud.google.com/sdk/docs/install) on your system.
 1. Login using your GitLab Google account by running:
@@ -100,7 +102,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 1. Optional: You can disable auth for local development in the `.env` file. This disables authentication or the gRPC connection between the Duo Workflow Service and Duo Workflow Executor but a token will still be required for requests to your local GitLab instance.
 
    ```dotenv
-   DUO_WORKFLOW_AUTH__ENABLED=false`
+   DUO_WORKFLOW_AUTH__ENABLED=false
    ```
 
 1. Run the Duo Workflow Service server
@@ -109,7 +111,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
    poetry run python -m duo_workflow_service.server
    ```
 
-1. If you can correctly connect to vertex, you should see something
+1. If you can correctly connect to Claude, you should see something
    like this in the output
 
    ```shell
@@ -151,8 +153,8 @@ info: Any user with at least the Maintainer role can merge updates to this conte
    ```shell
    make && \
    ./bin/duo-workflow-executor \
-       --goal='Fix the pipeline for the Merge request 62 in the project 19." \
-       --insecure --debug
+       --goal='Fix the pipeline for the Merge request 62 in the project 19.' \
+       --insecure --debug \
        --workflow-id=$WORKFLOW_ID \
        --token=$YOUR_GITLAB_PAT \
        --base-url="$GDK_GITLAB_URL" \
