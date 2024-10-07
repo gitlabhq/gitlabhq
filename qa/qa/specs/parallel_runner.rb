@@ -42,7 +42,6 @@ module QA
 
         def set_environment!
           ENV.store("NO_KNAPSACK", "true")
-          ENV.store("QA_PARALLEL_RUN", "true")
 
           return if ENV["QA_GITLAB_URL"].present?
 

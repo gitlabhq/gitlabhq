@@ -127,3 +127,7 @@ To create the required database objects execute:
 ```shell
 sudo gitlab-rake gitlab:clickhouse:migrate
 ```
+
+### Enable ClickHouse for Analytics
+
+Now that your GitLab instance is connected to ClickHouse, you can enable features to use ClickHouse by [enabling ClickHouse for Analytics](../administration/analytics.md).

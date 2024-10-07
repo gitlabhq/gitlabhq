@@ -745,7 +745,7 @@ module QA
       #
       # @return [Boolean]
       def parallel_run?
-        enabled?(ENV["QA_PARALLEL_RUN"], default: false)
+        ENV["TEST_ENV_NUMBER"].present?
       end
 
       # Execute tests in multiple parallel processes

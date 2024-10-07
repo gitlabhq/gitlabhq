@@ -48,7 +48,6 @@ module Gitlab
 
           create_cluster
           update_server_url
-          install_metrics_server
           log("Cluster '#{name}' created", :success)
         rescue Helpers::Shell::CommandFailure
           # Exit cleanly without stacktrace if shell command fails

@@ -1,7 +1,7 @@
 = gitlab_ui_form_for [:admin, @group] do |f|
   = form_errors(@group)
-  = render ::Layouts::HorizontalSectionComponent.new(options: { class: 'gl-pb-5 gl-mb-6' }) do |c|
-    - c.with_title { _('Naming, visibility') }
+
+  = render ::Layouts::SettingsSectionComponent.new(_('Naming, visibility')) do |c|
     - c.with_description do
       = _('Update your group name, description, avatar, and visibility.')
       = link_to _('Learn more about groups.'), help_page_path('user/group/index.md')
@@ -13,8 +13,7 @@
         = render 'shared/choose_avatar_button', f: f
       = render 'shared/visibility_level', f: f, visibility_level: visibility_level, can_change_visibility_level: can_change_group_visibility_level?(@group), form_model: @group, with_label: false
 
-  = render ::Layouts::HorizontalSectionComponent.new(options: { class: 'gl-pb-3 gl-mb-6' }) do |c|
-    - c.with_title { _('Permissions and group features') }
+  = render ::Layouts::SettingsSectionComponent.new(_('Permissions and group features')) do |c|
     - c.with_description do
       = _('Configure advanced permissions, Large File Storage, two-factor authentication, and CI/CD settings.')
     - c.with_body do
@@ -25,8 +24,7 @@
       = render 'groups/group_admin_settings', f: f
       = render_if_exists 'namespaces/shared_runners_minutes_settings', group: @group, form: f
 
-  = render ::Layouts::HorizontalSectionComponent.new(border: false, options: { class: 'gl-pb-3' }) do |c|
-    - c.with_title { _('Admin notes') }
+  = render ::Layouts::SettingsSectionComponent.new(_('Admin notes')) do |c|
     - c.with_body do
       = render 'shared/admin/admin_note_form', f: f
 
@@ -34,13 +32,13 @@
     = render Pajamas::AlertComponent.new(dismissible: false) do |c|
       - c.with_body do
         = render 'shared/group_tips'
-    .gl-mt-5
+    .settings-sticky-footer.gl-flex.gl-gap-3
       = f.submit _('Create group'), pajamas_button: true
       = render Pajamas::ButtonComponent.new(href: admin_groups_path) do
         = _('Cancel')
 
   - else
-    .gl-mt-5
+    .settings-sticky-footer.gl-flex.gl-gap-3
       = f.submit _('Save changes'), data: { testid: 'save-changes-button' }, pajamas_button: true
       = render Pajamas::ButtonComponent.new(href: admin_group_path(@group)) do
         = _('Cancel')

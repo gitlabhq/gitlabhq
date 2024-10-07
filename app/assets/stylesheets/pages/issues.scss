@@ -253,6 +253,16 @@ ul.related-merge-requests > li gl-emoji {
   }
 }
 
+.issuable-header-slide-enter-active,
+.issuable-header-slide-leave-active {
+  @apply gl-transition-all;
+}
+
+.issuable-header-slide-enter,
+.issuable-header-slide-leave-to {
+  transform: translateY(-100%);
+}
+
 .issuable-sticky-header-visible {
   --issuable-sticky-header-height: 40px;
 }

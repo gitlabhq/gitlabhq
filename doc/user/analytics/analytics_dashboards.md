@@ -24,7 +24,7 @@ filters and visualizations to query and retrieve results.
 
 Analytics dashboards use the following data sources:
 
-- [Product analytics](../product_analytics/index.md)
+- [Product analytics](../../operations/product_analytics/index.md)
 - [Value Stream Management](../analytics/value_streams_dashboard.md)
 
 You can also add [custom visualization data sources](../../development/fe_guide/customizable_dashboards.md#adding-a-new-visualization-data-source).
@@ -37,7 +37,7 @@ You cannot edit the built-in dashboards, but you can create custom dashboards wi
 
 ### Product analytics dashboards
 
-When [product analytics](../product_analytics/index.md) is enabled and onboarded, two built-in dashboards are available:
+When product analytics is enabled and onboarded, two built-in dashboards are available:
 
 - **Audience** displays metrics related to traffic, such as the number of users and sessions.
 - **Behavior** displays metrics related to user activity, such as the number of page views and events.
@@ -78,7 +78,7 @@ You can use the dashboard designer to:
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/425048) in GitLab 16.7. Feature flag `combined_analytics_visualization_editor` removed.
 
 NOTE:
-This feature is only compatible with the [product analytics](../product_analytics/index.md) data source.
+This feature is only compatible with the product analytics data source.
 
 You can use the visualization designer to:
 
@@ -327,7 +327,7 @@ If the dashboard displays a global error message that data could not be loaded, 
 If the error persists:
 
 - Check that your configurations match the [dashboard JSON schema](#define-a-dashboard) defined in `ee/app/validators/json_schemas/analytics_dashboard.json`.
-- For product analytics, make sure your [admin and project settings](../product_analytics/index.md#project-level-settings) are set up correctly.
+- For product analytics, make sure your [admin and project settings](../../operations/product_analytics/index.md#project-level-settings) are set up correctly.
 
 ### `Invalid dashboard configuration`
 
@@ -343,9 +343,9 @@ defined in `ee/app/validators/json_schemas/analytics_visualization.json`.
 
 If a dashboard panel displays an error message:
 
-- Make sure your [Cube query](../product_analytics/index.md#product-analytics-dashboards) and
+- Make sure your [Cube query](../../operations/product_analytics/index.md#product-analytics-dashboards) and
   [visualization](../analytics/analytics_dashboards.md#define-a-chart-visualization) configurations are set up correctly.
-- For [product analytics](../product_analytics/index.md), also check that your visualization's Cube query is valid.
+- For product analytics, also check that your visualization's Cube query is valid.
 
 ### Generate visualization with GitLab Duo returns unexpected results
 

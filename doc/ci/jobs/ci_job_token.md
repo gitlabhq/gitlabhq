@@ -224,7 +224,7 @@ parameter in the `projects` REST API endpoint.
 ### To `git clone` a private project's repository
 
 You can use the job token to authenticate and clone a repository from a private project
-in a CI/CD job. For example:
+in a CI/CD job. Use `gitlab-ci-token` as the user, and the value of the job token as the password. For example:
 
 ```shell
 git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.example.com/<namespace>/<project>

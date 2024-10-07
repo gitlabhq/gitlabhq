@@ -1,0 +1,12 @@
+---
+table_name: duo_workflows_events
+classes:
+- Ai::DuoWorkflows::Event
+feature_categories:
+- duo_workflow
+description:
+introduced_by_url:
+milestone: '17.5'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  project_id: projects

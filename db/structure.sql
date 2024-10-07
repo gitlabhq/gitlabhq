@@ -9759,7 +9759,10 @@ CREATE TABLE container_repositories (
     expiration_policy_completed_at timestamp with time zone,
     last_cleanup_deleted_tags_count integer,
     delete_started_at timestamp with time zone,
-    status_updated_at timestamp with time zone
+    status_updated_at timestamp with time zone,
+    failed_deletion_count integer DEFAULT 0 NOT NULL,
+    next_delete_attempt_at timestamp with time zone,
+    CONSTRAINT check_container_repositories_non_negative_failed_deletion_count CHECK ((failed_deletion_count >= 0))
 );
 
 CREATE SEQUENCE container_repositories_id_seq
@@ -10904,6 +10907,27 @@ CREATE SEQUENCE duo_workflows_checkpoints_id_seq
     CACHE 1;
 
 ALTER SEQUENCE duo_workflows_checkpoints_id_seq OWNED BY duo_workflows_checkpoints.id;
+
+CREATE TABLE duo_workflows_events (
+    id bigint NOT NULL,
+    workflow_id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    event_type smallint NOT NULL,
+    event_status smallint NOT NULL,
+    message text,
+    CONSTRAINT check_d96965e118 CHECK ((char_length(message) <= 255))
+);
+
+CREATE SEQUENCE duo_workflows_events_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE duo_workflows_events_id_seq OWNED BY duo_workflows_events.id;
 
 CREATE TABLE duo_workflows_workflows (
     id bigint NOT NULL,
@@ -22253,6 +22277,8 @@ ALTER TABLE ONLY draft_notes ALTER COLUMN id SET DEFAULT nextval('draft_notes_id
 
 ALTER TABLE ONLY duo_workflows_checkpoints ALTER COLUMN id SET DEFAULT nextval('duo_workflows_checkpoints_id_seq'::regclass);
 
+ALTER TABLE ONLY duo_workflows_events ALTER COLUMN id SET DEFAULT nextval('duo_workflows_events_id_seq'::regclass);
+
 ALTER TABLE ONLY duo_workflows_workflows ALTER COLUMN id SET DEFAULT nextval('duo_workflows_workflows_id_seq'::regclass);
 
 ALTER TABLE ONLY early_access_program_tracking_events ALTER COLUMN id SET DEFAULT nextval('early_access_program_tracking_events_id_seq'::regclass);
@@ -24437,6 +24463,9 @@ ALTER TABLE ONLY draft_notes
 
 ALTER TABLE ONLY duo_workflows_checkpoints
     ADD CONSTRAINT duo_workflows_checkpoints_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY duo_workflows_events
+    ADD CONSTRAINT duo_workflows_events_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY duo_workflows_workflows
     ADD CONSTRAINT duo_workflows_workflows_pkey PRIMARY KEY (id);
@@ -28545,6 +28574,8 @@ CREATE INDEX index_container_expiration_policies_on_next_run_at_and_enabled ON c
 
 CREATE INDEX index_container_registry_data_repair_details_on_status ON container_registry_data_repair_details USING btree (status);
 
+CREATE INDEX index_container_repositories_on_next_delete_attempt_at ON container_repositories USING btree (next_delete_attempt_at) WHERE (status = 0);
+
 CREATE INDEX index_container_repositories_on_project_id_and_id ON container_repositories USING btree (project_id, id);
 
 CREATE UNIQUE INDEX index_container_repositories_on_project_id_and_name ON container_repositories USING btree (project_id, name);
@@ -28810,6 +28841,10 @@ CREATE INDEX index_draft_notes_on_merge_request_id ON draft_notes USING btree (m
 CREATE INDEX index_draft_notes_on_project_id ON draft_notes USING btree (project_id);
 
 CREATE INDEX index_duo_workflows_checkpoints_on_project_id ON duo_workflows_checkpoints USING btree (project_id);
+
+CREATE INDEX index_duo_workflows_events_on_project_id ON duo_workflows_events USING btree (project_id);
+
+CREATE INDEX index_duo_workflows_events_on_workflow_id ON duo_workflows_events USING btree (workflow_id);
 
 CREATE UNIQUE INDEX index_duo_workflows_workflow_checkpoints_unique_thread ON duo_workflows_checkpoints USING btree (workflow_id, thread_ts);
 
@@ -36675,6 +36710,9 @@ ALTER TABLE ONLY ai_agent_version_attachments
 ALTER TABLE ONLY operations_feature_flag_scopes
     ADD CONSTRAINT fk_rails_a50a04d0a4 FOREIGN KEY (feature_flag_id) REFERENCES operations_feature_flags(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY duo_workflows_events
+    ADD CONSTRAINT fk_rails_a55845e9fa FOREIGN KEY (workflow_id) REFERENCES duo_workflows_workflows(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY packages_helm_file_metadata
     ADD CONSTRAINT fk_rails_a559865345 FOREIGN KEY (package_file_id) REFERENCES packages_package_files(id) ON DELETE CASCADE;
 
@@ -36743,6 +36781,9 @@ ALTER TABLE ONLY packages_composer_metadata
 
 ALTER TABLE ONLY user_phone_number_validations
     ADD CONSTRAINT fk_rails_ad6686f3d8 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY duo_workflows_events
+    ADD CONSTRAINT fk_rails_ae183590f0 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY analytics_cycle_analytics_group_stages
     ADD CONSTRAINT fk_rails_ae5da3409b FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;

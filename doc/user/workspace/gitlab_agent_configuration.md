@@ -331,18 +331,6 @@ remote_development:
   workspaces_per_user_quota: 3
 ```
 
-## Configuring user access with remote development
-
-You can configure the `user_access` module to access the connected Kubernetes cluster with your GitLab credentials.
-This module is configured and runs independently of the `remote_development` module.
-
-Be careful when configuring both `user_access` and `remote_development` in the same GitLab agent.
-The `remote_development` clusters manage user credentials (such as personal access tokens) as Kubernetes Secrets.
-Any misconfiguration in `user_access` might cause this private data to be accessible over the Kubernetes API.
-
-For more information about configuring `user_access`, see
-[Configure Kubernetes access](../../user/clusters/agent/user_access.md#configure-kubernetes-access).
-
 ### `use_kubernetes_user_namespaces`
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13983) in GitLab 17.4.
@@ -475,3 +463,15 @@ A valid label value:
 
 For more information about `labels`, see
 [Labels](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/).
+
+## Configuring user access with remote development
+
+You can configure the `user_access` module to access the connected Kubernetes cluster with your GitLab credentials.
+This module is configured and runs independently of the `remote_development` module.
+
+Be careful when configuring both `user_access` and `remote_development` in the same GitLab agent.
+The `remote_development` clusters manage user credentials (such as personal access tokens) as Kubernetes Secrets.
+Any misconfiguration in `user_access` might cause this private data to be accessible over the Kubernetes API.
+
+For more information about configuring `user_access`, see
+[Configure Kubernetes access](../../user/clusters/agent/user_access.md#configure-kubernetes-access).
