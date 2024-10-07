@@ -158,7 +158,7 @@ class Key < ApplicationRecord
     return unless public_key.banned?
 
     help_page_url = Rails.application.routes.url_helpers.help_page_url(
-      'security/ssh_keys_restrictions',
+      'security/ssh_keys_restrictions.md',
       anchor: 'block-banned-or-compromised-keys'
     )
 

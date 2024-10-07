@@ -429,4 +429,21 @@ describe('Merge requests list app', () => {
       });
     });
   });
+
+  describe('merge trains link', () => {
+    it.each`
+      path               | exists   | existsTest
+      ${'/merge_trains'} | ${true}  | ${'renders'}
+      ${undefined}       | ${false} | ${'does not render'}
+      ${null}            | ${false} | ${'does not render'}
+    `('$existsText merge trains link', ({ path, exists }) => {
+      createComponent({ provide: { mergeTrainsPath: path } });
+
+      expect(wrapper.findByTestId('merge-trains').exists()).toBe(exists);
+
+      if (exists) {
+        expect(wrapper.findByTestId('merge-trains').attributes('href')).toBe(path);
+      }
+    });
+  });
 });

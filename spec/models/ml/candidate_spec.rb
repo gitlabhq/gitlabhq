@@ -108,6 +108,16 @@ RSpec.describe Ml::Candidate, factory_default: :keep, feature_category: :mlops d
         .and change { Ml::CandidateMetric.count }.by(-2)
         .and not_change { Packages::Package.count }
     end
+
+    context 'when candidate is associated to a model version' do
+      let(:candidate_to_destroy) { candidate2 }
+
+      it 'does not destroy the candidate' do
+        expect { candidate_to_destroy.destroy! }.to raise_error(ActiveRecord::ActiveRecordError)
+        expect(candidate_to_destroy.errors.full_messages).to include('Cannot delete a candidate associated ' \
+          'to a model version')
+      end
+    end
   end
 
   describe '.artifact_root' do

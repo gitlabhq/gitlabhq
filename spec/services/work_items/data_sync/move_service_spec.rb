@@ -6,7 +6,7 @@ RSpec.describe WorkItems::DataSync::MoveService, feature_category: :team_plannin
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project) }
   let_it_be(:target_project) { create(:project, group: group) }
-  let_it_be(:issue_work_item) { create(:work_item, project: project) }
+  let_it_be_with_reload(:issue_work_item) { create(:work_item, :opened, project: project) }
   let_it_be(:task_work_item) { create(:work_item, :task, project: project) }
   let_it_be(:source_project_member) { create(:user, reporter_of: project) }
   let_it_be(:target_project_member) { create(:user, reporter_of: target_project) }
@@ -99,46 +99,38 @@ RSpec.describe WorkItems::DataSync::MoveService, feature_category: :team_plannin
     end
 
     context 'when moving work item with success' do
-      it 'increases the target namespace work items count by 1' do
-        expect do
-          service.execute
-        end.to change { target_namespace.work_items.count }.by(1)
-      end
-
-      it 'returns a new work item with the same attributes' do
-        new_work_item = service.execute
-
-        expect(new_work_item).to be_persisted
-        expect(new_work_item).to have_attributes(
+      let(:expected_original_work_item_state) { Issue.available_states[:closed] }
+      let!(:original_work_item_attrs) do
+        {
           title: original_work_item.title,
           description: original_work_item.description,
           author: original_work_item.author,
           work_item_type: original_work_item.work_item_type,
-          project: target_namespace.project,
+          state_id: original_work_item.state_id,
+          created_at: original_work_item.reload.created_at,
+          updated_by: original_work_item.updated_by,
+          updated_at: original_work_item.reload.updated_at,
+          last_edited_at: original_work_item.last_edited_at,
+          last_edited_by: original_work_item.last_edited_by,
+          closed_at: original_work_item.closed_at,
+          closed_by: original_work_item.closed_by,
+          duplicated_to_id: original_work_item.duplicated_to_id,
+          moved_to_id: original_work_item.moved_to_id,
+          promoted_to_epic_id: original_work_item.promoted_to_epic_id,
+          external_key: original_work_item.external_key,
+          upvotes_count: original_work_item.upvotes_count,
+          blocking_issues_count: original_work_item.blocking_issues_count,
+          project: target_namespace.try(:project),
           namespace: target_namespace
-        )
+        }
       end
 
-      it 'runs all widget callbacks' do
-        create_service_params = {
-          work_item: anything, target_work_item: anything, widget: anything, current_user: current_user, params: {}
-        }
-        cleanup_service_params = {
-          work_item: anything, target_work_item: nil, widget: anything, current_user: current_user, params: {}
-        }
+      it_behaves_like 'cloneable and moveable work item'
 
-        original_work_item.widgets.flat_map(&:sync_data_callback_class).each do |callback_class|
-          allow_next_instance_of(callback_class, **create_service_params) do |callback_instance|
-            expect(callback_instance).to receive(:before_create)
-            expect(callback_instance).to receive(:after_save_commit)
-          end
+      context 'with specific widgets' do
+        let!(:assignees) { [source_project_member, target_project_member, projects_member] }
 
-          allow_next_instance_of(callback_class, **cleanup_service_params) do |callback_instance|
-            expect(callback_instance).to receive(:post_move_cleanup)
-          end
-        end
-
-        service.execute
+        it_behaves_like 'cloneable and moveable widget data'
       end
     end
   end

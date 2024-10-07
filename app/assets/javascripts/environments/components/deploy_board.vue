@@ -199,7 +199,7 @@ export default {
             <gl-link
               v-if="rollbackUrl"
               :href="rollbackUrl"
-              class="btn quarantined-deprecated-btn"
+              class="btn"
               data-method="post"
               rel="nofollow"
               >{{ __('Rollback') }}</gl-link
@@ -207,7 +207,7 @@ export default {
             <gl-link
               v-if="abortUrl"
               :href="abortUrl"
-              class="btn btn-danger btn-inverted quarantined-deprecated-btn"
+              class="btn btn-danger btn-inverted"
               data-method="post"
               rel="nofollow"
               >{{ __('Abort') }}</gl-link

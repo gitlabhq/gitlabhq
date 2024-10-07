@@ -17,12 +17,29 @@ module WorkItems
           @create_params = {
             id: nil,
             iid: nil,
-            title: work_item.title,
+            created_at: work_item.created_at,
+            updated_at: work_item.updated_at,
+            updated_by: work_item.updated_by,
+            last_edited_at: work_item.last_edited_at,
+            last_edited_by: work_item.last_edited_by,
+            closed_at: work_item.closed_at,
+            closed_by: work_item.closed_by,
+            duplicated_to_id: work_item.duplicated_to_id,
+            moved_to_id: work_item.moved_to_id,
+            promoted_to_epic_id: work_item.promoted_to_epic_id,
+            external_key: work_item.external_key,
+            upvotes_count: work_item.upvotes_count,
+            blocking_issues_count: work_item.blocking_issues_count,
             work_item_type: target_work_item_type,
-            relative_position: relative_position,
-            author: work_item.author,
             project_id: project&.id,
             namespace_id: target_namespace.id,
+            title: work_item.title,
+            author: work_item.author,
+            relative_position: relative_position,
+            confidential: work_item.confidential,
+            cached_markdown_version: work_item.cached_markdown_version,
+            lock_version: work_item.lock_version,
+            service_desk_reply_to: service_desk_reply_to,
             imported_from: :none
           }.merge(overwritten_params)
         end
@@ -48,6 +65,10 @@ module WorkItems
 
         def project
           target_namespace.project if target_namespace.is_a?(Namespaces::ProjectNamespace)
+        end
+
+        def service_desk_reply_to
+          target_namespace.service_desk_alias_address
         end
       end
     end

@@ -6,10 +6,9 @@ module WorkItems
       class Base < ::WorkItems::Callbacks::Base
         attr_reader :work_item, :target_work_item, :current_user
 
-        def initialize(work_item:, target_work_item:, widget:, current_user:, params: {})
+        def initialize(work_item:, target_work_item:, current_user:, params: {})
           @work_item = work_item
           @target_work_item = target_work_item
-          @widget = widget
           @current_user = current_user
           @params = params
         end

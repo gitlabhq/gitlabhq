@@ -10847,6 +10847,9 @@ msgstr ""
 msgid "Cannot delete %{profile_name} referenced in security policy"
 msgstr ""
 
+msgid "Cannot delete a candidate associated to a model version"
+msgstr ""
+
 msgid "Cannot delete the default framework"
 msgstr ""
 

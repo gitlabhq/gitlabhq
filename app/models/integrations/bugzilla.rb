@@ -17,7 +17,7 @@ module Integrations
 
     def self.help
       build_help_page_url(
-        'user/project/integrations/bugzilla', s_("IssueTracker|Use Bugzilla as this project's issue tracker.")
+        'user/project/integrations/bugzilla.md', s_("IssueTracker|Use Bugzilla as this project's issue tracker.")
       )
     end
 

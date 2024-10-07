@@ -268,8 +268,7 @@ module API
 
           # We need to override this one because it
           # looks into Bearer authorization header
-          def find_oauth_access_token
-          end
+          def find_oauth_access_token; end
 
           def find_personal_access_token_from_conan_jwt
             token = decode_oauth_token_from_jwt

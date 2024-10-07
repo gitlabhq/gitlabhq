@@ -31,7 +31,7 @@ module Integrations
         recipients_docs_link = ActionController::Base.helpers.link_to(
           s_('IrkerService|How to enter channels or users?'),
           Rails.application.routes.url_helpers.help_page_url(
-            'user/project/integrations/irker',
+            'user/project/integrations/irker.md',
             anchor: 'enter-irker-recipients'
           ),
           target: '_blank', rel: 'noopener noreferrer'
@@ -63,7 +63,7 @@ module Integrations
 
     def self.help
       build_help_page_url(
-        'user/project/integrations/irker',
+        'user/project/integrations/irker.md',
         s_('IrkerService|Send update messages to an irker server. Before you can use this, ' \
         'you need to set up the irker daemon.'),
         { anchor: 'set-up-an-irker-daemon' }

@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe QueueBackfillOwaspTopTenOfVulnerabilityReads, feature_category: :vulnerability_management do
+RSpec.describe QueueRecoverDeletedMlModelVersionPackages, feature_category: :mlops do
   let!(:batched_migration) { described_class::MIGRATION }
 
   it 'schedules a new batched migration' do
@@ -14,11 +14,11 @@ RSpec.describe QueueBackfillOwaspTopTenOfVulnerabilityReads, feature_category: :
 
       migration.after -> {
         expect(batched_migration).to have_scheduled_batched_migration(
-          table_name: :vulnerability_reads,
-          column_name: :vulnerability_id,
-          interval: described_class::DELAY_INTERVAL,
-          batch_size: described_class::BATCH_SIZE,
-          sub_batch_size: described_class::SUB_BATCH_SIZE
+          table_name: :ml_model_versions,
+          column_name: :id,
+          interval: 2.minutes,
+          batch_size: 1000,
+          sub_batch_size: 100
         )
       }
     end

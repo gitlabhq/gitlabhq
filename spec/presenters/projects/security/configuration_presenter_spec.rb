@@ -35,8 +35,8 @@ RSpec.describe Projects::Security::ConfigurationPresenter, feature_category: :so
       let!(:build_license_scanning) { create(:ci_build, :license_scanning, pipeline: pipeline) }
 
       it 'includes links to auto devops and secure product docs' do
-        expect(html_data[:auto_devops_help_page_path]).to eq(help_page_path('topics/autodevops/index'))
-        expect(html_data[:help_page_path]).to eq(help_page_path('user/application_security/index'))
+        expect(html_data[:auto_devops_help_page_path]).to eq(help_page_path('topics/autodevops/index.md'))
+        expect(html_data[:help_page_path]).to eq(help_page_path('user/application_security/index.md'))
       end
 
       it 'returns info that Auto DevOps is not enabled' do
@@ -274,7 +274,7 @@ RSpec.describe Projects::Security::ConfigurationPresenter, feature_category: :so
       end
 
       it 'includes a link to CI pipeline docs' do
-        expect(html_data[:latest_pipeline_path]).to eq(help_page_path('ci/pipelines/index'))
+        expect(html_data[:latest_pipeline_path]).to eq(help_page_path('ci/pipelines/index.md'))
       end
 
       context 'when gathering feature data' do

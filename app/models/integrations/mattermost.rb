@@ -20,7 +20,7 @@ module Integrations
 
     def self.help
       build_help_page_url(
-        'user/project/integrations/mattermost', s_("Send notifications about project events to Mattermost channels.")
+        'user/project/integrations/mattermost.md', s_("Send notifications about project events to Mattermost channels.")
       )
     end
 

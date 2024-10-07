@@ -88,8 +88,7 @@
   }
 }
 
-//The class below, formally known as "btn" should only ever be used on elements that are not yet using a pajamas compliant button
-.quarantined-deprecated-btn {
+.btn {
   @include btn-default;
   @include btn-white;
 

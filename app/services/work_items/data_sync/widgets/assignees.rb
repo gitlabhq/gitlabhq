@@ -5,12 +5,13 @@ module WorkItems
     module Widgets
       class Assignees < Base
         def before_create
-          # set assignees, e.g.
-          # target_work_item.assignee_ids = work_item.assignee_ids
+          return unless target_work_item.get_widget(:assignees)
+
+          target_work_item.assignee_ids = work_item.assignee_ids
         end
 
         def post_move_cleanup
-          # do it
+          work_item.assignee_ids = []
         end
       end
     end

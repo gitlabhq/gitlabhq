@@ -490,4 +490,44 @@ RSpec.describe API::Ml::Mlflow::Runs, feature_category: :mlops do
       it_behaves_like 'MLflow|run_id param error cases'
     end
   end
+
+  describe 'POST /projects/:id/ml/mlflow/api/2.0/mlflow/runs/delete' do
+    let(:route) { "/projects/#{project_id}/ml/mlflow/api/2.0/mlflow/runs/delete" }
+    let(:default_params) { { run_id: candidate.eid.to_s } }
+    let(:params) { default_params }
+    let(:request) { post api(route), params: params, headers: headers }
+
+    it 'deletes the run', :aggregate_failures do
+      is_expected.to have_gitlab_http_status(:ok)
+      expect { candidate.reload }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    describe 'Error States' do
+      context 'when run does not exist' do
+        let(:params) { default_params.merge(run_id: non_existing_record_iid.to_s) }
+
+        it_behaves_like 'MLflow|Not Found - Resource Does Not Exist'
+      end
+
+      context 'when run_id is not passed' do
+        let(:params) { {} }
+
+        it_behaves_like 'MLflow|Bad Request'
+      end
+
+      context 'when run has a model version associated' do
+        let(:model) { create(:ml_models, project: project, name: "abc") }
+        let(:model_version) { create(:ml_model_versions, project: project, model: model) }
+        let(:params) { default_params.merge(run_id: model_version.candidate.eid.to_s) }
+
+        it 'does not delete the candidate' do
+          expect(json_response).to include({ "message" => 'Cannot delete a candidate associated to a model version' })
+          expect(model_version.candidate.reload).to be_present
+        end
+      end
+
+      it_behaves_like 'MLflow|shared error cases'
+      it_behaves_like 'MLflow|Requires api scope and write permission'
+    end
+  end
 end

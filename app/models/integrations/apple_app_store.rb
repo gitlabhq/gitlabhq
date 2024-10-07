@@ -65,7 +65,7 @@ module Integrations
 
       docs_link = ActionController::Base.helpers.link_to(
         '',
-        Rails.application.routes.url_helpers.help_page_url('user/project/integrations/apple_app_store'),
+        Rails.application.routes.url_helpers.help_page_url('user/project/integrations/apple_app_store.md'),
         target: '_blank',
         rel: 'noopener noreferrer'
       )

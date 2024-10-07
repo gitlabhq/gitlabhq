@@ -31,7 +31,7 @@ module Integrations
 
     def self.help
       build_help_page_url(
-        'user/project/integrations/unify_circuit',
+        'user/project/integrations/unify_circuit.md',
         s_("Integrations|Send notifications about project events to a Unify Circuit conversation.")
       )
     end

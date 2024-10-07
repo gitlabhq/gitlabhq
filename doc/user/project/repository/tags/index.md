@@ -112,7 +112,7 @@ GitLab enforces these additional rules on all tags:
 
 - No spaces are allowed in tag names.
 - Tag names starting with 40 or 64 hexadecimal characters are prohibited, because they are similar to Git commit hashes.
-- Tag names cannot start with `-`, `refs/heads`, `refs/tags`, or `refs/remotes`
+- Tag names cannot start with `-`, `refs/heads/`, `refs/tags/`, or `refs/remotes/`
 - Tag names are case-sensitive.
 
 ## Prevent tag deletion

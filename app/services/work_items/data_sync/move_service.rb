@@ -12,14 +12,7 @@ module WorkItems
       end
 
       def data_sync_action
-        new_work_item = move_work_item
-
-        # this may need to be moved inside `BaseCopyDataService` so that this would be the first system note after
-        # move action started, followed by some other system notes related to which data is removed, replaced, changed
-        # etc during the move operation.
-        move_system_notes(new_work_item)
-
-        new_work_item
+        move_work_item
       end
 
       def verify_can_move_work_item!(work_item, target_namespace)
@@ -48,7 +41,7 @@ module WorkItems
           target_namespace: target_namespace,
           current_user: current_user,
           target_work_item_type: work_item.work_item_type,
-          params: params,
+          params: params.merge(operation: :move),
           overwritten_params: {
             moved_issue: true
           }
@@ -61,6 +54,11 @@ module WorkItems
         WorkItems::DataSync::Handlers::CleanupDataHandler.new(
           work_item: work_item, current_user: current_user, params: params
         ).execute
+
+        # this may need to be moved inside `BaseCopyDataService` so that this would be the first system note after
+        # move action started, followed by some other system notes related to which data is removed, replaced, changed
+        # etc during the move operation.
+        move_system_notes(new_work_item)
 
         new_work_item
       end

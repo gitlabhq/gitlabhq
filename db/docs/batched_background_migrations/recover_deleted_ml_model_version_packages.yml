@@ -1,0 +1,9 @@
+---
+migration_job_name: RecoverDeletedMlModelVersionPackages
+description: Creates a package record for ML model versions whose package was cleaned up
+feature_category: mlops
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165214
+milestone: '17.5'
+queued_migration_version: 20241003061916
+finalize_after: '2024-11-25'
+finalized_by:

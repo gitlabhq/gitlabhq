@@ -50,6 +50,7 @@
           .form-text.gl-text-secondary
             = _('Maximum file size is 1MB. Pages are optimized for a 24px tall header logo')
 
+
   = render ::Layouts::SettingsSectionComponent.new(_('New project pages')) do |c|
     - c.with_body do
       .form-group
@@ -129,8 +130,8 @@
     .settings-section
       - if @appearance.persisted?
         = s_('AppearanceSettings|Preview last save:')
-        = link_to _('Sign-in page'), preview_sign_in_admin_application_settings_appearances_path, class: 'btn quarantined-deprecated-btn', target: '_blank', rel: 'noopener noreferrer'
-        = link_to _('New project page'), new_project_path, class: 'btn quarantined-deprecated-btn', target: '_blank', rel: 'noopener noreferrer'
+        = link_to _('Sign-in page'), preview_sign_in_admin_application_settings_appearances_path, class: 'btn', target: '_blank', rel: 'noopener noreferrer'
+        = link_to _('New project page'), new_project_path, class: 'btn', target: '_blank', rel: 'noopener noreferrer'
 
       - if @appearance.updated_at
         %span.gl-float-right.gl-text-secondary

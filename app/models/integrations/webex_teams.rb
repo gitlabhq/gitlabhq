@@ -34,7 +34,7 @@ module Integrations
 
     def self.help
       build_help_page_url(
-        'user/project/integrations/webex_teams',
+        'user/project/integrations/webex_teams.md',
         s_("WebexTeamsService|Send notifications about project events to Webex Teams.")
       )
     end

@@ -33,26 +33,30 @@ The Repository X-Ray service is automatically enabled if:
 - You have enabled the `ai_enable_internal_repository_xray_service` feature flag.
 - Your project has access to [GitLab Duo Code Suggestions](index.md).
 
-## Supported languages and package managers
+## Supported languages and dependency managers
 
-The Repository X-Ray searches a maximum of two directory levels from the repository's root. For example, it supports `Gemfile.lock`, `api/Gemfile.lock`, or `api/client/Gemfile.lock`, but not `api/v1/client/Gemfile.lock`. For each language, only the first matching configuration file is processed. Where available, lock files take precedence over their non-lock file counterparts.
+The Repository X-Ray searches a maximum of two directory levels from the repository's root. For example, it supports `Gemfile.lock`, `api/Gemfile.lock`, or `api/client/Gemfile.lock`, but not `api/v1/client/Gemfile.lock`. For each language, only the first matching dependency manager is processed. Where available, lock files take precedence over their non-lock file counterparts.
 
-| Language   | Package manager | Configuration file                   | GitLab version |
-| ---------- |-----------------| ------------------------------------ | -------------- |
-| C/C++      | Conan           | `conanfile.py`                       | 17.5 or later  |
-| C/C++      | Conan           | `conanfile.txt`                      | 17.5 or later  |
-| C/C++      | vcpkg           | `vcpkg.json`                         | 17.5 or later  |
-| C#         | NuGet           | `*.csproj`                           | 17.5 or later  |
-| Go         | Go Modules      | `go.mod`                             | 17.4 or later  |
-| Java       | Gradle          | `build.gradle`                       | 17.4 or later  |
-| Java       | Maven           | `pom.xml`                            | 17.4 or later  |
-| JavaScript | NPM             | `package-lock.json`, `package.json`  | 17.5 or later  |
-| Kotlin     | Gradle          | `build.gradle.kts`                   | 17.5 or later  |
-| PHP        | Composer        | `composer.lock`, `composer.json`     | 17.5 or later  |
-| Python     | Conda           | `environment.yml`                    | 17.5 or later  |
-| Python     | Pip             | `requirements.txt`                   | 17.5 or later  |
-| Python     | Poetry          | `poetry.lock`, `pyproject.toml`      | 17.5 or later  |
-| Ruby       | RubyGems        | `Gemfile.lock`                       | 17.4 or later  |
+| Language   | Dependency manager | Configuration file                  | GitLab version |
+| ---------- |--------------------| ----------------------------------- | -------------- |
+| C/C++      | Conan              | `conanfile.py`                      | 17.5 or later  |
+| C/C++      | Conan              | `conanfile.txt`                     | 17.5 or later  |
+| C/C++      | vcpkg              | `vcpkg.json`                        | 17.5 or later  |
+| C#         | NuGet              | `*.csproj`                          | 17.5 or later  |
+| Go         | Go Modules         | `go.mod`                            | 17.4 or later  |
+| Java       | Gradle             | `build.gradle`                      | 17.4 or later  |
+| Java       | Maven              | `pom.xml`                           | 17.4 or later  |
+| JavaScript | NPM                | `package-lock.json`, `package.json` | 17.5 or later  |
+| Kotlin     | Gradle             | `build.gradle.kts`                  | 17.5 or later  |
+| PHP        | Composer           | `composer.lock`, `composer.json`    | 17.5 or later  |
+| Python     | Conda              | `environment.yml`                   | 17.5 or later  |
+| Python     | Pip                | `*requirements*.txt` <sup>1</sup>   | 17.5 or later  |
+| Python     | Poetry             | `poetry.lock`, `pyproject.toml`     | 17.5 or later  |
+| Ruby       | RubyGems           | `Gemfile.lock`                      | 17.4 or later  |
+
+**Footnotes**:
+
+1. For Python Pip, all configuration files matching the `*requirements*.txt` glob pattern are processed.
 
 ## Enable Repository X-Ray in your CI pipeline (deprecated)
 

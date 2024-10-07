@@ -20,7 +20,7 @@ module Integrations
 
     def self.help
       build_help_page_url(
-        'user/project/integrations/ewm',
+        'user/project/integrations/ewm.md',
         s_("IssueTracker|Use IBM Engineering Workflow Management as this project's issue tracker.")
       )
     end

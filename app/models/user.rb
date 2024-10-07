@@ -1251,7 +1251,7 @@ class User < ApplicationRecord
         User.find_by_any_email(email)&.deleted_own_account?
 
       help_page_url = Rails.application.routes.url_helpers.help_page_url(
-        'user/profile/account/delete_account',
+        'user/profile/account/delete_account.md',
         anchor: 'delete-your-own-account'
       )
 

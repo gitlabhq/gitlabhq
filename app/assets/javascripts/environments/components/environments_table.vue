@@ -205,7 +205,7 @@ export default {
 
           <div :key="`sub-div-${i}`">
             <div class="text-center gl-mt-3">
-              <a :href="folderUrl(model)" class="btn btn-default quarantined-deprecated-btn">
+              <a :href="folderUrl(model)" class="btn btn-default">
                 {{ s__('Environments|Show all') }}
               </a>
             </div>

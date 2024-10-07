@@ -2,20 +2,4 @@
 # Cop supports --autocorrect.
 Style/EmptyMethod:
   Exclude:
-    - 'lib/api/helpers/packages/conan/api_helpers.rb'
-    - 'lib/api/helpers/projects_helpers.rb'
-    - 'lib/api/projects_relation_builder.rb'
-    - 'lib/gitlab/alert_management/payload/base.rb'
-    - 'lib/gitlab/background_migration/backfill_iteration_cadence_id_for_boards.rb'
-    - 'lib/gitlab/background_migration/create_security_setting.rb'
-    - 'lib/gitlab/background_migration/delete_invalid_epic_issues.rb'
-    - 'lib/gitlab/background_migration/migrate_approver_to_approval_rules.rb'
-    - 'lib/gitlab/background_migration/migrate_approver_to_approval_rules_check_progress.rb'
-    - 'lib/gitlab/background_migration/migrate_approver_to_approval_rules_in_batch.rb'
-    - 'lib/gitlab/background_migration/migrate_job_artifact_registry_to_ssf.rb'
-    - 'lib/gitlab/background_migration/migrate_requirements_to_work_items.rb'
-    - 'lib/gitlab/background_migration/migrate_shared_vulnerability_scanners.rb'
-    - 'lib/gitlab/git_access.rb'
-    - 'lib/gitlab/import_export/json/ndjson_writer.rb'
-    - 'lib/gitlab/mailgun/webhook_processors/base.rb'
-    - 'lib/gitlab/usage_data_non_sql_metrics.rb'
+

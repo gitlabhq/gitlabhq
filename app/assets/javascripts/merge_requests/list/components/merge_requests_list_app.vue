@@ -13,6 +13,7 @@ import { getParameterByName } from '~/lib/utils/url_utility';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
+import IssuableMilestone from '~/vue_shared/issuable/list/components/issuable_milestone.vue';
 import { DEFAULT_PAGE_SIZE, mergeRequestListTabs } from '~/vue_shared/issuable/list/constants';
 import {
   OPERATORS_IS,
@@ -107,23 +108,25 @@ export default {
     MergeRequestMoreActionsDropdown,
     ApprovalCount,
     EmptyState,
+    IssuableMilestone,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  inject: [
-    'autocompleteAwardEmojisPath',
-    'fullPath',
-    'hasAnyMergeRequests',
-    'hasScopedLabelsFeature',
-    'initialSort',
-    'isPublicVisibilityRestricted',
-    'isSignedIn',
-    'newMergeRequestPath',
-    'releasesEndpoint',
-    'canBulkUpdate',
-    'environmentNamesPath',
-  ],
+  inject: {
+    autocompleteAwardEmojisPat: { default: '' },
+    fullPath: { default: '' },
+    hasAnyMergeRequests: { default: false },
+    hasScopedLabelsFeature: { default: false },
+    initialSort: { default: '' },
+    isPublicVisibilityRestricted: { default: false },
+    isSignedIn: { default: false },
+    newMergeRequestPath: { default: '' },
+    releasesEndpoint: { default: '' },
+    canBulkUpdate: { default: false },
+    environmentNamesPath: { default: '' },
+    mergeTrainsPath: { default: undefined },
+  },
   data() {
     return {
       filterTokens: [],
@@ -659,6 +662,9 @@ export default {
   >
     <template #nav-actions>
       <div class="gl-flex gl-gap-3">
+        <gl-button v-if="mergeTrainsPath" :href="mergeTrainsPath" data-testid="merge-trains">
+          {{ __('Merge trains') }}
+        </gl-button>
         <gl-button
           v-if="canBulkUpdate"
           class="gl-grow"
@@ -694,6 +700,10 @@ export default {
       >
         <gl-icon name="warning-solid" class="gl-text-gray-900" />
       </gl-link>
+    </template>
+
+    <template #timeframe="{ issuable = {} }">
+      <issuable-milestone v-if="issuable.milestone" :milestone="issuable.milestone" />
     </template>
 
     <template #statistics="{ issuable = {} }">

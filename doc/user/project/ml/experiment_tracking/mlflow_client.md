@@ -288,6 +288,7 @@ of the methods below are also supported with the same caveats.
 | `delete_experiment`      | Yes             | 17.5          |                                                                                              |
 | `set_experiment`         | Yes             | 15.11         |                                                                                              |
 | `get_run`                | Yes             | 15.11         |                                                                                              |
+| `delete_run`             | Yes             | 17.5          |                                                                                              |
 | `start_run`              | Yes             | 15.11         | (16.3) If a name is not provided, the candidate receives a random nickname.                  |
 | `search_runs`            | Yes             | 15.11         | (16.4) `experiment_ids` supports only a single experiment ID with order by column or metric. |
 | `log_artifact`           | Yes with caveat | 15.11         | (15.11) `artifact_path` must be empty. Does not support directories.                         |

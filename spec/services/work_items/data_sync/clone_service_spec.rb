@@ -6,7 +6,7 @@ RSpec.describe WorkItems::DataSync::CloneService, feature_category: :team_planni
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, group: group) }
   let_it_be(:target_project) { create(:project, group: group) }
-  let_it_be(:issue_work_item) { create(:work_item, project: project) }
+  let_it_be_with_reload(:issue_work_item) { create(:work_item, :opened, project: project) }
   let_it_be(:task_work_item) { create(:work_item, :task, project: project) }
   let_it_be(:source_project_member) { create(:user, reporter_of: project) }
   let_it_be(:target_project_member) { create(:user, reporter_of: target_project) }
@@ -99,39 +99,36 @@ RSpec.describe WorkItems::DataSync::CloneService, feature_category: :team_planni
     end
 
     context 'when cloning work item with success' do
-      it 'increases the target namespace work items count by 1' do
-        expect do
-          service.execute
-        end.to change { target_namespace.work_items.count }.by(1)
-      end
-
-      it 'returns a new work item with the same attributes' do
-        new_work_item = service.execute
-
-        expect(new_work_item).to be_persisted
-        expect(new_work_item).to have_attributes(
+      let(:expected_original_work_item_state) { Issue.available_states[:opened] }
+      let!(:original_work_item_attrs) do
+        {
           title: original_work_item.title,
           description: original_work_item.description,
           author: current_user,
           work_item_type: original_work_item.work_item_type,
-          project: target_namespace.project,
+          state_id: Issue.available_states[:opened],
+          updated_by: current_user,
+          last_edited_at: nil,
+          last_edited_by: nil,
+          closed_at: nil,
+          closed_by: nil,
+          duplicated_to_id: nil,
+          moved_to_id: nil,
+          promoted_to_epic_id: nil,
+          external_key: nil,
+          upvotes_count: 0,
+          blocking_issues_count: 0,
+          project: target_namespace.try(:project),
           namespace: target_namespace
-        )
+        }
       end
 
-      it 'runs all widget callbacks' do
-        create_service_params = {
-          work_item: anything, target_work_item: anything, widget: anything, current_user: current_user, params: {}
-        }
+      it_behaves_like 'cloneable and moveable work item'
 
-        original_work_item.widgets.flat_map(&:sync_data_callback_class).each do |callback_class|
-          allow_next_instance_of(callback_class, **create_service_params) do |callback_instance|
-            expect(callback_instance).to receive(:before_create)
-            expect(callback_instance).to receive(:after_save_commit)
-          end
-        end
+      context 'with specific widgets' do
+        let!(:assignees) { [source_project_member, target_project_member, projects_member] }
 
-        service.execute
+        it_behaves_like 'cloneable and moveable widget data'
       end
     end
   end

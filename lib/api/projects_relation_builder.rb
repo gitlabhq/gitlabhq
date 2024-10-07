@@ -31,8 +31,7 @@ module API
 
       # This is overridden by the specific Entity class to
       # batch load certain counts
-      def execute_batch_counting(projects_relation)
-      end
+      def execute_batch_counting(projects_relation); end
 
       def preload_repository_cache(projects_relation)
         repositories = repositories_for_preload(projects_relation)

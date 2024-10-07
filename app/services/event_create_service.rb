@@ -261,7 +261,7 @@ class EventCreateService
     Gitlab::EventStore.publish(
       Users::ActivityEvent.new(data: {
         user_id: current_user.id,
-        namespace_id: project.namespace_id
+        namespace_id: project.root_ancestor.id
       })
     )
   end

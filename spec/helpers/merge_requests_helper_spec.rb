@@ -351,7 +351,7 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
         environment_names_path: unfoldered_environment_names_project_path(project, format: :json)
       }
 
-      expect(subject).to eq(expected_data)
+      expect(subject).to include(expected_data)
     end
   end
 

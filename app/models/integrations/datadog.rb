@@ -125,7 +125,7 @@ module Integrations
 
     def self.help
       build_help_page_url(
-        'integration/datadog',
+        'integration/datadog.md',
         s_('DatadogIntegration|Send CI/CD pipeline information to Datadog to monitor for job failures and troubleshoot performance issues.'),
         _('How do I set up this integration?')
       )

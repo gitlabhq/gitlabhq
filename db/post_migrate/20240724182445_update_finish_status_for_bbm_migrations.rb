@@ -36,7 +36,6 @@ class UpdateFinishStatusForBbmMigrations < Gitlab::Database::Migration[2.2]
     BackfillNugetNormalizedVersion
     BackfillOnboardingStatusStepUrl
     BackfillOrDropCiPipelineOnProjectId
-    BackfillOwaspTopTenOfVulnerabilityReads
     BackfillPackagesTagsProjectId
     BackfillPartitionIdCiPipelineArtifact
     BackfillPartitionIdCiPipelineChatData

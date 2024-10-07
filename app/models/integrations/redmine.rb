@@ -15,7 +15,7 @@ module Integrations
     end
 
     def self.help
-      build_help_page_url('user/project/integrations/redmine', s_("IssueTracker|Use Redmine as the issue tracker."))
+      build_help_page_url('user/project/integrations/redmine.md', s_("IssueTracker|Use Redmine as the issue tracker."))
     end
 
     def self.to_param

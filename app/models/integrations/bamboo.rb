@@ -54,7 +54,7 @@ module Integrations
 
     def self.help
       build_help_page_url(
-        'user/project/integrations/bamboo',
+        'user/project/integrations/bamboo.md',
         s_('BambooService|Run CI/CD pipelines with Atlassian Bamboo. You must set up automatic revision ' \
         'labeling and a repository trigger in Bamboo.')
       )

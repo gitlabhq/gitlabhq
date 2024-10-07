@@ -4,8 +4,7 @@ module Gitlab
   module BackgroundMigration
     # rubocop: disable Style/Documentation
     class MigrateJobArtifactRegistryToSsf
-      def perform(*job_artifact_ids)
-      end
+      def perform(*job_artifact_ids); end
     end
   end
 end

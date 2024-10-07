@@ -240,7 +240,7 @@ RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redi
     it 'publishes an activity event' do
       expect { subject }.to publish_event(Users::ActivityEvent).with({
         user_id: user.id,
-        namespace_id: project.namespace_id
+        namespace_id: project.root_ancestor.id
       })
     end
 

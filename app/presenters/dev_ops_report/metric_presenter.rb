@@ -28,7 +28,7 @@ module DevOpsReport
           description: 'created per active user',
           feature: 'milestones',
           blog: 'http://conversationaldevelopment.com/shorten-cycle/',
-          docs: help_page_path('user/project/milestones/index')
+          docs: help_page_path('user/project/milestones/index.md')
         ),
         Card.new(
           metric: metric,
@@ -36,7 +36,7 @@ module DevOpsReport
           description: 'created per active user',
           feature: 'boards',
           blog: 'http://jpattonassociates.com/user-story-mapping/',
-          docs: help_page_path('user/project/issue_board')
+          docs: help_page_path('user/project/issue_board.md')
         ),
         Card.new(
           metric: metric,
@@ -44,7 +44,7 @@ module DevOpsReport
           description: 'per active user',
           feature: 'merge_requests',
           blog: 'https://8thlight.com/blog/uncle-bob/2013/02/01/The-Humble-Craftsman.html',
-          docs: help_page_path('user/project/merge_requests/index')
+          docs: help_page_path('user/project/merge_requests/index.md')
         ),
         Card.new(
           metric: metric,
@@ -52,7 +52,7 @@ module DevOpsReport
           description: 'created per active user',
           feature: 'ci_pipelines',
           blog: 'https://martinfowler.com/bliki/ContinuousDelivery.html',
-          docs: help_page_path('ci/index')
+          docs: help_page_path('ci/index.md')
         ),
         Card.new(
           metric: metric,
@@ -60,7 +60,7 @@ module DevOpsReport
           description: 'created per active user',
           feature: 'environments',
           blog: 'https://about.gitlab.com/2016/08/26/ci-deployment-and-environments/',
-          docs: help_page_path('ci/environments/index')
+          docs: help_page_path('ci/environments/index.md')
         ),
         Card.new(
           metric: metric,
@@ -75,7 +75,7 @@ module DevOpsReport
           description: 'fraction of all projects',
           feature: 'projects_prometheus_active',
           blog: 'https://prometheus.io/docs/introduction/overview/',
-          docs: help_page_path('user/project/integrations/prometheus')
+          docs: help_page_path('user/project/integrations/prometheus.md')
         ),
         Card.new(
           metric: metric,

@@ -4,8 +4,7 @@ module Gitlab
   module BackgroundMigration
     # No op on CE
     class MigrateRequirementsToWorkItems
-      def perform(start_id, end_id)
-      end
+      def perform(start_id, end_id); end
     end
   end
 end
