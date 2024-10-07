@@ -38,8 +38,7 @@ describe('Commit pipeline status component', () => {
   };
 
   const findLoader = () => wrapper.findComponent(GlLoadingIcon);
-  const findLink = () => wrapper.find('a');
-  const findCiIcon = () => findLink().findComponent(CiIcon);
+  const findCiIcon = () => wrapper.findComponent(CiIcon);
 
   describe('Visibility management', () => {
     describe('when component is hidden', () => {
@@ -121,24 +120,36 @@ describe('Commit pipeline status component', () => {
     });
 
     describe('is successful', () => {
-      beforeEach(async () => {
-        pollConfig.successCallback({
-          data: { pipelines: [{ details: { status: mockCiStatus } }] },
+      describe('with pipelines', () => {
+        beforeEach(async () => {
+          pollConfig.successCallback({
+            data: { pipelines: [{ details: { status: mockCiStatus } }] },
+          });
+          await nextTick();
         });
-        await nextTick();
+
+        it('does not render loader', () => {
+          expect(findLoader().exists()).toBe(false);
+        });
+
+        it('renders CI icon with the correct title and status', () => {
+          expect(findCiIcon().attributes('title')).toEqual('Pipeline: Passed');
+          expect(findCiIcon().props('status')).toEqual(mockCiStatus);
+        });
       });
 
-      it('does not render loader', () => {
-        expect(findLoader().exists()).toBe(false);
-      });
+      describe('without pipelines', () => {
+        beforeEach(async () => {
+          pollConfig.successCallback({
+            data: { pipelines: [] },
+          });
 
-      it('renders link with href', () => {
-        expect(findLink().attributes('href')).toEqual(mockCiStatus.details_path);
-      });
+          await nextTick();
+        });
 
-      it('renders CI icon with the correct title and status', () => {
-        expect(findCiIcon().attributes('title')).toEqual('Pipeline: Passed');
-        expect(findCiIcon().props('status')).toEqual(mockCiStatus);
+        it('does not render ci icon', () => {
+          expect(findCiIcon().exists()).toBe(false);
+        });
       });
     });
 
@@ -149,10 +160,6 @@ describe('Commit pipeline status component', () => {
 
       it('does not render loader', () => {
         expect(findLoader().exists()).toBe(false);
-      });
-
-      it('renders link with href', () => {
-        expect(findLink().attributes('href')).toBeUndefined();
       });
 
       it('renders not found CI icon', () => {

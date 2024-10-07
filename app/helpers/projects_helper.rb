@@ -922,7 +922,7 @@ module ProjectsHelper
 
   def project_permissions_data(project, target_form_id = nil)
     data = visibility_confirm_modal_data(project, target_form_id)
-    cascading_settings_data = project_cascading_namespace_settings_tooltip_data(:duo_features_enabled, project, method(:edit_group_path))
+    cascading_settings_data = project_cascading_namespace_settings_tooltip_data(:duo_features_enabled, project, method(:edit_group_path)).to_json
     data.merge!(
       {
         cascading_settings_data: cascading_settings_data

@@ -133,6 +133,10 @@ module MembershipActions
     raise NotImplementedError
   end
 
+  def source
+    raise NotImplementedError
+  end
+
   def members_and_requesters
     membershipable.members_and_requesters
   end
@@ -142,7 +146,7 @@ module MembershipActions
   end
 
   def update_params
-    params.require(root_params_key).permit(:access_level, :expires_at)
+    params.require(root_params_key).permit(:access_level, :expires_at).merge({ source: source })
   end
 
   def requested_relations(inherited_permissions = :with_inherited_permissions)

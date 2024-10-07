@@ -292,3 +292,9 @@ $comparison-empty-state-height: 62px;
     width: 100%;
   }
 }
+
+// stylelint-disable-next-line gitlab/no-gl-class --- We need a slightly smaller spinner to fit the design
+.mr-widget-check-checking .gl-spinner {
+  width: 12px;
+  height: 12px;
+}

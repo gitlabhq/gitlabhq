@@ -7,7 +7,7 @@ module Mutations
         class Delete < ::Mutations::BaseMutation
           graphql_name 'DeleteContainerRegistryProtectionRule'
           description 'Deletes a container registry protection rule. ' \
-                      'Available only when feature flag `container_registry_protected_containers` is enabled.'
+            'Available only when feature flag `container_registry_protected_containers` is enabled.'
 
           authorize :admin_container_image
 

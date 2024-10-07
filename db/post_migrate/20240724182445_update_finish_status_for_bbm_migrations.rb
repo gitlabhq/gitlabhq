@@ -25,7 +25,6 @@ class UpdateFinishStatusForBbmMigrations < Gitlab::Database::Migration[2.2]
     BackfillEpicDatesToWorkItemDatesSources
     BackfillEpicIssuesIntoWorkItemParentLinks
     BackfillFindingIdInVulnerabilities
-    BackfillFindingInitialPipelineId
     BackfillHasIssuesForExternalIssueLinks
     BackfillHasRemediationsOfVulnerabilityReads
     BackfillIssueSearchDataNamespaceId

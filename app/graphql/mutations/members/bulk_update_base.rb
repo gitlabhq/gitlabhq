@@ -26,8 +26,10 @@ module Mutations
       INVALID_MEMBERS_ERROR = 'Only access level of direct members can be updated.'
 
       def resolve(**args)
+        source = authorized_find!(source_id: args[source_id_param_name])
+
         result = ::Members::UpdateService
-                   .new(current_user, args.except(:user_ids, source_id_param_name))
+                   .new(current_user, args.except(:user_ids, source_id_param_name).merge({ source: source }))
                    .execute(@updatable_members)
 
         present_result(result)

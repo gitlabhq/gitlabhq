@@ -46,4 +46,10 @@ describe('Merge request merge checks message component', () => {
 
     expect(wrapper.findComponent(StatusIcon).props('iconName')).toBe(icon);
   });
+
+  it('renders loading icon when status is CHECKING', () => {
+    factory({ check: { status: 'CHECKING', identifier: 'discussions_not_resolved' } });
+
+    expect(wrapper.findByTestId('checking-icon').exists()).toBe(true);
+  });
 });

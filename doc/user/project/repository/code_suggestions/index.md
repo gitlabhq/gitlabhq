@@ -80,8 +80,11 @@ To use Code Suggestions:
 1. Describe the requirements in natural language.
    Code Suggestions generates functions and code snippets based on the context provided.
 
-1. To accept a suggestion, press <kbd>Tab</kbd>. To reject a suggestion, press <kbd>Esc</kbd>.
-1. To ignore a suggestion, keep typing as you usually would.
+1. When you receive a suggestion, you can do any of the following:
+   - To accept a suggestion, press <kbd>Tab</kbd>.
+   - To accept a partial suggestion, press either <kbd>Control</kbd>+<kbd>Right arrow</kbd> or <kbd>Command</kbd>+<kbd>Right arrow</kbd>. 
+   - To reject a suggestion, press <kbd>Esc</kbd>.
+   - To ignore a suggestion, keep typing as you usually would.
 
 AI is non-deterministic, so you may not get the same suggestion every time with the same input.
 To generate quality code, write clear, descriptive, specific tasks.
@@ -156,7 +159,7 @@ To confirm that open tabs are used as context:
 1. Search for GitLab Workflow in the list, and select the gear icon.
 1. Select **Extension Settings**.
 1. In your **User** settings, under **GitLab › Duo Code Suggestions: Open Tabs Context**,
-   select **Enable Open Tabs Context to improve Code Suggestions by sharing context across open tabs**.
+   select **Use the contents of open tabs as context**.
 
 :::TabTitle JetBrains IDEs
 
@@ -256,11 +259,11 @@ When using Code Suggestions, [code review best practice](../../../../development
 
 Code Suggestions is powered by a generative AI model.
 
+- For code completion, suggestions are usually low latency and take less than one second. 
+- For code generation, algorithms or large code blocks might take more than five seconds to generate.
+
 Your personal access token enables a secure API connection to GitLab.com or to your GitLab instance.
 This API connection securely transmits a context window from your IDE/editor to the [GitLab AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist), a GitLab hosted service. The [gateway](../../../../development/ai_architecture.md) calls the large language model APIs, and then the generated suggestion is transmitted back to your IDE/editor.
-
-- For code completion, suggestions are usually low latency.
-- For code generation, algorithms or large code blocks might take more than 10 seconds to generate.
 
 ### Streaming
 

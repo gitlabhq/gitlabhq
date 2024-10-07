@@ -46,5 +46,12 @@ If you aren't sure which tech writer to ask, use [roulette](https://gitlab-org.g
     - If the content still needs to be edited for topic types, you can create a follow-up issue with the ~"docs-technical-debt" label.
 - [ ] Review by assigned maintainer, who can always request/require the reviews above. Maintainer's review can occur before or after a technical writer review.
 
-/label ~documentation ~"type::maintenance" ~"docs::improvement" ~"maintenance::refactor" ~"docs-only"
+/label ~documentation
+/label ~"docs-only"
+
+/label ~"docs::feature"
+/label ~"docs::fix"
+/label ~"docs::improvement"
+
+/label ~"type::maintenance" ~"maintenance::refactor"
 /assign me

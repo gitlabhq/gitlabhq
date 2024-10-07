@@ -11234,6 +11234,9 @@ msgstr ""
 msgid "Checking group path availability..."
 msgstr ""
 
+msgid "Checking if merge request can be merged..."
+msgstr ""
+
 msgid "Checking username availability..."
 msgstr ""
 
@@ -32489,6 +32492,9 @@ msgid "Loading full blame..."
 msgstr ""
 
 msgid "Loading more"
+msgstr ""
+
+msgid "Loading pipeline status"
 msgstr ""
 
 msgid "Loading snippet"

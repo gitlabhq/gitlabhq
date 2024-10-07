@@ -248,7 +248,7 @@ initCascadingSettingsLockTooltips();
 
  ```ruby
  # Example call from your Ruby helper  method for projects
-cascading_settings_data = project_cascading_namespace_settings_tooltip_data(:duo_features_enabled, project, method(:edit_group_path))
+cascading_settings_data = project_cascading_namespace_settings_tooltip_data(:duo_features_enabled, project, method(:edit_group_path)).to_json
  ```
 
 1. From your Vue's `index.js` file, be sure to convert the data into JSON and camel case format. This will make it easier to use in Vue.

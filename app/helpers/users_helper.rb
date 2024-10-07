@@ -102,6 +102,10 @@ module UsersHelper
     Gitlab.config.gitlab.impersonation_enabled
   end
 
+  def impersonation_tokens_enabled?
+    impersonation_enabled?
+  end
+
   def can_impersonate_user(user, impersonation_in_progress)
     can?(user, :log_in) && !user.password_expired? && !impersonation_in_progress
   end

@@ -484,12 +484,4 @@ RSpec.shared_examples 'allowing anyone to pull public terraform modules' do |sta
   end
 
   it_behaves_like 'returning response status', status
-
-  context 'when allow_anyone_to_pull_public_terraform_modules_on_group_level FF is disabled' do
-    before do
-      stub_feature_flags(allow_anyone_to_pull_public_terraform_modules_on_group_level: false)
-    end
-
-    it_behaves_like 'rejects terraform module packages access', :anonymous, :unauthorized
-  end
 end

@@ -1,6 +1,7 @@
 <script>
 import { GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
 import Visibility from 'visibilityjs';
+import { isEmpty } from 'lodash';
 import { createAlert } from '~/alert';
 import Poll from '~/lib/utils/poll';
 import { __, s__, sprintf } from '~/locale';
@@ -33,6 +34,9 @@ export default {
         ciStatus: this.ciStatus.text,
       });
     },
+    hasCiStatus() {
+      return !isEmpty(this.ciStatus) && !this.isLoading;
+    },
   },
   mounted() {
     this.service = new CommitPipelineService(this.endpoint);
@@ -44,10 +48,14 @@ export default {
   methods: {
     successCallback(res) {
       const { pipelines } = res.data;
+
       if (pipelines.length > 0) {
         // The pipeline entity always keeps the latest pipeline info on the `details.status`
         this.ciStatus = pipelines[0].details.status;
+      } else {
+        this.ciStatus = {};
       }
+
       this.isLoading = false;
     },
     errorCallback() {
@@ -92,9 +100,12 @@ export default {
 </script>
 <template>
   <div class="gl-ml-5">
-    <gl-loading-icon v-if="isLoading" size="sm" label="Loading pipeline status" />
-    <a v-else :href="ciStatus.details_path">
-      <ci-icon :status="ciStatus" :title="statusTitle" :aria-label="statusTitle" />
-    </a>
+    <gl-loading-icon v-if="isLoading" size="sm" :label="__('Loading pipeline status')" />
+    <ci-icon
+      v-else-if="hasCiStatus"
+      :status="ciStatus"
+      :title="statusTitle"
+      :aria-label="statusTitle"
+    />
   </div>
 </template>

@@ -7,7 +7,7 @@ module Mutations
         class Create < ::Mutations::BaseMutation
           graphql_name 'CreateContainerRegistryProtectionRule'
           description 'Creates a protection rule to restrict access to a project\'s container registry. ' \
-                      'Available only when feature flag `container_registry_protected_containers` is enabled.'
+            'Available only when feature flag `container_registry_protected_containers` is enabled.'
 
           include FindsProject
 

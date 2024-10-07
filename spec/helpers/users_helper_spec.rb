@@ -183,6 +183,22 @@ RSpec.describe UsersHelper, feature_category: :user_management do
     end
   end
 
+  describe '#impersonation_enabled' do
+    context 'when impersonation is enabled' do
+      before do
+        stub_config_setting(impersonation_enabled: true)
+      end
+
+      it 'allows the admin to impersonate a  user' do
+        expect(helper.impersonation_enabled?).to eq(true)
+      end
+
+      it 'allows impersonation tokens' do
+        expect(helper.impersonation_tokens_enabled?).to eq(true)
+      end
+    end
+  end
+
   describe '#can_impersonate_user' do
     let(:user) { create(:user) }
     let(:impersonation_in_progress) { false }

@@ -1,0 +1,13 @@
+---
+description: Tracks when the work item progress is updated
+action: updated_progress
+product_group: project_management
+milestone: '15.7'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105770
+distributions:
+  - ce
+  - ee
+tiers:
+  - free
+  - premium
+  - ultimate

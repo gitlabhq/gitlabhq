@@ -49,7 +49,7 @@ export default {
       :action="action"
     />
     <li v-if="hasMoreChildren" class="group-row">
-      <a :href="parentGroup.relativePath" class="group-row-contents has-more-items py-2">
+      <a :href="parentGroup.relativePath" class="group-row-contents has-more-items gl-py-3">
         <gl-icon name="external-link" /> {{ moreChildrenStats }}
       </a>
     </li>

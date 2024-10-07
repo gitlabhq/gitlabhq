@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe RescheduleSettingProjectVulnerabilityCount, feature_category: :vulnerability_management do
+RSpec.describe QueueSetTotalNumberOfVulnerabilitiesForExistingProjects, feature_category: :vulnerability_management do
   let!(:batched_migration) { described_class::MIGRATION }
 
   it 'schedules a new batched migration' do
@@ -14,8 +14,10 @@ RSpec.describe RescheduleSettingProjectVulnerabilityCount, feature_category: :vu
 
       migration.after -> {
         expect(batched_migration).to have_scheduled_batched_migration(
-          table_name: :project_settings,
+          gitlab_schema: :gitlab_sec,
+          table_name: :vulnerability_reads,
           column_name: :project_id,
+          batch_class_name: 'LooseIndexScanBatchingStrategy',
           interval: described_class::DELAY_INTERVAL,
           batch_size: described_class::BATCH_SIZE,
           sub_batch_size: described_class::SUB_BATCH_SIZE

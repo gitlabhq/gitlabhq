@@ -46,7 +46,7 @@ export default {
     <pagination-links
       :change="change"
       :page-info="pageInfo"
-      class="justify-content-center gl-mt-3 !gl-flex"
+      class="gl-mt-3 gl-flex gl-justify-center"
     />
   </div>
 </template>

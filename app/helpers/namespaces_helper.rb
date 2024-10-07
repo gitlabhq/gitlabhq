@@ -56,26 +56,22 @@ module NamespacesHelper
   def project_cascading_namespace_settings_tooltip_data(attribute, project, settings_path_helper)
     return unless attribute && project && settings_path_helper
 
-    data = cascading_namespace_settings_tooltip_raw_data(attribute, project.group, settings_path_helper)
-    return {} if data.nil?
+    data = cascading_namespace_settings_tooltip_raw_data(attribute, project.parent, settings_path_helper)
+    return data if data[:locked_by_ancestor]
 
-    update_project_data_with_lock_info(data, "#{attribute}_locked?", project)
+    data[:locked_by_application_setting] = check_project_lock(project, "#{attribute}_locked_by_application_setting?")
+    locked_by_ancestor = check_project_lock(project, "#{attribute}_locked_by_ancestor?")
+    locked_by_project = check_project_lock(project, "#{attribute}_locked?")
 
-    Gitlab::Json.dump(data)
-    data.to_json
-  end
+    return data unless locked_by_ancestor || locked_by_project
 
-  def update_project_data_with_lock_info(data, attribute, project)
-    return if data["locked_by_ancestor"]
-
-    locked_by_group = check_project_lock(project, attribute)
-    return unless locked_by_group
-
-    data[:locked_by_ancestor] = locked_by_group
+    data[:locked_by_ancestor] = true
     data[:ancestor_namespace] = {
-      full_name: project.group.name,
-      path: edit_group_path(project.group)
+      full_name: project.parent.name,
+      path: Gitlab::UrlBuilder.build(project.parent, only_path: true)
     }
+
+    data
   end
 
   def cascading_namespace_setting_locked?(attribute, group, **args)

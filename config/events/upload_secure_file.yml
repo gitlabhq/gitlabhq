@@ -1,0 +1,13 @@
+---
+description: Tracks when the secure file is uploaded.
+action: upload_secure_file
+product_group: mobile_devops
+milestone: '15.2'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90449
+distributions:
+  - ce
+  - ee
+tiers:
+  - free
+  - premium
+  - ultimate

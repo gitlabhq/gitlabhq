@@ -2,12 +2,6 @@
 # Cop supports --autocorrect.
 Layout/LineEndStringConcatenationIndentation:
   Exclude:
-    - 'app/graphql/mutations/award_emojis/toggle.rb'
-    - 'app/graphql/mutations/boards/issues/issue_move_list.rb'
-    - 'app/graphql/mutations/ci/job_token_scope/add_project.rb'
-    - 'app/graphql/mutations/concerns/mutations/validate_time_estimate.rb'
-    - 'app/graphql/mutations/container_registry/protection/rule/create.rb'
-    - 'app/graphql/mutations/container_registry/protection/rule/delete.rb'
     - 'app/graphql/types/packages/package_base_type.rb'
     - 'app/graphql/types/packages/protection/rule_type.rb'
     - 'app/graphql/types/permission_types/ci/pipeline_schedules.rb'

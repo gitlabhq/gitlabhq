@@ -236,7 +236,7 @@ RSpec.describe 'merge requests discussions', feature_category: :source_code_mana
 
       context 'when author role changes' do
         before do
-          Members::UpdateService.new(owner, access_level: Gitlab::Access::GUEST).execute(author_membership)
+          Members::UpdateService.new(owner, access_level: Gitlab::Access::GUEST, source: project).execute(author_membership)
         end
 
         it_behaves_like 'cache miss' do
@@ -246,7 +246,7 @@ RSpec.describe 'merge requests discussions', feature_category: :source_code_mana
 
       context 'when current_user role changes' do
         before do
-          Members::UpdateService.new(owner, access_level: Gitlab::Access::GUEST).execute(project.member(user))
+          Members::UpdateService.new(owner, access_level: Gitlab::Access::GUEST, source: project).execute(project.member(user))
         end
 
         it_behaves_like 'cache miss' do

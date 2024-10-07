@@ -95,6 +95,11 @@ Cop/StaticTranslationDefinition:
     - 'spec/**/*'
     - 'ee/spec/**/*'
 
+# Disable old cop, needs to be removed when gitlab-styles 13.0.0 is merged
+# see: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164582
+Cop/WithoutReactiveCache:
+  Enabled: false
+
 InternalAffairs/DeprecateCopHelper:
   Enabled: true
   Include:
