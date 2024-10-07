@@ -60,6 +60,16 @@ RSpec.describe Gitlab::Middleware::Go, feature_category: :source_code_management
                 it 'returns the 2-segment path' do
                   expect_response_with_path(go, enabled_protocol, project.full_path)
                 end
+
+                context 'when instance does not allow password authentication for Git over HTTP(S)' do
+                  before do
+                    stub_application_setting(password_authentication_enabled_for_git: false)
+                  end
+
+                  it 'returns the 2-segment path' do
+                    expect_response_with_path(go, enabled_protocol, project.full_path)
+                  end
+                end
               end
 
               context 'when authorization header is present but invalid' do
