@@ -175,7 +175,7 @@ module VisibilityLevelHelper
           'Public groups and projects will be indexed by search engines. ' \
           'Read more about %{free_user_limit_doc_link_start}free user limits%{link_end}, ' \
           'or %{group_billings_link_start}upgrade to a paid tier%{link_end}.'),
-        free_user_limit_doc_link_start: "<a href='#{help_page_path('user/free_user_limit')}' target='_blank' rel='noopener noreferrer'>".html_safe,
+        free_user_limit_doc_link_start: "<a href='#{help_page_path('user/free_user_limit.md')}' target='_blank' rel='noopener noreferrer'>".html_safe,
         group_billings_link_start: "<a href='#{group_billings_path(group)}' target='_blank' rel='noopener noreferrer'>".html_safe,
         link_end: "</a>".html_safe
       ).html_safe

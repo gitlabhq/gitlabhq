@@ -14,6 +14,6 @@ RSpec.describe Projects::Security::ConfigurationHelper do
   describe 'vulnerability_training_docs_path' do
     subject { helper.vulnerability_training_docs_path }
 
-    it { is_expected.to eq(help_page_path('user/application_security/vulnerabilities/index', anchor: 'enable-security-training-for-vulnerabilities')) }
+    it { is_expected.to eq(help_page_path('user/application_security/vulnerabilities/index.md', anchor: 'enable-security-training-for-vulnerabilities')) }
   end
 end

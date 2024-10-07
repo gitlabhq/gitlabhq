@@ -7,7 +7,7 @@ module ClustersHelper
 
   def js_clusters_list_data(clusterable)
     {
-      ancestor_help_path: help_page_path('user/group/clusters/index', anchor: 'cluster-precedence'),
+      ancestor_help_path: help_page_path('user/group/clusters/index.md', anchor: 'cluster-precedence'),
       endpoint: clusterable.index_path(format: :json),
       img_tags: {
         aws: { path: image_path('illustrations/logos/amazon_eks.svg'), text: s_('ClusterIntegration|Amazon EKS') },
@@ -37,8 +37,8 @@ module ClustersHelper
       editable: can_edit.to_s,
       environment_scope: cluster.environment_scope,
       base_domain: cluster.base_domain,
-      auto_devops_help_path: help_page_path('topics/autodevops/index'),
-      external_endpoint_help_path: help_page_path('user/project/clusters/gitlab_managed_clusters', anchor: 'base-domain')
+      auto_devops_help_path: help_page_path('topics/autodevops/index.md'),
+      external_endpoint_help_path: help_page_path('user/project/clusters/gitlab_managed_clusters.md', anchor: 'base-domain')
     }
   end
 

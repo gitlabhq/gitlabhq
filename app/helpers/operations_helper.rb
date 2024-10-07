@@ -21,7 +21,7 @@ module OperationsHelper
       'prometheus_authorization_key' => @project.alerting_setting&.token,
       'prometheus_api_url' => prometheus_integration.api_url,
       'prometheus_url' => notify_project_prometheus_alerts_url(@project, format: :json),
-      'alerts_setup_url' => help_page_path('operations/incident_management/integrations', anchor: 'configuration'),
+      'alerts_setup_url' => help_page_path('operations/incident_management/integrations.md', anchor: 'configuration'),
       'alerts_usage_url' => project_alert_management_index_path(@project),
       'disabled' => disabled.to_s,
       'project_path' => @project.full_path,

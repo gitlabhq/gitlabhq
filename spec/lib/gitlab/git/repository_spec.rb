@@ -671,15 +671,17 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
         no_tags: true,
         timeout: described_class::GITLAB_PROJECTS_TIMEOUT,
         prune: false,
+        check_repo_changed: false,
         check_tags_changed: false,
         refmap: nil,
         http_authorization_header: "",
+        lfs_sync_before_branch_updates: false,
         resolved_address: '172.16.123.1'
       }
 
       expect(repository.gitaly_repository_client).to receive(:fetch_remote).with(url, expected_opts)
 
-      repository.fetch_remote(url, ssh_auth: ssh_auth, forced: true, no_tags: true, prune: false, check_tags_changed: false, resolved_address: '172.16.123.1')
+      repository.fetch_remote(url, ssh_auth: ssh_auth, forced: true, no_tags: true, prune: false, check_repo_changed: false, check_tags_changed: false, lfs_sync_before_branch_updates: false, resolved_address: '172.16.123.1')
     end
 
     it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::RepositoryService, :fetch_remote do

@@ -38,48 +38,6 @@
   }
 }
 
-.pipeline-quota {
-  border-bottom: 1px solid $table-border-color;
-  margin: 0 0 $gl-padding;
-
-  .row {
-    padding-top: 10px;
-    padding-bottom: 10px;
-  }
-
-  .right {
-    text-align: right;
-  }
-
-  .progress {
-    height: 6px;
-    width: 100%;
-    margin-bottom: 0;
-    margin-top: 4px;
-  }
-}
-
-table.pipeline-project-metrics tr td {
-  padding: $gl-padding;
-}
-
-.explore-groups.landing {
-  .inner-content p {
-    margin: 7px 0 0;
-    max-width: 480px;
-    padding: 0 $gl-padding;
-
-    @include media-breakpoint-down(sm) {
-      margin: 0 auto;
-    }
-  }
-
-  .svg-container svg {
-    width: 62px;
-    height: 50px;
-  }
-}
-
 .groups-list-tree-container {
   > .group-list-tree > .group-row.has-children:first-child {
     border-top: 0;

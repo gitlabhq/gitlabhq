@@ -160,7 +160,7 @@ module IntegrationsHelper
   end
 
   def integrations_help_page_path
-    help_page_path('administration/settings/project_integration_management')
+    help_page_path('administration/settings/project_integration_management.md')
   end
 
   def project_jira_issues_integration?

@@ -166,7 +166,7 @@ module IssuablesHelper
       issuableRef: issuable.to_reference,
       imported: issuable.imported?,
       markdownPreviewPath: preview_markdown_path(parent, target_type: issuable.model_name, target_id: issuable.iid),
-      markdownDocsPath: help_page_path('user/markdown'),
+      markdownDocsPath: help_page_path('user/markdown.md'),
       lockVersion: issuable.lock_version,
       issuableTemplateNamesPath: template_names_path(parent, issuable),
       initialTitleHtml: markdown_field(issuable, :title),

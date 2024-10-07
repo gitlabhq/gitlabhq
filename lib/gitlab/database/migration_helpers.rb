@@ -17,6 +17,7 @@ module Gitlab
       include AsyncIndexes::MigrationHelpers
       include AsyncConstraints::MigrationHelpers
       include WraparoundVacuumHelpers
+      include PartitionHelpers
 
       INTEGER_IDS_YET_TO_INITIALIZED_TO_BIGINT_FILE_PATH = 'db/integer_ids_not_yet_initialized_to_bigint.yml'
 
@@ -1241,20 +1242,6 @@ into similar problems in the future (e.g. when new tables are created).
         end
       end
       # rubocop:enable Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
-
-      def partition?(table_name)
-        if view_exists?(:postgres_partitions)
-          Gitlab::Database::PostgresPartition.partition_exists?(table_name)
-        else
-          Gitlab::Database::PostgresPartition.legacy_partition_exists?(table_name)
-        end
-      end
-
-      def table_partitioned?(table_name)
-        Gitlab::Database::PostgresPartitionedTable
-          .find_by_name_in_current_schema(table_name)
-          .present?
-      end
 
       # While it is safe to call `change_column_default` on a column without
       # default it would still require access exclusive lock on the table

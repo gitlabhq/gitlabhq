@@ -70,6 +70,15 @@ This error occurs when you try to access a tool of GitLab Duo Chat that is not b
 
 Ensure your [GitLab Duo subscription tier](https://about.gitlab.com/gitlab-duo/#pricing) includes the selected tool.
 
+## `Error M3006`
+
+You might get an error that states
+`I'm sorry, you don't have the GitLab Duo subscription required to use Duo Chat. Please contact your administrator. Error code: M3006`.
+
+This error occurs when GitLab Duo Chat is not included in your GitLab Duo subscription.
+
+Ensure your [GitLab Duo subscription tier](https://about.gitlab.com/gitlab-duo/#pricing) includes GitLab Duo Chat.
+
 ## `Error M4000`
 
 You might get an error that states

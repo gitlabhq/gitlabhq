@@ -207,7 +207,7 @@ module ProjectsHelper
   end
 
   def link_to_autodeploy_doc
-    link_to _('About auto deploy'), help_page_path('topics/autodevops/stages', anchor: 'auto-deploy'), target: '_blank', rel: 'noopener'
+    link_to _('About auto deploy'), help_page_path('topics/autodevops/stages.md', anchor: 'auto-deploy'), target: '_blank', rel: 'noopener'
   end
 
   def autodeploy_flash_notice(branch_name)
@@ -412,30 +412,30 @@ module ProjectsHelper
   def project_permissions_panel_data(project)
     {
       packagesAvailable: ::Gitlab.config.packages.enabled,
-      packagesHelpPath: help_page_path('user/packages/index'),
+      packagesHelpPath: help_page_path('user/packages/index.md'),
       currentSettings: project_permissions_settings(project),
       canAddCatalogResource: can_add_catalog_resource?(project),
       canSetDiffPreviewInEmail: can_set_diff_preview_in_email?(project, current_user),
       canChangeVisibilityLevel: can_change_visibility_level?(project, current_user),
       canDisableEmails: can_disable_emails?(project, current_user),
       allowedVisibilityOptions: project_allowed_visibility_levels(project),
-      visibilityHelpPath: help_page_path('user/public_access'),
+      visibilityHelpPath: help_page_path('user/public_access.md'),
       registryAvailable: Gitlab.config.registry.enabled,
-      registryHelpPath: help_page_path('user/packages/container_registry/index'),
+      registryHelpPath: help_page_path('user/packages/container_registry/index.md'),
       lfsAvailable: Gitlab.config.lfs.enabled,
-      lfsHelpPath: help_page_path('topics/git/lfs/index'),
+      lfsHelpPath: help_page_path('topics/git/lfs/index.md'),
       lfsObjectsExist: project.lfs_objects.exists?,
-      lfsObjectsRemovalHelpPath: help_page_path('topics/git/lfs/index', anchor: 'removing-objects-from-lfs'),
+      lfsObjectsRemovalHelpPath: help_page_path('topics/git/lfs/index.md', anchor: 'removing-objects-from-lfs'),
       pagesAvailable: Gitlab.config.pages.enabled,
       pagesAccessControlEnabled: Gitlab.config.pages.access_control,
       pagesAccessControlForced: ::Gitlab::Pages.access_control_is_forced?,
-      pagesHelpPath: help_page_path('user/project/pages/introduction', anchor: 'gitlab-pages-access-control'),
-      issuesHelpPath: help_page_path('user/project/issues/index'),
+      pagesHelpPath: help_page_path('user/project/pages/introduction.md', anchor: 'gitlab-pages-access-control'),
+      issuesHelpPath: help_page_path('user/project/issues/index.md'),
       membersPagePath: project_project_members_path(project),
-      environmentsHelpPath: help_page_path('ci/environments/index'),
-      featureFlagsHelpPath: help_page_path('operations/feature_flags'),
-      releasesHelpPath: help_page_path('user/project/releases/index'),
-      infrastructureHelpPath: help_page_path('user/infrastructure/index')
+      environmentsHelpPath: help_page_path('ci/environments/index.md'),
+      featureFlagsHelpPath: help_page_path('operations/feature_flags.md'),
+      releasesHelpPath: help_page_path('user/project/releases/index.md'),
+      infrastructureHelpPath: help_page_path('user/infrastructure/index.md')
     }
   end
 
@@ -508,7 +508,7 @@ module ProjectsHelper
     {
       emails_disabled: project.emails_disabled?.to_s,
       notification_dropdown_items: dropdown_items,
-      notification_help_page_path: help_page_path('user/profile/notifications'),
+      notification_help_page_path: help_page_path('user/profile/notifications.md'),
       notification_level: notification_level
     }
   end
@@ -541,7 +541,7 @@ module ProjectsHelper
   end
 
   def import_from_bitbucket_message
-    configure_oauth_import_message('Bitbucket', help_page_path("integration/bitbucket"))
+    configure_oauth_import_message('Bitbucket', help_page_path("integration/bitbucket.md"))
   end
 
   def show_archived_project_banner?(project)

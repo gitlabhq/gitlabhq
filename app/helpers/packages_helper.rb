@@ -112,9 +112,9 @@ module PackagesHelper
       admin_settings_path: ci_cd_admin_application_settings_path(anchor: 'js-registry-settings'),
       project_settings_path: project_settings_packages_and_registries_path(project),
       enable_historic_entries: container_expiration_policies_historic_entry_enabled?.to_s,
-      help_page_path: help_page_path('user/packages/container_registry/reduce_container_registry_storage', anchor: 'cleanup-policy'),
+      help_page_path: help_page_path('user/packages/container_registry/reduce_container_registry_storage.md', anchor: 'cleanup-policy'),
       show_cleanup_policy_link: show_cleanup_policy_link(project).to_s,
-      tags_regex_help_page_path: help_page_path('user/packages/container_registry/reduce_container_registry_storage', anchor: 'regex-pattern-examples')
+      tags_regex_help_page_path: help_page_path('user/packages/container_registry/reduce_container_registry_storage.md', anchor: 'regex-pattern-examples')
     }
   end
 

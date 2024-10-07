@@ -19,7 +19,7 @@ RSpec.describe InviteMembersHelper do
         name: project.name,
         default_access_level: Gitlab::Access::GUEST,
         invalid_groups: project.related_group_ids,
-        help_link: help_page_url('user/permissions'),
+        help_link: help_page_url('user/permissions.md'),
         is_project: 'true',
         access_levels: ProjectMember.access_level_roles.to_json,
         full_path: project.full_path
