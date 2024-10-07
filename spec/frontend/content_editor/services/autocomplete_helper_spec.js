@@ -74,24 +74,45 @@ describe('createDataSource', () => {
     mock.restore();
   });
 
-  it('fetches data from source and filters based on query', async () => {
-    const data = [
-      { name: 'abc', description: 'xyz' },
-      { name: 'bcd', description: 'wxy' },
-      { name: 'cde', description: 'vwx' },
-    ];
-    mock.onGet('/source').reply(HTTP_STATUS_OK, data);
-
-    const dataSource = createDataSource({
+  describe('on fetch success', () => {
+    const dataSourceParams = {
       source: '/source',
       searchFields: ['name', 'description'],
+    };
+
+    beforeEach(() => {
+      const data = [
+        { name: 'abc', description: 'xyz' },
+        { name: 'bcd', description: 'wxy' },
+        { name: 'cde', description: 'vwx' },
+      ];
+      mock.onGet('/source').reply(HTTP_STATUS_OK, data);
     });
 
-    const results = await dataSource.search('b');
-    expect(results).toEqual([
-      { name: 'bcd', description: 'wxy' },
-      { name: 'abc', description: 'xyz' },
-    ]);
+    it('fetches data from source and filters based on query', async () => {
+      const dataSource = createDataSource(dataSourceParams);
+
+      const results = await dataSource.search('b');
+      expect(results).toEqual([
+        { name: 'bcd', description: 'wxy' },
+        { name: 'abc', description: 'xyz' },
+      ]);
+    });
+
+    describe('if filterOnBackend: true', () => {
+      it('fetches data from source, passing a `search` param', async () => {
+        const dataSource = createDataSource({
+          ...dataSourceParams,
+          filterOnBackend: true,
+        });
+
+        const results = await dataSource.search('bcd');
+        expect(mock.history.get[0].params).toEqual({ search: 'bcd' });
+
+        // results are still filtered out on frontend, on top of backend filtering
+        expect(results).toEqual([{ name: 'bcd', description: 'wxy' }]);
+      });
+    });
   });
 
   it('handles source fetch errors', async () => {

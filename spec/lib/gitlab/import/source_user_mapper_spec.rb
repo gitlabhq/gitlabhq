@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Import::SourceUserMapper, :request_store, feature_category: :importers do
   let_it_be(:namespace) { create(:namespace) }
   let_it_be(:import_type) { 'github' }
-  let_it_be(:source_hostname) { 'github.com' }
+  let_it_be(:source_hostname) { 'https://github.com' }
 
   let_it_be(:existing_import_source_user) do
     create(
@@ -129,6 +129,30 @@ RSpec.describe Gitlab::Import::SourceUserMapper, :request_store, feature_categor
 
         it_behaves_like 'it does not create an import_source_user or placeholder user'
       end
+
+      context 'when source host name has a path' do
+        let(:source_hostname) { 'https://github.com/path' }
+
+        it 'normalizes the source_hostname' do
+          expect(find_or_create_source_user.source_hostname).to eq('https://github.com')
+        end
+      end
+
+      context 'when source host name has a port' do
+        let(:source_hostname) { 'https://github.com:8443/path' }
+
+        it 'normalizes the base URI and keeps the port in the source_hostname' do
+          expect(find_or_create_source_user.source_hostname).to eq('https://github.com:8443')
+        end
+      end
+
+      context 'when source host name has a subdomain' do
+        let(:source_hostname) { 'https://subdomain.github.com/path' }
+
+        it 'normalizes the base URI and keeps the subdomain in the source_hostname' do
+          expect(find_or_create_source_user.source_hostname).to eq('https://subdomain.github.com')
+        end
+      end
     end
 
     context 'when the placeholder user limit has been reached' do
@@ -194,6 +218,55 @@ RSpec.describe Gitlab::Import::SourceUserMapper, :request_store, feature_categor
 
     it 'returns the existing source user' do
       expect(find_source_user).to eq(existing_import_source_user)
+    end
+
+    context 'when source_hostname has a path, and the source user record does not' do
+      let(:source_hostname) { 'https://github.com/path' }
+
+      it 'returns the existing source user' do
+        expect(find_source_user).to eq(existing_import_source_user)
+        expect(existing_import_source_user.source_hostname).to eq('https://github.com')
+      end
+    end
+
+    context 'when source_hostname has a port, and the source user record does not' do
+      let(:source_hostname) { 'https://github.com:8443' }
+
+      it 'does not return the existing source user' do
+        expect(find_source_user).to be_nil
+      end
+    end
+
+    context 'when source_hostname has a subdomain, and the source user record does not' do
+      let(:source_hostname) { 'https://subdomain.github.com' }
+
+      it 'does not return the existing source user' do
+        expect(find_source_user).to be_nil
+      end
+    end
+
+    context 'when source_hostname scheme does not match' do
+      let(:source_hostname) { 'http://github.com' }
+
+      it 'does not return the existing source user' do
+        expect(find_source_user).to be_nil
+      end
+    end
+
+    context 'when namespace does not match' do
+      let(:namespace) { create(:group) }
+
+      it 'does not return the existing source user' do
+        expect(find_source_user).to be_nil
+      end
+    end
+
+    context 'when import_type does not match' do
+      let(:import_type) { 'gitea' }
+
+      it 'does not return the existing source user' do
+        expect(find_source_user).to be_nil
+      end
     end
 
     context 'when source user does not exist' do

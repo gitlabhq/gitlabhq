@@ -15,7 +15,7 @@ module Gitlab
       def initialize(namespace:, import_type:, source_hostname:)
         @namespace = namespace.root_ancestor
         @import_type = import_type
-        @source_hostname = source_hostname
+        @source_hostname = Gitlab::UrlHelpers.normalized_base_url(source_hostname)
       end
 
       # Finds a source user by the provided `source_user_identifier`.

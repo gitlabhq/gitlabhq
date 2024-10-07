@@ -59,17 +59,18 @@
                     user: User.new(username: '{{username}}', name: '{{name}}'),
                     avatar: { lazy: true, url: '{{avatar_url}}' }
               #js-dropdown-assignee.gl-filtered-search-suggestion-list.dropdown-menu
-                %ul{ data: { dropdown: true } }
-                  %li.filter-dropdown-item{ data: { value: 'None' } }
-                    = render Pajamas::ButtonComponent.new(variant: :link) do
-                      = _('None')
-                  %li.filter-dropdown-item{ data: { value: 'Any' } }
-                    = render Pajamas::ButtonComponent.new(variant: :link) do
-                      = _('Any')
-                  %li.divider.droplab-item-ignore
-                  - if current_user
-                    = render 'shared/issuable/user_dropdown_item',
-                      user: current_user
+                - if type != :issues_analytics
+                  %ul{ data: { dropdown: true } }
+                    %li.filter-dropdown-item{ data: { value: 'None' } }
+                      = render Pajamas::ButtonComponent.new(variant: :link) do
+                        = _('None')
+                    %li.filter-dropdown-item{ data: { value: 'Any' } }
+                      = render Pajamas::ButtonComponent.new(variant: :link) do
+                        = _('Any')
+                    %li.divider.droplab-item-ignore
+                    - if current_user
+                      = render 'shared/issuable/user_dropdown_item',
+                        user: current_user
                 %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
                   = render 'shared/issuable/user_dropdown_item',
                     user: User.new(username: '{{username}}', name: '{{name}}'),
@@ -96,20 +97,21 @@
               = render_if_exists 'shared/issuable/merge_user_dropdown'
 
               #js-dropdown-milestone.gl-filtered-search-suggestion-list.dropdown-menu
-                %ul{ data: { dropdown: true } }
-                  %li.filter-dropdown-item{ data: { value: 'None' } }
-                    = render Pajamas::ButtonComponent.new(variant: :link) do
-                      = _('None')
-                  %li.filter-dropdown-item{ data: { value: 'Any' } }
-                    = render Pajamas::ButtonComponent.new(variant: :link) do
-                      = _('Any')
-                  %li.filter-dropdown-item{ data: { value: 'Upcoming' } }
-                    = render Pajamas::ButtonComponent.new(variant: :link) do
-                      = _('Upcoming')
-                  %li.filter-dropdown-item{ data: { value: 'Started' } }
-                    = render Pajamas::ButtonComponent.new(variant: :link) do
-                      = _('Started')
-                  %li.divider.droplab-item-ignore
+                - if type != :issues_analytics
+                  %ul{ data: { dropdown: true } }
+                    %li.filter-dropdown-item{ data: { value: 'None' } }
+                      = render Pajamas::ButtonComponent.new(variant: :link) do
+                        = _('None')
+                    %li.filter-dropdown-item{ data: { value: 'Any' } }
+                      = render Pajamas::ButtonComponent.new(variant: :link) do
+                        = _('Any')
+                    %li.filter-dropdown-item{ data: { value: 'Upcoming' } }
+                      = render Pajamas::ButtonComponent.new(variant: :link) do
+                        = _('Upcoming')
+                    %li.filter-dropdown-item{ data: { value: 'Started' } }
+                      = render Pajamas::ButtonComponent.new(variant: :link) do
+                        = _('Started')
+                    %li.divider.droplab-item-ignore
                 %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
                   %li.filter-dropdown-item
                     = render Pajamas::ButtonComponent.new(variant: :link, button_options: { class: 'js-data-value' }) do

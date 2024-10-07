@@ -9,7 +9,9 @@ module Gitlab
       scope :wraparound_prevention, -> { where(wraparound_prevention: true) }
 
       def self.for_tables(tables)
-        Gitlab::Database::LoadBalancing::Session.current.use_primary do
+        Gitlab::Database::LoadBalancing::SessionMap
+          .current(connection.load_balancer)
+          .use_primary do
           # calling `.to_a` here to execute the query in the primary's scope
           # and to avoid having the scope chained and re-executed
           #

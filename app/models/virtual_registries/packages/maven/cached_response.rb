@@ -25,6 +25,7 @@ module VirtualRegistries
           :upstream_etag,
           :content_type,
           length: { maximum: 255 }
+        validates :file_final_path, length: { maximum: 1024 }
         validates :downloads_count, numericality: { greater_than: 0, only_integer: true }
         validates :relative_path, uniqueness: { scope: :upstream_id }, if: :upstream
         validates :file, presence: true

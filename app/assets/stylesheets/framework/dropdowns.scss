@@ -21,11 +21,6 @@
   display: block;
 }
 
-@mixin set-invisible {
-  transform: translateY(-10px);
-  display: none;
-}
-
 .show.dropdown {
   .dropdown-menu {
     @include set-visible;
@@ -772,7 +767,8 @@
   @include set-visible;
 
   &.is-hidden {
-    @include set-invisible;
+    transform: translateY(-10px);
+    display: none;
     overflow: hidden;
   }
 }

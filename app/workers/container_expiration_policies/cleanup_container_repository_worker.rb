@@ -185,7 +185,9 @@ module ContainerExpirationPolicies
     end
 
     def use_replica_if_available(&blk)
-      ::Gitlab::Database::LoadBalancing::Session.current.use_replicas_for_read_queries(&blk)
+      ::Gitlab::Database::LoadBalancing::SessionMap
+        .with_sessions([::ApplicationRecord, ::Ci::ApplicationRecord])
+        .use_replicas_for_read_queries(&blk)
     end
   end
 end

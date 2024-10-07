@@ -1,0 +1,9 @@
+---
+name: allow_self_hosted_features_for_com
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/497784
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/168337
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/497994
+milestone: '17.5'
+group: group::custom models
+type: experiment
+default_enabled: false

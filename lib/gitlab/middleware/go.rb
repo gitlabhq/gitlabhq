@@ -130,10 +130,7 @@ module Gitlab
       # can_read_project? checks if the request's credentials have read access to the project
       def can_read_project?(request, project)
         return true if project.public?
-
-        if Feature.enabled?(:go_get_handle_401_error, Feature.current_request) && !has_basic_credentials?(request)
-          return false
-        end
+        return false unless has_basic_credentials?(request)
 
         login, password = user_name_and_password(request)
         auth_result = Gitlab::Auth.find_for_git_client(login, password, project: project, request: request)

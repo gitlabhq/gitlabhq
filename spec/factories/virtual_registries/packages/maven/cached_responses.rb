@@ -10,6 +10,7 @@ FactoryBot.define do
     upstream_etag { OpenSSL::Digest.hexdigest('SHA256', 'test') }
     content_type { 'text/plain' }
     downloads_count { 5 }
+    file_final_path { '5f/9c/5f9c/@final/c7/4c/240c' }
 
     transient do
       file_fixture { 'spec/fixtures/bfg_object_map.txt' }

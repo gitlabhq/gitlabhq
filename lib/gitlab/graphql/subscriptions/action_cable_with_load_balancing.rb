@@ -27,8 +27,11 @@ module Gitlab
           # and others expect the original payload.
           return super(subscription_id, event, object) unless wrapped_payload?(object)
 
-          wal_locations = object[KEY_WAL_LOCATIONS]
-          ::Gitlab::Database::LoadBalancing::Session.current.use_primary! if use_primary?(wal_locations)
+          if use_primary?(object[KEY_WAL_LOCATIONS])
+            ::Gitlab::Database::LoadBalancing::SessionMap
+              .with_sessions(Gitlab::Database::LoadBalancing.base_models)
+              .use_primary!
+          end
 
           super(subscription_id, event, object[KEY_PAYLOAD])
         end

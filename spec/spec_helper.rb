@@ -358,6 +358,9 @@ RSpec.configure do |config|
       # Since we are very early in the Vue migration, there isn't much value in testing when the feature flag is enabled
       # Please see https://gitlab.com/gitlab-org/gitlab/-/issues/466081 for tracking revisiting this.
       stub_feature_flags(your_work_projects_vue: false)
+
+      # This feature flag allows enabling self-hosted features on Staging Ref: https://gitlab.com/gitlab-org/gitlab/-/issues/497784
+      stub_feature_flags(allow_self_hosted_features_for_com: false)
     else
       unstub_all_feature_flags
     end

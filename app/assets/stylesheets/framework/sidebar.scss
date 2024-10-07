@@ -257,8 +257,20 @@
 }
 
 .toggle-right-sidebar-button {
-  @include side-panel-toggle;
+  @apply gl-transition-width;
+  height: $toggle-sidebar-height;
+  padding: 0 $gl-padding;
+  background-color: $gray-10;
+  border: 0;
+  color: $gl-text-color-secondary;
+  display: flex;
+  align-items: center;
   border-bottom: 1px solid $border-color;
+
+  &:hover {
+    background-color: $border-color;
+    color: $gl-text-color;
+  }
 }
 
 .edit-link {

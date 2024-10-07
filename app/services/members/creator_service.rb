@@ -158,7 +158,6 @@ module Members
     def execute
       find_or_build_member
       commit_member
-      after_commit_tasks
 
       member
     end
@@ -230,10 +229,6 @@ module Members
         # for details.
         member.save
       end
-    end
-
-    def after_commit_tasks
-      # hook for overriding in other uses
     end
 
     def approve_request

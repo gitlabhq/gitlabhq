@@ -170,7 +170,6 @@ RSpec.describe 'gitlab:db:validate_config', :silence_stdout, :suppress_gitlab_sc
       context "when there's no main: but something different, as currently we only can share with main:" do
         let(:test_config) do
           {
-            archive: main_database_config,
             ci: main_database_config.merge(database_tasks: false)
           }
         end

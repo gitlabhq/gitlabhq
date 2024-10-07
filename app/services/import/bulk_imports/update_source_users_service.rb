@@ -34,7 +34,7 @@ module Import
       def source_users_with_missing_information
         Import::SourceUser.source_users_with_missing_information(
           namespace: namespace,
-          source_hostname: bulk_import.configuration.source_hostname,
+          source_hostname: bulk_import.configuration.url,
           import_type: Import::SOURCE_DIRECT_TRANSFER
         )
       end
@@ -43,7 +43,7 @@ module Import
         Import::SourceUser.find_source_user(
           source_user_identifier: source_user_identifier,
           namespace: namespace,
-          source_hostname: bulk_import.configuration.source_hostname,
+          source_hostname: bulk_import.configuration.url,
           import_type: Import::SOURCE_DIRECT_TRANSFER
         )
       end

@@ -1008,7 +1008,7 @@ RSpec.describe API::VirtualRegistries::Packages::Maven, :aggregate_failures, fea
           cached_response
             .as_json
             .merge('cached_response_id' => Base64.urlsafe_encode64(cached_response.relative_path))
-            .except('id', 'object_storage_key', 'file_store', 'status')
+            .except('id', 'object_storage_key', 'file_store', 'status', 'file_final_path')
         )
       end
     end
@@ -1228,6 +1228,13 @@ RSpec.describe API::VirtualRegistries::Packages::Maven, :aggregate_failures, fea
 
     shared_examples 'returning the workhorse send_dependency response' do
       it 'returns a workhorse send_url response' do
+        expect(::VirtualRegistries::CachedResponseUploader).to receive(:workhorse_authorize).with(
+          a_hash_including(
+            use_final_store_path: true,
+            final_store_path_root_id: registry.id
+          )
+        ).and_call_original
+
         expect(Gitlab::Workhorse).to receive(:send_dependency).with(
           an_instance_of(Hash),
           an_instance_of(String),

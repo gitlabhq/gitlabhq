@@ -13,7 +13,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqClientMiddleware, feature
   end
 
   after do
-    Gitlab::Database::LoadBalancing::Session.clear_session
+    Gitlab::Database::LoadBalancing::SessionMap.clear_session
   end
 
   def run_middleware
@@ -55,7 +55,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqClientMiddleware, feature
         run_middleware
 
         expect(job['wal_locations']).to be_nil
-        expect(job['wal_location_source']).to be_nil
+        expect(job['wal_location_sources']).to be_nil
       end
 
       include_examples 'job data consistency'
@@ -80,22 +80,24 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqClientMiddleware, feature
         context 'when replica hosts are available' do
           it 'passes database_replica_location' do
             expected_locations = expect_tracked_locations_when_replicas_available
+            expected_sources = expected_locations.keys.index_with { |_| :replica }
 
             run_middleware
 
             expect(job['wal_locations']).to eq(expected_locations)
-            expect(job['wal_location_source']).to eq(:replica)
+            expect(job['wal_location_sources']).to eq(expected_sources)
           end
         end
 
         context 'when no replica hosts are available' do
           it 'passes primary_write_location' do
             expected_locations = expect_tracked_locations_when_no_replicas_available
+            expected_sources = expected_locations.keys.index_with { |_| :replica }
 
             run_middleware
 
             expect(job['wal_locations']).to eq(expected_locations)
-            expect(job['wal_location_source']).to eq(:replica)
+            expect(job['wal_location_sources']).to eq(expected_sources)
           end
         end
 
@@ -109,11 +111,12 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqClientMiddleware, feature
 
         it 'passes primary write location', :aggregate_failures do
           expected_locations = expect_tracked_locations_from_primary_only
+          expected_sources = expected_locations.keys.index_with { |_| :primary }
 
           run_middleware
 
           expect(job['wal_locations']).to eq(expected_locations)
-          expect(job['wal_location_source']).to eq(:primary)
+          expect(job['wal_location_sources']).to eq(expected_sources)
         end
 
         include_examples 'job data consistency'
@@ -156,6 +159,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqClientMiddleware, feature
       let(:new_location) { 'AB/12345' }
       let(:wal_locations) { { Gitlab::Database::MAIN_DATABASE_NAME.to_sym => old_location } }
       let(:job) { { "job_id" => "a180b47c-3fd6-41b8-81e9-34da61c3400e", 'wal_locations' => wal_locations } }
+      let(:session) { Gitlab::Database::LoadBalancing::Session.new }
 
       before do
         Gitlab::Database::LoadBalancing.each_load_balancer do |lb|
@@ -166,14 +170,15 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqClientMiddleware, feature
 
       shared_examples_for 'does not set database location again' do |use_primary|
         before do
-          allow(Gitlab::Database::LoadBalancing::Session.current).to receive(:use_primary?).and_return(use_primary)
+          allow(Gitlab::Database::LoadBalancing::SessionMap).to receive(:current).and_return(session)
+          allow(session).to receive(:use_primary?).and_return(use_primary)
         end
 
         it 'does not set database locations again' do
           run_middleware
 
           expect(job['wal_locations']).to eq(wal_locations)
-          expect(job['wal_location_source']).to be_nil
+          expect(job['wal_location_sources']).to be_nil
         end
       end
 

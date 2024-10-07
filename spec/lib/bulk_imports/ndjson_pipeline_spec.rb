@@ -16,7 +16,7 @@ RSpec.describe BulkImports::NdjsonPipeline, feature_category: :importers do
       import_type: ::Import::SOURCE_DIRECT_TRANSFER,
       namespace: group,
       source_user_identifier: 101,
-      source_hostname: bulk_import.configuration.source_hostname
+      source_hostname: bulk_import.configuration.url
     )
   end
 
@@ -25,7 +25,7 @@ RSpec.describe BulkImports::NdjsonPipeline, feature_category: :importers do
       import_type: ::Import::SOURCE_DIRECT_TRANSFER,
       namespace: group,
       source_user_identifier: 102,
-      source_hostname: bulk_import.configuration.source_hostname
+      source_hostname: bulk_import.configuration.url
     )
   end
 
@@ -34,7 +34,7 @@ RSpec.describe BulkImports::NdjsonPipeline, feature_category: :importers do
       import_type: ::Import::SOURCE_DIRECT_TRANSFER,
       namespace: group,
       source_user_identifier: 103,
-      source_hostname: bulk_import.configuration.source_hostname
+      source_hostname: bulk_import.configuration.url
     )
   end
 

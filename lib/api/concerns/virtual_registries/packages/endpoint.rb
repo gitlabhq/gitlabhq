@@ -68,7 +68,9 @@ module API
               def authorized_upload_response
                 ::VirtualRegistries::CachedResponseUploader.workhorse_authorize(
                   has_length: true,
-                  maximum_size: MAX_FILE_SIZE
+                  maximum_size: MAX_FILE_SIZE,
+                  use_final_store_path: true,
+                  final_store_path_root_id: registry.id
                 )
               end
 

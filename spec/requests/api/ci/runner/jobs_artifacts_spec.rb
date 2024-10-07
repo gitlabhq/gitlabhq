@@ -897,19 +897,12 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
         let(:token) { job.token }
 
         def expect_use_primary
-          lb_session = ::Gitlab::Database::LoadBalancing::Session.current
+          expect(Gitlab::Database::LoadBalancing::SessionMap)
+            .to receive(:with_sessions).with([::ApplicationRecord, ::Ci::ApplicationRecord]).and_call_original
 
-          expect(lb_session).to receive(:use_primary).and_call_original
-
-          allow(::Gitlab::Database::LoadBalancing::Session).to receive(:current).and_return(lb_session)
-        end
-
-        def expect_no_use_primary
-          lb_session = ::Gitlab::Database::LoadBalancing::Session.current
-
-          expect(lb_session).not_to receive(:use_primary)
-
-          allow(::Gitlab::Database::LoadBalancing::Session).to receive(:current).and_return(lb_session)
+          expect_next_instance_of(Gitlab::Database::LoadBalancing::ScopedSessions) do |inst|
+            expect(inst).to receive(:use_primary).and_call_original
+          end
         end
 
         it_behaves_like 'API::CI::Runner application context metadata', 'GET /api/:version/jobs/:id/artifacts' do

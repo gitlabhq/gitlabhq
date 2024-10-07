@@ -54,6 +54,7 @@ function createSuggestionPlugin({
           command: markdownLine.match(/\/\w+/)?.[0],
           cache,
           limit,
+          ...options,
         })
         .search(query);
     },
@@ -158,13 +159,13 @@ export default Node.create({
       });
 
     return [
-      createPlugin('@', 'reference', 'user', { limit: 10 }),
+      createPlugin('@', 'reference', 'user', { limit: 10, filterOnBackend: true }),
       createPlugin('#', 'reference', 'issue'),
       createPlugin('$', 'reference', 'snippet'),
       createPlugin('~', 'referenceLabel', 'label', { limit: 20 }),
       createPlugin('&', 'reference', 'epic'),
       createPlugin('!', 'reference', 'merge_request'),
-      createPlugin('[vulnerability:', 'reference', 'vulnerability'),
+      createPlugin('[vulnerability:', 'reference', 'vulnerability', { filterOnBackend: true }),
       createPlugin('%', 'reference', 'milestone'),
       createPlugin(':', 'emoji', 'emoji'),
       createPlugin('[[', 'link', 'wiki'),

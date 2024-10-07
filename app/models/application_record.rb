@@ -69,7 +69,7 @@ class ApplicationRecord < ActiveRecord::Base
   # to allow callers gracefully handling the errors to still complete within
   # the 5s target duration of a low urgency request.
   def self.with_fast_read_statement_timeout(timeout_ms = 4500)
-    ::Gitlab::Database::LoadBalancing::Session.current.fallback_to_replicas_for_ambiguous_queries do
+    ::Gitlab::Database::LoadBalancing::SessionMap.current(load_balancer).fallback_to_replicas_for_ambiguous_queries do
       transaction(requires_new: true) do # rubocop:disable Performance/ActiveRecordSubtransactions
         connection.exec_query("SET LOCAL statement_timeout = #{timeout_ms}")
 

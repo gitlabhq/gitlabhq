@@ -11,10 +11,6 @@
   }
 }
 
-@mixin btn-middle {
-  @include btn-default;
-}
-
 @mixin btn-outline($background, $text, $border, $hover-background, $hover-text, $hover-border, $active-background, $active-border, $active-text) {
   background-color: $background;
   color: $text;
@@ -155,7 +151,7 @@
 .input-group-prepend,
 .input-group-append {
   .btn {
-    @include btn-middle;
+    @include btn-default;
 
     &:hover {
       outline: none;

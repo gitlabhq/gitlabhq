@@ -15,7 +15,7 @@ RSpec.describe Import::BulkImports::Common::Transformers::SourceUserMemberAttrib
     let_it_be(:import_source_user) do
       create(:import_source_user,
         namespace: context.portable.root_ancestor,
-        source_hostname: bulk_import.configuration.source_hostname,
+        source_hostname: bulk_import.configuration.url,
         import_type: Import::SOURCE_DIRECT_TRANSFER,
         source_user_identifier: '101'
       )
@@ -24,7 +24,7 @@ RSpec.describe Import::BulkImports::Common::Transformers::SourceUserMemberAttrib
     let_it_be(:reassigned_import_source_user) do
       create(:import_source_user, :completed,
         namespace: context.portable.root_ancestor,
-        source_hostname: bulk_import.configuration.source_hostname,
+        source_hostname: bulk_import.configuration.url,
         import_type: Import::SOURCE_DIRECT_TRANSFER,
         source_user_identifier: '102'
       )

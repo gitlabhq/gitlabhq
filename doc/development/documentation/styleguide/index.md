@@ -534,11 +534,11 @@ Instead, write content that is clear enough that emphasis is not needed. GitLab 
 Use lists to present information in a format that is easier to scan.
 
 - Make all items in the list parallel.
-  For example, do not start some bullets with nouns and others with verbs.
-- Do not use a period if the phrase is not a full sentence.
-- Use a period after every sentence. Do not use semicolons or commas.
+  For example, do not start some items with nouns and others with verbs.
+- Do not use a period if the item is not a full sentence.
+- Use a period after every full sentence. Do not use semicolons or commas.
 - Give all items the same punctuation.
-- Start list items with a capital letter.
+- Start all items with a capital letter.
 - Separate the introductory phrase from explanatory text with a colon (`:`). For example:
 
   ```markdown
@@ -1280,7 +1280,7 @@ if you were helping someone read and interact with the page and they couldn't se
 
 Do:
 
-`![A runner sending a request to the Docker API.](img/document_image_title_vX_Y.png)`
+`![A runner sending a request to the Docker API](img/document_image_title_vX_Y.png)`
 
 Do not:
 
@@ -1292,14 +1292,13 @@ When writing alt text:
 typically stop reading after this amount.
 - If the image has complex information, like a workflow diagram, use a short alt text to identify the image and
 include detailed information in the text.
-- Use complete sentences.
-- Use punctuation.
-- Use sentence case and avoid using all-caps. Some screenreaders read capitals as individual letters.
+- Use end punctuation.
+- Use sentence case and avoid using all-caps. Some screen readers read capitals as individual letters.
 - Don't use phrases like **Image of** or **Graphic of**.
-- Don't use a string of keywords. Include keywords in a complete sentence to enhance context.
+- Don't use a string of keywords. Include keywords in phrases or sentences to enhance context.
 - Introduce the image in the section text, not the alt text.
 - Try to avoid repeating content that you've already used in the section text.
-- Don't use inline styling, like bold, italics, or backticks. Screen readers will read `**text**` as `star star text star star`.
+- Don't use inline styling, like bold, italics, or backticks. Screen readers read `**text**` as `star star text star star`.
 
 #### Automatic screenshot generator
 

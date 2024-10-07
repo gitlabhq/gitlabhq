@@ -137,7 +137,7 @@ module Ci
       # not want to upgrade database connection proxy to use the primary
       # database after heartbeat write happens.
       #
-      ::Gitlab::Database::LoadBalancing::Session.without_sticky_writes do
+      ::Gitlab::Database::LoadBalancing::SessionMap.current(connection.load_balancer).without_sticky_writes do
         values = values&.slice(:version, :revision, :platform, :architecture, :ip_address, :config, :executor) || {}
 
         values.merge!(contacted_at: Time.current, creation_state: :finished) if update_contacted_at

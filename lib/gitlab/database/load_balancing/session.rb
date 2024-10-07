@@ -56,6 +56,7 @@ module Gitlab
         ensure
           @ignore_writes = false
         end
+        alias_method :without_sticky_writes, :ignore_writes
 
         # Indicates that the read SQL statements from anywhere inside this
         # blocks should use a replica, regardless of the current primary

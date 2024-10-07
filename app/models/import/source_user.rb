@@ -33,6 +33,7 @@ module Import
         s_('Import|already assigned to another placeholder')
       }
     }
+    validate :validate_source_hostname
 
     scope :for_namespace, ->(namespace_id) { where(namespace_id: namespace_id) }
     scope :by_source_hostname, ->(source_hostname) { where(source_hostname: source_hostname) }
@@ -146,6 +147,16 @@ module Import
 
     def cancelable_status?
       STATUSES.slice(*CANCELABLE_STATUSES).value?(status)
+    end
+
+    def validate_source_hostname
+      return unless source_hostname
+
+      uri = Gitlab::Utils.parse_url(source_hostname)
+
+      return if uri && uri.scheme && uri.host && uri.path.blank?
+
+      errors.add(:source_hostname, :invalid, message: 'must contain scheme and host, and not path')
     end
   end
 end

@@ -560,6 +560,11 @@ RSpec.describe Feature, :clean_gitlab_redis_feature_flag, stub_feature_flags: fa
 
         context 'and feature has been disabled' do
           before do
+            # TODO: revert changes to .once when removing use_load_balancing_session_map feature flag
+            # We stub SessionMap.current since it uses a feature flag. Within this spec, all feature flags
+            # definitions are missing due to the stubbed Feature::Definition.definitions method.
+            allow(Gitlab::Database::LoadBalancing::SessionMap)
+              .to receive(:current).and_return(Gitlab::Database::LoadBalancing::Session.current)
             described_class.disable(:my_feature_flag)
           end
 

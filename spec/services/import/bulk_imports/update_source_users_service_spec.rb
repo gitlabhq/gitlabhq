@@ -6,7 +6,7 @@ RSpec.describe Import::BulkImports::UpdateSourceUsersService, :clean_gitlab_redi
   feature_category: :importers do
   let_it_be(:portable) { create(:group) }
   let_it_be(:bulk_import) { create(:bulk_import, :with_configuration) }
-  let_it_be(:source_hostname) { bulk_import.configuration.source_hostname }
+  let_it_be(:source_hostname) { bulk_import.configuration.url }
 
   let_it_be(:import_source_user_1) do
     create(:import_source_user,

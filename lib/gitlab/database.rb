@@ -214,10 +214,10 @@ module Gitlab
       # Calls to #uncached only disable caching for the current connection. Since the load balancer
       # can potentially upgrade from read to read-write mode (using a different connection), we specify
       # up-front that we'll explicitly use the primary for the duration of the operation.
-      Gitlab::Database::LoadBalancing::Session.current.use_primary do
-        base_models = database_base_models_using_load_balancing.values
-        base_models.reduce(block) { |blk, model| -> { model.uncached(&blk) } }.call
-      end
+      base_models = database_base_models_using_load_balancing.values
+      base_models.reduce(block) do |blk, model|
+        -> { Gitlab::Database::LoadBalancing::SessionMap.current(model.load_balancer).use_primary { model.uncached(&blk) } }
+      end.call
     end
 
     def self.allow_cross_joins_across_databases(url:)

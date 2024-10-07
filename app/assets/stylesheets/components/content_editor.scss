@@ -30,6 +30,16 @@
   span.ProseMirror-selectednode {
     background-color: $blue-100;
     box-shadow: 0 2px 0 $blue-100, 0 -2px 0 $blue-100;
+    
+    &.gfm-project_member, .gfm-project_member {
+      &:not(.current-user) {
+        background-color: $blue-200;
+      }
+    }
+
+    &.gfm-project_member {
+      box-shadow: 0 0 0 2px $blue-100;
+    }
   }
 
   pre > code {

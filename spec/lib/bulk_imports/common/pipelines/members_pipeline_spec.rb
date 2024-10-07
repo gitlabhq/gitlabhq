@@ -80,7 +80,7 @@ RSpec.describe BulkImports::Common::Pipelines::MembersPipeline, feature_category
         let!(:import_source_user) do
           create(:import_source_user,
             namespace: context.portable.root_ancestor,
-            source_hostname: bulk_import.configuration.source_hostname,
+            source_hostname: bulk_import.configuration.url,
             import_type: Import::SOURCE_DIRECT_TRANSFER,
             source_user_identifier: '101'
           )
@@ -90,7 +90,7 @@ RSpec.describe BulkImports::Common::Pipelines::MembersPipeline, feature_category
           create(:import_source_user,
             :completed,
             namespace: context.portable.root_ancestor,
-            source_hostname: bulk_import.configuration.source_hostname,
+            source_hostname: bulk_import.configuration.url,
             import_type: Import::SOURCE_DIRECT_TRANSFER,
             source_user_identifier: '102'
           )
@@ -135,7 +135,7 @@ RSpec.describe BulkImports::Common::Pipelines::MembersPipeline, feature_category
             expect(import_source_user).to have_attributes(
               source_user_identifier: '103',
               namespace: context.portable.root_ancestor,
-              source_hostname: bulk_import.configuration.source_hostname,
+              source_hostname: bulk_import.configuration.url,
               import_type: Import::SOURCE_DIRECT_TRANSFER.to_s
             )
 

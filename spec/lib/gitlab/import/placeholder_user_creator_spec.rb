@@ -6,7 +6,7 @@ RSpec.describe Gitlab::Import::PlaceholderUserCreator, feature_category: :import
   let_it_be(:namespace) { create(:namespace) }
 
   let(:import_type) { 'github' }
-  let(:source_hostname) { 'github.com' }
+  let(:source_hostname) { 'https://github.com' }
   let(:source_name) { 'Pry Contributor' }
   let(:source_username) { 'a_pry_contributor' }
   let(:source_user_identifier) { '1' }

@@ -454,7 +454,8 @@
     padding-left: 3px;
 
     /* Normalize the bullet position on webkit. */
-    @include on-webkit-only {
+    /* stylelint-disable-next-line media-feature-name-no-vendor-prefix */
+    @media screen and (-webkit-min-device-pixel-ratio: 0) {
       margin-left: 28px;
       padding-left: 0;
     }

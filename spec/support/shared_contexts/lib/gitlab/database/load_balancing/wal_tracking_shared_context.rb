@@ -4,9 +4,9 @@ RSpec.shared_context 'when tracking WAL location reference' do
   let(:current_location) { '0/D525E3A8' }
 
   around do |example|
-    Gitlab::Database::LoadBalancing::Session.clear_session
+    Gitlab::Database::LoadBalancing::SessionMap.clear_session
     example.run
-    Gitlab::Database::LoadBalancing::Session.clear_session
+    Gitlab::Database::LoadBalancing::SessionMap.clear_session
   end
 
   def expect_tracked_locations_when_replicas_available
@@ -53,11 +53,15 @@ RSpec.shared_context 'when tracking WAL location reference' do
   end
 
   def stub_no_writes_performed!
-    allow(Gitlab::Database::LoadBalancing::Session.current).to receive(:use_primary?).and_return(false)
+    Gitlab::Database::LoadBalancing.each_load_balancer do |lb|
+      allow(Gitlab::Database::LoadBalancing::SessionMap.current(lb)).to receive(:use_primary?).and_return(false)
+    end
   end
 
   def stub_write_performed!
-    allow(Gitlab::Database::LoadBalancing::Session.current).to receive(:use_primary?).and_return(true)
+    Gitlab::Database::LoadBalancing.each_load_balancer do |lb|
+      allow(Gitlab::Database::LoadBalancing::SessionMap.current(lb)).to receive(:use_primary?).and_return(true)
+    end
   end
 
   def stub_replica_available!(available)

@@ -8,8 +8,9 @@ export const initAccessDropdown = (el, options) => {
   }
 
   const { accessLevelsData, ...props } = options;
-  const { label, disabled, preselectedItems } = el.dataset || {};
+  const { label, disabled, preselectedItems = '[]' } = el.dataset || {};
   let preselected = [];
+
   try {
     preselected = JSON.parse(preselectedItems);
   } catch (e) {

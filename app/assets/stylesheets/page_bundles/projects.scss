@@ -299,7 +299,19 @@
   &.admin-projects,
   &.group-settings-projects {
     .project-row {
-      @include basic-list-stats;
+      .stats {
+        float: right;
+        line-height: $list-text-height;
+        color: $gl-text-color-secondary;
+
+        @include media-breakpoint-down(xs) {
+          padding-top: $gl-padding-6;
+        }
+
+        span {
+          margin-right: 15px;
+        }
+      }
 
       .description > p {
         margin-bottom: 0;

@@ -22,7 +22,8 @@ RSpec.describe Gitlab::Database::PostgresAutovacuumActivity, type: :model, featu
         create(:postgres_autovacuum_activity, table: table)
       end
 
-      expect(Gitlab::Database::LoadBalancing::Session.current).to receive(:use_primary).and_yield
+      expect(Gitlab::Database::LoadBalancing::SessionMap.current(ApplicationRecord.load_balancer))
+        .to receive(:use_primary).and_yield
     end
 
     it 'returns autovacuum activity for queries tables' do

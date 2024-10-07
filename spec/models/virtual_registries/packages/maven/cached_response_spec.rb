@@ -16,6 +16,7 @@ RSpec.describe VirtualRegistries::Packages::Maven::CachedResponse, type: :model,
       it { is_expected.to validate_length_of(attr).is_at_most(255) }
     end
     it { is_expected.to validate_numericality_of(:downloads_count).only_integer.is_greater_than(0) }
+    it { is_expected.to validate_length_of(:file_final_path).is_at_most(1024) }
 
     context 'with persisted cached response' do
       before do
