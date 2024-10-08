@@ -1,7 +1,7 @@
 ---
 api_type: boolean
 attr: enforce_terms
-clusterwide:
+clusterwide: true
 column: enforce_terms
 db_type: boolean
 default: 'false'

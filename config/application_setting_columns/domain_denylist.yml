@@ -1,7 +1,7 @@
 ---
 api_type: array of strings
 attr: domain_denylist
-clusterwide:
+clusterwide: true
 column: domain_denylist
 db_type: text
 default:

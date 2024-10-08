@@ -1,7 +1,7 @@
 ---
 api_type: boolean
 attr: grafana_enabled
-clusterwide:
+clusterwide: false
 column: grafana_enabled
 db_type: boolean
 default: 'false'

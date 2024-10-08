@@ -1,7 +1,7 @@
 ---
 api_type: boolean
 attr: sourcegraph_public_only
-clusterwide:
+clusterwide: false
 column: sourcegraph_public_only
 db_type: boolean
 default: 'true'

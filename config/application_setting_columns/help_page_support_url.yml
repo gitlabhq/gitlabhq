@@ -1,7 +1,7 @@
 ---
 api_type: string
 attr: help_page_support_url
-clusterwide:
+clusterwide: true
 column: help_page_support_url
 db_type: character
 default:

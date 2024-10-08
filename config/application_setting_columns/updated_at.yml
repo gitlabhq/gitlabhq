@@ -1,7 +1,7 @@
 ---
 api_type:
 attr: updated_at
-clusterwide:
+clusterwide: false
 column: updated_at
 db_type: timestamp
 default:

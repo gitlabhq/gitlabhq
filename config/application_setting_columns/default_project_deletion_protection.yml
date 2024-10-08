@@ -1,7 +1,7 @@
 ---
 api_type: boolean
 attr: default_project_deletion_protection
-clusterwide:
+clusterwide: false
 column: default_project_deletion_protection
 db_type: boolean
 default: 'false'

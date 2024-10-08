@@ -1,7 +1,7 @@
 ---
 api_type: boolean
 attr: snowplow_enabled
-clusterwide:
+clusterwide: false
 column: snowplow_enabled
 db_type: boolean
 default: 'false'

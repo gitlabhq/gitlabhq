@@ -1,7 +1,7 @@
 ---
 api_type:
 attr: vertex_ai_access_token
-clusterwide:
+clusterwide: false
 column: encrypted_vertex_ai_access_token
 db_type: bytea
 default:

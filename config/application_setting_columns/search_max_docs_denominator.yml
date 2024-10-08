@@ -1,7 +1,7 @@
 ---
 api_type:
 attr: search_max_docs_denominator
-clusterwide:
+clusterwide: false
 column: search_max_docs_denominator
 db_type: integer
 default: '5000000'

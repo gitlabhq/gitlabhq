@@ -1,7 +1,7 @@
 ---
 api_type:
 attr: update_namespace_name_rate_limit
-clusterwide:
+clusterwide: false
 column: update_namespace_name_rate_limit
 db_type: smallint
 default: '120'

@@ -1,7 +1,7 @@
 ---
 api_type: boolean
 attr: user_oauth_applications
-clusterwide:
+clusterwide: false
 column: user_oauth_applications
 db_type: boolean
 default: 'true'

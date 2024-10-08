@@ -1,7 +1,7 @@
 ---
 api_type: boolean
 attr: require_two_factor_authentication
-clusterwide:
+clusterwide: false
 column: require_two_factor_authentication
 db_type: boolean
 default: 'false'

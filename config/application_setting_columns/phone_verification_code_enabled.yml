@@ -1,7 +1,7 @@
 ---
 api_type:
 attr: phone_verification_code_enabled
-clusterwide:
+clusterwide: false
 column: phone_verification_code_enabled
 db_type: boolean
 default: 'false'

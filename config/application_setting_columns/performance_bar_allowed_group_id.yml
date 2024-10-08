@@ -1,7 +1,7 @@
 ---
 api_type: string
 attr: performance_bar_allowed_group_id
-clusterwide:
+clusterwide: false
 column: performance_bar_allowed_group_id
 db_type: bigint
 default:

@@ -1,7 +1,7 @@
 ---
 api_type: boolean
 attr: plantuml_enabled
-clusterwide:
+clusterwide: true
 column: plantuml_enabled
 db_type: boolean
 default:

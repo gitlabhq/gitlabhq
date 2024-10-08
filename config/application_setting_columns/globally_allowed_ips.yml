@@ -1,7 +1,7 @@
 ---
 api_type: string
 attr: globally_allowed_ips
-clusterwide:
+clusterwide: true
 column: globally_allowed_ips
 db_type: text
 default: "''::text"

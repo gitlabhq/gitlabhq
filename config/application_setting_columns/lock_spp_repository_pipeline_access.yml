@@ -1,7 +1,7 @@
 ---
 api_type:
 attr: lock_spp_repository_pipeline_access
-clusterwide:
+clusterwide: false
 column: lock_spp_repository_pipeline_access
 db_type: boolean
 default: 'false'

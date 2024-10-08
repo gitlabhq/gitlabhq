@@ -1,7 +1,7 @@
 ---
 api_type: boolean
 attr: suggest_pipeline_enabled
-clusterwide:
+clusterwide: false
 column: suggest_pipeline_enabled
 db_type: boolean
 default: 'true'

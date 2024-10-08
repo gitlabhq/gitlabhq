@@ -1,7 +1,7 @@
 ---
 api_type:
 attr: importers
-clusterwide:
+clusterwide: true
 column: importers
 db_type: jsonb
 default: "'{}'::jsonb"

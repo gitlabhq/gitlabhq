@@ -1,7 +1,7 @@
 ---
 api_type:
 attr: usage_stats_set_by_user_id
-clusterwide:
+clusterwide: false
 column: usage_stats_set_by_user_id
 db_type: bigint
 default:

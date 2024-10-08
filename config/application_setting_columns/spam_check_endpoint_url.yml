@@ -1,7 +1,7 @@
 ---
 api_type: string
 attr: spam_check_endpoint_url
-clusterwide:
+clusterwide: true
 column: spam_check_endpoint_url
 db_type: text
 default:

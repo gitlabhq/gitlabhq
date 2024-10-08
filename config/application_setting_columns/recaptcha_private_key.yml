@@ -1,7 +1,7 @@
 ---
 api_type: string
 attr: recaptcha_private_key
-clusterwide:
+clusterwide: true
 column: encrypted_recaptcha_private_key
 db_type: text
 default:

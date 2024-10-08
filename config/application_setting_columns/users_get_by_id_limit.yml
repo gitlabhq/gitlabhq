@@ -1,7 +1,7 @@
 ---
 api_type:
 attr: users_get_by_id_limit
-clusterwide:
+clusterwide: false
 column: users_get_by_id_limit
 db_type: integer
 default: '300'

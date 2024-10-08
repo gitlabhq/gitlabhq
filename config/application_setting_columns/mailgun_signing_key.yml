@@ -1,7 +1,7 @@
 ---
 api_type: string
 attr: mailgun_signing_key
-clusterwide:
+clusterwide: true
 column: encrypted_mailgun_signing_key
 db_type: bytea
 default:

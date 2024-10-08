@@ -1,7 +1,7 @@
 ---
 api_type: boolean
 attr: package_registry_allow_anyone_to_pull_option
-clusterwide:
+clusterwide: false
 column: package_registry_allow_anyone_to_pull_option
 db_type: boolean
 default: 'true'

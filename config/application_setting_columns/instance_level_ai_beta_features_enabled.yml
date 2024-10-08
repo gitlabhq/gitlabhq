@@ -1,7 +1,7 @@
 ---
 api_type:
 attr: instance_level_ai_beta_features_enabled
-clusterwide:
+clusterwide: false
 column: instance_level_ai_beta_features_enabled
 db_type: boolean
 default: 'false'

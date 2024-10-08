@@ -1,7 +1,7 @@
 ---
 api_type:
 attr: lets_encrypt_private_key
-clusterwide:
+clusterwide: true
 column: encrypted_lets_encrypt_private_key
 db_type: text
 default:

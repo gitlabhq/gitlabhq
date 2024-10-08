@@ -1,7 +1,7 @@
 ---
 api_type: boolean
 attr: enforce_namespace_storage_limit
-clusterwide:
+clusterwide: false
 column: enforce_namespace_storage_limit
 db_type: boolean
 default: 'false'

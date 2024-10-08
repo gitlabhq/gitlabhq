@@ -1,7 +1,7 @@
 ---
 api_type:
 attr: database_max_running_batched_background_migrations
-clusterwide:
+clusterwide: true
 column: database_max_running_batched_background_migrations
 db_type: integer
 default: '2'

@@ -1,7 +1,7 @@
 ---
 api_type: boolean
 attr: delete_unconfirmed_users
-clusterwide:
+clusterwide: false
 column: delete_unconfirmed_users
 db_type: boolean
 default: 'false'

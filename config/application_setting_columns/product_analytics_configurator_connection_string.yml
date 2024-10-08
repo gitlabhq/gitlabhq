@@ -1,7 +1,7 @@
 ---
 api_type:
 attr: product_analytics_configurator_connection_string
-clusterwide:
+clusterwide: false
 column: encrypted_product_analytics_configurator_connection_string
 db_type: bytea
 default:

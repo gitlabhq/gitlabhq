@@ -1,7 +1,7 @@
 ---
 api_type:
 attr: vertex_ai_host
-clusterwide:
+clusterwide: false
 column: vertex_ai_host
 db_type: text
 default:

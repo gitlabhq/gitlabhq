@@ -1,7 +1,7 @@
 ---
 api_type: boolean
 attr: version_check_enabled
-clusterwide:
+clusterwide: false
 column: version_check_enabled
 db_type: boolean
 default: 'true'

@@ -1,7 +1,7 @@
 ---
 api_type: boolean
 attr: user_default_external
-clusterwide:
+clusterwide: false
 column: user_default_external
 db_type: boolean
 default: 'false'

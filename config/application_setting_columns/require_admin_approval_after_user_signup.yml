@@ -1,7 +1,7 @@
 ---
 api_type: boolean
 attr: require_admin_approval_after_user_signup
-clusterwide:
+clusterwide: false
 column: require_admin_approval_after_user_signup
 db_type: boolean
 default: 'true'

@@ -1,7 +1,7 @@
 ---
 api_type:
 attr: database_grafana_tag
-clusterwide:
+clusterwide: true
 column: database_grafana_tag
 db_type: text
 default:

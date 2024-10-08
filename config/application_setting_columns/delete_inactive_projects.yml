@@ -1,7 +1,7 @@
 ---
 api_type:
 attr: delete_inactive_projects
-clusterwide:
+clusterwide: false
 column: delete_inactive_projects
 db_type: boolean
 default: 'false'

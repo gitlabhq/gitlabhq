@@ -1,7 +1,7 @@
 ---
 api_type: boolean
 attr: maven_package_requests_forwarding
-clusterwide:
+clusterwide: true
 column: maven_package_requests_forwarding
 db_type: boolean
 default: 'true'

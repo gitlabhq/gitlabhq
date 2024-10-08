@@ -1,7 +1,7 @@
 ---
 api_type: boolean
 attr: group_owners_can_manage_default_branch_protection
-clusterwide:
+clusterwide: false
 column: group_owners_can_manage_default_branch_protection
 db_type: boolean
 default: 'true'

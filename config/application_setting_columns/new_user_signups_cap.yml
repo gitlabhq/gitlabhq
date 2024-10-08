@@ -1,7 +1,7 @@
 ---
 api_type:
 attr: new_user_signups_cap
-clusterwide:
+clusterwide: false
 column: new_user_signups_cap
 db_type: integer
 default:

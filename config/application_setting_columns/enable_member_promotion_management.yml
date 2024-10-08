@@ -1,7 +1,7 @@
 ---
 api_type:
 attr: enable_member_promotion_management
-clusterwide:
+clusterwide: false
 column: enable_member_promotion_management
 db_type: boolean
 default: 'false'

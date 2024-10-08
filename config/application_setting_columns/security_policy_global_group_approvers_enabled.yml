@@ -1,7 +1,7 @@
 ---
 api_type: boolean
 attr: security_policy_global_group_approvers_enabled
-clusterwide:
+clusterwide: false
 column: security_policy_global_group_approvers_enabled
 db_type: boolean
 default: 'true'

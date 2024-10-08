@@ -1,7 +1,7 @@
 ---
 api_type:
 attr: dingtalk_integration_enabled
-clusterwide:
+clusterwide: false
 column: dingtalk_integration_enabled
 db_type: boolean
 default: 'false'

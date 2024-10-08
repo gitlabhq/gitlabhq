@@ -1,7 +1,7 @@
 ---
 api_type: array of strings
 attr: outbound_local_requests_whitelist
-clusterwide:
+clusterwide: true
 column: outbound_local_requests_whitelist
 db_type: character
 default: "'{}'::character"

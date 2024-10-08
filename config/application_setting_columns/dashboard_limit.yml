@@ -1,7 +1,7 @@
 ---
 api_type:
 attr: dashboard_limit
-clusterwide:
+clusterwide: true
 column: dashboard_limit
 db_type: integer
 default: '0'

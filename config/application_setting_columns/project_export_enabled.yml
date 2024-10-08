@@ -1,7 +1,7 @@
 ---
 api_type: boolean
 attr: project_export_enabled
-clusterwide:
+clusterwide: false
 column: project_export_enabled
 db_type: boolean
 default: 'true'

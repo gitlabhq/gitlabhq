@@ -1,7 +1,7 @@
 ---
 api_type: string
 attr: security_txt_content
-clusterwide:
+clusterwide: true
 column: security_txt_content
 db_type: text
 default:

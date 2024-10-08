@@ -1,7 +1,7 @@
 ---
 api_type: boolean
 attr: housekeeping_bitmaps_enabled
-clusterwide:
+clusterwide: false
 column: housekeeping_bitmaps_enabled
 db_type: boolean
 default: 'true'

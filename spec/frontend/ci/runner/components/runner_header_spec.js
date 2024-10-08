@@ -10,6 +10,7 @@ import { TYPENAME_CI_RUNNER } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 
+import PageHeading from '~/vue_shared/components/page_heading.vue';
 import RunnerHeader from '~/ci/runner/components/runner_header.vue';
 import RunnerCreatedAt from '~/ci/runner/components/runner_created_at.vue';
 import RunnerTypeBadge from '~/ci/runner/components/runner_type_badge.vue';
@@ -23,6 +24,7 @@ const mockRunnerSha = mockRunner.shortSha;
 describe('RunnerHeader', () => {
   let wrapper;
 
+  const findPageHeading = () => wrapper.findComponent(PageHeading);
   const findRunnerTypeBadge = () => wrapper.findComponent(RunnerTypeBadge);
   const findRunnerStatusBadge = () => wrapper.findComponent(RunnerStatusBadge);
   const findRunnerLockedIcon = () => wrapper.findByTestId('lock-icon');
@@ -38,6 +40,7 @@ describe('RunnerHeader', () => {
       stubs: {
         GlSprintf,
         TimeAgo,
+        PageHeading,
       },
       ...options,
     });
@@ -72,7 +75,7 @@ describe('RunnerHeader', () => {
       },
     });
 
-    expect(wrapper.text()).toContain(`#99 (${mockRunnerSha})`);
+    expect(findPageHeading().props('heading')).toBe(`#99 (${mockRunnerSha})`);
   });
 
   it('displays the runner locked icon', () => {

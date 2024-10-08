@@ -1,7 +1,7 @@
 ---
 api_type: boolean
 attr: include_optional_metrics_in_service_ping
-clusterwide:
+clusterwide: false
 column: include_optional_metrics_in_service_ping
 db_type: boolean
 default: 'true'

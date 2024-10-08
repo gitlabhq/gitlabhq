@@ -1,7 +1,7 @@
 ---
 api_type: boolean
 attr: hide_third_party_offers
-clusterwide:
+clusterwide: false
 column: hide_third_party_offers
 db_type: boolean
 default: 'false'

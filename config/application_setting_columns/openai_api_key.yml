@@ -1,11 +1,11 @@
 ---
 api_type:
 attr: openai_api_key
-clusterwide:
+clusterwide: false
 column: encrypted_openai_api_key
 db_type: bytea
 default:
-description: This column is currently ignored.
+description:
 encrypted: true
 gitlab_com_different_than_default: false
 jihu: false

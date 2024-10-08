@@ -1,7 +1,7 @@
 ---
 api_type: boolean
 attr: enable_artifact_external_redirect_warning_page
-clusterwide:
+clusterwide: false
 column: enable_artifact_external_redirect_warning_page
 db_type: boolean
 default: 'true'

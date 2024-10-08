@@ -1,7 +1,7 @@
 ---
 api_type:
 attr: repository_storages
-clusterwide:
+clusterwide: false
 column: repository_storages
 db_type: character
 default: "'default'::character"

@@ -247,7 +247,7 @@ export default {
         };
       },
       skip() {
-        return this.isGroupWorkItem;
+        return this.isGroupWorkItem || this.workItemLoading;
       },
       update(data) {
         return data.workspace?.userPermissions ?? defaultWorkspacePermissions;

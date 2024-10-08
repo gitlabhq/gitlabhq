@@ -1,7 +1,7 @@
 ---
 api_type: string
 attr: sourcegraph_url
-clusterwide:
+clusterwide: false
 column: sourcegraph_url
 db_type: character
 default:

@@ -1,7 +1,7 @@
 ---
 api_type: array of integers
 attr: git_rate_limit_users_alertlist
-clusterwide:
+clusterwide: false
 column: git_rate_limit_users_alertlist
 db_type: integer[]
 default: "'{}'::integer[]"

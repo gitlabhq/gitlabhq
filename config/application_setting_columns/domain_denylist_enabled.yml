@@ -1,7 +1,7 @@
 ---
 api_type: boolean
 attr: domain_denylist_enabled
-clusterwide:
+clusterwide: true
 column: domain_denylist_enabled
 db_type: boolean
 default: 'false'

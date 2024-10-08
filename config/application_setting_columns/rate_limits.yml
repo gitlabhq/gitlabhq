@@ -1,7 +1,7 @@
 ---
 api_type:
 attr: rate_limits
-clusterwide:
+clusterwide: true
 column: rate_limits
 db_type: jsonb
 default: "'{}'::jsonb"

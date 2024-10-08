@@ -1,7 +1,7 @@
 ---
 api_type: string
 attr: personal_access_token_prefix
-clusterwide:
+clusterwide: false
 column: personal_access_token_prefix
 db_type: text
 default: "'glpat-'::text"

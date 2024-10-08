@@ -10,7 +10,7 @@ include:
 
 # code pattern changes with selective execution enabled
 .code-pattern-with-selective-enabled-knapsack-set: &code-pattern-with-selective-enabled-knapsack-set
-  if: $MR_CODE_PATTERNS == "true" && $QA_TESTS != "" && $KNAPSACK_TEST_FILE_PATTERN != "" && $SELECTIVE_EXECUTION_IMPROVED == "true"
+  if: $MR_CODE_PATTERNS == "true" && $KNAPSACK_TEST_FILE_PATTERN != "" && $SELECTIVE_EXECUTION_IMPROVED == "true"
 
 .code-pattern-with-selective-enabled-knapsack-unset: &code-pattern-with-selective-enabled-knapsack-unset
   if: $MR_CODE_PATTERNS == "true" && $QA_TESTS != "" && $KNAPSACK_TEST_FILE_PATTERN == "" && $SELECTIVE_EXECUTION_IMPROVED == "true"

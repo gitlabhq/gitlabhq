@@ -1385,6 +1385,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_49b563d0130b() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "dast_scanner_profiles"
+  WHERE "dast_scanner_profiles"."id" = NEW."dast_scanner_profile_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_49e070da6320() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -10171,7 +10187,8 @@ CREATE TABLE dast_scanner_profiles (
 
 CREATE TABLE dast_scanner_profiles_builds (
     dast_scanner_profile_id bigint NOT NULL,
-    ci_build_id bigint NOT NULL
+    ci_build_id bigint NOT NULL,
+    project_id bigint
 );
 
 COMMENT ON TABLE dast_scanner_profiles_builds IS '{"owner":"group::dynamic analysis","description":"Join table between DAST Scanner Profiles and CI Builds"}';
@@ -28625,6 +28642,8 @@ CREATE INDEX index_dast_profiles_tags_on_project_id ON dast_profiles_tags USING 
 
 CREATE INDEX index_dast_profiles_tags_on_tag_id ON dast_profiles_tags USING btree (tag_id);
 
+CREATE INDEX index_dast_scanner_profiles_builds_on_project_id ON dast_scanner_profiles_builds USING btree (project_id);
+
 CREATE UNIQUE INDEX index_dast_scanner_profiles_on_project_id_and_name ON dast_scanner_profiles USING btree (project_id, name);
 
 CREATE INDEX index_dast_site_profile_secret_variables_on_project_id ON dast_site_profile_secret_variables USING btree (project_id);
@@ -33658,6 +33677,8 @@ CREATE TRIGGER trigger_44ff19ad0ab2 BEFORE INSERT OR UPDATE ON packages_pypi_met
 CREATE TRIGGER trigger_46ebe375f632 BEFORE INSERT OR UPDATE ON epic_issues FOR EACH ROW EXECUTE FUNCTION trigger_46ebe375f632();
 
 CREATE TRIGGER trigger_49862b4b3035 BEFORE INSERT OR UPDATE ON approval_group_rules_protected_branches FOR EACH ROW EXECUTE FUNCTION trigger_49862b4b3035();
+
+CREATE TRIGGER trigger_49b563d0130b BEFORE INSERT OR UPDATE ON dast_scanner_profiles_builds FOR EACH ROW EXECUTE FUNCTION trigger_49b563d0130b();
 
 CREATE TRIGGER trigger_49e070da6320 BEFORE INSERT OR UPDATE ON packages_dependency_links FOR EACH ROW EXECUTE FUNCTION trigger_49e070da6320();
 

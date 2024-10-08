@@ -1,7 +1,7 @@
 ---
 api_type:
 attr: search_max_shard_size_gb
-clusterwide:
+clusterwide: false
 column: search_max_shard_size_gb
 db_type: integer
 default: '50'

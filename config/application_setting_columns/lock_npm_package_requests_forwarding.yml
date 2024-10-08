@@ -1,7 +1,7 @@
 ---
 api_type:
 attr: lock_npm_package_requests_forwarding
-clusterwide:
+clusterwide: false
 column: lock_npm_package_requests_forwarding
 db_type: boolean
 default: 'false'

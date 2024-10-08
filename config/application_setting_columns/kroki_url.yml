@@ -1,7 +1,7 @@
 ---
 api_type: string
 attr: kroki_url
-clusterwide:
+clusterwide: false
 column: kroki_url
 db_type: character
 default:

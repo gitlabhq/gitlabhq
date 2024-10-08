@@ -1,7 +1,7 @@
 ---
 api_type:
 attr: lets_encrypt_terms_of_service_accepted
-clusterwide:
+clusterwide: true
 column: lets_encrypt_terms_of_service_accepted
 db_type: boolean
 default: 'false'

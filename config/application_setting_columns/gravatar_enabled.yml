@@ -1,7 +1,7 @@
 ---
 api_type: boolean
 attr: gravatar_enabled
-clusterwide:
+clusterwide: true
 column: gravatar_enabled
 db_type: boolean
 default:

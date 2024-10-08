@@ -1,7 +1,7 @@
 ---
 api_type:
 attr: license_usage_data_exported
-clusterwide:
+clusterwide: false
 column: license_usage_data_exported
 db_type: boolean
 default: 'false'

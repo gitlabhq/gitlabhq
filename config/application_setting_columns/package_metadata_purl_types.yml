@@ -1,7 +1,7 @@
 ---
 api_type: array of integers
 attr: package_metadata_purl_types
-clusterwide:
+clusterwide: false
 column: package_metadata_purl_types
 db_type: smallint[]
 default: "'{1"

@@ -1,7 +1,7 @@
 ---
 api_type: boolean
 attr: pages_domain_verification_enabled
-clusterwide:
+clusterwide: false
 column: pages_domain_verification_enabled
 db_type: boolean
 default: 'true'

@@ -1,7 +1,7 @@
 ---
 api_type:
 attr: inactive_projects_min_size_mb
-clusterwide:
+clusterwide: false
 column: inactive_projects_min_size_mb
 db_type: integer
 default: '0'

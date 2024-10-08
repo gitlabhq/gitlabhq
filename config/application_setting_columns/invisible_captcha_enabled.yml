@@ -1,7 +1,7 @@
 ---
 api_type: boolean
 attr: invisible_captcha_enabled
-clusterwide:
+clusterwide: true
 column: invisible_captcha_enabled
 db_type: boolean
 default: 'false'

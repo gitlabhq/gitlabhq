@@ -1,7 +1,7 @@
 ---
 api_type:
 attr: lock_memberships_to_ldap
-clusterwide:
+clusterwide: false
 column: lock_memberships_to_ldap
 db_type: boolean
 default: 'false'

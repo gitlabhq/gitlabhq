@@ -1,7 +1,7 @@
 ---
 api_type: boolean
 attr: require_personal_access_token_expiry
-clusterwide:
+clusterwide: false
 column: require_personal_access_token_expiry
 db_type: boolean
 default: 'true'

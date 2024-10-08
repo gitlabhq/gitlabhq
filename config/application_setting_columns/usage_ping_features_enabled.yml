@@ -1,7 +1,7 @@
 ---
 api_type:
 attr: usage_ping_features_enabled
-clusterwide:
+clusterwide: false
 column: usage_ping_features_enabled
 db_type: boolean
 default: 'false'

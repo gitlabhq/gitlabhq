@@ -1,7 +1,7 @@
 ---
 api_type:
 attr: observability_backend_ssl_verification_enabled
-clusterwide:
+clusterwide: false
 column: observability_backend_ssl_verification_enabled
 db_type: boolean
 default: 'true'

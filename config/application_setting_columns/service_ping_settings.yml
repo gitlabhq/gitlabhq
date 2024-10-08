@@ -1,7 +1,7 @@
 ---
 api_type:
 attr: service_ping_settings
-clusterwide:
+clusterwide: false
 column: service_ping_settings
 db_type: jsonb
 default: "'{}'::jsonb"

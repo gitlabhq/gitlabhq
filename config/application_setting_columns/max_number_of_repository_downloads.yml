@@ -1,7 +1,7 @@
 ---
 api_type: integer
 attr: max_number_of_repository_downloads
-clusterwide:
+clusterwide: false
 column: max_number_of_repository_downloads
 db_type: smallint
 default: '0'

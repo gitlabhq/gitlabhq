@@ -1,7 +1,7 @@
 ---
 api_type: boolean
 attr: spam_check_endpoint_enabled
-clusterwide:
+clusterwide: true
 column: spam_check_endpoint_enabled
 db_type: boolean
 default: 'false'

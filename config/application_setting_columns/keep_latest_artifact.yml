@@ -1,7 +1,7 @@
 ---
 api_type: boolean
 attr: keep_latest_artifact
-clusterwide:
+clusterwide: false
 column: keep_latest_artifact
 db_type: boolean
 default: 'true'

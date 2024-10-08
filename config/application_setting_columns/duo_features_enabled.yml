@@ -1,7 +1,7 @@
 ---
 api_type: boolean
 attr: duo_features_enabled
-clusterwide:
+clusterwide: false
 column: duo_features_enabled
 db_type: boolean
 default: 'true'

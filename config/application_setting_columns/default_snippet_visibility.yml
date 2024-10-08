@@ -1,7 +1,7 @@
 ---
 api_type: string
 attr: default_snippet_visibility
-clusterwide:
+clusterwide: false
 column: default_snippet_visibility
 db_type: integer
 default: '0'

@@ -1,7 +1,7 @@
 ---
 api_type: string
 attr: default_project_visibility
-clusterwide:
+clusterwide: false
 column: default_project_visibility
 db_type: integer
 default: '0'

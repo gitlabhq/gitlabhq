@@ -1,7 +1,7 @@
 ---
 api_type: boolean
 attr: remember_me_enabled
-clusterwide:
+clusterwide: false
 column: remember_me_enabled
 db_type: boolean
 default: 'true'

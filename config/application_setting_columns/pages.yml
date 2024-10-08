@@ -1,7 +1,7 @@
 ---
 api_type:
 attr: pages
-clusterwide:
+clusterwide: false
 column: pages
 db_type: jsonb
 default: "'{}'::jsonb"

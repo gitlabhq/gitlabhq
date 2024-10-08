@@ -1,7 +1,7 @@
 ---
 api_type: boolean
 attr: disable_personal_access_tokens
-clusterwide:
+clusterwide: false
 column: disable_personal_access_tokens
 db_type: boolean
 default: 'false'

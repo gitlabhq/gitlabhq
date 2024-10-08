@@ -1,7 +1,7 @@
 ---
 api_type: integer
 attr: security_approval_policies_limit
-clusterwide:
+clusterwide: false
 column: security_approval_policies_limit
 db_type: integer
 default: '5'

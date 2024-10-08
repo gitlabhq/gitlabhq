@@ -1,7 +1,7 @@
 ---
 api_type: string
 attr: default_preferred_language
-clusterwide:
+clusterwide: false
 column: default_preferred_language
 db_type: text
 default: "'en'::text"

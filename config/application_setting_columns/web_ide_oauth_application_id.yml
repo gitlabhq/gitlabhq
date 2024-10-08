@@ -1,7 +1,7 @@
 ---
 api_type:
 attr: web_ide_oauth_application_id
-clusterwide:
+clusterwide: false
 column: web_ide_oauth_application_id
 db_type: bigint
 default:

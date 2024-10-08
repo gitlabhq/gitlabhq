@@ -1,7 +1,7 @@
 ---
 api_type:
 attr: metrics_enabled
-clusterwide:
+clusterwide: true
 column: metrics_enabled
 db_type: boolean
 default: 'false'

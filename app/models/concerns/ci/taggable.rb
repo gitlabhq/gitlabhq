@@ -29,21 +29,26 @@ module Ci
 
       attribute :tag_list, Gitlab::Database::Type::TagListType.new
 
-      scope :tagged_with, ->(tags) do
+      scope :tagged_with, ->(tags, like_search_enabled: false) do
         Gitlab::Ci::Tags::Parser
           .new(tags)
           .parse
-          .map { |tag| with_tag(tag) }
+          .map { |tag| with_tag(tag, like_search_enabled: like_search_enabled) }
           .reduce(:and)
       end
 
-      scope :with_tag, ->(name) do
-        where_exists(
-          Tagging
-            .merge(unscoped.scoped_tagging)
-            .where(context: :tags)
-            .where(tag_id: Tag.where(name: name))
-        )
+      scope :with_tag, ->(name, like_search_enabled: false) do
+        query = Tagging
+                  .merge(unscoped.scoped_tagging)
+                  .where(context: :tags)
+
+        if like_search_enabled
+          query = query.where(tag_id: Tag.where("name LIKE ?", "%#{sanitize_sql_like(name)}%")) # rubocop:disable GitlabSecurity/SqlInjection -- we are sanitizing
+        else
+          query = query.where(tag_id: Tag.where(name: name))
+        end
+
+        where_exists(query)
       end
 
       scope :scoped_tagging, -> do

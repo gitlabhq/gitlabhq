@@ -1,7 +1,7 @@
 ---
 api_type:
 attr: deny_all_requests_except_allowed
-clusterwide:
+clusterwide: false
 column: deny_all_requests_except_allowed
 db_type: boolean
 default: 'false'

@@ -1,7 +1,7 @@
 ---
 api_type: string
 attr: default_branch_name
-clusterwide:
+clusterwide: false
 column: default_branch_name
 db_type: text
 default:

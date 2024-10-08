@@ -1,7 +1,7 @@
 ---
 api_type: boolean
 attr: throttle_authenticated_packages_api_enabled
-clusterwide:
+clusterwide: false
 column: throttle_authenticated_packages_api_enabled
 db_type: boolean
 default: 'false'

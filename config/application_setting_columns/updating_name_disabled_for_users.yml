@@ -1,7 +1,7 @@
 ---
 api_type: boolean
 attr: updating_name_disabled_for_users
-clusterwide:
+clusterwide: false
 column: updating_name_disabled_for_users
 db_type: boolean
 default: 'false'

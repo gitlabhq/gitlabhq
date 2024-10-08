@@ -1,7 +1,7 @@
 ---
 api_type:
 attr: floc_enabled
-clusterwide:
+clusterwide: false
 column: floc_enabled
 db_type: boolean
 default: 'false'

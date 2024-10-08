@@ -1,7 +1,7 @@
 ---
 api_type:
 attr: database_grafana_api_key
-clusterwide:
+clusterwide: true
 column: encrypted_database_grafana_api_key
 db_type: bytea
 default:

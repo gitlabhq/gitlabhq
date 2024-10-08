@@ -5,17 +5,20 @@ require 'fileutils'
 require 'yaml'
 
 class ApplicationSettingAnalysis
+  AUTOMATIC_FIELDS = %i[
+    column
+    db_type
+    api_type
+    encrypted
+    not_null
+    default
+    gitlab_com_different_than_default
+    description
+    jihu
+  ].freeze
   ApplicationSettingPrototype = Struct.new(
-    :column,
+    *AUTOMATIC_FIELDS,
     :attr,
-    :db_type,
-    :api_type,
-    :encrypted,
-    :not_null,
-    :default,
-    :gitlab_com_different_than_default,
-    :description,
-    :jihu,
     :clusterwide,
     keyword_init: true)
 
@@ -263,14 +266,17 @@ class ApplicationSettingAnalysis
 
     def initialize(hash)
       super(hash)
-      self[:encrypted] = column.start_with?('encrypted_')
-      self[:attr] = column.delete_prefix('encrypted_')
+      self[:encrypted] = column.start_with?('encrypted_') || column.end_with?('_encrypted')
+      self[:attr] = column.delete_prefix('encrypted_').delete_suffix('_encrypted')
       self[:gitlab_com_different_than_default] = GITLAB_COM_DIFFERENT_THAN_DEFAULT.include?(column)
     end
 
     def merge!(other)
       other.to_h.each do |k, v|
-        self[k] = v unless v.nil?
+        next if v.nil?
+        next if ApplicationSettingAnalysis::AUTOMATIC_FIELDS.include?(k.to_sym)
+
+        self[k] = v
       end
     end
 
@@ -316,6 +322,10 @@ class ApplicationSettingAnalysis
       encrypted_\w+_iv # ignore encryption-related extra columns
       |
       \w+_html # ignore Markdown-caching extra columns
+      |
+      # this is a legacy column, but we want to reference the
+      # runners_registration_token_encrypted column instead
+      runners_registration_token
     )$
   }x
   DEFAULT_REGEX = /DEFAULT (?<default>[^\s,]+)/

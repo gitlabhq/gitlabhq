@@ -1,7 +1,7 @@
 ---
 api_type:
 attr: disable_download_button
-clusterwide:
+clusterwide: false
 column: disable_download_button
 db_type: boolean
 default: 'false'

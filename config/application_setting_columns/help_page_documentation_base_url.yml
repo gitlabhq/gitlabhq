@@ -1,7 +1,7 @@
 ---
 api_type:
 attr: help_page_documentation_base_url
-clusterwide:
+clusterwide: true
 column: help_page_documentation_base_url
 db_type: text
 default:

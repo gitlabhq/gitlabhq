@@ -1,7 +1,7 @@
 ---
 api_type:
 attr: project_export_limit
-clusterwide:
+clusterwide: false
 column: project_export_limit
 db_type: integer
 default: '6'

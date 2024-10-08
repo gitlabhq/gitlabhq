@@ -1,7 +1,7 @@
 ---
 api_type:
 attr: throttle_protected_paths_enabled
-clusterwide:
+clusterwide: false
 column: throttle_protected_paths_enabled
 db_type: boolean
 default: 'false'

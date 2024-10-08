@@ -1,7 +1,7 @@
 ---
 api_type: object
 attr: kroki_formats
-clusterwide:
+clusterwide: false
 column: kroki_formats
 db_type: jsonb
 default: "'{}'::jsonb"

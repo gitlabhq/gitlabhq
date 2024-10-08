@@ -1,7 +1,7 @@
 ---
 api_type:
 attr: product_analytics_data_collector_host
-clusterwide:
+clusterwide: false
 column: product_analytics_data_collector_host
 db_type: text
 default:

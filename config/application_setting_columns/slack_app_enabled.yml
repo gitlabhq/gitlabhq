@@ -1,7 +1,7 @@
 ---
 api_type: boolean
 attr: slack_app_enabled
-clusterwide:
+clusterwide: false
 column: slack_app_enabled
 db_type: boolean
 default: 'false'

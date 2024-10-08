@@ -149,7 +149,7 @@ RSpec.describe Ci::RunnersFinder, feature_category: :fleet_visibility do
 
           context 'by tag_name' do
             it 'calls the corresponding scope on Ci::Runner' do
-              expect(Ci::Runner).to receive(:tagged_with).with(%w[tag1 tag2]).and_call_original
+              expect(Ci::Runner).to receive(:tagged_with).with(%w[tag1 tag2], like_search_enabled: true).and_call_original
 
               described_class.new(current_user: admin, params: { tag_name: %w[tag1 tag2] }).execute
             end
@@ -454,6 +454,14 @@ RSpec.describe Ci::RunnersFinder, feature_category: :fleet_visibility do
 
                 it 'returns correct runner' do
                   expect(subject).to match_array([runner_project_5])
+                end
+
+                context 'when searching using part of the tag name' do
+                  let(:extra_params) { { tag_name: %w[unner] } }
+
+                  it 'returns correct runner' do
+                    expect(subject).to match_array([runner_project_5])
+                  end
                 end
               end
 

@@ -1,7 +1,7 @@
 ---
 api_type:
 attr: pseudonymizer_enabled
-clusterwide:
+clusterwide: false
 column: pseudonymizer_enabled
 db_type: boolean
 default: 'false'

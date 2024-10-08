@@ -1,7 +1,7 @@
 ---
 api_type: boolean
 attr: disable_overriding_approvers_per_merge_request
-clusterwide:
+clusterwide: false
 column: disable_overriding_approvers_per_merge_request
 db_type: boolean
 default: 'false'

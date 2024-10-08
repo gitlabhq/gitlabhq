@@ -1,7 +1,7 @@
 ---
 api_type: boolean
 attr: notify_on_unknown_sign_in
-clusterwide:
+clusterwide: false
 column: notify_on_unknown_sign_in
 db_type: boolean
 default: 'true'

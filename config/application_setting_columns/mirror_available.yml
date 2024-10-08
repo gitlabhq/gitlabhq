@@ -1,7 +1,7 @@
 ---
 api_type: boolean
 attr: mirror_available
-clusterwide:
+clusterwide: false
 column: mirror_available
 db_type: boolean
 default: 'true'

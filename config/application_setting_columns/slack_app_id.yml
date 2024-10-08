@@ -1,7 +1,7 @@
 ---
 api_type: string
 attr: slack_app_id
-clusterwide:
+clusterwide: false
 column: slack_app_id
 db_type: character
 default:

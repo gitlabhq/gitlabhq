@@ -1,7 +1,7 @@
 ---
 api_type:
 attr: jobs_per_stage_page_size
-clusterwide:
+clusterwide: false
 column: jobs_per_stage_page_size
 db_type: integer
 default: '200'

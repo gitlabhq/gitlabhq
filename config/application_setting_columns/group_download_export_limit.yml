@@ -1,7 +1,7 @@
 ---
 api_type:
 attr: group_download_export_limit
-clusterwide:
+clusterwide: false
 column: group_download_export_limit
 db_type: integer
 default: '1'

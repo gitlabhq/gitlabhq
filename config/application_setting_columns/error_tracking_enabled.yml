@@ -1,7 +1,7 @@
 ---
 api_type:
 attr: error_tracking_enabled
-clusterwide:
+clusterwide: true
 column: error_tracking_enabled
 db_type: boolean
 default: 'false'

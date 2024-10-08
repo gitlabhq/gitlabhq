@@ -1,7 +1,7 @@
 ---
 api_type:
 attr: error_tracking_api_url
-clusterwide:
+clusterwide: true
 column: error_tracking_api_url
 db_type: text
 default:

@@ -1,7 +1,7 @@
 ---
 api_type:
 attr: metrics_host
-clusterwide:
+clusterwide: false
 column: metrics_host
 db_type: character
 default: "'localhost'::character"

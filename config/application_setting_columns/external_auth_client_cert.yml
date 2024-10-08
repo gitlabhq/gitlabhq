@@ -1,7 +1,7 @@
 ---
 api_type: string
 attr: external_auth_client_cert
-clusterwide:
+clusterwide: false
 column: external_auth_client_cert
 db_type: text
 default:

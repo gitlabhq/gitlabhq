@@ -853,6 +853,16 @@ describe('WorkItemDetail component', () => {
       expect(findDesignUploadButton().exists()).toBe(false);
     });
 
+    it('does not call permisisons query for a group work item', async () => {
+      createComponent({
+        modalIsGroup: true,
+        workspacePermissionsHandler: workspacePermissionsAllowedHandler,
+      });
+      await waitForPromises();
+
+      expect(workspacePermissionsAllowedHandler).not.toHaveBeenCalled();
+    });
+
     it('uploads a design', async () => {
       createComponent();
       await waitForPromises();

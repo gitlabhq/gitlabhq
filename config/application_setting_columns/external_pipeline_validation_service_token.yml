@@ -1,7 +1,7 @@
 ---
 api_type: string
 attr: external_pipeline_validation_service_token
-clusterwide:
+clusterwide: true
 column: encrypted_external_pipeline_validation_service_token
 db_type: text
 default:

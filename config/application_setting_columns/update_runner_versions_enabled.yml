@@ -1,7 +1,7 @@
 ---
 api_type: boolean
 attr: update_runner_versions_enabled
-clusterwide:
+clusterwide: false
 column: update_runner_versions_enabled
 db_type: boolean
 default: 'true'

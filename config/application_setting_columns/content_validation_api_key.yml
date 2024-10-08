@@ -8,5 +8,5 @@ default:
 description:
 encrypted: true
 gitlab_com_different_than_default: false
-jihu: false
+jihu: true
 not_null: false

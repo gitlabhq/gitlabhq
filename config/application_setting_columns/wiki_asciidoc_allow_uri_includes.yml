@@ -1,7 +1,7 @@
 ---
 api_type:
 attr: wiki_asciidoc_allow_uri_includes
-clusterwide:
+clusterwide: false
 column: wiki_asciidoc_allow_uri_includes
 db_type: boolean
 default: 'false'

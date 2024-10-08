@@ -1,7 +1,7 @@
 ---
 api_type:
 attr: search_rate_limit_allowlist
-clusterwide:
+clusterwide: false
 column: search_rate_limit_allowlist
 db_type: text[]
 default: "'{}'::text[]"

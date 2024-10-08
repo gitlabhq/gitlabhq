@@ -1,7 +1,7 @@
 ---
 api_type: string
 attr: user_default_internal_regex
-clusterwide:
+clusterwide: false
 column: user_default_internal_regex
 db_type: character
 default:

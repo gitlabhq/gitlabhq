@@ -1,7 +1,7 @@
 ---
 api_type: boolean
 attr: signup_enabled
-clusterwide:
+clusterwide: false
 column: signup_enabled
 db_type: boolean
 default:

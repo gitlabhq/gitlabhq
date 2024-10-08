@@ -1,7 +1,7 @@
 ---
 api_type: string
 attr: geo_node_allowed_ips
-clusterwide:
+clusterwide: false
 column: geo_node_allowed_ips
 db_type: character
 default: "'0.0.0.0/0"

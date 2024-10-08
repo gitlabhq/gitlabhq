@@ -1,7 +1,7 @@
 ---
 api_type:
 attr: namespace_aggregation_schedule_lease_duration_in_seconds
-clusterwide:
+clusterwide: false
 column: namespace_aggregation_schedule_lease_duration_in_seconds
 db_type: integer
 default: '300'

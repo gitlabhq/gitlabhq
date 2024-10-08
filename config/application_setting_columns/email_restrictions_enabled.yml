@@ -1,7 +1,7 @@
 ---
 api_type: boolean
 attr: email_restrictions_enabled
-clusterwide:
+clusterwide: true
 column: email_restrictions_enabled
 db_type: boolean
 default: 'false'

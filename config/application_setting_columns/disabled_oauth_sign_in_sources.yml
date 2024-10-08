@@ -1,7 +1,7 @@
 ---
 api_type: array of strings
 attr: disabled_oauth_sign_in_sources
-clusterwide:
+clusterwide: false
 column: disabled_oauth_sign_in_sources
 db_type: text
 default:

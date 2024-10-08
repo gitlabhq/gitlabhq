@@ -1,7 +1,7 @@
 ---
 api_type:
 attr: users_get_by_id_limit_allowlist
-clusterwide:
+clusterwide: false
 column: users_get_by_id_limit_allowlist
 db_type: text[]
 default: "'{}'::text[]"

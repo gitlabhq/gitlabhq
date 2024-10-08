@@ -1,7 +1,7 @@
 ---
 api_type: float
 attr: polling_interval_multiplier
-clusterwide:
+clusterwide: false
 column: polling_interval_multiplier
 db_type: numeric
 default: '1.0'

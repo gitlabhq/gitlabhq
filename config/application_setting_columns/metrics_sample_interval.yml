@@ -1,7 +1,7 @@
 ---
 api_type:
 attr: metrics_sample_interval
-clusterwide:
+clusterwide: true
 column: metrics_sample_interval
 db_type: integer
 default: '15'

@@ -1,7 +1,7 @@
 ---
 api_type: float
 attr: external_authorization_service_timeout
-clusterwide:
+clusterwide: false
 column: external_authorization_service_timeout
 db_type: double
 default: '0.5'

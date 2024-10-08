@@ -1,7 +1,7 @@
 ---
 api_type:
 attr: lets_encrypt_notification_email
-clusterwide:
+clusterwide: true
 column: lets_encrypt_notification_email
 db_type: character
 default:

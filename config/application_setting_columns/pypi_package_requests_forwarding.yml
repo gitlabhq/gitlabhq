@@ -1,7 +1,7 @@
 ---
 api_type: boolean
 attr: pypi_package_requests_forwarding
-clusterwide:
+clusterwide: false
 column: pypi_package_requests_forwarding
 db_type: boolean
 default: 'true'

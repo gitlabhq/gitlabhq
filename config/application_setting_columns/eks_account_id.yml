@@ -1,7 +1,7 @@
 ---
 api_type: string
 attr: eks_account_id
-clusterwide:
+clusterwide: true
 column: eks_account_id
 db_type: character
 default:

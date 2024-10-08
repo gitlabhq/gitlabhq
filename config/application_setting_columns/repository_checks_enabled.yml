@@ -1,7 +1,7 @@
 ---
 api_type: boolean
 attr: repository_checks_enabled
-clusterwide:
+clusterwide: false
 column: repository_checks_enabled
 db_type: boolean
 default: 'false'

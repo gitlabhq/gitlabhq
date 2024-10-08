@@ -1,7 +1,7 @@
 ---
 api_type: hash of strings to integers
 attr: repository_storages_weighted
-clusterwide:
+clusterwide: true
 column: repository_storages_weighted
 db_type: jsonb
 default: "'{}'::jsonb"

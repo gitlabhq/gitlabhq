@@ -1,7 +1,7 @@
 ---
 api_type: string
 attr: external_auth_client_key
-clusterwide:
+clusterwide: false
 column: encrypted_external_auth_client_key
 db_type: text
 default:

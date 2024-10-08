@@ -1,7 +1,7 @@
 ---
 api_type: string
 attr: default_group_visibility
-clusterwide:
+clusterwide: false
 column: default_group_visibility
 db_type: integer
 default:

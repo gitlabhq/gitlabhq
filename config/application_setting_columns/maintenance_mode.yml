@@ -1,7 +1,7 @@
 ---
 api_type: boolean
 attr: maintenance_mode
-clusterwide:
+clusterwide: false
 column: maintenance_mode
 db_type: boolean
 default: 'false'

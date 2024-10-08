@@ -1,7 +1,7 @@
 ---
 api_type: boolean
 attr: email_author_in_body
-clusterwide:
+clusterwide: true
 column: email_author_in_body
 db_type: boolean
 default: 'false'

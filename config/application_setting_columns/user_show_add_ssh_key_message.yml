@@ -1,7 +1,7 @@
 ---
 api_type: boolean
 attr: user_show_add_ssh_key_message
-clusterwide:
+clusterwide: false
 column: user_show_add_ssh_key_message
 db_type: boolean
 default: 'true'

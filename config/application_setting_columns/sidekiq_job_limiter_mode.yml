@@ -1,7 +1,7 @@
 ---
 api_type: string
 attr: sidekiq_job_limiter_mode
-clusterwide:
+clusterwide: false
 column: sidekiq_job_limiter_mode
 db_type: smallint
 default: '1'

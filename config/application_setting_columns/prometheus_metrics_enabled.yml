@@ -1,7 +1,7 @@
 ---
 api_type: boolean
 attr: prometheus_metrics_enabled
-clusterwide:
+clusterwide: false
 column: prometheus_metrics_enabled
 db_type: boolean
 default: 'true'

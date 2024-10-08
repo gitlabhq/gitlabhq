@@ -1,7 +1,7 @@
 ---
 api_type: boolean
 attr: npm_package_requests_forwarding
-clusterwide:
+clusterwide: false
 column: npm_package_requests_forwarding
 db_type: boolean
 default: 'true'

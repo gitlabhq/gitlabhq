@@ -1,7 +1,7 @@
 ---
 api_type: array of strings
 attr: valid_runner_registrars
-clusterwide:
+clusterwide: false
 column: valid_runner_registrars
 db_type: character
 default: "'{project"

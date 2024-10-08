@@ -1,7 +1,7 @@
 ---
 api_type:
 attr: product_analytics_enabled
-clusterwide:
+clusterwide: false
 column: product_analytics_enabled
 db_type: boolean
 default: 'false'

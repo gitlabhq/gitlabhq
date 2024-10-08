@@ -1,7 +1,7 @@
 ---
 api_type:
 attr: future_subscriptions
-clusterwide:
+clusterwide: false
 column: future_subscriptions
 db_type: jsonb
 default: "'[]'::jsonb"

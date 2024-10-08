@@ -1,7 +1,7 @@
 ---
 api_type: integer
 attr: gitaly_timeout_default
-clusterwide:
+clusterwide: false
 column: gitaly_timeout_default
 db_type: integer
 default: '55'

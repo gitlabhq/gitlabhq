@@ -1,7 +1,7 @@
 ---
 api_type: string
 attr: diagramsnet_url
-clusterwide:
+clusterwide: false
 column: diagramsnet_url
 db_type: text
 default: "'https://embed.diagrams.net'::text"

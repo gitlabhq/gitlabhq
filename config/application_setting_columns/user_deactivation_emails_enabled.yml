@@ -1,7 +1,7 @@
 ---
 api_type: boolean
 attr: user_deactivation_emails_enabled
-clusterwide:
+clusterwide: false
 column: user_deactivation_emails_enabled
 db_type: boolean
 default: 'true'

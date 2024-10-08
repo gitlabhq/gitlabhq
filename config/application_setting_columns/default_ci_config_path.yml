@@ -1,7 +1,7 @@
 ---
 api_type: string
 attr: default_ci_config_path
-clusterwide:
+clusterwide: false
 column: default_ci_config_path
 db_type: character
 default:

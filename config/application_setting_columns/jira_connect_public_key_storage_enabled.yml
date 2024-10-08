@@ -1,7 +1,7 @@
 ---
 api_type: boolean
 attr: jira_connect_public_key_storage_enabled
-clusterwide:
+clusterwide: true
 column: jira_connect_public_key_storage_enabled
 db_type: boolean
 default: 'false'

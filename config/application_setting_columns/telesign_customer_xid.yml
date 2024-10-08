@@ -1,7 +1,7 @@
 ---
 api_type:
 attr: telesign_customer_xid
-clusterwide:
+clusterwide: true
 column: encrypted_telesign_customer_xid
 db_type: bytea
 default:

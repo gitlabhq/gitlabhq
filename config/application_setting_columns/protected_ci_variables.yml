@@ -1,7 +1,7 @@
 ---
 api_type: boolean
 attr: protected_ci_variables
-clusterwide:
+clusterwide: false
 column: protected_ci_variables
 db_type: boolean
 default: 'true'

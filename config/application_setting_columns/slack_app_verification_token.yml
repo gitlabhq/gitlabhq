@@ -1,7 +1,7 @@
 ---
 api_type: string
 attr: slack_app_verification_token
-clusterwide:
+clusterwide: false
 column: encrypted_slack_app_verification_token
 db_type: text
 default:

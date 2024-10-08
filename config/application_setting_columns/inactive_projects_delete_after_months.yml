@@ -1,7 +1,7 @@
 ---
 api_type:
 attr: inactive_projects_delete_after_months
-clusterwide:
+clusterwide: false
 column: inactive_projects_delete_after_months
 db_type: integer
 default: '2'

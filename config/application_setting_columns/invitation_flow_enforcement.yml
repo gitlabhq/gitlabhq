@@ -1,7 +1,7 @@
 ---
 api_type:
 attr: invitation_flow_enforcement
-clusterwide:
+clusterwide: false
 column: invitation_flow_enforcement
 db_type: boolean
 default: 'false'

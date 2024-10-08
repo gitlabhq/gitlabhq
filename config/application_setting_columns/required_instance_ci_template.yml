@@ -1,7 +1,7 @@
 ---
 api_type:
 attr: required_instance_ci_template
-clusterwide:
+clusterwide: false
 column: required_instance_ci_template
 db_type: text
 default:

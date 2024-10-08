@@ -1,7 +1,7 @@
 ---
 api_type:
 attr: force_pages_access_control
-clusterwide:
+clusterwide: false
 column: force_pages_access_control
 db_type: boolean
 default: 'false'

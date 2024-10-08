@@ -1,7 +1,7 @@
 ---
 api_type: boolean
 attr: service_access_tokens_expiration_enforced
-clusterwide:
+clusterwide: false
 column: service_access_tokens_expiration_enforced
 db_type: boolean
 default: 'true'

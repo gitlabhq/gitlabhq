@@ -1,7 +1,7 @@
 ---
 api_type: boolean
 attr: dns_rebinding_protection_enabled
-clusterwide:
+clusterwide: false
 column: dns_rebinding_protection_enabled
 db_type: boolean
 default: 'true'

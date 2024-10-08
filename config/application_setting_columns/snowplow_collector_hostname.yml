@@ -1,7 +1,7 @@
 ---
 api_type: string
 attr: snowplow_collector_hostname
-clusterwide:
+clusterwide: false
 column: snowplow_collector_hostname
 db_type: character
 default:

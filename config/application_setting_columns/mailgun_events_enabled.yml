@@ -1,7 +1,7 @@
 ---
 api_type: boolean
 attr: mailgun_events_enabled
-clusterwide:
+clusterwide: true
 column: mailgun_events_enabled
 db_type: boolean
 default: 'false'

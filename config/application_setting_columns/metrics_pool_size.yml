@@ -1,7 +1,7 @@
 ---
 api_type:
 attr: metrics_pool_size
-clusterwide:
+clusterwide: true
 column: metrics_pool_size
 db_type: integer
 default: '16'

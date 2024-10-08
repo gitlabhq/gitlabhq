@@ -1,7 +1,7 @@
 ---
 api_type: boolean
 attr: help_page_hide_commercial_content
-clusterwide:
+clusterwide: true
 column: help_page_hide_commercial_content
 db_type: boolean
 default: 'false'

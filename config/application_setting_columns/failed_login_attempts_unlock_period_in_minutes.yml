@@ -1,7 +1,7 @@
 ---
 api_type: integer
 attr: failed_login_attempts_unlock_period_in_minutes
-clusterwide:
+clusterwide: false
 column: failed_login_attempts_unlock_period_in_minutes
 db_type: integer
 default:

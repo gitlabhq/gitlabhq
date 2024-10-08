@@ -1,7 +1,7 @@
 ---
 api_type: boolean
 attr: recaptcha_enabled
-clusterwide:
+clusterwide: true
 column: recaptcha_enabled
 db_type: boolean
 default: 'false'

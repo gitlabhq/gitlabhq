@@ -1,7 +1,7 @@
 ---
 api_type:
 attr: push_rule_id
-clusterwide:
+clusterwide: false
 column: push_rule_id
 db_type: bigint
 default:

@@ -1,7 +1,7 @@
 ---
 api_type: string
 attr: enabled_git_access_protocol
-clusterwide:
+clusterwide: true
 column: enabled_git_access_protocol
 db_type: character
 default:

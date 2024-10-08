@@ -1,0 +1,12 @@
+---
+api_type: string
+attr: static_objects_external_storage_auth_token
+clusterwide: false
+column: static_objects_external_storage_auth_token_encrypted
+db_type: text
+default:
+description: Authentication token for the external storage linked in `static_objects_external_storage_url`.
+encrypted: true
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

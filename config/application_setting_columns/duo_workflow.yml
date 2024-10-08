@@ -1,7 +1,7 @@
 ---
 api_type:
 attr: duo_workflow
-clusterwide:
+clusterwide: true
 column: duo_workflow
 db_type: jsonb
 default: "'{}'::jsonb"

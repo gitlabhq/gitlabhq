@@ -1,7 +1,7 @@
 ---
 api_type: string
 attr: spam_check_api_key
-clusterwide:
+clusterwide: true
 column: encrypted_spam_check_api_key
 db_type: bytea
 default:

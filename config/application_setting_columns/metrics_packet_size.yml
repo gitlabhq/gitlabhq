@@ -1,7 +1,7 @@
 ---
 api_type:
 attr: metrics_packet_size
-clusterwide:
+clusterwide: true
 column: metrics_packet_size
 db_type: integer
 default: '1'

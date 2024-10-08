@@ -1,7 +1,7 @@
 ---
 api_type: boolean
 attr: login_recaptcha_protection_enabled
-clusterwide:
+clusterwide: false
 column: login_recaptcha_protection_enabled
 db_type: boolean
 default: 'false'

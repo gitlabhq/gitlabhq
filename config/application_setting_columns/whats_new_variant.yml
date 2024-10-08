@@ -1,7 +1,7 @@
 ---
 api_type: string
 attr: whats_new_variant
-clusterwide:
+clusterwide: false
 column: whats_new_variant
 db_type: smallint
 default: '0'

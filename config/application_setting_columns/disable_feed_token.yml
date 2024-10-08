@@ -1,7 +1,7 @@
 ---
 api_type: boolean
 attr: disable_feed_token
-clusterwide:
+clusterwide: false
 column: disable_feed_token
 db_type: boolean
 default: 'false'

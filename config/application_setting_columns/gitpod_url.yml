@@ -1,7 +1,7 @@
 ---
 api_type: string
 attr: gitpod_url
-clusterwide:
+clusterwide: false
 column: gitpod_url
 db_type: text
 default: "'https://gitpod.io/'::text"

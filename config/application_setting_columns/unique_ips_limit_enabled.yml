@@ -1,7 +1,7 @@
 ---
 api_type: boolean
 attr: unique_ips_limit_enabled
-clusterwide:
+clusterwide: false
 column: unique_ips_limit_enabled
 db_type: boolean
 default: 'false'

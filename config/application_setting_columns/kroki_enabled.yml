@@ -1,7 +1,7 @@
 ---
 api_type: boolean
 attr: kroki_enabled
-clusterwide:
+clusterwide: false
 column: kroki_enabled
 db_type: boolean
 default:

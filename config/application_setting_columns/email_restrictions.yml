@@ -1,7 +1,7 @@
 ---
 api_type: string
 attr: email_restrictions
-clusterwide:
+clusterwide: true
 column: email_restrictions
 db_type: text
 default:

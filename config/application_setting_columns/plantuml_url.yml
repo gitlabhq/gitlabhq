@@ -1,7 +1,7 @@
 ---
 api_type: string
 attr: plantuml_url
-clusterwide:
+clusterwide: true
 column: plantuml_url
 db_type: character
 default:

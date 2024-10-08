@@ -1,7 +1,7 @@
 ---
 api_type: boolean
 attr: gitlab_dedicated_instance
-clusterwide:
+clusterwide: false
 column: gitlab_dedicated_instance
 db_type: boolean
 default: 'false'

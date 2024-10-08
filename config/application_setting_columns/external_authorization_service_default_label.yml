@@ -1,7 +1,7 @@
 ---
 api_type: string
 attr: external_authorization_service_default_label
-clusterwide:
+clusterwide: false
 column: external_authorization_service_default_label
 db_type: character
 default:

@@ -1,7 +1,7 @@
 ---
 api_type: integer
 attr: shared_runners_minutes
-clusterwide:
+clusterwide: false
 column: shared_runners_minutes
 db_type: integer
 default: '0'

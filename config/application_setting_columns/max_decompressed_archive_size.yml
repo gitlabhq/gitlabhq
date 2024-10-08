@@ -1,7 +1,7 @@
 ---
 api_type: integer
 attr: max_decompressed_archive_size
-clusterwide:
+clusterwide: false
 column: max_decompressed_archive_size
 db_type: integer
 default: '25600'

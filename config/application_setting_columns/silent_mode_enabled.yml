@@ -1,7 +1,7 @@
 ---
 api_type: boolean
 attr: silent_mode_enabled
-clusterwide:
+clusterwide: false
 column: silent_mode_enabled
 db_type: boolean
 default: 'false'

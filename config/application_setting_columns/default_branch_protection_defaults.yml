@@ -1,7 +1,7 @@
 ---
 api_type: hash
 attr: default_branch_protection_defaults
-clusterwide:
+clusterwide: false
 column: default_branch_protection_defaults
 db_type: jsonb
 default: "'{}'::jsonb"

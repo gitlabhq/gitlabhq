@@ -1,7 +1,7 @@
 ---
 api_type: boolean
 attr: prevent_merge_requests_author_approval
-clusterwide:
+clusterwide: false
 column: prevent_merge_requests_author_approval
 db_type: boolean
 default: 'false'

@@ -1,7 +1,7 @@
 ---
 api_type:
 attr: lock_math_rendering_limits_enabled
-clusterwide:
+clusterwide: false
 column: lock_math_rendering_limits_enabled
 db_type: boolean
 default: 'false'
