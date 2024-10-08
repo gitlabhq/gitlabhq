@@ -535,11 +535,13 @@ Use lists to present information in a format that is easier to scan.
 
 - Make all items in the list parallel.
   For example, do not start some items with nouns and others with verbs.
-- Do not use a period if the item is not a full sentence.
-- Use a period after every full sentence. Do not use semicolons or commas.
-- Give all items the same punctuation.
 - Start all items with a capital letter.
-- Separate the introductory phrase from explanatory text with a colon (`:`). For example:
+- Give all items the same punctuation.
+- Do not use a period if the item is not a full sentence.
+- Use a period after every full sentence.
+  Do not use semicolons or commas.
+- Add a colon (`:`) after the introductory phrase.
+  For example:
 
   ```markdown
   You can:
@@ -1288,17 +1290,22 @@ Do not:
 
 When writing alt text:
 
-- Write short, descriptive alt text in 155 characters or fewer. Screen readers
-typically stop reading after this amount.
-- If the image has complex information, like a workflow diagram, use a short alt text to identify the image and
-include detailed information in the text.
-- Use end punctuation.
-- Use sentence case and avoid using all-caps. Some screen readers read capitals as individual letters.
-- Don't use phrases like **Image of** or **Graphic of**.
-- Don't use a string of keywords. Include keywords in phrases or sentences to enhance context.
-- Introduce the image in the section text, not the alt text.
-- Try to avoid repeating content that you've already used in the section text.
-- Don't use inline styling, like bold, italics, or backticks. Screen readers read `**text**` as `star star text star star`.
+- Write short, descriptive alt text in 155 characters or fewer.
+  Screen readers typically stop reading after this many characters.
+- If the image has complex information like a workflow diagram, use short alt text
+  to identify the image and include detailed information in the text.
+- Use punctuation.
+- Do not use a period if the text is not a full sentence.
+- Use a period after every full sentence.
+- Use sentence case and avoid using all caps.
+  Some screen readers read capitals as individual letters.
+- Do not use phrases like **Image of** or **Graphic of**.
+- Do not use a string of keywords.
+  Include keywords in the text to enhance context.
+- Introduce the image in the topic, not the alt text.
+- Try to avoid repeating text you've already used in the topic.
+- Do not use inline styling like bold, italics, or backticks.
+  Screen readers read `**text**` as `star star text star star`.
 
 #### Automatic screenshot generator
 

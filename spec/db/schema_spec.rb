@@ -286,7 +286,7 @@ RSpec.describe 'Database schema',
             it 'only has existing indexes in the ignored duplicate indexes duplicate_indexes.yml' do
               table_ignored_indexes = (ignored_indexes[table] || {}).to_a.flatten.uniq
               indexes_by_name = indexes.map(&:name)
-              expect(indexes_by_name).to include(*table_ignored_indexes)
+              expect(indexes_by_name).to include(*table_ignored_indexes) unless table_ignored_indexes.empty?
             end
 
             it 'does not have any duplicated indexes' do

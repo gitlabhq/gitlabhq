@@ -265,6 +265,10 @@ describe('Work Item Note', () => {
       it('should have the project name', () => {
         expect(findNoteActions().props('projectName')).toBe('Project name');
       });
+
+      it('should pass the noteUrl to the note header and should be a work items url', () => {
+        expect(findNoteHeader().props('noteUrl')).toContain('work_items');
+      });
     });
 
     describe('comment threads', () => {

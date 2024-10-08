@@ -20,6 +20,7 @@ class ApplicationSetting < ApplicationRecord
     encrypted_vertex_ai_access_token_iv
   ], remove_with: '17.5', remove_after: '2024-09-19'
   ignore_columns %i[toggle_security_policy_custom_ci lock_toggle_security_policy_custom_ci], remove_with: '17.6', remove_after: '2024-10-17'
+  ignore_column :runners_registration_token, remove_with: '17.7', remove_after: '2024-11-22'
 
   INSTANCE_REVIEW_MIN_USERS = 50
   GRAFANA_URL_ERROR_MESSAGE = 'Please check your Grafana URL setting in ' \

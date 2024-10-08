@@ -163,7 +163,7 @@ module Gitlab
         rescue Timeout::Error => e
           logger.error "Secret Detection scan timed out on the blob(id:#{blob.id}): #{e}"
           SecretDetection::Finding.new(blob.id,
-            SecretDetection::Status::BLOB_TIMEOUT)
+            SecretDetection::Status::PAYLOAD_TIMEOUT)
         end
 
         found_secrets.freeze
@@ -187,7 +187,7 @@ module Gitlab
           rescue Timeout::Error => e
             logger.error "Secret Detection scan timed out on the blob(id:#{blob.id}): #{e}"
             SecretDetection::Finding.new(blob.id,
-              SecretDetection::Status::BLOB_TIMEOUT)
+              SecretDetection::Status::PAYLOAD_TIMEOUT)
           end
         end
 
@@ -238,7 +238,7 @@ module Gitlab
       def overall_scan_status(found_secrets)
         return SecretDetection::Status::NOT_FOUND if found_secrets.empty?
 
-        timed_out_blobs = found_secrets.count { |el| el.status == SecretDetection::Status::BLOB_TIMEOUT }
+        timed_out_blobs = found_secrets.count { |el| el.status == SecretDetection::Status::PAYLOAD_TIMEOUT }
 
         case timed_out_blobs
         when 0

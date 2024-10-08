@@ -5710,10 +5710,9 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     subject { project.predefined_project_variables.to_runner_variables }
 
     specify do
-      expect(subject).to include
-      [
+      expect(subject).to include(
         { key: 'CI_CONFIG_PATH', value: Ci::Pipeline::DEFAULT_CONFIG_PATH, public: true, masked: false }
-      ]
+      )
     end
 
     context 'when ci config path is overridden' do
@@ -5722,10 +5721,9 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       end
 
       it do
-        expect(subject).to include
-        [
+        expect(subject).to include(
           { key: 'CI_CONFIG_PATH', value: 'random.yml', public: true, masked: false }
-        ]
+        )
       end
     end
   end

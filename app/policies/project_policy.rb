@@ -1019,7 +1019,7 @@ class ProjectPolicy < BasePolicy
     enable :read_namespace_catalog
   end
 
-  rule { reporter & model_registry_enabled }.policy do
+  rule { model_registry_enabled }.policy do
     enable :read_model_registry
   end
 
@@ -1027,7 +1027,7 @@ class ProjectPolicy < BasePolicy
     enable :write_model_registry
   end
 
-  rule { reporter & model_experiments_enabled }.policy do
+  rule { model_experiments_enabled }.policy do
     enable :read_model_experiments
   end
 

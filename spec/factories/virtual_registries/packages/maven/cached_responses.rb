@@ -11,6 +11,7 @@ FactoryBot.define do
     content_type { 'text/plain' }
     downloads_count { 5 }
     file_final_path { '5f/9c/5f9c/@final/c7/4c/240c' }
+    status { :default }
 
     transient do
       file_fixture { 'spec/fixtures/bfg_object_map.txt' }

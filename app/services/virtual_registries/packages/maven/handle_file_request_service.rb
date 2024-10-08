@@ -46,7 +46,7 @@ module VirtualRegistries
         def cached_response
           # TODO change this to support multiple upstreams
           # https://gitlab.com/gitlab-org/gitlab/-/issues/480461
-          registry.upstream.cached_responses.find_by_relative_path(relative_path)
+          registry.upstream.cached_responses.default.find_by_relative_path(relative_path)
         end
         strong_memoize_attr :cached_response
 

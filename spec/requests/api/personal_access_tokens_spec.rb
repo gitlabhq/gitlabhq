@@ -214,7 +214,7 @@ RSpec.describe API::PersonalAccessTokens, :aggregate_failures, feature_category:
 
             expect(response).to have_gitlab_http_status(status)
 
-            expect(json_response.map { |pat| pat['id'] }).to include(*result) if status == :ok
+            expect(json_response.map { |pat| pat['id'] }).to include(*result) if status == :ok && !result.empty?
           end
         end
       end
@@ -237,7 +237,7 @@ RSpec.describe API::PersonalAccessTokens, :aggregate_failures, feature_category:
 
             expect(response).to have_gitlab_http_status(status)
 
-            expect(json_response.map { |pat| pat['id'] }).to include(*result) if status == :ok
+            expect(json_response.map { |pat| pat['id'] }).to include(*result) if status == :ok && !result.empty?
           end
         end
       end

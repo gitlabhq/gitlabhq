@@ -48,11 +48,6 @@ Include the following detail as necessary:
 /label ~"documentation"
 /label ~"docs-only"
 
-<!-- Keep one docs:: label, or leave as is to apply ~"docs::improvement"-->
-/label ~"docs::feature"
-/label ~"docs::fix"
-/label ~"docs::improvement"
-
 /label ~"type::maintenance" ~"maintenance::refactor"
 
 /milestone %Backlog

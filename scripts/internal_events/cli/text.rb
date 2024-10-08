@@ -174,18 +174,24 @@ module InternalEventsCli
 
     ADDITIONAL_PROPERTIES_INTRO = <<~TEXT.freeze
       #{format_info('ADDITIONAL PROPERTIES')}
-      If you provide extra context with each triggered event, extra capabilities are enabled:
-      - Service Ping: filter metrics to a specific subset of events
-      - Snowflake: view/sort/group individual events from GitLab.com
+      Describe any related attributes or information which should be tracked when the event occurs. This enables extra capabilities:
+        - Service Ping: define metrics filtered to a specific subset of events (built-in properties only)
+        - Snowflake: view/sort/group individual events from GitLab.com
 
-      A few specific attributes are available for recording the context of each event. These include 2 strings and 1 numeric value.
+      BUILT-IN PROPERTIES (recommended)
+      For the best performance and flexibility, provide event context using:
 
-      ex) For an event like 'change_merge_request_status', we might want to include:
+        property (string),  label (string),  value (numeric)
 
-          Attribute: String 1 (attribute will be named `label`)
-          Description: Status of merge request after update (one of opened, merged, closed)
+      These attribute names correspond to repurposed fields in Snowflake. They have no special meaning other than data type.
 
-          This would enable us to create a metric like: Monthly count of unique users who changed an MR status to "closed"
+      ex) To add a metric like "Monthly count of unique users who changed an MR status to closed" using a 'change_merge_request_status' event, define an additional property like:
+        Attribute: label (string)
+        Description: Status of merge request after update (one of opened, merged, closed)
+
+      CUSTOM PROPERTIES (as-needed)
+      When the built-in properties are insufficient, properties of any name can be provided.
+      This option becomes available after both property and label are defined, or after value is defined.
 
     TEXT
 

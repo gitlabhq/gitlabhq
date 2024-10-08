@@ -277,7 +277,7 @@ RSpec.describe Gitlab::SecretDetection::Scan, feature_category: :secret_detectio
             ),
             Gitlab::SecretDetection::Finding.new(
               blobs[2].id,
-              Gitlab::SecretDetection::Status::BLOB_TIMEOUT
+              Gitlab::SecretDetection::Status::PAYLOAD_TIMEOUT
             )
           ]
         )
@@ -294,15 +294,15 @@ RSpec.describe Gitlab::SecretDetection::Scan, feature_category: :secret_detectio
           [
             Gitlab::SecretDetection::Finding.new(
               all_large_blobs[0].id,
-              Gitlab::SecretDetection::Status::BLOB_TIMEOUT
+              Gitlab::SecretDetection::Status::PAYLOAD_TIMEOUT
             ),
             Gitlab::SecretDetection::Finding.new(
               all_large_blobs[1].id,
-              Gitlab::SecretDetection::Status::BLOB_TIMEOUT
+              Gitlab::SecretDetection::Status::PAYLOAD_TIMEOUT
             ),
             Gitlab::SecretDetection::Finding.new(
               all_large_blobs[2].id,
-              Gitlab::SecretDetection::Status::BLOB_TIMEOUT
+              Gitlab::SecretDetection::Status::PAYLOAD_TIMEOUT
             )
           ]
         )

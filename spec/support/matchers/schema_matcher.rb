@@ -79,7 +79,10 @@ RSpec::Matchers.define :match_snowplow_schema do |schema, dir: nil, **options|
   end
 end
 
-RSpec::Matchers.define :match_schema do |schema, dir: nil, **options|
+RSpec::Matchers.define :match_schema do |schema, options = {}|
+  # NOTE: https://github.com/rspec/rspec-support/pull/591 broke kwarg parsing
+  dir = options.fetch(:dir, nil)
+
   match do |data|
     schema = SchemaPath.expand(schema, dir)
     schema = Pathname.new(schema) if schema.is_a?(String)

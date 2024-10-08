@@ -192,7 +192,7 @@ When working with the GitLab for Jira Cloud app, you might encounter the followi
 
 For administrator documentation, see [GitLab for Jira Cloud app administration](../../administration/settings/jira_cloud_app_troubleshooting.md).
 
-### Error when connecting the app
+### Error: `Failed to link group`
 
 When you connect the GitLab for Jira Cloud app, you might get this error:
 

@@ -262,7 +262,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'ee/spec/lib/gitlab/usage/metrics/instrumentations/protected_environments_required_approvals_average_metric_spec.rb'
     - 'ee/spec/lib/gitlab/vulnerability_scanning/security_report_builder_spec.rb'
     - 'ee/spec/lib/security/scan_result_policies/policy_violation_details_spec.rb'
-    - 'ee/spec/mailers/emails/abandoned_trial_notification_spec.rb'
     - 'ee/spec/mailers/emails/block_seat_overages_spec.rb'
     - 'ee/spec/models/dependency_proxy/packages/setting_spec.rb'
     - 'ee/spec/models/members/member_role_spec.rb'

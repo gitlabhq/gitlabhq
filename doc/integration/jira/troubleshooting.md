@@ -130,9 +130,9 @@ For more information, see [issue 341571](https://gitlab.com/gitlab-org/gitlab/-/
 
 To resolve this issue, disable and then re-enable the integration.
 
-## `certificate verify failed` when testing the integration settings
+## Error: `certificate verify failed`
 
-When testing the Jira issue integration settings, you might get the following error:
+When you test the Jira issue integration settings, you might get the following error:
 
 ```plaintext
 Connection failed. Check your integration settings. SSL_connect returned=1 errno=0 peeraddr=<jira.example.com> state=error: certificate verify failed (unable to get local issuer certificate)
@@ -253,9 +253,9 @@ end
 
 When [viewing Jira issues](configure.md#view-jira-issues) in GitLab, you might encounter the following issues.
 
-### `500 We're sorry` when accessing a Jira issue in GitLab
+### Error: `500 We're sorry`
 
-When accessing a Jira issue in GitLab, you might get a `500 We're sorry. Something went wrong on our end` error.
+When you access a Jira issue in GitLab, you might get a `500 We're sorry. Something went wrong on our end` error.
 Check [`production.log`](../../administration/logs/index.md#productionlog) to see if the file contains the following exception:
 
 ```plaintext
@@ -264,7 +264,7 @@ Check [`production.log`](../../administration/logs/index.md#productionlog) to se
 
 If that's the case, ensure the [**Due date** field is visible for issues](https://confluence.atlassian.com/jirakb/due-date-field-is-missing-189431917.html) in the integrated Jira project.
 
-### Error when requesting data from Jira
+### Error: `An error occurred while requesting data from Jira`
 
 When you try to view the Jira issue list or create a Jira issue in GitLab, you might get one of the following errors:
 
@@ -289,7 +289,7 @@ Your Jira project key must not have [restricted words and characters](https://co
 
 When you try to view the Jira issue list in GitLab, you might see one of the following errors.
 
-#### Error: `The value '<project>' does not exist for the field 'project'.`
+#### Error: `The value '<project>' does not exist for the field 'project'`
 
 If you use the wrong authentication credentials for your Jira installation, you might see this error:
 
@@ -310,7 +310,7 @@ For more information, see [Jira issue integration](configure.md).
 
 To resolve this issue, update the authentication credentials to match your Jira installation.
 
-#### Error: `The credentials for accessing Jira are not allowed to access the data.`
+#### Error: `The credentials for accessing Jira are not allowed to access the data`
 
 If your Jira credentials cannot access the Jira project key you specified in the
 [Jira issue integration](configure.md#configure-the-integration), you might see this error:

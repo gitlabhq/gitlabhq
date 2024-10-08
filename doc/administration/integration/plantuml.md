@@ -356,7 +356,7 @@ these steps:
   [requires a header prefix in the URL](https://plantuml.com/text-encoding)
   to distinguish different encoding types.
 
-## Troubleshooting PlantUML configuration
+## Troubleshooting
 
 ### Rendered diagram URL remains the same after update
 

@@ -129,6 +129,11 @@ InitializerConnections.raise_if_new_database_connection do
         end
       end
 
+      # HTTP Router
+      # Creating a black hole for /-/http_router/version since it is taken by the
+      # cloudflare worker, see: https://gitlab.com/gitlab-org/cells/http-router/-/issues/47
+      match '/http_router/version', to: proc { [204, {}, ['']] }, via: :all
+
       # '/-/health' implemented by BasicHealthCheck middleware
       get 'liveness' => 'health#liveness'
       get 'readiness' => 'health#readiness'

@@ -3905,6 +3905,9 @@ msgstr ""
 msgid "AdminSelfHostedModels|By enabling self-hosted models, you accept the %{link_start}GitLab Testing Agreement%{link_end}."
 msgstr ""
 
+msgid "AdminSelfHostedModels|Configure AI Features"
+msgstr ""
+
 msgid "AdminSelfHostedModels|Create model"
 msgstr ""
 
@@ -3968,6 +3971,9 @@ msgstr ""
 msgid "AdminSelfHostedModels|New self-hosted model"
 msgstr ""
 
+msgid "AdminSelfHostedModels|Once the model is no longer in use, you can return here to delete it."
+msgstr ""
+
 msgid "AdminSelfHostedModels|Please add a valid endpoint."
 msgstr ""
 
@@ -4002,6 +4008,15 @@ msgid "AdminSelfHostedModels|Successfully updated %{mainFeature} / %{title}"
 msgstr ""
 
 msgid "AdminSelfHostedModels|There was an error saving the self-hosted model. Please try again."
+msgstr ""
+
+msgid "AdminSelfHostedModels|This self-hosted model cannot be deleted"
+msgstr ""
+
+msgid "AdminSelfHostedModels|To remove %{boldStart}%{modelName}%{boldEnd}, you must first remove it from the following AI Feature(s):"
+msgstr ""
+
+msgid "AdminSelfHostedModels|You are about to delete the %{boldStart}%{modelName}%{boldEnd} self-hosted model. This action cannot be undone."
 msgstr ""
 
 msgid "AdminSelfHostedModels|Your self-hosted model was successfully deleted."

@@ -60,24 +60,24 @@ RSpec.describe ::API::MlModelPackages, feature_category: :mlops do
       true  | :developer  | :private | false | :personal_access_token | :not_found
       true  | :developer  | :private | true  | :job_token             | :success
       true  | :developer  | :private | true  | :personal_access_token | :success
-      true  | :developer  | :public  | false | :job_token             | :not_found
-      true  | :developer  | :public  | false | :personal_access_token | :not_found
+      true  | :developer  | :public  | false | :job_token             | :forbidden
+      true  | :developer  | :public  | false | :personal_access_token | :forbidden
       true  | :developer  | :public  | true  | :job_token             | :success
       true  | :developer  | :public  | true  | :personal_access_token | :success
       true  | :guest      | :private | false | :job_token             | :forbidden
       true  | :guest      | :private | false | :personal_access_token | :not_found
-      true  | :guest      | :private | true  | :job_token             | :not_found
-      true  | :guest      | :private | true  | :personal_access_token | :not_found
-      true  | :guest      | :public  | false | :job_token             | :not_found
-      true  | :guest      | :public  | false | :personal_access_token | :not_found
-      true  | :guest      | :public  | true  | :job_token             | :not_found
-      true  | :guest      | :public  | true  | :personal_access_token | :not_found
+      true  | :guest      | :private | true  | :job_token             | :forbidden
+      true  | :guest      | :private | true  | :personal_access_token | :forbidden
+      true  | :guest      | :public  | false | :job_token             | :forbidden
+      true  | :guest      | :public  | false | :personal_access_token | :forbidden
+      true  | :guest      | :public  | true  | :job_token             | :forbidden
+      true  | :guest      | :public  | true  | :personal_access_token | :forbidden
       true  | :reporter   | :private | false | :job_token             | :forbidden
       true  | :reporter   | :private | false | :personal_access_token | :not_found
       true  | :reporter   | :private | true  | :job_token             | :forbidden
       true  | :reporter   | :private | true  | :personal_access_token | :forbidden
-      true  | :reporter   | :public  | false | :job_token             | :not_found
-      true  | :reporter   | :public  | false | :personal_access_token | :not_found
+      true  | :reporter   | :public  | false | :job_token             | :forbidden
+      true  | :reporter   | :public  | false | :personal_access_token | :forbidden
       true  | :reporter   | :public  | true  | :job_token             | :forbidden
       true  | :reporter   | :public  | true  | :personal_access_token | :forbidden
     end
@@ -101,29 +101,29 @@ RSpec.describe ::API::MlModelPackages, feature_category: :mlops do
       false |  :guest      | :public  | true  | :job_token             | :unauthorized
       false |  :guest      | :public  | true  | :personal_access_token | :unauthorized
       true  |  :anonymous  | :private | false | :personal_access_token | :not_found
-      true  |  :anonymous  | :public  | false | :personal_access_token | :not_found
+      true  |  :anonymous  | :public  | false | :personal_access_token | :success
       true  |  :developer  | :private | false | :job_token             | :forbidden
       true  |  :developer  | :private | false | :personal_access_token | :not_found
       true  |  :developer  | :private | true  | :job_token             | :success
       true  |  :developer  | :private | true  | :personal_access_token | :success
-      true  |  :developer  | :public  | false | :job_token             | :not_found
-      true  |  :developer  | :public  | false | :personal_access_token | :not_found
+      true  |  :developer  | :public  | false | :job_token             | :success
+      true  |  :developer  | :public  | false | :personal_access_token | :success
       true  |  :developer  | :public  | true  | :job_token             | :success
       true  |  :developer  | :public  | true  | :personal_access_token | :success
       true  |  :guest      | :private | false | :job_token             | :forbidden
       true  |  :guest      | :private | false | :personal_access_token | :not_found
-      true  |  :guest      | :private | true  | :job_token             | :not_found
-      true  |  :guest      | :private | true  | :personal_access_token | :not_found
-      true  |  :guest      | :public  | false | :job_token             | :not_found
-      true  |  :guest      | :public  | false | :personal_access_token | :not_found
-      true  |  :guest      | :public  | true  | :job_token             | :not_found
-      true  |  :guest      | :public  | true  | :personal_access_token | :not_found
+      true  |  :guest      | :private | true  | :job_token             | :forbidden
+      true  |  :guest      | :private | true  | :personal_access_token | :forbidden
+      true  |  :guest      | :public  | false | :job_token             | :success
+      true  |  :guest      | :public  | false | :personal_access_token | :success
+      true  |  :guest      | :public  | true  | :job_token             | :success
+      true  |  :guest      | :public  | true  | :personal_access_token | :success
       true  |  :reporter   | :private | false | :job_token             | :forbidden
       true  |  :reporter   | :private | false | :personal_access_token | :not_found
       true  |  :reporter   | :private | true  | :job_token             | :success
       true  |  :reporter   | :private | true  | :personal_access_token | :success
-      true  |  :reporter   | :public  | false | :job_token             | :not_found
-      true  |  :reporter   | :public  | false | :personal_access_token | :not_found
+      true  |  :reporter   | :public  | false | :job_token             | :success
+      true  |  :reporter   | :public  | false | :personal_access_token | :success
       true  |  :reporter   | :public  | true  | :job_token             | :success
       true  |  :reporter   | :public  | true  | :personal_access_token | :success
     end

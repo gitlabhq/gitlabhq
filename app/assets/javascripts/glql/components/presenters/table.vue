@@ -42,7 +42,7 @@ export default {
 </script>
 <template>
   <div class="!gl-my-4">
-    <table ref="table" class="!gl-mb-2 !gl-mt-0">
+    <table ref="table" class="!gl-mb-2 !gl-mt-0 gl-overflow-y-hidden">
       <thead>
         <tr v-if="table">
           <th-resizable v-for="(field, fieldIndex) in fields" :key="field.key" :table="table">

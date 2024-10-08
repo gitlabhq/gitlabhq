@@ -49,9 +49,5 @@ If you aren't sure which tech writer to ask, use [roulette](https://gitlab-org.g
 /label ~documentation
 /label ~"docs-only"
 
-/label ~"docs::feature"
-/label ~"docs::fix"
-/label ~"docs::improvement"
-
 /label ~"type::maintenance" ~"maintenance::refactor"
 /assign me

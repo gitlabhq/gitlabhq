@@ -27,7 +27,9 @@ module VirtualRegistries
           length: { maximum: 255 }
         validates :file_final_path, length: { maximum: 1024 }
         validates :downloads_count, numericality: { greater_than: 0, only_integer: true }
-        validates :relative_path, uniqueness: { scope: :upstream_id }, if: :upstream
+        validates :relative_path,
+          uniqueness: { scope: [:upstream_id, :status] },
+          if: -> { upstream.present? && default? }
         validates :file, presence: true
 
         mount_file_store_uploader ::VirtualRegistries::CachedResponseUploader
@@ -51,7 +53,11 @@ module VirtualRegistries
         # safe_find_or_create_by.
         # We are using the check existence and rescue alternative.
         def self.create_or_update_by!(upstream:, group_id:, relative_path:, updates: {})
-          find_or_initialize_by(upstream: upstream, group_id: group_id, relative_path: relative_path).tap do |record|
+          default.find_or_initialize_by(
+            upstream: upstream,
+            group_id: group_id,
+            relative_path: relative_path
+          ).tap do |record|
             record.increment(:downloads_count) if record.persisted?
             record.update!(**updates)
           end

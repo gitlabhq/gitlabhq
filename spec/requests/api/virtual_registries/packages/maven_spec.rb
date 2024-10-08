@@ -997,6 +997,16 @@ RSpec.describe API::VirtualRegistries::Packages::Maven, :aggregate_failures, fea
       "/virtual_registries/packages/maven/registries/#{registry.id}/upstreams/#{upstream_id}/cached_responses"
     end
 
+    let_it_be(:processing_cached_response) do
+      create(
+        :virtual_registries_packages_maven_cached_response,
+        :processing,
+        upstream: upstream,
+        group: upstream.group,
+        relative_path: cached_response.relative_path
+      )
+    end
+
     subject(:api_request) { get api(url), headers: headers }
 
     shared_examples 'successful response' do
@@ -1104,6 +1114,16 @@ RSpec.describe API::VirtualRegistries::Packages::Maven, :aggregate_failures, fea
     let(:url) do
       "/virtual_registries/packages/maven/registries/#{registry.id}/upstreams/#{upstream.id}/" \
         "cached_responses/#{cached_response_id}"
+    end
+
+    let_it_be(:processing_cached_response) do
+      create(
+        :virtual_registries_packages_maven_cached_response,
+        :processing,
+        upstream: upstream,
+        group: upstream.group,
+        relative_path: cached_response.relative_path
+      )
     end
 
     subject(:api_request) { delete api(url), headers: headers }
@@ -1368,8 +1388,6 @@ RSpec.describe API::VirtualRegistries::Packages::Maven, :aggregate_failures, fea
   describe 'POST /api/v4/virtual_registries/packages/maven/:id/*path/upload' do
     include_context 'workhorse headers'
 
-    let(:path) { 'com/test/package/1.2.3/package-1.2.3.pom' }
-    let(:url) { "/virtual_registries/packages/maven/#{registry.id}/#{path}/upload" }
     let(:file_upload) { fixture_file_upload('spec/fixtures/packages/maven/my-app-1.0-20180724.124855-1.pom') }
     let(:gid_header) { { described_class::UPSTREAM_GID_HEADER => upstream.to_global_id.to_s } }
     let(:additional_headers) do
@@ -1377,6 +1395,18 @@ RSpec.describe API::VirtualRegistries::Packages::Maven, :aggregate_failures, fea
     end
 
     let(:headers) { workhorse_headers.merge(additional_headers) }
+
+    let_it_be(:path) { 'com/test/package/1.2.3/package-1.2.3.pom' }
+    let_it_be(:url) { "/virtual_registries/packages/maven/#{registry.id}/#{path}/upload" }
+    let_it_be(:processing_cached_response) do
+      create(
+        :virtual_registries_packages_maven_cached_response,
+        :processing,
+        upstream: upstream,
+        group: upstream.group,
+        relative_path: "/#{path}"
+      )
+    end
 
     subject(:request) do
       workhorse_finalize(

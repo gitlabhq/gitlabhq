@@ -100,13 +100,13 @@ If your Slack integration is not working, start troubleshooting by
 searching through the [Sidekiq logs](../../../administration/logs/index.md#sidekiqlog)
 for errors relating to your Slack service.
 
-### Something went wrong on our end
+### Error: `Something went wrong on our end`
 
 You might get this generic error message in the GitLab UI.
 Review [the logs](../../../administration/logs/index.md#productionlog) to find
 the error message and keep troubleshooting from there.
 
-### `certificate verify failed`
+### Error: `certificate verify failed`
 
 You might see an entry like the following in your Sidekiq log:
 

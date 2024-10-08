@@ -103,9 +103,23 @@ Secret push protection does not check a file in a commit when:
 
 - The file is a binary file.
 - The file is larger than 1 MiB.
+- The diff patch for the file is larger than 1 MiB (when using _[diff scanning](#diff-scanning)_).
 - The file was renamed, deleted, or moved without changes to the content.
 - The content of the file is identical to the content of another file in the source code.
 - The file is contained in the initial push that created the repository.
+
+## Diff scanning
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/469161) in GitLab 17.5 [with a project-level flag](../../../../administration/feature_flags.md) named `spp_scan_diffs`.
+
+Secret Push Protection scans all contents of modified files by default.
+This can cause a [push to be blocked unexpectedly](#push-blocked-unexpectedly) when a file containing a secret is scanned.
+You can enable the `spp_scan_diffs` [feature flag](../../../../administration/feature_flags.md) for your project,
+which modifies Secret Push Protection to only scan newly committed changes (or diffs), and not the rest of the file.
+
+When `spp_scan_diffs` is enabled, Secret Push Protection scans the diffs for CLI-based pushes via HTTP/SSH.
+Changes committed via the WebIDE still result in the entire file being scanned due to a technical limitation.
+[Issue 491282](https://gitlab.com/gitlab-org/gitlab/-/issues/491282) addresses the limitation so only the diffs are scanned for WebIDE changes.
 
 ## Resolve a blocked push
 
@@ -196,12 +210,11 @@ When working with secret push protection, you may encounter the following situat
 
 ### Push blocked unexpectedly
 
-Secret Push Protection scans all contents of modified files. This can cause a push to be
-unexpectedly blocked if a modified file contains a secret, even if the secret is not part of the diff.
+Secret Push Protection scans all contents of modified files. This can cause a push to be unexpectedly blocked
+if a modified file contains a secret, even if the secret is not part of the diff.
 
-To push a change to a file that contains a secret, you need to [skip secret push protection](#skip-secret-push-protection).
-
-[Issue 469161](https://gitlab.com/gitlab-org/gitlab/-/issues/469161) proposes to change the scanning logic to scan only diffs.
+[Enable the `spp_scan_diffs` feature flag](#diff-scanning) to ensure that only newly committed changes are scanned.
+To push a WebIDE change to a file that contains a secret, you need to [skip secret push protection](#skip-secret-push-protection).
 
 ### File was not scanned
 

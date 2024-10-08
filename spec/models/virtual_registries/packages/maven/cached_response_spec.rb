@@ -23,7 +23,7 @@ RSpec.describe VirtualRegistries::Packages::Maven::CachedResponse, type: :model,
         cached_response.save!
       end
 
-      it { is_expected.to validate_uniqueness_of(:relative_path).scoped_to(:upstream_id) }
+      it { is_expected.to validate_uniqueness_of(:relative_path).scoped_to(:upstream_id, :status) }
 
       context 'when upstream_id is nil' do
         let(:new_cached_response) { build(:virtual_registries_packages_maven_cached_response) }
@@ -31,6 +31,33 @@ RSpec.describe VirtualRegistries::Packages::Maven::CachedResponse, type: :model,
         before do
           cached_response.update!(upstream_id: nil)
           new_cached_response.upstream = nil
+        end
+
+        it 'does not validate uniqueness of relative_path' do
+          new_cached_response.validate
+          expect(new_cached_response.errors.messages_for(:relative_path)).not_to include 'has already been taken'
+        end
+      end
+
+      context 'with a similar cached response in a different status' do
+        let!(:cached_response_in_error) do
+          create(
+            :virtual_registries_packages_maven_cached_response,
+            :error,
+            group_id: cached_response.group_id,
+            upstream_id: cached_response.upstream_id,
+            relative_path: cached_response.relative_path
+          )
+        end
+
+        let(:new_cached_response) do
+          build(
+            :virtual_registries_packages_maven_cached_response,
+            :error,
+            group_id: cached_response.group_id,
+            upstream_id: cached_response.upstream_id,
+            relative_path: cached_response.relative_path
+          )
         end
 
         it 'does not validate uniqueness of relative_path' do

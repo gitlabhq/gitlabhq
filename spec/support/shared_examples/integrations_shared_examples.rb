@@ -17,7 +17,10 @@ RSpec.shared_examples 'set up an integration' do |endpoint:, integration:|
     current_integration = project.integrations.by_name(integration).first
     expect(current_integration).to have_attributes(integration_attrs)
     expect(json_response['properties'].keys).to match_array(current_integration.api_field_names)
-    expect(json_response['properties'].keys).not_to include(*current_integration.secret_fields)
+
+    unless current_integration.secret_fields.empty?
+      expect(json_response['properties'].keys).not_to include(*current_integration.secret_fields)
+    end
   end
 
   context 'when all booleans are flipped' do
@@ -136,7 +139,10 @@ RSpec.shared_examples 'get an integration settings' do |endpoint:, integration:|
       expect(initialized_integration).not_to be_active
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['properties'].keys).to match_array(integration_instance.api_field_names)
-      expect(json_response['properties'].keys).not_to include(*integration_instance.secret_fields)
+
+      unless integration_instance.secret_fields.empty?
+        expect(json_response['properties'].keys).not_to include(*integration_instance.secret_fields)
+      end
     end
   end
 
@@ -151,7 +157,10 @@ RSpec.shared_examples 'get an integration settings' do |endpoint:, integration:|
       expect(initialized_integration).to be_active
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['properties'].keys).to match_array(integration_instance.api_field_names)
-      expect(json_response['properties'].keys).not_to include(*integration_instance.secret_fields)
+
+      unless integration_instance.secret_fields.empty?
+        expect(json_response['properties'].keys).not_to include(*integration_instance.secret_fields)
+      end
     end
   end
 

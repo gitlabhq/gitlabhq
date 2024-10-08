@@ -204,7 +204,7 @@ USER gitlab-workspaces
 
 When working with workspaces, you might encounter the following issues.
 
-### `Failed to renew lease` when creating a workspace
+### Error: `Failed to renew lease`
 
 You might not be able to create a workspace due to a known issue in the GitLab agent for Kubernetes.
 The following error message might appear in the agent's log:

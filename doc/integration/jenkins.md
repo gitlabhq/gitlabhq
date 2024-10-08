@@ -171,9 +171,9 @@ If you cannot [provide GitLab with your Jenkins server URL and authentication in
 
 ## Troubleshooting
 
-### Error during GitLab configuration - "Connection failed. Please check your settings"
+### Error: `Connection failed. Please check your settings`
 
-While configuring GitLab, you might get an error that states "Connection failed. Please check your settings".
+When you configure GitLab, you might get an error that states `Connection failed. Please check your settings`.
 
 This issue has multiple possible causes and solutions:
 
@@ -184,7 +184,7 @@ This issue has multiple possible causes and solutions:
 | The credentials for the Jenkins instance do not have sufficient access or are invalid.| Grant the credentials sufficient access or create valid credentials.  |
 |The **Enable authentication for `/project` end-point** checkbox is not selected in your [Jenkins plugin configuration](#configure-the-jenkins-server)| Select the checkbox.  |
 
-### Error in merge requests - "Could not connect to the CI server"
+### Error: `Could not connect to the CI server`
 
 You might get an error that states `Could not connect to the CI server` in a merge
 request if GitLab did not receive a build status update from Jenkins through the

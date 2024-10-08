@@ -353,7 +353,7 @@ that cannot be accessed directly from the internet, keep the following in mind:
   [Atlassian IP addresses](https://support.atlassian.com/organization-administration/docs/ip-addresses-and-domains-for-atlassian-cloud-products/#Outgoing-Connections) only.
 - If you use a rewrite or subfilter with your proxy, ensure the proxy
   does not rewrite or replace the `gitlab-jira-connect-${host}` app key.
-  Otherwise, you might get a [`Failed to link group`](jira_cloud_app_troubleshooting.md#failed-to-link-group) error.
+  Otherwise, you might get a [`Failed to link group`](jira_cloud_app_troubleshooting.md#error-failed-to-link-group) error.
 
 ### External NGINX
 

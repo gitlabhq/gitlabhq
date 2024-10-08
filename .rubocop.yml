@@ -524,6 +524,7 @@ Gitlab/AvoidCurrentOrganization:
     - 'ee/lib/api/**/*'
     - 'app/graphql/**/*'
     - 'ee/app/graphql/**/*'
+    - 'lib/gitlab/current_settings.rb'
     - 'lib/gitlab/middleware/organizations/current.rb'
     - 'spec/**/*'
     - 'ee/spec/**/*'
