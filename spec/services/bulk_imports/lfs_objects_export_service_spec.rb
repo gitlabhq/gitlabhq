@@ -28,7 +28,7 @@ RSpec.describe BulkImports::LfsObjectsExportService, feature_category: :importer
   end
 
   after do
-    FileUtils.remove_entry(export_path) if Dir.exist?(export_path)
+    FileUtils.rm_rf(export_path)
   end
 
   describe '#execute' do

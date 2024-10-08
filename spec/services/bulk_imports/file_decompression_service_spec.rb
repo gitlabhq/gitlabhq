@@ -13,7 +13,7 @@ RSpec.describe BulkImports::FileDecompressionService, feature_category: :importe
 
   before do
     FileUtils.copy_file(gz_filepath, File.join(tmpdir, gz_filename))
-    FileUtils.remove_entry(ndjson_filepath) if File.exist?(ndjson_filepath)
+    FileUtils.rm_rf(ndjson_filepath)
   end
 
   after(:all) do

@@ -191,7 +191,7 @@ RSpec.describe Gitlab::Cleanup::ProjectUploads do
           end
 
           after do
-            File.delete(path) if File.exist?(path)
+            FileUtils.rm_f(path)
           end
 
           it_behaves_like 'moves the file to lost and found'

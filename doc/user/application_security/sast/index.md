@@ -656,11 +656,25 @@ The following are Docker image-related CI/CD variables.
       </td>
     </tr>
     <tr>
+      <td>
+        <!-- markdownlint-disable MD044 -->
+        <code>SAST_SPOTBUGS_EXCLUDED_BUILD_PATHS</code>
+        <!-- markdownlint-enable MD044 -->
+      </td>
+      <td>
+        Comma-separated list of paths for excluding directories from being built and scanned.
+      </td>
+      <td>None</td>
+      <td>
+        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs">SpotBugs</a><sup><b><a href="#sast-spotbugs-excluded-build-paths-description">4</a></b></sup>
+      </td>
+    </tr>
+    <tr>
       <td rowspan="3">
         <code>SEARCH_MAX_DEPTH</code>
       </td>
       <td rowspan="3">
-        The number of directory levels the analyzer will descend into when searching for matching files to scan.<sup><b><a href="#search-max-depth-description">4</a></b></sup>
+        The number of directory levels the analyzer will descend into when searching for matching files to scan.<sup><b><a href="#search-max-depth-description">5</a></b></sup>
       </td>
       <td rowspan="2">
         <code>
@@ -695,6 +709,7 @@ The following are Docker image-related CI/CD variables.
    these can generate false positives. To exclude paths, copy and paste the default excluded paths, then **add** your
    own paths to be excluded. If you don't specify the default excluded paths, the defaults are overridden and _only_ the
    paths you specify are excluded from SAST scans.
+
 1. <a id="sast-excluded-paths-semgrep"></a>For these analyzers, `SAST_EXCLUDED_PATHS` is implemented as a **pre-filter**,
    which is applied _before_ the scan is executed.
 
@@ -725,6 +740,22 @@ The following are Docker image-related CI/CD variables.
 
    For analyzers that support `SAST_EXCLUDED_PATHS` as both a pre-filter and post-filter, the pre-filter is applied first,
    then the post-filter is applied to any vulnerabilities that remain.
+
+1. <a id="sast-spotbugs-excluded-build-paths-description"></a> For this variable, Path patterns can be globs
+   (see [`doublestar.Match`](https://pkg.go.dev/github.com/bmatcuk/doublestar/v4@v4.0.2#Match) for supported patterns).
+   Directories are excluded from the build process if the path pattern matches a supported build file:
+
+   - `build.sbt`
+   - `grailsw`
+   - `gradlew`
+   - `build.gradle`
+   - `mvnw`
+   - `pom.xml`
+   - `build.xml`
+
+   For example, to exclude building and scanning a `maven` project containing a build file with the path `project/subdir/pom.xml`, pass a glob pattern that explicitly matches the build file, such as `project/*/*.xml` or `**/*.xml`, or an exact match such as `project/subdir/pom.xml`.
+
+   Passing a parent directory for the pattern, such as `project` or `project/subdir`, does _not_ exclude the directory from being built, because in this case, the build file is _not_ explicitly matched by the pattern.
 
 1. <a id="search-max-depth-description"></a>The [SAST CI/CD template](https://gitlab.com/gitlab-org/gitlab/blob/v17.4.1-ee/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml)
    searches the repository to detect the programming languages

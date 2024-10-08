@@ -11,7 +11,7 @@ RSpec.describe BulkImports::UploadsExportService, feature_category: :importers d
   subject(:service) { described_class.new(project, export_path) }
 
   after do
-    FileUtils.remove_entry(export_path) if Dir.exist?(export_path)
+    FileUtils.rm_rf(export_path)
   end
 
   describe '#execute' do
