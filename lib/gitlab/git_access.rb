@@ -27,6 +27,7 @@ module Gitlab
       upload_pack_disabled_over_http: 'Pulling over HTTP is not allowed.',
       receive_pack_disabled_over_http: 'Pushing over HTTP is not allowed.',
       read_only: 'The repository is temporarily read-only. Please try again later.',
+      archived: "You can't push code to an archived project.",
       cannot_push_to_read_only: "You can't push code to a read-only GitLab instance.",
       push_code: 'You are not allowed to push code to this project.'
     }.freeze
@@ -322,6 +323,10 @@ module Gitlab
     def check_push_access!
       if project&.repository_read_only?
         raise ForbiddenError, error_message(:read_only)
+      end
+
+      if project&.archived?
+        raise ForbiddenError, error_message(:archived)
       end
 
       if deploy_key?

@@ -696,7 +696,12 @@ RSpec.describe DiffHelper, feature_category: :code_review_workflow do
         .with(when_renamed: true)
         .and_return(:renamed_same_file)
 
-      allow_next_instance_of(MergeRequests::Conflicts::ListService, merge_request, allow_tree_conflicts: true) do |svc|
+      allow_next_instance_of(
+        MergeRequests::Conflicts::ListService,
+        merge_request,
+        allow_tree_conflicts: true,
+        skip_content: true
+      ) do |svc|
         if exception.present?
           allow(svc).to receive_message_chain(:conflicts, :files).and_raise(exception)
         else

@@ -10,10 +10,6 @@ RSpec.describe MergeRequests::Conflicts::ListService, feature_category: :code_re
       end
     end
 
-    def conflicts_service(merge_request)
-      described_class.new(merge_request)
-    end
-
     it 'returns a falsey value when the MR can be merged without conflicts' do
       merge_request = create_merge_request('master')
       merge_request.mark_as_mergeable
@@ -94,5 +90,59 @@ RSpec.describe MergeRequests::Conflicts::ListService, feature_category: :code_re
 
       expect(conflicts_service(merge_request).can_be_resolved_in_ui?).to be_falsey
     end
+  end
+
+  describe '#conflicts' do
+    let(:merge_request) { build_stubbed(:merge_request) }
+    let(:file_collection) { [instance_double(Gitlab::Conflict::FileCollection)] }
+
+    it 'returns conflict file collection' do
+      expect(Gitlab::Conflict::FileCollection)
+        .to receive(:new)
+        .with(
+          merge_request,
+          allow_tree_conflicts: nil,
+          skip_content: nil
+        )
+        .and_return(file_collection)
+
+      expect(conflicts_service(merge_request).conflicts).to eq(file_collection)
+    end
+
+    context 'when allow_tree_conflicts is set to true' do
+      it 'returns conflict file collection with allow_tree_conflicts as true' do
+        expect(Gitlab::Conflict::FileCollection)
+          .to receive(:new)
+          .with(
+            merge_request,
+            allow_tree_conflicts: true,
+            skip_content: nil
+          )
+          .and_return(file_collection)
+
+        expect(conflicts_service(merge_request, allow_tree_conflicts: true).conflicts)
+          .to eq(file_collection)
+      end
+    end
+
+    context 'when skip_content is set to true' do
+      it 'returns conflict file collection with skip_content as true' do
+        expect(Gitlab::Conflict::FileCollection)
+          .to receive(:new)
+          .with(
+            merge_request,
+            allow_tree_conflicts: nil,
+            skip_content: true
+          )
+          .and_return(file_collection)
+
+        expect(conflicts_service(merge_request, skip_content: true).conflicts)
+          .to eq(file_collection)
+      end
+    end
+  end
+
+  def conflicts_service(merge_request, params = {})
+    described_class.new(merge_request, params)
   end
 end
