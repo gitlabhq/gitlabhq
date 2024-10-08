@@ -49,7 +49,7 @@ export default {
     :aria-label="label"
     :title="tooltipTitle"
     type="button"
-    class="btn-blank"
+    class="gl-rounded-none gl-border-none !gl-bg-transparent gl-p-0 !gl-shadow-none !gl-outline-none"
     @click.stop.prevent="clicked"
   >
     <gl-icon :name="icon" :class="iconClasses" />

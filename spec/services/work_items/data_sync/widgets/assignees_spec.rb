@@ -6,7 +6,7 @@ RSpec.describe WorkItems::DataSync::Widgets::Assignees, feature_category: :team_
   let_it_be(:current_user) { create(:user) }
   let_it_be(:assignee1) { create(:user) }
   let_it_be(:assignee2) { create(:user) }
-  let_it_be(:work_item) { create(:work_item, assignees: [assignee1, assignee2]) }
+  let_it_be_with_reload(:work_item) { create(:work_item, assignees: [assignee1, assignee2]) }
   let_it_be(:target_work_item) { create(:work_item) }
   let(:params) { {} }
 
@@ -23,11 +23,12 @@ RSpec.describe WorkItems::DataSync::Widgets::Assignees, feature_category: :team_
       end
 
       it 'copies assignee_ids from work_item to target_work_item' do
-        expect(target_work_item).to receive(:assignee_ids=).and_call_original
+        expect(callback).to receive(:new_work_item_assignees).and_call_original
+        expect(::IssueAssignee).to receive(:insert_all).and_call_original
 
-        callback.before_create
+        callback.after_create
 
-        expect(target_work_item.assignees).to match_array([assignee1, assignee2])
+        expect(target_work_item.reload.assignees).to match_array([assignee1, assignee2])
       end
     end
 
@@ -38,11 +39,12 @@ RSpec.describe WorkItems::DataSync::Widgets::Assignees, feature_category: :team_
       end
 
       it 'does not copy assignee_ids' do
-        expect(target_work_item).not_to receive(:assignee_ids=)
+        expect(callback).not_to receive(:new_work_item_assignees)
+        expect(::IssueAssignee).not_to receive(:insert_all)
 
-        callback.before_create
+        callback.after_create
 
-        expect(target_work_item.assignees).to be_empty
+        expect(target_work_item.reload.assignees).to be_empty
       end
     end
   end
@@ -52,7 +54,7 @@ RSpec.describe WorkItems::DataSync::Widgets::Assignees, feature_category: :team_
       expect { callback.post_move_cleanup }.not_to raise_error
     end
 
-    it 'updates original work item assignees' do
+    it 'removes original work item assignees' do
       callback.post_move_cleanup
 
       expect(work_item.assignee_ids).to be_empty

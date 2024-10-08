@@ -2145,6 +2145,9 @@ msgstr ""
 msgid "AI Agent was successfully deleted"
 msgstr ""
 
+msgid "AI Gateway"
+msgstr ""
+
 msgid "AI Gateway URL:"
 msgstr ""
 
@@ -2326,6 +2329,9 @@ msgid "AI|The existing description will be replaced when you submit."
 msgstr ""
 
 msgid "AI|To help improve the quality of the content, send your feedback to GitLab team members."
+msgstr ""
+
+msgid "AI|Use GitLab Duo to generate a comment with a suggested solution."
 msgstr ""
 
 msgid "AI|Use GitLab Duo to generate a merge request with a suggested solution."
@@ -10889,6 +10895,9 @@ msgstr ""
 msgid "Cannot delete the default organization"
 msgstr ""
 
+msgid "Cannot have more than %{maximum_path_exclusions} path exclusions for secret push protection per project"
+msgstr ""
+
 msgid "Cannot have multiple Jira imports running at the same time"
 msgstr ""
 
@@ -13343,6 +13352,9 @@ msgstr ""
 msgid "Code Quality scans found %{findings}."
 msgstr ""
 
+msgid "Code Suggestions"
+msgstr ""
+
 msgid "Code block"
 msgstr ""
 
@@ -13497,6 +13509,12 @@ msgid "CodeSuggestions|Test Generation"
 msgstr ""
 
 msgid "CodeSuggestions|Tests are running"
+msgstr ""
+
+msgid "CodeSuggestions|The AI gateway URL must be set up as an environment variable."
+msgstr ""
+
+msgid "CodeSuggestions|The Code Suggestions feature is available."
 msgstr ""
 
 msgid "CodeSuggestions|The active subscription must sync with customers.gitlab.com every 72 hours."

@@ -23,6 +23,10 @@ $notification-box-shadow-color: rgba(0, 0, 0, 0.25);
     margin: 0;
   }
 
+  &:has(.gl-alert) {
+    @apply gl-mt-3;
+  }
+
   .flash-alert,
   .flash-notice,
   .flash-success,

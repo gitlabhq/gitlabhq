@@ -9,11 +9,11 @@ RSpec.shared_examples 'cloneable and moveable work item' do
 
   it 'runs all widget callbacks' do
     create_service_params = {
-      work_item: anything, target_work_item: anything, current_user: current_user, params: {}
+      work_item: anything, target_work_item: anything, current_user: current_user, params: anything
     }
 
     cleanup_service_params = {
-      work_item: anything, target_work_item: nil, current_user: current_user, params: {}
+      work_item: anything, target_work_item: nil, current_user: current_user, params: anything
     }
 
     original_work_item.widgets.flat_map(&:sync_data_callback_class).each do |callback_class|
@@ -54,21 +54,36 @@ RSpec.shared_examples 'cloneable and moveable widget data' do
     original_work_item.assignee_ids = assignees.map(&:id)
   end
 
-  where(:widget_name, :original_widget_data_lambda, :expected_new_work_item_widget_data) do
-    :assignees | -> { set_assignees } | ref(:assignees)
+  def work_item_assignees(work_item)
+    work_item.reload.assignees
+  end
+
+  where(:widget_name, :eval_value, :before_lambda, :expected_data, :operations) do
+    :assignees | :work_item_assignees | -> { set_assignees } | ref(:assignees) | [ref(:move), ref(:clone)]
   end
 
   with_them do
     context "with widget" do
+      let(:move) { WorkItems::DataSync::MoveService }
+      let(:clone) { WorkItems::DataSync::CloneService }
+
       before do
-        instance_exec(&original_widget_data_lambda)
+        instance_exec(&before_lambda)
       end
 
       it 'clones and moves widget data' do
         new_work_item = service.execute
+        widget_value = send(eval_value, new_work_item)
 
-        expect(new_work_item.public_send(widget_name)).to match_array(expected_new_work_item_widget_data)
-        expect(original_work_item.assignees).to be_empty if described_class == WorkItems::DataSync::MoveService
+        if operations.include?(described_class)
+          expect(widget_value).not_to be_nil
+          expect(widget_value).not_to be_empty
+          expect(widget_value).to match_array(expected_data)
+        else
+          expect(widget_value).to be_empty
+        end
+
+        expect(original_work_item.reload.public_send(widget_name)).to be_empty if described_class == move
       end
     end
   end

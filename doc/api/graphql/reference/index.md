@@ -17548,6 +17548,8 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="addonuserstarredprojectsminaccesslevel"></a>`minAccessLevel` | [`AccessLevelEnum`](#accesslevelenum) | Return only projects where current user has at least the specified access level. |
+| <a id="addonuserstarredprojectsprogramminglanguagename"></a>`programmingLanguageName` | [`String`](#string) | Filter projects by programming language name (case insensitive). For example: "css" or "ruby". |
 | <a id="addonuserstarredprojectssearch"></a>`search` | [`String`](#string) | Search query. |
 | <a id="addonuserstarredprojectssort"></a>`sort` | [`ProjectSort`](#projectsort) | List starred projects by sort order. |
 
@@ -18461,6 +18463,8 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="autocompleteduserstarredprojectsminaccesslevel"></a>`minAccessLevel` | [`AccessLevelEnum`](#accesslevelenum) | Return only projects where current user has at least the specified access level. |
+| <a id="autocompleteduserstarredprojectsprogramminglanguagename"></a>`programmingLanguageName` | [`String`](#string) | Filter projects by programming language name (case insensitive). For example: "css" or "ruby". |
 | <a id="autocompleteduserstarredprojectssearch"></a>`search` | [`String`](#string) | Search query. |
 | <a id="autocompleteduserstarredprojectssort"></a>`sort` | [`ProjectSort`](#projectsort) | List starred projects by sort order. |
 
@@ -20871,6 +20875,8 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="currentuserstarredprojectsminaccesslevel"></a>`minAccessLevel` | [`AccessLevelEnum`](#accesslevelenum) | Return only projects where current user has at least the specified access level. |
+| <a id="currentuserstarredprojectsprogramminglanguagename"></a>`programmingLanguageName` | [`String`](#string) | Filter projects by programming language name (case insensitive). For example: "css" or "ruby". |
 | <a id="currentuserstarredprojectssearch"></a>`search` | [`String`](#string) | Search query. |
 | <a id="currentuserstarredprojectssort"></a>`sort` | [`ProjectSort`](#projectsort) | List starred projects by sort order. |
 
@@ -26479,6 +26485,8 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="mergerequestassigneestarredprojectsminaccesslevel"></a>`minAccessLevel` | [`AccessLevelEnum`](#accesslevelenum) | Return only projects where current user has at least the specified access level. |
+| <a id="mergerequestassigneestarredprojectsprogramminglanguagename"></a>`programmingLanguageName` | [`String`](#string) | Filter projects by programming language name (case insensitive). For example: "css" or "ruby". |
 | <a id="mergerequestassigneestarredprojectssearch"></a>`search` | [`String`](#string) | Search query. |
 | <a id="mergerequestassigneestarredprojectssort"></a>`sort` | [`ProjectSort`](#projectsort) | List starred projects by sort order. |
 
@@ -26875,6 +26883,8 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="mergerequestauthorstarredprojectsminaccesslevel"></a>`minAccessLevel` | [`AccessLevelEnum`](#accesslevelenum) | Return only projects where current user has at least the specified access level. |
+| <a id="mergerequestauthorstarredprojectsprogramminglanguagename"></a>`programmingLanguageName` | [`String`](#string) | Filter projects by programming language name (case insensitive). For example: "css" or "ruby". |
 | <a id="mergerequestauthorstarredprojectssearch"></a>`search` | [`String`](#string) | Search query. |
 | <a id="mergerequestauthorstarredprojectssort"></a>`sort` | [`ProjectSort`](#projectsort) | List starred projects by sort order. |
 
@@ -27317,6 +27327,8 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="mergerequestparticipantstarredprojectsminaccesslevel"></a>`minAccessLevel` | [`AccessLevelEnum`](#accesslevelenum) | Return only projects where current user has at least the specified access level. |
+| <a id="mergerequestparticipantstarredprojectsprogramminglanguagename"></a>`programmingLanguageName` | [`String`](#string) | Filter projects by programming language name (case insensitive). For example: "css" or "ruby". |
 | <a id="mergerequestparticipantstarredprojectssearch"></a>`search` | [`String`](#string) | Search query. |
 | <a id="mergerequestparticipantstarredprojectssort"></a>`sort` | [`ProjectSort`](#projectsort) | List starred projects by sort order. |
 
@@ -27732,6 +27744,8 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="mergerequestreviewerstarredprojectsminaccesslevel"></a>`minAccessLevel` | [`AccessLevelEnum`](#accesslevelenum) | Return only projects where current user has at least the specified access level. |
+| <a id="mergerequestreviewerstarredprojectsprogramminglanguagename"></a>`programmingLanguageName` | [`String`](#string) | Filter projects by programming language name (case insensitive). For example: "css" or "ruby". |
 | <a id="mergerequestreviewerstarredprojectssearch"></a>`search` | [`String`](#string) | Search query. |
 | <a id="mergerequestreviewerstarredprojectssort"></a>`sort` | [`ProjectSort`](#projectsort) | List starred projects by sort order. |
 
@@ -34266,6 +34280,8 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="usercorestarredprojectsminaccesslevel"></a>`minAccessLevel` | [`AccessLevelEnum`](#accesslevelenum) | Return only projects where current user has at least the specified access level. |
+| <a id="usercorestarredprojectsprogramminglanguagename"></a>`programmingLanguageName` | [`String`](#string) | Filter projects by programming language name (case insensitive). For example: "css" or "ruby". |
 | <a id="usercorestarredprojectssearch"></a>`search` | [`String`](#string) | Search query. |
 | <a id="usercorestarredprojectssort"></a>`sort` | [`ProjectSort`](#projectsort) | List starred projects by sort order. |
 
@@ -41446,6 +41462,8 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="userstarredprojectsminaccesslevel"></a>`minAccessLevel` | [`AccessLevelEnum`](#accesslevelenum) | Return only projects where current user has at least the specified access level. |
+| <a id="userstarredprojectsprogramminglanguagename"></a>`programmingLanguageName` | [`String`](#string) | Filter projects by programming language name (case insensitive). For example: "css" or "ruby". |
 | <a id="userstarredprojectssearch"></a>`search` | [`String`](#string) | Search query. |
 | <a id="userstarredprojectssort"></a>`sort` | [`ProjectSort`](#projectsort) | List starred projects by sort order. |
 

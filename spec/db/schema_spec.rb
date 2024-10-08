@@ -101,6 +101,7 @@ RSpec.describe 'Database schema',
     p_ci_pipelines: %w[partition_id auto_canceled_by_partition_id auto_canceled_by_id],
     p_ci_runner_machine_builds: %w[project_id],
     ci_runners: %w[sharding_key_id], # This value is meant to populate the partitioned table, no other usage
+    ci_runner_machines: %w[sharding_key_id], # This value is meant to populate the partitioned table, no other usage
     ci_runner_projects: %w[runner_id],
     ci_sources_pipelines: %w[partition_id source_partition_id source_job_id],
     ci_sources_projects: %w[partition_id],

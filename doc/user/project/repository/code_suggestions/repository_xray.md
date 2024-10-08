@@ -13,11 +13,24 @@ DETAILS:
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12060) in GitLab 16.7.
 
-Repository X-Ray enhances [GitLab Duo Code Suggestions](index.md) by providing additional context to improve the accuracy and relevance of code recommendations.
+Repository X-Ray automatically enriches code generation requests for [GitLab Duo Code Suggestions](index.md) by providing additional context about a project's dependencies to improve the accuracy and relevance of code recommendations.
 
-Repository X-Ray gives the code assistant more insight into the project's codebase and dependencies to generate better suggestions. It does this by analyzing key project configuration files such as `Gemfile.lock`, `package.json`, and `go.mod` to build additional context.
+Repository X-Ray gives the code assistant more insight into the project's codebase and dependencies by:
 
-By understanding the frameworks, libraries and other dependencies in use, Repository X-Ray helps the code assistant tailor suggestions to match the coding patterns, styles and technologies used in the project. This results in code recommendations that integrate more seamlessly and follow best practices for that stack.
+- Searching for dependency manager configuration files (for example, `Gemfile.lock`, `package.json`, `go.mod`).
+- Extracting a list of libraries from their content.
+- Providing the extracted list as additional context to be used by GitLab Duo Code Suggestions in code generation requests.
+
+By understanding the libraries and other dependencies in use, Repository X-Ray helps the code assistant tailor suggestions to match the coding patterns, styles and technologies used in the project. This results in code suggestions that integrate more seamlessly and follow best practices for the given stack.
+
+NOTE:
+Repository X-Ray only enhances code generation requests and not code completion requests.
+
+## How Repository X-Ray works
+
+When a new commit is pushed to your project's default branch, the Repository X-Ray triggers a background job that scans and parses the applicable configuration files in your repository automatically.
+
+Typically, only one scanning job runs at a time in each project. This means that if a second scan is triggered while a scan is already in progress, that second scan waits until the first scan is complete before executing. This could result in a small delay before the latest configuration file data is parsed and updated in the database.
 
 ## Enable Repository X-Ray
 

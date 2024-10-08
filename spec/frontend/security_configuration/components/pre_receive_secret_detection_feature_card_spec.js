@@ -1,4 +1,4 @@
-import { GlToggle, GlLink, GlIcon, GlPopover, GlButton, GlExperimentBadge } from '@gitlab/ui';
+import { GlToggle, GlLink, GlIcon, GlPopover, GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import Vue from 'vue';
@@ -77,7 +77,6 @@ describe('PreReceiveSecretDetectionFeatureCard component', () => {
   const findLockIcon = () => wrapper.findComponent(GlIcon);
   const findPopover = () => wrapper.findComponent(GlPopover);
   const findSettingsButton = () => wrapper.findComponent(GlButton);
-  const findBetaBadge = () => wrapper.findComponent(GlExperimentBadge);
 
   it('renders correct name and description', () => {
     expect(wrapper.text()).toContain(feature.name);
@@ -97,10 +96,6 @@ describe('PreReceiveSecretDetectionFeatureCard component', () => {
     expect(button.exists()).toBe(true);
     expect(button.props('icon')).toBe('settings');
     expect(button.attributes('href')).toBe(secretDetectionConfigurationPath);
-  });
-
-  it('shows the beta badge', () => {
-    expect(findBetaBadge().exists()).toBe(true);
   });
 
   describe('when feature is available', () => {

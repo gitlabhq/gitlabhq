@@ -1058,4 +1058,28 @@ EOS
       end
     end
   end
+
+  describe '#valid_full_sha' do
+    before do
+      allow(commit).to receive(:id).and_return(value)
+    end
+
+    let(:sha) { '5716ca5987cbf97d6bb54920bea6adde242d87e6' }
+
+    context 'when commit id does not match the full sha pattern' do
+      let(:value) { sha[0, Gitlab::Git::Commit::SHA1_LENGTH - 1] } # doesn't match Gitlab::Git::Commit::FULL_SHA_PATTERN because length is less than 40
+
+      it 'returns nil' do
+        expect(commit.valid_full_sha).to be_empty
+      end
+    end
+
+    context 'when commit id matches the full sha pattern' do
+      let(:value) { sha }
+
+      it 'returns the sha as a string' do
+        expect(commit.valid_full_sha).to eq(sha)
+      end
+    end
+  end
 end

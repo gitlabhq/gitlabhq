@@ -155,6 +155,10 @@ RSpec.describe Gitlab::Ci::Ansi2html, feature_category: :continuous_integration 
       expect(convert_html("#{line_prefix}\r\n#{line_prefix}")).to eq('<span><br/></span>')
     end
 
+    it "replaces consecutive linefeeds with line break tag" do
+      expect(convert_html("#{line_prefix}\r\r\n#{line_prefix}")).to eq('<span><br/></span>')
+    end
+
     it 'replaces invalid UTF-8 data' do
       expect(convert_html("#{line_prefix}UTF-8 dashes here: ───\n🐤🐤🐤🐤\xF0\x9F\x90\n")).to eq("<span>UTF-8 dashes here: ───<br/>🐤🐤🐤🐤�<br/></span>")
     end

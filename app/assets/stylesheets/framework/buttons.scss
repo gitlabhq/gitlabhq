@@ -170,21 +170,6 @@
   }
 }
 
-.btn-blank {
-  padding: 0;
-  background: transparent;
-  border: 0;
-  border-radius: 0;
-
-  &:hover,
-  &:active,
-  &:focus {
-    outline: 0;
-    background: transparent;
-    box-shadow: none;
-  }
-}
-
 // All disabled buttons, regardless of color, type, etc
 .btn.disabled,
 .btn[disabled],

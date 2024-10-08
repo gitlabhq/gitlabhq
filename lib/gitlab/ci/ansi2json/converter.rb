@@ -123,7 +123,7 @@ module Gitlab
           elsif scan_token(scanner, /\e(?:[@-_].*?)?$/)
             # stop scanning
             scanner.terminate
-          elsif scan_token(scanner, /\r?\n/)
+          elsif scan_token(scanner, /\r*\n/)
             flush_current_line
           elsif scan_token(scanner, "\r")
             # drop last line

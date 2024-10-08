@@ -27,31 +27,32 @@ To set up your self-hosted model infrastructure:
 1. Configure your GitLab instance.
 1. Install the GitLab AI Gateway.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an installation video guide, see [Self-Hosted Models Deployment](https://youtu.be/UNmD9-sgUvw).
-<!-- Video published on 2024-05-30 -->
-
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an installation video guide in French, see [Self-Hosted Models Deployment (French Language version)](https://youtu.be/UNmD9-sgUvw).
-<!-- Video published on 2024-05-30 -->
-
 ## Install large language model serving infrastructure
 
 Install one of the following GitLab-approved LLM models:
 
-| Model                                                                              | Code completion | Code generation | GitLab Duo Chat |
-|------------------------------------------------------------------------------------|-----------------|-----------------|---------|
-| [CodeGemma 2b](https://huggingface.co/google/codegemma-2b)                         | **{check-circle}** Yes               | **{dotted-circle}** No               | **{dotted-circle}** No        |
-| [CodeGemma 7b-it](https://huggingface.co/google/codegemma-7b-it) (Instruction)     | **{dotted-circle}** No                | **{check-circle}** Yes               | **{dotted-circle}** No        |
-| [CodeGemma 7b-code](https://huggingface.co/google/codegemma-7b) (Code)             | **{check-circle}** Yes               | **{dotted-circle}** No               | **{dotted-circle}** No        |
-| [Code-Llama 13b-code](https://huggingface.co/meta-llama/CodeLlama-13b-hf)          | **{check-circle}** Yes               | **{dotted-circle}** No               | **{dotted-circle}** No        |
-| [Code-Llama 13b](https://huggingface.co/meta-llama/CodeLlama-13b-Instruct-hf)      | **{dotted-circle}** No                | **{check-circle}** Yes               | **{dotted-circle}** No        |
-| [Codestral 22B](https://huggingface.co/mistralai/Codestral-22B-v0.1) (see [setup instructions](litellm_proxy_setup.md#example-setup-for-codestral-with-ollama))                                         | **{check-circle}** Yes               | **{check-circle}** Yes               | **{dotted-circle}** No        |
-| [Mistral 7B](https://huggingface.co/mistralai/Mistral-7B-v0.1)                     | **{dotted-circle}** No                | **{check-circle}** Yes               | **{check-circle}** Yes        |
-| [Mixtral 8x22B](https://huggingface.co/mistral-community/Mixtral-8x22B-v0.1)       | **{dotted-circle}** No                | **{check-circle}** Yes               | **{check-circle}** Yes        |
-| [Mixtral 8x7B](https://huggingface.co/mistralai/Mixtral-8x7B-Instruct-v0.1)        | **{dotted-circle}** No                | **{check-circle}** Yes               | **{check-circle}** Yes        |
-| [DeepSeek Coder 33b Instruct](https://huggingface.co/deepseek-ai/deepseek-coder-33b-instruct)        | **{check-circle}** Yes                | **{check-circle}** Yes               | **{dotted-circle}** No        |
-| [DeepSeek Coder 33b Base](https://huggingface.co/deepseek-ai/deepseek-coder-33b-base)        | **{check-circle}** Yes                | **{dotted-circle}** No               | **{dotted-circle}** No        |
+| Model family | Model                                                                              | Code completion | Code generation | GitLab Duo Chat |
+|--------------|------------------------------------------------------------------------------------|-----------------|-----------------|---------|
+| Mistral      | [Codestral 22B](https://huggingface.co/mistralai/Codestral-22B-v0.1) (see [setup instructions](litellm_proxy_setup.md#example-setup-for-codestral-with-ollama))                                         | **{check-circle}** Yes               | **{check-circle}** Yes               | **{dotted-circle}** No        |
+| Mistral      | [Mistral 7B](https://huggingface.co/mistralai/Mistral-7B-v0.1)                     | **{dotted-circle}** No                | **{check-circle}** Yes               | **{check-circle}** Yes        |
+| Mistral      | [Mixtral 8x22B](https://huggingface.co/mistral-community/Mixtral-8x22B-v0.1)       | **{dotted-circle}** No                | **{check-circle}** Yes               | **{check-circle}** Yes        |
+| Mistral      | [Mixtral 8x7B](https://huggingface.co/mistralai/Mixtral-8x7B-Instruct-v0.1)        | **{dotted-circle}** No                | **{check-circle}** Yes               | **{check-circle}** Yes        |
+| Mistral      | [Mistral 7B Text](https://huggingface.co/mistralai/Mistral-7B-v0.3)                     | **{check-circle}** Yes                | **{dotted-circle}** No               |**{dotted-circle}** No        |
+| Mistral      | [Mixtral 8x22B Text](https://huggingface.co/mistralai/Mixtral-8x22B-v0.1)       | **{check-circle}** Yes                | **{dotted-circle}** No               | **{dotted-circle}** No        |
+| Mistral      | [Mixtral 8x7B Text](https://huggingface.co/mistralai/Mixtral-8x7B-v0.1)        | **{check-circle}** Yes                | **{dotted-circle}** No               | **{dotted-circle}** No        |
+| Claude 3     | [Claude 3.5 Sonnet](https://www.anthropic.com/news/claude-3-5-sonnet)        | **{check-circle}** Yes                | **{check-circle}** Yes               | **{check-circle}** Yes        |
+
+The following models are under evaluation, and support is limited:
+
+| Model family  | Model                                                                              | Code completion | Code generation | GitLab Duo Chat |
+|---------------|---------------------------------------------------------------------|-----------------|-----------------|---------|
+| CodeGemma     | [CodeGemma 2b](https://huggingface.co/google/codegemma-2b)                         | **{check-circle}** Yes               | **{dotted-circle}** No               | **{dotted-circle}** No        |
+| CodeGemma     | [CodeGemma 7b-it](https://huggingface.co/google/codegemma-7b-it) (Instruction)     | **{dotted-circle}** No                | **{check-circle}** Yes               | **{dotted-circle}** No        |
+| CodeGemma     | [CodeGemma 7b-code](https://huggingface.co/google/codegemma-7b) (Code)             | **{check-circle}** Yes               | **{dotted-circle}** No               | **{dotted-circle}** No        |
+| CodeLlama     | [Code-Llama 13b-code](https://huggingface.co/meta-llama/CodeLlama-13b-hf)          | **{check-circle}** Yes               | **{dotted-circle}** No               | **{dotted-circle}** No        |
+| CodeLlama     | [Code-Llama 13b](https://huggingface.co/meta-llama/CodeLlama-13b-Instruct-hf)      | **{dotted-circle}** No                | **{check-circle}** Yes               | **{dotted-circle}** No        |
+| DeepSeekCoder | [DeepSeek Coder 33b Instruct](https://huggingface.co/deepseek-ai/deepseek-coder-33b-instruct)        | **{check-circle}** Yes                | **{check-circle}** Yes               | **{dotted-circle}** No        |
+| DeepSeekCoder | [DeepSeek Coder 33b Base](https://huggingface.co/deepseek-ai/deepseek-coder-33b-base)        | **{check-circle}** Yes                | **{dotted-circle}** No               | **{dotted-circle}** No        |
 
 ### Use a serving architecture
 
@@ -80,7 +81,7 @@ Prerequisites:
       gitlab_rails['env'] = {
       'GITLAB_LICENSE_MODE' => 'production',
       'CUSTOMER_PORTAL_URL' => 'https://customers.gitlab.com',
-      'AI_GATEWAY_URL' => '<path_to_their_ai_gateway>'
+      'AI_GATEWAY_URL' => '<path_to_your_ai_gateway>:<port>'
       }
       ```
 
@@ -89,21 +90,6 @@ Prerequisites:
       ```shell
       sudo gitlab-ctl reconfigure
       ```
-
-1. [Start a GitLab Rails console](../feature_flags.md#start-the-gitlab-rails-console):
-
-   ```shell
-   sudo gitlab-rails console
-   ```
-
-   In the console, enable feature flags:
-
-   ```shell
-   Feature.enable(:self_hosted_models_beta_ended)
-   Feature.enable(:ai_custom_model)
-   ```
-
-   Exit the Rails console.
 
 ## Install the GitLab AI Gateway
 
@@ -146,7 +132,8 @@ permissions have been granted to that directory.
 For Docker images with version `self-hosted-17.4.0-ee` and later, run the following:
 
 ```shell
-docker run -e AIGW_GITLAB_URL=<your_gitlab_instance> \
+docker run -p 5052:5052 \
+ -e AIGW_GITLAB_URL=<your_gitlab_instance> \
  -e AIGW_GITLAB_API_URL=https://<your_gitlab_domain>/api/v4/ \
  <image>
 ```

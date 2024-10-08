@@ -4,7 +4,7 @@ exports[`Expand button on click when short text is provided renders button after
 <span>
   <button
     aria-label="Click to expand text"
-    class="btn btn-blank btn-default btn-icon btn-md button-ellipsis-horizontal gl-button js-text-expander-prepend text-expander"
+    class="!gl-bg-transparent !gl-outline-none !gl-shadow-none btn btn-default btn-icon btn-md button-ellipsis-horizontal gl-border-none gl-button gl-p-0 gl-rounded-none js-text-expander-prepend text-expander"
     style="display: none;"
     type="button"
   >
@@ -26,7 +26,7 @@ exports[`Expand button on click when short text is provided renders button after
   </span>
   <button
     aria-label="Click to expand text"
-    class="btn btn-blank btn-default btn-icon btn-md button-ellipsis-horizontal gl-button js-text-expander-append text-expander"
+    class="!gl-bg-transparent !gl-outline-none !gl-shadow-none btn btn-default btn-icon btn-md button-ellipsis-horizontal gl-border-none gl-button gl-p-0 gl-rounded-none js-text-expander-append text-expander"
     style=""
     type="button"
   >
@@ -48,7 +48,7 @@ exports[`Expand button when short text is provided renders button before text 1`
 <span>
   <button
     aria-label="Click to expand text"
-    class="btn btn-blank btn-default btn-icon btn-md button-ellipsis-horizontal gl-button js-text-expander-prepend text-expander"
+    class="!gl-bg-transparent !gl-outline-none !gl-shadow-none btn btn-default btn-icon btn-md button-ellipsis-horizontal gl-border-none gl-button gl-p-0 gl-rounded-none js-text-expander-prepend text-expander"
     type="button"
   >
     <svg
@@ -69,7 +69,7 @@ exports[`Expand button when short text is provided renders button before text 1`
   </span>
   <button
     aria-label="Click to expand text"
-    class="btn btn-blank btn-default btn-icon btn-md button-ellipsis-horizontal gl-button js-text-expander-append text-expander"
+    class="!gl-bg-transparent !gl-outline-none !gl-shadow-none btn btn-default btn-icon btn-md button-ellipsis-horizontal gl-border-none gl-button gl-p-0 gl-rounded-none js-text-expander-append text-expander"
     style="display: none;"
     type="button"
   >

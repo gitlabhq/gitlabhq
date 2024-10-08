@@ -9017,6 +9017,8 @@ CREATE TABLE ci_runner_machines (
     config jsonb DEFAULT '{}'::jsonb NOT NULL,
     system_xid text,
     creation_state smallint DEFAULT 0 NOT NULL,
+    runner_type smallint,
+    sharding_key_id bigint,
     CONSTRAINT check_1537c1f66f CHECK ((char_length(platform) <= 255)),
     CONSTRAINT check_5253913ae9 CHECK ((char_length(system_xid) <= 64)),
     CONSTRAINT check_6f45a91da7 CHECK ((char_length(version) <= 2048)),
@@ -28386,6 +28388,8 @@ CREATE INDEX index_ci_runner_machines_on_minor_version_trigram ON ci_runner_mach
 CREATE INDEX index_ci_runner_machines_on_patch_version_trigram ON ci_runner_machines USING btree ("substring"(version, '^\d+\.\d+\.\d+'::text), version, runner_id);
 
 CREATE UNIQUE INDEX index_ci_runner_machines_on_runner_id_and_system_xid ON ci_runner_machines USING btree (runner_id, system_xid);
+
+CREATE INDEX index_ci_runner_machines_on_runner_type ON ci_runner_machines USING btree (runner_type);
 
 CREATE INDEX index_ci_runner_machines_on_version ON ci_runner_machines USING btree (version);
 

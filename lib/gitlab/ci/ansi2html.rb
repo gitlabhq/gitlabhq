@@ -149,7 +149,7 @@ module Gitlab
             return
           elsif scanner.scan('<')
             write_in_tag '&lt;'
-          elsif scanner.scan(/\r?\n/)
+          elsif scanner.scan(/\r*\n/)
             handle_new_line
           else
             write_in_tag scanner.scan(/./m)

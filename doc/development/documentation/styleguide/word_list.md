@@ -676,8 +676,13 @@ See also [**on**](#on).
 
 ## disable
 
-See the [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/d/disable-disabled) for guidance on **disable**.
-Use **inactive** or **off** instead.
+Do not use **disable** to describe making a setting or feature unavailable. Use alternatives like **turn off**, **hide**,
+**make unavailable**, or **remove** instead.
+
+To describe a state, use **off**, **inactive**, or **unavailable**.
+
+This guidance is based on the
+[Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/d/disable-disabled).
 
 ## disallow
 
@@ -783,8 +788,12 @@ Use **emoji** to refer to the plural form of **emoji**.
 
 ## enable
 
-See the [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/e/enable-enables) for guidance on **enable**.
-Use **active** or **on** instead.
+Do not use **enable** to describe making a setting or feature available. Use **turn on** instead.
+
+To describe a state, use **on** or **active**.
+
+This guidance is based on the
+[Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/d/disable-disabled).
 
 ## enter
 
