@@ -392,4 +392,14 @@ RSpec.describe Backup::Targets::Files, feature_category: :backup_restore do
       ).to be_falsey
     end
   end
+
+  context 'with unified backup' do
+    subject(:files) do
+      described_class.new(progress, '/fake/path', options: backup_options)
+    end
+
+    it 'is not asynchronous by default' do
+      expect(files.asynchronous?).to be_falsey
+    end
+  end
 end

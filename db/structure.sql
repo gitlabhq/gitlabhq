@@ -34347,6 +34347,9 @@ ALTER TABLE ONLY approval_group_rules_protected_branches
 ALTER TABLE ONLY deploy_tokens
     ADD CONSTRAINT fk_51bf7bfb69 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY ml_models
+    ADD CONSTRAINT fk_51e87f7c50_new FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY path_locks
     ADD CONSTRAINT fk_5265c98f24 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -36050,9 +36053,6 @@ ALTER TABLE ONLY ml_candidate_metadata
 
 ALTER TABLE zoekt_tasks
     ADD CONSTRAINT fk_rails_51af186590 FOREIGN KEY (zoekt_node_id) REFERENCES zoekt_nodes(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY ml_models
-    ADD CONSTRAINT fk_rails_51e87f7c50 FOREIGN KEY (project_id) REFERENCES projects(id);
 
 ALTER TABLE ONLY merge_request_merge_schedules
     ADD CONSTRAINT fk_rails_5294434bc3 FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;

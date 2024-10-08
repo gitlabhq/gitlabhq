@@ -172,6 +172,10 @@ module Backup
         raise FileBackupError.new(storage_realpath, backup_tarball)
       end
 
+      def asynchronous?
+        false
+      end
+
       private
 
       def storage_realpath

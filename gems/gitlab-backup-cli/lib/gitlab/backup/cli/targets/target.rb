@@ -16,6 +16,10 @@ module Gitlab
             @options = options
           end
 
+          def asynchronous?
+            false
+          end
+
           # dump task backup to `path`
           #
           # @param [String] path fully qualified backup task destination

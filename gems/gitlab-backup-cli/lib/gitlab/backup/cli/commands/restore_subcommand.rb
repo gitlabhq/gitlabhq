@@ -4,7 +4,7 @@ module Gitlab
   module Backup
     module Cli
       module Commands
-        class RestoreSubcommand < Command
+        class RestoreSubcommand < ObjectStorageCommand
           package_name 'Restore'
 
           desc 'all BACKUP_ID', 'Restores a backup including repositories, database and local files'
@@ -20,7 +20,11 @@ module Gitlab
             restore_executor =
               Gitlab::Backup::Cli::RestoreExecutor.new(
                 context: build_context,
-                backup_id: backup_id
+                backup_id: backup_id,
+                backup_bucket: options["backup_bucket"],
+                wait_for_completion: options["wait_for_completion"],
+                registry_bucket: options["registry_bucket"],
+                service_account_file: options["service_account_file"]
               )
 
             duration = measure_duration do

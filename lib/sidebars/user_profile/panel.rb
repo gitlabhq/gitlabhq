@@ -25,8 +25,17 @@ module Sidebars
 
       private
 
+      def add_legacy_menu?
+        # When `profile_tabs_vue` feature flag is enabled, legacy profile pages
+        # will be replaced by routes in `app/assets/javascripts/profile/components/app.vue`
+        Feature.disabled?(:profile_tabs_vue, context.current_user)
+      end
+
       def add_menus
         add_menu(Sidebars::UserProfile::Menus::OverviewMenu.new(context))
+
+        return unless add_legacy_menu?
+
         add_menu(Sidebars::UserProfile::Menus::ActivityMenu.new(context))
         add_menu(Sidebars::UserProfile::Menus::GroupsMenu.new(context))
         add_menu(Sidebars::UserProfile::Menus::ContributedProjectsMenu.new(context))

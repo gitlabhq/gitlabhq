@@ -6,6 +6,7 @@ module Gitlab
       module Tasks
         class Task
           attr_reader :options, :context
+          attr_writer :target
 
           # Identifier used as parameter in the CLI to skip from executing
           def self.id
@@ -30,10 +31,10 @@ module Gitlab
             target.dump(backup_output, backup_id)
           end
 
-          def restore!(archive_directory)
+          def restore!(archive_directory, backup_id)
             archived_data_location = Pathname(archive_directory).join(destination_path)
 
-            target.restore(archived_data_location, nil)
+            target.restore(archived_data_location, backup_id)
           end
 
           # Key string that identifies the task
@@ -83,19 +84,31 @@ module Gitlab
             true
           end
 
+          def asynchronous?
+            target.asynchronous? || false
+          end
+
+          def wait_until_done!
+            target.wait_until_done!
+          end
+
+          def target
+            return @target unless @target.nil?
+
+            @target = if object_storage?
+                        ::Gitlab::Backup::Cli::Targets::ObjectStorage.find_task(id, options, config)
+                      else
+                        local
+                      end
+
+            @target
+          end
+
           private
 
           # The target factory method
-          def target
+          def local
             raise NotImplementedError
-          end
-
-          def check_object_storage(file_target)
-            if object_storage?
-              ::Gitlab::Backup::Cli::Targets::ObjectStorage.find_task(id, options, config)
-            else
-              file_target
-            end
           end
         end
       end
