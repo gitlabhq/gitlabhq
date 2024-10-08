@@ -273,16 +273,8 @@ module Gitlab
 
         def query_and_release(...)
           if low_timeout_for_host_queries?
-            Gitlab::Database::LoadBalancing::Logger.info(
-              event: :host_query_low_statement_timeout,
-              message: "Using low statement timeout code path for host query"
-            )
             query_and_release_fast_timeout(...)
           else
-            Gitlab::Database::LoadBalancing::Logger.info(
-              event: :host_query_high_statement_timeout,
-              message: "Using high statement timeout code path for host query"
-            )
             query_and_release_old(...)
           end
         end
@@ -336,7 +328,7 @@ module Gitlab
         end
 
         def low_timeout_for_host_queries?
-          Feature.enabled?(:load_balancer_low_statement_timeout, Feature.current_pod)
+          Feature.enabled?(:load_balancer_low_statement_timeout)
         end
       end
     end

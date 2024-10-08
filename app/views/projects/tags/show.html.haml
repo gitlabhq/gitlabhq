@@ -45,7 +45,7 @@
       = render partial: 'projects/commit/signature', object: @tag.signature
     - if can?(current_user, :admin_tag, @project)
       = render 'edit_release_button', tag: @tag, project: @project, release: @release
-    = link_button_to nil, project_tree_path(@project, @tag.name), class: 'has-tooltip', title: s_('TagsPage|Browse files'), icon: 'folder-open'
+    = link_button_to nil, project_tree_path(@project, @tag.name, ref_type: :tags), class: 'has-tooltip', title: s_('TagsPage|Browse files'), icon: 'folder-open'
     = link_button_to nil, project_commits_path(@project, @tag.name), class: 'has-tooltip', title: s_('TagsPage|Browse commits'), icon: 'history'
     = render 'projects/buttons/download', project: @project, ref: @tag.name
     - if can?(current_user, :admin_tag, @project)

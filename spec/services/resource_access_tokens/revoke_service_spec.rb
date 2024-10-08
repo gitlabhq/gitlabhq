@@ -45,7 +45,10 @@ RSpec.describe ResourceAccessTokens::RevokeService, feature_category: :system_ac
         it { expect(subject.message).to eq("Access token #{access_token.name} has been revoked and the bot user has been scheduled for deletion.") }
 
         it 'calls delete user worker' do
-          expect(DeleteUserWorker).to receive(:perform_async).with(user.id, resource_bot.id, skip_authorization: true)
+          expect(DeleteUserWorker).to receive(:perform_async).with(
+            user.id, resource_bot.id,
+            skip_authorization: true, reason_for_deletion: "Access token revoked"
+          )
 
           subject
         end

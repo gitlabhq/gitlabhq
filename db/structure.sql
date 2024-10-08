@@ -2670,6 +2670,19 @@ BEGIN
 END
 $$;
 
+CREATE FUNCTION update_issue_correct_work_item_type_id_sync_event() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+SELECT "correct_id"
+INTO NEW."correct_work_item_type_id"
+FROM "work_item_types"
+WHERE "work_item_types"."id" = NEW."work_item_type_id";
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION update_location_from_vulnerability_occurrences() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -31651,6 +31664,8 @@ CREATE INDEX index_work_item_type_custom_fields_on_work_item_type_id ON work_ite
 
 CREATE INDEX index_work_item_types_on_base_type_and_id ON work_item_types USING btree (base_type, id);
 
+CREATE UNIQUE INDEX index_work_item_types_on_correct_id_unique ON work_item_types USING btree (correct_id);
+
 CREATE UNIQUE INDEX index_work_item_types_on_name_unique ON work_item_types USING btree (TRIM(BOTH FROM lower(name)));
 
 CREATE UNIQUE INDEX index_work_item_widget_definitions_on_type_id_and_name ON work_item_widget_definitions USING btree (work_item_type_id, TRIM(BOTH FROM lower(name)));
@@ -33821,6 +33836,8 @@ CREATE TRIGGER trigger_catalog_resource_sync_event_on_project_update AFTER UPDAT
 
 CREATE TRIGGER trigger_cf646a118cbb BEFORE INSERT OR UPDATE ON milestone_releases FOR EACH ROW EXECUTE FUNCTION trigger_cf646a118cbb();
 
+CREATE TRIGGER trigger_correct_work_item_type_id_sync_event_on_issue_update BEFORE INSERT OR UPDATE OF work_item_type_id ON issues FOR EACH ROW EXECUTE FUNCTION update_issue_correct_work_item_type_id_sync_event();
+
 CREATE TRIGGER trigger_d4487a75bd44 BEFORE INSERT OR UPDATE ON terraform_state_versions FOR EACH ROW EXECUTE FUNCTION trigger_d4487a75bd44();
 
 CREATE TRIGGER trigger_d5c895007948 BEFORE INSERT OR UPDATE ON protected_environment_approval_rules FOR EACH ROW EXECUTE FUNCTION trigger_d5c895007948();
@@ -34088,6 +34105,9 @@ ALTER TABLE ONLY analytics_devops_adoption_segments
 
 ALTER TABLE ONLY project_statistics
     ADD CONSTRAINT fk_198ad46fdc FOREIGN KEY (root_namespace_id) REFERENCES namespaces(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY issues
+    ADD CONSTRAINT fk_1adaba52b0 FOREIGN KEY (correct_work_item_type_id) REFERENCES work_item_types(correct_id) NOT VALID;
 
 ALTER TABLE ONLY approval_policy_rule_project_links
     ADD CONSTRAINT fk_1c78796d52 FOREIGN KEY (approval_policy_rule_id) REFERENCES approval_policy_rules(id) ON DELETE CASCADE;

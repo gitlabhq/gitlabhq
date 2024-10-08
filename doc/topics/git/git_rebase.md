@@ -23,7 +23,7 @@ When you rebase:
 1. Git stacks the commits you have in your branch on top of all
    the commits it imported from that branch:
 
-   ![Git rebase illustration](img/git_rebase_v13_5.png)
+   ![Git rebase illustration](img/git_rebase_illustration.png)
 
 While most rebases are performed against `main`, you can rebase against any other
 branch, such as `release-15-3`. You can also specify a different remote repository

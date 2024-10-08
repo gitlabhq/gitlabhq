@@ -173,7 +173,6 @@ RSpec.describe Gitlab::Database::LoadBalancing::Host, feature_category: :databas
         end
 
         it 'logs the online event' do
-          allow(Gitlab::Database::LoadBalancing::Logger).to receive(:info).and_call_original
           expect(Gitlab::Database::LoadBalancing::Logger)
             .to receive(:info)
             .with(hash_including(event: :host_online))
@@ -449,7 +448,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Host, feature_category: :databas
 
     context 'with the flag set' do
       before do
-        stub_feature_flags(load_balancer_low_statement_timeout: Feature.current_pod)
+        stub_feature_flags(load_balancer_low_statement_timeout: true)
       end
 
       it 'returns quickly if the underlying query takes a long time' do

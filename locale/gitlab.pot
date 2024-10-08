@@ -13478,7 +13478,7 @@ msgstr ""
 msgid "CodeSuggestions|Manage seat assignments for %{addOnName} or run a health check to identify problems."
 msgstr ""
 
-msgid "CodeSuggestions|Manage seat assignments for %{addOnName}."
+msgid "CodeSuggestions|Manage seat assignments for %{addOnName} within your group."
 msgstr ""
 
 msgid "CodeSuggestions|No health problems detected"
@@ -23631,6 +23631,9 @@ msgid "Followed Users' Activity"
 msgstr ""
 
 msgid "Followed users"
+msgstr ""
+
+msgid "Following"
 msgstr ""
 
 msgid "Following tags don't exist"
@@ -34029,6 +34032,9 @@ msgstr ""
 msgid "MergeChecks|View locked files"
 msgstr ""
 
+msgid "MergeChecks|View policies"
+msgstr ""
+
 msgid "MergeConflict|Commit to source branch"
 msgstr ""
 
@@ -38094,9 +38100,6 @@ msgid "Open"
 msgstr ""
 
 msgid "Open Selection"
-msgstr ""
-
-msgid "Open action menu"
 msgstr ""
 
 msgid "Open color picker"
@@ -54035,12 +54038,6 @@ msgstr ""
 msgid "Switch branch/tag"
 msgstr ""
 
-msgid "Switch to new dashboard"
-msgstr ""
-
-msgid "Switch to old dashboard"
-msgstr ""
-
 msgid "Switch to plain text editing"
 msgstr ""
 
@@ -59033,6 +59030,9 @@ msgid "UsageQuota|Recalculate repository usage"
 msgstr ""
 
 msgid "UsageQuota|Registry"
+msgstr ""
+
+msgid "UsageQuota|Seat utilization"
 msgstr ""
 
 msgid "UsageQuota|Shared bits of code and text."

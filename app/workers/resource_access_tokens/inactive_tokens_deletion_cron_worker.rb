@@ -38,7 +38,12 @@ module ResourceAccessTokens
 
       DeleteUserWorker.bulk_perform_async_with_contexts(
         users,
-        arguments_proc: ->(user) { [admin_bot_id, user.id, { skip_authorization: true }] },
+        arguments_proc: ->(user) {
+                          [
+                            admin_bot_id, user.id,
+                            { skip_authorization: true, reason_for_deletion: "No active token assigned" }
+                          ]
+                        },
         context_proc: ->(user) { { user: user } }
       )
     end

@@ -399,29 +399,6 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
     end
   end
 
-  describe '#merge_request_dashboard_enabled?' do
-    using RSpec::Parameterized::TableSyntax
-
-    let_it_be(:current_user) { build_stubbed(:user) }
-
-    where(:enabled, :search_page, :result) do
-      true  | true  | false
-      true  | false | true
-      false | false | false
-      false | true  | false
-    end
-
-    with_them do
-      before do
-        stub_feature_flags(merge_request_dashboard: enabled)
-
-        allow(helper).to receive(:current_page?).and_return(search_page)
-      end
-
-      it { expect(helper.merge_request_dashboard_enabled?(current_user)).to eq(result) }
-    end
-  end
-
   describe '#diffs_stream_url' do
     let_it_be(:offset) { 5 }
     let(:merge_request) { create(:merge_request_with_diffs) }

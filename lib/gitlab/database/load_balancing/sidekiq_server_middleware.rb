@@ -9,6 +9,10 @@ module Gitlab
         JobReplicaNotUpToDate = Class.new(::Gitlab::SidekiqMiddleware::RetryError)
 
         REPLICA_WAIT_SLEEP_SECONDS = 0.5
+        URGENT_REPLICA_WAIT_SLEEP_SECONDS = 0.1
+
+        SLEEP_ATTEMPTS = 3
+        URGENT_SLEEP_ATTEMPTS = 5
 
         def call(worker, job, _queue)
           # ActiveJobs have wrapped class stored in 'wrapped' key
@@ -54,8 +58,8 @@ module Gitlab
           # Happy case: we can read from a replica.
           return replica_strategy(worker_class, job) if databases_in_sync?(wal_locations)
 
-          3.times do
-            sleep REPLICA_WAIT_SLEEP_SECONDS
+          sleep_attempts(worker_class).times do
+            sleep sleep_duration(worker_class)
             break if databases_in_sync?(wal_locations)
           end
 
@@ -68,6 +72,14 @@ module Gitlab
             # Sad case: we need to fall back to the primary.
             :primary
           end
+        end
+
+        def sleep_duration(worker_class)
+          worker_class.get_urgency == :high ? URGENT_REPLICA_WAIT_SLEEP_SECONDS : REPLICA_WAIT_SLEEP_SECONDS
+        end
+
+        def sleep_attempts(worker_class)
+          worker_class.get_urgency == :high ? URGENT_SLEEP_ATTEMPTS : SLEEP_ATTEMPTS
         end
 
         def get_wal_locations(job)

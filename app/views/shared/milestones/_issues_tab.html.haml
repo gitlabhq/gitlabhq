@@ -2,8 +2,10 @@
 
 - if display_issues_count_warning?(@milestone)
   .flash-container
-    .flash-warning#milestone-issue-count-warning
-      = milestone_issues_count_message(@milestone)
+    = render Pajamas::AlertComponent.new(variant: :warning,
+      alert_options: { id: 'milestone-issue-count-warning' }) do |c|
+      - c.with_body do
+        = milestone_issues_count_message(@milestone)
 
 .row.gl-mt-3
   .col-md-4

@@ -38,7 +38,7 @@ module ResourceAccessTokens
     attr_reader :current_user, :access_token, :bot_user, :resource
 
     def destroy_bot_user
-      DeleteUserWorker.perform_async(current_user.id, bot_user.id, skip_authorization: true)
+      DeleteUserWorker.perform_async(current_user.id, bot_user.id, skip_authorization: true, reason_for_deletion: "Access token revoked")
     end
 
     def can_destroy_token?

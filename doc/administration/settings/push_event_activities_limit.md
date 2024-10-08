@@ -31,10 +31,8 @@ To modify this setting:
   1. On the left sidebar, at the bottom, select **Admin**.
   1. Select **Settings > Network**.
   1. Expand **Performance optimization**.
-  1. Edit the **Push event activities limit** setting. 
+  1. Edit the **Push event activities limit** setting.
 - Through the [Application settings API](../../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls)
   as `push_event_activities_limit`.
 
 The default value is `3`, but the value can be greater than or equal to `0`. Setting this value to `0` does not disable throttling.
-
-![The push event activities limit set to 3.](img/push_event_activities_limit_v12_4.png)

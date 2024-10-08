@@ -31,10 +31,7 @@ can access the object pool connected to the source project.
 
 To fork an existing project in GitLab:
 
-1. On the project's homepage, in the upper-right corner, select **Fork** (**{fork}**):
-
-   ![Fork this project](img/forking_workflow_fork_button_v13_10.png)
-
+1. On the project's homepage, in the upper-right corner, select **Fork** (**{fork}**).
 1. Optional. Edit the **Project name**.
 1. For **Project URL**, select the [namespace](../../namespace/index.md)
    your fork should belong to.

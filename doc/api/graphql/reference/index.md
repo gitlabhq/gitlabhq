@@ -12365,6 +12365,29 @@ The edge type for [`CodeQualityDegradation`](#codequalitydegradation).
 | <a id="codequalitydegradationedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="codequalitydegradationedgenode"></a>`node` | [`CodeQualityDegradation`](#codequalitydegradation) | The item at the end of the edge. |
 
+#### `CodeSuggestionEventConnection`
+
+The connection type for [`CodeSuggestionEvent`](#codesuggestionevent).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="codesuggestioneventconnectionedges"></a>`edges` | [`[CodeSuggestionEventEdge]`](#codesuggestioneventedge) | A list of edges. |
+| <a id="codesuggestioneventconnectionnodes"></a>`nodes` | [`[CodeSuggestionEvent]`](#codesuggestionevent) | A list of nodes. |
+| <a id="codesuggestioneventconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `CodeSuggestionEventEdge`
+
+The edge type for [`CodeSuggestionEvent`](#codesuggestionevent).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="codesuggestioneventedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="codesuggestioneventedgenode"></a>`node` | [`CodeSuggestionEvent`](#codesuggestionevent) | The item at the end of the edge. |
+
 #### `CommitConnection`
 
 The connection type for [`Commit`](#commit).
@@ -17792,6 +17815,14 @@ Self-hosted LLM servers.
 | <a id="aiselfhostedmodelname"></a>`name` | [`String!`](#string) | Deployment name of the self-hosted model. |
 | <a id="aiselfhostedmodelupdatedat"></a>`updatedAt` | [`Time`](#time) | Timestamp of last update. |
 
+### `AiUsageData`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aiusagedatacodesuggestionevents"></a>`codeSuggestionEvents` | [`CodeSuggestionEventConnection`](#codesuggestioneventconnection) | Events related to code suggestions feature. (see [Connections](#connections)) |
+
 ### `AlertManagementAlert`
 
 Describes an alert from the project's Alert Management.
@@ -19896,6 +19927,19 @@ Code Quality report for a pipeline.
 | <a id="codequalityreportsummarymajor"></a>`major` | [`Int`](#int) | Total number of major status. |
 | <a id="codequalityreportsummaryminor"></a>`minor` | [`Int`](#int) | Total number of minor status. |
 | <a id="codequalityreportsummaryunknown"></a>`unknown` | [`Int`](#int) | Total number of unknown status. |
+
+### `CodeSuggestionEvent`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="codesuggestioneventevent"></a>`event` | [`AiUsageCodeSuggestionEvent!`](#aiusagecodesuggestionevent) | Type of the event. |
+| <a id="codesuggestioneventlanguage"></a>`language` | [`String`](#string) | Programming language in the context of the suggestion. |
+| <a id="codesuggestioneventsuggestionsize"></a>`suggestionSize` | [`String`](#string) | Size of the code suggestion. |
+| <a id="codesuggestioneventtimestamp"></a>`timestamp` | [`Time!`](#time) | When the event happened. |
+| <a id="codesuggestioneventuniquetrackingid"></a>`uniqueTrackingId` | [`String`](#string) | Unique tracking number. |
+| <a id="codesuggestioneventuser"></a>`user` | [`UserCore!`](#usercore) | User associated with the event. |
 
 ### `CodequalityReportsComparer`
 
@@ -23308,6 +23352,7 @@ GPG signature for a signed commit.
 | <a id="groupactualrepositorysizelimit"></a>`actualRepositorySizeLimit` | [`Float`](#float) | Size limit for repositories in the namespace in bytes. This limit only applies to namespaces under Project limit enforcement. |
 | <a id="groupactualsizelimit"></a>`actualSizeLimit` | [`Float`](#float) | The actual storage size limit (in bytes) based on the enforcement type of either repository or namespace. This limit is agnostic of enforcement type. |
 | <a id="groupadditionalpurchasedstoragesize"></a>`additionalPurchasedStorageSize` | [`Float`](#float) | Additional storage purchased for the root namespace in bytes. |
+| <a id="groupaiusagedata"></a>`aiUsageData` **{warning-solid}** | [`AiUsageData`](#aiusagedata) | **Introduced** in GitLab 17.5. **Status**: Experiment. AI-related data. |
 | <a id="groupallowstalerunnerpruning"></a>`allowStaleRunnerPruning` | [`Boolean!`](#boolean) | Indicates whether to regularly prune stale group runners. Defaults to false. |
 | <a id="groupamazons3configurations"></a>`amazonS3Configurations` | [`AmazonS3ConfigurationTypeConnection`](#amazons3configurationtypeconnection) | Amazon S3 configurations that receive audit events belonging to the group. (see [Connections](#connections)) |
 | <a id="groupautodevopsenabled"></a>`autoDevopsEnabled` | [`Boolean`](#boolean) | Indicates whether Auto DevOps is enabled for all projects within this group. |
@@ -29717,6 +29762,7 @@ Project-level settings for product analytics provider.
 | <a id="projectactualrepositorysizelimit"></a>`actualRepositorySizeLimit` | [`Float`](#float) | Size limit for the repository in bytes. |
 | <a id="projectagentconfigurations"></a>`agentConfigurations` | [`AgentConfigurationConnection`](#agentconfigurationconnection) | Agent configurations defined by the project. (see [Connections](#connections)) |
 | <a id="projectaiagents"></a>`aiAgents` **{warning-solid}** | [`AiAgentConnection`](#aiagentconnection) | **Introduced** in GitLab 16.9. **Status**: Experiment. Ai Agents for the project. |
+| <a id="projectaiusagedata"></a>`aiUsageData` **{warning-solid}** | [`AiUsageData`](#aiusagedata) | **Introduced** in GitLab 17.5. **Status**: Experiment. AI-related data. |
 | <a id="projectallowmergeonskippedpipeline"></a>`allowMergeOnSkippedPipeline` | [`Boolean`](#boolean) | If `only_allow_merge_if_pipeline_succeeds` is true, indicates if merge requests of the project can also be merged with skipped jobs. |
 | <a id="projectallowsmultiplemergerequestassignees"></a>`allowsMultipleMergeRequestAssignees` | [`Boolean!`](#boolean) | Project allows assigning multiple users to a merge request. |
 | <a id="projectallowsmultiplemergerequestreviewers"></a>`allowsMultipleMergeRequestReviewers` | [`Boolean!`](#boolean) | Project allows assigning multiple reviewers to a merge request. |
@@ -36132,6 +36178,16 @@ Types of messages returned from AI features.
 | Value | Description |
 | ----- | ----------- |
 | <a id="aimessagetypetool"></a>`TOOL` | Tool selection message. |
+
+### `AiUsageCodeSuggestionEvent`
+
+Type of code suggestion event.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="aiusagecodesuggestioneventcode_suggestion_accepted_in_ide"></a>`CODE_SUGGESTION_ACCEPTED_IN_IDE` | Code suggestion accepted. |
+| <a id="aiusagecodesuggestioneventcode_suggestion_rejected_in_ide"></a>`CODE_SUGGESTION_REJECTED_IN_IDE` | Code suggestion rejected. |
+| <a id="aiusagecodesuggestioneventcode_suggestion_shown_in_ide"></a>`CODE_SUGGESTION_SHOWN_IN_IDE` | Code suggestion shown. |
 
 ### `AlertManagementAlertSort`
 

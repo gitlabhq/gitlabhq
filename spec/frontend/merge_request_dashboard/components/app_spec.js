@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import VueRouter from 'vue-router';
 import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -12,6 +13,7 @@ import assigneeCountQuery from '~/merge_request_dashboard/queries/assignee_count
 import { createMockMergeRequest } from '../mock_data';
 
 Vue.use(VueApollo);
+Vue.use(VueRouter);
 
 describe('Merge requests app component', () => {
   let wrapper;
@@ -63,15 +65,24 @@ describe('Merge requests app component', () => {
 
     wrapper = shallowMountExtended(App, {
       apolloProvider,
+      router: new VueRouter({}),
       propsData: {
-        lists: [
+        tabs: [
           {
-            title: 'Assigned merge requests',
-            query: 'assignedMergeRequests',
-            variables: { state: 'opened' },
+            title: 'Needs attention',
+            lists: [
+              {
+                title: 'Assigned merge requests',
+                query: 'assignedMergeRequests',
+                variables: { state: 'opened' },
+              },
+            ],
           },
         ],
         ...props,
+      },
+      provide: {
+        mergeRequestsSearchDashboardPath: '/search',
       },
       stubs: {
         MergeRequestsQuery,

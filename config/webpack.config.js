@@ -41,6 +41,8 @@ const {
   WEBPACK_OUTPUT_PATH,
   WEBPACK_PUBLIC_PATH,
   SOURCEGRAPH_PUBLIC_PATH,
+  PDF_JS_WORKER_PUBLIC_PATH,
+  PDF_JS_CMAPS_PUBLIC_PATH,
   GITLAB_WEB_IDE_PUBLIC_PATH,
   copyFilesPatterns,
 } = require('./webpack.constants');
@@ -845,6 +847,8 @@ module.exports = {
       // This is used by Sourcegraph because these assets are loaded dnamically
       'process.env.SOURCEGRAPH_PUBLIC_PATH': JSON.stringify(SOURCEGRAPH_PUBLIC_PATH),
       'process.env.GITLAB_WEB_IDE_PUBLIC_PATH': JSON.stringify(GITLAB_WEB_IDE_PUBLIC_PATH),
+      'process.env.PDF_JS_WORKER_PUBLIC_PATH': JSON.stringify(PDF_JS_WORKER_PUBLIC_PATH),
+      'process.env.PDF_JS_CMAPS_PUBLIC_PATH': JSON.stringify(PDF_JS_CMAPS_PUBLIC_PATH),
       'window.IS_VITE': JSON.stringify(false),
       ...(IS_PRODUCTION ? {} : { LIVE_RELOAD: DEV_SERVER_LIVERELOAD }),
     }),

@@ -241,7 +241,7 @@
 {"name":"gitlab-styles","version":"12.0.1","platform":"ruby","checksum":"d8a302b0ab0e1f18e2d11501760f1b85c5e70b5e5ca628828a0786c7984ed133"},
 {"name":"gitlab_chronic_duration","version":"0.12.0","platform":"ruby","checksum":"0d766944d415b5c831f176871ee8625783fc0c5bfbef2d79a3a616f207ffc16d"},
 {"name":"gitlab_omniauth-ldap","version":"2.2.0","platform":"ruby","checksum":"bb4d20acb3b123ed654a8f6a47d3fac673ece7ed0b6992edb92dca14bad2838c"},
-{"name":"gitlab_quality-test_tooling","version":"1.38.1","platform":"ruby","checksum":"7c5e71b9069ef69ef9e0d07fb26af6d6afcc82a5e898e62a8049df05ebd75c10"},
+{"name":"gitlab_quality-test_tooling","version":"1.39.0","platform":"ruby","checksum":"3b3cb8495c69b5b1358cb114c0d41f371badbc7fd9a137ff7a4e1442a8a6ea35"},
 {"name":"globalid","version":"1.1.0","platform":"ruby","checksum":"b337e1746f0c8cb0a6c918234b03a1ddeb4966206ce288fbb57779f59b2d154f"},
 {"name":"gon","version":"6.4.0","platform":"ruby","checksum":"e3a618d659392890f1aa7db420f17c75fd7d35aeb5f8fe003697d02c4b88d2f0"},
 {"name":"google-apis-androidpublisher_v3","version":"0.34.0","platform":"ruby","checksum":"d7e1d7dd92f79c498fe2082222a1740d788e022e660c135564b3fd299cab5425"},

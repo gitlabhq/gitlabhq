@@ -75,7 +75,7 @@ module ResourceAccessTokens
     end
 
     def delete_failed_user(user)
-      DeleteUserWorker.perform_async(current_user.id, user.id, hard_delete: true, skip_authorization: true)
+      DeleteUserWorker.perform_async(current_user.id, user.id, hard_delete: true, skip_authorization: true, reason_for_deletion: "Access token creation failed")
     end
 
     def default_user_params

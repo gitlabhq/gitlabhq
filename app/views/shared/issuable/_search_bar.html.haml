@@ -3,11 +3,12 @@
 - disable_target_branch = local_assigns.fetch(:disable_target_branch, false)
 - disable_releases = local_assigns.fetch(:disable_releases, false)
 - disable_environments = local_assigns.fetch(:disable_environments, false)
+- filtered_search_class = local_assigns.fetch(:filtered_search_class, '')
 - placeholder = local_assigns[:placeholder] || _('Search or filter results…')
 - block_css_class = type != :productivity_analytics ? 'row-content-block second-block' : ''
 
 .issues-filters
-  .issues-details-filters.filtered-search-block.gl-flex.gl-flex-col.lg:gl-flex-row.gl-gap-3{ class: block_css_class }
+  .issues-details-filters.filtered-search-block.gl-flex.gl-flex-col.lg:gl-flex-row.gl-gap-3{ class: [block_css_class, filtered_search_class] }
     .gl-flex.gl-flex-col.md:gl-flex-row.gl-grow.gl-w-full
       = form_tag page_filter_path, method: :get, class: 'filter-form js-filter-form gl-w-full' do
         - if params[:search].present?
