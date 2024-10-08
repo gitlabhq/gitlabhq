@@ -3,34 +3,32 @@ import { convertToSnakeCase } from '~/lib/utils/text_utility';
 
 export default class FormErrorTracker {
   constructor() {
-    this.elements = document.querySelectorAll('.js-track-error');
+    this.elements = [
+      ...document.querySelectorAll('.js-track-error'),
+      // https://gitlab.com/gitlab-org/gitlab/-/issues/494329 to revert this additional
+      // class when blocker is implemented
+      ...Array.from(document.querySelectorAll('.js-track-error-gl-select')).map(
+        (select) => select.firstElementChild,
+      ),
+    ];
+
     this.trackErrorOnChange = FormErrorTracker.trackErrorOnChange.bind(this);
     this.trackErrorOnEmptyField = FormErrorTracker.trackErrorOnEmptyField.bind(this);
 
     this.elements.forEach((element) => {
-      // https://gitlab.com/gitlab-org/gitlab/-/issues/494329 to revert this condition when
-      // blocker is implemented
-      const actionItem = element.hasChildNodes() ? element.firstElementChild : element;
+      // on item change
+      element.addEventListener('input', this.trackErrorOnChange);
 
-      if (actionItem) {
-        // on item change
-        actionItem.addEventListener('input', this.trackErrorOnChange);
-
-        // on invalid item - adding separately to track submit click without
-        // changing any field
-        actionItem.addEventListener('invalid', this.trackErrorOnEmptyField);
-      }
+      // on invalid item - adding separately to track submit click without
+      // changing any field
+      element.addEventListener('invalid', this.trackErrorOnEmptyField);
     });
   }
 
   destroy() {
     this.elements.forEach((element) => {
-      const actionItem = element.hasChildNodes() ? element.firstElementChild : element;
-
-      if (actionItem) {
-        actionItem.removeEventListener('input', this.trackErrorOnChange);
-        actionItem.removeEventListener('invalid', this.trackErrorOnEmptyField);
-      }
+      element.removeEventListener('input', this.trackErrorOnChange);
+      element.removeEventListener('invalid', this.trackErrorOnEmptyField);
     });
   }
 

@@ -191,7 +191,7 @@ RSpec.describe Import::GithubController, feature_category: :importers do
         ActionController::Base.helpers.link_to(
           'Learn More',
           help_page_url(
-            'user/project/import/github', anchor: 'use-a-github-personal-access-token'
+            'user/project/import/github.md', anchor: 'use-a-github-personal-access-token'
           ),
           target: '_blank',
           rel: 'noopener noreferrer'

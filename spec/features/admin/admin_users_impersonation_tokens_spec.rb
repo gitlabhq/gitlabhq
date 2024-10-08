@@ -6,8 +6,9 @@ RSpec.describe 'Admin > Users > Impersonation Tokens', :js, feature_category: :s
   include Spec::Support::Helpers::ModalHelpers
   include Features::AccessTokenHelpers
 
-  let(:admin) { create(:admin) }
-  let!(:user) { create(:user) }
+  let(:organization) { create(:organization) }
+  let(:admin) { create(:admin, organizations: [organization]) }
+  let!(:user) { create(:user, organizations: [organization]) }
 
   before do
     sign_in(admin)
@@ -16,7 +17,6 @@ RSpec.describe 'Admin > Users > Impersonation Tokens', :js, feature_category: :s
 
   describe "token creation" do
     it "allows creation of a token" do
-      create(:organization, :default)
       name = 'Hello World'
 
       visit admin_user_impersonation_tokens_path(user_id: user.username)
@@ -38,14 +38,17 @@ RSpec.describe 'Admin > Users > Impersonation Tokens', :js, feature_category: :s
       expect(active_access_tokens).to have_text('in')
       expect(active_access_tokens).to have_text('read_api')
       expect(active_access_tokens).to have_text('read_user')
-      expect(PersonalAccessTokensFinder.new(impersonation: true).execute.count).to equal(1)
+      expect(PersonalAccessTokensFinder.new(impersonation: true, organization: organization).execute.count).to equal(1)
       expect(created_access_token).to match(/[\w-]{20}/)
     end
   end
 
   describe 'active tokens' do
-    let!(:impersonation_token) { create(:personal_access_token, :impersonation, user: user) }
-    let!(:personal_access_token) { create(:personal_access_token, user: user) }
+    let!(:impersonation_token) do
+      create(:personal_access_token, :impersonation, user: user, organization: organization)
+    end
+
+    let!(:personal_access_token) { create(:personal_access_token, user: user, organization: organization) }
 
     it 'only shows impersonation tokens' do
       visit admin_user_impersonation_tokens_path(user_id: user.username)
@@ -64,7 +67,9 @@ RSpec.describe 'Admin > Users > Impersonation Tokens', :js, feature_category: :s
   end
 
   describe "inactive tokens" do
-    let!(:impersonation_token) { create(:personal_access_token, :impersonation, user: user) }
+    let!(:impersonation_token) do
+      create(:personal_access_token, :impersonation, user: user, organization: organization)
+    end
 
     it "allows revocation of an active impersonation token" do
       visit admin_user_impersonation_tokens_path(user_id: user.username)

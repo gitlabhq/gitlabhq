@@ -149,7 +149,7 @@ RSpec.describe IssueEntity do
       end
 
       it 'returns archived project doc' do
-        expect(subject[:archived_project_docs_path]).to eq('/help/user/project/settings/index#archive-a-project')
+        expect(subject[:archived_project_docs_path]).to eq('/help/user/project/settings/index.md#archive-a-project')
       end
     end
   end

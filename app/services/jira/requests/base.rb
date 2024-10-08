@@ -63,12 +63,12 @@ module Jira
       end
 
       def auth_docs_link_start
-        auth_docs_link_url = Rails.application.routes.url_helpers.help_page_path('integration/jira/index', anchor: 'authentication-in-jira')
+        auth_docs_link_url = Rails.application.routes.url_helpers.help_page_path('integration/jira/index.md', anchor: 'authentication-in-jira')
         link_start(auth_docs_link_url)
       end
 
       def config_docs_link_start
-        config_docs_link_url = Rails.application.routes.url_helpers.help_page_path('integration/jira/configure')
+        config_docs_link_url = Rails.application.routes.url_helpers.help_page_path('integration/jira/configure.md')
         link_start(config_docs_link_url)
       end
 

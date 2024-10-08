@@ -46,7 +46,7 @@ RSpec.describe JwtController, feature_category: :system_access do
         {
           "errors" => [{
             "code" => "UNAUTHORIZED",
-            "message" => "HTTP Basic: Access denied. If a password was provided for Git authentication, the password was incorrect or you're required to use a token instead of a password. If a token was provided, it was either incorrect, expired, or improperly scoped. See http://www.example.com/help/user/profile/account/two_factor_authentication#troubleshooting"
+            "message" => "HTTP Basic: Access denied. If a password was provided for Git authentication, the password was incorrect or you're required to use a token instead of a password. If a token was provided, it was either incorrect, expired, or improperly scoped. See http://www.example.com/help/user/profile/account/two_factor_authentication.md#troubleshooting"
           }]
         }
       )

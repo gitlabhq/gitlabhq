@@ -38,10 +38,10 @@
         label_options: { class: 'label-bold' }
     .form-group
       = f.label :throttle_authenticated_api_requests_per_period, _('Maximum authenticated API requests per rate limit period per user'), class: 'label-bold'
-      = f.number_field :throttle_authenticated_api_requests_per_period, class: 'form-control gl-form-input'
+      = f.number_field :throttle_authenticated_api_requests_per_period, class: 'form-control gl-form-input', data: { testid: 'throttle-authenticated-api-requests-per-user' }
     .form-group
       = f.label :throttle_authenticated_api_period_in_seconds, _('Authenticated API rate limit period in seconds'), class: 'label-bold'
-      = f.number_field :throttle_authenticated_api_period_in_seconds, class: 'form-control gl-form-input'
+      = f.number_field :throttle_authenticated_api_period_in_seconds, class: 'form-control gl-form-input', data: { testid: 'throttle-authenticated-api-requests-per-seconds' }
 
   %fieldset
     .form-group

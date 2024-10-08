@@ -253,7 +253,7 @@ class Import::GithubController < Import::BaseController
     session[access_token_key] = nil
     docs_link = helpers.link_to(
       '',
-      help_page_url('user/project/import/github', anchor: 'use-a-github-personal-access-token'),
+      help_page_url('user/project/import/github.md', anchor: 'use-a-github-personal-access-token'),
       target: '_blank',
       rel: 'noopener noreferrer'
     )

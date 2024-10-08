@@ -65,7 +65,7 @@ class JwtController < ApplicationController
 
   def render_access_denied
     help_page = help_page_url(
-      'user/profile/account/two_factor_authentication',
+      'user/profile/account/two_factor_authentication.md',
       anchor: 'troubleshooting'
     )
 
