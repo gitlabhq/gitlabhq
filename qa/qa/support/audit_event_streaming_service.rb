@@ -2,38 +2,52 @@
 
 module QA
   module Support
-    class AuditEventStreamingService < Vendor::Smocker::SmockerApi
+    class AuditEventStreamingService
       def initialize(wait: 10, reset_on_init: true)
+        @mocks = File.read(EE::Runtime::Path.fixture('audit_event_streaming', 'mocks.yml'))
+
         # We use the time of initialization to limit the results we get from the audit events API
         @start = DateTime.now.iso8601
-        @smocker_container = Service::DockerRun::Smocker.new
-        @smocker_container.register!
-        @smocker_container.wait_for_running
-
-        super(
+        @smocker_container = Service::DockerRun::Smocker.create
+        @api = Vendor::Smocker::SmockerApi.new(
           host: @smocker_container.host_name,
           public_port: @smocker_container.public_port,
           admin_port: @smocker_container.admin_port
         )
-        wait_for_ready(wait: wait)
-        reset if reset_on_init
-        register(mocks)
+        @api.wait_for_ready(wait: wait)
+        @api.reset if reset_on_init
+        @api.register(mocks)
       end
 
-      def logs
-        @smocker_container.logs
+      delegate :verify, to: :api
+
+      # Fetch smocker container logs
+      #
+      # @return [String]
+      def container_logs
+        smocker_container.logs
       end
 
+      # Reset mock definitions
+      #
+      # @return [void]
       def reset!
-        reset
-        register(mocks)
+        api.reset
+        api.register(mocks)
       end
 
       # Remove the Smocker Docker container
       #
       # @return [void]
       def teardown!
-        @smocker_container.remove! if @smocker_container
+        smocker_container&.remove!
+      end
+
+      # Stream destination url
+      #
+      # @return [String]
+      def destination_url
+        @logs_endpoint ||= api.url('logs')
       end
 
       # Wait for the mock service to receive a request with the specified event type
@@ -46,7 +60,7 @@ module QA
       # @return [Hash] the request
       def wait_for_event(event_type, entity_type, entity_path = nil, wait: 10, raise_on_failure: true)
         event = Waiter.wait_until(max_duration: wait, sleep_interval: 1, raise_on_failure: false) do
-          history.find do |record|
+          api.history.find do |record|
             body = record.request[:body]
             next if body.blank?
 
@@ -62,8 +76,8 @@ module QA
 
         raise Repeater::WaitExceededError,
           "An event with type '#{event_type}'#{" and entity_path '#{entity_path}'" if entity_path} was not received. " \
-          "Event history: #{stringified_history}. " \
-          "Audit events with entity_type '#{entity_type}': #{audit_events}"
+            "Event history: #{stringified_history}. " \
+            "Audit events with entity_type '#{entity_type}': #{audit_events}"
       end
 
       # Wait for GitLab to start streaming audit events and for the Smocker server to be ready to receive them.
@@ -80,19 +94,14 @@ module QA
         end
       rescue Repeater::WaitExceededError
         # If there is a failure this will output the logs from the smocker container (at the debug log level)
-        logs
+        container_logs
 
         raise
       end
 
       private
 
-      # The configuration for the mocked requests and responses for events that will be verified in this test
-      #
-      # @return [String]
-      def mocks
-        @mocks ||= File.read(EE::Runtime::Path.fixture('audit_event_streaming', 'mocks.yml'))
-      end
+      attr_reader :mocks, :smocker_container, :api
     end
   end
 end

@@ -39,10 +39,14 @@ module WikiPages
 
     # This method throws an error if internal_event_name returns an unknown event name
     def increment_usage(page)
+      track_event(page, internal_event_name)
+    end
+
+    def track_event(page, event_name)
       label = 'template' if page.template?
 
       Gitlab::InternalEvents.track_event(
-        internal_event_name,
+        event_name,
         user: current_user,
         project: project,
         namespace: group,

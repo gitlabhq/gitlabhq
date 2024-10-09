@@ -244,6 +244,21 @@ of your group. They can, therefore, view information they should not be able to 
 Reassigning contributions to users with administrator access is disabled by default, but you can
 [enable](../../../administration/settings/import_and_export_settings.md#allow-contribution-mapping-to-administrators) it.
 
+##### Membership security considerations
+
+Because of the GitLab permissions model, when a group or project is imported into an existing parent group, members of
+the parent group are granted [inherited membership](../members/index.md#membership-types) of the imported group or project.
+
+Selecting a user for contribution and membership reassignment who already has an
+existing inherited membership of the imported group or project can affect how memberships
+are reassigned to them.
+
+GitLab does not allow a membership in a child project or group to have a lower role
+than an inherited membership. If an imported membership for an assigned user has a lower role 
+than their existing inherited membership, the imported membership is not reassigned to the user.
+
+This results in their membership for the imported group or project being higher than it was on the source.
+
 #### Request reassignment in UI
 
 Prerequisites:

@@ -58,12 +58,27 @@ RSpec.shared_examples 'WikiPages::UpdateService#execute' do |container_type|
     service.execute(page)
   end
 
-  it_behaves_like 'internal event tracking' do
-    let(:event) { 'update_wiki_page' }
+  describe 'internal event tracking' do
     let(:project) { container if container.is_a?(Project) }
     let(:namespace) { container.is_a?(Group) ? container : container.namespace }
 
     subject(:track_event) { service.execute(page) }
+
+    it_behaves_like 'internal event tracking' do
+      let(:event) { 'update_wiki_page' }
+    end
+
+    context 'with group container', if: container_type == :group do
+      it_behaves_like 'internal event tracking' do
+        let(:event) { 'update_group_wiki_page' }
+      end
+    end
+
+    context 'with project container', if: container_type == :project do
+      it_behaves_like 'internal event not tracked' do
+        let(:event) { 'update_group_wiki_page' }
+      end
+    end
   end
 
   context 'when the updated page is a template' do

@@ -24,6 +24,7 @@ RSpec.describe Gitlab::Import::SourceUserMapper, :request_store, feature_categor
     let(:source_name) { 'Pry Contributor' }
     let(:source_username) { 'a_pry_contributor' }
     let(:source_user_identifier) { '123456' }
+    let(:cache) { false }
 
     subject(:find_or_create_source_user) do
       described_class.new(
@@ -33,7 +34,8 @@ RSpec.describe Gitlab::Import::SourceUserMapper, :request_store, feature_categor
       ).find_or_create_source_user(
         source_name: source_name,
         source_username: source_username,
-        source_user_identifier: source_user_identifier
+        source_user_identifier: source_user_identifier,
+        cache: cache
       )
     end
 
@@ -201,6 +203,26 @@ RSpec.describe Gitlab::Import::SourceUserMapper, :request_store, feature_categor
         allow(User).to receive(:new).and_return(user)
 
         expect { find_or_create_source_user }.to raise_error(ActiveRecord::RecordInvalid)
+      end
+    end
+
+    context 'when cache is true' do
+      let(:cache) { true }
+
+      it 'caches the created source user' do
+        source_user = find_or_create_source_user
+
+        expect(Gitlab::SafeRequestStore[:source_user_cache][source_user.source_user_identifier]).to eq(source_user)
+      end
+    end
+
+    context 'when cache is false' do
+      let(:cache) { false }
+
+      it 'does not cache the created source user' do
+        source_user = find_or_create_source_user
+
+        expect(Gitlab::SafeRequestStore[:source_user_cache][source_user.source_user_identifier]).to eq(nil)
       end
     end
   end

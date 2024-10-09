@@ -15,25 +15,36 @@ RSpec.shared_examples 'WikiPages::DestroyService#execute' do |container_type|
     service.execute(page)
   end
 
-  it_behaves_like 'internal event tracking' do
-    let(:event) { 'delete_wiki_page' }
+  describe 'internal event tracking' do
     let(:project) { container if container.is_a?(Project) }
     let(:namespace) { container.is_a?(Group) ? container : container.namespace }
 
     subject(:track_event) { service.execute(page) }
-  end
-
-  context 'when the deleted page is a template' do
-    let(:page) { create(:wiki_page, title: "#{Wiki::TEMPLATES_DIR}/foobar") }
 
     it_behaves_like 'internal event tracking' do
       let(:event) { 'delete_wiki_page' }
-      let(:project) { container if container.is_a?(Project) }
-      let(:namespace) { container.is_a?(Group) ? container : container.namespace }
-      let(:label) { 'template' }
-      let(:property) { 'markdown' }
+    end
 
-      subject(:track_event) { service.execute(page) }
+    context 'with group container', if: container_type == :group do
+      it_behaves_like 'internal event tracking' do
+        let(:event) { 'delete_group_wiki_page' }
+      end
+    end
+
+    context 'with project container', if: container_type == :project do
+      it_behaves_like 'internal event not tracked' do
+        let(:event) { 'delete_group_wiki_page' }
+      end
+    end
+
+    context 'when the deleted page is a template' do
+      let(:page) { create(:wiki_page, title: "#{Wiki::TEMPLATES_DIR}/foobar") }
+
+      it_behaves_like 'internal event tracking' do
+        let(:event) { 'delete_wiki_page' }
+        let(:label) { 'template' }
+        let(:property) { 'markdown' }
+      end
     end
   end
 

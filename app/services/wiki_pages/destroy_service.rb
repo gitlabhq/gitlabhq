@@ -29,3 +29,5 @@ module WikiPages
     end
   end
 end
+
+WikiPages::DestroyService.prepend_mod_with('WikiPages::DestroyService')

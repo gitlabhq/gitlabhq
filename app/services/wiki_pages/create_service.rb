@@ -32,3 +32,5 @@ module WikiPages
     end
   end
 end
+
+WikiPages::CreateService.prepend_mod_with('WikiPages::CreateService')

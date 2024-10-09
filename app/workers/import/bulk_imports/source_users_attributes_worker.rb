@@ -9,6 +9,7 @@ module Import
       data_consistency :delayed
       feature_category :importers
       sidekiq_options retry: 6, dead: false
+      sidekiq_options max_retries_after_interruption: 20
       worker_has_external_dependencies!
 
       PERFORM_DELAY = 1.minute

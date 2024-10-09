@@ -85,11 +85,11 @@ module QA
         end
 
         def running?
-          `docker ps -f name=#{@name}`.include?(@name)
+          shell("docker ps -f name=#{@name}").include?(@name)
         end
 
         def read_file(file_path)
-          `docker exec #{@name} /bin/cat #{file_path}`
+          shell("docker exec #{@name} /bin/cat #{file_path}")
         end
 
         def restart

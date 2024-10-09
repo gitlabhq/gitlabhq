@@ -1,0 +1,20 @@
+---
+description: Wiki page in a group wiki is created
+internal_events: true
+action: create_group_wiki_page
+identifiers:
+- namespace
+- user
+additional_properties:
+  label:
+    description: "Is 'template' when the page is a template"
+  property:
+    description: "Name of the markup language used by the page"
+product_group: knowledge
+milestone: '17.5'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167091
+distributions:
+- ee
+tiers:
+- premium
+- ultimate

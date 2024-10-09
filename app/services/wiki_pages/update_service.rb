@@ -41,3 +41,5 @@ module WikiPages
     end
   end
 end
+
+WikiPages::UpdateService.prepend_mod_with('WikiPages::UpdateService')
