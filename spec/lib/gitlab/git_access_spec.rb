@@ -1127,6 +1127,16 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures, feature_category: :system
     end
   end
 
+  context 'when the project is archived' do
+    let(:project) { create(:project, :repository, :archived) }
+
+    it 'denies push access' do
+      project.add_maintainer(user)
+
+      expect { push_access_check }.to raise_forbidden(described_class::ERROR_MESSAGES[:archived])
+    end
+  end
+
   describe 'deploy key permissions' do
     let(:key) { create(:deploy_key, user: user) }
     let(:actor) { key }
@@ -1138,6 +1148,14 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures, feature_category: :system
         end
 
         it { expect { push_access_check }.not_to raise_error }
+
+        context 'when project is archived' do
+          before do
+            project.update!(archived: true)
+          end
+
+          it { expect { push_access_check }.to raise_forbidden(described_class::ERROR_MESSAGES[:archived]) }
+        end
       end
 
       context 'when unauthorized' do

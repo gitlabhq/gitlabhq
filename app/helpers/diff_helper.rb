@@ -245,7 +245,12 @@ module DiffHelper
     return unless merge_request.cannot_be_merged? && merge_request.source_branch_exists? && merge_request.target_branch_exists?
 
     cached_conflicts_with_types do
-      conflicts_service = MergeRequests::Conflicts::ListService.new(merge_request, allow_tree_conflicts: true) # rubocop:disable CodeReuse/ServiceClass
+      # We set skip_content to true since we don't really need the content to list the conflicts and their types
+      conflicts_service = MergeRequests::Conflicts::ListService.new( # rubocop:disable CodeReuse/ServiceClass
+        merge_request,
+        allow_tree_conflicts: true,
+        skip_content: true
+      )
 
       {}.tap do |h|
         conflicts_service.conflicts.files.each do |file|

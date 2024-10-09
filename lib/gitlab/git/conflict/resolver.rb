@@ -9,16 +9,22 @@ module Gitlab
         ConflictSideMissing = Class.new(StandardError)
         ResolutionError = Class.new(StandardError)
 
-        def initialize(target_repository, our_commit_oid, their_commit_oid, allow_tree_conflicts: false)
+        def initialize(target_repository, our_commit_oid, their_commit_oid, allow_tree_conflicts: false, skip_content: false)
           @target_repository = target_repository
           @our_commit_oid = our_commit_oid
           @their_commit_oid = their_commit_oid
           @allow_tree_conflicts = allow_tree_conflicts
+          @skip_content = skip_content
         end
 
         def conflicts
           @conflicts ||= wrapped_gitaly_errors do
-            gitaly_conflicts_client(@target_repository).list_conflict_files(allow_tree_conflicts: @allow_tree_conflicts).to_a
+            gitaly_conflicts_client(@target_repository)
+              .list_conflict_files(
+                allow_tree_conflicts: @allow_tree_conflicts,
+                skip_content: @skip_content
+              )
+              .to_a
           rescue GRPC::FailedPrecondition => e
             raise Gitlab::Git::Conflict::Resolver::ConflictSideMissing, e.message
           end
