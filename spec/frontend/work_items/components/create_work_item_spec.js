@@ -3,6 +3,7 @@ import VueApollo from 'vue-apollo';
 import { GlAlert, GlFormSelect } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import namespaceWorkItemTypesQueryResponse from 'test_fixtures/graphql/work_items/namespace_work_item_types.query.graphql.json';
+import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import CreateWorkItem from '~/work_items/components/create_work_item.vue';
@@ -13,6 +14,7 @@ import WorkItemLabels from '~/work_items/components/work_item_labels.vue';
 import WorkItemCrmContacts from '~/work_items/components/work_item_crm_contacts.vue';
 import WorkItemProjectsListbox from '~/work_items/components/work_item_links/work_item_projects_listbox.vue';
 import { WORK_ITEM_TYPE_ENUM_EPIC } from '~/work_items/constants';
+import { setNewWorkItemCache } from '~/work_items/graphql/cache_utils';
 import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
 import createWorkItemMutation from '~/work_items/graphql/create_work_item.mutation.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
@@ -40,7 +42,7 @@ describe('Create work item component', () => {
   /** @type {import('@vue/test-utils').Wrapper} */
   let wrapper;
   let mockApollo;
-
+  useLocalStorageSpy();
   const workItemTypeEpicId =
     namespaceWorkItemTypesQueryResponse.data.workspace.workItemTypes.nodes.find(
       ({ name }) => name === 'Epic',
@@ -156,6 +158,15 @@ describe('Create work item component', () => {
     it('emits event on Cancel button click', () => {
       findCancelButton().vm.$emit('click');
       expect(wrapper.emitted('cancel')).toEqual([[]]);
+    });
+
+    it('clears cache on cancel', async () => {
+      const AUTO_SAVE_KEY = `autosave/new-full-path-epic-draft`;
+      findCancelButton().vm.$emit('click');
+
+      await nextTick();
+      expect(localStorage.removeItem).toHaveBeenCalledWith(AUTO_SAVE_KEY);
+      expect(setNewWorkItemCache).toHaveBeenCalled();
     });
   });
 

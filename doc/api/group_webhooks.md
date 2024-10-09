@@ -68,6 +68,7 @@ Example response:
     "wiki_page_events": false,
     "job_events": false,
     "deployment_events": false,
+    "feature_flag_events": false,
     "releases_events": false,
     "subgroup_events": false,
     "emoji_events": false,
@@ -126,6 +127,7 @@ Example response:
   "pipeline_events": true,
   "wiki_page_events": true,
   "deployment_events": true,
+  "feature_flag_events": false,
   "releases_events": true,
   "subgroup_events": true,
   "member_events": true,
@@ -487,6 +489,7 @@ Supported attributes:
 | `pipeline_events`            | boolean        | no       | Trigger hook on pipeline events. |
 | `wiki_page_events`           | boolean        | no       | Trigger hook on wiki page events. |
 | `deployment_events`          | boolean        | no       | Trigger hook on deployment events. |
+| `feature_flag_events`        | boolean        | no       | Trigger hook on feature flag events. |
 | `releases_events`            | boolean        | no       | Trigger hook on release events. |
 | `subgroup_events`            | boolean        | no       | Trigger hook on subgroup events. |
 | `member_events`              | boolean        | no       | Trigger hook on member events. |
@@ -528,6 +531,7 @@ Example response:
   "pipeline_events": true,
   "wiki_page_events": true,
   "deployment_events": true,
+  "feature_flag_events": true,
   "releases_events": true,
   "subgroup_events": true,
   "member_events": true,
@@ -572,6 +576,7 @@ Supported attributes:
 | `pipeline_events`            | boolean        | no       | Trigger hook on pipeline events. |
 | `wiki_page_events`           | boolean        | no       | Trigger hook on wiki page events. |
 | `deployment_events`          | boolean        | no       | Trigger hook on deployment events. |
+| `feature_flag_events`        | boolean        | no       | Trigger hook on feature flag events. |
 | `releases_events`            | boolean        | no       | Trigger hook on release events. |
 | `subgroup_events`            | boolean        | no       | Trigger hook on subgroup events. |
 | `member_events`              | boolean        | no       | Trigger hook on member events. |
@@ -614,6 +619,7 @@ Example response:
   "pipeline_events": true,
   "wiki_page_events": true,
   "deployment_events": true,
+  "feature_flag_events": true,
   "releases_events": true,
   "subgroup_events": true,
   "member_events": true,

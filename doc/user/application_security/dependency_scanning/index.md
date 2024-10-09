@@ -946,6 +946,10 @@ set the variable `DS_IMAGE_SUFFIX` to `"-fips"`.
 
 Dependency scanning for Gradle projects and auto-remediation for Yarn projects are not supported in FIPS mode.
 
+FIPS-enabled images are based on RedHat's UBI micro.
+They don't have package managers such as `dnf` or `microdnf`
+so it's not possible to install system packages at runtime.
+
 ## Output
 
 Dependency Scanning produces the following output:

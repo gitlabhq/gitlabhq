@@ -136,12 +136,8 @@ module Gitlab
               # in the best case, where all 100 changes belong to the same project, we'll execute
               # a single update statement.
               def execute
-                ::Gitlab::Database.allow_cross_joins_across_databases(
-                  url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/478765'
-                ) do
-                  changes_by_project.each do |changes|
-                    connection.execute(update_sql(changes))
-                  end
+                changes_by_project.each do |changes|
+                  connection.execute(update_sql(changes))
                 end
               end
 
@@ -286,24 +282,20 @@ module Gitlab
       def perform
         user_id = Users::Internal.security_bot.id
 
-        ::Gitlab::Database.allow_cross_joins_across_databases(
-          url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/478765'
-        ) do
-          each_sub_batch do |sub_batch|
-            cte = Gitlab::SQL::CTE.new(:batched_relation, sub_batch.limit(100))
+        each_sub_batch do |sub_batch|
+          cte = Gitlab::SQL::CTE.new(:batched_relation, sub_batch.limit(100))
 
-            filtered_batch = cte
-              .apply_to(Migratable::Vulnerabilities::Read.all)
-              .joins('INNER JOIN vulnerability_scanners ON vulnerability_scanners.id = vulnerability_reads.scanner_id')
-              .where('vulnerability_scanners.external_id': REMOVED_SCANNERS.keys)
+          filtered_batch = cte
+            .apply_to(Migratable::Vulnerabilities::Read.all)
+            .joins('INNER JOIN vulnerability_scanners ON vulnerability_scanners.id = vulnerability_reads.scanner_id')
+            .where('vulnerability_scanners.external_id': REMOVED_SCANNERS.keys)
 
-            vulnerability_tuples = values_for_fields(
-              filtered_batch, :vulnerability_id, 'vulnerability_reads.project_id', :namespace_id, :severity, :uuid
-            )
+          vulnerability_tuples = values_for_fields(
+            filtered_batch, :vulnerability_id, 'vulnerability_reads.project_id', :namespace_id, :severity, :uuid
+          )
 
-            connection.transaction do
-              perform_bulk_writes(user_id, vulnerability_tuples)
-            end
+          connection.transaction do
+            perform_bulk_writes(user_id, vulnerability_tuples)
           end
         end
       end

@@ -68,6 +68,7 @@ Example response:
   "wiki_page_events": true,
   "deployment_events": true,
   "releases_events": true,
+  "feature_flag_events": true,
   "enable_ssl_verification": true,
   "repository_update_events": false,
   "alert_status": "executable",
@@ -406,6 +407,7 @@ Supported attributes:
 | `confidential_note_events`     | boolean           | No       | Trigger project webhook on confidential note events. |
 | `deployment_events`            | boolean           | No       | Trigger project webhook on deployment events. |
 | `enable_ssl_verification`      | boolean           | No       | Do SSL verification when triggering the webhook. |
+| `feature_flag_events`          | boolean           | No       | Trigger project webhook on feature flag events. |
 | `issues_events`                | boolean           | No       | Trigger project webhook on issues events. |
 | `job_events`                   | boolean           | No       | Trigger project webhook on job events. |
 | `merge_requests_events`        | boolean           | No       | Trigger project webhook on merge requests events. |
@@ -445,6 +447,7 @@ Supported attributes:
 | `confidential_note_events`     | boolean           | No       | Trigger project webhook on confidential note events. |
 | `deployment_events`            | boolean           | No       | Trigger project webhook on deployment events. |
 | `enable_ssl_verification`      | boolean           | No       | Do SSL verification when triggering the hook. |
+| `feature_flag_events`          | boolean           | No       | Trigger project webhook on feature flag events. |
 | `issues_events`                | boolean           | No       | Trigger project webhook on issues events. |
 | `job_events`                   | boolean           | No       | Trigger project webhook on job events. |
 | `merge_requests_events`        | boolean           | No       | Trigger project webhook on merge requests events. |

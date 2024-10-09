@@ -2876,6 +2876,30 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
         end
       end
 
+      context 'when creating a nested group with `default_branch_protection_defaults` attribute' do
+        let_it_be(:parent) { create(:group) }
+        let_it_be(:params) do
+          attributes_for_group_api(
+            default_branch_protection_defaults: {
+              "allowed_to_push" => [{ "access_level" => Gitlab::Access::DEVELOPER }]
+            },
+            parent_id: parent.id
+          )
+        end
+
+        subject { post api("/groups", user3), params: params }
+
+        before do
+          parent.add_owner(user3)
+        end
+
+        it 'creates group' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:created)
+        end
+      end
+
       context 'when creating a group with `enabled_git_access_protocol' do
         let(:params) { attributes_for_group_api enabled_git_access_protocol: 'all' }
 

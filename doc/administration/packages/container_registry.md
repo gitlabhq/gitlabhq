@@ -959,7 +959,7 @@ To configure a notification endpoint for a Linux package installation:
    registry['notifications'] = [
      {
        'name' => 'test_endpoint',
-       'url' => 'https://gitlab.example.com/notify',
+       'url' => 'https://gitlab.example.com/api/v4/container_registry_event/events',
        'timeout' => '500ms',
        'threshold' => 5, # DEPRECATED: use `maxretries` instead.
        'maxretries' => 5,
@@ -969,7 +969,13 @@ To configure a notification endpoint for a Linux package installation:
        }
      }
    ]
+
+   gitlab_rails['registry_notification_secret'] = 'AUTHORIZATION_EXAMPLE_TOKEN' # Must match the auth token in registry['notifications'] 
    ```
+
+   NOTE:
+   Replace `AUTHORIZATION_EXAMPLE_TOKEN` with a case sensitive alphanumeric string
+   that starts with a letter. You can generate one with `< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c 32 | sed "s/^[0-9]*//"; echo`
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 

@@ -427,6 +427,15 @@ export default {
     },
     handleCancelClick() {
       this.$emit('cancel');
+      const workItemTypeName = this.selectedWorkItemTypeName || this.workItemTypeName;
+      const autosaveKey = getNewWorkItemAutoSaveKey(this.fullPath, workItemTypeName);
+      clearDraft(autosaveKey);
+      setNewWorkItemCache(
+        this.fullPath,
+        this.workItemTypes[0]?.widgetDefinitions,
+        this.selectedWorkItemTypeName,
+        this.workItemTypes[0]?.id,
+      );
     },
   },
   NEW_WORK_ITEM_IID,
