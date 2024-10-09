@@ -16,7 +16,7 @@
     source_hostname: source_hostname,
     destination_group: destination_group } %>
 
-<%= s_('UserMapping|Review reassignment details') %>: <%= import_source_user_url(@source_user) %>
+<%= s_('UserMapping|Review reassignment details') %>: <%= import_source_user_url(@source_user.reassignment_token) %>
 
 <%= s_('UserMapping|Import details:') %>
 <%= safe_format(s_('UserMapping|Imported from: %{source_hostname}'), source_hostname: source_hostname) %>

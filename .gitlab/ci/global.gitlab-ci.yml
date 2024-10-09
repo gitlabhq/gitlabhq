@@ -334,6 +334,10 @@
           litellm_params:
             model: ollama/codestral
             mock_response: "Mock response from codestral"
+        - model_name: mistral
+          litellm_params:
+            model: ollama/mistral
+            mock_response: "Mock response from mistral"
 
 .litellm-proxy-services:
   services:

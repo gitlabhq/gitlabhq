@@ -1047,8 +1047,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
 
       it 'executes query using primary database' do
         expect(Ci::Build).to receive(:find_by_token).with(build.token).and_wrap_original do |m, *args|
-          expect(::Gitlab::Database::LoadBalancing::SessionMap.current(Ci::Build.load_balancer).use_primary?)
-            .to eq(true)
+          expect(::Gitlab::Database::LoadBalancing::Session.current.use_primary?).to eq(true)
           m.call(*args)
         end
 

@@ -124,29 +124,28 @@ RSpec.describe Users::ActivityService, feature_category: :user_profile do
 
     context 'when last activity is in the past' do
       let(:user) { create(:user, last_activity_on: Date.today - 1.week) }
-      let(:lb) { User.load_balancer }
 
       context 'database load balancing is configured' do
         before do
-          ::Gitlab::Database::LoadBalancing::SessionMap.clear_session
+          ::Gitlab::Database::LoadBalancing::Session.clear_session
         end
 
         let(:service) do
           service = described_class.new(author: user)
 
-          ::Gitlab::Database::LoadBalancing::SessionMap.clear_session
+          ::Gitlab::Database::LoadBalancing::Session.clear_session
 
           service
         end
 
         it 'does not stick to primary' do
-          expect(::Gitlab::Database::LoadBalancing::SessionMap.current(lb)).not_to be_performed_write
+          expect(::Gitlab::Database::LoadBalancing::Session.current).not_to be_performed_write
 
           service.execute
 
           expect(user.last_activity_on).to eq(Date.today)
-          expect(::Gitlab::Database::LoadBalancing::SessionMap.current(lb)).to be_performed_write
-          expect(::Gitlab::Database::LoadBalancing::SessionMap.current(lb)).not_to be_using_primary
+          expect(::Gitlab::Database::LoadBalancing::Session.current).to be_performed_write
+          expect(::Gitlab::Database::LoadBalancing::Session.current).not_to be_using_primary
         end
       end
 

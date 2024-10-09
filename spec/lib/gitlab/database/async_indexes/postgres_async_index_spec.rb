@@ -73,8 +73,8 @@ RSpec.describe Gitlab::Database::AsyncIndexes::PostgresAsyncIndex, type: :model,
   end
 
   describe 'scopes' do
-    let_it_be(:async_index_creation) { create(:postgres_async_index) }
-    let_it_be(:async_index_destruction) { create(:postgres_async_index, :with_drop) }
+    let_it_be(:async_index_creation) { create(:postgres_async_index, attempts: 0) }
+    let_it_be(:async_index_destruction) { create(:postgres_async_index, :with_drop, attempts: 0) }
 
     describe '.to_create' do
       subject { described_class.to_create }

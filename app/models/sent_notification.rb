@@ -45,7 +45,7 @@ class SentNotification < ApplicationRecord
 
       # Non-sticky write is used as `.record` is only used in ActionMailer
       # where there are no queries to SentNotification.
-      ::Gitlab::Database::LoadBalancing::SessionMap.current(load_balancer).without_sticky_writes do
+      ::Gitlab::Database::LoadBalancing::Session.without_sticky_writes do
         create(attrs)
       end
     end

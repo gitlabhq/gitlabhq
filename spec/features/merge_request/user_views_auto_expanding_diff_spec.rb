@@ -24,7 +24,7 @@ RSpec.describe 'User views diffs file-by-file', :js, feature_category: :code_rev
     page.within('#diffs') do
       expect(page).not_to have_content('This diff is collapsed')
 
-      find('.page-link.next-page-item').click
+      find_by_testid('gl-pagination-next').click
 
       expect(page).not_to have_content('This diff is collapsed')
       expect(page).to have_selector('.diff-file .file-title', text: 'large_diff_renamed.md')

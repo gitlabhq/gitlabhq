@@ -81,8 +81,7 @@ RSpec.describe ContainerExpirationPolicyWorker, feature_category: :container_reg
 
       context 'with load balancing enabled' do
         it 'reads the counts from the replica' do
-          expect(Gitlab::Database::LoadBalancing::SessionMap.current(ContainerRepository.load_balancer))
-            .to receive(:use_replicas_for_read_queries).and_call_original
+          expect(Gitlab::Database::LoadBalancing::Session.current).to receive(:use_replicas_for_read_queries).and_call_original
 
           subject
         end

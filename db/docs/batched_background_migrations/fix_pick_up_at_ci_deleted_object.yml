@@ -1,0 +1,8 @@
+---
+migration_job_name: FixPickUpAtCiDeletedObject
+description: Fix ci_deleted_objects#pick_up_at column so records get purged
+feature_category: job_artifacts
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165778
+milestone: '17.5'
+queued_migration_version: 20241004064933
+finalized_by: # version of the migration that finalized this BBM

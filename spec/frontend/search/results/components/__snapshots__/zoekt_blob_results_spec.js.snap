@@ -86,6 +86,7 @@ exports[`ZoektBlobResults when component loads normally renders component proper
     ellipsistext="…"
     labelfirstpage="Go to first page"
     labellastpage="Go to last page"
+    labelnav="Pagination"
     labelnextpage="Go to next page"
     labelpage="Go to page %{page}"
     labelprevpage="Go to previous page"

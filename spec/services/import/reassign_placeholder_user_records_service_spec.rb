@@ -467,7 +467,7 @@ RSpec.describe Import::ReassignPlaceholderUserRecordsService, feature_category: 
 
     context 'when the source user is not in reassignment_in_progress status' do
       before do
-        source_user.update!(status: 1)
+        source_user.complete!
       end
 
       it 'does not reassign any contributions or create memberships' do

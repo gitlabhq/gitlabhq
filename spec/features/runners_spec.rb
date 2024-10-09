@@ -164,7 +164,7 @@ RSpec.describe 'Runners', feature_category: :fleet_visibility do
             visit project_runners_path(project)
 
             within_testid 'available-shared-runners' do
-              expect(find('.pagination')).not_to be_nil
+              expect(find('.gl-pagination')).not_to be_nil
             end
           end
         end
@@ -178,7 +178,7 @@ RSpec.describe 'Runners', feature_category: :fleet_visibility do
 
           visit project_runners_path(project)
 
-          expect(find('.pagination')).not_to be_nil
+          expect(find('.gl-pagination')).not_to be_nil
         end
       end
     end
@@ -393,7 +393,7 @@ RSpec.describe 'Runners', feature_category: :fleet_visibility do
               visit project_runners_path(project)
 
               within_testid 'group-runners' do
-                expect(find('.pagination')).not_to be_nil
+                expect(find('.gl-pagination')).not_to be_nil
               end
             end
           end

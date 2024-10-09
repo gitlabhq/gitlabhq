@@ -5,7 +5,7 @@ module Packages
     extend ActiveSupport::Concern
 
     def touch_last_downloaded_at
-      ::Gitlab::Database::LoadBalancing::SessionMap.current(load_balancer).without_sticky_writes do
+      ::Gitlab::Database::LoadBalancing::Session.without_sticky_writes do
         update_column(:last_downloaded_at, Time.zone.now)
       end
     end

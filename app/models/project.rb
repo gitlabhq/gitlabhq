@@ -1491,8 +1491,7 @@ class Project < ApplicationRecord
     job_type = type.to_s.capitalize
 
     if job_id
-      use_primary = ::Gitlab::Database::LoadBalancing::SessionMap.current(load_balancer).use_primary?
-      Gitlab::AppLogger.info("#{job_type} job scheduled for #{full_path} with job ID #{job_id} (primary: #{use_primary}).")
+      Gitlab::AppLogger.info("#{job_type} job scheduled for #{full_path} with job ID #{job_id} (primary: #{::Gitlab::Database::LoadBalancing::Session.current.use_primary?}).")
     else
       Gitlab::AppLogger.error("#{job_type} job failed to create for #{full_path}.")
     end

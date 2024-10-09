@@ -6,9 +6,9 @@
 -#    per_page:      number of items to fetch per page
 -#    remote:        data-remote
 
-- page_url = current_page.first? ? '#' : url
+- is_first_page = current_page.first?
+- view = is_first_page ? 'kaminari/gitlab/disabled_page_cursor_nav' : 'kaminari/gitlab/page_cursor_nav'
 
-%li.page-item.js-previous-button{ class: ('disabled' if current_page.first?) }
-  = link_to page_url, rel: 'prev', remote: remote, class: 'page-link' do
-    = sprite_icon('chevron-lg-left', size: 8)
-    = s_('Pagination|Prev')
+= render view, testid: 'kaminari-pagination-prev', rel: 'prev', url: url, remote: remote do
+  = sprite_icon('chevron-left')
+  = s_('Pagination|Prev')

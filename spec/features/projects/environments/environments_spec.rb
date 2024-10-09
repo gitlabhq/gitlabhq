@@ -58,11 +58,11 @@ RSpec.describe 'Environments page', :js, feature_category: :continuous_delivery 
         it 'renders second page of pipelines' do
           visit_environments(project, scope: 'active')
 
-          find('.page-link.next-page-item').click
+          find_by_testid('gl-pagination-next').click
           wait_for_requests
 
-          expect(page).to have_selector('.gl-pagination .page-link', count: 4)
-          expect(find('.gl-pagination .page-link.active').text).to eq("2")
+          expect(page).to have_selector('[data-testid="gl-pagination-li"]', count: 4)
+          expect(find('[data-testid="gl-pagination-item"].active').text).to eq("2")
         end
       end
 

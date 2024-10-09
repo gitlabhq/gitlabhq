@@ -48,7 +48,7 @@
 
     - c.with_footer do
       .gl-flex.gl-gap-3
-        = render Pajamas::ButtonComponent.new(variant: :danger, method: :post, href: accept_import_source_user_path(@source_user)) do
+        = render Pajamas::ButtonComponent.new(variant: :danger, method: :post, href: accept_import_source_user_path(@source_user.reassignment_token)) do
           = s_('UserMapping|Approve reassignment')
-        = render Pajamas::ButtonComponent.new(method: :post, href: decline_import_source_user_path(@source_user)) do
+        = render Pajamas::ButtonComponent.new(method: :post, href: decline_import_source_user_path(@source_user.reassignment_token)) do
           = s_('UserMapping|Reject')

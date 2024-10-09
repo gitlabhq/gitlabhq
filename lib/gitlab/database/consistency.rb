@@ -13,9 +13,8 @@ module Gitlab
       # require read consistency after recent writes.
       #
       def self.with_read_consistency(&block)
-        ::Gitlab::Database::LoadBalancing::SessionMap
-          .with_sessions(Gitlab::Database::LoadBalancing.base_models)
-          .use_primary(&block)
+        ::Gitlab::Database::LoadBalancing::Session
+          .current.use_primary(&block)
       end
     end
   end

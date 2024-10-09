@@ -20,8 +20,7 @@ module Users
       return unless user
       return if user.last_activity_on == Date.today
 
-      ::Gitlab::Database::LoadBalancing::SessionMap.current(user.load_balancer)
-              .without_sticky_writes { record_activity }
+      ::Gitlab::Database::LoadBalancing::Session.without_sticky_writes { record_activity }
     end
 
     private

@@ -131,7 +131,7 @@ module Gitlab
         private
 
         def current_session
-          ::Gitlab::Database::LoadBalancing::SessionMap.current(@load_balancer)
+          ::Gitlab::Database::LoadBalancing::Session.current
         end
 
         def track_read_only_transaction!

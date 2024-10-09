@@ -59,7 +59,7 @@ module Gitlab
 
           # Returns number of WAL segments pending archival
           def pending_wal_count
-            Gitlab::Database::LoadBalancing::SessionMap.current(connection.load_balancer).use_primary do
+            Gitlab::Database::LoadBalancing::Session.current.use_primary do
               connection.execute(PENDING_WAL_COUNT_SQL).to_a.first&.fetch('pending_wal_count')
             end
           end

@@ -195,7 +195,8 @@ RSpec.describe 'Dashboard Groups page', :js, feature_category: :groups_and_proje
     end
 
     it 'loads results for next page' do
-      expect(page).to have_selector('.gl-pagination .page-item a.page-link', count: 3)
+      expect(page).to have_selector('[data-testid="gl-pagination-item"]', count: 2)
+      expect(page).to have_selector('[data-testid="gl-pagination-next"]')
 
       # Check first page
       expect(page).to have_content(group2.full_name)
@@ -204,7 +205,7 @@ RSpec.describe 'Dashboard Groups page', :js, feature_category: :groups_and_proje
       expect(page).not_to have_selector("#group-#{group.id}")
 
       # Go to next page
-      find('.gl-pagination .page-item:last-of-type a.page-link').click
+      find_by_testid('gl-pagination-next').click
 
       wait_for_requests
 

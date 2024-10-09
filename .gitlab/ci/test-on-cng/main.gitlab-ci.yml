@@ -89,7 +89,7 @@ workflow:
   needs:
     - build-cng
     - download-knapsack-report
-  parallel: 5
+  parallel: 10
 
 # ==========================================
 # Pre stage

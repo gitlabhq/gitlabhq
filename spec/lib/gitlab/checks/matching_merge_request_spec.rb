@@ -32,7 +32,7 @@ RSpec.describe Gitlab::Checks::MatchingMergeRequest, feature_category: :source_c
     end
 
     context 'with load balancing enabled', :redis do
-      let(:session) { ::Gitlab::Database::LoadBalancing::SessionMap.current(project.load_balancer) }
+      let(:session) { ::Gitlab::Database::LoadBalancing::Session.current }
 
       before do
         # Need to mock as though we actually have replicas
@@ -43,7 +43,7 @@ RSpec.describe Gitlab::Checks::MatchingMergeRequest, feature_category: :source_c
         # Put some sticking position for the primary in Redis
         ::ApplicationRecord.sticking.stick(:project, project.id)
 
-        Gitlab::Database::LoadBalancing::SessionMap.clear_session
+        Gitlab::Database::LoadBalancing::Session.clear_session
 
         # Mock the load balancer result since we don't actually have real replicas to match against
         expect(::ApplicationRecord.load_balancer)
@@ -59,7 +59,7 @@ RSpec.describe Gitlab::Checks::MatchingMergeRequest, feature_category: :source_c
       end
 
       after do
-        Gitlab::Database::LoadBalancing::SessionMap.clear_session
+        Gitlab::Database::LoadBalancing::Session.clear_session
       end
 
       context 'when any secondary is caught up' do

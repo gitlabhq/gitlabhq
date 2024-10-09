@@ -44,8 +44,7 @@ RSpec.describe Gitlab::Database::HealthStatus::Indicators::WriteAheadLog, featur
     end
 
     it 'uses primary database' do
-      expect(Gitlab::Database::LoadBalancing::SessionMap.current(connection.load_balancer))
-        .to receive(:use_primary).and_yield
+      expect(Gitlab::Database::LoadBalancing::Session.current).to receive(:use_primary).and_yield
 
       evaluate
     end

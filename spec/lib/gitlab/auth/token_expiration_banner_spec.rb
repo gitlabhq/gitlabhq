@@ -13,8 +13,7 @@ RSpec.describe Gitlab::Auth::TokenExpirationBanner, feature_category: :system_ac
     # for specs, we need to reset it each time
     before do
       described_class.instance_variable_set(:@show_token_expiration_banner, nil)
-      # TODO: revert changes to .twice when removing use_load_balancing_session_map feature flag
-      allow(Gitlab).to receive(:version_info).at_least(:twice).and_return(gitlab_version)
+      allow(Gitlab).to receive(:version_info).twice.and_return(gitlab_version)
     end
 
     it { is_expected.to be(false) }

@@ -196,7 +196,7 @@ module Gitlab
         end
 
         def primary_transaction(statement_timeout: nil)
-          Gitlab::Database::LoadBalancing::SessionMap.current(connection.load_balancer).use_primary do
+          Gitlab::Database::LoadBalancing::Session.current.use_primary do
             connection.transaction(requires_new: false) do
               if statement_timeout.present?
                 connection.execute(

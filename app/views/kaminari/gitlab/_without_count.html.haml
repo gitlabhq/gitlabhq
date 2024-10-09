@@ -1,12 +1,12 @@
-.gl-pagination.gl-mt-3
-  %ul.pagination.justify-content-center
-    - if previous_path
-      %li.page-item.prev
-        = link_to previous_path, rel: 'prev', class: 'page-link', data: paginate_event_tracking_data_attributes(event_tracking: event_tracking, event_label: 'prev') do
-          = sprite_icon('chevron-lg-left', size: 8)
-          = s_('Pagination|Prev')
-    - if next_path
-      %li.page-item.next
-        = link_to next_path, rel: 'next', class: 'page-link', data: paginate_event_tracking_data_attributes(event_tracking: event_tracking, event_label: 'next') do
-          = s_('Pagination|Next')
-          = sprite_icon('chevron-lg-right', size: 8)
+- prev_view = previous_path ? 'kaminari/gitlab/page_cursor_nav' : 'kaminari/gitlab/disabled_page_cursor_nav'
+- next_view = next_path ? 'kaminari/gitlab/page_cursor_nav' : 'kaminari/gitlab/disabled_page_cursor_nav'
+
+- if previous_path || next_path
+  .gl-pagination.gl-mt-3
+    %ul.gl-justify-center
+      = render prev_view, testid: 'kaminari-pagination-prev', rel: 'prev', url: previous_path, data: paginate_event_tracking_data_attributes(event_tracking: event_tracking, event_label: 'prev') do
+        = sprite_icon('chevron-left')
+        = s_('Pagination|Prev')
+      = render next_view, testid: 'kaminari-pagination-next', rel: 'next', url: next_path, data: paginate_event_tracking_data_attributes(event_tracking: event_tracking, event_label: 'next') do
+        = s_('Pagination|Next')
+        = sprite_icon('chevron-right')

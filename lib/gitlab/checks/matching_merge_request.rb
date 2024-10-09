@@ -28,7 +28,7 @@ module Gitlab
         # the write location to ensure the replica can make this query.
         # Adding use_primary_on_empty_location: true for extra precaution in case there happens to be
         # no LSN saved for the project then we will use the primary.
-        track_session_metrics(::ApplicationRecord.load_balancer) do
+        track_session_metrics do
           ::ApplicationRecord.sticking.find_caught_up_replica(:project, @project.id, use_primary_on_empty_location: true)
         end
 
@@ -42,12 +42,12 @@ module Gitlab
 
       private
 
-      def track_session_metrics(lb)
-        before = ::Gitlab::Database::LoadBalancing::SessionMap.current(lb).use_primary?
+      def track_session_metrics
+        before = ::Gitlab::Database::LoadBalancing::Session.current.use_primary?
 
         yield
 
-        after = ::Gitlab::Database::LoadBalancing::SessionMap.current(lb).use_primary?
+        after = ::Gitlab::Database::LoadBalancing::Session.current.use_primary?
 
         increment_attempt_count
 

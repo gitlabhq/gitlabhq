@@ -18,6 +18,9 @@ RSpec.describe ::API::MlModelPackages, feature_category: :mlops do
   let_it_be(:another_project, reload: true) { create(:project) }
   let_it_be(:model) { create(:ml_models, user: project.owner, project: project) }
   let_it_be(:model_version) { create(:ml_model_versions, :with_package, model: model, version: '0.1.0') }
+  let(:snowplow_gitlab_standard_context) do
+    { user: user, project: project, namespace: project.namespace, property: 'i_package_ml_model_user' }
+  end
 
   let_it_be(:tokens) do
     {
@@ -203,6 +206,7 @@ RSpec.describe ::API::MlModelPackages, feature_category: :mlops do
     end
   end
 
+  # rubocop:disable RSpec/MultipleMemoizedHelpers -- This test requires many different variables to be set
   describe 'PUT /api/v4/projects/:id/packages/ml_models/:model_version_id/(*path)/files/:file_name' do
     include_context 'ml model authorize permissions table'
 
@@ -247,7 +251,6 @@ RSpec.describe ::API::MlModelPackages, feature_category: :mlops do
         it_behaves_like 'process ml model package upload'
       end
 
-      # rubocop:disable RSpec/MultipleMemoizedHelpers -- This test requires many different variables to be set
       context 'when file is for candidate' do
         let_it_be(:candidate) do
           create(:ml_candidates, project: model.project, experiment: model.default_experiment, model_version: nil)
@@ -277,7 +280,6 @@ RSpec.describe ::API::MlModelPackages, feature_category: :mlops do
 
       it_behaves_like 'Not found when model version does not exist'
     end
-    # rubocop:enable RSpec/MultipleMemoizedHelpers
 
     describe 'user access' do
       where(:valid_token, :user_role, :visibility, :member, :token_type, :expected_status) do
@@ -357,4 +359,5 @@ RSpec.describe ::API::MlModelPackages, feature_category: :mlops do
       it_behaves_like 'Endpoint not found if read_model_registry not available'
     end
   end
+  # rubocop:enable RSpec/MultipleMemoizedHelpers
 end

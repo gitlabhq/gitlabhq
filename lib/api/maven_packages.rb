@@ -266,8 +266,7 @@ module API
         # so we need to skip the second FIPS check here.
         file_name, format = extract_format(params[:file_name], skip_fips_check: true)
 
-        lb = ::ApplicationRecord.load_balancer
-        ::Gitlab::Database::LoadBalancing::SessionMap.current(lb).use_primary do
+        ::Gitlab::Database::LoadBalancing::Session.current.use_primary do
           result = ::Packages::Maven::FindOrCreatePackageService
                      .new(user_project, current_user, params.merge(build: current_authenticated_job)).execute
 

@@ -153,10 +153,6 @@ RSpec.describe Gitlab::Database::LoadBalancing, :suppress_gitlab_schemas_validat
       end
     end
 
-    def current_session
-      ::Gitlab::Database::LoadBalancing::SessionMap.current(model.load_balancer)
-    end
-
     where(:queries, :include_transaction, :expected_results) do
       [
         # Read methods
@@ -239,7 +235,7 @@ RSpec.describe Gitlab::Database::LoadBalancing, :suppress_gitlab_schemas_validat
         # use_primary
         [
           -> {
-            current_session.use_primary do
+            ::Gitlab::Database::LoadBalancing::Session.current.use_primary do
               model.first
               model.where(name: 'test1').to_a
             end
@@ -252,7 +248,7 @@ RSpec.describe Gitlab::Database::LoadBalancing, :suppress_gitlab_schemas_validat
         [
           -> {
             model.first
-            current_session.use_primary!
+            ::Gitlab::Database::LoadBalancing::Session.current.use_primary!
             model.where(name: 'test1').to_a
           },
           false, [:replica, :primary]
@@ -261,7 +257,7 @@ RSpec.describe Gitlab::Database::LoadBalancing, :suppress_gitlab_schemas_validat
         # use_replicas_for_read_queries does not affect read queries
         [
           -> {
-            current_session.use_replicas_for_read_queries do
+            ::Gitlab::Database::LoadBalancing::Session.current.use_replicas_for_read_queries do
               model.where(name: 'test1').to_a
             end
           },
@@ -271,7 +267,7 @@ RSpec.describe Gitlab::Database::LoadBalancing, :suppress_gitlab_schemas_validat
         # use_replicas_for_read_queries does not affect write queries
         [
           -> {
-            current_session.use_replicas_for_read_queries do
+            ::Gitlab::Database::LoadBalancing::Session.current.use_replicas_for_read_queries do
               model.create!(name: 'test1')
             end
           },
@@ -281,7 +277,7 @@ RSpec.describe Gitlab::Database::LoadBalancing, :suppress_gitlab_schemas_validat
         # use_replicas_for_read_queries does not affect ambiguous queries
         [
           -> {
-            current_session.use_replicas_for_read_queries do
+            ::Gitlab::Database::LoadBalancing::Session.current.use_replicas_for_read_queries do
               model.connection.exec_query("SELECT 1")
             end
           },
@@ -291,8 +287,8 @@ RSpec.describe Gitlab::Database::LoadBalancing, :suppress_gitlab_schemas_validat
         # use_replicas_for_read_queries ignores use_primary! for read queries
         [
           -> {
-            current_session.use_primary!
-            current_session.use_replicas_for_read_queries do
+            ::Gitlab::Database::LoadBalancing::Session.current.use_primary!
+            ::Gitlab::Database::LoadBalancing::Session.current.use_replicas_for_read_queries do
               model.where(name: 'test1').to_a
             end
           },
@@ -302,8 +298,8 @@ RSpec.describe Gitlab::Database::LoadBalancing, :suppress_gitlab_schemas_validat
         # use_replicas_for_read_queries adheres use_primary! for write queries
         [
           -> {
-            current_session.use_primary!
-            current_session.use_replicas_for_read_queries do
+            ::Gitlab::Database::LoadBalancing::Session.current.use_primary!
+            ::Gitlab::Database::LoadBalancing::Session.current.use_replicas_for_read_queries do
               model.create!(name: 'test1')
             end
           },
@@ -313,8 +309,8 @@ RSpec.describe Gitlab::Database::LoadBalancing, :suppress_gitlab_schemas_validat
         # use_replicas_for_read_queries adheres use_primary! for ambiguous queries
         [
           -> {
-            current_session.use_primary!
-            current_session.use_replicas_for_read_queries do
+            ::Gitlab::Database::LoadBalancing::Session.current.use_primary!
+            ::Gitlab::Database::LoadBalancing::Session.current.use_replicas_for_read_queries do
               model.connection.exec_query('SELECT 1')
             end
           },
@@ -324,8 +320,8 @@ RSpec.describe Gitlab::Database::LoadBalancing, :suppress_gitlab_schemas_validat
         # use_replicas_for_read_queries ignores use_primary blocks
         [
           -> {
-            current_session.use_primary do
-              current_session.use_replicas_for_read_queries do
+            ::Gitlab::Database::LoadBalancing::Session.current.use_primary do
+              ::Gitlab::Database::LoadBalancing::Session.current.use_replicas_for_read_queries do
                 model.where(name: 'test1').to_a
               end
             end
@@ -336,8 +332,8 @@ RSpec.describe Gitlab::Database::LoadBalancing, :suppress_gitlab_schemas_validat
         # use_replicas_for_read_queries ignores a session already performed write
         [
           -> {
-            current_session.write!
-            current_session.use_replicas_for_read_queries do
+            ::Gitlab::Database::LoadBalancing::Session.current.write!
+            ::Gitlab::Database::LoadBalancing::Session.current.use_replicas_for_read_queries do
               model.where(name: 'test1').to_a
             end
           },
@@ -347,7 +343,7 @@ RSpec.describe Gitlab::Database::LoadBalancing, :suppress_gitlab_schemas_validat
         # fallback_to_replicas_for_ambiguous_queries
         [
           -> {
-            current_session.fallback_to_replicas_for_ambiguous_queries do
+            ::Gitlab::Database::LoadBalancing::Session.current.fallback_to_replicas_for_ambiguous_queries do
               model.first
               model.where(name: 'test1').to_a
             end
@@ -358,7 +354,7 @@ RSpec.describe Gitlab::Database::LoadBalancing, :suppress_gitlab_schemas_validat
         # fallback_to_replicas_for_ambiguous_queries for read-only transaction
         [
           -> {
-            current_session.fallback_to_replicas_for_ambiguous_queries do
+            ::Gitlab::Database::LoadBalancing::Session.current.fallback_to_replicas_for_ambiguous_queries do
               model.transaction do
                 model.first
                 model.where(name: 'test1').to_a
@@ -371,7 +367,7 @@ RSpec.describe Gitlab::Database::LoadBalancing, :suppress_gitlab_schemas_validat
         # A custom read query inside fallback_to_replicas_for_ambiguous_queries
         [
           -> {
-            current_session.fallback_to_replicas_for_ambiguous_queries do
+            ::Gitlab::Database::LoadBalancing::Session.current.fallback_to_replicas_for_ambiguous_queries do
               model.connection.exec_query("SELECT 1")
             end
           },
@@ -381,7 +377,7 @@ RSpec.describe Gitlab::Database::LoadBalancing, :suppress_gitlab_schemas_validat
         # A custom read query inside a transaction fallback_to_replicas_for_ambiguous_queries
         [
           -> {
-            current_session.fallback_to_replicas_for_ambiguous_queries do
+            ::Gitlab::Database::LoadBalancing::Session.current.fallback_to_replicas_for_ambiguous_queries do
               model.transaction do
                 model.connection.exec_query("SET LOCAL statement_timeout = 5000")
                 model.count
@@ -395,7 +391,7 @@ RSpec.describe Gitlab::Database::LoadBalancing, :suppress_gitlab_schemas_validat
         [
           -> {
             model.create!(name: 'Test1')
-            current_session.fallback_to_replicas_for_ambiguous_queries do
+            ::Gitlab::Database::LoadBalancing::Session.current.fallback_to_replicas_for_ambiguous_queries do
               model.connection.exec_query("SELECT 1")
             end
           },
@@ -405,8 +401,8 @@ RSpec.describe Gitlab::Database::LoadBalancing, :suppress_gitlab_schemas_validat
         # fallback_to_replicas_for_ambiguous_queries after use_primary!
         [
           -> {
-            current_session.use_primary!
-            current_session.fallback_to_replicas_for_ambiguous_queries do
+            ::Gitlab::Database::LoadBalancing::Session.current.use_primary!
+            ::Gitlab::Database::LoadBalancing::Session.current.fallback_to_replicas_for_ambiguous_queries do
               model.connection.exec_query("SELECT 1")
             end
           },
@@ -416,8 +412,8 @@ RSpec.describe Gitlab::Database::LoadBalancing, :suppress_gitlab_schemas_validat
         # fallback_to_replicas_for_ambiguous_queries inside use_primary
         [
           -> {
-            current_session.use_primary do
-              current_session.fallback_to_replicas_for_ambiguous_queries do
+            ::Gitlab::Database::LoadBalancing::Session.current.use_primary do
+              ::Gitlab::Database::LoadBalancing::Session.current.fallback_to_replicas_for_ambiguous_queries do
                 model.connection.exec_query("SELECT 1")
               end
             end
@@ -428,8 +424,8 @@ RSpec.describe Gitlab::Database::LoadBalancing, :suppress_gitlab_schemas_validat
         # use_primary inside fallback_to_replicas_for_ambiguous_queries
         [
           -> {
-            current_session.fallback_to_replicas_for_ambiguous_queries do
-              current_session.use_primary do
+            ::Gitlab::Database::LoadBalancing::Session.current.fallback_to_replicas_for_ambiguous_queries do
+              ::Gitlab::Database::LoadBalancing::Session.current.use_primary do
                 model.connection.exec_query("SELECT 1")
               end
             end
@@ -440,7 +436,7 @@ RSpec.describe Gitlab::Database::LoadBalancing, :suppress_gitlab_schemas_validat
         # A write query inside fallback_to_replicas_for_ambiguous_queries
         [
           -> {
-            current_session.fallback_to_replicas_for_ambiguous_queries do
+            ::Gitlab::Database::LoadBalancing::Session.current.fallback_to_replicas_for_ambiguous_queries do
               model.connection.exec_query("SELECT 1")
               model.delete_all
               model.connection.exec_query("SELECT 1")
@@ -452,8 +448,8 @@ RSpec.describe Gitlab::Database::LoadBalancing, :suppress_gitlab_schemas_validat
         # use_replicas_for_read_queries incorporates with fallback_to_replicas_for_ambiguous_queries
         [
           -> {
-            current_session.use_replicas_for_read_queries do
-              current_session.fallback_to_replicas_for_ambiguous_queries do
+            ::Gitlab::Database::LoadBalancing::Session.current.use_replicas_for_read_queries do
+              ::Gitlab::Database::LoadBalancing::Session.current.fallback_to_replicas_for_ambiguous_queries do
                 model.connection.exec_query('SELECT 1')
                 model.where(name: 'test1').to_a
               end
@@ -504,7 +500,7 @@ RSpec.describe Gitlab::Database::LoadBalancing, :suppress_gitlab_schemas_validat
           # replica even when the current session is stuck to the primary.
           [
             -> {
-              current_session.use_primary!
+              ::Gitlab::Database::LoadBalancing::Session.current.use_primary!
               model.connection.clear_cache!
               model.connection.schema_cache.add('users')
               model.connection.pool.release_connection
@@ -565,9 +561,7 @@ RSpec.describe Gitlab::Database::LoadBalancing, :suppress_gitlab_schemas_validat
     context 'a write inside a transaction inside fallback_to_replicas_for_ambiguous_queries block' do
       it 'raises an exception' do
         expect do
-          ::Gitlab::Database::LoadBalancing::SessionMap
-            .current(model.load_balancer)
-            .fallback_to_replicas_for_ambiguous_queries do
+          ::Gitlab::Database::LoadBalancing::Session.current.fallback_to_replicas_for_ambiguous_queries do
             model.transaction do
               model.first
               model.create!(name: 'hello')

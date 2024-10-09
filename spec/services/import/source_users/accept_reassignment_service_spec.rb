@@ -4,8 +4,11 @@ require 'spec_helper'
 
 RSpec.describe Import::SourceUsers::AcceptReassignmentService, feature_category: :importers do
   let(:import_source_user) { create(:import_source_user, :awaiting_approval) }
+  let(:reassignment_token) { import_source_user.reassignment_token }
   let(:current_user) { import_source_user.reassign_to_user }
-  let(:service) { described_class.new(import_source_user, current_user: current_user) }
+  let(:service) do
+    described_class.new(import_source_user, current_user: current_user, reassignment_token: reassignment_token)
+  end
 
   describe '#execute' do
     it 'returns success' do
@@ -47,6 +50,18 @@ RSpec.describe Import::SourceUsers::AcceptReassignmentService, feature_category:
 
     context 'when no current user is provided' do
       let(:current_user) { nil }
+
+      it_behaves_like 'current user does not have permission to accept reassignment'
+    end
+
+    context 'when passing the wrong reassignment_token' do
+      let(:reassignment_token) { '1234567890abcdef' }
+
+      it_behaves_like 'current user does not have permission to accept reassignment'
+    end
+
+    context 'when not passing a reassignment_token' do
+      let(:reassignment_token) { nil }
 
       it_behaves_like 'current user does not have permission to accept reassignment'
     end

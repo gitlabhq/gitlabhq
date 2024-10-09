@@ -56,6 +56,7 @@ module Gitlab
           actor = ::Group.actor_from_id(event.data[:namespace_id])
           Feature.enabled?(:track_member_activity, actor)
         end
+      store.subscribe ::Pages::DeletePagesDeploymentWorker, to: ::Projects::ProjectArchivedEvent
     end
     private_class_method :configure!
   end

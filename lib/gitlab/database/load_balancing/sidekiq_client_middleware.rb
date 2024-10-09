@@ -34,7 +34,19 @@ module Gitlab
 
         def set_data_consistency_locations!(job)
           job['wal_locations'] = wal_locations_by_db_name
-          job['wal_location_sources'] = wal_location_sources_by_db_name
+          job['wal_location_source'] = wal_location_source
+        end
+
+        def wal_location_source
+          if ::Gitlab::Database::LoadBalancing.primary_only? || uses_primary?
+            ::Gitlab::Database::LoadBalancing::ROLE_PRIMARY
+          else
+            ::Gitlab::Database::LoadBalancing::ROLE_REPLICA
+          end
+        end
+
+        def uses_primary?
+          ::Gitlab::Database::LoadBalancing::Session.current.use_primary?
         end
       end
     end

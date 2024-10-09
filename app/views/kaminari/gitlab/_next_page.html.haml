@@ -6,9 +6,9 @@
 -#    per_page:      number of items to fetch per page
 -#    remote:        data-remote
 
-- page_url = current_page.last? ? '#' : url
+- is_last_page = current_page.last?
+- view = is_last_page ? 'kaminari/gitlab/disabled_page_cursor_nav' : 'kaminari/gitlab/page_cursor_nav'
 
-%li.page-item.js-next-button{ class: ('disabled' if current_page.last?) }
-  = link_to page_url, rel: 'next', remote: remote, class: 'page-link' do
-    = s_('Pagination|Next')
-    = sprite_icon('chevron-lg-right', size: 8)
+= render view, testid: 'kaminari-pagination-next', rel: 'next', url: url, remote: remote do
+  = s_('Pagination|Next')
+  = sprite_icon('chevron-right')

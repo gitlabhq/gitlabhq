@@ -11,10 +11,22 @@ module Import
 
       def execute
         return error_invalid_permissions unless current_user.can?(:admin_import_source_user, import_source_user)
-        return error_invalid_status unless import_source_user.reassignable_status?
         return error_invalid_assignee unless valid_assignee?(assignee_user)
 
-        if reassign_user
+        invalid_status = false
+        reassign_successful = false
+
+        import_source_user.with_lock do
+          if import_source_user.reassignable_status?
+            reassign_successful = reassign_user
+          else
+            invalid_status = true
+          end
+        end
+
+        return error_invalid_status if invalid_status
+
+        if reassign_successful
           send_user_reassign_email
 
           ServiceResponse.success(payload: import_source_user)

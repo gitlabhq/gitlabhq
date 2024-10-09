@@ -3729,6 +3729,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: pages_delete_pages_deployment
+  :worker_name: Pages::DeletePagesDeploymentWorker
+  :feature_category: :pages
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: pages_domain_ssl_renewal
   :worker_name: PagesDomainSslRenewalWorker
   :feature_category: :pages

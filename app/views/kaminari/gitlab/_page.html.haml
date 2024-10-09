@@ -6,9 +6,9 @@
 -#    total_pages:   total number of pages
 -#    per_page:      number of items to fetch per page
 -#    remote:        data-remote
-%li.page-item.js-pagination-page{ class: [active_when(page.current?),
+%li.js-pagination-page{ class: [active_when(page.current?),
   ('sibling' if page.next? || page.prev?),
   ('js-first-button' if page.first?),
   ('js-last-button' if page.last?),
   ('!gl-hidden md:!gl-block' if !page.current?)] }
-  = link_to page, url, { remote: remote, rel: page.next? ? 'next' : page.prev? ? 'prev' : nil, class: ['page-link', active_when(page.current?)] }
+  = link_to page, url, { remote: remote, rel: page.next? ? 'next' : page.prev? ? 'prev' : nil, class: ['gl-pagination-item', active_when(page.current?)], 'data-testid': 'kaminari-pagination-item' }

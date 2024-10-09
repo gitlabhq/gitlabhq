@@ -665,15 +665,16 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
           visit project_pipelines_path(project, page: '2')
           wait_for_requests
 
-          expect(page).to have_selector('.gl-pagination .page-link', count: 4)
+          expect(page).to have_selector('[data-testid="gl-pagination-li"]', count: 4)
         end
 
         it 'shows updated content' do
           visit project_pipelines_path(project)
           wait_for_requests
-          page.find('.page-link.next-page-item').click
 
-          expect(page).to have_selector('.gl-pagination .page-link', count: 4)
+          find_by_testid('gl-pagination-next').click
+
+          expect(page).to have_selector('[data-testid="gl-pagination-li"]', count: 4)
         end
       end
 

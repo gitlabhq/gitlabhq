@@ -16,7 +16,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::RackMiddleware, :redis do
   end
 
   after do
-    Gitlab::Database::LoadBalancing::SessionMap.clear_session
+    Gitlab::Database::LoadBalancing::Session.clear_session
   end
 
   describe '#call' do
@@ -100,11 +100,8 @@ RSpec.describe Gitlab::Database::LoadBalancing::RackMiddleware, :redis do
     let(:warden) { warden_user }
 
     before do
-      Gitlab::Database::LoadBalancing.base_models.each do |model|
-        allow(::Gitlab::Database::LoadBalancing::SessionMap.current(model.load_balancer))
-          .to receive(:performed_write?)
-          .and_return(write_performed)
-      end
+      allow(::Gitlab::Database::LoadBalancing::Session.current).to receive(:performed_write?)
+        .and_return(write_performed)
     end
 
     subject { middleware.stick_if_necessary(env) }
@@ -183,7 +180,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::RackMiddleware, :redis do
     it 'clears the currently used host and session' do
       session = spy(:session)
 
-      stub_const('Gitlab::Database::LoadBalancing::SessionMap', session)
+      stub_const('Gitlab::Database::LoadBalancing::Session', session)
 
       expect(Gitlab::Database::LoadBalancing).to receive(:release_hosts)
 

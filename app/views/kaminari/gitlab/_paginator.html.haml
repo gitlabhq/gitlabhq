@@ -7,7 +7,7 @@
 -#    paginator:     the paginator that renders the pagination tags inside
 = paginator.render do
   .gl-pagination.gl-mt-3
-    %ul.pagination.justify-content-center
+    %ul.gl-justify-center
       = prev_page_tag
       - each_page do |page|
         - if page.left_outer? || page.right_outer? || page.inside_window? || page.first? || page.last?

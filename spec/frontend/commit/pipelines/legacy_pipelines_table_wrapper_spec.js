@@ -121,7 +121,7 @@ describe('Pipelines table in Commits and Merge requests', () => {
       it('should make an API request when using pagination', async () => {
         expect(mock.history.get).toHaveLength(1);
 
-        wrapper.find('.next-page-item').trigger('click');
+        wrapper.find('[data-testid="gl-pagination-next"]').trigger('click');
 
         await waitForPromises();
 

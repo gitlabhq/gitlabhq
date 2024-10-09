@@ -10,8 +10,6 @@ module Gitlab
         # the primary.
         EXPIRATION = 30
 
-        attr_reader :load_balancer
-
         def initialize(load_balancer)
           @load_balancer = load_balancer
         end
@@ -37,7 +35,7 @@ module Gitlab
                      !use_primary_on_empty_location
                    end
 
-          use_primary! if !result && use_primary_on_failure
+          ::Gitlab::Database::LoadBalancing::Session.current.use_primary! if !result && use_primary_on_failure
 
           result
         end
@@ -48,7 +46,7 @@ module Gitlab
           with_primary_write_location do |location|
             set_write_location_for(namespace, id, location)
           end
-          use_primary!
+          ::Gitlab::Database::LoadBalancing::Session.current.use_primary!
         end
 
         def bulk_stick(namespace, ids)
@@ -58,7 +56,7 @@ module Gitlab
             end
           end
 
-          use_primary!
+          ::Gitlab::Database::LoadBalancing::Session.current.use_primary!
         end
 
         private
@@ -101,10 +99,6 @@ module Gitlab
 
         def with_redis(&block)
           Gitlab::Redis::DbLoadBalancing.with(&block)
-        end
-
-        def use_primary!
-          ::Gitlab::Database::LoadBalancing::SessionMap.current(@load_balancer).use_primary!
         end
       end
     end

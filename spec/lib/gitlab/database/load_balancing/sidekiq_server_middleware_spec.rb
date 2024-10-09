@@ -16,14 +16,14 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware, :clean_
     skip_default_enabled_yaml_check
 
     replication_lag!(false)
-    Gitlab::Database::LoadBalancing::SessionMap.clear_session
+    Gitlab::Database::LoadBalancing::Session.clear_session
 
     stub_const("#{described_class.name}::REPLICA_WAIT_SLEEP_SECONDS", 0.02)
     stub_const("#{described_class.name}::URGENT_REPLICA_WAIT_SLEEP_SECONDS", 0.01)
   end
 
   after do
-    Gitlab::Database::LoadBalancing::SessionMap.clear_session
+    Gitlab::Database::LoadBalancing::Session.clear_session
   end
 
   describe '#call' do
@@ -59,9 +59,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware, :clean_
     shared_examples_for 'stick to the primary' do |expected_strategy|
       it 'sticks to the primary' do
         run_middleware do
-          Gitlab::Database::LoadBalancing.each_load_balancer do |lb|
-            expect(Gitlab::Database::LoadBalancing::SessionMap.current(lb).use_primary?).to be_truthy
-          end
+          expect(Gitlab::Database::LoadBalancing::Session.current.use_primary?).to be_truthy
         end
       end
 
@@ -76,9 +74,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware, :clean_
           .and_return(any_caught_up)
 
         run_middleware do
-          Gitlab::Database::LoadBalancing.each_load_balancer do |lb|
-            expect(Gitlab::Database::LoadBalancing::SessionMap.current(lb).use_primary?).not_to be_truthy
-          end
+          expect(Gitlab::Database::LoadBalancing::Session.current.use_primary?).not_to be_truthy
         end
       end
 

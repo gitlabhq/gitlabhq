@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Database::AsyncIndexes, feature_category: :database do
   describe '.create_pending_indexes!' do
-    subject { described_class.create_pending_indexes! }
+    subject(:create_pending_indexes) { described_class.create_pending_indexes! }
 
     before do
       create_list(:postgres_async_index, 4)
@@ -17,12 +17,26 @@ RSpec.describe Gitlab::Database::AsyncIndexes, feature_category: :database do
         expect(creator).to receive(:perform)
       end
 
-      subject
+      create_pending_indexes
+    end
+
+    context 'when there are indexes to be created in the queue with higher attempts' do
+      before do
+        described_class::PostgresAsyncIndex.first(2).each do |async_index|
+          async_index.update!(attempts: 1)
+        end
+      end
+
+      it 'does not pick up failed indexes' do
+        expect { create_pending_indexes }
+          .to change { described_class::PostgresAsyncIndex.count }.by(-2)
+          .and not_change { described_class::PostgresAsyncIndex.where('attempts > ?', 0).count }
+      end
     end
   end
 
   describe '.drop_pending_indexes!' do
-    subject { described_class.drop_pending_indexes! }
+    subject(:drop_pending_indexes) { described_class.drop_pending_indexes! }
 
     before do
       create_list(:postgres_async_index, 4, :with_drop)
@@ -35,7 +49,21 @@ RSpec.describe Gitlab::Database::AsyncIndexes, feature_category: :database do
         expect(destructor).to receive(:perform)
       end
 
-      subject
+      drop_pending_indexes
+    end
+
+    context 'when there are indexes to be destroyed in the queue with higher attempts' do
+      before do
+        described_class::PostgresAsyncIndex.first(2).each do |async_index|
+          async_index.update!(attempts: 1)
+        end
+      end
+
+      it 'does not pick up failed indexes' do
+        expect { drop_pending_indexes }
+          .to change { described_class::PostgresAsyncIndex.count }.by(-2)
+          .and not_change { described_class::PostgresAsyncIndex.where('attempts > ?', 0).count }
+      end
     end
   end
 

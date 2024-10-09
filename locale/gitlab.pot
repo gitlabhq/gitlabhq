@@ -5168,6 +5168,15 @@ msgstr ""
 msgid "AiImpactAnalytics|Value can't be calculated due to insufficient data."
 msgstr ""
 
+msgid "AiPowered|AI models"
+msgstr ""
+
+msgid "AiPowered|Allow use of self-hosted models"
+msgstr ""
+
+msgid "AiPowered|By enabling self-hosted models, you agree to the %{linkStart}GitLab Testing Agreement%{linkEnd}. Please note that this action cannot be reversed."
+msgstr ""
+
 msgid "AiPowered|Configure AI-powered GitLab Duo features. %{linkStart}Which features?%{linkEnd}"
 msgstr ""
 
@@ -5235,6 +5244,9 @@ msgid "AiPowered|When you save, GitLab Duo will be turned for all groups, subgro
 msgstr ""
 
 msgid "AiPowered|When you save, GitLab Duo will be turned off for all groups, subgroups, and projects."
+msgstr ""
+
+msgid "AiPowered|You have enabled self-hosted models and agreed to the %{linkStart}GitLab Testing Agreement%{linkEnd}. Please note that this action cannot be reversed."
 msgstr ""
 
 msgid "Akismet"

@@ -56,9 +56,7 @@ RSpec.describe SentNotification, :request_store, feature_category: :shared do
     it 'writes without sticking to primary' do
       subject
 
-      Gitlab::Database::LoadBalancing.each_load_balancer do |lb|
-        expect(Gitlab::Database::LoadBalancing::SessionMap.current(lb).use_primary?).to be false
-      end
+      expect(Gitlab::Database::LoadBalancing::Session.current.use_primary?).to be false
     end
   end
 

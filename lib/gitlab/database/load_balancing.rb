@@ -34,10 +34,6 @@ module Gitlab
         each_load_balancer.all?(&:primary_only?)
       end
 
-      def self.primary?(name)
-        each_load_balancer.find { |c| c.name == name }&.primary_only?
-      end
-
       def self.release_hosts
         each_load_balancer(&:release_host)
       end

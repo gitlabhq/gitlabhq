@@ -57,7 +57,7 @@ RSpec.describe 'File blame', :js, feature_category: :source_code_management do
 
         expect(page).to have_css('#L1')
         expect(page).not_to have_css('#L3')
-        expect(find('.page-link.active')).to have_text('1')
+        expect(find('[data-testid="kaminari-pagination-item"].active')).to have_text('1')
       end
     end
 
@@ -65,14 +65,14 @@ RSpec.describe 'File blame', :js, feature_category: :source_code_management do
       before do
         visit_blob_blame(path)
 
-        find('.js-next-button').click
+        find_by_testid('kaminari-pagination-next').click
       end
 
       it 'displays next two lines of the file with pagination' do
         within_testid 'blob-content-holder' do
           expect(page).not_to have_css('#L1')
           expect(page).to have_css('#L3')
-          expect(find('.page-link.active')).to have_text('2')
+          expect(find('[data-testid="kaminari-pagination-item"].active')).to have_text('2')
         end
       end
 
@@ -80,7 +80,7 @@ RSpec.describe 'File blame', :js, feature_category: :source_code_management do
         within_testid 'blob-content-holder' do
           find('.version-link').click
 
-          expect(find('.page-link.active')).to have_text('2')
+          expect(find('[data-testid="kaminari-pagination-item"].active')).to have_text('2')
         end
       end
     end
@@ -133,7 +133,7 @@ RSpec.describe 'File blame', :js, feature_category: :source_code_management do
 
         expect(page).to have_css('#L1')
         expect(page).not_to have_css('#L201')
-        expect(find('.page-link.active')).to have_text('1')
+        expect(find('[data-testid="kaminari-pagination-item"].active')).to have_text('1')
       end
     end
 
@@ -144,11 +144,11 @@ RSpec.describe 'File blame', :js, feature_category: :source_code_management do
 
       it 'displays next two hundred lines of the file with pagination' do
         within_testid 'blob-content-holder' do
-          find('.js-next-button').click
+          find_by_testid('kaminari-pagination-next').click
 
           expect(page).not_to have_css('#L1')
           expect(page).to have_css('#L201')
-          expect(find('.page-link.active')).to have_text('2')
+          expect(find('[data-testid="kaminari-pagination-item"].active')).to have_text('2')
         end
       end
     end

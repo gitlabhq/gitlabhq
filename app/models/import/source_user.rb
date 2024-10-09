@@ -22,6 +22,8 @@ module Import
     validates :namespace_id, :import_type, :source_hostname, :source_user_identifier, :status, presence: true
     validates :source_user_identifier, uniqueness: { scope: [:namespace_id, :source_hostname, :import_type] }
     validates :placeholder_user_id, presence: true, unless: :completed?
+    validates :reassignment_token, absence: true, unless: :awaiting_approval?
+    validates :reassignment_token, length: { is: 32 }, if: :awaiting_approval?
     validates :reassign_to_user_id, presence: true, if: -> {
                                                           awaiting_approval? || reassignment_in_progress? || completed?
                                                         }
@@ -59,6 +61,14 @@ module Import
     state_machine :status, initial: :pending_reassignment do
       STATUSES.each do |status_name, value|
         state status_name, value: value
+      end
+
+      before_transition awaiting_approval: any do |source_user|
+        source_user.reassignment_token = nil
+      end
+
+      before_transition any => :awaiting_approval do |source_user|
+        source_user.reassignment_token = SecureRandom.hex
       end
 
       event :reassign do

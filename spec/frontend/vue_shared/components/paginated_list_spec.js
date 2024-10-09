@@ -1,3 +1,4 @@
+import { GlPaginatedList } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import PaginatedList from '~/vue_shared/components/paginated_list.vue';
 import { PREV, NEXT } from '~/vue_shared/components/pagination/constants';
@@ -32,6 +33,7 @@ describe('Pagination links component', () => {
 
     [glPaginatedList] = wrapper.vm.$children;
   });
+  const findGlPaginatedList = () => wrapper.findComponent(GlPaginatedList);
 
   describe('Paginated List Component', () => {
     describe('props', () => {
@@ -46,8 +48,7 @@ describe('Pagination links component', () => {
 
     describe('rendering', () => {
       it('renders the gl-paginated-list', () => {
-        expect(wrapper.find('ul.list-group').exists()).toBe(true);
-        expect(wrapper.findAll('li.list-group-item').length).toBe(2);
+        expect(findGlPaginatedList().exists()).toBe(true);
       });
     });
   });

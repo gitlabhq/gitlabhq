@@ -4,15 +4,15 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Database::Consistency do
   let(:session) do
-    Gitlab::Database::LoadBalancing::SessionMap.current(ApplicationRecord.load_balancer)
+    Gitlab::Database::LoadBalancing::Session.current
   end
 
   before do
-    Gitlab::Database::LoadBalancing::SessionMap.clear_session
+    Gitlab::Database::LoadBalancing::Session.clear_session
   end
 
   after do
-    Gitlab::Database::LoadBalancing::SessionMap.clear_session
+    Gitlab::Database::LoadBalancing::Session.clear_session
   end
 
   describe '.with_read_consistency' do

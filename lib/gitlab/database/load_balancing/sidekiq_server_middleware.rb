@@ -22,9 +22,7 @@ module Gitlab
           job['load_balancing_strategy'] = strategy.to_s
 
           if use_primary?(strategy)
-            ::Gitlab::Database::LoadBalancing::SessionMap
-              .with_sessions(Gitlab::Database::LoadBalancing.base_models)
-              .use_primary!
+            ::Gitlab::Database::LoadBalancing::Session.current.use_primary!
           elsif strategy == :retry
             raise JobReplicaNotUpToDate, "Sidekiq job #{resolved_class} JID-#{job['jid']} couldn't use the replica. "\
               "Replica was not up to date."
@@ -41,7 +39,7 @@ module Gitlab
 
         def clear
           ::Gitlab::Database::LoadBalancing.release_hosts
-          ::Gitlab::Database::LoadBalancing::SessionMap.clear_session
+          ::Gitlab::Database::LoadBalancing::Session.clear_session
         end
 
         def use_primary?(strategy)

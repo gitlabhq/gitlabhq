@@ -469,7 +469,7 @@ module Ci
       # not want to upgrade database connection proxy to use the primary
       # database after heartbeat write happens.
       #
-      ::Gitlab::Database::LoadBalancing::SessionMap.current(connection.load_balancer).without_sticky_writes do
+      ::Gitlab::Database::LoadBalancing::Session.without_sticky_writes do
         values = { contacted_at: Time.current, creation_state: :finished }
 
         merge_cache_attributes(values)

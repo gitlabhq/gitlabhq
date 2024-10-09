@@ -227,7 +227,7 @@ describe('AlertManagementEmptyState', () => {
         findPagination().vm.$emit('input', 3);
 
         await nextTick();
-        expect(findPagination().findAll('.page-item').at(0).text()).toBe('Previous');
+        expect(findPagination().find('[data-testid="gl-pagination-prev"]').text()).toBe('Previous');
       });
 
       it('returns prevPage number', async () => {
@@ -250,7 +250,7 @@ describe('AlertManagementEmptyState', () => {
         findPagination().vm.$emit('input', 3);
 
         await nextTick();
-        expect(findPagination().findAll('.page-item').at(1).text()).toBe('Next');
+        expect(findPagination().find('[data-testid="gl-pagination-next"]').text()).toBe('Next');
       });
 
       it('returns nextPage number', async () => {

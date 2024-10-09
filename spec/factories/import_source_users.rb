@@ -24,6 +24,7 @@ FactoryBot.define do
 
     trait :awaiting_approval do
       with_reassign_to_user
+      reassignment_token { SecureRandom.hex }
       status { 1 }
     end
 

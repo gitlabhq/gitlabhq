@@ -100,8 +100,13 @@ class RegistrationsController < Devise::RegistrationsController
   def after_successful_create_hook(user)
     accept_pending_invitations
     persist_accepted_terms_if_required(user)
+    execute_system_hooks(user)
     notify_new_instance_access_request(user)
     track_successful_user_creation(user)
+  end
+
+  def execute_system_hooks(user)
+    SystemHooksService.new.execute_hooks_for(user, :create)
   end
 
   def notify_new_instance_access_request(user)

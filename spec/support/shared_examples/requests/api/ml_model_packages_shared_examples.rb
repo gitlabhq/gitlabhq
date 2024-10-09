@@ -60,6 +60,8 @@ RSpec.shared_examples 'creates package files for model versions' do
     expect(package_file.file_name).to eq(saved_file_name)
   end
 
+  it_behaves_like 'a package tracking event', 'API::MlModelPackages', 'push_package'
+
   it 'returns bad request if package creation fails' do
     expect_next_instance_of(::Packages::MlModel::CreatePackageFileService) do |instance|
       expect(instance).to receive(:execute).and_return(nil)
@@ -94,8 +96,6 @@ RSpec.shared_examples 'process ml model package upload' do
     context 'with correct params' do
       it_behaves_like 'package workhorse uploads'
       it_behaves_like 'creates package files for model versions'
-      # To be reactivated with https://gitlab.com/gitlab-org/gitlab/-/issues/414270
-      # it_behaves_like 'a package tracking event', '::API::MlModelPackages', 'push_package'
     end
   end
 
@@ -146,5 +146,6 @@ RSpec.shared_examples 'process ml model package download' do
     it { is_expected.to have_gitlab_http_status(:success) }
   end
 
+  it_behaves_like 'a package tracking event', 'API::MlModelPackages', 'pull_package'
   it_behaves_like 'Not found when model version does not exist'
 end

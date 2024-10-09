@@ -15,12 +15,12 @@ RSpec.configure do |config|
       model.connection = Gitlab::Database::LoadBalancing::ConnectionProxy.new(model.load_balancer)
     end
 
-    Gitlab::Database::LoadBalancing::SessionMap.clear_session
+    Gitlab::Database::LoadBalancing::Session.clear_session
     redis_shared_state_cleanup!
 
     example.run
 
-    Gitlab::Database::LoadBalancing::SessionMap.clear_session
+    Gitlab::Database::LoadBalancing::Session.clear_session
     redis_shared_state_cleanup!
 
     old_proxies.each do |model, proxy|

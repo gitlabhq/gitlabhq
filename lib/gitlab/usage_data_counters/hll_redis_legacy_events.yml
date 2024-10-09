@@ -218,6 +218,7 @@
 - i_package_npm_user
 - i_package_nuget_deploy_token
 - i_package_nuget_user
+- i_package_ml_model_user
 - i_package_pypi_deploy_token
 - i_package_pypi_user
 - i_package_rpm_deploy_token

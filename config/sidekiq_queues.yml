@@ -595,6 +595,8 @@
   - 1
 - - pages_deactivate_mr_deployments
   - 1
+- - pages_delete_pages_deployment
+  - 1
 - - pages_domain_ssl_renewal
   - 1
 - - pages_domain_verification
@@ -822,6 +824,8 @@
 - - security_sync_policy
   - 1
 - - security_sync_policy_violation_comment
+  - 1
+- - security_sync_project_policy
   - 1
 - - security_sync_scan_policies
   - 1

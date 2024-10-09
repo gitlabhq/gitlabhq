@@ -7,7 +7,7 @@ module Emails
       @project = Project.find project_id
       @target_url = project_url(@project)
       @old_path_with_namespace = old_path_with_namespace
-      mail_with_locale(
+      email_with_layout(
         to: @user.notification_email_for(@project.group),
         subject: subject("Project was moved")
       )
@@ -15,7 +15,7 @@ module Emails
 
     def project_was_exported_email(current_user, project)
       @project = project
-      mail_with_locale(
+      email_with_layout(
         to: current_user.notification_email_for(project.group),
         subject: subject("Project was exported")
       )
@@ -24,7 +24,7 @@ module Emails
     def project_was_not_exported_email(current_user, project, errors)
       @project = project
       @errors = errors
-      mail_with_locale(
+      email_with_layout(
         to: current_user.notification_email_for(@project.group),
         subject: subject("Project export error")
       )
