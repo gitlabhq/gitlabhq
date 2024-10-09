@@ -636,9 +636,6 @@ msgstr[1] ""
 msgid "%{chartTitle} no data series"
 msgstr ""
 
-msgid "%{client_name} is requesting access to your account on %{title}."
-msgstr ""
-
 msgid "%{codeStart}$%{codeEnd} will be treated as the start of a reference to another variable."
 msgstr ""
 
@@ -1362,6 +1359,9 @@ msgid "%{strong_start}%{branch_count}%{strong_end} Branch"
 msgid_plural "%{strong_start}%{branch_count}%{strong_end} Branches"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "%{strong_start}%{client_name}%{strong_end} is requesting access to your account on %{title}."
+msgstr ""
 
 msgid "%{strong_start}%{commit_count}%{strong_end} Commit"
 msgid_plural "%{strong_start}%{commit_count}%{strong_end} Commits"
@@ -32776,7 +32776,7 @@ msgstr ""
 msgid "Make sure you save it - you won't be able to access it again."
 msgstr ""
 
-msgid "Make sure you trust %{client_name} before authorizing."
+msgid "Make sure you trust %{strong_start}%{client_name}%{strong_end} before authorizing."
 msgstr ""
 
 msgid "Makes this %{type} confidential."
@@ -63005,7 +63005,7 @@ msgstr ""
 msgid "You are already impersonating another user"
 msgstr ""
 
-msgid "You are an administrator, which means authorizing access to %{client_name} will allow it to interact with GitLab as an administrator as well."
+msgid "You are an administrator, which means authorizing access to %{strong_start}%{client_name}%{strong_end} will allow it to interact with GitLab as an administrator as well."
 msgstr ""
 
 msgid "You are attempting to delete a file that has been previously updated."
@@ -63608,7 +63608,7 @@ msgstr ""
 msgid "You tried to fork %{link_to_the_project} but it failed for the following reason:"
 msgstr ""
 
-msgid "You will be redirected to %{domain} after authorizing."
+msgid "You will be redirected to %{strong_start}%{domain}%{strong_end} after authorizing."
 msgstr ""
 
 msgid "You will be the author of all events in the activity feed that are the result of an update, like new branches being created or new commits being pushed to existing branches."

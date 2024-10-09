@@ -69,7 +69,6 @@ Performance/MapCompact:
     - 'ee/lib/gitlab/ci/reports/metrics/reports_comparer.rb'
     - 'ee/lib/gitlab/search/aggregation_parser.rb'
     - 'ee/spec/models/ee/member_spec.rb'
-    - 'ee/spec/requests/api/search_spec.rb'
     - 'haml_lint/linter/no_plain_nodes.rb'
     - 'lib/api/entities/feature.rb'
     - 'lib/api/helpers/common_helpers.rb'

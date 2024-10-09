@@ -1804,7 +1804,6 @@ Layout/LineLength:
     - 'ee/spec/requests/api/related_epic_links_spec.rb'
     - 'ee/spec/requests/api/releases_spec.rb'
     - 'ee/spec/requests/api/resource_iteration_events_spec.rb'
-    - 'ee/spec/requests/api/search_spec.rb'
     - 'ee/spec/requests/api/settings_spec.rb'
     - 'ee/spec/requests/api/status_checks_spec.rb'
     - 'ee/spec/requests/api/users_spec.rb'

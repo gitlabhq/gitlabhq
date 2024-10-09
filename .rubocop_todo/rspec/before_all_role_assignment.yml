@@ -470,7 +470,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'ee/spec/requests/api/related_epic_links_spec.rb'
     - 'ee/spec/requests/api/repositories_spec.rb'
     - 'ee/spec/requests/api/saml_group_links_spec.rb'
-    - 'ee/spec/requests/api/search_spec.rb'
     - 'ee/spec/requests/api/todos_spec.rb'
     - 'ee/spec/requests/api/vulnerabilities_spec.rb'
     - 'ee/spec/requests/api/vulnerability_exports_spec.rb'

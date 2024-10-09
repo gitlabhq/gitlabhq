@@ -239,7 +239,7 @@ class IssuableBaseService < ::BaseContainerService
     elsif author_id
       issuable.author_id = author_id
     else
-      issuable.author = current_user
+      issuable.author ||= current_user
     end
   end
 

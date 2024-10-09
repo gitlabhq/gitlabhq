@@ -193,6 +193,7 @@ Audit event types belong to the following product categories.
 
 | Name | Description | Saved to database | Streamed | Introduced in | Scope |
 |:------------|:------------|:------------------|:---------|:--------------|:--------------|
+| [`container_repository_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156037) | Triggered when a container repository is first pushed to the registry | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [17.5](https://gitlab.com/gitlab-org/gitlab/-/issues/362290) | Project |
 | [`container_repository_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152967) | Triggered when a project's container registry is deleted | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [17.2](https://gitlab.com/gitlab-org/gitlab/-/issues/362290) | Project |
 | [`container_repository_deletion_marked`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152967) | Triggered when a project's container repository is marked for deletion | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [17.2](https://gitlab.com/gitlab-org/gitlab/-/issues/362290) | Project |
 | [`container_repository_tags_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156066) | Triggered when a project's container repository tag is deleted | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [17.2](https://gitlab.com/gitlab-org/gitlab/-/issues/362290) | Project |

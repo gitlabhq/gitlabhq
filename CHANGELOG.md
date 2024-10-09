@@ -2,6 +2,23 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 17.4.2 (2024-10-09)
+
+### Fixed (1 change)
+
+- [Drop project_id not null constraint ci_deleted_objects](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e02a0c065456a51ad57a93d56150271cc4dd442e)
+
+### Security (8 changes)
+
+- [Do not create a pipeline on MR refresh if source branch was deleted](https://gitlab.com/gitlab-org/security/gitlab/-/commit/66c4e57a3494686a9dc6058d2348074b465f5dd3) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4522))
+- [Escape OAuth application name on authorize page](https://gitlab.com/gitlab-org/security/gitlab/-/commit/293bb1f70c681b75672e0b41af84ab5ae47d1e1e) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4517))
+- [Prevent guest access to project templates](https://gitlab.com/gitlab-org/security/gitlab/-/commit/544398bdf7ea2b81100f8b95496f14d9b4698db8) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4477))
+- [Remove access to local requests via cube query service](https://gitlab.com/gitlab-org/security/gitlab/-/commit/86894edacdaf1cad4b0e85f71918109d48013ccb) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4492))
+- [External webhook token should be set](https://gitlab.com/gitlab-org/security/gitlab/-/commit/70fb8bebe2e8f1b85d625a8e496515c3f7e0e6d8) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4510))
+- [Skip content when listing conflict files with types](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c19d8a96d103680ec874327c1631e179e17da06a) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4513))
+- [Hide version info from unauthorized users](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0dd81e22f819f916c50cf531fa769000e9b5941b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4500))
+- [Prevent deploy keys from pushing code to an archived project](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ed7a5173cae50f610d2c0263197f7996653cfc10) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4486))
+
 ## 17.4.1 (2024-09-24)
 
 ### Fixed (2 changes)
@@ -872,6 +889,23 @@ entry.
 
 - [Update learn more link and docs formatting](https://gitlab.com/gitlab-org/gitlab/-/commit/6f536fdb20c2d2b96124afe693042c91483a32b2) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164889))
 
+## 17.3.5 (2024-10-09)
+
+### Fixed (1 change)
+
+- [Ensure levels is an array](https://gitlab.com/gitlab-org/security/gitlab/-/commit/74594891f31984feaaae6a069f057d6f48a489a6)
+
+### Security (8 changes)
+
+- [Do not create a pipeline on MR refresh if source branch was deleted](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c36869b2e5cb0f88793bec7e20ded3e4d005f942) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4523))
+- [Escape OAuth application name on authorize page](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b5a704563f746e5c61301d3a7db0eab68d434e24) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4518))
+- [Prevent guest access to project templates](https://gitlab.com/gitlab-org/security/gitlab/-/commit/92d177e2c5aaafb4f74bc2ceafe39b9a068e803d) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4449))
+- [Remove access to local requests via cube query service](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7043d0116cbf2051907dfd88d56ed3f847ab95b2) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4493))
+- [External webhook token should be set](https://gitlab.com/gitlab-org/security/gitlab/-/commit/77c2a678acfc6fded56c6e10147701b6ef7aaeb5) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4511))
+- [Skip content when listing conflict files with types](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2b559425cb195a78007db930cbbf8450b5254c89) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4514))
+- [Hide version info from unauthorized users](https://gitlab.com/gitlab-org/security/gitlab/-/commit/94e70d423789a50fc8e172b002bf1428593bbc51) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4501))
+- [Prevent deploy keys from pushing code to an archived project](https://gitlab.com/gitlab-org/security/gitlab/-/commit/3cd52356b4b1194e7108af832d5da4087e4be05c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4487))
+
 ## 17.3.4 (2024-09-24)
 
 ### Security (3 changes)
@@ -1661,6 +1695,23 @@ No changes.
 - [Protected packages: Cleanup renaming of protected_up_to_access_level](https://gitlab.com/gitlab-org/gitlab/-/commit/c84c1efb2b0d204765ba121e9ad523d44fdb3712) by @gerardo-navarro ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146173))
 - [Dynamically gets the column type for assertion](https://gitlab.com/gitlab-org/gitlab/-/commit/1389a3daffd104925cce71776903cbf527723222) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159099))
 - [Quarantine a flaky test](https://gitlab.com/gitlab-org/gitlab/-/commit/c94fca35b909440ec66ea35c97ab11aa847dde58) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158180))
+
+## 17.2.9 (2024-10-09)
+
+### Fixed (1 change)
+
+- [Ensure levels is an array](https://gitlab.com/gitlab-org/security/gitlab/-/commit/d5450d020895b9fab3c7c6ad4191001308590899)
+
+### Security (8 changes)
+
+- [Do not create a pipeline on MR refresh if source branch was deleted](https://gitlab.com/gitlab-org/security/gitlab/-/commit/3dd89a71b436e8218a5d159a1dd75cb2de078129) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4524))
+- [Escape OAuth application name on authorize page](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b5cf4d286ae83033912e342177a501ffc2ad6a53) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4519))
+- [Prevent guest access to project templates](https://gitlab.com/gitlab-org/security/gitlab/-/commit/9666414231dbfc03eb0711ec501b7d02665120df) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4450))
+- [Remove access to local requests via cube query service](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1a46c8c1753f08ba55e8a0d2fbcbc710feecf898) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4494))
+- [External webhook token should be set](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c795ea96a4dac381cf434aa7e3f379907ec6366d) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4512))
+- [Skip content when listing conflict files with types](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c7f598b42b0c6cd68cdcdb8b79293e7e2b22b457) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4515))
+- [Hide version info from unauthorized users](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0184d4e9c665c209e1c67eff2da9059e17304f1d) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4502))
+- [Prevent deploy keys from pushing code to an archived project](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0a5dc2f0b302123a941a4676eedd52c3423ef73b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4488))
 
 ## 17.2.8 (2024-09-24)
 

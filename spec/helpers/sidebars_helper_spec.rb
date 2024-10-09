@@ -231,6 +231,58 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
       it { is_expected.to include({ is_admin: true }) }
     end
 
+    describe "what's new information" do
+      context 'when display_whats_new? is true' do
+        before do
+          allow(helper).to receive(:display_whats_new?).and_return(true)
+        end
+
+        it do
+          is_expected.to include({
+            whats_new_most_recent_release_items_count: helper.whats_new_most_recent_release_items_count,
+            whats_new_version_digest: helper.whats_new_version_digest
+          })
+        end
+      end
+
+      context 'when display_whats_new? is false' do
+        before do
+          allow(helper).to receive(:display_whats_new?).and_return(false)
+        end
+
+        it do
+          is_expected.not_to have_key(:whats_new_most_recent_release_items_count)
+          is_expected.not_to have_key(:whats_new_version_digest)
+        end
+      end
+    end
+
+    describe 'instance version information' do
+      context 'when show_version_check? is true' do
+        before do
+          allow(helper).to receive(:show_version_check?).and_return(true)
+        end
+
+        it do
+          is_expected.to include({
+            gitlab_version: Gitlab.version_info,
+            gitlab_version_check: helper.gitlab_version_check
+          })
+        end
+      end
+
+      context 'when show_version_check? is false' do
+        before do
+          allow(helper).to receive(:show_version_check?).and_return(false)
+        end
+
+        it do
+          is_expected.not_to have_key(:gitlab_version)
+          is_expected.not_to have_key(:gitlab_version_check)
+        end
+      end
+    end
+
     describe "shortcut links" do
       describe "as the anonymous user" do
         let_it_be(:user) { nil }

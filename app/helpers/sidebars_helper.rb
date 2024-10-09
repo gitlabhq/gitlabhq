@@ -43,7 +43,7 @@ module SidebarsHelper
   end
 
   def super_sidebar_logged_out_context(panel:, panel_type:) # rubocop:disable Metrics/AbcSize
-    {
+    super_sidebar_instance_version_data.merge(super_sidebar_whats_new_data).merge({
       is_logged_in: false,
       context_switcher_links: context_switcher_links,
       current_menu_items: panel.super_sidebar_menu_items,
@@ -51,16 +51,12 @@ module SidebarsHelper
       support_path: support_url,
       docs_path: help_docs_path,
       display_whats_new: display_whats_new?,
-      whats_new_most_recent_release_items_count: whats_new_most_recent_release_items_count,
-      whats_new_version_digest: whats_new_version_digest,
       show_version_check: show_version_check?,
-      gitlab_version: Gitlab.version_info,
-      gitlab_version_check: gitlab_version_check,
       search: search_data,
       panel_type: panel_type,
       shortcut_links: shortcut_links,
       terms: terms_link
-    }
+    })
   end
 
   def super_sidebar_logged_in_context(user, group:, project:, panel:, panel_type:) # rubocop:disable Metrics/AbcSize
@@ -124,6 +120,24 @@ module SidebarsHelper
       track_visits_path: track_namespace_visits_path,
       work_items: work_items_modal_data(group)
     })
+  end
+
+  def super_sidebar_instance_version_data
+    return {} unless show_version_check?
+
+    {
+      gitlab_version: Gitlab.version_info,
+      gitlab_version_check: gitlab_version_check
+    }
+  end
+
+  def super_sidebar_whats_new_data
+    return {} unless display_whats_new?
+
+    {
+      whats_new_most_recent_release_items_count: whats_new_most_recent_release_items_count,
+      whats_new_version_digest: whats_new_version_digest
+    }
   end
 
   def work_items_modal_data(group)

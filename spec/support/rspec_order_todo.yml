@@ -1909,7 +1909,6 @@
 - './ee/spec/requests/api/resource_label_events_spec.rb'
 - './ee/spec/requests/api/resource_weight_events_spec.rb'
 - './ee/spec/requests/api/saml_group_links_spec.rb'
-- './ee/spec/requests/api/search_spec.rb'
 - './ee/spec/requests/api/settings_spec.rb'
 - './ee/spec/requests/api/status_checks_spec.rb'
 - './ee/spec/requests/api/submodules_spec.rb'

@@ -71,7 +71,6 @@ Rails/Pluck:
     - 'ee/spec/requests/api/protected_environments_spec.rb'
     - 'ee/spec/requests/api/protected_tags_spec.rb'
     - 'ee/spec/requests/api/releases_spec.rb'
-    - 'ee/spec/requests/api/search_spec.rb'
     - 'ee/spec/requests/api/status_checks_spec.rb'
     - 'ee/spec/requests/api/users_spec.rb'
     - 'ee/spec/requests/api/vulnerabilities_spec.rb'

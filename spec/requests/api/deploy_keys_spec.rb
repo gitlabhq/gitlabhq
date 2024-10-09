@@ -110,6 +110,64 @@ RSpec.describe API::DeployKeys, :aggregate_failures, feature_category: :continuo
     end
   end
 
+  describe 'POST /deploy_keys' do
+    let_it_be(:path) { '/deploy_keys' }
+
+    it_behaves_like 'POST request permissions for admin mode' do
+      let(:params) { attributes_for :another_key }
+      let(:failed_status_code) { :forbidden }
+    end
+
+    context 'when unauthenticated' do
+      it 'returns authentication error' do
+        post api(path), params: attributes_for(:another_key)
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+
+    context 'when authenticated as admin' do
+      let_it_be(:pat) { create(:personal_access_token, :admin_mode, user: admin) }
+
+      it 'creates a new deploy key' do
+        expect do
+          post api(path, personal_access_token: pat), params: attributes_for(:another_key)
+        end.to change { DeployKey.count }.by(1)
+
+        expect(response).to have_gitlab_http_status(:created)
+      end
+
+      it 'does not create an invalid ssh key' do
+        post api(path, personal_access_token: pat), params: { title: 'invalid key' }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to eq('key is missing')
+      end
+
+      it 'does not create a key without title' do
+        post api(path, personal_access_token: pat), params: { key: 'some key' }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to eq('title is missing')
+      end
+
+      it 'returns Bad Request when deploy key is duplicated' do
+        post api(path, personal_access_token: pat), params: { key: deploy_key.key, title: deploy_key.title }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']['fingerprint_sha256']).to eq(['has already been taken'])
+      end
+
+      it 'accepts optional expires_at parameter' do
+        attrs = attributes_for(:another_key).merge(expires_at: 2.days.since.iso8601)
+        post api(path, personal_access_token: pat), params: attrs
+
+        expect(response).to have_gitlab_http_status(:created)
+        expect(Time.parse(json_response['expires_at'])).to be_like_time(2.days.since)
+      end
+    end
+  end
+
   describe 'GET /projects/:id/deploy_keys' do
     let(:deploy_key) { create(:deploy_key, public: true, user: admin) }
 

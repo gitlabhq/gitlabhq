@@ -50,6 +50,9 @@ GitLab Advanced SAST includes the following features:
 - Cross-file analysis: Tracks data flow across different files, discovering vulnerabilities at a deeper level.
 - Sanitizer detection: Avoid false positive results in case the user input is properly sanitized.
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an overview of GitLab Advanced SAST and how it works, see [GitLab Advanced SAST: Accelerating Vulnerability Resolution](https://youtu.be/xDa1MHOcyn8).
+
 For a product tour, see the [GitLab Advanced SAST product tour](https://gitlab.navattic.com/advanced-sast).
 
 ## Supported languages
@@ -136,6 +139,20 @@ To enable Advanced SAST by using the pipeline editor:
 1. Review and edit the merge request according to your standard workflow, then select **Merge**.
 
 Pipelines now include an Advanced SAST job.
+
+## Vulnerability code flow
+
+For some vulnerabilities detected by Advanced SAST, a **Code flow** tab is available in the [Vulnerability Page](../vulnerabilities/index.md).
+A vulnerability's code flow is the path the data takes from the user input (source) to the vulnerable line of code (sink),
+through all assignments, manipulation, and sanitization. This information helps you understand and evaluate the
+vulnerability's context, impact, and risk.
+
+The **Code flow** tab shows:
+
+- The steps from source to sink.
+- The relevant files, including code snippets.
+
+![Vulnerability Code Flow](../vulnerabilities/img/example_code_flow_of_python_applications_v17_3.png)
 
 ## Troubleshooting
 
