@@ -262,21 +262,11 @@ RSpec.describe AppearancesHelper do
       end
     end
 
-    context 'with add_gitlab_white_text option' do
-      let(:options) { { add_gitlab_white_text: true } }
+    context 'with add_gitlab_logo_text option' do
+      let(:options) { { add_gitlab_logo_text: true } }
 
-      it 'renders shared/logo_with_white_text partial' do
-        expect(helper).to receive(:render).with(partial: 'shared/logo_with_white_text', formats: :svg)
-
-        subject
-      end
-    end
-
-    context 'with add_gitlab_black_text option' do
-      let(:options) { { add_gitlab_black_text: true } }
-
-      it 'renders shared/logo_with_black_text partial' do
-        expect(helper).to receive(:render).with(partial: 'shared/logo_with_black_text', formats: :svg)
+      it 'renders shared/logo_with_text partial' do
+        expect(helper).to receive(:render).with(partial: 'shared/logo_with_text', formats: :svg)
 
         subject
       end

@@ -899,7 +899,7 @@ export const workItemBlockedByLinkedItemsResponse = {
   },
 };
 
-export const workItemDevelopmentNodes = [
+export const workItemDevelopmentMRNodes = [
   {
     fromMrDescription: true,
     mergeRequest: {
@@ -1084,15 +1084,47 @@ export const workItemDevelopmentNodes = [
   },
 ];
 
+export const workItemDevelopmentFeatureFlagNodes = [
+  {
+    active: true,
+    id: 'gid://gitlab/Operations::FeatureFlag/1',
+    name: 'flag1',
+    path: 'http://127.0.0.1:3000/flightjs/Flight/-/feature_flags/1/edit',
+    reference: '[feature_flag:1]',
+    __typename: 'FeatureFlag',
+  },
+  {
+    active: false,
+    id: 'gid://gitlab/Operations::FeatureFlag/2',
+    name: 'flag2',
+    path: 'http://127.0.0.1:3000/flightjs/Flight/-/feature_flags/2/edit',
+    reference: '[feature_flag:2]',
+    __typename: 'FeatureFlag',
+  },
+  {
+    active: false,
+    id: 'gid://gitlab/Operations::FeatureFlag/3',
+    name: 'flag3',
+    path: 'http://127.0.0.1:3000/flightjs/Flight/-/feature_flags/3/edit',
+    reference: '[feature_flag:3]',
+    __typename: 'FeatureFlag',
+  },
+];
+
 export const workItemDevelopmentFragmentResponse = (
-  nodes = workItemDevelopmentNodes,
+  mrNodes = workItemDevelopmentMRNodes,
   willAutoCloseByMergeRequest = false,
+  featureFlagNodes = workItemDevelopmentFeatureFlagNodes,
 ) => {
   return {
     type: 'DEVELOPMENT',
     willAutoCloseByMergeRequest,
+    featureFlags: {
+      nodes: featureFlagNodes,
+      __typename: 'FeatureFlagConnection',
+    },
     closingMergeRequests: {
-      nodes,
+      nodes: mrNodes,
       __typename: 'WorkItemClosingMergeRequestConnection',
     },
     __typename: 'WorkItemWidgetDevelopment',

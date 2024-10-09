@@ -1,6 +1,6 @@
 import { identity, memoize, isEmpty } from 'lodash';
 import { initEmojiMap, getAllEmoji, searchEmoji } from '~/emoji';
-import { parsePikadayDate } from '~/lib/utils/datetime_utility';
+import { newDate } from '~/lib/utils/datetime_utility';
 import axios from '~/lib/utils/axios_utils';
 import { COMMANDS } from '../constants';
 
@@ -38,7 +38,7 @@ function parseMilestone(milestone) {
     return milestone;
   }
 
-  const dueDate = milestone.due_date ? parsePikadayDate(milestone.due_date) : null;
+  const dueDate = milestone.due_date ? newDate(milestone.due_date) : null;
   const expired = dueDate ? Date.now() > dueDate.getTime() : false;
 
   return {

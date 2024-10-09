@@ -1,6 +1,6 @@
 import { GlLink, GlIcon, GlAvatarsInline, GlAvatarLink, GlAvatar } from '@gitlab/ui';
 import { shallowMount, mount } from '@vue/test-utils';
-import { workItemDevelopmentNodes } from 'jest/work_items/mock_data';
+import { workItemDevelopmentMRNodes } from 'jest/work_items/mock_data';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { STATUS_OPEN, STATUS_CLOSED, STATUS_MERGED } from '~/issues/constants';
 import WorkItemDevelopmentMRItem from '~/work_items/components/work_item_development/work_item_development_mr_item.vue';
@@ -8,7 +8,7 @@ import WorkItemDevelopmentMRItem from '~/work_items/components/work_item_develop
 describe('WorkItemDevelopmentMRItem', () => {
   let wrapper;
 
-  const openMergeRequest = workItemDevelopmentNodes[0].mergeRequest;
+  const openMergeRequest = workItemDevelopmentMRNodes[0].mergeRequest;
   const closedMergeRequest = {
     ...openMergeRequest,
     state: STATUS_CLOSED,
@@ -18,12 +18,12 @@ describe('WorkItemDevelopmentMRItem', () => {
     state: STATUS_MERGED,
   };
 
-  const mergeRequestWithNoAssignees = workItemDevelopmentNodes[1].mergeRequest;
+  const mergeRequestWithNoAssignees = workItemDevelopmentMRNodes[1].mergeRequest;
 
   const createComponent = ({ mergeRequest = openMergeRequest, mountFn = shallowMount } = {}) => {
     wrapper = mountFn(WorkItemDevelopmentMRItem, {
       propsData: {
-        mergeRequest,
+        itemContent: mergeRequest,
       },
     });
   };

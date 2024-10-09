@@ -23125,6 +23125,9 @@ msgstr ""
 msgid "Feature disabled"
 msgstr ""
 
+msgid "Feature flag"
+msgstr ""
+
 msgid "Feature flag status"
 msgstr ""
 
@@ -35080,9 +35083,6 @@ msgid "MlModelRegistry|User canceled upload."
 msgstr ""
 
 msgid "MlModelRegistry|Using the MLflow client"
-msgstr ""
-
-msgid "MlModelRegistry|Version candidates"
 msgstr ""
 
 msgid "MlModelRegistry|Version description"

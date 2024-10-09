@@ -43,8 +43,6 @@ module Ci
       finished: 100
     }, _suffix: true
 
-    enum runner_type: Runner.runner_types
-
     has_many :runner_manager_builds, inverse_of: :runner_manager, foreign_key: :runner_machine_id,
       class_name: 'Ci::RunnerManagerBuild'
     has_many :builds, through: :runner_manager_builds, class_name: 'Ci::Build'
@@ -52,19 +50,13 @@ module Ci
       class_name: 'Ci::RunnerVersion'
 
     validates :runner, presence: true
-    validates :runner_type, presence: true, on: :create
     validates :system_xid, presence: true, length: { maximum: 64 }
-    validates :sharding_key_id, presence: true, on: :create, unless: :instance_type?
     validates :version, length: { maximum: 2048 }
     validates :revision, length: { maximum: 255 }
     validates :platform, length: { maximum: 255 }
     validates :architecture, length: { maximum: 255 }
     validates :ip_address, length: { maximum: 1024 }
     validates :config, json_schema: { filename: 'ci_runner_config' }
-
-    validate :no_sharding_key_id, if: :instance_type?
-
-    before_validation :copy_runner_fields
 
     cached_attr_reader :version, :revision, :platform, :architecture, :ip_address, :contacted_at, :executor_type
 
@@ -179,19 +171,6 @@ module Ci
       return unless new_version && Gitlab::Ci::RunnerReleases.instance.enabled?
 
       Ci::Runners::ProcessRunnerVersionUpdateWorker.perform_async(new_version)
-    end
-
-    def copy_runner_fields
-      return unless runner
-
-      self.runner_type = runner.runner_type
-      self.sharding_key_id = runner.sharding_key_id
-    end
-
-    def no_sharding_key_id
-      return if sharding_key_id.nil?
-
-      errors.add(:runner_manager, 'cannot have sharding_key_id assigned')
     end
 
     def self.version_regex_expression_for_version(version)

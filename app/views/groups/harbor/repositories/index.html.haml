@@ -1,8 +1,8 @@
 - page_title _("Harbor Registry")
 
 #js-harbor-registry-list-group{ data: { endpoint: group_harbor_repositories_path(@group),
-  "no_containers_image" => image_path('illustrations/docker-empty-state.svg'),
-  "containers_error_image" => image_path('illustrations/docker-error-state.svg'),
+  "no_containers_image" => image_path('illustrations/status/status-nothing-md.svg'),
+  "containers_error_image" => image_path('illustrations/status/status-fail-md.svg'),
   "repository_url" => @group.harbor_integration.hostname,
   "harbor_integration_project_name" => @group.harbor_integration.project_name,
   full_path: @group.full_path,

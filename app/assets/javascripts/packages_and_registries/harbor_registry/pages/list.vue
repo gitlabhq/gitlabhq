@@ -1,5 +1,6 @@
 <script>
 import { GlEmptyState, GlSprintf, GlLink, GlSkeletonLoader } from '@gitlab/ui';
+import EmptyResult from '~/vue_shared/components/empty_result.vue';
 import HarborListHeader from '~/packages_and_registries/harbor_registry/components/list/harbor_list_header.vue';
 import PersistedSearch from '~/packages_and_registries/shared/components/persisted_search.vue';
 import HarborList from '~/packages_and_registries/harbor_registry/components/list/harbor_list.vue';
@@ -37,6 +38,7 @@ export default {
     GlEmptyState,
     GlSprintf,
     GlLink,
+    EmptyResult,
     PersistedSearch,
     CliCommands: () =>
       import(
@@ -164,7 +166,6 @@ export default {
       v-if="showConnectionError"
       :title="$options.i18n.connectionErrorTitle"
       :svg-path="containersErrorImage"
-      :svg-height="null"
     >
       <template #description>
         <p>
@@ -218,10 +219,10 @@ export default {
           @prev-page="fetchPrevPage"
           @next-page="fetchNextPage"
         />
+        <empty-result v-else-if="name" data-testid="emptySearch" />
         <gl-empty-state
           v-else
           :svg-path="noContainersImage"
-          :svg-height="null"
           data-testid="emptySearch"
           :title="emptyStateTexts.title"
         >

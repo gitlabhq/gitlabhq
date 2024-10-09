@@ -13,16 +13,21 @@ DETAILS:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368434) in GitLab 15.11.
 > - Detection of personal access tokens with a custom prefix was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/411146) in GitLab 16.1. GitLab self-managed only.
 
-When you create an issue or epic, propose a merge request, or write a comment, you might accidentally post a sensitive value.
-For example, you might paste in the details of an API request or an environment variable that contains an authentication token.
+When you create an issue, propose a merge request, or write a comment, you might accidentally post a
+secret. For example, you might paste in the details of an API request or an environment variable
+that contains an authentication token. If a secret is leaked it could be used to do harm.
 
-When you edit the description or comment in an issue, epic, or merge request, GitLab checks if it contains a sensitive token.
-If a token is found, a warning message is displayed. You can then edit your description or comment before posting it.
-This check happens in your browser before the message is sent to the server.
-The check is always on; you don't have to set it up.
+Client-side secret detection helps to minimize the risk of that happening. When you edit the
+description or comment in an issue or merge request, GitLab checks if it contains a secret. If a
+secret is found, a warning message is displayed. You can then edit the description or comment to
+remove the secret before posting your message, or add the description or comment as it is. This
+check occurs in your browser, so the secret is not revealed to anyone else unless you add it to
+GitLab. The check is always on; you don't have to set it up.
 
-Your text is checked for the following secret types:
+Client-side secret detection checks only the following for secrets:
 
-- GitLab [personal access tokens](../../../../security/tokens/index.md#personal-access-tokens)
-  - If a [personal access token prefix](../../../../administration/settings/account_and_limit_settings.md#personal-access-token-prefix) has been configured, a token using this prefix is checked.
-- GitLab [feed tokens](../../../../security/tokens/index.md#feed-token)
+- Comments in issues or merge requests.
+- Descriptions of issues or merge requests.
+
+For details of which types of secrets are covered by client-side secret detection, see
+[Detected secrets](../detected_secrets.md).

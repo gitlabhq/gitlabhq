@@ -1,8 +1,8 @@
 - page_title _("Harbor Registry")
 
 #js-harbor-registry-list-project{ data: { endpoint: project_harbor_repositories_path(@project),
-  "no_containers_image" => image_path('illustrations/docker-empty-state.svg'),
-  "containers_error_image" => image_path('illustrations/docker-error-state.svg'),
+  "no_containers_image" => image_path('illustrations/status/status-nothing-md.svg'),
+  "containers_error_image" => image_path('illustrations/status/status-fail-md.svg'),
   "repository_url" => @project.harbor_integration.hostname,
   "harbor_integration_project_name" => @project.harbor_integration.project_name,
   "project_name" => @project.name,

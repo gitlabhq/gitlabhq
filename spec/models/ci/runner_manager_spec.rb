@@ -3,9 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Ci::RunnerManager, feature_category: :fleet_visibility, type: :model do
-  let_it_be(:group) { create(:group) }
-  let_it_be(:project) { create(:project, group: group) }
-
   it_behaves_like 'having unique enum values'
 
   it_behaves_like 'it has loose foreign keys' do
@@ -21,31 +18,11 @@ RSpec.describe Ci::RunnerManager, feature_category: :fleet_visibility, type: :mo
     it { is_expected.to validate_presence_of(:runner) }
     it { is_expected.to validate_presence_of(:system_xid) }
     it { is_expected.to validate_length_of(:system_xid).is_at_most(64) }
-    it { is_expected.to validate_presence_of(:runner_type).on(:create) }
-    it { is_expected.to validate_presence_of(:sharding_key_id).on(:create) }
     it { is_expected.to validate_length_of(:version).is_at_most(2048) }
     it { is_expected.to validate_length_of(:revision).is_at_most(255) }
     it { is_expected.to validate_length_of(:platform).is_at_most(255) }
     it { is_expected.to validate_length_of(:architecture).is_at_most(255) }
     it { is_expected.to validate_length_of(:ip_address).is_at_most(1024) }
-
-    context 'when runner manager is instance type', :aggregate_failures do
-      let(:runner_manager) { build(:ci_runner_machine, runner_type: :instance_type) }
-
-      it { expect(runner_manager).to be_valid }
-
-      context 'when sharding_key_id is present' do
-        let(:runner_manager) do
-          build(:ci_runner_machine, runner: build(:ci_runner, sharding_key_id: non_existing_record_id))
-        end
-
-        it 'is invalid' do
-          expect(runner_manager).to be_invalid
-          expect(runner_manager.errors.full_messages).to contain_exactly(
-            'Runner manager cannot have sharding_key_id assigned')
-        end
-      end
-    end
 
     context 'when runner has config' do
       it 'is valid' do
@@ -60,60 +37,6 @@ RSpec.describe Ci::RunnerManager, feature_category: :fleet_visibility, type: :mo
         runner_manager = build(:ci_runner_machine, config: { test: 1 })
 
         expect(runner_manager).not_to be_valid
-      end
-    end
-
-    describe 'shading_key_id validations' do
-      let(:runner_manager) { build(:ci_runner_machine, runner: runner) }
-
-      context 'with instance runner' do
-        let(:runner) { build(:ci_runner, :instance) }
-
-        it { expect(runner).to be_valid }
-
-        context 'when sharding_key_id is not present' do
-          before do
-            runner.sharding_key_id = nil
-            runner_manager.sharding_key_id = nil
-          end
-
-          it { expect(runner_manager).to be_valid }
-        end
-      end
-
-      context 'with group runner' do
-        let(:runner) { build(:ci_runner, :group, groups: [group]) }
-
-        it { expect(runner_manager).to be_valid }
-
-        context 'when sharding_key_id is not present' do
-          before do
-            runner.sharding_key_id = nil
-            runner_manager.sharding_key_id = nil
-          end
-
-          it 'adds error to model', :aggregate_failures do
-            expect(runner_manager).not_to be_valid
-            expect(runner_manager.errors[:sharding_key_id]).to contain_exactly("can't be blank")
-          end
-        end
-      end
-
-      context 'with project runner' do
-        let(:runner) { build(:ci_runner, :project, projects: [project]) }
-
-        it { expect(runner).to be_valid }
-
-        context 'when sharding_key_id is not present' do
-          before do
-            runner.sharding_key_id = nil
-          end
-
-          it 'adds error to model', :aggregate_failures do
-            expect(runner_manager).not_to be_valid
-            expect(runner_manager.errors[:sharding_key_id]).to contain_exactly("can't be blank")
-          end
-        end
       end
     end
   end
@@ -663,46 +586,6 @@ RSpec.describe Ci::RunnerManager, feature_category: :fleet_visibility, type: :mo
       end
 
       it { is_expected.to contain_exactly existing_build }
-    end
-  end
-
-  describe '#set_runner_type_and_sharding_key_id' do
-    let(:runner_manager) { build(:ci_runner_machine, runner: runner) }
-
-    before do
-      runner_manager.runner_type = nil
-      runner_manager.sharding_key_id = nil
-    end
-
-    shared_examples 'when sharding_key_id is not present' do
-      before do
-        runner_manager.save!
-      end
-
-      it 'sets runner_type and sharding_key_id from runner', :aggregate_failures do
-        expect(runner_manager.runner_type).to eq(runner.runner_type)
-        expect(runner_manager.sharding_key_id).to eq(runner.sharding_key_id)
-      end
-    end
-
-    context 'with instance runner' do
-      let(:runner) { build(:ci_runner, :instance) }
-
-      it { expect(runner).to be_valid }
-
-      it_behaves_like 'when sharding_key_id is not present'
-    end
-
-    context 'with group runner' do
-      let(:runner) { build(:ci_runner, :group, groups: [group]) }
-
-      it_behaves_like 'when sharding_key_id is not present'
-    end
-
-    context 'with project runner' do
-      let(:runner) { build(:ci_runner, :project, projects: [project]) }
-
-      it_behaves_like 'when sharding_key_id is not present'
     end
   end
 end

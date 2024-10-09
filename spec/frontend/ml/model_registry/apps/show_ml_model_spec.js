@@ -106,9 +106,7 @@ describe('ml/model_registry/apps/show_ml_model', () => {
   const findVersionsCountBadge = () => findVersionsTab().findComponent(GlBadge);
   const findModelVersionList = () => wrapper.findComponent(ModelVersionList);
   const findModelDetail = () => wrapper.findComponent(ModelDetail);
-  const findCandidateTab = () => wrapper.findAllComponents(GlTab).at(2);
   const findCandidateList = () => wrapper.findComponent(CandidateList);
-  const findCandidatesCountBadge = () => findCandidateTab().findComponent(GlBadge);
   const findTitleArea = () => wrapper.findComponent(TitleArea);
   const findVersionCountMetadataItem = () => findTitleArea().findComponent(MetadataItem);
   const findActionsDropdown = () => wrapper.findComponent(ActionsDropdown);
@@ -197,10 +195,6 @@ describe('ml/model_registry/apps/show_ml_model', () => {
     it('shows the number of versions in the tab', () => {
       expect(findVersionsCountBadge().text()).toBe(model.versionCount.toString());
     });
-
-    it('shows the number of candidates in the tab', () => {
-      expect(findCandidatesCountBadge().text()).toBe(model.candidateCount.toString());
-    });
   });
 
   describe('Model loading', () => {
@@ -243,17 +237,6 @@ describe('ml/model_registry/apps/show_ml_model', () => {
       expect(findModelDetail().exists()).toBe(false);
       expect(findModelVersionList().props('modelId')).toBe(model.id);
       expect(findCandidateList().exists()).toBe(false);
-    });
-
-    it('shows candidate list when location hash is `#/candidates`', async () => {
-      await createWrapper({ mountFn: mountExtended });
-
-      await findCandidateTab().vm.$emit('click');
-
-      expect(findTabs().props('value')).toBe(2);
-      expect(findModelDetail().exists()).toBe(false);
-      expect(findModelVersionList().exists()).toBe(false);
-      expect(findCandidateList().props('modelId')).toBe(model.id);
     });
 
     describe.each`

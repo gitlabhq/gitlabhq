@@ -86,9 +86,7 @@ RSpec.describe API::Ci::Helpers::Runner, feature_category: :runner do
   end
 
   describe '#current_runner_manager', :freeze_time, feature_category: :fleet_visibility do
-    let_it_be(:group) { create(:group) }
-
-    let(:runner) { create(:ci_runner, :group, token: 'foo', groups: [group]) }
+    let(:runner) { create(:ci_runner, token: 'foo') }
     let(:runner_manager) { create(:ci_runner_machine, runner: runner, system_xid: 'bar', contacted_at: 1.hour.ago) }
 
     subject(:current_runner_manager) { helper.current_runner_manager }
@@ -115,8 +113,6 @@ RSpec.describe API::Ci::Helpers::Runner, feature_category: :runner do
         expect(current_runner_manager.system_xid).to eq('new_system_id')
         expect(current_runner_manager.contacted_at).to be_nil
         expect(current_runner_manager.runner).to eq(runner)
-        expect(current_runner_manager.runner_type).to eq(runner.runner_type)
-        expect(current_runner_manager.sharding_key_id).to eq(runner.sharding_key_id)
       end
 
       it 'creates a new <legacy> runner manager if system_id is not specified', :aggregate_failures do
@@ -127,8 +123,6 @@ RSpec.describe API::Ci::Helpers::Runner, feature_category: :runner do
         expect(current_runner_manager).not_to be_nil
         expect(current_runner_manager.system_xid).to eq(::API::Ci::Helpers::Runner::LEGACY_SYSTEM_XID)
         expect(current_runner_manager.runner).to eq(runner)
-        expect(current_runner_manager.runner_type).to eq(runner.runner_type)
-        expect(current_runner_manager.sharding_key_id).to eq(runner.sharding_key_id)
       end
     end
   end

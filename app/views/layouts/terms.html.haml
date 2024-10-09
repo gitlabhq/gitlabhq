@@ -12,7 +12,7 @@
       .limit-container-width.gl-my-5{ class: container_class }
         = render Pajamas::CardComponent.new( body_options: { class: 'gl-p-0' }, header_options: { class: 'gl-flex gl-items-center gl-justify-between' }) do |c|
           - c.with_header do
-            = brand_header_logo({add_gitlab_black_text: true})
+            = brand_header_logo({add_gitlab_logo_text: true})
             - if current_user
               .gl-flex.gl-gap-2.gl-items-center
                 .gl-text-right.gl-leading-normal

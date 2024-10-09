@@ -2,8 +2,10 @@
 import { GlButton } from '@gitlab/ui';
 import { sprintf, __ } from '~/locale';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
+import { TYPENAME_FEATURE_FLAG } from '~/graphql_shared/constants';
 
 import WorkItemDevelopmentMrItem from './work_item_development_mr_item.vue';
+import WorkItemDevelopmentFfItem from './work_item_development_ff_item.vue';
 
 const DEFAULT_RENDER_COUNT = 3;
 
@@ -25,11 +27,21 @@ export default {
   },
   computed: {
     list() {
-      // keeping as a separate prop , will be appending with FF and branches
-      return [...this.mergeRequests];
+      // keeping as a separate prop, will be appending with branches
+      return [...this.sortedFeatureFlags, ...this.mergeRequests];
     },
     mergeRequests() {
       return this.workItemDevWidget.closingMergeRequests?.nodes || [];
+    },
+    featureFlags() {
+      return this.workItemDevWidget.featureFlags?.nodes || [];
+    },
+    sortedFeatureFlags() {
+      const flagsSortedByRelationshipDate = [...this.featureFlags].reverse();
+      const enabledFlags = flagsSortedByRelationshipDate.filter((flag) => flag.active);
+      const disabledFlags = flagsSortedByRelationshipDate.filter((flag) => !flag.active);
+
+      return [...enabledFlags, ...disabledFlags];
     },
     hiddenItemsLabel() {
       const { moreCount } = this;
@@ -53,10 +65,23 @@ export default {
   },
   methods: {
     itemComponent(item) {
-      return this.isMergeRequest(item) ? WorkItemDevelopmentMrItem : 'li';
+      let component;
+
+      if (this.isMergeRequest(item)) {
+        component = WorkItemDevelopmentMrItem;
+      } else if (this.isFeatureFlag(item)) {
+        component = WorkItemDevelopmentFfItem;
+      } else {
+        component = 'li';
+      }
+      return component;
     },
     isMergeRequest(item) {
       return item.fromMrDescription !== undefined;
+    },
+    isFeatureFlag(item) {
+      // eslint-disable-next-line no-underscore-dangle
+      return item.__typename === TYPENAME_FEATURE_FLAG;
     },
     async toggleShowLess() {
       this.showLess = !this.showLess;
@@ -76,7 +101,7 @@ export default {
   <div>
     <ul ref="list-body" class="gl-m-0 gl-list-none gl-p-0" data-testid="work-item-dev-items-list">
       <li v-for="item in uncollapsedItems" :key="itemId(item)" class="gl-mr-3">
-        <component :is="itemComponent(item)" :merge-request="itemObject(item)" />
+        <component :is="itemComponent(item)" :item-content="itemObject(item)" />
       </li>
     </ul>
     <gl-button

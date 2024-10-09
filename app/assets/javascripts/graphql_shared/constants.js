@@ -14,6 +14,7 @@ export const TYPENAME_DESIGN_VERSION = 'DesignManagement::Version';
 export const TYPENAME_DISCUSSION = 'Discussion';
 export const TYPENAME_EPIC = 'Epic';
 export const TYPENAME_EPIC_BOARD = 'Boards::EpicBoard';
+export const TYPENAME_FEATURE_FLAG = 'FeatureFlag';
 export const TYPENAME_GROUP = 'Group';
 export const TYPENAME_ISSUE = 'Issue';
 export const TYPENAME_ITERATION = 'Iteration';

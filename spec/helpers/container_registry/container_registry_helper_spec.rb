@@ -32,8 +32,8 @@ RSpec.describe ContainerRegistry::ContainerRegistryHelper, feature_category: :co
         help_page_path: help_page_path('user/packages/container_registry/index.md'),
         two_factor_auth_help_link: help_page_path('user/profile/account/two_factor_authentication.md'),
         personal_access_tokens_help_link: help_page_path('user/profile/personal_access_tokens.md'),
-        no_containers_image: match_asset_path('illustrations/docker-empty-state.svg'),
-        containers_error_image: match_asset_path('illustrations/docker-error-state.svg'),
+        no_containers_image: match_asset_path('illustrations/status/status-nothing-md.svg'),
+        containers_error_image: match_asset_path('illustrations/status/status-fail-md.svg'),
         repository_url: escape_once(project.container_registry_url),
         registry_host_url_with_port: escape_once(Gitlab.config.registry.host_port),
         expiration_policy_help_page_path:

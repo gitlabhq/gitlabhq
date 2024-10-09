@@ -316,12 +316,6 @@ describe('formatTime', () => {
 });
 
 describe('datefix', () => {
-  describe('parsePikadayDate', () => {
-    it('should return a UTC date', () => {
-      expect(datetimeUtility.parsePikadayDate('2020-01-29')).toEqual(new Date(2020, 0, 29));
-    });
-  });
-
   describe('toISODateFormat', () => {
     it('should format a Date object into yyyy-mm-dd format', () => {
       expect(datetimeUtility.toISODateFormat(new Date('2020-01-29:00:00'))).toEqual('2020-01-29');
