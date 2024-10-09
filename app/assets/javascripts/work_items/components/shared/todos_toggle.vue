@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlTooltipDirective, GlIcon } from '@gitlab/ui';
+import { GlButton, GlTooltipDirective, GlAnimatedTodoIcon } from '@gitlab/ui';
 
 import { s__ } from '~/locale';
 import { updateGlobalTodoCount } from '~/sidebar/utils';
@@ -22,8 +22,8 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   components: {
-    GlIcon,
     GlButton,
+    GlAnimatedTodoIcon,
   },
   props: {
     itemId: {
@@ -142,7 +142,7 @@ export default {
 
 <template>
   <gl-button
-    v-gl-tooltip.hover
+    v-gl-tooltip.bottom.hover
     :disabled="isLoading"
     :title="buttonLabel"
     :category="todosButtonType"
@@ -150,6 +150,10 @@ export default {
     :aria-label="buttonLabel"
     @click="onToggle"
   >
-    <gl-icon :class="{ '!gl-fill-blue-500': pendingTodo }" :name="buttonIcon" />
+    <gl-animated-todo-icon
+      :is-on="pendingTodo"
+      :class="{ '!gl-text-blue-500': pendingTodo }"
+      :name="buttonIcon"
+    />
   </gl-button>
 </template>

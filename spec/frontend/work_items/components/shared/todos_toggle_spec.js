@@ -1,4 +1,4 @@
-import { GlButton, GlIcon } from '@gitlab/ui';
+import { GlButton, GlAnimatedTodoIcon } from '@gitlab/ui';
 
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
@@ -27,7 +27,7 @@ describe('WorkItemTodo component', () => {
   let wrapper;
 
   const findTodoWidget = () => wrapper.findComponent(GlButton);
-  const findTodoIcon = () => wrapper.findComponent(GlIcon);
+  const findAnimatedTodoIcon = () => wrapper.findComponent(GlAnimatedTodoIcon);
 
   const errorMessage = 'Failed to add item';
   const workItemQueryResponse = workItemResponseFactory({ canUpdate: true });
@@ -75,8 +75,9 @@ describe('WorkItemTodo component', () => {
     createComponent();
 
     expect(findTodoWidget().exists()).toBe(true);
-    expect(findTodoIcon().props('name')).toEqual(TODO_ADD_ICON);
-    expect(findTodoIcon().classes('!gl-fill-blue-500')).toBe(false);
+    expect(findAnimatedTodoIcon().attributes('name')).toEqual(TODO_ADD_ICON);
+    expect(findAnimatedTodoIcon().props('isOn')).toBe(false);
+    expect(findAnimatedTodoIcon().classes('!gl-text-blue-500')).toBe(false);
     expect(findTodoWidget().props('category')).toBe('tertiary');
   });
 
@@ -85,8 +86,9 @@ describe('WorkItemTodo component', () => {
       currentUserTodos: [mockCurrentUserTodos],
     });
 
-    expect(findTodoIcon().props('name')).toEqual(TODO_DONE_ICON);
-    expect(findTodoIcon().classes('!gl-fill-blue-500')).toBe(true);
+    expect(findAnimatedTodoIcon().attributes('name')).toEqual(TODO_DONE_ICON);
+    expect(findAnimatedTodoIcon().props('isOn')).toBe(true);
+    expect(findAnimatedTodoIcon().classes('!gl-text-blue-500')).toBe(true);
   });
 
   it.each`

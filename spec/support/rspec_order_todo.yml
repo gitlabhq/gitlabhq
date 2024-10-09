@@ -469,7 +469,6 @@
 - './ee/spec/graphql/resolvers/ci/code_coverage_activities_resolver_spec.rb'
 - './ee/spec/graphql/resolvers/ci/code_coverage_summary_resolver_spec.rb'
 - './ee/spec/graphql/resolvers/clusters/agents_resolver_spec.rb'
-- './ee/spec/graphql/resolvers/compliance_management/merge_requests/compliance_violation_resolver_spec.rb'
 - './ee/spec/graphql/resolvers/dast_site_profile_resolver_spec.rb'
 - './ee/spec/graphql/resolvers/dast_site_validation_resolver_spec.rb'
 - './ee/spec/graphql/resolvers/dora_metrics_resolver_spec.rb'

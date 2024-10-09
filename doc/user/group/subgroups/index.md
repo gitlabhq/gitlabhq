@@ -70,9 +70,7 @@ To view the subgroups of a group:
 ### Private subgroups in public parent groups
 
 In the hierarchy list, public groups with private subgroups have an expand option (**{chevron-down}**),
-which indicates the group has nested subgroups. The expand option (**{chevron-down}**) is visible
-to all users, but the private group is displayed only to users who are direct or inherited members
-of the private subgroup.
+which indicates the group has nested subgroups. All users can view the expand option (**{chevron-down}**), but only direct or inherited members of the private subgroup can view the private group.
 
 If you prefer to keep information about the presence of nested subgroups private,
 you should add private subgroups only to private parent groups.

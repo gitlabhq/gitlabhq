@@ -155,7 +155,6 @@ RSpec/NamedSubject:
     - 'ee/spec/graphql/resolvers/app_sec/fuzzing/coverage/corpuses_resolver_spec.rb'
     - 'ee/spec/graphql/resolvers/boards/epic_list_resolver_spec.rb'
     - 'ee/spec/graphql/resolvers/clusters/agents_resolver_spec.rb'
-    - 'ee/spec/graphql/resolvers/compliance_management/merge_requests/compliance_violation_resolver_spec.rb'
     - 'ee/spec/graphql/resolvers/incident_management/oncall_shifts_resolver_spec.rb'
     - 'ee/spec/graphql/resolvers/incident_management/oncall_users_resolver_spec.rb'
     - 'ee/spec/graphql/resolvers/product_analytics/state_resolver_spec.rb'

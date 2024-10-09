@@ -213,7 +213,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'ee/spec/graphql/resolvers/boards/epic_list_resolver_spec.rb'
     - 'ee/spec/graphql/resolvers/boards/epic_lists_resolvers_spec.rb'
     - 'ee/spec/graphql/resolvers/clusters/agents_resolver_spec.rb'
-    - 'ee/spec/graphql/resolvers/compliance_management/merge_requests/compliance_violation_resolver_spec.rb'
     - 'ee/spec/graphql/resolvers/dast_site_validation_resolver_spec.rb'
     - 'ee/spec/graphql/resolvers/epic_ancestors_resolver_spec.rb'
     - 'ee/spec/graphql/resolvers/epic_issues_resolver_spec.rb'

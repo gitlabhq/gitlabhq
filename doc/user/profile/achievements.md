@@ -19,7 +19,8 @@ an administrator can [enable the feature flag](../../administration/feature_flag
 This feature is not ready for production use.
 
 Achievements are a way to reward users for their activity on GitLab.
-As a namespace maintainer or owner, you can create custom achievements for specific contributions, which you can award to or revoke from users based on your criteria.
+As a namespace maintainer or owner, you can create custom achievements for specific contributions. You can award these
+achievements to users or revoke them based on defined criteria.
 
 As a user, you can collect achievements to highlight your contributions to different projects or groups on your profile.
 An achievement consists of a name, a description, and an avatar.

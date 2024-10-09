@@ -73,3 +73,17 @@ export const updateStoreAfterUploadDesign = (store, data, query) => {
     addNewDesignToStore(store, data, query);
   }
 };
+
+export const updateWorkItemDesignCurrentTodosWidget = ({ store, todos, query }) => {
+  const sourceData = store.readQuery(query);
+
+  if (!sourceData) {
+    return;
+  }
+
+  const newData = produce(sourceData, (draftState) => {
+    draftState.localDesign.currentUserTodos.nodes = todos;
+  });
+
+  store.writeQuery({ ...query, data: newData });
+};

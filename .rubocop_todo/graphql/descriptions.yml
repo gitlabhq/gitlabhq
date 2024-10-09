@@ -41,7 +41,6 @@ Graphql/Descriptions:
     - 'ee/app/graphql/types/burnup_chart_daily_totals_type.rb'
     - 'ee/app/graphql/types/ci/namespace_ci_cd_setting_type.rb'
     - 'ee/app/graphql/types/compliance_management/compliance_framework_input_type.rb'
-    - 'ee/app/graphql/types/compliance_management/merge_requests/compliance_violation_input_type.rb'
     - 'ee/app/graphql/types/epic_descendant_weight_sum_type.rb'
     - 'ee/app/graphql/types/epic_type.rb'
     - 'ee/app/graphql/types/geo/geo_node_type.rb'

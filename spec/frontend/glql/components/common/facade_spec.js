@@ -60,7 +60,9 @@ describe('GlqlFacade', () => {
       expect(wrapper.findComponent(MockComponent).exists()).toBe(true);
     });
 
-    it('tracks GLQL render event', () => {
+    // quarantine: https://gitlab.com/gitlab-org/gitlab/-/issues/498359
+    // eslint-disable-next-line jest/no-disabled-tests
+    it.skip('tracks GLQL render event', () => {
       const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
 
       expect(trackEventSpy).toHaveBeenCalledWith(

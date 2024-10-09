@@ -7,10 +7,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Organize work with projects
 
-In GitLab, you can create projects to host
-your codebase. You can also use projects to track issues, plan work,
-collaborate on code, and continuously build, test, and use
-built-in CI/CD to deploy your app.
+Create projects to host your codebase in GitLab.
+You can also use projects to:
+
+- Track issues
+- Plan work
+- Collaborate on code
+- Use CI/CD tools to continuously build, test, and deploy your app
 
 Projects can be available [publicly, internally, or privately](../public_access.md).
 GitLab does not limit the number of private projects you can create.

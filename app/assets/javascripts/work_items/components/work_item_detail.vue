@@ -722,7 +722,7 @@ export default {
                 v-if="showWorkItemCurrentUserTodos"
                 :item-id="workItem.id"
                 :current-user-todos="currentUserTodos"
-                :todos-button-type="'secondary'"
+                todos-button-type="secondary"
                 @todosUpdated="updateWorkItemCurrentTodosWidgetCache"
                 @error="updateError = $event"
               />

@@ -12,6 +12,10 @@ export const mockDesign = {
     nodes: [],
     __typename: 'TodoConnection',
   },
+  discussions: {
+    nodes: [],
+    __typename: 'DiscussionConnection',
+  },
   __typename: 'Design',
 };
 

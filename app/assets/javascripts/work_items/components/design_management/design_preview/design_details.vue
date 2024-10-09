@@ -7,7 +7,9 @@ import { Mousetrap } from '~/lib/mousetrap';
 import { keysFor, ISSUE_CLOSE_DESIGN } from '~/behaviors/shortcuts/keybindings';
 import { ROUTES } from '../../../constants';
 import getDesignQuery from '../graphql/design_details.query.graphql';
+import getLocalDesignQuery from '../graphql/local_design.query.graphql';
 import { extractDesign, extractDiscussions, getPageLayoutElement } from '../utils';
+import { updateWorkItemDesignCurrentTodosWidget } from '../cache_updates';
 import {
   DESIGN_DETAIL_LAYOUT_CLASSLIST,
   DESIGN_NOT_FOUND_ERROR,
@@ -64,7 +66,8 @@ export default {
   },
   data() {
     return {
-      design: {},
+      designSource: {},
+      localDesign: {},
       annotationCoordinates: null,
       errorMessage: '',
       scale: DEFAULT_SCALE,
@@ -77,16 +80,29 @@ export default {
     };
   },
   apollo: {
-    design: {
+    // If a design is opened and closed, the design is cached by Apollo.
+    // But it will replace the design widget cache of the design list query.
+    // So, while writing the designSource cache, Apollo is not able to find the existing cache
+    // and throws error while writing the cache. This is a known issue.
+    // As a workaround, the local design will help in maintaining the design cache.
+    // https://gitlab.com/gitlab-org/gitlab/-/issues/461539
+    localDesign: {
+      query: getLocalDesignQuery,
+      variables() {
+        return {
+          filenames: [this.$route.params.id],
+          atVersion: this.designsVersion,
+        };
+      },
+    },
+    designSource: {
       query: getDesignQuery,
-      // We want to see cached design version if we have one, and fetch newer version on the background to update discussions
-      fetchPolicy: fetchPolicies.CACHE_AND_NETWORK,
-      // We need this for handling loading state when using frontend cache
+      fetchPolicy: fetchPolicies.NO_CACHE,
       notifyOnNetworkStatusChange: true,
       variables() {
         return this.designVariables;
       },
-      update: (data) => extractDesign(data),
+      update: (data) => data,
       result(res) {
         this.onDesignQueryResult(res);
       },
@@ -97,7 +113,10 @@ export default {
   },
   computed: {
     isLoading() {
-      return this.$apollo.queries.design.loading && !this.design.id;
+      return this.$apollo.loading && !this.design.id;
+    },
+    design() {
+      return this.localDesign || {};
     },
     designVariables() {
       return {
@@ -123,6 +142,9 @@ export default {
     },
     resolvedDiscussions() {
       return this.discussions.filter((discussion) => discussion.resolved);
+    },
+    currentUserDesignTodos() {
+      return this.design?.currentUserTodos?.nodes;
     },
   },
   watch: {
@@ -151,6 +173,18 @@ export default {
         const workItem = data.project.workItems.nodes[0];
         this.workItemId = workItem.id;
         this.workItemTitle = workItem.title;
+
+        // Write to the localDesign cache which is separate from designSource when design is opened.
+        this.$apollo.provider.defaultClient.cache.writeQuery({
+          query: getLocalDesignQuery,
+          variables: {
+            filenames: [this.$route.params.id],
+            atVersion: this.designsVersion,
+          },
+          data: {
+            localDesign: extractDesign(data),
+          },
+        });
       }
     },
     onQueryError(message) {
@@ -178,6 +212,21 @@ export default {
     toggleResolvedComments(newValue) {
       this.resolvedDiscussionsExpanded = newValue;
     },
+    updateWorkItemDesignCurrentTodosWidgetCache({ cache, todos }) {
+      // Write the updated todos to the localDesign cache instead of designSource
+      // to maintain it even if a new design is opened.
+      updateWorkItemDesignCurrentTodosWidget({
+        store: cache,
+        todos,
+        query: {
+          query: getLocalDesignQuery,
+          variables: {
+            filenames: [this.$route.params.id],
+            atVersion: this.designsVersion,
+          },
+        },
+      });
+    },
   },
 };
 </script>
@@ -194,7 +243,9 @@ export default {
         :is-loading="isLoading"
         :is-sidebar-open="isSidebarOpen"
         :all-designs="allDesigns"
+        :current-user-design-todos="currentUserDesignTodos"
         @toggle-sidebar="toggleSidebar"
+        @todosUpdated="updateWorkItemDesignCurrentTodosWidgetCache"
       />
       <div class="gl-relative gl-flex gl-grow gl-flex-col gl-overflow-hidden lg:gl-flex-row">
         <div class="gl-relative gl-flex gl-grow-2 gl-flex-col gl-overflow-hidden">

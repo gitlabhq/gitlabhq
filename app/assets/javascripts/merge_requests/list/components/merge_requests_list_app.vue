@@ -2,16 +2,15 @@
 import { GlFilteredSearchToken, GlButton, GlLink, GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
 import ApprovalCount from 'ee_else_ce/merge_requests/components/approval_count.vue';
-import { createAlert } from '~/alert';
 import Api from '~/api';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { STATUS_ALL, STATUS_CLOSED, STATUS_OPEN, STATUS_MERGED } from '~/issues/constants';
 import { fetchPolicies } from '~/lib/graphql';
 import { isPositiveInteger } from '~/lib/utils/number_utils';
 import { scrollUp } from '~/lib/utils/scroll_utils';
-import { getParameterByName } from '~/lib/utils/url_utility';
+import { getParameterByName, mergeUrlParams } from '~/lib/utils/url_utility';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
-import { convertToGraphQLId } from '~/graphql_shared/utils';
+import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import IssuableMilestone from '~/vue_shared/issuable/list/components/issuable_milestone.vue';
 import { DEFAULT_PAGE_SIZE, mergeRequestListTabs } from '~/vue_shared/issuable/list/constants';
@@ -51,7 +50,6 @@ import {
   TOKEN_TYPE_ENVIRONMENT,
   TOKEN_TITLE_ENVIRONMENT,
 } from '~/vue_shared/components/filtered_search_bar/constants';
-import { AutocompleteCache } from '~/issues/dashboard/utils';
 import {
   convertToApiParams,
   convertToSearchQuery,
@@ -73,7 +71,8 @@ import {
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import setSortPreferenceMutation from '~/issues/list/queries/set_sort_preference.mutation.graphql';
 import issuableEventHub from '~/issues/list/eventhub';
-import { i18n } from '../constants';
+import { AutocompleteCache } from '../../utils/autocomplete_cache';
+import { i18n, BRANCH_LIST_REFRESH_INTERVAL } from '../constants';
 import getMergeRequestsQuery from '../queries/get_merge_requests.query.graphql';
 import getMergeRequestsCountsQuery from '../queries/get_merge_requests_counts.query.graphql';
 import searchLabelsQuery from '../queries/search_labels.query.graphql';
@@ -93,6 +92,10 @@ const EnvironmentToken = () => import('./tokens/environment_token.vue');
 const EmojiToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/emoji_token.vue');
 const DateToken = () => import('~/vue_shared/components/filtered_search_bar/tokens/date_token.vue');
+
+function cacheIsExpired(cacheAge, compareTo = Date.now()) {
+  return cacheAge + BRANCH_LIST_REFRESH_INTERVAL <= compareTo;
+}
 
 export default {
   name: 'MergeRequestsListApp',
@@ -129,6 +132,8 @@ export default {
   },
   data() {
     return {
+      projectId: null,
+      branchCacheAges: {},
       filterTokens: [],
       mergeRequests: [],
       mergeRequestCounts: {},
@@ -157,6 +162,7 @@ export default {
         if (!data) {
           return;
         }
+        this.projectId = getIdFromGraphQLId(data.project.id);
         this.pageInfo = data.project.mergeRequests?.pageInfo ?? {};
       },
       error(error) {
@@ -336,7 +342,7 @@ export default {
           operators: OPERATORS_IS,
           fullPath: this.fullPath,
           isProject: true,
-          fetchBranches: this.fetchBranches,
+          fetchBranches: this.fetchTargetBranches,
         },
         {
           type: TOKEN_TYPE_SOURCE_BRANCH,
@@ -346,7 +352,7 @@ export default {
           operators: OPERATORS_IS,
           fullPath: this.fullPath,
           isProject: true,
-          fetchBranches: this.fetchBranches,
+          fetchBranches: this.fetchSourceBranches,
         },
         {
           type: TOKEN_TYPE_LABEL,
@@ -472,16 +478,62 @@ export default {
     issuableEventHub.$off('issuables:toggleBulkEdit', this.toggleBulkEditSidebar);
   },
   methods: {
-    fetchBranches(search) {
-      return Api.branches(this.fullPath, search)
-        .then((response) => {
-          return response;
+    getBranchPath(branchType = 'other') {
+      const typeUrls = {
+        source: '/-/autocomplete/merge_request_source_branches.json',
+        target: '/-/autocomplete/merge_request_target_branches.json',
+        other: Api.buildUrl(Api.createBranchPath).replace(':id', encodeURIComponent(this.fullPath)),
+      };
+      const url = typeUrls[branchType];
+
+      return url && this.projectId
+        ? mergeUrlParams({ project_id: this.projectId }, url)
+        : typeUrls.other;
+    },
+    async updateBranchCache(branchType, path) {
+      const lastCheck = this.branchCacheAges[branchType];
+
+      if (cacheIsExpired(lastCheck)) {
+        await this.autocompleteCache.updateLocalCache(path);
+      }
+    },
+    async fetchBranches(type = 'other', search) {
+      const branchPath = this.getBranchPath(type);
+      const cacheAge = this.branchCacheAges[type];
+      const runTime = Date.now();
+
+      await this.updateBranchCache(type, branchPath);
+
+      const fetch = this.autocompleteCache.fetch({
+        mutator: (branchList) =>
+          branchList.map((branch, index) => ({
+            ...branch,
+            name: branch.name || branch.title,
+            id: index,
+          })),
+        formatter: (results) => ({ data: results }),
+        url: branchPath,
+        searchProperty: 'name',
+        search,
+      });
+
+      fetch
+        .then(() => {
+          if (!cacheAge || cacheIsExpired(cacheAge, runTime)) {
+            this.branchCacheAges[type] = Date.now();
+          }
         })
         .catch(() => {
-          createAlert({
-            message: this.$options.i18n.errorFetchingBranches,
-          });
+          // An error has occurred, but there's nothing the user can do about it, so... we're swallowing it.
         });
+
+      return fetch;
+    },
+    fetchTargetBranches(search) {
+      return this.fetchBranches('target', search);
+    },
+    fetchSourceBranches(search) {
+      return this.fetchBranches('source', search);
     },
     fetchEmojis(search) {
       return this.autocompleteCache.fetch({

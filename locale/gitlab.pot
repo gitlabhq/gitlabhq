@@ -3821,6 +3821,12 @@ msgstr ""
 msgid "AdminArea|total billable + total non-billable"
 msgstr ""
 
+msgid "AdminCustomModels|Custom Models"
+msgstr ""
+
+msgid "AdminCustomModels|Manage GitLab Duo by configuring and assigning self-hosted models to AI-powered features"
+msgstr ""
+
 msgid "AdminDashboard|Error loading the statistics. Please try again"
 msgstr ""
 

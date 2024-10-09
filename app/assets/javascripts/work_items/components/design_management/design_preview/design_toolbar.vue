@@ -1,8 +1,10 @@
 <script>
 import { GlButton, GlIcon, GlSkeletonLoader, GlTooltipDirective } from '@gitlab/ui';
+import { isLoggedIn } from '~/lib/utils/common_utils';
 import { TYPE_DESIGN } from '~/import/constants';
 import { s__ } from '~/locale';
 import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
+import TodosToggle from '../../shared/todos_toggle.vue';
 import CloseButton from './close_button.vue';
 import DesignNavigation from './design_navigation.vue';
 
@@ -12,6 +14,7 @@ export default {
     hideCommentsButtonLabel: s__('DesignManagement|Hide comments'),
     showCommentsButtonLabel: s__('DesignManagement|Show comments'),
   },
+  isLoggedIn: isLoggedIn(),
   components: {
     GlButton,
     GlIcon,
@@ -19,6 +22,7 @@ export default {
     ImportedBadge,
     CloseButton,
     DesignNavigation,
+    TodosToggle,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -45,6 +49,11 @@ export default {
       required: true,
     },
     allDesigns: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
+    currentUserDesignTodos: {
       type: Array,
       required: false,
       default: () => [],
@@ -83,7 +92,17 @@ export default {
       </div>
       <close-button class="gl-ml-auto md:gl-hidden" />
     </div>
-    <div class="gl-mr-5 gl-flex gl-shrink-0 md:gl-ml-auto md:gl-flex-row">
+    <div
+      v-if="!isLoading && design.id"
+      class="gl-mr-5 gl-flex gl-shrink-0 md:gl-ml-auto md:gl-flex-row"
+    >
+      <todos-toggle
+        v-if="$options.isLoggedIn"
+        :item-id="design.id"
+        :current-user-todos="currentUserDesignTodos"
+        todos-button-type="tertiary"
+        @todosUpdated="$emit('todosUpdated', $event)"
+      />
       <gl-button
         v-gl-tooltip.bottom
         category="tertiary"

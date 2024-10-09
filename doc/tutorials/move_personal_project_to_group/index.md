@@ -11,8 +11,8 @@ DETAILS:
 **Offering:** GitLab.com
 
 If you created a project under a [personal namespace](../../user/namespace/index.md),
-you can perform common tasks, like managing issue and merge requests,
-and using source control and CI/CD.
+you can perform common tasks, like managing issues, merge requests,
+source control, and CI/CD.
 
 However, at some point you might outgrow your personal project and
 want to move your project to a group namespace instead. With a group namespace, you can:
