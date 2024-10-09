@@ -3386,6 +3386,12 @@
       when: never
     - !reference [".releases:rules:canonical-dot-com-security-gitlab-stable-branch-only", rules]
 
+.release-environments:rules:ai-gateway-tagging:
+  rules:
+    - if: '$AIGW_PIPELINE_TRIGGER_TOKEN == null'
+      when: never
+    - if: '$CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+-ee$/'
+
 ###################
 # Benchmark rules #
 ###################

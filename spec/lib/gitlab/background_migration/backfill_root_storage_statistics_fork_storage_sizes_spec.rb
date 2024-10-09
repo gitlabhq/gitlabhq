@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::BackfillRootStorageStatisticsForkStorageSizes, schema: 20230718020825, feature_category: :consumables_cost_management do # rubocop:disable Layout/LineLength
+RSpec.describe Gitlab::BackgroundMigration::BackfillRootStorageStatisticsForkStorageSizes, schema: 20230728020644, feature_category: :consumables_cost_management do # rubocop:disable Layout/LineLength
   describe '#perform' do
     let(:namespaces_table) { table(:namespaces) }
     let(:root_storage_statistics_table) { table(:namespace_root_storage_statistics) }

@@ -4019,6 +4019,9 @@ msgstr ""
 msgid "AdminSelfHostedModels|Successfully updated %{mainFeature} / %{title}"
 msgstr ""
 
+msgid "AdminSelfHostedModels|The self-hosted model was successfully %{action}."
+msgstr ""
+
 msgid "AdminSelfHostedModels|There was an error saving the self-hosted model. Please try again."
 msgstr ""
 
@@ -5782,6 +5785,9 @@ msgid "Allow secret push protection"
 msgstr ""
 
 msgid "Allow this key to push to this repository"
+msgstr ""
+
+msgid "Allow top-level group owners to create Service accounts."
 msgstr ""
 
 msgid "Allow use of licensed EE features"
@@ -44036,9 +44042,6 @@ msgstr ""
 msgid "PromotionRequests|User promotion has been rejected. Some errors occurred"
 msgstr ""
 
-msgid "Promotions"
-msgstr ""
-
 msgid "Promotions|Add %{link_start} description templates %{link_end} to help your contributors to communicate effectively!"
 msgstr ""
 
@@ -46580,6 +46583,9 @@ msgid "Roadmap view"
 msgstr ""
 
 msgid "Role"
+msgstr ""
+
+msgid "Role promotions"
 msgstr ""
 
 msgid "Roles and permissions"
@@ -51077,6 +51083,9 @@ msgid "Service access token expiration"
 msgstr ""
 
 msgid "Service account"
+msgstr ""
+
+msgid "Service account creation"
 msgstr ""
 
 msgid "Service account generated successfully"

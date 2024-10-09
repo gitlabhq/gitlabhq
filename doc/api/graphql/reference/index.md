@@ -31942,6 +31942,7 @@ Returns [`UserMergeRequestInteraction`](#usermergerequestinteraction).
 | <a id="projectpermissionsremoveproject"></a>`removeProject` | [`Boolean!`](#boolean) | If `true`, the user can perform `remove_project` on this resource. |
 | <a id="projectpermissionsrenameproject"></a>`renameProject` | [`Boolean!`](#boolean) | If `true`, the user can perform `rename_project` on this resource. |
 | <a id="projectpermissionsrequestaccess"></a>`requestAccess` | [`Boolean!`](#boolean) | If `true`, the user can perform `request_access` on this resource. |
+| <a id="projectpermissionsupdatedesign"></a>`updateDesign` | [`Boolean!`](#boolean) | If `true`, the user can perform `update_design` on this resource. |
 | <a id="projectpermissionsupdatepages"></a>`updatePages` | [`Boolean!`](#boolean) | If `true`, the user can perform `update_pages` on this resource. |
 | <a id="projectpermissionsupdatewiki"></a>`updateWiki` | [`Boolean!`](#boolean) | If `true`, the user can perform `update_wiki` on this resource. |
 | <a id="projectpermissionsuploadfile"></a>`uploadFile` | [`Boolean!`](#boolean) | If `true`, the user can perform `upload_file` on this resource. |
@@ -36124,6 +36125,7 @@ LLMs supported by the self-hosted model features.
 | <a id="aiacceptedselfhostedmodelscodellama"></a>`CODELLAMA` | Code-Llama Instruct: Suitable for code suggestions. |
 | <a id="aiacceptedselfhostedmodelscodestral"></a>`CODESTRAL` | Codestral: Suitable for code suggestions. |
 | <a id="aiacceptedselfhostedmodelsdeepseekcoder"></a>`DEEPSEEKCODER` | Deepseek Coder base or instruct. |
+| <a id="aiacceptedselfhostedmodelsgpt"></a>`GPT` | GPT: Suitable for code generation. |
 | <a id="aiacceptedselfhostedmodelsllama3"></a>`LLAMA3` | LLaMA 3: Suitable for code suggestions and duo chat. |
 | <a id="aiacceptedselfhostedmodelsmistral"></a>`MISTRAL` | Mistral: Suitable for code suggestions and duo chat. |
 

@@ -144,7 +144,8 @@ A scheduled pipeline:
   `.gitlab-ci.yml` file.
 - Runs according to the schedule defined in the `cadence` field.
 - Runs under a `security_policy_bot` user account in the project, with the Guest role and
-  elevated permissions. This account is created when the policy is linked to a group or project.
+  permissions to create pipelines and read the repository's content from a CI/CD job. This account
+  is created when the policy is linked to a group or project.
 
 | Field      | Type | Required | Possible values | Description |
 |------------|------|----------|-----------------|-------------|

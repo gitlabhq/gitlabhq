@@ -136,7 +136,7 @@ GitLab also supports the following user types for unique use cases:
   to projects by default and assisting administrators in identifying
   which users are not employed by the organization.
 
-- [Service Accounts](../user/profile/service_accounts.md#self-managed-gitlab) -
+- [Service Accounts](../user/profile/service_accounts.md#administrators-in-gitlab-self-managed) -
   Service accounts may be added to accommodate automated tasks.
   Service accounts do not use a seat under the license.
 

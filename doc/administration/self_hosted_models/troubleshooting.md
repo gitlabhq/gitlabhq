@@ -59,8 +59,9 @@ model_name = "<your_model_name>"
 model_endpoint = "<your_model_endpoint>"
 model_api_key = "<your_model_api_key>"
 body = {:prompt_components=>[{:type=>"prompt", :metadata=>{:source=>"GitLab EE", :version=>"17.3.0"}, :payload=>{:content=>[{:role=>:user, :content=>"Hello"}], :provider=>:litellm, :model=>model_name, :model_endpoint=>model_endpoint, :model_api_key=>model_api_key}}]}
+ai_gateway_url = Gitlab::AiGateway.url # Verify that it's not nil
 client = Gitlab::Llm::AiGateway::Client.new(User.find_by_id(1), service_name: :self_hosted_models)
-client.complete(endpoint: "/v1/chat/agent", body: body)
+client.complete(url: "#{ai_gateway_url}/v1/chat/agent", body: body)
 ```
 
 This should return a response from the model in the format:
@@ -80,6 +81,7 @@ If that is not the case, this might means one of the following:
 - The GitLab environment variables are not configured correctly. To resolve, [check that the GitLab environmental variables are set up correctly](#check-that-gitlab-environmental-variables-are-set-up-correctly).
 - The GitLab instance is not configured to use self-hosted models. To resolve, [check if the GitLab instance is configured to use self-hosted models](#check-if-gitlab-instance-is-configured-to-use-self-hosted-models).
 - The AI Gateway is not reachable. To resolve, [check if GitLab can make an HTTP request to the AI Gateway](#check-if-gitlab-can-make-an-http-request-to-ai-gateway).
+- When the LLM server is installed on the same instance as the AI Gateway container, local requests may not work. To resolve, [allow local requests from the Docker container](#llm-server-is-not-available-inside-ai-gateway-container).
 
 ## Check if a user can request Code Suggestions
 
@@ -178,7 +180,7 @@ echo $AIGW_CUSTOM_MODELS__ENABLED # must be true
 ```
 
 If the environmental variables are not set up correctly, set them by
-[creating a container](install_infrastructure.md#find-the-ai-gateway-release).
+[creating a container](../../install/install_ai_gateway.md#find-the-ai-gateway-release).
 
 ## Check if the model is reachable from AI Gateway
 
@@ -193,11 +195,24 @@ To resolve this, contact your network administrator.
 
 ## The image's platform does not match the host
 
-When [finding the AI Gateway release](install_infrastructure.md#find-the-ai-gateway-release),
+When [finding the AI Gateway release](../../install/install_ai_gateway.md#find-the-ai-gateway-release),
 you might get an error that states `The requested image’s platform (linux/amd64) does not match the detected host`.
 
 To work around this error, add `--platform linux/amd64` to the `docker run` command:
 
 ```shell
 docker run --platform linux/amd64 -e AIGW_GITLAB_URL=<your-gitlab-endpoint> <image>
+```
+
+## LLM server is not available inside AI Gateway container
+
+If the LLM server is installed on the same instance as the AI Gateway container, it may not be accessible through the local host.
+
+To resolve this:
+
+1. Include `--network host` in the `docker run` command to enable local requests from the AI Gateway container.
+1. Use the `-e AIGW_FASTAPI__METRICS_PORT=8083` flag to address the port conflicts.
+
+```shell
+docker run --network host -e AIGW_GITLAB_URL=<your-gitlab-endpoint> -e AIGW_FASTAPI__METRICS_PORT=8083 <image>
 ```

@@ -662,7 +662,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
     subject { notification.unknown_sign_in(user, ip, time, request_info) }
 
     it 'sends email to the user' do
-      expect { subject }.to have_enqueued_email(user, ip, time, mail: 'unknown_sign_in_email')
+      expect { subject }.to have_enqueued_email(user, ip, time, { country: country, city: city }, mail: 'unknown_sign_in_email')
     end
   end
 

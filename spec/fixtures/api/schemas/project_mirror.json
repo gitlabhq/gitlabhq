@@ -7,7 +7,12 @@
     "last_update_at",
     "last_update_started_at",
     "last_successful_update_at",
-    "last_error"
+    "last_error",
+    "enabled",
+    "mirror_trigger_builds",
+    "only_mirror_protected_branches",
+    "mirror_overwrites_diverged_branches",
+    "mirror_branch_regex"
   ],
   "properties": {
     "id": {
@@ -38,6 +43,30 @@
       ]
     },
     "last_error": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "enabled": {
+      "type": "boolean"
+    },
+    "mirror_trigger_builds": {
+      "type": "boolean"
+    },
+    "only_mirror_protected_branches": {
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "mirror_overwrites_diverged_branches": {
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "mirror_branch_regex": {
       "type": [
         "string",
         "null"

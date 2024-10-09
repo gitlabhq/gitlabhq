@@ -11,7 +11,9 @@ module CrystalballEnv
     require 'crystalball'
 
     enable_described_strategy # We use this for writing and reading
-    enable_coverage_strategy # We use this only for writing for now
+
+    # TODO: Please work on https://gitlab.com/gitlab-org/gitlab/-/issues/498479 before enabling CoverageStrategy again
+    # enable_coverage_strategy # We use this only for writing for now
   end
 
   def enable_described_strategy

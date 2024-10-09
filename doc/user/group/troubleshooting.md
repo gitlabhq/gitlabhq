@@ -98,8 +98,6 @@ To remove the user as a billable member, follow one of these options:
 - Remove the invited group membership from your project or group members page.
 - Recommended. Remove the user directly from the invited group, if you have access to the group.
 
-The feature request to **Update `billable_members` endpoint to include invited group** is being worked on. For more information, see [issue 386583](https://gitlab.com/gitlab-org/gitlab/-/issues/386583).
-
 ## Missing or insufficient permission, delete button disabled
 
 This error typically occurs when a user attempts to remove the `container_registry` images from the archived projects during group transfer. To solve this error:

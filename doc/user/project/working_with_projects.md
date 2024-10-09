@@ -260,6 +260,8 @@ To restore a project marked for deletion:
 
 ## Archive a project
 
+> - Pages removal [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/343109) in GitLab 17.5.
+
 When you archive a project, some features become read-only.
 These features are still accessible, but not writable.
 
@@ -271,6 +273,9 @@ These features are still accessible, but not writable.
 - All other project features
 
 Active pipeline schedules of archived projects don't become read-only.
+
+If the project has deployed Pages, they are removed along with any custom domains,
+and the Pages link is no longer accessible.
 
 Archived projects are:
 
@@ -311,6 +316,8 @@ Prerequisites:
 1. Under **Advanced**, select **Expand**.
 1. In the **Unarchive project** section, select **Unarchive project**.
 1. To confirm, select **OK**.
+
+The deployed Pages are not restored and you must rerun the pipeline.
 
 ## View project activity
 

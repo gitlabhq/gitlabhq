@@ -32,6 +32,7 @@
     = render 'admin/application_settings/require_personal_access_token_expiry', form: f
     = render_if_exists 'admin/application_settings/personal_access_token_expiration_policy', form: f
     = render_if_exists 'admin/application_settings/service_access_tokens_expiration_enforced', form: f
+    = render_if_exists 'admin/application_settings/allow_top_level_group_owners_to_create_service_accounts', form: f
     = render_if_exists 'admin/application_settings/ssh_key_expiration_policy', form: f
 
     .form-group

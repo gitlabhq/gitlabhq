@@ -140,7 +140,7 @@ class NotificationService
   def unknown_sign_in(user, ip, time, request_info)
     return unless user.can?(:receive_notifications)
 
-    mailer.unknown_sign_in_email(user, ip, time).deliver_later
+    mailer.unknown_sign_in_email(user, ip, time, country: request_info.country, city: request_info.city).deliver_later
   end
 
   # Notify a user when a wrong 2FA OTP has been entered to

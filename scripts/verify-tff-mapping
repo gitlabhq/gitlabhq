@@ -114,8 +114,8 @@ tests = [
 
   {
     explanation: 'Migration should map to its non-timestamped spec',
-    changed_file: 'db/migrate/20230707003301_add_expiry_notified_at_to_member.rb',
-    expected: ['spec/migrations/add_expiry_notified_at_to_member_spec.rb']
+    changed_file: 'db/migrate/20240228144013_migrate_custom_permissions.rb',
+    expected: ['spec/migrations/migrate_custom_permissions_spec.rb']
   },
   {
     explanation: 'Migration should map to its timestamped spec',

@@ -197,8 +197,13 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   def build_auth_user(auth_user_class)
     strong_memoize_with(:build_auth_user, auth_user_class) do
-      auth_user_class.new(oauth, { organization_id: Current.organization_id })
+      auth_user_class.new(oauth, build_auth_user_params)
     end
+  end
+
+  # Overridden in EE
+  def build_auth_user_params
+    { organization_id: Current.organization_id }
   end
 
   # Overridden in EE

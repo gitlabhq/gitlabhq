@@ -4,7 +4,7 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Credentials inventory
+# Credentials inventory for GitLab self-managed
 
 DETAILS:
 **Tier:** Ultimate
@@ -13,6 +13,8 @@ DETAILS:
 As a GitLab administrator, you are responsible for the overall security of your instance.
 To assist, GitLab provides an inventory of all the credentials that can be used to access
 your self-managed instance.
+
+This page describes how to manage the credentials inventory for GitLab self-managed. To manage credentials on GitLab.com, see [Credentials inventory for GitLab.com](../user/group/credentials_inventory.md).
 
 In the credentials inventory, you can view all:
 
