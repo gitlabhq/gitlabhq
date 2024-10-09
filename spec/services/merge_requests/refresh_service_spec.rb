@@ -246,6 +246,18 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
           expect(@another_merge_request.has_commits?).to be_falsy
         end
 
+        context 'when push is a branch removal' do
+          before do
+            # If @newrev is a blank SHA, it means the ref has been removed
+            @newrev = Gitlab::Git::SHA1_BLANK_SHA
+          end
+
+          it 'does not create detached merge request pipeline' do
+            expect { subject }
+              .not_to change { @merge_request.pipelines_for_merge_request.count }
+          end
+        end
+
         context 'when "push_options: nil" is passed' do
           let(:service_instance) { service.new(project: project, current_user: @user, params: { push_options: nil }) }
 

@@ -7,11 +7,7 @@ RSpec.shared_examples 'shared super sidebar context' do
       current_context_header: nil,
       support_path: helper.support_url,
       display_whats_new: helper.display_whats_new?,
-      whats_new_most_recent_release_items_count: helper.whats_new_most_recent_release_items_count,
-      whats_new_version_digest: helper.whats_new_version_digest,
       show_version_check: helper.show_version_check?,
-      gitlab_version: Gitlab.version_info,
-      gitlab_version_check: helper.gitlab_version_check,
       search: {
         search_path: search_path,
         issues_path: issues_dashboard_path,

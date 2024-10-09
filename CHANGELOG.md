@@ -2,6 +2,23 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 17.4.2 (2024-10-09)
+
+### Fixed (1 change)
+
+- [Drop project_id not null constraint ci_deleted_objects](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e02a0c065456a51ad57a93d56150271cc4dd442e)
+
+### Security (8 changes)
+
+- [Do not create a pipeline on MR refresh if source branch was deleted](https://gitlab.com/gitlab-org/security/gitlab/-/commit/66c4e57a3494686a9dc6058d2348074b465f5dd3) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4522))
+- [Escape OAuth application name on authorize page](https://gitlab.com/gitlab-org/security/gitlab/-/commit/293bb1f70c681b75672e0b41af84ab5ae47d1e1e) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4517))
+- [Prevent guest access to project templates](https://gitlab.com/gitlab-org/security/gitlab/-/commit/544398bdf7ea2b81100f8b95496f14d9b4698db8) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4477))
+- [Remove access to local requests via cube query service](https://gitlab.com/gitlab-org/security/gitlab/-/commit/86894edacdaf1cad4b0e85f71918109d48013ccb) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4492))
+- [External webhook token should be set](https://gitlab.com/gitlab-org/security/gitlab/-/commit/70fb8bebe2e8f1b85d625a8e496515c3f7e0e6d8) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4510))
+- [Skip content when listing conflict files with types](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c19d8a96d103680ec874327c1631e179e17da06a) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4513))
+- [Hide version info from unauthorized users](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0dd81e22f819f916c50cf531fa769000e9b5941b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4500))
+- [Prevent deploy keys from pushing code to an archived project](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ed7a5173cae50f610d2c0263197f7996653cfc10) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4486))
+
 ## 17.4.1 (2024-09-24)
 
 ### Fixed (2 changes)
