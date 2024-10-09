@@ -14,6 +14,14 @@ module API
 
     feature_category :source_code_management
 
+    helpers do
+      def authorize_template_permissions!
+        permission = params[:type] == 'issues' ? :read_project : :download_code
+
+        authorize! permission, user_project, "Your current role does not have the required permissions to access the #{params[:type]} template. Contact your project administrator for assistance."
+      end
+    end
+
     params do
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
       requires :type, type: String, values: TEMPLATE_TYPES, desc: 'The type (dockerfiles|gitignores|gitlab_ci_ymls|licenses|issues|merge_requests) of the template'
@@ -32,6 +40,8 @@ module API
         use :pagination
       end
       get ':id/templates/:type' do
+        authorize_template_permissions!
+
         templates = TemplateFinder.all_template_names(user_project, params[:type]).values.flatten
 
         present paginate(::Kaminari.paginate_array(templates)), with: Entities::TemplatesList
@@ -60,6 +70,8 @@ module API
       end
 
       get ':id/templates/:type/:name', requirements: TEMPLATE_NAMES_ENDPOINT_REQUIREMENTS do
+        authorize_template_permissions!
+
         begin
           template = TemplateFinder.build(
             params[:type],

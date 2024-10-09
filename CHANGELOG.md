@@ -2,6 +2,23 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 17.3.5 (2024-10-09)
+
+### Fixed (1 change)
+
+- [Ensure levels is an array](https://gitlab.com/gitlab-org/security/gitlab/-/commit/74594891f31984feaaae6a069f057d6f48a489a6)
+
+### Security (8 changes)
+
+- [Do not create a pipeline on MR refresh if source branch was deleted](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c36869b2e5cb0f88793bec7e20ded3e4d005f942) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4523))
+- [Escape OAuth application name on authorize page](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b5a704563f746e5c61301d3a7db0eab68d434e24) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4518))
+- [Prevent guest access to project templates](https://gitlab.com/gitlab-org/security/gitlab/-/commit/92d177e2c5aaafb4f74bc2ceafe39b9a068e803d) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4449))
+- [Remove access to local requests via cube query service](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7043d0116cbf2051907dfd88d56ed3f847ab95b2) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4493))
+- [External webhook token should be set](https://gitlab.com/gitlab-org/security/gitlab/-/commit/77c2a678acfc6fded56c6e10147701b6ef7aaeb5) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4511))
+- [Skip content when listing conflict files with types](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2b559425cb195a78007db930cbbf8450b5254c89) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4514))
+- [Hide version info from unauthorized users](https://gitlab.com/gitlab-org/security/gitlab/-/commit/94e70d423789a50fc8e172b002bf1428593bbc51) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4501))
+- [Prevent deploy keys from pushing code to an archived project](https://gitlab.com/gitlab-org/security/gitlab/-/commit/3cd52356b4b1194e7108af832d5da4087e4be05c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4487))
+
 ## 17.3.4 (2024-09-24)
 
 ### Security (3 changes)
