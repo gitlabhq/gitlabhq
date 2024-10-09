@@ -15,6 +15,11 @@ module Gitlab
             worker_class = worker.is_a?(Class) ? worker : worker.class
             worker_name = worker_class.name
 
+            if ::Feature.enabled?(:sidekiq_concurrency_limit_optimized_count, Feature.current_request,
+              type: :gitlab_com_derisk)
+              return ConcurrencyLimitService.concurrent_worker_count(worker_name)
+            end
+
             workers(skip_cache: skip_cache)[worker_name].to_i
           end
 

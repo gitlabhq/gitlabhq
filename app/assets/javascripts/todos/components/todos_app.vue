@@ -45,6 +45,7 @@ export default {
       queryFilterValues: {
         groupId: [],
         projectId: [],
+        authorId: [],
         type: [],
         action: [],
         sort: `${SORT_OPTIONS[0].value}_DESC`,
@@ -57,7 +58,7 @@ export default {
       query: getTodosQuery,
       variables() {
         return {
-          state: STATUS_BY_TAB[this.currentTab],
+          state: this.statusByTab,
           ...this.queryFilterValues,
           ...this.cursor,
         };
@@ -93,6 +94,9 @@ export default {
     },
   },
   computed: {
+    statusByTab() {
+      return STATUS_BY_TAB[this.currentTab];
+    },
     isLoading() {
       return this.$apollo.queries.todos.loading;
     },
@@ -181,7 +185,7 @@ export default {
       </div>
     </div>
 
-    <todos-filter-bar @filters-changed="handleFiltersChanged" />
+    <todos-filter-bar :todos-status="statusByTab" @filters-changed="handleFiltersChanged" />
 
     <div>
       <div class="gl-flex gl-flex-col">

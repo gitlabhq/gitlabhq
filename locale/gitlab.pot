@@ -33841,6 +33841,9 @@ msgstr ""
 msgid "Members|Role change request was sent to the administrator."
 msgstr ""
 
+msgid "Members|Role promotions must be approved by an administrator. This setting can be changed in the Admin area. %{linkStart}Learn more%{linkEnd}."
+msgstr ""
+
 msgid "Members|Role updated successfully."
 msgstr ""
 
@@ -50558,9 +50561,6 @@ msgstr ""
 msgid "SecurityReports|Security dashboard"
 msgstr ""
 
-msgid "SecurityReports|Security reports can only be accessed by authorized users."
-msgstr ""
-
 msgid "SecurityReports|Security scans have run"
 msgstr ""
 
@@ -50690,12 +50690,6 @@ msgid "SecurityReports|Vulnerability report"
 msgstr ""
 
 msgid "SecurityReports|Warning parsing security reports"
-msgstr ""
-
-msgid "SecurityReports|You do not have sufficient permissions to access this report"
-msgstr ""
-
-msgid "SecurityReports|You must sign in as an authorized user to see this report"
 msgstr ""
 
 msgid "SecurityReports|scanned resources"
@@ -55541,6 +55535,9 @@ msgid "There was a problem fetching CRM contacts."
 msgstr ""
 
 msgid "There was a problem fetching CRM organizations."
+msgstr ""
+
+msgid "There was a problem fetching authors."
 msgstr ""
 
 msgid "There was a problem fetching branches."

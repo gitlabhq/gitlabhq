@@ -7,6 +7,8 @@ import {
   TOKEN_TYPE_GROUP,
   TOKEN_TITLE_PROJECT,
   TOKEN_TYPE_PROJECT,
+  TOKEN_TYPE_AUTHOR,
+  TOKEN_TITLE_AUTHOR,
   ENTITY_TYPES,
   FILTERED_SEARCH_TERM,
 } from '~/vue_shared/components/filtered_search_bar/constants';
@@ -33,6 +35,7 @@ import {
 } from '../constants';
 import GroupToken from './filtered_search_tokens/group_token.vue';
 import ProjectToken from './filtered_search_tokens/project_token.vue';
+import AuthorToken from './filtered_search_tokens/author_token.vue';
 
 export const SORT_OPTIONS = [
   {
@@ -139,43 +142,7 @@ const DEFAULT_TOKEN_OPTIONS = {
 const TOKEN_TYPE_CATEGORY = 'category';
 const TOKEN_TYPE_REASON = 'reason';
 
-const FILTERED_SEARCH_TOKENS = [
-  {
-    ...DEFAULT_TOKEN_OPTIONS,
-    icon: 'group',
-    title: TOKEN_TITLE_GROUP,
-    type: TOKEN_TYPE_GROUP,
-    entityType: ENTITY_TYPES.GROUP,
-    token: GroupToken,
-  },
-  {
-    ...DEFAULT_TOKEN_OPTIONS,
-    icon: 'project',
-    title: TOKEN_TITLE_PROJECT,
-    type: TOKEN_TYPE_PROJECT,
-    entityType: ENTITY_TYPES.PROJECT,
-    token: ProjectToken,
-  },
-  {
-    ...DEFAULT_TOKEN_OPTIONS,
-    icon: 'overview',
-    title: s__('Todos|Category'),
-    type: TOKEN_TYPE_CATEGORY,
-    token: GlFilteredSearchToken,
-    options: TARGET_TYPES,
-  },
-  {
-    ...DEFAULT_TOKEN_OPTIONS,
-    icon: 'trigger-source',
-    title: s__('Todos|Reason'),
-    type: TOKEN_TYPE_REASON,
-    token: GlFilteredSearchToken,
-    options: ACTION_TYPES,
-  },
-];
-
 export default {
-  FILTERED_SEARCH_TOKENS,
   SORT_OPTIONS,
   i18n: {
     searchTextOptionLabel: s__('Todos|Raw text search is not currently supported'),
@@ -189,6 +156,12 @@ export default {
     GlFilteredSearch,
     GlAlert,
   },
+  props: {
+    todosStatus: {
+      type: Array,
+      required: true,
+    },
+  },
   data() {
     return {
       isAscending: false,
@@ -198,11 +171,57 @@ export default {
     };
   },
   computed: {
+    filteredSearchTokens() {
+      return [
+        {
+          ...DEFAULT_TOKEN_OPTIONS,
+          icon: 'group',
+          title: TOKEN_TITLE_GROUP,
+          type: TOKEN_TYPE_GROUP,
+          entityType: ENTITY_TYPES.GROUP,
+          token: GroupToken,
+        },
+        {
+          ...DEFAULT_TOKEN_OPTIONS,
+          icon: 'project',
+          title: TOKEN_TITLE_PROJECT,
+          type: TOKEN_TYPE_PROJECT,
+          entityType: ENTITY_TYPES.PROJECT,
+          token: ProjectToken,
+        },
+        {
+          ...DEFAULT_TOKEN_OPTIONS,
+          icon: 'user',
+          title: TOKEN_TITLE_AUTHOR,
+          type: TOKEN_TYPE_AUTHOR,
+          entityType: ENTITY_TYPES.AUTHOR,
+          token: AuthorToken,
+          status: this.todosStatus,
+        },
+        {
+          ...DEFAULT_TOKEN_OPTIONS,
+          icon: 'overview',
+          title: s__('Todos|Category'),
+          type: TOKEN_TYPE_CATEGORY,
+          token: GlFilteredSearchToken,
+          options: TARGET_TYPES,
+        },
+        {
+          ...DEFAULT_TOKEN_OPTIONS,
+          icon: 'trigger-source',
+          title: s__('Todos|Reason'),
+          type: TOKEN_TYPE_REASON,
+          token: GlFilteredSearchToken,
+          options: ACTION_TYPES,
+        },
+      ];
+    },
     filters() {
       return Object.fromEntries(
         [
           ['groupId', TOKEN_TYPE_GROUP],
           ['projectId', TOKEN_TYPE_PROJECT],
+          ['authorId', TOKEN_TYPE_AUTHOR],
           ['type', TOKEN_TYPE_CATEGORY],
           ['action', TOKEN_TYPE_REASON],
         ].map(([param, tokenType]) => {
@@ -259,7 +278,7 @@ export default {
         v-model="filterTokens"
         terms-as-tokens
         :placeholder="$options.i18n.filteredSearchPlaceholder"
-        :available-tokens="$options.FILTERED_SEARCH_TOKENS"
+        :available-tokens="filteredSearchTokens"
         :search-text-option-label="$options.i18n.searchTextOptionLabel"
         @submit="sendFilterChanged"
         @clear="onFiltersCleared"

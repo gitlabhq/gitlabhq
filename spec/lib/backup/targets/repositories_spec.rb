@@ -76,7 +76,7 @@ RSpec.describe Backup::Targets::Repositories, feature_category: :backup_restore 
       end
 
       create_list(:project, 2, :repository)
-      create_list(:snippet, 2, :repository)
+      create_list(:personal_snippet, 2, :repository)
 
       # Number of expected queries are 2 more than control.count
       # to account for the queries for project.design_management_repository

@@ -100,7 +100,7 @@ RSpec.describe Gitlab::SearchContext::Builder, type: :controller do
     end
 
     context 'when there are multiple snippets' do
-      let(:snippets) { create_list(:snippet, 3) }
+      let(:snippets) { create_list(:project_snippet, 3) }
 
       describe '#build!' do
         subject(:context) do

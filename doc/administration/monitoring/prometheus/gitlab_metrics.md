@@ -239,6 +239,7 @@ configuration option in `gitlab.yml`. These metrics are served from the
 | `sidekiq_concurrency_limit_queue_jobs`         | Gauge     | 17.3 | Number of Sidekiq jobs waiting in the concurrency limit queue|  `worker`                                                             |
 | `sidekiq_concurrency_limit_max_concurrent_jobs` | Gauge     | 17.3 | Max number of concurrent running Sidekiq jobs |   `worker`                                                           |
 | `sidekiq_concurrency_limit_deferred_jobs_total` | Counter     | 17.3 | Total number of deferred Sidekiq jobs |   `worker`                                                           |
+| `sidekiq_concurrency_limit_current_concurrent_jobs` | Gauge | 17.5 | Number of concurrently running Sidekiq jobs |   `worker`                                                           |
 | `geo_db_replication_lag_seconds`               | Gauge   | 10.2  | Database replication lag (seconds) | `url` |
 | `geo_repositories`                             | Gauge   | 10.2  | Deprecated for removal in 18.0. Replaced by `geo_project_repositories`. Total number of repositories available on primary | `url` |
 | `geo_lfs_objects`                              | Gauge   | 10.2  | Number of LFS objects on primary | `url` |

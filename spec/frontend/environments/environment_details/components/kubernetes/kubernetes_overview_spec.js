@@ -158,6 +158,7 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_ov
         configuration,
         environmentName: defaultProps.environmentName,
         fluxResourcePath: kustomizationResourcePath,
+        fluxNamespace: '',
         namespace: kubernetesNamespace,
         resourceType: k8sResourceType.k8sPods,
         fluxApiError: '',
@@ -306,6 +307,12 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_ov
           it('provides correct `fluxResourceStatus` to KubernetesStatusBar', () => {
             expect(findKubernetesStatusBar().props('fluxResourceStatus')).toEqual(
               fluxResourceStatus,
+            );
+          });
+
+          it('provides correct `fluxNamespace` to KubernetesStatusBar', () => {
+            expect(findKubernetesStatusBar().props('fluxNamespace')).toBe(
+              fluxKustomization.metadata.namespace,
             );
           });
 

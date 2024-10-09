@@ -27,6 +27,7 @@ const configuration = {
 const environmentName = 'environment_name';
 const kustomizationResourcePath =
   'kustomize.toolkit.fluxcd.io/v1/namespaces/my-namespace/kustomizations/app';
+const fluxNamespace = 'flux-namespace';
 
 describe('~/environments/environment_details/components/kubernetes/kubernetes_status_bar.vue', () => {
   let wrapper;
@@ -57,6 +58,7 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_st
         namespace,
         resourceType,
         fluxResourceStatus,
+        fluxNamespace,
         fluxApiError,
       },
       stubs: {
@@ -97,7 +99,7 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_st
 
         const fluxConnectionStatus = findFluxConnectionStatus();
         expect(fluxConnectionStatus.props('configuration')).toBe(configuration);
-        expect(fluxConnectionStatus.props('namespace')).toBe(kubernetesNamespace);
+        expect(fluxConnectionStatus.props('namespace')).toBe(fluxNamespace);
         expect(fluxConnectionStatus.props('resourceTypeParam')).toEqual({
           resourceType: k8sResourceType.fluxKustomizations,
           connectionParams: {

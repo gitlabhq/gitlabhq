@@ -110,9 +110,7 @@ module Gitlab
       end
 
       def add_thread_identity(payload)
-        # Similar to what Sidekiq does ith it's out-of-the-box logger:
-        # https://github.com/sidekiq/sidekiq/blob/2451d70080db95cb5f69effcbd74381cf3b3f727/lib/sidekiq/logger.rb#L80
-        payload['sidekiq_tid'] = (Thread.current.object_id ^ ::Process.pid).to_s(36)
+        payload['sidekiq_tid'] = Gitlab::SidekiqProcess.tid
         payload['sidekiq_thread_name'] = Thread.current.name if Thread.current.name
       end
 

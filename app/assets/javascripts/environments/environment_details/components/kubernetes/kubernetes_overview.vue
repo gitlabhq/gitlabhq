@@ -160,6 +160,11 @@ export default {
     fluxResourceStatus() {
       return this.fluxKustomization.conditions || this.fluxHelmRelease.conditions;
     },
+    fluxNamespace() {
+      return (
+        this.fluxKustomization?.metadata?.namespace || this.fluxHelmRelease?.metadata?.namespace
+      );
+    },
   },
   methods: {
     handleError(message) {
@@ -287,6 +292,7 @@ export default {
         :flux-resource-path="fluxResourcePath"
         :resource-type="activeTab"
         :flux-resource-status="fluxResourceStatus"
+        :flux-namespace="fluxNamespace"
         :flux-api-error="fluxApiError"
         @error="handleError"
         @show-flux-resource-details="showFluxResourceDetails"
