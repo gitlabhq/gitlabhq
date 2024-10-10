@@ -1033,7 +1033,7 @@ field. You should switch to the new field as soon as possible.
 
 </div>
 
-The [`runnerRegistrationToken`](https://docs.gitlab.com/runner/install/kubernetes.html#required-configuration) parameter to use the GitLab Helm Chart to install a runner on Kubernetes is deprecated.
+The [`runnerRegistrationToken`](https://docs.gitlab.com/runner/install/kubernetes.html) parameter to use the GitLab Helm Chart to install a runner on Kubernetes is deprecated.
 
 We plan to implement a new method to bind runners to a GitLab instance leveraging `runnerToken`
 as part of the new [GitLab Runner token architecture](https://docs.gitlab.com/ee/ci/runners/new_creation_workflow.html).

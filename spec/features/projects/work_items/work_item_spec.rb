@@ -90,7 +90,11 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
     it_behaves_like 'work items comments', :issue
     it_behaves_like 'work items description'
     it_behaves_like 'work items milestone'
-    it_behaves_like 'work items notifications'
+
+    context 'with quarantine context', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/486486' do
+      it_behaves_like 'work items notifications'
+    end
+
     it_behaves_like 'work items todos'
     it_behaves_like 'work items award emoji'
     it_behaves_like 'work items time tracking'

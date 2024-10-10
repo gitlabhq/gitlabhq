@@ -19,6 +19,15 @@ export default {
       required: true,
     },
     /**
+     * A function that receives the token's current value and returns a promise that resolves with
+     * the fetched suggestion item. This is used to initialize the component when it has a value set
+     * before the user interacts with it.
+     */
+    fetchActiveTokenValue: {
+      type: Function,
+      required: true,
+    },
+    /**
      * An error message to be displayed in a danger alert in the event the suggestions could not be
      * fetched.
      */
@@ -26,12 +35,35 @@ export default {
       type: String,
       required: true,
     },
+    /**
+     * The token's initial value. If this is defined, the related data will be fetched by the
+     * provided `fetchActiveTokenValue` function.
+     */
+    value: {
+      type: Object,
+      required: false,
+      default: null,
+    },
   },
   data() {
     return {
       suggestionItems: [],
       loading: false,
+      fetchingValue: false,
     };
+  },
+  async created() {
+    if (this.value?.data) {
+      this.fetchingValue = true;
+      try {
+        const value = await this.fetchActiveTokenValue(this.value.data);
+        this.suggestionItems.push(value);
+      } catch (error) {
+        createAlert({ message: this.suggestionsFetchError, error });
+      } finally {
+        this.fetchingValue = false;
+      }
+    }
   },
   methods: {
     fetchSuggestionsBySearchTerm(search) {
@@ -60,10 +92,12 @@ export default {
 
 <template>
   <base-token
+    v-if="!fetchingValue"
     :suggestions-loading="loading"
     :suggestions="suggestionItems"
     :get-active-token-value="getActiveToken"
     :value-identifier="getValueIdentifier"
+    :value="value"
     v-bind="$attrs"
     v-on="$listeners"
     @fetch-suggestions="fetchSuggestionsBySearchTerm"

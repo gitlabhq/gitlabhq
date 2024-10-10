@@ -1,5 +1,6 @@
 <script>
 import { __ } from '~/locale';
+import Api from '~/api';
 import searchTodosGroupsQuery from '../queries/search_todos_groups.query.graphql';
 import AsyncToken from './async_token.vue';
 
@@ -19,6 +20,15 @@ export default {
         })
         .then(({ data }) => data.currentUser.groups.nodes);
     },
+    fetchGroup(groupId) {
+      return Api.group(groupId).then((data) => {
+        return {
+          id: data.id,
+          name: data.name,
+          fullPath: data.full_path,
+        };
+      });
+    },
     displayValue(group) {
       return group?.name;
     },
@@ -29,6 +39,7 @@ export default {
 <template>
   <async-token
     :fetch-suggestions="fetchGroups"
+    :fetch-active-token-value="fetchGroup"
     :suggestions-fetch-error="$options.i18n.suggestionsFetchError"
     v-bind="$attrs"
     v-on="$listeners"

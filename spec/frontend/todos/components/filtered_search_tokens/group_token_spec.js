@@ -2,6 +2,8 @@ import { GlFilteredSearchTokenSegment } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
+import MockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
@@ -27,10 +29,19 @@ const mockToken = {
   operators: OPERATORS_IS,
 };
 
+const [firstGroup] = todosGroupsResponse.data.currentUser.groups.nodes;
+const mockGroup = {
+  id: String(getIdFromGraphQLId(firstGroup.id)),
+  name: firstGroup.name,
+  full_path: firstGroup.fullName,
+};
+const mockGroupInfoEndpoint = `/api/v4/groups/${mockGroup.id}`;
+
 const searchTodosGroupsQuerySuccessHandler = jest.fn().mockResolvedValue(todosGroupsResponse);
 
 describe('GroupToken', () => {
   let wrapper;
+  let axiosMock;
 
   function createComponent({
     props = {},
@@ -64,11 +75,56 @@ describe('GroupToken', () => {
   }
 
   const findBaseToken = () => wrapper.findComponent(BaseToken);
+  const findGlFilteredSearchTokenSegments = () =>
+    wrapper.findAllComponents(GlFilteredSearchTokenSegment);
 
   const triggerFetchSuggestions = (searchTerm = null) => {
     findBaseToken().vm.$emit('fetch-suggestions', searchTerm);
     return waitForPromises();
   };
+
+  const itRendersToken = (group) => {
+    const [tokenName, , tokenValue] = findGlFilteredSearchTokenSegments().wrappers;
+
+    expect(tokenName.text()).toBe(mockToken.title);
+    expect(tokenValue.text()).toBe(group.name);
+  };
+
+  beforeEach(() => {
+    gon.api_version = 'v4';
+    axiosMock = new MockAdapter(axios);
+  });
+
+  afterEach(() => {
+    axiosMock.restore();
+  });
+
+  it("fetches the initially selected group's info if any, delaying the base token's rendering", async () => {
+    axiosMock.onGet(mockGroupInfoEndpoint).reply(200, mockGroup);
+    createComponent({
+      props: { value: { data: mockGroup.id } },
+      // Prevent the suggestions query from resolving to prevent false positives
+      searchTodosGroupsQueryHandler: () => new Promise(),
+    });
+
+    expect(findBaseToken().exists()).toBe(false);
+
+    await waitForPromises();
+
+    expect(findBaseToken().exists()).toBe(true);
+    itRendersToken(mockGroup);
+  });
+
+  it("creates an alert if it fails to fetch the initially selected group's info", async () => {
+    axiosMock.onGet(mockGroupInfoEndpoint).reply(404);
+    createComponent({ props: { value: { data: mockGroup.id } } });
+    await waitForPromises();
+
+    expect(createAlert).toHaveBeenCalledWith({
+      message: 'There was a problem fetching groups.',
+      error: expect.any(Error),
+    });
+  });
 
   it('starts fetching suggestions on mount', async () => {
     createComponent();
@@ -134,11 +190,7 @@ describe('GroupToken', () => {
     });
     await waitForPromises();
 
-    const tokenSegments = wrapper.findAllComponents(GlFilteredSearchTokenSegment);
-    const [tokenName, , tokenValue] = tokenSegments.wrappers;
-
-    expect(tokenName.text()).toBe(mockToken.title);
-    expect(tokenValue.text()).toBe(selectedGroup.name);
+    itRendersToken(selectedGroup);
   });
 
   it('creates an alert if the query fails', async () => {

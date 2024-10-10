@@ -259,7 +259,7 @@ You have two options to solve this error:
 - Use the `VAULT_CACERT` environment variable to configure GitLab Runner to trust the certificate:
   - If you are using systemd to manage GitLab Runner, see [how to add an environment variable for GitLab Runner](https://docs.gitlab.com/runner/configuration/init.html#setting-custom-environment-variables).
   - If you deployed GitLab Runner using the [Helm chart](https://docs.gitlab.com/runner/install/kubernetes.html):
-    1. [Provide a custom certificate for accessing GitLab](https://docs.gitlab.com/runner/install/kubernetes.html#providing-a-custom-certificate-for-accessing-gitlab), and make sure to add the certificate for the Vault server instead of the certificate for GitLab. If your GitLab instance is also using a self-signed certificate, you should be able to add both in the same `Secret`.
+    1. [Provide a custom certificate for accessing GitLab](https://docs.gitlab.com/runner/install/kubernetes_helm_chart_configuration.html#access-gitlab-with-a-custom-certificate), and make sure to add the certificate for the Vault server instead of the certificate for GitLab. If your GitLab instance is also using a self-signed certificate, you should be able to add both in the same `Secret`.
     1. Add the following lines in your `values.yaml` file:
 
        ```yaml

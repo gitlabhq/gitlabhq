@@ -27,6 +27,15 @@ const mockToken = {
   status: ['pending'],
 };
 
+const [firstAuthor] = todosAuthorsResponse;
+const mockAuthor = {
+  id: String(firstAuthor.id),
+  username: firstAuthor.username,
+  name: firstAuthor.name,
+  avatar_url: firstAuthor.avatar_url,
+};
+const mockAuthorInfoEndpoint = `/api/v4/users/${mockAuthor.id}`;
+
 describe('AuthorToken', () => {
   let wrapper;
   let axiosMock;
@@ -52,19 +61,57 @@ describe('AuthorToken', () => {
   }
 
   const findBaseToken = () => wrapper.findComponent(BaseToken);
+  const findGlFilteredSearchTokenSegments = () =>
+    wrapper.findAllComponents(GlFilteredSearchTokenSegment);
 
   const triggerFetchSuggestions = (searchTerm = null) => {
     findBaseToken().vm.$emit('fetch-suggestions', searchTerm);
     return waitForPromises();
   };
 
+  const itRendersToken = (author) => {
+    const [tokenName, , tokenValue] = findGlFilteredSearchTokenSegments().wrappers;
+    const avatar = tokenValue.findComponent(GlAvatar);
+
+    expect(tokenName.text()).toBe(mockToken.title);
+    expect(avatar.exists()).toBe(true);
+    expect(avatar.props('src')).toBe(author.avatar_url);
+    expect(tokenValue.text()).toBe(author.name);
+  };
+
   beforeEach(() => {
+    gon.api_version = 'v4';
     axiosMock = new MockAdapter(axios);
     axiosMock.onGet('/-/autocomplete/users.json').reply(200, todosAuthorsResponse);
   });
 
   afterEach(() => {
     axiosMock.restore();
+  });
+
+  it("fetches the initially selected author's info if any, delaying the base token's rendering", async () => {
+    // Prevent the suggestions query from resolving to prevent false positives
+    axiosMock.onGet('/-/autocomplete/users.json').reply(() => new Promise());
+    axiosMock.onGet(mockAuthorInfoEndpoint).replyOnce(200, mockAuthor);
+    createComponent({ props: { value: { data: mockAuthor.id } } });
+
+    expect(findBaseToken().exists()).toBe(false);
+
+    await waitForPromises();
+
+    expect(findBaseToken().exists()).toBe(true);
+    itRendersToken(mockAuthor);
+  });
+
+  it("creates an alert if it fails to fetch the initially selected author's info", async () => {
+    axiosMock.onGet(mockAuthorInfoEndpoint).reply(404);
+    createComponent({ props: { value: { data: mockAuthor.id } } });
+    await waitForPromises();
+
+    expect(createAlert).toHaveBeenCalledWith({
+      message: 'There was a problem fetching authors.',
+      error: expect.any(Error),
+    });
   });
 
   it('starts fetching suggestions on mount', async () => {
@@ -146,11 +193,7 @@ describe('AuthorToken', () => {
     });
     await waitForPromises();
 
-    const tokenSegments = wrapper.findAllComponents(GlFilteredSearchTokenSegment);
-    const [tokenName, , tokenValue] = tokenSegments.wrappers;
-
-    expect(tokenName.text()).toBe(mockToken.title);
-    expect(tokenValue.text()).toBe(selectedAuthor.name);
+    itRendersToken(selectedAuthor);
   });
 
   it('creates an alert if the query fails', async () => {

@@ -51,84 +51,113 @@ export const SORT_OPTIONS = [
     text: s__('Todos|Label priority'),
   },
 ];
+const LEGAL_SORT_OPTIONS = SORT_OPTIONS.map(({ value }) => value);
 
+/**
+ * The IDs must match the ones defined in the `todo_actions_options` method in
+ * `app/helpers/todos_helper.rb`.
+ */
 export const TARGET_TYPES = [
   {
+    // eslint-disable-next-line @gitlab/require-i18n-strings
+    id: 'Issue',
     value: TODO_TARGET_TYPE_ISSUE,
     title: s__('Todos|Issue'),
   },
   {
+    id: 'WorkItem', // Note: This ID has no equivalent in `app/helpers/todos_helper.rb`.
     value: TODO_TARGET_TYPE_WORK_ITEM,
     title: s__('Todos|Work item'),
   },
   {
+    id: 'MergeRequest',
     value: TODO_TARGET_TYPE_MERGE_REQUEST,
     title: s__('Todos|Merge request'),
   },
   {
+    id: 'DesignManagement::Design',
     value: TODO_TARGET_TYPE_DESIGN,
     title: s__('Todos|Design'),
   },
   {
+    id: 'AlertManagement::Alert',
     value: TODO_TARGET_TYPE_ALERT,
     title: s__('Todos|Alert'),
   },
   {
+    // eslint-disable-next-line @gitlab/require-i18n-strings
+    id: 'Epic', // Note: This ID has no equivalent in `app/helpers/todos_helper.rb`.
     value: TODO_TARGET_TYPE_EPIC,
     title: s__('Todos|Epic'),
   },
 ];
 
+/**
+ * The IDs must match the ones defined in `app/models/todo.rb`.
+ */
 export const ACTION_TYPES = [
   {
+    id: '1',
     value: TODO_ACTION_TYPE_ASSIGNED,
     title: s__('Todos|Assigned'),
   },
   {
+    id: '2',
     value: TODO_ACTION_TYPE_MENTIONED,
     title: s__('Todos|Mentioned'),
   },
   {
+    id: '3',
     value: TODO_ACTION_TYPE_BUILD_FAILED,
     title: s__('Todos|Build failed'),
   },
   {
+    id: '4',
     value: TODO_ACTION_TYPE_MARKED,
     title: s__('Todos|Marked'),
   },
   {
+    id: '5',
     value: TODO_ACTION_TYPE_APPROVAL_REQUIRED,
     title: s__('Todos|Approval required'),
   },
   {
+    id: '6',
     value: TODO_ACTION_TYPE_UNMERGEABLE,
     title: s__('Todos|Unmergeable'),
   },
   {
+    id: '7',
     value: TODO_ACTION_TYPE_DIRECTLY_ADDRESSED,
     title: s__('Todos|Directly addressed'),
   },
   {
+    id: '8',
     value: TODO_ACTION_TYPE_MERGE_TRAIN_REMOVED,
     title: s__('Todos|Merge train removed'),
   },
   {
+    id: '9',
     value: TODO_ACTION_TYPE_REVIEW_REQUESTED,
     title: s__('Todos|Review requested'),
   },
   {
+    id: '10',
     value: TODO_ACTION_TYPE_MEMBER_ACCESS_REQUESTED,
     title: s__('Todos|Member access request'),
   },
   {
+    id: '11',
     value: TODO_ACTION_TYPE_REVIEW_SUBMITTED,
     title: s__('Todos|Review submitted'),
   },
   {
+    id: '12',
     value: TODO_ACTION_TYPE_OKR_CHECKIN_REQUESTED,
     title: s__('Todos|OKR checkin requested'),
   },
   {
+    id: '13',
     value: TODO_ACTION_TYPE_ADDED_APPROVER,
     title: s__('Todos|Added approver'),
   },
@@ -141,6 +170,59 @@ const DEFAULT_TOKEN_OPTIONS = {
 
 const TOKEN_TYPE_CATEGORY = 'category';
 const TOKEN_TYPE_REASON = 'reason';
+
+const GROUP_URL_PARAM = 'group_id';
+const PROJECT_URL_PARAM = 'project_id';
+const AUTHOR_URL_PARAM = 'author_id';
+const CATEGORY_URL_PARAM = 'type';
+const ACTION_URL_PARAM = 'action_id';
+const SORT_URL_PARAM = 'sort';
+
+const FILTERS = [
+  {
+    apiParam: 'groupId',
+    urlParam: GROUP_URL_PARAM,
+    tokenType: TOKEN_TYPE_GROUP,
+  },
+  {
+    apiParam: 'projectId',
+    urlParam: PROJECT_URL_PARAM,
+    tokenType: TOKEN_TYPE_PROJECT,
+  },
+  {
+    apiParam: 'authorId',
+    urlParam: AUTHOR_URL_PARAM,
+    tokenType: TOKEN_TYPE_AUTHOR,
+  },
+  {
+    apiParam: 'type',
+    urlParam: CATEGORY_URL_PARAM,
+    tokenType: TOKEN_TYPE_CATEGORY,
+    fromUrlValueResolver: (searchParams) => {
+      const { value } =
+        TARGET_TYPES.find((option) => option.id === searchParams.get(CATEGORY_URL_PARAM)) ?? {};
+      return value;
+    },
+    toUrlValueResolver: (value) => {
+      const { id } = TARGET_TYPES.find((option) => option.value === value);
+      return id;
+    },
+  },
+  {
+    apiParam: 'action',
+    urlParam: ACTION_URL_PARAM,
+    tokenType: TOKEN_TYPE_REASON,
+    fromUrlValueResolver: (searchParams) => {
+      const { value } =
+        ACTION_TYPES.find((option) => option.id === searchParams.get(ACTION_URL_PARAM)) ?? {};
+      return value;
+    },
+    toUrlValueResolver: (value) => {
+      const { id } = ACTION_TYPES.find((option) => option.value === value);
+      return id;
+    },
+  },
+];
 
 export default {
   SORT_OPTIONS,
@@ -218,23 +300,53 @@ export default {
     },
     filters() {
       return Object.fromEntries(
-        [
-          ['groupId', TOKEN_TYPE_GROUP],
-          ['projectId', TOKEN_TYPE_PROJECT],
-          ['authorId', TOKEN_TYPE_AUTHOR],
-          ['type', TOKEN_TYPE_CATEGORY],
-          ['action', TOKEN_TYPE_REASON],
-        ].map(([param, tokenType]) => {
+        FILTERS.map(({ apiParam, tokenType }) => {
           const selectedValue = this.filterTokens.find((token) => token.type === tokenType);
-          return [param, selectedValue ? [selectedValue.value.data] : []];
+          return [apiParam, selectedValue ? [selectedValue.value.data] : []];
         }),
       );
+    },
+    isDefaultSortOrder() {
+      return this.sortBy === SORT_OPTIONS[0].value && !this.isAscending;
     },
     hasFullTextSearchToken() {
       return this.filterTokens.some(
         (token) => token.type === FILTERED_SEARCH_TERM && token.value.data.length,
       );
     },
+  },
+  created() {
+    let urlDidChangeFilters = false;
+    const searchParams = new URLSearchParams(window.location.search);
+
+    FILTERS.forEach(({ urlParam, tokenType, fromUrlValueResolver }) => {
+      const value = fromUrlValueResolver
+        ? fromUrlValueResolver(searchParams)
+        : searchParams.get(urlParam);
+      if (value) {
+        urlDidChangeFilters = true;
+        this.filterTokens.push({
+          type: tokenType,
+          value: { data: value },
+        });
+      }
+    });
+
+    if (searchParams.has(SORT_URL_PARAM)) {
+      urlDidChangeFilters = true;
+      const sortParam = searchParams.get(SORT_URL_PARAM).toUpperCase();
+
+      const sortBy = sortParam.replace(/_(ASC|DESC)$/, '');
+      this.isAscending = sortParam.endsWith('_ASC');
+      this.sortBy = LEGAL_SORT_OPTIONS.includes(sortBy) ? sortBy : SORT_OPTIONS[0].value;
+    }
+
+    if (urlDidChangeFilters) {
+      this.$emit('filters-changed', {
+        ...this.filters,
+        sort: this.isAscending ? `${this.sortBy}_ASC` : `${this.sortBy}_DESC`,
+      });
+    }
   },
   methods: {
     onSortByChange(value) {
@@ -258,6 +370,25 @@ export default {
         ...this.filters,
         sort: this.isAscending ? `${this.sortBy}_ASC` : `${this.sortBy}_DESC`,
       });
+      this.syncUrl();
+    },
+    syncUrl() {
+      const searchParams = new URLSearchParams();
+
+      FILTERS.forEach(({ apiParam, urlParam, toUrlValueResolver }) => {
+        if (this.filters[apiParam].length) {
+          const urlValue = toUrlValueResolver
+            ? toUrlValueResolver(this.filters[apiParam][0])
+            : this.filters[apiParam][0];
+          searchParams.set(urlParam, urlValue);
+        }
+      });
+
+      if (!this.isDefaultSortOrder) {
+        searchParams.set('sort', this.isAscending ? `${this.sortBy}_ASC` : `${this.sortBy}_DESC`);
+      }
+
+      window.history.replaceState(null, '', `?${searchParams.toString()}`);
     },
   },
 };

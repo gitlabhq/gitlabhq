@@ -2,6 +2,7 @@
 import { GlAvatar } from '@gitlab/ui';
 import { __ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
+import { getUser } from '~/rest_api';
 import AsyncToken from './async_token.vue';
 
 export default {
@@ -31,6 +32,9 @@ export default {
         })
         .then(({ data }) => data);
     },
+    fetchUser(userId) {
+      return getUser(userId).then(({ data }) => data);
+    },
     displayValue(user) {
       return user?.name;
     },
@@ -41,6 +45,7 @@ export default {
 <template>
   <async-token
     :fetch-suggestions="fetchUsers"
+    :fetch-active-token-value="fetchUser"
     :suggestions-fetch-error="$options.i18n.suggestionsFetchError"
     :config="config"
     v-bind="$attrs"

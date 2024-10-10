@@ -2,6 +2,8 @@ import { GlFilteredSearchTokenSegment } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
+import MockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
@@ -27,10 +29,19 @@ const mockToken = {
   operators: OPERATORS_IS,
 };
 
+const [firstProject] = todosProjectsResponse.data.projects.nodes;
+const mockProject = {
+  id: String(getIdFromGraphQLId(firstProject.id)),
+  name: firstProject.name,
+  full_path: firstProject.fullName,
+};
+const mockProjectInfoEndpoint = `/api/v4/projects/${mockProject.id}`;
+
 const searchTodosProjectsQuerySuccessHandler = jest.fn().mockResolvedValue(todosProjectsResponse);
 
 describe('ProjectToken', () => {
   let wrapper;
+  let axiosMock;
 
   function createComponent({
     props = {},
@@ -64,11 +75,56 @@ describe('ProjectToken', () => {
   }
 
   const findBaseToken = () => wrapper.findComponent(BaseToken);
+  const findGlFilteredSearchTokenSegments = () =>
+    wrapper.findAllComponents(GlFilteredSearchTokenSegment);
 
   const triggerFetchSuggestions = (searchTerm = null) => {
     findBaseToken().vm.$emit('fetch-suggestions', searchTerm);
     return waitForPromises();
   };
+
+  const itRendersToken = (project) => {
+    const [tokenName, , tokenValue] = findGlFilteredSearchTokenSegments().wrappers;
+
+    expect(tokenName.text()).toBe(mockToken.title);
+    expect(tokenValue.text()).toBe(project.name);
+  };
+
+  beforeEach(() => {
+    gon.api_version = 'v4';
+    axiosMock = new MockAdapter(axios);
+  });
+
+  afterEach(() => {
+    axiosMock.restore();
+  });
+
+  it("fetches the initially selected project's info if any, delaying the base token's rendering", async () => {
+    axiosMock.onGet(mockProjectInfoEndpoint).reply(200, mockProject);
+    createComponent({
+      props: { value: { data: mockProject.id } },
+      // Prevent the suggestions query from resolving to prevent false positives
+      searchTodosProjectsQueryHandler: () => new Promise(),
+    });
+
+    expect(findBaseToken().exists()).toBe(false);
+
+    await waitForPromises();
+
+    expect(findBaseToken().exists()).toBe(true);
+    itRendersToken(mockProject);
+  });
+
+  it("creates an alert if it fails to fetch the initially selected project's info", async () => {
+    axiosMock.onGet(mockProjectInfoEndpoint).reply(404);
+    createComponent({ props: { value: { data: mockProject.id } } });
+    await waitForPromises();
+
+    expect(createAlert).toHaveBeenCalledWith({
+      message: 'There was a problem fetching projects.',
+      error: expect.any(Error),
+    });
+  });
 
   it('starts fetching suggestions on mount', async () => {
     createComponent();

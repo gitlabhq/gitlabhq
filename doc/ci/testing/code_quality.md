@@ -637,7 +637,7 @@ name = "docker:20.10.12-dind"
 
 NOTE:
 If you use the [GitLab Runner Helm Chart](https://docs.gitlab.com/runner/install/kubernetes.html), you can use
-the above Kubernetes configuration in the [`config` field](https://docs.gitlab.com/runner/install/kubernetes.html#additional-configuration)
+the above Kubernetes configuration in the [`config` field](https://docs.gitlab.com/runner/install/kubernetes_helm_chart_configuration.html)
 in the `values.yaml` file.
 
 To ensure that you use the `overlay2` [storage driver](https://docs.docker.com/storage/storagedriver/select-storage-driver/), which offers the best overall performance:
