@@ -128,10 +128,21 @@ These stages are always available, regardless of any project's CI/CD configurati
 | `file` | `string` | true | A full file path relative to the root directory (/). The YAML files must have the `.yml` or `.yaml` extension. |
 | `ref` | `string` | false | The ref to retrieve the file from. Defaults to the HEAD of the project when not specified. |
 
-To run pipelines with injected CI/CD configuration, users must have access to the project with the CI/CD configuration.
+Use the `content` type in a policy to reference a CI/CD configuration stored in another repository.
+This allows you to reuse the same CI/CD configuration across multiple policies, reducing the
+overhead of maintaining these configurations. For example, if you have a custom secret detection
+CI/CD configuration you want to enforce in policy A and policy B, you can create a single YAML configuration file and reference the configuration in both policies.
 
-Starting in GitLab 17.4, users can store the CI/CD configuration in a security policy project repository and grant pipeline execution access to the repository. Projects linked to the security policy project then have access to the repository as a source for security policies.
-You can configure this in the project's general settings for security policy projects.
+Prerequisites:
+
+- Users triggering pipelines run in those projects on which a policy containing the `content` type
+  is enforced must have at minimum read-only access to the project containing the CI/CD
+- In projects that enforce pipeline execution policies, users must have at least read-only access to the project that contains the CI/CD configuration to trigger the pipeline. 
+
+  In GitLab 17.4 and later, you can grant the required read-only access for the CI/CD configuration file
+  specified in a security policy project using the `content` type. To do so, enable the setting **Pipeline execution policies** in the general settings of the security policy project.
+  Enabling this setting grants the user who triggered the pipeline access to 
+  read the CI/CD configuration file enforced by the pipeline execution policy. This setting does not grant the user access to any other parts of the project where the configuration file is stored.
 
 ### `policy_scope` scope type
 

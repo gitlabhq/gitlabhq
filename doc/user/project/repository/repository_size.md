@@ -323,6 +323,8 @@ For example, to get a list of files at a given commit or branch sorted by size:
 
    The third column in the output is the object ID of the blob.
 
+Alternatively, you can get these IDs using the [Repositories API list repository tree](../../../api/repositories.md#list-repository-tree) endpoint.
+
 ## Storage limits
 
 Repository size limits:

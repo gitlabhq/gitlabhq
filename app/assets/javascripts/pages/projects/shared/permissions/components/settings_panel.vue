@@ -94,10 +94,10 @@ export default {
     ),
     pipelineExecutionPoliciesLabel: s__('ProjectSettings|Pipeline execution policies'),
     sppRepositoryPipelineAccessLabel: s__(
-      'ProjectSettings|Grant access to this repository for projects linked to it as the security policy project source for security policies.',
+      'ProjectSettings|Grant access to the CI/CD configurations for projects linked to this security policy project as the source for security policies.',
     ),
     sppRepositoryPipelineAccessHelpText: s__(
-      'ProjectSettings|Allow users and tokens read-only access to fetch security policy configurations within this project to enforce policies. %{linkStart}Learn more%{linkEnd}.',
+      'ProjectSettings|Allow users and tokens read-only access to fetch security policy configurations in this project to enforce policies. %{linkStart}Learn more%{linkEnd}.',
     ),
   },
   VISIBILITY_LEVEL_PRIVATE_INTEGER,
