@@ -14,7 +14,7 @@ RSpec.describe 'gitlab:redis:secret rake tasks', :silence_stdout, feature_catego
     allow_next_instance_of(Gitlab::Redis::Cache) do |instance|
       allow(instance).to receive(:secret_file).and_return(redis_secret_file)
     end
-    allow(Gitlab::Application.secrets).to receive(:encrypted_settings_key_base).and_return(SecureRandom.hex(64))
+    allow(Gitlab::Application.credentials).to receive(:encrypted_settings_key_base).and_return(SecureRandom.hex(64))
   end
 
   after do
@@ -30,7 +30,7 @@ RSpec.describe 'gitlab:redis:secret rake tasks', :silence_stdout, feature_catego
 
     it 'displays error when key does not exist' do
       Settings.encrypted(redis_secret_file).write('somevalue')
-      allow(Gitlab::Application.secrets).to receive(:encrypted_settings_key_base).and_return(nil)
+      allow(Gitlab::Application.credentials).to receive(:encrypted_settings_key_base).and_return(nil)
       expect do
         run_rake_task('gitlab:redis:secret:show')
       end.to output(/Missing encryption key encrypted_settings_key_base./).to_stderr
@@ -38,7 +38,7 @@ RSpec.describe 'gitlab:redis:secret rake tasks', :silence_stdout, feature_catego
 
     it 'displays error when key is changed' do
       Settings.encrypted(redis_secret_file).write('somevalue')
-      allow(Gitlab::Application.secrets).to receive(:encrypted_settings_key_base).and_return(SecureRandom.hex(64))
+      allow(Gitlab::Application.credentials).to receive(:encrypted_settings_key_base).and_return(SecureRandom.hex(64))
       expect do
         run_rake_task('gitlab:redis:secret:show')
       end.to output(/Couldn't decrypt .* Perhaps you passed the wrong key?/).to_stderr
@@ -60,7 +60,7 @@ RSpec.describe 'gitlab:redis:secret rake tasks', :silence_stdout, feature_catego
     end
 
     it 'displays error when key does not exist' do
-      allow(Gitlab::Application.secrets).to receive(:encrypted_settings_key_base).and_return(nil)
+      allow(Gitlab::Application.credentials).to receive(:encrypted_settings_key_base).and_return(nil)
       expect do
         run_rake_task('gitlab:redis:secret:edit')
       end.to output(/Missing encryption key encrypted_settings_key_base./).to_stderr
@@ -68,7 +68,7 @@ RSpec.describe 'gitlab:redis:secret rake tasks', :silence_stdout, feature_catego
 
     it 'displays error when key is changed' do
       Settings.encrypted(redis_secret_file).write('somevalue')
-      allow(Gitlab::Application.secrets).to receive(:encrypted_settings_key_base).and_return(SecureRandom.hex(64))
+      allow(Gitlab::Application.credentials).to receive(:encrypted_settings_key_base).and_return(SecureRandom.hex(64))
       expect do
         run_rake_task('gitlab:redis:secret:edit')
       end.to output(/Couldn't decrypt .* Perhaps you passed the wrong key?/).to_stderr
@@ -110,7 +110,7 @@ RSpec.describe 'gitlab:redis:secret rake tasks', :silence_stdout, feature_catego
     end
 
     it 'displays error when key does not exist' do
-      allow(Gitlab::Application.secrets).to receive(:encrypted_settings_key_base).and_return(nil)
+      allow(Gitlab::Application.credentials).to receive(:encrypted_settings_key_base).and_return(nil)
       expect do
         run_rake_task('gitlab:redis:secret:write')
       end.to output(/Missing encryption key encrypted_settings_key_base./).to_stderr

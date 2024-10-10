@@ -39,7 +39,7 @@ To set up the GitLab agent, you're going to:
 
 ## Prerequisites
 
-- Your [workspace infrastructure](configuration.md#set-up-workspace-infrastructure) must be set up.
+- You must [set up workspace infrastructure](configuration.md#set-up-workspace-infrastructure).
 - You must have administrator access to the instance or the Owner role for the group.
 
 ## Configure the `remote_development` module in the agent project
@@ -48,7 +48,7 @@ To configure the `remote_development` module in the agent project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. In your project, create a `.gitlab/agents/<agentName>/config.yaml` file.
-   `agentName` is the name of the agent you configured when you set up the workspace infrastructure.
+   `agentName` is the name of the agent you configured when you set up workspace infrastructure.
 1. In `config.yaml`, use the following configuration for [workspace settings](gitlab_agent_configuration.md#workspace-settings):
 
    ```yaml
@@ -76,7 +76,7 @@ Now it's time to grant workspace users the necessary permissions to create and m
 
 ## Grant workspace users the necessary permissions
 
-You can now grant users with at least the Developer role for the workspace and agent projects
+You can grant users with at least the Developer role for the workspace and agent projects
 the necessary permissions to create and manage workspaces.
 
 To grant workspace users the necessary permissions, see:

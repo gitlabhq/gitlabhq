@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::OtpKeyRotator do
   let(:file) { Tempfile.new("otp-key-rotator-test") }
   let(:filename) { file.path }
-  let(:old_key) { Gitlab::Application.secrets.otp_key_base }
+  let(:old_key) { Gitlab::Application.credentials.otp_key_base }
   let(:new_key) { "00" * 32 }
   let!(:users) { create_list(:user, 5, :two_factor) }
 

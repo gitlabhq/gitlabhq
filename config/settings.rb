@@ -133,7 +133,7 @@ Settings = GitlabSettings.load(file, Rails.env) do
 
   # Don't use this in new code, use attr_encrypted_db_key_base_32 instead!
   def attr_encrypted_db_key_base_truncated
-    Gitlab::Application.secrets.db_key_base[0..31]
+    Gitlab::Application.credentials.db_key_base[0..31]
   end
 
   # Ruby 2.4+ requires passing in the exact required length for OpenSSL keys
@@ -156,14 +156,14 @@ Settings = GitlabSettings.load(file, Rails.env) do
   # generate a hash of the password:
   # https://github.com/attr-encrypted/encryptor/blob/c3a62c4a9e74686dd95e0548f9dc2a361fdc95d1/lib/encryptor.rb#L77
   def attr_encrypted_db_key_base
-    Gitlab::Application.secrets.db_key_base
+    Gitlab::Application.credentials.db_key_base
   end
 
   def encrypted(path)
     Gitlab::EncryptedConfiguration.new(
       content_path: path,
-      base_key: Gitlab::Application.secrets.encrypted_settings_key_base,
-      previous_keys: Gitlab::Application.secrets.rotated_encrypted_settings_key_base || []
+      base_key: Gitlab::Application.credentials.encrypted_settings_key_base,
+      previous_keys: Gitlab::Application.credentials.rotated_encrypted_settings_key_base || []
     )
   end
 

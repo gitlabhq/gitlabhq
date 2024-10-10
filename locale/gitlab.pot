@@ -13478,9 +13478,6 @@ msgstr ""
 msgid "CodeSuggestions|Get started with these Duo Pro features:"
 msgstr ""
 
-msgid "CodeSuggestions|GitLab Duo"
-msgstr ""
-
 msgid "CodeSuggestions|GitLab Duo Enterprise"
 msgstr ""
 
@@ -50456,9 +50453,6 @@ msgstr ""
 msgid "SecurityReports|Has merge request"
 msgstr ""
 
-msgid "SecurityReports|Hide dismissed"
-msgstr ""
-
 msgid "SecurityReports|Historical view of open vulnerabilities in the default branch. Excludes vulnerabilities that were resolved or dismissed. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
@@ -61282,9 +61276,6 @@ msgstr ""
 msgid "We've detected unusual activity"
 msgstr ""
 
-msgid "We've found no vulnerabilities"
-msgstr ""
-
 msgid "Web IDE"
 msgstr ""
 
@@ -61781,9 +61772,6 @@ msgid "Which emoji events trigger webhooks"
 msgstr ""
 
 msgid "Which project or group access token events trigger webhooks"
-msgstr ""
-
-msgid "While it's rare to have no vulnerabilities, it can happen. In any event, we ask that you please double check your settings to make sure you've set up your dashboard correctly."
 msgstr ""
 
 msgid "Who can approve?"

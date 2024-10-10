@@ -159,11 +159,12 @@ RSpec.describe API::DeployKeys, :aggregate_failures, feature_category: :continuo
       end
 
       it 'accepts optional expires_at parameter' do
-        attrs = attributes_for(:another_key).merge(expires_at: 2.days.since.iso8601)
+        expires_at = 2.days.since
+        attrs = attributes_for(:another_key).merge(expires_at: expires_at.iso8601)
         post api(path, personal_access_token: pat), params: attrs
 
         expect(response).to have_gitlab_http_status(:created)
-        expect(Time.parse(json_response['expires_at'])).to be_like_time(2.days.since)
+        expect(Time.parse(json_response['expires_at'])).to be_like_time(expires_at)
       end
     end
   end
@@ -299,12 +300,13 @@ RSpec.describe API::DeployKeys, :aggregate_failures, feature_category: :continuo
     end
 
     it 'accepts expires_at parameter' do
-      key_attrs = attributes_for(:another_key).merge(expires_at: 2.days.since.iso8601)
+      expires_at = 2.days.since
+      key_attrs = attributes_for(:another_key).merge(expires_at: expires_at.iso8601)
 
       post api(project_path, admin, admin_mode: true), params: key_attrs
 
       expect(response).to have_gitlab_http_status(:created)
-      expect(Time.parse(json_response['expires_at'])).to be_like_time(2.days.since)
+      expect(Time.parse(json_response['expires_at'])).to be_like_time(expires_at)
     end
   end
 

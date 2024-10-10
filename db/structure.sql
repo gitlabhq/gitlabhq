@@ -20746,7 +20746,6 @@ CREATE TABLE vulnerability_reads (
     owasp_top_10 smallint DEFAULT '-1'::integer,
     traversal_ids bigint[] DEFAULT '{}'::bigint[],
     archived boolean DEFAULT false NOT NULL,
-    identifier_external_ids text[] DEFAULT '{}'::text[] NOT NULL,
     identifier_names text[] DEFAULT '{}'::text[] NOT NULL,
     has_vulnerability_resolution boolean DEFAULT false,
     CONSTRAINT check_380451bdbe CHECK ((char_length(location_image) <= 2048)),

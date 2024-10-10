@@ -145,12 +145,12 @@ After Quick Chat opens:
 1. In the message box, enter your question. The available commands are shown while you enter text:
    - Enter `/` to display all available commands.
    - Enter `/re` to display `/refactor`.
-1. To send your question, select **Send**, or press <kbd>Command<kbd> + <kbd>Enter<kbd>.
+1. To send your question, select **Send**, or press <kbd>Command</kbd> + <kbd>Enter</kbd>.
 1. To exit chat, either select the chat icon in the gutter, or press **Escape** while focused on the chat.
 
 ## Use GitLab Duo Chat in Visual Studio for Windows
 
-To use GitLab Duo Chat in the GitLab extension for Visual Studio: 
+To use GitLab Duo Chat in the GitLab extension for Visual Studio:
 
 1. Install and set up the extension for Visual Studio:
    1. In Visual Studio, download and install the [GitLab extension for Visual Studio](../../editor_extensions/visual_studio/index.md).

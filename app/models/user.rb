@@ -95,13 +95,13 @@ class User < ApplicationRecord
   attribute :color_mode_id, default: -> { Gitlab::ColorModes::APPLICATION_DEFAULT }
 
   attr_encrypted :otp_secret,
-    key: Gitlab::Application.secrets.otp_key_base,
+    key: Gitlab::Application.credentials.otp_key_base,
     mode: :per_attribute_iv_and_salt,
     insecure_mode: true,
     algorithm: 'aes-256-cbc'
 
   devise :two_factor_authenticatable,
-    otp_secret_encryption_key: Gitlab::Application.secrets.otp_key_base
+    otp_secret_encryption_key: Gitlab::Application.credentials.otp_key_base
 
   devise :two_factor_backupable, otp_number_of_backup_codes: 10
   devise :two_factor_backupable_pbkdf2

@@ -87,6 +87,20 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
         expect(response).to have_gitlab_http_status(:no_content)
       end
 
+      it 'uses batched Redis updates when feature flag is enabled' do
+        expect(Gitlab::InternalEvents).to receive(:with_batched_redis_writes)
+
+        send_request(params: { counters: { k8s_api_proxy_request: 5 } })
+      end
+
+      it 'does not use batched Redis updates when feature flag is disabled' do
+        stub_feature_flags(batched_redis_updates_for_kubernetes_agent_events: false)
+
+        expect(Gitlab::InternalEvents).not_to receive(:with_batched_redis_writes)
+
+        send_request(params: { counters: { k8s_api_proxy_request: 5 } })
+      end
+
       it 'returns no_content for counts of zero' do
         counters = { k8s_api_proxy_request: 0 }
         unique_counters = { k8s_api_proxy_requests_unique_users_via_ci_access: [] }

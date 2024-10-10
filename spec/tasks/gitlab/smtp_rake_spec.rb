@@ -11,7 +11,7 @@ RSpec.describe 'gitlab:smtp:secret rake tasks' do
     stub_warn_user_is_not_gitlab
     FileUtils.mkdir_p('tmp/tests/smtpenc/')
     allow(Gitlab.config.gitlab).to receive(:email_smtp_secret_file).and_return(smtp_secret_file)
-    allow(Gitlab::Application.secrets).to receive(:encrypted_settings_key_base).and_return(SecureRandom.hex(64))
+    allow(Gitlab::Application.credentials).to receive(:encrypted_settings_key_base).and_return(SecureRandom.hex(64))
   end
 
   after do
@@ -20,19 +20,25 @@ RSpec.describe 'gitlab:smtp:secret rake tasks' do
 
   describe ':show' do
     it 'displays error when file does not exist' do
-      expect { run_rake_task('gitlab:smtp:secret:show') }.to output(/File .* does not exist. Use `gitlab-rake gitlab:smtp:secret:edit` to change that./).to_stdout
+      expect do
+        run_rake_task('gitlab:smtp:secret:show')
+      end.to output(/File .* does not exist. Use `gitlab-rake gitlab:smtp:secret:edit` to change that./).to_stdout
     end
 
     it 'displays error when key does not exist' do
       Settings.encrypted(smtp_secret_file).write('somevalue')
-      allow(Gitlab::Application.secrets).to receive(:encrypted_settings_key_base).and_return(nil)
-      expect { run_rake_task('gitlab:smtp:secret:show') }.to output(/Missing encryption key encrypted_settings_key_base./).to_stderr
+      allow(Gitlab::Application.credentials).to receive(:encrypted_settings_key_base).and_return(nil)
+      expect do
+        run_rake_task('gitlab:smtp:secret:show')
+      end.to output(/Missing encryption key encrypted_settings_key_base./).to_stderr
     end
 
     it 'displays error when key is changed' do
       Settings.encrypted(smtp_secret_file).write('somevalue')
-      allow(Gitlab::Application.secrets).to receive(:encrypted_settings_key_base).and_return(SecureRandom.hex(64))
-      expect { run_rake_task('gitlab:smtp:secret:show') }.to output(/Couldn't decrypt .* Perhaps you passed the wrong key?/).to_stderr
+      allow(Gitlab::Application.credentials).to receive(:encrypted_settings_key_base).and_return(SecureRandom.hex(64))
+      expect do
+        run_rake_task('gitlab:smtp:secret:show')
+      end.to output(/Couldn't decrypt .* Perhaps you passed the wrong key?/).to_stderr
     end
 
     it 'outputs the unencrypted content when present' do
@@ -51,14 +57,18 @@ RSpec.describe 'gitlab:smtp:secret rake tasks' do
     end
 
     it 'displays error when key does not exist' do
-      allow(Gitlab::Application.secrets).to receive(:encrypted_settings_key_base).and_return(nil)
-      expect { run_rake_task('gitlab:smtp:secret:edit') }.to output(/Missing encryption key encrypted_settings_key_base./).to_stderr
+      allow(Gitlab::Application.credentials).to receive(:encrypted_settings_key_base).and_return(nil)
+      expect do
+        run_rake_task('gitlab:smtp:secret:edit')
+      end.to output(/Missing encryption key encrypted_settings_key_base./).to_stderr
     end
 
     it 'displays error when key is changed' do
       Settings.encrypted(smtp_secret_file).write('somevalue')
-      allow(Gitlab::Application.secrets).to receive(:encrypted_settings_key_base).and_return(SecureRandom.hex(64))
-      expect { run_rake_task('gitlab:smtp:secret:edit') }.to output(/Couldn't decrypt .* Perhaps you passed the wrong key?/).to_stderr
+      allow(Gitlab::Application.credentials).to receive(:encrypted_settings_key_base).and_return(SecureRandom.hex(64))
+      expect do
+        run_rake_task('gitlab:smtp:secret:edit')
+      end.to output(/Couldn't decrypt .* Perhaps you passed the wrong key?/).to_stderr
     end
 
     it 'displays error when write directory does not exist' do
@@ -93,8 +103,10 @@ RSpec.describe 'gitlab:smtp:secret rake tasks' do
     end
 
     it 'displays error when key does not exist' do
-      allow(Gitlab::Application.secrets).to receive(:encrypted_settings_key_base).and_return(nil)
-      expect { run_rake_task('gitlab:smtp:secret:write') }.to output(/Missing encryption key encrypted_settings_key_base./).to_stderr
+      allow(Gitlab::Application.credentials).to receive(:encrypted_settings_key_base).and_return(nil)
+      expect do
+        run_rake_task('gitlab:smtp:secret:write')
+      end.to output(/Missing encryption key encrypted_settings_key_base./).to_stderr
     end
 
     it 'displays error when write directory does not exist' do

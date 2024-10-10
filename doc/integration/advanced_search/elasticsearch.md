@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** Self-managed
 
 This page describes how to enable advanced search. When enabled,
 advanced search provides faster search response times and [improved search features](../../user/search/advanced_search.md).
@@ -288,9 +288,9 @@ When you upgrade to GitLab 15.0 and later, you must use Elasticsearch 7.x and la
 ## Elasticsearch repository indexer
 
 To index Git repository data, GitLab uses [`gitlab-elasticsearch-indexer`](https://gitlab.com/gitlab-org/gitlab-elasticsearch-indexer).
-For self-compiled installations, see [install the indexer from source](#install-the-indexer-from-source).
+For self-compiled installations, see [install the indexer](#install-the-indexer).
 
-### Install the indexer from source
+### Install the indexer
 
 You first install some dependencies and then build and install the indexer itself.
 
@@ -366,9 +366,6 @@ These errors may occur when indexing Git repository data.
 
 ## Enable advanced search
 
-DETAILS:
-**Offering:** Self-managed
-
 Prerequisites:
 
 - You must have administrator access to the instance.
@@ -395,19 +392,15 @@ For GitLab instances with more than 50 GB of repository data, see [Index large i
 
 #### From the user interface
 
-DETAILS:
-**Offering:** Self-managed
-
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/271532) in GitLab 17.3.
 
 Prerequisites:
 
 - You must have administrator access to the instance.
 
-You can use **Index the instance** to perform initial indexing
-or re-create an index from scratch.
+You can perform initial indexing or re-create an index from the user interface.
 
-To enable advanced search with this setting:
+To enable advanced search and index the instance from the user interface:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Search**.
@@ -415,9 +408,6 @@ To enable advanced search with this setting:
 1. Select **Index the instance**.
 
 #### With a Rake task
-
-DETAILS:
-**Offering:** Self-managed
 
 Prerequisites:
 
@@ -459,9 +449,6 @@ bundle exec rake gitlab:elastic:index_users RAILS_ENV=production
 
 ### Check indexing status
 
-DETAILS:
-**Offering:** Self-managed
-
 Prerequisites:
 
 - You must have administrator access to the instance.
@@ -473,9 +460,6 @@ To check indexing status:
 1. Expand **Indexing status**.
 
 ### Monitor the status of background jobs
-
-DETAILS:
-**Offering:** Self-managed
 
 Prerequisites:
 
@@ -551,16 +535,14 @@ If you do not specify any namespace or project, only project records are indexed
 
 ## Enable custom language analyzers
 
-DETAILS:
-**Offering:** Self-managed
-
 Prerequisites:
 
 - You must have administrator access to the instance.
 
-You can improve the language support for Chinese and Japanese languages by utilizing [`smartcn`](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-smartcn.html) and/or [`kuromoji`](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-kuromoji.html) analysis plugins from Elastic.
+You can improve language support for Chinese and Japanese by using the [`smartcn`](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-smartcn.html)
+and [`kuromoji`](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-kuromoji.html) analysis plugins from Elastic.
 
-To enable language support:
+To enable custom language analyzers:
 
 1. Install the desired plugins, refer to [Elasticsearch documentation](https://www.elastic.co/guide/en/elasticsearch/plugins/7.9/installation.html) for plugins installation instructions. The plugins must be installed on every node in the cluster, and each node must be restarted after installation. For a list of plugins, see the table later in this section.
 1. On the left sidebar, at the bottom, select **Admin**.
@@ -582,9 +564,6 @@ For guidance on what to install, see the following Elasticsearch language plugin
 
 ## Disable advanced search
 
-DETAILS:
-**Offering:** Self-managed
-
 Prerequisites:
 
 - You must have administrator access to the instance.
@@ -598,17 +577,14 @@ To disable advanced search in GitLab:
 1. Optional. For Elasticsearch instances that are still online, delete existing indices:
 
    ```shell
-   # Omnibus installations
+   # For installations that use the Linux package
    sudo gitlab-rake gitlab:elastic:delete_index
 
-   # Installations from source
+   # For self-compiled installations
    bundle exec rake gitlab:elastic:delete_index RAILS_ENV=production
    ```
 
 ## Resume indexing
-
-DETAILS:
-**Offering:** Self-managed
 
 Prerequisites:
 
@@ -636,14 +612,11 @@ You can use zero-downtime reindexing to configure index settings or mappings tha
 
 ### Trigger reindexing
 
-DETAILS:
-**Offering:** Self-managed
-
 Prerequisites:
 
 - You must have administrator access to the instance.
 
-To trigger the reindexing process:
+To trigger reindexing:
 
 1. Sign in to your GitLab instance as an administrator.
 1. On the left sidebar, at the bottom, select **Admin**.
@@ -659,22 +632,21 @@ page you triggered the reindexing process.
 
 While the reindexing is running, you can follow its progress under that same section.
 
-#### Elasticsearch zero-downtime reindexing
-
-DETAILS:
-**Offering:** Self-managed
+#### Trigger zero-downtime reindexing
 
 Prerequisites:
 
 - You must have administrator access to the instance.
 
+To trigger zero-downtime reindexing:
+
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Search**.
-1. Expand **Elasticsearch zero-downtime reindexing**, and you'll
-   find the following options:
+1. Expand **Elasticsearch zero-downtime reindexing**.
+   The following settings are available:
 
-- [Slice multiplier](#slice-multiplier)
-- [Maximum running slices](#maximum-running-slices)
+   - [Slice multiplier](#slice-multiplier)
+   - [Maximum running slices](#maximum-running-slices)
 
 ##### Slice multiplier
 
@@ -704,22 +676,19 @@ it is for the reindex to finish quickly and resume indexing.
 
 ### Mark the most recent reindexing job as failed and resume indexing
 
-DETAILS:
-**Offering:** Self-managed
-
 Prerequisites:
 
 - You must have administrator access to the instance.
 
-To abandon the unfinished reindexing job and resume indexing:
+To abandon an unfinished reindexing job and resume indexing:
 
 1. Mark the most recent reindexing job as failed:
 
    ```shell
-   # Omnibus installations
+   # For installations that use the Linux package
    sudo gitlab-rake gitlab:elastic:mark_reindex_failed
 
-   # Installations from source
+   # For self-compiled installations
    bundle exec rake gitlab:elastic:mark_reindex_failed RAILS_ENV=production
    ```
 
@@ -995,9 +964,6 @@ The number must not be `0` because losing one node corrupts the index.
 
 ### Index large instances efficiently
 
-DETAILS:
-**Offering:** Self-managed
-
 Prerequisites:
 
 - You must have administrator access to the instance.
@@ -1009,26 +975,26 @@ Make sure to prepare for this task by having a
 [extra Sidekiq processes](../../administration/sidekiq/extra_sidekiq_processes.md).
 
 If [enabling advanced search](#enable-advanced-search) causes problems
-due to large volumes of data being indexed, follow these steps:
+due to large volumes of data being indexed:
 
 1. [Configure your Elasticsearch host and port](#enable-advanced-search).
 1. Create empty indices:
 
    ```shell
-   # Omnibus installations
+   # For installations that use the Linux package
    sudo gitlab-rake gitlab:elastic:create_empty_index
 
-   # Installations from source
+   # For self-compiled installations
    bundle exec rake gitlab:elastic:create_empty_index RAILS_ENV=production
    ```
 
 1. If this is a re-index of your GitLab instance, clear the index status:
 
    ```shell
-   # Omnibus installations
+   # For installations that use the Linux package
    sudo gitlab-rake gitlab:elastic:clear_index_status
 
-   # Installations from source
+   # For self-compiled installations
    bundle exec rake gitlab:elastic:clear_index_status RAILS_ENV=production
    ```
 
@@ -1056,10 +1022,10 @@ due to large volumes of data being indexed, follow these steps:
 1. Index projects and their associated data:
 
    ```shell
-   # Omnibus installations
+   # For installations that use the Linux package
    sudo gitlab-rake gitlab:elastic:index_projects
 
-   # Installations from source
+   # For self-compiled installations
    bundle exec rake gitlab:elastic:index_projects RAILS_ENV=production
    ```
 
@@ -1068,10 +1034,10 @@ due to large volumes of data being indexed, follow these steps:
    and select `elastic_commit_indexer`, or you can query indexing status using a Rake task:
 
    ```shell
-   # Omnibus installations
+   # For installations that use the Linux package
    sudo gitlab-rake gitlab:elastic:index_projects_status
 
-   # Installations from source
+   # For self-compiled installations
    bundle exec rake gitlab:elastic:index_projects_status RAILS_ENV=production
 
    Indexing is 65.55% complete (6555/10000 projects)
@@ -1081,10 +1047,10 @@ due to large volumes of data being indexed, follow these steps:
    `ID_FROM` and `ID_TO` parameters:
 
    ```shell
-   # Omnibus installations
+   # For installations that use the Linux package
    sudo gitlab-rake gitlab:elastic:index_projects ID_FROM=1001 ID_TO=2000
 
-   # Installations from source
+   # For self-compiled installations
    bundle exec rake gitlab:elastic:index_projects ID_FROM=1001 ID_TO=2000 RAILS_ENV=production
    ```
 
@@ -1103,13 +1069,13 @@ due to large volumes of data being indexed, follow these steps:
 1. Epics, group wikis, personal snippets, and users are not associated with a project and must be indexed separately:
 
    ```shell
-   # Omnibus installations
+   # For installations that use the Linux package
    sudo gitlab-rake gitlab:elastic:index_epics
    sudo gitlab-rake gitlab:elastic:index_group_wikis
    sudo gitlab-rake gitlab:elastic:index_snippets
    sudo gitlab-rake gitlab:elastic:index_users
 
-   # Installations from source
+   # For self-compiled installations
    bundle exec rake gitlab:elastic:index_epics RAILS_ENV=production
    bundle exec rake gitlab:elastic:index_group_wikis RAILS_ENV=production
    bundle exec rake gitlab:elastic:index_snippets RAILS_ENV=production

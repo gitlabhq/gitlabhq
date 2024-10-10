@@ -56,8 +56,8 @@ If a cluster agent is allowed for one group, for example `subgroup-1`, then the 
 
 Prerequisites:
 
-- The [workspace infrastructure](configuration.md#set-up-workspace-infrastructure) must be set up.
-- You must be an administrator or group owner.
+- You must [set up workspace infrastructure](configuration.md#set-up-workspace-infrastructure).
+- You must have administrator access to the instance or the Owner role for the group.
 
 To allow a cluster agent for workspaces in a group:
 
@@ -73,8 +73,8 @@ The status of the selected agent is updated to **Allowed**, and the agent is dis
 
 Prerequisites:
 
-- The [workspace infrastructure](configuration.md#set-up-workspace-infrastructure) must be set up.
-- You must be an administrator or group owner.
+- You must [set up workspace infrastructure](configuration.md#set-up-workspace-infrastructure).
+- You must have administrator access to the instance or the Owner role for the group.
 
 To remove an allowed cluster agent from a group:
 
@@ -115,6 +115,7 @@ you can use any configured agent in `top-group` and in any of its subgroups.
 
 NOTE:
 If a setting has an invalid value, it's not possible to update any setting until you fix that value.
+Updating any of these settings (except `enabled`) does not affect existing workspaces
 
 ### `enabled`
 
@@ -238,8 +239,6 @@ Any resources you define in your [devfile](index.md#devfile) override this setti
 For `default_resources_per_workspace_container`, `requests` and `limits` are required.
 For more information about possible CPU and memory values, see [Resource units in Kubernetes](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#resource-units-in-kubernetes).
 
-When you change any of these values, existing workspaces restart immediately for the changes to take effect.
-
 **Example configuration:**
 
 ```yaml
@@ -266,7 +265,6 @@ For more information about possible CPU and memory values, see:
 - [Resource units in Kubernetes](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#resource-units-in-kubernetes)
 - [Resource quotas](https://kubernetes.io/docs/concepts/policy/resource-quotas/)
 
-When you change any of these values, existing workspaces restart immediately for the changes to take effect.
 Workspaces fail when they exceed the values you set for `requests` and `limits`.
 
 **Example configuration:**
@@ -296,8 +294,6 @@ You cannot create new workspaces for an agent when:
 - The number of workspaces for the agent has reached the defined `workspaces_quota`.
 - `workspaces_quota` is set to `0`.
 
-This setting does not affect existing workspaces for the agent.
-
 The default value is `-1` (unlimited).
 Possible values are greater than or equal to `-1`.
 
@@ -319,7 +315,7 @@ You cannot create new workspaces for a user when:
 - The number of workspaces for the user has reached the defined `workspaces_per_user_quota`.
 - `workspaces_per_user_quota` is set to `0`.
 
-This setting does not affect existing workspaces for the user.
+However, if the quota is reduced below the number of currently running workspaces for a user, the user's workspaces will _not_ be automatically terminated.
 
 The default value is `-1` (unlimited).
 Possible values are greater than or equal to `-1`.

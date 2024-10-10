@@ -40,7 +40,7 @@ module Terraform
     end
 
     def key
-      OpenSSL::HMAC.digest('SHA256', Gitlab::Application.secrets.db_key_base, project_id.to_s)
+      OpenSSL::HMAC.digest('SHA256', Gitlab::Application.credentials.db_key_base, project_id.to_s)
     end
 
     class << self
