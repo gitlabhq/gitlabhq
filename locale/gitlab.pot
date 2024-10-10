@@ -20289,6 +20289,9 @@ msgstr ""
 msgid "DuoChat|Included references"
 msgstr ""
 
+msgid "DuoChat|Learn what Duo Chat can do."
+msgstr ""
+
 msgid "DuoChat|No results found"
 msgstr ""
 

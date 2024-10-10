@@ -59,6 +59,8 @@ module Gitlab
       #           it instead groups the diffs into smaller array where each array contains diffs with cumulative size of
       #           +MIN_CHUNK_SIZE_PER_PROC_BYTES+ bytes and each group runs in a separate sub-process. Default value
       #           is true.
+      # +exclusions+:: A hash containing arrays of exclusions by their type. Types handled here are
+      #                `raw_value` and `rule`.
       #
       # NOTE:
       # Running the scan in fork mode primarily focuses on reducing the memory consumption of the scan by
@@ -77,7 +79,8 @@ module Gitlab
         diffs,
         timeout: DEFAULT_SCAN_TIMEOUT_SECS,
         payload_timeout: DEFAULT_PAYLOAD_TIMEOUT_SECS,
-        subprocess: RUN_IN_SUBPROCESS
+        subprocess: RUN_IN_SUBPROCESS,
+        exclusions: {}
       )
 
         return SecretDetection::Response.new(SecretDetection::Status::INPUT_ERROR) unless validate_scan_input(diffs)
@@ -89,9 +92,9 @@ module Gitlab
 
           secrets =
             if subprocess
-              run_scan_within_subprocess(matched_diffs, payload_timeout)
+              run_scan_within_subprocess(matched_diffs, payload_timeout, exclusions)
             else
-              run_scan(matched_diffs, payload_timeout)
+              run_scan(matched_diffs, payload_timeout, exclusions)
             end
 
           scan_status = overall_scan_status(secrets)
@@ -158,10 +161,10 @@ module Gitlab
         matched_diffs.freeze
       end
 
-      def run_scan(diffs, payload_timeout)
+      def run_scan(diffs, payload_timeout, exclusions)
         found_secrets = diffs.flat_map do |diff|
           Timeout.timeout(payload_timeout) do
-            find_secrets(diff)
+            find_secrets(diff, exclusions)
           end
         rescue Timeout::Error => e
           logger.error "Secret Detection scan timed out on the diff(id:#{diff.right_blob_id}): #{e}"
@@ -172,7 +175,7 @@ module Gitlab
         found_secrets.freeze
       end
 
-      def run_scan_within_subprocess(diffs, payload_timeout)
+      def run_scan_within_subprocess(diffs, payload_timeout, exclusions)
         diff_sizes = diffs.map { |diff| diff.patch.bytesize }
         grouped_diff_indicies = group_by_chunk_size(diff_sizes)
 
@@ -185,7 +188,7 @@ module Gitlab
         ) do |grouped_diff|
           grouped_diff.flat_map do |diff|
             Timeout.timeout(payload_timeout) do
-              find_secrets(diff)
+              find_secrets(diff, exclusions)
             end
           rescue Timeout::Error => e
             logger.error "Secret Detection scan timed out on the diff(id:#{diff.right_blob_id}): #{e}"
@@ -198,7 +201,7 @@ module Gitlab
       end
 
       # finds secrets in the given diff with a timeout circuit breaker
-      def find_secrets(diff)
+      def find_secrets(diff, exclusions)
         line_number_offset = 0
         secrets = []
 
@@ -221,6 +224,10 @@ module Gitlab
         #  +this context line has a + but starts with a space so isnt an addition
         #  -this context line has a - but starts with a space so isnt a removal
         diff.patch.each_line do |line|
+          exclusions[:raw_value]&.each do |exclusion|
+            line.gsub!(exclusion.value, '') # remove excluded raw value from the line.
+          end
+
           # Parse hunk header for start line
           if line.start_with?("@@")
             hunk_info = line.match(/@@ -\d+(,\d+)? \+(\d+)(,\d+)? @@/)
@@ -238,6 +245,8 @@ module Gitlab
             patterns.each do |pattern|
               type = rules[pattern]["id"]
               description = rules[pattern]["description"]
+
+              next if exclusions[:rule]&.any? { |exclusion| exclusion.value == type }
 
               secrets << SecretDetection::Finding.new(
                 diff.right_blob_id,

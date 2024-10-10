@@ -12,6 +12,10 @@ RSpec.describe Gitlab::SecretDetection::ScanDiffs, feature_category: :secret_det
   let(:sha1_blank_sha) { ('0' * 40).freeze }
   let(:sample_blob_id) { 'fe29d93da4843da433e62711ace82db601eb4f8f' }
 
+  let(:exclusion) do
+    Struct.new(:value, keyword_init: true)
+  end
+
   let(:ruleset) do
     {
       "title" => "gitleaks config",
@@ -375,6 +379,144 @@ RSpec.describe Gitlab::SecretDetection::ScanDiffs, feature_category: :secret_det
         )
 
         expect(scan.secrets_scan(all_large_diffs, payload_timeout: each_payload_timeout_secs)).to eq(expected_response)
+      end
+    end
+
+    context 'when using exclusions' do
+      let(:diffs) do
+        [
+          diff_blob.new(
+            left_blob_id: sha1_blank_sha,
+            right_blob_id: sample_blob_id,
+            patch: "@@ -0,0 +1 @@\n+data with no secret\n",
+            status: :STATUS_END_OF_PATCH,
+            binary: false,
+            over_patch_bytes_limit: false
+          ),
+          diff_blob.new(
+            left_blob_id: sha1_blank_sha,
+            right_blob_id: sample_blob_id,
+            patch: "@@ -0,0 +1 @@\n+GR134894145645645645645645645\n", # gitleaks:allow
+            status: :STATUS_END_OF_PATCH,
+            binary: false,
+            over_patch_bytes_limit: false
+          ),
+          diff_blob.new(
+            left_blob_id: sha1_blank_sha,
+            right_blob_id: sample_blob_id,
+            patch: "@@ -0,0 +1 @@\n+GR134894145645645645645645789\n", # gitleaks:allow
+            status: :STATUS_END_OF_PATCH,
+            binary: false,
+            over_patch_bytes_limit: false
+          ),
+          diff_blob.new(
+            left_blob_id: sha1_blank_sha,
+            right_blob_id: sample_blob_id,
+            patch: "@@ -0,0 +1 @@\n+GR134894112312312312312312312\n", # gitleaks:allow
+            status: :STATUS_END_OF_PATCH,
+            binary: false,
+            over_patch_bytes_limit: false
+          ),
+          diff_blob.new(
+            left_blob_id: sha1_blank_sha,
+            right_blob_id: sample_blob_id,
+            patch: "@@ -0,0 +1 @@\n+glpat-12312312312312312312\n", # gitleaks:allow
+            status: :STATUS_END_OF_PATCH,
+            binary: false,
+            over_patch_bytes_limit: false
+          ),
+          diff_blob.new(
+            left_blob_id: sha1_blank_sha,
+            right_blob_id: sample_blob_id,
+            patch: "@@ -0,0 +1,3 @@\n+test data" \
+                   "\n+glptt-1231231231231231231212312312312312312312\n+line contd", # gitleaks:allow
+            status: :STATUS_END_OF_PATCH,
+            binary: false,
+            over_patch_bytes_limit: false
+          )
+        ]
+      end
+
+      context "when excluding secrets based on raw values" do
+        let(:exclusions) do
+          {
+            raw_value: [
+              exclusion.new(value: 'GR134894112312312312312312312'), # gitleaks:allow
+              exclusion.new(value: 'glpat-12312312312312312312') # gitleaks:allow
+            ]
+          }
+        end
+
+        let(:valid_lines) do
+          [
+            diffs[1].patch,
+            diffs[2].patch,
+            *diffs[5].patch.lines
+          ]
+        end
+
+        it "excludes values from being detected" do
+          expected_scan_status = Gitlab::SecretDetection::Status::FOUND
+
+          expected_response = Gitlab::SecretDetection::Response.new(
+            expected_scan_status,
+            [
+              Gitlab::SecretDetection::Finding.new(
+                diffs[1].right_blob_id,
+                expected_scan_status,
+                1,
+                ruleset['rules'][2]['id'],
+                ruleset['rules'][2]['description']
+              ),
+              Gitlab::SecretDetection::Finding.new(
+                diffs[2].right_blob_id,
+                expected_scan_status,
+                1,
+                ruleset['rules'][2]['id'],
+                ruleset['rules'][2]['description']
+              ),
+              Gitlab::SecretDetection::Finding.new(
+                diffs[5].right_blob_id,
+                expected_scan_status,
+                2,
+                ruleset['rules'][1]['id'],
+                ruleset['rules'][1]['description']
+              )
+            ]
+          )
+
+          expect(scan.secrets_scan(diffs, exclusions: exclusions)).to eq(expected_response)
+        end
+      end
+
+      context "when excluding secrets based on rules from default ruleset" do
+        let(:exclusions) do
+          {
+            rule: [
+              exclusion.new(value: "gitlab_runner_registration_token"),
+              exclusion.new(value: "gitlab_personal_access_token")
+            ]
+          }
+        end
+
+        it 'filters out secrets matching excluded rules from detected findings' do
+          expected_scan_status = Gitlab::SecretDetection::Status::FOUND
+
+          expected_response = Gitlab::SecretDetection::Response.new(
+            expected_scan_status,
+            [
+              Gitlab::SecretDetection::Finding.new(
+                diffs[5].right_blob_id,
+                expected_scan_status,
+                2,
+                ruleset['rules'][1]['id'],
+                ruleset['rules'][1]['description']
+              )
+            ]
+          )
+
+          expect(scan.secrets_scan(diffs, exclusions: exclusions)).to eq(expected_response)
+        end
       end
     end
   end
