@@ -2553,7 +2553,6 @@ Gitlab/BoundedContexts:
     - 'ee/app/graphql/types/move_type_enum.rb'
     - 'ee/app/graphql/types/negated_iteration_wildcard_id_enum.rb'
     - 'ee/app/graphql/types/path_lock_type.rb'
-    - 'ee/app/graphql/types/pending_group_member_type.rb'
     - 'ee/app/graphql/types/permission_types/dast_site_profile.rb'
     - 'ee/app/graphql/types/permission_types/epic.rb'
     - 'ee/app/graphql/types/permission_types/pipeline_security_report_finding.rb'

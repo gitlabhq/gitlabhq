@@ -22,13 +22,13 @@ appear for choosing the date. To remove the date, select the date
 text and delete it. The date is related to the server's time zone, not the time zone of
 the user setting the due date.
 
-![Create a due date](img/due_dates_create.png)
+![Create a due date](img/due_dates_create_v9_3.png)
 
 You can also set a due date by using the issue sidebar. Expand the
 sidebar and select **Edit** to pick a due date or remove the existing one.
 Changes are saved immediately.
 
-![Edit a due date with the sidebar](img/due_dates_edit_sidebar.png)
+![Edit a due date with the sidebar](img/due_dates_edit_sidebar_v9_3.png)
 
 The last way to set a due date is by using [quick actions](../quick_actions.md), directly in an issue's description or comment:
 
@@ -45,7 +45,7 @@ To display issues with the latest due dates at the top, select **Sort direction*
 
 Due dates also appear in your [to-do list](../../todos.md).
 
-![Issues with due dates in the to dos](img/due_dates_todos.png)
+![Issues with due dates in the to dos](img/due_dates_todos_v9_3.png)
 
 The day before an open issue is due, an email is sent to all participants
 of the issue. Like the due date, the "day before the due date" is determined by the

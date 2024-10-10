@@ -15258,28 +15258,28 @@ The edge type for [`PathLock`](#pathlock).
 | <a id="pathlockedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="pathlockedgenode"></a>`node` | [`PathLock`](#pathlock) | The item at the end of the edge. |
 
-#### `PendingGroupMemberConnection`
+#### `PendingMemberInterfaceConnection`
 
-The connection type for [`PendingGroupMember`](#pendinggroupmember).
-
-##### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="pendinggroupmemberconnectionedges"></a>`edges` | [`[PendingGroupMemberEdge]`](#pendinggroupmemberedge) | A list of edges. |
-| <a id="pendinggroupmemberconnectionnodes"></a>`nodes` | [`[PendingGroupMember]`](#pendinggroupmember) | A list of nodes. |
-| <a id="pendinggroupmemberconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
-
-#### `PendingGroupMemberEdge`
-
-The edge type for [`PendingGroupMember`](#pendinggroupmember).
+The connection type for [`PendingMemberInterface`](#pendingmemberinterface).
 
 ##### Fields
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="pendinggroupmemberedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
-| <a id="pendinggroupmemberedgenode"></a>`node` | [`PendingGroupMember`](#pendinggroupmember) | The item at the end of the edge. |
+| <a id="pendingmemberinterfaceconnectionedges"></a>`edges` | [`[PendingMemberInterfaceEdge]`](#pendingmemberinterfaceedge) | A list of edges. |
+| <a id="pendingmemberinterfaceconnectionnodes"></a>`nodes` | [`[PendingMemberInterface]`](#pendingmemberinterface) | A list of nodes. |
+| <a id="pendingmemberinterfaceconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `PendingMemberInterfaceEdge`
+
+The edge type for [`PendingMemberInterface`](#pendingmemberinterface).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pendingmemberinterfaceedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="pendingmemberinterfaceedgenode"></a>`node` | [`PendingMemberInterface`](#pendingmemberinterface) | The item at the end of the edge. |
 
 #### `PipelineArtifactRegistryConnection`
 
@@ -23404,7 +23404,7 @@ GPG signature for a signed commit.
 | <a id="groupparent"></a>`parent` | [`Group`](#group) | Parent group. |
 | <a id="grouppath"></a>`path` | [`String!`](#string) | Path of the namespace. |
 | <a id="grouppendingmemberapprovals"></a>`pendingMemberApprovals` **{warning-solid}** | [`MemberApprovalConnection`](#memberapprovalconnection) | **Introduced** in GitLab 17.3. **Status**: Experiment. Pending member promotions of the group. |
-| <a id="grouppendingmembers"></a>`pendingMembers` **{warning-solid}** | [`PendingGroupMemberConnection`](#pendinggroupmemberconnection) | **Introduced** in GitLab 16.6. **Status**: Experiment. A pending membership of a user within this group. |
+| <a id="grouppendingmembers"></a>`pendingMembers` **{warning-solid}** | [`PendingMemberInterfaceConnection`](#pendingmemberinterfaceconnection) | **Introduced** in GitLab 16.6. **Status**: Experiment. A pending membership of a user within this group. |
 | <a id="grouppermanentdeletiondate"></a>`permanentDeletionDate` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.11. **Status**: Experiment. Date when group will be deleted if delayed group deletion is enabled. |
 | <a id="groupproductanalyticsstoredeventslimit"></a>`productAnalyticsStoredEventsLimit` **{warning-solid}** | [`Int`](#int) | **Introduced** in GitLab 16.9. **Status**: Experiment. Number of product analytics events namespace is permitted to store per cycle. |
 | <a id="groupprojectcreationlevel"></a>`projectCreationLevel` | [`String`](#string) | Permission level required to create projects in the group. |
@@ -29175,22 +29175,19 @@ Represents a Pending Group Membership.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="pendinggroupmemberaccesslevel"></a>`accessLevel` | [`AccessLevel`](#accesslevel) | GitLab::Access level. |
-| <a id="pendinggroupmemberapproved"></a>`approved` | [`Boolean`](#boolean) | Whether the pending group member has been approved. |
-| <a id="pendinggroupmemberavatarurl"></a>`avatarUrl` | [`String`](#string) | URL to avatar image file of the pending group member. |
+| <a id="pendinggroupmemberapproved"></a>`approved` | [`Boolean`](#boolean) | Whether the pending member has been approved. |
+| <a id="pendinggroupmemberavatarurl"></a>`avatarUrl` | [`String`](#string) | URL to avatar image file of the pending member. |
 | <a id="pendinggroupmembercreatedat"></a>`createdAt` | [`Time`](#time) | Date and time the membership was created. |
 | <a id="pendinggroupmembercreatedby"></a>`createdBy` | [`UserCore`](#usercore) | User that authorized membership. |
-| <a id="pendinggroupmemberemail"></a>`email` | [`String`](#string) | Public email of the pending group member. |
+| <a id="pendinggroupmemberemail"></a>`email` | [`String`](#string) | Public email of the pending member. |
 | <a id="pendinggroupmemberexpiresat"></a>`expiresAt` | [`Time`](#time) | Date and time the membership expires. |
-| <a id="pendinggroupmembergroup"></a>`group` | [`Group`](#group) | Group that a user is a member of. |
 | <a id="pendinggroupmemberid"></a>`id` | [`ID!`](#id) | ID of the member. |
-| <a id="pendinggroupmemberinvited"></a>`invited` | [`Boolean`](#boolean) | Whether the pending group member has been invited. |
-| <a id="pendinggroupmembername"></a>`name` | [`String`](#string) | Name of the pending group member. |
-| <a id="pendinggroupmembernotificationemail"></a>`notificationEmail` | [`String`](#string) | Group notification email for user. Only available for admins. |
+| <a id="pendinggroupmemberinvited"></a>`invited` | [`Boolean`](#boolean) | Whether the pending member has been invited. |
+| <a id="pendinggroupmembername"></a>`name` | [`String`](#string) | Name of the pending member. |
 | <a id="pendinggroupmemberupdatedat"></a>`updatedAt` | [`Time`](#time) | Date and time the membership was last updated. |
 | <a id="pendinggroupmemberuser"></a>`user` | [`UserCore`](#usercore) | User that is associated with the member object. |
-| <a id="pendinggroupmemberuserpermissions"></a>`userPermissions` | [`GroupPermissions!`](#grouppermissions) | Permissions for the current user on the resource. |
-| <a id="pendinggroupmemberusername"></a>`username` | [`String`](#string) | Username of the pending group member. |
-| <a id="pendinggroupmemberweburl"></a>`webUrl` | [`String`](#string) | Web URL of the pending group member. |
+| <a id="pendinggroupmemberusername"></a>`username` | [`String`](#string) | Username of the pending member. |
+| <a id="pendinggroupmemberweburl"></a>`webUrl` | [`String`](#string) | Web URL of the pending member. |
 
 #### Fields with arguments
 
@@ -29205,6 +29202,43 @@ Returns [`UserMergeRequestInteraction`](#usermergerequestinteraction).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="pendinggroupmembermergerequestinteractionid"></a>`id` | [`MergeRequestID!`](#mergerequestid) | Global ID of the merge request. |
+
+### `PendingProjectMember`
+
+Represents a Pending Project Membership.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pendingprojectmemberaccesslevel"></a>`accessLevel` | [`AccessLevel`](#accesslevel) | GitLab::Access level. |
+| <a id="pendingprojectmemberapproved"></a>`approved` | [`Boolean`](#boolean) | Whether the pending member has been approved. |
+| <a id="pendingprojectmemberavatarurl"></a>`avatarUrl` | [`String`](#string) | URL to avatar image file of the pending member. |
+| <a id="pendingprojectmembercreatedat"></a>`createdAt` | [`Time`](#time) | Date and time the membership was created. |
+| <a id="pendingprojectmembercreatedby"></a>`createdBy` | [`UserCore`](#usercore) | User that authorized membership. |
+| <a id="pendingprojectmemberemail"></a>`email` | [`String`](#string) | Public email of the pending member. |
+| <a id="pendingprojectmemberexpiresat"></a>`expiresAt` | [`Time`](#time) | Date and time the membership expires. |
+| <a id="pendingprojectmemberid"></a>`id` | [`ID!`](#id) | ID of the member. |
+| <a id="pendingprojectmemberinvited"></a>`invited` | [`Boolean`](#boolean) | Whether the pending member has been invited. |
+| <a id="pendingprojectmembername"></a>`name` | [`String`](#string) | Name of the pending member. |
+| <a id="pendingprojectmemberupdatedat"></a>`updatedAt` | [`Time`](#time) | Date and time the membership was last updated. |
+| <a id="pendingprojectmemberuser"></a>`user` | [`UserCore`](#usercore) | User that is associated with the member object. |
+| <a id="pendingprojectmemberusername"></a>`username` | [`String`](#string) | Username of the pending member. |
+| <a id="pendingprojectmemberweburl"></a>`webUrl` | [`String`](#string) | Web URL of the pending member. |
+
+#### Fields with arguments
+
+##### `PendingProjectMember.mergeRequestInteraction`
+
+Find a merge request.
+
+Returns [`UserMergeRequestInteraction`](#usermergerequestinteraction).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pendingprojectmembermergerequestinteractionid"></a>`id` | [`MergeRequestID!`](#mergerequestid) | Global ID of the merge request. |
 
 ### `Pipeline`
 
@@ -41018,6 +41052,7 @@ Implementations:
 
 - [`GroupMember`](#groupmember)
 - [`PendingGroupMember`](#pendinggroupmember)
+- [`PendingProjectMember`](#pendingprojectmember)
 - [`ProjectMember`](#projectmember)
 
 ##### Fields
@@ -41122,6 +41157,46 @@ Implementations:
 | ---- | ---- | ----------- |
 | <a id="packagefilemetadatacreatedat"></a>`createdAt` | [`Time!`](#time) | Date of creation. |
 | <a id="packagefilemetadataupdatedat"></a>`updatedAt` | [`Time!`](#time) | Date of most recent update. |
+
+#### `PendingMemberInterface`
+
+Implementations:
+
+- [`PendingGroupMember`](#pendinggroupmember)
+- [`PendingProjectMember`](#pendingprojectmember)
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pendingmemberinterfaceaccesslevel"></a>`accessLevel` | [`AccessLevel`](#accesslevel) | GitLab::Access level. |
+| <a id="pendingmemberinterfaceapproved"></a>`approved` | [`Boolean`](#boolean) | Whether the pending member has been approved. |
+| <a id="pendingmemberinterfaceavatarurl"></a>`avatarUrl` | [`String`](#string) | URL to avatar image file of the pending member. |
+| <a id="pendingmemberinterfacecreatedat"></a>`createdAt` | [`Time`](#time) | Date and time the membership was created. |
+| <a id="pendingmemberinterfacecreatedby"></a>`createdBy` | [`UserCore`](#usercore) | User that authorized membership. |
+| <a id="pendingmemberinterfaceemail"></a>`email` | [`String`](#string) | Public email of the pending member. |
+| <a id="pendingmemberinterfaceexpiresat"></a>`expiresAt` | [`Time`](#time) | Date and time the membership expires. |
+| <a id="pendingmemberinterfaceid"></a>`id` | [`ID!`](#id) | ID of the member. |
+| <a id="pendingmemberinterfaceinvited"></a>`invited` | [`Boolean`](#boolean) | Whether the pending member has been invited. |
+| <a id="pendingmemberinterfacename"></a>`name` | [`String`](#string) | Name of the pending member. |
+| <a id="pendingmemberinterfaceupdatedat"></a>`updatedAt` | [`Time`](#time) | Date and time the membership was last updated. |
+| <a id="pendingmemberinterfaceuser"></a>`user` | [`UserCore`](#usercore) | User that is associated with the member object. |
+| <a id="pendingmemberinterfaceusername"></a>`username` | [`String`](#string) | Username of the pending member. |
+| <a id="pendingmemberinterfaceweburl"></a>`webUrl` | [`String`](#string) | Web URL of the pending member. |
+
+##### Fields with arguments
+
+###### `PendingMemberInterface.mergeRequestInteraction`
+
+Find a merge request.
+
+Returns [`UserMergeRequestInteraction`](#usermergerequestinteraction).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pendingmemberinterfacemergerequestinteractionid"></a>`id` | [`MergeRequestID!`](#mergerequestid) | Global ID of the merge request. |
 
 #### `ResolvableInterface`
 

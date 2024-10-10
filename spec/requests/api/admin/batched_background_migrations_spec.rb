@@ -113,7 +113,10 @@ RSpec.describe API::Admin::BatchedBackgroundMigrations, feature_category: :datab
         let(:params) { { database: database } }
 
         context 'when CI database is provided' do
-          let(:db_config) { instance_double(ActiveRecord::DatabaseConfigurations::HashConfig, name: 'fake_db') }
+          let(:db_config) do
+            instance_double(ActiveRecord::DatabaseConfigurations::HashConfig, name: 'fake_db', database: 'db')
+          end
+
           let(:default_model) { ActiveRecord::Base }
           let(:base_models) { { 'fake_db' => default_model, 'ci' => ci_model }.with_indifferent_access }
 

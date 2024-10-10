@@ -412,7 +412,7 @@ them to change their position and epic assignment:
 - To remove an issue from an epic, drag it to the **Issues with no epic assigned** lane.
 - To move an issue to another epic _and_ another list, at the same time, drag the issue diagonally.
 
-![Drag issues between swimlanes](img/epics_swimlanes_drag_and_drop.png)
+![Drag issues between swimlanes](img/epics_swimlanes_drag_and_drop_v13_6.png)
 
 ## Work in progress limits
 

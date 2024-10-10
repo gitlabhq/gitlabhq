@@ -15,6 +15,8 @@ module Ci
       belongs_to :target_group, class_name: '::Group'
       belongs_to :added_by, class_name: 'User'
 
+      validates :job_token_policies, json_schema: { filename: 'ci_job_token_policies' }, allow_blank: true
+
       scope :with_source, ->(project) { where(source_project: project) }
       scope :with_target, ->(group) { where(target_group: group) }
 

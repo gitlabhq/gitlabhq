@@ -25,7 +25,7 @@ RSpec.shared_examples 'UpdateProjectStatistics' do |with_counter_attribute|
   def expect_flush_counter_increments_worker_performed
     expect(FlushCounterIncrementsWorker)
       .to receive(:perform_in)
-      .with(Gitlab::Counters::BufferedCounter::WORKER_DELAY, project.statistics.class.name, project.statistics.id, project_statistics_name)
+      .with(Gitlab::Counters::BufferedCounter::WORKER_DELAY, project.statistics.class.name, project.statistics.id, project_statistics_name.to_s)
 
     yield
 

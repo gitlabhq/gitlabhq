@@ -258,6 +258,22 @@ RSpec.describe Gitlab::Database, feature_category: :database do
     end
   end
 
+  describe '.db_config_database' do
+    let(:model) { ActiveRecord::Base }
+
+    it 'returns the db_config database for the connection' do
+      # This is a ConnectionProxy
+      expect(described_class.db_config_database(model.connection)).to eq('gitlabhq_test')
+
+      # This is an actual connection
+      expect(described_class.db_config_database(model.retrieve_connection)).to eq('gitlabhq_test')
+    end
+
+    it 'returns unknown if .database returns nil' do
+      expect(described_class.db_config_database(nil)).to eq('unknown')
+    end
+  end
+
   describe '.db_config_names' do
     using RSpec::Parameterized::TableSyntax
 

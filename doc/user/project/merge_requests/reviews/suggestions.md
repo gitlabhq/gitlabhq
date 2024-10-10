@@ -79,7 +79,7 @@ suggestion.
 
 Multiline comments display the comment's line numbers above the body of the comment:
 
-![Multiline comment selection displayed above comment](img/multiline-comment-saved.png)
+![Multiline comment selection displayed above comment](img/multiline-comment-saved_v13_3.png)
 
 #### Using the rich text editor
 

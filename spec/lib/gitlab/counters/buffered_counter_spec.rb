@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Counters::BufferedCounter, :clean_gitlab_redis_shared_state do
+RSpec.describe Gitlab::Counters::BufferedCounter, :clean_gitlab_redis_shared_state, feature_category: :groups_and_projects do
   using RSpec::Parameterized::TableSyntax
 
   subject(:counter) { described_class.new(counter_record, attribute) }
@@ -52,7 +52,7 @@ RSpec.describe Gitlab::Counters::BufferedCounter, :clean_gitlab_redis_shared_sta
 
       it 'schedules a worker to commit the counter key into database' do
         expect(FlushCounterIncrementsWorker).to receive(:perform_in)
-          .with(described_class::WORKER_DELAY, counter_record.class.to_s, counter_record.id, attribute)
+          .with(described_class::WORKER_DELAY, counter_record.class.to_s, counter_record.id, attribute.to_s)
 
         counter.increment(increment)
       end
@@ -81,7 +81,7 @@ RSpec.describe Gitlab::Counters::BufferedCounter, :clean_gitlab_redis_shared_sta
 
       it 'schedules a worker to commit the counter key into database' do
         expect(FlushCounterIncrementsWorker).to receive(:perform_in)
-          .with(described_class::WORKER_DELAY, counter_record.class.to_s, counter_record.id, attribute)
+          .with(described_class::WORKER_DELAY, counter_record.class.to_s, counter_record.id, attribute.to_s)
 
         counter.increment(increment)
       end
@@ -267,7 +267,7 @@ RSpec.describe Gitlab::Counters::BufferedCounter, :clean_gitlab_redis_shared_sta
 
       it 'schedules a worker to commit the counter into database' do
         expect(FlushCounterIncrementsWorker).to receive(:perform_in)
-          .with(described_class::WORKER_DELAY, counter_record.class.to_s, counter_record.id, attribute)
+          .with(described_class::WORKER_DELAY, counter_record.class.to_s, counter_record.id, attribute.to_s)
 
         counter.bulk_increment(increments)
       end
@@ -463,7 +463,7 @@ RSpec.describe Gitlab::Counters::BufferedCounter, :clean_gitlab_redis_shared_sta
 
       it 'schedules a worker to commit the counter key into database' do
         expect(FlushCounterIncrementsWorker).to receive(:perform_in)
-          .with(described_class::WORKER_DELAY, counter_record.class.to_s, counter_record.id, attribute)
+          .with(described_class::WORKER_DELAY, counter_record.class.to_s, counter_record.id, attribute.to_s)
 
         counter.finalize_refresh
       end

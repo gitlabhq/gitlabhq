@@ -27,7 +27,7 @@ in GitLab.
 </ul>
 </p>
 </div>
-<div class="col-md-3"><img src="img/ssgs_pages.png" alt="Examples of SSGs supported by Pages" class="middle display-block"></div>
+<div class="col-md-3"><img src="img/ssgs_pages_v11_3.png" alt="Examples of SSGs supported by Pages" class="middle display-block"></div>
 </div>
 
 To publish a website with Pages, you can use any static site generator,

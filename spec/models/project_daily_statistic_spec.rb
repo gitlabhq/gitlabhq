@@ -24,7 +24,7 @@ RSpec.describe ProjectDailyStatistic, feature_category: :groups_and_projects do
     it 'schedules a worker to update the fetch count', :sidekiq_inline do
       expect(FlushCounterIncrementsWorker)
         .to receive(:perform_in)
-        .with(Gitlab::Counters::BufferedCounter::WORKER_DELAY, described_class.name, daily_statistic.id, :fetch_count)
+        .with(Gitlab::Counters::BufferedCounter::WORKER_DELAY, described_class.name, daily_statistic.id, 'fetch_count')
         .and_call_original
 
       expect { increment! }

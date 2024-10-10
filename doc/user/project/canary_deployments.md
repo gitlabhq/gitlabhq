@@ -96,7 +96,7 @@ quick and clear insight into the status of each environment and deployment.
 Canary deployments are marked with a yellow dot in the deploy board so that you
 can quickly notice them.
 
-![Canary deployments on deploy board](img/deploy_boards_canary_deployments.png)
+![Canary deployments on deploy board](img/deploy_boards_canary_deployments_v9_2.png)
 
 #### How to check the current traffic weight on a Canary Ingress (deprecated)
 
@@ -106,7 +106,7 @@ This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/e
 1. Visit the [deploy board](../../user/project/deploy_boards.md).
 1. View the current weights on the right.
 
-   ![Rollout Status Canary Ingress](img/canary_weight.png)
+   ![Rollout Status Canary Ingress](img/canary_weight_v13_7.png)
 
 #### How to change the traffic weight on a Canary Ingress (deprecated)
 

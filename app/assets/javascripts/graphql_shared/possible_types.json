@@ -90,6 +90,7 @@
   "MemberInterface": [
     "GroupMember",
     "PendingGroupMember",
+    "PendingProjectMember",
     "ProjectMember"
   ],
   "NoteableInterface": [
@@ -126,6 +127,10 @@
     "NugetMetadata",
     "PypiMetadata",
     "TerraformModuleMetadata"
+  ],
+  "PendingMemberInterface": [
+    "PendingGroupMember",
+    "PendingProjectMember"
   ],
   "Registrable": [
     "CiSecureFileRegistry",

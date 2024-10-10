@@ -59,7 +59,7 @@ RSpec.shared_examples_for CounterAttribute do |counter_attributes|
 
             it 'schedules a worker to flush counter increments asynchronously' do
               expect(FlushCounterIncrementsWorker).to receive(:perform_in)
-                .with(Gitlab::Counters::BufferedCounter::WORKER_DELAY, model.class.name, model.id, attribute)
+                .with(Gitlab::Counters::BufferedCounter::WORKER_DELAY, model.class.name, model.id, attribute.to_s)
                 .and_call_original
 
               subject
@@ -176,7 +176,7 @@ RSpec.shared_examples_for CounterAttribute do |counter_attributes|
 
           it 'schedules a worker to flush counter increments asynchronously' do
             expect(FlushCounterIncrementsWorker).to receive(:perform_in)
-              .with(Gitlab::Counters::BufferedCounter::WORKER_DELAY, model.class.name, model.id, attribute)
+              .with(Gitlab::Counters::BufferedCounter::WORKER_DELAY, model.class.name, model.id, attribute.to_s)
               .and_call_original
 
             subject

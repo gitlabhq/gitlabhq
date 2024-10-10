@@ -40,7 +40,7 @@ RSpec.describe Admin::BackgroundMigrationsController, :enable_admin_mode, featur
 
   describe 'GET #index' do
     let(:default_model) { ActiveRecord::Base }
-    let(:db_config) { instance_double(ActiveRecord::DatabaseConfigurations::HashConfig, name: 'fake_db') }
+    let(:db_config) { instance_double(ActiveRecord::DatabaseConfigurations::HashConfig, name: 'fake_db', database: 'db') }
 
     before do
       allow(Gitlab::Database).to receive(:db_config_for_connection).and_return(db_config)

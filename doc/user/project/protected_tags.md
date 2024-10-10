@@ -75,7 +75,7 @@ In that case, if _any_ of these protected tags have a setting like
 If you select a protected tag's name, GitLab displays a list of
 all matching tags:
 
-![Protected tag matches](img/protected_tag_matches.png)
+![Protected tag matches](img/protected_tag_matches_v9_1.png)
 
 ## Prevent tag creation with the same name as branches
 

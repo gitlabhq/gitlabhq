@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ProjectStatistics do
+RSpec.describe ProjectStatistics, feature_category: :source_code_management do
   let(:project) { create :project }
   let(:statistics) { project.statistics }
 
@@ -489,7 +489,7 @@ RSpec.describe ProjectStatistics do
       it 'schedules a worker to update the statistic and storage_size async', :sidekiq_inline do
         expect(FlushCounterIncrementsWorker)
           .to receive(:perform_in)
-          .with(Gitlab::Counters::BufferedCounter::WORKER_DELAY, described_class.name, statistics.id, stat)
+          .with(Gitlab::Counters::BufferedCounter::WORKER_DELAY, described_class.name, statistics.id, stat.to_s)
           .and_call_original
 
         expect { described_class.increment_statistic(project, stat, increment) }
@@ -594,7 +594,7 @@ RSpec.describe ProjectStatistics do
       it 'schedules a worker to update the statistic and storage_size async', :sidekiq_inline do
         expect(FlushCounterIncrementsWorker)
           .to receive(:perform_in)
-                .with(Gitlab::Counters::BufferedCounter::WORKER_DELAY, described_class.name, statistics.id, stat)
+                .with(Gitlab::Counters::BufferedCounter::WORKER_DELAY, described_class.name, statistics.id, stat.to_s)
                 .and_call_original
 
         expect { described_class.bulk_increment_statistic(project, stat, increments) }

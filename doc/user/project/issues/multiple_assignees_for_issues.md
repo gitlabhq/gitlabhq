@@ -24,4 +24,4 @@ would as single assignees), simplifying communication and ownership.
 After an assignee completes their work, they remove themselves as an assignee, making
 it clear that their task is complete.
 
-![multiple assignees for issues](img/multiple_assignees_for_issues.png)
+![multiple assignees for issues](img/multiple_assignees_for_issues_v9_4.png)

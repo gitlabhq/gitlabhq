@@ -107,6 +107,28 @@ You might get an error that states
 
 This error occurs when there is a problem answering [questions related to CI/CD](../gitlab_duo_chat/examples.md#ask-about-cicd). Please try your request again.
 
+## `Error M4003`
+
+You might get an error that states
+`This command is used for explaining vulnerabilities and can only be invoked from a vulnerability detail page.` or
+`Vulnerability Explanation currently only supports vulnerabilities reported by SAST. Error code: M4003`.
+
+This error occurs when there is a problem when using [`Explain Vulnerability`](../gitlab_duo_chat/examples.md#explain-a-vulnerability) feature.
+
+## `Error M4004`
+
+You might get an error that states
+`This resource has no comments to summarize`.
+
+This error occurs when there is a problem when using `Summarize Discussion` feature.
+
+## `Error M4005`
+
+You might get an error that states
+`There is no job log to troubleshoot.` or `This command is used for troubleshooting jobs and can only be invoked from a failed job log page.`.
+
+This error occurs when there is a problem when using [`Troubleshoot job`](../gitlab_duo_chat/examples.md#troubleshoot-failed-cicd-jobs-with-root-cause-analysis) feature.
+
 ## `Error M5000`
 
 You might get an error that states
@@ -159,7 +181,7 @@ If you see this error, then to resolve it, contact the GitLab support team and a
 
 For more information, see [issue 103](https://gitlab.com/gitlab-com/enablement-sub-department/section-enable-request-for-help/-/issues/103).
 
-## Check the health of the Cloud Connector 
+## Check the health of the Cloud Connector
 
 We have created a script that verifies the status of various components related to the Cloud Connector, such as:
 

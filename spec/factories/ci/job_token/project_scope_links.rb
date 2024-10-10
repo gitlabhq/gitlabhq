@@ -5,5 +5,6 @@ FactoryBot.define do
     association :source_project, factory: :project
     association :target_project, factory: :project
     association :added_by, factory: :user
+    job_token_policies { [] }
   end
 end

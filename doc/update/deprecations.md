@@ -960,6 +960,25 @@ Update all references to `ciUsedMinutes` from these types to `ciDuration`.
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
+### `mergeTrainIndex` and `mergeTrainsCount` GraphQL fields deprecated
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.5</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/473759).
+
+</div>
+
+The GraphQL field `mergeTrainIndex` and `mergeTrainsCount` in `MergeRequest` are deprecated. To
+determine the position of the merge request on the merge train use the
+`index` field in `MergeTrainCar` instead. To get the count of MRs in a merge train,
+use `count` from `cars` in `MergeTrains::TrainType` instead.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
 ### `require_password_to_approve` field
 
 <div class="deprecation-notes">

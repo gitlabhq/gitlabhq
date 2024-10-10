@@ -46,6 +46,10 @@ module Gitlab
         ::Gitlab::Database.db_config_name(marginalia_adapter)
       end
 
+      def db_config_database
+        ::Gitlab::Database.db_config_database(marginalia_adapter)
+      end
+
       def console_hostname
         return unless ::Gitlab::Runtime.console?
 

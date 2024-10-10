@@ -189,7 +189,7 @@ merge request reports area by selecting **Bypass**:
 1. On the merge request **Overview**, scroll to the merge request reports area.
 1. Next to **The change requests must be completed or resolved**, select **Bypass**:
 
-   ![A merge request that is blocked because a user requested changes](img/bypass_17_2.png)
+   ![A merge request that is blocked because a user requested changes](img/bypass_v17_2.png)
 
 1. The merge reports area shows `Merge with caution: Override added`. To see which check
    was bypassed, select **Expand merge checks** (**{chevron-lg-down}**) and find the

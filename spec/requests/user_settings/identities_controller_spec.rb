@@ -115,7 +115,9 @@ RSpec.describe UserSettings::IdentitiesController, feature_category: :system_acc
 
         expect(response).to redirect_to profile_account_path
         expect(flash[:notice]).to eq(
-          format(_('Error linking identity: %{errors}'), errors: 'Extern uid has already been taken')
+          format(_('Error linking identity: %{errors}'),
+            errors: "Extern uid has already been taken. " \
+              "Please contact your administrator to generate a unique extern_uid / NameID")
         )
       end
     end

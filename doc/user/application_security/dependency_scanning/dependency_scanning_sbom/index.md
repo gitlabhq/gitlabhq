@@ -68,7 +68,8 @@ Prerequisites:
   [`docker`](https://docs.gitlab.com/runner/executors/docker.html) or
   [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html) executor.
   - If you're using SaaS runners on GitLab.com, this is enabled by default.
-- A supported lock file or dependency graph must be in the repository.
+- A [supported lock file or dependency graph](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning/#supported-files)
+  must be in the repository.
   Alternatively, configure the CI/CD job to output either as a job artifact,
   ensuring the artifacts are generated in a stage before the `dependency-scanning`
   job's stage. See the following example.
@@ -89,7 +90,7 @@ stages:
 image: maven:3.9.9-eclipse-temurin-21
 
 include:
-  - component: $CI_SERVER_FQDN/components/dependency-scanning/main@0.4.0
+  - component: $CI_SERVER_FQDN/components/dependency-scanning/main@0
 
 build:
   # Running in the build stage ensures that the dependency-scanning job

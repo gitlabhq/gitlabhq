@@ -73,6 +73,27 @@ RSpec.describe Ci::JobToken::ProjectScopeLink, feature_category: :continuous_int
       expect(link).not_to be_valid
       expect(link.errors[:target_project]).to contain_exactly("can't be the same as the source project")
     end
+
+    describe 'job token policies' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:value, :valid) do
+        nil                         | true
+        []                          | true
+        %w[read_build]              | true
+        %w[read_build read_project] | true
+        %w[read_issue]              | false
+        { project: %w[read_build] } | false
+      end
+
+      with_them do
+        let(:link) { build(:ci_job_token_project_scope_link, job_token_policies: value) }
+
+        it 'matches the json_schema for policies' do
+          expect(link.valid?).to eq(valid)
+        end
+      end
+    end
   end
 
   describe '.with_source' do
