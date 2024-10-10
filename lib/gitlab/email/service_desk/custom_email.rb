@@ -30,9 +30,23 @@ module Gitlab
             settings = find_service_desk_setting_from_reply_address(email, key)
             # We intentionally don't check whether custom email is enabled
             # so we don't lose emails that are addressed to a disabled custom email address
-            return unless settings
+            return unless settings.present?
 
             key
+          end
+
+          # Checks whether the given email is a custom email and returns
+          # the project's mail key.
+          def key_from_settings(email)
+            return unless email.present?
+
+            # Normalize custom email to also include verification emails.
+            potential_custom_email = email.sub(ServiceDeskSetting::CUSTOM_EMAIL_VERIFICATION_SUBADDRESS, '')
+
+            settings = ServiceDeskSetting.find_by_custom_email(potential_custom_email)
+            return unless settings.present?
+
+            settings.project.default_service_desk_subaddress_part
           end
 
           private

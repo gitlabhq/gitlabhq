@@ -194,7 +194,7 @@ module MergeRequests
       return unless abort_auto_merges?(merge_request)
 
       learn_more_url = Rails.application.routes.url_helpers.help_page_url(
-        'ci/pipelines/merge_trains',
+        'ci/pipelines/merge_trains.md',
         anchor: 'merge-request-dropped-from-the-merge-train'
       )
 

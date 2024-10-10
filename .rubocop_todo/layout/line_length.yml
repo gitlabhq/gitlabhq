@@ -342,7 +342,6 @@ Layout/LineLength:
     - 'app/models/namespace.rb'
     - 'app/models/namespace/package_setting.rb'
     - 'app/models/namespace_setting.rb'
-    - 'app/models/namespace_statistics.rb'
     - 'app/models/namespaces/traversal/linear.rb'
     - 'app/models/notification_setting.rb'
     - 'app/models/oauth_access_token.rb'

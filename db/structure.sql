@@ -7877,6 +7877,7 @@ CREATE TABLE bulk_import_entities (
     source_xid integer,
     migrate_projects boolean DEFAULT true NOT NULL,
     has_failures boolean DEFAULT false,
+    migrate_memberships boolean DEFAULT true NOT NULL,
     CONSTRAINT check_13f279f7da CHECK ((char_length(source_full_path) <= 255)),
     CONSTRAINT check_715d725ea2 CHECK ((char_length(destination_name) <= 255)),
     CONSTRAINT check_796a4d9cc6 CHECK ((char_length(jid) <= 255)),
@@ -15225,6 +15226,25 @@ CREATE SEQUENCE packages_conan_package_references_id_seq
     CACHE 1;
 
 ALTER SEQUENCE packages_conan_package_references_id_seq OWNED BY packages_conan_package_references.id;
+
+CREATE TABLE packages_conan_package_revisions (
+    id bigint NOT NULL,
+    package_id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    package_reference_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    revision bytea NOT NULL
+);
+
+CREATE SEQUENCE packages_conan_package_revisions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE packages_conan_package_revisions_id_seq OWNED BY packages_conan_package_revisions.id;
 
 CREATE TABLE packages_conan_recipe_revisions (
     id bigint NOT NULL,
@@ -22704,6 +22724,8 @@ ALTER TABLE ONLY packages_conan_metadata ALTER COLUMN id SET DEFAULT nextval('pa
 
 ALTER TABLE ONLY packages_conan_package_references ALTER COLUMN id SET DEFAULT nextval('packages_conan_package_references_id_seq'::regclass);
 
+ALTER TABLE ONLY packages_conan_package_revisions ALTER COLUMN id SET DEFAULT nextval('packages_conan_package_revisions_id_seq'::regclass);
+
 ALTER TABLE ONLY packages_conan_recipe_revisions ALTER COLUMN id SET DEFAULT nextval('packages_conan_recipe_revisions_id_seq'::regclass);
 
 ALTER TABLE ONLY packages_debian_group_architectures ALTER COLUMN id SET DEFAULT nextval('packages_debian_group_architectures_id_seq'::regclass);
@@ -25180,6 +25202,9 @@ ALTER TABLE ONLY packages_conan_metadata
 
 ALTER TABLE ONLY packages_conan_package_references
     ADD CONSTRAINT packages_conan_package_references_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY packages_conan_package_revisions
+    ADD CONSTRAINT packages_conan_package_revisions_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY packages_conan_recipe_revisions
     ADD CONSTRAINT packages_conan_recipe_revisions_pkey PRIMARY KEY (id);
@@ -30192,6 +30217,10 @@ CREATE INDEX index_packages_conan_package_references_on_project_id ON packages_c
 
 CREATE INDEX index_packages_conan_package_references_on_recipe_revision_id ON packages_conan_package_references USING btree (recipe_revision_id);
 
+CREATE INDEX index_packages_conan_package_revisions_on_package_reference_id ON packages_conan_package_revisions USING btree (package_reference_id);
+
+CREATE INDEX index_packages_conan_package_revisions_on_project_id ON packages_conan_package_revisions USING btree (project_id);
+
 CREATE INDEX index_packages_conan_recipe_revisions_on_project_id ON packages_conan_recipe_revisions USING btree (project_id);
 
 CREATE INDEX index_packages_debian_group_architectures_on_group_id ON packages_debian_group_architectures USING btree (group_id);
@@ -31913,6 +31942,8 @@ CREATE UNIQUE INDEX uniq_audit_instance_event_filters_destination_id_and_event_t
 CREATE UNIQUE INDEX uniq_google_cloud_logging_configuration_namespace_id_and_name ON audit_events_google_cloud_logging_configurations USING btree (namespace_id, name);
 
 CREATE UNIQUE INDEX uniq_idx_on_packages_conan_package_references_package_reference ON packages_conan_package_references USING btree (package_id, recipe_revision_id, reference);
+
+CREATE UNIQUE INDEX uniq_idx_on_packages_conan_package_revisions_revision ON packages_conan_package_revisions USING btree (package_id, package_reference_id, revision);
 
 CREATE UNIQUE INDEX uniq_idx_packages_packages_on_project_id_name_version_ml_model ON packages_packages USING btree (project_id, name, version) WHERE ((package_type = 14) AND (status <> 4));
 
@@ -34142,9 +34173,6 @@ ALTER TABLE ONLY analytics_devops_adoption_segments
 ALTER TABLE ONLY project_statistics
     ADD CONSTRAINT fk_198ad46fdc FOREIGN KEY (root_namespace_id) REFERENCES namespaces(id) ON DELETE SET NULL;
 
-ALTER TABLE ONLY issues
-    ADD CONSTRAINT fk_1adaba52b0 FOREIGN KEY (correct_work_item_type_id) REFERENCES work_item_types(correct_id) NOT VALID;
-
 ALTER TABLE ONLY approval_policy_rule_project_links
     ADD CONSTRAINT fk_1c78796d52 FOREIGN KEY (approval_policy_rule_id) REFERENCES approval_policy_rules(id) ON DELETE CASCADE;
 
@@ -34522,6 +34550,9 @@ ALTER TABLE ONLY csv_issue_imports
 
 ALTER TABLE ONLY milestone_releases
     ADD CONSTRAINT fk_5e73b8cad2 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY packages_conan_package_revisions
+    ADD CONSTRAINT fk_5f7c6a9244 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY project_access_tokens
     ADD CONSTRAINT fk_5f7e8450e1 FOREIGN KEY (personal_access_token_id) REFERENCES personal_access_tokens(id) ON DELETE CASCADE;
@@ -35026,6 +35057,9 @@ ALTER TABLE ONLY issues
 
 ALTER TABLE ONLY duo_workflows_checkpoints
     ADD CONSTRAINT fk_b3d9cea509 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY packages_conan_package_revisions
+    ADD CONSTRAINT fk_b482b1a2f8 FOREIGN KEY (package_reference_id) REFERENCES packages_conan_package_references(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY protected_tag_create_access_levels
     ADD CONSTRAINT fk_b4eb82fe3c FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
@@ -35536,6 +35570,9 @@ ALTER TABLE ONLY import_placeholder_memberships
 
 ALTER TABLE ONLY project_import_data
     ADD CONSTRAINT fk_ffb9ee3a10 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY packages_conan_package_revisions
+    ADD CONSTRAINT fk_ffc5836122 FOREIGN KEY (package_id) REFERENCES packages_packages(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY issues
     ADD CONSTRAINT fk_ffed080f01 FOREIGN KEY (updated_by_id) REFERENCES users(id) ON DELETE SET NULL;

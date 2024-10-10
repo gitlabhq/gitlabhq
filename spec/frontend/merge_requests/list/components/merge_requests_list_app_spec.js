@@ -89,6 +89,7 @@ function createComponent({
       rssUrl: '',
       canBulkUpdate: true,
       environmentNamesPath: '',
+      defaultBranch: 'main',
       ...provide,
     },
     apolloProvider,
@@ -573,5 +574,27 @@ describe('Merge requests list app', () => {
         expect(wrapper.findByTestId('merge-trains').attributes('href')).toBe(path);
       }
     });
+  });
+
+  describe('target branch link', () => {
+    it.each`
+      defaultBranch | targetBranch    | exists   | existsText
+      ${'main'}     | ${'main'}       | ${false} | ${'does not render'}
+      ${'main'}     | ${'new-branch'} | ${true}  | ${'renders'}
+    `(
+      '$existsText target branch link when default branch: $defaultBranch and targetBranch: $targetBranch',
+      async ({ defaultBranch, targetBranch, exists }) => {
+        const response = JSON.parse(JSON.stringify(getQueryResponse));
+        Object.assign(response.data.project.mergeRequests.nodes[0], {
+          targetBranch,
+        });
+
+        createComponent({ provide: { defaultBranch }, mountFn: mountExtended, response });
+
+        await waitForPromises();
+
+        expect(wrapper.findByTestId('target-branch').exists()).toBe(exists);
+      },
+    );
   });
 });

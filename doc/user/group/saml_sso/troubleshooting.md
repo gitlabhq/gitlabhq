@@ -277,9 +277,24 @@ you must set `attribute_statements` in the SAML configuration to
 
 ## User sign in banner error messages
 
-### Message: "SAML authentication failed: Extern UID has already been taken"
+### Message: "SAML authentication failed: SAML NameID is missing from your SAML response."
 
-This error suggests you are signed in as a GitLab user but have already linked your SAML identity to a different GitLab user. Sign out and then try to sign in again using SAML, which should log you into GitLab with the linked user account.
+You might get an error that states `SAML authentication failed: SAML NameID is missing from your SAML response. Please contact your administrator.`
+
+This issue occurs when you try sign into GitLab using Group SSO, but your SAML response did not include a `NameID`.
+
+To resolve this issue:
+
+- Contact your administrator to ensure your IdP account has an assigned `NameID`.
+- Use a [SAML debugging tool](#saml-debugging-tools) to verify that your SAML response has a valid `NameID`.
+
+### Message: "SAML authentication failed: Extern uid has already been taken."
+
+You might get an error that states `SAML authentication failed: Extern uid has already been taken. Please contact your administrator to generate a unique external_uid (NameID).`
+
+This issue occurs when you try to link your existing GitLab account to a SAML identity using Group SSO, but there is an existing GitLab account with your current `NameID`.
+
+To resolve this issue, tell your administrator to re-generate a unique `Extern UID` (`NameID`) for your IdP account. Make sure this new `Extern UID` adheres to the [GitLab `NameID` constraints](index.md#manage-user-saml-identity).
 
 If you do not wish to use that GitLab user with the SAML login, you can [unlink the GitLab account from the SAML app](index.md#unlink-accounts).
 

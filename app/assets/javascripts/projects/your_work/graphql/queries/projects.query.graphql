@@ -9,6 +9,10 @@ query getYourWorkProjects(
   $last: Int
   $before: String
   $after: String
+  $sort: String
+  $search: String
+  $minAccessLevel: AccessLevelEnum
+  $programmingLanguageName: String
 ) {
   projects(
     archived: $archived
@@ -18,6 +22,10 @@ query getYourWorkProjects(
     last: $last
     before: $before
     after: $after
+    sort: $sort
+    search: $search
+    minAccessLevel: $minAccessLevel
+    programmingLanguageName: $programmingLanguageName
   ) {
     nodes {
       ...Project

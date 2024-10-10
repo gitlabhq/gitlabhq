@@ -6,9 +6,14 @@ module VirtualRegistries
       class CachedResponse < ApplicationRecord
         include FileStoreMounter
         include Gitlab::SQL::Pattern
+        include ::UpdateNamespaceStatistics
 
         belongs_to :group
         belongs_to :upstream, class_name: 'VirtualRegistries::Packages::Maven::Upstream', inverse_of: :cached_responses
+
+        alias_attribute :namespace, :group
+
+        update_namespace_statistics namespace_statistics_name: :dependency_proxy_size
 
         # Used in destroying stale cached responses in DestroyOrphanCachedResponsesWorker
         enum :status, default: 0, processing: 1, error: 3
@@ -43,6 +48,7 @@ module VirtualRegistries
         end
         scope :orphan, -> { where(upstream: nil) }
         scope :pending_destruction, -> { orphan.default }
+        scope :for_group, ->(group) { where(group: group) }
 
         def self.next_pending_destruction
           pending_destruction.lock('FOR UPDATE SKIP LOCKED').take

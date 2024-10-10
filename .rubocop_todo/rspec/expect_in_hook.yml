@@ -392,7 +392,6 @@ RSpec/ExpectInHook:
     - 'spec/support/shared_examples/lib/wikis_api_examples.rb'
     - 'spec/support/shared_examples/metrics/sampler_shared_examples.rb'
     - 'spec/support/shared_examples/models/concerns/has_wiki_shared_examples.rb'
-    - 'spec/support/shared_examples/models/concerns/update_namespace_statistics_shared_examples.rb'
     - 'spec/support/shared_examples/models/mentionable_shared_examples.rb'
     - 'spec/support/shared_examples/quick_actions/issuable/close_quick_action_shared_examples.rb'
     - 'spec/support/shared_examples/requests/api/helm_packages_shared_examples.rb'

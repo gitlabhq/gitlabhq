@@ -12,7 +12,7 @@ module RuboCop
       #   _('See [the docs](https://docs.gitlab.com/ee/user/permissions#roles).')
       #
       #   # good
-      #   docs_link = link_to _('the docs'), help_page_url('user/permissions', anchor: 'roles')
+      #   docs_link = link_to _('the docs'), help_page_url('user/permissions.md', anchor: 'roles')
       #   "See #{docs_link}."
       #   _('See %{docs_link}.').html_safe % { docs_link: docs_link.html_safe }
       class DocUrl < RuboCop::Cop::Base

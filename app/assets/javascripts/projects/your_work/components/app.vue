@@ -1,6 +1,6 @@
 <script>
 import { GlTabs, GlTab, GlBadge, GlFilteredSearchToken } from '@gitlab/ui';
-import { isEqual } from 'lodash';
+import { isEqual, pick } from 'lodash';
 import { __ } from '~/locale';
 import { TIMESTAMP_TYPE_UPDATED_AT } from '~/vue_shared/components/resource_lists/constants';
 import { QUERY_PARAM_END_CURSOR, QUERY_PARAM_START_CURSOR } from '~/graphql_shared/constants';
@@ -23,6 +23,8 @@ import {
   CONTRIBUTED_TAB,
   CUSTOM_DASHBOARD_ROUTE_NAMES,
   PROJECT_DASHBOARD_TABS,
+  FILTERED_SEARCH_TOKEN_LANGUAGE,
+  FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
 } from '../constants';
 import projectCountsQuery from '../graphql/queries/project_counts.query.graphql';
 import TabView from './tab_view.vue';
@@ -90,7 +92,7 @@ export default {
     filteredSearchTokens() {
       return [
         {
-          type: 'language',
+          type: FILTERED_SEARCH_TOKEN_LANGUAGE,
           icon: 'lock',
           title: __('Language'),
           token: GlFilteredSearchToken,
@@ -103,7 +105,7 @@ export default {
           })),
         },
         {
-          type: 'min_access_level',
+          type: FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
           icon: 'user',
           title: __('Role'),
           token: GlFilteredSearchToken,
@@ -140,6 +142,22 @@ export default {
     },
     endCursor() {
       return this.$route.query[QUERY_PARAM_END_CURSOR];
+    },
+    routeQueryWithoutPagination() {
+      const {
+        [QUERY_PARAM_START_CURSOR]: startCursor,
+        [QUERY_PARAM_END_CURSOR]: endCursor,
+        ...routeQuery
+      } = this.$route.query;
+
+      return routeQuery;
+    },
+    filters() {
+      return pick(this.routeQueryWithoutPagination, [
+        FILTERED_SEARCH_TOKEN_LANGUAGE,
+        FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
+        FILTERED_SEARCH_TERM_KEY,
+      ]);
     },
   },
   methods: {
@@ -178,12 +196,12 @@ export default {
     onSortDirectionChange(isAscending) {
       const sort = this.createSortQuery({ sortBy: this.activeSortOption.value, isAscending });
 
-      this.pushQuery({ ...this.$route.query, sort });
+      this.pushQuery({ ...this.routeQueryWithoutPagination, sort });
     },
     onSortByChange(sortBy) {
       const sort = this.createSortQuery({ sortBy, isAscending: this.isAscending });
 
-      this.pushQuery({ ...this.$route.query, sort });
+      this.pushQuery({ ...this.routeQueryWithoutPagination, sort });
     },
     onFilter(filters) {
       const { sort } = this.$route.query;
@@ -219,6 +237,8 @@ export default {
           :tab="tab"
           :start-cursor="startCursor"
           :end-cursor="endCursor"
+          :sort="sort"
+          :filters="filters"
           @page-change="onPageChange"
         />
         <template v-else>{{ tab.text }}</template>

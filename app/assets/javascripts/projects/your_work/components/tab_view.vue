@@ -7,6 +7,12 @@ import { __ } from '~/locale';
 import { createAlert } from '~/alert';
 import { formatGraphQLProjects } from '~/vue_shared/components/projects_list/utils';
 import { TIMESTAMP_TYPE_UPDATED_AT } from '~/vue_shared/components/resource_lists/constants';
+import { FILTERED_SEARCH_TERM_KEY } from '~/projects/filtered_search_and_sort/constants';
+import { ACCESS_LEVELS_INTEGER_TO_STRING } from '~/access_level/constants';
+import {
+  FILTERED_SEARCH_TOKEN_LANGUAGE,
+  FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
+} from '../constants';
 
 export default {
   name: 'YourWorkProjectsTabView',
@@ -21,6 +27,7 @@ export default {
     GlKeysetPagination,
     ProjectsList,
   },
+  inject: ['programmingLanguages'],
   props: {
     tab: {
       required: true,
@@ -36,6 +43,14 @@ export default {
       required: false,
       default: null,
     },
+    sort: {
+      type: String,
+      required: true,
+    },
+    filters: {
+      type: Object,
+      required: true,
+    },
   },
   data() {
     return {
@@ -47,7 +62,21 @@ export default {
       return {
         query: this.tab.query,
         variables() {
-          return { ...this.pagination, ...this.tab.variables };
+          const { transformVariables } = this.tab;
+
+          const variables = {
+            ...this.pagination,
+            ...this.tab.variables,
+            sort: this.sort,
+            programmingLanguageName: this.programmingLanguageName,
+            minAccessLevel: this.minAccessLevel,
+            search: this.search,
+          };
+          const transformedVariables = transformVariables
+            ? transformVariables(variables)
+            : variables;
+
+          return transformedVariables;
         },
         update(response) {
           const { nodes, pageInfo } = get(response, this.tab.queryPath);
@@ -89,6 +118,22 @@ export default {
     },
     isLoading() {
       return this.$apollo.queries.projects.loading;
+    },
+    search() {
+      return this.filters[FILTERED_SEARCH_TERM_KEY];
+    },
+    minAccessLevel() {
+      const { [FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL]: minAccessLevelInteger } = this.filters;
+
+      return minAccessLevelInteger && ACCESS_LEVELS_INTEGER_TO_STRING[minAccessLevelInteger];
+    },
+    programmingLanguageName() {
+      const { [FILTERED_SEARCH_TOKEN_LANGUAGE]: programmingLanguageId } = this.filters;
+
+      return (
+        programmingLanguageId &&
+        this.programmingLanguages.find(({ id }) => id === parseInt(programmingLanguageId, 10))?.name
+      );
     },
   },
   methods: {

@@ -2636,7 +2636,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   describe '#service_desk_enabled?' do
     let_it_be(:namespace) { create(:namespace) }
 
-    subject(:project) { build(:project, :private, namespace: namespace, service_desk_enabled: true) }
+    subject(:project) { build(:project, :private, :service_desk_enabled, namespace: namespace) }
 
     before do
       allow(Gitlab::Email::IncomingEmail).to receive(:enabled?).and_return(true)
@@ -2649,8 +2649,18 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
+  describe '#default_service_desk_subaddress_part', feature_category: :service_desk do
+    let_it_be(:project) { create(:project, :service_desk_enabled) }
+
+    subject { project.default_service_desk_subaddress_part }
+
+    it 'contains the full path slug, project id and default suffix' do
+      is_expected.to eq("#{project.full_path_slug}-#{project.id}-issue-")
+    end
+  end
+
   describe '#service_desk_address', feature_category: :service_desk do
-    let_it_be(:project, reload: true) { create(:project, service_desk_enabled: true) }
+    let_it_be(:project, reload: true) { create(:project, :service_desk_enabled) }
 
     subject { project.service_desk_address }
 

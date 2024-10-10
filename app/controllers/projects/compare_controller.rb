@@ -44,17 +44,14 @@ class Projects::CompareController < Projects::ApplicationController
   end
 
   def create
-    from_to_vars = {
-      from: compare_params[:from].presence,
-      to: compare_params[:to].presence,
-      from_project_id: compare_params[:from_project_id].presence,
-      straight: compare_params[:straight].presence
-    }
+    from_to_vars = build_from_to_vars
 
     if from_to_vars[:from].blank? || from_to_vars[:to].blank?
       flash[:alert] = "You must select a Source and a Target revision"
 
       redirect_to project_compare_index_path(source_project, from_to_vars)
+    elsif compare_params[:straight] == "true"
+      redirect_to project_compare_with_two_dots_path(source_project, from_to_vars)
     else
       redirect_to project_compare_path(source_project, from_to_vars)
     end
@@ -76,6 +73,19 @@ class Projects::CompareController < Projects::ApplicationController
   end
 
   private
+
+  def build_from_to_vars
+    from_to_vars = {
+      from: compare_params[:from].presence,
+      to: compare_params[:to].presence
+    }
+
+    if compare_params[:from_project_id] != compare_params[:to_project_id]
+      from_to_vars[:from_project_id] = compare_params[:from_project_id].presence
+    end
+
+    from_to_vars
+  end
 
   def validate_refs!
     invalid = [head_ref, start_ref].filter { |ref| !valid_ref?(ref) }
@@ -169,6 +179,6 @@ class Projects::CompareController < Projects::ApplicationController
   # rubocop: enable CodeReuse/ActiveRecord
 
   def compare_params
-    @compare_params ||= params.permit(:from, :to, :from_project_id, :straight)
+    @compare_params ||= params.permit(:from, :to, :from_project_id, :straight, :to_project_id)
   end
 end

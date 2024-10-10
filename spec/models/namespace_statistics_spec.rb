@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe NamespaceStatistics do
+RSpec.describe NamespaceStatistics, type: :model, feature_category: :consumables_cost_management do
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
 
@@ -97,13 +97,14 @@ RSpec.describe NamespaceStatistics do
     let_it_be(:statistics, reload: true) { create(:namespace_statistics, namespace: group) }
     let_it_be(:dependency_proxy_manifest) { create(:dependency_proxy_manifest, group: group, size: 50) }
     let_it_be(:dependency_proxy_blob) { create(:dependency_proxy_blob, group: group, size: 50) }
+    let_it_be(:vreg_maven_cached_response) { create(:virtual_registries_packages_maven_cached_response, group: group, size: 50) }
 
     subject(:update_dependency_proxy_size) { statistics.update_dependency_proxy_size }
 
     it 'updates the dependency proxy size' do
       update_dependency_proxy_size
 
-      expect(statistics.dependency_proxy_size).to eq 100
+      expect(statistics.dependency_proxy_size).to eq 150
     end
 
     context 'when namespace does not belong to a group' do

@@ -6,7 +6,8 @@
 # Don't use format parameter as file extension (old 3.0.x behavior)
 # See http://guides.rubyonrails.org/routing.html#route-globbing-and-wildcard-segments
 scope format: false do
-  get '/compare/:from...:to', to: 'compare#show', as: 'compare', constraints: { from: /.+/, to: /.+/ }
+  get '/compare/:from...:to/', to: 'compare#show', as: 'compare', constraints: { from: /.+/, to: /.+/ }
+  get '/compare/:from..:to/', to: 'compare#show', as: 'compare_with_two_dots', constraints: { from: /.+/, to: /.+/ }, defaults: { straight: "true" }
 
   resources :compare, only: [:index, :create] do
     collection do

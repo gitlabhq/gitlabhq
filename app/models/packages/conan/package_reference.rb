@@ -16,6 +16,8 @@ module Packages
         inverse_of: :conan_package_references
       belongs_to :project
 
+      has_many :package_revisions, inverse_of: :package_reference, class_name: 'Packages::Conan::PackageRevision'
+
       validates :package, :project, presence: true
       validates :reference, presence: true, bytesize: { maximum: -> { REFERENCE_LENGTH_MAX } },
         uniqueness: { scope: [:package_id, :recipe_revision_id] }

@@ -18,10 +18,14 @@ import {
   MEMBER_TAB,
   STARRED_TAB,
   INACTIVE_TAB,
+  FILTERED_SEARCH_TOKEN_LANGUAGE,
+  FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
 } from '~/projects/your_work/constants';
+import { FILTERED_SEARCH_TERM_KEY } from '~/projects/filtered_search_and_sort/constants';
+import { ACCESS_LEVEL_OWNER_INTEGER, ACCESS_LEVEL_OWNER_STRING } from '~/access_level/constants';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { pageInfoMultiplePages } from './mock_data';
+import { pageInfoMultiplePages, programmingLanguages } from './mock_data';
 
 jest.mock('~/alert');
 
@@ -31,12 +35,22 @@ describe('TabView', () => {
   let wrapper;
   let mockApollo;
 
-  const createComponent = ({ handler, propsData }) => {
+  const defaultPropsData = {
+    sort: 'name_desc',
+    filters: {
+      [FILTERED_SEARCH_TERM_KEY]: 'foo',
+      [FILTERED_SEARCH_TOKEN_LANGUAGE]: '8',
+      [FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL]: ACCESS_LEVEL_OWNER_INTEGER,
+    },
+  };
+
+  const createComponent = ({ handler, propsData = {} } = {}) => {
     mockApollo = createMockApollo([handler]);
 
     wrapper = mountExtended(TabView, {
       apolloProvider: mockApollo,
-      propsData,
+      propsData: { ...defaultPropsData, ...propsData },
+      provide: { programmingLanguages },
     });
   };
 
@@ -48,12 +62,12 @@ describe('TabView', () => {
   });
 
   describe.each`
-    tab                | handler                                                                                     | expectedVariables                                             | expectedProjects
-    ${CONTRIBUTED_TAB} | ${[CONTRIBUTED_TAB.query, jest.fn().mockResolvedValue(contributedProjectsGraphQlResponse)]} | ${{ contributed: true, starred: false }}                      | ${contributedProjectsGraphQlResponse.data.currentUser.contributedProjects.nodes}
-    ${PERSONAL_TAB}    | ${[PERSONAL_TAB.query, jest.fn().mockResolvedValue(personalProjectsGraphQlResponse)]}       | ${{ personal: true, membership: false, archived: 'EXCLUDE' }} | ${personalProjectsGraphQlResponse.data.projects.nodes}
-    ${MEMBER_TAB}      | ${[MEMBER_TAB.query, jest.fn().mockResolvedValue(membershipProjectsGraphQlResponse)]}       | ${{ personal: false, membership: true, archived: 'EXCLUDE' }} | ${membershipProjectsGraphQlResponse.data.projects.nodes}
-    ${STARRED_TAB}     | ${[STARRED_TAB.query, jest.fn().mockResolvedValue(starredProjectsGraphQlResponse)]}         | ${{ contributed: false, starred: true }}                      | ${starredProjectsGraphQlResponse.data.currentUser.starredProjects.nodes}
-    ${INACTIVE_TAB}    | ${[INACTIVE_TAB.query, jest.fn().mockResolvedValue(inactiveProjectsGraphQlResponse)]}       | ${{ personal: false, membership: true, archived: 'ONLY' }}    | ${inactiveProjectsGraphQlResponse.data.projects.nodes}
+    tab                | handler                                                                                     | expectedVariables                                                                          | expectedProjects
+    ${CONTRIBUTED_TAB} | ${[CONTRIBUTED_TAB.query, jest.fn().mockResolvedValue(contributedProjectsGraphQlResponse)]} | ${{ contributed: true, starred: false, sort: defaultPropsData.sort.toUpperCase() }}        | ${contributedProjectsGraphQlResponse.data.currentUser.contributedProjects.nodes}
+    ${PERSONAL_TAB}    | ${[PERSONAL_TAB.query, jest.fn().mockResolvedValue(personalProjectsGraphQlResponse)]}       | ${{ personal: true, membership: false, archived: 'EXCLUDE', sort: defaultPropsData.sort }} | ${personalProjectsGraphQlResponse.data.projects.nodes}
+    ${MEMBER_TAB}      | ${[MEMBER_TAB.query, jest.fn().mockResolvedValue(membershipProjectsGraphQlResponse)]}       | ${{ personal: false, membership: true, archived: 'EXCLUDE', sort: defaultPropsData.sort }} | ${membershipProjectsGraphQlResponse.data.projects.nodes}
+    ${STARRED_TAB}     | ${[STARRED_TAB.query, jest.fn().mockResolvedValue(starredProjectsGraphQlResponse)]}         | ${{ contributed: false, starred: true, sort: defaultPropsData.sort.toUpperCase() }}        | ${starredProjectsGraphQlResponse.data.currentUser.starredProjects.nodes}
+    ${INACTIVE_TAB}    | ${[INACTIVE_TAB.query, jest.fn().mockResolvedValue(inactiveProjectsGraphQlResponse)]}       | ${{ personal: false, membership: true, archived: 'ONLY', sort: defaultPropsData.sort }}    | ${inactiveProjectsGraphQlResponse.data.projects.nodes}
   `(
     'onMount when route name is $tab.value',
     ({ tab, handler, expectedVariables, expectedProjects }) => {
@@ -81,6 +95,9 @@ describe('TabView', () => {
             first: DEFAULT_PER_PAGE,
             before: null,
             after: null,
+            search: defaultPropsData.filters[FILTERED_SEARCH_TERM_KEY],
+            programmingLanguageName: 'CoffeeScript',
+            minAccessLevel: ACCESS_LEVEL_OWNER_STRING,
             ...expectedVariables,
           });
         });
@@ -202,6 +219,10 @@ describe('TabView', () => {
             personal: true,
             membership: false,
             archived: 'EXCLUDE',
+            sort: defaultPropsData.sort,
+            search: defaultPropsData.filters[FILTERED_SEARCH_TERM_KEY],
+            programmingLanguageName: 'CoffeeScript',
+            minAccessLevel: ACCESS_LEVEL_OWNER_STRING,
           });
         });
       });
@@ -236,6 +257,10 @@ describe('TabView', () => {
             personal: true,
             membership: false,
             archived: 'EXCLUDE',
+            sort: defaultPropsData.sort,
+            search: defaultPropsData.filters[FILTERED_SEARCH_TERM_KEY],
+            programmingLanguageName: 'CoffeeScript',
+            minAccessLevel: ACCESS_LEVEL_OWNER_STRING,
           });
         });
       });

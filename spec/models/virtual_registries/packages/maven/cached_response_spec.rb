@@ -6,6 +6,12 @@ RSpec.describe VirtualRegistries::Packages::Maven::CachedResponse, type: :model,
   subject(:cached_response) { build(:virtual_registries_packages_maven_cached_response) }
 
   it { is_expected.to include_module(FileStoreMounter) }
+  it { is_expected.to include_module(::UpdateNamespaceStatistics) }
+
+  it_behaves_like 'updates namespace statistics' do
+    let(:statistic_source) { cached_response }
+    let(:non_statistic_attribute) { :relative_path }
+  end
 
   describe 'validations' do
     %i[group file relative_path content_type downloads_count size].each do |attr|
@@ -95,6 +101,18 @@ RSpec.describe VirtualRegistries::Packages::Maven::CachedResponse, type: :model,
       end
 
       it { is_expected.to contain_exactly(pending_destruction_cached_response) }
+    end
+
+    describe '.for_group' do
+      let_it_be(:cached_response1) { create(:virtual_registries_packages_maven_cached_response) }
+      let_it_be(:cached_response2) { create(:virtual_registries_packages_maven_cached_response) }
+      let_it_be(:cached_response3) { create(:virtual_registries_packages_maven_cached_response) }
+
+      let(:groups) { [cached_response1.group, cached_response2.group] }
+
+      subject { described_class.for_group(groups) }
+
+      it { is_expected.to match_array([cached_response1, cached_response2]) }
     end
   end
 

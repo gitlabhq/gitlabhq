@@ -21,62 +21,12 @@ module Ci
         return if pipeline.parent_pipeline? # skip if child pipeline
         return unless project.auto_cancel_pending_pipelines?
 
-        if Feature.enabled?(:cancel_redundant_pipelines_without_hierarchy_cte, @project)
-          auto_cancel_all_pipelines_with_cancelable_statuses
-
-          return
-        end
-
-        paginator.each do |ids|
-          pipelines = parent_and_child_pipelines(ids)
-
-          Gitlab::OptimisticLocking.retry_lock(pipelines, name: 'cancel_pending_pipelines') do |cancelables|
-            auto_cancel_pipelines(cancelables.ids)
-          end
-        end
+        auto_cancel_all_pipelines_with_cancelable_statuses
       end
 
       private
 
       attr_reader :pipeline, :project
-
-      def paginator
-        page = 1
-        Enumerator.new do |yielder|
-          loop do
-            # leverage the index_ci_pipelines_on_project_id_and_status_and_created_at index
-            records = project.all_pipelines
-              .created_after(pipelines_created_after)
-              .order(:status, :created_at)
-              .page(page) # use offset pagination because there is no other way to loop over the data
-              .per(PAGE_SIZE)
-              .pluck(:id)
-
-            raise StopIteration if records.empty?
-
-            yielder << records
-            page += 1
-          end
-        end
-      end
-
-      def parent_auto_cancelable_pipelines(ids)
-        scope = project.all_pipelines
-          .created_after(pipelines_created_after)
-          .for_ref(pipeline.ref)
-          .where_not_sha(project.commit(pipeline.ref).try(:id))
-          .where("created_at < ?", pipeline.created_at)
-          .for_status(CommitStatus::AVAILABLE_STATUSES) # Force usage of project_id_and_status_and_created_at_index
-          .ci_sources
-
-        scope.id_in(ids)
-      end
-
-      def parent_and_child_pipelines(ids)
-        Ci::Pipeline.object_hierarchy(parent_auto_cancelable_pipelines(ids), project_condition: :same)
-          .base_and_descendants
-          .cancelable
-      end
 
       def cancelable_status_pipeline_ids
         project.all_pipelines
@@ -164,26 +114,6 @@ module Ci
         )
       end
       # rubocop:enable Metrics/CyclomaticComplexity
-
-      def auto_cancel_pipelines(pipeline_ids)
-        ::Ci::Pipeline
-          .id_in(pipeline_ids)
-          .each do |cancelable_pipeline|
-            case cancelable_pipeline.auto_cancel_on_new_commit
-            when 'none'
-              # no-op
-            when 'conservative'
-              next unless conservative_cancellable_pipeline_ids(pipeline_ids).include?(cancelable_pipeline.id)
-
-              cancel_pipeline(cancelable_pipeline, safe_cancellation: false)
-            when 'interruptible'
-              cancel_pipeline(cancelable_pipeline, safe_cancellation: true)
-            else
-              raise ArgumentError,
-                "Unknown auto_cancel_on_new_commit value: #{cancelable_pipeline.auto_cancel_on_new_commit}"
-            end
-          end
-      end
 
       def conservative_cancellable_pipeline_ids(pipeline_ids)
         strong_memoize_with(:conservative_cancellable_pipeline_ids, pipeline_ids) do

@@ -3768,7 +3768,7 @@ Gitlab/BoundedContexts:
     - 'ee/lib/quality/seeders/dependencies.rb'
     - 'ee/lib/quality/seeders/insights/issues.rb'
     - 'ee/lib/quality/seeders/vulnerabilities.rb'
-    - 'ee/lib/sidebars/admin/menus/ai_powered_features_menu.rb'
+    - 'ee/lib/sidebars/admin/menus/self_hosted_models_menu.rb'
     - 'ee/lib/sidebars/admin/menus/code_suggestions_menu.rb'
     - 'ee/lib/sidebars/admin/menus/credentials_menu.rb'
     - 'ee/lib/sidebars/admin/menus/geo_menu.rb'

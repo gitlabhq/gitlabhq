@@ -56,6 +56,9 @@ module Types
       description: 'State of the merge request.'
     field :target_branch, GraphQL::Types::String, null: false,
       description: 'Target branch of the merge request.'
+    field :target_branch_path, GraphQL::Types::String, method: :target_branch_commits_path, null: true,
+      calls_gitaly: true,
+      description: 'Path to the target branch of the merge request.'
     field :target_project, Types::ProjectType, null: false,
       description: 'Target project of the merge request.'
     field :target_project_id, GraphQL::Types::Int, null: false,

@@ -2,6 +2,7 @@
 import { GlFilteredSearchToken, GlButton, GlLink, GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
 import ApprovalCount from 'ee_else_ce/merge_requests/components/approval_count.vue';
+import { sprintf, __ } from '~/locale';
 import Api from '~/api';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { STATUS_ALL, STATUS_CLOSED, STATUS_OPEN, STATUS_MERGED } from '~/issues/constants';
@@ -129,6 +130,7 @@ export default {
     canBulkUpdate: { default: false },
     environmentNamesPath: { default: '' },
     mergeTrainsPath: { default: undefined },
+    defaultBranch: { default: '' },
   },
   data() {
     return {
@@ -676,6 +678,11 @@ export default {
         issuableEventHub.$emit('issuables:updateBulkEdit');
       });
     },
+    targetBranchTooltip(mergeRequest) {
+      return sprintf(__('Target branch: %{target_branch}'), {
+        target_branch: mergeRequest.targetBranch,
+      });
+    },
   },
   STATUS_OPEN,
 };
@@ -756,6 +763,23 @@ export default {
 
     <template #timeframe="{ issuable = {} }">
       <issuable-milestone v-if="issuable.milestone" :milestone="issuable.milestone" />
+    </template>
+
+    <template #target-branch="{ issuable = {} }">
+      <span
+        v-if="issuable.targetBranch !== defaultBranch"
+        class="project-ref-path gl-inline-block gl-max-w-26 gl-truncate gl-align-bottom"
+        data-testid="target-branch"
+      >
+        <gl-link
+          v-gl-tooltip
+          :href="issuable.targetBranchPath"
+          :title="targetBranchTooltip(issuable)"
+          class="ref-name !gl-text-gray-500"
+        >
+          <gl-icon name="branch" :size="12" class="gl-mr-2" />{{ issuable.targetBranch }}
+        </gl-link>
+      </span>
     </template>
 
     <template #statistics="{ issuable = {} }">

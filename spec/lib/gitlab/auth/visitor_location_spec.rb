@@ -25,8 +25,8 @@ RSpec.describe Gitlab::Auth::VisitorLocation, feature_category: :system_access d
   end
 
   context 'when locale is not default' do
-    before do
-      I18n.locale = :de
+    around do |example|
+      Gitlab::I18n.with_locale(:de, &example)
     end
 
     it 'returns localized country name' do

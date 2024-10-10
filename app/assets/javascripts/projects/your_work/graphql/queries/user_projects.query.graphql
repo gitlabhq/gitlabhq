@@ -8,11 +8,23 @@ query getYourWorkUserProjects(
   $last: Int
   $before: String
   $after: String
+  $sort: ProjectSort
+  $search: String
+  $minAccessLevel: AccessLevelEnum
+  $programmingLanguageName: String
 ) {
   currentUser {
     id
-    contributedProjects(first: $first, last: $last, before: $before, after: $after)
-      @include(if: $contributed) {
+    contributedProjects(
+      first: $first
+      last: $last
+      before: $before
+      after: $after
+      sort: $sort
+      search: $search
+      minAccessLevel: $minAccessLevel
+      programmingLanguageName: $programmingLanguageName
+    ) @include(if: $contributed) {
       nodes {
         ...Project
       }
@@ -20,8 +32,16 @@ query getYourWorkUserProjects(
         ...PageInfo
       }
     }
-    starredProjects(first: $first, last: $last, before: $before, after: $after)
-      @include(if: $starred) {
+    starredProjects(
+      first: $first
+      last: $last
+      before: $before
+      after: $after
+      sort: $sort
+      search: $search
+      minAccessLevel: $minAccessLevel
+      programmingLanguageName: $programmingLanguageName
+    ) @include(if: $starred) {
       nodes {
         ...Project
       }

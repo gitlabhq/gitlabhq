@@ -315,7 +315,8 @@ You cannot create new workspaces for a user when:
 - The number of workspaces for the user has reached the defined `workspaces_per_user_quota`.
 - `workspaces_per_user_quota` is set to `0`.
 
-However, if the quota is reduced below the number of currently running workspaces for a user, the user's workspaces will _not_ be automatically terminated.
+If `workspaces_per_user_quota` is set to a value below the number of existing workspaces for a user,
+the user's workspaces are not terminated automatically.
 
 The default value is `-1` (unlimited).
 Possible values are greater than or equal to `-1`.

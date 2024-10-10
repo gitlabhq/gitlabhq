@@ -444,6 +444,7 @@ export default {
             </gl-sprintf>
           </span>
           <slot name="timeframe"></slot>
+          <slot name="target-branch"></slot>
         </span>
         <p
           v-if="labels.length"

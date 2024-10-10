@@ -35,6 +35,7 @@ export async function mountMergeRequestListsApp() {
     canBulkUpdate,
     environmentNamesPath,
     mergeTrainsPath,
+    defaultBranch,
   } = el.dataset;
 
   return new Vue({
@@ -67,6 +68,7 @@ export async function mountMergeRequestListsApp() {
       canBulkUpdate: parseBoolean(canBulkUpdate),
       environmentNamesPath,
       mergeTrainsPath,
+      defaultBranch,
     },
     render: (createComponent) => createComponent(MergeRequestsListApp),
   });

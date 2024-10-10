@@ -6,12 +6,13 @@ RSpec.describe Gitlab::Email::Receiver, feature_category: :shared do
   include_context 'email shared context'
 
   let_it_be_with_reload(:project) { create(:project) }
-  let(:metric_transaction) { instance_double(Gitlab::Metrics::WebTransaction) }
+
+  let(:metric_transaction) { instance_double(Gitlab::Metrics::WebTransaction, increment: true, observe: true) }
+  let(:mail_key) { 'gitlabhq/gitlabhq+auth_token' }
 
   shared_examples 'successful receive' do
     let(:handler) { double(:handler, project: project, execute: true, metrics_event: nil, metrics_params: nil) }
     let(:client_id) { 'email/jake@example.com' }
-    let(:mail_key) { 'gitlabhq/gitlabhq+auth_token' }
 
     it 'correctly finds the mail key' do
       expect(Gitlab::Email::Handler).to receive(:for).with(an_instance_of(Mail::Message), mail_key).and_return(handler)
@@ -41,7 +42,9 @@ RSpec.describe Gitlab::Email::Receiver, feature_category: :shared do
 
   shared_examples 'failed receive with event' do
     it 'adds metric event' do
-      expect(::Gitlab::Metrics::BackgroundTransaction).to receive(:current).and_return(metric_transaction)
+      # Use allow here because we receive it multiple times which is out of scope of this class
+      allow(::Gitlab::Metrics::BackgroundTransaction).to receive(:current).and_return(metric_transaction)
+
       expect(metric_transaction).to receive(:add_event).with('email_receiver_error', { error: expected_error.name })
 
       expect { receiver.execute }.to raise_error(expected_error)
@@ -148,69 +151,132 @@ RSpec.describe Gitlab::Email::Receiver, feature_category: :shared do
       it_behaves_like 'successful receive'
     end
 
-    context 'when Service Desk custom email reply address in To header and no References header exists' do
+    context 'for Service Desk custom email' do
       let_it_be_with_refind(:setting) { create(:service_desk_setting, project: project, add_external_participants_from_cc: true) }
 
       let!(:credential) { create(:service_desk_custom_email_credential, project: project) }
       let!(:verification) { create(:service_desk_custom_email_verification, :finished, project: project) }
-      let(:incoming_email) { "incoming+gitlabhq/gitlabhq+auth_token@appmail.example.com" }
-      let(:reply_key) { "5de1a83a6fc3c9fe34d756c7f484159e" }
-      let(:custom_email_reply) { "support+#{reply_key}@example.com" }
 
-      context 'when custom email is enabled' do
-        let(:email_raw) do
-          <<~EMAIL
-          Delivered-To: #{incoming_email}
-          From: jake@example.com
-          To: #{custom_email_reply}
-          Subject: Reply titile
+      let(:incoming_email) { project.service_desk_incoming_address }
+      let(:mail_key) { "5de1a83a6fc3c9fe34d756c7f484159e" }
+      let(:email) { "support+#{mail_key}@example.com" }
+      let(:meta_key) { :to_address }
+      let(:meta_value) { [email] }
 
-          Reply body
-          EMAIL
-        end
-
-        let(:meta_key) { :to_address }
-        let(:meta_value) { [custom_email_reply] }
-
-        before do
-          project.reset
-          setting.update!(custom_email: 'support@example.com', custom_email_enabled: true)
-        end
-
-        it_behaves_like 'successful receive' do
-          let(:mail_key) { reply_key }
-        end
-
-        # Email forwarding using a transport rule in Microsoft 365 adds the forwarding
-        # target to the `To` header. We have to select te custom email reply address
-        # before the incoming address (forwarding target)
-        # See https://gitlab.com/gitlab-org/gitlab/-/issues/426269#note_1629170865 for email structure
-        context 'when also Service Desk incoming address in To header' do
+      shared_examples 'successful receive from Delivered-To header' do
+        context 'when in Delivered-To header' do
           let(:email_raw) do
             <<~EMAIL
+            Delivered-To: #{incoming_email}
             From: jake@example.com
-            To: #{custom_email_reply}, #{incoming_email}
-            Subject: Reply titile
+            To: #{email}
+            Subject: Title
 
             Reply body
             EMAIL
           end
 
-          let(:meta_value) { [custom_email_reply, incoming_email] }
+          it_behaves_like 'successful receive'
+        end
+      end
 
-          it_behaves_like 'successful receive' do
-            let(:mail_key) { reply_key }
+      shared_examples 'successful receive from To header' do
+        context 'when in To header' do
+          let(:email_raw) do
+            <<~EMAIL
+            From: jake@example.com
+            To: #{email}
+            Subject: Title
+
+            Reply body
+            EMAIL
+          end
+
+          it_behaves_like 'successful receive'
+
+          context 'when also incoming address is in To header' do
+            let(:email_raw) do
+              <<~EMAIL
+              From: jake@example.com
+              To: #{email}, #{incoming_email}
+              Subject: Title
+
+              Body
+              EMAIL
+            end
+
+            let(:meta_value) { [email, incoming_email] }
+
+            it_behaves_like 'successful receive'
           end
         end
+      end
+
+      before do
+        # Technically the state of ServiceDeskSetting and custom email records differ based on
+        # the verification state and whether it's enabled or not.
+        # But we always want to match a custom email with a project key and decide
+        # to discard that email later in the handler.
+        # So we ignore the custom email state here for simplicity.
+        setting.update!(custom_email: 'support@example.com', custom_email_enabled: true)
+        project.reset
+      end
+
+      context 'for email to custom email address with reply key' do
+        it_behaves_like 'successful receive from Delivered-To header'
+        it_behaves_like 'successful receive from To header'
+      end
+
+      context 'for verification email' do
+        let(:mail_key) { project.default_service_desk_subaddress_part }
+        let(:email) { "support+verify@example.com" }
+
+        it_behaves_like 'successful receive from Delivered-To header'
+        it_behaves_like 'successful receive from To header'
+      end
+
+      context 'for email to custom email address' do
+        let(:mail_key) { project.default_service_desk_subaddress_part }
+        let(:email) { "support@example.com" }
+
+        it_behaves_like 'successful receive from Delivered-To header'
+        it_behaves_like 'successful receive from To header'
       end
     end
   end
 
   context 'when we cannot find a capable handler' do
-    let(:email_raw) { fixture_file('emails/valid_reply.eml').gsub(mail_key, '!!!') }
     let(:expected_error) { Gitlab::Email::UnknownIncomingEmail }
 
-    it_behaves_like 'failed receive with event'
+    context 'when mail key is not correct' do
+      let(:email_raw) do
+        <<~EMAIL
+        From: from@example.com
+        To: incoming+!!!@example.com
+        In-Reply-To: <issue_1@localhost>
+        References: <incoming-!!!@localhost> <issue_1@localhost>
+        Subject: Title
+
+        Body
+        EMAIL
+      end
+
+      it_behaves_like 'failed receive with event'
+    end
+
+    context 'when email is not known' do
+      let(:email_raw) do
+        <<~EMAIL
+        From: from@example.com
+        To: to@example.com
+        Subject: Title
+
+        Body
+        EMAIL
+      end
+
+      it_behaves_like 'failed receive with event'
+    end
   end
 
   context 'when the email is blank' do

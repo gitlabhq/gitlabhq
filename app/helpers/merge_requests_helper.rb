@@ -249,7 +249,8 @@ module MergeRequestsHelper
       rss_url: url_for(safe_params.merge(rss_url_options)),
       releases_endpoint: project_releases_path(project, format: :json),
       can_bulk_update: can?(current_user, :admin_merge_request, project).to_s,
-      environment_names_path: unfoldered_environment_names_project_path(project, :json)
+      environment_names_path: unfoldered_environment_names_project_path(project, :json),
+      default_branch: project.default_branch
     }
   end
 

@@ -217,7 +217,6 @@ Performance/StringIdentifierArgument:
     - 'spec/support/shared_examples/models/concerns/cascading_namespace_setting_shared_examples.rb'
     - 'spec/support/shared_examples/models/concerns/cascading_project_setting_shared_examples.rb'
     - 'spec/support/shared_examples/models/concerns/integrations/reset_secret_fields_shared_examples.rb'
-    - 'spec/support/shared_examples/models/concerns/update_namespace_statistics_shared_examples.rb'
     - 'spec/support/shared_examples/models/email_format_shared_examples.rb'
     - 'spec/support/shared_examples/models/project_ci_cd_settings_shared_examples.rb'
     - 'spec/support/shared_examples/policies/project_policy_shared_examples.rb'

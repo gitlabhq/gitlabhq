@@ -75,10 +75,6 @@
         .badge.badge-pill {
           color: $gl-text-color;
         }
-
-        iframe.twitter-share-button {
-          vertical-align: bottom;
-        }
       }
 
       code {
@@ -103,13 +99,6 @@
       p:last-child {
         margin-bottom: 0;
       }
-    }
-
-    .event-note-icon {
-      color: $gray-500;
-      float: left;
-      font-size: $gl-font-size;
-      margin-right: 5px;
     }
   }
 

@@ -1,9 +1,0 @@
----
-name: cancel_redundant_pipelines_without_hierarchy_cte
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/438101
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144273
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/463623
-milestone: '17.2'
-group: group::pipeline execution
-type: gitlab_com_derisk
-default_enabled: false

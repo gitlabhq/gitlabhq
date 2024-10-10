@@ -65,11 +65,7 @@ It includes these labels, which are added to the merge request:
   For example, `~devops::create` and `~group::source code`.
 - A `~documentation` [specialization label](../labels/index.md#specialization-labels).
 
-A member of the Technical Writing team adds these labels:
-
-- A [documentation scoped label](../../user/project/labels.md#scoped-labels) with the
-  `docs::` prefix. For example, `~docs::improvement`.
-- The [`~Technical Writing` team label](../labels/index.md#team-labels).
+A member of the Technical Writing team adds the [`~Technical Writing` team label](../labels/index.md#team-labels).
 
 NOTE:
 With the exception of `/doc/development/documentation`,

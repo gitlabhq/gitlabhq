@@ -3821,12 +3821,6 @@ msgstr ""
 msgid "AdminArea|total billable + total non-billable"
 msgstr ""
 
-msgid "AdminCustomModels|Custom Models"
-msgstr ""
-
-msgid "AdminCustomModels|Manage GitLab Duo by configuring and assigning self-hosted models to AI-powered features"
-msgstr ""
-
 msgid "AdminDashboard|Error loading the statistics. Please try again"
 msgstr ""
 
@@ -3957,6 +3951,9 @@ msgid "AdminSelfHostedModels|If required, provide the API token that grants acce
 msgstr ""
 
 msgid "AdminSelfHostedModels|Manage AI models that can be used for GitLab AI features."
+msgstr ""
+
+msgid "AdminSelfHostedModels|Manage GitLab Duo by configuring and assigning self-hosted models to AI-powered features"
 msgstr ""
 
 msgid "AdminSelfHostedModels|Model"
@@ -4952,9 +4949,6 @@ msgstr ""
 msgid "Administrators are not permitted to connect applications with these scopes: %{code_open}api%{code_close}, %{code_open}read_api%{code_close}, %{code_open}read_repository%{code_close}, %{code_open}write_repository%{code_close}, %{code_open}write_registry%{code_close}, %{code_open}read_registry%{code_close}, and %{code_open}sudo%{code_close}. To permit this, change the %{code_open}disable_admin_oauth_scopes%{code_close} setting using the API."
 msgstr ""
 
-msgid "Admin|AI-powered features"
-msgstr ""
-
 msgid "Admin|Abuse reports"
 msgstr ""
 
@@ -4980,9 +4974,6 @@ msgid "Admin|Credentials"
 msgstr ""
 
 msgid "Admin|Deploy keys"
-msgstr ""
-
-msgid "Admin|Features"
 msgstr ""
 
 msgid "Admin|Geo"
@@ -50660,6 +50651,15 @@ msgid "SecurityReports|There was an error while generating the report."
 msgstr ""
 
 msgid "SecurityReports|These vulnerabilities were detected in external sources. They are not necessarily tied to your GitLab project. For example, running containers, URLs, and so on."
+msgstr ""
+
+msgid "SecurityReports|This project has reached the maximum number of vulnerabilities it can contain and some of the vulnerabilities couldn't be ingested."
+msgstr ""
+
+msgid "SecurityReports|This project has reached the maximum number of vulnerabilities it can contain. New vulnerabilities will not be created."
+msgstr ""
+
+msgid "SecurityReports|This project is reaching the maximum number of vulnerabilities it can contain."
 msgstr ""
 
 msgid "SecurityReports|This selection is required."

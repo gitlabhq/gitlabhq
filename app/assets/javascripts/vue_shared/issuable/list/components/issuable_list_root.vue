@@ -406,6 +406,9 @@ export default {
           <template #timeframe>
             <slot name="timeframe" :issuable="issuable"></slot>
           </template>
+          <template #target-branch>
+            <slot name="target-branch" :issuable="issuable"></slot>
+          </template>
           <template #status>
             <slot name="status" :issuable="issuable"></slot>
           </template>

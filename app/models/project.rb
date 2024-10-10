@@ -3043,7 +3043,7 @@ class Project < ApplicationRecord
     config = Gitlab.config.incoming_email
     wildcard = Gitlab::Email::Common::WILDCARD_PLACEHOLDER
 
-    config.address&.gsub(wildcard, "#{full_path_slug}-#{default_service_desk_suffix}")
+    config.address&.gsub(wildcard, default_service_desk_subaddress_part)
   end
 
   def service_desk_alias_address
@@ -3058,6 +3058,10 @@ class Project < ApplicationRecord
     return unless service_desk_setting&.custom_email_enabled?
 
     service_desk_setting.custom_email
+  end
+
+  def default_service_desk_subaddress_part
+    "#{full_path_slug}-#{default_service_desk_suffix}"
   end
 
   def default_service_desk_suffix

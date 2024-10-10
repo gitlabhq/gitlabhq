@@ -46,8 +46,10 @@ module UpdateNamespaceStatistics
     end
 
     def schedule_namespace_statistics_refresh
+      return unless namespace
+
       run_after_commit do
-        Groups::UpdateStatisticsWorker.perform_async(namespace.id, [self.class.namespace_statistics_name])
+        Groups::UpdateStatisticsWorker.perform_async(namespace.id, [self.class.namespace_statistics_name.to_s])
       end
     end
   end

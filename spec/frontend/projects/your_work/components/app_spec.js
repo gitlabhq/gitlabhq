@@ -18,6 +18,8 @@ import {
   PERSONAL_TAB,
   MEMBER_TAB,
   INACTIVE_TAB,
+  FILTERED_SEARCH_TOKEN_LANGUAGE,
+  FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
 } from '~/projects/your_work/constants';
 import { RECENT_SEARCHES_STORAGE_KEY_PROJECTS } from '~/filtered_search/recent_searches_storage_keys';
 import {
@@ -33,8 +35,11 @@ import { OPERATORS_IS } from '~/vue_shared/components/filtered_search_bar/consta
 import FilteredSearchAndSort from '~/groups_projects/components/filtered_search_and_sort.vue';
 import projectCountsQuery from '~/projects/your_work/graphql/queries/project_counts.query.graphql';
 import { createAlert } from '~/alert';
+import { ACCESS_LEVEL_OWNER_INTEGER } from '~/access_level/constants';
+import { QUERY_PARAM_END_CURSOR, QUERY_PARAM_START_CURSOR } from '~/graphql_shared/constants';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { programmingLanguages } from './mock_data';
 
 jest.mock('~/alert');
 
@@ -47,15 +52,7 @@ const defaultRoute = {
 
 const defaultProvide = {
   initialSort: 'created_desc',
-  programmingLanguages: [
-    { id: 5, name: 'CSS', color: '#563d7c', created_at: '2023-09-19T14:41:37.601Z' },
-    { id: 8, name: 'CoffeeScript', color: '#244776', created_at: '2023-09-19T14:42:01.494Z' },
-    { id: 1, name: 'HTML', color: '#e34c26', created_at: '2023-09-19T14:41:37.597Z' },
-    { id: 7, name: 'JavaScript', color: '#f1e05a', created_at: '2023-09-19T14:42:01.494Z' },
-    { id: 10, name: 'Makefile', color: '#427819', created_at: '2023-09-19T14:42:11.922Z' },
-    { id: 6, name: 'Ruby', color: '#701516', created_at: '2023-09-19T14:42:01.493Z' },
-    { id: 11, name: 'Shell', color: '#89e051', created_at: '2023-09-19T14:42:11.923Z' },
-  ],
+  programmingLanguages,
 };
 
 const searchTerm = 'foo bar';
@@ -161,7 +158,7 @@ describe('YourWorkProjectsApp', () => {
       expect(findFilteredSearchAndSort().props()).toMatchObject({
         filteredSearchTokens: [
           {
-            type: 'language',
+            type: FILTERED_SEARCH_TOKEN_LANGUAGE,
             icon: 'lock',
             title: 'Language',
             token: GlFilteredSearchToken,
@@ -170,15 +167,10 @@ describe('YourWorkProjectsApp', () => {
             options: [
               { value: '5', title: 'CSS' },
               { value: '8', title: 'CoffeeScript' },
-              { value: '1', title: 'HTML' },
-              { value: '7', title: 'JavaScript' },
-              { value: '10', title: 'Makefile' },
-              { value: '6', title: 'Ruby' },
-              { value: '11', title: 'Shell' },
             ],
           },
           {
-            type: 'min_access_level',
+            type: FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
             icon: 'user',
             title: 'Role',
             token: GlFilteredSearchToken,
@@ -219,7 +211,10 @@ describe('YourWorkProjectsApp', () => {
         createComponent({
           route: {
             ...defaultRoute,
-            query: { [FILTERED_SEARCH_TERM_KEY]: searchTerm },
+            query: {
+              [FILTERED_SEARCH_TERM_KEY]: searchTerm,
+              [QUERY_PARAM_END_CURSOR]: mockEndCursor,
+            },
           },
         });
 
@@ -239,7 +234,10 @@ describe('YourWorkProjectsApp', () => {
         createComponent({
           route: {
             ...defaultRoute,
-            query: { [FILTERED_SEARCH_TERM_KEY]: searchTerm },
+            query: {
+              [FILTERED_SEARCH_TERM_KEY]: searchTerm,
+              [QUERY_PARAM_END_CURSOR]: mockEndCursor,
+            },
           },
         });
 
@@ -266,19 +264,41 @@ describe('YourWorkProjectsApp', () => {
     ${MEMBER_TAB.value}              | ${MEMBER_TAB}
     ${INACTIVE_TAB.value}            | ${INACTIVE_TAB}
   `('onMount when route name is $name', ({ name, expectedTab }) => {
+    const query = {
+      sort: 'name_desc',
+      [FILTERED_SEARCH_TERM_KEY]: 'foo',
+      [FILTERED_SEARCH_TOKEN_LANGUAGE]: '8',
+      [FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL]: ACCESS_LEVEL_OWNER_INTEGER,
+      [QUERY_PARAM_END_CURSOR]: mockEndCursor,
+      [QUERY_PARAM_START_CURSOR]: mockStartCursor,
+    };
+
     beforeEach(() => {
-      createComponent({ route: { name } });
+      createComponent({
+        route: { name, query },
+      });
     });
 
     it('initializes to the correct tab', () => {
       expect(findActiveTab().text()).toContain(expectedTab.text);
     });
 
-    if (expectedTab.query) {
-      it('renders `TabView` component and passes `tab` prop', () => {
-        expect(findTabView().props('tab')).toMatchObject(expectedTab);
+    it('renders `TabView` component and passes `tab` prop', () => {
+      expect(findTabView().props('tab')).toMatchObject(expectedTab);
+    });
+
+    it('passes sorting, filtering, and pagination props', () => {
+      expect(findTabView().props()).toMatchObject({
+        sort: query.sort,
+        filters: {
+          [FILTERED_SEARCH_TERM_KEY]: query[FILTERED_SEARCH_TERM_KEY],
+          [FILTERED_SEARCH_TOKEN_LANGUAGE]: query[FILTERED_SEARCH_TOKEN_LANGUAGE],
+          [FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL]: query[FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL],
+        },
+        endCursor: mockEndCursor,
+        startCursor: mockStartCursor,
       });
-    }
+    });
   });
 
   describe('onTabUpdate', () => {
