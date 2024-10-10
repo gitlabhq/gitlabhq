@@ -48,7 +48,7 @@ To generate a SAML Response:
    - Go to the GitLab single sign-on URL for the group.
    - Select **Authorize** or attempt to sign
 1. For Self Managed Instance:
-   - Go to the instance home page  
+   - Go to the instance home page
    - Click on the `SAML Login` button to sign in
 1. A SAML response is displayed in the tracer console that resembles this
    [example SAML response](index.md#example-saml-response).
@@ -418,7 +418,7 @@ If the user receives a `404` after signing in successfully, check if you have IP
 
 Because SAML SSO for groups is a paid feature, your subscription expiring can result in a `404` error when you're signing in using SAML SSO on GitLab.com.
 If all users are receiving a `404` when attempting to sign in using SAML, confirm
-[there is an active subscription](../../../subscriptions/gitlab_com/index.md#view-your-gitlabcom-subscription) being used in this SAML SSO namespace.
+[there is an active subscription](../../../subscriptions/gitlab_com/index.md#view-gitlabcom-subscription) being used in this SAML SSO namespace.
 
 If you receive a `404` during setup when using "verify configuration", make sure you have used the correct
 [SHA-1 generated fingerprint](../../../integration/saml.md#configure-saml-on-your-idp).

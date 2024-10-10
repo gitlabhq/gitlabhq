@@ -20,7 +20,7 @@ describe('IncidentsSettingTabs', () => {
   });
 
   const findToggleButton = () => wrapper.findByTestId('settings-block-toggle');
-  const findSectionHeader = () => wrapper.findComponent({ ref: 'sectionHeader' });
+  const findSectionHeader = () => wrapper.findByTestId('settings-block-title');
   const findIntegrationTabs = () => wrapper.findAllComponents(GlTab);
   const findIntegrationTabAt = (index) => findIntegrationTabs().at(index);
   const findTabComponent = (tab) => wrapper.findByTestId(`${tab.component}-tab`);
@@ -31,7 +31,7 @@ describe('IncidentsSettingTabs', () => {
 
   describe('expand/collapse button', () => {
     it('renders as an expand button by default', () => {
-      expect(findToggleButton().text()).toContain('Expand');
+      expect(findToggleButton().attributes('aria-label')).toContain('Expand');
     });
   });
 

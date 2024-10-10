@@ -80,6 +80,8 @@ include:
     SKIP_IMAGE_VERIFICATION: "true"
     # set specific arch list
     ARCH_LIST: amd64
+    # use larger runner for complex rails build jobs
+    HIGH_CAPACITY_RUNNER_TAG: high-cpu
   trigger:
     project: '${CI_PROJECT_NAMESPACE}/$[[ inputs.cng_path ]]'
     branch: $TRIGGER_BRANCH

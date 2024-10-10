@@ -133,7 +133,7 @@ export default {
     <template #header>
       <div
         data-testid="pipeline-stage-dropdown-menu-title"
-        class="gl-flex gl-min-h-8 gl-items-center gl-border-b-1 gl-border-b-gray-200 !gl-p-4 gl-text-sm gl-font-bold gl-leading-1 gl-border-b-solid"
+        class="gl-flex gl-min-h-8 gl-items-center gl-border-b-1 gl-border-b-dropdown !gl-p-4 gl-text-sm gl-font-bold gl-leading-1 gl-border-b-solid"
       >
         <span>{{ dropdownHeaderText }}</span>
       </div>

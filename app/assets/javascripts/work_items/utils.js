@@ -2,6 +2,7 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { queryToObject } from '~/lib/utils/url_utility';
 import AccessorUtilities from '~/lib/utils/accessor';
 import { parseBoolean } from '~/lib/utils/common_utils';
+import { TYPE_EPIC, TYPE_ISSUE } from '~/issues/constants';
 
 import {
   NEW_WORK_ITEM_IID,
@@ -246,6 +247,40 @@ export const getShowLabelsFromLocalStorage = (showLabelsLocalStorageKey, default
     return parseBoolean(localStorage.getItem(showLabelsLocalStorageKey) ?? defaultValue);
   }
   return null;
+};
+
+/**
+ * @param {{fullPath?: string, referencePath?: string}} activeItem
+ * @param {string} fullPath
+ * @param {string} issuableType
+ * @returns {string}
+ */
+export const makeDrawerItemFullPath = (activeItem, fullPath, issuableType = TYPE_ISSUE) => {
+  if (activeItem?.fullPath) {
+    return activeItem.fullPath;
+  }
+  const delimiter = issuableType === TYPE_EPIC ? '&' : '#';
+  if (!activeItem?.referencePath) {
+    return fullPath;
+  }
+  return activeItem.referencePath.split(delimiter)[0];
+};
+
+/**
+ * since legacy epics don't have GID matching the work item ID, we need additional parameters
+ * @param {{iid: string, id: string}} activeItem
+ * @param {string} fullPath
+ * @param {string} issuableType
+ * @returns {{iid: string, full_path: string, id: number}}
+ */
+export const makeDrawerUrlParam = (activeItem, fullPath, issuableType = TYPE_ISSUE) => {
+  return btoa(
+    JSON.stringify({
+      iid: activeItem.iid,
+      full_path: makeDrawerItemFullPath(activeItem, fullPath, issuableType),
+      id: getIdFromGraphQLId(activeItem.id),
+    }),
+  );
 };
 
 export const getNewWorkItemAutoSaveKey = (fullPath, workItemType) => {

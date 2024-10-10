@@ -796,6 +796,7 @@ For most components vertical and horizontal scaling can be applied as usual. How
 
 - When scaling Puma or Sidekiq vertically the amount of workers will need to be adjusted to use the additional specs. Puma will be scaled automatically on the next reconfigure but Sidekiq will need [its configuration changed beforehand](../sidekiq/extra_sidekiq_processes.md#start-multiple-processes).
 - Redis and PgBouncer are primarily single threaded. If these components are seeing CPU exhaustion they may need to be scaled out horizontally.
+- The following components require an odd number of nodes for a voting quorum when deployed in HA form: Consul, Redis Sentinel, and Praefect.
 - Scaling certain components significantly can result in notable knock on effects that affect the performance of the environment. [Refer to the dedicated section below for more guidance](#scaling-knock-on-effects).
 
 Conversely, if you have robust metrics in place that show the environment is over-provisioned, you can scale downwards similarly.

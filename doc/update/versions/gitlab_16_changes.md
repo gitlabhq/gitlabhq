@@ -867,7 +867,7 @@ Specific information applies to installations using Geo:
 - A `BackfillCiPipelineVariablesForPipelineIdBigintConversion` background migration is finalized with
   the `EnsureAgainBackfillForCiPipelineVariablesPipelineIdIsFinished` post-deploy migration.
   GitLab 16.2.0 introduced a [batched background migration](../background_migrations.md#batched-background-migrations) to
-  [backfill bigint `pipeline_id` values on the `ci_pipeline_variables` table](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123132). This
+  [backfill `bigint` `pipeline_id` values on the `ci_pipeline_variables` table](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123132). This
   migration may take a long time to complete on larger GitLab instances (4 hours to process 50 million rows reported in one case).
   To avoid a prolonged upgrade downtime, make sure the migration has completed successfully before upgrading to 16.3.
 
@@ -1107,7 +1107,7 @@ Workaround: A possible workaround is to [disable proxying](../../administration/
 - A `BackfillCiPipelineVariablesForBigintConversion` background migration is finalized with
   the `EnsureBackfillBigintIdIsCompleted` post-deploy migration.
   GitLab 16.0.0 introduced a [batched background migration](../background_migrations.md#batched-background-migrations) to
-  [backfill bigint `id` values on the `ci_pipeline_variables` table](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118878). This
+  [backfill `bigint` `id` values on the `ci_pipeline_variables` table](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118878). This
   migration may take a long time to complete on larger GitLab instances (4 hours to process 50 million rows reported in one case).
   To avoid a prolonged upgrade downtime, make sure the migration has completed successfully before upgrading to 16.1.
 

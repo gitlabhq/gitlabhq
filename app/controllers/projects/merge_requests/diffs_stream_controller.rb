@@ -11,10 +11,6 @@ module Projects
         @merge_request
       end
 
-      def options
-        {}
-      end
-
       def stream_diff_files(options)
         if !!ActiveModel::Type::Boolean.new.cast(params[:diff_blobs])
           stream_diff_blobs(options)

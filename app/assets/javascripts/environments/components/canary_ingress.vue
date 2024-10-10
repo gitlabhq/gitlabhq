@@ -37,7 +37,7 @@ export default {
       'gl-text-base',
       'gl-font-normal',
       'gl-leading-normal',
-      'gl-shadow-inner-1-gray-200',
+      'gl-shadow-inner-1-dropdown',
       'gl-py-3',
       'gl-px-4',
       'gl-mb-0',

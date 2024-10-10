@@ -15,7 +15,7 @@ To install GitLab in a Docker container, use Docker Compose, Docker Engine, or D
 Prerequisites:
 
 - You must have a working [Docker installation](https://docs.docker.com/engine/install/#server) that is not Docker for Windows.
-Docker for Windows is not officially supported as the images have known compatability issues with volume
+Docker for Windows is not officially supported as the images have known compatibility issues with volume
 permissions and potentially other unknown issues. If you are trying to run on Docker
 for Windows, see the [getting help page](https://about.gitlab.com/get-help/). This page
 contains links to community resources (like IRC or forums) where you can seek help

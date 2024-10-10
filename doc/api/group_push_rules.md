@@ -64,7 +64,7 @@ Adds push rules to the group. Use only if you haven't defined any push rules so 
 POST /groups/:id/push_rule
 ```
 
-Supported attribues:
+Supported attributes:
 
 <!-- markdownlint-disable MD056 -->
 
@@ -180,7 +180,7 @@ Deletes all the push rules of a group.
 DELETE /groups/:id/push_rule
 ```
 
-Supported attribues:
+Supported attributes:
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |

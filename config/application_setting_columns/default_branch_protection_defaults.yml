@@ -8,6 +8,6 @@ default: "'{}'::jsonb"
 description: "[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/408314) in
   GitLab 17.0. For available options, see [Options for `default_branch_protection_defaults`](groups.md#options-for-default_branch_protection_defaults)."
 encrypted: false
-gitlab_com_different_than_default: false
+gitlab_com_different_than_default: true
 jihu: false
 not_null: true

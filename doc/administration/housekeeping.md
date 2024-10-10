@@ -177,7 +177,7 @@ staggered across Gitaly nodes so the scheduled housekeeping is not running
 simultaneously on multiple nodes.
 
 If a scheduled housekeeping run reaches the `duration` specified, the running tasks are
-gracefully cancelled. On subsequent scheduled housekeeping runs, Gitaly randomly shuffles
+gracefully canceled. On subsequent scheduled housekeeping runs, Gitaly randomly shuffles
 the repository list to process.
 
 The following snippet enables daily background repository maintenance starting at

@@ -229,6 +229,13 @@ compliance_job:
  ...
 ```
 
+NOTE:
+Jobs from the project configuration that are defined for a custom
+`stage` are excluded from the final pipeline.
+To include a job in the final configuration, define it for a
+[default pipeline stage](../../../ci/yaml/index.md#stages) or a reserved
+stage (`.pipeline-policy-pre` or `.pipeline-policy-post`).
+
 ## CI/CD variables
 
 Pipeline execution jobs are executed in isolation. Variables defined in another policy or in the project's `.gitlab-ci.yml` file are not available in the pipeline execution policy

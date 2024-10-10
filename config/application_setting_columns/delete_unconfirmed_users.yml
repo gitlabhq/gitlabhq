@@ -10,6 +10,6 @@ description: Specifies whether users who have not confirmed their email should b
   `unconfirmed_users_delete_after_days` days. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352514)
   in GitLab 16.1. Self-managed, Premium and Ultimate only.
 encrypted: false
-gitlab_com_different_than_default: false
+gitlab_com_different_than_default: true
 jihu: false
 not_null: true

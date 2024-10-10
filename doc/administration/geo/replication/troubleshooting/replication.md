@@ -596,7 +596,7 @@ If one or more of these values is significantly high, this could indicate a prob
 If you get a **secondary** site in a broken state and want to reset the replication state,
 to start again from scratch, there are a few steps that can help you:
 
-1. Stop Sidekiq and the Geo LogCursor.
+1. Stop Sidekiq and the Geo Log Cursor.
 
    It's possible to make Sidekiq stop gracefully, but making it stop getting new jobs and
    wait until the current jobs to finish processing.

@@ -321,8 +321,8 @@ is applied not only to models. Here's a list of other examples:
 - `ee/app/views/foo.html.haml`
 - `ee/app/views/foo/_bar.html.haml`
 
-This works because for every path that is present in CE's eager-load/auto-load
-paths, we add the same `ee/`-prepended path in [`config/application.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/925d3d4ebc7a2c72964ce97623ae41b8af12538d/config/application.rb#L42-52).
+This works because for every path in the CE `eager-load/auto-load`
+path, we add the same `ee/`-prepended path in [`config/application.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/925d3d4ebc7a2c72964ce97623ae41b8af12538d/config/application.rb#L42-52).
 This also applies to views.
 
 #### Testing EE-only backend features

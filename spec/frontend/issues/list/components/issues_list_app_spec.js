@@ -54,11 +54,17 @@ import { getSortKey, getSortOptions } from '~/issues/list/utils';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
 import { scrollUp } from '~/lib/utils/scroll_utils';
-import { joinPaths } from '~/lib/utils/url_utility';
+import {
+  joinPaths,
+  getParameterByName,
+  updateHistory,
+  removeParams,
+} from '~/lib/utils/url_utility';
 import {
   WORK_ITEM_TYPE_ENUM_INCIDENT,
   WORK_ITEM_TYPE_ENUM_ISSUE,
   WORK_ITEM_TYPE_ENUM_TASK,
+  DETAIL_VIEW_QUERY_PARAM_NAME,
 } from '~/work_items/constants';
 import {
   TOKEN_TYPE_ASSIGNEE,
@@ -91,6 +97,7 @@ import('~/users_select');
 jest.mock('~/sentry/sentry_browser_wrapper');
 jest.mock('~/alert');
 jest.mock('~/lib/utils/scroll_utils', () => ({ scrollUp: jest.fn() }));
+jest.mock('~/lib/utils/url_utility');
 
 describe('CE IssuesListApp component', () => {
   let axiosMock;
@@ -98,6 +105,8 @@ describe('CE IssuesListApp component', () => {
 
   Vue.use(VueApollo);
   Vue.use(VueRouter);
+
+  const fullPath = 'path/to/project';
 
   const defaultProvide = {
     autocompleteAwardEmojisPath: 'autocomplete/award/emojis/path',
@@ -108,7 +117,7 @@ describe('CE IssuesListApp component', () => {
     canReadCrmContact: false,
     canReadCrmOrganization: false,
     exportCsvPath: 'export/csv/path',
-    fullPath: 'path/to/project',
+    fullPath,
     hasAnyIssues: true,
     hasAnyProjects: true,
     hasBlockedIssuesFeature: true,
@@ -135,6 +144,7 @@ describe('CE IssuesListApp component', () => {
   };
 
   let defaultQueryResponse = getIssuesQueryResponse;
+  /** @type {import('vue-router').default} */
   let router;
   if (IS_EE) {
     defaultQueryResponse = cloneDeep(getIssuesQueryResponse);
@@ -221,6 +231,9 @@ describe('CE IssuesListApp component', () => {
   beforeEach(() => {
     setWindowLocation(TEST_HOST);
     axiosMock = new AxiosMockAdapter(axios);
+    joinPaths.mockImplementation((args) =>
+      jest.requireActual('~/lib/utils/url_utility').joinPaths(args),
+    );
   });
 
   afterEach(() => {
@@ -500,6 +513,9 @@ describe('CE IssuesListApp component', () => {
       it('is set from the url params', () => {
         const initialState = STATUS_ALL;
         setWindowLocation(`?state=${initialState}`);
+        getParameterByName.mockImplementation((args) =>
+          jest.requireActual('~/lib/utils/url_utility').getParameterByName(args),
+        );
         wrapper = mountComponent();
 
         expect(findIssuableList().props('currentTab')).toBe(initialState);
@@ -1126,10 +1142,9 @@ describe('CE IssuesListApp component', () => {
       });
 
       it('selects active issuable', () => {
-        expect(findIssuableList().props('activeIssuable')).toEqual({
-          ...getIssuesQueryResponse.data.project.issues.nodes[0],
-          fullPath: defaultProvide.fullPath,
-        });
+        expect(findIssuableList().props('activeIssuable')).toEqual(
+          getIssuesQueryResponse.data.project.issues.nodes[0],
+        );
       });
 
       describe('when closing the drawer', () => {
@@ -1157,8 +1172,8 @@ describe('CE IssuesListApp component', () => {
 
           await waitForPromises();
 
-          expect(mockIssuesQueryResponse).toHaveBeenCalledTimes(2);
-          expect(mockIssuesCountsQueryResponse).toHaveBeenCalledTimes(2);
+          expect(mockIssuesQueryResponse).toHaveBeenCalledTimes(1);
+          expect(mockIssuesCountsQueryResponse).toHaveBeenCalledTimes(1);
         });
 
         it('updates the assignees field of active issuable', async () => {
@@ -1300,5 +1315,84 @@ describe('CE IssuesListApp component', () => {
     await nextTick();
 
     expect(findIssuableList().props('error')).toBe('An error occurred while deleting an issuable.');
+  });
+
+  describe('when the URL contains a `show` parameter', () => {
+    const { id, iid } = defaultQueryResponse.data.project.issues.nodes[0];
+    const mountForShowParameter = async (
+      showParams = { id: getIdFromGraphQLId(id), iid, full_path: fullPath },
+    ) => {
+      const show = btoa(JSON.stringify(showParams));
+      setWindowLocation(`?${DETAIL_VIEW_QUERY_PARAM_NAME}=${show}`);
+      getParameterByName.mockReturnValue(show);
+      wrapper = mountComponent({
+        provide: {
+          glFeatures: {
+            issuesListDrawer: true,
+          },
+        },
+      });
+      await waitForPromises();
+    };
+    it('calls `getParameterByName` to get the `show` param', async () => {
+      await mountForShowParameter();
+
+      expect(getParameterByName).toHaveBeenCalledWith(DETAIL_VIEW_QUERY_PARAM_NAME);
+    });
+    describe('and the `show` param contains an item in the list', () => {
+      it('sets the `activeIssuable` for the work item drawer', async () => {
+        await mountForShowParameter();
+
+        expect(findWorkItemDrawer().props('activeItem')).toMatchObject({ id, iid, fullPath });
+      });
+    });
+    describe('and the `show` param does not contain an item in the list', () => {
+      beforeEach(async () => {
+        await mountForShowParameter({
+          id: 'gid://gitlab/Issue/999999',
+          iid: '999999',
+          full_path: 'does/not/match',
+        });
+      });
+      it('`updateHistory` is called', () => {
+        expect(updateHistory).toHaveBeenCalled();
+      });
+      it('`removeParams` is called to remove the `show` param', () => {
+        expect(removeParams).toHaveBeenCalledWith([DETAIL_VIEW_QUERY_PARAM_NAME]);
+      });
+    });
+  });
+
+  describe('when the route is updated', () => {
+    const { id, iid } = defaultQueryResponse.data.project.issues.nodes[0];
+    const show = btoa(JSON.stringify({ id: getIdFromGraphQLId(id), iid, full_path: fullPath }));
+    beforeEach(async () => {
+      getParameterByName.mockReturnValue(show);
+      wrapper = mountComponent({
+        provide: {
+          glFeatures: {
+            issuesListDrawer: true,
+          },
+        },
+      });
+      await waitForPromises();
+    });
+    describe('and the query contains a `show` parameter', () => {
+      it('calls `getParameterByName` to get the show param', async () => {
+        await router.push({ query: { show } });
+        expect(getParameterByName).toHaveBeenLastCalledWith(DETAIL_VIEW_QUERY_PARAM_NAME);
+      });
+    });
+    describe('and the query does not contain a `show` parameter', () => {
+      it('sets the `activeIssuable` to null, closing the drawer', async () => {
+        findIssuableList().vm.$emit(
+          'select-issuable',
+          getIssuesQueryResponse.data.project.issues.nodes[0],
+        );
+        expect(findWorkItemDrawer().props('open')).toBe(true);
+        await router.push({ query: { otherThing: true } });
+        expect(findWorkItemDrawer().props('open')).toBe(false);
+      });
+    });
   });
 });

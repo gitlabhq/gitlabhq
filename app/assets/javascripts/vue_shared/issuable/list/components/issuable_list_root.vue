@@ -6,6 +6,7 @@ import PageSizeSelector from '~/vue_shared/components/page_size_selector.vue';
 import { updateHistory, setUrlParams } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import { DRAG_DELAY } from '~/sortable/constants';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
@@ -307,7 +308,9 @@ export default {
       this.$emit('page-size-change', newPageSize);
     },
     isIssuableActive(issuable) {
-      return Boolean(issuable.iid === this.activeIssuable?.iid);
+      return Boolean(
+        getIdFromGraphQLId(issuable.id) === getIdFromGraphQLId(this.activeIssuable?.id),
+      );
     },
   },
   PAGE_SIZE_STORAGE_KEY,

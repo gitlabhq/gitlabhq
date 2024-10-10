@@ -180,7 +180,7 @@ export default {
     :data-testid="testid"
   >
     <template #list-item>
-      <div class="-gl-my-1 -gl-ml-2 gl-flex gl-items-center gl-justify-between">
+      <div class="-gl-my-2 -gl-ml-2 gl-flex gl-items-center gl-justify-between">
         <job-name-component
           v-gl-tooltip.viewport.left
           :title="tooltipText"

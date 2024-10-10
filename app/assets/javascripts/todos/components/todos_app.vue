@@ -1,5 +1,13 @@
 <script>
-import { GlLoadingIcon, GlKeysetPagination, GlButton, GlBadge, GlTab, GlTabs } from '@gitlab/ui';
+import {
+  GlLoadingIcon,
+  GlKeysetPagination,
+  GlLink,
+  GlButton,
+  GlBadge,
+  GlTab,
+  GlTabs,
+} from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { createAlert } from '~/alert';
 import { s__ } from '~/locale';
@@ -14,6 +22,7 @@ const STATUS_BY_TAB = [['pending'], ['done'], ['pending', 'done']];
 
 export default {
   components: {
+    GlLink,
     GlLoadingIcon,
     GlKeysetPagination,
     GlButton,
@@ -209,6 +218,12 @@ export default {
           @prev="prevPage"
           @next="nextPage"
         />
+
+        <div class="gl-mt-5 gl-text-center">
+          <gl-link href="https://gitlab.com/gitlab-org/gitlab/-/issues/498315" target="_blank">{{
+            s__('Todos|Leave feedback')
+          }}</gl-link>
+        </div>
       </div>
     </div>
   </div>

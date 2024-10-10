@@ -169,6 +169,16 @@ feature-flags-usage:
     paths:
       - tmp/feature_flags/
 
+ensure-application-settings-have-definition-file:
+  image: ruby:${RUBY_VERSION}-alpine
+  extends:
+    - .static-analysis-base
+    - .static-analysis:rules:ensure-application-settings-have-definition-file
+  variables:
+    USE_BUNDLE_INSTALL: "false"
+  script:
+    - run_timed_command "scripts/cells/ci-ensure-application-settings-have-definition-file.rb"
+
 semgrep-appsec-custom-rules:
   stage: lint
   extends:

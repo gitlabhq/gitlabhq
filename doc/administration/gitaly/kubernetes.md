@@ -59,7 +59,7 @@ When running Gitaly in Kubernetes, you must:
 
 A pod can rotate for many reasons. Understanding and planing the service lifecycle helps minimize disruption.
 
-For example, in Gitaly's case, a Kubernetes `StatefulSet` rotates on `spec.template` object changes, which can happen during Helm Chart upgrades (labels, or image tag) or pod resource requests or limits updates.
+For example, with Gitaly, a Kubernetes `StatefulSet` rotates on `spec.template` object changes, which can happen during Helm Chart upgrades (labels, or image tag) or pod resource requests or limits updates.
 
 This section focuses on common pod disruption cases and how to address them.
 

@@ -2558,6 +2558,13 @@
     - <<: *if-default-refs
       changes: *code-backstage-qa-patterns
 
+.static-analysis:rules:ensure-application-settings-have-definition-file:
+  rules:
+    - <<: *if-default-refs
+      changes:
+        - db/structure.sql
+        - config/application_setting_columns/*.yml
+
 .static-analysis:rules:haml-lint:
   rules:
     - <<: *if-default-refs

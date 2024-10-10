@@ -6,6 +6,7 @@ module Import
     MEMBER_DELETE_BATCH_SIZE = 1_000
     GROUP_FINDER_MEMBER_RELATIONS = %i[direct inherited shared_from_groups].freeze
     PROJECT_FINDER_MEMBER_RELATIONS = %i[direct inherited invited_groups shared_into_ancestors].freeze
+    RELATION_BATCH_SLEEP = 5
 
     def initialize(import_source_user)
       @import_source_user = import_source_user
@@ -73,6 +74,9 @@ module Import
             user_reference_column: user_reference_column
           ) do |model_relation, placeholder_references|
             reassign_placeholder_records_batch(model_relation, placeholder_references, user_reference_column)
+
+            # TODO: Remove with https://gitlab.com/gitlab-org/gitlab/-/issues/493977
+            Kernel.sleep RELATION_BATCH_SLEEP
           end
         rescue NameError => e
           ::Import::Framework::Logger.error(

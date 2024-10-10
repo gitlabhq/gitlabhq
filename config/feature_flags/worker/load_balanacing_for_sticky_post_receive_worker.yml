@@ -1,9 +1,0 @@
----
-name: load_balanacing_for_sticky_post_receive_worker
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/402254
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167317
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/495040
-milestone: '17.5'
-group: group::source code
-type: worker
-default_enabled: false

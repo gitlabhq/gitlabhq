@@ -15,10 +15,10 @@ Most of the tooling and APIs are considered unstable.
 
 ### Setup ClickHouse server
 
-1. Install ClickHouse locally as described in [ClickHouse installation documentation](https://clickhouse.com/docs/en/install). If you use QuickInstall it will be installed in current directory, if you use homebrew it will be installed to `/opt/homebrew/bin/clickhouse`
+1. Install ClickHouse locally as described in [ClickHouse installation documentation](https://clickhouse.com/docs/en/install). If you use QuickInstall it will be installed in current directory, if you use Homebrew it will be installed to `/opt/homebrew/bin/clickhouse`
 1. Enable experimental services with `gdk config set gdk.experimental.ruby_services true`
-1. Add clickhouse section to your `gdk.yml`. See [`gdk.example.yml`](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/gdk.example.yml)
-1. Adjust `gdk.yml` clickhouse config to point to your local clickhouse installation and local data storage. E.g.
+1. Add ClickHouse section to your `gdk.yml`. See [`gdk.example.yml`](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/gdk.example.yml)
+1. Adjust the `gdk.yml` ClickHouse configuration file to point to your local ClickHouse installation and local data storage. E.g.
 
    ```yaml
    clickhouse:
@@ -31,7 +31,7 @@ Most of the tooling and APIs are considered unstable.
    ```
 
 1. Run `gdk reconfigure`
-1. Start clickhouse with `gdk start clickhouse`
+1. Start ClickHouse with `gdk start clickhouse`
 
 ### Configure your Rails application
 

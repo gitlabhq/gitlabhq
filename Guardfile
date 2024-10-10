@@ -6,7 +6,7 @@ require "guard/rspec/dsl"
 
 cmd = ENV['GUARD_CMD'] || (ENV['SPRING'] ? 'spring rspec' : 'bundle exec rspec')
 
-directories %w[app ee keeps lib rubocop tooling spec]
+directories %w[app ee keeps lib rubocop scripts spec tooling]
 
 rspec_context_for = proc do |context_path|
   OpenStruct.new(to_s: "spec").tap do |rspec| # rubocop:disable Style/OpenStructUse
@@ -45,6 +45,7 @@ guard_setup = proc do |context_path|
   watch(%r{^#{context_path}(lib/.+)\.rb$}) { |m| rspec.spec.call(m[1]) }
   watch(%r{^#{context_path}(rubocop/.+)\.rb$}) { |m| rspec.spec.call(m[1]) }
   watch(%r{^#{context_path}(tooling/.+)\.rb$}) { |m| rspec.spec.call(m[1]) }
+  watch(%r{^#{context_path}(scripts/.+)\.rb$}) { |m| rspec.spec.call(m[1].tr('-', '_')) }
 
   # Rails files
   rails = rails_context_for.call(context_path, %w[erb haml slim])

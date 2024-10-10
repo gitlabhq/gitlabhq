@@ -100,7 +100,9 @@ export default {
       return this.issuable.iid;
     },
     workItemFullPath() {
-      return this.issuable.namespace?.fullPath;
+      return (
+        this.issuable.namespace?.fullPath || this.issuable.reference?.split(this.issuableSymbol)[0]
+      );
     },
     author() {
       return this.issuable.author || {};
@@ -267,6 +269,7 @@ export default {
         return;
       }
       this.$emit('select-issuable', {
+        id: this.issuable.id,
         iid: this.issuableIid,
         webUrl: this.issuable.webUrl,
         fullPath: this.workItemFullPath,

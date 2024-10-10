@@ -50,6 +50,27 @@ For deprecation reviewers (Technical Writers only):
 {::options parse_block_html="true" /}
 
 <div class="js-deprecation-filters"></div>
+<div class="milestone-wrapper" data-milestone="20.0">
+
+## GitLab 20.0
+
+<div class="deprecation breaking-change" data-milestone="20.0">
+
+### GitLab Runner Docker Machine executor is deprecated
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.5</span>
+- Removal in GitLab <span class="milestone">20.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/498268).
+
+</div>
+
+The [GitLab Runner Docker Machine executor](https://docs.gitlab.com/runner/executors/docker_machine.html) is deprecated and will be fully removed from the product as a supported feature in GitLab 20.0 (May 2027). The replacement for Docker Machine, [GitLab Runner Autoscaler](https://docs.gitlab.com/runner/runner_autoscale/) with GitLab developed plugins for Amazon Web Services (AWS) EC2, Google Compute Engine (GCE) and Microsoft Azure virtual machines (VMs) is generally available. With this announcement, the GitLab Runner team will no longer accept community contributions for the GitLab maintained Docker Machine fork, or resolve newly identified bugs.
+
+</div>
+</div>
+
 <div class="milestone-wrapper" data-milestone="19.0">
 
 ## GitLab 19.0

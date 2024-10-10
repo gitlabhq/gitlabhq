@@ -130,7 +130,7 @@ using NFS, it doesn't matter in which order you upgrade the Gitaly servers.
 
 ## Upgrade the PostgreSQL nodes
 
-For unclustered PostgreSQL servers:
+For non-clustered PostgreSQL servers:
 
 1. [Upgrade the GitLab package](package/index.md#upgrade-to-a-specific-version-using-the-official-repositories).
 
@@ -245,7 +245,7 @@ running all database migrations. On the deploy node:
    1. Update `gitlab.rb` on the deploy node. Change `gitlab_rails['db_host']`
       and `gitlab_rails['db_port']` to either:
 
-      - The host and port for your database server (unclustered PostgreSQL).
+      - The host and port for your database server (non-clustered PostgreSQL).
       - The host and port for your cluster leader if you're running Patroni.
 
    1. Apply the changes:

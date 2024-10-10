@@ -12,6 +12,10 @@ class MergeRequests::PipelineEntity < Grape::Entity
     project_pipeline_path(pipeline.project, pipeline)
   end
 
+  expose :project_path do |pipeline|
+    project_path(pipeline.project)
+  end
+
   expose :flags do
     expose :merged_result_pipeline?, as: :merge_request_pipeline # deprecated, use merged_result_pipeline going forward
     expose :merged_result_pipeline?, as: :merged_result_pipeline

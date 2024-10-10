@@ -1558,7 +1558,7 @@ Deployment events are triggered when a deployment:
 - Starts
 - Succeeds
 - Fails
-- Is cancelled
+- Is canceled
 
 The `deployable_id` and `deployable_url` in the payload represent a CI/CD job that executed the deployment.
 When the deployment event occurs by [API](../../../ci/environments/external_deployment_tools.md) or [`trigger` jobs](../../../ci/pipelines/downstream_pipelines.md), `deployable_url` is `null`.

@@ -738,6 +738,41 @@ group(fullPath: "your-group-path") {
 - When invoking the API, you get the current data from the database. Over time, the same metrics might change due to changes in the underlying data in the database. For example, moving or removing a project from the group might affect group-level metrics.
 - Re-requesting the metrics for previous periods and comparing them to the previously collected metrics can show skews in the data, which can help in discovering and explaining changing trends.
 
+## Forecast deployment frequency with Value Stream Forecasting
+
+DETAILS:
+**Tier: GitLab.com and Self-managed:** For a limited time, Ultimate. On October 17, 2024, Ultimate with [GitLab Duo Enterprise](https://about.gitlab.com/gitlab-duo/#pricing). **GitLab Dedicated:** GitLab Duo Enterprise.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Status:** Experiment
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10228) in GitLab 16.2 as an [experiment](../../../policy/experiment-beta-support.md#experiment).
+
+Improve your planning and decision-making by predicting productivity metrics and
+identifying anomalies across your software development lifecycle.
+
+Prerequisites:
+
+- You must belong to at least one group with the [experiment and beta features setting](../../gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features) enabled.
+- You must have permission to view the CI/CD analytics.
+
+To view a forecast of deployment frequency in CI/CD Analytics:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Analyze > CI/CD analytics**.
+1. Select the **Deployment frequency** tab.
+1. Turn on the **Show forecast** toggle.
+1. On the confirmation dialog, select **Accept testing terms**.
+
+The forecast is displayed as a dotted line on the chart. Data is forecasted for
+a duration that is half of the selected date range.
+
+For example, if you select a 30-day range, a forecast for the following 15 days
+is displayed.
+
+![Forecast deployment frequency](img/forecast_deployment_frequency.png)
+
+Provide feedback on this experimental feature in [issue 416833](https://gitlab.com/gitlab-org/gitlab/-/issues/416833).
+
 ## Troubleshooting
 
 ### 100% CPU utilization by Sidekiq `cronjob:analytics_cycle_analytics`

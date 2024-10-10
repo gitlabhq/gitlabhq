@@ -1526,8 +1526,8 @@ input/output operations per second (IOPS) for read operations and 2,000 IOPS for
 write operations. If you're running the environment on a Cloud provider,
 refer to their documentation about how to configure IOPS correctly.
 
-Gitaly servers must not be exposed to the public internet, as Gitaly's network
-traffic is unencrypted by default. The use of a firewall is highly recommended
+Gitaly servers must not be exposed to the public internet, as network traffic
+on Gitaly is unencrypted by default. The use of a firewall is highly recommended
 to restrict access to the Gitaly server. Another option is to
 [use TLS](#gitaly-cluster-tls-support).
 

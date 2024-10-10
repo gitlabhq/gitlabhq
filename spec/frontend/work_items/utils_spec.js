@@ -7,8 +7,11 @@ import {
   workItemRoadmapPath,
   saveShowLabelsToLocalStorage,
   getShowLabelsFromLocalStorage,
+  makeDrawerUrlParam,
+  makeDrawerItemFullPath,
 } from '~/work_items/utils';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
+import { TYPE_EPIC } from '~/issues/constants';
 
 describe('autocompleteDataSources', () => {
   beforeEach(() => {
@@ -197,5 +200,48 @@ describe('utils for remembering user showLabel preferences', () => {
       expect(localStorage.getItem).toHaveBeenCalled();
       expect(newResult).toBe(false);
     });
+  });
+});
+
+describe('`makeDrawerItemFullPath`', () => {
+  it('returns the items `fullPath` if present', () => {
+    const result = makeDrawerItemFullPath(
+      { fullPath: 'this/should/be/returned' },
+      'this/should/not',
+    );
+    expect(result).toBe('this/should/be/returned');
+  });
+  it('returns the fallback `fullPath` if `activeItem` does not have a `referencePath`', () => {
+    const result = makeDrawerItemFullPath({}, 'this/should/be/returned');
+    expect(result).toBe('this/should/be/returned');
+  });
+  describe('when `activeItem` has a `referencePath`', () => {
+    it('handles the default `issuableType` of `ISSUE`', () => {
+      const result = makeDrawerItemFullPath(
+        { referencePath: 'this/should/be/returned#100' },
+        'this/should/not',
+      );
+      expect(result).toBe('this/should/be/returned');
+    });
+    it('handles case where `issuableType` is an `EPIC`', () => {
+      const result = makeDrawerItemFullPath(
+        { referencePath: 'this/should/be/returned&100' },
+        'this/should/not',
+        TYPE_EPIC,
+      );
+      expect(result).toBe('this/should/be/returned');
+    });
+  });
+});
+
+describe('`makeDrawerUrlParam`', () => {
+  it('returns iid, full_path, and id', () => {
+    const result = makeDrawerUrlParam(
+      { id: 'gid://gitlab/Issue/1', iid: '123', fullPath: 'gitlab-org/gitlab' },
+      'gitlab-org/gitlab',
+    );
+    expect(result).toEqual(
+      btoa(JSON.stringify({ iid: '123', full_path: 'gitlab-org/gitlab', id: 1 })),
+    );
   });
 });

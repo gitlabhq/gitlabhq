@@ -173,7 +173,7 @@ export default {
         >
           <template #header>
             <div
-              class="gl-min-h-8 gl-border-b-1 gl-border-b-gray-200 !gl-p-4 gl-text-sm gl-font-bold gl-border-b-solid"
+              class="gl-min-h-8 gl-border-b-1 gl-border-b-dropdown !gl-p-4 gl-text-sm gl-font-bold gl-border-b-solid"
             >
               {{ __('Manage') }}
             </div>

@@ -3,6 +3,7 @@
 module StreamDiffs
   extend ActiveSupport::Concern
   include ActionController::Live
+  include DiffHelper
 
   def diffs
     return render_404 unless rapid_diffs_enabled?
@@ -11,7 +12,7 @@ module StreamDiffs
 
     offset = { offset_index: params.permit(:offset)[:offset].to_i }
 
-    stream_diff_files(options.merge(offset))
+    stream_diff_files(streaming_diff_options.merge(offset))
   rescue StandardError => e
     Gitlab::AppLogger.error("Error streaming diffs: #{e.message}")
     response.stream.write e.message
@@ -29,8 +30,8 @@ module StreamDiffs
     raise NotImplementedError
   end
 
-  def options
-    {}
+  def streaming_diff_options
+    diff_options
   end
 
   def view

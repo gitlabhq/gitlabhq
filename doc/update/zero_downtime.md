@@ -391,7 +391,7 @@ below:
       gitlab-ctl stop nginx
       ```
 
-   1. Stop the Geo Logcursor process to ensure it fails over to another node:
+   1. Stop the Geo Log Cursor process to ensure it fails over to another node:
 
       ```shell
       gitlab-ctl stop geo-logcursor
@@ -441,7 +441,7 @@ below:
       gitlab-ctl stop nginx
       ```
 
-   1. Stop the Geo Logcursor process to ensure it fails over to another node:
+   1. Stop the Geo Log Cursor process to ensure it fails over to another node:
 
       ```shell
       gitlab-ctl stop geo-logcursor

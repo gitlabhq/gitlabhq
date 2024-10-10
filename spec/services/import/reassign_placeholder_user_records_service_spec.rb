@@ -120,6 +120,12 @@ RSpec.describe Import::ReassignPlaceholderUserRecordsService, feature_category: 
   end
 
   describe '#execute', :aggregate_failures do
+    before do
+      # Decrease the sleep in this test, so the test suite runs faster.
+      # TODO: Remove with https://gitlab.com/gitlab-org/gitlab/-/issues/493977
+      stub_const("#{described_class}::RELATION_BATCH_SLEEP", 0.01)
+    end
+
     shared_examples 'a successful reassignment' do
       it 'completes the reassignment' do
         service.execute
@@ -144,6 +150,12 @@ RSpec.describe Import::ReassignPlaceholderUserRecordsService, feature_category: 
 
     context 'when a user can be reassigned without error' do
       it_behaves_like 'a successful reassignment'
+
+      it 'sleeps between processing each model relation batch' do
+        expect(Kernel).to receive(:sleep).with(0.01).exactly(8).times
+
+        service.execute
+      end
 
       it 'updates actual records from the source user\'s placeholder reference records' do
         expect { service.execute }.to change { merge_requests[0].reload.author_id }

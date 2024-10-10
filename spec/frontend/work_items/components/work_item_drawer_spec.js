@@ -6,12 +6,14 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 
 import { TYPE_EPIC, TYPE_ISSUE } from '~/issues/constants';
+import { DETAIL_VIEW_QUERY_PARAM_NAME } from '~/work_items/constants';
 import WorkItemDrawer from '~/work_items/components/work_item_drawer.vue';
 import WorkItemDetail from '~/work_items/components/work_item_detail.vue';
 import deleteWorkItemMutation from '~/work_items/graphql/delete_work_item.mutation.graphql';
 import workspacePermissionsQuery from '~/work_items/graphql/workspace_permissions.query.graphql';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { visitUrl } from '~/lib/utils/url_utility';
+import { visitUrl, updateHistory, setUrlParams, removeParams } from '~/lib/utils/url_utility';
+import { makeDrawerUrlParam } from '~/work_items/utils';
 import { mockProjectPermissionsQueryResponse } from '../mock_data';
 
 jest.mock('~/lib/utils/url_utility');
@@ -122,6 +124,21 @@ describe('WorkItemDrawer', () => {
       expect(wrapper.emitted('close')).toHaveLength(1);
     });
 
+    it('calls `upddateHistory`', () => {
+      createComponent({ open: true });
+
+      findGlDrawer().vm.$emit('close');
+
+      expect(updateHistory).toHaveBeenCalled();
+    });
+    it('calls `removeParams` to remove the `show` param', () => {
+      createComponent({ open: true });
+
+      findGlDrawer().vm.$emit('close');
+
+      expect(removeParams).toHaveBeenCalledWith([DETAIL_VIEW_QUERY_PARAM_NAME]);
+    });
+
     describe('`clickOutsideExcludeSelector` prop', () => {
       let fakeParent;
       let otherElement;
@@ -199,10 +216,10 @@ describe('WorkItemDrawer', () => {
     });
 
     describe('when active issuable has no fullPath property', () => {
-      it('passes empty value if active issuable has no reference path or full path', () => {
+      it('uses injected fullPath if active issuable has no reference path or full path', () => {
         createComponent({ activeItem: {} });
 
-        expect(findWorkItem().props('modalWorkItemFullPath')).toBe('');
+        expect(findWorkItem().props('modalWorkItemFullPath')).toBe('gitlab-org/gitlab');
       });
 
       it('passes correctly calculated path if active issuable is an issue', () => {
@@ -263,6 +280,29 @@ describe('WorkItemDrawer', () => {
 
       expect(visitUrl).not.toHaveBeenCalled();
       expect(mockRouterPush).toHaveBeenCalledWith({ name: 'workItem', params: { iid: '1' } });
+    });
+  });
+
+  describe('when `activeItem` prop is changed and it contains an `id`', () => {
+    const activeItem = {
+      iid: '1',
+      webUrl: '/groups/gitlab-org/gitlab/-/work_items/1',
+      fullPath: 'gitlab-org/gitlab',
+      id: 'gid://gitlab/WorkItem/1',
+    };
+    const showParam = makeDrawerUrlParam(activeItem, 'gitlab-org/gitlab');
+    beforeEach(async () => {
+      createComponent();
+      await wrapper.setProps({
+        open: true,
+        activeItem,
+      });
+    });
+    it('calls `updateHistory`', () => {
+      expect(updateHistory).toHaveBeenCalled();
+    });
+    it('calls `setUrlParams` with `show` param', () => {
+      expect(setUrlParams).toHaveBeenCalledWith({ [DETAIL_VIEW_QUERY_PARAM_NAME]: showParam });
     });
   });
 });

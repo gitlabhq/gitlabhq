@@ -133,6 +133,7 @@ export default {
           :column-index="columnIndex"
           @toggleNewForm="toggleNewForm"
           @setFilters="$emit('setFilters', $event)"
+          @cannot-find-active-item="$emit('cannot-find-active-item')"
         />
       </div>
       <div

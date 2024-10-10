@@ -17,13 +17,13 @@ module Gitlab
 
         def internal_event_exists?(event_name)
           definitions
-            .any? { |event| event.attributes[:internal_events] && event.attributes[:action] == event_name } ||
+            .any? { |event| event.attributes[:internal_events] && event.action == event_name } ||
             Gitlab::UsageDataCounters::HLLRedisCounter.legacy_event?(event_name)
         end
 
         def find(event_name)
           strong_memoize_with(:find, event_name) do
-            definitions.find { |definition| definition.attributes[:action] == event_name }
+            definitions.find { |definition| definition.action == event_name }
           end
         end
 
@@ -66,20 +66,20 @@ module Gitlab
         @event_selection_rules ||= find_event_selection_rules
       end
 
+      def action
+        attributes[:action]
+      end
+
       private
 
       def find_event_selection_rules
-        result = [
-          Gitlab::Usage::EventSelectionRule.new(name: attributes[:action], time_framed: false),
-          Gitlab::Usage::EventSelectionRule.new(name: attributes[:action], time_framed: true)
-        ]
-        Gitlab::Usage::MetricDefinition.definitions.each_value do |metric_definition|
-          matching_event_selection_rules = metric_definition.event_selection_rules.select do |event_selection_rule|
-            event_selection_rule.name == attributes[:action]
+        [
+          Gitlab::Usage::EventSelectionRule.new(name: action, time_framed: false),
+          Gitlab::Usage::EventSelectionRule.new(name: action, time_framed: true),
+          *Gitlab::Usage::MetricDefinition.all.flat_map do |metric_definition|
+            metric_definition.event_selection_rules.select { |rule| rule.name == action }
           end
-          result.concat(matching_event_selection_rules)
-        end
-        result.uniq
+        ].uniq
       end
     end
   end

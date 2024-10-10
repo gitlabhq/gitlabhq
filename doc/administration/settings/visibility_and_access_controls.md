@@ -67,7 +67,7 @@ To restrict project deletion to only administrators:
 
 To disable the restriction:
 
-1. Select **Owners and administators**.
+1. Select **Owners and administrators**.
 1. Select **Save changes**.
 
 ## Deletion protection

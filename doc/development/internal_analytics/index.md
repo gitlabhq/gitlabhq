@@ -166,7 +166,7 @@ The propagation process takes multiple hours to complete. The following diagram 
 
 #### Pre-computed metrics
 
-Metrics are computed once per week like on Self-Managed, with the only difference being that most of the computation takes place within the Warehouse rathern than within the instance.
+Metrics are computed once per week like on Self-Managed, with the only difference being that most of the computation takes place within the Warehouse rather than within the instance.
 For GitLab.com this process is started on Monday morning and computes metrics for the time-frame from Sunday 23:59 UTC and this Sunday 23:59 UTC.
 
 The following diagram illustrates the process:

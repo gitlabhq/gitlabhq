@@ -47,7 +47,7 @@ component. You can find all the relevant frontend code under `app/assets/javascr
 However, even though the actual handling of the request interception and
 modal is transparent, without any mandatory changes to the involved JavaScript or Vue components
 for the form or page, changes in request or error handling may be required. Changes are needed
-because the existing behavior may not work correctly: for example, if a failed or cancelled
+because the existing behavior may not work correctly: for example, if a failed or canceled
 CAPTCHA display interrupts the standard request flow or UI updates.
 Careful exploratory testing of all scenarios is important to uncover any potential
 problems.

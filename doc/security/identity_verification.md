@@ -63,6 +63,8 @@ A user might not receive a one-time password (OTP) if their phone number is from
 
 The following countries are partially supported:
 
+<!-- vale gitlab_base.Spelling = NO -->
+
 - Armenia
 - Belarus
 - Cambodia
@@ -84,6 +86,8 @@ The following countries are partially supported:
 - Uganda
 - Ukraine
 - Uzbekistan
+
+<!-- vale gitlab_base.Spelling = YES -->
 
 Users with phone numbers from partially supported countries can try [credit card verification](#credit-card-verification), or create a [support ticket](https://about.gitlab.com/support/).
 

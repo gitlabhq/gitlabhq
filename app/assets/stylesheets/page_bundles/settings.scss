@@ -42,6 +42,14 @@
   &.animating {
     overflow: hidden;
   }
+
+  .settings-toggle svg {
+    @apply gl-transition;
+  }
+
+  &.expanded .settings-toggle svg {
+    transform: rotate(90deg);
+  }
 }
 
 .vue-settings-block {

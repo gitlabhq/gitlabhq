@@ -81,6 +81,51 @@ RSpec.describe Gitlab::ImportExport::Json::StreamingSerializer, :clean_gitlab_re
         subject.execute
       end
 
+      context 'when batch export raises an error' do
+        it 'does not raise an error and logs' do
+          allow(json_writer).to receive(:write_relation_array).and_raise(StandardError, 'Error!')
+          allow(logger).to receive(:error)
+
+          expect { subject.execute }.not_to raise_error
+
+          expect(logger).to have_received(:error).with(
+            importer: 'Import/Export',
+            message: 'Error exporting relation batch',
+            exception_message: 'Error!',
+            exception_class: 'StandardError',
+            relation: :issues,
+            project_id: exportable.id,
+            project_name: exportable.name,
+            project_path: exportable.full_path,
+            sql: nil
+          )
+        end
+
+        context 'when error has sql query' do
+          it 'logs the error message and the sql query' do
+            allow(json_writer)
+              .to receive(:write_relation_array)
+              .and_raise(ActiveRecord::QueryCanceled.new('PG::QueryCanceled: statement timeout', sql: 'SQL query'))
+
+            allow(logger).to receive(:error)
+
+            expect { subject.execute }.not_to raise_error
+
+            expect(logger).to have_received(:error).with(
+              importer: 'Import/Export',
+              message: 'Error exporting relation batch',
+              exception_message: 'PG::QueryCanceled: statement timeout',
+              exception_class: 'ActiveRecord::QueryCanceled',
+              relation: :issues,
+              project_id: exportable.id,
+              project_name: exportable.name,
+              project_path: exportable.full_path,
+              sql: 'SQL query'
+            )
+          end
+        end
+      end
+
       it 'logs the relation name and the number of records to export' do
         allow(json_writer).to receive(:write_relation_array)
         allow(logger).to receive(:info)

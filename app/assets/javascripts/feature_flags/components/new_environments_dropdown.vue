@@ -99,7 +99,7 @@ export default {
     <template #footer>
       <div
         v-if="isCreateEnvironmentShown"
-        class="gl-border-t-1 gl-border-t-gray-200 gl-p-2 gl-border-t-solid"
+        class="gl-border-t-1 gl-border-t-dropdown gl-p-2 gl-border-t-solid"
       >
         <gl-button
           category="tertiary"

@@ -97,7 +97,12 @@ To enable secret push protection in a project:
 ## Coverage
 
 Secret push protection checks the content of each commit when it is pushed to GitLab.
-However, the following exclusions apply.
+However, the following conditions apply:
+
+Secret push protection does not block a secret being pushed when either the following apply:
+
+- When pushing commits you specified that [secret push protection is to be skipped](#skip-secret-push-protection).
+- A [secret detection exclusion](../exclusions.md) defines the secret as being out of scope.
 
 Secret push protection does not check a file in a commit when:
 

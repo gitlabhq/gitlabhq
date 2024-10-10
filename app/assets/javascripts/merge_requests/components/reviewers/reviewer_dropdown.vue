@@ -187,7 +187,7 @@ export default {
 
         <template v-if="directlyInviteMembers" #footer>
           <div
-            class="gl-flex gl-flex-col gl-border-t-1 gl-border-t-gray-200 !gl-p-2 !gl-pt-0 gl-border-t-solid"
+            class="gl-flex gl-flex-col gl-border-t-1 gl-border-t-dropdown !gl-p-2 !gl-pt-0 gl-border-t-solid"
           >
             <invite-members-trigger
               trigger-element="button"

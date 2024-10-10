@@ -94,12 +94,14 @@ export const artifacts = [
     text: 'result.txt',
     url: 'bar',
     job_name: 'generate-artifact',
+    name: 'generate-artifact',
     job_path: 'bar',
   },
   {
     text: 'foo.txt',
     url: 'foo',
     job_name: 'foo-artifact',
+    name: 'foo-artifact',
     job_path: 'foo',
   },
 ];
@@ -420,9 +422,10 @@ export const mockStore = {
     flags: {},
     ref: {},
   },
-  pipelineIid: 23,
+  pipelineEtag: '/etag',
+  pipelineIid: '12',
+  pipelineProjectPath: '/full/path',
   targetBranch: 'target-branch',
-  sourceProjectFullPath: '/group1/project2',
   targetProjectFullPath: '/group2/project2',
   sourceBranch: 'source-branch',
   sourceBranchLink: 'source-branch-link',
@@ -563,6 +566,22 @@ export const mockMergePipeline = {
     commit_path: '/root/ci-web-terminal/commit/aa1939133d373c94879becb79d91828a892ee319',
   },
   cancel_path: '/root/ci-web-terminal/pipelines/127/cancel',
+};
+
+export const mockMergePipelineQueryResponse = {
+  data: {
+    project: {
+      id: 'gid://gitlab/Project/20',
+      pipeline: {
+        id: 'gid://gitlab/Ci::Pipeline/315',
+        iid: '14',
+        project: {
+          id: 'gid://gitlab/Ci::Pipeline/1866',
+          fullPath: 'flightjs/Flight',
+        },
+      },
+    },
+  },
 };
 
 export const mockPostMergeDeployments = [

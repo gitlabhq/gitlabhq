@@ -12,7 +12,16 @@ RSpec.describe StreamDiffs, type: :controller, feature_category: :source_code_ma
       end
 
       def call_options
-        options
+        streaming_diff_options
+      end
+
+      def diff_options
+        {
+          ignore_whitespace_change: false,
+          expanded: false,
+          use_extra_viewer_as_main: true,
+          offset_index: 0
+        }
       end
     end
   end
@@ -24,8 +33,13 @@ RSpec.describe StreamDiffs, type: :controller, feature_category: :source_code_ma
   end
 
   describe '#options' do
-    it 'returns empty hash' do
-      expect(controller.new.call_options).to eq({})
+    it 'returns hash of diff_options' do
+      expect(controller.new.call_options).to eq({
+        ignore_whitespace_change: false,
+        expanded: false,
+        use_extra_viewer_as_main: true,
+        offset_index: 0
+      })
     end
   end
 end

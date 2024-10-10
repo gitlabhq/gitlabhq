@@ -67,7 +67,7 @@ These tables are usually central to the application, and used very often.
 
 Why is this a problem?
 
-- Many of these columns are included in indexes, which leads to index write amplifcation.
+- Many of these columns are included in indexes, which leads to index write amplification.
   When the number of indexes on the table is more than 16, it affects query planning,
   and may lead to [light-weight lock (LWLock) contention](https://gitlab.com/groups/gitlab-org/-/epics/11543).
 - Updates in PostgreSQL are implemented as a combination of delete and insert. This means that each column,
@@ -124,6 +124,6 @@ In order to extract it from `users` into a new table, we'll have to do the follo
 1. Release N + 3 [example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142087)
    - Remove the ignore rule for the original column.
 
-While this is a lenghty process, it's needed in order to do the extraction
+While this is a lengthy process, it's needed in order to do the extraction
 without disrupting the application. Once completed, the original column and the related index will
 no longer exists on the `users` table, which will result in improved performance.

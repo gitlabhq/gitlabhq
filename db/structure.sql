@@ -20658,7 +20658,8 @@ CREATE TABLE vulnerability_namespace_historical_statistics (
     unknown integer DEFAULT 0 NOT NULL,
     info integer DEFAULT 0 NOT NULL,
     date date NOT NULL,
-    letter_grade smallint NOT NULL
+    letter_grade smallint NOT NULL,
+    migrating boolean DEFAULT false NOT NULL
 );
 
 CREATE SEQUENCE vulnerability_namespace_historical_statistics_id_seq

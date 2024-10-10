@@ -42,14 +42,16 @@ describe('MRWidgetPipeline', () => {
   const defaultProps = {
     pipeline: mockData.pipeline,
     pipelineEtag: '/api/graphql:pipelines/sha/a3cf305c10be3fafdd89b12cb1c389e6bde45875',
-    pipelineIid: 12,
+    pipelineMiniGraphVariables: {
+      iid: '12',
+      fullPath: 'project/path',
+    },
     ciStatus: SUCCESS,
     hasCi: true,
     mrTroubleshootingDocsPath: 'help',
     ciTroubleshootingDocsPath: 'ci-help',
     targetProjectId: 1,
     iid: 1,
-    sourceProjectFullPath: 'gitlab-org2/gitlab',
     targetProjectFullPath: 'gitlab-org/gitlab',
   };
 
@@ -228,8 +230,8 @@ describe('MRWidgetPipeline', () => {
 
       it('sends the correct props', () => {
         expect(findPipelineMiniGraph().props()).toMatchObject({
-          fullPath: defaultProps.sourceProjectFullPath,
-          iid: defaultProps.pipelineIid.toString(),
+          fullPath: defaultProps.pipelineMiniGraphVariables.fullPath,
+          iid: defaultProps.pipelineMiniGraphVariables.iid,
           pipelineEtag: defaultProps.pipelineEtag,
         });
       });

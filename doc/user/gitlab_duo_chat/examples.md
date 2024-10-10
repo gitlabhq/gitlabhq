@@ -78,6 +78,34 @@ You can ask about a specific GitLab epic. For example:
 NOTE:
 If the epic contains a large amount of text (more than 40,000 words), GitLab Duo Chat might not be able to consider every word. The AI model has a limit to the amount of input it can process at one time.
 
+## Ask about a specific merge request
+
+DETAILS:
+**Tier: GitLab.com and Self-managed:** For a limited time, Premium or Ultimate. On October 17, 2024, Ultimate with [GitLab Duo Enterprise](https://about.gitlab.com/gitlab-duo/#pricing). **GitLab Dedicated:** GitLab Duo Enterprise.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Editors:** GitLab UI
+**LLM:** Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/464587) in GitLab 17.5.
+
+You can ask GitLab about the merge request you're viewing. You can ask about:
+
+- The title or description.
+- Comments and threads.
+- The content on the **Changes** tab.
+- Metadata, like labels, source branch, author, milestone, and more.
+
+While in the merge request, open Chat and type your question. For example:
+
+- `Why was the .vue file changed?`
+- `What do the reviewers say about this merge request?`
+- `How can this merge request be improved?`
+- `Which files and changes should I review first?`
+
+Chat is not aware of pipelines or commits. However, you can use
+[root cause analysis](#troubleshoot-failed-cicd-jobs-with-root-cause-analysis)
+to troubleshoot the jobs in your pipeline.
+
 ## Explain selected code
 
 DETAILS:

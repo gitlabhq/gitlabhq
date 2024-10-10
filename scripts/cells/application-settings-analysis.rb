@@ -4,8 +4,8 @@
 require 'fileutils'
 require 'yaml'
 
-class ApplicationSettingAnalysis
-  AUTOMATIC_FIELDS = %i[
+class ApplicationSettingsAnalysis
+  CODEBASE_FIELDS = %i[
     column
     db_type
     api_type
@@ -17,7 +17,7 @@ class ApplicationSettingAnalysis
     jihu
   ].freeze
   ApplicationSettingPrototype = Struct.new(
-    *AUTOMATIC_FIELDS,
+    *CODEBASE_FIELDS,
     :attr,
     :clusterwide,
     keyword_init: true)
@@ -25,11 +25,12 @@ class ApplicationSettingAnalysis
   class ApplicationSetting < ApplicationSettingPrototype
     # Computed from Teleport Rails console with:
     # ```shell
-    # $ as = ApplicationSetting.first
+    # $ as = Gitlab::CurrentSettings.current_application_settings
     # $ as_defaults = ApplicationSetting.defaults
     # $ new_as = ApplicationSetting.new
-    # $ as.attributes.to_h.each { |k, v| puts "#{k} different than defaults" \
-    # if (as_defaults.key?(k) && as_defaults[k] != v) || (new_as[k] != v) }; nil
+    # $ diff_than_def = as.attributes.to_h.select { |k, v| (as_defaults[k] || new_as[k]) != v }; nil
+    # $ diff_than_def_valid_columns = diff_than_default.keys.reject { |k| k.match?(%r{^(encrypted_\w+_iv|\w+_html)$}) }
+    # $ diff_than_def_valid_columns.sort.each { |d| puts d }; nil
     # ```
     #
     # rubocop:disable Naming/InclusiveLanguage -- This is the actual column name
@@ -69,9 +70,11 @@ class ApplicationSettingAnalysis
       deactivation_email_additional_text
       default_artifacts_expire_in
       default_branch_name
+      default_branch_protection_defaults
       default_ci_config_path
       default_group_visibility
       default_projects_limit
+      delete_unconfirmed_users
       diff_max_files
       diff_max_lines
       domain_denylist
@@ -269,25 +272,36 @@ class ApplicationSettingAnalysis
       self[:encrypted] = column.start_with?('encrypted_') || column.end_with?('_encrypted')
       self[:attr] = column.delete_prefix('encrypted_').delete_suffix('_encrypted')
       self[:gitlab_com_different_than_default] = GITLAB_COM_DIFFERENT_THAN_DEFAULT.include?(column)
+      populate_fields_from_definition!
     end
 
-    def merge!(other)
-      other.to_h.each do |k, v|
+    def populate_fields_from_definition!
+      definition.each do |k, v|
         next if v.nil?
-        next if ApplicationSettingAnalysis::AUTOMATIC_FIELDS.include?(k.to_sym)
+        next if CODEBASE_FIELDS.include?(k.to_sym)
 
         self[k] = v
       end
     end
 
-    def attr_config_file
+    def definition_file_path
       File.expand_path("../../config/application_setting_columns/#{attr}.yml", __dir__)
+    end
+
+    def definition_file_exist?
+      File.exist?(definition_file_path)
+    end
+
+    private
+
+    def definition
+      @definition ||= definition_file_exist? ? YAML.safe_load_file(definition_file_path) : {}
     end
   end
 
   ApplicationSettingApiDoc = Struct.new(:attr, :db_type, :api_type, :required, :description, keyword_init: true)
 
-  API_STRING_ATTRIBUTES_STORED_AS_INTEGER = %w[
+  ENUM_ATTRIBUTES = %w[
     default_group_visibility
     default_project_visibility
     default_snippet_visibility
@@ -346,21 +360,23 @@ class ApplicationSettingAnalysis
     "## Statistics\n"
   ].freeze
 
-  def execute
-    db_structure_attrs = attributes_from_codebase.map(&:attr)
-
-    virtual_api_settings = attributes_from_doc_api_settings.reject { |api| db_structure_attrs.include?(api.attr) }
-    virtual_api_settings.each do |virtual_api_setting|
-      puts "API setting #{virtual_api_setting.attr} doesn't actually exist as a DB column in `application_settings`!"
-    end
-
-    write_final_attributes!
-    write_doc_page!
-    clean_deleted_attributes!
+  def self.definition_files
+    @definition_files ||= Dir.glob(File.expand_path("../../config/application_setting_columns/*.yml", __dir__))
   end
 
-  def attributes_from_codebase
-    @attributes_from_codebase ||= begin
+  def initialize(stdout: $stdout)
+    @stdout = stdout
+  end
+
+  def execute
+    warn_about_virtual_attributes!
+    write_attributes!
+    write_documentation_page!
+    clean_outdated_definition_files!
+  end
+
+  def attributes
+    @attributes ||= begin
       structure_sql = File.read(DB_STRUCTURE_FILE_PATH)
       match = structure_sql.match(CREATE_TABLE_REGEX)
       jihu_columns = structure_sql.scan(JIHU_COMMENT_REGEX).flatten
@@ -382,15 +398,15 @@ class ApplicationSettingAnalysis
           as_attr.api_type, as_attr.description = fetch_type_and_description_from_api_documentation(as_attr)
         end
       end
-    end
+    end.sort_by(&:attr)
   end
 
   private
 
-  attr_reader :application_setting_attrs
+  attr_reader :stdout, :application_setting_attrs
 
-  def attributes_from_doc_api_settings
-    @attributes_from_doc_api_settings ||= begin
+  def documentation_api_settings
+    @documentation_api_settings ||= begin
       settings_md = File.read(DOC_API_SETTINGS_FILE_PATH)
       match = settings_md.match(DOC_API_SETTINGS_TABLE_REGEX)
       doc_rows = match[:rows].lines(chomp: true).map(&:strip).filter_map do |line|
@@ -407,13 +423,13 @@ class ApplicationSettingAnalysis
   end
 
   def fetch_type_and_description_from_api_documentation(as_attr)
-    existing_attribute_from_doc_api_settings = attributes_from_doc_api_settings.find do |api|
+    existing_attribute_from_doc_api_settings = documentation_api_settings.find do |api|
       api.attr == as_attr.attr
     end
     return unless existing_attribute_from_doc_api_settings
 
     compatible_api_types = DB_TYPE_TO_COMPATIBLE_API_TYPES.fetch(as_attr.db_type, [as_attr.db_type])
-    if API_STRING_ATTRIBUTES_STORED_AS_INTEGER.include?(as_attr.attr) && compatible_api_types.include?('integer')
+    if ENUM_ATTRIBUTES.include?(as_attr.attr) && compatible_api_types.include?('integer')
       compatible_api_types = ['string']
     end
 
@@ -425,60 +441,61 @@ class ApplicationSettingAnalysis
     [existing_attribute_from_doc_api_settings.api_type, existing_attribute_from_doc_api_settings.description]
   end
 
-  def final_attributes
-    @final_attributes ||= attributes_from_codebase.map do |as|
-      as.merge!(YAML.safe_load_file(as.attr_config_file)) if File.exist?(as.attr_config_file)
-
-      as
-    end.sort_by(&:attr)
+  def warn_about_virtual_attributes!
+    db_structure_attrs = attributes.map(&:attr)
+    virtual_api_settings = documentation_api_settings.reject { |api| db_structure_attrs.include?(api.attr) }
+    virtual_api_settings.each do |virtual_api_setting|
+      stdout.puts "API setting `#{virtual_api_setting.attr}` doesn't actually exist as a DB " \
+        "column in `application_settings`!"
+    end
   end
 
-  def write_final_attributes!
-    final_attributes.each do |final_attribute|
+  def write_attributes!
+    attributes.each do |final_attribute|
       File.write(
-        final_attribute.attr_config_file,
+        final_attribute.definition_file_path,
         Hash[final_attribute.to_h.sort].transform_keys(&:to_s).to_yaml
       )
     end
   end
 
-  def clean_deleted_attributes!
-    valid_attribute_names = attributes_from_codebase.map(&:attr)
+  def clean_outdated_definition_files!
+    valid_attribute_names = attributes.map(&:attr)
 
-    Dir.glob(File.expand_path("../../config/application_setting_columns/*.yml", __dir__)).each do |path|
+    self.class.definition_files.each do |path|
       attribute_name = File.basename(path, '.yml')
       next if valid_attribute_names.include?(attribute_name)
 
-      puts "Deleting #{path} since the #{attribute_name} attribute doesn't exist anymore."
+      stdout.puts "Deleting #{path} since the #{attribute_name} attribute doesn't exist anymore."
       File.unlink(path)
     end
   end
 
-  def write_doc_page! # rubocop:disable Metrics/AbcSize: -- THe method generates a doc page so it's a bit special
+  def write_documentation_page! # rubocop:disable Metrics/AbcSize: -- The method generates a doc page so it's a bit special
     doc_page = DOC_PAGE_HEADERS.dup
 
-    doc_page << "- Number of attributes: #{final_attributes.count}"
+    doc_page << "- Number of attributes: #{attributes.count}"
 
-    as_encrypted = final_attributes.count(&:encrypted)
+    as_encrypted = attributes.count(&:encrypted)
     doc_page << "- Number of encrypted attributes: #{as_encrypted} " \
-      "(#{(as_encrypted.to_f / final_attributes.count).round(2) * 100}%)"
+      "(#{(as_encrypted.to_f / attributes.count).round(2) * 100}%)"
 
-    as_documented = final_attributes.count(&:description)
+    as_documented = attributes.count(&:description)
     doc_page << "- Number of attributes documented: #{as_documented} " \
-      "(#{(as_documented.to_f / final_attributes.count).round(2) * 100}%)"
+      "(#{(as_documented.to_f / attributes.count).round(2) * 100}%)"
 
-    as_on_gitlab_com_different_than_default = final_attributes.count(&:gitlab_com_different_than_default)
+    as_on_gitlab_com_different_than_default = attributes.count(&:gitlab_com_different_than_default)
     doc_page << "- Number of attributes on GitLab.com different from the defaults: " \
       "#{as_on_gitlab_com_different_than_default} " \
-      "(#{(as_on_gitlab_com_different_than_default.to_f / final_attributes.count).round(2) * 100}%)"
+      "(#{(as_on_gitlab_com_different_than_default.to_f / attributes.count).round(2) * 100}%)"
 
-    as_with_clusterwide_set = final_attributes.count { |as| !as.clusterwide.nil? }
+    as_with_clusterwide_set = attributes.count { |as| !as.clusterwide.nil? }
     doc_page << "- Number of attributes with `clusterwide` set: #{as_with_clusterwide_set} " \
-      "(#{(as_with_clusterwide_set.to_f / final_attributes.count).round(2) * 100}%)"
+      "(#{(as_with_clusterwide_set.to_f / attributes.count).round(2) * 100}%)"
 
-    as_with_clusterwide_true = final_attributes.count(&:clusterwide)
+    as_with_clusterwide_true = attributes.count(&:clusterwide)
     doc_page << "- Number of attributes with `clusterwide: true` set: #{as_with_clusterwide_true} " \
-      "(#{(as_with_clusterwide_true.to_f / final_attributes.count).round(2) * 100}%)\n"
+      "(#{(as_with_clusterwide_true.to_f / attributes.count).round(2) * 100}%)\n"
 
     doc_page << "## Individual columns\n"
     doc_page << "| Attribute name | Encrypted | DB Type | API Type | Not Null? | Default | " \
@@ -486,7 +503,7 @@ class ApplicationSettingAnalysis
     doc_page << "| -------------- | ------------- | --------- | --------- | ----------------- | " \
       "--------------------- | ------------- | ----------- |"
 
-    final_attributes.each do |as|
+    attributes.each do |as|
       jihu = as.jihu ? ' [JIHU]' : ''
       doc_page << "| `#{as.attr}`#{jihu} | `#{as.encrypted}` | `#{as.db_type}` | `#{as.api_type}` | `#{as.not_null}` " \
         "| `#{as.default || (as.not_null ? '???' : 'null')}` | `#{as.gitlab_com_different_than_default}` " \
@@ -500,4 +517,4 @@ class ApplicationSettingAnalysis
   end
 end
 
-ApplicationSettingAnalysis.new.execute
+ApplicationSettingsAnalysis.new.execute if $PROGRAM_NAME == __FILE__

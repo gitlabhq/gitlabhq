@@ -28,6 +28,36 @@ To edit an issue:
 1. Edit the available fields.
 1. Select **Save changes**.
 
+### Populate an issue with Issue Description Generation
+
+DETAILS:
+**Tier:** For a limited time, Ultimate. On October 17, 2024, Ultimate with [GitLab Duo Enterprise](https://about.gitlab.com/gitlab-duo/#pricing).
+**Offering:** GitLab.com
+**Status:** Experiment
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10762) in GitLab 16.3 as an [experiment](../../../policy/experiment-beta-support.md#experiment).
+
+Generate a detailed description for an issue based on a short summary you provide.
+
+Prerequisites:
+
+- You must belong to at least one group with the [experiment and beta features setting](../../gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features) enabled.
+- You must have permission to view the issue.
+- Only available for the plain text editor.
+
+To generate an issue description:
+
+1. Create a new issue.
+1. Above the **Description** field, select **GitLab Duo** (**{tanuki-ai}**) **> Generate issue description**.
+1. Write a short description and select **Submit**.
+
+The issue description is replaced with AI-generated text.
+
+Provide feedback on this experimental feature in [issue 409844](https://gitlab.com/gitlab-org/gitlab/-/issues/409844).
+
+**Data usage**: When you use this feature, the text you enter is sent to
+the [large language model listed on the GitLab Duo page](../../gitlab_duo/index.md#issue-description-generation).
+
 ### Remove a task list item
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377307) in GitLab 15.9.

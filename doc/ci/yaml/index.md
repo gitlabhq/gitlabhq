@@ -572,7 +572,7 @@ In this example:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23605) in GitLab 16.10 [with a flag](../../administration/feature_flags.md) named `auto_cancel_pipeline_on_job_failure`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/433163) in GitLab 16.11. Feature flag `auto_cancel_pipeline_on_job_failure` removed.
 
-Use `workflow:auto_cancel:on_job_failure` to configure which jobs should be cancelled as soon as one job fails.
+Use `workflow:auto_cancel:on_job_failure` to configure which jobs should be canceled as soon as one job fails.
 
 **Possible inputs**:
 
@@ -604,7 +604,7 @@ job3:
     - sleep 30
 ```
 
-In this example, if `job2` fails, `job1` is cancelled if it is still running and `job3` does not start.
+In this example, if `job2` fails, `job1` is canceled if it is still running and `job3` does not start.
 
 **Related topics:**
 
@@ -1067,12 +1067,12 @@ The following topics explain how to use keywords to configure CI/CD pipelines.
 
 ### `after_script`
 
-> - Running `after_script` commands for cancelled jobs [introduced](https://gitlab.com/groups/gitlab-org/-/epics/10158) in GitLab 17.0.
+> - Running `after_script` commands for canceled jobs [introduced](https://gitlab.com/groups/gitlab-org/-/epics/10158) in GitLab 17.0.
 
 Use `after_script` to define an array of commands to run last, after a job's `before_script` and
 `script` sections complete. `after_script` commands also run when:
 
-- The job is cancelled while the `before_script` or `script` sections are still running.
+- The job is canceled while the `before_script` or `script` sections are still running.
 - The job fails with failure type of `script_failure`, but not [other failure types](#retrywhen).
 
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
@@ -1114,7 +1114,7 @@ Scripts you specify in `after_script` execute in a new shell, separate from any
   `after_script` times out or fails, the job exits with code `0` (`Job Succeeded`).
 - There is a known issue with using [CI/CD job tokens](../jobs/ci_job_token.md) with `after_script`.
   You can use a job token for authentication in `after_script` commands, but the token
-  immediately becomes invalid if the job is cancelled. See [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/473376)
+  immediately becomes invalid if the job is canceled. See [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/473376)
   for more details.
 
 If a job times out, the `after_script` commands do not execute.
@@ -1124,7 +1124,7 @@ If a job times out, the `after_script` commands do not execute.
 
 - [Use `after_script` with `default`](script.md#set-a-default-before_script-or-after_script-for-all-jobs)
   to define a default array of commands that should run after all jobs.
-- You can configure a job to [skip `after_script` commands if the job is cancelled](script.md#skip-after_script-commands-if-a-job-is-cancelled).
+- You can configure a job to [skip `after_script` commands if the job is canceled](script.md#skip-after_script-commands-if-a-job-is-canceled).
 - You can [ignore non-zero exit codes](script.md#ignore-non-zero-exit-codes).
 - [Use color codes with `after_script`](script.md#add-color-codes-to-script-output)
   to make job logs easier to review.
@@ -2957,26 +2957,26 @@ In this example, a new pipeline causes a running pipeline to cancel `step-1` and
 **Additional details**:
 
 - Only set `interruptible: true` if the job can be safely canceled after it has started,
-  like a build job. Deployment jobs usually shouldn't be cancelled, to prevent partial deployments.
+  like a build job. Deployment jobs usually shouldn't be canceled, to prevent partial deployments.
 - When using the default behavior or `workflow:auto_cancel:on_new_commit: conservative`:
   - A job that has not started yet is always considered `interruptible: true`, regardless of the job's configuration.
     The `interruptible` configuration is only considered after the job starts.
-  - **Running** pipelines are only cancelled if all running jobs are configured with `interruptible: true` or
+  - **Running** pipelines are only canceled if all running jobs are configured with `interruptible: true` or
     no jobs configured with `interruptible: false` have started at any time.
     After a job with `interruptible: false` starts, the entire pipeline is no longer
     considered interruptible.
   - If the pipeline triggered a downstream pipeline, but no job with `interruptible: false`
-    in the downstream pipeline has started yet, the downstream pipeline is also cancelled.
+    in the downstream pipeline has started yet, the downstream pipeline is also canceled.
 - You can add an optional manual job with `interruptible: false` in the first stage of
   a pipeline to allow users to manually prevent a pipeline from being automatically
-  cancelled. After a user starts the job, the pipeline cannot be canceled by the
+  canceled. After a user starts the job, the pipeline cannot be canceled by the
   **Auto-cancel redundant pipelines** feature.
 - When using `interruptible` with a [trigger job](#trigger):
   - The triggered downstream pipeline is never affected by the trigger job's `interruptible` configuration.
   - If [`workflow:auto_cancel`](#workflowauto_cancelon_new_commit) is set to `conservative`,
     the trigger job's `interruptible` configuration has no effect.
   - If [`workflow:auto_cancel`](#workflowauto_cancelon_new_commit) is set to `interruptible`,
-    a trigger job with `interruptible: true` can be automatically cancelled.
+    a trigger job with `interruptible: true` can be automatically canceled.
 
 ### `needs`
 

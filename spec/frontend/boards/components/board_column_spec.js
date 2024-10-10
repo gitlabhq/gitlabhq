@@ -3,6 +3,7 @@ import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import { listObj } from 'jest/boards/mock_data';
 import BoardColumn from '~/boards/components/board_column.vue';
+import BoardList from '~/boards/components/board_list.vue';
 import { ListType } from '~/boards/constants';
 import BoardAddNewColumnBetween from '~/boards/components/board_add_new_column_between.vue';
 
@@ -45,6 +46,7 @@ describe('Board Column Component', () => {
 
   const isExpandable = () => wrapper.find('.is-expandable').exists();
   const isCollapsed = () => wrapper.find('.is-collapsed').exists();
+  const findList = () => wrapper.findComponent(BoardList);
   const findAddColumnBetween = () =>
     wrapper.find('[data-testid="board-add-new-column-between-button"]');
 
@@ -113,5 +115,13 @@ describe('Board Column Component', () => {
 
       expect(findAddColumnBetween().exists()).toBe(false);
     });
+  });
+
+  it('emits `cannot-find-active-item` when `BoardList` emits `cannot-find-active-item`', () => {
+    createComponent();
+
+    findList().vm.$emit('cannot-find-active-item');
+
+    expect(wrapper.emitted('cannot-find-active-item')).toHaveLength(1);
   });
 });

@@ -13460,6 +13460,9 @@ msgstr ""
 msgid "CodeSuggestions|Code Suggestions"
 msgstr ""
 
+msgid "CodeSuggestions|Download Report"
+msgstr ""
+
 msgid "CodeSuggestions|Enhance your coding experience with intelligent recommendations. %{linkStart}GitLab Duo%{linkEnd} offers features that use generative AI to suggest code."
 msgstr ""
 
@@ -19940,18 +19943,10 @@ msgstr ""
 msgid "Dismiss"
 msgstr ""
 
-msgid "Dismiss %d selected vulnerability as"
-msgid_plural "Dismiss %d selected vulnerabilities as"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "Dismiss Alert"
 msgstr ""
 
 msgid "Dismiss merge request promotion"
-msgstr ""
-
-msgid "Dismiss selected"
 msgstr ""
 
 msgid "Dismiss trial promotion"
@@ -23117,9 +23112,6 @@ msgid "Failed to upload object map file"
 msgstr ""
 
 msgid "Failure"
-msgstr ""
-
-msgid "False positive"
 msgstr ""
 
 msgid "Fast timeout"
@@ -45906,9 +45898,6 @@ msgstr ""
 msgid "Reports|Accessibility scanning results are being parsed"
 msgstr ""
 
-msgid "Reports|Actions"
-msgstr ""
-
 msgid "Reports|An error occurred while loading %{name} results"
 msgstr ""
 
@@ -45943,9 +45932,6 @@ msgstr ""
 msgid "Reports|Head report parsing error:"
 msgstr ""
 
-msgid "Reports|Identifier"
-msgstr ""
-
 msgid "Reports|Metrics report scanning detected no new changes"
 msgstr ""
 
@@ -45961,12 +45947,6 @@ msgstr ""
 msgid "Reports|New"
 msgstr ""
 
-msgid "Reports|Scanner"
-msgstr ""
-
-msgid "Reports|Severity"
-msgstr ""
-
 msgid "Reports|Test summary"
 msgstr ""
 
@@ -45977,9 +45957,6 @@ msgid "Reports|Test summary results are loading"
 msgstr ""
 
 msgid "Reports|Tool"
-msgstr ""
-
-msgid "Reports|Vulnerability"
 msgstr ""
 
 msgid "Reports|Vulnerability Name"
@@ -49518,7 +49495,7 @@ msgstr ""
 msgid "SecurityOrchestration|Enabled"
 msgstr ""
 
-msgid "SecurityOrchestration|Enforce %{linkStart}security policies%{linkEnd} for this group."
+msgid "SecurityOrchestration|Enforce %{linkStart}security policies%{linkEnd} for all projects in this group."
 msgstr ""
 
 msgid "SecurityOrchestration|Enforce %{linkStart}security policies%{linkEnd} for this project."
@@ -50354,9 +50331,6 @@ msgstr ""
 msgid "SecurityReports|Create Jira issue"
 msgstr ""
 
-msgid "SecurityReports|Create issue"
-msgstr ""
-
 msgid "SecurityReports|Detection"
 msgstr ""
 
@@ -50456,13 +50430,7 @@ msgstr ""
 msgid "SecurityReports|Issue"
 msgstr ""
 
-msgid "SecurityReports|Issue Created"
-msgstr ""
-
 msgid "SecurityReports|Issues created from a vulnerability cannot be removed."
-msgstr ""
-
-msgid "SecurityReports|Jira Issue Created"
 msgstr ""
 
 msgid "SecurityReports|Learn more about security configuration"
@@ -50496,9 +50464,6 @@ msgid "SecurityReports|Monitor vulnerabilities in your project"
 msgstr ""
 
 msgid "SecurityReports|Monitored projects"
-msgstr ""
-
-msgid "SecurityReports|More info"
 msgstr ""
 
 msgid "SecurityReports|New feature: Grouping"
@@ -55603,6 +55568,9 @@ msgstr ""
 msgid "There was a problem fetching the latest pipeline status."
 msgstr ""
 
+msgid "There was a problem fetching the merge pipeline."
+msgstr ""
+
 msgid "There was a problem fetching the pipeline mini graph."
 msgstr ""
 
@@ -57280,6 +57248,9 @@ msgid "Todos|It's how you always know what to work on next."
 msgstr ""
 
 msgid "Todos|Label priority"
+msgstr ""
+
+msgid "Todos|Leave feedback"
 msgstr ""
 
 msgid "Todos|Mark all as done"
@@ -62098,9 +62069,6 @@ msgstr ""
 msgid "Withdraw Access Request"
 msgstr ""
 
-msgid "Won't fix / Accept risk"
-msgstr ""
-
 msgid "Work Item type with id %{id} was not found"
 msgstr ""
 
@@ -64155,9 +64123,6 @@ msgid "Zoom meeting removed"
 msgstr ""
 
 msgid "Zoom out"
-msgstr ""
-
-msgid "[No reason]"
 msgstr ""
 
 msgid "[REDACTED]"
@@ -66489,9 +66454,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "vulnerability|Add a comment"
-msgstr ""
-
-msgid "vulnerability|dismissed"
 msgstr ""
 
 msgid "was set to auto-merge by"

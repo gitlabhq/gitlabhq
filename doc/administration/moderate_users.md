@@ -178,7 +178,7 @@ For more information, see [user deactivation emails](../administration/settings/
 To deactivate users with the GitLab API, see [deactivate user](../api/user_moderation.md#deactivate-a-user). For information about permanent user restrictions, see [block and unblock users](#block-and-unblock-users).
 
 To remove a user from a GitLab.com subscription, see
-[Remove users from your subscription](../subscriptions/gitlab_com/index.md#remove-users-from-your-subscription).
+[Remove users from your subscription](../subscriptions/gitlab_com/index.md#remove-users-from-subscription).
 
 ### Automatically deactivate dormant users
 

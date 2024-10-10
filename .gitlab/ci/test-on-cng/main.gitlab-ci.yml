@@ -105,11 +105,6 @@ build-cng:
   variables:
     # use larger runner for complex rails build jobs
     HIGH_CAPACITY_RUNNER_TAG: e2e
-  # quality specific fork, see: https://gitlab.com/gitlab-org/quality/quality-engineering/team-tasks/-/issues/2839
-  trigger:
-    project: ${CI_PROJECT_NAMESPACE}/quality/quality-engineering/CNG-mirror
-    branch: $TRIGGER_BRANCH
-    strategy: depend
 
 download-knapsack-report:
   extends:

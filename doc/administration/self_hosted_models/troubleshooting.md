@@ -85,7 +85,7 @@ If that is not the case, this might means one of the following:
 
 ## Check if a user can request Code Suggestions
 
-In the GitLab Rails console, check if a user can request Code Suggestions by runnning:
+In the GitLab Rails console, check if a user can request Code Suggestions by running:
 
 ```ruby
 User.find_by_id("<user_id>").can?(:access_code_suggestions)

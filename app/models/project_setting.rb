@@ -11,6 +11,7 @@ class ProjectSetting < ApplicationRecord
   belongs_to :project, inverse_of: :project_setting
 
   scope :for_projects, ->(projects) { where(project_id: projects) }
+  scope :with_namespace, -> { joins(project: :namespace) }
 
   attr_encrypted :cube_api_key,
     mode: :per_attribute_iv,

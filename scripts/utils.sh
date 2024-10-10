@@ -480,13 +480,13 @@ function define_trigger_branch_in_build_env() {
 }
 
 function log_disk_usage() {
-  caller=$1
-  echo "[log_disk_usage ${caller}] start"
+  local collapsed="${1:-true}"
+  section_start "log_disk_usage" "Disk usage" "${collapsed}"
 
   echo -e "df -h"
   df -h
 
   echo -e "du -h -d 1"
   du -h -d 1
-  echo "[log_disk_usage ${caller}] end"
+  section_end "log_disk_usage"
 }

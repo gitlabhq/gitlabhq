@@ -444,8 +444,8 @@ Be sure to note the following items:
 - A GitLab server can use one or more Gitaly server nodes.
 - Gitaly addresses must be specified to be correctly resolvable for *all*
   Gitaly clients.
-- Gitaly servers must not be exposed to the public internet, as Gitaly's network
-  traffic is unencrypted by default. The use of a firewall is highly recommended
+- Gitaly servers must not be exposed to the public internet, as network traffic
+  on Gitaly is unencrypted by default. The use of a firewall is highly recommended
   to restrict access to the Gitaly server. Another option is to
   [use TLS](#gitaly-tls-support).
 

@@ -79,9 +79,9 @@ export default {
       type: String,
       required: false,
     },
-    pipelineIid: {
-      type: Number,
-      required: false,
+    pipelineMiniGraphVariables: {
+      type: Object,
+      required: true,
     },
     buildsWithCoverage: {
       type: Array,
@@ -128,10 +128,6 @@ export default {
       required: false,
       default: false,
     },
-    sourceProjectFullPath: {
-      type: String,
-      required: true,
-    },
     targetProjectFullPath: {
       type: String,
       required: true,
@@ -155,12 +151,13 @@ export default {
       return this.hasPipeline && !this.ciStatus;
     },
     status() {
-      return this.pipeline.details && this.pipeline.details.status
-        ? this.pipeline.details.status
-        : {};
+      return this.pipeline?.details?.status || {};
     },
     artifacts() {
       return this.pipeline?.details?.artifacts;
+    },
+    hasArtifacts() {
+      return Boolean(this.pipeline?.details?.artifacts?.length);
     },
     hasStages() {
       return this.pipeline?.details?.stages?.length > 0;
@@ -209,9 +206,6 @@ export default {
         'Test coverage value for this pipeline was calculated by averaging the resulting coverage values of %d jobs.',
         this.buildsWithCoverage.length,
       );
-    },
-    pipelineMiniGraphQueryId() {
-      return this.pipelineIid?.toString() || null;
     },
     isMergeTrain() {
       return Boolean(this.pipeline.flags?.merge_train_pipeline);
@@ -307,9 +301,9 @@ export default {
               <div class="gl-inline-flex gl-grow gl-items-center gl-justify-between">
                 <div>
                   <pipeline-mini-graph
-                    v-if="isGraphQLPipelineMiniGraph && pipelineMiniGraphQueryId"
-                    :iid="pipelineMiniGraphQueryId"
-                    :full-path="sourceProjectFullPath"
+                    v-if="isGraphQLPipelineMiniGraph && pipelineMiniGraphVariables.iid"
+                    :iid="pipelineMiniGraphVariables.iid"
+                    :full-path="pipelineMiniGraphVariables.fullPath"
                     :is-merge-train="isMergeTrain"
                     :pipeline-etag="pipelineEtag"
                   />
@@ -323,6 +317,7 @@ export default {
                   />
                 </div>
                 <pipeline-artifacts
+                  v-if="hasArtifacts"
                   :pipeline-id="pipeline.id"
                   :artifacts="artifacts"
                   class="gl-ml-3"

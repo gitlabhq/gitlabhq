@@ -347,7 +347,7 @@ remote_development:
 ```
 
 For more information about `use_kubernetes_user_namespaces`, see
-[User Namespaces](https://kubernetes.io/docs/concepts/workloads/pods/user-namespaces/).
+[user namespaces](https://kubernetes.io/docs/concepts/workloads/pods/user-namespaces/).
 
 ### `default_runtime_class`
 

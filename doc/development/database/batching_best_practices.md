@@ -190,7 +190,7 @@ Pros:
 Cons:
 
 - Scheduling the work (putting the cursor in the queue) is not crash safe.
-- Potential serialization issues when the cursor is read. (multi-version compability)
+- Potential serialization issues when the cursor is read (multi-version compatibility).
 - Extra care needs to be taken about database transactions.
 
 #### PostgreSQL based cursor

@@ -561,7 +561,7 @@ To enable it:
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Preferences**.
 1. Expand **Pages**.
-1. Enter the email address for receiving notifications and accept Let's Encrypt's Terms of Service.
+1. Enter the email address for receiving notifications and accept the Terms of Service for Let's Encrypt.
 1. Select **Save changes**.
 
 ### Access control

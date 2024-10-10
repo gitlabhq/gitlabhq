@@ -19757,6 +19757,8 @@ GitLab CI/CD configuration template.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="cloudconnectorproberesultdetails"></a>`details` | [`JSON`](#json) | Additional details about the probe result. |
+| <a id="cloudconnectorproberesulterrors"></a>`errors` | [`[String!]`](#string) | Full list of errors about the probe result. |
 | <a id="cloudconnectorproberesultmessage"></a>`message` | [`String`](#string) | Additional message or details about the probe result. |
 | <a id="cloudconnectorproberesultname"></a>`name` | [`String`](#string) | Name of the probe. |
 | <a id="cloudconnectorproberesultsuccess"></a>`success` | [`Boolean`](#boolean) | Indicates if the probe was successful. |

@@ -195,7 +195,7 @@ DETAILS:
 
 - Helps populate an issue more quickly by generating a more in-depth description, based on a short summary you provide.
 - LLM: Anthropic [Claude 3 Haiku](https://docs.anthropic.com/en/docs/about-claude/models#claude-3-a-new-generation-of-ai)
-- [View documentation](experiments.md#populate-an-issue-with-issue-description-generation).
+- [View documentation](../project/issues/managing_issues.md#populate-an-issue-with-issue-description-generation).
 
 ### Code Review Summary
 
@@ -219,6 +219,17 @@ DETAILS:
 - Processes and responds to your questions about your application's usage data.
 - LLM: Vertex AI Codey [`codechat-bison`](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/code-chat)
 - [View documentation](../analytics/analytics_dashboards.md#generate-a-custom-visualization-with-gitlab-duo).
+
+### GitLab Duo Workflow
+
+DETAILS:
+**Offering:** GitLab.com
+**Status:** Experiment
+**Tier:** Ultimate
+
+- Automate tasks and help increase productivity in your development workflow.
+- LLM: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
+- [View documentation](../duo_workflow/index.md).
 
 ## Disable GitLab Duo features for specific groups or projects or an entire instance
 

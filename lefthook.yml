@@ -127,8 +127,7 @@ pre-push:
       run: scripts/verify-tff-mapping
     secrets-detection:
       tags: secrets
-      files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
-      run: 'if command -v gitleaks > /dev/null 2>&1; then gitleaks detect --log-opts="$(git merge-base origin/master HEAD)..HEAD" --no-banner --redact --verbose; else echo "WARNING: gitleaks is not installed. Please install it. See https://github.com/zricethezav/gitleaks#installing."; fi'
+      run: .lefthook/gitleaks.sh pre-push
 
   scripts:
     'merge_conflicts':
@@ -154,8 +153,7 @@ pre-commit:
       run: scripts/verify-tff-mapping
     secrets-detection:
       tags: secrets
-      files: git diff --name-only --diff-filter=d --staged
-      run: 'if command -v gitleaks > /dev/null 2>&1; then gitleaks protect --no-banner --staged --redact --verbose; else echo "WARNING: gitleaks is not installed. Please install it. See https://github.com/zricethezav/gitleaks#installing."; fi'
+      run: .lefthook/gitleaks.sh pre-commit
 
 auto-fix:
   parallel: true

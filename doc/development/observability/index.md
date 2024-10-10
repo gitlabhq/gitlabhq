@@ -9,7 +9,7 @@ description: "Documentation for developers interested in contributing features o
 
 ## GitLab Observability development setup
 
-There are two options for developing and debugging GitLab Observablity:
+There are two options for developing and debugging GitLab Observability:
 
 - [Run GDK locally and connect to the staging instance](#run-gdk-and-connect-to-the-staging-instance-of-gitlab-observability-backend) of [GitLab Observability Backend](https://gitlab.com/gitlab-org/opstrace/opstrace). This is the simplest and recommended approach for those looking to make changes, or verify changes to Rails, Sidekiq or Workhorse.
 - [Use the purpose built `devvm`](#use-the-purpose-built-devvm). This is more involved but includes a development deployment of the [GitLab Observability Backend](https://gitlab.com/gitlab-org/opstrace/opstrace). This is recommended for those who want to make changes to the GitLab Observability Backend component.

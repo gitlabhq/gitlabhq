@@ -454,7 +454,11 @@ You can use the [AWS CLI](https://aws.amazon.com/cli/) to verify that access to 
 
 The S3 bucket contains a combination of **infrastructure logs** and **application logs** from the GitLab [log system](../../administration/logs/index.md). The logs in the bucket are encrypted using an AWS KMS key that is managed by GitLab. If you choose to enable [BYOK](../../administration/dedicated/create_instance.md#encrypted-data-at-rest-byok), the application logs are not encrypted with the key you provide.
 
+<!-- vale gitlab_base.Spelling = NO -->
+
 The logs in the S3 bucket are organized by date in `YYYY/MM/DD/HH` format. For example, there would be a directory like `2023/10/12/13`. That directory would contain the logs from October 12, 2023 at 1300 UTC. The logs are streamed into the bucket with [Amazon Kinesis Data Firehose](https://aws.amazon.com/firehose/).
+
+<!-- vale gitlab_base.Spelling = YES -->
 
 ## Troubleshooting
 

@@ -30,8 +30,12 @@ to the UI. This is properly balanced and scheduled, and therefore is
 a better indicator of effective uptime. You can also monitor the sign-in
 page `/users/sign_in` endpoint.
 
+<!-- vale gitlab_base.Spelling = NO -->
+
 On GitLab.com, tools such as [Pingdom](https://www.pingdom.com/) and
 Apdex measurements are used to determine uptime.
+
+<!-- vale gitlab_base.Spelling = YES -->
 
 ## IP allowlist
 

@@ -114,10 +114,14 @@ during indexing and searching operations. Some of the benefits and tradeoffs to 
 - Routing is not used if too many shards would be hit for global and group scoped searches.
 - Shard size imbalance might occur.
 
+<!-- vale gitlab_base.Spelling = NO -->
+
 ## Existing analyzers and tokenizers
 
 The following analyzers and tokenizers are defined in
 [`ee/lib/elastic/latest/config.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/elastic/latest/config.rb).
+
+<!-- vale gitlab_base.Spelling = YES -->
 
 ### Analyzers
 
@@ -196,9 +200,10 @@ If data cannot be added to one of the [existing indices in Elasticsearch](../int
   ```shell
   curl "http://localhost:9200"
   ```
-
+<!-- vale gitlab_base.Spelling = NO -->
 - [Run Kibana](https://www.elastic.co/guide/en/kibana/current/install.html#_install_kibana_yourself) to interact
   with your local Elasticsearch cluster. Alternatively, you can use [Cerebro](https://github.com/lmenezes/cerebro) or a similar tool.
+<!-- vale gitlab_base.Spelling = YES -->
 - To tail the logs for Elasticsearch, run this command:
 
   ```shell

@@ -1,0 +1,13 @@
+query getMergePipeline($fullPath: ID!, $id: CiPipelineID!) {
+  project(fullPath: $fullPath) {
+    id
+    pipeline(id: $id) {
+      id
+      iid
+      project {
+        id
+        fullPath
+      }
+    }
+  }
+}

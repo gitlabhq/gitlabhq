@@ -145,14 +145,18 @@ export default {
       return Number(this.pageInfo.hasNextPage);
     },
     fields() {
-      return [
-        this.canBulkDestroyArtifacts && {
-          key: 'checkbox',
-          label: '',
-          thClass: 'gl-w-1/20',
-        },
-        ...this.$options.fields,
-      ];
+      if (this.canBulkDestroyArtifacts) {
+        return [
+          {
+            key: 'checkbox',
+            label: '',
+            thClass: 'gl-w-1/20',
+          },
+          ...this.$options.fields,
+        ];
+      }
+
+      return this.$options.fields;
     },
     anyArtifactsSelected() {
       return Boolean(this.selectedArtifacts.length);

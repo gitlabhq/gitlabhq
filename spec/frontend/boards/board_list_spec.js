@@ -2,6 +2,7 @@ import { GlIntersectionObserver } from '@gitlab/ui';
 import Draggable from 'vuedraggable';
 import { nextTick } from 'vue';
 import { DraggableItemTypes, ListType } from 'ee_else_ce/boards/constants';
+import { DETAIL_VIEW_QUERY_PARAM_NAME } from '~/work_items/constants';
 import { useFakeRequestAnimationFrame } from 'helpers/fake_request_animation_frame';
 import waitForPromises from 'helpers/wait_for_promises';
 import createComponent from 'jest/boards/board_list_helper';
@@ -10,10 +11,15 @@ import BoardCard from '~/boards/components/board_card.vue';
 import BoardCutLine from '~/boards/components/board_cut_line.vue';
 import BoardCardMoveToPosition from '~/boards/components/board_card_move_to_position.vue';
 import listIssuesQuery from '~/boards/graphql/lists_issues.query.graphql';
+import { getParameterByName } from '~/lib/utils/url_utility';
+import setWindowLocation from 'helpers/set_window_location_helper';
 
 import { mockIssues, mockIssuesMore, mockGroupIssuesResponse } from './mock_data';
 
+jest.mock('~/lib/utils/url_utility');
+
 describe('Board list component', () => {
+  /** @type {import('@vue/test-utils').Wrapper} */
   let wrapper;
 
   const findByTestId = (testId) => wrapper.find(`[data-testid="${testId}"]`);
@@ -337,6 +343,63 @@ describe('Board list component', () => {
       expect(document.activeElement).toEqual(findBoardCardButtons().at(1).element);
       await findBoardCardButtons().at(1).trigger('keydown.up');
       expect(document.activeElement).toEqual(findBoardCardButtons().at(0).element);
+    });
+  });
+
+  describe('when the URL contains a `show` parameter', () => {
+    const mutationHandler = jest.fn();
+    const listResolver = jest.fn().mockResolvedValue(mockGroupIssuesResponse());
+    const { id, iid, referencePath } = mockIssues[0];
+    const mountForShowParamTests = async (showParams = { id, iid, full_path: referencePath }) => {
+      const show = btoa(JSON.stringify(showParams));
+      setWindowLocation(`?${DETAIL_VIEW_QUERY_PARAM_NAME}=${show}`);
+
+      getParameterByName.mockReturnValue(show);
+
+      wrapper = createComponent({
+        apolloQueryHandlers: [[listIssuesQuery, listResolver]],
+        apolloResolvers: {
+          Mutation: {
+            setActiveBoardItem: mutationHandler,
+          },
+        },
+      });
+      await waitForPromises();
+    };
+    it('calls `getParameterByName` to get the `show` parameter', async () => {
+      await mountForShowParamTests();
+      expect(getParameterByName).toHaveBeenCalledWith(DETAIL_VIEW_QUERY_PARAM_NAME);
+    });
+
+    describe('when the item is found in the list', () => {
+      it('calls the `setActiveWorkItem` mutation', async () => {
+        await mountForShowParamTests();
+        expect(mutationHandler).toHaveBeenCalled();
+      });
+    });
+
+    describe('when the item is not found in the list', () => {
+      it('emits `cannot-find-active-item`', async () => {
+        await mountForShowParamTests({
+          id: 'gid://gitlab/Issue/9999',
+          iid: '9999',
+          full_path: 'does-not-match/at-all',
+        });
+        expect(wrapper.emitted('cannot-find-active-item')).toHaveLength(1);
+      });
+    });
+
+    describe('when the list component has already tried to find the show parameter item in the list', () => {
+      it('does not call `getParameterName` to get the `show` parameter', async () => {
+        await mountForShowParamTests({
+          id: 'gid://gitlab/Issue/9999',
+          iid: '9999',
+          full_path: 'does-not-match/at-all',
+        });
+        await wrapper.setProps({ filterParams: { first: 50 } });
+        expect(listResolver).toHaveBeenCalledTimes(2);
+        expect(getParameterByName).toHaveBeenCalledTimes(1);
+      });
     });
   });
 });

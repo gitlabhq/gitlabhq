@@ -81,7 +81,7 @@ topics and use cases. The most frequently required during database reviewing are
 
 ## How to apply to become a database maintainer
 
-Database maintainership uses the same process as other projects for identifying maintainers.
+Becoming a database maintainer uses the same process as the other projects.
 [Follow the general process documented here](https://handbook.gitlab.com/handbook/engineering/workflow/code-review/#how-to-become-a-project-maintainer).
 
 For database specific requirements, see [`Project maintainer process for gitlab-database`](https://handbook.gitlab.com/handbook/engineering/workflow/code-review/#project-maintainer-process-for-gitlab-database)

@@ -19,7 +19,9 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
 
   let(:user) { personal_access_token.user }
   let(:ci_build) { create(:ci_build, :running, user: user, project: project) }
-  let(:snowplow_gitlab_standard_context) { { user: user, project: project, namespace: project.namespace, property: 'i_package_generic_user' } }
+  let(:snowplow_gitlab_standard_context) do
+    { user: user, project: project, namespace: project.namespace, property: 'i_package_generic_user' }
+  end
 
   def auth_header
     return {} if user_role == :anonymous
@@ -170,7 +172,9 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
       end
 
       with_them do
-        subject { authorize_upload_file(workhorse_headers.merge(personal_access_token_header), param_name => param_value) }
+        subject do
+          authorize_upload_file(workhorse_headers.merge(personal_access_token_header), param_name => param_value)
+        end
 
         it_behaves_like 'secure endpoint'
       end
@@ -466,7 +470,9 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
       context 'with existing package' do
         let_it_be(:package_name) { 'mypackage' }
         let_it_be(:package_version) { '1.2.3' }
-        let_it_be_with_reload(:existing_package) { create(:generic_package, name: package_name, version: package_version, project: project) }
+        let_it_be_with_reload(:existing_package) do
+          create(:generic_package, name: package_name, version: package_version, project: project)
+        end
 
         let(:headers) { workhorse_headers.merge(personal_access_token_header) }
 
@@ -539,13 +545,17 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
       end
 
       with_them do
-        subject { upload_file(params, workhorse_headers.merge(personal_access_token_header), param_name => param_value) }
+        subject do
+          upload_file(params, workhorse_headers.merge(personal_access_token_header), param_name => param_value)
+        end
 
         it_behaves_like 'secure endpoint'
       end
     end
 
-    def upload_file(params, request_headers, send_rewritten_field: true, package_name: 'mypackage', package_version: '0.0.1', file_name: 'myfile.tar.gz')
+    def upload_file(
+      params, request_headers, send_rewritten_field: true, package_name: 'mypackage',
+      package_version: '0.0.1', file_name: 'myfile.tar.gz')
       url = "/projects/#{project.id}/packages/generic/#{package_name}/#{package_version}/#{file_name}"
 
       workhorse_finalize(
@@ -802,16 +812,47 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
     context 'when object storage is enabled' do
       let(:package_file) { create(:package_file, :generic, :object_storage, package: package) }
 
+      subject(:download) { download_file(personal_access_token_header) }
+
       before do
-        stub_package_file_object_storage(enabled: true)
         project.add_developer(user)
       end
 
-      it 'includes response-content-disposition and filename in the redirect file URL' do
-        download_file(personal_access_token_header)
+      context 'when direct download is enabled' do
+        let(:disposition_param) do
+          "response-content-disposition=attachment%3B%20filename%3D%22#{package_file.file_name}"
+        end
 
-        expect(response.parsed_body).to include("response-content-disposition=attachment%3B%20filename%3D%22#{package_file.file_name}")
-        expect(response).to have_gitlab_http_status(:redirect)
+        before do
+          stub_package_file_object_storage
+        end
+
+        it 'includes response-content-disposition and filename in the redirect file URL' do
+          download
+
+          expect(response.parsed_body).to include(disposition_param)
+          expect(response).to have_gitlab_http_status(:redirect)
+        end
+      end
+
+      context 'when direct download is disabled' do
+        let(:dispositon_header) do
+          "attachment; filename=\"#{package_file.file_name}\"; filename*=UTF-8\'\'#{package_file.file_name}"
+        end
+
+        before do
+          stub_package_file_object_storage(proxy_download: true)
+        end
+
+        it 'sends a file with response-content-disposition and filename' do
+          expect(::Gitlab::Workhorse).to receive(:send_url)
+            .with(instance_of(String), { response_headers: { 'Content-Disposition' => dispositon_header } })
+            .and_call_original
+
+          download
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
       end
     end
 

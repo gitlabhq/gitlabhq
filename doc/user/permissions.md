@@ -478,7 +478,7 @@ Group permissions for [group features](../user/group/index.md):
 | Create subgroup                                                                            |       |          |           | ✓          | ✓     | Maintainers: Only if users with the Maintainer role [can create subgroups](group/subgroups/index.md#change-who-can-create-subgroups). |
 | Edit [epic](group/epics/index.md) comments (posted by any user)                            |       |          |           | ✓          | ✓     |       |
 | Fork project into a group                                                                  |       |          |           | ✓          | ✓     |       |
-| View [Billing](../subscriptions/gitlab_com/index.md#view-your-gitlabcom-subscription)      |       |          |           |            | ✓     | Does not apply to subgroups |
+| View [Billing](../subscriptions/gitlab_com/index.md#view-gitlabcom-subscription)      |       |          |           |            | ✓     | Does not apply to subgroups |
 | View group [Usage Quotas](usage_quotas.md) page                                            |       |          |           |            | ✓     | Does not apply to subgroups |
 | [Migrate group](group/import/index.md)                                                    |       |          |           |            | ✓     |       |
 | Delete group                                                                               |       |          |           |            | ✓     |       |
