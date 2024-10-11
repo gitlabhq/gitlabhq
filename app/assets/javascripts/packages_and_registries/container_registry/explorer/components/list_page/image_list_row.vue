@@ -1,5 +1,6 @@
 <script>
-import { GlButton, GlTooltipDirective, GlSprintf, GlSkeletonLoader, GlBadge } from '@gitlab/ui';
+import { GlButton, GlTooltipDirective, GlSprintf, GlSkeletonLoader } from '@gitlab/ui';
+import ProtectedBadge from '~/vue_shared/components/badges/protected_badge.vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { n__, s__ } from '~/locale';
 import Tracking from '~/tracking';
@@ -34,7 +35,8 @@ export default {
     GlSkeletonLoader,
     CleanupStatus,
     PublishMessage,
-    GlBadge,
+
+    ProtectedBadge,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -186,15 +188,10 @@ export default {
             :expiration-policy="expirationPolicy"
           />
 
-          <gl-badge
+          <protected-badge
             v-if="showBadgeProtected"
-            v-gl-tooltip
-            :title="$options.i18n.badgeProtectedTooltipText"
-            size="sm"
-            variant="neutral"
-          >
-            {{ __('protected') }}
-          </gl-badge>
+            :tooltip-text="$options.i18n.badgeProtectedTooltipText"
+          />
         </template>
       </template>
 

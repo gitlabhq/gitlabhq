@@ -3,6 +3,7 @@
 - description = local_assigns.fetch(:description, nil)
 - label = local_assigns.fetch(:label)
 - variant = local_assigns.fetch(:variant)
+- icon = local_assigns.fetch(:icon, nil)
 
 - title = capture do
   .signature-popover
@@ -31,5 +32,5 @@
 
     = link_to(_('Learn about signing commits'), help_page_path('user/project/repository/signed_commits/index.md'), class: 'gl-link gl-block gl-mt-3')
 
-%a.signature-badge.gl-inline-block.gl-ml-4{ role: 'button', tabindex: 0, data: { toggle: 'popover', html: 'true', placement: 'top', title: title, content: content } }
-  = gl_badge_tag label, variant: variant
+%a.signature-badge.gl-inline-flex.gl-ml-4.gl-align-middle{ role: 'button', tabindex: 0, data: { toggle: 'popover', html: 'true', placement: 'bottom', title: title, content: content } }
+  = gl_badge_tag label, variant: variant, icon: icon

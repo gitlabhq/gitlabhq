@@ -25,16 +25,15 @@ fragment Todo on Todo {
     nameWithNamespace
   }
   targetEntity {
+    name
     ... on Issue {
       issueState: state
-      title
       reference
       webPath
       dueDate
     }
     ... on MergeRequest {
       mergeRequestState: state
-      title
       reference
       webPath
     }

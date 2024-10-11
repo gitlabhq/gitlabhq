@@ -23,6 +23,7 @@ describe('Release block', () => {
         release: releaseProp,
       },
       provide: {
+        projectPath: 'project/path',
         glFeatures: {
           ...featureFlags,
         },

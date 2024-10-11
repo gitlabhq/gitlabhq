@@ -9843,9 +9843,6 @@ msgstr ""
 msgid "BranchRules|default"
 msgstr ""
 
-msgid "BranchRules|protected"
-msgstr ""
-
 msgid "Branches"
 msgstr ""
 
@@ -21147,6 +21144,9 @@ msgid "Enabled OAuth authentication sources"
 msgstr ""
 
 msgid "Enables a free GitLab Ultimate trial when you create a new project."
+msgstr ""
+
+msgid "Enables a free Ultimate + GitLab Duo Enterprise trial when you create a new project."
 msgstr ""
 
 msgid "End Time"
@@ -37854,7 +37854,7 @@ msgstr ""
 msgid "OnDemandScans|On-demand scans run outside of DevOps cycle and find vulnerabilities in your projects. %{learnMoreLinkStart}Learn more%{learnMoreLinkEnd}."
 msgstr ""
 
-msgid "OnDemandScans|On-demand scans run outside the DevOps cycle and find vulnerabilities in your projects. %{learnMoreLinkStart}Learn more%{learnMoreLinkEnd}"
+msgid "OnDemandScans|On-demand scans run outside the DevOps cycle and find vulnerabilities in your projects. %{learnMoreLinkStart}Learn more%{learnMoreLinkEnd}."
 msgstr ""
 
 msgid "OnDemandScans|Only project owners and maintainers can select runner tags."
@@ -42672,6 +42672,9 @@ msgstr ""
 msgid "ProjectMaintenance|Blob IDs to remove"
 msgstr ""
 
+msgid "ProjectMaintenance|Blobs removal is scheduled."
+msgstr ""
+
 msgid "ProjectMaintenance|Blobs removed"
 msgstr ""
 
@@ -42741,6 +42744,9 @@ msgstr ""
 msgid "ProjectMaintenance|Text redacted"
 msgstr ""
 
+msgid "ProjectMaintenance|Text redaction removal is scheduled."
+msgstr ""
+
 msgid "ProjectMaintenance|To confirm, enter the following:"
 msgstr ""
 
@@ -42754,6 +42760,12 @@ msgid "ProjectMaintenance|Yes, redact matching strings"
 msgstr ""
 
 msgid "ProjectMaintenance|Yes, remove blobs"
+msgstr ""
+
+msgid "ProjectMaintenance|You will receive an email notification when the process is complete. Run housekeeping to remove old versions from repository."
+msgstr ""
+
+msgid "ProjectMaintenance|You will receive an email notification when the process is complete. To remove old versions from the repository, run housekeeping."
 msgstr ""
 
 msgid "ProjectOverview|Create new fork"
@@ -55852,6 +55864,9 @@ msgstr ""
 msgid "This commit was created in the GitLab UI, and signed with a GitLab-verified signature."
 msgstr ""
 
+msgid "This commit was previously signed with a verified signature and verified committer email address. However the committer email address is no longer verified to the same user."
+msgstr ""
+
 msgid "This commit was signed with a %{strong_open}verified%{strong_close} signature and the committer email is verified to belong to the same user."
 msgstr ""
 
@@ -57288,6 +57303,12 @@ msgstr ""
 msgid "Todos|Review submitted"
 msgstr ""
 
+msgid "Todos|SSH key"
+msgstr ""
+
+msgid "Todos|SSH key expired"
+msgstr ""
+
 msgid "Todos|Something went wrong. Please try again."
 msgstr ""
 
@@ -57322,6 +57343,9 @@ msgid "Todos|You"
 msgstr ""
 
 msgid "Todos|You're all done!"
+msgstr ""
+
+msgid "Todos|Your SSH key has expired"
 msgstr ""
 
 msgid "Todos|Your To-Do List shows what to work on next"
@@ -58015,6 +58039,9 @@ msgstr ""
 msgid "Trial|Start free GitLab Ultimate trial"
 msgstr ""
 
+msgid "Trial|Start free Ultimate + GitLab Duo Enterprise trial"
+msgstr ""
+
 msgid "Trial|State or province"
 msgstr ""
 
@@ -58028,6 +58055,9 @@ msgid "Trial|Your GitLab Ultimate trial lasts for 30 days, but you can keep your
 msgstr ""
 
 msgid "Trial|Your combined Ultimate and GitLab Duo Enterprise trial lasts for 60 days. We just need some additional information to activate it."
+msgstr ""
+
+msgid "Trial|Your free Ultimate & GitLab Duo Enterprise Trial lasts for 60 days. After this period, you can maintain a GitLab Free account forever, or upgrade to a paid plan."
 msgstr ""
 
 msgid "Trigger"
@@ -60343,6 +60373,9 @@ msgid "Verified"
 msgstr ""
 
 msgid "Verified commit"
+msgstr ""
+
+msgid "Verified commit with unverified email"
 msgstr ""
 
 msgid "Verify SAML Configuration"
@@ -63378,6 +63411,9 @@ msgid "You have been enrolled in the Early Access Program. Thank you for helping
 msgstr ""
 
 msgid "You have been granted access to the %{source_name} %{source_type} with the following role: %{role_name}."
+msgstr ""
+
+msgid "You have been granted access to the %{source_name} %{source_type}, which is part of the %{organization_name} organization with the following role: %{role_name}."
 msgstr ""
 
 msgid "You have been invited by %{link_to_inviter} to join %{source_name} %{strong_open}%{link_to_source}%{strong_close} as %{role}"

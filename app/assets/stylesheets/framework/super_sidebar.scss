@@ -530,7 +530,7 @@ $command-palette-spacing: px-to-rem(14px);
   }
 
   @include gl-media-breakpoint-up(sm) {
-    padding: 5rem 1rem 0;
+    padding: 0.2rem 1rem  0;
   }
 
   .vertical-align-normalization {

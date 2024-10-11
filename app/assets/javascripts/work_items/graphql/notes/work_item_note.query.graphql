@@ -1,0 +1,7 @@
+#import "ee_else_ce/work_items/graphql/notes/work_item_note.fragment.graphql"
+
+query workItemNote($id: NoteID!) {
+  note(id: $id) {
+    ...WorkItemNote
+  }
+}

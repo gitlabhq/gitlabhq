@@ -1,5 +1,6 @@
 <script>
 import { GlButton, GlDrawer, GlLink, GlFormTextarea, GlModal, GlFormInput } from '@gitlab/ui';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { InternalEvents } from '~/tracking';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { helpPagePath } from '~/helpers/help_page_helper';
@@ -29,8 +30,12 @@ const i18n = {
   modalConfirm: s__('ProjectMaintenance|Enter the following to confirm:'),
   removeBlobsError: s__('ProjectMaintenance|Something went wrong while removing blobs.'),
   successAlertTitle: s__('ProjectMaintenance|Blobs removed'),
+  scheduledRemovalSuccessAlertTitle: s__('ProjectMaintenance|Blobs removal is scheduled.'),
   successAlertContent: s__(
     'ProjectMaintenance|Run housekeeping to remove old versions from repository.',
+  ),
+  scheduledSuccessAlertContent: s__(
+    'ProjectMaintenance|You will receive an email notification when the process is complete. Run housekeeping to remove old versions from repository.',
   ),
   successAlertButtonText: s__('ProjectMaintenance|Go to housekeeping'),
 };
@@ -43,7 +48,7 @@ export default {
   }),
   modalCancel: { text: i18n.modalCancelText },
   components: { GlButton, GlDrawer, GlLink, GlFormTextarea, GlModal, GlFormInput },
-  mixins: [trackingMixin],
+  mixins: [trackingMixin, glFeatureFlagsMixin()],
   inject: { projectPath: { default: '' }, housekeepingPath: { default: '' } },
   data() {
     return {
@@ -72,6 +77,16 @@ export default {
     },
     isConfirmEnabled() {
       return this.confirmInput === this.projectPath;
+    },
+    alertTitle() {
+      return this.glFeatures.asyncRewriteHistory
+        ? this.$options.i18n.scheduledRemovalSuccessAlertTitle
+        : this.$options.i18n.successAlertTitle;
+    },
+    alertBody() {
+      return this.glFeatures.asyncRewriteHistory
+        ? this.$options.i18n.scheduledSuccessAlertContent
+        : this.$options.i18n.successAlertContent;
     },
   },
   methods: {
@@ -117,8 +132,8 @@ export default {
     },
     generateSuccessAlert() {
       createAlert({
-        title: i18n.successAlertTitle,
-        message: i18n.successAlertContent,
+        title: this.alertTitle,
+        message: this.alertBody,
         variant: VARIANT_WARNING,
         primaryButton: {
           text: i18n.successAlertButtonText,

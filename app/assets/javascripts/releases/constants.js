@@ -61,9 +61,6 @@ export const i18n = {
     "CiCatalog|Use the 'release' keyword in a CI/CD job to publish to the CI/CD Catalog.",
   ),
   defaultReleaseBtnTitle: __('Create a new release'),
-  catalogResourceQueryError: s__(
-    'CiCatalog|There was a problem fetching the CI/CD Catalog setting.',
-  ),
   errorMessage: __('An error occurred while fetching the releases. Please try again.'),
   newRelease: __('New release'),
   tagNameIsRequiredMessage: __('Tag name is required.'),

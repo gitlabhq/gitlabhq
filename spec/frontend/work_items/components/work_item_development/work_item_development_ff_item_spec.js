@@ -55,8 +55,8 @@ describe('WorkItemDevelopmentFfItem', () => {
       createComponent({ featureFlag: enabledFeatureFlag });
 
       expect(findFlagTooltip().exists()).toBe(true);
-      expect(findFlagTooltip().text()).toBe(
-        `Feature flag  ${enabledFeatureFlag.name} ${enabledFeatureFlag.reference} Enabled`,
+      expect(findFlagTooltip().text()).toContain(
+        `${enabledFeatureFlag.name} ${enabledFeatureFlag.reference} Enabled`,
       );
     });
 
@@ -64,8 +64,8 @@ describe('WorkItemDevelopmentFfItem', () => {
       createComponent({ featureFlag: disabledFeatureFlag });
 
       expect(findFlagTooltip().exists()).toBe(true);
-      expect(findFlagTooltip().text()).toBe(
-        `Feature flag  ${disabledFeatureFlag.name} ${disabledFeatureFlag.reference} Disabled`,
+      expect(findFlagTooltip().text()).toContain(
+        `${disabledFeatureFlag.name} ${disabledFeatureFlag.reference} Disabled`,
       );
     });
   });

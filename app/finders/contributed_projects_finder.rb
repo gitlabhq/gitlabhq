@@ -12,7 +12,7 @@
 #                        projects, regardless of their visibility to the current_user.
 #     min_access_level: Return only projects where user has at least the access level.
 #     programming_language_name: Return only projects that use the provided programming language.
-#     order_by: Order projects
+#     sort: Order projects
 #
 # Returns an ActiveRecord::Relation.
 class ContributedProjectsFinder
@@ -33,7 +33,7 @@ class ContributedProjectsFinder
     collection = init_collection
     collection = filter_projects(collection)
 
-    collection.with_namespace.sort_by_attribute(params[:order_by] || 'id_desc')
+    collection.with_namespace.sort_by_attribute(params[:sort] || 'id_desc')
   end
 
   private

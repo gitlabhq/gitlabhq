@@ -13,6 +13,7 @@ import WorkItemDiscussion from '~/work_items/components/notes/work_item_discussi
 import WorkItemAddNote from '~/work_items/components/notes/work_item_add_note.vue';
 import WorkItemNotesActivityHeader from '~/work_items/components/notes/work_item_notes_activity_header.vue';
 import WorkItemNotesLoading from '~/work_items/components/notes/work_item_notes_loading.vue';
+import workItemNoteQuery from '~/work_items/graphql/notes/work_item_note.query.graphql';
 import workItemNotesByIidQuery from '~/work_items/graphql/notes/work_item_notes_by_iid.query.graphql';
 import deleteWorkItemNoteMutation from '~/work_items/graphql/notes/delete_work_item_notes.mutation.graphql';
 import workItemNoteCreatedSubscription from '~/work_items/graphql/notes/work_item_note_created.subscription.graphql';
@@ -34,6 +35,7 @@ import {
 
 const mockWorkItemId = workItemQueryResponse.data.workItem.id;
 const mockWorkItemIid = workItemQueryResponse.data.workItem.iid;
+
 const mockNotesWidgetResponse = mockWorkItemNotesResponse.data.workItem.widgets.find(
   (widget) => widget.type === WIDGET_TYPE_NOTES,
 );
@@ -52,6 +54,10 @@ const firstSystemNodeId = mockNotesWidgetResponse.discussions.nodes[0].notes.nod
 
 const mockDiscussions = mockWorkItemNotesWidgetResponseWithComments.discussions.nodes;
 
+const mockWorkItemNoteResponse = {
+  data: { note: mockDiscussions[0].notes.nodes[0] },
+};
+
 describe('WorkItemNotes component', () => {
   let wrapper;
 
@@ -69,6 +75,7 @@ describe('WorkItemNotes component', () => {
   const findDeleteNoteModal = () => wrapper.findComponent(GlModal);
   const findWorkItemAddNote = () => wrapper.findComponent(WorkItemAddNote);
 
+  const workItemNoteQueryHandler = jest.fn().mockResolvedValue(mockWorkItemNoteResponse);
   const workItemNotesQueryHandler = jest.fn().mockResolvedValue(mockWorkItemNotesByIidResponse);
   const workItemMoreNotesQueryHandler = jest.fn().mockResolvedValue(mockMoreWorkItemNotesResponse);
   const workItemNotesWithCommentsQueryHandler = jest
@@ -99,6 +106,7 @@ describe('WorkItemNotes component', () => {
   } = {}) => {
     wrapper = shallowMount(WorkItemNotes, {
       apolloProvider: createMockApollo([
+        [workItemNoteQuery, workItemNoteQueryHandler],
         [workItemNotesByIidQuery, defaultWorkItemNotesQueryHandler],
         [deleteWorkItemNoteMutation, deleteWINoteMutationHandler],
         [workItemNoteCreatedSubscription, notesCreateSubscriptionHandler],
@@ -139,6 +147,50 @@ describe('WorkItemNotes component', () => {
 
     it('does not render system notes', () => {
       expect(findAllSystemNotes().exists()).toBe(false);
+    });
+
+    it('skips query for target note if no note_id in URL', () => {
+      createComponent();
+
+      expect(workItemNoteQueryHandler).not.toHaveBeenCalled();
+    });
+
+    it('skips query for target note if invalid note_id in URL', () => {
+      setWindowLocation('#not_a_note');
+
+      createComponent();
+
+      expect(workItemNoteQueryHandler).not.toHaveBeenCalled();
+    });
+
+    it('skips query for target note if note_id is for a synthetic note', () => {
+      setWindowLocation('#note_517f0177a539a244bf9c5a720b6d6f376a268996');
+
+      createComponent();
+
+      expect(workItemNoteQueryHandler).not.toHaveBeenCalled();
+    });
+
+    it('makes query for target note if note_id in URL', () => {
+      setWindowLocation('#note_174');
+
+      createComponent();
+
+      expect(workItemNoteQueryHandler).toHaveBeenCalledWith({
+        id: 'gid://gitlab/Note/174',
+      });
+    });
+
+    it('renders note above skeleton notes once loaded', async () => {
+      setWindowLocation('#note_174');
+
+      createComponent();
+
+      await waitForPromises();
+
+      expect(findWorkItemCommentNoteAtIndex(0).props('discussion')).toEqual([
+        mockWorkItemNoteResponse.data.note,
+      ]);
     });
   });
 
@@ -417,6 +469,7 @@ describe('WorkItemNotes component', () => {
 
       await waitForPromises();
       await nextTick();
+
       expect(findAllWorkItemCommentNotes().at(0).props('isExpandedOnLoad')).toBe(true);
     });
   });

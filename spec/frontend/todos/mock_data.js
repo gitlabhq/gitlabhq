@@ -28,7 +28,7 @@ export const todosResponse = {
             },
             targetEntity: {
               mergeRequestState: 'opened',
-              title: 'Can be automatically merged',
+              name: 'Can be automatically merged',
               reference: '!8',
               webPath: '/gitlab-org/gitlab-test/-/merge_requests/8',
               __typename: 'MergeRequest',
@@ -59,7 +59,7 @@ export const todosResponse = {
             },
             targetEntity: {
               mergeRequestState: 'opened',
-              title: 'Update file .gitlab-ci.yml',
+              name: 'Update file .gitlab-ci.yml',
               reference: '!17',
               webPath: '/flightjs/Flight/-/merge_requests/17',
               __typename: 'MergeRequest',

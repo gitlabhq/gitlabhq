@@ -9,6 +9,7 @@ export const TODO_TARGET_TYPE_MERGE_REQUEST = 'MERGEREQUEST';
 export const TODO_TARGET_TYPE_DESIGN = 'DESIGN';
 export const TODO_TARGET_TYPE_ALERT = 'ALERT';
 export const TODO_TARGET_TYPE_EPIC = 'EPIC';
+export const TODO_TARGET_TYPE_SSH_KEY = 'KEY';
 
 export const TODO_ACTION_TYPE_ASSIGNED = 'assigned';
 export const TODO_ACTION_TYPE_MENTIONED = 'mentioned';
@@ -23,6 +24,7 @@ export const TODO_ACTION_TYPE_MEMBER_ACCESS_REQUESTED = 'member_access_requested
 export const TODO_ACTION_TYPE_REVIEW_SUBMITTED = 'review_submitted';
 export const TODO_ACTION_TYPE_OKR_CHECKIN_REQUESTED = 'okr_checkin_requested';
 export const TODO_ACTION_TYPE_ADDED_APPROVER = 'added_approver';
+export const TODO_ACTION_TYPE_SSH_KEY_EXPIRED = 'ssh_key_expired';
 
 export const TODO_EMPTY_TITLE_POOL = [
   s__("Todos|Good job! Looks like you don't have anything left on your To-Do List"),

@@ -214,7 +214,7 @@ describe('UserBar component', () => {
 
     it('search button should have tracking', async () => {
       const { trackEventSpy } = bindInternalEventDocument(findSearchButton().element);
-      await findSearchButton().trigger('click');
+      await findSearchButton().vm.$emit('click');
 
       expect(trackEventSpy).toHaveBeenCalledWith(
         'click_search_button_to_activate_command_palette',
@@ -240,6 +240,20 @@ describe('UserBar component', () => {
         await nextTick();
         const tooltip = getBinding(findSearchButton().element, 'gl-tooltip');
         expect(tooltip.value).toBe(`Type <kbd>/</kbd> to search`);
+      });
+    });
+
+    describe('when feature flag is on', () => {
+      beforeEach(() => {
+        createWrapper({ provideOverrides: { glFeatures: { searchButtonTopRight: true } } });
+      });
+
+      it('should not render search button', () => {
+        expect(findSearchButton().exists()).toBe(false);
+      });
+
+      it('should not render search modal', () => {
+        expect(findSearchModal().exists()).toBe(false);
       });
     });
   });

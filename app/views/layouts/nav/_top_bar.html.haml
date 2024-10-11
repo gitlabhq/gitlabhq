@@ -1,6 +1,10 @@
 %div{ class: 'top-bar-fixed container-fluid', data: { testid: 'top-bar' } }
   .top-bar-container.gl-flex.gl-items-center.gl-gap-2
-    = render Pajamas::ButtonComponent.new(icon: 'sidebar', category: :tertiary, button_options: { class: 'js-super-sidebar-toggle-expand super-sidebar-toggle -gl-ml-3', aria: { controls: 'super-sidebar', expanded: 'false', label: _('Primary navigation sidebar') } })
-    = render "layouts/nav/breadcrumbs/breadcrumbs"
-    = render "layouts/nav/work_items/feedback_badge"
-    = render_if_exists "layouts/nav/ask_duo_button"
+    .gl-grow.gl-basis-0.gl-flex.gl-items-center.gl-justify-start
+      = render Pajamas::ButtonComponent.new(icon: 'sidebar', category: :tertiary, button_options: { class: 'js-super-sidebar-toggle-expand super-sidebar-toggle -gl-ml-3', aria: { controls: 'super-sidebar', expanded: 'false', label: _('Primary navigation sidebar') } })
+      = render "layouts/nav/breadcrumbs/breadcrumbs"
+    .gl-flex-none.gl-flex.gl-items-center.gl-justify-center
+      = render "layouts/nav/search_button"
+    .gl-grow.gl-basis-0.gl-flex.gl-items-center.gl-justify-end
+      = render "layouts/nav/work_items/feedback_badge"
+      = render_if_exists "layouts/nav/ask_duo_button"

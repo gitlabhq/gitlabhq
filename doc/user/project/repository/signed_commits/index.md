@@ -57,6 +57,21 @@ GitLab uses SSH to sign commits created through the web UI.
 To verify these commits locally, obtain the GitLab public key for signing web commits
 using the [Web Commits API](../../../../api/web_commits.md#get-public-signing-key).
 
+### Use gitmailmap with verified commits
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/425042) in GitLab 17.5 [with a flag](../../../../administration/feature_flags.md) named `check_for_mailmapped_commit_emails`. Disabled by default.
+
+FLAG:
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+The [`gitmailmap`](https://git-scm.com/docs/gitmailmap) feature allows users to map author names and email addresses.
+GitLab uses these email addresses to provide links to the commit author.
+When using a `mailmap` author mapping, it's possible to have a verified commit with an unverified author email.
+
+For SSH signatures with `mailmap` author mappings, GitLab displays an orange verified label with a warning sign.
+To restore the green verified label, verify the mapped email address, or remove the `mailmap` entry.
+
 ## Troubleshooting
 
 ### Fix verification problems with signed commits

@@ -23,7 +23,8 @@ class Todo < ApplicationRecord
   MEMBER_ACCESS_REQUESTED = 10
   REVIEW_SUBMITTED = 11 # This is an EE-only feature
   OKR_CHECKIN_REQUESTED = 12 # This is an EE-only feature
-  ADDED_APPROVER = 13 # This is an EE-only feature
+  ADDED_APPROVER = 13 # This is an EE-only feature,
+  SSH_KEY_EXPIRED = 14
 
   ACTION_NAMES = {
     ASSIGNED => :assigned,
@@ -38,7 +39,8 @@ class Todo < ApplicationRecord
     MEMBER_ACCESS_REQUESTED => :member_access_requested,
     REVIEW_SUBMITTED => :review_submitted,
     OKR_CHECKIN_REQUESTED => :okr_checkin_requested,
-    ADDED_APPROVER => :added_approver
+    ADDED_APPROVER => :added_approver,
+    SSH_KEY_EXPIRED => :ssh_key_expired
   }.freeze
 
   ACTIONS_MULTIPLE_ALLOWED = [Todo::MENTIONED, Todo::DIRECTLY_ADDRESSED, Todo::MEMBER_ACCESS_REQUESTED].freeze
@@ -64,8 +66,8 @@ class Todo < ApplicationRecord
   validates :author, presence: true
   validates :target_id, presence: true, unless: :for_commit?
   validates :commit_id, presence: true, if: :for_commit?
-  validates :project, presence: true, unless: :group_id
-  validates :group, presence: true, unless: :project_id
+  validates :project, presence: true, unless: -> { group_id || for_ssh_key? }
+  validates :group, presence: true, unless: -> { project_id || for_ssh_key? }
 
   scope :pending, -> { with_state(:pending) }
   scope :snoozed, -> { where(arel_table[:snoozed_until].gt(Time.current)) }
@@ -313,6 +315,10 @@ class Todo < ApplicationRecord
     [Issue.name, WorkItem.name].any?(target_type)
   end
 
+  def for_ssh_key?
+    target_type == Key.name
+  end
+
   # override to return commits, which are not active record
   def target
     if for_commit?
@@ -356,6 +362,8 @@ class Todo < ApplicationRecord
       build_project_target_url
     when Group
       build_group_target_url
+    when Key
+      build_ssh_key_target_url
     end
   end
 
@@ -443,6 +451,10 @@ class Todo < ApplicationRecord
       target,
       tab: 'access_requests'
     )
+  end
+
+  def build_ssh_key_target_url
+    ::Gitlab::Routing.url_helpers.user_settings_ssh_key_url(target)
   end
 end
 

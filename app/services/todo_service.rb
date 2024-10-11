@@ -164,6 +164,25 @@ class TodoService
     resolve_todos_for_target(awardable, current_user)
   end
 
+  # When a SSH key expired we should:
+  #
+  # * create a todo for the user owning that SSH key
+  #
+  def ssh_key_expired(ssh_keys)
+    ssh_keys = Array(ssh_keys)
+
+    ssh_keys.each do |ssh_key|
+      user = ssh_key.user
+      attributes = {
+        target_id: ssh_key.id,
+        target_type: Key,
+        action: ::Todo::SSH_KEY_EXPIRED,
+        author_id: user.id
+      }
+      create_todos(user, attributes, nil, nil)
+    end
+  end
+
   # When user marks a target as todo
   def mark_todo(target, current_user)
     project = target.project

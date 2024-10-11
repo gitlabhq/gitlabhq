@@ -46,4 +46,10 @@ RSpec.describe CommitSignatures::X509CommitSignature do
       expect(described_class.safe_create!(attributes).signed_by_user).to be_nil
     end
   end
+
+  describe '#reverified_status' do
+    it 'returns existing verification status' do
+      expect(described_class.safe_create!(attributes).reverified_status).to eq(signature.verification_status)
+    end
+  end
 end

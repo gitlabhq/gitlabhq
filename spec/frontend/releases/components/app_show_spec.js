@@ -26,7 +26,7 @@ describe('Release show component', () => {
   const createComponent = ({ apolloProvider }) => {
     wrapper = shallowMount(ReleaseShowApp, {
       provide: {
-        fullPath: MOCK_FULL_PATH,
+        projectPath: MOCK_FULL_PATH,
         tagName: MOCK_TAG_NAME,
       },
       apolloProvider,

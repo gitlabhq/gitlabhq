@@ -1121,6 +1121,31 @@ RSpec.describe TodoService, feature_category: :team_planning do
       end
     end
 
+    describe '#ssh_key_expired' do
+      let_it_be(:ssh_key) { create(:key, user: author) }
+
+      context 'when given a single key' do
+        it 'creates a pending todo for the user' do
+          service.ssh_key_expired(ssh_key)
+
+          should_create_todo(user: author, author: author, target: ssh_key, project: nil, action: Todo::SSH_KEY_EXPIRED)
+        end
+      end
+
+      context 'when given an array of keys' do
+        let_it_be(:ssh_key_of_member) { create(:key, user: member) }
+        let_it_be(:ssh_key_of_guest) { create(:key, user: guest) }
+
+        it 'creates a pending todo for each key with the correct user' do
+          service.ssh_key_expired([ssh_key, ssh_key_of_member, ssh_key_of_guest])
+
+          should_create_todo(user: author, author: author, target: ssh_key, project: nil, action: Todo::SSH_KEY_EXPIRED)
+          should_create_todo(user: member, author: member, target: ssh_key_of_member, project: nil, action: Todo::SSH_KEY_EXPIRED)
+          should_create_todo(user: guest, author: guest, target: ssh_key_of_guest, project: nil, action: Todo::SSH_KEY_EXPIRED)
+        end
+      end
+    end
+
     describe '#merge_request_build_failed' do
       let(:merge_participants) { [unassigned_mr.author, admin] }
 

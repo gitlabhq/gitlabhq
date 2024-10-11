@@ -4,8 +4,8 @@ import {
   GlDisclosureDropdownItem,
   GlIcon,
   GlTooltipDirective,
-  GlBadge,
 } from '@gitlab/ui';
+import ProtectedBadge from '~/vue_shared/components/badges/protected_badge.vue';
 import { sprintf, n__, s__ } from '~/locale';
 import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
@@ -44,7 +44,7 @@ export default {
     GlIcon,
     TitleArea,
     MetadataItem,
-    GlBadge,
+    ProtectedBadge,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -215,15 +215,10 @@ export default {
     </template>
 
     <template #metadata-protection-rule-exists>
-      <gl-badge
+      <protected-badge
         v-if="showBadgeProtected"
-        v-gl-tooltip="{ title: $options.i18n.BADGE_PROTECTED_TOOLTIP_TEXT }"
-        icon-size="sm"
-        size="sm"
-        variant="neutral"
-      >
-        {{ __('protected') }}
-      </gl-badge>
+        :tooltip-text="$options.i18n.BADGE_PROTECTED_TOOLTIP_TEXT"
+      />
     </template>
 
     <template v-if="!deleteButtonDisabled" #right-actions>

@@ -35,7 +35,7 @@ module Resolvers
           current_user: current_user,
           params: {
             search: args[:search],
-            order_by: args[:sort],
+            sort: args[:sort],
             min_access_level: args[:min_access_level],
             programming_language_name: args[:programming_language_name]
           }

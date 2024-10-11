@@ -799,7 +799,7 @@ class Namespace < ApplicationRecord
   end
 
   def refresh_access_of_projects_invited_groups
-    if Feature.enabled?(:specialized_worker_for_group_lock_update_auth_recalculation)
+    if Feature.enabled?(:specialized_worker_for_group_lock_update_auth_recalculation, self)
       Project
         .where(namespace_id: id)
         .joins(:project_group_links)

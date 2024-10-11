@@ -26,8 +26,8 @@ RSpec.describe ContributedProjectsFinder, feature_category: :groups_and_projects
     travel_to(2.hours.from_now) { create(:push_event, project: public_project, author: user) }
   end
 
-  context 'when order_by is specified' do
-    let(:params) { { order_by: 'latest_activity_desc' } }
+  context 'when sort is specified' do
+    let(:params) { { sort: 'latest_activity_desc' } }
 
     subject { finder.execute }
 

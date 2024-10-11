@@ -6,6 +6,9 @@ identifiers:
 - namespace
 - project
 - user
+additional_properties:
+  label:
+    description: Position of the button.
 product_group: global_search
 milestone: '17.0'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151651

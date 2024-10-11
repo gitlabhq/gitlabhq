@@ -6,6 +6,7 @@ class Key < ApplicationRecord
   include ShaAttribute
   include Expirable
   include FromUnion
+  include Todoable
 
   sha256_attribute :fingerprint_sha256
 
@@ -140,6 +141,14 @@ class Key < ApplicationRecord
 
   def signing?
     super || auth_and_signing?
+  end
+
+  def readable_by?(user)
+    user_id == user.id
+  end
+
+  def to_reference
+    fingerprint
   end
 
   private

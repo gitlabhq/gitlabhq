@@ -1169,7 +1169,7 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
       let(:params) { {} }
 
       before do
-        get api(endpoint_path)
+        get api(endpoint_path), params: params
       end
 
       context 'when it is cached' do
@@ -1191,6 +1191,12 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
           end
 
           it_behaves_like 'a non-cached MergeRequest api request', 1
+        end
+
+        context 'when "with_labels_details" parameter is provided' do
+          let(:params) { { with_labels_details: true } }
+
+          it_behaves_like 'a non-cached MergeRequest api request', 4
         end
 
         context 'when the assignees change' do

@@ -52,6 +52,7 @@ module Gitlab
 
         :unverified
       end
+      alias_method :reverified_status, :verification_status
 
       private
 

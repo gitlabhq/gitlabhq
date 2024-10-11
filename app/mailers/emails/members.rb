@@ -7,7 +7,7 @@ module Emails
     include Gitlab::Experiment::Dsl
 
     included do
-      helper_method :member_source, :member
+      helper_method :member, :member_source, :member_source_organization
       helper_method :experiment
     end
 
@@ -102,6 +102,10 @@ module Emails
 
     def member_source
       @member_source ||= member.source
+    end
+
+    def member_source_organization
+      @member_source_organization ||= member_source.organization
     end
 
     def notification_group

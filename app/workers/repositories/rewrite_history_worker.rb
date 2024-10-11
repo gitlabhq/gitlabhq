@@ -19,10 +19,20 @@ module Repositories
       user = User.find_by_id(args[:user_id])
       return unless user
 
-      Repositories::RewriteHistoryService.new(project, user).execute(
+      result = Repositories::RewriteHistoryService.new(project, user).execute(
         blob_oids: args.fetch(:blob_oids, []),
         redactions: args.fetch(:redactions, [])
       )
+
+      return notification_service.repository_rewrite_history_success(project, user) if result.success?
+
+      notification_service.repository_rewrite_history_failure(project, user, result.message)
+    end
+
+    private
+
+    def notification_service
+      @notification_service ||= NotificationService.new
     end
   end
 end

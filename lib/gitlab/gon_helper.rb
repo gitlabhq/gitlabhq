@@ -83,6 +83,7 @@ module Gitlab
       # To be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/399248
       push_frontend_feature_flag(:remove_monitor_metrics)
       push_frontend_feature_flag(:work_items_view_preference, current_user)
+      push_frontend_feature_flag(:search_button_top_right, current_user)
     end
 
     # Exposes the state of a feature flag to the frontend code.

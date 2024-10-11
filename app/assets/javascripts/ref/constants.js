@@ -30,5 +30,4 @@ export const DEFAULT_I18N = Object.freeze({
   commits: __('Commits'),
   noRefSelected: __('No ref selected'),
   totalCountLabel: s__('TotalRefCountIndicator|1000+'),
-  protectedLabelText: __('protected'),
 });

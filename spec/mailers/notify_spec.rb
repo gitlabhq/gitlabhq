@@ -589,6 +589,7 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
       let(:owner) { create(:user, name: "Chang O'Keefe") }
       let(:project) { create(:project, :public, namespace: owner.namespace) }
       let(:project_member) { create(:project_member, project: project, user: user) }
+      let(:organization) { project.organization }
 
       subject { described_class.member_access_granted_email('project', project_member.id) }
 
@@ -598,14 +599,31 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
       it_behaves_like 'appearance header and footer enabled'
       it_behaves_like 'appearance header and footer not enabled'
 
-      it 'contains all the useful information' do
+      it 'contains all the useful information', :aggregate_failures do
         is_expected.to have_subject "Access to the #{project.full_name} project was granted"
         is_expected.to have_body_text project.full_name
         is_expected.to have_body_text project.web_url
+        is_expected.to have_body_text organization.name
+        is_expected.to have_body_text organization.web_url
         is_expected.to have_body_text project_member.human_access
-        is_expected.to have_body_text 'default role'
         is_expected.to have_body_text 'leave the project'
         is_expected.to have_body_text project_url(project, leave: 1)
+      end
+
+      context 'when ui_for_organizations feature is disabled' do
+        before do
+          stub_feature_flags(ui_for_organizations: false)
+        end
+
+        it 'contains all the useful information', :aggregate_failures do
+          is_expected.to have_subject "Access to the #{project.full_name} project was granted"
+          is_expected.to have_body_text project.full_name
+          is_expected.to have_body_text project.web_url
+          is_expected.to have_body_text project_member.human_access
+          is_expected.to have_body_text 'default role'
+          is_expected.to have_body_text 'leave the project'
+          is_expected.to have_body_text project_url(project, leave: 1)
+        end
       end
     end
 
@@ -1589,6 +1607,7 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
   context 'for a group' do
     describe 'group access requested' do
       let(:group) { create(:group, :public) }
+      let(:organization) { group.organization }
       let(:group_member) do
         group.request_access(user)
         group.requesters.find_by(user_id: user.id)
@@ -1615,6 +1634,7 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
     end
 
     describe 'group access changed' do
+      let(:organization) { group.organization }
       let(:group_member) { create(:group_member, group: group, user: user) }
       let(:recipient) { user }
 
@@ -1627,13 +1647,30 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
       it_behaves_like 'appearance header and footer enabled'
       it_behaves_like 'appearance header and footer not enabled'
 
-      it 'contains all the useful information' do
+      it 'contains all the useful information', :aggregate_failures do
         is_expected.to have_subject "Access to the #{group.name} group was granted"
         is_expected.to have_body_text group.name
         is_expected.to have_body_text group.web_url
+        is_expected.to have_body_text organization.name
+        is_expected.to have_body_text organization.web_url
         is_expected.to have_body_text group_member.human_access
         is_expected.to have_body_text 'leave the group'
         is_expected.to have_body_text group_url(group, leave: 1)
+      end
+
+      context 'when ui_for_organizations feature is disabled' do
+        before do
+          stub_feature_flags(ui_for_organizations: false)
+        end
+
+        it 'contains all the useful information', :aggregate_failures do
+          is_expected.to have_subject "Access to the #{group.name} group was granted"
+          is_expected.to have_body_text group.name
+          is_expected.to have_body_text group.web_url
+          is_expected.to have_body_text group_member.human_access
+          is_expected.to have_body_text 'leave the group'
+          is_expected.to have_body_text group_url(group, leave: 1)
+        end
       end
     end
 

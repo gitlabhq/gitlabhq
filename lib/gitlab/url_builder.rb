@@ -62,6 +62,8 @@ module Gitlab
           design_url(object, **options)
         when ::Packages::Package
           package_url(object, **options)
+        when ::Key
+          instance.user_settings_ssh_key_url(object)
         else
           raise NotImplementedError, "No URL builder defined for #{object.inspect}"
         end

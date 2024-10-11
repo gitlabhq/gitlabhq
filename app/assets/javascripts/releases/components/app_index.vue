@@ -8,13 +8,15 @@ import { setUrlParams, getParameterByName } from '~/lib/utils/url_utility';
 import { i18n, PAGE_SIZE, DEFAULT_SORT } from '~/releases/constants';
 import { convertAllReleasesGraphQLResponse } from '~/releases/util';
 import { popDeleteReleaseNotification } from '~/releases/release_notification_service';
-import getCiCatalogSettingsQuery from '~/ci/catalog/graphql/queries/get_ci_catalog_settings.query.graphql';
+
 import allReleasesQuery from '../graphql/queries/all_releases.query.graphql';
+
 import ReleaseBlock from './release_block.vue';
 import ReleaseSkeletonLoader from './release_skeleton_loader.vue';
 import ReleasesEmptyState from './releases_empty_state.vue';
 import ReleasesPagination from './releases_pagination.vue';
 import ReleasesSort from './releases_sort.vue';
+import CiCdCatalogWrapper from './ci_cd_catalog_wrapper.vue';
 
 export default {
   name: 'ReleasesIndexApp',
@@ -24,6 +26,7 @@ export default {
     alertInfoPublishLink: helpPagePath('ci/components/index', { anchor: 'publish-a-new-release' }),
   },
   components: {
+    CiCdCatalogWrapper,
     GlAlert,
     GlButton,
     GlLink,
@@ -96,21 +99,6 @@ export default {
         });
       },
     },
-    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
-    isCatalogResource: {
-      query: getCiCatalogSettingsQuery,
-      variables() {
-        return {
-          fullPath: this.projectPath,
-        };
-      },
-      update({ project }) {
-        return project?.isCatalogResource || false;
-      },
-      error() {
-        createAlert({ message: this.$options.i18n.catalogResourceQueryError });
-      },
-    },
   },
   data() {
     return {
@@ -173,11 +161,6 @@ export default {
     },
     atomFeedBtnTitle() {
       return this.$options.i18n.atomFeedBtnTitle;
-    },
-    releaseBtnTitle() {
-      return this.isCatalogResource
-        ? this.$options.i18n.catalogResourceReleaseBtnTitle
-        : this.$options.i18n.defaultReleaseBtnTitle;
     },
     releases() {
       if (this.isFullRequestLoaded) {
@@ -265,35 +248,44 @@ export default {
 
       this.sort = newSort;
     },
+    releaseBtnTitle(isCiCdCatalogProject) {
+      return isCiCdCatalogProject
+        ? this.$options.i18n.catalogResourceReleaseBtnTitle
+        : this.$options.i18n.defaultReleaseBtnTitle;
+    },
   },
 };
 </script>
 <template>
   <div class="gl-mt-3 gl-flex gl-flex-col">
-    <gl-alert
-      v-if="isCatalogResource"
-      :title="$options.i18n.alertTitle"
-      :dismissible="false"
-      variant="warning"
-      class="mb-3 mt-2"
-    >
-      <gl-sprintf :message="$options.i18n.alertInfoMessage">
-        <template #link="{ content }">
-          <gl-link
-            :href="$options.links.alertInfoMessageLink"
-            target="_blank"
-            class="gl-mr-2 !gl-no-underline"
-          >
-            <code class="gl-pr-0">
-              {{ content }}
-            </code>
+    <ci-cd-catalog-wrapper>
+      <template #default="{ isCiCdCatalogProject }">
+        <gl-alert
+          v-if="isCiCdCatalogProject"
+          :title="$options.i18n.alertTitle"
+          :dismissible="false"
+          variant="warning"
+          class="mb-3 mt-2"
+        >
+          <gl-sprintf :message="$options.i18n.alertInfoMessage">
+            <template #link="{ content }">
+              <gl-link
+                :href="$options.links.alertInfoMessageLink"
+                target="_blank"
+                class="gl-mr-2 !gl-no-underline"
+              >
+                <code class="gl-pr-0">
+                  {{ content }}
+                </code>
+              </gl-link>
+            </template>
+          </gl-sprintf>
+          <gl-link :href="$options.links.alertInfoPublishLink" target="_blank">
+            {{ $options.i18n.alertInfoPublishMessage }}
           </gl-link>
-        </template>
-      </gl-sprintf>
-      <gl-link :href="$options.links.alertInfoPublishLink" target="_blank">
-        {{ $options.i18n.alertInfoPublishMessage }}
-      </gl-link>
-    </gl-alert>
+        </gl-alert>
+      </template>
+    </ci-cd-catalog-wrapper>
     <releases-empty-state v-if="shouldRenderEmptyState" />
     <div v-else class="gl-flex gl-gap-3 gl-self-end">
       <releases-sort :value="sort" @input="onSortChanged" />
@@ -309,29 +301,33 @@ export default {
         :aria-label="atomFeedBtnTitle"
       />
 
-      <div
-        v-if="newReleasePath"
-        v-gl-tooltip.hover
-        :title="releaseBtnTitle"
-        data-testid="new-release-btn-tooltip"
-      >
-        <gl-button
-          :disabled="isCatalogResource"
-          :href="newReleasePath"
-          class="gl-ml-2"
-          category="primary"
-          variant="confirm"
-          >{{ $options.i18n.newRelease }}</gl-button
-        >
-      </div>
+      <ci-cd-catalog-wrapper>
+        <template #default="{ isCiCdCatalogProject }">
+          <div
+            v-if="newReleasePath"
+            v-gl-tooltip.hover
+            :title="releaseBtnTitle(isCiCdCatalogProject)"
+            data-testid="new-release-btn-tooltip"
+          >
+            <gl-button
+              :disabled="isCiCdCatalogProject"
+              :href="newReleasePath"
+              class="gl-ml-2"
+              category="primary"
+              variant="confirm"
+              >{{ $options.i18n.newRelease }}</gl-button
+            >
+          </div>
+        </template>
+      </ci-cd-catalog-wrapper>
     </div>
 
     <release-block
       v-for="(release, index) in releases"
       :key="getReleaseKey(release, index)"
+      :class="{ 'linked-card gl-relative': releases.length > 1 && index !== releases.length - 1 }"
       :release="release"
       :sort="sort"
-      :class="{ 'linked-card gl-relative': releases.length > 1 && index !== releases.length - 1 }"
     />
 
     <release-skeleton-loader v-if="shouldRenderLoadingIndicator" class="gl-mt-5" />

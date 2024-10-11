@@ -108,6 +108,12 @@ describe('Work Item Note', () => {
         autocompleteDataSources: {},
         assignees,
       },
+      stubs: {
+        TimelineEntryItem,
+      },
+      mocks: {
+        $route: {},
+      },
       apolloProvider: mockApollo([
         [workItemByIidQuery, workItemByIidResponseHandler],
         [updateWorkItemNoteMutation, updateNoteMutationHandler],
@@ -119,6 +125,7 @@ describe('Work Item Note', () => {
   describe('when editing', () => {
     beforeEach(() => {
       createComponent();
+
       findNoteActions().vm.$emit('startEditing');
       return nextTick();
     });

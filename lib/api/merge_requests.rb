@@ -92,6 +92,25 @@ module API
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
+      def render_merge_requests(merge_requests, options, skip_cache: false)
+        return present merge_requests, options if skip_cache
+
+        cache_context = ->(mr) do
+          [
+            current_user&.cache_key,
+            mr.merge_status,
+            mr.labels.map(&:cache_key),
+            mr.merge_request_assignees.map(&:cache_key),
+            mr.merge_request_reviewers.map(&:cache_key)
+          ].join(":")
+        end
+
+        present_cached merge_requests,
+          expires_in: 8.hours,
+          cache_context: cache_context,
+          **options
+      end
+
       def merge_request_pipelines_with_access
         mr = find_merge_request_with_access(params[:merge_request_iid])
         ::Ci::PipelinesForMergeRequestFinder.new(mr, current_user).execute
@@ -297,18 +316,11 @@ module API
 
         recheck_mergeability_of(merge_requests: merge_requests) unless options[:skip_merge_status_recheck]
 
-        present_cached merge_requests,
-          expires_in: 8.hours,
-          cache_context: ->(mr) do
-            [
-              current_user&.cache_key,
-              mr.merge_status,
-              mr.labels.map(&:cache_key),
-              mr.merge_request_assignees.map(&:cache_key),
-              mr.merge_request_reviewers.map(&:cache_key)
-            ].join(":")
-          end,
-          **options
+        skip_cache = [
+          declared_params[:with_labels_details] == true
+        ].any?
+
+        render_merge_requests(merge_requests, options, skip_cache: skip_cache)
       end
 
       desc 'Create merge request' do

@@ -19,6 +19,7 @@ import {
   TODO_TARGET_TYPE_DESIGN,
   TODO_TARGET_TYPE_ALERT,
   TODO_TARGET_TYPE_EPIC,
+  TODO_TARGET_TYPE_SSH_KEY,
   TODO_ACTION_TYPE_ASSIGNED,
   TODO_ACTION_TYPE_MENTIONED,
   TODO_ACTION_TYPE_BUILD_FAILED,
@@ -32,6 +33,7 @@ import {
   TODO_ACTION_TYPE_REVIEW_SUBMITTED,
   TODO_ACTION_TYPE_OKR_CHECKIN_REQUESTED,
   TODO_ACTION_TYPE_ADDED_APPROVER,
+  TODO_ACTION_TYPE_SSH_KEY_EXPIRED,
 } from '../constants';
 import GroupToken from './filtered_search_tokens/group_token.vue';
 import ProjectToken from './filtered_search_tokens/project_token.vue';
@@ -89,6 +91,12 @@ export const TARGET_TYPES = [
     id: 'Epic', // Note: This ID has no equivalent in `app/helpers/todos_helper.rb`.
     value: TODO_TARGET_TYPE_EPIC,
     title: s__('Todos|Epic'),
+  },
+  {
+    // eslint-disable-next-line @gitlab/require-i18n-strings
+    id: 'Key',
+    value: TODO_TARGET_TYPE_SSH_KEY,
+    title: s__('Todos|SSH key'),
   },
 ];
 
@@ -160,6 +168,11 @@ export const ACTION_TYPES = [
     id: '13',
     value: TODO_ACTION_TYPE_ADDED_APPROVER,
     title: s__('Todos|Added approver'),
+  },
+  {
+    id: '14',
+    value: TODO_ACTION_TYPE_SSH_KEY_EXPIRED,
+    title: s__('Todos|SSH key expired'),
   },
 ];
 

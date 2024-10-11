@@ -1,6 +1,6 @@
 - title = capture do
   = html_escape(_('This commit was signed with an %{strong_open}unverified%{strong_close} signature.')) % { strong_open: '<strong>'.html_safe, strong_close: '</strong>'.html_safe }
 
-- locals = { signature: signature, title: title, label: _('Unverified'), variant: 'muted', icon: 'status_notfound_borderless', show_user: true }
+- locals = { signature: signature, title: title, label: _('Unverified'), variant: 'muted', show_user: true }
 
 = render partial: 'projects/commit/signature_badge', locals: locals

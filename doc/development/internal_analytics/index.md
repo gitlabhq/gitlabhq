@@ -212,3 +212,9 @@ flowchart LR;
 
 GitLab only receives event counts or similarly aggregated information from self-managed instances. User identifiers for individual events on the SaaS version of GitLab are [pseudonymized](https://metrics.gitlab.com/identifiers/).
 An exact description on what kind of data is being collected through the Internal Analytics system is given in our [handbook](https://handbook.gitlab.com/handbook/legal/privacy/customer-product-usage-information/).
+
+## Contribution guidelines
+
+- [Instrumenting features with internal analytics](review_guidelines.md)
+- [Reviewing internal analytics contributions](review_guidelines.md#the-analytics-instrumentation-reviewer-should)
+- [Contributing to the Internal Events CLI](cli_contribution_guidelines.md)

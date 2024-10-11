@@ -31,8 +31,8 @@ describe('WorkItemDescriptionRendered', () => {
     canEdit = false,
     isGroup = false,
     workItemType = 'ISSUE',
-    mockComputed = {},
     withoutHeadingAnchors = false,
+    disableTruncation = false,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemDescriptionRendered, {
       propsData: {
@@ -42,10 +42,13 @@ describe('WorkItemDescriptionRendered', () => {
         isGroup,
         workItemType,
         withoutHeadingAnchors,
+        disableTruncation,
       },
-      computed: mockComputed,
       provide: {
         fullPath: 'full/path',
+      },
+      stubs: {
+        CreateWorkItemModal,
       },
     });
   };
@@ -66,17 +69,15 @@ describe('WorkItemDescriptionRendered', () => {
           description: 'This is a long description',
           descriptionHtml: '<p>This is a long description</p>',
         },
-        mockComputed: {
-          isTruncated() {
-            return true;
-          },
-        },
       });
+      const { element } = findDescription();
+      jest.spyOn(element, 'clientHeight', 'get').mockImplementation(() => 800);
     });
 
     it('shows the untruncate action', () => {
       expect(findReadMore().exists()).toBe(true);
     });
+
     it('tracks untruncate action', async () => {
       const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
 
