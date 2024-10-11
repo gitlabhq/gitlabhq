@@ -14,7 +14,8 @@ RSpec.describe ::Ci::CollectPipelineAnalyticsService, :click_house, :enable_admi
   let_it_be(:ending_time) { 1.week.after(Time.utc(2023)) }
 
   let(:project) { project1 }
-  let(:status_groups) { [:all] }
+  let(:status_groups) { [:any] }
+  let(:duration_percentiles) { [] }
   let(:from_time) { starting_time }
   let(:to_time) { ending_time }
 
@@ -24,7 +25,8 @@ RSpec.describe ::Ci::CollectPipelineAnalyticsService, :click_house, :enable_admi
       project: project,
       from_time: from_time,
       to_time: to_time,
-      status_groups: status_groups)
+      status_groups: status_groups,
+      duration_percentiles: duration_percentiles)
   end
 
   let(:pipelines) do
@@ -67,11 +69,13 @@ RSpec.describe ::Ci::CollectPipelineAnalyticsService, :click_house, :enable_admi
   shared_examples 'a service returning aggregate analytics' do
     using RSpec::Parameterized::TableSyntax
 
-    where(:status_groups, :expected_aggregate) do
-      %i[all]           | { all: 6 }
-      %i[all success]   | { all: 6, success: 1 }
-      %i[success other] | { success: 1, other: 2 }
-      %i[failed]        | { failed: 2 }
+    where(:status_groups, :duration_percentiles, :expected_aggregate) do
+      %i[any]           | []       | { count: { any: 6 } }
+      %i[any]           | [50, 75] | { count: { any: 6 }, duration_statistics: { p50: 30.minutes, p75: 2475.seconds } }
+      %i[any success]   | []       | { count: { any: 6, success: 1 } }
+      %i[success other] | []       | { count: { success: 1, other: 2 } }
+      %i[failed]        | [50,
+        75] | { count: { failed: 2 }, duration_statistics: { p50: 30.minutes, p75: 2475.seconds } }
     end
 
     with_them do
@@ -85,12 +89,15 @@ RSpec.describe ::Ci::CollectPipelineAnalyticsService, :click_house, :enable_admi
     context 'when dates are not specified' do
       let(:from_time) { nil }
       let(:to_time) { nil }
+      let(:duration_percentiles) { [50, 99] }
 
       context 'and there are pipelines in the last week', time_travel_to: '2023-01-08' do
         it 'returns aggregate analytics from last week' do
           expect(result.errors).to eq([])
           expect(result.success?).to eq(true)
-          expect(result.payload[:aggregate]).to eq({ all: 6 })
+          expect(result.payload[:aggregate]).to eq(
+            count: { any: 6 }, duration_statistics: { p50: 30.minutes, p99: 6975.seconds }
+          )
         end
       end
 
@@ -98,7 +105,7 @@ RSpec.describe ::Ci::CollectPipelineAnalyticsService, :click_house, :enable_admi
         it 'returns empty aggregate analytics' do
           expect(result.errors).to eq([])
           expect(result.success?).to eq(true)
-          expect(result.payload[:aggregate]).to eq({ all: 0 })
+          expect(result.payload[:aggregate]).to eq(count: { any: 0 }, duration_statistics: { p50: nil, p99: nil })
         end
       end
     end
@@ -110,7 +117,7 @@ RSpec.describe ::Ci::CollectPipelineAnalyticsService, :click_house, :enable_admi
       it 'does not include job starting 1 second before start of week' do
         expect(result.errors).to eq([])
         expect(result.success?).to eq(true)
-        expect(result.payload[:aggregate]).to eq({ all: 6 })
+        expect(result.payload[:aggregate]).to eq(count: { any: 6 })
       end
     end
 
@@ -121,7 +128,7 @@ RSpec.describe ::Ci::CollectPipelineAnalyticsService, :click_house, :enable_admi
       it 'includes job starting 1 second before start of week' do
         expect(result.errors).to eq([])
         expect(result.success?).to eq(true)
-        expect(result.payload[:aggregate]).to eq({ all: 7 })
+        expect(result.payload[:aggregate]).to eq(count: { any: 7 })
       end
     end
 
@@ -136,7 +143,7 @@ RSpec.describe ::Ci::CollectPipelineAnalyticsService, :click_house, :enable_admi
 
     context 'when a different project is specified' do
       let(:project) { project2 }
-      let(:status_groups) { %i[all success failed] }
+      let(:status_groups) { %i[any success failed] }
 
       before do
         insert_ci_pipelines_to_click_house([
@@ -147,7 +154,7 @@ RSpec.describe ::Ci::CollectPipelineAnalyticsService, :click_house, :enable_admi
       it 'returns aggregate analytics for specified project only' do
         expect(result.success?).to eq(true)
         expect(result.errors).to eq([])
-        expect(result.payload[:aggregate]).to eq({ all: 1, success: 0, failed: 1 })
+        expect(result.payload[:aggregate]).to eq(count: { any: 1, success: 0, failed: 1 })
       end
     end
   end

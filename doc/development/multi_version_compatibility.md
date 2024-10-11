@@ -77,7 +77,7 @@ This example is not exhaustive. GitLab can be deployed in many different ways. E
 
 ## How long must code be backwards-compatible?
 
-For users following [zero-downtime update instructions](../update/index.md#upgrading-without-downtime), the answer is one monthly release. For example:
+For users following [zero-downtime update instructions](../update/zero_downtime.md), the answer is one monthly release. For example:
 
 - 13.11 => 13.12
 - 13.12 => 14.0
@@ -85,7 +85,7 @@ For users following [zero-downtime update instructions](../update/index.md#upgra
 
 For GitLab.com, there can be multiple tiny version updates per day, so GitLab.com doesn't constrain how far changes must be backwards-compatible.
 
-Many users [skip some monthly releases](../update/index.md#upgrading-to-a-new-major-version), for example:
+Many users skip some monthly releases, for example:
 
 - 13.0 => 13.12
 
@@ -110,7 +110,7 @@ During an update, there will be [two different versions of GitLab running in dif
 
 ## Doesn't the order of update steps matter?
 
-Yes! We have specific instructions for [zero-downtime updates](../update/index.md#upgrading-without-downtime) because it allows us to ignore some permutations of compatibility. This is why we don't worry about Rails code making DB calls to an old PostgreSQL database schema.
+Yes! We have specific instructions for [zero-downtime updates](../update/zero_downtime.md) because it allows us to ignore some permutations of compatibility. This is why we don't worry about Rails code making DB calls to an old PostgreSQL database schema.
 
 ## You've identified a potential backwards compatibility problem, what can you do about it?
 

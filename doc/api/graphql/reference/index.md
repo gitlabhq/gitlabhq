@@ -19343,6 +19343,20 @@ CI/CD config variables.
 | <a id="ciconfigvariablevalue"></a>`value` | [`String`](#string) | Value of the variable. |
 | <a id="ciconfigvariablevalueoptions"></a>`valueOptions` | [`[String!]`](#string) | Value options for the variable. |
 
+### `CiDurationStatistics`
+
+Histogram of durations for a group of CI/CD jobs or pipelines.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cidurationstatisticsp50"></a>`p50` **{warning-solid}** | [`Duration`](#duration) | **Introduced** in GitLab 15.8. **Status**: Experiment. 50th percentile. 50% of the durations are lower than this value. |
+| <a id="cidurationstatisticsp75"></a>`p75` **{warning-solid}** | [`Duration`](#duration) | **Introduced** in GitLab 15.8. **Status**: Experiment. 75th percentile. 75% of the durations are lower than this value. |
+| <a id="cidurationstatisticsp90"></a>`p90` **{warning-solid}** | [`Duration`](#duration) | **Introduced** in GitLab 15.8. **Status**: Experiment. 90th percentile. 90% of the durations are lower than this value. |
+| <a id="cidurationstatisticsp95"></a>`p95` **{warning-solid}** | [`Duration`](#duration) | **Introduced** in GitLab 15.8. **Status**: Experiment. 95th percentile. 95% of the durations are lower than this value. |
+| <a id="cidurationstatisticsp99"></a>`p99` **{warning-solid}** | [`Duration`](#duration) | **Introduced** in GitLab 15.8. **Status**: Experiment. 99th percentile. 99% of the durations are lower than this value. |
+
 ### `CiFreezePeriod`
 
 Represents a deployment freeze window of a project.
@@ -19520,20 +19534,6 @@ Returns [`String!`](#string).
 | ---- | ---- | ----------- |
 | <a id="cijobtracehtmlsummarylastlines"></a>`lastLines` | [`Int`](#int) | Number of tail lines to return, up to a maximum of 100 lines. |
 
-### `CiJobsDurationStatistics`
-
-Representation of duration statistics for a group of CI jobs.
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="cijobsdurationstatisticsp50"></a>`p50` **{warning-solid}** | [`Duration`](#duration) | **Introduced** in GitLab 15.8. **Status**: Experiment. 50th percentile. 50% of the durations are lower than this value. |
-| <a id="cijobsdurationstatisticsp75"></a>`p75` **{warning-solid}** | [`Duration`](#duration) | **Introduced** in GitLab 15.8. **Status**: Experiment. 75th percentile. 75% of the durations are lower than this value. |
-| <a id="cijobsdurationstatisticsp90"></a>`p90` **{warning-solid}** | [`Duration`](#duration) | **Introduced** in GitLab 15.8. **Status**: Experiment. 90th percentile. 90% of the durations are lower than this value. |
-| <a id="cijobsdurationstatisticsp95"></a>`p95` **{warning-solid}** | [`Duration`](#duration) | **Introduced** in GitLab 15.8. **Status**: Experiment. 95th percentile. 95% of the durations are lower than this value. |
-| <a id="cijobsdurationstatisticsp99"></a>`p99` **{warning-solid}** | [`Duration`](#duration) | **Introduced** in GitLab 15.8. **Status**: Experiment. 99th percentile. 99% of the durations are lower than this value. |
-
 ### `CiJobsStatistics`
 
 Statistics for a group of CI jobs.
@@ -19542,7 +19542,7 @@ Statistics for a group of CI jobs.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="cijobsstatisticsqueuedduration"></a>`queuedDuration` | [`CiJobsDurationStatistics`](#cijobsdurationstatistics) | Statistics for amount of time that jobs were waiting to be picked up. The calculation is performed based on the most recent 100 jobs executed by the 5000 most recently created runners in context. If no filter is applied to runners, the calculation is performed based on the most recent 100 jobs globally. |
+| <a id="cijobsstatisticsqueuedduration"></a>`queuedDuration` | [`CiDurationStatistics`](#cidurationstatistics) | Statistics for the amount of time that jobs were waiting to be picked up. The calculation is based on the 100 most recent jobs run by the 5000 most recently created runners in context. If no filter is applied to runners, the calculation uses the 100 most recent jobs globally. |
 
 ### `CiManualVariable`
 
@@ -29598,6 +29598,7 @@ Returns [`TestSuite`](#testsuite).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="pipelineanalyticsperioddurationstatistics"></a>`durationStatistics` **{warning-solid}** | [`CiDurationStatistics`](#cidurationstatistics) | **Introduced** in GitLab 17.5. **Status**: Experiment. Pipeline duration statistics. |
 | <a id="pipelineanalyticsperiodlabel"></a>`label` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.5. **Status**: Experiment. Label for the data point. |
 
 #### Fields with arguments
@@ -29616,7 +29617,7 @@ Returns [`BigInt`](#bigint).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="pipelineanalyticsperiodcountstatus"></a>`status` | [`PipelineAnalyticsJobStatus`](#pipelineanalyticsjobstatus) | Filter totals by status. If not provided, the totals for all pipelines are returned. |
+| <a id="pipelineanalyticsperiodcountstatus"></a>`status` | [`PipelineAnalyticsJobStatus!`](#pipelineanalyticsjobstatus) | Filter pipeline totals by status. If not specified, totals for all pipeline statuses are returned. |
 
 ### `PipelineArtifactRegistry`
 
@@ -38613,6 +38614,7 @@ Package type of a package protection rule resource.
 
 | Value | Description |
 | ----- | ----------- |
+| <a id="pipelineanalyticsjobstatusany"></a>`ANY` | Jobs with any status. |
 | <a id="pipelineanalyticsjobstatusfailed"></a>`FAILED` | Job that failed. |
 | <a id="pipelineanalyticsjobstatusother"></a>`OTHER` | Job that was canceled or skipped. |
 | <a id="pipelineanalyticsjobstatussuccess"></a>`SUCCESS` | Job that succeeded. |

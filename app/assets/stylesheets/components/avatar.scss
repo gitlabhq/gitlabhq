@@ -201,7 +201,7 @@ $avatar-sizes: (
   // stylelint-disable-next-line gitlab/no-gl-class
   .gl-avatar-labeled-label,
   .gl-avatar-labeled-sublabel {
-    @include gl-text-truncate;
+    @apply gl-truncate;
   }
 
   &.user-popover-cannot-merge {

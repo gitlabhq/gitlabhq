@@ -80,7 +80,7 @@ must disable the **primary** site.
 
 Note the following when promoting a secondary:
 
-- If the secondary site [has been paused](../../geo/index.md#pausing-and-resuming-replication), the promotion
+- If the secondary site [has been paused](../replication/pause_resume_replication.md), the promotion
   performs a point-in-time recovery to the last known state.
   Data that was created on the primary while the secondary was paused is lost.
 - A new **secondary** should not be added at this time. If you want to add a new
@@ -313,7 +313,7 @@ changing Git remotes and API URLs.
 Promoting a **secondary** site to **primary** site using the process above does not enable
 Geo on the new **primary** site.
 
-To bring a new **secondary** site online, follow the [Geo setup instructions](../index.md#setup-instructions).
+To bring a new **secondary** site online, follow the [Geo setup instructions](../setup/index.md).
 
 ### Step 6. Removing the former secondary's tracking database
 

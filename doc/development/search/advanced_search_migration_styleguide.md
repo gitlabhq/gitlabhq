@@ -442,7 +442,7 @@ safely can.
 
 We choose to use GitLab [required stops](../database/required_stops.md) as a safe time to remove
 backwards compatibility for indices that have not been fully migrated. We
-[document this in our upgrade documentation](../../update/index.md#upgrading-to-a-new-major-version).
+[document this in our upgrade documentation](../../update/plan_your_upgrade.md).
 
 [GitLab Housekeeper](https://gitlab.com/gitlab-org/gitlab/-/blob/master/gems/gitlab-housekeeper/README.md)
 is used to automate the cleanup process. This process includes

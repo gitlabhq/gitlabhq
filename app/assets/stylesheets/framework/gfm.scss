@@ -4,7 +4,7 @@
 
 .gfm-commit,
 .gfm-commit_range {
-  @include gl-font-monospace;
+  @apply gl-font-monospace;
   font-size: 95%;
 }
 

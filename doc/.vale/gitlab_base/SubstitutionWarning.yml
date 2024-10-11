@@ -53,6 +53,7 @@ swap:
   OAuth2: "OAuth 2.0"
   omnibus gitlab: "Linux package"
   'omnibus(?!\))': "Linux package"
+  once a: "after a"
   once that: "after that"
   once the: "after the"
   once you: "after you"

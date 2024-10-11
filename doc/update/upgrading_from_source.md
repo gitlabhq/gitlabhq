@@ -397,10 +397,11 @@ If all items are green, then congratulations, the upgrade is complete!
 
 ## Version specific changes
 
-Upgrading versions might need some manual intervention. For more information,
-[check the version you are upgrading to](index.md#version-specific-upgrading-instructions)
-for additional steps required for all GitLab installations, and for
-steps that apply to self-compiled installations.
+Upgrading versions might need some manual intervention. For more information, see:
+
+- [GitLab 17 changes](versions/gitlab_17_changes.md)
+- [GitLab 16 changes](versions/gitlab_16_changes.md)
+- [GitLab 15 changes](versions/gitlab_15_changes.md)
 
 ## Troubleshooting
 

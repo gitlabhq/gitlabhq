@@ -545,7 +545,8 @@ lib/gitlab/checks/**
 /doc/administration/auth/ @jglassman1
 /doc/administration/backup_restore/ @axil
 /doc/administration/broadcast_messages.md @sselhorn
-/doc/administration/cicd.md @lyspin
+/doc/administration/cicd/ @lyspin
+/doc/administration/cicd/job_logs.md @rsarangadharan
 /doc/administration/clusters/ @phillipwells
 /doc/administration/compliance.md @eread
 /doc/administration/configure.md @axil
@@ -559,7 +560,6 @@ lib/gitlab/checks/**
 /doc/administration/docs_self_host.md @axil
 /doc/administration/encrypted_configuration.md @axil
 /doc/administration/environment_variables.md @axil
-/doc/administration/external_pipeline_validation.md @lyspin
 /doc/administration/external_users.md @jglassman1
 /doc/administration/feature_flags.md @axil
 /doc/administration/file_hooks.md @ashrafkhamis
@@ -582,9 +582,6 @@ lib/gitlab/checks/**
 /doc/administration/internal_users.md @eread
 /doc/administration/invalidate_markdown_cache.md @msedlakjakubowski
 /doc/administration/issue_closing_pattern.md @aqualls
-/doc/administration/job_artifacts.md @lyspin
-/doc/administration/job_artifacts_troubleshooting.md @lyspin
-/doc/administration/job_logs.md @rsarangadharan
 /doc/administration/labels.md @msedlakjakubowski
 /doc/administration/lfs/ @brendan777
 /doc/administration/libravatar.md @axil
@@ -592,13 +589,16 @@ lib/gitlab/checks/**
 /doc/administration/license_file.md @fneill
 /doc/administration/load_balancer.md @axil
 /doc/administration/logs/ @axil
+/doc/administration/logs/index.md @lciutacu
 /doc/administration/maintenance_mode/ @axil
 /doc/administration/merge_request_diffs.md @brendan777
 /doc/administration/merge_requests_approvals.md @brendan777
 /doc/administration/moderate_users.md @jglassman1
 /doc/administration/monitoring/github_imports.md @ashrafkhamis
+/doc/administration/monitoring/index.md @lciutacu
 /doc/administration/monitoring/ip_allowlist.md @jglassman1
 /doc/administration/monitoring/performance/ @jglassman1
+/doc/administration/monitoring/performance/grafana_configuration.md @lciutacu
 /doc/administration/monitoring/prometheus/gitlab_exporter.md @jglassman1
 /doc/administration/monitoring/prometheus/index.md @axil
 /doc/administration/monitoring/prometheus/registry_exporter.md @phillipwells
@@ -622,6 +622,7 @@ lib/gitlab/checks/**
 /doc/administration/read_only_gitlab.md @axil
 /doc/administration/redis/ @axil
 /doc/administration/reference_architectures/ @axil
+/doc/administration/reply_by_email.md @lciutacu
 /doc/administration/reply_by_email_postfix_setup.md @axil
 /doc/administration/reporting/ @axil
 /doc/administration/repository_checks.md @eread
@@ -640,6 +641,7 @@ lib/gitlab/checks/**
 /doc/administration/settings/gitaly_timeouts.md @eread
 /doc/administration/settings/import_and_export_settings.md @ashrafkhamis
 /doc/administration/settings/import_export_rate_limits.md @ashrafkhamis
+/doc/administration/settings/incident_management_rate_limits.md @lciutacu
 /doc/administration/settings/instance_template_repository.md @brendan777
 /doc/administration/settings/jira_cloud_app.md @ashrafkhamis
 /doc/administration/settings/jira_cloud_app_troubleshooting.md @ashrafkhamis
@@ -678,6 +680,7 @@ lib/gitlab/checks/**
 /doc/api/access_requests.md @jglassman1
 /doc/api/admin/ @jglassman1
 /doc/api/admin_sidekiq_queues.md @axil
+/doc/api/alert_management_alerts.md @lciutacu
 /doc/api/api_resources.md @ashrafkhamis
 /doc/api/appearance.md @jglassman1
 /doc/api/applications.md @jglassman1
@@ -804,10 +807,12 @@ lib/gitlab/checks/**
 /doc/api/project_level_variables.md @marcel.amirault
 /doc/api/project_markdown_uploads.md @msedlakjakubowski
 /doc/api/project_packages_protection_rules.md @phillipwells
+/doc/api/project_pull_mirroring.md @brendan777
 /doc/api/project_push_rules.md @brendan777
 /doc/api/project_relations_export.md @ashrafkhamis
 /doc/api/project_repository_storage_moves.md @eread
 /doc/api/project_snippets.md @brendan777
+/doc/api/project_starring.md @lciutacu
 /doc/api/project_statistics.md @brendan777
 /doc/api/project_templates.md @brendan777
 /doc/api/project_vulnerabilities.md @rdickenson
@@ -922,8 +927,9 @@ lib/gitlab/checks/**
 /doc/development/cicd/ @gitlab-org/maintainers/cicd-verify
 /doc/development/contributing/verify/ @gitlab-org/maintainers/cicd-verify
 /doc/development/database/ @abdwdd @alexpooley @manojmj
+/doc/development/distributed_tracing.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/development/distribution/ @gitlab-org/distribution
-/doc/development/documentation/ @sselhorn
+/doc/development/documentation/ @fneill
 /doc/development/duo_workflow/ @gitlab-org/ai-powered
 /doc/development/fe_guide/customizable_dashboards.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/development/fe_guide/keyboard_shortcuts.md @gitlab-org/foundations/engineering
@@ -932,6 +938,7 @@ lib/gitlab/checks/**
 /doc/development/gitpod_internals.md @gl-quality/eng-prod
 /doc/development/image_scaling.md @abdwdd @alexpooley @manojmj
 /doc/development/internal_analytics/ @gitlab-org/analytics-section/product-analytics/engineers/frontend @gitlab-org/analytics-section/analytics-instrumentation/engineers
+/doc/development/logging.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/development/navigation_sidebar.md @gitlab-org/foundations/engineering
 /doc/development/observability/ @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/development/omnibus.md @gitlab-org/distribution
@@ -940,6 +947,7 @@ lib/gitlab/checks/**
 /doc/development/permissions/ @rlehmann1
 /doc/development/pipelines/ @gl-quality/eng-prod
 /doc/development/policies.md @gitlab-org/govern/authentication/approvers
+/doc/development/prometheus_metrics.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/development/search/ @gitlab-org/search-team/migration-maintainers
 /doc/development/sec/ @gitlab-org/govern/threat-insights-frontend-team
 /doc/development/sec/gemnasium_analyzer_data.md @gitlab-org/secure/composition-analysis-be @gitlab-org/secure/static-analysis
@@ -949,6 +957,7 @@ lib/gitlab/checks/**
 /doc/drawers/ @ashrafkhamis
 /doc/editor_extensions/ @aqualls
 /doc/install/ @axil
+/doc/install/install_ai_gateway.md @sselhorn @jglassman1 @fneill
 /doc/integration/ @jglassman1
 /doc/integration/advanced_search/ @ashrafkhamis
 /doc/integration/datadog.md @rsarangadharan
@@ -981,6 +990,7 @@ lib/gitlab/checks/**
 /doc/topics/autodevops/ @phillipwells
 /doc/topics/git/ @brendan777
 /doc/topics/offline/ @axil
+/doc/topics/runner_fleet_design_guides/ @rsarangadharan
 /doc/tutorials/ @kpaizee
 /doc/tutorials/boards_for_teams/ @msedlakjakubowski
 /doc/tutorials/compliance_pipeline/ @eread
@@ -1041,6 +1051,7 @@ lib/gitlab/checks/**
 /doc/user/group/compliance_frameworks.md @eread
 /doc/user/group/compliance_pipelines.md @eread
 /doc/user/group/contribution_analytics/ @lciutacu
+/doc/user/group/credentials_inventory.md @jglassman1
 /doc/user/group/custom_project_templates.md @brendan777
 /doc/user/group/devops_adoption/ @lciutacu
 /doc/user/group/epics/ @msedlakjakubowski
@@ -1069,7 +1080,6 @@ lib/gitlab/checks/**
 /doc/user/packages/container_registry/ @marcel.amirault
 /doc/user/packages/dependency_proxy/ @marcel.amirault
 /doc/user/packages/harbor_container_registry/ @marcel.amirault
-/doc/user/product_analytics/ @lciutacu
 /doc/user/profile/account/ @jglassman1
 /doc/user/profile/achievements.md @lciutacu
 /doc/user/profile/comment_templates.md @aqualls

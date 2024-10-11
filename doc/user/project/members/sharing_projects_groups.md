@@ -106,6 +106,7 @@ For a project that was created by `Group 1`:
 
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/219230) to display invited group members on the Members tab of the Members page in GitLab 16.10 [with a flag](../../../administration/feature_flags.md) named `webui_members_inherited_users`. Disabled by default.
 > - Feature flag `webui_members_inherited_users` [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/219230) in GitLab 17.0.
+> - Access expiration date for direct members of subgroups and projects [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/471051) in GitLab 17.4.
 
 FLAG:
 On self-managed GitLab, by default this feature is available. To hide the feature per user, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `webui_members_inherited_users`.
@@ -215,6 +216,8 @@ This behavior is intended to help group Owners to better manage the memberships 
 `User B` is an inherited member of `Group 1`. This user doesn't get access to `Group 2` when `Group 1` is invited.
 
 ### Invite a group to a group
+
+> - Access expiration date for direct members of subgroups and projects [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/471051) in GitLab 17.4.
 
 Similar to how you invite a group to a project, you can invite a group to another group.
 

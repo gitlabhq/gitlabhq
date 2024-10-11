@@ -19,7 +19,10 @@ describe('GlobalSearch MergeRequestsFilters', () => {
     hasMissingProjectContext: () => true,
   };
 
-  const createComponent = (initialState = {}) => {
+  const createComponent = (
+    initialState = {},
+    provide = { glFeatures: { searchMrFilterSourceBranch: true } },
+  ) => {
     const store = new Vuex.Store({
       state: {
         urlQuery: MOCK_QUERY,
@@ -34,6 +37,7 @@ describe('GlobalSearch MergeRequestsFilters', () => {
 
     wrapper = shallowMount(MergeRequestsFilters, {
       store,
+      provide,
     });
   };
 
@@ -76,6 +80,27 @@ describe('GlobalSearch MergeRequestsFilters', () => {
       expect(findSourceBranchFilter().exists()).toBe(true);
     });
   });
+
+  describe.each([true, false])(
+    'When feature flag search_mr_filter_source_branch is',
+    (searchMrFilterSourceBranch) => {
+      beforeEach(() => {
+        createComponent(null, { glFeatures: { searchMrFilterSourceBranch } });
+      });
+
+      it('renders StatusFilter', () => {
+        expect(findStatusFilter().exists()).toBe(true);
+      });
+
+      it('renders ArchivedFilter', () => {
+        expect(findArchivedFilter().exists()).toBe(true);
+      });
+
+      it('renders sourceBranchFilter', () => {
+        expect(findSourceBranchFilter().exists()).toBe(searchMrFilterSourceBranch);
+      });
+    },
+  );
 
   describe('hasMissingProjectContext getter', () => {
     beforeEach(() => {

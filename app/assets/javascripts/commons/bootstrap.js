@@ -1,8 +1,8 @@
 import $ from 'jquery';
 
 // bootstrap jQuery plugins
-import 'bootstrap/js/dist/dropdown';
-import 'bootstrap/js/dist/tab';
+import 'vendor/bootstrap/js/src/dropdown';
+import 'vendor/bootstrap/js/src/tab';
 
 // custom jQuery functions
 $.fn.extend({

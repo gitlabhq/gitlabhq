@@ -2,7 +2,7 @@
 @import 'framework/variables_overrides';
 
 @import '@gitlab/ui/src/scss/variables';
-@import '@gitlab/ui/src/scss/utility-mixins/index';
+@import '@gitlab/ui/src/scss/mixins';
 
 @media print {
   .md h1,

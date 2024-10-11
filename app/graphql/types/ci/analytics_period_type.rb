@@ -15,12 +15,18 @@ module Types
         description: 'Pipeline count, optionally filtered by status.' do
           argument :status,
             type: ::Types::Ci::AnalyticsJobStatusEnum,
-            required: false,
-            description: 'Filter totals by status. If not provided, the totals for all pipelines are returned.'
+            required: true,
+            default_value: :any,
+            description: 'Filter pipeline totals by status. ' \
+              'If not specified, totals for all pipeline statuses are returned.'
         end
 
-      def count(status: :all)
-        object.fetch(status, 0)
+      field :duration_statistics, ::Types::Ci::DurationStatisticsType, null: true,
+        description: 'Pipeline duration statistics.',
+        alpha: { milestone: '17.5' }
+
+      def count(status:)
+        object[:count].fetch(status, 0)
       end
     end
     # rubocop: enable Graphql/AuthorizeTypes

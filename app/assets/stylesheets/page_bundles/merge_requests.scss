@@ -169,7 +169,7 @@
     grid-template-columns: 1fr 1fr;
 
     .content + .content {
-      @include gl-border-t;
+      @apply gl-border-t;
     }
 
     .notes-content {
@@ -556,7 +556,7 @@
   }
 
   .label-branch {
-    @include gl-font-monospace;
+    @apply gl-font-monospace;
     overflow: hidden;
     word-break: break-all;
   }

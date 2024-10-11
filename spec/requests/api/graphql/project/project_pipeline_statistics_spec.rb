@@ -113,6 +113,28 @@ RSpec.describe 'rendering project pipeline statistics', :aggregate_failures, :cl
           'other' => '0'
         })
       end
+
+      context 'when requesting only full count' do
+        let(:period_fields) { 'all: count' }
+
+        it "contains expected data for the last week" do
+          perform_request
+
+          expect_graphql_errors_to_be_empty
+          expect(aggregate).to eq('all' => '4')
+        end
+      end
+
+      context 'when requesting only a specific status count' do
+        let(:period_fields) { 'failed: count(status: FAILED)' }
+
+        it "contains expected data for the last week" do
+          perform_request
+
+          expect_graphql_errors_to_be_empty
+          expect(aggregate).to eq('failed' => '2')
+        end
+      end
     end
 
     context 'when time window is specified' do
@@ -187,6 +209,62 @@ RSpec.describe 'rendering project pipeline statistics', :aggregate_failures, :cl
             })
           end
         end
+      end
+    end
+
+    describe 'durationStatistics' do
+      let(:fields) do
+        <<~QUERY
+          aggregate {
+            durationStatistics {
+              p50
+              p75
+              p90
+              p95
+              p99
+            }
+          }
+        QUERY
+      end
+
+      subject(:perform_request) do
+        post_graphql(query, current_user: user)
+
+        graphql_data_at(:project, :pipelineAnalytics, :aggregate, :durationStatistics)
+      end
+
+      it_behaves_like 'a working graphql query' do
+        before do
+          perform_request
+        end
+      end
+
+      context 'with no pipelines in time window', time_travel_to: Time.utc(2024, 1, 1) do
+        let(:expected_duration_statistics) do
+          {
+            'p50' => nil,
+            'p75' => nil,
+            'p90' => nil,
+            'p95' => nil,
+            'p99' => nil
+          }
+        end
+
+        it { is_expected.to eq(expected_duration_statistics) }
+      end
+
+      context 'with completed pipelines', time_travel_to: Time.utc(2024, 5, 11) do
+        let(:expected_duration_statistics) do
+          {
+            'p50' => 2250.0,
+            'p75' => 3825.0,
+            'p90' => 5850.0,
+            'p95' => 6525.0,
+            'p99' => 7065.0
+          }
+        end
+
+        it { is_expected.to eq(expected_duration_statistics) }
       end
     end
   end

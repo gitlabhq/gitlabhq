@@ -60,6 +60,12 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
           Arel::Nodes::NamedFunction.new('countMerge', [@query_builder.table[:count_pipelines]])
         end
 
+        def duration_quantile_function(quantile)
+          Arel::Nodes::NamedFunction
+            .new("quantileMerge(#{quantile / 100.0})", [@query_builder.table[:duration_quantile]])
+            .as("p#{quantile}")
+        end
+
         private
 
         def format_time(date)

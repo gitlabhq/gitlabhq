@@ -16,7 +16,9 @@ a warm-standby as part of a disaster recovery strategy.
 WARNING:
 Geo undergoes significant changes from release to release. Upgrades are
 supported and [documented](#upgrading-geo), but you should ensure that you're
-using the right version of the documentation for your installation.
+using the right version of the documentation for your installation. 
+
+To make sure you're using the right version of the documentation, go to [the Geo page on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/administration/geo/index.md) and choose the appropriate release from the **Switch branch/tag** dropdown list. For example, [`v15.7.6-ee`](https://gitlab.com/gitlab-org/gitlab/-/blob/v15.7.6-ee/doc/administration/geo/index.md).
 
 Fetching large repositories can take a long time for teams and runners located far from a single GitLab instance.
 
@@ -24,8 +26,6 @@ Geo provides local caches that can be placed geographically close to remote team
 to clone and fetch large repositories, speeding up development and increasing the productivity of your remote teams.
 
 Geo secondary sites transparently proxy write requests to the primary site. All Geo sites can be configured to respond to a single GitLab URL, to deliver a consistent, seamless, and comprehensive experience whichever site the user lands on.
-
-To make sure you're using the right version of the documentation, go to [the Geo page on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/administration/geo/index.md) and choose the appropriate release from the **Switch branch/tag** dropdown list. For example, [`v15.7.6-ee`](https://gitlab.com/gitlab-org/gitlab/-/blob/v15.7.6-ee/doc/administration/geo/index.md).
 
 Geo uses a set of defined terms that are described in the [Geo Glossary](glossary.md).
 Be sure to familiarize yourself with those terms.
@@ -116,7 +116,7 @@ A **secondary** site needs two different PostgreSQL databases:
 - A read-only database instance that streams data from the main GitLab database.
 - A [read/write database instance(tracking database)](#geo-tracking-database) used internally by the **secondary** site to record what data has been replicated.
 
-In **secondary** sites, there is an additional daemon: [Geo Log Cursor](#geo-log-cursor).
+The **secondary** sites also run an additional daemon: [Geo Log Cursor](#geo-log-cursor).
 
 ## Requirements for running Geo
 
@@ -132,7 +132,7 @@ The following are required to run Geo:
   **must** [check OS locale data compatibility](replication/troubleshooting/common.md#check-os-locale-data-compatibility)
   across Geo sites to avoid silent corruption of database indexes.
 - [Supported PostgreSQL versions](https://handbook.gitlab.com/handbook/engineering/infrastructure/core-platform/data_stores/database/postgresql-upgrade-cadence/) for your GitLab releases with [Streaming Replication](https://wiki.postgresql.org/wiki/Streaming_Replication).
-  - [PostgreSQL Logical replication](https://www.postgresql.org/docs/current/logical-replication.html) is not supported.
+  - [PostgreSQL Logical replication](https://www.postgresql.org/docs/current/logical-replication.html) is not supported. 
 - All sites must run [the same PostgreSQL versions](setup/database.md#postgresql-replication).
 - Git 2.9 or later
 - Git-lfs 2.4.2 or later on the user side when using LFS
@@ -235,70 +235,17 @@ This list of limitations only reflects the latest version of GitLab. If you are 
 There is a complete list of all GitLab [data types](replication/datatypes.md) and
 [replicated data types](replication/datatypes.md#replicated-data-types).
 
-## Setup instructions
-
-For setup instructions, see [Setting up Geo](setup/index.md).
-
 ## Post-installation documentation
 
 After installing GitLab on the **secondary** sites and performing the initial configuration, see the following documentation for post-installation information.
 
-### Configuring Geo
+### Setting up Geo
 
-For information on configuring Geo, see [Geo configuration](replication/configuration.md).
-
-### Upgrading Geo
-
-For information on how to update your Geo sites to the latest GitLab version, see [Upgrading the Geo sites](replication/upgrading_the_geo_sites.md).
-
-### Pausing and resuming replication
-
-WARNING:
-Pausing and resuming of replication is only supported for Geo installations using a
-Linux package-managed database. External databases are not supported.
-
-In some circumstances, like during [upgrades](replication/upgrading_the_geo_sites.md) or a
-[planned failover](disaster_recovery/planned_failover.md), it is desirable to pause replication between the primary and secondary.
-
-If you plan to allow user activity on your secondary sites during the upgrade,
-do not pause replication for a [zero-downtime upgrade](../../update/zero_downtime.md). While paused, the secondary site gets more and more out-of-date.
-One known effect is that more and more Git fetches get redirected or proxied to the primary site. There may be additional unknown effects.
-
-Pausing and resuming replication is done through a command-line tool from a specific node in the secondary site. Depending on your database architecture,
-this will target either the `postgresql` or `patroni` service:
-
-- If you are using a single node for all services on your secondary site, you must run the commands on this single node.
-- If you have a standalone PostgreSQL node on your secondary site, you must run the commands on this standalone PostgreSQL node.
-- If your secondary site is using a Patroni cluster, you must run these commands on the secondary Patroni standby leader node.
-
-If you aren't using a single node for all services on your secondary site, ensure that the `/etc/gitlab/gitlab.rb` on your PostgreSQL or Patroni nodes
-contains the configuration line `gitlab_rails['geo_node_name'] = 'node_name'`, where `node_name` is the same as the `geo_node_name` on the application node.
-
-**To Pause: (from secondary site)**
-
-Also, be aware that if PostgreSQL is restarted after pausing replication (either by restarting the VM or restarting the service with `gitlab-ctl restart postgresql`), PostgreSQL automatically resumes replication, which is something you wouldn't want during an upgrade or in a planned failover scenario.
-
-```shell
-gitlab-ctl geo-replication-pause
-```
-
-**To Resume: (from secondary site)**
-
-```shell
-gitlab-ctl geo-replication-resume
-```
-
-### Configuring Geo for multiple nodes
-
-For information on configuring Geo for multiple nodes, see [Geo for multiple servers](replication/multiple_servers.md).
+For information on configuring Geo, see [Set up Geo](setup/index.md).
 
 ### Configuring Geo with Object Storage
 
 For information on configuring Geo with Object storage, see [Geo with Object storage](replication/object_storage.md).
-
-### Disaster Recovery
-
-For information on using Geo in disaster recovery situations to mitigate data-loss and restore services, see [Disaster Recovery](disaster_recovery/index.md).
 
 ### Replicating the container registry
 
@@ -316,13 +263,13 @@ For more information on configuring Single Sign-On (SSO), see [Geo with Single S
 
 For more information on configuring LDAP, see [Geo with Single Sign-On (SSO) > LDAP](replication/single_sign_on.md#ldap).
 
-### Security Review
-
-For more information on Geo security, see [Geo security review](replication/security_review.md).
-
 ### Tuning Geo
 
 For more information on tuning Geo, see [Tuning Geo](replication/tuning.md).
+
+### Pausing and resuming replication
+
+For more information, see [Pausing and resuming replication](replication/pause_resume_replication.md).
 
 ### Backfill
 
@@ -339,6 +286,14 @@ of the backfill.
 - In addition to our standard best practices for deploying a [fleet of runners](https://docs.gitlab.com/runner/fleet_scaling/index.html), runners can also be configured to connect to Geo secondaries to spread out job load. See how to [register runners against secondaries](secondary_proxy/runners.md).
 - See also how to handle [Disaster Recovery with runners](disaster_recovery/planned_failover.md#runner-failover).
 
+### Upgrading Geo
+
+For information on how to update your Geo sites to the latest GitLab version, see [Upgrading the Geo sites](replication/upgrading_the_geo_sites.md).
+
+### Security Review
+
+For more information on Geo security, see [Geo security review](replication/security_review.md).
+
 ## Remove Geo site
 
 For more information on removing a Geo site, see [Removing **secondary** Geo sites](replication/remove_geo_site.md).
@@ -347,16 +302,22 @@ For more information on removing a Geo site, see [Removing **secondary** Geo sit
 
 To find out how to disable Geo, see [Disabling Geo](replication/disable_geo.md).
 
-## Frequently Asked Questions
-
-For answers to common questions, see the [Geo FAQ](replication/faq.md).
-
 ## Log files
 
 Geo stores structured log messages in a `geo.log` file.
 
 For more information on how to access and consume Geo logs, see the [Geo section in the log system documentation](../logs/index.md#geolog).
 
+## Disaster Recovery
+
+For information on using Geo in disaster recovery situations to mitigate data-loss and restore services, see [Disaster Recovery](disaster_recovery/index.md).
+
+## Frequently Asked Questions
+
+For answers to common questions, see the [Geo FAQ](replication/faq.md).
+
 ## Troubleshooting
 
-For troubleshooting steps, see [Geo Troubleshooting](replication/troubleshooting/index.md).
+- For Geo troubleshooting steps, see [Geo Troubleshooting](replication/troubleshooting/index.md).
+
+- For Disaster Recovery troubleshooting steps, see [Troubleshooting Geo failover](disaster_recovery/failover_troubleshooting.md).

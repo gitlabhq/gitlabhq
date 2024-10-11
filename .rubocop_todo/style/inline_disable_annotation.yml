@@ -1199,7 +1199,6 @@ Style/InlineDisableAnnotation:
     - 'ee/app/graphql/types/ci/code_coverage_activity_type.rb'
     - 'ee/app/graphql/types/ci/code_coverage_summary_type.rb'
     - 'ee/app/graphql/types/ci/code_quality_degradation_type.rb'
-    - 'ee/app/graphql/types/ci/jobs_duration_statistics_type.rb'
     - 'ee/app/graphql/types/ci/jobs_statistics_type.rb'
     - 'ee/app/graphql/types/ci/minutes/namespace_monthly_usage_type.rb'
     - 'ee/app/graphql/types/ci/minutes/project_monthly_usage_type.rb'

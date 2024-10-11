@@ -115,7 +115,7 @@ you can use any configured agent in `top-group` and in any of its subgroups.
 
 NOTE:
 If a setting has an invalid value, it's not possible to update any setting until you fix that value.
-Updating any of these settings (except `enabled`) does not affect existing workspaces
+Updating any of these settings (except `enabled`) does not affect existing workspaces.
 
 ### `enabled`
 
@@ -294,6 +294,9 @@ You cannot create new workspaces for an agent when:
 - The number of workspaces for the agent has reached the defined `workspaces_quota`.
 - `workspaces_quota` is set to `0`.
 
+If `workspaces_quota` is set to a value below the number of non-terminated workspaces
+for an agent, the agent's workspaces are not terminated automatically.
+
 The default value is `-1` (unlimited).
 Possible values are greater than or equal to `-1`.
 
@@ -315,8 +318,8 @@ You cannot create new workspaces for a user when:
 - The number of workspaces for the user has reached the defined `workspaces_per_user_quota`.
 - `workspaces_per_user_quota` is set to `0`.
 
-If `workspaces_per_user_quota` is set to a value below the number of existing workspaces for a user,
-the user's workspaces are not terminated automatically.
+If `workspaces_per_user_quota` is set to a value below the number of non-terminated workspaces
+for a user, the user's workspaces are not terminated automatically.
 
 The default value is `-1` (unlimited).
 Possible values are greater than or equal to `-1`.

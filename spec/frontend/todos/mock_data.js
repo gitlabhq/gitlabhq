@@ -185,3 +185,39 @@ export const todosAuthorsResponse = [
     path: '/delorse',
   },
 ];
+
+export const todosMarkAllAsDoneResponse = {
+  data: {
+    markAllAsDone: {
+      todos: todosResponse.data.currentUser.todos.nodes,
+      errors: [],
+    },
+  },
+};
+
+export const todosMarkAllAsDoneErrorResponse = {
+  data: {
+    markAllAsDone: {
+      todos: null,
+      errors: ['Boom'],
+    },
+  },
+};
+
+export const todosUndoMarkAllAsDoneResponse = {
+  data: {
+    undoMarkAllAsDone: {
+      todos: todosResponse.data.currentUser.todos.nodes,
+      errors: [],
+    },
+  },
+};
+
+export const todosUndoMarkAllAsDoneErrorResponse = {
+  data: {
+    undoMarkAllAsDone: {
+      todos: null,
+      errors: ['Boom'],
+    },
+  },
+};

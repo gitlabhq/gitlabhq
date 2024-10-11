@@ -35,6 +35,7 @@ import {
   reloadOnInvitationSuccess,
 } from '~/invite_members/utils/trigger_successful_invite_alert';
 import { captureException } from '~/ci/runner/sentry_utils';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import { GROUPS_INVITATIONS_PATH, invitationsApiResponse } from '../mock_data/api_responses';
 import {
   propsData,
@@ -143,7 +144,6 @@ describe('InviteMembersModal', () => {
   };
   const findActionButton = () => wrapper.findByTestId('invite-modal-submit');
   const findCancelButton = () => wrapper.findByTestId('invite-modal-cancel');
-
   const emitClickFromModal = (findButton) => () =>
     findButton().vm.$emit('click', { preventDefault: jest.fn() });
 
@@ -181,6 +181,26 @@ describe('InviteMembersModal', () => {
 
       expect(findBase().props('accessLevels')).toMatchObject({
         validRoles: propsData.accessLevels,
+      });
+    });
+
+    describe('when inviting users to a project', () => {
+      it('set accessExpirationHelpLink for projects', () => {
+        createInviteMembersToProjectWrapper();
+
+        expect(findBase().props('accessExpirationHelpLink')).toBe(
+          helpPagePath('user/project/members/index', { anchor: 'add-users-to-a-project' }),
+        );
+      });
+    });
+
+    describe('when inviting users to a group', () => {
+      it('set accessExpirationHelpLink for groups', () => {
+        createInviteMembersToGroupWrapper();
+
+        expect(findBase().props('accessExpirationHelpLink')).toBe(
+          helpPagePath('user/group/index', { anchor: 'add-users-to-a-group' }),
+        );
       });
     });
   });

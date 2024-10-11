@@ -802,7 +802,7 @@ is recreated with the correct up-to-date schema.
 Before upgrading to a major GitLab version, you must complete all
 migrations that exist up until the latest minor version before that major
 version. You must also resolve and [retry any halted migrations](#retry-a-halted-migration)
-before proceeding with a major version upgrade. For more information, see [Upgrading to a new major version](../../update/index.md#upgrading-to-a-new-major-version).
+before proceeding with a major version upgrade. For more information, see [Migrations for upgrades](../../update/background_migrations.md).
 
 Migrations that have been removed are
 [marked as obsolete](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63001).

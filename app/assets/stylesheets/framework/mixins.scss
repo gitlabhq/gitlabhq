@@ -436,3 +436,12 @@
   top: $top;
   height: calc(100% - #{$top});
 }
+
+/**
+ * Deprecated mixin for dark mode
+ */
+@mixin gl-dark-invert-keep-hue {
+  .gl-dark & {
+    filter: invert(0.8) hue-rotate(180deg);
+  }
+}

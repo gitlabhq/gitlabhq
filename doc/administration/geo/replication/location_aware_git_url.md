@@ -46,7 +46,7 @@ In any case, you require:
 - A Route53 Hosted Zone managing your domain.
 
 If you haven't yet set up a Geo _primary_ site and _secondary_ site, see the
-[Geo setup instructions](../index.md#setup-instructions).
+[Geo setup instructions](../setup/index.md).
 
 ## Create a traffic policy
 

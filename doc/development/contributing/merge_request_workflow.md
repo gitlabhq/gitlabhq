@@ -249,7 +249,7 @@ requirements.
    Upgrade stops are sometimes requested when a GitLab code change is dependent
    upon a background migration being already complete. Ideally, changes causing required
    upgrade stops should be held for the next major release, or
-   [at least a 3 milestones notice in advance if unavoidable](../../update/index.md#upgrade-paths).
+   [at least a 3 milestones notice in advance if unavoidable](../../update/upgrade_paths.md).
 
 ### Testing
 

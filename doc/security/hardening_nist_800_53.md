@@ -615,7 +615,7 @@ GitLab documents its [Release and Maintenance Policy](../policy/maintenance.md)
 in the documentation. Prior to upgrading a GitLab instance, please review the
 available guidance, which can assist with [planning an upgrade](../update/plan_your_upgrade.md),
 [upgrading without downtime](../update/zero_downtime.md),
-and other [upgrade paths](../update/index.md#upgrade-paths).
+and other [upgrade paths](../update/upgrade_paths.md).
 
 [Security dashboards](../user/application_security/security_dashboard/index.md)
 can be configured to track vulnerability data over time, which you can use to identify

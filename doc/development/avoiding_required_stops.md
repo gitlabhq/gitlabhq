@@ -19,7 +19,7 @@ lag behind the current release for up to three years and still expect to have
 support for upgrades.
 
 For example, a GitLab user upgrading from GitLab 14.0.12 to GitLab 16.1,
-which is a fully supported [upgrade path](../update/index.md#upgrade-paths), may have
+which is a fully supported [upgrade path](../update/upgrade_paths.md), may have
 the following required stops: `14.3.6`, `14.9.5`, `14.10.5`, `15.0.5`, `15.1.6`,
 `15.4.6`, and `15.11.11` before upgrading to the latest `16.1.z` version.
 
@@ -37,7 +37,7 @@ release just prior to a `major` version release in order to accommodate multiple
 [breaking changes](../update/terminology.md#breaking-change).
 
 Additionally, as of GitLab 16, we have introduced
-[_scheduled_ `major`.`minor` required stops](../update/index.md#upgrade-paths):
+[_scheduled_ `major`.`minor` required stops](../update/upgrade_paths.md):
 
 >>>
 During GitLab 16.x, we are scheduling two or three required upgrade stops.
@@ -132,11 +132,14 @@ downtime or other major issues.
 
 #### Examples
 
-Examples of deprecations are too numerous to be listed here, but can found
-in the [deprecations and removals by version](../update/deprecations.md) as well
-as the [version-specific upgrading instructions](../update/index.md#version-specific-upgrading-instructions),
-[version-specific changes for the GitLab package (Omnibus)](../update/package/index.md#version-specific-changes),
-and [GitLab chart upgrade notes](https://docs.gitlab.com/charts/installation/upgrade.html).
+Examples of deprecations are too numerous to be listed here, but can found in the:
+
+- [Deprecations and removals by version](../update/deprecations.md).
+- Version-specific upgrading instructions:
+  - [GitLab 17](../update/versions/gitlab_17_changes.md)
+  - [GitLab 16](../update/versions/gitlab_16_changes.md)
+  - [GitLab 15](../update/versions/gitlab_15_changes.md)
+- [GitLab chart upgrade notes](https://docs.gitlab.com/charts/installation/upgrade.html).
 
 ## Adding required stops
 
@@ -154,7 +157,7 @@ must align your changes with these milestones in mind.
 Before releasing a known required stop, complete these steps. If the required stop
 is identified after release, the following steps must still be completed:
 
-1. In the same MR, update the [upgrade paths](../update/index.md#upgrade-paths) documentation to include the new
+1. In the same MR, update the [upgrade paths](../update/upgrade_paths.md) documentation to include the new
    required stop, and the [`upgrade_path.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/upgrade_path.yml).
    The `upgrade_path.yml` is the single source of truth (SSoT) for all our required stops.
 1. Communicate the changes with the customer Support and Release management teams.

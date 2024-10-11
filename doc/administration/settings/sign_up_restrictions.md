@@ -169,8 +169,6 @@ To turn on restricted access:
 When you turn on restricted access, the following known issues might occur and result in overages:
 
 - The number of seats can still be exceeded if:
-  - You promote a user that is a member of the root group and has the Minimal Access role to a higher role.
-  - For Ultimate, you promote a user with the Guest role to a higher role.
   - You use SAML or SCIM to add new members, and have exceeded the number of seats in the subscription.
   - Multiple users with the Owner role add members simultaneously.
   - New billable members delay accepting an invitation.

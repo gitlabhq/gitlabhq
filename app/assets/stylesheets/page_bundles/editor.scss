@@ -25,7 +25,7 @@
   }
 
   .file-title {
-    @include gl-font-monospace;
+    @apply gl-font-monospace;
   }
 
   .editor-ref {

@@ -1,4 +1,4 @@
-import { GlDatepicker, GlFormGroup, GlLink, GlSprintf, GlModal, GlIcon } from '@gitlab/ui';
+import { GlDatepicker, GlFormGroup, GlSprintf, GlModal, GlIcon } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { RENDER_ALL_SLOTS_TEMPLATE, stubComponent } from 'helpers/stub_component';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
@@ -50,7 +50,9 @@ describe('InviteModalBase', () => {
 
   const findRoleSelector = () => wrapper.findComponent(RoleSelector);
   const findDatepicker = () => wrapper.findComponent(GlDatepicker);
-  const findLink = () => wrapper.findComponent(GlLink);
+  const findLink = () => wrapper.findByTestId('invite-modal-help-link');
+  const findAccessExpirationHelpLink = () =>
+    wrapper.findByTestId('invite-modal-access-expiration-link');
   const findIcon = () => wrapper.findComponent(GlIcon);
   const findIntroText = () => wrapper.findByTestId('modal-base-intro-text').text();
   const findMembersFormGroup = () => wrapper.findByTestId('members-form-group');
@@ -136,6 +138,20 @@ describe('InviteModalBase', () => {
 
       it('renders the correct link', () => {
         expect(findLink().attributes('href')).toBe(propsData.helpLink);
+      });
+    });
+
+    describe('rendering the access expiration help link', () => {
+      beforeEach(() => {
+        createComponent({
+          mountFn: mountExtended,
+        });
+      });
+
+      it('renders the correct link', () => {
+        expect(findAccessExpirationHelpLink().attributes('href')).toBe(
+          propsData.accessExpirationHelpLink,
+        );
       });
     });
 

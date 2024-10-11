@@ -363,7 +363,7 @@
 {"name":"kubeclient","version":"4.11.0","platform":"ruby","checksum":"4985fcd749fb8c364a668a8350a49821647f03aa52d9ee6cbc582beb8e883fcc"},
 {"name":"language_server-protocol","version":"3.17.0.3","platform":"ruby","checksum":"3d5c58c02f44a20d972957a9febe386d7e7468ab3900ce6bd2b563dd910c6b3f"},
 {"name":"launchy","version":"2.5.2","platform":"ruby","checksum":"8aa0441655aec5514008e1d04892c2de3ba57bd337afb984568da091121a241b"},
-{"name":"lefthook","version":"1.7.15","platform":"ruby","checksum":"b392b426e7db3596842c4d87dd2896a392d07dfbceb0fc626241ef90e2f101e2"},
+{"name":"lefthook","version":"1.7.18","platform":"ruby","checksum":"0c27ef6ddd22aa864723ef4e089498567dbd7aed31ec35b6807770a3e6b55caf"},
 {"name":"letter_opener","version":"1.10.0","platform":"ruby","checksum":"2ff33f2e3b5c3c26d1959be54b395c086ca6d44826e8bf41a14ff96fdf1bdbb2"},
 {"name":"letter_opener_web","version":"3.0.0","platform":"ruby","checksum":"3f391efe0e8b9b24becfab5537dfb17a5cf5eb532038f947daab58cb4b749860"},
 {"name":"libyajl2","version":"2.1.0","platform":"ruby","checksum":"aa5df6c725776fc050c8418450de0f7c129cb7200b811907c4c0b3b5c0aea0ef"},

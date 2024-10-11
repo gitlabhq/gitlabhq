@@ -1,6 +1,6 @@
 <script>
 import { GlBanner, GlTableLite, GlBadge } from '@gitlab/ui';
-import emptyStateIllustration from '@gitlab/svgs/dist/illustrations/lock_promotion.svg?url';
+import emptyStateIllustration from '@gitlab/svgs/dist/illustrations/secure-sm.svg';
 import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
 import { s__, __ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';

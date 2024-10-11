@@ -1362,10 +1362,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-3.119.0.tgz#becbeea7e7ee241baecdad02b9ad04de7a8aed04"
   integrity sha512-Os/PF37pCY75uLA0dmGaZe13BmirzlWH+pFLinCAPRChEC7KhHCJtIy0efRAxzkA4uatmHpJHxftuTc7NeiSNQ==
 
-"@gitlab/ui@96.1.0":
-  version "96.1.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-96.1.0.tgz#ed09eea52170424c9b006c740f301f1b5c66416a"
-  integrity sha512-ak5d51JbLsoNTQJ/AGulx15bx1oeb/zbxxicIcTle2qBnrLEUDsLmnV6P2+y4/rFsJHmUQZuWn26DHVMY6x8Zw==
+"@gitlab/ui@96.3.0":
+  version "96.3.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-96.3.0.tgz#eba3980b96de22ce0ed2e2738e62a2dbd1f81c6e"
+  integrity sha512-zXLGQyjGFkid/fsdRQiuHYrQ4Dj7npi595q3irXhYZcfNXskAG6o9cxsHFsrJhDaILnpz5+WOL+/KnGI/frmuw==
   dependencies:
     "@floating-ui/dom" "1.4.3"
     echarts "^5.3.2"
@@ -4333,11 +4333,6 @@ boolbase@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/boolbase/-/boolbase-1.0.0.tgz#68dff5fbe60c51eb37725ea9e3ed310dcc1e776e"
   integrity sha1-aN/1++YMUes3cl6p4+0xDcwed24=
-
-bootstrap@4.6.2:
-  version "4.6.2"
-  resolved "https://registry.yarnpkg.com/bootstrap/-/bootstrap-4.6.2.tgz#8e0cd61611728a5bf65a3a2b8d6ff6c77d5d7479"
-  integrity sha512-51Bbp/Uxr9aTuy6ca/8FbFloBUJZLHwnhTcnjIeRn2suQWsWzcuJhGjKDB5eppVte/8oCdOL3VuwxvZDUggwGQ==
 
 brace-expansion@^1.1.7:
   version "1.1.11"

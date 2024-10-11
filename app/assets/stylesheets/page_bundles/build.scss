@@ -158,7 +158,7 @@
   word-wrap: break-word;
   color: color-yiq($builds-log-bg);
   border-radius: 0 0 $gl-border-radius-base $gl-border-radius-base;
-  @include gl-min-h-8;
+  @apply gl-min-h-8;
   background-color: $builds-log-bg;
 }
 

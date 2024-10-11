@@ -35,7 +35,6 @@ Lint/SymbolConversion:
     - 'app/services/notification_service.rb'
     - 'app/workers/project_export_worker.rb'
     - 'ee/app/graphql/ee/resolvers/projects/branch_rules_resolver.rb'
-    - 'ee/app/graphql/types/ci/jobs_duration_statistics_type.rb'
     - 'ee/app/models/concerns/ee/protected_branch.rb'
     - 'ee/app/models/geo_node_status.rb'
     - 'ee/app/policies/ee/group_policy.rb'

@@ -111,18 +111,22 @@ to your instance and then upgrade it for any relevant features you're using.
   - [Zero-downtime upgrades](zero_downtime.md) (if possible and desired)
   - [Convert from GitLab Community Edition to Enterprise Edition](package/convert_to_ee.md)
 - What version should you upgrade to:
-  - [Determine what upgrade path](index.md#upgrade-paths) to follow.
-  - Account for any [version-specific update instructions](index.md#version-specific-upgrading-instructions) for both the current version and the destination version.
-  - Account for any [version-specific changes](package/index.md#version-specific-changes).
+  - [Determine what upgrade path](upgrade_paths.md) to follow.
+  - Account for changes in GitLab versions. For more information, see:
+    - [GitLab 17 changes](versions/gitlab_17_changes.md)
+    - [GitLab 16 changes](versions/gitlab_16_changes.md)
+    - [GitLab 15 changes](versions/gitlab_15_changes.md)
   - Check the [OS compatibility with the target GitLab version](../administration/package_information/supported_os.md).
-- Due to background migrations, plan to pause before any further upgrades.
-  [All migrations must finish running](background_migrations.md)
-  before the next upgrade.
+- Check for required database and advanced search [background migrations](background_migrations.md). If there are
+  background migrations, pause before any further upgrades. All migrations must finish running before the next
+  upgrade.
+- If your GitLab instance has any runners associated with it, you must upgrade them to match the current GitLab version.
+  This ensures [compatibility with GitLab versions](https://docs.gitlab.com/runner/#gitlab-runner-versions).
 - If available in your starting version, consider
   [turning on maintenance mode](../administration/maintenance_mode/index.md) during the
   upgrade.
 - About PostgreSQL:
-  1. On the left sidebar, at the bottom, select **Admin**..
+  1. On the left sidebar, at the bottom, select **Admin**.
   1. Look for the version of PostgreSQL you are using.
      If [a PostgreSQL upgrade is needed](../administration/package_information/postgresql_versions.md),
      account for the relevant
@@ -147,7 +151,10 @@ version prior to upgrading the application server.
 If you're using Geo:
 
 - Review [Geo upgrade documentation](../administration/geo/replication/upgrading_the_geo_sites.md).
-- Read about the [Geo version-specific update instructions](index.md#version-specific-upgrading-instructions).
+- Read about the Geo version-specific update instructions:
+  - [GitLab 17](versions/gitlab_17_changes.md)
+  - [GitLab 16](versions/gitlab_16_changes.md)
+  - [GitLab 15](versions/gitlab_15_changes.md)
 - Review Geo-specific steps when [upgrading the database](https://docs.gitlab.com/omnibus/settings/database.html#upgrading-a-geo-instance).
 - Create an upgrade and rollback plan for _each_ Geo site (primary and each secondary).
 
@@ -163,7 +170,7 @@ If you have Kubernetes clusters connected with GitLab, [upgrade your GitLab agen
 #### Elasticsearch
 
 Before updating GitLab, confirm advanced search migrations are complete by
-[checking for pending advanced search migrations](index.md#checking-for-pending-advanced-search-migrations).
+[checking for pending advanced search migrations](background_migrations.md#check-for-pending-advanced-search-migrations).
 
 After updating GitLab, you may have to upgrade
 [Elasticsearch if the new version breaks compatibility](../integration/advanced_search/elasticsearch.md#version-requirements).

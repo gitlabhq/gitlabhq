@@ -103,7 +103,7 @@ namespace :tw do
       CodeOwnerRule.new('Composition Analysis',
         '@gitlab-org/secure/composition-analysis-be @gitlab-org/secure/static-analysis'),
       CodeOwnerRule.new('Distribution', '@gitlab-org/distribution'),
-      CodeOwnerRule.new('Documentation Guidelines', '@sselhorn'),
+      CodeOwnerRule.new('Documentation Guidelines', '@fneill'),
       CodeOwnerRule.new('Engineering Productivity', '@gl-quality/eng-prod'),
       CodeOwnerRule.new('Personal Productivity', '@gitlab-org/foundations/engineering'),
       CodeOwnerRule.new('Gitaly', '@proglottis @toon'),

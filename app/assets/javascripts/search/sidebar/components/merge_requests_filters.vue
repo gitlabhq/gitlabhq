@@ -1,6 +1,7 @@
 <script>
 // eslint-disable-next-line no-restricted-imports
 import { mapGetters, mapState } from 'vuex';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import StatusFilter from './status_filter/index.vue';
 import FiltersTemplate from './filters_template.vue';
 import ArchivedFilter from './archived_filter/index.vue';
@@ -14,12 +15,15 @@ export default {
     ArchivedFilter,
     SourceBranchFilter,
   },
+  mixins: [glFeatureFlagsMixin()],
   computed: {
     ...mapGetters(['hasMissingProjectContext']),
     ...mapState(['groupInitialJson']),
     shouldShowSourceBranchFilter() {
-      // this will be changed https://gitlab.com/gitlab-org/gitlab/-/issues/480740
-      return !this.hasMissingProjectContext || this.groupInitialJson?.id;
+      return (
+        this.glFeatures.searchMrFilterSourceBranch &&
+        (!this.hasMissingProjectContext || this.groupInitialJson?.id)
+      );
     },
   },
 };

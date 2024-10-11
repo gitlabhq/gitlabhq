@@ -1,13 +1,5 @@
 <script>
-import {
-  GlLoadingIcon,
-  GlKeysetPagination,
-  GlLink,
-  GlButton,
-  GlBadge,
-  GlTab,
-  GlTabs,
-} from '@gitlab/ui';
+import { GlLoadingIcon, GlKeysetPagination, GlLink, GlBadge, GlTab, GlTabs } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { createAlert } from '~/alert';
 import { s__ } from '~/locale';
@@ -16,6 +8,7 @@ import getTodosCountQuery from './queries/get_todos_count.query.graphql';
 import TodoItem from './todo_item.vue';
 import TodosEmptyState from './todos_empty_state.vue';
 import TodosFilterBar, { SORT_OPTIONS } from './todos_filter_bar.vue';
+import TodosMarkAllDoneButton from './todos_mark_all_done_button.vue';
 
 const ENTRIES_PER_PAGE = 20;
 const STATUS_BY_TAB = [['pending'], ['done'], ['pending', 'done']];
@@ -25,13 +18,13 @@ export default {
     GlLink,
     GlLoadingIcon,
     GlKeysetPagination,
-    GlButton,
     GlBadge,
     GlTabs,
     GlTab,
     TodosEmptyState,
     TodosFilterBar,
     TodoItem,
+    TodosMarkAllDoneButton,
   },
 
   data() {
@@ -121,7 +114,7 @@ export default {
       return !this.isLoading && this.todos.length === 0;
     },
     showMarkAllAsDone() {
-      return this.currentTab === 0;
+      return this.currentTab === 0 && !this.showEmptyState;
     },
     fadeDoneTodo() {
       return this.currentTab === 0;
@@ -157,6 +150,9 @@ export default {
       this.alert?.dismiss();
       this.queryFilterValues = { ...data };
     },
+    updateCounts() {
+      this.$apollo.queries.todosCount.refetch();
+    },
   },
 };
 </script>
@@ -188,9 +184,7 @@ export default {
       </gl-tabs>
 
       <div v-if="showMarkAllAsDone" class="gl-my-3 gl-mr-5 gl-flex gl-items-center gl-justify-end">
-        <gl-button data-testid="btn-mark-all-as-done">
-          {{ s__('Todos|Mark all as done') }}
-        </gl-button>
+        <todos-mark-all-done-button @change="updateCounts" />
       </div>
     </div>
 

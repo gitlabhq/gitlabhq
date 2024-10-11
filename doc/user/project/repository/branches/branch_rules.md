@@ -159,7 +159,7 @@ To add a status check service:
 
    You should use a HTTPS URL to protect your merge request data in transit.
 
-![Branch rules status checks](img/branch_rule_status_check.png)
+![Branch rules status checks](img/branch_rule_status_check_v17_4.png)
 
 For more information, see [External status checks](../../merge_requests/status_checks.md).
 

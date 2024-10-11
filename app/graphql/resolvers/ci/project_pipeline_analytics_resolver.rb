@@ -37,12 +37,14 @@ module Resolvers
         result = legacy_fields(lookahead)
 
         if any_field_selected?(lookahead, :aggregate)
+          aggregate_lookahead = lookahead&.selection(:aggregate)
           response =
             ::Ci::CollectPipelineAnalyticsService.new(
               current_user: context[:current_user], project: project,
               source: source, ref: ref,
               from_time: from_time, to_time: to_time,
-              status_groups: selected_status_groups(lookahead)
+              status_groups: selected_status_groups(aggregate_lookahead),
+              duration_percentiles: selected_duration_percentiles(aggregate_lookahead)
             ).execute
 
           raise_resource_not_available_error! response.message if response.error?
@@ -98,15 +100,14 @@ module Resolvers
         fields.any? { |field| lookahead&.selects?(field) }
       end
 
-      def selected_status_groups(lookahead)
-        return [] unless lookahead
+      def selected_status_groups(aggregate_lookahead)
+        return [] unless aggregate_lookahead&.selects?(:count)
 
-        selection = ::Ci::CollectPipelineAnalyticsService::STATUS_GROUPS.filter do |status|
-          lookahead.selection(:aggregate).selects?(:count, arguments: { status: status })
+        selection = []
+        selection << :any if aggregate_lookahead.selects?(:count, arguments: { status: :any })
+        selection + ::Ci::CollectPipelineAnalyticsService::STATUS_GROUPS.filter do |status|
+          aggregate_lookahead.selects?(:count, arguments: { status: status })
         end
-        selection << :all if lookahead.selection(:aggregate).selects?(:count, arguments: nil)
-
-        selection
       end
 
       def selected_period_statuses(lookahead, period)
@@ -118,6 +119,14 @@ module Resolvers
         selected << :success if lookahead.selects?(:"#{period}_pipelines_successful")
 
         selected.sort.uniq
+      end
+
+      def selected_duration_percentiles(aggregate_lookahead)
+        return [] unless aggregate_lookahead
+
+        ::Ci::CollectPipelineAnalyticsService::ALLOWED_PERCENTILES.filter do |percentile|
+          aggregate_lookahead.selection(:duration_statistics).selects?("p#{percentile}")
+        end
       end
     end
   end

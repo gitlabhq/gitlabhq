@@ -3192,9 +3192,6 @@ msgstr ""
 msgid "Add approval rule"
 msgstr ""
 
-msgid "Add approvers"
-msgstr ""
-
 msgid "Add branch or merge request"
 msgstr ""
 
@@ -18388,9 +18385,6 @@ msgstr ""
 msgid "Deloyment|Something went wrong starting the deployment. Please try again later."
 msgstr ""
 
-msgid "Denied"
-msgstr ""
-
 msgid "Denied authorization of chat nickname %{user_name}."
 msgstr ""
 
@@ -26614,6 +26608,9 @@ msgstr ""
 msgid "GroupSettings|Change group URL"
 msgstr ""
 
+msgid "GroupSettings|Change saved."
+msgstr ""
+
 msgid "GroupSettings|Changing a group's URL can have unintended side effects."
 msgstr ""
 
@@ -26669,6 +26666,9 @@ msgid "GroupSettings|Experiment"
 msgstr ""
 
 msgid "GroupSettings|Export group"
+msgstr ""
+
+msgid "GroupSettings|Failed to save changes."
 msgstr ""
 
 msgid "GroupSettings|Git abuse rate limit"
@@ -26728,6 +26728,12 @@ msgstr ""
 msgid "GroupSettings|Reporting"
 msgstr ""
 
+msgid "GroupSettings|Retry"
+msgstr ""
+
+msgid "GroupSettings|Saving..."
+msgstr ""
+
 msgid "GroupSettings|Select a project"
 msgstr ""
 
@@ -26777,6 +26783,9 @@ msgid "GroupSettings|This setting is applied on %{ancestor_group}. You can overr
 msgstr ""
 
 msgid "GroupSettings|Transfer group"
+msgstr ""
+
+msgid "GroupSettings|Undo"
 msgstr ""
 
 msgid "GroupSettings|Users can create %{link_start_project}project access tokens%{link_end} and %{link_start_group}group access tokens%{link_end} in this group"
@@ -27570,6 +27579,9 @@ msgid "I'd like to receive updates about GitLab via email"
 msgstr ""
 
 msgid "I'm signing up for GitLab because:"
+msgstr ""
+
+msgid "I'm sorry, Duo Chat agent reached the limit before finding an answer for your question. Please try a different prompt or clear your conversation history with /clear."
 msgstr ""
 
 msgid "I'm sorry, I couldn't respond in time. Please try again."
@@ -29609,6 +29621,9 @@ msgid "InviteMembersBanner|We noticed that you haven't invited anyone to this gr
 msgstr ""
 
 msgid "InviteMembersModal| To get more members, the owner of this top-level group can %{trialLinkStart}start a trial%{trialLinkEnd} or %{upgradeLinkStart}upgrade%{upgradeLinkEnd} to a paid tier."
+msgstr ""
+
+msgid "InviteMembersModal|%{linkStart}Read more%{linkEnd} about access expiration"
 msgstr ""
 
 msgid "InviteMembersModal|%{linkStart}Read more%{linkEnd} about role permissions"
@@ -32185,40 +32200,13 @@ msgstr ""
 msgid "License overview"
 msgstr ""
 
-msgid "LicenseCompliance|%{docLinkStart}License Approvals%{docLinkEnd} are active"
-msgstr ""
-
-msgid "LicenseCompliance|%{docLinkStart}License Approvals%{docLinkEnd} are inactive"
-msgstr ""
-
 msgid "LicenseCompliance|Acceptable for use in this project"
-msgstr ""
-
-msgid "LicenseCompliance|Acceptable license to be used in the project"
-msgstr ""
-
-msgid "LicenseCompliance|Add license and related policy"
-msgstr ""
-
-msgid "LicenseCompliance|Add license policy"
-msgstr ""
-
-msgid "LicenseCompliance|Allow"
 msgstr ""
 
 msgid "LicenseCompliance|Allowed"
 msgstr ""
 
 msgid "LicenseCompliance|Denied"
-msgstr ""
-
-msgid "LicenseCompliance|Deny"
-msgstr ""
-
-msgid "LicenseCompliance|Disallow merge request if detected and will instruct developer to remove"
-msgstr ""
-
-msgid "LicenseCompliance|Learn more about %{linkStart}License Approvals%{linkEnd}"
 msgstr ""
 
 msgid "LicenseCompliance|License Compliance detected %d license"
@@ -32267,37 +32255,13 @@ msgstr ""
 msgid "LicenseCompliance|License Compliance detected no new licenses"
 msgstr ""
 
-msgid "LicenseCompliance|License name"
-msgstr ""
-
 msgid "LicenseCompliance|No policy matches this license"
 msgstr ""
 
 msgid "LicenseCompliance|Out-of-compliance with the project's policies and should be removed"
 msgstr ""
 
-msgid "LicenseCompliance|Remove license"
-msgstr ""
-
-msgid "LicenseCompliance|Remove license?"
-msgstr ""
-
-msgid "LicenseCompliance|There are currently no policies in this project."
-msgstr ""
-
-msgid "LicenseCompliance|There are currently no policies that match in this project."
-msgstr ""
-
-msgid "LicenseCompliance|This license already exists in this project."
-msgstr ""
-
 msgid "LicenseCompliance|Uncategorized"
-msgstr ""
-
-msgid "LicenseCompliance|Update approvals"
-msgstr ""
-
-msgid "LicenseCompliance|You are about to remove the license, %{name}, from this project."
 msgstr ""
 
 msgid "LicenseManagement|Allowed"
@@ -32324,9 +32288,6 @@ msgstr ""
 msgid "Licenses"
 msgstr ""
 
-msgid "Licenses|Acceptable license to be used in the project"
-msgstr ""
-
 msgid "Licenses|Drag your license file here or %{linkStart}select a file to upload%{linkEnd}."
 msgstr ""
 
@@ -32336,16 +32297,7 @@ msgstr ""
 msgid "Licenses|Error: You are trying to upload something other than a file"
 msgstr ""
 
-msgid "Licenses|Name"
-msgstr ""
-
-msgid "Licenses|Policy"
-msgstr ""
-
 msgid "Licenses|The file could not be uploaded."
-msgstr ""
-
-msgid "Licenses|Unacceptable license, if detected it will disallow a merge request until it's removed"
 msgstr ""
 
 msgid "Limit display of time tracking units to hours."
@@ -57180,6 +57132,9 @@ msgstr ""
 msgid "Todos|Could not merge"
 msgstr ""
 
+msgid "Todos|Could not restore to-dos."
+msgstr ""
+
 msgid "Todos|Created"
 msgstr ""
 
@@ -57249,6 +57204,9 @@ msgstr ""
 msgid "Todos|Mark all as done"
 msgstr ""
 
+msgid "Todos|Mark all as done failed. Try again later."
+msgstr ""
+
 msgid "Todos|Mark as done"
 msgstr ""
 
@@ -57257,6 +57215,11 @@ msgstr ""
 
 msgid "Todos|Marked"
 msgstr ""
+
+msgid "Todos|Marked 1 to-do as done"
+msgid_plural "Todos|Marked %d to-dos as done"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Todos|Member access request"
 msgstr ""
@@ -57302,6 +57265,11 @@ msgstr ""
 
 msgid "Todos|Removed from Merge Train"
 msgstr ""
+
+msgid "Todos|Restored 1 to-do"
+msgid_plural "Todos|Restored %d to-dos"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Todos|Review requested"
 msgstr ""
@@ -58703,9 +58671,6 @@ msgid "Update Scheduled…"
 msgstr ""
 
 msgid "Update appearance settings"
-msgstr ""
-
-msgid "Update approvers"
 msgstr ""
 
 msgid "Update failed"
@@ -63826,6 +63791,9 @@ msgstr ""
 msgid "Your GitLab instance allows anyone to register for an account, which is a security risk on public-facing GitLab instances. You should deactivate new sign ups if public users aren't expected to register for an account."
 msgstr ""
 
+msgid "Your GitLab instance is currently being updated. Please try again later."
+msgstr ""
+
 msgid "Your GitLab version"
 msgstr ""
 
@@ -65367,9 +65335,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "load it anyway"
-msgstr ""
-
-msgid "loading"
 msgstr ""
 
 msgid "locked by %{path_lock_user_name} %{created_at}"

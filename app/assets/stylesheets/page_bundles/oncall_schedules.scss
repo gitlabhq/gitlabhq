@@ -55,7 +55,7 @@ $column-right-gradient: linear-gradient(to right, $gradient-dark-gray 0%, $gradi
 
     &:first-of-type {
       .week-item-sublabel .sublabel-value:nth-of-type(7) {
-        @include gl-border-r;
+        @apply gl-border-r;
       }
     }
   }

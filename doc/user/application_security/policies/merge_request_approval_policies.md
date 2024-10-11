@@ -554,6 +554,35 @@ To resolve this you can:
 - Manually edit the `policy.yml` file that defines the policy so that it becomes valid again.
 - Unassign and re-assign the security policy projects where the `policy.yml` file is stored.
 
+### Missing security scans
+
+When using merge request approval policies, you may encounter situations where merge requests are blocked, including in new projects or when certain security scans are not executed. This behavior is by design to reduce the risk of introducing vulnerabilities into your system.
+
+Example scenarios:
+
+- Missing scans on source or target branches
+
+  If security scans are missing on either the source or target branch, GitLab cannot effectively evaluate whether the merge request is introducing new vulnerabilities. In such cases, approval is required as a precautionary measure.
+
+- New projects
+
+  For new projects where security scans have not yet been set up or executed on the target branch, all merge requests require approval. This ensures that security checks are active from the project's inception.
+
+- Projects with no files to scan
+
+  Even in projects that contain no files relevant to the selected security scans, the approval requirement is still enforced. This maintains consistent security practices across all projects.
+
+- First merge request
+
+  The very first merge request in a new project may be blocked if the default branch doesn't have a security scan, even if the source branch has no vulnerabilities.
+
+To resolve these issues:
+
+- Ensure that all required security scans are configured and running successfully on both source and target branches.
+- For new projects, set up and run the necessary security scans on the default branch before creating merge requests.
+- Consider using scan execution policies or pipeline execution policies to ensure consistent execution of security scans across all branches.
+- Consider using [`fallback_behavior`](#fallback_behavior) with `open` to prevent invalid or unenforceable rules in a policy from requiring approval.
+
 ### Support request for debugging of merge request approval policy
 
 GitLab.com users may submit a [support ticket](https://about.gitlab.com/support/) titled "Merge request approval policy debugging". Provide the following details:

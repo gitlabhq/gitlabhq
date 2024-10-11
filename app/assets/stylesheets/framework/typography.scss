@@ -758,7 +758,7 @@ pre {
 }
 
 .monospace {
-  @include gl-font-monospace;
+  @apply gl-font-monospace;
 }
 
 .weight-normal {

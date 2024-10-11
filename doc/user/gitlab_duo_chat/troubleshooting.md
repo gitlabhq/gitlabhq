@@ -163,6 +163,48 @@ To resolve the issue, try your request again.
 If the error persists, use the `/clear` command to reset the chat.
 If problem continues, please report the issue to the GitLab support team.
 
+## `Error A1002`
+
+You might get an error that states
+`I'm sorry, I couldn't respond in time. Please try again. Error code: A1002`.
+
+This error occurs when no events are returned from AI Gateway or GitLab failed to parse the events. Please try your request again.
+
+## `Error A1003`
+
+You might get an error that states
+`I'm sorry, I couldn't respond in time. Please try again. Error code: A1003`.
+
+This error occurs when streaming response from AI Gateway failed. Please try your request again.
+
+## `Error A1004`
+
+You might get an error that states
+`I'm sorry, I couldn't respond in time. Please try again. Error code: A1004`.
+
+This error occurs when an error occurred in the AI Gateway process. Please try your request again.
+
+## `Error A1005`
+
+You might get an error that states
+`I'm sorry, you've entered too many prompts. Please run /clear or /reset before asking the next question. Error code: A1005`.
+
+This error occurs when the length of prompts exceeds the max token limit of the LLM. Please clean up your conversation history with `/clear` or `/reset` and try your request again.
+
+## `Error A1006`
+
+You might get an error that states
+`I'm sorry, Duo Chat agent reached the limit before finding an answer for your question. Please try a different prompt or clear your conversation history with /clear. Error code: A1006`.
+
+This error occurs when ReAct agent failed to find a solution for your query. Please try a different prompt or clear your conversation history with `/clear`.
+
+## `Error A9999`
+
+You might get an error that states
+`I'm sorry, I couldn't respond in time. Please try again. Error code: A9999`.
+
+This error occurs when an unknown error occurs in ReAct agent. Please try your request again.
+
 ## `Error A6000`
 
 You might get an error that states

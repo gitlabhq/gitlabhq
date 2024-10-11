@@ -2,20 +2,19 @@
 - show_label_issues_link = subject_or_group_defined && show_label_issuables_link?(label, :issues)
 - show_label_merge_requests_link = subject_or_group_defined && show_label_issuables_link?(label, :merge_requests)
 
-.label-name.gl-shrink-0.gl-mr-5
+.label-name.gl-shrink-0.gl-mr-5.gl-mt-1
   = render_label(label, link: '#', tooltip: true, tooltip_shows_title: true)
   - if show_labels_full_path?(@project, @group)
     .gl-mt-2
       = render 'shared/label_full_path', label: label
 .label-description.gl-w-full
   .gl-flex.gl-items-stretch.gl-flex-wrap
-    .gl-grow.gl-mr-5{ class: 'gl-basis-1/2' }
+    .gl-grow.gl-mt-1.gl-mr-5{ class: 'gl-basis-1/2' }
       - if label.description.present?
-        .gl-my-1
-          = markdown_field(label, :description)
-    %ul.label-links.gl-m-0.gl-mt-2.gl-p-0.gl-whitespace-nowrap.gl-flex.gl-gap-5
+        = markdown_field(label, :description)
+    %ul.label-links.gl-m-0.gl-mt-1.gl-p-0.gl-whitespace-nowrap.gl-flex.gl-gap-5
       - if label.lock_on_merge
-        %li.gl-inline-flex
+        %li.gl-inline-flex.gl-self-start.gl-mt-1
           = render Pajamas::BadgeComponent.new(_('Lock on merge'), icon: 'lock', variant: :muted)
       - if show_label_issues_link
         %li.gl-inline-flex

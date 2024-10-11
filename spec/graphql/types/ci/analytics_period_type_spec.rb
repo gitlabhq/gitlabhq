@@ -9,6 +9,7 @@ RSpec.describe Types::Ci::AnalyticsPeriodType, feature_category: :fleet_visibili
     expected_fields = %i[
       label
       count
+      durationStatistics
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)

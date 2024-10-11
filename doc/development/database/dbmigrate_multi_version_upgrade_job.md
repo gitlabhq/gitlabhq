@@ -9,9 +9,9 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 > - [Introduced](https://gitlab.com/groups/gitlab-org/quality/quality-engineering/-/epics/19) in GitLab 16.11.
 
 This job runs on the test stage of a merge request pipeline. It validates that migrations pass
-for multi-version upgrade from the latest [required upgrade stop](../../update/index.md#upgrade-paths)
+for multi-version upgrade from the latest [required upgrade stop](../../update/upgrade_paths.md)
 to the author's working branch. It achieves it by running `gitlab:db:configure` against PostgreSQL
-dump created from the latest known [GitLab version stop](../../update/index.md#upgrade-paths) with test data.
+dump created from the latest known [GitLab version stop](../../update/upgrade_paths.md) with test data.
 
 The database dump is generated and maintained with [PostgreSQL Dump Generator](https://gitlab.com/gitlab-org/quality/pg-dump-generator).
 To seed database with data, the tool uses Data Seeder with [`bulk_data.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/db/seeds/data_seeder/bulk_data.rb)

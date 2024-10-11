@@ -135,6 +135,36 @@ RSpec.shared_examples_for 'a ci_finished_pipelines aggregation model' do |table_
     end
   end
 
+  describe '#duration_quantile_function' do
+    subject(:result_sql) { instance.select(instance.duration_quantile_function(quantile)).to_sql }
+
+    context 'when quantile is 50' do
+      let(:quantile) { 50 }
+
+      it 'builds the correct SQL' do
+        expected_sql = <<~SQL.lines(chomp: true).join(' ')
+          SELECT quantileMerge(0.5)("#{table_name}"."duration_quantile") AS p50
+          FROM "#{table_name}"
+        SQL
+
+        expect(result_sql.strip).to eq(expected_sql.strip)
+      end
+    end
+
+    context 'when quantile is 99' do
+      let(:quantile) { 99 }
+
+      it 'builds the correct SQL' do
+        expected_sql = <<~SQL.lines(chomp: true).join(' ')
+          SELECT quantileMerge(0.99)("#{table_name}"."duration_quantile") AS p99
+          FROM "#{table_name}"
+        SQL
+
+        expect(result_sql.strip).to eq(expected_sql.strip)
+      end
+    end
+  end
+
   describe 'class methods' do
     before do
       allow(described_class).to receive(:new).and_return(instance)

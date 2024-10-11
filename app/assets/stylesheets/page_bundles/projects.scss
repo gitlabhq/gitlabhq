@@ -459,7 +459,7 @@
   }
 
   .form-control {
-    @include gl-font-monospace;
+    @apply gl-font-monospace;
     background-color: var(--gl-control-background-color-default);
     border-color: var(--gl-control-border-color-default);
     font-size: 14px;

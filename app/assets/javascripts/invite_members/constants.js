@@ -80,6 +80,9 @@ export const INVALID_FEEDBACK_MESSAGE_DEFAULT = s__('InviteMembersModal|Somethin
 export const READ_MORE_TEXT = s__(
   `InviteMembersModal|%{linkStart}Read more%{linkEnd} about role permissions`,
 );
+export const READ_MORE_ACCESS_EXPIRATION_TEXT = s__(
+  `InviteMembersModal|%{linkStart}Read more%{linkEnd} about access expiration`,
+);
 export const INVITE_BUTTON_TEXT = s__('InviteMembersModal|Invite');
 export const INVITE_BUTTON_TEXT_DISABLED = s__('InviteMembersModal|Manage members');
 export const CANCEL_BUTTON_TEXT = s__('InviteMembersModal|Cancel');
