@@ -8747,7 +8747,9 @@ CREATE TABLE ci_pipeline_chat_data (
     chat_name_id bigint NOT NULL,
     response_url text NOT NULL,
     pipeline_id bigint NOT NULL,
-    partition_id bigint NOT NULL
+    partition_id bigint NOT NULL,
+    project_id bigint,
+    CONSTRAINT check_f6412eda6f CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE ci_pipeline_chat_data_id_seq
@@ -13133,6 +13135,7 @@ CREATE TABLE jira_tracker_data (
     jira_issue_regex text,
     jira_auth_type smallint DEFAULT 0 NOT NULL,
     project_keys text[] DEFAULT '{}'::text[] NOT NULL,
+    customize_jira_issue_enabled boolean DEFAULT false,
     CONSTRAINT check_0bf84b76e9 CHECK ((char_length(vulnerabilities_issuetype) <= 255)),
     CONSTRAINT check_0fbd71d9f2 CHECK ((integration_id IS NOT NULL)),
     CONSTRAINT check_214cf6a48b CHECK ((char_length(project_key) <= 255)),
@@ -28330,6 +28333,8 @@ CREATE INDEX index_ci_pipeline_artifacts_verification_state ON ci_pipeline_artif
 CREATE INDEX index_ci_pipeline_chat_data_on_chat_name_id ON ci_pipeline_chat_data USING btree (chat_name_id);
 
 CREATE UNIQUE INDEX index_ci_pipeline_chat_data_on_pipeline_id ON ci_pipeline_chat_data USING btree (pipeline_id);
+
+CREATE INDEX index_ci_pipeline_chat_data_on_project_id ON ci_pipeline_chat_data USING btree (project_id);
 
 CREATE INDEX index_ci_pipeline_messages_on_pipeline_id ON ci_pipeline_messages USING btree (pipeline_id);
 

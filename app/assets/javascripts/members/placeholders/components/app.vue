@@ -134,6 +134,9 @@ export default {
         },
       ];
     },
+    initialSortBy() {
+      return this.sort || PLACEHOLDER_SORT_SOURCE_NAME_ASC;
+    },
   },
   watch: {
     selectedTabIndex() {
@@ -175,7 +178,7 @@ export default {
       this.filterParams = { ...queryParams };
 
       if (sort) {
-        this.sort = sort;
+        this.sort = sort || PLACEHOLDER_SORT_SOURCE_NAME_ASC;
       }
 
       if (queryParams.status) {
@@ -242,7 +245,6 @@ export default {
     },
   },
   uploadCsvModalId: UPLOAD_CSV_PLACEHOLDERS_MODAL_ID,
-  initialSortBy: PLACEHOLDER_SORT_SOURCE_NAME_ASC,
   PLACEHOLDER_USER_REASSIGNED_STATUS_OPTIONS,
 };
 </script>
@@ -264,7 +266,7 @@ export default {
           key="filter-unassigned"
           :namespace="group.path"
           :initial-filter-value="initialFilterValue"
-          :initial-sort-by="$options.initialSortBy"
+          :initial-sort-by="initialSortBy"
           :tokens="filteredSearchTokens()"
           :sort-options="sortOptions"
           :search-input-placeholder="s__('UserMapping|Search placeholder users')"
@@ -294,7 +296,7 @@ export default {
           key="filter-reassigned"
           :namespace="group.path"
           :initial-filter-value="initialFilterValue"
-          :initial-sort-by="$options.initialSortBy"
+          :initial-sort-by="initialSortBy"
           :tokens="filteredSearchTokens($options.PLACEHOLDER_USER_REASSIGNED_STATUS_OPTIONS)"
           :sort-options="sortOptions"
           :search-input-placeholder="s__('UserMapping|Search placeholder users')"

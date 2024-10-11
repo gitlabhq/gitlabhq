@@ -68,11 +68,13 @@ describe('~/projects/pipelines/charts/components/pipeline_charts.vue', () => {
     describe('displays individual correctly', () => {
       it('renders with the correct data', () => {
         const charts = wrapper.findComponent(CiCdAnalyticsCharts);
-        expect(charts.props()).toEqual({
-          charts: wrapper.vm.areaCharts,
-          chartOptions: wrapper.vm.$options.areaChartOptions,
-          loading: false,
-        });
+        expect(charts.props()).toEqual(
+          expect.objectContaining({
+            charts: wrapper.vm.areaCharts,
+            chartOptions: wrapper.vm.$options.areaChartOptions,
+            loading: false,
+          }),
+        );
       });
     });
   });

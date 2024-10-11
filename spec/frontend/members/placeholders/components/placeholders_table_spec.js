@@ -25,6 +25,7 @@ import {
   PLACEHOLDER_USER_STATUS,
   PLACEHOLDER_SORT_SOURCE_NAME_ASC,
   PLACEHOLDER_SORT_SOURCE_NAME_DESC,
+  PLACEHOLDER_SORT_STATUS_ASC,
 } from '~/import_entities/import_groups/constants';
 
 import importSourceUsersQuery from '~/members/placeholders/graphql/queries/import_source_users.query.graphql';
@@ -391,6 +392,37 @@ describe('PlaceholdersTable', () => {
         first: 20,
         statuses: PLACEHOLDER_USER_STATUS.UNASSIGNED,
       });
+    });
+  });
+
+  describe('when sort is changed', () => {
+    beforeEach(async () => {
+      createComponent({
+        queryHandler: sourceUsersQueryHandler,
+        props: {
+          querySort: PLACEHOLDER_SORT_STATUS_ASC,
+        },
+      });
+
+      await waitForPromises();
+    });
+
+    it('refetches data when sort changes', async () => {
+      expect(sourceUsersQueryHandler).toHaveBeenCalledTimes(1);
+      expect(sourceUsersQueryHandler).toHaveBeenCalledWith(
+        expect.objectContaining({
+          sort: PLACEHOLDER_SORT_STATUS_ASC,
+        }),
+      );
+
+      await wrapper.setProps({ querySort: PLACEHOLDER_SORT_SOURCE_NAME_DESC });
+
+      expect(sourceUsersQueryHandler).toHaveBeenCalledTimes(2);
+      expect(sourceUsersQueryHandler).toHaveBeenCalledWith(
+        expect.objectContaining({
+          sort: PLACEHOLDER_SORT_SOURCE_NAME_DESC,
+        }),
+      );
     });
   });
 

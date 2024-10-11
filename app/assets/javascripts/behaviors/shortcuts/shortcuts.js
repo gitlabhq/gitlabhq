@@ -87,8 +87,20 @@ export default class Shortcuts {
       [GO_TO_YOUR_TODO_LIST, () => findAndFollowLink('.shortcuts-todos')],
       [GO_TO_ACTIVITY_FEED, () => findAndFollowLink('.dashboard-shortcuts-activity')],
       [GO_TO_YOUR_ISSUES, () => findAndFollowLink('.dashboard-shortcuts-issues')],
-      [GO_TO_YOUR_MERGE_REQUESTS, () => findAndFollowLink('.dashboard-shortcuts-merge_requests')],
-      [GO_TO_YOUR_REVIEW_REQUESTS, () => findAndFollowLink('.dashboard-shortcuts-review_requests')],
+      [
+        GO_TO_YOUR_MERGE_REQUESTS,
+        () =>
+          findAndFollowLink(
+            '.dashboard-shortcuts-merge_requests, .js-merge-request-dashboard-shortcut',
+          ),
+      ],
+      [
+        GO_TO_YOUR_REVIEW_REQUESTS,
+        () =>
+          findAndFollowLink(
+            '.dashboard-shortcuts-review_requests, .js-merge-request-dashboard-shortcut',
+          ),
+      ],
       [GO_TO_YOUR_PROJECTS, () => findAndFollowLink('.dashboard-shortcuts-projects')],
       [GO_TO_YOUR_GROUPS, () => findAndFollowLink('.dashboard-shortcuts-groups')],
       [GO_TO_MILESTONE_LIST, () => findAndFollowLink('.dashboard-shortcuts-milestones')],

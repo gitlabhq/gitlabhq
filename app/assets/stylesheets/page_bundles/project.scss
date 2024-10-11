@@ -147,7 +147,7 @@
   margin-bottom: 7px;
 
   h5 {
-    color: var(--gl-text-color-heading);
+    @apply gl-text-heading;
   }
 }
 

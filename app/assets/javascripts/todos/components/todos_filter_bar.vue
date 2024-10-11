@@ -420,6 +420,7 @@ export default {
     <div class="gl-border-b gl-flex gl-flex-col gl-gap-4 gl-bg-gray-10 gl-p-5 sm:gl-flex-row">
       <gl-filtered-search
         v-model="filterTokens"
+        class="gl-min-w-0 gl-flex-grow"
         terms-as-tokens
         :placeholder="$options.i18n.filteredSearchPlaceholder"
         :available-tokens="filteredSearchTokens"

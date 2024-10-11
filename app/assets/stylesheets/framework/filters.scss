@@ -140,20 +140,21 @@
     padding-right: 0;
 
     .close-icon {
-      color: $gl-text-color-secondary;
+      color: var(--gl-icon-color-subtle);
     }
 
     &:hover .close-icon {
-      color: $gl-text-color;
+      color: var(--gl-icon-color-default);
     }
 
     &.inverted {
       .close-icon {
-        color: $gl-text-color-secondary-inverted;
+        color: var(--gl-color-neutral-0);
+        opacity: 0.85;
       }
 
       &:hover .close-icon {
-        color: $gl-text-color-inverted;
+        color: var(--gl-color-neutral-0);
       }
     }
   }
@@ -178,7 +179,7 @@
 .filtered-search-term {
   .name {
     background-color: inherit;
-    color: $black;
+    color: var(--gl-token-foreground-color);
     text-transform: none;
   }
 
@@ -200,8 +201,8 @@
   display: flex;
   width: 100%;
   min-width: 0;
-  border: 1px solid $gray-400;
-  background-color: var(--gl-control-background-color-default);
+  border: 1px solid var(--gl-control-border-color-default);
+  @apply gl-bg-default;
   border-radius: $gl-border-radius-base;
 
   &.focus,
@@ -273,14 +274,14 @@
   border-radius: $gl-border-radius-base-inner 0 0 $gl-border-radius-base-inner;
   color: $gl-text-color-secondary;
   margin: -1px 0 -1px -1px;
-  box-shadow: inset 0 0 0 1px $gray-400;
+  box-shadow: inset 0 0 0 1px var(--gl-control-border-color-default);
   flex: 1;
   transition: color 0.1s linear;
   width: auto;
 
   &:hover,
   &:focus {
-    color: $gl-text-color;
+    @apply gl-text-default;
   }
 }
 
@@ -321,7 +322,7 @@
   .epics-details-filters {
     padding-top: $gl-padding-8;
     padding-bottom: $gl-padding-8;
-    background-color: $white;
+    @apply gl-bg-default;
   }
 
   .filter-dropdown-container {
@@ -349,7 +350,7 @@
     }
 
     .dropdown-label-box {
-      border-color: $white;
+      border-color: var(--gl-background-color-default);
       border-style: solid;
       border-width: 1px;
       width: 17px;
@@ -378,7 +379,7 @@
     // around sort dropdown match with filter
     // input field.
     .gl-button {
-      box-shadow: inset 0 0 0 1px $gray-400;
+      box-shadow: inset 0 0 0 1px var(--gl-control-border-color-default);
     }
   }
 

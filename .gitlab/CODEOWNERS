@@ -1186,7 +1186,6 @@ lib/gitlab/checks/**
 /app/assets/javascripts/access_tokens/
 /app/assets/javascripts/alerts_settings/graphql/mutations/reset_http_token.mutation.graphql
 /app/assets/javascripts/authentication/
-/app/assets/javascripts/ide/components/shared/tokened_input.vue
 /app/assets/javascripts/packages_and_registries/package_registry/components/list/tokens/
 /app/assets/javascripts/pages/admin/impersonation_tokens/
 /app/assets/javascripts/pages/groups/settings/access_tokens/
@@ -1674,6 +1673,7 @@ ee/lib/gitlab/llm/completions/chat.rb
 /qa/qa/specs/features/**/remote_development/ @gitlab-org/maintainers/workspaces/backend @gl-quality/qe-maintainers
 
 ^[Create::IDE - Remote Development Frontend] @gitlab-org/maintainers/workspaces/frontend
+/app/assets/javascripts/ide/components/shared/tokened_input.vue
 /ee/app/assets/remote_development/
 /ee/app/assets/**/remote_development/
 /ee/app/views/remote_development/

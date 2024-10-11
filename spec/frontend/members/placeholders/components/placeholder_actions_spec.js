@@ -173,10 +173,6 @@ describe('PlaceholderActions', () => {
           });
         });
 
-        it('refetches sourceUsersQuery', () => {
-          expect(sourceUsersQueryHandler).toHaveBeenCalledTimes(2);
-        });
-
         it('emits "confirm" event', async () => {
           await waitForPromises();
           expect(wrapper.emitted('confirm')[0]).toEqual([]);
@@ -216,10 +212,6 @@ describe('PlaceholderActions', () => {
             id: mockSourceUsers[0].id,
             userId: mockUser1.id,
           });
-        });
-
-        it('does not refetch sourceUsersQuery', () => {
-          expect(sourceUsersQueryHandler).toHaveBeenCalledTimes(1);
         });
 
         it('does not emit "confirm" event', async () => {

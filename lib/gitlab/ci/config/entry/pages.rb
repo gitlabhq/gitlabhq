@@ -17,7 +17,7 @@ module Gitlab
           attributes ALLOWED_KEYS
 
           validations do
-            validates :config, type: Hash
+            validates :config, hash_or_boolean: true
             validates :config, allowed_keys: ALLOWED_KEYS
 
             with_options allow_nil: true do

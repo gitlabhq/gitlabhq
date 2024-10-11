@@ -65,7 +65,7 @@ sudo service gitlab stop
 
 ### 3. Update Ruby
 
-From GitLab 16.7, we only support Ruby 3.1.x and dropped support for Ruby 3.0. Be sure to upgrade if necessary.
+In GitLab 17.5 and later, we only support Ruby 3.2.x and have dropped support for Ruby 3.1. Be sure to upgrade if necessary.
 You can check which version you are running with `ruby -v`.
 
 [Install Ruby](https://www.ruby-lang.org/en/documentation/installation/).

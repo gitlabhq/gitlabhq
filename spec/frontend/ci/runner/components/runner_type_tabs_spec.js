@@ -1,5 +1,6 @@
 import { GlTab } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { stubComponent } from 'helpers/stub_component';
 import RunnerTypeTabs from '~/ci/runner/components/runner_type_tabs.vue';
 import RunnerCount from '~/ci/runner/components/stat/runner_count.vue';
 import {
@@ -73,14 +74,13 @@ describe('RunnerTypeTabs', () => {
   it('Shows count when receiving a number', () => {
     createComponent({
       stubs: {
-        RunnerCount: {
-          props: ['variables'],
+        RunnerCount: stubComponent(RunnerCount, {
           render() {
             return this.$scopedSlots.default({
               count: mockCount(this.variables.type),
             });
           },
-        },
+        }),
       },
     });
 
@@ -90,14 +90,13 @@ describe('RunnerTypeTabs', () => {
   it('Shows formatted count when receiving a large number', () => {
     createComponent({
       stubs: {
-        RunnerCount: {
-          props: ['variables'],
+        RunnerCount: stubComponent(RunnerCount, {
           render() {
             return this.$scopedSlots.default({
               count: mockCount(this.variables.type, 1000),
             });
           },
-        },
+        }),
       },
     });
 

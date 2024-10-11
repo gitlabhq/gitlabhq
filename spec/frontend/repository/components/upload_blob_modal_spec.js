@@ -3,6 +3,7 @@ import { shallowMount } from '@vue/test-utils';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
+import FileIcon from '~/vue_shared/components/file_icon.vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
@@ -56,6 +57,7 @@ describe('UploadBlobModal', () => {
   const actionButtonDisabledState = () => findModal().props('actionPrimary').attributes.disabled;
   const cancelButtonDisabledState = () => findModal().props('actionCancel').attributes.disabled;
   const actionButtonLoadingState = () => findModal().props('actionPrimary').attributes.loading;
+  const findFileIcon = () => wrapper.findComponent(FileIcon);
 
   describe.each`
     canPushCode | displayBranchName | displayForkedBranchMessage
@@ -154,6 +156,10 @@ describe('UploadBlobModal', () => {
             findModal().vm.$emit('primary', mockEvent);
 
             await waitForPromises();
+          });
+
+          it('displays the correct file type icon', () => {
+            expect(findFileIcon().props('fileName')).toBe('file.jpg');
           });
 
           it('redirects to the uploaded file', () => {

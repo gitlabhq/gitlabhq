@@ -515,8 +515,13 @@ module Ci
       end
     end
 
-    def ensure_manager(system_xid, &blk)
-      RunnerManager.safe_find_or_create_by!(runner_id: id, system_xid: system_xid.to_s, &blk) # rubocop: disable Performance/ActiveRecordSubtransactionMethods
+    def ensure_manager(system_xid)
+      # rubocop: disable Performance/ActiveRecordSubtransactionMethods -- This is used only in API endpoints outside of transactions
+      RunnerManager.safe_find_or_create_by!(runner_id: id, system_xid: system_xid.to_s) do |m|
+        m.runner_type = runner_type
+        m.sharding_key_id = sharding_key_id
+      end
+      # rubocop: enable Performance/ActiveRecordSubtransactionMethods
     end
 
     def registration_available?

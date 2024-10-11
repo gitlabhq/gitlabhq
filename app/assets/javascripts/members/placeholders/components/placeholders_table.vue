@@ -10,6 +10,7 @@ import {
 } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { __, s__ } from '~/locale';
+import { fetchPolicies } from '~/lib/graphql';
 
 import { DEFAULT_PAGE_SIZE } from '~/members/constants';
 
@@ -81,6 +82,8 @@ export default {
           sort: this.querySort,
         };
       },
+      // ensures up-to-date (instead of cached, sometimes inaccurate) results when query executes
+      fetchPolicy: fetchPolicies.NETWORK_ONLY,
       skip() {
         return this.isSearchQueryTooShort;
       },

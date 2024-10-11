@@ -5,6 +5,8 @@ class QueueBackfillRunnerTypeAndShardingKeyIdOnCiRunnerManagers < Gitlab::Databa
 
   restrict_gitlab_migration gitlab_schema: :gitlab_ci
 
+  MIGRATION = 'BackfillRunnerTypeAndShardingKeyIdOnCiRunnerManagers'
+
   def up
     # no-op
   end

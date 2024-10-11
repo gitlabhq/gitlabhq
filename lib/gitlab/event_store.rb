@@ -50,12 +50,6 @@ module Gitlab
         to: ::Packages::PackageCreatedEvent,
         if: ->(event) { ::Ml::ExperimentTracking::AssociateMlCandidateToPackageWorker.handles_event?(event) }
       store.subscribe ::Ci::InitializePipelinesIidSequenceWorker, to: ::Projects::ProjectCreatedEvent
-      store.subscribe ::Users::RecordLastActivityWorker,
-        to: ::Users::ActivityEvent,
-        if: ->(event) do
-          actor = ::Group.actor_from_id(event.data[:namespace_id])
-          Feature.enabled?(:track_member_activity, actor)
-        end
       store.subscribe ::Pages::DeletePagesDeploymentWorker, to: ::Projects::ProjectArchivedEvent
     end
     private_class_method :configure!

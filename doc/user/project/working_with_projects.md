@@ -133,6 +133,7 @@ Prerequisites:
 1. Select **Settings > General**.
 1. In the **Project name** text box, enter your project name. See the [limitations on project names](../../user/reserved_names.md).
 1. Optional. In the **Project description** text box, enter your project description. The description is limited to 2,000 characters.
+Components published in the CI/CD catalog require a project description.
 1. Optional. Under **Project avatar**, to change your project avatar, select **Choose file**. The ideal image size is 192 x 192 pixels, and the maximum file size allowed is 200 KB.
 1. Select **Save changes**.
 

@@ -2,6 +2,7 @@
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { EditorContent as TiptapEditorContent } from '@tiptap/vue-2';
 import { isEqual } from 'lodash';
+import { markRaw } from '~/lib/utils/vue3compat/mark_raw';
 import { __ } from '~/locale';
 import { VARIANT_DANGER } from '~/alert';
 import EditorModeSwitcher from '~/vue_shared/components/markdown/editor_mode_switcher.vue';
@@ -115,7 +116,6 @@ export default {
   },
   data() {
     return {
-      contentEditor: null,
       focused: false,
       isLoading: false,
       latestMarkdown: null,
@@ -156,21 +156,23 @@ export default {
     } = this;
 
     // This is a non-reactive attribute intentionally since this is a complex object.
-    this.contentEditor = createContentEditor({
-      renderMarkdown,
-      uploadsPath,
-      extensions,
-      serializerConfig,
-      drawioEnabled,
-      enableAutocomplete,
-      autocompleteDataSources,
-      codeSuggestionsConfig,
-      sidebarMediator: SidebarMediator.singleton,
-      tiptapOptions: {
-        autofocus,
-        editable,
-      },
-    });
+    this.contentEditor = markRaw(
+      createContentEditor({
+        renderMarkdown,
+        uploadsPath,
+        extensions,
+        serializerConfig,
+        drawioEnabled,
+        enableAutocomplete,
+        autocompleteDataSources,
+        codeSuggestionsConfig,
+        sidebarMediator: SidebarMediator.singleton,
+        tiptapOptions: {
+          autofocus,
+          editable,
+        },
+      }),
+    );
   },
   async mounted() {
     this.$emit('initialized');

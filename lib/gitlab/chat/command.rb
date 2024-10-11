@@ -48,6 +48,7 @@ module Gitlab
           sha: commit,
           chat_data: {
             chat_name_id: chat_name.id,
+            project_id: project.id,
             command: name,
             arguments: arguments,
             response_url: response_url

@@ -151,6 +151,10 @@ describe('PlaceholdersTabApp', () => {
         });
       });
 
+      it('passes the correct sort to FilteredSearchBar', () => {
+        expect(findFilteredSearchBar().props('initialSortBy')).toBe('STATUS_ASC');
+      });
+
       it('updates URL on new filter and search', async () => {
         findFilteredSearchBar().vm.$emit('onFilter', [
           filterByReassigningStatusToken,
@@ -175,6 +179,7 @@ describe('PlaceholdersTabApp', () => {
         expect(window.location.search).toBe(
           `?tab=placeholders&status=failed&search=foo&sort=SOURCE_NAME_DESC`,
         );
+        expect(findFilteredSearchBar().props('initialSortBy')).toBe('SOURCE_NAME_DESC');
       });
     });
 

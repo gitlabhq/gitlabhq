@@ -32,14 +32,14 @@ describe('NavItem component', () => {
       stubs: {
         RouterLink: {
           ...RouterLinkStub,
-          render() {
+          render(h) {
             const children = this.$scopedSlots.default({
               href: '/foo',
               isActive: false,
               navigate: jest.fn(),
               ...routerLinkSlotProps,
             });
-            return children;
+            return h('a', children);
           },
         },
       },

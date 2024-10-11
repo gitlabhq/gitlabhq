@@ -40,12 +40,16 @@ module Projects
 
     private
 
+    def config
+      build.pages.is_a?(Hash) ? build.pages : {}
+    end
+
     def extra_deployment?
       path_prefix.present?
     end
 
     def path_prefix
-      ::Gitlab::Utils.slugify(build.pages&.fetch(:path_prefix, nil) || '')
+      ::Gitlab::Utils.slugify(config.fetch(:path_prefix, nil) || '')
     end
 
     def success

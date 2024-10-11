@@ -4331,22 +4331,54 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   end
 
   describe '#pages_generator?', feature_category: :pages do
-    where(:name, :enabled, :result) do
-      'foo' | false | false
-      'pages' | false | false
-      'pages:preview' | true | false
-      'pages' | true | true
-    end
-
-    with_them do
-      before do
-        stub_pages_setting(enabled: enabled)
-        build.update!(name: name)
+    context 'with customizable_pages_job_name feature flag enabled' do
+      where(:name, :pages_config, :enabled, :result) do
+        'foo' | nil | false | false
+        'pages' | nil | false | false
+        'pages:preview' | nil | true | false
+        'pages' | nil | true | true
+        'foo' | true | true | true
+        'foo' | { expire_in: '1 day' } | true | true
+        'foo' | false | true | false
+        'pages' | false | true | false
       end
 
-      subject { build.pages_generator? }
+      with_them do
+        before do
+          stub_pages_setting(enabled: enabled)
+          build.update!(name: name, options: { pages: pages_config })
+          stub_feature_flags(customizable_pages_job_name: true)
+        end
 
-      it { is_expected.to eq(result) }
+        subject { build.pages_generator? }
+
+        it { is_expected.to eq(result) }
+      end
+    end
+
+    context 'with customizable_pages_job_name feature flag disabled' do
+      where(:name, :pages_config, :enabled, :result) do
+        'foo' | nil | false | false
+        'pages' | nil | false | false
+        'pages:preview' | nil | true | false
+        'pages' | nil | true | true
+        'foo' | true | true | false
+        'foo' | { expire_in: '1 day' } | true | false
+        'foo' | false | true | false
+        'pages' | false | true | true
+      end
+
+      with_them do
+        before do
+          stub_feature_flags(customizable_pages_job_name: false)
+          stub_pages_setting(enabled: enabled)
+          build.update!(name: name, options: { pages: pages_config })
+        end
+
+        subject { build.pages_generator? }
+
+        it { is_expected.to eq(result) }
+      end
     end
   end
 

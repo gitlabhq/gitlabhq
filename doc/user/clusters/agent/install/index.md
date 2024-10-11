@@ -27,7 +27,40 @@ Before you can install the agent in your cluster, you need:
   Then it is available by default at `wss://gitlab.example.com/-/kubernetes-agent/`.
   On GitLab.com, the agent server is available at `wss://kas.gitlab.com`.
 
-## Installation steps
+## Bootstrap the agent with Flux support (recommended)
+
+You can install the agent by bootstrapping it with the [GitLab CLI (`glab`)](../../../../editor_extensions/gitlab_cli/index.md) and Flux.
+
+Prerequisites:
+
+- You have the following command-line tools installed:
+  - `glab`
+  - `kubectl`
+  - `flux`
+- You have a local cluster connection that works with `kubectl` and `flux`.
+- You [bootstrapped Flux](https://fluxcd.io/flux/installation/bootstrap/gitlab/) into the cluster with `flux bootstrap`.
+
+To install the agent:
+
+- Run `glab cluster agent bootstrap`:
+
+  ```shell
+  glab cluster agent bootstrap <agent-name>
+  ```
+
+By default, the command:
+
+1. Registers the agent.
+1. Configures the agent.
+1. Configures an environment with a dashboard for the agent.
+1. Creates an agent token.
+1. In the cluster, creates a Kubernetes secret with the agent token.
+1. Commits the Flux Helm resources to the Git repository.
+1. Triggers a Flux reconciliation.
+
+For customization options, run `glab cluster agent bootstrap --help`.
+
+## Install the agent manually
 
 It takes three steps to install the agent in your cluster:
 

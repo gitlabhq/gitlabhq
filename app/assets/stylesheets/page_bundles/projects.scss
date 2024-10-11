@@ -43,7 +43,7 @@
     &.static-namespace {
       height: 35px;
       border-radius: 3px;
-      border: 1px solid var(--gl-border-color-default);
+      @apply gl-border;
       max-width: 100%;
       flex-grow: 1;
     }
@@ -115,7 +115,7 @@
   margin: 0;
 
   a {
-    color: var(--gl-text-color-default);
+    @apply gl-text-default;
   }
 
   .dropdown-menu {
@@ -137,7 +137,7 @@
     padding: 16px 0;
 
     &:not(:first-child) {
-      border-top: 1px solid var(--gl-border-color-default);
+      @apply gl-border-t;
     }
 
     .controls {
@@ -264,7 +264,7 @@
 .project-row {
   .description p {
     margin-bottom: 0;
-    color: var(--gl-text-color-subtle);
+    @apply gl-text-subtle;
     @include str-truncated(100%);
   }
 
@@ -460,8 +460,8 @@
 
   .form-control {
     @include gl-font-monospace;
-    background-color: var(--white, $white);
-    border-color: var(--gl-border-color-default);
+    background-color: var(--gl-control-background-color-default);
+    border-color: var(--gl-control-border-color-default);
     font-size: 14px;
     margin-left: -1px;
     cursor: auto;

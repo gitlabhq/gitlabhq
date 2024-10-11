@@ -12,7 +12,6 @@ import {
   PLACEHOLDER_STATUS_AWAITING_APPROVAL,
   PLACEHOLDER_STATUS_REASSIGNING,
 } from '~/import_entities/import_groups/constants';
-import importSourceUsersQuery from '../graphql/queries/import_source_users.query.graphql';
 import importSourceUserReassignMutation from '../graphql/mutations/reassign.mutation.graphql';
 import importSourceUserKeepAsPlaceholderMutation from '../graphql/mutations/keep_as_placeholder.mutation.graphql';
 import importSourceUseResendNotificationMutation from '../graphql/mutations/resend_notification.mutation.graphql';
@@ -254,8 +253,6 @@ export default {
               id: this.sourceUser.id,
               ...(hasSelectedUser ? { userId: this.selectedUser.id } : {}),
             },
-            // importSourceUsersQuery used in placeholders_table.vue
-            refetchQueries: [hasSelectedUser ? {} : importSourceUsersQuery],
           })
           .then(({ data }) => {
             const { errors } = getFirstPropertyValue(data);

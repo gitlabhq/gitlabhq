@@ -2145,8 +2145,6 @@ RSpec/FeatureCategory:
     - 'spec/lib/gitlab/chat/command_spec.rb'
     - 'spec/lib/gitlab/chat/output_spec.rb'
     - 'spec/lib/gitlab/chat/responder/base_spec.rb'
-    - 'spec/lib/gitlab/chat/responder/mattermost_spec.rb'
-    - 'spec/lib/gitlab/chat/responder/slack_spec.rb'
     - 'spec/lib/gitlab/chat_name_token_spec.rb'
     - 'spec/lib/gitlab/ci/artifacts/logger_spec.rb'
     - 'spec/lib/gitlab/ci/artifacts/metrics_spec.rb'

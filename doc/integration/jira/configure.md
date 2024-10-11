@@ -21,6 +21,7 @@ The supported Jira versions are `6.x`, `7.x`, `8.x`, and `9.x`.
 > - **Jira issues** and **Jira issues for vulnerabilities** sections [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151753) in GitLab 17.0. Feature flag `jira_multiple_project_keys` removed.
 > - **Enable Jira issues** checkbox [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149055) to **View Jira issues** in GitLab 17.0.
 > - **Enable Jira issue creation from vulnerabilities** checkbox [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149055) to **Create Jira issues for vulnerabilities** in GitLab 17.0.
+> - **Customize Jira issues** setting [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/478824) in GitLab 17.5.
 
 Prerequisites:
 
@@ -93,6 +94,8 @@ To configure your project settings in GitLab:
    1. Enter a Jira project key.
    1. Select **Fetch issue types for this project key** (**{retry}**),
       then select the type of Jira issues to create.
+   1. Optional. Select the **Customize Jira issues** checkbox to be able to review, modify, or add details
+      to a Jira issue when it's created for a vulnerability.
 1. Optional. Select **Test settings**.
 1. Select **Save changes**.
 
@@ -174,6 +177,8 @@ To create a Jira issue for a vulnerability:
 1. Select **Secure > Vulnerability report**.
 1. Select the vulnerability's description.
 1. Select **Create Jira issue**.
+
+   If the [**Customize Jira issues**](#configure-the-integration) setting is selected, you will be redirected to the issue creation form on your Jira instance, pre-filled with vulnerability data. You can review, modify, or add details before creating the Jira issue.
 
 The issue is created in the target Jira project with information from the vulnerability report.
 

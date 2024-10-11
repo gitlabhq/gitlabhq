@@ -55,6 +55,11 @@ The following models are under evaluation, and support is limited:
 | CodeLlama     | [Code-Llama 13b](https://huggingface.co/meta-llama/CodeLlama-13b-Instruct-hf)      | **{dotted-circle}** No                | **{check-circle}** Yes               | **{dotted-circle}** No        |
 | DeepSeekCoder | [DeepSeek Coder 33b Instruct](https://huggingface.co/deepseek-ai/deepseek-coder-33b-instruct)        | **{check-circle}** Yes                | **{check-circle}** Yes               | **{dotted-circle}** No        |
 | DeepSeekCoder | [DeepSeek Coder 33b Base](https://huggingface.co/deepseek-ai/deepseek-coder-33b-base)        | **{check-circle}** Yes                | **{dotted-circle}** No               | **{dotted-circle}** No        |
+| GPT  | [GPT-3.5-Turbo](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure#gpt-35)        | **{check-circle}** No                | **{dotted-circle}** Yes               | **{dotted-circle}** No        |
+| GPT  | [GPT-4](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure#gpt-4)        | **{check-circle}** No                | **{dotted-circle}** Yes               | **{dotted-circle}** No        |
+| GPT  | [GPT-4 Turbo](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure#gpt-4)        | **{check-circle}** No                | **{dotted-circle}** Yes               | **{dotted-circle}** No        |
+| GPT  | [GPT-4o](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure#gpt-4o-and-gpt-4-turbo)        | **{check-circle}** No                | **{dotted-circle}** Yes               | **{dotted-circle}** No        |
+| GPT  | [GPT-4o-mini](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure#gpt-4o-and-gpt-4-turbo)        | **{check-circle}** No                | **{dotted-circle}** Yes               | **{dotted-circle}** No        |
 
 <!-- vale gitlab_base.Spelling = YES -->
 
@@ -63,7 +68,7 @@ The following models are under evaluation, and support is limited:
 To host your models, you should use:
 
 - For non-cloud on-premise deployments, [vLLM](https://docs.vllm.ai/en/stable/).
-- For cloud deployments, AWS Bedrock as a cloud provider.
+- For cloud deployments, AWS Bedrock or Azure as a cloud providers.
 
 ## Configure your GitLab instance
 

@@ -622,7 +622,7 @@
 }
 
 .dropdown-input-field {
-  background-color: $input-bg;
+  background-color: var(--gl-control-background-color-default);
   display: block;
   width: 100%;
   min-height: 30px;
@@ -632,7 +632,7 @@
   padding-right: $gl-spacing-scale-3;
   color: $gray-700;
   line-height: 30px;
-  border: 1px solid $gray-400;
+  border: 1px solid var(--gl-control-border-color-default);
   border-radius: $gl-border-radius-base;
   outline: 0;
 

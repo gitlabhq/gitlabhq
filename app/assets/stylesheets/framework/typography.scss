@@ -27,12 +27,6 @@
     > code {
       font-weight: inherit;
     }
-
-    a:not(.no-attachment-icon) img {
-      // Remove bottom padding because
-      // <p> already has $gl-padding bottom
-      margin-bottom: 0;
-    }
   }
 
   .media-container {
@@ -47,16 +41,13 @@
 
   img {
     max-width: 100%;
+    vertical-align: baseline;
   }
 
   img[width][height] {
     object-fit: contain;
     object-position: top;
     height: auto;
-  }
-
-  img:not(.emoji) {
-    margin: 0 0 8px;
   }
 
   img.lazy {
@@ -102,7 +93,6 @@
   // Single code lines should wrap
   code {
     font-family: $monospace-font;
-    vertical-align: bottom;
     white-space: pre-wrap;
     // Safari
     word-wrap: break-word;
@@ -828,30 +818,12 @@ h4 {
 /**
  * form text input i.e. search bar, comments, forms, etc.
  */
-/* stylelint-disable selector-no-vendor-prefix  */
 input,
 textarea {
-  &::-webkit-input-placeholder {
-    color: $gl-text-color-tertiary;
-  }
-
-  // support firefox 19+ vendor prefix
-  &::-moz-placeholder {
-    color: $gl-text-color-tertiary;
-    opacity: 1; // FF defaults to 0.54
-  }
-
-  // support Edge vendor prefix
-  &::-ms-input-placeholder {
-    color: $gl-text-color-tertiary;
-  }
-
-  // support IE vendor prefix
-  &:-ms-input-placeholder {
-    color: $gl-text-color-tertiary;
+  &::placeholder {
+    color: var(--gl-control-placeholder-color);
   }
 }
-/* stylelint-enable */
 
 wbr {
   display: inline-block;

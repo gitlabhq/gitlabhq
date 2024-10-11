@@ -177,6 +177,9 @@ export default {
         <counter
           v-gl-tooltip:super-sidebar.bottom="mrMenuShown ? '' : $options.i18n.mergeRequests"
           class="gl-w-full"
+          :class="{
+            'js-merge-request-dashboard-shortcut': !sidebarData.merge_request_menu,
+          }"
           icon="merge-request"
           :href="sidebarData.merge_request_dashboard_path"
           :count="mergeRequestTotalCount"
