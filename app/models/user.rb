@@ -1207,11 +1207,7 @@ class User < ApplicationRecord
   end
 
   def needs_new_otp_secret?
-    if Feature.enabled?(:delete_otp_no_webauthn)
-      return !two_factor_otp_enabled? && otp_secret_expired?
-    end
-
-    !two_factor_enabled? && otp_secret_expired?
+    !two_factor_otp_enabled? && otp_secret_expired?
   end
 
   def otp_secret_expired?

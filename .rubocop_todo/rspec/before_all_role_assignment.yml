@@ -139,7 +139,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'ee/spec/features/search/user_searches_for_epics_spec.rb'
     - 'ee/spec/features/search/zoekt/search_spec.rb'
     - 'ee/spec/features/subscriptions/expiring_subscription_message_spec.rb'
-    - 'ee/spec/features/trials/show_trial_banner_spec.rb'
     - 'ee/spec/finders/approval_rules/group_finder_spec.rb'
     - 'ee/spec/finders/compliance_management/merge_requests/compliance_violations_finder_spec.rb'
     - 'ee/spec/finders/concerns/epics/with_access_check_spec.rb'

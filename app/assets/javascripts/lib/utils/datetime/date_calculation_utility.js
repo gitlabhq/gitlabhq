@@ -1,4 +1,5 @@
 import { isNumber } from 'lodash';
+import dateformat from '~/lib/dateformat';
 import { __, n__ } from '~/locale';
 import { getDayName, parseSeconds } from './date_format_utility';
 
@@ -798,3 +799,21 @@ export function convertNanoToMs(nano) {
 export function convertMsToNano(ms) {
   return ms * 1e6;
 }
+
+export const isValidDateString = (dateString) => {
+  if (typeof dateString !== 'string' || !dateString.trim()) {
+    return false;
+  }
+
+  let isoFormatted;
+  try {
+    isoFormatted = dateformat(dateString, 'isoUtcDateTime');
+  } catch (e) {
+    if (e instanceof TypeError) {
+      // not a valid date string
+      return false;
+    }
+    throw e;
+  }
+  return !Number.isNaN(Date.parse(isoFormatted));
+};

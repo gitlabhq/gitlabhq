@@ -19,8 +19,6 @@
 
 = render partial: 'flash_messages'
 
-= render_if_exists 'gitlab_subscriptions/trials/alert', namespace: @group
-
 = render_if_exists 'shared/duo_free_access_ending_banner', resource: @group
 
 = render 'groups/home_panel'

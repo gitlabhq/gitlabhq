@@ -94,8 +94,6 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
   end
 
   def destroy_otp
-    return if Feature.disabled?(:delete_otp_no_webauthn)
-
     result = TwoFactor::DestroyOtpService.new(current_user, user: current_user).execute
 
     if result[:status] == :success

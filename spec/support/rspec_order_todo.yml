@@ -271,7 +271,6 @@
 - './ee/spec/features/trial_registrations/company_information_spec.rb'
 - './ee/spec/features/trial_registrations/signin_spec.rb'
 - './ee/spec/features/trial_registrations/signup_spec.rb'
-- './ee/spec/features/trials/show_trial_banner_spec.rb'
 - './ee/spec/features/users/login_spec.rb'
 - './ee/spec/features/users/signup_spec.rb'
 - './ee/spec/features/user_unsubscribes_from_admin_notifications_spec.rb'

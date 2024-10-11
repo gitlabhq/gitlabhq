@@ -13,7 +13,7 @@ import {
 } from '@gitlab/ui';
 import { STATUS_CLOSED } from '~/issues/constants';
 import { visitUrl, mergeUrlParams, joinPaths } from '~/lib/utils/url_utility';
-import { isValidDateString } from '~/lib/utils/datetime_range';
+import { isValidDateString } from '~/lib/utils/datetime_utility';
 import { s__, n__ } from '~/locale';
 import { INCIDENT_SEVERITY } from '~/sidebar/constants';
 import SeverityToken from '~/sidebar/components/severity/severity.vue';

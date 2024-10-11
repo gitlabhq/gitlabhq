@@ -12690,6 +12690,30 @@ The edge type for [`CustomEmoji`](#customemoji).
 | <a id="customemojiedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="customemojiedgenode"></a>`node` | [`CustomEmoji`](#customemoji) | The item at the end of the edge. |
 
+#### `CustomFieldConnection`
+
+The connection type for [`CustomField`](#customfield).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="customfieldconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
+| <a id="customfieldconnectionedges"></a>`edges` | [`[CustomFieldEdge]`](#customfieldedge) | A list of edges. |
+| <a id="customfieldconnectionnodes"></a>`nodes` | [`[CustomField]`](#customfield) | A list of nodes. |
+| <a id="customfieldconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `CustomFieldEdge`
+
+The edge type for [`CustomField`](#customfield).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="customfieldedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="customfieldedgenode"></a>`node` | [`CustomField`](#customfield) | The item at the end of the edge. |
+
 #### `CustomerRelationsContactConnection`
 
 The connection type for [`CustomerRelationsContact`](#customerrelationscontact).
@@ -21061,6 +21085,34 @@ A custom emoji uploaded by user.
 | <a id="customemojipermissionsdeletecustomemoji"></a>`deleteCustomEmoji` | [`Boolean!`](#boolean) | If `true`, the user can perform `delete_custom_emoji` on this resource. |
 | <a id="customemojipermissionsreadcustomemoji"></a>`readCustomEmoji` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_custom_emoji` on this resource. |
 
+### `CustomField`
+
+Represents a custom field.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="customfieldactive"></a>`active` | [`Boolean!`](#boolean) | Whether the custom field is active. |
+| <a id="customfieldcreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp when the custom field was created. |
+| <a id="customfieldfieldtype"></a>`fieldType` | [`CustomFieldType!`](#customfieldtype) | Type of custom field. |
+| <a id="customfieldid"></a>`id` | [`IssuablesCustomFieldID!`](#issuablescustomfieldid) | Global ID of the custom field. |
+| <a id="customfieldname"></a>`name` | [`String!`](#string) | Name of the custom field. |
+| <a id="customfieldselectoptions"></a>`selectOptions` | [`[CustomFieldSelectOption!]`](#customfieldselectoption) | Available options for a select field. |
+| <a id="customfieldupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp when the custom field was last updated. |
+| <a id="customfieldworkitemtypes"></a>`workItemTypes` | [`[WorkItemType!]`](#workitemtype) | Work item types that the custom field is available on. |
+
+### `CustomFieldSelectOption`
+
+Represents a custom field select option.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="customfieldselectoptionid"></a>`id` | [`IssuablesCustomFieldSelectOptionID!`](#issuablescustomfieldselectoptionid) | Global ID of the custom field select option. |
+| <a id="customfieldselectoptionvalue"></a>`value` | [`String!`](#string) | Value of the custom field select option. |
+
 ### `CustomerRelationsContact`
 
 #### Fields
@@ -23791,6 +23843,28 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="groupcustomemojiincludeancestorgroups"></a>`includeAncestorGroups` | [`Boolean`](#boolean) | Includes custom emoji from parent groups. |
+
+##### `Group.customFields`
+
+Custom fields configured for the group. Available only when feature flag `custom_fields_feature` is enabled.
+
+DETAILS:
+**Introduced** in GitLab 17.5.
+**Status**: Experiment.
+
+Returns [`CustomFieldConnection`](#customfieldconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupcustomfieldsactive"></a>`active` | [`Boolean`](#boolean) | Filter for active fields. If `false`, excludes active fields. If `true`, returns only active fields. |
+| <a id="groupcustomfieldssearch"></a>`search` | [`String`](#string) | Search query for custom field name. |
+| <a id="groupcustomfieldsworkitemtypeids"></a>`workItemTypeIds` | [`[WorkItemsTypeID!]`](#workitemstypeid) | Filter custom fields associated to the given work item types. If empty, returns custom fields not associated to any work item type. |
 
 ##### `Group.customizableDashboardVisualizations`
 
@@ -37010,6 +37084,17 @@ Values for sorting tags.
 | <a id="containerrepositorytagsortpublished_at_asc"></a>`PUBLISHED_AT_ASC` | Ordered by published_at in ascending order. Only available for GitLab.com. |
 | <a id="containerrepositorytagsortpublished_at_desc"></a>`PUBLISHED_AT_DESC` | Ordered by published_at in descending order. Only available for GitLab.com. |
 
+### `CustomFieldType`
+
+Type of custom field.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="customfieldtypemulti_select"></a>`MULTI_SELECT` | Multi select field type. |
+| <a id="customfieldtypenumber"></a>`NUMBER` | Number field type. |
+| <a id="customfieldtypesingle_select"></a>`SINGLE_SELECT` | Single select field type. |
+| <a id="customfieldtypetext"></a>`TEXT` | Text field type. |
+
 ### `CustomerRelationsContactState`
 
 | Value | Description |
@@ -40218,6 +40303,18 @@ The older format `"gid://gitlab/PrometheusService/1"` was deprecated in 14.1.
 A `IssuableID` is a global ID. It is encoded as a string.
 
 An example `IssuableID` is: `"gid://gitlab/Issuable/1"`.
+
+### `IssuablesCustomFieldID`
+
+A `IssuablesCustomFieldID` is a global ID. It is encoded as a string.
+
+An example `IssuablesCustomFieldID` is: `"gid://gitlab/Issuables::CustomField/1"`.
+
+### `IssuablesCustomFieldSelectOptionID`
+
+A `IssuablesCustomFieldSelectOptionID` is a global ID. It is encoded as a string.
+
+An example `IssuablesCustomFieldSelectOptionID` is: `"gid://gitlab/Issuables::CustomFieldSelectOption/1"`.
 
 ### `IssueID`
 

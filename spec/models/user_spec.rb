@@ -2651,69 +2651,33 @@ RSpec.describe User, feature_category: :user_profile do
   describe 'needs_new_otp_secret?', :freeze_time do
     let(:user) { create(:user) }
 
-    context 'when `delete_otp_no_webauthn` feature flag is enabled' do
-      context 'when no OTP is enabled' do
-        let(:user) { create(:user, :two_factor_via_webauthn) }
+    context 'when no OTP is enabled' do
+      let(:user) { create(:user, :two_factor_via_webauthn) }
 
-        it 'returns true if otp_secret_expires_at is nil' do
-          expect(user.needs_new_otp_secret?).to eq(true)
-        end
-
-        it 'returns true if the otp_secret_expires_at has passed' do
-          user.update!(otp_secret_expires_at: 10.minutes.ago)
-
-          expect(user.reload.needs_new_otp_secret?).to eq(true)
-        end
-
-        it 'returns false if the otp_secret_expires_at has not passed' do
-          user.update!(otp_secret_expires_at: 10.minutes.from_now)
-
-          expect(user.reload.needs_new_otp_secret?).to eq(false)
-        end
+      it 'returns true if otp_secret_expires_at is nil' do
+        expect(user.needs_new_otp_secret?).to eq(true)
       end
 
-      context 'when OTP is enabled' do
-        let(:user) { create(:user, :two_factor_via_otp) }
+      it 'returns true if the otp_secret_expires_at has passed' do
+        user.update!(otp_secret_expires_at: 10.minutes.ago)
 
-        it 'returns false even if ttl is expired' do
-          user.otp_secret_expires_at = 10.minutes.ago
+        expect(user.reload.needs_new_otp_secret?).to eq(true)
+      end
 
-          expect(user.needs_new_otp_secret?).to eq(false)
-        end
+      it 'returns false if the otp_secret_expires_at has not passed' do
+        user.update!(otp_secret_expires_at: 10.minutes.from_now)
+
+        expect(user.reload.needs_new_otp_secret?).to eq(false)
       end
     end
 
-    context 'when `delete_otp_no_webauthn` feature flag is disabled' do
-      before do
-        stub_feature_flags(delete_otp_no_webauthn: false)
-      end
+    context 'when OTP is enabled' do
+      let(:user) { create(:user, :two_factor_via_otp) }
 
-      context 'when two-factor is not enabled' do
-        it 'returns true if otp_secret_expires_at is nil' do
-          expect(user.needs_new_otp_secret?).to eq(true)
-        end
+      it 'returns false even if ttl is expired' do
+        user.otp_secret_expires_at = 10.minutes.ago
 
-        it 'returns true if the otp_secret_expires_at has passed' do
-          user.update!(otp_secret_expires_at: 10.minutes.ago)
-
-          expect(user.reload.needs_new_otp_secret?).to eq(true)
-        end
-
-        it 'returns false if the otp_secret_expires_at has not passed' do
-          user.update!(otp_secret_expires_at: 10.minutes.from_now)
-
-          expect(user.reload.needs_new_otp_secret?).to eq(false)
-        end
-      end
-
-      context 'when two-factor is enabled' do
-        let(:user) { create(:user, :two_factor) }
-
-        it 'returns false even if ttl is expired' do
-          user.otp_secret_expires_at = 10.minutes.ago
-
-          expect(user.needs_new_otp_secret?).to eq(false)
-        end
+        expect(user.needs_new_otp_secret?).to eq(false)
       end
     end
   end

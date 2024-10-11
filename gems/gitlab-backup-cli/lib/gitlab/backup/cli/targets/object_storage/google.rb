@@ -19,7 +19,7 @@ module Gitlab
               @client = ::Google::Cloud::StorageTransfer.storage_transfer_service
             end
 
-            def dump(_, backup_id)
+            def dump(backup_id)
               response = find_or_create_job(backup_id, "backup")
               run_request = {
                 project_id: backup_job_spec(backup_id)[:project_id],
@@ -28,7 +28,7 @@ module Gitlab
               @results = client.run_transfer_job run_request
             end
 
-            def restore(_, backup_id)
+            def restore(backup_id)
               response = find_or_create_job(backup_id, "restore")
               run_request = {
                 project_id: restore_job_spec(backup_id)[:project_id],

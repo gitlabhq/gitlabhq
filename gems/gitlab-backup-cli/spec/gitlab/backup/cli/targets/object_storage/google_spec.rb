@@ -79,7 +79,7 @@ RSpec.describe Gitlab::Backup::Cli::Targets::ObjectStorage::Google do
           transfer_job: updated_spec
         )
         expect(client).to receive(:run_transfer_job).with({ job_name: "fake_transfer_job", project_id: "fake_project" })
-        object_storage.dump(nil, 12345)
+        object_storage.dump(12345)
       end
     end
 
@@ -94,7 +94,7 @@ RSpec.describe Gitlab::Backup::Cli::Targets::ObjectStorage::Google do
       it "creates a new job" do
         expect(client).to receive(:create_transfer_job)
           .with(transfer_job: new_backup_transfer_job_spec).and_return(backup_transfer_job)
-        object_storage.dump(nil, 12345)
+        object_storage.dump(12345)
       end
     end
   end
@@ -113,7 +113,7 @@ RSpec.describe Gitlab::Backup::Cli::Targets::ObjectStorage::Google do
           transfer_job: updated_spec
         )
         expect(client).to receive(:run_transfer_job).with({ job_name: "fake_transfer_job", project_id: "fake_project" })
-        object_storage.restore(nil, 12345)
+        object_storage.restore(12345)
       end
     end
 
@@ -128,7 +128,7 @@ RSpec.describe Gitlab::Backup::Cli::Targets::ObjectStorage::Google do
       it "creates a new job" do
         expect(client).to receive(:create_transfer_job)
           .with(transfer_job: new_restore_transfer_job_spec).and_return(restore_transfer_job)
-        object_storage.restore(nil, 12345)
+        object_storage.restore(12345)
       end
     end
   end
