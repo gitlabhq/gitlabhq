@@ -1,0 +1,64 @@
+{
+  "schema": "iglu:com.snowplowanalytics.snowplow/contexts/jsonschema/1-0-0",
+  "data": [
+    {
+      "schema": "iglu:com.gitlab/gitlab_standard/jsonschema/1-1-1",
+      "data": {
+        "environment": "development",
+        "source": "gitlab-javascript",
+        "correlation_id": "01J8TQSEHCG1EWCFSP5TKKYNPY",
+        "plan": "default",
+        "extra": {
+        },
+        "user_id": 1,
+        "is_gitlab_team_member": null,
+        "namespace_id": 31,
+        "project_id": 6,
+        "feature_enabled_by_namespace_ids": null,
+        "realm": "self-managed",
+        "instance_id": "c0b9bbb1-fdf8-42a1-af25-043711af0c6b",
+        "host_name": "macbook-pro.lan",
+        "instance_version": "17.5.0",
+        "context_generated_at": "2024-09-27T21:57:00.131Z",
+        "google_analytics_id": ""
+      }
+    },
+    {
+      "schema": "iglu:com.snowplowanalytics.snowplow/web_page/jsonschema/1-0-0",
+      "data": {
+        "id": "d03d95be-bc74-438e-bd7c-39df66249155"
+      }
+    },
+    {
+      "schema": "iglu:com.google.analytics/cookies/jsonschema/1-0-0",
+      "data": {
+      }
+    },
+    {
+      "schema": "iglu:org.w3/PerformanceTiming/jsonschema/1-0-0",
+      "data": {
+        "navigationStart": 1727474219558,
+        "redirectStart": 0,
+        "redirectEnd": 0,
+        "fetchStart": 1727474219561,
+        "domainLookupStart": 1727474219561,
+        "domainLookupEnd": 1727474219561,
+        "connectStart": 1727474219561,
+        "secureConnectionStart": 0,
+        "connectEnd": 1727474219561,
+        "requestStart": 1727474219562,
+        "responseStart": 1727474220389,
+        "responseEnd": 1727474220399,
+        "unloadEventStart": 0,
+        "unloadEventEnd": 0,
+        "domLoading": 1727474220392,
+        "domInteractive": 1727474220513,
+        "domContentLoadedEventStart": 1727474221842,
+        "domContentLoadedEventEnd": 1727474221842,
+        "domComplete": 1727474221955,
+        "loadEventStart": 1727474221956,
+        "loadEventEnd": 1727474221956
+      }
+    }
+  ]
+}

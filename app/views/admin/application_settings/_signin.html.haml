@@ -11,6 +11,10 @@
         _('Allow password authentication for Git over HTTP(S)'),
         help_text: Gitlab::Auth::Ldap::Config.enabled? ? _('Clear this checkbox to use a personal access token or LDAP password instead.') : _('Clear this checkbox to use a personal access token instead.')
     - if omniauth_enabled? && button_based_providers.any?
+      .form-group
+        = f.gitlab_ui_checkbox_component :disable_password_authentication_for_users_with_sso_identities,
+            _('Disable password authentication for users with an SSO identity'),
+            help_text: _('Ensure users with SSO identities cannot sign in with password even when password authentication is enabled.')
       %fieldset.form-group
         %legend.gl-text-base.gl-mb-3.gl-border-none.gl-font-bold= _('Enabled OAuth authentication sources')
         = hidden_field_tag 'application_setting[enabled_oauth_sign_in_sources][]'

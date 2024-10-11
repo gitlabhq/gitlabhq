@@ -497,7 +497,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'ee/spec/requests/projects/dependencies_controller_spec.rb'
     - 'ee/spec/requests/projects/issues_controller_spec.rb'
     - 'ee/spec/requests/projects/on_demand_scans_controller_spec.rb'
-    - 'ee/spec/requests/projects/pipelines/email_campaigns_controller_spec.rb'
     - 'ee/spec/requests/projects/requirements_management/requirements_controller_spec.rb'
     - 'ee/spec/requests/projects/security/dast_configuration_controller_spec.rb'
     - 'ee/spec/requests/projects/security/dast_scanner_profiles_controller_spec.rb'

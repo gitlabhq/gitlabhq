@@ -1,5 +1,6 @@
 import { GlAvatar, GlSprintf, GlLink, GlSkeletonLoader } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import PageHeading from '~/vue_shared/components/page_heading.vue';
 import component from '~/vue_shared/components/registry/title_area.vue';
 
 describe('title area', () => {
@@ -8,7 +9,7 @@ describe('title area', () => {
   const findSubHeaderSlot = () => wrapper.findByTestId('sub-header');
   const findRightActionsSlot = () => wrapper.findByTestId('right-actions');
   const findMetadataSlot = (name) => wrapper.findByTestId(name);
-  const findTitle = () => wrapper.findByTestId('title');
+  const findTitle = () => wrapper.findByTestId('page-heading');
   const findAvatar = () => wrapper.findComponent(GlAvatar);
   const findInfoMessages = () => wrapper.findAllByTestId('info-message');
   const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
@@ -16,7 +17,7 @@ describe('title area', () => {
   const mountComponent = ({ propsData = { title: 'foo' }, slots } = {}) => {
     wrapper = shallowMountExtended(component, {
       propsData,
-      stubs: { GlSprintf },
+      stubs: { GlSprintf, PageHeading },
       slots: {
         'sub-header': '<div data-testid="sub-header" />',
         'right-actions': '<div data-testid="right-actions" />',

@@ -22,17 +22,6 @@
 }
 
 .gl-dark {
-  .gl-new-dropdown-item {
-    &:active,
-    &:hover,
-    &:focus,
-    &:focus:active {
-      .gl-new-dropdown-item-content {
-        background-color: $gray-10;
-      }
-    }
-  }
-
   .gl-dark-invert-keep-hue {
     filter: invert(0.8) hue-rotate(180deg);
   }
@@ -64,25 +53,4 @@
 .timeline-entry.draft-note:not(.note-form) .timeline-content {
   // soften on darkmode
   background-color: mix($gray-50, $orange-50, 75%) !important;
-}
-
-.gl-dark  {
-  .gl-filtered-search-suggestion-active {
-    background-color: $gray-100;
-  }
-
-  .gl-dropdown-item.gl-filtered-search-suggestion,
-  .gl-filtered-search-suggestion-active {
-    .dropdown-item:hover {
-      background-color: $gray-200;
-    }
-  }
-
-  .filtered-search-wrapper li.droplab-item-active button {
-    background-color: $gray-100;
-
-    &:hover {
-     background-color: $gray-200;
-    }
-  }
 }

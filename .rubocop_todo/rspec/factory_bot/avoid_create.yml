@@ -88,7 +88,6 @@ RSpec/FactoryBot/AvoidCreate:
     - 'ee/spec/mailers/ee/emails/profile_spec.rb'
     - 'ee/spec/mailers/ee/emails/projects_spec.rb'
     - 'ee/spec/mailers/emails/group_memberships_spec.rb'
-    - 'ee/spec/mailers/emails/in_product_marketing_spec.rb'
     - 'ee/spec/mailers/emails/merge_commits_spec.rb'
     - 'ee/spec/mailers/emails/namespace_storage_usage_mailer_spec.rb'
     - 'ee/spec/mailers/emails/requirements_spec.rb'

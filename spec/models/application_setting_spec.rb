@@ -48,6 +48,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { expect(setting.user_contributed_projects_api_limit).to eq(100) }
     it { expect(setting.user_projects_api_limit).to eq(300) }
     it { expect(setting.user_starred_projects_api_limit).to eq(100) }
+    it { expect(setting.disable_password_authentication_for_users_with_sso_identities).to eq(false) }
   end
 
   describe 'USERS_UNCONFIRMED_SECONDARY_EMAILS_DELETE_AFTER_DAYS' do
@@ -93,6 +94,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { expect(described_class).to validate_jsonb_schema(['application_setting_rate_limits']) }
     it { expect(described_class).to validate_jsonb_schema(['application_setting_package_registry']) }
     it { expect(described_class).to validate_jsonb_schema(['application_setting_service_ping_settings']) }
+    it { expect(described_class).to validate_jsonb_schema(['application_setting_sign_in_restrictions']) }
 
     it { is_expected.to allow_value(nil).for(:home_page_url) }
     it { is_expected.to allow_value(http).for(:home_page_url) }

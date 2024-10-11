@@ -713,7 +713,7 @@ To ignore a secret, add `gitleaks:allow` as a comment to the line that contains 
 For example:
 
 ```ruby
- "A personal token for GitLab will look like glpat-JUST20LETTERSANDNUMB" #gitleaks:allow
+"A personal token for GitLab will look like glpat-JUST20LETTERSANDNUMB"  # gitleaks:allow
 ```
 
 #### Detecting complex strings

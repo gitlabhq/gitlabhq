@@ -37,7 +37,6 @@ class Notify < ApplicationMailer
   helper AvatarsHelper
   helper GitlabRoutingHelper
   helper IssuablesHelper
-  helper InProductMarketingHelper
   helper RegistrationsHelper
 
   layout :determine_layout

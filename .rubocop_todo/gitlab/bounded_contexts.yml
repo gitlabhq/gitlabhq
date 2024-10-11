@@ -2690,7 +2690,6 @@ Gitlab/BoundedContexts:
     - 'ee/app/mailers/emails/enterprise_users.rb'
     - 'ee/app/mailers/emails/epics.rb'
     - 'ee/app/mailers/emails/group_memberships.rb'
-    - 'ee/app/mailers/emails/in_product_marketing.rb'
     - 'ee/app/mailers/emails/merge_commits.rb'
     - 'ee/app/mailers/emails/namespace_storage_usage_mailer.rb'
     - 'ee/app/mailers/emails/okr.rb'

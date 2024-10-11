@@ -740,6 +740,7 @@
       &:focus,
       &.is-focused {
         @include dropdown-item-hover;
+        background-color: transparent;
       }
     }
 

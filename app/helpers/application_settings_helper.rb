@@ -256,6 +256,7 @@ module ApplicationSettingsHelper
       :deny_all_requests_except_allowed,
       :disable_admin_oauth_scopes,
       :disable_feed_token,
+      :disable_password_authentication_for_users_with_sso_identities,
       :disabled_oauth_sign_in_sources,
       :domain_denylist,
       :domain_denylist_enabled,

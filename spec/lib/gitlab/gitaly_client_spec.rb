@@ -591,7 +591,7 @@ RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
         allow(Gitlab::RequestContext.instance).to receive(:request_deadline).and_return(request_deadline)
       end
 
-      it 'includes the deadline information' do
+      it 'includes the deadline information', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/450626' do
         kword_args = described_class.request_kwargs('default', timeout: 2)
 
         expect(kword_args[:deadline])

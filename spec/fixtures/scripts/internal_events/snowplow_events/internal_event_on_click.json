@@ -1,0 +1,30 @@
+{
+  "schema": "iglu:com.snowplowanalytics.snowplow/payload_data/jsonschema/1-0-4",
+  "data": [
+    {
+      "e": "se",
+      "se_ca": "projects:blob:show",
+      "se_ac": "click_blame_control_on_blob_page",
+      "eid": "b29b0978-21fd-4eef-9df0-94bcb7c83402",
+      "tv": "js-3.24.2",
+      "tna": "gl",
+      "p": "web",
+      "cookie": "1",
+      "cs": "UTF-8",
+      "lang": "en-US",
+      "res": "1512x982",
+      "cd": "30",
+      "tz": "America/New_York",
+      "dtm": "1727474524024",
+      "cx": "eyJzY2hlbWEiOiJpZ2x1OmNvbS5zbm93cGxvd2FuYWx5dGljcy5zbm93cGxvdy9jb250ZXh0cy9qc29uc2NoZW1hLzEtMC0wIiwiZGF0YSI6W3sic2NoZW1hIjoiaWdsdTpjb20uZ2l0bGFiL2dpdGxhYl9zdGFuZGFyZC9qc29uc2NoZW1hLzEtMS0xIiwiZGF0YSI6eyJlbnZpcm9ubWVudCI6ImRldmVsb3BtZW50Iiwic291cmNlIjoiZ2l0bGFiLWphdmFzY3JpcHQiLCJjb3JyZWxhdGlvbl9pZCI6IjAxSjhUUjJEQjVWMjk2VlRXVjVCNVo1TjNWIiwicGxhbiI6ImRlZmF1bHQiLCJleHRyYSI6e30sInVzZXJfaWQiOjEsImlzX2dpdGxhYl90ZWFtX21lbWJlciI6bnVsbCwibmFtZXNwYWNlX2lkIjozMSwicHJvamVjdF9pZCI6NiwiZmVhdHVyZV9lbmFibGVkX2J5X25hbWVzcGFjZV9pZHMiOm51bGwsInJlYWxtIjoic2VsZi1tYW5hZ2VkIiwiaW5zdGFuY2VfaWQiOiJjMGI5YmJiMS1mZGY4LTQyYTEtYWYyNS0wNDM3MTFhZjBjNmIiLCJob3N0X25hbWUiOiJtYWNib29rLXByby5sYW4iLCJpbnN0YW5jZV92ZXJzaW9uIjoiMTcuNS4wIiwiY29udGV4dF9nZW5lcmF0ZWRfYXQiOiIyMDI0LTA5LTI3VDIyOjAxOjU0LjQxOVoiLCJnb29nbGVfYW5hbHl0aWNzX2lkIjoiIn19LHsic2NoZW1hIjoiaWdsdTpjb20uZ2l0bGFiL2dpdGxhYl9zZXJ2aWNlX3BpbmcvanNvbnNjaGVtYS8xLTAtMSIsImRhdGEiOnsiZXZlbnRfbmFtZSI6ImNsaWNrX2JsYW1lX2NvbnRyb2xfb25fYmxvYl9wYWdlIiwiZGF0YV9zb3VyY2UiOiJyZWRpc19obGwifX0seyJzY2hlbWEiOiJpZ2x1OmNvbS5zbm93cGxvd2FuYWx5dGljcy5zbm93cGxvdy93ZWJfcGFnZS9qc29uc2NoZW1hLzEtMC0wIiwiZGF0YSI6eyJpZCI6IjMwZTQ0OGY3LWRkNTUtNGFjZS1hMTQwLWIyMGQ2MTIwNzI3ZiJ9fSx7InNjaGVtYSI6ImlnbHU6Y29tLmdvb2dsZS5hbmFseXRpY3MvY29va2llcy9qc29uc2NoZW1hLzEtMC0wIiwiZGF0YSI6e319LHsic2NoZW1hIjoiaWdsdTpvcmcudzMvUGVyZm9ybWFuY2VUaW1pbmcvanNvbnNjaGVtYS8xLTAtMCIsImRhdGEiOnsibmF2aWdhdGlvblN0YXJ0IjoxNzI3NDc0NTEzMjA0LCJyZWRpcmVjdFN0YXJ0IjowLCJyZWRpcmVjdEVuZCI6MCwiZmV0Y2hTdGFydCI6MTcyNzQ3NDUxMzIwNiwiZG9tYWluTG9va3VwU3RhcnQiOjE3Mjc0NzQ1MTMyMDcsImRvbWFpbkxvb2t1cEVuZCI6MTcyNzQ3NDUxMzIwNywiY29ubmVjdFN0YXJ0IjoxNzI3NDc0NTEzMjA3LCJzZWN1cmVDb25uZWN0aW9uU3RhcnQiOjAsImNvbm5lY3RFbmQiOjE3Mjc0NzQ1MTMyMDksInJlcXVlc3RTdGFydCI6MTcyNzQ3NDUxMzIwOSwicmVzcG9uc2VTdGFydCI6MTcyNzQ3NDUxNTE5OCwicmVzcG9uc2VFbmQiOjE3Mjc0NzQ1MTUyODIsInVubG9hZEV2ZW50U3RhcnQiOjAsInVubG9hZEV2ZW50RW5kIjowLCJkb21Mb2FkaW5nIjoxNzI3NDc0NTE1MjA1LCJkb21JbnRlcmFjdGl2ZSI6MTcyNzQ3NDUyMDQ2NywiZG9tQ29udGVudExvYWRlZEV2ZW50U3RhcnQiOjE3Mjc0NzQ1MjM4NzMsImRvbUNvbnRlbnRMb2FkZWRFdmVudEVuZCI6MTcyNzQ3NDUyMzg3NCwiZG9tQ29tcGxldGUiOjE3Mjc0NzQ1MjM5MzEsImxvYWRFdmVudFN0YXJ0IjoxNzI3NDc0NTIzOTMyLCJsb2FkRXZlbnRFbmQiOjE3Mjc0NzQ1MjM5MzJ9fV19",
+      "vp": "871x823",
+      "ds": "871x823",
+      "vid": "1",
+      "sid": "2d803ded-f7c9-49b2-8204-4a3d700c2878",
+      "duid": "472822d6-1d8d-4e6f-9700-c5d8c4569af8",
+      "refr": "http://gdk.test:3000/flightjs/Flight",
+      "url": "http://gdk.test:3000/flightjs/Flight/-/blob/master/ADOPTERS.md",
+      "stm": "1727474524025"
+    }
+  ]
+}

@@ -2937,27 +2937,6 @@ msgstr ""
 msgid "Account: %{account}"
 msgstr ""
 
-msgid "AccountValidation|Fix your pipelines by validating your account"
-msgstr ""
-
-msgid "AccountValidation|I'll bring my own runners"
-msgstr ""
-
-msgid "AccountValidation|In order to use free compute minutes on shared runners, you'll need to validate your account using one of our verification options. If you prefer not to, you can run pipelines by bringing your own runners and disabling shared runners for your project."
-msgstr ""
-
-msgid "AccountValidation|Learn more."
-msgstr ""
-
-msgid "AccountValidation|Looks like you'll need to validate your account to use free compute minutes"
-msgstr ""
-
-msgid "AccountValidation|Validate your account"
-msgstr ""
-
-msgid "AccountValidation|Verification is required to discourage and reduce the abuse on GitLab infrastructure. If you verify with a credit or debit card, %{strong_start}GitLab will not charge your card, it will only be used for validation.%{strong_end} %{learn_more_link}"
-msgstr ""
-
 msgid "Achievements"
 msgstr ""
 
@@ -19841,6 +19820,9 @@ msgstr ""
 msgid "Disable group runners"
 msgstr ""
 
+msgid "Disable password authentication for users with an SSO identity"
+msgstr ""
+
 msgid "Disable personal access tokens"
 msgstr ""
 
@@ -21193,6 +21175,9 @@ msgid "Engine"
 msgstr ""
 
 msgid "Enhance security by storing service account keys in secret managers - learn more about %{docLinkStart}secret management with GitLab%{docLinkEnd}"
+msgstr ""
+
+msgid "Ensure users with SSO identities cannot sign in with password even when password authentication is enabled."
 msgstr ""
 
 msgid "Ensure your %{linkStart}environment is part of the deploy stage%{linkEnd} of your CI pipeline to track deployments to your cluster."
@@ -28454,9 +28439,6 @@ msgstr ""
 msgid "In use"
 msgstr ""
 
-msgid "InProductMarketing|%{strong_start}GitLab Inc.%{strong_end} 268 Bush Street, #350, San Francisco, CA 94104, USA"
-msgstr ""
-
 msgid "InProductMarketing|%{upper_start}Free 30-day trial%{upper_end} %{lower_start}GitLab Ultimate%{lower_end}"
 msgstr ""
 
@@ -28464,9 +28446,6 @@ msgid "InProductMarketing|%{upper_start}Free 60-day trial%{upper_end} %{lower_st
 msgstr ""
 
 msgid "InProductMarketing|Accelerate your digital transformation"
-msgstr ""
-
-msgid "InProductMarketing|Blog"
 msgstr ""
 
 msgid "InProductMarketing|Boost efficiency and collaboration"
@@ -28487,19 +28466,10 @@ msgstr ""
 msgid "InProductMarketing|Ensure compliance"
 msgstr ""
 
-msgid "InProductMarketing|Facebook"
-msgstr ""
-
 msgid "InProductMarketing|Free guest users"
 msgstr ""
 
 msgid "InProductMarketing|GitLab Duo Enterprise: AI across the software development lifecycle"
-msgstr ""
-
-msgid "InProductMarketing|If you don't want to receive marketing emails directly from GitLab, %{marketing_preference_link}."
-msgstr ""
-
-msgid "InProductMarketing|If you no longer wish to receive marketing emails from us,"
 msgstr ""
 
 msgid "InProductMarketing|Improve collaboration and visibility"
@@ -28529,28 +28499,10 @@ msgstr ""
 msgid "InProductMarketing|Team members collaborating"
 msgstr ""
 
-msgid "InProductMarketing|To opt out of these onboarding emails, %{unsubscribe_link}."
-msgstr ""
-
 msgid "InProductMarketing|Trusted by"
 msgstr ""
 
-msgid "InProductMarketing|Twitter"
-msgstr ""
-
 msgid "InProductMarketing|Want to host GitLab on your servers?"
-msgstr ""
-
-msgid "InProductMarketing|YouTube"
-msgstr ""
-
-msgid "InProductMarketing|go to about.gitlab.com"
-msgstr ""
-
-msgid "InProductMarketing|unsubscribe"
-msgstr ""
-
-msgid "InProductMarketing|you may %{unsubscribe_link} at any time."
 msgstr ""
 
 msgid "Inactive"
@@ -39041,9 +38993,6 @@ msgstr ""
 msgid "PackageRegistry|Other versions"
 msgstr ""
 
-msgid "PackageRegistry|Package Registry"
-msgstr ""
-
 msgid "PackageRegistry|Package asset deleted successfully"
 msgstr ""
 
@@ -39068,6 +39017,9 @@ msgid "PackageRegistry|Package protection rule deleted."
 msgstr ""
 
 msgid "PackageRegistry|Package protection rule updated."
+msgstr ""
+
+msgid "PackageRegistry|Package registry"
 msgstr ""
 
 msgid "PackageRegistry|Package updated by commit %{link} on branch %{branch}, built by pipeline %{pipeline}, and published to the registry %{datetime}"
@@ -40676,6 +40628,9 @@ msgid "Pipelines|Validate"
 msgstr ""
 
 msgid "Pipelines|Validating GitLab CI configuration…"
+msgstr ""
+
+msgid "Pipelines|View analytics"
 msgstr ""
 
 msgid "Pipelines|View merge train details"

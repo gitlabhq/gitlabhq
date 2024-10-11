@@ -55,7 +55,7 @@ Next, you'll test secret push protection.
 
 GitLab identifies secrets by matching specific patterns of letters, digits, and symbols. These patterns
 are also used to identify the type of secret.
-Let's test this feature by adding the fake secret `glpat-12345678901234567890` to our project:
+Let's test this feature by adding the fake secret `glpat-12345678901234567890` to our project: <!-- gitleaks:allow -->
 
 1. In the project, check out a new branch:
 
@@ -63,11 +63,12 @@ Let's test this feature by adding the fake secret `glpat-12345678901234567890` t
    git checkout -b push-protection-tutorial
    ```
 
-1. Create a new file with the following content:
+1. Create a new file with the following content, removing the spaces before and after
+   the `-` to match the exact format of a personal access token:
 
    ```plaintext
    hello, world!
-   glpat-12345678901234567890
+   glpat - 12345678901234567890
    ```
 
 1. Commit the file to your branch:
@@ -83,12 +84,12 @@ Let's test this feature by adding the fake secret `glpat-12345678901234567890` t
 
    ```shell
    $ git push
-   remote: GitLab: 
+   remote: GitLab:
    remote: PUSH BLOCKED: Secrets detected in code changes
    remote:
    remote: Secret push protection found the following secrets in commit: 123abc
    remote: -- myFile.txt:2 | GitLab Personal Access Token
-   remote: 
+   remote:
    remote: To push your changes you must remove the identified secrets.
    To gitlab.com:
     ! [remote rejected] push-protection-tutorial -> main (pre-receive hook declined)

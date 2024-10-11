@@ -92,6 +92,12 @@ RSpec.describe ApplicationSettingsHelper do
         ])
     end
 
+    it 'contains sign_in_restrictions values' do
+      expect(visible_attributes).to include(*%i[
+        disable_password_authentication_for_users_with_sso_identities
+      ])
+    end
+
     context 'when on SaaS', :saas do
       it 'does not contain :deactivate_dormant_users' do
         expect(helper.visible_attributes).not_to include(:deactivate_dormant_users)

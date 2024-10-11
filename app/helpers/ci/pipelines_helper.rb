@@ -65,7 +65,8 @@ module Ci
         suggested_ci_templates: suggested_ci_templates.to_json,
         full_path: project.full_path,
         visibility_pipeline_id_type: visibility_pipeline_id_type,
-        show_jenkins_ci_prompt: show_jenkins_ci_prompt(project).to_s
+        show_jenkins_ci_prompt: show_jenkins_ci_prompt(project).to_s,
+        pipelines_analytics_path: charts_project_pipelines_path(project)
       }
     end
 

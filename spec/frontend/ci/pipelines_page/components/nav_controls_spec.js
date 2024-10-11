@@ -14,6 +14,21 @@ describe('Pipelines Nav Controls', () => {
 
   const findRunPipelineButton = () => wrapper.findByTestId('run-pipeline-button');
   const findClearCacheButton = () => wrapper.findByTestId('clear-cache-button');
+  const findViewAnalyticsLink = () => wrapper.findByTestId('view-analytics-link');
+
+  it('should render link to navigate to CI/CD analytics', () => {
+    const mockData = {
+      pipelinesAnalyticsPath: '/pipelines/charts',
+    };
+
+    createComponent(mockData);
+
+    const link = findViewAnalyticsLink();
+
+    expect(link.exists()).toBe(true);
+    expect(link.text()).toContain('View analytics');
+    expect(link.attributes('href')).toBe(mockData.pipelinesAnalyticsPath);
+  });
 
   it('should render link to create a new pipeline', () => {
     const mockData = {

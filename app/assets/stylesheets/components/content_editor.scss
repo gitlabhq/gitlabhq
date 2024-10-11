@@ -391,7 +391,7 @@
   // stylelint-disable-next-line gitlab/no-gl-class
   li.focused div.gl-new-dropdown-item-content {
     @include gl-focus($inset: true);
-    background-color: $gray-50;
+    background-color: var(--gl-dropdown-option-background-color-unselected-hover);
   }
 }
 

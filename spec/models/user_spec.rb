@@ -6159,6 +6159,8 @@ RSpec.describe User, feature_category: :user_profile do
   end
 
   describe '#allow_password_authentication_for_web?' do
+    subject(:allow_password_authentication_for_web?) { user.allow_password_authentication_for_web? }
+
     context 'regular user' do
       let(:user) { build(:user) }
 
@@ -6178,9 +6180,13 @@ RSpec.describe User, feature_category: :user_profile do
 
       expect(user.allow_password_authentication_for_web?).to be_falsey
     end
+
+    it_behaves_like 'OmniAuth user password authentication'
   end
 
   describe '#allow_password_authentication_for_git?' do
+    subject(:allow_password_authentication_for_git?) { user.allow_password_authentication_for_git? }
+
     context 'regular user' do
       let(:user) { build(:user) }
 
@@ -6200,6 +6206,8 @@ RSpec.describe User, feature_category: :user_profile do
 
       expect(user.allow_password_authentication_for_git?).to be_falsey
     end
+
+    it_behaves_like 'OmniAuth user password authentication'
   end
 
   describe '#assigned_open_merge_requests_count' do
@@ -7445,35 +7453,40 @@ RSpec.describe User, feature_category: :user_profile do
   describe '#valid_password?' do
     subject(:validate_password) { user.valid_password?(password) }
 
+    let(:password) { user.password }
+
     context 'user with disallowed password' do
       let(:user) { create(:user, :disallowed_password) }
-      let(:password) { user.password }
 
       it { is_expected.to eq(false) }
     end
 
     context 'using a correct password' do
-      let(:user) { create(:user) }
-      let(:password) { user.password }
+      context 'with a regular user' do
+        let(:user) { create(:user) }
+        let(:password) { user.password }
 
-      it { is_expected.to eq(true) }
+        it { is_expected.to eq(true) }
 
-      context 'when password authentication is disabled' do
-        before do
-          stub_application_setting(password_authentication_enabled_for_web: false)
-          stub_application_setting(password_authentication_enabled_for_git: false)
+        context 'when password authentication for web is disabled' do
+          before do
+            stub_application_setting(password_authentication_enabled_for_web: false)
+            stub_application_setting(password_authentication_enabled_for_git: true)
+          end
+
+          it { is_expected.to eq(false) }
         end
 
-        it { is_expected.to eq(false) }
-      end
+        context 'when user with LDAP identity' do
+          before do
+            create(:identity, provider: 'ldapmain', user: user)
+          end
 
-      context 'when user with LDAP identity' do
-        before do
-          create(:identity, provider: 'ldapmain', user: user)
+          it { is_expected.to eq(false) }
         end
-
-        it { is_expected.to eq(false) }
       end
+
+      it_behaves_like 'OmniAuth user password authentication'
     end
 
     context 'using a wrong password' do

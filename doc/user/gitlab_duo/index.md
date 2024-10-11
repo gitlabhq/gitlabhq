@@ -231,6 +231,17 @@ DETAILS:
 - LLM: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
 - [View documentation](../duo_workflow/index.md).
 
+### GitLab Duo Code Review
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** GitLab.com
+**Status:** Experiment
+
+- Automated code review of the proposed changes in your merge request.
+- LLM: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
+- [View documentation](../project/merge_requests/duo_in_merge_requests.md#gitlab-duo-code-review).
+
 ## Disable GitLab Duo features for specific groups or projects or an entire instance
 
 Disable GitLab Duo features by [following these instructions](turn_on_off.md).

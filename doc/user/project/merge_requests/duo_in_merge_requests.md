@@ -90,6 +90,30 @@ To generate a commit message with GitLab Duo:
 - Contents of the file
 - The filename
 
+## GitLab Duo code review
+
+DETAILS:
+**Tier: GitLab.com:** For a limited time, Ultimate. On October 17, 2024, Ultimate with [GitLab Duo Enterprise](https://about.gitlab.com/gitlab-duo/#pricing). **GitLab Dedicated:** GitLab Duo Enterprise.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14825) in GitLab 17.5 as an [experiment](../../../policy/experiment-beta-support.md#experiment).
+> - Feature flag `ai_review_merge_request` [disabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/456106).
+
+FLAG:
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+When your merge request is ready to be reviewed, you can choose to have GitLab Duo Code Review perform an initial review.
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Code > Merge requests** and find your merge request.
+1. In a comment box type the quick action `/duo_code_review`.
+
+**Data usage**: When you use this feature, the following data is sent to the large language model referenced above:
+
+- Contents of the file
+- The filename
+
 ## Related topics
 
 - [Control GitLab Duo availability](../../ai_features_enable.md)

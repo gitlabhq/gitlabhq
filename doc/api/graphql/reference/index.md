@@ -30257,6 +30257,22 @@ Returns [`CommitReferences`](#commitreferences).
 | ---- | ---- | ----------- |
 | <a id="projectcommitreferencescommitsha"></a>`commitSha` | [`String!`](#string) | Project commit SHA identifier. For example, `287774414568010855642518513f085491644061`. |
 
+##### `Project.complianceStandardsAdherence`
+
+Compliance standards adherence for the project.
+
+Returns [`ComplianceStandardsAdherenceConnection`](#compliancestandardsadherenceconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectcompliancestandardsadherencefilters"></a>`filters` | [`ComplianceStandardsProjectAdherenceInput`](#compliancestandardsprojectadherenceinput) | Filters applied when retrieving compliance standards adherence. |
+
 ##### `Project.containerRepositories`
 
 Container repositories of the project.
@@ -41985,6 +42001,15 @@ Attributes for defining a CI/CD variable.
 | <a id="compliancestandardsadherenceinputcheckname"></a>`checkName` | [`ComplianceStandardsAdherenceCheckName`](#compliancestandardsadherencecheckname) | Name of the check for the compliance standard. |
 | <a id="compliancestandardsadherenceinputprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter compliance standards adherence by project. |
 | <a id="compliancestandardsadherenceinputstandard"></a>`standard` | [`ComplianceStandardsAdherenceStandard`](#compliancestandardsadherencestandard) | Name of the compliance standard. |
+
+### `ComplianceStandardsProjectAdherenceInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="compliancestandardsprojectadherenceinputcheckname"></a>`checkName` | [`ComplianceStandardsAdherenceCheckName`](#compliancestandardsadherencecheckname) | Name of the check for the compliance standard. |
+| <a id="compliancestandardsprojectadherenceinputstandard"></a>`standard` | [`ComplianceStandardsAdherenceStandard`](#compliancestandardsadherencestandard) | Name of the compliance standard. |
 
 ### `ComplianceViolationInput`
 

@@ -192,7 +192,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'ee/lib/ee/gitlab/namespace_storage_size_error_message.rb'
     - 'ee/lib/ee/gitlab/pages/deployment_validations.rb'
     - 'ee/lib/gitlab/checks/secrets_check.rb'
-    - 'ee/lib/gitlab/email/message/account_validation.rb'
     - 'ee/lib/gitlab/licenses/submit_license_usage_data_banner.rb'
     - 'ee/lib/gitlab/llm/chain/tools/explain_code/executor.rb'
     - 'ee/lib/gitlab/llm/chain/tools/refactor_code/executor.rb'

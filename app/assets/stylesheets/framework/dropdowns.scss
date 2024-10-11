@@ -181,8 +181,8 @@
 }
 
 @mixin dropdown-item-hover {
-  background-color: $gray-50;
-  color: $gl-text-color;
+  background-color: var(--gl-dropdown-option-background-color-unselected-hover);
+  color: var(--gl-dropdown-option-text-color-hover);
   outline: 0;
 }
 

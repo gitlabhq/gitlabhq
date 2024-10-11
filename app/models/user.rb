@@ -1106,7 +1106,7 @@ class User < ApplicationRecord
   def valid_password?(password)
     return false unless password_allowed?(password)
     return false if password_automatically_set?
-    return false unless allow_password_authentication?
+    return false unless allow_password_authentication_for_web?
 
     super
   end
@@ -1455,11 +1455,17 @@ class User < ApplicationRecord
   end
 
   def allow_password_authentication_for_web?
-    Gitlab::CurrentSettings.password_authentication_enabled_for_web? && !ldap_user?
+    return false if ldap_user?
+    return false if disable_password_authentication_for_sso_users?
+
+    Gitlab::CurrentSettings.password_authentication_enabled_for_web?
   end
 
   def allow_password_authentication_for_git?
-    Gitlab::CurrentSettings.password_authentication_enabled_for_git? && !password_based_omniauth_user?
+    return false if password_based_omniauth_user?
+    return false if disable_password_authentication_for_sso_users?
+
+    Gitlab::CurrentSettings.password_authentication_enabled_for_git?
   end
 
   # method overriden in EE
@@ -2531,6 +2537,14 @@ class User < ApplicationRecord
   end
 
   private
+
+  def disable_password_authentication_for_sso_users?
+    ::Gitlab::CurrentSettings.disable_password_authentication_for_users_with_sso_identities? && omniauth_user?
+  end
+
+  def omniauth_user?
+    identities.any?
+  end
 
   def optional_namespace?
     Feature.enabled?(:optional_personal_namespace, self)

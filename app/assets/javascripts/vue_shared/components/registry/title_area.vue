@@ -1,6 +1,7 @@
 <script>
 import { GlAvatar, GlSprintf, GlLink, GlSkeletonLoader } from '@gitlab/ui';
 import { isEqual } from 'lodash';
+import PageHeading from '~/vue_shared/components/page_heading.vue';
 import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';
 
 export default {
@@ -10,6 +11,7 @@ export default {
     GlSprintf,
     GlLink,
     GlSkeletonLoader,
+    PageHeading,
   },
   props: {
     avatar: {
@@ -62,31 +64,15 @@ export default {
 
 <template>
   <div class="gl-flex gl-flex-col">
-    <div class="gl-flex gl-flex-wrap gl-justify-between gl-py-3 sm:gl-flex-nowrap">
-      <div class="gl-min-w-0 gl-grow gl-flex-col">
-        <div class="gl-flex">
-          <gl-avatar
-            v-if="avatar"
-            :src="avatar"
-            :shape="$options.AVATAR_SHAPE_OPTION_RECT"
-            class="gl-mr-4 gl-self-center"
-          />
+    <page-heading>
+      <template #heading>
+        <slot name="title">{{ title }}</slot>
+        <gl-avatar v-if="avatar" :src="avatar" :shape="$options.AVATAR_SHAPE_OPTION_RECT" />
+      </template>
 
-          <div class="gl-flex gl-min-w-0 gl-flex-col">
-            <h2 class="gl-mb-0 gl-mt-3 gl-text-size-h1" data-testid="title">
-              <slot name="title">{{ title }}</slot>
-            </h2>
-
-            <div
-              v-if="$scopedSlots['sub-header']"
-              class="gl-mt-3 gl-flex gl-items-center gl-text-gray-500"
-            >
-              <slot name="sub-header"></slot>
-            </div>
-          </div>
-        </div>
-
-        <div v-if="metadataSlots.length > 0" class="gl-mt-3 gl-flex gl-flex-wrap gl-items-center">
+      <template #description>
+        <slot name="sub-header"></slot>
+        <div v-if="metadataSlots.length > 0" class="gl-flex gl-flex-wrap gl-items-center">
           <template v-if="!metadataLoading">
             <div
               v-for="(row, metadataIndex) in metadataSlots"
@@ -105,11 +91,13 @@ export default {
             </div>
           </template>
         </div>
-      </div>
-      <div v-if="$scopedSlots['right-actions']" class="gl-mt-3 gl-flex gl-items-start gl-gap-3">
+      </template>
+
+      <template #actions>
         <slot name="right-actions"></slot>
-      </div>
-    </div>
+      </template>
+    </page-heading>
+
     <p v-if="infoMessages.length">
       <span
         v-for="(message, index) in infoMessages"
@@ -124,6 +112,7 @@ export default {
         </gl-sprintf>
       </span>
     </p>
+
     <slot></slot>
   </div>
 </template>
