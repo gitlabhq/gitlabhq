@@ -69,7 +69,7 @@ configure the **secondary** in a few ways:
 - Use a separate object store and enable the **Allow this secondary node to replicate
   content on Object Storage** setting.
 
-GitLab does not currently support the case where both:
+GitLab does not support the case where both:
 
 - The **primary** site uses local storage.
 - A **secondary** site uses object storage.

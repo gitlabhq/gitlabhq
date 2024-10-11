@@ -375,7 +375,7 @@ Truncate the filenames in the `uploads` table:
 
       Where:
 
-      - `current_filename`: a filename that is currently more than 246 characters long.
+      - `current_filename`: a filename that is more than 246 characters long.
       - `new_filename`: a filename that has been truncated to 246 characters maximum.
       - `new_path`: new path considering the `new_filename` (truncated).
 

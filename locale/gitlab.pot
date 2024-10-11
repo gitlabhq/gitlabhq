@@ -63751,6 +63751,9 @@ msgstr ""
 msgid "Your Chain of Custody CSV export for the group %{group_name} has been added to this email as an attachment."
 msgstr ""
 
+msgid "Your Contributed Projects (default)"
+msgstr ""
+
 msgid "Your DevOps Reports give an overview of how you are using GitLab from a feature perspective. Use them to view how you compare with other organizations, and how your teams compare against each other."
 msgstr ""
 

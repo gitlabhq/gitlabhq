@@ -19,8 +19,8 @@ causes downtime.
 
 ## Promoting a **secondary** Geo site in single-secondary configurations
 
-We don't currently provide an automated way to promote a Geo replica and do a
-failover, but you can do it manually if you have `root` access to the machine.
+While you can't automatically promote a Geo replica and do a failover,
+you can promote it manually if you have `root` access to the machine.
 
 This process promotes a **secondary** Geo site to a **primary** site. To regain
 geographic redundancy as quickly as possible, you should add a new **secondary** site

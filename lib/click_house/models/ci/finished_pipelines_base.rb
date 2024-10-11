@@ -28,6 +28,14 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
           where(path: project.project_namespace.traversal_path)
         end
 
+        def for_source(source)
+          where(source: source)
+        end
+
+        def for_ref(ref)
+          where(ref: ref)
+        end
+
         def within_dates(from_time, to_time)
           query = self
           started_at_bucket = @query_builder.table[:started_at_bucket]

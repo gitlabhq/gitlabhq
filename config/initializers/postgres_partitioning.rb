@@ -102,4 +102,22 @@ Gitlab::Database::Partitioning.register_tables(
     }
   ]
 )
+
+Gitlab::Database::Partitioning.register_tables(
+  [
+    {
+      limit_connection_names: %i[ci],
+      table_name: 'p_ci_build_trace_metadata',
+      partitioned_column: :partition_id,
+      strategy: :ci_sliding_list,
+      next_partition_if: ->(latest_partition) {
+                           ::Feature.enabled?(:partition_ci_build_trace_metadata, :instance) &&
+                            latest_partition &&
+                            [100, 101].include?(latest_partition.values.max)
+                         },
+      detach_partition_if: proc { false }
+    }
+  ]
+)
+
 Gitlab::Database::Partitioning.sync_partitions_ignore_db_error

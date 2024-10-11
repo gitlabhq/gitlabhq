@@ -1619,7 +1619,6 @@ Payload example:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - Access request events [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163094) in GitLab 17.4.
 
@@ -1784,7 +1783,6 @@ Payload example:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 These events are triggered for [group webhooks](webhooks.md#group-webhooks) only.
 

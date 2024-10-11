@@ -410,7 +410,7 @@ architectures are designed to have enough memory in most cases to avoid the need
 [Praefect requires its own database server](../gitaly/praefect.md#postgresql) and
 a third-party PostgreSQL database solution to achieve full HA.
 
-We hope to offer a built-in solution for these restrictions in the future. In the meantime, you can set up a 
+We hope to offer a built-in solution for these restrictions in the future. In the meantime, you can set up a
 non-HA PostgreSQL server using the Linux package as the specifications reflect. See the following issues for more information:
 
 - [`omnibus-gitlab#7292`](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7292).
@@ -812,7 +812,7 @@ The Reference Architectures have been designed to have elasticity to accommodate
 The following components can impact others when they have been significantly scaled:
 
 - Puma and Sidekiq - Notable scale ups of either Puma or Sidekiq workers will result in higher concurrent connections to the internal load balancer, PostgreSQL (via PgBouncer if present), Gitaly (via Praefect if present) and Redis respectively.
-  - Redis is primarily single threaded and in some cases may need to be split up into different instances (Cache / Persistent) if the increased throughput causes CPU exhaustion if a combined cluster is currently being used.
+  - Redis is primarily single-threaded. In some cases, you may need to split Redis into separate instances (for example, cache and persistent) if the increased throughput causes CPU exhaustion in a combined cluster.
   - PgBouncer is also single threaded but a scale out might result in a new pool being added that in turn might increase the total connections to Postgres. It's strongly recommended to only do this if you have experience in managing Postgres connections and to seek assistance if in doubt.
 - Gitaly Cluster / PostgreSQL - A notable scale out of additional nodes can have a detrimental effect on the HA system and performance due to increased replication calls to the primary node.
 

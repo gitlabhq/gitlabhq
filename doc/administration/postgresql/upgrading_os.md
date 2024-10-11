@@ -240,8 +240,6 @@ different types of indexes were handled, see the blog post about
 
 To see what version of `glibc` is used, run `ldd --version`.
 
-You can compare the behavior of `glibc` on your servers [using shell commands](../geo/replication/troubleshooting/common.md#check-os-locale-data-compatibility).
-
 The following table shows the `glibc` versions shipped for different operating systems:
 
 | Operating system    | `glibc` version |

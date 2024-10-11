@@ -84,6 +84,10 @@ module Gitlab
       end
     end
 
+    def has_work_item_references?
+      references(:work_item).present?
+    end
+
     private
 
     def update_visible_nodes_set(all, visible)

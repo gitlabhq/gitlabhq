@@ -28,7 +28,7 @@ Code Suggestions is made up of code completion and code generation. These are tw
 To ensure your preferred tooling is supported, review the:
 
 [Supported languages](../project/repository/code_suggestions/supported_extensions.md#supported-languages)
-[Supported editors](../project/repository/code_suggestions/supported_extensions.md#supported-editor-extensions) 
+[Supported editors](../project/repository/code_suggestions/supported_extensions.md#supported-editor-extensions)
 
 ## Step 3: Enable Code Suggestions
 

@@ -71,7 +71,7 @@ Prerequisites:
 
 - A custom domain name `example.com` or subdomain `subdomain.example.com`.
 - Access to your domain's server control panel to set up a DNS `TXT` record to verify your domain's ownership.
-- A project in the group. This project will be linked to the verified domains, and should not be deleted. 
+- A project in the group. This project will be linked to the verified domains, and should not be deleted.
 - Ensure that [GitLab Pages](../project/pages/index.md) is enabled for the project. If GitLab Pages is disabled, adding the domain might result in an error.
 - You must have the Owner role for the top-level group.
 

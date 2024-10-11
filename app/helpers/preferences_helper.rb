@@ -27,8 +27,14 @@ module PreferencesHelper
 
   # Maps `dashboard` values to more user-friendly option text
   def localized_dashboard_choices
+    projects = if Feature.enabled?(:your_work_projects_vue, current_user)
+                 _("Your Contributed Projects (default)")
+               else
+                 _("Your Projects (default)")
+               end
+
     {
-      projects: _("Your Projects (default)"),
+      projects: projects,
       stars: _("Starred Projects"),
       your_activity: _("Your Activity"),
       project_activity: _("Your Projects' Activity"),

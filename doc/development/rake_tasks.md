@@ -500,7 +500,7 @@ To edit the content, you may need to edit the following:
   which is then used by the `rake` task described earlier.
 
 `@parsed_schema` is an instance variable that the `graphql-docs` gem expects to have available.
-`Gitlab::Graphql::Docs::Helper` defines the `object` method we currently use. This is also where you
+`Gitlab::Graphql::Docs::Helper` defines the `object` method we use. This is also where you
 should implement any new methods for new types you'd like to display.
 
 ### Update machine-readable schema files

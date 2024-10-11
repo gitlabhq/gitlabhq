@@ -2,6 +2,8 @@
 
 RSpec.shared_examples_for 'a ci_finished_pipelines aggregation model' do |table_name|
   let(:instance) { described_class.new }
+  let(:ref) { 'master' }
+  let(:source) { 'api' }
 
   let_it_be(:group) { create(:group, :nested) }
   let_it_be(:project) { create(:project, group: group) }
@@ -16,6 +18,32 @@ RSpec.shared_examples_for 'a ci_finished_pipelines aggregation model' do |table_
       expected_sql = <<~SQL.lines(chomp: true).join(' ')
         SELECT * FROM "#{table_name}"
         WHERE "#{table_name}"."path" = '#{path}'
+      SQL
+
+      expect(result_sql.strip).to eq(expected_sql.strip)
+    end
+  end
+
+  describe '#for_ref' do
+    subject(:result_sql) { instance.for_ref(ref).to_sql }
+
+    it 'builds the correct SQL' do
+      expected_sql = <<~SQL.lines(chomp: true).join(' ')
+        SELECT * FROM "#{table_name}"
+        WHERE "#{table_name}"."ref" = '#{ref}'
+      SQL
+
+      expect(result_sql.strip).to eq(expected_sql.strip)
+    end
+  end
+
+  describe '#for_source' do
+    subject(:result_sql) { instance.for_source(source).to_sql }
+
+    it 'builds the correct SQL' do
+      expected_sql = <<~SQL.lines(chomp: true).join(' ')
+        SELECT * FROM "#{table_name}"
+        WHERE "#{table_name}"."source" = '#{source}'
       SQL
 
       expect(result_sql.strip).to eq(expected_sql.strip)

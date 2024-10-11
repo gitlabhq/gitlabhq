@@ -91,7 +91,7 @@ Prerequisites:
 
 - You must have at least the Reporter role for the project.
 
-To delete the currently active issue board:
+To delete the open issue board:
 
 1. In the upper-right corner of the issue board page, select **Configure board** (**{settings}**).
 1. Select **Delete board**.

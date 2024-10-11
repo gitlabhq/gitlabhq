@@ -272,7 +272,7 @@ from [owasp.org](https://owasp.org/).
 
 ### What user authorization requirements have been defined?
 
-- **Secondary** sites must only be able to *read* data. They are not currently able to mutate data on the **primary** site.
+- **Secondary** sites must only be able to *read* data. They cannot mutate data on the **primary** site.
 
 ### What session management requirements have been defined?
 

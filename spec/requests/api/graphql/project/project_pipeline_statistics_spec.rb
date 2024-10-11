@@ -12,15 +12,17 @@ RSpec.describe 'rendering project pipeline statistics', :aggregate_failures, :cl
 
   let(:from_time) { nil }
   let(:to_time) { nil }
+  let(:source) { nil }
+  let(:ref) { nil }
   let(:pipelines) do
     current_time = Time.utc(2024, 5, 11)
 
     [
-      create_pipeline(:running, 35.minutes.before(current_time), 30.minutes),
-      create_pipeline(:success, 1.day.before(current_time), 30.minutes),
-      create_pipeline(:failed, 5.days.before(current_time), 2.hours),
-      create_pipeline(:failed, 1.week.before(current_time), 45.minutes),
-      create_pipeline(:skipped, 7.months.before(current_time), 45.minutes)
+      create_pipeline(:running, 35.minutes.before(current_time), 30.minutes, 'main', :pipeline),
+      create_pipeline(:success, 1.day.before(current_time), 30.minutes, 'main2', :push),
+      create_pipeline(:failed, 5.days.before(current_time), 2.hours, 'main', :pipeline),
+      create_pipeline(:failed, 1.week.before(current_time), 45.minutes, 'main', :pipeline),
+      create_pipeline(:skipped, 7.months.before(current_time), 45.minutes, 'main', :pipeline)
     ]
   end
 
@@ -40,7 +42,7 @@ RSpec.describe 'rendering project pipeline statistics', :aggregate_failures, :cl
     graphql_query_for(
       :project, { full_path: project.full_path },
       query_graphql_field(
-        :pipeline_analytics, { from_time: from_time, to_time: to_time }.compact,
+        :pipeline_analytics, { from_time: from_time, to_time: to_time, ref: ref, source: source }.compact,
         fields)
     )
   end
@@ -130,32 +132,60 @@ RSpec.describe 'rendering project pipeline statistics', :aggregate_failures, :cl
         })
       end
 
-      context 'with time window spanning less than 1 year' do
-        let(:from_time) { '2023-05-11T00:00:00+00:00' }
-        let(:to_time) { '2024-05-10T23:59:59+00:00' }
+      context 'when ref is specified' do
+        let(:ref) { 'main2' }
 
         it "contains expected data for the period" do
-          perform_request
-
-          expect_graphql_errors_to_be_empty
           expect(aggregate).to eq({
             'label' => nil,
-            'all' => '5',
+            'all' => '1',
             'success' => '1',
-            'failed' => '2',
-            'other' => '1'
+            'failed' => '0',
+            'other' => '0'
           })
         end
       end
 
-      context 'with time window spanning 1 year' do
-        let(:from_time) { '2024-01-01T00:00:00+02:00' }
-        let(:to_time) { '2025-01-01T00:00:00+02:00' }
+      context 'when source is specified' do
+        let(:source) { :PUSH }
 
         it "contains expected data for the period" do
-          perform_request
+          expect(aggregate).to eq({
+            'label' => nil,
+            'all' => '1',
+            'success' => '1',
+            'failed' => '0',
+            'other' => '0'
+          })
+        end
+      end
 
-          expect_graphql_errors_to_include("Maximum of 366 days can be requested")
+      context 'when source and ref are specified' do
+        let(:source) { :PUSH }
+        let(:ref) { 'main2' }
+
+        it "contains expected data for the period" do
+          expect(aggregate).to eq({
+            'label' => nil,
+            'all' => '1',
+            'success' => '1',
+            'failed' => '0',
+            'other' => '0'
+          })
+        end
+
+        context 'and source/ref are not a match' do
+          let(:ref) { 'main' }
+
+          it "contains expected data for the period" do
+            expect(aggregate).to eq({
+              'label' => nil,
+              'all' => '0',
+              'success' => '0',
+              'failed' => '0',
+              'other' => '0'
+            })
+          end
         end
       end
     end
@@ -405,10 +435,10 @@ RSpec.describe 'rendering project pipeline statistics', :aggregate_failures, :cl
     end
   end
 
-  def create_pipeline(status, started_at, duration)
+  def create_pipeline(status, started_at, duration, ref, source)
     # NOTE: This can be switched to build_stubbed once the legacy fields are removed and we rely solely
     # on CollectPipelineAnalyticsService
-    pipeline = create(:ci_pipeline, status, project: project,
+    pipeline = create(:ci_pipeline, status, project: project, ref: ref, source: source,
       created_at: 1.second.before(started_at), started_at: started_at)
 
     status = :success if status == :manual

@@ -13,6 +13,16 @@ module Resolvers
 
       alias_method :project, :object
 
+      argument :source, Types::PipelineCiSourcesEnum,
+        required: false,
+        description: 'Source of the pipeline.',
+        alpha: { milestone: '17.5' }
+
+      argument :ref, GraphQL::Types::String,
+        required: false,
+        description: 'Branch that triggered the pipeline.',
+        alpha: { milestone: '17.5' }
+
       argument :from_time, Types::TimeType,
         required: false,
         description: 'Start of the requested time frame. Defaults to the pipelines started in the past week.',
@@ -23,13 +33,15 @@ module Resolvers
         description: 'End of the requested time frame. Defaults to pipelines started before the current date.',
         alpha: { milestone: '17.5' }
 
-      def resolve(lookahead:, from_time: nil, to_time: nil)
+      def resolve(lookahead:, source: nil, ref: nil, from_time: nil, to_time: nil)
         result = legacy_fields(lookahead)
 
         if any_field_selected?(lookahead, :aggregate)
           response =
             ::Ci::CollectPipelineAnalyticsService.new(
-              current_user: context[:current_user], project: project, from_time: from_time, to_time: to_time,
+              current_user: context[:current_user], project: project,
+              source: source, ref: ref,
+              from_time: from_time, to_time: to_time,
               status_groups: selected_status_groups(lookahead)
             ).execute
 

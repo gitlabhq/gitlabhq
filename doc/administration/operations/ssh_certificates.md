@@ -153,14 +153,15 @@ Consider the balance between the number of keys for typical users (especially if
 
 Users can still bypass SSH certificate authentication by manually
 uploading an SSH public key to their profile, relying on the
-`~/.ssh/authorized_keys` fallback to authenticate it. There's
-currently no feature to prevent this,
-[but there's an open request for adding it](https://gitlab.com/gitlab-org/gitlab/-/issues/23260).
+`~/.ssh/authorized_keys` fallback to authenticate it.
 
-Such a restriction can currently be hacked in by, for example, providing a
-custom `AuthorizedKeysCommand` which checks if the discovered key-ID
-returned from `gitlab-shell-authorized-keys-check` is a deploy key or
-not (all non-deploy keys should be refused).
+There's an [open issue](https://gitlab.com/gitlab-org/gitlab/-/issues/23260)
+to add a setting that prevents users from uploading SSH keys that are not deploy keys.
+
+You can build a check to enforce this restriction yourself.
+For example, provide a custom `AuthorizedKeysCommand` which checks
+if the discovered key-ID returned from `gitlab-shell-authorized-keys-check`
+is a deploy key or not (all non-deploy keys should be refused).
 
 ## Disabling the global warning about users lacking SSH keys
 

@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-GitLab currently doesn't have built-in support for managing SSH keys in a build
+GitLab does not have built-in support for managing SSH keys in a build
 environment (where the GitLab Runner runs).
 
 Use SSH keys when you want to:

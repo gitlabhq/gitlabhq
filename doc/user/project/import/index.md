@@ -254,7 +254,7 @@ existing inherited membership of the imported group or project can affect how me
 are reassigned to them.
 
 GitLab does not allow a membership in a child project or group to have a lower role
-than an inherited membership. If an imported membership for an assigned user has a lower role 
+than an inherited membership. If an imported membership for an assigned user has a lower role
 than their existing inherited membership, the imported membership is not reassigned to the user.
 
 This results in their membership for the imported group or project being higher than it was on the source.

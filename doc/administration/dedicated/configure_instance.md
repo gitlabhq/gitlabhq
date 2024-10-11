@@ -78,7 +78,7 @@ You can use the configuration change log to track the changes made to your GitLa
 Each configuration change has a status:
 
 - Initiated: Configuration change is made in Switchboard, but not yet deployed to the instance.
-- In progress: Configuration change is currently being deployed to the instance.
+- In progress: Configuration change is actively being deployed to the instance.
 - Complete: Configuration change has been deployed to the instance.
 - Delayed: Initial job to deploy a change has failed and the change has not yet been assigned to a new job.
 

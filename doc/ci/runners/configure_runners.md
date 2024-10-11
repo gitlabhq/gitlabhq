@@ -520,7 +520,7 @@ Use the `empty` Git strategy when:
 
 ### Git submodule strategy
 
-The `GIT_SUBMODULE_STRATEGY` variable is used to control if / how 
+The `GIT_SUBMODULE_STRATEGY` variable is used to control if / how
 [Git submodules](https://git-scm.com/book/en/v2/Git-Tools-Submodules) are included when fetching the code before a build. You can set them
 globally or per-job in the [`variables`](../yaml/index.md#variables) section.
 

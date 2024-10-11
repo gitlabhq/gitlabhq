@@ -557,7 +557,7 @@ Actors also provide an easy way to do a percentage rollout of a feature in a sti
 If a 1% rollout enabled a feature for a specific actor, that actor will continue to have the feature enabled at
 10%, 50%, and 100%.
 
-GitLab currently supports the following feature flag actors:
+GitLab supports the following feature flag actors:
 
 - `User` model
 - `Project` model

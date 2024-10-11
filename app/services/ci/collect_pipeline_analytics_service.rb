@@ -6,10 +6,12 @@ module Ci
     STATUS_GROUPS = STATUS_GROUP_TO_STATUSES.keys.freeze
     STATUS_TO_STATUS_GROUP = STATUS_GROUP_TO_STATUSES.flat_map { |k, v| v.product([k]) }.to_h
 
-    def initialize(current_user:, project:, from_time:, to_time:, status_groups: [:all])
+    def initialize(current_user:, project:, from_time:, to_time:, source: nil, ref: nil, status_groups: [:all])
       @current_user = current_user
       @project = project
       @status_groups = status_groups
+      @source = source
+      @ref = ref
       @from_time = from_time || 1.week.ago.utc
       @to_time = to_time || Time.now.utc
     end
@@ -45,7 +47,14 @@ module Ci
 
     def calculate_aggregate
       result = @status_groups.index_with(0)
-      query = clickhouse_model.for_project(@project).within_dates(@from_time, @to_time)
+
+      query = clickhouse_model
+        .for_project(@project)
+        .within_dates(@from_time, @to_time)
+
+      query = query.for_source(@source) if @source
+      query = query.for_ref(@ref) if @ref
+
       if @status_groups.include?(:all)
         all_query = query.select(query.count_pipelines_function.as('all'))
         result[:all] = ::ClickHouse::Client.select(all_query.to_sql, :main).first['all']

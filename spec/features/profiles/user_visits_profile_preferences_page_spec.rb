@@ -9,11 +9,13 @@ RSpec.describe 'User visits the profile preferences page', :js, feature_category
 
   before do
     sign_in(user)
-
-    visit(profile_preferences_path)
   end
 
   describe 'User changes their syntax highlighting theme', :js do
+    before do
+      visit(profile_preferences_path)
+    end
+
     it 'updates their preference' do
       choose 'user_color_scheme_id_5'
 
@@ -24,7 +26,33 @@ RSpec.describe 'User visits the profile preferences page', :js, feature_category
     end
   end
 
+  context 'when your_work_projects_vue feature flag is enabled' do
+    before do
+      stub_feature_flags(your_work_projects_vue: true)
+      visit(profile_preferences_path)
+    end
+
+    it 'sets default dashboard preference to Your Contributed Projects (default)' do
+      expect(page).to have_button('Your Contributed Projects (default)')
+    end
+  end
+
+  context 'when your_work_projects_vue feature flag is disabled' do
+    before do
+      stub_feature_flags(your_work_projects_vue: false)
+      visit(profile_preferences_path)
+    end
+
+    it 'sets default dashboard preference to Your Projects (default)' do
+      expect(page).to have_button('Your Projects (default)')
+    end
+  end
+
   describe 'User changes their default dashboard', :js do
+    before do
+      visit(profile_preferences_path)
+    end
+
     it 'creates a flash message' do
       select_from_listbox 'Starred Projects', from: 'Your Projects', exact_item_text: true
       click_button 'Save changes'
@@ -53,6 +81,10 @@ RSpec.describe 'User visits the profile preferences page', :js, feature_category
   end
 
   describe 'User changes their language', :js do
+    before do
+      visit(profile_preferences_path)
+    end
+
     it 'creates a flash message' do
       select_from_listbox 'English', from: 'English'
       click_button 'Save changes'
@@ -75,6 +107,10 @@ RSpec.describe 'User visits the profile preferences page', :js, feature_category
   end
 
   describe 'User changes whitespace in code' do
+    before do
+      visit(profile_preferences_path)
+    end
+
     it 'updates their preference' do
       expect(user.render_whitespace_in_code).to be(false)
       expect(render_whitespace_field).not_to be_checked

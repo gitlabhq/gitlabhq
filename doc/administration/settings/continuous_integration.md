@@ -252,6 +252,7 @@ from the **Admin** area:
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > CI/CD**.
 1. Expand the **Continuous Integration and Deployment** section.
+<!-- vale gitlab_base.CurrentStatus  = NO -->
 1. In the **CI/CD limits** section, you can set the following limits:
    - **Maximum number of jobs in a single pipeline**
    - **Total number of jobs in currently active pipelines**
@@ -261,6 +262,7 @@ from the **Admin** area:
    - **Maximum number of runners registered per group**
    - **Maximum number of runners registered per project**
    - **Maximum number of downstream pipelines in a pipeline's hierarchy tree**
+<!-- vale gitlab_base.CurrentStatus  = YES -->
 
 ## Enable or disable the pipeline suggestion banner
 

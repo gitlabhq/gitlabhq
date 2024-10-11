@@ -82,7 +82,7 @@ To use Code Suggestions:
 
 1. When you receive a suggestion, you can do any of the following:
    - To accept a suggestion, press <kbd>Tab</kbd>.
-   - To accept a partial suggestion, press either <kbd>Control</kbd>+<kbd>Right arrow</kbd> or <kbd>Command</kbd>+<kbd>Right arrow</kbd>. 
+   - To accept a partial suggestion, press either <kbd>Control</kbd>+<kbd>Right arrow</kbd> or <kbd>Command</kbd>+<kbd>Right arrow</kbd>.
    - To reject a suggestion, press <kbd>Esc</kbd>.
    - To ignore a suggestion, keep typing as you usually would.
 
@@ -259,7 +259,7 @@ When using Code Suggestions, [code review best practice](../../../../development
 
 Code Suggestions is powered by a generative AI model.
 
-- For code completion, suggestions are usually low latency and take less than one second. 
+- For code completion, suggestions are usually low latency and take less than one second.
 - For code generation, algorithms or large code blocks might take more than five seconds to generate.
 
 Your personal access token enables a secure API connection to GitLab.com or to your GitLab instance.

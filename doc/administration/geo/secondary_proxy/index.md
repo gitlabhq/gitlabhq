@@ -118,7 +118,7 @@ distributes traffic to your Geo sites using a location-aware URL.
 ### Configure each site to use the same external URL
 
 After you have set up routing from a single URL to all of your Geo sites, follow
-the following steps if your sites currently use different URLs:
+the following steps if your sites use different URLs:
 
 1. On each GitLab site, SSH into **each** node running Rails (Puma, Sidekiq, Log-Cursor)
    and set the `external_url` to that of the single URL:
@@ -153,7 +153,7 @@ GitLab does not support multiple external URLs, see [issue 21319](https://gitlab
 
 ### Configure a secondary Geo site to a different external URL than the primary site
 
-If your secondary site currently uses the same external URL as the primary site:
+If your secondary site uses the same external URL as the primary site:
 
 1. On the secondary site, SSH into **each** node running Rails (Puma, Sidekiq, Log-Cursor)
    and set the `external_url` to the desired URL for the secondary site:
@@ -197,7 +197,7 @@ Most HTTP traffic sent to a secondary Geo site is proxied to the primary Geo sit
 secondary Geo sites are able to support write requests, and avoid read-after-write problems. Certain
 **read** requests are handled locally by secondary sites for improved latency and bandwidth nearby.
 
-The following table details the components currently tested through the Geo secondary site Workhorse proxy.
+The following table details the components tested through the Geo secondary site Workhorse proxy.
 It does not cover all data types.
 
 In this context, accelerated reads refer to read requests served from the secondary site, provided that the data is up to date for the component on the secondary site. If the data on the secondary site is determined to be out of date, the request is forwarded to the primary site. Read requests for components not listed in the table below are always automatically forwarded to the primary site.

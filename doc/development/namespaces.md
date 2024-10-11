@@ -217,7 +217,7 @@ namespace_object.recursive_self_and_hierarchy
 
 ### Search using trie data structure
 
-`Namespaces::Traversal::TrieNode` implements a trie data structure to efficiently search within 
+`Namespaces::Traversal::TrieNode` implements a trie data structure to efficiently search within
 `namespaces.traveral_ids` hierarchy for a set of Namespaces.
 
 ```ruby

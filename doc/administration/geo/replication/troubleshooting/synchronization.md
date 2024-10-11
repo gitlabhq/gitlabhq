@@ -301,7 +301,7 @@ project.replicator.sync
 
 The following script:
 
-- Loops over all currently failed repositories.
+- Loops over all failed repositories.
 - Displays the project details and the reasons for the last failure.
 - Attempts to resync the repository.
 - Reports back if a failure occurs, and why.

@@ -368,3 +368,4 @@ Use the following commands to quickly accomplish specific tasks.
 | /refactor              | [Refactor the code](#refactor-code-in-the-ide)        |
 | /troubleshoot          | [Troubleshoot failed CI/CD jobs with Root Cause Analysis](#troubleshoot-failed-cicd-jobs-with-root-cause-analysis) |
 | /fix                   | [Fix the code](#fix-code-in-the-ide)        |
+| /help                  | Learn more about how Duo Chat works.  |
