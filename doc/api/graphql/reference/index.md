@@ -7589,6 +7589,30 @@ Input type: `OrganizationUpdateInput`
 | <a id="mutationorganizationupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationorganizationupdateorganization"></a>`organization` | [`Organization`](#organization) | Organization after mutation. |
 
+### `Mutation.organizationUserUpdate`
+
+DETAILS:
+**Introduced** in GitLab 17.5.
+**Status**: Experiment.
+
+Input type: `OrganizationUserUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationorganizationuserupdateaccesslevel"></a>`accessLevel` | [`OrganizationUserAccessLevel!`](#organizationuseraccesslevel) | Access level to update the organization user to. |
+| <a id="mutationorganizationuserupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationorganizationuserupdateid"></a>`id` | [`OrganizationsOrganizationUserID!`](#organizationsorganizationuserid) | ID of the organization user to mutate. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationorganizationuserupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationorganizationuserupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationorganizationuserupdateorganizationuser"></a>`organizationUser` **{warning-solid}** | [`OrganizationUser`](#organizationuser) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.5. |
+
 ### `Mutation.pagesMarkOnboardingComplete`
 
 Input type: `PagesMarkOnboardingCompleteInput`
@@ -40353,6 +40377,12 @@ An example `OperationsFeatureFlagID` is: `"gid://gitlab/Operations::FeatureFlag/
 A `OrganizationsOrganizationID` is a global ID. It is encoded as a string.
 
 An example `OrganizationsOrganizationID` is: `"gid://gitlab/Organizations::Organization/1"`.
+
+### `OrganizationsOrganizationUserID`
+
+A `OrganizationsOrganizationUserID` is a global ID. It is encoded as a string.
+
+An example `OrganizationsOrganizationUserID` is: `"gid://gitlab/Organizations::OrganizationUser/1"`.
 
 ### `PackagesConanFileMetadatumID`
 

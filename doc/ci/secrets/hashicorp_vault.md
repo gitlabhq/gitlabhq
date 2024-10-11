@@ -168,7 +168,8 @@ Success! Uploaded policy: myproject-production
 
 You also need roles that link the JWT with these policies.
 
-One for staging named `myproject-staging`:
+For example, one role for staging named `myproject-staging`. The [bound claims](https://developer.hashicorp.com/vault/api-docs/auth/jwt#bound_claims)
+is configured to only allow the policy to be used for the `main` branch in the project with ID `22`:
 
 ```shell
 $ vault write auth/jwt/role/myproject-staging - <<EOF
@@ -180,14 +181,15 @@ $ vault write auth/jwt/role/myproject-staging - <<EOF
   "bound_audiences": "https://vault.example.com",
   "bound_claims": {
     "project_id": "22",
-    "ref": "master",
+    "ref": "main",
     "ref_type": "branch"
   }
 }
 EOF
 ```
 
-And one for production named `myproject-production`:
+And one role for production named `myproject-production`. The `bound_claims` section
+for this role only allows protected branches that match the `auto-deploy-*` pattern to access the secrets.
 
 ```shell
 $ vault write auth/jwt/role/myproject-production - <<EOF
@@ -207,9 +209,6 @@ $ vault write auth/jwt/role/myproject-production - <<EOF
 }
 EOF
 ```
-
-This example uses [bound claims](https://developer.hashicorp.com/vault/api-docs/auth/jwt#bound_claims)
-to specify that only a JWT with matching values for the specified claims is allowed to authenticate.
 
 Combined with [protected branches](../../user/project/repository/branches/protected.md),
 you can restrict who is able to authenticate and read the secrets.

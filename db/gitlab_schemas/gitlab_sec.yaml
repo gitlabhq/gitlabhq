@@ -153,4 +153,4 @@ allow_cross_foreign_keys:
       - dast_site_tokens
       - dast_site_validations
       - dast_sites
-cell_local: true
+require_sharding_key: true

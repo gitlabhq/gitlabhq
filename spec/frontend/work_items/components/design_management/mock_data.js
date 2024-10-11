@@ -84,6 +84,30 @@ export const designCollectionResponse = (mockDesigns = [mockDesign]) => ({
   },
 });
 
+export const allDesignsArchivedResponse = () => ({
+  data: {
+    workItem: {
+      id: 'gid://gitlab/WorkItem/1',
+      workItemType: {
+        id: 'gid://gitlab/WorkItems::Type/1',
+        name: 'Issue',
+        __typename: 'WorkItemType',
+      },
+      widgets: [
+        {
+          __typename: 'WorkItemWidgetDesigns',
+          type: 'DESIGNS',
+          designCollection: {
+            copyState: 'READY',
+            designs: { nodes: [] },
+            versions: { nodes: mockAllVersions },
+          },
+        },
+      ],
+    },
+  },
+});
+
 export const getDesignResponse = {
   data: {
     project: {
@@ -99,12 +123,35 @@ export const getDesignResponse = {
                 type: 'DESIGNS',
                 designCollection: {
                   designs: { nodes: [mockDesign] },
+                  versions: { nodes: mockAllVersions },
                 },
               },
             ],
           },
         ],
       },
+    },
+  },
+};
+
+export const mockArchiveDesignMutationResponse = {
+  data: {
+    designManagementDelete: {
+      version: {
+        id: 'gid://gitlab/DesignManagement::Version/45',
+        sha: '9c325d6ebff28c5316360e2c40939ceaf0e7560e',
+        createdAt: '2024-10-02T18:56:41Z',
+        author: {
+          id: 'gid://gitlab/User/1',
+          name: 'Administrator',
+          avatarUrl:
+            'https://www.gravatar.com/avatar/fb95b2f29af5fa93521f6aa719fd7216f539d2ba41c7188e8925af9dfac16d44?s=80&d=identicon',
+          __typename: 'UserCore',
+        },
+        __typename: 'DesignVersion',
+      },
+      errors: [],
+      __typename: 'DesignManagementDeletePayload',
     },
   },
 };

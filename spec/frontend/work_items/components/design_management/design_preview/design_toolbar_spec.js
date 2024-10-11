@@ -4,6 +4,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import DesignToolbar from '~/work_items/components/design_management/design_preview/design_toolbar.vue';
 import CloseButton from '~/work_items/components/design_management/design_preview/close_button.vue';
+import ArchiveDesignButton from '~/work_items/components/design_management/archive_design_button.vue';
 import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
 import TodosToggle from '~/work_items/components/shared/todos_toggle.vue';
 import mockDesign from './mock_design';
@@ -14,7 +15,11 @@ describe('DesignToolbar', () => {
   let wrapper;
   const workItemTitle = 'Test title';
 
-  function createComponent({ isLoading = false, design = mockDesign } = {}) {
+  function createComponent({
+    isLoading = false,
+    design = mockDesign,
+    isLatestVersion = true,
+  } = {}) {
     wrapper = shallowMountExtended(DesignToolbar, {
       propsData: {
         workItemTitle,
@@ -22,6 +27,7 @@ describe('DesignToolbar', () => {
         design,
         isSidebarOpen: true,
         designFilename: design.filename,
+        isLatestVersion,
       },
       isLoggedIn: isLoggedIn(),
     });
@@ -65,6 +71,18 @@ describe('DesignToolbar', () => {
     createComponent();
 
     expect(wrapper.findComponent(CloseButton).exists()).toBe(true);
+  });
+
+  it('renders archive design button', () => {
+    createComponent();
+
+    expect(wrapper.findComponent(ArchiveDesignButton).exists()).toBe(true);
+  });
+
+  it('does not render archive design button if the version is not the latest', () => {
+    createComponent({ isLatestVersion: false });
+
+    expect(wrapper.findComponent(ArchiveDesignButton).exists()).toBe(false);
   });
 
   it('renders imported badge when design is imported', () => {

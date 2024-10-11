@@ -176,7 +176,7 @@ module Gitlab
 
         grouped_blobs = grouped_blob_indicies.map { |idx_arr| idx_arr.map { |i| blobs[i] } }
 
-        found_secrets = Parallel.flat_map(
+        Parallel.flat_map(
           grouped_blobs,
           in_processes: MAX_PROCS_PER_REQUEST,
           isolation: true # do not reuse sub-processes
@@ -191,8 +191,6 @@ module Gitlab
               SecretDetection::Status::PAYLOAD_TIMEOUT)
           end
         end
-
-        found_secrets.freeze
       end
 
       # finds secrets in the given blob with a timeout circuit breaker

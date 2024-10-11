@@ -1,0 +1,10 @@
+#import "./fragments/version.fragment.graphql"
+
+mutation archiveDesign($filenames: [String!]!, $projectPath: ID!, $iid: ID!) {
+  designManagementDelete(input: { projectPath: $projectPath, iid: $iid, filenames: $filenames }) {
+    version {
+      ...VersionListItem
+    }
+    errors
+  }
+}

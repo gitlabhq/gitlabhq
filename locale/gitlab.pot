@@ -19235,6 +19235,12 @@ msgstr ""
 msgid "DesignManagement|Adding a design with the same filename replaces the file in a new version."
 msgstr ""
 
+msgid "DesignManagement|All designs have been archived."
+msgstr ""
+
+msgid "DesignManagement|An error occurred while loading designs. Please try again."
+msgstr ""
+
 msgid "DesignManagement|Archive design"
 msgstr ""
 
@@ -19319,6 +19325,11 @@ msgstr ""
 msgid "DesignManagement|Error uploading a new design. Please try again."
 msgstr ""
 
+msgid "DesignManagement|Failed to archive a design. Please try again."
+msgid_plural "DesignManagement|Failed to archive designs. Please try again."
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "DesignManagement|Go back to designs"
 msgstr ""
 
@@ -19352,6 +19363,9 @@ msgstr ""
 msgid "DesignManagement|Select all"
 msgstr ""
 
+msgid "DesignManagement|Select the design"
+msgstr ""
+
 msgid "DesignManagement|Show comments"
 msgstr ""
 
@@ -19371,6 +19385,9 @@ msgid "DesignManagement|To upload designs, you'll need to enable LFS and have an
 msgstr ""
 
 msgid "DesignManagement|Unresolve thread"
+msgstr ""
+
+msgid "DesignManagement|Unselect the design"
 msgstr ""
 
 msgid "DesignManagement|Upload designs"
@@ -23091,6 +23108,9 @@ msgid "Failed to update organization"
 msgstr ""
 
 msgid "Failed to update the Canary Ingress."
+msgstr ""
+
+msgid "Failed to update the organization user"
 msgstr ""
 
 msgid "Failed to upload object map file"
@@ -57903,6 +57923,27 @@ msgstr ""
 msgid "TrialRegistration|To complete registration, we need additional details from you."
 msgstr ""
 
+msgid "TrialWidget|%{daysLeft} days left in trial"
+msgstr ""
+
+msgid "TrialWidget|GitLab Duo Enterprise"
+msgstr ""
+
+msgid "TrialWidget|GitLab Duo Enterprise Trial"
+msgstr ""
+
+msgid "TrialWidget|Learn more"
+msgstr ""
+
+msgid "TrialWidget|See upgrade options"
+msgstr ""
+
+msgid "TrialWidget|Upgrade"
+msgstr ""
+
+msgid "TrialWidget|Your trial of GitLab Duo Enterprise has ended"
+msgstr ""
+
 msgid "Trials|%{planName} Trial"
 msgstr ""
 
@@ -63189,6 +63230,9 @@ msgstr ""
 msgid "You cannot assign or unassign frameworks to a project that has more than one associated framework."
 msgstr ""
 
+msgid "You cannot change the access of the last owner from the organization"
+msgstr ""
+
 msgid "You cannot combine replace_ids with add_ids or remove_ids"
 msgstr ""
 
@@ -63409,6 +63453,9 @@ msgid "You have insufficient permissions to update an on-call schedule for this 
 msgstr ""
 
 msgid "You have insufficient permissions to update the organization"
+msgstr ""
+
+msgid "You have insufficient permissions to update the organization user"
 msgstr ""
 
 msgid "You have insufficient permissions to update this HTTP integration"

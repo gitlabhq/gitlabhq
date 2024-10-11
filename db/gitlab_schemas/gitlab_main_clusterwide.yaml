@@ -12,4 +12,4 @@ allow_cross_transactions:
 allow_cross_foreign_keys:
   - gitlab_main
   - gitlab_main_cell
-cell_local: false
+require_sharding_key: false

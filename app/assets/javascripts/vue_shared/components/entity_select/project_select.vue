@@ -10,6 +10,7 @@ import {
   FETCH_PROJECT_ERROR,
 } from './constants';
 import EntitySelector from './entity_select.vue';
+import { initialSelectionPropValidator } from './utils';
 
 export default {
   components: {
@@ -73,9 +74,10 @@ export default {
       default: 'similarity',
     },
     initialSelection: {
-      type: String,
+      type: [String, Number, Object],
       required: false,
       default: null,
+      validator: initialSelectionPropValidator,
     },
     emptyText: {
       type: String,

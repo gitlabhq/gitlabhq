@@ -4,7 +4,7 @@ module Sidebars
   module UserProfile
     module Menus
       class OverviewMenu < ::Sidebars::UserProfile::BaseMenu
-        include UsersHelper
+        include ::UsersHelper
 
         override :link
         def link

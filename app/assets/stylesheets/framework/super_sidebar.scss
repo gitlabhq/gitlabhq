@@ -737,3 +737,7 @@ $scroll-scrim-height: 2.25rem;
     margin-top: 0;
   }
 }
+
+.custom-gradient-progress .progress-bar {
+  background: linear-gradient(90deg, #ffb177 0%, #936fff 100%);
+}

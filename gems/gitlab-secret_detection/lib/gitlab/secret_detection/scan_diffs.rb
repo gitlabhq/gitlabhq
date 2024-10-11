@@ -162,7 +162,7 @@ module Gitlab
       end
 
       def run_scan(diffs, payload_timeout, exclusions)
-        found_secrets = diffs.flat_map do |diff|
+        diffs.flat_map do |diff|
           Timeout.timeout(payload_timeout) do
             find_secrets(diff, exclusions)
           end
@@ -171,8 +171,6 @@ module Gitlab
           SecretDetection::Finding.new(diff.right_blob_id,
             SecretDetection::Status::PAYLOAD_TIMEOUT)
         end
-
-        found_secrets.freeze
       end
 
       def run_scan_within_subprocess(diffs, payload_timeout, exclusions)
@@ -181,7 +179,7 @@ module Gitlab
 
         grouped_diffs = grouped_diff_indicies.map { |idx_arr| idx_arr.map { |i| diffs[i] } }
 
-        found_secrets = Parallel.flat_map(
+        Parallel.flat_map(
           grouped_diffs,
           in_processes: MAX_PROCS_PER_REQUEST,
           isolation: true # do not reuse sub-processes
@@ -196,8 +194,6 @@ module Gitlab
               SecretDetection::Status::PAYLOAD_TIMEOUT)
           end
         end
-
-        found_secrets.freeze
       end
 
       # finds secrets in the given diff with a timeout circuit breaker

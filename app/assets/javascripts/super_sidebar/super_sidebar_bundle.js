@@ -35,6 +35,7 @@ const getTrialStatusWidgetData = (sidebarData) => {
     return {
       showTrialStatusWidget: true,
       showDuoProTrialStatusWidget: false,
+      showTrialWidget: false,
       trialDaysUsed: Number(trialDaysUsed),
       trialDuration: Number(trialDuration),
       navIconImagePath,
@@ -66,6 +67,7 @@ const getTrialStatusWidgetData = (sidebarData) => {
     return {
       showDuoProTrialStatusWidget: true,
       showTrialStatusWidget: false,
+      showTrialWidget: false,
       trialDaysUsed: Number(trialDaysUsed),
       trialDuration: Number(trialDuration),
       percentageComplete: Number(percentageComplete),
@@ -79,7 +81,38 @@ const getTrialStatusWidgetData = (sidebarData) => {
     };
   }
 
-  return { showTrialStatusWidget: false, showDuoProTrialStatusWidget: false };
+  if (sidebarData.trial_widget_data_attrs) {
+    const {
+      trialType,
+      daysRemaining,
+      percentageComplete,
+      groupId,
+      trialDiscoverPagePath,
+      purchaseNowUrl,
+      featureId,
+      dismissEndpoint,
+    } = convertObjectPropsToCamelCase(sidebarData.trial_widget_data_attrs);
+
+    return {
+      showTrialWidget: true,
+      showTrialStatusWidget: false,
+      showDuoProTrialStatusWidget: false,
+      trialType,
+      daysRemaining: Number(daysRemaining),
+      percentageComplete: Number(percentageComplete),
+      groupId,
+      trialDiscoverPagePath,
+      purchaseNowUrl,
+      featureId,
+      dismissEndpoint,
+    };
+  }
+
+  return {
+    showTrialWidget: false,
+    showTrialStatusWidget: false,
+    showDuoProTrialStatusWidget: false,
+  };
 };
 
 export const initSuperSidebar = () => {

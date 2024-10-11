@@ -20,7 +20,6 @@ module InternalEventsCli
 
     TEXT
 
-    # TODO: Remove "NEW TOOL" comment after 3 months
     FEEDBACK_NOTICE = format_heading <<~TEXT.chomp
       Thanks for using the Internal Events CLI!
 

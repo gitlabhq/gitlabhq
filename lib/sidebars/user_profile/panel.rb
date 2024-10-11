@@ -3,7 +3,7 @@
 module Sidebars
   module UserProfile
     class Panel < ::Sidebars::Panel
-      include UsersHelper
+      include ::UsersHelper
       include Gitlab::Allowable
 
       delegate :current_user, to: :@context

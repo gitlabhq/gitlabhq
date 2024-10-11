@@ -59,12 +59,12 @@ For a product tour, see the [GitLab Advanced SAST product tour](https://gitlab.n
 
 GitLab Advanced SAST supports the following languages with cross-function and cross-file taint analysis:
 
-- Python
-- Go
-- Java (JSP files are also supported)
-- JavaScript
-- TypeScript
 - C#
+- Go
+- Java, including Java Server Pages (JSP)
+- JavaScript, TypeScript
+- Python
+- Ruby
 
 ## Configuration
 

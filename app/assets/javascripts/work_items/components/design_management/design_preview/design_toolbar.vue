@@ -5,6 +5,7 @@ import { TYPE_DESIGN } from '~/import/constants';
 import { s__ } from '~/locale';
 import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
 import TodosToggle from '../../shared/todos_toggle.vue';
+import ArchiveDesignButton from '../archive_design_button.vue';
 import CloseButton from './close_button.vue';
 import DesignNavigation from './design_navigation.vue';
 
@@ -13,6 +14,7 @@ export default {
     downloadButtonLabel: s__('DesignManagement|Download design'),
     hideCommentsButtonLabel: s__('DesignManagement|Hide comments'),
     showCommentsButtonLabel: s__('DesignManagement|Show comments'),
+    archiveButtonLabel: s__('DesignManagement|Archive design'),
   },
   isLoggedIn: isLoggedIn(),
   components: {
@@ -23,6 +25,7 @@ export default {
     CloseButton,
     DesignNavigation,
     TodosToggle,
+    ArchiveDesignButton,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -41,6 +44,10 @@ export default {
       required: true,
     },
     isLoading: {
+      type: Boolean,
+      required: true,
+    },
+    isLatestVersion: {
       type: Boolean,
       required: true,
     },
@@ -111,6 +118,17 @@ export default {
         icon="download"
         :title="$options.i18n.downloadButtonLabel"
         :aria-label="$options.i18n.downloadButtonLabel"
+      />
+      <archive-design-button
+        v-if="isLatestVersion"
+        v-gl-tooltip.bottom
+        button-size="medium"
+        :title="$options.i18n.archiveButtonLabel"
+        :aria-label="$options.i18n.archiveButtonLabel"
+        button-icon="archive"
+        class="gl-ml-2"
+        button-category="tertiary"
+        @archive-selected-designs="$emit('archive-design')"
       />
       <gl-button
         v-gl-tooltip.bottom

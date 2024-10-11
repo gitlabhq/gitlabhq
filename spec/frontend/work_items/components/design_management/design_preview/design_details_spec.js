@@ -8,6 +8,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 
 import getDesignQuery from '~/work_items/components/design_management/graphql/design_details.query.graphql';
 import getLocalDesignQuery from '~/work_items/components/design_management/graphql/local_design.query.graphql';
+import archiveDesignMutation from '~/work_items/components/design_management/graphql/archive_design.mutation.graphql';
 import DesignDetails from '~/work_items/components/design_management/design_preview/design_details.vue';
 import DesignPresentation from '~/work_items/components/design_management/design_preview/design_presentation.vue';
 import DesignToolbar from '~/work_items/components/design_management/design_preview/design_toolbar.vue';
@@ -18,9 +19,9 @@ import { updateWorkItemDesignCurrentTodosWidget } from '~/work_items/components/
 import {
   DESIGN_DETAIL_LAYOUT_CLASSLIST,
   DESIGN_NOT_FOUND_ERROR,
+  DESIGN_SINGLE_ARCHIVE_ERROR,
 } from '~/work_items/components/design_management/constants';
-
-import { getDesignResponse, mockDesign } from '../mock_data';
+import { getDesignResponse, mockDesign, mockArchiveDesignMutationResponse } from '../mock_data';
 
 jest.mock('~/alert');
 jest.mock('~/work_items/components/design_management/cache_updates', () => ({
@@ -54,16 +55,24 @@ describe('DesignDetails', () => {
   const findDesignScaler = () => wrapper.findComponent(DesignScaler);
 
   const getDesignQueryHandler = jest.fn().mockResolvedValue(getDesignResponse);
+  const archiveDesignSuccessMutationHandler = jest
+    .fn()
+    .mockResolvedValue(mockArchiveDesignMutationResponse);
+  const archiveDesignMutationError = jest.fn().mockRejectedValue(new Error('Mutation failed'));
   const error = new Error('ruh roh some error');
   const errorQueryHandler = jest.fn().mockRejectedValue(error);
 
   function createComponent({
     queryHandler = getDesignQueryHandler,
+    archiveDesignMutationHandler = archiveDesignSuccessMutationHandler,
     routeArg = MOCK_ROUTE,
     data = {},
   } = {}) {
     wrapper = shallowMountExtended(DesignDetails, {
-      apolloProvider: createMockApollo([[getDesignQuery, queryHandler]]),
+      apolloProvider: createMockApollo([
+        [getDesignQuery, queryHandler],
+        [archiveDesignMutation, archiveDesignMutationHandler],
+      ]),
       data() {
         return data;
       },
@@ -108,6 +117,22 @@ describe('DesignDetails', () => {
 
     it('renders `DesignScaler` component', () => {
       expect(findDesignScaler().exists()).toBe(true);
+    });
+
+    it('archives a design', async () => {
+      findDesignToolbar().vm.$emit('archive-design');
+      await waitForPromises();
+
+      expect(archiveDesignSuccessMutationHandler).toHaveBeenCalled();
+    });
+
+    it('throws error if archive a design query fails', async () => {
+      createComponent({ archiveDesignMutationHandler: archiveDesignMutationError });
+
+      findDesignToolbar().vm.$emit('archive-design');
+      await waitForPromises();
+
+      expect(createAlert).toHaveBeenCalledWith({ message: DESIGN_SINGLE_ARCHIVE_ERROR });
     });
   });
 

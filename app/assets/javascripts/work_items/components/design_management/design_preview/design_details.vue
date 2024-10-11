@@ -8,12 +8,24 @@ import { keysFor, ISSUE_CLOSE_DESIGN } from '~/behaviors/shortcuts/keybindings';
 import { ROUTES } from '../../../constants';
 import getDesignQuery from '../graphql/design_details.query.graphql';
 import getLocalDesignQuery from '../graphql/local_design.query.graphql';
-import { extractDesign, extractDiscussions, getPageLayoutElement } from '../utils';
-import { updateWorkItemDesignCurrentTodosWidget } from '../cache_updates';
+import getWorkItemDesignListQuery from '../graphql/design_collection.query.graphql';
+import archiveDesignMutation from '../graphql/archive_design.mutation.graphql';
+import {
+  extractDesign,
+  extractDiscussions,
+  getPageLayoutElement,
+  extractVersions,
+  findVersionId,
+} from '../utils';
+import {
+  updateStoreAfterDesignsArchive,
+  updateWorkItemDesignCurrentTodosWidget,
+} from '../cache_updates';
 import {
   DESIGN_DETAIL_LAYOUT_CLASSLIST,
   DESIGN_NOT_FOUND_ERROR,
   DESIGN_VERSION_NOT_EXIST_ERROR,
+  DESIGN_SINGLE_ARCHIVE_ERROR,
 } from '../constants';
 import DesignPresentation from './design_presentation.vue';
 import DesignToolbar from './design_toolbar.vue';
@@ -77,6 +89,7 @@ export default {
       workItemId: '',
       workItemTitle: '',
       isSidebarOpen: true,
+      allVersions: [],
     };
   },
   apollo: {
@@ -146,6 +159,26 @@ export default {
     currentUserDesignTodos() {
       return this.design?.currentUserTodos?.nodes;
     },
+    designCollectionQueryBody() {
+      return {
+        query: getWorkItemDesignListQuery,
+        variables: { id: this.workItemId, atVersion: null },
+      };
+    },
+    latestVersionId() {
+      const latestVersion = this.allVersions[0];
+      return latestVersion && findVersionId(latestVersion.id);
+    },
+    isLatestVersion() {
+      if (this.allVersions.length > 0) {
+        return (
+          !this.hasValidVersion ||
+          !this.latestVersionId ||
+          this.hasValidVersion === this.latestVersionId
+        );
+      }
+      return true;
+    },
   },
   watch: {
     resolvedDiscussions(val) {
@@ -173,6 +206,7 @@ export default {
         const workItem = data.project.workItems.nodes[0];
         this.workItemId = workItem.id;
         this.workItemTitle = workItem.title;
+        this.allVersions = extractVersions(data);
 
         // Write to the localDesign cache which is separate from designSource when design is opened.
         this.$apollo.provider.defaultClient.cache.writeQuery({
@@ -192,10 +226,6 @@ export default {
       // we want to create these alerts on the work item page
       createAlert({ message });
       this.$router.push({ name: ROUTES.workItem });
-    },
-    onError(message, e) {
-      this.errorMessage = message;
-      if (e) throw e;
     },
     closeDesign() {
       this.$router.push({
@@ -227,6 +257,32 @@ export default {
         },
       });
     },
+    async onArchiveDesign() {
+      try {
+        await this.$apollo.mutate({
+          mutation: archiveDesignMutation,
+          variables: {
+            filenames: [this.design.filename],
+            projectPath: this.fullPath,
+            iid: this.iid,
+          },
+          update: this.afterArchiveDesign,
+        });
+      } catch (error) {
+        this.onQueryError(DESIGN_SINGLE_ARCHIVE_ERROR);
+        this.errorMessage = DESIGN_SINGLE_ARCHIVE_ERROR;
+      } finally {
+        this.closeDesign();
+      }
+    },
+    afterArchiveDesign(store, { data: { designManagementDelete } }) {
+      updateStoreAfterDesignsArchive(
+        store,
+        designManagementDelete,
+        this.designCollectionQueryBody,
+        [this.design.filename],
+      );
+    },
   },
 };
 </script>
@@ -242,9 +298,11 @@ export default {
         :design-filename="$route.params.id"
         :is-loading="isLoading"
         :is-sidebar-open="isSidebarOpen"
+        :is-latest-version="isLatestVersion"
         :all-designs="allDesigns"
         :current-user-design-todos="currentUserDesignTodos"
         @toggle-sidebar="toggleSidebar"
+        @archive-design="onArchiveDesign"
         @todosUpdated="updateWorkItemDesignCurrentTodosWidgetCache"
       />
       <div class="gl-relative gl-flex gl-grow gl-flex-col gl-overflow-hidden lg:gl-flex-row">

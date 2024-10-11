@@ -88,8 +88,8 @@ module Gitlab
         # rubocop:enable Gitlab/DocUrl
       end
 
-      def self.cell_local?(schema)
-        Gitlab::Database.all_gitlab_schemas[schema.to_s].cell_local
+      def self.require_sharding_key?(schema)
+        Gitlab::Database.all_gitlab_schemas[schema.to_s].require_sharding_key
       end
 
       def self.cross_joins_allowed?(table_schemas, all_tables)

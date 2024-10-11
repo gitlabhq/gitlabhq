@@ -108,6 +108,27 @@ describe('EntitySelect', () => {
       expect(fetchInitialSelectionMock).toHaveBeenCalledTimes(1);
       expect(findListbox().props('toggleText')).toBe(itemMock.text);
     });
+
+    describe('when initialSelection is an object', () => {
+      beforeEach(async () => {
+        fetchInitialSelectionMock = jest.fn().mockImplementation(() => itemMock);
+        createComponent({
+          props: {
+            fetchInitialSelection: fetchInitialSelectionMock,
+            initialSelection: itemMock,
+          },
+        });
+        await nextTick();
+      });
+
+      it('does not fetch initial selection', () => {
+        expect(fetchInitialSelectionMock).not.toHaveBeenCalled();
+      });
+
+      it('shows initial selection as selected', () => {
+        expect(findListbox().props('toggleText')).toBe(itemMock.text);
+      });
+    });
   });
 
   it("renders the error slot's content", () => {

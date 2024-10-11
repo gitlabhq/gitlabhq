@@ -34,6 +34,10 @@ export const DESIGN_VERSION_NOT_EXIST_ERROR = s__(
   'DesignManagement|Requested design version does not exist.',
 );
 
+export const DESIGN_SINGLE_ARCHIVE_ERROR = s__(
+  'DesignManagement|Failed to archive a design. Please try again.',
+);
+
 const DESIGN_UPLOAD_SKIPPED_MESSAGE = s__('DesignManagement|Upload skipped. %{reason}');
 const MAX_SKIPPED_FILES_LISTINGS = 5;
 
@@ -104,4 +108,12 @@ export const designUploadSkippedWarning = (uploadedDesigns, skippedFiles) => {
   }
 
   return someDesignsSkippedMessage(skippedFiles);
+};
+
+export const designArchiveError = (designsCount = 1) => {
+  return n__(
+    'DesignManagement|Failed to archive a design. Please try again.',
+    'DesignManagement|Failed to archive designs. Please try again.',
+    designsCount,
+  );
 };

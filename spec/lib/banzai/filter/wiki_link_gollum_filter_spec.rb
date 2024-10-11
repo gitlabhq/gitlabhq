@@ -116,6 +116,15 @@ RSpec.describe Banzai::Filter::WikiLinkGollumFilter, feature_category: :wiki do
       expect(doc.at_css('code').text).to eq '[[link-in-backticks]]'
     end
 
+    it 'handles escaping brackets in title' do
+      tag = '[[this \[and\] that]]'
+      doc = pipeline_filter("See #{tag}", wiki: wiki)
+      expected_path = ::File.join(wiki.wiki_base_path, 'this%20%5Band%5D%20that')
+
+      expect(doc.at_css('a').text).to eq 'this [and] that'
+      expect(doc.at_css('a')['href']).to eq expected_path
+    end
+
     it 'handles group wiki links' do
       tag = '[[wiki-slug]]'
       doc = pipeline_filter("See #{tag}", project: nil, group: group, wiki: wiki)

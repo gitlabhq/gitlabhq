@@ -1,4 +1,7 @@
-import { groupsPath } from '~/vue_shared/components/entity_select/utils';
+import {
+  groupsPath,
+  initialSelectionPropValidator,
+} from '~/vue_shared/components/entity_select/utils';
 
 describe('entity_select utils', () => {
   describe('groupsPath', () => {
@@ -24,5 +27,18 @@ describe('entity_select utils', () => {
     expect(() => {
       groupsPath('descendant_groups');
     }).toThrow('Cannot use groupsFilter without a parentGroupID');
+  });
+
+  describe('initialSelectionPropValidator', () => {
+    it.each`
+      value                            | expected
+      ${1}                             | ${true}
+      ${'1'}                           | ${true}
+      ${{ value: 'foo', text: 'Bar' }} | ${true}
+      ${{ text: 'Bar' }}               | ${false}
+      ${{ value: 'foo' }}              | ${false}
+    `('returns $expected when value is $value', ({ value, expected }) => {
+      expect(initialSelectionPropValidator(value)).toBe(expected);
+    });
   });
 });

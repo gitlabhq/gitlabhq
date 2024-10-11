@@ -3,7 +3,7 @@
 module Admin
   class UserEntity < API::Entities::UserSafe
     include RequestAwareEntity
-    include UsersHelper
+    include ::UsersHelper
     include UserActionsHelper
 
     expose :created_at

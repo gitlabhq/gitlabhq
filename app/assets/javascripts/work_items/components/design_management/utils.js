@@ -10,6 +10,9 @@ export const extractDesigns = (data) =>
 
 export const extractDesign = (data) => (extractDesigns(data) || [])[0];
 
+export const extractVersions = (data) =>
+  findDesignWidget(data.project.workItems.nodes[0].widgets).designCollection.versions.nodes;
+
 export const extractDiscussions = (discussions) =>
   discussions.nodes.map((discussion, index) => ({
     ...discussion,
@@ -18,6 +21,8 @@ export const extractDiscussions = (discussions) =>
   }));
 
 export const getPageLayoutElement = () => document.querySelector('.layout-page');
+
+export const designWidgetOf = (data) => findDesignWidget(data.workItem.widgets);
 
 /**
  * Generates optimistic response for a design upload mutation
