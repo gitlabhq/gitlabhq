@@ -261,7 +261,7 @@ class IssuableBaseService < ::BaseContainerService
     filter_params(issuable)
 
     params.delete(:state_event)
-    params[:author] ||= current_user
+    params[:author] ||= issuable.author || current_user
     params[:label_ids] = process_label_ids(params, issuable: issuable, extra_label_ids: issuable.label_ids.to_a)
 
     if issuable.respond_to?(:assignee_ids)
