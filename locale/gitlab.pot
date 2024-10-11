@@ -3929,7 +3929,7 @@ msgstr ""
 msgid "AdminSelfHostedModels|Manage AI models that can be used for GitLab AI features."
 msgstr ""
 
-msgid "AdminSelfHostedModels|Manage GitLab Duo by configuring and assigning self-hosted models to AI-powered features"
+msgid "AdminSelfHostedModels|Manage GitLab Duo by configuring and assigning self-hosted models to AI-powered features."
 msgstr ""
 
 msgid "AdminSelfHostedModels|Model"
@@ -28525,6 +28525,9 @@ msgstr ""
 msgid "InProductMarketing|Start your 30-day free trial"
 msgstr ""
 
+msgid "InProductMarketing|Start your 60-day free trial"
+msgstr ""
+
 msgid "InProductMarketing|Team members collaborating"
 msgstr ""
 
@@ -39883,6 +39886,9 @@ msgid "PipelineCharts|CI/CD Analytics"
 msgstr ""
 
 msgid "PipelineCharts|Failure rate"
+msgstr ""
+
+msgid "PipelineCharts|Pipelines"
 msgstr ""
 
 msgid "PipelineCharts|Success rate"

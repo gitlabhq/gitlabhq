@@ -88,18 +88,35 @@ RSpec.describe 'Project Graph', :js, feature_category: :source_code_management d
   end
 
   context 'when CI enabled' do
+    subject(:visit_path) { visit ci_project_graph_path(project, 'master') }
+
     before do
       project.enable_ci
-
-      visit ci_project_graph_path(project, 'master')
     end
 
-    it 'renders CI graphs' do
-      expect(page).to have_content 'CI/CD Analytics'
-      expect(page).to have_content 'Last week'
-      expect(page).to have_content 'Last month'
-      expect(page).to have_content 'Last year'
-      expect(page).to have_content 'Pipeline durations for the last 30 commits'
+    context 'with ci_improved_project_pipeline_analytics feature flag on' do
+      it 'renders Pipeline graphs' do
+        visit_path
+
+        expect(page).to have_content 'CI/CD Analytics'
+        expect(page).to have_content 'Pipelines'
+      end
+    end
+
+    context 'with ci_improved_project_pipeline_analytics feature flag off' do
+      before do
+        stub_feature_flags(ci_improved_project_pipeline_analytics: false)
+      end
+
+      it 'renders CI graphs' do
+        visit_path
+
+        expect(page).to have_content 'CI/CD Analytics'
+        expect(page).to have_content 'Last week'
+        expect(page).to have_content 'Last month'
+        expect(page).to have_content 'Last year'
+        expect(page).to have_content 'Pipeline durations for the last 30 commits'
+      end
     end
   end
 end
