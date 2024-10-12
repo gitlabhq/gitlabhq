@@ -81,11 +81,15 @@ module Projects
     def validate_name_format
       return if name.blank?
 
-      # /\R/ - A linebreak: \n, \v, \f, \r \u0085 (NEXT LINE),
-      # \u2028 (LINE SEPARATOR), \u2029 (PARAGRAPH SEPARATOR) or \r\n.
-      return unless /\R/.match?(name)
-
-      errors.add(:name, 'has characters that are not allowed')
+      case name
+      when /\R/
+        # /\R/ - A linebreak: \n, \v, \f, \r \u0085 (NEXT LINE),
+        # \u2028 (LINE SEPARATOR), \u2029 (PARAGRAPH SEPARATOR) or \r\n.
+        errors.add(:name, 'has characters that are not allowed')
+      when /[^\p{ASCII}]/
+        # when not ASCII characters
+        errors.add(:name, 'must only include ASCII characters')
+      end
     end
   end
 end

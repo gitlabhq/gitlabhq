@@ -32,12 +32,17 @@ class SecretsInitializer
 
   attr_reader :secrets_file_path, :rails_env
 
+  def secrets_for_env(env)
+    secrets = secrets_from_file[env] || {}
+    secrets.deep_symbolize_keys
+  end
+
   def set_credentials_from_file_and_env!
     # Inspired by https://github.com/rails/rails/blob/v7.0.8.4/railties/lib/rails/secrets.rb#L25-L36
     # Later, once config/secrets.yml won't be read automatically, we'll need to do it manually, so
     # we anticipate and do it ourselves here.
-    secrets = secrets_from_file.fetch("shared", {}).deep_symbolize_keys
-      .merge(secrets_from_file.fetch(rails_env, {}).deep_symbolize_keys)
+    secrets = secrets_for_env('shared')
+                .merge(secrets_for_env(rails_env))
 
     # Copy secrets from config/secrets.yml into Rails.application.credentials
     # If we support native Rails.application.credentials later
