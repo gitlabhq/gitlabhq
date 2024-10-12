@@ -208,9 +208,9 @@ end
 
 RSpec.shared_examples 'track event' do |event_name|
   let(:event_user) do
-    if auth == :deploy_token
+    if defined?(auth) && auth == :deploy_token
       deploy_token
-    elsif user_role
+    elsif defined?(user_role) && user_role
       user
     end
   end

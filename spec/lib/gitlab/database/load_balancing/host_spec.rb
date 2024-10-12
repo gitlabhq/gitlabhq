@@ -87,7 +87,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Host, feature_category: :databas
     if ::Gitlab.next_rails?
       it_behaves_like 'disconnects the pool'
     else
-      context 'with load_balancing_disconnect_without_verify feature flag enabled' do
+      context 'with Rails 7.0' do
         let(:disconnect_method) { :disconnect_without_verify! }
 
         it_behaves_like 'disconnects the pool'
