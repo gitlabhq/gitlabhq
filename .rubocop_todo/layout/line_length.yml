@@ -90,7 +90,6 @@ Layout/LineLength:
     - 'app/finders/issuables/assignee_filter.rb'
     - 'app/finders/issuables/label_filter.rb'
     - 'app/finders/projects/members/effective_access_level_finder.rb'
-    - 'app/finders/projects_finder.rb'
     - 'app/finders/releases/group_releases_finder.rb'
     - 'app/finders/security/security_jobs_finder.rb'
     - 'app/finders/todos_finder.rb'

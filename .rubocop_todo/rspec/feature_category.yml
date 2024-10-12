@@ -1450,7 +1450,6 @@ RSpec/FeatureCategory:
     - 'spec/graphql/mutations/commits/create_spec.rb'
     - 'spec/graphql/mutations/concerns/mutations/resolves_group_spec.rb'
     - 'spec/graphql/mutations/concerns/mutations/resolves_issuable_spec.rb'
-    - 'spec/graphql/mutations/container_expiration_policies/update_spec.rb'
     - 'spec/graphql/mutations/custom_emoji/create_spec.rb'
     - 'spec/graphql/mutations/custom_emoji/destroy_spec.rb'
     - 'spec/graphql/mutations/customer_relations/contacts/create_spec.rb'

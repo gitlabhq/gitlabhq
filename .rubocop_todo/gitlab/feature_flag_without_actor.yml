@@ -21,7 +21,6 @@ Gitlab/FeatureFlagWithoutActor:
     - 'app/finders/notes_finder.rb'
     - 'app/finders/projects_finder.rb'
     - 'app/finders/snippets_finder.rb'
-    - 'app/graphql/mutations/container_registry/protection/rule/delete.rb'
     - 'app/graphql/mutations/issues/bulk_update.rb'
     - 'app/graphql/types/namespace_type.rb'
     - 'app/graphql/types/project_type.rb'
