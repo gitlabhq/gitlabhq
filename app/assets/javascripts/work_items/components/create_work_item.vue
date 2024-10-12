@@ -8,7 +8,7 @@ import {
   GlFormSelect,
 } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import { __, getPreferredLocales, s__ } from '~/locale';
+import { __, getPreferredLocales, s__, sprintf } from '~/locale';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import { fetchPolicies } from '~/lib/graphql';
 import { addHierarchyChild, setNewWorkItemCache } from '~/work_items/graphql/cache_utils';
@@ -31,6 +31,7 @@ import {
   WIDGET_TYPE_LABELS,
   WIDGET_TYPE_ROLLEDUP_DATES,
   WIDGET_TYPE_CRM_CONTACTS,
+  WIDGET_TYPE_LINKED_ITEMS,
 } from '../constants';
 import createWorkItemMutation from '../graphql/create_work_item.mutation.graphql';
 import namespaceWorkItemTypesQuery from '../graphql/namespace_work_item_types.query.graphql';
@@ -103,11 +104,18 @@ export default {
       required: false,
       default: null,
     },
+    relatedItem: {
+      type: Object,
+      required: false,
+      validator: (i) => i.id && i.type && i.reference,
+      default: null,
+    },
   },
   data() {
     return {
       isTitleValid: true,
       isConfidential: false,
+      isRelatedToItem: true,
       error: null,
       workItemTypes: [],
       selectedProjectFullPath: null,
@@ -296,6 +304,19 @@ export default {
     workItemIid() {
       return this.workItem?.iid;
     },
+    relatedItemText() {
+      return sprintf(s__('WorkItem|Relates to %{workItemType} %{workItemReference}'), {
+        workItemType: this.relatedItem.type,
+        workItemReference: this.relatedItem.reference,
+      });
+    },
+    shouldIncludeRelatedItem() {
+      return (
+        this.isWidgetSupported(WIDGET_TYPE_LINKED_ITEMS) &&
+        this.isRelatedToItem &&
+        this.relatedItem?.id
+      );
+    },
   },
   methods: {
     isWidgetSupported(widgetType) {
@@ -390,6 +411,12 @@ export default {
       if (this.isWidgetSupported(WIDGET_TYPE_CRM_CONTACTS)) {
         workItemCreateInput.crmContactsWidget = {
           contactIds: this.workItemCrmContactIds,
+        };
+      }
+
+      if (this.shouldIncludeRelatedItem) {
+        workItemCreateInput.linkedItemsWidget = {
+          workItemsIds: [this.relatedItem.id],
         };
       }
 
@@ -502,16 +529,23 @@ export default {
               @error="updateError = $event"
               @updateDraft="updateDraftData('description', $event)"
             />
-            <gl-form-group :label="__('Confidentiality')" label-for="work-item-confidential">
-              <gl-form-checkbox
-                id="work-item-confidential"
-                v-model="isConfidential"
-                data-testid="confidential-checkbox"
-                @change="updateDraftData('confidential', $event)"
-              >
-                {{ makeConfidentialText }}
-              </gl-form-checkbox>
-            </gl-form-group>
+            <gl-form-checkbox
+              id="work-item-confidential"
+              v-model="isConfidential"
+              data-testid="confidential-checkbox"
+              @change="updateDraftData('confidential', $event)"
+            >
+              {{ makeConfidentialText }}
+            </gl-form-checkbox>
+            <gl-form-checkbox
+              v-if="relatedItem"
+              id="work-item-relates-to"
+              v-model="isRelatedToItem"
+              class="gl-mt-3"
+              data-testid="relates-to-checkbox"
+            >
+              {{ relatedItemText }}
+            </gl-form-checkbox>
           </section>
           <aside
             v-if="hasWidgets"

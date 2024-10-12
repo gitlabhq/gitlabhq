@@ -210,7 +210,7 @@ export default {
     },
     formGroupClass() {
       return {
-        'gl-mb-5 common-note-form': true,
+        'common-note-form': true,
       };
     },
     showEditedAt() {
@@ -313,7 +313,6 @@ export default {
         label-for="work-item-description"
       >
         <markdown-editor
-          class="gl-mb-5"
           :value="descriptionText"
           :render-markdown-path="markdownPreviewPath"
           :markdown-docs-path="$options.markdownDocsPath"
@@ -328,7 +327,12 @@ export default {
           @keydown.ctrl.enter="updateWorkItem"
         />
         <div class="gl-flex">
-          <gl-alert v-if="hasConflicts" :dismissible="false" variant="danger" class="gl-w-full">
+          <gl-alert
+            v-if="hasConflicts"
+            :dismissible="false"
+            variant="danger"
+            class="gl-mt-5 gl-w-full"
+          >
             <p>
               {{
                 s__(
@@ -364,7 +368,7 @@ export default {
               </gl-button>
             </template>
           </gl-alert>
-          <template v-else-if="showButtonsBelowField">
+          <div v-else-if="showButtonsBelowField" class="gl-mt-5">
             <gl-button
               category="primary"
               variant="confirm"
@@ -376,7 +380,7 @@ export default {
             <gl-button category="secondary" class="gl-ml-3" data-testid="cancel" type="reset"
               >{{ __('Cancel') }}
             </gl-button>
-          </template>
+          </div>
         </div>
       </gl-form-group>
     </gl-form>

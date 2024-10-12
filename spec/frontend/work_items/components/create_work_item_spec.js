@@ -47,7 +47,6 @@ describe('Create work item component', () => {
     namespaceWorkItemTypesQueryResponse.data.workspace.workItemTypes.nodes.find(
       ({ name }) => name === 'Epic',
     ).id;
-
   const createWorkItemSuccessHandler = jest.fn().mockResolvedValue(createWorkItemMutationResponse);
   const errorHandler = jest.fn().mockRejectedValue('Houston, we have a problem');
 
@@ -65,6 +64,7 @@ describe('Create work item component', () => {
   const findProjectsSelector = () => wrapper.findComponent(WorkItemProjectsListbox);
   const findSelect = () => wrapper.findComponent(GlFormSelect);
   const findConfidentialCheckbox = () => wrapper.find('[data-testid="confidential-checkbox"]');
+  const findRelatesToCheckbox = () => wrapper.find('[data-testid="relates-to-checkbox"]');
   const findCreateWorkItemView = () => wrapper.find('[data-testid="create-work-item-view"]');
 
   const findCreateButton = () => wrapper.find('[data-testid="create-button"]');
@@ -355,7 +355,7 @@ describe('Create work item component', () => {
   describe('Create work item widgets for epic work item type', () => {
     describe('default', () => {
       beforeEach(async () => {
-        await createComponent({ singleWorkItemType: true });
+        createComponent({ singleWorkItemType: true });
         await waitForPromises();
       });
 
@@ -382,7 +382,7 @@ describe('Create work item component', () => {
 
     it('uses the description prop as the initial description value when defined', async () => {
       const description = 'i am a description';
-      await createComponent({
+      createComponent({
         singleWorkItemType: true,
         props: { description },
       });
@@ -393,10 +393,60 @@ describe('Create work item component', () => {
 
     it('uses the title prop as the initial title value when defined', async () => {
       const title = 'i am a title';
-      await createComponent({ singleWorkItemType: true, props: { title } });
+      createComponent({ singleWorkItemType: true, props: { title } });
       await waitForPromises();
 
       expect(findTitleInput().props('title')).toBe(title);
+    });
+  });
+
+  describe('With related item', () => {
+    const id = 'gid://gitlab/WorkItem/1';
+    const type = 'Epic';
+    const reference = 'gitlab-org#1';
+    beforeEach(async () => {
+      createComponent({
+        singleWorkItemType: true,
+        props: {
+          relatedItem: {
+            id,
+            type,
+            reference,
+          },
+        },
+      });
+      await waitForPromises();
+    });
+    it('renders a checkbox', () => {
+      expect(findRelatesToCheckbox().exists()).toBe(true);
+    });
+    it('renders the correct text for the checkbox', () => {
+      expect(findRelatesToCheckbox().text()).toContain(`Relates to ${type} ${reference}`);
+    });
+    it('includes the related item in the create work item request', async () => {
+      await updateWorkItemTitle();
+      await submitCreateForm();
+
+      expect(createWorkItemSuccessHandler).toHaveBeenCalledWith({
+        input: expect.objectContaining({
+          linkedItemsWidget: {
+            workItemsIds: [id],
+          },
+        }),
+      });
+    });
+    it('does not include the related item in the create work item request if the checkbox is unchecked', async () => {
+      await updateWorkItemTitle();
+      findRelatesToCheckbox().vm.$emit('input', false);
+      await submitCreateForm();
+
+      expect(createWorkItemSuccessHandler).not.toHaveBeenCalledWith({
+        input: expect.objectContaining({
+          linkedItemsWidget: {
+            workItemsIds: [id],
+          },
+        }),
+      });
     });
   });
 });

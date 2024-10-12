@@ -754,6 +754,7 @@ export default {
                 :work-item-state="workItem.state"
                 :has-children="hasChildren"
                 :work-item-author-id="workItemAuthorId"
+                :can-create-related-item="workItemLinkedItems !== undefined"
                 @deleteWorkItem="$emit('deleteWorkItem', { workItemType, workItemId: workItem.id })"
                 @toggleWorkItemConfidentiality="toggleConfidentiality"
                 @error="updateError = $event"

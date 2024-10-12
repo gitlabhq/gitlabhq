@@ -67,6 +67,12 @@ export default {
       required: false,
       default: false,
     },
+    relatedItem: {
+      type: Object,
+      required: false,
+      validator: (i) => i.id && i.type && i.reference,
+      default: null,
+    },
   },
   data() {
     return {
@@ -201,6 +207,7 @@ export default {
         :show-project-selector="showProjectSelector"
         :title="title"
         :work-item-type-name="workItemTypeName"
+        :related-item="relatedItem"
         @cancel="hideModal"
         @workItemCreated="handleCreated"
       />

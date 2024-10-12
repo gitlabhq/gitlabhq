@@ -54,6 +54,7 @@ describe('WorkItemRelationshipPopover', () => {
         target,
         workItemFullPath: 'gitlab-org/gitlab-test',
         workItemWebUrl,
+        workItemType: 'Task',
         loading,
       },
     });

@@ -34,6 +34,7 @@ import {
   WIDGET_TYPE_CRM_CONTACTS,
   NEW_WORK_ITEM_IID,
   WIDGET_TYPE_CURRENT_USER_TODOS,
+  WIDGET_TYPE_LINKED_ITEMS,
 } from '../constants';
 import workItemByIidQuery from './work_item_by_iid.query.graphql';
 import getWorkItemTreeQuery from './work_item_tree.query.graphql';
@@ -308,6 +309,7 @@ export const setNewWorkItemCache = async (
     WIDGET_TYPE_START_AND_DUE_DATE,
     WIDGET_TYPE_PROGRESS,
     WIDGET_TYPE_HEALTH_STATUS,
+    WIDGET_TYPE_LINKED_ITEMS,
     WIDGET_TYPE_COLOR,
     WIDGET_TYPE_HIERARCHY,
     WIDGET_TYPE_TIME_TRACKING,
@@ -351,6 +353,16 @@ export const setNewWorkItemCache = async (
             __typename: 'UserCoreConnection',
           },
           __typename: 'WorkItemWidgetAssignees',
+        });
+      }
+
+      if (widgetName === WIDGET_TYPE_LINKED_ITEMS) {
+        widgets.push({
+          type: WIDGET_TYPE_LINKED_ITEMS,
+          linkedItems: {
+            nodes: [],
+          },
+          __typename: 'WorkItemWidgetLinkedItems',
         });
       }
 

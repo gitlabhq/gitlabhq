@@ -40,9 +40,9 @@ export default {
       todos: [],
       currentTab: 0,
       todosCount: {
-        pending: 0,
-        done: 0,
-        all: 0,
+        pending: '-',
+        done: '-',
+        all: '-',
       },
       queryFilterValues: {
         groupId: [],

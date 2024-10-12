@@ -2080,6 +2080,7 @@ export const workItemObjectiveWithChild = {
     iconName: 'issue-type-objective',
     __typename: 'WorkItemType',
   },
+  webUrl: 'http://gdk.test/gitlab-org/gitlab/-/issues/1',
   namespace: {
     __typename: 'Project',
     id: '1',
@@ -2135,6 +2136,7 @@ export const workItemObjectiveWithoutChild = {
     iconName: 'issue-type-objective',
     __typename: 'WorkItemType',
   },
+  webUrl: 'http://gdk.test/gitlab-org/gitlab/-/issues/1',
   namespace: {
     __typename: 'Project',
     id: '1',
