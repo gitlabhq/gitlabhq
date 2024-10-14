@@ -4,17 +4,11 @@ module Gitlab
   module SidekiqMiddleware
     module ConcurrencyLimit
       class ConcurrencyLimitService
-        REDIS_KEY_PREFIX = 'sidekiq:concurrency_limit'
-
-        delegate :add_to_queue!, :queue_size, :has_jobs_in_queue?, :resume_processing!, to: :@queue_manager
-
-        delegate :track_execution_start, :track_execution_end, :cleanup_stale_trackers,
-          :concurrent_worker_count, to: :@worker_execution_tracker
+        # Class for managing queues for deferred workers
 
         def initialize(worker_name)
           @worker_name = worker_name
-          @queue_manager = QueueManager.new(worker_name, REDIS_KEY_PREFIX)
-          @worker_execution_tracker = WorkerExecutionTracker.new(worker_name, REDIS_KEY_PREFIX)
+          @redis_key = "sidekiq:concurrency_limit:throttled_jobs:{#{worker_name.underscore}}"
         end
 
         class << self
@@ -33,22 +27,81 @@ module Gitlab
           def queue_size(worker_name)
             new(worker_name).queue_size
           end
+        end
 
-          def cleanup_stale_trackers(worker_name)
-            new(worker_name).cleanup_stale_trackers
+        def add_to_queue!(args, context)
+          with_redis do |redis|
+            redis.rpush(redis_key, serialize(args, context))
           end
 
-          def track_execution_start(worker_name)
-            new(worker_name).track_execution_start
-          end
+          deferred_job_counter.increment({ worker: worker_name })
+        end
 
-          def track_execution_end(worker_name)
-            new(worker_name).track_execution_end
-          end
+        def queue_size
+          with_redis { |redis| redis.llen(redis_key) }
+        end
 
-          def concurrent_worker_count(worker_name)
-            new(worker_name).concurrent_worker_count
+        def has_jobs_in_queue?
+          queue_size != 0
+        end
+
+        def resume_processing!(limit:)
+          with_redis do |redis|
+            jobs = next_batch_from_queue(redis, limit: limit)
+            break if jobs.empty?
+
+            jobs.each { |j| send_to_processing_queue(deserialize(j)) }
+
+            remove_processed_jobs(redis, limit: jobs.length)
+
+            jobs.length
           end
+        end
+
+        private
+
+        attr_reader :worker_name, :redis_key
+
+        def with_redis(&blk)
+          Gitlab::Redis::SharedState.with(&blk) # rubocop:disable CodeReuse/ActiveRecord -- Not active record
+        end
+
+        def serialize(args, context)
+          {
+            args: args,
+            context: context
+          }.to_json
+        end
+
+        def deserialize(json)
+          Gitlab::Json.parse(json)
+        end
+
+        def send_to_processing_queue(job)
+          context = (job['context'] || {}).merge(related_class: self.class.name)
+
+          Gitlab::ApplicationContext.with_raw_context(context) do
+            args = job['args']
+
+            Gitlab::SidekiqLogging::ConcurrencyLimitLogger.instance.resumed_log(worker_name, args)
+
+            worker_name.safe_constantize&.perform_async(*args)
+          end
+        end
+
+        def next_batch_from_queue(redis, limit:)
+          return [] unless limit > 0
+
+          redis.lrange(redis_key, 0, limit - 1)
+        end
+
+        def remove_processed_jobs(redis, limit:)
+          redis.ltrim(redis_key, limit, -1)
+        end
+
+        def deferred_job_counter
+          @deferred_job_count ||= ::Gitlab::Metrics.counter(:sidekiq_concurrency_limit_deferred_jobs_total,
+            'Count of jobs deferred by the concurrency limit middleware.')
         end
       end
     end

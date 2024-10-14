@@ -2,8 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService,
-  :clean_gitlab_redis_shared_state, :clean_gitlab_redis_queues_metadata, feature_category: :global_search do
+RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService, :clean_gitlab_redis_shared_state, feature_category: :global_search do
   let(:worker_class) do
     Class.new do
       def self.name
@@ -91,51 +90,76 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitServ
     end
   end
 
-  describe '.track_execution_start' do
-    subject(:track_execution_start) { described_class.track_execution_start(worker_class_name) }
+  describe '#add_to_queue!' do
+    subject(:add_to_queue!) { service.add_to_queue!(worker_args, worker_context) }
 
-    it 'calls an instance method' do
-      expect_next_instance_of(described_class) do |instance|
-        expect(instance).to receive(:track_execution_start)
+    it 'adds a job to the set' do
+      expect { add_to_queue! }
+        .to change { service.queue_size }
+        .from(0).to(1)
+    end
+
+    it 'adds only one unique job to the set' do
+      expect do
+        2.times { add_to_queue! }
+      end.to change { service.queue_size }.from(0).to(1)
+    end
+
+    it 'stores context information' do
+      add_to_queue!
+
+      service.send(:with_redis) do |r|
+        set_key = service.send(:redis_key)
+        stored_job = service.send(:deserialize, r.lrange(set_key, 0, -1).first)
+
+        expect(stored_job['context']).to eq(stored_context)
       end
-
-      track_execution_start
     end
   end
 
-  describe '.track_execution_end' do
-    subject(:track_execution_end) { described_class.track_execution_end(worker_class_name) }
-
-    it 'calls an instance method' do
-      expect_next_instance_of(described_class) do |instance|
-        expect(instance).to receive(:track_execution_end)
-      end
-
-      track_execution_end
+  describe '#has_jobs_in_queue?' do
+    it 'uses queue_size' do
+      expect { service.add_to_queue!(worker_args, worker_context) }
+        .to change { service.has_jobs_in_queue? }
+        .from(false).to(true)
     end
   end
 
-  describe '.concurrent_worker_count' do
-    subject(:concurrent_worker_count) { described_class.concurrent_worker_count(worker_class_name) }
+  describe '#resume_processing!' do
+    let(:jobs) { [[1], [2], [3]] }
+    let(:expected_context) { stored_context.merge(related_class: described_class.name) }
 
-    it 'calls an instance method' do
-      expect_next_instance_of(described_class) do |instance|
-        expect(instance).to receive(:concurrent_worker_count)
+    it 'puts jobs back into the queue and respects order' do
+      jobs.each do |j|
+        service.add_to_queue!(j, worker_context)
       end
 
-      concurrent_worker_count
+      expect(worker_class).to receive(:perform_async).with(1).ordered
+      expect(worker_class).to receive(:perform_async).with(2).ordered
+      expect(worker_class).not_to receive(:perform_async).with(3).ordered
+
+      expect(Gitlab::SidekiqLogging::ConcurrencyLimitLogger.instance)
+        .to receive(:resumed_log)
+        .with(worker_class_name, [1])
+      expect(Gitlab::SidekiqLogging::ConcurrencyLimitLogger.instance)
+        .to receive(:resumed_log)
+        .with(worker_class_name, [2])
+
+      service.resume_processing!(limit: 2)
     end
-  end
 
-  describe '.cleanup_stale_trackers' do
-    subject(:cleanup_stale_trackers) { described_class.cleanup_stale_trackers(worker_class_name) }
-
-    it 'calls an instance method' do
-      expect_next_instance_of(described_class) do |instance|
-        expect(instance).to receive(:cleanup_stale_trackers)
+    it 'drops a set after execution' do
+      jobs.each do |j|
+        service.add_to_queue!(j, worker_context)
       end
 
-      cleanup_stale_trackers
+      expect(Gitlab::ApplicationContext).to receive(:with_raw_context)
+        .with(expected_context)
+        .exactly(jobs.count).times.and_call_original
+      expect(worker_class).to receive(:perform_async).exactly(jobs.count).times
+
+      expect { service.resume_processing!(limit: jobs.count) }
+        .to change { service.has_jobs_in_queue? }.from(true).to(false)
     end
   end
 

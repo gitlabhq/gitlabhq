@@ -7,9 +7,6 @@ module Gitlab
         def initialize(worker, job)
           @worker = worker
           @job = job
-
-          worker_class = worker.is_a?(Class) ? worker : worker.class
-          @worker_class = worker_class.name
         end
 
         # This will continue the middleware chain if the job should be scheduled
@@ -32,21 +29,17 @@ module Gitlab
             return
           end
 
-          track_execution_start
-
           yield
-        ensure
-          track_execution_end
         end
 
         private
 
-        attr_reader :job, :worker, :worker_class
+        attr_reader :job, :worker
 
         def should_defer_schedule?
           return false if Feature.disabled?(:sidekiq_concurrency_limit_middleware, Feature.current_request, type: :ops)
           return false if resumed?
-          return false if ::Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersMap.limit_for(worker: worker) == 0
+          return false unless ::Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersMap.limit_for(worker: worker)
 
           has_jobs_in_queue?
         end
@@ -64,26 +57,13 @@ module Gitlab
           ::Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService
         end
 
-        def track_execution_start
-          return if Feature.disabled?(:sidekiq_concurrency_limit_middleware, Feature.current_request, type: :ops)
-          return unless ::Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersMap.limit_for(worker: worker) > 0
-
-          concurrency_service.track_execution_start(worker_class)
-        end
-
-        def track_execution_end
-          return if Feature.disabled?(:sidekiq_concurrency_limit_middleware, Feature.current_request, type: :ops)
-          return unless ::Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersMap.limit_for(worker: worker) > 0
-
-          concurrency_service.track_execution_end(worker_class)
-        end
-
         def resumed?
           current_context['meta.related_class'] == concurrency_service.name
         end
 
         def has_jobs_in_queue?
-          concurrency_service.has_jobs_in_queue?(worker_class)
+          worker_class = worker.is_a?(Class) ? worker : worker.class
+          concurrency_service.has_jobs_in_queue?(worker_class.name)
         end
 
         def defer_job!
