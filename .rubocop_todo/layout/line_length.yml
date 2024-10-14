@@ -1104,7 +1104,6 @@ Layout/LineLength:
     - 'ee/lib/gitlab/contribution_analytics/data_collector.rb'
     - 'ee/lib/gitlab/elastic/group_search_results.rb'
     - 'ee/lib/gitlab/elastic/project_search_results.rb'
-    - 'ee/lib/gitlab/elastic/search_results.rb'
     - 'ee/lib/gitlab/expiring_subscription_message.rb'
     - 'ee/lib/gitlab/geo.rb'
     - 'ee/lib/gitlab/geo/git_ssh_proxy.rb'

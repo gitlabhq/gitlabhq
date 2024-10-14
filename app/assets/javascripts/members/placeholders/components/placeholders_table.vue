@@ -3,6 +3,7 @@ import {
   GlAvatarLabeled,
   GlBadge,
   GlEmptyState,
+  GlIcon,
   GlKeysetPagination,
   GlLoadingIcon,
   GlTable,
@@ -30,6 +31,7 @@ export default {
     GlAvatarLabeled,
     GlBadge,
     GlEmptyState,
+    GlIcon,
     GlKeysetPagination,
     GlLoadingIcon,
     GlTable,
@@ -155,6 +157,9 @@ export default {
         item.status === PLACEHOLDER_STATUS_COMPLETED
       );
     },
+    isPlaceholderUserDeleted(item) {
+      return item.status === PLACEHOLDER_STATUS_COMPLETED && !item.placeholderUser;
+    },
     reassignedUser(item) {
       if (item.status === PLACEHOLDER_STATUS_KEPT_AS_PLACEHOLDER) {
         return item.placeholderUser;
@@ -205,11 +210,18 @@ export default {
           :label="item.placeholderUser.name"
           :sub-label="`@${item.placeholderUser.username}`"
         />
+        <span v-else-if="isPlaceholderUserDeleted(item)">{{
+          s__('UserMapping|Placeholder deleted')
+        }}</span>
       </template>
 
       <template #cell(source)="{ item }">
-        <div>{{ item.sourceHostname }}</div>
-        <div class="gl-mt-2">{{ item.sourceUsername }}</div>
+        <div class="gl-flex gl-gap-1">
+          <gl-icon name="location" />
+          <span>{{ item.sourceHostname }}</span>
+        </div>
+        <div class="gl-mt-2">{{ item.sourceName }}</div>
+        <div class="gl-mt-2">@{{ item.sourceUsername }}</div>
       </template>
 
       <template #cell(status)="{ item }">
@@ -223,13 +235,15 @@ export default {
       </template>
 
       <template #cell(actions)="{ item }">
-        <gl-avatar-labeled
-          v-if="isReassignedItem(item)"
-          :size="32"
-          :src="reassignedUser(item).avatarUrl"
-          :label="reassignedUser(item).name"
-          :sub-label="`@${reassignedUser(item).username}`"
-        />
+        <template v-if="isReassignedItem(item)">
+          <gl-avatar-labeled
+            v-if="reassignedUser(item)"
+            :size="32"
+            :src="reassignedUser(item).avatarUrl"
+            :label="reassignedUser(item).name"
+            :sub-label="`@${reassignedUser(item).username}`"
+          />
+        </template>
         <placeholder-actions v-else :key="item.id" :source-user="item" @confirm="onConfirm(item)" />
       </template>
     </gl-table>

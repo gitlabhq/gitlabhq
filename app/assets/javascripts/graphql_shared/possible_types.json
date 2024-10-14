@@ -87,6 +87,10 @@
     "CiBuildNeed",
     "CiJob"
   ],
+  "LabelInterface": [
+    "AbuseReportLabel",
+    "Label"
+  ],
   "MemberInterface": [
     "GroupMember",
     "PendingGroupMember",

@@ -59631,6 +59631,9 @@ msgstr ""
 msgid "UserMapping|Placeholder %{name} (@%{username}) kept as placeholder."
 msgstr ""
 
+msgid "UserMapping|Placeholder deleted"
+msgstr ""
+
 msgid "UserMapping|Placeholder user"
 msgstr ""
 
@@ -60830,9 +60833,6 @@ msgstr ""
 msgid "VulnerabilityManagement|Name is a required field"
 msgstr ""
 
-msgid "VulnerabilityManagement|Needs triage"
-msgstr ""
-
 msgid "VulnerabilityManagement|Read more about related issues"
 msgstr ""
 
@@ -60906,6 +60906,9 @@ msgid "VulnerabilityStatusTypes|Confirmed"
 msgstr ""
 
 msgid "VulnerabilityStatusTypes|Dismissed"
+msgstr ""
+
+msgid "VulnerabilityStatusTypes|Mark as..."
 msgstr ""
 
 msgid "VulnerabilityStatusTypes|Needs triage"

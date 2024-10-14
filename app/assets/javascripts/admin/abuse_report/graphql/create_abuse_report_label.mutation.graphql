@@ -1,9 +1,11 @@
-#import "~/graphql_shared/fragments/label.fragment.graphql"
-
 mutation createAbuseReportLabel($title: String!, $color: String) {
   labelCreate: abuseReportLabelCreate(input: { title: $title, color: $color }) {
     label {
-      ...Label
+      id
+      title
+      description
+      color
+      textColor
     }
     errors
   }

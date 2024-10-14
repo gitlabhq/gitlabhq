@@ -82,6 +82,8 @@ transfer, you must use the [API](../../../api/bulk_imports.md#start-a-new-group-
   top-level group on the destination instance always maps to direct members in projects, even though the source top-level
   group contains the necessary shared membership hierarchy details. Support for full mapping of shared memberships is
   proposed in [issue 458345](https://gitlab.com/gitlab-org/gitlab/-/issues/458345).
+- In GitLab 17.0, 17.1, and 17.2, imported epics and work items are mapped
+  to the importing user rather than the original author.
 
 ## Estimating migration duration
 

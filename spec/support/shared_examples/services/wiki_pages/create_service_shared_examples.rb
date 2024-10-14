@@ -124,4 +124,19 @@ RSpec.shared_examples 'WikiPages::CreateService#execute' do |container_type|
         .and have_attributes(errors: be_present)
     end
   end
+
+  context 'when wiki create fails due to git error' do
+    it 'catches the thrown error and returns a ServiceResponse error' do
+      container = create(container_type, :wiki_repo)
+      service = described_class.new(container: container, current_user: user, params: opts)
+
+      allow(Gitlab::GitalyClient).to receive(:call) do
+        raise GRPC::Unavailable, 'Gitaly broken in this spec'
+      end
+
+      result = service.execute
+      expect(result).to be_error
+      expect(result.message).to eq('Could not create wiki page')
+    end
+  end
 end

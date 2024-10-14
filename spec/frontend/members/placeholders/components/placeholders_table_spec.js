@@ -169,7 +169,8 @@ describe('PlaceholdersTable', () => {
       await waitForPromises();
 
       expect(findTableRows().at(0).text()).toContain(mockSourceUsers[0].sourceHostname);
-      expect(findTableRows().at(0).text()).toContain(mockSourceUsers[0].sourceUsername);
+      expect(findTableRows().at(0).text()).toContain(mockSourceUsers[0].sourceName);
+      expect(findTableRows().at(0).text()).toContain(`@${mockSourceUsers[0].sourceUsername}`);
     });
 
     it('renders status badge with tooltip', async () => {
@@ -205,17 +206,11 @@ describe('PlaceholdersTable', () => {
       expect(actions.props('sourceUser')).toEqual(mockSourceUsers[0]);
     });
 
-    it('renders avatar for reassignToUser when item status is COMPLETED', async () => {
+    it('renders "Placeholder deleted" text when item status is COMPLETED', async () => {
       await waitForPromises();
 
       const reassignedItemRow = findTableRows().at(6);
-      const actionsAvatar = reassignedItemRow.findAllComponents(GlAvatarLabeled).at(1);
-      const { reassignToUser } = mockSourceUsers[6];
-
-      expect(actionsAvatar.props()).toMatchObject({
-        label: reassignToUser.name,
-        subLabel: `@${reassignToUser.username}`,
-      });
+      expect(reassignedItemRow.text()).toContain('Placeholder deleted');
     });
 
     it('table actions emit "confirm" event with item', () => {

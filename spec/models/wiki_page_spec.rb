@@ -419,6 +419,25 @@ RSpec.describe WikiPage, feature_category: :wiki do
         expect(wiki.find_page(title).content).to eq(page.content)
       end
     end
+
+    context 'when the repository fails' do
+      it 'do not create the page if the repository raise an error' do
+        page = build_wiki_page(container)
+
+        allow(Gitlab::GitalyClient).to receive(:call) do
+          raise GRPC::Unavailable, 'Gitaly broken in this spec'
+        end
+
+        saved = page.create(attributes)
+
+        # unstub
+        allow(Gitlab::GitalyClient).to receive(:call).and_call_original
+
+        expect(saved).to be(false)
+        expect(page.errors.messages[:base]).to include(/Gitaly broken in this spec/)
+        expect(wiki.find_page(title)).to be_nil
+      end
+    end
   end
 
   describe "dot in the title" do
@@ -661,6 +680,28 @@ RSpec.describe WikiPage, feature_category: :wiki do
         expect(page.content).to eq 'test content'
       end
     end
+
+    context 'when the repository fails' do
+      it 'do not update the page if the repository raise an error' do
+        page = create_wiki_page(container)
+
+        allow(Gitlab::GitalyClient).to receive(:call) do
+          raise GRPC::Unavailable, 'Gitaly broken in this spec'
+        end
+
+        saved = page.update(content: "new content")
+
+        # unstub
+        allow(Gitlab::GitalyClient).to receive(:call).and_call_original
+
+        expect(saved).to be(false)
+        expect(page.errors.messages[:base]).to include(/Gitaly broken in this spec/)
+
+        page_found = wiki.find_page(original_title)
+
+        expect(page_found.content).to eq 'test content'
+      end
+    end
   end
 
   describe "#delete" do
@@ -670,6 +711,25 @@ RSpec.describe WikiPage, feature_category: :wiki do
       expect do
         expect(page.delete).to eq(true)
       end.to change { wiki.list_pages.length }.by(-1)
+    end
+
+    context 'when the repository fails' do
+      it 'do not delete the page if the repository raise an error' do
+        page = create_wiki_page(container)
+
+        allow(Gitlab::GitalyClient).to receive(:call) do
+          raise GRPC::Unavailable, 'Gitaly broken in this spec'
+        end
+
+        deleted = page.delete
+
+        # unstub
+        allow(Gitlab::GitalyClient).to receive(:call).and_call_original
+
+        expect(deleted).to be(false)
+        expect(wiki.error_message).to match(/Gitaly broken in this spec/)
+        expect(wiki.list_pages.length).to be(1)
+      end
     end
   end
 

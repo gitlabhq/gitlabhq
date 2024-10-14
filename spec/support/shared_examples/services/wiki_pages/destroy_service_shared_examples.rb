@@ -79,4 +79,20 @@ RSpec.shared_examples 'WikiPages::DestroyService#execute' do |container_type|
       service.execute(page)
     end
   end
+
+  context 'when wiki delete fails due to git error' do
+    it 'catches the thrown error and returns a ServiceResponse error' do
+      container = create(container_type, :wiki_repo)
+      page = create(:wiki_page, container: container)
+      service = described_class.new(container: container, current_user: user)
+
+      allow(Gitlab::GitalyClient).to receive(:call) do
+        raise GRPC::Unavailable, 'Gitaly broken in this spec'
+      end
+
+      result = service.execute(page)
+      expect(result).to be_error
+      expect(result.message).to eq('Could not delete wiki page')
+    end
+  end
 end

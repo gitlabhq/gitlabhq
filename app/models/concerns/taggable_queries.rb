@@ -19,8 +19,12 @@ module TaggableQueries
   end
 
   def tags_ids
-    tags.limit(MAX_TAGS_IDS).order('id ASC').pluck(:id).tap do |ids|
+    tags_ids_relation.limit(MAX_TAGS_IDS).order('id ASC').pluck(:id).tap do |ids|
       raise TooManyTagsError if ids.size >= MAX_TAGS_IDS
     end
+  end
+
+  def tags_ids_relation
+    tags
   end
 end

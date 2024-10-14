@@ -262,6 +262,7 @@ e2e:test-on-cng:
     PIPELINE_NAME: E2E CNG
     DYNAMIC_PIPELINE_YML: test-on-cng-pipeline.yml
     SKIP_MESSAGE: Skipping test-on-cng due to mr containing only quarantine changes!
+  allow_failure: true # TODO: remove once gitlab-org/quality/quality-engineering/team-tasks#3049 is finished
 
 e2e:code-suggestions-eval:
   extends:

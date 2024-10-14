@@ -1436,7 +1436,7 @@ Input type: `AbuseReportLabelCreateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationabusereportlabelcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationabusereportlabelcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationabusereportlabelcreatelabel"></a>`label` | [`Label`](#label) | Label after mutation. |
+| <a id="mutationabusereportlabelcreatelabel"></a>`label` | [`AbuseReportLabel`](#abusereportlabel) | Label after mutation. |
 
 ### `Mutation.achievementsAward`
 
@@ -11366,6 +11366,29 @@ The edge type for [`AiSelfHostedModel`](#aiselfhostedmodel).
 | <a id="aiselfhostedmodeledgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="aiselfhostedmodeledgenode"></a>`node` | [`AiSelfHostedModel`](#aiselfhostedmodel) | The item at the end of the edge. |
 
+#### `AiUserMetricsConnection`
+
+The connection type for [`AiUserMetrics`](#aiusermetrics).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aiusermetricsconnectionedges"></a>`edges` | [`[AiUserMetricsEdge]`](#aiusermetricsedge) | A list of edges. |
+| <a id="aiusermetricsconnectionnodes"></a>`nodes` | [`[AiUserMetrics]`](#aiusermetrics) | A list of nodes. |
+| <a id="aiusermetricsconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `AiUserMetricsEdge`
+
+The edge type for [`AiUserMetrics`](#aiusermetrics).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aiusermetricsedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="aiusermetricsedgenode"></a>`node` | [`AiUserMetrics`](#aiusermetrics) | The item at the end of the edge. |
+
 #### `AlertManagementAlertConnection`
 
 The connection type for [`AlertManagementAlert`](#alertmanagementalert).
@@ -17250,6 +17273,21 @@ An abuse report.
 | <a id="abusereportdiscussionresolvedat"></a>`resolvedAt` | [`Time`](#time) | Timestamp of when the object was resolved. |
 | <a id="abusereportdiscussionresolvedby"></a>`resolvedBy` | [`UserCore`](#usercore) | User who resolved the object. |
 
+### `AbuseReportLabel`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="abusereportlabelcolor"></a>`color` | [`String!`](#string) | Background color of the label. |
+| <a id="abusereportlabelcreatedat"></a>`createdAt` | [`Time!`](#time) | When the label was created. |
+| <a id="abusereportlabeldescription"></a>`description` | [`String`](#string) | Description of the label (Markdown rendered as HTML for caching). |
+| <a id="abusereportlabeldescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `description`. |
+| <a id="abusereportlabelid"></a>`id` | [`ID!`](#id) | Label ID. |
+| <a id="abusereportlabeltextcolor"></a>`textColor` | [`String!`](#string) | Text color of the label. |
+| <a id="abusereportlabeltitle"></a>`title` | [`String!`](#string) | Content of the label. |
+| <a id="abusereportlabelupdatedat"></a>`updatedAt` | [`Time!`](#time) | When the label was last updated. |
+
 ### `AbuseReportNote`
 
 #### Fields
@@ -17935,6 +17973,16 @@ Self-hosted LLM servers.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="aiusagedatacodesuggestionevents"></a>`codeSuggestionEvents` | [`CodeSuggestionEventConnection`](#codesuggestioneventconnection) | Events related to code suggestions feature. (see [Connections](#connections)) |
+
+### `AiUserMetrics`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aiusermetricscodesuggestionsacceptedcount"></a>`codeSuggestionsAcceptedCount` | [`Int`](#int) | Total count of code suggestions accepted by the user. |
+| <a id="aiusermetricsduochatinteractionscount"></a>`duoChatInteractionsCount` | [`Int`](#int) | Number of user interactions with GitLab Duo Chat. |
+| <a id="aiusermetricsuser"></a>`user` | [`UserCore!`](#usercore) | Metrics user. |
 
 ### `AlertManagementAlert`
 
@@ -23655,6 +23703,27 @@ Returns [`AiMetrics`](#aimetrics).
 | <a id="groupaimetricsenddate"></a>`endDate` | [`Date`](#date) | Date range to end at. Default is the end of current month. |
 | <a id="groupaimetricsstartdate"></a>`startDate` | [`Date`](#date) | Date range to start from. Default is the beginning of current month. |
 
+##### `Group.aiUserMetrics`
+
+AI-related user metrics.
+
+DETAILS:
+**Introduced** in GitLab 17.5.
+**Status**: Experiment.
+
+Returns [`AiUserMetricsConnection`](#aiusermetricsconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupaiusermetricsenddate"></a>`endDate` | [`Date`](#date) | Date range to end at. Default is the end of current month. |
+| <a id="groupaiusermetricsstartdate"></a>`startDate` | [`Date`](#date) | Date range to start from. Default is the beginning of current month. |
+
 ##### `Group.approvalPolicies`
 
 Approval Policies of the project.
@@ -25995,14 +26064,14 @@ Represents an SSH key.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="labelcolor"></a>`color` | [`String!`](#string) | Background color of the label. |
-| <a id="labelcreatedat"></a>`createdAt` | [`Time!`](#time) | When this label was created. |
+| <a id="labelcreatedat"></a>`createdAt` | [`Time!`](#time) | When the label was created. |
 | <a id="labeldescription"></a>`description` | [`String`](#string) | Description of the label (Markdown rendered as HTML for caching). |
 | <a id="labeldescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `description`. |
 | <a id="labelid"></a>`id` | [`ID!`](#id) | Label ID. |
 | <a id="labellockonmerge"></a>`lockOnMerge` | [`Boolean!`](#boolean) | Indicates this label is locked for merge requests that have been merged. |
 | <a id="labeltextcolor"></a>`textColor` | [`String!`](#string) | Text color of the label. |
 | <a id="labeltitle"></a>`title` | [`String!`](#string) | Content of the label. |
-| <a id="labelupdatedat"></a>`updatedAt` | [`Time!`](#time) | When this label was last updated. |
+| <a id="labelupdatedat"></a>`updatedAt` | [`Time!`](#time) | When the label was last updated. |
 
 ### `LfsObjectRegistry`
 
@@ -30138,6 +30207,27 @@ Returns [`AiMetrics`](#aimetrics).
 | ---- | ---- | ----------- |
 | <a id="projectaimetricsenddate"></a>`endDate` | [`Date`](#date) | Date range to end at. Default is the end of current month. |
 | <a id="projectaimetricsstartdate"></a>`startDate` | [`Date`](#date) | Date range to start from. Default is the beginning of current month. |
+
+##### `Project.aiUserMetrics`
+
+AI-related user metrics.
+
+DETAILS:
+**Introduced** in GitLab 17.5.
+**Status**: Experiment.
+
+Returns [`AiUserMetricsConnection`](#aiusermetricsconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectaiusermetricsenddate"></a>`endDate` | [`Date`](#date) | Date range to end at. Default is the end of current month. |
+| <a id="projectaiusermetricsstartdate"></a>`startDate` | [`Date`](#date) | Date range to start from. Default is the beginning of current month. |
 
 ##### `Project.alertManagementAlert`
 
@@ -41294,6 +41384,25 @@ Implementations:
 | <a id="googlecloudloggingconfigurationinterfaceid"></a>`id` | [`ID!`](#id) | ID of the configuration. |
 | <a id="googlecloudloggingconfigurationinterfacelogidname"></a>`logIdName` | [`String!`](#string) | Log ID. |
 | <a id="googlecloudloggingconfigurationinterfacename"></a>`name` | [`String!`](#string) | Name of the external destination to send audit events to. |
+
+#### `LabelInterface`
+
+Implementations:
+
+- [`AbuseReportLabel`](#abusereportlabel)
+- [`Label`](#label)
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="labelinterfacecolor"></a>`color` | [`String!`](#string) | Background color of the label. |
+| <a id="labelinterfacecreatedat"></a>`createdAt` | [`Time!`](#time) | When the label was created. |
+| <a id="labelinterfacedescription"></a>`description` | [`String`](#string) | Description of the label (Markdown rendered as HTML for caching). |
+| <a id="labelinterfaceid"></a>`id` | [`ID!`](#id) | Label ID. |
+| <a id="labelinterfacetextcolor"></a>`textColor` | [`String!`](#string) | Text color of the label. |
+| <a id="labelinterfacetitle"></a>`title` | [`String!`](#string) | Content of the label. |
+| <a id="labelinterfaceupdatedat"></a>`updatedAt` | [`Time!`](#time) | When the label was last updated. |
 
 #### `MemberInterface`
 

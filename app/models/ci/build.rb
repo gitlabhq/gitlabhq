@@ -103,6 +103,11 @@ module Ci
       partition_foreign_key: :partition_id,
       inverse_of: :build
 
+    has_many :simple_tags,
+      class_name: 'Ci::Tag',
+      through: :tag_links,
+      source: :tag
+
     Ci::JobArtifact.file_types.each_key do |key|
       has_one :"job_artifacts_#{key}", ->(build) { in_partition(build).with_file_types([key]) },
         class_name: 'Ci::JobArtifact',
@@ -403,7 +408,7 @@ module Ci
     def self.build_matchers(project)
       unique_params = [
         :protected,
-        Arel.sql("(#{arel_tag_names_array.to_sql})")
+        Arel.sql("(#{arel_tag_names_array(project: project).to_sql})")
       ]
 
       group(*unique_params).pluck('array_agg(id)', *unique_params).map do |values|
@@ -418,6 +423,24 @@ module Ci
 
     def self.ids_in_merge_request(merge_request_id)
       in_merge_request(merge_request_id).pluck(:id)
+    end
+
+    def self.arel_tag_names_array(context = :tags, project: nil)
+      return super(context) if Feature.disabled?(:use_new_queue_tags, project)
+
+      ::Ci::BuildTag
+        .joins(:tag)
+        .where(::Ci::BuildTag.arel_table[:build_id].eq(arel_table[:id]))
+        .where(::Ci::BuildTag.arel_table[:partition_id].eq(arel_table[:partition_id]))
+        .select('COALESCE(array_agg(tags.name ORDER BY name), ARRAY[]::text[])')
+    end
+
+    def tags_ids_relation
+      if Feature.enabled?(:use_new_queue_tags, project)
+        simple_tags
+      else
+        tags
+      end
     end
 
     # A Ci::Bridge may transition to `canceling` as a result of strategy: :depend

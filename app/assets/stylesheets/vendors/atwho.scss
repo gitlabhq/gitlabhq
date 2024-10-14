@@ -4,9 +4,10 @@
   min-width: $gl-new-dropdown-min-width;
   max-width: $gl-new-dropdown-max-width;
 
-  border-bottom-width: $gl-border-size-1;
-  border-bottom-style: solid;
-  border-bottom-color: $gray-100;
+  @apply gl-border-dropdown;
+  @apply gl-bg-dropdown;
+  @apply gl-text-default;
+
   border-radius: $gl-border-radius-large;
   @include gl-shadow-md;
 
@@ -35,7 +36,6 @@
   .cur {
     .avatar {
       @include disable-all-animation;
-      border: 1px solid $white;
     }
   }
 
@@ -58,8 +58,8 @@
 
       &.cur {
         @include gl-focus;
-        background-color: $gray-50;
-        color: $gl-text-color;
+        color: var(--gl-dropdown-option-text-color-hover);
+        background-color: var(--gl-dropdown-option-background-color-unselected-hover);
 
         small {
           color: inherit;
@@ -77,7 +77,7 @@
       }
 
       strong {
-        color: $gl-text-color;
+        @apply gl-text-strong;
       }
 
       gl-emoji {

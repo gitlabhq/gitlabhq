@@ -13,10 +13,14 @@ DETAILS:
 Migrating groups and projects by using [direct transfer](../../group/import/index.md) is recommended. However, in some
 situations, you might need to migrate groups and project by using file exports.
 
-## Known issue
+## Known issues
 
-Because of a known issue, you might see error `PG::QueryCanceled: ERROR: canceling statement due to statement timeout`.
-For more information, see [troubleshooting information](import_export_troubleshooting.md#error-pgquerycanceled-error-canceling-statement-due-to-statement-timeout).
+- Due to a known issue, you might encounter a
+  `PG::QueryCanceled: ERROR: canceling statement due to statement timeout` error.
+  For more information, see the
+  [troubleshooting documentation](import_export_troubleshooting.md#error-pgquerycanceled-error-canceling-statement-due-to-statement-timeout).
+- In GitLab 17.0, 17.1, and 17.2, imported epics and work items are mapped
+  to the importing user rather than the original author.
 
 ## Migrate projects by uploading an export file
 

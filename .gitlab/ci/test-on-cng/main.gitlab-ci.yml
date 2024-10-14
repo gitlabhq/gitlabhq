@@ -126,7 +126,6 @@ cng-instance:
   variables:
     DEPLOYMENT_TYPE: kind
     EXTRA_DEPLOY_VALUES: --env COVERBAND_ENABLED=${COVERBAND_ENABLED}
-  allow_failure: true
 
 # Test run against environment with minimum supported redis version defined in lib/system_check/app/redis_version_check.rb
 cng-qa-min-redis-version:

@@ -464,6 +464,7 @@ builds:
 - tag_links
 - tag_taggings
 - tags
+- simple_tags
 - security_scans
 - dast_site_profiles_build
 - dast_site_profile
