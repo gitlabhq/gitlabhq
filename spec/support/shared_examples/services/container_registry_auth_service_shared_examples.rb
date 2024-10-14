@@ -1424,7 +1424,6 @@ RSpec.shared_examples 'a container registry auth service' do
 
     let_it_be(:current_project) { create(:project) }
     let_it_be(:project) { current_project }
-    let_it_be(:current_user) { create(:user) }
 
     let_it_be(:container_repository_path) { current_project.full_path }
     let_it_be(:container_repository_path_pattern_no_match) { "#{container_repository_path}_no_match" }
@@ -1437,6 +1436,7 @@ RSpec.shared_examples 'a container registry auth service' do
     let_it_be(:project_developer) { create(:user, developer_of: current_project) }
     let_it_be(:project_maintainer) { create(:user, maintainer_of: current_project) }
     let_it_be(:project_owner) { current_project.owner }
+    let_it_be(:instance_admin) { create(:admin) }
 
     let(:current_params) { { scopes: ["repository:#{container_repository_path}:push"] } }
 
@@ -1449,13 +1449,16 @@ RSpec.shared_examples 'a container registry auth service' do
       end
     end
 
-    context 'for different repository_path_patterns and current user roles' do
+    context 'for different repository_path_patterns and current user roles', :enable_admin_mode do
       # rubocop:disable Layout/LineLength -- Avoid formatting to keep one-line table layout
       where(:repository_path_pattern, :minimum_access_level_for_push, :current_user, :shared_examples_name) do
         ref(:container_repository_path)                  | :maintainer | ref(:project_developer)  | 'a protected container repository'
         ref(:container_repository_path)                  | :maintainer | ref(:project_owner)      | 'a pushable'
         ref(:container_repository_path)                  | :owner      | ref(:project_maintainer) | 'a protected container repository'
+        ref(:container_repository_path)                  | :owner      | ref(:project_owner)      | 'a pushable'
+        ref(:container_repository_path)                  | :owner      | ref(:instance_admin)     | 'a pushable'
         ref(:container_repository_path)                  | :admin      | ref(:project_owner)      | 'a protected container repository'
+        ref(:container_repository_path)                  | :admin      | ref(:instance_admin)     | 'a pushable'
         ref(:container_repository_path_pattern_no_match) | :maintainer | ref(:project_developer)  | 'a pushable'
         ref(:container_repository_path_pattern_no_match) | :admin      | ref(:project_owner)      | 'a pushable'
       end

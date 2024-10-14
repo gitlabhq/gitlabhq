@@ -34,7 +34,7 @@ RSpec.shared_examples 'policy editor' do
   it "can create a policy when a policy project exists" do
     visit(path_to_policy_editor)
     page.within(".gl-card:nth-child(1)") do
-      click_button _('Select policy')
+      click_link _('Select policy')
     end
     fill_in _('Name'), with: 'Prevent vulnerabilities'
     click_button _('Select scan type')

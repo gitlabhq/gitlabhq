@@ -29,9 +29,6 @@ export const I18N_HELP_TEXT = s__(
 export const I18N_SEND_TO_SECONDARY_EMAIL_GUIDE = s__(
   'IdentityVerification|Enter a verified email address associated with this account. A new code will be sent to this address.',
 );
-export const I18N_CHECK_SUPPORT_PAGE_TEXT = s__(
-  "IdentityVerification|If you've lost access to the email associated to this account or having trouble with the code, %{supportLinkStart}here are some other steps you can take.%{supportLinkEnd}",
-);
 export const I18N_CANCEL = __('Cancel');
 export const I18N_EMAIL_INVALID = s__('IdentityVerification|Please enter a valid email address.');
 export const I18N_UPDATE_EMAIL_SUCCESS = s__(

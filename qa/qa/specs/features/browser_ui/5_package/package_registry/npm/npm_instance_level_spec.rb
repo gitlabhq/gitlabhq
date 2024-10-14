@@ -30,7 +30,7 @@ module QA
       let!(:another_project) { create(:project, name: 'npm-instance-level-install', group: project.group) }
       let!(:runner) do
         create(:group_runner,
-          name: "qa-runner-#{Time.now.to_i}",
+          name: "qa-runner-#{SecureRandom.hex(6)}",
           tags: ["runner-for-#{project.group.name}"],
           executor: :docker,
           group: project.group)

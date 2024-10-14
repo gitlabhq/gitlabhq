@@ -58,12 +58,11 @@ namespace :gitlab do
       merge_requests = MergeRequest.from_and_to_forks(project)
       merge_request_diffs = MergeRequestDiff
         .joins(:merge_request).merge(merge_requests)
-        .select(:id, :start_commit_sha, :head_commit_sha, :base_commit_sha)
+        .select(:id, :start_commit_sha, :head_commit_sha)
 
-      merge_request_diffs.find_each do |diff|
+      merge_request_diffs.where.not(diff_type: :merge_head).find_each do |diff|
         add_match(csv, diff.start_commit_sha)
         add_match(csv, diff.head_commit_sha)
-        add_match(csv, diff.base_commit_sha)
       end
     end
 

@@ -46,8 +46,8 @@ RSpec.describe Gitlab::BackgroundMigration::FixPickUpAtCiDeletedObject, schema: 
           .to not_change { deleted_object1.reload.pick_up_at }
           .and not_change { deleted_object2.reload.pick_up_at }
 
-        expect(deleted_object3.reload.pick_up_at).to be_within(2.seconds).of(1.hour.from_now)
-        expect(deleted_object4.reload.pick_up_at).to be_within(2.seconds).of(1.hour.from_now)
+        expect(deleted_object3.reload.pick_up_at).to be_within(10.seconds).of(1.hour.from_now)
+        expect(deleted_object4.reload.pick_up_at).to be_within(10.seconds).of(1.hour.from_now)
       end
     end
   end

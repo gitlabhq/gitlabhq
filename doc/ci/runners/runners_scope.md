@@ -28,7 +28,7 @@ multiple projects.
 If you are using a self-managed instance of GitLab, administrators can:
 
 - [Install GitLab Runner](https://docs.gitlab.com/runner/install/index.html) and register an instance runner.
-- Configure a maximum number of instance runner [compute minutes for each group](../pipelines/compute_minutes.md#set-the-compute-quota-for-a-specific-namespace).
+- Configure a maximum number of instance runner [compute minutes for each group](../../administration/cicd/compute_minutes.md#set-the-compute-quota-for-a-group).
 
 If you are using GitLab.com:
 

@@ -40,8 +40,10 @@ export default {
     };
   },
   mounted() {
-    this.isNarrowScreen = isNarrowScreen(this.$refs?.buttonRoot);
-    isNarrowScreenAddListener(this.$refs?.buttonRoot, this.handleNarrowScreenChange);
+    if (this.$refs?.buttonRoot) {
+      this.isNarrowScreen = isNarrowScreen(this.$refs.buttonRoot);
+      isNarrowScreenAddListener(this.$refs.buttonRoot, this.handleNarrowScreenChange);
+    }
   },
   beforeDestroy() {
     isNarrowScreenRemoveListener(this.$refs.buttonRoot, this.handleNarrowScreenChange);

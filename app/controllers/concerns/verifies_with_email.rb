@@ -22,8 +22,6 @@ module VerifiesWithEmail
       # when the password is correct, which could be a giveaway when brute-forced.
       return render_sign_in_rate_limited if check_rate_limit!(:user_sign_in, scope: user) { true }
 
-      push_frontend_feature_flag(:send_verification_code_to_secondary_email, user)
-
       # Verify the email if the user has logged in successfully.
       verify_email(user) if user.valid_password?(user_params[:password])
     end
@@ -41,8 +39,7 @@ module VerifiesWithEmail
     else
       secondary_email = user_secondary_email(user, email_params[:email])
 
-      if Feature.enabled?(:send_verification_code_to_secondary_email, user) &&
-          email_params[:email].present? && secondary_email.present?
+      if email_params[:email].present? && secondary_email.present?
         send_verification_instructions(user, secondary_email: secondary_email)
       elsif email_params[:email].blank?
         send_verification_instructions(user)

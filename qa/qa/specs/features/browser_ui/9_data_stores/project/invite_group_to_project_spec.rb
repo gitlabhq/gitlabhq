@@ -30,14 +30,16 @@ module QA
         end
       end
 
-      let(:user) do
-        Resource::User.fabricate_or_use(Runtime::Env.gitlab_qa_username_1, Runtime::Env.gitlab_qa_password_1)
-      end
+      let(:user) { create(:user) }
 
       before do
         Flow::Login.sign_in
         group.add_member(user, Resource::Members::AccessLevel::MAINTAINER)
         project.visit!
+      end
+
+      after do
+        user.remove_via_api!
       end
 
       context 'with a personal namespace project',

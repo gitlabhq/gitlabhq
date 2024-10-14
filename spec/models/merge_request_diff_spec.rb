@@ -44,6 +44,10 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
   describe 'create new record' do
     subject { diff_with_commits }
 
+    before do
+      allow(Gitlab::Git::KeepAround).to receive(:execute).and_call_original
+    end
+
     it { expect(subject).to be_valid }
     it { expect(subject).to be_persisted }
     it { expect(subject.commits.count).to eq(29) }
@@ -61,10 +65,20 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
       merge_request.create_merge_request_diff
     end
 
-    context 'when diff_type is merge_head' do
-      let_it_be(:merge_request) { create(:merge_request) }
+    it 'creates hidden refs' do
+      hidden_refs = subject.project.repository.raw.list_refs(["refs/#{Repository::REF_MERGE_REQUEST}/", "refs/#{Repository::REF_KEEP_AROUND}/"])
 
-      let_it_be(:merge_head) do
+      expect(hidden_refs).to match_array([
+        Gitaly::ListRefsResponse::Reference.new(name: subject.merge_request.ref_path, target: subject.head_commit_sha),
+        Gitaly::ListRefsResponse::Reference.new(name: "refs/#{Repository::REF_KEEP_AROUND}/#{subject.head_commit_sha}", target: subject.head_commit_sha),
+        Gitaly::ListRefsResponse::Reference.new(name: "refs/#{Repository::REF_KEEP_AROUND}/#{subject.start_commit_sha}", target: subject.start_commit_sha)
+      ])
+    end
+
+    context 'when diff_type is merge_head' do
+      let(:merge_request) { create(:merge_request) }
+
+      let!(:merge_head) do
         MergeRequests::MergeToRefService
           .new(project: merge_request.project, current_user: merge_request.author)
           .execute(merge_request)
@@ -79,6 +93,17 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
       it { expect(merge_head.head_commit_sha).to eq(merge_request.merge_ref_head.diff_refs.head_sha) }
       it { expect(merge_head.base_commit_sha).to eq(merge_request.merge_ref_head.diff_refs.base_sha) }
       it { expect(merge_head.start_commit_sha).to eq(merge_request.target_branch_sha) }
+
+      it 'creates hidden refs' do
+        hidden_refs = merge_request.project.repository.raw.list_refs(["refs/#{Repository::REF_MERGE_REQUEST}/", "refs/#{Repository::REF_KEEP_AROUND}/"])
+
+        expect(hidden_refs).to match_array([
+          Gitaly::ListRefsResponse::Reference.new(name: merge_request.ref_path, target: merge_request.source_branch_sha),
+          Gitaly::ListRefsResponse::Reference.new(name: merge_request.merge_ref_path, target: merge_head.head_commit_sha),
+          Gitaly::ListRefsResponse::Reference.new(name: "refs/#{Repository::REF_KEEP_AROUND}/#{merge_head.start_commit_sha}", target: merge_head.start_commit_sha),
+          Gitaly::ListRefsResponse::Reference.new(name: "refs/#{Repository::REF_KEEP_AROUND}/#{merge_request.source_branch_sha}", target: merge_request.source_branch_sha)
+        ])
+      end
     end
   end
 

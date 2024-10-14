@@ -17,7 +17,6 @@ import {
   I18N_HELP_TEXT,
   I18N_SEND_TO_SECONDARY_EMAIL_BUTTON_TEXT,
   I18N_SEND_TO_SECONDARY_EMAIL_GUIDE,
-  I18N_CHECK_SUPPORT_PAGE_TEXT,
   SUPPORT_URL,
   VERIFICATION_CODE_REGEX,
   SUCCESS_RESPONSE,
@@ -172,7 +171,6 @@ export default {
     helpText: I18N_HELP_TEXT,
     sendToSecondaryEmailButtonText: I18N_SEND_TO_SECONDARY_EMAIL_BUTTON_TEXT,
     sendToSecondaryEmailGuide: I18N_SEND_TO_SECONDARY_EMAIL_GUIDE,
-    checkSupportPageText: I18N_CHECK_SUPPORT_PAGE_TEXT,
     supportUrl: SUPPORT_URL,
   },
   forms: {
@@ -236,10 +234,7 @@ export default {
         >
       </section>
       <p class="gl-mt-3 gl-text-secondary">
-        <gl-sprintf
-          v-if="glFeatures.sendVerificationCodeToSecondaryEmail"
-          :message="$options.i18n.helpText"
-        >
+        <gl-sprintf :message="$options.i18n.helpText">
           <template #sendToSecondaryEmailButton>
             <gl-button
               class="gl-align-baseline"
@@ -248,11 +243,6 @@ export default {
               >{{ $options.i18n.sendToSecondaryEmailButtonText }}</gl-button
             >
           </template>
-          <template #supportLink="{ content }">
-            <gl-link :href="$options.i18n.supportUrl" target="_blank">{{ content }}</gl-link>
-          </template>
-        </gl-sprintf>
-        <gl-sprintf v-else :message="$options.i18n.checkSupportPageText">
           <template #supportLink="{ content }">
             <gl-link :href="$options.i18n.supportUrl" target="_blank">{{ content }}</gl-link>
           </template>

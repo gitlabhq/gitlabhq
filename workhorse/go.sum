@@ -163,8 +163,6 @@ github.com/chzyer/logex v1.1.10/go.mod h1:+Ywpsq7O8HXn0nuIou7OrIPyXbp3wmkHB+jjWR
 github.com/chzyer/readline v0.0.0-20180603132655-2972be24d48e/go.mod h1:nSuG5e5PlCu98SY8svDHJxuZscDgtXS6KTTbou5AhLI=
 github.com/chzyer/test v0.0.0-20180213035817-a1ea475d72b1/go.mod h1:Q3SI9o4m/ZMnBNeIyt5eFwwo7qiLfzFZmjNmxjkiQlU=
 github.com/client9/misspell v0.3.4/go.mod h1:qj6jICC3Q7zFZvVWo7KLAzC3yx5G7kyvSDkc90ppPyw=
-github.com/client9/reopen v1.0.0 h1:8tpLVR74DLpLObrn2KvsyxJY++2iORGR17WLUdSzUws=
-github.com/client9/reopen v1.0.0/go.mod h1:caXVCEr+lUtoN1FlsRiOWdfQtdRHIYfcb0ai8qKWtkQ=
 github.com/cloudflare/tableflip v1.2.3 h1:8I+B99QnnEWPHOY3fWipwVKxS70LGgUsslG7CSfmHMw=
 github.com/cloudflare/tableflip v1.2.3/go.mod h1:P4gRehmV6Z2bY5ao5ml9Pd8u6kuEnlB37pUFMmv7j2E=
 github.com/cncf/udpa/go v0.0.0-20191209042840-269d4d468f6f/go.mod h1:M8M6+tZqaGXZJjfX53e64911xZQV5JYwmTeXPW+k8Sc=
@@ -487,8 +485,10 @@ github.com/yusufpapurcu/wmi v1.2.2 h1:KBNDSne4vP5mbSWnJbO+51IMOXJB67QiYCSBrubbPR
 github.com/yusufpapurcu/wmi v1.2.2/go.mod h1:SBZ9tNy3G9/m5Oi98Zks0QjeHVDvuK0qfxQmPyzfmi0=
 gitlab.com/gitlab-org/gitaly/v16 v16.11.10 h1:AuOHkrj0qLvHA6mnbrxIc5X9iwqRgRm9IM37gR+3n1s=
 gitlab.com/gitlab-org/gitaly/v16 v16.11.10/go.mod h1:lJizRUtXRd1SBHjNbbbL9OsGN4TiugvfRBd8bIsdWI0=
-gitlab.com/gitlab-org/labkit v1.21.0 h1:hLmdBDtXjD1yOmZ+uJOac3a5Tlo83QaezwhES4IYik4=
-gitlab.com/gitlab-org/labkit v1.21.0/go.mod h1:zeATDAaSBelPcPLbTTq8J3ZJEHyPTLVBM1q3nva+/W4=
+gitlab.com/gitlab-org/go/reopen v1.0.0 h1:6BujZ0lkkjGIejTUJdNO1w56mN1SI10qcVQyQlOPM+8=
+gitlab.com/gitlab-org/go/reopen v1.0.0/go.mod h1:D6OID8YJDzEVZNYW02R/Pkj0v8gYFSIhXFTArAsBQw8=
+gitlab.com/gitlab-org/labkit v1.21.2 h1:GlFHh8OdkrIMH3Qi0ByOzva0fGYXMICsuahGpJe4KNQ=
+gitlab.com/gitlab-org/labkit v1.21.2/go.mod h1:Q++SWyCH/abH2pytnX2SU/3mrCX6aK/xKz/WpM1hLbA=
 go.etcd.io/bbolt v1.3.5/go.mod h1:G5EMThwa9y8QZGBClrRx5EY+Yw9kAhnjy3bSjsnlVTQ=
 go.opencensus.io v0.21.0/go.mod h1:mSImk1erAIZhrmZN+AvHh14ztQfjbGwt4TtuofqLduU=
 go.opencensus.io v0.22.0/go.mod h1:+kGneAE2xo2IficOXnaByMWTGM9T73dGwxeWcUqIpI8=

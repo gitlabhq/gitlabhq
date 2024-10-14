@@ -22,7 +22,7 @@ module QA
 
       let(:runner) do
         Resource::ProjectRunner.fabricate! do |runner|
-          runner.name = "qa-runner-#{Time.now.to_i}"
+          runner.name = "qa-runner-#{SecureRandom.hex(6)}"
           runner.tags = ["runner-for-#{imported_project.name}"]
           runner.executor = :docker
           runner.project = imported_project

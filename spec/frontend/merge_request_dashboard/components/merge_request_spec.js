@@ -18,7 +18,7 @@ describe('Merge request dashboard merge request component', () => {
       propsData: {
         mergeRequest: {
           reference: '!123456',
-          titleHtml: 'Merge request title',
+          title: 'Merge request title',
           author: {
             name: 'John Smith',
             webUrl: 'https://gitlab.com/root',

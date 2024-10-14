@@ -8,13 +8,9 @@ module QA
       only: { job: /gdk-qa-.*/ }
     } do
       let(:project) { create(:project, :with_readme, name: 'project-for-tags') }
-      let(:developer_user) do
-        Resource::User.fabricate_or_use(Runtime::Env.gitlab_qa_username_1, Runtime::Env.gitlab_qa_password_1)
-      end
+      let(:developer_user) { create(:user) }
 
-      let(:maintainer_user) do
-        Resource::User.fabricate_or_use(Runtime::Env.gitlab_qa_username_2, Runtime::Env.gitlab_qa_password_2)
-      end
+      let(:maintainer_user) { create(:user) }
 
       let(:tag_name) { 'v0.0.1' }
       let(:tag_message) { 'Version 0.0.1' }

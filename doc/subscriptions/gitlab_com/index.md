@@ -375,11 +375,9 @@ You cannot transfer:
 
 ## Compute minutes
 
-Compute is the resource consumed when running [pipelines](../../ci/pipelines/index.md)
-on GitLab instance runners.
-You can [purchase additional compute minutes](../../ci/pipelines/compute_minutes.md#purchase-additional-compute-minutes)
-for your personal or group namespace.
-Compute minutes are a **one-time purchase**, so they do not renew.
+[Compute minutes](../../ci/pipelines/compute_minutes.md) is the resource consumed when running
+[CI/CD pipelines](../../ci/index.md) on GitLab instance runners. If you run out of compute minutes,
+you can [purchase additional compute minutes](compute_minutes.md).
 
 ## Enterprise Agile Planning
 

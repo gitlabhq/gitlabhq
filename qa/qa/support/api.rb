@@ -134,7 +134,7 @@ module QA
 
           if response.code == HTTP_STATUS_TOO_MANY_REQUESTS
             wait_seconds = response.headers[:retry_after].to_i
-            QA::Runtime::Logger.debug("Received 429 - Too many requests. Waiting for #{wait_seconds} seconds.")
+            QA::Runtime::Logger.warn("Received 429 - Too many requests. Waiting for #{wait_seconds} seconds.")
 
             sleep wait_seconds
           end

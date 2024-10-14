@@ -22,13 +22,9 @@ module QA
         ])
       end
 
-      let(:developer) do
-        Resource::User.fabricate_or_use(Runtime::Env.gitlab_qa_username_1, Runtime::Env.gitlab_qa_password_1)
-      end
+      let(:developer) { create(:user) }
 
-      let(:maintainer) do
-        Resource::User.fabricate_or_use(Runtime::Env.gitlab_qa_username_2, Runtime::Env.gitlab_qa_password_2)
-      end
+      let(:maintainer) { create(:user) }
 
       before do
         Flow::Login.sign_in
@@ -39,6 +35,8 @@ module QA
       end
 
       after do
+        developer.remove_via_api!
+        maintainer.remove_via_api!
         runner.remove_via_api!
       end
 

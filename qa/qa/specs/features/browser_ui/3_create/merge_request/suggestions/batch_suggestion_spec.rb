@@ -14,9 +14,7 @@ module QA
           ))
       end
 
-      let(:dev_user) do
-        Resource::User.fabricate_or_use(Runtime::Env.gitlab_qa_username_1, Runtime::Env.gitlab_qa_password_1)
-      end
+      let(:dev_user) { create(:user) }
 
       before do
         project.add_member(dev_user)
@@ -36,6 +34,10 @@ module QA
         Flow::Login.sign_in
 
         merge_request.visit!
+      end
+
+      after do
+        dev_user.remove_via_api!
       end
 
       it 'applies multiple suggestions', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347682' do

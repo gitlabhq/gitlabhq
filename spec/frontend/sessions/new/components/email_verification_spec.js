@@ -76,36 +76,18 @@ describe('EmailVerification', () => {
       expect(wrapper.text()).toContain(`You are signed in as ${defaultPropsData.username}`);
     });
 
-    it('contains help text linking the user to support page', () => {
-      expect(wrapper.text()).toContain(
-        "If you've lost access to the email associated to this account or having trouble with the code, here are some other steps you can take.",
+    it('contains help text describing option to verification code to secondary email and a link to support page', () => {
+      expect(wrapper.text()).toMatch(
+        /If you don't have access to the primary email address, you can.*send a code to another address associated with this account, or you can try to verify another way./,
       );
     });
 
-    it('does not render the link to show secondary email form', () => {
-      expect(findShowSecondaryEmailFormLink().exists()).toBe(false);
+    it('renders the link to show secondary email form', () => {
+      expect(findShowSecondaryEmailFormLink().exists()).toBe(true);
     });
 
-    describe('when sendVerificationCodeToSecondaryEmail feature flag is enabled', () => {
-      beforeEach(() => {
-        createComponent({
-          provide: { glFeatures: { sendVerificationCodeToSecondaryEmail: true } },
-        });
-      });
-
-      it('contains help text describing option to verification code to secondary email and a link to support page', () => {
-        expect(wrapper.text()).toMatch(
-          /If you don't have access to the primary email address, you can.*send a code to another address associated with this account, or you can try to verify another way./,
-        );
-      });
-
-      it('renders the link to show secondary email form', () => {
-        expect(findShowSecondaryEmailFormLink().exists()).toBe(true);
-      });
-
-      it('does not render EmailForm for sending code to secondary email initially', () => {
-        expect(findSecondaryEmailForm().exists()).toBe(false);
-      });
+    it('does not render EmailForm for sending code to secondary email initially', () => {
+      expect(findSecondaryEmailForm().exists()).toBe(false);
     });
   });
 
@@ -238,9 +220,7 @@ describe('EmailVerification', () => {
       ${'the request failed'}                     | ${HTTP_STATUS_NOT_FOUND} | ${null}                                          | ${genericAlertObject}
     `(`displayed alert message when $scenario`, ({ statusCode, response, alertObject }) => {
       beforeEach(() => {
-        createComponent({
-          provide: { glFeatures: { sendVerificationCodeToSecondaryEmail: true } },
-        });
+        createComponent();
 
         enterCode('xxx');
       });
@@ -319,9 +299,7 @@ describe('EmailVerification', () => {
 
   describe('secondary email form', () => {
     beforeEach(() => {
-      createComponent({
-        provide: { glFeatures: { sendVerificationCodeToSecondaryEmail: true } },
-      });
+      createComponent();
     });
 
     it('is shown when the show link is clicked', async () => {

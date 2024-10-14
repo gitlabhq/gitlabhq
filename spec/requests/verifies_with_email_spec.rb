@@ -54,7 +54,6 @@ RSpec.describe 'VerifiesWithEmail', :clean_gitlab_redis_sessions, :clean_gitlab_
       expect(request.session[:verification_user_id]).to eq(user.id)
       expect(response).to have_gitlab_http_status(:ok)
       expect(response).to render_template('devise/sessions/email_verification')
-      expect(response.body).to have_pushed_frontend_feature_flags(sendVerificationCodeToSecondaryEmail: true)
     end
   end
 
@@ -323,11 +322,8 @@ RSpec.describe 'VerifiesWithEmail', :clean_gitlab_redis_sessions, :clean_gitlab_
     end
 
     context 'when a verification_user_id session variable exists' do
-      let(:send_verification_code_to_secondary_email) { true }
-
       before do
         stub_session(session_data: { verification_user_id: user.id })
-        stub_feature_flags(send_verification_code_to_secondary_email: send_verification_code_to_secondary_email)
 
         perform_enqueued_jobs do
           post(users_resend_verification_code_path, params: params)
@@ -349,15 +345,6 @@ RSpec.describe 'VerifiesWithEmail', :clean_gitlab_redis_sessions, :clean_gitlab_
 
           it_behaves_like 'locks the user and sends verification instructions' do
             let(:recipient_email) { secondary_email.email }
-          end
-
-          context 'when send_verification_code_to_secondary_email feature flag is disabled' do
-            let(:send_verification_code_to_secondary_email) { false }
-
-            it 'does not send verification instructions to email address specified by email param' do
-              sent_email = ActionMailer::Base.deliveries.find { |d| d.to.include?(secondary_email.email) }
-              expect(sent_email).to be_nil
-            end
           end
         end
 
