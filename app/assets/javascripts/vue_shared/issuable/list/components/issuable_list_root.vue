@@ -424,6 +424,9 @@ export default {
           <template #pipeline-status>
             <slot name="pipeline-status" :issuable="issuable"></slot>
           </template>
+          <template #reviewers>
+            <slot name="reviewers" :issuable="issuable"></slot>
+          </template>
           <template #title-icons>
             <slot name="title-icons" :issuable="issuable"></slot>
           </template>

@@ -737,6 +737,9 @@ msgid_plural "%{count} more releases"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%{count} more reviewers"
+msgstr ""
+
 msgid "%{count} of %{required} approvals from %{name}"
 msgstr ""
 
@@ -5138,13 +5141,7 @@ msgstr ""
 msgid "AiImpactAnalytics|Value can't be calculated due to insufficient data."
 msgstr ""
 
-msgid "AiPowered|AI models"
-msgstr ""
-
-msgid "AiPowered|Allow use of self-hosted models"
-msgstr ""
-
-msgid "AiPowered|By enabling self-hosted models, you agree to the %{linkStart}GitLab Testing Agreement%{linkEnd}. Please note that this action cannot be reversed."
+msgid "AiPowered|By turning on self-hosted AI models, you agree to the %{linkStart}GitLab Testing Agreement%{linkEnd}. This action cannot be reversed."
 msgstr ""
 
 msgid "AiPowered|Configure AI-powered GitLab Duo features. %{linkStart}Which features?%{linkEnd}"
@@ -5198,6 +5195,9 @@ msgstr ""
 msgid "AiPowered|Participate in the Early Access Program and help make GitLab better"
 msgstr ""
 
+msgid "AiPowered|Self-hosted AI models"
+msgstr ""
+
 msgid "AiPowered|Setting unavailable"
 msgstr ""
 
@@ -5205,6 +5205,9 @@ msgid "AiPowered|Specify how code completion requests are sent to the AI gateway
 msgstr ""
 
 msgid "AiPowered|These features are being developed and might be unstable. %{linkStart}What do experiment and beta mean?%{linkEnd}"
+msgstr ""
+
+msgid "AiPowered|Turn on self-hosted models"
 msgstr ""
 
 msgid "AiPowered|When GitLab Duo is not available, experiment and beta features cannot be turned on."
@@ -5216,7 +5219,7 @@ msgstr ""
 msgid "AiPowered|When you save, GitLab Duo will be turned off for all groups, subgroups, and projects."
 msgstr ""
 
-msgid "AiPowered|You have enabled self-hosted models and agreed to the %{linkStart}GitLab Testing Agreement%{linkEnd}. Please note that this action cannot be reversed."
+msgid "AiPowered|You have turned on self-hosted AI models and agreed to the %{linkStart}GitLab Testing Agreement%{linkEnd}. This action cannot be reversed."
 msgstr ""
 
 msgid "Akismet"
@@ -31764,6 +31767,9 @@ msgstr ""
 msgid "Label|Assignee"
 msgstr ""
 
+msgid "Label|Reviewer"
+msgstr ""
+
 msgid "Lacking permissions to the blocking merge request"
 msgstr ""
 
@@ -46436,6 +46442,9 @@ msgstr ""
 msgid "Review changes"
 msgstr ""
 
+msgid "Review requested from %{reviewerName}"
+msgstr ""
+
 msgid "Review requests"
 msgstr ""
 
@@ -55160,6 +55169,9 @@ msgid "The project was successfully imported."
 msgstr ""
 
 msgid "The project-group link could not be removed."
+msgstr ""
+
+msgid "The provided params did not update the note."
 msgstr ""
 
 msgid "The related CI build failed."

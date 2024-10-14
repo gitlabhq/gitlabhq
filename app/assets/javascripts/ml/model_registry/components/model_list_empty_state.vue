@@ -1,6 +1,6 @@
 <script>
 import { GlEmptyState, GlButton, GlModalDirective } from '@gitlab/ui';
-import emptySvgUrl from '@gitlab/svgs/dist/illustrations/empty-state/empty-dag-md.svg?url';
+import emptySvgUrl from '@gitlab/svgs/dist/illustrations/status/status-new-md.svg';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__ } from '~/locale';
 import { MLFLOW_USAGE_MODAL_ID } from '../constants';
@@ -45,7 +45,6 @@ export default {
   <gl-empty-state
     :title="title"
     :svg-path="$options.emptySvgPath"
-    :svg-height="null"
     class="gl-py-8"
     :description="description"
   >

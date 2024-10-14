@@ -37,6 +37,19 @@ export const getQueryResponse = {
                 },
               ],
             },
+            reviewers: {
+              nodes: [
+                {
+                  __typename: 'UserCore',
+                  id: 'gid://gitlab/User/789',
+                  avatarUrl: 'avatar/url',
+                  name: 'Bart Simpson',
+                  username: 'bsimpson',
+                  webUrl: 'url/bsimpson',
+                  webPath: '/bsimpson',
+                },
+              ],
+            },
             author: {
               __typename: 'UserCore',
               id: 'gid://gitlab/User/456',

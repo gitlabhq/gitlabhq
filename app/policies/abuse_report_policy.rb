@@ -5,5 +5,6 @@ class AbuseReportPolicy < ::BasePolicy
     enable :read_abuse_report
     enable :read_note
     enable :create_note
+    enable :update_note
   end
 end

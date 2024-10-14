@@ -20,6 +20,8 @@ import TaskList from '~/task_list';
 import mrWidgetEventHub from '~/vue_merge_request_widget/event_hub';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_NOTE } from '~/graphql_shared/constants';
+import { useBatchComments } from '~/batch_comments/store';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import notesEventHub from '../../event_hub';
 
 import promoteTimelineEvent from '../../graphql/promote_timeline_event.mutation.graphql';
@@ -28,8 +30,8 @@ import * as constants from '../../constants';
 import * as types from '../../stores/mutation_types';
 import * as utils from '../../stores/utils';
 
-export const updateLockedAttribute = ({ commit, getters }, { locked, fullPath }) => {
-  const { iid, targetType } = getters.getNoteableData;
+export function updateLockedAttribute({ locked, fullPath }) {
+  const { iid, targetType } = this.getNoteableData;
 
   return utils.gqClient
     .mutate({
@@ -49,117 +51,132 @@ export const updateLockedAttribute = ({ commit, getters }, { locked, fullPath })
           ? data.issueSetLocked.issue.discussionLocked
           : data.mergeRequestSetLocked.mergeRequest.discussionLocked;
 
-      commit(types.SET_ISSUABLE_LOCK, discussionLocked);
+      this[types.SET_ISSUABLE_LOCK](discussionLocked);
     });
-};
+}
 
-export const expandDiscussion = ({ commit, dispatch }, data) => {
+export function expandDiscussion(data) {
   if (data.discussionId) {
-    dispatch('diffs/renderFileForDiscussionId', data.discussionId, { root: true });
+    useLegacyDiffs().renderFileForDiscussionId(data.discussionId);
   }
 
-  commit(types.EXPAND_DISCUSSION, data);
-};
+  this[types.EXPAND_DISCUSSION](data);
+}
 
-export const collapseDiscussion = ({ commit }, data) => commit(types.COLLAPSE_DISCUSSION, data);
+export function collapseDiscussion(data) {
+  return this[types.COLLAPSE_DISCUSSION](data);
+}
 
-export const setNotesData = ({ commit }, data) => commit(types.SET_NOTES_DATA, data);
+export function setNotesData(data) {
+  return this[types.SET_NOTES_DATA](data);
+}
 
-export const setNoteableData = ({ commit }, data) => commit(types.SET_NOTEABLE_DATA, data);
+export function setNoteableData(data) {
+  return this[types.SET_NOTEABLE_DATA](data);
+}
 
-export const setConfidentiality = ({ commit }, data) => commit(types.SET_ISSUE_CONFIDENTIAL, data);
+export function setConfidentiality(data) {
+  return this[types.SET_ISSUE_CONFIDENTIAL](data);
+}
 
-export const setUserData = ({ commit }, data) => commit(types.SET_USER_DATA, data);
+export function setUserData(data) {
+  return this[types.SET_USER_DATA](data);
+}
 
-export const setLastFetchedAt = ({ commit }, data) => commit(types.SET_LAST_FETCHED_AT, data);
+export function setLastFetchedAt(data) {
+  return this[types.SET_LAST_FETCHED_AT](data);
+}
 
-export const setInitialNotes = ({ commit }, discussions) =>
-  commit(types.ADD_OR_UPDATE_DISCUSSIONS, discussions);
+export function setInitialNotes(discussions) {
+  return this[types.ADD_OR_UPDATE_DISCUSSIONS](discussions);
+}
 
-export const setTargetNoteHash = ({ commit }, data) => commit(types.SET_TARGET_NOTE_HASH, data);
+export function setTargetNoteHash(data) {
+  return this[types.SET_TARGET_NOTE_HASH](data);
+}
 
-export const setNotesFetchedState = ({ commit }, state) =>
-  commit(types.SET_NOTES_FETCHED_STATE, state);
+export function setNotesFetchedState(state) {
+  return this[types.SET_NOTES_FETCHED_STATE](state);
+}
 
-export const toggleDiscussion = ({ commit }, data) => commit(types.TOGGLE_DISCUSSION, data);
+export function toggleDiscussion(data) {
+  return this[types.TOGGLE_DISCUSSION](data);
+}
 
-export const toggleAllDiscussions = ({ commit, getters }) => {
-  const expanded = getters.allDiscussionsExpanded;
-  commit(types.SET_EXPAND_ALL_DISCUSSIONS, !expanded);
-};
+export function toggleAllDiscussions() {
+  const expanded = this.allDiscussionsExpanded;
+  this[types.SET_EXPAND_ALL_DISCUSSIONS](!expanded);
+}
 
-export const fetchDiscussions = (
-  { commit, dispatch, getters },
-  { path, filter, persistFilter },
-) => {
+export function fetchDiscussions({ path, filter, persistFilter }) {
   let config =
     filter !== undefined
       ? { params: { notes_filter: filter, persist_filter: persistFilter } }
       : null;
 
-  if (getters.noteableType === constants.MERGE_REQUEST_NOTEABLE_TYPE) {
+  if (this.noteableType === constants.MERGE_REQUEST_NOTEABLE_TYPE) {
     config = { params: { notes_filter: 0, persist_filter: false } };
   }
 
   if (
-    getters.noteableType === constants.ISSUE_NOTEABLE_TYPE ||
-    getters.noteableType === constants.MERGE_REQUEST_NOTEABLE_TYPE
+    this.noteableType === constants.ISSUE_NOTEABLE_TYPE ||
+    this.noteableType === constants.MERGE_REQUEST_NOTEABLE_TYPE
   ) {
-    return dispatch('fetchDiscussionsBatch', { path, config, perPage: 20 });
+    return this.fetchDiscussionsBatch({ path, config, perPage: 20 });
   }
 
   return axios.get(path, config).then(({ data }) => {
-    commit(types.ADD_OR_UPDATE_DISCUSSIONS, data);
-    commit(types.SET_FETCHING_DISCUSSIONS, false);
+    this[types.ADD_OR_UPDATE_DISCUSSIONS](data);
+    this[types.SET_FETCHING_DISCUSSIONS](false);
 
-    dispatch('updateResolvableDiscussionsCounts');
+    this.updateResolvableDiscussionsCounts();
   });
-};
+}
 
-export const fetchNotes = ({ dispatch, getters }) => {
-  if (getters.isFetching) return null;
+export function fetchNotes() {
+  if (this.isFetching) return null;
 
-  dispatch('setFetchingState', true);
+  this.setFetchingState(true);
 
-  return dispatch('fetchDiscussions', getters.getFetchDiscussionsConfig)
-    .then(() => dispatch('initPolling'))
+  return this.fetchDiscussions(this.getFetchDiscussionsConfig)
+    .then(() => this.initPolling())
     .then(() => {
-      dispatch('setLoadingState', false);
-      dispatch('setNotesFetchedState', true);
+      this.setLoadingState(false);
+      this.setNotesFetchedState(true);
       notesEventHub.$emit('fetchedNotesData');
-      dispatch('setFetchingState', false);
+      this.setFetchingState(false);
     })
     .catch(() => {
-      dispatch('setLoadingState', false);
-      dispatch('setNotesFetchedState', true);
+      this.setLoadingState(false);
+      this.setNotesFetchedState(true);
       createAlert({
         message: __('Something went wrong while fetching comments. Please try again.'),
       });
     });
-};
+}
 
-export const initPolling = ({ state, dispatch, getters, commit }) => {
-  if (state.isPollingInitialized) {
+export function initPolling() {
+  if (this.isPollingInitialized) {
     return;
   }
 
-  dispatch('setLastFetchedAt', getters.getNotesDataByProp('lastFetchedAt'));
+  this.setLastFetchedAt(this.getNotesDataByProp('lastFetchedAt'));
 
   const debouncedFetchUpdatedNotes = debounce(() => {
-    dispatch('fetchUpdatedNotes');
+    this.fetchUpdatedNotes();
   }, constants.FETCH_UPDATED_NOTES_DEBOUNCE_TIMEOUT);
 
   actionCable.subscriptions.create(
     {
       channel: 'Noteable::NotesChannel',
-      project_id: state.notesData.projectId,
-      group_id: state.notesData.groupId,
-      noteable_type: state.notesData.noteableType,
-      noteable_id: state.notesData.noteableId,
+      project_id: this.notesData.projectId,
+      group_id: this.notesData.groupId,
+      noteable_type: this.notesData.noteableType,
+      noteable_id: this.notesData.noteableId,
     },
     {
       connected() {
-        dispatch('fetchUpdatedNotes');
+        this.fetchUpdatedNotes();
       },
       received(data) {
         if (data.event === 'updated') {
@@ -169,10 +186,10 @@ export const initPolling = ({ state, dispatch, getters, commit }) => {
     },
   );
 
-  commit(types.SET_IS_POLLING_INITIALIZED, true);
-};
+  this[types.SET_IS_POLLING_INITIALIZED](true);
+}
 
-export const fetchDiscussionsBatch = ({ commit, dispatch }, { path, config, cursor, perPage }) => {
+export function fetchDiscussionsBatch({ path, config, cursor, perPage }) {
   const params = { ...config?.params, per_page: perPage };
 
   if (cursor) {
@@ -180,7 +197,7 @@ export const fetchDiscussionsBatch = ({ commit, dispatch }, { path, config, curs
   }
 
   return axios.get(path, { params }).then(({ data, headers }) => {
-    commit(types.ADD_OR_UPDATE_DISCUSSIONS, data);
+    this[types.ADD_OR_UPDATE_DISCUSSIONS](data);
 
     if (headers && headers['x-next-page-cursor']) {
       const nextConfig = { ...config };
@@ -190,7 +207,7 @@ export const fetchDiscussionsBatch = ({ commit, dispatch }, { path, config, curs
         delete nextConfig.params.persist_filter;
       }
 
-      return dispatch('fetchDiscussionsBatch', {
+      return this.fetchDiscussionsBatch({
         path,
         config: nextConfig,
         cursor: headers['x-next-page-cursor'],
@@ -198,75 +215,76 @@ export const fetchDiscussionsBatch = ({ commit, dispatch }, { path, config, curs
       });
     }
 
-    commit(types.SET_DONE_FETCHING_BATCH_DISCUSSIONS, true);
-    commit(types.SET_FETCHING_DISCUSSIONS, false);
-    dispatch('updateResolvableDiscussionsCounts');
+    this[types.SET_DONE_FETCHING_BATCH_DISCUSSIONS](true);
+    this[types.SET_FETCHING_DISCUSSIONS](false);
+    this.updateResolvableDiscussionsCounts();
 
     return undefined;
   });
-};
+}
 
-export const updateDiscussion = ({ commit, state }, discussion) => {
-  commit(types.UPDATE_DISCUSSION, discussion);
+export function updateDiscussion(discussion) {
+  this[types.UPDATE_DISCUSSION](discussion);
 
-  return utils.findNoteObjectById(state.discussions, discussion.id);
-};
+  return utils.findNoteObjectById(this.discussions, discussion.id);
+}
 
-export const setDiscussionSortDirection = ({ commit }, { direction, persist = true }) => {
-  commit(types.SET_DISCUSSIONS_SORT, { direction, persist });
-};
+export function setDiscussionSortDirection({ direction, persist = true }) {
+  this[types.SET_DISCUSSIONS_SORT]({ direction, persist });
+}
 
-export const setTimelineView = ({ commit }, enabled) => {
-  commit(types.SET_TIMELINE_VIEW, enabled);
-};
+export function setTimelineView(enabled) {
+  this[types.SET_TIMELINE_VIEW](enabled);
+}
 
-export const setSelectedCommentPosition = ({ commit }, position) => {
-  commit(types.SET_SELECTED_COMMENT_POSITION, position);
-};
+export function setSelectedCommentPosition(position) {
+  this[types.SET_SELECTED_COMMENT_POSITION](position);
+}
 
-export const setSelectedCommentPositionHover = ({ commit }, position) => {
-  commit(types.SET_SELECTED_COMMENT_POSITION_HOVER, position);
-};
+export function setSelectedCommentPositionHover(position) {
+  this[types.SET_SELECTED_COMMENT_POSITION_HOVER](position);
+}
 
-export const removeNote = ({ commit, dispatch, state }, note) => {
-  const discussion = state.discussions.find(({ id }) => id === note.discussion_id);
+export function removeNote(note) {
+  const discussion = this.discussions.find(({ id }) => id === note.discussion_id);
 
-  commit(types.DELETE_NOTE, note);
+  this[types.DELETE_NOTE](note);
 
-  dispatch('updateMergeRequestWidget');
-  dispatch('updateResolvableDiscussionsCounts');
+  this.updateMergeRequestWidget();
+  this.updateResolvableDiscussionsCounts();
 
   if (isInMRPage()) {
-    dispatch('diffs/removeDiscussionsFromDiff', discussion);
+    useLegacyDiffs().removeDiscussionsFromDiff(discussion);
   }
-};
+}
 
-export const deleteNote = ({ dispatch }, note) =>
-  axios.delete(note.path).then(() => {
-    dispatch('removeNote', note);
+export function deleteNote(note) {
+  return axios.delete(note.path).then(() => {
+    this.removeNote(note);
   });
+}
 
-export const updateNote = ({ commit, dispatch }, { endpoint, note }) =>
-  axios.put(endpoint, note).then(({ data }) => {
-    commit(types.UPDATE_NOTE, data);
-    dispatch('startTaskList');
+export function updateNote({ endpoint, note }) {
+  return axios.put(endpoint, note).then(({ data }) => {
+    this[types.UPDATE_NOTE](data);
+    this.startTaskList();
   });
+}
 
-export const updateOrCreateNotes = ({ commit, state, getters, dispatch }, notes) => {
-  const { notesById } = getters;
+export function updateOrCreateNotes(notes) {
+  const { notesById } = this;
   const debouncedFetchDiscussions = (isFetching) => {
     if (!isFetching) {
-      commit(types.SET_FETCHING_DISCUSSIONS, true);
-      dispatch('fetchDiscussions', { path: state.notesData.discussionsPath });
+      this[types.SET_FETCHING_DISCUSSIONS](true);
+      this.fetchDiscussions({ path: this.notesData.discussionsPath });
     } else {
       if (isFetching !== true) {
-        clearTimeout(state.currentlyFetchingDiscussions);
+        clearTimeout(this.currentlyFetchingDiscussions);
       }
 
-      commit(
-        types.SET_FETCHING_DISCUSSIONS,
+      this[types.SET_FETCHING_DISCUSSIONS](
         setTimeout(() => {
-          dispatch('fetchDiscussions', { path: state.notesData.discussionsPath });
+          this.fetchDiscussions({ path: this.notesData.discussionsPath });
         }, constants.DISCUSSION_FETCH_TIMEOUT),
       );
     }
@@ -274,28 +292,25 @@ export const updateOrCreateNotes = ({ commit, state, getters, dispatch }, notes)
 
   notes.forEach((note) => {
     if (notesById[note.id]) {
-      commit(types.UPDATE_NOTE, note);
+      this[types.UPDATE_NOTE](note);
     } else if (note.type === constants.DISCUSSION_NOTE || note.type === constants.DIFF_NOTE) {
-      const discussion = utils.findNoteObjectById(state.discussions, note.discussion_id);
+      const discussion = utils.findNoteObjectById(this.discussions, note.discussion_id);
 
       if (discussion) {
-        commit(types.ADD_NEW_REPLY_TO_DISCUSSION, note);
+        this[types.ADD_NEW_REPLY_TO_DISCUSSION](note);
       } else if (note.type === constants.DIFF_NOTE && !note.base_discussion) {
-        debouncedFetchDiscussions(state.currentlyFetchingDiscussions);
+        debouncedFetchDiscussions(this.currentlyFetchingDiscussions);
       } else {
-        commit(types.ADD_NEW_NOTE, note);
+        this[types.ADD_NEW_NOTE](note);
       }
     } else {
-      commit(types.ADD_NEW_NOTE, note);
+      this[types.ADD_NEW_NOTE](note);
     }
   });
-};
+}
 
-export const promoteCommentToTimelineEvent = (
-  { commit },
-  { noteId, addError, addGenericError },
-) => {
-  commit(types.SET_PROMOTE_COMMENT_TO_TIMELINE_PROGRESS, true); // Set loading state
+export function promoteCommentToTimelineEvent({ noteId, addError, addGenericError }) {
+  this[types.SET_PROMOTE_COMMENT_TO_TIMELINE_PROGRESS](true); // Set loading state
   return utils.gqClient
     .mutate({
       mutation: promoteTimelineEvent,
@@ -335,47 +350,48 @@ export const promoteCommentToTimelineEvent = (
       });
     })
     .finally(() => {
-      commit(types.SET_PROMOTE_COMMENT_TO_TIMELINE_PROGRESS, false); // Revert loading state
+      this[types.SET_PROMOTE_COMMENT_TO_TIMELINE_PROGRESS](false); // Revert loading state
     });
-};
+}
 
-export const replyToDiscussion = (
-  { commit, state, getters, dispatch },
-  { endpoint, data: reply },
-) =>
-  axios.post(endpoint, reply).then(({ data }) => {
+export function replyToDiscussion({ endpoint, data: reply }) {
+  return axios.post(endpoint, reply).then(({ data }) => {
     if (data.discussion) {
-      commit(types.UPDATE_DISCUSSION, data.discussion);
+      this[types.UPDATE_DISCUSSION](data.discussion);
 
-      updateOrCreateNotes({ commit, state, getters, dispatch }, data.discussion.notes);
+      this.updateOrCreateNotes(data.discussion.notes);
 
-      dispatch('updateMergeRequestWidget');
-      dispatch('startTaskList');
-      dispatch('updateResolvableDiscussionsCounts');
+      this.updateMergeRequestWidget();
+      this.startTaskList();
+      this.updateResolvableDiscussionsCounts();
     } else {
-      commit(types.ADD_NEW_REPLY_TO_DISCUSSION, data);
+      this[types.ADD_NEW_REPLY_TO_DISCUSSION](data);
     }
 
     return data;
   });
+}
 
-export const createNewNote = ({ commit, dispatch }, { endpoint, data: reply }) =>
-  axios.post(endpoint, reply).then(({ data }) => {
+export function createNewNote({ endpoint, data: reply }) {
+  return axios.post(endpoint, reply).then(({ data }) => {
     if (!data.errors) {
-      commit(types.ADD_NEW_NOTE, data);
+      this[types.ADD_NEW_NOTE](data);
 
-      dispatch('updateMergeRequestWidget');
-      dispatch('startTaskList');
-      dispatch('updateResolvableDiscussionsCounts');
+      this.updateMergeRequestWidget();
+      this.startTaskList();
+      this.updateResolvableDiscussionsCounts();
     }
     return data;
   });
+}
 
-export const removePlaceholderNotes = ({ commit }) => commit(types.REMOVE_PLACEHOLDER_NOTES);
+export function removePlaceholderNotes() {
+  return this[types.REMOVE_PLACEHOLDER_NOTES]();
+}
 
-export const resolveDiscussion = ({ state, dispatch, getters }, { discussionId }) => {
-  const discussion = utils.findNoteObjectById(state.discussions, discussionId);
-  const isResolved = getters.isDiscussionResolved(discussionId);
+export function resolveDiscussion({ discussionId }) {
+  const discussion = utils.findNoteObjectById(this.discussions, discussionId);
+  const isResolved = this.isDiscussionResolved(discussionId);
 
   if (!discussion) {
     return Promise.reject();
@@ -384,69 +400,70 @@ export const resolveDiscussion = ({ state, dispatch, getters }, { discussionId }
     return Promise.resolve();
   }
 
-  return dispatch('toggleResolveNote', {
+  return this.toggleResolveNote({
     endpoint: discussion.resolve_path,
     isResolved,
     discussion: true,
   });
-};
+}
 
-export const toggleResolveNote = ({ commit, dispatch }, { endpoint, isResolved, discussion }) => {
+export function toggleResolveNote({ endpoint, isResolved, discussion }) {
   const method = isResolved
     ? constants.UNRESOLVE_NOTE_METHOD_NAME
     : constants.RESOLVE_NOTE_METHOD_NAME;
   const mutationType = discussion ? types.UPDATE_DISCUSSION : types.UPDATE_NOTE;
 
   return axios[method](endpoint).then(({ data }) => {
-    commit(mutationType, data);
+    this[mutationType](data);
 
-    dispatch('updateResolvableDiscussionsCounts');
+    this.updateResolvableDiscussionsCounts();
 
-    dispatch('updateMergeRequestWidget');
+    this.updateMergeRequestWidget();
   });
-};
+}
 
-export const closeIssuable = ({ commit, dispatch, state }) => {
-  dispatch('toggleStateButtonLoading', true);
-  return axios.put(state.notesData.closePath).then(({ data }) => {
-    commit(types.CLOSE_ISSUE);
-    dispatch('emitStateChangedEvent', data);
-    dispatch('toggleStateButtonLoading', false);
+export function closeIssuable() {
+  this.toggleStateButtonLoading(true);
+  return axios.put(this.notesData.closePath).then(({ data }) => {
+    this[types.CLOSE_ISSUE]();
+    this.emitStateChangedEvent(data);
+    this.toggleStateButtonLoading(false);
   });
-};
+}
 
-export const reopenIssuable = ({ commit, dispatch, state }) => {
-  dispatch('toggleStateButtonLoading', true);
-  return axios.put(state.notesData.reopenPath).then(({ data }) => {
-    commit(types.REOPEN_ISSUE);
-    dispatch('emitStateChangedEvent', data);
-    dispatch('toggleStateButtonLoading', false);
+export function reopenIssuable() {
+  this.toggleStateButtonLoading(true);
+  return axios.put(this.notesData.reopenPath).then(({ data }) => {
+    this[types.REOPEN_ISSUE]();
+    this.emitStateChangedEvent(data);
+    this.toggleStateButtonLoading(false);
   });
-};
+}
 
-export const toggleStateButtonLoading = ({ commit }, value) =>
-  commit(types.TOGGLE_STATE_BUTTON_LOADING, value);
+export function toggleStateButtonLoading(value) {
+  return this[types.TOGGLE_STATE_BUTTON_LOADING](value);
+}
 
-export const emitStateChangedEvent = ({ getters }, data) => {
+export function emitStateChangedEvent(data) {
   const event = new CustomEvent(EVENT_ISSUABLE_VUE_APP_CHANGE, {
     detail: {
       data,
-      isClosed: getters.openState === STATUS_CLOSED,
+      isClosed: this.openState === STATUS_CLOSED,
     },
   });
 
   document.dispatchEvent(event);
-};
+}
 
-export const toggleIssueLocalState = ({ commit }, newState) => {
+export function toggleIssueLocalState(newState) {
   if (newState === STATUS_CLOSED) {
-    commit(types.CLOSE_ISSUE);
+    this[types.CLOSE_ISSUE]();
   } else if (newState === STATUS_REOPENED) {
-    commit(types.REOPEN_ISSUE);
+    this[types.REOPEN_ISSUE]();
   }
-};
+}
 
-export const saveNote = ({ commit, dispatch }, noteData) => {
+export function saveNote(noteData) {
   // For MR discussuions we need to post as `note[note]` and issue we use `note.note`.
   // For batch comments, we use draft_note
   const note = noteData.data.draft_note || noteData.data['note[note]'] || noteData.data.note.note;
@@ -457,32 +474,32 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
   const postData = { ...noteData };
   if (postData.isDraft === true) {
     methodToDispatch = replyId
-      ? 'batchComments/addDraftToDiscussion'
-      : 'batchComments/createNewDraft';
+      ? useBatchComments().addDraftToDiscussion
+      : useBatchComments().createNewDraft;
     if (!postData.draft_note && noteData.note) {
       postData.draft_note = postData.note;
       delete postData.note;
     }
   } else {
-    methodToDispatch = replyId ? 'replyToDiscussion' : 'createNewNote';
+    methodToDispatch = replyId ? this.replyToDiscussion : this.createNewNote;
   }
 
   $('.notes-form .flash-container').hide(); // hide previous flash notification
-  commit(types.REMOVE_PLACEHOLDER_NOTES); // remove previous placeholders
+  this[types.REMOVE_PLACEHOLDER_NOTES](); // remove previous placeholders
 
   if (hasQuickActions) {
     placeholderText = utils.stripQuickActions(placeholderText);
   }
 
   if (placeholderText.length) {
-    commit(types.SHOW_PLACEHOLDER_NOTE, {
+    this[types.SHOW_PLACEHOLDER_NOTE]({
       noteBody: placeholderText,
       replyId,
     });
   }
 
   if (hasQuickActions) {
-    commit(types.SHOW_PLACEHOLDER_NOTE, {
+    this[types.SHOW_PLACEHOLDER_NOTE]({
       isSystemNote: true,
       noteBody: utils.getQuickActionText(note),
       replyId,
@@ -500,7 +517,7 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
     const message = commandsOnly;
 
     if (commandNames?.indexOf('submit_review') >= 0) {
-      dispatch('batchComments/clearDrafts');
+      useBatchComments().clearDrafts();
     }
 
     /*
@@ -566,37 +583,21 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
   };
 
   const removePlaceholder = (res) => {
-    commit(types.REMOVE_PLACEHOLDER_NOTES);
+    this[types.REMOVE_PLACEHOLDER_NOTES]();
 
     return res;
   };
 
-  return dispatch(methodToDispatch, postData, { root: true })
+  return methodToDispatch(postData)
     .then(processQuickActions)
     .then(processEmojiAward)
     .then(processTimeTracking)
     .then(removePlaceholder);
-};
+}
 
-export const setFetchingState = ({ commit }, fetchingState) =>
-  commit(types.SET_NOTES_FETCHING_STATE, fetchingState);
-
-// eslint-disable-next-line max-params
-const pollSuccessCallBack = async (resp, commit, state, getters, dispatch) => {
-  if (state.isResolvingDiscussion) {
-    return null;
-  }
-
-  if (resp.notes?.length) {
-    await dispatch('updateOrCreateNotes', resp.notes);
-    dispatch('startTaskList');
-    dispatch('updateResolvableDiscussionsCounts');
-  }
-
-  commit(types.SET_LAST_FETCHED_AT, resp.last_fetched_at);
-
-  return resp;
-};
+export function setFetchingState(fetchingState) {
+  return this[types.SET_NOTES_FETCHING_STATE](fetchingState);
+}
 
 const getFetchDataParams = (state) => {
   const endpoint = state.notesData.notesPath;
@@ -609,88 +610,99 @@ const getFetchDataParams = (state) => {
   return { endpoint, options };
 };
 
-export const fetchUpdatedNotes = ({ commit, state, getters, dispatch }) => {
-  const { endpoint, options } = getFetchDataParams(state);
+export function fetchUpdatedNotes() {
+  const { endpoint, options } = getFetchDataParams(this);
 
   return axios
     .get(endpoint, options)
-    .then(({ data }) => {
-      pollSuccessCallBack(data, commit, state, getters, dispatch);
+    .then(async ({ data }) => {
+      if (this.isResolvingDiscussion) {
+        return null;
+      }
+
+      if (data.notes?.length) {
+        await this.updateOrCreateNotes(data.notes);
+        this.startTaskList();
+        this.updateResolvableDiscussionsCounts();
+      }
+
+      this[types.SET_LAST_FETCHED_AT](data.last_fetched_at);
+
+      return undefined;
     })
     .catch(() => {});
-};
+}
 
-export const toggleAward = ({ commit, getters }, { awardName, noteId }) => {
-  commit(types.TOGGLE_AWARD, { awardName, note: getters.notesById[noteId] });
-};
+export function toggleAward({ awardName, noteId }) {
+  this[types.TOGGLE_AWARD]({ awardName, note: this.notesById[noteId] });
+}
 
-export const toggleAwardRequest = ({ dispatch }, data) => {
+export function toggleAwardRequest(data) {
   const { endpoint, awardName } = data;
 
   return axios.post(endpoint, { name: awardName }).then(() => {
-    dispatch('toggleAward', data);
+    this.toggleAward(data);
   });
-};
+}
 
-export const fetchDiscussionDiffLines = ({ commit }, discussion) =>
-  axios.get(discussion.truncated_diff_lines_path).then(({ data }) => {
-    commit(types.SET_DISCUSSION_DIFF_LINES, {
+export function fetchDiscussionDiffLines(discussion) {
+  return axios.get(discussion.truncated_diff_lines_path).then(({ data }) => {
+    this[types.SET_DISCUSSION_DIFF_LINES]({
       discussionId: discussion.id,
       diffLines: data.truncated_diff_lines,
     });
   });
+}
 
 export const updateMergeRequestWidget = () => {
   mrWidgetEventHub.$emit('mr.discussion.updated');
 };
 
-export const setLoadingState = ({ commit }, data) => {
-  commit(types.SET_NOTES_LOADING_STATE, data);
-};
+export function setLoadingState(data) {
+  this[types.SET_NOTES_LOADING_STATE](data);
+}
 
-export const filterDiscussion = ({ commit, dispatch }, { path, filter, persistFilter }) => {
-  commit(types.CLEAR_DISCUSSIONS);
-  dispatch('setLoadingState', true);
-  dispatch('fetchDiscussions', { path, filter, persistFilter })
+export function filterDiscussion({ path, filter, persistFilter }) {
+  this[types.CLEAR_DISCUSSIONS]();
+  this.setLoadingState(true);
+  this.fetchDiscussions({ path, filter, persistFilter })
     .then(() => {
-      dispatch('setLoadingState', false);
-      dispatch('setNotesFetchedState', true);
+      this.setLoadingState(false);
+      this.setNotesFetchedState(true);
     })
     .catch(() => {
-      dispatch('setLoadingState', false);
-      dispatch('setNotesFetchedState', true);
+      this.setLoadingState(false);
+      this.setNotesFetchedState(true);
       createAlert({
         message: __('Something went wrong while fetching comments. Please try again.'),
       });
     });
-};
+}
 
-export const setCommentsDisabled = ({ commit }, data) => {
-  commit(types.DISABLE_COMMENTS, data);
-};
+export function setCommentsDisabled(data) {
+  this[types.DISABLE_COMMENTS](data);
+}
 
-export const startTaskList = ({ dispatch }) =>
-  Vue.nextTick(
+export function startTaskList() {
+  return Vue.nextTick(
     () =>
       new TaskList({
         dataType: 'note',
         fieldName: 'note',
         selector: '.notes .is-editable',
-        onSuccess: () => dispatch('startTaskList'),
+        onSuccess: () => this.startTaskList(),
       }),
   );
+}
 
-export const updateResolvableDiscussionsCounts = ({ commit }) =>
-  commit(types.UPDATE_RESOLVABLE_DISCUSSIONS_COUNTS);
+export function updateResolvableDiscussionsCounts() {
+  return this[types.UPDATE_RESOLVABLE_DISCUSSIONS_COUNTS]();
+}
 
-export const submitSuggestion = (
-  { commit, dispatch },
-  { discussionId, suggestionId, flashContainer, message },
-) => {
-  const dispatchResolveDiscussion = () =>
-    dispatch('resolveDiscussion', { discussionId }).catch(() => {});
+export function submitSuggestion({ discussionId, suggestionId, flashContainer, message }) {
+  const dispatchResolveDiscussion = () => this.resolveDiscussion({ discussionId }).catch(() => {});
 
-  commit(types.SET_RESOLVING_DISCUSSION, true);
+  this[types.SET_RESOLVING_DISCUSSION](true);
 
   return Api.applySuggestion(suggestionId, message)
     .then(dispatchResolveDiscussion)
@@ -709,25 +721,25 @@ export const submitSuggestion = (
       });
     })
     .finally(() => {
-      commit(types.SET_RESOLVING_DISCUSSION, false);
+      this[types.SET_RESOLVING_DISCUSSION](false);
     });
-};
+}
 
-export const submitSuggestionBatch = ({ commit, dispatch, state }, { message, flashContainer }) => {
-  const suggestionIds = state.batchSuggestionsInfo.map(({ suggestionId }) => suggestionId);
+export function submitSuggestionBatch({ message, flashContainer }) {
+  const suggestionIds = this.batchSuggestionsInfo.map(({ suggestionId }) => suggestionId);
 
   const resolveAllDiscussions = () =>
-    state.batchSuggestionsInfo.map((suggestionInfo) => {
+    this.batchSuggestionsInfo.map((suggestionInfo) => {
       const { discussionId } = suggestionInfo;
-      return dispatch('resolveDiscussion', { discussionId }).catch(() => {});
+      return this.resolveDiscussion({ discussionId }).catch(() => {});
     });
 
-  commit(types.SET_APPLYING_BATCH_STATE, true);
-  commit(types.SET_RESOLVING_DISCUSSION, true);
+  this[types.SET_APPLYING_BATCH_STATE](true);
+  this[types.SET_RESOLVING_DISCUSSION](true);
 
   return Api.applySuggestionBatch(suggestionIds, message)
     .then(() => Promise.all(resolveAllDiscussions()))
-    .then(() => commit(types.CLEAR_SUGGESTION_BATCH))
+    .then(() => this[types.CLEAR_SUGGESTION_BATCH]())
     .catch((err) => {
       const defaultMessage = __(
         'Something went wrong while applying the batch of suggestions. Please try again.',
@@ -743,75 +755,77 @@ export const submitSuggestionBatch = ({ commit, dispatch, state }, { message, fl
       });
     })
     .finally(() => {
-      commit(types.SET_APPLYING_BATCH_STATE, false);
-      commit(types.SET_RESOLVING_DISCUSSION, false);
+      this[types.SET_APPLYING_BATCH_STATE](false);
+      this[types.SET_RESOLVING_DISCUSSION](false);
     });
-};
+}
 
-export const addSuggestionInfoToBatch = ({ commit }, { suggestionId, noteId, discussionId }) =>
-  commit(types.ADD_SUGGESTION_TO_BATCH, { suggestionId, noteId, discussionId });
+export function addSuggestionInfoToBatch({ suggestionId, noteId, discussionId }) {
+  return this[types.ADD_SUGGESTION_TO_BATCH]({ suggestionId, noteId, discussionId });
+}
 
-export const removeSuggestionInfoFromBatch = ({ commit }, suggestionId) =>
-  commit(types.REMOVE_SUGGESTION_FROM_BATCH, suggestionId);
+export function removeSuggestionInfoFromBatch(suggestionId) {
+  return this[types.REMOVE_SUGGESTION_FROM_BATCH](suggestionId);
+}
 
-export const convertToDiscussion = ({ commit }, noteId) =>
-  commit(types.CONVERT_TO_DISCUSSION, noteId);
+export function convertToDiscussion(noteId) {
+  return this[types.CONVERT_TO_DISCUSSION](noteId);
+}
 
-export const removeConvertedDiscussion = ({ commit }, noteId) =>
-  commit(types.REMOVE_CONVERTED_DISCUSSION, noteId);
+export function removeConvertedDiscussion(noteId) {
+  return this[types.REMOVE_CONVERTED_DISCUSSION](noteId);
+}
 
-export const setCurrentDiscussionId = ({ commit }, discussionId) =>
-  commit(types.SET_CURRENT_DISCUSSION_ID, discussionId);
+export function setCurrentDiscussionId(discussionId) {
+  return this[types.SET_CURRENT_DISCUSSION_ID](discussionId);
+}
 
-export const fetchDescriptionVersion = ({ dispatch }, { endpoint, startingVersion, versionId }) => {
+export function fetchDescriptionVersion({ endpoint, startingVersion, versionId }) {
   let requestUrl = endpoint;
 
   if (startingVersion) {
     requestUrl = mergeUrlParams({ start_version_id: startingVersion }, requestUrl);
   }
-  dispatch('requestDescriptionVersion');
+  this.requestDescriptionVersion();
 
   return axios
     .get(requestUrl)
     .then((res) => {
-      dispatch('receiveDescriptionVersion', { descriptionVersion: res.data, versionId });
+      this.receiveDescriptionVersion({ descriptionVersion: res.data, versionId });
     })
     .catch((error) => {
-      dispatch('receiveDescriptionVersionError', error);
+      this.receiveDescriptionVersionError(error);
       createAlert({
         message: __('Something went wrong while fetching description changes. Please try again.'),
       });
     });
-};
+}
 
-export const requestDescriptionVersion = ({ commit }) => {
-  commit(types.REQUEST_DESCRIPTION_VERSION);
-};
-export const receiveDescriptionVersion = ({ commit }, descriptionVersion) => {
-  commit(types.RECEIVE_DESCRIPTION_VERSION, descriptionVersion);
-};
-export const receiveDescriptionVersionError = ({ commit }, error) => {
-  commit(types.RECEIVE_DESCRIPTION_VERSION_ERROR, error);
-};
+export function requestDescriptionVersion() {
+  this[types.REQUEST_DESCRIPTION_VERSION]();
+}
+export function receiveDescriptionVersion(descriptionVersion) {
+  this[types.RECEIVE_DESCRIPTION_VERSION](descriptionVersion);
+}
+export function receiveDescriptionVersionError(error) {
+  this[types.RECEIVE_DESCRIPTION_VERSION_ERROR](error);
+}
 
-export const softDeleteDescriptionVersion = (
-  { dispatch },
-  { endpoint, startingVersion, versionId },
-) => {
+export function softDeleteDescriptionVersion({ endpoint, startingVersion, versionId }) {
   let requestUrl = endpoint;
 
   if (startingVersion) {
     requestUrl = mergeUrlParams({ start_version_id: startingVersion }, requestUrl);
   }
-  dispatch('requestDeleteDescriptionVersion');
+  this.requestDeleteDescriptionVersion();
 
   return axios
     .delete(requestUrl)
     .then(() => {
-      dispatch('receiveDeleteDescriptionVersion', versionId);
+      this.receiveDeleteDescriptionVersion(versionId);
     })
     .catch((error) => {
-      dispatch('receiveDeleteDescriptionVersionError', error);
+      this.receiveDeleteDescriptionVersionError(error);
       createAlert({
         message: __('Something went wrong while deleting description changes. Please try again.'),
       });
@@ -820,25 +834,26 @@ export const softDeleteDescriptionVersion = (
       //  needs to know if the request failed to reset its internal state.
       throw new Error();
     });
-};
+}
 
-export const requestDeleteDescriptionVersion = ({ commit }) => {
-  commit(types.REQUEST_DELETE_DESCRIPTION_VERSION);
-};
-export const receiveDeleteDescriptionVersion = ({ commit }, versionId) => {
-  commit(types.RECEIVE_DELETE_DESCRIPTION_VERSION, { [versionId]: __('Deleted') });
-};
-export const receiveDeleteDescriptionVersionError = ({ commit }, error) => {
-  commit(types.RECEIVE_DELETE_DESCRIPTION_VERSION_ERROR, error);
-};
+export function requestDeleteDescriptionVersion() {
+  this[types.REQUEST_DELETE_DESCRIPTION_VERSION]();
+}
+export function receiveDeleteDescriptionVersion(versionId) {
+  this[types.RECEIVE_DELETE_DESCRIPTION_VERSION]({ [versionId]: __('Deleted') });
+}
+export function receiveDeleteDescriptionVersionError(error) {
+  this[types.RECEIVE_DELETE_DESCRIPTION_VERSION_ERROR](error);
+}
 
-export const updateAssignees = ({ commit }, assignees) => {
-  commit(types.UPDATE_ASSIGNEES, assignees);
-};
+export function updateAssignees(assignees) {
+  this[types.UPDATE_ASSIGNEES](assignees);
+}
 
-export const updateDiscussionPosition = ({ commit }, updatedPosition) => {
-  commit(types.UPDATE_DISCUSSION_POSITION, updatedPosition);
-};
+export function updateDiscussionPosition(updatedPosition) {
+  this[types.UPDATE_DISCUSSION_POSITION](updatedPosition);
+}
 
-export const updateMergeRequestFilters = ({ commit }, newFilters) =>
-  commit(types.SET_MERGE_REQUEST_FILTERS, newFilters);
+export function updateMergeRequestFilters(newFilters) {
+  return this[types.SET_MERGE_REQUEST_FILTERS](newFilters);
+}

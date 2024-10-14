@@ -6,7 +6,7 @@ import { helpPagePath } from '~/helpers/help_page_helper';
  * Component to link to GitLab docs.
  *
  * @example
- * <help-page-link href="user/usage_quotas">
+ * <help-page-link href="user/storage_usage_quotas">
  *   Usage Quotas help.
  * <help-page-link>
  */

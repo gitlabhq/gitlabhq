@@ -13,7 +13,7 @@ const Template = (args, { argTypes }) => ({
 
 export const Default = Template.bind({});
 Default.args = {
-  href: 'user/usage_quotas',
+  href: 'user/storage_usage_quotas',
 };
 
 export const LinkWithAnAnchor = Template.bind({});
@@ -25,7 +25,7 @@ LinkWithAnAnchor.args = {
 export const LinkWithAnchorInPath = Template.bind({});
 LinkWithAnchorInPath.args = {
   ...Default.args,
-  href: 'user/usage_quotas#namespace-storage-limit',
+  href: 'user/storage_usage_quotas#namespace-storage-limit',
 };
 
 export const CustomAttributes = Template.bind({});

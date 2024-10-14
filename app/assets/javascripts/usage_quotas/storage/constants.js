@@ -34,11 +34,11 @@ export const usageQuotasHelpPaths = {
   repositorySizeLimit: helpPagePath('administration/settings/account_and_limit_settings', {
     anchor: 'repository-size-limit',
   }),
-  usageQuotas: helpPagePath('user/usage_quotas'),
-  usageQuotasProjectStorageLimit: helpPagePath('user/usage_quotas', {
+  usageQuotas: helpPagePath('user/storage_usage_quotas'),
+  usageQuotasProjectStorageLimit: helpPagePath('user/storage_usage_quotas', {
     anchor: 'view-storage',
   }),
-  usageQuotasNamespaceStorageLimit: helpPagePath('user/usage_quotas', {
+  usageQuotasNamespaceStorageLimit: helpPagePath('user/storage_usage_quotas', {
     anchor: 'view-storage',
   }),
 };

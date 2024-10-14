@@ -15,6 +15,7 @@ import { isScopedLabel } from '~/lib/utils/common_utils';
 import { isExternal, setUrlFragment, visitUrl } from '~/lib/utils/url_utility';
 import { __, n__, sprintf } from '~/locale';
 import IssuableAssignees from '~/issuable/components/issue_assignees.vue';
+
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
@@ -487,6 +488,7 @@ export default {
             class="gl-flex gl-items-center"
           />
         </li>
+        <slot name="reviewers"></slot>
         <li
           v-if="showDiscussions && notesCount"
           class="!gl-mr-0 gl-hidden sm:gl-block"

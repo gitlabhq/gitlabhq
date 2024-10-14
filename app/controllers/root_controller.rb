@@ -52,7 +52,8 @@ class RootController < Dashboard::ProjectsController
     when 'groups'
       redirect_to(dashboard_groups_path)
     when 'todos'
-      redirect_to(dashboard_todos_path)
+      redirect_to(Feature.enabled?(:todos_vue_application,
+        current_user) ? vue_dashboard_todos_path : dashboard_todos_path)
     when 'issues'
       redirect_to(issues_dashboard_path(assignee_username: current_user.username))
     when 'merge_requests'

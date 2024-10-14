@@ -43,6 +43,7 @@ import { BRANCH_LIST_REFRESH_INTERVAL } from '~/merge_requests/list/constants';
 import getMergeRequestsQuery from '~/merge_requests/list/queries/get_merge_requests.query.graphql';
 import getMergeRequestsCountQuery from '~/merge_requests/list/queries/get_merge_requests_counts.query.graphql';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
+import MergeRequestReviewers from '~/issuable/components/merge_request_reviewers.vue';
 import issuableEventHub from '~/issues/list/eventhub';
 
 Vue.use(VueApollo);
@@ -503,6 +504,21 @@ describe('Merge requests list app', () => {
     expect(wrapper.findComponent(ApprovalCount).props('mergeRequest')).toEqual(
       getQueryResponse.data.project.mergeRequests.nodes[0],
     );
+  });
+
+  it('renders merge-request-reviewers component', async () => {
+    createComponent({ mountFn: mountExtended });
+
+    await waitForPromises();
+
+    const reviewersEl = wrapper.findComponent(MergeRequestReviewers);
+
+    expect(reviewersEl.exists()).toBe(true);
+    expect(reviewersEl.props()).toMatchObject({
+      reviewers: getQueryResponse.data.project.mergeRequests.nodes[0].reviewers.nodes,
+      iconSize: 16,
+      maxVisible: 4,
+    });
   });
 
   describe('bulk edit', () => {

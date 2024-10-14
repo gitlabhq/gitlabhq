@@ -158,7 +158,10 @@ export default {
               <number-to-human-size :value="project.statistics.storageSize" />
             </template>
           </gl-sprintf>
-          <help-page-link href="user/usage_quotas#view-project-fork-storage-usage" target="_blank">
+          <help-page-link
+            href="user/storage_usage_quotas#view-project-fork-storage-usage"
+            target="_blank"
+          >
             <gl-icon name="question-o" :size="12" />
           </help-page-link>
         </div>

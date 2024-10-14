@@ -7,10 +7,10 @@ import * as types from '../../stores/mutation_types';
 import * as utils from '../../stores/utils';
 
 export default {
-  [types.ADD_NEW_NOTE](state, data) {
+  [types.ADD_NEW_NOTE](data) {
     const note = data.discussion ? data.discussion.notes[0] : data;
     const { discussion_id: discussionId, type } = note;
-    const [exists] = state.discussions.filter((n) => n.id === note.discussion_id);
+    const [exists] = this.discussions.filter((n) => n.id === note.discussion_id);
     const isDiscussion = type === constants.DISCUSSION_NOTE || type === constants.DIFF_NOTE;
 
     if (!exists) {
@@ -42,12 +42,12 @@ export default {
       delete note.base_discussion;
       discussion.notes = [note];
 
-      state.discussions.push(discussion);
+      this.discussions.push(discussion);
     }
   },
 
-  [types.ADD_NEW_REPLY_TO_DISCUSSION](state, note) {
-    const discussion = utils.findNoteObjectById(state.discussions, note.discussion_id);
+  [types.ADD_NEW_REPLY_TO_DISCUSSION](note) {
+    const discussion = utils.findNoteObjectById(this.discussions, note.discussion_id);
     const existingNote = discussion && utils.findNoteObjectById(discussion.notes, note.id);
 
     if (discussion && !existingNote) {
@@ -55,33 +55,33 @@ export default {
     }
   },
 
-  [types.DELETE_NOTE](state, note) {
-    const noteObj = utils.findNoteObjectById(state.discussions, note.discussion_id);
+  [types.DELETE_NOTE](note) {
+    const noteObj = utils.findNoteObjectById(this.discussions, note.discussion_id);
 
     if (noteObj.individual_note) {
-      state.discussions.splice(state.discussions.indexOf(noteObj), 1);
+      this.discussions.splice(this.discussions.indexOf(noteObj), 1);
     } else {
       const comment = utils.findNoteObjectById(noteObj.notes, note.id);
       noteObj.notes.splice(noteObj.notes.indexOf(comment), 1);
 
       if (!noteObj.notes.length) {
-        state.discussions.splice(state.discussions.indexOf(noteObj), 1);
+        this.discussions.splice(this.discussions.indexOf(noteObj), 1);
       }
     }
   },
 
-  [types.EXPAND_DISCUSSION](state, { discussionId }) {
-    const discussion = utils.findNoteObjectById(state.discussions, discussionId);
+  [types.EXPAND_DISCUSSION]({ discussionId }) {
+    const discussion = utils.findNoteObjectById(this.discussions, discussionId);
     Object.assign(discussion, { expanded: true });
   },
 
-  [types.COLLAPSE_DISCUSSION](state, { discussionId }) {
-    const discussion = utils.findNoteObjectById(state.discussions, discussionId);
+  [types.COLLAPSE_DISCUSSION]({ discussionId }) {
+    const discussion = utils.findNoteObjectById(this.discussions, discussionId);
     Object.assign(discussion, { expanded: false });
   },
 
-  [types.REMOVE_PLACEHOLDER_NOTES](state) {
-    const { discussions } = state;
+  [types.REMOVE_PLACEHOLDER_NOTES]() {
+    const { discussions } = this;
 
     for (let i = discussions.length - 1; i >= 0; i -= 1) {
       const note = discussions[i];
@@ -101,31 +101,31 @@ export default {
     }
   },
 
-  [types.SET_NOTES_DATA](state, data) {
-    Object.assign(state, { notesData: data });
+  [types.SET_NOTES_DATA](data) {
+    Object.assign(this, { notesData: data });
   },
 
-  [types.SET_NOTEABLE_DATA](state, data) {
-    Object.assign(state, { noteableData: data });
+  [types.SET_NOTEABLE_DATA](data) {
+    Object.assign(this, { noteableData: data });
   },
 
-  [types.SET_ISSUE_CONFIDENTIAL](state, data) {
-    state.noteableData.confidential = data;
+  [types.SET_ISSUE_CONFIDENTIAL](data) {
+    this.noteableData.confidential = data;
   },
 
-  [types.SET_ISSUABLE_LOCK](state, locked) {
-    state.noteableData.discussion_locked = locked;
+  [types.SET_ISSUABLE_LOCK](locked) {
+    this.noteableData.discussion_locked = locked;
   },
 
-  [types.SET_USER_DATA](state, data) {
-    Object.assign(state, { userData: data });
+  [types.SET_USER_DATA](data) {
+    Object.assign(this, { userData: data });
   },
 
-  [types.CLEAR_DISCUSSIONS](state) {
-    state.discussions = [];
+  [types.CLEAR_DISCUSSIONS]() {
+    this.discussions = [];
   },
 
-  [types.ADD_OR_UPDATE_DISCUSSIONS](state, discussionsData) {
+  [types.ADD_OR_UPDATE_DISCUSSIONS](discussionsData) {
     discussionsData.forEach((d) => {
       const discussion = { ...d };
       const diffData = {};
@@ -146,43 +146,43 @@ export default {
             ...diffData,
             notes: [n], // override notes array to only have one item to mimick individual_note
           };
-          const oldDiscussion = state.discussions.find(
+          const oldDiscussion = this.discussions.find(
             (existingDiscussion) =>
               existingDiscussion.id === discussion.id && existingDiscussion.notes[0].id === n.id,
           );
 
           if (oldDiscussion) {
-            state.discussions.splice(state.discussions.indexOf(oldDiscussion), 1, newDiscussion);
+            this.discussions.splice(this.discussions.indexOf(oldDiscussion), 1, newDiscussion);
           } else {
-            state.discussions.push(newDiscussion);
+            this.discussions.push(newDiscussion);
           }
         });
       } else {
-        const oldDiscussion = utils.findNoteObjectById(state.discussions, discussion.id);
+        const oldDiscussion = utils.findNoteObjectById(this.discussions, discussion.id);
 
         if (oldDiscussion) {
-          state.discussions.splice(state.discussions.indexOf(oldDiscussion), 1, {
+          this.discussions.splice(this.discussions.indexOf(oldDiscussion), 1, {
             ...discussion,
             ...diffData,
             expanded: oldDiscussion.expanded,
           });
         } else {
-          state.discussions.push({ ...discussion, ...diffData });
+          this.discussions.push({ ...discussion, ...diffData });
         }
       }
     });
   },
 
-  [types.SET_LAST_FETCHED_AT](state, fetchedAt) {
-    Object.assign(state, { lastFetchedAt: fetchedAt });
+  [types.SET_LAST_FETCHED_AT](fetchedAt) {
+    Object.assign(this, { lastFetchedAt: fetchedAt });
   },
 
-  [types.SET_TARGET_NOTE_HASH](state, hash) {
-    Object.assign(state, { targetNoteHash: hash });
+  [types.SET_TARGET_NOTE_HASH](hash) {
+    Object.assign(this, { targetNoteHash: hash });
   },
 
-  [types.SHOW_PLACEHOLDER_NOTE](state, data) {
-    let notesArr = state.discussions;
+  [types.SHOW_PLACEHOLDER_NOTE](data) {
+    let notesArr = this.discussions;
 
     const existingDiscussion = utils.findNoteObjectById(notesArr, data.replyId);
     if (existingDiscussion) {
@@ -202,9 +202,9 @@ export default {
     });
   },
 
-  [types.TOGGLE_AWARD](state, data) {
+  [types.TOGGLE_AWARD](data) {
     const { awardName, note } = data;
-    const { id, name, username } = state.userData;
+    const { id, name, username } = this.userData;
 
     const hasEmojiAwardedByCurrentUser = note.award_emoji.filter(
       (emoji) => `${emoji.name}` === `${data.awardName}` && emoji.user.id === id,
@@ -221,34 +221,34 @@ export default {
     }
   },
 
-  [types.TOGGLE_DISCUSSION](state, { discussionId, forceExpanded = null }) {
-    const discussion = utils.findNoteObjectById(state.discussions, discussionId);
+  [types.TOGGLE_DISCUSSION]({ discussionId, forceExpanded = null }) {
+    const discussion = utils.findNoteObjectById(this.discussions, discussionId);
     Object.assign(discussion, {
       expanded: forceExpanded === null ? !discussion.expanded : forceExpanded,
     });
   },
 
-  [types.SET_EXPAND_DISCUSSIONS](state, { discussionIds, expanded }) {
+  [types.SET_EXPAND_DISCUSSIONS]({ discussionIds, expanded }) {
     if (discussionIds?.length) {
       discussionIds.forEach((discussionId) => {
-        const discussion = utils.findNoteObjectById(state.discussions, discussionId);
+        const discussion = utils.findNoteObjectById(this.discussions, discussionId);
         Object.assign(discussion, { expanded });
       });
     }
   },
 
-  [types.SET_EXPAND_ALL_DISCUSSIONS](state, expanded) {
-    state.discussions.forEach((discussion) => {
+  [types.SET_EXPAND_ALL_DISCUSSIONS](expanded) {
+    this.discussions.forEach((discussion) => {
       Object.assign(discussion, { expanded });
     });
   },
 
-  [types.SET_RESOLVING_DISCUSSION](state, isResolving) {
-    state.isResolvingDiscussion = isResolving;
+  [types.SET_RESOLVING_DISCUSSION](isResolving) {
+    this.isResolvingDiscussion = isResolving;
   },
 
-  [types.UPDATE_NOTE](state, note) {
-    const discussion = utils.findNoteObjectById(state.discussions, note.discussion_id);
+  [types.UPDATE_NOTE](note) {
+    const discussion = utils.findNoteObjectById(this.discussions, note.discussion_id);
 
     // Disable eslint here so we can delete the property that we no longer need
     // in the note object
@@ -280,8 +280,8 @@ export default {
     }
   },
 
-  [types.APPLY_SUGGESTION](state, { noteId, discussionId, suggestionId }) {
-    const noteObj = utils.findNoteObjectById(state.discussions, discussionId);
+  [types.APPLY_SUGGESTION]({ noteId, discussionId, suggestionId }) {
+    const noteObj = utils.findNoteObjectById(this.discussions, discussionId);
     const comment = utils.findNoteObjectById(noteObj.notes, noteId);
 
     comment.suggestions = comment.suggestions.map((suggestion) => ({
@@ -291,11 +291,11 @@ export default {
     }));
   },
 
-  [types.SET_APPLYING_BATCH_STATE](state, isApplyingBatch) {
-    state.batchSuggestionsInfo.forEach((suggestionInfo) => {
+  [types.SET_APPLYING_BATCH_STATE](isApplyingBatch) {
+    this.batchSuggestionsInfo.forEach((suggestionInfo) => {
       const { discussionId, noteId, suggestionId } = suggestionInfo;
 
-      const noteObj = utils.findNoteObjectById(state.discussions, discussionId);
+      const noteObj = utils.findNoteObjectById(this.discussions, discussionId);
       const comment = utils.findNoteObjectById(noteObj.notes, noteId);
 
       comment.suggestions = comment.suggestions.map((suggestion) => ({
@@ -305,92 +305,92 @@ export default {
     });
   },
 
-  [types.ADD_SUGGESTION_TO_BATCH](state, { noteId, discussionId, suggestionId }) {
-    state.batchSuggestionsInfo.push({
+  [types.ADD_SUGGESTION_TO_BATCH]({ noteId, discussionId, suggestionId }) {
+    this.batchSuggestionsInfo.push({
       suggestionId,
       noteId,
       discussionId,
     });
   },
 
-  [types.REMOVE_SUGGESTION_FROM_BATCH](state, id) {
-    const index = state.batchSuggestionsInfo.findIndex(({ suggestionId }) => suggestionId === id);
+  [types.REMOVE_SUGGESTION_FROM_BATCH](id) {
+    const index = this.batchSuggestionsInfo.findIndex(({ suggestionId }) => suggestionId === id);
     if (index !== -1) {
-      state.batchSuggestionsInfo.splice(index, 1);
+      this.batchSuggestionsInfo.splice(index, 1);
     }
   },
 
-  [types.CLEAR_SUGGESTION_BATCH](state) {
-    state.batchSuggestionsInfo.splice(0, state.batchSuggestionsInfo.length);
+  [types.CLEAR_SUGGESTION_BATCH]() {
+    this.batchSuggestionsInfo.splice(0, this.batchSuggestionsInfo.length);
   },
 
-  [types.UPDATE_DISCUSSION](state, noteData) {
+  [types.UPDATE_DISCUSSION](noteData) {
     const note = noteData;
-    const selectedDiscussion = state.discussions.find((disc) => disc.id === note.id);
+    const selectedDiscussion = this.discussions.find((disc) => disc.id === note.id);
     note.expanded = true; // override expand flag to prevent collapse
     Object.assign(selectedDiscussion, { ...note });
   },
 
-  [types.UPDATE_DISCUSSION_POSITION](state, { discussionId, position }) {
-    const selectedDiscussion = state.discussions.find((disc) => disc.id === discussionId);
+  [types.UPDATE_DISCUSSION_POSITION]({ discussionId, position }) {
+    const selectedDiscussion = this.discussions.find((disc) => disc.id === discussionId);
     if (selectedDiscussion) Object.assign(selectedDiscussion.position, { ...position });
   },
 
-  [types.CLOSE_ISSUE](state) {
-    Object.assign(state.noteableData, { state: STATUS_CLOSED });
+  [types.CLOSE_ISSUE]() {
+    Object.assign(this.noteableData, { this: STATUS_CLOSED });
   },
 
-  [types.REOPEN_ISSUE](state) {
-    Object.assign(state.noteableData, { state: STATUS_REOPENED });
+  [types.REOPEN_ISSUE]() {
+    Object.assign(this.noteableData, { this: STATUS_REOPENED });
   },
 
-  [types.TOGGLE_STATE_BUTTON_LOADING](state, value) {
-    Object.assign(state, { isToggleStateButtonLoading: value });
+  [types.TOGGLE_STATE_BUTTON_LOADING](value) {
+    Object.assign(this, { isToggleStateButtonLoading: value });
   },
 
-  [types.SET_NOTES_FETCHED_STATE](state, value) {
-    Object.assign(state, { isNotesFetched: value });
+  [types.SET_NOTES_FETCHED_STATE](value) {
+    Object.assign(this, { isNotesFetched: value });
   },
 
-  [types.SET_NOTES_LOADING_STATE](state, value) {
-    state.isLoading = value;
+  [types.SET_NOTES_LOADING_STATE](value) {
+    this.isLoading = value;
   },
 
-  [types.SET_NOTES_FETCHING_STATE](state, value) {
-    state.isFetching = value;
+  [types.SET_NOTES_FETCHING_STATE](value) {
+    this.isFetching = value;
   },
 
-  [types.SET_DISCUSSION_DIFF_LINES](state, { discussionId, diffLines }) {
-    const discussion = utils.findNoteObjectById(state.discussions, discussionId);
+  [types.SET_DISCUSSION_DIFF_LINES]({ discussionId, diffLines }) {
+    const discussion = utils.findNoteObjectById(this.discussions, discussionId);
 
     discussion.truncated_diff_lines = utils.prepareDiffLines(diffLines);
   },
 
-  [types.SET_DISCUSSIONS_SORT](state, { direction, persist }) {
-    state.discussionSortOrder = direction;
-    state.persistSortOrder = persist;
+  [types.SET_DISCUSSIONS_SORT]({ direction, persist }) {
+    this.discussionSortOrder = direction;
+    this.persistSortOrder = persist;
   },
 
-  [types.SET_TIMELINE_VIEW](state, value) {
-    state.isTimelineEnabled = value;
+  [types.SET_TIMELINE_VIEW](value) {
+    this.isTimelineEnabled = value;
   },
 
-  [types.SET_SELECTED_COMMENT_POSITION](state, position) {
-    state.selectedCommentPosition = position;
+  [types.SET_SELECTED_COMMENT_POSITION](position) {
+    this.selectedCommentPosition = position;
   },
 
-  [types.SET_SELECTED_COMMENT_POSITION_HOVER](state, position) {
-    state.selectedCommentPositionHover = position;
+  [types.SET_SELECTED_COMMENT_POSITION_HOVER](position) {
+    this.selectedCommentPositionHover = position;
   },
 
-  [types.DISABLE_COMMENTS](state, value) {
-    state.commentsDisabled = value;
+  [types.DISABLE_COMMENTS](value) {
+    this.commentsDisabled = value;
   },
-  [types.UPDATE_RESOLVABLE_DISCUSSIONS_COUNTS](state) {
-    state.resolvableDiscussionsCount = state.discussions.filter(
+  [types.UPDATE_RESOLVABLE_DISCUSSIONS_COUNTS]() {
+    this.resolvableDiscussionsCount = this.discussions.filter(
       (discussion) => !discussion.individual_note && discussion.resolvable,
     ).length;
-    state.unresolvedDiscussionsCount = state.discussions.filter(
+    this.unresolvedDiscussionsCount = this.discussions.filter(
       (discussion) =>
         !discussion.individual_note &&
         discussion.resolvable &&
@@ -398,58 +398,58 @@ export default {
     ).length;
   },
 
-  [types.CONVERT_TO_DISCUSSION](state, discussionId) {
-    const convertedDisscussionIds = [...state.convertedDisscussionIds, discussionId];
-    Object.assign(state, { convertedDisscussionIds });
+  [types.CONVERT_TO_DISCUSSION](discussionId) {
+    const convertedDisscussionIds = [...this.convertedDisscussionIds, discussionId];
+    Object.assign(this, { convertedDisscussionIds });
   },
 
-  [types.REMOVE_CONVERTED_DISCUSSION](state, discussionId) {
-    const convertedDisscussionIds = [...state.convertedDisscussionIds];
+  [types.REMOVE_CONVERTED_DISCUSSION](discussionId) {
+    const convertedDisscussionIds = [...this.convertedDisscussionIds];
 
     convertedDisscussionIds.splice(convertedDisscussionIds.indexOf(discussionId), 1);
-    Object.assign(state, { convertedDisscussionIds });
+    Object.assign(this, { convertedDisscussionIds });
   },
 
-  [types.SET_CURRENT_DISCUSSION_ID](state, discussionId) {
-    state.currentDiscussionId = discussionId;
+  [types.SET_CURRENT_DISCUSSION_ID](discussionId) {
+    this.currentDiscussionId = discussionId;
   },
 
-  [types.REQUEST_DESCRIPTION_VERSION](state) {
-    state.isLoadingDescriptionVersion = true;
+  [types.REQUEST_DESCRIPTION_VERSION]() {
+    this.isLoadingDescriptionVersion = true;
   },
-  [types.RECEIVE_DESCRIPTION_VERSION](state, { descriptionVersion, versionId }) {
-    const descriptionVersions = { ...state.descriptionVersions, [versionId]: descriptionVersion };
-    Object.assign(state, { descriptionVersions, isLoadingDescriptionVersion: false });
+  [types.RECEIVE_DESCRIPTION_VERSION]({ descriptionVersion, versionId }) {
+    const descriptionVersions = { ...this.descriptionVersions, [versionId]: descriptionVersion };
+    Object.assign(this, { descriptionVersions, isLoadingDescriptionVersion: false });
   },
-  [types.RECEIVE_DESCRIPTION_VERSION_ERROR](state) {
-    state.isLoadingDescriptionVersion = false;
+  [types.RECEIVE_DESCRIPTION_VERSION_ERROR]() {
+    this.isLoadingDescriptionVersion = false;
   },
-  [types.REQUEST_DELETE_DESCRIPTION_VERSION](state) {
-    state.isLoadingDescriptionVersion = true;
+  [types.REQUEST_DELETE_DESCRIPTION_VERSION]() {
+    this.isLoadingDescriptionVersion = true;
   },
-  [types.RECEIVE_DELETE_DESCRIPTION_VERSION](state, descriptionVersion) {
-    state.isLoadingDescriptionVersion = false;
-    Object.assign(state.descriptionVersions, descriptionVersion);
+  [types.RECEIVE_DELETE_DESCRIPTION_VERSION](descriptionVersion) {
+    this.isLoadingDescriptionVersion = false;
+    Object.assign(this.descriptionVersions, descriptionVersion);
   },
-  [types.RECEIVE_DELETE_DESCRIPTION_VERSION_ERROR](state) {
-    state.isLoadingDescriptionVersion = false;
+  [types.RECEIVE_DELETE_DESCRIPTION_VERSION_ERROR]() {
+    this.isLoadingDescriptionVersion = false;
   },
-  [types.UPDATE_ASSIGNEES](state, assignees) {
-    state.noteableData.assignees = assignees;
+  [types.UPDATE_ASSIGNEES](assignees) {
+    this.noteableData.assignees = assignees;
   },
-  [types.SET_FETCHING_DISCUSSIONS](state, value) {
-    state.currentlyFetchingDiscussions = value;
+  [types.SET_FETCHING_DISCUSSIONS](value) {
+    this.currentlyFetchingDiscussions = value;
   },
-  [types.SET_DONE_FETCHING_BATCH_DISCUSSIONS](state, value) {
-    state.doneFetchingBatchDiscussions = value;
+  [types.SET_DONE_FETCHING_BATCH_DISCUSSIONS](value) {
+    this.doneFetchingBatchDiscussions = value;
   },
-  [types.SET_PROMOTE_COMMENT_TO_TIMELINE_PROGRESS](state, value) {
-    state.isPromoteCommentToTimelineEventInProgress = value;
+  [types.SET_PROMOTE_COMMENT_TO_TIMELINE_PROGRESS](value) {
+    this.isPromoteCommentToTimelineEventInProgress = value;
   },
-  [types.SET_IS_POLLING_INITIALIZED](state, value) {
-    state.isPollingInitialized = value;
+  [types.SET_IS_POLLING_INITIALIZED](value) {
+    this.isPollingInitialized = value;
   },
-  [types.SET_MERGE_REQUEST_FILTERS](state, value) {
-    state.mergeRequestFilters = value;
+  [types.SET_MERGE_REQUEST_FILTERS](value) {
+    this.mergeRequestFilters = value;
   },
 };

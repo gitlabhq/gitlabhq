@@ -320,7 +320,7 @@ Project permissions for [project features](project/organize_work_with_projects.m
 | Edit comments (posted by any user)                                        |       |          |           |     ✓      |   ✓   |       |
 | Add [deploy keys](project/deploy_keys/index.md)                           |       |          |           |     ✓      |   ✓   |       |
 | Manage [Project Operations](../operations/index.md)                       |       |          |           |     ✓      |   ✓   |       |
-| View [Usage Quotas](usage_quotas.md) page                                 |       |          |           |     ✓      |   ✓   |       |
+| View [Usage Quotas](storage_usage_quotas.md) page                         |       |          |           |     ✓      |   ✓   |       |
 | Globally delete [snippets](snippets.md)                                   |       |          |           |     ✓      |   ✓   |       |
 | Globally edit [snippets](snippets.md)                                     |       |          |           |     ✓      |   ✓   |       |
 | Archive project                                                           |       |          |           |            |   ✓   |       |
@@ -479,7 +479,7 @@ Group permissions for [group features](../user/group/index.md):
 | Edit [epic](group/epics/index.md) comments (posted by any user)                            |       |          |           | ✓          | ✓     |       |
 | Fork project into a group                                                                  |       |          |           | ✓          | ✓     |       |
 | View [Billing](../subscriptions/gitlab_com/index.md#view-gitlabcom-subscription)      |       |          |           |            | ✓     | Does not apply to subgroups |
-| View group [Usage Quotas](usage_quotas.md) page                                            |       |          |           |            | ✓     | Does not apply to subgroups |
+| View group [Usage Quotas](storage_usage_quotas.md) page                                            |       |          |           |            | ✓     | Does not apply to subgroups |
 | [Migrate group](group/import/index.md)                                                    |       |          |           |            | ✓     |       |
 | Delete group                                                                               |       |          |           |            | ✓     |       |
 | Manage [subscriptions, storage, and compute minutes](../subscriptions/gitlab_com/index.md) |       |          |           |            | ✓     |       |

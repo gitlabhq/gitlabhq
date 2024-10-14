@@ -109,10 +109,21 @@ RSpec.describe RootController do
           user.dashboard = 'todos'
         end
 
-        it 'redirects to their todo list' do
-          get :index
+        context 'with the :todos_vue_application feature flag disabled (default)' do
+          it 'redirects to the classic todo list' do
+            stub_feature_flags(todos_vue_application: false)
+            get :index
 
-          expect(response).to redirect_to dashboard_todos_path
+            expect(response).to redirect_to dashboard_todos_path
+          end
+        end
+
+        context 'with the :todos_vue_application feature flag enabled (internal beta)' do
+          it 'redirects to the new todo list' do
+            get :index
+
+            expect(response).to redirect_to vue_dashboard_todos_path
+          end
         end
       end
 

@@ -5,8 +5,8 @@ description: >
   The background migration job was originally queued by post-deployment migration 20240829160537,
   but cancelled as part of a revert.
 feature_category: runner
-introduced_by_url: 'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/168420'
-milestone: '17.5'
-queued_migration_version: 20241007171237
+introduced_by_url: 'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164386'
+milestone: '17.4'
+queued_migration_version: 20240829160537
 finalize_after: '2024-11-15'
 finalized_by: # version of the migration that finalized this BBM

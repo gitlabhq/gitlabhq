@@ -37,6 +37,10 @@ To add a new setting, you have to:
 - Add a [model test](https://gitlab.com/gitlab-org/gitlab/-/blob/6f33ad46ffeac454c6c9ce92d6ba328a72f062fd/spec/models/application_setting_spec.rb) for the validation and default value
 - Find the [right view file](https://gitlab.com/gitlab-org/gitlab/-/tree/26ad8f4086c03283814bda50ff6e7043902cdbff/app/views/admin/application_settings) or create a new one and add a form field to the new setting.
 - Update the [API documentation](https://gitlab.com/gitlab-org/gitlab/-/blob/6f33ad46ffeac454c6c9ce92d6ba328a72f062fd/doc/api/settings.md). Application settings will automatically be available on the REST API.
+- Run the `scripts/cells/application-settings-analysis.rb` script to generate a definition YAML file at `config/application_setting_columns/*.yml` and update the documentation file at
+  [`cells/application_settings_analysis`](cells/application_settings_analysis.md), based on `db/structure.sql` as well as the API documentation. Once the definition file is created, please ensure you set the
+  `clusterwide` key to `true` or `false` in it. Setting `clusterwide: true` means that the attribute value will be copied from the leader cell to other cells
+  [in the context of Cells architecture](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/impacted_features/admin-area/). In most cases, `clusterwide: false` is preferrable.
 
 ### Database migration example
 

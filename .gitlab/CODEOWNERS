@@ -1169,7 +1169,7 @@ lib/gitlab/checks/**
 /doc/user/storage_management_automation.md @fneill
 /doc/user/tasks.md @msedlakjakubowski
 /doc/user/todos.md @sselhorn
-/doc/user/usage_quotas.md @fneill
+/doc/user/storage_usage_quotas.md @fneill
 /doc/user/workspace/ @ashrafkhamis
 # End rake-managed-docs-block
 

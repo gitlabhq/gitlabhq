@@ -407,7 +407,7 @@ For more information, [see the investigation details](https://gitlab.com/gitlab-
 
 ## Usage quota shows incorrect artifact storage usage
 
-Sometimes the [artifacts storage usage](../../user/usage_quotas.md) displays an incorrect
+Sometimes the [artifacts storage usage](../../user/storage_usage_quotas.md) displays an incorrect
 value for the total storage space used by artifacts. To recalculate the artifact
 usage statistics for all projects in the instance, you can run this background script:
 

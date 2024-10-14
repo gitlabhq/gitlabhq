@@ -70,6 +70,7 @@ import {
   urlSortParams,
 } from '~/issues/list/constants';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
+import MergeRequestReviewers from '~/issuable/components/merge_request_reviewers.vue';
 import setSortPreferenceMutation from '~/issues/list/queries/set_sort_preference.mutation.graphql';
 import issuableEventHub from '~/issues/list/eventhub';
 import { AutocompleteCache } from '../../utils/autocomplete_cache';
@@ -110,6 +111,7 @@ export default {
     CiIcon,
     MergeRequestStatistics,
     MergeRequestMoreActionsDropdown,
+    MergeRequestReviewers,
     ApprovalCount,
     EmptyState,
     IssuableMilestone,
@@ -571,6 +573,9 @@ export default {
       }
       return undefined;
     },
+    getReviewers(issuable) {
+      return issuable.reviewers?.nodes || [];
+    },
     handleClickTab(state) {
       if (this.state === state) {
         return;
@@ -796,6 +801,17 @@ export default {
         class="issuable-pipeline-status gl-hidden sm:gl-flex"
       >
         <ci-icon :status="issuable.headPipeline.detailedStatus" use-link show-tooltip />
+      </li>
+    </template>
+
+    <template #reviewers="{ issuable = {} }">
+      <li v-if="getReviewers(issuable).length" class="!gl-mr-0">
+        <merge-request-reviewers
+          :reviewers="getReviewers(issuable)"
+          :icon-size="16"
+          :max-visible="4"
+          class="gl-flex gl-items-center"
+        />
       </li>
     </template>
 

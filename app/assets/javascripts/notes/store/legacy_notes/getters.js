@@ -3,15 +3,13 @@ import { match } from '~/diffs/utils/diff_file';
 import { isInMRPage } from '~/lib/utils/common_utils';
 import { doesHashExistInUrl } from '~/lib/utils/url_utility';
 import { badgeState } from '~/merge_requests/components/merge_request_header.vue';
+import { useBatchComments } from '~/batch_comments/store';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import * as constants from '../../constants';
 import { collapseSystemNotes } from '../../stores/collapse_utils';
 
-const getDraftComments = (state) => {
-  if (!state.batchComments) {
-    return [];
-  }
-
-  return state.batchComments.drafts
+const getDraftComments = (drafts) => {
+  return drafts
     .filter((draft) => !draft.file_path && !draft.discussion_id)
     .map((x) => ({
       ...x,
@@ -56,14 +54,13 @@ const hideActivity = (filters, discussion) => {
   return false;
 };
 
-// was 'discussions', replace all mapGetters using this
-export const filteredDiscussions = (state, getters, rootState) => {
-  let discussionsInState = clone(state.discussions);
+export function filteredDiscussions() {
+  let discussionsInState = clone(this.discussions);
   // NOTE: not testing bc will be removed when backend is finished.
 
-  if (state.noteableData.targetType === 'merge_request') {
+  if (this.noteableData.targetType === 'merge_request') {
     discussionsInState = discussionsInState.reduce((acc, discussion) => {
-      if (hideActivity(state.mergeRequestFilters, discussion)) {
+      if (hideActivity(this.mergeRequestFilters, discussion)) {
         return acc;
       }
 
@@ -73,7 +70,7 @@ export const filteredDiscussions = (state, getters, rootState) => {
     }, []);
   }
 
-  if (state.isTimelineEnabled) {
+  if (this.isTimelineEnabled) {
     discussionsInState = discussionsInState
       .reduce((acc, discussion) => {
         const transformedToIndividualNotes = discussion.notes.map((note) => ({
@@ -91,116 +88,121 @@ export const filteredDiscussions = (state, getters, rootState) => {
 
   discussionsInState = collapseSystemNotes(discussionsInState);
 
-  discussionsInState = discussionsInState.concat(getDraftComments(rootState));
+  discussionsInState = discussionsInState.concat(getDraftComments(useBatchComments().drafts));
 
-  if (state.discussionSortOrder === constants.DESC) {
+  if (this.discussionSortOrder === constants.DESC) {
     discussionsInState = discussionsInState.reverse();
   }
 
   return discussionsInState;
-};
+}
 
-// these should've never been getters
-// export const convertedDisscussionIds = (state) => state.convertedDisscussionIds;
-// export const targetNoteHash = (state) => state.targetNoteHash;
-// export const isNotesFetched = (state) => state.isNotesFetched;
+export function getNotesData() {
+  return this.notesData;
+}
 
-export const getNotesData = (state) => state.notesData;
+export function sortDirection() {
+  return this.discussionSortOrder;
+}
 
-/*
- * WARNING: This is an example of an "unnecessary" getter
- * more info found here: https://gitlab.com/groups/gitlab-org/-/epics/2913.
- */
+export function timelineEnabled() {
+  return this.isTimelineEnabled;
+}
 
-export const sortDirection = (state) => state.discussionSortOrder;
+export function getNotesDataByProp() {
+  return (prop) => this.notesData[prop];
+}
 
-export const timelineEnabled = (state) => state.isTimelineEnabled;
+export function getNoteableData() {
+  return this.noteableData;
+}
 
-// these should've never been getters
-// export const isFetching = (state) => state.isFetching;
-// export const isLoading = (state) => state.isLoading;
-// export const persistSortOrder = (state) => state.persistSortOrder;
+export function getNoteableDataByProp() {
+  return (prop) => this.noteableData[prop];
+}
 
-export const getNotesDataByProp = (state) => (prop) => state.notesData[prop];
+export function getBlockedByIssues() {
+  return this.noteableData.blocked_by_issues;
+}
 
-export const getNoteableData = (state) => state.noteableData;
+export function userCanReply() {
+  return Boolean(this.noteableData.current_user.can_create_note);
+}
 
-export const getNoteableDataByProp = (state) => (prop) => state.noteableData[prop];
+export function openState() {
+  return isInMRPage() ? badgeState.this : this.noteableData.this;
+}
 
-export const getBlockedByIssues = (state) => state.noteableData.blocked_by_issues;
+export function getUserData() {
+  return this.userData || {};
+}
 
-export const userCanReply = (state) => Boolean(state.noteableData.current_user.can_create_note);
+export function getUserDataByProp() {
+  return (prop) => this.userData && this.userData[prop];
+}
 
-export const openState = (state) => (isInMRPage() ? badgeState.state : state.noteableData.state);
-
-export const getUserData = (state) => state.userData || {};
-
-export const getUserDataByProp = (state) => (prop) => state.userData && state.userData[prop];
-
-// this should've never been a getter
-// export const descriptionVersions = (state) => state.descriptionVersions;
-
-export const canUserAddIncidentTimelineEvents = (state) => {
+export function canUserAddIncidentTimelineEvents() {
   return Boolean(
-    state.userData?.can_add_timeline_events &&
-      state.noteableData.type === constants.NOTEABLE_TYPE_MAPPING.Incident,
+    this.userData?.can_add_timeline_events &&
+      this.noteableData.type === constants.NOTEABLE_TYPE_MAPPING.Incident,
   );
-};
+}
 
-export const notesById = (state) =>
-  state.discussions.reduce((acc, note) => {
+export function notesById() {
+  return this.discussions.reduce((acc, note) => {
     note.notes.every((n) => Object.assign(acc, { [n.id]: n }));
     return acc;
   }, {});
+}
 
-export const noteableType = (state) => {
+export function noteableType() {
   const { ISSUE_NOTEABLE_TYPE, MERGE_REQUEST_NOTEABLE_TYPE, EPIC_NOTEABLE_TYPE } = constants;
 
-  if (state.noteableData.noteableType === EPIC_NOTEABLE_TYPE) {
+  if (this.noteableData.noteableType === EPIC_NOTEABLE_TYPE) {
     return EPIC_NOTEABLE_TYPE;
   }
 
-  return state.noteableData.merge_params ? MERGE_REQUEST_NOTEABLE_TYPE : ISSUE_NOTEABLE_TYPE;
-};
+  return this.noteableData.merge_params ? MERGE_REQUEST_NOTEABLE_TYPE : ISSUE_NOTEABLE_TYPE;
+}
 
 const reverseNotes = (array) => array.slice(0).reverse();
 
 const isLastNote = (note, state) =>
   !note.system && state.userData && note.author && note.author.id === state.userData.id;
 
-export const getCurrentUserLastNote = (state) =>
-  flattenDeep(reverseNotes(state.discussions).map((note) => reverseNotes(note.notes))).find((el) =>
-    isLastNote(el, state),
+export function getCurrentUserLastNote() {
+  return flattenDeep(reverseNotes(this.discussions).map((note) => reverseNotes(note.notes))).find(
+    (el) => isLastNote(el, this),
   );
+}
 
-export const getDiscussionLastNote = (state) => (discussion) =>
-  reverseNotes(discussion.notes).find((el) => isLastNote(el, state));
+export function getDiscussionLastNote() {
+  return (discussion) => reverseNotes(discussion.notes).find((el) => isLastNote(el, this));
+}
 
-// these should've never been getters
-// export const unresolvedDiscussionsCount = (state) => state.unresolvedDiscussionsCount;
-// export const resolvableDiscussionsCount = (state) => state.resolvableDiscussionsCount;
-
-export const showJumpToNextDiscussion =
-  (state, getters) =>
-  (mode = 'discussion') => {
+export function showJumpToNextDiscussion() {
+  return (mode = 'discussion') => {
     const orderedDiffs =
       mode !== 'discussion'
-        ? getters.unresolvedDiscussionsIdsByDiff
-        : getters.unresolvedDiscussionsIdsByDate;
+        ? this.unresolvedDiscussionsIdsByDiff
+        : this.unresolvedDiscussionsIdsByDate;
 
     return orderedDiffs.length > 1;
   };
+}
 
-export const isDiscussionResolved = (state, getters) => (discussionId) =>
-  getters.resolvedDiscussionsById[discussionId] !== undefined;
+export function isDiscussionResolved() {
+  return (discussionId) => this.resolvedDiscussionsById[discussionId] !== undefined;
+}
 
-export const allResolvableDiscussions = (state) =>
-  state.discussions.filter((d) => !d.individual_note && d.resolvable);
+export function allResolvableDiscussions() {
+  return this.discussions.filter((d) => !d.individual_note && d.resolvable);
+}
 
-export const resolvedDiscussionsById = (state) => {
+export function resolvedDiscussionsById() {
   const map = {};
 
-  state.discussions
+  this.discussions
     .filter((d) => d.resolvable)
     .forEach((n) => {
       if (n.notes) {
@@ -213,11 +215,10 @@ export const resolvedDiscussionsById = (state) => {
     });
 
   return map;
-};
+}
 
-// Gets Discussions IDs ordered by the date of their initial note
-export const unresolvedDiscussionsIdsByDate = (state, getters) =>
-  getters.allResolvableDiscussions
+export function unresolvedDiscussionsIdsByDate() {
+  return this.allResolvableDiscussions
     .filter((d) => !d.resolved)
     .sort((a, b) => {
       const aDate = new Date(a.notes[0].created_at);
@@ -230,16 +231,12 @@ export const unresolvedDiscussionsIdsByDate = (state, getters) =>
       return aDate === bDate ? 0 : 1;
     })
     .map((d) => d.id);
+}
 
-// Gets Discussions IDs ordered by their position in the diff
-//
-// Sorts the array of resolvable yet unresolved discussions by
-// comparing file names first. If file names are the same, compares
-// line numbers.
-export const unresolvedDiscussionsIdsByDiff = (state, getters, allState) => {
-  const authoritativeFiles = allState.diffs.diffFiles;
+export function unresolvedDiscussionsIdsByDiff() {
+  const authoritativeFiles = useLegacyDiffs().diffFiles;
 
-  return getters.allResolvableDiscussions
+  return this.allResolvableDiscussions
     .filter((d) => !d.resolved && d.active)
     .sort((a, b) => {
       let order = 0;
@@ -271,45 +268,44 @@ export const unresolvedDiscussionsIdsByDiff = (state, getters, allState) => {
         : 1;
     })
     .map((d) => d.id);
-};
+}
 
-export const resolvedDiscussionCount = (state, getters) => {
-  const resolvedMap = getters.resolvedDiscussionsById;
+export function resolvedDiscussionCount() {
+  const resolvedMap = this.resolvedDiscussionsById;
 
   return Object.keys(resolvedMap).length;
-};
+}
 
-export const discussionTabCounter = (state) =>
-  state.discussions.reduce(
+export function discussionTabCounter() {
+  return this.discussions.reduce(
     (acc, discussion) =>
       acc + discussion.notes.filter((note) => !note.system && !note.placeholder).length,
     0,
   );
+}
 
-// Returns the list of discussion IDs ordered according to given parameter
-// @param {Boolean} diffOrder - is ordered by diff?
-export const unresolvedDiscussionsIdsOrdered = (state, getters) => (diffOrder) => {
-  if (diffOrder) {
-    return getters.unresolvedDiscussionsIdsByDiff;
-  }
-  return getters.unresolvedDiscussionsIdsByDate;
-};
+export function unresolvedDiscussionsIdsOrdered() {
+  return (diffOrder) => {
+    if (diffOrder) {
+      return this.unresolvedDiscussionsIdsByDiff;
+    }
+    return this.unresolvedDiscussionsIdsByDate;
+  };
+}
 
-// Checks if a given discussion is the last in the current order (diff or date)
-// @param {Boolean} discussionId - id of the discussion
-// @param {Boolean} diffOrder - is ordered by diff?
-export const isLastUnresolvedDiscussion = (state, getters) => (discussionId, diffOrder) => {
-  const idsOrdered = getters.unresolvedDiscussionsIdsOrdered(diffOrder);
-  const lastDiscussionId = idsOrdered[idsOrdered.length - 1];
+export function isLastUnresolvedDiscussion() {
+  return (discussionId, diffOrder) => {
+    const idsOrdered = this.unresolvedDiscussionsIdsOrdered(diffOrder);
+    const lastDiscussionId = idsOrdered[idsOrdered.length - 1];
 
-  return lastDiscussionId === discussionId;
-};
+    return lastDiscussionId === discussionId;
+  };
+}
 
-export const findUnresolvedDiscussionIdNeighbor =
-  (state, getters) =>
-  ({ discussionId, diffOrder, step }) => {
-    const diffIds = getters.unresolvedDiscussionsIdsOrdered(diffOrder);
-    const dateIds = getters.unresolvedDiscussionsIdsOrdered(false);
+export function findUnresolvedDiscussionIdNeighbor() {
+  return ({ discussionId, diffOrder, step }) => {
+    const diffIds = this.unresolvedDiscussionsIdsOrdered(diffOrder);
+    const dateIds = this.unresolvedDiscussionsIdsOrdered(false);
     const ids = diffIds.length ? diffIds : dateIds;
     const index = ids.indexOf(discussionId) + step;
 
@@ -323,53 +319,57 @@ export const findUnresolvedDiscussionIdNeighbor =
 
     return ids[index];
   };
+}
 
-// Gets the ID of the discussion following the one provided, respecting order (diff or date)
-// @param {Boolean} discussionId - id of the current discussion
-// @param {Boolean} diffOrder - is ordered by diff?
-export const nextUnresolvedDiscussionId = (state, getters) => (discussionId, diffOrder) =>
-  getters.findUnresolvedDiscussionIdNeighbor({ discussionId, diffOrder, step: 1 });
+export function nextUnresolvedDiscussionId() {
+  return (discussionId, diffOrder) =>
+    this.findUnresolvedDiscussionIdNeighbor({ discussionId, diffOrder, step: 1 });
+}
 
-export const previousUnresolvedDiscussionId = (state, getters) => (discussionId, diffOrder) =>
-  getters.findUnresolvedDiscussionIdNeighbor({ discussionId, diffOrder, step: -1 });
+export function previousUnresolvedDiscussionId() {
+  return (discussionId, diffOrder) =>
+    this.findUnresolvedDiscussionIdNeighbor({ discussionId, diffOrder, step: -1 });
+}
 
-// @param {Boolean} diffOrder - is ordered by diff?
-export const firstUnresolvedDiscussionId = (state, getters) => (diffOrder) => {
-  if (diffOrder) {
-    return getters.unresolvedDiscussionsIdsByDiff[0];
-  }
-  return getters.unresolvedDiscussionsIdsByDate[0];
-};
-
-export const getDiscussion = (state) => (discussionId) =>
-  state.discussions.find((discussion) => discussion.id === discussionId);
-
-// this should've never been a getter
-// export const commentsDisabled = (state) => state.commentsDisabled;
-
-export const suggestionsCount = (state, getters) =>
-  Object.values(getters.notesById).filter((n) => n.suggestions?.length).length;
-
-// eslint-disable-next-line max-params
-export const hasDrafts = (state, getters, rootState, rootGetters) =>
-  Boolean(rootGetters['batchComments/hasDrafts']);
-
-export const getSuggestionsFilePaths = (state) => () =>
-  state.batchSuggestionsInfo.reduce((acc, suggestion) => {
-    const discussion = state.discussions.find((d) => d.id === suggestion.discussionId);
-
-    if (acc.indexOf(discussion?.diff_file?.file_path) === -1) {
-      acc.push(discussion.diff_file.file_path);
+export function firstUnresolvedDiscussionId() {
+  return (diffOrder) => {
+    if (diffOrder) {
+      return this.unresolvedDiscussionsIdsByDiff[0];
     }
+    return this.unresolvedDiscussionsIdsByDate[0];
+  };
+}
 
-    return acc;
-  }, []);
+export function getDiscussion() {
+  return (discussionId) => this.discussions.find((discussion) => discussion.id === discussionId);
+}
 
-export const getFetchDiscussionsConfig = (state, getters) => {
-  const defaultConfig = { path: getters.getNotesDataByProp('discussionsPath') };
+export function suggestionsCount() {
+  return Object.values(this.notesById).filter((n) => n.suggestions?.length).length;
+}
+
+export function hasDrafts() {
+  return Boolean(useBatchComments().hasDrafts);
+}
+
+export function getSuggestionsFilePaths() {
+  return () =>
+    this.batchSuggestionsInfo.reduce((acc, suggestion) => {
+      const discussion = this.discussions.find((d) => d.id === suggestion.discussionId);
+
+      if (acc.indexOf(discussion?.diff_file?.file_path) === -1) {
+        acc.push(discussion.diff_file.file_path);
+      }
+
+      return acc;
+    }, []);
+}
+
+export function getFetchDiscussionsConfig() {
+  const defaultConfig = { path: this.getNotesDataByProp('discussionsPath') };
 
   const currentFilter =
-    getters.getNotesDataByProp('notesFilter') || constants.DISCUSSION_FILTERS_DEFAULT_VALUE;
+    this.getNotesDataByProp('notesFilter') || constants.DISCUSSION_FILTERS_DEFAULT_VALUE;
 
   if (
     doesHashExistInUrl(constants.NOTE_UNDERSCORE) &&
@@ -382,8 +382,8 @@ export const getFetchDiscussionsConfig = (state, getters) => {
     };
   }
   return defaultConfig;
-};
+}
 
-export const allDiscussionsExpanded = (state) => {
-  return state.discussions.every((discussion) => discussion.expanded);
-};
+export function allDiscussionsExpanded() {
+  return this.discussions.every((discussion) => discussion.expanded);
+}
