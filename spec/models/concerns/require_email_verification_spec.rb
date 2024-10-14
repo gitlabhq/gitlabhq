@@ -67,7 +67,7 @@ RSpec.describe RequireEmailVerification, feature_category: :insider_threat do
 
       context 'when failed_attempts is GTE Devise default amount' do
         before do
-          instance.failed_attempts = 10
+          instance.failed_attempts = instance.class.maximum_attempts
         end
 
         it { is_expected.to eq(true) }
@@ -87,7 +87,7 @@ RSpec.describe RequireEmailVerification, feature_category: :insider_threat do
 
       context 'when locked longer ago than Devise default time but shorter ago than overriden time' do
         before do
-          instance.locked_at = 11.minutes.ago
+          instance.locked_at = (instance.class.unlock_in + 1.minute).ago
         end
 
         it { is_expected.to eq(!overridden) }

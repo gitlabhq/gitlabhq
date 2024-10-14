@@ -666,7 +666,7 @@ RSpec.describe Ci::RunnerManager, feature_category: :fleet_visibility, type: :mo
     end
   end
 
-  describe '#set_runner_type_and_sharding_key_id' do
+  describe '#copy_runner_fields' do
     let(:runner_manager) { build(:ci_runner_machine, runner: runner) }
 
     before do
