@@ -209,6 +209,13 @@ module Import
             model: Timelog,
             columns: { "user_id" => "user_id" }
           }
+        },
+        "WorkItem" => {
+          1 => {
+            model: WorkItem,
+            columns: { "author_id" => "author_id", "updated_by_id" => "updated_by_id",
+                       "closed_by_id" => "closed_by_id", "last_edited_by_id" => "last_edited_by_id" }
+          }
         }
       }.freeze
 

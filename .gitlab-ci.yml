@@ -185,7 +185,7 @@ variables:
   BUNDLE_FROZEN: "true"
   BUNDLE_GEMFILE: Gemfile
   # we override the max_old_space_size to prevent OOM errors
-  NODE_OPTIONS: --max_old_space_size=5120
+  NODE_OPTIONS: --max-old-space-size=10240
   GIT_DEPTH: "20"
   # 'GIT_STRATEGY: clone' optimizes the pack-objects cache hit ratio
   GIT_STRATEGY: "clone"

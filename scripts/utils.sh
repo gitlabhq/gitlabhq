@@ -480,13 +480,38 @@ function define_trigger_branch_in_build_env() {
 }
 
 function log_disk_usage() {
-  local collapsed="${1:-true}"
-  section_start "log_disk_usage" "Disk usage" "${collapsed}"
+  local exit_on_low_space="${1:-false}"
+  local space_threshold_gb=2 # 2GB
 
+  available_space=$(df -h | awk 'NR==2 {print $4}') # value at the 2nd row 4th column of the df -h output
+
+  echo "*******************************************************"
+  echo "This runner currently has ${available_space} free disk space."
+  echo "*******************************************************"
+
+  section_start "log_disk_usage" "Disk usage detail" "true"
   echo -e "df -h"
   df -h
 
   echo -e "du -h -d 1"
   du -h -d 1
   section_end "log_disk_usage"
+
+  if [[ "$exit_on_low_space" = "true" ]]; then
+
+    if [[ $OSTYPE == 'darwin'* ]]; then
+      available_space_gb=$(df -g | awk 'NR==2 {print $4}')
+    else
+      available_space_gb=$(df -BG | awk 'NR==2 {print $4}' | sed 's/G//')
+    fi
+
+    if (( $(echo "$available_space_gb < $space_threshold_gb") )); then
+      echo "********************************************************************"
+      echo "This job requires ${space_threshold_gb}G free disk space, but the runner only has ${available_space}."
+      echo "Exiting now in anticipation of a 'no space left on device' error."
+      echo "If this problem persists, please contact #g_hosted_runners team."
+      echo "********************************************************************"
+      exit 111
+    fi
+  fi
 }

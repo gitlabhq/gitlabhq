@@ -73,7 +73,7 @@ instance:
     - .qa
   variables:
     QA_SCENARIO: Test::Instance::Image
-    QA_RUN_IN_PARALLEL: true
+    QA_RUN_IN_PARALLEL: false
   rules:
     - !reference [.rules:test:smoke-for-omnibus-mr, rules]
     - !reference [.rules:test:feature-flags-set, rules]  # always run instance to validate ff change

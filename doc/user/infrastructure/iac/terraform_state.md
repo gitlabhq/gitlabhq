@@ -18,18 +18,12 @@ With Terraform remote [backends](https://www.terraform.io/language/settings/back
 you can store the state file in a remote and shared store.
 
 GitLab provides a [Terraform HTTP backend](https://www.terraform.io/language/settings/backends/http)
-to securely store your state files with minimal configuration.
-
-In GitLab, you can:
-
-- Version your Terraform state files.
-- Encrypt the state file both in transit and at rest.
-- Lock and unlock states.
-- Remotely execute `terraform plan` and `terraform apply` commands.
+to securely store your state files with minimal configuration. 
+The Terraform state backend provides automatic versioning and encryption of the sate files managed by the GitLab instance.
 
 WARNING:
 **Disaster recovery planning**
-Terraform state files are encrypted with the lockbox Ruby gem when they are at rest on disk and in object storage.
+Terraform state files are encrypted with the lockbox Ruby gem when they are at rest on disk and in object storage with a key derived from the [db_key_base application setting](../../../development/application_secrets.md#secret-entries).
 [To decrypt a state file, GitLab must be available](https://gitlab.com/gitlab-org/gitlab/-/issues/335739).
 If it is offline, and you use GitLab to deploy infrastructure that GitLab requires (like virtual machines,
 Kubernetes clusters, or network components), you cannot access the state file easily or decrypt it.

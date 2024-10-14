@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# rubocop:disable BackgroundMigration/DictionaryFile -- There is no corresponding BBM dictionary,
+# as the original BBM is still in place.
 class RequeueBackfillPCiRunnerMachineBuildsProjectId < Gitlab::Database::Migration[2.2]
   milestone '17.5'
   restrict_gitlab_migration gitlab_schema: :gitlab_ci
@@ -32,3 +34,4 @@ class RequeueBackfillPCiRunnerMachineBuildsProjectId < Gitlab::Database::Migrati
     delete_batched_background_migration(MIGRATION, TABLE_NAME, BATCH_COLUMN, JOB_ARGS)
   end
 end
+# rubocop:enable BackgroundMigration/DictionaryFile

@@ -8,7 +8,6 @@ class ApplicationSetting < ApplicationRecord
   include IgnorableColumns
   include Sanitizable
 
-  ignore_column :sign_in_text_html, remove_with: '17.5', remove_after: '2024-10-17'
   ignore_columns %i[
     encrypted_openai_api_key
     encrypted_openai_api_key_iv

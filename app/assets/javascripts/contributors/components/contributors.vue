@@ -5,11 +5,11 @@ import { debounce, uniq } from 'lodash';
 // eslint-disable-next-line no-restricted-imports
 import { mapActions, mapState, mapGetters } from 'vuex';
 import { visitUrl } from '~/lib/utils/url_utility';
-import { getDatesInRange } from '~/lib/utils/datetime_utility';
+import { getDatesInRange, toISODateFormat } from '~/lib/utils/datetime_utility';
 import { __ } from '~/locale';
 import RefSelector from '~/ref/components/ref_selector.vue';
 import { REF_TYPE_BRANCHES, REF_TYPE_TAGS } from '~/ref/constants';
-import { xAxisLabelFormatter, dateFormatter } from '../utils';
+import { xAxisLabelFormatter } from '../utils';
 import { MASTER_CHART_HEIGHT } from '../constants';
 import ContributorAreaChart from './contributor_area_chart.vue';
 import IndividualChart from './individual_chart.vue';
@@ -136,7 +136,7 @@ export default {
       const firstContributionDate = new Date(dates[0]);
       const lastContributionDate = new Date(dates[dates.length - 1]);
 
-      return getDatesInRange(firstContributionDate, lastContributionDate, dateFormatter);
+      return getDatesInRange(firstContributionDate, lastContributionDate, toISODateFormat);
     },
     firstContributionDate() {
       return this.xAxisRange[0];

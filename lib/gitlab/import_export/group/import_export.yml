@@ -66,6 +66,7 @@ excluded_attributes:
     - :max_pages_size
   epics:
     - :state_id
+    - :assignee_id
   iterations_cadence: &iterations_cadence_definition
     - :id
     - :next_run_date

@@ -1,6 +1,5 @@
 /* eslint-disable @gitlab/require-i18n-strings */
-import { getDatesInRange } from '~/lib/utils/datetime_utility';
-import { dateFormatter } from '../utils';
+import { getDatesInRange, toISODateFormat } from '~/lib/utils/datetime_utility';
 import Contributors from './contributors.vue';
 
 export const getMasterChartOptions = () => ({
@@ -22,7 +21,7 @@ export const getMasterChartData = (parsedData) => {
   const firstContributionDate = new Date(dates[0]);
   const lastContributionDate = new Date(dates[dates.length - 1]);
 
-  const xAxisRange = getDatesInRange(firstContributionDate, lastContributionDate, dateFormatter);
+  const xAxisRange = getDatesInRange(firstContributionDate, lastContributionDate, toISODateFormat);
 
   const data = {};
   xAxisRange.forEach((date) => {
@@ -43,7 +42,7 @@ export const generateRawData = (count, contributors = 3) => {
   for (let i = 0; i < Math.ceil(count / 2); i += 1) {
     const dateToAdd = new Date();
     dateToAdd.setDate(dateToAdd.getDate() - i);
-    dates.push(dateFormatter(dateToAdd));
+    dates.push(toISODateFormat(dateToAdd));
   }
 
   for (let i = 0; i < count; i += 1) {

@@ -29724,6 +29724,8 @@ CREATE INDEX index_merge_request_diffs_on_project_id ON merge_request_diffs USIN
 
 CREATE UNIQUE INDEX index_merge_request_diffs_on_unique_merge_request_id ON merge_request_diffs USING btree (merge_request_id) WHERE (diff_type = 2);
 
+CREATE INDEX index_merge_request_merge_schedules_on_merge_after_and_mr_id ON merge_request_merge_schedules USING btree (merge_after, merge_request_id);
+
 CREATE UNIQUE INDEX index_merge_request_merge_schedules_on_merge_request_id ON merge_request_merge_schedules USING btree (merge_request_id);
 
 CREATE INDEX index_merge_request_merge_schedules_on_project_id ON merge_request_merge_schedules USING btree (project_id);

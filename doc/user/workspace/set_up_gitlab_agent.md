@@ -5,11 +5,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 description: "Set up the GitLab agent to create and manage workspaces in a project."
 ---
 
-# Tutorial: Set up the GitLab agent
+# Tutorial: Set up the GitLab agent for workspaces
 
 This tutorial shows you how to set up the GitLab agent so users
-can create and manage workspaces in a project.
-For this tutorial, the following hierarchy is used:
+can create and manage workspaces in a project. For this tutorial, the following hierarchy is used:
 
 ```mermaid
 %%{init: {'theme':'neutral'}}%%
@@ -39,6 +38,7 @@ To set up the GitLab agent, you're going to:
 
 ## Prerequisites
 
+- GitLab agent must be [installed](../clusters/agent/install/index.md) and [configured](gitlab_agent_configuration.md).
 - You must [set up workspace infrastructure](configuration.md#set-up-workspace-infrastructure).
 - You must have administrator access to the instance or the Owner role for the group.
 

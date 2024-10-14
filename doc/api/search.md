@@ -41,6 +41,7 @@ GET /search
 | `order_by`    | string   | No | Allowed values are `created_at` only. If not set, results are sorted by `created_at` in descending order for basic search, or by the most relevant documents for advanced search.|
 | `sort`    | string   | No | Allowed values are `asc` or `desc` only. If not set, results are sorted by `created_at` in descending order for basic search, or by the most relevant documents for advanced search.|
 | `state`       | string   | No | Filter by state. Supports `issues` and `merge_requests` scopes; other scopes are ignored. |
+| `fields` | array of strings | No | Array of fields you wish to search, allowed values are `title` only. Supports `merge_requests` scope; other scopes are ignored. Premium and Ultimate only. |
 
 ### Scope: `projects`
 
