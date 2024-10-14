@@ -32,9 +32,7 @@ module Packages
             'created' => package_file.created_at.utc.strftime('%Y-%m-%dT%H:%M:%S.%NZ'),
             'digest' => package_file.file_sha256,
             'urls' => ["charts/#{package_file.file_name}"]
-          }).tap do |metadata|
-            metadata['appVersion'] = format('"%s"', metadata['appVersion']) if metadata.key?('appVersion')
-          end
+          })
         end
 
         result

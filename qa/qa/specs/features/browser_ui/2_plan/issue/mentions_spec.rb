@@ -3,7 +3,9 @@
 module QA
   RSpec.describe 'Plan', :smoke, product_group: :project_management do
     describe 'mention' do
-      let(:user) { create(:user) }
+      let(:user) do
+        Resource::User.fabricate_or_use(Runtime::Env.gitlab_qa_username_1, Runtime::Env.gitlab_qa_password_1)
+      end
 
       let(:project) do
         Resource::Project.fabricate_via_api_unless_fips! do |project|
@@ -36,10 +38,6 @@ module QA
         else
           create(:issue, project: project).visit!
         end
-      end
-
-      after do
-        user.remove_via_api!
       end
 
       it 'mentions another user in an issue',

@@ -15,7 +15,9 @@ module QA
           ))
       end
 
-      let(:dev_user) { create(:user) }
+      let(:dev_user) do
+        Resource::User.fabricate_or_use(Runtime::Env.gitlab_qa_username_1, Runtime::Env.gitlab_qa_password_1)
+      end
 
       before do
         project.add_member(dev_user)
@@ -30,10 +32,6 @@ module QA
 
         Flow::Login.sign_in
         merge_request.visit!
-      end
-
-      after do
-        dev_user.remove_via_api!
       end
 
       it 'applies a single suggestion with a custom message',

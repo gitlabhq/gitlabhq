@@ -3,11 +3,15 @@
 module QA
   RSpec.describe 'Data Stores' do
     describe 'Project owner permissions', :smoke, product_group: :tenant_scale do
-      let!(:owner) { create(:user) }
+      let!(:owner) do
+        Resource::User.fabricate_or_use(Runtime::Env.gitlab_qa_username_1, Runtime::Env.gitlab_qa_password_1)
+      end
 
       let!(:owner_api_client) { Runtime::API::Client.new(:gitlab, user: owner) }
 
-      let!(:maintainer) { create(:user) }
+      let!(:maintainer) do
+        Resource::User.fabricate_or_use(Runtime::Env.gitlab_qa_username_2, Runtime::Env.gitlab_qa_password_2)
+      end
 
       shared_examples 'adds user as owner' do |project_type, testcase|
         let!(:issue) do

@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlFormGroup, GlModal } from '@gitlab/ui';
+import { GlButton, GlFormGroup, GlModal, GlTooltipDirective } from '@gitlab/ui';
 import { uniqueId } from 'lodash';
 import PasswordInput from '~/authentication/password/components/password_input.vue';
 import csrf from '~/lib/utils/csrf';
@@ -18,10 +18,18 @@ export default {
     },
   },
   components: { GlButton, GlFormGroup, GlModal, PasswordInput },
+  directives: {
+    GlTooltip: GlTooltipDirective,
+  },
   props: {
     buttonText: {
       type: String,
       required: true,
+    },
+    icon: {
+      type: String,
+      required: false,
+      default: null,
     },
     message: {
       type: String,
@@ -111,7 +119,17 @@ export default {
       </form>
     </gl-modal>
 
-    <gl-button :variant="variant" data-testid="2fa-action-button" block @click="showModal">
+    <gl-button
+      v-if="icon"
+      v-gl-tooltip
+      :title="buttonText"
+      :aria-label="buttonText"
+      :variant="variant"
+      :icon="icon"
+      data-testid="2fa-action-button"
+      @click="showModal"
+    />
+    <gl-button v-else :variant="variant" data-testid="2fa-action-button" block @click="showModal">
       {{ buttonText }}
     </gl-button>
   </div>

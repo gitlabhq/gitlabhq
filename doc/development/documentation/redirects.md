@@ -85,34 +85,43 @@ To redirect a page to another page in the same repository:
 
 1. If the page had images that aren't used on any other pages, delete them.
 
-After your changes are committed, search for and update all links that point to the old file:
+### Update links in other repositories
 
-- In <https://gitlab.com/gitlab-com/www-gitlab-com>, search for full URLs:
+After your changes are committed, search for and update all other repositories that
+might link to the old file:
 
-  ```shell
-  grep -r "docs.gitlab.com/ee/path/to/file.html" .
-  ```
+1. In <https://gitlab.com/gitlab-com/www-gitlab-com>, search for full URLs:
 
-- In <https://gitlab.com/gitlab-org/gitlab-docs/-/tree/main/content/_data>,
-  search the navigation bar configuration files for the path with `.html`:
-
-  ```shell
-  grep -r "path/to/file.html" .
+   ```shell
+   grep -r "docs.gitlab.com/ee/path/to/file.html" .
    ```
 
-- In [all of the doc projects](site_architecture/index.md#source-files), search for links in the docs
-  and codebase. Search for all variations, including full URL and just the path.
-  For example, go to the root directory of the `gitlab` project and run:
+1. In <https://gitlab.com/gitlab-org/gitlab-docs/-/tree/main/content/_data>,
+   search the navigation bar configuration files for the path with `.html`:
 
-  ```shell
-  grep -r "docs.gitlab.com/ee/path/to/file.html" .
-  grep -r "path/to/file.html" .
-  grep -r "path/to/file.md" .
-  grep -r "path/to/file" .
-  ```
+   ```shell
+   grep -r "path/to/file.html" .
+    ```
 
-  You might need to try variations of relative links, such as `../path/to/file` or
-  `../file` to find every case.
+1. In [all of the doc projects](site_architecture/index.md#source-files), search for links in the docs
+   and codebase. Search for all variations, including full URL and just the path.
+   For example, go to the root directory of the `gitlab` project and run:
+
+   ```shell
+   grep -r "docs.gitlab.com/ee/path/to/file.html" .
+   grep -r "path/to/file.html" .
+   grep -r "path/to/file.md" .
+   grep -r "path/to/file" .
+   ```
+
+   You might need to try variations of relative links, such as `../path/to/file` or
+   `../file` to find every case.
+
+1. In <https://gitlab.com/gitlab-org/customers-gitlab-com>, search for full URLs:
+
+   ```shell
+   grep -r "docs.gitlab.com/ee/path/to/file.html" .
+   ```
 
 ### Move a file's location
 

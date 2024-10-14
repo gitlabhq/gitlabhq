@@ -9,4 +9,5 @@ description: Used to store credentials and configuration of external projects wh
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/7d98c8842d6bc9b14fb410f028db7ab651961b42
 milestone: '7.10'
 gitlab_schema: gitlab_main_cell
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/463854
+sharding_key:
+   project_id: projects

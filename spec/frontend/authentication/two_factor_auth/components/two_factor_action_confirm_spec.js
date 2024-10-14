@@ -1,4 +1,5 @@
 import { GlFormGroup, GlModal } from '@gitlab/ui';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import TwoFactorActionConfirm from '~/authentication/two_factor_auth/components/two_factor_action_confirm.vue';
 import PasswordInput from '~/authentication/password/components/password_input.vue';
@@ -17,6 +18,9 @@ describe('TwoFactorActionConfirm', () => {
 
   const createComponent = (options = {}, mount = shallowMountExtended) => {
     wrapper = mount(TwoFactorActionConfirm, {
+      directives: {
+        GlTooltip: createMockDirective('gl-tooltip'),
+      },
       propsData: {
         ...defaultProps,
         ...options,
@@ -54,6 +58,46 @@ describe('TwoFactorActionConfirm', () => {
 
       it('renders the modal when button is clicked', async () => {
         createComponent({}, mountExtended);
+        expect(findModal().props('visible')).toBe(false);
+
+        await findButton().trigger('click');
+
+        expect(findModal().props('visible')).toBe(true);
+      });
+    });
+
+    describe('when icon button', () => {
+      const icon = 'remove';
+
+      beforeEach(() => {
+        createComponent({ icon });
+      });
+
+      it('renders icon with aria-label and title', () => {
+        expect(findButton().props('icon')).toBe(icon);
+        expect(findButton().attributes('aria-label')).toBe(defaultProps.buttonText);
+        expect(findButton().attributes('title')).toBe(defaultProps.buttonText);
+      });
+
+      it('checks that tooltip is displayed', () => {
+        const buttonTooltipDirective = getBinding(findButton().element, 'gl-tooltip');
+
+        expect(buttonTooltipDirective).toBeDefined();
+      });
+
+      it('renders default `danger` variant', () => {
+        expect(findButton().props('variant')).toBe('danger');
+      });
+
+      it('renders custom variant', () => {
+        const variant = 'confirm';
+        createComponent({ icon, variant });
+
+        expect(findButton().props('variant')).toBe(variant);
+      });
+
+      it('renders the modal when button is clicked', async () => {
+        createComponent({ icon }, mountExtended);
         expect(findModal().props('visible')).toBe(false);
 
         await findButton().trigger('click');

@@ -82,7 +82,7 @@ export const initClose2faSuccessMessage = () => {
 
 export const initTwoFactorConfirm = () => {
   document.querySelectorAll('.js-two-factor-action-confirm').forEach((el) => {
-    const { buttonText, classes, message, method, passwordRequired, path, title, variant } =
+    const { buttonText, classes, icon, message, method, passwordRequired, path, title, variant } =
       el.dataset;
 
     // eslint-disable-next-line no-new
@@ -93,6 +93,7 @@ export const initTwoFactorConfirm = () => {
           props: {
             buttonText,
             classes,
+            icon,
             message,
             method,
             passwordRequired: parseBoolean(passwordRequired),

@@ -231,7 +231,6 @@ FactoryBot.define do
         sequence(:package_version) { |n| package&.version || "v#{n}" }
         channel { 'stable' }
         description { nil }
-        app_version { nil }
       end
 
       after :create do |package_file, evaluator|
@@ -239,8 +238,7 @@ FactoryBot.define do
           create :helm_file_metadatum,
             package_file: package_file,
             channel: evaluator.channel,
-            description: evaluator.description,
-            app_version: evaluator.app_version
+            description: evaluator.description
         end
       end
     end

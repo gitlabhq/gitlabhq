@@ -3,16 +3,12 @@
 module QA
   RSpec.describe 'Create', :orchestrated, :repository_storage, :requires_admin, product_group: :source_code do
     describe 'Gitaly repository storage' do
-      let(:user) { create(:user) }
+      let(:user) { Resource::User.fabricate_or_use(Runtime::Env.gitlab_qa_username_1, Runtime::Env.gitlab_qa_password_1) }
       let(:parent_project) { create(:project, :with_readme, name: 'parent-project') }
       let(:fork_project) { create(:fork, user: user, upstream: parent_project).project }
 
       before do
         parent_project.add_member(user)
-      end
-
-      after do
-        user.remove_via_api!
       end
 
       it 'creates a 2nd fork after moving the parent project',

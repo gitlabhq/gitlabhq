@@ -473,6 +473,20 @@ RSpec.describe AuthHelper, feature_category: :system_access do
     end
   end
 
+  describe '#delete_webauthn_device_data' do
+    let(:path) { 'test/path' }
+
+    it 'returns data to delete a WebAuthn device' do
+      expect(helper.delete_webauthn_device_data(path)).to match(a_hash_including({
+        button_text: _('Delete WebAuthn device'),
+        icon: 'remove',
+        message: _('Are you sure you want to delete this WebAuthn device?'),
+        path: path,
+        password_required: 'false'
+      }))
+    end
+  end
+
   describe '#disable_two_factor_authentication_data' do
     context 'when password is required' do
       it 'returns data to disable two-factor authentication' do

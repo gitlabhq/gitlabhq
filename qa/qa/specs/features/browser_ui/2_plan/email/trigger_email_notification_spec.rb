@@ -5,16 +5,14 @@ module QA
     describe 'Email Notification' do
       include Support::API
 
-      let!(:user) { create(:user) }
+      let!(:user) do
+        Resource::User.fabricate_or_use(Runtime::Env.gitlab_qa_username_1, Runtime::Env.gitlab_qa_password_1)
+      end
 
       let(:project) { create(:project, name: 'email-notification-test') }
 
       before do
         Flow::Login.sign_in
-      end
-
-      after do
-        user.remove_via_api!
       end
 
       it 'is received by a user for project invitation', :blocking, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347961' do
