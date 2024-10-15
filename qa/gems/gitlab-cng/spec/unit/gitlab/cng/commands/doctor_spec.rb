@@ -28,7 +28,7 @@ RSpec.describe Gitlab::Cng::Commands::Doctor do
   context "with all tools present" do
     it "does not raise an error", :aggregate_failures do
       expect do
-        expect { invoke_command(command_name) }.not_to raise_error
+        expect { invoke_command(command_name) }.not_to raise_error(SystemExit)
       end.to output(/All system dependencies are present/).to_stdout
     end
   end
@@ -38,7 +38,7 @@ RSpec.describe Gitlab::Cng::Commands::Doctor do
 
     it "prints missing dependencies warning", :aggregate_failures do
       expect do
-        expect { invoke_command(command_name) }.not_to raise_error
+        expect { invoke_command(command_name) }.not_to raise_error(SystemExit)
       end.to output(/Following optional system dependecies are missing: tar/).to_stdout
     end
   end

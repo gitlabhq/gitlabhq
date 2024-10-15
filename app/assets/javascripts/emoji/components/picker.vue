@@ -101,8 +101,10 @@ export default {
       }
     },
     onSearchInput() {
-      this.$refs.virtualScoller.setScrollTop(0);
-      this.$refs.virtualScoller.forceRender();
+      if (this.$refs.virtualScoller) {
+        this.$refs.virtualScoller.setScrollTop(0);
+        this.$refs.virtualScoller.forceRender();
+      }
     },
     async onScroll(event, { offset }) {
       const categories = await getEmojiCategories();
@@ -111,8 +113,6 @@ export default {
     },
     onShow() {
       this.isVisible = true;
-      this.$refs.searchValue.focusInput();
-
       this.$emit('shown');
     },
     onHide() {
@@ -166,7 +166,7 @@ export default {
         </gl-button>
       </template>
 
-      <template #header>
+      <template v-if="isVisible" #header>
         <gl-search-box-by-type
           ref="searchValue"
           v-model="searchValue"
@@ -180,6 +180,7 @@ export default {
       </template>
 
       <div
+        v-if="isVisible"
         v-show="!searchValue"
         class="award-list gl-flex gl-border-b-1 gl-border-gray-100 gl-border-b-solid"
       >

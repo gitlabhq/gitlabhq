@@ -33,6 +33,20 @@ GitLab Duo inline in your current file.
 
 To learn more, see the [documentation for Code Suggestions](../../user/project/repository/code_suggestions/index.md).
 
+### Configure more languages for Code Suggestions
+
+To add more languages to Code Suggestions:
+
+1. Find your desired language in the list of
+   [language identifiers](https://code.visualstudio.com/docs/languages/identifiers#_known-language-identifiers)
+   for VS Code. You need the **Identifier** for a later step.
+1. In VS Code, open the extension settings for **GitLab Workflow**:
+   1. On the top bar, go to **Code > Settings > Extensions**.
+   1. Search for **GitLab Workflow** in the list, then select **Manage** (**{settings}**) **> Extension Settings**.
+   1. In your **User** settings, find
+      **GitLab › Duo Code Suggestions: Additional Languages** and select **Add Item**.
+1. In **Item**, add the language identifier, and select **OK**.
+
 ## Set up the GitLab Workflow extension
 
 This extension requires you to create a GitLab personal access token, and assign it to the extension:
@@ -45,7 +59,7 @@ This extension requires you to create a GitLab personal access token, and assign
       - When manually adding an instance to **URL to GitLab instance**, paste the full URL to your
         GitLab instance, including the `http://` or `https://`. Press <kbd>Enter</kbd> to confirm.
    1. For `GitLab.com`, you can use the OAuth authentication method.
-   1. If you don't use OAuth, use a personal access token to log in.
+   1. If you don't use OAuth, use a personal access token to sign in.
       - If you have an existing personal access token with `api` scope, select **Enter an existing token** to enter it.
       - If you don't, select **Create a token first**, and the extension opens the token settings page for you.
         If this method fails, follow the instructions to [create a personal access token](../../user/profile/personal_access_tokens.md#create-a-personal-access-token).
@@ -81,20 +95,6 @@ or **Accept Next Line Of Inline Suggestion**:
    or **Accept Next Line Of Inline Suggestion**.
 1. Press <kbd>Enter</kbd> to save your changes.
 
-## Configure more languages for Code Suggestions
-
-To add more languages to Code Suggestions:
-
-1. Find your desired language in the list of
-   [language identifiers](https://code.visualstudio.com/docs/languages/identifiers#_known-language-identifiers)
-   for VS Code. You need the **Identifier** for a later step.
-1. In VS Code, open the extension settings for **GitLab Workflow**:
-   1. On the top bar, go to **Code > Settings > Extensions**.
-   1. Search for **GitLab Workflow** in the list, then select **Manage** (**{settings}**) **> Extension Settings**.
-   1. In your **User** settings, find
-      **GitLab › Duo Code Suggestions: Additional Languages** and select **Add Item**.
-1. In **Item**, add the language identifier, and select **OK**.
-
 ## Integrate with GitLab
 
 This extension brings the GitLab features you use every day directly into your VS Code environment:
@@ -113,6 +113,59 @@ This extension brings the GitLab features you use every day directly into your V
 - [View security findings](https://marketplace.visualstudio.com/items?itemName=gitlab.gitlab-workflow#security-findings).
 
 For detailed information on these features, refer to the [GitLab Workflow extension documentation](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/blob/main/README.md).
+
+## Create a snippet
+
+Create a [snippet](../../user/snippets.md) to store and share bits of code and text with other users.
+Snippets can be a selection or an entire file.
+
+To create a snippet in VS Code:
+
+1. Choose the content for your snippet:
+   - For a **Snippet from file**, open the file.
+   - For a **Snippet from selection**, open the file and select the lines you want to include.
+1. Open the Command Palette:
+   - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+   - For Windows or Linux, press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+1. In the command palette, run the command `GitLab: Create Snippet`.
+1. Select the snippet's privacy level:
+   - **Private** snippets are visible only to project members.
+   - **Public** snippets are visible to everyone.
+1. Select the snippet's scope:
+   - **Snippet from file** uses the entire contents of the active file.
+   - **Snippet from selection** uses the lines you selected in the active file.
+
+GitLab opens the new snippet's page in a new browser tab.
+
+### Create a patch file
+
+When you review a merge request, create a snippet patch when you want to suggest multi-file changes.
+
+1. On your local machine, check out the branch you want to propose changes to.
+1. In VS Code, edit all files you want to change. Do not commit your changes.
+1. Open the Command Palette, enter `GitLab: Create snippet patch`, and select it. This command runs a
+   `git diff` command and creates a GitLab snippet in your project.
+1. Enter a **Patch name** and press <kbd>Enter</kbd>. GitLab uses this name as the
+   snippet title, and converts it into a filename appended with `.patch`.
+1. Select the snippet's privacy level:
+   - **Private** snippets are visible only to project members.
+   - **Public** snippets are visible to everyone.
+
+VS Code opens the snippet patch in a new browser tab. The snippet patch's
+description contains instructions on how to apply the patch.
+
+### Insert a snippet
+
+To insert an existing single-file or [multi-file](../../user/snippets.md#add-or-remove-multiple-files) snippet from a project you are a member of:
+
+1. Place your cursor where you want to insert the snippet.
+1. Open the Command Palette:
+   - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+   - For Windows or Linux, press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+1. Type `GitLab: Insert Snippet` and select it.
+1. Select the project containing your snippet.
+1. Select the snippet to apply.
+1. For a multi-file snippet, select the file to apply.
 
 ## Related topics
 

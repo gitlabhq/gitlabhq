@@ -1,12 +1,10 @@
-- hidden_variables_enabled = (@group.present? && Feature.enabled?(:ci_hidden_variables, @group)) || (@project.present? && Feature.enabled?(:ci_hidden_variables, @project.group))
-
 %p
   = s_('CiVariables|Variables can be accidentally exposed in a job log, or maliciously sent to a third party server. The masked variable feature can help reduce the risk of accidentally exposing variable values, but is not a guaranteed method to prevent malicious users from accessing variables.')
   = link_to _('How can I make my variables more secure?'), help_page_path('ci/variables/index.md', anchor: 'cicd-variable-security'), target: '_blank', rel: 'noopener noreferrer'
 %p
   = s_('CiVariables|Variables can have several attributes.')
   = link_to _('Learn more.'), help_page_path('ci/variables/index.md', anchor: 'define-a-cicd-variable-in-the-ui'), target: '_blank', rel: 'noopener noreferrer'
-- if hidden_variables_enabled
+- if @group.present? || @project.present?
   %ul
     %li
       = safe_format(s_('CiVariables|%{strong_start}Visibility:%{strong_end} Set the visibility level for the value. Can be visible, masked, or masked and hidden.'), tag_pair(tag.strong, :strong_start, :strong_end))

@@ -330,10 +330,7 @@ Different versions of [GitLab Runner](../runners/index.md) have different maskin
 ### Hide a CI/CD variable
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/29674) in GitLab 17.4 [with a flag](../../administration/feature_flags.md) named `ci_hidden_variables`. Enabled by default.
-
-FLAG:
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165843) in GitLab 17.6. Feature flag `ci_hidden_variables` removed.
 
 In addition to masking, you can also prevent the value of CI/CD variables from being revealed
 in the **CI/CD** settings page. Hiding a variable is only possible when creating a new variable,

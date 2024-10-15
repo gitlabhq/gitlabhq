@@ -61,24 +61,6 @@ RSpec.describe API::GroupVariables, feature_category: :secrets_management do
           expect(json_response['environment_scope']).to eq(variable.environment_scope)
           expect(json_response['description']).to be_nil
         end
-
-        context 'and feature flag `ci_hidden_variables is disabled`' do
-          before do
-            stub_feature_flags(ci_hidden_variables: false)
-          end
-
-          it 'returns group variable details without changes' do
-            get api("/groups/#{group.id}/variables/#{variable.key}", user)
-
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(json_response['value']).to eq(variable.value)
-            expect(json_response['protected']).to eq(variable.protected?)
-            expect(json_response['hidden']).to eq(true)
-            expect(json_response['variable_type']).to eq(variable.variable_type)
-            expect(json_response['environment_scope']).to eq(variable.environment_scope)
-            expect(json_response['description']).to be_nil
-          end
-        end
       end
 
       context 'when variable is not hidden' do
@@ -94,24 +76,6 @@ RSpec.describe API::GroupVariables, feature_category: :secrets_management do
           expect(json_response['variable_type']).to eq(variable.variable_type)
           expect(json_response['environment_scope']).to eq(variable.environment_scope)
           expect(json_response['description']).to be_nil
-        end
-
-        context 'and feature flag `ci_hidden_variables is disabled`' do
-          before do
-            stub_feature_flags(ci_hidden_variables: false)
-          end
-
-          it 'returns group variable details' do
-            get api("/groups/#{group.id}/variables/#{variable.key}", user)
-
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(json_response['value']).to eq(variable.value)
-            expect(json_response['protected']).to eq(variable.protected?)
-            expect(json_response['hidden']).to eq(false)
-            expect(json_response['variable_type']).to eq(variable.variable_type)
-            expect(json_response['environment_scope']).to eq(variable.environment_scope)
-            expect(json_response['description']).to be_nil
-          end
         end
       end
 
