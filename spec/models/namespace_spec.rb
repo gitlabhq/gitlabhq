@@ -275,6 +275,72 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     end
   end
 
+  describe 'default values' do
+    context 'organzation_id' do
+      context 'when feature flag namespace_model_default_org is enabled' do
+        context 'and database has a default value' do
+          before do
+            described_class.connection.execute("ALTER TABLE namespaces ALTER COLUMN organization_id SET DEFAULT 100")
+            described_class.reset_column_information
+          end
+
+          after do
+            described_class.connection.execute("ALTER TABLE namespaces ALTER COLUMN organization_id SET DEFAULT 1")
+            described_class.reset_column_information
+          end
+
+          it 'uses value from model' do
+            expect(described_class.new.organization_id).to eq(1)
+          end
+        end
+
+        context 'and database has no default value' do
+          before do
+            described_class.connection.execute("ALTER TABLE namespaces ALTER COLUMN organization_id DROP DEFAULT")
+            described_class.reset_column_information
+          end
+
+          after do
+            described_class.connection.execute("ALTER TABLE namespaces ALTER COLUMN organization_id SET DEFAULT 1")
+            described_class.reset_column_information
+          end
+
+          it 'uses value from model' do
+            expect(described_class.new.organization_id).to eq(1)
+          end
+        end
+      end
+
+      context 'when feature flag namespace_model_default_org is disabled' do
+        before do
+          stub_feature_flags(namespace_model_default_org: false)
+        end
+
+        context 'and database has a default value' do
+          before do
+            described_class.connection.execute("ALTER TABLE namespaces ALTER COLUMN organization_id SET DEFAULT 100")
+            described_class.reset_column_information
+          end
+
+          it 'uses database value' do
+            expect(described_class.new.organization_id).to eq(100)
+          end
+        end
+
+        context 'and database has no default value' do
+          before do
+            described_class.connection.execute("ALTER TABLE namespaces ALTER COLUMN organization_id DROP DEFAULT")
+            described_class.reset_column_information
+          end
+
+          it 'is nil' do
+            expect(described_class.new.organization_id).to be_nil
+          end
+        end
+      end
+    end
+  end
+
   describe "ReferencePatternValidation" do
     subject { described_class.reference_pattern }
 

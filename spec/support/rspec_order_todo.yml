@@ -2984,7 +2984,6 @@
 - './spec/features/frequently_visited_projects_and_groups_spec.rb'
 - './spec/features/gitlab_experiments_spec.rb'
 - './spec/features/global_search_spec.rb'
-- './spec/features/graphiql_spec.rb'
 - './spec/features/graphql_known_operations_spec.rb'
 - './spec/features/groups/activity_spec.rb'
 - './spec/features/groups/board_sidebar_spec.rb'

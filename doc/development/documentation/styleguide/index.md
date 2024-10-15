@@ -456,6 +456,18 @@ To make text bold, wrap it with double asterisks (`**`). For example:
 1. Select **Cancel**.
 ```
 
+When using bold format for UI elements or keywords, place any punctuation outside the bold tag.
+This rule includes periods, commas, colons, and right-angle brackets (`>`).
+
+The punctuation is part of the sentence structure rather than the UI element or keyword that you're emphasizing.
+
+Include punctuation in the bold tag when it's part of the UI element or keyword itself.
+
+For example:
+
+- `**Option**: This an option description.`
+- `Select **Overview** > **Users**.`
+
 ### Inline code
 
 Use inline code for:

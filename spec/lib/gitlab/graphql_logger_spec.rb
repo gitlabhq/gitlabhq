@@ -15,7 +15,7 @@ RSpec.describe Gitlab::GraphqlLogger do
   end
 
   context 'logging a GraphQL query' do
-    let(:query) { File.read(Rails.root.join('spec/fixtures/api/graphql/introspection.graphql')) }
+    let(:query) { CachedIntrospectionQuery.query_string }
 
     it 'logs a query from JSON' do
       analyzer_memo = {

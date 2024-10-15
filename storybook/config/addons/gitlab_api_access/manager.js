@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-restricted-imports
 import React from 'react';
 import { addons, types } from '@storybook/addons';
 import { useAddonState } from '@storybook/api';

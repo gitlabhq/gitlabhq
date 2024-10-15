@@ -44,3 +44,4 @@ gitlab-ctl geo-replication-pause
 
 ```shell
 gitlab-ctl geo-replication-resume
+```

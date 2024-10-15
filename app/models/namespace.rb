@@ -158,6 +158,12 @@ class Namespace < ApplicationRecord
   validate :changing_allow_descendants_override_disabled_shared_runners_is_allowed, unless: -> { project_namespace? }
   validate :parent_organization_match, if: :require_organization?
 
+  attribute :organization_id, :integer, default: -> do
+    return 1 if Feature.enabled?(:namespace_model_default_org)
+
+    columns_hash['organization_id'].default
+  end
+
   delegate :name, to: :owner, allow_nil: true, prefix: true
   delegate :avatar_url, to: :owner, allow_nil: true
   delegate :prevent_sharing_groups_outside_hierarchy, :prevent_sharing_groups_outside_hierarchy=,

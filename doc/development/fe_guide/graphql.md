@@ -1716,8 +1716,7 @@ When [using Vuex](#using-with-vuex), disable the cache when:
   if the data is being cached elsewhere, or if there is no need for it for the given use case.
 
 ```javascript
-import createDefaultClient from '~/lib/graphql';
-import fetchPolicies from '~/graphql_shared/fetch_policy_constants';
+import createDefaultClient, { fetchPolicies } from '~/lib/graphql';
 
 const defaultClient = createDefaultClient(
   {},

@@ -100,7 +100,7 @@ class Key < ApplicationRecord
   def add_to_authorized_keys
     return unless Gitlab::CurrentSettings.authorized_keys_enabled?
 
-    AuthorizedKeysWorker.perform_async(:add_key, shell_id, key)
+    AuthorizedKeysWorker.perform_async('add_key', shell_id, key)
   end
 
   # rubocop: disable CodeReuse/ServiceClass
@@ -112,7 +112,7 @@ class Key < ApplicationRecord
   def remove_from_authorized_keys
     return unless Gitlab::CurrentSettings.authorized_keys_enabled?
 
-    AuthorizedKeysWorker.perform_async(:remove_key, shell_id)
+    AuthorizedKeysWorker.perform_async('remove_key', shell_id)
   end
 
   # rubocop: disable CodeReuse/ServiceClass

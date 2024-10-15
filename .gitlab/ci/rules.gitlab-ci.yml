@@ -1834,8 +1834,6 @@
 
 .qa:rules:e2e:test-on-cng:
   rules:
-    - <<: *if-default-branch-schedule-nightly  # already executed in the 2-hourly schedule
-      when: never
     # TODO: Enable for stable branches once cng is fully enabled in mr pipelines
     - <<: *if-merge-request-targeting-stable-branch
       when: never
@@ -1847,7 +1845,20 @@
     - !reference [".qa:rules:e2e-blocking-base-before", rules]
     - !reference [".prevent-tier-2-and-below", rules]
     - !reference [".qa:rules:e2e-blocking-base-after", rules]
-    - !reference [".qa:rules:e2e-schedule-blocking", rules]
+    - <<: *if-dot-com-gitlab-org-schedule
+      variables:
+        CREATE_TEST_FAILURE_ISSUES: "true"
+        PROCESS_TEST_RESULTS: "true"
+        KNAPSACK_GENERATE_REPORT: "false"
+        QA_SAVE_TEST_METRICS: "true"
+        QA_RUN_IN_PARALLEL: "true"
+    - <<: *if-default-branch-schedule-nightly
+      variables:
+        CREATE_TEST_FAILURE_ISSUES: "true"
+        PROCESS_TEST_RESULTS: "true"
+        KNAPSACK_GENERATE_REPORT: "true"
+        QA_SAVE_TEST_METRICS: "true"
+        QA_RUN_IN_PARALLEL: "false" # disable single job parallelization due to incompatibility with knapsack
 
 .qa:rules:test-on-omnibus-nightly:
   rules:

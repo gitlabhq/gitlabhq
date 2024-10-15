@@ -162,6 +162,9 @@ rules:
           message: 'See our documentation on "Migrating from VueX" for tips on how to avoid adding new VueX stores.'
         - name: '@sentry/browser'
           message: Use "import * as Sentry from '~/sentry/sentry_browser_wrapper';" instead
+      patterns:
+        - group: ['react', 'react-dom/*']
+          message: We do not allow usage of React in our codebase except for the graphql_explorer
   unicorn/prefer-dom-node-dataset:
     - error
   no-unsanitized/method:

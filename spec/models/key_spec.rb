@@ -409,13 +409,13 @@ RSpec.describe Key, :mailer do
         key.save!
 
         # Check after the fact so we have access to Key#id
-        expect(AuthorizedKeysWorker).to have_received(:perform_async).with(:add_key, key.shell_id, key.key)
+        expect(AuthorizedKeysWorker).to have_received(:perform_async).with('add_key', key.shell_id, key.key)
       end
 
       it 'removes key from authorized_file' do
         key.save!
 
-        expect(AuthorizedKeysWorker).to receive(:perform_async).with(:remove_key, key.shell_id)
+        expect(AuthorizedKeysWorker).to receive(:perform_async).with('remove_key', key.shell_id)
 
         key.destroy!
       end
