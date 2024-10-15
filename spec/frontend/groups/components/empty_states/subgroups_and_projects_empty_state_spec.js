@@ -6,12 +6,10 @@ import SubgroupsAndProjectsEmptyState from '~/groups/components/empty_states/sub
 let wrapper;
 
 const defaultProvide = {
-  newProjectIllustration: '/assets/illustrations/project-create-new-sm.svg',
   newProjectPath: '/projects/new?namespace_id=231',
-  newSubgroupIllustration: '/assets/illustrations/group-new.svg',
   newSubgroupPath: '/groups/new?parent_id=231',
   emptyProjectsIllustration: '/assets/illustrations/empty-state/empty-projects-md.svg',
-  emptySubgroupIllustration: '/assets/illustrations/empty-state/empty-subgroup-md.svg',
+  emptySubgroupIllustration: '/assets/illustrations/empty-state/empty-projects-md.svg',
   canCreateSubgroups: true,
   canCreateProjects: true,
 };
@@ -25,28 +23,20 @@ const createComponent = ({ provide = {} } = {}) => {
   });
 };
 
-const findNewSubgroupLink = () =>
-  wrapper.findByRole('link', {
-    name: new RegExp(SubgroupsAndProjectsEmptyState.i18n.withLinks.subgroup.title),
-  });
-const findNewProjectLink = () =>
-  wrapper.findByRole('link', {
-    name: new RegExp(SubgroupsAndProjectsEmptyState.i18n.withLinks.project.title),
-  });
-const findNewSubgroupIllustration = () =>
-  wrapper.findByRole('img', { name: SubgroupsAndProjectsEmptyState.i18n.withLinks.subgroup.title });
-const findNewProjectIllustration = () =>
-  wrapper.findByRole('img', { name: SubgroupsAndProjectsEmptyState.i18n.withLinks.project.title });
+const findNewSubgroupCard = () => wrapper.findByTestId('create-subgroup');
+const findNewProjectCard = () => wrapper.findByTestId('create-project');
 
 describe('SubgroupsAndProjectsEmptyState', () => {
   describe('when user has permission to create a subgroup', () => {
-    it('renders `Create new subgroup` link', () => {
+    it('renders `Create subgroup` card', () => {
       createComponent();
 
-      expect(findNewSubgroupLink().attributes('href')).toBe(defaultProvide.newSubgroupPath);
-      expect(findNewSubgroupIllustration().element.src).toBe(
-        defaultProvide.newSubgroupIllustration,
-      );
+      expect(findNewSubgroupCard().props()).toMatchObject({
+        title: 'Create subgroup',
+        description: 'Use groups to manage multiple projects and members.',
+        icon: 'subgroup',
+        href: defaultProvide.newSubgroupPath,
+      });
     });
   });
 
@@ -54,8 +44,13 @@ describe('SubgroupsAndProjectsEmptyState', () => {
     it('renders `Create new project` link', () => {
       createComponent();
 
-      expect(findNewProjectLink().attributes('href')).toBe(defaultProvide.newProjectPath);
-      expect(findNewProjectIllustration().element.src).toBe(defaultProvide.newProjectIllustration);
+      expect(findNewProjectCard().props()).toMatchObject({
+        title: 'Create project',
+        description:
+          'Use projects to store and access issues, wiki pages, and other GitLab features.',
+        icon: 'project',
+        href: defaultProvide.newProjectPath,
+      });
     });
   });
 
@@ -64,10 +59,13 @@ describe('SubgroupsAndProjectsEmptyState', () => {
       createComponent({ provide: { canCreateSubgroups: false, canCreateProjects: false } });
 
       expect(wrapper.findComponent(GlEmptyState).props()).toMatchObject({
-        title: SubgroupsAndProjectsEmptyState.i18n.withoutLinks.title,
-        description: SubgroupsAndProjectsEmptyState.i18n.withoutLinks.description,
+        title: 'There are no subgroups or projects in this group',
+        description:
+          'You do not have necessary permissions to create a subgroup or project in this group. Please contact an owner of this group to create a new subgroup or project.',
         svgPath: defaultProvide.emptySubgroupIllustration,
       });
+
+      expect(wrapper.findByTestId('empty-subgroup-and-projects-actions').exists()).toBe(false);
     });
   });
 });

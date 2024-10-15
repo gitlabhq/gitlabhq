@@ -117,7 +117,7 @@ they rarely require code reviews:
 1. Generated Go files, including the generated files by protocol buffer compiler.
 
 To mark a file or path as generated, set the `gitlab-generated` attribute for it
-in your [`.gitattributes` file](../git_attributes.md).
+in your [`.gitattributes` file](../repository/files/git_attributes.md).
 
 ### View a collapsed file
 

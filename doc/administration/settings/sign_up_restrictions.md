@@ -143,7 +143,7 @@ DETAILS:
 **Offering:** GitLab.com
 **Status:** Beta
 
-> -Introduced in GitLab 17.5.
+> - Introduced in GitLab 17.5.
 
 This feature is in [beta](../../policy/experiment-beta-support.md).
 

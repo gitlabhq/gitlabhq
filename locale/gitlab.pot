@@ -7754,6 +7754,12 @@ msgstr ""
 msgid "Attempted to update the pipeline trigger token but failed"
 msgstr ""
 
+msgid "Attribute 'container-overrides' is not yet supported"
+msgstr ""
+
+msgid "Attribute 'pod-overrides' is not yet supported"
+msgstr ""
+
 msgid "Audit events"
 msgstr ""
 
@@ -26843,13 +26849,10 @@ msgstr ""
 msgid "GroupsEmptyState|A group is a collection of several projects"
 msgstr ""
 
-msgid "GroupsEmptyState|Create new project"
+msgid "GroupsEmptyState|Create project"
 msgstr ""
 
-msgid "GroupsEmptyState|Create new subgroup"
-msgstr ""
-
-msgid "GroupsEmptyState|Groups are the best way to manage multiple projects and members."
+msgid "GroupsEmptyState|Create subgroup"
 msgstr ""
 
 msgid "GroupsEmptyState|If you organize your projects under a group, it works like a folder. You can manage your group member's permissions and access to each project in the group."
@@ -26858,22 +26861,34 @@ msgstr ""
 msgid "GroupsEmptyState|No groups found"
 msgstr ""
 
-msgid "GroupsEmptyState|No inactive projects."
-msgstr ""
-
 msgid "GroupsEmptyState|No public or internal groups"
-msgstr ""
-
-msgid "GroupsEmptyState|No shared projects."
-msgstr ""
-
-msgid "GroupsEmptyState|No subgroups or projects."
 msgstr ""
 
 msgid "GroupsEmptyState|Projects are where you can store your code, access issues, wiki, and other features of GitLab."
 msgstr ""
 
+msgid "GroupsEmptyState|Projects that are no longer used are displayed here."
+msgstr ""
+
+msgid "GroupsEmptyState|There are no inactive projects in this group"
+msgstr ""
+
+msgid "GroupsEmptyState|There are no shared projects in this group"
+msgstr ""
+
+msgid "GroupsEmptyState|There are no subgroups or projects in this group"
+msgstr ""
+
+msgid "GroupsEmptyState|Use groups to manage multiple projects and members."
+msgstr ""
+
+msgid "GroupsEmptyState|Use projects to store and access issues, wiki pages, and other GitLab features."
+msgstr ""
+
 msgid "GroupsEmptyState|You do not have necessary permissions to create a subgroup or project in this group. Please contact an owner of this group to create a new subgroup or project."
+msgstr ""
+
+msgid "GroupsEmptyState|You will see here all the projects shared with other groups and projects."
 msgstr ""
 
 msgid "GroupsNew|%{groupsLinkStart}Groups%{groupsLinkEnd} and %{subgroupsLinkStart}subgroups%{subgroupsLinkEnd} allow you to manage and collaborate across multiple projects. Members of a group have access to all of its projects."

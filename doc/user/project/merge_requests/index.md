@@ -251,7 +251,7 @@ For a software developer working in a team:
 1. Your manager:
    1. Pushes a commit with their final review.
    1. [Approves the merge request](approvals/index.md).
-   1. Sets it to [auto-merge](merge_when_pipeline_succeeds.md) (formerly **Merge when pipeline succeeds**).
+   1. Sets it to [auto-merge](auto_merge.md) (formerly **Merge when pipeline succeeds**).
 1. Your changes get deployed to production with [manual jobs](../../../ci/jobs/job_control.md#create-a-job-that-must-be-run-manually) for GitLab CI/CD.
 1. Your implementations were successfully shipped to your customer.
 
@@ -396,4 +396,4 @@ Enabling this feature flag moves the notifications and to-do item buttons to the
 - [Comments and threads](../../discussions/index.md)
 - [Suggest code changes](reviews/suggestions.md)
 - [CI/CD pipelines](../../../ci/index.md)
-- [Push options](../push_options.md) for merge requests
+- [Push options](../../../topics/git/commit.md) for merge requests

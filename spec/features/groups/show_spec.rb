@@ -94,15 +94,15 @@ RSpec.describe 'Group show page', feature_category: :groups_and_projects do
           visit path
         end
 
-        it 'shows `Create new subgroup` link' do
+        it 'shows `Create subgroup` link' do
           link = new_group_path(parent_id: group.id, anchor: 'create-group-pane')
 
-          expect(page).to have_link(s_('GroupsEmptyState|Create new subgroup'), href: link)
+          expect(page).to have_link(s_('GroupsEmptyState|Create subgroup'), href: link)
         end
 
-        it 'shows `Create new project` link' do
+        it 'shows `Create project` link' do
           expect(page)
-            .to have_link(s_('GroupsEmptyState|Create new project'), href: new_project_path(namespace_id: group.id))
+            .to have_link(s_('GroupsEmptyState|Create project'), href: new_project_path(namespace_id: group.id))
         end
       end
     end
@@ -169,7 +169,7 @@ RSpec.describe 'Group show page', feature_category: :groups_and_projects do
                      'or project in this group. Please contact an owner of this group to create a ' \
                      'new subgroup or project.')
 
-        expect(page).to have_content(s_('GroupsEmptyState|No subgroups or projects.'))
+        expect(page).to have_content(s_('GroupsEmptyState|There are no subgroups or projects in this group'))
         expect(page).to have_content(content)
       end
     end

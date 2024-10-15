@@ -77,7 +77,7 @@ It offers both server settings and project-specific settings.
   1. In the root directory of your local copy of the repository, run `git lfs install`. This command
      adds:
      - A pre-push Git hook to your repository.
-     - A [`.gitattributes` file](../../../user/project/git_attributes.md) to track
+     - A [`.gitattributes` file](../../../user/project/repository/files/git_attributes.md) to track
        handling for individual files and file types.
   1. Add the files and file types you want to track with Git LFS.
 
@@ -313,4 +313,4 @@ the total size of your repository, see
 - [Git LFS developer information](../../../development/lfs.md)
 - [GitLab Git Large File Storage (LFS) Administration](../../../administration/lfs/index.md) for self-managed instances
 - [Troubleshooting Git LFS](troubleshooting.md)
-- [The `.gitattributes` file](../../../user/project/git_attributes.md)
+- [The `.gitattributes` file](../../../user/project/repository/files/git_attributes.md)

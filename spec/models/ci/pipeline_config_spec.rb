@@ -12,7 +12,7 @@ RSpec.describe Ci::PipelineConfig, type: :model, feature_category: :continuous_i
     include Ci::PartitioningHelpers
 
     let(:pipeline) { create(:ci_pipeline) }
-    let(:pipeline_config) { create(:ci_pipeline_config, pipeline: pipeline) }
+    let(:pipeline_config) { create(:ci_pipeline_config, pipeline: pipeline, project_id: pipeline.project_id) }
 
     before do
       stub_current_partition_id(ci_testing_partition_id)

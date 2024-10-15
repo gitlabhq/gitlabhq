@@ -133,7 +133,7 @@ Configure your project's merge request settings:
 - Enable:
   - [Merge request approvals](../merge_requests/approvals/index.md).
   - [Status checks](../merge_requests/status_checks.md).
-  - [Merge only if pipeline succeeds](../merge_requests/merge_when_pipeline_succeeds.md).
+  - [Merge only if pipeline succeeds](../merge_requests/auto_merge.md).
   - [Merge only when all threads are resolved](../merge_requests/index.md#prevent-merge-unless-all-threads-are-resolved).
   - [Required associated issue from Jira](../../../integration/jira/issues.md#require-associated-jira-issue-for-merge-requests-to-be-merged).
   - [Suggested Reviewers](../merge_requests/reviews/index.md#suggested-reviewers)

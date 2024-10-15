@@ -8976,14 +8976,18 @@ CREATE TABLE ci_pipelines (
 CREATE TABLE p_ci_pipelines_config (
     pipeline_id bigint NOT NULL,
     partition_id bigint NOT NULL,
-    content text NOT NULL
+    content text NOT NULL,
+    project_id bigint,
+    CONSTRAINT check_b2a19dd79a CHECK ((project_id IS NOT NULL))
 )
 PARTITION BY LIST (partition_id);
 
 CREATE TABLE ci_pipelines_config (
     pipeline_id bigint NOT NULL,
     partition_id bigint NOT NULL,
-    content text NOT NULL
+    content text NOT NULL,
+    project_id bigint,
+    CONSTRAINT check_b2a19dd79a CHECK ((project_id IS NOT NULL))
 );
 
 CREATE TABLE ci_project_mirrors (
@@ -27992,6 +27996,10 @@ CREATE INDEX index_batched_jobs_on_batched_migration_id_and_status ON batched_ba
 
 CREATE UNIQUE INDEX index_batched_migrations_on_gl_schema_and_unique_configuration ON batched_background_migrations USING btree (gitlab_schema, job_class_name, table_name, column_name, job_arguments);
 
+CREATE INDEX index_p_ci_pipelines_config_on_project_id ON ONLY p_ci_pipelines_config USING btree (project_id);
+
+CREATE INDEX index_bb7e299984 ON ci_pipelines_config USING btree (project_id);
+
 CREATE INDEX index_board_assignees_on_assignee_id ON board_assignees USING btree (assignee_id);
 
 CREATE UNIQUE INDEX index_board_assignees_on_board_id_and_assignee_id ON board_assignees USING btree (board_id, assignee_id);
@@ -33561,6 +33569,8 @@ ALTER INDEX p_ci_job_artifacts_job_id_file_type_partition_id_idx ATTACH PARTITIO
 ALTER INDEX p_ci_pipelines_ci_ref_id_id_idx ATTACH PARTITION idx_ci_pipelines_artifacts_locked;
 
 ALTER INDEX index_p_ci_builds_on_execution_config_id ATTACH PARTITION index_0928d9f200;
+
+ALTER INDEX index_p_ci_pipelines_config_on_project_id ATTACH PARTITION index_bb7e299984;
 
 ALTER INDEX p_ci_builds_metadata_build_id_idx ATTACH PARTITION index_ci_builds_metadata_on_build_id_and_has_exposed_artifacts;
 

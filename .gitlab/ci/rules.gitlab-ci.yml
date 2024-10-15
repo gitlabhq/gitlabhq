@@ -1852,6 +1852,8 @@
 .qa:rules:test-on-omnibus-nightly:
   rules:
     - !reference [".qa:rules:e2e-test-never-run", rules]
+    - <<: *if-security-schedule
+      when: never
     - <<: *if-default-branch-schedule-nightly
       allow_failure: true
       variables:

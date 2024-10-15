@@ -132,7 +132,7 @@ Git push options can perform actions for merge requests while pushing changes:
 | `merge_request.create`                       | Create a new merge request for the pushed branch. |
 | `merge_request.target=<branch_name>`         | Set the target of the merge request to a particular branch, such as: `git push -o merge_request.target=branch_name`. |
 | `merge_request.target_project=<project>`     | Set the target of the merge request to a particular upstream project, such as: `git push -o merge_request.target_project=path/to/project`. Introduced in [GitLab 16.6](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132475). |
-| `merge_request.merge_when_pipeline_succeeds` | Set the merge request to [merge when its pipeline succeeds](../../user/project/merge_requests/merge_when_pipeline_succeeds.md). |
+| `merge_request.merge_when_pipeline_succeeds` | Set the merge request to [merge when its pipeline succeeds](../../user/project/merge_requests/auto_merge.md). |
 | `merge_request.remove_source_branch`         | Set the merge request to remove the source branch when it's merged. |
 | `merge_request.squash`                       | Set the merge request to squash all commits into a single commit on merge. Introduced in [GitLab 17.2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158778). |
 | `merge_request.title="<title>"`              | Set the title of the merge request. For example: `git push -o merge_request.title="The title I want"`. |
