@@ -2,7 +2,7 @@
 data_category: operational
 key_path: prometheus_metrics_enabled
 description: Whether Prometheus Metrics endpoint is enabled
-product_group: respond
+product_group: platform_insights
 value_type: boolean
 status: active
 time_frame: none

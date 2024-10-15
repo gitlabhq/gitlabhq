@@ -1,7 +1,7 @@
 ---
 key_path: counts.count_total_i_quickactions_convert_to_ticket_weekly
 description: Weekly count of executions of the /convert_to_ticket quickaction on an issue
-product_group: respond
+product_group: platform_insights
 performance_indicator_type: []
 value_type: number
 status: active

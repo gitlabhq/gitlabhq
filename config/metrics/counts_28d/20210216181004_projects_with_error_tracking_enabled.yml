@@ -2,7 +2,7 @@
 data_category: optional
 key_path: usage_activity_by_stage_monthly.monitor.projects_with_error_tracking_enabled
 description: Count of users creating projects with error tracking enabled.
-product_group: respond
+product_group: platform_insights
 value_type: number
 status: active
 time_frame: 28d

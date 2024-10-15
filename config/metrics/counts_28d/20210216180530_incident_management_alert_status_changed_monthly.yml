@@ -2,7 +2,7 @@
 data_category: optional
 key_path: redis_hll_counters.incident_management.incident_management_alert_status_changed_monthly
 description: Count of unique users changing alert's status changes per month
-product_group: respond
+product_group: platform_insights
 value_type: number
 status: active
 time_frame: 28d

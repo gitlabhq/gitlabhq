@@ -2,7 +2,7 @@
 data_category: optional
 key_path: counts_weekly.aggregated_metrics.incident_management_incidents_total_unique_counts
 description: Count of unique users per week to take an action on an incident
-product_group: respond
+product_group: platform_insights
 value_type: number
 status: active
 time_frame: 7d

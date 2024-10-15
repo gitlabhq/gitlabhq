@@ -1,7 +1,7 @@
 ---
 key_path: counts.projects_with_monitor_enabled
 description: The number of projects with Monitor turned on.
-product_group: respond
+product_group: platform_insights
 value_type: number
 status: active
 milestone: "15.9"

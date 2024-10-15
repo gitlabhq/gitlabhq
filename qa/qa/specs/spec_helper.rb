@@ -72,33 +72,22 @@ RSpec.configure do |config|
   end
 
   config.prepend_after do |example|
-    page = Capybara.page
-    QA::Support::PageErrorChecker.log_request_errors(page)
-
-    QA::Support::PageErrorChecker.check_page_for_error_code(page) if example.exception
+    if Capybara::Session.instance_created?
+      page = Capybara.page
+      QA::Support::PageErrorChecker.log_request_errors(page)
+      QA::Support::PageErrorChecker.check_page_for_error_code(page) if example.exception
+    end
   end
 
-  # Add fabrication time to spec metadata
   config.append_after do |example|
+    # Add fabrication time to spec metadata
     example.metadata[:api_fabrication] = Thread.current[:api_fabrication]
     example.metadata[:browser_ui_fabrication] = Thread.current[:browser_ui_fabrication]
-  end
 
-  config.after(:context) do
-    if !QA::Runtime::Browser.blank_page? && QA::Page::Main::Menu.perform(&:signed_in?)
-      QA::Page::Main::Menu.perform(&:sign_out)
-      raise(
-        <<~ERROR
-          The test left the browser signed in.
-
-          Usually, Capybara prevents this from happening but some things can
-          interfere. For example, if it has an `after(:context)` block that logs
-          in, the browser will stay logged in and this will cause the next test
-          to fail.
-
-          Please make sure the test does not leave the browser signed in.
-        ERROR
-      )
+    # Reset browser session between tests
+    if Capybara::Session.instance_created?
+      QA::Runtime::Logger.debug("Resetting browser session...")
+      Capybara.current_session.reset!
     end
   end
 

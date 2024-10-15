@@ -9,27 +9,17 @@ module QA
       let(:api_client) { Runtime::API::Client.new(:gitlab, user: rate_limited_user) }
       let!(:request) { Runtime::API::Request.new(api_client, '/users') }
 
-      before do
-        Flow::Login.sign_in_as_admin
-        Page::Main::Menu.perform(&:go_to_admin_area)
-        Page::Admin::Menu.perform(&:go_to_network_settings)
-
-        Page::Admin::Settings::Network.perform do |setting|
-          setting.expand_user_ip_limits do |page|
-            page.enable_authenticated_api_request_limit
-            page.set_authenticated_api_request_limit_per_user(5)
-            page.set_authenticated_api_request_limit_seconds(60)
-            page.save_settings
-          end
-        end
-      end
-
       after do
         rate_limited_user.remove_via_api!
       end
 
       it 'throttles authenticated api requests by user',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347881' do
+        with_application_settings(
+          throttle_authenticated_api_requests_per_period: 5,
+          throttle_authenticated_api_period_in_seconds: 60,
+          throttle_authenticated_api_enabled: true
+        ) do
           5.times do
             res = RestClient.get request.url
             expect(res.code).to be(200)
@@ -39,6 +29,16 @@ module QA
             expect(e.class).to be(RestClient::TooManyRequests)
           end
         end
+      end
+    end
+
+    private
+
+    def with_application_settings(**hargs)
+      QA::Runtime::ApplicationSettings.set_application_settings(**hargs)
+      yield
+    ensure
+      QA::Runtime::ApplicationSettings.restore_application_settings(*hargs.keys)
     end
   end
 end

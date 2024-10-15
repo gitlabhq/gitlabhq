@@ -2,7 +2,7 @@
 data_category: optional
 key_path: counts.incident_issues
 description: Count of incidents (issues where issue_type=incident)
-product_group: respond
+product_group: platform_insights
 value_type: number
 status: active
 time_frame: all

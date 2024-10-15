@@ -2,7 +2,7 @@
 data_category: optional
 key_path: counts.grafana_integrated_projects
 description: Total Grafana integrations attached to projects
-product_group: respond
+product_group: platform_insights
 value_type: number
 status: removed
 time_frame: all

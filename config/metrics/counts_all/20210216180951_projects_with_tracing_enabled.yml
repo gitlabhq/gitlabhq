@@ -2,7 +2,7 @@
 data_category: optional
 key_path: usage_activity_by_stage.monitor.projects_with_tracing_enabled
 description: Projects with tracing enabled
-product_group: respond
+product_group: platform_insights
 value_type: number
 status: removed
 time_frame: all

@@ -2,7 +2,7 @@
 data_category: operational
 key_path: prometheus_enabled
 description: Whether the bundled Prometheus is enabled
-product_group: respond
+product_group: platform_insights
 value_type: boolean
 status: active
 time_frame: none

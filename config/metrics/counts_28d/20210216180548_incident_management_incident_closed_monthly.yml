@@ -2,7 +2,7 @@
 data_category: optional
 key_path: redis_hll_counters.incident_management.incident_management_incident_closed_monthly
 description: Count of users closing incidents per month
-product_group: respond
+product_group: platform_insights
 value_type: number
 status: active
 time_frame: 28d

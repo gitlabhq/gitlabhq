@@ -2,7 +2,7 @@
 data_category: optional
 key_path: counts.issues_created_from_alerts
 description: Count of issues created automatically on alerts. This count may drop with 17.3 due to the removal of GitLab-Managed Prometheus
-product_group: respond
+product_group: platform_insights
 value_type: number
 status: active
 time_frame: all

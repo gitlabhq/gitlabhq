@@ -2,7 +2,7 @@
 data_category: optional
 key_path: counts.projects_with_enabled_alert_integrations
 description: Count of projects with at least 1 enabled integration
-product_group: respond
+product_group: platform_insights
 value_type: number
 status: active
 time_frame: all

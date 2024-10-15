@@ -2,7 +2,7 @@
 data_category: optional
 key_path: counts.projects_creating_incidents
 description: Counts of Projects that have incident issues, regardless of status.
-product_group: respond
+product_group: platform_insights
 value_type: number
 status: active
 time_frame: all

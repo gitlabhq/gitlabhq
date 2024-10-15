@@ -2,7 +2,7 @@
 data_category: optional
 key_path: usage_activity_by_stage_monthly.monitor.operations_dashboard_default_dashboard
 description: Active users with enabled operations dashboard
-product_group: respond
+product_group: platform_insights
 value_type: number
 status: active
 time_frame: 28d

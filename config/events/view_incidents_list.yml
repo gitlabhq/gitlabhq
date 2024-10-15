@@ -1,7 +1,7 @@
 ---
 description: Tracks when the incidents list is viewed
 action: view_incidents_list
-product_group: respond
+product_group: platform_insights
 milestone: '13.5'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45011
 distributions:
