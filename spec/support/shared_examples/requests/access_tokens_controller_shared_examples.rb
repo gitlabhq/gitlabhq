@@ -132,6 +132,8 @@ RSpec.shared_examples 'POST resource access tokens available' do
 
     parsed_body = Gitlab::Json.parse(response.body)
     expect(parsed_body['new_token']).not_to be_blank
+    expect(parsed_body['active_access_tokens'].length).to be > 0
+    expect(parsed_body['total']).to be > 0
     expect(parsed_body['errors']).to be_blank
     expect(response).to have_gitlab_http_status(:success)
   end

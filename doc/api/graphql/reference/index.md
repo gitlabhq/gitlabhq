@@ -25155,6 +25155,7 @@ Represents a Group Membership.
 | <a id="groupmemberexpiresat"></a>`expiresAt` | [`Time`](#time) | Date and time the membership expires. |
 | <a id="groupmembergroup"></a>`group` | [`Group`](#group) | Group that a user is a member of. |
 | <a id="groupmemberid"></a>`id` | [`ID!`](#id) | ID of the member. |
+| <a id="groupmemberlastactivityon"></a>`lastActivityOn` | [`Time`](#time) | Date of last activity in the namespace (group or project). |
 | <a id="groupmembernotificationemail"></a>`notificationEmail` | [`String`](#string) | Group notification email for user. Only available for admins. |
 | <a id="groupmemberupdatedat"></a>`updatedAt` | [`Time`](#time) | Date and time the membership was last updated. |
 | <a id="groupmemberuser"></a>`user` | [`UserCore`](#usercore) | User that is associated with the member object. |
@@ -29459,6 +29460,7 @@ Represents a Pending Group Membership.
 | <a id="pendinggroupmemberexpiresat"></a>`expiresAt` | [`Time`](#time) | Date and time the membership expires. |
 | <a id="pendinggroupmemberid"></a>`id` | [`ID!`](#id) | ID of the member. |
 | <a id="pendinggroupmemberinvited"></a>`invited` | [`Boolean`](#boolean) | Whether the pending member has been invited. |
+| <a id="pendinggroupmemberlastactivityon"></a>`lastActivityOn` | [`Time`](#time) | Date of last activity in the namespace (group or project). |
 | <a id="pendinggroupmembername"></a>`name` | [`String`](#string) | Name of the pending member. |
 | <a id="pendinggroupmemberupdatedat"></a>`updatedAt` | [`Time`](#time) | Date and time the membership was last updated. |
 | <a id="pendinggroupmemberuser"></a>`user` | [`UserCore`](#usercore) | User that is associated with the member object. |
@@ -29496,6 +29498,7 @@ Represents a Pending Project Membership.
 | <a id="pendingprojectmemberexpiresat"></a>`expiresAt` | [`Time`](#time) | Date and time the membership expires. |
 | <a id="pendingprojectmemberid"></a>`id` | [`ID!`](#id) | ID of the member. |
 | <a id="pendingprojectmemberinvited"></a>`invited` | [`Boolean`](#boolean) | Whether the pending member has been invited. |
+| <a id="pendingprojectmemberlastactivityon"></a>`lastActivityOn` | [`Time`](#time) | Date of last activity in the namespace (group or project). |
 | <a id="pendingprojectmembername"></a>`name` | [`String`](#string) | Name of the pending member. |
 | <a id="pendingprojectmemberupdatedat"></a>`updatedAt` | [`Time`](#time) | Date and time the membership was last updated. |
 | <a id="pendingprojectmemberuser"></a>`user` | [`UserCore`](#usercore) | User that is associated with the member object. |
@@ -32226,6 +32229,7 @@ Represents a Project Membership.
 | <a id="projectmembercreatedby"></a>`createdBy` | [`UserCore`](#usercore) | User that authorized membership. |
 | <a id="projectmemberexpiresat"></a>`expiresAt` | [`Time`](#time) | Date and time the membership expires. |
 | <a id="projectmemberid"></a>`id` | [`ID!`](#id) | ID of the member. |
+| <a id="projectmemberlastactivityon"></a>`lastActivityOn` | [`Time`](#time) | Date of last activity in the namespace (group or project). |
 | <a id="projectmemberproject"></a>`project` | [`Project`](#project) | Project that User is a member of. |
 | <a id="projectmemberupdatedat"></a>`updatedAt` | [`Time`](#time) | Date and time the membership was last updated. |
 | <a id="projectmemberuser"></a>`user` | [`UserCore`](#usercore) | User that is associated with the member object. |
@@ -41449,6 +41453,7 @@ Implementations:
 | <a id="memberinterfacecreatedby"></a>`createdBy` | [`UserCore`](#usercore) | User that authorized membership. |
 | <a id="memberinterfaceexpiresat"></a>`expiresAt` | [`Time`](#time) | Date and time the membership expires. |
 | <a id="memberinterfaceid"></a>`id` | [`ID!`](#id) | ID of the member. |
+| <a id="memberinterfacelastactivityon"></a>`lastActivityOn` | [`Time`](#time) | Date of last activity in the namespace (group or project). |
 | <a id="memberinterfaceupdatedat"></a>`updatedAt` | [`Time`](#time) | Date and time the membership was last updated. |
 | <a id="memberinterfaceuser"></a>`user` | [`UserCore`](#usercore) | User that is associated with the member object. |
 
@@ -41563,6 +41568,7 @@ Implementations:
 | <a id="pendingmemberinterfaceexpiresat"></a>`expiresAt` | [`Time`](#time) | Date and time the membership expires. |
 | <a id="pendingmemberinterfaceid"></a>`id` | [`ID!`](#id) | ID of the member. |
 | <a id="pendingmemberinterfaceinvited"></a>`invited` | [`Boolean`](#boolean) | Whether the pending member has been invited. |
+| <a id="pendingmemberinterfacelastactivityon"></a>`lastActivityOn` | [`Time`](#time) | Date of last activity in the namespace (group or project). |
 | <a id="pendingmemberinterfacename"></a>`name` | [`String`](#string) | Name of the pending member. |
 | <a id="pendingmemberinterfaceupdatedat"></a>`updatedAt` | [`Time`](#time) | Date and time the membership was last updated. |
 | <a id="pendingmemberinterfaceuser"></a>`user` | [`UserCore`](#usercore) | User that is associated with the member object. |

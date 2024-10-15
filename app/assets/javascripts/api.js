@@ -75,7 +75,6 @@ const Api = {
   releaseLinkPath: '/api/:version/projects/:id/releases/:tag_name/assets/links/:link_id',
   mergeRequestsPipeline: '/api/:version/projects/:id/merge_requests/:merge_request_iid/pipelines',
   adminStatisticsPath: '/api/:version/application/statistics',
-  pipelineJobsPath: '/api/:version/projects/:id/pipelines/:pipeline_id/jobs',
   pipelineSinglePath: '/api/:version/projects/:id/pipelines/:pipeline_id',
   pipelinesPath: '/api/:version/projects/:id/pipelines/',
   createPipelinePath: '/api/:version/projects/:id/pipeline',
@@ -795,14 +794,6 @@ const Api = {
       .replace(':pipeline_id', encodeURIComponent(pipelineId));
 
     return axios.get(url);
-  },
-
-  pipelineJobs(projectId, pipelineId, params) {
-    const url = Api.buildUrl(this.pipelineJobsPath)
-      .replace(':id', encodeURIComponent(projectId))
-      .replace(':pipeline_id', encodeURIComponent(pipelineId));
-
-    return axios.get(url, { params });
   },
 
   // Return all pipelines for a project or filter by query params

@@ -77,4 +77,6 @@ Updated files:
 
 After running the script, you must commit all the modified files to Git and create a merge request.
 
+The script is part of GDK and a frontend or backend developer can run the script and prepare the merge request.
+
 If a group is split into multiple groups, you need to manually update the product_group.

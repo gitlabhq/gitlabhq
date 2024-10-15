@@ -29162,8 +29162,6 @@ CREATE UNIQUE INDEX index_feature_gates_on_feature_key_and_key_and_value ON feat
 
 CREATE UNIQUE INDEX index_features_on_key ON features USING btree (key);
 
-CREATE INDEX index_for_owasp_top_10_group_level_reports ON vulnerability_reads USING btree (owasp_top_10, state, report_type, severity, traversal_ids, vulnerability_id, resolved_on_default_branch) WHERE (archived = false);
-
 CREATE INDEX index_for_protected_environment_group_id_of_protected_environme ON protected_environment_deploy_access_levels USING btree (protected_environment_group_id);
 
 CREATE INDEX index_for_protected_environment_project_id_of_protected_environ ON protected_environment_deploy_access_levels USING btree (protected_environment_project_id);

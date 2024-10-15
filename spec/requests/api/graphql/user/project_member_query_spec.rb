@@ -13,6 +13,7 @@ RSpec.describe 'ProjectMember', feature_category: :groups_and_projects do
           integerValue
           stringValue
         }
+        lastActivityOn
         project {
           id
         }
@@ -30,4 +31,6 @@ RSpec.describe 'ProjectMember', feature_category: :groups_and_projects do
 
   it_behaves_like 'a working graphql query'
   it_behaves_like 'a working membership object query'
+
+  it { expect(graphql_data.dig('user', 'projectMemberships', 'nodes', 0, 'lastActivityOn')).to be_present }
 end

@@ -909,26 +909,6 @@ describe('Api', () => {
     });
   });
 
-  describe('pipelineJobs', () => {
-    it.each([undefined, {}, { foo: true }])(
-      'fetches the jobs for a given pipeline given %p params',
-      async (params) => {
-        const projectId = 123;
-        const pipelineId = 456;
-        const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectId}/pipelines/${pipelineId}/jobs`;
-        const payload = [
-          {
-            name: 'test',
-          },
-        ];
-        mock.onGet(expectedUrl, { params }).reply(HTTP_STATUS_OK, payload);
-
-        const { data } = await Api.pipelineJobs(projectId, pipelineId, params);
-        expect(data).toEqual(payload);
-      },
-    );
-  });
-
   describe('createBranch', () => {
     it('creates new branch', () => {
       const ref = 'main';

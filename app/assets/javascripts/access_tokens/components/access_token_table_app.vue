@@ -1,12 +1,23 @@
 <script>
 import { GlButton, GlIcon, GlLink, GlPagination, GlTable, GlTooltipDirective } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import axios from '~/lib/utils/axios_utils';
+import {
+  convertObjectPropsToCamelCase,
+  normalizeHeaders,
+  parseIntPagination,
+} from '~/lib/utils/common_utils';
 import { __, sprintf } from '~/locale';
 import DomElementListener from '~/vue_shared/components/dom_element_listener.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import UserDate from '~/vue_shared/components/user_date.vue';
 import { EVENT_SUCCESS, FIELDS, FORM_SELECTOR, INITIAL_PAGE, PAGE_SIZE } from './constants';
+
+/**
+ * This component supports two different types of pagination:
+ * 1. Frontend only pagination: all the data is passed to the frontend. The UI slices and displays the tokens.
+ * 2. Backend pagination: backend sends only the data corresponding to the `page` parameter.
+ */
 
 export default {
   EVENT_SUCCESS,
@@ -41,16 +52,21 @@ export default {
   inject: [
     'accessTokenType',
     'accessTokenTypePlural',
+    'backendPagination',
     'initialActiveAccessTokens',
     'noActiveTokensMessage',
     'showRole',
   ],
   data() {
+    const activeAccessTokens = this.convert(this.initialActiveAccessTokens);
+
     return {
-      activeAccessTokens: convertObjectPropsToCamelCase(this.initialActiveAccessTokens, {
-        deep: true,
-      }),
-      currentPage: INITIAL_PAGE,
+      activeAccessTokens,
+      busy: false,
+      currentPage: INITIAL_PAGE, // This is the page use in the GlTable. It stays 1 if the backend pagination is on.
+      page: INITIAL_PAGE, // This is the page use in the GlPagination component
+      perPage: PAGE_SIZE,
+      totalItems: activeAccessTokens.length,
     };
   },
   computed: {
@@ -70,17 +86,67 @@ export default {
         ignoredFields.push('role');
       }
 
-      return FIELDS.filter(({ key }) => !ignoredFields.includes(key));
+      const fields = FIELDS.filter(({ key }) => !ignoredFields.includes(key));
+
+      // Remove the sortability of the columns if backend pagination is on.
+      if (this.backendPagination) {
+        return fields.map((field) => ({
+          ...field,
+          sortable: false,
+        }));
+      }
+
+      return fields;
     },
     showPagination() {
-      return this.activeAccessTokens.length > PAGE_SIZE;
+      return this.totalItems > this.perPage;
     },
   },
+  created() {
+    if (this.backendPagination) {
+      this.fetchData();
+    }
+  },
   methods: {
+    convert(accessTokens) {
+      return convertObjectPropsToCamelCase(accessTokens, { deep: true });
+    },
+    async fetchData(newPage) {
+      const url = new URL(document.location.href);
+      url.pathname = `${url.pathname}.json`;
+
+      if (newPage) {
+        url.searchParams.delete('page');
+        url.searchParams.append('page', newPage);
+      }
+
+      this.busy = true;
+      const { data, headers } = await axios.get(url.toString());
+
+      const { page, perPage, total } = parseIntPagination(normalizeHeaders(headers));
+      this.page = page;
+      this.perPage = perPage;
+      this.totalItems = total;
+      this.busy = false;
+
+      if (newPage) {
+        this.activeAccessTokens = this.convert(data);
+        this.replaceHistory(newPage);
+      }
+    },
+    replaceHistory(page) {
+      window.history.replaceState(null, '', `?page=${page}`);
+    },
     onSuccess(event) {
-      const [{ active_access_tokens: activeAccessTokens }] = event.detail;
-      this.activeAccessTokens = convertObjectPropsToCamelCase(activeAccessTokens, { deep: true });
+      const [{ active_access_tokens: activeAccessTokens, total: totalItems }] = event.detail;
+      this.activeAccessTokens = this.convert(activeAccessTokens);
+      this.totalItems = totalItems;
       this.currentPage = INITIAL_PAGE;
+      this.page = INITIAL_PAGE;
+
+      if (this.backendPagination) {
+        this.replaceHistory(INITIAL_PAGE);
+      }
     },
     modalMessage(tokenName) {
       return sprintf(this.$options.i18n.modalMessage, {
@@ -101,6 +167,15 @@ export default {
       // For other columns the default sorting works OK
       return false;
     },
+    async pageChanged(newPage) {
+      if (this.backendPagination) {
+        await this.fetchData(newPage);
+      } else {
+        this.currentPage = newPage;
+        this.page = newPage;
+      }
+      window.scrollTo({ top: 0 });
+    },
   },
 };
 </script>
@@ -114,11 +189,12 @@ export default {
           :empty-text="noActiveTokensMessage"
           :fields="filteredFields"
           :items="activeAccessTokens"
-          :per-page="$options.PAGE_SIZE"
+          :per-page="perPage"
           :current-page="currentPage"
           :sort-compare="sortingChanged"
           show-empty
           stacked="sm"
+          :busy="busy"
         >
           <template #cell(createdAt)="{ item: { createdAt } }">
             <user-date :date="createdAt" />
@@ -167,11 +243,13 @@ export default {
       </div>
       <gl-pagination
         v-if="showPagination"
-        v-model="currentPage"
-        :per-page="$options.PAGE_SIZE"
-        :total-items="activeAccessTokens.length"
+        :value="page"
+        :per-page="perPage"
+        :total-items="totalItems"
+        :disabled="busy"
         align="center"
         class="gl-mt-5"
+        @input="pageChanged"
       />
     </div>
   </dom-element-listener>

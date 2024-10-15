@@ -1,0 +1,8 @@
+---
+migration_job_name: BackfillMembersRequestAcceptedAt
+description: Backfills `request_accepted_at` column in the `members` table to `created_at` column value for all existing records.
+feature_category: groups_and_projects
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166812
+milestone: '17.5'
+queued_migration_version: 20240920083708
+finalized_by:

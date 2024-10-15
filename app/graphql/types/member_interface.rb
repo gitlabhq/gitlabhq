@@ -22,6 +22,9 @@ module Types
     field :expires_at, Types::TimeType, null: true,
       description: 'Date and time the membership expires.'
 
+    field :last_activity_on, Types::TimeType,
+      description: 'Date of last activity in the namespace (group or project).'
+
     field :user, Types::UserType, null: true,
       description: 'User that is associated with the member object.'
 
