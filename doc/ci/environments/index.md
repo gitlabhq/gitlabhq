@@ -387,11 +387,11 @@ The [environment URL](../yaml/index.md#environmenturl) is displayed in a few
 places in GitLab:
 
 - In a merge request as a link:
-  ![Environment URL in merge request](../img/environments_mr_review_app.png)
+  ![Environment URL in merge request](../img/environments_mr_review_app_v11_10.png)
 - In the Environments view as a button:
   ![Open live environment from environments view](img/environments_open_live_environment_v14_8.png)
 - In the Deployments view as a button:
-  ![Environment URL in deployments](../img/deployments_view.png)
+  ![Environment URL in deployments](../img/deployments_view_v11_10.png)
 
 You can see this information in a merge request if:
 
@@ -400,7 +400,7 @@ You can see this information in a merge request if:
 
 For example:
 
-![Environment URLs in merge request](../img/environments_link_url_mr.png)
+![Environment URLs in merge request](../img/environments_link_url_mr_v10_1.png)
 
 #### Go from source files to public pages
 
@@ -856,7 +856,7 @@ You can also access the terminal button from the page for a specific environment
 
 Select the button to establish the terminal session:
 
-![Terminal page](../img/environments_terminal_page.png)
+![Terminal page](../img/environments_terminal_page_v8_15.png)
 
 This works like any other terminal. You're in the container created
 by your deployment so you can:

@@ -56,7 +56,7 @@ once on the target branch (`main`, for example), before it displays in a
 merge request targeting that branch. Additionally, the widget only displays if the
 job ran in the latest pipeline for the Merge request.
 
-![Browser Performance Widget](img/browser_performance_testing.png)
+![Browser Performance Widget](img/browser_performance_testing_v13_4.png)
 
 ## Configuring Browser Performance Testing
 

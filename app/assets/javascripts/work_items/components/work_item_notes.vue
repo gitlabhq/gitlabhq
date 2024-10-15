@@ -221,7 +221,9 @@ export default {
       const discussionNoteId = convertToGraphQLId(TYPENAME_DISCUSSION_NOTE, this.previewNoteId);
 
       function matchingNoteId(note) {
-        return note.notes.nodes[0].id === noteId || note.notes.nodes[0].id === discussionNoteId;
+        return note.notes.nodes.find((singleReply) => {
+          return singleReply.id === noteId || singleReply.id === discussionNoteId;
+        });
       }
 
       const notes = this.workItemNotes?.nodes || [];

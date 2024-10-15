@@ -70,9 +70,17 @@ GitLab 16.8.
 
 ## User contributions and membership mapping
 
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed, GitLab Dedicated
+
 > - Mapping of shared and inherited shared members as direct members was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129017) in GitLab 16.3.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148220) in GitLab 16.11, shared and inherited shared members are no longer mapped as direct members if they are already shared or inherited shared members of the imported group or project.
 > - Full support for mapping inherited membership [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/458834) in GitLab 17.1.
+> - Removed from GitLab.com direct transfer migrations in GitLab 17.5 in favor of [the alternative](../../project/import/index.md#user-contribution-and-membership-mapping).
+
+This method of user contributions and membership mapping is for self-managed GitLab instances. For the method available
+on GitLab.com, see [User contribution and membership mapping](../../project/import/index.md#user-contribution-and-membership-mapping).
 
 Users are never created during a migration. Instead, contributions and membership of users on the source instance are
 mapped to users on the destination instance. The type of mapping of a user's membership depends on the
@@ -91,9 +99,6 @@ elevated permissions.
 
 NOTE:
 There is a [known issue](index.md#known-issues) affecting the mapping of shared memberships.
-
-For the new experimental user contribution and membership mapping feature, see
-[User contribution and membership mapping](../../project/import/index.md#user-contribution-and-membership-mapping).
 
 ### Configure users on destination instance
 

@@ -69,14 +69,14 @@ for the current job. Only the person who started a job can debug it.
 When selected, a new tab opens to the terminal page where you can access
 the terminal and type commands like in a standard shell.
 
-![terminal of the job](img/interactive_web_terminal_page.png)
+![terminal of the job](img/interactive_web_terminal_page_v11_1.png)
 
 If you have the terminal open and the job has finished with its tasks, the
 terminal blocks the job from finishing for the duration configured in
 [`[session_server].session_timeout`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-session_server-section) until you
 close the terminal window.
 
-![finished job with terminal open](img/finished_job_with_terminal_open.png)
+![finished job with terminal open](img/finished_job_with_terminal_open_v11_2.png)
 
 ## Interactive web terminals for the Web IDE
 

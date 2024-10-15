@@ -321,7 +321,7 @@ this line should be hidden when collapsed
 
 Sample job console log:
 
-![Custom collapsible sections](img/collapsible-job.png)
+![Custom collapsible sections](img/collapsible_job_v16_10.png)
 
 #### Use a script to improve display of collapsible sections
 
@@ -498,7 +498,7 @@ Resolve this by either:
 Sometimes the formatting in the job log displays incorrectly with tools that rely
 on the `TERM` environment variable for coloring or formatting. For example, with the `mypy` command:
 
-![Example output](img/incorrect_log_rendering.png)
+![Example output](img/incorrect_log_rendering_v16_5.png)
 
 GitLab Runner runs the container's shell in non-interactive mode, so the shell's `TERM`
 environment variable is set to `dumb`. To fix the formatting for these tools, you can:

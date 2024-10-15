@@ -108,7 +108,7 @@ To view the code coverage history for all projects in a group:
 1. Select **Analyze > Repository analytics**.
 1. Optional. To view a CSV file of the data, select **Download historic test coverage data (.csv)**.
 
-![Code coverage graph of a group over time](img/code_coverage_group_report.png)
+![Code coverage graph of a group over time](img/code_coverage_group_report_v15_11.png)
 
 ### Pipeline badges
 

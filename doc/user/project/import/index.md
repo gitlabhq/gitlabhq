@@ -83,14 +83,17 @@ difficult, but several tools exist including:
 ## User contribution and membership mapping
 
 DETAILS:
-**Status:** Experiment
+**Tier:** Free, Premium, Ultimate
+**Offering:** GitLab.com
 
-> - [Introduced to migration by using direct transfer](https://gitlab.com/gitlab-org/gitlab/-/issues/443557) in GitLab 17.4 [with flags](../../../administration/feature_flags.md) named `importer_user_mapping` and `bulk_import_importer_user_mapping`. Disabled by default. This feature is an [experiment](../../../policy/experiment-beta-support.md).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/443557) to direct transfer migrations for self-managed instances in GitLab 17.4 [with flags](../../../administration/feature_flags.md) named `importer_user_mapping` and `bulk_import_importer_user_mapping`. Disabled by default.
 
 FLAG:
 The availability of this feature is controlled by feature flags.
 For more information, see the history.
-This feature is available for internal testing only, it is not ready for production use.
+
+This method of user contributions and membership mapping is enabled for GitLab.com [direct transfer migrations](../../group/import/index.md). For the method available on
+self-managed GitLab instances, see [User contributions and membership mapping](../../group/import/direct_transfer_migrations.md#user-contributions-and-membership-mapping).
 
 With user contribution and membership mapping, you can assign imported contributions and memberships to users on the
 destination instance after import has completed. Unlike the previous method of user contribution and membership mapping,
@@ -98,12 +101,6 @@ no preparation is needed before the import.
 
 The process doesn't rely on email addresses, so you can map contributions for users who have different emails on source
 and destination instances.
-
-NOTE:
-This new method of user contribution and membership method is only supported for
-[migrations by using direct transfer](../../group/import/index.md). For information on the other method of user
-contribution and membership mapping for direct transfer migrations, see
-[User contributions and membership mapping](../../group/import/direct_transfer_migrations.md#user-contributions-and-membership-mapping).
 
 Each user on the destination instance that is assigned a mapping can:
 
