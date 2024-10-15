@@ -129,6 +129,18 @@ RSpec.describe Tooling::Danger::StableBranch, feature_category: :delivery do
         )
       end
 
+      let(:mr_description_response) do
+        %(
+        <!--
+        Please don't remove this comment...
+
+        template sourced from
+        https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/merge_request_templates/Stable%20Branch.md
+        -->
+        ## What does this MR do and why?
+        )
+      end
+
       before do
         allow(fake_helper).to receive(:mr_target_branch).and_return(target_branch)
         allow(fake_helper).to receive(:mr_source_branch).and_return(source_branch)
@@ -150,6 +162,7 @@ RSpec.describe Tooling::Danger::StableBranch, feature_category: :delivery do
         allow(gitlab_gem_client).to receive(:api).and_return(fake_api)
         allow(fake_api).to receive(:pipeline_bridges).with(1, '1')
           .and_return(pipeline_bridges_response)
+        allow(fake_helper).to receive(:mr_description).and_return(mr_description_response)
       end
 
       # the stubbed behavior above is the success path
@@ -325,6 +338,16 @@ RSpec.describe Tooling::Danger::StableBranch, feature_category: :delivery do
         end
 
         it_behaves_like 'without a failure'
+      end
+
+      context 'when the MR body does not contain the template source' do
+        let(:mr_description_response) { 'some description' }
+
+        it 'fails about missing template source' do
+          expect(stable_branch).to receive(:fail).with(described_class::NEEDS_STABLE_BRANCH_TEMPLATE_MESSAGE)
+
+          subject
+        end
       end
     end
   end
