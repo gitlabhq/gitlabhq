@@ -249,11 +249,13 @@ RSpec.describe SecretsInitializer do
           expect(new_secrets['otp_key_base']).to eq('otp_key_base')
           expect(new_secrets['openid_connect_signing_key']).to match(rsa_key)
         end
+        expect(initializer).to receive(:warn).with(/^Creating a backup of secrets file/)
         expect(initializer).to receive(:warn).with(
           "Missing Rails.application.credentials.openid_connect_signing_key for #{rails_env_name} environment. " \
             "The secret will be generated and stored in config/secrets.yml."
         )
 
+        expect(FileUtils).to receive(:mv).with(fake_secret_file.path, anything)
         initializer.execute!
 
         expect(Rails.application.credentials.secret_key_base).to eq('env_key')

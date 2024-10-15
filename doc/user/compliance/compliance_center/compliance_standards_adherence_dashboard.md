@@ -28,11 +28,11 @@ The field in the **Date since last status change** column reflects the date of t
 
 Prerequisites:
 
-- You must be an administrator or have the Owner role for the group.
+- You must be an administrator or have the Owner role for the project or group.
 
-To view the compliance standards adherence dashboard for a group:
+To view the compliance standards adherence dashboard:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Secure > Compliance center**.
 
 You can filter the compliance standards adherence dashboard on:

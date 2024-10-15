@@ -45,7 +45,7 @@ eslint-report.html
 /config/redis.yml
 /config/unicorn.rb
 /config/puma.rb
-/config/secrets.yml
+/config/secrets.yml*
 /config/session_store.yml
 /config/sidekiq.yml
 /config/click_house.yml

@@ -12,9 +12,11 @@ DETAILS:
 **Status:** Experiment
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/395692) in GitLab 17.3 behind the feature flag `dependency_scanning_using_sbom_reports`.
+> - Released [lockfile-based Dependency Scanning](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning/-/blob/main/README.md?ref_type=heads#supported-files) analyzer as an [Experiment](../../../../policy/experiment-beta-support.md#experiment-features) in GitLab 17.4.
+> - Released [Dependency Scanning CI/CD Component](https://gitlab.com/explore/catalog/components/dependency-scanning) version [`0.4.0`](https://gitlab.com/components/dependency-scanning/-/tags/0.4.0) in GitLab 17.5 with support for the [lockfile-based Dependency Scanning](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning/-/blob/main/README.md?ref_type=heads#supported-files) analyzer.
 
 FLAG:
-The availability of this feature is controlled by a feature flag.
+This feature uses an Experimental analyzer.
 For more information, see the history.
 This feature is available for testing, but not ready for production use.
 
