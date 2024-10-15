@@ -11,6 +11,7 @@ module Packages
       enum :status, default: 0, processing: 1, error: 3
 
       belongs_to :package, -> { where(package_type: :nuget) }, inverse_of: :nuget_symbols
+      belongs_to :project
 
       delegate :project_id, :project, to: :package
 

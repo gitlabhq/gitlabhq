@@ -65,7 +65,7 @@ Each link as an asset has the following attributes:
 | `name`      | The name of the link.                                                                                        | Yes      |
 | `url`       | The URL to download a file.                                                                                  | Yes      |
 | `filepath`  | The redirect link to the `url`. Must start with a slash (`/`). See [this section](#permanent-links-to-release-assets) for more information. | No       |
-| `link_type` | The content kind of what users can download via `url`. See [this section](#link-types) for more information. | No       |
+| `link_type` | The content kind of what users can download with `url`. See [this section](#link-types) for more information. | No       |
 
 #### Permanent links to release assets
 

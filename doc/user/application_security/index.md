@@ -438,7 +438,7 @@ The above `.gitlab-ci.yml` causes a linting error:
 
 ```plaintext
 Unable to create pipeline
-- dependency_scanning job: chosen stage does not exist; available stages are .pre
+- dependency_scanning job: chosen stage test does not exist; available stages are .pre
 - unit-tests
 - .post
 ```

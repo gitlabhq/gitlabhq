@@ -209,7 +209,7 @@ After about 10 minutes, your cluster is ready.
 
 ## Disable Role-Based Access Control (RBAC) (optional)
 
-When connecting a cluster via GitLab integration, you may specify whether the
+When connecting a cluster through GitLab integration, you may specify whether the
 cluster is RBAC-enabled or not. This affects how GitLab interacts with the
 cluster for certain operations. If you did *not* check the **RBAC-enabled cluster**
 checkbox at creation time, GitLab assumes RBAC is disabled for your cluster

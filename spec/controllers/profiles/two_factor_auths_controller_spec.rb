@@ -449,13 +449,14 @@ RSpec.describe Profiles::TwoFactorAuthsController, feature_category: :system_acc
       end
 
       it 'disables OTP authenticator and leaves WebAuthn devices unaffected' do
-        expect(user.reload.two_factor_otp_enabled?).to eq(true)
-        expect(user.reload.two_factor_webauthn_enabled?).to eq(true)
+        expect(user.two_factor_otp_enabled?).to eq(true)
+        expect(user.two_factor_webauthn_enabled?).to eq(true)
 
         go
 
-        expect(user.reload.two_factor_otp_enabled?).to eq(false)
-        expect(user.reload.two_factor_webauthn_enabled?).to eq(true)
+        user.reload
+        expect(user.two_factor_otp_enabled?).to eq(false)
+        expect(user.two_factor_webauthn_enabled?).to eq(true)
       end
 
       it 'redirects to profile_two_factor_auth_path' do
@@ -480,13 +481,14 @@ RSpec.describe Profiles::TwoFactorAuthsController, feature_category: :system_acc
       end
 
       it 'leaves WebAuthn devices unaffected' do
-        expect(user.reload.two_factor_otp_enabled?).to eq(false)
-        expect(user.reload.two_factor_webauthn_enabled?).to eq(true)
+        expect(user.two_factor_otp_enabled?).to eq(false)
+        expect(user.two_factor_webauthn_enabled?).to eq(true)
 
         go
 
-        expect(user.reload.two_factor_otp_enabled?).to eq(false)
-        expect(user.reload.two_factor_webauthn_enabled?).to eq(true)
+        user.reload
+        expect(user.two_factor_otp_enabled?).to eq(false)
+        expect(user.two_factor_webauthn_enabled?).to eq(true)
       end
 
       it 'redirects to profile_two_factor_auth_path' do
@@ -504,5 +506,46 @@ RSpec.describe Profiles::TwoFactorAuthsController, feature_category: :system_acc
 
       it_behaves_like 'user must enter a valid current password'
     end
+  end
+
+  describe 'DELETE destroy_webauthn' do
+    let_it_be_with_reload(:user) do
+      create(:user, :two_factor_via_webauthn)
+    end
+
+    let(:webauthn_id) { user.webauthn_registrations.first.id }
+    let(:current_password) { user.password }
+    let(:destroy_webauthn) do
+      delete :destroy_webauthn, params: { id: webauthn_id, current_password: current_password }
+    end
+
+    def go
+      destroy_webauthn
+    end
+
+    it 'destroys the webauthn device' do
+      count = user.webauthn_registrations.count
+      go
+
+      user.reload
+      expect(user.webauthn_registrations.count).to eq(count - 1)
+    end
+
+    it 'redirects to the profile two factor authentication page' do
+      go
+
+      expect(response).to redirect_to profile_two_factor_auth_path
+    end
+
+    it 'calls the Webauthn::DestroyService' do
+      service = double
+
+      expect(Webauthn::DestroyService).to receive(:new).with(user, user, webauthn_id.to_s).and_return(service)
+      expect(service).to receive(:execute)
+
+      go
+    end
+
+    it_behaves_like 'user must enter a valid current password'
   end
 end

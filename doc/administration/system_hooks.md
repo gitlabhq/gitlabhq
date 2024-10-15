@@ -377,7 +377,7 @@ Refer to `group_rename` and `user_rename` for that case.
 }
 ```
 
-If the user is blocked via LDAP, `state` is `ldap_blocked`.
+If the user is blocked through LDAP, `state` is `ldap_blocked`.
 
 **User renamed:**
 

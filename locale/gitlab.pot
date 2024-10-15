@@ -7372,6 +7372,9 @@ msgstr ""
 msgid "Are you sure you want to delete this WebAuthn device?"
 msgstr ""
 
+msgid "Are you sure you want to delete this WebAuthn device? Enter your password to continue."
+msgstr ""
+
 msgid "Are you sure you want to delete this branch target?"
 msgstr ""
 
@@ -50253,9 +50256,6 @@ msgstr ""
 msgid "SecurityReports|All tools"
 msgstr ""
 
-msgid "SecurityReports|Although it's rare to have no vulnerabilities, it can happen. Check your project's security configuration to make sure you've set up your security scans correctly."
-msgstr ""
-
 msgid "SecurityReports|Change status"
 msgstr ""
 
@@ -50376,6 +50376,9 @@ msgstr ""
 msgid "SecurityReports|Historical view of open vulnerabilities in the default branch. Excludes vulnerabilities that were resolved or dismissed. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
+msgid "SecurityReports|If you were expecting vulnerabilities to be shown here, check that you've completed the %{linkStart}security scanning prerequisites%{linkEnd}, or check the other vulnerability types in the tabs above."
+msgstr ""
+
 msgid "SecurityReports|Image"
 msgstr ""
 
@@ -50427,7 +50430,7 @@ msgstr ""
 msgid "SecurityReports|No longer detected"
 msgstr ""
 
-msgid "SecurityReports|No vulnerabilities found"
+msgid "SecurityReports|No vulnerabilities to report"
 msgstr ""
 
 msgid "SecurityReports|Oops, something doesn't seem right."
@@ -50586,6 +50589,9 @@ msgid "SecurityReports|Warning parsing security reports"
 msgstr ""
 
 msgid "SecurityReports|scanned resources"
+msgstr ""
+
+msgid "SecurityReports|security scanning prerequisites"
 msgstr ""
 
 msgid "SecurityTraining|Enable security training to learn how to fix vulnerabilities. View security training from selected educational providers relevant to the detected vulnerability."
@@ -64430,6 +64436,12 @@ msgid "cannot be used for user namespace"
 msgstr ""
 
 msgid "cannot contain HTML/XML tags, including any word between angle brackets (&lt;,&gt;)."
+msgstr ""
+
+msgid "cannot have more than %{count} frameworks"
+msgstr ""
+
+msgid "cannot have more than %{count} requirements"
 msgstr ""
 
 msgid "cannot include leading slash or directory traversal."

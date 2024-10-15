@@ -211,7 +211,7 @@ The 3 status items are defined as follows:
 To find more details about failed items, check
 [the `gitlab-rails/geo.log` file](../../../logs/log_parsing.md#find-most-common-geo-sync-errors)
 
-If you notice replication or verification failures, you can try to [resolve them](replication.md#fixing-non-postgresql-replication-failures).
+If you notice synchronization or verification failures, you can try to [resolve them](replication.md).
 
 If there are Repository check failures, you can try to [resolve them](synchronization.md#find-repository-check-failures-in-a-geo-secondary-site).
 

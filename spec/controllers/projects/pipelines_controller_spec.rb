@@ -935,7 +935,7 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
 
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['errors']).to eq([
-          'test job: chosen stage does not exist; available stages are .pre, build, test, deploy, .post'
+          'test job: chosen stage invalid does not exist; available stages are .pre, build, test, deploy, .post'
         ])
         expect(json_response['warnings'][0]).to include(
           'jobs:build may allow multiple pipelines to run for a single action due to `rules:when`'

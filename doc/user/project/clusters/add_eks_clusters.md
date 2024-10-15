@@ -209,14 +209,14 @@ if not already enabled. If a wildcard DNS entry was created resolving to the
 Load Balancer, enter it in the `domain` field under the Auto DevOps settings.
 Otherwise, the deployed app isn't externally available outside of the cluster.
 
-![Deploy Pipeline](img/pipeline.png)
+![Deploy Pipeline](img/pipeline_v11_0.png)
 
 GitLab creates a new pipeline, which begins to build, test, and deploy the app.
 
 After the pipeline has finished, your app runs in EKS, and is available
 to users. Select **Operate > Environments**.
 
-![Deployed Environment](img/environment.png)
+![Deployed Environment](img/environment_v11_0.png)
 
 GitLab displays a list of the environments and their deploy status, as well as
 options to browse to the app, view monitoring metrics, and even access a shell
@@ -299,7 +299,7 @@ Check that:
    [external ID](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-user_externalid.html)
    match the value defined in the **Trust relationships** tab in AWS:
 
-   ![AWS IAM Trust relationships](img/aws_iam_role_trust.png)
+   ![AWS IAM Trust relationships](img/aws_iam_role_trust_v13_7.png)
 
 ### Could not load Security Groups for this VPC
 

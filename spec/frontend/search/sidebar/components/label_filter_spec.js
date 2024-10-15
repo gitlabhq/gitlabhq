@@ -107,6 +107,7 @@ describe('GlobalSearchSidebarLabelFilter', () => {
   const findLabelPills = () => wrapper.findAllComponentsByTestId('label');
   const findSelectedUappliedLavelPills = () => wrapper.findAllComponentsByTestId('unapplied-label');
   const findClosedUnappliedPills = () => wrapper.findAllComponentsByTestId('unselected-label');
+  const findSelectedLabelsCheckboxes = () => wrapper.findByTestId('selected-labels-checkboxes');
 
   describe('Renders correctly closed', () => {
     beforeEach(async () => {
@@ -384,6 +385,44 @@ describe('GlobalSearchSidebarLabelFilter', () => {
 
       it('has correct pills', () => {
         expect(findLabelPills()).toHaveLength(2);
+      });
+    });
+
+    describe('when applied labels show as slected in dropdown', () => {
+      beforeEach(() => {
+        const mockGetters = {
+          appliedSelectedLabels: jest.fn(() => MOCK_FILTERED_UNSELECTED_LABELS),
+        };
+        createComponent({}, mockGetters);
+        store.commit(RECEIVE_AGGREGATIONS_SUCCESS, MOCK_LABEL_AGGREGATIONS.data);
+      });
+
+      it('has correct checkboxes', async () => {
+        await findSearchBox().vm.$emit('focusin');
+
+        expect(findSelectedLabelsCheckboxes().findAll('li')).toHaveLength(2);
+      });
+    });
+
+    describe('when searching labels', () => {
+      beforeEach(() => {
+        const mockGetters = {
+          appliedSelectedLabels: jest.fn(() => MOCK_FILTERED_UNSELECTED_LABELS),
+        };
+        createComponent({ searchLabelString: 'Cosche' }, mockGetters);
+        store.commit(RECEIVE_AGGREGATIONS_SUCCESS, MOCK_LABEL_AGGREGATIONS.data);
+      });
+
+      it('correctly merges selected and newly selected labels', async () => {
+        await findSearchBox().vm.$emit('focusin');
+        await findCheckboxGroup().vm.$emit('input', [6]);
+        await Vue.nextTick();
+
+        expect(store.state.query.label_name).toEqual(['Aftersync', 'Brist']);
+        expect(actionSpies.setQuery.mock.lastCall[1]).toEqual({
+          key: 'label_name',
+          value: ['Cosche'],
+        });
       });
     });
 

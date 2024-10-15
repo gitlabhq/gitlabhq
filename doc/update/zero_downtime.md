@@ -26,8 +26,8 @@ Achieving _true_ zero downtime as part of an upgrade is notably difficult for an
 this guide has been tested as given against our HA [Reference Architectures](../administration/reference_architectures/index.md)
 and was found to result in effectively no observable downtime, but please be aware your mileage may vary dependent on the specific system makeup.
 
-For additional confidence some customers have found success via further techniques such as the
-manual draining of nodes via specific load balancer or infrastructure capabilities. These techniques depend greatly
+For additional confidence, some customers have found success with further techniques such as the
+manually draining nodes by using specific load balancer or infrastructure capabilities. These techniques depend greatly
 on the underlying infrastructure capabilities and as a result are not covered in this guide.
 For any additional information please reach out to your GitLab representative
 or the [Support team](https://about.gitlab.com/support/).
@@ -58,7 +58,7 @@ In addition to the above, please be aware of the following considerations:
   - The time necessary to complete these migrations can be reduced by increasing the number of Sidekiq workers that can process jobs in the
     `background_migration` queue. To see the size of this queue, [check for background migrations before upgrading](background_migrations.md).
 - [PostgreSQL major version upgrades](../administration/postgresql/replication_and_failover.md#near-zero-downtime-upgrade-of-postgresql-in-a-patroni-cluster) are a separate process and not covered by zero-downtime upgrades (smaller upgrades are covered).
-- Zero-downtime upgrades are supported for any GitLab components you've deployed with the GitLab Linux package. If you've deployed select components via a supported third party service, such as PostgreSQL in AWS RDS or Redis in GCP Memorystore, upgrades for those services will need to be performed separately as per their standard processes.
+- Zero-downtime upgrades are supported for any GitLab components you've deployed with the GitLab Linux package. If you've deployed select components through a supported third party service, such as PostgreSQL in AWS RDS or Redis in GCP Memorystore, upgrades for those services will need to be performed separately as per their standard processes.
 - As a general guideline, the larger amount of data you have, the more time it will take for the upgrade to complete. In testing, any database smaller than 10 GB shouldn't generally take longer than an hour, but your mileage may vary.
 
 NOTE:
@@ -147,7 +147,7 @@ This process applies to both Gitaly Sharded and Cluster setups. Run through the 
 
 ### Praefect
 
-For Gitaly Cluster setups, Praefect will be deployed and needs to be upgraded in similar fashion via a graceful reload.
+For Gitaly Cluster setups, you must deploy and upgrade Praefect in a similar way by using a graceful reload.
 
 NOTE:
 The upgrade process attempts to do a graceful handover to a new Praefect process.
@@ -213,24 +213,26 @@ nodes to be a deploy node. This target node will be configured to run migrations
 Rails as a webserver consists primarily of [Puma](../administration/operations/puma.md), [Workhorse](../development/workhorse/index.md), and [NGINX](../development/architecture.md#nginx).
 
 Each of these components have different behaviours when it comes to doing a live upgrade. While Puma can allow
-for a graceful reload, Workhorse doesn't. As such, the best approach is to drain the node gracefully through other means such as via your Load Balancer. It's also possible to do this via NGINX on the node through its graceful shutdown functionality. In this section we'll use the NGINX approach.
+for a graceful reload, Workhorse doesn't. The best approach is to drain the node gracefully through other means,
+such as by using your load balancer. You can also do this by using NGINX on the node through its graceful shutdown
+functionality. This section explains the NGINX approach.
 
-In addition to the above, Rails is where the main database migrations need to be executed. Like Praefect, this is best done via the deploy node approach. If PgBouncer is currently being used, it also needs to be bypassed as Rails uses an advisory lock when attempting to run a migration to prevent concurrent migrations from running on the same database. These locks are not shared across transactions, resulting in `ActiveRecord::ConcurrentMigrationError` and other issues when running database migrations using PgBouncer in transaction pooling mode.
+In addition to the above, Rails is where the main database migrations need to be executed. Like Praefect, the best approach is by using the deploy node. If PgBouncer is currently being used, it also needs to be bypassed as Rails uses an advisory lock when attempting to run a migration to prevent concurrent migrations from running on the same database. These locks are not shared across transactions, resulting in `ActiveRecord::ConcurrentMigrationError` and other issues when running database migrations using PgBouncer in transaction pooling mode.
 
 1. On the **Rails deploy node**:
 
-   1. Drain the node of traffic gracefully. This can be done in various ways, but one approach is via
-      NGINX by sending it a `QUIT` signal and then stopping the service. As an example this could be
-      done via the following shell script:
+   1. Drain the node of traffic gracefully. You can do this in various ways, but one
+   approach is to use NGINX by sending it a `QUIT` signal and then stopping the service.
+   As an example, you can do this by using the following shell script:
 
       ```shell
       # Send QUIT to NGINX master process to drain and exit
       NGINX_PID=$(cat /var/opt/gitlab/nginx/nginx.pid)
       kill -QUIT $NGINX_PID
- 
+
       # Wait for drain to complete
       while kill -0 $NGINX_PID 2>/dev/null; do sleep 1; done
- 
+
       # Stop NGINX service to prevent automatic restarts
       gitlab-ctl stop nginx
       ```
@@ -261,18 +263,18 @@ In addition to the above, Rails is where the main database migrations need to be
 
 1. On every **other Rails node** sequentially:
 
-   1. Drain the node of traffic gracefully. This can be done in various ways, but one approach is via
-      NGINX by sending it a `QUIT` signal and then stopping the service. As an example this could be
-      done via the following shell script:
+   1. Drain the node of traffic gracefully. You can do this in various ways, but one
+   approach is to use NGINX by sending it a `QUIT` signal and then stopping the service. 
+   As an example, you can do this by using the following shell script:
 
       ```shell
       # Send QUIT to NGINX master process to drain and exit
       NGINX_PID=$(cat /var/opt/gitlab/nginx/nginx.pid)
       kill -QUIT $NGINX_PID
- 
+
       # Wait for drain to complete
       while kill -0 $NGINX_PID 2>/dev/null; do sleep 1; done
- 
+
       # Stop NGINX service to prevent automatic restarts
       gitlab-ctl stop nginx
       ```
@@ -378,9 +380,9 @@ below:
 
 1. On the **Rails deploy node**:
 
-   1. Drain the node of traffic gracefully. This can be done in various ways, but one approach is via
-      NGINX by sending it a `QUIT` signal and then stopping the service. As an example this could be
-      done via the following shell script:
+   1. Drain the node of traffic gracefully. You can do this in various ways, but one
+   approach is to use NGINX by sending it a `QUIT` signal and then stopping the service.
+   As an example, you can do this by using the following shell script:
 
       ```shell
       # Send QUIT to NGINX master process to drain and exit
@@ -428,9 +430,9 @@ below:
 
 1. On every **other Rails node** sequentially:
 
-   1. Drain the node of traffic gracefully. This can be done in various ways, but one approach is via
-      NGINX by sending it a `QUIT` signal and then stopping the service. As an example this could be
-      done via the following shell script:
+   1. Drain the node of traffic gracefully. You can do this in various ways, but one
+   approach is to use NGINX by sending it a `QUIT` signal and then stopping the service.
+   As an example, you can do this by using the following shell script:
 
       ```shell
       # Send QUIT to NGINX master process to drain and exit

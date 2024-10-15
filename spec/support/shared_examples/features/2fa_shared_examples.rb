@@ -5,8 +5,8 @@ RSpec.shared_examples 'hardware device for 2fa' do |device_type|
   include Spec::Support::Helpers::ModalHelpers
 
   def register_device(device_type, **kwargs)
-    case device_type.downcase
-    when "webauthn"
+    case device_type
+    when 'WebAuthn'
       register_webauthn_device(**kwargs)
     else
       raise "Unknown device type #{device_type}"
@@ -57,10 +57,11 @@ RSpec.shared_examples 'hardware device for 2fa' do |device_type|
         expect(page).to have_content(first_device.name)
         expect(page).to have_content(second_device.name)
 
-        accept_gl_confirm(button_text: 'Delete') do
-          within_testid(device_type.downcase) do
-            click_on 'Delete', match: :first
-          end
+        click_button _('Delete WebAuthn device'), match: :first if device_type == 'WebAuthn'
+
+        within_modal do
+          fill_in _('Current password'), with: user.password
+          find_by_testid('2fa-action-primary').click
         end
 
         expect(page).to have_content('Successfully deleted')

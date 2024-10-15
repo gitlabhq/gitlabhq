@@ -64,11 +64,11 @@ For most package types, the following credential types are valid:
   allows access to packages in the project running the job for the users running the pipeline.
   Access to other external projects can be configured.
 - If your organization uses two factor authentication (2FA), you must use a personal access token with the scope set to `api`.
-- If you are publishing a package via CI/CD pipelines, you must use a CI job token.
+- If you are publishing a package by using CI/CD pipelines, you must use a CI job token.
 
 NOTE:
 If the "Package registry" feature is turned off for your project at **Settings > General > Visibility, project features, permissions**, you will receive a 403 Forbidden response.
-Accessing package registry via deploy token is not available when external authorization is enabled.
+Accessing the package registry with a deploy token is not available when external authorization is enabled.
 
 ## Use GitLab CI/CD
 

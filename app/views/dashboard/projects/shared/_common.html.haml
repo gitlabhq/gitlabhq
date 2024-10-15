@@ -5,9 +5,11 @@
 = render "projects/last_push"
 
 - if Feature.enabled?(:your_work_projects_vue, current_user)
-  #js-your-work-projects-app
+  = render 'dashboard/projects_head'
+  #js-your-work-projects-app{ data: { app_data: dashboard_projects_app_data } }
 - else
   = render 'dashboard/projects_head', project_tab_filter: :starred
+  = render 'dashboard/projects_nav'
 
   - if params[:filter_projects] || any_projects?(@projects)
     = render 'projects'

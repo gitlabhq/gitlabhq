@@ -1240,7 +1240,6 @@ RSpec/FeatureCategory:
     - 'spec/controllers/profiles/avatars_controller_spec.rb'
     - 'spec/controllers/profiles/emails_controller_spec.rb'
     - 'spec/controllers/profiles/preferences_controller_spec.rb'
-    - 'spec/controllers/profiles/webauthn_registrations_controller_spec.rb'
     - 'spec/controllers/profiles_controller_spec.rb'
     - 'spec/controllers/projects/analytics/cycle_analytics/stages_controller_spec.rb'
     - 'spec/controllers/projects/analytics/cycle_analytics/summary_controller_spec.rb'

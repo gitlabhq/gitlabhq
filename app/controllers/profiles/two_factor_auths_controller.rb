@@ -3,7 +3,7 @@
 class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
   skip_before_action :check_two_factor_requirement
   before_action :ensure_verified_primary_email, only: [:show, :create]
-  before_action :validate_current_password, only: [:create, :codes, :destroy, :destroy_otp, :create_webauthn], if: :current_password_required?
+  before_action :validate_current_password, only: [:create, :codes, :destroy, :destroy_otp, :destroy_webauthn, :create_webauthn], if: :current_password_required?
   before_action :update_current_user_otp!, only: [:show]
 
   helper_method :current_password_required?
@@ -103,6 +103,12 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
     end
   end
 
+  def destroy_webauthn
+    Webauthn::DestroyService.new(current_user, current_user, params[:id]).execute
+
+    redirect_to profile_two_factor_auth_path, status: :found, notice: _("Successfully deleted WebAuthn device.")
+  end
+
   def skip
     if two_factor_grace_period_expired?
       redirect_to new_profile_two_factor_auth_path, alert: _('Cannot skip two factor authentication setup')
@@ -185,7 +191,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
       {
         name: webauthn_registration.name,
         created_at: webauthn_registration.created_at,
-        delete_path: profile_webauthn_registration_path(webauthn_registration)
+        delete_path: destroy_webauthn_profile_two_factor_auth_path(webauthn_registration)
       }
     end
   end

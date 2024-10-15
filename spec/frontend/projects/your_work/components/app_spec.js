@@ -81,7 +81,6 @@ describe('YourWorkProjectsApp', () => {
     });
   };
 
-  const findPageTitle = () => wrapper.find('h1');
   const findGlTabs = () => wrapper.findComponent(GlTabs);
   const findActiveTab = () => wrapper.findByRole('tab', { selected: true });
   const findTabByName = (name) =>
@@ -96,12 +95,6 @@ describe('YourWorkProjectsApp', () => {
   });
 
   describe('template', () => {
-    it('renders Vue app with Projects h1 tag', () => {
-      createComponent();
-
-      expect(findPageTitle().text()).toBe('Projects');
-    });
-
     describe('when project counts are loading', () => {
       beforeEach(() => {
         createComponent();

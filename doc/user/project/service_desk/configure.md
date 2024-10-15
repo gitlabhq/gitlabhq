@@ -316,7 +316,7 @@ notification email with the verification result.
 If the verification failed, the email also contains details of the reason.
 
 If the verification was successful, the custom email address is ready to be used.
-You can now enable sending Service Desk emails via the custom email address.
+You can now enable sending Service Desk emails with the custom email address.
 
 #### Troubleshooting your configuration
 
@@ -371,7 +371,7 @@ To troubleshoot this:
 
 ### Enable or disable the custom email address
 
-After the custom email address has been verified, administrators can enable or disable sending Service Desk emails via the custom email address.
+After the custom email address has been verified, administrators can enable or disable sending Service Desk emails with the custom email address.
 
 To **enable** the custom email address:
 
@@ -1006,7 +1006,7 @@ or completely separately.
 
 1. GitLab offers two methods to transport emails from `mail_room` to the GitLab
    application. You can configure the `delivery_method` for each email setting individually:
-   1. Recommended: `webhook` (default in GitLab 15.3 and later) sends the email payload via an API POST request to your GitLab
+   1. Recommended: `webhook` (default in GitLab 15.3 and later) sends the email payload with an API POST request to your GitLab
       application. It uses a shared token to authenticate. If you choose this method,
       make sure the `mail_room` process can access the API endpoint and distribute the shared
       token across all application nodes.
@@ -1019,7 +1019,7 @@ or completely separately.
       gitlab_rails['incoming_email_delivery_method'] = "webhook"
 
       # The URL that mail_room can contact. You can also use an internal URL or IP,
-      # just make sure mail_room can access the GitLab API via that address.
+      # just make sure mail_room can access the GitLab API with that address.
       # Do not end with "/".
       gitlab_rails['incoming_email_gitlab_url'] = "https://gitlab.example.com"
 
@@ -1033,7 +1033,7 @@ or completely separately.
       gitlab_rails['service_desk_email_delivery_method'] = "webhook"
 
       # The URL that mail_room can contact. You can also use an internal URL or IP,
-      # just make sure mail_room can access the GitLab API via that address.
+      # just make sure mail_room can access the GitLab API with that address.
       # Do not end with "/".
 
       gitlab_rails['service_desk_email_gitlab_url'] = "https://gitlab.example.com"

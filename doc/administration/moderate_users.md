@@ -255,7 +255,7 @@ The user's state is set to active and they consume a
 [seat](../subscriptions/self_managed/index.md#billable-users).
 
 NOTE:
-A deactivated user can also activate their account themselves by logging back in via the UI.
+A deactivated user can also activate their account themselves by logging back in through the UI.
 Users can also be activated using the [GitLab API](../api/user_moderation.md#activate-a-user).
 
 ## Ban and unban users

@@ -89,7 +89,7 @@ Commit message templates support these variables:
 | `%{first_commit}`  | Full message of the first commit in merge request diff. | `Update README.md` |
 | `%{first_multiline_commit}` | Full message of the first commit that's not a merge commit and has more than one line in message body. Merge request title if all commits aren't multiline. | `Update README.md`<br><br>`Improved project description in readme file.` |
 | `%{url}`           | Full URL to the merge request. | `https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1` |
-| `%{reviewed_by}`   | Line-separated list of the merge request reviewers, based on users who submit a review via batch comments, in a `Reviewed-by` Git commit trailer format. | `Reviewed-by: Sidney Jones <sjones@example.com>` <br> `Reviewed-by: Zhang Wei <zwei@example.com>` |
+| `%{reviewed_by}`   | Line-separated list of the merge request reviewers, based on users who submit a review by using batch comments, in a `Reviewed-by` Git commit trailer format. | `Reviewed-by: Sidney Jones <sjones@example.com>` <br> `Reviewed-by: Zhang Wei <zwei@example.com>` |
 | `%{approved_by}`   | Line-separated list of the merge request approvers in a `Approved-by` Git commit trailer format. | `Approved-by: Sidney Jones <sjones@example.com>` <br> `Approved-by: Zhang Wei <zwei@example.com>` |
 | `%{merged_by}`     | User who merged the merge request. | `Alex Garcia <agarcia@example.com>` |
 | `%{merge_request_author}` | Name and email of the merge request author. | `Zane Doe <zdoe@example.com>` |

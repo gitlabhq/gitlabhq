@@ -385,7 +385,7 @@ DETAILS:
 
 #### Memberships not granted
 
-Sometimes you may think a particular user should be added to a GitLab group via
+Sometimes you may think a particular user should be added to a GitLab group through
 LDAP group sync, but for some reason it's not happening. You can check several
 things to debug the situation.
 

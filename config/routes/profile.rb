@@ -64,10 +64,9 @@ resource :profile, only: [] do
         patch :skip
         post :create_webauthn
         delete :destroy_otp
+        delete :destroy_webauthn, path: 'destroy_webauthn/:id'
       end
     end
-
-    resources :webauthn_registrations, only: [:destroy]
 
     resources :usage_quotas, only: [:index]
   end

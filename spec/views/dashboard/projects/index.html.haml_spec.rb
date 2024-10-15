@@ -29,6 +29,14 @@ RSpec.describe 'dashboard/projects/index.html.haml', feature_category: :groups_a
         expect(rendered).to have_selector('#js-your-work-projects-app')
         expect(rendered).not_to render_template('dashboard/projects/_projects')
       end
+
+      it 'shows the "New project" button' do
+        expect(rendered).to have_link('New project')
+      end
+
+      it 'shows the "Explore projects" button' do
+        expect(rendered).to have_link('Explore projects')
+      end
     end
 
     context 'when projects do not exist' do

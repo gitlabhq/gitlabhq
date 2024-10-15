@@ -42,7 +42,7 @@
         %p
           - register_2fa_token = _('We recommend using cloud-based authenticator applications that can restore access if you lose your hardware device.')
           = register_2fa_token.html_safe
-          = link_to _('What are some examples?'), help_page_path('user/profile/account/two_factor_authentication.md', anchor: 'enable-one-time-password'), target: '_blank', rel: 'noopener noreferrer'
+          = link_to _('What are some examples?'), help_page_path('user/profile/account/two_factor_authentication.md', anchor: 'enable-a-one-time-password-authenticator'), target: '_blank', rel: 'noopener noreferrer'
         .gl-p-2.gl-mb-3{ style: 'background: #fff' }
           = raw @qr_code
         .gl-mb-5
@@ -93,7 +93,7 @@
           = _("Not all browsers support WebAuthn. You must save your recovery codes after you first register a two-factor authenticator to be able to sign in, even from an unsupported browser.")
         - else
           = _("Not all browsers support WebAuthn. Therefore, we require that you set up a two-factor authentication app first. That way you'll always be able to sign in, even from an unsupported browser.")
-    .col-lg-8{ data: { testid: 'webauthn' } }
+    .col-lg-8
       - if @webauthn_registration.errors.present?
         = form_errors(@webauthn_registration)
       = render "authentication/register", target_path: create_webauthn_profile_two_factor_auth_path
@@ -127,7 +127,7 @@
                   %td= registration[:created_at].to_date.to_fs(:medium)
                   %td
                     .gl-float-right
-                      .js-two-factor-action-confirm{ data: delete_webauthn_device_data(registration[:delete_path]) }
+                      .js-two-factor-action-confirm{ data: delete_webauthn_device_data(current_password_required?, registration[:delete_path]) }
 
       - else
         .settings-message.text-center

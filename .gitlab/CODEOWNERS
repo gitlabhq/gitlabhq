@@ -1192,11 +1192,16 @@ lib/gitlab/checks/**
 /ee/spec/requests/custom_roles/
 /ee/lib/api/member_roles.rb
 
+[Container registry] @gitlab-org/ci-cd/package-stage/container-registry-group
+/app/assets/javascripts/packages_and_registries/container_registry/
+/app/assets/javascripts/packages_and_registries/dependency_proxy/
+/app/assets/javascripts/packages_and_registries/harbor_registry/
+/ee/app/services/ee/auth/container_registry_authentication_service.rb
+
 [Authentication] @gitlab-org/govern/authentication/approvers
 /app/assets/javascripts/access_tokens/
 /app/assets/javascripts/alerts_settings/graphql/mutations/reset_http_token.mutation.graphql
 /app/assets/javascripts/authentication/
-/app/assets/javascripts/packages_and_registries/package_registry/components/list/tokens/
 /app/assets/javascripts/pages/admin/impersonation_tokens/
 /app/assets/javascripts/pages/groups/settings/access_tokens/
 /app/assets/javascripts/pages/ldap/
@@ -1365,7 +1370,6 @@ lib/gitlab/checks/**
 /ee/app/models/ee/project_authorization.rb
 /ee/app/models/scim_oauth_access_token.rb
 /ee/app/serializers/scim_oauth_access_token_entity.rb
-/ee/app/services/ee/auth/
 /ee/app/services/ee/personal_access_tokens/
 /ee/app/services/ee/resource_access_tokens/
 /ee/app/services/ee/users/authorized_build_service.rb

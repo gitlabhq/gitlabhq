@@ -2743,8 +2743,6 @@
 - './spec/controllers/profiles/emails_controller_spec.rb'
 - './spec/controllers/profiles/notifications_controller_spec.rb'
 - './spec/controllers/profiles/preferences_controller_spec.rb'
-- './spec/controllers/profiles/two_factor_auths_controller_spec.rb'
-- './spec/controllers/profiles/webauthn_registrations_controller_spec.rb'
 - './spec/controllers/projects/alerting/notifications_controller_spec.rb'
 - './spec/controllers/projects/analytics/cycle_analytics/stages_controller_spec.rb'
 - './spec/controllers/projects/analytics/cycle_analytics/summary_controller_spec.rb'

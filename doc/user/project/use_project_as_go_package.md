@@ -95,7 +95,7 @@ If the Go module is located under a private subgroup like
 `gitlab.com/namespace/subgroup/go-module`, then the Git authentication doesn't work.
 It happens, because `go get` makes an unauthenticated request to discover
 the repository path.
-Without an HTTP authentication via `.netrc` file, GitLab responds with
+Without an HTTP authentication by using a `.netrc` file, GitLab responds with
 `gitlab.com/namespace/subgroup.git` to prevent a security risk of exposing
 the project's existence for unauthenticated users.
 As a result, the Go module cannot be downloaded.

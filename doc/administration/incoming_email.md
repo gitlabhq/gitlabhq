@@ -131,8 +131,8 @@ WARNING:
 Be careful when choosing the domain used for receiving incoming email.
 
 For example, suppose your top-level company domain is `hooli.com`.
-All employees in your company have an email address at that domain via Google
-Apps, and your company's private Slack instance requires a valid `@hooli.com`
+All employees in your company have an email address at that domain through Google
+Workspace, and your company's private Slack instance requires a valid `@hooli.com`
 email address to sign up.
 
 If you also host a public-facing GitLab instance at `hooli.com` and set your

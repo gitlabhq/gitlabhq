@@ -72,6 +72,9 @@ describe('WorkItemDrawer', () => {
           push: mockRouterPush,
         },
       },
+      stubs: {
+        WorkItemDetail,
+      },
       apolloProvider: createMockApollo([
         [deleteWorkItemMutation, deleteWorkItemMutationHandler],
         [workspacePermissionsQuery, workspacePermissionsHandler],

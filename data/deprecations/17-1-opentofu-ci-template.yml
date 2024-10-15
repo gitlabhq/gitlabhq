@@ -18,10 +18,6 @@
     With the introduction of [GitLab CI/CD components for self-managed users](https://docs.gitlab.com/ee/ci/components/#use-a-gitlabcom-component-in-a-self-managed-instance)
     we are removing the redundant OpenTofu CI/CD templates in favor of the CI/CD components.
 
-    We introduced the OpenTofu CI/CD template in 16.8 because CI/CD components were not yet available for self-managed instances.
-    With the introduction of [GitLab CI/CD components for self-managed users](https://docs.gitlab.com/ee/ci/components/#use-a-gitlabcom-component-in-a-self-managed-instance),
-    we are removing the redundant OpenTofu CI/CD templates in favor of the [OpenTofu CI/CD component](https://gitlab.com/components/opentofu).
-
     For information about migrating from the CI/CD template to the component, see the [OpenTofu component documentation](https://gitlab.com/components/opentofu#usage-on-self-managed).
 
 # ==============================

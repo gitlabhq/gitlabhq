@@ -11,6 +11,7 @@ RSpec.describe Packages::Nuget::Symbol, type: :model, feature_category: :package
 
   describe 'relationships' do
     it { is_expected.to belong_to(:package).inverse_of(:nuget_symbols) }
+    it { is_expected.to belong_to(:project) }
   end
 
   describe 'validations' do

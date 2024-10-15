@@ -475,7 +475,7 @@ a session if the browser is closed or the existing session expires.
   - [Sign-ins from unknown IP addresses or devices](notifications.md#notifications-for-unknown-sign-ins)
   - [Attempted sign-ins using incorrect verification codes](notifications.md#notifications-for-attempted-sign-ins-using-incorrect-verification-codes)
 - Manage applications that can [use GitLab as an OAuth provider](../../integration/oauth_provider.md)
-- Manage [personal access tokens](personal_access_tokens.md) to access your account via API and authorized applications
-- Manage [SSH keys](../ssh.md) to access your account via SSH
+- Manage [personal access tokens](personal_access_tokens.md) to access your account through the API and authorized applications
+- Manage [SSH keys](../ssh.md) to access your account by using SSH
 - [Change the syntax highlighting theme](preferences.md#change-the-syntax-highlighting-theme)
 - [View your active sessions](active_sessions.md) and revoke any of them if necessary

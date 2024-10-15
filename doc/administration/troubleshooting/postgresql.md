@@ -286,7 +286,7 @@ HINT:  Free one or increase max_replication_slots.
 ### Geo replication errors
 
 If you receive errors like this example, read about how to resolve
-[Geo replication errors](../geo/replication/troubleshooting/replication.md#fixing-postgresql-database-replication-errors):
+[Geo replication errors](../geo/replication/troubleshooting/postgresql_replication.md):
 
 ```plaintext
 ERROR: replication slots can only be used if max_replication_slots > 0

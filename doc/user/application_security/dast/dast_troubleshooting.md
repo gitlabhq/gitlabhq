@@ -75,7 +75,7 @@ tips for optimizing DAST scans in a [blog post](https://about.gitlab.com/blog/20
 
 For information on this, see the [general Application Security troubleshooting section](../../../ci/jobs/job_artifacts_troubleshooting.md#error-message-no-files-to-upload).
 
-## Getting error `dast job: chosen stage does not exist` when including DAST CI template
+## Getting error `dast job: chosen stage dast does not exist` when including DAST CI template
 
 To avoid overwriting stages from other CI files, newer versions of the DAST CI template do not
 define stages. If you recently started using `DAST.latest.gitlab-ci.yml` or upgraded to a new major

@@ -220,7 +220,7 @@ Then authenticate by either:
 
 - Entering the correct OTP.
 - In GitLab 15.3 and later, responding to a device push notification if
-  [FortiAuthenticator is enabled](../user/profile/account/two_factor_authentication.md#enable-one-time-password-using-fortiauthenticator).
+  [FortiAuthenticator is enabled](../user/profile/account/two_factor_authentication.md#enable-a-one-time-password-authenticator-using-fortiauthenticator).
 
 After successful authentication, you can perform [Git over SSH operations](../development/gitlab_shell/features.md#git-operations) for 15 minutes (default) with the associated
 SSH key.

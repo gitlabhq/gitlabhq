@@ -752,7 +752,7 @@ Plan.default.actual_limits.update!(dast_profile_schedules: 50)
 
 The default maximum size of the CI artifacts archive is 5 megabytes.
 
-You can change this limit via the [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session).
+You can change this limit by using the [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session).
 To update the maximum size of the CI artifacts archive,
 update `max_artifacts_content_include_size` with the new value. For example, to set it to 20 MB:
 
@@ -794,7 +794,7 @@ by multiplying [`max_yaml_size_bytes` (default 1 MB)](#maximum-size-and-depth-of
 with [`ci_max_includes` (default 150)](../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls).
 If both limits are unmodified, the default is set to 1 MB x 150 = `157286400` bytes (150 MB).
 
-You can change this limit via the [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session).
+You can change this limit by using the [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session).
 To update the maximum memory that can be allocated for the CI/CD configuration,
 update `ci_max_total_yaml_size_bytes` with the new value. For example, to set it to 20 MB:
 

@@ -111,7 +111,7 @@ through the AMI process, or upgrade the package itself:
   and a redeployment using AMIs issues the nodes with new hostnames. Even though
   the storage is the same, Gitaly Cluster does not work when the hostnames change.
 
-The Praefect nodes, however, can be upgraded via an AMI redeployment process:
+The Praefect nodes, however, can be upgraded by using an AMI redeployment process:
 
   1. The AMI redeployment process must include `gitlab-ctl reconfigure`.
      Set `praefect['auto_migrate'] = false` on the AMI so all nodes get this. This

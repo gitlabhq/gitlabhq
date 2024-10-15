@@ -125,7 +125,7 @@ If you are running a self-managed instance of GitLab,
 
 ### Configure GitLab Pages in a Helm Chart (Kubernetes) instance
 
-To configure GitLab Pages on instances deployed via Helm chart (Kubernetes), use either:
+To configure GitLab Pages on instances deployed with Helm chart (Kubernetes), use either:
 
 - [The `gitlab-pages` subchart](https://docs.gitlab.com/charts/charts/gitlab/gitlab-pages/).
 - [An external GitLab Pages instance](https://docs.gitlab.com/charts/advanced/external-gitlab-pages/).

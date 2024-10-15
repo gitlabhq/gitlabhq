@@ -114,7 +114,6 @@ Rails/StrongParams:
     - 'app/controllers/profiles/groups_controller.rb'
     - 'app/controllers/profiles/slacks_controller.rb'
     - 'app/controllers/profiles/two_factor_auths_controller.rb'
-    - 'app/controllers/profiles/webauthn_registrations_controller.rb'
     - 'app/controllers/projects/alert_management_controller.rb'
     - 'app/controllers/projects/alerting/notifications_controller.rb'
     - 'app/controllers/projects/analytics/cycle_analytics/stages_controller.rb'

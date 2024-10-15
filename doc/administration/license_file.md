@@ -211,7 +211,7 @@ License.current # check to make sure it applied
 ```
 
 These snippets can be saved to a file and executed [using the Rails Runner](operations/rails_console.md#using-the-rails-runner) so the
-license can be applied via shell automation scripts.
+license can be applied through shell automation scripts.
 
 This is needed for example in a known edge-case with
 [expired license and multiple LDAP servers](../administration/auth/ldap/ldap-troubleshooting.md#expired-license-causes-errors-with-multiple-ldap-servers).

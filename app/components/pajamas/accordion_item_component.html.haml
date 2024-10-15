@@ -1,6 +1,6 @@
 .gl-accordion-item
   %h3.gl-accordion-item-header
-    = render Pajamas::ButtonComponent.new(variant: :link, icon: icon, icon_classes: "js-chevron-icon", button_options: { "aria-controls": "accordion-item", "aria-expanded": expanded }) do
+    = render Pajamas::ButtonComponent.new(variant: :link, icon: icon, icon_classes: "js-chevron-icon", button_options: { "aria-controls": "accordion-item", "aria-expanded": expanded?, **@button_options}) do
       = @title
 
   .accordion-item.gl-mt-3.gl-text-base.collapse{ **body_class }

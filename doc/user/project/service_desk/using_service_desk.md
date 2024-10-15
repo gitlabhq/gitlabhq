@@ -37,7 +37,7 @@ are sent as emails:
 
 ![Service Desk reply email](img/service_desk_reply.png)
 
-Any responses they send via email are displayed in the issue itself.
+Any responses they send by email are displayed in the issue itself.
 
 For additional information see [External participants](external_participants.md) and the
 [headers used for treating email](../../../administration/incoming_email.md#accepted-headers).
@@ -56,7 +56,9 @@ To create a Service Desk ticket from the UI:
 1. Optional. Add a comment on the ticket to send an initial Service Desk email to the external participant.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<!-- vale gitlab_base.LatinTerms = NO -->
 For a walkthrough, see [Create Service Desk tickets via the UI and API (GitLab 16.10)](https://youtu.be/ibUGNc2wifQ).
+<!-- vale gitlab_base.LatinTerms = YES -->
 <!-- Video published on 2024-03-05 -->
 
 ## As a responder to the issue
