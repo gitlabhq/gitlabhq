@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::Filter::ExternalLinkFilter, feature_category: :team_planning do
+RSpec.describe Banzai::Filter::ExternalLinkFilter, feature_category: :markdown do
   include FilterSpecHelper
 
   shared_examples 'an external link with rel attribute' do

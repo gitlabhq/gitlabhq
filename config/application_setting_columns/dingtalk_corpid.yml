@@ -1,0 +1,12 @@
+---
+api_type:
+attr: dingtalk_corpid
+clusterwide: false
+column: encrypted_dingtalk_corpid
+db_type: bytea
+default:
+description:
+encrypted: true
+gitlab_com_different_than_default: false
+jihu: true
+not_null: false

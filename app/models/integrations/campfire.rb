@@ -55,7 +55,7 @@ module Integrations
 
     def self.help
       build_help_page_url(
-        'api/integrations',
+        'api/integrations.md',
         s_('CampfireService|Send notifications about push events to Campfire chat rooms.'),
         { anchor: 'campfire' }
       )

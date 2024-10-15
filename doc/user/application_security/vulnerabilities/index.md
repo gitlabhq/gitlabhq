@@ -32,7 +32,7 @@ the Vulnerability Report's [Activity filter](../vulnerability_report/index.md#ac
 ## Explaining a vulnerability
 
 DETAILS:
-**Tier: GitLab.com and Self-managed:** For a limited time, Ultimate. In the future, Ultimate with [GitLab Duo Enterprise](../../../subscriptions/subscription-add-ons.md). **GitLab Dedicated:** GitLab Duo Enterprise.
+**Tier: GitLab.com and Self-managed:** For a limited time, Ultimate. On October 17, 2024, Ultimate with [GitLab Duo Enterprise](https://about.gitlab.com/gitlab-duo/#pricing). **GitLab Dedicated:** GitLab Duo Enterprise.
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10368) in GitLab 16.0 as an [experiment](../../../policy/experiment-beta-support.md#experiment) on GitLab.com.
@@ -90,7 +90,7 @@ The following data is shared with third-party AI APIs:
 ## Vulnerability Resolution
 
 DETAILS:
-**Tier: GitLab.com and Self-managed:** For a limited time, Ultimate. In the future, Ultimate with [GitLab Duo Enterprise](../../../subscriptions/subscription-add-ons.md). **GitLab Dedicated:** GitLab Duo Enterprise.
+**Tier: GitLab.com and Self-managed:** For a limited time, Ultimate. On October 17, 2024, Ultimate with [GitLab Duo Enterprise](https://about.gitlab.com/gitlab-duo/#pricing). **GitLab Dedicated:** GitLab Duo Enterprise.
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Status:** Beta
 
@@ -100,16 +100,20 @@ DETAILS:
 Use GitLab Duo Vulnerability resolution to automatically create a merge request that
 resolves the vulnerability. By default, it is powered by Anthropic's [`claude-3.5-sonnet`](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet) model.
 
-We cannot guarantee that the large language model produces results that are correct. Use the
-explanation with caution.
+We can't guarantee that the large language model produces correct results.
+You should always review the proposed change before merging it. When reviewing, check that:
+
+- Your application's existing functionality is preserved.
+- The vulnerability is resolved in accordance with your organization's standards.
 
 Prerequisites:
 
-- You must have the GitLab Ultimate subscription tier and GitLab Duo Enterprise..
+- You must have the GitLab Ultimate subscription tier and GitLab Duo Enterprise.
 - You must be a member of the project.
-- The vulnerability must be a SAST finding by a supported analyzer:
-  - [GitLab supported analyzer](../sast/analyzers.md)
-  - Properly integrated [3rd party SAST scanner](../../../development/integrations/secure.md) which includes reporting both [vulnerability location](../../../development/integrations/secure.md#sast) and [CWE Identifier](../../../development/integrations/secure.md#identifiers) for each vulnerability.
+- The vulnerability must be a SAST finding from a supported analyzer:
+  - Any [GitLab-supported analyzer](../sast/analyzers.md).
+  - A properly integrated [third-party SAST scanner](../../../development/integrations/secure.md) that reports the [vulnerability location](../../../development/integrations/secure.md#sast) and a [CWE Identifier](../../../development/integrations/secure.md#identifiers) for each vulnerability.
+- The vulnerability must be of a [supported type](#supported-vulnerabilities-for-vulnerability-resolution).
 
 Learn more about [how to enable all GitLab Duo features](../../ai_features_enable.md).
 
@@ -122,6 +126,7 @@ To resolve the vulnerability:
 1. In the dropdown list that appears, select **Tool**, then select all the values in the **SAST** category.
 1. Select outside the filter field. The vulnerability severity totals and list of matching vulnerabilities are updated.
 1. Select the SAST vulnerability you want resolved.
+   - A blue icon is shown next to vulnerabilities that support Vulnerability Resolution.
 1. In the upper-right corner, select **Resolve with AI**.
 1. Add an additional commit to the MR. This forces a new pipeline to run.
 1. After the pipeline is complete, on the [pipeline security tab](../vulnerability_report/pipeline.md#view-vulnerabilities-in-a-pipeline), confirm that the vulnerability no longer appears.
@@ -130,11 +135,17 @@ To resolve the vulnerability:
 A merge request containing the AI remediation suggestions is opened. Review the suggested changes,
 then process the merge request according to your standard workflow.
 
-### Limitations of Vulnerability Resolution
+Provide feedback on this feature in [issue 476553](https://gitlab.com/gitlab-org/gitlab/-/issues/476553).
 
-Vulnerability Resolution is enabled for the following list of vulnerability classes. If you see that the button is disabled, that means that the CWE is not part of the supported list at this time. We are actively testing and expanding coverage for Vulnerability Resolution to more classes of vulnerabilities.
+### Supported vulnerabilities for Vulnerability Resolution
 
-<details><summary style="color:#5943b6"><a>View the complete list of supported CWEs for Vulnerability Resolution</a></summary>
+To ensure that suggested resolutions are high-quality, Vulnerability Resolution is available for a specific set of vulnerabilities.
+The system decides whether to offer Vulnerability Resolution based on the vulnerability's Common Weakness Enumeration (CWE) identifier.
+
+We selected the current set of vulnerabilities based on testing by automated systems and security experts.
+We are actively working to expand coverage to more types of vulnerabilities.
+
+<details><summary style="color:#5943b6; margin-top: 1em;"><a>View the complete list of supported CWEs for Vulnerability Resolution</a></summary>
 
 <ul>
   <li>CWE-23: Relative Path Traversal</li>
@@ -185,16 +196,16 @@ Vulnerability Resolution is enabled for the following list of vulnerability clas
 
 ### Troubleshooting
 
-Occasionally the Vulnerability Resolution may not work as expected. Please use the following
-resources to troubleshoot:
+Vulnerability Resolution sometimes cannot generate a suggested fix. Common causes include:
 
-- You may be presented with a message indicating that the AI model has determined that the
-  vulnerability is a false positive. Use this feature with caution and always verify the AI model's
-  response.
-- "Upstream" errors - this may indicate an issue with our third-party AI. Please try again, and
-  report to GitLab if the error continues.
-- General errors, such as "an unexpected error has occurred" - this may indicate an issue within
-  GitLab Duo. Please try again, and report to GitLab if the error continues.
+- **False positive detected:** Before proposing a fix, the AI model assesses whether the vulnerability is valid. It may judge that the vulnerability is not a true vulnerability, or isn't worth fixing.
+  - This can happen if the vulnerability occurs in test code. Your organization might still choose to fix vulnerabilities even if they happen in test code, but models sometimes assess these to be false positives.
+  - If you agree that the vulnerability is a false-positive or is not worth fixing, you should [dismiss the vulnerability](#vulnerability-status-values) and [select a matching reason](#vulnerability-dismissal-reasons).
+    - To customize your SAST configuration or report a problem with a GitLab SAST rule, see [SAST rules](../sast/rules.md).
+- **Temporary or unexpected error:** The error message may state that "an unexpected error has occurred", "the upstream AI provider request timed out", "something went wrong", or a similar cause.
+  - These errors may be caused by temporary problems with the AI provider or with GitLab Duo.
+  - A new request may succeed, so you can try to resolve the vulnerability again.
+  - If you continue to see these errors, contact GitLab for assistance.
 
 ### Data shared with third-party AI APIs for Vulnerability Resolution
 

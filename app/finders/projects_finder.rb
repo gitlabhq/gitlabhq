@@ -30,10 +30,13 @@
 #     not_aimed_for_deletion: boolean
 #     full_paths: string[]
 #     organization: Scope the groups to the Organizations::Organization
+#     language: int
+#     language_name: string
 #
 class ProjectsFinder < UnionFinder
   include CustomAttributesFilter
   include UpdatedAtFilter
+  include Projects::SearchFilter
 
   attr_accessor :params
   attr_reader :current_user, :project_ids_relation
@@ -218,18 +221,6 @@ class ProjectsFinder < UnionFinder
     items.with_topic(topic)
   end
 
-  def by_search(items)
-    params[:search] ||= params[:name]
-
-    return items if Feature.enabled?(:disable_anonymous_project_search, type: :ops) && current_user.nil?
-
-    if params[:search].present? && params[:minimum_search_length].present? && params[:search].length < params[:minimum_search_length].to_i
-      return items.none
-    end
-
-    items.optionally_search(params[:search], include_namespace: params[:search_namespaces].present?)
-  end
-
   def by_not_aimed_for_deletion(items)
     params[:not_aimed_for_deletion].present? ? items.not_aimed_for_deletion : items
   end
@@ -259,11 +250,10 @@ class ProjectsFinder < UnionFinder
   end
 
   def by_language(items)
-    if params[:language].present?
-      items.with_programming_language_id(params[:language])
-    else
-      items
-    end
+    return items.with_programming_language_id(params[:language]) if params[:language].present?
+    return items.with_programming_language(params[:language_name]) if params[:language_name].present?
+
+    items
   end
 
   def sort(items)

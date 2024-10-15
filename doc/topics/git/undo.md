@@ -326,11 +326,11 @@ it's no longer accessible in your repository's history.
 Replaces a list of strings with `***REMOVED***`.
 
 Alternatively, to completely delete specific files from a repository, see
-[Remove blobs](../../user/project/repository/reducing_the_repo_size_using_git.md#remove-blobs).
+[Remove blobs](../../user/project/repository/repository_size.md#remove-blobs).
 
 Prerequisites:
 
-- You must have the Owner role for the instance.
+- You must have the Owner role for the project.
 
 To redact text from your repository:
 
@@ -368,7 +368,7 @@ These tools are faster because they do not provide the same
 feature set as `git filter-branch` does, but focus on specific use cases.
 
 For more information about purging files from the repository history and GitLab storage,
-see [Reduce repository size](../../user/project/repository/reducing_the_repo_size_using_git.md).
+see [Reduce repository size](../../user/project/repository/repository_size.md#reduce-repository-size).
 
 ## Undo commits by removing them
 
@@ -529,7 +529,7 @@ git checkout -- <file>
 
 These commands remove the file from current branches, but do not expunge it from your repository's history.
 To completely remove all traces of the file, past and present, from your repository, see
-[Remove blobs](../../user/project/repository/reducing_the_repo_size_using_git.md#remove-blobs).
+[Remove blobs](../../user/project/repository/repository_size.md#remove-blobs).
 
 ## Related topics
 

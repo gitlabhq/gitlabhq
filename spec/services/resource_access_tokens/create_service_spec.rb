@@ -31,6 +31,20 @@ RSpec.describe ResourceAccessTokens::CreateService, feature_category: :system_ac
       end
     end
 
+    shared_examples 'deletes failed project bot' do
+      it 'calls DeleteUserWorker for the project bot' do
+        expect_next_instance_of(User) do |project_bot|
+          project_bot.id = User.maximum(:id) + 1
+          expect(DeleteUserWorker).to receive(:perform_async).with(
+            user.id, project_bot.id,
+            hard_delete: true, skip_authorization: true, reason_for_deletion: "Access token creation failed"
+          ).and_call_original
+        end
+
+        subject
+      end
+    end
+
     shared_examples 'correct error message' do
       it 'returns correct error message' do
         expect(subject.error?).to be true
@@ -279,18 +293,16 @@ RSpec.describe ResourceAccessTokens::CreateService, feature_category: :system_ac
 
             it_behaves_like 'token creation fails'
             it_behaves_like 'correct error message'
+            it_behaves_like 'deletes failed project bot'
           end
         end
 
         context "when access provisioning fails" do
-          let_it_be(:bot_user) { create(:user, :project_bot) }
-
-          let(:unpersisted_member) { build(:project_member, source: resource, user: bot_user) }
+          let(:unpersisted_member) { build(:project_member, source: resource) }
           let(:error_message) { 'Could not provision maintainer access to the access token. ERROR: error message' }
 
           before do
             allow_next_instance_of(ResourceAccessTokens::CreateService) do |service|
-              allow(service).to receive(:create_user).and_return(bot_user)
               allow(service).to receive(:create_membership).and_return(unpersisted_member)
             end
 
@@ -303,6 +315,7 @@ RSpec.describe ResourceAccessTokens::CreateService, feature_category: :system_ac
 
             it_behaves_like 'token creation fails'
             it_behaves_like 'correct error message'
+            it_behaves_like 'deletes failed project bot'
           end
 
           context 'with MAINTAINER access_level, in string format' do
@@ -310,6 +323,7 @@ RSpec.describe ResourceAccessTokens::CreateService, feature_category: :system_ac
 
             it_behaves_like 'token creation fails'
             it_behaves_like 'correct error message'
+            it_behaves_like 'deletes failed project bot'
           end
         end
       end

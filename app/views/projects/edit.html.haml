@@ -3,7 +3,7 @@
 - add_page_specific_style 'page_bundles/projects_edit'
 - reduce_visibility_form_id = 'reduce-visibility-form'
 - @force_desktop_expanded_sidebar = true
-- project_docs_path = help_page_path('user/project/working_with_projects')
+- project_docs_path = help_page_path('user/project/working_with_projects.md')
 - project_docs_link_start = '<a href="%{url}" target="_blank">'.html_safe % { url: project_docs_path }
 
 %h1.gl-sr-only= @breadcrumb_title
@@ -36,7 +36,7 @@
     expanded: expanded_by_default?) do |c|
     - c.with_description do
       = s_('ProjectSettings|Add badges to display information about this project.')
-      = link_to s_('ProjectSettings|What are badges?'), help_page_path('user/project/badges')
+      = link_to s_('ProjectSettings|What are badges?'), help_page_path('user/project/badges.md')
     - c.with_body do
       = render 'shared/badges/badge_settings'
 
@@ -61,13 +61,13 @@
               %h4.gl-text-base.gl-leading-24.gl-m-0= _('Housekeeping')
             %p.gl-text-subtle.gl-text-sm.gl-m-0
               = _('Runs a number of housekeeping tasks within the current repository, such as compressing file revisions and removing unreachable objects.')
-              = link_to _('Learn more.'), help_page_path('administration/housekeeping'), target: '_blank', rel: 'noopener noreferrer'
+              = link_to _('Learn more.'), help_page_path('administration/housekeeping.md'), target: '_blank', rel: 'noopener noreferrer'
 
           - c.with_body do
             .gl-flex.gl-flex-wrap.gl-gap-3
               = render Pajamas::ButtonComponent.new(method: :post, href: housekeeping_project_path(@project)) do
                 = _('Run housekeeping')
-              #js-project-prune-unreachable-objects-button{ data: { prune_objects_path: housekeeping_project_path(@project, prune: true), prune_objects_doc_path: help_page_path('administration/housekeeping', anchor: 'prune-unreachable-objects') } }
+              #js-project-prune-unreachable-objects-button{ data: { prune_objects_path: housekeeping_project_path(@project, prune: true), prune_objects_doc_path: help_page_path('administration/housekeeping.md', anchor: 'prune-unreachable-objects') } }
 
         = render 'export', project: @project
 
@@ -78,7 +78,7 @@
             .gl-flex.gl-grow
               %h4.gl-text-base.gl-leading-24.gl-m-0= _('Change path')
             %p.gl-text-subtle.gl-text-sm.gl-m-0
-              - link = link_to('', help_page_path('user/project/working_with_projects', anchor: 'rename-a-repository'), target: '_blank', rel: 'noopener noreferrer')
+              - link = link_to('', help_page_path('user/project/working_with_projects.md', anchor: 'rename-a-repository'), target: '_blank', rel: 'noopener noreferrer')
               = safe_format(_("A project’s repository name defines its URL (the one you use to access the project via a browser) and its place on the file disk where GitLab is installed. %{link_start}Learn more.%{link_end}"), tag_pair(link, :link_start, :link_end))
 
           - c.with_body do

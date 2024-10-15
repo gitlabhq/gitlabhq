@@ -77,8 +77,8 @@ class Groups::ApplicationController < ApplicationController
     false
   end
 
-  def validate_root_group!
-    render_404 unless group.root?
+  def validate_crm_group!
+    render_404 unless group.crm_group?
   end
 
   def authorize_action!(action)

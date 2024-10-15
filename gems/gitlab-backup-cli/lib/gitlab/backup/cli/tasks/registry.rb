@@ -21,7 +21,7 @@ module Gitlab
           def config
             settings = {
               object_store: {
-                connection: Gitlab::Backup::Cli::SourceContext.new.config('object_store').connection.to_hash,
+                connection: context.config('object_store').connection.to_hash,
                 remote_directory: options.container_registry_bucket
               }
             }
@@ -30,8 +30,8 @@ module Gitlab
 
           private
 
-          def target
-            check_object_storage(::Backup::Targets::Files.new(nil, storage_path, options: options))
+          def local
+            ::Backup::Targets::Files.new(nil, storage_path, options: options)
           end
 
           def storage_path = context.registry_path

@@ -88,7 +88,8 @@ RSpec.describe 'Projects settings', feature_category: :groups_and_projects do
   def expect_toggle_state(state)
     is_collapsed = state == :collapsed
 
-    expect(button).to have_content(is_collapsed ? 'Expand' : 'Collapse')
+    expect(panel).to have_css(is_collapsed ? '.settings-toggle[aria-label^="Expand"]' : '.settings-toggle[aria-label^="Collapse"]')
+
     expect(panel[:class]).send(is_collapsed ? 'not_to' : 'to', include('expanded'))
   end
 end

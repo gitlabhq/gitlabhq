@@ -2,7 +2,7 @@ export function createMockMergeRequest(mergeRequest = {}) {
   return {
     id: 1,
     reference: '!1',
-    titleHtml: 'Title',
+    title: 'Title',
     webUrl: '/',
     author: {
       id: 1,

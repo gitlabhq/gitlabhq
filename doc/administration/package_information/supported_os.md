@@ -17,7 +17,7 @@ avoid confusion, the official policy is that at any point of time, all the
 operating systems supported by GitLab are listed in the
 [installation page](https://about.gitlab.com/install/).
 
-The following lists the currently supported OSs and their possible EOL dates.
+The following lists the supported OSs and their possible EOL dates.
 
 NOTE:
 `amd64` and `x86_64` refer to the same 64-bit architecture.

@@ -3,6 +3,8 @@ import { GlAlert, GlLoadingIcon } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
 import { renderMarkdown } from '~/notes/utils';
 import SafeHtml from '~/vue_shared/directives/safe_html';
+import { sha256 } from '~/lib/utils/text_utility';
+import { InternalEvents } from '~/tracking';
 import { executeAndPresentQuery } from '../../core';
 import Counter from '../../utils/counter';
 
@@ -17,6 +19,7 @@ export default {
   directives: {
     SafeHtml,
   },
+  mixins: [InternalEvents.mixin()],
   props: {
     query: {
       required: true,
@@ -62,6 +65,7 @@ export default {
 
       try {
         this.presenterComponent = await executeAndPresentQuery(this.query);
+        this.trackRender();
       } catch (error) {
         this.handleQueryError(error.message);
       } finally {
@@ -78,6 +82,13 @@ export default {
       this.error = {};
     },
     renderMarkdown,
+    async trackRender() {
+      try {
+        this.trackEvent('render_glql_block', { label: await sha256(this.query) });
+      } catch (e) {
+        // ignore any tracking errors
+      }
+    },
   },
   safeHtmlConfig: { ALLOWED_TAGS: ['code'] },
   i18n: {

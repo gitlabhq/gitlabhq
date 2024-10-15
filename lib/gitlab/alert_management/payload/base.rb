@@ -152,11 +152,9 @@ module Gitlab
 
         private
 
-        def plain_gitlab_fingerprint
-        end
+        def plain_gitlab_fingerprint; end
 
-        def severity_raw
-        end
+        def severity_raw; end
 
         def severity_mapping
           SEVERITY_MAPPING

@@ -1,0 +1,13 @@
+---
+api_type: array of strings
+attr: import_sources
+clusterwide: true
+column: import_sources
+db_type: text
+default:
+description: 'Sources to allow project import from, possible values: `github`, `bitbucket`,
+  `bitbucket_server`, `fogbugz`, `git`, `gitlab_project`, `gitea`, and `manifest`.'
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

@@ -1,0 +1,13 @@
+---
+description: tracks when a user selects "Incident" as the issue type from the dropdown.
+action: select_issue_type_incident
+product_group: project_management
+milestone: '15.11'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115364
+distributions:
+  - ce
+  - ee
+tiers:
+  - free
+  - premium
+  - ultimate

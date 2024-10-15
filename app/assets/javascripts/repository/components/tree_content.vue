@@ -9,6 +9,7 @@ import {
   i18n,
 } from '../constants';
 import getRefMixin from '../mixins/get_ref';
+import { getRefType } from '../utils/ref_type';
 import projectPathQuery from '../queries/project_path.query.graphql';
 import { readmeFile } from '../utils/readme';
 import { loadCommits, isRequested, resetRequestedCommits } from '../commits_service';
@@ -100,7 +101,7 @@ export default {
           variables: {
             projectPath: this.projectPath,
             ref: this.ref,
-            refType: this.refType?.toUpperCase(),
+            refType: getRefType(this.refType),
             path: originalPath,
             nextPageCursor: this.nextPageCursor,
             pageSize: TREE_PAGE_SIZE,

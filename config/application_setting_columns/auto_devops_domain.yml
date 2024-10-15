@@ -1,0 +1,13 @@
+---
+api_type: string
+attr: auto_devops_domain
+clusterwide: true
+column: auto_devops_domain
+db_type: character
+default:
+description: Specify a domain to use by default for every project's Auto Review Apps
+  and Auto Deploy stages.
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

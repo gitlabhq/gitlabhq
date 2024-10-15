@@ -12,7 +12,7 @@
     = f.text_area :key, class: 'form-control gl-form-input gl-form-input-xl !gl-h-auto', rows: 5, required: true, data: { testid: 'deploy-key-field' }
     .form-text.text-muted
       = _('Paste a public key here.')
-      = link_to _('How do I generate it?'), help_page_path("user/ssh")
+      = link_to _('How do I generate it?'), help_page_path("user/ssh.md")
 
   = f.fields_for :deploy_keys_projects do |deploy_keys_project_form|
     .form-group

@@ -1,0 +1,9 @@
+---
+migration_job_name: BackfillPagesDeploymentStatesProjectId
+description: Backfills sharding key `pages_deployment_states.project_id` from `pages_deployments`.
+feature_category: pages
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167613
+milestone: '17.5'
+queued_migration_version: 20240930123056
+finalize_after: '2024-10-22'
+finalized_by: # version of the migration that finalized this BBM

@@ -3,7 +3,7 @@ table_name: prometheus_alert_events
 classes:
 - PrometheusAlertEvent
 feature_categories:
-- metrics
+- observability
 description: TODO
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/7493
 milestone: '11.4'

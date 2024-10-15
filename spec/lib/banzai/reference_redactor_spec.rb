@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::ReferenceRedactor, feature_category: :team_planning do
+RSpec.describe Banzai::ReferenceRedactor, feature_category: :markdown do
   let(:user) { create(:user) }
   let(:project) { build(:project) }
   let(:redactor) { described_class.new(Banzai::RenderContext.new(project, user)) }

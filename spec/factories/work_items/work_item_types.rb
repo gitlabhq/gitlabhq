@@ -20,9 +20,11 @@ FactoryBot.define do
     end
 
     # non_default work item types don't exist in production. This trait only exists to simplify work item type
-    # specific specs
+    # specific specs and prevent coupling with existing default types
     trait :non_default do
       default { false }
+      sequence(:id, 100) { |n| n }
+      sequence(:correct_id, 100) { |n| n }
     end
 
     trait :issue do

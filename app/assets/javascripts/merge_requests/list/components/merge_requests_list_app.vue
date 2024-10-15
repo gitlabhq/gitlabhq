@@ -2,24 +2,26 @@
 import { GlFilteredSearchToken, GlButton, GlLink, GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
 import ApprovalCount from 'ee_else_ce/merge_requests/components/approval_count.vue';
-import { createAlert } from '~/alert';
+import { sprintf, __ } from '~/locale';
 import Api from '~/api';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { STATUS_ALL, STATUS_CLOSED, STATUS_OPEN, STATUS_MERGED } from '~/issues/constants';
-import axios from '~/lib/utils/axios_utils';
 import { fetchPolicies } from '~/lib/graphql';
 import { isPositiveInteger } from '~/lib/utils/number_utils';
 import { scrollUp } from '~/lib/utils/scroll_utils';
-import { getParameterByName } from '~/lib/utils/url_utility';
+import { getParameterByName, mergeUrlParams } from '~/lib/utils/url_utility';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
-import { convertToGraphQLId } from '~/graphql_shared/utils';
+import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
+import IssuableMilestone from '~/vue_shared/issuable/list/components/issuable_milestone.vue';
 import { DEFAULT_PAGE_SIZE, mergeRequestListTabs } from '~/vue_shared/issuable/list/constants';
 import {
   OPERATORS_IS,
   OPERATORS_IS_NOT,
   TOKEN_TITLE_APPROVED_BY,
   TOKEN_TYPE_APPROVED_BY,
+  TOKEN_TITLE_APPROVER,
+  TOKEN_TYPE_APPROVER,
   TOKEN_TITLE_AUTHOR,
   TOKEN_TYPE_AUTHOR,
   TOKEN_TITLE_DRAFT,
@@ -42,6 +44,12 @@ import {
   TOKEN_TYPE_LABEL,
   TOKEN_TITLE_RELEASE,
   TOKEN_TYPE_RELEASE,
+  TOKEN_TITLE_DEPLOYED_BEFORE,
+  TOKEN_TYPE_DEPLOYED_BEFORE,
+  TOKEN_TITLE_DEPLOYED_AFTER,
+  TOKEN_TYPE_DEPLOYED_AFTER,
+  TOKEN_TYPE_ENVIRONMENT,
+  TOKEN_TITLE_ENVIRONMENT,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import {
   convertToApiParams,
@@ -62,13 +70,17 @@ import {
   urlSortParams,
 } from '~/issues/list/constants';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
+import MergeRequestReviewers from '~/issuable/components/merge_request_reviewers.vue';
 import setSortPreferenceMutation from '~/issues/list/queries/set_sort_preference.mutation.graphql';
-import { i18n } from '../constants';
+import issuableEventHub from '~/issues/list/eventhub';
+import { AutocompleteCache } from '../../utils/autocomplete_cache';
+import { i18n, BRANCH_LIST_REFRESH_INTERVAL } from '../constants';
 import getMergeRequestsQuery from '../queries/get_merge_requests.query.graphql';
 import getMergeRequestsCountsQuery from '../queries/get_merge_requests_counts.query.graphql';
 import searchLabelsQuery from '../queries/search_labels.query.graphql';
 import MergeRequestStatistics from './merge_request_statistics.vue';
 import MergeRequestMoreActionsDropdown from './more_actions_dropdown.vue';
+import EmptyState from './empty_state.vue';
 
 const UserToken = () => import('~/vue_shared/components/filtered_search_bar/tokens/user_token.vue');
 const BranchToken = () =>
@@ -78,8 +90,14 @@ const MilestoneToken = () =>
 const LabelToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/label_token.vue');
 const ReleaseToken = () => import('./tokens/release_client_search_token.vue');
+const EnvironmentToken = () => import('./tokens/environment_token.vue');
 const EmojiToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/emoji_token.vue');
+const DateToken = () => import('~/vue_shared/components/filtered_search_bar/tokens/date_token.vue');
+
+function cacheIsExpired(cacheAge, compareTo = Date.now()) {
+  return cacheAge + BRANCH_LIST_REFRESH_INTERVAL <= compareTo;
+}
 
 export default {
   name: 'MergeRequestsListApp',
@@ -93,24 +111,33 @@ export default {
     CiIcon,
     MergeRequestStatistics,
     MergeRequestMoreActionsDropdown,
+    MergeRequestReviewers,
     ApprovalCount,
+    EmptyState,
+    IssuableMilestone,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  inject: [
-    'autocompleteAwardEmojisPath',
-    'fullPath',
-    'hasAnyMergeRequests',
-    'hasScopedLabelsFeature',
-    'initialSort',
-    'isPublicVisibilityRestricted',
-    'isSignedIn',
-    'newMergeRequestPath',
-    'releasesEndpoint',
-  ],
+  inject: {
+    autocompleteAwardEmojisPat: { default: '' },
+    fullPath: { default: '' },
+    hasAnyMergeRequests: { default: false },
+    hasScopedLabelsFeature: { default: false },
+    initialSort: { default: '' },
+    isPublicVisibilityRestricted: { default: false },
+    isSignedIn: { default: false },
+    newMergeRequestPath: { default: '' },
+    releasesEndpoint: { default: '' },
+    canBulkUpdate: { default: false },
+    environmentNamesPath: { default: '' },
+    mergeTrainsPath: { default: undefined },
+    defaultBranch: { default: '' },
+  },
   data() {
     return {
+      projectId: null,
+      branchCacheAges: {},
       filterTokens: [],
       mergeRequests: [],
       mergeRequestCounts: {},
@@ -120,6 +147,7 @@ export default {
       sortKey: CREATED_DESC,
       state: STATUS_OPEN,
       pageSize: DEFAULT_PAGE_SIZE,
+      showBulkEditSidebar: false,
     };
   },
   apollo: {
@@ -138,6 +166,7 @@ export default {
         if (!data) {
           return;
         }
+        this.projectId = getIdFromGraphQLId(data.project.id);
         this.pageInfo = data.project.mergeRequests?.pageInfo ?? {};
       },
       error(error) {
@@ -208,6 +237,19 @@ export default {
           fullPath: this.fullPath,
           isProject: true,
           recentSuggestionsStorageKey: `${this.fullPath}-merge_requests-recent-tokens-approved_by`,
+          preloadedUsers,
+          multiSelect: false,
+        },
+        {
+          type: TOKEN_TYPE_APPROVER,
+          title: TOKEN_TITLE_APPROVER,
+          icon: 'approval',
+          token: UserToken,
+          dataType: 'user',
+          operators: OPERATORS_IS,
+          fullPath: this.fullPath,
+          isProject: true,
+          recentSuggestionsStorageKey: `${this.fullPath}-merge_requests-recent-tokens-approvers`,
           preloadedUsers,
           multiSelect: false,
         },
@@ -304,7 +346,7 @@ export default {
           operators: OPERATORS_IS,
           fullPath: this.fullPath,
           isProject: true,
-          fetchBranches: this.fetchBranches,
+          fetchBranches: this.fetchTargetBranches,
         },
         {
           type: TOKEN_TYPE_SOURCE_BRANCH,
@@ -314,7 +356,7 @@ export default {
           operators: OPERATORS_IS,
           fullPath: this.fullPath,
           isProject: true,
-          fetchBranches: this.fetchBranches,
+          fetchBranches: this.fetchSourceBranches,
         },
         {
           type: TOKEN_TYPE_LABEL,
@@ -332,6 +374,30 @@ export default {
           token: ReleaseToken,
           operators: OPERATORS_IS_NOT,
           releasesEndpoint: this.releasesEndpoint,
+        },
+        {
+          type: TOKEN_TYPE_ENVIRONMENT,
+          title: TOKEN_TITLE_ENVIRONMENT,
+          icon: 'environment',
+          token: EnvironmentToken,
+          operators: OPERATORS_IS,
+          multiselect: false,
+          unique: true,
+          environmentsEndpoint: this.environmentNamesPath,
+        },
+        {
+          type: TOKEN_TYPE_DEPLOYED_BEFORE,
+          title: TOKEN_TITLE_DEPLOYED_BEFORE,
+          icon: 'clock',
+          token: DateToken,
+          operators: OPERATORS_IS,
+        },
+        {
+          type: TOKEN_TYPE_DEPLOYED_AFTER,
+          title: TOKEN_TITLE_DEPLOYED_AFTER,
+          icon: 'clock',
+          token: DateToken,
+          operators: OPERATORS_IS,
         },
       ];
 
@@ -398,24 +464,88 @@ export default {
         })
       );
     },
+    isOpenTab() {
+      return this.state === STATUS_OPEN;
+    },
+    isBulkEditButtonDisabled() {
+      return this.showBulkEditSidebar || !this.mergeRequests.length;
+    },
   },
   created() {
     this.updateData(this.initialSort);
+    this.autocompleteCache = new AutocompleteCache();
+  },
+  mounted() {
+    issuableEventHub.$on('issuables:toggleBulkEdit', this.toggleBulkEditSidebar);
+  },
+  beforeDestroy() {
+    issuableEventHub.$off('issuables:toggleBulkEdit', this.toggleBulkEditSidebar);
   },
   methods: {
-    fetchBranches(search) {
-      return Api.branches(this.fullPath, search)
-        .then((response) => {
-          return response;
+    getBranchPath(branchType = 'other') {
+      const typeUrls = {
+        source: '/-/autocomplete/merge_request_source_branches.json',
+        target: '/-/autocomplete/merge_request_target_branches.json',
+        other: Api.buildUrl(Api.createBranchPath).replace(':id', encodeURIComponent(this.fullPath)),
+      };
+      const url = typeUrls[branchType];
+
+      return url && this.projectId
+        ? mergeUrlParams({ project_id: this.projectId }, url)
+        : typeUrls.other;
+    },
+    async updateBranchCache(branchType, path) {
+      const lastCheck = this.branchCacheAges[branchType];
+
+      if (cacheIsExpired(lastCheck)) {
+        await this.autocompleteCache.updateLocalCache(path);
+      }
+    },
+    async fetchBranches(type = 'other', search) {
+      const branchPath = this.getBranchPath(type);
+      const cacheAge = this.branchCacheAges[type];
+      const runTime = Date.now();
+
+      await this.updateBranchCache(type, branchPath);
+
+      const fetch = this.autocompleteCache.fetch({
+        mutator: (branchList) =>
+          branchList.map((branch, index) => ({
+            ...branch,
+            name: branch.name || branch.title,
+            id: index,
+          })),
+        formatter: (results) => ({ data: results }),
+        url: branchPath,
+        searchProperty: 'name',
+        search,
+      });
+
+      fetch
+        .then(() => {
+          if (!cacheAge || cacheIsExpired(cacheAge, runTime)) {
+            this.branchCacheAges[type] = Date.now();
+          }
         })
         .catch(() => {
-          createAlert({
-            message: this.$options.i18n.errorFetchingBranches,
-          });
+          // An error has occurred, but there's nothing the user can do about it, so... we're swallowing it.
         });
+
+      return fetch;
     },
-    fetchEmojis() {
-      return axios.get(this.autocompleteAwardEmojisPath);
+    fetchTargetBranches(search) {
+      return this.fetchBranches('target', search);
+    },
+    fetchSourceBranches(search) {
+      return this.fetchBranches('source', search);
+    },
+    fetchEmojis(search) {
+      return this.autocompleteCache.fetch({
+        url: this.autocompleteAwardEmojisPath,
+        cacheName: 'emojis',
+        searchProperty: 'name',
+        search,
+      });
     },
     fetchLabelsWithFetchPolicy(search, fetchPolicy = fetchPolicies.CACHE_FIRST) {
       return this.$apollo
@@ -442,6 +572,9 @@ export default {
         return this.$options.i18n.merged;
       }
       return undefined;
+    },
+    getReviewers(issuable) {
+      return issuable.reviewers?.nodes || [];
     },
     handleClickTab(state) {
       if (this.state === state) {
@@ -530,6 +663,31 @@ export default {
         mergeRequest.conflicts
       );
     },
+    toggleBulkEditSidebar(showBulkEditSidebar) {
+      this.showBulkEditSidebar = showBulkEditSidebar;
+    },
+    async handleBulkUpdateClick() {
+      if (!this.hasInitBulkEdit) {
+        const bulkUpdateSidebar = await import('~/issuable');
+        bulkUpdateSidebar.initBulkUpdateSidebar('issuable_');
+
+        this.hasInitBulkEdit = true;
+      }
+
+      issuableEventHub.$emit('issuables:enableBulkEdit');
+    },
+    handleUpdateLegacyBulkEdit() {
+      // If "select all" checkbox was checked, wait for all checkboxes
+      // to be checked before updating IssuableBulkUpdateSidebar class
+      this.$nextTick(() => {
+        issuableEventHub.$emit('issuables:updateBulkEdit');
+      });
+    },
+    targetBranchTooltip(mergeRequest) {
+      return sprintf(__('Target branch: %{target_branch}'), {
+        target_branch: mergeRequest.targetBranch,
+      });
+    },
   },
   STATUS_OPEN,
 };
@@ -557,14 +715,30 @@ export default {
     use-keyset-pagination
     :has-next-page="pageInfo.hasNextPage"
     :has-previous-page="pageInfo.hasPreviousPage"
+    issuable-item-class="merge-request"
+    :show-bulk-edit-sidebar="showBulkEditSidebar"
     @click-tab="handleClickTab"
     @next-page="handleNextPage"
     @previous-page="handlePreviousPage"
     @sort="handleSort"
     @filter="handleFilter"
+    @update-legacy-bulk-edit="handleUpdateLegacyBulkEdit"
   >
     <template #nav-actions>
       <div class="gl-flex gl-gap-3">
+        <gl-button v-if="mergeTrainsPath" :href="mergeTrainsPath" data-testid="merge-trains">
+          {{ __('Merge trains') }}
+        </gl-button>
+        <gl-button
+          v-if="canBulkUpdate"
+          class="gl-grow"
+          :disabled="isBulkEditButtonDisabled"
+          data-testid="bulk-edit"
+          @click="handleBulkUpdateClick"
+        >
+          {{ __('Bulk edit') }}
+        </gl-button>
+
         <gl-button
           v-if="newMergeRequestPath"
           variant="confirm"
@@ -592,6 +766,27 @@ export default {
       </gl-link>
     </template>
 
+    <template #timeframe="{ issuable = {} }">
+      <issuable-milestone v-if="issuable.milestone" :milestone="issuable.milestone" />
+    </template>
+
+    <template #target-branch="{ issuable = {} }">
+      <span
+        v-if="issuable.targetBranch !== defaultBranch"
+        class="project-ref-path gl-inline-block gl-max-w-26 gl-truncate gl-align-bottom"
+        data-testid="target-branch"
+      >
+        <gl-link
+          v-gl-tooltip
+          :href="issuable.targetBranchPath"
+          :title="targetBranchTooltip(issuable)"
+          class="ref-name !gl-text-gray-500"
+        >
+          <gl-icon name="branch" :size="12" class="gl-mr-2" />{{ issuable.targetBranch }}
+        </gl-link>
+      </span>
+    </template>
+
     <template #statistics="{ issuable = {} }">
       <merge-request-statistics :merge-request="issuable" />
     </template>
@@ -608,5 +803,21 @@ export default {
         <ci-icon :status="issuable.headPipeline.detailedStatus" use-link show-tooltip />
       </li>
     </template>
+
+    <template #reviewers="{ issuable = {} }">
+      <li v-if="getReviewers(issuable).length" class="!gl-mr-0">
+        <merge-request-reviewers
+          :reviewers="getReviewers(issuable)"
+          :icon-size="16"
+          :max-visible="4"
+          class="gl-flex gl-items-center"
+        />
+      </li>
+    </template>
+
+    <template #empty-state>
+      <empty-state :has-search="hasSearch" :is-open-tab="isOpenTab" />
+    </template>
   </issuable-list>
+  <empty-state v-else :has-merge-requests="false" />
 </template>

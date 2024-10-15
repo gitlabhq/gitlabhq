@@ -1,0 +1,13 @@
+---
+api_type: string
+attr: security_txt_content
+clusterwide: true
+column: security_txt_content
+db_type: text
+default:
+description: "[Public security contact information](../administration/settings/security_contact_information.md).
+  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/433210) in GitLab 16.7."
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

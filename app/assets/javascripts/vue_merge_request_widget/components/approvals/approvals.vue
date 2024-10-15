@@ -66,11 +66,17 @@ export default {
       required: false,
       default: false,
     },
+    actionButtons: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   data() {
     return {
       hasApprovalAuthError: false,
       isApproving: false,
+      userPermissions: {},
     };
   },
   computed: {
@@ -276,6 +282,7 @@ export default {
       :collapsed="collapsed"
       :expand-details-tooltip="__('Expand eligible approvers')"
       :collapse-details-tooltip="__('Collapse eligible approvers')"
+      :actions="actionButtons"
       @toggle="() => $emit('toggle')"
     >
       <template v-if="isLoading">{{ $options.FETCH_LOADING }}</template>

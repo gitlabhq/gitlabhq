@@ -1,0 +1,12 @@
+---
+api_type:
+attr: container_registry_features
+clusterwide: true
+column: container_registry_features
+db_type: text[]
+default: "'{}'::text[]"
+description:
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: true

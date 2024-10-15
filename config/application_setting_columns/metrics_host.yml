@@ -1,0 +1,12 @@
+---
+api_type:
+attr: metrics_host
+clusterwide: false
+column: metrics_host
+db_type: character
+default: "'localhost'::character"
+description:
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: false

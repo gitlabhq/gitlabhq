@@ -1,0 +1,21 @@
+---
+description: GLQL blocks rendered
+internal_events: true
+action: render_glql_block
+identifiers:
+- project
+- namespace
+- user
+additional_properties:
+  label:
+    description: SHA256 of the GLQL block content
+product_group: knowledge
+milestone: '17.5'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167165
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

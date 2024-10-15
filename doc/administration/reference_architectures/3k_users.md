@@ -180,13 +180,14 @@ To set up GitLab and its components to accommodate up to 60 RPS or 3,000 users:
    to handle the load balancing of the GitLab application services nodes.
 1. [Configure the internal load balancer](#configure-the-internal-load-balancer)
    to handle the load balancing of GitLab application internal connections.
-1. [Configure Consul](#configure-consul).
+1. [Configure Consul](#configure-consul) for service discovery and health checking.
 1. [Configure PostgreSQL](#configure-postgresql), the database for GitLab.
-1. [Configure PgBouncer](#configure-pgbouncer).
-1. [Configure Redis](#configure-redis).
+1. [Configure PgBouncer](#configure-pgbouncer) for database connection pooling and management.
+1. [Configure Redis](#configure-redis), which stores session data, temporary
+cache information, and background job queues.
 1. [Configure Gitaly Cluster](#configure-gitaly-cluster),
    provides access to the Git repositories.
-1. [Configure Sidekiq](#configure-sidekiq).
+1. [Configure Sidekiq](#configure-sidekiq) for background job processing.
 1. [Configure the main GitLab Rails application](#configure-gitlab-rails)
    to run Puma, Workhorse, GitLab Shell, and to serve all frontend
    requests (which include UI, API, and Git over HTTP/SSH).
@@ -517,7 +518,7 @@ If you use a third party external service:
 
 1. The HA Linux package PostgreSQL setup encompasses PostgreSQL, PgBouncer and Consul. All of these components would no longer be required when using a third party external service.
 1. Set up PostgreSQL according to the
-   [database requirements document](../../install/requirements.md#database).
+   [database requirements document](../../install/requirements.md#postgresql).
 1. Set up a `gitlab` username with a password of your choice. The `gitlab` user
    needs privileges to create the `gitlabhq_production` database.
 1. Configure the GitLab application servers with the appropriate details.
@@ -1361,8 +1362,8 @@ input/output operations per second (IOPS) for read operations and 2,000 IOPS for
 write operations. If you're running the environment on a Cloud provider,
 refer to their documentation about how to configure IOPS correctly.
 
-Gitaly servers must not be exposed to the public internet, as Gitaly's network
-traffic is unencrypted by default. The use of a firewall is highly recommended
+Gitaly servers must not be exposed to the public internet, as network traffic
+on Gitaly is unencrypted by default. The use of a firewall is highly recommended
 to restrict access to the Gitaly server. Another option is to
 [use TLS](#gitaly-cluster-tls-support).
 
@@ -2090,7 +2091,7 @@ in the future.
 
 GitLab Runner returns job logs in chunks which the Linux package caches temporarily on disk in `/var/opt/gitlab/gitlab-ci/builds` by default, even when using consolidated object storage. With default configuration, this directory needs to be shared through NFS on any GitLab Rails and Sidekiq nodes.
 
-While sharing the job logs through NFS is supported, it's recommended to avoid the need to use NFS by enabling [incremental logging](../job_logs.md#incremental-logging-architecture) (required when no NFS node has been deployed). Incremental logging uses Redis instead of disk space for temporary caching of job logs.
+While sharing the job logs through NFS is supported, it's recommended to avoid the need to use NFS by enabling [incremental logging](../cicd/job_logs.md#incremental-logging-architecture) (required when no NFS node has been deployed). Incremental logging uses Redis instead of disk space for temporary caching of job logs.
 
 ## Configure advanced search
 
@@ -2126,13 +2127,13 @@ If not stated below, no other modifications are supported for lower use counts.
 - Combining select nodes: The following specific components are supported to be combined onto the same nodes to reduce complexity at the cost of some performance:
   - GitLab Rails and Sidekiq: Sidekiq nodes can be removed, and the component instead enabled on the GitLab Rails nodes.
   - PostgreSQL and PgBouncer: PgBouncer nodes could be removed and instead be enabled on PostgreSQL nodes with the Internal Load Balancer pointing to them. However, to enable [Database Load Balancing](../postgresql/database_load_balancing.md), a separate PgBouncer array is still required.
-- Reducing the node counts: Some node types do not need consensus and can run with fewer nodes (but more than one for redundancy). This will also lead to reduced performance.
+- Reducing the node counts: Some node types do not need consensus and can run with fewer nodes (but more than one for redundancy):
   - GitLab Rails and Sidekiq: Stateless services don't have a minimum node count. Two are enough for redundancy.
   - PostgreSQL and PgBouncer: A quorum is not strictly necessary. Two PostgreSQL nodes and two PgBouncer nodes are enough for redundancy.
+  - Consul, Redis Sentinel, and Praefect: Require an odd number, and a minimum of three nodes, for a voting quorum.
 - Running select components in reputable Cloud PaaS solutions: The following specific components are supported to be run on reputable Cloud Provider PaaS solutions. By doing this, additional dependent components can also be removed:
   - PostgreSQL: Can be run on reputable Cloud PaaS solutions such as Google Cloud SQL or Amazon RDS. In this setup, the PgBouncer and Consul nodes are no longer required:
     - Consul may still be desired if [Prometheus](../monitoring/prometheus/index.md) auto discovery is a requirement, otherwise you would need to [manually add scrape configurations](../monitoring/prometheus/index.md#adding-custom-scrape-configurations) for all nodes.
-      - As Redis Sentinel runs on the same box as Consul in this architecture, it may need to be run on a separate box if Redis is still being run using the Linux package.
   - Redis: Can be run on reputable Cloud PaaS solutions such as Google Memorystore and AWS ElastiCache. In this setup, the Redis Sentinel is no longer required.
 
 ## Cloud Native Hybrid reference architecture with Helm Charts (alternative)

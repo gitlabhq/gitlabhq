@@ -1,0 +1,12 @@
+---
+api_type: boolean
+attr: user_default_external
+clusterwide: false
+column: user_default_external
+db_type: boolean
+default: 'false'
+description: Newly registered users are external by default.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

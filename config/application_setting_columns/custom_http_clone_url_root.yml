@@ -1,0 +1,12 @@
+---
+api_type: string
+attr: custom_http_clone_url_root
+clusterwide: true
+column: custom_http_clone_url_root
+db_type: character
+default:
+description: Set a custom Git clone URL for HTTP(S).
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

@@ -77,7 +77,7 @@ module Ci
       title = "#{_('Pipeline')}: #{ci_label_for_status(status)}"
       data = { toggle: 'tooltip', placement: tooltip_placement, container: container, testid: 'ci-icon' }
 
-      icon_wrapper_class = "js-ci-status-badge-legacy ci-icon-gl-icon-wrapper"
+      icon_wrapper_class = "ci-icon-gl-icon-wrapper"
 
       content_tag(content_tag_variant, href: path, class: badge_classes, title: title, data: data) do
         if show_status_text

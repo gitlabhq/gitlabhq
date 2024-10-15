@@ -58,12 +58,27 @@ RSpec.shared_examples 'WikiPages::UpdateService#execute' do |container_type|
     service.execute(page)
   end
 
-  it_behaves_like 'internal event tracking' do
-    let(:event) { 'update_wiki_page' }
+  describe 'internal event tracking' do
     let(:project) { container if container.is_a?(Project) }
     let(:namespace) { container.is_a?(Group) ? container : container.namespace }
 
     subject(:track_event) { service.execute(page) }
+
+    it_behaves_like 'internal event tracking' do
+      let(:event) { 'update_wiki_page' }
+    end
+
+    context 'with group container', if: container_type == :group do
+      it_behaves_like 'internal event tracking' do
+        let(:event) { 'update_group_wiki_page' }
+      end
+    end
+
+    context 'with project container', if: container_type == :project do
+      it_behaves_like 'internal event not tracked' do
+        let(:event) { 'update_group_wiki_page' }
+      end
+    end
   end
 
   context 'when the updated page is a template' do
@@ -127,6 +142,22 @@ RSpec.shared_examples 'WikiPages::UpdateService#execute' do |container_type|
       expect(response).to be_error
       expect(page).to be_invalid
         .and have_attributes(errors: be_present)
+    end
+  end
+
+  context 'when wiki update fails due to git error' do
+    it 'catches the thrown error and returns a ServiceResponse error' do
+      container = create(container_type, :wiki_repo)
+      page = create(:wiki_page, container: container)
+      service = described_class.new(container: container, current_user: user, params: opts)
+
+      allow(Gitlab::GitalyClient).to receive(:call) do
+        raise GRPC::Unavailable, 'Gitaly broken in this spec'
+      end
+
+      result = service.execute(page)
+      expect(result).to be_error
+      expect(result.message).to eq('Could not update wiki page')
     end
   end
 end

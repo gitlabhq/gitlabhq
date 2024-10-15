@@ -21,7 +21,8 @@ module QA
       let(:session) { SecureRandom.hex(5) }
       let(:tag_name) { SecureRandom.hex(5) }
 
-      it 'sends a push event', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348945' do
+      it 'sends a push event',
+        :blocking, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348945' do
         Resource::ProjectWebHook.setup(session: session, push: true) do |webhook, smocker|
           Resource::Repository::ProjectPush.fabricate! do |project_push|
             project_push.project = webhook.project
@@ -31,7 +32,8 @@ module QA
         end
       end
 
-      it 'sends a merge request event', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/349720' do
+      it 'sends a merge request event',
+        :blocking, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/349720' do
         Resource::ProjectWebHook.setup(session: session, merge_requests: true) do |webhook, smocker|
           create(:merge_request, project: webhook.project)
 
@@ -39,7 +41,8 @@ module QA
         end
       end
 
-      it 'sends a wiki page event', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/349722' do
+      it 'sends a wiki page event',
+        :blocking, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/349722' do
         Resource::ProjectWebHook.setup(session: session, wiki_page: true) do |webhook, smocker|
           create(:project_wiki_page, project: webhook.project)
 
@@ -47,7 +50,7 @@ module QA
         end
       end
 
-      it 'sends an issues and note event',
+      it 'sends an issues and note event', :blocking,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/349723' do
         Resource::ProjectWebHook.setup(session: session, issues: true, note: true) do |webhook, smocker|
           issue = create(:issue, project: webhook.project)
@@ -69,7 +72,7 @@ module QA
         end
       end
 
-      it 'sends a tag event',
+      it 'sends a tag event', :blocking,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/383577' do
         Resource::ProjectWebHook.setup(session: session, tag_push: true) do |webhook, smocker|
           project_push = Resource::Repository::ProjectPush.fabricate! do |project_push|

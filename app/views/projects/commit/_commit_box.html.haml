@@ -11,14 +11,13 @@
     %span.gl-hidden.sm:gl-inline= _('authored')
     #{time_ago_with_tooltip(@commit.authored_date)}
     %span= s_('ByAuthor|by')
-    = author_avatar(@commit, size: 24, has_tooltip: false)
     %strong
+      = author_avatar(@commit, size: 24, has_tooltip: false)
       = commit_author_link(@commit, avatar: true, size: 24)
     = user_status(@commit.author)
     - if @commit.different_committer?
-      %span.light= _('Committed by')
-      %strong
-        = commit_committer_link(@commit, avatar: true, size: 24)
+      %span.gl-text-subtle= _('Committed by')
+      = commit_committer_link(@commit, avatar: true, size: 24)
       #{time_ago_with_tooltip(@commit.committed_date)}
 
   = link_button_to _('Browse files'), project_tree_path(@project, @commit), class: 'gl-mr-3 gl-w-full sm:gl-w-auto gl-mb-3 sm:gl-mb-0'
@@ -55,7 +54,7 @@
   - if can?(current_user, :read_pipeline, @last_pipeline)
     - status = @last_pipeline.detailed_status(current_user)
     .well-segment.pipeline-info
-      .js-commit-pipeline-status{ data: { full_path: @project.full_path, iid: @last_pipeline.iid, graphql_resource_etag: graphql_etag_pipeline_path(@last_pipeline) } }
+      .js-commit-box-pipeline-status{ data: { full_path: @project.full_path, iid: @last_pipeline.iid, graphql_resource_etag: graphql_etag_pipeline_path(@last_pipeline) } }
       #{ _('Pipeline') }
       = link_to "##{@last_pipeline.id}", project_pipeline_path(@project, @last_pipeline.id)
       = status&.label

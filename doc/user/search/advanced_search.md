@@ -41,6 +41,8 @@ You can use advanced search in:
 
 ## Syntax
 
+<!-- Remember to also update the tables in `doc/drawers/advanced_search_syntax.md` -->
+
 > - Refining user search [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388409) in GitLab 15.10.
 
 Advanced search uses [`simple_query_string`](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-simple-query-string-query.html),

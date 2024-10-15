@@ -418,16 +418,6 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
           it 'returns validation errors' do
             expect(update_work_item[:message]).to contain_exactly("Title can't be blank")
           end
-
-          it 'does not execute after-update widgets', :aggregate_failures do
-            expect(service).to receive(:update).and_call_original
-            expect(service).not_to receive(:execute_widgets).with(callback: :update, widget_params: widget_params)
-
-            expect do
-              update_work_item
-              work_item.reload
-            end.not_to change(work_item, :description)
-          end
         end
       end
 
@@ -505,17 +495,19 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
 
         let(:widget_params) { { hierarchy_widget: { children: [child_work_item] } } }
 
-        include_examples 'publish WorkItems::WorkItemUpdatedEvent event',
-          attributes: %w[
-            title
-            title_html
-            lock_version
-            updated_at
-            updated_by_id
-          ],
-          widgets: %w[
-            hierarchy_widget
-          ]
+        context 'when quarantined shared example', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/485044' do
+          include_examples 'publish WorkItems::WorkItemUpdatedEvent event',
+            attributes: %w[
+              title
+              title_html
+              lock_version
+              updated_at
+              updated_by_id
+            ],
+            widgets: %w[
+              hierarchy_widget
+            ]
+        end
 
         it 'updates the children of the work item' do
           expect do
@@ -557,14 +549,6 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
 
           it 'returns validation errors' do
             expect(update_work_item[:message]).to contain_exactly("Title can't be blank")
-          end
-
-          it 'does not execute after-update widgets', :aggregate_failures do
-            expect(service).to receive(:update).and_call_original
-            expect(service).not_to receive(:execute_widgets).with(callback: :before_update_in_transaction, widget_params: widget_params)
-            expect(work_item.work_item_children).not_to include(child_work_item)
-
-            update_work_item
           end
         end
       end
@@ -678,14 +662,18 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
           end.to change(work_item, :assignees).from([developer]).to([assignee]).and change(work_item, :updated_at)
         end
 
-        it_behaves_like 'publish WorkItems::WorkItemUpdatedEvent event',
-          attributes: %w[
-            updated_at
-            updated_by_id
-          ],
-          widgets: %w[
-            assignees_widget
-          ]
+        context 'when quarantined shared example', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/485027' do
+          it_behaves_like 'publish WorkItems::WorkItemUpdatedEvent event',
+            attributes:
+            %w[
+              updated_at
+              updated_by_id
+            ],
+            widgets:
+            %w[
+              assignees_widget
+            ]
+        end
 
         context 'when work item validation fails' do
           let(:opts) { { title: '' } }

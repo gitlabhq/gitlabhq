@@ -17,7 +17,7 @@ contents, and how they can be customized.
 
 ### Error budget panels
 
-![28 day budget](img/stage_group_dashboards_28d_budget.png)
+![A panel showing metrics for a 28-day error budget including availability, budget remaining, and budget spent](img/stage_group_dashboards_28d_budget.png)
 
 The top panels display the [error budget](../index.md#error-budget).
 These panels always show the 28 days before the end time selected in the
@@ -27,7 +27,7 @@ and stage.
 
 ### Metrics panels
 
-![Metrics panels](img/stage_group_dashboards_metrics.png)
+![A time series graph displaying worker metrics for jobs-per-second completion rates](img/stage_group_dashboards_metrics.png)
 
 Although most of the metrics displayed in the panels are self-explanatory in their title and nearby
 description, note the following:
@@ -74,7 +74,7 @@ Example debugging workflow:
    [Code Review group's dashboard](https://dashboards.gitlab.net/d/stage-groups-code_review/stage-groups-group-dashboard-create-code-review?orgId=1).
 1. Sidekiq Error Rate panel shows an elevated error rate, specifically `UpdateMergeRequestsWorker`.
 
-  ![Debug 1](img/stage_group_dashboards_debug_1.png)
+  ![A histogram showing error rate metrics from different worker events](img/stage_group_dashboards_debug_1.png)
 
 1. If you select **Kibana: Kibana Sidekiq failed request logs** in the **Extra links** section, you can filter for `UpdateMergeRequestsWorker` and read through the logs.
 

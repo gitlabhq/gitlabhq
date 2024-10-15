@@ -55,9 +55,14 @@ RSpec.describe Ci::JobsFinder, '#execute', feature_category: :continuous_integra
       end
 
       context 'with param `runner_type`' do
-        let_it_be(:job_with_group_runner) { create(:ci_build, :success, runner: create(:ci_runner, :group)) }
         let_it_be(:job_with_instance_runner) { create(:ci_build, :success, runner: create(:ci_runner, :instance)) }
-        let_it_be(:job_with_project_runner) { create(:ci_build, :success, runner: create(:ci_runner, :project)) }
+        let_it_be(:job_with_group_runner) do
+          create(:ci_build, :success, runner: create(:ci_runner, :group, groups: [project.parent]))
+        end
+
+        let_it_be(:job_with_project_runner) do
+          create(:ci_build, :success, runner: create(:ci_runner, :project, projects: [project]))
+        end
 
         context 'with feature flag :admin_jobs_filter_runner_type enabled' do
           using RSpec::Parameterized::TableSyntax
@@ -98,11 +103,13 @@ RSpec.describe Ci::JobsFinder, '#execute', feature_category: :continuous_integra
 
       context "with params" do
         let_it_be(:job_with_running_status_and_group_runner) do
-          create(:ci_build, :running, runner: create(:ci_runner, :group))
+          create(:ci_build, :running, runner: create(:ci_runner, :group, groups: [project.parent]))
         end
 
         let_it_be(:job_with_instance_runner) { create(:ci_build, :success, runner: create(:ci_runner, :instance)) }
-        let_it_be(:job_with_project_runner) { create(:ci_build, :success, runner: create(:ci_runner, :project)) }
+        let_it_be(:job_with_project_runner) do
+          create(:ci_build, :success, runner: create(:ci_runner, :project, projects: [project]))
+        end
 
         context 'with feature flag :admin_jobs_filter_runner_type enabled' do
           using RSpec::Parameterized::TableSyntax

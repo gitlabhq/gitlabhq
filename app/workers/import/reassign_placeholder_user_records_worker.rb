@@ -12,17 +12,15 @@ module Import
     sidekiq_options retry: 5, dead: false
     sidekiq_options max_retries_after_interruption: 20
 
+    # TODO: Remove with https://gitlab.com/gitlab-org/gitlab/-/issues/493977
+    concurrency_limit -> { 4 }
+
     sidekiq_retries_exhausted do |msg, exception|
       new.perform_failure(exception, msg['args'])
     end
 
     def perform(import_source_user_id, _params = {})
       @import_source_user = Import::SourceUser.find_by_id(import_source_user_id)
-
-      return unless Feature.enabled?(
-        :importer_user_mapping,
-        User.actor_from_id(import_source_user&.reassigned_by_user_id)
-      )
 
       return unless import_source_user_valid?
 

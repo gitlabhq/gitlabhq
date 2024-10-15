@@ -7,6 +7,8 @@ module Gitlab
         class Component
           include Gitlab::Utils::StrongMemoize
 
+          UNKNOWN_PACKAGE = "unknown"
+
           attr_reader :ref, :component_type, :version, :path
           attr_accessor :properties, :purl, :source_package_name, :ancestors, :licenses
 
@@ -46,6 +48,14 @@ module Gitlab
             [name, version, purl&.type]
           end
 
+          def reachability
+            reachability = properties&.data&.fetch('reachability', UNKNOWN_PACKAGE)
+
+            return UNKNOWN_PACKAGE unless supported_reachability_type?(reachability)
+
+            reachability
+          end
+
           private
 
           def supported_component_type?
@@ -58,6 +68,10 @@ module Gitlab
 
             # however, if the purl type is provided, it _must be valid_
             ::Enums::Sbom.purl_types.include?(purl.type.to_sym)
+          end
+
+          def supported_reachability_type?(type)
+            ::Enums::Sbom::REACHABILITY_TYPES.include?(type)
           end
 
           def sort_by_attributes(component)

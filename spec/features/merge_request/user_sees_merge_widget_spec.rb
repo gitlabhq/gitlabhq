@@ -425,7 +425,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
       visit project_merge_request_path(project, merge_request)
     end
 
-    it 'updates the MR widget', :sidekiq_might_not_need_inline do
+    it 'updates the MR widget', :sidekiq_might_not_need_inline, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/449626' do
       page.within('.mr-state-widget') do
         click_button 'Merge'
       end

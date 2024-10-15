@@ -82,6 +82,7 @@ Prerequisites:
 - You must have the Owner or Maintainer role.
 - [Group membership lock](../../group/access_and_permissions.md#prevent-members-from-being-added-to-projects-in-a-group) must be disabled.
 - If [sign-up is disabled](../../../administration/settings/sign_up_restrictions.md#disable-new-sign-ups), an administrator must add the user by email first.
+- If [promotion management](../../../administration/settings/sign_up_restrictions.md#enable-role-promotion-approval) is enabled, an administrator must approve the invite.
 
 To add a user to a project:
 
@@ -101,9 +102,8 @@ To add a user to a project:
    seven days before their access expires.
 
    WARNING:
-   If you give a member the Maintainer role and select an expiration date, that member
-   has full permissions for the time they are in the role. This includes the ability
-   to extend their own time in the Maintainer role.
+   Maintainers have full permissions until their role expires, including the ability to
+   extend their own access expiration date.
 
 1. Select **Invite**.
    If you invited the user using their:
@@ -122,6 +122,18 @@ role for the group. For example, the maximum role you can set is:
 - Maintainer (`40`), if you have the Maintainer role on the project.
 
 The Owner [role](../../permissions.md#project-members-permissions) can be added for the group only.
+
+### View users pending promotion
+
+When [promotion management](../../../administration/settings/sign_up_restrictions.md#enable-role-promotion-approval) is enabled, an administrator must approve the membership requests of users who would become billable users in the subscription.
+
+To view users pending promotion:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Manage > Members**.
+1. Select **Role promotions** tab.
+
+If the **Role promotions** tab is not displayed, the project has no pending promotions.
 
 ## Updating expiration and role
 
@@ -193,8 +205,8 @@ To remove a member from a project:
 
 ## Ensure removed users cannot invite themselves back
 
-Malicious users with the Maintainer or Owner role could exploit a race condition that allows
-them to invite themselves back to a group or project that a GitLab administrator has removed them from.
+Users with the Maintainer or Owner role could exploit a race condition that allows
+them to rejoin groups or projects after an administrator removes them.
 
 To avoid this problem, GitLab administrators can:
 
@@ -262,8 +274,7 @@ Up to ten project Maintainers or Owners are notified.
 Any project Owner or Maintainer can approve or decline the request.
 Project Maintainers cannot approve Owner role access requests.
 
-If a project does not have any direct Owners or Maintainers, the notification is sent to the
-most recently active Owners of the project's parent group.
+If a project does not have any direct Owners or Maintainers, the most recently active Owners of the project's parent group receive the notification.
 
 ### Withdraw an access request to a project
 

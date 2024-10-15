@@ -171,6 +171,7 @@ these parameters:
 - `duo_features_enabled`
 - `lock_duo_features_enabled`
 - `use_clickhouse_for_analytics`
+- `pre_receive_secret_detection_enabled`
 
 ```json
 {
@@ -529,9 +530,9 @@ listed in the descriptions of the relevant settings.
 | `import_sources`                         | array of strings | no                                   | Sources to allow project import from, possible values: `github`, `bitbucket`, `bitbucket_server`, `fogbugz`, `git`, `gitlab_project`, `gitea`, and `manifest`. |
 | `invisible_captcha_enabled`              | boolean          | no                                   | Enable Invisible CAPTCHA spam detection during sign-up. Disabled by default. |
 | `issues_create_limit`                    | integer          | no                                   | Max number of issue creation requests per minute per user. Disabled by default.|
-| `jira_connect_application_key`           | String           | no                                   | ID of the OAuth application used to authenticate with the GitLab for Jira Cloud app. |
+| `jira_connect_application_key`           | string           | no                                   | ID of the OAuth application used to authenticate with the GitLab for Jira Cloud app. |
 | `jira_connect_public_key_storage_enabled` | boolean         | no                                   | Enable public key storage for the GitLab for Jira Cloud app. |
-| `jira_connect_proxy_url`                 | String           | no                                   | URL of the GitLab instance used as a proxy for the GitLab for Jira Cloud app. |
+| `jira_connect_proxy_url`                 | string           | no                                   | URL of the GitLab instance used as a proxy for the GitLab for Jira Cloud app. |
 | `keep_latest_artifact`                   | boolean          | no                                   | Prevent the deletion of the artifacts from the most recent successful jobs, regardless of the expiry time. Enabled by default. |
 | `local_markdown_version`                 | integer          | no                                   | Increase this value when any cached Markdown should be invalidated. |
 | `mailgun_signing_key`                    | string           | no                                   | The Mailgun HTTP webhook signing key for receiving events from webhook. |
@@ -581,13 +582,13 @@ listed in the descriptions of the relevant settings.
 | `personal_access_token_prefix`           | string           | no                                   | Prefix for all generated personal access tokens. |
 | `pipeline_limit_per_project_user_sha`    | integer          | no                                   | Maximum number of pipeline creation requests per minute per user and commit. Disabled by default. |
 | `gitpod_enabled`                         | boolean          | no                                   | (**If enabled, requires:** `gitpod_url`) Enable [Gitpod integration](../integration/gitpod.md). Default is `false`. |
-| `gitpod_url`                             | boolean          | required by: `gitpod_enabled`        | The Gitpod instance URL for integration. |
+| `gitpod_url`                             | string           | required by: `gitpod_enabled`        | The Gitpod instance URL for integration. |
 | `kroki_enabled`                          | boolean          | no                                   | (**If enabled, requires:** `kroki_url`) Enable [Kroki integration](../administration/integration/kroki.md). Default is `false`. |
-| `kroki_url`                              | boolean          | required by: `kroki_enabled`         | The Kroki instance URL for integration. |
+| `kroki_url`                              | string           | required by: `kroki_enabled`         | The Kroki instance URL for integration. |
 | `kroki_formats`                          | object           | no                                   | Additional formats supported by the Kroki instance. Possible values are `true` or `false` for formats `bpmn`, `blockdiag`, and `excalidraw` in the format `<format>: true` or `<format>: false`. |
 | `plantuml_enabled`                       | boolean          | no                                   | (**If enabled, requires:** `plantuml_url`) Enable [PlantUML integration](../administration/integration/plantuml.md). Default is `false`. |
 | `plantuml_url`                           | string           | required by: `plantuml_enabled`      | The PlantUML instance URL for integration. |
-| `polling_interval_multiplier`            | decimal          | no                                   | Interval multiplier used by endpoints that perform polling. Set to `0` to disable polling. |
+| `polling_interval_multiplier`            | float            | no                                   | Interval multiplier used by endpoints that perform polling. Set to `0` to disable polling. |
 | `project_export_enabled`                 | boolean          | no                                   | Enable project export. |
 | `project_jobs_api_rate_limit`            | integer          | no                                   | Maximum authenticated requests to `/project/:id/jobs` per minute. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129319) in GitLab 16.5. Default: 600. |
 | `projects_api_rate_limit_unauthenticated` | integer         | no                                   | [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112283) in GitLab 15.10. Max number of requests per 10 minutes per IP address for unauthenticated requests to the [list all projects API](projects.md#list-all-projects). Default: 400. To disable throttling set to 0.|
@@ -703,6 +704,7 @@ listed in the descriptions of the relevant settings.
 | `lock_duo_features_enabled`              | boolean          | no                                   | Indicates whether the GitLab Duo features enabled setting is enforced for all subgroups. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144931) in GitLab 16.10. Self-managed, Premium and Ultimate only. |
 | `nuget_skip_metadata_url_validation` | boolean     | no                                   | Indicates whether to skip metadata URL validation for the NuGet package. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145887) in GitLab 17.0. |
 | `require_admin_two_factor_authentication` | boolean         | no | Allow administrators to require 2FA for all administrators on the instance. |
+| `pre_receive_secret_detection_enabled` | boolean         | no | Allow projects to enable secret push protection. This does not enable secret push protection. When you enable this feature, you accept the [GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/). Ultimate only. |
 
 ### Configure inactive project deletion
 

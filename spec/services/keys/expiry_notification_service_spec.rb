@@ -37,6 +37,22 @@ RSpec.describe Keys::ExpiryNotificationService, feature_category: :source_code_m
     end
   end
 
+  shared_examples 'creates todo' do
+    it do
+      perform_enqueued_jobs do
+        expect { subject.execute }.to change { user.todos.count }.by(1)
+      end
+    end
+  end
+
+  shared_examples 'does not create todo' do
+    it do
+      perform_enqueued_jobs do
+        expect { subject.execute }.not_to change { user.todos.count }
+      end
+    end
+  end
+
   shared_context 'block user' do
     before do
       user.block!
@@ -49,6 +65,7 @@ RSpec.describe Keys::ExpiryNotificationService, feature_category: :source_code_m
     let(:expiring_soon) { false }
 
     context 'when user has permission to receive notification' do
+      it_behaves_like 'creates todo'
       it_behaves_like 'sends a notification'
 
       it_behaves_like 'uses notification service to send email to the user', :ssh_key_expired
@@ -56,11 +73,20 @@ RSpec.describe Keys::ExpiryNotificationService, feature_category: :source_code_m
       it 'updates notified column' do
         expect { subject.execute }.to change { key.reload.expiry_notification_delivered_at }
       end
+
+      context 'when derisk feature flag is disabled' do
+        before do
+          stub_feature_flags(todos_for_ssh_key_expiry: false)
+        end
+
+        it_behaves_like 'does not create todo'
+      end
     end
 
     context 'when user does NOT have permission to receive notification' do
       include_context 'block user'
 
+      it_behaves_like 'does not create todo'
       it_behaves_like 'does not send notification'
 
       it 'does not update notified column' do

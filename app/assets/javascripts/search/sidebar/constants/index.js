@@ -28,6 +28,8 @@ export const SEARCH_TYPE_BASIC = 'basic';
 export const SEARCH_TYPE_ADVANCED = 'advanced';
 export const SEARCH_TYPE_ZOEKT = 'zoekt';
 
+export const SEARCH_ICON = 'search';
+
 export const ANY_OPTION = {
   id: null,
   name: __('Any'),
@@ -50,3 +52,8 @@ export const PROJECT_DATA = {
 
 export const EVENT_CLICK_ZOEKT_INCLUDE_FORKS_ON_SEARCH_RESULTS_PAGE =
   'click_zoekt_include_forks_on_search_results_page';
+
+export const EVENT_SELECT_SOURCE_BRANCH_FILTER = 'select_source_branch_filter';
+
+export const EVENT_SELECT_SOURCE_BRANCH_FILTER_ON_MERGE_REQUEST_PAGE =
+  'select_source_branch_filter_on_merge_request_page';

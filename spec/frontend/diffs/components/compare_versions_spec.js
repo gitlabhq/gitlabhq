@@ -1,3 +1,4 @@
+import { GlAnimatedSidebarIcon } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import getDiffWithCommit from 'test_fixtures/merge_request_diffs/with_commit.json';
@@ -84,7 +85,7 @@ describe('CompareVersions', () => {
 
       expect(treeListBtn.exists()).toBe(true);
       expect(treeListBtn.attributes('aria-label')).toBe('Hide file browser');
-      expect(treeListBtn.props('icon')).toBe('sidebar');
+      expect(treeListBtn.findComponent(GlAnimatedSidebarIcon).exists()).toBe(true);
     });
 
     it('should render comparison dropdowns with correct values', () => {

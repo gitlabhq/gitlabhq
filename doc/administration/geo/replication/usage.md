@@ -12,7 +12,7 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** Self-managed
 
-After you set up the [database replication and configure the Geo nodes](../index.md#setup-instructions), use your closest GitLab site as you would do with the primary one.
+After you set up the [database replication and configure the Geo nodes](../setup/index.md), use your closest GitLab site as you would do with the primary one.
 
 ## Git operations
 

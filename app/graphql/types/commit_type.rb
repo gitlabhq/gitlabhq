@@ -70,7 +70,7 @@ module Types
 
     field :diffs, [Types::DiffType], null: true, calls_gitaly: true,
       description: 'Diffs contained within the commit. ' \
-                   'This field can only be resolved for 10 diffs in any single request.' do
+        'This field can only be resolved for 10 diffs in any single request.' do
       # Limited to 10 calls per GraphQL request as calling `diffs` multiple times will
       # lead to N+1 queries to Gitaly.
       extension ::Gitlab::Graphql::Limit::FieldCallCount, limit: 10

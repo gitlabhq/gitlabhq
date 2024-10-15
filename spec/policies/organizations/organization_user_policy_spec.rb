@@ -92,6 +92,12 @@ RSpec.describe Organizations::OrganizationUserPolicy, feature_category: :cell do
     end
   end
 
+  context 'for update_organization_user policy' do
+    let_it_be(:user_policy) { :update_organization_user }
+
+    it_behaves_like 'organization owner policy'
+  end
+
   context 'for remove_user policy' do
     let_it_be(:user_policy) { :remove_user }
 

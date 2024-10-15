@@ -3,10 +3,6 @@
 module Gitlab
   module UsageDataCounters
     module IssueActivityUniqueCounter
-      ISSUE_CATEGORY = 'issues_edit'
-      ISSUE_ACTION = 'perform_issue_action'
-      ISSUE_LABEL = 'redis_hll_counters.issues_edit.issues_edit_total_unique_counts_monthly'
-
       ISSUE_ASSIGNEE_CHANGED = 'g_project_management_issue_assignee_changed'
       ISSUE_CREATED = 'g_project_management_issue_created'
       ISSUE_CLOSED = 'g_project_management_issue_closed'

@@ -3,6 +3,14 @@
 # Renders a GlAlert root element
 module Pajamas
   class AlertComponent < Pajamas::Component
+    VARIANT_ICONS = {
+      info: 'information-o',
+      warning: 'warning',
+      success: 'check-circle',
+      danger: 'error',
+      tip: 'bulb'
+    }.freeze
+
     # @param [String] title
     # @param [Symbol] variant
     # @param [Boolean] dismissible
@@ -34,14 +42,6 @@ module Pajamas
 
     renders_one :body
     renders_one :actions
-
-    VARIANT_ICONS = {
-      info: 'information-o',
-      warning: 'warning',
-      success: 'check-circle',
-      danger: 'error',
-      tip: 'bulb'
-    }.freeze
 
     def icon
       VARIANT_ICONS[@variant]

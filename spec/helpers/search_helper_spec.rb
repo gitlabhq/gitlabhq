@@ -1067,7 +1067,7 @@ RSpec.describe SearchHelper, feature_category: :global_search do
 
     context 'snippet' do
       context 'when searching from snippets' do
-        let(:snippet) { create(:snippet) }
+        let(:snippet) { create(:project_snippet) }
 
         it 'adds :for_snippets true correctly to hash' do
           expect(header_search_context[:for_snippets]).to eq(true)

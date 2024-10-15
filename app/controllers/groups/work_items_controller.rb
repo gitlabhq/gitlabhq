@@ -32,7 +32,7 @@ module Groups
     private
 
     def namespace_work_items_enabled?
-      group&.namespace_work_items_enabled?(current_user)
+      group&.namespace_work_items_enabled?
     end
 
     # The work_items/:iid route renders a Vue app that takes care of the show and new pages.

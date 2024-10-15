@@ -1,0 +1,13 @@
+---
+api_type: string
+attr: external_pipeline_validation_service_token
+clusterwide: true
+column: encrypted_external_pipeline_validation_service_token
+db_type: text
+default:
+description: Optional. Token to include as the `X-Gitlab-Token` header in requests
+  to the URL in `external_pipeline_validation_service_url`.
+encrypted: true
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

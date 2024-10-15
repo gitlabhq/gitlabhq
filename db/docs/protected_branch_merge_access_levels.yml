@@ -8,4 +8,4 @@ description: Stores merge access settings for protected branches
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5081
 milestone: '8.11'
 gitlab_schema: gitlab_main_cell
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/462136
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/490485

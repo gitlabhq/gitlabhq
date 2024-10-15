@@ -1,0 +1,12 @@
+---
+api_type:
+attr: license_trial_ends_on
+clusterwide: false
+column: license_trial_ends_on
+db_type: date
+default:
+description:
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: false

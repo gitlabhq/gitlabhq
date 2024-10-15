@@ -153,7 +153,7 @@ ul.related-merge-requests > li gl-emoji {
     // override dropdown item styles
     .btn.btn-confirm {
       @include btn-default;
-      @include btn-blue;
+      @include btn-color($blue-500, $blue-600, $blue-600, $blue-700, $blue-700, $blue-800, $white-contrast);
 
       border-width: 1px;
       line-height: $line-height-base;
@@ -251,6 +251,16 @@ ul.related-merge-requests > li gl-emoji {
   @include media-breakpoint-up(xl) {
     padding: 0 $container-margin-xl;
   }
+}
+
+.issuable-header-slide-enter-active,
+.issuable-header-slide-leave-active {
+  @apply gl-transition-all;
+}
+
+.issuable-header-slide-enter,
+.issuable-header-slide-leave-to {
+  transform: translateY(-100%);
 }
 
 .issuable-sticky-header-visible {

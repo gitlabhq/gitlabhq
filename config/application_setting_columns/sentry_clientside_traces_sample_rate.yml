@@ -1,0 +1,12 @@
+---
+api_type:
+attr: sentry_clientside_traces_sample_rate
+clusterwide: false
+column: sentry_clientside_traces_sample_rate
+db_type: double
+default: '0.0'
+description:
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: true

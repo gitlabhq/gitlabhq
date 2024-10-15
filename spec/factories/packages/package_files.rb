@@ -235,7 +235,10 @@ FactoryBot.define do
 
       after :create do |package_file, evaluator|
         unless evaluator.without_loaded_metadatum
-          create :helm_file_metadatum, package_file: package_file, channel: evaluator.channel, description: evaluator.description
+          create :helm_file_metadatum,
+            package_file: package_file,
+            channel: evaluator.channel,
+            description: evaluator.description
         end
       end
     end
@@ -364,6 +367,13 @@ FactoryBot.define do
 
     trait(:object_storage) do
       file_store { Packages::PackageFileUploader::Store::REMOTE }
+    end
+
+    trait(:ml_model) do
+      package
+      file_fixture { 'spec/fixtures/packages/ml_model/MLmodel' }
+      file_name { 'MLmodel' }
+      size { 527.bytes }
     end
 
     factory :package_file_with_file, traits: [:jar]

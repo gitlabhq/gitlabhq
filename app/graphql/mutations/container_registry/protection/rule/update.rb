@@ -7,8 +7,8 @@ module Mutations
         class Update < ::Mutations::BaseMutation
           graphql_name 'UpdateContainerRegistryProtectionRule'
           description 'Updates a container registry protection rule to restrict access to project containers. ' \
-                      'You can prevent users without certain roles from altering containers. ' \
-                      'Available only when feature flag `container_registry_protected_containers` is enabled.'
+            'You can prevent users without certain roles from altering containers. ' \
+            'Available only when feature flag `container_registry_protected_containers` is enabled.'
 
           authorize :admin_container_image
 
@@ -53,8 +53,9 @@ module Mutations
 
           def resolve(id:, **kwargs)
             container_registry_protection_rule = authorized_find!(id: id)
+            project = container_registry_protection_rule.project
 
-            if Feature.disabled?(:container_registry_protected_containers, container_registry_protection_rule.project)
+            if Feature.disabled?(:container_registry_protected_containers, project.root_ancestor)
               raise_resource_not_available_error!("'container_registry_protected_containers' feature flag is disabled")
             end
 

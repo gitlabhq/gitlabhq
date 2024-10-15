@@ -201,7 +201,7 @@ export default {
         <gl-link
           v-gl-tooltip
           :href="environment.environmentPath"
-          class="gl-truncate gl-text-blue-500"
+          class="gl-truncate"
           :class="{ 'gl-font-bold': visible }"
           :title="name"
         >
@@ -216,7 +216,11 @@ export default {
         >
       </div>
       <div class="gl-flex gl-items-center">
-        <p v-if="canShowAutoStopDate" class="gl-mb-0 gl-mr-5 gl-text-sm gl-text-gray-700">
+        <p
+          v-if="canShowAutoStopDate"
+          class="gl-mb-0 gl-mr-5 gl-text-sm gl-text-gray-700"
+          data-testid="auto-stop-time"
+        >
           <gl-sprintf :message="$options.i18n.autoStopIn">
             <template #time>
               <time-ago-tooltip :time="environment.autoStopAt" css-class="gl-font-bold" />

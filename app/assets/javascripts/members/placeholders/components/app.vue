@@ -60,6 +60,7 @@ export default {
       reassignedCount: null,
       filterParams: {},
       sort: null,
+      skipResettingFilterParams: false,
     };
   },
   computed: {
@@ -133,9 +134,16 @@ export default {
         },
       ];
     },
+    initialSortBy() {
+      return this.sort || PLACEHOLDER_SORT_SOURCE_NAME_ASC;
+    },
   },
   watch: {
     selectedTabIndex() {
+      if (this.skipResettingFilterParams) {
+        this.skipResettingFilterParams = false;
+        return;
+      }
       this.filterParams = {};
     },
     urlParams: {
@@ -152,24 +160,38 @@ export default {
     },
   },
   created() {
-    const { sort, ...queryParams } = convertObjectPropsToCamelCase(
-      queryToObject(window.location.search.substring(1), { gatherArrays: true }),
-      {
-        dropKeys: ['scope', 'utf8', 'tab'], // These keys are unsupported/unnecessary
-      },
-    );
-
-    this.filterParams = { ...queryParams };
-
-    if (sort) {
-      this.sort = sort;
-    }
+    this.setInitialFilterAndSort();
   },
   mounted() {
     this.unassignedCount = this.pagination.awaitingReassignmentItems;
     this.reassignedCount = this.pagination.reassignedItems;
   },
   methods: {
+    setInitialFilterAndSort() {
+      const { sort, ...queryParams } = convertObjectPropsToCamelCase(
+        queryToObject(window.location.search.substring(1), { gatherArrays: true }),
+        {
+          dropKeys: ['scope', 'utf8', 'tab'], // These keys are unsupported/unnecessary
+        },
+      );
+
+      this.filterParams = { ...queryParams };
+
+      if (sort) {
+        this.sort = sort || PLACEHOLDER_SORT_SOURCE_NAME_ASC;
+      }
+
+      if (queryParams.status) {
+        const reassignedStatuses = PLACEHOLDER_USER_REASSIGNED_STATUS_OPTIONS.map(
+          (status) => status.value,
+        );
+        // When status is one of the reassigned statuses, we should open the reassigned tab
+        if (reassignedStatuses.includes(queryParams.status)) {
+          this.skipResettingFilterParams = true;
+          this.selectedTabIndex = 1;
+        }
+      }
+    },
     filteredSearchTokens(options = PLACEHOLDER_USER_UNASSIGNED_STATUS_OPTIONS) {
       return [
         {
@@ -223,7 +245,6 @@ export default {
     },
   },
   uploadCsvModalId: UPLOAD_CSV_PLACEHOLDERS_MODAL_ID,
-  initialSortBy: PLACEHOLDER_SORT_SOURCE_NAME_ASC,
   PLACEHOLDER_USER_REASSIGNED_STATUS_OPTIONS,
 };
 </script>
@@ -245,7 +266,7 @@ export default {
           key="filter-unassigned"
           :namespace="group.path"
           :initial-filter-value="initialFilterValue"
-          :initial-sort-by="$options.initialSortBy"
+          :initial-sort-by="initialSortBy"
           :tokens="filteredSearchTokens()"
           :sort-options="sortOptions"
           :search-input-placeholder="s__('UserMapping|Search placeholder users')"
@@ -275,7 +296,7 @@ export default {
           key="filter-reassigned"
           :namespace="group.path"
           :initial-filter-value="initialFilterValue"
-          :initial-sort-by="$options.initialSortBy"
+          :initial-sort-by="initialSortBy"
           :tokens="filteredSearchTokens($options.PLACEHOLDER_USER_REASSIGNED_STATUS_OPTIONS)"
           :sort-options="sortOptions"
           :search-input-placeholder="s__('UserMapping|Search placeholder users')"

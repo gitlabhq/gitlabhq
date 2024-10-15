@@ -36,7 +36,7 @@ RSpec.describe 'Issue Boards new issue', :js, feature_category: :portfolio_manag
       end
 
       it 'does not display new issue button in closed list' do
-        page.within('.board:nth-child(3)') do
+        page.within('[data-testid="board-list"]:nth-child(3)') do
           expect(page).not_to have_button('Create new issue')
         end
       end
@@ -120,7 +120,7 @@ RSpec.describe 'Issue Boards new issue', :js, feature_category: :portfolio_manag
 
         wait_for_all_requests
 
-        page.within('.board:nth-child(2)') do
+        page.within('[data-testid="board-list"]:nth-child(2)') do
           click_button('Create new issue')
 
           page.within(first('.board-new-issue-form')) do
@@ -148,7 +148,7 @@ RSpec.describe 'Issue Boards new issue', :js, feature_category: :portfolio_manag
       end
 
       it 'does not display new issue button in label list' do
-        page.within('.board:nth-child(2)') do
+        page.within('[data-testid="board-list"]:nth-child(2)') do
           expect(page).not_to have_button('Create new issue')
         end
       end
@@ -172,7 +172,7 @@ RSpec.describe 'Issue Boards new issue', :js, feature_category: :portfolio_manag
 
         context 'when backlog does not exist' do
           it 'does not display new issue button in label list' do
-            page.within('.board.is-draggable') do
+            page.within('[data-testid="board-list"].is-draggable') do
               expect(page).not_to have_button('Create new issue')
             end
           end
@@ -184,7 +184,7 @@ RSpec.describe 'Issue Boards new issue', :js, feature_category: :portfolio_manag
           end
 
           it 'does not display new issue button in label list' do
-            page.within('.board.is-draggable') do
+            page.within('[data-testid="board-list"].is-draggable') do
               expect(page).not_to have_button('Create new issue')
             end
           end

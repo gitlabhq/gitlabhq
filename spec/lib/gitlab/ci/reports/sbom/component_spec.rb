@@ -227,4 +227,54 @@ RSpec.describe Gitlab::Ci::Reports::Sbom::Component, feature_category: :dependen
       it { is_expected.to be(true) }
     end
   end
+
+  describe '#reachability' do
+    subject { component.reachability }
+
+    context 'when properties are nil' do
+      before do
+        component.properties = nil
+      end
+
+      it { is_expected.to eq('unknown') }
+    end
+
+    context 'when reachability is missing from properties' do
+      before do
+        component.properties = Gitlab::Ci::Parsers::Sbom::CyclonedxProperties.parse_component_source([])
+      end
+
+      it { is_expected.to eq('unknown') }
+    end
+
+    context 'when reachability value is invalid' do
+      before do
+        component.properties = Gitlab::Ci::Parsers::Sbom::CyclonedxProperties.parse_component_source([
+          { 'name' => 'gitlab:dependency_scanning_component:reachability', 'value' => 'bad_reachability_value' }
+        ])
+      end
+
+      it { is_expected.to eq('unknown') }
+    end
+
+    context 'when reachability value is unknown' do
+      before do
+        component.properties = Gitlab::Ci::Parsers::Sbom::CyclonedxProperties.parse_component_source([
+          { 'name' => 'gitlab:dependency_scanning_component:reachability', 'value' => 'unknown' }
+        ])
+      end
+
+      it { is_expected.to eq('unknown') }
+    end
+
+    context 'when reachability value is in_use' do
+      before do
+        component.properties = Gitlab::Ci::Parsers::Sbom::CyclonedxProperties.parse_component_source([
+          { 'name' => 'gitlab:dependency_scanning_component:reachability', 'value' => 'in_use' }
+        ])
+      end
+
+      it { is_expected.to eq('in_use') }
+    end
+  end
 end

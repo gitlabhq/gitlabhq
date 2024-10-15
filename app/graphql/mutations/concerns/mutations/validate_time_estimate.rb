@@ -15,7 +15,7 @@ module Mutations
       elsif parsed_time_estimate < 0
         raise Gitlab::Graphql::Errors::ArgumentError,
           'timeEstimate must be greater than or equal to zero. ' \
-          'Remember that every new timeEstimate overwrites the previous value.'
+            'Remember that every new timeEstimate overwrites the previous value.'
       end
     end
   end

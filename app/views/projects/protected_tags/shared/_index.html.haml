@@ -6,11 +6,11 @@
   expanded: expanded) do |c|
   - c.with_description do
     = s_("ProtectedTag|Limit access to creating and updating tags.")
-    = link_to s_("ProtectedTag|What are protected tags?"), help_page_path("user/project/protected_tags")
+    = link_to s_("ProtectedTag|What are protected tags?"), help_page_path("user/project/protected_tags.md")
   - c.with_body do
     %p.gl-text-secondary
       = s_("ProtectedTag|By default, protected tags restrict who can modify the tag.")
-      = link_to s_("ProtectedTag|Learn more."), help_page_path("user/project/protected_tags", anchor: "who-can-modify-a-protected-tag")
+      = link_to s_("ProtectedTag|Learn more."), help_page_path("user/project/protected_tags.md", anchor: "who-can-modify-a-protected-tag")
 
     = render ::Layouts::CrudComponent.new(_('Protected tags'),
       icon: 'tag',

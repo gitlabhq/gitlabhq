@@ -22,20 +22,20 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   props: {
-    mergeRequest: {
+    itemContent: {
       type: Object,
       required: true,
     },
   },
   computed: {
     assignees() {
-      return this.mergeRequest?.assignees?.nodes || [];
+      return this.itemContent?.assignees?.nodes || [];
     },
     stateIconClass() {
       return {
-        'gl-text-green-500': this.mergeRequest.state === STATUS_OPEN,
-        'gl-text-red-500': this.mergeRequest.state === STATUS_CLOSED,
-        'gl-text-blue-500': this.mergeRequest.state === STATUS_MERGED,
+        'gl-text-green-500': this.itemContent.state === STATUS_OPEN,
+        'gl-text-red-500': this.itemContent.state === STATUS_CLOSED,
+        'gl-text-blue-500': this.itemContent.state === STATUS_MERGED,
       };
     },
     stateIcon() {
@@ -44,7 +44,7 @@ export default {
         [STATUS_MERGED]: 'merge',
         [STATUS_CLOSED]: 'merge-request-close',
       };
-      return stateIcons[this.mergeRequest.state];
+      return stateIcons[this.itemContent.state];
     },
     assigneesCollapsedTooltip() {
       if (this.assignees.length > 2) {
@@ -55,7 +55,7 @@ export default {
       return '';
     },
     projectPath() {
-      return `${this.mergeRequest.project.namespace.path}/${this.mergeRequest.project.name}`;
+      return `${this.itemContent.project.namespace.path}/${this.itemContent.project.name}`;
     },
   },
 };
@@ -63,15 +63,15 @@ export default {
 <template>
   <div class="gl-mb-2 gl-flex gl-items-center gl-justify-between gl-gap-2">
     <gl-link
-      :href="mergeRequest.webUrl"
+      :href="itemContent.webUrl"
       class="gfm-merge_request gl-truncate gl-text-gray-900 hover:gl-text-gray-900 hover:gl-underline"
       data-reference-type="merge_request"
       :data-project-path="projectPath"
-      :data-iid="mergeRequest.iid"
-      :data-mr-title="mergeRequest.title"
+      :data-iid="itemContent.iid"
+      :data-mr-title="itemContent.title"
       data-placement="left"
     >
-      <gl-icon :name="stateIcon" :class="stateIconClass" /> {{ mergeRequest.title }}
+      <gl-icon :name="stateIcon" :class="stateIconClass" /> {{ itemContent.title }}
     </gl-link>
     <gl-avatars-inline
       v-if="assignees.length"

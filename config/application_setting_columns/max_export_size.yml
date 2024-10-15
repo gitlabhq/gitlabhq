@@ -1,0 +1,12 @@
+---
+api_type: integer
+attr: max_export_size
+clusterwide: true
+column: max_export_size
+db_type: integer
+default: '0'
+description: Maximum export size in MB. 0 for unlimited. Default = 0 (unlimited).
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

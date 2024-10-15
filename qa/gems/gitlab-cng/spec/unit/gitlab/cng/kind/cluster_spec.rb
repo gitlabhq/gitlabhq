@@ -18,10 +18,12 @@ RSpec.describe Gitlab::Cng::Kind::Cluster do
     let(:tmp_config_path) { File.join("/tmp", "kind-config.yml") }
     let(:command_status) { instance_double(Process::Status, success?: true) }
     let(:clusters) { "kind" }
+    let(:helm) { instance_double(Gitlab::Cng::Helm::Client, add_helm_chart: nil, upgrade: nil) }
 
     before do
       allow(Gitlab::Cng::Helpers::Utils).to receive(:tmp_dir).and_return("/tmp")
       allow(Gitlab::Cng::Helpers::Spinner).to receive(:spin).and_yield
+      allow(Gitlab::Cng::Helm::Client).to receive(:new).and_return(helm)
       allow(File).to receive(:write).with(tmp_config_path, kind_config_content)
 
       allow(Open3).to receive(:popen2e).with({}, *%w[
@@ -80,8 +82,20 @@ RSpec.describe Gitlab::Cng::Kind::Cluster do
           ]).and_return(["", command_status])
         end
 
-        it "creates cluster with ci specific configuration" do
+        it "creates cluster with ci specific configuration", :aggregate_failures do
           expect { cluster.create }.to output(/Cluster '#{name}' created/).to_stdout
+          expect(helm).not_to have_received(:add_helm_chart).with(
+            "metrics-server",
+            "https://kubernetes-sigs.github.io/metrics-server/"
+          )
+          expect(helm).not_to have_received(:upgrade).with(
+            "metrics-server",
+            "metrics-server/metrics-server",
+            namespace: "kube-system",
+            timeout: "1m",
+            values: { "args" => ["--kubelet-insecure-tls"] }.to_yaml,
+            args: ["--atomic", "--version", "^3.12"]
+          )
         end
       end
     end

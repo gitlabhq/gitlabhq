@@ -1,22 +1,16 @@
 # frozen_string_literal: true
 
 class Label < ApplicationRecord
-  include CacheMarkdownField
+  include BaseLabel
   include Referable
   include Subscribable
-  include Gitlab::SQL::Pattern
   include OptionallySearch
   include Sortable
   include FromUnion
   include Presentable
   include EachBatch
 
-  cache_markdown_field :description, pipeline: :single_line
-
-  DEFAULT_COLOR = ::Gitlab::Color.of('#6699cc')
   DESCRIPTION_LENGTH_MAX = 512.kilobytes
-
-  attribute :color, ::Gitlab::Database::Type::Color.new, default: DEFAULT_COLOR
 
   has_many :lists, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :priorities, class_name: 'LabelPriority'
@@ -24,16 +18,10 @@ class Label < ApplicationRecord
   has_many :issues, through: :label_links, source: :target, source_type: 'Issue'
   has_many :merge_requests, through: :label_links, source: :target, source_type: 'MergeRequest'
 
-  before_validation :strip_whitespace_from_title
   before_destroy :prevent_locked_label_destroy, prepend: true
 
-  validates :color, color: true, presence: true
   validate :ensure_lock_on_merge_allowed
-
-  # Don't allow ',' for label titles
-  validates :title, presence: true, format: { with: /\A[^,]+\z/ }
   validates :title, uniqueness: { scope: [:group_id, :project_id] }
-  validates :title, length: { maximum: 255 }
 
   # we validate the description against DESCRIPTION_LENGTH_MAX only for labels being created and on updates if
   # the description changes to avoid breaking the existing labels which may have their descriptions longer
@@ -182,34 +170,6 @@ class Label < ApplicationRecord
     on_board(board_id).pluck(:label_id)
   end
 
-  # Searches for labels with a matching title or description.
-  #
-  # This method uses ILIKE on PostgreSQL.
-  #
-  # query - The search query as a String.
-  #
-  # Returns an ActiveRecord::Relation.
-  def self.search(query, **options)
-    # make sure we prevent passing in disallowed columns
-    search_in = case options[:search_in]
-                when [:title]
-                  [:title]
-                when [:description]
-                  [:description]
-                else
-                  [:title, :description]
-                end
-
-    fuzzy_search(query, search_in)
-  end
-
-  # Override Gitlab::SQL::Pattern.min_chars_for_partial_matching as
-  # label queries are never global, and so will not use a trigram
-  # index. That means we can have just one character in the LIKE.
-  def self.min_chars_for_partial_matching
-    1
-  end
-
   def self.on_project_board?(project_id, label_id)
     return false if label_id.blank?
 
@@ -257,30 +217,6 @@ class Label < ApplicationRecord
 
   def priority?
     priorities.present?
-  end
-
-  def color
-    super || DEFAULT_COLOR
-  end
-
-  def text_color
-    color.contrast
-  end
-
-  def title=(value)
-    if value.blank?
-      super
-    else
-      write_attribute(:title, sanitize_value(value))
-    end
-  end
-
-  def description=(value)
-    if value.blank?
-      super
-    else
-      write_attribute(:description, sanitize_value(value))
-    end
   end
 
   ##
@@ -360,14 +296,6 @@ class Label < ApplicationRecord
     else
       id
     end
-  end
-
-  def sanitize_value(value)
-    CGI.unescapeHTML(Sanitize.clean(value.to_s))
-  end
-
-  def strip_whitespace_from_title
-    self[:title] = title&.strip
   end
 
   def prevent_locked_label_destroy

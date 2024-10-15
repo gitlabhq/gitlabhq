@@ -16,13 +16,17 @@ RSpec.describe 'Value Stream Analytics', :js, feature_category: :value_stream_ma
   let_it_be(:metrics_selector) { "[data-testid='vsa-metrics']" }
   let_it_be(:metric_value_selector) { "[data-testid='displayValue']" }
   let_it_be(:predefined_date_ranges_dropdown_selector) { '[data-testid="vsa-predefined-date-ranges-dropdown"]' }
+  let_it_be(:project) { create(:project, :repository, maintainers: user) }
+  let_it_be(:issue) { create(:issue, title: 'My feature', project: project, created_at: 3.weeks.ago) }
+  let_it_be(:milestone) { create(:milestone, project: project) }
+  let_it_be(:mr) { create(:merge_request, source_project: project) }
+  let_it_be(:commit) { create_commit("References #{issue.to_reference}", project, user, mr.source_branch, commit_time: mr.created_at - 1.day, skip_push_handler: true) }
+  let_it_be(:closed_issues) { create(:merge_requests_closing_issues, merge_request: mr, issue_id: issue.id) }
+  let_it_be(:pipeline) do
+    create(:ci_empty_pipeline, status: 'created', project: project, ref: mr.source_branch, sha: mr.source_branch_sha, head_pipeline_of: mr)
+  end
 
   let(:stage_table) { find(stage_table_selector) }
-  let(:project) { create(:project, :repository) }
-  let(:issue) { create(:issue, project: project, created_at: 2.days.ago) }
-  let(:milestone) { create(:milestone, project: project) }
-  let(:mr) { create_merge_request_closing_issue(user, project, issue, commit_message: "References #{issue.to_reference}") }
-  let(:pipeline) { create(:ci_empty_pipeline, status: 'created', project: project, ref: mr.source_branch, sha: mr.source_branch_sha, head_pipeline_of: mr) }
 
   def metrics_values
     page.find(metrics_selector).all(metric_value_selector).collect(&:text)
@@ -40,7 +44,6 @@ RSpec.describe 'Value Stream Analytics', :js, feature_category: :value_stream_ma
   context 'as an allowed user' do
     context 'when project is new' do
       before do
-        project.add_maintainer(user)
         sign_in(user)
 
         visit project_cycle_analytics_path(project)
@@ -48,7 +51,16 @@ RSpec.describe 'Value Stream Analytics', :js, feature_category: :value_stream_ma
       end
 
       it 'displays metrics with relevant values' do
-        expect(metrics_values).to eq(['-'] * 3)
+        new_issue_count, commit_count, deploy_count = metrics_values
+
+        # We expect 1 for new issues because we created one in the setup
+        expect(new_issue_count).to eq("1")
+
+        # We expect 1 commit because we created one commit in the setup
+        expect(commit_count).to eq("1")
+
+        # No deploys were made to master in the time period
+        expect(deploy_count).to eq("-")
       end
 
       it 'shows active stage with empty message' do
@@ -63,28 +75,31 @@ RSpec.describe 'Value Stream Analytics', :js, feature_category: :value_stream_ma
       # So setting the date range to be the last 2 days should skip past the existing data
       from = 2.days.ago.to_date.iso8601
       to = 1.day.ago.to_date.iso8601
-      max_items_per_page = 20
+      max_items_per_page = 3
 
       around do |example|
         travel_to(5.days.ago) { example.run }
       end
 
+      before_all do
+        travel_to(5.days.ago) do
+          create_cycle(user, project, issue, mr, milestone, pipeline)
+          create_list(:issue, max_items_per_page, project: project, created_at: 2.weeks.ago, milestone: milestone)
+          deploy_master(user, project)
+
+          issue.reload.metrics.update!(first_mentioned_in_commit_at: issue.metrics.first_associated_with_milestone_at + 1.hour)
+          mr.update!(created_at: issue.metrics.first_associated_with_milestone_at + 1.hour)
+          mr.metrics.update!(
+            latest_build_started_at: mr.created_at + 3.hours,
+            latest_build_finished_at: mr.created_at + 4.hours,
+            merged_at: mr.created_at + 4.hours,
+            first_deployed_to_production_at: mr.created_at + 5.hours
+          )
+        end
+      end
+
       before do
-        project.add_maintainer(user)
-        create_cycle(user, project, issue, mr, milestone, pipeline)
-        create_list(:issue, max_items_per_page, project: project, created_at: 2.weeks.ago, milestone: milestone)
-        deploy_master(user, project)
-
-        issue.metrics.update!(first_mentioned_in_commit_at: issue.metrics.first_associated_with_milestone_at + 1.hour)
-        merge_request = issue.merge_requests_closing_issues.first.merge_request
-        merge_request.update!(created_at: issue.metrics.first_associated_with_milestone_at + 1.hour)
-        merge_request.metrics.update!(
-          latest_build_started_at: merge_request.created_at + 3.hours,
-          latest_build_finished_at: merge_request.created_at + 4.hours,
-          merged_at: merge_request.created_at + 4.hours,
-          first_deployed_to_production_at: merge_request.created_at + 5.hours
-        )
-
+        stub_const('Gitlab::Analytics::CycleAnalytics::RecordsFetcher::MAX_RECORDS', max_items_per_page - 1)
         sign_in(user)
         visit project_cycle_analytics_path(project)
 
@@ -122,19 +137,16 @@ RSpec.describe 'Value Stream Analytics', :js, feature_category: :value_stream_ma
         expect_merge_request_to_be_present
       end
 
-      it 'can sort records', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/338332' do
-        # NOTE: checking that the string changes should suffice
-        # depending on the order the tests are run we might run into problems with hard coded strings
-        original_first_title = first_stage_title
-        stage_time_column.click
+      it 'can sort records' do
+        original_first_title = issue.title
 
         expect_to_be_sorted "descending"
-        expect(first_stage_title).not_to have_text(original_first_title, exact: true)
+        expect(first_stage_title).to eq(original_first_title)
 
         stage_time_column.click
 
         expect_to_be_sorted "ascending"
-        expect(first_stage_title).to have_text(original_first_title, exact: true)
+        expect(first_stage_title).not_to eq(original_first_title)
       end
 
       it 'paginates the results' do
@@ -163,7 +175,7 @@ RSpec.describe 'Value Stream Analytics', :js, feature_category: :value_stream_ma
       end
 
       it 'can filter the metrics by date' do
-        expect(metrics_values).to match_array(%w[21 2 1])
+        expect(metrics_values).to match_array(%w[- 1 4])
 
         set_daterange(from, to)
 
@@ -201,13 +213,14 @@ RSpec.describe 'Value Stream Analytics', :js, feature_category: :value_stream_ma
   end
 
   context "as a guest" do
-    before do
-      project.add_developer(user)
+    before_all do
       project.add_guest(guest)
 
       create_cycle(user, project, issue, mr, milestone, pipeline)
       deploy_master(user, project)
+    end
 
+    before do
       sign_in(guest)
       visit project_cycle_analytics_path(project)
       wait_for_requests

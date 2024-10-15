@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'User creates release', :js, feature_category: :continuous_delivery do
   include Features::ReleasesHelpers
+  include MobileHelpers
 
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:milestone_1) { create(:milestone, project: project, title: '1.1') }
@@ -14,6 +15,8 @@ RSpec.describe 'User creates release', :js, feature_category: :continuous_delive
   let(:tag_name) { 'new-tag' }
 
   before do
+    resize_window(1920, 1080)
+
     project.add_developer(user)
 
     sign_in(user)
@@ -21,6 +24,10 @@ RSpec.describe 'User creates release', :js, feature_category: :continuous_delive
     visit new_page_url
 
     wait_for_requests
+  end
+
+  after do
+    restore_window_size
   end
 
   it 'renders the breadcrumbs', :aggregate_failures do

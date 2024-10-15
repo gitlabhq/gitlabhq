@@ -18,7 +18,7 @@ RSpec.describe Gitlab::MarkdownCache::ActiveRecord::Extension, feature_category:
     end
   end
 
-  let(:cache_version) { Gitlab::MarkdownCache::CACHE_COMMONMARK_VERSION << 16 }
+  let(:cache_version) { Gitlab::MarkdownCache::CACHE_COMMONMARK_VERSION_SHIFTED }
   let(:thing) do
     klass.create!(
       project_id: project.id, namespace_id: project.project_namespace_id,

@@ -1,0 +1,12 @@
+---
+api_type: integer
+attr: unique_ips_limit_per_user
+clusterwide: false
+column: unique_ips_limit_per_user
+db_type: integer
+default:
+description: Maximum number of IPs per user.
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

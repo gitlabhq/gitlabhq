@@ -1,4 +1,4 @@
-import { GlLoadingIcon, GlModal } from '@gitlab/ui';
+import { GlLoadingIcon, GlModal, GlPagination } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import { mount } from '@vue/test-utils';
 import axios from '~/lib/utils/axios_utils';
@@ -50,7 +50,7 @@ describe('SecureFilesList', () => {
   const findRowAt = (i) => findRows().at(i);
   const findCell = (i, col) => findRowAt(i).findAll('td').at(col);
   const findHeaderAt = (i) => wrapper.findAll('thead th').at(i);
-  const findPagination = () => wrapper.findAll('ul.pagination');
+  const findPagination = () => wrapper.findComponent(GlPagination);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findUploadButton = () => wrapper.findAll('span.gl-button-text');
   const findDeleteModal = () => wrapper.findComponent(GlModal);
@@ -130,38 +130,17 @@ describe('SecureFilesList', () => {
     });
   });
 
-  describe('pagination', () => {
-    it('displays the pagination component with there are more than 20 items', async () => {
-      mock = new MockAdapter(axios);
-      mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, secureFiles, { 'x-total': 30 });
-
-      createWrapper();
-      await waitForPromises();
-
-      expect(findPagination().exists()).toBe(true);
-    });
-
-    it('does not display the pagination component with there are 20 items', async () => {
-      mock = new MockAdapter(axios);
-      mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, secureFiles, { 'x-total': 20 });
-
-      createWrapper();
-      await waitForPromises();
-
-      expect(findPagination().exists()).toBe(false);
-    });
-  });
-
   describe('loading state', () => {
-    it('displays the loading icon while waiting for the backend request', () => {
+    it('displays the loading icon and hides pagination while waiting for the backend request', () => {
       mock = new MockAdapter(axios);
       mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, secureFiles);
       createWrapper();
 
       expect(findLoadingIcon().exists()).toBe(true);
+      expect(findPagination().exists()).toBe(false);
     });
 
-    it('does not display the loading icon after the backend request has completed', async () => {
+    it('does not display the loading icon and shows pagination after the backend request has completed', async () => {
       mock = new MockAdapter(axios);
       mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, secureFiles);
 
@@ -169,6 +148,7 @@ describe('SecureFilesList', () => {
       await waitForPromises();
 
       expect(findLoadingIcon().exists()).toBe(false);
+      expect(findPagination().exists()).toBe(true);
     });
   });
 

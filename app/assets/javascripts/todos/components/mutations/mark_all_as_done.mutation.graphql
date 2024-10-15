@@ -1,0 +1,9 @@
+mutation markAllAsDone {
+  markAllAsDone: todosMarkAllDone(input: {}) {
+    todos {
+      id
+      state
+    }
+    errors
+  }
+}

@@ -34,7 +34,8 @@ RSpec.describe Ci::PipelinesHelper, feature_category: :continuous_integration do
     end
 
     it 'has the expected keys' do
-      expect(subject.keys).to include(:endpoint,
+      expect(subject.keys).to include(
+        :endpoint,
         :project_id,
         :default_branch_name,
         :params,
@@ -49,7 +50,9 @@ RSpec.describe Ci::PipelinesHelper, feature_category: :continuous_integration do
         :suggested_ci_templates,
         :full_path,
         :visibility_pipeline_id_type,
-        :show_jenkins_ci_prompt)
+        :show_jenkins_ci_prompt,
+        :pipelines_analytics_path
+      )
     end
   end
 

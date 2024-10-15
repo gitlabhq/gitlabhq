@@ -12,7 +12,7 @@ In this example, I found some UI text I'd like to change.
 In the upper-right corner in GitLab, I selected my avatar and then **Preferences**.
 I want to change `Customize the color of GitLab` to `Customize the color theme of the GitLab UI`:
 
-![UI text](../img/ui_color_theme_before.png)
+![The UI text in GitLab before making the change.](../img/ui_color_theme_before.png)
 
 [View an interactive demo of this section](https://gitlab.navattic.com/uu5a0dc5).
 
@@ -44,7 +44,7 @@ Use your local IDE to make changes to the code in the GDK directory.
 1. Refresh the web browser where you're viewing the GDK.
    The changes should be displayed. Take a screenshot.
 
-   ![UI text - Color Theme](../img/ui_color_theme_after.png)
+   ![The UI text in GitLab after making the change.](../img/ui_color_theme_after.png)
 
 1. Commit the changes:
 

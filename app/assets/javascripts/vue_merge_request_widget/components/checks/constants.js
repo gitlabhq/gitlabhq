@@ -12,6 +12,12 @@ export const COMPONENTS = {
     import('ee_component/vue_merge_request_widget/components/checks/locked_paths.vue'),
   locked_lfs_files: () =>
     import('ee_component/vue_merge_request_widget/components/checks/locked_paths.vue'),
+  not_approved: () =>
+    import('ee_component/vue_merge_request_widget/components/checks/not_approved.vue'),
+  security_policy_violations: () =>
+    import(
+      'ee_component/vue_merge_request_widget/components/checks/security_policy_violations.vue'
+    ),
 };
 
 export const FAILURE_REASONS = {
@@ -31,4 +37,5 @@ export const FAILURE_REASONS = {
   locked_paths: __('All paths must be unlocked'),
   locked_lfs_files: __('All LFS files must be unlocked.'),
   security_policy_evaluation: __('All security policies must be evaluated.'),
+  security_policy_violations: __('All policy rules must be satisfied.'),
 };

@@ -23,7 +23,7 @@ RSpec.describe 'Multi Select Issue', :js, feature_category: :team_planning do
   end
 
   def wait_for_board_cards(board_number, expected_cards)
-    page.within(find(".board:nth-child(#{board_number})")) do
+    page.within(find("[data-testid='board-list']:nth-child(#{board_number})")) do
       expect(page.find('.board-header')).to have_content(expected_cards.to_s)
       expect(page).to have_selector('.board-card', count: expected_cards)
     end

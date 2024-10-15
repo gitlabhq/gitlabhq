@@ -12,7 +12,7 @@ DETAILS:
 
 There's no automatic removal process for blobs. Unless you delete them manually, they're stored
 indefinitely. Since this impacts your
-[storage usage quota](../../usage_quotas.md),
+[storage usage quota](../../storage_usage_quotas.md),
 it's important that you clear unused items from the cache. This page covers several options for
 doing so.
 

@@ -78,7 +78,7 @@ end
 We must not make breaking changes to our REST API v4, even in major GitLab releases.
 
 Our REST API maintains its own versioning independent of GitLab versioning.
-The current REST API version is `4`. [We commit to follow semantic versioning for our REST API](../api/rest/index.md#compatibility-guidelines),
+The current REST API version is `4`. [We commit to follow semantic versioning for our REST API](../api/rest/index.md),
 which means we cannot make breaking changes until a major version change (most likely, `5`).
 
 Because version `5` is not scheduled, we allow rare [exceptions](#exceptions).
@@ -117,7 +117,7 @@ Some examples of breaking changes are:
 - Changing the type of fields in the response. In a JSON response, this would be a change of any `Number`, `String`, `Boolean`, `Array`, or `Object` type to another type.
 - Adding a new **required** argument.
 - Changing authentication, authorization, or other header requirements.
-- Changing [any status code](../api/rest/index.md#status-codes) other than `500`.
+- Changing [any status code](../api/rest/troubleshooting.md#status-codes) other than `500`.
 
 ## What is not a breaking change
 
@@ -125,7 +125,7 @@ Some examples of non-breaking changes:
 
 - Any additive change, such as adding endpoints, non-required arguments, fields, or enum values.
 - Changes to error messages.
-- Changes from a `500` status code to [any supported status code](../api/rest/index.md#status-codes) (this is a bugfix).
+- Changes from a `500` status code to [any supported status code](../api/rest/troubleshooting.md#status-codes) (this is a bugfix).
 - Changes to the order of fields returned in a response.
 
 ## Experimental, beta, and generally available features

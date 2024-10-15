@@ -1,0 +1,9 @@
+---
+migration_job_name: BackfillPackagesNpmMetadataProjectId
+description: Backfills sharding key `packages_npm_metadata.project_id` from `packages_packages`.
+feature_category: package_registry
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167446
+milestone: '17.5'
+queued_migration_version: 20240927125019
+finalize_after: '2024-10-22'
+finalized_by: # version of the migration that finalized this BBM

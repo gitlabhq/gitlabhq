@@ -91,7 +91,6 @@ For example: `https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_templat
 ### Supported variables in merge request templates
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89810) in GitLab 15.7.
-> - `merge_request_author` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152510) in GitLab 17.1.
 
 NOTE:
 This feature is available only for
@@ -106,7 +105,6 @@ your merge request template with their values:
 | `%{co_authored_by}` | Names and emails of commit authors in a `Co-authored-by` Git commit trailer format. Limited to authors of 100 most recent commits in merge request. | `Co-authored-by: Zane Doe <zdoe@example.com>` <br> `Co-authored-by: Blake Smith <bsmith@example.com>` |
 | `%{first_commit}` | Full message of the first commit in merge request diff. | `Update README.md` |
 | `%{first_multiline_commit}` | Full message of the first commit that's not a merge commit and has more than one line in message body. Merge request title if all commits aren't multiline. | `Update README.md` <br><br> `Improved project description in readme file.` |
-| `%{merge_request_author}` | Name and email of the merge request author. | `Zane Doe <zdoe@example.com>` |
 | `%{source_branch}` | The name of the branch being merged. | `my-feature-branch`  |
 | `%{target_branch}` | The name of the branch that the changes are applied to. | `main` |
 

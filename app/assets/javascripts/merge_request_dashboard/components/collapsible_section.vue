@@ -44,8 +44,11 @@ export default {
     },
   },
   watch: {
-    count(newVal) {
-      this.open = newVal > 0;
+    count: {
+      handler(newVal) {
+        this.open = newVal > 0;
+      },
+      immediate: true,
     },
   },
   methods: {

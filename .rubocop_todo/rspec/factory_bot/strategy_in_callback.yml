@@ -34,7 +34,6 @@ RSpec/FactoryBot/StrategyInCallback:
     - 'spec/factories/design_management/designs.rb'
     - 'spec/factories/design_management/versions.rb'
     - 'spec/factories/environments.rb'
-    - 'spec/factories/group_members.rb'
     - 'spec/factories/groups.rb'
     - 'spec/factories/integrations.rb'
     - 'spec/factories/issues.rb'

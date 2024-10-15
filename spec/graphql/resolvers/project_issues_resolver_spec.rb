@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Resolvers::ProjectIssuesResolver do
+RSpec.describe Resolvers::ProjectIssuesResolver, feature_category: :team_planning do
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }
@@ -386,6 +386,8 @@ RSpec.describe Resolvers::ProjectIssuesResolver do
           end
         end
       end
+
+      # subscribed filtering handled in request spec, spec/requests/api/graphql/project/issues_spec.rb
 
       describe 'sorting' do
         context 'when sorting by created' do

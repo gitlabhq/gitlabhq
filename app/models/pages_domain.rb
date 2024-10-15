@@ -23,6 +23,7 @@ class PagesDomain < ApplicationRecord
   after_initialize :set_verification_code
   before_validation :clear_auto_ssl_failure, unless: :auto_ssl_enabled
 
+  validates :project, presence: true
   validates :domain, hostname: { allow_numeric_hostname: true }
   validates :domain, uniqueness: { case_sensitive: false }
   validates :certificate, :key, presence: true, if: :usage_serverless?

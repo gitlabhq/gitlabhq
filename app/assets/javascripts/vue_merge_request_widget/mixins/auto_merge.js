@@ -4,7 +4,7 @@ import { MWCP_MERGE_STRATEGY } from '~/vue_merge_request_widget/constants';
 export default {
   computed: {
     statusText() {
-      const { autoMergeStrategy } = this.state;
+      const { autoMergeStrategy } = this.state.mergeRequest;
 
       if (autoMergeStrategy === MWCP_MERGE_STRATEGY) {
         return s__(

@@ -1,0 +1,13 @@
+---
+api_type: integer
+attr: external_pipeline_validation_service_timeout
+clusterwide: true
+column: external_pipeline_validation_service_timeout
+db_type: integer
+default:
+description: How long to wait for a response from the pipeline validation service.
+  Assumes `OK` if it times out.
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

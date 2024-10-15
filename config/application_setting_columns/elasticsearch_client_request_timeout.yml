@@ -1,0 +1,12 @@
+---
+api_type:
+attr: elasticsearch_client_request_timeout
+clusterwide: false
+column: elasticsearch_client_request_timeout
+db_type: integer
+default: '0'
+description:
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: true

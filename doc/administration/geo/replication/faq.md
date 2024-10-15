@@ -48,7 +48,7 @@ Read the documentation for [Disaster Recovery](../disaster_recovery/index.md).
 
 ## What data is replicated to a **secondary** site?
 
-We currently replicate the whole rails database, project repositories, LFS objects, generated
+We replicate the whole rails database, project repositories, LFS objects, generated
 attachments, avatars and more. This means information such as user accounts,
 issues, merge requests, groups, and project data are available for
 query.

@@ -5,7 +5,7 @@ module BulkImports
     private
 
     def normalize_path(path)
-      return path.downcase if path =~ Gitlab::Regex.oci_repository_path_regex
+      return path.downcase if Gitlab::Regex.oci_repository_path_regex.match?(path)
 
       path = path.parameterize.downcase
 

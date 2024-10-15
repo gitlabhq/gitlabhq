@@ -1,0 +1,13 @@
+---
+api_type: string
+attr: maintenance_mode_message
+clusterwide: false
+column: maintenance_mode_message
+db_type: text
+default:
+description: Message displayed when instance is in maintenance mode. Premium and Ultimate
+  only.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: false

@@ -9,6 +9,7 @@ RSpec.describe Gitlab::GithubImport::Importer::ReleasesImporter, feature_categor
   let(:github_release_name) { 'Initial Release' }
   let(:created_at) { Time.new(2017, 1, 1, 12, 00) }
   let(:released_at) { Time.new(2017, 1, 1, 12, 00) }
+  let(:body) { 'This is my release' }
   let(:author) do
     {
       login: 'User A',
@@ -21,7 +22,7 @@ RSpec.describe Gitlab::GithubImport::Importer::ReleasesImporter, feature_categor
       id: 123456,
       tag_name: '1.0',
       name: github_release_name,
-      body: 'This is my release',
+      body: body,
       created_at: created_at,
       published_at: released_at,
       author: author
@@ -76,6 +77,18 @@ RSpec.describe Gitlab::GithubImport::Importer::ReleasesImporter, feature_categor
       allow(importer).to receive(:each_release).and_return([github_release])
       expect { importer.execute }.to change { Release.count }.by(1)
       expect { importer.execute }.to change { Release.count }.by(0) # Idempotency check
+    end
+
+    context 'when the body has user mentions' do
+      let(:body) { 'You can ask @knejad by emailing xyz@gitlab.com' }
+
+      it 'adds backticks to the username' do
+        allow(importer).to receive(:each_release).and_return([github_release])
+
+        importer.execute
+
+        expect(Release.last.description).to eq("You can ask `@knejad` by emailing xyz@gitlab.com")
+      end
     end
   end
 

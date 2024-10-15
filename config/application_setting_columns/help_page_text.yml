@@ -1,0 +1,12 @@
+---
+api_type: string
+attr: help_page_text
+clusterwide: true
+column: help_page_text
+db_type: text
+default:
+description: Custom text displayed on the help page.
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

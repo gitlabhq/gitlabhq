@@ -222,6 +222,9 @@
     - "\n" # Skip label description
     - "\e[B\e[B\n" # Select: Number (aka value)
     - "Time the CLI ran before closing (seconds)\n" # value description
+    - "\e[B\e[B\n" # Select: Add extra property (aka value)
+    - "custom_key\n" # Submit property name
+    - "The extra custom property name\n" # Submit property description
     - "\n" # Select (add props): None! Continue to next step!
     - "\n" # Skip MR URL
     - "instrumentation" # Filters to the analytics instrumentation group
@@ -265,30 +268,6 @@
     - path: ee/config/events/internal_events_cli_opened.yml
       content: spec/fixtures/scripts/internal_events/events/ee_event_without_identifiers.yml
 
-- description: Auto-proceeds to MR selection when event uses all additional properties
-  inputs:
-    keystrokes:
-    - "1\n" # Enum-select: New Event -- start tracking when an action or scenario occurs on gitlab instances
-    - "Engineer uses Internal Event CLI to define a new event\n" # Submit description
-    - "internal_events_cli_used\n" # Submit action name
-    - "1\n" # Select: [namespace, project, user]
-    - "\e[B\n" # Arrow down to & Select: String 1 (aka label)
-    - "\n" # Skip label description
-    - "\e[B\n" # Arrow down to: String 2 (aka property)
-    - "\n" # Skip property description
-    - "\e[B\n" # Arrow down to: Number (aka value)
-    - "Time the CLI ran before closing (seconds)\n" # value description
-    - "\n" # Skip MR URL
-    - "instrumentation" # Filters to the analytics instrumentation group
-    - "\n" # Accept analytics:monitor:analytics_instrumentation
-    - "1\n" # Select: [free, premium, ultimate]
-    - "y\n" # Create file
-    - "4\n" # Exit
-  outputs:
-    files:
-    - path: config/events/internal_events_cli_used.yml
-      content: spec/fixtures/scripts/internal_events/events/event_with_all_additional_properties.yml
-
 - description: Event with feature_enabled_by_namespace_ids identifier
   inputs:
     keystrokes:
@@ -302,6 +281,10 @@
     - "\n" # Skip property description
     - "\e[B\n" # Arrow down to: Number (aka value)
     - "Time the CLI ran before closing (seconds)\n" # value description
+    - "\e[B\n" # Select: Add extra property (aka custom_key)
+    - "custom_key\n" # Submit property name
+    - "The extra custom property name\n" # Submit property description
+    - "\n" # Select (add props): None! Continue to next step!
     - "\n" # Skip MR URL
     - "instrumentation" # Filters to the analytics instrumentation group
     - "\n" # Accept analytics:monitor:analytics_instrumentation

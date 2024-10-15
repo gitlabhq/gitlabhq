@@ -27,7 +27,7 @@ GET /groups/:id/access_tokens?state=inactive
 
 | Attribute | Type    | required | Description         |
 |-----------|---------|----------|---------------------|
-| `id` | integer or string | yes | ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
+| `id` | integer or string | yes | ID or [URL-encoded path of the group](rest/index.md#namespaced-paths) |
 | `state` | string | No | Limit results to tokens with specified state. Valid values are `active` and `inactive`. By default both states are returned. |
 
 ```shell
@@ -77,7 +77,7 @@ GET /groups/:id/access_tokens/:token_id
 
 | Attribute | Type    | required | Description         |
 |-----------|---------|----------|---------------------|
-| `id` | integer or string | yes | ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
+| `id` | integer or string | yes | ID or [URL-encoded path of the group](rest/index.md#namespaced-paths) |
 | `token_id` | integer | yes | ID of the group access token |
 
 ```shell
@@ -113,7 +113,7 @@ POST /groups/:id/access_tokens
 
 | Attribute | Type    | required | Description         |
 |-----------|---------|----------|---------------------|
-| `id` | integer or string | yes | ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
+| `id` | integer or string | yes | ID or [URL-encoded path of the group](rest/index.md#namespaced-paths) |
 | `name` | String | yes | Name of the group access token  |
 | `scopes` | `Array[String]` | yes | [List of scopes](../user/group/settings/group_access_tokens.md#scopes-for-a-group-access-token) |
 | `access_level` | Integer | no | Access level. Valid values are `10` (Guest), `20` (Reporter), `30` (Developer), `40` (Maintainer), and `50` (Owner). |
@@ -162,7 +162,7 @@ POST /groups/:id/access_tokens/:token_id/rotate
 
 | Attribute | Type       | required | Description         |
 |-----------|------------|----------|---------------------|
-| `id` | integer or string  | yes      | ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
+| `id` | integer or string  | yes      | ID or [URL-encoded path of the group](rest/index.md#namespaced-paths) |
 | `token_id` | integer | yes | ID of the access token |
 | `expires_at` | date    | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416795) in GitLab 16.6. |
 
@@ -212,7 +212,7 @@ DELETE /groups/:id/access_tokens/:token_id
 
 | Attribute | Type    | required | Description         |
 |-----------|---------|----------|---------------------|
-| `id` | integer or string | yes | ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
+| `id` | integer or string | yes | ID or [URL-encoded path of the group](rest/index.md#namespaced-paths) |
 | `token_id` | integer | yes | ID of the group access token |
 
 ```shell

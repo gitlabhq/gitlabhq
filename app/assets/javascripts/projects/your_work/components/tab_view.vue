@@ -1,11 +1,18 @@
 <script>
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlLoadingIcon, GlKeysetPagination } from '@gitlab/ui';
 import { get } from 'lodash';
 import ProjectsList from '~/vue_shared/components/projects_list/projects_list.vue';
+import { DEFAULT_PER_PAGE } from '~/api';
 import { __ } from '~/locale';
 import { createAlert } from '~/alert';
 import { formatGraphQLProjects } from '~/vue_shared/components/projects_list/utils';
 import { TIMESTAMP_TYPE_UPDATED_AT } from '~/vue_shared/components/resource_lists/constants';
+import { FILTERED_SEARCH_TERM_KEY } from '~/projects/filtered_search_and_sort/constants';
+import { ACCESS_LEVELS_INTEGER_TO_STRING } from '~/access_level/constants';
+import {
+  FILTERED_SEARCH_TOKEN_LANGUAGE,
+  FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
+} from '../constants';
 
 export default {
   name: 'YourWorkProjectsTabView',
@@ -17,12 +24,32 @@ export default {
   },
   components: {
     GlLoadingIcon,
+    GlKeysetPagination,
     ProjectsList,
   },
+  inject: ['programmingLanguages'],
   props: {
     tab: {
       required: true,
       type: Object,
+    },
+    startCursor: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    endCursor: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    sort: {
+      type: String,
+      required: true,
+    },
+    filters: {
+      type: Object,
+      required: true,
     },
   },
   data() {
@@ -34,6 +61,23 @@ export default {
     projects() {
       return {
         query: this.tab.query,
+        variables() {
+          const { transformVariables } = this.tab;
+
+          const variables = {
+            ...this.pagination,
+            ...this.tab.variables,
+            sort: this.sort,
+            programmingLanguageName: this.programmingLanguageName,
+            minAccessLevel: this.minAccessLevel,
+            search: this.search,
+          };
+          const transformedVariables = transformVariables
+            ? transformVariables(variables)
+            : variables;
+
+          return transformedVariables;
+        },
         update(response) {
           const { nodes, pageInfo } = get(response, this.tab.queryPath);
 
@@ -52,13 +96,61 @@ export default {
     nodes() {
       return this.projects.nodes || [];
     },
+    pageInfo() {
+      return this.projects.pageInfo || {};
+    },
+    pagination() {
+      if (!this.startCursor && !this.endCursor) {
+        return {
+          first: DEFAULT_PER_PAGE,
+          after: null,
+          last: null,
+          before: null,
+        };
+      }
+
+      return {
+        first: this.endCursor && DEFAULT_PER_PAGE,
+        after: this.endCursor,
+        last: this.startCursor && DEFAULT_PER_PAGE,
+        before: this.startCursor,
+      };
+    },
     isLoading() {
       return this.$apollo.queries.projects.loading;
+    },
+    search() {
+      return this.filters[FILTERED_SEARCH_TERM_KEY];
+    },
+    minAccessLevel() {
+      const { [FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL]: minAccessLevelInteger } = this.filters;
+
+      return minAccessLevelInteger && ACCESS_LEVELS_INTEGER_TO_STRING[minAccessLevelInteger];
+    },
+    programmingLanguageName() {
+      const { [FILTERED_SEARCH_TOKEN_LANGUAGE]: programmingLanguageId } = this.filters;
+
+      return (
+        programmingLanguageId &&
+        this.programmingLanguages.find(({ id }) => id === parseInt(programmingLanguageId, 10))?.name
+      );
     },
   },
   methods: {
     onDeleteComplete() {
       this.$apollo.queries.projects.refetch();
+    },
+    onNext(endCursor) {
+      this.$emit('page-change', {
+        endCursor,
+        startCursor: null,
+      });
+    },
+    onPrev(startCursor) {
+      this.$emit('page-change', {
+        endCursor: null,
+        startCursor,
+      });
     },
   },
 };
@@ -66,12 +158,16 @@ export default {
 
 <template>
   <gl-loading-icon v-if="isLoading" class="gl-mt-5" size="md" />
-  <projects-list
-    v-else-if="nodes.length"
-    :projects="nodes"
-    show-project-icon
-    list-item-class="gl-px-5"
-    :timestamp-type="$options.TIMESTAMP_TYPE_UPDATED_AT"
-    @delete-complete="onDeleteComplete"
-  />
+  <div v-else-if="nodes.length">
+    <projects-list
+      :projects="nodes"
+      show-project-icon
+      list-item-class="gl-px-5"
+      :timestamp-type="$options.TIMESTAMP_TYPE_UPDATED_AT"
+      @delete-complete="onDeleteComplete"
+    />
+    <div v-if="pageInfo.hasNextPage || pageInfo.hasPreviousPage" class="gl-mt-5 gl-text-center">
+      <gl-keyset-pagination v-bind="pageInfo" @prev="onPrev" @next="onNext" />
+    </div>
+  </div>
 </template>

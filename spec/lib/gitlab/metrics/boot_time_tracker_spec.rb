@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Metrics::BootTimeTracker, feature_category: :metrics do
+RSpec.describe Gitlab::Metrics::BootTimeTracker, feature_category: :observability do
   let(:logger) { double('logger') }
   let(:gauge) { double('gauge') }
 

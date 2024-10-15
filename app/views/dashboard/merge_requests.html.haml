@@ -8,26 +8,37 @@
 = render_if_exists 'shared/dashboard/saml_reauth_notice',
   groups_requiring_saml_reauth: user_groups_requiring_reauth
 
-- if merge_request_dashboard_enabled?(current_user)
-  #js-merge-request-dashboard{ data: { initial_data: merge_request_dashboard_data(current_user).to_json } }
-    = render ::Layouts::PageHeadingComponent.new(_('Merge requests'))
+= render ::Layouts::PageHeadingComponent.new(title) do |c|
+  - c.with_actions do
+    - if current_user
+      = render 'shared/new_project_item_vue_select'
+
+- if merge_request_dashboard_enabled?(current_user) && !current_page?(merge_requests_search_dashboard_path)
+  #js-merge-request-dashboard{ data: { base_path: merge_requests_dashboard_path, merge_requests_search_dashboard_path: merge_requests_search_dashboard_path, initial_data: merge_request_dashboard_data.to_json } }
     = gl_loading_icon(size: 'lg')
-- else
-  = render ::Layouts::PageHeadingComponent.new(title) do |c|
-    - c.with_actions do
-      - if current_user
-        = render 'shared/new_project_item_vue_select'
-      - if current_user&.merge_request_dashboard_enabled?
-        .js-action-dropdown{ data: { switchDashboardPath: merge_requests_dashboard_path } }
 
-  .top-area
-    = render 'shared/issuable/nav', type: :merge_requests, display_count: !(@no_filters_set || @search_timeout_occurred)
+- if !merge_request_dashboard_enabled?(current_user) || current_page?(merge_requests_search_dashboard_path)
+  - if merge_request_dashboard_enabled?(current_user)
+    = gl_tabs_nav do
+      = gl_tab_link_to _('Needs attention'), merge_requests_dashboard_path
+      = gl_tab_link_to _('Following'), merge_requests_following_dashboard_path
+      = gl_tab_link_to _('Search'), merge_requests_search_dashboard_path, item_active: true
 
-  = render 'shared/issuable/search_bar',
-    type: :merge_requests,
-    disable_target_branch: true,
-    disable_releases: true,
-    disable_environments: true
+  %div{ class: "#{'gl-bg-gray-10' if merge_request_dashboard_enabled?(current_user)}" }
+    - unless merge_request_dashboard_enabled?(current_user)
+      .top-area
+        = render 'shared/issuable/nav', type: :merge_requests, display_count: !(@no_filters_set || @search_timeout_occurred)
+
+    = render 'shared/issuable/search_bar',
+      type: :merge_requests,
+      disable_target_branch: true,
+      disable_releases: true,
+      disable_environments: true,
+      filtered_search_class: merge_request_dashboard_enabled?(current_user) ? '!gl-border-b-0' : ''
+
+    - if merge_request_dashboard_enabled?(current_user)
+      .top-area
+        = render 'shared/issuable/nav', type: :merge_requests, display_count: !(@no_filters_set || @search_timeout_occurred)
 
   - if current_user && @no_filters_set
     = render 'no_filter_selected'

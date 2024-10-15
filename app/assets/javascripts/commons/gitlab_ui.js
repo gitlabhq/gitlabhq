@@ -17,6 +17,8 @@ applyGitLabUIConfig({
     'GlBanner.closeButtonTitle': __('Dismiss'),
     'GlBreadcrumb.showMoreLabel': __('Show more breadcrumbs'),
     'GlBroadcastMessage.closeButtonTitle': __('Dismiss'),
+    'GlDatepicker.monthLabel': __('Month'),
+    'GlDatepicker.yearLabel': __('Year'),
     'GlDuoChatContextItemMenu.emptyStateMessage': s__('DuoChat|No results found'),
     'GlDuoChatContextItemMenu.loadingMessage': __('Loading...'),
     'GlDuoChatContextItemMenu.searchInputPlaceholder': s__('DuoChat|Search %{categoryLabel}...'),

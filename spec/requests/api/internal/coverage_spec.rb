@@ -36,8 +36,12 @@ RSpec.describe API::Internal::Coverage, feature_category: :code_testing do
 
       before do
         stub_const('Coverband', Class.new)
-        allow(Coverband).to receive_message_chain(:configuration, :store, :coverage).and_return(coverage_hash)
+        stub_const('Coverband::RUNTIME_TYPE', :runtime)
+
         allow(Coverband).to receive_message_chain(:configuration, :store, :clear!).and_return({})
+        allow(Coverband).to receive_message_chain(:configuration, :store, :coverage)
+          .with(:runtime, skip_hash_check: true)
+          .and_return(coverage_hash)
       end
 
       it 'GET returns 200', :aggregate_failures do

@@ -3,6 +3,8 @@
 class WikiPage
   class Meta < ApplicationRecord
     include HasWikiPageMetaAttributes
+    include Mentionable
+    include Noteable
 
     self.table_name = 'wiki_page_meta'
 
@@ -10,14 +12,13 @@ class WikiPage
     belongs_to :namespace, optional: true
 
     has_many :slugs, class_name: 'WikiPage::Slug', foreign_key: 'wiki_page_meta_id', inverse_of: :wiki_page_meta
+    has_many :notes, as: :noteable
+    has_many :user_mentions, class_name: 'Wikis::UserMention', foreign_key: 'wiki_page_meta_id',
+      inverse_of: :wiki_page_meta
 
     validate :project_or_namespace_present?
 
     alias_method :resource_parent, :project
-
-    def container_key
-      namespace.present? ? :namespace_id : :project_id
-    end
 
     def container
       project || namespace
@@ -26,6 +27,14 @@ class WikiPage
     def container=(value)
       self.project = value if value.is_a?(Project)
       self.namespace = value if value.is_a?(Namespace)
+    end
+
+    def for_group_wiki?
+      namespace_id.present?
+    end
+
+    def container_key
+      for_group_wiki? ? :namespace_id : :project_id
     end
 
     private

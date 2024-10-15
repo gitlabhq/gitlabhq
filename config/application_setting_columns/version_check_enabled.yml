@@ -1,0 +1,12 @@
+---
+api_type: boolean
+attr: version_check_enabled
+clusterwide: false
+column: version_check_enabled
+db_type: boolean
+default: 'true'
+description: Let GitLab inform you when an update is available.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: false

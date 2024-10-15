@@ -24,10 +24,6 @@ RSpec.describe WorkItemPolicy, :aggregate_failures, feature_category: :team_plan
     described_class.new(user, work_item)
   end
 
-  before do
-    stub_feature_flags(enforce_check_group_level_work_items_license: true)
-  end
-
   context 'with project level work items' do
     context 'with private project' do
       let(:project_work_item) { create(:work_item, project: private_project) }

@@ -129,6 +129,11 @@ InitializerConnections.raise_if_new_database_connection do
         end
       end
 
+      # HTTP Router
+      # Creating a black hole for /-/http_router/version since it is taken by the
+      # cloudflare worker, see: https://gitlab.com/gitlab-org/cells/http-router/-/issues/47
+      match '/http_router/version', to: proc { [204, {}, ['']] }, via: :all
+
       # '/-/health' implemented by BasicHealthCheck middleware
       get 'liveness' => 'health#liveness'
       get 'readiness' => 'health#readiness'
@@ -208,7 +213,7 @@ InitializerConnections.raise_if_new_database_connection do
 
       resources :sent_notifications, only: [], constraints: { id: /\h{32}/ } do
         member do
-          get :unsubscribe
+          match :unsubscribe, via: [:get, :post]
         end
       end
 
@@ -270,11 +275,14 @@ InitializerConnections.raise_if_new_database_connection do
 
     resources :groups, only: [:index, :new, :create]
 
+    get '/-/g/:id' => 'groups/redirect#redirect_from_id'
+
     draw :group
 
     resources :projects, only: [:index, :new, :create]
 
     get '/projects/:id' => 'projects/redirect#redirect_from_id'
+    get '/-/p/:id' => 'projects/redirect#redirect_from_id'
 
     draw :git_http
     draw :api

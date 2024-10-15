@@ -1,8 +1,8 @@
-- help_link_public_pipelines = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'change-which-users-can-view-your-pipelines'), target: '_blank', rel: 'noopener noreferrer'
-- help_link_auto_canceling = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'auto-cancel-redundant-pipelines'), target: '_blank', rel: 'noopener noreferrer'
-- help_link_prevent_outdated = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'prevent-outdated-deployment-jobs'), target: '_blank', rel: 'noopener noreferrer'
-- help_link_prevent_outdated_allow_rollback = link_to sprite_icon('question-o'), help_page_path('ci/environments/deployment_safety', anchor: 'job-retries-for-rollback-deployments'), target: '_blank', rel: 'noopener noreferrer'
-- help_link_separated_caches = link_to sprite_icon('question-o'), help_page_path('ci/caching/index', anchor: 'cache-key-names'), target: '_blank', rel: 'noopener noreferrer'
+- help_link_public_pipelines = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings.md', anchor: 'change-which-users-can-view-your-pipelines'), target: '_blank', rel: 'noopener noreferrer'
+- help_link_auto_canceling = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings.md', anchor: 'auto-cancel-redundant-pipelines'), target: '_blank', rel: 'noopener noreferrer'
+- help_link_prevent_outdated = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings.md', anchor: 'prevent-outdated-deployment-jobs'), target: '_blank', rel: 'noopener noreferrer'
+- help_link_prevent_outdated_allow_rollback = link_to sprite_icon('question-o'), help_page_path('ci/environments/deployment_safety.md', anchor: 'job-retries-for-rollback-deployments'), target: '_blank', rel: 'noopener noreferrer'
+- help_link_separated_caches = link_to sprite_icon('question-o'), help_page_path('ci/caching/index.md', anchor: 'cache-key-names'), target: '_blank', rel: 'noopener noreferrer'
 
 .row.gl-mt-3
   .col-lg-12
@@ -43,7 +43,7 @@
           = f.text_field :ci_config_path, class: 'form-control', placeholder: '.gitlab-ci.yml'
           %p.form-text.text-muted
             = html_escape(_("The name of the CI/CD configuration file. A path relative to the root directory is optional (for example %{code_open}my/path/.myfile.yml%{code_close}).")) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
-            = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'specify-a-custom-cicd-configuration-file'), target: '_blank', rel: 'noopener noreferrer'
+            = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings.md', anchor: 'specify-a-custom-cicd-configuration-file'), target: '_blank', rel: 'noopener noreferrer'
 
         %hr
         .form-group
@@ -51,7 +51,7 @@
             = _("Git strategy")
           .gl-mb-3
             = _("Choose which Git strategy to use when fetching the project.")
-            = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'choose-the-default-git-strategy'), target: '_blank', rel: 'noopener noreferrer'
+            = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings.md', anchor: 'choose-the-default-git-strategy'), target: '_blank', rel: 'noopener noreferrer'
           = f.gitlab_ui_radio_component :build_allow_git_fetch,
             false,
             "git clone",
@@ -67,7 +67,7 @@
             = form.number_field :default_git_depth, { class: 'form-control gl-form-input', min: 0, max: 1000 }
             %p.form-text.text-muted
               = html_escape(_('The number of changes to fetch from GitLab when cloning a repository. Lower values can speed up pipeline execution. Set to %{code_open}0%{code_close} or blank to fetch all branches and tags for each job')) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
-              = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'limit-the-number-of-changes-fetched-during-clone'), target: '_blank', rel: 'noopener noreferrer'
+              = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings.md', anchor: 'limit-the-number-of-changes-fetched-during-clone'), target: '_blank', rel: 'noopener noreferrer'
 
         %hr
         .form-group
@@ -75,7 +75,7 @@
           = f.text_field :build_timeout_human_readable, class: 'form-control gl-form-input'
           %p.form-text.text-muted
             = html_escape(_('Jobs fail if they run longer than the timeout time. Input value is in seconds by default. Human readable input is also accepted, for example %{code_open}1 hour%{code_close}.')) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
-            = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'set-a-limit-for-how-long-jobs-can-run'), target: '_blank', rel: 'noopener noreferrer'
+            = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings.md', anchor: 'set-a-limit-for-how-long-jobs-can-run'), target: '_blank', rel: 'noopener noreferrer'
 
         - if can?(current_user, :update_max_artifacts_size, @project)
           .form-group
@@ -83,7 +83,7 @@
             = f.number_field :max_artifacts_size, class: 'form-control gl-form-input'
             %p.form-text.text-muted
               = _("The maximum file size in megabytes for individual job artifacts.")
-              = link_to sprite_icon('question-o'), help_page_path('administration/settings/continuous_integration', anchor: 'maximum-artifacts-size'), target: '_blank', rel: 'noopener noreferrer'
+              = link_to sprite_icon('question-o'), help_page_path('administration/settings/continuous_integration.md', anchor: 'maximum-artifacts-size'), target: '_blank', rel: 'noopener noreferrer'
 
         = f.submit _('Save changes'), pajamas_button: true
 

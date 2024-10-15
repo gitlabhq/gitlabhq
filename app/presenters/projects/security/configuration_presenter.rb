@@ -11,11 +11,11 @@ module Projects
       def to_h
         {
           auto_devops_enabled: auto_devops_source?,
-          auto_devops_help_page_path: help_page_path('topics/autodevops/index'),
+          auto_devops_help_page_path: help_page_path('topics/autodevops/index.md'),
           auto_devops_path: auto_devops_settings_path(project),
           can_enable_auto_devops: can_enable_auto_devops?,
           features: features,
-          help_page_path: help_page_path('user/application_security/index'),
+          help_page_path: help_page_path('user/application_security/index.md'),
           latest_pipeline_path: latest_pipeline_path,
           gitlab_ci_present: project.has_ci_config_file?,
           gitlab_ci_history_path: gitlab_ci_history_path,
@@ -74,7 +74,7 @@ module Projects
       end
 
       def latest_pipeline_path
-        return help_page_path('ci/pipelines/index') unless latest_default_branch_pipeline
+        return help_page_path('ci/pipelines/index.md') unless latest_default_branch_pipeline
 
         project_pipeline_path(self, latest_default_branch_pipeline)
       end

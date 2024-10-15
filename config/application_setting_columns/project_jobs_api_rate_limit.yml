@@ -1,0 +1,13 @@
+---
+api_type: integer
+attr: project_jobs_api_rate_limit
+clusterwide: false
+column: project_jobs_api_rate_limit
+db_type: integer
+default: '600'
+description: 'Maximum authenticated requests to `/project/:id/jobs` per minute. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129319)
+  in GitLab 16.5. Default: 600.'
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

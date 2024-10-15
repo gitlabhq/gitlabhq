@@ -27,7 +27,7 @@ the keyword reference for information on how to fetch artifacts with these keywo
 ## Job artifacts use too much disk space
 
 If job artifacts are using too much disk space, see the
-[job artifacts administration documentation](../../administration/job_artifacts_troubleshooting.md#job-artifacts-using-too-much-disk-space).
+[job artifacts administration documentation](../../administration/cicd/job_artifacts_troubleshooting.md#job-artifacts-using-too-much-disk-space).
 
 ## Error message `No files to upload`
 

@@ -1,0 +1,12 @@
+---
+api_type:
+attr: group_import_limit
+clusterwide: false
+column: group_import_limit
+db_type: integer
+default: '6'
+description:
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

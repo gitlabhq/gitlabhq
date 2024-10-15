@@ -1,38 +1,13 @@
 ---
-stage: Secure
-group: Secret Detection
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+redirect_to: '../detected_secrets.md'
+remove_date: '2024-12-23'
 ---
 
-# Detected secrets
+<!-- markdownlint-disable -->
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+This document was moved to [another location](../detected_secrets.md).
 
-This table lists the secrets detected by [client-side secret detection](index.md).
-
-<!-- markdownlint-disable MD044 -->
-<!-- markdownlint-disable MD037 -->
-
-| Description                       | Keywords |
-|:----------------------------------|:---------|
-| GitLab Feed Token                 | glft     |
-| GitLab Agent for Kubernetes Token | glagent  |
-| GitLab CI Build (Job) Token       | glcbt    |
-| GitLab Deploy Token               | gldt     |
-| GitLab Feature Flags Client Token | glffct   |
-| GitLab Incoming Mail Token        | glimt    |
-| GitLab OAuth Application Secret   | gloas    |
-| GitLab Personal Access Token      | glpat    |
-| GitLab Pipeline Trigger Token     | glptt    |
-| GitLab Runner Token               | glrt     |
-| GitLab SCIM OAuth Access Token    | glsoat   |
-| Anthropic key                     | sk-ant   |
-
-<!-- markdownlint-enable MD037 -->
-<!-- markdownlint-enable MD044 -->
-
-## Related topics
-
-- [GitLab Token overview](../../../../security/token_overview.md)
+<!-- This redirect file can be deleted after <2024-12-23>. -->
+<!-- Redirects that point to other docs in the same project expire in three months. -->
+<!-- Redirects that point to docs in a different project or site (for example, link is not relative and starts with `https:`) expire in one year. -->
+<!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/redirects.html -->

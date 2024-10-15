@@ -22,12 +22,74 @@ query getWorkItems(
   $beforeCursor: String
   $firstPageSize: Int
   $lastPageSize: Int
+  $isGroup: Boolean = true
 ) {
-  group(fullPath: $fullPath) {
+  group(fullPath: $fullPath) @include(if: $isGroup) {
     id
     name
     workItems(
       includeDescendants: true
+      search: $search
+      sort: $sort
+      state: $state
+      assigneeUsernames: $assigneeUsernames
+      assigneeWildcardId: $assigneeWildcardId
+      authorUsername: $authorUsername
+      confidential: $confidential
+      labelName: $labelName
+      milestoneTitle: $milestoneTitle
+      milestoneWildcardId: $milestoneWildcardId
+      myReactionEmoji: $myReactionEmoji
+      types: $types
+      in: $in
+      not: $not
+      or: $or
+      after: $afterCursor
+      before: $beforeCursor
+      first: $firstPageSize
+      last: $lastPageSize
+    ) {
+      pageInfo {
+        ...PageInfo
+      }
+      nodes {
+        id
+        author {
+          id
+          avatarUrl
+          name
+          username
+          webUrl
+          webPath
+        }
+        closedAt
+        confidential
+        createdAt
+        iid
+        namespace {
+          id
+          fullPath
+        }
+        reference(full: true)
+        state
+        title
+        updatedAt
+        webUrl
+        widgets {
+          type
+          ...WorkItemWidgets
+        }
+        workItemType {
+          id
+          name
+        }
+      }
+    }
+  }
+  project(fullPath: $fullPath) @skip(if: $isGroup) {
+    id
+    name
+    workItems(
       search: $search
       sort: $sort
       state: $state

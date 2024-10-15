@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe WorkItems::Widgets::StartAndDueDate, feature_category: :team_planning do
-  let(:work_item) { build_stubbed(:work_item, start_date: Date.today, due_date: 1.week.from_now) }
+  let(:work_item) { nil }
 
   subject(:widget) { described_class.new(work_item) }
 
@@ -11,36 +11,66 @@ RSpec.describe WorkItems::Widgets::StartAndDueDate, feature_category: :team_plan
     specify { expect(described_class.type).to eq(:start_and_due_date) }
   end
 
-  describe '.quick_action_params' do
-    specify { expect(described_class.quick_action_params).to include(:due_date) }
-  end
-
   describe '#type' do
     specify { expect(widget.type).to eq(:start_and_due_date) }
   end
 
-  describe '#start_date' do
-    specify { expect(widget.start_date).to eq(work_item.start_date) }
+  describe '.quick_action_params' do
+    specify { expect(described_class.quick_action_params).to contain_exactly(:due_date) }
   end
 
-  describe '#due_date' do
-    specify { expect(widget.due_date).to eq(work_item.due_date) }
+  describe '.quick_action_commands' do
+    specify { expect(described_class.quick_action_commands).to contain_exactly(:due, :remove_due_date) }
   end
 
-  context 'when work item has dates_source' do
-    let!(:dates_source) do
-      work_item.build_dates_source(
-        start_date_fixed: work_item.start_date - 1.day,
-        due_date_fixed: work_item.due_date + 1.day
-      )
+  describe '#fixed?' do
+    specify { expect(widget.fixed?).to eq(true) }
+  end
+
+  describe '#can_rollup?' do
+    specify { expect(widget.can_rollup?).to eq(false) }
+  end
+
+  context 'when on FOSS', unless: Gitlab.ee? do
+    context 'and work_item does not exist' do
+      describe '#start_date' do
+        specify { expect(widget.start_date).to eq(nil) }
+      end
+
+      describe '#due_date' do
+        specify { expect(widget.due_date).to eq(nil) }
+      end
     end
 
-    describe '#start_date' do
-      specify { expect(widget.start_date).to eq(dates_source.start_date_fixed) }
-    end
+    context 'and work_item exists' do
+      let(:work_item) { build_stubbed(:work_item, start_date: Date.today, due_date: 1.week.from_now) }
 
-    describe '#due_date' do
-      specify { expect(widget.due_date).to eq(dates_source.due_date_fixed) }
+      context 'and work_item does not have a dates_source' do
+        describe '#start_date' do
+          specify { expect(widget.start_date).to eq(work_item.start_date) }
+        end
+
+        describe '#due_date' do
+          specify { expect(widget.due_date).to eq(work_item.due_date) }
+        end
+      end
+
+      context 'and work_item does have a dates_source' do
+        let!(:dates_source) do
+          work_item.build_dates_source(
+            start_date_fixed: work_item.start_date - 1.day,
+            due_date_fixed: work_item.due_date + 1.day
+          )
+        end
+
+        describe '#start_date' do
+          specify { expect(widget.start_date).to eq(dates_source.start_date_fixed) }
+        end
+
+        describe '#due_date' do
+          specify { expect(widget.due_date).to eq(dates_source.due_date_fixed) }
+        end
+      end
     end
   end
 end

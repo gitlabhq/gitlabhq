@@ -185,13 +185,14 @@ To set up GitLab and its components to accommodate up to 500 RPS or 25,000 users
    to handle the load balancing of the GitLab application services nodes.
 1. [Configure the internal load balancer](#configure-the-internal-load-balancer)
    to handle the load balancing of GitLab application internal connections.
-1. [Configure Consul](#configure-consul).
+1. [Configure Consul](#configure-consul) for service discovery and health checking.
 1. [Configure PostgreSQL](#configure-postgresql), the database for GitLab.
-1. [Configure PgBouncer](#configure-pgbouncer).
-1. [Configure Redis](#configure-redis).
+1. [Configure PgBouncer](#configure-pgbouncer) for database connection pooling and management.
+1. [Configure Redis](#configure-redis), which stores session data, temporary
+cache information, and background job queues.
 1. [Configure Gitaly Cluster](#configure-gitaly-cluster),
    provides access to the Git repositories.
-1. [Configure Sidekiq](#configure-sidekiq).
+1. [Configure Sidekiq](#configure-sidekiq) for background job processing.
 1. [Configure the main GitLab Rails application](#configure-gitlab-rails)
    to run Puma, Workhorse, GitLab Shell, and to serve all frontend
    requests (which include UI, API, and Git over HTTP/SSH).
@@ -531,7 +532,7 @@ If you use a third party external service:
 
 1. The HA Linux package PostgreSQL setup encompasses PostgreSQL, PgBouncer and Consul. These components would no longer be required when using a third party external service.
 1. Set up PostgreSQL according to the
-   [database requirements document](../../install/requirements.md#database).
+   [database requirements document](../../install/requirements.md#postgresql).
 1. Set up a `gitlab` username with a password of your choice. The `gitlab` user
    needs privileges to create the `gitlabhq_production` database.
 1. Configure the GitLab application servers with the appropriate details.
@@ -1531,8 +1532,8 @@ input/output operations per second (IOPS) for read operations and 2,000 IOPS for
 write operations. If you're running the environment on a Cloud provider,
 refer to their documentation about how to configure IOPS correctly.
 
-Gitaly servers must not be exposed to the public internet, as Gitaly's network
-traffic is unencrypted by default. The use of a firewall is highly recommended
+Gitaly servers must not be exposed to the public internet, as network traffic
+on Gitaly is unencrypted by default. The use of a firewall is highly recommended
 to restrict access to the Gitaly server. Another option is to
 [use TLS](#gitaly-cluster-tls-support).
 
@@ -2225,7 +2226,7 @@ in the future.
 
 GitLab Runner returns job logs in chunks which the Linux package caches temporarily on disk in `/var/opt/gitlab/gitlab-ci/builds` by default, even when using consolidated object storage. With default configuration, this directory needs to be shared through NFS on any GitLab Rails and Sidekiq nodes.
 
-While sharing the job logs through NFS is supported, it's recommended to avoid the need to use NFS by enabling [incremental logging](../job_logs.md#incremental-logging-architecture) (required when no NFS node has been deployed). Incremental logging uses Redis instead of disk space for temporary caching of job logs.
+While sharing the job logs through NFS is supported, it's recommended to avoid the need to use NFS by enabling [incremental logging](../cicd/job_logs.md#incremental-logging-architecture) (required when no NFS node has been deployed). Incremental logging uses Redis instead of disk space for temporary caching of job logs.
 
 ## Configure advanced search
 
@@ -2280,7 +2281,7 @@ the overall makeup as desired as long as the minimum CPU and Memory requirements
 |----------------------|-------------------------|-----------------|--------------|
 | Webservice           | 140 vCPU<br/>175 GB memory (request)<br/>245 GB memory (limit) | 5 x `n1-standard-32` | 5 x `c5.9xlarge` |
 | Sidekiq              | 12.6 vCPU<br/>28 GB memory (request)<br/>56 GB memory (limit) | 4 x `n1-standard-4` | 4 x `m5.xlarge`  |
-| Supporting services  | 4 vCPU<br/>15 GB memory | 2 x `n1-standard-4` | 2 x `m5.xlarge`   |
+| Supporting services  | 8 vCPU<br/>30 GB memory | 2 x `n1-standard-4` | 2 x `m5.xlarge`   |
 
 - For this setup, we **recommend** and regularly [test](index.md#validation-and-test-results)
   [Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine) and [Amazon Elastic Kubernetes Service (EKS)](https://aws.amazon.com/eks/). Other Kubernetes services may also work, but your mileage may vary.

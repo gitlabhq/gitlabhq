@@ -90,8 +90,7 @@ module CachingArrayResolver
   end
 
   # Override this to intercept the items once they are found
-  def item_found(query_input, item)
-  end
+  def item_found(query_input, item); end
 
   def max_union_size
     MAX_UNION_SIZE

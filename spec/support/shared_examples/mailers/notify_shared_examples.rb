@@ -205,6 +205,9 @@ RSpec.shared_examples 'an unsubscribeable thread' do
       is_expected.to have_header('List-Unsubscribe', /unsubscribe/)
       is_expected.to have_header('List-Unsubscribe', /mailto/)
       is_expected.to have_header('List-Unsubscribe', /^<.+,.+>$/)
+      # Ensure force parameter is not present because some firewall scans access header links
+      # and so would automatically unsubscribe participants.
+      is_expected.not_to have_header('List-Unsubscribe', /force=true/)
       is_expected.to have_header('List-Unsubscribe-Post', 'List-Unsubscribe=One-Click')
       is_expected.to have_body_text('unsubscribe')
     end

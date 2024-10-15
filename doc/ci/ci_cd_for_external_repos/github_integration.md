@@ -48,7 +48,7 @@ repositories:
 GitLab:
 
 1. Imports the project.
-1. Enables [Pull Mirroring](../../user/project/repository/mirror/pull.md).
+1. Enables [pull mirroring](../../user/project/repository/mirror/pull.md).
 1. Enables [GitHub project integration](../../user/project/integrations/github.md).
 1. Creates a web hook on GitHub to notify GitLab of new commits.
 
@@ -80,7 +80,7 @@ To manually enable GitLab CI/CD for your repository:
    new commits.
 
    The web hook URL should be set to the GitLab API to
-   [trigger pull mirroring](../../api/projects.md#start-the-pull-mirroring-process-for-a-project),
+   [trigger pull mirroring](../../api/project_pull_mirroring.md#start-the-pull-mirroring-process-for-a-project),
    using the GitLab personal access token we just created:
 
    ```plaintext
@@ -90,15 +90,3 @@ To manually enable GitLab CI/CD for your repository:
    Select the **Let me select individual events** option, then check the **Pull requests** and **Pushes** checkboxes. These settings are needed for [pipelines for external pull requests](index.md#pipelines-for-external-pull-requests).
 
 1. In GitHub, add a `.gitlab-ci.yml` to configure GitLab CI/CD.
-
-<!-- ## Troubleshooting
-
-Include any troubleshooting steps that you can foresee. If you know beforehand what issues
-one might have when setting this up, or when something is changed, or on upgrading, it's
-important to describe those, too. Think of things that may go wrong and include them here.
-This is important to minimize requests for support, and to avoid doc comments with
-questions that you know someone might ask.
-
-Each scenario can be a third-level heading, for example `### Getting error message X`.
-If you have none to add when creating a doc, leave this section in place
-but commented out to help encourage others to add to it in the future. -->

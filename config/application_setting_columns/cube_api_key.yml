@@ -1,0 +1,12 @@
+---
+api_type:
+attr: cube_api_key
+clusterwide: true
+column: encrypted_cube_api_key
+db_type: bytea
+default:
+description:
+encrypted: true
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

@@ -41,7 +41,7 @@ RSpec.describe Gitlab::Tracking::EventDefinition, feature_category: :service_pin
     definitions_by_action = described_class
                               .definitions
                               .select { |d| d.attributes[:internal_events] }
-                              .group_by { |d| d.attributes[:action] }
+                              .group_by(&:action)
 
     definitions_by_action.each do |action, definitions|
       expect(definitions.size).to eq(1),

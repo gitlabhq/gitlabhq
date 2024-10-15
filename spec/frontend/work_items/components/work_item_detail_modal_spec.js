@@ -4,11 +4,15 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
-import { stubComponent } from 'helpers/stub_component';
 import WorkItemDetailModal from '~/work_items/components/work_item_detail_modal.vue';
 import deleteWorkItemMutation from '~/work_items/graphql/delete_work_item.mutation.graphql';
+import workspacePermissionsQuery from '~/work_items/graphql/workspace_permissions.query.graphql';
 import WorkItemDetail from '~/work_items/components/work_item_detail.vue';
-import { deleteWorkItemMutationErrorResponse, deleteWorkItemResponse } from '../mock_data';
+import {
+  deleteWorkItemMutationErrorResponse,
+  deleteWorkItemResponse,
+  mockProjectPermissionsQueryResponse,
+} from '../mock_data';
 
 describe('WorkItemDetailModal component', () => {
   let wrapper;
@@ -28,15 +32,26 @@ describe('WorkItemDetailModal component', () => {
     },
   };
 
+  const WorkItemDetailStub = {
+    template: '<div data-testid="work-item-stub"> Work Item </div>',
+    props: ['workItemId', 'workItemIid'],
+  };
+
   const findModal = () => wrapper.findComponent(GlModal);
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findWorkItemDetail = () => wrapper.findComponent(WorkItemDetail);
 
+  const workspacePermissionsHandler = jest
+    .fn()
+    .mockResolvedValue(mockProjectPermissionsQueryResponse());
+
   const createComponent = ({
     deleteWorkItemMutationHandler = jest.fn().mockResolvedValue(deleteWorkItemResponse),
+    stubs = {},
   } = {}) => {
     const apolloProvider = createMockApollo([
       [deleteWorkItemMutation, deleteWorkItemMutationHandler],
+      [workspacePermissionsQuery, workspacePermissionsHandler],
     ]);
 
     wrapper = shallowMount(WorkItemDetailModal, {
@@ -53,11 +68,8 @@ describe('WorkItemDetailModal component', () => {
       },
       stubs: {
         GlModal,
-        WorkItemDetail: stubComponent(WorkItemDetail, {
-          methods: {
-            openInModal: jest.fn(),
-          },
-        }),
+        WorkItemDetail,
+        ...stubs,
       },
     });
   };
@@ -122,16 +134,21 @@ describe('WorkItemDetailModal component', () => {
   });
 
   it('updates the work item when WorkItemDetail emits `update-modal` event', async () => {
-    createComponent();
+    createComponent({
+      stubs: {
+        WorkItemDetail: WorkItemDetailStub,
+      },
+    });
 
-    findWorkItemDetail().vm.$emit('update-modal', undefined, {
+    const workItemDetailComponent = wrapper.find('[data-testid="work-item-stub"]');
+    workItemDetailComponent.vm.$emit('update-modal', undefined, {
       iid: '2',
       id: 'gid://gitlab/WorkItem/2',
     });
     await nextTick();
 
-    expect(findWorkItemDetail().props('workItemIid')).toBe('2');
-    expect(findWorkItemDetail().props('workItemId')).toBe('gid://gitlab/WorkItem/2');
+    expect(workItemDetailComponent.props('workItemIid')).toBe('2');
+    expect(workItemDetailComponent.props('workItemId')).toBe('gid://gitlab/WorkItem/2');
   });
 
   describe('delete work item', () => {

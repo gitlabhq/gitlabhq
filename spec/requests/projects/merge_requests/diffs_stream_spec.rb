@@ -5,6 +5,14 @@ require 'spec_helper'
 RSpec.describe 'Merge Requests Diffs stream', feature_category: :code_review_workflow do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user, maintainer_of: project) }
+  let_it_be(:diff_options_hash) do
+    {
+      ignore_whitespace_change: false,
+      expanded: false,
+      use_extra_viewer_as_main: true,
+      offset_index: 0
+    }
+  end
 
   before do
     sign_in(user)
@@ -29,6 +37,18 @@ RSpec.describe 'Merge Requests Diffs stream', feature_category: :code_review_wor
         target_project: project,
         source_project: project
       )
+    end
+
+    context 'when accessed' do
+      it 'passes hash of options to #diffs_for_streaming' do
+        expect_next_instance_of(::Projects::MergeRequests::DiffsStreamController) do |controller|
+          expect(controller).to receive(:stream_diff_files)
+            .with(diff_options_hash)
+            .and_call_original
+        end
+
+        go
+      end
     end
 
     context 'when offset is not given' do

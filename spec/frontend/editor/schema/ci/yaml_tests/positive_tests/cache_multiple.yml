@@ -1,0 +1,90 @@
+# valid cache:when values
+job:
+  script:
+    - echo 'running job'
+  cache:
+    - when: 'on_success'
+    - when: 'on_failure'
+    - when: 'always'
+
+# valid cache:paths
+cache-paths:
+  script: echo "This job uses a cache."
+  cache:
+    - key: binaries-cache
+      paths:
+        - binaries/*.apk
+        - .config
+
+# valid cache:key
+cache-key-first:
+  script: echo "This job uses a cache."
+  cache:
+    - key: random-string
+      paths:
+        - binaries/
+    - key: random-..string
+      paths:
+        - binaries/
+    - key: .random-string
+      paths:
+        - binaries/
+    - key: random-string.
+      paths:
+        - binaries/
+
+cache-key-second:
+  script: echo "This job uses a cache."
+  cache:
+    - key: $CI_COMMIT_REF_SLUG
+      paths:
+        - binaries/
+    - key: binaries-cache-$CI_COMMIT_REF_SLUG
+      paths:
+        - binaries/
+
+# valid cache:key:files
+cache-key-files:
+  script: echo "This job uses a cache."
+  cache:
+    - key:
+        files:
+          - Gemfile.lock
+          - package.json
+      paths:
+        - vendor/ruby
+        - node_modules
+    - key:
+        files:
+          - Gemfile.lock
+        prefix: random-string
+      paths:
+        - binaries/
+    - key:
+        files:
+          - Gemfile.lock
+        prefix: $CI_JOB_NAME
+      paths:
+        - binaries/
+    - key:
+        files:
+          - Gemfile.lock
+        prefix: binaries-cache-$CI_JOB_NAME
+      paths:
+        - binaries/
+
+# valid cache:untracked
+cache-untracked-true:
+  script: test
+  cache:
+    - untracked: true
+    - untracked: false
+
+# valid cache:policy
+cache-policy-push:
+  script: echo "This job uses a cache."
+  cache:
+    - policy: push
+    - policy: pull
+    - paths: # no policy
+        - binaries/

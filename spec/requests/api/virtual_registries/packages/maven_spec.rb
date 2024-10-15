@@ -997,6 +997,16 @@ RSpec.describe API::VirtualRegistries::Packages::Maven, :aggregate_failures, fea
       "/virtual_registries/packages/maven/registries/#{registry.id}/upstreams/#{upstream_id}/cached_responses"
     end
 
+    let_it_be(:processing_cached_response) do
+      create(
+        :virtual_registries_packages_maven_cached_response,
+        :processing,
+        upstream: upstream,
+        group: upstream.group,
+        relative_path: cached_response.relative_path
+      )
+    end
+
     subject(:api_request) { get api(url), headers: headers }
 
     shared_examples 'successful response' do
@@ -1008,7 +1018,7 @@ RSpec.describe API::VirtualRegistries::Packages::Maven, :aggregate_failures, fea
           cached_response
             .as_json
             .merge('cached_response_id' => Base64.urlsafe_encode64(cached_response.relative_path))
-            .except('id', 'object_storage_key', 'file_store')
+            .except('id', 'object_storage_key', 'file_store', 'status', 'file_final_path')
         )
       end
     end
@@ -1104,6 +1114,16 @@ RSpec.describe API::VirtualRegistries::Packages::Maven, :aggregate_failures, fea
     let(:url) do
       "/virtual_registries/packages/maven/registries/#{registry.id}/upstreams/#{upstream.id}/" \
         "cached_responses/#{cached_response_id}"
+    end
+
+    let_it_be(:processing_cached_response) do
+      create(
+        :virtual_registries_packages_maven_cached_response,
+        :processing,
+        upstream: upstream,
+        group: upstream.group,
+        relative_path: cached_response.relative_path
+      )
     end
 
     subject(:api_request) { delete api(url), headers: headers }
@@ -1228,6 +1248,23 @@ RSpec.describe API::VirtualRegistries::Packages::Maven, :aggregate_failures, fea
 
     shared_examples 'returning the workhorse send_dependency response' do
       it 'returns a workhorse send_url response' do
+        expect(::VirtualRegistries::CachedResponseUploader).to receive(:workhorse_authorize).with(
+          a_hash_including(
+            use_final_store_path: true,
+            final_store_path_root_id: registry.id
+          )
+        ).and_call_original
+
+        expect(Gitlab::Workhorse).to receive(:send_dependency).with(
+          an_instance_of(Hash),
+          an_instance_of(String),
+          a_hash_including(
+            allow_localhost: true,
+            ssrf_filter: true,
+            allowed_uris: ObjectStoreSettings.enabled_endpoint_uris
+          )
+        ).and_call_original
+
         request
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -1247,14 +1284,15 @@ RSpec.describe API::VirtualRegistries::Packages::Maven, :aggregate_failures, fea
         end
 
         expected_upload_config = {
-          'Headers' => { described_class::UPSTREAM_GID_HEADER => [upstream.to_global_id.to_s] }
+          'Headers' => { described_class::UPSTREAM_GID_HEADER => [upstream.to_global_id.to_s] },
+          'AuthorizedUploadResponse' => a_kind_of(Hash)
         }
 
         expect(send_data_type).to eq('send-dependency')
         expect(send_data['Url']).to be_present
         expect(send_data['Headers']).to eq(expected_headers)
         expect(send_data['ResponseHeaders']).to eq(expected_resp_headers)
-        expect(send_data['UploadConfig']).to eq(expected_upload_config)
+        expect(send_data['UploadConfig']).to include(expected_upload_config)
       end
     end
 
@@ -1347,58 +1385,9 @@ RSpec.describe API::VirtualRegistries::Packages::Maven, :aggregate_failures, fea
     it_behaves_like 'not authenticated user'
   end
 
-  describe 'POST /api/v4/virtual_registries/packages/maven/:id/*path/upload/authorize' do
-    include_context 'workhorse headers'
-
-    let(:path) { 'com/test/package/1.2.3/package-1.2.3.pom' }
-    let(:url) { "/virtual_registries/packages/maven/#{registry.id}/#{path}/upload/authorize" }
-
-    subject(:request) do
-      post api(url), headers: headers
-    end
-
-    shared_examples 'returning the workhorse authorization response' do
-      it 'authorizes the upload' do
-        request
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response.media_type).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
-        expect(json_response['TempPath']).not_to be_nil
-      end
-    end
-
-    it_behaves_like 'authenticated endpoint',
-      success_shared_example_name: 'returning the workhorse authorization response' do
-        let(:headers) { workhorse_headers }
-      end
-
-    context 'with a valid user' do
-      let(:headers) { workhorse_headers.merge(token_header(:personal_access_token)) }
-
-      context 'with no workhorse headers' do
-        let(:headers) { token_header(:personal_access_token) }
-
-        it_behaves_like 'returning response status', :forbidden
-      end
-
-      context 'with no permissions on registry' do
-        let_it_be(:user) { create(:user) }
-
-        it_behaves_like 'returning response status', :forbidden
-      end
-
-      it_behaves_like 'disabled feature flag'
-      it_behaves_like 'disabled dependency proxy'
-    end
-
-    it_behaves_like 'not authenticated user'
-  end
-
   describe 'POST /api/v4/virtual_registries/packages/maven/:id/*path/upload' do
     include_context 'workhorse headers'
 
-    let(:path) { 'com/test/package/1.2.3/package-1.2.3.pom' }
-    let(:url) { "/virtual_registries/packages/maven/#{registry.id}/#{path}/upload" }
     let(:file_upload) { fixture_file_upload('spec/fixtures/packages/maven/my-app-1.0-20180724.124855-1.pom') }
     let(:gid_header) { { described_class::UPSTREAM_GID_HEADER => upstream.to_global_id.to_s } }
     let(:additional_headers) do
@@ -1406,6 +1395,18 @@ RSpec.describe API::VirtualRegistries::Packages::Maven, :aggregate_failures, fea
     end
 
     let(:headers) { workhorse_headers.merge(additional_headers) }
+
+    let_it_be(:path) { 'com/test/package/1.2.3/package-1.2.3.pom' }
+    let_it_be(:url) { "/virtual_registries/packages/maven/#{registry.id}/#{path}/upload" }
+    let_it_be(:processing_cached_response) do
+      create(
+        :virtual_registries_packages_maven_cached_response,
+        :processing,
+        upstream: upstream,
+        group: upstream.group,
+        relative_path: "/#{path}"
+      )
+    end
 
     subject(:request) do
       workhorse_finalize(
@@ -1421,7 +1422,7 @@ RSpec.describe API::VirtualRegistries::Packages::Maven, :aggregate_failures, fea
       it 'accepts the upload', :freeze_time do
         expect { request }.to change { upstream.cached_responses.count }.by(1)
 
-        expect(response).to have_gitlab_http_status(:created)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(upstream.cached_responses.last).to have_attributes(
           relative_path: "/#{path}",
           downloads_count: 1,

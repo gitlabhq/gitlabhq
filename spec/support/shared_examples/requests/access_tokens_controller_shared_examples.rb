@@ -197,7 +197,11 @@ RSpec.shared_examples 'PUT resource access tokens available' do
     end
 
     it 'calls delete user worker' do
-      expect(DeleteUserWorker).to receive(:perform_async).with(user.id, access_token_user.id, skip_authorization: true)
+      expect(DeleteUserWorker).to receive(:perform_async).with(
+        user.id,
+        access_token_user.id,
+        skip_authorization: true, reason_for_deletion: "Access token revoked"
+      )
 
       subject
     end

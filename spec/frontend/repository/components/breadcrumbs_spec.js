@@ -157,6 +157,20 @@ describe('Repository breadcrumbs component', () => {
     },
   );
 
+  it.each`
+    currentPath           | expectedPath | routeName
+    ${'foo'}              | ${'foo'}     | ${'treePath'}
+    ${'foo/bar'}          | ${'foo/bar'} | ${'treePath'}
+    ${'foo/bar/index.js'} | ${'foo/bar'} | ${'blobPath'}
+  `(
+    'sets data-current-path to $expectedPath when path is $currentPath and routeName is $routeName',
+    ({ currentPath, expectedPath, routeName }) => {
+      factory(currentPath, {}, { name: routeName });
+
+      expect(wrapper.attributes('data-current-path')).toBe(expectedPath);
+    },
+  );
+
   it('renders add to tree dropdown when permissions are true', async () => {
     permissionsQuerySpy.mockResolvedValue(
       createPermissionsQueryResponse({ forkProject: true, createMergeRequestIn: true }),

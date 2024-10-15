@@ -17,3 +17,4 @@ desired_sharding_key:
         table: p_ci_job_artifacts
         sharding_key: project_id
         belongs_to: job_artifact
+desired_sharding_key_migration_job_name: BackfillCiJobArtifactStatesProjectId

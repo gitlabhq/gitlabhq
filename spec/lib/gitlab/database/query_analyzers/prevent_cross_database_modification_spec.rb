@@ -181,7 +181,7 @@ RSpec.describe Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModificatio
           sql_log_contains: [/UPDATE "projects"/, /SELECT "ci_pipelines"\.\* FROM "ci_pipelines" .*FOR UPDATE/]
 
         context 'when the modification is inside a factory save! call' do
-          let(:runner) { create(:ci_runner, :project, projects: [build(:project)]) }
+          let(:runner) { create(:ci_runner, :project, projects: [create(:project)]) }
 
           it 'does not raise an error' do
             runner

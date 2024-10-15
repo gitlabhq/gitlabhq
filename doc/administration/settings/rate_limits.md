@@ -3,6 +3,8 @@ redirect_to: '../../security/rate_limits.md'
 remove_date: '2024-11-28'
 ---
 
+<!-- markdownlint-disable -->
+
 This document was moved to [another location](../../security/rate_limits.md).
 
 <!-- This redirect file can be deleted after <2024-11-28>. -->

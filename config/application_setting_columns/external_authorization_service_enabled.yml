@@ -1,0 +1,14 @@
+---
+api_type: boolean
+attr: external_authorization_service_enabled
+clusterwide: false
+column: external_authorization_service_enabled
+db_type: boolean
+default: 'false'
+description: "(**If enabled, requires:** `external_authorization_service_default_label`,
+  `external_authorization_service_timeout` and `external_authorization_service_url`)
+  Enable using an external authorization service for accessing projects."
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

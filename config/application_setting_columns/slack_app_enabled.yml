@@ -1,0 +1,13 @@
+---
+api_type: boolean
+attr: slack_app_enabled
+clusterwide: false
+column: slack_app_enabled
+db_type: boolean
+default: 'false'
+description: "(**If enabled, requires:** `slack_app_id`, `slack_app_secret`, `slack_app_signing_secret`,
+  and `slack_app_verification_token`) Enable the GitLab for Slack app."
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

@@ -92,8 +92,8 @@ To prepare the new server:
    1. On the left sidebar, select **Monitoring > Background jobs**.
    1. Under the Sidekiq dashboard, select **Cron** tab and then
       **Disable All**.
-1. Wait for the currently running CI/CD jobs to finish, or accept that jobs that have not completed may be lost.
-   To view jobs currently running, on the left sidebar, select **Overviews > Jobs**,
+1. Wait for the running CI/CD jobs to finish, or accept that jobs that have not completed may be lost.
+   To view jobs running, on the left sidebar, select **Overviews > Jobs**,
    and then select **Running**.
 1. Wait for Sidekiq jobs to finish:
    1. On the left sidebar, select **Monitoring > Background jobs**.

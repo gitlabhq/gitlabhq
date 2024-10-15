@@ -28,7 +28,7 @@ module BulkImports
             BulkImports::TransformReferencesWorker.perform_in(delay, batch.map(&:id), Issue.to_s, tracker_id)
 
             batch.each do |issue|
-              issue.notes.select(:id).each_batch(of: BATCH_SIZE) do |notes_batch|
+              issue.notes.select(:id, :noteable_id, :noteable_type).each_batch(of: BATCH_SIZE) do |notes_batch|
                 BulkImports::TransformReferencesWorker.perform_in(delay, notes_batch.map(&:id), Note.to_s, tracker_id)
               end
             end

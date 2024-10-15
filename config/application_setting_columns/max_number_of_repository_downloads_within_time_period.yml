@@ -1,0 +1,14 @@
+---
+api_type: integer
+attr: max_number_of_repository_downloads_within_time_period
+clusterwide: false
+column: max_number_of_repository_downloads_within_time_period
+db_type: integer
+default: '0'
+description: 'Reporting time period (in seconds). Default: 0, Maximum: 864000 seconds
+  (10 days). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87980)
+  in GitLab 15.1. Self-managed, Ultimate only.'
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

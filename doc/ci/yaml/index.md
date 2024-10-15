@@ -572,7 +572,7 @@ In this example:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23605) in GitLab 16.10 [with a flag](../../administration/feature_flags.md) named `auto_cancel_pipeline_on_job_failure`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/433163) in GitLab 16.11. Feature flag `auto_cancel_pipeline_on_job_failure` removed.
 
-Use `workflow:auto_cancel:on_job_failure` to configure which jobs should be cancelled as soon as one job fails.
+Use `workflow:auto_cancel:on_job_failure` to configure which jobs should be canceled as soon as one job fails.
 
 **Possible inputs**:
 
@@ -604,7 +604,7 @@ job3:
     - sleep 30
 ```
 
-In this example, if `job2` fails, `job1` is cancelled if it is still running and `job3` does not start.
+In this example, if `job2` fails, `job1` is canceled if it is still running and `job3` does not start.
 
 **Related topics:**
 
@@ -1067,12 +1067,12 @@ The following topics explain how to use keywords to configure CI/CD pipelines.
 
 ### `after_script`
 
-> - Running `after_script` commands for cancelled jobs [introduced](https://gitlab.com/groups/gitlab-org/-/epics/10158) in GitLab 17.0.
+> - Running `after_script` commands for canceled jobs [introduced](https://gitlab.com/groups/gitlab-org/-/epics/10158) in GitLab 17.0.
 
 Use `after_script` to define an array of commands to run last, after a job's `before_script` and
 `script` sections complete. `after_script` commands also run when:
 
-- The job is cancelled while the `before_script` or `script` sections are still running.
+- The job is canceled while the `before_script` or `script` sections are still running.
 - The job fails with failure type of `script_failure`, but not [other failure types](#retrywhen).
 
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
@@ -1114,7 +1114,7 @@ Scripts you specify in `after_script` execute in a new shell, separate from any
   `after_script` times out or fails, the job exits with code `0` (`Job Succeeded`).
 - There is a known issue with using [CI/CD job tokens](../jobs/ci_job_token.md) with `after_script`.
   You can use a job token for authentication in `after_script` commands, but the token
-  immediately becomes invalid if the job is cancelled. See [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/473376)
+  immediately becomes invalid if the job is canceled. See [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/473376)
   for more details.
 
 If a job times out, the `after_script` commands do not execute.
@@ -1124,7 +1124,7 @@ If a job times out, the `after_script` commands do not execute.
 
 - [Use `after_script` with `default`](script.md#set-a-default-before_script-or-after_script-for-all-jobs)
   to define a default array of commands that should run after all jobs.
-- You can configure a job to [skip `after_script` commands if the job is cancelled](script.md#skip-after_script-commands-if-a-job-is-cancelled).
+- You can configure a job to [skip `after_script` commands if the job is canceled](script.md#skip-after_script-commands-if-a-job-is-canceled).
 - You can [ignore non-zero exit codes](script.md#ignore-non-zero-exit-codes).
 - [Use color codes with `after_script`](script.md#add-color-codes-to-script-output)
   to make job logs easier to review.
@@ -2875,7 +2875,7 @@ Use `interruptible` to configure the [auto-cancel redundant pipelines](../pipeli
 feature to cancel a job before it completes if a new pipeline on the same ref starts for a newer commit. If the feature
 is disabled, the keyword has no effect. The new pipeline must be for a commit with new changes. For example,
 the **Auto-cancel redundant pipelines** feature has no effect
-if you select **Run pipeline** in the UI to run a pipeline for the same commit.
+if you select **New pipeline** in the UI to run a pipeline for the same commit.
 
 The behavior of the **Auto-cancel redundant pipelines** feature can be controlled by
 the [`workflow:auto_cancel:on_new_commit`](#workflowauto_cancelon_new_commit) setting.
@@ -2957,31 +2957,31 @@ In this example, a new pipeline causes a running pipeline to cancel `step-1` and
 **Additional details**:
 
 - Only set `interruptible: true` if the job can be safely canceled after it has started,
-  like a build job. Deployment jobs usually shouldn't be cancelled, to prevent partial deployments.
+  like a build job. Deployment jobs usually shouldn't be canceled, to prevent partial deployments.
 - When using the default behavior or `workflow:auto_cancel:on_new_commit: conservative`:
   - A job that has not started yet is always considered `interruptible: true`, regardless of the job's configuration.
     The `interruptible` configuration is only considered after the job starts.
-  - **Running** pipelines are only cancelled if all running jobs are configured with `interruptible: true` or
+  - **Running** pipelines are only canceled if all running jobs are configured with `interruptible: true` or
     no jobs configured with `interruptible: false` have started at any time.
     After a job with `interruptible: false` starts, the entire pipeline is no longer
     considered interruptible.
   - If the pipeline triggered a downstream pipeline, but no job with `interruptible: false`
-    in the downstream pipeline has started yet, the downstream pipeline is also cancelled.
+    in the downstream pipeline has started yet, the downstream pipeline is also canceled.
 - You can add an optional manual job with `interruptible: false` in the first stage of
   a pipeline to allow users to manually prevent a pipeline from being automatically
-  cancelled. After a user starts the job, the pipeline cannot be canceled by the
+  canceled. After a user starts the job, the pipeline cannot be canceled by the
   **Auto-cancel redundant pipelines** feature.
 - When using `interruptible` with a [trigger job](#trigger):
   - The triggered downstream pipeline is never affected by the trigger job's `interruptible` configuration.
   - If [`workflow:auto_cancel`](#workflowauto_cancelon_new_commit) is set to `conservative`,
     the trigger job's `interruptible` configuration has no effect.
   - If [`workflow:auto_cancel`](#workflowauto_cancelon_new_commit) is set to `interruptible`,
-    a trigger job with `interruptible: true` can be automatically cancelled.
+    a trigger job with `interruptible: true` can be automatically canceled.
 
 ### `needs`
 
 Use `needs` to execute jobs out-of-order. Relationships between jobs
-that use `needs` can be visualized as a [directed acyclic graph](../directed_acyclic_graph/index.md).
+that use `needs` can be visualized as a [directed acyclic graph](../yaml/needs.md).
 
 You can ignore stage ordering and run some jobs without waiting for others to complete.
 Jobs in multiple stages can run concurrently.
@@ -3041,7 +3041,7 @@ This example creates four paths of execution:
 - The maximum number of jobs that a single job can have in the `needs` array is limited:
   - For GitLab.com, the limit is 50. For more information, see
     [issue 350398](https://gitlab.com/gitlab-org/gitlab/-/issues/350398).
-  - For self-managed instances, the default limit is 50. This limit [can be changed](../../administration/cicd.md#set-the-needs-job-limit).
+  - For self-managed instances, the default limit is 50. This limit [can be changed](../../administration/cicd/index.md#set-the-needs-job-limit).
 - If `needs` refers to a job that uses the [`parallel`](#parallel) keyword,
   it depends on all jobs created in parallel, not just one job. It also downloads
   artifacts from all the parallel jobs by default. If the artifacts have the same
@@ -3173,8 +3173,8 @@ build_job:
   or the group/project must have public visibility.
 - You can't use `needs:project` in the same job as [`trigger`](#trigger).
 - When using `needs:project` to download artifacts from another pipeline, the job does not wait for
-  the needed job to complete. [Directed acyclic graph](../directed_acyclic_graph/index.md)
-  behavior is limited to jobs in the same pipeline. Make sure that the needed job in the other
+  the needed job to complete. [Using `needs` to wait for jobs to complete](../yaml/needs.md)
+  is limited to jobs in the same pipeline. Make sure that the needed job in the other
   pipeline completes before the job that needs it tries to download the artifacts.
 - You can't download artifacts from jobs that run in [`parallel`](#parallel).
 - Support [CI/CD variables](../variables/index.md) in `project`, `job`, and `ref`.
@@ -3465,14 +3465,15 @@ as an artifact and published with GitLab Pages.
 DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
-**Status:** Experiment
+**Status:** Beta
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129534) in GitLab 16.7 as an [experiment](../../policy/experiment-beta-support.md) [with a flag](../../user/feature_flags.md) named `pages_multiple_versions_setting`, disabled by default.
+> - [Enabled on GitLab.com, self-managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/422145) in GitLab 17.4.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available,
-an administrator can [enable the feature flag](../../administration/feature_flags.md) named
-`pages_multiple_versions_setting`. On GitLab.com and GitLab Dedicated, this feature is not available. This feature is not ready for production use.
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
 
 Use `pages.path_prefix` to configure a path prefix for [parallel deployments](../../user/project/pages/index.md#parallel-deployments) of GitLab Pages.
 
@@ -4272,7 +4273,7 @@ any subkeys. All additional details and related topics are the same.
 
 **Possible inputs**:
 
-- An array of file paths. File paths can include [CI/CD variables](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
+- See the possible inputs for `rules:changes` above.
 
 **Example of `rules:changes:paths`**:
 
@@ -4488,14 +4489,12 @@ if reached when evaluating a job's rules.
 
 **Possible inputs**:
 
-- `on_success` (default): Run the job only when no jobs in earlier stages fail
-  or are allowed to fail with [`allow_failure: true`](#allow_failure). `on_success`
-  is the default behavior when you combine `when` with `if`, `changes`, or `exists`.
+- `on_success` (default): Run the job only when no jobs in earlier stages fail.
 - `on_failure`: Run the job only when at least one job in an earlier stage fails.
 - `never`: Don't run the job regardless of the status of jobs in earlier stages.
 - `always`: Run the job regardless of the status of jobs in earlier stages.
 - `manual`: Add the job to the pipeline as a [manual job](../jobs/job_control.md#create-a-job-that-must-be-run-manually).
-  When using `rules:when` with `manual`, `allow_failure` defaults to `false`.
+  The default value for [`allow_failure`](#allow_failure) changes to `false`.
 - `delayed`: Add the job to the pipeline as a [delayed job](../jobs/job_control.md#run-a-job-after-a-delay).
 
 **Example of `rules:when`**:
@@ -4517,6 +4516,17 @@ In this example, `job1` is added to pipelines:
   when `when` is not defined.
 - For feature branches as a delayed job.
 - In all other cases as a manual job.
+
+**Additional details**:
+
+- When evaluating the status of jobs for `on_success` and `on_failure`:
+  - Jobs with [`allow_failure: true`](#allow_failure) in earlier stages are considered successful, even if they failed.
+  - Skipped jobs in earlier stages, for example [manual jobs that have not been started](../jobs/job_control.md#create-a-job-that-must-be-run-manually),
+    are considered successful.
+- When using `rules:when: manual` to [add a manual job](../jobs/job_control.md#create-a-job-that-must-be-run-manually):
+  - [`allow_failure`](#allow_failure) becomes `false` by default. This default is the opposite of
+    using [`when: manual`](#when) to add a manual job.
+  - To achieve the same behavior as `when: manual` defined outside of `rules`, set [`rules: allow_failure`](#rulesallow_failure) to `true`.
 
 #### `rules:allow_failure`
 
@@ -4665,6 +4675,7 @@ DETAILS:
 **Status:** Experiment
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440487) in GitLab 17.3 [with a flag](../../administration/feature_flags.md) named `pipeline_run_keyword`. Disabled by default. Requires GitLab Runner 17.1.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/471925) in GitLab 17.5. Feature flag `pipeline_run_keyword` removed.
 
 FLAG:
 The availability of this feature is controlled by a feature flag.
@@ -5666,16 +5677,13 @@ the default value is `when: on_success`.
 
 **Possible inputs**:
 
-- `on_success` (default): Run the job only when no jobs in earlier stages fail
-  or have `allow_failure: true`.
-- `on_failure`: Run the job only when at least one job in an earlier stage fails. A job in an earlier stage
-  with `allow_failure: true` is always considered successful.
+- `on_success` (default): Run the job only when no jobs in earlier stages fail.
+- `on_failure`: Run the job only when at least one job in an earlier stage fails.
 - `never`: Don't run the job regardless of the status of jobs in earlier stages.
-  Can only be used in a [`rules`](#rules) section or `workflow: rules`.
-- `always`: Run the job regardless of the status of jobs in earlier stages. Can also be used in `workflow:rules`.
-- `manual`: Run the job only when [triggered manually](../jobs/job_control.md#create-a-job-that-must-be-run-manually).
-- `delayed`: [Delay the execution of a job](../jobs/job_control.md#run-a-job-after-a-delay)
-  for a specified duration.
+  Can only be used in a [`rules`](#ruleswhen) section or [`workflow: rules`](#workflowrules).
+- `always`: Run the job regardless of the status of jobs in earlier stages.
+- `manual`: Add the job to the pipeline as a [manual job](../jobs/job_control.md#create-a-job-that-must-be-run-manually).
+- `delayed`: Add the job to the pipeline as a [delayed job](../jobs/job_control.md#run-a-job-after-a-delay).
 
 **Example of `when`**:
 
@@ -5726,9 +5734,12 @@ In this example, the script:
 
 **Additional details**:
 
-- The default behavior of `allow_failure` changes to `true` with `when: manual`.
-  However, if you use `when: manual` with [`rules`](#rules), `allow_failure` defaults
-  to `false`.
+- When evaluating the status of jobs for `on_success` and `on_failure`:
+  - Jobs with [`allow_failure: true`](#allow_failure) in earlier stages are considered successful, even if they failed.
+  - Skipped jobs in earlier stages, for example [manual jobs that have not been started](../jobs/job_control.md#create-a-job-that-must-be-run-manually),
+    are considered successful.
+- The default value for [`allow_failure`](#allow_failure) is `true` with `when: manual`. The default value
+  changes to `false` with [`rules:when: manual`](#ruleswhen).
 
 **Related topics**:
 
@@ -5832,7 +5843,7 @@ pipeline based on branch names or pipeline types.
   | `schedules`              | For [scheduled pipelines](../pipelines/schedules.md). |
   | `tags`                   | When the Git reference for a pipeline is a tag. |
   | `triggers`               | For pipelines created by using a [trigger token](../triggers/index.md#configure-cicd-jobs-to-run-in-triggered-pipelines). |
-  | `web`                    | For pipelines created by selecting **Run pipeline** in the GitLab UI, from the project's **Build > Pipelines** section. |
+  | `web`                    | For pipelines created by selecting **New pipeline** in the GitLab UI, from the project's **Build > Pipelines** section. |
 
 **Example of `only:refs` and `except:refs`**:
 

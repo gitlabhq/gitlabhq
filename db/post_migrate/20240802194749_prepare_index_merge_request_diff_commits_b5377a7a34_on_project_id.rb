@@ -7,10 +7,10 @@ class PrepareIndexMergeRequestDiffCommitsB5377a7a34OnProjectId < Gitlab::Databas
   INDEX_NAME = 'index_merge_request_diff_commits_b5377a7a34_on_project_id'
 
   def up
-    prepare_async_index :merge_request_diff_commits_b5377a7a34, :project_id, name: INDEX_NAME
+    # no-op
   end
 
   def down
-    unprepare_async_index :merge_request_diff_commits_b5377a7a34, INDEX_NAME
+    # no-op
   end
 end

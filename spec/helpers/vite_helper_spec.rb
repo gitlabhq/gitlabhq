@@ -27,6 +27,8 @@ RSpec.describe ViteHelper, feature_category: :tooling do
   describe '#universal_stylesheet_link_tag' do
     let_it_be(:path) { 'application' }
 
+    subject(:link_tag) { Capybara.string(helper.universal_stylesheet_link_tag(path)).first('link', visible: :all) }
+
     context 'when Vite is disabled' do
       before do
         allow(helper).to receive(:vite_enabled?).and_return(false)
@@ -34,7 +36,6 @@ RSpec.describe ViteHelper, feature_category: :tooling do
 
       it 'uses stylesheet_link_tag' do
         expect(helper).to receive(:stylesheet_link_tag).with(path).and_call_original
-        link_tag = Capybara.string(helper.universal_stylesheet_link_tag(path)).first('link', visible: :all)
 
         expect(link_tag[:rel]).to eq('stylesheet')
         expect(link_tag[:href]).to match_asset_path("#{path}.css")
@@ -44,11 +45,29 @@ RSpec.describe ViteHelper, feature_category: :tooling do
     context 'when Vite is enabled' do
       before do
         allow(helper).to receive(:vite_enabled?).and_return(true)
+
+        allow(ViteRuby.instance.manifest).to receive(:path_for)
+                                               .with("stylesheets/styles.#{path}.scss", type: :stylesheet)
+                                               .and_return("/vite-dev/stylesheets/styles.#{path}.scss.css")
       end
 
       it 'uses vite_stylesheet_tag' do
-        expect(helper).to receive(:vite_stylesheet_tag).with("stylesheets/styles.#{path}.scss")
-        helper.universal_stylesheet_link_tag(path)
+        expect(link_tag[:rel]).to eq('stylesheet')
+        expect(link_tag[:href]).to eq('/vite-dev/stylesheets/styles.application.scss.css')
+      end
+
+      context 'when asset_host is set' do
+        before do
+          allow(helper).to receive_message_chain(:config, :asset_host).and_return('http://localhost')
+
+          allow(ViteRuby.config).to receive(:host).and_return('localhost')
+          allow(ViteRuby.config).to receive(:port).and_return(3808)
+        end
+
+        it 'replaces the asset_host with the configured Vite host' do
+          expect(link_tag[:rel]).to eq('stylesheet')
+          expect(link_tag[:href]).to eq('http://localhost:3808/vite-dev/stylesheets/styles.application.scss.css')
+        end
       end
     end
   end

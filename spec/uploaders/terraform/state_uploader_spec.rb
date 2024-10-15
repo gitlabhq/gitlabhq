@@ -49,7 +49,7 @@ RSpec.describe Terraform::StateUploader do
     it 'creates a digest with a secret key and the project id' do
       expect(OpenSSL::HMAC)
         .to receive(:digest)
-        .with('SHA256', Gitlab::Application.secrets.db_key_base, state_version.project_id.to_s)
+        .with('SHA256', Gitlab::Application.credentials.db_key_base, state_version.project_id.to_s)
         .and_return('digest')
 
       expect(subject.key).to eq('digest')

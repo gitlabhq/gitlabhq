@@ -148,7 +148,7 @@ subscription levels, and [groups](project/wiki/group.md) for
 
 Snippets with multiple files display a file count in the [snippet list](https://gitlab.com/dashboard/snippets):
 
-![Example of snippet](img/snippet_tooltip_v13_10.png)
+![Example of snippet](img/snippet_tooltip_v17_4.png)
 
 You can manage snippets with Git (because they're [versioned](#versioned-snippets)
 by a Git repository), through the [Snippets API](../api/snippets.md), and in the GitLab UI.
@@ -266,7 +266,7 @@ Because versioned snippets are considered as part of the [namespace storage size
 it's recommended to keep snippets' repositories as compact as possible.
 
 For more information about tools to compact repositories,
-see the documentation on [reducing repository size](../user/project/repository/reducing_the_repo_size_using_git.md).
+see the documentation on [reducing repository size](../user/project/repository/repository_size.md#reduce-repository-size).
 
 ### Cannot enter text into the snippet text box
 

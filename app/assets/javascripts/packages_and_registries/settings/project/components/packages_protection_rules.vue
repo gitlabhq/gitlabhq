@@ -246,7 +246,7 @@ export default {
     {
       key: 'col_4_actions',
       label: __('Actions'),
-      thClass: 'gl-text-right',
+      thAlignRight: true,
       tdClass: '!gl-align-middle gl-text-right',
     },
   ],

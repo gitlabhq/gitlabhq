@@ -16,7 +16,7 @@ class LabelNote < SyntheticNote
     resource ||= events.first.issuable
 
     label_note = from_event(events.first, resource: resource, resource_parent: resource_parent)
-    label_note.events = events
+    label_note.events = events.sort_by { |e| e.label&.name.to_s }
 
     label_note
   end
@@ -59,7 +59,7 @@ class LabelNote < SyntheticNote
   # added 3 deleted labels
   # added ~1 ~2 labels
   def labels_str(label_refs, prefix: '')
-    existing_refs = label_refs.select { |ref| ref.present? }.sort
+    existing_refs = label_refs.select(&:present?)
     refs_str = existing_refs.empty? ? nil : existing_refs.join(' ')
 
     deleted = label_refs.count - existing_refs.count

@@ -1,0 +1,12 @@
+---
+api_type: boolean
+attr: disable_feed_token
+clusterwide: false
+column: disable_feed_token
+db_type: boolean
+default: 'false'
+description: Disable display of RSS/Atom and calendar feed tokens.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

@@ -1,6 +1,6 @@
 ---
 stage: Monitor
-group: Observability
+group: Platform Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -23,6 +23,13 @@ This feature is available for testing, but not ready for production use.
 GitLab supports centralized application and infrastructure logs collection, storage, and analysis.
 GitLab Logging provides insight about the operational health of monitored systems.
 Use logs to learn more about your systems and applications in a given range of time.
+
+## Logs ingestion limits
+
+Logs ingest a maximum of 102,400 bytes per minute.
+When the limit is exceeded, a `429 Too Many Requests` response is returned.
+
+To request a limit increase to 1,048,576 bytes per minute, contact [GitLab support](https://about.gitlab.com/support/).
 
 ## Configure logging
 

@@ -30,7 +30,7 @@ module QA
 
     let!(:runner) do
       create(:group_runner,
-        name: "qa-runner-#{Time.now.to_i}",
+        name: "qa-runner-#{SecureRandom.hex(6)}",
         tags: ["runner-for-#{package_project.group.name}"],
         executor: :docker,
         group: package_project.group)

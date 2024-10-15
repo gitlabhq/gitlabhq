@@ -27,7 +27,7 @@
   .md-area {
     // stylelint-disable-next-line gitlab/no-gl-class
     .gl-form-textarea {
-      @include gl-shadow-none;
+      @apply gl-shadow-none;
     }
   }
 }
@@ -83,9 +83,9 @@
     &::after {
       content: '';
       position: absolute;
-      @include gl-border-gray-50;
-      @include gl-border-1;
-      @include gl-border-b-solid;
+      @apply gl-border-gray-50;
+      @apply gl-border-1;
+      @apply gl-border-b-solid;
       // Border spans the whole container minus icon width and grid gap
       width: calc(100% - $gl-spacing-scale-8 - $gl-spacing-scale-5);
       bottom: $gl-spacing-scale-3;

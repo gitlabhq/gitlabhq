@@ -504,8 +504,9 @@ A namespace:
   area, rather than arbitrary ones.
 - Gives a linguistic context to help the translator.
 
-In some cases, namespaces don't make sense. For example, for ubiquitous UI words and phrases such as
-"Cancel" or phrases like "Save changes," a namespace could be counterproductive.
+Some languages are more contextual than English.
+For example, `cancel` can be translated in different ways depending on how it's used.
+To define the context of use, always add a namespace to UI text in English.
 
 Namespaces should be PascalCase.
 

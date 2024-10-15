@@ -28,6 +28,11 @@ module Resolvers
                Incompatible with projectPath.
       DESC
 
+    argument :include_archived, GraphQL::Types::Boolean,
+      required: false,
+      default_value: false,
+      description: "Merge requests from archived projects."
+
     attr_reader :project
     alias_method :user, :object
 
@@ -77,6 +82,7 @@ module Resolvers
     def prepare_args(args)
       args.delete(:project_id)
       args.delete(:project_path)
+      args[:non_archived] = args.delete(:include_archived) != true
     end
   end
 end

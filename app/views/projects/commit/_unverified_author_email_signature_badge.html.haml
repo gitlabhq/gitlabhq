@@ -1,0 +1,6 @@
+- title = _('Verified commit with unverified email')
+- description = _('This commit was previously signed with a verified signature and verified committer email address. However the committer email address is no longer verified to the same user.')
+
+- locals = { signature: signature, title: title, description: description, label: _('Verified'), variant: 'warning', icon: 'warning' }
+
+= render partial: 'projects/commit/signature_badge', locals: locals

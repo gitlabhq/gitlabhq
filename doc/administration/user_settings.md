@@ -49,7 +49,7 @@ For self-compiled installations:
 Administrators can:
 
 - Use the **Admin** area to [prevent an existing user from creating top-level groups](../administration/admin_area.md#prevent-a-user-from-creating-top-level-groups).
-- Use the [modify an existing user API endpoint](../api/users.md#user-modification) to change the `can_create_group` setting.
+- Use the [modify an existing user API endpoint](../api/users.md#modify-a-user) to change the `can_create_group` setting.
 
 ## Prevent users from changing their usernames
 

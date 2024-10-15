@@ -257,6 +257,7 @@ The project for a new Gem should always be created in [`gitlab-org/ruby/gems` na
    the gem name with `gitlab-`. For example, `gitlab-sidekiq-fetcher`.
 1. Locally create the gem or fork as necessary.
 1. [Publish an empty `0.0.1` version of the gem to rubygems.org](https://guides.rubygems.org/publishing/#publishing-to-rubygemsorg) to ensure the gem name is reserved.
+<!-- vale gitlab_base.Spelling = NO -->
 1. Add the [`gitlab_rubygems`](https://rubygems.org/profiles/gitlab_rubygems) user as owner of the new gem by running:
 
    ```shell
@@ -264,11 +265,11 @@ The project for a new Gem should always be created in [`gitlab-org/ruby/gems` na
    ```
 
    - Ping [Rémy Coutable](https://gitlab.com/rymai) to confirm the ownership in the [Rubygems committee project](https://gitlab.com/gitlab-dependency-committees/rubygems-committee/-/issues/).
-
 1. Optional. Add some or all of the following users as co-owners:
    - [Marin Jankovski](https://rubygems.org/profiles/marinjankovski)
    - [Rémy Coutable](https://rubygems.org/profiles/rymai)
    - [Stan Hu](https://rubygems.org/profiles/stanhu)
+<!-- vale gitlab_base.Spelling = YES -->
 1. Optional. Add any other relevant developers as co-owners.
 1. Visit `https://rubygems.org/gems/<gem-name>` and verify that the gem was published
    successfully and `gitlab_rubygems` is also an owner.

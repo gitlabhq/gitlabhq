@@ -1,4 +1,5 @@
 import * as textUtils from '~/lib/utils/text_utility';
+import { stubCrypto } from 'helpers/crypto';
 
 describe('text_utility', () => {
   describe('addDelimiter', () => {
@@ -456,6 +457,15 @@ describe('text_utility', () => {
       ${'!@#$%^&*()-=+/?[]{}'} | ${'!@#$%^&*()-=+/?[]{}'} | ${true}
     `('returns expected result', ({ pattern, str, result }) => {
       expect(textUtils.wildcardMatch(str, pattern)).toBe(result);
+    });
+  });
+
+  describe('sha256', () => {
+    beforeEach(stubCrypto);
+
+    it('returns a sha256 hash', async () => {
+      const hash = await textUtils.sha256('How vexingly quick daft zebras jump!');
+      expect(hash).toBe('3f7282eed1c3cef3efc993275e9b9cc0cfe85927450d6b0e5d73a2c59663232e');
     });
   });
 });

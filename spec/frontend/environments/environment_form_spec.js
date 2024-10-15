@@ -3,6 +3,7 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import waitForPromises from 'helpers/wait_for_promises';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
+import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import EnvironmentForm from '~/environments/components/environment_form.vue';
 import getUserAuthorizedAgents from '~/environments/graphql/queries/user_authorized_agents.query.graphql';
 import EnvironmentFluxResourceSelector from '~/environments/components/environment_flux_resource_selector.vue';
@@ -13,7 +14,7 @@ import { mockKasTunnelUrl } from './mock_data';
 jest.mock('~/lib/utils/csrf');
 
 const DEFAULT_PROPS = {
-  environment: { name: '', externalUrl: '' },
+  environment: { name: '', externalUrl: '', description: '' },
   title: 'environment',
   cancelPath: '/cancel',
 };
@@ -21,6 +22,7 @@ const DEFAULT_PROPS = {
 const PROVIDE = {
   protectedEnvironmentSettingsPath: '/projects/not_real/settings/ci_cd',
   kasTunnelUrl: mockKasTunnelUrl,
+  markdownPreviewPath: '/path/to/markdown/preview',
 };
 const userAccessAuthorizedAgents = [
   { agent: { id: '1', name: 'agent-1' } },
@@ -89,6 +91,7 @@ describe('~/environments/components/form.vue', () => {
   const findAgentSelector = () => wrapper.findByTestId('agent-selector');
   const findNamespaceSelector = () => wrapper.findComponent(EnvironmentNamespaceSelector);
   const findFluxResourceSelector = () => wrapper.findComponent(EnvironmentFluxResourceSelector);
+  const findMarkdownField = () => wrapper.findComponent(MarkdownEditor);
 
   const selectAgent = async () => {
     findAgentSelector().vm.$emit('shown');
@@ -128,7 +131,9 @@ describe('~/environments/components/form.vue', () => {
         await name.setValue('test');
         await name.trigger('blur');
 
-        expect(wrapper.emitted('change')).toEqual([[{ name: 'test', externalUrl: '' }]]);
+        expect(wrapper.emitted('change')).toEqual([
+          [{ name: 'test', externalUrl: '', description: '' }],
+        ]);
       });
 
       it('should validate that the name is required', async () => {
@@ -152,7 +157,7 @@ describe('~/environments/components/form.vue', () => {
         await url.trigger('blur');
 
         expect(wrapper.emitted('change')).toEqual([
-          [{ name: '', externalUrl: 'https://example.com' }],
+          [{ name: '', externalUrl: 'https://example.com', description: '' }],
         ]);
       });
 
@@ -185,6 +190,7 @@ describe('~/environments/components/form.vue', () => {
         environment: {
           name: '',
           externalUrl: '',
+          description: '',
         },
       });
     });
@@ -226,6 +232,7 @@ describe('~/environments/components/form.vue', () => {
           id: 1,
           name: 'test',
           externalUrl: 'https://example.com',
+          description: '',
         },
       });
     });
@@ -252,6 +259,42 @@ describe('~/environments/components/form.vue', () => {
         loading: false,
         items: [],
       });
+    });
+  });
+
+  describe('description', () => {
+    it('renders markdown field', () => {
+      wrapper = createWrapper();
+
+      expect(findMarkdownField().props()).toMatchObject({
+        value: '',
+        renderMarkdownPath: PROVIDE.markdownPreviewPath,
+        markdownDocsPath: '/help/user/markdown',
+        disabled: false,
+      });
+    });
+
+    it('sets the markdown value when provided', () => {
+      wrapper = createWrapper({
+        environment: { name: 'production', externalUrl: '', description: 'some-description' },
+      });
+
+      expect(findMarkdownField().props('value')).toBe('some-description');
+    });
+
+    it('emits changes on user input', async () => {
+      wrapper = createWrapper();
+      await findMarkdownField().vm.$emit('input', 'my new description');
+
+      expect(wrapper.emitted('change').at(-1)).toEqual([
+        { name: '', externalUrl: '', description: 'my new description' },
+      ]);
+    });
+
+    it('disables field on loading', () => {
+      wrapper = createWrapper({ loading: true });
+
+      expect(findMarkdownField().props('disabled')).toBe(true);
     });
   });
 
@@ -301,6 +344,7 @@ describe('~/environments/components/form.vue', () => {
           {
             name: '',
             externalUrl: '',
+            description: '',
             clusterAgentId: '2',
             kubernetesNamespace: null,
             fluxResourcePath: null,
@@ -334,7 +378,13 @@ describe('~/environments/components/form.vue', () => {
         await nextTick();
 
         expect(wrapper.emitted('change')[1]).toEqual([
-          { name: '', externalUrl: '', kubernetesNamespace: 'agent', fluxResourcePath: null },
+          {
+            name: '',
+            externalUrl: '',
+            description: '',
+            kubernetesNamespace: 'agent',
+            fluxResourcePath: null,
+          },
         ]);
       });
     });

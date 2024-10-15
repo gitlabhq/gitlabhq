@@ -1,0 +1,12 @@
+---
+api_type:
+attr: vertex_ai_project
+clusterwide: false
+column: vertex_ai_project
+db_type: text
+default:
+description:
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

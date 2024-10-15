@@ -1,6 +1,7 @@
 <script>
 import { produce } from 'immer';
 import { GlAlert, GlButton, GlLink, GlBadge } from '@gitlab/ui';
+import { cloneDeep } from 'lodash';
 
 import { s__, n__, sprintf } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
@@ -25,6 +26,7 @@ import WorkItemRelationshipList from './work_item_relationship_list.vue';
 import WorkItemAddRelationshipForm from './work_item_add_relationship_form.vue';
 
 export default {
+  linkedCategories: LINKED_CATEGORIES_MAP,
   helpPath: helpPagePath('/user/okrs.md#linked-items-in-okrs'),
   components: {
     GlAlert,
@@ -159,6 +161,51 @@ export default {
     toggleShowLabels() {
       this.showLabels = !this.showLabels;
       saveShowLabelsToLocalStorage(this.showLabelsLocalStorageKey, this.showLabels);
+    },
+    /**
+     * We are relying on calling two mutations sequentially to achieve drag and drop
+     * until https://gitlab.com/gitlab-org/gitlab/-/issues/481896 is resolved.
+     * So to update placement of item on UI, we need to manually remove it from source
+     * list and put it to target list.
+     */
+    updateLinkedItem({ linkedItem, fromRelationshipType, toRelationshipType }) {
+      // Remove from source list
+      switch (fromRelationshipType) {
+        case this.$options.linkedCategories.RELATES_TO:
+          this.linksRelatesTo = this.linksRelatesTo.filter(
+            (item) => item.linkId !== linkedItem.linkId,
+          );
+          break;
+        case this.$options.linkedCategories.IS_BLOCKED_BY:
+          this.linksIsBlockedBy = this.linksIsBlockedBy.filter(
+            (item) => item.linkId !== linkedItem.linkId,
+          );
+          break;
+        case this.$options.linkedCategories.BLOCKS:
+          this.linksBlocks = this.linksBlocks.filter((item) => item.linkId !== linkedItem.linkId);
+          break;
+        default:
+          break;
+      }
+
+      // Clone the object before updating its relationship type
+      const updatingLinkedItem = cloneDeep(linkedItem);
+      updatingLinkedItem.linkType = toRelationshipType;
+
+      // Add to target list
+      switch (toRelationshipType) {
+        case this.$options.linkedCategories.RELATES_TO:
+          this.linksRelatesTo.unshift(updatingLinkedItem);
+          break;
+        case this.$options.linkedCategories.IS_BLOCKED_BY:
+          this.linksIsBlockedBy.unshift(updatingLinkedItem);
+          break;
+        case this.$options.linkedCategories.BLOCKS:
+          this.linksBlocks.unshift(updatingLinkedItem);
+          break;
+        default:
+          break;
+      }
     },
     async removeLinkedItem(linkedItem) {
       try {
@@ -297,7 +344,10 @@ export default {
 
       <work-item-relationship-list
         v-if="linksBlocks.length"
+        :parent-work-item-id="workItemId"
+        :parent-work-item-iid="workItemIid"
         :linked-items="linksBlocks"
+        :relationship-type="$options.linkedCategories.BLOCKS"
         :heading="$options.i18n.blockingTitle"
         :can-update="canAdminWorkItemLink"
         :show-labels="showLabels"
@@ -310,10 +360,14 @@ export default {
           })
         "
         @removeLinkedItem="removeLinkedItem"
+        @updateLinkedItem="updateLinkedItem"
       />
       <work-item-relationship-list
         v-if="linksIsBlockedBy.length"
+        :parent-work-item-id="workItemId"
+        :parent-work-item-iid="workItemIid"
         :linked-items="linksIsBlockedBy"
+        :relationship-type="$options.linkedCategories.IS_BLOCKED_BY"
         :heading="$options.i18n.blockedByTitle"
         :can-update="canAdminWorkItemLink"
         :show-labels="showLabels"
@@ -326,10 +380,14 @@ export default {
           })
         "
         @removeLinkedItem="removeLinkedItem"
+        @updateLinkedItem="updateLinkedItem"
       />
       <work-item-relationship-list
         v-if="linksRelatesTo.length"
+        :parent-work-item-id="workItemId"
+        :parent-work-item-iid="workItemIid"
         :linked-items="linksRelatesTo"
+        :relationship-type="$options.linkedCategories.RELATES_TO"
         :heading="$options.i18n.relatedToTitle"
         :can-update="canAdminWorkItemLink"
         :show-labels="showLabels"
@@ -342,6 +400,7 @@ export default {
           })
         "
         @removeLinkedItem="removeLinkedItem"
+        @updateLinkedItem="updateLinkedItem"
       />
     </template>
   </crud-component>

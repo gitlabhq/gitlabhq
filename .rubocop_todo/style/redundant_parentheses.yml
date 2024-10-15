@@ -19,7 +19,6 @@ Style/RedundantParentheses:
     - 'ee/app/services/merge_trains/refresh_service.rb'
     - 'ee/lib/ee/gitlab/git_access.rb'
     - 'ee/lib/ee/gitlab/scim/params_parser.rb'
-    - 'ee/lib/elastic/latest/git_class_proxy.rb'
     - 'ee/spec/requests/lfs_locks_api_spec.rb'
     - 'lib/api/appearance.rb'
     - 'lib/file_size_validator.rb'

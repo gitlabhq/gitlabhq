@@ -11,7 +11,7 @@ designated as a **primary** site and can be run with multiple
 **secondary** sites. Geo orchestrates quite a few components that can be seen on
 the diagram below and are described in more detail within this document.
 
-![Geo Architecture Diagram](../administration/geo/replication/img/geo_architecture.png)
+![Geo Architecture Diagram](../administration/geo/replication/img/geo_architecture_v13_8.png)
 
 ## Replication layer
 

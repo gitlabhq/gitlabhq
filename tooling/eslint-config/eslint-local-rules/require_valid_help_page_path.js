@@ -15,7 +15,7 @@ function getAnchor(node) {
     return node.arguments[0].value.match(/#(.+)$/)?.[1] ?? null;
   }
   return (
-    node.arguments?.[1]?.properties
+    node.arguments[1].properties
       .find((property) => {
         return property.key.name === 'anchor';
       })
@@ -33,12 +33,12 @@ module.exports = {
   },
   create(context) {
     return {
-      CallExpression(node) {
-        if (node.callee.name !== 'helpPagePath') {
+      'CallExpression[callee.name="helpPagePath"]': (node) => {
+        if (node.arguments.length === 0) {
           return;
         }
 
-        if (node.arguments?.[0]?.type !== TYPE_LITERAL) {
+        if (node.arguments[0].type !== TYPE_LITERAL) {
           context.report({
             node,
             message: "`helpPagePath`'s first argument must be a string literal",

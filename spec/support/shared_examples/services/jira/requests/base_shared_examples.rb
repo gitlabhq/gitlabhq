@@ -32,7 +32,7 @@ RSpec.shared_examples 'a service that handles Jira API errors' do
   end
 
   context 'when the JSON in JIRA::HTTPError is unsafe' do
-    config_docs_link_url = Rails.application.routes.url_helpers.help_page_path('integration/jira/configure')
+    config_docs_link_url = Rails.application.routes.url_helpers.help_page_path('integration/jira/configure.md')
     let(:docs_link_start) { '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: config_docs_link_url } }
 
     before do

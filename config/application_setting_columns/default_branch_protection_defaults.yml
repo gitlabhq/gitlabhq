@@ -1,0 +1,13 @@
+---
+api_type: hash
+attr: default_branch_protection_defaults
+clusterwide: false
+column: default_branch_protection_defaults
+db_type: jsonb
+default: "'{}'::jsonb"
+description: "[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/408314) in
+  GitLab 17.0. For available options, see [Options for `default_branch_protection_defaults`](groups.md#options-for-default_branch_protection_defaults)."
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: true

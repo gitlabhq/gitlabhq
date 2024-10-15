@@ -111,6 +111,8 @@ module Gitlab
 
         protected
 
+        attr_reader :user_params
+
         def activate_user_if_user_cap_not_reached
           nil
         end
@@ -224,8 +226,8 @@ module Gitlab
         end
 
         def build_new_user(skip_confirmation: true)
-          user_params = user_attributes.merge(skip_confirmation: skip_confirmation)
-          Users::AuthorizedBuildService.new(nil, user_params).execute
+          augmented_user_params = user_attributes.merge(skip_confirmation: skip_confirmation)
+          Users::AuthorizedBuildService.new(nil, augmented_user_params).execute
         end
 
         def user_attributes
@@ -249,7 +251,7 @@ module Gitlab
             password: auth_hash.password,
             password_confirmation: auth_hash.password,
             password_automatically_set: true,
-            organization_id: @user_params[:organization_id]
+            organization_id: user_params[:organization_id]
           }
         end
 

@@ -1,0 +1,12 @@
+---
+api_type:
+attr: lets_encrypt_terms_of_service_accepted
+clusterwide: true
+column: lets_encrypt_terms_of_service_accepted
+db_type: boolean
+default: 'false'
+description:
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: true

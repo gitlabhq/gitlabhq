@@ -1,0 +1,12 @@
+---
+table_name: work_item_type_custom_fields
+classes:
+- WorkItems::TypeCustomField
+feature_categories:
+- team_planning
+description: Associated custom fields for work item types
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167591
+milestone: '17.5'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  namespace_id: namespaces

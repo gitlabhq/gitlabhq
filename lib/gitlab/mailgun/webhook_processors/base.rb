@@ -8,8 +8,7 @@ module Gitlab
           @payload = payload || {}
         end
 
-        def execute
-        end
+        def execute; end
 
         private
 

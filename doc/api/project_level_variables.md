@@ -20,11 +20,15 @@ GET /projects/:id/variables
 
 | Attribute | Type           | Required | Description |
 |-----------|----------------|----------|-------------|
-| `id`      | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
+| `id`      | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+
+Example request:
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/variables"
 ```
+
+Example response:
 
 ```json
 [
@@ -62,13 +66,17 @@ GET /projects/:id/variables/:key
 
 | Attribute | Type           | Required | Description |
 |-----------|----------------|----------|-------------|
-| `id`      | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
+| `id`      | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
 | `key`     | string         | Yes      | The `key` of a variable |
 | `filter`  | hash           | No       | Available filters: `[environment_scope]`. See the [`filter` parameter details](#the-filter-parameter). |
+
+Example request:
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/variables/TEST_VARIABLE_1"
 ```
+
+Example response:
 
 ```json
 {
@@ -95,7 +103,7 @@ POST /projects/:id/variables
 
 | Attribute           | Type           | Required | Description |
 |---------------------|----------------|----------|-------------|
-| `id`                | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
+| `id`                | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
 | `key`               | string         | Yes      | The `key` of a variable; must have no more than 255 characters; only `A-Z`, `a-z`, `0-9`, and `_` are allowed |
 | `value`             | string         | Yes      | The `value` of a variable |
 | `description`       | string         | No       | The description of the variable. Default: `null`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/409641) in GitLab 16.2. |
@@ -105,10 +113,14 @@ POST /projects/:id/variables
 | `raw`               | boolean        | No       | Whether the variable is treated as a raw string. Default: `false`. When `true`, variables in the value are not [expanded](../ci/variables/index.md#prevent-cicd-variable-expansion). |
 | `variable_type`     | string         | No       | The type of a variable. Available types are: `env_var` (default) and `file` |
 
+Example request:
+
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
      "https://gitlab.example.com/api/v4/projects/1/variables" --form "key=NEW_VARIABLE" --form "value=new value"
 ```
+
+Example response:
 
 ```json
 {
@@ -134,7 +146,7 @@ PUT /projects/:id/variables/:key
 
 | Attribute           | Type           | Required | Description |
 |---------------------|----------------|----------|-------------|
-| `id`                | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
+| `id`                | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
 | `key`               | string         | Yes      | The `key` of a variable |
 | `value`             | string         | Yes      | The `value` of a variable |
 | `description`       | string         | No       | The description of the variable. Default: `null`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/409641) in GitLab 16.2. |
@@ -145,10 +157,14 @@ PUT /projects/:id/variables/:key
 | `raw`               | boolean        | No       | Whether the variable is treated as a raw string. Default: `false`. When `true`, variables in the value are not [expanded](../ci/variables/index.md#prevent-cicd-variable-expansion). |
 | `variable_type`     | string         | No       | The type of a variable. Available types are: `env_var` (default) and `file` |
 
+Example request:
+
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
      "https://gitlab.example.com/api/v4/projects/1/variables/NEW_VARIABLE" --form "value=updated value"
 ```
+
+Example response:
 
 ```json
 {
@@ -174,9 +190,11 @@ DELETE /projects/:id/variables/:key
 
 | Attribute | Type           | Required | Description |
 |-----------|----------------|----------|-------------|
-| `id`      | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
+| `id`      | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
 | `key`     | string         | Yes      | The `key` of a variable |
 | `filter`  | hash           | No       | Available filters: `[environment_scope]`. See the [`filter` parameter details](#the-filter-parameter). |
+
+Example request:
 
 ```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/variables/VARIABLE_1"

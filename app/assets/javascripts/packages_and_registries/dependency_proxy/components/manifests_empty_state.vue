@@ -35,11 +35,7 @@ export default {
 </script>
 
 <template>
-  <gl-empty-state
-    :svg-path="noManifestsIllustration"
-    :svg-height="null"
-    :title="$options.i18n.noManifestTitle"
-  >
+  <gl-empty-state :svg-path="noManifestsIllustration" :title="$options.i18n.noManifestTitle">
     <template #description>
       <p class="gl-mb-5">
         <gl-sprintf :message="$options.i18n.emptyText">

@@ -43,6 +43,9 @@
     },
     "bot": {
       "type": "boolean"
+    },
+    "user_type": {
+      "type": "string"
     }
   }
 }

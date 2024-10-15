@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import { setCookie } from '~/lib/utils/common_utils';
 import UserCallout from '~/user_callout';
-import { initProfileTabs, initUserAchievements } from '~/profile';
+import { initUserAchievements, initUserProfileApp } from '~/profile';
 import { initUserActionsApp } from '~/users/profile/actions';
 import UserTabs from './user_tabs';
 
@@ -11,7 +11,7 @@ function initUserProfile(action) {
   // See https://gitlab.com/gitlab-org/gitlab/-/issues/435899.
 
   if (gon.features?.profileTabsVue) {
-    initProfileTabs();
+    initUserProfileApp();
   } else {
     // eslint-disable-next-line no-new
     new UserTabs({ parentEl: '.user-profile', action });

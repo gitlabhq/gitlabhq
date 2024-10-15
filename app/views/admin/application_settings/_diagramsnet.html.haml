@@ -5,7 +5,7 @@
   expanded: expanded) do |c|
   - c.with_description do
     = _('Render diagrams in your documents using diagrams.net.')
-    = link_to _('Learn more.'), help_page_path('administration/integration/diagrams_net'), target: '_blank', rel: 'noopener noreferrer'
+    = link_to _('Learn more.'), help_page_path('administration/integration/diagrams_net.md'), target: '_blank', rel: 'noopener noreferrer'
   - c.with_body do
     = gitlab_ui_form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-diagramsnet-settings'), html: { class: 'fieldset-form', id: 'diagramsnet-settings' } do |f|
       = form_errors(@application_setting) if expanded

@@ -7,14 +7,14 @@ module ClustersHelper
 
   def js_clusters_list_data(clusterable)
     {
-      ancestor_help_path: help_page_path('user/group/clusters/index', anchor: 'cluster-precedence'),
+      ancestor_help_path: help_page_path('user/group/clusters/index.md', anchor: 'cluster-precedence'),
       endpoint: clusterable.index_path(format: :json),
       img_tags: {
         aws: { path: image_path('illustrations/logos/amazon_eks.svg'), text: s_('ClusterIntegration|Amazon EKS') },
         default: { path: image_path('illustrations/logos/kubernetes.svg'), text: _('Kubernetes Cluster') },
         gcp: { path: image_path('illustrations/logos/google_gke.svg'), text: s_('ClusterIntegration|Google GKE') }
       },
-      clusters_empty_state_image: image_path('illustrations/empty-state/empty-state-clusters.svg'),
+      clusters_empty_state_image: image_path('illustrations/empty-state/empty-cloud-md.svg'),
       empty_state_image: image_path('illustrations/empty-state/empty-environment-md.svg'),
       empty_state_help_text: clusterable.empty_state_help_text,
       add_cluster_path: clusterable.connect_path,
@@ -37,8 +37,8 @@ module ClustersHelper
       editable: can_edit.to_s,
       environment_scope: cluster.environment_scope,
       base_domain: cluster.base_domain,
-      auto_devops_help_path: help_page_path('topics/autodevops/index'),
-      external_endpoint_help_path: help_page_path('user/project/clusters/gitlab_managed_clusters', anchor: 'base-domain')
+      auto_devops_help_path: help_page_path('topics/autodevops/index.md'),
+      external_endpoint_help_path: help_page_path('user/project/clusters/gitlab_managed_clusters.md', anchor: 'base-domain')
     }
   end
 

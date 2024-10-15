@@ -19,6 +19,7 @@
     "wiki_page_events",
     "job_events",
     "deployment_events",
+    "feature_flag_events",
     "releases_events",
     "alert_status",
     "disabled_until",
@@ -108,6 +109,9 @@
       "type": "boolean"
     },
     "deployment_events": {
+      "type": "boolean"
+    },
+    "feature_flag_events": {
       "type": "boolean"
     },
     "releases_events": {

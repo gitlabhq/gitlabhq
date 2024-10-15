@@ -25,13 +25,13 @@ class Projects::MergeRequests::ConflictsController < Projects::MergeRequests::Ap
         elsif @merge_request.can_be_merged?
           render json: {
             message: _('The merge conflicts for this merge request have already been resolved. ' \
-                       'Please return to the merge request.'),
+              'Please return to the merge request.'),
             type: 'error'
           }
         else
           render json: {
             message: _('The merge conflicts for this merge request cannot be resolved through GitLab. ' \
-                       'Please try to resolve them locally.'),
+              'Please try to resolve them locally.'),
             type: 'error'
           }
         end

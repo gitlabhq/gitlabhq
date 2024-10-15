@@ -52,6 +52,8 @@ namespace :gitlab do
         post.puts "remove_date: '#{date}'"
         post.puts '---'
         post.puts
+        post.puts '<!-- markdownlint-disable -->'
+        post.puts
         post.puts "This document was moved to [another location](#{new_path})."
         post.puts
         post.puts "<!-- This redirect file can be deleted after <#{date}>. -->"

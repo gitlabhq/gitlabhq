@@ -38,7 +38,7 @@ module Mutations
 
           if direction == :outbound
             raise Gitlab::Graphql::Errors::ArgumentError, 'direction: OUTBOUND scope entries can only be removed. ' \
-                                                          'Only INBOUND scope can be expanded.'
+              'Only INBOUND scope can be expanded.'
           end
 
           direction ||= :inbound

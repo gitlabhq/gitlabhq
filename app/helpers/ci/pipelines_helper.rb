@@ -59,13 +59,14 @@ module Ci
         pipeline_schedules_path: pipeline_schedules_path(project),
         can_create_pipeline: can?(current_user, :create_pipeline, project).to_s,
         new_pipeline_path: can?(current_user, :create_pipeline, project) && new_project_pipeline_path(project),
-        reset_cache_path: can?(current_user, :admin_pipeline, project) && reset_cache_project_settings_ci_cd_path(project),
+        reset_cache_path: can_any?(current_user, [:admin_pipeline, :admin_runner], project) && reset_cache_project_settings_ci_cd_path(project),
         has_gitlab_ci: has_gitlab_ci?(project).to_s,
         pipeline_editor_path: can?(current_user, :create_pipeline, project) && project_ci_pipeline_editor_path(project),
         suggested_ci_templates: suggested_ci_templates.to_json,
         full_path: project.full_path,
         visibility_pipeline_id_type: visibility_pipeline_id_type,
-        show_jenkins_ci_prompt: show_jenkins_ci_prompt(project).to_s
+        show_jenkins_ci_prompt: show_jenkins_ci_prompt(project).to_s,
+        pipelines_analytics_path: charts_project_pipelines_path(project)
       }
     end
 

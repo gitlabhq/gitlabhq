@@ -28,7 +28,7 @@ RSpec.shared_examples 'issuable record that does not supports quick actions' do 
       }
     end
 
-    it 'attaches labels to issuable' do
+    it 'does not attach labels to issuable' do
       expect(issuable.label_ids).to be_empty
       expect(issuable.description).to eq new_descr
     end
@@ -42,8 +42,8 @@ RSpec.shared_examples 'issuable record that does not supports quick actions' do 
       }
     end
 
-    it 'attaches all labels to issuable' do
-      expect(issuable.label_ids).to match_array([labels.second.id])
+    it 'does not attach labels to issuable' do
+      expect(issuable.label_ids).to be_empty
       expect(issuable.description).to eq new_descr
     end
   end
@@ -55,7 +55,7 @@ RSpec.shared_examples 'issuable record that does not supports quick actions' do 
       }
     end
 
-    it 'assigns and sets milestone to issuable' do
+    it 'does not assign and set milestone to issuable' do
       expect(issuable.assignees).to be_empty
       expect(issuable.milestone).to be_nil
       expect(issuable.description).to eq new_descr

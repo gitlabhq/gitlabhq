@@ -38,7 +38,7 @@ module Gitlab
 
       # not_found_response returns a message that the go cli toolchain displays directly.
       def not_found_response
-        go_help_page_url = Rails.application.routes.url_helpers.help_page_url('user/project/use_project_as_go_package')
+        go_help_page_url = Rails.application.routes.url_helpers.help_page_url('user/project/use_project_as_go_package.md')
         not_found_message = "Go package not found or access denied. If you are trying to access a private project, ensure your ~/.netrc file has credentials so the go toolchain can authenticate. See #{go_help_page_url} for details."
 
         [404, { 'Content-Type' => 'text/plain' }, [not_found_message]]

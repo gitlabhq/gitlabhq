@@ -1,0 +1,12 @@
+---
+api_type:
+attr: throttle_incident_management_notification_period_in_seconds
+clusterwide: false
+column: throttle_incident_management_notification_period_in_seconds
+db_type: integer
+default: '3600'
+description:
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: false

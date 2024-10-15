@@ -1,0 +1,13 @@
+---
+api_type: integer
+attr: pipeline_limit_per_project_user_sha
+clusterwide: false
+column: pipeline_limit_per_project_user_sha
+db_type: integer
+default: '0'
+description: Maximum number of pipeline creation requests per minute per user and
+  commit. Disabled by default.
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: true

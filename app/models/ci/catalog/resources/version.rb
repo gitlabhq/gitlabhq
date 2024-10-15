@@ -18,7 +18,8 @@ module Ci
         belongs_to :published_by, class_name: 'User'
         has_many :components, class_name: 'Ci::Catalog::Resources::Component', inverse_of: :version
 
-        validates :release, :catalog_resource, :project, presence: true
+        validates :release, presence: true, uniqueness: { message: N_('has already been published') }
+        validates :catalog_resource, :project, presence: true
         validates :published_by, presence: true, on: :create
         validate :validate_published_by_is_release_author, on: :create
 

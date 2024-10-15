@@ -168,11 +168,6 @@ Prerequisites:
 
 ## Troubleshooting
 
-### API support for managing merge request dependencies
-
-No API support exists for managing dependencies. For more information, read
-[issue #12551](https://gitlab.com/gitlab-org/gitlab/-/issues/12551).
-
 ### Preserving dependencies on project import or export
 
 Dependencies are not preserved when projects are imported or exported. For more

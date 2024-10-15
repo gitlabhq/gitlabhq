@@ -57,6 +57,9 @@ You can access a project by using its ID instead of its name at `https://gitlab.
 For example, if in your personal namespace `alex` you have a project `my-project` with the ID `123456`,
 you can access the project either at `https://gitlab.example.com/alex/my-project` or `https://gitlab.example.com/projects/123456`.
 
+NOTE:
+From GitLab 17.5, you can also use `https://gitlab.example.com/-/p/<id>` for this endpoint.
+
 You might also need the project ID if you want to interact with the project using the [GitLab API](../../api/index.md).
 
 To copy the project ID:
@@ -130,6 +133,7 @@ Prerequisites:
 1. Select **Settings > General**.
 1. In the **Project name** text box, enter your project name. See the [limitations on project names](../../user/reserved_names.md).
 1. Optional. In the **Project description** text box, enter your project description. The description is limited to 2,000 characters.
+Components published in the CI/CD catalog require a project description.
 1. Optional. Under **Project avatar**, to change your project avatar, select **Choose file**. The ideal image size is 192 x 192 pixels, and the maximum file size allowed is 200 KB.
 1. Select **Save changes**.
 
@@ -156,6 +160,7 @@ After you delete a project:
 Prerequisites:
 
 - You must have the Owner role for a project.
+- Owners must be [allowed to delete projects](../../administration/settings/visibility_and_access_controls.md#restrict-project-deletion-to-administrators).
 
 To delete a project:
 
@@ -256,6 +261,8 @@ To restore a project marked for deletion:
 
 ## Archive a project
 
+> - Pages removal [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/343109) in GitLab 17.5.
+
 When you archive a project, some features become read-only.
 These features are still accessible, but not writable.
 
@@ -267,6 +274,9 @@ These features are still accessible, but not writable.
 - All other project features
 
 Active pipeline schedules of archived projects don't become read-only.
+
+If the project has deployed Pages, they are removed along with any custom domains,
+and the Pages link is no longer accessible.
 
 Archived projects are:
 
@@ -307,6 +317,8 @@ Prerequisites:
 1. Under **Advanced**, select **Expand**.
 1. In the **Unarchive project** section, select **Unarchive project**.
 1. To confirm, select **OK**.
+
+The deployed Pages are not restored and you must rerun the pipeline.
 
 ## View project activity
 
@@ -420,7 +432,7 @@ You can add compliance frameworks to projects in a group that has a [compliance 
 
 ## Manage project access through LDAP groups
 
-You can [use LDAP to manage group membership](../group/access_and_permissions.md#manage-group-memberships-via-ldap).
+You can [use LDAP to manage group membership](../group/access_and_permissions.md#manage-group-memberships-with-ldap).
 
 You cannot use LDAP groups to manage project access, but you can use the following workaround.
 

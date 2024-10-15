@@ -9,6 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 DETAILS:
 **Offering:** GitLab.com
 **Status:** Experiment
+**Tier:** Ultimate
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14153) in GitLab 17.4 [with a flag](../../administration/feature_flags.md) named `duo_workflow`. Enabled for GitLab team members only. This feature is an [experiment](../../policy/experiment-beta-support.md).
 
@@ -22,74 +23,42 @@ Automate tasks and help increase productivity in your development workflow by us
 GitLab Duo Workflow, as part of your IDE, takes the information you provide
 and uses AI to walk you through an implementation plan.
 
-For the first release, there is only one supported Workflow: write or update code to fix a broken pipeline on a merge request.
-You can do this from VS Code or by running a cURL command.
+GitLab Duo Workflow supports a wide variety of use cases. Here are a few examples:
+
+- Bootstrapping a new project
+- Writing tests
+- Fixing a failed pipeline
+- Implementing a proof of concept for an existing issue
+- Commenting on a Merge Request with suggestions
+- Optimize GitLab CI
+
+These are examples of known GitLab Duo Workflow that have successfully executed, but it can be used for many more use cases.
 
 ## Prerequisites
 
 Before you can use GitLab Duo Workflow in VS Code:
 
-1. Enable the feature `duo_workflow` feature flag for yourself.
-   - In Slack, in the `#production` channel, type: `/chatops run feature set --user=myusername duo_workflow true`
-   - Or, post a request in the `#f_duo_workflow` Slack channel.
 1. Install the [GitLab Workflow extension for VS Code](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow).
    Minimum version 5.8.0.
 1. In VS Code, [set the Docker socket file path](#install-docker-and-set-the-socket-file-path).
 
 ### Install Docker and set the socket file path
 
-1. Install Docker:
+1. Download the [script](https://gitlab.com/-/snippets/3745948). This downloads Docker, Colima, pulls workflow generic image and updates VS code settings to update Docker context for Duo Workflow. You will need to [Authenticate with the GitLab container registry](../packages/container_registry/authenticate_with_container_registry.md) to pull the generic workflow image. You can run the script with `--dry-run` flag to know the dependencies that will be installed with the script.
+1. Run the script.
 
    ```shell
-   brew install docker
-   ```
-
-1. Install Colima by using Homebrew:
-
-   ```shell
-   brew install colima
-   ```
-
-1. Start Colima:
-
-   ```shell
-   colima start
-   ```
-
-1. Set Docker context:
-
-   ```shell
-   docker context use colima
-   ```
-
-1. [Authenticate with the GitLab container registry](../packages/container_registry/authenticate_with_container_registry.md).
-
-1. Manually pull the
-   [latest version of the Workflow Docker image](https://gitlab.com/gitlab-org/duo-workflow/default-docker-image/container_registry/6740066)
-   from the container registry:
-
-   ```shell
-   docker pull registry.gitlab.com/gitlab-org/duo-workflow/default-docker-image/workflow-generic-image:v0.0.4
-   ```
-
-1. Access VS Code settings:
-   - On Mac: <kbd>Cmd</kbd> + <kbd>,</kbd>
-   - On Windows and Linux: <kbd>Ctrl</kbd> + <kbd>,</kbd>
-1. In the upper-right corner, select the **Open Settings (JSON)** icon.
-1. Add this line:
-
-   ```json
-   "gitlab.duoWorkflow.dockerSocket": "/Users/<username>/.colima/default/docker.sock"
-   "gitlab.featureFlags.languageServerWebviews": true
-   ```
-
-1. Save the settings file.
+        chmod +x duo_workflow_runtime.sh
+        ./duo_workflow_runtime.sh
+    ```
 
 ## Use GitLab Duo Workflow in VS Code
 
 To use GitLab Duo Workflow:
 
-1. In VS Code, open the GitLab project and check out the branch for the code you would like to change.
+1. In VS Code, open the GitLab project.
+   - The namespace must have an **Ultimate** subscription.
+   - You must check out the branch for the code you would like to change.
 1. Access the Command Palette:
    - On Mac: <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>P</kbd>
    - On Windows and Linux: <kbd>Ctrl</kbd> + <kbd>P</kbd>.
@@ -107,15 +76,15 @@ Instead of running GitLab Workflow in VS Code, you can use a cURL command. See
 1. Start GitLab Workflow in a CI/CD pipeline by using the following cURL request.
 
    ```shell
-        curl POST --verbose \
-        --header 'Authorization: Bearer $YOUR_GITLAB_PAT' \
-        --header 'Content-Type: application/json' \
-        --data '{
-            "project_id": "$PROJECT_ID_FOR_RUNNING_WORKFLOW_AGAINST",
-            "start_workflow": true,
-            "goal": "Fix the pipeline for merge request X in project Y."
-        }' \
-        --location 'https://gitlab.com/api/v4/ai/duo_workflows/workflows'
+   curl POST --verbose \
+      --header "Authorization: Bearer $YOUR_GITLAB_PAT" \
+      --header "Content-Type: application/json" \
+      --data '{
+         "project_id": "$PROJECT_ID_FOR_RUNNING_WORKFLOW_AGAINST",
+         "start_workflow": true,
+         "goal": "Fix the pipeline for merge request X in project Y."
+      }' \
+      --location 'https://gitlab.com/api/v4/ai/duo_workflows/workflows'
     ```
 
 The response should be the pipeline ID. To view the pipeline execution, go to:
@@ -142,9 +111,6 @@ In addition, Duo Workflow has read-only access to:
 Duo Workflow has the following limitations:
 
 - No copy and paste functionality. For details, see [issue 380](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/issues/380).
-- Execution steps not displayed in UI.
-- Cannot push changes automatically.
-- Manual entry of merge request and project IDs required.
 - No theme support.
 - Project-specific workflow execution only.
 

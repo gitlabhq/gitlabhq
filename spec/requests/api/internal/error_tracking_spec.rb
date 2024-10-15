@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Internal::ErrorTracking, feature_category: :error_tracking do
+RSpec.describe API::Internal::ErrorTracking, feature_category: :observability do
   let(:secret_token) { Gitlab::CurrentSettings.error_tracking_access_token }
   let(:headers) do
     { ::API::Internal::ErrorTracking::GITLAB_ERROR_TRACKING_TOKEN_HEADER => secret_token }

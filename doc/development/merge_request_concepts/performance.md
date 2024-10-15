@@ -202,7 +202,7 @@ that require any kind of hierarchical structure.
 
 CTEs have been effectively used as an optimization fence in many simpler cases,
 such as this [example](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/43242#note_61416277).
-With the currently supported PostgreSQL versions, the optimization fence behavior must be enabled
+With the supported PostgreSQL versions, the optimization fence behavior must be enabled
 with the `MATERIALIZED` keyword. By default CTEs are inlined then [optimized by default](https://paquier.xyz/postgresql-2/postgres-12-with-materialize/).
 
 When building CTE statements, use the `Gitlab::SQL::CTE` class.

@@ -1,0 +1,13 @@
+---
+api_type: boolean
+attr: user_defaults_to_private_profile
+clusterwide: false
+column: user_defaults_to_private_profile
+db_type: boolean
+default: 'false'
+description: Newly created users have private profile by default. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/231301)
+  in GitLab 15.8. Defaults to `false`.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

@@ -1,6 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import { TEST_HOST } from 'helpers/test_constants';
 import confidentialState from '~/confidential_merge_request/state';
+import { NON_INPUT_KEY_EVENTS } from '~/issues/constants';
 import CreateMergeRequestDropdown from '~/issues/create_merge_request_dropdown';
 import axios from '~/lib/utils/axios_utils';
 
@@ -96,5 +97,29 @@ describe('CreateMergeRequestDropdown', () => {
         hasClass,
       );
     });
+  });
+
+  describe('onChangeInput', () => {
+    it('returns early if the user copies the branch name', () => {
+      const ctrlEvent = {
+        keyCode: 67, // 'c' key
+        ctrlKey: true,
+      };
+      expect(dropdown.onChangeInput(ctrlEvent)).toBe(undefined);
+      const cmdEvent = {
+        keyCode: 67, // 'c' key
+        metaKey: true,
+      };
+      expect(dropdown.onChangeInput(cmdEvent)).toBe(undefined);
+    });
+    it.each(NON_INPUT_KEY_EVENTS)(
+      'returns early when the user releases $label key',
+      ({ keyCode }) => {
+        const event = {
+          keyCode,
+        };
+        expect(dropdown.onChangeInput(event)).toBe(undefined);
+      },
+    );
   });
 });

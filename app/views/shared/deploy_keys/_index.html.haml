@@ -6,7 +6,7 @@
   css_class: 'rspec-deploy-keys-settings',
   expanded: expanded) do |c|
   - c.with_description do
-    - link = link_to('', help_page_path('user/project/deploy_keys/index'), target: '_blank', rel: 'noopener noreferrer')
+    - link = link_to('', help_page_path('user/project/deploy_keys/index.md'), target: '_blank', rel: 'noopener noreferrer')
     = safe_format(_("Add deploy keys to grant read/write access to this repository. %{link_start}What are deploy keys?%{link_end}"), tag_pair(link, :link_start, :link_end))
   - c.with_body do
     = render ::Layouts::CrudComponent.new(_('Deploy keys'),

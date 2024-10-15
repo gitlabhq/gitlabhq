@@ -4,7 +4,7 @@
 
 .top-bar-fixed {
   @apply gl-shadow-inner-b-1-gray-100;
-  background-color: $body-bg;
+  @apply gl-bg-default;
   position: fixed;
   left: var(--application-bar-left);
   right: var(--application-bar-right);

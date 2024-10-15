@@ -1,13 +1,15 @@
 <script>
-import { GlButton, GlSprintf, GlDisclosureDropdown } from '@gitlab/ui';
+import { GlButton, GlLink, GlSprintf, GlDisclosureDropdown } from '@gitlab/ui';
 import GITLAB_LOGO_SVG_URL from '@gitlab/svgs/dist/illustrations/gitlab_logo.svg?url';
 import { s__ } from '~/locale';
 import { joinPaths, stripRelativeUrlRootFromPath } from '~/lib/utils/url_utility';
+import { helpPagePath } from '~/helpers/help_page_helper';
 
 export default {
   name: 'OAuthDomainMismatchError',
   components: {
     GlButton,
+    GlLink,
     GlSprintf,
     GlDisclosureDropdown,
   },
@@ -34,6 +36,11 @@ export default {
           };
         });
     },
+    helpPageUrl() {
+      return helpPagePath('user/project/web_ide/index', {
+        anchor: 'update-the-oauth-callback-url',
+      });
+    },
   },
   gitlabLogo: GITLAB_LOGO_SVG_URL,
   i18n: {
@@ -49,7 +56,7 @@ export default {
     ),
     expected: s__('IDE|Could not find a callback URL entry for %{expectedCallbackUrl}.'),
     contact: s__(
-      'IDE|Contact your administrator or try to open the Web IDE again with another domain.',
+      'IDE|Contact your administrator or try to open the Web IDE again with another domain. %{linkStart}How can an administrator resolve the issue%{linkEnd}?',
     ),
   },
 };
@@ -62,13 +69,19 @@ export default {
       <p>
         {{ $options.i18n.description }}
       </p>
-      <gl-sprintf :message="$options.i18n.expected">
-        <template #expectedCallbackUrl>
-          <code>{{ expectedCallbackUrl }}</code>
-        </template>
-      </gl-sprintf>
       <p>
-        {{ $options.i18n.contact }}
+        <gl-sprintf :message="$options.i18n.expected">
+          <template #expectedCallbackUrl>
+            <code>{{ expectedCallbackUrl }}</code>
+          </template>
+        </gl-sprintf>
+      </p>
+      <p>
+        <gl-sprintf :message="$options.i18n.contact">
+          <template #link="{ content }">
+            <gl-link :href="helpPageUrl">{{ content }}</gl-link>
+          </template>
+        </gl-sprintf>
       </p>
       <div class="gl-mt-6">
         <gl-disclosure-dropdown

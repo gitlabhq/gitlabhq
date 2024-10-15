@@ -1,0 +1,12 @@
+---
+api_type:
+attr: force_pages_access_control
+clusterwide: false
+column: force_pages_access_control
+db_type: boolean
+default: 'false'
+description:
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Rendering json:table code block in markdown', :js, feature_category: :team_planning do
+RSpec.describe 'Rendering json:table code block in markdown', :js, feature_category: :markdown do
   let_it_be(:project) { create(:project, :public) }
 
   it 'creates table correctly' do

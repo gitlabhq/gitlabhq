@@ -413,8 +413,8 @@ command. For example:
 
 ## Toggle a feature flag
 
-See [rolling out changes](controls.md#rolling-out-changes) for more information about toggling
-feature flags.
+See [rolling out changes](controls.md#rolling-out-changes) for more information
+about toggling feature flags.
 
 ## Delete a feature flag
 
@@ -557,7 +557,7 @@ Actors also provide an easy way to do a percentage rollout of a feature in a sti
 If a 1% rollout enabled a feature for a specific actor, that actor will continue to have the feature enabled at
 10%, 50%, and 100%.
 
-GitLab currently supports the following feature flag actors:
+GitLab supports the following feature flag actors:
 
 - `User` model
 - `Project` model
@@ -588,7 +588,7 @@ return unless Feature.enabled?(:feature_flag, project)
 project.update!(column: value)
 ```
 
-See [Feature flags in the development of GitLab](controls.md#process) for details on how to use ChatOps
+See [Use ChatOps to enable and disable feature flags](controls.md#process) for details on how to use ChatOps
 to selectively enable or disable feature flags in GitLab-provided environments, like staging and production.
 
 Flag state is not inherited from a group by its subgroups or projects.
@@ -797,9 +797,9 @@ We want to avoid introducing a changelog when features are not accessible by an 
 
   ```mermaid
   flowchart LR
-    FDOFF(Flag is currently\n`default: off`)
-    FDON(Flag is currently\n`default: on`)
-    CDO{Change to\n`default: on`}
+    FDOFF(Flag is currently<br>'default: off')
+    FDON(Flag is currently<br>'default: on')
+    CDO{Change to<br>'default: on'}
     ACF(added / changed / fixed / '...')
     RF{Remove flag}
     RF2{Remove flag}

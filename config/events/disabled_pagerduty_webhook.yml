@@ -1,0 +1,14 @@
+---
+description: Triggered when a PagerDuty integration is disabled in Incident Management settings
+action: disabled_pagerduty_webhook
+identifiers:
+product_group: respond
+milestone: "<13.9"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36653
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

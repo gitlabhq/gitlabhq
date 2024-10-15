@@ -1,0 +1,12 @@
+---
+api_type:
+attr: security_policies
+clusterwide: false
+column: security_policies
+db_type: jsonb
+default: "'{}'::jsonb"
+description:
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: true

@@ -1,0 +1,12 @@
+---
+api_type:
+attr: users_get_by_id_limit
+clusterwide: false
+column: users_get_by_id_limit
+db_type: integer
+default: '300'
+description:
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

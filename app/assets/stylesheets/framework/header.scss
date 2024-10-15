@@ -67,7 +67,7 @@
   top: $calc-system-headers-height;
   left: 0;
   right: 0;
-  background-color: $brand-charcoal;
+  background-color: var(--gl-color-brand-charcoal);
 
   @media (forced-colors: active) {
     border-bottom: 1px solid;
@@ -90,7 +90,7 @@
 
   &:hover,
   &:focus {
-    background-color: $brand-gray-04;
+    background-color: var(--gl-color-brand-gray-04);
   }
 
   &:focus,
@@ -99,7 +99,7 @@
   }
 
   &:active {
-    background-color: $brand-gray-03;
+    background-color: var(--gl-color-brand-gray-03);
   }
 
   img {
@@ -132,19 +132,19 @@
     padding: 6px 8px;
     height: 32px;
     border-radius: $gl-border-radius-base;
-    color: $gray-100;
+    color: var(--gl-color-neutral-100);
     font-weight: $gl-font-weight-normal;
     font-size: $gl-font-size;
 
     &:hover,
     &:focus,
     &:active {
-      color: $white;
+      color: var(--gl-color-neutral-0);
     }
 
     &:hover,
     &:focus {
-      background-color: $brand-gray-04;
+      background-color: var(--gl-color-brand-gray-04);
       text-decoration: none;
     }
 
@@ -154,7 +154,7 @@
     }
 
     &:active {
-      background-color: $brand-gray-03;
+      background-color: var(--gl-color-brand-gray-03);
     }
   }
 }

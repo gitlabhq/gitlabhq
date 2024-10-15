@@ -1,0 +1,12 @@
+---
+api_type: string
+attr: kroki_url
+clusterwide: false
+column: kroki_url
+db_type: character
+default:
+description: The Kroki instance URL for integration.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: false

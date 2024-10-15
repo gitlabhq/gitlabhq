@@ -87,7 +87,7 @@ key = "/path/to/private/key"
 		{
 			Network: "tcp",
 			Addr:    "localhost:3445",
-			Tls: &config.TLSConfig{
+			TLS: &config.TLSConfig{
 				Certificate: "/path/to/certificate",
 				Key:         "/path/to/private/key",
 			},
@@ -95,7 +95,7 @@ key = "/path/to/private/key"
 		{
 			Network: "tcp",
 			Addr:    "localhost:3443",
-			Tls: &config.TLSConfig{
+			TLS: &config.TLSConfig{
 				Certificate: "/path/to/certificate",
 				Key:         "/path/to/private/key",
 				MinVersion:  "tls1.1",
@@ -117,13 +117,13 @@ key = "/path/to/private/key"
 	}
 
 	for i, cfg := range []config.ListenerConfig{*cfg.MetricsListener, cfg.Listeners[0]} {
-		require.Equal(t, listenerConfigs[i].Tls.Certificate, cfg.Tls.Certificate)
-		require.Equal(t, listenerConfigs[i].Tls.Key, cfg.Tls.Key)
-		require.Equal(t, listenerConfigs[i].Tls.MinVersion, cfg.Tls.MinVersion)
-		require.Equal(t, listenerConfigs[i].Tls.MaxVersion, cfg.Tls.MaxVersion)
+		require.Equal(t, listenerConfigs[i].TLS.Certificate, cfg.TLS.Certificate)
+		require.Equal(t, listenerConfigs[i].TLS.Key, cfg.TLS.Key)
+		require.Equal(t, listenerConfigs[i].TLS.MinVersion, cfg.TLS.MinVersion)
+		require.Equal(t, listenerConfigs[i].TLS.MaxVersion, cfg.TLS.MaxVersion)
 	}
 
-	require.Nil(t, cfg.Listeners[1].Tls)
+	require.Nil(t, cfg.Listeners[1].TLS)
 }
 
 func TestTwoMetricsAddrsAreSpecifiedError(t *testing.T) {
@@ -562,7 +562,7 @@ func TestLoadConfigCommand(t *testing.T) {
 							{
 								Network: "tcp",
 								Addr:    "127.0.0.1:3443",
-								Tls: &config.TLSConfig{
+								TLS: &config.TLSConfig{
 									Certificate: "/path/to/certificate",
 									Key:         "/path/to/private/key",
 								},

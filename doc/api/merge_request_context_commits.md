@@ -23,7 +23,7 @@ Parameters:
 
 | Attribute           | Type    | Required | Description |
 |---------------------|---------|----------|-------------|
-| `id`                | integer | Yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`                | integer | Yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 | `merge_request_iid` | integer | Yes | The internal ID of the merge request. |
 
 ```json
@@ -57,7 +57,7 @@ Parameters:
 
 | Attribute           | Type    | Required | Description |
 |---------------------|---------|----------|-------------|
-| `id`                | integer | Yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user  |
+| `id`                | integer | Yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths)  |
 | `merge_request_iid` | integer | Yes | The internal ID of the merge request. |
 | `commits`           | string array | Yes | The context commits' SHAs. |
 
@@ -108,5 +108,5 @@ Parameters:
 | Attribute           | Type         | Required | Description  |
 |---------------------|--------------|----------|--------------|
 | `commits`           | string array | Yes | The context commits' SHA. |
-| `id`                | integer      | Yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`                | integer      | Yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 | `merge_request_iid` | integer      | Yes | The internal ID of the merge request. |

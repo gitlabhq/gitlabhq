@@ -1,0 +1,13 @@
+---
+api_type: integer
+attr: first_day_of_week
+clusterwide: false
+column: first_day_of_week
+db_type: integer
+default: '0'
+description: Start day of the week for calendar views and date pickers. Valid values
+  are `0` (default) for Sunday, `1` for Monday, and `6` for Saturday.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

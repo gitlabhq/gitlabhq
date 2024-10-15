@@ -4,12 +4,13 @@ import VueApollo from 'vue-apollo';
 import { GlAlert } from '@gitlab/ui';
 import originalAllReleasesQueryResponse from 'test_fixtures/graphql/releases/graphql/queries/all_releases.query.graphql.json';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import { stubComponent } from 'helpers/stub_component';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import allReleasesQuery from '~/releases/graphql/queries/all_releases.query.graphql';
-import getCiCatalogSettingsQuery from '~/ci/catalog/graphql/queries/get_ci_catalog_settings.query.graphql';
 import { createAlert, VARIANT_SUCCESS } from '~/alert';
 import { historyPushState } from '~/lib/utils/common_utils';
+import CiCdCatalogWrapper from '~/releases/components/ci_cd_catalog_wrapper.vue';
 import ReleasesIndexApp from '~/releases/components/app_index.vue';
 import ReleaseBlock from '~/releases/components/release_block.vue';
 import ReleaseSkeletonLoader from '~/releases/components/release_skeleton_loader.vue';
@@ -18,7 +19,6 @@ import ReleasesPagination from '~/releases/components/releases_pagination.vue';
 import ReleasesSort from '~/releases/components/releases_sort.vue';
 import { i18n, PAGE_SIZE, CREATED_ASC, DEFAULT_SORT } from '~/releases/constants';
 import { deleteReleaseSessionKey } from '~/releases/release_notification_service';
-import { generateCatalogSettingsResponse } from '../mock_data';
 
 Vue.use(VueApollo);
 
@@ -50,11 +50,11 @@ describe('app_index.vue', () => {
   let noReleases;
   let queryMock;
   let toast;
-  let ciCatalogSettingsResponse;
 
   const createComponent = ({
     singleResponse = Promise.resolve(singleRelease),
     fullResponse = Promise.resolve(allReleases),
+    isCiCdCatalogProject = false,
   } = {}) => {
     const handlers = [
       [
@@ -63,7 +63,6 @@ describe('app_index.vue', () => {
           return vars.first === 1 ? singleResponse : fullResponse;
         }),
       ],
-      [getCiCatalogSettingsQuery, ciCatalogSettingsResponse],
     ];
     const apolloProvider = createMockApollo(handlers);
 
@@ -75,6 +74,14 @@ describe('app_index.vue', () => {
         newReleasePath,
         projectPath,
         atomFeedPath,
+      },
+      stubs: {
+        CiCdCatalogWrapper: {
+          ...stubComponent(CiCdCatalogWrapper),
+          render() {
+            return this.$scopedSlots.default({ isCiCdCatalogProject });
+          },
+        },
       },
       mocks: {
         $toast: { show: toast },
@@ -452,14 +459,9 @@ describe('app_index.vue', () => {
   });
 
   describe('CI/CD Catalog Alert', () => {
-    beforeEach(() => {
-      ciCatalogSettingsResponse = jest.fn();
-    });
-
     describe('when the project is a catalog resource', () => {
       beforeEach(async () => {
-        ciCatalogSettingsResponse.mockResolvedValue(generateCatalogSettingsResponse(true));
-        await createComponent();
+        await createComponent({ isCiCdCatalogProject: true });
       });
 
       it('renders the CI/CD Catalog alert', () => {
@@ -480,7 +482,6 @@ describe('app_index.vue', () => {
 
     describe('when the project is not a catalog resource', () => {
       beforeEach(async () => {
-        ciCatalogSettingsResponse.mockResolvedValue(generateCatalogSettingsResponse(false));
         await createComponent();
       });
 

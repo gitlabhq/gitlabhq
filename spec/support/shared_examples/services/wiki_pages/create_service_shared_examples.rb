@@ -2,7 +2,7 @@
 
 RSpec.shared_examples 'WikiPages::CreateService#execute' do |container_type|
   let(:container) { create(container_type, :wiki_repo) }
-  let(:user) { create(:user) }
+  let(:user) { create(:user, :with_namespace) }
   let(:page_title) { 'Title' }
   let(:container_key) { container.is_a?(Group) ? :namespace_id : :project_id }
 
@@ -43,12 +43,27 @@ RSpec.shared_examples 'WikiPages::CreateService#execute' do |container_type|
     service.execute
   end
 
-  it_behaves_like 'internal event tracking' do
-    let(:event) { 'create_wiki_page' }
+  describe 'internal event tracking' do
     let(:project) { container if container.is_a?(Project) }
     let(:namespace) { container.is_a?(Group) ? container : container.namespace }
 
     subject(:track_event) { service.execute }
+
+    it_behaves_like 'internal event tracking' do
+      let(:event) { 'create_wiki_page' }
+    end
+
+    context 'with group container', if: container_type == :group do
+      it_behaves_like 'internal event tracking' do
+        let(:event) { 'create_group_wiki_page' }
+      end
+    end
+
+    context 'with project container', if: container_type == :project do
+      it_behaves_like 'internal event not tracked' do
+        let(:event) { 'create_group_wiki_page' }
+      end
+    end
   end
 
   context 'when the new page is a template' do
@@ -107,6 +122,21 @@ RSpec.shared_examples 'WikiPages::CreateService#execute' do |container_type|
 
       expect(page).to be_invalid
         .and have_attributes(errors: be_present)
+    end
+  end
+
+  context 'when wiki create fails due to git error' do
+    it 'catches the thrown error and returns a ServiceResponse error' do
+      container = create(container_type, :wiki_repo)
+      service = described_class.new(container: container, current_user: user, params: opts)
+
+      allow(Gitlab::GitalyClient).to receive(:call) do
+        raise GRPC::Unavailable, 'Gitaly broken in this spec'
+      end
+
+      result = service.execute
+      expect(result).to be_error
+      expect(result.message).to eq('Could not create wiki page')
     end
   end
 end

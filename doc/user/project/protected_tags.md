@@ -27,8 +27,8 @@ This feature evolved out of [protected branches](repository/branches/protected.m
 
 By default:
 
-- To create tags, you must have the Maintainer role.
-- No one can update or delete tags.
+- To create or delete tags, you must have the Maintainer role.
+- Protected tags [can only be deleted](#delete-a-protected-tag) using the UI or API.
 
 ## Configuring protected tags
 
@@ -75,7 +75,7 @@ In that case, if _any_ of these protected tags have a setting like
 If you select a protected tag's name, GitLab displays a list of
 all matching tags:
 
-![Protected tag matches](img/protected_tag_matches.png)
+![Protected tag matches](img/protected_tag_matches_v9_1.png)
 
 ## Prevent tag creation with the same name as branches
 

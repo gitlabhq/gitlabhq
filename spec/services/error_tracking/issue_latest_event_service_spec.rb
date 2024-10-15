@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ErrorTracking::IssueLatestEventService, feature_category: :error_tracking do
+RSpec.describe ErrorTracking::IssueLatestEventService, feature_category: :observability do
   include_context 'sentry error tracking context'
 
   let(:params) { {} }

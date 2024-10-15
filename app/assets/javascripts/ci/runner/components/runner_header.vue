@@ -1,5 +1,6 @@
 <script>
 import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
+import PageHeading from '~/vue_shared/components/page_heading.vue';
 import { I18N_LOCKED_RUNNER_DESCRIPTION } from '../constants';
 import { formatRunnerName } from '../utils';
 import RunnerCreatedAt from './runner_created_at.vue';
@@ -14,6 +15,7 @@ export default {
     RunnerStatusBadge,
     RunnerUpgradeStatusBadge: () =>
       import('ee_component/ci/runner/components/runner_upgrade_status_badge.vue'),
+    PageHeading,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -33,22 +35,24 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-py-5">
-    <div class="gl-flex gl-justify-between">
-      <h1 class="gl-my-0 gl-text-size-h-display">{{ name }}</h1>
+  <page-heading :heading="name">
+    <template #description>
+      <div class="gl-flex gl-flex-wrap gl-items-start gl-gap-3">
+        <runner-status-badge :contacted-at="runner.contactedAt" :status="runner.status" />
+        <runner-type-badge :type="runner.runnerType" />
+        <runner-upgrade-status-badge :runner="runner" />
+        <gl-icon
+          v-if="runner.locked"
+          v-gl-tooltip="$options.I18N_LOCKED_RUNNER_DESCRIPTION"
+          name="lock"
+          :aria-label="$options.I18N_LOCKED_RUNNER_DESCRIPTION"
+        />
+        <runner-created-at :runner="runner" class="-gl-mt-1" />
+      </div>
+    </template>
+
+    <template #actions>
       <slot name="actions"></slot>
-    </div>
-    <div class="gl-mt-3 gl-flex gl-flex-wrap gl-items-start gl-gap-3">
-      <runner-status-badge :contacted-at="runner.contactedAt" :status="runner.status" />
-      <runner-type-badge :type="runner.runnerType" />
-      <runner-upgrade-status-badge :runner="runner" />
-      <gl-icon
-        v-if="runner.locked"
-        v-gl-tooltip="$options.I18N_LOCKED_RUNNER_DESCRIPTION"
-        name="lock"
-        :aria-label="$options.I18N_LOCKED_RUNNER_DESCRIPTION"
-      />
-      <runner-created-at :runner="runner" />
-    </div>
-  </div>
+    </template>
+  </page-heading>
 </template>

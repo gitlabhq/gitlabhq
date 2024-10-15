@@ -84,10 +84,6 @@ $work-item-overview-gap-width: 2rem;
     overflow-x: hidden;
   }
 
-  .work-item-date-picker {
-    max-width: 175px;
-  }
-
   .work-item-overview-right-sidebar {
     margin-top: 0;
     grid-row-start: 1;
@@ -335,4 +331,10 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
+}
+
+.create-work-item-modal {
+  .note-textarea {
+    overflow-y: scroll !important;
+  }
 }

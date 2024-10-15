@@ -5,6 +5,9 @@
   "properties": {
     "silent_admin_exports_enabled": {
       "type": "boolean"
+    },
+    "allow_contribution_mapping_to_admins": {
+      "type": "boolean"
     }
   },
   "additionalProperties": false

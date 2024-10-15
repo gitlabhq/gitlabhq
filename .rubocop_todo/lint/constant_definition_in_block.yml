@@ -22,7 +22,6 @@ Lint/ConstantDefinitionInBlock:
     - 'ee/app/models/ee/user.rb'
     - 'ee/app/models/ee/vulnerability.rb'
     - 'ee/app/services/ee/notes/quick_actions_service.rb'
-    - 'ee/lib/ee/api/search.rb'
     - 'ee/lib/gitlab/subscription_portal/clients/rest.rb'
     - 'ee/lib/tasks/geo.rake'
     - 'ee/spec/db/schema_support.rb'

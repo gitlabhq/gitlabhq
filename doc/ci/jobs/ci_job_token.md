@@ -1,5 +1,5 @@
 ---
-stage: Verify
+stage: Govern
 group: Pipeline Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -184,6 +184,7 @@ You can also enable and disable the setting with the [GraphQL](../../api/graphql
 ### Git push to your project repository
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/389060) in GitLab 17.2. [with a flag](../../administration/feature_flags.md) named `allow_push_repository_for_job_token`. Disabled by default.
+> - **Token Access** setting [renamed to **Job token permissions**](https://gitlab.com/gitlab-org/gitlab/-/issues/415519) in GitLab 17.2.
 
 FLAG:
 The availability of this feature is controlled by a feature flag.
@@ -208,14 +209,14 @@ To grant permission to job tokens generated in your project to push to the proje
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > CI/CD**.
-1. Expand **Token Access**.
+1. Expand **Job token permissions**.
 1. In the **Permissions** section, select **Allow Git push requests to the repository**.
 
 The job token has the same access permissions as the user that started the job.
 Job tokens from other [projects or groups in the allowlist](#add-a-group-or-project-to-the-job-token-allowlist)
 cannot push to the repository in your project.
 
-You can also control this setting with the [`ci_push_repository_for_job_token_allowed`](../../api/projects.md#edit-project)
+You can also control this setting with the [`ci_push_repository_for_job_token_allowed`](../../api/projects.md#edit-a-project)
 parameter in the `projects` REST API endpoint.
 
 ## Use a job token
@@ -223,7 +224,7 @@ parameter in the `projects` REST API endpoint.
 ### To `git clone` a private project's repository
 
 You can use the job token to authenticate and clone a repository from a private project
-in a CI/CD job. For example:
+in a CI/CD job. Use `gitlab-ci-token` as the user, and the value of the job token as the password. For example:
 
 ```shell
 git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.example.com/<namespace>/<project>

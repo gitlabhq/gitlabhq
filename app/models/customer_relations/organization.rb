@@ -21,7 +21,7 @@ class CustomerRelations::Organization < ApplicationRecord
   validates :name, uniqueness: { case_sensitive: false, scope: [:group_id] }
   validates :name, length: { maximum: 255 }
   validates :description, length: { maximum: 1024 }
-  validate :validate_root_group
+  validate :validate_crm_group
 
   scope :order_scope_asc, ->(field) { order(arel_table[field].asc.nulls_last) }
   scope :order_scope_desc, ->(field) { order(arel_table[field].desc.nulls_last) }
@@ -90,9 +90,9 @@ class CustomerRelations::Organization < ApplicationRecord
     end
   end
 
-  def validate_root_group
-    return if group&.root?
+  def validate_crm_group
+    return if group&.crm_group?
 
-    self.errors.add(:base, _('organizations can only be added to root groups'))
+    self.errors.add(:base, _('organizations can only be added to root groups and groups configured as CRM targets'))
   end
 end

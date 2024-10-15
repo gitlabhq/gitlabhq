@@ -79,7 +79,7 @@ export default {
   jobClasses: [
     'gl-p-3',
     'gl-border-0',
-    'gl-rounded-base',
+    '!gl-rounded-base',
     'hover:gl-bg-strong',
     'focus:gl-bg-strong',
     'hover:gl-text-gray-900',

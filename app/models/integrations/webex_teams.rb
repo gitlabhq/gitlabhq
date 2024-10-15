@@ -34,13 +34,12 @@ module Integrations
 
     def self.help
       build_help_page_url(
-        'user/project/integrations/webex_teams',
+        'user/project/integrations/webex_teams.md',
         s_("WebexTeamsService|Send notifications about project events to Webex Teams.")
       )
     end
 
-    def default_channel_placeholder
-    end
+    def default_channel_placeholder; end
 
     def self.supported_events
       %w[push issue confidential_issue merge_request note confidential_note tag_push pipeline wiki_page]

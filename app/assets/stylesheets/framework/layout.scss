@@ -49,11 +49,13 @@ html {
   }
 }
 
-.alert-wrapper {
+.alert-wrapper-top-space {
   .gl-alert:first-child {
     @apply gl-mt-3;
   }
+}
 
+.alert-wrapper {
   .alert-link-group {
     float: right;
   }

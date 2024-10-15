@@ -1,8 +1,0 @@
----
-name: emoji_webhooks
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123952
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/417288
-milestone: '16.2'
-type: development
-group: group::import and integrate
-default_enabled: true

@@ -676,8 +676,13 @@ See also [**on**](#on).
 
 ## disable
 
-See the [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/d/disable-disabled) for guidance on **disable**.
-Use **inactive** or **off** instead.
+Do not use **disable** to describe making a setting or feature unavailable. Use alternatives like **turn off**, **hide**,
+**make unavailable**, or **remove** instead.
+
+To describe a state, use **off**, **inactive**, or **unavailable**.
+
+This guidance is based on the
+[Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/d/disable-disabled).
 
 ## disallow
 
@@ -783,8 +788,12 @@ Use **emoji** to refer to the plural form of **emoji**.
 
 ## enable
 
-See the [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/e/enable-enables) for guidance on **enable**.
-Use **active** or **on** instead.
+Do not use **enable** to describe making a setting or feature available. Use **turn on** instead.
+
+To describe a state, use **on** or **active**.
+
+This guidance is based on the
+[Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/d/disable-disabled).
 
 ## enter
 
@@ -966,6 +975,22 @@ You can use **GA** to indicate general availability if you spell it out on first
 
 Do not make **GitLab** possessive (GitLab's). This guidance follows [GitLab Trademark Guidelines](https://handbook.gitlab.com/handbook/marketing/brand-and-product-marketing/brand/brand-activation/trademark-guidelines/).
 
+Do not put **GitLab** next to the name of another third-party tool or brand.
+For example, do not use:
+
+- GitLab Chrome extension
+- GitLab Kubernetes agent
+
+Instead, use:
+
+- GitLab extension for Chrome
+- GitLab agent for Kubernetes
+
+Putting the brand names next to each other can imply ownership or partnership, which we don't want to do,
+unless we've gone through a legal review and have been told to promote the partnership.
+
+This guidance follows the [Use of Third-party Trademarks](https://handbook.gitlab.com/handbook/legal/policies/product-third-party-trademarks-guidelines/#dos--donts-for-use-of-third-party-trademarks-in-gitlab).
+
 ## GitLab Dedicated
 
 Use **GitLab Dedicated** to refer to the product offering. It refers to a GitLab instance that's hosted and managed by GitLab for customers.
@@ -993,6 +1018,7 @@ the following are the names of GitLab Duo features:
 - GitLab Duo Merge Request Summary
 - GitLab Duo Product Analytics
 - GitLab Duo Root Cause Analysis
+- GitLab Duo Self-Hosted Models
 - GitLab Duo Test Generation
 - GitLab Duo Vulnerability Explanation
 - GitLab Duo Vulnerability Resolution
@@ -1604,14 +1630,16 @@ Instead of:
 
 Put the word **only** next to the word it modifies.
 
+In the following example, **only** modifies the noun **projects**.
+The meaning is that you can create one type of project--a private project.
+
 - You can create only private projects.
 
-In this example, **only** modifies the noun **projects**. The sentence means you can create one type of project--a private project.
+In the following example, **only** modifies the verb **create**.
+The meaning is that you can't perform other actions,
+like deleting private projects, or adding users to them.
 
 - You can only create private projects.
-
-In this example, **only** modifies the verb **create**. This sentence means that you can't perform other actions,
-like deleting private projects, or adding users to them.
 
 ## override
 
@@ -1985,6 +2013,16 @@ However, you can make an exception for **right-click** and **click-through demo*
 Use **self-hosted model** (lowercase) to refer to a language model that's hosted by a customer, rather than GitLab.
 
 The language model might be an LLM (large language model), but it might not be.
+
+## Self-Hosted Models
+
+Use title case for the **GitLab Duo Self-Hosted Models** feature.
+
+On first mention on a page, use **GitLab Duo Self-Hosted Models**.
+Thereafter, use **Self-Hosted Models** by itself.
+
+This phrase applies when specifically referring to the feature name only.
+If you're writing about [self-hosted models](#self-hosted-model), no need to use title case.
 
 ## self-managed
 

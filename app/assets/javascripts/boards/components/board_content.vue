@@ -5,9 +5,9 @@ import produce from 'immer';
 import Draggable from 'vuedraggable';
 import BoardAddNewColumn from 'ee_else_ce/boards/components/board_add_new_column.vue';
 import BoardAddNewColumnTrigger from '~/boards/components/board_add_new_column_trigger.vue';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import WorkItemDrawer from '~/work_items/components/work_item_drawer.vue';
 import { s__ } from '~/locale';
+import { removeParams, updateHistory } from '~/lib/utils/url_utility';
 import { defaultSortableOptions, DRAG_DELAY } from '~/sortable/constants';
 import { mapWorkItemWidgetsToIssuableFields } from '~/issues/list/utils';
 import {
@@ -20,6 +20,7 @@ import {
   DEFAULT_BOARD_LIST_ITEMS_SIZE,
   BoardType,
 } from 'ee_else_ce/boards/constants';
+import { DETAIL_VIEW_QUERY_PARAM_NAME } from '~/work_items/constants';
 import { calculateNewPosition } from 'ee_else_ce/boards/boards_util';
 import { setError } from '../graphql/cache_updates';
 import BoardColumn from './board_column.vue';
@@ -39,7 +40,6 @@ export default {
     GlAlert,
     WorkItemDrawer,
   },
-  mixins: [glFeatureFlagsMixin()],
   inject: [
     'boardType',
     'canAdminList',
@@ -81,11 +81,16 @@ export default {
       type: Boolean,
       required: true,
     },
+    useWorkItemDrawer: {
+      type: Boolean,
+      required: true,
+    },
   },
   data() {
     return {
       boardHeight: null,
       highlightedLists: [],
+      columnsThatCannotFindActiveItem: 0,
     };
   },
   computed: {
@@ -126,9 +131,6 @@ export default {
     closedListId() {
       const closedList = this.boardListsToUse.find((list) => list.listType === ListType.closed);
       return closedList?.id || '';
-    },
-    issuesDrawerEnabled() {
-      return this.glFeatures.issuesListDrawer;
     },
     namespace() {
       return this.isGroupBoard ? BoardType.group : BoardType.project;
@@ -243,6 +245,17 @@ export default {
           }),
       );
     },
+    isLastList(index) {
+      return this.boardListsToUse.length - 1 === index;
+    },
+    handleCannotFindActiveItem() {
+      this.columnsThatCannotFindActiveItem += 1;
+      if (this.columnsThatCannotFindActiveItem === this.boardListsToUse.length) {
+        updateHistory({
+          url: removeParams([DETAIL_VIEW_QUERY_PARAM_NAME]),
+        });
+      }
+    },
   },
 };
 </script>
@@ -264,24 +277,34 @@ export default {
         v-for="(list, index) in boardListsToUse"
         :key="index"
         ref="board"
+        :column-index="index"
         :board-id="boardId"
         :list="list"
         :filters="filterParams"
         :highlighted-lists="highlightedLists"
         :data-draggable-item-type="$options.draggableItemTypes.list"
         :class="{ '!gl-hidden sm:!gl-inline-block': addColumnFormVisible }"
+        :last="isLastList(index)"
+        :list-query-variables="listQueryVariables"
+        :lists="boardListsById"
+        :can-admin-list="canAdminList"
+        @highlight-list="highlightList"
         @setActiveList="$emit('setActiveList', $event)"
         @setFilters="$emit('setFilters', $event)"
+        @addNewListAfter="$emit('setAddColumnFormVisibility', $event)"
+        @cannot-find-active-item="handleCannotFindActiveItem"
       />
 
       <transition mode="out-in" name="slide" @after-enter="afterFormEnters">
-        <div v-if="!addColumnFormVisible" class="gl-inline-block gl-pl-2">
+        <div v-if="!addColumnFormVisible && canAdminList" class="gl-inline-block gl-pl-2">
           <board-add-new-column-trigger
-            v-if="canAdminList"
             :is-new-list-showing="addColumnFormVisible"
             @setAddColumnFormVisibility="$emit('setAddColumnFormVisibility', $event)"
           />
         </div>
+      </transition>
+
+      <transition mode="out-in" name="slide" @after-enter="afterFormEnters">
         <board-add-new-column
           v-if="addColumnFormVisible"
           :board-id="boardId"
@@ -330,7 +353,7 @@ export default {
       </div>
     </epics-swimlanes>
     <board-drawer-wrapper
-      v-if="issuesDrawerEnabled"
+      v-if="useWorkItemDrawer"
       :backlog-list-id="backlogListId"
       :closed-list-id="closedListId"
     >
@@ -347,6 +370,7 @@ export default {
           :open="Boolean(activeIssuable && activeIssuable.iid)"
           :active-item="activeIssuable"
           :issuable-type="issuableType"
+          click-outside-exclude-selector=".board-card"
           @close="onDrawerClosed"
           @work-item-updated="updateBoardCard($event, activeIssuable)"
           @workItemDeleted="onIssuableDeleted(activeIssuable)"

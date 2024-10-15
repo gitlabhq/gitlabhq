@@ -4,6 +4,14 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
   module Models
     module Ci
       class FinishedPipelinesBase < ClickHouse::Models::BaseModel
+        def self.time_window_valid?(from_time, to_time)
+          raise NotImplementedError, "subclasses of #{self.class.name} must implement #{__method__}"
+        end
+
+        def self.validate_time_window(from_time, to_time)
+          raise NotImplementedError, "subclasses of #{self.class.name} must implement #{__method__}"
+        end
+
         def self.for_project(project)
           new.for_project(project)
         end
@@ -18,6 +26,14 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
 
         def for_project(project)
           where(path: project.project_namespace.traversal_path)
+        end
+
+        def for_source(source)
+          where(source: source)
+        end
+
+        def for_ref(ref)
+          where(ref: ref)
         end
 
         def within_dates(from_time, to_time)
@@ -42,6 +58,12 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
 
         def count_pipelines_function
           Arel::Nodes::NamedFunction.new('countMerge', [@query_builder.table[:count_pipelines]])
+        end
+
+        def duration_quantile_function(quantile)
+          Arel::Nodes::NamedFunction
+            .new("quantileMerge(#{quantile / 100.0})", [@query_builder.table[:duration_quantile]])
+            .as("p#{quantile}")
         end
 
         private

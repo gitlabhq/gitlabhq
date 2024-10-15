@@ -22,7 +22,10 @@ const createMockReassignUser = (index) => {
   };
 };
 
-const createMockSourceUser = (index, { status, reassignToUser = false } = {}) => {
+const createMockSourceUser = (
+  index,
+  { status, placeholderUser = true, reassignToUser = false } = {},
+) => {
   return {
     __typename: 'ImportSourceUser',
     id: `gid://gitlab/Import::SourceUser/${index}`,
@@ -30,7 +33,8 @@ const createMockSourceUser = (index, { status, reassignToUser = false } = {}) =>
     sourceName: `Old User ${index}`,
     sourceUsername: `old_user_${index}`,
     status,
-    placeholderUser: createMockPlaceholderUser(index),
+    reassignmentError: null,
+    placeholderUser: placeholderUser ? createMockPlaceholderUser(index) : null,
     reassignToUser: reassignToUser ? createMockReassignUser(index) : null,
   };
 };
@@ -59,6 +63,7 @@ export const mockSourceUsers = [
   }),
   createMockSourceUser(7, {
     status: 'COMPLETED',
+    placeholderUser: false,
     reassignToUser: true,
   }),
 ];

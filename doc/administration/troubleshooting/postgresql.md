@@ -261,7 +261,7 @@ To resolve the error, run `VACUUM` manually:
 
 ### GitLab database requirements
 
-See [database requirements](../../install/requirements.md#database) and review and install the
+See [database requirements](../../install/requirements.md#postgresql) and review and install the
 [required extension list](../../install/postgresql_extensions.md).
 
 ### Serialization errors in the `production/sidekiq` log

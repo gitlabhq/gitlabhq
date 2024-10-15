@@ -90,6 +90,7 @@ describe('ImportArtifactZone', () => {
       expect(formattedFileSizeDiv().text()).toBe('1.00 KiB');
       expect(fileNameDiv().exists()).toBe(true);
       expect(cancelButton().exists()).toBe(false);
+      expect(clearButton().exists()).toBe(true);
     });
 
     it('clears the loaded table', async () => {
@@ -128,11 +129,17 @@ describe('ImportArtifactZone', () => {
       expect(wrapper.emitted('change')).toStrictEqual([[]]);
     });
 
-    it('shows and success alert', async () => {
+    it('does not show any alert initially', async () => {
+      await emulateFileDrop();
+
+      expect(alert().exists()).toBe(false);
+    });
+
+    it('shows success alert', async () => {
       await emulateFileDrop();
       await waitForPromises();
 
-      expect(alert().text()).toBe('Artifact uploaded successfully.');
+      expect(alert().text()).toBe('Artifacts uploaded successfully.');
       expect(alert().props().variant).toBe('success');
     });
   });
@@ -252,7 +259,16 @@ describe('ImportArtifactZone', () => {
       expect(alert().props().variant).toBe('warning');
     });
 
-    it('displays an error on failure', async () => {
+    it('emits an error event on a failure', async () => {
+      uploadModel.mockRejectedValueOnce('File is too big.');
+
+      await emulateFileDrop();
+      await waitForPromises();
+
+      expect(wrapper.emitted('error')).toStrictEqual([['file.txt: File is too big.']]);
+    });
+
+    it('displays an error on failure and cancelation', async () => {
       uploadModel.mockRejectedValueOnce('File is too big.');
       uploadModel.mockRejectedValueOnce('File name is invalid.');
 
@@ -262,6 +278,19 @@ describe('ImportArtifactZone', () => {
       expect(uploadFeedback().text()).toBe('File is too big.');
       expect(alert().text()).toBe('All artifact uploads failed or were canceled.');
       expect(alert().props().variant).toBe('danger');
+    });
+
+    it('emits an error event on multiple failures', async () => {
+      uploadModel.mockRejectedValueOnce('File is too big.');
+      uploadModel.mockRejectedValueOnce('File name is invalid.');
+
+      await emulateFileDrop();
+      await waitForPromises();
+
+      expect(wrapper.emitted('error')).toStrictEqual([
+        ['file.txt: File is too big.'],
+        ['file.txt: File is too big. another file.txt: File name is invalid.'],
+      ]);
     });
 
     it('keeps the failed table', async () => {

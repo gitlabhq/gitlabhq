@@ -497,7 +497,7 @@ export default {
       <gl-button
         v-gl-tooltip.hover
         v-safe-html="submoduleDiffCompareLinkText"
-        class="submodule-compare"
+        class="submodule-compare gl-inline-block"
         :title="$options.i18n.compareButtonLabel"
         :aria-label="$options.i18n.compareButtonLabel"
         :href="diffFile.submodule_compare.url"

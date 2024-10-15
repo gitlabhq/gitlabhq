@@ -15,6 +15,8 @@ DETAILS:
 
 FLAG:
 The availability of this feature is controlled by a feature flag.
+To selectively enable this feature for certain projects or groups, you need to use the root namespace of the project or group.
+It is not possible to enable this feature for projects individually.
 For more information, see the history.
 This feature is available for testing, but not ready for production use.
 

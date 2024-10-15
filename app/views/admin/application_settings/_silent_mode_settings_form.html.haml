@@ -3,6 +3,6 @@
   expanded: expanded_by_default?) do |c|
   - c.with_description do
     = s_('SilentMode|Suppress outbound communication, such as emails, from GitLab.')
-    = link_to _('Learn more.'), help_page_path('administration/silent_mode/index'), target: '_blank', rel: 'noopener noreferrer'
+    = link_to _('Learn more.'), help_page_path('administration/silent_mode/index.md'), target: '_blank', rel: 'noopener noreferrer'
   - c.with_body do
     #js-silent-mode-settings{ data: { "silent-mode-enabled" => @application_setting.silent_mode_enabled.to_s } }

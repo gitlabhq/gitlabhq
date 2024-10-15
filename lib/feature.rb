@@ -44,6 +44,16 @@ module Feature
     end
   end
 
+  # Generates the same flipper_id for a given kubernetes pod,
+  # or for the entire gitlab application if deployed on a single host.
+  class FlipperPod
+    attr_reader :flipper_id
+
+    def initialize
+      @flipper_id = "FlipperPod:#{Socket.gethostname}".freeze
+    end
+  end
+
   # Generates a unique flipper_id for the current GitLab instance.
   class FlipperGitlabInstance
     attr_reader :flipper_id
@@ -253,6 +263,10 @@ module Feature
       end
     end
 
+    def current_pod
+      @flipper_pod ||= FlipperPod.new
+    end
+
     def gitlab_instance
       @flipper_gitlab_instance ||= FlipperGitlabInstance.new
     end
@@ -290,6 +304,8 @@ module Feature
         gitlab_instance
       when :request, :current_request
         current_request
+      when :pod, :current_pod
+        current_pod
       else
         thing
       end

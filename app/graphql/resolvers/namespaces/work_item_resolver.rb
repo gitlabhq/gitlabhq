@@ -8,7 +8,7 @@ module Resolvers
       argument :iid, GraphQL::Types::String, required: true, description: 'IID of the work item.'
 
       def ready?(**args)
-        return false if resource_parent.is_a?(Group) && !resource_parent.namespace_work_items_enabled?(current_user)
+        return false if resource_parent.is_a?(Group) && !resource_parent.namespace_work_items_enabled?
 
         super
       end

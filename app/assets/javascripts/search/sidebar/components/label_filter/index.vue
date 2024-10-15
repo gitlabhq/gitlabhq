@@ -240,7 +240,7 @@ export default {
       v-if="isFocused"
       v-outside.click.focusin="closeDropdown"
       data-testid="header-search-dropdown-menu"
-      class="header-search-dropdown-menu gl-absolute gl-z-2 gl-mt-3 !gl-w-full !gl-min-w-full !gl-max-w-none gl-overflow-y-auto gl-rounded-base gl-border-1 gl-border-solid gl-border-gray-200 gl-bg-white gl-shadow-x0-y2-b4-s0"
+      class="header-search-dropdown-menu gl-absolute gl-z-2 gl-mt-3 !gl-w-full !gl-min-w-full !gl-max-w-none gl-overflow-y-auto gl-rounded-base gl-border-1 gl-border-solid gl-border-dropdown gl-bg-white gl-shadow-x0-y2-b4-s0"
     >
       <div class="header-search-dropdown-content gl-py-2">
         <dropdown-keyboard-navigation

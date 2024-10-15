@@ -102,3 +102,21 @@ export function removeListenerSystemColorSchemeChange(onEvent) {
     .matchMedia(PREFERS_DARK)
     .removeEventListener('change', (event) => handleColorSchemeChange(onEvent, event));
 }
+
+function isNarrowScreenMediaQuery(elRef) {
+  const computedStyles = getComputedStyle(elRef);
+  const largeBreakpointSize = parseInt(computedStyles.getPropertyValue('--breakpoint-lg'), 10);
+  return window.matchMedia(`(max-width: ${largeBreakpointSize - 1}px)`);
+}
+
+export function isNarrowScreen(elRef) {
+  return isNarrowScreenMediaQuery(elRef).matches;
+}
+
+export function isNarrowScreenAddListener(elRef, handlerFn) {
+  isNarrowScreenMediaQuery(elRef).addEventListener('change', handlerFn);
+}
+
+export function isNarrowScreenRemoveListener(elRef, handlerFn) {
+  isNarrowScreenMediaQuery(elRef).removeEventListener('change', handlerFn);
+}

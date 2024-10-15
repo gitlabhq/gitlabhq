@@ -1,3 +1,4 @@
+// Package main handles image resizing by reading a PNG image from stdin and writing a PNG image to stdout.
 package main
 
 import (

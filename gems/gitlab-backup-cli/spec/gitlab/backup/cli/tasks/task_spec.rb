@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe Gitlab::Backup::Cli::Tasks::Task do
-  let(:options) { nil }
+  let(:options) { instance_double("::Backup::Option", backup_id: "abc123") }
   let(:context) { build_fake_context }
   let(:tmpdir) { Pathname.new(Dir.mktmpdir('task', temp_path)) }
   let(:metadata) { build(:backup_metadata) }
@@ -59,7 +59,7 @@ RSpec.describe Gitlab::Backup::Cli::Tasks::Task do
       expect(task).to receive(:destination_path).and_return(tmpdir.join('test_task'))
       expect(task).to receive_message_chain(:target, :restore)
 
-      task.restore!(archive_directory)
+      task.restore!(archive_directory, options.backup_id)
     end
   end
 end

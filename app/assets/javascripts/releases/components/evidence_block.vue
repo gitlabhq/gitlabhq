@@ -1,7 +1,6 @@
 <script>
 import { GlLink, GlTooltipDirective, GlIcon } from '@gitlab/ui';
-import dateFormat from '~/lib/dateformat';
-import { getTimeago } from '~/lib/utils/datetime_utility';
+import { getTimeago, localeDateFormat, newDate } from '~/lib/utils/datetime_utility';
 import { truncateSha } from '~/lib/utils/text_utility';
 import { __, sprintf } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
@@ -44,14 +43,15 @@ export default {
       return truncateSha(this.release.evidences[index].sha);
     },
     collectedAt(index) {
-      return dateFormat(this.release.evidences[index].collectedAt, 'mmmm dS, yyyy, h:MM TT');
+      return localeDateFormat.asDateTimeFull.format(
+        newDate(this.release.evidences[index].collectedAt),
+      );
     },
     timeSummary(index) {
       const { format } = getTimeago();
-      const summary = sprintf(__(' Collected %{time}'), {
-        time: format(this.release.evidences[index].collectedAt),
+      return sprintf(__(' Collected %{time}'), {
+        time: format(newDate(this.release.evidences[index].collectedAt)),
       });
-      return summary;
     },
   },
 };

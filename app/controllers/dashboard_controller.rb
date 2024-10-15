@@ -8,15 +8,15 @@ class DashboardController < Dashboard::ApplicationController
   prepend_before_action(only: [:issues_calendar]) { authenticate_sessionless_user!(:ics) }
 
   before_action :event_filter, only: :activity
-  before_action :projects, only: [:issues, :merge_requests]
-  before_action :set_show_full_reference, only: [:issues, :merge_requests]
-  before_action :check_filters_presence!, only: [:issues, :merge_requests]
+  before_action :projects, only: [:issues, :merge_requests, :search_merge_requests]
+  before_action :set_show_full_reference, only: [:issues, :merge_requests, :search_merge_requests]
+  before_action :check_filters_presence!, only: [:issues, :merge_requests, :search_merge_requests]
 
   before_action only: :issues do
     push_frontend_feature_flag(:frontend_caching)
   end
 
-  before_action only: :merge_requests do
+  before_action only: [:merge_requests, :search_merge_requests] do
     push_frontend_feature_flag(:mr_approved_filter, type: :ops)
   end
 
@@ -24,9 +24,9 @@ class DashboardController < Dashboard::ApplicationController
 
   feature_category :user_profile, [:activity]
   feature_category :team_planning, [:issues, :issues_calendar]
-  feature_category :code_review_workflow, [:merge_requests]
+  feature_category :code_review_workflow, [:merge_requests, :search_merge_requests]
 
-  urgency :low, [:merge_requests, :activity]
+  urgency :low, [:merge_requests, :activity, :search_merge_requests]
   urgency :low, [:issues, :issues_calendar]
 
   def activity
@@ -38,6 +38,10 @@ class DashboardController < Dashboard::ApplicationController
         pager_json('events/_events', @events.count { |event| event.visible_to_user?(current_user) })
       end
     end
+  end
+
+  def search_merge_requests
+    render_merge_requests
   end
 
   protected

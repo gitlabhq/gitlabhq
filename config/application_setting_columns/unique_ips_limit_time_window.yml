@@ -1,0 +1,12 @@
+---
+api_type: integer
+attr: unique_ips_limit_time_window
+clusterwide: false
+column: unique_ips_limit_time_window
+db_type: integer
+default:
+description: How many seconds an IP is counted towards the limit.
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

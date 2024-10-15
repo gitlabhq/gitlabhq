@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::Filter::EscapedCharFilter, feature_category: :team_planning do
+RSpec.describe Banzai::Filter::EscapedCharFilter, feature_category: :markdown do
   include FilterSpecHelper
 
   it 'ensure we handle all the GitLab reference characters', :eager_load do

@@ -154,7 +154,7 @@ NOTE:
 The repository size limit includes repository files and LFS, but does not include artifacts, uploads,
 wiki, packages, or snippets. The repository size limit applies to both private and public projects.
 
-For details on manually purging files, see [reducing the repository size using Git](../../user/project/repository/reducing_the_repo_size_using_git.md).
+For details on manually purging files, see [reducing the repository size using Git](../../user/project/repository/repository_size.md#reduce-repository-size).
 
 ## Session duration
 
@@ -238,6 +238,25 @@ When you require expiration dates for new access tokens:
 - Users must set an expiration date that does not exceed the allowed lifetime for new access tokens.
 - To control the maximum access token lifetime, use the [**Limit the lifetime of access tokens** setting](#limit-the-lifetime-of-access-tokens).
 
+## Allow top-level group Owners to create service accounts
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163726) in GitLab 17.5 [with a feature flag](../feature_flags.md) named `allow_top_level_group_owners_to_create_service_accounts` for GitLab self-managed. Disabled by default.
+
+FLAG:
+On GitLab self-managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../feature_flags.md) named `allow_top_level_group_owners_to_create_service_accounts`. On GitLab.com, this feature is available.
+
+By default, in GitLab self-managed, top-level group Owners can not create service accounts. GitLab administrators can allow top-level group Owners to create service accounts.
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > General**.
+1. Expand **Account and limit**.
+1. Under **Service account creation**, select the **Allow top-level group owners to create Service accounts** checkbox.
+1. Select **Save changes**.
+
 ## Limit the lifetime of SSH keys
 
 DETAILS:
@@ -311,6 +330,26 @@ Once a lifetime for access tokens is set, GitLab:
   allowed lifetime. Three hours is given to allow administrators to change the allowed lifetime,
   or remove it, before revocation takes place.
 
+## User OAuth applications setting
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
+
+Prerequisites:
+
+You must be an administrator.
+
+The **User OAuth applications** setting controls whether users can register applications to use GitLab as an OAuth provider. This setting affects user-owned OAuth application, but does not affect group-level OAuth applications.
+
+To toggle on or off the **User OAuth applications** setting:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > General**.
+1. Expand the **Account and limit** section.
+1. Select or clear the **User OAuth applications** checkbox.
+1. Select **Save changes**.
+
 ## Disable user profile name changes
 
 DETAILS:
@@ -329,7 +368,7 @@ To do this:
 NOTE:
 When this ability is disabled, GitLab administrators can still use the
 [**Admin** area](../../administration/admin_area.md#administering-users) or the
-[API](../../api/users.md#user-modification) to update usernames.
+[API](../../api/users.md#modify-a-user) to update usernames.
 
 ## Prevent users from creating organizations
 
@@ -467,4 +506,4 @@ Your push has been rejected, because this repository has exceeded its size limit
 To resolve this problem, either of these options helps in the short- to middle-term:
 
 - Increase the [repository size limit](#repository-size-limit).
-- [Reduce the repository size](../../user/project/repository/reducing_the_repo_size_using_git.md).
+- [Reduce the repository size](../../user/project/repository/repository_size.md#reduce-repository-size).

@@ -1,10 +1,12 @@
 - classes = local_assigns.fetch(:classes, '')
+- max_file_size = local_assigns.fetch(:max_file_size, '')
 - mime_types = local_assigns.fetch(:mime_types, '')
 
-%span.js-filepicker
-  = render Pajamas::ButtonComponent.new(button_options: { class: "js-filepicker-button #{classes}" }) do
+%span.js-filepicker{ data: { 'max-file-size': max_file_size } }
+  = render Pajamas::ButtonComponent.new(category: :secondary, button_options: { class: "js-filepicker-button #{classes}" }) do
     = _("Choose file…")
   %span.file_name.gl-ml-3.js-filepicker-filename= _("No file chosen.")
   = f.file_field field, class: "js-filepicker-input hidden", accept: mime_types
   - if help_text.present?
-    .form-text.text-muted= help_text
+    .form-text.gl-text-subtle= help_text
+  %span.js-filepicker-error.gl-hidden.gl-text-danger= _("The maximum file size is %{size}.").html_safe % { size: number_to_human_size(max_file_size * 1024) }

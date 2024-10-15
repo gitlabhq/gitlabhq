@@ -14,7 +14,7 @@ module Packages
       private
 
       def packages
-        base.pypi.has_version
+        base.has_version
       end
 
       override :group_packages
@@ -24,6 +24,11 @@ module Packages
           within_group: @project_or_group,
           with_package_registry_enabled: true
         )
+      end
+
+      override :packages_class
+      def packages_class
+        ::Packages::Pypi::Package
       end
     end
   end

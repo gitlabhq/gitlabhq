@@ -1,0 +1,33 @@
+{
+  "schema": "iglu:com.snowplowanalytics.snowplow/contexts/jsonschema/1-0-1",
+  "data": [
+    {
+      "schema": "iglu:com.gitlab/gitlab_standard/jsonschema/1-1-1",
+      "data": {
+        "environment": "development",
+        "source": "gitlab-rails",
+        "correlation_id": "01J8TRMTKBHTCAT9R84F1QK6TB",
+        "plan": "default",
+        "extra": {
+        },
+        "user_id": 1,
+        "is_gitlab_team_member": null,
+        "namespace_id": 31,
+        "project_id": 6,
+        "feature_enabled_by_namespace_ids": null,
+        "realm": "self-managed",
+        "instance_id": "c0b9bbb1-fdf8-42a1-af25-043711af0c6b",
+        "host_name": "macbook-pro.lan",
+        "instance_version": "17.5.0",
+        "context_generated_at": "2024-09-27 22:11:57 UTC"
+      }
+    },
+    {
+      "schema": "iglu:com.gitlab/gitlab_service_ping/jsonschema/1-0-1",
+      "data": {
+        "data_source": "redis_hll",
+        "event_name": "g_project_management_issue_created"
+      }
+    }
+  ]
+}

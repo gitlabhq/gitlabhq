@@ -1,0 +1,12 @@
+---
+api_type:
+attr: namespace_storage_forks_cost_factor
+clusterwide: false
+column: namespace_storage_forks_cost_factor
+db_type: double
+default: '1.0'
+description:
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: true

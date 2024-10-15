@@ -34,6 +34,7 @@ RSpec.describe Projects::Topic do
     it { is_expected.not_to allow_value("new\nline").for(:name).with_message(name_format_message) }
     it { is_expected.not_to allow_value("new\rline").for(:name).with_message(name_format_message) }
     it { is_expected.not_to allow_value("new\vline").for(:name).with_message(name_format_message) }
+    it { is_expected.not_to allow_value('トピック').for(:name).with_message('must only include ASCII characters') }
 
     context 'for slug' do
       let(:slug_format_message) { "can contain only letters, digits, '_', '-', '.'" }

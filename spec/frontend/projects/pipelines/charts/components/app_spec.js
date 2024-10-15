@@ -7,6 +7,7 @@ import { TEST_HOST } from 'helpers/test_constants';
 import { mergeUrlParams, updateHistory, getParameterValues } from '~/lib/utils/url_utility';
 import Component from '~/projects/pipelines/charts/components/app.vue';
 import PipelineCharts from '~/projects/pipelines/charts/components/pipeline_charts.vue';
+import PipelineChartsNew from '~/projects/pipelines/charts/components/pipeline_charts_new.vue';
 import API from '~/api';
 import { mockTracking } from 'helpers/tracking_helper';
 import { SNOWPLOW_DATA_SOURCE, SNOWPLOW_SCHEMA } from '~/projects/pipelines/charts/constants';
@@ -54,6 +55,7 @@ describe('ProjectsPipelinesChartsApp', () => {
   const findChangeFailureRateCharts = () => wrapper.findComponent(ChangeFailureRateChartsStub);
   const findDeploymentFrequencyCharts = () => wrapper.findComponent(DeploymentFrequencyChartsStub);
   const findPipelineCharts = () => wrapper.findComponent(PipelineCharts);
+  const findPipelineChartsNew = () => wrapper.findComponent(PipelineChartsNew);
   const findProjectQualitySummary = () => wrapper.findComponent(ProjectQualitySummaryStub);
 
   describe('when all charts are available', () => {
@@ -243,6 +245,26 @@ describe('ProjectsPipelinesChartsApp', () => {
 
     it('does not render the tab', () => {
       expect(findProjectQualitySummary().exists()).toBe(false);
+    });
+  });
+
+  describe('ci_improved_project_pipeline_analytics feature flag', () => {
+    describe.each`
+      status   | finderFn
+      ${false} | ${findPipelineCharts}
+      ${true}  | ${findPipelineChartsNew}
+    `('when flag is $status', ({ status, finderFn }) => {
+      it('renders component', () => {
+        createComponent({
+          provide: {
+            glFeatures: {
+              ciImprovedProjectPipelineAnalytics: status,
+            },
+          },
+        });
+
+        expect(finderFn().exists()).toBe(true);
+      });
     });
   });
 });

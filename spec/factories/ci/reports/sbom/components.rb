@@ -31,7 +31,7 @@ FactoryBot.define do
 
     trait :with_trivy_properties do
       properties do
-        Gitlab::Ci::Parsers::Sbom::CyclonedxProperties.parse_trivy_source([
+        Gitlab::Ci::Parsers::Sbom::CyclonedxProperties.parse_component_source([
           { 'name' => 'aquasecurity:trivy:PkgType', 'value' => 'node-pkg' },
           { 'name' => 'aquasecurity:trivy:FilePath',
             'value' => 'usr/local/lib/node_modules/npm/node_modules/@colors/colors/package.json' }

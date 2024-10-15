@@ -44,16 +44,3 @@
 .gl-broadcast-message-content p:last-child {
   margin: 0;
 }
-
-// Manually override text color
-// to fix darkmode contrast issues
-// See https://gitlab.com/gitlab-org/gitlab-ui/-/merge_requests/4114#note_1875136307
-.gl-dark .gl-broadcast-message.banner {
-  &.indigo,
-  &.blue,
-  &.green,
-  &.red,
-  &.dark {
-    color: $gl-text-color-inverted;
-  }
-}

@@ -90,6 +90,68 @@ RSpec.describe DashboardController, feature_category: :code_review_workflow do
         end
       end
     end
+
+    describe 'GET merge requests search' do
+      it_behaves_like 'issuables requiring filter', :search_merge_requests
+
+      context 'when an ActiveRecord::QueryCanceled is raised' do
+        before do
+          allow_next_instance_of(Gitlab::IssuableMetadata) do |instance|
+            allow(instance).to receive(:data).and_raise(ActiveRecord::QueryCanceled)
+          end
+        end
+
+        it 'sets :search_timeout_occurred' do
+          get :search_merge_requests, params: { author_id: user.id }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(assigns(:search_timeout_occurred)).to eq(true)
+        end
+
+        context 'rendering views' do
+          render_views
+
+          it 'shows error message' do
+            get :search_merge_requests, params: { author_id: user.id }
+
+            expect(response.body).to have_content('Too many results to display. Edit your search or add a filter.')
+          end
+
+          it 'does not display MR counts in nav' do
+            get :search_merge_requests, params: { author_id: user.id }
+
+            expect(response.body).to have_content('Open Merged Closed All')
+            expect(response.body).not_to have_content('Open 0 Merged 0 Closed 0 All 0')
+          end
+        end
+
+        it 'logs the exception' do
+          expect(Gitlab::ErrorTracking).to receive(:track_exception).and_call_original
+
+          get :search_merge_requests, params: { author_id: user.id }
+        end
+      end
+
+      context 'when an ActiveRecord::QueryCanceled is not raised' do
+        it 'does not set :search_timeout_occurred' do
+          get :search_merge_requests, params: { author_id: user.id }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(assigns(:search_timeout_occurred)).to eq(nil)
+        end
+
+        context 'rendering views' do
+          render_views
+
+          it 'displays MR counts in nav' do
+            get :search_merge_requests, params: { author_id: user.id }
+
+            expect(response.body).to have_content('Open 0 Merged 0 Closed 0 All 0')
+            expect(response.body).not_to have_content('Open Merged Closed All')
+          end
+        end
+      end
+    end
   end
 
   describe "GET activity as JSON" do

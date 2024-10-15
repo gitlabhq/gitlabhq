@@ -1,0 +1,14 @@
+---
+description: Triggered when an issue template is selected for new incidents in Incident Management settings
+action: enabled_issue_template_on_alerts
+identifiers:
+product_group: respond
+milestone: "<13.9"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165305
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

@@ -4,6 +4,6 @@
 - return unless show_token_expiration_banner?
 - return unless cookies[cookie_key].blank?
 
-- link = link_to('', help_page_path('security/tokens/token_troubleshooting'), target: '_blank', rel: 'noopener noreferrer')
+- link = link_to('', help_page_path('security/tokens/token_troubleshooting.md'), target: '_blank', rel: 'noopener noreferrer')
 - message = safe_format(s_('AccessTokens|GitLab now enforces expiry dates on tokens that originally had no set expiration date. Those tokens were given an expiration date of one year later. Please review your personal access tokens, project access tokens, and group access tokens to ensure you are aware of upcoming expirations. Administrators of GitLab can find more information on how to identify and mitigate interruption in our %{link_start}documentation%{link_end}.'), tag_pair(link, :link_start, :link_end))
 = render Pajamas::BroadcastBannerComponent.new(message: message, id: id, theme: 'light-indigo', dismissable: true, expire_date: Time.now.next_year.iso8601, cookie_key: cookie_key)

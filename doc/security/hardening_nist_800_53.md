@@ -136,7 +136,7 @@ GitLab also supports the following user types for unique use cases:
   to projects by default and assisting administrators in identifying
   which users are not employed by the organization.
 
-- [Service Accounts](../user/profile/service_accounts.md#self-managed-gitlab) -
+- [Service Accounts](../user/profile/service_accounts.md#administrators-in-gitlab-self-managed) -
   Service accounts may be added to accommodate automated tasks.
   Service accounts do not use a seat under the license.
 
@@ -615,7 +615,7 @@ GitLab documents its [Release and Maintenance Policy](../policy/maintenance.md)
 in the documentation. Prior to upgrading a GitLab instance, please review the
 available guidance, which can assist with [planning an upgrade](../update/plan_your_upgrade.md),
 [upgrading without downtime](../update/zero_downtime.md),
-and other [upgrade paths](../update/index.md#upgrade-paths).
+and other [upgrade paths](../update/upgrade_paths.md).
 
 [Security dashboards](../user/application_security/security_dashboard/index.md)
 can be configured to track vulnerability data over time, which you can use to identify

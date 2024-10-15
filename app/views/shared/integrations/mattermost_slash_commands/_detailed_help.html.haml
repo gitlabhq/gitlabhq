@@ -5,11 +5,11 @@
 %p= s_("ProjectService|To configure this integration, you should:")
 %ol.indent-list
   %li
-    - enable_slash_commands_link_url = help_page_url('user/project/integrations/mattermost_slash_commands', anchor: 'enable-custom-slash-commands-in-mattermost')
+    - enable_slash_commands_link_url = help_page_url('user/project/integrations/mattermost_slash_commands.md', anchor: 'enable-custom-slash-commands-in-mattermost')
     - enable_slash_commands_link = link_to '', enable_slash_commands_link_url, target: '_blank', rel: 'noopener noreferrer'
     = safe_format(s_('MattermostService|%{link_start}Enable custom slash commands %{icon}%{link_end} on your Mattermost installation.'), tag_pair(enable_slash_commands_link, :link_start, :link_end), icon: external_link_icon)
   %li
-    - create_slash_commands_link_url = help_page_url('user/project/integrations/mattermost_slash_commands', anchor: 'create-a-slash-command-in-mattermost')
+    - create_slash_commands_link_url = help_page_url('user/project/integrations/mattermost_slash_commands.md', anchor: 'create-a-slash-command-in-mattermost')
     - create_slash_commands_link = link_to '', create_slash_commands_link_url, target: '_blank', rel: 'noopener noreferrer'
     = safe_format(s_('MattermostService|%{link_start}Add a slash command %{icon}%{link_end} in your Mattermost team with the options listed below.'), tag_pair(create_slash_commands_link, :link_start, :link_end), icon: external_link_icon)
   %li

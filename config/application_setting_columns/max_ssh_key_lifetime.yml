@@ -1,0 +1,13 @@
+---
+api_type: integer
+attr: max_ssh_key_lifetime
+clusterwide: false
+column: max_ssh_key_lifetime
+db_type: integer
+default:
+description: Maximum allowable lifetime for SSH keys in days. Self-managed, Ultimate
+  only.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: false

@@ -85,13 +85,13 @@ RSpec.describe ResourceLabelEvent, feature_category: :team_planning, type: :mode
     end
 
     it 'returns true if markdown is outdated' do
-      subject.attributes = { cached_markdown_version: ((Gitlab::MarkdownCache::CACHE_COMMONMARK_VERSION - 1) << 16) | 0 }
+      subject.attributes = { cached_markdown_version: Gitlab::MarkdownCache::CACHE_COMMONMARK_VERSION_SHIFTED + 1 }
 
       expect(subject.outdated_markdown?).to be true
     end
 
     it 'returns false if label and reference are set' do
-      subject.attributes = { reference: 'whatever', cached_markdown_version: Gitlab::MarkdownCache::CACHE_COMMONMARK_VERSION << 16 }
+      subject.attributes = { reference: 'whatever', cached_markdown_version: Gitlab::MarkdownCache::CACHE_COMMONMARK_VERSION_SHIFTED }
 
       expect(subject.outdated_markdown?).to be false
     end

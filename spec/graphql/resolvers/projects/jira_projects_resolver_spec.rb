@@ -90,7 +90,7 @@ RSpec.describe Resolvers::Projects::JiraProjectsResolver, feature_category: :int
           end
 
           it 'generates a failure error' do
-            config_docs_link_url = Rails.application.routes.url_helpers.help_page_path('integration/jira/configure')
+            config_docs_link_url = Rails.application.routes.url_helpers.help_page_path('integration/jira/configure.md')
             docs_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: config_docs_link_url }
             error_message = 'An error occurred while requesting data from Jira: Some failure. Check your %{docs_link_start}Jira integration configuration</a> and try again.' % { docs_link_start: docs_link_start }
 

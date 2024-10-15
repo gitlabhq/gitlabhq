@@ -90,6 +90,10 @@ module QA
           element 'squash-checkbox'
         end
 
+        view 'app/assets/javascripts/vue_merge_request_widget/components/states/ready_to_merge.vue' do
+          element 'widget_edit_commit_message'
+        end
+
         view 'app/assets/javascripts/vue_merge_request_widget/mr_widget_options.vue' do
           element 'mr-widget-content'
           element 'pipeline-container'
@@ -294,6 +298,10 @@ module QA
           end
 
           check_element('squash-checkbox', true)
+        end
+
+        def edit_commit_message
+          check_element('widget_edit_commit_message', true)
         end
 
         def merge!

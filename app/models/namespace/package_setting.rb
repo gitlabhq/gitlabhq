@@ -43,5 +43,20 @@ class Namespace::PackageSetting < ApplicationRecord
 
       duplicates_allowed || regex.match?(package.name) || regex.match?(package.version)
     end
+
+    def duplicates_allowed_for_package?(package)
+      return true unless package
+      raise PackageSettingNotImplemented unless PACKAGES_WITH_SETTINGS.include?(package.package_type)
+
+      package.package_settings["#{package.package_type}_duplicates_allowed"]
+    end
+
+    def matches_duplicate_exception?(package)
+      return true unless package
+
+      regex = ::Gitlab::UntrustedRegexp.new("\\A#{package.package_settings["#{package.package_type}_duplicate_exception_regex"]}\\z")
+
+      regex.match?(package.name) || regex.match?(package.version)
+    end
   end
 end

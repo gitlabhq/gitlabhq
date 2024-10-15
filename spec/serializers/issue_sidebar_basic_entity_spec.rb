@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe IssueSidebarBasicEntity do
+RSpec.describe IssueSidebarBasicEntity, feature_category: :team_planning do
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, :repository, group: group) }
   let_it_be(:user) { create(:user, developer_of: project) }
@@ -68,7 +68,7 @@ RSpec.describe IssueSidebarBasicEntity do
   describe 'show_crm_contacts' do
     using RSpec::Parameterized::TableSyntax
 
-    where(:is_reporter, :contacts_exist_for_group, :expected) do
+    where(:is_reporter, :contacts_exist_for_crm_group, :expected) do
       false | false | false
       false | true  | false
       true  | false | false
@@ -77,10 +77,10 @@ RSpec.describe IssueSidebarBasicEntity do
 
     with_them do
       it 'sets proper boolean value for show_crm_contacts' do
-        allow(CustomerRelations::Contact).to receive(:exists_for_group?).with(group).and_return(contacts_exist_for_group)
+        allow(CustomerRelations::Contact).to receive(:exists_for_group?).with(group).and_return(contacts_exist_for_crm_group)
 
         if is_reporter
-          project.root_ancestor.add_reporter(user)
+          project.crm_group.add_reporter(user)
         end
 
         expect(entity[:show_crm_contacts]).to be(expected)
@@ -95,7 +95,7 @@ RSpec.describe IssueSidebarBasicEntity do
       subject(:entity) { serializer.represent(subgroup_issue, serializer: 'sidebar') }
 
       before do
-        subgroup_project.root_ancestor.add_reporter(user)
+        subgroup_project.crm_group.add_reporter(user)
       end
 
       context 'with crm enabled' do

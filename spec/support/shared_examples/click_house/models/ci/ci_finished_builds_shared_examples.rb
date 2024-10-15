@@ -2,6 +2,8 @@
 
 RSpec.shared_examples_for 'a ci_finished_pipelines aggregation model' do |table_name|
   let(:instance) { described_class.new }
+  let(:ref) { 'master' }
+  let(:source) { 'api' }
 
   let_it_be(:group) { create(:group, :nested) }
   let_it_be(:project) { create(:project, group: group) }
@@ -16,6 +18,32 @@ RSpec.shared_examples_for 'a ci_finished_pipelines aggregation model' do |table_
       expected_sql = <<~SQL.lines(chomp: true).join(' ')
         SELECT * FROM "#{table_name}"
         WHERE "#{table_name}"."path" = '#{path}'
+      SQL
+
+      expect(result_sql.strip).to eq(expected_sql.strip)
+    end
+  end
+
+  describe '#for_ref' do
+    subject(:result_sql) { instance.for_ref(ref).to_sql }
+
+    it 'builds the correct SQL' do
+      expected_sql = <<~SQL.lines(chomp: true).join(' ')
+        SELECT * FROM "#{table_name}"
+        WHERE "#{table_name}"."ref" = '#{ref}'
+      SQL
+
+      expect(result_sql.strip).to eq(expected_sql.strip)
+    end
+  end
+
+  describe '#for_source' do
+    subject(:result_sql) { instance.for_source(source).to_sql }
+
+    it 'builds the correct SQL' do
+      expected_sql = <<~SQL.lines(chomp: true).join(' ')
+        SELECT * FROM "#{table_name}"
+        WHERE "#{table_name}"."source" = '#{source}'
       SQL
 
       expect(result_sql.strip).to eq(expected_sql.strip)
@@ -104,6 +132,36 @@ RSpec.shared_examples_for 'a ci_finished_pipelines aggregation model' do |table_
       SQL
 
       expect(result_sql.strip).to eq(expected_sql.strip)
+    end
+  end
+
+  describe '#duration_quantile_function' do
+    subject(:result_sql) { instance.select(instance.duration_quantile_function(quantile)).to_sql }
+
+    context 'when quantile is 50' do
+      let(:quantile) { 50 }
+
+      it 'builds the correct SQL' do
+        expected_sql = <<~SQL.lines(chomp: true).join(' ')
+          SELECT quantileMerge(0.5)("#{table_name}"."duration_quantile") AS p50
+          FROM "#{table_name}"
+        SQL
+
+        expect(result_sql.strip).to eq(expected_sql.strip)
+      end
+    end
+
+    context 'when quantile is 99' do
+      let(:quantile) { 99 }
+
+      it 'builds the correct SQL' do
+        expected_sql = <<~SQL.lines(chomp: true).join(' ')
+          SELECT quantileMerge(0.99)("#{table_name}"."duration_quantile") AS p99
+          FROM "#{table_name}"
+        SQL
+
+        expect(result_sql.strip).to eq(expected_sql.strip)
+      end
     end
   end
 

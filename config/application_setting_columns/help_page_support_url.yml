@@ -1,0 +1,12 @@
+---
+api_type: string
+attr: help_page_support_url
+clusterwide: true
+column: help_page_support_url
+db_type: character
+default:
+description: Alternate support URL for help page and help dropdown list.
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

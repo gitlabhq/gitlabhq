@@ -3,7 +3,7 @@
 module QA
   RSpec.describe 'Verify', :runner, product_group: :runner do
     describe 'Runner registration' do
-      let(:executor) { "qa-runner-#{Time.now.to_i}" }
+      let(:executor) { "qa-runner-#{SecureRandom.hex(6)}" }
       let!(:runner) { create(:project_runner, name: executor, tags: ['e2e-test']) }
 
       after do

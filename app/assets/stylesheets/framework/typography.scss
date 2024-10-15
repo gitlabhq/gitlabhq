@@ -27,32 +27,27 @@
     > code {
       font-weight: inherit;
     }
-
-    a:not(.no-attachment-icon) img {
-      // Remove bottom padding because
-      // <p> already has $gl-padding bottom
-      margin-bottom: 0;
-    }
   }
 
   .media-container {
     display: inline-flex;
     flex-direction: column;
     margin-bottom: $gl-spacing-scale-2;
+
+    video {
+      max-width: 100%;
+    }
   }
 
   img {
     max-width: 100%;
+    vertical-align: baseline;
   }
 
   img[width][height] {
     object-fit: contain;
     object-position: top;
     height: auto;
-  }
-
-  img:not(.emoji) {
-    margin: 0 0 8px;
   }
 
   img.lazy {
@@ -98,7 +93,6 @@
   // Single code lines should wrap
   code {
     font-family: $monospace-font;
-    vertical-align: bottom;
     white-space: pre-wrap;
     // Safari
     word-wrap: break-word;
@@ -262,7 +256,6 @@
         }
       }
     }
-
 
     &.grid-rows {
       > thead > tr > th,
@@ -451,7 +444,8 @@
     padding-left: 3px;
 
     /* Normalize the bullet position on webkit. */
-    @include on-webkit-only {
+    /* stylelint-disable-next-line media-feature-name-no-vendor-prefix */
+    @media screen and (-webkit-min-device-pixel-ratio: 0) {
       margin-left: 28px;
       padding-left: 0;
     }
@@ -763,15 +757,8 @@ pre {
   }
 }
 
-code {
-  &.key-fingerprint {
-    background: $body-bg;
-    color: $text-color;
-  }
-}
-
 .monospace {
-  @include gl-font-monospace;
+  @apply gl-font-monospace;
 }
 
 .weight-normal {
@@ -828,34 +815,15 @@ h4 {
   background: $line-added-dark;
 }
 
-
 /**
  * form text input i.e. search bar, comments, forms, etc.
  */
-/* stylelint-disable selector-no-vendor-prefix  */
 input,
 textarea {
-  &::-webkit-input-placeholder {
-    color: $gl-text-color-tertiary;
-  }
-
-  // support firefox 19+ vendor prefix
-  &::-moz-placeholder {
-    color: $gl-text-color-tertiary;
-    opacity: 1; // FF defaults to 0.54
-  }
-
-  // support Edge vendor prefix
-  &::-ms-input-placeholder {
-    color: $gl-text-color-tertiary;
-  }
-
-  // support IE vendor prefix
-  &:-ms-input-placeholder {
-    color: $gl-text-color-tertiary;
+  &::placeholder {
+    color: var(--gl-control-placeholder-color);
   }
 }
-/* stylelint-enable */
 
 wbr {
   display: inline-block;
@@ -891,5 +859,12 @@ wbr {
      p {
       margin-block-end: 0;
      }
+  }
+
+  // prevent backref character from rendering as emoji
+  .footnote-backref gl-emoji {
+    font-family: inherit;
+    font-size: 0.875em;
+    pointer-events: none;
   }
 }

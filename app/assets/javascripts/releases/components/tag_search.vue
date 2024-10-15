@@ -70,7 +70,7 @@ export default {
   <div data-testid="tag-name-search">
     <gl-search-box-by-type
       :value="query"
-      class="gl-border-b-1 gl-border-gray-200 gl-border-b-solid"
+      class="gl-border-b-1 gl-border-dropdown gl-border-b-solid"
       borderless
       autofocus
       @input="onSearchBoxInput"
@@ -95,7 +95,7 @@ export default {
         {{ $options.i18n.noResults }}
       </div>
     </div>
-    <div class="gl-border-t-1 gl-border-gray-200 gl-py-3 gl-border-t-solid">
+    <div class="gl-border-t-1 gl-border-dropdown gl-py-3 gl-border-t-solid">
       <gl-button
         category="tertiary"
         class="!gl-justify-start !gl-rounded-none"

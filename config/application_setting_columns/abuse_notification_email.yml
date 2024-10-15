@@ -1,0 +1,13 @@
+---
+api_type: string
+attr: abuse_notification_email
+clusterwide: true
+column: abuse_notification_email
+db_type: character
+default:
+description: If set, [abuse reports](../administration/review_abuse_reports.md) are
+  sent to this address. Abuse reports are always available in the **Admin** area.
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

@@ -1,0 +1,12 @@
+---
+api_type: boolean
+attr: deactivate_dormant_users
+clusterwide: false
+column: deactivate_dormant_users
+db_type: boolean
+default: 'false'
+description: Enable [automatic deactivation of dormant users](../administration/moderate_users.md#automatically-deactivate-dormant-users).
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

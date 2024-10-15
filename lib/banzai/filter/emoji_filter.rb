@@ -15,7 +15,7 @@ module Banzai
       def call
         @emoji_count = 0
 
-        doc.xpath('descendant-or-self::text()').each do |node|
+        doc.xpath('descendant-or-self::text()[not(ancestor::a[@data-footnote-backref])]').each do |node|
           break if Banzai::Filter.filter_item_limit_exceeded?(@emoji_count)
           next if has_ancestor?(node, IGNORED_ANCESTOR_TAGS)
 

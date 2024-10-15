@@ -1,0 +1,13 @@
+---
+api_type: hash of strings to integers
+attr: repository_storages_weighted
+clusterwide: true
+column: repository_storages_weighted
+db_type: jsonb
+default: "'{}'::jsonb"
+description: Hash of names of taken from `gitlab.yml` to [weights](../administration/repository_storage_paths.md#configure-where-new-repositories-are-stored).
+  New projects are created in one of these stores, chosen by a weighted random selection.
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: true

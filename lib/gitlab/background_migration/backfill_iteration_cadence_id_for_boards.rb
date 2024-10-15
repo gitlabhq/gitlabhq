@@ -4,8 +4,7 @@ module Gitlab
   module BackgroundMigration
     # rubocop: disable Style/Documentation
     class BackfillIterationCadenceIdForBoards
-      def perform(*args)
-      end
+      def perform(*args); end
     end
   end
 end

@@ -6,7 +6,7 @@
   id: 'js-error-tracking-settings') do |c|
   - c.with_description do
     = _('Link Sentry to GitLab to discover and view the errors your application generates.')
-    = link_to _('Learn more.'), help_page_path('operations/error_tracking'), target: '_blank', rel: 'noopener noreferrer'
+    = link_to _('Learn more.'), help_page_path('operations/error_tracking.md'), target: '_blank', rel: 'noopener noreferrer'
   - c.with_body do
     .js-error-tracking-form{ data: { list_projects_endpoint: project_error_tracking_projects_path(@project, format: :json),
         operations_settings_endpoint: project_settings_operations_path(@project),

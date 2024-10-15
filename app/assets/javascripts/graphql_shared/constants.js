@@ -12,8 +12,10 @@ export const TYPENAME_CRM_CONTACT = 'CustomerRelations::Contact';
 export const TYPENAME_CRM_ORGANIZATION = 'CustomerRelations::Organization';
 export const TYPENAME_DESIGN_VERSION = 'DesignManagement::Version';
 export const TYPENAME_DISCUSSION = 'Discussion';
+export const TYPENAME_DISCUSSION_NOTE = 'DiscussionNote';
 export const TYPENAME_EPIC = 'Epic';
 export const TYPENAME_EPIC_BOARD = 'Boards::EpicBoard';
+export const TYPENAME_FEATURE_FLAG = 'FeatureFlag';
 export const TYPENAME_GROUP = 'Group';
 export const TYPENAME_ISSUE = 'Issue';
 export const TYPENAME_ITERATION = 'Iteration';
@@ -35,3 +37,6 @@ export const TYPE_ORGANIZATION = 'Organizations::Organization';
 export const TYPE_USERS_SAVED_REPLY = 'Users::SavedReply';
 export const TYPE_WORKSPACE = 'RemoteDevelopment::Workspace';
 export const TYPE_COMPLIANCE_FRAMEWORK = 'ComplianceManagement::Framework';
+
+export const QUERY_PARAM_START_CURSOR = 'start_cursor';
+export const QUERY_PARAM_END_CURSOR = 'end_cursor';

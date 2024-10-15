@@ -7,6 +7,22 @@ RSpec.describe Onboarding::Status, feature_category: :onboarding do
   let_it_be(:user) { member.user }
   let_it_be(:source) { member.group }
 
+  describe '.registration_path_params' do
+    let(:params) { { some: 'thing' } }
+
+    subject { described_class.registration_path_params(params: params) }
+
+    it { is_expected.to eq({}) }
+  end
+
+  describe '#registration_omniauth_params' do
+    let(:params) { { glm_source: 'source', glm_content: 'content', extra: 'param' } }
+
+    subject { described_class.new(params, {}, nil).registration_omniauth_params }
+
+    it { is_expected.to eq({}) }
+  end
+
   describe '#single_invite?' do
     subject { described_class.new(nil, nil, user).single_invite? }
 

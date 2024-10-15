@@ -92,4 +92,61 @@ RSpec.describe Gitlab::Diff::Line do
       expect(line.marker_ranges).to eq(marker_ranges)
     end
   end
+
+  describe '#text_content' do
+    context 'when has rich text' do
+      before do
+        line.rich_text = '+<span>added</span>'.html_safe
+      end
+
+      it 'returns unprefixed rich text' do
+        expect(line.text_content).to eq('<span>added</span>')
+        expect(line.text_content.html_safe?).to be(true)
+      end
+    end
+
+    context 'when has plain text only' do
+      before do
+        line.text = '+added'.html_safe
+      end
+
+      it 'returns unprefixed plain text' do
+        expect(line.text_content).to eq('added')
+        expect(line.text_content.html_safe?).to be(false)
+      end
+    end
+  end
+
+  describe '#id' do
+    context 'when meta line' do
+      it 'returns nil' do
+        expect(line.id('', :old)).to be_nil
+      end
+    end
+
+    context 'when changed line' do
+      let(:line) do
+        described_class.new(
+          '<input>',
+          'new',
+          1,
+          10,
+          11,
+          parent_file: double(:file),
+          line_code: double(:line_code),
+          rich_text: rich_text
+        )
+      end
+
+      let(:file_hash) { 'foo' }
+
+      it 'returns the correct old side ID' do
+        expect(line.id(file_hash, :old)).to eq("line_#{file_hash}_L#{line.old_pos}")
+      end
+
+      it 'returns the correct new side ID' do
+        expect(line.id(file_hash, :new)).to eq("line_#{file_hash}_R#{line.new_pos}")
+      end
+    end
+  end
 end

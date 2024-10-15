@@ -1,0 +1,12 @@
+---
+api_type:
+attr: metrics_packet_size
+clusterwide: true
+column: metrics_packet_size
+db_type: integer
+default: '1'
+description:
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

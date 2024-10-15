@@ -1,0 +1,37 @@
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
+#import "ee_else_ce/graphql_shared/fragments/project.fragment.graphql"
+
+query getYourWorkProjects(
+  $archived: ProjectArchived = EXCLUDE
+  $membership: Boolean = false
+  $personal: Boolean = false
+  $first: Int
+  $last: Int
+  $before: String
+  $after: String
+  $sort: String
+  $search: String
+  $minAccessLevel: AccessLevelEnum
+  $programmingLanguageName: String
+) {
+  projects(
+    archived: $archived
+    membership: $membership
+    personal: $personal
+    first: $first
+    last: $last
+    before: $before
+    after: $after
+    sort: $sort
+    search: $search
+    minAccessLevel: $minAccessLevel
+    programmingLanguageName: $programmingLanguageName
+  ) {
+    nodes {
+      ...Project
+    }
+    pageInfo {
+      ...PageInfo
+    }
+  }
+}

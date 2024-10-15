@@ -43,6 +43,7 @@ export default () => {
     invalidPathError,
     securityConfigurationPath,
     containerScanningForRegistryDocsPath,
+    vulnerabilityReportPath,
     ...config
   } = el.dataset;
 
@@ -80,6 +81,7 @@ export default () => {
             isMetadataDatabaseEnabled: parseBoolean(isMetadataDatabaseEnabled),
             securityConfigurationPath,
             containerScanningForRegistryDocsPath,
+            vulnerabilityReportPath,
           },
           /* eslint-disable @gitlab/require-i18n-strings */
           dockerBuildCommand: `docker build -t ${config.repositoryUrl} .`,

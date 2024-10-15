@@ -100,6 +100,52 @@ Example response:
 ]
 ```
 
+## Add deploy key
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed, GitLab Dedicated
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/478476) in GitLab 17.5.
+
+Create a deploy key for the GitLab instance. This endpoint requires administrator
+access.
+
+```plaintext
+POST /deploy_keys
+```
+
+Supported attributes:
+
+| Attribute     | Type     | Required | Description                                                                                                                       |
+|:--------------|:---------|:---------|:----------------------------------------------------------------------------------------------------------------------------------|
+| `key`         | string   | yes      | New deploy key                                                                                                                    |
+| `title`       | string   | yes      | New deploy key's title                                                                                                            |
+| `expires_at`  | datetime | no       | Expiration date for the deploy key. Does not expire if no value is provided. Expected in ISO 8601 format (`2024-12-31T08:00:00Z`) |
+
+Example request:
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --header "Content-Type: application/json" \
+     --data '{"title": "My deploy key", "key": "ssh-rsa AAAA...", "expired_at": "2024-12-31T08:00:00Z"}' \
+     "https://gitlab.example.com/api/v4/deploy_keys/"
+```
+
+Example response:
+
+```json
+{
+  "id" : 5,
+  "title" : "My deploy key",
+  "key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQDNJAkI3Wdf0r13c8a5pEExB2YowPWCSVzfZV22pNBc1CuEbyYLHpUyaD0GwpGvFdx2aP7lMEk35k6Rz3ccBF6jRaVJyhsn5VNnW92PMpBJ/P1UebhXwsFHdQf5rTt082cSxWuk61kGWRQtk4ozt/J2DF/dIUVaLvc+z4HomT41fQ==",
+  "fingerprint": "4a:9d:64:15:ed:3a:e6:07:6e:89:36:b3:3b:03:05:d9",
+  "fingerprint_sha256": "SHA256:Jrs3LD1Ji30xNLtTVf9NDCj7kkBgPBb2pjvTZ3HfIgU",
+  "usage_type": "auth_and_signing",
+  "created_at": "2024-10-03T01:32:21.992Z",
+  "expires_at": "2024-12-31T08:00:00.000Z"
+}
+```
+
 ## List deploy keys for project
 
 Get a list of a project's deploy keys.
@@ -110,7 +156,7 @@ GET /projects/:id/deploy_keys
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/deploy_keys"
@@ -214,7 +260,7 @@ Parameters:
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
 | `key_id`  | integer | yes | The ID of the deploy key |
 
 ```shell
@@ -236,7 +282,7 @@ Example response:
 }
 ```
 
-## Add deploy key
+## Add deploy key for a project
 
 Creates a new deploy key for a project.
 
@@ -249,7 +295,7 @@ POST /projects/:id/deploy_keys
 
 | Attribute    | Type | Required | Description |
 | -----------  | ---- | -------- | ----------- |
-| `id`         | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`         | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
 | `key`        | string   | yes | New deploy key |
 | `title`      | string   | yes | New deploy key's title |
 | `can_push`   | boolean  | no  | Can deploy key push to the project's repository |
@@ -284,7 +330,7 @@ PUT /projects/:id/deploy_keys/:key_id
 
 | Attribute  | Type | Required | Description |
 | ---------  | ---- | -------- | ----------- |
-| `id`       | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`       | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
 | `can_push` | boolean | no  | Can deploy key push to the project's repository |
 | `title`    | string  | no | New deploy key's title |
 
@@ -316,7 +362,7 @@ DELETE /projects/:id/deploy_keys/:key_id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
 | `key_id`  | integer | yes | The ID of the deploy key |
 
 ```shell
@@ -333,7 +379,7 @@ POST /projects/:id/deploy_keys/:key_id/enable
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
 | `key_id`  | integer | yes | The ID of the deploy key |
 
 ```shell

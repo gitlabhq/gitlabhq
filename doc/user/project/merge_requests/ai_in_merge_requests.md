@@ -3,6 +3,8 @@ redirect_to: 'duo_in_merge_requests.md'
 remove_date: '2025-06-11'
 ---
 
+<!-- markdownlint-disable -->
+
 This document was moved to [another location](duo_in_merge_requests.md).
 
 <!-- This redirect file can be deleted after <2025-06-11>. -->

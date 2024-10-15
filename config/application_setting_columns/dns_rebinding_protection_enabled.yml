@@ -1,0 +1,12 @@
+---
+api_type: boolean
+attr: dns_rebinding_protection_enabled
+clusterwide: false
+column: dns_rebinding_protection_enabled
+db_type: boolean
+default: 'true'
+description: Enforce DNS-rebinding attack protection.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

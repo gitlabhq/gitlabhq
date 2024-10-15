@@ -26,6 +26,7 @@ Use these variables to customize and deploy your build.
 | `AUTO_DEVOPS_BUILD_IMAGE_EXTRA_ARGS`    | Extra arguments to be passed to the `docker build` command. Using quotes doesn't prevent word splitting. [More details](customize.md#pass-arguments-to-docker-build). |
 | `AUTO_DEVOPS_BUILD_IMAGE_FORWARDED_CI_VARIABLES` | A [comma-separated list of CI/CD variable names](customize.md#forward-cicd-variables-to-the-build-environment) to be forwarded to the build environment (the buildpack builder or `docker build`). |
 | `AUTO_DEVOPS_BUILD_IMAGE_CNB_PORT`      | In GitLab 15.0 and later, port exposed by the generated Docker image. Set to `false` to prevent exposing any ports. Defaults to `5000`. |
+| `AUTO_DEVOPS_BUILD_IMAGE_CONTEXT`       | Used to set the build context directory for Dockerfile and Cloud Native Buildpacks. Defaults to the root directory. |
 | `AUTO_DEVOPS_CHART`                     | Helm Chart used to deploy your apps. Defaults to the one [provided by GitLab](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/tree/master/assets/auto-deploy-app). |
 | `AUTO_DEVOPS_CHART_REPOSITORY`          | Helm Chart repository used to search for charts. Defaults to `https://charts.gitlab.io`. |
 | `AUTO_DEVOPS_CHART_REPOSITORY_NAME`     | Used to set the name of the Helm repository. Defaults to `gitlab`. |

@@ -32,7 +32,7 @@ module ImportHelper
   end
 
   def import_svn_message(_ci_cd_only)
-    svn_link = link_to _('Learn more'), help_page_path('user/project/import/index', anchor: 'import-repositories-from-subversion')
+    svn_link = link_to _('Learn more'), help_page_path('user/project/import/index.md', anchor: 'import-repositories-from-subversion')
     s_('Import|You can import a Subversion repository by using third-party tools. %{svn_link}.').html_safe % { svn_link: svn_link }
   end
 
@@ -53,7 +53,7 @@ module ImportHelper
   end
 
   def import_configure_github_admin_message
-    github_integration_link = link_to 'GitHub integration', help_page_path('integration/github')
+    github_integration_link = link_to 'GitHub integration', help_page_path('integration/github.md')
 
     if current_user.can_admin_all_resources?
       _('Note: As an administrator you may like to configure %{github_integration_link}, which will allow login via GitHub and allow importing repositories without generating a personal access token.').html_safe % { github_integration_link: github_integration_link }

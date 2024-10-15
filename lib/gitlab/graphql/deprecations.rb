@@ -30,7 +30,7 @@ module Gitlab
         if kwargs[:deprecation_reason].present?
           raise ArgumentError, <<~ERROR
             Use `deprecated` property instead of `deprecation_reason`. See
-            #{Rails.application.routes.url_helpers.help_page_url('development/api_graphql_styleguide', anchor: 'deprecating-schema-items')}
+            #{Rails.application.routes.url_helpers.help_page_url('development/api_graphql_styleguide.md', anchor: 'deprecating-schema-items')}
           ERROR
         end
 

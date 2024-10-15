@@ -29,6 +29,10 @@ mapping:
   - source: 'ee/lib/gitlab/ci/config/(?<rest>.+)\.rb'
     test: 'ee/spec/lib/gitlab/ci/yaml_processor_spec.rb'
 
+  # See https://gitlab.com/gitlab-org/gitlab/-/issues/466068#note_1987902951
+  - source: 'ee/lib/audit_events/strategies/(?<rest>.+)\.rb'
+    test: 'ee/spec/lib/audit_events/external_destination_streamer_spec.rb'
+
   # FOSS tooling should map to respective spec
   - source: 'tooling/(?<rest>.+)\.rb'
     test: 'spec/tooling/%{rest}_spec.rb'
@@ -208,3 +212,13 @@ mapping:
   - source: 'public/robots\.txt'
     test:
       - 'spec/requests/robots_txt_spec.rb'
+
+  # See https://gitlab.com/gitlab-org/gitlab/-/issues/466068#note_1987834618
+  - source: 'ee/app/replicators/geo/(?<rest>.+)\.rb'
+    test: 'ee/spec/models/geo_node_status_spec.rb'
+
+  # Any change to lib/sidebars/**/*.rb should map to specs that contain the words `sidebar` or `navbar`
+  #
+  # See https://gitlab.com/gitlab-org/gitlab/-/issues/466068#note_1988359861
+  - source: '(?<prefix>ee/)?lib/sidebars/(?<rest>.+)\.rb'
+    test: '%{prefix}spec/features/**/{navbar,sidebar}_spec.rb'

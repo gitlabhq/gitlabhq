@@ -35,6 +35,7 @@ export default {
     SidebarHoverPeekBehavior,
     SidebarPortalTarget,
     ScrollScrim,
+    TrialWidget: () => import('ee_component/contextual_sidebar/components/trial_widget.vue'),
     TrialStatusWidget: () =>
       import('ee_component/contextual_sidebar/components/trial_status_widget.vue'),
     TrialStatusPopover: () =>
@@ -50,7 +51,7 @@ export default {
     primaryNavigation: s__('Navigation|Primary navigation'),
     adminArea: s__('Navigation|Admin'),
   },
-  inject: ['showTrialStatusWidget', 'showDuoProTrialStatusWidget'],
+  inject: ['showTrialStatusWidget', 'showDuoProTrialStatusWidget', 'showTrialWidget'],
   props: {
     sidebarData: {
       type: Object,
@@ -260,6 +261,11 @@ export default {
           />
           <sidebar-portal-target />
         </scroll-scrim>
+        <div v-if="showTrialWidget" class="gl-p-2">
+          <trial-widget
+            class="gl-relative gl-mb-1 gl-flex gl-items-center gl-rounded-base gl-p-3 gl-leading-normal !gl-text-default !gl-no-underline"
+          />
+        </div>
         <div class="gl-p-2">
           <help-center ref="helpCenter" :sidebar-data="sidebarData" />
           <gl-button

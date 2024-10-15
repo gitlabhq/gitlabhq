@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-If you have installed your own runners, you can configure and secure them in GitLab.
+This document describes how to configure runners in the GitLab UI.
 
 If you need to configure runners on the machine where you installed GitLab Runner, see
 [the GitLab Runner documentation](https://docs.gitlab.com/runner/configuration/).
@@ -21,10 +21,7 @@ You can specify a maximum job timeout for each runner to prevent projects
 with longer job timeouts from using the runner. The maximum job timeout is
 used if it is shorter than the job timeout defined in the project.
 
-You can set a runner's maximum timeout with one of the following methods:
-
-- The REST API endpoint [`PUT /runners/:id`](../../api/runners.md#update-runners-details) by setting `maximum_timeout`
-- The GitLab Helm chart by setting `maximumTimeout`
+To set a runner's maximum timeout, set the `maximum_timeout` parameter in the REST API endpoint [`PUT /runners/:id`](../../api/runners.md#update-runners-details).
 
 ### For an instance runner
 
@@ -32,14 +29,16 @@ Prerequisites:
 
 - You must be an administrator.
 
-On GitLab.com, you cannot override the job timeout for instance runners and must use the [project defined timeout](../pipelines/settings.md#set-a-limit-for-how-long-jobs-can-run) instead.
+You can override the job timeout for instance runners on self-managed GitLab installations only.
+
+On GitLab.com, you cannot override the job timeout for GitLab hosted instance runners and must use the [project defined timeout](../pipelines/settings.md#set-a-limit-for-how-long-jobs-can-run) instead.
 
 To set the maximum job timeout:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **CI/CD > Runners**.
 1. To the right of the runner, you want to edit, select **Edit** (**{pencil}**).
-1. In the **Maximum job timeout** field, enter a value in seconds. The minimum amount is 600 seconds (10 minutes).
+1. In the **Maximum job timeout** field, enter a value in seconds. The minimum value is 600 seconds (10 minutes).
 1. Select **Save changes**.
 
 ### For a group runner
@@ -53,7 +52,7 @@ To set the maximum job timeout:
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Build > Runners**.
 1. To the right of the runner you want to edit, select **Edit** (**{pencil}**).
-1. In the **Maximum job timeout** field, enter a value in seconds. The minimum amount is 600 seconds (10 minutes).
+1. In the **Maximum job timeout** field, enter a value in seconds. The minimum value is 600 seconds (10 minutes).
 1. Select **Save changes**.
 
 ### For a project runner
@@ -68,7 +67,7 @@ To set the maximum job timeout:
 1. Select **Settings > CI/CD**.
 1. Expand **Runners**.
 1. To the right of the runner you want to edit, select **Edit** (**{pencil}**).
-1. In the **Maximum job timeout** field, enter a value in seconds. The minimum amount is 600 seconds (10 minutes). If not defined, the [job timeout for the project](../pipelines/settings.md#set-a-limit-for-how-long-jobs-can-run) is used instead.
+1. In the **Maximum job timeout** field, enter a value in seconds. The minimum value is 600 seconds (10 minutes). If not defined, the [job timeout for the project](../pipelines/settings.md#set-a-limit-for-how-long-jobs-can-run) is used instead.
 1. Select **Save changes**.
 
 ## How maximum job timeout works
@@ -98,7 +97,7 @@ To set the maximum job timeout:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/4335) in GitLab Runner 16.4.
 
-To control the amount of time `script` and `after_script` runs before it terminates, you can set specify a timeout.
+To control the amount of time `script` and `after_script` runs before it terminates, specify a timeout value in the `.gitlab-ci.yml` file.
 
 For example, you can specify a timeout to terminate a long-running `script` early, so that artifacts and caches can still be uploaded
 before the job timeout is exceeded.
@@ -135,21 +134,16 @@ job-artifact-upload-on-timeout:
 
 ## Protecting sensitive information
 
-To avoid exposing sensitive information, you can restrict the usage
-of instance runners on large GitLab instances. This ensures that you
-control access to your GitLab instances and secure [runner executors](https://docs.gitlab.com/runner/executors/).
-
-If certain executors run a job, the file system, the code the runner executes,
-and the runner authentication token may be exposed. This means that anyone who runs jobs
-on an _instance runner_ can access another user's code that runs on the runner.
-Users with access to the runner authentication token can use it to create a clone of
+The security risks are greater when using instance runners as they are available by default to all groups and projects in a GitLab instance. Depending on the runner executor used and the file system, the code that the runner executes
+and the runner authentication token might get exposed to all users who have access to the runner host environment.
+For example, users with access to the runner authentication token can use it to create a clone of
 a runner and submit false jobs in a vector attack. For more information, see [Security Considerations](https://docs.gitlab.com/runner/security/).
 
 ## Configuring long polling
 
 To reduce job queueing times and load on your GitLab server, configure [long polling](long_polling.md).
 
-### Using instance runners in forked projects
+## Using instance runners in forked projects
 
 When a project is forked, the job settings related to jobs are copied. If you have instance runners
 configured for a project and a user forks that project, the instance runners serve jobs of this project.
@@ -163,7 +157,7 @@ To work around this issue, ensure that the instance runner settings are consiste
 - If instance runners are **enabled** on the forked project, then this should also be **enabled** on the new namespace.
 - If instance runners are **disabled** on the forked project, then this should also be **disabled** on the new namespace.
 
-### Reset the runner registration token for a project (deprecated)
+## Reset the runner registration token for a project (deprecated)
 
 WARNING:
 The ability to pass a runner registration token, and support for certain configuration arguments was
@@ -192,8 +186,8 @@ you use to provision and register new values.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30942) in GitLab 15.3 [with a flag](../../administration/feature_flags.md) named `enforce_runner_token_expires_at`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/377902) in GitLab 15.5. Feature flag `enforce_runner_token_expires_at` removed.
 
-Each runner has an [runner authentication token](../../api/runners.md#registration-and-authentication-tokens)
-to connect with the GitLab instance.
+Each runner uses a [runner authentication token](../../api/runners.md#registration-and-authentication-tokens)
+to connect to and authenticate with a GitLab instance.
 
 To help prevent the token from being compromised, you can have the
 token rotate automatically at specified intervals. When the tokens are rotated,
@@ -206,11 +200,11 @@ For more information about token rotation, see
 If you need to manually update the runner authentication token, you can run a
 command to [reset the token](https://docs.gitlab.com/runner/commands/#gitlab-runner-reset-token).
 
-### Reset the runner authentication token
+### Reset the runner configuration authentication token
 
-If a runner authentication token is revealed, an attacker could use the token to [clone a runner](https://docs.gitlab.com/runner/security/#cloning-a-runner).
+If a runner's authentication token is exposed, an attacker could use it to [clone the runner](https://docs.gitlab.com/runner/security/#cloning-a-runner).
 
-To reset the runner authentication token:
+To reset the runner configuration authentication token:
 
 1. Delete the runner:
    - [Delete an instance runner](runners_scope.md#delete-instance-runners).
@@ -224,8 +218,8 @@ To reset the runner authentication token:
 
 ### Automatically rotate runner authentication tokens
 
-You can specify an interval for runner authentication tokens to rotate.
-This rotation helps ensure the security of the tokens assigned to your runners.
+You can specify an interval to rotate runner authentication tokens.
+Regularly rotating runner authentication tokens helps minimize the risk of unauthorized access to your GitLab instance through compromised tokens.
 
 Prerequisites:
 
@@ -467,6 +461,9 @@ globally or for individual jobs:
 - [`ARTIFACT_COMPRESSION_LEVEL`](#artifact-and-cache-settings) (artifact archiver compression level)
 - [`CACHE_COMPRESSION_LEVEL`](#artifact-and-cache-settings) (cache archiver compression level)
 - [`CACHE_REQUEST_TIMEOUT`](#artifact-and-cache-settings) (cache request timeout)
+- [`RUNNER_SCRIPT_TIMEOUT`](#set-script-and-after_script-timeouts)
+- [`RUNNER_AFTER_SCRIPT_TIMEOUT`](#set-script-and-after_script-timeouts)
+- [`AFTER_SCRIPT_IGNORE_ERRORS`](#ignore-errors-in-after_script)
 
 You can also use variables to configure how many times a runner
 [attempts certain stages of job execution](#job-stages-attempts).
@@ -523,8 +520,8 @@ Use the `empty` Git strategy when:
 
 ### Git submodule strategy
 
-The `GIT_SUBMODULE_STRATEGY` variable is used to control if / how Git
-submodules are included when fetching the code before a build. You can set them
+The `GIT_SUBMODULE_STRATEGY` variable is used to control if / how
+[Git submodules](https://git-scm.com/book/en/v2/Git-Tools-Submodules) are included when fetching the code before a build. You can set them
 globally or per-job in the [`variables`](../yaml/index.md#variables) section.
 
 There are three possible values: `none`, `normal`, and `recursive`:
@@ -862,6 +859,21 @@ The value of `GIT_CLONE_PATH` is expanded once into
 `$CI_BUILDS_DIR/go/src/namespace/project`, and results in failure
 because `$CI_BUILDS_DIR` is not expanded.
 
+### Ignore errors in `after_script`
+
+You can use [`after_script`](../yaml/index.md#after_script) in a job to define an array of commands
+that should run after the job's `before_script` and `script` sections. The `after_script` commands
+run regardless of the script termination status (failure or success).
+
+By default, GitLab Runner ignores any errors that happen when `after_script` runs.
+To set the job to fail immediately on errors when `after_script` runs, set the
+`AFTER_SCRIPT_IGNORE_ERRORS` CI/CD variable to `false`. For example:
+
+```yaml
+variables:
+  AFTER_SCRIPT_IGNORE_ERRORS: false
+```
+
 ### Job stages attempts
 
 You can set the number of attempts that the running job tries to execute
@@ -1160,7 +1172,7 @@ An example of provenance metadata that the GitLab Runner might generate is as fo
 To verify compliance with the in-toto specification,
 see the [in-toto statement](https://in-toto.io/Statement/v0.1).
 
-### Staging directory
+## Staging directory
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3403) in GitLab Runner 15.0.
 
@@ -1174,7 +1186,7 @@ To change the directory, set `ARCHIVER_STAGING_DIR` as a variable in your CI job
 The directory you specify is used as the location for downloading artifacts prior to extraction. If the `fastzip` archiver is
 used, this location is also used as scratch space when archiving.
 
-### Configure `fastzip` to improve performance
+## Configure `fastzip` to improve performance
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3130) in GitLab Runner 15.0.
 

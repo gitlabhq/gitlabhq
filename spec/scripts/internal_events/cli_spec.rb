@@ -275,11 +275,11 @@ RSpec.describe Cli, feature_category: :service_ping do
         select_event_from_list
 
         expected_output = <<~TEXT.chomp
-        ‣ Monthly/Weekly count of unique users [who triggered internal_events_cli_used]
-          Monthly/Weekly count of unique projects [where internal_events_cli_used occurred]
-          Monthly/Weekly count of unique namespaces [where internal_events_cli_used occurred]
-          Monthly/Weekly count of [internal_events_cli_used occurrences]
-          Total count of [internal_events_cli_used occurrences]
+        ‣ Monthly/Weekly count of unique users who triggered internal_events_cli_used
+          Monthly/Weekly count of unique projects where internal_events_cli_used occurred
+          Monthly/Weekly count of unique namespaces where internal_events_cli_used occurred
+          Monthly/Weekly count of internal_events_cli_used occurrences
+          Total count of internal_events_cli_used occurrences
         TEXT
 
         with_cli_thread do
@@ -299,12 +299,12 @@ RSpec.describe Cli, feature_category: :service_ping do
           select_event_from_list
 
           expected_output = <<~TEXT.chomp
-          ‣ Monthly/Weekly count of unique users [who triggered internal_events_cli_used]
-            Monthly/Weekly count of unique projects [where internal_events_cli_used occurred]
-            Monthly/Weekly count of unique namespaces [where internal_events_cli_used occurred]
-            Monthly count of [internal_events_cli_used occurrences]
-          ✘ Weekly count of [internal_events_cli_used occurrences] (already defined)
-            Total count of [internal_events_cli_used occurrences]
+          ‣ Monthly/Weekly count of unique users who triggered internal_events_cli_used
+            Monthly/Weekly count of unique projects where internal_events_cli_used occurred
+            Monthly/Weekly count of unique namespaces where internal_events_cli_used occurred
+            Monthly count of internal_events_cli_used occurrences
+            Total count of internal_events_cli_used occurrences
+          ✘ Weekly count of internal_events_cli_used occurrences (already defined)
           TEXT
 
           with_cli_thread do
@@ -325,11 +325,11 @@ RSpec.describe Cli, feature_category: :service_ping do
           select_event_from_list
 
           expected_output = <<~TEXT.chomp
-          ‣ Monthly/Weekly count of unique users [who triggered internal_events_cli_used]
-            Monthly/Weekly count of unique projects [where internal_events_cli_used occurred]
-            Monthly/Weekly count of unique namespaces [where internal_events_cli_used occurred]
-            Monthly/Weekly count of [internal_events_cli_used occurrences]
-          ✘ Total count of [internal_events_cli_used occurrences] (already defined)
+          ‣ Monthly/Weekly count of unique users who triggered internal_events_cli_used
+            Monthly/Weekly count of unique projects where internal_events_cli_used occurred
+            Monthly/Weekly count of unique namespaces where internal_events_cli_used occurred
+            Monthly/Weekly count of internal_events_cli_used occurrences
+          ✘ Total count of internal_events_cli_used occurrences (already defined)
           TEXT
 
           with_cli_thread do
@@ -386,11 +386,11 @@ RSpec.describe Cli, feature_category: :service_ping do
         ])
 
         expected_output = <<~TEXT.chomp
-        ‣ Monthly/Weekly count of unique users [who triggered any of 2 events]
-        ✘ Monthly/Weekly count of unique projects [where any of 2 events occurred] (already defined)
-          Monthly/Weekly count of unique namespaces [where any of 2 events occurred]
-          Monthly/Weekly count of [any of 2 events occurrences]
-          Total count of [any of 2 events occurrences]
+        ‣ Monthly/Weekly count of unique users who triggered any of 2 events
+          Monthly/Weekly count of unique namespaces where any of 2 events occurred
+          Monthly/Weekly count of any of 2 events occurrences
+          Total count of any of 2 events occurrences
+        ✘ Monthly/Weekly count of unique projects where any of 2 events occurred (already defined)
         TEXT
 
         with_cli_thread do
@@ -413,11 +413,11 @@ RSpec.describe Cli, feature_category: :service_ping do
         ])
 
         expected_output = <<~TEXT.chomp
-        ✘ Monthly/Weekly count of unique users [who triggered internal_events_cli_opened] (user unavailable)
-        ✘ Monthly/Weekly count of unique projects [where internal_events_cli_opened occurred] (project unavailable)
-        ✘ Monthly/Weekly count of unique namespaces [where internal_events_cli_opened occurred] (namespace unavailable)
-        ‣ Monthly/Weekly count of [internal_events_cli_opened occurrences]
-          Total count of [internal_events_cli_opened occurrences]
+        ‣ Monthly/Weekly count of internal_events_cli_opened occurrences
+          Total count of internal_events_cli_opened occurrences
+        ✘ Monthly/Weekly count of unique users who triggered internal_events_cli_opened (user unavailable)
+        ✘ Monthly/Weekly count of unique projects where internal_events_cli_opened occurred (project unavailable)
+        ✘ Monthly/Weekly count of unique namespaces where internal_events_cli_opened occurred (namespace unavailable)
         TEXT
 
         with_cli_thread do
@@ -457,6 +457,117 @@ RSpec.describe Cli, feature_category: :service_ping do
 
         with_cli_thread do
           expect { plain_last_lines(15) }.to eventually_include_cli_text(expected_output)
+        end
+      end
+    end
+
+    context 'when additional properties are present' do
+      let(:event_path_with_add_props) { 'config/events/internal_events_cli_used.yml' }
+      let(:event_content_with_add_props) { internal_event_fixture('events/event_with_all_additional_properties.yml') }
+
+      before do
+        File.write(event_path_with_add_props, File.read(event_content_with_add_props))
+      end
+
+      it 'offers metrics to filter by or count unique additional props' do
+        queue_cli_inputs([
+          "2\n", # Enum-select: New Metric -- calculate how often one or more existing events occur over time
+          "1\n", # Enum-select: Single event -- count occurrences of a specific event or user interaction
+          'internal_events_cli_used', # Filters to this event
+          "\n" # Select: config/events/internal_events_cli_used.yml
+        ])
+
+        expected_output = <<~TEXT.chomp
+        ‣ Monthly/Weekly count of unique users who triggered internal_events_cli_used
+          Monthly/Weekly count of unique projects where internal_events_cli_used occurred
+          Monthly/Weekly count of unique namespaces where internal_events_cli_used occurred
+          Monthly/Weekly count of unique users who triggered internal_events_cli_used where label/property/value is...
+          Monthly/Weekly count of unique projects where internal_events_cli_used occurred where label/property/value is...
+          Monthly/Weekly count of unique namespaces where internal_events_cli_used occurred where label/property/value is...
+          Monthly/Weekly count of internal_events_cli_used occurrences
+          Monthly/Weekly count of internal_events_cli_used occurrences where label/property/value is...
+          Total count of internal_events_cli_used occurrences
+          Total count of internal_events_cli_used occurrences where label/property/value is...
+          Monthly/Weekly count of unique values for 'label' from internal_events_cli_used occurrences
+          Monthly/Weekly count of unique values for 'property' from internal_events_cli_used occurrences
+          Monthly/Weekly count of unique values for 'value' from internal_events_cli_used occurrences
+          Monthly/Weekly count of unique values for 'label' from internal_events_cli_used occurrences where property/value is...
+          Monthly/Weekly count of unique values for 'property' from internal_events_cli_used occurrences where label/value is...
+          Monthly/Weekly count of unique values for 'value' from internal_events_cli_used occurrences where label/property is...
+        TEXT
+
+        with_cli_thread do
+          expect { plain_last_lines(16) }.to eventually_equal_cli_text(expected_output)
+        end
+      end
+
+      context 'with multiple events' do
+        let(:another_event_path) { 'config/events/internal_events_cli_opened.yml' }
+        let(:another_event_content) { internal_event_fixture('events/secondary_event_with_additional_properties.yml') }
+
+        before do
+          File.write(another_event_path, File.read(another_event_content))
+        end
+
+        it 'disables unique metrics without shared additional props, but allows filtered metrics' do
+          queue_cli_inputs([
+            "2\n", # Enum-select: New Metric -- calculate how often one or more existing events occur over time
+            "2\n", # Enum-select: Single event -- count occurrences of a specific event or user interaction
+            "internal_events_cli_", # Filters to this event
+            " ", # Select: config/events/internal_events_cli_used.yml
+            "\e[B ", # Arrow down & Select: config/events/internal_events_cli_opened.yml
+            "\n" # Submit Multi-select
+          ])
+
+          # Note the disabled "property" field is deduplicated with the filtered option
+          # The event only has label/value defined, so we'll include those
+          expected_output = <<~TEXT.chomp
+          ‣ Monthly/Weekly count of unique users who triggered any of 2 events
+            Monthly/Weekly count of unique projects where any of 2 events occurred
+            Monthly/Weekly count of unique namespaces where any of 2 events occurred
+            Monthly/Weekly count of unique users who triggered any of 2 events where label/value/property is...
+            Monthly/Weekly count of unique projects where any of 2 events occurred where label/value/property is...
+            Monthly/Weekly count of unique namespaces where any of 2 events occurred where label/value/property is...
+            Monthly/Weekly count of any of 2 events occurrences
+            Monthly/Weekly count of any of 2 events occurrences where label/value/property is...
+            Total count of any of 2 events occurrences
+            Total count of any of 2 events occurrences where label/value/property is...
+            Monthly/Weekly count of unique values for 'label' from any of 2 events occurrences
+            Monthly/Weekly count of unique values for 'value' from any of 2 events occurrences
+            Monthly/Weekly count of unique values for 'label' from any of 2 events occurrences where value/property is...
+            Monthly/Weekly count of unique values for 'value' from any of 2 events occurrences where label/property is...
+          ✘ Monthly/Weekly count of unique values for 'property' from any of 2 events occurrences (property unavailable)
+          TEXT
+
+          with_cli_thread do
+            expect { plain_last_lines(15) }.to eventually_equal_cli_text(expected_output)
+          end
+        end
+
+        it 'skips filter inputs for an unavailable property' do
+          queue_cli_inputs([
+            "2\n", # Enum-select: New Metric -- calculate how often one or more existing events occur over time
+            "2\n", # Enum-select: Multiple events -- count occurrences of a specific event or user interaction
+            "internal_events_cli_", # Filters to this event
+            " ", # Select: config/events/internal_events_cli_used.yml
+            "\e[B ", # Arrow down & Select: config/events/internal_events_cli_opened.yml
+            "\n", # Submit Multi-select
+            "\e[A\n", # Arrow up & select Monthly/Weekly unique 'value' from any of 2 events where label/property is...
+            "a label value\n", # Enter a value for 'label' for internal_events_cli_opened
+            "\n", # Accept the same 'label' value for internal_events_cli_used
+            "a property value\n", # Enter a value for 'property' for internal_events_cli_used
+            "here's a description\n", # Submit a description
+            "heres_a_key\n" # Submit a replacement key path for filtered metric
+          ])
+
+          # 'value' is an additional property for the metric here,
+          # so proceeding to the next step without that extra input means we filtered
+          with_cli_thread do
+            expect { plain_last_lines }.to eventually_include_cli_text(
+              'internal_events_cli_opened(label=a label value)',
+              'internal_events_cli_used(label=a label value property=a property value)'
+            )
+          end
         end
       end
     end
@@ -887,7 +998,8 @@ RSpec.describe Cli, feature_category: :service_ping do
           user: user,
           additional_properties: {
             label: 'string', # TODO
-            value: 72 # Time the CLI ran before closing (seconds)
+            value: 72, # Time the CLI ran before closing (seconds)
+            custom_key: custom_value # The extra custom property name
           }
         )
 
@@ -907,7 +1019,8 @@ RSpec.describe Cli, feature_category: :service_ping do
           let(:additional_properties) do
             {
               label: 'string',
-              value: 72
+              value: 72,
+              custom_key: custom_value
             }
           end
         end
@@ -937,6 +1050,7 @@ RSpec.describe Cli, feature_category: :service_ping do
                 {
                   label: 'string', // TODO
                   value: 72, // Time the CLI ran before closing (seconds)
+                  custom_key: custom_value, // The extra custom property name
                 },
               );
             },
@@ -965,6 +1079,7 @@ RSpec.describe Cli, feature_category: :service_ping do
             {
               label: 'string', // TODO
               value: 72, // Time the CLI ran before closing (seconds)
+              custom_key: custom_value, // The extra custom property name
             },
           );
 
@@ -993,6 +1108,7 @@ RSpec.describe Cli, feature_category: :service_ping do
             data-event-tracking="internal_events_cli_used"
             data-event-label="string"
             data-event-value=72
+            data-event-custom_key=custom_value
           >
             Click Me
           </gl-button>
@@ -1014,6 +1130,7 @@ RSpec.describe Cli, feature_category: :service_ping do
             data-event-tracking-load="internal_events_cli_used"
             data-event-label="string"
             data-event-value=72
+            data-event-custom_key=custom_value
           >
             Click Me
           </gl-button>
@@ -1028,18 +1145,18 @@ RSpec.describe Cli, feature_category: :service_ping do
         --------------------------------------------------
         # HAML -- ON-CLICK
 
-        .inline-block{ data: { event_tracking: 'internal_events_cli_used', event_label: 'string', event_value: 72 } }
+        .inline-block{ data: { event_tracking: 'internal_events_cli_used', event_label: 'string', event_value: 72, event_custom_key: custom_value } }
           = _('Important Text')
 
         --------------------------------------------------
         # HAML -- COMPONENT ON-CLICK
 
-        = render Pajamas::ButtonComponent.new(button_options: { data: { event_tracking: 'internal_events_cli_used', event_label: 'string', event_value: 72 } })
+        = render Pajamas::ButtonComponent.new(button_options: { data: { event_tracking: 'internal_events_cli_used', event_label: 'string', event_value: 72, event_custom_key: custom_value } })
 
         --------------------------------------------------
         # HAML -- COMPONENT ON-LOAD
 
-        = render Pajamas::ButtonComponent.new(button_options: { data: { event_tracking_load: true, event_tracking: 'internal_events_cli_used', event_label: 'string', event_value: 72 } })
+        = render Pajamas::ButtonComponent.new(button_options: { data: { event_tracking_load: true, event_tracking: 'internal_events_cli_used', event_label: 'string', event_value: 72, event_custom_key: custom_value } })
 
         --------------------------------------------------
         TEXT

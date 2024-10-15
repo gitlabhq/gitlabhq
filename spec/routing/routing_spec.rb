@@ -231,6 +231,11 @@ end
 RSpec.describe DashboardController, "routing" do
   it "to #index" do
     expect(get("/dashboard")).to route_to('dashboard/projects#index')
+    expect(get("/dashboard/projects")).to route_to('dashboard/projects#index')
+    expect(get("/dashboard/projects/contributed")).to route_to('dashboard/projects#index')
+    expect(get("/dashboard/projects/personal")).to route_to('dashboard/projects#index')
+    expect(get("/dashboard/projects/member")).to route_to('dashboard/projects#index')
+    expect(get("/dashboard/projects/inactive")).to route_to('dashboard/projects#index')
   end
 
   it "to #issues" do

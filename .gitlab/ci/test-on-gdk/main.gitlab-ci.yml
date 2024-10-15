@@ -10,7 +10,7 @@ include:
 
 # code pattern changes with selective execution enabled
 .code-pattern-with-selective-enabled-knapsack-set: &code-pattern-with-selective-enabled-knapsack-set
-  if: $MR_CODE_PATTERNS == "true" && $QA_TESTS != "" && $KNAPSACK_TEST_FILE_PATTERN != "" && $SELECTIVE_EXECUTION_IMPROVED == "true"
+  if: $MR_CODE_PATTERNS == "true" && $KNAPSACK_TEST_FILE_PATTERN != "" && $SELECTIVE_EXECUTION_IMPROVED == "true"
 
 .code-pattern-with-selective-enabled-knapsack-unset: &code-pattern-with-selective-enabled-knapsack-unset
   if: $MR_CODE_PATTERNS == "true" && $QA_TESTS != "" && $KNAPSACK_TEST_FILE_PATTERN == "" && $SELECTIVE_EXECUTION_IMPROVED == "true"
@@ -48,6 +48,11 @@ include:
         - ".gitlab/ci/test-on-gdk/**"
         - "lib/gitlab/database/load_balancing/**/*"
 
+.rules:test:gdk-gitaly-version-change:
+  rules:
+    changes:
+      - "GITALY_SERVER_VERSION"
+
 .with-parallel:
   parallel: 15
 
@@ -83,7 +88,7 @@ include:
     GITLAB_QA_ADMIN_ACCESS_TOKEN: $QA_ADMIN_ACCESS_TOKEN
     FF_NETWORK_PER_BUILD: "true"
     RSPEC_LAST_RUN_RESULTS_FILE: "$CI_PROJECT_DIR/qa/tmp/examples.txt"
-    COVERBAND_ENABLED: "$COVERBAND_ENABLED"
+    COVERBAND_ENABLED: "$COVERBAND_ENABLED"  # explicitly define variable so it is passed in to gdk service container
   before_script:
     - echo "SUITE_RAN=true" > "$QA_SUITE_STATUS_ENV_FILE"
     - echo -e "\e[0Ksection_start:`date +%s`:install_gems[collapsed=true]\r\e[0KInstall gems"
@@ -156,6 +161,14 @@ gdk-qa-blocking-selective:
   variables:
     QA_SCENARIO: Test::Instance::Blocking
     QA_RUN_TYPE: gdk-qa-blocking
+
+gdk-qa-blocking-gitaly-transactions:
+  extends: gdk-qa-blocking
+  variables:
+    QA_GITALY_TRANSACTIONS_ENABLED: "true"
+  rules:
+    - !reference [.rules:test:never-schedule-pipeline, rules]
+    - !reference [.rules:test:gdk-gitaly-version-change, rules]
 
 # ------------------------------------------
 # Non Blocking tests

@@ -1,10 +1,6 @@
 ---
 Migration/EnsureFactoryForTable:
   Exclude:
-    - 'db/migrate/20230626211305_create_catalog_resource_versions.rb'
-    - 'db/migrate/20230704233431_create_table_batched_git_ref_updates_deletions.rb'
-    - 'db/migrate/20230717142737_create_group_ssh_certificate.rb'
-    - 'db/migrate/20230727084849_create_catalog_resource_components.rb'
     - 'db/migrate/20230821133549_create_packages_nuget_symbols.rb'
     - 'db/migrate/20230823132142_create_instance_google_cloud_logging_configurations.rb'
     - 'db/migrate/20230903170000_create_packages_protection_rules.rb'

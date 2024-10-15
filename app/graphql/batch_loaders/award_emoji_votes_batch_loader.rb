@@ -12,8 +12,9 @@ module BatchLoaders
 
     def self.load_votes_for(object, vote_type, awardable_class: nil)
       awardable_class ||= object.class.name
+      batch_key = "#{object.class.base_class.name}-#{vote_type}"
 
-      BatchLoader::GraphQL.for(object.id).batch(key: "#{object.issuing_parent_id}-#{vote_type}") do |ids, loader, _args|
+      BatchLoader::GraphQL.for(object.id).batch(key: batch_key) do |ids, loader, _args|
         counts = AwardEmoji.votes_for_collection(ids, awardable_class).named(vote_type).index_by(&:awardable_id)
 
         ids.each do |id|

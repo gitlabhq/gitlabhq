@@ -434,7 +434,6 @@ RSpec.describe Ci::CreatePipelineService, :ci_config_feature_flag_correctness, :
       expect(response.message).to eq('Missing CI config file')
       expect(response.payload).not_to be_persisted
       expect(Ci::Pipeline.count).to eq(0)
-      expect(Onboarding::PipelineCreatedWorker).not_to receive(:perform_async)
     end
 
     shared_examples 'a failed pipeline' do
@@ -1411,13 +1410,6 @@ RSpec.describe Ci::CreatePipelineService, :ci_config_feature_flag_correctness, :
               pipeline
 
               expect(MergeRequests::UpdateHeadPipelineWorker).to have_received(:perform_async).with('Ci::PipelineCreatedEvent', { 'pipeline_id' => pipeline.id })
-            end
-
-            it 'schedules a namespace onboarding create action worker' do
-              expect(Onboarding::PipelineCreatedWorker)
-                .to receive(:perform_async).with(project.namespace_id)
-
-              pipeline
             end
 
             context 'when target sha is specified' do

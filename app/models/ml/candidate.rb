@@ -29,6 +29,8 @@ module Ml
       scope: :project,
       init: AtomicInternalId.project_init(self, :internal_id)
 
+    before_destroy :check_model_version
+
     scope :including_relationships, -> { includes(:latest_metrics, :params, :user, :package, :project, :ci_build) }
     scope :by_name, ->(name) { where("ml_candidates.name LIKE ?", "%#{sanitize_sql_like(name)}%") } # rubocop:disable GitlabSecurity/SqlInjection
     scope :without_model_version, -> { where(model_version: nil) }
@@ -91,6 +93,15 @@ module Ml
 
         find_by(project_id: project_id, internal_id: iid)
       end
+    end
+
+    private
+
+    def check_model_version
+      return unless model_version_id
+
+      errors.add(:base, _("Cannot delete a candidate associated to a model version"))
+      throw :abort # rubocop:disable Cop/BanCatchThrow
     end
   end
 end

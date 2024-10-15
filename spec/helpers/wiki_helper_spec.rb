@@ -139,4 +139,10 @@ RSpec.describe WikiHelper, feature_category: :wiki do
   it_behaves_like 'wiki endpoint helpers' do
     let_it_be(:page) { create(:wiki_page) }
   end
+
+  context 'for wiki subpages' do
+    it_behaves_like 'wiki endpoint helpers' do
+      let_it_be(:page) { create(:wiki_page, title: 'foo/bar') }
+    end
+  end
 end

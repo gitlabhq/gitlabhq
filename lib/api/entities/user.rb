@@ -3,7 +3,7 @@
 module API
   module Entities
     class User < UserBasic
-      include UsersHelper
+      include ::UsersHelper
       include TimeZoneHelper
       include Gitlab::Utils::StrongMemoize
 

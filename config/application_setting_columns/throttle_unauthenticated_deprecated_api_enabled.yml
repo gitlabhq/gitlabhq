@@ -1,0 +1,12 @@
+---
+api_type:
+attr: throttle_unauthenticated_deprecated_api_enabled
+clusterwide: false
+column: throttle_unauthenticated_deprecated_api_enabled
+db_type: boolean
+default: 'false'
+description:
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::ErrorTracking::ClientKeys, feature_category: :error_tracking do
+RSpec.describe API::ErrorTracking::ClientKeys, feature_category: :observability do
   let_it_be(:guest) { create(:user) }
   let_it_be(:maintainer) { create(:user) }
   let_it_be(:setting) { create(:project_error_tracking_setting) }

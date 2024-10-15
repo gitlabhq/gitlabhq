@@ -443,6 +443,18 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers, 
     end
   end
 
+  shared_examples 'invalid early finalization' do
+    it 'throws an early finalization error' do
+      expect { ensure_batched_background_migration_is_finished }.to raise_error(described_class::EARLY_FINALIZATION_ERROR)
+    end
+  end
+
+  shared_examples 'valid finalization' do
+    it 'does not throw any error' do
+      expect { ensure_batched_background_migration_is_finished }.not_to raise_error
+    end
+  end
+
   describe '#ensure_batched_background_migration_is_finished' do
     let(:job_class_name) { 'CopyColumnUsingBackgroundMigrationJob' }
     let(:table_name) { '_test_table' }
@@ -461,12 +473,14 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers, 
 
     let(:migration_attributes) do
       configuration.merge(
-        gitlab_schema: gitlab_schema
+        gitlab_schema: gitlab_schema,
+        queued_migration_version: Time.now.utc.strftime("%Y%m%d%H%M%S")
       )
     end
 
     before do
       allow(migration).to receive(:transaction_open?).and_return(false)
+      allow(migration).to receive(:version).and_return('20240905124118')
     end
 
     subject(:ensure_batched_background_migration_is_finished) { migration.ensure_batched_background_migration_is_finished(**configuration) }
@@ -587,6 +601,80 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers, 
 
         expect { migration.ensure_batched_background_migration_is_finished(**configuration.merge(finalize: false)) }.to raise_error(RuntimeError)
       end
+    end
+
+    context 'with finalized migration' do
+      let(:migration_attributes) do
+        configuration
+          .except(:skip_early_finalization_validation)
+          .merge(queued_migration_version: '20240905124118')
+      end
+
+      before do
+        allow(Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas).to receive(:require_dml_mode!)
+
+        create(:batched_background_migration, :finalized, migration_attributes)
+      end
+
+      context 'when the migration does not have queued_migration_version attr' do
+        let(:migration_attributes) { configuration.merge(queued_migration_version: nil) }
+
+        it_behaves_like 'valid finalization'
+      end
+
+      context 'when the migration version is before ENFORCE_EARLY_FINALIZATION_FROM_VERSION' do
+        let(:migration_attributes) { configuration.merge(queued_migration_version: '20240905124116') }
+
+        it_behaves_like 'valid finalization'
+      end
+
+      context 'when the migration is queued after the last required stop' do
+        before do
+          stub_bbm_stops('16.11', '17.2')
+        end
+
+        it_behaves_like 'invalid early finalization'
+
+        context 'with skip_early_finalization_validation enabled' do
+          let(:configuration) do
+            {
+              job_class_name: job_class_name,
+              table_name: table_name,
+              column_name: column_name,
+              job_arguments: job_arguments,
+              skip_early_finalization_validation: true
+            }
+          end
+
+          it_behaves_like 'valid finalization'
+        end
+      end
+
+      context 'when the migration is queued on the last required stop' do
+        before do
+          stub_bbm_stops('16.11', '16.11')
+        end
+
+        it_behaves_like 'valid finalization'
+      end
+
+      context 'when the migration is queued before the last required stop' do
+        before do
+          stub_bbm_stops('16.11', '16.10')
+        end
+
+        it_behaves_like 'valid finalization'
+      end
+    end
+  end
+
+  def stub_bbm_stops(last_required_stop, queued_milestone)
+    allow_next_instance_of(Gitlab::Utils::BatchedBackgroundMigrationsDictionary) do |dict|
+      allow(dict).to receive(:milestone).and_return(queued_milestone)
+    end
+
+    allow_next_instance_of(Gitlab::Utils::UpgradePath) do |ugrade_path|
+      allow(ugrade_path).to receive(:last_required_stop).and_return(Gitlab::VersionInfo.parse_from_milestone(last_required_stop))
     end
   end
 end

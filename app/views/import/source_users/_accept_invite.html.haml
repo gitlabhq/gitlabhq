@@ -8,6 +8,6 @@
     destination_group: link_to(source_user.namespace.name, group_path(source_user.namespace)))
   - c.with_actions do
     = render Pajamas::ButtonComponent.new(variant: :default,
-      href: help_page_path('user/project/import/index', anchor: 'accept-contribution-reassignment'),
+      href: help_page_path('user/project/import/index.md', anchor: 'accept-contribution-reassignment'),
       button_options: { class: 'deferred-link gl-alert-action', rel: 'noreferrer noopener' }, target: '_blank') do
       = _('Learn more')

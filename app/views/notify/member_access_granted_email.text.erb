@@ -1,11 +1,21 @@
+<% source_name = member_source.human_name %>
 <% source_type = member_source.model_name.singular %>
+<% organization_name = member_source_organization.name %>
 <% role_name = member.present.human_access %>
 <% role_type = member.present.role_type %>
-<%= _('You have been granted access to the %{source_name} %{source_type} with the following role: %{role_name}.') % { source_name: member_source.human_name, source_type: source_type, role_name: role_name  } %>
-<%= _('This is a %{role_type} role.') % { role_type: role_type }  %>
+
+<% if Feature.enabled?(:ui_for_organizations, member.present.user) %>
+<%= _('You have been granted access to the %{source_name} %{source_type}, which is part of the %{organization_name} organization with the following role: %{role_name}.') % { source_name: source_name, source_type: source_type, organization_name: organization_name, role_name: role_name } %>
 
 <%= member_source.web_url %>
+<%= member_source_organization.web_url %>
+<% else %>
+<%= _('You have been granted access to the %{source_name} %{source_type} with the following role: %{role_name}.') % { source_name: source_name, source_type: source_type, role_name: role_name } %>
+<%= _('This is a %{role_type} role.') % { role_type: role_type } %>
 
-<%= _('If this was a mistake you can leave the %{source_type}.') % { source_type: source_type  } %>
+<%= member_source.web_url %>
+<% end %>
+
+<%= _('If this was a mistake you can leave the %{source_type}.') % { source_type: source_type } %>
 
 <%= polymorphic_url([member_source], leave: 1) %>

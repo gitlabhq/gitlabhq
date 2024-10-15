@@ -1,0 +1,12 @@
+---
+api_type:
+attr: repository_storages
+clusterwide: false
+column: repository_storages
+db_type: character
+default: "'default'::character"
+description:
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

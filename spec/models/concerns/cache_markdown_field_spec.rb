@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe CacheMarkdownField, :clean_gitlab_redis_cache do
+RSpec.describe CacheMarkdownField, :clean_gitlab_redis_cache, feature_category: :markdown do
   let(:ar_class) do
     Class.new(ActiveRecord::Base) do
       self.table_name = 'issues'
@@ -46,7 +46,7 @@ RSpec.describe CacheMarkdownField, :clean_gitlab_redis_cache do
   let(:updated_markdown) { '`Bar`' }
   let(:updated_html) { '<p dir="auto"><code>Bar</code></p>' }
 
-  let(:cache_version) { Gitlab::MarkdownCache::CACHE_COMMONMARK_VERSION << 16 }
+  let(:cache_version) { Gitlab::MarkdownCache::CACHE_COMMONMARK_VERSION_SHIFTED }
 
   def thing_subclass(klass, *extra_attributes)
     Class.new(klass) { attr_accessor(*extra_attributes) }

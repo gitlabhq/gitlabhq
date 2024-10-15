@@ -17,7 +17,7 @@
         - if current_user.admin?
           = render Pajamas::ButtonComponent.new(href: [:admin, @group], icon: 'admin', button_options: { title: _('View group in admin area'), data: { toggle: 'tooltip', placement: 'bottom', container: 'body' } })
         - if @notification_setting
-          .js-vue-notification-dropdown{ data: { disabled: emails_disabled.to_s, dropdown_items: notification_dropdown_items(@notification_setting).to_json, notification_level: @notification_setting.level, help_page_path: help_page_path('user/profile/notifications'), group_id: @group.id, container_class: 'gl-align-top' } }
+          .js-vue-notification-dropdown{ data: { disabled: emails_disabled.to_s, dropdown_items: notification_dropdown_items(@notification_setting).to_json, notification_level: @notification_setting.level, help_page_path: help_page_path('user/profile/notifications.md'), group_id: @group.id, container_class: 'gl-align-top' } }
         - if can_create_subgroups
           .sm:gl-w-auto.gl-w-full
             = render Pajamas::ButtonComponent.new(href: new_group_path(parent_id: @group.id, anchor: 'create-group-pane'), button_options: { data: { testid: 'new-subgroup-button' }, class: 'sm:gl-w-auto gl-w-full'}) do

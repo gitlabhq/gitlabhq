@@ -1,0 +1,13 @@
+---
+api_type: boolean
+attr: mirror_available
+clusterwide: false
+column: mirror_available
+db_type: boolean
+default: 'true'
+description: Allow repository mirroring to configured by project Maintainers. If disabled,
+  only Administrators can configure repository mirroring.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

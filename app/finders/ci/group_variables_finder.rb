@@ -2,6 +2,13 @@
 
 module Ci
   class GroupVariablesFinder
+    SORT_TO_PARAMS_MAP = {
+      created_desc: { order_by: 'created_at', sort: 'desc' },
+      created_asc: { order_by: 'created_at', sort: 'asc' },
+      key_desc: { order_by: 'key', sort: 'desc' },
+      key_asc: { order_by: 'key', sort: 'asc' }
+    }.freeze
+
     def initialize(project, sort_key = nil)
       @project = project
       @params = sort_to_params_map(sort_key)
@@ -16,13 +23,6 @@ module Ci
     end
 
     private
-
-    SORT_TO_PARAMS_MAP = {
-      created_desc: { order_by: 'created_at', sort: 'desc' },
-      created_asc: { order_by: 'created_at', sort: 'asc' },
-      key_desc: { order_by: 'key', sort: 'desc' },
-      key_asc: { order_by: 'key', sort: 'asc' }
-    }.freeze
 
     def sort_to_params_map(sort_key)
       SORT_TO_PARAMS_MAP[sort_key] || {}

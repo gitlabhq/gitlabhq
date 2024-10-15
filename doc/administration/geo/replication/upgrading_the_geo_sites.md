@@ -20,8 +20,10 @@ This may result in a larger than expected downtime.
 
 Upgrading Geo sites involves performing:
 
-1. [Version-specific upgrade steps](../../../update/index.md#version-specific-upgrading-instructions), depending on the
-   version being upgraded to or from.
+1. Version-specific upgrade steps, depending on the version being upgraded to or from:
+   - [GitLab 17 changes](../../../update/versions/gitlab_17_changes.md)
+   - [GitLab 16 changes](../../../update/versions/gitlab_16_changes.md)
+   - [GitLab 15 changes](../../../update/versions/gitlab_15_changes.md)
 1. [General upgrade steps](#general-upgrade-steps), for all upgrades.
 
 ## General upgrade steps
@@ -33,7 +35,7 @@ If you want to avoid downtime, consider using [zero-downtime upgrades](../../../
 To upgrade the Geo sites when a new GitLab version is released, upgrade **primary**
 and all **secondary** sites:
 
-1. Optional. [Pause replication on each **secondary** site](../index.md#pausing-and-resuming-replication)
+1. Optional. [Pause replication on each **secondary** site](../replication/pause_resume_replication.md)
    to protect the disaster recovery (DR) capability of the **secondary** sites.
 1. SSH into each node of the **primary** site.
 1. [Upgrade GitLab on the **primary** site](../../../update/package/index.md#upgrade-using-the-official-repositories).

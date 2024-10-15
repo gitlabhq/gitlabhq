@@ -5,7 +5,7 @@ classes:
 feature_categories:
 - continuous_integration
 - integrations
-- metrics
+- observability
 - service_ping
 - source_code_management
 description: GitLab application settings

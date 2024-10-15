@@ -13,6 +13,7 @@ import { CLUSTER_AGENT_ERROR_MESSAGES } from '~/environments/constants';
 import k8sPodsQuery from '~/environments/graphql/queries/k8s_pods.query.graphql';
 import k8sServicesQuery from '~/environments/graphql/queries/k8s_services.query.graphql';
 import k8sDeploymentsQuery from '~/environments/graphql/queries/k8s_deployments.query.graphql';
+import k8sEventsQuery from '~/environments/graphql/queries/k8s_events.query.graphql';
 import { updateConnectionStatus } from '~/environments/graphql/resolvers/kubernetes/k8s_connection_status';
 import {
   connectionStatus,
@@ -375,6 +376,8 @@ describe('~/frontend/environments/graphql/resolvers', () => {
   });
 
   describe('k8sEvents', () => {
+    const client = { writeQuery: jest.fn() };
+
     const involvedObjectName = 'my-pod';
     const mockEventsListFn = jest.fn().mockImplementation(() => {
       return Promise.resolve({
@@ -382,24 +385,57 @@ describe('~/frontend/environments/graphql/resolvers', () => {
       });
     });
 
-    const mockNamespacedEventsListFn = jest.fn().mockImplementation(mockEventsListFn);
+    const mockWatcher = WatchApi.prototype;
+    const mockEventsListWatcherFn = jest.fn().mockImplementation(() => {
+      return Promise.resolve(mockWatcher);
+    });
 
-    it('should request namespaced events with the field selector from the cluster_client library if namespace is specified', async () => {
-      jest
-        .spyOn(CoreV1Api.prototype, 'listCoreV1NamespacedEvent')
-        .mockImplementation(mockNamespacedEventsListFn);
+    const mockOnDataFn = jest.fn().mockImplementation((eventName, callback) => callback([]));
 
-      const events = await mockResolvers.Query.k8sEvents(null, {
-        configuration,
-        namespace,
-        involvedObjectName,
+    describe('when the API request is successful', () => {
+      beforeEach(() => {
+        jest
+          .spyOn(CoreV1Api.prototype, 'listCoreV1NamespacedEvent')
+          .mockImplementation(mockEventsListFn);
+        jest.spyOn(mockWatcher, 'subscribeToStream').mockImplementation(mockEventsListWatcherFn);
+        jest.spyOn(mockWatcher, 'on').mockImplementation(mockOnDataFn);
       });
 
-      expect(mockNamespacedEventsListFn).toHaveBeenCalledWith({
-        namespace,
-        fieldSelector: `involvedObject.name=${involvedObjectName}`,
+      it('should request namespaced events with the field selector from the cluster_client library if namespace is specified', async () => {
+        const events = await mockResolvers.Query.k8sEvents(
+          null,
+          {
+            configuration,
+            namespace,
+            involvedObjectName,
+          },
+          { client },
+        );
+
+        expect(mockEventsListFn).toHaveBeenCalledWith({
+          namespace,
+          fieldSelector: `involvedObject.name=${involvedObjectName}`,
+        });
+        expect(events).toEqual(k8sEventsMock);
       });
-      expect(events).toEqual(k8sEventsMock);
+
+      it('should update cache with the new data when received from the library', async () => {
+        await mockResolvers.Query.k8sEvents(
+          null,
+          {
+            configuration,
+            namespace,
+            involvedObjectName,
+          },
+          { client },
+        );
+
+        expect(client.writeQuery).toHaveBeenCalledWith({
+          query: k8sEventsQuery,
+          variables: { configuration, namespace, involvedObjectName },
+          data: { k8sEvents: [] },
+        });
+      });
     });
 
     it('should throw an error if the API call fails', async () => {
@@ -408,7 +444,11 @@ describe('~/frontend/environments/graphql/resolvers', () => {
         .mockRejectedValue(new Error('API error'));
 
       await expect(
-        mockResolvers.Query.k8sEvents(null, { configuration, namespace, involvedObjectName }),
+        mockResolvers.Query.k8sEvents(
+          null,
+          { configuration, namespace, involvedObjectName },
+          { client },
+        ),
       ).rejects.toThrow('API error');
     });
   });

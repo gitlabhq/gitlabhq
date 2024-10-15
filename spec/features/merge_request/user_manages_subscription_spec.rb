@@ -45,10 +45,10 @@ RSpec.describe 'User manages subscription', :js, feature_category: :code_review_
       wait_for_requests
 
       find_by_testid('subscribe-button').click
-      expect(page).to have_selector('[data-testid="notifications-off-icon"]')
+      expect(page).to have_selector('svg.gl-animated-icon-on')
 
       find_by_testid('subscribe-button').click
-      expect(page).to have_selector('[data-testid="notifications-icon"]')
+      expect(page).to have_selector('svg.gl-animated-icon-off')
     end
   end
 end

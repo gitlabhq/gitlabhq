@@ -1,0 +1,13 @@
+---
+api_type: string
+attr: email_confirmation_setting
+clusterwide: true
+column: email_confirmation_setting
+db_type: smallint
+default: '0'
+description: Specifies whether users must confirm their email before sign in. Possible
+  values are `off`, `soft`, and `hard`.
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

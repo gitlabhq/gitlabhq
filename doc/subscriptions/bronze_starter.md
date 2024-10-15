@@ -23,9 +23,9 @@ the tiers are no longer mentioned in GitLab documentation:
   - [Setting a default template for merge requests and issues](../user/project/description_templates.md#set-a-default-template-for-merge-requests-and-issues)
 - [Email from GitLab](../administration/email_from_gitlab.md)
 - Groups:
-  - [Creating group memberships via CN](../user/group/access_and_permissions.md#create-group-links-via-cn)
+  - [Creating group memberships with a CN](../user/group/access_and_permissions.md#create-group-links-with-a-cn)
   - [Group push rules](../user/group/access_and_permissions.md#group-push-rules)
-  - [Managing group memberships via LDAP](../user/group/access_and_permissions.md#manage-group-memberships-via-ldap)
+  - [Managing group memberships with LDAP](../user/group/access_and_permissions.md#manage-group-memberships-with-ldap)
   - [Member locking](../user/group/access_and_permissions.md#prevent-members-from-being-added-to-projects-in-a-group)
   - [Overriding user permissions](../user/group/access_and_permissions.md#override-user-permissions)
   - [User contribution analytics](../user/group/contribution_analytics/index.md)
@@ -105,7 +105,7 @@ the tiers are no longer mentioned in GitLab documentation:
   - [Filtering merge requests](../user/project/merge_requests/index.md#filter-the-list-of-merge-requests) by "approved by"
   - [Advanced search (Elasticsearch)](../user/search/advanced_search.md)
 - [Service Desk](../user/project/service_desk/index.md)
-- [Storage usage statistics](../user/usage_quotas.md)
+- [Storage usage statistics](../user/storage_usage_quotas.md)
 
 The following developer features continue to be available to Starter and
 Bronze-level subscribers:

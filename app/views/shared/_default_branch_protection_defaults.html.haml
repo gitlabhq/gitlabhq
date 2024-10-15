@@ -28,7 +28,7 @@
       - c.with_label do
         = s_("ProtectedBranch|Allowed to force push")
       - c.with_help_text do
-        - force_push_docs_url = help_page_url('topics/git/git_rebase', anchor: 'force-pushing')
+        - force_push_docs_url = help_page_url('topics/git/git_rebase.md', anchor: 'force-pushing')
         - force_push_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: force_push_docs_url }
         = (s_("ProtectedBranch|Allow all users with push access to %{tag_start}force push%{tag_end}.") % { tag_start: force_push_link_start, tag_end: '</a>' }).html_safe
 

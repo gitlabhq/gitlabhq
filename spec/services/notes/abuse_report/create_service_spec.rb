@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Notes::AbuseReport::CreateService, feature_category: :team_planning do
+RSpec.describe Notes::AbuseReport::CreateService, feature_category: :insider_threat do
   let_it_be(:abuse_report) { create(:abuse_report) }
   let_it_be(:user) { create(:admin) }
 

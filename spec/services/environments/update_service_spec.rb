@@ -15,10 +15,14 @@ RSpec.describe Environments::UpdateService, feature_category: :environment_manag
   describe '#execute' do
     subject { service.execute(environment) }
 
-    let(:params) { { external_url: 'https://gitlab.com/' } }
+    let(:params) { { external_url: 'https://gitlab.com/', description: 'description' } }
 
     it 'updates the external URL' do
       expect { subject }.to change { environment.reload.external_url }.to('https://gitlab.com/')
+    end
+
+    it 'updates the description' do
+      expect { subject }.to change { environment.reload.description }.to('description')
     end
 
     it 'returns successful response' do

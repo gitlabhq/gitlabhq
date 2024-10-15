@@ -106,13 +106,13 @@ RSpec.describe 'Environments Folder page', :js, feature_category: :environment_m
 
       # rubocop:enable FactoryBot/ExcessiveCreateList
       it 'shows pagination' do
-        pagination = find('.pagination')
+        pagination = find('.gl-pagination')
 
         expect(pagination).to have_content('2')
       end
 
       it 'can navigate to the next page and updates the url' do
-        pagination = find('.pagination')
+        pagination = find('.gl-pagination')
         pagination.scroll_to(:bottom)
         within(pagination) do
           click_link 'Next'

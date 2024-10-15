@@ -32,7 +32,7 @@ module Integrations
     end
 
     def self.help
-      build_help_page_url('user/project/integrations/asana', s_('Add commit messages as comments to Asana tasks.'))
+      build_help_page_url('user/project/integrations/asana.md', s_('Add commit messages as comments to Asana tasks.'))
     end
 
     def self.to_param

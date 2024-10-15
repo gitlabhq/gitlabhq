@@ -13,6 +13,14 @@ module AntiAbuse
         DiscussionNote
       end
 
+      def self.model_class
+        AntiAbuse::Reports::Note
+      end
+
+      def discussion_class
+        self.class
+      end
+
       def reply_attributes
         first_note.slice(:type, :abuse_report_id, :discussion_id)
       end

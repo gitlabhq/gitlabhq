@@ -20,7 +20,7 @@ GET /groups/:id/variables
 
 | Attribute | Type           | Required | Description |
 |-----------|----------------|----------|-------------|
-| `id`      | integer/string | Yes      | The ID of a group or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
+| `id`      | integer/string | Yes      | The ID of a group or [URL-encoded path of the group](rest/index.md#namespaced-paths) |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/variables"
@@ -64,7 +64,7 @@ GET /groups/:id/variables/:key
 
 | Attribute | Type           | Required | Description |
 |-----------|----------------|----------|-------------|
-| `id`      | integer/string | Yes      | The ID of a group or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
+| `id`      | integer/string | Yes      | The ID of a group or [URL-encoded path of the group](rest/index.md#namespaced-paths) |
 | `key`     | string         | Yes      | The `key` of a variable |
 | `filter`  | hash           | No       | Available filters: `[environment_scope]`. See the [`filter` parameter details](#the-filter-parameter). |
 
@@ -95,10 +95,10 @@ POST /groups/:id/variables
 
 | Attribute                             | Type           | Required | Description |
 |---------------------------------------|----------------|----------|-------------|
-| `id`                                  | integer/string | Yes      | The ID of a group or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding). |
+| `id`                                  | integer/string | Yes      | The ID of a group or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
 | `key`                                 | string         | Yes      | The `key` of a variable; must have no more than 255 characters; only `A-Z`, `a-z`, `0-9`, and `_` are allowed. |
 | `value`                               | string         | Yes      | The `value` of a variable. |
-| `description`                         | string         | No       | The `description` of the variable. Default: `null`. |
+| `description`                         | string         | No       | The `description` of the variable; must have no more than 255 characters. Default: `null`. |
 | `environment_scope`                   | string         | No       | The [environment scope](../ci/environments/index.md#limit-the-environment-scope-of-a-cicd-variable) of a variable. Premium and Ultimate only. |
 | `masked`                              | boolean        | No       | Whether the variable is masked. |
 | `protected`                           | boolean        | No       | Whether the variable is protected. |
@@ -136,7 +136,7 @@ PUT /groups/:id/variables/:key
 
 | Attribute                             | Type           | Required | Description |
 |---------------------------------------|----------------|----------|-------------|
-| `id`                                  | integer/string | Yes      | The ID of a group or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
+| `id`                                  | integer/string | Yes      | The ID of a group or [URL-encoded path of the group](rest/index.md#namespaced-paths) |
 | `key`                                 | string         | Yes      | The `key` of a variable |
 | `value`                               | string         | Yes      | The `value` of a variable |
 | `description`                         | string         | No       | The description of the variable. Default: `null`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/409641) in GitLab 16.2. |
@@ -178,7 +178,7 @@ DELETE /groups/:id/variables/:key
 
 | Attribute | Type           | Required | Description |
 |-----------|----------------|----------|-------------|
-| `id`      | integer/string | Yes      | The ID of a group or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
+| `id`      | integer/string | Yes      | The ID of a group or [URL-encoded path of the group](rest/index.md#namespaced-paths) |
 | `key`     | string         | Yes      | The `key` of a variable |
 | `filter`  | hash           | No       | Available filters: `[environment_scope]`. See the [`filter` parameter details](#the-filter-parameter). |
 

@@ -159,7 +159,7 @@ RSpec.describe Ci::BuildTraceMetadata, feature_category: :continuous_integration
     end
   end
 
-  describe 'partitioning', :ci_partitionable do
+  describe 'partitioning' do
     include Ci::PartitioningHelpers
 
     let_it_be(:pipeline) { create(:ci_pipeline) }
@@ -169,11 +169,11 @@ RSpec.describe Ci::BuildTraceMetadata, feature_category: :continuous_integration
     let(:metadata) { create(:ci_build_trace_metadata, build: new_build) }
 
     before do
-      stub_current_partition_id(ci_testing_partition_id_for_check_constraints)
+      stub_current_partition_id(ci_testing_partition_id)
     end
 
     it 'assigns the same partition id as the one that build has' do
-      expect(metadata.partition_id).to eq(ci_testing_partition_id_for_check_constraints)
+      expect(metadata.partition_id).to eq(ci_testing_partition_id)
     end
   end
 end

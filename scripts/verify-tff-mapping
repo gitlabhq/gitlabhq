@@ -69,6 +69,15 @@ tests = [
   },
 
   {
+    explanation: 'https://gitlab.com/gitlab-org/gitlab/-/issues/466068#note_1987902951',
+    changed_file: 'ee/lib/audit_events/strategies/instance/amazon_s3_destination_strategy.rb',
+    expected: %w[
+      ee/spec/lib/audit_events/strategies/instance/amazon_s3_destination_strategy_spec.rb
+      ee/spec/lib/audit_events/external_destination_streamer_spec.rb
+    ]
+  },
+
+  {
     explanation: 'Tooling should map to respective spec',
     changed_file: 'tooling/danger/specs/project_factory_suggestion.rb',
     expected: ['spec/tooling/danger/specs/project_factory_suggestion_spec.rb']
@@ -105,8 +114,8 @@ tests = [
 
   {
     explanation: 'Migration should map to its non-timestamped spec',
-    changed_file: 'db/migrate/20230707003301_add_expiry_notified_at_to_member.rb',
-    expected: ['spec/migrations/add_expiry_notified_at_to_member_spec.rb']
+    changed_file: 'db/migrate/20240228144013_migrate_custom_permissions.rb',
+    expected: ['spec/migrations/migrate_custom_permissions_spec.rb']
   },
   {
     explanation: 'Migration should map to its timestamped spec',
@@ -461,6 +470,52 @@ tests = [
       ee/spec/requests/api/graphql/remote_development/workspace/with_id_arg_spec.rb
     ]
   },
+
+  {
+    explanation: 'https://gitlab.com/gitlab-org/gitlab/-/issues/466068#note_1987834618',
+    changed_file: 'ee/app/replicators/geo/ci_secure_file_replicator.rb',
+    expected: %w[
+      ee/spec/replicators/geo/ci_secure_file_replicator_spec.rb
+      ee/spec/models/geo_node_status_spec.rb
+    ]
+  },
+
+  # Why is it commented out?
+  #
+  # We cannot uncomment this, as this "spec" would fail as soon as we add/remove a file in
+  # the "spec/features" folder hierarchy that would contain the word navbar/sidebar.
+  #
+  # {
+  #   explanation: 'https://gitlab.com/gitlab-org/gitlab/-/issues/466068#note_1988359861',
+  #   changed_file: 'lib/sidebars/projects/menus/issues_menu.rb',
+  #   expected: %w[
+  #     spec/features/boards/sidebar_spec.rb
+  #     spec/features/dashboard/navbar_spec.rb
+  #     spec/features/explore/navbar_spec.rb
+  #     spec/features/groups/navbar_spec.rb
+  #     spec/features/projects/navbar_spec.rb
+  #     spec/lib/sidebars/projects/menus/issues_menu_spec.rb
+  #   ]
+  # },
+
+  # Why is it commented out?
+  #
+  # We cannot uncomment this, as this "spec" would fail as soon as we add/remove a file in
+  # the "spec/features" folder hierarchy that would contain the word navbar/sidebar.
+  #
+  # {
+  #   explanation: 'https://gitlab.com/gitlab-org/gitlab/-/issues/466068#note_1988359861',
+  #   changed_file: 'ee/lib/sidebars/groups/menus/epics_menu.rb',
+  #   expected: %w[
+  #     ee/spec/features/boards/sidebar_spec.rb
+  #     ee/spec/features/dashboard/navbar_spec.rb
+  #     ee/spec/features/groups/navbar_spec.rb
+  #     ee/spec/features/merge_request/sidebar_spec.rb
+  #     ee/spec/features/projects/navbar_spec.rb
+  #     ee/spec/lib/sidebars/groups/menus/epics_menu_spec.rb
+  #   ]
+  # },
+
   {
     explanation: 'Run database dictionary related specs on db/docs changes.',
     changed_file: 'db/docs/design_management_repositories.yml',

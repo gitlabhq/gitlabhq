@@ -595,6 +595,242 @@ To install a package by using `sbt`:
 
 ::EndTabs
 
+## CI/CD integration for Maven packages
+
+You can use CI/CD to automatically build, test, and publish Maven packages.
+The examples in this section cover scenarios like:
+
+- Multi-module projects
+- Versioned releases
+- Conditional publishing
+- Integration with code quality and security scans
+
+You can adapt and combine these examples to suit your specific project needs.
+
+Remember to adjust the Maven version, Java version, and other specifics according to your project requirements. Also, make sure you properly configured the necessary credentials and settings for publishing to the GitLab package registry.
+
+### Basic Maven package build and publish
+
+This example configures a pipeline that builds and publishes a Maven package:
+
+```yaml
+image: maven:3.8.5-openjdk-17
+
+variables:
+  MAVEN_CLI_OPTS: "-s .m2/settings.xml --batch-mode"
+  MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
+
+cache:
+  paths:
+    - .m2/repository/
+    - target/
+
+stages:
+  - build
+  - test
+  - publish
+
+build:
+  stage: build
+  script:
+    - mvn $MAVEN_CLI_OPTS compile
+
+test:
+  stage: test
+  script:
+    - mvn $MAVEN_CLI_OPTS test
+
+publish:
+  stage: publish
+  script:
+    - mvn $MAVEN_CLI_OPTS deploy
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+```
+
+### Multi-module Maven project with parallel jobs
+
+For larger projects with multiple modules, you can use parallel jobs to speed up the build process:
+
+```yaml
+image: maven:3.8.5-openjdk-17
+
+variables:
+  MAVEN_CLI_OPTS: "-s .m2/settings.xml --batch-mode"
+  MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
+
+cache:
+  paths:
+    - .m2/repository/
+    - target/
+
+stages:
+  - build
+  - test
+  - publish
+
+build:
+  stage: build
+  script:
+    - mvn $MAVEN_CLI_OPTS compile
+
+test:
+  stage: test
+  parallel:
+    matrix:
+      - MODULE: [module1, module2, module3]
+  script:
+    - mvn $MAVEN_CLI_OPTS test -pl $MODULE
+
+publish:
+  stage: publish
+  script:
+    - mvn $MAVEN_CLI_OPTS deploy
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+```
+
+### Versioned releases with tags
+
+This example creates versioned releases when a tag is pushed:
+
+```yaml
+image: maven:3.8.5-openjdk-17
+
+variables:
+  MAVEN_CLI_OPTS: "-s .m2/settings.xml --batch-mode"
+  MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
+
+cache:
+  paths:
+    - .m2/repository/
+    - target/
+
+stages:
+  - build
+  - test
+  - publish
+  - release
+
+build:
+  stage: build
+  script:
+    - mvn $MAVEN_CLI_OPTS compile
+
+test:
+  stage: test
+  script:
+    - mvn $MAVEN_CLI_OPTS test
+
+publish:
+  stage: publish
+  script:
+    - mvn $MAVEN_CLI_OPTS deploy
+  only:
+    - main
+
+release:
+  stage: release
+  script:
+    - mvn versions:set -DnewVersion=${CI_COMMIT_TAG}
+    - mvn $MAVEN_CLI_OPTS deploy
+  rules:
+    - if: $CI_COMMIT_TAG
+```
+
+### Conditional publishing based on changes
+
+This example publishes packages only when certain files are changed:
+
+```yaml
+image: maven:3.8.5-openjdk-17
+
+variables:
+  MAVEN_CLI_OPTS: "-s .m2/settings.xml --batch-mode"
+  MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
+
+cache:
+  paths:
+    - .m2/repository/
+    - target/
+
+stages:
+  - build
+  - test
+  - publish
+
+build:
+  stage: build
+  script:
+    - mvn $MAVEN_CLI_OPTS compile
+
+test:
+  stage: test
+  script:
+    - mvn $MAVEN_CLI_OPTS test
+
+publish:
+  stage: publish
+  script:
+    - mvn $MAVEN_CLI_OPTS deploy
+  only:
+    - main
+  rules:
+    - changes:
+      - pom.xml
+      - src/**/*
+```
+
+### Integration with code quality and security scans
+
+This example integrates code quality checks and security scans into the pipeline:
+
+```yaml
+image: maven:3.8.5-openjdk-17
+
+variables:
+  MAVEN_CLI_OPTS: "-s .m2/settings.xml --batch-mode"
+  MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
+
+include:
+  - template: Security/SAST.gitlab-ci.yml
+  - template: Code-Quality.gitlab-ci.yml
+
+cache:
+  paths:
+    - .m2/repository/
+    - target/
+
+stages:
+  - build
+  - test
+  - quality
+  - publish
+
+build:
+  stage: build
+  script:
+    - mvn $MAVEN_CLI_OPTS compile
+
+test:
+  stage: test
+  script:
+    - mvn $MAVEN_CLI_OPTS test
+
+code_quality:
+  stage: quality
+
+sast:
+  stage: quality
+
+publish:
+  stage: publish
+  script:
+    - mvn $MAVEN_CLI_OPTS deploy
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+```
+
 ## Helpful hints
 
 ### Publishing a package with the same name or version
@@ -790,6 +1026,12 @@ The version string is validated by using the following regex.
 
 You can experiment with the regex and try your version strings on [this regular expression editor](https://rubular.com/r/rrLQqUXjfKEoL6).
 
+### Use different settings for snapshot and release deployments
+
+To use different URLs or settings for snapshots and releases:
+
+- In the `<distributionManagement>` section of your `pom.xml` file, define separate `<repository>` and `<snapshotRepository>` elements.
+
 ### Useful Maven command-line options
 
 There are some [Maven command-line options](https://maven.apache.org/ref/current/maven-embedder/cli.html)
@@ -838,6 +1080,18 @@ The GitLab Maven repository supports the following CLI commands:
 ::EndTabs
 
 ## Troubleshooting
+
+While working with Maven packages in GitLab, you might encounter an issue.
+To resolve many common issues, try these steps:
+
+- Verify authentication - Ensure your authentication tokens are correct and have not expired.
+- Check permissions - Confirm you have the necessary permissions to publish or install packages.
+- Validate Maven settings - Double-check your `settings.xml` file for correct configuration.
+- Review GitLab CI/CD logs - For CI/CD issues, carefully examine the job logs for error messages.
+- Ensure correct endpoint URLs - Verify you're using the correct endpoint URLs for your project or group.
+- Use the -s option with `mvn` commands - Always run Maven commands with the `-s` option, for example, `mvn package -s settings.xml`. Without this option, authentication settings aren't applied, and Maven might fail to find packages.
+
+### Clear the cache
 
 To improve performance, clients cache files related to a package. If you encounter issues, clear
 the cache with these commands:
@@ -891,3 +1145,61 @@ package:
     - 'mvn help:system'
     - 'mvn package'
 ```
+
+### "401 Unauthorized" error when trying to publish a package
+
+This usually indicates an authentication issue. Check that:
+
+- Your authentication token is valid and has not expired.
+- You're using the correct token type (personal access token, deploy token, or CI job token).
+- The token has the necessary permissions (`api`, `read_api`, or `read_repository`).
+- For Maven projects, you're using the `-s` option with your mvn commands (for example, `mvn deploy -s settings.xml`). Without this option, Maven won't apply the authentication settings from your `settings.xml` file, leading to unauthorized errors.
+
+### "400 Bad Request" error with message "Validation failed: Version is invalid"
+
+GitLab has specific requirements for version strings. Ensure your version follows the format:
+
+```regex
+^(?!.*\.\.)(?!.*\.$)[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*(\+[0-9A-Za-z-]+)?$
+```
+
+For example, "1.0.0", "1.0-SNAPSHOT", and "1.0.0-alpha" are valid, but "1..0" or "1.0." are not.
+
+### "Artifact already exists" errors when publishing
+
+This error occurs when you try to publish a package version that already exists. To resolve:
+
+- Increment your package version before publishing.
+- If you're using SNAPSHOT versions, ensure you're allowing SNAPSHOT overwrites in your configuration.
+
+### Published package not appearing in the UI
+
+If you've just published a package, it might take a few moments to appear. If it still doesn't show:
+
+- Verify you have the necessary permissions to view packages.
+- Check that the package was successfully published by reviewing CI/CD logs or Maven output.
+- Ensure you're looking in the correct project or group.
+
+### Maven repository dependency conflicts
+
+Dependency conflicts can be resolved by:
+
+- Explicitly defining versions in your `pom.xml`.
+- Using Maven's dependency management section to control versions.
+- Using the `<exclusions>` tag to exclude conflicting transitive dependencies.
+
+### "Unable to find valid certification path to requested target" error
+
+This is typically a SSL certificate issue. To resolve:
+
+- Ensure your JDK trusts the GitLab server's SSL certificate.
+- If using a self-signed certificate, add it to your JDK's truststore.
+- As a last resort, you can disable SSL verification in Maven settings. Not recommended for production.
+
+### "No plugin found for prefix" pipeline errors
+
+This usually means Maven can't find the plugin. To fix:
+
+- Ensure the plugin is correctly defined in your `pom.xml`.
+- Check that your CI/CD configuration is using the correct Maven settings file.
+- Verify that your pipeline has access to all necessary repositories.

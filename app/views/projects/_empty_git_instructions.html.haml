@@ -3,7 +3,7 @@
 
 - git_push_target = ''
 - if protocol == 'ssh'
-  - ssh_doc = link_to('', help_page_path('user/ssh'), target: '_blank', rel: 'noopener noreferrer')
+  - ssh_doc = link_to('', help_page_path('user/ssh.md'), target: '_blank', rel: 'noopener noreferrer')
   %p.gl-mt-2= safe_format(_('%{link}How to use SSH keys%{link_end}?'), tag_pair(ssh_doc, :link, :link_end))
   - git_push_target = content_tag(:span, ssh_clone_url_to_repo(@project), class: 'js-clone')
 - if protocol == 'https'

@@ -8,7 +8,7 @@ import {
   GlDisclosureDropdownItem,
   GlModalDirective,
 } from '@gitlab/ui';
-import CLUSTER_EMPTY_SVG from '@gitlab/svgs/dist/illustrations/empty-state/empty-state-clusters.svg?url';
+import CLUSTER_EMPTY_SVG from '@gitlab/svgs/dist/illustrations/empty-state/empty-environment-md.svg';
 import { isEmpty } from 'lodash';
 import { s__, __ } from '~/locale';
 import { createAlert } from '~/alert';
@@ -29,6 +29,9 @@ import {
   CLUSTER_HEALTH_ERROR,
   HELM_RELEASES_RESOURCE_TYPE,
   KUSTOMIZATIONS_RESOURCE_TYPE,
+  FLUX_RECONCILE_ACTION,
+  FLUX_SUSPEND_ACTION,
+  FLUX_RESUME_ACTION,
 } from '~/environments/constants';
 import { CONNECT_MODAL_ID } from '~/clusters_list/constants';
 import WorkloadDetailsDrawer from '~/kubernetes_dashboard/components/workload_details_drawer.vue';
@@ -157,6 +160,11 @@ export default {
     fluxResourceStatus() {
       return this.fluxKustomization.conditions || this.fluxHelmRelease.conditions;
     },
+    fluxNamespace() {
+      return (
+        this.fluxKustomization?.metadata?.namespace || this.fluxHelmRelease?.metadata?.namespace
+      );
+    },
   },
   methods: {
     handleError(message) {
@@ -184,11 +192,8 @@ export default {
         spec: item.spec,
         fullStatus: item.status.conditions,
         actions: [
-          {
-            name: 'flux-reconcile',
-            text: s__('KubernetesDashboard|Trigger reconciliation'),
-            icon: 'retry',
-          },
+          FLUX_RECONCILE_ACTION,
+          item.spec.suspend ? FLUX_RESUME_ACTION : FLUX_SUSPEND_ACTION,
         ],
       };
     },
@@ -215,8 +220,10 @@ export default {
     onPodDeleted() {
       this.closeDetailsDrawer();
     },
-    onFluxReconcile() {
-      this.trackEvent('click_trigger_flux_reconciliation');
+    onFluxEvent({ trackingEvent = '', updateData = {} }) {
+      if (trackingEvent) {
+        this.trackEvent(trackingEvent);
+      }
 
       this.$apollo
         .mutate({
@@ -224,7 +231,7 @@ export default {
           variables: {
             configuration: this.k8sAccessConfiguration,
             fluxResourcePath: this.fluxResourcePath,
-            data: updateFluxRequested(),
+            data: updateFluxRequested(updateData),
           },
         })
         .then(({ data }) => {
@@ -239,6 +246,21 @@ export default {
         .catch((error) => {
           createAlert({ message: this.$options.i18n.error + error.message, variant: 'danger' });
         });
+    },
+    onFluxReconcile() {
+      this.onFluxEvent({ trackingEvent: 'click_trigger_flux_reconciliation' });
+    },
+    onFluxSuspend() {
+      this.onFluxEvent({
+        trackingEvent: 'click_trigger_flux_suspend',
+        updateData: { path: '/spec/suspend', value: true },
+      });
+    },
+    onFluxResume() {
+      this.onFluxEvent({
+        trackingEvent: 'click_trigger_flux_resume',
+        updateData: { path: '/spec/suspend', value: false },
+      });
     },
   },
   i18n: {
@@ -270,6 +292,7 @@ export default {
         :flux-resource-path="fluxResourcePath"
         :resource-type="activeTab"
         :flux-resource-status="fluxResourceStatus"
+        :flux-namespace="fluxNamespace"
         :flux-api-error="fluxApiError"
         @error="handleError"
         @show-flux-resource-details="showFluxResourceDetails"
@@ -326,6 +349,8 @@ export default {
       :configuration="k8sAccessConfiguration"
       @delete-pod="onDeletePod"
       @flux-reconcile="onFluxReconcile"
+      @flux-suspend="onFluxSuspend"
+      @flux-resume="onFluxResume"
     />
   </div>
   <gl-empty-state

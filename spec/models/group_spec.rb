@@ -15,6 +15,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     it { is_expected.to have_many(:all_owner_members) }
     it { is_expected.to have_many(:group_members).dependent(:destroy) }
     it { is_expected.to have_many(:non_invite_group_members).class_name('GroupMember') }
+    it { is_expected.to have_many(:request_group_members).class_name('GroupMember').inverse_of(:group) }
     it { is_expected.to have_many(:namespace_members) }
     it { is_expected.to have_many(:users).through(:group_members) }
     it { is_expected.to have_many(:owners).through(:all_owner_members) }
@@ -55,6 +56,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
     it { is_expected.to have_many(:contacts).class_name('CustomerRelations::Contact') }
     it { is_expected.to have_many(:crm_organizations).class_name('CustomerRelations::Organization') }
+    it { is_expected.to have_many(:crm_targets).class_name('Group::CrmSettings').inverse_of(:source_group) }
     it { is_expected.to have_many(:protected_branches).inverse_of(:group).with_foreign_key(:namespace_id) }
     it { is_expected.to have_one(:crm_settings) }
     it { is_expected.to have_one(:group_feature) }
@@ -74,6 +76,21 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
       it 'includes the correct members' do
         expect(group.non_invite_group_members).to contain_exactly(non_invited_member, non_requested_member, non_minimal_access_member)
+      end
+    end
+
+    describe '#request_group_members' do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:requested_member) { create(:group_member, :access_request, group: group) }
+
+      before do
+        create(:group_member, group: group) # regular member
+        create(:group_member, :invited, group: group)
+        create(:group_member, :minimal_access, group: group)
+      end
+
+      it 'includes the correct members' do
+        expect(group.request_group_members).to contain_exactly(requested_member)
       end
     end
 
@@ -892,6 +909,14 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
   end
 
+  describe '#notification_group' do
+    it 'is expected to reference itself' do
+      group = build(:group)
+
+      expect(group.notification_group).to eq(group)
+    end
+  end
+
   describe '.public_or_visible_to_user' do
     let!(:private_group) { create(:group, :private) }
     let!(:private_subgroup) { create(:group, :private, parent: private_group) }
@@ -937,17 +962,19 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       group.destroy!
     end
 
-    let!(:group_1) { create(:group, name: 'Y group') }
-    let!(:group_2) { create(:group, name: 'J group', created_at: 2.days.ago, updated_at: 1.day.ago) }
-    let!(:group_3) { create(:group, name: 'A group') }
-    let!(:group_4) { create(:group, name: 'F group', created_at: 1.day.ago, updated_at: 1.day.ago) }
+    let!(:group_1) { create(:group, id: 10, name: 'Y group') }
+    let!(:group_2) { create(:group, id: 11, name: 'J group', created_at: 2.days.ago, updated_at: 1.day.ago) }
+    let!(:group_3) { create(:group, id: 12, name: 'A group') }
+    let!(:group_4) { create(:group, id: 13, name: 'F group', created_at: 1.day.ago, updated_at: 1.day.ago) }
 
     subject { described_class.with_statistics.with_route.sort_by_attribute(sort) }
 
-    context 'when sort by is not provided (id desc by default)' do
+    context 'when sort by is not provided' do
       let(:sort) { nil }
 
-      it { is_expected.to eq([group_1, group_2, group_3, group_4]) }
+      it 'results are not ordered' do
+        is_expected.to contain_exactly(group_1, group_2, group_3, group_4)
+      end
     end
 
     context 'when sort by name_asc' do
@@ -974,28 +1001,16 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       it { is_expected.to eq([group_1, group_2, group_3, group_4].sort_by(&:path).reverse) }
     end
 
-    context 'when sort by recently_created' do
+    context 'when sort by created_desc' do
       let(:sort) { 'created_desc' }
 
       it { is_expected.to eq([group_3, group_1, group_4, group_2]) }
     end
 
-    context 'when sort by oldest_created' do
+    context 'when sort by created_asc' do
       let(:sort) { 'created_asc' }
 
       it { is_expected.to eq([group_2, group_4, group_1, group_3]) }
-    end
-
-    context 'when sort by latest_activity' do
-      let(:sort) { 'latest_activity_desc' }
-
-      it { is_expected.to eq([group_1, group_2, group_3, group_4]) }
-    end
-
-    context 'when sort by oldest_activity' do
-      let(:sort) { 'latest_activity_asc' }
-
-      it { is_expected.to eq([group_1, group_2, group_3, group_4]) }
     end
 
     context 'when sort by storage_size_desc' do
@@ -1111,16 +1126,6 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       it { is_expected.to match_array([private_group]) }
     end
 
-    describe 'with_onboarding_progress' do
-      subject { described_class.with_onboarding_progress }
-
-      it 'joins onboarding_progress' do
-        create(:onboarding_progress, namespace: group)
-
-        expect(subject).to eq([group])
-      end
-    end
-
     describe 'with_non_archived_projects' do
       let_it_be(:project) { create(:project, group: private_group, archived: false) }
 
@@ -1139,6 +1144,17 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
       it 'loads the records of non invite group members' do
         associations = subject.map { |group| group.association(:non_invite_group_members) }
+        expect(associations).to all(be_loaded)
+      end
+    end
+
+    describe '.with_request_group_members' do
+      let_it_be(:group_member) { create(:group_member, :access_request, member_namespace: private_group) }
+
+      subject(:with_request_group_members) { described_class.with_request_group_members }
+
+      it 'loads the records of non invite group members' do
+        associations = with_request_group_members.map { |group| group.association(:request_group_members) }
         expect(associations).to all(be_loaded)
       end
     end
@@ -3973,6 +3989,41 @@ RSpec.describe Group, feature_category: :groups_and_projects do
         group_id: group.id,
         full_path: group.full_path
       })
+    end
+  end
+
+  describe '#crm_group' do
+    let!(:crm_group) { create(:group) }
+    let!(:root_group) { create(:group) }
+    let!(:parent_group) { create(:group, parent: root_group) }
+    let!(:child_group) { create(:group, parent: parent_group) }
+
+    context 'when the group has a source_group_id' do
+      let!(:crm_settings) { create(:crm_settings, group: child_group, source_group: crm_group) }
+
+      it 'returns the source_group' do
+        expect(child_group.crm_group).to eq(crm_group)
+      end
+    end
+
+    context 'when the group does not have a source_group_id but is a root group' do
+      it 'returns the root group' do
+        expect(root_group.crm_group).to eq(root_group)
+      end
+    end
+
+    context 'when the group has no source_group_id and is not a root group' do
+      context 'when a parent group has a source_group_id' do
+        let!(:crm_settings) { create(:crm_settings, group: parent_group, source_group: crm_group) }
+
+        it 'traverses up the hierarchy and returns the first group with a source_group_id' do
+          expect(child_group.crm_group).to eq(crm_group)
+        end
+      end
+
+      it 'returns the root group if no groups in the hierarchy have a source_group_id' do
+        expect(child_group.crm_group).to eq(root_group)
+      end
     end
   end
 end

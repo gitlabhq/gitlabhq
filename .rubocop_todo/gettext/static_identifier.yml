@@ -2,16 +2,13 @@
 Gettext/StaticIdentifier:
   Exclude:
     - 'app/graphql/types/project_type.rb'
-    - 'app/models/integrations/apple_app_store.rb'
     - 'app/models/integrations/confluence.rb'
-    - 'app/models/integrations/google_play.rb'
     - 'app/services/import/fogbugz_service.rb'
     - 'app/services/issuable_links/create_service.rb'
     - 'app/services/issues/set_crm_contacts_service.rb'
     - 'app/services/projects/create_from_template_service.rb'
     - 'app/services/security/ci_configuration/base_create_service.rb'
     - 'app/services/users/banned_user_base_service.rb'
-    - 'ee/app/controllers/admin/licenses_controller.rb'
     - 'ee/app/mailers/ee/emails/admin_notification.rb'
     - 'ee/app/mailers/emails/namespace_storage_usage_mailer.rb'
     - 'ee/app/models/integrations/github.rb'

@@ -192,7 +192,7 @@ To archive multiple designs at once:
 
 ### Replicate design management data
 
-Design Management data [can be replicated](../../../administration/geo/replication/datatypes.md#limitations-on-replicationverification)
+Design Management data [can be replicated](../../../administration/geo/replication/datatypes.md#replicated-data-types)
 and in GitLab 16.1 and later it can be [verified by Geo as well](https://gitlab.com/gitlab-org/gitlab/-/issues/355660).
 
 ## Markdown and rich text editors for descriptions

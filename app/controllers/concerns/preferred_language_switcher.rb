@@ -15,7 +15,7 @@ module PreferredLanguageSwitcher
 
   def preferred_language
     cookies[:preferred_language].presence_in(Gitlab::I18n.available_locales) ||
-      selectable_language(marketing_site_language) ||
+      selectable_language(language_from_params) ||
       selectable_language(browser_languages) ||
       Gitlab::CurrentSettings.default_preferred_language
   end
@@ -37,14 +37,9 @@ module PreferredLanguageSwitcher
   end
   strong_memoize_attr :browser_languages
 
-  def marketing_site_language
-    # Our marketing site will be the only thing we are sure of the language placement in the url for.
-    locale = params[:glm_source]&.match(%r{\A#{ApplicationHelper.promo_host}/([a-z]{2})-([a-z]{2})}i)&.captures
-
-    return [] if locale.blank?
-
-    # This is local and then locale_region - the marketing site will always send locale-region pairs like fr-fr.
-    [locale[0], "#{locale[0]}_#{locale[1]}"]
+  def language_from_params
+    # overridden in ee
+    []
   end
 end
 

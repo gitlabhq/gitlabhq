@@ -882,8 +882,13 @@ class MergeRequestDiff < ApplicationRecord
   end
 
   def keep_around_commits
+    # The merge head keeps track of what an actual merge might look like. The
+    # referenced merge is temporary and so is kept alive with
+    # MergeRequest#merge_ref_path which is updated as required.
+    return if merge_head?
+
     [repository, merge_request.source_project.repository].uniq.each do |repo|
-      repo.keep_around(start_commit_sha, head_commit_sha, base_commit_sha, source: self.class.name)
+      repo.keep_around(start_commit_sha, head_commit_sha, source: self.class.name)
     end
   end
 

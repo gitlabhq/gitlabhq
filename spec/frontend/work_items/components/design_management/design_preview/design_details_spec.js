@@ -1,24 +1,32 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
+
 import { createAlert } from '~/alert';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 
 import getDesignQuery from '~/work_items/components/design_management/graphql/design_details.query.graphql';
+import getLocalDesignQuery from '~/work_items/components/design_management/graphql/local_design.query.graphql';
+import archiveDesignMutation from '~/work_items/components/design_management/graphql/archive_design.mutation.graphql';
 import DesignDetails from '~/work_items/components/design_management/design_preview/design_details.vue';
 import DesignPresentation from '~/work_items/components/design_management/design_preview/design_presentation.vue';
 import DesignToolbar from '~/work_items/components/design_management/design_preview/design_toolbar.vue';
 import DesignSidebar from '~/work_items/components/design_management/design_preview/design_sidebar.vue';
 import DesignScaler from '~/work_items/components/design_management/design_preview/design_scaler.vue';
-import { DESIGN_NOT_FOUND_ERROR } from '~/work_items/components/design_management/error_messages';
 import * as utils from '~/work_items/components/design_management/utils';
-import { DESIGN_DETAIL_LAYOUT_CLASSLIST } from '~/work_items/components/design_management/constants';
-
-import { getDesignResponse } from '../mock_data';
+import { updateWorkItemDesignCurrentTodosWidget } from '~/work_items/components/design_management/cache_updates';
+import {
+  DESIGN_DETAIL_LAYOUT_CLASSLIST,
+  DESIGN_NOT_FOUND_ERROR,
+  DESIGN_SINGLE_ARCHIVE_ERROR,
+} from '~/work_items/components/design_management/constants';
+import { getDesignResponse, mockDesign, mockArchiveDesignMutationResponse } from '../mock_data';
 
 jest.mock('~/alert');
-
+jest.mock('~/work_items/components/design_management/cache_updates', () => ({
+  updateWorkItemDesignCurrentTodosWidget: jest.fn(),
+}));
 Vue.use(VueApollo);
 
 const MOCK_ROUTE = {
@@ -47,16 +55,24 @@ describe('DesignDetails', () => {
   const findDesignScaler = () => wrapper.findComponent(DesignScaler);
 
   const getDesignQueryHandler = jest.fn().mockResolvedValue(getDesignResponse);
+  const archiveDesignSuccessMutationHandler = jest
+    .fn()
+    .mockResolvedValue(mockArchiveDesignMutationResponse);
+  const archiveDesignMutationError = jest.fn().mockRejectedValue(new Error('Mutation failed'));
   const error = new Error('ruh roh some error');
   const errorQueryHandler = jest.fn().mockRejectedValue(error);
 
   function createComponent({
     queryHandler = getDesignQueryHandler,
+    archiveDesignMutationHandler = archiveDesignSuccessMutationHandler,
     routeArg = MOCK_ROUTE,
     data = {},
   } = {}) {
     wrapper = shallowMountExtended(DesignDetails, {
-      apolloProvider: createMockApollo([[getDesignQuery, queryHandler]]),
+      apolloProvider: createMockApollo([
+        [getDesignQuery, queryHandler],
+        [archiveDesignMutation, archiveDesignMutationHandler],
+      ]),
       data() {
         return data;
       },
@@ -99,17 +115,24 @@ describe('DesignDetails', () => {
       });
     });
 
-    it('closes sidebar on toggle', async () => {
-      expect(findDesignSidebar().props('isOpen')).toBe(true);
-
-      findDesignToolbar().vm.$emit('toggle-sidebar');
-      await nextTick();
-
-      expect(findDesignSidebar().props('isOpen')).toBe(false);
-    });
-
     it('renders `DesignScaler` component', () => {
       expect(findDesignScaler().exists()).toBe(true);
+    });
+
+    it('archives a design', async () => {
+      findDesignToolbar().vm.$emit('archive-design');
+      await waitForPromises();
+
+      expect(archiveDesignSuccessMutationHandler).toHaveBeenCalled();
+    });
+
+    it('throws error if archive a design query fails', async () => {
+      createComponent({ archiveDesignMutationHandler: archiveDesignMutationError });
+
+      findDesignToolbar().vm.$emit('archive-design');
+      await waitForPromises();
+
+      expect(createAlert).toHaveBeenCalledWith({ message: DESIGN_SINGLE_ARCHIVE_ERROR });
     });
   });
 
@@ -165,6 +188,46 @@ describe('DesignDetails', () => {
       expect(mockPageLayoutElement.classList.remove).toHaveBeenCalledWith(
         ...DESIGN_DETAIL_LAYOUT_CLASSLIST,
       );
+    });
+  });
+
+  describe('design toolbar', () => {
+    beforeEach(async () => {
+      createComponent();
+      await waitForPromises();
+    });
+
+    it('renders with correct data', () => {
+      const { design, currentUserDesignTodos, designFilename } = findDesignToolbar().props();
+
+      expect(design).toEqual(mockDesign);
+      expect(currentUserDesignTodos).toEqual([]);
+      expect(designFilename).toEqual(MOCK_ROUTE.params.id);
+    });
+
+    it('closes sidebar on toggle', async () => {
+      expect(findDesignSidebar().props('isOpen')).toBe(true);
+
+      findDesignToolbar().vm.$emit('toggle-sidebar');
+      await nextTick();
+
+      expect(findDesignSidebar().props('isOpen')).toBe(false);
+    });
+
+    it('updates cache when todos are updated', () => {
+      findDesignToolbar().vm.$emit('todosUpdated', { cache: expect.anything(), todos: [] });
+
+      expect(updateWorkItemDesignCurrentTodosWidget).toHaveBeenCalledWith({
+        store: expect.anything(),
+        todos: [],
+        query: {
+          query: getLocalDesignQuery,
+          variables: {
+            filenames: [MOCK_ROUTE.params.id],
+            atVersion: null,
+          },
+        },
+      });
     });
   });
 });

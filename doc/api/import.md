@@ -253,8 +253,8 @@ curl --request POST \
   --data '{
     "bitbucket_username": "bitbucket_username",
     "bitbucket_app_password": "bitbucket_app_password",
-    "repo_path": "username/my_project"
-    "target_namespace": "my_group/my_subgroup"
+    "repo_path": "username/my_project",
+    "target_namespace": "my_group/my_subgroup",
     "new_name": "new_project_name"
 }'
 ```

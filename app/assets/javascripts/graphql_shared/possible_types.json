@@ -87,9 +87,14 @@
     "CiBuildNeed",
     "CiJob"
   ],
+  "LabelInterface": [
+    "AbuseReportLabel",
+    "Label"
+  ],
   "MemberInterface": [
     "GroupMember",
     "PendingGroupMember",
+    "PendingProjectMember",
     "ProjectMember"
   ],
   "NoteableInterface": [
@@ -112,7 +117,8 @@
     "ApprovalPolicy",
     "PipelineExecutionPolicy",
     "ScanExecutionPolicy",
-    "ScanResultPolicy"
+    "ScanResultPolicy",
+    "VulnerabilityManagementPolicy"
   ],
   "PackageFileMetadata": [
     "ConanFileMetadata",
@@ -125,6 +131,10 @@
     "NugetMetadata",
     "PypiMetadata",
     "TerraformModuleMetadata"
+  ],
+  "PendingMemberInterface": [
+    "PendingGroupMember",
+    "PendingProjectMember"
   ],
   "Registrable": [
     "CiSecureFileRegistry",
@@ -176,9 +186,11 @@
     "EpicIssue",
     "Group",
     "Issue",
+    "Key",
     "MergeRequest",
     "Namespace",
     "Project",
+    "Vulnerability",
     "WorkItem"
   ],
   "User": [

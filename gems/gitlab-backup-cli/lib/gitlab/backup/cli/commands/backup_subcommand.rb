@@ -4,30 +4,13 @@ module Gitlab
   module Backup
     module Cli
       module Commands
-        class BackupSubcommand < Command
+        class BackupSubcommand < ObjectStorageCommand
           package_name 'Backup'
-
-          EXECUTOR_OPTIONS = %w[backup_bucket wait_for_completion registry_bucket service_account_file].freeze
-
-          class_option :backup_bucket,
-            desc: "When backing up object storage, this is the bucket to backup to",
-            required: false
-
-          class_option :wait_for_completion,
-            desc: "Wait for object storage backups to complete",
-            type: :boolean,
-            default: true
-
-          class_option :registry_bucket,
-            desc: "When backing up registry from object storage, this is the source bucket",
-            required: false
-
-          class_option :service_account_file,
-            desc: "JSON file containing the Google service account credentials",
-            default: "/etc/gitlab/backup-account-credentials.json"
 
           desc 'all', 'Creates a backup including repositories, database and local files'
           def all
+            Gitlab::Backup::Cli.update_process_title!('backup all')
+
             duration = measure_duration do
               Gitlab::Backup::Cli::Output.info("Initializing environment...")
               Gitlab::Backup::Cli.rails_environment!
@@ -35,7 +18,11 @@ module Gitlab
             Gitlab::Backup::Cli::Output.success("Environment loaded. (#{duration.in_seconds}s)")
 
             backup_executor = Gitlab::Backup::Cli::BackupExecutor.new(
-              context: build_context, backup_options: executor_options
+              context: build_context,
+              backup_bucket: options["backup_bucket"],
+              wait_for_completion: options["wait_for_completion"],
+              registry_bucket: options["registry_bucket"],
+              service_account_file: options["service_account_file"]
             )
             backup_id = backup_executor.metadata.backup_id
 
@@ -56,9 +43,7 @@ module Gitlab
           private
 
           def build_context
-            # TODO: When we have more then one context we need to auto-detect which one to use
-            # https://gitlab.com/gitlab-org/gitlab/-/issues/454530
-            Gitlab::Backup::Cli::SourceContext.new
+            ::Gitlab::Backup::Cli::Context.build
           end
 
           def measure_duration
@@ -66,10 +51,6 @@ module Gitlab
             yield
 
             ActiveSupport::Duration.build(Time.now - start)
-          end
-
-          def executor_options
-            options.select { |key, _| EXECUTOR_OPTIONS.include?(key) }
           end
         end
       end

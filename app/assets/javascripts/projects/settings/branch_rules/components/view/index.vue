@@ -100,6 +100,7 @@ export default {
       variables() {
         return {
           projectPath: this.projectPath,
+          buildMissing: this.isAllBranchesRule,
         };
       },
       update({ project: { branchRules, group } }) {
@@ -199,11 +200,11 @@ export default {
     statusChecksCount() {
       return '0';
     },
+    isAllBranchesRule() {
+      return this.branch === this.$options.i18n.allBranches;
+    },
     isPredefinedRule() {
-      return (
-        this.branch === this.$options.i18n.allBranches ||
-        this.branch === this.$options.i18n.allProtectedBranches
-      );
+      return this.isAllBranchesRule || this.branch === this.$options.i18n.allProtectedBranches;
     },
     hasPushAccessLevelSet() {
       return this.pushAccessLevels?.total > 0;
@@ -216,8 +217,8 @@ export default {
     accessLevelsDrawerData() {
       return this.isAllowedToMergeDrawerOpen ? this.mergeAccessLevels : this.pushAccessLevels;
     },
-    showStatusChecksWithDrawer() {
-      return this.glFeatures.editBranchRules && !this.isPredefinedRule;
+    showStatusChecksSection() {
+      return this.showStatusChecks && this.branch !== this.$options.i18n.allProtectedBranches;
     },
   },
   methods: {
@@ -538,7 +539,7 @@ export default {
 
       <!-- Status checks -->
       <settings-section
-        v-if="showStatusChecks"
+        v-if="showStatusChecksSection"
         :heading="$options.i18n.statusChecksTitle"
         class="-gl-mt-5"
       >
@@ -554,10 +555,11 @@ export default {
 
         <!-- eslint-disable-next-line vue/no-undef-components -->
         <status-checks
-          v-if="showStatusChecksWithDrawer"
-          :branch-rule-id="branchRule.id"
+          v-if="glFeatures.editBranchRules"
+          :branch-rule-id="branchRule && branchRule.id"
           :status-checks="statusChecks"
           :project-path="projectPath"
+          :is-all-branches-rule="isAllBranchesRule"
           class="gl-mt-3"
         />
 

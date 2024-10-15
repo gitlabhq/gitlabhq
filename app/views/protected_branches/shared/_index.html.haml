@@ -7,7 +7,7 @@
   expanded: expanded) do |c|
   - c.with_description do
     = s_("ProtectedBranch|Keep stable branches secure and force developers to use merge requests.")
-    = link_to s_("ProtectedBranch|What are protected branches?"), help_page_path("user/project/repository/branches/protected")
+    = link_to s_("ProtectedBranch|What are protected branches?"), help_page_path("user/project/repository/branches/protected.md")
   - c.with_body do
     .js-alert-protected-branch-created-container.gl-mt-5
 
@@ -16,7 +16,7 @@
       dismissible: false) do |c|
       - c.with_body do
         =  s_("ProtectedBranch|Giving merge rights to a protected branch also gives elevated permissions for certain CI/CD features.")
-        = link_to s_("ProtectedBranch|What are the security implications?"), help_page_path('ci/pipelines/index', anchor: 'pipeline-security-on-protected-branches'), target: '_blank', rel: 'noopener noreferrer'
+        = link_to s_("ProtectedBranch|What are the security implications?"), help_page_path('ci/pipelines/index.md', anchor: 'pipeline-security-on-protected-branches'), target: '_blank', rel: 'noopener noreferrer'
 
     = render ::Layouts::CrudComponent.new(s_("ProtectedBranch|Protected branches"),
       icon: 'branch',
@@ -25,7 +25,7 @@
       toggle_options: { data: { testid: 'add-protected-branch-button' } }) do |c|
       - c.with_description do
         = s_("ProtectedBranch|By default, protected branches restrict who can modify the branch.")
-        = link_to s_("ProtectedBranch|Learn more."), help_page_path("user/project/repository/branches/protected", anchor: "who-can-modify-a-protected-branch")
+        = link_to s_("ProtectedBranch|Learn more."), help_page_path("user/project/repository/branches/protected.md", anchor: "who-can-modify-a-protected-branch")
       - c.with_body do
         = content_for :branches_list
 

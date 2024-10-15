@@ -30,6 +30,7 @@ Gitaly implements a client-server architecture:
   - [GitLab Workhorse](https://gitlab.com/gitlab-org/gitlab-workhorse)
   - [GitLab Elasticsearch Indexer](https://gitlab.com/gitlab-org/gitlab-elasticsearch-indexer)
   - [GitLab Zoekt Indexer](https://gitlab.com/gitlab-org/gitlab-zoekt-indexer)
+  - [GitLab Agent for Kubernetes (KAS)](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent)
 
 Gitaly manages only Git repository access for GitLab. Other types of GitLab data aren't accessed
 using Gitaly.
@@ -142,26 +143,33 @@ In this example:
 The following illustrates the Gitaly client-server architecture:
 
 ```mermaid
-flowchart TD
+flowchart LR
   subgraph Gitaly clients
-    A[GitLab Rails]
-    B[GitLab Workhorse]
-    C[GitLab Shell]
-    D[...]
+    Rails[GitLab Rails]
+    Workhorse[GitLab Workhorse]
+    Shell[GitLab Shell]
+    Zoekt[Zoekt Indexer]
+    Elasticsearch[Elasticsearch Indexer]
+    KAS["GitLab Agent for Kubernetes (KAS)"]
   end
 
   subgraph Gitaly
-    E[Git integration]
+    GitalyServer[Gitaly server]
   end
 
-F[Local filesystem]
+  FS[Local filesystem]
+  ObjectStorage[Object storage]
 
-A -- gRPC --> Gitaly
-B -- gRPC--> Gitaly
-C -- gRPC --> Gitaly
-D -- gRPC --> Gitaly
+  Rails -- gRPC --> Gitaly
+  Workhorse -- gRPC --> Gitaly
+  Shell -- gRPC --> Gitaly
+  Zoekt -- gRPC --> Gitaly
+  Elasticsearch -- gRPC --> Gitaly
+  KAS -- gRPC --> Gitaly
 
-E --> F
+  GitalyServer --> FS
+  GitalyServer -- TCP --> Workhorse
+  GitalyServer -- TCP --> ObjectStorage
 ```
 
 ### Configure Gitaly
@@ -271,7 +279,7 @@ Gitaly Cluster and [Geo](../geo/index.md) both provide redundancy. However the r
   not aware when Gitaly Cluster is used.
 - Geo provides [replication](../geo/index.md) and [disaster recovery](../geo/disaster_recovery/index.md) for
   an entire instance of GitLab. Users know when they are using Geo for
-  [replication](../geo/index.md). Geo [replicates multiple data types](../geo/replication/datatypes.md#limitations-on-replicationverification),
+  [replication](../geo/index.md). Geo [replicates multiple data types](../geo/replication/datatypes.md#replicated-data-types),
   including Git data.
 
 The following table outlines the major differences between Gitaly Cluster and Geo:

@@ -39,6 +39,14 @@ module Gitlab
           end
         end
 
+        def with_routed_client
+          Gitlab::Redis::Queues.instances.each_value do |inst|
+            Sidekiq::Client.via(inst.sidekiq_redis) do
+              yield
+            end
+          end
+        end
+
         def migrated_shards
           @migrated_shards ||= Set.new(Gitlab::Json.parse(ENV.fetch('SIDEKIQ_MIGRATED_SHARDS', '[]')))
         end

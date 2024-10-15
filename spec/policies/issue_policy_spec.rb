@@ -25,10 +25,6 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
     described_class.new(user, issue)
   end
 
-  before do
-    stub_feature_flags(enforce_check_group_level_work_items_license: true)
-  end
-
   shared_examples 'support bot with service desk enabled' do
     before do
       allow(::Gitlab::Email::IncomingEmail).to receive(:enabled?) { true }
@@ -587,6 +583,32 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
 
         expect(policies).to be_disallowed(:read_crm_contacts)
         expect(policies).to be_disallowed(:set_issue_crm_contacts)
+      end
+    end
+
+    context 'when custom crm_group configured' do
+      let_it_be(:crm_settings) { create(:crm_settings, source_group: create(:group)) }
+      let_it_be(:subgroup) { create(:group, parent: create(:group), crm_settings: crm_settings) }
+      let_it_be(:project) { create(:project, group: subgroup) }
+
+      context 'when custom crm_group guest' do
+        it 'is disallowed' do
+          subgroup.parent.add_reporter(user)
+          crm_settings.source_group.add_guest(user)
+
+          expect(policies).to be_disallowed(:read_crm_contacts)
+          expect(policies).to be_disallowed(:set_issue_crm_contacts)
+        end
+      end
+
+      context 'when custom crm_group reporter' do
+        it 'is allowed' do
+          subgroup.parent.add_reporter(user)
+          crm_settings.source_group.add_reporter(user)
+
+          expect(policies).to be_allowed(:read_crm_contacts)
+          expect(policies).to be_allowed(:set_issue_crm_contacts)
+        end
       end
     end
   end

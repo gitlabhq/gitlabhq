@@ -1,0 +1,13 @@
+---
+api_type: integer
+attr: file_template_project_id
+clusterwide: false
+column: file_template_project_id
+db_type: bigint
+default:
+description: The ID of a project to load custom file templates from. Premium and Ultimate
+  only.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: false

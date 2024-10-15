@@ -6,7 +6,7 @@ module Mutations
       class Create < BaseMutation
         graphql_name 'AbuseReportLabelCreate'
 
-        field :label, Types::LabelType, null: true, description: 'Label after mutation.'
+        field :label, Types::AntiAbuse::AbuseReportLabelType, null: true, description: 'Label after mutation.'
 
         argument :title, GraphQL::Types::String, required: true, description: 'Title of the label.'
 

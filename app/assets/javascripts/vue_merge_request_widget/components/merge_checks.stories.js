@@ -20,7 +20,7 @@ const defaultRender = (apolloProvider) => ({
   template: '<merge-checks :mr="mr" :service="service" />',
 });
 
-const Template = ({ canMerge, failed, pushToSourceBranch }) => {
+const Template = ({ canMerge, failed, checking, pushToSourceBranch }) => {
   const requestHandlers = [
     [
       mergeChecksQuery,
@@ -42,8 +42,8 @@ const Template = ({ canMerge, failed, pushToSourceBranch }) => {
                     status: failed ? 'FAILED' : 'SUCCESS',
                   },
                   {
-                    identifier: 'DRAFT_STATUS',
-                    status: failed ? 'FAILED' : 'SUCCESS',
+                    identifier: 'NOT_APPROVED',
+                    status: checking ? 'CHECKING' : 'SUCCESS',
                   },
                 ],
               },
@@ -82,7 +82,7 @@ const LoadingTemplate = () => {
 };
 
 export const Default = Template.bind({});
-Default.args = { canMerge: true, failed: true, pushToSourceBranch: true };
+Default.args = { canMerge: true, failed: true, checking: false, pushToSourceBranch: true };
 
 export const Loading = LoadingTemplate.bind({});
 Loading.args = {};

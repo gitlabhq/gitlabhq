@@ -248,6 +248,11 @@ module SearchHelper
     end
   end
 
+  def should_show_work_items_as_epics_in_results?
+    ::Feature.enabled?(:search_epics_uses_work_items_index, current_user) &&
+      ::Elastic::DataMigrationService.migration_has_finished?(:backfill_work_items)
+  end
+
   def should_show_zoekt_results?(_scope, _search_type)
     false
   end
@@ -273,14 +278,14 @@ module SearchHelper
   # Autocomplete results for internal help pages
   def help_autocomplete
     [
-      { category: "Help", label: _("API Help"),                     url: help_page_path("api/index") },
-      { category: "Help", label: _("Markdown Help"),                url: help_page_path("user/markdown") },
-      { category: "Help", label: _("Permissions Help"),             url: help_page_path("user/permissions") },
-      { category: "Help", label: _("Public Access Help"),           url: help_page_path("user/public_access") },
-      { category: "Help", label: _("Rake Tasks Help"),              url: help_page_path("raketasks/index") },
-      { category: "Help", label: _("SSH Keys Help"),                url: help_page_path("user/ssh") },
-      { category: "Help", label: s_("Webhooks|System hooks help"),  url: help_page_path("administration/system_hooks") },
-      { category: "Help", label: _("Webhooks Help"),                url: help_page_path("user/project/integrations/webhooks") }
+      { category: "Help", label: _("API Help"),                     url: help_page_path("api/index.md") },
+      { category: "Help", label: _("Markdown Help"),                url: help_page_path("user/markdown.md") },
+      { category: "Help", label: _("Permissions Help"),             url: help_page_path("user/permissions.md") },
+      { category: "Help", label: _("Public Access Help"),           url: help_page_path("user/public_access.md") },
+      { category: "Help", label: _("Rake Tasks Help"),              url: help_page_path("raketasks/index.md") },
+      { category: "Help", label: _("SSH Keys Help"),                url: help_page_path("user/ssh.md") },
+      { category: "Help", label: s_("Webhooks|System hooks help"),  url: help_page_path("administration/system_hooks.md") },
+      { category: "Help", label: _("Webhooks Help"),                url: help_page_path("user/project/integrations/webhooks.md") }
     ]
   end
 

@@ -1,0 +1,13 @@
+---
+description: Tracks when incident details are viewed
+action: view_incident_details
+product_group: respond
+milestone: '13.5'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45011
+distributions:
+  - ce
+  - ee
+tiers:
+  - free
+  - premium
+  - ultimate

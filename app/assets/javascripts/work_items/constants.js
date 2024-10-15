@@ -41,6 +41,7 @@ export const WORK_ITEM_TYPE_ENUM_OBJECTIVE = 'OBJECTIVE';
 export const WORK_ITEM_TYPE_ENUM_KEY_RESULT = 'KEY_RESULT';
 export const WORK_ITEM_TYPE_ENUM_EPIC = 'EPIC';
 
+export const WORK_ITEM_TYPE_VALUE_WORK_ITEM = 'Work Item';
 export const WORK_ITEM_TYPE_VALUE_EPIC = 'Epic';
 export const WORK_ITEM_TYPE_VALUE_INCIDENT = 'Incident';
 export const WORK_ITEM_TYPE_VALUE_ISSUE = 'Issue';
@@ -137,7 +138,7 @@ export const I18N_MAX_WORK_ITEMS_ERROR_MESSAGE = sprintf(
   { MAX_WORK_ITEMS },
 );
 export const I18N_MAX_WORK_ITEMS_NOTE_LABEL = sprintf(
-  s__('WorkItem|Add a maximum of %{MAX_WORK_ITEMS} items at a time.'),
+  s__('WorkItem|Add up to %{MAX_WORK_ITEMS} items at a time.'),
   { MAX_WORK_ITEMS },
 );
 
@@ -209,6 +210,7 @@ export const WORK_ITEM_TYPE_VALUE_MAP = {
   [WORK_ITEM_TYPE_VALUE_ISSUE]: WORK_ITEM_TYPE_ENUM_ISSUE,
   [WORK_ITEM_TYPE_VALUE_EPIC]: WORK_ITEM_TYPE_ENUM_EPIC,
   [WORK_ITEM_TYPE_VALUE_TASK]: WORK_ITEM_TYPE_ENUM_TASK,
+  [WORK_ITEM_TYPE_VALUE_INCIDENT]: WORK_ITEM_TYPE_ENUM_INCIDENT,
 };
 
 export const WORK_ITEMS_TREE_TEXT = {
@@ -268,6 +270,7 @@ export const TEST_ID_COPY_REFERENCE_ACTION = 'copy-reference-action';
 export const TEST_ID_COPY_CREATE_NOTE_EMAIL_ACTION = 'copy-create-note-email-action';
 export const TEST_ID_TOGGLE_ACTION = 'state-toggle-action';
 export const TEST_ID_REPORT_ABUSE = 'report-abuse-action';
+export const TEST_ID_NEW_RELATED_WORK_ITEM = 'new-related-work-item';
 
 export const TODO_ADD_ICON = 'todo-add';
 export const TODO_DONE_ICON = 'todo-done';
@@ -296,6 +299,12 @@ export const LINKED_CATEGORIES_MAP = {
   BLOCKS: 'blocks',
 };
 
+export const RELATIONSHIP_TYPE_ENUM = {
+  relates_to: 'RELATED',
+  blocks: 'BLOCKS',
+  is_blocked_by: 'BLOCKED_BY',
+};
+
 export const LINKED_ITEM_TYPE_VALUE = {
   RELATED: 'RELATED',
   BLOCKED_BY: 'BLOCKED_BY',
@@ -306,14 +315,6 @@ export const LINK_ITEM_FORM_HEADER_LABEL = {
   [WORK_ITEM_TYPE_VALUE_OBJECTIVE]: s__('WorkItem|The current objective'),
   [WORK_ITEM_TYPE_VALUE_KEY_RESULT]: s__('WorkItem|The current key result'),
   [WORK_ITEM_TYPE_VALUE_TASK]: s__('WorkItem|The current task'),
-};
-
-export const SUPPORTED_PARENT_TYPE_MAP = {
-  [WORK_ITEM_TYPE_VALUE_OBJECTIVE]: [WORK_ITEM_TYPE_ENUM_OBJECTIVE],
-  [WORK_ITEM_TYPE_VALUE_KEY_RESULT]: [WORK_ITEM_TYPE_ENUM_OBJECTIVE],
-  [WORK_ITEM_TYPE_VALUE_TASK]: [WORK_ITEM_TYPE_ENUM_ISSUE],
-  [WORK_ITEM_TYPE_VALUE_EPIC]: [WORK_ITEM_TYPE_ENUM_EPIC],
-  [WORK_ITEM_TYPE_VALUE_ISSUE]: [WORK_ITEM_TYPE_ENUM_EPIC],
 };
 
 export const LINKED_ITEMS_ANCHOR = 'linkeditems';
@@ -350,7 +351,7 @@ export const NEW_WORK_ITEM_IID = 'new-work-item-iid';
 
 export const NEW_WORK_ITEM_GID = 'gid://gitlab/WorkItem/new';
 
-export const NEW_EPIC_FEEDBACK_PROMPT_EXPIRY = '2024-11-01';
+export const NEW_EPIC_FEEDBACK_PROMPT_EXPIRY = '2024-12-31';
 export const FEATURE_NAME = 'work_item_epic_feedback';
 
 export const CLEAR_VALUE = 'CLEAR_VALUE';
@@ -361,6 +362,16 @@ export const ROUTES = {
   workItem: 'workItem',
   new: 'new',
   design: 'design',
+};
+
+export const WORK_ITEM_TYPE_ROUTE_WORK_ITEM = 'work_items';
+export const WORK_ITEM_TYPE_ROUTE_ISSUE = 'issues';
+export const WORK_ITEM_TYPE_ROUTE_EPIC = 'epics';
+
+export const WORK_ITEM_BASE_ROUTE_MAP = {
+  [WORK_ITEM_TYPE_ROUTE_WORK_ITEM]: null,
+  [WORK_ITEM_TYPE_ROUTE_ISSUE]: WORK_ITEM_TYPE_ENUM_ISSUE,
+  [WORK_ITEM_TYPE_ROUTE_EPIC]: WORK_ITEM_TYPE_ENUM_EPIC,
 };
 
 export const WORKITEM_LINKS_SHOWLABELS_LOCALSTORAGEKEY = 'workItemLinks.showLabels';

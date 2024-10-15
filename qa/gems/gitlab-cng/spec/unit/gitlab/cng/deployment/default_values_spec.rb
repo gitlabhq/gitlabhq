@@ -4,7 +4,7 @@ RSpec.describe Gitlab::Cng::Deployment::DefaultValues do
   let(:ci_project_dir) { "/builds/dir" }
   let(:ci_commit_sha) { "0acb5ee6db0860436fafc2c31a2cd87849c51aa3" }
   let(:ci_short_sha) { "0acb5ee6db08" }
-  let(:image_repository) { "registry.gitlab.com/gitlab-org/quality/quality-engineering/cng-mirror" }
+  let(:image_repository) { "registry.gitlab.com/gitlab-org/build/cng-mirror" }
   let(:gitaly_version) { "7aa06a578d76bdc294ee8e9acb4f063e7d9f1d5f" }
   let(:shell_version) { "14.0.5" }
 

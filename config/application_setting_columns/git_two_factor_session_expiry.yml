@@ -1,0 +1,13 @@
+---
+api_type: integer
+attr: git_two_factor_session_expiry
+clusterwide: false
+column: git_two_factor_session_expiry
+db_type: integer
+default: '15'
+description: Maximum duration (in minutes) of a session for Git operations when 2FA
+  is enabled. Premium and Ultimate only.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

@@ -66,6 +66,8 @@ class MergeRequest < ApplicationRecord
   has_one :predictions, inverse_of: :merge_request
   delegate :suggested_reviewers, to: :predictions
 
+  has_one :merge_schedule, class_name: 'MergeRequests::MergeSchedule', inverse_of: :merge_request
+
   belongs_to :latest_merge_request_diff, class_name: 'MergeRequestDiff'
   manual_inverse_association :latest_merge_request_diff, :merge_request
 
@@ -378,6 +380,7 @@ class MergeRequest < ApplicationRecord
     preload_routables.preload(
       :assignees, :author, :unresolved_notes, :labels, :milestone,
       :timelogs, :latest_merge_request_diff, :reviewers,
+      :merge_schedule,
       target_project: :project_feature,
       metrics: [:latest_closed_by, :merged_by]
     )
@@ -1294,7 +1297,8 @@ class MergeRequest < ApplicationRecord
       skip_locked_paths_check: merge_when_checks_pass_strat,
       skip_jira_check: merge_when_checks_pass_strat,
       skip_locked_lfs_files_check: merge_when_checks_pass_strat,
-      skip_security_policy_check: merge_when_checks_pass_strat
+      skip_security_policy_check: merge_when_checks_pass_strat,
+      skip_merge_time_check: merge_when_checks_pass_strat
     }
   end
 
@@ -1322,6 +1326,7 @@ class MergeRequest < ApplicationRecord
     #
     [
       ::MergeRequests::Mergeability::CheckOpenStatusService,
+      ::MergeRequests::Mergeability::CheckMergeTimeService,
       ::MergeRequests::Mergeability::CheckDraftStatusService,
       ::MergeRequests::Mergeability::CheckCommitsStatusService,
       ::MergeRequests::Mergeability::CheckDiscussionsStatusService,

@@ -1,0 +1,12 @@
+---
+api_type: string
+attr: snowplow_database_collector_hostname
+clusterwide: false
+column: snowplow_database_collector_hostname
+db_type: text
+default:
+description: The Snowplow collector for database events hostname. (for example, `db-snowplow.trx.gitlab.net`)
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: false

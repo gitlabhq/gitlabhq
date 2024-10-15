@@ -12,21 +12,19 @@ RSpec.describe Ci::RunnerNamespace, feature_category: :runner do
   end
 
   it_behaves_like 'cleanup by a loose foreign key' do
-    let!(:model) { create(:ci_runner_namespace) }
-
-    let!(:parent) { model.namespace }
+    let!(:parent) { create(:group) }
+    let!(:runner) { create(:ci_runner, :group, groups: [parent]) }
+    let(:model) { runner.runner_namespaces.first }
   end
 
   describe 'validations' do
-    before_all do
-      create(:ci_runner, :group, groups: [create(:group)])
-    end
+    let_it_be(:runner) { create(:ci_runner, :group, groups: [create(:group)]) }
 
     it { is_expected.to validate_presence_of(:namespace).on([:create, :update]) }
     it { is_expected.to validate_uniqueness_of(:runner_id).scoped_to(:namespace_id) }
 
     it 'validates that runner_id is valid' do
-      runner_namespace = create(:ci_runner_namespace, namespace: Group.first)
+      runner_namespace = runner.runner_namespaces.first
       runner_namespace.runner_id = nil
       expect(runner_namespace).not_to be_valid
     end

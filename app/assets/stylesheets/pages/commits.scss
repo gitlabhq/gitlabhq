@@ -9,7 +9,7 @@
  * custom merge request message
  */
 .commit-message-container {
-  background-color: $body-bg;
+  @apply gl-bg-default;
   position: relative;
   font-family: $monospace-font;
   $left: 12px;

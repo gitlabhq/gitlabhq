@@ -18,7 +18,6 @@ silenced = Rails.env.production? && !Gitlab::Utils.to_boolean(ENV['GITLAB_LOG_DE
 deprecators.silenced = silenced
 
 ignored_warnings = [
-  /`Rails.application.secrets` is deprecated in favor of `Rails.application.credentials`/,
   /Your `secret_key_base` is configured in `Rails.application.secrets`, which is deprecated in favor of/,
   /Please pass the (coder|class) as a keyword argument/
 ]

@@ -6,6 +6,7 @@ class Key < ApplicationRecord
   include ShaAttribute
   include Expirable
   include FromUnion
+  include Todoable
 
   sha256_attribute :fingerprint_sha256
 
@@ -142,6 +143,14 @@ class Key < ApplicationRecord
     super || auth_and_signing?
   end
 
+  def readable_by?(user)
+    user_id == user.id
+  end
+
+  def to_reference
+    fingerprint
+  end
+
   private
 
   def generate_fingerprint
@@ -158,7 +167,7 @@ class Key < ApplicationRecord
     return unless public_key.banned?
 
     help_page_url = Rails.application.routes.url_helpers.help_page_url(
-      'security/ssh_keys_restrictions',
+      'security/ssh_keys_restrictions.md',
       anchor: 'block-banned-or-compromised-keys'
     )
 

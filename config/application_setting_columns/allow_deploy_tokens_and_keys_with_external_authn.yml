@@ -1,0 +1,12 @@
+---
+api_type:
+attr: allow_deploy_tokens_and_keys_with_external_authn
+clusterwide: false
+column: allow_deploy_tokens_and_keys_with_external_authn
+db_type: boolean
+default: 'false'
+description:
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

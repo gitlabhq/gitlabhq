@@ -1,0 +1,12 @@
+---
+api_type:
+attr: compliance_frameworks
+clusterwide: false
+column: compliance_frameworks
+db_type: smallint[]
+default: "'{}'::smallint[]"
+description:
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

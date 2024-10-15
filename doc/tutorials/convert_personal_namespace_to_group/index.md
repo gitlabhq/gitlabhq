@@ -10,18 +10,17 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com
 
-If you've started out on GitLab with a personal [namespace](../../user/namespace/index.md), but now find
-that you've outgrown its capabilities and its limitations hinder the collaboration on your projects,
-you might want to switch to a group namespace instead.
-A group namespace allows you to create multiple subgroups, and manage their members and permissions.
+If you've started out with a personal [namespace](../../user/namespace/index.md), but find
+that you've outgrown its capabilities, you can switch to a group namespace instead.
+With a group namespace, you can create multiple subgroups and manage their members and permissions.
 
-You don't have to start from scratch - you can create a new group
+You don't have to start from scratch. You can create a new group
 and move your existing projects to the group to get the added benefits.
 To find out how, see [Tutorial: Move your personal project to a group](../move_personal_project_to_group/index.md).
 
-But you can go one step further and convert your personal namespace into a group namespace,
-so you get to keep the existing username and URL. For example, if your username is `alex`,
-you can continue using the `https://gitlab.example.com/alex` URL for your group.
+You can also go one step further and convert your personal namespace into a group namespace.
+Converting your namespace lets you keep the existing username and URL. For example, if your
+username is `alex`, you can continue using the `https://gitlab.example.com/alex` URL for your group.
 
 This tutorial shows you how to convert your personal namespace into a group namespace
 using the following steps:
@@ -40,7 +39,7 @@ rename the `alex` namespace to `alex-user`, and `alex-group` namespace to the no
 1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New group**.
 1. In **Group name**, enter a name for the group.
 1. In **Group URL**, enter a path for the group, which is used as the namespace.
-   Don't worry about the actual path, this is only temporary. You'll change this URL to the username of the personal namespace in the [final step](#rename-the-new-group-namespace-to-the-original-username).
+   Don't worry about the actual path, this is only temporary. You change this URL to the username of the personal namespace in the [final step](#rename-the-new-group-namespace-to-the-original-username).
 1. Choose the [visibility level](../../user/public_access.md).
 1. Optional. Fill in information to personalize your experience.
 1. Select **Create group**.
@@ -48,7 +47,7 @@ rename the `alex` namespace to `alex-user`, and `alex-group` namespace to the no
 ## Transfer projects from the personal namespace to the group
 
 Next, you must transfer your projects from the personal namespace to the new group.
-You can transfer only one project at a time, so if you want to transfer multiple projects,
+You can transfer only one project at a time. If you want to transfer multiple projects,
 you must perform the steps below for each project.
 
 Before you start the transfer process, make sure you:

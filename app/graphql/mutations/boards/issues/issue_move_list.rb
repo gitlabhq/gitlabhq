@@ -41,13 +41,13 @@ module Mutations
         argument :position_in_list, GraphQL::Types::Int,
           required: false,
           description: "Position of issue within the board list. Positions start at 0. "\
-                       "Use #{::Boards::Issues::MoveService::LIST_END_POSITION} to move to the end of the list."
+            "Use #{::Boards::Issues::MoveService::LIST_END_POSITION} to move to the end of the list."
 
         def ready?(**args)
           if move_arguments(args).blank?
             raise Gitlab::Graphql::Errors::ArgumentError,
               'At least one of the arguments ' \
-              'fromListId, toListId, positionInList, moveAfterId, or moveBeforeId is required'
+                'fromListId, toListId, positionInList, moveAfterId, or moveBeforeId is required'
           end
 
           if move_list_arguments(args).one?

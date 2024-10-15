@@ -23,6 +23,9 @@
     "tier": {
       "type": "string"
     },
+    "description": {
+      "$ref": "../../types/nullable_string.json"
+    },
     "external_url": {
       "$ref": "../../types/nullable_string.json"
     },

@@ -1,0 +1,12 @@
+---
+api_type:
+attr: content_validation_api_key
+clusterwide: false
+column: encrypted_content_validation_api_key
+db_type: bytea
+default:
+description:
+encrypted: true
+gitlab_com_different_than_default: false
+jihu: true
+not_null: false

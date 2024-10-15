@@ -14,7 +14,7 @@ query getProjectCounts {
   member: projects(membership: true) {
     count
   }
-  inactive: projects(archived: ONLY) {
+  inactive: projects(archived: ONLY, membership: true) {
     count
   }
 }

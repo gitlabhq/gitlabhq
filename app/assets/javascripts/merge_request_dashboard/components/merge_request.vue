@@ -71,11 +71,9 @@ export default {
     </td>
     <td class="gl-px-3 gl-py-4 gl-align-top">
       <h4 class="gl-mb-0 gl-mt-0 gl-text-base">
-        <gl-link
-          v-safe-html="mergeRequest.titleHtml"
-          :href="mergeRequest.webUrl"
-          class="gl-text-primary hover:gl-text-gray-900"
-        />
+        <gl-link :href="mergeRequest.webUrl" class="gl-text-primary hover:gl-text-gray-900">
+          {{ mergeRequest.title }}
+        </gl-link>
       </h4>
       <div class="gl-mb-2 gl-mt-2 gl-text-sm gl-text-secondary">
         <gl-sprintf

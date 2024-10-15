@@ -36,7 +36,7 @@ You can read more about enabling browser-specific keyboard navigation on [a11ypr
   [checkbox](#checkbox-inputs-with-accessible-names),
   [radio](#radio-inputs-with-accessible-names),
   [file](#file-inputs-with-accessible-names),
-  and [toggle](#gltoggle-components-with-an-accessible-names) inputs have accessible names.
+  and [toggle](#gltoggle-components-with-accessible-names) inputs have accessible names.
 - [Buttons](#buttons-and-links-with-descriptive-accessible-names),
   [links](#buttons-and-links-with-descriptive-accessible-names),
   and [images](#images-with-accessible-names) have descriptive accessible names.
@@ -244,7 +244,7 @@ File input examples:
 <input id="attach-file" type="file" />
 ```
 
-#### GlToggle components with an accessible names
+#### GlToggle components with accessible names
 
 `GlToggle` examples:
 
@@ -256,9 +256,9 @@ File input examples:
 <gl-toggle v-model="notifications" :label="__('Notifications')" label-position="hidden" />
 ```
 
-#### GlFormCombobox components with an accessible names
+#### GlFormCombobox components with accessible names
 
-`GlFormCombobox` examples:
+`GlFormCombobox` example:
 
 ```html
 <!-- GlFormCombobox with label -->

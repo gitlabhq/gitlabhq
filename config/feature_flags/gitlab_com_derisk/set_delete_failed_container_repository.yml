@@ -1,0 +1,9 @@
+---
+name: set_delete_failed_container_repository
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/480652
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166119
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/490354
+milestone: '17.5'
+group: group::container registry
+type: gitlab_com_derisk
+default_enabled: false

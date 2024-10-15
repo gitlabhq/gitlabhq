@@ -147,9 +147,11 @@ module Emails
       mail_with_locale(to: @user.notification_email_or_default, subject: subject(_("Your SSH key is expiring soon.")))
     end
 
-    def unknown_sign_in_email(user, ip, time)
+    def unknown_sign_in_email(user, ip, time, request_info = {})
       @user = user
       @ip = ip
+      @city = request_info[:city]
+      @country = request_info[:country]
       @time = time
       @target_url = edit_user_settings_password_url
 

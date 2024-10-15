@@ -300,15 +300,6 @@
   :weight: 1
   :idempotent: true
   :tags: []
-- :name: cronjob:ci_platform_metrics_update_cron
-  :worker_name: CiPlatformMetricsUpdateCronWorker
-  :feature_category: :continuous_integration
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :cpu
-  :weight: 1
-  :idempotent: false
-  :tags: []
 - :name: cronjob:ci_runners_reconcile_existing_runner_versions_cron
   :worker_name: Ci::Runners::ReconcileExistingRunnerVersionsCronWorker
   :feature_category: :fleet_visibility
@@ -536,7 +527,7 @@
   :tags: []
 - :name: cronjob:gitlab_performance_bar_stats
   :worker_name: GitlabPerformanceBarStatsWorker
-  :feature_category: :metrics
+  :feature_category: :observability
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :cpu
@@ -624,18 +615,18 @@
   :weight: 1
   :idempotent: false
   :tags: []
-- :name: cronjob:merge_requests_ensure_prepared
-  :worker_name: MergeRequests::EnsurePreparedWorker
+- :name: cronjob:merge_requests_process_scheduled_merge
+  :worker_name: MergeRequests::ProcessScheduledMergeWorker
   :feature_category: :code_review_workflow
   :has_external_dependencies: false
   :urgency: :low
-  :resource_boundary: :unknown
+  :resource_boundary: :cpu
   :weight: 1
-  :idempotent: true
+  :idempotent: false
   :tags: []
 - :name: cronjob:metrics_global_metrics_update
   :worker_name: Metrics::GlobalMetricsUpdateWorker
-  :feature_category: :metrics
+  :feature_category: :observability
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -1040,6 +1031,15 @@
   :tags: []
 - :name: dependency_proxy_blob:dependency_proxy_cleanup_blob
   :worker_name: DependencyProxy::CleanupBlobWorker
+  :feature_category: :virtual_registry
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: dependency_proxy_blob:virtual_registries_packages_destroy_orphan_cached_responses
+  :worker_name: VirtualRegistries::Packages::DestroyOrphanCachedResponsesWorker
   :feature_category: :virtual_registry
   :has_external_dependencies: false
   :urgency: :low
@@ -2433,6 +2433,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: anti_abuse_ban_duplicate_users
+  :worker_name: AntiAbuse::BanDuplicateUsersWorker
+  :feature_category: :instance_resiliency
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: anti_abuse_spam_abuse_events
   :worker_name: AntiAbuse::SpamAbuseEventsWorker
   :feature_category: :instance_resiliency
@@ -2910,6 +2919,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: ci_job_token_log_authorization
+  :worker_name: Ci::JobToken::LogAuthorizationWorker
+  :feature_category: :secrets_management
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: ci_low_urgency_cancel_redundant_pipelines
   :worker_name: Ci::LowUrgencyCancelRedundantPipelinesWorker
   :feature_category: :continuous_integration
@@ -3173,7 +3191,7 @@
   :tags: []
 - :name: error_tracking_issue_link
   :worker_name: ErrorTrackingIssueLinkWorker
-  :feature_category: :error_tracking
+  :feature_category: :observability
   :has_external_dependencies: true
   :urgency: :low
   :resource_boundary: :unknown
@@ -3702,42 +3720,6 @@
   :weight: 2
   :idempotent: false
   :tags: []
-- :name: onboarding_issue_created
-  :worker_name: Onboarding::IssueCreatedWorker
-  :feature_category: :onboarding
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
-- :name: onboarding_pipeline_created
-  :worker_name: Onboarding::PipelineCreatedWorker
-  :feature_category: :onboarding
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
-- :name: onboarding_progress
-  :worker_name: Onboarding::ProgressWorker
-  :feature_category: :onboarding
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :cpu
-  :weight: 1
-  :idempotent: true
-  :tags: []
-- :name: onboarding_user_added
-  :worker_name: Onboarding::UserAddedWorker
-  :feature_category: :onboarding
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
 - :name: pages
   :worker_name: PagesWorker
   :feature_category: :pages
@@ -3749,6 +3731,15 @@
   :tags: []
 - :name: pages_deactivate_mr_deployments
   :worker_name: Pages::DeactivateMrDeploymentsWorker
+  :feature_category: :pages
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: pages_delete_pages_deployment
+  :worker_name: Pages::DeletePagesDeploymentWorker
   :feature_category: :pages
   :has_external_dependencies: false
   :urgency: :low
@@ -4070,6 +4061,15 @@
   :resource_boundary: :unknown
   :weight: 2
   :idempotent: false
+  :tags: []
+- :name: repositories_rewrite_history
+  :worker_name: Repositories::RewriteHistoryWorker
+  :feature_category: :source_code_management
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
   :tags: []
 - :name: repository_cleanup
   :worker_name: RepositoryCleanupWorker

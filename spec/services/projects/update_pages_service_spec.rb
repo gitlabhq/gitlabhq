@@ -101,7 +101,7 @@ RSpec.describe Projects::UpdatePagesService, feature_category: :pages do
     end
   end
 
-  context 'for new artifacts' do
+  RSpec.shared_examples 'for new artifacts' do
     context "for a valid job" do
       let!(:artifacts_archive) { create(:ci_job_artifact, :correct_checksum, file: file, job: build) }
 
@@ -327,6 +327,18 @@ RSpec.describe Projects::UpdatePagesService, feature_category: :pages do
           .to eq('The uploaded artifact size does not match the expected value')
       end
     end
+  end
+
+  context 'with ff_pages_use_open_file feature flag disabled' do
+    before do
+      stub_feature_flags(ff_pages_use_open_file: false)
+    end
+
+    it_behaves_like 'for new artifacts'
+  end
+
+  context 'with ff_pages_use_open_file feature flag enabled' do
+    it_behaves_like 'for new artifacts'
   end
 
   # this situation should never happen in real life because all new archives have sha256

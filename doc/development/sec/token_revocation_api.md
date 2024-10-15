@@ -77,17 +77,17 @@ with each provider to revoke the token.
 | `400` | The request body is invalid or one of the submitted token types is not supported. The request should not be retried. |
 | `429` | The provider has received too many requests. The request should be retried later. |
 
-Example request body:
+Example request body (space characters added to `token` value to prevent secret detection warnings):
 
 ```json
 [{
     "type": "gitleaks_rule_id_gitlab_personal_access_token",
-    "token": "glpat--8GMtG8Mf4EnMJzmAWDU",
+    "token": "glpat - 8GMtG8Mf4EnMJzmAWDU",
     "location": "https://example.com/some-repo/blob/abcdefghijklmnop/compromisedfile1.java"
 },
 {
     "type": "gitleaks_rule_id_gitlab_personal_access_token",
-    "token": "glpat--tG84EGK33nMLLDE70zU",
+    "token": "glpat - tG84EGK33nMLLDE70zU",
     "location": "https://example.com/some-repo/blob/abcdefghijklmnop/compromisedfile2.java"
 }]
 ```

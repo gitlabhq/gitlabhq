@@ -1,0 +1,13 @@
+---
+api_type: boolean
+attr: maven_package_requests_forwarding
+clusterwide: true
+column: maven_package_requests_forwarding
+db_type: boolean
+default: 'true'
+description: Use repo.maven.apache.org as a default remote repository when the package
+  is not found in the GitLab Package Registry for Maven. Premium and Ultimate only.
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: true

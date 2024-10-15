@@ -1,0 +1,12 @@
+---
+api_type:
+attr: sentry_environment
+clusterwide: false
+column: sentry_environment
+db_type: text
+default:
+description:
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

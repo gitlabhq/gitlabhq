@@ -1,0 +1,12 @@
+---
+api_type:
+attr: jobs_per_stage_page_size
+clusterwide: false
+column: jobs_per_stage_page_size
+db_type: integer
+default: '200'
+description:
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

@@ -32,6 +32,14 @@ You can restrict the password authentication for web interface and Git over HTTP
 
 In the event of an external authentication provider outage, use the [GitLab Rails console](../operations/rails_console.md) to [re-enable the standard web sign-in form](#re-enable-standard-web-sign-in-form-in-rails-console). This configuration can also be changed over the [Application settings REST API](../../api/settings.md#change-application-settings) while authenticating with an administrator account's personal access token.
 
+### Disable password authentication for users with an SSO identity
+
+Even when password authentication is enabled, it may be desirable to restrict SSO users ability to sign in with a
+password. Select **Disable password authentication for users with an SSO identity** to ensure SSO users always sign in
+with their external provider.
+
+This restricts password authentication for both the web interface and Git over HTTP(S).
+
 ## Admin Mode
 
 If you're an administrator, you might want to work in GitLab without administrator access.
@@ -167,14 +175,14 @@ After the two-factor authentication is configured as mandatory, users are allowe
 to skip forced configuration of two-factor authentication for the configurable grace
 period in hours.
 
-![Two-factor grace period](img/two_factor_grace_period.png)
+![The two-factor grace period set to 48 hours.](img/two_factor_grace_period_v12_5.png)
 
 ## Email notification for unknown sign-ins
 
 When enabled, GitLab notifies users of sign-ins from unknown IP addresses or devices. For more information,
 see [Email notification for unknown sign-ins](../../user/profile/notifications.md#notifications-for-unknown-sign-ins).
 
-![Email notification for unknown sign-ins](img/email_notification_for_unknown_sign_ins_v13_2.png)
+![Email notifications enabled for unknown sign-ins.](img/email_notification_for_unknown_sign_ins_v13_2.png)
 
 ## Sign-in information
 

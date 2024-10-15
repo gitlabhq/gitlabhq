@@ -55,7 +55,7 @@ On this page, you can:
 
   Branches with merge requests that do not point to the default branch display the **{merge-request}** **New** merge request button.
 
-- [View branch rules](#view-branch-rules).
+- [View branch rules](branch_rules.md#view-branch-rules).
 - See latest pipeline status on the branch.
 
 ## Create a branch
@@ -133,7 +133,7 @@ GitLab enforces these additional rules on all branches:
 - Branch names are case-sensitive.
 
 Common software packages, like Docker, can enforce
-[additional branch naming restrictions](../../../../administration/packages/container_registry.md#docker-connection-error).
+[additional branch naming restrictions](../../../../administration/packages/container_registry_troubleshooting.md#docker-connection-error).
 
 For the best compatibility with other software packages, use only:
 
@@ -195,131 +195,7 @@ GitLab uses the issue number to import data into the merge request:
 ## Manage and protect branches
 
 GitLab provides multiple methods to protect individual branches. These methods
-ensure your branches receive oversight and quality checks from their creation to their deletion:
-
-- Apply enhanced security and protection to your project's [default branch](default.md).
-- Configure [protected branches](../../repository/branches/protected.md) to:
-  - Limit who can push and merge to a branch.
-  - Manage if users can force push to the branch.
-  - Manage if changes to files listed in the `CODEOWNERS` file can be pushed directly to the branch.
-- Configure [approval rules](../../merge_requests/approvals/rules.md#approvals-for-protected-branches) to manage review requirements and implement [security-related approvals](../../merge_requests/approvals/rules.md#security-approvals).
-- Integrate with third-party [status checks](../../merge_requests/status_checks.md)
-  to ensure the contents of your branch meets your defined quality standards.
-
-You can manage your branches:
-
-- With the GitLab user interface.
-- With Git on the command line.
-- With the [Branches API](../../../../api/branches.md).
-
-### View branch rules
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88279) in GitLab 15.1 with a flag named `branch_rules`. Disabled by default.
-> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/363170) in GitLab 15.10.
-> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/363170) in GitLab 15.11.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123368) in GitLab 16.1. Feature flag `branch_rules` removed.
-
-The **Branch rules overview** page shows all branches with any configured protections,
-and their protection methods:
-
-![Example of a branch with configured protections](img/view_branch_protections_v15_10.png)
-
-Prerequisites:
-
-- You must have at least the Maintainer role for the project.
-
-To view the **Branch rules overview** list:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Repository**.
-1. Expand **Branch rules** to view all branches with protections.
-   - To add protections to a new branch:
-     1. Select **Add branch rule**.
-     1. Select **Create protected branch**.
-   - To view more information about protections on an existing branch:
-     1. Identify the branch you want more information about.
-     1. Select **View details** to see information about its:
-        - [Branch protections](../../repository/branches/protected.md).
-        - [Approval rules](../../merge_requests/approvals/rules.md#approvals-for-protected-branches).
-        - [Status checks](../../merge_requests/status_checks.md).
-
-### Create a branch rule
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88279) in GitLab 16.8 with a flag named `add_branch_rules`. Disabled by default.
-> - Feature flag `add_branch_rules` [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88279) to `edit_branch_rules` in GitLab 16.11. Disabled by default.
-> - **All branches** and **All protected branches** options [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388129) in GitLab 17.0.
-
-FLAG:
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-Prerequisites:
-
-- You must have at least the Maintainer role for the project.
-
-To create a branch rule:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Repository**.
-1. Expand **Branch rules**.
-1. Then:
-   - To enter a specific branch name or pattern:
-     1. In the **Add branch rule** dropdown list, select **Branch name or pattern**.
-     1. On the dialog, from the **Create branch rule** dropdown list, select a branch name or create a wildcard by typing `*`.
-   - To protect all branches in the project:
-     1. In the **Add branch rule** dropdown list, select **All branches**.
-     1. On the rule's details page, under **Merge request approvals**, enter the required number of approvals for the rule.
-   - To protect all branches in the project that are already specified as protected:
-     1. In the **Add branch rule** dropdown list, select **All protected branches**.
-     1. On the rule's details page, under **Merge request approvals**, enter the required number of approvals for the rule.
-
-### Edit a branch rule
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88279) in GitLab 16.8 with a flag named `add_branch_rules`. Disabled by default.
-> - Feature flag `add_branch_rules` [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88279) to `edit_branch_rules` in GitLab 16.11. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, an administrator can [enable the feature flag](../../../../administration/feature_flags.md) named `edit_branch_rules`.
-On GitLab.com and GitLab Dedicated, this feature is not available.
-This feature is not ready for production use.
-
-Prerequisites:
-
-- You must have at least the Maintainer role for the project.
-
-To edit a branch rule:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Repository**.
-1. Expand **Branch rules**.
-1. Next to a rule you want to edit, select **View details**.
-1. In the upper-right corner, select **Edit**.
-1. Edit the information as needed.
-1. Select **Update**.
-
-### Delete a branch rule
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88279) in GitLab 16.8 with a flag named `add_branch_rules`. Disabled by default.
-> - Feature flag `add_branch_rules` [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88279) to `edit_branch_rules` in GitLab 16.11. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, an administrator can [enable the feature flag](../../../../administration/feature_flags.md) named `edit_branch_rules`.
-On GitLab.com and GitLab Dedicated, this feature is not available.
-This feature is not ready for production use.
-
-Prerequisites:
-
-- You must have at least the Maintainer role for the project.
-
-To delete a branch rule:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Repository**.
-1. Expand **Branch rules**.
-1. Next to a rule you want to delete, select **View details**.
-1. In the upper-right corner, select **Delete rule**.
-1. On the confirmation dialog, select **Delete branch rule**.
+ensure your branches receive oversight and quality checks from their creation to their deletion. To view and edit branch protections, see [Branch rules](branch_rules.md).
 
 ## Compare branches
 

@@ -1,0 +1,12 @@
+---
+api_type:
+attr: max_pages_custom_domains_per_project
+clusterwide: false
+column: max_pages_custom_domains_per_project
+db_type: integer
+default: '0'
+description:
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: true

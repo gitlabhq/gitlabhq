@@ -51,6 +51,7 @@ class Projects::IssuesController < Projects::ApplicationController
     push_frontend_feature_flag(:notifications_todos_buttons, current_user)
     push_frontend_feature_flag(:comment_tooltips, current_user)
     push_force_frontend_feature_flag(:glql_integration, project&.glql_integration_feature_flag_enabled?)
+    push_frontend_feature_flag(:issue_autocomplete_backend_filtering, project)
   end
 
   before_action only: [:index, :show] do
@@ -67,13 +68,12 @@ class Projects::IssuesController < Projects::ApplicationController
     push_force_frontend_feature_flag(:work_items_alpha, project&.work_items_alpha_feature_flag_enabled?)
     push_frontend_feature_flag(:epic_widget_edit_confirmation, project)
     push_frontend_feature_flag(:namespace_level_work_items, project&.group)
+    push_frontend_feature_flag(:work_items_view_preference, current_user)
   end
 
   around_action :allow_gitaly_ref_name_caching, only: [:discussions]
 
   respond_to :html
-
-  alias_method :designs, :show
 
   feature_category :team_planning, [
     :index, :calendar, :show, :new, :create, :edit, :update,
@@ -139,6 +139,17 @@ class Projects::IssuesController < Projects::ApplicationController
 
     respond_with(@issue)
   end
+
+  def show
+    return super unless show_work_item? && request.format.html?
+
+    @right_sidebar = false
+    @work_item = issue.becomes(::WorkItem) # rubocop:disable Cop/AvoidBecomes -- We need the instance to be a work item
+
+    render 'projects/work_items/show'
+  end
+
+  alias_method :designs, :show
 
   def edit
     respond_with(@issue)
@@ -390,6 +401,10 @@ class Projects::IssuesController < Projects::ApplicationController
 
   private
 
+  def show_work_item?
+    Feature.enabled?(:work_items_view_preference, current_user) && current_user&.user_preference&.use_work_items_view
+  end
+
   def work_item_redirect_except_actions
     ISSUES_EXCEPT_ACTIONS
   end
@@ -446,7 +461,7 @@ class Projects::IssuesController < Projects::ApplicationController
   def create_vulnerability_issue_feedback(issue); end
 
   def redirect_if_work_item
-    return unless use_work_items_path?(issue)
+    return unless use_work_items_path?(issue) && !show_work_item?
 
     redirect_to project_work_item_path(project, issue.iid, params: request.query_parameters)
   end

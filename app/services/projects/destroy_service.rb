@@ -170,7 +170,15 @@ module Projects
       #
       # Exclude container repositories because its before_destroy would be
       # called multiple times, and it doesn't destroy any database records.
-      project.destroy_dependent_associations_in_batches(exclude: [:container_repositories, :snippets])
+
+      Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModification.temporary_ignore_tables_in_transaction(
+        %w[
+          vulnerabilities
+          notes
+        ], url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/485803'
+      ) do
+        project.destroy_dependent_associations_in_batches(exclude: [:container_repositories, :snippets])
+      end
       project.destroy!
     rescue ActiveRecord::RecordNotDestroyed => e
       raise_error(

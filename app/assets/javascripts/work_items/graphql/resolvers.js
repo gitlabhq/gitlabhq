@@ -1,8 +1,9 @@
-import { set } from 'lodash';
+import { set, isEmpty } from 'lodash';
 import { produce } from 'immer';
 import { findWidget } from '~/issues/list/utils';
-import { pikadayToString } from '~/lib/utils/datetime_utility';
-import { newWorkItemFullPath } from '../utils';
+import { newDate, toISODateFormat } from '~/lib/utils/datetime_utility';
+import { updateDraft } from '~/lib/utils/autosave';
+import { getNewWorkItemAutoSaveKey, newWorkItemFullPath } from '../utils';
 import {
   WIDGET_TYPE_ASSIGNEES,
   WIDGET_TYPE_COLOR,
@@ -36,10 +37,10 @@ const updateRolledUpDatesWidget = (draftData, rolledUpDates) => {
   if (!rolledUpDates) return;
 
   const dueDateFixed = rolledUpDates.dueDateFixed
-    ? pikadayToString(rolledUpDates.dueDateFixed)
+    ? toISODateFormat(newDate(rolledUpDates.dueDateFixed))
     : null;
   const startDateFixed = rolledUpDates.startDateFixed
-    ? pikadayToString(rolledUpDates.startDateFixed)
+    ? toISODateFormat(newDate(rolledUpDates.startDateFixed))
     : null;
 
   const widget = findWidget(WIDGET_TYPE_ROLLEDUP_DATES, draftData.workspace.workItem);
@@ -94,14 +95,14 @@ export const updateNewWorkItemCache = (input, cache) => {
           nodePath: 'color',
         },
         {
-          widgetType: WIDGET_TYPE_DESCRIPTION,
-          newData: description,
-          nodePath: 'description',
-        },
-        {
           widgetType: WIDGET_TYPE_CRM_CONTACTS,
           newData: crmContacts,
           nodePath: 'contacts.nodes',
+        },
+        {
+          widgetType: WIDGET_TYPE_DESCRIPTION,
+          newData: description,
+          nodePath: 'description',
         },
       ];
 
@@ -116,6 +117,16 @@ export const updateNewWorkItemCache = (input, cache) => {
       if (confidential !== undefined) draftData.workspace.workItem.confidential = confidential;
     }),
   );
+
+  const newData = cache.readQuery({ query, variables });
+
+  const autosaveKey = getNewWorkItemAutoSaveKey(fullPath, workItemType);
+
+  const isQueryDataValid = !isEmpty(newData) && newData?.workspace?.workItem;
+
+  if (isQueryDataValid && autosaveKey) {
+    updateDraft(autosaveKey, JSON.stringify(newData));
+  }
 };
 
 export const workItemBulkEdit = (input) => {

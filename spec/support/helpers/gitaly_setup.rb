@@ -392,7 +392,7 @@ module GitalySetup
   end
 
   def read_log_file(logs_path)
-    return unless File.exist?(logs_path)
+    return '' unless File.exist?(logs_path)
 
     <<~LOGS
       \n#{logs_path}:\n

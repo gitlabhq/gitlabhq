@@ -36,25 +36,25 @@ describe('IssueMilestone component', () => {
       it('renders `Expired` when there is a due date in the past', () => {
         wrapper = createComponent({ ...mockMilestone, due_date: '2019-12-31', start_date: '' });
 
-        expect(findTooltip().text()).toContain('Expired 6 months ago(December 31, 2019)');
+        expect(findTooltip().text()).toContain('Expired 6 months ago(Dec 31, 2019)');
       });
 
       it('renders `remaining` when there is a due date in the future', () => {
         wrapper = createComponent({ ...mockMilestone, due_date: '2020-12-31', start_date: '' });
 
-        expect(findTooltip().text()).toContain('5 months remaining(December 31, 2020)');
+        expect(findTooltip().text()).toContain('5 months remaining(Dec 31, 2020)');
       });
 
       it('renders `Started` when there is a start date in the past', () => {
         wrapper = createComponent({ ...mockMilestone, due_date: '', start_date: '2019-12-31' });
 
-        expect(findTooltip().text()).toContain('Started 6 months ago(December 31, 2019)');
+        expect(findTooltip().text()).toContain('Started 6 months ago(Dec 31, 2019)');
       });
 
       it('renders `Starts` when there is a start date in the future', () => {
         wrapper = createComponent({ ...mockMilestone, due_date: '', start_date: '2020-12-31' });
 
-        expect(findTooltip().text()).toContain('Starts in 5 months(December 31, 2020)');
+        expect(findTooltip().text()).toContain('Starts in 5 months(Dec 31, 2020)');
       });
     });
   });

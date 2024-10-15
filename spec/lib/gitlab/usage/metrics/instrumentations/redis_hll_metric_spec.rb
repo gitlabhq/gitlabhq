@@ -35,6 +35,7 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::RedisHLLMetric, :clean_
       Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:g_project_management_issue_iteration_changed, values: 2, time: 2.weeks.ago, property_name: 'user')
       Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:g_project_management_issue_iteration_changed, values: 1, time: 2.weeks.ago, property_name: 'user')
       Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:g_project_management_issue_iteration_changed, values: 3, time: 2.weeks.ago, property_name: 'project')
+      Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:g_project_management_issue_iteration_changed, values: 3, time: 2.weeks.ago, property_name: 'label')
     end
 
     it_behaves_like 'a correct instrumented metric value', { time_frame: '28d', events: [name: 'g_project_management_issue_iteration_changed', unique: 'user.id'] }
@@ -58,6 +59,13 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::RedisHLLMetric, :clean_
 
     context "with options attributes also defined" do
       it_behaves_like 'a correct instrumented metric value', { time_frame: '28d', options: { events: ['i_quickactions_approve'] }, events: [name: 'g_project_management_issue_iteration_changed', unique: 'user.id'] }
+    end
+
+    context 'with property_name excluding ".id"' do
+      let(:expected_value) { 1 }
+
+      it_behaves_like 'a correct instrumented metric value',
+        { time_frame: '28d', events: [name: 'g_project_management_issue_iteration_changed', unique: 'label'] }
     end
   end
 

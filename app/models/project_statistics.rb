@@ -2,12 +2,15 @@
 
 class ProjectStatistics < ApplicationRecord
   include CounterAttribute
+  include IgnorableColumns
 
   belongs_to :project
   belongs_to :namespace
 
   attribute :wiki_size, default: 0
   attribute :snippets_size, default: 0
+
+  ignore_column :vulnerability_count, remove_with: '17.7', remove_after: '2024-11-15'
 
   counter_attribute :build_artifacts_size
   counter_attribute :packages_size

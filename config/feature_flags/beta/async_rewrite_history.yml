@@ -1,0 +1,9 @@
+---
+name: async_rewrite_history
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/475250
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162306
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/481484
+milestone: '17.4'
+group: group::source code
+type: beta
+default_enabled: false

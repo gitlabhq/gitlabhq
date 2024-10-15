@@ -1,5 +1,6 @@
 #import "~/graphql_shared/fragments/user.fragment.graphql"
 #import "~/graphql_shared/fragments/user_availability.fragment.graphql"
+#import "ee_else_ce/sidebar/queries/reviewer_applicable_approval_rules.fragment.graphql"
 
 query mergeRequestReviewers($fullPath: ID!, $iid: String!) {
   workspace: project(fullPath: $fullPath) {
@@ -15,6 +16,8 @@ query mergeRequestReviewers($fullPath: ID!, $iid: String!) {
             canUpdate
             approved
             reviewState
+
+            ...ReviewersApplicableApprovalRules
           }
         }
       }

@@ -17,6 +17,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
   it { is_expected.to nullify_if_blank(:external_url) }
   it { is_expected.to nullify_if_blank(:kubernetes_namespace) }
   it { is_expected.to nullify_if_blank(:flux_resource_path) }
+  it { is_expected.to nullify_if_blank(:description) }
 
   it { is_expected.to belong_to(:project).required }
   it { is_expected.to belong_to(:merge_request).optional }
@@ -39,6 +40,8 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
   it { is_expected.to validate_length_of(:external_url).is_at_most(255) }
   it { is_expected.to validate_length_of(:kubernetes_namespace).is_at_most(63) }
   it { is_expected.to validate_length_of(:flux_resource_path).is_at_most(255) }
+  it { is_expected.to validate_length_of(:description).is_at_most(10000) }
+  it { is_expected.to validate_length_of(:description_html).is_at_most(50000) }
 
   describe 'validation' do
     it 'does not become invalid record when external_url is empty' do
@@ -926,6 +929,24 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
 
               # Now the job should be processed.
               expect(close_action.reload.processed).to be_truthy
+            end
+
+            context "when 'no_locking_for_stop_actions' is disabled" do
+              before do
+                stub_feature_flags(no_locking_for_stop_actions: false)
+                allow(Gitlab::OptimisticLocking).to receive(:retry_lock).and_call_original
+              end
+
+              it 'plays the job with locking' do
+                skip unless factory_type == :ci_build
+                # Since job is droped.
+                expect(close_action.processed).to be_falsey
+                # it encounters the StaleObjectError at first, but reloads the object and runs `job.play`
+                expect { subject }.not_to raise_error
+                expect(Gitlab::OptimisticLocking).to have_received(:retry_lock).exactly(3).times
+                # Now the job should be processed.
+                expect(close_action.reload.processed).to be_truthy
+              end
             end
 
             it 'does nothing when bridge job' do
@@ -2193,7 +2214,9 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
     end
 
     it 'caches the freeze periods' do
-      expect(Gitlab::SafeRequestStore).to receive(:fetch)
+      allow(Gitlab::SafeRequestStore).to receive(:fetch).and_call_original
+
+      expect(Gitlab::SafeRequestStore).to receive(:fetch).with("project:#{project.id}:freeze_periods_for_environments")
         .at_least(:once)
         .and_return([freeze_period])
 

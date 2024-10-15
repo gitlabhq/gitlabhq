@@ -313,6 +313,11 @@ module Gitlab
       db_config&.name || 'unknown'
     end
 
+    def self.db_config_database(connection)
+      db_config = db_config_for_connection(connection)
+      db_config&.database || 'unknown'
+    end
+
     # If the `database_tasks: false` is being used,
     # return the expected fallback database for this database configuration
     def self.db_config_share_with(db_config)

@@ -27,9 +27,10 @@ module Crm
     end
 
     def execute
-      return CustomerRelations::Contact.none unless root_group
+      group = params[:group]&.crm_group
+      return CustomerRelations::Contact.none unless group && can?(@current_user, :read_crm_contact, group)
 
-      contacts = root_group.contacts
+      contacts = group.contacts
       contacts = by_ids(contacts)
       contacts = by_state(contacts)
       contacts = by_search(contacts)
@@ -49,16 +50,6 @@ module Crm
         contacts.sort_by_organization(direction)
       else
         contacts.sort_by_field(field, direction)
-      end
-    end
-
-    def root_group
-      strong_memoize(:root_group) do
-        group = params[:group]&.root_ancestor
-
-        next unless can?(@current_user, :read_crm_contact, group)
-
-        group
       end
     end
 

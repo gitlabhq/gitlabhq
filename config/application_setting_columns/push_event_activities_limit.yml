@@ -1,0 +1,14 @@
+---
+api_type: integer
+attr: push_event_activities_limit
+clusterwide: false
+column: push_event_activities_limit
+db_type: integer
+default: '3'
+description: Maximum number of changes (branches or tags) in a single push above which
+  a [bulk push event is created](../administration/settings/push_event_activities_limit.md).
+  Setting to `0` does not disable throttling.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

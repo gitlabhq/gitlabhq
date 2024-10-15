@@ -43,7 +43,7 @@ class Packages::Package < ApplicationRecord
   has_many :installable_nuget_package_files, -> { installable.with_nuget_format }, class_name: 'Packages::PackageFile', inverse_of: :package
   has_many :dependency_links, inverse_of: :package, class_name: 'Packages::DependencyLink'
   has_many :tags, inverse_of: :package, class_name: 'Packages::Tag'
-  has_one :pypi_metadatum, inverse_of: :package, class_name: 'Packages::Pypi::Metadatum'
+
   has_one :maven_metadatum, inverse_of: :package, class_name: 'Packages::Maven::Metadatum'
   has_one :nuget_metadatum, inverse_of: :package, class_name: 'Packages::Nuget::Metadatum'
   has_many :nuget_symbols, inverse_of: :package, class_name: 'Packages::Nuget::Symbol'
@@ -74,21 +74,13 @@ class Packages::Package < ApplicationRecord
   validates :name, format: { with: Gitlab::Regex.terraform_module_package_name_regex }, if: :terraform_module?
   validates :version, format: { with: Gitlab::Regex.nuget_version_regex }, if: :nuget?
   validates :version, format: { with: Gitlab::Regex.maven_version_regex }, if: -> { version? && maven? }
-  validates :version, format: { with: Gitlab::Regex.pypi_version_regex }, if: :pypi?
+
   validates :version, format: { with: Gitlab::Regex.semver_regex, message: Gitlab::Regex.semver_regex_message },
     if: -> { npm? || terraform_module? }
 
   scope :for_projects, ->(project_ids) { where(project_id: project_ids) }
   scope :with_name, ->(name) { where(name: name) }
   scope :with_name_like, ->(name) { where(arel_table[:name].matches(name)) }
-
-  scope :with_normalized_pypi_name, ->(name) do
-    where(
-      "LOWER(regexp_replace(name, ?, '-', 'g')) = ?",
-      Gitlab::Regex::Packages::PYPI_NORMALIZED_NAME_REGEX_STRING,
-      name.downcase
-    )
-  end
 
   scope :with_case_insensitive_version, ->(version) do
     where('LOWER(version) = ?', version.downcase)
@@ -124,7 +116,6 @@ class Packages::Package < ApplicationRecord
 
   scope :preload_npm_metadatum, -> { preload(:npm_metadatum) }
   scope :preload_nuget_metadatum, -> { preload(:nuget_metadatum) }
-  scope :preload_pypi_metadatum, -> { preload(:pypi_metadatum) }
 
   scope :with_npm_scope, ->(scope) do
     npm.where("position('/' in packages_packages.name) > 0 AND split_part(packages_packages.name, '/', 1) = :package_scope", package_scope: "@#{sanitize_sql_like(scope)}")
@@ -185,7 +176,8 @@ class Packages::Package < ApplicationRecord
       debian: 'Packages::Debian::Package',
       composer: 'Packages::Composer::Package',
       helm: 'Packages::Helm::Package',
-      generic: 'Packages::Generic::Package'
+      generic: 'Packages::Generic::Package',
+      pypi: 'Packages::Pypi::Package'
     }.freeze
   end
 
@@ -308,13 +300,6 @@ class Packages::Package < ApplicationRecord
     return unless pending_destruction?
 
     ::Packages::MarkPackageFilesForDestructionWorker.perform_async(id)
-  end
-
-  # As defined in PEP 503 https://peps.python.org/pep-0503/#normalized-names
-  def normalized_pypi_name
-    return name unless pypi?
-
-    name.gsub(/#{Gitlab::Regex::Packages::PYPI_NORMALIZED_NAME_REGEX_STRING}/o, '-').downcase
   end
 
   def normalized_nuget_version

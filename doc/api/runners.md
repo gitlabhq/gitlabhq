@@ -604,7 +604,7 @@ GET /projects/:id/runners?tag_list=tag1,tag2
 
 | Attribute        | Type           | Required | Description                                                                                                                                                                                                          |
 |------------------|----------------|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `id`             | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user                                                                                                  |
+| `id`             | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths)                                                                                                  |
 | `scope`          | string         | no       | Deprecated: Use `type` or `status` instead. The scope of runners to return, one of: `active`, `paused`, `online` and `offline`; showing all runners if none provided                                                 |
 | `type`           | string         | no       | The type of runners to return, one of: `instance_type`, `group_type`, `project_type`                                                                                                                                 |
 | `status`         | string         | no       | The status of runners to return, one of: `online`, `offline`, `stale`, or `never_contacted`.<br/>Other possible values are the deprecated `active` and `paused`.<br/>Requesting `offline` runners might also return `stale` runners because `stale` is included in `offline`. |
@@ -679,7 +679,7 @@ POST /projects/:id/runners
 
 | Attribute   | Type    | Required | Description         |
 |-------------|---------|----------|---------------------|
-| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
 | `runner_id` | integer | yes      | The ID of a runner  |
 
 ```shell
@@ -729,7 +729,7 @@ DELETE /projects/:id/runners/:runner_id
 
 | Attribute   | Type    | Required | Description         |
 |-------------|---------|----------|---------------------|
-| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
 | `runner_id` | integer | yes      | The ID of a runner  |
 
 ```shell
@@ -754,7 +754,7 @@ GET /groups/:id/runners?tag_list=tag1,tag2
 
 | Attribute        | Type           | Required | Description                                                                                                                                                                                                             |
 |------------------|----------------|----------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `id`             | integer        | yes      | The ID of the group owned by the authenticated user                                                                                                                                                                     |
+| `id`             | integer        | yes      | The ID of the group                                                                                                                                                                     |
 | `type`           | string         | no       | The type of runners to return, one of: `instance_type`, `group_type`, `project_type`. The `project_type` value is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/351466) and will be removed in GitLab 15.0 |
 | `status`         | string         | no       | The status of runners to return, one of: `online`, `offline`, `stale`, or `never_contacted`.<br/>Other possible values are the deprecated `active` and `paused`.<br/>Requesting `offline` runners might also return `stale` runners because `stale` is included in `offline`. |
 | `paused`         | boolean        | no       | Whether to include only runners that are accepting or ignoring new jobs                                                                                                                                                 |

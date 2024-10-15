@@ -1,0 +1,12 @@
+---
+api_type:
+attr: cube_api_base_url
+clusterwide: true
+column: cube_api_base_url
+db_type: text
+default:
+description:
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

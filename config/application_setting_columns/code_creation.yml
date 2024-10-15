@@ -1,0 +1,12 @@
+---
+api_type:
+attr: code_creation
+clusterwide: true
+column: code_creation
+db_type: jsonb
+default: "'{}'::jsonb"
+description:
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: true

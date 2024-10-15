@@ -1,0 +1,14 @@
+---
+table_name: compliance_checks
+classes:
+  - ComplianceManagement::ComplianceFramework::ComplianceCheck
+feature_categories:
+  - compliance_management
+description: Stores the compliance checks for a compliance requirement
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161382
+milestone: '17.3'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  namespace_id: namespaces
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166353
+removed_in_milestone: '17.5'

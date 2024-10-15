@@ -1,0 +1,13 @@
+---
+api_type: boolean
+attr: recaptcha_enabled
+clusterwide: true
+column: recaptcha_enabled
+db_type: boolean
+default: 'false'
+description: "(**If enabled, requires:** `recaptcha_private_key` and `recaptcha_site_key`)
+  Enable reCAPTCHA."
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

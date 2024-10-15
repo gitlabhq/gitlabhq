@@ -132,6 +132,7 @@ RSpec.describe 'Setting issues crm contacts', feature_category: :service_desk do
       let(:group2) { create(:group) }
       let(:contact) { create(:contact, group: group2) }
       let(:contact_ids) { [global_id_of(contact)] }
+      let(:initial_contacts) { [] }
 
       before do
         group2.add_reporter(user)
@@ -142,6 +143,28 @@ RSpec.describe 'Setting issues crm contacts', feature_category: :service_desk do
 
         expect(graphql_data_at(:issue_set_crm_contacts, :errors))
         .to match_array(["Issue customer relations contacts #{contact.id}: #{does_not_exist_or_no_permission}"])
+      end
+
+      context 'when that group is configured as the subgroup contact source' do
+        let!(:crm_settings) { create(:crm_settings, group: subgroup, source_group: group2) }
+
+        it 'updates the issue with correct contacts' do
+          post_graphql_mutation(mutation, current_user: user)
+
+          expect(graphql_data_at(:issue_set_crm_contacts, :issue, :customer_relations_contacts, :nodes))
+            .to match_array(expected_contacts([contact]))
+        end
+      end
+
+      context 'when that group is configured as the root group contact source' do
+        let!(:crm_settings) { create(:crm_settings, group: group, source_group: group2) }
+
+        it 'updates the issue with correct contacts' do
+          post_graphql_mutation(mutation, current_user: user)
+
+          expect(graphql_data_at(:issue_set_crm_contacts, :issue, :customer_relations_contacts, :nodes))
+            .to match_array(expected_contacts([contact]))
+        end
       end
     end
 

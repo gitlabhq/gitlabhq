@@ -33,8 +33,7 @@ RSpec.describe 'cross-database foreign keys' do
       'protected_branch_merge_access_levels.user_id',            # https://gitlab.com/gitlab-org/gitlab/-/issues/431055
       'user_group_callouts.user_id',                             # https://gitlab.com/gitlab-org/gitlab/-/issues/421287
       'subscription_user_add_on_assignments.user_id',            # https://gitlab.com/gitlab-org/gitlab/-/issues/444666
-      'subscription_add_on_purchases.subscription_add_on_id',    # https://gitlab.com/gitlab-org/gitlab/-/issues/444666
-      'dast_pre_scan_verifications.dast_profile_id'              # https://gitlab.com/gitlab-org/gitlab/-/issues/479141
+      'subscription_add_on_purchases.subscription_add_on_id'     # https://gitlab.com/gitlab-org/gitlab/-/issues/444666
     ]
   end
 

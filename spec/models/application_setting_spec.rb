@@ -41,12 +41,14 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { expect(setting.group_projects_api_limit).to eq(600) }
     it { expect(setting.group_shared_groups_api_limit).to eq(60) }
     it { expect(setting.groups_api_limit).to eq(200) }
+    it { expect(setting.create_organization_api_limit).to eq(10) }
     it { expect(setting.project_api_limit).to eq(400) }
     it { expect(setting.project_invited_groups_api_limit).to eq(60) }
     it { expect(setting.projects_api_limit).to eq(2000) }
     it { expect(setting.user_contributed_projects_api_limit).to eq(100) }
     it { expect(setting.user_projects_api_limit).to eq(300) }
     it { expect(setting.user_starred_projects_api_limit).to eq(100) }
+    it { expect(setting.disable_password_authentication_for_users_with_sso_identities).to eq(false) }
   end
 
   describe 'USERS_UNCONFIRMED_SECONDARY_EMAILS_DELETE_AFTER_DAYS' do
@@ -92,6 +94,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { expect(described_class).to validate_jsonb_schema(['application_setting_rate_limits']) }
     it { expect(described_class).to validate_jsonb_schema(['application_setting_package_registry']) }
     it { expect(described_class).to validate_jsonb_schema(['application_setting_service_ping_settings']) }
+    it { expect(described_class).to validate_jsonb_schema(['application_setting_sign_in_restrictions']) }
 
     it { is_expected.to allow_value(nil).for(:home_page_url) }
     it { is_expected.to allow_value(http).for(:home_page_url) }
@@ -204,6 +207,9 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
 
     it { is_expected.to validate_inclusion_of(:silent_admin_exports_enabled).in_array([true, false]) }
 
+    it { is_expected.to allow_values([true, false]).for(:enforce_ci_inbound_job_token_scope_enabled) }
+    it { is_expected.not_to allow_value(nil).for(:enforce_ci_inbound_job_token_scope_enabled) }
+
     context 'for non-null integer attributes starting from 0' do
       where(:attribute) do
         %i[
@@ -237,6 +243,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
           package_registry_cleanup_policies_worker_capacity
           packages_cleanup_package_file_worker_capacity
           pipeline_limit_per_project_user_sha
+          create_organization_api_limit
           project_api_limit
           projects_api_limit
           projects_api_rate_limit_unauthenticated

@@ -80,7 +80,7 @@ module ReleasesHelper
       group_milestones_available: group_milestone_project_releases_available?(@project),
       project_path: @project.full_path,
       markdown_preview_path: preview_markdown_path(@project),
-      markdown_docs_path: help_page_path('user/markdown'),
+      markdown_docs_path: help_page_path('user/markdown.md'),
       release_assets_docs_path: releases_help_page_path(anchor: 'release-assets'),
       manage_milestones_path: project_milestones_path(@project),
       new_milestone_path: new_project_milestone_path(@project, redirect_path: 'new_release'),

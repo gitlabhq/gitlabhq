@@ -35,7 +35,7 @@ RSpec.describe 'User creates branch', :js, feature_category: :source_code_manage
       visit new_project_branch_path(project)
     end
 
-    it 'renders the breadcrumbs' do
+    it 'renders the breadcrumbs', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/498887' do
       within_testid('breadcrumb-links') do
         expect(page).to have_content("#{project.creator.name} #{project.name} Branches New branch")
 

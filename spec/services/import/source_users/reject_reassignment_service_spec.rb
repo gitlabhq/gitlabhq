@@ -4,8 +4,11 @@ require 'spec_helper'
 
 RSpec.describe Import::SourceUsers::RejectReassignmentService, feature_category: :importers do
   let(:import_source_user) { create(:import_source_user, :awaiting_approval) }
+  let(:reassignment_token) { import_source_user.reassignment_token }
   let(:current_user) { import_source_user.reassign_to_user }
-  let(:service) { described_class.new(import_source_user, current_user: current_user) }
+  let(:service) do
+    described_class.new(import_source_user, current_user: current_user, reassignment_token: reassignment_token)
+  end
 
   describe '#execute' do
     let(:message_delivery) { instance_double(ActionMailer::MessageDelivery) }
@@ -25,9 +28,7 @@ RSpec.describe Import::SourceUsers::RejectReassignmentService, feature_category:
       expect(import_source_user.reload).to be_rejected
     end
 
-    context 'when current user does not have permission to reject' do
-      let(:current_user) { create(:user) }
-
+    shared_examples 'current user does not have permission to reject reassignment' do
       it 'returns error no permissions' do
         result = service.execute
 
@@ -36,6 +37,24 @@ RSpec.describe Import::SourceUsers::RejectReassignmentService, feature_category:
         expect(result).to be_error
         expect(result.message).to eq('You have insufficient permissions to update the import source user')
       end
+    end
+
+    context 'when passing the wrong reassignment_token' do
+      let(:reassignment_token) { '1234567890abcdef' }
+
+      it_behaves_like 'current user does not have permission to reject reassignment'
+    end
+
+    context 'when not passing a reassignment_token' do
+      let(:reassignment_token) { nil }
+
+      it_behaves_like 'current user does not have permission to reject reassignment'
+    end
+
+    context 'when current user is not the assigned user' do
+      let(:current_user) { create(:user) }
+
+      it_behaves_like 'current user does not have permission to reject reassignment'
     end
 
     context 'when import source user does not have a rejectable status' do

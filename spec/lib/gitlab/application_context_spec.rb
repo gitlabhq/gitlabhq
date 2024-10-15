@@ -190,7 +190,7 @@ RSpec.describe Gitlab::ApplicationContext, feature_category: :shared do
     end
 
     context 'when using a runner project' do
-      let_it_be_with_reload(:runner) { create(:ci_runner, :project) }
+      let_it_be_with_reload(:runner) { create(:ci_runner, :project, projects: [project]) }
 
       it 'sets project path from runner project' do
         context = described_class.new(runner: runner)

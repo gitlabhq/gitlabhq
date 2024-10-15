@@ -173,7 +173,7 @@ RSpec.describe 'Creating a Snippet', feature_category: :source_code_management d
     context 'when there are uploaded files' do
       shared_examples 'expected files argument' do |file_value, expected_value|
         let(:uploaded_files) { file_value }
-        let(:snippet) { build(:snippet) }
+        let(:snippet) { build(:personal_snippet) }
         let(:creation_response) do
           ::ServiceResponse.error(message: 'urk', payload: { snippet: snippet })
         end

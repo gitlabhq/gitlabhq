@@ -218,6 +218,7 @@
 - i_package_npm_user
 - i_package_nuget_deploy_token
 - i_package_nuget_user
+- i_package_ml_model_user
 - i_package_pypi_deploy_token
 - i_package_pypi_user
 - i_package_rpm_deploy_token
@@ -353,7 +354,6 @@
 - k8s_api_proxy_requests_unique_agents_via_pat_access
 - k8s_api_proxy_requests_unique_agents_via_user_access
 - merge_request_action
-- o_pipeline_authoring_unique_users_committing_ciconfigfile
 - o_pipeline_authoring_unique_users_pushing_mr_ciconfigfile
 - p_analytics_code_reviews
 - p_analytics_insights

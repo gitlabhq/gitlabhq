@@ -1,0 +1,14 @@
+---
+api_type: string
+attr: slack_app_verification_token
+clusterwide: false
+column: encrypted_slack_app_verification_token
+db_type: text
+default:
+description: The verification token of the GitLab for Slack app. This method of authentication
+  is deprecated by Slack and used only for authenticating slash commands from the
+  app.
+encrypted: true
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

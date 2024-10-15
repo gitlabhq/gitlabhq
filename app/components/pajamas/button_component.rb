@@ -2,6 +2,35 @@
 
 module Pajamas
   class ButtonComponent < Pajamas::Component
+    CATEGORY_OPTIONS = [:primary, :secondary, :tertiary].freeze
+    VARIANT_OPTIONS = [:default, :confirm, :danger, :dashed, :link, :reset].freeze
+    SIZE_OPTIONS = [:small, :medium].freeze
+    TYPE_OPTIONS = [:button, :reset, :submit].freeze
+    TARGET_OPTIONS = %w[_self _blank _parent _top].freeze
+    METHOD_OPTIONS = [:get, :post, :put, :delete, :patch].freeze
+
+    CATEGORY_CLASSES = {
+      primary: '',
+      secondary: 'secondary',
+      tertiary: 'tertiary'
+    }.freeze
+
+    VARIANT_CLASSES = {
+      default: 'btn-default',
+      confirm: 'btn-confirm',
+      danger: 'btn-danger',
+      dashed: 'btn-dashed',
+      link: 'btn-link',
+      reset: 'btn-gl-reset'
+    }.freeze
+
+    NON_CATEGORY_VARIANTS = [:dashed, :link, :reset].freeze
+
+    SIZE_CLASSES = {
+      small: 'btn-sm',
+      medium: 'btn-md'
+    }.freeze
+
     # Below slot must be used as an exception to render custom icon image that is available from assets,
     # configs, attachments, etc. For all other regular cases please use :icon param to add an icon.
     renders_one :icon_content
@@ -79,35 +108,6 @@ module Pajamas
 
       classes.join(' ')
     end
-
-    CATEGORY_OPTIONS = [:primary, :secondary, :tertiary].freeze
-    VARIANT_OPTIONS = [:default, :confirm, :danger, :dashed, :link, :reset].freeze
-    SIZE_OPTIONS = [:small, :medium].freeze
-    TYPE_OPTIONS = [:button, :reset, :submit].freeze
-    TARGET_OPTIONS = %w[_self _blank _parent _top].freeze
-    METHOD_OPTIONS = [:get, :post, :put, :delete, :patch].freeze
-
-    CATEGORY_CLASSES = {
-      primary: '',
-      secondary: 'secondary',
-      tertiary: 'tertiary'
-    }.freeze
-
-    VARIANT_CLASSES = {
-      default: 'btn-default',
-      confirm: 'btn-confirm',
-      danger: 'btn-danger',
-      dashed: 'btn-dashed',
-      link: 'btn-link',
-      reset: 'btn-gl-reset'
-    }.freeze
-
-    NON_CATEGORY_VARIANTS = [:dashed, :link, :reset].freeze
-
-    SIZE_CLASSES = {
-      small: 'btn-sm',
-      medium: 'btn-md'
-    }.freeze
 
     delegate :sprite_icon, to: :helpers
     delegate :gl_loading_icon, to: :helpers

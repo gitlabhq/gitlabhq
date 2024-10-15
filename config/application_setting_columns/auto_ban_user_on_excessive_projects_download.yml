@@ -1,0 +1,16 @@
+---
+api_type: boolean
+attr: auto_ban_user_on_excessive_projects_download
+clusterwide: false
+column: auto_ban_user_on_excessive_projects_download
+db_type: boolean
+default: 'false'
+description: When enabled, users will get automatically banned from the application
+  when they download more than the maximum number of unique projects in the time period
+  specified by `max_number_of_repository_downloads` and `max_number_of_repository_downloads_within_time_period`
+  respectively. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/94153)
+  in GitLab 15.4. Self-managed, Ultimate only.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

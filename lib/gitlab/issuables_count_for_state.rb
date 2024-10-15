@@ -143,8 +143,8 @@ module Gitlab
 
     def params_include_filters?
       non_filtering_params = %i[
-        scope state sort group_id include_subgroups namespace_id
-        attempt_group_search_optimizations non_archived issue_types lookahead
+        scope state sort group_id include_subgroups include_descendants namespace_id
+        attempt_group_search_optimizations non_archived issue_types lookahead exclude_projects
       ]
 
       finder.params.except(*non_filtering_params).values.any?

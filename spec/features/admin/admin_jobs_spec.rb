@@ -91,7 +91,7 @@ RSpec.describe 'Admin Jobs', :js, feature_category: :continuous_integration do
           wait_for_requests
 
           expect(page).to have_selector('[data-testid="jobs-finished-tab"]')
-          expect(page).to have_content 'No jobs to show'
+          expect(page).to have_content 'No results found'
           expect(page).to have_button 'Cancel all jobs'
         end
       end

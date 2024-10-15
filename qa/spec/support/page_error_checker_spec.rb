@@ -303,7 +303,7 @@ RSpec.describe QA::Support::PageErrorChecker do
       expect(page).to receive(:execute_script)
 
       expect(QA::Runtime::Logger).to receive(:debug).with("Fetching API error cache for #{page_url}")
-      expect(QA::Runtime::Logger).to receive(:error).with(<<~ERROR)
+      expect(QA::Runtime::Logger).to receive(:warn).with(<<~ERROR)
         Interceptor Api Errors
         [500] GET https://foo.bar -- Correlation Id: 12345
       ERROR
@@ -323,7 +323,7 @@ RSpec.describe QA::Support::PageErrorChecker do
       expect(page).to receive(:execute_script)
 
       expect(QA::Runtime::Logger).to receive(:debug).with("Fetching API error cache for #{page_url}")
-      expect(QA::Runtime::Logger).to receive(:error).with(<<~ERROR).exactly(1).time
+      expect(QA::Runtime::Logger).to receive(:warn).with(<<~ERROR).exactly(1).time
         Interceptor Api Errors
         [500] GET https://foo.bar -- Correlation Id: 12345
       ERROR
@@ -343,7 +343,7 @@ RSpec.describe QA::Support::PageErrorChecker do
       expect(page).to receive(:execute_script)
 
       expect(QA::Runtime::Logger).to receive(:debug).with("Fetching API error cache for #{page_url}")
-      expect(QA::Runtime::Logger).to receive(:error).with(<<~ERROR)
+      expect(QA::Runtime::Logger).to receive(:warn).with(<<~ERROR)
         Interceptor Api Errors
         [500] GET https://foo.bar -- Correlation Id: 12345
       ERROR
@@ -364,7 +364,7 @@ RSpec.describe QA::Support::PageErrorChecker do
       expect(page).to receive(:execute_script)
 
       expect(QA::Runtime::Logger).to receive(:debug).with("Fetching API error cache for #{page_url}")
-      expect(QA::Runtime::Logger).to receive(:error).with(<<~ERROR.chomp)
+      expect(QA::Runtime::Logger).to receive(:warn).with(<<~ERROR.chomp)
         Interceptor Api Errors
         [200] POST https://foo.bar -- Correlation Id: 12345
         error-messages: Something bad happened

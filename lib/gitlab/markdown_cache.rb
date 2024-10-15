@@ -13,8 +13,19 @@ module Gitlab
     # See: https://gitlab.com/gitlab-org/gitlab/-/issues/330313
     CACHE_COMMONMARK_VERSION       = 33
     CACHE_COMMONMARK_VERSION_START = 10
+    CACHE_COMMONMARK_VERSION_SHIFTED = CACHE_COMMONMARK_VERSION << 16
 
     BaseError = Class.new(StandardError)
     UnsupportedClassError = Class.new(BaseError)
+
+    # We could be called by a method that is inside the Gitlab::CurrentSettings
+    # object. In this case we need to pass in the local_markdown_version in order
+    # to avoid an infinite loop. See usaage in `app/models/concerns/cache_markdown_field.rb`
+    # Otherwise pass in `nil`
+    def self.latest_cached_markdown_version(local_version:)
+      local_version ||= Gitlab::CurrentSettings.current_application_settings.local_markdown_version
+
+      CACHE_COMMONMARK_VERSION_SHIFTED | local_version
+    end
   end
 end

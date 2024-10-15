@@ -121,14 +121,14 @@ This feature is an [experiment](../../../policy/experiment-beta-support.md). If 
 
 ### Placeholder users
 
-Instead of immediately attempting to assign contributions to users on the destination instance, a
-placeholder user is created for:
-
-- Each imported membership.
-- Any user whose contributions were imported.
+Instead of immediately assigning contributions and memberships to users on the destination instance, a
+placeholder user is created for any user whose contributions or memberships were imported.
 
 Both contributions and memberships are first assigned to these placeholder users and can be reassigned after import
-to existing users on destination instance.
+to existing users on the destination instance.
+
+Until they are reassigned, contributions display as associated with the placeholder. Placeholder memberships
+do not display in member lists.
 
 #### Placeholder user attributes
 
@@ -156,10 +156,10 @@ To preserve historical context, the placeholder user name and username are deriv
 
 Prerequisites:
 
-- You must have the Owner role of the group.
+- You must have the Owner role for the group.
 
-Placeholder users are created in the top-level group on the destination instance where a group or project are imported
-to. After the import, to view placeholder users for a group:
+Placeholder users are created on the destination instance while a group or project is imported.
+To view placeholder users created during imports to a top-level group and its subgroups:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Manage > Members**.
@@ -240,6 +240,24 @@ starting.
 
 Reassigning contributions and membership to an incorrect user poses a security threat, because the user becomes a member
 of your group. They can, therefore, view information they should not be able to see.
+
+Reassigning contributions to users with administrator access is disabled by default, but you can
+[enable](../../../administration/settings/import_and_export_settings.md#allow-contribution-mapping-to-administrators) it.
+
+##### Membership security considerations
+
+Because of the GitLab permissions model, when a group or project is imported into an existing parent group, members of
+the parent group are granted [inherited membership](../members/index.md#membership-types) of the imported group or project.
+
+Selecting a user for contribution and membership reassignment who already has an
+existing inherited membership of the imported group or project can affect how memberships
+are reassigned to them.
+
+GitLab does not allow a membership in a child project or group to have a lower role
+than an inherited membership. If an imported membership for an assigned user has a lower role
+than their existing inherited membership, the imported membership is not reassigned to the user.
+
+This results in their membership for the imported group or project being higher than it was on the source.
 
 #### Request reassignment in UI
 

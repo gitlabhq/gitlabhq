@@ -1,0 +1,12 @@
+---
+api_type:
+attr: usage_stats_set_by_user_id
+clusterwide: false
+column: usage_stats_set_by_user_id
+db_type: bigint
+default:
+description:
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

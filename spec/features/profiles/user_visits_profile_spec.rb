@@ -130,7 +130,7 @@ RSpec.describe 'User visits their profile', feature_category: :user_profile do
     end
 
     context 'for snippets' do
-      let_it_be(:snippet) { create(:snippet, :public, author: user) }
+      let_it_be(:snippet) { create(:personal_snippet, :public, author: user) }
 
       it_behaves_like 'shows expected content' do
         let(:link) { 'Snippets' }

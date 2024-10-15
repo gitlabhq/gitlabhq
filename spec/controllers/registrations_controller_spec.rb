@@ -472,6 +472,16 @@ RSpec.describe RegistrationsController, :with_current_organization, feature_cate
       end
     end
 
+    context 'for system hooks' do
+      it 'executes user_create system hook' do
+        expect_next_instance_of(SystemHooksService) do |system_hook_service|
+          expect(system_hook_service).to receive(:execute_hooks_for).with(User.find_by(email: 'new@user.com'), :create)
+        end
+
+        expect { post_create }.to change { User.where(email: 'new@user.com').count }.from(0).to(1)
+      end
+    end
+
     context 'when the rate limit has been reached' do
       it 'returns status 429 Too Many Requests', :aggregate_failures do
         ip = '1.2.3.4'

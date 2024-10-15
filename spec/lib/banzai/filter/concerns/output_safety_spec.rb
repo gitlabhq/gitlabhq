@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Banzai::Filter::Concerns::OutputSafety, feature_category: :team_planning do
+RSpec.describe Banzai::Filter::Concerns::OutputSafety, feature_category: :markdown do
   subject(:filter) do
     Class.new do
       include Banzai::Filter::Concerns::OutputSafety

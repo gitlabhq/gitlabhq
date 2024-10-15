@@ -1,0 +1,14 @@
+---
+api_type: boolean
+attr: email_author_in_body
+clusterwide: true
+column: email_author_in_body
+db_type: boolean
+default: 'false'
+description: Some email servers do not support overriding the email sender name. Enable
+  this option to include the name of the author of the issue, merge request or comment
+  in the email body instead.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: false

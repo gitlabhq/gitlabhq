@@ -12,5 +12,4 @@ RSpec/OverwritingSetup:
     - 'spec/models/todo_spec.rb'
     - 'spec/models/user_spec.rb'
     - 'spec/policies/ci/build_policy_spec.rb'
-    - 'spec/services/packages/nuget/search_service_spec.rb'
     - 'spec/services/projects/container_repository/gitlab/cleanup_tags_service_spec.rb'

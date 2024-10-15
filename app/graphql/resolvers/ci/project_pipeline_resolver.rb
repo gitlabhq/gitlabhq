@@ -14,7 +14,7 @@ module Resolvers
         description: 'Global ID of the Pipeline. For example, "gid://gitlab/Ci::Pipeline/314".',
         prepare: ->(pipeline_id, _ctx) { pipeline_id.model_id }
 
-      argument :iid, GraphQL::Types::ID,
+      argument :iid, GraphQL::Types::ID, # rubocop:disable Graphql/IDType -- Legacy argument using ID type kept for backwards compatibility
         required: false,
         description: 'IID of the Pipeline. For example, "1".'
 

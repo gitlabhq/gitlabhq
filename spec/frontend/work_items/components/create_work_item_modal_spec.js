@@ -164,4 +164,16 @@ describe('CreateWorkItemModal', () => {
 
     expect(setNewWorkItemCache).not.toHaveBeenCalled();
   });
+
+  it('resets the cache on work item created event', async () => {
+    createComponent();
+
+    await waitForPromises();
+
+    await nextTick();
+
+    findForm().vm.$emit('workItemCreated', { webUrl: '/' });
+
+    expect(setNewWorkItemCache).toHaveBeenCalled();
+  });
 });

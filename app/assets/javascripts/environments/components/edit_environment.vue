@@ -2,7 +2,6 @@
 import { GlLoadingIcon } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { visitUrl } from '~/lib/utils/url_utility';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import getEnvironment from '../graphql/queries/environment.query.graphql';
 import updateEnvironment from '../graphql/mutations/update_environment.mutation.graphql';
 import EnvironmentForm from './environment_form.vue';
@@ -12,11 +11,9 @@ export default {
     GlLoadingIcon,
     EnvironmentForm,
   },
-  mixins: [glFeatureFlagsMixin()],
   inject: ['projectEnvironmentsPath', 'projectPath', 'environmentName'],
   apollo: {
-    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
-    environment: {
+    formEnvironment: {
       query: getEnvironment,
       variables() {
         return {
@@ -26,7 +23,7 @@ export default {
       },
       update(data) {
         const result = data?.project?.environment || {};
-        this.formEnvironment = { ...result, clusterAgentId: result?.clusterAgent?.id };
+        return { ...result, clusterAgentId: result?.clusterAgent?.id };
       },
     },
   },
@@ -38,7 +35,7 @@ export default {
   },
   computed: {
     isQueryLoading() {
-      return this.$apollo.queries.environment.loading;
+      return this.$apollo.queries.formEnvironment.loading;
     },
   },
   methods: {
@@ -53,6 +50,7 @@ export default {
           variables: {
             input: {
               id: this.formEnvironment.id,
+              description: this.formEnvironment.description,
               externalUrl: this.formEnvironment.externalUrl,
               clusterAgentId: this.formEnvironment.clusterAgentId,
               kubernetesNamespace: this.formEnvironment.kubernetesNamespace,

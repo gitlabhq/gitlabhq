@@ -1,0 +1,13 @@
+---
+api_type: boolean
+attr: diagramsnet_enabled
+clusterwide: false
+column: diagramsnet_enabled
+db_type: boolean
+default: 'true'
+description: "(If enabled, requires `diagramsnet_url`) Enable [Diagrams.net integration](../administration/integration/diagrams_net.md).
+  Default is `true`."
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

@@ -142,6 +142,77 @@ RSpec.describe Gitlab::Ci::Build::Context::Build, feature_category: :pipeline_co
         end
       end
     end
+
+    context 'when environment includes nested variables' do
+      let(:seed_attributes) do
+        {
+          name: 'some-job',
+          environment: 'env-$NESTED_VAR',
+          yaml_variables: [
+            { key: 'NESTED_VAR', value: 'nested-$CI_COMMIT_REF_NAME' }
+          ],
+          options: {
+            environment: { name: 'env-$NESTED_VAR' }
+          }
+        }
+      end
+
+      it 'expands the nested variable' do
+        is_expected.to include('CI_ENVIRONMENT_NAME' => 'env-nested-master')
+      end
+
+      context 'when the FF ci_variables_optimization_for_yaml_and_node is disabled' do
+        before do
+          stub_feature_flags(ci_variables_optimization_for_yaml_and_node: false)
+        end
+
+        it 'expands the nested variable' do
+          is_expected.to include('CI_ENVIRONMENT_NAME' => 'env-nested-master')
+        end
+      end
+    end
+
+    context 'when kubernetes namespace includes nested variables' do
+      let(:seed_attributes) do
+        {
+          name: 'some-job',
+          environment: 'env-master',
+          yaml_variables: [
+            { key: 'NESTED_VAR', value: 'nested-$CI_PROJECT_PATH' }
+          ],
+          options: {
+            environment: { name: 'env-master', kubernetes: { namespace: 'k8s-$NESTED_VAR' } }
+          }
+        }
+      end
+
+      let!(:default_cluster) do
+        create(
+          :cluster,
+          :not_managed,
+          platform_type: :kubernetes,
+          projects: [project],
+          environment_scope: '*',
+          platform_kubernetes: default_cluster_kubernetes
+        )
+      end
+
+      let(:default_cluster_kubernetes) { create(:cluster_platform_kubernetes, token: 'default-AAA') }
+
+      it 'does not expand the nested variable' do
+        is_expected.to include('KUBE_NAMESPACE' => "k8s-nested-$CI_PROJECT_PATH")
+      end
+
+      context 'when the FF ci_variables_optimization_for_yaml_and_node is disabled' do
+        before do
+          stub_feature_flags(ci_variables_optimization_for_yaml_and_node: false)
+        end
+
+        it 'does not expand the nested variable' do
+          is_expected.to include('KUBE_NAMESPACE' => "k8s-nested-$CI_PROJECT_PATH")
+        end
+      end
+    end
   end
 
   describe '#variables_hash' do

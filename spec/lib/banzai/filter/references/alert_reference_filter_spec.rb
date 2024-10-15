@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::Filter::References::AlertReferenceFilter, feature_category: :team_planning do
+RSpec.describe Banzai::Filter::References::AlertReferenceFilter, feature_category: :markdown do
   include FilterSpecHelper
 
   let_it_be(:project)   { create(:project, :public) }

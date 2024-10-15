@@ -211,8 +211,8 @@ the related documentation.
 |----------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------|------------------------|
 | Artifacts maximum size (compressed)                                              | 1 GB                                                                                                                      | See [Maximum artifacts size](../../administration/settings/continuous_integration.md#maximum-artifacts-size). |
 | Artifacts [expiry time](../../ci/yaml/index.md#artifactsexpire_in)               | From June 22, 2020, deleted after 30 days unless otherwise specified (artifacts created before that date have no expiry). | See [Default artifacts expiration](../../administration/settings/continuous_integration.md#default-artifacts-expiration). |
-| Scheduled Pipeline Cron                                                          | `*/5 * * * *`                                                                                                             | See [Pipeline schedules advanced configuration](../../administration/cicd.md#change-maximum-scheduled-pipeline-frequency). |
-| Maximum jobs in active pipelines                                                 | `500` for Free tier, `1000` for all trial tiers, `20000` for Premium, and `100000` for Ultimate.                                                 | See [Number of jobs in active pipelines](../../administration/instance_limits.md#number-of-jobs-in-active-pipelines). |
+| Scheduled Pipeline Cron                                                          | `*/5 * * * *`                                                                                                             | See [Pipeline schedules advanced configuration](../../administration/cicd/index.md#change-maximum-scheduled-pipeline-frequency). |
+| Maximum jobs in active pipelines                                                 | `500` for Free tier, `1000` for all trial tiers, `20000` for Premium, and `100000` for Ultimate.                          | See [Number of jobs in active pipelines](../../administration/instance_limits.md#number-of-jobs-in-active-pipelines). |
 | Maximum CI/CD subscriptions to a project                                         | `2`                                                                                                                       | See [Number of CI/CD subscriptions to a project](../../administration/instance_limits.md#number-of-cicd-subscriptions-to-a-project). |
 | Maximum number of pipeline triggers in a project                                 | `25000` for all tiers                                                                                                     | See [Limit the number of pipeline triggers](../../administration/instance_limits.md#limit-the-number-of-pipeline-triggers). |
 | Maximum pipeline schedules in projects                                           | `10` for Free tier, `50` for all paid tiers                                                                               | See [Number of pipeline schedules](../../administration/instance_limits.md#number-of-pipeline-schedules). |
@@ -260,7 +260,7 @@ the default value [is the same as for self-managed instances](../../administrati
 
 If you are near or over the repository size limit, you can either:
 
-- [Reduce your repository size with Git](../project/repository/reducing_the_repo_size_using_git.md).
+- [Reduce your repository size with Git](../project/repository/repository_size.md#reduce-repository-size).
 - [Purchase additional storage](https://about.gitlab.com/pricing/licensing-faq/#can-i-buy-more-storage).
 
 NOTE:
@@ -292,11 +292,10 @@ from those IPs and allow them.
 GitLab.com is fronted by Cloudflare. For incoming connections to GitLab.com, you might need to allow CIDR blocks of Cloudflare ([IPv4](https://www.cloudflare.com/ips-v4/) and [IPv6](https://www.cloudflare.com/ips-v6/)).
 
 For outgoing connections from CI/CD runners, we are not providing static IP addresses.
-Most GitLab.com instance runners are deployed into Google Cloud Platform (GCP) in `us-east1`, except _Linux GPU-enabled_ and _Linux Arm64_, hosted in `us-central1`.
+Most GitLab.com instance runners are deployed into Google Cloud in `us-east1`, except _Linux GPU-enabled_ and _Linux Arm64_, hosted in `us-central1`.
 You can configure any IP-based firewall by looking up
 [IP address ranges or CIDR blocks for GCP](https://cloud.google.com/compute/docs/faq#find_ip_range).
-MacOS runners are hosted on AWS and have a different IP range.
-For more information, see [AWS IP address ranges](https://docs.aws.amazon.com/vpc/latest/userguide/aws-ip-ranges.html).
+MacOS runners are hosted on AWS with runner managers hosted on Google Cloud. To configure IP-based firewall, you must allow both [AWS IP address ranges](https://docs.aws.amazon.com/vpc/latest/userguide/aws-ip-ranges.html) and [Google Cloud](https://cloud.google.com/compute/docs/faq#find_ip_range).
 
 ## Hostname list
 
@@ -397,6 +396,7 @@ The following table describes the rate limits for GitLab.com:
 | [Pull mirroring](../project/repository/mirror/pull.md) intervals | 5 minutes                     |
 | API requests from a user to `/api/v4/users/:id`                  | 300 requests per 10 minutes   |
 | GitLab package cloud requests for an IP address ([introduced](https://gitlab.com/gitlab-com/gl-infra/production-engineering/-/issues/24083) in GitLab 16.11) | 3,000 requests per minute |
+| GitLab repository files | 500 requests per minute |
 
 More details are available on the rate limits for
 [protected paths](#protected-paths-throttle) and
@@ -406,7 +406,7 @@ GitLab can rate-limit requests at several layers. The rate limits listed here
 are configured in the application. These limits are the most
 restrictive per IP address. For more information about the rate limits
 for GitLab.com, see
-[an overview](https://gitlab.com/gitlab-com/runbooks/-/tree/master/docs/rate-limiting).
+[the documentation in the handbook](https://handbook.gitlab.com/handbook/engineering/infrastructure/rate-limiting).
 
 ### Rate limiting responses
 

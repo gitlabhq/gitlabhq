@@ -99,7 +99,7 @@ export default {
     <runner-form-fields v-model="model" :loading="loading" :runner-type="runnerType" />
     <runner-update-cost-factor-fields v-model="model" :runner-type="runnerType" />
 
-    <div class="gl-mt-6">
+    <div class="gl-mt-6 gl-flex gl-gap-3">
       <gl-button
         type="submit"
         variant="confirm"

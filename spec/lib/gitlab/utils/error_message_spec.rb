@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Gitlab::Utils::ErrorMessage, feature_category: :error_tracking do
+RSpec.describe Gitlab::Utils::ErrorMessage, feature_category: :observability do
   let(:klass) do
     Class.new do
       include Gitlab::Utils::ErrorMessage

@@ -47,21 +47,38 @@ goals in the set time frames, driving successful project outcomes.
   <iframe src="https://www.youtube-nocookie.com/embed/c0EwYYUZppw" frameborder="0" allowfullscreen> </iframe>
 </figure>
 
-## Relationships between epics and issues
+## Relationships between epics and other items
 
-The possible relationships between epics and issues are:
+The possible relationships between epics and other items are:
 
 - An epic is the parent of one or more issues.
 - An epic is the parent of one or more [child epics](manage_epics.md#multi-level-child-epics). Ultimate only.
+- An epic is [linked](linked_epics.md) to one or more task, objective, or key result.
+  Your administrator must have [enabled the new look for epics](epic_work_items.md).
+
+Example set of relationships:
 
 ```mermaid
+
 %%{init: { "fontFamily": "GitLab Sans" }}%%
 graph TD
-accTitle: Epics and issues
-accDescr: How issues and child epics relate to parent epics
-    Parent_epic --> Issue1
-    Parent_epic --> Child_epic
-    Child_epic --> Issue2
+    accTitle: Epics and issues
+    accDescr: How issues and child epics relate to parent epics and lateral relationships to work items
+
+    %% Main structure %%
+    Parent_epic -->|contains| Issue1
+    Parent_epic -->|contains| Child_epic
+    Child_epic -->|contains| Issue2
+
+    %% Additional work items and lateral relationships %%
+    Issue1 -- contains --> Task1["Task"]
+    Issue2 -- "blocked by" --> Objective1["Objective"]
+    Task1 -- blocking --> KeyResult1["Key Result"]
+
+    %% Work items linked to epics and issues %%
+    Parent_epic -. related .- Objective1
+    Child_epic -. "blocked by" .- KeyResult1
+
 ```
 
 ### Child issues from different group hierarchies
@@ -81,8 +98,8 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 If your epic contains one or more [child epics](manage_epics.md#multi-level-child-epics) that
-have a start or due date, a visual
-[roadmap](../roadmap/index.md) of the child epics is listed under the parent epic.
+have a start or due date, you can go to a [roadmap](../roadmap/index.md)
+of the child epics from the epic.
 
 ![Child epics roadmap](img/epic_view_roadmap_v12_9.png)
 
@@ -90,7 +107,7 @@ have a start or due date, a visual
 
 If your administrator [enabled the new look for epics](epic_work_items.md):
 
-- On the Child issues and epics section header, select **More actions** (**{ellipsis_v}**) **> View on a roadmap**.
+- On the **Child items** section header, select **More actions** (**{ellipsis_v}**) **> View on a roadmap**.
 
 A roadmap filtered for the parent epic opens.
 
@@ -102,7 +119,7 @@ A roadmap filtered for the parent epic opens.
 - [Turn on notifications](../../profile/notifications.md) for about epic events.
 - [Add an emoji reaction](../../emoji_reactions.md) to an epic or its comments.
 - Collaborate on an epic by posting comments in a [thread](../../discussions/index.md).
-- Use [health status](../../project/issues/managing_issues.md#health-status) to track your progress.
+- Use [health status](manage_epics.md#health-status) to track your progress.
 
 <!-- ## Troubleshooting
 

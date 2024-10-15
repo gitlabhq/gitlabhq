@@ -1,0 +1,12 @@
+---
+api_type: string
+attr: after_sign_out_path
+clusterwide: true
+column: after_sign_out_path
+db_type: character
+default:
+description: Where to redirect users after logout.
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

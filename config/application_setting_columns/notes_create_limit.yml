@@ -1,0 +1,12 @@
+---
+api_type:
+attr: notes_create_limit
+clusterwide: true
+column: notes_create_limit
+db_type: integer
+default: '300'
+description:
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: true

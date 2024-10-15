@@ -1,0 +1,12 @@
+---
+api_type: boolean
+attr: prevent_merge_requests_committers_approval
+clusterwide: false
+column: prevent_merge_requests_committers_approval
+db_type: boolean
+default: 'false'
+description: Prevent approval by committers to merge requests
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

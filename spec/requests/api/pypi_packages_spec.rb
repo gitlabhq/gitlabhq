@@ -328,7 +328,7 @@ RSpec.describe API::PypiPackages, feature_category: :package_registry do
           end
 
           it 'returns 422 and does not create a package' do
-            expect { subject }.not_to change { project.packages.pypi.count }
+            expect { subject }.not_to change { Packages::Pypi::Package.for_projects(project).count }
 
             expect(response).to have_gitlab_http_status(:unprocessable_entity)
           end
@@ -424,7 +424,7 @@ RSpec.describe API::PypiPackages, feature_category: :package_registry do
 
       it 'does not create a new package', :aggregate_failures do
         expect { subject }
-          .to change { project.packages.pypi.count }.by(0)
+          .to change { Packages::Pypi::Package.for_projects(project).count }.by(0)
           .and change { Packages::PackageFile.count }.by(1)
           .and change { Packages::Pypi::Metadatum.count }.by(0)
         expect(response).to have_gitlab_http_status(:created)
@@ -434,7 +434,7 @@ RSpec.describe API::PypiPackages, feature_category: :package_registry do
         it 'does create a new package', :aggregate_failures do
           existing_package.pending_destruction!
           expect { subject }
-            .to change { project.packages.pypi.count }.by(1)
+            .to change { Packages::Pypi::Package.for_projects(project).count }.by(1)
             .and change { Packages::PackageFile.count }.by(1)
             .and change { Packages::Pypi::Metadatum.count }.by(1)
           expect(response).to have_gitlab_http_status(:created)

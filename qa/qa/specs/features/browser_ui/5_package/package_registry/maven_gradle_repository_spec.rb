@@ -20,7 +20,7 @@ module QA
       let(:project) { create(:project, :private, :with_readme, name: "#{package_type}_project") }
       let!(:runner) do
         create(:project_runner,
-          name: "qa-runner-#{Time.now.to_i}",
+          name: "qa-runner-#{SecureRandom.hex(6)}",
           tags: ["runner-for-#{project.name}"],
           executor: :docker,
           project: project)

@@ -10,8 +10,6 @@ config:
   code-block-style:                 # MD046
     style: "fenced"
   emphasis-style: false             # MD049
-  first-header-h1: true             # MD002
-  first-line-h1: false              # MD041
   header-style:                     # MD003
     style: "atx"
   hr-style:                         # MD035
@@ -162,6 +160,8 @@ config:
       "YAML",
       "YouTrack"
     ]
+ignores:
+  - "doc/architecture"
 customRules:
   - "./doc/.markdownlint/rules/tabs_blank_lines.js"
   - "./doc/.markdownlint/rules/tabs_title_markup.js"

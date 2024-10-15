@@ -65,7 +65,7 @@ RSpec.describe BranchesHelper, feature_category: :source_code_management do
         merge_request.close
       end
 
-      it { is_expected.to be_nil }
+      it { is_expected.to eq(icon: 'merge-request-close', title: "Closed - #{title}", variant: :danger) }
     end
 
     context 'when merge request is open' do

@@ -1,6 +1,6 @@
 ---
 stage: Monitor
-group: Observability
+group: Platform Insights
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 description: "Documentation for developers interested in contributing features or bugfixes for GitLab Observability."
 ---
@@ -9,7 +9,7 @@ description: "Documentation for developers interested in contributing features o
 
 ## GitLab Observability development setup
 
-There are two options for developing and debugging GitLab Observablity:
+There are two options for developing and debugging GitLab Observability:
 
 - [Run GDK locally and connect to the staging instance](#run-gdk-and-connect-to-the-staging-instance-of-gitlab-observability-backend) of [GitLab Observability Backend](https://gitlab.com/gitlab-org/opstrace/opstrace). This is the simplest and recommended approach for those looking to make changes, or verify changes to Rails, Sidekiq or Workhorse.
 - [Use the purpose built `devvm`](#use-the-purpose-built-devvm). This is more involved but includes a development deployment of the [GitLab Observability Backend](https://gitlab.com/gitlab-org/opstrace/opstrace). This is recommended for those who want to make changes to the GitLab Observability Backend component.
@@ -86,12 +86,15 @@ You can reference the instructions for running the demo app [here](https://opent
 
 1. Create a project in your local GDK instance. Take note of the project ID.
 1. In the newly created project, create a project access token with **Developer** role and **API** scope. Save the token for use in the next step.
-1. With an editor, edit the configuration in `src/otelcollector/otelcol-config-extras.yml`. Add the following YAML, replacing `gdk.test:3443` with the host of your GitLab instance, and replace `$PROJECT_ID` and `$TOKEN` with the respective project ID and token created in the previous steps:
+1. With an editor, edit the configuration in `src/otelcollector/otelcol-config-extras.yml`. Add the following YAML, replacing:
+
+   - `$GDK_HOST` with the host and `$GDK_PORT` with the port number of your GitLab instance.
+   - `$PROJECT_ID` with the project ID and `$TOKEN` with the token created in the previous steps.
 
    ```yaml
    exporters:
       otlphttp/gitlab:
-         endpoint: http://gdk.test:3443/api/v4/projects/$PROJECT_ID/observability/ 
+         endpoint: http://$GDK_HOST:$GDK_PORT/api/v4/projects/$PROJECT_ID/observability/
          headers:
             "private-token": "$TOKEN"
 
@@ -105,7 +108,10 @@ You can reference the instructions for running the demo app [here](https://opent
             exporters: [otlphttp/gitlab]
    ```
 
-1. Save the config and start the demo app:
+NOTE:
+For GDK and Docker to communicate you may need to set up a [loopback interface](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/local_network.md#create-loopback-interface).
+
+1. Save the configuration and start the demo app:
 
    ```shell
    docker compose up --force-recreate --remove-orphans --detach
@@ -116,8 +122,8 @@ You can reference the instructions for running the demo app [here](https://opent
 
 ### Run GDK with mocked Observability data
 
-Apply the following [patch](https://gitlab.com/gitlab-org/opstrace/opstrace/-/snippets/3744171) to override Observability API calls with local mocks:
+Apply the following [patch](https://gitlab.com/gitlab-org/opstrace/opstrace/-/snippets/3747939) to override Observability API calls with local mocks:
 
 ```shell
-git apply < <(curl --silent "https://gitlab.com/gitlab-org/opstrace/opstrace/-/snippets/3744171/raw/main/mock.patch")
+git apply < <(curl --silent "https://gitlab.com/gitlab-org/opstrace/opstrace/-/snippets/3747939/raw/main/mock.patch")
 ```

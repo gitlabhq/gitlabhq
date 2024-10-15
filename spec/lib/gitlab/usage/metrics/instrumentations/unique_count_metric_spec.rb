@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Usage::Metrics::Instrumentations::UniqueCountMetric, :clean_gitlab_redis_shared_state,
-  feature_category: :product_analytics_data_management do
+  feature_category: :product_analytics do
   let(:metric_definition) do
     instance_double("Gitlab::Usage::MetricDefinition", event_selection_rules: event_selection_rules)
   end

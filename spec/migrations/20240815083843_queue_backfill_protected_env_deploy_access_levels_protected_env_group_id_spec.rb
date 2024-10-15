@@ -3,7 +3,8 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe QueueBackfillProtectedEnvDeployAccessLevelsProtectedEnvGroupId, feature_category: :continuous_delivery do
+RSpec.describe QueueBackfillProtectedEnvDeployAccessLevelsProtectedEnvGroupId, migration: :gitlab_main_cell,
+  feature_category: :continuous_delivery do
   let!(:batched_migration) { described_class::MIGRATION }
 
   it 'schedules a new batched migration' do

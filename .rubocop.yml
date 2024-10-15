@@ -95,6 +95,11 @@ Cop/StaticTranslationDefinition:
     - 'spec/**/*'
     - 'ee/spec/**/*'
 
+# Disable old cop, needs to be removed when gitlab-styles 13.0.0 is merged
+# see: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164582
+Cop/WithoutReactiveCache:
+  Enabled: false
+
 InternalAffairs/DeprecateCopHelper:
   Enabled: true
   Include:
@@ -519,6 +524,7 @@ Gitlab/AvoidCurrentOrganization:
     - 'ee/lib/api/**/*'
     - 'app/graphql/**/*'
     - 'ee/app/graphql/**/*'
+    - 'lib/gitlab/current_settings.rb'
     - 'lib/gitlab/middleware/organizations/current.rb'
     - 'spec/**/*'
     - 'ee/spec/**/*'
@@ -531,12 +537,17 @@ Gitlab/AvoidGitlabInstanceChecks:
     - 'db/post_migrate/*.rb'
     - 'ee/db/fixtures/**/*'
 
+Gitlab/EeOnlyClass:
+  Enabled: true
+  Include:
+    - 'ee/**/ee/**/*.rb'
+
 # See https://gitlab.com/gitlab-org/gitlab/-/issues/373194
 Gitlab/RSpec/AvoidSetup:
   Enabled: true
   Include:
     - 'ee/spec/features/registrations/saas/**/*'
-    - 'ee/spec/features/trials/saas/**/*'
+    - 'ee/spec/features/gitlab_subscriptions/trials/creation_*'
     - 'ee/spec/features/gitlab_subscriptions/trials/duo_pro/**/*'
     - 'ee/spec/features/gitlab_subscriptions/trials/duo_enterprise/**/*'
 

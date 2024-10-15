@@ -4,7 +4,7 @@ module MergeRequests
   class CreatePipelineWorker
     include ApplicationWorker
 
-    data_consistency :always
+    data_consistency :sticky
 
     sidekiq_options retry: 3
     include PipelineQueue

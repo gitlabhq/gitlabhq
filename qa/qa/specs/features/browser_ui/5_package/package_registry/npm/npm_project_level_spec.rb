@@ -29,7 +29,7 @@ module QA
       let!(:project) { create(:project, :private, name: 'npm-project-level') }
       let!(:runner) do
         create(:project_runner,
-          name: "qa-runner-#{Time.now.to_i}",
+          name: "qa-runner-#{SecureRandom.hex(6)}",
           tags: ["runner-for-#{project.name}"],
           executor: :docker,
           project: project)

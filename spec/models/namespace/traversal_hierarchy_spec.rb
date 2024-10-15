@@ -68,7 +68,7 @@ RSpec.describe Namespace::TraversalHierarchy, type: :model, feature_category: :g
       end
     end
 
-    it_behaves_like 'locked row', nowait: true do
+    it_behaves_like 'locked row', timeout: true do
       let(:recorded_queries) { ActiveRecord::QueryRecorder.new }
       let(:row) { root }
 
@@ -78,19 +78,20 @@ RSpec.describe Namespace::TraversalHierarchy, type: :model, feature_category: :g
     end
 
     context 'when record is already locked' do
+      let(:msg) { 'PG::QueryCanceled: ERROR:  canceling statement due to statement timeout' }
+
       before do
-        msg = %(PG::LockNotAvailable: ERROR:  could not obtain lock on row in relation "namespaces"\n)
-        allow(root).to receive(:lock!).and_raise(ActiveRecord::LockWaitTimeout.new(msg))
+        allow(root).to receive(:lock!).and_raise(ActiveRecord::QueryCanceled.new(msg))
       end
 
-      it { expect { subject }.to raise_error(ActiveRecord::LockWaitTimeout) }
+      it { expect { subject }.to raise_error(ActiveRecord::QueryCanceled, msg) }
 
-      it 'increment db_nowait counter' do
+      it 'increment db_query_timeout counter' do
         expect do
           subject
         rescue StandardError
           nil
-        end.to change { db_nowait_total('Namespace#sync_traversal_ids!') }.by(1)
+        end.to change { db_query_timeout_total('Namespace#sync_traversal_ids!') }.by(1)
       end
     end
 
@@ -99,7 +100,7 @@ RSpec.describe Namespace::TraversalHierarchy, type: :model, feature_category: :g
         stub_feature_flags(sync_traversal_ids_nowait: false)
       end
 
-      it_behaves_like 'locked row', nowait: false do
+      it_behaves_like 'locked row', timeout: false do
         let(:recorded_queries) { ActiveRecord::QueryRecorder.new }
         let(:row) { root }
 
@@ -126,9 +127,9 @@ RSpec.describe Namespace::TraversalHierarchy, type: :model, feature_category: :g
     end
   end
 
-  def db_nowait_total(source)
+  def db_query_timeout_total(source)
     Gitlab::Metrics
-      .counter(:db_nowait, 'Counts the times we triggered NOWAIT on a database lock operation')
+      .counter(:db_query_timeout, 'Counts the times the query timed out')
       .get(source: source)
   end
 

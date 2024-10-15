@@ -24,7 +24,7 @@ RSpec.describe EnvironmentsHelper, feature_category: :environment_management do
         'can_read_environment' => 'true',
         'project_path' => project.full_path,
         'folder_name' => folder_name,
-        'help_page_path' => '/help/ci/environments/index'
+        'help_page_path' => '/help/ci/environments/index.md'
       )
     end
   end

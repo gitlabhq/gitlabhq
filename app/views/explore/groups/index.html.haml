@@ -9,7 +9,7 @@
     %h1.page-title.gl-text-size-h-display= page_title
     %p
       = _("Below you will find all the groups that are public or internal. Contribute by requesting to join a group.")
-      #{link_to _('Learn more'), help_page_path('user/group/index', { anchor: 'view-groups' })}.
+      #{link_to _('Learn more'), help_page_path('user/group/index.md', { anchor: 'view-groups' })}.
   .page-title-controls.gl-mt-4
     - if current_user&.can_create_group?
       = render Pajamas::ButtonComponent.new(href: new_group_path, variant: :confirm) do

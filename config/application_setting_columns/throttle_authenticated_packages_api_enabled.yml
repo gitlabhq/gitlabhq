@@ -1,0 +1,16 @@
+---
+api_type: boolean
+attr: throttle_authenticated_packages_api_enabled
+clusterwide: false
+column: throttle_authenticated_packages_api_enabled
+db_type: boolean
+default: 'false'
+description: "(**If enabled, requires:** `throttle_authenticated_packages_api_period_in_seconds`
+  and `throttle_authenticated_packages_api_requests_per_period`) Enable authenticated
+  API request rate limit. Helps reduce request volume (for example, from crawlers
+  or abusive bots). View [Package Registry rate limits](../administration/settings/package_registry_rate_limits.md)
+  for more details."
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

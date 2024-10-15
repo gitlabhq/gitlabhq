@@ -67,7 +67,6 @@ GraphQL/ExtractType:
     - 'app/graphql/types/work_items/linked_item_type.rb'
     - 'app/graphql/types/work_items/widgets/description_type.rb'
     - 'ee/app/graphql/mutations/projects/product_analytics_project_settings_update.rb'
-    - 'ee/app/graphql/types/analytics/ai_metrics.rb'
     - 'ee/app/graphql/types/analytics/contribution_analytics/contribution_metadata_type.rb'
     - 'ee/app/graphql/types/analytics/devops_adoption/snapshot_type.rb'
     - 'ee/app/graphql/types/app_sec/fuzzing/api/ci_configuration_type.rb'

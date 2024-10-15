@@ -26,7 +26,7 @@ module Types
 
         field :versions, Types::Ci::Catalog::Resources::VersionType.connection_type, null: true,
           description: 'Versions of the catalog resource. This field can only be ' \
-                       'resolved for one catalog resource in any single request.',
+            'resolved for one catalog resource in any single request.',
           resolver: Resolvers::Ci::Catalog::Resources::VersionsResolver
 
         field :verification_level, Types::Ci::Catalog::Resources::VerificationLevelEnum, null: true,
@@ -44,7 +44,7 @@ module Types
 
         field :last_30_day_usage_count, GraphQL::Types::Int, null: false,
           description: 'Number of projects that used a component from this catalog resource in a pipeline, by using ' \
-                       '`include:component`, in the last 30 days.',
+            '`include:component`, in the last 30 days.',
           alpha: { milestone: '17.0' }
 
         def web_path

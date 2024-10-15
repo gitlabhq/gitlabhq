@@ -3,10 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe SentNotificationsController, feature_category: :shared do
-  let(:user) { create(:user) }
-  let(:project) { create(:project, :public) }
-  let(:private_project) { create(:project, :private) }
-  let(:sent_notification) { create(:sent_notification, project: target_project, noteable: noteable, recipient: user) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :public) }
+  let_it_be(:private_project) { create(:project, :private) }
+
   let(:email) { 'email@example.com' }
 
   let(:issue) do
@@ -31,44 +31,127 @@ RSpec.describe SentNotificationsController, feature_category: :shared do
   let(:noteable) { issue }
   let(:target_project) { project }
 
+  let(:sent_notification) do
+    create(:sent_notification, project: target_project, noteable: noteable, recipient: user)
+  end
+
+  let(:id) { sent_notification.reply_key }
+  let(:perform_request) { unsubscribe }
+
   def force_unsubscribe
-    get(:unsubscribe, params: { id: sent_notification.reply_key, force: true })
+    get(:unsubscribe, params: { id: id, force: true })
   end
 
   def unsubscribe
-    get(:unsubscribe, params: { id: sent_notification.reply_key })
+    get(:unsubscribe, params: { id: id })
+  end
+
+  def post_unsubscribe
+    post(:unsubscribe, params: { id: id })
+  end
+
+  shared_examples 'returns 404' do
+    it 'does not set the flash message' do
+      expect(controller).not_to set_flash[:notice]
+    end
+
+    it 'returns a 404' do
+      expect(response).to have_gitlab_http_status(:not_found)
+    end
+  end
+
+  shared_examples 'validates parameters and records' do
+    context 'when the ID passed does not exist' do
+      let(:id) { sent_notification.reply_key.reverse }
+
+      before do
+        perform_request
+      end
+
+      it_behaves_like 'returns 404'
+    end
+
+    context 'when the noteable associated to the notification has been deleted' do
+      before do
+        sent_notification.noteable.destroy!
+
+        perform_request
+      end
+
+      it_behaves_like 'returns 404'
+    end
+  end
+
+  shared_examples 'unsubscribes a user' do
+    before do
+      perform_request
+    end
+
+    it 'unsubscribes the user' do
+      expect(issue.subscribed?(user, project)).to be_falsey
+    end
+
+    it 'does not delete the issue email participant for non-service-desk issue' do
+      expect { force_unsubscribe }.not_to change { issue.issue_email_participants.count }
+    end
+
+    it 'sets the flash message' do
+      expect(controller).to set_flash[:notice].to(/unsubscribed/)
+    end
+  end
+
+  shared_examples 'unsubscribes an external participant' do
+    context 'when support bot is the notification recipient' do
+      let(:sent_notification) do
+        create(:sent_notification,
+          project: target_project, noteable: noteable, recipient: Users::Internal.support_bot)
+      end
+
+      it 'deletes the external author on the issue' do
+        expect { perform_request }.to change { issue.issue_email_participants.count }.by(-1)
+      end
+
+      context 'when sent_notification contains issue_email_participant' do
+        let!(:other_issue_email_participant) do
+          create(:issue_email_participant, issue: issue, email: 'other@example.com')
+        end
+
+        let(:sent_notification) do
+          create(:sent_notification,
+            project: target_project,
+            noteable: noteable,
+            recipient: Users::Internal.support_bot,
+            issue_email_participant: other_issue_email_participant
+          )
+        end
+
+        it 'deletes the connected issue email participant' do
+          expect { perform_request }.to change { issue.issue_email_participants.count }.by(-1)
+          # Ensure external author is still present
+          expect(issue.email_participants_emails).to contain_exactly(email)
+        end
+      end
+
+      context 'when noteable is not an issue' do
+        let(:noteable) { merge_request }
+
+        it 'does not delete the external author on the issue' do
+          expect { perform_request }.not_to change { issue.issue_email_participants.count }
+        end
+      end
+    end
   end
 
   describe 'GET unsubscribe' do
-    shared_examples 'returns 404' do
-      it 'does not set the flash message' do
-        expect(controller).not_to set_flash[:notice]
-      end
-
-      it 'returns a 404' do
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-    end
-
     context 'when the user is not logged in' do
       context 'when the force param is passed' do
-        before do
-          force_unsubscribe
-        end
+        let(:perform_request) { force_unsubscribe }
 
-        it 'unsubscribes the user' do
-          expect(issue.subscribed?(user, project)).to be_falsey
-        end
-
-        it 'does not delete the issue email participant for non-service-desk issue' do
-          expect { force_unsubscribe }.not_to change { issue.issue_email_participants.count }
-        end
-
-        it 'sets the flash message' do
-          expect(controller).to set_flash[:notice].to(/unsubscribed/)
-        end
+        it_behaves_like 'unsubscribes a user'
+        it_behaves_like 'unsubscribes an external participant'
 
         it 'redirects to the login page' do
+          force_unsubscribe
           expect(response).to redirect_to(new_user_session_path)
         end
       end
@@ -185,15 +268,7 @@ RSpec.describe SentNotificationsController, feature_category: :shared do
         end
       end
 
-      context 'when the noteable associated to the notification has been deleted' do
-        before do
-          sent_notification.noteable.destroy!
-
-          unsubscribe
-        end
-
-        it_behaves_like 'returns 404'
-      end
+      it_behaves_like 'validates parameters and records'
     end
 
     context 'when the user is logged in' do
@@ -201,30 +276,17 @@ RSpec.describe SentNotificationsController, feature_category: :shared do
         sign_in(user)
       end
 
-      context 'when the ID passed does not exist' do
-        before do
-          get(:unsubscribe, params: { id: sent_notification.reply_key.reverse })
-        end
-
-        it_behaves_like 'returns 404'
-      end
+      it_behaves_like 'validates parameters and records'
+      it_behaves_like 'unsubscribes an external participant'
 
       context 'when the force param is passed' do
-        before do
-          force_unsubscribe
-        end
+        let(:perform_request) { force_unsubscribe }
 
-        it 'unsubscribes the user' do
-          expect(issue.subscribed?(user, project)).to be_falsey
-        end
-
-        it 'sets the flash message' do
-          expect(controller).to set_flash[:notice].to(/unsubscribed/)
-        end
+        it_behaves_like 'unsubscribes a user'
 
         it 'redirects to the issue page' do
-          expect(response)
-            .to redirect_to(project_issue_path(project, issue))
+          force_unsubscribe
+          expect(response).to redirect_to(project_issue_path(project, issue))
         end
       end
 
@@ -252,8 +314,7 @@ RSpec.describe SentNotificationsController, feature_category: :shared do
         end
 
         it 'redirects to the merge request page' do
-          expect(response)
-            .to redirect_to(project_merge_request_path(project, merge_request))
+          expect(response).to redirect_to(project_merge_request_path(project, merge_request))
         end
 
         context 'when unsubscribing from design' do
@@ -295,8 +356,11 @@ RSpec.describe SentNotificationsController, feature_category: :shared do
           let(:noteable) { issue }
           let(:target_project) { private_project }
 
-          before do
+          before_all do
             private_project.add_developer(user)
+          end
+
+          before do
             unsubscribe
           end
 
@@ -309,55 +373,39 @@ RSpec.describe SentNotificationsController, feature_category: :shared do
           end
         end
       end
+    end
+  end
 
-      context 'when the noteable associated to the notification has been deleted' do
-        before do
-          sent_notification.noteable.destroy!
+  describe 'POST unsubscribe' do
+    let(:perform_request) { post_unsubscribe }
 
-          unsubscribe
-        end
+    # Ensure we don't verify CSRF token
+    around do |example|
+      ForgeryProtection.with_forgery_protection { example.run }
+    end
 
-        it_behaves_like 'returns 404'
+    it_behaves_like 'validates parameters and records'
+
+    context 'when the user is not logged in' do
+      it_behaves_like 'unsubscribes a user'
+      it_behaves_like 'unsubscribes an external participant'
+
+      it 'redirects to the login page' do
+        post_unsubscribe
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+
+    context 'when the user is logged in' do
+      before do
+        sign_in(user)
       end
 
-      context 'when support bot is the notification recipient' do
-        let(:sent_notification) do
-          create(:sent_notification,
-            project: target_project, noteable: noteable, recipient: Users::Internal.support_bot)
-        end
+      it_behaves_like 'unsubscribes a user'
 
-        it 'deletes the external author on the issue' do
-          expect { unsubscribe }.to change { issue.issue_email_participants.count }.by(-1)
-        end
-
-        context 'when sent_notification contains issue_email_participant' do
-          let!(:other_issue_email_participant) do
-            create(:issue_email_participant, issue: issue, email: 'other@example.com')
-          end
-
-          let(:sent_notification) do
-            create(:sent_notification,
-              project: target_project,
-              noteable: noteable,
-              recipient: Users::Internal.support_bot,
-              issue_email_participant: other_issue_email_participant
-            )
-          end
-
-          it 'deletes the connected issue email participant' do
-            expect { unsubscribe }.to change { issue.issue_email_participants.count }.by(-1)
-            # Ensure external author is still present
-            expect(issue.email_participants_emails).to contain_exactly(email)
-          end
-        end
-
-        context 'when noteable is not an issue' do
-          let(:noteable) { merge_request }
-
-          it 'does not delete the external author on the issue' do
-            expect { unsubscribe }.not_to change { issue.issue_email_participants.count }
-          end
-        end
+      it 'redirects to the issue page' do
+        post_unsubscribe
+        expect(response).to redirect_to(project_issue_path(project, issue))
       end
     end
   end

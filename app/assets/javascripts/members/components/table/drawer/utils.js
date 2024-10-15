@@ -22,7 +22,7 @@ export const callRoleUpdateApi = async (member, role) => {
 
   return axios.put(member.memberPath, {
     [accessLevelProp]: role.accessLevel,
-    member_role_id: role.memberRoleId,
+    member_role_id: role.memberRoleId || null,
   });
 };
 

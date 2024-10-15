@@ -47,7 +47,7 @@ To subscribe to GitLab.com:
 1. On the left sidebar, select **Settings > Billing** and choose a tier. You are taken to the Customers Portal.
 1. Fill out the form to complete your purchase.
 
-## View your GitLab.com subscription
+## View GitLab.com subscription
 
 Prerequisites:
 
@@ -69,12 +69,79 @@ The following information is displayed:
 | **Subscription start date** | Date your subscription started. |
 | **Subscription end date**   | Date your current subscription ends. |
 
+## Renew GitLab.com subscription
+
+30 days before a subscription expires, a banner with the subscription expiry date displays for group owners in the GitLab user interface.
+
+Before you renew your GitLab.com subscription, you should [review your account](../self_managed/index.md#review-your-account).
+
+You can renew your subscription [manually](../self_managed/index.md#renew-subscription-manually) or automatically.
+Your updated subscription is applied to your namespace.
+The renewal period start date is displayed on the group Billing page under **Next subscription term start date**.
+
+You can view and [manage renewal invoice](../self_managed/index.md#manage-renewal-invoice) at any time.
+
+### Renew for fewer seats
+
+You can renew your subscription for fewer seats, as long as the seat total is equal to or greater than the billable user quantity at the time of renewal.
+If you want to renew for fewer seats, you can do either of the following:
+
+- [Manually renew](../self_managed/index.md#renew-subscription-manually) within 15 days of subscription renewal date, and **specify the desired seat quantity** on the renewal page. To reduce billable user quantity, [remove users from your subscription](#remove-users-from-subscription).
+- Disable automatic subscription renewal and work with the Sales team to renew it for the number of seats you want.
+
+### Automatic subscription renewal
+
+When a subscription is set to auto-renew, it renews automatically at midnight UTC on the expiration date without a gap in available service.
+You receive [email notifications](../self_managed/index.md#email-notifications) before a subscription automatically renews.
+Subscriptions purchased through the Customers Portal or GitLab.com are set to auto-renew by default,
+but you can [disable automatic subscription renewal](../self_managed/index.md#enable-or-disable-automatic-subscription-renewal).
+
+The number of seats is adjusted to fit the [number of billable users in your group](#view-seat-usage) at the time of renewal,
+if that number is higher than the current subscription quantity.
+
+## Expired subscriptions
+
+When your subscription expires, you can continue to use paid features of GitLab for 14 days.
+On the 15th day, paid features are no longer available. You can
+continue to use free features.
+
+For example, if a subscription has a start date of January 1, 2024 and an end date of January 1, 2025:
+
+- It expires at 11:59:59 PM UTC December 31, 2024.
+- It is considered expired from 12:00:00 AM UTC January 1, 2025.
+- The grace period of 14 days starts at 12:00:00 AM UTC January 1, 2025 and ends at 11:59:59 PM UTC January 14, 2025.
+- Paid features are no longer available as of 12:00:00 AM UTC January 15, 2025.
+
+To resume paid feature functionality, purchase a new subscription.
+
+## Upgrade subscription tier
+
+To upgrade your [GitLab tier](https://about.gitlab.com/pricing/):
+
+1. Sign in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
+1. Select **Upgrade** on the relevant subscription card.
+1. Select the desired upgrade.
+1. Confirm the active form of payment, or add a new form of payment.
+1. Check the **I accept the Privacy Statement and Terms of Service** checkbox.
+1. Select **Confirm purchase**.
+
+When the purchase has been processed, you receive confirmation of your new subscription tier.
+
+## Add or change subscription contacts
+
+Contacts can renew a subscription, cancel a subscription, or transfer the subscription to a different namespace.
+
+You can [change profile owner information](../customers_portal.md#change-profile-owner-information)
+and [add a secondary contact for your subscription](../customers_portal.md#add-a-secondary-contact).
+
 ## How seat usage is determined
 
-A GitLab.com subscription uses a concurrent (_seat_) model. You pay for a
-subscription according to the maximum number of users assigned to the top-level group or its children during the billing period. You can
-add and remove users during the subscription period without incurring additional charges, as long as the total users
-at any given time doesn't exceed the subscription count. If the total users exceeds your subscription count, you will incur an overage
+A GitLab.com subscription uses a concurrent (_seat_) model.
+You pay for a subscription according to the maximum number of users assigned to the top-level group
+or its children during the billing period.
+You can add and remove users during the subscription period without incurring additional charges,
+as long as the total users at any given time doesn't exceed the subscription count.
+If the total users exceeds your subscription count, you will incur an overage,
 which must be paid at your next [reconciliation](../quarterly_reconciliation.md).
 
 A top-level group can be [changed](../../user/group/manage.md#change-a-groups-path) like any other group.
@@ -104,7 +171,65 @@ and that group does not have a paid subscription, they would not see any of the 
 It is also possible for users to belong to two different top-level groups with different subscriptions.
 In this case, they would see only the features available to that subscription.
 
-### View seat usage
+### Free Guest users
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+
+In the **Ultimate** tier, users who are assigned the Guest role do not consume a seat.
+The user must not be assigned any other role, anywhere in the instance or in the namespace for GitLab.com.
+
+- If your project is private or internal, a user with the Guest role has
+  [a set of permissions](../../user/permissions.md#project-members-permissions).
+- If your project is public, all users, including those with the Guest role
+  can access your project.
+- For GitLab.com, if a user with the Guest role creates a project in their personal namespace, it does not consume a seat. The project is under the user's personal namespace and does not relate to the group with the Ultimate subscription.
+
+### Seats owed
+
+If the number of billable users exceeds the number of **seats in subscription**, known
+as the number of **seats owed**, you must pay for the excess number of users.
+
+For example, if you purchase a subscription for 10 users:
+
+| Event                                              | Billable members | Maximum users |
+|:---------------------------------------------------|:-----------------|:--------------|
+| Ten users occupy all 10 seats.                     | 10               | 10            |
+| Two new users join.                                | 12               | 12            |
+| Three users leave and their accounts are removed.  | 9                | 12            |
+
+Seats owed = 12 - 10 (Maximum users - users in subscription)
+
+To prevent charges from seats owed, you can
+[turn on restricted access](../../administration/settings/sign_up_restrictions.md#turn-on-restricted-access).
+This setting restricts groups from adding new billable users when there are no seats left in the subscription.
+
+### Seat usage alerts
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348481) in GitLab 15.2 [with a flag](../../administration/feature_flags.md) named `seat_flag_alerts`.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/362041) in GitLab 15.4. Feature flag `seat_flag_alerts` removed.
+
+If you have the Owner role of the top-level group, an alert notifies you
+of your total seat usage.
+
+The alert displays on group, subgroup, and project
+pages, and only for top-level groups linked to subscriptions enrolled
+in [quarterly subscription reconciliations](../quarterly_reconciliation.md).
+After you dismiss the alert, it doesn't display until another seat is used.
+
+The alert displays based on the following seat usage. You cannot configure the
+amounts at which the alert displays.
+
+| Seats in subscription | Alert displays when |
+|-----------------------|---------------------|
+| 0-15                  | One seat remains.   |
+| 16-25                 | Two seats remain.   |
+| 26-99                 | 10% of seats remain.|
+| 100-999               | 8% of seats remain. |
+| 1000+                 | 5% of seats remain. |
+
+## View seat usage
 
 To view a list of seats being used:
 
@@ -130,7 +255,7 @@ To view your subscription information and a summary of seat counts:
 - The **Last login** field is updated when a user signs in after they have signed out. If there is an active session
   when a user re-authenticates (for example, after a 24 hour SAML session timeout), this field is not updated.
 
-### Search seat usage
+## Search seat usage
 
 To search billable users:
 
@@ -148,7 +273,7 @@ For example:
 | Amir       | `ami`         | Yes     |
 | Amir       | `amr`         | No      |
 
-### Export seat usage
+## Export seat usage
 
 To export seat usage data as a CSV file:
 
@@ -156,7 +281,7 @@ To export seat usage data as a CSV file:
 1. Select **Settings > Usage Quotas**.
 1. In the **Seats** tab, select **Export list**.
 
-### Export seat usage history
+## Export seat usage history
 
 Prerequisites:
 
@@ -171,37 +296,7 @@ To export seat usage history as a CSV file:
 The generated list contains all seats being used,
 and is not affected by the current search.
 
-## Seats owed
-
-If the number of billable users exceeds the number of **seats in subscription**, known
-as the number of **seats owed**, you must pay for the excess number of users.
-
-For example, if you purchase a subscription for 10 users:
-
-| Event                                              | Billable members | Maximum users |
-|:---------------------------------------------------|:-----------------|:--------------|
-| Ten users occupy all 10 seats.                     | 10               | 10            |
-| Two new users join.                                | 12               | 12            |
-| Three users leave and their accounts are removed.  | 9                | 12            |
-
-Seats owed = 12 - 10 (Maximum users - users in subscription)
-
-### Free Guest users
-
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
-
-In the **Ultimate** tier, users who are assigned the Guest role do not consume a seat.
-The user must not be assigned any other role, anywhere in the instance or in the namespace for GitLab.com.
-
-- If your project is private or internal, a user with the Guest role has
-  [a set of permissions](../../user/permissions.md#project-members-permissions).
-- If your project is public, all users, including those with the Guest role
-  can access your project.
-- For GitLab.com, if a user with the Guest role creates a project in their personal namespace, it does not consume a seat. The project is under the user's personal namespace and does not relate to the group with the Ultimate subscription.
-
-### Add seats to your subscription
+## Add seats to subscription
 
 Your subscription cost is based on the maximum number of seats you use during the billing period.
 Even if you reach the number of seats in your subscription, you can continue to add users.
@@ -223,7 +318,7 @@ The following is emailed to you:
 - A payment receipt. You can also access this information in the Customers Portal under
   [**Invoices**](https://customers.gitlab.com/invoices).
 
-### Remove users from your subscription
+## Remove users from subscription
 
 To remove a billable user from your GitLab.com subscription:
 
@@ -240,31 +335,7 @@ If you add a member to a group by using the [share a group with another group](.
 
 To remove a user from your self-managed instance, see [Deactivate a user](../../administration/moderate_users.md#deactivate-a-user).
 
-## Seat usage alerts
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348481) in GitLab 15.2 [with a flag](../../administration/feature_flags.md) named `seat_flag_alerts`.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/362041) in GitLab 15.4. Feature flag `seat_flag_alerts` removed.
-
-If you have the Owner role of the top-level group, an alert notifies you
-of your total seat usage.
-
-The alert displays on group, subgroup, and project
-pages, and only for top-level groups linked to subscriptions enrolled
-in [quarterly subscription reconciliations](../quarterly_reconciliation.md).
-After you dismiss the alert, it doesn't display until another seat is used.
-
-The alert displays based on the following seat usage. You cannot configure the
-amounts at which the alert displays.
-
-| Seats in subscription | Alert displays when           |
-|-----------------------|----------------------|
-| 0-15                  | One seat remains.     |
-| 16-25                 | Two seats remain.    |
-| 26-99                 | 10% of seats remain. |
-| 100-999               | 8% of seats remain.  |
-| 1000+                 | 5% of seats remain.  |
-
-## Change the linked group
+## Link subscription to a group
 
 To change the group linked to a GitLab.com subscription:
 
@@ -293,7 +364,7 @@ For a demo, see [Linking GitLab Subscription to the Namespace](https://youtu.be/
 
 ### Transfer restrictions
 
-Changing the linked namespace is not supported for all subscription types.
+You can change the linked namespace, however this is not supported for all subscription types.
 
 You cannot transfer:
 
@@ -302,110 +373,38 @@ You cannot transfer:
 - A subscription with a Premium or Ultimate plan to a namespace which already has a Premium or Ultimate plan.
 - A subscription with a GitLab Duo add-on to a namespace which already has a subscriptions with a GitLab Duo add-on.
 
-## Upgrade your GitLab.com subscription tier
+## Compute minutes
 
-To upgrade your [GitLab tier](https://about.gitlab.com/pricing/):
+[Compute minutes](../../ci/pipelines/compute_minutes.md) is the resource consumed when running
+[CI/CD pipelines](../../ci/index.md) on GitLab instance runners. If you run out of compute minutes,
+you can [purchase additional compute minutes](compute_minutes.md).
 
-1. Sign in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
-1. Select **Upgrade** on the relevant subscription card.
-1. Select the desired upgrade.
-1. Confirm the active form of payment, or add a new form of payment.
-1. Check the **I accept the Privacy Statement and Terms of Service** checkbox.
-1. Select **Confirm purchase**.
+## Enterprise Agile Planning
 
-When the purchase has been processed, you receive confirmation of your new subscription tier.
+GitLab Enterprise Agile Planning is an add-on that helps bring non-technical users into the same
+DevSecOps platform where engineers build, test, secure, and deploy code.
+The add-on enables cross-team collaboration between developers and non-developers without having to
+purchase full GitLab licenses for non-engineering team members.
+With Enterprise Agile Planning seats, non-engineering team members can participate in planning
+workflows, measure software delivery velocity and impact with Value Stream Analytics, and use
+executive dashboards to drive organizational visibility.
 
-## Subscription expiry
+To purchase additional Enterprise Agile Planning seats, contact your
+[GitLab sales representative](https://about.gitlab.com/sales/) for more information.
 
-When your subscription expires, you can continue to use paid features of GitLab for 14 days.
-On the 15th day, paid features are no longer available. You can
-continue to use free features.
+## Purchase more storage
 
-For example, if a subscription has a start date of January 1, 2024 and an end date of January 1, 2025:
-
-- It expires at 11:59:59 PM UTC December 31, 2024.
-- It is considered expired from 12:00:00 AM UTC January 1, 2025.
-- The grace period of 14 days starts at 12:00:00 AM UTC January 1, 2025 and ends at 11:59:59 PM UTC January 14, 2025.
-- Paid features are no longer available as of 12:00:00 AM UTC January 15, 2025.
-
-To resume paid feature functionality, purchase a new subscription.
-
-## Renew your GitLab.com subscription
-
-30 days before a subscription expires, a banner with the subscription expiry date displays for group owners in the GitLab user interface.
-
-Before you renew your GitLab.com subscription, you should [review your account](../self_managed/index.md#review-your-account).
-
-You can renew your subscription [manually](../self_managed/index.md#renew-subscription-manually) or automatically.
-Your updated subscription is applied to your namespace.
-The renewal period start date is displayed on the group Billing page under **Next subscription term start date**.
-
-You can view and [manage renewal invoice](../self_managed/index.md#manage-renewal-invoice) at any time.
-
-### Renew for fewer seats
-
-You can renew your subscription for fewer seats, as long as the seat total is equal to or greater than the billable user quantity at the time of renewal.
-If you want to renew for fewer seats, you can do either of the following:
-
-- [Manually renew](../self_managed/index.md#renew-subscription-manually) within 15 days of subscription renewal date, and **specify the desired seat quantity** on the renewal page. To reduce billable user quantity, [remove users from your subscription](#remove-users-from-your-subscription).
-- Disable automatic subscription renewal and work with the Sales team to renew it for the number of seats you want.
-
-### Automatic subscription renewal
-
-When a subscription is set to auto-renew, it renews automatically at midnight UTC on the expiration date without a gap in available service.
-You receive [email notifications](../self_managed/index.md#email-notifications) before a subscription automatically renews.
-Subscriptions purchased through the Customers Portal or GitLab.com are set to auto-renew by default,
-but you can [disable automatic subscription renewal](../self_managed/index.md#enable-or-disable-automatic-subscription-renewal).
-
-The number of seats is adjusted to fit the [number of billable users in your group](#view-seat-usage) at the time of renewal,
-if that number is higher than the current subscription quantity.
-
-## Add or change the contacts for your subscription
-
-Contacts can renew a subscription, cancel a subscription, or transfer the subscription to a different namespace.
-
-For information about how to transfer ownership of the Customers Portal account to another person, see
-[Change profile owner information](../customers_portal.md#change-profile-owner-information).
-
-To add a secondary contact for your subscription:
-
-1. Ensure an account exists in the
-   [Customers Portal](https://customers.gitlab.com/customers/sign_in) for the user you want to add.
-1. [Create a ticket with the Support team](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293). Include any relevant material in your request.
-
-## Compute
-
-Compute is the resource consumed when running [pipelines](../../ci/pipelines/index.md)
-on GitLab instance runners.
-
-Refer to [Compute usage](../../ci/pipelines/compute_minutes.md)
-for more information.
-
-### Purchase additional compute minutes
-
-You can [purchase additional compute minutes](../../ci/pipelines/compute_minutes.md#purchase-additional-compute-minutes)
-for your personal or group namespace. Compute minutes are a **one-time purchase**, so they do not renew.
-
-## Add-on subscription for additional Storage
-
-Projects have a free storage quota of 10 GiB. To exceed this quota you must first
-purchase one or more storage subscription units. Each unit provides 10 GiB of additional
-storage per namespace. A storage subscription is renewed annually. For more details, see
-[Storage](../../user/usage_quotas.md).
-
-### Purchase more storage
+To exceed the free 10 GiB storage quota, you can purchase more storage for your personal or group namespace.
 
 Prerequisites:
 
 - You must have the Owner role.
 
-You can purchase a storage subscription for your personal or group namespace.
-
 NOTE:
 Storage subscriptions **renew automatically each year**.
 You can [disable automatic subscription renewal](../self_managed/index.md#enable-or-disable-automatic-subscription-renewal).
 
-#### For your personal namespace
+### For your personal namespace
 
 1. Sign in to GitLab.com.
 1. From either your personal homepage or the group's page, go to **Settings > Usage Quotas**.
@@ -423,7 +422,7 @@ You can [disable automatic subscription renewal](../self_managed/index.md#enable
 The **Purchased storage available** total is incremented by the amount purchased. The read-only
 state for all projects is removed, and their excess usage is deducted from the additional storage.
 
-#### For your group namespace
+### For your group namespace
 
 If you're using GitLab.com, you can purchase additional storage so your
 pipelines aren't blocked after you have used all your storage from your
@@ -449,30 +448,3 @@ To confirm the available storage, go to your group, and then select
 
 The **Purchased storage available** total is incremented by the amount purchased. All locked
 projects are unlocked and their excess usage is deducted from the additional storage.
-
-## Enterprise Agile Planning
-
-GitLab Enterprise Agile Planning is an add-on that helps bring non-technical users into the same
-DevSecOps platform where engineers build, test, secure, and deploy code.
-The add-on enables cross-team collaboration between developers and non-developers without having to
-purchase full GitLab licenses for non-engineering team members.
-With Enterprise Agile Planning seats, non-engineering team members can participate in planning
-workflows, measure software delivery velocity and impact with Value Stream Analytics, and use
-executive dashboards to drive organizational visibility.
-
-### Purchase additional Enterprise Agile Planning seats
-
-Contact your [GitLab sales representative](https://about.gitlab.com/sales/) for more information.
-
-## Contact Support
-
-Learn more about:
-
-- The tiers of [GitLab Support](https://about.gitlab.com/support/).
-- [Submit a request via the Support Portal](https://support.gitlab.com/hc/en-us/requests/new).
-
-We also encourage you to search our project trackers for known issues and
-existing feature requests in the [GitLab](https://gitlab.com/gitlab-org/gitlab/-/issues/) project.
-
-These issues are the best avenue for getting updates on specific product plans
-and for communicating directly with the relevant GitLab team members.

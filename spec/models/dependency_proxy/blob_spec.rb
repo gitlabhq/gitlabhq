@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe DependencyProxy::Blob, type: :model do
+RSpec.describe DependencyProxy::Blob, type: :model, feature_category: :dependency_proxy do
   it_behaves_like 'ttl_expirable'
   it_behaves_like 'destructible', factory: :dependency_proxy_blob
 

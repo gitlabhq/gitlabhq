@@ -23,7 +23,7 @@ RSpec.describe Import::BulkImports::SourceUsersMapper, feature_category: :import
     create(:import_source_user,
       namespace: portable,
       import_type: Import::SOURCE_DIRECT_TRANSFER,
-      source_hostname: bulk_import.configuration.source_hostname,
+      source_hostname: bulk_import.configuration.url,
       source_user_identifier: 101
     )
   end
@@ -33,7 +33,7 @@ RSpec.describe Import::BulkImports::SourceUsersMapper, feature_category: :import
       :completed,
       namespace: portable,
       import_type: Import::SOURCE_DIRECT_TRANSFER,
-      source_hostname: bulk_import.configuration.source_hostname,
+      source_hostname: bulk_import.configuration.url,
       source_user_identifier: 102
     )
   end

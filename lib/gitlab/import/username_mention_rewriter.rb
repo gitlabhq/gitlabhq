@@ -15,12 +15,14 @@ module Gitlab
       MENTION_REGEX = Gitlab::UntrustedRegexp.new('(`+[^`]*`+)|((?:^|\s|\()@[\w\-#./]+)')
 
       def update_username_mentions(relation_hash)
-        relation_hash['description'] = update_text(relation_hash['description']) if relation_hash['description']
+        if relation_hash['description']
+          relation_hash['description'] = wrap_mentions_in_backticks(relation_hash['description'])
+        end
 
-        relation_hash['note'] = update_text(relation_hash['note']) if relation_hash['note']
+        relation_hash['note'] = wrap_mentions_in_backticks(relation_hash['note']) if relation_hash['note']
       end
 
-      def update_text(text)
+      def wrap_mentions_in_backticks(text)
         return text unless text.present?
 
         if MENTION_REGEX.match?(text)

@@ -27,11 +27,6 @@
   }
 
   &.todo-pending.done-reversible {
-    .todo-item,
-    .todo-timestamp {
-      opacity: 0.5;
-    }
-
     .todo-avatar {
       filter: grayscale(1);
     }

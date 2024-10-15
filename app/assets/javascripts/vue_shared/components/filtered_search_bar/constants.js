@@ -63,6 +63,7 @@ export const TOKEN_EMPTY_SEARCH_TERM = {
 
 export const TOKEN_TITLE_APPROVED_BY = __('Approved-By');
 export const TOKEN_TITLE_MERGE_USER = __('Merged-By');
+export const TOKEN_TITLE_APPROVER = __('Approver');
 export const TOKEN_TITLE_ASSIGNEE = s__('SearchToken|Assignee');
 export const TOKEN_TITLE_AUTHOR = __('Author');
 export const TOKEN_TITLE_CONFIDENTIAL = __('Confidential');
@@ -86,7 +87,12 @@ export const TOKEN_TITLE_VERSION = __('Version');
 export const TOKEN_TITLE_SEARCH_WITHIN = __('Search Within');
 export const TOKEN_TITLE_CREATED = __('Created date');
 export const TOKEN_TITLE_CLOSED = __('Closed date');
+export const TOKEN_TITLE_DEPLOYED_BEFORE = __('Deployed-before');
+export const TOKEN_TITLE_DEPLOYED_AFTER = __('Deployed-after');
+export const TOKEN_TITLE_ASSIGNED_SEAT = __('Assigned seat');
+export const TOKEN_TITLE_ENVIRONMENT = __('Environment');
 
+export const TOKEN_TYPE_APPROVER = 'approver';
 export const TOKEN_TYPE_APPROVED_BY = 'approved-by';
 export const TOKEN_TYPE_MERGE_USER = 'merge-user';
 export const TOKEN_TYPE_ASSIGNEE = 'assignee';
@@ -97,6 +103,7 @@ export const TOKEN_TYPE_DRAFT = 'draft';
 export const TOKEN_TYPE_GROUP = 'group';
 export const TOKEN_TYPE_GROUP_INVITE = 'group-invite';
 export const TOKEN_TYPE_EPIC = 'epic';
+export const TOKEN_TYPE_ASSIGNED_SEAT = 'assigned-seat';
 // As health status gets reused between issue lists and boards
 // this is in the shared constants. Until we have not decoupled the EE filtered search bar
 // from the CE component, we need to keep this in the CE code.
@@ -120,3 +127,16 @@ export const TOKEN_TYPE_WEIGHT = 'weight';
 export const TOKEN_TYPE_SEARCH_WITHIN = 'in';
 export const TOKEN_TYPE_CREATED = 'created';
 export const TOKEN_TYPE_CLOSED = 'closed';
+export const TOKEN_TYPE_DEPLOYED_BEFORE = 'deployed-before';
+export const TOKEN_TYPE_DEPLOYED_AFTER = 'deployed-after';
+export const TOKEN_TYPE_ENVIRONMENT = 'environment';
+
+// Due to the i18n eslint rule we can't have a capitalized string even if it is a case-aware URL param
+/* eslint-disable @gitlab/require-i18n-strings */
+export const ENTITY_TYPES = {
+  USER: 'User',
+  AUTHOR: 'Author',
+  GROUP: 'Group',
+  PROJECT: 'Project',
+};
+/* eslint-enable @gitlab/require-i18n-strings */

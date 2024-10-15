@@ -122,10 +122,10 @@ Supported attributes:
 
 If successful, returns:
 
-- [`200`](rest/index.md#status-codes) if the feature is enabled.
-- [`403`](rest/index.md#status-codes) if the feature is disabled.
+- [`200`](rest/troubleshooting.md#status-codes) if the feature is enabled.
+- [`403`](rest/troubleshooting.md#status-codes) if the feature is disabled.
 
-Additionally, returns a [`404`](rest/index.md#status-codes) if the path is empty or the project does not exist.
+Additionally, returns a [`404`](rest/troubleshooting.md#status-codes) if the path is empty or the project does not exist.
 
 Example request:
 

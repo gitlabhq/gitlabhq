@@ -1,6 +1,6 @@
 ---
 stage: Monitor
-group: Observability
+group: Platform Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -99,6 +99,13 @@ The following table shows what type of aggregation is used for each search perio
 | More than 30 minutes and less than one hour | By minute |
 | More than one hour and less than 72 hours | Hourly |
 | More than 72 hours | Daily |
+
+### Metrics ingestion limits
+
+Metrics ingest a maximum of 102,400 bytes per minute.
+When the limit is exceeded, a `429 Too Many Requests` response is returned.
+
+To request a limit increase to 1,048,576 bytes per minute, contact [GitLab support](https://about.gitlab.com/support/).
 
 ### Data retention
 

@@ -45,11 +45,11 @@ class Admin::ImpersonationTokensController < Admin::ApplicationController
   # rubocop: enable CodeReuse/ActiveRecord
 
   def verify_impersonation_enabled!
-    access_denied! unless helpers.impersonation_enabled?
+    access_denied! unless helpers.impersonation_tokens_enabled?
   end
 
   def finder(options = {})
-    PersonalAccessTokensFinder.new({ user: user, impersonation: true }.merge(options))
+    PersonalAccessTokensFinder.new({ user: user, impersonation: true, organization: Current.organization }.merge(options))
   end
 
   def active_impersonation_tokens

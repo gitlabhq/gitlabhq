@@ -1680,3 +1680,18 @@ export const mockDataForBlobBody = {
   projectPath: 'Testjs/Test',
   __typename: 'SearchBlobFileType',
 };
+
+export const mockSourceBranches = [
+  {
+    text: 'master',
+    value: 'master',
+  },
+  {
+    text: 'feature',
+    value: 'feature',
+  },
+  {
+    text: 'develop',
+    value: 'develop',
+  },
+];

@@ -3,6 +3,8 @@ redirect_to: '../administration/internal_users.md'
 remove_date: '2024-11-14'
 ---
 
+<!-- markdownlint-disable -->
+
 This document was moved to [another location](../administration/internal_users.md).
 
 <!-- This redirect file can be deleted after <2024-11-14>. -->

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::Filter::AbsoluteLinkFilter, feature_category: :team_planning do
+RSpec.describe Banzai::Filter::AbsoluteLinkFilter, feature_category: :markdown do
   def filter(doc, context = {})
     described_class.call(doc, context)
   end

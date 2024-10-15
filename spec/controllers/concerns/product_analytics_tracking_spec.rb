@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe ProductAnalyticsTracking, :snowplow, feature_category: :product_analytics_data_management do
+RSpec.describe ProductAnalyticsTracking, :snowplow, feature_category: :product_analytics do
   include TrackingHelpers
   include SnowplowHelpers
 
@@ -64,7 +64,8 @@ RSpec.describe ProductAnalyticsTracking, :snowplow, feature_category: :product_a
       allow(Gitlab::Tracking::EventDefinition).to receive(:internal_event_exists?).with('an_event').and_return(true)
       event_definition = instance_double(
         Gitlab::Tracking::EventDefinition,
-        event_selection_rules: [all_time_total_count, time_framed_total_count]
+        event_selection_rules: [all_time_total_count, time_framed_total_count],
+        to_h: {}
       )
       allow(Gitlab::Tracking::EventDefinition).to receive(:find).with(event_name).and_return(event_definition)
     end

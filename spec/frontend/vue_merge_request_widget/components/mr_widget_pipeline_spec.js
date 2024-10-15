@@ -42,7 +42,10 @@ describe('MRWidgetPipeline', () => {
   const defaultProps = {
     pipeline: mockData.pipeline,
     pipelineEtag: '/api/graphql:pipelines/sha/a3cf305c10be3fafdd89b12cb1c389e6bde45875',
-    pipelineIid: 12,
+    pipelineMiniGraphVariables: {
+      iid: '12',
+      fullPath: 'project/path',
+    },
     ciStatus: SUCCESS,
     hasCi: true,
     mrTroubleshootingDocsPath: 'help',
@@ -216,9 +219,21 @@ describe('MRWidgetPipeline', () => {
     });
 
     describe('feature flag behavior', () => {
-      it('should render the graphql pipeline mini graph', () => {
+      beforeEach(() => {
         createWrapper({}, shallowMount, true);
+      });
+
+      it('should render the correct pipeline mini graph component', () => {
+        expect(findLegacyPipelineMiniGraph().exists()).toBe(false);
         expect(findPipelineMiniGraph().exists()).toBe(true);
+      });
+
+      it('sends the correct props', () => {
+        expect(findPipelineMiniGraph().props()).toMatchObject({
+          fullPath: defaultProps.pipelineMiniGraphVariables.fullPath,
+          iid: defaultProps.pipelineMiniGraphVariables.iid,
+          pipelineEtag: defaultProps.pipelineEtag,
+        });
       });
     });
   });

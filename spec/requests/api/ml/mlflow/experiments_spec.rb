@@ -284,4 +284,45 @@ RSpec.describe API::Ml::Mlflow::Experiments, feature_category: :mlops do
       it_behaves_like 'MLflow|Requires api scope and write permission'
     end
   end
+
+  describe 'POST /projects/:id/ml/mlflow/api/2.0/mlflow/experiments/delete' do
+    let(:route) { "/projects/#{project_id}/ml/mlflow/api/2.0/mlflow/experiments/delete" }
+    let(:default_params) { { experiment_id: experiment.iid.to_s } }
+    let(:params) { default_params }
+    let(:request) { post api(route), params: params, headers: headers }
+
+    it 'deletes the experiment', :aggregate_failures do
+      is_expected.to have_gitlab_http_status(:ok)
+      expect { experiment.reload }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    describe 'Error States' do
+      context 'when experiment does not exist' do
+        let(:params) { default_params.merge(experiment_id: non_existing_record_iid.to_s) }
+
+        it_behaves_like 'MLflow|Not Found - Resource Does Not Exist'
+      end
+
+      context 'when experiment has a model_id' do
+        let(:model) { create(:ml_models, project: project) }
+        let(:experiment) { create(:ml_experiments, :with_metadata, project: project, model_id: model.id) }
+
+        it 'returns an error' do
+          is_expected.to have_gitlab_http_status(:bad_request)
+          expect(json_response).to include({ 'message' => 'Cannot delete an experiment associated to a model' })
+        end
+
+        it_behaves_like 'MLflow|Bad Request'
+      end
+
+      context 'when experiment_id is not passed' do
+        let(:params) { {} }
+
+        it_behaves_like 'MLflow|Bad Request'
+      end
+
+      it_behaves_like 'MLflow|shared error cases'
+      it_behaves_like 'MLflow|Requires api scope and write permission'
+    end
+  end
 end

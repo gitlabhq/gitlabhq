@@ -79,12 +79,12 @@ routing configurations. To create a traffic policy:
    1. Select **Connect to**, then select **New endpoint**.
    1. Choose **Type** `value` and fill it in with `<your **secondary** IP address>`.
 
-   ![Add traffic policy endpoints](img/single_url_add_traffic_policy_endpoints.png)
+   ![Add traffic policy endpoints](img/single_url_add_traffic_policy_endpoints_v14_5.png)
 
 1. Select **Create traffic policy**.
 1. Fill in **Policy record DNS name** with `gitlab`.
 
-   ![Create policy records with traffic policy](img/single_url_create_policy_records_with_traffic_policy.png)
+   ![Create policy records with traffic policy](img/single_url_create_policy_records_with_traffic_policy_v14_5.png)
 
 1. Select **Create policy records**.
 
@@ -118,7 +118,7 @@ distributes traffic to your Geo sites using a location-aware URL.
 ### Configure each site to use the same external URL
 
 After you have set up routing from a single URL to all of your Geo sites, follow
-the following steps if your sites currently use different URLs:
+the following steps if your sites use different URLs:
 
 1. On each GitLab site, SSH into **each** node running Rails (Puma, Sidekiq, Log-Cursor)
    and set the `external_url` to that of the single URL:
@@ -153,7 +153,7 @@ GitLab does not support multiple external URLs, see [issue 21319](https://gitlab
 
 ### Configure a secondary Geo site to a different external URL than the primary site
 
-If your secondary site currently uses the same external URL as the primary site:
+If your secondary site uses the same external URL as the primary site:
 
 1. On the secondary site, SSH into **each** node running Rails (Puma, Sidekiq, Log-Cursor)
    and set the `external_url` to the desired URL for the secondary site:
@@ -197,7 +197,7 @@ Most HTTP traffic sent to a secondary Geo site is proxied to the primary Geo sit
 secondary Geo sites are able to support write requests, and avoid read-after-write problems. Certain
 **read** requests are handled locally by secondary sites for improved latency and bandwidth nearby.
 
-The following table details the components currently tested through the Geo secondary site Workhorse proxy.
+The following table details the components tested through the Geo secondary site Workhorse proxy.
 It does not cover all data types.
 
 In this context, accelerated reads refer to read requests served from the secondary site, provided that the data is up to date for the component on the secondary site. If the data on the secondary site is determined to be out of date, the request is forwarded to the primary site. Read requests for components not listed in the table below are always automatically forwarded to the primary site.
@@ -248,7 +248,11 @@ for details.
 
 ### Disable secondary site HTTP proxying per site
 
-If there are multiple secondary sites, you can disable HTTP proxying on each secondary site separately, by following these steps on a Linux package installation:
+If there are multiple secondary sites, you can disable HTTP proxying on each secondary site separately, by following these steps:
+
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
 
 1. SSH into each application node (serving user traffic directly) on your secondary Geo site
    and add the following environment variable:
@@ -269,7 +273,9 @@ If there are multiple secondary sites, you can disable HTTP proxying on each sec
    sudo gitlab-ctl reconfigure
    ```
 
-In Kubernetes, you can use `--set gitlab.webservice.extraEnv.GEO_SECONDARY_PROXY="0"`,
+:::TabTitle Helm chart (Kubernetes)
+
+You can use `--set gitlab.webservice.extraEnv.GEO_SECONDARY_PROXY="0"`,
 or specify the following in your values file:
 
 ```yaml
@@ -278,6 +284,8 @@ gitlab:
     extraEnv:
       GEO_SECONDARY_PROXY: "0"
 ```
+
+::EndTabs
 
 ### Disable secondary site Git proxying
 

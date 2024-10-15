@@ -118,7 +118,7 @@ module WorkItems
     end
 
     def project_namespaces
-      return unless include_descendants?
+      return if !include_descendants? || exclude_projects?
 
       projects = Project.in_namespace(params.group.self_and_descendant_ids)
       projects = projects.id_in(params[:projects]) if params[:projects]
@@ -130,7 +130,7 @@ module WorkItems
     end
 
     def include_namespace_level_work_items?
-      params.group? && params.group.namespace_work_items_enabled?(current_user)
+      params.group? && params.group.namespace_work_items_enabled?
     end
 
     def include_descendants?
@@ -142,6 +142,11 @@ module WorkItems
       params.fetch(:include_ancestors, false)
     end
     strong_memoize_attr :include_ancestors?
+
+    def exclude_projects?
+      params.fetch(:exclude_projects, false)
+    end
+    strong_memoize_attr :exclude_projects?
   end
 end
 

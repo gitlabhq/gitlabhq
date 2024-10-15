@@ -390,18 +390,6 @@ RSpec.describe Notes::QuickActionsService, feature_category: :team_planning do
       let_it_be(:note) { build(:note, noteable: noteable, project: project, note: note_text) }
       let_it_be(:children) { [child, second_child] }
 
-      shared_examples 'adds child work items' do
-        it 'leaves the note empty' do
-          expect(execute(note)).to be_empty
-        end
-
-        it 'adds child work items' do
-          expect { execute(note) }.to change { WorkItems::ParentLink.count }.by(2)
-          expect(noteable.reload.work_item_children).to match_array(children)
-          expect(noteable.valid?).to be_truthy
-        end
-      end
-
       it_behaves_like 'adds child work items'
 
       context 'when using work item full reference' do
@@ -412,7 +400,7 @@ RSpec.describe Notes::QuickActionsService, feature_category: :team_planning do
 
       context 'when using work item URL' do
         let_it_be(:project_path) { "#{Gitlab.config.gitlab.url}/#{project.full_path}" }
-        let_it_be(:url) { "#{project_path}/work_items/#{child.iid}, #{project_path}/work_items/#{second_child.iid}" }
+        let_it_be(:url) { "#{project_path}/work_items/#{child.iid}, #{project_path}/issues/#{second_child.iid}" }
         let_it_be(:note_text) { "/add_child #{url}" }
 
         it_behaves_like 'adds child work items'
@@ -466,19 +454,6 @@ RSpec.describe Notes::QuickActionsService, feature_category: :team_planning do
       let_it_be_with_reload(:parent) { create(:work_item, :objective, project: project) }
       let_it_be(:note_text) { "/set_parent #{parent.to_reference}" }
       let_it_be(:note) { build(:note, noteable: noteable, project: project, note: note_text) }
-
-      shared_examples 'sets work item parent' do
-        it 'leaves the note empty' do
-          expect(execute(note)).to be_empty
-        end
-
-        it 'sets work item parent' do
-          execute(note)
-
-          expect(parent.valid?).to be_truthy
-          expect(noteable.work_item_parent).to eq(parent)
-        end
-      end
 
       context 'when using work item reference' do
         let_it_be(:note_text) { "/set_parent #{project.full_path}#{parent.to_reference}" }

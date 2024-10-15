@@ -45,6 +45,8 @@ cache-assets:production:
   extends:
     - .cache-assets-base
     - .production
+  tags:
+    - $GITLAB_LARGE_RUNNER_OPTIONAL
 
 packages-cleanup:
   extends:

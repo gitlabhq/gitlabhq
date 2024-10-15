@@ -7,7 +7,7 @@ module QA
       let(:changed_content) { 'changes' }
       let(:commit_message) { 'Changes to snippets' }
       let(:added_content) { 'updated ' }
-      let(:snippet) { create(:snippet, file_name: new_file) }
+      let(:snippet) { create(:project_snippet, file_name: new_file) }
       let(:ssh_key) { create(:ssh_key, title: "my key title #{Time.now.to_f}") }
       let(:repository_uri_http) do
         snippet.visit!

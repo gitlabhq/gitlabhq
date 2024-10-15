@@ -10,10 +10,6 @@ module QA
           element 'create-new-label-button'
         end
 
-        view 'app/views/shared/empty_states/_labels.html.haml' do
-          element 'label-svg-content'
-        end
-
         view 'app/views/shared/empty_states/_priority_labels.html.haml' do
           element 'label-svg-content'
         end

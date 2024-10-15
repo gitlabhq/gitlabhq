@@ -630,7 +630,8 @@ RSpec.describe Gitlab::Workhorse, feature_category: :shared do
     let(:upload_method) { nil }
     let(:upload_url) { nil }
     let(:upload_headers) { {} }
-    let(:upload_config) { { method: upload_method, headers: upload_headers, url: upload_url }.compact_blank! }
+    let(:authorized_upload_response) { {} }
+    let(:upload_config) { { method: upload_method, headers: upload_headers, url: upload_url, authorized_upload_response: authorized_upload_response }.compact_blank! }
     let(:ssrf_filter) { false }
     let(:allow_localhost) { true }
     let(:allowed_uris) { [] }
@@ -653,7 +654,8 @@ RSpec.describe Gitlab::Workhorse, feature_category: :shared do
           'UploadConfig' => {
             'Method' => upload_method,
             'Url' => upload_url,
-            'Headers' => upload_headers.transform_values { |v| Array.wrap(v) }
+            'Headers' => upload_headers.transform_values { |v| Array.wrap(v) },
+            'AuthorizedUploadResponse' => authorized_upload_response
           }.compact_blank!
         }
         expected_params.compact_blank!
@@ -684,6 +686,12 @@ RSpec.describe Gitlab::Workhorse, feature_category: :shared do
       let(:upload_headers) { { 'Private-Token' => '1234567890' } }
 
       it_behaves_like 'setting the header correctly', ensure_upload_config_field: 'Headers'
+    end
+
+    context 'with authorized upload response set' do
+      let(:authorized_upload_response) { { 'TempPath' => '/dev/null' } }
+
+      it_behaves_like 'setting the header correctly', ensure_upload_config_field: 'AuthorizedUploadResponse'
     end
 
     context 'when `ssrf_filter` parameter is set' do

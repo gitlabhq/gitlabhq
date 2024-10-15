@@ -1,8 +1,18 @@
 - breadcrumb_title _('Two-Factor Authentication')
 - page_title _('Two-Factor Authentication'), _('Account')
 - add_to_breadcrumbs _('Account'), profile_account_path
+- troubleshooting_link = link_to _('Try the troubleshooting steps here.'), help_page_path('user/profile/account/two_factor_authentication_troubleshooting.md'), target: '_blank', rel: 'noopener noreferrer'
+
 
 .js-two-factor-auth{ 'data-two-factor-skippable' => "#{two_factor_skippable?}", 'data-two_factor_skip_url' => skip_profile_two_factor_auth_path }
+  - if @destroy_error
+    = render Pajamas::AlertComponent.new(title: @destroy_error[:message],
+      variant: :danger,
+      alert_options: { class: 'gl-mb-5' },
+      dismissible: false) do |c|
+      - c.with_body do
+        = troubleshooting_link
+
   .row.gl-mt-3
     .col-lg-4
       %h4.gl-mt-0
@@ -12,7 +22,22 @@
     .col-lg-8
       - if current_user.two_factor_otp_enabled?
         %p
-          = _("You've already enabled two-factor authentication using one time password authenticators. In order to register a different device, you must first disable two-factor authentication.")
+          = _("You've already enabled two-factor authentication using a one-time password authenticator. In order to register a different device, you must first delete this authenticator.")
+        - if Feature.enabled?(:two_factor_actions)
+          .gl-inline-block.gl-w-full.sm:gl-w-auto
+            .js-two-factor-action-confirm{ data: delete_otp_authenticator_data(current_password_required?) }
+        - else
+          = gitlab_ui_form_for(:user, url: destroy_otp_profile_two_factor_auth_path, method: :delete, html: { class: 'sm:gl-inline-block' }) do |f|
+            - if current_password_required?
+              .form-group
+                = f.label :password, _('Current password')
+                = f.password_field :password, class: 'form-control gl-form-input js-password', name: "current_password"
+
+            = render Pajamas::ButtonComponent.new(variant: :danger,
+              type: :submit,
+              button_options: { class: 'gl-w-full sm:gl-w-auto' }) do
+              = _('Delete one-time password authenticator')
+
       - else
         %p
           - register_2fa_token = _('We recommend using cloud-based authenticator applications that can restore access if you lose your hardware device.')
@@ -41,8 +66,7 @@
               alert_options: { class: 'gl-mb-3' },
               dismissible: false) do |c|
               - c.with_body do
-                = link_to _('Try the troubleshooting steps here.'), help_page_path('user/profile/account/two_factor_authentication_troubleshooting.md'), target: '_blank', rel: 'noopener noreferrer'
-
+                = troubleshooting_link
           - if current_password_required?
             .form-group
               = label_tag :current_password, _('Current password'), class: 'label-bold'
@@ -69,7 +93,7 @@
           = _("Not all browsers support WebAuthn. You must save your recovery codes after you first register a two-factor authenticator to be able to sign in, even from an unsupported browser.")
         - else
           = _("Not all browsers support WebAuthn. Therefore, we require that you set up a two-factor authentication app first. That way you'll always be able to sign in, even from an unsupported browser.")
-    .col-lg-8
+    .col-lg-8{ data: { testid: 'webauthn' } }
       - if @webauthn_registration.errors.present?
         = form_errors(@webauthn_registration)
       = render "authentication/register", target_path: create_webauthn_profile_two_factor_auth_path
@@ -102,11 +126,8 @@
                         = _("no name set")
                   %td= registration[:created_at].to_date.to_fs(:medium)
                   %td
-                    = render Pajamas::ButtonComponent.new(variant: :danger,
-                      href: registration[:delete_path],
-                      method: :delete,
-                      button_options: { class: 'gl-float-right', data: { confirm: _('Are you sure you want to delete this device? This action cannot be undone.'), confirm_btn_variant: "danger" }, aria: { label: _('Delete') }}) do
-                      = _('Delete')
+                    .gl-float-right
+                      .js-two-factor-action-confirm{ data: delete_webauthn_device_data(registration[:delete_path]) }
 
       - else
         .settings-message.text-center
@@ -130,8 +151,15 @@
             alert_options: { class: 'gl-mb-3' },
             dismissible: false) do |c|
             - c.with_body do
-              = link_to _('Try the troubleshooting steps here.'), help_page_path('user/profile/account/two_factor_authentication_troubleshooting.md'), target: '_blank', rel: 'noopener noreferrer'
-        .js-manage-two-factor-form{ data: { current_password_required: current_password_required?.to_s, profile_two_factor_auth_path: profile_two_factor_auth_path, profile_two_factor_auth_method: 'delete', codes_profile_two_factor_auth_path: codes_profile_two_factor_auth_path, codes_profile_two_factor_auth_method: 'post' } }
+              = troubleshooting_link
+        - if Feature.enabled?(:two_factor_actions)
+          .gl-flex.gl-flex-wrap.gl-gap-3
+            .gl-w-full.sm:gl-w-auto
+              .js-two-factor-action-confirm{ data: disable_two_factor_authentication_data(current_password_required?) }
+            .gl-w-full.sm:gl-w-auto
+              .js-two-factor-action-confirm{ data: codes_two_factor_authentication_data(current_password_required?) }
+        - else
+          .js-manage-two-factor-form{ data: { current_password_required: current_password_required?.to_s, profile_two_factor_auth_path: profile_two_factor_auth_path, profile_two_factor_auth_method: 'delete', codes_profile_two_factor_auth_path: codes_profile_two_factor_auth_path, codes_profile_two_factor_auth_method: 'post' } }
       - else
         %p
           = _("Register a one-time password authenticator or a WebAuthn device first.")

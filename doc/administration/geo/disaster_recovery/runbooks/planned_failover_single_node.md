@@ -5,15 +5,18 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 ignore_in_report: true
 ---
 
-WARNING:
-This runbook is an [experiment](../../../../policy/experiment-beta-support.md#experiment). For complete, production-ready documentation, see the
-[disaster recovery documentation](../index.md).
-
 # Disaster Recovery (Geo) promotion runbooks
 
 DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** Self-managed
+**Status:** Experiment
+
+Disaster Recovery (Geo) promotion runbooks.
+
+WARNING:
+This runbook is an [experiment](../../../../policy/experiment-beta-support.md#experiment). For complete, production-ready documentation, see the
+[disaster recovery documentation](../index.md).
 
 ## Geo planned failover for a single-node configuration
 
@@ -131,7 +134,7 @@ follow these steps to avoid unnecessary data loss:
    [what is excluded](../planned_failover.md#not-all-data-is-automatically-replicated).
 
    1. If you are manually replicating any
-      [data not managed by Geo](../../replication/datatypes.md#limitations-on-replicationverification),
+      [data not managed by Geo](../../replication/datatypes.md#replicated-data-types),
       trigger the final replication process now.
    1. On the **primary** site:
       1. On the left sidebar, at the bottom, select **Admin**.

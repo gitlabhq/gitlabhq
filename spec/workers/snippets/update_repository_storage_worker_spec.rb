@@ -6,7 +6,7 @@ RSpec.describe Snippets::UpdateRepositoryStorageWorker, feature_category: :sourc
   subject { described_class.new }
 
   it_behaves_like 'an update storage move worker' do
-    let_it_be_with_refind(:container) { create(:snippet, :repository) }
+    let_it_be_with_refind(:container) { create(:project_snippet, :repository) }
     let_it_be(:repository_storage_move) { create(:snippet_repository_storage_move) }
 
     let(:service_klass) { Snippets::UpdateRepositoryStorageService }

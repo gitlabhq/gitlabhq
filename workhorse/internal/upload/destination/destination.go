@@ -125,62 +125,7 @@ func Upload(ctx context.Context, reader io.Reader, size int64, name string, opts
 	hashes := newMultiHash(opts.UploadHashFunctions)
 	reader = io.TeeReader(reader, hashes.Writer)
 
-	var clientMode string
-	var uploadDestination consumer
-	var err error
-	switch {
-	// This case means Workhorse is acting as an upload proxy for Rails and buffers files
-	// to disk in a temporary location, see:
-	// https://docs.gitlab.com/ee/development/uploads/#rails-controller-upload
-	case opts.IsLocalTempFile():
-		clientMode = "local_tempfile"
-		uploadDestination, err = fh.newLocalFile(ctx, opts)
-	// All cases below mean we are doing a direct upload to remote i.e. object storage, see:
-	// https://docs.gitlab.com/ee/development/uploads/#direct-upload
-	case opts.UseWorkhorseClientEnabled() && opts.ObjectStorageConfig.IsGoCloud():
-		clientMode = fmt.Sprintf("go_cloud:%s", opts.ObjectStorageConfig.Provider)
-		p := &objectstore.GoCloudObjectParams{
-			Ctx:        ctx,
-			Mux:        opts.ObjectStorageConfig.URLMux,
-			BucketURL:  opts.ObjectStorageConfig.GoCloudConfig.URL,
-			ObjectName: opts.RemoteTempObjectID,
-		}
-		uploadDestination, err = objectstore.NewGoCloudObject(p)
-	case opts.UseWorkhorseClientEnabled() && opts.ObjectStorageConfig.IsAWS() && opts.ObjectStorageConfig.IsValid():
-		if opts.ObjectStorageConfig.S3Config.AwsSDK == "v1" {
-			clientMode = "s3_client"
-			uploadDestination, err = objectstore.NewS3Object(
-				opts.RemoteTempObjectID,
-				opts.ObjectStorageConfig.S3Credentials,
-				opts.ObjectStorageConfig.S3Config,
-			)
-		} else {
-			clientMode = "s3_client_v2"
-			uploadDestination, err = objectstore.NewS3v2Object(
-				opts.RemoteTempObjectID,
-				opts.ObjectStorageConfig.S3Credentials,
-				opts.ObjectStorageConfig.S3Config,
-			)
-		}
-	case opts.IsMultipart():
-		clientMode = "s3_multipart"
-		uploadDestination, err = objectstore.NewMultipart(
-			opts.PresignedParts,
-			opts.PresignedCompleteMultipart,
-			opts.PresignedAbortMultipart,
-			opts.PresignedDelete,
-			opts.PutHeaders,
-			opts.PartSize,
-		)
-	default:
-		clientMode = "presigned_put"
-		uploadDestination, err = objectstore.NewObject(
-			opts.PresignedPut,
-			opts.PresignedDelete,
-			opts.PutHeaders,
-			size,
-		)
-	}
+	clientMode, uploadDestination, err := getClientInformation(ctx, opts, fh, size)
 
 	if err != nil {
 		return nil, err
@@ -232,6 +177,67 @@ func Upload(ctx context.Context, reader io.Reader, size int64, name string, opts
 	logger.Info("saved file")
 	fh.hashes = hashes.finish()
 	return fh, nil
+}
+
+func getClientInformation(ctx context.Context, opts *UploadOpts, fh *FileHandler, size int64) (string, consumer, error) {
+	var clientMode string
+	var uploadDestination consumer
+	var err error
+	switch {
+	// This case means Workhorse is acting as an upload proxy for Rails and buffers files
+	// to disk in a temporary location, see:
+	// https://docs.gitlab.com/ee/development/uploads/#rails-controller-upload
+	case opts.IsLocalTempFile():
+		clientMode = "local_tempfile"
+		uploadDestination, err = fh.newLocalFile(ctx, opts)
+
+	// All cases below mean we are doing a direct upload to remote i.e. object storage, see:
+	// https://docs.gitlab.com/ee/development/uploads/#direct-upload
+	case opts.UseWorkhorseClientEnabled() && opts.ObjectStorageConfig.IsGoCloud():
+		clientMode = fmt.Sprintf("go_cloud:%s", opts.ObjectStorageConfig.Provider)
+		p := &objectstore.GoCloudObjectParams{
+			Ctx:        ctx,
+			Mux:        opts.ObjectStorageConfig.URLMux,
+			BucketURL:  opts.ObjectStorageConfig.GoCloudConfig.URL,
+			ObjectName: opts.RemoteTempObjectID,
+		}
+		uploadDestination, err = objectstore.NewGoCloudObject(p)
+	case opts.UseWorkhorseClientEnabled() && opts.ObjectStorageConfig.IsAWS() && opts.ObjectStorageConfig.IsValid():
+		if opts.ObjectStorageConfig.S3Config.AwsSDK == "v1" {
+			clientMode = "s3_client"
+			uploadDestination, err = objectstore.NewS3Object(
+				opts.RemoteTempObjectID,
+				opts.ObjectStorageConfig.S3Credentials,
+				opts.ObjectStorageConfig.S3Config,
+			)
+		} else {
+			clientMode = "s3_client_v2"
+			uploadDestination, err = objectstore.NewS3v2Object(
+				opts.RemoteTempObjectID,
+				opts.ObjectStorageConfig.S3Credentials,
+				opts.ObjectStorageConfig.S3Config,
+			)
+		}
+	case opts.IsMultipart():
+		clientMode = "s3_multipart"
+		uploadDestination, err = objectstore.NewMultipart(
+			opts.PresignedParts,
+			opts.PresignedCompleteMultipart,
+			opts.PresignedAbortMultipart,
+			opts.PresignedDelete,
+			opts.PutHeaders,
+			opts.PartSize,
+		)
+	default:
+		clientMode = "presigned_put"
+		uploadDestination, err = objectstore.NewObject(
+			opts.PresignedPut,
+			opts.PresignedDelete,
+			opts.PutHeaders,
+			size,
+		)
+	}
+	return clientMode, uploadDestination, err
 }
 
 func (fh *FileHandler) newLocalFile(ctx context.Context, opts *UploadOpts) (consumer, error) {

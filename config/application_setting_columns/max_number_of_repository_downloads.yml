@@ -1,0 +1,14 @@
+---
+api_type: integer
+attr: max_number_of_repository_downloads
+clusterwide: false
+column: max_number_of_repository_downloads
+db_type: smallint
+default: '0'
+description: 'Maximum number of unique repositories a user can download in the specified
+  time period before they are banned. Default: 0, Maximum: 10,000 repositories. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87980)
+  in GitLab 15.1. Self-managed, Ultimate only.'
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

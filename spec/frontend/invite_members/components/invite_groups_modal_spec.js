@@ -18,6 +18,7 @@ import {
   GROUP_MODAL_TO_PROJECT_ALERT_BODY,
   GROUP_MODAL_TO_PROJECT_ALERT_LINK,
 } from '~/invite_members/constants';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import { propsData, sharedGroup } from '../mock_data/group_modal';
 
 jest.mock('~/invite_members/utils/trigger_successful_invite_alert');
@@ -83,6 +84,30 @@ describe('InviteGroupsModal', () => {
 
       expect(findBase().props('accessLevels')).toMatchObject({
         validRoles: propsData.accessLevels,
+      });
+    });
+
+    describe('when inviting a group to a project', () => {
+      it('set accessExpirationHelpLink for projects', () => {
+        createInviteGroupToProjectWrapper();
+
+        expect(findBase().props('accessExpirationHelpLink')).toBe(
+          helpPagePath('user/project/members/sharing_projects_groups', {
+            anchor: 'invite-a-group-to-a-project',
+          }),
+        );
+      });
+    });
+
+    describe('when inviting a group to a group', () => {
+      it('set accessExpirationHelpLink for groups', () => {
+        createInviteGroupToGroupWrapper();
+
+        expect(findBase().props('accessExpirationHelpLink')).toBe(
+          helpPagePath('user/project/members/sharing_projects_groups', {
+            anchor: 'invite-a-group-to-a-group',
+          }),
+        );
       });
     });
   });

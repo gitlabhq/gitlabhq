@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::Filter::References::ReferenceFilter, feature_category: :team_planning do
+RSpec.describe Banzai::Filter::References::ReferenceFilter, feature_category: :markdown do
   let(:project) { build_stubbed(:project) }
 
   describe '#each_node' do

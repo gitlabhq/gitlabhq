@@ -19,7 +19,7 @@ WARNING:
 This feature is in [beta](../../policy/experiment-beta-support.md#beta) and subject to change without notice.
 For more information, see [epic 9404](https://gitlab.com/groups/gitlab-org/-/epics/9404).
 
-With exact code search, you can use regular expression and exact match modes
+With exact code search, you can use exact match and regular expression modes
 to search for code in all GitLab or in a specific project.
 
 Exact code search is powered by [Zoekt](https://github.com/sourcegraph/zoekt)
@@ -70,8 +70,8 @@ When this feature is enabled for instances with more than 20,000 projects, your 
 
 GitLab has two search modes:
 
-- **Regular expression mode:** supports regular and boolean expressions.
 - **Exact match mode:** returns results that exactly match the query.
+- **Regular expression mode:** supports regular and boolean expressions.
 
 The exact match mode is used by default.
 To switch to the regular expression mode, to the right of the search box,
@@ -79,23 +79,25 @@ select **Use regular expression** (**{regular-expression}**).
 
 ### Syntax
 
-This table shows some example queries for regular expression and exact match modes.
+<!-- Remember to also update the table in `doc/drawers/exact_code_search_syntax.md` -->
 
-| Query                | Regular expression mode                                 | Exact match mode               |
-| -------------------- | ------------------------------------------------------- | ------------------------------ |
-| `"foo"`              | `foo`                                                   | `"foo"`                        |
+This table shows some example queries for exact match and regular expression modes.
+
+| Query                | Exact match mode                                        | Regular expression mode |
+| -------------------- | ------------------------------------------------------- | ----------------------- |
+| `"foo"`              | `"foo"`                                                 | `foo` |
 | `foo file:^doc/`     | `foo` in directories that start with `/doc`             | `foo` in directories that start with `/doc` |
-| `"class foo"`        | `class foo`                                             | `"class foo"`                  |
-| `class foo`          | `class` and `foo`                                       | `class foo`                    |
-| `foo or bar`         | `foo` or `bar`                                          | `foo or bar`                   |
-| `class Foo`          | `class` (case insensitive) and `Foo` (case sensitive)   | `class Foo` (case insensitive) |
-| `class Foo case:yes` | `class` and `Foo` (both case sensitive)                 | `class Foo` (case sensitive)   |
-| `foo -bar`           | `foo` but not `bar`                                     | `foo -bar`                     |
+| `"class foo"`        | `"class foo"`                                           | `class foo` |
+| `class foo`          | `class foo`                                             | `class` and `foo` |
+| `foo or bar`         | `foo or bar`                                            | `foo` or `bar` |
+| `class Foo`          | `class Foo` (case insensitive)                          | `class` (case insensitive) and `Foo` (case sensitive) |
+| `class Foo case:yes` | `class Foo` (case sensitive)                            | `class` and `Foo` (both case sensitive) |
+| `foo -bar`           | `foo -bar`                                              | `foo` but not `bar` |
 | `foo file:js`        | `foo` in files with names that contain `js`             | `foo` in files with names that contain `js` |
 | `foo -file:test`     | `foo` in files with names that do not contain `test`    | `foo` in files with names that do not contain `test` |
-| `foo lang:ruby`      | `foo` in Ruby source code                               | `foo` in Ruby source code      |
+| `foo lang:ruby`      | `foo` in Ruby source code                               | `foo` in Ruby source code |
 | `foo file:\.js$`     | `foo` in files with names that end with `.js`           | `foo` in files with names that end with `.js` |
-| `foo.*bar`           | `foo.*bar` (regular expression)                         | None                           |
+| `foo.*bar`           | None                                                    | `foo.*bar` (regular expression) |
 | `sym:foo`            | `foo` in symbols like class, method, and variable names | `foo` in symbols like class, method, and variable names |
 
 ## Known issues

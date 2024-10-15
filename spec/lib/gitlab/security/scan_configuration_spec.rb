@@ -96,14 +96,14 @@ RSpec.describe ::Gitlab::Security::ScanConfiguration do
       :sast | { name: "Static Application Security Testing (SAST)",
          short_name: "SAST",
          description: "Analyze your source code for vulnerabilities.",
-         help_path: "/help/user/application_security/sast/index",
-         configuration_help_path: "/help/user/application_security/sast/index#configuration",
+         help_path: "/help/user/application_security/sast/index.md",
+         configuration_help_path: "/help/user/application_security/sast/index.md#configuration",
          type: "sast" }
       :sast_iac | { name: "Infrastructure as Code (IaC) Scanning",
         short_name: "SAST IaC",
         description: "Analyze your infrastructure as code configuration files for known vulnerabilities.",
-        help_path: "/help/user/application_security/iac_scanning/index",
-        configuration_help_path: "/help/user/application_security/iac_scanning/index#configuration",
+        help_path: "/help/user/application_security/iac_scanning/index.md",
+        configuration_help_path: "/help/user/application_security/iac_scanning/index.md#configuration",
         type: "sast_iac" }
       :dast | {
         badge: { text: "Available on demand",
@@ -121,43 +121,43 @@ RSpec.describe ::Gitlab::Security::ScanConfiguration do
         description: "Analyze a deployed version of your web application for known " \
                      "vulnerabilities by examining it from the outside in. DAST works by simulating " \
                      "external attacks on your application while it is running.",
-        help_path: "/help/user/application_security/dast/index",
-        configuration_help_path: "/help/user/application_security/dast/index#enable-automatic-dast-run",
+        help_path: "/help/user/application_security/dast/index.md",
+        configuration_help_path: "/help/user/application_security/dast/index.md#enable-automatic-dast-run",
         type: "dast",
         anchor: "dast"
       }
       :dependency_scanning | { name: "Dependency Scanning",
         description: "Analyze your dependencies for known vulnerabilities.",
-        help_path: "/help/user/application_security/dependency_scanning/index",
-        configuration_help_path: "/help/user/application_security/dependency_scanning/index#configuration",
+        help_path: "/help/user/application_security/dependency_scanning/index.md",
+        configuration_help_path: "/help/user/application_security/dependency_scanning/index.md#configuration",
         type: "dependency_scanning",
         anchor: "dependency-scanning" }
       :container_scanning | { name: "Container Scanning",
         description: "Check your Docker images for known vulnerabilities.",
-        help_path: "/help/user/application_security/container_scanning/index",
-        configuration_help_path: "/help/user/application_security/container_scanning/index#configuration",
+        help_path: "/help/user/application_security/container_scanning/index.md",
+        configuration_help_path: "/help/user/application_security/container_scanning/index.md#configuration",
         type: "container_scanning" }
       :pre_receive_secret_detection | { name: _("Secret push protection"),
         description: "Block secrets such as keys and API tokens from being pushed to your repositories. " \
                      "Secret push protection is triggered when commits are pushed to a repository. " \
                      "If any secrets are detected, the push is blocked.",
         help_path: Gitlab::Routing.url_helpers.help_page_path(
-          "user/application_security/secret_detection/secret_push_protection/index"),
+          "user/application_security/secret_detection/secret_push_protection/index.md"),
         type: "pre_receive_secret_detection" }
       :secret_detection | { name: "Pipeline Secret Detection",
         description: "Analyze your source code and Git history for secrets by using CI/CD pipelines.",
-        help_path: "/help/user/application_security/secret_detection/pipeline/index",
-        configuration_help_path: "/help/user/application_security/secret_detection/pipeline/index#configuration",
+        help_path: "/help/user/application_security/secret_detection/pipeline/index.md",
+        configuration_help_path: "/help/user/application_security/secret_detection/pipeline/index.md#configuration",
         type: "secret_detection" }
       :api_fuzzing | { name: "API Fuzzing",
         description: "Find bugs in your code with API fuzzing.",
-        help_path: "/help/user/application_security/api_fuzzing/index",
+        help_path: "/help/user/application_security/api_fuzzing/index.md",
         type: "api_fuzzing" }
       :coverage_fuzzing | { name: "Coverage Fuzzing",
         description: "Find bugs in your code with coverage-guided fuzzing.",
-        help_path: "/help/user/application_security/coverage_fuzzing/index",
+        help_path: "/help/user/application_security/coverage_fuzzing/index.md",
         configuration_help_path: \
-          "/help/user/application_security/coverage_fuzzing/index#enable-coverage-guided-fuzz-testing",
+          "/help/user/application_security/coverage_fuzzing/index.md#enable-coverage-guided-fuzz-testing",
         type: "coverage_fuzzing",
         secondary: { type: "corpus_management",
                      name: "Corpus Management",
@@ -175,9 +175,9 @@ RSpec.describe ::Gitlab::Security::ScanConfiguration do
                      "application by attempting to detect " \
                      "and exploit known vulnerabilities.",
         name: "Breach and Attack Simulation (BAS)",
-        help_path: "/help/user/application_security/breach_and_attack_simulation/index",
+        help_path: "/help/user/application_security/breach_and_attack_simulation/index.md",
         secondary: { configuration_help_path: "/help/user/application_security/breach_and_attack_simulation/" \
-                                              "index#extend-dynamic-application-security-testing-dast",
+                                              "index.md#extend-dynamic-application-security-testing-dast",
                      description: "Enable incubating Breach and " \
                                   "Attack Simulation focused features " \
                                   "such as callback attacks in your DAST scans.",

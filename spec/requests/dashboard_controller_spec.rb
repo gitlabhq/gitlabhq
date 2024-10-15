@@ -40,4 +40,18 @@ RSpec.describe DashboardController, feature_category: :system_access do
       end
     end
   end
+
+  context 'search merge requests dashboard' do
+    it_behaves_like 'rate limited endpoint', rate_limit_key: :search_rate_limit do
+      let_it_be(:current_user) { create(:user) }
+
+      before do
+        sign_in current_user
+      end
+
+      def request
+        get merge_requests_search_dashboard_path, params: { scope: 'all', search: 'test' }
+      end
+    end
+  end
 end

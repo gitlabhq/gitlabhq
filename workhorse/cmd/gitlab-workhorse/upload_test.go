@@ -149,6 +149,8 @@ func TestAcceleratedUpload(t *testing.T) {
 		{"POST", `/api/graphql`, false},
 		{"POST", `/api/v4/topics`, false},
 		{"PUT", `/api/v4/topics`, false},
+		{"POST", `/api/v4/organizations`, false},
+		{"PUT", `/api/v4/organizations/1`, false},
 		{"POST", `/api/v4/groups`, false},
 		{"PUT", `/api/v4/groups/5`, false},
 		{"PUT", `/api/v4/groups/group%2Fsubgroup`, false},

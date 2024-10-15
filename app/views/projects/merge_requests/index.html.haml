@@ -15,6 +15,8 @@
 
 - if Feature.enabled?(:vue_merge_request_list, @project)
   .js-merge-request-list-root{ data: project_merge_requests_list_data(@project, current_user) }
+  - if @can_bulk_update
+    = render 'shared/issuable/bulk_update_sidebar', type: :merge_requests
 - else
   - if @project.merge_requests.exists?
     .top-area
@@ -34,4 +36,4 @@
 
   - if new_merge_request_email && can?(current_user, :create_merge_request_in, @project)
     .gl-text-center.gl-pt-5.gl-pb-7
-      .js-issuable-by-email{ data: { initial_email: new_merge_request_email, issuable_type: issuable_type, emails_help_page_path: help_page_path('development/emails', anchor: 'email-namespace'), quick_actions_help_path: help_page_path('user/project/quick_actions'), markdown_help_path: help_page_path('user/markdown'), reset_path: new_issuable_address_project_path(@project, issuable_type: issuable_type) } }
+      .js-issuable-by-email{ data: { initial_email: new_merge_request_email, issuable_type: issuable_type, emails_help_page_path: help_page_path('development/emails.md', anchor: 'email-namespace'), quick_actions_help_path: help_page_path('user/project/quick_actions.md'), markdown_help_path: help_page_path('user/markdown.md'), reset_path: new_issuable_address_project_path(@project, issuable_type: issuable_type) } }

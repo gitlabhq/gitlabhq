@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe PreviewMarkdownService, feature_category: :team_planning do
+RSpec.describe PreviewMarkdownService, feature_category: :markdown do
   let_it_be_with_reload(:project) { create(:project, :repository) }
   let_it_be(:developer) { create(:user, developer_of: project) }
   let(:user) { developer }

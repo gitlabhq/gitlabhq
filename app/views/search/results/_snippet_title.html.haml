@@ -4,7 +4,7 @@
 
 .search-result-row
   %h4
-    = link_to gitlab_snippet_path(snippet_title), data:  { event_tracking: 'click_search_result', event_label: @scope, event_value: position, event_property: @search_term } do
+    = link_to gitlab_snippet_path(snippet_title), data:  { event_tracking: 'click_search_result', event_label: @scope, event_value: position } do
       = truncate(snippet_title.title, length: 60)
       = snippet_badge(snippet_title)
     %span.gl-text-primary.monospace.tiny.gl-float-right.term

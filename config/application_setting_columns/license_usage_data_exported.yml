@@ -1,0 +1,12 @@
+---
+api_type:
+attr: license_usage_data_exported
+clusterwide: false
+column: license_usage_data_exported
+db_type: boolean
+default: 'false'
+description:
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

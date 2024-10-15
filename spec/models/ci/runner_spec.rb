@@ -5,6 +5,9 @@ require 'spec_helper'
 RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
   include StubGitlabCalls
 
+  let_it_be(:group) { create(:group) }
+  let_it_be(:project) { create(:project, group: group) }
+
   it_behaves_like 'having unique enum values'
 
   it_behaves_like 'it has loose foreign keys' do
@@ -24,7 +27,7 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
     # validate that at least groups association does not generate cross-DB
     # queries.
     it 'does not create a cross-database query' do
-      runner = create(:ci_runner, :group)
+      runner = create(:ci_runner, :group, groups: [group])
 
       with_cross_joins_prevented do
         expect(runner.groups.count).to eq(1)
@@ -34,7 +37,7 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
 
   describe '#owner_runner_namespace' do
     it 'considers the first group' do
-      runner = create(:ci_runner, :group)
+      runner = create(:ci_runner, :group, groups: [group])
 
       with_cross_joins_prevented do
         expect(runner.owner_runner_namespace.namespace_id).to eq(runner.groups.first.id)
@@ -43,7 +46,7 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
   end
 
   describe 'projects association' do
-    let(:runner) { create(:ci_runner, :project) }
+    let(:runner) { create(:ci_runner, :project, projects: [project]) }
 
     it 'does not create a cross-database query' do
       with_cross_joins_prevented do
@@ -98,39 +101,48 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
     it { is_expected.to validate_presence_of(:access_level) }
     it { is_expected.to validate_presence_of(:runner_type) }
     it { is_expected.to validate_presence_of(:registration_type) }
+    it { is_expected.to validate_presence_of(:sharding_key_id) }
+
+    context 'when runner is instance type' do
+      let(:runner) { build(:ci_runner, :instance_type) }
+
+      it { expect(runner).to be_valid }
+
+      context 'when sharding_key_id is present' do
+        let(:runner) { build(:ci_runner, :instance_type, sharding_key_id: non_existing_record_id) }
+
+        it 'is invalid' do
+          expect(runner).to be_invalid
+          expect(runner.errors.full_messages).to contain_exactly('Runner cannot have sharding_key_id assigned')
+        end
+      end
+    end
 
     context 'when runner is not allowed to pick untagged jobs' do
       context 'when runner does not have tags' do
         let(:runner) { build(:ci_runner, tag_list: [], run_untagged: false) }
 
-        it 'is not valid' do
-          expect(runner).to be_invalid
-        end
+        it { expect(runner).to be_invalid }
       end
 
       context 'when runner has too many tags' do
         let(:runner) { build(:ci_runner, tag_list: (1..::Ci::Runner::TAG_LIST_MAX_LENGTH + 1).map { |i| "tag#{i}" }, run_untagged: false) }
 
-        it 'is not valid' do
-          expect(runner).to be_invalid
-        end
+        it { expect(runner).to be_invalid }
       end
 
       context 'when runner has tags' do
         let(:runner) { build(:ci_runner, tag_list: ['tag'], run_untagged: false) }
 
-        it 'is valid' do
-          expect(runner).to be_valid
-        end
+        it { expect(runner).to be_valid }
       end
     end
 
     describe '#exactly_one_group' do
-      let(:group) { create(:group) }
       let(:runner) { create(:ci_runner, :group, groups: [group]) }
 
       it 'disallows assigning group if already assigned to a group' do
-        runner.runner_namespaces << create(:ci_runner_namespace)
+        runner.runner_namespaces << create(:ci_runner_namespace, runner: runner)
 
         expect(runner).not_to be_valid
         expect(runner.errors.full_messages).to include('Runner needs to be assigned to exactly one group')
@@ -138,11 +150,8 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
     end
 
     context 'runner_type validations' do
-      let_it_be(:group) { create(:group) }
-      let_it_be(:project) { create(:project) }
-
       it 'disallows assigning group to project_type runner' do
-        project_runner = build(:ci_runner, :project, groups: [group])
+        project_runner = build(:ci_runner, :project, :without_projects, groups: [group])
 
         expect(project_runner).not_to be_valid
         expect(project_runner.errors.full_messages).to include('Runner cannot have groups assigned')
@@ -222,7 +231,7 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
       end
 
       context 'when runner is not an instance type' do
-        let(:runner) { create(:ci_runner, :group) }
+        let(:runner) { create(:ci_runner, :group, groups: [group]) }
 
         subject { runner.allowed_plan_ids = [default_plan.id] }
 
@@ -232,6 +241,54 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
           expect(runner).not_to be_valid
           expect(runner.errors.full_messages).to include('Runner cannot have allowed plans assigned')
           puts runner.errors.full_messages
+        end
+      end
+    end
+  end
+
+  describe '#ensure_shading_key_id' do
+    context 'with instance runner' do
+      let(:runner) { create(:ci_runner, :instance) }
+
+      it { expect(runner).to be_valid }
+
+      context 'when sharding_key_id points to an invalid record ID' do
+        before do
+          runner.sharding_key_id = non_existing_record_id
+        end
+
+        it 'updates the sharding_key_id before saving' do
+          expect { runner.save! }.to change { runner.sharding_key_id }.to(nil)
+        end
+      end
+    end
+
+    context 'with group runner' do
+      let!(:runner) { create(:ci_runner, :group, groups: [group]) }
+
+      it { expect(runner).to be_valid }
+
+      context 'when sharding_key_id is not present' do
+        before do
+          runner.sharding_key_id = nil
+        end
+
+        it 'updates the sharding_key_id before saving' do
+          expect { runner.save! }.to change { runner.sharding_key_id }.to(group.id)
+        end
+      end
+    end
+
+    context 'with project runner' do
+      let!(:runner) { create(:ci_runner, :project, projects: [project]) }
+
+      context 'when sharding_key_id is not present' do
+        before do
+          runner.sharding_key_id = nil
+        end
+
+        it 'updates the sharding_key_id before saving' do
+          expect { runner.save! }.to change { runner.sharding_key_id }.to(project.id)
         end
       end
     end
@@ -269,8 +326,6 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
   end
 
   describe '.instance_type' do
-    let(:group) { create(:group) }
-    let(:project) { create(:project) }
     let!(:group_runner) { create(:ci_runner, :group, groups: [group]) }
     let!(:project_runner) { create(:ci_runner, :project, projects: [project]) }
     let!(:shared_runner) { create(:ci_runner, :instance) }
@@ -436,8 +491,7 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
   end
 
   describe '#only_for' do
-    let_it_be_with_reload(:runner) { create(:ci_runner, :project) }
-    let_it_be(:project) { runner.projects.first }
+    let_it_be_with_reload(:runner) { create(:ci_runner, :project, projects: [project]) }
 
     subject { runner.only_for?(project) }
 
@@ -460,15 +514,15 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
   end
 
   describe '#assign_to' do
-    let(:project) { create(:project) }
+    let_it_be(:project) { create(:project) }
 
-    subject { runner.assign_to(project) }
+    subject(:assign_to) { runner.assign_to(project) }
 
-    context 'with shared_runner' do
+    context 'with instance runner' do
       let(:runner) { create(:ci_runner, :instance) }
 
       it 'raises an error' do
-        expect { subject }
+        expect { assign_to }
           .to raise_error(ArgumentError, 'Transitioning an instance runner to a project runner is not supported')
       end
     end
@@ -478,20 +532,25 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
       let(:runner) { create(:ci_runner, :group, groups: [group]) }
 
       it 'raises an error' do
-        expect { subject }
+        expect { assign_to }
           .to raise_error(ArgumentError, 'Transitioning a group runner to a project runner is not supported')
       end
     end
 
     context 'with project runner' do
-      let(:other_project) { create(:project) }
+      let_it_be(:other_project) { create(:project) }
+
       let(:runner) { create(:ci_runner, :project, projects: [other_project]) }
 
       it 'assigns runner to project' do
-        expect(subject).to be_truthy
+        expect(assign_to).to be_truthy
 
         expect(runner).to be_project_type
         expect(runner.runner_projects.pluck(:project_id)).to contain_exactly(project.id, other_project.id)
+      end
+
+      it 'does not change sharding_key_id' do
+        expect { assign_to }.not_to change { runner.sharding_key_id }.from(other_project.id)
       end
     end
   end
@@ -1343,7 +1402,7 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
     context 'deduplicates on runner_type' do
       before do
         create_list(:ci_runner, 2, :instance)
-        create_list(:ci_runner, 2, :project)
+        create_list(:ci_runner, 2, :project, projects: [project])
       end
 
       it 'creates two matchers' do
@@ -1636,6 +1695,8 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
       let(:runner) { create(:ci_runner) }
 
       specify { expect(runner.token).not_to start_with(described_class::CREATED_RUNNER_TOKEN_PREFIX) }
+      it { is_expected.to match(/[0-9a-zA-Z_-]{8}/) }
+      it { is_expected.not_to start_with('t1_') }
       it { is_expected.not_to start_with(described_class::CREATED_RUNNER_TOKEN_PREFIX) }
     end
 
@@ -1643,6 +1704,8 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
       let(:runner) { create(:ci_runner, registration_type: :authenticated_user) }
 
       specify { expect(runner.token).to start_with(described_class::CREATED_RUNNER_TOKEN_PREFIX) }
+      it { is_expected.to match(/[0-9a-zA-Z_-]{8}/) }
+      it { is_expected.not_to start_with('t1_') }
       it { is_expected.not_to start_with(described_class::CREATED_RUNNER_TOKEN_PREFIX) }
     end
   end
@@ -1650,16 +1713,49 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
   describe '#token' do
     subject(:token) { runner.token }
 
+    let(:runner_type) { :instance_type }
+    let(:attrs) { {} }
+    let(:runner) { create(:ci_runner, runner_type, registration_type: registration_type, **attrs) }
+
     context 'when runner is registered' do
-      let(:runner) { create(:ci_runner) }
+      let(:registration_type) { :registration_token }
 
       it { is_expected.not_to start_with('glrt-') }
+      it { is_expected.to start_with('t1_') }
+
+      context 'when runner is group type' do
+        let(:runner_type) { :group_type }
+        let(:attrs) { { groups: [group] } }
+
+        it { is_expected.to start_with('t2_') }
+      end
+
+      context 'when runner is project type' do
+        let(:runner_type) { :project_type }
+        let(:attrs) { { projects: [project] } }
+
+        it { is_expected.to start_with('t3_') }
+      end
     end
 
     context 'when runner is created via UI' do
-      let(:runner) { create(:ci_runner, registration_type: :authenticated_user) }
+      let(:registration_type) { :authenticated_user }
 
-      it { is_expected.to start_with('glrt-') }
+      it { is_expected.to start_with('glrt-t1_') }
+
+      context 'when runner is group type' do
+        let(:runner_type) { :group_type }
+        let(:attrs) { { groups: [group] } }
+
+        it { is_expected.to start_with('glrt-t2_') }
+      end
+
+      context 'when runner is project type' do
+        let(:runner_type) { :project_type }
+        let(:attrs) { { projects: [project] } }
+
+        it { is_expected.to start_with('glrt-t3_') }
+      end
     end
   end
 
@@ -2054,7 +2150,7 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
     subject { described_class.with_runner_type(runner_type) }
 
     let_it_be(:instance_runner) { create(:ci_runner, :instance) }
-    let_it_be(:group_runner) { create(:ci_runner, :group) }
+    let_it_be(:group_runner) { create(:ci_runner, :group, groups: [group]) }
     let_it_be(:project_runner) { create(:ci_runner, :project, :without_projects) }
 
     context 'with instance_type' do

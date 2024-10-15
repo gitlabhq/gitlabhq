@@ -56,6 +56,7 @@ module QA
 
       def setup_workspaces_in_cluster
         @provider.install_ngnix_ingress
+        @provider.wait_for_pod('ingress-nginx')
         @provider.install_gitlab_workspaces_proxy
       end
 

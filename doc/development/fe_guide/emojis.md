@@ -6,21 +6,24 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # Emojis
 
-GitLab supports native Unicode emojis and falls back to image-based emojis selectively
-when your platform does not support it.
+GitLab supports native Emojis through the [`tanuki_emoji`](https://gitlab.com/gitlab-org/ruby/gems/tanuki_emoji) gem.
+
+NOTE:
+[`tanuki_emoji`](https://gitlab.com/gitlab-org/ruby/gems/tanuki_emoji) gem has replaced [`gemojione`](https://github.com/bonusly/gemojione). See [more information here](https://gitlab.com/gitlab-org/gitlab/-/issues/429653#note_1931385720).
 
 ## How to update Emojis
 
-1. Update the `gemojione` gem
+1. Update the [`tanuki_emoji`](https://gitlab.com/gitlab-org/ruby/gems/tanuki_emoji) gem.
 1. Update `fixtures/emojis/index.json` from [Gemojione](https://github.com/bonusly/gemojione/blob/master/config/index.json).
    In the future, we could grab the file directly from the gem.
    We should probably make a PR on the Gemojione project to get access to
    all emojis after being parsed or just a raw path to the `json` file itself.
 1. Ensure [`emoji-unicode-version`](https://www.npmjs.com/package/emoji-unicode-version)
    is up to date with the latest version.
-1. Run `bundle exec rake gemojione:aliases`
-1. Run `bundle exec rake gemojione:digests`
-1. Run `bundle exec rake gemojione:sprite`
+1. Use the [`tanuki_emoji`](https://gitlab.com/gitlab-org/ruby/gems/tanuki_emoji) gem's [Rake tasks](../rake_tasks.md) to update aliases, digests, and sprites:
+   1. Run `bundle exec rake tanuki_emoji:aliases`
+   1. Run `bundle exec rake tanuki_emoji:digests`
+   1. Run `bundle exec rake tanuki_emoji:sprite`
 1. Ensure new sprite sheets generated for 1x and 2x
    - `app/assets/images/emoji.png`
    - `app/assets/images/emoji@2x.png`

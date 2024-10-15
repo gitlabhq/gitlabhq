@@ -1,0 +1,12 @@
+---
+api_type:
+attr: health_check_access_token
+clusterwide: true
+column: health_check_access_token
+db_type: character
+default:
+description:
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

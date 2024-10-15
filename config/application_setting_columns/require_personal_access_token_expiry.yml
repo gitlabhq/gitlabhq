@@ -1,0 +1,13 @@
+---
+api_type: boolean
+attr: require_personal_access_token_expiry
+clusterwide: false
+column: require_personal_access_token_expiry
+db_type: boolean
+default: 'true'
+description: When enabled, users must set an expiration date when creating a group
+  or project access token, or a personal access token owned by a non-service account.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

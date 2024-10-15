@@ -1,0 +1,13 @@
+---
+api_type: boolean
+attr: housekeeping_bitmaps_enabled
+clusterwide: false
+column: housekeeping_bitmaps_enabled
+db_type: boolean
+default: 'true'
+description: Deprecated. Git packfile bitmap creation is always enabled and cannot
+  be changed via API and UI. Always returns `true`.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

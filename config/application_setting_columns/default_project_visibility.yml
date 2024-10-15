@@ -1,0 +1,14 @@
+---
+api_type: string
+attr: default_project_visibility
+clusterwide: false
+column: default_project_visibility
+db_type: integer
+default: '0'
+description: 'What visibility level new projects receive. Can take `private`, `internal`
+  and `public` as a parameter. Default is `private`. [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131203)
+  in GitLab 16.4: cannot be set to any levels in `restricted_visibility_levels`.'
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

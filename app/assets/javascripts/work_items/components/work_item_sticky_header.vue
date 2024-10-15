@@ -6,7 +6,7 @@ import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { isNotesWidget } from '../utils';
 import WorkItemActions from './work_item_actions.vue';
-import WorkItemTodos from './work_item_todos.vue';
+import TodosToggle from './shared/todos_toggle.vue';
 import WorkItemStateBadge from './work_item_state_badge.vue';
 import WorkItemNotificationsWidget from './work_item_notifications_widget.vue';
 
@@ -16,7 +16,7 @@ export default {
     GlIntersectionObserver,
     GlLoadingIcon,
     WorkItemActions,
-    WorkItemTodos,
+    TodosToggle,
     ConfidentialityBadge,
     WorkItemStateBadge,
     WorkItemNotificationsWidget,
@@ -141,13 +141,13 @@ export default {
           >
             {{ __('Edit') }}
           </gl-button>
-          <work-item-todos
+          <todos-toggle
             v-if="showWorkItemCurrentUserTodos"
-            :work-item-id="workItem.id"
-            :work-item-iid="workItem.iid"
-            :work-item-fullpath="projectFullPath"
+            :item-id="workItem.id"
             :current-user-todos="currentUserTodos"
-            @error="$emit('error')"
+            todos-button-type="secondary"
+            @todosUpdated="$emit('todosUpdated', $event)"
+            @error="updateError = $event"
           />
           <work-item-notifications-widget
             v-if="newTodoAndNotificationsEnabled"

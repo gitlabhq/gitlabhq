@@ -38,9 +38,9 @@ To import your project from FogBugz:
 1. Select **FogBugz**.
 1. Enter your FogBugz URL, email address, and password.
 1. Create a mapping from FogBugz users to GitLab users.
-   ![User Map](img/fogbugz_import_user_map.png)
+   ![User Map](img/fogbugz_import_user_map_v8.png)
 1. For the projects you want to import, select **Import**.
-   ![Import Project](img/fogbugz_import_select_project.png)
+   ![Import Project](img/fogbugz_import_select_project_v8.png)
 1. After the import finishes, select the link to go to the project
    dashboard. Follow the directions to push your existing repository.
 1. To import a project:

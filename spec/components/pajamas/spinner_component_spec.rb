@@ -50,16 +50,16 @@ RSpec.describe Pajamas::SpinnerComponent, type: :component do
 
   describe 'label' do
     context 'by default' do
-      it 'has "Loading" as aria-label' do
-        expect(page).to have_css '.gl-spinner[aria-label="Loading"]'
+      it 'has "Loading" as screen reader available text' do
+        expect(page).to have_css('.gl-sr-only', text: 'Loading')
       end
     end
 
     context 'when set to something else' do
       let(:options) { { label: "Sending" } }
 
-      it 'has a custom aria-label' do
-        expect(page).to have_css '.gl-spinner[aria-label="Sending"]'
+      it 'has a custom label as screen reader available text' do
+        expect(page).to have_css('.gl-sr-only', text: 'Sending')
       end
     end
   end

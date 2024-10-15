@@ -3,11 +3,16 @@
 - role_name = content_tag(:span, member.present.human_access, class: :highlight)
 - role_type = content_tag(:span, "#{member.present.role_type} role", class: :highlight)
 
+- leave_link = link_to('', polymorphic_url([member_source], leave: 1), target: '_blank', rel: 'noopener noreferrer')
+
 %tr
   %td.text-content
     %p
+    - if Feature.enabled?(:ui_for_organizations, member.present.user)
+      - organization_name = link_to(member_source_organization.name, member_source_organization.web_url, target: '_blank', rel: 'noopener noreferrer', class: :highlight)
+      = safe_format(_('You have been granted access to the %{source_name} %{source_type}, which is part of the %{organization_name} organization with the following role: %{role_name}.'), source_name: source_name, source_type: source_type, organization_name: organization_name, role_name: role_name)
+    - else
       = safe_format(_('You have been granted access to the %{source_name} %{source_type} with the following role: %{role_name}.'), source_name: source_name, source_type: source_type, role_name: role_name)
       = safe_format(_('This is a %{role_type}.'), role_type: role_type)
     %p
-      - leave_link = link_to('', polymorphic_url([member_source], leave: 1), target: '_blank', rel: 'noopener noreferrer')
       = safe_format(_('If this was a mistake you can %{leave_link_start}leave the %{source_type}%{link_end}.'), tag_pair(leave_link, :leave_link_start, :link_end), source_type: source_type)

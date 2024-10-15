@@ -68,7 +68,7 @@ export default {
         </button>
       </template>
       <template #header>
-        <span class="gl-border-b-1 gl-border-gray-200 gl-p-4 gl-border-b-solid">
+        <span class="gl-border-b-1 gl-border-dropdown gl-p-4 gl-border-b-solid">
           {{ $options.i18n.header }}
         </span>
       </template>

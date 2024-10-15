@@ -1,0 +1,12 @@
+---
+api_type:
+attr: deactivation_email_additional_text
+clusterwide: true
+column: deactivation_email_additional_text
+db_type: text
+default:
+description:
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

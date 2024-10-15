@@ -1,0 +1,13 @@
+---
+api_type: integer
+attr: elasticsearch_max_code_indexing_concurrency
+clusterwide: false
+column: elasticsearch_max_code_indexing_concurrency
+db_type: integer
+default: '30'
+description: Maximum concurrency of Elasticsearch code indexing background jobs. This
+  only applies to repository indexing operations. Premium and Ultimate only.
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: true

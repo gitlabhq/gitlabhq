@@ -4,6 +4,8 @@ group: Composition Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
+# Dependency Scanning
+
 <style>
 table.ds-table tr:nth-child(even) {
     background-color: transparent;
@@ -40,8 +42,6 @@ table.no-vertical-table-lines tr {
     border-top: none;
 }
 </style>
-
-# Dependency Scanning
 
 DETAILS:
 **Tier:** Ultimate
@@ -677,7 +677,7 @@ The `gemnasium` analyzer scans supports JavaScript projects for vendored librari
 #### Go
 
 Multiple files are supported. When a `go.mod` file is detected, the analyzer attempts to generate a [build list](https://go.dev/ref/mod#glos-build-list) using
-[Minimal Version Selection](https://go.dev/ref/mod#glos-minimal-version-selection).
+[Minimal Version Selection](https://go.dev/ref/mod#glos-minimal-version-selection). If this fails, the analyzer instead attempts to parse the dependencies within the `go.mod` file.
 
 As a requirement, the `go.mod` file should be cleaned up using the command `go mod tidy` to ensure proper management of dependencies. The process is repeated for every detected `go.mod` file.
 
@@ -859,6 +859,7 @@ The following variables configure the behavior of specific dependency scanning a
 | `MAVEN_CLI_OPTS`                     | `gemnasium-maven`  | `"-DskipTests --batch-mode"` | List of command line arguments that are passed to `maven` by the analyzer. See an example for [using private repositories](../index.md#using-private-maven-repositories). |
 | `GRADLE_CLI_OPTS`                    | `gemnasium-maven`  |                              | List of command line arguments that are passed to `gradle` by the analyzer. |
 | `GRADLE_PLUGIN_INIT_PATH`            | `gemnasium-maven`  | `"gemnasium-init.gradle"`    | Specifies the path to the Gradle initialization script. The init script must include `allprojects { apply plugin: 'project-report' }` to ensure compatibility. |
+| `DS_GRADLE_RESOLUTION_POLICY`        | `gemnasium-maven`  | `"failed"`                   | Controls Gradle dependency resolution strictness. Accepts `"none"` to allow partial results, or `"failed"` to fail the scan when any dependencies fail to resolve. |
 | `SBT_CLI_OPTS`                       | `gemnasium-maven`  |                              | List of command-line arguments that the analyzer passes to `sbt`. |
 | `PIP_INDEX_URL`                      | `gemnasium-python` | `https://pypi.org/simple`    | Base URL of Python Package Index. |
 | `PIP_EXTRA_INDEX_URL`                | `gemnasium-python` |                              | Array of [extra URLs](https://pip.pypa.io/en/stable/reference/pip_install/#cmdoption-extra-index-url) of package indexes to use in addition to `PIP_INDEX_URL`. Comma-separated. **Warning:** Read [the following security consideration](#python-projects) when using this environment variable. |
@@ -944,6 +945,10 @@ scanning jobs automatically use the FIPS-enabled images. To manually switch to F
 set the variable `DS_IMAGE_SUFFIX` to `"-fips"`.
 
 Dependency scanning for Gradle projects and auto-remediation for Yarn projects are not supported in FIPS mode.
+
+FIPS-enabled images are based on RedHat's UBI micro.
+They don't have package managers such as `dnf` or `microdnf`
+so it's not possible to install system packages at runtime.
 
 ## Output
 
@@ -1243,6 +1248,44 @@ We recommend that you use the most recent version of all containers, and the mos
 ### Gradle projects
 
 Do not override the `reports.html.destination` or `reports.html.outputLocation` properties when generating an HTML dependency report for Gradle projects. Doing so prevents Dependency Scanning from functioning correctly.
+
+### Maven Projects
+
+In isolated networks, if the central repository is a private registry (explicitly set with the `<mirror>` directive), Maven builds may fail to find the `gemnasium-maven-plugin` dependency. This issue occurs because Maven doesn't search the local repository (`/root/.m2`) by default and attempts to fetch from the central repository. The result is an error about the missing dependency.
+
+#### Workaround
+
+To resolve this issue, add a `<pluginRepositories>` section to your `settings.xml` file. This allows Maven to find plugins in the local repository.
+
+Before you begin, consider the following:
+
+- This workaround is only for environments where the default Maven central repository is mirrored to a private registry.
+- After applying this workaround, Maven searches the local repository for plugins, which may have security implications in some environments. Make sure this aligns with your organization's security policies.
+
+Follow these steps to modify the `settings.xml` file:
+
+1. Locate your Maven `settings.xml` file. This file is typically found in one of these locations:
+
+   - `/root/.m2/settings.xml` for the root user.
+   - `~/.m2/settings.xml` for a regular user.
+   - `${maven.home}/conf/settings.xml` global settings.
+
+1. Check if there's an existing `<pluginRepositories>` section in the file.
+
+1. If a `<pluginRepositories>` section already exists, add only the following `<pluginRepository>` element inside it.
+Otherwise, add the entire `<pluginRepositories>` section:
+
+      ```xml
+        <pluginRepositories>
+          <pluginRepository>
+              <id>local2</id>
+              <name>local repository</name>
+              <url>file:///root/.m2/repository/</url>
+          </pluginRepository>
+        </pluginRepositories>
+      ```
+
+1. Run your Maven build or dependency scanning process again.
 
 ### Python projects
 

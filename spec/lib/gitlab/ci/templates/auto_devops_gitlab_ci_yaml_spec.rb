@@ -311,8 +311,8 @@ RSpec.describe 'Auto-DevOps.gitlab-ci.yml', feature_category: :auto_devops do
         end
 
         it 'creates a pipeline with the expected jobs' do
-          expect(build_names).to include(*include_build_names)
-          expect(build_names).not_to include(*not_include_build_names)
+          expect(build_names).to include(*include_build_names) unless include_build_names.empty?
+          expect(build_names).not_to include(*not_include_build_names) unless not_include_build_names.empty?
         end
       end
     end

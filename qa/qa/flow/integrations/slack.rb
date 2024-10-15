@@ -41,7 +41,7 @@ module QA
               chat_page.messages.last.text =~ /connect your GitLab account|404 not found!/i
             end
 
-            break(true) if chat_page.messages.last.text =~ /404 not found!/i
+            break(true) if /404 not found!/i.match?(chat_page.messages.last.text)
 
             chat_page.click_connect_account_link
 

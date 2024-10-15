@@ -30,6 +30,16 @@
   span.ProseMirror-selectednode {
     background-color: $blue-100;
     box-shadow: 0 2px 0 $blue-100, 0 -2px 0 $blue-100;
+    
+    &.gfm-project_member, .gfm-project_member {
+      &:not(.current-user) {
+        background-color: $blue-200;
+      }
+    }
+
+    &.gfm-project_member {
+      box-shadow: 0 0 0 2px $blue-100;
+    }
   }
 
   pre > code {
@@ -118,10 +128,6 @@
   img.ProseMirror-selectednode {
     outline: 2px solid $blue-200;
     outline-offset: -2px;
-  }
-
-  video {
-    max-width: 400px;
   }
 
   img {
@@ -385,7 +391,7 @@
   // stylelint-disable-next-line gitlab/no-gl-class
   li.focused div.gl-new-dropdown-item-content {
     @include gl-focus($inset: true);
-    background-color: $gray-50;
+    background-color: var(--gl-dropdown-option-background-color-unselected-hover);
   }
 }
 

@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe QueueBackfillDraftNotesProjectId, feature_category: :code_review_workflow do
+RSpec.describe QueueBackfillDraftNotesProjectId, migration: :gitlab_main_cell, feature_category: :code_review_workflow do
   let!(:batched_migration) { described_class::MIGRATION }
 
   it 'schedules a new batched migration' do

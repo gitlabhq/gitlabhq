@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::HookData::MergeRequestBuilder do
+RSpec.describe Gitlab::HookData::MergeRequestBuilder, feature_category: :code_review_workflow do
   let_it_be(:merge_request) { create(:merge_request) }
 
   let(:builder) { described_class.new(merge_request) }

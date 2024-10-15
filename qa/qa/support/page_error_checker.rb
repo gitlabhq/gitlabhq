@@ -94,7 +94,7 @@ module QA
             "#{error_metadata} -- #{error_body[:request_id_string]}\n#{error_body[:error_body]}"
           end
 
-          QA::Runtime::Logger.error "Interceptor Api Errors\n#{errors.join("\n")}" unless errors.nil? || errors.empty?
+          QA::Runtime::Logger.warn "Interceptor Api Errors\n#{errors.join("\n")}" unless errors.nil? || errors.empty?
 
           # clear the cache after logging the errors
           page.execute_script <<~JS

@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Ci::Catalog::Resources::ReleaseService, feature_category: :pipeline_composition do
   describe '#execute' do
-    let(:components_data) { nil }
+    let(:metadata) { nil }
     let(:project) { create(:project, :catalog_resource_with_components) }
     let(:release) do
       create(:release, project: project, sha: project.repository.root_ref_sha, author: project.first_owner)
@@ -12,7 +12,7 @@ RSpec.describe Ci::Catalog::Resources::ReleaseService, feature_category: :pipeli
 
     let(:user) { project.first_owner }
 
-    subject(:execute) { described_class.new(release, user, components_data).execute }
+    subject(:execute) { described_class.new(release, user, metadata).execute }
 
     context 'when executing release service' do
       let(:histogram) { instance_double(Prometheus::Client::Histogram) }
@@ -39,10 +39,12 @@ RSpec.describe Ci::Catalog::Resources::ReleaseService, feature_category: :pipeli
     context 'with a valid catalog resource and release from passed data' do
       let!(:catalog_resource) { create(:ci_catalog_resource, project: project) }
 
-      let(:components_data) do
-        [
-          { name: 'hello-component', spec: { inputs: { hello: nil } } }
-        ]
+      let(:metadata) do
+        {
+          components: [
+            { name: 'hello-component', spec: { inputs: { hello: nil } }, component_type: 'template' }
+          ]
+        }
       end
 
       it 'validates the catalog resource and creates a version' do
@@ -51,12 +53,28 @@ RSpec.describe Ci::Catalog::Resources::ReleaseService, feature_category: :pipeli
         version = Ci::Catalog::Resources::Version.last
 
         expect(response).to be_success
+        expect(response.payload[:version]).to eq(version)
         expect(version.release).to eq(release)
         expect(version.catalog_resource).to eq(catalog_resource)
         expect(version.catalog_resource.project).to eq(project)
         expect(version.components.count).to eq(1)
         expect(version.components.first.name).to eq('hello-component')
         expect(version.components.first.spec).to eq({ 'inputs' => { 'hello' => nil } })
+      end
+
+      context 'when the user does not have permission to publish a version' do
+        let(:user) { create(:user) }
+
+        before do
+          project.add_reporter(user)
+        end
+
+        it 'returns an error' do
+          response = execute
+
+          expect(response).to be_error
+          expect(response.message).to include('You are not authorized to publish a version to the CI/CD catalog')
+        end
       end
     end
 
@@ -69,6 +87,7 @@ RSpec.describe Ci::Catalog::Resources::ReleaseService, feature_category: :pipeli
         version = Ci::Catalog::Resources::Version.last
 
         expect(response).to be_success
+        expect(response.payload[:version]).to eq(version)
         expect(version.release).to eq(release)
         expect(version.catalog_resource).to eq(catalog_resource)
         expect(version.catalog_resource.project).to eq(project)
@@ -111,10 +130,12 @@ RSpec.describe Ci::Catalog::Resources::ReleaseService, feature_category: :pipeli
       let(:project) { create(:project, :catalog_resource_with_components) }
       let!(:catalog_resource) { create(:ci_catalog_resource, project: project) }
 
-      let(:components_data) do
-        [
-          { invalid: 'data' }
-        ]
+      let(:metadata) do
+        {
+          components: [
+            { invalid: 'data' }
+          ]
+        }
       end
 
       it 'returns an error and does not create a version' do

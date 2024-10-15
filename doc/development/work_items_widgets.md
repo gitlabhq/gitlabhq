@@ -131,7 +131,7 @@ Refer to [merge request #159720](https://gitlab.com/gitlab-org/gitlab/-/merge_re
 1. Create the component `app/assets/javascripts/work_items/components/work_item_<widget_name>.vue` or `ee/app/assets/javascripts/work_items/components/work_item_<widget_name>.vue`.
    - The component should not receive any props which are available from `workItemByIidQuery`- see [issue #461761](https://gitlab.com/gitlab-org/gitlab/-/issues/461761).
 1. Add the component to the view/edit work item screen `app/assets/javascripts/work_items/components/work_item_attributes_wrapper.vue`.
-1. If the widget is avaiable when creating new work items:
+1. If the widget is available when creating new work items:
    1. Add the component to the create work item screen `app/assets/javascripts/work_items/components/create_work_item.vue`.
    1. Define a local input type `app/assets/javascripts/work_items/graphql/typedefs.graphql`.
    1. Stub the new work item state GraphQL data for the widget in `app/assets/javascripts/work_items/graphql/cache_utils.js`.
@@ -157,7 +157,7 @@ Now you can update tests for existing files and write tests for the new files:
 1. `spec/features/projects/work_items/work_item_spec.rb` or `ee/spec/features/projects/work_items/work_item_spec.rb`.
 
 NOTE:
-You may find some feature specs failing because of excissive SQL queries.
+You may find some feature specs failing because of excessive SQL queries.
 To resolve this, update the mocked `Gitlab::QueryLimiting::Transaction.threshold` in `spec/support/shared_examples/features/work_items/rolledup_dates_shared_examples.rb`.
 
 ## Steps to implement a new work item widget on frontend in the create view

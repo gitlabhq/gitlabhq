@@ -1,5 +1,6 @@
 <script>
 import {
+  GlAvatar,
   GlIcon,
   GlDropdown,
   GlDropdownDivider,
@@ -33,6 +34,7 @@ export default {
     ASSIGNEES_BLOCK: s__('AlertManagement|Alert assignees: %{assignees}'),
   },
   components: {
+    GlAvatar,
     GlIcon,
     GlDropdown,
     GlDropdownItem,
@@ -282,7 +284,7 @@ export default {
     >
       <div v-if="userName" class="gl-mt-2 gl-inline-flex" data-testid="assigned-users">
         <span class="gl-relative gl-mr-4">
-          <img :alt="userName" :src="userImg" :width="32" class="avatar avatar-inline s32 gl-m-0" />
+          <gl-avatar :src="userImg" :size="32" :alt="userName" />
         </span>
         <span class="gl-flex gl-flex-col gl-overflow-hidden">
           <strong class="dropdown-menu-user-full-name">

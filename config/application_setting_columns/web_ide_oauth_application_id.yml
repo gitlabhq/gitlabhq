@@ -1,0 +1,12 @@
+---
+api_type:
+attr: web_ide_oauth_application_id
+clusterwide: false
+column: web_ide_oauth_application_id
+db_type: bigint
+default:
+description:
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

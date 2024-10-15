@@ -53,12 +53,23 @@ RSpec.describe 'keep-around tasks', :silence_stdout, feature_category: :source_c
     end
 
     shared_examples 'orphans found' do |keep_around_count:, orphan_count:|
-      it 'prints a summary' do
-        expect(logger).to receive(:info).with("Summary:")
-        expect(logger).to receive(:info).with("\tKeep-around references: #{keep_around_count}")
-        expect(logger).to receive(:info).with("\tPotentially orphaned: #{orphan_count}")
-
+      it 'creates a report' do
         run_rake_task('gitlab:keep_around:orphaned')
+
+        csv = CSV.parse(file, headers: true)
+        keep_counts = {}
+
+        csv.each do |row|
+          case row['operation']
+          when 'keep'
+            keep_counts[row['commit_id']] = 0
+          when 'usage'
+            keep_counts[row['commit_id']] += 1 if keep_counts.has_key?(row['commit_id'])
+          end
+        end
+
+        expect(keep_counts.size).to eq(keep_around_count)
+        expect(keep_counts.values.count { |keep_count| keep_count == 0 }).to eq(orphan_count)
       end
     end
 
@@ -132,16 +143,6 @@ RSpec.describe 'keep-around tasks', :silence_stdout, feature_category: :source_c
 
     context "for note keep-arounds" do
       let_it_be(:note) { create(:note_on_commit, project: project, commit_id: ::TestEnv::BRANCH_SHA['master']) }
-
-      it_behaves_like 'orphans found',
-        keep_around_count: 3,
-        orphan_count: 2
-    end
-
-    context "for sent notification keep-arounds" do
-      let_it_be(:sent_notification) do
-        create(:sent_notification, project: project, commit_id: ::TestEnv::BRANCH_SHA['master'])
-      end
 
       it_behaves_like 'orphans found',
         keep_around_count: 3,

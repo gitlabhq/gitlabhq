@@ -1,5 +1,5 @@
 ---
-stage: Verify
+stage: Govern
 group: Pipeline Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ignore_in_report: true
@@ -219,3 +219,17 @@ job:
         akeyless_api_url: 'http://gateway_url:8080/v2'
         gateway_ca_certificate: 'ca_certificate'
 ```
+
+## Troubleshooting
+
+## `The secrets provider can not be found. Check your CI/CD variables and try again.` message
+
+You might receive this error when attempting to start a job configured to access Akeyless:
+
+```plaintext
+The secrets provider can not be found. Check your CI/CD variables and try again.
+```
+
+The job can't be created because the required variable is not defined:
+
+- `AKEYLESS_ACCESS_ID`

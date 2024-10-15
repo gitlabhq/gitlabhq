@@ -1,0 +1,9 @@
+---
+migration_job_name: BackfillDastSiteProfilesBuildsProjectId
+description: Backfills sharding key `dast_site_profiles_builds.project_id` from `dast_site_profiles`.
+feature_category: dynamic_application_security_testing
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167768
+milestone: '17.5'
+queued_migration_version: 20241001122045
+finalize_after: '2024-11-22'
+finalized_by: # version of the migration that finalized this BBM

@@ -895,6 +895,21 @@ rspec-ee integration pg14 single-db-ci-connection:
     - .rspec-ee-integration-parallel
     - .rails:rules:single-db-ci-connection-ee
 
+.custom-models-variables:
+  variables:
+    AIGW_CUSTOM_MODELS__ENABLED: true
+    AI_GATEWAY_URL: http://ai-gateway:5052
+    LITELLM_PROXY_URL: http://litellm-proxy:4000
+
+rspec-ee system custom-models pg14:
+  extends:
+    - .rspec-ee-base-pg14
+    - .rails:rules:ee-only-system
+    - .custom-models-variables
+  script:
+    - !reference [.base-script, script]
+    - rspec_parallelized_job "--tag requires_custom_models_setup"
+
 rspec-ee system pg14:
   extends:
     - .rspec-ee-base-pg14

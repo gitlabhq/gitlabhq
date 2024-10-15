@@ -58,7 +58,7 @@ export default {
           </gl-badge>
         </span>
 
-        <span class="gl-break-all gl-text-gray-500">@{{ user.username }}</span>
+        <span class="gl-break-all gl-text-subtle">@{{ user.username }}</span>
 
         <span
           v-if="user.status.customized"

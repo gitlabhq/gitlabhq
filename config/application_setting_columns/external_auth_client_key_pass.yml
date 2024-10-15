@@ -1,0 +1,13 @@
+---
+api_type: string
+attr: external_auth_client_key_pass
+clusterwide: false
+column: encrypted_external_auth_client_key_pass
+db_type: character
+default:
+description: Passphrase to use for the private key when authenticating with the external
+  service this is encrypted when stored.
+encrypted: true
+gitlab_com_different_than_default: false
+jihu: false
+not_null: false

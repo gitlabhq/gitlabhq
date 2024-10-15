@@ -69,11 +69,7 @@ module DiffViewer
     end
 
     def expandable?
-      if Feature.enabled?(:increase_diff_file_performance, diff_file.repository.project)
-        !too_large? && text?
-      else
-        diff_file&.blob&.readable_text?
-      end
+      !too_large? && text?
     end
 
     def binary_detected_after_load?

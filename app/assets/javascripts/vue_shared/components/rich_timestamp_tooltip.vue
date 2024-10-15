@@ -1,7 +1,7 @@
 <script>
 import { GlTooltip } from '@gitlab/ui';
 
-import { formatDate } from '~/lib/utils/datetime_utility';
+import { localeDateFormat, newDate } from '~/lib/utils/datetime_utility';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 
 export default {
@@ -28,7 +28,9 @@ export default {
       return this.rawTimestamp ? this.timeFormatted(this.rawTimestamp) : '';
     },
     timestamp() {
-      return this.rawTimestamp ? formatDate(new Date(this.rawTimestamp)) : '';
+      return this.rawTimestamp
+        ? localeDateFormat.asDateTimeFull.format(newDate(this.rawTimestamp))
+        : '';
     },
   },
 };

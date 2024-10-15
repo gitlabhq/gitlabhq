@@ -39,7 +39,7 @@ domains:
       - value_stream_management
       - devops_reports
       - dora_metrics
-      - product_analytics_data_management
+      - product_analytics
 
   AntiAbuse:
     description:
@@ -211,8 +211,7 @@ domains:
   Observability:
     description:
     feature_categories:
-      - metrics
-      - error_tracking
+      - observability
       - incident_management
 
   Onboarding:
@@ -314,6 +313,11 @@ domains:
     description:
     feature_categories:
       - infrastructure_as_code
+
+  Todos:
+    description: User todos management
+    feature_categories:
+      - notifications
 
   Users:
     description: Behavior related to user lifecycle and profile settings. Feature specific behavior must not go here.

@@ -147,7 +147,7 @@ import { loadCSSFile } from '../lib/utils/css_utils';
       const reader = new FileReader();
       reader.onload = () => {
         this.modalCropImg.setAttribute('src', reader.result);
-        import(/* webpackChunkName: 'bootstrapModal' */ 'bootstrap/js/dist/modal')
+        import(/* webpackChunkName: 'bootstrapModal' */ 'vendor/bootstrap/js/src/modal')
           .then(() => {
             this.modalCrop.modal('show');
           })

@@ -46,7 +46,8 @@ RSpec.describe Gitlab::Cng::Commands::Subcommands::Deployment do
         namespace: "gitlab",
         ci: false,
         gitlab_domain: "127.0.0.1.nip.io",
-        timeout: "10m"
+        timeout: "10m",
+        retry: 0
       )
       expect(Gitlab::Cng::Deployment::Configurations::Kind).to have_received(:new).with(
         namespace: "gitlab",

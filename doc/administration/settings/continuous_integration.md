@@ -95,12 +95,12 @@ To view the rendered details:
 1. Select **Settings > CI/CD**.
 1. Expand **Runners**.
 
-![Instance runner details example](img/continuous_integration_shared_runner_details_v14_10.png)
+![A project's runner settings shows a message about shared runner guidelines.](img/continuous_integration_shared_runner_details_v14_10.png)
 
 ## Maximum artifacts size
 
 An administrator can set the maximum size of the
-[job artifacts](../../administration/job_artifacts.md) for:
+[job artifacts](../../administration/cicd/job_artifacts.md) for:
 
 - The entire instance
 - Each project
@@ -131,7 +131,7 @@ The value is in MB, and the default value is 100 MB per job. An administrator ca
 
 ## Default artifacts expiration
 
-The default expiration time of the [job artifacts](../../administration/job_artifacts.md)
+The default expiration time of the [job artifacts](../../administration/cicd/job_artifacts.md)
 can be set in the **Admin** area of your GitLab instance. The syntax of duration is
 described in [`artifacts:expire_in`](../../ci/yaml/index.md#artifactsexpire_in)
 and the default value is `30 days`.
@@ -149,7 +149,7 @@ NOTE:
 Any changes to this setting applies to new artifacts only. The expiration time is not
 be updated for artifacts created before this setting was changed.
 The administrator may need to manually search for and expire previously-created
-artifacts, as described in the [troubleshooting documentation](../../administration/job_artifacts_troubleshooting.md#delete-old-builds-and-artifacts).
+artifacts, as described in the [troubleshooting documentation](../../administration/cicd/job_artifacts_troubleshooting.md#delete-old-builds-and-artifacts).
 
 ## Keep the latest artifacts for all jobs in the latest successful pipelines
 
@@ -252,6 +252,7 @@ from the **Admin** area:
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > CI/CD**.
 1. Expand the **Continuous Integration and Deployment** section.
+<!-- vale gitlab_base.CurrentStatus  = NO -->
 1. In the **CI/CD limits** section, you can set the following limits:
    - **Maximum number of jobs in a single pipeline**
    - **Total number of jobs in currently active pipelines**
@@ -261,13 +262,14 @@ from the **Admin** area:
    - **Maximum number of runners registered per group**
    - **Maximum number of runners registered per project**
    - **Maximum number of downstream pipelines in a pipeline's hierarchy tree**
+<!-- vale gitlab_base.CurrentStatus  = YES -->
 
 ## Enable or disable the pipeline suggestion banner
 
 By default, a banner displays in merge requests with no pipeline suggesting a
 walkthrough on how to add one.
 
-![Suggest pipeline banner](img/suggest_pipeline_banner_v14_5.png)
+![A banner displays guidance on how to get started with GitLab Pipelines.](img/suggest_pipeline_banner_v14_5.png)
 
 To enable or disable the banner:
 

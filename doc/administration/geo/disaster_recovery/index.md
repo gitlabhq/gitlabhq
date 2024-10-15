@@ -19,8 +19,8 @@ causes downtime.
 
 ## Promoting a **secondary** Geo site in single-secondary configurations
 
-We don't currently provide an automated way to promote a Geo replica and do a
-failover, but you can do it manually if you have `root` access to the machine.
+While you can't automatically promote a Geo replica and do a failover,
+you can promote it manually if you have `root` access to the machine.
 
 This process promotes a **secondary** Geo site to a **primary** site. To regain
 geographic redundancy as quickly as possible, you should add a new **secondary** site
@@ -80,7 +80,7 @@ must disable the **primary** site.
 
 Note the following when promoting a secondary:
 
-- If the secondary site [has been paused](../../geo/index.md#pausing-and-resuming-replication), the promotion
+- If the secondary site [has been paused](../replication/pause_resume_replication.md), the promotion
   performs a point-in-time recovery to the last known state.
   Data that was created on the primary while the secondary was paused is lost.
 - A new **secondary** should not be added at this time. If you want to add a new
@@ -88,7 +88,7 @@ Note the following when promoting a secondary:
   the **secondary** to the **primary**.
 - If you encounter an `ActiveRecord::RecordInvalid: Validation failed: Name has already been taken`
   error message during this process, for more information, see this
-  [troubleshooting advice](failover_troubleshooting.md).md#fixing-errors-during-a-failover-or-when-promoting-a-secondary-to-a-primary-site).
+  [troubleshooting advice](failover_troubleshooting.md#fixing-errors-during-a-failover-or-when-promoting-a-secondary-to-a-primary-site).
 - If you are using separate URLs, you should [point the primary domain DNS at the newly promoted site](#step-4-optional-updating-the-primary-domain-dns-record). Otherwise, runners must be registered again with the newly promoted site, and all Git remotes, bookmarks, and external integrations must be updated.
 - If you are using [location-aware DNS](../secondary_proxy/index.md#configure-location-aware-dns), the runners should automatically connect to the new primary after the old primary is removed from the DNS entry.
 - If you don't expect the runners connected to the previous primary to come back, you should remove them:
@@ -313,7 +313,7 @@ changing Git remotes and API URLs.
 Promoting a **secondary** site to **primary** site using the process above does not enable
 Geo on the new **primary** site.
 
-To bring a new **secondary** site online, follow the [Geo setup instructions](../index.md#setup-instructions).
+To bring a new **secondary** site online, follow the [Geo setup instructions](../setup/index.md).
 
 ### Step 6. Removing the former secondary's tracking database
 

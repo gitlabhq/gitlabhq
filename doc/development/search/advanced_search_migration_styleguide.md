@@ -442,7 +442,7 @@ safely can.
 
 We choose to use GitLab [required stops](../database/required_stops.md) as a safe time to remove
 backwards compatibility for indices that have not been fully migrated. We
-[document this in our upgrade documentation](../../update/index.md#upgrading-to-a-new-major-version).
+[document this in our upgrade documentation](../../update/plan_your_upgrade.md).
 
 [GitLab Housekeeper](https://gitlab.com/gitlab-org/gitlab/-/blob/master/gems/gitlab-housekeeper/README.md)
 is used to automate the cleanup process. This process includes
@@ -509,5 +509,6 @@ recent obsolete migration.
 
 The MR assignee must:
 
+1. Backup migrations from the default branch to the [migration graveyard](https://gitlab.com/gitlab-org/search-team/migration-graveyard)
 1. Verify that no references to the migration or spec files exist in the `.rubocop_todo/` directory.
 1. Push any required changes to the merge request.

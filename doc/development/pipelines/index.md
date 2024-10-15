@@ -260,7 +260,7 @@ to actually start running tests in merge train pipelines.
 
 #### Why do we need to have a "stable" default branch?
 
-If the default branch is unstable (i.e. CI/CD pipelines for the default branch are failing frequently), all of the merge requests pipelines that were added AFTER a faulty merge request pipeline would have to be **cancelled** and **added back to the train**, which would create a lot of delays if the merge train is long.
+If the default branch is unstable (i.e. CI/CD pipelines for the default branch are failing frequently), all of the merge requests pipelines that were added AFTER a faulty merge request pipeline would have to be **canceled** and **added back to the train**, which would create a lot of delays if the merge train is long.
 
 #### How stable does the default branch have to be?
 
@@ -642,7 +642,7 @@ fail.
 #### Troubleshooting `rspec:undercoverage` failures
 
 The `rspec:undercoverage` job has [known bugs](https://gitlab.com/groups/gitlab-org/-/epics/8254)
-that can cause false positive failures. Such false positive falures may also happen if you are updating database migration that is too old.
+that can cause false positive failures. Such false positive failures may also happen if you are updating database migration that is too old.
 You can test coverage locally to determine if it's safe to apply `pipeline:skip-undercoverage`. For example, using `<spec>` as the name of the
 test causing the failure:
 

@@ -6,7 +6,7 @@ import { getGroupTransferLocations } from '~/api/groups_api';
 
 export const i18n = {
   confirmationMessage: __(
-    "You are about to transfer %{codeStart}%{groupName}%{codeEnd} to another namespace. This action changes the %{projectLinkStart}project's path%{projectLinkEnd} and can lead to %{documentationLinkStart}data loss%{documentationLinkEnd}.",
+    "You are about to transfer %{codeStart}%{groupName}%{codeEnd} to another namespace. This action changes the %{groupLinkStart}group's path%{groupLinkEnd} and can lead to %{documentationLinkStart}data loss%{documentationLinkEnd}.",
   ),
   confirmButtonText: __('Transfer group'),
   emptyNamespaceTitle: __('No parent group'),

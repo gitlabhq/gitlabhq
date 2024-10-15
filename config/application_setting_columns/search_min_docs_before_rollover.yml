@@ -1,0 +1,12 @@
+---
+api_type:
+attr: search_min_docs_before_rollover
+clusterwide: false
+column: search_min_docs_before_rollover
+db_type: integer
+default: '100000'
+description:
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

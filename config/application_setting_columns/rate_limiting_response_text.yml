@@ -1,0 +1,14 @@
+---
+api_type: string
+attr: rate_limiting_response_text
+clusterwide: true
+column: rate_limiting_response_text
+db_type: text
+default:
+description: When rate limiting is enabled via the `throttle_*` settings, send this
+  plain text response when a rate limit is exceeded. 'Retry later' is sent if this
+  is blank.
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

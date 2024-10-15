@@ -1,0 +1,13 @@
+---
+api_type: boolean
+attr: user_show_add_ssh_key_message
+clusterwide: false
+column: user_show_add_ssh_key_message
+db_type: boolean
+default: 'true'
+description: When set to `false` disable the `You won't be able to pull or push project
+  code via SSH` warning shown to users with no uploaded SSH key.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

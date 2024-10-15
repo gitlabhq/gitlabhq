@@ -13,8 +13,8 @@ module Gitlab
 
           private
 
-          def target
-            check_object_storage(::Backup::Targets::Files.new(nil, storage_path, options: options))
+          def local
+            ::Backup::Targets::Files.new(nil, storage_path, options: options)
           end
 
           def storage_path = context.ci_lfs_path

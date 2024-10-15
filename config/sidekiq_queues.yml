@@ -45,6 +45,8 @@
   - 1
 - - analytics_usage_trends_counter_job
   - 1
+- - anti_abuse_ban_duplicate_users
+  - 1
 - - anti_abuse_new_abuse_report
   - 1
 - - anti_abuse_spam_abuse_events
@@ -186,6 +188,8 @@
 - - ci_initialize_pipelines_iid_sequence
   - 1
 - - ci_job_artifacts_expire_project_build_artifacts
+  - 1
+- - ci_job_token_log_authorization
   - 1
 - - ci_low_urgency_cancel_redundant_pipelines
   - 1
@@ -375,6 +379,10 @@
   - 1
 - - gitlab_subscriptions_add_on_purchases_refresh_user_assignments
   - 1
+- - gitlab_subscriptions_member_management_apply_pending_member_approvals
+  - 1
+- - gitlab_subscriptions_members_record_last_activity
+  - 1
 - - gitlab_subscriptions_refresh_seats
   - 1
 - - gitlab_subscriptions_trials_apply_trial
@@ -529,6 +537,8 @@
   - 1
 - - merge_requests_process_auto_merge_from_event
   - 1
+- - merge_requests_process_merge_audit_event
+  - 1
 - - merge_requests_remove_user_approval_rules
   - 1
 - - merge_requests_resolve_todos
@@ -569,19 +579,13 @@
   - 1
 - - object_storage
   - 1
+- - onboarding_add_on_seat_assignment_iterable_trigger
+  - 1
 - - onboarding_create_iterable_trigger
   - 1
 - - onboarding_create_iterable_triggers
   - 1
-- - onboarding_issue_created
-  - 1
-- - onboarding_pipeline_created
-  - 1
-- - onboarding_progress
-  - 1
 - - onboarding_progress_tracking
-  - 1
-- - onboarding_user_added
   - 1
 - - package_cleanup
   - 1
@@ -592,6 +596,8 @@
 - - pages
   - 1
 - - pages_deactivate_mr_deployments
+  - 1
+- - pages_delete_pages_deployment
   - 1
 - - pages_domain_ssl_renewal
   - 1
@@ -697,6 +703,8 @@
   - 1
 - - remote_mirror_notification
   - 2
+- - repositories_rewrite_history
+  - 1
 - - repository_check
   - 1
 - - repository_cleanup
@@ -745,7 +753,13 @@
   - 1
 - - search_zoekt_index_marked_as_to_delete_event
   - 1
+- - search_zoekt_index_over_watermark_event
+  - 1
 - - search_zoekt_indexing_task
+  - 1
+- - search_zoekt_initial_indexing_event
+  - 1
+- - search_zoekt_lost_node_event
   - 1
 - - search_zoekt_namespace_indexer
   - 1
@@ -759,11 +773,17 @@
   - 1
 - - search_zoekt_repo_marked_as_to_delete_event
   - 1
+- - search_zoekt_task_failed_event
+  - 1
+- - search_zoekt_update_index_used_bytes
+  - 1
 - - secrets_management_provision_project_secrets_manager
   - 1
 - - security_create_security_policy_project
   - 1
 - - security_delete_orchestration_configuration
+  - 1
+- - security_delete_security_policy
   - 1
 - - security_generate_policy_violation_comment
   - 1
@@ -803,7 +823,11 @@
   - 2
 - - security_scans_purge_by_job_id
   - 1
+- - security_sync_policy
+  - 1
 - - security_sync_policy_violation_comment
+  - 1
+- - security_sync_project_policy
   - 1
 - - security_sync_scan_policies
   - 1

@@ -156,7 +156,7 @@ RSpec.describe SnippetPresenter do
     end
 
     context 'when snippet has a repository' do
-      let(:snippet) { create(:snippet, :repository, author: user) }
+      let(:snippet) { create(:project_snippet, :repository, author: user) }
 
       it 'returns repository first blob' do
         expect(subject.name).to eq snippet.blobs.first.name

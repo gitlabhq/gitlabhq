@@ -1,2 +1,3 @@
 = content_tag (@inline ? :span : :div), **html_options do
-  %span{ class: spinner_class, aria: {label: @label} }>
+  %span{ class: spinner_class, aria: {hidden: true} }>
+  %span{ class: 'gl-sr-only !gl-absolute' }= @label

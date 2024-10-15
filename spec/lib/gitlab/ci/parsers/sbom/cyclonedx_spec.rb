@@ -214,7 +214,7 @@ RSpec.describe Gitlab::Ci::Parsers::Sbom::Cyclonedx, feature_category: :dependen
 
       it 'adds component with license information' do
         expected_license = an_object_having_attributes(
-          id: license_id,
+          spdx_identifier: license_id,
           name: nil,
           url: license_url)
 
@@ -377,6 +377,54 @@ RSpec.describe Gitlab::Ci::Parsers::Sbom::Cyclonedx, feature_category: :dependen
     it 'passes dependencies to report' do
       expect(report).to receive(:add_dependency).with('ref', 'dependency_ref')
 
+      parse!
+    end
+  end
+
+  context 'when report has components with reachability' do
+    let(:report_data) { base_report_data.merge({ 'components' => components }) }
+
+    let(:parsed_properties) do
+      {
+        'reachability' => 'in_use'
+      }
+    end
+
+    let(:components) do
+      [
+        {
+          "name" => "GitPython",
+          "version" => "3.1.44",
+          "purl" => "pkg:pypi/GitPython@3.1.44",
+          "type" => "library",
+          "bom-ref" => "pkg:pypi/GitPython@3.1.44",
+          "properties" => [
+            {
+              "name" => "gitlab:dependency_scanning_component:reachability",
+              "value" => "in_use"
+            }
+          ]
+        }
+      ]
+    end
+
+    before do
+      allow(report).to receive(:add_component)
+    end
+
+    it 'adds component with the reachability property' do
+      expect(report).to receive(:add_component)
+        .with(
+          an_object_having_attributes(
+            name: "gitpython",
+            version: "3.1.44",
+            component_type: "library",
+            purl: an_object_having_attributes(type: "pypi"),
+            properties: an_object_having_attributes(
+              data: parsed_properties
+            )
+          )
+        )
       parse!
     end
   end

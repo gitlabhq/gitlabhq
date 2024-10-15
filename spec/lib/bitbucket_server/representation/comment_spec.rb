@@ -40,7 +40,7 @@ RSpec.describe BitbucketServer::Representation::Comment, feature_category: :impo
   end
 
   describe '#author_email' do
-    it { expect(subject.author_email).to eq('test.user@example.com' ) }
+    it { expect(subject.author_email).to eq('test.user@example.com') }
   end
 
   describe '#note' do
@@ -57,7 +57,7 @@ RSpec.describe BitbucketServer::Representation::Comment, feature_category: :impo
 
   describe '#comments' do
     it { expect(subject.comments.count).to eq(4) }
-    it { expect(subject.comments).to all( be_a(described_class) ) }
+    it { expect(subject.comments).to all(be_a(described_class)) }
     it { expect(subject.comments.map(&:note)).to match_array(["Hello world", "Ok", "hello", "hi"]) }
 
     # The thread should look like:

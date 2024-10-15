@@ -108,6 +108,12 @@ describe('Work Item Note', () => {
         autocompleteDataSources: {},
         assignees,
       },
+      stubs: {
+        TimelineEntryItem,
+      },
+      mocks: {
+        $route: {},
+      },
       apolloProvider: mockApollo([
         [workItemByIidQuery, workItemByIidResponseHandler],
         [updateWorkItemNoteMutation, updateNoteMutationHandler],
@@ -119,6 +125,7 @@ describe('Work Item Note', () => {
   describe('when editing', () => {
     beforeEach(() => {
       createComponent();
+
       findNoteActions().vm.$emit('startEditing');
       return nextTick();
     });
@@ -264,6 +271,10 @@ describe('Work Item Note', () => {
 
       it('should have the project name', () => {
         expect(findNoteActions().props('projectName')).toBe('Project name');
+      });
+
+      it('should pass the noteUrl to the note header and should be a work items url', () => {
+        expect(findNoteHeader().props('noteUrl')).toContain('work_items');
       });
     });
 

@@ -52,7 +52,7 @@ module Issues
     end
 
     def add_by_email
-      contact_ids = ::CustomerRelations::Contact.find_ids_by_emails(container.root_ancestor, emails(:add_emails))
+      contact_ids = ::CustomerRelations::Contact.find_ids_by_emails(container.crm_group, emails(:add_emails))
       add_by_id(contact_ids)
     end
 

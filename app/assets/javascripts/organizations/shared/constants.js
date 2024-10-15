@@ -30,9 +30,6 @@ export const FORM_FIELD_DESCRIPTION_VALIDATORS = [
   ),
 ];
 
-export const QUERY_PARAM_START_CURSOR = 'start_cursor';
-export const QUERY_PARAM_END_CURSOR = 'end_cursor';
-
 export const SORT_DIRECTION_ASC = 'asc';
 export const SORT_DIRECTION_DESC = 'desc';
 

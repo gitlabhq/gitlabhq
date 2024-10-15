@@ -96,10 +96,10 @@ The following list depicts the network architecture of Gitaly:
 - Authentication is done through a static token which is shared among the Gitaly and GitLab Rails
   nodes.
 
-The following digraph illustrates communication between Gitaly servers and GitLab Rails showing
+The following diagram illustrates communication between Gitaly servers and GitLab Rails showing
 the default ports for HTTP and HTTPs communication.
 
-![Gitaly network architecture diagram](img/gitaly_network_13_9.png)
+![Two Gitaly servers and a GitLab Rails exchanging information.](img/gitaly_network_v13_9.png)
 
 WARNING:
 Gitaly servers must not be exposed to the public internet as Gitaly network traffic is unencrypted
@@ -614,6 +614,7 @@ When these limits are reached, performance may be reduced and users may be disco
 
 > - This method of configuring repository cgroups was introduced in GitLab 15.1.
 > - `cpu_quota_us`[introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/5422) in GitLab 15.10.
+> - `max_cgroups_per_repo` [introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/5689) in GitLab 16.7.
 
 To configure repository cgroups in Gitaly using the new method, use the following settings for the new configuration method
 to `gitaly['configuration'][:cgroups]` in `/etc/gitlab/gitlab.rb`:
@@ -645,8 +646,14 @@ to `gitaly['configuration'][:cgroups]` in `/etc/gitlab/gitlab.rb`:
   that is imposed on all Git processes contained in a repository cgroup. A Git
   process can't use more then the given quota. We set
   `cfs_period_us` to `100ms` so 1 core is `100000`. 0 implies no limit.
+- `repositories.max_cgroups_per_repo` is the number of repository cgroups that Git processes
+  targeting a specific repository can be distributed across. This enables more conservative
+  CPU and memory limits to be configured for repository cgroups while still allowing for
+  bursty workloads. For instance, with a `max_cgroups_per_repo` of `2` and a `memory_bytes`
+  limit of 10GB, independent Git operations against a specific repository can consume up
+  to 20GB of memory.
 
-For example:
+For example (not necessarily recommended settings):
 
 ```ruby
 # in /etc/gitlab/gitlab.rb
@@ -662,7 +669,8 @@ gitaly['configuration'] = {
       count: 1000,
       memory_bytes: 32212254720, # 20gb
       cpu_shares: 512,
-      cpu_quota_us: 200000 # 2 cores
+      cpu_quota_us: 200000, # 2 cores
+      max_cgroups_per_repo: 2
     },
   },
 }

@@ -8,7 +8,7 @@ description: "Troubleshooting tips for common problems in Code Suggestions."
 # Troubleshooting Code Suggestions
 
 DETAILS:
-**Tier:** Premium with GitLab Duo Pro or Ultimate with [GitLab Duo Pro or Enterprise](../../../../subscriptions/subscription-add-ons.md)
+**Tier:** Premium with GitLab Duo Pro or Ultimate with [GitLab Duo Pro or Enterprise](https://about.gitlab.com/gitlab-duo/#pricing)
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 When working with GitLab Duo Code Suggestions, you might encounter the following issues.

@@ -93,7 +93,7 @@ module Types
       field :previous_stage_jobs_or_needs, Types::Ci::JobNeedUnion.connection_type,
         null: true,
         description: 'Jobs that must complete before the job runs. Returns `BuildNeed`, ' \
-                     'which is the needed jobs if the job uses the `needs` keyword, or the previous stage jobs otherwise.',
+          'which is the needed jobs if the job uses the `needs` keyword, or the previous stage jobs otherwise.',
         deprecated: { reason: 'Replaced by previousStageJobs and needs fields', milestone: '16.4' }
       field :ref_name, GraphQL::Types::String, null: true,
         description: 'Ref name of the job.'

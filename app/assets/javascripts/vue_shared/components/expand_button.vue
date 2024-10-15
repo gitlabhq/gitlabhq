@@ -43,7 +43,7 @@ export default {
       v-show="isCollapsed"
       :aria-label="ariaLabel"
       type="button"
-      class="js-text-expander-prepend text-expander btn-blank"
+      class="js-text-expander-prepend text-expander gl-rounded-none gl-border-none !gl-bg-transparent gl-p-0 !gl-shadow-none !gl-outline-none"
       icon="ellipsis_h"
       @click="onClick"
     />
@@ -53,7 +53,7 @@ export default {
       v-show="!isCollapsed"
       :aria-label="ariaLabel"
       type="button"
-      class="js-text-expander-append text-expander btn-blank"
+      class="js-text-expander-append text-expander gl-rounded-none gl-border-none !gl-bg-transparent gl-p-0 !gl-shadow-none !gl-outline-none"
       icon="ellipsis_h"
       @click="onClick"
     />

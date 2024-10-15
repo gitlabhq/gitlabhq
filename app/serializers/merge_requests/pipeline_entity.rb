@@ -4,11 +4,16 @@ class MergeRequests::PipelineEntity < Grape::Entity
   include RequestAwareEntity
 
   expose :id
+  expose :iid
   expose :active?, as: :active
   expose :name
 
   expose :path do |pipeline|
     project_pipeline_path(pipeline.project, pipeline)
+  end
+
+  expose :project_path do |pipeline|
+    project_path(pipeline.project)
   end
 
   expose :flags do

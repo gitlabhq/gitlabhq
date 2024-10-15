@@ -1,0 +1,16 @@
+---
+description: Tracks when the NuGet search service is used via the API.
+action: search_package
+identifiers:
+- project
+- namespace
+- user
+product_group: package_registry
+milestone: '12.10'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/27438
+distributions:
+- ce
+tiers:
+- free
+- premium
+- ultimate

@@ -7,13 +7,13 @@
 
   %fieldset
     .form-group
-      - help_link_start = link_start % { url: help_page_path('administration/settings/usage_statistics', anchor: 'version-check') }
+      - help_link_start = link_start % { url: help_page_path('administration/settings/usage_statistics.md', anchor: 'version-check') }
       = f.gitlab_ui_checkbox_component :version_check_enabled, _('Enable version check'),
         help_text: _("GitLab informs you if a new version is available. %{link_start}What information does GitLab Inc. collect?%{link_end}").html_safe % { link_start: help_link_start, link_end: link_end }
     .form-group
       - can_be_configured = @application_setting.usage_ping_can_be_configured?
-      - service_ping_link_start = link_start % { url: help_page_path('development/internal_analytics/service_ping/index') }
-      - deactivating_service_ping_link_start = link_start % { url: help_page_path('administration/settings/usage_statistics', anchor: 'through-the-configuration-file') }
+      - service_ping_link_start = link_start % { url: help_page_path('development/internal_analytics/service_ping/index.md') }
+      - deactivating_service_ping_link_start = link_start % { url: help_page_path('administration/settings/usage_statistics.md', anchor: 'through-the-configuration-file') }
       - usage_ping_help_text = s_('AdminSettings|To help improve GitLab and its user experience, GitLab periodically collects usage information. %{link_start}What information is shared with GitLab Inc.?%{link_end}').html_safe % { link_start: service_ping_link_start, link_end: link_end }
       - disabled_help_text = s_('AdminSettings|Service ping is disabled in your configuration file, and cannot be enabled through this form. For more information, see the documentation on %{link_start}deactivating service ping%{link_end}.').html_safe % { link_start: deactivating_service_ping_link_start, link_end: link_end }
       = f.gitlab_ui_checkbox_component :usage_ping_enabled, s_('AdminSettings|Enable Service Ping'),
@@ -36,13 +36,13 @@
           title: s_('AdminSettings|Service Ping payload not found in the application cache')) do |c|
 
           - c.with_body do
-            - generate_manually_link = link_to('', help_page_path('development/internal_analytics/service_ping/troubleshooting', anchor: 'generate-service-ping'), target: '_blank', rel: 'noopener noreferrer')
+            - generate_manually_link = link_to('', help_page_path('development/internal_analytics/service_ping/troubleshooting.md', anchor: 'generate-service-ping'), target: '_blank', rel: 'noopener noreferrer')
             = safe_format(s_('AdminSettings|%{generate_manually_link_start}Generate%{generate_manually_link_end} Service Ping to preview and download service usage data payload.'), tag_pair(generate_manually_link, :generate_manually_link_start, :generate_manually_link_end))
     .form-group
       - usage_ping_enabled = @application_setting.usage_ping_enabled?
       - include_optional_metrics_in_service_ping = @application_setting.include_optional_metrics_in_service_ping
       - label = s_('AdminSettings|Enable Registration Features')
-      - label_link = link_to sprite_icon('question-o'), help_page_path('administration/settings/usage_statistics', anchor: 'registration-features-program')
+      - label_link = link_to sprite_icon('question-o'), help_page_path('administration/settings/usage_statistics.md', anchor: 'registration-features-program')
       - service_ping_help_text = usage_ping_enabled ? s_('AdminSettings|You can enable Registration Features because Service Ping is enabled.') : s_('AdminSettings|To enable Registration Features, first enable Service Ping.')
       - optional_metrics_help_text = include_optional_metrics_in_service_ping ? s_('AdminSettings|You can enable Registration Features because optional data in Service Ping is enabled.') : s_('AdminSettings|To enable Registration Features, first enable optional data in Service Ping.')
       = f.gitlab_ui_checkbox_component :usage_ping_features_enabled?, '%{label} %{label_link}'.html_safe % { label: label, label_link: label_link },
@@ -51,7 +51,7 @@
         label_options: { id: 'service_ping_features_label' }
       .form-text.gl-text-gray-500.gl-pl-6
         %p.gl-mb-3
-          - registration_features_gitlab_path = help_page_path('administration/settings/usage_statistics', anchor: 'registration-features-program')
+          - registration_features_gitlab_path = help_page_path('administration/settings/usage_statistics.md', anchor: 'registration-features-program')
           - registration_features_gitlab_link = link_to('', registration_features_gitlab_path, target: '_blank', rel: 'noopener noreferrer')
           = safe_format(s_('AdminSettings|For a list of included Registration Features, see %{link_start}the documentation%{link_end}.'), tag_pair(registration_features_gitlab_link, :link_start, :link_end))
 

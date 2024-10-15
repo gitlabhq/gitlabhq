@@ -1,0 +1,12 @@
+---
+api_type:
+attr: public_runner_releases_url
+clusterwide: false
+column: public_runner_releases_url
+db_type: text
+default: "'https://gitlab.com/api/v4/projects/gitlab-org%2Fgitlab-runner/releases'::text"
+description:
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

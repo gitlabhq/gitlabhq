@@ -59,16 +59,6 @@ merge conflict in the GitLab user interface:
 If any file in your merge request contains conflicts, but can't meet all of these
 criteria, you must resolve the conflict manually.
 
-## Conflicts GitLab can't detect
-
-GitLab does not detect conflicts when both branches rename a file to different names.
-For example, these changes don't create a conflict:
-
-1. Branch `one` renames `example.txt` to `example1.txt`
-1. Branch `two` renames `example.txt` to `example_old.txt`.
-
-When these branches merge, both `example1.txt` and `example_old.txt` are present.
-
 ## Methods of resolving conflicts
 
 GitLab shows [conflicts available for resolution](#conflicts-you-can-resolve-in-the-user-interface)

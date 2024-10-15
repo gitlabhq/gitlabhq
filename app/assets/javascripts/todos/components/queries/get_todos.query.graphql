@@ -9,6 +9,7 @@ query todos(
   $state: [TodoStateEnum!]
   $projectId: [ID!]
   $groupId: [ID!]
+  $authorId: [ID!]
   $action: [TodoActionEnum!]
   $type: [TodoTargetEnum!]
   $sort: TodoSort
@@ -23,6 +24,7 @@ query todos(
       state: $state
       projectId: $projectId
       groupId: $groupId
+      authorId: $authorId
       action: $action
       type: $type
       sort: $sort

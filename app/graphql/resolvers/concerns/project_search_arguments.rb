@@ -28,7 +28,7 @@ module ProjectSearchArguments
       required: false,
       default_value: 'id_desc',
       description: "Sort order of results. Format: `<field_name>_<sort_direction>`, " \
-                   "for example: `id_desc` or `name_asc`"
+        "for example: `id_desc` or `name_asc`"
   end
 
   private

@@ -22,27 +22,6 @@
 }
 
 .gl-dark {
-  .gl-datepicker-theme {
-    .is-selected > .pika-button {
-      color: $gray-900;
-    }
-
-    :not(.is-selected) > .pika-button:hover {
-      background-color: $gray-200;
-    }
-  }
-
-  .gl-new-dropdown-item {
-    &:active,
-    &:hover,
-    &:focus,
-    &:focus:active {
-      .gl-new-dropdown-item-content {
-        background-color: $gray-10;
-      }
-    }
-  }
-
   .gl-dark-invert-keep-hue {
     filter: invert(0.8) hue-rotate(180deg);
   }
@@ -57,35 +36,7 @@
   filter: brightness(0.9) contrast(1.1);
 }
 
-// duplicated class as the original .atwho-view style is added later
-.atwho-view.atwho-view {
-  background-color: $white;
-  color: $gray-900;
-  border-color: $gray-800;
-}
-
-.gl-avatar:not(.gl-avatar-identicon),
-.avatar-container,
-.avatar {
-  background: rgba($gray-950, 0.04);
-}
-
-.gl-avatar {
-  border-style: none;
-  box-shadow: inset 0 0 0 1px rgba($gray-950, $gl-avatar-border-opacity);
-}
-
-aside.right-sidebar:not(.right-sidebar-merge-requests) {
-  background-color: $gray-10;
-}
-
 :root.gl-dark {
-  .terms {
-    .logo-text {
-      fill: var(--black);
-    }
-  }
-
   .md :not(pre.code) > code {
     background-color: $gray-200;
   }
@@ -95,45 +46,4 @@ aside.right-sidebar:not(.right-sidebar-merge-requests) {
 .timeline-entry.draft-note:not(.note-form) .timeline-content {
   // soften on darkmode
   background-color: mix($gray-50, $orange-50, 75%) !important;
-}
-
-.gl-dark .issue-sticky-header-text .badge-muted {
-  background-color: var(--gray-100);
-  color: var(--gray-700);
-}
-
-.gl-dark  {
-  .gl-filtered-search-token-type,
-  .gl-filtered-search-token-operator,
-  .gl-filtered-search-token-data,
-  .gl-filtered-search-suggestion-active {
-    background-color: $gray-100;
-  }
-
-  .gl-dropdown-item.gl-filtered-search-suggestion,
-  .gl-filtered-search-suggestion-active {
-    .dropdown-item:hover {
-      background-color: $gray-200;
-    }
-  }
-
-  .filtered-search-token {
-    .name, .operator, .value-container {
-      background-color: $gray-100;
-    }
-
-    &:hover {
-      .operator, .value-container {
-        background-color: $gray-200;
-      }
-    }
-  }
-
-  .filtered-search-wrapper li.droplab-item-active button {
-    background-color: $gray-100;
-
-    &:hover {
-     background-color: $gray-200;
-    }
-  }
 }

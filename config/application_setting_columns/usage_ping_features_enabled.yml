@@ -1,0 +1,12 @@
+---
+api_type:
+attr: usage_ping_features_enabled
+clusterwide: false
+column: usage_ping_features_enabled
+db_type: boolean
+default: 'false'
+description:
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

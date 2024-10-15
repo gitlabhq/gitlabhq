@@ -1,0 +1,12 @@
+---
+api_type:
+attr: deny_all_requests_except_allowed
+clusterwide: false
+column: deny_all_requests_except_allowed
+db_type: boolean
+default: 'false'
+description:
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

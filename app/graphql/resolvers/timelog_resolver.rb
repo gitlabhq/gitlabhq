@@ -74,18 +74,27 @@ module Resolvers
     end
 
     def validate_args!(object, args)
-      # sort is always provided because of its default value so we
-      # should check the remaining args to make sure at least one filter
-      # argument was provided
-      cleaned_args = args.except(:sort)
+      unless has_parent?(object, args) || for_current_user?(args) || admin_user?
+        raise_argument_error('Non-admin users must provide a group_id, project_id, or current username')
+      end
 
-      if cleaned_args.empty? && object.nil?
-        raise_argument_error('Provide at least one argument')
-      elsif args[:start_time] && args[:start_date]
+      if args[:start_time] && args[:start_date]
         raise_argument_error('Provide either a start date or time, but not both')
       elsif args[:end_time] && args[:end_date]
         raise_argument_error('Provide either an end date or time, but not both')
       end
+    end
+
+    def has_parent?(object, args)
+      object || args[:group_id] || args[:project_id]
+    end
+
+    def for_current_user?(args)
+      args[:username].present? && args[:username] == current_user&.username
+    end
+
+    def admin_user?
+      current_user&.can_read_all_resources?
     end
 
     def parse_datetime_args(args)

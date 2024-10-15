@@ -50,7 +50,7 @@ hard to keep the update process simple and reliable.
 
 If you are unable to follow our monthly release cycle, there are a couple of
 cases you must consider. Follow the
-[upgrade paths guide](../update/index.md#upgrade-paths) to safely upgrade
+[upgrade paths guide](../update/upgrade_paths.md) to safely upgrade
 between versions.
 
 NOTE:
@@ -64,7 +64,8 @@ A step-by-step guide to [upgrading the Linux package-bundled PostgreSQL is docum
 
 ## Upgrading major versions
 
-Backward-incompatible changes and migrations are reserved for major versions. See the [upgrade guide](../update/index.md#upgrading-to-a-new-major-version).
+Backward-incompatible changes and migrations are reserved for major versions. For more information, see
+[Create a GitLab upgrade plan](../update/plan_your_upgrade.md).
 
 ## Patch releases
 

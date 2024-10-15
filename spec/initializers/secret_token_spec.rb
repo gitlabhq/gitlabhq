@@ -3,271 +3,265 @@
 require 'spec_helper'
 require_relative '../../config/initializers/01_secret_token'
 
-RSpec.describe 'create_tokens' do
-  include StubENV
-
-  let(:secrets) { ActiveSupport::OrderedOptions.new }
-  let(:hex_key) { /\h{128}/ }
-  let(:rsa_key) { /\A-----BEGIN RSA PRIVATE KEY-----\n.+\n-----END RSA PRIVATE KEY-----\n\Z/m }
+# rubocop:disable RSpec/FilePath -- The initializer name starts with `01` because we want to run it ASAP
+# rubocop:disable RSpec/FeatureCategory -- This is a shared responsibility
+RSpec.describe SecretsInitializer do
+  let(:rails_env_name) { 'test' }
+  let(:rails_env) { ActiveSupport::EnvironmentInquirer.new(rails_env_name) }
+  let(:fake_secret_file) { Tempfile.new(['fake-secrets', '.yml']) }
+  let(:secrets_hash) { {} }
+  let(:fake_secret_file_content) { secrets_hash.to_yaml }
 
   before do
-    allow(Rails).to receive_message_chain(:application, :secrets).and_return(secrets)
-    allow(Rails).to receive_message_chain(:root, :join) { |string| string }
-
-    allow(File).to receive(:write).and_call_original
-    allow(File).to receive(:write).with(Rails.root.join('config/secrets.yml'))
-    allow(File).to receive(:delete).and_call_original
-    allow(File).to receive(:delete).with(Rails.root.join('.secret'))
-    allow(self).to receive(:warn)
-    allow(self).to receive(:exit)
+    fake_secret_file.write(fake_secret_file_content)
+    fake_secret_file.rewind
   end
+
+  after do
+    fake_secret_file.close
+    fake_secret_file.unlink
+  end
+
+  subject(:initializer) { described_class.new(secrets_file_path: fake_secret_file.path, rails_env: rails_env) }
 
   describe 'ensure acknowledged secrets in any installations' do
     let(:acknowledged_secrets) do
-      %w[secret_key_base otp_key_base db_key_base openid_connect_signing_key encrypted_settings_key_base rotated_encrypted_settings_key_base]
+      %w[secret_key_base otp_key_base db_key_base openid_connect_signing_key encrypted_settings_key_base
+        rotated_encrypted_settings_key_base]
     end
 
     it 'does not allow to add a new secret without a proper handling' do
-      create_tokens
+      secrets_hash = YAML.safe_load_file(Rails.root.join('config/secrets.yml'))
 
-      secrets_hash = YAML.load_file(Rails.root.join('config/secrets.yml'))
-
-      secrets_hash.each do |environment, secrets|
+      secrets_hash.each_value do |secrets|
         new_secrets = secrets.keys - acknowledged_secrets
 
         expect(new_secrets).to be_empty,
-          <<~EOS
-           CAUTION:
-           It looks like you have just added new secret(s) #{new_secrets.inspect} to the secrets.yml.
-           Please read the development guide for GitLab secrets at doc/development/application_secrets.md before you proceed this change.
-           If you're absolutely sure that the change is safe, please add the new secrets to the 'acknowledged_secrets' in order to silence this warning.
-          EOS
+          <<~WARNING
+          CAUTION:
+          It looks like you have just added new secret(s) #{new_secrets.inspect} to the secrets.yml.
+          Please read the development guide for GitLab secrets at doc/development/application_secrets.md before you proceed this change.
+          If you're absolutely sure that the change is safe, please add the new secrets to the 'acknowledged_secrets' in order to silence this warning.
+          WARNING
       end
     end
   end
 
-  context 'setting secret keys' do
+  describe '#secrets_from_file' do
+    context 'when the secrets files is a valid YAML' do
+      let(:secrets_hash) { { 'foo' => 'bar' } }
+
+      it 'parses and returns the hash' do
+        expect(initializer.secrets_from_file).to eq({ 'foo' => 'bar' })
+      end
+    end
+
+    context 'when the secrets file does not exist' do
+      let(:fake_secret_file_content) { 'foo = bar' }
+
+      it 'returns an empty hash' do
+        expect(YAML).to receive(:safe_load_file).and_raise(Errno::ENOENT)
+
+        expect(initializer.secrets_from_file).to eq({})
+      end
+    end
+
+    context 'when the secrets file contains invalid YAML' do
+      let(:fake_secret_file_content) { "foo:\n\tbar: baz\n\tbar: foo" }
+
+      it 'raises a Psych::SyntaxError exception' do
+        expect { initializer.secrets_from_file }.to raise_error(Psych::SyntaxError)
+      end
+    end
+  end
+
+  describe '#execute!' do
+    include StubENV
+
+    let(:allowed_keys) do
+      %w[
+        secret_key_base
+        db_key_base
+        otp_key_base
+        openid_connect_signing_key
+      ]
+    end
+
+    let(:hex_key) { /\h{128}/ }
+    let(:rsa_key) { /\A-----BEGIN RSA PRIVATE KEY-----\n.+\n-----END RSA PRIVATE KEY-----\n\Z/m }
+
+    around do |example|
+      original_credentials = Rails.application.credentials
+      # Ensure we clear any existing `encrypted_settings_key_base` credential
+      allowed_keys.each do |key|
+        Rails.application.credentials.public_send(:"#{key}=", nil)
+      end
+
+      example.run
+
+      Rails.application.credentials = original_credentials
+    end
+
+    before do
+      allow(File).to receive(:write).with(fake_secret_file.path, any_args)
+    end
+
     context 'when none of the secrets exist' do
       before do
         stub_env('SECRET_KEY_BASE', nil)
-        allow(File).to receive(:exist?).with('.secret').and_return(false)
-        allow(File).to receive(:exist?).with('config/secrets.yml').and_return(false)
-        allow(self).to receive(:warn_missing_secret)
       end
 
       it 'generates different hashes for secret_key_base, otp_key_base, and db_key_base' do
-        create_tokens
+        initializer.execute!
 
-        keys = secrets.values_at(:secret_key_base, :otp_key_base, :db_key_base)
+        keys = Rails.application.credentials.values_at(:secret_key_base, :otp_key_base, :db_key_base)
 
         expect(keys.uniq).to eq(keys)
         expect(keys).to all(match(hex_key))
       end
 
       it 'generates an RSA key for openid_connect_signing_key' do
-        create_tokens
+        initializer.execute!
 
-        keys = secrets.values_at(:openid_connect_signing_key)
+        keys = Rails.application.credentials.values_at(:openid_connect_signing_key)
 
         expect(keys.uniq).to eq(keys)
         expect(keys).to all(match(rsa_key))
       end
 
       it 'warns about the secrets to add to secrets.yml' do
-        expect(self).to receive(:warn_missing_secret).with('secret_key_base')
-        expect(self).to receive(:warn_missing_secret).with('otp_key_base')
-        expect(self).to receive(:warn_missing_secret).with('db_key_base')
-        expect(self).to receive(:warn_missing_secret).with('openid_connect_signing_key')
+        allowed_keys.each do |key|
+          expect(initializer).to receive(:warn_missing_secret).with(key)
+        end
 
-        create_tokens
+        initializer.execute!
       end
 
       it 'writes the secrets to secrets.yml' do
-        expect(File).to receive(:write).with('config/secrets.yml', any_args) do |filename, contents, options|
-          new_secrets = YAML.safe_load(contents)[Rails.env]
+        expect(File).to receive(:write).with(fake_secret_file.path, any_args) do |_filename, contents, _options|
+          new_secrets = YAML.safe_load(contents)[rails_env_name]
 
-          expect(new_secrets['secret_key_base']).to eq(secrets.secret_key_base)
-          expect(new_secrets['otp_key_base']).to eq(secrets.otp_key_base)
-          expect(new_secrets['db_key_base']).to eq(secrets.db_key_base)
-          expect(new_secrets['openid_connect_signing_key']).to eq(secrets.openid_connect_signing_key)
-          expect(new_secrets['encrypted_settings_key_base']).to eq(secrets.encrypted_settings_key_base)
+          allowed_keys.each do |key|
+            expect(new_secrets[key]).to eq(Rails.application.credentials.values_at(key.to_sym).first)
+          end
+          expect(new_secrets['encrypted_settings_key_base']).to be_nil # encrypted_settings_key_base is optional
         end
 
-        create_tokens
+        initializer.execute!
       end
 
-      it 'does not write a .secret file' do
-        expect(File).not_to receive(:write).with('.secret')
+      context 'when GITLAB_GENERATE_ENCRYPTED_SETTINGS_KEY_BASE is set' do
+        let(:allowed_keys) do
+          super() + ['encrypted_settings_key_base']
+        end
 
-        create_tokens
-      end
-    end
-
-    context 'when the other secrets all exist' do
-      before do
-        secrets.db_key_base = 'db_key_base'
-        secrets.openid_connect_signing_key = 'openid_connect_signing_key'
-        secrets.encrypted_settings_key_base = 'encrypted_settings_key_base'
-
-        allow(File).to receive(:exist?).with('.secret').and_return(true)
-        stub_file_read('.secret', content: 'file_key')
-      end
-
-      context 'when secret_key_base exists in the environment and secrets.yml' do
         before do
-          stub_env('SECRET_KEY_BASE', 'env_key')
-          secrets.secret_key_base = 'secret_key_base'
-          secrets.otp_key_base = 'otp_key_base'
-          secrets.openid_connect_signing_key = 'openid_connect_signing_key'
+          stub_env('GITLAB_GENERATE_ENCRYPTED_SETTINGS_KEY_BASE', '1')
+          allow(initializer).to receive(:warn_missing_secret)
         end
 
-        it 'does not issue a warning' do
-          expect(self).not_to receive(:warn)
+        it 'writes the encrypted_settings_key_base secret' do
+          expect(initializer).to receive(:warn_missing_secret).with('encrypted_settings_key_base')
+          expect(File).to receive(:write).with(fake_secret_file.path, any_args) do |_filename, contents, _options|
+            new_secrets = YAML.safe_load(contents)[rails_env_name]
 
-          create_tokens
-        end
-
-        it 'uses the environment variable' do
-          create_tokens
-
-          expect(secrets.secret_key_base).to eq('env_key')
-        end
-
-        it 'does not update secrets.yml' do
-          expect(File).not_to receive(:write)
-
-          create_tokens
-        end
-      end
-
-      context 'when secret_key_base and otp_key_base exist' do
-        before do
-          secrets.secret_key_base = 'secret_key_base'
-          secrets.otp_key_base = 'otp_key_base'
-          secrets.openid_connect_signing_key = 'openid_connect_signing_key'
-        end
-
-        it 'does not write any files' do
-          expect(File).not_to receive(:write)
-
-          create_tokens
-        end
-
-        it 'sets the keys to the values from the environment and secrets.yml' do
-          create_tokens
-
-          expect(secrets.secret_key_base).to eq('secret_key_base')
-          expect(secrets.otp_key_base).to eq('otp_key_base')
-          expect(secrets.db_key_base).to eq('db_key_base')
-          expect(secrets.openid_connect_signing_key).to eq('openid_connect_signing_key')
-          expect(secrets.encrypted_settings_key_base).to eq('encrypted_settings_key_base')
-        end
-
-        it 'deletes the .secret file' do
-          expect(File).to receive(:delete).with('.secret')
-
-          create_tokens
-        end
-      end
-
-      context 'when secret_key_base and otp_key_base do not exist' do
-        before do
-          allow(File).to receive(:exist?).with('config/secrets.yml').and_return(true)
-          allow(YAML).to receive(:load_file).with('config/secrets.yml').and_return('test' => secrets.to_h.stringify_keys)
-          allow(self).to receive(:warn_missing_secret)
-        end
-
-        it 'uses the file secret' do
-          expect(File).to receive(:write) do |filename, contents, options|
-            new_secrets = YAML.safe_load(contents)[Rails.env]
-
-            expect(new_secrets['secret_key_base']).to eq('file_key')
-            expect(new_secrets['otp_key_base']).to eq('file_key')
-            expect(new_secrets['db_key_base']).to eq('db_key_base')
-            expect(new_secrets['openid_connect_signing_key']).to eq('openid_connect_signing_key')
+            expect(new_secrets['encrypted_settings_key_base']).to eq(Rails.application.credentials.encrypted_settings_key_base)
           end
 
-          create_tokens
-
-          expect(secrets.otp_key_base).to eq('file_key')
-        end
-
-        it 'keeps the other secrets as they were' do
-          create_tokens
-
-          expect(secrets.db_key_base).to eq('db_key_base')
-        end
-
-        it 'warns about the missing secrets' do
-          expect(self).to receive(:warn_missing_secret).with('secret_key_base')
-          expect(self).to receive(:warn_missing_secret).with('otp_key_base')
-
-          create_tokens
-        end
-
-        it 'deletes the .secret file' do
-          expect(File).to receive(:delete).with('.secret')
-
-          create_tokens
-        end
-      end
-
-      context 'when rotated_encrypted_settings_key_base does not exist' do
-        before do
-          secrets.secret_key_base = 'secret_key_base'
-          secrets.otp_key_base = 'otp_key_base'
-          secrets.openid_connect_signing_key = 'openid_connect_signing_key'
-          secrets.encrypted_settings_key_base = 'encrypted_settings_key_base'
-        end
-
-        it 'does not warn about the missing secrets' do
-          expect(self).not_to receive(:warn_missing_secret).with('rotated_encrypted_settings_key_base')
-
-          create_tokens
-        end
-
-        it 'does not update secrets.yml' do
-          expect(File).not_to receive(:write)
-
-          create_tokens
+          initializer.execute!
         end
       end
     end
 
-    context 'when db_key_base is blank but exists in secrets.yml' do
-      before do
-        secrets.otp_key_base = 'otp_key_base'
-        secrets.secret_key_base = 'secret_key_base'
-        secrets.encrypted_settings_key_base = 'encrypted_settings_key_base'
-        yaml_secrets = secrets.to_h.stringify_keys.merge('db_key_base' => '<%= an_erb_expression %>')
+    shared_examples 'credentials are properly set' do
+      it 'sets Rails.application.credentials' do
+        initializer.execute!
 
-        allow(File).to receive(:exist?).with('.secret').and_return(false)
-        allow(File).to receive(:exist?).with('config/secrets.yml').and_return(true)
-        allow(YAML).to receive(:load_file).with('config/secrets.yml').and_return('test' => yaml_secrets)
-        allow(self).to receive(:warn_missing_secret)
+        expect(Rails.application.credentials.values_at(*allowed_keys.map(&:to_sym))).to eq(allowed_keys)
       end
 
-      it 'warns about updating db_key_base' do
-        expect(self).to receive(:warn_missing_secret).with('db_key_base')
+      it 'does not issue warnings' do
+        expect(initializer).not_to receive(:warn_missing_secret)
 
-        create_tokens
-      end
-
-      it 'warns about the blank value existing in secrets.yml and exits' do
-        expect(self).to receive(:warn) do |warning|
-          expect(warning).to include('db_key_base')
-          expect(warning).to include('<%= an_erb_expression %>')
-        end
-
-        create_tokens
+        initializer.execute!
       end
 
       it 'does not update secrets.yml' do
-        expect(self).to receive(:exit).with(1).and_call_original
         expect(File).not_to receive(:write)
 
-        expect { create_tokens }.to raise_error(SystemExit)
+        initializer.execute!
+      end
+    end
+
+    context 'when secrets exist in secrets.yml' do
+      let(:secrets_hash) { { rails_env_name => Hash[allowed_keys.zip(allowed_keys)] } }
+
+      it_behaves_like 'credentials are properly set'
+
+      context 'when secret_key_base also exist in the environment variable' do
+        before do
+          stub_env('SECRET_KEY_BASE', 'env_key')
+        end
+
+        it 'sets Rails.application.credentials.secret_key_base from the environment variable' do
+          initializer.execute!
+
+          expect(Rails.application.credentials.secret_key_base).to eq('env_key')
+        end
+      end
+    end
+
+    context 'when secrets exist in Rails.application.credentials' do
+      before do
+        allowed_keys.each do |key|
+          Rails.application.credentials.public_send(:"#{key}=", key)
+        end
+      end
+
+      it_behaves_like 'credentials are properly set'
+
+      context 'when secret_key_base also exist in the environment variable' do
+        before do
+          stub_env('SECRET_KEY_BASE', 'env_key')
+        end
+
+        it 'sets Rails.application.credentials.secret_key_base from the environment variable' do
+          initializer.execute!
+
+          expect(Rails.application.credentials.secret_key_base).to eq('env_key')
+        end
+      end
+    end
+
+    context 'with some secrets missing, some in ENV, some in Rails.application.credentials, some in secrets.yml' do
+      let(:rails_env_name) { 'foo' }
+      let(:secrets_hash) { { rails_env_name => { 'otp_key_base' => 'otp_key_base' } } }
+
+      before do
+        stub_env('SECRET_KEY_BASE', 'env_key')
+        Rails.application.credentials.db_key_base = 'db_key_base'
+      end
+
+      it 'sets Rails.application.credentials properly, issue a warning and writes config.secrets.yml' do
+        expect(File).to receive(:write).with(fake_secret_file.path, any_args) do |_filename, contents, _options|
+          new_secrets = YAML.safe_load(contents)[rails_env_name]
+
+          expect(new_secrets['otp_key_base']).to eq('otp_key_base')
+          expect(new_secrets['openid_connect_signing_key']).to match(rsa_key)
+        end
+        expect(initializer).to receive(:warn).with(
+          "Missing Rails.application.credentials.openid_connect_signing_key for #{rails_env_name} environment. " \
+            "The secret will be generated and stored in config/secrets.yml."
+        )
+
+        initializer.execute!
+
+        expect(Rails.application.credentials.secret_key_base).to eq('env_key')
+        expect(Rails.application.credentials.db_key_base).to eq('db_key_base')
+        expect(Rails.application.credentials.otp_key_base).to eq('otp_key_base')
       end
     end
   end
 end
+# rubocop:enable RSpec/FeatureCategory
+# rubocop:enable RSpec/FilePath

@@ -3,7 +3,7 @@ table_name: observability_traces_issues_connections
 classes:
   - Observability::TracesIssuesConnection
 feature_categories:
-  - tracing
+  - observability
 description: Represents the join between an Issue and an Observability trace stored in Gitlab Observability Backend.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162534
 milestone: '17.4'

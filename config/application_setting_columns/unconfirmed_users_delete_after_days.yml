@@ -1,0 +1,15 @@
+---
+api_type: integer
+attr: unconfirmed_users_delete_after_days
+clusterwide: true
+column: unconfirmed_users_delete_after_days
+db_type: integer
+default: '7'
+description: Specifies how many days after sign-up to delete users who have not confirmed
+  their email. Only applicable if `delete_unconfirmed_users` is set to `true`. Must
+  be `1` or greater. Default is `7`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352514)
+  in GitLab 16.1. Self-managed, Premium and Ultimate only.
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: true

@@ -285,6 +285,27 @@ module Issuable
       fuzzy_search(query, [:title])
     end
 
+    def gfm_autocomplete_search(query)
+      issuables_cte = Gitlab::SQL::CTE.new(table_name, self.without_order)
+
+      search_conditions = unscoped.where(
+        'title ILIKE :pattern',
+        pattern: "%#{sanitize_sql_like(query)}%"
+      )
+
+      if query.match?(/\A\d+\z/)
+        search_conditions = search_conditions.or(
+          unscoped.where('iid::text LIKE :pattern', pattern: "#{query}%")
+        )
+      end
+
+      unscoped
+        .with(issuables_cte.to_arel)
+        .from(issuables_cte.table)
+        .merge(search_conditions)
+        .order(issuables_cte.table[:id].desc)
+    end
+
     def available_states
       @available_states ||= STATE_ID_MAP.slice(*available_state_names)
     end

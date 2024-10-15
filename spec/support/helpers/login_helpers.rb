@@ -52,13 +52,13 @@ module LoginHelpers
   def gitlab_sign_in_via(provider, user, uid, saml_response = nil)
     mock_auth_hash_with_saml_xml(provider, uid, user.email, saml_response)
     visit new_user_session_path
-    click_button provider
+    click_button Gitlab::Auth::OAuth::Provider.label_for(provider)
   end
 
   def gitlab_enable_admin_mode_sign_in_via(provider, user, uid, saml_response = nil)
     mock_auth_hash_with_saml_xml(provider, uid, user.email, saml_response)
     visit new_admin_session_path
-    click_button provider
+    click_button Gitlab::Auth::OAuth::Provider.label_for(provider)
   end
 
   # Requires Javascript driver.
@@ -137,7 +137,7 @@ module LoginHelpers
   def register_via(provider, uid, email, additional_info: {})
     mock_auth_hash(provider, uid, email, additional_info: additional_info)
     visit new_user_registration_path
-    expect(page).to have_content('Create an account using').or(have_content('Register with'))
+    expect(page).to have_content('Create an account using').or(have_content('Continue with'))
 
     click_button Gitlab::Auth::OAuth::Provider.label_for(provider)
   end
@@ -202,7 +202,7 @@ module LoginHelpers
   end
 
   def mock_saml_config
-    ActiveSupport::InheritableOptions.new(name: 'saml', label: 'saml', args: {
+    ActiveSupport::InheritableOptions.new(name: 'saml', label: 'SAML', args: {
       assertion_consumer_service_url: 'https://localhost:3443/users/auth/saml/callback',
       idp_cert_fingerprint: '26:43:2C:47:AF:F0:6B:D0:07:9C:AD:A3:74:FE:5D:94:5F:4E:9E:52',
       idp_sso_target_url: 'https://idp.example.com/sso/saml',

@@ -196,7 +196,10 @@
   },
   "definitions": {
     "artifacts": {
-      "type": "object",
+      "type": [
+        "object",
+        "null"
+      ],
       "markdownDescription": "Used to specify a list of files and directories that should be attached to the job if it succeeds. Artifacts are sent to Gitlab where they can be downloaded. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#artifacts).",
       "additionalProperties": false,
       "properties": {
@@ -1467,6 +1470,20 @@
     },
     "cache": {
       "markdownDescription": "Use `cache` to specify a list of files and directories to cache between jobs. You can only use paths that are in the local working copy. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#cache)",
+      "oneOf": [
+        {
+          "$ref": "#/definitions/cache_item"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/cache_item"
+          }
+        }
+      ]
+    },
+    "cache_item": {
+      "type": "object",
       "properties": {
         "key": {
           "markdownDescription": "Use the `cache:key` keyword to give each cache a unique identifying key. All jobs that use the same cache key use the same cache, including in different pipelines. Must be used with `cache:path`, or nothing is cached. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#cachekey).",
@@ -2383,18 +2400,27 @@
           "type": "string"
         },
         "pages": {
-          "type": "object",
-          "additionalProperties": false,
-          "properties": {
-            "path_prefix": {
-              "type": "string",
-              "markdownDescription": "The GitLab Pages URL path prefix used in this version of pages. The given value is converted to lowercase, shortened to 63 bytes, and everything except alphanumeric characters is replaced with a hyphen. Leading and trailing hyphens are not permitted."
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "path_prefix": {
+                  "type": "string",
+                  "markdownDescription": "The GitLab Pages URL path prefix used in this version of pages. The given value is converted to lowercase, shortened to 63 bytes, and everything except alphanumeric characters is replaced with a hyphen. Leading and trailing hyphens are not permitted."
+                },
+                "expire_in": {
+                  "type": "string",
+                  "markdownDescription": "How long the deployment should be active. Deployments that have expired are no longer available on the web. Supports a wide variety of formats, e.g. '1 week', '3 mins 4 sec', '2 hrs 20 min', '2h20min', '6 mos 1 day', '47 yrs 6 mos and 4d', '3 weeks and 2 days'. Set to 'never' to prevent extra deployments from expiring. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#pagesexpire_in)."
+                }
+              }
             },
-            "expire_in": {
-              "type": "string",
-              "markdownDescription": "How long the deployment should be active. Deployments that have expired are no longer available on the web. Supports a wide variety of formats, e.g. '1 week', '3 mins 4 sec', '2 hrs 20 min', '2h20min', '6 mos 1 day', '47 yrs 6 mos and 4d', '3 weeks and 2 days'. Set to 'never' to prevent extra deployments from expiring. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#pagesexpire_in)."
+            {
+              "type": "boolean",
+              "markdownDescription": "Whether this job should trigger a Pages deploy (Replaces the need to name the job `pages`)",
+              "default": false
             }
-          }
+          ]
         }
       },
       "oneOf": [

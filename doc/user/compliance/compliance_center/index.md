@@ -11,6 +11,7 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122931) from Compliance report in GitLab 16.3.
+> - [Available at project level](https://gitlab.com/gitlab-org/gitlab/-/issues/441350) in GitLab 17.5.
 
 The compliance center is the central location for compliance teams to manage their compliance standards adherence reporting, violations reporting, and compliance frameworks for their group.
 

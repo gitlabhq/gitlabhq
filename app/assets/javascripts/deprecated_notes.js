@@ -1536,7 +1536,7 @@ export default class Notes {
          <div class="timeline-entry-inner">
             <div class="timeline-icon">
                <a href="/${escape(currentUsername)}">
-                 <img class="avatar s40" src="${currentUserAvatar}" />
+                 <img class="avatar s32" src="${currentUserAvatar}" />
                </a>
             </div>
             <div class="timeline-content ${discussionClass}">

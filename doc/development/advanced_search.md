@@ -32,6 +32,10 @@ In August 2020, a second Deep Dive was hosted, focusing on
 [slides](https://lulalala.gitlab.io/gitlab-elasticsearch-deepdive/) are available.
 Everything covered in this deep dive was accurate as of GitLab 13.3.
 
+In July 2024, Terri Chu hosted a Lunch and Learn on Advanced search basics, integration, indexing and search. The [Google Slides](https://docs.google.com/presentation/d/1Fy3pfFIGK_2ZCoB93EksRKhaS7uuNp81I3L5_joWa04/edit?usp=sharing_) (GitLab team members only) and
+ <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>[recording on YouTube](https://youtu.be/5OXK1isDaks) (GitLab team members only) are available.
+Everything covered in this deep dive was accurate as of GitLab 17.0.
+
 ## Supported Versions
 
 See [Version Requirements](../integration/advanced_search/elasticsearch.md#version-requirements).
@@ -110,10 +114,14 @@ during indexing and searching operations. Some of the benefits and tradeoffs to 
 - Routing is not used if too many shards would be hit for global and group scoped searches.
 - Shard size imbalance might occur.
 
+<!-- vale gitlab_base.Spelling = NO -->
+
 ## Existing analyzers and tokenizers
 
 The following analyzers and tokenizers are defined in
 [`ee/lib/elastic/latest/config.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/elastic/latest/config.rb).
+
+<!-- vale gitlab_base.Spelling = YES -->
 
 ### Analyzers
 
@@ -192,9 +200,10 @@ If data cannot be added to one of the [existing indices in Elasticsearch](../int
   ```shell
   curl "http://localhost:9200"
   ```
-
+<!-- vale gitlab_base.Spelling = NO -->
 - [Run Kibana](https://www.elastic.co/guide/en/kibana/current/install.html#_install_kibana_yourself) to interact
   with your local Elasticsearch cluster. Alternatively, you can use [Cerebro](https://github.com/lmenezes/cerebro) or a similar tool.
+<!-- vale gitlab_base.Spelling = YES -->
 - To tail the logs for Elasticsearch, run this command:
 
   ```shell
@@ -204,6 +213,12 @@ If data cannot be added to one of the [existing indices in Elasticsearch](../int
 See [Recommended process for adding a new document type](#recommended-process-for-adding-a-new-document-type) for how to structure the rollout.
 
 ### Create the index
+
+NOTE
+All new indexes must have:
+
+- `project_id` and `namespace_id` fields (if available). One of the fields must be used for routing.
+- A `traversal_ids` field for efficient global and group search. Populate the field with `object.namespace.elastic_namespace_ancestry`
 
 1. Create a `Search::Elastic::Types::` class in `ee/lib/search/elastic/types/`.
 1. Define the following class methods:
@@ -336,6 +351,15 @@ Always check for `Gitlab::CurrentSettings.elasticsearch_indexing?` and `use_elas
 
 Also check that the index is able to handle the index request. For example, check that the index exists if it was added in the current major release by verifying that the migration to add the index was completed: `Elastic::DataMigrationService.migration_has_finished?`.
 
+#### Transfers and deletes
+
+Project and group transfers and deletes must make updates to the index to avoid orphaned data.
+
+Indexes that contain a `project_id` field must use the [`Search::Elastic::DeleteWorker`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/workers/search/elastic/delete_worker.rb). Indexes that contain a `namespace_id` field but no `project_id` field must use [`Search::ElasticGroupAssociationDeleteWorker`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/workers/search/elastic_group_association_deletion_worker.rb).
+
+1. Add the indexed class to `excluded_classes` in [`ElasticDeleteProjectWorker`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/workers/elastic_delete_project_worker.rb)
+1. Update the worker to remove documents from the index
+
 ### Recommended process for adding a new document type
 
 Create the following MRs and have them reviewed by a member of the Global Search team:
@@ -435,7 +459,44 @@ Requires `type` field. Query with `doc_type` in options.
 }
 ```
 
-##### `by_confidentiality`
+##### `by_group_level_confidentiality`
+
+Requires `current_user` and `group_ids` fields. Query based on the permissions to user to read confidential group entities.
+
+```json
+{
+  "bool": {
+    "must": [
+      {
+        "term": {
+          "confidential": {
+            "value": true,
+            "_name": "confidential:true"
+          }
+        }
+      },
+      {
+        "terms": {
+          "namespace_id": [
+            1
+          ],
+          "_name": "groups:can:read_confidential_work_items"
+        }
+      }
+    ]
+  },
+  "should": {
+    "term": {
+      "confidential": {
+        "value": false,
+        "_name": "confidential:false"
+      }
+    }
+  }
+}
+```
+
+##### `by_project_confidentiality`
 
 Requires `confidential`, `author_id`, `assignee_id`, `project_id` fields. Query with `confidential` in options.
 
@@ -670,14 +731,179 @@ Requires `source_branch` field. Query with `source_branch` or `not_source_branch
 }
 ```
 
+##### `by_group_level_authorization`
+
+Requires `current_user`, `group_ids`, `traversal_id`, `search_level` fields. Query with `search_level` and
+filter on `namespace_visibility_level` based on permissions user has for each group.
+
+NOTE:
+Examples are shown for a logged in user. The JSON may be different for users with authorizations, admins, external, or anonymous users
+
+###### global
+
+```json
+{
+  "bool": {
+    "should": [
+      {
+        "bool": {
+          "filter": [
+            {
+              "term": {
+                "namespace_visibility_level": {
+                  "value": 20,
+                  "_name": "filters:namespace_visibility_level:public"
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "bool": {
+          "filter": [
+            {
+              "term": {
+                "namespace_visibility_level": {
+                  "value": 10,
+                  "_name": "filters:namespace_visibility_level:internal"
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "bool": {
+          "filter": [
+            {
+              "term": {
+                "namespace_visibility_level": {
+                  "value": 0,
+                  "_name": "filters:namespace_visibility_level:private"
+                }
+              }
+            },
+            {
+              "terms": {
+                "namespace_id": [
+                  33,
+                  22
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "minimum_should_match": 1
+  }
+}
+```
+
+###### group
+
+```json
+[
+  {
+    "bool": {
+      "_name": "filters:level:group",
+      "minimum_should_match": 1,
+      "should": [
+        {
+          "prefix": {
+            "traversal_ids": {
+              "_name": "filters:level:group:ancestry_filter:descendants",
+              "value": "22-"
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "bool": {
+      "should": [
+        {
+          "bool": {
+            "filter": [
+              {
+                "term": {
+                  "namespace_visibility_level": {
+                    "value": 20,
+                    "_name": "filters:namespace_visibility_level:public"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "bool": {
+            "filter": [
+              {
+                "term": {
+                  "namespace_visibility_level": {
+                    "value": 10,
+                    "_name": "filters:namespace_visibility_level:internal"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "bool": {
+            "filter": [
+              {
+                "term": {
+                  "namespace_visibility_level": {
+                    "value": 0,
+                    "_name": "filters:namespace_visibility_level:private"
+                  }
+                }
+              },
+              {
+                "terms": {
+                  "namespace_id": [
+                    22
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "minimum_should_match": 1
+    }
+  },
+  {
+    "bool": {
+      "_name": "filters:level:group",
+      "minimum_should_match": 1,
+      "should": [
+        {
+          "prefix": {
+            "traversal_ids": {
+              "_name": "filters:level:group:ancestry_filter:descendants",
+              "value": "22-"
+            }
+          }
+        }
+      ]
+    }
+  }
+]
+```
+
 ##### `by_search_level_and_membership`
 
-Requires `project_id` or `traversal_id` fields. Supports feature `*_access_level` fields. Query with `search_level`
+Requires `project_id` and `traversal_id` fields. Supports feature `*_access_level` fields. Query with `search_level`
  and optionally `project_ids`, `group_ids`, `features`, and `current_user` in options.
 
 Filtering is applied for:
 
-- search level for global, group, or project 
+- search level for global, group, or project
 - membership for direct membership to groups and projects or shared membership through direct access to a group
 - any feature access levels passed through `features`
 

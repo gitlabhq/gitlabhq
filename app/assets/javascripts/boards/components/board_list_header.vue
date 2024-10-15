@@ -1,5 +1,6 @@
 <script>
 import {
+  GlAvatar,
   GlButton,
   GlButtonGroup,
   GlLabel,
@@ -39,6 +40,7 @@ export default {
     ),
   },
   components: {
+    GlAvatar,
     GlButton,
     GlButtonGroup,
     GlLabel,
@@ -366,14 +368,14 @@ export default {
           'gl-mt-5 gl-rotate-90': list.collapsed,
         }"
       >
-        <img
+        <gl-avatar
           v-gl-tooltip.hover.bottom
           :title="listAssignee"
           :alt="list.assignee.name"
           :src="list.assignee.avatarUrl"
-          class="avatar s20"
-          height="20"
-          width="20"
+          :entity-name="list.assignee.name"
+          :size="24"
+          class="gl-mr-3"
         />
       </a>
       <!-- EE end -->

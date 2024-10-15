@@ -301,7 +301,7 @@ class Commit
   end
 
   def lazy_author
-    BatchLoader.for(author_email.downcase).batch do |emails, loader|
+    BatchLoader.for(author_email&.downcase).batch do |emails, loader|
       users = User.by_any_email(emails, confirmed: true).includes(:emails)
 
       emails.each do |email|
@@ -317,7 +317,7 @@ class Commit
       lazy_author&.itself
     end
   end
-  request_cache(:author) { author_email.downcase }
+  request_cache(:author) { author_email&.downcase }
 
   def committer(confirmed: true)
     @committer ||= User.find_by_any_email(committer_email, confirmed: confirmed)
@@ -515,6 +515,7 @@ class Commit
   def diffs(diff_options = {})
     Gitlab::Diff::FileCollection::Commit.new(self, diff_options: diff_options)
   end
+  alias_method :diffs_for_streaming, :diffs
 
   def persisted?
     true
@@ -598,6 +599,10 @@ class Commit
 
   def has_encoded_file_paths?
     raw_diffs.any?(&:encoded_file_path)
+  end
+
+  def valid_full_sha
+    id.match(Gitlab::Git::Commit::FULL_SHA_PATTERN).to_s
   end
 
   private

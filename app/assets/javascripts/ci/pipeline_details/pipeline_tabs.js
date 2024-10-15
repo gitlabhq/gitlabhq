@@ -43,7 +43,6 @@ export const createAppOptions = (selector, apolloProvider, router) => {
     suiteEndpoint,
     blobPath,
     hasTestReport,
-    emptyDagSvgPath,
     emptyStateImagePath,
     artifactsExpiredImagePath,
     isFullCodequalityReportAvailable,
@@ -95,7 +94,6 @@ export const createAppOptions = (selector, apolloProvider, router) => {
       suiteEndpoint,
       blobPath,
       hasTestReport,
-      emptyDagSvgPath,
       emptyStateImagePath,
       artifactsExpiredImagePath,
       securityPoliciesPath,
@@ -106,8 +104,8 @@ export const createAppOptions = (selector, apolloProvider, router) => {
     errorCaptured(err, _vm, info) {
       reportToSentry('pipeline_tabs', `error: ${err}, info: ${info}`);
     },
-    render(createElement) {
-      return createElement(PipelineTabs);
+    render(createElement, props = {}) {
+      return createElement(PipelineTabs, { props });
     },
   };
 };

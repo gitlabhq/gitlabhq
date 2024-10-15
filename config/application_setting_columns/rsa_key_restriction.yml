@@ -1,0 +1,13 @@
+---
+api_type: integer
+attr: rsa_key_restriction
+clusterwide: false
+column: rsa_key_restriction
+db_type: integer
+default: '0'
+description: The minimum allowed bit length of an uploaded RSA key. Default is `0`
+  (no restriction). `-1` disables RSA keys.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

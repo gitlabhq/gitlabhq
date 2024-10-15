@@ -58,7 +58,7 @@ module Backup
             target_directory: backup_files_realpath,
             target: '.',
             excludes: excludes)
-          result = shell_pipeline.new(tar_command, compress_command).run_pipeline!(output: archive_file)
+          result = shell_pipeline.new(tar_command, compress_command).run!(output: archive_file)
 
           FileUtils.rm_rf(backup_files_realpath)
         else
@@ -69,7 +69,7 @@ module Backup
             target: '.',
             excludes: excludes)
 
-          result = shell_pipeline.new(tar_command, compress_command).run_pipeline!(output: archive_file)
+          result = shell_pipeline.new(tar_command, compress_command).run!(output: archive_file)
         end
 
         success = pipeline_succeeded?(
@@ -94,7 +94,7 @@ module Backup
           archive_file: USE_STDIN,
           target_directory: storage_realpath)
 
-        result = shell_pipeline.new(decompress_command, tar_command).run_pipeline!(input: archive_file)
+        result = shell_pipeline.new(decompress_command, tar_command).run!(input: archive_file)
 
         success = pipeline_succeeded?(
           compress_status: result.status_list[0],
@@ -170,6 +170,10 @@ module Backup
 
       def raise_custom_error(backup_tarball)
         raise FileBackupError.new(storage_realpath, backup_tarball)
+      end
+
+      def asynchronous?
+        false
       end
 
       private

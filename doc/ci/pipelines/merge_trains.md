@@ -62,7 +62,7 @@ If the pipeline for `B` fails:
 
 - The first pipeline (`A`) continues to run.
 - `B` is removed from the train.
-- The pipeline for `C` [is cancelled](#automatic-pipeline-cancellation), and a new pipeline
+- The pipeline for `C` [is canceled](#automatic-pipeline-cancellation), and a new pipeline
   starts for the changes from `A` and `C` combined with the target branch (without the `B` changes).
 
 If `A` then completes successfully, it merges into the target branch, and `C` continues
@@ -85,7 +85,7 @@ Redundant merge train pipelines happen when:
 In these cases, GitLab must create new merge train pipelines for some or all of the
 merge requests on the train. The old pipelines were comparing against the previous
 combined changes in the merge train, which are no longer valid, so these old pipelines
-are cancelled.
+are canceled.
 
 ## Enable merge trains
 
@@ -180,7 +180,7 @@ waiting to join the merge train.
 When you remove a merge request from a merge train:
 
 - All pipelines for merge requests queued after the removed merge request restart.
-- Redundant pipelines [are cancelled](#automatic-pipeline-cancellation).
+- Redundant pipelines [are canceled](#automatic-pipeline-cancellation).
 
 You can add the merge request to a merge train again later.
 
@@ -197,7 +197,7 @@ be merged urgently, you can select **Merge Immediately**.
 When you merge a merge request immediately:
 
 - The commits from the merge request are merged, ignoring the status of the merge train.
-- The merge train pipelines for all other merge requests on the train [are cancelled](#automatic-pipeline-cancellation).
+- The merge train pipelines for all other merge requests on the train [are canceled](#automatic-pipeline-cancellation).
 - A new merge train starts and all the merge requests from the original merge train are added to this new merge train,
   with a new merge train pipeline for each. These new merge train pipelines now contain
   the commits added by the merge request that was merged immediately.
@@ -255,7 +255,7 @@ To enable skipping the train without pipeline restarts:
 To merge a merge request by skipping the merge train, use the [merge requests merge API endpoint](../../api/merge_requests.md#merge-a-merge-request)
 to merge with the attribute `skip_merge_train` set to `true`.
 
-The merge request merges, and the existing merge train pipelines are not cancelled
+The merge request merges, and the existing merge train pipelines are not canceled
 or restarted.
 
 ## Troubleshooting

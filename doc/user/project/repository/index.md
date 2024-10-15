@@ -50,45 +50,11 @@ To add or upload a file from the GitLab UI:
 
 ## Commit changes to a repository
 
-You can [commit your changes](https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository)
-to a branch in the repository. When you use the command line, use [`git commit`](../../../topics/git/commands.md#git-commit).
-You can add multiple commits before pushing your changes.
+You can commit your changes to a branch in the repository. When you use the command line,
+use [`git commit`](../../../topics/git/commands.md#git-commit).
 
-- **Commit message:**
-
-  A commit message identifies what is changed and why. Use descriptive messages to clarify the changes.
-  In GitLab, you can add keywords to the commit message to perform one of the following actions:
-
-  - **Trigger a GitLab CI/CD pipeline:**
-
-    If the project is configured with [GitLab CI/CD](../../../ci/index.md),
-    you trigger a pipeline per push, not per commit.
-
-  - **Skip pipelines:**
-
-    Add the [`ci skip`](../../../ci/pipelines/index.md#skip-a-pipeline) keyword to
-    your commit message to make GitLab CI/CD skip the pipeline.
-
-  - **Cross-link issues and merge requests:**
-
-    Use [cross-linking](../issues/crosslinking_issues.md#from-commit-messages)
-    to keep track of related parts of your workflow.
-    If you mention an issue or a merge request in a commit message, they are displayed
-    on their respective thread.
-
-- **Cherry-pick a commit:**
-
-  In GitLab, you can [cherry-pick a commit](../merge_requests/cherry_pick_changes.md#cherry-pick-a-single-commit)
-  from the UI.
-
-- **Revert a commit:**
-
-  [Revert a commit](../merge_requests/revert_changes.md#revert-a-commit)
-  from the UI to a selected branch.
-
-- **Sign a commit:**
-
-  Add extra security by [signing your commits](signed_commits/index.md).
+For information about how to use commits to improve communication and collaboration,
+trigger or skip pipelines, and reverting changes, see [commits](../../project/merge_requests/commits.md).
 
 ## Clone a repository
 
@@ -156,25 +122,6 @@ To change this behavior and include additional file types in the default setting
 This feature can use excessive CPU. If you experience an issue, see the
 [Repository Languages: excessive CPU use](files/index.md#repository-languages-excessive-cpu-use) troubleshooting section.
 
-## Repository size
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368150) in GitLab 15.3, feature flags `gitaly_revlist_for_repo_size` and `gitaly_catfile_repo_size` for alternative repository size calculations.
-
-FLAG:
-On self-managed GitLab, by default GitLab uses the `du -sk` command to determine the size of a repository. GitLab can use either
-`git-rev-list` (enabled with feature flag `gitaly_revlist_for_repo_size`) or `git-cat-file` (enabled with feature flag
-`gitaly_catfile_repo_size`) instead. To switch between different calculation methods, an administrator can
-[enable or disable](../../../administration/feature_flags.md) these feature flags.
-
-The **Project overview** page shows the size of all files in the repository. The size is
-updated every 15 minutes. The file size includes repository files, artifacts, and LFS.
-
-The size can differ slightly from one instance to another due to compression, housekeeping, and other factors.
-Administrators can set a [repository size limit](../../../administration/settings/account_and_limit_settings.md#repository-size-limit).
-
-GitLab sets the size limits for GitLab.com.
-For more information, see [Account and limit settings](../../gitlab_com/index.md#account-and-limit-settings).
-
 ## Repository contributor analytics
 
 You can view a line chart with the number of commits to the selected project branch over time,
@@ -213,7 +160,7 @@ After you change a path, you must update the existing URL in the following resou
 
 - [Include statements](../../../ci/yaml/includes.md) except [`include:component`](../../../ci/components/index.md),
   otherwise pipelines fail with a syntax error. CI/CD component references can follow redirects.
-- Namespaced API calls that use the [encoded path](../../../api/rest/index.md#namespaced-path-encoding)
+- Namespaced API calls that use the [encoded path](../../../api/rest/index.md#namespaced-paths)
   instead of the numeric namespace and project IDs.
 - [Docker image references](../../../ci/yaml/index.md#image).
 - Variables that specify a project or namespace.

@@ -1,0 +1,13 @@
+---
+api_type: boolean
+attr: housekeeping_enabled
+clusterwide: false
+column: housekeeping_enabled
+db_type: boolean
+default: 'true'
+description: Enable or disable Git housekeeping. Requires additional fields to be
+  set. For more information, see [Housekeeping fields](#housekeeping-fields).
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

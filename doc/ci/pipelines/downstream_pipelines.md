@@ -402,7 +402,7 @@ In this example:
 
 1. The parent pipeline triggers the child pipeline and `job3` at the same time
 1. `job2` from the child pipeline fails and the child pipeline is canceled, stopping `job1` as well
-1. The child pipeline has been cancelled so the parent pipeline is auto-canceled
+1. The child pipeline has been canceled so the parent pipeline is auto-canceled
 
 ### Mirror the status of a downstream pipeline in the trigger job
 

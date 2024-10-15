@@ -24,7 +24,9 @@ RSpec.describe WikiPages::BaseService, feature_category: :wiki do
       end
 
       it 'raises an error on unknown events' do
-        expect { subject.send(:increment_usage, page) }.to raise_error(Gitlab::InternalEvents::UnknownEventError)
+        expect do
+          subject.send(:increment_usage, page)
+        end.to raise_error(Gitlab::Tracking::EventValidator::UnknownEventError)
       end
     end
   end

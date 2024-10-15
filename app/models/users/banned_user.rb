@@ -15,7 +15,9 @@ module Users
     scope :by_detumbled_email, ->(email) do
       return none if email.blank?
 
-      joins(:emails).where({ emails: { detumbled_email: ::Gitlab::Utils::Email.normalize_email(email) } })
+      joins(:emails)
+        .where({ emails: { detumbled_email: ::Gitlab::Utils::Email.normalize_email(email) } })
+        .where.not({ emails: { confirmed_at: nil } })
     end
   end
 end

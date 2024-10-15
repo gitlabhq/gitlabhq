@@ -81,6 +81,7 @@ module Gitlab
       commits = Rails.cache.fetch(cache_key, expires_in: CACHE_EXPIRE_IN) do
         repository
           .list_last_commits_for_tree(commit.id, ensured_path, offset: offset, limit: limit + 1, literal_pathspec: true)
+          .tap { |tuple| prerender_commit_full_titles!(tuple.values) }
           .transform_values! { |commit| commit_to_hash(commit) }
       end
 

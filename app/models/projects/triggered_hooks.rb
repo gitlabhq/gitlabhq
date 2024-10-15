@@ -17,8 +17,6 @@ module Projects
       # Assumes that the relations implement TriggerableHooks
       @relations.each do |hooks|
         hooks.hooks_for(@scope).select_active(@scope, @data).each do |hook|
-          next if @scope == :emoji_hooks && Feature.disabled?(:emoji_webhooks, hook.parent)
-
           hook.async_execute(@data, @scope.to_s)
         end
       end

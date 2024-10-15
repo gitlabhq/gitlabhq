@@ -12,8 +12,8 @@ RSpec.describe 'Issues > User sees empty state', :js, feature_category: :team_pl
 
       visit project_issues_path(project, milestone_title: "1.0")
 
-      expect(page).to have_content('Sorry, your filter produced no results')
-      expect(page).to have_content('To widen your search, change or remove filters above')
+      expect(page).to have_content('No results found')
+      expect(page).to have_content('Edit your search and try again.')
     end
   end
 

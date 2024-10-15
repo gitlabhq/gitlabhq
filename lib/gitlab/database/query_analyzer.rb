@@ -10,9 +10,52 @@ module Gitlab
     class QueryAnalyzer
       include ::Singleton
 
-      Parsed = Struct.new(
-        :sql, :connection, :pg, :event_name
-      )
+      class Parsed
+        include Gitlab::Utils::StrongMemoize
+
+        attr_reader :raw, :connection, :event_name, :error
+
+        def initialize(raw, connection, event_name)
+          @raw = raw
+          @connection = connection
+          @event_name = normalize_event_name(event_name)
+          @error = nil
+        end
+
+        def sql
+          try_parse do
+            PgQuery.normalize(raw)
+          end
+        end
+        strong_memoize_attr :sql
+
+        def pg
+          try_parse do
+            PgQuery.parse(raw)
+          end
+        end
+        strong_memoize_attr :pg
+
+        private
+
+        def try_parse
+          return if error
+
+          yield
+        rescue PgQuery::ParseError => e
+          # Ignore PgQuery parse errors (due to depth limit or other reasons)
+          Gitlab::ErrorTracking.track_exception(e)
+          @error = e
+
+          nil
+        end
+
+        def normalize_event_name(event_name)
+          split_event_name = event_name.to_s.downcase.split(' ')
+
+          split_event_name.size > 1 ? split_event_name.from(1).join('_') : split_event_name.join('_')
+        end
+      end
 
       attr_reader :all_analyzers
 
@@ -83,8 +126,7 @@ module Gitlab
         analyzers = enabled_analyzers
         return unless analyzers&.any?
 
-        parsed = parse(sql, connection, event_name)
-        return unless parsed
+        parsed = Parsed.new(sql, connection, event_name)
 
         analyzers.each do |analyzer|
           next if analyzer.suppressed? && !analyzer.requires_tracking?(parsed)
@@ -96,19 +138,6 @@ module Gitlab
         end
       end
 
-      def parse(sql, connection, event_name)
-        parsed = PgQuery.parse(sql)
-        return unless parsed
-
-        normalized = PgQuery.normalize(sql)
-        Parsed.new(normalized, connection, parsed, normalize_event_name(event_name))
-      rescue PgQuery::ParseError => e
-        # Ignore PgQuery parse errors (due to depth limit or other reasons)
-        Gitlab::ErrorTracking.track_exception(e)
-
-        nil
-      end
-
       def with_ignored_recursive_calls
         return if Thread.current[:query_analyzer_recursive]
 
@@ -118,12 +147,6 @@ module Gitlab
         ensure
           Thread.current[:query_analyzer_recursive] = nil
         end
-      end
-
-      def normalize_event_name(event_name)
-        split_event_name = event_name.to_s.downcase.split(' ')
-
-        split_event_name.size > 1 ? split_event_name.from(1).join('_') : split_event_name.join('_')
       end
     end
   end

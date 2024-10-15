@@ -4,12 +4,20 @@ require "spec_helper"
 
 RSpec.describe RapidDiffs::Viewers::Text::ParallelViewComponent, type: :component, feature_category: :code_review_workflow do
   let_it_be(:diff_file) { build(:diff_file) }
-  let(:lines) { diff_file.parallel_diff_lines_with_match_tail }
 
   it "renders parallel lines" do
+    diff_file.viewer_hunks.each_with_index do |hunk, index|
+      allow_next_instances_of(
+        RapidDiffs::Viewers::Text::ParallelHunkComponent,
+        index + 1,
+        diff_file: diff_file,
+        diff_hunk: hunk
+      ) do |instance|
+        allow(instance).to receive(:render_in).and_return('hunk-view')
+      end
+    end
     render_component
-    expect(page).to have_text(lines.first[:left].rich_text)
-    expect(page).to have_text(lines.first[:right].rich_text)
+    expect(page).to have_text('hunk-view', count: diff_file.viewer_hunks.count)
   end
 
   it "renders headings" do

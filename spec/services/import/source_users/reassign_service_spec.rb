@@ -56,21 +56,59 @@ RSpec.describe Import::SourceUsers::ReassignService, feature_category: :importer
       let(:assignee_user) { nil }
 
       it_behaves_like 'an error response', 'invalid assignee',
-        error: 'Only active regular, auditor, or administrator users can be assigned'
+        error: s_('UserMapping|You can assign only active users with regular or auditor access. ' \
+          'To assign users with administrator access, ask your GitLab administrator to ' \
+          'enable the "Allow contribution mapping to admins" setting.')
     end
 
     context 'when assignee user is not a human' do
       let(:assignee_user) { create(:user, :bot) }
 
       it_behaves_like 'an error response', 'invalid assignee',
-        error: 'Only active regular, auditor, or administrator users can be assigned'
+        error: s_('UserMapping|You can assign only active users with regular or auditor access. ' \
+          'To assign users with administrator access, ask your GitLab administrator to ' \
+          'enable the "Allow contribution mapping to admins" setting.')
     end
 
     context 'when assignee user is not active' do
       let(:assignee_user) { create(:user, :deactivated) }
 
       it_behaves_like 'an error response', 'invalid assignee',
-        error: 'Only active regular, auditor, or administrator users can be assigned'
+        error: s_('UserMapping|You can assign only active users with regular or auditor access. ' \
+          'To assign users with administrator access, ask your GitLab administrator to ' \
+          'enable the "Allow contribution mapping to admins" setting.')
+    end
+
+    context 'when assignee user is an admin' do
+      let(:assignee_user) { create(:user, :admin) }
+
+      it_behaves_like 'an error response', 'invalid assignee',
+        error: s_('UserMapping|You can assign only active users with regular or auditor access. ' \
+          'To assign users with administrator access, ask your GitLab administrator to ' \
+          'enable the "Allow contribution mapping to admins" setting.')
+    end
+
+    context 'when allow_contribution_mapping_to_admins setting is enabled' do
+      before do
+        stub_application_setting(allow_contribution_mapping_to_admins: true)
+      end
+
+      context 'and the assignee user is invalid' do
+        let(:assignee_user) { create(:user, :deactivated) }
+
+        it_behaves_like 'an error response', 'invalid assignee',
+          error: s_('UserMapping|You can assign users with regular, auditor, or administrator access only.')
+      end
+
+      context 'and the assignee user is an admin' do
+        let(:assignee_user) { create(:user, :admin) }
+
+        it 'assigns the user' do
+          expect(Notify).to receive_message_chain(:import_source_user_reassign, :deliver_now)
+
+          expect(service.execute).to be_success
+        end
+      end
     end
 
     context 'when an error occurs' do

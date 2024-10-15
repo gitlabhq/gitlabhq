@@ -1,0 +1,12 @@
+---
+api_type:
+attr: throttle_incident_management_notification_enabled
+clusterwide: false
+column: throttle_incident_management_notification_enabled
+db_type: boolean
+default: 'false'
+description:
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: true

@@ -68,7 +68,16 @@ You might get an error that states
 
 This error occurs when you try to access a tool of GitLab Duo Chat that is not bundled in your GitLab Duo subscription tier.
 
-Ensure your [GitLab Duo subscription tier](https://about.gitlab.com/gitlab-duo/) includes the selected tool.
+Ensure your [GitLab Duo subscription tier](https://about.gitlab.com/gitlab-duo/#pricing) includes the selected tool.
+
+## `Error M3006`
+
+You might get an error that states
+`I'm sorry, you don't have the GitLab Duo subscription required to use Duo Chat. Please contact your administrator. Error code: M3006`.
+
+This error occurs when GitLab Duo Chat is not included in your GitLab Duo subscription.
+
+Ensure your [GitLab Duo subscription tier](https://about.gitlab.com/gitlab-duo/#pricing) includes GitLab Duo Chat.
 
 ## `Error M4000`
 
@@ -97,6 +106,28 @@ You might get an error that states
 `I'm sorry, I can't generate a response. Please try again. Error code: M4002`.
 
 This error occurs when there is a problem answering [questions related to CI/CD](../gitlab_duo_chat/examples.md#ask-about-cicd). Please try your request again.
+
+## `Error M4003`
+
+You might get an error that states
+`This command is used for explaining vulnerabilities and can only be invoked from a vulnerability detail page.` or
+`Vulnerability Explanation currently only supports vulnerabilities reported by SAST. Error code: M4003`.
+
+This error occurs when there is a problem when using [`Explain Vulnerability`](../gitlab_duo_chat/examples.md#explain-a-vulnerability) feature.
+
+## `Error M4004`
+
+You might get an error that states
+`This resource has no comments to summarize`.
+
+This error occurs when there is a problem when using `Summarize Discussion` feature.
+
+## `Error M4005`
+
+You might get an error that states
+`There is no job log to troubleshoot.` or `This command is used for troubleshooting jobs and can only be invoked from a failed job log page.`.
+
+This error occurs when there is a problem when using [`Troubleshoot job`](../gitlab_duo_chat/examples.md#troubleshoot-failed-cicd-jobs-with-root-cause-analysis) feature.
 
 ## `Error M5000`
 
@@ -132,6 +163,48 @@ To resolve the issue, try your request again.
 If the error persists, use the `/clear` command to reset the chat.
 If problem continues, please report the issue to the GitLab support team.
 
+## `Error A1002`
+
+You might get an error that states
+`I'm sorry, I couldn't respond in time. Please try again. Error code: A1002`.
+
+This error occurs when no events are returned from AI Gateway or GitLab failed to parse the events. Please try your request again.
+
+## `Error A1003`
+
+You might get an error that states
+`I'm sorry, I couldn't respond in time. Please try again. Error code: A1003`.
+
+This error occurs when streaming response from AI Gateway failed. Please try your request again.
+
+## `Error A1004`
+
+You might get an error that states
+`I'm sorry, I couldn't respond in time. Please try again. Error code: A1004`.
+
+This error occurs when an error occurred in the AI Gateway process. Please try your request again.
+
+## `Error A1005`
+
+You might get an error that states
+`I'm sorry, you've entered too many prompts. Please run /clear or /reset before asking the next question. Error code: A1005`.
+
+This error occurs when the length of prompts exceeds the max token limit of the LLM. Please clean up your conversation history with `/clear` or `/reset` and try your request again.
+
+## `Error A1006`
+
+You might get an error that states
+`I'm sorry, Duo Chat agent reached the limit before finding an answer for your question. Please try a different prompt or clear your conversation history with /clear. Error code: A1006`.
+
+This error occurs when ReAct agent failed to find a solution for your query. Please try a different prompt or clear your conversation history with `/clear`.
+
+## `Error A9999`
+
+You might get an error that states
+`I'm sorry, I couldn't respond in time. Please try again. Error code: A9999`.
+
+This error occurs when an unknown error occurs in ReAct agent. Please try your request again.
+
 ## `Error A6000`
 
 You might get an error that states
@@ -139,3 +212,43 @@ You might get an error that states
 
 This is a fallback error that occurs when there is a problem with GitLab Duo Chat.
 Please try a more specific request, enter `/clear` to start a new chat, or leave feedback to help us improve.
+
+## Header mismatch issue
+
+You might get an error that states `I'm sorry, I can't generate a response. Please try again`, without a specific error code.
+
+Check the Sidekiq logs to see if you find the following error:`Header mismatch 'X-Gitlab-Instance-Id'`.
+
+If you see this error, then to resolve it, contact the GitLab support team and ask them to send you a new activation code for the license.
+
+For more information, see [issue 103](https://gitlab.com/gitlab-com/enablement-sub-department/section-enable-request-for-help/-/issues/103).
+
+## Check the health of the Cloud Connector
+
+We have created a script that verifies the status of various components related to the Cloud Connector, such as:
+
+- Access data
+- Tokens
+- Licenses
+- Host connectivity
+- Feature accessibility
+
+You can run this script in debug mode for more detailed output and to generate a report file.
+
+1. SSH into your single node instance and download the script:
+
+   ```shell
+   wget https://gitlab.com/gitlab-org/gitlab/-/snippets/3734617/raw/main/health_check.rb
+   ```
+
+1. Use Rails Runner to execute the script.
+
+   Ensure that you use the full path to the script.
+
+   ```ruby
+   Usage: gitlab-rails runner full_path/to/health_check.rb
+          --debug                     Enable debug mode
+          --output-file <file_path>   Write a report to a specified file
+          --username <username>       Provide a username to test seat assignments
+          --skip [CHECK]              Skip specific checks (options: access_data, token, license, host, features, end_to_end)
+   ```

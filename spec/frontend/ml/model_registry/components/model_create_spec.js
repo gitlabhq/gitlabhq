@@ -3,7 +3,7 @@ import VueApollo from 'vue-apollo';
 import { GlModal } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import { visitUrl } from '~/lib/utils/url_utility';
+import { visitUrlWithAlerts } from '~/lib/utils/url_utility';
 import ModelCreate from '~/ml/model_registry/components/model_create.vue';
 import ImportArtifactZone from '~/ml/model_registry/components/import_artifact_zone.vue';
 import UploadDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
@@ -22,7 +22,7 @@ Vue.use(VueApollo);
 
 jest.mock('~/lib/utils/url_utility', () => ({
   ...jest.requireActual('~/lib/utils/url_utility'),
-  visitUrl: jest.fn(),
+  visitUrlWithAlerts: jest.fn(),
 }));
 
 jest.mock('~/ml/model_registry/services/upload_model', () => ({
@@ -110,6 +110,13 @@ describe('ModelCreate', () => {
         expect(getBinding(findModalButton().element, 'gl-modal').value).toBe(
           MODEL_CREATION_MODAL_ID,
         );
+        expect(findModalButton().attributes()).toMatchObject({
+          buttontextclasses: '',
+          category: 'primary',
+          icon: '',
+          size: 'medium',
+          variant: 'confirm',
+        });
       });
     });
 
@@ -400,7 +407,13 @@ describe('ModelCreate', () => {
     });
 
     it('Visits the model versions page upon successful create mutation', () => {
-      expect(visitUrl).toHaveBeenCalledWith('/some/project/-/ml/models/1/versions/1');
+      expect(visitUrlWithAlerts).toHaveBeenCalledWith('/some/project/-/ml/models/1/versions/1', [
+        {
+          id: 'import-artifact-alert',
+          message: 'Artifacts uploaded successfully.',
+          variant: 'info',
+        },
+      ]);
     });
   });
 
@@ -415,7 +428,13 @@ describe('ModelCreate', () => {
     });
 
     it('Visits the model page upon successful create mutation without a version', () => {
-      expect(visitUrl).toHaveBeenCalledWith('/some/project/-/ml/models/1');
+      expect(visitUrlWithAlerts).toHaveBeenCalledWith('/some/project/-/ml/models/1', [
+        {
+          id: 'import-artifact-alert',
+          message: 'Artifacts uploaded successfully.',
+          variant: 'info',
+        },
+      ]);
     });
   });
 
@@ -488,7 +507,13 @@ describe('ModelCreate', () => {
 
     it('Visits the model versions page upon successful create mutation', async () => {
       await submitForm(); // retry submit
-      expect(visitUrl).toHaveBeenCalledWith('/some/project/-/ml/models/1/versions/1');
+      expect(visitUrlWithAlerts).toHaveBeenCalledWith('/some/project/-/ml/models/1/versions/1', [
+        {
+          id: 'import-artifact-alert',
+          message: 'Artifact uploads completed with errors. file.txt: Artifact import error.',
+          variant: 'danger',
+        },
+      ]);
     });
 
     it('Uploads a file mutation upon confirm', async () => {

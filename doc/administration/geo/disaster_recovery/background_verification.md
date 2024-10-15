@@ -74,7 +74,7 @@ On the **primary** site:
 1. Select **Edit** for the **primary** site to customize the minimum
    re-verification interval:
 
-   ![Window with configuration attributes of a Geo node.](img/reverification-interval.png)
+   ![Window with configuration attributes of a Geo node.](img/reverification-interval_v11_6.png)
 
 ## Reset verification for projects where verification has failed
 

@@ -20,7 +20,7 @@ module Gitlab
           def parse_all(root, accessibility_report)
             return unless root.present?
 
-            root.dig("results").each do |url, value|
+            root["results"].each do |url, value|
               accessibility_report.add_url(url, value)
             end
 

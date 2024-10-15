@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MarkdownContentRewriterService, feature_category: :team_planning do
+RSpec.describe MarkdownContentRewriterService, feature_category: :markdown do
   let_it_be(:user) { create(:user) }
   let_it_be(:source_parent) { create(:project, :public) }
   let_it_be(:target_parent) { create(:project, :public) }

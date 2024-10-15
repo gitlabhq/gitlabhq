@@ -55,7 +55,7 @@ GET /projects/:id/pages/domains
 
 | Attribute | Type           | Required | Description                              |
 | --------- | -------------- | -------- | ---------------------------------------- |
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/pages/domains"
@@ -91,7 +91,7 @@ GET /projects/:id/pages/domains/:domain
 
 | Attribute | Type           | Required | Description                              |
 | --------- | -------------- | -------- | ---------------------------------------- |
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
 | `domain`  | string         | yes      | The custom domain indicated by the user  |
 
 ```shell
@@ -133,7 +133,7 @@ POST /projects/:id/pages/domains
 
 | Attribute          | Type           | Required | Description                              |
 | -------------------| -------------- | -------- | ---------------------------------------- |
-| `id`               | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`               | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
 | `domain`           | string         | yes      | The custom domain indicated by the user  |
 | `auto_ssl_enabled` | boolean        | no       | Enables [automatic generation](../user/project/pages/custom_domains_ssl_tls_certification/lets_encrypt_integration.md) of SSL certificates issued by Let's Encrypt for custom domains. |
 | `certificate`      | file/string    | no       | The certificate in PEM format with intermediates following in most specific to least specific order.|
@@ -186,7 +186,7 @@ PUT /projects/:id/pages/domains/:domain
 
 | Attribute          | Type           | Required | Description                              |
 | ------------------ | -------------- | -------- | ---------------------------------------- |
-| `id`               | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`               | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
 | `domain`           | string         | yes      | The custom domain indicated by the user  |
 | `auto_ssl_enabled` | boolean        | no       | Enables [automatic generation](../user/project/pages/custom_domains_ssl_tls_certification/lets_encrypt_integration.md) of SSL certificates issued by Let's Encrypt for custom domains. |
 | `certificate`      | file/string    | no       | The certificate in PEM format with intermediates following in most specific to least specific order.|
@@ -264,7 +264,7 @@ DELETE /projects/:id/pages/domains/:domain
 
 | Attribute | Type           | Required | Description                              |
 | --------- | -------------- | -------- | ---------------------------------------- |
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
 | `domain`  | string         | yes      | The custom domain indicated by the user  |
 
 ```shell

@@ -1,0 +1,12 @@
+---
+api_type: boolean
+attr: notify_on_unknown_sign_in
+clusterwide: false
+column: notify_on_unknown_sign_in
+db_type: boolean
+default: 'true'
+description: Enable sending notification if sign in from unknown IP address happens.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

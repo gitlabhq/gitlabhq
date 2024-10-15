@@ -487,7 +487,7 @@ For self-managed GitLab instances in an environment with limited, restricted, or
 to external resources through the internet, some adjustments are required for the container scanning job to
 successfully run. For more information, see [Offline environments](../offline_deployments/index.md).
 
-#### Requirements for offline container Scanning
+#### Requirements for offline container scanning
 
 To use container scanning in an offline environment, you need:
 
@@ -613,7 +613,7 @@ Scanning images in external private registries is not supported when [FIPS mode]
 
 #### Create and use a Trivy Java database mirror
 
-When the `trivy` scanner is used and a `jar` file is encountered in a container image being scanned, `trivy` downloads an additional `trivy-java-db` vulnerability database. By default, the `trivy-java-db` database is hosted as an [OCI artifact](https://oras.land/docs/quickstart/) at `ghcr.io/aquasecurity/trivy-java-db:1`. If this registry is not accessible, for example in a network-isolated offline GitLab instance, one solution is to mirror the `trivy-java-db` to a container registry that can be accessed in the offline instance:
+When the `trivy` scanner is used and a `jar` file is encountered in a container image being scanned, `trivy` downloads an additional `trivy-java-db` vulnerability database. By default, the `trivy-java-db` database is hosted as an [OCI artifact](https://oras.land/docs/quickstart/) at `ghcr.io/aquasecurity/trivy-java-db:1`. If this registry is [not accessible](#running-container-scanning-in-an-offline-environment) or responds with `TOOMANYREQUESTS`, one solution is to mirror the `trivy-java-db` to a more accessible container registry:
 
 ```yaml
 mirror trivy java db:

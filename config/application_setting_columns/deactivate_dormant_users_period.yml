@@ -1,0 +1,13 @@
+---
+api_type: integer
+attr: deactivate_dormant_users_period
+clusterwide: false
+column: deactivate_dormant_users_period
+db_type: integer
+default: '90'
+description: Length of time (in days) after which a user is considered dormant. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/336747)
+  in GitLab 15.3.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

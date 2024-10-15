@@ -255,10 +255,7 @@ export default {
             {{ downstreamTitle }}
           </span>
           <div class="-gl-m-2 gl-truncate gl-p-2">
-            <gl-link
-              class="gl-text-sm !gl-text-blue-500"
-              :href="pipeline.path"
-              data-testid="pipelineLink"
+            <gl-link class="gl-text-sm" :href="pipeline.path" data-testid="pipelineLink"
               >#{{ pipeline.id }}</gl-link
             >
           </div>

@@ -15,6 +15,8 @@ class NewNoteWorker # rubocop:disable Scalability/IdempotentWorker
   # Keep extra parameter to preserve backwards compatibility with
   # old `NewNoteWorker` jobs (can remove later)
   def perform(note_id, _params = {})
+    Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/497631', new_threshold: 200)
+
     if note = Note.find_by_id(note_id)
       NotificationService.new.new_note(note) unless note.skip_notification?
       Notes::PostProcessService.new(note).execute

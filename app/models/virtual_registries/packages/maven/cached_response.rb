@@ -6,9 +6,17 @@ module VirtualRegistries
       class CachedResponse < ApplicationRecord
         include FileStoreMounter
         include Gitlab::SQL::Pattern
+        include ::UpdateNamespaceStatistics
 
         belongs_to :group
         belongs_to :upstream, class_name: 'VirtualRegistries::Packages::Maven::Upstream', inverse_of: :cached_responses
+
+        alias_attribute :namespace, :group
+
+        update_namespace_statistics namespace_statistics_name: :dependency_proxy_size
+
+        # Used in destroying stale cached responses in DestroyOrphanCachedResponsesWorker
+        enum :status, default: 0, processing: 1, error: 3
 
         validates :group, top_level_group: true, presence: true
         validates :relative_path,
@@ -22,8 +30,11 @@ module VirtualRegistries
           :upstream_etag,
           :content_type,
           length: { maximum: 255 }
+        validates :file_final_path, length: { maximum: 1024 }
         validates :downloads_count, numericality: { greater_than: 0, only_integer: true }
-        validates :relative_path, uniqueness: { scope: :upstream_id }, if: :upstream
+        validates :relative_path,
+          uniqueness: { scope: [:upstream_id, :status] },
+          if: -> { upstream.present? && default? }
         validates :file, presence: true
 
         mount_file_store_uploader ::VirtualRegistries::CachedResponseUploader
@@ -35,13 +46,24 @@ module VirtualRegistries
         scope :search_by_relative_path, ->(query) do
           fuzzy_search(query, [:relative_path], use_minimum_char_limit: false)
         end
+        scope :orphan, -> { where(upstream: nil) }
+        scope :pending_destruction, -> { orphan.default }
+        scope :for_group, ->(group) { where(group: group) }
+
+        def self.next_pending_destruction
+          pending_destruction.lock('FOR UPDATE SKIP LOCKED').take
+        end
 
         # create or update a cached response identified by the upstream, group_id and relative_path
         # Given that we have chances that this function is not executed in isolation, we can't use
         # safe_find_or_create_by.
         # We are using the check existence and rescue alternative.
         def self.create_or_update_by!(upstream:, group_id:, relative_path:, updates: {})
-          find_or_initialize_by(upstream: upstream, group_id: group_id, relative_path: relative_path).tap do |record|
+          default.find_or_initialize_by(
+            upstream: upstream,
+            group_id: group_id,
+            relative_path: relative_path
+          ).tap do |record|
             record.increment(:downloads_count) if record.persisted?
             record.update!(**updates)
           end

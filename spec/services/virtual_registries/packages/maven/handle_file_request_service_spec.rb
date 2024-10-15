@@ -39,6 +39,16 @@ RSpec.describe VirtualRegistries::Packages::Maven::HandleFileRequestService, :ag
     end
 
     context 'with a User' do
+      let_it_be(:processing_cached_response) do
+        create(
+          :virtual_registries_packages_maven_cached_response,
+          :upstream_checked,
+          :processing,
+          upstream: registry.upstream,
+          relative_path: "/#{path}"
+        )
+      end
+
       context 'with no cached response' do
         it_behaves_like 'returning a service response success response', action: :workhorse_upload_url
 

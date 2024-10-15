@@ -17,7 +17,7 @@ module ControllerWithCrossProjectAccessCheck
 
     rejection_message = _(
       "This page is unavailable because you are not allowed to read information "\
-      "across multiple projects."
+        "across multiple projects."
     )
     access_denied!(rejection_message)
   end

@@ -83,11 +83,14 @@ export const buildKubernetesErrors = (errors = []) => ({
   __typename: 'LocalKubernetesErrors',
 });
 
-export const updateFluxRequested = () =>
+export const updateFluxRequested = ({
+  path = '/metadata/annotations/reconcile.fluxcd.io~1requestedAt',
+  value = new Date(),
+} = {}) =>
   JSON.stringify([
     {
       op: 'replace',
-      path: '/metadata/annotations/reconcile.fluxcd.io~1requestedAt',
-      value: new Date(),
+      path,
+      value,
     },
   ]);

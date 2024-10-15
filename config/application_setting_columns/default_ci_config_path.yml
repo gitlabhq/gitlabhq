@@ -1,0 +1,13 @@
+---
+api_type: string
+attr: default_ci_config_path
+clusterwide: false
+column: default_ci_config_path
+db_type: character
+default:
+description: Default CI/CD configuration file and path for new projects (`.gitlab-ci.yml`
+  if not set).
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

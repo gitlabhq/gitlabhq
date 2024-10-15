@@ -64,8 +64,7 @@ A deploy token's scope determines the actions it can perform.
 > - [Feature flag `ci_variable_for_group_gitlab_deploy_token`](https://gitlab.com/gitlab-org/gitlab/-/issues/363621) removed in GitLab 15.4.
 
 A GitLab deploy token is a special type of deploy token. If you create a deploy token named
-`gitlab-deploy-token`, the deploy token is automatically exposed to the CI/CD jobs as variables, for
-use in a CI/CD pipeline:
+`gitlab-deploy-token`, the deploy token is automatically exposed to project CI/CD jobs as variables:
 
 - `CI_DEPLOY_USER`: Username
 - `CI_DEPLOY_PASSWORD`: Token
@@ -81,6 +80,9 @@ In GitLab 15.0 and earlier, the special handling for the `gitlab-deploy-token` d
 work for group deploy tokens. To make a group deploy token available for CI/CD jobs, set the
 `CI_DEPLOY_USER` and `CI_DEPLOY_PASSWORD` CI/CD variables in **Settings > CI/CD > Variables** to the
 name and token of the group deploy token.
+
+When `gitlab-deploy-token` is defined in a group, the `CI_DEPLOY_USER` and `CI_DEPLOY_PASSWORD`
+CI/CD variables are available only to immediate child projects of the group.
 
 ### GitLab deploy token security
 

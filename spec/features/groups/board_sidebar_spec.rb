@@ -16,7 +16,7 @@ RSpec.describe 'Group Issue Boards', :js, feature_category: :portfolio_managemen
   let!(:issue_2)         { create(:labeled_issue, project: project_2, relative_position: 2) }
   let(:board)            { create(:board, group: group) }
   let!(:list)            { create(:list, board: board, label: project_1_label, position: 0) }
-  let(:card)             { find('.board:nth-child(1)').first('.board-card') }
+  let(:card)             { find('[data-testid="board-list"]:nth-child(1)').first('.board-card') }
 
   context 'when work item drawer is disabled' do
     before do

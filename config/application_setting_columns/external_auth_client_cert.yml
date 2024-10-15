@@ -1,0 +1,13 @@
+---
+api_type: string
+attr: external_auth_client_cert
+clusterwide: false
+column: external_auth_client_cert
+db_type: text
+default:
+description: "(**If enabled, requires:** `external_auth_client_key`) The certificate
+  to use to authenticate with the external authorization service."
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: false

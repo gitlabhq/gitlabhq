@@ -1,0 +1,20 @@
+---
+key_path: redis_hll_counters.count_distinct_user_id_from_update_group_wiki_page_weekly
+description: Weekly count of unique users who updated a wiki page in group wiki
+product_group: knowledge
+performance_indicator_type: []
+value_type: number
+status: active
+milestone: '17.5'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167091
+time_frame: 7d
+data_source: internal_events
+data_category: optional
+distribution:
+- ee
+tier:
+- premium
+- ultimate
+events:
+- name: update_group_wiki_page
+  unique: user.id

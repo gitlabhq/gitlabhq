@@ -20,3 +20,4 @@ desired_sharding_key:
         table: incident_management_oncall_schedules
         sharding_key: project_id
         belongs_to: schedule
+desired_sharding_key_migration_job_name: BackfillIncidentManagementOncallRotationsProjectId

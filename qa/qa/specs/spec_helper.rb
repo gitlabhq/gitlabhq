@@ -42,7 +42,12 @@ RSpec.configure do |config|
   config.example_status_persistence_file_path = ENV.fetch('RSPEC_LAST_RUN_RESULTS_FILE', 'tmp/examples.txt')
 
   config.prepend_before do |example|
-    QA::Runtime::Logger.info("Starting test: #{Rainbow(example.full_description).bright}")
+    if QA::Runtime::Env.parallel_run?
+      QA::Runtime::Logger.info("Starting test - PID #{Process.pid}: #{Rainbow(example.full_description).bright}")
+    else
+      QA::Runtime::Logger.info("Starting test: #{Rainbow(example.full_description).bright}")
+    end
+
     QA::Runtime::Example.current = example
 
     visit(QA::Runtime::Scenario.gitlab_address) if QA::Runtime::Env.mobile_layout?
@@ -53,8 +58,8 @@ RSpec.configure do |config|
   end
 
   config.prepend_before(:suite) do
-    # Perform before hooks at the very start of the test run
-    QA::Runtime::Release.perform_before_hooks unless QA::Runtime::Env.dry_run
+    # Perform before hooks at the very start of the test run, perform once for parallel runs
+    QA::Runtime::Release.perform_before_hooks unless QA::Runtime::Env.dry_run || QA::Runtime::Env.parallel_run?
   end
 
   config.before(:suite) do

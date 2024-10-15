@@ -7,6 +7,11 @@ module Gitlab
         BUFFER_SIZE = 4096
         LIMIT_SIZE = 500.kilobytes
 
+        TIMESTAMP_HEADER_DATETIME = '\d{4}-[01][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]\.[0-9]{6}Z'
+        TIMESTAMP_HEADER_DATETIME_LENGTH = 27
+        TIMESTAMP_HEADER_REGEX = /(#{TIMESTAMP_HEADER_DATETIME}) [0-9a-f]{2}[EO][+ ]/
+        TIMESTAMP_HEADER_LENGTH = 32
+
         attr_reader :stream, :metrics
 
         delegate :close, :tell, :seek, :size, :url, :truncate, to: :stream, allow_nil: true
@@ -15,6 +20,7 @@ module Gitlab
           @stream = yield
           @stream&.binmode
           @metrics = metrics
+          @timestamped = nil
         end
 
         def valid?
@@ -78,9 +84,14 @@ module Gitlab
           regex = Gitlab::UntrustedRegexp.new(regex)
 
           match = ""
+          strip_timestamp = has_timestamps?
 
           reverse_line do |line|
             line.chomp!
+
+            # strip timestamp from line
+            line.slice!(0, TIMESTAMP_HEADER_LENGTH) if strip_timestamp
+
             matches = regex.scan(line)
             next unless matches.is_a?(Array)
             next if matches.empty?
@@ -173,6 +184,18 @@ module Gitlab
           stream.read(cur_offset - start).tap do
             stream.seek(start, IO::SEEK_SET)
           end
+        end
+
+        def has_timestamps?
+          return @timestamped unless @timestamped.nil?
+
+          cur_offset = stream.tell
+          stream.seek(0, IO::SEEK_SET)
+          line = stream.readline.chomp
+          stream.seek(cur_offset, IO::SEEK_SET)
+
+          @timestamped = TIMESTAMP_HEADER_REGEX.match?(line)
+          @timestamped
         end
       end
     end

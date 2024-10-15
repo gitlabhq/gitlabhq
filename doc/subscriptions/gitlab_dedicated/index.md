@@ -10,7 +10,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 GitLab Dedicated is a fully isolated, single-tenant SaaS solution that is:
 
 - Hosted and managed by GitLab, Inc.
-- Deployed on AWS in a cloud region of your choice. See [available AWS regions](#available-aws-regions).
+- Deployed on AWS in a cloud [region](data_residency_and_high_availability.md#available-aws-regions) of your choice.
 
 GitLab Dedicated removes the overhead of platform management to increase your operational efficiency, reduce risk, and enhance the speed and agility of your organization. Each GitLab Dedicated instance is highly available with disaster recovery and deployed into the cloud region of your choice. GitLab teams fully manage the maintenance and operations of each isolated instance, so customers can access our latest product improvements while meeting the most complex compliance standards.
 
@@ -18,55 +18,15 @@ It's the offering of choice for enterprises and organizations in highly regulate
 
 ## Available features
 
-### Data residency
-
-GitLab Dedicated allows you to select the cloud region where your data will be stored. Upon [onboarding](../../administration/dedicated/create_instance.md#step-2-create-your-gitlab-dedicated-instance), choose the cloud region where you want to deploy your Dedicated instance. Some AWS regions have limited features and as a result, we are not able to deploy production instances to those regions. See below for the [list of available AWS regions](#available-aws-regions).
-
 ### Advanced search
 
 GitLab Dedicated uses the [advanced search functionality](../../integration/advanced_search/elasticsearch.md).
-
-### Availability and scalability
-
-GitLab Dedicated leverages modified versions of the GitLab [Cloud Native Hybrid reference architectures](../../administration/reference_architectures/index.md#cloud-native-hybrid) with high availability enabled. When [onboarding](../../administration/dedicated/create_instance.md#step-2-create-your-gitlab-dedicated-instance), GitLab will match you to the closest reference architecture size based on your number of users. Learn about the [current Service Level Objective](https://handbook.gitlab.com/handbook/engineering/infrastructure/team/gitlab-dedicated/slas/#current-service-level-objective).
-
-NOTE:
-The published [reference architectures](../../administration/reference_architectures/index.md) act as a starting point in defining the cloud resources deployed inside GitLab Dedicated environments, but they are not comprehensive. GitLab Dedicated leverages additional Cloud Provider services beyond what's included in the standard reference architectures for enhanced security and stability of the environment. Therefore, GitLab Dedicated costs differ from standard reference architecture costs.
-
-#### Zero-downtime upgrades
-
-Deployments for GitLab Dedicated follow the process for [zero-downtime upgrades](../../update/zero_downtime.md) to ensure [backward compatibility](../../development/multi_version_compatibility.md) of the application during an upgrade. When no infrastructure changes or maintenance tasks require downtime, using the instance during an upgrade is possible and safe.
-
-During a GitLab version update, static assets may change and are only available in one of the two versions. To mitigate this situation, GitLab Dedicated adopts three techniques:
-
-1. Each static asset has a unique name that changes when its content changes.
-1. The browser caches each static asset.
-1. Each request from the same browser is routed to the same server temporarily.
-
-These techniques together give a strong assurance about asset availability:
-
-- During an upgrade, a user routed to a server running the new version will receive assets from the same server, completely removing the risk of receiving a broken page.
-- If routed to the old version, a regular user will have assets cached in their browser.
-- If not cached, they will receive the requested page and assets from the same server.
-- If the specific server is upgraded during the requests, they may still be routed to another server running the same version.
-- If the new server is running the upgraded version, and the requested asset changed, then the page may show some user interface glitches.
-
-To notice the effect of an upgrade, a new user of the system should connect for the first time during a version upgrade and get routed to an old version of the application immediately before its upgrade. The subsequent asset requests should end up in a server running the new version of GitLab, and the requested assets must have changed during this specific version upgrade. If all of this happens, a page refresh is enough to restore it.
-
-NOTE:
-Adopting a caching proxy in the customer network will further reduce this risk.
-
-#### Disaster Recovery
-
-When [onboarding](../../administration/dedicated/create_instance.md#step-2-create-your-gitlab-dedicated-instance) to GitLab Dedicated, you specify a Secondary AWS region in which your data will be stored. This region is used to recover your GitLab Dedicated instance in case of a disaster. Regular backups of all GitLab Dedicated datastores (including Database and Git repositories) are taken and tested regularly and stored in your desired secondary region. GitLab Dedicated also provides the ability to store copies of these backups in a separate cloud region of choice for greater redundancy.
-
-For more information, read about the [recovery plan for GitLab Dedicated](https://handbook.gitlab.com/handbook/engineering/infrastructure/team/gitlab-dedicated/slas/#disaster-recovery-plan) as well as RPO and RTO targets. These targets are available only when both the primary and secondary regions are supported by GitLab Dedicated. See below for a [list of available AWS regions](#available-aws-regions) for GitLab Dedicated.
 
 ### Security
 
 #### Authentication and authorization
 
-GitLab Dedicated supports instance-level [SAML OmniAuth](../../integration/saml.md) functionality. Your GitLab Dedicated instance acts as the service provider, and you must provide the necessary [configuration](../../integration/saml.md#configure-saml-support-in-gitlab) in order for GitLab to communicate with your IdP. For more information, see how to [configure SAML](../../administration/dedicated/configure_instance.md#saml) for your instance.
+GitLab Dedicated supports instance-level [SAML OmniAuth](../../integration/saml.md) functionality using a single SAML provider. Your GitLab Dedicated instance acts as the service provider, and you must provide the necessary [configuration](../../integration/saml.md#configure-saml-support-in-gitlab) in order for GitLab to communicate with your IdP. For more information, see how to [configure SAML](../../administration/dedicated/configure_instance.md#saml) for your instance.
 
 - SAML [request signing](../../integration/saml.md#sign-saml-authentication-requests-optional), [group sync](../../user/group/saml_sso/group_sync.md#configure-saml-group-sync), and [SAML groups](../../integration/saml.md#configure-users-based-on-saml-group-membership) are supported.
 
@@ -95,10 +55,6 @@ If you would rather send application email using an SMTP server instead of Amazo
 GitLab Dedicated is trusted by highly regulated customers in part due to our ability to transparently demonstrate compliance with various regulations, certifications, and compliance frameworks.
 
 You can view compliance and certification details, and download compliance artifacts from the [GitLab Dedicated Trust Center](https://trust.gitlab.com/?product=gitlab-dedicated).
-
-#### Isolation
-
-As a single-tenant SaaS solution, GitLab Dedicated provides infrastructure-level isolation of your GitLab environment. Your environment is placed into a separate AWS account from other tenants. This AWS account contains all of the underlying infrastructure necessary to host the GitLab application and your data stays within the account boundary. You administer the application while GitLab manages the underlying infrastructure. Tenant environments are also completely isolated from GitLab.com.
 
 #### Access controls
 
@@ -144,18 +100,6 @@ To add a custom hostname after your instance is created, submit a [support ticke
 
 NOTE:
 Custom hostnames for GitLab Pages are not supported. If you use GitLab Pages, the URL to access the Pages site for your GitLab Dedicated instance would be `tenant_name.gitlab-dedicated.site`.
-
-### Maintenance
-
-GitLab leverages [weekly maintenance windows](../../administration/dedicated/create_instance.md#maintenance-window) to keep your instance up to date, fix security issues, and ensure the overall reliability and performance of your environment.
-
-#### Upgrades
-
-GitLab performs monthly upgrades to your instance with the latest patch release during your preferred [maintenance window](../../administration/dedicated/create_instance.md#maintenance-window) tracking one release behind the latest GitLab release. For example, if the latest version of GitLab available is 16.8, GitLab Dedicated runs on 16.7.
-
-#### Unscheduled maintenance
-
-GitLab may conduct [unscheduled maintenance](../../administration/dedicated/create_instance.md#emergency-maintenance) to address high-severity issues affecting the security, availability, or reliability of your instance.
 
 ### Application
 
@@ -266,25 +210,6 @@ The following operational features are not available:
 - Multiple login providers
 - Support for deploying to non-AWS cloud providers, such as GCP or Azure
 - Observability Dashboard using Switchboard
-
-### Available AWS regions
-
-The following is a list of AWS regions verified for use in GitLab Dedicated. Regions must support io2 volumes and meet other requirements. If there is a region you are interested in that is not on this list, reach out through your account representative or [GitLab Support](https://about.gitlab.com/support/) to inquire about its availability. This list will be updated from time to time as additional regions are verified.
-
-- Asia Pacific (Mumbai)
-- Asia Pacific (Seoul)
-- Asia Pacific (Singapore)
-- Asia Pacific (Sydney)
-- Asia Pacific (Tokyo)
-- Canada (Central)
-- Europe (Frankfurt)
-- Europe (Ireland)
-- Europe (London)
-- Europe (Stockholm)
-- US East (Ohio)
-- US East (N. Virginia)
-- US West (N. California)
-- US West (Oregon)
 
 ## Planned features
 

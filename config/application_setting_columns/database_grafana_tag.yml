@@ -1,0 +1,12 @@
+---
+api_type:
+attr: database_grafana_tag
+clusterwide: true
+column: database_grafana_tag
+db_type: text
+default:
+description:
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

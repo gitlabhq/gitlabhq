@@ -1,0 +1,37 @@
+- title: "GitLab Runner Docker Machine executor is deprecated"
+  # The milestones for the deprecation announcement, and the removal.
+  removal_milestone: "20.0"
+  announcement_milestone: "17.5"
+  # Change breaking_change to false if needed.
+  breaking_change: true
+  # The stage and GitLab username of the person reporting the change,
+  # and a link to the deprecation issue
+  reporter: DarrenEastman
+  stage: verify
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/498268
+  # Use the impact calculator https://gitlab-com.gitlab.io/gl-infra/breaking-change-impact-calculator/?
+  impact: medium
+  scope: [instance, group, project]
+  resolution_role: [Admin, Owner, Maintainer]
+  manual_task: true
+  body: |  # (required) Don't change this line.
+   The [GitLab Runner Docker Machine executor](https://docs.gitlab.com/runner/executors/docker_machine.html) is deprecated and will be fully removed from the product as a supported feature in GitLab 20.0 (May 2027). The replacement for Docker Machine, [GitLab Runner Autoscaler](https://docs.gitlab.com/runner/runner_autoscale/) with GitLab developed plugins for Amazon Web Services (AWS) EC2, Google Compute Engine (GCE) and Microsoft Azure virtual machines (VMs) is generally available. With this announcement, the GitLab Runner team will no longer accept community contributions for the GitLab maintained Docker Machine fork, or resolve newly identified bugs.
+
+# ==============================
+# OPTIONAL END-OF-SUPPORT FIELDS
+# ==============================
+#
+# If an End of Support period applies:
+# 1) Share this announcement in the `#spt_managers` Support channel in Slack
+# 2) Mention `@gitlab-com/support` in this merge request.
+#
+  # When support for this feature ends, in XX.YY milestone format.
+  end_of_support_milestone:
+  # Array of tiers the feature is currently available to,
+  # like [Free, Silver, Gold, Core, Premium, Ultimate]
+  tiers:
+  # Links to documentation and thumbnail image
+  documentation_url:
+  image_url:
+  # Use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg
+  video_url:

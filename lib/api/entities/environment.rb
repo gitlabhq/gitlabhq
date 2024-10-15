@@ -13,6 +13,7 @@ module API
       expose :cluster_agent, using: Entities::Clusters::Agent, if: ->(_, _) { can_read_cluster_agent? }
       expose :kubernetes_namespace, if: ->(_, _) { can_read_cluster_agent? }
       expose :flux_resource_path, if: ->(_, _) { can_read_cluster_agent? }
+      expose :description, documentation: { type: 'string', example: 'description' }
 
       private
 

@@ -144,11 +144,11 @@ export default {
     <template #header>
       <div
         aria-hidden="true"
-        class="gl-flex gl-min-h-8 gl-items-center gl-border-b-1 gl-border-b-gray-200 !gl-p-4 gl-text-sm gl-font-bold gl-text-gray-900 gl-border-b-solid"
+        class="gl-flex gl-min-h-8 gl-items-center gl-border-b-1 gl-border-b-dropdown !gl-p-4 gl-text-sm gl-font-bold gl-text-gray-900 gl-border-b-solid"
       >
         {{ $options.i18n.downloadArtifacts }}
       </div>
-      <div v-if="hasArtifacts" class="gl-border-b-1 gl-border-b-gray-200 gl-border-b-solid">
+      <div v-if="hasArtifacts" class="gl-border-b-1 gl-border-b-dropdown gl-border-b-solid">
         <gl-search-box-by-type
           ref="searchInput"
           v-model.trim="searchQuery"

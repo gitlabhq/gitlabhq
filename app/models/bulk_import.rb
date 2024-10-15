@@ -55,7 +55,7 @@ class BulkImport < ApplicationRecord
     # rubocop:disable Style/SymbolProc
     after_transition any => [:finished, :failed, :timeout] do |bulk_import|
       bulk_import.update_has_failures
-      bulk_import.notify_owners_of_completion
+      bulk_import.send_completion_notification
     end
     # rubocop:enable Style/SymbolProc
 
@@ -103,22 +103,10 @@ class BulkImport < ApplicationRecord
     finished? || failed? || timeout? || canceled?
   end
 
-  def notify_owners_of_completion
-    users_to_notify = parent_group_entity&.group&.owners
-
-    return if users_to_notify.blank?
-
-    users_to_notify.each do |owner|
-      run_after_commit do
-        Notify.bulk_import_complete(owner.id, id).deliver_later
-      end
+  def send_completion_notification
+    run_after_commit do
+      Notify.bulk_import_complete(user.id, id).deliver_later
     end
-  end
-
-  # Finds the root group entity of the BulkImport's entity tree.
-  # @return [BulkImports::Entity, nil]
-  def parent_group_entity
-    entities.group_entity.where(parent: nil).first
   end
 
   def destination_group_roots

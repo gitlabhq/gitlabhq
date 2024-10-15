@@ -58,7 +58,7 @@ is set.
 ##### Replication factor set
 
 If a custom replication factor is set, use [`praefect set-replication-factor`](praefect.md#configure-replication-factor) to set the replication factor per repository again to get
-new storage assigned. 
+new storage assigned.
 
 For example, if two nodes in the virtual storage have a replication factor of 2 and a new node (`gitaly-3`) is added, you should increase the replication
 factor to 3:

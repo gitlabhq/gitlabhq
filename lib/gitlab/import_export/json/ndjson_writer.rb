@@ -10,8 +10,7 @@ module Gitlab
           @dir_path = dir_path
         end
 
-        def close
-        end
+        def close; end
 
         def write_attributes(exportable_path, hash)
           # It will create:

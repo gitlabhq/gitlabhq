@@ -1,0 +1,17 @@
+---
+description: Integrate a GitLab instance with Salesforce to enable users to sign in to the GitLab instance with their Salesforce account.
+action: salesforce_sso
+identifiers:
+- user
+product_group: authentication
+milestone: '15.7'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/168787
+distributions:
+- ce
+tiers:
+- free
+- premium
+- ultimate
+additional_properties:
+  label:
+    description: Optional. `invite_registration`, `subscription_registration` or `free_registration`

@@ -10,4 +10,13 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104267
 milestone: '15.7'
 allow_cross_foreign_keys:
 - gitlab_main_clusterwide
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/457485
+desired_sharding_key:
+  project_id:
+    references: projects
+    backfill_via:
+      parent:
+        foreign_key: candidate_id
+        table: ml_candidates
+        sharding_key: project_id
+        belongs_to: candidate
+desired_sharding_key_migration_job_name: BackfillMlCandidateMetadataProjectId

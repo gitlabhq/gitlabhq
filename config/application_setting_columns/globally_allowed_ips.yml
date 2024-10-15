@@ -1,0 +1,13 @@
+---
+api_type: string
+attr: globally_allowed_ips
+clusterwide: true
+column: globally_allowed_ips
+db_type: text
+default: "''::text"
+description: Comma-separated list of IP addresses and CIDRs always allowed for inbound
+  traffic. For example, `1.1.1.1, 2.2.2.0/24`.
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: true

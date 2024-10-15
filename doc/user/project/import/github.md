@@ -95,13 +95,13 @@ If the above requirements are not met, the importer can't map the particular use
 - GitLab [can't import](https://gitlab.com/gitlab-org/gitlab/-/issues/424046) GitHub Markdown image attachments that
   were uploaded to private repositories before 2023-05-09. If you encounter this problem, would like to help us resolve the problem, and are willing to provide a sample repository
   for us, please add a comment to [issue 424046](https://gitlab.com/gitlab-org/gitlab/-/issues/424046) and we'll contact you.
-- For [GitLab-specific references](../../markdown.md#gitlab-specific-references), GitLab uses a `#` character for issues and a `!` character for merge requests.
-  However, GitHub uses only a `#` character for both issues and pull requests.
+- For [GitLab-specific references](../../markdown.md#gitlab-specific-references), GitLab uses the `#` character for issues and a `!` character for merge requests.
+  However, GitHub uses only the `#` character for both issues and pull requests. When importing:
 
-  When importing:
-
-  - Comment notes, GitLab only matches references to issues because GitLab doesn't know whether a references points to an issue or a merge request.
-  - Issues or merge request descriptions, GitLab ignores all references because their imported counterparts might not have been created on the destination yet.
+  - Comment notes, GitLab only creates links to issues because GitLab can't determine whether a references points to an
+    issue or a merge request.
+  - Issues or merge request descriptions, GitLab doesn't create links for any references because their imported
+    counterparts might not have been created on the destination yet.
 
 ## Import your GitHub repository into GitLab
 

@@ -1,5 +1,5 @@
 ---
-stage: Verify
+stage: Govern
 group: Pipeline Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -149,6 +149,20 @@ This limit is imposed by Google Cloud IAM, tracked in [Google issue #264362370](
 
 The only fix for this issue is to use shorter names
 [for your branch and repository](https://github.com/google-github-actions/auth/blob/main/docs/TROUBLESHOOTING.md#subject-exceeds-the-127-byte-limit).
+
+## `The secrets provider can not be found. Check your CI/CD variables and try again.` message
+
+You might receive this error when attempting to start a job configured to access GCP Secret Manager:
+
+```plaintext
+The secrets provider can not be found. Check your CI/CD variables and try again.
+```
+
+The job can't be created because one or more of the required variables are not defined:
+
+- `GCP_PROJECT_NUMBER`
+- `GCP_WORKLOAD_IDENTITY_FEDERATION_POOL_ID`
+- `GCP_WORKLOAD_IDENTITY_FEDERATION_PROVIDER_ID`
 
 ### `WARNING: Not resolved: no resolver that can handle the secret` warning
 

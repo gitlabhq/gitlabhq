@@ -11,13 +11,13 @@
     - link_style = "color: #1b69b6; text-decoration:none;"
     - pipeline_link = link_to("\##{@pipeline.iid}", pipeline_url(@pipeline), style: link_style).html_safe
     - project_link = link_to(@project.name, project_url(@project), style: link_style).html_safe
-    - supported_langs_link = link_to(s_('Notify|currently supported languages'), help_page_url('topics/autodevops/stages', anchor: 'currently-supported-languages'), style: link_style).html_safe
+    - supported_langs_link = link_to(s_('Notify|currently supported languages'), help_page_url('topics/autodevops/stages.md', anchor: 'currently-supported-languages'), style: link_style).html_safe
     - settings_link = link_to(s_('Notify|CI/CD project settings'), project_settings_ci_cd_url(@project), style: link_style).html_safe
     = s_('Notify|The Auto DevOps pipeline failed for pipeline %{pipeline_link} and has been disabled for %{project_link}. In order to use the Auto DevOps pipeline with your project, please review the %{supported_langs_link}, adjust your project accordingly, and turn on the Auto DevOps pipeline within your %{settings_link}.').html_safe % { pipeline_link: pipeline_link, project_link: project_link, supported_langs_link: supported_langs_link, settings_link: settings_link }
 
 %tr.pre-section
   %td{ style: 'text-align: center;border-bottom:1px solid #ededed' }
-    %a{ href: help_page_url('topics/autodevops/index'), style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;" }
+    %a{ href: help_page_url('topics/autodevops/index.md'), style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;" }
       %button{ type: 'button', style: 'border-color: #dfdfdf; border-style: solid; border-width: 1px; border-radius: 4px; font-size: 14px; padding: 8px 16px; background-color:#fff; margin: 8px 0; cursor: pointer;' }
         = s_('Notify|Learn more about Auto DevOps')
 

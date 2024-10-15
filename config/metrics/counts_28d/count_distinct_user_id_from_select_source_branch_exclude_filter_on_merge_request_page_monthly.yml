@@ -1,0 +1,24 @@
+---
+key_path: redis_hll_counters.count_distinct_user_id_from_select_source_branch_exclude_filter_on_merge_request_page_monthly
+description: Monthly count of unique users who selected source branch exlude option
+product_group: global_search
+performance_indicator_type: []
+value_type: number
+status: active
+milestone: '17.5'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156491
+time_frame: 28d
+data_source: internal_events
+data_category: optional
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate
+events:
+- name: select_source_branch_filter_on_merge_request_page
+  unique: user.id
+  filter:
+    label: exclude

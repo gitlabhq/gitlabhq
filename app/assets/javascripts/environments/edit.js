@@ -15,6 +15,7 @@ export default (el) => {
     projectEnvironmentsPath,
     protectedEnvironmentSettingsPath,
     projectPath,
+    markdownPreviewPath,
     environmentName,
     kasTunnelUrl,
   } = el.dataset;
@@ -26,6 +27,7 @@ export default (el) => {
       projectEnvironmentsPath,
       protectedEnvironmentSettingsPath,
       projectPath,
+      markdownPreviewPath,
       environmentName,
       kasTunnelUrl: removeLastSlashInUrlPath(kasTunnelUrl),
     },

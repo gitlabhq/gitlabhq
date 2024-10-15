@@ -15,7 +15,7 @@
         } }
     - else
       = _('Please contact an admin to create runners.')
-      = link_to _('Learn more.'), help_page_path('administration/settings/continuous_integration', anchor: 'restrict-runner-registration-by-all-users-in-an-instance'), target: '_blank', rel: 'noopener noreferrer'
+      = link_to _('Learn more.'), help_page_path('administration/settings/continuous_integration.md', anchor: 'restrict-runner-registration-by-all-users-in-an-instance'), target: '_blank', rel: 'noopener noreferrer'
 %hr
 
 - if @project_runners.any?

@@ -42,6 +42,7 @@ import mergeRequestReferenceQuery from './merge_request_reference.query.graphql'
 import mergeRequestSubscribed from './merge_request_subscribed.query.graphql';
 import mergeRequestTimeTrackingQuery from './merge_request_time_tracking.query.graphql';
 import mergeRequestTodoQuery from './merge_request_todo.query.graphql';
+import mergeRequestTodoSubscription from './merge_request_todo.subscription.graphql';
 import todoCreateMutation from './todo_create.mutation.graphql';
 import todoMarkDoneMutation from './todo_mark_done.mutation.graphql';
 import updateEpicConfidentialMutation from './update_epic_confidential.mutation.graphql';
@@ -278,6 +279,7 @@ export const todoQueries = {
   },
   [TYPE_MERGE_REQUEST]: {
     query: mergeRequestTodoQuery,
+    subscription: mergeRequestTodoSubscription,
   },
 };
 

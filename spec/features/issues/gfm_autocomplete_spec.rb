@@ -347,17 +347,53 @@ RSpec.describe 'GFM autocomplete', :js, feature_category: :team_planning do
       it 'suggests objects correctly' do
         fill_in 'Comment', with: object.class.reference_prefix
 
-        find_autocomplete_menu.find('li').click
+        find_autocomplete_menu.find('li', text: object.title).click
 
         expect(find_field('Comment').value).to have_text(expected_body)
       end
     end
 
-    context 'issues', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/471790' do
-      let(:object) { issue }
-      let(:expected_body) { object.to_reference }
+    context 'issues' do
+      let_it_be(:issue_99) { create(:issue, project: project, title: 'gitlab issue', iid: 99) }
+      let_it_be(:issue_990) { create(:issue, project: project, title: 'other issue', iid: 990) }
 
-      it_behaves_like 'autocomplete suggestions'
+      it_behaves_like 'autocomplete suggestions' do
+        let(:object) { issue }
+        let(:expected_body) { object.to_reference }
+      end
+
+      shared_examples 'searching issue autocomplete' do
+        it 'supports matching by iid' do
+          fill_in 'Comment', with: '#99'
+
+          page.within(find_autocomplete_menu) do
+            expect(page).to have_selector('li', count: 2)
+            expect(page).to have_selector('li', text: 'gitlab issue')
+            expect(page).to have_selector('li', text: 'other issue')
+          end
+        end
+
+        it 'supports matching by title' do
+          fill_in 'Comment', with: '#gitlab'
+
+          page.within(find_autocomplete_menu) do
+            expect(page).to have_selector('li', count: 1)
+            expect(page).to have_selector('li', text: 'gitlab issue')
+          end
+        end
+      end
+
+      it_behaves_like 'searching issue autocomplete'
+
+      context 'when issue_autocomplete_backend_filtering is disabled' do
+        before do
+          stub_feature_flags(issue_autocomplete_backend_filtering: false)
+
+          visit project_issue_path(project, issue)
+        end
+
+        it_behaves_like 'searching issue autocomplete'
+      end
     end
 
     context 'merge requests' do

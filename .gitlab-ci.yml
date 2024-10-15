@@ -114,6 +114,10 @@ workflow:
         <<: [*next-ruby-variables, *default-merge-request-variables]
         PIPELINE_NAME: 'Ruby $RUBY_VERSION MR'
     # For the scheduled pipelines, we set specific variables.
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $BUILD_WITH_NEXT_RUBY_VERSION == "true"'
+      variables:
+        <<: *next-ruby-variables
+        PIPELINE_NAME: 'Scheduled Ruby $RUBY_VERSION $CI_COMMIT_BRANCH branch'
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule"'
       variables:
         <<: [*default-ruby-variables, *default-branch-pipeline-failure-variables]
@@ -181,7 +185,7 @@ variables:
   BUNDLE_FROZEN: "true"
   BUNDLE_GEMFILE: Gemfile
   # we override the max_old_space_size to prevent OOM errors
-  NODE_OPTIONS: --max_old_space_size=5120
+  NODE_OPTIONS: --max-old-space-size=10240
   GIT_DEPTH: "20"
   # 'GIT_STRATEGY: clone' optimizes the pack-objects cache hit ratio
   GIT_STRATEGY: "clone"

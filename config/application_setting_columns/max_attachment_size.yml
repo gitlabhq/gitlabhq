@@ -1,0 +1,12 @@
+---
+api_type: integer
+attr: max_attachment_size
+clusterwide: false
+column: max_attachment_size
+db_type: integer
+default: '100'
+description: Limit attachment size in MB.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

@@ -58,7 +58,7 @@ Security incidents related to credentials exposure can vary in severity from low
 - Review the available [audit events](../administration/audit_event_reports.md) for your group or namespace.
 - Adversaries may attempt to create tokens, SSH keys, or user accounts to maintain persistence. Look for [audit events](../user/compliance/audit_event_types.md) related to these activities.
 - Focus on CI-related [audit events](../user/compliance/audit_event_types.md#continuous-integration) to identify any modifications to CI/CD variables.
-- Review [job logs](../administration/job_logs.md) for any pipelines ran by an adversary
+- Review [job logs](../administration/cicd/job_logs.md) for any pipelines ran by an adversary
 
 ### Suspected compromised user account
 

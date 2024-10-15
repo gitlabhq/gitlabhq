@@ -48,11 +48,7 @@ RSpec.describe Gitlab::Patch::RedisCacheStore, :use_clean_rails_redis_caching, f
 
               if normal_cluster || multistore_cluster
                 times = (input_size.to_f / chunk_size).ceil
-                expect(redis).to receive(:pipelined).exactly(times).times.and_call_original
-
-                expect_next_instances_of(::Redis::PipelinedConnection, times) do |p|
-                  expect(p).to receive(:get).at_most(chunk_size).times
-                end
+                expect(redis).to receive(:mget).exactly(times).times.and_call_original
               else
                 expect(redis).to receive(:mget).and_call_original
               end
@@ -111,7 +107,7 @@ RSpec.describe Gitlab::Patch::RedisCacheStore, :use_clean_rails_redis_caching, f
             # no expectation on number of times as it could vary depending on cluster size
             # if the Redis is a Redis Cluster
             if Gitlab::Redis::ClusterUtil.cluster?(redis)
-              expect(redis).to receive(:pipelined).at_least(2).and_call_original
+              expect(redis).to receive(:del).at_least(2).and_call_original
             else
               expect(redis).to receive(:del).and_call_original
             end

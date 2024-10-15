@@ -38,25 +38,25 @@ This section has screenshots for the elements of Azure Active Directory configur
 
 ### Basic SAML app configuration
 
-![Azure AD basic SAML](img/AzureAD-basic_SAML.png)
+![Azure AD basic SAML](img/AzureAD-basic_SAML_v14_1.png)
 
 ### User claims and attributes
 
-![Azure AD user claims](img/AzureAD-claims.png)
+![Azure AD user claims](img/AzureAD-claims_v14_1.png)
 
 ### SCIM mapping
 
 Provisioning:
 
-![Azure AD SCIM Provisioning](img/AzureAD-scim_provisioning.png)
+![Azure AD SCIM Provisioning](img/AzureAD-scim_provisioning_v14_8.png)
 
 ### Attribute mapping
 
-![Azure AD SCIM Attribute Mapping](img/AzureAD-scim_attribute_mapping.png)
+![Azure AD SCIM Attribute Mapping](img/AzureAD-scim_attribute_mapping_v12_2.png)
 
 ### Group Sync
 
-![Azure Group Claims](img/azure_configure_group_claim.png)
+![Azure Group Claims](img/azure_configure_group_claim_v14_0.png)
 
 Using the **Group ID** source attribute requires users to enter the group ID or object ID when configuring SAML group links.
 
@@ -90,55 +90,55 @@ fingerprint.
 
 ### Basic SAML app configuration for GitLab.com groups
 
-![Okta basic SAML](img/Okta-GroupSAML.png)
+![Okta basic SAML](img/Okta-GroupSAML_v15_3.png)
 
 ### Basic SAML app configuration for GitLab self-managed
 
-![Okta admin panel view](img/Okta-SM.png)
+![Okta admin panel view](img/Okta-SM_v15_3.png)
 
 ### User claims and attributes
 
-![Okta Attributes](img/Okta-attributes.png)
+![Okta Attributes](img/Okta-attributes_v15_3.png)
 
 ### Group Sync
 
-![Okta Group attribute](img/Okta-GroupAttribute.png)
+![Okta Group attribute](img/Okta-GroupAttribute_v15_3.png)
 
 ### Advanced SAML app settings (defaults)
 
-![Okta Advanced Settings](img/Okta-advancedsettings.png)
+![Okta Advanced Settings](img/Okta-advancedsettings_v15_3.png)
 
 ### IdP links and certificate
 
-![Okta Links and Certificate](img/Okta-linkscert.png)
+![Okta Links and Certificate](img/Okta-linkscert_v15_3.png)
 
 ### SAML sign on settings
 
-![Okta SAML settings](img/okta_saml_settings.png)
+![Okta SAML settings](img/okta_saml_settings_v15_3.png)
 
 ### SCIM settings
 
 Setting the username for the newly provisioned users when assigning them the SCIM app:
 
-![Assigning SCIM app to users on Okta](img/okta_setting_username.png)
+![Assigning SCIM app to users on Okta](img/okta_setting_username_v14_6.png)
 
 ## OneLogin
 
 ### Basic SAML app configuration
 
-![OneLogin application details](img/OneLogin-app_details.png)
+![OneLogin application details](img/OneLogin-app_details_v12.png)
 
 ### Parameters
 
-![OneLogin application details](img/OneLogin-parameters.png)
+![OneLogin application details](img/OneLogin-parameters_v12.png)
 
 ### Adding a user
 
-![OneLogin user add](img/OneLogin-userAdd.png)
+![OneLogin user add](img/OneLogin-userAdd_v12.png)
 
 ### SSO settings
 
-![OneLogin SSO settings](img/OneLogin-SSOsettings.png)
+![OneLogin SSO settings](img/OneLogin-SSOsettings_v12.png)
 
 ## SAML response example
 

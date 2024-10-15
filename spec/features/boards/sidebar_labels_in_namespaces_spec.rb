@@ -7,7 +7,7 @@ RSpec.describe 'Issue boards sidebar labels select', :js, feature_category: :por
 
   include_context 'labels from nested groups and projects'
 
-  let(:card) { find('.board:nth-child(1)').first('[data-testid="board-card"]') }
+  let(:card) { find('[data-testid="board-list"]:nth-child(1)').first('[data-testid="board-card"]') }
 
   context 'when work item drawer is disabled' do
     let_it_be(:group_board) { create(:board, group: group) }

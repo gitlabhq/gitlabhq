@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Sentry', feature_category: :error_tracking do
+RSpec.describe 'Sentry', feature_category: :observability do
   it 'does not load sentry if sentry settings are disabled' do
     allow(Gitlab::CurrentSettings).to receive(:sentry_enabled).and_return(false)
 

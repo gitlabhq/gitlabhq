@@ -101,7 +101,7 @@ module API
         Gitlab::EventStore.publish(
           ::Users::ActivityEvent.new(data: {
             user_id: actor.id,
-            namespace_id: project.namespace_id
+            namespace_id: project.root_ancestor.id
           })
         )
       end

@@ -1,5 +1,6 @@
 import { editor as monacoEditor, languages as monacoLanguages } from 'monaco-editor';
 import { DEFAULT_THEME, themes } from '~/ide/lib/themes';
+import YamlWorker from './monaco_yaml_worker?worker';
 
 export const clearDomElement = (el) => {
   if (!el || !el.firstChild) return;
@@ -34,4 +35,25 @@ export const getBlobLanguage = (path) => {
 export const setupCodeSnippet = (el) => {
   monacoEditor.colorizeElement(el);
   setupEditorTheme();
+};
+
+/**
+ * This is required for monaco-yaml to work with Vite.
+ * See https://gitlab.com/gitlab-org/gitlab/-/issues/461252 for details
+ */
+export const enableMonacoYamlWorkerForVite = () => {
+  if (window.IS_VITE) {
+    window.MonacoEnvironment = {
+      async getWorker(moduleId, label) {
+        switch (label) {
+          // Handle other cases
+          case 'yaml': {
+            return new YamlWorker();
+          }
+          default:
+            throw new Error(`Unknown label ${label}`);
+        }
+      },
+    };
+  }
 };

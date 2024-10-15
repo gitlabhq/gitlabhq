@@ -1,0 +1,12 @@
+---
+api_type: boolean
+attr: hide_third_party_offers
+clusterwide: false
+column: hide_third_party_offers
+db_type: boolean
+default: 'false'
+description: Do not display offers from third parties in GitLab.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

@@ -1,7 +1,6 @@
 <script>
 import { GlAlert, GlModal } from '@gitlab/ui';
 import { s__ } from '~/locale';
-import { scrollToTargetOnResize } from '~/lib/utils/resize_observer';
 import { removeHierarchyChild } from '../graphql/cache_utils';
 import deleteWorkItemMutation from '../graphql/delete_work_item.mutation.graphql';
 
@@ -45,7 +44,6 @@ export default {
       updatedWorkItemIid: null,
       updatedWorkItemId: null,
       isModalShown: false,
-      hasNotes: false,
     };
   },
   computed: {
@@ -54,13 +52,6 @@ export default {
     },
     displayedWorkItemId() {
       return this.updatedWorkItemId || this.workItemId;
-    },
-  },
-  watch: {
-    hasNotes(newVal) {
-      if (newVal && this.isModalShown) {
-        scrollToTargetOnResize({ containerId: this.$options.WORK_ITEM_DETAIL_MODAL_ID });
-      }
     },
   },
   methods: {
@@ -112,9 +103,6 @@ export default {
     onModalShow() {
       this.isModalShown = true;
     },
-    updateHasNotes() {
-      this.hasNotes = true;
-    },
     openReportAbuseModal(reply) {
       this.$emit('openReportAbuse', reply);
     },
@@ -149,7 +137,6 @@ export default {
       @close="hide"
       @deleteWorkItem="deleteWorkItem"
       @update-modal="updateModal"
-      @has-notes="updateHasNotes"
       @openReportAbuse="openReportAbuseModal"
     />
   </gl-modal>

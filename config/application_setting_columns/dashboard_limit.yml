@@ -1,0 +1,12 @@
+---
+api_type:
+attr: dashboard_limit
+clusterwide: true
+column: dashboard_limit
+db_type: integer
+default: '0'
+description:
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: true

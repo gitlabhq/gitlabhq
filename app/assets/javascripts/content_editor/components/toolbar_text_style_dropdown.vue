@@ -75,7 +75,6 @@ export default {
       :selected="activeItemLabel"
       :disabled="!activeItem"
       :data-qa-text-style="activeItemLabel"
-      data-testid="text-style-dropdown"
       size="small"
       toggle-class="btn-default-tertiary"
       @select="execute"

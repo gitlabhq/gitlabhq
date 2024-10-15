@@ -1,0 +1,10 @@
+---
+migration_job_name: BackfillShardingKeyIdOnCiRunners
+description: >-
+  Backfills the `sharding_key_id` column from `ci_runner_namespaces` and `ci_runner_projects`.
+  The column will serve as the sharding key in the future partitioned (by `runner_type`) table.
+feature_category: runner
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166916
+milestone: '17.5'
+queued_migration_version: 20240923132401
+finalized_by: # version of the migration that finalized this BBM

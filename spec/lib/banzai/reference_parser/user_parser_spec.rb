@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::ReferenceParser::UserParser, feature_category: :team_planning do
+RSpec.describe Banzai::ReferenceParser::UserParser, feature_category: :markdown do
   include ReferenceParserHelpers
 
   let(:group) { create(:group) }

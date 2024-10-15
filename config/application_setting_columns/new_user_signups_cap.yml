@@ -1,0 +1,12 @@
+---
+api_type:
+attr: new_user_signups_cap
+clusterwide: false
+column: new_user_signups_cap
+db_type: integer
+default:
+description:
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: false

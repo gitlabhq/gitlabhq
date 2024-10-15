@@ -33,9 +33,9 @@ Supported attributes:
 
 | Attribute                     | Type            | Required | Description                    |
 |-------------------------------|-----------------|----------|--------------------------------|
-| `id`                          | integer/string  | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`                          | integer/string  | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 
-If successful, returns [`200`](rest/index.md#status-codes) and a list of container registry protection rules.
+If successful, returns [`200`](rest/troubleshooting.md#status-codes) and a list of container registry protection rules.
 
 Can return the following status codes:
 
@@ -86,12 +86,12 @@ Supported attributes:
 
 | Attribute                         | Type           | Required | Description |
 |-----------------------------------|----------------|----------|-------------|
-| `id`                              | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`                              | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 | `repository_path_pattern`         | string         | Yes      | Container repository path pattern protected by the protection rule. For example `flight/flight-*`. Wildcard character `*` allowed. |
 | `minimum_access_level_for_push`   | string         | No       | Minimum GitLab access level to allow to push container images to the container registry. For example `maintainer`, `owner` or `admin`. Must be provided when `minimum_access_level_for_delete` is not set. |
 | `minimum_access_level_for_delete` | string         | No       | Minimum GitLab access level to allow to delete container images in the container registry. For example `maintainer`, `owner`, `admin`. Must be provided when `minimum_access_level_for_push` is not set. |
 
-If successful, returns [`201`](rest/index.md#status-codes) and the created container registry protection rule.
+If successful, returns [`201`](rest/troubleshooting.md#status-codes) and the created container registry protection rule.
 
 Can return the following status codes:
 
@@ -130,13 +130,13 @@ Supported attributes:
 
 | Attribute                         | Type           | Required | Description |
 |-----------------------------------|----------------|----------|-------------|
-| `id`                              | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`                              | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 | `protection_rule_id`              | integer        | Yes      | ID of the protection rule to be updated. |
 | `repository_path_pattern`         | string         | No       | Container repository path pattern protected by the protection rule. For example `flight/flight-*`. Wildcard character `*` allowed. |
 | `minimum_access_level_for_push`   | string         | No       | Minimum GitLab access level to allow to push container images to the container registry. For example `maintainer`, `owner` or `admin`. Must be provided when `minimum_access_level_for_delete` is not set. To unset the value, use an empty string `""`. |
 | `minimum_access_level_for_delete` | string         | No       | Minimum GitLab access level to allow to delete container images in the container registry. For example `maintainer`, `owner`, `admin`. Must be provided when `minimum_access_level_for_push` is not set. To unset the value, use an empty string `""`. |
 
-If successful, returns [`200`](rest/index.md#status-codes) and the updated protection rule.
+If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the updated protection rule.
 
 Can return the following status codes:
 
@@ -173,10 +173,10 @@ Supported attributes:
 
 | Attribute            | Type           | Required | Description |
 |----------------------|----------------|----------|-------------|
-| `id`                 | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`                 | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 | `protection_rule_id` | integer        | Yes      | ID of the container registry protection rule to be deleted. |
 
-If successful, returns [`204 No Content`](rest/index.md#status-codes).
+If successful, returns [`204 No Content`](rest/troubleshooting.md#status-codes).
 
 Can return the following status codes:
 

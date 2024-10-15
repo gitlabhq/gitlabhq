@@ -1,0 +1,14 @@
+---
+api_type: string
+attr: enabled_git_access_protocol
+clusterwide: true
+column: enabled_git_access_protocol
+db_type: character
+default:
+description: 'Enabled protocols for Git access. Allowed values are: `ssh`, `http`,
+  and `all` to allow both protocols. `all` value [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12944)
+  in GitLab 16.9.'
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

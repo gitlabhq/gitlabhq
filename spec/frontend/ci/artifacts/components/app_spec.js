@@ -8,6 +8,7 @@ import getBuildArtifactsSizeQuery from '~/ci/artifacts/graphql/queries/get_build
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import PageHeading from '~/vue_shared/components/page_heading.vue';
 import { PAGE_TITLE, TOTAL_ARTIFACTS_SIZE, SIZE_UNKNOWN } from '~/ci/artifacts/constants';
 
 const TEST_BUILD_ARTIFACTS_SIZE = 1024;
@@ -39,7 +40,7 @@ describe('ArtifactsApp component', () => {
   let apolloProvider;
   let getBuildArtifactsSizeSpy;
 
-  const findTitle = () => wrapper.findByTestId('artifacts-page-title');
+  const findTitle = () => wrapper.findByTestId('page-heading');
   const findBuildArtifactsSize = () => wrapper.findByTestId('build-artifacts-size');
   const findJobArtifactsTable = () => wrapper.findComponent(JobArtifactsTable);
   const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
@@ -48,6 +49,9 @@ describe('ArtifactsApp component', () => {
     wrapper = shallowMountExtended(ArtifactsApp, {
       provide: { projectPath: 'project/path' },
       apolloProvider,
+      stubs: {
+        PageHeading,
+      },
     });
   };
 

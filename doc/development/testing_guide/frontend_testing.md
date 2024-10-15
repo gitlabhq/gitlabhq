@@ -253,7 +253,17 @@ it('exists', () => {
 });
 ```
 
-### Naming unit tests
+### Naming unit/component tests
+
+Unit/Component tests should be named `${componentName}_spec.js`
+
+If the test name is not specific enough, consider renaming the component.
+
+For Example:
+
+`diff_stats_dropdown.vue` should have a unit/component test named `diff_stats_dropdown_spec.js`
+
+### Describe block naming
 
 When writing describe test blocks to test specific functions/methods,
 use the method name as the describe block name.

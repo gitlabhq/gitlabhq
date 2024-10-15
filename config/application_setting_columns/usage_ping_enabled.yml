@@ -1,0 +1,12 @@
+---
+api_type: boolean
+attr: usage_ping_enabled
+clusterwide: false
+column: usage_ping_enabled
+db_type: boolean
+default: 'true'
+description: Every week GitLab reports license usage back to GitLab, Inc.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

@@ -1,9 +1,0 @@
----
-name: group_access_request_webhooks
-feature_issue_url: 
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163094
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/479877
-milestone: '17.4'
-group: group::import and integrate
-type: beta
-default_enabled: false

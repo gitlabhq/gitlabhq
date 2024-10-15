@@ -74,6 +74,23 @@ RSpec.describe Groups::AutocompleteService, feature_category: :groups_and_projec
         expect(issues.map(&:title)).to contain_exactly(project_issue.title, sub_group_project_issue.title)
       end
     end
+
+    context 'when search param is given' do
+      let_it_be(:issue_8) { create(:issue, project: project, iid: 8) }
+      let_it_be(:issue_80) { create(:work_item, :group_level, namespace: group, iid: 80) }
+      let_it_be(:issue_800) { create(:work_item, :group_level, namespace: sub_group, iid: 800) }
+      let_it_be(:issue_8000) { create(:issue, project: sub_group_project, iid: 8000) }
+      let_it_be(:issue_80000) { create(:issue, project: sub_group_project, iid: 80000) }
+      let_it_be(:issue_90000) { create(:issue, project: project, title: 'gitlab issue 8', iid: 90000) }
+
+      it 'returns limited list of matching issues' do
+        autocomplete = described_class.new(group, user, { search: '8' })
+
+        issue_iids = autocomplete.issues.map(&:iid)
+
+        expect(issue_iids).to eq([90000, 80000, 8000, 800, 80])
+      end
+    end
   end
 
   describe '#merge_requests' do

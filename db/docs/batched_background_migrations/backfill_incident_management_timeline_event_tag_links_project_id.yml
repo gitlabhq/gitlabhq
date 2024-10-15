@@ -1,0 +1,9 @@
+---
+migration_job_name: BackfillIncidentManagementTimelineEventTagLinksProjectId
+description: Backfills sharding key `incident_management_timeline_event_tag_links.project_id` from `incident_management_timeline_event_tags`.
+feature_category: incident_management
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166461
+milestone: '17.5'
+queued_migration_version: 20240918102413
+finalize_after: '2024-10-22'
+finalized_by: # version of the migration that finalized this BBM

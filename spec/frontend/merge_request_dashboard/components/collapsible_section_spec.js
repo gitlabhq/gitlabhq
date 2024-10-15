@@ -23,6 +23,12 @@ describe('Merge request dashboard collapsible section', () => {
     expect(wrapper.element).toMatchSnapshot();
   });
 
+  it('collapses content when count is 0', () => {
+    createComponent(0);
+
+    expect(wrapper.findByTestId('section-content').exists()).toBe(false);
+  });
+
   it('expands collapsed content', async () => {
     createComponent(1);
 

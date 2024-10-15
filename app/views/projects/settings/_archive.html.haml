@@ -11,12 +11,12 @@
 
   - c.with_body do
     - if @project.archived?
-      - link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/project/working_with_projects', anchor: 'unarchive-a-project') }
+      - link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/project/working_with_projects.md', anchor: 'unarchive-a-project') }
       %p= _("Unarchiving the project restores its members' ability to make commits, and create issues, comments, and other entities. %{strong_start}After you unarchive the project, it displays in the search and on the dashboard.%{strong_end} %{link_start}Learn more.%{link_end}").html_safe % { strong_start: '<strong>'.html_safe, strong_end: '</strong>'.html_safe, link_start: link_start, link_end: '</a>'.html_safe }
       = render Pajamas::ButtonComponent.new(method: :post, href: unarchive_project_path(@project), variant: :confirm, button_options: { aria: { label: _('Unarchive project') }, data: { confirm: _("Are you sure that you want to unarchive this project?"), testid: 'unarchive-project-link' } }) do
         =  _('Unarchive project')
     - else
-      - link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/project/working_with_projects', anchor: 'archive-a-project') }
+      - link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/project/working_with_projects.md', anchor: 'archive-a-project') }
       %p= _("Archiving the project makes it entirely read-only. It is hidden from the dashboard and doesn't display in searches. %{strong_start}The repository cannot be committed to, and no issues, comments, or other entities can be created.%{strong_end} %{link_start}Learn more.%{link_end}").html_safe % { strong_start: '<strong>'.html_safe, strong_end: '</strong>'.html_safe, link_start: link_start, link_end: '</a>'.html_safe }
       = render Pajamas::ButtonComponent.new(method: :post, href: archive_project_path(@project), variant: :confirm, button_options: { aria: { label: _('Archive project') }, data: { confirm: _("Are you sure that you want to archive this project?"), testid: 'archive-project-link', 'confirm-btn-variant': 'confirm' } }) do
         =  _('Archive project')

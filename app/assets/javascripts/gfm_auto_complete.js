@@ -17,7 +17,7 @@ import {
 } from '~/work_items/constants';
 import AjaxCache from './lib/utils/ajax_cache';
 import { spriteIcon } from './lib/utils/common_utils';
-import { parsePikadayDate } from './lib/utils/datetime_utility';
+import { newDate } from './lib/utils/datetime_utility';
 import { unicodeLetters } from './lib/utils/regexp';
 import { renderVueComponentForLegacyJS } from './render_vue_component_for_legacy_js';
 
@@ -37,6 +37,8 @@ export const AT_WHO_ACTIVE_CLASS = 'at-who-active';
 export const CONTACT_STATE_ACTIVE = 'active';
 export const CONTACTS_ADD_COMMAND = '/add_contacts';
 export const CONTACTS_REMOVE_COMMAND = '/remove_contacts';
+
+const useIssueBackendFiltering = window.gon.features?.issueAutocompleteBackendFiltering;
 
 const busyBadge = memoize(
   () =>
@@ -498,6 +500,7 @@ class GfmAutoComplete {
       alias: ISSUES_ALIAS,
       searchKey: 'search',
       maxLen: 100,
+      delay: useIssueBackendFiltering ? DEFAULT_DEBOUNCE_AND_THROTTLE_MS : null,
       displayTpl(value) {
         let tmpl = GfmAutoComplete.Loading.template;
         if (value.title != null) {
@@ -553,7 +556,7 @@ class GfmAutoComplete {
               return m;
             }
 
-            const dueDate = m.due_date ? parsePikadayDate(m.due_date) : null;
+            const dueDate = m.due_date ? newDate(m.due_date) : null;
             const expired = dueDate ? Date.now() > dueDate.getTime() : false;
 
             return {
@@ -1090,6 +1093,10 @@ GfmAutoComplete.atTypeMap = {
 };
 
 GfmAutoComplete.typesWithBackendFiltering = ['vulnerabilities', 'members'];
+
+if (useIssueBackendFiltering) {
+  GfmAutoComplete.typesWithBackendFiltering.push('issues');
+}
 
 GfmAutoComplete.isTypeWithBackendFiltering = (type) =>
   GfmAutoComplete.typesWithBackendFiltering.includes(GfmAutoComplete.atTypeMap[type]);

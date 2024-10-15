@@ -51,8 +51,9 @@ Each dashboard provides a unique viewpoint of your security posture.
 ### Project Security Dashboard
 
 The Project Security Dashboard shows the total number of vulnerabilities detected over time,
-with up to 365 days of historical data for a given project. You can view the Project Security
-Dashboard:
+with up to 365 days of historical data for a given project. The dashboard is an historical view of open vulnerabilities in the default branch. Open vulnerabilities are those of only `Needs triage` or `Confirmed` status (`Dismissed` or `Resolved` vulnerabilities are excluded).
+
+To view a project's security dashboard:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Secure > Security dashboard**.
@@ -63,7 +64,7 @@ Dashboard:
      across the chart.
    - To reset to the original range, select **Remove Selection** (**{redo}**).
 
-![Project Security Dashboard](img/project_security_dashboard.png)
+![Project Security Dashboard](img/project_security_dashboard_v16_6.png)
 
 #### Downloading the vulnerability chart
 
@@ -106,7 +107,7 @@ To view group security dashboard:
    - You can see how many vulnerabilities of a particular severity are found in a project
    - You can select a project's name to directly access its project security dashboard
 
-![Group Security Dashboard](img/group_security_dashboard.png)
+![Group Security Dashboard](img/group_security_dashboard_v16_6.png)
 
 ## Security Center
 

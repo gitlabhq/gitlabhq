@@ -889,6 +889,31 @@ entry.
 
 - [Update learn more link and docs formatting](https://gitlab.com/gitlab-org/gitlab/-/commit/6f536fdb20c2d2b96124afe693042c91483a32b2) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164889))
 
+## 17.3.5 (2024-10-09)
+
+### Fixed (1 change)
+
+- [Ensure levels is an array](https://gitlab.com/gitlab-org/security/gitlab/-/commit/74594891f31984feaaae6a069f057d6f48a489a6)
+
+### Security (8 changes)
+
+- [Do not create a pipeline on MR refresh if source branch was deleted](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c36869b2e5cb0f88793bec7e20ded3e4d005f942) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4523))
+- [Escape OAuth application name on authorize page](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b5a704563f746e5c61301d3a7db0eab68d434e24) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4518))
+- [Prevent guest access to project templates](https://gitlab.com/gitlab-org/security/gitlab/-/commit/92d177e2c5aaafb4f74bc2ceafe39b9a068e803d) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4449))
+- [Remove access to local requests via cube query service](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7043d0116cbf2051907dfd88d56ed3f847ab95b2) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4493))
+- [External webhook token should be set](https://gitlab.com/gitlab-org/security/gitlab/-/commit/77c2a678acfc6fded56c6e10147701b6ef7aaeb5) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4511))
+- [Skip content when listing conflict files with types](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2b559425cb195a78007db930cbbf8450b5254c89) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4514))
+- [Hide version info from unauthorized users](https://gitlab.com/gitlab-org/security/gitlab/-/commit/94e70d423789a50fc8e172b002bf1428593bbc51) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4501))
+- [Prevent deploy keys from pushing code to an archived project](https://gitlab.com/gitlab-org/security/gitlab/-/commit/3cd52356b4b1194e7108af832d5da4087e4be05c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4487))
+
+## 17.3.4 (2024-09-24)
+
+### Security (3 changes)
+
+- [Implement input sanitization for SummarizeComments](https://gitlab.com/gitlab-org/security/gitlab/-/commit/034f25d7a760c8027f3c7426ca57ee49459f866f) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4411))
+- [Hide system notes with invalid references](https://gitlab.com/gitlab-org/security/gitlab/-/commit/484a80474d1f262b45923de365e288140605333e) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4483))
+- [Reset dependency proxy maven credentials when registry url is changed](https://gitlab.com/gitlab-org/security/gitlab/-/commit/74a4ae92cbb1e74e9e1e6858d6d3b0cf9daa4d09) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4458))
+
 ## 17.3.3 (2024-09-16)
 
 No changes.
@@ -1670,6 +1695,31 @@ No changes.
 - [Protected packages: Cleanup renaming of protected_up_to_access_level](https://gitlab.com/gitlab-org/gitlab/-/commit/c84c1efb2b0d204765ba121e9ad523d44fdb3712) by @gerardo-navarro ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146173))
 - [Dynamically gets the column type for assertion](https://gitlab.com/gitlab-org/gitlab/-/commit/1389a3daffd104925cce71776903cbf527723222) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159099))
 - [Quarantine a flaky test](https://gitlab.com/gitlab-org/gitlab/-/commit/c94fca35b909440ec66ea35c97ab11aa847dde58) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158180))
+
+## 17.2.9 (2024-10-09)
+
+### Fixed (1 change)
+
+- [Ensure levels is an array](https://gitlab.com/gitlab-org/security/gitlab/-/commit/d5450d020895b9fab3c7c6ad4191001308590899)
+
+### Security (8 changes)
+
+- [Do not create a pipeline on MR refresh if source branch was deleted](https://gitlab.com/gitlab-org/security/gitlab/-/commit/3dd89a71b436e8218a5d159a1dd75cb2de078129) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4524))
+- [Escape OAuth application name on authorize page](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b5cf4d286ae83033912e342177a501ffc2ad6a53) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4519))
+- [Prevent guest access to project templates](https://gitlab.com/gitlab-org/security/gitlab/-/commit/9666414231dbfc03eb0711ec501b7d02665120df) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4450))
+- [Remove access to local requests via cube query service](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1a46c8c1753f08ba55e8a0d2fbcbc710feecf898) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4494))
+- [External webhook token should be set](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c795ea96a4dac381cf434aa7e3f379907ec6366d) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4512))
+- [Skip content when listing conflict files with types](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c7f598b42b0c6cd68cdcdb8b79293e7e2b22b457) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4515))
+- [Hide version info from unauthorized users](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0184d4e9c665c209e1c67eff2da9059e17304f1d) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4502))
+- [Prevent deploy keys from pushing code to an archived project](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0a5dc2f0b302123a941a4676eedd52c3423ef73b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4488))
+
+## 17.2.8 (2024-09-24)
+
+### Security (3 changes)
+
+- [Implement input sanitization for SummarizeComments](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4bed1f854c5c7014d7486cc404a5da5321c27070) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4412))
+- [Hide system notes with invalid references](https://gitlab.com/gitlab-org/security/gitlab/-/commit/884df0d68bb3f3f2a2029b2851d202949780dd3b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4484))
+- [Reset dependency proxy maven credentials when registry url is changed](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c43c6ab51a2005958414062c23d5d017a9cba57d) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4459))
 
 ## 17.2.7 (2024-09-16)
 
@@ -5538,6 +5588,10 @@ No changes.
 - [Finalize the backfill migration for onboarding status step url](gitlab-org/gitlab@f986c1b1cf00968ff106136893bfe68d47895c69) ([merge request](gitlab-org/gitlab!147278))
 - [Remove ClusterRepositoryCache migration helper class](gitlab-org/gitlab@f71a7a94ce8d70d9d378ebc225b802b58f0ae006) ([merge request](gitlab-org/gitlab!147244))
 
+## 16.10.10 (2024-09-19)
+
+No changes.
+
 ## 16.10.9 (2024-07-23)
 
 ### Added (1 change)
@@ -6333,6 +6387,10 @@ No changes.
 - [Add sharding keys for code_review_workflow](gitlab-org/gitlab@f0ad99cc932bd74a5d02de99ee62651b32a34af2) ([merge request](gitlab-org/gitlab!143310))
 - [Add sharding keys for system_access](gitlab-org/gitlab@62c2fd4788e62e46f1469e2f18d178840e8e3df2) ([merge request](gitlab-org/gitlab!142501))
 - [Add sharding keys for purchase](gitlab-org/gitlab@9c3843da74714c72483c17489d5d3d68ceffd2c8) ([merge request](gitlab-org/gitlab!142505))
+
+## 16.9.11 (2024-09-19)
+
+No changes.
 
 ## 16.9.10 (2024-07-23)
 
@@ -7184,6 +7242,10 @@ No changes.
 
 - [Add remediation badge to vulnerability report](gitlab-org/gitlab@e6236197509eae1bb27edf8fb2c63ccf769c2642) ([merge request](gitlab-org/gitlab!142455))
 
+## 16.8.10 (2024-09-20)
+
+No changes.
+
 ## 16.8.9 (2024-07-23)
 
 ### Added (1 change)
@@ -7780,6 +7842,10 @@ No changes.
 - [Finalize merge_request_diffs.project_id backfill](gitlab-org/gitlab@26aded629ba0a944e9c1ef138d9d5563de0d86ac) ([merge request](gitlab-org/gitlab!139726))
 - [Bump the finalize_after date of backfill migration](gitlab-org/gitlab@770ab7faa2048bfeb8bddd506e6f37fe18bb4d06) ([merge request](gitlab-org/gitlab!140109))
 - [Remove code_suggestions_completion_api feature](gitlab-org/gitlab@988e2f57f9635ed9cc3896b15965b608fce54756) ([merge request](gitlab-org/gitlab!138174)) **GitLab Enterprise Edition**
+
+## 16.7.10 (2024-09-20)
+
+No changes.
 
 ## 16.7.9 (2024-07-23)
 
@@ -8786,6 +8852,10 @@ No changes.
 
 - [Move export buttons next to each other](gitlab-org/gitlab@106bea7a6246cd153cf66d133936a09d46369ae3) ([merge request](gitlab-org/gitlab!137461))
 
+## 16.6.10 (2024-09-20)
+
+No changes.
+
 ## 16.6.9 (2024-07-23)
 
 ### Added (1 change)
@@ -9434,6 +9504,10 @@ No changes.
 - [Raise rate limit error with type](gitlab-org/gitlab@68e071cdea7a7874f4975d1555c384ef920c0dee) ([merge request](gitlab-org/gitlab!134511))
 - [Remove pubsub migration helper for actioncable](gitlab-org/gitlab@763ca1305db6f1c9cf6700b8497494a81926d742) ([merge request](gitlab-org/gitlab!133066))
 - [Use partitioned table for CommitStatus](gitlab-org/gitlab@063826e042778995fae13928a2fb5de2c8855b45) ([merge request](gitlab-org/gitlab!134489))
+
+## 16.5.10 (2024-09-20)
+
+No changes.
 
 ## 16.5.9 (2024-07-23)
 
@@ -10206,6 +10280,10 @@ No changes.
 - [Remove FF when canceling redundant pipelines](gitlab-org/gitlab@16bb8c5ff1ef7c6b1d854c71f4fec555439de210) ([merge request](gitlab-org/gitlab!131978))
 - [Alias read_namespace to access_namespace and move usages to new ability](gitlab-org/gitlab@61cdb4127143162a9bf9182f9c3c2d8421ee447f) by @Taucher2003 ([merge request](gitlab-org/gitlab!126625))
 - [Remove `custom_roles_on_groups` feature flag](gitlab-org/gitlab@ddb4b4399b8bb82793410005c5778a002ae409b9) ([merge request](gitlab-org/gitlab!132187)) **GitLab Enterprise Edition**
+
+## 16.4.7 (2024-09-20)
+
+No changes.
 
 ## 16.4.6 (2024-07-23)
 
@@ -11036,6 +11114,10 @@ No changes.
 - [Remove completed partition_id migrations](gitlab-org/gitlab@119f7a7fd961c93be6b1bbd606fbbe2b798f10aa) ([merge request](gitlab-org/gitlab!129118))
 - [Convert design_user_mentions.note_id to bigint for self-managed](gitlab-org/gitlab@08219da99fc356fecc4e9965fe1891baca4d10ff) ([merge request](gitlab-org/gitlab!129111))
 - [Migrate etag cache store from SharedState to Cache](gitlab-org/gitlab@6476298fcdcf77206fa768bcca6bd1e3c7994936) ([merge request](gitlab-org/gitlab!129050))
+
+## 16.3.9 (2024-09-20)
+
+No changes.
 
 ## 16.3.8 (2024-07-23)
 
@@ -11932,6 +12014,10 @@ No changes.
 - [Fix test pollution in count_deployments_metric_spec](gitlab-org/gitlab@610e6a033fe9b20aabc237b18837cddf150d4d1b) ([merge request](gitlab-org/gitlab!126808))
 - [Update BulkImports::PipelineBatchWorker resource boundary](gitlab-org/gitlab@7d2477d81bcc2d035be26587802706f7098b6e44) ([merge request](gitlab-org/gitlab!126696))
 
+## 16.2.11 (2024-09-23)
+
+No changes.
+
 ## 16.2.10 (2024-07-23)
 
 ### Added (1 change)
@@ -12779,6 +12865,10 @@ No changes.
 - [Accept period_time as string on DORA executor](gitlab-org/gitlab@7d0792288be02cd3300410144067ea947da4846a) ([merge request](gitlab-org/gitlab!123975)) **GitLab Enterprise Edition**
 - [Add schema_version in the commits index mapping](gitlab-org/gitlab@e75b94903b69e1e1588e251217926882875555a8) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123435)) **GitLab Enterprise Edition**
 - [Allow to set labels for Redis calls](gitlab-org/gitlab@8ccfff9e2d250eb22afaa7d0243e707b536a5436) ([merge request](gitlab-org/gitlab!122340))
+
+## 16.1.8 (2024-09-23)
+
+No changes.
 
 ## 16.1.7 (2024-07-23)
 
@@ -13814,6 +13904,10 @@ No changes.
 - [Remove use_traversal_ids_for_ancestor_scopes feature flag](gitlab-org/gitlab@f65d0b8212759de7686d4b02f8c45fea615c52a3) ([merge request](gitlab-org/gitlab!120559))
 - [Migrate custom CSS to utility classes](gitlab-org/gitlab@a67999317bec111d523c763fc865665d4ded0aaf) ([merge request](gitlab-org/gitlab!120745)) **GitLab Enterprise Edition**
 - [Remove the vsa_group_and_project_parity FF](gitlab-org/gitlab@d090818bdedb0e220928d8e456cf36c8bce81f42) ([merge request](gitlab-org/gitlab!120727)) **GitLab Enterprise Edition**
+
+## 16.0.10 (2024-09-23)
+
+No changes.
 
 ## 16.0.9 (2024-07-23)
 

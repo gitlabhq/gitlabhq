@@ -74,12 +74,12 @@ When applied, the suggestion replaces from 2 lines above to 2 lines below the co
 ![Multi-line suggestion preview](img/multi-line-suggestion-preview_v16_6.png)
 
 Suggestions for multiple lines are limited to 100 lines _above_ and 100
-lines _below_ the commented diff line. This allows for up to 200 changed lines per
+lines _below_ the commented diff line. This allows for up to 201 changed lines per
 suggestion.
 
 Multiline comments display the comment's line numbers above the body of the comment:
 
-![Multiline comment selection displayed above comment](img/multiline-comment-saved.png)
+![Multiline comment selection displayed above comment](img/multiline-comment-saved_v13_3.png)
 
 #### Using the rich text editor
 

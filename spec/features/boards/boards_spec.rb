@@ -88,19 +88,13 @@ RSpec.describe 'Project issue boards', :js, feature_category: :portfolio_managem
         visit_project_board_path_without_query_limit(project, board)
       end
 
-      it 'shows description tooltip on list title', :quarantine do
-        page.within('.board:nth-child(2)') do
-          expect(find('.board-title span.has-tooltip')[:title]).to eq('Test')
-        end
-      end
-
       it 'shows issues in lists' do
         wait_for_board_cards(2, 8)
         wait_for_board_cards(3, 2)
       end
 
       it 'shows confidential issues with icon', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/383970' do
-        page.within(find('.board:nth-child(2)')) do
+        page.within(all('[data-testid="board-list"]')[1]) do
           expect(page).to have_selector('.confidential-icon', count: 1)
         end
       end
@@ -110,9 +104,9 @@ RSpec.describe 'Project issue boards', :js, feature_category: :portfolio_managem
 
         wait_for_requests
 
-        expect(find('.board:nth-child(2)')).to have_selector('.board-card', count: 0)
-        expect(find('.board:nth-child(3)')).to have_selector('.board-card', count: 0)
-        expect(find('.board:nth-child(4)')).to have_selector('.board-card', count: 1)
+        expect(all('[data-testid="board-list"]')[1]).to have_selector('.board-card', count: 0)
+        expect(all('[data-testid="board-list"]')[2]).to have_selector('.board-card', count: 0)
+        expect(all('[data-testid="board-list"]')[3]).to have_selector('.board-card', count: 1)
       end
 
       it 'search list' do
@@ -120,9 +114,9 @@ RSpec.describe 'Project issue boards', :js, feature_category: :portfolio_managem
 
         wait_for_requests
 
-        expect(find('.board:nth-child(2)')).to have_selector('.board-card', count: 1)
-        expect(find('.board:nth-child(3)')).to have_selector('.board-card', count: 0)
-        expect(find('.board:nth-child(4)')).to have_selector('.board-card', count: 0)
+        expect(all('[data-testid="board-list"]')[1]).to have_selector('.board-card', count: 1)
+        expect(all('[data-testid="board-list"]')[2]).to have_selector('.board-card', count: 0)
+        expect(all('[data-testid="board-list"]')[3]).to have_selector('.board-card', count: 0)
       end
 
       it 'allows user to delete board' do
@@ -141,7 +135,7 @@ RSpec.describe 'Project issue boards', :js, feature_category: :portfolio_managem
 
         visit_project_board_path_without_query_limit(project, board)
 
-        page.within(find('.board:nth-child(2)')) do
+        page.within(all('[data-testid="board-list"]')[1]) do
           expect(page.find('.board-header')).to have_content('38')
           expect(page).to have_selector('.board-card', count: 10)
           expect(page).to have_content('Showing 10 of 38 issues')
@@ -149,7 +143,7 @@ RSpec.describe 'Project issue boards', :js, feature_category: :portfolio_managem
           find('.board .board-list')
 
           inspect_requests(inject_headers: { 'X-GITLAB-DISABLE-SQL-QUERY-LIMIT' => 'https://gitlab.com/gitlab-org/gitlab/-/issues/323426' }) do
-            evaluate_script("[...document.querySelectorAll('.board:nth-child(2) .board-list [data-testid=\"board-card-gl-io\"]')].pop().scrollIntoView()")
+            evaluate_script("[...document.querySelectorAll('[data-testid=\"board-list\"]:nth-child(2) .board-list [data-testid=\"board-card-gl-io\"]')].pop().scrollIntoView()")
           end
 
           expect(page).to have_selector('.board-card', count: 20)
@@ -158,7 +152,7 @@ RSpec.describe 'Project issue boards', :js, feature_category: :portfolio_managem
           find('.board .board-list')
 
           inspect_requests(inject_headers: { 'X-GITLAB-DISABLE-SQL-QUERY-LIMIT' => 'https://gitlab.com/gitlab-org/gitlab/-/issues/323426' }) do
-            evaluate_script("[...document.querySelectorAll('.board:nth-child(2) .board-list [data-testid=\"board-card-gl-io\"]')].pop().scrollIntoView()")
+            evaluate_script("[...document.querySelectorAll('[data-testid=\"board-list\"]:nth-child(2) .board-list [data-testid=\"board-card-gl-io\"]')].pop().scrollIntoView()")
           end
 
           expect(page).to have_selector('.board-card', count: 30)
@@ -167,7 +161,7 @@ RSpec.describe 'Project issue boards', :js, feature_category: :portfolio_managem
           find('.board .board-list')
 
           inspect_requests(inject_headers: { 'X-GITLAB-DISABLE-SQL-QUERY-LIMIT' => 'https://gitlab.com/gitlab-org/gitlab/-/issues/323426' }) do
-            evaluate_script("[...document.querySelectorAll('.board:nth-child(2) .board-list [data-testid=\"board-card-gl-io\"]')].pop().scrollIntoView()")
+            evaluate_script("[...document.querySelectorAll('[data-testid=\"board-list\"]:nth-child(2) .board-list [data-testid=\"board-card-gl-io\"]')].pop().scrollIntoView()")
           end
 
           expect(page).to have_selector('.board-card', count: 38)
@@ -188,10 +182,10 @@ RSpec.describe 'Project issue boards', :js, feature_category: :portfolio_managem
           wait_for_board_cards(3, 2)
           wait_for_board_cards(4, 2)
 
-          expect(find('.board:nth-child(2)')).not_to have_content(issue9.title)
-          expect(find('.board:nth-child(4)')).to have_selector('.board-card', count: 2)
-          expect(find('.board:nth-child(4)')).to have_content(issue9.title)
-          expect(find('.board:nth-child(4)')).not_to have_content(planning.title)
+          expect(all('[data-testid="board-list"]')[1]).not_to have_content(issue9.title)
+          expect(all('[data-testid="board-list"]')[3]).to have_selector('.board-card', count: 2)
+          expect(all('[data-testid="board-list"]')[3]).to have_content(issue9.title)
+          expect(all('[data-testid="board-list"]')[3]).not_to have_content(planning.title)
         end
 
         it 'removes all of the same issue to closed' do
@@ -201,9 +195,9 @@ RSpec.describe 'Project issue boards', :js, feature_category: :portfolio_managem
           wait_for_board_cards(3, 2)
           wait_for_board_cards(4, 2)
 
-          expect(find('.board:nth-child(2)')).not_to have_content(issue9.title)
-          expect(find('.board:nth-child(4)')).to have_content(issue9.title)
-          expect(find('.board:nth-child(4)')).not_to have_content(planning.title)
+          expect(all('[data-testid="board-list"]')[1]).not_to have_content(issue9.title)
+          expect(all('[data-testid="board-list"]')[3]).to have_content(issue9.title)
+          expect(all('[data-testid="board-list"]')[3]).not_to have_content(planning.title)
         end
       end
 
@@ -211,14 +205,14 @@ RSpec.describe 'Project issue boards', :js, feature_category: :portfolio_managem
         it 'changes position of list' do
           drag(list_from_index: 2, list_to_index: 1, selector: '.board-header')
 
-          expect(find('.board:nth-child(2) [data-testid="board-list-header"]')).to have_content(development.title)
-          expect(find('.board:nth-child(3) [data-testid="board-list-header"]')).to have_content(planning.title)
+          expect(all('[data-testid="board-list"]')[1]).to have_content(development.title)
+          expect(all('[data-testid="board-list"]')[2]).to have_content(planning.title)
 
           # Make sure list positions are preserved after a reload
           visit_project_board_path_without_query_limit(project, board)
 
-          expect(find('.board:nth-child(2) [data-testid="board-list-header"]')).to have_content(development.title)
-          expect(find('.board:nth-child(3) [data-testid="board-list-header"]')).to have_content(planning.title)
+          expect(all('[data-testid="board-list"]')[1]).to have_content(development.title)
+          expect(all('[data-testid="board-list"]')[2]).to have_content(planning.title)
         end
 
         context 'without backlog and closed lists' do
@@ -231,18 +225,18 @@ RSpec.describe 'Project issue boards', :js, feature_category: :portfolio_managem
 
             drag(list_from_index: 0, list_to_index: 1, selector: '.board-header')
 
-            expect(find('.board:nth-child(1) [data-testid="board-list-header"]')).to have_content(development.title)
-            expect(find('.board:nth-child(2) [data-testid="board-list-header"]')).to have_content(planning.title)
+            expect(all('[data-testid="board-list"]')[0]).to have_content(development.title)
+            expect(all('[data-testid="board-list"]')[1]).to have_content(planning.title)
 
             visit_project_board_path_without_query_limit(project, board)
 
-            expect(find('.board:nth-child(1) [data-testid="board-list-header"]')).to have_content(development.title)
-            expect(find('.board:nth-child(2) [data-testid="board-list-header"]')).to have_content(planning.title)
+            expect(all('[data-testid="board-list"]')[0]).to have_content(development.title)
+            expect(all('[data-testid="board-list"]')[1]).to have_content(planning.title)
           end
         end
 
         it 'dragging does not duplicate list' do
-          selector = '.board:not(.is-ghost) .board-header'
+          selector = '[data-testid="board-list"]:not(.is-ghost) .board-header'
           expect(page).to have_selector(selector, text: development.title, count: 1)
 
           inspect_requests(inject_headers: { 'X-GITLAB-DISABLE-SQL-QUERY-LIMIT' => 'https://gitlab.com/gitlab-org/gitlab/-/issues/323426' }) do
@@ -259,8 +253,8 @@ RSpec.describe 'Project issue boards', :js, feature_category: :portfolio_managem
           wait_for_board_cards(3, 2)
           wait_for_board_cards(4, 1)
 
-          expect(find('.board:nth-child(3)')).to have_content(issue6.title)
-          expect(find('.board:nth-child(3)').all('.board-card').last).not_to have_content(development.title)
+          expect(all('[data-testid="board-list"]')[2]).to have_content(issue6.title)
+          expect(all('[data-testid="board-list"]')[2].all('.board-card').last).not_to have_content(development.title)
         end
 
         it 'issue moves between lists and does not show the "Planning" label since the card is in the "Planning" list label', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/383970' do
@@ -270,8 +264,8 @@ RSpec.describe 'Project issue boards', :js, feature_category: :portfolio_managem
           wait_for_board_cards(3, 1)
           wait_for_board_cards(4, 1)
 
-          expect(find('.board:nth-child(2)')).to have_content(issue7.title)
-          expect(find('.board:nth-child(2)').all('.board-card').first).not_to have_content(planning.title)
+          expect(all('[data-testid="board-list"]')[1]).to have_content(issue7.title)
+          expect(all('[data-testid="board-list"]')[1].all('.board-card').first).not_to have_content(planning.title)
         end
 
         it 'issue moves from closed', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/383970' do
@@ -281,12 +275,12 @@ RSpec.describe 'Project issue boards', :js, feature_category: :portfolio_managem
           wait_for_board_cards(3, 1)
           wait_for_board_cards(4, 2)
 
-          expect(find('.board:nth-child(4)')).to have_content(issue8.title)
+          expect(all('[data-testid="board-list"]')[3]).to have_content(issue8.title)
         end
 
         context 'issue card' do
           it 'shows assignee' do
-            page.within(find('.board:nth-child(2)')) do
+            page.within(all('[data-testid="board-list"]')[1]) do
               expect(page).to have_selector('.gl-avatar', count: 1)
             end
           end
@@ -295,7 +289,7 @@ RSpec.describe 'Project issue boards', :js, feature_category: :portfolio_managem
             let(:total_planning_issues) { "8" }
 
             it 'shows issue count on the list' do
-              page.within(find(".board:nth-child(2)")) do
+              page.within(all('[data-testid="board-list"]')[1]) do
                 expect(find_by_testid('board-items-count')).to have_text(total_planning_issues)
                 expect(page).not_to have_selector('.max-issue-size')
               end
@@ -328,7 +322,7 @@ RSpec.describe 'Project issue boards', :js, feature_category: :portfolio_managem
 
         it 'filters by milestone' do
           set_filter("milestone", "\"#{milestone.title}")
-          click_on milestone.title
+          click_link milestone.title
           filter_submit.click
 
           wait_for_requests
@@ -370,12 +364,12 @@ RSpec.describe 'Project issue boards', :js, feature_category: :portfolio_managem
 
           wait_for_requests
 
-          page.within(find('.board:nth-child(2)')) do
+          page.within(all('[data-testid="board-list"]')[1]) do
             expect(page.find('.board-header')).to have_content('1')
             expect(page).to have_selector('.board-card', count: 1)
           end
 
-          page.within(find('.board:nth-child(3)')) do
+          page.within(all('[data-testid="board-list"]')[2]) do
             expect(page.find('.board-header')).to have_content('0')
             expect(page).to have_selector('.board-card', count: 0)
           end
@@ -407,7 +401,7 @@ RSpec.describe 'Project issue boards', :js, feature_category: :portfolio_managem
 
           wait_for_requests
 
-          page.within(find('.board:nth-child(2)')) do
+          page.within(all('[data-testid="board-list"]')[1]) do
             expect(page.find('.board-header')).to have_content('31')
             expect(page).to have_selector('.board-card', count: 10)
             expect(page).to have_content('Showing 10 of 31 issues')
@@ -459,7 +453,7 @@ RSpec.describe 'Project issue boards', :js, feature_category: :portfolio_managem
         end
 
         it 'filters by clicking label button on issue' do
-          page.within(find('.board:nth-child(2)')) do
+          page.within(all('[data-testid="board-list"]')[1]) do
             expect(page).to have_selector('.board-card', count: 8)
             expect(find('.board-card', match: :first)).to have_content(bug.title)
             click_link(bug.title)
@@ -477,7 +471,7 @@ RSpec.describe 'Project issue boards', :js, feature_category: :portfolio_managem
         end
 
         it 'removes label filter by clicking label button on issue' do
-          page.within(find('.board:nth-child(2)')) do
+          page.within(all('[data-testid="board-list"]')[1]) do
             page.within(find('.board-card', match: :first)) do
               click_link(bug.title)
             end
@@ -551,7 +545,7 @@ RSpec.describe 'Project issue boards', :js, feature_category: :portfolio_managem
   end
 
   def wait_for_board_cards(board_number, expected_cards)
-    page.within(find(".board:nth-child(#{board_number})")) do
+    page.within(find("[data-testid='board-list']:nth-child(#{board_number})")) do
       expect(page.find('.board-header')).to have_content(expected_cards.to_s)
       expect(page).to have_selector('.board-card', count: expected_cards)
     end
@@ -587,7 +581,7 @@ RSpec.describe 'Project issue boards', :js, feature_category: :portfolio_managem
   end
 
   def remove_list
-    page.within(find('.board:nth-child(2)')) do
+    page.within(all('[data-testid="board-list"]')[1]) do
       click_button('Edit list settings')
     end
 

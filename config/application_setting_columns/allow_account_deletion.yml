@@ -1,0 +1,12 @@
+---
+api_type: boolean
+attr: allow_account_deletion
+clusterwide: false
+column: allow_account_deletion
+db_type: boolean
+default: 'true'
+description: Enable [users to delete their accounts](../administration/settings/account_and_limit_settings.md#prevent-users-from-deleting-their-accounts).
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

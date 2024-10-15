@@ -44,29 +44,33 @@ A deploy key is given a permission level when it is created:
 You can change a deploy key's permission level after creating it. Changing a project deploy key's
 permissions only applies for the current project.
 
-GitLab authorizes the creator of the deploy key if the Git-command triggers additional processes. For example:
+If a push that uses a deploy key triggers additional processes, the creator of the key must be authorized. For example:
 
 - When a deploy key is used to push a commit to a [protected branch](../repository/branches/protected.md),
-  the _creator_ of the deploy key must have access to the branch.
-- When a deploy key is used to push a commit that triggers a CI/CD pipeline, the _creator_ of the
+  the creator of the deploy key must have access to the branch.
+- When a deploy key is used to push a commit that triggers a CI/CD pipeline, the creator of the
   deploy key must have access to the CI/CD resources, including protected environments and secret
   variables.
 
-## Security implications
+### Security implications
 
-The intended use case for deploy keys is for non-human interaction with GitLab, for example: an automated script running on a server in your organization.
+Deploy keys are meant to facilitate non-human interaction with GitLab. For example, you can use a deploy key
+to grant permissions to a script that automatically runs on a server in your organization.
 
 You should create a dedicated account to act as a service account, and create the deploy key with the service account.
-If you use another user account to create deploy keys, the user is granted persistent privileges.
+If you use another user account to create deploy keys, that user is granted privileges that persist until the deploy key is revoked.
 
 In addition:
 
 - Deploy keys work even if the user who created them is removed from the group or project.
 - The creator of a deploy key retains access to the group or project, even if the user is demoted or removed.
-- When a deploy key is specified in a protected branch rule, the creator of the deploy key gains access to the protected branch, as well as to the deploy key itself.
+- When a deploy key is specified in a protected branch rule, the creator of the deploy key:
+  - Gains access to the protected branch, as well as to the deploy key itself.
+  - Can push to the protected branch, if the deploy key has read-write permission.
+    This is true even if the branch is protected against changes from all users.
 
 As with all sensitive information, you should ensure only those who need access to the secret can read it.
-For human interactions, use credentials tied to users such as Personal access tokens.
+For human interactions, use credentials tied to users such as personal access tokens.
 
 To help detect a potential secret leak, you can use the
 [audit event](../../compliance/audit_event_schema.md#example-audit-event-payloads-for-git-over-ssh-events-with-deploy-key) feature.

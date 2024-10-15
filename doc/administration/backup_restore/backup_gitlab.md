@@ -182,6 +182,8 @@ Backups do not include:
 - [Mattermost data](../../integration/mattermost/index.md#back-up-gitlab-mattermost)
 - Redis (and thus Sidekiq jobs)
 - [Object storage](#object-storage) on Linux package (Omnibus) / Docker / Self-compiled installations
+- [Global server hooks](../server_hooks.md#create-global-server-hooks-for-all-repositories)
+- [File hooks](../file_hooks.md)
 
 WARNING:
 GitLab does not back up any configuration files (`/etc/gitlab`), TLS keys and certificates, or system
@@ -386,7 +388,7 @@ DECOMPRESS_CMD=tee gitlab-backup restore
 ##### Parallel compression with `pigz`
 
 WARNING:
-While we support using `COMPRESS_CMD` and `DECOMPRESS_CMD` to override the default Gzip compression library, we currently only test the default Gzip library with default options on a routine basis. You are responsible for testing and validating the viability of your backups. We strongly recommend this as best practice in general for backups, whether overriding the compression command or not. If you encounter issues with another compression library, you should revert back to the default. Troubleshooting and fixing errors with alternative libraries are a lower priority for GitLab.
+While we support using `COMPRESS_CMD` and `DECOMPRESS_CMD` to override the default Gzip compression library, we only test the default Gzip library with default options on a routine basis. You are responsible for testing and validating the viability of your backups. We strongly recommend this as best practice in general for backups, whether overriding the compression command or not. If you encounter issues with another compression library, you should revert back to the default. Troubleshooting and fixing errors with alternative libraries are a lower priority for GitLab.
 
 NOTE:
 `pigz` is not included in the GitLab Linux package. You must install it yourself.
@@ -406,7 +408,7 @@ DECOMPRESS_CMD="pigz --decompress --stdout" sudo gitlab-backup restore
 ##### Parallel compression with `zstd`
 
 WARNING:
-While we support using `COMPRESS_CMD` and `DECOMPRESS_CMD` to override the default Gzip compression library, we currently only test the default Gzip library with default options on a routine basis. You are responsible for testing and validating the viability of your backups. We strongly recommend this as best practice in general for backups, whether overriding the compression command or not. If you encounter issues with another compression library, you should revert back to the default. Troubleshooting and fixing errors with alternative libraries are a lower priority for GitLab.
+While we support using `COMPRESS_CMD` and `DECOMPRESS_CMD` to override the default Gzip compression library, we only test the default Gzip library with default options on a routine basis. You are responsible for testing and validating the viability of your backups. We strongly recommend this as best practice in general for backups, whether overriding the compression command or not. If you encounter issues with another compression library, you should revert back to the default. Troubleshooting and fixing errors with alternative libraries are a lower priority for GitLab.
 
 NOTE:
 `zstd` is not included in the GitLab Linux package. You must install it yourself.

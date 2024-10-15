@@ -4,6 +4,7 @@ import { debounce, isArray } from 'lodash';
 // eslint-disable-next-line no-restricted-imports
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { sprintf } from '~/locale';
+import ProtectedBadge from '~/vue_shared/components/badges/protected_badge.vue';
 import {
   ALL_REF_TYPES,
   SEARCH_DEBOUNCE_MS,
@@ -25,6 +26,7 @@ export default {
     GlBadge,
     GlIcon,
     GlCollapsibleListbox,
+    ProtectedBadge,
   },
   inheritAttrs: false,
   props: {
@@ -284,7 +286,7 @@ export default {
       <template #list-item="{ item }">
         {{ item.text }}
         <gl-badge v-if="item.default" variant="info">{{ i18n.defaultLabelText }}</gl-badge>
-        <gl-badge v-if="item.protected" variant="neutral">{{ i18n.protectedLabelText }}</gl-badge>
+        <protected-badge v-if="item.protected" />
       </template>
       <template #footer>
         <slot name="footer" v-bind="footerSlotProps"></slot>

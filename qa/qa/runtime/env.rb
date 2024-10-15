@@ -2,6 +2,7 @@
 
 require 'active_support/deprecation'
 require 'uri'
+require 'etc'
 
 module QA
   module Runtime
@@ -485,6 +486,10 @@ module QA
         ENV.fetch("WORKSPACES_OAUTH_SIGNING_KEY")
       end
 
+      def workspaces_proxy_version
+        ENV.fetch("WORKSPACES_PROXY_VERSION", '0.1.12')
+      end
+
       def workspaces_proxy_domain
         ENV.fetch("WORKSPACES_PROXY_DOMAIN")
       end
@@ -568,10 +573,6 @@ module QA
 
       def geo_environment?
         QA::Runtime::Scenario.attributes.include?(:geo_secondary_address)
-      end
-
-      def gitlab_agentk_version
-        ENV.fetch('GITLAB_AGENTK_VERSION', 'v16.10.0')
       end
 
       def transient_trials
@@ -732,6 +733,26 @@ module QA
       # @return [Boolean]
       def rspec_retried?
         enabled?(ENV['QA_RSPEC_RETRIED'], default: false)
+      end
+
+      def parallel_processes
+        ENV.fetch('QA_PARALLEL_PROCESSES') do
+          [Etc.nprocessors / 2, 1].max
+        end.to_i
+      end
+
+      # Execution was started by parallel runner
+      #
+      # @return [Boolean]
+      def parallel_run?
+        ENV["TEST_ENV_NUMBER"].present?
+      end
+
+      # Execute tests in multiple parallel processes
+      #
+      # @return [Boolean]
+      def run_in_parallel?
+        enabled?(ENV["QA_RUN_IN_PARALLEL"], default: false)
       end
 
       private

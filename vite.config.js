@@ -122,6 +122,7 @@ export default defineConfig({
     'process.env.GITLAB_WEB_IDE_PUBLIC_PATH': JSON.stringify(GITLAB_WEB_IDE_PUBLIC_PATH),
     'process.env.PDF_JS_WORKER_PUBLIC_PATH': JSON.stringify(PDF_JS_WORKER_PUBLIC_PATH),
     'process.env.PDF_JS_CMAPS_PUBLIC_PATH': JSON.stringify(PDF_JS_CMAPS_PUBLIC_PATH),
+    'window.IS_VITE': JSON.stringify(true),
     'window.VUE_DEVTOOLS_CONFIG.openInEditorHost': JSON.stringify(
       viteGDKConfig.hmr
         ? `${process.env.VITE_HMR_HTTP_URL}/vite-dev/`

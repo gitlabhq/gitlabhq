@@ -1,0 +1,13 @@
+---
+description: Track when the work item state is updated.
+action: updated_state
+product_group: project_management
+milestone: '15.0'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/83485
+distributions:
+  - ce
+  - ee
+tiers:
+  - free
+  - premium
+  - ultimate

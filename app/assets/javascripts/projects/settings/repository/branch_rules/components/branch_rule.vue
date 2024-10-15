@@ -1,5 +1,6 @@
 <script>
 import { GlBadge, GlButton } from '@gitlab/ui';
+import ProtectedBadge from '~/vue_shared/components/badges/protected_badge.vue';
 import { s__, sprintf, n__ } from '~/locale';
 import { getAccessLevels } from '../../../utils';
 
@@ -7,7 +8,6 @@ export default {
   name: 'BranchRule',
   i18n: {
     defaultLabel: s__('BranchRules|default'),
-    protectedLabel: s__('BranchRules|protected'),
     detailsButtonLabel: s__('BranchRules|View details'),
     allowForcePush: s__('BranchRules|Allowed to force push'),
     codeOwnerApprovalRequired: s__('BranchRules|Requires CODEOWNERS approval'),
@@ -20,6 +20,7 @@ export default {
   components: {
     GlBadge,
     GlButton,
+    ProtectedBadge,
   },
   inject: {
     branchRulesPath: {
@@ -164,9 +165,7 @@ export default {
           $options.i18n.defaultLabel
         }}</gl-badge>
 
-        <gl-badge v-if="isProtected" variant="neutral" class="gl-ml-2">{{
-          $options.i18n.protectedLabel
-        }}</gl-badge>
+        <protected-badge v-if="isProtected" />
 
         <ul v-if="hasApprovalDetails" class="gl-mb-0 gl-mt-2 gl-pl-6 gl-text-gray-500">
           <li v-for="(detail, index) in approvalDetails" :key="index">{{ detail }}</li>

@@ -37,7 +37,6 @@ RSpec/ReturnFromStub:
     - 'ee/spec/views/admin/groups/_form.html.haml_spec.rb'
     - 'ee/spec/views/shared/_mirror_update_button.html.haml_spec.rb'
     - 'ee/spec/workers/ee/ci/build_finished_worker_spec.rb'
-    - 'qa/spec/specs/runner_spec.rb'
     - 'spec/benchmarks/banzai_benchmark.rb'
     - 'spec/config/settings_spec.rb'
     - 'spec/controllers/admin/application_settings_controller_spec.rb'

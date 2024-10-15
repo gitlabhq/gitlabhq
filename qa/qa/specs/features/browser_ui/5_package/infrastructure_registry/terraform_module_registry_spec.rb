@@ -17,12 +17,12 @@ module QA
           project.name = 'terraform-module-test'
           project.group = group
           project.gitlab_repository_path = 'https://gitlab.com/mattkasa/terraform-module-test.git'
-        end
+        end.reload!
       end
 
       let(:runner) do
         Resource::ProjectRunner.fabricate! do |runner|
-          runner.name = "qa-runner-#{Time.now.to_i}"
+          runner.name = "qa-runner-#{SecureRandom.hex(6)}"
           runner.tags = ["runner-for-#{imported_project.name}"]
           runner.executor = :docker
           runner.project = imported_project
@@ -34,7 +34,6 @@ module QA
         QA::Support::Helpers::ImportSource.enable('git')
 
         Flow::Login.sign_in
-
         imported_project
         runner
       end
@@ -45,24 +44,18 @@ module QA
 
       it 'publishes a module', :blocking,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/371583' do
-        Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
-          terraform_module_yaml = ERB.new(
-            read_fixture('package_managers/terraform', 'module_upload.yaml.erb')
-          ).result(binding)
+        terraform_module_yaml = ERB.new(
+          read_fixture('package_managers/terraform', 'module_upload.yaml.erb')
+        ).result(binding)
 
-          create(:commit, project: imported_project, commit_message: 'Add gitlab-ci.yaml file', actions: [
-            { action: 'update', file_path: '.gitlab-ci.yml', content: terraform_module_yaml }
-          ])
-        end
+        create(:commit, project: imported_project, commit_message: 'Add gitlab-ci.yaml file', actions: [
+          { action: 'update', file_path: '.gitlab-ci.yml', content: terraform_module_yaml }
+        ])
 
         create(:tag, project: imported_project, ref: imported_project.default_branch, name: '1.0.0')
 
-        Flow::Pipeline.visit_latest_pipeline
-
-        Page::Project::Pipeline::Show.perform do |pipeline|
-          pipeline.click_job('upload')
-        end
-
+        Flow::Pipeline.wait_for_pipeline_creation_via_api(project: imported_project)
+        imported_project.visit_job('upload')
         Page::Project::Job::Show.perform do |job|
           expect(job).to be_successful(timeout: 180)
         end

@@ -55,7 +55,7 @@ RSpec.describe API::Statistics, 'Statistics', :aggregate_failures, feature_categ
         projects = create_list(:project, 4, namespace: create(:namespace, owner: admin))
         issues = create_list(:issue, 2, project: projects.first, updated_by: admin)
 
-        create_list(:snippet, 2, :public, author: admin)
+        create_list(:personal_snippet, 2, :public, author: admin)
         create_list(:note, 2, author: admin, project: projects.first, noteable: issues.first)
         create_list(:milestone, 3, project: projects.first)
         create(:key, user: admin)

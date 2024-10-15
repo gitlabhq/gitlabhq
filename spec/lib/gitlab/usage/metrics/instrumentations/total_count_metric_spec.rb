@@ -3,25 +3,28 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Usage::Metrics::Instrumentations::TotalCountMetric, :clean_gitlab_redis_shared_state,
-  feature_category: :product_analytics_data_management do
+  feature_category: :product_analytics do
   before do
     allow(Gitlab::Tracking::EventDefinition).to receive(:internal_event_exists?).and_return(true)
 
     event_definition = instance_double(
       Gitlab::Tracking::EventDefinition,
-      event_selection_rules: [Gitlab::Usage::EventSelectionRule.new(name: 'my_event', time_framed: false)]
+      event_selection_rules: [Gitlab::Usage::EventSelectionRule.new(name: 'my_event', time_framed: false)],
+      to_h: {}
     )
     allow(Gitlab::Tracking::EventDefinition).to receive(:find).with('my_event').and_return(event_definition)
 
     event_definition1 = instance_double(
       Gitlab::Tracking::EventDefinition,
-      event_selection_rules: [Gitlab::Usage::EventSelectionRule.new(name: 'my_event1', time_framed: false)]
+      event_selection_rules: [Gitlab::Usage::EventSelectionRule.new(name: 'my_event1', time_framed: false)],
+      to_h: {}
     )
     allow(Gitlab::Tracking::EventDefinition).to receive(:find).with('my_event1').and_return(event_definition1)
 
     event_definition2 = instance_double(
       Gitlab::Tracking::EventDefinition,
-      event_selection_rules: [Gitlab::Usage::EventSelectionRule.new(name: 'my_event2', time_framed: false)]
+      event_selection_rules: [Gitlab::Usage::EventSelectionRule.new(name: 'my_event2', time_framed: false)],
+      to_h: {}
     )
     allow(Gitlab::Tracking::EventDefinition).to receive(:find).with('my_event2').and_return(event_definition2)
   end

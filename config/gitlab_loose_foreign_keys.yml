@@ -35,6 +35,13 @@ ci_group_variables:
   - table: namespaces
     column: group_id
     on_delete: async_delete
+ci_job_token_authorizations:
+  - table: projects
+    column: origin_project_id
+    on_delete: async_delete
+  - table: projects
+    column: accessed_project_id
+    on_delete: async_delete
 ci_job_token_group_scope_links:
   - table: users
     column: added_by_id
@@ -192,6 +199,13 @@ dast_pre_scan_verifications:
   - table: projects
     column: project_id
     on_delete: async_delete
+dast_profile_schedules:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
+  - table: users
+    column: user_id
+    on_delete: async_nullify
 dast_profiles:
   - table: projects
     column: project_id
@@ -414,6 +428,12 @@ packages_build_infos:
   - table: ci_pipelines
     column: pipeline_id
     on_delete: async_nullify
+packages_npm_metadata_caches:
+  - table: projects
+    column: project_id
+    on_delete: update_column_to
+    target_column: status
+    target_value: 2
 packages_package_file_build_infos:
   - table: ci_pipelines
     column: pipeline_id
@@ -433,10 +453,11 @@ project_security_exclusions:
   - table: projects
     column: project_id
     on_delete: async_delete
+project_security_statistics:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
 projects:
-  - table: organizations
-    column: organization_id
-    on_delete: async_nullify
   - table: users
     column: marked_for_deletion_by_user_id
     on_delete: async_nullify
@@ -628,6 +649,13 @@ vulnerability_occurrences:
   - table: projects
     column: project_id
     on_delete: async_delete
+vulnerability_reads:
+  - table: cluster_agents
+    column: casted_cluster_agent_id
+    on_delete: async_nullify
+  - table: projects
+    column: project_id
+    on_delete: async_delete
 vulnerability_remediations:
   - table: projects
     column: project_id
@@ -636,6 +664,13 @@ vulnerability_scanners:
   - table: projects
     column: project_id
     on_delete: async_delete
+vulnerability_state_transitions:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
+  - table: users
+    column: author_id
+    on_delete: async_nullify
 vulnerability_statistics:
   - table: ci_pipelines
     column: latest_pipeline_id

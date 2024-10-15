@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::Filter::PlantumlFilter, feature_category: :team_planning do
+RSpec.describe Banzai::Filter::PlantumlFilter, feature_category: :markdown do
   include FilterSpecHelper
 
   it 'replaces plantuml pre tag with img tag' do

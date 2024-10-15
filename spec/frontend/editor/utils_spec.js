@@ -97,4 +97,17 @@ describe('Source Editor utils', () => {
       expect(monacoEditor.setTheme).toHaveBeenCalled();
     });
   });
+
+  describe('enableMonacoYamlWorkerForVite', () => {
+    it('does not set up the worker for non-Vite environments', () => {
+      utils.enableMonacoYamlWorkerForVite();
+      expect(window.MonacoEnvironment).toBeUndefined();
+    });
+
+    it('does set up the worker for Vite environments', () => {
+      window.IS_VITE = true;
+      utils.enableMonacoYamlWorkerForVite();
+      expect(window.MonacoEnvironment).toBeDefined();
+    });
+  });
 });

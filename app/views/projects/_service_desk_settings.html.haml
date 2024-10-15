@@ -4,7 +4,7 @@
   testid: 'service-desk-content',
   expanded: expanded_by_default?) do |c|
   - c.with_description do
-    - link_start = "<a href='#{help_page_path('user/project/service_desk/index')}' target='_blank' rel='noopener noreferrer'>".html_safe
+    - link_start = "<a href='#{help_page_path('user/project/service_desk/index.md')}' target='_blank' rel='noopener noreferrer'>".html_safe
     = _('Enable and disable Service Desk. Some additional configuration might be required. %{link_start}Learn more%{link_end}.').html_safe % { link_start: link_start, link_end: '</a>'.html_safe }
   - c.with_body do
     - if ::Gitlab::ServiceDesk.supported?

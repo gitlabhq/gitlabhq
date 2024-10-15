@@ -1,0 +1,12 @@
+---
+api_type:
+attr: runners_registration_token
+clusterwide: false
+column: runners_registration_token_encrypted
+db_type: character
+default:
+description:
+encrypted: true
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

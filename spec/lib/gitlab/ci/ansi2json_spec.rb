@@ -27,6 +27,14 @@ RSpec.describe Gitlab::Ci::Ansi2json, feature_category: :continuous_integration 
           ])
       end
 
+      it 'adds new line when encountering \r\r\n' do
+        expect(convert_json("Hello\r\r\nworld")).to eq(
+          [
+            { offset: 0, content: [{ text: 'Hello' }] },
+            { offset: 8, content: [{ text: 'world' }] }
+          ])
+      end
+
       it 'ignores empty newlines' do
         expect(convert_json("Hello\n\nworld")).to eq(
           [

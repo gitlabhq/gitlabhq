@@ -1,0 +1,71 @@
+{
+  "schema": "iglu:com.snowplowanalytics.snowplow/contexts/jsonschema/1-0-0",
+  "data": [
+    {
+      "schema": "iglu:com.gitlab/gitlab_standard/jsonschema/1-1-1",
+      "data": {
+        "environment": "development",
+        "source": "gitlab-javascript",
+        "correlation_id": "01J8TQ3T3XSCBQ5CR9ZMMV0K1J",
+        "plan": null,
+        "extra": {
+        },
+        "user_id": 1,
+        "is_gitlab_team_member": null,
+        "namespace_id": null,
+        "project_id": null,
+        "feature_enabled_by_namespace_ids": null,
+        "realm": "self-managed",
+        "instance_id": "c0b9bbb1-fdf8-42a1-af25-043711af0c6b",
+        "host_name": "macbook-pro.lan",
+        "instance_version": "17.5.0",
+        "context_generated_at": "2024-09-27T21:45:11.468Z",
+        "google_analytics_id": ""
+      }
+    },
+    {
+      "schema": "iglu:com.gitlab/gitlab_service_ping/jsonschema/1-0-1",
+      "data": {
+        "event_name": "view_admin_dashboard_pageload",
+        "data_source": "redis_hll"
+      }
+    },
+    {
+      "schema": "iglu:com.snowplowanalytics.snowplow/web_page/jsonschema/1-0-0",
+      "data": {
+        "id": "16db3a46-a0a0-4e0d-8aaa-0aa0c8c87942"
+      }
+    },
+    {
+      "schema": "iglu:com.google.analytics/cookies/jsonschema/1-0-0",
+      "data": {
+      }
+    },
+    {
+      "schema": "iglu:org.w3/PerformanceTiming/jsonschema/1-0-0",
+      "data": {
+        "navigationStart": 1727473510517,
+        "redirectStart": 0,
+        "redirectEnd": 0,
+        "fetchStart": 1727473510520,
+        "domainLookupStart": 1727473510520,
+        "domainLookupEnd": 1727473510520,
+        "connectStart": 1727473510520,
+        "secureConnectionStart": 0,
+        "connectEnd": 1727473510520,
+        "requestStart": 1727473510522,
+        "responseStart": 1727473511763,
+        "responseEnd": 1727473511769,
+        "unloadEventStart": 0,
+        "unloadEventEnd": 0,
+        "domLoading": 1727473511766,
+        "domInteractive": 1727473511917,
+        "domContentLoadedEventStart": 1727473512790,
+        "domContentLoadedEventEnd": 1727473512791,
+        "domComplete": 1727473512932,
+        "loadEventStart": 1727473512933,
+        "loadEventEnd": 1727473512933
+      }
+    }
+  ]
+}

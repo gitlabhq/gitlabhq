@@ -94,4 +94,55 @@ describe('sidebarEntriesToTree', () => {
       },
     ]);
   });
+
+  it('works properly even if the slugs contain special characters and emojis', () => {
+    const entries = [
+      { path: '/00-START-HERE-:-)', slug: '00-START-HERE-:-)', title: '00 START HERE : )' },
+      {
+        path: '/Page-that-should-break-the-sidebar-)',
+        slug: 'Page-that-should-break-the-sidebar-)',
+        title: 'Page that should break the sidebar )',
+      },
+      {
+        path: '/What-about-this-/-new-subpage',
+        slug: 'What-about-this-/-new-subpage',
+        title: 'these subpages seems working just fine',
+      },
+      {
+        path: '/What-about-utf-%F0%9F%A4%AC',
+        slug: 'What-about-utf-🤬',
+        title: 'What about utf 🤬',
+      },
+      { path: '/home', slug: 'home', title: 'Home' },
+      { path: '/-not-trimmed-', slug: '-not-trimmed-', title: ' Not trimmed ' },
+    ];
+
+    expect(sidebarEntriesToTree(entries)).toMatchObject([
+      { path: '/-not-trimmed-', slug: '-not-trimmed-', title: ' Not trimmed ' },
+      { slug: '00-START-HERE-:-)', path: '/00-START-HERE-:-)', title: '00 START HERE : )' },
+      { slug: 'home', path: '/home', title: 'Home' },
+      {
+        slug: 'Page-that-should-break-the-sidebar-)',
+        path: '/Page-that-should-break-the-sidebar-)',
+        title: 'Page that should break the sidebar )',
+      },
+      {
+        slug: 'What-about-this-',
+        path: '/What-about-this-',
+        title: 'What about this ',
+        children: [
+          {
+            slug: 'What-about-this-/-new-subpage',
+            path: '/What-about-this-/-new-subpage',
+            title: 'these subpages seems working just fine',
+          },
+        ],
+      },
+      {
+        slug: 'What-about-utf-🤬',
+        path: '/What-about-utf-%F0%9F%A4%AC',
+        title: 'What about utf 🤬',
+      },
+    ]);
+  });
 });

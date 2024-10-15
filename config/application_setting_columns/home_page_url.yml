@@ -1,0 +1,12 @@
+---
+api_type: string
+attr: home_page_url
+clusterwide: true
+column: home_page_url
+db_type: character
+default:
+description: Redirect to this URL when not logged in.
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

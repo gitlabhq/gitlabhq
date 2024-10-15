@@ -28,5 +28,5 @@
           .input-group-append
             = clipboard_button(target: '#domain_verification', category: :primary, size: :medium)
         %p.form-text.gl-text-subtle
-          - link_to_help = link_to(_('verify ownership'), help_page_path('user/project/pages/custom_domains_ssl_tls_certification/index', anchor: '4-verify-the-domains-ownership'))
+          - link_to_help = link_to(_('verify ownership'), help_page_path('user/project/pages/custom_domains_ssl_tls_certification/index.md', anchor: '4-verify-the-domains-ownership'))
           = _("To %{link_to_help} of your domain, add the above key to a TXT record within your DNS configuration within seven days.").html_safe % { link_to_help: link_to_help }

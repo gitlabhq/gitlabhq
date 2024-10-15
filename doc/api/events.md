@@ -17,21 +17,24 @@ DETAILS:
 See [User contribution events](../user/profile/contributions_calendar.md#user-contribution-events) for available types for the `action` parameter.
 These options are in lowercase.
 
-### Target Types
+### Target types
+
+> - Support for epics [introduced](https://gitlab.com/groups/gitlab-org/-/epics/13056) in GitLab 17.3. Your administrator must have [enabled the new look for epics](../user/group/epics/epic_work_items.md).
 
 Available target types for the `target_type` parameter are:
 
-- `issue`
-- `milestone`
-- `merge_request`
+- `epic`. Your administrator must have [enabled the new look for epics](../user/group/epics/epic_work_items.md).
+- `issue`.
+- `milestone`.
+- `merge_request`.
 - `note` - Some notes on merge requests may be of the type `DiscussionNote`, instead of `Note`.
   `DiscussionNote` items are [not available using the API](discussions.md#understand-note-types-in-the-api).
-- `project`
-- `snippet`
-- `user`
+- `project`.
+- `snippet`.
+- `user`.
 
 These options are in lowercase.
-Events associated with epics are not available using the API.
+Some epic features like child items, linked items, start dates, due dates, and health statuses are not available using the API.
 Some discussions on merge requests may be of type `DiscussionNote`. These are not available using the API.
 
 ### Date formatting
@@ -288,7 +291,7 @@ Parameters:
 
 | Attribute     | Type           | Required | Description                                                                                         |
 |---------------|----------------|----------|-----------------------------------------------------------------------------------------------------|
-| `project_id`  | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding)                 |
+| `project_id`  | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths)                 |
 | `action`      | string         | no       | Include only events of a particular [action type](#actions)                                         |
 | `target_type` | string         | no       | Include only events of a particular [target type](#target-types)                                    |
 | `before`      | date           | no       | Include only events created before a particular date. [View how to format dates](#date-formatting). |

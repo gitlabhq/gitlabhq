@@ -1,8 +1,0 @@
----
-name: check_membership_in_protected_ref_access
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132380
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/425926
-milestone: '16.5'
-type: development
-group: group::source code
-default_enabled: false

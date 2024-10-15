@@ -14,8 +14,8 @@ RSpec.describe WorkItems::Callbacks::Hierarchy, feature_category: :portfolio_man
   let(:callback) { described_class.new(issuable: work_item, current_user: user, params: params) }
   let(:not_found_error) { 'No matching work item found. Make sure that you are adding a valid work item ID.' }
 
-  shared_examples 'raises a WidgetError' do |message_arg|
-    it { expect { subject }.to raise_error(::WorkItems::Widgets::BaseService::WidgetError, message_arg || message) }
+  shared_examples 'raises a callback error' do |message_arg|
+    it { expect { subject }.to raise_error(::Issuable::Callbacks::Base::Error, message_arg || message) }
   end
 
   describe '#after_create' do
@@ -24,7 +24,7 @@ RSpec.describe WorkItems::Callbacks::Hierarchy, feature_category: :portfolio_man
     context 'when invalid params are present' do
       let(:params) { { other_parent: 'parent_work_item' } }
 
-      it_behaves_like 'raises a WidgetError', 'One or more arguments are invalid: other_parent.'
+      it_behaves_like 'raises a callback error', 'One or more arguments are invalid: other_parent.'
     end
   end
 
@@ -34,19 +34,19 @@ RSpec.describe WorkItems::Callbacks::Hierarchy, feature_category: :portfolio_man
     context 'when invalid params are present' do
       let(:params) { { other_parent: 'parent_work_item' } }
 
-      it_behaves_like 'raises a WidgetError', 'One or more arguments are invalid: other_parent.'
+      it_behaves_like 'raises a callback error', 'One or more arguments are invalid: other_parent.'
     end
 
     context 'when multiple params are present' do
-      it_behaves_like 'raises a WidgetError', 'One and only one of children, parent or remove_child is required' do
+      it_behaves_like 'raises a callback error', 'One and only one of children, parent or remove_child is required' do
         let(:params) { { parent: parent_work_item, children: [child_work_item] } }
       end
 
-      it_behaves_like 'raises a WidgetError', 'One and only one of children, parent or remove_child is required' do
+      it_behaves_like 'raises a callback error', 'One and only one of children, parent or remove_child is required' do
         let(:params) { { parent: parent_work_item, remove_child: child_work_item } }
       end
 
-      it_behaves_like 'raises a WidgetError', 'One and only one of children, parent or remove_child is required' do
+      it_behaves_like 'raises a callback error', 'One and only one of children, parent or remove_child is required' do
         let(:params) { { remove_child: child_work_item, children: [child_work_item] } }
       end
     end
@@ -57,7 +57,7 @@ RSpec.describe WorkItems::Callbacks::Hierarchy, feature_category: :portfolio_man
           { parent: parent_work_item, adjacent_work_item: child_work_item }
         end
 
-        it_behaves_like 'raises a WidgetError', described_class::INVALID_RELATIVE_POSITION_ERROR
+        it_behaves_like 'raises a callback error', described_class::INVALID_RELATIVE_POSITION_ERROR
       end
 
       context 'when only relative_position is present' do
@@ -65,7 +65,7 @@ RSpec.describe WorkItems::Callbacks::Hierarchy, feature_category: :portfolio_man
           { parent: parent_work_item, relative_position: 'AFTER' }
         end
 
-        it_behaves_like 'raises a WidgetError', described_class::INVALID_RELATIVE_POSITION_ERROR
+        it_behaves_like 'raises a callback error', described_class::INVALID_RELATIVE_POSITION_ERROR
       end
     end
 
@@ -77,7 +77,7 @@ RSpec.describe WorkItems::Callbacks::Hierarchy, feature_category: :portfolio_man
       context 'when user has insufficient permissions to link work items' do
         let(:params) { { children: [child_work_item4] } }
 
-        it_behaves_like 'raises a WidgetError' do
+        it_behaves_like 'raises a callback error' do
           let(:message) { not_found_error }
         end
       end
@@ -103,7 +103,7 @@ RSpec.describe WorkItems::Callbacks::Hierarchy, feature_category: :portfolio_man
                 { children: [child_work_item3], relative_position: 'BEFORE', adjacent_work_item: child_work_item }
               end
 
-              it_behaves_like 'raises a WidgetError', described_class::CHILDREN_REORDERING_ERROR
+              it_behaves_like 'raises a callback error', described_class::CHILDREN_REORDERING_ERROR
             end
 
             context 'with AFTER value' do
@@ -111,7 +111,7 @@ RSpec.describe WorkItems::Callbacks::Hierarchy, feature_category: :portfolio_man
                 { children: [child_work_item2], relative_position: 'AFTER', adjacent_work_item: child_work_item }
               end
 
-              it_behaves_like 'raises a WidgetError', described_class::CHILDREN_REORDERING_ERROR
+              it_behaves_like 'raises a callback error', described_class::CHILDREN_REORDERING_ERROR
             end
           end
         end
@@ -129,7 +129,7 @@ RSpec.describe WorkItems::Callbacks::Hierarchy, feature_category: :portfolio_man
         context 'when child is already assigned' do
           let(:params) { { children: [child_work_item] } }
 
-          it_behaves_like 'raises a WidgetError', 'Work item(s) already assigned'
+          it_behaves_like 'raises a callback error', 'Work item(s) already assigned'
         end
 
         context 'when child type is invalid' do
@@ -137,7 +137,7 @@ RSpec.describe WorkItems::Callbacks::Hierarchy, feature_category: :portfolio_man
 
           let(:params) { { children: [child_issue] } }
 
-          it_behaves_like 'raises a WidgetError' do
+          it_behaves_like 'raises a callback error' do
             let(:message) do
               "#{child_issue.to_reference} cannot be added: it's not allowed to add this type of parent item"
             end
@@ -152,7 +152,7 @@ RSpec.describe WorkItems::Callbacks::Hierarchy, feature_category: :portfolio_man
       let(:params) { { parent: parent_work_item } }
 
       context 'when user has insufficient permissions to link work items' do
-        it_behaves_like 'raises a WidgetError' do
+        it_behaves_like 'raises a callback error' do
           let(:message) { not_found_error }
         end
       end
@@ -194,7 +194,7 @@ RSpec.describe WorkItems::Callbacks::Hierarchy, feature_category: :portfolio_man
 
           let(:params) { { parent: parent_task } }
 
-          it_behaves_like 'raises a WidgetError' do
+          it_behaves_like 'raises a callback error' do
             let(:message) do
               "#{parent_task.to_reference} cannot be added: it's not allowed to add this type of parent item"
             end
@@ -224,7 +224,7 @@ RSpec.describe WorkItems::Callbacks::Hierarchy, feature_category: :portfolio_man
               { parent: parent_work_item, adjacent_work_item: other_hierarchy_adjacent, relative_position: 'AFTER' }
             end
 
-            it_behaves_like 'raises a WidgetError', described_class::UNRELATED_ADJACENT_HIERARCHY_ERROR
+            it_behaves_like 'raises a callback error', described_class::UNRELATED_ADJACENT_HIERARCHY_ERROR
           end
         end
       end

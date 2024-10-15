@@ -2,15 +2,15 @@
 
 module Timelogs
   class TimelogsFinder
-    attr_reader :issuable, :params
+    attr_reader :parent, :params
 
-    def initialize(issuable, params = {})
-      @issuable = issuable
+    def initialize(parent, params = {})
+      @parent = parent
       @params = params
     end
 
     def execute
-      timelogs = issuable&.timelogs || Timelog.all
+      timelogs = parent&.timelogs || Timelog.all
       timelogs = by_time(timelogs)
       timelogs = by_user(timelogs)
       timelogs = by_group(timelogs)

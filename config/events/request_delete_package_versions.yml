@@ -1,0 +1,13 @@
+---
+description: tracks an event when a user initiates the request to delete multiple package versions in bulk.
+action: request_delete_package_versions
+product_group: package_registry
+milestone: '15.9'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110721
+distributions:
+  - ce
+  - ee
+tiers:
+  - free
+  - premium
+  - ultimate

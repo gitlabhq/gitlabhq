@@ -1,0 +1,14 @@
+---
+description: Triggered when email notifications are disabled in Incident Management settings
+action: disabled_sending_emails
+identifiers:
+product_group: respond
+milestone: "<13.9"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165305
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

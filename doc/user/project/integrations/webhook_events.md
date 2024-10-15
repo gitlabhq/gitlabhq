@@ -1558,7 +1558,7 @@ Deployment events are triggered when a deployment:
 - Starts
 - Succeeds
 - Fails
-- Is cancelled
+- Is canceled
 
 The `deployable_id` and `deployable_url` in the payload represent a CI/CD job that executed the deployment.
 When the deployment event occurs by [API](../../../ci/environments/external_deployment_tools.md) or [`trigger` jobs](../../../ci/pipelines/downstream_pipelines.md), `deployable_url` is `null`.
@@ -1619,7 +1619,6 @@ Payload example:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - Access request events [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163094) in GitLab 17.4.
 
@@ -1721,11 +1720,7 @@ Payload example:
 ### A user requests access
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163094) in GitLab 17.4 [with a flag](../../../administration/feature_flags.md) named `group_access_request_webhooks`. Disabled by default.
-
-FLAG:
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/479877) in GitLab 17.5. Feature flag `group_access_request_webhooks` removed.
 
 Request header:
 
@@ -1756,11 +1751,7 @@ Payload example:
 ### An access request is denied
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163094) in GitLab 17.4 [with a flag](../../../administration/feature_flags.md) named `group_access_request_webhooks`. Disabled by default.
-
-FLAG:
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/479877) in GitLab 17.5. Feature flag `group_access_request_webhooks` removed.
 
 Request header:
 
@@ -1792,7 +1783,6 @@ Payload example:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 These events are triggered for [group webhooks](webhooks.md#group-webhooks) only.
 
@@ -2007,6 +1997,7 @@ Payload example:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123952) in GitLab 16.2 [with a flag](../../../administration/feature_flags.md) named `emoji_webhooks`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/417288) in GitLab 16.3.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/417288) in GitLab 16.4.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/417288) in GitLab 17.5. Feature flag `emoji_webhooks` removed.
 
 FLAG:
 On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can
@@ -2154,7 +2145,7 @@ Payload example:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141907) in GitLab 16.10 [with a flag](../../../administration/feature_flags.md) named `access_token_webhooks`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/439379) in GitLab 16.11.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/454642) in GitLab 16.11. Feature flag `access_token_webhooks` removed.
-> - `full_path` attribute [added](https://gitlab.com/gitlab-org/gitlab/-/issues/465421) in GitLab 17.4. 
+> - `full_path` attribute [added](https://gitlab.com/gitlab-org/gitlab/-/issues/465421) in GitLab 17.4.
 
 Two access token expiration events are generated:
 

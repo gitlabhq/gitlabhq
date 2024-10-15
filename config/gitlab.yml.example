@@ -592,10 +592,6 @@ production: &base
     schedule_migrate_external_diffs_worker:
       cron: "15 * * * *"
 
-    # Update CI Platform Metrics daily
-    ci_platform_metrics_update_cron_worker:
-      cron: "47 9 * * *"
-
     # Periodically update ci_runner_versions table with up-to-date versions and status.
     ci_runner_versions_reconciliation_worker:
       cron: "@daily"

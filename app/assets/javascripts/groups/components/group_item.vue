@@ -152,9 +152,9 @@ export default {
   >
     <div
       :class="{ 'project-row-contents': !isGroup }"
-      class="group-row-contents py-2 pr-3 gl-flex gl-items-center"
+      class="group-row-contents gl-flex gl-items-center gl-py-3 gl-pr-5"
     >
-      <div class="folder-toggle-wrap gl-mr-2 !gl-flex gl-items-center">
+      <div class="folder-toggle-wrap gl-mr-2 gl-flex gl-items-center">
         <gl-button
           v-if="hasChildren"
           :aria-label="toggleAriaLabel"
@@ -170,7 +170,7 @@ export default {
       <gl-loading-icon
         v-if="group.isChildrenLoading"
         size="lg"
-        class="flex-shrink-0 gl-mr-3 gl-hidden sm:gl-inline-flex"
+        class="gl-mr-3 gl-hidden gl-shrink-0 sm:gl-inline-flex"
       />
       <a
         :class="{ 'sm:gl-flex': !group.isChildrenLoading }"
@@ -186,8 +186,8 @@ export default {
           :project-name="group.name"
         />
       </a>
-      <div class="group-text-container flex-fill !gl-flex gl-items-center">
-        <div class="group-text flex-grow-1 flex-shrink-1">
+      <div class="group-text-container gl-flex gl-flex-auto gl-items-center">
+        <div class="group-text gl-shrink gl-grow">
           <div
             class="title namespace-title gl-mr-3 gl-flex gl-flex-wrap gl-items-center gl-font-bold"
           >
@@ -253,7 +253,7 @@ export default {
         <div v-else-if="group.archived">
           <gl-badge variant="info">{{ __('Archived') }}</gl-badge>
         </div>
-        <div class="metadata justify-content-md-between gl-flex gl-shrink-0 gl-grow gl-flex-wrap">
+        <div class="metadata gl-flex gl-shrink-0 gl-grow gl-flex-wrap md:gl-justify-between">
           <item-stats :item="group" class="group-stats gl-hidden gl-items-center md:gl-flex" />
           <item-actions
             v-if="showActionsMenu"

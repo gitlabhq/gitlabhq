@@ -1,0 +1,13 @@
+---
+api_type: string
+attr: spam_check_endpoint_url
+clusterwide: true
+column: spam_check_endpoint_url
+db_type: text
+default:
+description: URL of the external Spamcheck service endpoint. Valid URI schemes are
+  `grpc` or `tls`. Specifying `tls` forces communication to be encrypted.
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

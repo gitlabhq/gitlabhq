@@ -1,41 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'desired sharding key backfill job' do
-  let(:known_cross_joins) do
-    {
-      sbom_occurrences_vulnerabilities: {
-        sbom_occurrences: 'https://gitlab.com/groups/gitlab-org/-/epics/14116#identified-cross-joins'
-      },
-      vulnerability_occurrence_identifiers: {
-        vulnerability_occurrences: 'https://gitlab.com/gitlab-org/gitlab/-/issues/480354'
-      },
-      vulnerability_external_issue_links: {
-        vulnerabilities: 'https://gitlab.com/gitlab-org/gitlab/-/issues/480354'
-      },
-      vulnerability_occurrence_pipelines: {
-        vulnerability_occurrences: 'https://gitlab.com/gitlab-org/gitlab/-/issues/480354'
-      },
-      vulnerability_merge_request_links: {
-        vulnerabilities: 'https://gitlab.com/gitlab-org/gitlab/-/issues/475058'
-      },
-      vulnerability_issue_links: {
-        vulnerabilities: 'https://gitlab.com/gitlab-org/gitlab/-/issues/475058'
-      },
-      vulnerability_finding_evidences: {
-        vulnerability_occurrences: 'https://gitlab.com/gitlab-org/gitlab/-/issues/480354'
-      },
-      vulnerability_finding_links: {
-        vulnerability_occurrences: 'https://gitlab.com/gitlab-org/gitlab/-/issues/480354'
-      },
-      vulnerability_finding_signatures: {
-        vulnerability_occurrences: 'https://gitlab.com/gitlab-org/gitlab/-/issues/480354'
-      },
-      vulnerability_flags: {
-        vulnerability_occurrences: 'https://gitlab.com/gitlab-org/gitlab/-/issues/480354'
-      }
-    }
-  end
-
   let(:batch_column) { :id }
   let!(:connection) { table(batch_table).connection }
   let!(:starting_id) { table(batch_table).pluck(batch_column).min }
@@ -75,14 +40,6 @@ RSpec.shared_examples 'desired sharding key backfill job' do
       expect(query).to include("AND #{backfill_via_table}.#{partition_column} = #{batch_table}.#{partition_column}")
     end
 
-    if known_cross_joins.dig(batch_table, backfill_via_table).present?
-      ::Gitlab::Database.allow_cross_joins_across_databases(
-        url: known_cross_joins[batch_table][backfill_via_table]
-      ) do
-        expect { connection.execute(query) }.not_to raise_error
-      end
-    else
-      expect { connection.execute(query) }.not_to raise_error
-    end
+    expect { connection.execute(query) }.not_to raise_error
   end
 end

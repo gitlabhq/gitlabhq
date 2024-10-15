@@ -114,7 +114,7 @@ exports[`JiraImportForm table body shows correct information in each cell 1`] = 
                 >
                   <svg
                     aria-hidden="true"
-                    class="gl-fill-current gl-icon gl-search-box-by-type-search-icon s16"
+                    class="gl-fill-icon-subtle gl-icon gl-search-box-by-type-search-icon s16"
                     data-testid="search-icon"
                     role="img"
                   >
@@ -215,7 +215,7 @@ exports[`JiraImportForm table body shows correct information in each cell 1`] = 
                 >
                   <svg
                     aria-hidden="true"
-                    class="gl-fill-current gl-icon gl-search-box-by-type-search-icon s16"
+                    class="gl-fill-icon-subtle gl-icon gl-search-box-by-type-search-icon s16"
                     data-testid="search-icon"
                     role="img"
                   >

@@ -29,7 +29,7 @@ RSpec.describe StatAnchorsHelper, feature_category: :groups_and_projects do
         let(:anchor) { anchor_klass.new(false) }
 
         it 'returns the proper attributes' do
-          expect(subject[:class]).to include('stat-link !gl-px-0 !gl-pb-2 btn-link gl-button !gl-text-blue-500')
+          expect(subject[:class]).to include('stat-link !gl-px-0 !gl-pb-2 btn-link gl-button !gl-text-link')
         end
       end
     end

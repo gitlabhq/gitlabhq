@@ -1,0 +1,9 @@
+table_name: system_access_instance_microsoft_graph_access_tokens
+feature_categories:
+- system_access
+classes:
+- SystemAccess::InstanceMicrosoftGraphAccessToken
+description: Access tokens for the Microsoft Graph API for self-managed
+milestone: '17.5'
+gitlab_schema: gitlab_main_cell
+exempt_from_sharding: true

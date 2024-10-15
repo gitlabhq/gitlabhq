@@ -1,0 +1,12 @@
+---
+api_type:
+attr: update_namespace_name_rate_limit
+clusterwide: false
+column: update_namespace_name_rate_limit
+db_type: smallint
+default: '120'
+description:
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

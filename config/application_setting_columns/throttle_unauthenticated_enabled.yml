@@ -1,0 +1,16 @@
+---
+api_type: boolean
+attr: throttle_unauthenticated_enabled
+clusterwide: false
+column: throttle_unauthenticated_enabled
+db_type: boolean
+default: 'false'
+description: "([Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/335300)
+  in GitLab 14.3. Use `throttle_unauthenticated_web_enabled` or `throttle_unauthenticated_api_enabled`
+  instead.) (**If enabled, requires:** `throttle_unauthenticated_period_in_seconds`
+  and `throttle_unauthenticated_requests_per_period`) Enable unauthenticated web request
+  rate limit. Helps reduce request volume (for example, from crawlers or abusive bots)."
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: true

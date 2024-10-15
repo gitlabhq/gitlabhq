@@ -57,7 +57,7 @@ There are four ways to resolve an abuse report, with a button for each method:
 
 The following is an example of the **Abuse reports** page:
 
-![abuse-reports-page-image](img/abuse_reports_page_v13_11.png)
+![A list of example abuse reports submitted for various users, with resolution actions available for each.](img/abuse_reports_page_v13_11.png)
 
 ### Blocking users
 
@@ -83,7 +83,7 @@ After blocking, you can still either:
 The following is an example of a blocked user listed on the **Abuse reports**
 page:
 
-![abuse-report-blocked-user-image](img/abuse_report_blocked_user.png)
+![The block user action is unavailable for an abuse report because the user is already blocked.](img/abuse_report_blocked_user_v11_7.png)
 
 ## Related topics
 

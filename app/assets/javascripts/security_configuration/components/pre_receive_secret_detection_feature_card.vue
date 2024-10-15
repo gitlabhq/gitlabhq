@@ -10,7 +10,6 @@ import {
   GlTooltipDirective,
 } from '@gitlab/ui';
 import ProjectSetPreReceiveSecretDetection from '~/security_configuration/graphql/set_pre_receive_secret_detection.graphql';
-import BetaBadge from '~/vue_shared/components/badges/beta_badge.vue';
 import { __, s__ } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
@@ -23,7 +22,6 @@ export default {
     GlPopover,
     GlToggle,
     GlAlert,
-    BetaBadge,
     GlButton,
   },
   directives: {
@@ -71,10 +69,6 @@ export default {
         'gl-shrink-0': true,
         'gl-text-gray-500': !enabled,
         'gl-text-green-500': enabled,
-        'gl-w-full': true,
-        'gl-justify-between': true,
-        'gl-flex': true,
-        'gl-mb-4': true,
       };
     },
     isToggleDisabled() {
@@ -139,7 +133,7 @@ export default {
     notEnabled: s__('SecurityConfiguration|Not enabled'),
     availableWith: s__('SecurityConfiguration|Available with Ultimate'),
     learnMore: __('Learn more'),
-    tooltipTitle: s__('SecretDetection|Feature not available'),
+    tooltipTitle: s__('SecretDetection|Action unavailable'),
     tooltipDescription: s__(
       'SecretDetection|This feature has been disabled at the instance level. Please reach out to your instance administrator to request activation.',
     ),
@@ -155,7 +149,7 @@ export default {
 
 <template>
   <gl-card :class="cardClasses">
-    <div class="gl-flex gl-flex-col-reverse gl-items-baseline">
+    <div class="gl-flex gl-items-baseline">
       <h3 class="gl-m-0 gl-mr-3 gl-text-lg">
         {{ feature.name }}
         <gl-icon v-if="showLock" id="lockIcon" name="lock" class="gl-mb-1" />
@@ -172,8 +166,6 @@ export default {
         data-testid="feature-status"
         :data-qa-feature="`${feature.type}_${enabled}_status`"
       >
-        <beta-badge size="sm" />
-
         <template v-if="enabled">
           <span>
             <gl-icon name="check-circle-filled" />

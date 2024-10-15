@@ -1,16 +1,16 @@
 load_performance:
   stage: performance
-  image: docker:20.10.12
+  image: docker:27.3
   allow_failure: true
   variables:
     DOCKER_TLS_CERTDIR: ""
     K6_IMAGE: grafana/k6
-    K6_VERSION: 0.41.0
+    K6_VERSION: 0.54.0
     K6_TEST_FILE: raw.githubusercontent.com/grafana/k6/master/examples/http_get.js
     K6_OPTIONS: ''
     K6_DOCKER_OPTIONS: ''
   services:
-    - name: 'docker:20.10.12-dind'
+    - name: docker:27.3-dind
       command: ['--tls=false', '--host=tcp://0.0.0.0:2375']
   script:
     - |

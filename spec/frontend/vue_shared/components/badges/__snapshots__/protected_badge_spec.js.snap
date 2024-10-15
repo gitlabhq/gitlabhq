@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ProtectedBadge component renders the badge 1`] = `
+<span
+  class="badge badge-neutral badge-pill gl-badge"
+  size="sm"
+  title=""
+>
+  <span
+    class="gl-badge-content"
+  >
+    protected
+  </span>
+</span>
+`;

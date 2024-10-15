@@ -29,8 +29,8 @@ module Gitlab
             #{blob_id_size_msg}
             To resolve this error, you must either reduce the size of the above blobs, or utilize LFS.
             You may use "git ls-tree -r HEAD | grep $BLOB_ID" to see the file path.
-            Please refer to #{Rails.application.routes.url_helpers.help_page_url('user/free_push_limit')} and
-            #{Rails.application.routes.url_helpers.help_page_url('administration/settings/account_and_limit_settings')}
+            Please refer to #{Rails.application.routes.url_helpers.help_page_url('user/free_push_limit.md')} and
+            #{Rails.application.routes.url_helpers.help_page_url('administration/settings/account_and_limit_settings.md')}
             for further information.
             OVERSIZE_ERR_MSG
 

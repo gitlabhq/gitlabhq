@@ -1,0 +1,12 @@
+---
+table_name: packages_conan_package_references
+classes:
+- Packages::Conan::PackageReference
+feature_categories:
+- package_registry
+description: Conan package references
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166443
+milestone: '17.5'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  project_id: projects

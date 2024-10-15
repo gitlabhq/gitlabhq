@@ -1,6 +1,6 @@
 - form = local_assigns.fetch(:form)
 
-- private_profile_help_link = link_to _("What information is hidden?"), help_page_path('user/profile/index', anchor: 'make-your-user-profile-page-private')
+- private_profile_help_link = link_to _("What information is hidden?"), help_page_path('user/profile/index.md', anchor: 'make-your-user-profile-page-private')
 - private_profile_label = safe_format(s_("Profiles|Don't display activity-related personal information on your profile. %{private_profile_help_link_start}What information is hidden?%{private_profile_help_link_end}"), tag_pair(private_profile_help_link, :private_profile_help_link_start, :private_profile_help_link_end))
 
 = form.gitlab_ui_checkbox_component :private_profile, private_profile_label

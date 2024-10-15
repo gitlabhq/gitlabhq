@@ -4,6 +4,6 @@
   - c.with_body do
     %strong= _("Warning:")
     - pages_host = Gitlab.config.pages.host
-    - docs_link_start = "<a href='#{help_page_path('user/project/pages/introduction', anchor: 'subdomains-of-subdomains')}' target='_blank' rel='noopener noreferrer'>".html_safe
+    - docs_link_start = "<a href='#{help_page_path('user/project/pages/introduction.md', anchor: 'subdomains-of-subdomains')}' target='_blank' rel='noopener noreferrer'>".html_safe
     - link_end = '</a>'.html_safe
     = s_("GitLabPages|When using Pages under the general domain of a GitLab instance (%{pages_host}), you cannot use HTTPS with subdomains of subdomains. If your namespace or groupname contains a dot, it does not work. This is a limitation of the HTTP Over TLS protocol. HTTP pages work if you don't redirect HTTP to HTTPS. %{docs_link_start}Learn more.%{link_end}").html_safe % { pages_host: pages_host, docs_link_start: docs_link_start, link_end: link_end }

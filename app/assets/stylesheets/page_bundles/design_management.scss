@@ -4,10 +4,6 @@ $design-pin-diameter: 28px;
 $design-pin-diameter-sm: 24px;
 $t-gray-a-16-design-pin: rgba($black, 0.16);
 
-.design-card-header {
-  background: transparent;
-}
-
 .layout-page.design-detail-layout {
   max-height: 100vh;
 
@@ -58,12 +54,6 @@ $t-gray-a-16-design-pin: rgba($black, 0.16);
 .design-list-item {
   height: 160px;
   text-decoration: none;
-
-  .icon-version-status {
-    position: absolute;
-    right: 10px;
-    top: 10px;
-  }
 
   &:hover {
     border-color: var(--gray-400, $gray-400);

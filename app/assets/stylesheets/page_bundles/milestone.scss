@@ -115,33 +115,3 @@
     }
   }
 }
-
-@include media-breakpoint-down(md) {
-  .milestone-actions {
-    @include clearfix();
-    padding-top: $gl-vert-padding;
-
-    .btn:first-child {
-      margin-left: 0;
-    }
-  }
-}
-
-.issuable-row {
-  background-color: var(--white, $white);
-}
-
-.milestone-popover-instructions-list {
-  padding-left: 2em;
-
-  > li {
-    padding-left: 1em;
-  }
-}
-
-@include media-breakpoint-down(xs) {
-  .milestone-banner-text,
-  .milestone-banner-link {
-    display: inline;
-  }
-}

@@ -70,6 +70,27 @@ RSpec.describe Subscribable, 'Subscribable' do
     end
   end
 
+  context 'with subscription scopes' do
+    let(:resource_2) { create(:issue, project: project) }
+
+    before do
+      resource.subscriptions.create!(user: user_1, subscribed: true)
+      resource_2.subscriptions.create!(user: user_1, project: project, subscribed: false)
+    end
+
+    describe '.explicitly_subscribed' do
+      it 'returns subscribed issues' do
+        expect(project.issues.explicitly_subscribed(user_1)).to contain_exactly(resource)
+      end
+    end
+
+    describe '.explicitly_unsubscribed' do
+      it 'returns unsubscribed issues' do
+        expect(project.issues.explicitly_unsubscribed(user_1)).to contain_exactly(resource_2)
+      end
+    end
+  end
+
   describe '#toggle_subscription' do
     context 'without project' do
       it 'toggles the current subscription state for the given user' do

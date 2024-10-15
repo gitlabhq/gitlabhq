@@ -1,0 +1,13 @@
+---
+api_type: string
+attr: external_auth_client_key
+clusterwide: false
+column: encrypted_external_auth_client_key
+db_type: text
+default:
+description: Private key for the certificate when authentication is required for the
+  external authorization service, this is encrypted when stored.
+encrypted: true
+gitlab_com_different_than_default: false
+jihu: false
+not_null: false

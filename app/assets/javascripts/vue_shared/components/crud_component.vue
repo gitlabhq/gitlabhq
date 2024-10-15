@@ -63,6 +63,11 @@ export default {
       required: false,
       default: null,
     },
+    titleClass: {
+      type: [String, Object],
+      required: false,
+      default: null,
+    },
     bodyClass: {
       type: [String, Object],
       required: false,
@@ -144,7 +149,8 @@ export default {
     >
       <div class="gl-flex gl-flex-col gl-self-center">
         <h2
-          class="gl-m-0 gl-inline-flex gl-items-start gl-gap-3 gl-text-base gl-font-bold gl-leading-normal"
+          class="gl-m-0 gl-inline-flex gl-items-center gl-gap-3 gl-text-base gl-font-bold gl-leading-normal"
+          :class="titleClass"
           data-testid="crud-title"
         >
           <gl-link
@@ -158,7 +164,7 @@ export default {
 
           <span
             v-if="displayedCount || $scopedSlots.count"
-            class="gl-inline-flex gl-items-center gl-gap-2 gl-text-sm gl-text-subtle"
+            class="crud-count gl-inline-flex gl-items-center gl-gap-2 gl-self-start gl-text-sm gl-text-subtle"
             data-testid="crud-count"
           >
             <template v-if="displayedCount">

@@ -61,13 +61,6 @@ When you create a merge request from your fork back to the upstream project, and
 your merge request contains a new Git LFS object, GitLab associates the new LFS object
 with the _upstream_ project after merge.
 
-## Known limitations
-
-- The Git LFS original v1 API is unsupported.
-- Git LFS requests use HTTPS credentials, which means you should use a good Git
-  [credentials store](https://git-scm.com/book/en/v2/Git-Tools-Credential-Storage).
-- [Group wikis](../../../user/project/wiki/group.md) do not support Git LFS.
-
 ## Configure Git LFS for a project
 
 DETAILS:
@@ -276,8 +269,9 @@ and clones them over HTTPS. If you run `git clone` with a SSH URL, like
 `user@hostname.com:group/project.git`, you must enter your GitLab credentials again for HTTPS
 authentication.
 
-Even when Git communicates with your repository over SSH, Git LFS objects still use HTTPS.
-Support for a wholly SSH-based protocol is proposed in [epic 11872](https://gitlab.com/groups/gitlab-org/-/epics/11872).
+By default, Git LFS operations occur over HTTPS, even when Git communicates with your repository over SSH.
+In GitLab 17.2, [pure SSH support for LFS](https://gitlab.com/groups/gitlab-org/-/epics/11872) was introduced.
+For information on how to enable this feature, see [Pure SSH transfer protocol](../../../administration/lfs/index.md#pure-ssh-transfer-protocol).
 
 To fetch new LFS objects for a repository you have already cloned, run this command:
 
@@ -306,6 +300,12 @@ see [Delete sensitive information from commits](../undo.md#delete-sensitive-info
 WARNING:
 Expunging file history requires rewriting Git history. This action is destructive and irreversible.
 
+## Reduce repository size after removing large files
+
+If you need to remove large files from your repository's history, to reduce
+the total size of your repository, see
+[Reduce repository size](../../../user/project/repository/repository_size.md#reduce-repository-size).
+
 ## Related topics
 
 - Use Git LFS to set up [exclusive file locks](../../../user/project/file_lock.md#exclusive-file-locks).
@@ -314,11 +314,3 @@ Expunging file history requires rewriting Git history. This action is destructiv
 - [GitLab Git Large File Storage (LFS) Administration](../../../administration/lfs/index.md) for self-managed instances
 - [Troubleshooting Git LFS](troubleshooting.md)
 - [The `.gitattributes` file](../../../user/project/git_attributes.md)
-
-## Troubleshooting
-
-### Reduce repository size after removing large files
-
-If you need to remove large files from your repository's history, to reduce
-the total size of your repository, see
-[Reduce repository size](../../../user/project/repository/reducing_the_repo_size_using_git.md).

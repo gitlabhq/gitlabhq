@@ -8,7 +8,7 @@ RSpec.describe WorkItems::Callbacks::LinkedItems, :freeze_time, feature_category
   let_it_be(:work_ite_to_link) { create(:work_item, project: project) }
   let_it_be(:work_item) { create(:work_item, project: project) }
 
-  let(:error_class) { ::WorkItems::Widgets::BaseService::WidgetError }
+  let(:error_class) { ::Issuable::Callbacks::Base::Error }
   let(:current_user) { reporter }
   let(:work_items_ids) { [work_ite_to_link.id] }
   let(:params) { { work_items_ids: work_items_ids, link_type: 'relates_to' } }

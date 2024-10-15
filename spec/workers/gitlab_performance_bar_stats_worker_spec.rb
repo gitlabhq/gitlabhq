@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabPerformanceBarStatsWorker, feature_category: :metrics do
+RSpec.describe GitlabPerformanceBarStatsWorker, feature_category: :observability do
   include ExclusiveLeaseHelpers
 
   subject(:worker) { described_class.new }

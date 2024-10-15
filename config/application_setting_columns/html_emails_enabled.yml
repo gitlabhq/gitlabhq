@@ -1,0 +1,12 @@
+---
+api_type: boolean
+attr: html_emails_enabled
+clusterwide: false
+column: html_emails_enabled
+db_type: boolean
+default: 'true'
+description: Enable HTML emails.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: false

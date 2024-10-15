@@ -13,9 +13,7 @@ module Packages
           ::Packages::Maven::PackageFinder.new(current_user, project, path: path)
           .execute&.last
 
-        if !Namespace::PackageSetting.duplicates_allowed?(package) && target_package_is_duplicate?(package)
-          return ServiceResponse.error(message: 'Duplicate package is not allowed')
-        end
+        return ServiceResponse.error(message: 'Duplicate package is not allowed') if duplicate_error?(package)
 
         unless package
           # Maven uploads several files during `mvn deploy` in next order:
@@ -65,6 +63,13 @@ module Packages
       end
 
       private
+
+      def duplicate_error?(package)
+        return false if Namespace::PackageSetting.duplicates_allowed_for_package?(package)
+        return false if Namespace::PackageSetting.matches_duplicate_exception?(package)
+
+        target_package_is_duplicate?(package)
+      end
 
       def file_name_too_long?
         return false unless file_name

@@ -70,33 +70,9 @@
   }
 }
 
-@mixin basic-list-stats {
-  .stats {
-    float: right;
-    line-height: $list-text-height;
-    color: $gl-text-color-secondary;
-
-    @include media-breakpoint-down(xs) {
-      padding-top: $gl-padding-6;
-    }
-
-    span {
-      margin-right: 15px;
-    }
-  }
-}
-
 @mixin webkit-prefix($property, $value) {
   #{'-webkit-' + $property}: $value;
   #{$property}: $value;
-}
-
-/* http://phrappe.com/css/conditional-css-for-webkit-based-browsers/ */
-@mixin on-webkit-only {
-  /* stylelint-disable-next-line media-feature-name-no-vendor-prefix */
-  @media screen and (-webkit-min-device-pixel-ratio: 0) {
-    @content;
-  }
 }
 
 @mixin keyframes($animation-name) {
@@ -124,14 +100,6 @@
     color: $color-dark;
     border-color: $color-dark;
   }
-}
-
-@mixin green-status-color {
-  @include status-color(
-    var(--green-100, $green-100),
-    var(--green-500, $green-500),
-    var(--green-700, $green-700)
-  );
 }
 
 @mixin fade($gradient-direction, $gradient-color) {
@@ -421,22 +389,6 @@
   }
 }
 
-@mixin side-panel-toggle {
-  @apply gl-transition-width;
-  height: $toggle-sidebar-height;
-  padding: 0 $gl-padding;
-  background-color: $gray-10;
-  border: 0;
-  color: $gl-text-color-secondary;
-  display: flex;
-  align-items: center;
-
-  &:hover {
-    background-color: $border-color;
-    color: $gl-text-color;
-  }
-}
-
 @mixin devise-errors {
   h2 {
     margin-top: 0;
@@ -483,4 +435,13 @@
   left: $left;
   top: $top;
   height: calc(100% - #{$top});
+}
+
+/**
+ * Deprecated mixin for dark mode
+ */
+@mixin gl-dark-invert-keep-hue {
+  .gl-dark & {
+    filter: invert(0.8) hue-rotate(180deg);
+  }
 }

@@ -1,0 +1,12 @@
+---
+api_type:
+attr: prometheus_alert_db_indicators_settings
+clusterwide: false
+column: prometheus_alert_db_indicators_settings
+db_type: jsonb
+default:
+description:
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

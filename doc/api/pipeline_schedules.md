@@ -22,7 +22,7 @@ GET /projects/:id/pipeline_schedules
 
 | Attribute | Type           | Required | Description |
 |-----------|----------------|----------|-------------|
-| `id`      | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
+| `id`      | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
 | `scope`   | string         | No       | The scope of pipeline schedules, must be one of: `active`, `inactive` |
 
 ```shell
@@ -63,7 +63,7 @@ GET /projects/:id/pipeline_schedules/:pipeline_schedule_id
 
 | Attribute              | Type           | Required | Description |
 |------------------------|----------------|----------|-------------|
-| `id`                   | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
+| `id`                   | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
 | `pipeline_schedule_id` | integer        | Yes      | The pipeline schedule ID |
 
 ```shell
@@ -120,7 +120,7 @@ Supported attributes:
 
 | Attribute              | Type           | Required | Description |
 |------------------------|----------------|----------|-------------|
-| `id`                   | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `id`                   | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 | `pipeline_schedule_id` | integer        | Yes      | The pipeline schedule ID. |
 
 Example request:
@@ -172,7 +172,7 @@ POST /projects/:id/pipeline_schedules
 |-----------------|----------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `cron`          | string         | Yes      | The [cron](https://en.wikipedia.org/wiki/Cron) schedule, for example: `0 1 * * *`.                                                                                                                                                                                                    |
 | `description`   | string         | Yes      | The description of the pipeline schedule.                                                                                                                                                                                                                                             |
-| `id`            | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding).                                                                                                                                                                                                  |
+| `id`            | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths).                                                                                                                                                                                                  |
 | `ref`           | string         | Yes      | The branch or tag name that is triggered. Both the short (e.g. `main`) and full (e.g. `refs/heads/main` or `refs/tags/main`) ref versions are accepted. If a short version is provided, it is automatically expanded to the full ref version but, if the ref is [ambiguous](../ci/pipelines/schedules.md#ambiguous-refs), it will be rejected |
 | `active`        | boolean        | No       | The activation of pipeline schedule. If false is set, the pipeline schedule is initially deactivated (default: `true`).                                                                                                                                                               |
 | `cron_timezone` | string         | No       | The time zone supported by `ActiveSupport::TimeZone`, for example: `Pacific Time (US & Canada)` (default: `UTC`).                                                                                                                                                                     |
@@ -216,7 +216,7 @@ PUT /projects/:id/pipeline_schedules/:pipeline_schedule_id
 
 | Attribute              | Type           | Required | Description                                                                                                                                                                                                                                                                                                                                   |
 |------------------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `id`                   | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding).                                                                                                                                                                                                                                                          |
+| `id`                   | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths).                                                                                                                                                                                                                                                          |
 | `pipeline_schedule_id` | integer        | Yes      | The pipeline schedule ID.                                                                                                                                                                                                                                                                                                                     |
 | `active`               | boolean        | No       | The activation of pipeline schedule. If false is set, the pipeline schedule is initially deactivated.                                                                                                                                                                                                                                         |
 | `cron_timezone`        | string         | No       | The time zone supported by `ActiveSupport::TimeZone` (for example `Pacific Time (US & Canada)`), or `TZInfo::Timezone` (for example `America/Los_Angeles`).                                                                                                                                                                                   |
@@ -267,7 +267,7 @@ POST /projects/:id/pipeline_schedules/:pipeline_schedule_id/take_ownership
 
 | Attribute              | Type           | Required | Description |
 |------------------------|----------------|----------|-------------|
-| `id`                   | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
+| `id`                   | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
 | `pipeline_schedule_id` | integer        | Yes      | The pipeline schedule ID |
 
 ```shell
@@ -312,7 +312,7 @@ DELETE /projects/:id/pipeline_schedules/:pipeline_schedule_id
 
 | Attribute              | Type           | Required | Description |
 |------------------------|----------------|----------|-------------|
-| `id`                   | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
+| `id`                   | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
 | `pipeline_schedule_id` | integer        | Yes      | The pipeline schedule ID |
 
 ```shell
@@ -358,7 +358,7 @@ POST /projects/:id/pipeline_schedules/:pipeline_schedule_id/play
 
 | Attribute              | Type           | Required | Description |
 |------------------------|----------------|----------|-------------|
-| `id`                   | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
+| `id`                   | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
 | `pipeline_schedule_id` | integer        | Yes      | The pipeline schedule ID |
 
 Example request:
@@ -387,7 +387,7 @@ POST /projects/:id/pipeline_schedules/:pipeline_schedule_id/variables
 
 | Attribute              | Type           | Required | Description |
 |------------------------|----------------|----------|-------------|
-| `id`                   | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
+| `id`                   | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
 | `key`                  | string         | Yes      | The `key` of a variable; must have no more than 255 characters; only `A-Z`, `a-z`, `0-9`, and `_` are allowed |
 | `pipeline_schedule_id` | integer        | Yes      | The pipeline schedule ID |
 | `value`                | string         | Yes      | The `value` of a variable |
@@ -416,7 +416,7 @@ PUT /projects/:id/pipeline_schedules/:pipeline_schedule_id/variables/:key
 
 | Attribute              | Type           | Required | Description |
 |------------------------|----------------|----------|-------------|
-| `id`                   | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
+| `id`                   | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
 | `key`                  | string         | Yes      | The `key` of a variable |
 | `pipeline_schedule_id` | integer        | Yes      | The pipeline schedule ID |
 | `value`                | string         | Yes      | The `value` of a variable |
@@ -446,7 +446,7 @@ DELETE /projects/:id/pipeline_schedules/:pipeline_schedule_id/variables/:key
 
 | Attribute              | Type           | Required | Description |
 |------------------------|----------------|----------|-------------|
-| `id`                   | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
+| `id`                   | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
 | `key`                  | string         | Yes      | The `key` of a variable |
 | `pipeline_schedule_id` | integer        | Yes      | The pipeline schedule ID |
 

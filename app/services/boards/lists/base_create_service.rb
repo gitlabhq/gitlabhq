@@ -13,10 +13,11 @@ module Boards
                  create_backlog(board)
                else
                  target = target(board)
-                 position = next_position(board)
+                 position = params[:position] || next_position(board)
 
                  return ServiceResponse.error(message: _('%{board_target} not found') % { board_target: type.to_s.capitalize }) if target.blank?
 
+                 reorder_subsequent_lists!(board, position)
                  create_list(board, type, target, position)
                end
 
@@ -46,6 +47,20 @@ module Boards
       def available_labels
         ::Labels::AvailableLabelsService.new(current_user, parent, {})
           .available_labels
+      end
+
+      # Shift each list that is after the new list's position so that they
+      # are in the correct order.
+      def reorder_subsequent_lists!(board, insert_position)
+        lists = board.lists.movable.ordered.positioned_at_or_after(insert_position)
+
+        return if lists.empty?
+
+        mapping = lists.map.with_index do |list, i|
+          [list, { position: insert_position + i + 1 }]
+        end.to_h
+
+        ::Gitlab::Database::BulkUpdate.execute(%i[position], mapping)
       end
 
       def next_position(board)

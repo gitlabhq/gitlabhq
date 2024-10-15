@@ -434,7 +434,7 @@ RSpec.describe API::Integrations, feature_category: :integrations do
     end
 
     def assert_secret_fields_filtered(response_keys, integration)
-      expect(response_keys).not_to include(*integration.secret_fields)
+      expect(response_keys).not_to include(*integration.secret_fields) unless integration.secret_fields.empty?
     end
   end
 

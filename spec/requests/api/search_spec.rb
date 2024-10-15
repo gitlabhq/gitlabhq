@@ -369,7 +369,7 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
 
       context 'for snippet_titles scope' do
         before do
-          create(:snippet, :public, title: 'awesome snippet', content: 'snippet content')
+          create(:personal_snippet, :public, title: 'awesome snippet', content: 'snippet content')
 
           get api(endpoint, user), params: { scope: 'snippet_titles', search: 'awesome' }
         end
@@ -380,7 +380,7 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
 
         describe 'pagination' do
           before do
-            create(:snippet, :public, title: 'another snippet', content: 'snippet content')
+            create(:personal_snippet, :public, title: 'another snippet', content: 'snippet content')
           end
 
           include_examples 'pagination', scope: :snippet_titles

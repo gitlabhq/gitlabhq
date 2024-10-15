@@ -9,7 +9,7 @@ module Gitlab
 
         IMPORTED_OBJECT_MAX_RETRIES = 5
 
-        OVERRIDES = { user_contributions: :user }.freeze
+        OVERRIDES = { user_contributions: :user, merge_schedule: 'MergeRequests::MergeSchedule' }.freeze
         EXISTING_OBJECT_RELATIONS = %i[].freeze
 
         # This represents all relations that have unique key on `project_id` or `group_id`

@@ -16,11 +16,15 @@ RSpec.describe Users::AutoBanService, feature_category: :instance_resiliency do
       expect(Users::BannedUser.last.user_id).to eq(user.id)
     end
 
-    describe 'recording a custom attribute' do
-      it 'records a custom attribute' do
-        expect { subject }.to change { UserCustomAttribute.count }.by(1)
-        expect(user.custom_attributes.by_key(UserCustomAttribute::AUTO_BANNED_BY).first.value).to eq(reason.to_s)
-      end
+    it 'records a custom attribute' do
+      expect { subject }.to change { UserCustomAttribute.count }.by(1)
+      expect(user.custom_attributes.by_key(UserCustomAttribute::AUTO_BANNED_BY).first.value).to eq(reason.to_s)
+    end
+
+    it 'bans duplicate users' do
+      expect(AntiAbuse::BanDuplicateUsersWorker).to receive(:perform_async).with(user.id)
+
+      subject
     end
   end
 

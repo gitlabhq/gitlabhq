@@ -17,12 +17,6 @@ RSpec.describe Projects::UpdateStatisticsService, feature_category: :groups_and_
 
         service.execute
       end
-
-      it_behaves_like 'does not record an onboarding progress action' do
-        subject do
-          service.execute
-        end
-      end
     end
 
     context 'with an existing project' do

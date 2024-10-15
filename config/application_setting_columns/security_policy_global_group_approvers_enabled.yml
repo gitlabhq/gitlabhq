@@ -1,0 +1,13 @@
+---
+api_type: boolean
+attr: security_policy_global_group_approvers_enabled
+clusterwide: false
+column: security_policy_global_group_approvers_enabled
+db_type: boolean
+default: 'true'
+description: Whether to look up merge request approval policy approval groups globally
+  or within project hierarchies.
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: true

@@ -30,7 +30,7 @@ RSpec.describe Redactable do
 
   context 'when model is a snippet' do
     it_behaves_like 'model with redactable field' do
-      let(:model) { create(:snippet) }
+      let(:model) { create(:project_snippet) }
       let(:field) { :description }
     end
   end

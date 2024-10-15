@@ -11,10 +11,12 @@ import (
 	"gitlab.com/gitlab-org/gitaly/v16/streamio"
 )
 
+// BlobClient wraps the gRPC client for Gitaly's BlobService.
 type BlobClient struct {
 	gitalypb.BlobServiceClient
 }
 
+// SendBlob streams the blob data from Gitaly to the HTTP response writer.
 func (client *BlobClient) SendBlob(ctx context.Context, w http.ResponseWriter, request *gitalypb.GetBlobRequest) error {
 	c, err := client.GetBlob(ctx, request)
 	if err != nil {

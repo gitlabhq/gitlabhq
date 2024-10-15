@@ -19,7 +19,7 @@ export default {
       variables() {
         return this.mergeRequestQueryVariables;
       },
-      update: (data) => data.project?.mergeRequest,
+      update: (data) => data.project,
     },
   },
   components: {
@@ -51,14 +51,17 @@ export default {
       return this.$apollo.queries.state.loading && Object.keys(this.state).length === 0;
     },
     stateRemoveSourceBranch() {
-      if (!this.state.shouldRemoveSourceBranch) return false;
+      if (!this.state.mergeRequest.shouldRemoveSourceBranch) return false;
 
-      return this.state.shouldRemoveSourceBranch || this.state.forceRemoveSourceBranch;
+      return (
+        this.state.mergeRequest.shouldRemoveSourceBranch ||
+        this.state.mergeRequest.forceRemoveSourceBranch
+      );
     },
     canRemoveSourceBranch() {
       const { currentUserId } = this.mr;
-      const mergeUserId = getIdFromGraphQLId(this.state.mergeUser?.id);
-      const canRemoveSourceBranch = this.state.userPermissions.removeSourceBranch;
+      const mergeUserId = getIdFromGraphQLId(this.state.mergeRequest.mergeUser?.id);
+      const canRemoveSourceBranch = this.state.mergeRequest.userPermissions.removeSourceBranch;
 
       return (
         !this.stateRemoveSourceBranch && canRemoveSourceBranch && mergeUserId === currentUserId
@@ -103,7 +106,7 @@ export default {
     removeSourceBranch() {
       const options = {
         sha: this.mr.sha,
-        auto_merge_strategy: this.state.autoMergeStrategy,
+        auto_merge_strategy: this.state.mergeRequest.autoMergeStrategy,
         should_remove_source_branch: true,
       };
 
@@ -142,7 +145,10 @@ export default {
       <h4 class="gl-mr-3 gl-grow" data-testid="statusText">
         <gl-sprintf :message="statusText" data-testid="statusText">
           <template #merge_author>
-            <mr-widget-author v-if="state.mergeUser" :author="state.mergeUser" />
+            <mr-widget-author
+              v-if="state.mergeRequest.mergeUser"
+              :author="state.mergeRequest.mergeUser"
+            />
           </template>
         </gl-sprintf>
       </h4>

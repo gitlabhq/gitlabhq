@@ -16,7 +16,6 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
       'organizationGroupsProjectsDisplay' => 'GROUPS',
       'organizationGroupsProjectsSort' => 'NAME_DESC',
       'visibilityPipelineIdType' => 'IID',
-      'useWebIdeExtensionMarketplace' => true,
       'useWorkItemsView' => true
     }
   end
@@ -34,14 +33,12 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
       expect(mutation_response['userPreferences']['organizationGroupsProjectsDisplay']).to eq('GROUPS')
       expect(mutation_response['userPreferences']['organizationGroupsProjectsSort']).to eq('NAME_DESC')
       expect(mutation_response['userPreferences']['visibilityPipelineIdType']).to eq('IID')
-      expect(mutation_response['userPreferences']['useWebIdeExtensionMarketplace']).to eq(true)
       expect(mutation_response['userPreferences']['useWorkItemsView']).to eq(true)
 
       expect(current_user.user_preference.persisted?).to eq(true)
       expect(current_user.user_preference.extensions_marketplace_opt_in_status).to eq('enabled')
       expect(current_user.user_preference.issues_sort).to eq(Types::IssueSortEnum.values[sort_value].value.to_s)
       expect(current_user.user_preference.visibility_pipeline_id_type).to eq('iid')
-      expect(current_user.user_preference.use_web_ide_extension_marketplace).to eq(false)
       expect(current_user.user_preference.use_work_items_view).to eq(true)
     end
   end
@@ -54,7 +51,6 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
         organization_groups_projects_display: Types::Organizations::GroupsProjectsDisplayEnum.values['GROUPS'].value,
         organization_groups_projects_sort: 'NAME_DESC',
         visibility_pipeline_id_type: 'id',
-        use_web_ide_extension_marketplace: false,
         use_work_items_view: false
       }
     end
@@ -87,7 +83,6 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
           'organizationGroupsProjectsDisplay' => nil,
           'organizationGroupsProjectsSort' => nil,
           'visibilityPipelineIdType' => nil,
-          'useWebIdeExtensionMarketplace' => nil,
           'useWorkItemsView' => nil
         }
       end
@@ -107,7 +102,6 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
           organization_groups_projects_display: init_user_preference[:organization_groups_projects_display],
           extensions_marketplace_opt_in_status: init_user_preference[:extensions_marketplace_opt_in_status],
           visibility_pipeline_id_type: init_user_preference[:visibility_pipeline_id_type],
-          use_web_ide_extension_marketplace: init_user_preference[:use_web_ide_extension_marketplace],
           use_work_items_view: init_user_preference[:use_work_items_view]
         })
       end

@@ -3,5 +3,5 @@
     - c.with_body do
       = s_('OutdatedBrowser|GitLab may not work properly, because you are using an outdated web browser.')
       %br
-      - link = link_to('', help_page_path('install/requirements', anchor: 'supported-web-browsers'), target: '_blank', rel: 'noopener noreferrer')
+      - link = link_to('', help_page_path('install/requirements.md', anchor: 'supported-web-browsers'), target: '_blank', rel: 'noopener noreferrer')
       = safe_format(s_('OutdatedBrowser|Please install a %{browser_link_start}supported web browser%{browser_link_end} for a better experience.'), tag_pair(link, :browser_link_start, :browser_link_end))

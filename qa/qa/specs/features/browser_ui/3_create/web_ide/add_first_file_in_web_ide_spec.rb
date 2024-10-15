@@ -3,15 +3,11 @@
 module QA
   RSpec.describe 'Create', :skip_live_env, product_group: :remote_development do
     describe 'Add first file in Web IDE' do
+      include_context 'Web IDE test prep'
       let(:project) { create(:project, :with_readme, name: 'webide-create-file-project') }
 
       before do
-        Flow::Login.sign_in
-        project.visit!
-        Page::Project::Show.perform(&:open_web_ide!)
-        Page::Project::WebIDE::VSCode.perform do |ide|
-          ide.wait_for_ide_to_load('README.md')
-        end
+        load_web_ide
       end
 
       context 'when a file with the same name already exists' do

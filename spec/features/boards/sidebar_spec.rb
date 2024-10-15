@@ -44,7 +44,7 @@ RSpec.describe 'Project issue boards sidebar', :js, feature_category: :portfolio
   end
 
   def first_card
-    find('.board:nth-child(1)').first("[data-testid='board-card']")
+    find('[data-testid="board-list"]:nth-child(1)').first("[data-testid='board-card']")
   end
 
   def click_first_issue_card

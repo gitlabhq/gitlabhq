@@ -1,5 +1,5 @@
 - title: "Group vulnerability report by OWASP top 10 2017 is deprecated"
-  removal_milestone: "17.6"
+  removal_milestone: "18.0"
   announcement_milestone: "17.0"
   breaking_change: false
   reporter: abellucci
@@ -11,5 +11,6 @@
   body: |  # (required) Don't change this line.
     Grouping the vulnerability report by OWASP top 10 2017 is deprecated, replaced by grouping by OWASP top 10 2021.
     In the future we will support the most recent version of OWASP top 10 for grouping on the vulnerability report.
+    Along with this change we are also deprecating and removing the 2017 GraphQL API enums which the feature uses. Additional details are included in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/488433).
   tiers: [Gold, Ultimate]
   documentation_url: https://docs.gitlab.com/ee/user/application_security/vulnerability_report/#group-vulnerabilities

@@ -45,6 +45,15 @@ Users with the [Auditor access level](../../administration/auditor_users.md) can
 
 Audit events can be viewed at the group, project, instance, and sign-in level. Each level has different audit events which it logs.
 
+### Sign-in audit events
+
+Successful sign-in events are the only audit events available at all tiers. To see successful sign-in events:
+
+1. On the left sidebar, select your avatar.
+1. Select **Edit profile > Authentication log**.
+
+After upgrading to a paid tier, you can also see successful sign-in events on audit event pages.
+
 ### Group audit events
 
 DETAILS:
@@ -70,19 +79,6 @@ DETAILS:
 1. Filter the audit events by the member of the project (user) who performed the action and date range.
 
 Project audit events can also be accessed using the [project audit events API](../../api/audit_events.md#project-audit-events). Project audit event queries `created_after` and `created_before` parameters are limited to a maximum 30 day difference between the dates.
-
-### Sign-in audit events
-
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
-
-Successful sign-in events are the only audit events available at all tiers. To see successful sign-in events:
-
-1. On the left sidebar, select your avatar.
-1. Select **Edit profile > Authentication log**.
-
-After upgrading to a paid tier, you can also see successful sign-in events on audit event pages.
 
 ## Time zones
 

@@ -1,0 +1,13 @@
+---
+api_type: boolean
+attr: user_oauth_applications
+clusterwide: false
+column: user_oauth_applications
+db_type: boolean
+default: 'true'
+description: Allow users to register any application to use GitLab as an OAuth provider.
+  This setting does not affect group-level OAuth applications.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: false

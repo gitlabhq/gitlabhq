@@ -5,8 +5,8 @@ module Types
     class DefinitionType < ::Types::BaseObject
       graphql_name 'AuditEventDefinition'
       description 'Represents the YAML definitions for audit events defined ' \
-                  'in `ee/config/audit_events/types/<event-type-name>.yml` ' \
-                  'and `config/audit_events/types/<event-type-name>.yml`.'
+        'in `ee/config/audit_events/types/<event-type-name>.yml` ' \
+        'and `config/audit_events/types/<event-type-name>.yml`.'
 
       authorize :audit_event_definitions
 
@@ -21,14 +21,14 @@ module Types
       field :introduced_by_issue, GraphQL::Types::String,
         null: true,
         description: 'Link to the issue introducing the event. For older' \
-                     'audit events, it can be a commit URL rather than a' \
-                     'merge request URL.'
+          'audit events, it can be a commit URL rather than a' \
+          'merge request URL.'
 
       field :introduced_by_mr, GraphQL::Types::String,
         null: true,
         description: 'Link to the merge request introducing the event. For' \
-                     'older audit events, it can be a commit URL rather than' \
-                     'a merge request URL.'
+          'older audit events, it can be a commit URL rather than' \
+          'a merge request URL.'
 
       field :feature_category, GraphQL::Types::String,
         null: false,

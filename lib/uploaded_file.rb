@@ -92,7 +92,7 @@ class UploadedFile
     name = name.tr("\\", "/") # work-around for IE
     name = ::File.basename(name)
     name = name.gsub(CarrierWave::SanitizedFile.sanitize_regexp, "_")
-    name = "_#{name}" if name =~ /\A\.+\z/
+    name = "_#{name}" if /\A\.+\z/.match?(name)
     name = "unnamed" if name.empty?
     name.mb_chars.to_s
   end

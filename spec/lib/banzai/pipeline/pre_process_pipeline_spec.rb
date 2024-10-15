@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::Pipeline::PreProcessPipeline, feature_category: :team_planning do
+RSpec.describe Banzai::Pipeline::PreProcessPipeline, feature_category: :markdown do
   it 'pre-processes the source text' do
     markdown = <<~MD
       \xEF\xBB\xBF---

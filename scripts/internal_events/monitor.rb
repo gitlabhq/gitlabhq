@@ -1,3 +1,4 @@
+#!/usr/bin/env ruby
 # frozen_string_literal: true
 
 # Internal Events Tracking Monitor
@@ -17,6 +18,20 @@
 # Exiting:
 #   - To exit the script, press Ctrl+C.
 #
+
+unless defined?(Rails)
+  puts <<~TEXT
+
+    Error! The Internal Events Tracking Monitor could not access the Rails context!
+
+      Ensure GDK is running, then run:
+
+      bin/rails runner scripts/internal_events/monitor.rb #{ARGV.join(' ')}
+
+  TEXT
+
+  exit! 1
+end
 
 require 'terminal-table'
 require 'net/http'

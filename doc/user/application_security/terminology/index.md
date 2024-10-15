@@ -265,7 +265,7 @@ support for cheap scan is proposed in issue [349926](https://gitlab.com/gitlab-o
 
 An irreversible action that is done to filter out targets before analysis occurs. This is usually provided to allow
 the user to reduce scope and noise as well as speed up the analysis. This should not be done if a record is needed as
-we currently do not store anything related to the skipped/excluded code or assets.
+we do not store anything related to the skipped/excluded code or assets.
 
 Examples: `DS_EXCLUDED_PATHS` should `Exclude files and directories from the scan based on the paths provided.`
 

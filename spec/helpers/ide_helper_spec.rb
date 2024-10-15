@@ -68,7 +68,7 @@ RSpec.describe IdeHelper, feature_category: :web_ide do
           'user-preferences-path' => profile_preferences_path,
           'sign-in-path' => 'test-sign-in-path',
           'new-web-ide-help-page-path' =>
-            help_page_path('user/project/web_ide/index', anchor: 'vscode-reimplementation'),
+            help_page_path('user/project/web_ide/index.md', anchor: 'vscode-reimplementation'),
           'csp-nonce' => 'test-csp-nonce'
         }
       end
@@ -144,30 +144,23 @@ RSpec.describe IdeHelper, feature_category: :web_ide do
   describe '#show_web_ide_oauth_callback_mismatch_callout?' do
     let_it_be(:oauth_application) { create(:oauth_application, owner: nil) }
 
-    it 'returns false if Web IDE OAuth is not enabled' do
-      stub_feature_flags(vscode_web_ide: true, web_ide_oauth: false)
+    before do
+      stub_feature_flags(vscode_web_ide: true)
+    end
+
+    it 'returns false if no Web IDE OAuth application found' do
       expect(helper.show_web_ide_oauth_callback_mismatch_callout?).to be false
     end
 
-    context 'when Web IDE OAuth is enabled' do
-      before do
-        stub_feature_flags(vscode_web_ide: true, web_ide_oauth: true)
-      end
+    it "returns true if domain does not match OAuth application callback URLs" do
+      stub_application_setting({ web_ide_oauth_application: oauth_application })
+      expect(helper.show_web_ide_oauth_callback_mismatch_callout?).to be true
+    end
 
-      it 'returns false if no Web IDE OAuth application found' do
-        expect(helper.show_web_ide_oauth_callback_mismatch_callout?).to be false
-      end
-
-      it "returns true if domain does not match OAuth application callback URLs" do
-        stub_application_setting({ web_ide_oauth_application: oauth_application })
-        expect(helper.show_web_ide_oauth_callback_mismatch_callout?).to be true
-      end
-
-      it "returns false if domain matches OAuth application callback URL" do
-        oauth_application.redirect_uri = "#{request.base_url}/oauth-redirect"
-        stub_application_setting({ web_ide_oauth_application: oauth_application })
-        expect(helper.show_web_ide_oauth_callback_mismatch_callout?).to be false
-      end
+    it "returns false if domain matches OAuth application callback URL" do
+      oauth_application.redirect_uri = "#{request.base_url}/oauth-redirect"
+      stub_application_setting({ web_ide_oauth_application: oauth_application })
+      expect(helper.show_web_ide_oauth_callback_mismatch_callout?).to be false
     end
   end
 

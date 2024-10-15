@@ -38,8 +38,7 @@
     = render 'shared/errors/gitaly_unavailable', reason: s_('TagsPage|Unable to load tags')
 
   - if show_empty_search
-    = render Pajamas::EmptyStateComponent.new(svg_path: 'illustrations/empty-state/empty-search-md.svg',
-      title: s_('TagsPage|Sorry, your filter produced no results'))
+    = render ::Layouts::EmptyResultComponent.new(type: :search)
   - else
     %ul.flex-list.content-list
       = render partial: 'tag', collection: @tags

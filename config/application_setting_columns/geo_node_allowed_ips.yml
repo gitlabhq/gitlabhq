@@ -1,0 +1,13 @@
+---
+api_type: string
+attr: geo_node_allowed_ips
+clusterwide: false
+column: geo_node_allowed_ips
+db_type: character
+default: "'0.0.0.0/0"
+description: Comma-separated list of IPs and CIDRs of allowed secondary nodes. For
+  example, `1.1.1.1, 2.2.2.0/24`. Self-managed, Premium and Ultimate only.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: false

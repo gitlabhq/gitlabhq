@@ -1,5 +1,5 @@
 ---
-stage: Verify
+stage: Govern
 group: Pipeline Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-GitLab currently doesn't have built-in support for managing SSH keys in a build
+GitLab does not have built-in support for managing SSH keys in a build
 environment (where the GitLab Runner runs).
 
 Use SSH keys when you want to:
@@ -38,9 +38,9 @@ To create and use an SSH key in GitLab CI/CD:
    at the end of the last line of the SSH key before saving it in the CI/CD settings.
 1. Run the [`ssh-agent`](https://linux.die.net/man/1/ssh-agent) in the job, which loads
    the private key.
-1. Copy the public key to the servers you want to have access to (usually in
-   `~/.ssh/authorized_keys`) or add it as a [deploy key](../../user/project/deploy_keys/index.md)
-   if you are accessing a private GitLab repository.
+1. Copy the public key to the servers you want to have access to (usually in `~/.ssh/authorized_keys`).
+   If you are accessing a private GitLab repository, you also need to add the public key as
+   a [deploy key](../../user/project/deploy_keys/index.md).
 
 In the following example, the `ssh-add -` command does not display the value of
 `$SSH_PRIVATE_KEY` in the job log, though it could be exposed if you enable

@@ -11,7 +11,7 @@ RSpec.describe 'gitlab:incoming_email:secret rake tasks', :silence_stdout, featu
     stub_env('EDITOR', 'cat')
     stub_warn_user_is_not_gitlab
     allow(Gitlab.config.incoming_email).to receive(:encrypted_secret_file).and_return(encrypted_secret_file)
-    allow(Gitlab::Application.secrets).to receive(:encrypted_settings_key_base).and_return(SecureRandom.hex(64))
+    allow(Gitlab::Application.credentials).to receive(:encrypted_settings_key_base).and_return(SecureRandom.hex(64))
   end
 
   after do
@@ -26,14 +26,14 @@ RSpec.describe 'gitlab:incoming_email:secret rake tasks', :silence_stdout, featu
 
     it 'displays error when key does not exist' do
       Settings.encrypted(encrypted_secret_file).write('somevalue')
-      allow(Gitlab::Application.secrets).to receive(:encrypted_settings_key_base).and_return(nil)
+      allow(Gitlab::Application.credentials).to receive(:encrypted_settings_key_base).and_return(nil)
       expect { run_rake_task('gitlab:incoming_email:secret:show') }.to \
         output(/Missing encryption key encrypted_settings_key_base./).to_stderr
     end
 
     it 'displays error when key is changed' do
       Settings.encrypted(encrypted_secret_file).write('somevalue')
-      allow(Gitlab::Application.secrets).to receive(:encrypted_settings_key_base).and_return(SecureRandom.hex(64))
+      allow(Gitlab::Application.credentials).to receive(:encrypted_settings_key_base).and_return(SecureRandom.hex(64))
       expect { run_rake_task('gitlab:incoming_email:secret:show') }.to \
         output(/Couldn't decrypt .* Perhaps you passed the wrong key?/).to_stderr
     end
@@ -54,14 +54,14 @@ RSpec.describe 'gitlab:incoming_email:secret rake tasks', :silence_stdout, featu
     end
 
     it 'displays error when key does not exist' do
-      allow(Gitlab::Application.secrets).to receive(:encrypted_settings_key_base).and_return(nil)
+      allow(Gitlab::Application.credentials).to receive(:encrypted_settings_key_base).and_return(nil)
       expect { run_rake_task('gitlab:incoming_email:secret:edit') }.to \
         output(/Missing encryption key encrypted_settings_key_base./).to_stderr
     end
 
     it 'displays error when key is changed' do
       Settings.encrypted(encrypted_secret_file).write('somevalue')
-      allow(Gitlab::Application.secrets).to receive(:encrypted_settings_key_base).and_return(SecureRandom.hex(64))
+      allow(Gitlab::Application.credentials).to receive(:encrypted_settings_key_base).and_return(SecureRandom.hex(64))
       expect { run_rake_task('gitlab:incoming_email:secret:edit') }.to \
         output(/Couldn't decrypt .* Perhaps you passed the wrong key?/).to_stderr
     end
@@ -101,7 +101,7 @@ RSpec.describe 'gitlab:incoming_email:secret rake tasks', :silence_stdout, featu
     end
 
     it 'displays error when key does not exist' do
-      allow(Gitlab::Application.secrets).to receive(:encrypted_settings_key_base).and_return(nil)
+      allow(Gitlab::Application.credentials).to receive(:encrypted_settings_key_base).and_return(nil)
       expect { run_rake_task('gitlab:incoming_email:secret:write') }.to \
         output(/Missing encryption key encrypted_settings_key_base./).to_stderr
     end

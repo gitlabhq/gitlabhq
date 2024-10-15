@@ -1,0 +1,13 @@
+---
+api_type: string
+attr: jira_connect_proxy_url
+clusterwide: true
+column: jira_connect_proxy_url
+db_type: text
+default:
+description: URL of the GitLab instance used as a proxy for the GitLab for Jira Cloud
+  app.
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

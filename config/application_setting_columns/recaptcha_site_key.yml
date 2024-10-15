@@ -1,0 +1,12 @@
+---
+api_type: string
+attr: recaptcha_site_key
+clusterwide: true
+column: encrypted_recaptcha_site_key
+db_type: text
+default:
+description: Site key for reCAPTCHA.
+encrypted: true
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

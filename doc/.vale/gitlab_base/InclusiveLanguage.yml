@@ -16,7 +16,7 @@ swap:
   his: their
   mankind: humanity, people
   manpower: GitLab team members
-  master: primary, main
+  master: primary, main, controller, active, parent, hub
   sanity (?:check|test): check for completeness
-  slave: secondary
+  slave: secondary, agent, standby, child, spoke 
   whitelist(?:ed|ing|s)?: allowlist

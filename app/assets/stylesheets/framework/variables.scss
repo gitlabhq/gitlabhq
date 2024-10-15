@@ -82,11 +82,9 @@ $gl-font-weight-bold: 600;
 $gl-text-color: $gray-900;
 $gl-text-color-secondary: $gray-500 !default;
 $gl-text-color-tertiary: $gray-400;
-$gl-text-color-inverted: $white;
-$gl-text-color-secondary-inverted: rgba($white, 0.85);
 $gl-text-color-disabled: $gray-400;
-$link-color: $blue-500 !default;
-$link-hover-color: $blue-500 !default;
+$link-color: var(--gl-text-color-link) !default;
+$link-hover-color: var(--gl-text-color-link) !default;
 $gl-grayish-blue: #7f8fa4;
 $gl-font-size-12: 12px;
 $gl-font-size-14: 14px;
@@ -248,11 +246,6 @@ $dropdown-fade-mask-height: 32px;
 $dropdown-member-form-control-width: 163px;
 
 /*
-* Filtered Search
-*/
-$filtered-search-term-shadow-color: rgba(0, 0, 0, 0.09);
-
-/*
 * Sidebar
 */
 $sidebar-toggle-height: 60px;
@@ -305,12 +298,6 @@ $calendar-user-contrib-text: #959494;
 * Boards
 */
 $issue-boards-card-shadow: rgba(0, 0, 0, 0.1);
-
-/*
-* Avatar
-*/
-$avatar-radius: 50%;
-$gl-avatar-border-opacity: 0.1;
 
 /*
 * Blame

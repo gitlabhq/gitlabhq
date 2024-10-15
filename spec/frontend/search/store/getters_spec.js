@@ -159,15 +159,19 @@ describe('Global Search Store Getters', () => {
       expect(getters.unappliedNewLabels(state).map(({ key }) => key)).toStrictEqual(['6', '73']);
     });
   });
-  describe('hasProjectContext', () => {
-    it('returns true project_id is NOT in query', () => {
-      state.query.project_id = undefined;
-      expect(getters.hasProjectContext(state)).toBe(true);
+  describe('hasMissingProjectContext', () => {
+    it('returns true projectInitialJson.id is NOT in query', () => {
+      state.projectInitialJson = {
+        id: undefined,
+      };
+      expect(getters.hasMissingProjectContext(state)).toBe(true);
     });
 
-    it('returns false project_id is in query', () => {
-      state.query.project_id = 'test';
-      expect(getters.hasProjectContext(state)).toBe(false);
+    it('returns false projectInitialJson.id is in query', () => {
+      state.projectInitialJson = {
+        id: 'test',
+      };
+      expect(getters.hasMissingProjectContext(state)).toBe(false);
     });
   });
 });

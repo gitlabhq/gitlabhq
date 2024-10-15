@@ -135,6 +135,25 @@ rubocop:
         fi
       fi
 
+rails-next-dependency-check:
+  stage: lint
+  needs: []
+  extends:
+    - .rails:rules:rails-next-dependency-check
+  variables:
+    BUNDLE_GEMFILE: Gemfile.next
+  script:
+    - bundle install
+    - cp Gemfile.lock Gemfile.next.lock
+    - bundle lock
+    - bundle install
+  after_script:
+    - |
+      if [ "$CI_JOB_STATUS" == "failed" ]; then
+        echo "Gemfile.next.lock contains outdated dependencies, please run the following command and push the changes:"
+        echo "cp Gemfile.lock Gemfile.next.lock && BUNDLE_GEMFILE=Gemfile.next bundle lock && BUNDLE_GEMFILE=Gemfile.next bundle exec bundler-checksum init"
+      fi
+
 feature-flags-usage:
   extends:
     - .static-analysis-base
@@ -149,6 +168,16 @@ feature-flags-usage:
     when: always
     paths:
       - tmp/feature_flags/
+
+ensure-application-settings-have-definition-file:
+  image: ruby:${RUBY_VERSION}-alpine
+  extends:
+    - .static-analysis-base
+    - .static-analysis:rules:ensure-application-settings-have-definition-file
+  variables:
+    USE_BUNDLE_INSTALL: "false"
+  script:
+    - run_timed_command "scripts/cells/ci-ensure-application-settings-have-definition-file.rb"
 
 semgrep-appsec-custom-rules:
   stage: lint

@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141127) in GitLab 16.10 [with a flag](../administration/feature_flags.md) named `google_cloud_support_feature_flag`. This feature is in [beta](../policy/experiment-beta-support.md).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141127) in GitLab 16.10 [with a flag](../administration/feature_flags.md) named `google_cloud_support_feature_flag`.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150472) in GitLab 17.1. Feature flag `google_cloud_support_feature_flag` removed.
 
 To use Google Cloud integrations like the
@@ -236,3 +236,76 @@ These claims are a superset of the
 [ID token claims](../ci/secrets/id_token_authentication.md#token-payload).
 All values are of type string. See the ID token claims documentation for more
 details and example values.
+
+## Control access to Google Cloud
+
+When you [set up a Workload Identity Federation](#create-and-configure-a-workload-identity-federation),
+many of the standard GitLab claims (for example, `user_access_level`) are automatically mapped to
+Google Cloud attributes.
+
+You can further customize who can access Google Cloud from your GitLab organization.
+To do this, you use [Common Expression Language (CEL)](https://github.com/google/cel-spec/blob/master/doc/intro.md#introduction)
+to set principals based on the [OIDC custom attributes](#oidc-custom-claims) for the GitLab on Google Cloud integration.
+
+For example, to allow users with the `maintainer` role in GitLab to push
+artifacts to the Google Artifact Registry from the GitLab project `gitlab-org/my-project`:
+
+1. Sign into the Google Cloud Console and go to the
+   [**Workload Identity Federation** page](https://console.cloud.google.com/iam-admin/workload-identity-pools?supportedpurview=project).
+
+1. In the **Display name** column, select your workload identity pool.
+
+1. In the **Providers** section, next to the workload identity provider you want to edit,
+   select **Edit** (**{pencil}**) to open **Provider details**.
+
+1. In the **Attribute mapping** section, select **Add mapping**.
+1. In the **Google N** text box, enter:
+
+   ```shell
+   attribute.my_project_maintainer
+   ```
+
+1. In the **OIDC N** text box, enter the following CEL expression:
+
+   ```shell
+   assertion.maintainer_access=="true" && assertion.project_path=="gitlab-org/my-project"
+   ```
+
+1. Select **Save**.
+
+   The Google attribute `my_project_maintainer` is mapped to the GitLab claims
+   `maintainer_access==true` and the `project_path=="gitlab-org/my-project"`.
+
+1. In the Google Cloud Console, go to the [**IAM** page](https://console.cloud.google.com/iam-admin/iam?supportedpurview=project).
+
+1. Select **Grant access**.
+1. In the **New principals** text box, enter the principal set including the
+   `attribute.my_project_maintainer/true` in the following format:
+
+   ```shell
+   principalSet://iam.googleapis.com/projects/<PROJECT_NUMBER>/locations/global/workloadIdentityPools/<POOL_ID>/attribute.my_project_maintainer/true
+   ```
+
+   Replace the following:
+
+   - `<PROJECT_NUMBER>` with your Google Cloud project number. To find
+     your project number, see [Identifying projects](https://cloud.google.com/resource-manager/docs/creating-managing-projects#identifying_projects).
+   - `<POOL_ID>` with your workload identity pool ID.
+
+1. In the **Select a role** dropdown list, select **Google Artifact Registry Writer role**
+   (`roles/artifactregistry.writer`).
+1. Select **Save**.
+
+The role is granted to the principal set containing users with the `maintainer`
+role in GitLab on the project `gitlab-org/my-project`.
+
+To prevent your other GitLab projects from pushing artifacts to the Google Artifact Registry, you
+can view your IAM policies in the Google Cloud Console, and
+remove or edit roles as required.
+
+## View your IAM policies
+
+Sign into the Google Cloud Console and go to the
+[**IAM** page](https://console.google.com/iam-admin/iam?supportedpurview=project)
+
+You can select either **View by principals** or **View by roles**.

@@ -163,7 +163,7 @@ export default {
     </template>
 
     <template v-if="!organizationSwitchingEnabled" #footer>
-      <div class="gl-border-t gl-mt-2 gl-border-t-gray-200 gl-px-4 gl-pt-3">
+      <div class="gl-border-t gl-mt-2 gl-border-t-dropdown gl-px-4 gl-pt-3">
         <div class="gl-text-sm gl-font-bold">
           {{ $options.i18n.switchOrganizations }}
         </div>

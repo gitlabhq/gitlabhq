@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::FixAllowDescendantsOverrideDisabledSharedRunners, schema: 20230802085923,
+RSpec.describe Gitlab::BackgroundMigration::FixAllowDescendantsOverrideDisabledSharedRunners, schema: 20230728020644,
   feature_category: :fleet_visibility do
   let(:namespaces) { table(:namespaces) }
 

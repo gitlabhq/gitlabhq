@@ -1,0 +1,14 @@
+---
+api_type: array of strings
+attr: git_rate_limit_users_allowlist
+clusterwide: false
+column: git_rate_limit_users_allowlist
+db_type: text[]
+default: "'{}'::text[]"
+description: 'List of usernames excluded from Git anti-abuse rate limits. Default:
+  `[]`, Maximum: 100 usernames. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90815)
+  in GitLab 15.2. Self-managed, Ultimate only.'
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

@@ -68,15 +68,15 @@ RSpec.describe Gitlab::BackgroundMigration::DeduplicateLfsObjectsProjects, featu
   end
 
   let!(:duplicated_lfs_objects_project3) do
-    lfs_objects_projects_table.create!(project_id: project2.id, lfs_object_id: lfs_object4.id, repository_type: 0)
+    lfs_objects_projects_table.create!(project_id: project2.id, lfs_object_id: lfs_object4.id, repository_type: nil)
   end
 
   let!(:duplicated_lfs_objects_project4) do
-    lfs_objects_projects_table.create!(project_id: project2.id, lfs_object_id: lfs_object4.id, repository_type: 0)
+    lfs_objects_projects_table.create!(project_id: project2.id, lfs_object_id: lfs_object4.id, repository_type: nil)
   end
 
   let!(:lfs_objects_project5) do
-    lfs_objects_projects_table.create!(project_id: project2.id, lfs_object_id: lfs_object4.id, repository_type: 0)
+    lfs_objects_projects_table.create!(project_id: project2.id, lfs_object_id: lfs_object4.id, repository_type: nil)
   end
 
   let!(:lfs_objects_project6) do

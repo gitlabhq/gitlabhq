@@ -57,7 +57,7 @@ value with the [`variables`](../yaml/index.md#variables) keyword.
 Variables saved in the `.gitlab-ci.yml` file are visible to all users with access to
 the repository, and should store only non-sensitive project configuration. For example,
 the URL of a database saved in a `DATABASE_URL` variable. Sensitive variables containing values
-like secrets or keys should be [stored in project settings](#define-a-cicd-variable-in-the-ui).
+like secrets or keys should be [added in the UI](#define-a-cicd-variable-in-the-ui).
 
 You can use `variables` in a job or at the top level of the `.gitlab-ci.yml` file.
 If the variable is defined:
@@ -110,7 +110,7 @@ job1:
 
 Sensitive variables like tokens or passwords should be stored in the settings in the UI,
 not [in the `.gitlab-ci.yml` file](#define-a-cicd-variable-in-the-gitlab-ciyml-file).
-Define CI/CD variables in the UI:
+Add CI/CD variables in the UI:
 
 - For a project [in the project's settings](#for-a-project).
 - For all projects in a group [in the group's setting](#for-a-group).
@@ -128,8 +128,8 @@ all variables become available to the pipeline.
 
 ### For a project
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362227) in GitLab 15.7, projects can define a maximum of 200 CI/CD variables.
-> - [Updated](https://gitlab.com/gitlab-org/gitlab/-/issues/373289) in GitLab 15.9, projects can define a maximum of 8000 CI/CD variables.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362227) in GitLab 15.7, projects can have a maximum of 200 CI/CD variables.
+> - [Updated](https://gitlab.com/gitlab-org/gitlab/-/issues/373289) in GitLab 15.9, projects can have a maximum of 8000 CI/CD variables.
 
 You can add CI/CD variables to a project's settings.
 
@@ -148,22 +148,19 @@ To add or update variables in the project settings:
    - **Type**: `Variable` (default) or [`File`](#use-file-type-cicd-variables).
    - **Environment scope**: Optional. **All (default)** (`*`), a specific [environment](../environments/index.md#types-of-environments),
      or a wildcard [environment scope](../environments/index.md#limit-the-environment-scope-of-a-cicd-variable).
-   - **Protect variable** Optional. If selected, the variable is only available
-     in pipelines that run on [protected branches](../../user/project/repository/branches/protected.md) or [protected tags](../../user/project/protected_tags.md).
-   - **Visibility**:
-      - **Visible**: The variable's **Value** is visible in job logs and shown in variables settings.
-      - **Masked**: The variable's **Value** is masked in job logs, but it is still shown in variables settings.
-        The variable fails to save if the value does not meet the [masking requirements](#mask-a-cicd-variable).
-      - **Masked and hidden**: The variable's **Value** is masked in job logs, and it will not be shown in variables settings.
-        The variable fails to save if the value does not meet the [masking requirements](#mask-a-cicd-variable).
+   - **Protect variable** Optional. If selected, the variable is only available in pipelines
+     that run on [protected branches](../../user/project/repository/branches/protected.md)
+     or [protected tags](../../user/project/protected_tags.md).
+   - **Visibility**: Select **Visible** (default), [**Masked**](#mask-a-cicd-variable),
+     or [**Masked and hidden**](#hide-a-cicd-variable) (only available for new variables).
 
 After you create a variable, you can use it in the pipeline configuration
 or in [job scripts](#use-cicd-variables-in-job-scripts).
 
 ### For a group
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362227) in GitLab 15.7, groups can define a maximum of 200 CI/CD variables.
-> - [Updated](https://gitlab.com/gitlab-org/gitlab/-/issues/373289) in GitLab 15.9, groups can define a maximum of 30000 CI/CD variables.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362227) in GitLab 15.7, groups can have a maximum of 200 CI/CD variables.
+> - [Updated](https://gitlab.com/gitlab-org/gitlab/-/issues/373289) in GitLab 15.9, groups can have a maximum of 30000 CI/CD variables.
 
 You can make a CI/CD variable available to all projects in a group.
 
@@ -180,14 +177,11 @@ To add a group variable:
    - **Key**: Must be one line, with no spaces, using only letters, numbers, or `_`.
    - **Value**: No limitations.
    - **Type**: `Variable` (default) or [`File`](#use-file-type-cicd-variables).
-   - **Protect variable** Optional. If selected, the variable is only available
-     in pipelines that run on protected branches or tags.
-   - **Visibility**:
-      - **Visible**: The variable's **Value** is visible in job logs and shown in variables settings.
-      - **Masked**: The variable's **Value** is masked in job logs, but it is still shown in variables settings.
-        The variable fails to save if the value does not meet the [masking requirements](#mask-a-cicd-variable).
-      - **Masked and hidden**: The variable's **Value** is masked in job logs, and it will not be shown in variables settings.
-        The variable fails to save if the value does not meet the [masking requirements](#mask-a-cicd-variable).
+   - **Protect variable** Optional. If selected, the variable is only available in pipelines
+     that run on [protected branches](../../user/project/repository/branches/protected.md)
+     or [protected tags](../../user/project/protected_tags.md).
+   - **Visibility**: Select **Visible** (default), [**Masked**](#mask-a-cicd-variable),
+     or [**Masked and hidden**](#hide-a-cicd-variable) (only available for new variables).
 
 The group variables that are available in a project are listed in the project's
 **Settings > CI/CD > Variables** section. Variables from [subgroups](../../user/group/subgroups/index.md)
@@ -229,12 +223,11 @@ To add an instance variable:
    - **Value**: The value is limited to 10,000 characters, but also bounded by any limits in the
      runner's operating system.
    - **Type**: `Variable` (default) or [`File`](#use-file-type-cicd-variables).
-   - **Protect variable** Optional. If selected, the variable is only available
-     in pipelines that run on protected branches or tags.
-   - **Visibility**:
-      - **Visible**: The variable's **Value** is visible in job logs and shown in variables settings.
-      - **Masked**: The variable's **Value** is masked in job logs, but it is still shown in variables settings.
-        The variable fails to save if the value does not meet the [masking requirements](#mask-a-cicd-variable).
+   - **Protect variable** Optional. If selected, the variable is only available in pipelines
+     that run on [protected branches](../../user/project/repository/branches/protected.md)
+     or [protected tags](../../user/project/protected_tags.md).
+   - **Visibility**: Select **Visible** (default), [**Masked**](#mask-a-cicd-variable),
+     or [**Masked and hidden**](#hide-a-cicd-variable) (only available for new variables).
 
 ## CI/CD variable security
 
@@ -292,18 +285,19 @@ consider using [external secrets](../secrets/index.md) and [file type variables]
 to prevent commands such as `env`/`printenv` from printing secret variables.
 
 You can mask a project, group, or instance CI/CD variable so the value of the variable
-does not display in job logs.
+does not display in job logs. When a masked CI/CD variable would be displayed in a job log,
+the value is replaced with `[masked]` to prevent the value from being exposed.
 
 Prerequisites:
 
-- You must have the same role or access level as required to [define a CI/CD variable in the UI](#define-a-cicd-variable-in-the-ui).
+- You must have the same role or access level as required to [add a CI/CD variable in the UI](#define-a-cicd-variable-in-the-ui).
 
 To mask a variable:
 
 1. For the group, project, or in the **Admin** area, select **Settings > CI/CD**.
 1. Expand **Variables**.
 1. Next to the variable you want to protect, select **Edit**.
-1. Select the **Mask variable** checkbox.
+1. Under **Visibility**, select **Mask variable**.
 1. Select **Update variable**.
 
 The method used to mask variables [limits what can be included in a masked variable](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/13784#note_106756757).
@@ -322,7 +316,8 @@ the value can contain only:
 
 Masking a variable automatically masks the value anywhere in a job log. If another
 variable has the same value, that value is also masked, including when a variable
-references a masked variable.
+references a masked variable. The string `[MASKED]` is shown instead of the value,
+possibly with some trailing `x` characters.
 
 Different versions of [GitLab Runner](../runners/index.md) have different masking limitations:
 
@@ -331,6 +326,28 @@ Different versions of [GitLab Runner](../runners/index.md) have different maskin
 | v14.1.0 and earlier | Masking of large secrets (greater than 4 KiB) could potentially be [revealed](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/28128). No sensitive URL parameter masking. |
 | v14.2.0 to v15.3.0  | The tail of a large secret (greater than 4 KiB) could potentially be [revealed](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/28128). No sensitive URL parameter masking. |
 | v15.7.0 and later   | Secrets could be revealed when `CI_DEBUG_SERVICES` is enabled. For details, read about [service container logging](../services/index.md#capturing-service-container-logs). |
+
+### Hide a CI/CD variable
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/29674) in GitLab 17.4 [with a flag](../../administration/feature_flags.md) named `ci_hidden_variables`. Enabled by default.
+
+FLAG:
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+In addition to masking, you can also prevent the value of CI/CD variables from being revealed
+in the **CI/CD** settings page. Hiding a variable is only possible when creating a new variable,
+you cannot update an existing variable to be hidden.
+
+Prerequisites:
+
+- You must have the same role or access level as required to [add a CI/CD variable in the UI](#define-a-cicd-variable-in-the-ui).
+- The variable value must match the [requirements for masked variables](#mask-a-cicd-variable).
+
+To hide a variable, select **Masked and hidden** in the **Visibility** section when
+you [add a new CI/CD variable in the UI](#define-a-cicd-variable-in-the-ui).
+After you save the variable, the variable can be used in CI/CD pipelines, but cannot
+be revealed in the UI again.
 
 ### Protect a CI/CD variable
 
@@ -342,7 +359,7 @@ or [protected tags](../../user/project/protected_tags.md).
 
 Prerequisites:
 
-- You must have the same role or access level as required to [define a CI/CD variable in the UI](#define-a-cicd-variable-in-the-ui).
+- You must have the same role or access level as required to [add a CI/CD variable in the UI](#define-a-cicd-variable-in-the-ui).
 
 To set a variable as protected:
 
@@ -481,7 +498,7 @@ job_name:
 
 [Service containers](../docker/using_docker_images.md) can use CI/CD variables, but
 by default can only access [variables saved in the `.gitlab-ci.yml` file](#define-a-cicd-variable-in-the-gitlab-ciyml-file).
-Variables [set in the GitLab UI](#define-a-cicd-variable-in-the-ui) are not available to
+Variables [added in the GitLab UI](#define-a-cicd-variable-in-the-ui) are not available to
 service containers, because service containers are not trusted by default.
 
 To make a UI-defined variable available in a service container, you can re-assign
@@ -699,7 +716,7 @@ disable variable expansion for the variable
 
 Prerequisites:
 
-- You must have the same role or access level as required to [define a CI/CD variable in the UI](#define-a-cicd-variable-in-the-ui).
+- You must have the same role or access level as required to [add a CI/CD variable in the UI](#define-a-cicd-variable-in-the-ui).
 
 To disable variable expansion for the variable:
 
@@ -776,7 +793,7 @@ You can limit the ability to override variables to only users with at least the 
 When other users try to run a pipeline with overridden variables, they receive the
 `Insufficient permissions to set pipeline variables` error message.
 
-Enable this feature by using [the projects API](../../api/projects.md#edit-project)
+Enable this feature by using [the projects API](../../api/projects.md#edit-a-project)
 to enable the `restrict_user_defined_variables` setting. The setting is `disabled` by default.
 
 If you [store your CI/CD configurations in a different repository](../../ci/pipelines/settings.md#specify-a-custom-cicd-configuration-file),
@@ -790,7 +807,7 @@ When the `restrict_user_defined_variables` option is enabled, you can specify wh
 [roles](../../user/permissions.md#roles) can override variables with the
 `ci_pipeline_variables_minimum_override_role` setting.
 
-To change the setting, use [the projects API](../../api/projects.md#edit-project)
+To change the setting, use [the projects API](../../api/projects.md#edit-a-project)
 to modify `ci_pipeline_variables_minimum_override_role` to one of:
 
 - `owner`: Only users with the Owner role can override variables. You must have the Owner
@@ -893,7 +910,7 @@ When the runner executes the job:
 You can list all variables available to a script with the `export` command
 in Bash or `dir env:` in PowerShell. This exposes the values of **all** available
 variables, which can be a [security risk](#cicd-variable-security).
-[Masked variables](#mask-a-cicd-variable) display as `[masked]`.
+[Masked variables](#mask-a-cicd-variable) display as `[MASKED]`.
 
 For example, with Bash:
 
@@ -910,13 +927,13 @@ export CI_JOB_ID="50"
 export CI_COMMIT_SHA="1ecfd275763eff1d6b4844ea3168962458c9f27a"
 export CI_COMMIT_SHORT_SHA="1ecfd275"
 export CI_COMMIT_REF_NAME="main"
-export CI_REPOSITORY_URL="https://gitlab-ci-token:[masked]@example.com/gitlab-org/gitlab.git"
+export CI_REPOSITORY_URL="https://gitlab-ci-token:[MASKED]@example.com/gitlab-org/gitlab.git"
 export CI_COMMIT_TAG="1.0.0"
 export CI_JOB_NAME="spec:other"
 export CI_JOB_STAGE="test"
 export CI_JOB_MANUAL="true"
 export CI_JOB_TRIGGERED="true"
-export CI_JOB_TOKEN="[masked]"
+export CI_JOB_TOKEN="[MASKED]"
 export CI_PIPELINE_ID="1000"
 export CI_PIPELINE_IID="10"
 export CI_PAGES_DOMAIN="gitlab.io"

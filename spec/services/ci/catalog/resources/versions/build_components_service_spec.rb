@@ -11,10 +11,10 @@ RSpec.describe Ci::Catalog::Resources::Versions::BuildComponentsService, feature
 
     let(:components_data) do
       [
-        { name: 'secret-detection', spec: { 'inputs' => { 'website' => nil } } },
-        { name: 'dast',             spec: {} },
-        { name: 'blank-yaml',       spec: {} },
-        { name: 'template',         spec: { 'inputs' => { 'environment' => nil } } }
+        { name: 'secret-detection', spec: { 'inputs' => { 'website' => nil } }, component_type: 'template' },
+        { name: 'dast',             spec: {}, component_type: 'template' },
+        { name: 'blank-yaml',       spec: {}, component_type: 'template' },
+        { name: 'template',         spec: { 'inputs' => { 'environment' => nil } }, component_type: 'template' }
       ]
     end
 
@@ -38,7 +38,7 @@ RSpec.describe Ci::Catalog::Resources::Versions::BuildComponentsService, feature
     context 'when there are more than 30 components' do
       let(:components_data) do
         num_components = 31
-        (0...num_components).map { |i| { name: "component_#{i}", spec: {} } }
+        (0...num_components).map { |i| { name: "component_#{i}", spec: {}, component_type: 'template' } }
       end
 
       it 'raises an error' do
@@ -72,6 +72,21 @@ RSpec.describe Ci::Catalog::Resources::Versions::BuildComponentsService, feature
 
         expect(response).to be_success
         expect(response.payload).to be_empty
+      end
+    end
+
+    context 'with an invalid component type' do
+      let(:components_data) do
+        [
+          { name: 'secret-detection', spec: { 'inputs' => { 'website' => nil } }, component_type: 'invalid' }
+        ]
+      end
+
+      it 'returns an error' do
+        response = execute
+
+        expect(response).to be_error
+        expect(response.message).to include("'invalid' is not a valid resource_type")
       end
     end
   end

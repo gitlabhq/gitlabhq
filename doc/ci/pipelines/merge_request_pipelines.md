@@ -134,7 +134,7 @@ To use the UI to run a pipeline in the parent project for a merge request from a
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325189) in GitLab 15.3.
 
 To prevent users from running new pipelines for fork projects in the parent project
-use [the projects API](../../api/projects.md#edit-project) to disable the `ci_allow_fork_pipelines_to_run_in_parent_project`
+use [the projects API](../../api/projects.md#edit-a-project) to disable the `ci_allow_fork_pipelines_to_run_in_parent_project`
 setting.
 
 WARNING:

@@ -8,7 +8,6 @@
  * - Button Actions.
  * [Mockup](https://gitlab.com/gitlab-org/gitlab-foss/uploads/2f655655c0eadf655d0ae7467b53002a/environments__deploy-graphic.png)
  */
-import deployBoardSvg from '@gitlab/svgs/dist/illustrations/deploy-boards.svg?raw';
 import {
   GlIcon,
   GlLoadingIcon,
@@ -92,9 +91,6 @@ export default {
     },
     instanceTitle() {
       return n__('Instance', 'Instances', this.instanceCount);
-    },
-    deployBoardSvg() {
-      return deployBoardSvg;
     },
     rollbackUrl() {
       if (this.graphql) {
@@ -217,8 +213,6 @@ export default {
       </div>
 
       <div v-if="canRenderEmptyState" class="deploy-board-empty">
-        <section v-safe-html="deployBoardSvg" class="deploy-board-empty-state-svg"></section>
-
         <section class="deploy-board-empty-state-text">
           <span class="deploy-board-empty-state-title gl-flex">{{
             __('Kubernetes deployment not found')

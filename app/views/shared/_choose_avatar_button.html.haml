@@ -1,1 +1,1 @@
-= render 'shared/file_picker_button', f: f, field: :avatar, help_text: s_("Profiles|The ideal image size is 192 x 192 pixels.") + " " + s_("Profiles|The maximum file size allowed is 200 KiB.")
+= render 'shared/file_picker_button', f: f, field: :avatar, help_text: s_("Profiles|The ideal image size is 192 x 192 pixels.") + " " + s_("Profiles|The maximum file size allowed is 200 KiB."), max_file_size: 200

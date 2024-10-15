@@ -6,15 +6,19 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Get started organizing work with projects
 
-In GitLab, the data related to a specific development effort goes in a project.
-The project serves as a central hub for collaboration, version control, and project management.
+Projects in GitLab organize all the data for a specific development project.
+A project is where you work with your team, store your files, and manage your tasks.
 
-Projects provide the environment for managing and collaborating
-on software development projects, from planning and coding to testing and deployment.
+Use projects to:
+
+- Write and save code
+- Track issues and tasks
+- Collaborate on code changes
+- Test and deploy your app
 
 Project creation and maintenance is part of a larger workflow:
 
-![Workflow](img/get_started_projects_v16_11.png)
+![Organize work with projects is part of the plan stage in a development workflow.](img/get_started_projects_v16_11.png)
 
 ## Step 1: Create a project
 
@@ -24,13 +28,13 @@ documentation, and related resources.
 A project contains a repository. A repository contains all the files,
 directories, and data related to your work.
 
-Set the appropriate visibility level (public, internal, or private) for your project,
-based on your project's security and collaboration requirements.
-Configure project settings, like merge request approvals, issue tracking,
-and CI/CD pipelines, to align with your development workflow.
+When you create the project, review and configure the following settings to align with your development workflow and collaboration requirements:
 
-Use description templates to maintain consistency and provide essential information
-when creating issues, merge requests, or other project entities.
+- Visibility level
+- Merge request approvals
+- Issue tracking
+- CI/CD pipelines
+- Description templates for entities like issues or merge requests
 
 For more information, see:
 
@@ -42,15 +46,11 @@ For more information, see:
 
 ## Step 2: Secure and control access to projects
 
-To grant specific access rights to automated tools or external systems,
-helping ensure secure integration with your GitLab projects, generate project access tokens.
+Use the following tools to manage secure access to your projects:
 
-If you want to securely deploy your project to external systems,
-create deploy keys. These keys can grant read-only access to your repositories.
-
-And finally, to provide temporary and limited access to
-your project's repository and registry, create deploy tokens, which
-help enable secure deployments and automation.
+- Project access tokens: Grant specific access rights to automated tools or external systems for secure integration.
+- Deploy keys: Grant read-only access to your repositories to securely deploy your project to external systems.
+- Deploy tokens: Grant temporary, limited access to your project's repository and registry for secure deployments and automation.
 
 For more information, see:
 
@@ -63,33 +63,29 @@ For more information, see:
 You can invite multiple projects to a group, sometimes called
 `sharing a project with a group`. Each project has its own repository,
 issues, merge requests, and other features.
-When you have multiple projects in the same group, your team members can collaborate
-on specific projects while still maintaining
-a high-level overview of all the work being done in the group.
 
-To further refine who has access to which projects, you can
-add subgroups to your group.
+With multiple projects in a group, team members can collaborate on individual
+projects while having a high-level view of all the work done in the group.
+
+To further refine access to your projects, you can add subgroups to
+your group.
 
 For more information, see:
 
 - [Share projects](../project/members/sharing_projects_groups.md)
+- [Subgroups](../group/subgroups/index.md)
 
 ## Step 4: Enhance project discoverability and recognition
 
-To create a consistent and easily recognizable naming scheme for your projects,
-use reserved project and group names. Consistent names can help make projects
-more discoverable.
-
-Use the search functionality to quickly find specific projects,
+Use the search box to quickly find specific projects,
 issues, merge requests, or code snippets across your GitLab instance.
 
-Another way to make your projects more discoverable is to add badges
-to your project's `README` file. Badges can display important information,
-like build status, test coverage, or version number. They provide a
-quick overview of your project's health and status.
+To make projects easier to find:
 
-And finally, topics are labels that you can assign to projects
-to help you organize and find them. You can assign a topic to several projects.
+- Create a consistent and recognizable naming scheme for your projects with reserved project and group names.
+- Add badges to your project's `README` file. Badges can display important information,
+like build status, project health, test coverage, or version number.
+- Assign project topics. Topics are labels that help you organize and find projects.
 
 For more information, see:
 
@@ -100,9 +96,14 @@ For more information, see:
 
 ## Step 5: Boost development efficiency and maintain code quality
 
-Use the code intelligence features, like code navigation,
-hover information, and auto-completion, to enhance your productivity and
-maintain a high-quality codebase. Code intelligence is a range of tools
+Use code intelligence features to enhance your productivity and
+maintain a high-quality codebase, such as:
+
+- Code navigation
+- Hover information
+- Auto-completion
+
+Code intelligence is a range of tools
 that help you efficiently explore, analyze, and maintain your codebase.
 
 To quickly locate and go to specific files in your project,
@@ -115,14 +116,14 @@ For more information, see:
 
 ## Step 6: Migrate projects into GitLab
 
-When necessary, use file exports to migrate projects to GitLab.
-You can migrate from other version control systems or GitLab instances.
-When you migrate a frequently accessed repository to GitLab, you can continue to
-access it by its original name by using a project alias.
+Use file exports to migrate projects to GitLab from other systems or GitLab instances.
 
-On GitLab.com, you can transfer a project from one namespace to another,
-which is essentially moving it so that another group or team can have
-access or ownership.
+When you migrate a frequently accessed repository to GitLab, you can use a project alias to
+continue to access it by its original name.
+
+On GitLab.com, you can transfer a project from one namespace to another.
+A transfer essentially moves a project to another group
+so its members have access or ownership.
 
 For more information, see:
 

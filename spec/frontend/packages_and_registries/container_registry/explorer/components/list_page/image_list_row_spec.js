@@ -1,6 +1,7 @@
 import { GlSprintf, GlSkeletonLoader, GlButton, GlBadge } from '@gitlab/ui';
+import ProtectedBadge from '~/vue_shared/components/badges/protected_badge.vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
+import { createMockDirective } from 'helpers/vue_mock_directive';
 import { mockTracking } from 'helpers/tracking_helper';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import DeleteButton from '~/packages_and_registries/container_registry/explorer/components/delete_button.vue';
@@ -34,7 +35,7 @@ describe('Image List Row', () => {
   const findListItemComponent = () => wrapper.findComponent(ListItem);
   const findShowFullPathButton = () => wrapper.findComponent(GlButton);
   const findPublishMessage = () => wrapper.findComponent(PublishMessage);
-  const findProtectedBadge = () => wrapper.findComponent(GlBadge);
+  const findProtectedBadge = () => wrapper.findComponent(ProtectedBadge);
 
   const mountComponent = ({ props = {}, config = {}, provide = {} } = {}) => {
     wrapper = shallowMountExtended(Component, {
@@ -289,25 +290,20 @@ describe('Image List Row', () => {
       });
     };
 
-    describe('when image has new badge', () => {
+    describe('when image is protected', () => {
       beforeEach(() => {
         mountComponentForProtectedBadge();
       });
 
       it('shows badge', () => {
-        expect(findProtectedBadge().text()).toBe('protected');
-      });
-
-      it('binds tooltip directive', () => {
-        const ProtectedBadgeTooltipBinding = getBinding(findProtectedBadge().element, 'gl-tooltip');
-        expect(ProtectedBadgeTooltipBinding).toBeDefined();
-        expect(findProtectedBadge().attributes('title')).toMatch(
+        expect(findProtectedBadge().exists()).toBe(true);
+        expect(findProtectedBadge().props('tooltipText')).toBe(
           'A protection rule exists for this container repository.',
         );
       });
     });
 
-    describe('when image does not have new badge', () => {
+    describe('when image is not protected', () => {
       it('does not show badge', () => {
         mountComponentForProtectedBadge({ itemProtectionRuleExists: false });
 

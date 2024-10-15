@@ -1,5 +1,5 @@
 import { s__, sprintf } from '~/locale';
-import { helpPagePath } from '~/helpers/help_page_helper';
+import { DOCS_URL } from 'jh_else_ce/lib/utils/url_utility';
 
 export const REGISTRATION_TOKEN_PLACEHOLDER = '$REGISTRATION_TOKEN';
 
@@ -70,10 +70,4 @@ export const AWS_EASY_BUTTONS = [
   },
 ];
 
-// eslint-disable-next-line local-rules/require-valid-help-page-path
-export const LEGACY_REGISTER_HELP_URL = helpPagePath(
-  'architecture/blueprints/runner_tokens/index.md',
-  {
-    anchor: 'using-the-authentication-token-in-place-of-the-registration-token',
-  },
-);
+export const LEGACY_REGISTER_HELP_URL = `${DOCS_URL}/runner/register/#register-with-a-runner-authentication-token`;

@@ -147,6 +147,9 @@ export default {
     rolledUpCountsByType() {
       return this.workItemHierarchy?.rolledUpCountsByType || [];
     },
+    depthLimitReachedByType() {
+      return this.workItemHierarchy?.depthLimitReachedByType || [];
+    },
     childrenIds() {
       return this.children.map((c) => c.id);
     },
@@ -165,11 +168,20 @@ export default {
       const reorderedChildTypes = childTypes.slice().sort((a, b) => a.id.localeCompare(b.id));
       return reorderedChildTypes.map((type) => {
         const enumType = WORK_ITEM_TYPE_VALUE_MAP[type.name];
+        const depthLimitByType =
+          this.depthLimitReachedByType?.find(
+            (item) => item.workItemType?.name.toUpperCase() === enumType,
+          ) || {};
+
         return {
           name: WORK_ITEMS_TYPE_MAP[enumType].name,
+          atDepthLimit: depthLimitByType.depthLimitReached,
           items: this.genericActionItems(type.name).map((item) => ({
             text: item.title,
             action: item.action,
+            extraAttrs: {
+              disabled: depthLimitByType.depthLimitReached,
+            },
           })),
         };
       });

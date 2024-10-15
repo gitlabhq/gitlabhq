@@ -39,7 +39,11 @@ class NamespaceStatistics < ApplicationRecord # rubocop:disable Gitlab/Namespace
   def update_dependency_proxy_size
     return unless group_namespace?
 
-    self.dependency_proxy_size = namespace.dependency_proxy_manifests.sum(:size) + namespace.dependency_proxy_blobs.sum(:size)
+    self.dependency_proxy_size = [
+      namespace.dependency_proxy_manifests,
+      namespace.dependency_proxy_blobs,
+      ::VirtualRegistries::Packages::Maven::CachedResponse.for_group(namespace)
+    ].sum { |rel| rel.sum(:size) }
   end
 
   def self.columns_to_refresh

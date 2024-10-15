@@ -20,7 +20,6 @@ module InternalEventsCli
 
     TEXT
 
-    # TODO: Remove "NEW TOOL" comment after 3 months
     FEEDBACK_NOTICE = format_heading <<~TEXT.chomp
       Thanks for using the Internal Events CLI!
 
@@ -53,7 +52,7 @@ module InternalEventsCli
           https://docs.gitlab.com/ee/user/analytics/
 
       #{format_warning('Customer wants usage data for their own products:')}
-          https://docs.gitlab.com/ee/user/product_analytics/
+          https://docs.gitlab.com/ee/operations/product_analytics/
     TEXT
 
     EVENT_TRACKING_EXAMPLES = <<~TEXT
@@ -174,18 +173,34 @@ module InternalEventsCli
 
     ADDITIONAL_PROPERTIES_INTRO = <<~TEXT.freeze
       #{format_info('ADDITIONAL PROPERTIES')}
-      If you provide extra context with each triggered event, extra capabilities are enabled:
-      - Service Ping: filter metrics to a specific subset of events
-      - Snowflake: view/sort/group individual events from GitLab.com
+      Describe any related attributes or information which should be tracked when the event occurs. This enables extra capabilities:
+        - Service Ping: define metrics filtered to a specific subset of events (built-in properties only)
+        - Snowflake: view/sort/group individual events from GitLab.com
 
-      There are a few specific attributes are available for recording the context of each event. These include 2 strings and 1 numeric value.
+      BUILT-IN PROPERTIES (recommended)
+      For the best performance and flexibility, provide event context using:
 
-      ex) For an event like 'change_merge_request_status', we might want to include:
+        property (string),  label (string),  value (numeric)
 
-          Attribute: String 1 (attribute will be named `label`)
-          Description: Status of merge request after update (one of opened, merged, closed)
+      These attribute names correspond to repurposed fields in Snowflake. They have no special meaning other than data type.
 
-          This would enable us to create a metric like: Monthly count of unique users who changed an MR status to "closed"
+      ex) To add a metric like "Monthly count of unique users who changed an MR status to closed" using a 'change_merge_request_status' event, define an additional property like:
+        Attribute: label (string)
+        Description: Status of merge request after update (one of opened, merged, closed)
+
+      CUSTOM PROPERTIES (as-needed)
+      When the built-in properties are insufficient, properties of any name can be provided.
+      This option becomes available after both property and label are defined, or after value is defined.
+
+    TEXT
+
+    ADDITIONAL_PROPERTIES_ADD_MORE_HELP = <<~TEXT.freeze
+      #{format_warning('Required. Must be unique within the event context. Must use only letters/numbers/underscores.')}
+
+      #{format_info('It should not be named any of the following:')}
+      - property#{' '}
+      - label
+      - value
 
     TEXT
 

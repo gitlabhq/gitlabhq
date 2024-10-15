@@ -3,6 +3,8 @@ redirect_to: 'merge_request_approval_policies.md'
 remove_date: '2024-10-25'
 ---
 
+<!-- markdownlint-disable -->
+
 This document was moved to [another location](merge_request_approval_policies.md).
 
 <!-- This redirect file can be deleted after <2024-10-25>. -->

@@ -7,7 +7,7 @@
         = s_('Runners|Runner version management')
       %span.form-text.gl-mb-3.gl-mt-0
         - help_text = s_('Runners|Official runner version data is periodically fetched from GitLab.com to determine whether the runners need upgrades.')
-        - learn_more_link = link_to _('Learn more.'), help_page_path('ci/runners/runners_scope', anchor: 'determine-which-runners-need-to-be-upgraded'), target: '_blank', rel: 'noopener noreferrer'
+        - learn_more_link = link_to _('Learn more.'), help_page_path('ci/runners/runners_scope.md', anchor: 'determine-which-runners-need-to-be-upgraded'), target: '_blank', rel: 'noopener noreferrer'
         = f.gitlab_ui_checkbox_component :update_runner_versions_enabled,
           s_('Runners|Fetch GitLab Runner release version data from GitLab.com'),
           help_text: '%{help_text} %{learn_more_link}'.html_safe % { help_text: help_text, learn_more_link: learn_more_link }

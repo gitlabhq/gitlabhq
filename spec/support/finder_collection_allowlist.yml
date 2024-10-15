@@ -64,6 +64,7 @@
 - Security::ScanExecutionPoliciesFinder
 - Security::ScanResultPoliciesFinder
 - Security::PipelineExecutionPoliciesFinder
+- Security::VulnerabilityManagementPoliciesFinder
 - Security::SecurityPoliciesFinder
 - SentryIssueFinder
 - ServerlessDomainFinder
@@ -72,3 +73,4 @@
 - UploaderFinder
 - UserGroupNotificationSettingsFinder
 - UserGroupsCounter
+- Ai::FeatureSettings::FeatureSettingFinder

@@ -60,6 +60,9 @@ module Gitlab
 
         # rubocop:disable Metrics/AbcSize
         def self.analyze(parsed)
+          # This analyzer requires the PgQuery parsed query to be present
+          return unless parsed.pg
+
           database = ::Gitlab::Database.db_config_name(parsed.connection)
           sql = parsed.sql
 

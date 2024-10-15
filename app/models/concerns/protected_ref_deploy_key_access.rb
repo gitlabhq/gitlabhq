@@ -32,7 +32,7 @@ module ProtectedRefDeployKeyAccess
 
   def check_access(current_user, current_project = project)
     super do
-      break enabled_deploy_key_for_user?(current_user) if deploy_key?
+      break deploy_key_access_allowed?(current_user) if deploy_key?
 
       yield if block_given?
     end
@@ -56,20 +56,25 @@ module ProtectedRefDeployKeyAccess
     errors.add(:deploy_key, 'is not enabled for this project')
   end
 
-  def enabled_deploy_key_for_user?(current_user)
-    current_user.can?(:read_project, project) &&
-      deploy_key.user_id == current_user.id &&
-      active_project_member?(current_user) &&
+  def deploy_key_access_allowed?(current_user)
+    deploy_key_owned_by?(current_user) && valid_deploy_key_status?
+  end
+
+  def deploy_key_owned_by?(current_user)
+    deploy_key.user_id == current_user.id
+  end
+
+  def valid_deploy_key_status?
+    deploy_key.user.can?(:read_project, project) &&
+      deploy_key_owner_project_member? &&
       deploy_key_has_write_access_to_project?
+  end
+
+  def deploy_key_owner_project_member?
+    project.member?(deploy_key.user)
   end
 
   def deploy_key_has_write_access_to_project?
     DeployKey.with_write_access_for_project(project, deploy_key: deploy_key).exists?
-  end
-
-  def active_project_member?(current_user)
-    return true if Feature.disabled?(:check_membership_in_protected_ref_access) # rubocop:disable Gitlab/FeatureFlagWithoutActor -- This flag already exists, I don't want to add an actor and break it.
-
-    project.member?(current_user)
   end
 end

@@ -31,10 +31,7 @@ can access the object pool connected to the source project.
 
 To fork an existing project in GitLab:
 
-1. On the project's homepage, in the upper-right corner, select **Fork** (**{fork}**):
-
-   ![Fork this project](img/forking_workflow_fork_button_v13_10.png)
-
+1. On the project's homepage, in the upper-right corner, select **Fork** (**{fork}**).
 1. Optional. Edit the **Project name**.
 1. For **Project URL**, select the [namespace](../../namespace/index.md)
    your fork should belong to.
@@ -200,7 +197,7 @@ Prerequisites:
 WARNING:
 If you remove a fork relationship, you can't send merge requests to the source.
 If anyone has forked your project, their fork also loses the relationship.
-To restore the fork relationship, [use the API](../../../api/projects.md#create-a-forked-fromto-relation-between-existing-projects).
+To restore the fork relationship, [use the API](../../../api/project_forks.md#create-a-fork-relationship-between-projects).
 
 To remove a fork relationship:
 

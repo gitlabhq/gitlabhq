@@ -168,7 +168,9 @@ What's behind the implementation of `ClickHouse::Event` is not decided yet, it c
 
 - ActiveRecord model directly connecting the ClickHouse database.
 - REST API call to an intermediate service.
+<!-- vale gitlab_base.Spelling = NO -->
 - Enqueueing an event to an event-streaming tool (like Kafka).
+<!-- vale gitlab_base.Spelling = YES -->
 
 #### Replication of `events` rows
 

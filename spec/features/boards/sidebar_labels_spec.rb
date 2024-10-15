@@ -19,9 +19,9 @@ RSpec.describe 'Project issue boards sidebar labels', :js, feature_category: :po
   let_it_be(:list1)       { create(:list, board: board, label: development, position: 0) }
   let_it_be(:list2)       { create(:list, board: board, label: bug, position: 1) }
 
-  let(:backlog_list)      { find('.board:nth-child(1)') }
-  let(:development_list)  { find('.board:nth-child(2)') }
-  let(:bug_list)          { find('.board:nth-child(3)') }
+  let(:backlog_list)      { find('[data-testid="board-list"]:nth-child(1)') }
+  let(:development_list)  { find('[data-testid="board-list"]:nth-child(2)') }
+  let(:bug_list)          { find('[data-testid="board-list"]:nth-child(3)') }
   let(:card)              { development_list.first('.board-card') }
   let(:backlog_card)      { backlog_list.first('.board-card') }
 

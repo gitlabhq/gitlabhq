@@ -5,7 +5,7 @@
   "can-read-environment" => can?(current_user, :read_environment, @project).to_s,
   "can-create-environment" => can?(current_user, :create_environment, @project).to_s,
   "new-environment-path" => new_project_environment_path(@project),
-  "help-page-path" => help_page_path("ci/environments/index"),
+  "help-page-path" => help_page_path("ci/environments/index.md"),
   "project-path" => @project.full_path,
   "project-id" => @project.id,
   "default-branch-name" => @project.default_branch_or_main } }

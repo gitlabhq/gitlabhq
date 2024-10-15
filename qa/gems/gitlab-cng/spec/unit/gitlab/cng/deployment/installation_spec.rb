@@ -11,7 +11,8 @@ RSpec.describe Gitlab::Cng::Deployment::Installation, :aggregate_failures do
         gitlab_domain: gitlab_domain,
         timeout: "10m",
         chart_sha: chart_sha,
-        env: ["RAILS_ENV_VAR=val"]
+        env: ["RAILS_ENV_VAR=val"],
+        retry: retry_attempts
       )
     end
 
@@ -20,13 +21,14 @@ RSpec.describe Gitlab::Cng::Deployment::Installation, :aggregate_failures do
     let(:chart_sha) { nil }
     let(:chart_reference) { "chart-reference" }
     let(:ci) { false }
+    let(:retry_attempts) { 0 }
 
     let(:kubeclient) do
       instance_double(Gitlab::Cng::Kubectl::Client, create_namespace: "", create_resource: "", execute: "")
     end
 
     let(:helmclient) do
-      instance_double(Gitlab::Cng::Helm::Client, add_helm_chart: chart_reference, upgrade: nil)
+      instance_double(Gitlab::Cng::Helm::Client, add_gitlab_helm_chart: chart_reference, upgrade: nil)
     end
 
     let(:configuration) do
@@ -73,39 +75,62 @@ RSpec.describe Gitlab::Cng::Deployment::Installation, :aggregate_failures do
     end
 
     context "with deployment failure" do
-      let(:warn_event) do
-        {
-          involvedObject: {
-            kind: "HorizontalPodAutoscaler",
-            name: "gitlab-webservice-default"
+      let(:warn_events) do
+        [
+          {
+            involvedObject: {
+              kind: "Pod",
+              name: "gitlab-webservice-default"
+            },
+            kind: "Event",
+            message: "failed to sync secret cache: timed out waiting for the condition",
+            reason: "FailedMount",
+            type: "Warning"
           },
-          kind: "Event",
-          message: "failed to get cpu usage",
-          reason: "FailedGetResourceMetric",
-          type: "Warning"
-        }
+          {
+            involvedObject: {
+              kind: "HorizontalPodAutoscaler",
+              name: "gitlab-webservice-default"
+            },
+            kind: "Event",
+            message: "failed to get cpu usage",
+            reason: "FailedGetResourceMetric",
+            type: "Warning"
+          }
+        ]
       end
+
+      let(:valid_event) { warn_events.first }
+      let(:removed_event) { warn_events.last }
 
       before do
         allow(helmclient).to receive(:upgrade).and_raise(Gitlab::Cng::Helm::Client::Error, "error")
-        allow(kubeclient).to receive(:events).with(json_format: true).and_return(<<~EVENTS)
-          {
-            "items": [
-              #{JSON.pretty_generate(warn_event)},
-              {
-                "type": "Normal"
-              }
-            ]
-          }
-        EVENTS
+        allow(kubeclient).to receive(:events).with(json_format: true).and_return({ items: warn_events }.to_json)
       end
 
-      it "automatically prints warning events" do
-        expect { expect { installation.create }.to raise_error(SystemExit) }.to output(
-          match("#{warn_event[:involvedObject][:kind]}/#{warn_event[:involvedObject][:name]}")
-          .and(match(warn_event[:message]))
-          .and(match(/For more information on troubleshooting failures, see: \S+/))
-        ).to_stdout
+      context "without retry" do
+        it "automatically prints warning events and troubleshooting info" do
+          expect { expect { installation.create }.to raise_error(SystemExit) }.to output(
+            match("#{valid_event[:involvedObject][:kind]}/#{valid_event[:involvedObject][:name]}")
+            .and(match(valid_event[:message]))
+            .and(match(/For more information on troubleshooting failures, see: \S+/))
+          ).to_stdout
+        end
+
+        it "removes metrics related warning events" do
+          expect { expect { installation.create }.to raise_error(SystemExit) }.not_to output(
+            match("#{removed_event[:involvedObject][:kind]}/#{removed_event[:involvedObject][:name]}")
+          ).to_stdout
+        end
+      end
+
+      context "with retry" do
+        let(:retry_attempts) { 1 }
+
+        it "retries deployment" do
+          expect { expect { installation.create }.to raise_error(SystemExit) }.to output.to_stdout
+          expect(helmclient).to have_received(:upgrade).twice
+        end
       end
     end
 
@@ -113,7 +138,7 @@ RSpec.describe Gitlab::Cng::Deployment::Installation, :aggregate_failures do
       it "runs setup and helm deployment" do
         expect { installation.create }.to output(/Creating CNG deployment 'gitlab'/).to_stdout
 
-        expect(helmclient).to have_received(:add_helm_chart).with(nil)
+        expect(helmclient).to have_received(:add_gitlab_helm_chart).with(nil)
         expect(helmclient).to have_received(:upgrade).with(
           "gitlab",
           chart_reference,
@@ -144,7 +169,7 @@ RSpec.describe Gitlab::Cng::Deployment::Installation, :aggregate_failures do
       it "runs helm install with correctly merged values and component versions" do
         expect { installation.create }.to output(/Creating CNG deployment 'gitlab'/).to_stdout
 
-        expect(helmclient).to have_received(:add_helm_chart).with(chart_sha)
+        expect(helmclient).to have_received(:add_gitlab_helm_chart).with(chart_sha)
         expect(helmclient).to have_received(:upgrade).with(
           "gitlab",
           chart_reference,

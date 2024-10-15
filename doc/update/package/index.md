@@ -18,7 +18,7 @@ GitLab package.
 - Create an [upgrade plan](../plan_your_upgrade.md).
   We recommend upgrading in a test environment first and having a [rollback plan](../plan_your_upgrade.md#rollback-plan)
   to reduce the risk of unplanned outages and extended downtime.
-- Decide when to upgrade by viewing the [supported upgrade paths](../index.md#upgrade-paths).
+- Decide when to upgrade by viewing the [supported upgrade paths](../upgrade_paths.md).
   You can't directly skip major versions (for example, go from 10.3 to 12.7 in one step).
 - If you are upgrading from a non-package installation to a GitLab package installation, see
   [Upgrading from a non-package installation to a GitLab package installation](https://docs.gitlab.com/omnibus/update/convert_to_omnibus.html).
@@ -120,7 +120,7 @@ For the GitLab Community Edition, replace `gitlab-ee` with
 Linux package managers default to installing the latest available version of a
 package for installation and upgrades. Upgrading directly to the latest major
 version can be problematic for older GitLab versions that require a multi-stage
-[upgrade path](../index.md#upgrade-paths). An upgrade path can span multiple
+[upgrade path](../upgrade_paths.md). An upgrade path can span multiple
 versions, so you must specify the specific GitLab package with each upgrade.
 
 To specify the intended GitLab version number in your package manager's install
@@ -144,7 +144,7 @@ or upgrade command:
 
 1. Install the specific `gitlab-ee` package by using one of the following commands
    and replacing `<version>` with the next supported version you would like to install
-   (make sure to review the [upgrade path](../index.md#upgrade-paths) to confirm the
+   (make sure to review the [upgrade path](../upgrade_paths.md) to confirm the
    version you're installing is part of a supported path):
 
    ```shell

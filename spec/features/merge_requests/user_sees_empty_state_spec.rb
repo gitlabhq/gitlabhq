@@ -35,8 +35,8 @@ RSpec.describe 'Merge request > User sees empty state', feature_category: :code_
       visit project_merge_requests_path(project, milestone_title: "1.0")
 
       expect(page).to have_selector('.gl-empty-state')
-      expect(page).to have_content('Sorry, your filter produced no results')
-      expect(page).to have_content('To widen your search, change or remove filters above')
+      expect(page).to have_content('No results found')
+      expect(page).to have_content('To widen your search, change or remove filters above.')
     end
   end
 
@@ -49,13 +49,10 @@ RSpec.describe 'Merge request > User sees empty state', feature_category: :code_
       sign_in(fork_user)
     end
 
-    it 'shows an empty state and a "New merge request" button' do
+    it 'shows empty state when filter results empty' do
       visit project_merge_requests_path(project, search: 'foo')
 
       expect(page).to have_selector('.gl-empty-state')
-      within('.gl-empty-state') do
-        expect(page).to have_link 'New merge request', href: project_new_merge_request_path(forked_project)
-      end
     end
   end
 end

@@ -71,7 +71,8 @@ Prerequisites:
 
 - A custom domain name `example.com` or subdomain `subdomain.example.com`.
 - Access to your domain's server control panel to set up a DNS `TXT` record to verify your domain's ownership.
-- A project in the group. This project will be linked to the verified domains, and should not be deleted.
+- A project in the group. This project will be linked to the verified domains, and should not be deleted. This project also needs to have the pages component enabled in its settings (**General** -> **Visibility, project features, permissions** -> **Pages**). If the pages component is disabled in its setttings, a `500` error will be generated during domain verification.
+- Ensure that [GitLab Pages](../project/pages/index.md) is enabled for the project. If GitLab Pages is disabled, adding the domain might result in an error.
 - You must have the Owner role for the top-level group.
 
 Domain verification applies at the top-level group and to all subgroups and projects
@@ -193,16 +194,19 @@ To disable 2FA:
 
 ### Enable the extension marketplace for the Web IDE and workspaces
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161819) in GitLab 17.4 [with flags](../../administration/feature_flags.md) named `web_ide_oauth` and `web_ide_extensions_marketplace`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161819) as a [beta](../../policy/experiment-beta-support.md#beta) in GitLab 17.0 [with flags](../../administration/feature_flags.md) named `web_ide_oauth` and `web_ide_extensions_marketplace`. Disabled by default.
+> - Feature flag `web_ide_oauth` [enabled on GitLab.com, self-managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163181) and feature flag `web_ide_extensions_marketplace` [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/459028) in GitLab 17.4.
+> - Feature flag `web_ide_oauth` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167464) in GitLab 17.5.
 
 FLAG:
-The availability of this feature is controlled by feature flags.
+The availability of this feature is controlled by a feature flag.
 For more information, see the history.
 
-If you have the Owner role for a top-level group, you can
-enable the extension marketplace for enterprise users.
+If you have the Owner role for a top-level group, you can enable the
+[extension marketplace](../project/web_ide/index.md#extension-marketplace) for enterprise users.
 
-To enable the extension marketplace for the Web IDE and workspaces:
+To enable the extension marketplace for the
+[Web IDE](../project/web_ide/index.md) and [workspaces](../workspace/index.md):
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
@@ -239,6 +243,10 @@ includes users' email addresses.
 ### Remove enterprise management features from an account
 
 Changing an enterprise user's primary email to an email from a non-verified domain automatically removes the enterprise badge from the account. This does not alter any account roles or permissions for the user, but does limit the group Owner's ability to manage this account.
+
+### Disable password authentication for enterprise users
+
+A top-level group Owner can [disable password authentication for enterprise users](../group/saml_sso/index.md#disable-password-authentication-for-enterprise-users).
 
 ## Troubleshooting
 

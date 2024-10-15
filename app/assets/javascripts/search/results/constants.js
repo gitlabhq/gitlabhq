@@ -10,9 +10,10 @@ export const DEFAULT_HEADER_LABEL_COLOR = '#D9C2EE';
 
 export const CODE_THEME_DARK = 'dark';
 export const CODE_THEME_DEFAULT = 'white';
+export const CODE_THEME_NONE = 'none';
 export const CODE_THEME_MONOKAI = 'monokai';
 export const CODE_THEME_SOLARIZED_DARK = 'solarized-dark';
 export const CODE_THEME_SOLARIZED_LIGHT = 'solarized-light';
 
-export const BORDER_DARK = '!gl-border-b-gray-100';
-export const BORDER_LIGHT = '!gl-border-b-gray-700';
+export const BORDER_DARK = 'multimatch-divider-dark';
+export const BORDER_LIGHT = 'multimatch-divider-light';

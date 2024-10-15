@@ -47,8 +47,6 @@ export default {
   apollo: {
     k8sEvents: {
       query: getK8sEventsQuery,
-      fetchPolicy: 'no-cache',
-      notifyOnNetworkStatusChange: true,
       variables() {
         return {
           configuration: this.configuration,
@@ -66,9 +64,12 @@ export default {
         this.eventsLoading = isLoading;
       },
       update(data) {
-        return data?.k8sEvents?.sort(
-          (a, b) => new Date(b.lastTimestamp) - new Date(a.lastTimestamp),
-        );
+        return data?.k8sEvents
+          ?.map((event) => ({
+            ...event,
+            timestamp: event.lastTimestamp || event.eventTime,
+          }))
+          .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
       },
     },
   },

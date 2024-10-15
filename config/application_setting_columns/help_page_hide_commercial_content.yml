@@ -1,0 +1,12 @@
+---
+api_type: boolean
+attr: help_page_hide_commercial_content
+clusterwide: true
+column: help_page_hide_commercial_content
+db_type: boolean
+default: 'false'
+description: Hide marketing-related entries from help.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: false

@@ -1,29 +1,69 @@
+import axios from 'axios';
 import { initToggle } from '~/toggles';
+import toast from '~/vue_shared/plugins/global_toast';
+import {
+  I18N_PENDING_MESSAGE,
+  I18N_SUCCESS_MESSAGE,
+  I18N_UNDO_ACTION_TEXT,
+  I18N_RETRY_ACTION_TEXT,
+  I18N_ERROR_MESSAGE,
+} from './constants';
 
-/**
- * Uses a toggle element in combination with a hidden field
- * to force submit a form that updates the settings.
- *
- * Unlike other settings in this page, updating this setting uses
- * a full page refresh (submit). This is done to avoid adding
- * `allow_runner_registration_token` to any API as this setting
- * is discouraged.
- */
 export const initAllowRunnerRegistrationTokenToggle = () => {
+  const toggle = () => {
+    const toggleButton = document.querySelector(
+      '.js-allow-runner-registration-token-toggle button',
+    );
+
+    toggleButton.click();
+  };
+
+  let toastMessage = {};
+  const displayToast = (message, options = {}) => {
+    toastMessage.hide?.();
+    toastMessage = toast(message, options);
+  };
+
   const el = document.querySelector('.js-allow-runner-registration-token-toggle');
   const input = document.querySelector('.js-allow-runner-registration-token-input');
 
   if (el && input) {
-    const toggle = initToggle(el);
+    const form = el.closest('form');
+    const toggleElement = initToggle(el);
 
-    toggle.$on('change', (isEnabled) => {
-      input.value = isEnabled;
+    toggleElement.$on('change', async (isEnabled) => {
+      if (toggleElement.isLoading) return;
 
-      toggle.isLoading = true;
+      try {
+        toggleElement.isLoading = true;
+        input.value = isEnabled;
 
-      toggle.$el.closest('form').requestSubmit();
+        displayToast(I18N_PENDING_MESSAGE);
+
+        await axios.post(form.action, new FormData(form));
+
+        displayToast(I18N_SUCCESS_MESSAGE, {
+          action: {
+            text: I18N_UNDO_ACTION_TEXT,
+            onClick: toggle,
+          },
+        });
+      } catch (_) {
+        input.value = !isEnabled;
+        toggleElement.value = !isEnabled;
+
+        displayToast(I18N_ERROR_MESSAGE, {
+          action: {
+            text: I18N_RETRY_ACTION_TEXT,
+            onClick: toggle,
+          },
+        });
+      } finally {
+        toggleElement.isLoading = false;
+      }
     });
-    return toggle;
+
+    return toggleElement;
   }
 
   return null;

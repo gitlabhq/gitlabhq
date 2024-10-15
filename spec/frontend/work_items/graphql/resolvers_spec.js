@@ -2,6 +2,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import { updateNewWorkItemCache } from '~/work_items/graphql/resolvers';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import updateNewWorkItemMutation from '~/work_items/graphql/update_new_work_item.mutation.graphql';
+import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import {
   WIDGET_TYPE_ASSIGNEES,
   WIDGET_TYPE_LABELS,
@@ -12,6 +13,7 @@ import { createWorkItemQueryResponse } from '../mock_data';
 describe('work items graphql resolvers', () => {
   describe('updateNewWorkItemCache', () => {
     let mockApolloClient;
+    useLocalStorageSpy();
 
     const fullPath = 'fullPath';
     const fullPathWithId = 'fullPath-issue-id';
@@ -109,6 +111,13 @@ describe('work items graphql resolvers', () => {
         const queryResult = await query(WIDGET_TYPE_DESCRIPTION);
         expect(queryResult).toMatchObject({ description: 'Description' });
       });
+
+      it('updates description with empty string as well', async () => {
+        await mutate({ description: '' });
+
+        const queryResult = await query(WIDGET_TYPE_DESCRIPTION);
+        expect(queryResult).toMatchObject({ description: '' });
+      });
     });
 
     describe('with confidential input', () => {
@@ -132,6 +141,26 @@ describe('work items graphql resolvers', () => {
         const queryResult = await query();
         expect(queryResult).toMatchObject({ title: 'Title' });
       });
+    });
+
+    it('updates the local storage with every mutation', async () => {
+      const AUTO_SAVE_KEY = `autosave/new-fullPath-issue-draft`;
+
+      await mutate({ title: 'Title' });
+
+      const queryResult = await query();
+
+      const object = {
+        workspace: {
+          __typename: 'Namespace',
+          id: 'full-path-epic-id',
+          workItem: {
+            ...queryResult,
+          },
+        },
+      };
+
+      expect(localStorage.setItem).toHaveBeenLastCalledWith(AUTO_SAVE_KEY, JSON.stringify(object));
     });
   });
 });

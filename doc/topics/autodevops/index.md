@@ -145,7 +145,7 @@ Auto DevOps pipeline for any project that belongs to that group:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Make sure the project doesn't contain a `.gitlab-ci.yml` file.
 1. Select **Build > Pipelines**.
-1. To trigger the Auto DevOps pipeline, select **Run pipeline**.
+1. To trigger the Auto DevOps pipeline, select **New pipeline**.
 
 #### Per instance
 

@@ -3,11 +3,12 @@
 - disable_target_branch = local_assigns.fetch(:disable_target_branch, false)
 - disable_releases = local_assigns.fetch(:disable_releases, false)
 - disable_environments = local_assigns.fetch(:disable_environments, false)
+- filtered_search_class = local_assigns.fetch(:filtered_search_class, '')
 - placeholder = local_assigns[:placeholder] || _('Search or filter results…')
 - block_css_class = type != :productivity_analytics ? 'row-content-block second-block' : ''
 
 .issues-filters
-  .issues-details-filters.filtered-search-block.gl-flex.gl-flex-col.lg:gl-flex-row.gl-gap-3{ class: block_css_class }
+  .issues-details-filters.filtered-search-block.gl-flex.gl-flex-col.lg:gl-flex-row.gl-gap-3{ class: [block_css_class, filtered_search_class] }
     .gl-flex.gl-flex-col.md:gl-flex-row.gl-grow.gl-w-full
       = form_tag page_filter_path, method: :get, class: 'filter-form js-filter-form gl-w-full' do
         - if params[:search].present?
@@ -59,17 +60,18 @@
                     user: User.new(username: '{{username}}', name: '{{name}}'),
                     avatar: { lazy: true, url: '{{avatar_url}}' }
               #js-dropdown-assignee.gl-filtered-search-suggestion-list.dropdown-menu
-                %ul{ data: { dropdown: true } }
-                  %li.filter-dropdown-item{ data: { value: 'None' } }
-                    = render Pajamas::ButtonComponent.new(variant: :link) do
-                      = _('None')
-                  %li.filter-dropdown-item{ data: { value: 'Any' } }
-                    = render Pajamas::ButtonComponent.new(variant: :link) do
-                      = _('Any')
-                  %li.divider.droplab-item-ignore
-                  - if current_user
-                    = render 'shared/issuable/user_dropdown_item',
-                      user: current_user
+                - if type != :issues_analytics
+                  %ul{ data: { dropdown: true } }
+                    %li.filter-dropdown-item{ data: { value: 'None' } }
+                      = render Pajamas::ButtonComponent.new(variant: :link) do
+                        = _('None')
+                    %li.filter-dropdown-item{ data: { value: 'Any' } }
+                      = render Pajamas::ButtonComponent.new(variant: :link) do
+                        = _('Any')
+                    %li.divider.droplab-item-ignore
+                    - if current_user
+                      = render 'shared/issuable/user_dropdown_item',
+                        user: current_user
                 %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
                   = render 'shared/issuable/user_dropdown_item',
                     user: User.new(username: '{{username}}', name: '{{name}}'),
@@ -96,20 +98,21 @@
               = render_if_exists 'shared/issuable/merge_user_dropdown'
 
               #js-dropdown-milestone.gl-filtered-search-suggestion-list.dropdown-menu
-                %ul{ data: { dropdown: true } }
-                  %li.filter-dropdown-item{ data: { value: 'None' } }
-                    = render Pajamas::ButtonComponent.new(variant: :link) do
-                      = _('None')
-                  %li.filter-dropdown-item{ data: { value: 'Any' } }
-                    = render Pajamas::ButtonComponent.new(variant: :link) do
-                      = _('Any')
-                  %li.filter-dropdown-item{ data: { value: 'Upcoming' } }
-                    = render Pajamas::ButtonComponent.new(variant: :link) do
-                      = _('Upcoming')
-                  %li.filter-dropdown-item{ data: { value: 'Started' } }
-                    = render Pajamas::ButtonComponent.new(variant: :link) do
-                      = _('Started')
-                  %li.divider.droplab-item-ignore
+                - if type != :issues_analytics
+                  %ul{ data: { dropdown: true } }
+                    %li.filter-dropdown-item{ data: { value: 'None' } }
+                      = render Pajamas::ButtonComponent.new(variant: :link) do
+                        = _('None')
+                    %li.filter-dropdown-item{ data: { value: 'Any' } }
+                      = render Pajamas::ButtonComponent.new(variant: :link) do
+                        = _('Any')
+                    %li.filter-dropdown-item{ data: { value: 'Upcoming' } }
+                      = render Pajamas::ButtonComponent.new(variant: :link) do
+                        = _('Upcoming')
+                    %li.filter-dropdown-item{ data: { value: 'Started' } }
+                      = render Pajamas::ButtonComponent.new(variant: :link) do
+                        = _('Started')
+                    %li.divider.droplab-item-ignore
                 %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
                   %li.filter-dropdown-item
                     = render Pajamas::ButtonComponent.new(variant: :link, button_options: { class: 'js-data-value' }) do

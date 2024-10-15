@@ -29,7 +29,10 @@ module Ml
     delegate :name, to: :model
 
     scope :order_by_model_id_id_desc, -> { order('model_id, id DESC') }
-    scope :latest_by_model, -> { order_by_model_id_id_desc.select('DISTINCT ON (model_id) *') }
+    scope :latest_by_model, -> {
+                              order(model_id: :desc, semver_major: :desc, semver_minor: :desc, semver_patch: :desc)
+                                .select('DISTINCT ON (model_id) *')
+                            }
     scope :by_version, ->(version) { where("version LIKE ?", "#{sanitize_sql_like(version)}%") } # rubocop:disable GitlabSecurity/SqlInjection -- we are sanitizing
     scope :for_model, ->(model) { where(project: model.project, model: model) }
     scope :including_relations, -> { includes(:project, :model, :candidate) }

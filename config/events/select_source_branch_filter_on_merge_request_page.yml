@@ -1,0 +1,21 @@
+---
+description: Merge request source branch filter
+internal_events: true
+action: select_source_branch_filter_on_merge_request_page
+identifiers:
+- project
+- namespace
+- user
+additional_properties:
+  label:
+    description: include or exclude
+product_group: global_search
+milestone: '17.5'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156491
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

@@ -1,0 +1,14 @@
+---
+api_type: boolean
+attr: lock_duo_features_enabled
+clusterwide: false
+column: lock_duo_features_enabled
+db_type: boolean
+default: 'false'
+description: Indicates whether the GitLab Duo features enabled setting is enforced
+  for all subgroups. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144931)
+  in GitLab 16.10. Self-managed, Premium and Ultimate only.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

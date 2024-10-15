@@ -17,6 +17,11 @@ fragment MergeRequestFragment on MergeRequest {
       ...User
     }
   }
+  reviewers @skip(if: $hideUsers) {
+    nodes {
+      ...User
+    }
+  }
   author @skip(if: $hideUsers) {
     ...User
   }
@@ -48,5 +53,11 @@ fragment MergeRequestFragment on MergeRequest {
   commitCount
   sourceBranchExists
   targetBranchExists
+  targetBranch
+  targetBranchPath
+  taskCompletionStatus {
+    completedCount
+    count
+  }
   ...MergeRequestApprovalFragment
 }

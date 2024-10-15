@@ -1,0 +1,9 @@
+---
+name: two_factor_actions
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/393419
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167338
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/491760
+milestone: '17.5'
+group: group::authentication
+type: gitlab_com_derisk
+default_enabled: false

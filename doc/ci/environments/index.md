@@ -33,7 +33,7 @@ Prerequisites:
 There are a few ways to view a list of environments for a given project:
 
 - On the project's overview page, if at least one environment is available (that is, not stopped).
-  ![Number of Environments](img/environments_project_home.png "Incremental counter of available Environments")
+  ![Number of Environments](img/environments_project_home_v15_9.png "Incremental counter of available Environments")
 
 - On the left sidebar, select **Operate > Environments**.
   The environments are displayed.
@@ -43,7 +43,7 @@ There are a few ways to view a list of environments for a given project:
 - To view a list of deployments for an environment, select the environment name,
   for example, `staging`.
 
-  ![Deployments list](img/deployments_list.png)
+  ![Deployments list](img/deployments_list_v13_10.png)
 
 Deployments show up in this list only after a deployment job has created them.
 
@@ -788,7 +788,7 @@ If you [set up an alert integration](../../operations/incident_management/integr
 alerts for environments are shown on the environments page. The alert with the highest
 severity is shown, so you can identify which environments need immediate attention.
 
-![Environment alert](img/alert_for_environment.png)
+![Environment alert](img/alert_for_environment_v13_4.png)
 
 When the issue that triggered the alert is resolved, it is removed and is no
 longer visible on the environments page.
@@ -895,7 +895,7 @@ Also, you can still fetch the deployed commit from the repository
 with specifying the commit SHA (for example, `git checkout <deployment-sha>`), even after archive.
 
 NOTE:
-GitLab preserves all commits as [`keep-around` refs](../../user/project/repository/reducing_the_repo_size_using_git.md)
+GitLab preserves all commits as [`keep-around` refs](../../user/project/repository/repository_size.md#reduce-repository-size)
 so that deployed commits are not garbage collected, even if it's not referenced by the deployment refs.
 
 ### Limit the environment scope of a CI/CD variable

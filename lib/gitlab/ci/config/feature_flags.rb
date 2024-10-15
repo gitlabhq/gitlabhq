@@ -27,8 +27,8 @@ module Gitlab
           end
 
           # Use this to check if a feature flag is enabled
-          def enabled?(feature_flag, type: :development)
-            ::Feature.enabled?(feature_flag, current_actor, type: type)
+          def enabled?(feature_flag)
+            ::Feature.enabled?(feature_flag, current_actor)
           end
 
           def ensure_correct_usage

@@ -14,6 +14,19 @@ module API
       expose :last_update_at, documentation: { type: 'dateTime', example: '2020-01-06T17:32:02.823Z' }
       expose :last_update_started_at, documentation: { type: 'dateTime', example: '2020-01-06T17:32:02.823Z' }
       expose :last_successful_update_at, documentation: { type: 'dateTime', example: '2020-01-06T17:32:02.823Z' }
+      expose :enabled, documentation: { type: 'boolean', example: false }
+      expose :mirror_trigger_builds, documentation: { type: 'boolean', example: false }
+      expose :only_mirror_protected_branches, documentation: { type: 'boolean', example: false }
+      expose :mirror_overwrites_diverged_branches, documentation: { type: 'boolean', example: false }
+      expose :mirror_branch_regex, documentation: { type: 'string', example: 'branch_name' }
+
+      delegate :project, to: :object
+      delegate :mirror_trigger_builds, :only_mirror_protected_branches, :mirror_overwrites_diverged_branches,
+        :mirror_branch_regex, to: :project
+
+      def enabled
+        object.project.mirror
+      end
     end
   end
 end

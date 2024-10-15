@@ -24,7 +24,7 @@ Supported attributes:
 
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
-| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
 
 Example response:
 
@@ -61,7 +61,7 @@ Supported attributes:
 
 | Attribute                       | Type              | Required | Description |
 |:--------------------------------|:------------------|:---------|:------------|
-| `id`                            | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `id`                            | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 | `author_email_regex`            | string            | No       | All commit author emails must match this regular expression. |
 | `branch_name_regex`             | string            | No       | All branch names must match this regular expression. |
 | `commit_message_negative_regex` | string            | No       | No commit message is allowed to match this regular expression. |
@@ -88,7 +88,7 @@ Supported attributes:
 
 | Attribute                       | Type              | Required | Description |
 |:--------------------------------|:------------------|:---------|:------------|
-| `id`                            | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `id`                            | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 | `author_email_regex`            | string            | No       | All commit author emails must match this regular expression. |
 | `branch_name_regex`             | string            | No       | All branch names must match this regular expression. |
 | `commit_message_negative_regex` | string            | No       | No commit message is allowed to match this regular expression. |
@@ -115,4 +115,4 @@ Supported attributes:
 
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
-| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |

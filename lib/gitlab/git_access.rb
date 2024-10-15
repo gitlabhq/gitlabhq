@@ -559,8 +559,7 @@ module Gitlab
     end
 
     # overriden in EE
-    def check_additional_conditions!
-    end
+    def check_additional_conditions!; end
 
     def repository_access_level
       project&.repository_access_level

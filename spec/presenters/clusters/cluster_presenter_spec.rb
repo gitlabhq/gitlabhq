@@ -121,7 +121,7 @@ RSpec.describe Clusters::ClusterPresenter do
       it do
         is_expected.to include(
           'clusters-path': clusterable_presenter.index_path,
-          'documentation-path': help_page_path('user/infrastructure/clusters/manage/clusters_health'),
+          'documentation-path': help_page_path('user/infrastructure/clusters/manage/clusters_health.md'),
           'settings-path': '',
           'project-path': '',
           'tags-path': ''

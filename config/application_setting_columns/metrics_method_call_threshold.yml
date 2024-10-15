@@ -1,0 +1,13 @@
+---
+api_type: integer
+attr: metrics_method_call_threshold
+clusterwide: true
+column: metrics_method_call_threshold
+db_type: integer
+default: '10'
+description: A method call is only tracked when it takes longer than the given amount
+  of milliseconds.
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

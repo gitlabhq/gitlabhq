@@ -61,6 +61,10 @@ class UserCustomAttribute < ApplicationRecord
       upsert_custom_attribute(user_id: spam_log.user_id, key: AUTO_BANNED_BY_SPAM_LOG_ID, value: spam_log.id)
     end
 
+    def set_auto_banned_by(user:, reason:)
+      upsert_custom_attribute(user_id: user.id, key: AUTO_BANNED_BY, value: reason)
+    end
+
     def set_trusted_by(user:, trusted_by:)
       return unless user && trusted_by
 

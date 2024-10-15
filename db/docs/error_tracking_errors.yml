@@ -3,7 +3,7 @@ table_name: error_tracking_errors
 classes:
 - ErrorTracking::Error
 feature_categories:
-- error_tracking
+- observability
 description: Persists error data for the Error Tracking's GitLab backend
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64712
 milestone: '14.1'

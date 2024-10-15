@@ -1,0 +1,13 @@
+---
+api_type: array of strings
+attr: valid_runner_registrars
+clusterwide: false
+column: valid_runner_registrars
+db_type: character
+default: "'{project"
+description: List of types which are allowed to register a GitLab Runner. Can be `[]`,
+  `['group']`, `['project']` or `['group', 'project']`.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: false

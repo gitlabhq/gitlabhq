@@ -172,6 +172,15 @@ RSpec.describe TodosHelper do
         expect(path).to eq(access_request_path)
       end
     end
+
+    context 'when a SSH expired' do
+      subject { helper.todo_target_path(todo) }
+
+      let(:key) { create(:key, user: user) }
+      let(:todo) { build(:todo, target: key, project: nil, user: user) }
+
+      it { is_expected.to eq user_settings_ssh_key_path(key) }
+    end
   end
 
   describe '#todo_target_aria_label' do
@@ -358,6 +367,7 @@ RSpec.describe TodosHelper do
       Todo::UNMERGEABLE         | true  | s_('Todos|Could not merge')
       Todo::MERGE_TRAIN_REMOVED | true  | s_("Todos|Removed from Merge Train")
       Todo::REVIEW_SUBMITTED    | false | s_('Todos|reviewed your merge request')
+      Todo::SSH_KEY_EXPIRED     | true  | s_('Todos|Your SSH key has expired')
     end
 
     with_them do

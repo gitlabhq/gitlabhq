@@ -1,0 +1,13 @@
+---
+api_type: boolean
+attr: plantuml_enabled
+clusterwide: true
+column: plantuml_enabled
+db_type: boolean
+default:
+description: "(**If enabled, requires:** `plantuml_url`) Enable [PlantUML integration](../administration/integration/plantuml.md).
+  Default is `false`."
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

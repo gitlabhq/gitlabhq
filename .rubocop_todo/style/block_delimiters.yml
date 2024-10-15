@@ -26,7 +26,6 @@ Style/BlockDelimiters:
     - 'ee/spec/models/protected_environments/deploy_access_level_spec.rb'
     - 'ee/spec/models/security/finding_spec.rb'
     - 'ee/spec/models/vulnerabilities/feedback_spec.rb'
-    - 'ee/spec/services/ee/personal_access_tokens/create_service_spec.rb'
     - 'ee/spec/services/gitlab_subscriptions/reconciliations/calculate_seat_count_data_service_spec.rb'
     - 'ee/spec/services/package_metadata/advisory_data_object_spec.rb'
     - 'ee/spec/services/package_metadata/compressed_package_data_object_spec.rb'

@@ -201,8 +201,7 @@ module RelativePositioning
   end
 
   # Override if you want to be notified of failures to move
-  def could_not_move(exception)
-  end
+  def could_not_move(exception); end
 
   # Override if the implementing class is not a simple application record, for
   # example if the record is loaded from a union.

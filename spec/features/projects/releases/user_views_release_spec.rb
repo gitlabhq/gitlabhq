@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'User views Release', :js, feature_category: :continuous_delivery do
+  include MobileHelpers
+
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
 
@@ -16,6 +18,8 @@ RSpec.describe 'User views Release', :js, feature_category: :continuous_delivery
   end
 
   before do
+    resize_window(1920, 1080)
+
     project.add_developer(user)
 
     sign_in(user)
@@ -23,17 +27,19 @@ RSpec.describe 'User views Release', :js, feature_category: :continuous_delivery
     visit project_release_path(project, release)
   end
 
+  after do
+    restore_window_size
+  end
+
   it_behaves_like 'page meta description', 'Lorem ipsum dolor sit amet'
 
   it 'renders the breadcrumbs' do
-    within_testid('breadcrumb-links') do
-      expect(page).to have_content("#{project.creator.name} #{project.name} Releases #{release.name}")
-
-      expect(page).to have_link(project.creator.name, href: user_path(project.creator))
-      expect(page).to have_link(project.name, href: project_path(project))
-      expect(page).to have_link('Releases', href: project_releases_path(project))
-      expect(page).to have_link(release.name, href: project_release_path(project, release))
-    end
+    expect(page_breadcrumbs).to include(
+      { text: project.creator.name, href: user_path(project.creator) },
+      { text: project.name, href: project_path(project) },
+      { text: 'Releases', href: project_releases_path(project) },
+      { text: release.name, href: project_release_path(project, release) }
+    )
   end
 
   it 'renders the release details' do

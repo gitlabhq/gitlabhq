@@ -13,15 +13,15 @@ stages:
 
 load_performance:
   stage: performance
-  image: docker:git
+  image: docker:27.3
   variables:
     K6_IMAGE: grafana/k6
-    K6_VERSION: 0.41.0
+    K6_VERSION: 0.54.0
     K6_TEST_FILE: raw.githubusercontent.com/grafana/k6/master/examples/http_get.js
     K6_OPTIONS: ''
     K6_DOCKER_OPTIONS: ''
   services:
-    - docker:dind
+    - docker:27.3-dind
   script:
     - docker run --rm -v "$(pwd)":/k6 -w /k6 $K6_DOCKER_OPTIONS $K6_IMAGE:$K6_VERSION run $K6_TEST_FILE --summary-export=load-performance.json $K6_OPTIONS
   artifacts:

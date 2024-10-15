@@ -1,0 +1,16 @@
+---
+api_type: boolean
+attr: disable_personal_access_tokens
+clusterwide: false
+column: disable_personal_access_tokens
+db_type: boolean
+default: 'false'
+description: Disable personal access tokens. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384201)
+  in GitLab 15.7. Self-managed, Premium and Ultimate only. There is no method available
+  to enable a personal access token that's been disabled through the API. This is
+  a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/399233). For more
+  information about available workarounds, see [Workaround](https://gitlab.com/gitlab-org/gitlab/-/issues/399233#workaround).
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

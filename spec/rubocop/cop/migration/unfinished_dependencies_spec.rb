@@ -99,7 +99,7 @@ RSpec.describe RuboCop::Cop::Migration::UnfinishedDependencies, feature_category
 
     context 'with properly finalized dependent background migrations' do
       before do
-        allow_next_instance_of(RuboCop::BatchedBackgroundMigrationsDictionary) do |bbms|
+        allow_next_instance_of(Gitlab::Utils::BatchedBackgroundMigrationsDictionary) do |bbms|
           allow(bbms).to receive(:finalized_by).and_return(version - 5)
         end
       end

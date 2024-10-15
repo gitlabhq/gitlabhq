@@ -20,7 +20,7 @@ RSpec.describe GitlabSchema.types['MergeRequest'], feature_category: :code_revie
       notes discussions user_permissions id iid title title_html description
       description_html state created_at updated_at source_project target_project
       project project_id source_project_id target_project_id source_branch
-      target_branch draft merge_when_pipeline_succeeds diff_head_sha
+      target_branch target_branch_path draft merge_when_pipeline_succeeds diff_head_sha
       merge_commit_sha user_notes_count user_discussions_count should_remove_source_branch
       diff_refs diff_stats diff_stats_summary
       force_remove_source_branch
@@ -37,7 +37,7 @@ RSpec.describe GitlabSchema.types['MergeRequest'], feature_category: :code_revie
       squash_on_merge available_auto_merge_strategies
       has_ci mergeable commits committers commits_without_merge_commits squash security_auto_fix default_squash_commit_message
       auto_merge_strategy merge_user award_emoji prepared_at codequality_reports_comparer supports_lock_on_merge
-      mergeability_checks
+      mergeability_checks merge_after
       allows_multiple_assignees allows_multiple_reviewers retargeted name
     ]
 
@@ -48,6 +48,19 @@ RSpec.describe GitlabSchema.types['MergeRequest'], feature_category: :code_revie
     subject { described_class.fields['pipelines'] }
 
     it { is_expected.to have_attributes(max_page_size: 500) }
+  end
+
+  describe '#target_branch_path' do
+    include Rails.application.routes.url_helpers
+
+    let_it_be(:project) { create(:project, :repository, :public) }
+    let_it_be(:merge_request) { create(:merge_request, source_project: project) }
+
+    it 'serializes correctly' do
+      path = resolve_field(:target_branch_path, merge_request)
+
+      expect(path).to eq(project_commits_path(project, merge_request.target_branch))
+    end
   end
 
   describe '#diff_stats_summary' do

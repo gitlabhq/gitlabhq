@@ -81,6 +81,9 @@ RSpec.describe Ci::Taggable, feature_category: :continuous_integration do
     it { expect(taggable_model.tagged_with('ruby, docker')).to match_array([tags]) }
     it { expect(taggable_model.tagged_with(%w[ruby docker])).to match_array([tags]) }
     it { expect(taggable_model.tagged_with(%w[ruby docker golang])).to be_empty }
+    it { expect(taggable_model.tagged_with('uby', like_search_enabled: false)).to be_empty }
+    it { expect(taggable_model.tagged_with('uby', like_search_enabled: true)).to match_array([tags, other_tags]) }
+    it { expect(taggable_model.tagged_with('uby')).to be_empty }
   end
 
   describe '#reload' do

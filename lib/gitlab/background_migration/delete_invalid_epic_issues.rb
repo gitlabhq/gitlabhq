@@ -6,8 +6,7 @@ module Gitlab
     class DeleteInvalidEpicIssues < BatchedMigrationJob
       feature_category :database
 
-      def perform
-      end
+      def perform; end
     end
   end
 end

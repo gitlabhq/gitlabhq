@@ -186,7 +186,7 @@ module MergeRequestsHelper
       endpoint_batch: diffs_batch_project_json_merge_request_path(project, merge_request, 'json', params),
       endpoint_coverage: @coverage_path,
       endpoint_diff_for_path: diff_for_path_namespace_project_merge_request_path(format: 'json', id: merge_request.iid, namespace_id: project.namespace.to_param, project_id: project.path),
-      help_page_path: help_page_path('user/project/merge_requests/reviews/suggestions'),
+      help_page_path: help_page_path('user/project/merge_requests/reviews/suggestions.md'),
       current_user_data: @current_user_data,
       update_current_user_path: @update_current_user_path,
       project_path: project_path(merge_request.project),
@@ -220,7 +220,7 @@ module MergeRequestsHelper
       source_project_full_path: merge_request.source_project&.full_path,
       source_project_default_url: merge_request.source_project && default_url_to_repo(merge_request.source_project),
       target_branch: merge_request.target_branch,
-      reviewing_docs_path: help_page_path('user/project/merge_requests/merge_request_troubleshooting', anchor: "check-out-merge-requests-locally-through-the-head-ref")
+      reviewing_docs_path: help_page_path('user/project/merge_requests/merge_request_troubleshooting.md', anchor: "check-out-merge-requests-locally-through-the-head-ref")
     }
   end
 
@@ -247,7 +247,10 @@ module MergeRequestsHelper
       email: current_user.present? ? current_user.notification_email_or_default : nil,
       export_csv_path: export_csv_project_merge_requests_path(project, request.query_parameters),
       rss_url: url_for(safe_params.merge(rss_url_options)),
-      releases_endpoint: project_releases_path(project, format: :json)
+      releases_endpoint: project_releases_path(project, format: :json),
+      can_bulk_update: can?(current_user, :admin_merge_request, project).to_s,
+      environment_names_path: unfoldered_environment_names_project_path(project, :json),
+      default_branch: project.default_branch
     }
   end
 
@@ -267,7 +270,7 @@ module MergeRequestsHelper
   end
 
   def merge_request_dashboard_enabled?(current_user)
-    current_user.merge_request_dashboard_enabled? && !current_page?(merge_requests_search_dashboard_path)
+    current_user.merge_request_dashboard_enabled?
   end
 
   def sticky_header_data(project, merge_request)
@@ -360,60 +363,71 @@ module MergeRequestsHelper
     { new_comment_template_paths: new_comment_template_paths(@project.group, @project).to_json }
   end
 
-  def merge_request_dashboard_data(current_user)
+  def merge_request_dashboard_data
     {
-      switch_dashboard_path: merge_request_dashboard_enabled?(current_user) ? merge_requests_search_dashboard_path : merge_requests_dashboard_path,
-      lists: [
+      tabs: [
         {
-          title: _('Returned to you'),
-          query: 'assignedMergeRequests',
-          variables: {
-            reviewStates: %w[REVIEWED REQUESTED_CHANGES]
-          }
+          title: _('Needs attention'),
+          key: '',
+          lists: [
+            {
+              title: _('Returned to you'),
+              query: 'assignedMergeRequests',
+              variables: {
+                reviewStates: %w[REVIEWED REQUESTED_CHANGES]
+              }
+            },
+            {
+              title: _('Reviews requested'),
+              query: 'reviewRequestedMergeRequests',
+              variables: {
+                reviewStates: %w[UNAPPROVED UNREVIEWED REVIEW_STARTED]
+              }
+            },
+            {
+              title: _('Assigned to you'),
+              query: 'assignedMergeRequests',
+              variables: {
+                reviewerWildcardId: 'NONE'
+              }
+            }
+          ]
         },
         {
-          title: _('Reviews requested'),
-          query: 'reviewRequestedMergeRequests',
-          variables: {
-            reviewStates: %w[UNAPPROVED UNREVIEWED REVIEW_STARTED]
-          }
-        },
-        {
-          title: _('Assigned to you'),
-          query: 'assignedMergeRequests',
-          variables: {
-            reviewerWildcardId: 'NONE'
-          }
-        },
-        {
-          title: _('Waiting for others'),
-          query: 'assigneeOrReviewerMergeRequests',
-          variables: {
-            reviewerReviewStates: %w[REVIEWED REQUESTED_CHANGES],
-            assignedReviewStates: %w[UNREVIEWED UNAPPROVED REVIEW_STARTED]
-          }
-        },
-        {
-          title: _('Approved by you'),
-          query: 'reviewRequestedMergeRequests',
-          variables: {
-            reviewState: 'APPROVED'
-          }
-        },
-        {
-          title: _('Approved by others'),
-          query: 'assignedMergeRequests',
-          variables: {
-            reviewState: 'APPROVED'
-          }
-        },
-        {
-          title: _('Merged recently'),
-          query: 'assigneeOrReviewerMergeRequests',
-          variables: {
-            state: 'merged',
-            mergedAfter: 2.weeks.ago.to_time.iso8601
-          }
+          title: _('Following'),
+          key: 'following',
+          lists: [
+            {
+              title: _('Waiting for others'),
+              query: 'assigneeOrReviewerMergeRequests',
+              variables: {
+                reviewerReviewStates: %w[REVIEWED REQUESTED_CHANGES],
+                assignedReviewStates: %w[UNREVIEWED UNAPPROVED REVIEW_STARTED]
+              }
+            },
+            {
+              title: _('Approved by you'),
+              query: 'reviewRequestedMergeRequests',
+              variables: {
+                reviewState: 'APPROVED'
+              }
+            },
+            {
+              title: _('Approved by others'),
+              query: 'assignedMergeRequests',
+              variables: {
+                reviewState: 'APPROVED'
+              }
+            },
+            {
+              title: _('Merged recently'),
+              query: 'assigneeOrReviewerMergeRequests',
+              variables: {
+                state: 'merged',
+                mergedAfter: 2.weeks.ago.to_time.iso8601
+              }
+            }
+          ]
         }
       ]
     }

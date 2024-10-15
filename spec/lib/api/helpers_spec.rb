@@ -1019,11 +1019,11 @@ RSpec.describe API::Helpers, feature_category: :shared do
     end
 
     it 'tracks an exception and renders 422 for unknown event', :aggregate_failures do
-      expect(Gitlab::InternalEvents).to receive(:track_event).and_raise(Gitlab::InternalEvents::UnknownEventError, "Unknown event: #{unknown_event}")
+      # expect(Gitlab::InternalEvents).to receive(:track_event).and_raise(Gitlab::InternalEvents::UnknownEventError, "Unknown event: #{unknown_event}")
 
       expect(Gitlab::ErrorTracking).to receive(:track_exception)
         .with(
-          instance_of(Gitlab::InternalEvents::UnknownEventError),
+          instance_of(Gitlab::Tracking::EventValidator::UnknownEventError),
           event_name: unknown_event
         )
       expect(helper).to receive(:unprocessable_entity!).with("Unknown event: #{unknown_event}")

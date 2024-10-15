@@ -37,7 +37,7 @@ GET /projects/:id/pipelines
 
 | Attribute        | Type           | Required | Description |
 |------------------|----------------|----------|-------------|
-| `id`             | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
+| `id`             | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
 | `name`           | string         | No       | Return pipelines with the specified name. |
 | `order_by`       | string         | No       | Order pipelines by `id`, `status`, `ref`, `updated_at` or `user_id` (default: `id`) |
 | `ref`            | string         | No       | The ref of pipelines |
@@ -104,7 +104,7 @@ GET /projects/:id/pipelines/:pipeline_id
 
 | Attribute     | Type           | Required | Description |
 |---------------|----------------|----------|-------------|
-| `id`          | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
+| `id`          | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
 | `pipeline_id` | integer        | Yes      | The ID of a pipeline |
 
 ```shell
@@ -233,7 +233,7 @@ GET /projects/:id/pipelines/:pipeline_id/variables
 
 | Attribute     | Type           | Required | Description |
 |---------------|----------------|----------|-------------|
-| `id`          | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
+| `id`          | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
 | `pipeline_id` | integer        | Yes      | The ID of a pipeline |
 
 ```shell
@@ -267,7 +267,7 @@ GET /projects/:id/pipelines/:pipeline_id/test_report
 
 | Attribute     | Type           | Required | Description |
 |---------------|----------------|----------|-------------|
-| `id`          | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
+| `id`          | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
 | `pipeline_id` | integer        | Yes      | The ID of a pipeline |
 
 Sample request:
@@ -321,7 +321,7 @@ GET /projects/:id/pipelines/:pipeline_id/test_report_summary
 
 | Attribute     | Type           | Required | Description |
 |---------------|----------------|----------|-------------|
-| `id`          | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
+| `id`          | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
 | `pipeline_id` | integer        | Yes      | The ID of a pipeline |
 
 Sample request:
@@ -371,7 +371,7 @@ POST /projects/:id/pipeline
 
 | Attribute   | Type           | Required | Description |
 |-------------|----------------|----------|-------------|
-| `id`        | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
+| `id`        | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
 | `ref`       | string         | Yes      | The branch or tag to run the pipeline on. For merge request pipelines use the [merge requests endpoint](merge_requests.md#create-merge-request-pipeline). |
 | `variables` | array          | No       | An [array of hashes](rest/index.md#array-of-hashes) containing the variables available in the pipeline, matching the structure `[{ 'key': 'UPLOAD_TO_S3', 'variable_type': 'file', 'value': 'true' }, {'key': 'TEST', 'value': 'test variable'}]`. If `variable_type` is excluded, it defaults to `env_var`. |
 
@@ -424,7 +424,7 @@ POST /projects/:id/pipelines/:pipeline_id/retry
 
 | Attribute     | Type           | Required | Description |
 |---------------|----------------|----------|-------------|
-| `id`          | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
+| `id`          | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
 | `pipeline_id` | integer        | Yes      | The ID of a pipeline |
 
 ```shell
@@ -472,7 +472,7 @@ POST /projects/:id/pipelines/:pipeline_id/cancel
 
 | Attribute     | Type           | Required | Description |
 |---------------|----------------|----------|-------------|
-| `id`          | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
+| `id`          | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
 | `pipeline_id` | integer        | Yes      | The ID of a pipeline |
 
 ```shell
@@ -529,7 +529,7 @@ DELETE /projects/:id/pipelines/:pipeline_id
 
 | Attribute     | Type           | Required | Description |
 |---------------|----------------|----------|-------------|
-| `id`          | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
+| `id`          | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
 | `pipeline_id` | integer        | Yes      | The ID of a pipeline |
 
 ```shell
@@ -546,7 +546,7 @@ PUT /projects/:id/pipelines/:pipeline_id/metadata
 
 | Attribute     | Type           | Required | Description |
 |---------------|----------------|----------|-------------|
-| `id`          | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
+| `id`          | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
 | `name`        | string         | Yes      | The new name of the pipeline |
 | `pipeline_id` | integer        | Yes      | The ID of a pipeline |
 

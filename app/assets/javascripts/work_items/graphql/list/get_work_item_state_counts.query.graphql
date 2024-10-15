@@ -14,11 +14,34 @@ query getWorkItemStateCounts(
   $types: [IssueType!]
   $not: NegatedWorkItemFilterInput
   $or: UnionedWorkItemFilterInput
+  $isGroup: Boolean = true
 ) {
-  group(fullPath: $fullPath) {
+  group(fullPath: $fullPath) @include(if: $isGroup) {
     id
     workItemStateCounts(
       includeDescendants: $includeDescendants
+      sort: $sort
+      state: $state
+      assigneeUsernames: $assigneeUsernames
+      assigneeWildcardId: $assigneeWildcardId
+      authorUsername: $authorUsername
+      confidential: $confidential
+      labelName: $labelName
+      milestoneTitle: $milestoneTitle
+      milestoneWildcardId: $milestoneWildcardId
+      myReactionEmoji: $myReactionEmoji
+      types: $types
+      not: $not
+      or: $or
+    ) {
+      all
+      closed
+      opened
+    }
+  }
+  project(fullPath: $fullPath) @skip(if: $isGroup) {
+    id
+    workItemStateCounts(
       sort: $sort
       state: $state
       assigneeUsernames: $assigneeUsernames

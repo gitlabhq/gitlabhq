@@ -13,7 +13,18 @@ RSpec.describe Import::SourceUser, type: :model, feature_category: :importers do
     it { is_expected.to validate_presence_of(:namespace_id) }
     it { is_expected.to validate_presence_of(:import_type) }
     it { is_expected.to validate_presence_of(:placeholder_user_id) }
+    it { is_expected.to validate_presence_of(:source_hostname) }
+    it { is_expected.to validate_presence_of(:source_user_identifier) }
+    it { is_expected.to validate_presence_of(:status) }
+    it { is_expected.to validate_absence_of(:reassignment_token) }
     it { is_expected.not_to validate_presence_of(:reassign_to_user_id) }
+
+    it 'validates source_hostname has port and scheme' do
+      create(:import_source_user)
+
+      is_expected.to allow_value("http://example.com:8080", "http://example.com").for(:source_hostname)
+      is_expected.not_to allow_values("http://", "example.com", "http://example.com/dir").for(:source_hostname)
+    end
 
     it 'validates uniqueness of reassign_to_user_id' do
       create(:import_source_user, :reassignment_in_progress)
@@ -41,6 +52,8 @@ RSpec.describe Import::SourceUser, type: :model, feature_category: :importers do
       subject { build(:import_source_user, :awaiting_approval) }
 
       it { is_expected.to validate_presence_of(:reassign_to_user_id) }
+      it { is_expected.to validate_length_of(:reassignment_token).is_equal_to(32) }
+      it { is_expected.to validate_presence_of(:reassignment_token).with_message(/is the wrong length/) }
     end
 
     context 'when reassignment_in_progress' do
@@ -109,6 +122,22 @@ RSpec.describe Import::SourceUser, type: :model, feature_category: :importers do
     it 'begins in pending state' do
       expect(described_class.new.pending_reassignment?).to eq(true)
     end
+
+    context 'when switching to awaiting_approval' do
+      subject(:source_user) { create(:import_source_user, :pending_reassignment) }
+
+      it 'assigns a reassignment_token' do
+        expect { source_user.reassign }.to change { source_user.reassignment_token }.from(nil)
+      end
+    end
+
+    context 'when switching from awaiting_approval' do
+      subject(:source_user) { create(:import_source_user, :awaiting_approval) }
+
+      it 'removes the reassignment_token' do
+        expect { source_user.cancel_reassignment }.to change { source_user.reassignment_token }.to(nil)
+      end
+    end
   end
 
   describe '.find_source_user' do
@@ -122,7 +151,7 @@ RSpec.describe Import::SourceUser, type: :model, feature_category: :importers do
         source_user_identifier: '1',
         namespace: namespace_1,
         import_type: 'bitbucket',
-        source_hostname: 'bitbucket.org'
+        source_hostname: 'https://bitbucket.org'
       )
     end
 
@@ -130,7 +159,7 @@ RSpec.describe Import::SourceUser, type: :model, feature_category: :importers do
       create(:import_source_user,
         source_user_identifier: '1',
         namespace: namespace_1,
-        source_hostname: 'bitbucket-server-domain.com',
+        source_hostname: 'https://bitbucket-server-domain.com',
         import_type: 'bitbucket_server'
       )
     end
@@ -139,7 +168,7 @@ RSpec.describe Import::SourceUser, type: :model, feature_category: :importers do
       expect(described_class.find_source_user(
         source_user_identifier: '1',
         namespace: namespace_1,
-        source_hostname: 'github.com',
+        source_hostname: 'https://github.com',
         import_type: 'github'
       )).to eq(source_user_1)
     end
@@ -159,7 +188,7 @@ RSpec.describe Import::SourceUser, type: :model, feature_category: :importers do
       expect(described_class.find_source_user(
         source_user_identifier: '1',
         namespace: nil,
-        source_hostname: 'github.com',
+        source_hostname: 'https://github.com',
         import_type: 'github'
       )).to be_nil
     end
@@ -183,7 +212,10 @@ RSpec.describe Import::SourceUser, type: :model, feature_category: :importers do
     let_it_be(:source_user_1) { create(:import_source_user, namespace: namespace, status: 4, source_name: 'd') }
     let_it_be(:source_user_2) { create(:import_source_user, namespace: namespace, status: 3, source_name: 'c') }
     let_it_be(:source_user_3) do
-      create(:import_source_user, :with_reassign_to_user, namespace: namespace, status: 1, source_name: 'a')
+      create(
+        :import_source_user, :with_reassign_to_user,
+        namespace: namespace, status: 1, source_name: 'a', reassignment_token: SecureRandom.hex
+      )
     end
 
     let_it_be(:source_user_4) do
@@ -275,7 +307,7 @@ RSpec.describe Import::SourceUser, type: :model, feature_category: :importers do
   describe '.source_users_with_missing_information' do
     let_it_be(:namespace) { create(:namespace) }
     let_it_be(:import_type) { 'github' }
-    let_it_be(:source_hostname) { 'github.com' }
+    let_it_be(:source_hostname) { 'https://github.com' }
 
     let_it_be(:source_user_1) do
       create(:import_source_user, namespace: namespace, source_username: nil, source_name: nil,
@@ -300,7 +332,7 @@ RSpec.describe Import::SourceUser, type: :model, feature_category: :importers do
       create(:import_source_user, namespace: namespace, source_username: nil, source_name: nil,
         import_type: 'gitlab_importer', source_hostname: source_hostname)
       create(:import_source_user, namespace: namespace, source_username: nil, source_name: nil,
-        import_type: import_type, source_hostname: 'source_hostname')
+        import_type: import_type, source_hostname: 'http://source_hostname')
     end
 
     it 'returns the count of records with unique placeholder users for the namespace' do

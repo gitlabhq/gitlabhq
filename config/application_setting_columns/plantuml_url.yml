@@ -1,0 +1,12 @@
+---
+api_type: string
+attr: plantuml_url
+clusterwide: true
+column: plantuml_url
+db_type: character
+default:
+description: The PlantUML instance URL for integration.
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

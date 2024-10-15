@@ -3,6 +3,8 @@ redirect_to: 'repository/branches/protected.md'
 remove_date: '2024-12-12'
 ---
 
+<!-- markdownlint-disable -->
+
 This document was moved to [another location](repository/branches/protected.md).
 
 <!-- This redirect file can be deleted after <2024-12-12>. -->

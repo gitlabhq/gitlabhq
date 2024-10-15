@@ -18,6 +18,9 @@ class JwtController < ApplicationController
     ::Auth::DependencyProxyAuthenticationService::AUDIENCE => ::Auth::DependencyProxyAuthenticationService
   }.freeze
 
+  # Currently POST requests for this route return a 404 by default and are allowed through in our readonly middleware -
+  # ee/lib/ee/gitlab/middleware/read_only/controller.rb
+  # If the action here changes to allow POST requests then a check for maintenance mode should be added
   def auth
     service = SERVICES[params[:service]]
     return head :not_found unless service
@@ -62,14 +65,14 @@ class JwtController < ApplicationController
 
   def render_access_denied
     help_page = help_page_url(
-      'user/profile/account/two_factor_authentication',
+      'user/profile/account/two_factor_authentication.md',
       anchor: 'troubleshooting'
     )
 
     render(
       json: { errors: [{
         code: 'UNAUTHORIZED',
-        message: format(_("HTTP Basic: Access denied. The provided password or token is incorrect or your account has 2FA enabled and you must use a personal access token instead of a password. See %{help_page_url}"), help_page_url: help_page)
+        message: format(_("HTTP Basic: Access denied. If a password was provided for Git authentication, the password was incorrect or you're required to use a token instead of a password. If a token was provided, it was either incorrect, expired, or improperly scoped. See %{help_page_url}"), help_page_url: help_page)
       }] },
       status: :unauthorized
     )

@@ -1,0 +1,12 @@
+---
+api_type: string
+attr: commit_email_hostname
+clusterwide: true
+column: commit_email_hostname
+db_type: character
+default:
+description: Custom hostname (for private commit emails).
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

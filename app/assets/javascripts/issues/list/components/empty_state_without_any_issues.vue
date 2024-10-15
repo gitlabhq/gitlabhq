@@ -1,5 +1,5 @@
 <script>
-import emptyStateSvg from '@gitlab/svgs/dist/illustrations/empty-state/empty-issues-md.svg';
+import emptyStateSvg from '@gitlab/svgs/dist/illustrations/empty-state/empty-issues-add-md.svg';
 import { GlButton, GlDisclosureDropdown, GlEmptyState, GlLink, GlSprintf } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import CsvImportExportButtons from '~/issuable/components/csv_import_export_buttons.vue';
@@ -77,7 +77,6 @@ export default {
       <gl-empty-state
         :title="__('Use issues to collaborate on ideas, solve problems, and plan work')"
         :svg-path="$options.emptyStateSvg"
-        :svg-height="150"
         data-testid="issuable-empty-state"
       >
         <template #description>

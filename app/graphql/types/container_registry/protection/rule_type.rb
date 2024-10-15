@@ -6,7 +6,7 @@ module Types
       class RuleType < ::Types::BaseObject
         graphql_name 'ContainerRegistryProtectionRule'
         description 'A container registry protection rule designed to prevent users with a certain ' \
-                    'access level or lower from altering the container registry.'
+          'access level or lower from altering the container registry.'
 
         authorize :admin_container_image
 

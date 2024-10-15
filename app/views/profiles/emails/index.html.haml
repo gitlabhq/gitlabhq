@@ -1,6 +1,6 @@
 - page_title _('Emails')
-- profile_message = _('Used for avatar detection. You can change it in your %{openingTag}profile settings%{closingTag}.') % { openingTag: "<a href='#{user_settings_profile_path}' class='!gl-text-blue-500'>".html_safe, closingTag: '</a>'.html_safe}
-- notification_message = _('Used for account notifications if a %{openingTag}group-specific email address%{closingTag} is not set.') % { openingTag: "<a href='#{profile_notifications_path}' class='!gl-text-blue-500'>".html_safe, closingTag: '</a>'.html_safe}
+- profile_message = _('Used for avatar detection. You can change it in your %{openingTag}profile settings%{closingTag}.') % { openingTag: "<a href='#{user_settings_profile_path}' class='!gl-text-link'>".html_safe, closingTag: '</a>'.html_safe}
+- notification_message = _('Used for account notifications if a %{openingTag}group-specific email address%{closingTag} is not set.') % { openingTag: "<a href='#{profile_notifications_path}' class='!gl-text-link'>".html_safe, closingTag: '</a>'.html_safe}
 - public_email_message = _('Your public email will be displayed on your public profile.')
 - commit_email_message = _('Used for web based operations, such as edits and merges.')
 - @force_desktop_expanded_sidebar = true

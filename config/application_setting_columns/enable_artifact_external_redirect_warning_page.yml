@@ -1,0 +1,13 @@
+---
+api_type: boolean
+attr: enable_artifact_external_redirect_warning_page
+clusterwide: false
+column: enable_artifact_external_redirect_warning_page
+db_type: boolean
+default: 'true'
+description: Show the external redirect page that warns you about user-generated content
+  in GitLab Pages.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

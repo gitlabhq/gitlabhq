@@ -115,6 +115,14 @@ The CRON expression is evaluated in [UTC](https://www.timeanddate.com/worldclock
 
 You can view the complete schema within the [scan execution policy documentation](../../application_security/policies/scan_execution_policies.md#scan-execution-policies-schema).
 
+## OCS vulnerability resolution for multi cluster configuration
+
+To ensure accurate vulnerability tracking with OCS, you should create a separate GitLab project with OCS enabled for each cluster. If you have multiple clusters, be sure to use one project for each cluster.
+
+OCS resolves vulnerabilities that are no longer found in your cluster after each scan by comparing the current scan vulnerabilities with those previously detected. Any vulnerabilities from earlier scans that are no longer present in the current scan are resolved for the GitLab project.
+
+If multiple clusters are configured in the same project, an OCS scan in one cluster (for example, Project A) would resolve previously detected vulnerabilities from another cluster (for example, Project B), leading to incorrect vulnerability reporting.
+
 ## Configure scanner resource requirements
 
 By default the scanner pod's default resource requirements are:

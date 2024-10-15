@@ -56,6 +56,19 @@ RSpec.describe Users::RefreshAuthorizedProjectsService, feature_category: :user_
         end
       end
     end
+
+    it 'logs the duration statistics' do
+      expect(Gitlab::AppJsonLogger).to receive(:info).with(
+        hash_including(
+          event: 'authorized_projects_refresh',
+          user_id: user.id,
+          obtain_redis_lease_duration_s: anything,
+          find_records_due_for_refresh_duration_s: anything,
+          update_authorizations_duration_s: anything
+        )
+      )
+      service.execute
+    end
   end
 
   describe '#execute_without_lease' do
@@ -147,15 +160,15 @@ RSpec.describe Users::RefreshAuthorizedProjectsService, feature_category: :user_
       service = described_class.new(user, source: source)
       user.project_authorizations.delete_all
 
-      expect(Gitlab::AppJsonLogger).to(
-        receive(:info).with(
+      expect(Gitlab::AppJsonLogger).to receive(:info).with(
+        hash_including(
           event: 'authorized_projects_refresh',
           user_id: user.id,
           'authorized_projects_refresh.source': source,
           'authorized_projects_refresh.rows_deleted_count': 0,
           'authorized_projects_refresh.rows_added_count': 1,
           'authorized_projects_refresh.rows_deleted_slice': [],
-          'authorized_projects_refresh.rows_added_slice': [[user.id, project.id, Gitlab::Access::MAINTAINER]]
+          'authorized_projects_refresh.rows_added_slice': [[user.id, project.id, Gitlab::Access::MAINTAINER, true]]
         )
       )
 

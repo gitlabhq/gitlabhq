@@ -1,0 +1,12 @@
+---
+api_type:
+attr: phone_verification_code_enabled
+clusterwide: false
+column: phone_verification_code_enabled
+db_type: boolean
+default: 'false'
+description:
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: true
+not_null: true

@@ -1,0 +1,14 @@
+---
+api_type: array of integers
+attr: git_rate_limit_users_alertlist
+clusterwide: false
+column: git_rate_limit_users_alertlist
+db_type: integer[]
+default: "'{}'::integer[]"
+description: 'List of user IDs that are emailed when the Git abuse rate limit is exceeded.
+  Default: `[]`, Maximum: 100 user IDs. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110201)
+  in GitLab 15.9. Self-managed, Ultimate only.'
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

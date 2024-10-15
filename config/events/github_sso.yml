@@ -1,0 +1,17 @@
+---
+description: Users can setup GitHub as an OAuth 2.0 authentication provider to login to GitLab with their GitHub credentials
+action: github_sso
+identifiers:
+- user
+product_group: authentication
+milestone: '15.7'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/168787
+distributions:
+- ce
+tiers:
+- free
+- premium
+- ultimate
+additional_properties:
+  label:
+    description: Optional. Can be `trial_registration`, `invite_registration`, `subscription_registration` or `free_registration`

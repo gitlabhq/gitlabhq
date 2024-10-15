@@ -156,7 +156,7 @@ RSpec.describe Issue, "Mentionable", feature_category: :team_planning do
       end
 
       it 'notifies new references from project snippet note' do
-        snippet = create(:snippet, project: project)
+        snippet = create(:project_snippet, project: project)
         note = create(:note, note: issues[0].to_reference, noteable: snippet, project: project, author: author)
 
         expect(SystemNoteService).to receive(:cross_reference).with(issues[1], any_args)

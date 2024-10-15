@@ -1,0 +1,12 @@
+---
+api_type:
+attr: metrics_enabled
+clusterwide: true
+column: metrics_enabled
+db_type: boolean
+default: 'false'
+description:
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

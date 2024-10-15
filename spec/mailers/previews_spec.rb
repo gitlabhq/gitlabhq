@@ -35,6 +35,8 @@ RSpec.describe 'Mailer previews', feature_category: :shared do
   before_all do
     create(:project_member, :maintainer, source: project, created_by: user)
     create(:project_member, :invited, source: project, created_by: user)
+    create(:group_member, :access_request, source: group)
+    create(:group_member, :access_request, source: create(:group, :private))
   end
 
   subject { preview.call(email) }

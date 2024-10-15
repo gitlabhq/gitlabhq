@@ -1,0 +1,12 @@
+---
+api_type: boolean
+attr: jira_connect_public_key_storage_enabled
+clusterwide: true
+column: jira_connect_public_key_storage_enabled
+db_type: boolean
+default: 'false'
+description: Enable public key storage for the GitLab for Jira Cloud app.
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: true

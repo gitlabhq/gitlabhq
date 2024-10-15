@@ -1,0 +1,16 @@
+---
+description: Tracks when the commit title is clicked
+action: click_commit_title
+product_group: pipeline_execution
+milestone: '15.4'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96897
+distributions:
+  - ce
+  - ee
+tiers:
+  - free
+  - premium
+  - ultimate
+additional_properties:
+  label:
+    description: Pipelines_table_component

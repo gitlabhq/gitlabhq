@@ -19,7 +19,7 @@ If you use the [pipeline editor](../pipeline_editor/index.md), it verifies confi
 syntax automatically.
 
 If you use VS Code, you can validate your CI/CD configuration with the
-[GitLab Workflow VS Code extension](../../editor_extensions/visual_studio_code/index.md).
+[GitLab Workflow extension for VS Code](../../editor_extensions/visual_studio_code/index.md).
 
 ## Check CI/CD syntax
 

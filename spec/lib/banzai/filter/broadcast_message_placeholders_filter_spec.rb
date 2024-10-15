@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::Filter::BroadcastMessagePlaceholdersFilter, feature_category: :team_planning do
+RSpec.describe Banzai::Filter::BroadcastMessagePlaceholdersFilter, feature_category: :markdown do
   include FilterSpecHelper
 
   subject { filter(text, current_user: user, broadcast_message_placeholders: true).to_html }

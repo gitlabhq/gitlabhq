@@ -16,16 +16,20 @@ module Gitlab
             @options = options
           end
 
-          # dump task backup to `path`
+          def asynchronous?
+            false
+          end
+
+          # dump task backup to `destination`
           #
-          # @param [String] path fully qualified backup task destination
-          # @param [String] backup_id unique identifier for the backup
-          def dump(path, backup_id)
+          # @param [String] destination fully qualified backup task destination
+          # or a backup id - a unique identifier for a cloud backup
+          def dump(destination)
             raise NotImplementedError
           end
 
-          # restore task backup from `path`
-          def restore(path, backup_id)
+          # restore task backup from `source`
+          def restore(source)
             raise NotImplementedError
           end
         end

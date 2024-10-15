@@ -1,0 +1,12 @@
+---
+api_type: string
+attr: external_pipeline_validation_service_url
+clusterwide: true
+column: external_pipeline_validation_service_url
+db_type: text
+default:
+description: URL to use for pipeline validation requests.
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

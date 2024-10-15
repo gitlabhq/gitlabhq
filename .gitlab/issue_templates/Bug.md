@@ -42,7 +42,10 @@ will also determine whether the bug is fixed in a more recent version. -->
 <!-- If you are reporting a bug on GitLab.com, uncomment below -->
 
 <!-- This bug happens on GitLab.com -->
+
+<!-- and uncomment below if you have /label privileges -->
 <!-- /label ~"reproduced on GitLab.com" -->
+<!-- or follow up with an issue comment of `@gitlab-bot label ~"reproduced on GitLab.com"` if you do not -->
 
 #### Results of GitLab environment info
 
@@ -86,3 +89,5 @@ will also determine whether the bug is fixed in a more recent version. -->
 <!-- If you can, link to the line of code that might be responsible for the problem. -->
 
 /label ~"type::bug"
+<!-- If you don't have /label privileges, follow up with an issue comment of `@gitlab-bot label ~"type::bug"` -->
+

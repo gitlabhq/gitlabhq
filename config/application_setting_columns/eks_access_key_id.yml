@@ -1,0 +1,12 @@
+---
+api_type: string
+attr: eks_access_key_id
+clusterwide: true
+column: eks_access_key_id
+db_type: character
+default:
+description: AWS IAM access key ID.
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

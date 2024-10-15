@@ -1,0 +1,12 @@
+---
+api_type:
+attr: lock_math_rendering_limits_enabled
+clusterwide: false
+column: lock_math_rendering_limits_enabled
+db_type: boolean
+default: 'false'
+description:
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

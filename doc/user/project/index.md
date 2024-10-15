@@ -164,7 +164,7 @@ or [renamed](working_with_projects.md#rename-a-repository).
 
 Previously used project paths have a redirect. Instead of creating a new project, the redirect causes
 push attempts to redirect requests to the renamed project location.
-To create a new project for a previously used or renamed project, use the UI or the [Projects API](../../api/projects.md#create-project).
+To create a new project for a previously used or renamed project, use the UI or the [Projects API](../../api/projects.md#create-a-project).
 
 Prerequisites:
 

@@ -1,0 +1,12 @@
+---
+api_type:
+attr: database_max_running_batched_background_migrations
+clusterwide: true
+column: database_max_running_batched_background_migrations
+db_type: integer
+default: '2'
+description:
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: true

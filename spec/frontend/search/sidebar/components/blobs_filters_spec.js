@@ -20,7 +20,7 @@ describe('GlobalSearch BlobsFilters', () => {
 
   const defaultGetters = {
     currentScope: () => 'blobs',
-    hasProjectContext: () => true,
+    hasMissingProjectContext: () => true,
   };
 
   const createComponent = (initialState = { searchType: SEARCH_TYPE_ADVANCED }) => {
@@ -70,7 +70,7 @@ describe('GlobalSearch BlobsFilters', () => {
     ${SEARCH_TYPE_ZOEKT}    | ${false}          | ${false}
   `('sidebar blobs fork filter:', ({ searchType, hasProjectContent, isShown }) => {
     beforeEach(() => {
-      defaultGetters.hasProjectContext = () => hasProjectContent;
+      defaultGetters.hasMissingProjectContext = () => hasProjectContent;
       createComponent({ searchType });
     });
 
@@ -89,7 +89,7 @@ describe('GlobalSearch BlobsFilters', () => {
     ${SEARCH_TYPE_ZOEKT}    | ${false}          | ${false}
   `('sidebar blobs archived filter:', ({ searchType, hasProjectContent, isShown }) => {
     beforeEach(() => {
-      defaultGetters.hasProjectContext = () => hasProjectContent;
+      defaultGetters.hasMissingProjectContext = () => hasProjectContent;
       createComponent({ searchType });
     });
 

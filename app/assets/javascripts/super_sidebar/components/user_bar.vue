@@ -177,6 +177,9 @@ export default {
         <counter
           v-gl-tooltip:super-sidebar.bottom="mrMenuShown ? '' : $options.i18n.mergeRequests"
           class="gl-w-full"
+          :class="{
+            'js-merge-request-dashboard-shortcut': !sidebarData.merge_request_menu,
+          }"
           icon="merge-request"
           :href="sidebarData.merge_request_dashboard_path"
           :count="mergeRequestTotalCount"
@@ -200,17 +203,20 @@ export default {
         data-track-property="nav_core_menu"
       />
     </div>
-    <button
-      id="super-sidebar-search"
-      v-gl-tooltip.bottom.html="searchTooltip"
-      v-gl-modal="$options.SEARCH_MODAL_ID"
-      class="user-bar-button gl-block gl-w-full gl-rounded-base gl-border-none gl-bg-gray-10 gl-py-3 gl-leading-1 gl-text-gray-900"
-      data-testid="super-sidebar-search-button"
-      @click="trackEvent('click_search_button_to_activate_command_palette')"
-    >
-      <gl-icon name="search" />
-      {{ $options.i18n.searchBtnText }}
-    </button>
-    <search-modal @shown="hideSearchTooltip" @hidden="showSearchTooltip" />
+
+    <div v-if="!glFeatures.searchButtonTopRight" class="gl-grow">
+      <gl-button
+        id="super-sidebar-search"
+        v-gl-tooltip.bottom.html="searchTooltip"
+        v-gl-modal="$options.SEARCH_MODAL_ID"
+        class="user-bar-button gl-block gl-w-full gl-rounded-base gl-border-none gl-bg-gray-10 gl-py-3 gl-leading-1 gl-text-gray-900"
+        data-testid="super-sidebar-search-button"
+        @click="trackEvent('click_search_button_to_activate_command_palette')"
+      >
+        <gl-icon name="search" />
+        {{ $options.i18n.searchBtnText }}
+      </gl-button>
+      <search-modal @shown="hideSearchTooltip" @hidden="showSearchTooltip" />
+    </div>
   </div>
 </template>

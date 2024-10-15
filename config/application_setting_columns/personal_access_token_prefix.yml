@@ -1,0 +1,12 @@
+---
+api_type: string
+attr: personal_access_token_prefix
+clusterwide: false
+column: personal_access_token_prefix
+db_type: text
+default: "'glpat-'::text"
+description: Prefix for all generated personal access tokens.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: false

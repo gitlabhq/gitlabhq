@@ -43,6 +43,24 @@ func TestRequestBody(t *testing.T) {
 	require.Equal(t, fileContent, string(uploadEcho))
 }
 
+func TestRequestBodyWithAPIResponse(t *testing.T) {
+	testhelper.ConfigureSecret()
+
+	body := strings.NewReader(fileContent)
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	resp := testUploadWithAPIResponse(ctx, &rails{}, &alwaysLocalPreparer{}, echoProxy(t, fileLen), body, &api.Response{TempPath: os.TempDir()})
+	defer resp.Body.Close()
+	require.Equal(t, http.StatusOK, resp.StatusCode)
+
+	uploadEcho, err := io.ReadAll(resp.Body)
+
+	require.NoError(t, err, "Can't read response body")
+	require.Equal(t, fileContent, string(uploadEcho))
+}
+
 func TestRequestBodyCustomPreparer(t *testing.T) {
 	body := strings.NewReader(fileContent)
 
@@ -95,6 +113,15 @@ func testUpload(ctx context.Context, auth PreAuthorizer, preparer Preparer, prox
 	w := httptest.NewRecorder()
 
 	RequestBody(auth, proxy, preparer).ServeHTTP(w, req)
+
+	return w.Result()
+}
+
+func testUploadWithAPIResponse(ctx context.Context, auth PreAuthorizer, preparer Preparer, proxy http.Handler, body io.Reader, api *api.Response) *http.Response {
+	req := httptest.NewRequest("POST", "http://example.com/upload", body).WithContext(ctx)
+	w := httptest.NewRecorder()
+
+	RequestBody(auth, proxy, preparer).ServeHTTPWithAPIResponse(w, req, api)
 
 	return w.Result()
 }

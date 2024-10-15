@@ -39,6 +39,10 @@ gem 'activerecord-gitlab', path: 'gems/activerecord-gitlab' # rubocop:todo Gemfi
 
 gem 'bootsnap', '~> 1.18.3', require: false # rubocop:todo Gemfile/MissingFeatureCategory
 
+# Avoid the precompiled native gems because Omnibus needs to build this to ensure
+# LD_LIBRARY_PATH is correct: https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/7730
+gem 'ffi', '~> 1.17', force_ruby_platform: true, feature_category: :shared
+
 gem 'openssl', '~> 3.0' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'ipaddr', '~> 1.2.5' # rubocop:todo Gemfile/MissingFeatureCategory
 
@@ -231,32 +235,32 @@ gem 'seed-fu', '~> 2.3.7' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'elasticsearch-model', '~> 7.2', feature_category: :global_search
 gem 'elasticsearch-rails', '~> 7.2', require: 'elasticsearch/rails/instrumentation', feature_category: :global_search
 gem 'elasticsearch-api', '7.17.11', feature_category: :global_search
-gem 'aws-sdk-core', '~> 3.202.0' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'aws-sdk-core', '~> 3.206.0' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'aws-sdk-cloudformation', '~> 1' # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'aws-sdk-s3', '~> 1.159.0' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'aws-sdk-s3', '~> 1.163.0' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'faraday-typhoeus', '~> 1.1', feature_category: :global_search
 gem 'faraday_middleware-aws-sigv4', '~> 1.0.1', feature_category: :global_search
 # Used with Elasticsearch to support http keep-alive connections
 gem 'typhoeus', '~> 1.4.0', feature_category: :global_search
 
 # Markdown and HTML processing
-gem 'html-pipeline', '~> 2.14.3', feature_category: :team_planning
-gem 'deckar01-task_list', '2.3.4', feature_category: :team_planning
-gem 'gitlab-markup', '~> 1.9.0', require: 'github/markup' # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'commonmarker', '~> 0.23.10', feature_category: :team_planning
-gem 'kramdown', '~> 2.3.1' # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'RedCloth', '~> 4.3.3' # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'org-ruby', '~> 0.9.12' # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'creole', '~> 0.5.0' # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'wikicloth', '0.8.1' # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'asciidoctor', '~> 2.0.18' # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'asciidoctor-include-ext', '~> 0.4.0', require: false # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'asciidoctor-plantuml', '~> 0.0.16' # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'asciidoctor-kroki', '~> 0.10.0', require: false # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'html-pipeline', '~> 2.14.3', feature_category: :markdown
+gem 'deckar01-task_list', '2.3.4', feature_category: :markdown
+gem 'gitlab-markup', '~> 1.9.0', require: 'github/markup', feature_category: :markdown
+gem 'commonmarker', '~> 0.23.10', feature_category: :markdown
+gem 'kramdown', '~> 2.3.1', feature_category: :markdown
+gem 'RedCloth', '~> 4.3.3', feature_category: :markdown
+gem 'org-ruby', '~> 0.9.12', feature_category: :markdown
+gem 'creole', '~> 0.5.0', feature_category: :markdown
+gem 'wikicloth', '0.8.1', feature_category: :markdown
+gem 'asciidoctor', '~> 2.0.18', feature_category: :markdown
+gem 'asciidoctor-include-ext', '~> 0.4.0', require: false, feature_category: :markdown
+gem 'asciidoctor-plantuml', '~> 0.0.16', feature_category: :markdown
+gem 'asciidoctor-kroki', '~> 0.10.0', require: false, feature_category: :markdown
 gem 'rouge', '~> 4.3.0', feature_category: :shared
-gem 'truncato', '~> 0.7.12' # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'nokogiri', '~> 1.16' # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'gitlab-glfm-markdown', '~> 0.0.20', feature_category: :team_planning
+gem 'truncato', '~> 0.7.12', feature_category: :team_planning
+gem 'nokogiri', '~> 1.16', feature_category: :shared
+gem 'gitlab-glfm-markdown', '~> 0.0.21', feature_category: :markdown
 
 # Calendar rendering
 gem 'icalendar', '~> 2.10.1', feature_category: :system_access
@@ -271,7 +275,7 @@ gem 'rack', '~> 2.2.9' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'rack-timeout', '~> 0.7.0', require: 'rack/timeout/base' # rubocop:todo Gemfile/MissingFeatureCategory
 
 group :puma do
-  gem 'puma', '= 6.4.0', require: false, feature_category: :shared
+  gem 'puma', '= 6.4.3', require: false, feature_category: :shared
   gem 'sd_notify', '~> 0.1.0', require: false # rubocop:todo Gemfile/MissingFeatureCategory
 end
 
@@ -383,9 +387,9 @@ gem 'gitlab-license', '~> 2.5', feature_category: :shared
 gem 'rack-attack', '~> 6.7.0' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # Sentry integration
-gem 'sentry-ruby', '~> 5.19.0', feature_category: :error_tracking
-gem 'sentry-rails', '~> 5.19.0', feature_category: :error_tracking
-gem 'sentry-sidekiq', '~> 5.19.0', feature_category: :error_tracking
+gem 'sentry-ruby', '~> 5.19.0', feature_category: :observability
+gem 'sentry-rails', '~> 5.19.0', feature_category: :observability
+gem 'sentry-sidekiq', '~> 5.19.0', feature_category: :observability
 
 # PostgreSQL query parsing
 #
@@ -400,7 +404,7 @@ gem 'thrift', '>= 0.16.0' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # I18n
 gem 'rails-i18n', '~> 7.0', '>= 7.0.9', feature_category: :internationalization
-gem 'gettext_i18n_rails', '~> 1.12.0', feature_category: :internationalization
+gem 'gettext_i18n_rails', '~> 1.13.0', feature_category: :internationalization
 gem 'gettext', '~> 3.4', '>= 3.4.9',
   require: false,
   group: [:development, :test],
@@ -428,7 +432,7 @@ gem 'prometheus-client-mmap', '~> 1.1', '>= 1.1.1', require: 'prometheus/client'
 gem 'async', '~> 2.12.1', require: false # rubocop:disable Gemfile/MissingFeatureCategory -- This is general utility gem
 
 # Security report schemas used to validate CI job artifacts of security jobs
-gem 'gitlab-security_report_schemas', '0.1.2.min15.0.0.max15.2.0', feature_category: :vulnerability_management
+gem 'gitlab-security_report_schemas', '0.1.2.min15.0.0.max15.2.1', feature_category: :vulnerability_management
 
 # OpenTelemetry
 group :opentelemetry do
@@ -477,7 +481,7 @@ group :development do
 
   gem 'listen', '~> 3.7' # rubocop:todo Gemfile/MissingFeatureCategory
 
-  gem 'ruby-lsp', "~> 0.17.0", require: false, feature_category: :tooling
+  gem 'ruby-lsp', "~> 0.19.0", require: false, feature_category: :tooling
 
   gem 'ruby-lsp-rails', "~> 0.3.6", feature_category: :tooling
 
@@ -497,7 +501,7 @@ group :development, :test do
   gem 'awesome_print', require: false # rubocop:todo Gemfile/MissingFeatureCategory
 
   gem 'database_cleaner-active_record', '~> 2.2.0', feature_category: :database
-  gem 'rspec-rails', '~> 6.1.1', feature_category: :shared
+  gem 'rspec-rails', '~> 7.0.0', feature_category: :shared
   gem 'factory_bot_rails', '~> 6.4.3', feature_category: :tooling
 
   # Prevent occasions where minitest is not bundled in packaged versions of ruby (see #3826)
@@ -589,7 +593,7 @@ group :test do
   # Moved in `test` because https://gitlab.com/gitlab-org/gitlab/-/issues/217527
   gem 'derailed_benchmarks', require: false # rubocop:todo Gemfile/MissingFeatureCategory
 
-  gem 'gitlab_quality-test_tooling', '~> 1.38.0', require: false, feature_category: :tooling
+  gem 'gitlab_quality-test_tooling', '~> 1.39.0', require: false, feature_category: :tooling
 end
 
 gem 'octokit', '~> 9.0', feature_category: :importers
@@ -736,3 +740,5 @@ gem 'gitlab-sdk', '~> 0.3.0', feature_category: :application_instrumentation
 gem 'openbao_client', path: 'gems/openbao_client' # rubocop:todo Gemfile/MissingFeatureCategory
 
 gem 'paper_trail', '~> 15.0' # rubocop:todo Gemfile/MissingFeatureCategory
+
+gem "i18n_data", "~> 0.13.1", feature_category: :system_access

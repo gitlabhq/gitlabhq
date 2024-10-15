@@ -1,0 +1,12 @@
+---
+api_type:
+attr: throttle_authenticated_git_lfs_requests_per_period
+clusterwide: false
+column: throttle_authenticated_git_lfs_requests_per_period
+db_type: integer
+default: '1000'
+description:
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

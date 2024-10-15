@@ -34,11 +34,11 @@ export const usageQuotasHelpPaths = {
   repositorySizeLimit: helpPagePath('administration/settings/account_and_limit_settings', {
     anchor: 'repository-size-limit',
   }),
-  usageQuotas: helpPagePath('user/usage_quotas'),
-  usageQuotasProjectStorageLimit: helpPagePath('user/usage_quotas', {
+  usageQuotas: helpPagePath('user/storage_usage_quotas'),
+  usageQuotasProjectStorageLimit: helpPagePath('user/storage_usage_quotas', {
     anchor: 'view-storage',
   }),
-  usageQuotasNamespaceStorageLimit: helpPagePath('user/usage_quotas', {
+  usageQuotasNamespaceStorageLimit: helpPagePath('user/storage_usage_quotas', {
     anchor: 'view-storage',
   }),
 };
@@ -90,7 +90,7 @@ export const NAMESPACE_STORAGE_TYPES = [
 ];
 
 export const storageTypeHelpPaths = {
-  lfsObjects: helpPagePath('/user/project/repository/reducing_the_repo_size_using_git', {
+  lfsObjects: helpPagePath('/user/project/repository/repository_size', {
     anchor: 'repository-cleanup',
   }),
   containerRegistry: helpPagePath(
@@ -102,7 +102,7 @@ export const storageTypeHelpPaths = {
   packages: helpPagePath('user/packages/package_registry/index.md', {
     anchor: 'reduce-storage-usage',
   }),
-  repository: helpPagePath('user/project/repository/reducing_the_repo_size_using_git'),
+  repository: helpPagePath('user/project/repository/repository_size'),
   snippets: helpPagePath('user/snippets', {
     anchor: 'reduce-snippets-repository-size',
   }),

@@ -277,6 +277,12 @@ Customers Portal:
 - Hostname
 - Instance ID
 
+Additionally, we also send add-on metrics such as:
+
+- Add-on type
+- Purchased seats
+- Assigned seats
+
 Example of a license sync request:
 
 ```json
@@ -324,7 +330,14 @@ Example of a license sync request:
   "max_historical_user_count": 75,
   "billable_users_count": 75,
   "hostname": "gitlab.example.com",
-  "instance_id": "9367590b-82ad-48cb-9da7-938134c29088"
+  "instance_id": "9367590b-82ad-48cb-9da7-938134c29088",
+  "add_on_metrics": [
+    {
+      "add_on_type": "duo_enterprise",
+      "purchased_seats": 100,
+      "assigned_seats": 50
+    }
+  ]
 }
 ```
 

@@ -121,8 +121,8 @@ To run the compliance pipeline configuration in `Tutorial project`:
 
 1. On the left sidebar, select **Search or go to** and find the `Tutorial project` project.
 1. Select **Build > Pipelines**.
-1. Select **Run pipeline**.
-1. On the **Run pipeline** page, select **Run pipeline**.
+1. Select **New pipeline**.
+1. On the **New pipeline** page, select **Run pipeline**.
 
 Notice the pipeline runs a job called `compliance-job` in a **test** stage. Nice work, you've run your first compliance
 job!
@@ -169,8 +169,8 @@ To confirm the regular pipeline configuration is combined with the compliance pi
 
 1. On the left sidebar, select **Search or go to** and find the `Tutorial project` project.
 1. Select **Build > Pipelines**.
-1. Select **Run pipeline**.
-1. On the **Run pipeline** page, select **Run pipeline**.
+1. Select **New pipeline**.
+1. On the **New pipeline** page, select **Run pipeline**.
 
 Notice the pipeline runs two jobs in a **test** stage:
 

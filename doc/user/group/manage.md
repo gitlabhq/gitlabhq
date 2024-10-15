@@ -9,19 +9,19 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Use groups to manage one or more related projects at the same time.
 
 NOTE:
-For self-managed customers it could be beneficial to create one single top-level group, so you can see an overview of
-your entire organization. For more information about efforts to create an
-organization view of all groups, [see epic 9266](https://gitlab.com/groups/gitlab-org/-/epics/9266).
-A single top-level group provides insights in your entire organization via a complete
+On self-managed GitLab, if you want to see an overview of your entire organization, you should create one top-level group.
+For more information about efforts to create an organization view of all groups,
+[see epic 9266](https://gitlab.com/groups/gitlab-org/-/epics/9266).
+A top-level group offers insights in your entire organization through a complete
 [Security Dashboard and Center](../application_security/security_dashboard/index.md),
-[Vulnerability](../application_security/vulnerability_report/index.md#vulnerability-report) and
-[Compliance center](../compliance/compliance_center/index.md), and
-[Value stream analytics](../group/value_stream_analytics/index.md).
+[Vulnerability Report](../application_security/vulnerability_report/index.md#vulnerability-report),
+[compliance center](../compliance/compliance_center/index.md), and
+[value stream analytics](../group/value_stream_analytics/index.md).
 
 ## Add a group README
 
-As a group owner or member, you can use a README to provide more information about your team, and invite users to contribute to your projects.
-The README is displayed on the group overview page, and can be changed in the group settings. All group members can edit the README.
+You can add a README file to provide information about your team and invite users to contribute to your projects.
+The README displays on the group overview page. All group members can view and edit the README.
 
 Prerequisites:
 
@@ -54,8 +54,8 @@ member with the Owner role.
 ## Change a group's path
 
 Changing a group's path (group URL) can have unintended side effects. Read how redirects behave
-[on the project-level](../project/repository/index.md#repository-path-changes)
-and [in the API](../../api/rest/index.md#redirects)
+for [projects](../project/repository/index.md#repository-path-changes)
+and in the [API](../../api/rest/index.md#redirects)
 before you proceed.
 
 If you are changing the path so it can be claimed by another group or user,
@@ -151,10 +151,10 @@ To disable email notifications:
 > - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/382055) the flag `diff_preview_in_email` on GitLab.com, self-managed, and GitLab Dedicated in GitLab 17.1.
 
 FLAG:
-The availability of this feature is controlled by a feature flag.
+A feature flag controls the availability of this feature.
 For more information, see the history.
 
-When you review code in a merge request and comment on a line of code, GitLab
+When you comment on code in a merge request, GitLab
 includes a few lines of the diff in the email notification to participants.
 Some organizational policies treat email as a less secure system, or might not
 control their own infrastructure for email. This can present risks to IP or
@@ -180,7 +180,7 @@ in which those users are members.
 
 Groups with disabled mentions are visualized accordingly in the autocompletion dropdown list.
 
-This is particularly helpful for groups with a large number of users.
+These visual cues are particularly helpful for groups with many users.
 
 To disable group mentions:
 
@@ -214,8 +214,7 @@ For members with `Minimal Access` in the selected group, their `Max Role` and `S
 
 For more information about user caps for GitLab self-managed, see [User cap](../../administration/settings/sign_up_restrictions.md#user-cap).
 
-When the number of billable members reaches the user cap, new users can't be added to the group
-without being approved by the group Owner.
+When the number of billable members reaches the user cap, the group Owner must approve new members.
 
 Groups with the user cap feature enabled have [group sharing](../project/members/sharing_projects_groups.md#invite-a-group-to-a-group)
 disabled for the group and its subgroups.
@@ -282,9 +281,9 @@ The user cap cannot be enabled if a group, subgroup, or project is shared extern
 or project is shared externally, it is shared outside of the namespace hierarchy, regardless of its level
 in the hierarchy.
 
-To ensure that the user cap applies when groups, subgroups, or projects are shared externally, restrict group sharing only within the top-level namespace. This ensure that groups in the same top-level namespace can be invited, and prevents the addition of new users (seats) when the group is shared.
+To ensure that the user cap applies when groups, subgroups, or projects are shared externally, restrict group sharing only in the top-level namespace. A top-level namespace restriction allows invitations in the same namespace and prevents new user (seat) additions from external shares.
 
-On GitLab.com, on the Ultimate tier, there is a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/441504) where you cannot add new guest users to a group when the amount of billable users exceeds the user cap. For example, suppose you have a user cap of 5, with 3 developers and 2 guests. After you add 2 more developers, you cannot add any more users, even if they are guest users that don't consume a billable seat.
+GitLab.com Ultimate has a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/441504) where you cannot add guest users to a group when billable users exceed the user cap. For example, suppose you have a user cap of 5, with 3 developers, and 2 guests. After you add 2 more developers, you cannot add any more users, even if they are guest users that don't consume a billable seat.
 
 ## Group file templates
 
@@ -382,8 +381,7 @@ To change this behavior:
 
 ### Prevent merge unless all threads are resolved
 
-You can prevent merge requests from being merged until all threads are resolved. When this setting is enabled, for all child projects in your group, the
-**Unresolved threads** count in a merge request is shown in orange when at least one thread remains unresolved.
+You can prevent merge requests from being merged until all threads are resolved. When this setting is enabled, child projects in your group display unresolved thread counts in orange on merge requests with at least one unresolved thread.
 
 Prerequisites:
 

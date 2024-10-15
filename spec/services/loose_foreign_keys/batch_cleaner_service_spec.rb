@@ -151,34 +151,6 @@ RSpec.describe LooseForeignKeys::BatchCleanerService, feature_category: :databas
     end
   end
 
-  context 'when loose_foreign_keys_update_column_to is disabled' do
-    before do
-      stub_feature_flags(loose_foreign_keys_update_column_to: false)
-    end
-
-    context 'when parent records are deleted' do
-      let(:deleted_records_counter) { Gitlab::Metrics.registry.get(:loose_foreign_key_processed_deleted_records) }
-
-      before do
-        parent_record_1.delete
-
-        expect(loose_fk_child_table_1.count).to eq(4)
-        expect(loose_fk_child_table_2.count).to eq(4)
-
-        described_class.new(
-          parent_table: '_test_loose_fk_parent_table',
-          loose_foreign_key_definitions: loose_foreign_key_definitions,
-          deleted_parent_records: LooseForeignKeys::DeletedRecord.load_batch_for_table('public._test_loose_fk_parent_table', 100),
-          connection: ::ApplicationRecord.connection
-        ).execute
-      end
-
-      it 'does not update the child records' do
-        expect(loose_fk_child_table_3.where(parent_id: parent_record_1.id, status: 4).count).to eq(0)
-      end
-    end
-  end
-
   context 'when the child table is partitioned' do
     let(:parent_child_table) { table(:_test_p_loose_fk_parent_table) }
     let(:partitioned_child_table1) { table("gitlab_partitions_dynamic._test_p_loose_fk_parent_table_100") }

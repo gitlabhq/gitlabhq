@@ -1,0 +1,13 @@
+---
+api_type: string
+attr: email_additional_text
+clusterwide: true
+column: email_additional_text
+db_type: character
+default:
+description: Additional text added to the bottom of every email for legal/auditing/compliance
+  reasons. Premium and Ultimate only.
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

@@ -3,7 +3,6 @@ import dateFormat from '~/lib/dateformat';
 import { roundToNearestHalf } from '~/lib/utils/common_utils';
 import { sanitize } from '~/lib/dompurify';
 import { s__, n__, __, sprintf } from '~/locale';
-import { parsePikadayDate } from './pikaday_utility';
 
 /**
  * Returns i18n month names array.
@@ -358,6 +357,19 @@ export const timeToHoursMinutes = (time = '') => {
 };
 
 /**
+ * Converts a Date object to a date-only string in the ISO format `yyyy-mm-dd`
+ *
+ * @param {Date} date A Date object
+ * @returns {string} A string in the format `yyyy-mm-dd`
+ */
+export const toISODateFormat = (date) => {
+  const day = padWithZeros(date.getDate());
+  const month = padWithZeros(date.getMonth() + 1);
+  const year = date.getFullYear();
+  return `${year}-${month}-${day}`;
+};
+
+/**
  * This combines a date and a time and returns the computed Date's ISO string representation.
  *
  * @param   {Date}   date Date object representing the base date.
@@ -492,12 +504,13 @@ export const formatTimezone = ({ offset, name }) => `[UTC${formatUtcOffset(offse
  * @param {Date} dueDate
  */
 export const humanTimeframe = (startDate, dueDate) => {
-  const start = startDate ? parsePikadayDate(startDate) : null;
-  const due = dueDate ? parsePikadayDate(dueDate) : null;
-
   if (startDate && dueDate) {
-    const startDateInWords = dateInWords(start, true, start.getFullYear() === due.getFullYear());
-    const dueDateInWords = dateInWords(due, true);
+    const startDateInWords = dateInWords(
+      startDate,
+      true,
+      startDate.getFullYear() === dueDate.getFullYear(),
+    );
+    const dueDateInWords = dateInWords(dueDate, true);
 
     return sprintf(__('%{startDate} – %{dueDate}'), {
       startDate: startDateInWords,
@@ -506,13 +519,25 @@ export const humanTimeframe = (startDate, dueDate) => {
   }
   if (startDate && !dueDate) {
     return sprintf(__('%{startDate} – No due date'), {
-      startDate: dateInWords(start, true, false),
+      startDate: dateInWords(startDate, true, false),
     });
   }
   if (!startDate && dueDate) {
     return sprintf(__('No start date – %{dueDate}'), {
-      dueDate: dateInWords(due, true, false),
+      dueDate: dateInWords(dueDate, true, false),
     });
   }
   return '';
+};
+
+/**
+ * Formats seconds into a human readable value of elapsed time,
+ * optionally limiting it to hours.
+ * @param {Number} seconds Seconds to format
+ * @param {Boolean} limitToHours Whether or not to limit the elapsed time to be expressed in hours
+ * @return {String} Provided seconds in human readable elapsed time format
+ */
+export const formatTimeSpent = (seconds, limitToHours) => {
+  const negative = seconds < 0;
+  return (negative ? '- ' : '') + stringifyTime(parseSeconds(seconds, { limitToHours }));
 };

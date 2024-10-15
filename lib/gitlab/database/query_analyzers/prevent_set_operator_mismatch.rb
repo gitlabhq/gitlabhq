@@ -17,6 +17,9 @@ module Gitlab
           def analyze(parsed)
             return unless requires_detection?(parsed.sql)
 
+            # This analyzer requires the PgQuery parsed query to be present
+            return unless parsed.pg
+
             # Only handle SELECT queries.
             parsed.pg.tree.stmts.each do |stmt|
               select_stmt = next_select_stmt(stmt)

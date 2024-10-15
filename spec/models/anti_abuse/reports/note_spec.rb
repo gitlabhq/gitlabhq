@@ -50,5 +50,11 @@ RSpec.describe AntiAbuse::Reports::Note, feature_category: :insider_threat do
         expect(described_class.parent_object_field).to eq(:abuse_report)
       end
     end
+
+    describe '#skip_project_check?' do
+      it 'returns true' do
+        expect(note1.skip_project_check?).to eq(true)
+      end
+    end
   end
 end

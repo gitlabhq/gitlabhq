@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe QueueBackfillEpicUserMentionsGroupId, feature_category: :team_planning do
+RSpec.describe QueueBackfillEpicUserMentionsGroupId, migration: :gitlab_main_cell, feature_category: :team_planning do
   let!(:batched_migration) { described_class::MIGRATION }
 
   it 'schedules a new batched migration' do

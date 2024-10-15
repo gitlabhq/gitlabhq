@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe ::PagesDomains::DeleteService, feature_category: :pages do
   let_it_be(:user) { create(:user) }
-  let_it_be(:pages_domain) { create(:pages_domain, :with_project) }
+  let_it_be(:pages_domain) { create(:pages_domain) }
 
   let(:params) do
     attributes_for(:pages_domain, :with_trusted_chain).slice(:key, :certificate).tap do |params|

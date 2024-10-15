@@ -1,8 +1,17 @@
 <script>
-import { GlFormGroup, GlCollapsibleListbox, GlSorting } from '@gitlab/ui';
-import ProjectSelect from '~/vue_shared/components/entity_select/project_select.vue';
-import GroupSelect from '~/vue_shared/components/entity_select/group_select.vue';
+import { GlSorting, GlFilteredSearch, GlFilteredSearchToken, GlAlert } from '@gitlab/ui';
 import { s__ } from '~/locale';
+import {
+  OPERATORS_IS,
+  TOKEN_TITLE_GROUP,
+  TOKEN_TYPE_GROUP,
+  TOKEN_TITLE_PROJECT,
+  TOKEN_TYPE_PROJECT,
+  TOKEN_TYPE_AUTHOR,
+  TOKEN_TITLE_AUTHOR,
+  ENTITY_TYPES,
+  FILTERED_SEARCH_TERM,
+} from '~/vue_shared/components/filtered_search_bar/constants';
 import {
   TODO_TARGET_TYPE_ISSUE,
   TODO_TARGET_TYPE_WORK_ITEM,
@@ -10,6 +19,7 @@ import {
   TODO_TARGET_TYPE_DESIGN,
   TODO_TARGET_TYPE_ALERT,
   TODO_TARGET_TYPE_EPIC,
+  TODO_TARGET_TYPE_SSH_KEY,
   TODO_ACTION_TYPE_ASSIGNED,
   TODO_ACTION_TYPE_MENTIONED,
   TODO_ACTION_TYPE_BUILD_FAILED,
@@ -23,7 +33,11 @@ import {
   TODO_ACTION_TYPE_REVIEW_SUBMITTED,
   TODO_ACTION_TYPE_OKR_CHECKIN_REQUESTED,
   TODO_ACTION_TYPE_ADDED_APPROVER,
+  TODO_ACTION_TYPE_SSH_KEY_EXPIRED,
 } from '../constants';
+import GroupToken from './filtered_search_tokens/group_token.vue';
+import ProjectToken from './filtered_search_tokens/project_token.vue';
+import AuthorToken from './filtered_search_tokens/author_token.vue';
 
 export const SORT_OPTIONS = [
   {
@@ -39,135 +53,315 @@ export const SORT_OPTIONS = [
     text: s__('Todos|Label priority'),
   },
 ];
+const LEGAL_SORT_OPTIONS = SORT_OPTIONS.map(({ value }) => value);
 
+/**
+ * The IDs must match the ones defined in the `todo_actions_options` method in
+ * `app/helpers/todos_helper.rb`.
+ */
 export const TARGET_TYPES = [
   {
-    value: 'any',
-    text: s__('Todos|Any'),
-  },
-  {
+    // eslint-disable-next-line @gitlab/require-i18n-strings
+    id: 'Issue',
     value: TODO_TARGET_TYPE_ISSUE,
-    text: s__('Todos|Issue'),
+    title: s__('Todos|Issue'),
   },
   {
+    id: 'WorkItem', // Note: This ID has no equivalent in `app/helpers/todos_helper.rb`.
     value: TODO_TARGET_TYPE_WORK_ITEM,
-    text: s__('Todos|Work item'),
+    title: s__('Todos|Work item'),
   },
   {
+    id: 'MergeRequest',
     value: TODO_TARGET_TYPE_MERGE_REQUEST,
-    text: s__('Todos|Merge request'),
+    title: s__('Todos|Merge request'),
   },
   {
+    id: 'DesignManagement::Design',
     value: TODO_TARGET_TYPE_DESIGN,
-    text: s__('Todos|Design'),
+    title: s__('Todos|Design'),
   },
   {
+    id: 'AlertManagement::Alert',
     value: TODO_TARGET_TYPE_ALERT,
-    text: s__('Todos|Alert'),
+    title: s__('Todos|Alert'),
   },
   {
+    // eslint-disable-next-line @gitlab/require-i18n-strings
+    id: 'Epic', // Note: This ID has no equivalent in `app/helpers/todos_helper.rb`.
     value: TODO_TARGET_TYPE_EPIC,
-    text: s__('Todos|Epic'),
+    title: s__('Todos|Epic'),
+  },
+  {
+    // eslint-disable-next-line @gitlab/require-i18n-strings
+    id: 'Key',
+    value: TODO_TARGET_TYPE_SSH_KEY,
+    title: s__('Todos|SSH key'),
   },
 ];
 
+/**
+ * The IDs must match the ones defined in `app/models/todo.rb`.
+ */
 export const ACTION_TYPES = [
   {
-    value: 'any',
-    text: s__('Todos|Any'),
-  },
-  {
+    id: '1',
     value: TODO_ACTION_TYPE_ASSIGNED,
-    text: s__('Todos|Assigned'),
+    title: s__('Todos|Assigned'),
   },
   {
+    id: '2',
     value: TODO_ACTION_TYPE_MENTIONED,
-    text: s__('Todos|Mentioned'),
+    title: s__('Todos|Mentioned'),
   },
   {
+    id: '3',
     value: TODO_ACTION_TYPE_BUILD_FAILED,
-    text: s__('Todos|Build failed'),
+    title: s__('Todos|Build failed'),
   },
   {
+    id: '4',
     value: TODO_ACTION_TYPE_MARKED,
-    text: s__('Todos|Marked'),
+    title: s__('Todos|Marked'),
   },
   {
+    id: '5',
     value: TODO_ACTION_TYPE_APPROVAL_REQUIRED,
-    text: s__('Todos|Approval required'),
+    title: s__('Todos|Approval required'),
   },
   {
+    id: '6',
     value: TODO_ACTION_TYPE_UNMERGEABLE,
-    text: s__('Todos|Unmergeable'),
+    title: s__('Todos|Unmergeable'),
   },
   {
+    id: '7',
     value: TODO_ACTION_TYPE_DIRECTLY_ADDRESSED,
-    text: s__('Todos|Directly addressed'),
+    title: s__('Todos|Directly addressed'),
   },
   {
+    id: '8',
     value: TODO_ACTION_TYPE_MERGE_TRAIN_REMOVED,
-    text: s__('Todos|Merge train removed'),
+    title: s__('Todos|Merge train removed'),
   },
   {
+    id: '9',
     value: TODO_ACTION_TYPE_REVIEW_REQUESTED,
-    text: s__('Todos|Review requested'),
+    title: s__('Todos|Review requested'),
   },
   {
+    id: '10',
     value: TODO_ACTION_TYPE_MEMBER_ACCESS_REQUESTED,
-    text: s__('Todos|Member access request'),
+    title: s__('Todos|Member access request'),
   },
   {
+    id: '11',
     value: TODO_ACTION_TYPE_REVIEW_SUBMITTED,
-    text: s__('Todos|Review submitted'),
+    title: s__('Todos|Review submitted'),
   },
   {
+    id: '12',
     value: TODO_ACTION_TYPE_OKR_CHECKIN_REQUESTED,
-    text: s__('Todos|OKR checkin requested'),
+    title: s__('Todos|OKR checkin requested'),
   },
   {
+    id: '13',
     value: TODO_ACTION_TYPE_ADDED_APPROVER,
-    text: s__('Todos|Added approver'),
+    title: s__('Todos|Added approver'),
+  },
+  {
+    id: '14',
+    value: TODO_ACTION_TYPE_SSH_KEY_EXPIRED,
+    title: s__('Todos|SSH key expired'),
+  },
+];
+
+const DEFAULT_TOKEN_OPTIONS = {
+  unique: true,
+  operators: OPERATORS_IS,
+};
+
+const TOKEN_TYPE_CATEGORY = 'category';
+const TOKEN_TYPE_REASON = 'reason';
+
+const GROUP_URL_PARAM = 'group_id';
+const PROJECT_URL_PARAM = 'project_id';
+const AUTHOR_URL_PARAM = 'author_id';
+const CATEGORY_URL_PARAM = 'type';
+const ACTION_URL_PARAM = 'action_id';
+const SORT_URL_PARAM = 'sort';
+
+const FILTERS = [
+  {
+    apiParam: 'groupId',
+    urlParam: GROUP_URL_PARAM,
+    tokenType: TOKEN_TYPE_GROUP,
+  },
+  {
+    apiParam: 'projectId',
+    urlParam: PROJECT_URL_PARAM,
+    tokenType: TOKEN_TYPE_PROJECT,
+  },
+  {
+    apiParam: 'authorId',
+    urlParam: AUTHOR_URL_PARAM,
+    tokenType: TOKEN_TYPE_AUTHOR,
+  },
+  {
+    apiParam: 'type',
+    urlParam: CATEGORY_URL_PARAM,
+    tokenType: TOKEN_TYPE_CATEGORY,
+    fromUrlValueResolver: (searchParams) => {
+      const { value } =
+        TARGET_TYPES.find((option) => option.id === searchParams.get(CATEGORY_URL_PARAM)) ?? {};
+      return value;
+    },
+    toUrlValueResolver: (value) => {
+      const { id } = TARGET_TYPES.find((option) => option.value === value);
+      return id;
+    },
+  },
+  {
+    apiParam: 'action',
+    urlParam: ACTION_URL_PARAM,
+    tokenType: TOKEN_TYPE_REASON,
+    fromUrlValueResolver: (searchParams) => {
+      const { value } =
+        ACTION_TYPES.find((option) => option.id === searchParams.get(ACTION_URL_PARAM)) ?? {};
+      return value;
+    },
+    toUrlValueResolver: (value) => {
+      const { id } = ACTION_TYPES.find((option) => option.value === value);
+      return id;
+    },
   },
 ];
 
 export default {
+  SORT_OPTIONS,
+  i18n: {
+    searchTextOptionLabel: s__('Todos|Raw text search is not currently supported'),
+    fullTextSearchWarning: s__(
+      'Todos|Raw text search is not currently supported. Please use the available search tokens.',
+    ),
+    filteredSearchPlaceholder: s__('Todos|Filter to-do items'),
+  },
   components: {
-    GlFormGroup,
-    GlCollapsibleListbox,
     GlSorting,
-    GroupSelect,
-    ProjectSelect,
+    GlFilteredSearch,
+    GlAlert,
+  },
+  props: {
+    todosStatus: {
+      type: Array,
+      required: true,
+    },
   },
   data() {
     return {
-      selectedType: TARGET_TYPES[0].value,
-      selectedAction: ACTION_TYPES[0].value,
-      selectedProjectId: null,
-      selectedGroupId: null,
-      typeItems: TARGET_TYPES,
-      actionItems: ACTION_TYPES,
-      sortOptions: SORT_OPTIONS,
       isAscending: false,
       sortBy: SORT_OPTIONS[0].value,
+      filterTokens: [],
+      showFullTextSearchWarning: false,
     };
   },
+  computed: {
+    filteredSearchTokens() {
+      return [
+        {
+          ...DEFAULT_TOKEN_OPTIONS,
+          icon: 'group',
+          title: TOKEN_TITLE_GROUP,
+          type: TOKEN_TYPE_GROUP,
+          entityType: ENTITY_TYPES.GROUP,
+          token: GroupToken,
+        },
+        {
+          ...DEFAULT_TOKEN_OPTIONS,
+          icon: 'project',
+          title: TOKEN_TITLE_PROJECT,
+          type: TOKEN_TYPE_PROJECT,
+          entityType: ENTITY_TYPES.PROJECT,
+          token: ProjectToken,
+        },
+        {
+          ...DEFAULT_TOKEN_OPTIONS,
+          icon: 'user',
+          title: TOKEN_TITLE_AUTHOR,
+          type: TOKEN_TYPE_AUTHOR,
+          entityType: ENTITY_TYPES.AUTHOR,
+          token: AuthorToken,
+          status: this.todosStatus,
+        },
+        {
+          ...DEFAULT_TOKEN_OPTIONS,
+          icon: 'overview',
+          title: s__('Todos|Category'),
+          type: TOKEN_TYPE_CATEGORY,
+          token: GlFilteredSearchToken,
+          options: TARGET_TYPES,
+        },
+        {
+          ...DEFAULT_TOKEN_OPTIONS,
+          icon: 'trigger-source',
+          title: s__('Todos|Reason'),
+          type: TOKEN_TYPE_REASON,
+          token: GlFilteredSearchToken,
+          options: ACTION_TYPES,
+        },
+      ];
+    },
+    filters() {
+      return Object.fromEntries(
+        FILTERS.map(({ apiParam, tokenType }) => {
+          const selectedValue = this.filterTokens.find((token) => token.type === tokenType);
+          return [apiParam, selectedValue ? [selectedValue.value.data] : []];
+        }),
+      );
+    },
+    isDefaultSortOrder() {
+      return this.sortBy === SORT_OPTIONS[0].value && !this.isAscending;
+    },
+    hasFullTextSearchToken() {
+      return this.filterTokens.some(
+        (token) => token.type === FILTERED_SEARCH_TERM && token.value.data.length,
+      );
+    },
+  },
+  created() {
+    let urlDidChangeFilters = false;
+    const searchParams = new URLSearchParams(window.location.search);
+
+    FILTERS.forEach(({ urlParam, tokenType, fromUrlValueResolver }) => {
+      const value = fromUrlValueResolver
+        ? fromUrlValueResolver(searchParams)
+        : searchParams.get(urlParam);
+      if (value) {
+        urlDidChangeFilters = true;
+        this.filterTokens.push({
+          type: tokenType,
+          value: { data: value },
+        });
+      }
+    });
+
+    if (searchParams.has(SORT_URL_PARAM)) {
+      urlDidChangeFilters = true;
+      const sortParam = searchParams.get(SORT_URL_PARAM).toUpperCase();
+
+      const sortBy = sortParam.replace(/_(ASC|DESC)$/, '');
+      this.isAscending = sortParam.endsWith('_ASC');
+      this.sortBy = LEGAL_SORT_OPTIONS.includes(sortBy) ? sortBy : SORT_OPTIONS[0].value;
+    }
+
+    if (urlDidChangeFilters) {
+      this.$emit('filters-changed', {
+        ...this.filters,
+        sort: this.isAscending ? `${this.sortBy}_ASC` : `${this.sortBy}_DESC`,
+      });
+    }
+  },
   methods: {
-    handleProjectSelected(data) {
-      this.selectedProjectId = data?.id;
-      this.sendFilterChanged();
-    },
-    handleGroupSelected(data) {
-      this.selectedGroupId = data?.id;
-      this.sendFilterChanged();
-    },
-    handleActionSelected(data) {
-      this.selectedAction = data;
-      this.sendFilterChanged();
-    },
-    handleTypeSelected(data) {
-      this.selectedType = data;
-      this.sendFilterChanged();
-    },
     onSortByChange(value) {
       this.sortBy = value;
       this.sendFilterChanged();
@@ -176,20 +370,38 @@ export default {
       this.isAscending = isAscending;
       this.sendFilterChanged();
     },
+    dismissFullTextSearchWarning() {
+      this.showFullTextSearchWarning = false;
+    },
+    async onFiltersCleared() {
+      await this.$nextTick();
+      this.sendFilterChanged();
+    },
     sendFilterChanged() {
+      this.showFullTextSearchWarning = this.hasFullTextSearchToken;
       this.$emit('filters-changed', {
-        groupId: this.selectedGroupId ? [this.selectedGroupId] : [],
-        projectId: this.selectedProjectId ? [this.selectedProjectId] : [],
-        type:
-          this.selectedType && this.selectedType !== TARGET_TYPES[0].value
-            ? [this.selectedType]
-            : [],
-        action:
-          this.selectedAction && this.selectedAction !== ACTION_TYPES[0].value
-            ? [this.selectedAction]
-            : [],
+        ...this.filters,
         sort: this.isAscending ? `${this.sortBy}_ASC` : `${this.sortBy}_DESC`,
       });
+      this.syncUrl();
+    },
+    syncUrl() {
+      const searchParams = new URLSearchParams();
+
+      FILTERS.forEach(({ apiParam, urlParam, toUrlValueResolver }) => {
+        if (this.filters[apiParam].length) {
+          const urlValue = toUrlValueResolver
+            ? toUrlValueResolver(this.filters[apiParam][0])
+            : this.filters[apiParam][0];
+          searchParams.set(urlParam, urlValue);
+        }
+      });
+
+      if (!this.isDefaultSortOrder) {
+        searchParams.set('sort', this.isAscending ? `${this.sortBy}_ASC` : `${this.sortBy}_DESC`);
+      }
+
+      window.history.replaceState(null, '', `?${searchParams.toString()}`);
     },
   },
 };
@@ -197,55 +409,32 @@ export default {
 
 <template>
   <div class="todos-filters">
+    <gl-alert
+      v-if="showFullTextSearchWarning"
+      variant="warning"
+      class="gl-mt-3"
+      @dismiss="dismissFullTextSearchWarning"
+    >
+      {{ $options.i18n.fullTextSearchWarning }}
+    </gl-alert>
     <div class="gl-border-b gl-flex gl-flex-col gl-gap-4 gl-bg-gray-10 gl-p-5 sm:gl-flex-row">
-      <group-select
-        class="gl-mb-0 gl-w-full sm:gl-w-3/20"
-        :label="__('Group')"
-        input-name="group"
-        input-id="group"
-        empty-text="Any"
-        :block="true"
-        :clearable="true"
-        @input="handleGroupSelected"
+      <gl-filtered-search
+        v-model="filterTokens"
+        class="gl-min-w-0 gl-flex-grow"
+        terms-as-tokens
+        :placeholder="$options.i18n.filteredSearchPlaceholder"
+        :available-tokens="filteredSearchTokens"
+        :search-text-option-label="$options.i18n.searchTextOptionLabel"
+        @submit="sendFilterChanged"
+        @clear="onFiltersCleared"
       />
-      <project-select
-        class="gl-mb-0 gl-w-full sm:gl-w-3/20"
-        :label="__('Project')"
-        input-name="project"
-        input-id="project"
-        empty-text="Any"
-        :block="true"
-        :include-subgroups="true"
-        @input="handleProjectSelected"
+      <gl-sorting
+        :sort-options="$options.SORT_OPTIONS"
+        :sort-by="sortBy"
+        :is-ascending="isAscending"
+        @sortByChange="onSortByChange"
+        @sortDirectionChange="onDirectionChange"
       />
-      <gl-form-group class="gl-mb-0 gl-w-full sm:gl-w-3/20" :label="__('Author')">
-        {{ __('Author') }}</gl-form-group
-      >
-      <gl-form-group class="gl-mb-0 gl-w-full sm:gl-w-3/20" :label="__('Action')">
-        <gl-collapsible-listbox
-          :block="true"
-          :items="actionItems"
-          :selected="selectedAction"
-          @select="handleActionSelected"
-        />
-      </gl-form-group>
-      <gl-form-group class="gl-mb-0 gl-w-full sm:gl-w-3/20" :label="__('Type')">
-        <gl-collapsible-listbox
-          :block="true"
-          :items="typeItems"
-          :selected="selectedType"
-          @select="handleTypeSelected"
-        />
-      </gl-form-group>
-      <gl-form-group class="gl-mb-0 sm:gl-ml-auto" :label="__('Sort by')">
-        <gl-sorting
-          :sort-options="sortOptions"
-          :sort-by="sortBy"
-          :is-ascending="isAscending"
-          @sortByChange="onSortByChange"
-          @sortDirectionChange="onDirectionChange"
-        />
-      </gl-form-group>
     </div>
   </div>
 </template>

@@ -1,4 +1,4 @@
-- link_url = help_page_path('user/infrastructure/iac/troubleshooting', anchor: 'state-not-found-if-the-state-name-contains-a-period')
+- link_url = help_page_path('user/infrastructure/iac/troubleshooting.md', anchor: 'state-not-found-if-the-state-name-contains-a-period')
 - link = link_to('', link_url, target: '_blank', rel: 'noopener noreferrer')
 
 = render Pajamas::AlertComponent.new(variant: 'info', alert_options: { class: 'gl-mt-5 js-period-in-terraform-state-name-alert', data: { feature_id: Users::CalloutsHelper::PERIOD_IN_TERRAFORM_STATE_NAME_ALERT, dismiss_endpoint: callouts_path, defer_links: 'true' }}) do |c|

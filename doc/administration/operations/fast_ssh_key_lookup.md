@@ -50,7 +50,7 @@ The `authorized_keys` file contains all the public SSH keys for users allowed to
 single source of truth, [Geo](../geo/index.md) must be configured to perform SSH fingerprint
 lookups with database lookup.
 
-As part of [setting up Geo](../geo/index.md#setup-instructions),
+As part of [setting up Geo](../geo/setup/index.md),
 you are required to follow the steps outlined below for both the primary and
 secondary nodes, but **Write to "authorized keys" file**
 must be unchecked only on the primary node, because it is reflected

@@ -72,6 +72,11 @@ RSpec.describe 'getting an issue list for a project', feature_category: :team_pl
     )
   end
 
+  let_it_be(:subscription) { create(:subscription, subscribable: issue_a, user: current_user, subscribed: true) }
+  let_it_be(:unsubscription) do
+    create(:subscription, subscribable: issue_b, user: current_user, subscribed: false)
+  end
+
   let_it_be(:issues, reload: true) { [issue_a, issue_b, issue_c, issue_d, issue_e] }
 
   let(:issue_nodes_path) { %w[project issues nodes] }
@@ -100,6 +105,8 @@ RSpec.describe 'getting an issue list for a project', feature_category: :team_pl
     let(:confidential_issues) { [issue_e] }
     let(:non_confidential_issues) { [issue_a, issue_b, issue_c, issue_d] }
     let(:public_non_confidential_issues) { non_confidential_issues }
+    let(:subscribed_issues) { [issue_a] }
+    let(:unsubscribed_issues) { [issue_b] }
 
     # sorting
     let(:data_path) { [:project, :issues] }

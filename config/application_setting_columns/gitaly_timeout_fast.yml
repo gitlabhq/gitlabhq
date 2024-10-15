@@ -1,0 +1,15 @@
+---
+api_type: integer
+attr: gitaly_timeout_fast
+clusterwide: false
+column: gitaly_timeout_fast
+db_type: integer
+default: '10'
+description: Gitaly fast operation timeout, in seconds. Some Gitaly operations are
+  expected to be fast. If they exceed this threshold, there may be a problem with
+  a storage shard and 'failing fast' can help maintain the stability of the GitLab
+  instance. Set to `0` to disable timeouts.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

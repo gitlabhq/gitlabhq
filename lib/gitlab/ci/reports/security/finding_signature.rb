@@ -10,8 +10,8 @@ module Gitlab
           attr_accessor :algorithm_type, :signature_value
 
           def initialize(params = {})
-            @algorithm_type = params.dig(:algorithm_type)
-            @signature_value = params.dig(:signature_value)
+            @algorithm_type = params[:algorithm_type]
+            @signature_value = params[:signature_value]
           end
 
           def signature_sha

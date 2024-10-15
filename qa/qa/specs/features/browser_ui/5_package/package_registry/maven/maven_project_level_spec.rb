@@ -2,7 +2,11 @@
 
 module QA
   RSpec.describe 'Package', :object_storage, :external_api_calls do
-    describe 'Maven project level endpoint', product_group: :package_registry do
+    describe 'Maven project level endpoint', product_group: :package_registry, quarantine: {
+      type: :investigating,
+      issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/471172",
+      only: { job: /gdk-qa-.*/ }
+    } do
       include Runtime::Fixtures
       include Support::Helpers::MaskToken
 
@@ -17,7 +21,7 @@ module QA
 
       let!(:runner) do
         create(:project_runner,
-          name: "qa-runner-#{Time.now.to_i}",
+          name: "qa-runner-#{SecureRandom.hex(6)}",
           tags: ["runner-for-#{package_project.name}"],
           executor: :docker,
           project: package_project)

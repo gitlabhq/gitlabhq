@@ -41,5 +41,9 @@ module Layouts
     def button_text
       @expanded ? _('Collapse') : _('Expand')
     end
+
+    def aria_label
+      @expanded ? "#{_('Collapse')} #{@heading}" : "#{_('Expand')} #{@heading}"
+    end
   end
 end

@@ -147,7 +147,7 @@ RSpec.describe VisibilityLevelHelper, feature_category: :system_access do
     end
 
     describe "snippet" do
-      let(:snippet) { build_stubbed(:snippet, :internal) }
+      let(:snippet) { build_stubbed(:personal_snippet, :internal) }
 
       it "disallows levels" do
         expect(disallowed_visibility_level?(snippet, public_vis)).to be_falsey

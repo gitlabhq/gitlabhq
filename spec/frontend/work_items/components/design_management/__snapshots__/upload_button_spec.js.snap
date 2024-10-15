@@ -1,0 +1,25 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Design management upload button component renders upload design button 1`] = `
+<div
+  class="gl-mt-4 sm:gl-ml-auto"
+>
+  <gl-button-stub
+    buttontextclasses=""
+    category="primary"
+    icon="media"
+    size="medium"
+    title="Adding a design with the same filename replaces the file in a new version."
+    variant="default"
+  >
+    Add design
+  </gl-button-stub>
+  <input
+    accept="image/png, image/jpg, image/jpeg, image/gif, image/bmp, image/tiff, image/ico"
+    class="gl-hidden"
+    multiple=""
+    name="design_file"
+    type="file"
+  />
+</div>
+`;

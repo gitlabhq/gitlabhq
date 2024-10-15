@@ -1,9 +1,10 @@
 <script>
-import { debounce } from 'lodash';
+import { debounce, isObject } from 'lodash';
 import { GlFormGroup, GlCollapsibleListbox } from '@gitlab/ui';
 import { __ } from '~/locale';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { RESET_LABEL, QUERY_TOO_SHORT_MESSAGE } from './constants';
+import { initialSelectionPropValidator } from './utils';
 
 const MINIMUM_QUERY_LENGTH = 3;
 
@@ -36,9 +37,10 @@ export default {
       required: true,
     },
     initialSelection: {
-      type: [String, Number],
+      type: [String, Number, Object],
       required: false,
       default: null,
+      validator: initialSelectionPropValidator,
     },
     clearable: {
       type: Boolean,
@@ -77,9 +79,8 @@ export default {
       searchString: '',
       items: [],
       page: 1,
-      selected: this.initialSelection || '',
-      initialSelectedItem: {},
       errorMessage: '',
+      ...this.setInitialSelected(),
     };
   },
   computed: {
@@ -112,6 +113,19 @@ export default {
     this.getInitialSelection();
   },
   methods: {
+    setInitialSelected() {
+      if (isObject(this.initialSelection) && this.initialSelection.value !== undefined) {
+        return {
+          selected: this.initialSelection.value,
+          initialSelectedItem: this.initialSelection,
+        };
+      }
+
+      return {
+        selected: this.initialSelection || '',
+        initialSelectedItem: {},
+      };
+    },
     search: debounce(function debouncedSearch(searchString) {
       this.searchString = searchString;
       if (this.isSearchQueryTooShort) {
@@ -142,7 +156,7 @@ export default {
       this.infiniteScrollLoading = false;
     },
     async getInitialSelection() {
-      if (!this.initialSelection) {
+      if (!this.initialSelection || isObject(this.initialSelection)) {
         this.pristine = false;
         return;
       }

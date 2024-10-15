@@ -15,7 +15,7 @@ module BulkImports
       return unless bulk_import
       return if bulk_import.completed?
       return bulk_import.fail_op! if all_entities_failed?
-      return bulk_import.finish! if all_entities_processed? && bulk_import.started?
+      return bulk_import.finish! if all_entities_processed? && bulk_import.started? && placeholder_references_loaded?
       return re_enqueue if max_batch_size_exceeded? # Do not start more jobs if max allowed are already running
 
       process_bulk_import
@@ -54,6 +54,25 @@ module BulkImports
       entities.all?(&:failed?)
     end
 
+    def placeholder_references_loaded?
+      return true unless importer_user_mapping_enabled?
+
+      store = Import::PlaceholderReferences::Store.new(
+        import_source: Import::SOURCE_DIRECT_TRANSFER,
+        import_uid: bulk_import.id
+      )
+
+      return true if store.empty?
+
+      logger.info(
+        message: 'Placeholder references not finished loading to database',
+        bulk_import_id: bulk_import.id,
+        placeholder_reference_store_count: store.count
+      )
+
+      false
+    end
+
     # A new BulkImportWorker job is enqueued to either
     #   - Process the new BulkImports::Entity created during import (e.g. for the subgroups)
     #   - Or to mark the `bulk_import` as finished
@@ -67,6 +86,10 @@ module BulkImports
 
     def max_batch_size_exceeded?
       started_entities.count >= DEFAULT_BATCH_SIZE
+    end
+
+    def importer_user_mapping_enabled?
+      Import::BulkImports::EphemeralData.new(bulk_import.id).importer_user_mapping_enabled?
     end
 
     def next_batch_size

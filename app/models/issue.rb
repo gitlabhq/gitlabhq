@@ -60,6 +60,18 @@ class Issue < ApplicationRecord
   # prevent caching this column by rails, as we want to easily remove it after the backfilling
   ignore_column :tmp_epic_id, remove_with: '16.11', remove_after: '2024-03-31'
 
+  # Interim columns to convert integer IDs to bigint
+  ignore_column :author_id_convert_to_bigint, remove_with: '17.7', remove_after: '2024-11-17'
+  ignore_column :closed_by_id_convert_to_bigint, remove_with: '17.7', remove_after: '2024-11-17'
+  ignore_column :duplicated_to_id_convert_to_bigint, remove_with: '17.7', remove_after: '2024-11-17'
+  ignore_column :id_convert_to_bigint, remove_with: '17.7', remove_after: '2024-11-17'
+  ignore_column :last_edited_by_id_convert_to_bigint, remove_with: '17.7', remove_after: '2024-11-17'
+  ignore_column :milestone_id_convert_to_bigint, remove_with: '17.7', remove_after: '2024-11-17'
+  ignore_column :moved_to_id_convert_to_bigint, remove_with: '17.7', remove_after: '2024-11-17'
+  ignore_column :project_id_convert_to_bigint, remove_with: '17.7', remove_after: '2024-11-17'
+  ignore_column :promoted_to_epic_id_convert_to_bigint, remove_with: '17.7', remove_after: '2024-11-17'
+  ignore_column :updated_by_id_convert_to_bigint, remove_with: '17.7', remove_after: '2024-11-17'
+
   belongs_to :project
   belongs_to :namespace, inverse_of: :issues
 
@@ -519,13 +531,12 @@ class Issue < ApplicationRecord
     self.duplicated_to_id = nil
   end
 
-  def can_move?(user, to_project = nil)
-    if to_project
-      return false unless user.can?(:admin_issue, to_project)
+  def can_move?(user, to_namespace = nil)
+    if to_namespace
+      return false unless user.can?(:admin_issue, to_namespace)
     end
 
-    !moved? && persisted? &&
-      user.can?(:admin_issue, self.project)
+    !moved? && persisted? && user.can?(:admin_issue, self)
   end
   alias_method :can_clone?, :can_move?
 

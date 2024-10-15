@@ -116,6 +116,19 @@ To trigger a reconciliation:
 1. On a dashboard, select the sync status badge of a Flux deployment.
 1. Select **Actions** (**{ellipsis_v}**) **> Trigger reconciliation** (**{retry}**).
 
+### Suspend or resume Flux reconciliation
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/478380) in GitLab 17.5.
+
+You can manually suspend or resume your Flux reconciliation from the UI.
+
+To suspend or resume reconciliation:
+
+1. On a dashboard, select the sync status badge of a Flux deployment.
+1. Select **Actions** (**{ellipsis_v}**), then choose one of the following:
+   - **Suspend reconciliation** (**{stop}**) to pause the Flux reconciliation.
+   - **Resume reconciliation** (**{play}**) to restart the Flux reconciliation.
+
 ### View pod logs
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13793) in GitLab 17.2.

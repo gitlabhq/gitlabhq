@@ -35,13 +35,6 @@ Enable Maintenance Mode as an administrator in one of these ways:
   curl --request PUT --header "PRIVATE-TOKEN:$ADMIN_TOKEN" "<gitlab-url>/api/v4/application/settings?maintenance_mode=true"
   ```
 
-- [**Rails console**](../operations/rails_console.md#starting-a-rails-console-session):
-
-  ```ruby
-  ::Gitlab::CurrentSettings.update!(maintenance_mode: true)
-  ::Gitlab::CurrentSettings.update!(maintenance_mode_message: "New message")
-  ```
-
 ## Disable Maintenance Mode
 
 Disable Maintenance Mode in one of three ways:
@@ -57,12 +50,6 @@ Disable Maintenance Mode in one of three ways:
 
   ```shell
   curl --request PUT --header "PRIVATE-TOKEN:$ADMIN_TOKEN" "<gitlab-url>/api/v4/application/settings?maintenance_mode=false"
-  ```
-
-- [**Rails console**](../operations/rails_console.md#starting-a-rails-console-session):
-
-  ```ruby
-  ::Gitlab::CurrentSettings.update!(maintenance_mode: false)
   ```
 
 ## Behavior of GitLab features in Maintenance Mode

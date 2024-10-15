@@ -1,0 +1,13 @@
+---
+api_type: boolean
+attr: include_optional_metrics_in_service_ping
+clusterwide: false
+column: include_optional_metrics_in_service_ping
+db_type: boolean
+default: 'true'
+description: Whether or not optional metrics are enabled in Service Ping. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141540)
+  in GitLab 16.10.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

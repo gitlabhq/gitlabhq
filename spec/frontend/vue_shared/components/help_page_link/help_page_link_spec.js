@@ -22,7 +22,7 @@ const findGlLink = () => wrapper.findComponent(GlLink);
 
 describe('HelpPageLink', () => {
   it('renders a link', () => {
-    const href = 'user/usage_quotas';
+    const href = 'user/storage_usage_quotas';
     createComponent({ href });
 
     const link = findGlLink();
@@ -31,7 +31,7 @@ describe('HelpPageLink', () => {
   });
 
   it('adds the anchor', () => {
-    const href = 'user/usage_quotas';
+    const href = 'user/storage_usage_quotas';
     const anchor = 'namespace-storage-limit';
     createComponent({ href, anchor });
 
@@ -41,7 +41,7 @@ describe('HelpPageLink', () => {
   });
 
   it('renders slot content', () => {
-    const href = 'user/usage_quotas';
+    const href = 'user/storage_usage_quotas';
     const slotContent = 'slot content';
     createComponent({ href }, { default: slotContent });
 

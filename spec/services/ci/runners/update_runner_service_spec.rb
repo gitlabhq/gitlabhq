@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Ci::Runners::UpdateRunnerService, '#execute', feature_category: :runner do
   subject(:execute) { described_class.new(runner).execute(params) }
 
-  let(:runner) { create(:ci_runner) }
+  let(:runner) { create(:ci_runner, tag_list: %w[macos shared]) }
 
   before do
     allow(runner).to receive(:tick_runner_queue)
@@ -21,6 +21,29 @@ RSpec.describe Ci::Runners::UpdateRunnerService, '#execute', feature_category: :
 
       expect(runner).to have_received(:tick_runner_queue)
       expect(runner.description).to eq('new runner')
+    end
+  end
+
+  context 'with tag_list param' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:tag_list, :expected_tag_list) do
+      [] | []
+      ['macos'] | ['macos']
+      ['linux'] | ['linux']
+    end
+
+    with_them do
+      let(:params) { { tag_list: tag_list } }
+
+      it 'updates the runner and ticking the queue' do
+        expect(execute).to be_success
+
+        runner.reload
+
+        expect(runner).to have_received(:tick_runner_queue)
+        expect(runner.tag_list).to eq(expected_tag_list)
+      end
     end
   end
 
@@ -52,6 +75,7 @@ RSpec.describe Ci::Runners::UpdateRunnerService, '#execute', feature_category: :
   end
 
   context 'when params are not valid' do
+    let(:runner) { create(:ci_runner) }
     let(:params) { { run_untagged: false } }
 
     it 'does not update and returns error because it is not valid' do

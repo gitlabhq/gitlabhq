@@ -9,7 +9,9 @@ module Gitlab
         DEFAULT_SIDEKIQ_SLEEP_INTERVAL_S = 3
         MIN_SIDEKIQ_SLEEP_INTERVAL_S = 2
         DEFAULT_MAX_STRIKES = 5
-        DEFAULT_MAX_HEAP_FRAG = 0.5
+        # This disables the heap fragmentation check since it doesn't work with Variable Width Allocation:
+        # https://gitlab.com/gitlab-org/gitlab/-/issues/407327
+        DEFAULT_MAX_HEAP_FRAG = 1
         DEFAULT_MAX_MEM_GROWTH = 3.0
         # grace_time / sleep_interval = max_strikes allowed for Sidekiq process to violate defined limits.
         DEFAULT_SIDEKIQ_GRACE_TIME_S = 900

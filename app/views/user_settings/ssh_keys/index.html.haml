@@ -20,7 +20,7 @@
         %h4.gl-mt-0
           = _('Add an SSH key')
         %p
-          - help_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/ssh') }
+          - help_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/ssh.md') }
           = _('Add an SSH key for secure access to GitLab. %{help_link_start}Learn more%{help_link_end}.').html_safe % {help_link_start: help_link_start, help_link_end: '</a>'.html_safe }
         = render 'form'
 

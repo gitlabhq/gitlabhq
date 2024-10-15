@@ -1,0 +1,13 @@
+---
+api_type: integer
+attr: max_terraform_state_size_bytes
+clusterwide: false
+column: max_terraform_state_size_bytes
+db_type: integer
+default: '0'
+description: Maximum size in bytes of the [Terraform state](../administration/terraform_state.md)
+  files. Set this to 0 for unlimited file size.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

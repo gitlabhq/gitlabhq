@@ -22,7 +22,7 @@
     - else
       %span #{note.noteable_type.titleize} ##{noteable_identifier}
       &middot;
-      = link_to note.noteable.title, note_url, data: { event_tracking: 'click_search_result', event_label: @scope, event_value: position, event_property: @search_term }
+      = link_to note.noteable.title, note_url, data: { event_tracking: 'click_search_result', event_label: @scope, event_value: position }
 
   .note-search-result
     .term

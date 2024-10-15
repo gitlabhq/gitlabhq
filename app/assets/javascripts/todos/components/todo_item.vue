@@ -48,11 +48,8 @@ export default {
 
 <template>
   <li
-    class="todo gl-border-t gl-border-b gl-relative -gl-mt-px gl-block gl-px-5 gl-py-3 hover:gl-z-1 hover:gl-cursor-pointer hover:gl-border-blue-200 hover:gl-bg-blue-50"
-    :class="{
-      'todo-pending': isPending,
-      'todo-done gl-border-gray-50 gl-bg-gray-10': fadeTodo,
-    }"
+    class="gl-border-t gl-border-b gl-relative -gl-mt-px gl-block gl-px-5 gl-py-3 hover:gl-z-1 hover:gl-cursor-pointer hover:gl-border-blue-200 hover:gl-bg-blue-50"
+    :class="{ 'gl-border-gray-50 gl-bg-gray-10': fadeTodo }"
   >
     <gl-link
       :href="targetUrl"

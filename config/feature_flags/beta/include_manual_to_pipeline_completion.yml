@@ -1,9 +1,0 @@
----
-name: include_manual_to_pipeline_completion
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/439691
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143046
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/440652
-milestone: '16.10'
-group: group::threat insights
-type: beta
-default_enabled: true

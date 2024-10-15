@@ -126,7 +126,7 @@ module Ci
       tag_list = @params[:tag_name].presence
       return items unless tag_list
 
-      items.tagged_with(tag_list)
+      items.tagged_with(tag_list, like_search_enabled: true)
     end
 
     def by_creator_id(items)

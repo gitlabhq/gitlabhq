@@ -45,7 +45,7 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_ag
 
   describe.each`
     lastUsedAt               | status        | lastUsedText
-    ${null}                  | ${'unused'}   | ${KubernetesAgentInfo.i18n.neverConnectedText}
+    ${null}                  | ${'unused'}   | ${''}
     ${connectedTimeNow}      | ${'active'}   | ${'just now'}
     ${connectedTimeInactive} | ${'inactive'} | ${'8 minutes ago'}
   `('when agent connection status is "$status"', ({ lastUsedAt, status, lastUsedText }) => {

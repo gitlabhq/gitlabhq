@@ -8657,7 +8657,7 @@ paths:
       - in: path
         name: id
         description: The ID of a project or URL-encoded NAMESPACE/PROJECT_NAME of
-          the project owned by the authenticated user
+          the project
         type: string
         required: true
       - in: query
@@ -8694,7 +8694,7 @@ paths:
       - in: path
         name: id
         description: The ID of a project or URL-encoded NAMESPACE/PROJECT_NAME of
-          the project owned by the authenticated user
+          the project
         type: string
         required: true
       - name: postApiV4ProjectsIdVariables
@@ -8721,7 +8721,7 @@ paths:
       - in: path
         name: id
         description: The ID of a project or URL-encoded NAMESPACE/PROJECT_NAME of
-          the project owned by the authenticated user
+          the project
         type: string
         required: true
       - in: path
@@ -8754,7 +8754,7 @@ paths:
       - in: path
         name: id
         description: The ID of a project or URL-encoded NAMESPACE/PROJECT_NAME of
-          the project owned by the authenticated user
+          the project
         type: string
         required: true
       - in: path
@@ -8785,7 +8785,7 @@ paths:
       - in: path
         name: id
         description: The ID of a project or URL-encoded NAMESPACE/PROJECT_NAME of
-          the project owned by the authenticated user
+          the project
         type: string
         required: true
       - in: path

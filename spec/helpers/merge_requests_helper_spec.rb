@@ -346,10 +346,13 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
         email: current_user.notification_email_or_default,
         export_csv_path: '/csv-url',
         rss_url: '/rss-url',
-        releases_endpoint: project_releases_path(project, format: :json)
+        releases_endpoint: project_releases_path(project, format: :json),
+        can_bulk_update: 'true',
+        environment_names_path: unfoldered_environment_names_project_path(project, format: :json),
+        default_branch: project.default_branch
       }
 
-      expect(subject).to eq(expected_data)
+      expect(subject).to include(expected_data)
     end
   end
 
@@ -394,29 +397,6 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
       expected_data = { identity_verification_required: 'false' }
 
       expect(subject).to include(expected_data)
-    end
-  end
-
-  describe '#merge_request_dashboard_enabled?' do
-    using RSpec::Parameterized::TableSyntax
-
-    let_it_be(:current_user) { build_stubbed(:user) }
-
-    where(:enabled, :search_page, :result) do
-      true  | true  | false
-      true  | false | true
-      false | false | false
-      false | true  | false
-    end
-
-    with_them do
-      before do
-        stub_feature_flags(merge_request_dashboard: enabled)
-
-        allow(helper).to receive(:current_page?).and_return(search_page)
-      end
-
-      it { expect(helper.merge_request_dashboard_enabled?(current_user)).to eq(result) }
     end
   end
 

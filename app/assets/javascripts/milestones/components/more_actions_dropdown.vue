@@ -214,11 +214,11 @@ export default {
       @action="setPromoteModalVisibility(true)"
     />
 
-    <gl-disclosure-dropdown-group v-if="canReadMilestone" bordered class="!gl-border-t-gray-200">
+    <gl-disclosure-dropdown-group v-if="canReadMilestone" bordered class="!gl-border-t-dropdown">
       <gl-disclosure-dropdown-item :item="copyIdItem" :data-clipboard-text="id" />
     </gl-disclosure-dropdown-group>
 
-    <gl-disclosure-dropdown-group v-if="showDelete" bordered class="!gl-border-t-gray-200">
+    <gl-disclosure-dropdown-group v-if="showDelete" bordered class="!gl-border-t-dropdown">
       <gl-disclosure-dropdown-item :item="deleteItem" @action="setDeleteModalVisibility(true)" />
     </gl-disclosure-dropdown-group>
 

@@ -1,0 +1,13 @@
+---
+api_type: string
+attr: external_authorization_service_default_label
+clusterwide: false
+column: external_authorization_service_default_label
+db_type: character
+default:
+description: The default classification label to use when requesting authorization
+  and no classification label has been specified on the project.
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

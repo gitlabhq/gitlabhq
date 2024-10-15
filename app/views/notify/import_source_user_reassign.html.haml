@@ -14,8 +14,8 @@
 - button_style = 'border: 1px solid #694cc0; border-radius: 4px; font-size: 14px; padding: 8px 16px; background-color: #7b58cf; color: #fff; cursor: pointer;'
 
 - strong_tag_pair = tag_pair(tag.strong, :strong_open, :strong_close)
-- help_link_tag_pair = tag_pair(link_to('', help_page_url('user/project/import/index', anchor: 'accept-contribution-reassignment'), target: '_blank', rel: 'noopener noreferrer'), :link_start, :link_end)
-- report_link_tag_pair = tag_pair(link_to('', help_page_url('user/report_abuse'), target: '_blank', rel: 'noopener noreferrer'), :report_link_start, :report_link_end)
+- help_link_tag_pair = tag_pair(link_to('', help_page_url('user/project/import/index.md', anchor: 'accept-contribution-reassignment'), target: '_blank', rel: 'noopener noreferrer'), :link_start, :link_end)
+- report_link_tag_pair = tag_pair(link_to('', help_page_url('user/report_abuse.md'), target: '_blank', rel: 'noopener noreferrer'), :report_link_start, :report_link_end)
 
 %p{ style: text_style }
   = safe_format(s_('UserMapping|%{reassigned_by_name} (%{reassigned_by_username}) wants to reassign contributions made by %{source_name} (%{source_username}) on %{source_hostname} to you in %{destination_group}.'),
@@ -27,7 +27,7 @@
     destination_group: destination_group)
 
 %p{ style: text_style }
-  = link_to import_source_user_url(@source_user), target: '_blank', rel: 'noopener noreferrer' do
+  = link_to import_source_user_url(@source_user.reassignment_token), target: '_blank', rel: 'noopener noreferrer' do
     %button{ type: 'button', style: button_style }
       = s_('UserMapping|Review reassignment details')
 

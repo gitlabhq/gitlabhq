@@ -52,8 +52,8 @@ A --> C(No)
 B --> D(fa:fa-link View your subscription on GitLab.com)
 C --> E(fa:fa-link View your self-hosted subscription)
 
-click D "./gitlab_com/index.html#view-your-gitlabcom-subscription"
-click E "./self_managed/index.html#view-your-subscription"
+click D "gitlab_com/index.md#view-gitlabcom-subscription"
+click E "self_managed/index.md#view-your-subscription"
 ```
 
 ## Contact Support

@@ -6,7 +6,7 @@ module Types
       graphql_name 'OrganizationUser'
       description 'A user with access to the organization.'
 
-      include UsersHelper
+      include ::UsersHelper
 
       authorize :read_organization_user
 

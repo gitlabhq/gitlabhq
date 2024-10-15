@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 module SignUpHelpers
-  def fill_in_sign_up_form(new_user, submit_button_text = 'Register', invite: false)
+  def fill_in_sign_up_form(new_user, invite: false)
     fill_in 'new_user_first_name', with: new_user.first_name
     fill_in 'new_user_last_name', with: new_user.last_name
     fill_in 'new_user_username', with: new_user.username
@@ -16,7 +16,7 @@ module SignUpHelpers
 
     yield if block_given?
 
-    click_button submit_button_text
+    click_button _('Continue')
   end
 
   def confirm_email(new_user)

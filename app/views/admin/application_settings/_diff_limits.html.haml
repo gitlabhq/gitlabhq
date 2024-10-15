@@ -9,7 +9,7 @@
         = _("Diff files surpassing this limit will be presented as 'too large' and won't be expandable.")
 
         = link_to sprite_icon('question-o'),
-          help_page_path('administration/diff_limits',
+          help_page_path('administration/diff_limits.md',
           anchor: 'diff-limits-administration')
 
       = f.label :diff_max_files, _('Maximum files in a diff'), class: 'label-light'
@@ -18,7 +18,7 @@
         = _("Diff files surpassing this limit will be presented as 'too large' and won't be expandable.")
 
         = link_to sprite_icon('question-o'),
-          help_page_path('administration/diff_limits',
+          help_page_path('administration/diff_limits.md',
           anchor: 'diff-limits-administration')
 
       = f.label :diff_max_lines, _('Maximum lines in a diff'), class: 'label-light'
@@ -27,6 +27,6 @@
         = _("Diff files surpassing this limit will be presented as 'too large' and won't be expandable.")
 
         = link_to sprite_icon('question-o'),
-          help_page_path('administration/diff_limits',
+          help_page_path('administration/diff_limits.md',
           anchor: 'diff-limits-administration')
   = f.submit _('Save changes'), pajamas_button: true

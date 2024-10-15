@@ -58,7 +58,7 @@ module Integrations
 
     def self.help
       jira_doc_link_start = format('<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe,
-        url: Gitlab::Routing.url_helpers.help_page_path('integration/jira/connect-app',
+        url: Gitlab::Routing.url_helpers.help_page_path('integration/jira/connect-app.md',
           anchor: 'configure-the-gitlab-for-jira-cloud-app')
       )
 

@@ -23,7 +23,7 @@ When you rebase:
 1. Git stacks the commits you have in your branch on top of all
    the commits it imported from that branch:
 
-   ![Git rebase illustration](img/git_rebase_v13_5.png)
+   ![Git rebase illustration](img/git_rebase_illustration.png)
 
 While most rebases are performed against `main`, you can rebase against any other
 branch, such as `release-15-3`. You can also specify a different remote repository
@@ -274,9 +274,11 @@ If, after using the `/rebase`
 [quick action](../../user/project/quick_actions.md#issues-merge-requests-and-epics),
 you see this error, a rebase cannot be scheduled:
 
+<!-- vale gitlab_base.CurrentStatus  = NO -->
 ```plaintext
 This merge request is currently in an unmergeable state, and cannot be rebased.
 ```
+<!-- vale gitlab_base.CurrentStatus  = YES -->
 
 This error occurs if any of these conditions are true:
 

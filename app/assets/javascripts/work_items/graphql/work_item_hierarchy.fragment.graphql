@@ -23,6 +23,13 @@ fragment WorkItemHierarchy on WorkItem {
     ... on WorkItemWidgetHierarchy {
       type
       hasChildren
+      depthLimitReachedByType {
+        workItemType {
+          id
+          name
+        }
+        depthLimitReached
+      }
       rolledUpCountsByType {
         countsByState {
           all

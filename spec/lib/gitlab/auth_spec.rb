@@ -1221,7 +1221,8 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
 
     it { is_expected.to include(*described_class::API_SCOPES - [:read_user]) }
     it { is_expected.to include(*described_class::REPOSITORY_SCOPES) }
-    it { is_expected.to include(*described_class.registry_scopes) }
+
+    it { is_expected.to include(*described_class.registry_scopes) } unless described_class.registry_scopes.empty?
     it { is_expected.to include(*described_class::OBSERVABILITY_SCOPES) }
   end
 

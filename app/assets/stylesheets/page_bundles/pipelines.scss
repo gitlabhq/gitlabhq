@@ -14,47 +14,6 @@
 // - app/assets/javascripts/commit/pipelines/pipelines_bundle.js
 
 .pipelines {
-  .pipeline-actions {
-    min-width: 170px; //Guarantees buttons don't break in several lines.
-
-    .btn-default {
-      color: var(--gray-500, $gray-500);
-    }
-
-    .btn.btn-retry:hover,
-    .btn.btn-retry:focus {
-      border-color: $dropdown-toggle-active-border-color;
-      background-color: $gray-50;
-    }
-
-    svg path {
-      fill: var(--gray-500, $gray-500);
-    }
-
-    .dropdown-menu {
-      max-height: $dropdown-max-height;
-      overflow-y: auto;
-    }
-
-    .dropdown-toggle,
-    .dropdown-menu {
-      color: var(--gray-500, $gray-500);
-    }
-
-    .btn-group.open .btn-default {
-      background-color: $gray-50;
-      border-color: $gray-100;
-    }
-
-    .btn .text-center {
-      display: inline;
-    }
-
-    .tooltip {
-      white-space: nowrap;
-    }
-  }
-
   .pipeline-tags .label-container {
     white-space: normal;
   }

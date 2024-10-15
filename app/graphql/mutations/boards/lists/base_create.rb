@@ -42,6 +42,7 @@ module Mutations
         def create_list_params(args)
           params = args.slice(*mutually_exclusive_args).with_indifferent_access
           params[:label_id] &&= ::GitlabSchema.parse_gid(params[:label_id], expected_type: ::Label).model_id
+          params[:position] = args[:position]
 
           params
         end

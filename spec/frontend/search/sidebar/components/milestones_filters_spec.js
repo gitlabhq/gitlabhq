@@ -12,7 +12,7 @@ describe('GlobalSearch MilestonesFilters', () => {
   let wrapper;
 
   const defaultGetters = {
-    hasProjectContext: () => true,
+    hasMissingProjectContext: () => true,
   };
 
   const findArchivedFilter = () => wrapper.findComponent(ArchivedFilter);
@@ -41,9 +41,9 @@ describe('GlobalSearch MilestonesFilters', () => {
     });
   });
 
-  describe('hasProjectContext getter', () => {
+  describe('hasMissingProjectContext getter', () => {
     beforeEach(() => {
-      defaultGetters.hasProjectContext = () => false;
+      defaultGetters.hasMissingProjectContext = () => false;
       createComponent();
     });
 

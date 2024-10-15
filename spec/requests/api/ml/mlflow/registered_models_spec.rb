@@ -178,7 +178,7 @@ RSpec.describe API::Ml::Mlflow::RegisteredModels, feature_category: :mlops do
       is_expected.to have_gitlab_http_status(:ok)
       is_expected.to match_response_schema('ml/get_latest_versions')
       expect(json_response["model_versions"][0]["name"]).to eq(model_name)
-      expect(json_response["model_versions"][0]["version"]).to eq(version2.version)
+      expect(json_response["model_versions"][0]["version"]).to eq(version2.id.to_s)
     end
 
     describe 'Error States' do

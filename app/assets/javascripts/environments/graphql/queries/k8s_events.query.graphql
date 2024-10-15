@@ -9,6 +9,7 @@ query getK8sEvents(
     namespace: $namespace
   ) @client {
     lastTimestamp
+    eventTime
     message
     reason
     source

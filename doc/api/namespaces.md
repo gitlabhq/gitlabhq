@@ -37,7 +37,7 @@ GET /namespaces?top_level_only=true
 | Attribute        | Type    | Required | Description |
 | ---------------- | ------- | -------- | ----------- |
 | `search`         | string  | no       | Returns a list of namespaces the user is authorized to view based on the search criteria |
-| `owned_only`     | boolean | no       | In GitLab 14.2 and later, returns a list of owned namespaces only |
+| `owned_only`     | boolean | no       | Returns a list of owned namespaces only |
 | `top_level_only` | boolean | no       | In GitLab 16.8 and later, returns a list of top level namespaces only |
 
 Example request:
@@ -154,7 +154,7 @@ GET /namespaces/:id
 
 | Attribute | Type           | Required | Description |
 | --------- | -------------- | -------- | ----------- |
-| `id`      | integer/string | yes      | ID or [URL-encoded path of the namespace](rest/index.md#namespaced-path-encoding) |
+| `id`      | integer/string | yes      | ID or [URL-encoded path of the namespace](rest/index.md#namespaced-paths) |
 
 Example request:
 

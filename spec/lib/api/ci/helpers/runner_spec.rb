@@ -86,20 +86,40 @@ RSpec.describe API::Ci::Helpers::Runner, feature_category: :runner do
   end
 
   describe '#current_runner_manager', :freeze_time, feature_category: :fleet_visibility do
-    let(:runner) { create(:ci_runner, token: 'foo') }
-    let(:runner_manager) { create(:ci_runner_machine, runner: runner, system_xid: 'bar', contacted_at: 1.hour.ago) }
+    let_it_be(:group) { create(:group) }
+
+    let(:runner) { create(:ci_runner, :group, token: 'foo', groups: [group]) }
 
     subject(:current_runner_manager) { helper.current_runner_manager }
 
     context 'when runner manager already exists' do
-      before do
-        allow(helper).to receive(:params).and_return(token: runner.token, system_id: runner_manager.system_xid)
+      let!(:existing_runner_manager) do
+        create(:ci_runner_machine, runner: runner, system_xid: 'bar', contacted_at: 1.hour.ago)
       end
 
-      it { is_expected.to eq(runner_manager) }
+      before do
+        allow(helper).to receive(:params).and_return(token: runner.token, system_id: existing_runner_manager.system_xid)
+      end
+
+      it { is_expected.to eq(existing_runner_manager) }
 
       it 'does not update the contacted_at field' do
         expect(current_runner_manager.contacted_at).to eq 1.hour.ago
+      end
+
+      context 'when a runner manager with nil runner_type and sharding_key_id already exists' do
+        before do
+          existing_runner_manager.update_columns(runner_type: nil, sharding_key_id: nil)
+        end
+
+        it 'reuses and updates existing runner manager', :aggregate_failures do
+          expect { current_runner_manager }.not_to raise_error
+
+          expect(current_runner_manager).not_to be_nil
+          expect(current_runner_manager.reload.contacted_at).to eq 1.hour.ago
+          expect(current_runner_manager.runner_type).to be_nil
+          expect(current_runner_manager.sharding_key_id).to be_nil
+        end
       end
     end
 
@@ -110,9 +130,17 @@ RSpec.describe API::Ci::Helpers::Runner, feature_category: :runner do
         expect { current_runner_manager }.to change { Ci::RunnerManager.count }.by(1)
 
         expect(current_runner_manager).not_to be_nil
+        current_runner_manager.reload
+
         expect(current_runner_manager.system_xid).to eq('new_system_id')
         expect(current_runner_manager.contacted_at).to be_nil
         expect(current_runner_manager.runner).to eq(runner)
+        expect(current_runner_manager.runner_type).to eq(runner.runner_type)
+        expect(current_runner_manager.sharding_key_id).to eq(runner.sharding_key_id)
+
+        # Verify that a second call doesn't raise an error
+        expect { helper.current_runner_manager }.not_to raise_error
+        expect(Ci::RunnerManager.count).to eq(1)
       end
 
       it 'creates a new <legacy> runner manager if system_id is not specified', :aggregate_failures do
@@ -123,6 +151,8 @@ RSpec.describe API::Ci::Helpers::Runner, feature_category: :runner do
         expect(current_runner_manager).not_to be_nil
         expect(current_runner_manager.system_xid).to eq(::API::Ci::Helpers::Runner::LEGACY_SYSTEM_XID)
         expect(current_runner_manager.runner).to eq(runner)
+        expect(current_runner_manager.runner_type).to eq(runner.runner_type)
+        expect(current_runner_manager.sharding_key_id).to eq(runner.sharding_key_id)
       end
     end
   end

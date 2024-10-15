@@ -84,7 +84,7 @@ RSpec.describe 'query terraform states', feature_category: :infrastructure_as_co
   end
 
   it 'returns count of terraform states' do
-    count = data.dig('count')
+    count = data['count']
     expect(count).to be(project.terraform_states.size)
   end
 

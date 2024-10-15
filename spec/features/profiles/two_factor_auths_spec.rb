@@ -128,28 +128,32 @@ RSpec.describe 'Two factor auths', feature_category: :system_access do
     end
 
     context 'when user has two-factor authentication enabled' do
-      let_it_be(:user) { create(:user, :two_factor) }
+      let_it_be(:user) { create(:user, :two_factor_via_otp, :two_factor_via_webauthn) }
+
+      it 'requires the current_password to delete the OTP authenticator', :js do
+        visit profile_two_factor_auth_path
+
+        click_button _('Delete one-time password authenticator')
+        modal_submit('wrong_password')
+
+        expect(page).to have_selector('.gl-alert-title', text: invalid_current_pwd_msg, count: 1)
+
+        click_button _('Delete one-time password authenticator')
+        modal_submit(user.password)
+
+        expect(page).to have_content(_('One-time password authenticator has been deleted!'))
+      end
 
       it 'requires the current_password to disable two-factor authentication', :js do
         visit profile_two_factor_auth_path
 
-        fill_in 'current_password', with: '123'
-
-        click_button 'Disable two-factor authentication'
-
-        within_modal do
-          click_button 'Disable'
-        end
+        click_button _('Disable two-factor authentication')
+        modal_submit('wrong_password')
 
         expect(page).to have_selector('.gl-alert-title', text: invalid_current_pwd_msg, count: 1)
 
-        fill_in 'current_password', with: user.password
-
-        click_button 'Disable two-factor authentication'
-
-        within_modal do
-          click_button 'Disable'
-        end
+        click_button _('Disable two-factor authentication')
+        modal_submit(user.password)
 
         expect(page).to have_content('Two-factor authentication has been disabled successfully!')
         expect(page).to have_content('Enable two-factor authentication')
@@ -158,15 +162,13 @@ RSpec.describe 'Two factor auths', feature_category: :system_access do
       it 'requires the current_password to regenerate recovery codes', :js do
         visit profile_two_factor_auth_path
 
-        fill_in 'current_password', with: '123'
-
-        click_button 'Regenerate recovery codes'
+        click_button _('Regenerate recovery codes')
+        modal_submit('wrong_password')
 
         expect(page).to have_selector('.gl-alert-title', text: invalid_current_pwd_msg, count: 1)
 
-        fill_in 'current_password', with: user.password
-
-        click_button 'Regenerate recovery codes'
+        click_button _('Regenerate recovery codes')
+        modal_submit(user.password)
 
         expect(page).to have_content('Please copy, download, or print your recovery codes before proceeding.')
       end
@@ -174,14 +176,20 @@ RSpec.describe 'Two factor auths', feature_category: :system_access do
       context 'when user authenticates with an external service' do
         let_it_be(:user) { create(:omniauth_user, :two_factor) }
 
+        it 'does not require the current_password to delete the OTP authenticator', :js do
+          visit profile_two_factor_auth_path
+
+          click_button _('Delete one-time password authenticator')
+          modal_submit_without_password
+
+          expect(page).to have_content(_('One-time password authenticator has been deleted!'))
+        end
+
         it 'does not require the current_password to disable two-factor authentication', :js do
           visit profile_two_factor_auth_path
 
-          click_button 'Disable two-factor authentication'
-
-          within_modal do
-            click_button 'Disable'
-          end
+          click_button _('Disable two-factor authentication')
+          modal_submit_without_password
 
           expect(page).to have_content('Two-factor authentication has been disabled successfully!')
           expect(page).to have_content('Enable two-factor authentication')
@@ -190,7 +198,8 @@ RSpec.describe 'Two factor auths', feature_category: :system_access do
         it 'does not require the current_password to regenerate recovery codes', :js do
           visit profile_two_factor_auth_path
 
-          click_button 'Regenerate recovery codes'
+          click_button _('Regenerate recovery codes')
+          modal_submit_without_password
 
           expect(page).to have_content('Please copy, download, or print your recovery codes before proceeding.')
         end
@@ -202,6 +211,19 @@ RSpec.describe 'Two factor auths', feature_category: :system_access do
       fill_in 'current_password', with: password
 
       click_button 'Register with two-factor app'
+    end
+
+    def modal_submit(password)
+      within_modal do
+        fill_in 'current_password', with: password
+        find_by_testid('2fa-action-primary').click
+      end
+    end
+
+    def modal_submit_without_password
+      within_modal do
+        find_by_testid('2fa-action-primary').click
+      end
     end
   end
 end

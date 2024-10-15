@@ -3,6 +3,7 @@ import { parseBoolean } from '~/lib/utils/common_utils';
 import { updateHistory, removeParams } from '~/lib/utils/url_utility';
 import ManageTwoFactorForm from './components/manage_two_factor_form.vue';
 import RecoveryCodes from './components/recovery_codes.vue';
+import TwoFactorActionConfirm from './components/two_factor_action_confirm.vue';
 import { SUCCESS_QUERY_PARAM } from './constants';
 
 export const initManageTwoFactorForm = () => {
@@ -77,4 +78,31 @@ export const initClose2faSuccessMessage = () => {
     },
     { once: true },
   );
+};
+
+export const initTwoFactorConfirm = () => {
+  document.querySelectorAll('.js-two-factor-action-confirm').forEach((el) => {
+    const { buttonText, classes, icon, message, method, passwordRequired, path, title, variant } =
+      el.dataset;
+
+    // eslint-disable-next-line no-new
+    new Vue({
+      el,
+      render(createElement) {
+        return createElement(TwoFactorActionConfirm, {
+          props: {
+            buttonText,
+            classes,
+            icon,
+            message,
+            method,
+            passwordRequired: parseBoolean(passwordRequired),
+            path,
+            title,
+            variant,
+          },
+        });
+      },
+    });
+  });
 };

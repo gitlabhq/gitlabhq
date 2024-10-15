@@ -47,8 +47,8 @@ describe('List Selector Utils', () => {
       const result = await fetchProjectGroups(mockProjectPath, mockGroupSearch);
 
       expect(result).toEqual([
-        { text: 'Group 1', value: 'group1', id: 1, fullName: 'Group 1', name: 'group1' },
-        { text: 'Group 2', value: 'group2', id: 2, fullName: 'Group 2', name: 'group2' },
+        { text: 'Group 1', value: 1, id: 1, fullName: 'Group 1', name: 'group1' },
+        { text: 'Group 2', value: 2, id: 2, fullName: 'Group 2', name: 'group2' },
       ]);
     });
   });
@@ -88,7 +88,7 @@ describe('List Selector Utils', () => {
       expect(result).toEqual([
         {
           text: 'Group 1',
-          value: 'group1',
+          value: 1,
           id: 1,
           fullName: 'Group 1',
           name: 'group1',
@@ -96,7 +96,7 @@ describe('List Selector Utils', () => {
         },
         {
           text: 'Group 2',
-          value: 'group2',
+          value: 2,
           id: 2,
           fullName: 'Group 2',
           name: 'group2',
@@ -138,8 +138,8 @@ describe('List Selector Utils', () => {
       const result = await fetchGroupsWithProjectAccess(mockProjectId, mockGroupSearch);
 
       expect(result).toEqual([
-        { text: 'group1', value: 'group1', id: 1, avatarUrl: null, name: 'group1' },
-        { text: 'group2', value: 'group2', id: 2, avatarUrl: null, name: 'group2' },
+        { text: 'group1', value: 1, id: 1, avatarUrl: null, name: 'group1' },
+        { text: 'group2', value: 2, id: 2, avatarUrl: null, name: 'group2' },
       ]);
     });
   });

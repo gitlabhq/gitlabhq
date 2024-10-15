@@ -1,16 +1,20 @@
 <script>
-import { GlLink, GlDrawer, GlButton, GlTooltipDirective } from '@gitlab/ui';
+import { GlLink, GlDrawer, GlButton, GlTooltipDirective, GlOutsideDirective } from '@gitlab/ui';
 import { escapeRegExp } from 'lodash';
 import { __ } from '~/locale';
 import deleteWorkItemMutation from '~/work_items/graphql/delete_work_item.mutation.graphql';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { TYPE_EPIC, TYPE_ISSUE } from '~/issues/constants';
+import { DETAIL_VIEW_QUERY_PARAM_NAME } from '~/work_items/constants';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import { visitUrl } from '~/lib/utils/url_utility';
+import { visitUrl, setUrlParams, updateHistory, removeParams } from '~/lib/utils/url_utility';
+import { makeDrawerItemFullPath, makeDrawerUrlParam } from '../utils';
 
 export default {
   name: 'WorkItemDrawer',
   directives: {
     GlTooltip: GlTooltipDirective,
+    GlOutside: GlOutsideDirective,
   },
   components: {
     GlLink,
@@ -18,7 +22,8 @@ export default {
     GlButton,
     WorkItemDetail: () => import('~/work_items/components/work_item_detail.vue'),
   },
-  inject: ['fullPath'],
+  mixins: [glFeatureFlagMixin()],
+  inject: ['fullPath', 'isGroup'],
   inheritAttrs: false,
   props: {
     open: {
@@ -35,6 +40,11 @@ export default {
       required: false,
       default: TYPE_ISSUE,
     },
+    clickOutsideExcludeSelector: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   data() {
     return {
@@ -43,14 +53,7 @@ export default {
   },
   computed: {
     activeItemFullPath() {
-      if (this.activeItem?.fullPath) {
-        return this.activeItem.fullPath;
-      }
-      const delimiter = this.issuableType === TYPE_EPIC ? '&' : '#';
-      if (!this.activeItem.referencePath) {
-        return undefined;
-      }
-      return this.activeItem.referencePath.split(delimiter)[0];
+      return makeDrawerItemFullPath(this.activeItem, this.fullPath, this.issuableType);
     },
     modalIsGroup() {
       return this.issuableType.toLowerCase() === TYPE_EPIC;
@@ -58,6 +61,24 @@ export default {
     headerReference() {
       const path = this.activeItemFullPath.substring(this.activeItemFullPath.lastIndexOf('/') + 1);
       return `${path}#${this.activeItem.iid}`;
+    },
+    issueAsWorkItem() {
+      return (
+        !this.isGroup &&
+        this.glFeatures.workItemsViewPreference &&
+        gon.current_user_use_work_items_view
+      );
+    },
+  },
+  watch: {
+    activeItem: {
+      deep: true,
+      immediate: true,
+      handler(newValue) {
+        if (newValue?.iid) {
+          this.setDrawerParams();
+        }
+      },
     },
   },
   methods: {
@@ -87,7 +108,7 @@ export default {
       const regex = new RegExp(`groups\/${escapedFullPath}\/-\/(work_items|epics)\/\\d+`);
       const isWorkItemPath = regex.test(workItem.webUrl);
 
-      if (isWorkItemPath) {
+      if (isWorkItemPath || this.issueAsWorkItem) {
         this.$router.push({
           name: 'workItem',
           params: {
@@ -104,23 +125,63 @@ export default {
         this.copyTooltipText = this.$options.i18n.copyTooltipText;
       }, 2000);
     },
+    setDrawerParams() {
+      const params = makeDrawerUrlParam(this.activeItem, this.fullPath, this.issuableType);
+      updateHistory({
+        // we're using `show` to match the modal view parameter
+        url: setUrlParams({ [DETAIL_VIEW_QUERY_PARAM_NAME]: params }),
+      });
+    },
+    handleClose() {
+      updateHistory({ url: removeParams([DETAIL_VIEW_QUERY_PARAM_NAME]) });
+      this.$emit('close');
+    },
+    handleClickOutside(event) {
+      for (const selector of this.$options.defaultExcludedSelectors) {
+        const excludedElements = document.querySelectorAll(selector);
+        for (const parent of excludedElements) {
+          if (parent.contains(event.target)) {
+            return;
+          }
+        }
+      }
+      if (this.clickOutsideExcludeSelector) {
+        const excludedElements = document.querySelectorAll(this.clickOutsideExcludeSelector);
+        for (const parent of excludedElements) {
+          if (parent.contains(event.target)) {
+            return;
+          }
+        }
+      }
+      this.handleClose();
+    },
   },
   i18n: {
     copyTooltipText: __('Copy item URL'),
     copiedTooltipText: __('Copied'),
     openTooltipText: __('Open in full page'),
   },
+  defaultExcludedSelectors: [
+    '#confirmationModal',
+    '#create-timelog-modal',
+    '#set-time-estimate-modal',
+    '[id^="insert-comment-template-modal"]',
+    '.pika-single',
+    '.atwho-container',
+    '.tippy-content .gl-new-dropdown-panel',
+  ],
 };
 </script>
 
 <template>
   <gl-drawer
+    v-gl-outside="handleClickOutside"
     :open="open"
     data-testid="work-item-drawer"
     header-sticky
     header-height="calc(var(--top-bar-height) + var(--performance-bar-height))"
     class="gl-w-full gl-leading-reset lg:gl-w-[480px] xl:gl-w-[768px] min-[1440px]:gl-w-[912px]"
-    @close="$emit('close')"
+    @close="handleClose"
   >
     <template #title>
       <div class="gl-text gl-flex gl-w-full gl-items-center gl-gap-x-2 xl:gl-px-4">

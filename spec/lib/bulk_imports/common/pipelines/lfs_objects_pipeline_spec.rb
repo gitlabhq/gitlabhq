@@ -20,14 +20,14 @@ RSpec.describe BulkImports::Common::Pipelines::LfsObjectsPipeline, feature_categ
     FileUtils.mkdir_p(lfs_dir_path)
     FileUtils.touch(lfs_json_file_path)
     FileUtils.touch(lfs_file_path)
-    File.write(lfs_json_file_path, { oid => [0, 1, 2, nil] }.to_json )
+    File.write(lfs_json_file_path, { oid => [0, 1, 2, nil] }.to_json)
 
     allow(Dir).to receive(:mktmpdir).with('bulk_imports').and_return(tmpdir)
     allow(pipeline).to receive(:set_source_objects_counter)
   end
 
   after do
-    FileUtils.remove_entry(tmpdir) if Dir.exist?(tmpdir)
+    FileUtils.rm_rf(tmpdir)
   end
 
   describe '#run' do
@@ -156,7 +156,7 @@ RSpec.describe BulkImports::Common::Pipelines::LfsObjectsPipeline, feature_categ
       context 'when lfs objects json is invalid' do
         context 'when oid value is not Array' do
           it 'does not create lfs objects project' do
-            File.write(lfs_json_file_path, { oid => 'test' }.to_json )
+            File.write(lfs_json_file_path, { oid => 'test' }.to_json)
 
             expect { pipeline.load(context, lfs_file_path) }.not_to change { portable.lfs_objects_projects.count }
           end
@@ -164,7 +164,7 @@ RSpec.describe BulkImports::Common::Pipelines::LfsObjectsPipeline, feature_categ
 
         context 'when oid value is nil' do
           it 'does not create lfs objects project' do
-            File.write(lfs_json_file_path, { oid => nil }.to_json )
+            File.write(lfs_json_file_path, { oid => nil }.to_json)
 
             expect { pipeline.load(context, lfs_file_path) }.not_to change { portable.lfs_objects_projects.count }
           end
@@ -172,7 +172,7 @@ RSpec.describe BulkImports::Common::Pipelines::LfsObjectsPipeline, feature_categ
 
         context 'when oid value is not allowed' do
           it 'does not create lfs objects project' do
-            File.write(lfs_json_file_path, { oid => ['invalid'] }.to_json )
+            File.write(lfs_json_file_path, { oid => ['invalid'] }.to_json)
 
             expect { pipeline.load(context, lfs_file_path) }.not_to change { portable.lfs_objects_projects.count }
           end
@@ -180,7 +180,7 @@ RSpec.describe BulkImports::Common::Pipelines::LfsObjectsPipeline, feature_categ
 
         context 'when repository type is duplicated' do
           it 'creates only one lfs objects project' do
-            File.write(lfs_json_file_path, { oid => [0, 0, 1, 1, 2, 2] }.to_json )
+            File.write(lfs_json_file_path, { oid => [0, 0, 1, 1, 2, 2] }.to_json)
 
             expect { pipeline.load(context, lfs_file_path) }.to change { portable.lfs_objects_projects.count }.by(3)
           end

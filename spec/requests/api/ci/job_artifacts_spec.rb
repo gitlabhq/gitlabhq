@@ -13,6 +13,10 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
     create(:project, :repository, public_builds: false)
   end
 
+  let_it_be(:other_project, reload: true) do
+    create(:project, :repository)
+  end
+
   let_it_be(:pipeline, reload: true) do
     create(:ci_pipeline, project: project, sha: project.commit.id, ref: project.default_branch)
   end
@@ -338,6 +342,15 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
 
                   subject
                 end
+              end
+            end
+
+            it_behaves_like 'logs inbound authorizations via job token', :ok, :forbidden do
+              let(:accessed_project) { project }
+              let(:origin_project) { other_job.project }
+
+              let(:perform_request) do
+                get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", job_token: job_token)
               end
             end
           end

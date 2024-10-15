@@ -3,7 +3,7 @@
 - position = index + 1
 
 .search-result-row
-  = link_to project_milestone_path(milestone.project, milestone), class: 'gl-font-bold gl-text-default', data: { event_tracking: 'click_search_result', event_label: @scope, event_value: position, event_property: @search_term } do
+  = link_to project_milestone_path(milestone.project, milestone), class: 'gl-font-bold gl-text-default', data: { event_tracking: 'click_search_result', event_label: @scope, event_value: position } do
     %span.term.str-truncated= simple_search_highlight_and_truncate(milestone.title, @search_term)
 
   - if milestone.project_milestone?

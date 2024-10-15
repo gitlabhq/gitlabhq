@@ -14,12 +14,12 @@ RSpec.describe 'gitlab-backup-cli backup subcommand', type: :thor do
         gitlab-backup-cli backup help [COMMAND]  # Describe subcommands or one specific subcommand
 
       Options:
-        [--backup-bucket=BACKUP_BUCKET]                      # When backing up object storage, this is the bucket to backup to
-        [--wait-for-completion], [--no-wait-for-completion]  # Wait for object storage backups to complete
-                                                             # Default: true
-        [--registry-bucket=REGISTRY_BUCKET]                  # When backing up registry from object storage, this is the source bucket
-        [--service-account-file=SERVICE_ACCOUNT_FILE]        # JSON file containing the Google service account credentials
-                                                             # Default: /etc/gitlab/backup-account-credentials.json
+        [--backup-bucket=BACKUP_BUCKET]                                                    # When backing up object storage, this is the bucket to backup to
+        [--wait-for-completion], [--no-wait-for-completion], [--skip-wait-for-completion]  # Wait for object storage backups to complete
+                                                                                           # Default: true
+        [--registry-bucket=REGISTRY_BUCKET]                                                # When backing up registry from object storage, this is the source bucket
+        [--service-account-file=SERVICE_ACCOUNT_FILE]                                      # JSON file containing the Google service account credentials
+                                                                                           # Default: /etc/gitlab/backup-account-credentials.json
 
     COMMAND
   end
@@ -58,7 +58,7 @@ RSpec.describe 'gitlab-backup-cli backup subcommand', type: :thor do
       expect { cli.start(%w[backup all]) }.to output(expected_backup_output).to_stdout
     end
 
-    it 'displays an error message when a Backup::Error is raised' do
+    it 'displays an error message when an error is raised' do
       backup_error = Gitlab::Backup::Cli::Error.new('Custom error message')
 
       # Simulate an error during execution

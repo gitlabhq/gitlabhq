@@ -100,9 +100,8 @@ export default {
         class="file-result-holder file-holder gl-my-5"
         :header-class="{
           '!gl-border-b-0': !hasCode(file),
-          'gl-new-card-header file-title': true,
+          'file-title': true,
         }"
-        footer-class="gl-new-card-footer"
         body-class="gl-p-0"
       >
         <template #header>

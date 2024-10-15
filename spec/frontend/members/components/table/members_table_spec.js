@@ -2,6 +2,7 @@ import { GlTable, GlButton } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
+import EmptyResult from '~/vue_shared/components/empty_result.vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import CreatedAt from '~/members/components/table/created_at.vue';
 import ExpirationDatepicker from '~/members/components/table/expiration_datepicker.vue';
@@ -269,10 +270,10 @@ describe('MembersTable', () => {
   });
 
   describe('when `members` is an empty array', () => {
-    it('displays a "No members found" message', () => {
+    it('displays a "No results found" message', () => {
       createComponent();
 
-      expect(wrapper.findByText('No members found').exists()).toBe(true);
+      expect(wrapper.findComponent(EmptyResult).exists()).toBe(true);
     });
   });
 
@@ -318,10 +319,16 @@ describe('MembersTable', () => {
     });
   });
 
-  it('adds QA testid to table row', () => {
-    createComponent();
+  describe('QA testid', () => {
+    const createMaxRoleComponent = (member = memberMock) => {
+      createComponent({ members: [member], tableFields: ['maxRole'] });
+    };
 
-    expect(findTable().find('tbody tr').attributes('data-testid')).toBe('member-row');
+    it('adds testid to table row', () => {
+      createMaxRoleComponent();
+
+      expect(findTable().find('tbody tr').attributes('data-testid')).toContain('members-table-row');
+    });
   });
 
   it('renders `members-pagination` component with correct props', () => {

@@ -48,7 +48,7 @@ class FailedTests
   def failed_cases_for_suite_collection
     suite_map.each_with_object(Hash.new { |h, k| h[k] = Set.new }) do |(suite_name, suite_collection_regex), hash|
       failed_suites.each do |suite|
-        hash[suite_name].merge(failed_cases(suite)) if suite['name'] =~ suite_collection_regex
+        hash[suite_name].merge(failed_cases(suite)) if suite_collection_regex.match?(suite['name'])
       end
     end
   end

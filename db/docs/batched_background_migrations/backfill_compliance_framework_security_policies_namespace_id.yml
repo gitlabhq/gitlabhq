@@ -1,8 +1,9 @@
 ---
 migration_job_name: BackfillComplianceFrameworkSecurityPoliciesNamespaceId
-description: Backfills sharding key `compliance_framework_security_policies.namespace_id` from `security_orchestration_policy_configurations`.
+description: Backfills sharding key `compliance_framework_security_policies.namespace_id`
+  from `security_orchestration_policy_configurations`.
 feature_category: security_policy_management
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160211
 milestone: '17.3'
 queued_migration_version: 20240722095920
-finalized_by: # version of the migration that finalized this BBM
+finalized_by: '20241010232231'

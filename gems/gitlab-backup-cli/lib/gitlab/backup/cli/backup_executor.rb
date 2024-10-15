@@ -10,20 +10,26 @@ module Gitlab
       #
       # It also allows for multiple backups to happen in parallel
       # without one overwriting data from another
-      class BackupExecutor
-        attr_reader :context, :metadata, :workdir, :archive_directory, :backup_bucket, :wait_for_completion,
-          :registry_bucket, :service_account_file
+      class BackupExecutor < BaseExecutor
+        attr_reader :context, :metadata, :workdir, :archive_directory
 
-        # @param [Gitlab::Backup::Cli::SourceContext] context
-        def initialize(context:, backup_options: {})
+        # @param [Gitlab::Backup::Cli::SourceContext, Context::OmnibusContext] context
+        def initialize(
+          context:,
+          backup_bucket: nil,
+          wait_for_completion: nil,
+          registry_bucket: nil,
+          service_account_file: nil)
           @context = context
           @metadata = build_metadata
           @workdir = create_temporary_workdir!
           @archive_directory = context.backup_basedir.join(metadata.backup_id)
-          @backup_bucket = backup_options["backup_bucket"]
-          @registry_bucket = backup_options["registry_bucket"]
-          @wait_for_completion = backup_options["wait_for_completion"]
-          @service_account_file = backup_options["service_account_file"]
+          super(
+            backup_bucket: backup_bucket,
+            wait_for_completion: wait_for_completion,
+            registry_bucket: registry_bucket,
+            service_account_file: service_account_file
+          )
         end
 
         def execute
@@ -58,19 +64,18 @@ module Gitlab
             Gitlab::Backup::Cli::Output.info("Executing Backup of #{task.human_name}...")
 
             duration = measure_duration do
-              tasks << { name: task.human_name, result: task.backup!(workdir, metadata.backup_id) }
+              task.backup!(workdir, metadata.backup_id)
+              tasks << task
             end
 
-            next unless task.object_storage?
+            next if task.asynchronous?
 
             Gitlab::Backup::Cli::Output.success("Finished Backup of #{task.human_name}! (#{duration.in_seconds}s)")
           end
 
           if wait_for_completion
             tasks.each do |task|
-              next unless task[:result].respond_to?(:wait_until_done!)
-
-              wait_for_task(task[:result])
+              wait_for_task(task)
             end
           else
             Gitlab::Backup::Cli::Output.info('Backup tasks completed! Not waiting for object storage tasks to complete')
@@ -107,13 +112,15 @@ module Gitlab
         end
 
         def wait_for_task(task)
-          Gitlab::Backup::Cli::Output.info("Waiting for Backup of #{task.name} to finish...")
+          return unless task.asynchronous?
+
+          Gitlab::Backup::Cli::Output.info("Waiting for Backup of #{task.human_name} to finish...")
 
           r = task.wait_until_done!
           if r.error?
-            Gitlab::Backup::Cli::Output.error("Backup of #{task.name} failed!")
+            Gitlab::Backup::Cli::Output.error("Backup of #{task.human_name} failed!")
           else
-            Gitlab::Backup::Cli::Output.success("Finished Backup of #{task.name}!")
+            Gitlab::Backup::Cli::Output.success("Finished Backup of #{task.human_name}!")
           end
         end
       end

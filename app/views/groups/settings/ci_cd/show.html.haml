@@ -42,8 +42,8 @@
     id: 'auto-devops-settings',
     expanded: expanded) do |c|
     - c.with_description do
-      - auto_devops_url = help_page_path('topics/autodevops/index')
-      - quickstart_url = help_page_path('topics/autodevops/cloud_deployments/auto_devops_with_gke')
+      - auto_devops_url = help_page_path('topics/autodevops/index.md')
+      - quickstart_url = help_page_path('topics/autodevops/cloud_deployments/auto_devops_with_gke.md')
       - auto_devops_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: auto_devops_url }
       - quickstart_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: quickstart_url }
       = html_escape(s_('AutoDevOps|%{auto_devops_start}Automate building, testing, and deploying%{auto_devops_end} your applications based on your continuous integration and delivery configuration. %{quickstart_start}How do I get started?%{quickstart_end}')) % { auto_devops_start: auto_devops_start, auto_devops_end: '</a>'.html_safe, quickstart_start: quickstart_start, quickstart_end: '</a>'.html_safe }

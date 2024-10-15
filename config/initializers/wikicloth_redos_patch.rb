@@ -209,7 +209,7 @@ module WikiCloth
       when "nowiki"
         return self.element_content
       when "a"
-        if self.element_attributes['href'] =~ /:\/\//
+        if /:\/\//.match?(self.element_attributes['href'])
           return @options[:link_handler].external_link(self.element_attributes['href'], self.element_content)
         elsif self.element_attributes['href'].nil? || self.element_attributes['href'] =~ /^\s*([\?\/])/
           # if a element has no href attribute, or href starts with / or ?

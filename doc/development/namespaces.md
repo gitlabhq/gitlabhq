@@ -215,6 +215,24 @@ namespace_object.recursive_ancestor_ids
 namespace_object.recursive_self_and_hierarchy
 ```
 
+### Search using trie data structure
+
+`Namespaces::Traversal::TrieNode` implements a trie data structure to efficiently search within
+`namespaces.traveral_ids` hierarchy for a set of Namespaces.
+
+```ruby
+traversal_ids = Namespace.where(...).map(&:traversal_ids)
+
+# contains [9970, 123] and [9970, 456]
+trie = Namespaces::Traversal::TrieNode.build(traversal_ids)
+
+trie.prefix_search([9970]) # returns [[9970, 123], [9970, 456]] 
+
+trie.covered?([9970]) # returns false
+trie.covered?([9970, 123]) # returns true
+trie.covered?([9970, 123, 789]) # returns true
+```
+
 ## Namespace query implementation
 
 The linear queries are executed using the `namespaces.traversal_ids` array column. Each array represents an ordered set of `Namespace` IDs from the root `Namespace` to the current `Namespace`.

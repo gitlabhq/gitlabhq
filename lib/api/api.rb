@@ -222,6 +222,7 @@ module API
         mount ::API::Admin::InstanceClusters
         mount ::API::Admin::Migrations
         mount ::API::Admin::PlanLimits
+        mount ::API::Admin::Token
         mount ::API::AlertManagementAlerts
         mount ::API::Appearance
         mount ::API::Applications
@@ -229,6 +230,7 @@ module API
         mount ::API::Badges
         mount ::API::Branches
         mount ::API::BulkImports
+        mount ::API::Ci::Catalog
         mount ::API::Ci::JobArtifacts
         mount ::API::Groups
         mount ::API::Ci::Jobs
@@ -304,6 +306,7 @@ module API
         mount ::API::NpmProjectPackages
         mount ::API::NugetGroupPackages
         mount ::API::NugetProjectPackages
+        mount ::API::Organizations
         mount ::API::PackageFiles
         mount ::API::Pages
         mount ::API::PagesDomains
@@ -396,6 +399,7 @@ module API
       mount ::API::UsageDataNonSqlMetrics
       mount ::API::VsCode::Settings::VsCodeSettingsSync
       mount ::API::Ml::Mlflow::Entrypoint
+      mount ::API::Ml::MlflowArtifacts::Entrypoint
     end
 
     mount ::API::Internal::AutoFlow

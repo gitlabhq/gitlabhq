@@ -21,7 +21,7 @@ RSpec.describe GitlabSchema.types['ReleaseLinks'] do
 
   context 'individual field authorization' do
     def fetch_authorizations(field_name)
-      described_class.fields.dig(field_name).instance_variable_get(:@authorize)
+      described_class.fields[field_name].instance_variable_get(:@authorize)
     end
 
     describe 'openedMergeRequestsUrl' do

@@ -17,6 +17,12 @@ module Gitlab
         LICENSE_SECRET = "gitlab-license"
         TROUBLESHOOTING_LINK = "https://gitlab.com/gitlab-org/gitlab/-/tree/master/qa/gems/gitlab-cng?ref_type=heads#troubleshooting"
 
+        # Ignore metrics events when logging events on deploy failure,
+        # these get generated on pod startup due to various reasons like pod not ready and don't affect deployment state
+        #
+        # @return [Array]
+        IGNORED_EVENTS = %w[FailedComputeMetricsReplicas FailedGetResourceMetric].freeze
+
         # Delete installation
         #
         # @param [String] name
@@ -56,6 +62,8 @@ module Gitlab
           @set = args[:set] || []
           @extra_env = args[:env] || []
           @chart_sha = args[:chart_sha]
+          @retry_attempts = args[:retry] || 0
+          @deployment_attempts = 0
         end
 
         # Perform deployment with all the additional setup
@@ -88,7 +96,8 @@ module Gitlab
           :gitlab_domain,
           :timeout,
           :chart_sha,
-          :extra_env
+          :extra_env,
+          :retry_attempts
 
         alias_method :cli_values, :set
 
@@ -158,7 +167,7 @@ module Gitlab
         # @return [String] chart reference
         def run_pre_deploy_setup
           Helpers::Spinner.spin("running pre-deployment setup") do
-            chart_reference = helm.add_helm_chart(chart_sha)
+            chart_reference = helm.add_gitlab_helm_chart(chart_sha)
             create_namespace
             create_license
 
@@ -186,7 +195,12 @@ module Gitlab
           Helpers::Spinner.spin("running helm deployment") do
             helm.upgrade(name, chart_reference, namespace: namespace, timeout: timeout, values: values, args: args)
           rescue Helm::Client::Error => e
-            handle_deploy_failure(e)
+            @deployment_attempts += 1
+            handle_deploy_failure(e) if @deployment_attempts > retry_attempts
+
+            log("Deployment failed, retrying...", :warn)
+            log("Error: #{e}", :warn)
+            retry
           end
           log("Deployment successful and app is available via: #{configuration.gitlab_url}", :success, bright: true)
         end
@@ -226,7 +240,7 @@ module Gitlab
         # @param [StandardError] error
         # @return [void]
         def handle_deploy_failure(error)
-          log("Helm upgrade failed!", :error)
+          log("Helm deployment failed!", :error)
           log("For more information on troubleshooting failures, see: '#{TROUBLESHOOTING_LINK}'", :warn)
 
           events = get_warning_events
@@ -246,6 +260,7 @@ module Gitlab
 
           events = items
             .select { |item| item[:kind] == "Event" && item[:type] == "Warning" }
+            .reject { |item| IGNORED_EVENTS.include?(item[:reason]) }
             .map do |item|
               object = item[:involvedObject]
 

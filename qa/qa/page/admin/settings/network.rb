@@ -12,7 +12,7 @@ module QA
             element 'outbound-requests-content'
           end
 
-          def expand_ip_limits(&block)
+          def expand_user_ip_limits(&block)
             expand_content('ip-limits-content') do
               Component::IpLimits.perform(&block)
             end

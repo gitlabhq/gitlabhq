@@ -173,10 +173,6 @@ describe('PlaceholderActions', () => {
           });
         });
 
-        it('refetches sourceUsersQuery', () => {
-          expect(sourceUsersQueryHandler).toHaveBeenCalledTimes(2);
-        });
-
         it('emits "confirm" event', async () => {
           await waitForPromises();
           expect(wrapper.emitted('confirm')[0]).toEqual([]);
@@ -216,10 +212,6 @@ describe('PlaceholderActions', () => {
             id: mockSourceUsers[0].id,
             userId: mockUser1.id,
           });
-        });
-
-        it('does not refetch sourceUsersQuery', () => {
-          expect(sourceUsersQueryHandler).toHaveBeenCalledTimes(1);
         });
 
         it('does not emit "confirm" event', async () => {
@@ -402,6 +394,36 @@ describe('PlaceholderActions', () => {
 
     it('does not render Confirm button', () => {
       expect(findConfirmButton().exists()).toBe(false);
+    });
+  });
+
+  describe('when status is FAILED with reassignmentError', () => {
+    const mockSourceUser = mockSourceUsers[1];
+    const reassignmentError = 'Reassignment failed due to error';
+
+    beforeEach(() => {
+      createComponent({
+        props: {
+          sourceUser: {
+            ...mockSourceUser,
+            status: 'FAILED',
+            reassignmentError,
+          },
+        },
+      });
+    });
+
+    it('renders only reassignment error as invalid feedback', () => {
+      expect(wrapper.findByText('This field is required.').exists()).toBe(false);
+      expect(wrapper.findByText(reassignmentError).exists()).toBe(true);
+    });
+
+    it('renders validation message and reassignment error when Confirm button is clicked', async () => {
+      findConfirmButton().vm.$emit('click');
+      await nextTick();
+
+      expect(wrapper.findByText('This field is required.').exists()).toBe(true);
+      expect(wrapper.findByText(reassignmentError).exists()).toBe(true);
     });
   });
 });

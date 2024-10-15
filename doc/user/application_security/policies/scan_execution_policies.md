@@ -15,7 +15,7 @@ DETAILS:
 > - Operational container scanning [introduced](https://gitlab.com/groups/gitlab-org/-/epics/3410) in GitLab 15.5
 > - Support for custom CI variables in the Scan Execution Policies editor [introduced](https://gitlab.com/groups/gitlab-org/-/epics/9566) in GitLab 16.2.
 > - Enforcement of scan execution policies on projects with an existing GitLab CI/CD configuration [introduced](https://gitlab.com/groups/gitlab-org/-/epics/6880) in GitLab 16.2 [with a flag](../../../administration/feature_flags.md) named `scan_execution_policy_pipelines`. Feature flag `scan_execution_policy_pipelines` removed in GitLab 16.5.
-> - Overriding predefined variables in scan execution policies [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440855) in GitLab 16.10 [with a flag](../../../administration/feature_flags.md) named `allow_restricted_variables_at_policy_level`. Enabled by default.
+> - Overriding predefined variables in scan execution policies [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440855) in GitLab 16.10 [with a flag](../../../administration/feature_flags.md) named `allow_restricted_variables_at_policy_level`. Enabled by default. Feature flag `allow_restricted_variables_at_policy_level` removed in GitLab 17.5.
 
 Use scan execution policies to enforce security scans, either as part of the pipeline or on a
 specified schedule. The security scans run with multiple project pipelines if you define the policy
@@ -103,6 +103,7 @@ the following sections and tables provide an alternative.
 FLAG:
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
+
 | Field | Type | Required | Possible values | Description |
 |-------|------|----------|-----------------|-------------|
 | `name` | `string` | true |  | Name of the policy. Maximum of 255 characters.|
@@ -143,7 +144,8 @@ A scheduled pipeline:
   `.gitlab-ci.yml` file.
 - Runs according to the schedule defined in the `cadence` field.
 - Runs under a `security_policy_bot` user account in the project, with the Guest role and
-  elevated permissions. This account is created when the policy is linked to a group or project.
+  permissions to create pipelines and read the repository's content from a CI/CD job. This account
+  is created when the policy is linked to a group or project.
 
 | Field      | Type | Required | Possible values | Description |
 |------------|------|----------|-----------------|-------------|
@@ -191,7 +193,7 @@ When using the `schedule` rule type with the `branches` field:
 - If a policy is enforced on a large number of projects or branches, the policy is processed in
   batches, and may take some time to create all pipelines.
 
-![A diagram showing how scheduled security scans are processed and executed with potential delays.](img/scheduled_scan_execution_policies_diagram.png)
+![A diagram showing how scheduled security scans are processed and executed with potential delays.](img/scheduled_scan_execution_policies_diagram_v15_10.png)
 
 ### `agent` schema
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::Filter::TableOfContentsTagFilter, feature_category: :team_planning do
+RSpec.describe Banzai::Filter::TableOfContentsTagFilter, feature_category: :markdown do
   include FilterSpecHelper
 
   context 'table of contents' do

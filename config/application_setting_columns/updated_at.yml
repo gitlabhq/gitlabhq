@@ -1,0 +1,12 @@
+---
+api_type:
+attr: updated_at
+clusterwide: false
+column: updated_at
+db_type: timestamp
+default:
+description:
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

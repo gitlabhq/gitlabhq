@@ -324,7 +324,7 @@ export default {
             <gl-dropdown
               :text="__('Recent searches')"
               class="filtered-search-history-dropdown-wrapper"
-              toggle-class="filtered-search-history-dropdown-toggle-button !gl-shadow-none !gl-border-r-gray-200 !gl-border-1 !gl-rounded-none"
+              toggle-class="filtered-search-history-dropdown-toggle-button !gl-shadow-none !gl-border-r-dropdown !gl-border-1 !gl-rounded-none"
               :disabled="loading"
             >
               <div v-if="!$options.hasLocalStorage" class="gl-px-5">

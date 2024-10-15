@@ -5,6 +5,21 @@ require 'spec_helper'
 RSpec.describe Packages::Conan::Package, type: :model, feature_category: :package_registry do
   describe 'relationships' do
     it { is_expected.to have_one(:conan_metadatum).inverse_of(:package) }
+
+    it do
+      is_expected.to have_many(:conan_recipe_revisions).inverse_of(:package)
+        .class_name('Packages::Conan::RecipeRevision')
+    end
+
+    it do
+      is_expected.to have_many(:conan_package_references).inverse_of(:package)
+        .class_name('Packages::Conan::PackageReference')
+    end
+
+    it do
+      is_expected.to have_many(:conan_package_revisions).inverse_of(:package)
+        .class_name('Packages::Conan::PackageRevision')
+    end
   end
 
   describe 'validations' do

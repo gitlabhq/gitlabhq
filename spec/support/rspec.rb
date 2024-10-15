@@ -3,7 +3,6 @@
 require_relative 'rake'
 require_relative 'rspec_order'
 require_relative 'rspec_run_time'
-require_relative 'struct_with_kwargs'
 require_relative 'system_exit_detected'
 require_relative 'helpers/stub_configuration'
 require_relative 'helpers/stub_metrics'

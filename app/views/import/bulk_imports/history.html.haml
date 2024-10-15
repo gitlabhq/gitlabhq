@@ -13,7 +13,7 @@
     - c.with_body do
       = pending_reassignment_presenter.body
     - c.with_actions do
-      = render Pajamas::ButtonComponent.new(variant: :default, href: help_page_path('user/project/import/index', anchor: 'placeholder-users'), button_options: { class: 'deferred-link gl-alert-action', rel: 'noreferrer noopener' }, target: '_blank') do
+      = render Pajamas::ButtonComponent.new(variant: :default, href: help_page_path('user/project/import/index.md', anchor: 'placeholder-users'), button_options: { class: 'deferred-link gl-alert-action', rel: 'noreferrer noopener' }, target: '_blank') do
         = _('Learn more')
 
 #import-history-mount-element{ data: { id: @bulk_import&.id, details_path: failures_import_bulk_import_path(':id', ':entity_id'), realtime_changes_path: realtime_changes_import_bulk_imports_path(format: :json) } }

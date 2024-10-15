@@ -1,0 +1,12 @@
+---
+api_type: string
+attr: diagramsnet_url
+clusterwide: false
+column: diagramsnet_url
+db_type: text
+default: "'https://embed.diagrams.net'::text"
+description: The Diagrams.net instance URL for integration.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: false

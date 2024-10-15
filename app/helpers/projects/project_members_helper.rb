@@ -10,16 +10,16 @@ module Projects::ProjectMembersHelper
       share_project_description(project)
     else
       ERB::Util.html_escape(_("Members can be added by project " \
-                  "%{i_open}Maintainers%{i_close} or %{i_open}Owners%{i_close}")) % {
-                    i_open: '<i>'.html_safe, i_close: '</i>'.html_safe
-                  }
+        "%{i_open}Maintainers%{i_close} or %{i_open}Owners%{i_close}")) % {
+          i_open: '<i>'.html_safe, i_close: '</i>'.html_safe
+        }
     end
   end
 
   private
 
   def project_members_app_data(
-    project, members:, invited:, access_requests:, include_relations:, search:, pending_members:) # rubocop:disable Lint/UnusedMethodArgument -- Argument used in EE
+    project, members:, invited:, access_requests:, include_relations:, search:, pending_members_count:) # rubocop:disable Lint/UnusedMethodArgument -- Argument used in EE
     {
       user: project_members_list_data(project, members, { param_name: :page, params: { search_groups: nil } }),
       group: project_group_links_list_data(project, include_relations, search),

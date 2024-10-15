@@ -244,7 +244,7 @@ export default {
             <slot name="list-item" :item="item">{{ item.text }}</slot>
           </template>
           <template v-if="showFooter" #footer>
-            <div class="gl-border-t-1 gl-border-t-gray-200 !gl-p-2 gl-border-t-solid">
+            <div class="gl-border-t-1 gl-border-t-dropdown !gl-p-2 gl-border-t-solid">
               <slot name="footer"></slot>
             </div>
           </template>

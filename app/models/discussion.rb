@@ -50,7 +50,7 @@ class Discussion
   end
 
   def self.build_discussions(discussion_ids, context_noteable = nil, preload_note_diff_file: false)
-    notes = Note.where(discussion_id: discussion_ids).fresh
+    notes = model_class.where(discussion_id: discussion_ids).fresh
     notes = notes.inc_note_diff_file if preload_note_diff_file
 
     grouped_notes = notes.group_by { |n| n.discussion_id }
@@ -59,7 +59,7 @@ class Discussion
 
   def self.lazy_find(discussion_id)
     BatchLoader.for(discussion_id).batch do |discussion_ids, loader|
-      results = Note.where(discussion_id: discussion_ids).fresh.to_a.group_by(&:discussion_id)
+      results = model_class.where(discussion_id: discussion_ids).fresh.to_a.group_by(&:discussion_id)
       results.each do |discussion_id, notes|
         next if notes.empty?
 
@@ -102,6 +102,10 @@ class Discussion
 
   def self.note_class
     DiscussionNote
+  end
+
+  def self.model_class
+    Note
   end
 
   def initialize(notes, context_noteable = nil)
@@ -190,7 +194,11 @@ class Discussion
   # hash is already unique per discussion. This also fixes the issue where same discussion may return different GIDs
   # depending on number of notes it has.
   def to_global_id(options = {})
-    GlobalID.new(::Gitlab::GlobalId.build(model_name: Discussion.to_s, id: id))
+    GlobalID.new(::Gitlab::GlobalId.build(model_name: discussion_class.to_s, id: id))
+  end
+
+  def discussion_class
+    ::Discussion
   end
 
   def noteable_collection_name

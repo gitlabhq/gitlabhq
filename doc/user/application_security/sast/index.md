@@ -6,6 +6,43 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Static Application Security Testing (SAST)
 
+<style>
+table.sast-table tr:nth-child(even) {
+    background-color: transparent;
+}
+
+table.sast-table td {
+    border-left: 1px solid #dbdbdb;
+    border-right: 1px solid #dbdbdb;
+    border-bottom: 1px solid #dbdbdb;
+}
+
+table.sast-table tr td:first-child {
+    border-left: 0;
+}
+
+table.sast-table tr td:last-child {
+    border-right: 0;
+}
+
+table.sast-table ul {
+    font-size: 1em;
+    list-style-type: none;
+    padding-left: 0px;
+    margin-bottom: 0px;
+}
+
+table.no-vertical-table-lines td {
+    border-left: none;
+    border-right: none;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+table.no-vertical-table-lines tr {
+    border-top: none;
+}
+</style>
+
 DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
@@ -25,19 +62,17 @@ For more information, see [Features](#features).
 
 The following table lists the GitLab tiers in which each feature is available.
 
-| Feature                                                                                   | In Free & Premium      | In Ultimate            |
-|:------------------------------------------------------------------------------------------|:-----------------------|:-----------------------|
-| Automatically scan code with [appropriate analyzers](#supported-languages-and-frameworks) | **{check-circle}** Yes | **{check-circle}** Yes |
-| [Configure SAST scanners](#configuration)                                                 | **{check-circle}** Yes | **{check-circle}** Yes |
-| [Customize SAST settings](#available-cicd-variables)                                      | **{check-circle}** Yes | **{check-circle}** Yes |
-| Download [SAST output](#output)                                                           | **{check-circle}** Yes | **{check-circle}** Yes |
-| See new findings in merge request widget                                                  | **{dotted-circle}** No | **{check-circle}** Yes |
-| See new findings in merge request changes                                                 | **{dotted-circle}** No | **{check-circle}** Yes |
-| [Manage vulnerabilities](../vulnerabilities/index.md)                                     | **{dotted-circle}** No | **{check-circle}** Yes |
-| [Access the Security Dashboard](../security_dashboard/index.md)                           | **{dotted-circle}** No | **{check-circle}** Yes |
-| [Configure SAST by using the UI](#configure-sast-by-using-the-ui)                         | **{dotted-circle}** No | **{check-circle}** Yes |
-| [Customize SAST rulesets](customize_rulesets.md)                                          | **{dotted-circle}** No | **{check-circle}** Yes |
-| [Track moved vulnerabilities](#advanced-vulnerability-tracking)                           | **{dotted-circle}** No | **{check-circle}** Yes |
+| Feature                                                                                  | In Free & Premium      | In Ultimate            |
+|:-----------------------------------------------------------------------------------------|:-----------------------|:-----------------------|
+| Basic scanning with [open-source analyzers](#supported-languages-and-frameworks)         | **{check-circle}** Yes | **{check-circle}** Yes |
+| Downloadable [SAST JSON report](#output)                                                 | **{check-circle}** Yes | **{check-circle}** Yes |
+| Cross-file, cross-function scanning with [GitLab Advanced SAST](gitlab_advanced_sast.md) | **{dotted-circle}** No | **{check-circle}** Yes |
+| New findings in [merge request widget](#merge-request-widget)                            | **{dotted-circle}** No | **{check-circle}** Yes |
+| New findings in [merge request changes view](#merge-request-changes-view)                | **{dotted-circle}** No | **{check-circle}** Yes |
+| [Vulnerability Management](../vulnerabilities/index.md)                                  | **{dotted-circle}** No | **{check-circle}** Yes |
+| [UI-based scanner configuration](#configure-sast-by-using-the-ui)                        | **{dotted-circle}** No | **{check-circle}** Yes |
+| [Ruleset customization](customize_rulesets.md)                                           | **{dotted-circle}** No | **{check-circle}** Yes |
+| [Advanced Vulnerability Tracking](#advanced-vulnerability-tracking)                      | **{dotted-circle}** No | **{check-circle}** Yes |
 
 ## Requirements
 
@@ -85,12 +120,14 @@ For more information about our plans for language support in SAST, see the [cate
 | Python                       | [Advanced SAST](gitlab_advanced_sast.md)                                      | 17.3                              |
 | React                        | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer) | 13.10                             |
 | Ruby                         | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer) | 16.11                             |
+| Ruby                         | [Advanced SAST](gitlab_advanced_sast.md)                                      | 17.5                              |
 | Ruby on Rails                | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer) | 16.11                             |
 | Rust <sup>2</sup>            | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with user-provided [Custom rules](customize_rulesets.md)     | 17.1                              |
 | Scala (any build system)     | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer) | 16.0                              |
 | Scala <sup>1</sup>           | [SpotBugs](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs) with the find-sec-bugs plugin                              | 11.0 (SBT) & 11.9 (Gradle, Maven) |
 | Swift (iOS)                  | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer) | 16.11                             |
 | TypeScript                   | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer) | 13.10                             |
+| TypeScript                   | [Advanced SAST](gitlab_advanced_sast.md)                                      | 17.3                              |
 
 <html>
   Footnotes:
@@ -201,7 +238,7 @@ include:
 A FIPS-compliant image is only available for the Advanced SAST and Semgrep-based analyzer.
 
 WARNING:
-To use SAST in a FIPS-compliant manner, you must [exclude other analyzers from running](analyzers.md#customize-analyzers). If you use a FIPS-enabled image to run Advanced SAST or Semgrep in [a runner with non-root user](https://docs.gitlab.com/runner/install/kubernetes.html#running-with-non-root-user), you must update the `run_as_user` attribute under `runners.kubernetes.pod_security_context` to use the ID of `gitlab` user [created by the image](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/-/blob/a5d822401014f400b24450c92df93467d5bbc6fd/Dockerfile.fips#L58), which is `1000`.
+To use SAST in a FIPS-compliant manner, you must [exclude other analyzers from running](analyzers.md#customize-analyzers). If you use a FIPS-enabled image to run Advanced SAST or Semgrep in [a runner with non-root user](https://docs.gitlab.com/runner/install/kubernetes_helm_chart_configuration.html#run-with-non-root-user), you must update the `run_as_user` attribute under `runners.kubernetes.pod_security_context` to use the ID of `gitlab` user [created by the image](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/-/blob/a5d822401014f400b24450c92df93467d5bbc6fd/Dockerfile.fips#L58), which is `1000`.
 
 ## Output
 
@@ -273,7 +310,7 @@ To configure SAST for a project you can:
 
 You can enable SAST across many projects by [enforcing scan execution](../index.md#enforce-scan-execution).
 
-To configure Advanced SAST (for Ultimate tier) please also follow these [instructions](gitlab_advanced_sast.md#configuration).
+To configure Advanced SAST (available in GitLab Ultimate only), follow these [instructions](gitlab_advanced_sast.md#configuration).
 
 ### Configure SAST in your CI/CD YAML
 
@@ -584,10 +621,148 @@ The following are Docker image-related CI/CD variables.
 
 #### Vulnerability filters
 
-| CI/CD variable               | Default value            | Description                                                                                                                                                                                                                 |
-|------------------------------|--------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `SAST_EXCLUDED_PATHS`        | `spec, test, tests, tmp` | Exclude vulnerabilities from output based on the paths. This is a comma-separated list of patterns. Patterns can be globs (see [`doublestar.Match`](https://pkg.go.dev/github.com/bmatcuk/doublestar/v4@v4.0.2#Match) for supported patterns), or file or folder paths (for example, `doc,spec`). Parent directories also match patterns. You might need to exclude temporary directories used by your build tool as these can generate false positives. To exclude paths, copy and paste the default excluded paths, then **add** your own paths to be excluded. If you don't specify the default excluded paths, you override the defaults and _only_ paths you specify are excluded from the SAST scans. |
-| `SEARCH_MAX_DEPTH`           | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) 20; all other SAST analyzers 4                        | SAST searches the repository to detect the programming languages used, and selects the matching analyzers. Set the value of `SEARCH_MAX_DEPTH` to specify how many directory levels the search phase should span. After the analyzers have been selected, the _entire_ repository is analyzed. |
+<table class="sast-table">
+  <thead>
+    <tr>
+      <th>CI/CD variable</th>
+      <th>Description</th>
+      <th>Default Value</th>
+      <th>Analyzer</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td rowspan="3">
+        <code>SAST_EXCLUDED_PATHS</code>
+      </td>
+      <td rowspan="3">
+        Comma-separated list of paths for excluding vulnerabilities. The exact handling of this variable depends on which analyzer is used.<sup><b><a href="#sast-excluded-paths-description">1</a></b></sup>
+      </td>
+      <td rowspan="3">
+        <code>
+          <a href="https://gitlab.com/gitlab-org/gitlab/blob/v17.3.0-ee/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml#L13">spec, test, tests, tmp</a>
+        </code>
+      </td>
+      <td>
+        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/semgrep">Semgrep</a><sup><b><a href="#sast-excluded-paths-semgrep">2</a></b>,</sup><sup><b><a href="#sast-excluded-paths-all-other-sast-analyzers">3</a></b></sup>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="gitlab_advanced_sast.md">GitLab Advanced SAST</a><sup><b><a href="#sast-excluded-paths-semgrep">2</a></b>,</sup><sup><b><a href="#sast-excluded-paths-all-other-sast-analyzers">3</a></b></sup>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        All other SAST analyzers<sup><b><a href="#sast-excluded-paths-all-other-sast-analyzers">3</a></b></sup>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <!-- markdownlint-disable MD044 -->
+        <code>SAST_SPOTBUGS_EXCLUDED_BUILD_PATHS</code>
+        <!-- markdownlint-enable MD044 -->
+      </td>
+      <td>
+        Comma-separated list of paths for excluding directories from being built and scanned.
+      </td>
+      <td>None</td>
+      <td>
+        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs">SpotBugs</a><sup><b><a href="#sast-spotbugs-excluded-build-paths-description">4</a></b></sup>
+      </td>
+    </tr>
+    <tr>
+      <td rowspan="3">
+        <code>SEARCH_MAX_DEPTH</code>
+      </td>
+      <td rowspan="3">
+        The number of directory levels the analyzer will descend into when searching for matching files to scan.<sup><b><a href="#search-max-depth-description">5</a></b></sup>
+      </td>
+      <td rowspan="2">
+        <code>
+          <a href="https://gitlab.com/gitlab-org/gitlab/-/blob/v17.3.0-ee/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml#L54">20</a>
+        </code>
+      </td>
+      <td>
+        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/semgrep">Semgrep</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="gitlab_advanced_sast.md">GitLab Advanced SAST</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>
+          <a href="https://gitlab.com/gitlab-org/gitlab/blob/v17.3.0-ee/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml#L26">4</a>
+        </code>
+      </td>
+      <td>
+        All other SAST analyzers
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+**Footnotes:**
+
+1. <a id="sast-excluded-paths-description"></a>You might need to exclude temporary directories used by your build tool as
+   these can generate false positives. To exclude paths, copy and paste the default excluded paths, then **add** your
+   own paths to be excluded. If you don't specify the default excluded paths, the defaults are overridden and _only_ the
+   paths you specify are excluded from SAST scans.
+
+1. <a id="sast-excluded-paths-semgrep"></a>For these analyzers, `SAST_EXCLUDED_PATHS` is implemented as a **pre-filter**,
+   which is applied _before_ the scan is executed.
+
+   The analyzer skips any files or directories whose path matches one of the comma-separated patterns.
+
+   For example, if `SAST_EXCLUDED_PATHS` is set to `*.py,tests`:
+
+   - `*.py` ignores the following:
+      - `foo.py`
+      - `src/foo.py`
+      - `foo.py/bar.sh`
+   - `tests` ignores:
+      - `tests/foo.py`
+      - `a/b/tests/c/foo.py`
+
+   Each pattern is a glob-style pattern that uses the same syntax as [gitignore](https://git-scm.com/docs/gitignore#_pattern_format).
+
+1. <a id="sast-excluded-paths-all-other-sast-analyzers"></a>For these analyzers, `SAST_EXCLUDED_PATHS` is implemented as
+   a **post-filter**, which is applied _after_ the scan is executed.
+
+   Patterns can be globs (see [`doublestar.Match`](https://pkg.go.dev/github.com/bmatcuk/doublestar/v4@v4.0.2#Match) for supported
+   patterns), or file or folder paths (for example, `doc,spec`). Parent directories also match patterns.
+
+   The post-filter implementation of `SAST_EXCLUDED_PATHS` is available for all SAST analyzers. Some
+   SAST analyzers such as those with superscript **[2](#sast-excluded-paths-semgrep)** implement `SAST_EXCLUDED_PATHS`
+   as both a pre-filter and post-filter. A pre-filter is more efficient because it reduces the number of files
+   to be scanned.
+
+   For analyzers that support `SAST_EXCLUDED_PATHS` as both a pre-filter and post-filter, the pre-filter is applied first,
+   then the post-filter is applied to any vulnerabilities that remain.
+
+1. <a id="sast-spotbugs-excluded-build-paths-description"></a> For this variable, Path patterns can be globs
+   (see [`doublestar.Match`](https://pkg.go.dev/github.com/bmatcuk/doublestar/v4@v4.0.2#Match) for supported patterns).
+   Directories are excluded from the build process if the path pattern matches a supported build file:
+
+   - `build.sbt`
+   - `grailsw`
+   - `gradlew`
+   - `build.gradle`
+   - `mvnw`
+   - `pom.xml`
+   - `build.xml`
+
+   For example, to exclude building and scanning a `maven` project containing a build file with the path `project/subdir/pom.xml`, pass a glob pattern that explicitly matches the build file, such as `project/*/*.xml` or `**/*.xml`, or an exact match such as `project/subdir/pom.xml`.
+
+   Passing a parent directory for the pattern, such as `project` or `project/subdir`, does _not_ exclude the directory from being built, because in this case, the build file is _not_ explicitly matched by the pattern.
+
+1. <a id="search-max-depth-description"></a>The [SAST CI/CD template](https://gitlab.com/gitlab-org/gitlab/blob/v17.4.1-ee/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml)
+   searches the repository to detect the programming languages
+   used, and selects the matching analyzers. Then, each analyzer searches the codebase to find the specific files or directories
+   it should scan. Set the value of `SEARCH_MAX_DEPTH` to specify how many directory levels the analyzer's search phase should span.
 
 #### Analyzer settings
 
@@ -595,6 +770,7 @@ Some analyzers can be customized with CI/CD variables.
 
 | CI/CD variable              | Analyzer   | Description                                                                                                                                                                                                                        |
 |-----------------------------|------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `GITLAB_ADVANCED_SAST_ENABLED` | GitLab Advanced SAST | Set to `true` to enable [Advanced SAST](gitlab_advanced_sast.md) scanning (available in GitLab Ultimate only). Default: `false`. |
 | `SCAN_KUBERNETES_MANIFESTS` | Kubesec    | Set to `"true"` to scan Kubernetes manifests.                                                                                                                                                                                      |
 | `KUBESEC_HELM_CHARTS_PATH`  | Kubesec    | Optional path to Helm charts that `helm` uses to generate a Kubernetes manifest that `kubesec` scans. If dependencies are defined, `helm dependency build` should be ran in a `before_script` to fetch the necessary dependencies. |
 | `KUBESEC_HELM_OPTIONS`      | Kubesec    | Additional arguments for the `helm` executable.                                                                                                                                                                                    |
@@ -626,10 +802,70 @@ To allow some customization of scanner behavior, you can add a limited set of fl
 underlying scanner. Specify the flags in the `SAST_SCANNER_ALLOWED_CLI_OPTS` CI/CD variable. These
 flags are added to the scanner's CLI options.
 
-| Analyzer                                                                     | CLI option         | Description |
-|------------------------------------------------------------------------------|--------------------|------------------------------------------------------------------------------|
-| [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) | `--max-memory`     | Sets the maximum system memory to use when running a rule on a single file. Measured in MB. |
-| [SpotBugs](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs) | `-effort` | Sets the analysis effort level. Valid values are `min`, `less`, `more` and `max`, defined in increasing order of scan's precision and ability to detect more vulnerabilities. Default value is set to `max` which may require more memory and time to complete the scan, depending on the project's size. In case you face memory or performance issues, you may reduce the analysis effort level to a lower value. For example: `-effort less`. |
+<table class="sast-table">
+  <thead>
+    <tr>
+      <th>Analyzer</th>
+      <th>CLI option</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td rowspan="3">
+        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/semgrep">Semgrep</a>
+      </td>
+      <td>
+        <code>--max-memory</code>
+      </td>
+      <td>
+        Sets the maximum system memory in MB to use when running a rule on a single file.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>--max-target-bytes</code>
+      </td>
+      <td>
+        <p>
+          Maximum size for a file to be scanned. Any input program larger than this is ignored.
+          Set to <code>0</code> or a negative value to disable this filter. Bytes can be specified with or without a unit of measurement,
+          for example: <code>12.5kb</code>, <code>1.5MB</code>, or <code>123</code>. Defaults to <code>1000000</code> bytes.
+        </p>
+        <p>
+          <b>Note:</b>
+          You should keep this flag set to the default value. Also, avoid changing this flag to scan minified
+          JavaScript, which is unlikely to work well, <code>DLLs</code>, <code>JARs</code> or other binary files
+          because binary files are not scanned.
+        </p>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>--timeout</code>
+      </td>
+      <td>
+        Maximum time in seconds to spend running a rule on a single file. Set to <code>0</code> to have no time limit.
+        Timeout value must be an integer, for example: <code>10</code> or <code>15</code>. Defaults to <code>5</code>.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs">SpotBugs</a>
+      </td>
+      <td>
+        <code>-effort</code>
+      </td>
+      <td>
+        Sets the analysis effort level. Valid values are, in increasing order of precision and ability to detect more vulnerabilities
+        <code>min</code>, <code>less</code>, <code>more</code> and <code>max</code>. Default value is set to
+        <code>max</code> which may require more memory and time to complete the scan, depending on the project's size. If you
+        face memory or performance issues, you can reduce the analysis effort level to a lower value. For example:
+        <code>-effort less</code>.
+      </td>
+    </tr>
+  </tbody>
+</table>
 
 #### Custom CI/CD variables
 

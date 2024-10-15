@@ -1,0 +1,12 @@
+---
+api_type: boolean
+attr: user_deactivation_emails_enabled
+clusterwide: false
+column: user_deactivation_emails_enabled
+db_type: boolean
+default: 'true'
+description: Send an email to users upon account deactivation.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

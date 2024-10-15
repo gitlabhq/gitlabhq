@@ -12,7 +12,6 @@ import userPermissionsQuery from './queries/user_permissions.query.graphql';
 
 export default {
   apollo: {
-    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     userPermissions: {
       query: userPermissionsQuery,
       variables() {
@@ -50,6 +49,7 @@ export default {
       searching: false,
       fetchedUsers: [],
       currentSelectedReviewers: this.selectedReviewers.map((r) => r.username),
+      userPermissions: {},
     };
   },
   computed: {
@@ -141,18 +141,16 @@ export default {
 
 <template>
   <update-reviewers
-    v-if="userPermissions && userPermissions.adminMergeRequest"
+    v-if="userPermissions.adminMergeRequest"
     :selected-reviewers="currentSelectedReviewers"
   >
     <template #default="{ loading, updateReviewers }">
       <gl-collapsible-listbox
         v-model="currentSelectedReviewers"
-        icon="plus"
-        :toggle-text="$options.i18n.selectReviewer"
+        :toggle-text="__('Edit')"
         toggle-class="!gl-text-primary"
         :header-text="$options.i18n.selectReviewer"
         :reset-button-label="$options.i18n.unassign"
-        text-sr-only
         category="tertiary"
         no-caret
         size="small"
@@ -189,7 +187,7 @@ export default {
 
         <template v-if="directlyInviteMembers" #footer>
           <div
-            class="gl-flex gl-flex-col gl-border-t-1 gl-border-t-gray-200 !gl-p-2 !gl-pt-0 gl-border-t-solid"
+            class="gl-flex gl-flex-col gl-border-t-1 gl-border-t-dropdown !gl-p-2 !gl-pt-0 gl-border-t-solid"
           >
             <invite-members-trigger
               trigger-element="button"

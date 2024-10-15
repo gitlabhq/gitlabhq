@@ -124,7 +124,7 @@ Follow these steps to enable the container registry. These steps reflect those f
 ## Allow the Docker daemon to trust the registry and GitLab Runner
 
 Provide your Docker daemon with your certs by
-[following the steps for using trusted certificates with your registry](../../administration/packages/container_registry.md#using-self-signed-certificates-with-container-registry):
+[following the steps for using trusted certificates with your registry](../../administration/packages/container_registry_troubleshooting.md#using-self-signed-certificates-with-container-registry):
 
 ```shell
 sudo mkdir -p /etc/docker/certs.d/my-host.internal:5000

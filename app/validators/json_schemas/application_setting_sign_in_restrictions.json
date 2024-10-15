@@ -1,0 +1,12 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Application sign in restrictions",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "disable_password_authentication_for_users_with_sso_identities": {
+      "type": "boolean",
+      "description": "Restrict users to SSO sign-in when the user has one or more associated SSO identities"
+    }
+  }
+}

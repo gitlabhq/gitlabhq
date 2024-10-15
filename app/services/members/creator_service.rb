@@ -48,12 +48,13 @@ module Members
               current_user = args[:current_user]
               next [] if managing_owners?(current_user, access_level) && cannot_manage_owners?(source, current_user)
 
-              emails, users, existing_members = parse_users_list(source, invitees)
+              emails, users, existing_members, users_by_emails = parse_users_list(source, invitees)
 
               common_arguments = {
                 source: source,
                 access_level: access_level,
-                existing_members: existing_members
+                existing_members: existing_members,
+                users_by_emails: users_by_emails
               }.merge(parsed_args(args))
 
               build_members(emails, users, common_arguments)
@@ -141,7 +142,7 @@ module Members
           existing_members = source.members_and_requesters.with_user(users + users_by_emails.values).index_by(&:user_id)
         end
 
-        [parsed_emails, users, existing_members]
+        [parsed_emails, users, existing_members, users_by_emails]
       end
     end
 
@@ -157,7 +158,6 @@ module Members
     def execute
       find_or_build_member
       commit_member
-      after_commit_tasks
 
       member
     end
@@ -229,10 +229,6 @@ module Members
         # for details.
         member.save
       end
-    end
-
-    def after_commit_tasks
-      # hook for overriding in other uses
     end
 
     def approve_request

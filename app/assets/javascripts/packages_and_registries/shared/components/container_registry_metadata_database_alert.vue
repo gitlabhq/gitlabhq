@@ -35,7 +35,7 @@ export default {
     <gl-sprintf
       :message="
         s__(
-          'ContainerRegistry|The %{linkStart}next-generation container registry%{linkEnd} is now available for upgrade and testing on self-managed instances as a Beta feature. This upgraded registry supports online garbage collection, and has significant performance and reliability improvements.',
+          'ContainerRegistry|The %{linkStart}next-generation container registry%{linkEnd} is now available for upgrade on self-managed instances. This upgraded registry supports online garbage collection, and has significant performance and reliability improvements.',
         )
       "
     >

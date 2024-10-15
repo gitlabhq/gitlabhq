@@ -1,0 +1,12 @@
+---
+api_type:
+attr: product_analytics_data_collector_host
+clusterwide: false
+column: product_analytics_data_collector_host
+db_type: text
+default:
+description:
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

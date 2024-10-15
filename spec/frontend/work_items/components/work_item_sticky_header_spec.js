@@ -7,7 +7,7 @@ import LockedBadge from '~/issuable/components/locked_badge.vue';
 import WorkItemStickyHeader from '~/work_items/components/work_item_sticky_header.vue';
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
 import WorkItemActions from '~/work_items/components/work_item_actions.vue';
-import WorkItemTodos from '~/work_items/components/work_item_todos.vue';
+import TodosToggle from '~/work_items/components/shared/todos_toggle.vue';
 import WorkItemStateBadge from '~/work_items/components/work_item_state_badge.vue';
 import WorkItemNotificationsWidget from '~/work_items/components/work_item_notifications_widget.vue';
 
@@ -46,7 +46,7 @@ describe('WorkItemStickyHeader', () => {
   const findConfidentialityBadge = () => wrapper.findComponent(ConfidentialityBadge);
   const findLockedBadge = () => wrapper.findComponent(LockedBadge);
   const findWorkItemActions = () => wrapper.findComponent(WorkItemActions);
-  const findWorkItemTodos = () => wrapper.findComponent(WorkItemTodos);
+  const findTodosToggle = () => wrapper.findComponent(TodosToggle);
   const findIntersectionObserver = () => wrapper.findComponent(GlIntersectionObserver);
   const findWorkItemStateBadge = () => wrapper.findComponent(WorkItemStateBadge);
   const findEditButton = () => wrapper.findByTestId('work-item-edit-button-sticky');
@@ -67,7 +67,7 @@ describe('WorkItemStickyHeader', () => {
     createComponent();
 
     expect(findWorkItemTitle().exists()).toBe(true);
-    expect(findWorkItemTodos().exists()).toBe(true);
+    expect(findTodosToggle().exists()).toBe(true);
     expect(findWorkItemActions().exists()).toBe(true);
   });
 

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::BackfillErrorTrackingErrorEventsProjectId,
-  feature_category: :error_tracking,
+  feature_category: :observability,
   schema: 20240731160140 do
   include_examples 'desired sharding key backfill job' do
     let(:batch_table) { :error_tracking_error_events }

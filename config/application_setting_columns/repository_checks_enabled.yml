@@ -1,0 +1,13 @@
+---
+api_type: boolean
+attr: repository_checks_enabled
+clusterwide: false
+column: repository_checks_enabled
+db_type: boolean
+default: 'false'
+description: GitLab periodically runs `git fsck` in all project and wiki repositories
+  to look for silent disk corruption issues.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: false

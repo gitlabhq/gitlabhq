@@ -172,7 +172,7 @@ and the files' IDs.
 On the repository file tree, GitLab displays an LFS badge for files
 tracked by Git LFS plus a padlock icon on exclusively-locked files:
 
-![LFS-Locked files](img/lfs_locked_files_v13_2.png)
+![LFS-Locked files](img/lfs_locked_files_v17_4.png)
 
 You can also [view and remove existing locks](#view-and-remove-existing-locks) from the GitLab UI.
 

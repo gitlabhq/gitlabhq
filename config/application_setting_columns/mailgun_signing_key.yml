@@ -1,0 +1,12 @@
+---
+api_type: string
+attr: mailgun_signing_key
+clusterwide: true
+column: encrypted_mailgun_signing_key
+db_type: bytea
+default:
+description: The Mailgun HTTP webhook signing key for receiving events from webhook.
+encrypted: true
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

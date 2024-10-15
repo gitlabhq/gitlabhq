@@ -31,7 +31,7 @@ POST /projects/:id/export_relations
 
 | Attribute | Type           | Required | Description                                        |
 |-----------|----------------|----------|----------------------------------------------------|
-| `id`      | integer/string | yes      | ID of the project owned by the authenticated user. |
+| `id`      | integer/string | yes      | ID of the project.                                 |
 | `batched` | boolean        | no       | Whether to export in batches.                      |
 
 ```shell
@@ -54,7 +54,7 @@ GET /projects/:id/export_relations/status
 
 | Attribute  | Type           | Required | Description                                        |
 |------------|----------------|----------|----------------------------------------------------|
-| `id`       | integer/string | yes      | ID of the project owned by the authenticated user. |
+| `id`       | integer/string | yes      | ID of the project.                                 |
 | `relation` | string         | no       | Name of the project top-level relation to view.    |
 
 ```shell
@@ -108,7 +108,7 @@ GET /projects/:id/export_relations/download
 
 | Attribute      | Type           | Required | Description                                         |
 |----------------|----------------|----------|-----------------------------------------------------|
-| `id`           | integer/string | yes      | ID of the project owned by the authenticated user.  |
+| `id`           | integer/string | yes      | ID of the project.                                  |
 | `relation`     | string         | yes      | Name of the project top-level relation to download. |
 | `batched`      | boolean        | no       | Whether the export is batched.                      |
 | `batch_number` | integer        | no       | Number of export batch to download.                 |

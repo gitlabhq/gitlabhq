@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Packages::Pypi::Metadatum, type: :model, feature_category: :package_registry do
@@ -8,6 +9,7 @@ RSpec.describe Packages::Pypi::Metadatum, type: :model, feature_category: :packa
 
   describe 'validations' do
     it { is_expected.to validate_presence_of(:package) }
+
     it { is_expected.to allow_value('').for(:required_python) }
     it { is_expected.to validate_length_of(:required_python).is_at_most(described_class::MAX_REQUIRED_PYTHON_LENGTH) }
     it { is_expected.to allow_value('').for(:keywords) }
@@ -33,13 +35,20 @@ RSpec.describe Packages::Pypi::Metadatum, type: :model, feature_category: :packa
         .is_at_most(described_class::MAX_DESCRIPTION_CONTENT_TYPE_LENGTH)
     }
 
-    describe '#pypi_package_type' do
-      it 'will not allow a package with a different package_type' do
-        package = build('package')
-        pypi_metadatum = build('pypi_metadatum', package: package)
+    describe '#package_type', :aggregate_failures do
+      subject(:pypi_metadatum) { build(:pypi_metadatum) }
 
-        expect(pypi_metadatum).not_to be_valid
-        expect(pypi_metadatum.errors.to_a).to include('Package type must be PyPi')
+      it 'builds a valid metadatum' do
+        expect { pypi_metadatum }.not_to raise_error
+        expect(pypi_metadatum).to be_valid
+      end
+
+      context 'with a different package type' do
+        let(:package) { build(:package) }
+
+        it 'raises the error' do
+          expect { build(:pypi_metadatum, package: package) }.to raise_error(ActiveRecord::AssociationTypeMismatch)
+        end
       end
     end
   end

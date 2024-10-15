@@ -1,0 +1,14 @@
+---
+api_type: object
+attr: kroki_formats
+clusterwide: false
+column: kroki_formats
+db_type: jsonb
+default: "'{}'::jsonb"
+description: 'Additional formats supported by the Kroki instance. Possible values
+  are `true` or `false` for formats `bpmn`, `blockdiag`, and `excalidraw` in the format
+  `<format>: true` or `<format>: false`.'
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

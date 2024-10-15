@@ -12,6 +12,7 @@ class ContainerRepository < ApplicationRecord
   REQUIRING_CLEANUP_STATUSES = %i[cleanup_unscheduled cleanup_scheduled].freeze
 
   MAX_TAGS_PAGES = 2000
+  MAX_DELETION_FAILURES = 10
 
   # The Registry client uses JWT token to authenticate to Registry. We cache the client using expiration
   # time of JWT token. However it's possible that the token is valid but by the time the request is made to
@@ -23,6 +24,8 @@ class ContainerRepository < ApplicationRecord
 
   validates :name, length: { minimum: 0, allow_nil: false }
   validates :name, uniqueness: { scope: :project_id }
+  validates :failed_deletion_count, presence: true
+  validates :failed_deletion_count, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: MAX_DELETION_FAILURES }
 
   enum status: { delete_scheduled: 0, delete_failed: 1, delete_ongoing: 2 }
   enum expiration_policy_cleanup_status: { cleanup_unscheduled: 0, cleanup_scheduled: 1, cleanup_unfinished: 2, cleanup_ongoing: 3 }
@@ -82,8 +85,9 @@ class ContainerRepository < ApplicationRecord
     (Gitlab::CurrentSettings.container_registry_token_expire_delay * 60) - AUTH_TOKEN_USAGE_RESERVED_TIME_IN_SECS
   end
 
-  class << self
-    alias_method :pending_destruction, :delete_scheduled # needed by Packages::Destructible
+  # needed by Packages::Destructible
+  def self.pending_destruction
+    delete_scheduled.where('next_delete_attempt_at IS NULL OR next_delete_attempt_at < ?', Time.zone.now)
   end
 
   # rubocop: disable CodeReuse/ServiceClass
@@ -253,16 +257,36 @@ class ContainerRepository < ApplicationRecord
 
   def set_delete_ongoing_status
     now = Time.zone.now
-    update_columns(
+
+    values = {
       status: :delete_ongoing,
       delete_started_at: now,
       status_updated_at: now
-    )
+    }
+
+    values[:next_delete_attempt_at] = nil if Feature.enabled?(:set_delete_failed_container_repository, project)
+
+    update_columns(values)
   end
 
   def set_delete_scheduled_status
-    update_columns(
+    values = {
       status: :delete_scheduled,
+      delete_started_at: nil,
+      status_updated_at: Time.zone.now
+    }
+
+    if Feature.enabled?(:set_delete_failed_container_repository, project)
+      values[:failed_deletion_count] = failed_deletion_count + 1
+      values[:next_delete_attempt_at] = next_delete_attempt_with_delay
+    end
+
+    update_columns(values)
+  end
+
+  def set_delete_failed_status
+    update_columns(
+      status: :delete_failed,
       delete_started_at: nil,
       status_updated_at: Time.zone.now
     )
@@ -320,6 +344,10 @@ class ContainerRepository < ApplicationRecord
     gitlab_api_client.repository_details(self.path, sizing: :self)
   end
   strong_memoize_attr :gitlab_api_client_repository_details
+
+  def next_delete_attempt_with_delay(now = Time.zone.now)
+    now + (2**failed_deletion_count).minutes
+  end
 end
 
 ContainerRepository.prepend_mod_with('ContainerRepository')

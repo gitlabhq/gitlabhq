@@ -24,15 +24,19 @@ RSpec.describe 'User reverts a merge request', :js, feature_category: :code_revi
 
     page.refresh
 
-    wait_for_requests
+    Sidekiq::Worker.skipping_transaction_check do
+      wait_for_requests
+    end
     # do not reload the page by visiting, let javascript update the page as it will validate we have loaded the modal
     # code correctly on page update that adds the `revert` button
   end
 
-  it 'reverts a merge request', :sidekiq_might_not_need_inline do
+  it 'reverts a merge request', :sidekiq_might_not_need_inline, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/450869' do
     revert_commit
 
-    wait_for_requests
+    Sidekiq::Worker.skipping_transaction_check do
+      wait_for_requests
+    end
 
     expect(page).to have_content('The merge request has been successfully reverted.')
   end
@@ -66,10 +70,12 @@ RSpec.describe 'User reverts a merge request', :js, feature_category: :code_revi
       project.update!(merge_requests_ff_only_enabled: true)
     end
 
-    it 'reverts a merge request', :sidekiq_might_not_need_inline do
+    it 'reverts a merge request', :sidekiq_might_not_need_inline, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/454303' do
       revert_commit
 
-      wait_for_requests
+      Sidekiq::Worker.skipping_transaction_check do
+        wait_for_requests
+      end
 
       expect(page).to have_content('The merge request has been successfully reverted.')
     end

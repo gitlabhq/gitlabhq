@@ -1,0 +1,13 @@
+---
+api_type: boolean
+attr: group_owners_can_manage_default_branch_protection
+clusterwide: false
+column: group_owners_can_manage_default_branch_protection
+db_type: boolean
+default: 'true'
+description: Prevent overrides of default branch protection. Self-managed, Premium
+  and Ultimate only.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

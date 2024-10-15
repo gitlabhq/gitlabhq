@@ -17,7 +17,7 @@ module Types
         :admin_wiki, :admin_project, :update_pages,
         :admin_remote_mirror, :create_label, :update_wiki, :destroy_wiki,
         :create_pages, :destroy_pages, :read_pages_content, :admin_operations,
-        :read_merge_request, :read_design, :create_design, :destroy_design,
+        :read_merge_request, :read_design, :create_design, :update_design, :destroy_design,
         :read_environment, :view_edit_page
 
       permission_field :create_snippet

@@ -8,7 +8,7 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
   let_it_be(:non_member) { create(:user) }
   let_it_be(:reporter) { create(:user) }
   let_it_be(:project) { create(:project, :private, :repository, namespace: user.namespace, maintainers: user, developers: developer, reporters: reporter) }
-  let_it_be_with_reload(:environment) { create(:environment, project: project) }
+  let_it_be_with_reload(:environment) { create(:environment, project: project, description: 'description') }
 
   describe 'GET /projects/:id/environments', :aggregate_failures do
     context 'as member of the project' do
@@ -22,6 +22,7 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
         expect(json_response.size).to eq(1)
         expect(json_response.first['name']).to eq(environment.name)
         expect(json_response.first['tier']).to eq(environment.tier)
+        expect(json_response.first['description']).to eq(environment.description)
         expect(json_response.first['external_url']).to eq(environment.external_url)
         expect(json_response.first['project']).to match_schema('public_api/v4/project')
         expect(json_response.first).not_to have_key('last_deployment')
@@ -126,11 +127,12 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
   describe 'POST /projects/:id/environments' do
     context 'as a member' do
       it 'creates an environment with valid params' do
-        post api("/projects/#{project.id}/environments", user), params: { name: "mepmep", tier: 'staging' }
+        post api("/projects/#{project.id}/environments", user), params: { name: "mepmep", tier: 'staging', description: 'description' }
 
         expect(response).to have_gitlab_http_status(:created)
         expect(response).to match_response_schema('public_api/v4/environment')
         expect(json_response['name']).to eq('mepmep')
+        expect(json_response['description']).to eq('description')
         expect(json_response['slug']).to eq('mepmep')
         expect(json_response['tier']).to eq('staging')
         expect(json_response['external']).to be nil
@@ -314,6 +316,15 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
       expect(response).to have_gitlab_http_status(:ok)
       expect(response).to match_response_schema('public_api/v4/environment')
       expect(json_response['external_url']).to eq(url)
+    end
+
+    it 'returns a 200 if description is changed' do
+      put api("/projects/#{project.id}/environments/#{environment.id}", user),
+        params: { description: 'new description' }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(response).to match_response_schema('public_api/v4/environment')
+      expect(json_response['description']).to eq('new description')
     end
 
     it 'returns a 200 if tier is changed' do

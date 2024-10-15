@@ -1,0 +1,12 @@
+---
+api_type: boolean
+attr: container_registry_expiration_policies_caching
+clusterwide: false
+column: container_registry_expiration_policies_caching
+db_type: boolean
+default: 'true'
+description: Caching during the execution of [cleanup policies](../user/packages/container_registry/reduce_container_registry_storage.md#set-cleanup-limits-to-conserve-resources).
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

@@ -5,6 +5,10 @@ import { LABEL_FILTER_PARAM } from '~/search/sidebar/components/label_filter/dat
 import { archivedFilterData } from '~/search/sidebar/components/archived_filter/data';
 import { INCLUDE_FORKED_FILTER_PARAM } from '~/search/sidebar/components/forks_filter/index.vue';
 import { s__ } from '~/locale';
+import {
+  SOURCE_BRANCH_PARAM,
+  NOT_SOURCE_BRANCH_PARAM,
+} from '~/search/sidebar/components/source_branch_filter/index.vue';
 
 export const MAX_FREQUENT_ITEMS = 5;
 
@@ -21,6 +25,8 @@ export const SIDEBAR_PARAMS = [
   LABEL_FILTER_PARAM,
   archivedFilterData.filterParam,
   INCLUDE_FORKED_FILTER_PARAM,
+  SOURCE_BRANCH_PARAM,
+  NOT_SOURCE_BRANCH_PARAM,
 ];
 
 export const REGEX_PARAM = 'regex';

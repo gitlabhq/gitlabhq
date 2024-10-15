@@ -232,7 +232,7 @@ module Trigger
       raw_version = super
 
       # if the version matches semver format, treat it as a tag and prepend `v`
-      if raw_version =~ Regexp.compile(/^\d+\.\d+\.\d+(-rc\d+)?(-ee)?$/)
+      if Regexp.compile(/^\d+\.\d+\.\d+(-rc\d+)?(-ee)?$/).match?(raw_version)
         "v#{raw_version}"
       else
         raw_version

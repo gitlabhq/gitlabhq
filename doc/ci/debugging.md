@@ -140,7 +140,7 @@ my-flaky-job:
 ```
 
 In this example, `DEBUG_VARS` is blank by default in standard pipelines. If you need to
-debug the job's behavior, run the pipeline manually and set `DEBUG_VARS` to `--vebose`
+debug the job's behavior, run the pipeline manually and set `DEBUG_VARS` to `--verbose`
 for additional output.
 
 ### Dependencies

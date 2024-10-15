@@ -123,8 +123,8 @@ describe('DateRangesDropdown', () => {
   describe('date range string', () => {
     it.each`
       selected           | expectedDates
-      ${lastWeekValue}   | ${'Sep 07, 2023 - Sep 14, 2023'}
-      ${last30DaysValue} | ${'Aug 15, 2023 - Sep 14, 2023'}
+      ${lastWeekValue}   | ${'Sep 7 – 14, 2023'}
+      ${last30DaysValue} | ${'Aug 15 – Sep 14, 2023'}
     `('should display correct dates selected', ({ selected, expectedDates }) => {
       createComponent({ props: { selected } });
 

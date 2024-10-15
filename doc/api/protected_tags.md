@@ -31,7 +31,7 @@ GET /projects/:id/protected_tags
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer or string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id` | integer or string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -72,7 +72,7 @@ GET /projects/:id/protected_tags/:name
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer or string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id` | integer or string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 | `name` | string | yes | The name of the tag or wildcard. |
 
 ```shell
@@ -96,6 +96,8 @@ Example response:
 ```
 
 ## Protect repository tags
+
+> - `deploy_key_id` configuration [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166866) in GitLab 17.5.
 
 Protects a single repository tag, or several project repository
 tags, using a wildcard protected tag.
@@ -122,9 +124,9 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer or string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id` | integer or string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 | `name` | string | yes | The name of the tag or wildcard. |
-| `allowed_to_create`   | array  | no | Array of access levels allowed to create tags, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, or `{access_level: integer}`. |
+| `allowed_to_create`   | array  | no | Array of access levels allowed to create tags, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, `{deploy_key_id: integer}`, or `{access_level: integer}`. Premium and Ultimate only. |
 | `create_access_level` | string | no | Access levels allowed to create. Default: `40`, for Maintainer role. |
 
 Example response:
@@ -157,7 +159,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer or string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id` | integer or string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 | `name` | string | yes | The name of the tag. |
 
 ## Related topics

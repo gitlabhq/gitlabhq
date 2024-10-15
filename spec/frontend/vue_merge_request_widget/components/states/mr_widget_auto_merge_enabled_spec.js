@@ -37,7 +37,14 @@ function factory(propsData, stateOverride = {}) {
         service: new MRWidgetService({}),
       },
       data() {
-        return { state: { ...convertPropsToGraphqlState(propsData), ...stateOverride } };
+        return {
+          state: {
+            mergeRequest: {
+              ...convertPropsToGraphqlState(propsData),
+              ...stateOverride,
+            },
+          },
+        };
       },
       mocks: {
         $apollo: {

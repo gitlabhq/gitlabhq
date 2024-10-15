@@ -8,10 +8,10 @@ module Gitlab
           attr_accessor :type, :status, :start_time, :end_time
 
           def initialize(params = {})
-            @type = params.dig('type')
-            @status = params.dig('status')
-            @start_time = params.dig('start_time')
-            @end_time = params.dig('end_time')
+            @type = params['type']
+            @status = params['status']
+            @start_time = params['start_time']
+            @end_time = params['end_time']
           end
 
           def to_hash

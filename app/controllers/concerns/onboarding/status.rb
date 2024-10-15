@@ -2,6 +2,10 @@
 
 module Onboarding
   class Status
+    def self.registration_path_params(params:) # rubocop:disable Lint/UnusedMethodArgument -- overridden in EE
+      {}
+    end
+
     def initialize(params, session, user)
       @params = params
       @session = session
@@ -20,6 +24,11 @@ module Onboarding
 
     def last_invited_member_source
       last_invited_member&.source
+    end
+
+    # overridden in EE
+    def registration_omniauth_params
+      {}
     end
 
     private

@@ -1,0 +1,12 @@
+---
+api_type:
+attr: telesign_customer_xid
+clusterwide: true
+column: encrypted_telesign_customer_xid
+db_type: bytea
+default:
+description:
+encrypted: true
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

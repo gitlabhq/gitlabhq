@@ -68,7 +68,7 @@ module Integrations
 
     def self.help
       build_help_page_url(
-        'user/project/integrations/matrix',
+        'user/project/integrations/matrix.md',
         s_("MatrixIntegration|Send notifications about project events to Matrix.")
       )
     end

@@ -1,0 +1,13 @@
+---
+api_type: boolean
+attr: update_runner_versions_enabled
+clusterwide: false
+column: update_runner_versions_enabled
+db_type: boolean
+default: 'true'
+description: Fetch GitLab Runner release version data from GitLab.com. For more information,
+  see how to [determine which runners need to be upgraded](../ci/runners/runners_scope.md#determine-which-runners-need-to-be-upgraded).
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

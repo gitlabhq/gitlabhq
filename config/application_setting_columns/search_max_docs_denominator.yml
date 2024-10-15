@@ -1,0 +1,12 @@
+---
+api_type:
+attr: search_max_docs_denominator
+clusterwide: false
+column: search_max_docs_denominator
+db_type: integer
+default: '5000000'
+description:
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

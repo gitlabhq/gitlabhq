@@ -11,5 +11,12 @@ FactoryBot.define do
     initialize_with do
       ::Gitlab::Ci::Reports::Security::Identifier.new(**attributes)
     end
+
+    trait :cwe do
+      external_id { '259' }
+      external_type { 'cwe' }
+      name { 'CWE-259' }
+      url { 'https://cwe.mitre.org/data/definitions/259.html' }
+    end
   end
 end

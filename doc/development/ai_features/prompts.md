@@ -3,6 +3,8 @@ redirect_to: 'ai_feature_development_playbook.md'
 remove_date: '2024-12-05'
 ---
 
+<!-- markdownlint-disable -->
+
 This document was moved to [another location](ai_feature_development_playbook.md).
 
 <!-- This redirect file can be deleted after 2024-12-05. -->

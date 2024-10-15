@@ -10,11 +10,6 @@ module RegistrationsHelper
       testid: 'new-user-username-field'
     }
   end
-
-  # overridden in EE
-  def register_omniauth_params(_local_assigns)
-    {}
-  end
 end
 
 RegistrationsHelper.prepend_mod_with('RegistrationsHelper')

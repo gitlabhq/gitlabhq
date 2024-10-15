@@ -2,7 +2,7 @@
 
 = render ::Layouts::CrudComponent.new(_('Custom attributes')) do |c|
   - c.with_actions do
-    = render Pajamas::ButtonComponent.new(href: help_page_path('api/custom_attributes'), size: :small, category: :tertiary, variant: :confirm) do
+    = render Pajamas::ButtonComponent.new(href: help_page_path('api/custom_attributes.md'), size: :small, category: :tertiary, variant: :confirm) do
       = _('Learn more')
   - c.with_body do
     %ul.content-list

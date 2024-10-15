@@ -1,0 +1,50 @@
+- name: More context-aware GitLab Duo Code Suggestions using open tabs
+  description: |
+    Elevate your coding workflow and receive more context-aware Code Suggestions using the contents of other open tabs. This improvement to Code Suggestions now uses the content of your open editor tabs to provide more relevant and accurate code recommendations.
+  stage: create
+  self-managed: true
+  gitlab-com: true
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/project/repository/code_suggestions/#use-open-tabs-as-context
+  image_url: https://about.gitlab.com/images/17_4/open-tabs.gif
+  published_at: 2024-09-19
+  release: 17.4
+
+- name: Auto-merge when all checks pass
+  description: |
+    Merge requests have many required checks that must pass before they are mergeable. These checks can include approvals, unresolved threads, pipelines, and other items that need to be satisfied. When you're responsible for merging code, it can be hard to keep track of all of these events, and know when to come back and check to see if a merge request can be merged.
+    GitLab now supports **Auto-merge** for all checks in merge requests. Auto-merge enables any user who is eligible to merge to set a merge request to **Auto-merge**, even before all the required checks have passed. As the merge request continues through its lifecycle, the merge request automagically merges after the last failing check passes.
+  stage: create
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/project/merge_requests/auto_merge.html
+  image_url: https://img.youtube.com/vi/UbqAYizAFAk/hqdefault.jpg
+  published_at: 2024-09-19
+  release: 17.4
+
+- name: Extension marketplace now available in the Web IDE
+  description: |
+    With the extension marketplace, you can discover, install, and manage third-party extensions and enhance your development experience. Some extensions are not compatible with the web-only version because they require a local runtime environment. However, you can still choose from thousands of extensions to boost your productivity or customize your workflow.
+    The extension marketplace is disabled by default. To get started, you can enable the extension marketplace in the **Integrations** section of your user preferences. For [enterprise users](https://docs.gitlab.com/ee/user/enterprise_user/), only users with the Owner role for a top-level group can enable the extension marketplace.
+  stage: create
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/project/web_ide/index.html#extension-marketplace
+  image_url: https://about.gitlab.com/images/17_4/extensions-marketplace.png
+  published_at: 2024-09-19
+  release: 17.4
+
+- name: List Kubernetes resource events
+  description: |
+    GitLab provides a real-time view into your pods and streaming pod logs. Until now, however, we didn't show you resource-specific event information from the UI, so you still had to use 3rd party tools to debug Kubernetes deployments.
+    This release adds events to the resource details view of [the dashboard for Kubernetes](https://docs.gitlab.com/ee/ci/environments/kubernetes_dashboard.html).
+  stage: deploy
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/ci/environments/kubernetes_dashboard.html
+  image_url: https://about.gitlab.com/images/17_4/kubernetes-events-list.png
+  published_at: 2024-09-19
+  release: 17.4

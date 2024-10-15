@@ -34,7 +34,52 @@ RSpec.describe ContainerRegistry::DeleteContainerRepositoryWorker, :aggregate_fa
                 .and_return(cleanup_tags_service_double)
       end
 
-      it 'picks and destroys the delete scheduled container repository' do
+      shared_examples 'setting the correct status based on failed_deletion_count' do
+        context 'when the failed_deletion_count is less than the max' do
+          let(:set_status_method) { :set_delete_scheduled_status }
+          let(:status_after_execution) { 'delete_scheduled' }
+
+          before do
+            container_repository.update!(failed_deletion_count: ContainerRepository::MAX_DELETION_FAILURES - 1)
+          end
+
+          it_behaves_like 'not deleting the repository and setting the correct status'
+        end
+
+        context 'when the failed_deletion_count has reached the max' do
+          let(:set_status_method) { :set_delete_failed_status }
+          let(:status_after_execution) { 'delete_failed' }
+
+          before do
+            container_repository.update!(failed_deletion_count: ContainerRepository::MAX_DELETION_FAILURES)
+          end
+
+          it_behaves_like 'not deleting the repository and setting the correct status'
+        end
+      end
+
+      shared_examples 'setting the status to delete_scheduled regardless of failed_deletion_count' do
+        let(:set_status_method) { :set_delete_scheduled_status }
+        let(:status_after_execution) { 'delete_scheduled' }
+
+        context 'when the failed_deletion_count is less than the max' do
+          before do
+            container_repository.update!(failed_deletion_count: ContainerRepository::MAX_DELETION_FAILURES - 1)
+          end
+
+          it_behaves_like 'not deleting the repository and setting the correct status'
+        end
+
+        context 'when the failed_deletion_count has reached the max' do
+          before do
+            container_repository.update!(failed_deletion_count: ContainerRepository::MAX_DELETION_FAILURES)
+          end
+
+          it_behaves_like 'not deleting the repository and setting the correct status'
+        end
+      end
+
+      it 'picks and destroys the next container repository for destruction' do
         expect_next_pending_destruction_container_repository do |repo|
           expect_logs_on(repo, tags_size_before_delete: 100, deleted_tags_size: 0)
           expect(repo).to receive(:destroy!).and_call_original
@@ -43,49 +88,78 @@ RSpec.describe ContainerRegistry::DeleteContainerRepositoryWorker, :aggregate_fa
         expect(ContainerRepository.all).to contain_exactly(second_container_repository)
       end
 
-      context 'with an error during the tags cleanup' do
-        let(:cleanup_tags_service_response) { { status: :error, original_size: 100, deleted_size: 0 } }
+      context 'when an error happens before reaching repository.destroy!' do
+        shared_examples 'not deleting the repository and setting the correct status' do
+          it 'does not delete the repository and sets the correct status' do
+            expect_next_pending_destruction_container_repository do |repo|
+              expect_logs_on(repo, tags_size_before_delete: 100, deleted_tags_size: 0)
+              expect(repo).to receive(set_status_method).and_call_original
+              expect(repo).not_to receive(:destroy!)
+            end
 
-        it 'does not delete the container repository' do
-          expect_next_pending_destruction_container_repository do |repo|
-            expect_logs_on(repo, tags_size_before_delete: 100, deleted_tags_size: 0)
-            expect(repo).to receive(:set_delete_scheduled_status).and_call_original
-            expect(repo).not_to receive(:destroy!)
+            expect(container_repository.reload.status).to eq('delete_scheduled')
+            expect { perform_work }.to not_change(ContainerRepository, :count)
+            expect(container_repository.reload.status).to eq(status_after_execution)
+            expect(container_repository.delete_started_at).to eq(nil)
           end
-          expect { perform_work }.to not_change(ContainerRepository, :count)
-                                       .and not_change { container_repository.reload.status }
-          expect(container_repository.delete_started_at).to eq(nil)
+        end
+
+        context 'with an error during the tags cleanup' do
+          let(:cleanup_tags_service_response) { { status: :error, original_size: 100, deleted_size: 0 } }
+
+          it_behaves_like 'setting the correct status based on failed_deletion_count'
+
+          context 'when the feature set_delete_failed_container_repository is disabled' do
+            before do
+              stub_feature_flags(set_delete_failed_container_repository: false)
+            end
+
+            it_behaves_like 'setting the status to delete_scheduled regardless of failed_deletion_count'
+          end
+        end
+
+        context 'with tags left to destroy' do
+          let(:tags_count) { 10 }
+
+          it_behaves_like 'setting the correct status based on failed_deletion_count'
+
+          context 'when the feature set_delete_failed_container_repository is disabled' do
+            before do
+              stub_feature_flags(set_delete_failed_container_repository: false)
+            end
+
+            it_behaves_like 'setting the status to delete_scheduled regardless of failed_deletion_count'
+          end
         end
       end
 
-      context 'with an error during the destroy' do
-        it 'does not delete the container repository' do
-          expect_next_pending_destruction_container_repository do |repo|
-            expect_logs_on(repo, tags_size_before_delete: 100, deleted_tags_size: 0)
-            expect(repo).to receive(:destroy!).and_raise('Error!')
-            expect(repo).to receive(:set_delete_scheduled_status).and_call_original
-          end
+      context 'with an error happening during container_repository.destroy' do
+        shared_examples 'not deleting the repository and setting the correct status' do
+          it 'does not delete the repository and sets the correct status' do
+            expect_next_pending_destruction_container_repository do |repo|
+              expect_logs_on(repo, tags_size_before_delete: 100, deleted_tags_size: 0)
+              expect(repo).to receive(set_status_method).and_call_original
+              expect(repo).to receive(:destroy!).and_raise('Error!')
+            end
 
-          expect(::Gitlab::ErrorTracking).to receive(:log_exception)
-                                               .with(instance_of(RuntimeError), class: described_class.name)
-          expect { perform_work }.to not_change(ContainerRepository, :count)
-                                       .and not_change { container_repository.reload.status }
-          expect(container_repository.delete_started_at).to eq(nil)
+            expect(::Gitlab::ErrorTracking).to receive(:log_exception)
+              .with(instance_of(RuntimeError), class: described_class.name)
+
+            expect(container_repository.reload.status).to eq('delete_scheduled')
+            expect { perform_work }.to not_change(ContainerRepository, :count)
+            expect(container_repository.reload.status).to eq(status_after_execution)
+            expect(container_repository.delete_started_at).to eq(nil)
+          end
         end
-      end
 
-      context 'with tags left to destroy' do
-        let(:tags_count) { 10 }
+        it_behaves_like 'setting the correct status based on failed_deletion_count'
 
-        it 'does not delete the container repository' do
-          expect_next_pending_destruction_container_repository do |repo|
-            expect(repo).not_to receive(:destroy!)
-            expect(repo).to receive(:set_delete_scheduled_status).and_call_original
+        context 'when the feature set_delete_failed_container_repository is disabled' do
+          before do
+            stub_feature_flags(set_delete_failed_container_repository: false)
           end
 
-          expect { perform_work }.to not_change(ContainerRepository, :count)
-                                       .and not_change { container_repository.reload.status }
-          expect(container_repository.delete_started_at).to eq(nil)
+          it_behaves_like 'setting the status to delete_scheduled regardless of failed_deletion_count'
         end
       end
 

@@ -29,6 +29,7 @@ describe('registry_header', () => {
         GlSprintf,
         TitleArea,
         MetadataContainerScanning: true,
+        ContainerScanningCounts: true,
       },
       propsData,
       slots,

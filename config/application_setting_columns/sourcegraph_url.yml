@@ -1,0 +1,12 @@
+---
+api_type: string
+attr: sourcegraph_url
+clusterwide: false
+column: sourcegraph_url
+db_type: character
+default:
+description: The Sourcegraph instance URL for integration.
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

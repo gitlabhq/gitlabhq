@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::Pipeline::PlainMarkdownPipeline, feature_category: :team_planning do
+RSpec.describe Banzai::Pipeline::PlainMarkdownPipeline, feature_category: :markdown do
   using RSpec::Parameterized::TableSyntax
 
   # TODO: This is legacy code, and is only used with the Ruby parser.

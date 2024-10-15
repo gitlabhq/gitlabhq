@@ -1,0 +1,15 @@
+---
+api_type: boolean
+attr: authorized_keys_enabled
+clusterwide: true
+column: authorized_keys_enabled
+db_type: boolean
+default: 'true'
+description: By default, we write to the `authorized_keys` file to support Git over
+  SSH without additional configuration. GitLab can be optimized to authenticate SSH
+  keys via the database file. Only disable this if you have configured your OpenSSH
+  server to use the AuthorizedKeysCommand.
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: true

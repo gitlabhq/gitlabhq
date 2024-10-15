@@ -1,0 +1,14 @@
+---
+api_type: boolean
+attr: pages_domain_verification_enabled
+clusterwide: false
+column: pages_domain_verification_enabled
+db_type: boolean
+default: 'true'
+description: Require users to prove ownership of custom domains. Domain verification
+  is an essential security measure for public GitLab sites. Users are required to
+  demonstrate they control a domain before it is enabled.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

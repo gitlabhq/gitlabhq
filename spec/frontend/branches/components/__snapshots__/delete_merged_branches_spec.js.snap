@@ -84,7 +84,6 @@ exports[`Delete merged branches component Delete merged branches confirmation mo
           class="gl-form-input gl-form-input-sm gl-mt-2"
           debounce="0"
           formatter="[Function]"
-          nowheel="true"
           required="true"
           type="text"
           value=""

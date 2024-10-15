@@ -1,0 +1,12 @@
+---
+api_type: boolean
+attr: signup_enabled
+clusterwide: false
+column: signup_enabled
+db_type: boolean
+default:
+description: Enable registration. Default is `true`.
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

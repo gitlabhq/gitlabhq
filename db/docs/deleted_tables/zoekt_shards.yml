@@ -1,0 +1,13 @@
+---
+table_name: zoekt_shards
+classes: []
+feature_categories:
+- global_search
+description: Describes a Zoekt server that will be used for indexing and search for
+  some configured namespaces
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105049
+milestone: '15.9'
+gitlab_schema: gitlab_main_cell
+exempt_from_sharding: true # table scheduled for deletion https://gitlab.com/gitlab-org/gitlab/-/issues/473263
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167720
+removed_in_milestone: '17.5'

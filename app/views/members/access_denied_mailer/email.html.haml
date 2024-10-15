@@ -1,0 +1,7 @@
+%tr
+  %td.text-content
+    %p
+      - target_to_join = source_hidden? ? content_tag(:span, _('Hidden'), class: :highlight) : link_to(member_source.human_name, member_source.web_url, class: :highlight)
+      - denied_tag = content_tag :span, _('denied'), class: :highlight
+      = s_('Notify|Your request to join the %{target_to_join} %{target_type} has been %{denied_tag}.').html_safe % { target_to_join: target_to_join, target_type: member_source.model_name.singular, denied_tag: denied_tag }
+

@@ -11,6 +11,7 @@ module API
           expose :description
           expose(:user_id) { |model| model.user_id.to_s }
           expose :metadata, as: :tags, using: KeyValue
+          expose :versions, as: :latest_versions
 
           private
 

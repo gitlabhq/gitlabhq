@@ -1,0 +1,22 @@
+---
+key_path: redis_hll_counters.count_distinct_label_from_internal_events_cli_used_monthly
+description: Monthly count of unique values provided for label
+product_group: analytics_instrumentation
+performance_indicator_type: []
+value_type: number
+status: active
+milestone: '16.6'
+introduced_by_url: TODO
+time_frame: 28d
+data_source: internal_events
+data_category: optional
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate
+events:
+- name: internal_events_cli_used
+  unique: label

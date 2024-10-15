@@ -82,7 +82,7 @@ RSpec.describe Pajamas::ButtonComponent, type: :component, feature_category: :de
         end
 
         it 'does not render a spinner' do
-          expect(page).not_to have_css ".gl-spinner[aria-label='Loading']"
+          expect(page).not_to have_css('.gl-sr-only', text: 'Loading')
         end
       end
 
@@ -94,7 +94,7 @@ RSpec.describe Pajamas::ButtonComponent, type: :component, feature_category: :de
         end
 
         it 'renders a spinner' do
-          expect(page).to have_css ".gl-spinner[aria-label='Loading']"
+          expect(page).to have_css('.gl-sr-only', text: 'Loading')
         end
       end
     end
@@ -217,7 +217,7 @@ RSpec.describe Pajamas::ButtonComponent, type: :component, feature_category: :de
 
         it 'renders only a loading icon' do
           expect(page).not_to have_css "svg.gl-icon.gl-button-icon.custom-icon[data-testid='star-o-icon']"
-          expect(page).to have_css ".gl-spinner[aria-label='Loading']"
+          expect(page).to have_css('.gl-sr-only', text: 'Loading')
         end
       end
     end

@@ -1,0 +1,10 @@
+#import "./work_item_ancestors.fragment.graphql"
+
+mutation workItemUpdateParent($input: WorkItemUpdateInput!) {
+  workItemUpdate(input: $input) {
+    workItem {
+      ...WorkItemAncestors
+    }
+    errors
+  }
+}

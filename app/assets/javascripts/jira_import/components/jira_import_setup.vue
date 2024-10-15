@@ -22,7 +22,6 @@ export default {
 <template>
   <gl-empty-state
     :svg-path="illustration"
-    :svg-height="null"
     title=""
     :description="__('You will first need to set up Jira Integration to use this feature.')"
     :primary-button-text="__('Set up Jira Integration')"

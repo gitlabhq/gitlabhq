@@ -1,0 +1,12 @@
+---
+table_name: wiki_page_meta_user_mentions
+classes:
+- Wikis::UserMention
+feature_categories:
+- wiki
+description: User mentions in wiki page notes
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163305
+milestone: '17.5'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  namespace_id: namespaces

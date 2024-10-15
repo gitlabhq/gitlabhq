@@ -46,6 +46,12 @@ module KnownSignIn
   end
 
   def notify_user
-    current_user.notification_service.unknown_sign_in(current_user, request.remote_ip, current_user.current_sign_in_at)
+    request_info = Gitlab::Auth::VisitorLocation.new(request)
+    current_user.notification_service.unknown_sign_in(
+      current_user,
+      request.remote_ip,
+      current_user.current_sign_in_at,
+      request_info
+    )
   end
 end

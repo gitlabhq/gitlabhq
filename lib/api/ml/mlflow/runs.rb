@@ -190,6 +190,23 @@ module API
 
             {}
           end
+
+          desc 'Delete a run.' do
+            summary 'Delete a run.'
+
+            detail 'https://mlflow.org/docs/2.16.0/rest-api.html#delete-run'
+          end
+          params do
+            requires :run_id, type: String, desc: 'UUID of the run.'
+          end
+          post 'delete', urgency: :low do
+            destroy = ::Ml::DestroyCandidateService.new(candidate, current_user).execute
+            if destroy.success?
+              present({})
+            else
+              render_api_error!(destroy.message.first, 400)
+            end
+          end
         end
       end
     end

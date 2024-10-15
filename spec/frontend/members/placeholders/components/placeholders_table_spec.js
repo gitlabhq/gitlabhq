@@ -25,6 +25,7 @@ import {
   PLACEHOLDER_USER_STATUS,
   PLACEHOLDER_SORT_SOURCE_NAME_ASC,
   PLACEHOLDER_SORT_SOURCE_NAME_DESC,
+  PLACEHOLDER_SORT_STATUS_ASC,
 } from '~/import_entities/import_groups/constants';
 
 import importSourceUsersQuery from '~/members/placeholders/graphql/queries/import_source_users.query.graphql';
@@ -168,7 +169,8 @@ describe('PlaceholdersTable', () => {
       await waitForPromises();
 
       expect(findTableRows().at(0).text()).toContain(mockSourceUsers[0].sourceHostname);
-      expect(findTableRows().at(0).text()).toContain(mockSourceUsers[0].sourceUsername);
+      expect(findTableRows().at(0).text()).toContain(mockSourceUsers[0].sourceName);
+      expect(findTableRows().at(0).text()).toContain(`@${mockSourceUsers[0].sourceUsername}`);
     });
 
     it('renders status badge with tooltip', async () => {
@@ -204,17 +206,11 @@ describe('PlaceholdersTable', () => {
       expect(actions.props('sourceUser')).toEqual(mockSourceUsers[0]);
     });
 
-    it('renders avatar for reassignToUser when item status is COMPLETED', async () => {
+    it('renders "Placeholder deleted" text when item status is COMPLETED', async () => {
       await waitForPromises();
 
       const reassignedItemRow = findTableRows().at(6);
-      const actionsAvatar = reassignedItemRow.findAllComponents(GlAvatarLabeled).at(1);
-      const { reassignToUser } = mockSourceUsers[6];
-
-      expect(actionsAvatar.props()).toMatchObject({
-        label: reassignToUser.name,
-        subLabel: `@${reassignToUser.username}`,
-      });
+      expect(reassignedItemRow.text()).toContain('Placeholder deleted');
     });
 
     it('table actions emit "confirm" event with item', () => {
@@ -391,6 +387,37 @@ describe('PlaceholdersTable', () => {
         first: 20,
         statuses: PLACEHOLDER_USER_STATUS.UNASSIGNED,
       });
+    });
+  });
+
+  describe('when sort is changed', () => {
+    beforeEach(async () => {
+      createComponent({
+        queryHandler: sourceUsersQueryHandler,
+        props: {
+          querySort: PLACEHOLDER_SORT_STATUS_ASC,
+        },
+      });
+
+      await waitForPromises();
+    });
+
+    it('refetches data when sort changes', async () => {
+      expect(sourceUsersQueryHandler).toHaveBeenCalledTimes(1);
+      expect(sourceUsersQueryHandler).toHaveBeenCalledWith(
+        expect.objectContaining({
+          sort: PLACEHOLDER_SORT_STATUS_ASC,
+        }),
+      );
+
+      await wrapper.setProps({ querySort: PLACEHOLDER_SORT_SOURCE_NAME_DESC });
+
+      expect(sourceUsersQueryHandler).toHaveBeenCalledTimes(2);
+      expect(sourceUsersQueryHandler).toHaveBeenCalledWith(
+        expect.objectContaining({
+          sort: PLACEHOLDER_SORT_SOURCE_NAME_DESC,
+        }),
+      );
     });
   });
 

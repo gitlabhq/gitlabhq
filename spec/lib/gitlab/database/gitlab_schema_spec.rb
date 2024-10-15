@@ -267,16 +267,4 @@ RSpec.describe Gitlab::Database::GitlabSchema, feature_category: :database do
       end
     end
   end
-
-  describe '.cell_local?' do
-    it 'is true for cell local tables and false otherwise' do
-      expect(described_class.cell_local?('gitlab_ci')).to eq(true)
-      expect(described_class.cell_local?('gitlab_pm')).to eq(true)
-      expect(described_class.cell_local?('gitlab_main_cell')).to eq(true)
-      expect(described_class.cell_local?('gitlab_main')).to eq(false)
-      expect(described_class.cell_local?('gitlab_main_clusterwide')).to eq(false)
-      expect(described_class.cell_local?('gitlab_shared')).to eq(false)
-      expect(described_class.cell_local?('gitlab_internal')).to eq(false)
-    end
-  end
 end

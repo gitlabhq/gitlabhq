@@ -22,11 +22,6 @@
   }
 }
 
-.dropdown-label-color-input {
-  position: relative;
-  margin-bottom: 8px;
-}
-
 .color-label {
   padding: 0 $grid-size;
   line-height: 16px;
@@ -54,11 +49,6 @@
         cursor: grabbing;
       }
     }
-  }
-
-  .prepend-description-left {
-    vertical-align: top;
-    line-height: 24px;
   }
 }
 
@@ -88,19 +78,6 @@
     // stylelint-disable-next-line gitlab/no-gl-class
     .gl-label {
       line-height: $gl-line-height;
-    }
-  }
-
-  .label-action {
-    color: var(--gray-700, $gray-700);
-    cursor: pointer;
-
-    &:hover {
-      color: var(--blue-600, $blue-600);
-    }
-
-    &.hover-red:hover {
-      color: var(--red-500, $red-500);
     }
   }
 }

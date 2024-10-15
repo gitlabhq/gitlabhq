@@ -40,13 +40,13 @@ module Gitlab
         # * +logger+ - [Gitlab::JsonLogger]
         # * +env+ - [Hash] custom environment hash, see the example with `DISABLE_LOCK_RETRIES`
         def with_lock_retries(*args, **kwargs, &block)
-          raise_on_exhaustion = !!kwargs.delete(:raise_on_exhaustion)
+          raise_on_exhaustion = !!kwargs.fetch(:raise_on_exhaustion, true)
           merged_args = {
             connection: connection,
             klass: self.class,
             logger: Gitlab::BackgroundMigration::Logger,
             allow_savepoints: true
-          }.merge(kwargs)
+          }.merge(kwargs.except(:raise_on_exhaustion))
 
           Gitlab::Database::WithLockRetries.new(**merged_args)
             .run(raise_on_exhaustion: raise_on_exhaustion, &block)

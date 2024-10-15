@@ -3,7 +3,7 @@
     can_add_related_issues: "#{can?(current_user, :admin_issue_link, @issue)}",
     full_path: @project.full_path,
     has_issue_weights_feature: @project.licensed_feature_available?(:issue_weights).to_s,
-    help_path: help_page_path('user/project/issues/related_issues'),
+    help_path: help_page_path('user/project/issues/related_issues.md'),
     is_group: 'false',
     issuable_type: @issue.issue_type,
     show_categorized_issues: @project.licensed_feature_available?(:blocked_issues).to_s,

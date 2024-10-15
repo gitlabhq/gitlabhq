@@ -179,9 +179,21 @@ For more information, see [issue 480328](https://gitlab.com/gitlab-org/gitlab/-/
    agent_configs_to_remove.delete_all
    ```
 
-## 17.5.0
+## 17.7.0
 
-With the upgrade to OpenSSL version 3:
+### OpenSSL 3 upgrade
+
+NOTE:
+Before upgrading to GitLab 17.7, use the [OpenSSL 3 guide](https://docs.gitlab.com/omnibus/settings/ssl/openssl_3.html)
+to identify and assess the compatibility of your external integrations.
+
+- The Linux package upgrades OpenSSL from v1.1.1w to v3.0.0.
+- Cloud Native GitLab (CNG) already upgraded to OpenSSL 3 in GitLab 16.7.0. If you are using Cloud Native GitLab, no
+  action is needed. However, note that [Cloud Native Hybrid](../../administration/reference_architectures/index.md#recommended-cloud-providers-and-services) installations
+  use the Linux packages for stateful components, such as Gitaly. For those components, you will need to verify
+  the TLS versions, ciphers, and certificates that are used work with the security level changes discussed below.
+
+With the upgrade to OpenSSL 3:
 
 - GitLab requires TLS 1.2 or higher for all outgoing and incoming TLS connections.
 - TLS/SSL certificates must have at least 112 bits of security. RSA, DSA, and DH keys shorter than 2048 bits, and ECC keys shorter than 224 bits are prohibited.
@@ -192,13 +204,35 @@ considered secure. GitLab will fail to connect to services using TLS
 1.0 or 1.1 with a `no protocols available` error message.
 
 In addition, OpenSSL 3 increased the [default security level from level 1 to 2](https://docs.openssl.org/3.0/man3/SSL_CTX_set_security_level/#default-callback-behaviour),
-raising the number of bits of security from 80 to 112. For example,
-a certificate signed with an RSA key can use RSA-2048 but not RSA-1024. GitLab
-will fail to connect to a service that uses a certificate signed with insufficient
-bits with a `certificate key too weak` error message.
+raising the minimum number of bits of security from 80 to 112. As a result,
+certificates signed with RSA and DSA keys shorter than 2048 bits and ECC keys
+shorter than 224 bits are prohibited.
+
+GitLab will fail to connect to a service that uses a certificate signed with
+insufficient bits with a `certificate key too weak` error message. For more
+information, see the [certificate requirements](../../security/tls_support.md#certificate-requirements).
+
+All components that are shipped with the Linux package are compatible with
+OpenSSL 3. Therefore, you only need to verify the services and integrations that
+are not part of the GitLab package and are ["external"](https://docs.gitlab.com/omnibus/settings/ssl/openssl_3.html#identifying-external-integrations).
+
+SSH keys are not affected by this upgrade. OpenSSL sets
+security requirements for TLS, not SSH. [OpenSSH](https://www.openssh.com/) and
+[`gitlab-sshd`](../../administration/operations/gitlab_sshd.md) have their
+own configuration settings for the allowed cryptographic algorithms.
 
 Check the [GitLab documentation on securing your installation](../../security/index.md)
 for more details.
+
+## 17.5.0
+
+NOTE:
+The OpenSSL 3 upgrade has been postponed to GitLab 17.7.0.
+
+- S3 object storage access for the GitLab Runner distributed cache is now handled by the
+  [AWS SDK v2 for Go](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/4987) instead of the MinIO client.
+  You can enable the MinIO client again by setting the `FF_USE_LEGACY_S3_CACHE_ADAPTER`
+  [GitLab Runner feature flag](https://docs.gitlab.com/runner/configuration/feature-flags.html) to `true`.
 
 ## 17.4.0
 
@@ -211,6 +245,11 @@ for more details.
     new environment as the database restore removes the existing database schema definition and uses the definition
     that's stored as part of the backup.
 - Git 2.46.0 and later is required by Gitaly. For installations from source, you should use the [Git version provided by Gitaly](../../install/installation.md#git).
+- S3 object storage uploads in Workhorse are now handled by default using the [AWS SDK v2 for Go](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164597). If you experience issues
+  with S3 object storage uploads, you can downgrade to v1 of by disabling the `workhorse_use_aws_sdk_v2` [feature flag](../../administration/feature_flags.md#enable-or-disable-the-feature).
+- When you upgrade to GitLab 17.4, an OAuth application is generated for the Web IDE.
+  If your GitLab server's external URL configuration in the `GitLab.rb` file contains uppercase letters, the Web IDE might fail to load.
+  To resolve this issue, see [update the OAuth callback URL](../../user/project/web_ide/index.md#update-the-oauth-callback-url).
 
 ## 17.3.0
 

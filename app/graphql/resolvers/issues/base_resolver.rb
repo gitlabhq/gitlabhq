@@ -32,7 +32,7 @@ module Resolvers
         GraphQL::Types::Boolean,
         required: false,
         description: 'Filter for confidential issues. If "false", excludes confidential issues. ' \
-                     'If "true", returns only confidential issues.'
+          'If "true", returns only confidential issues.'
       argument :created_after, Types::TimeType,
         required: false,
         description: 'Issues created after the date.'
@@ -69,12 +69,17 @@ module Resolvers
       argument :my_reaction_emoji, GraphQL::Types::String,
         required: false,
         description: 'Filter by reaction emoji applied by the current user. ' \
-                     'Wildcard values "NONE" and "ANY" are supported.'
+          'Wildcard values "NONE" and "ANY" are supported.'
       argument :not, Types::Issues::NegatedIssueFilterInputType,
         description: 'Negated arguments.',
         required: false
       argument :or, Types::Issues::UnionedIssueFilterInputType,
         description: 'List of arguments with inclusive OR.',
+        required: false
+      argument :subscribed, Types::Issuables::SubscriptionStatusEnum,
+        description: 'Issues the current user is subscribed to. Is ignored if ' \
+          '`filter_subscriptions` feature flag is disabled.',
+        alpha: { milestone: '17.5' },
         required: false
       argument :types, [Types::IssueTypeEnum],
         as: :issue_types,
@@ -123,6 +128,7 @@ module Resolvers
         params[:not] = params[:not].to_h if params[:not]
         params[:or] = params[:or].to_h if params[:or]
         params[:iids] ||= [params.delete(:iid)].compact if params[:iid]
+        params.delete(:subscribed) if Feature.disabled?(:filter_subscriptions, current_user)
 
         rewrite_param_name(params[:or], :author_usernames, :author_username)
         rewrite_param_name(params[:or], :label_names, :label_name)

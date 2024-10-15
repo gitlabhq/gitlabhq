@@ -5,6 +5,7 @@ import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import { makeMockUserCalloutDismisser } from 'helpers/mock_user_callout_dismisser';
 import stubChildren from 'helpers/stub_children';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
+import PageHeading from '~/vue_shared/components/page_heading.vue';
 import SecurityConfigurationApp from '~/security_configuration/components/app.vue';
 import AutoDevopsAlert from '~/security_configuration/components/auto_dev_ops_alert.vue';
 import AutoDevopsEnabledAlert from '~/security_configuration/components/auto_dev_ops_enabled_alert.vue';
@@ -46,11 +47,12 @@ describe('~/security_configuration/components/app', () => {
           dismiss: userCalloutDismissSpy,
           shouldShowCallout,
         }),
+        PageHeading,
       },
     });
   };
 
-  const findMainHeading = () => wrapper.find('h1');
+  const findMainHeading = () => wrapper.findByTestId('page-heading');
   const findTab = () => wrapper.findComponent(GlTab);
   const findTabs = () => wrapper.findAllComponents(GlTab);
   const findGlTabs = () => wrapper.findComponent(GlTabs);

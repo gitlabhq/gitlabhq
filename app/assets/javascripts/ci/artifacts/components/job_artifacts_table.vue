@@ -145,14 +145,18 @@ export default {
       return Number(this.pageInfo.hasNextPage);
     },
     fields() {
-      return [
-        this.canBulkDestroyArtifacts && {
-          key: 'checkbox',
-          label: '',
-          thClass: 'gl-w-1/20',
-        },
-        ...this.$options.fields,
-      ];
+      if (this.canBulkDestroyArtifacts) {
+        return [
+          {
+            key: 'checkbox',
+            label: '',
+            thClass: 'gl-w-1/20',
+          },
+          ...this.$options.fields,
+        ];
+      }
+
+      return this.$options.fields;
     },
     anyArtifactsSelected() {
       return Boolean(this.selectedArtifacts.length);
@@ -346,7 +350,8 @@ export default {
     {
       key: 'size',
       label: I18N_SIZE,
-      thClass: 'gl-w-3/20 gl-text-right',
+      thAlignRight: true,
+      thClass: 'gl-w-3/20',
       tdClass: 'gl-text-right',
     },
     {

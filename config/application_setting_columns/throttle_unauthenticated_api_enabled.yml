@@ -1,0 +1,15 @@
+---
+api_type: boolean
+attr: throttle_unauthenticated_api_enabled
+clusterwide: false
+column: throttle_unauthenticated_api_enabled
+db_type: boolean
+default: 'false'
+description: "(**If enabled, requires:** `throttle_unauthenticated_api_period_in_seconds`
+  and `throttle_unauthenticated_api_requests_per_period`) Enable unauthenticated API
+  request rate limit. Helps reduce request volume (for example, from crawlers or abusive
+  bots)."
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: true

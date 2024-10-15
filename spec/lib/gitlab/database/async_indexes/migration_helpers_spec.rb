@@ -149,6 +149,15 @@ RSpec.describe Gitlab::Database::AsyncIndexes::MigrationHelpers, feature_categor
         )
       end
     end
+
+    context 'when the table is partitioned' do
+      it 'raises an error' do
+        expect { migration.prepare_async_index('p_ci_builds', 'id') }.to(
+          raise_error(ArgumentError, "prepare_async_index can not be used on a partitioned table. " \
+            "Please use prepare_partitioned_async_index on the partitioned table.")
+        )
+      end
+    end
   end
 
   describe '#prepare_async_index_from_sql' do

@@ -301,7 +301,7 @@ If your LDAP server has a rate limit, that limit might be reached during the gro
 ::EndTabs
 
 To take advantage of group sync, group Owners or users with the [Maintainer role](../../../user/permissions.md) must
-[create one or more LDAP group links](../../../user/group/access_and_permissions.md#manage-group-memberships-via-ldap).
+[create one or more LDAP group links](../../../user/group/access_and_permissions.md#manage-group-memberships-with-ldap).
 
 NOTE:
 If you frequently experience connection issues between your LDAP server and GitLab instance, try reducing the frequency with which GitLab performs an LDAP group sync by
@@ -310,7 +310,7 @@ If you frequently experience connection issues between your LDAP server and GitL
 ### Add group links
 
 For information on adding group links by using CNs and filters, refer to the
-[GitLab groups documentation](../../../user/group/access_and_permissions.md#manage-group-memberships-via-ldap).
+[GitLab groups documentation](../../../user/group/access_and_permissions.md#manage-group-memberships-with-ldap).
 
 ### Administrator sync
 
@@ -445,7 +445,7 @@ To enable global group memberships lock:
 
 ### Change LDAP group synchronization settings management
 
-By default, group members with the Owner role can manage [LDAP group synchronization settings](../../../user/group/access_and_permissions.md#manage-group-memberships-via-ldap).
+By default, group members with the Owner role can manage [LDAP group synchronization settings](../../../user/group/access_and_permissions.md#manage-group-memberships-with-ldap).
 
 GitLab administrators can remove this permission from group Owners:
 

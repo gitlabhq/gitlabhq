@@ -36,7 +36,7 @@ module Integrations
 
     def self.help
       build_help_page_url(
-        'user/project/integrations/hangouts_chat',
+        'user/project/integrations/hangouts_chat.md',
         'Before enabling this integration, create a webhook for the space in Google Chat where you want to ' \
         'receive notifications from this project.',
         _('How do I set up a Google Chat webhook?')

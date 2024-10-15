@@ -18,10 +18,10 @@ class IssuePolicy < IssuablePolicy
     @user && (@user.admin? || can?(:reporter_access) || assignee_or_author?) # rubocop:disable Cop/UserAdmin
   end
 
-  desc "Project belongs to a group, crm is enabled and user can read contacts in the root group"
+  desc "Project belongs to a group, crm is enabled and user can read contacts in source group"
   condition(:can_read_crm_contacts, scope: :subject) do
     subject_container&.crm_enabled? &&
-      (@user&.can?(:read_crm_contact, subject_container.root_ancestor) || @user&.support_bot?)
+      (@user&.can?(:read_crm_contact, subject_container.crm_group) || @user&.support_bot?)
   end
 
   desc "Issue is confidential"
@@ -49,10 +49,7 @@ class IssuePolicy < IssuablePolicy
   # group level issues license for now is equivalent to epics license. We'll have to migrate epics license to
   # work items context once epics are fully migrated to work items.
   condition(:group_level_issues_license_available) do
-    # group level issues license is available if
-    # - checking the license is not enforced, i.e. `!enforce_check_group_level_work_items_license` -> true
-    # - or if license is available, e.g. EE, i.e. `epics_license_available?` -> true
-    Feature.disabled?(:enforce_check_group_level_work_items_license) || epics_license_available?
+    epics_license_available?
   end
   # rubocop:enable Gitlab/FeatureFlagWithoutActor
 

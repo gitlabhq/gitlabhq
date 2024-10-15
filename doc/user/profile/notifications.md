@@ -265,6 +265,7 @@ To always receive notifications on your own issues, merge requests, and so on, t
 ## Notifications for unknown sign-ins
 
 > - Listing the full name and username of the signed-in user [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/225183) in GitLab 15.10.
+> - Geographic location [added](https://gitlab.com/gitlab-org/gitlab/-/issues/296128) in GitLab 17.5.
 
 NOTE:
 This feature is enabled by default for self-managed instances. Administrators may disable this feature
@@ -278,6 +279,7 @@ malicious or unauthorized sign-ins. This notification email includes the:
 - Hostname.
 - User's name and username.
 - IP address.
+- Geographic location.
 - Date and time of sign-in.
 
 GitLab uses several methods to identify a known sign-in. All methods must fail for a notification email to be sent.

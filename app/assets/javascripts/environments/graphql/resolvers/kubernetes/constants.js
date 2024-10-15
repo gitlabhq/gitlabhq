@@ -15,4 +15,5 @@ export const k8sResourceType = {
   k8sDeployments: 'k8sDeployments',
   fluxHelmReleases: HELM_RELEASES_RESOURCE_TYPE,
   fluxKustomizations: KUSTOMIZATIONS_RESOURCE_TYPE,
+  k8sEvents: 'k8sEvents',
 };

@@ -1,6 +1,6 @@
 ---
 stage: Monitor
-group: Observability
+group: Platform Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -97,11 +97,11 @@ To view exported traces:
 1. In the `nodejs-O11y-tutorial` project, on the left sidebar, select **Monitor > Traces**.
    If everything is working correctly, you should see a trace for each request.
 
-   ![Metrics UI](img/nodejs_metrics_ui.png)
+   ![Metrics UI](img/nodejs_metrics_ui_v17_3.png)
 
 1. Optional. Select a trace to view its span.
 
-   ![Traces UI](img/nodejs_single_trace.png)
+   ![Traces UI](img/nodejs_single_trace_v17_3.png)
 
 Congratulations! You successfully created an application, configured it to use GitLab Observability features, and examined the traces the application created. You can continue to experiment with this application, or try configuring a more complex application to export traces.
 

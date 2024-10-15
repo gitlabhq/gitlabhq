@@ -1,0 +1,25 @@
+#import "./design_note.fragment.graphql"
+#import "./design_file.fragment.graphql"
+#import "./diff_refs.fragment.graphql"
+#import "./discussion_resolved_status.fragment.graphql"
+
+fragment DesignItem on Design {
+  ...DesignFile
+  fullPath
+  imported
+  diffRefs {
+    ...DesignDiffRefs
+  }
+  discussions {
+    nodes {
+      id
+      replyId
+      ...ResolvedStatus
+      notes {
+        nodes {
+          ...DesignNote
+        }
+      }
+    }
+  }
+}

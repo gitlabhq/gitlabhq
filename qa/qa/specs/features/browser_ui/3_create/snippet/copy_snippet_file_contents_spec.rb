@@ -8,7 +8,7 @@ module QA
       let(:third_file_content) { 'Third file content' }
 
       let(:personal_snippet) do
-        create(:snippet,
+        create(:project_snippet,
           title: 'Personal snippet to copy file contents from',
           file_name: 'First file name',
           file_content: first_file_content,

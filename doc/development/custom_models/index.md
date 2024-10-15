@@ -25,7 +25,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 ## Configure self-hosted models
 
 1. Follow the [instructions](../../administration/self_hosted_models/configure_duo_features.md#configure-the-self-hosted-model) to configure self-hosted models
-1. Follow the [instructions](../../administration/self_hosted_models/configure_duo_features.md#configure-the-features-to-your-models) to configure features to use the models
+1. Follow the [instructions](../../administration/self_hosted_models/configure_duo_features.md#configure-gitlab-duo-features-to-use-self-hosted-models) to configure features to use the models
 
 AI-powered features are now powered by self-hosted models.
 
@@ -43,3 +43,51 @@ Currently, there are the following workarounds:
 ```ruby
 Ai::FeatureSetting.find_by(feature: :duo_chat).destroy!
 ```
+
+## Testing
+
+To comprehensively test that a feature using Custom Models works as expected, you must write `system` specs.
+
+This is required because, unlike `unit` tests, `system` specs invoke all the components involved in the custom models stack. For example, the Puma, Workhorse, AI Gateway + LLM Mock server.
+
+To write a new `system` test and for it to run successfully, there are the following prerequisites:
+
+- AI Gateway must be running (usually on port `5052`), and you must configure the environment variable `AI_GATEWAY_URL`:
+
+  ```shell
+  export AI_GATEWAY_URL="http://localhost:5052"
+  ```
+
+- We use [LiteLLM proxy](https://www.litellm.ai/) to return mock responses. You must configure LiteLLM to return mock responses using a configuration file:
+
+  ```yaml
+  # config.yaml
+  model_list:
+    - model_name: codestral
+      litellm_params:
+        model: ollama/codestral
+        mock_response: "Mock response from codestral"
+  ```
+
+- LiteLLM proxy must be running (usually on port `4000`), and the you must configure the environment variable `LITELLM_PROXY_URL`:
+
+  ```shell
+  litellm --config config.yaml
+
+  export LITELLM_PROXY_URL="http://localhost:4000"
+  ```
+
+- You must tag the RSpec file with `requires_custom_models_setup`.
+
+For an example, see [`ee/spec/features/custom_models/code_suggestions_spec.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/244e37a201620f9d98503e186b60e4e572a05d6e/ee/spec/features/custom_models/code_suggestions_spec.rb). In this file, we test that the code completions feature uses a self-hosted `codestral` model.
+
+### Testing On CI
+
+On CI, AI Gateway and LiteLLM proxy are already configured to run for all tests tagged with `requires_custom_models_setup`.
+
+<!-- markdownlint-disable proper-names -->
+<!-- vale gitlab_base.Substitutions = NO -->
+However, you must also update the `config` for LiteLLM if you are testing features that use newer models in the specs that have not been used before.
+The configuration for LiteLLM is in [`.gitlab/ci/global.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/2b14f212d48ca2c22904805600491baf8460427e/.gitlab/ci/global.gitlab-ci.yml#L332).
+<!-- vale gitlab_base.Substitutions = YES -->
+<!-- markdownlint-enable proper-names -->

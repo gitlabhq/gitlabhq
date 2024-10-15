@@ -21,7 +21,7 @@ RSpec.describe SnippetRepository, feature_category: :snippets do
 
   describe '.find_snippet' do
     it 'finds snippet by disk path' do
-      snippet = create(:snippet, author: user)
+      snippet = create(:project_snippet, author: user)
       snippet.track_snippet_repository(snippet.repository.storage)
 
       expect(described_class.find_snippet(snippet.disk_path)).to eq(snippet)

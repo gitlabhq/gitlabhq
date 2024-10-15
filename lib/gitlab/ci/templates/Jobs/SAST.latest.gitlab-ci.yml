@@ -14,9 +14,6 @@ variables:
   SAST_EXCLUDED_PATHS: "$DEFAULT_SAST_EXCLUDED_PATHS"
   SCAN_KUBERNETES_MANIFESTS: "false"
   GITLAB_ADVANCED_SAST_SCA_FILENAME: "GLAS_SCA.json"
-  GITLAB_ADVANCED_SAST_SCA_TEMP_OUTPUT_FILENAME: "sca.json"
-  GLAS_STATIC_REACHABILITY_MATCHER_VERSION: "v0.0.3"
-  GITLAB_CDX_TO_REACHABILITY_CALCULATOR_VERSION: "v1.1.0"
 
 sast:
   stage: test
@@ -79,6 +76,7 @@ gitlab-advanced-sast:
         - '**/*.cjs'
         - '**/*.mjs'
         - '**/*.cs'
+        - '**/*.rb'
     - if: $CI_OPEN_MERGE_REQUESTS  # Don't add it to a *branch* pipeline if it's already in a merge request pipeline.
       when: never
     # If there's no open merge request, add it to a *branch* pipeline instead.
@@ -96,6 +94,7 @@ gitlab-advanced-sast:
         - '**/*.cjs'
         - '**/*.mjs'
         - '**/*.cs'
+        - '**/*.rb'
 
 .static-reachability-rules:
   rules:
@@ -103,13 +102,15 @@ gitlab-advanced-sast:
       when: never
     - if: $SAST_EXCLUDED_ANALYZERS =~ /gitlab-advanced-sast/
       when: never
-    - if: $STATIC_REACHABILITY_ENABLED != 'true'
+    - if: $GITLAB_STATIC_REACHABILITY_ENABLED != 'true'
       when: never
       # Add the job to merge request pipelines if there's an open merge request.
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" &&
           $GITLAB_FEATURES =~ /\bsast_advanced\b/
       exists:
         - '**/*.py'
+        - '**/*.java'
+        - '**/*.jsp'
     - if: $CI_OPEN_MERGE_REQUESTS  # Don't add it to a *branch* pipeline if it's already in a merge request pipeline.
       when: never
     # If there's no open merge request, add it to a *branch* pipeline instead.
@@ -117,6 +118,8 @@ gitlab-advanced-sast:
           $GITLAB_FEATURES =~ /\bsast_advanced\b/
       exists:
         - '**/*.py'
+        - '**/*.java'
+        - '**/*.jsp'
 
 gitlab-static-reachability:
   extends:
@@ -134,13 +137,15 @@ gitlab-static-reachability:
       when: never
     - if: $SAST_EXCLUDED_ANALYZERS =~ /gitlab-advanced-sast/
       when: never
-    - if: $STATIC_REACHABILITY_ENABLED != 'true'
+    - if: $GITLAB_STATIC_REACHABILITY_ENABLED != 'true'
       when: never
       # Add the job to merge request pipelines if there's an open merge request.
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" &&
           $GITLAB_FEATURES =~ /\bsast_advanced\b/
       exists:
         - '**/*.py'
+        - '**/*.java'
+        - '**/*.jsp'
     - if: $CI_OPEN_MERGE_REQUESTS  # Don't add it to a *branch* pipeline if it's already in a merge request pipeline.
       when: never
     # If there's no open merge request, add it to a *branch* pipeline instead.
@@ -148,32 +153,27 @@ gitlab-static-reachability:
           $GITLAB_FEATURES =~ /\bsast_advanced\b/
       exists:
         - '**/*.py'
+        - '**/*.java'
+        - '**/*.jsp'
 
-enrich-cdx-results:
+gitlab-enrich-cdx-results:
   stage: .post
   extends: .static-reachability-rules
   variables:
-    LIGHTZ_PATH: $GITLAB_ADVANCED_SAST_SCA_FILENAME
-    RESULTS_PATH: $GITLAB_ADVANCED_SAST_SCA_TEMP_OUTPUT_FILENAME
+    GLAS_STATIC_REACHABILITY_MATCHER_VERSION: "v1.0.1"
+    GLAS_REPORT: $GITLAB_ADVANCED_SAST_SCA_FILENAME
     SCA_TO_SARIF_PROJECT_ID: 60962090
-    SBOM_REACHABILITY_CALCULATOR_PROJECT_ID: 60621659
     DEPENDENCY_SCANNING_PATTERN: "**/gl-sbom-*.cdx.json"
-    GLAS_REPORT: $GITLAB_ADVANCED_SAST_SCA_TEMP_OUTPUT_FILENAME
   image:
     name: "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"
     entrypoint: [""]
   before_script:
     - |
         wget "gitlab.com/api/v4/projects/${SCA_TO_SARIF_PROJECT_ID}/packages/generic/sca-to-sarif-matcher/${GLAS_STATIC_REACHABILITY_MATCHER_VERSION}/matcher" \
-          -O /matcher
+          --no-verbose -O /matcher
     - chmod +x /matcher
-    - |
-        wget "gitlab.com/api/v4/projects/${SBOM_REACHABILITY_CALCULATOR_PROJECT_ID}/packages/generic/sca-to-sarif-reachability_calculator/${GITLAB_CDX_TO_REACHABILITY_CALCULATOR_VERSION}/reachability_calculator" \
-          -O /calculator
-    - chmod +x /calculator
   script:
-    - /matcher
-    - /calculator process
+    - /matcher process
   artifacts:
     paths:
       - "**/gl-sbom-*.cdx.json"
@@ -296,7 +296,7 @@ semgrep-sast:
           $SAST_EXCLUDED_ANALYZERS !~ /gitlab-advanced-sast/ &&
           ($GITLAB_ADVANCED_SAST_ENABLED == 'true' || $GITLAB_ADVANCED_SAST_ENABLED == '1')
       variables:
-        SAST_EXCLUDED_PATHS: "$DEFAULT_SAST_EXCLUDED_PATHS, **/*.py, **/*.go, **/*.java, **/*.js, **/*.jsx, **/*.ts, **/*.tsx, **/*.cjs, **/*.mjs, **/*.cs"
+        SAST_EXCLUDED_PATHS: "$DEFAULT_SAST_EXCLUDED_PATHS, **/*.py, **/*.go, **/*.java, **/*.js, **/*.jsx, **/*.ts, **/*.tsx, **/*.cjs, **/*.mjs, **/*.cs, **/*.rb"
       exists:
         - '**/*.c'
         - '**/*.cc'
@@ -311,7 +311,6 @@ semgrep-sast:
         - '**/*.php'
         - '**/*.swift'
         - '**/*.m'
-        - '**/*.rb'
         - '**/*.kt'
     ## In case gitlab-advanced-sast already covers all the files that semgrep-sast would have scanned
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" &&
@@ -355,7 +354,7 @@ semgrep-sast:
           $SAST_EXCLUDED_ANALYZERS !~ /gitlab-advanced-sast/ &&
           ($GITLAB_ADVANCED_SAST_ENABLED == 'true' || $GITLAB_ADVANCED_SAST_ENABLED == '1')
       variables:
-        SAST_EXCLUDED_PATHS: "$DEFAULT_SAST_EXCLUDED_PATHS, **/*.py, **/*.go, **/*.java, **/*.js, **/*.jsx, **/*.ts, **/*.tsx, **/*.cjs, **/*.mjs, **/*.cs"
+        SAST_EXCLUDED_PATHS: "$DEFAULT_SAST_EXCLUDED_PATHS, **/*.py, **/*.go, **/*.java, **/*.js, **/*.jsx, **/*.ts, **/*.tsx, **/*.cjs, **/*.mjs, **/*.cs, **/*.rb"
       exists:
         - '**/*.c'
         - '**/*.cc'
@@ -370,7 +369,6 @@ semgrep-sast:
         - '**/*.php'
         - '**/*.swift'
         - '**/*.m'
-        - '**/*.rb'
         - '**/*.kt'
     ## In case gitlab-advanced-sast already covers all the files that semgrep-sast would have scanned
     - if: $CI_COMMIT_BRANCH &&

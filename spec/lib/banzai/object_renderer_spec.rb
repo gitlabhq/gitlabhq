@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::ObjectRenderer, feature_category: :team_planning do
+RSpec.describe Banzai::ObjectRenderer, feature_category: :markdown do
   let(:project) { create(:project, :repository) }
   let(:user) { project.first_owner }
   let(:renderer) do
@@ -13,7 +13,7 @@ RSpec.describe Banzai::ObjectRenderer, feature_category: :team_planning do
     )
   end
 
-  let(:object) { Note.new(note: 'hello', note_html: '<p dir="auto">hello</p>', cached_markdown_version: Gitlab::MarkdownCache::CACHE_COMMONMARK_VERSION << 16) }
+  let(:object) { Note.new(note: 'hello', note_html: '<p dir="auto">hello</p>', cached_markdown_version: Gitlab::MarkdownCache::CACHE_COMMONMARK_VERSION_SHIFTED) }
 
   describe '#render' do
     context 'with cache' do

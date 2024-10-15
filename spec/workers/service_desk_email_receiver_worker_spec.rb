@@ -22,7 +22,7 @@ RSpec.describe ServiceDeskEmailReceiverWorker, :mailer, feature_category: :servi
       context 'when service desk receiver raises an exception' do
         before do
           allow_next_instance_of(Gitlab::Email::ServiceDeskReceiver) do |receiver|
-            allow(receiver).to receive(:find_handler).and_return(nil)
+            allow(receiver).to receive(:handler).and_return(nil)
           end
           expect(Sidekiq.logger).to receive(:error).with(hash_including('exception.class' => Gitlab::Email::UnknownIncomingEmail.to_s)).and_call_original
         end

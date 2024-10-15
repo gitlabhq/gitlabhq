@@ -28,6 +28,6 @@ class ErrorTracking::ErrorEvent < ApplicationRecord
   end
 
   def release
-    payload.dig('release')
+    payload['release']
   end
 end

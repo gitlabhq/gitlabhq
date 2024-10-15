@@ -1,0 +1,15 @@
+---
+api_type: boolean
+attr: delete_unconfirmed_users
+clusterwide: false
+column: delete_unconfirmed_users
+db_type: boolean
+default: 'false'
+description: Specifies whether users who have not confirmed their email should be
+  deleted. Default is `false`. When set to `true`, unconfirmed users are deleted after
+  `unconfirmed_users_delete_after_days` days. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352514)
+  in GitLab 16.1. Self-managed, Premium and Ultimate only.
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: true

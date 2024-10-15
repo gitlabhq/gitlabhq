@@ -1,0 +1,13 @@
+---
+api_type: array of strings
+attr: outbound_local_requests_whitelist
+clusterwide: true
+column: outbound_local_requests_whitelist
+db_type: character
+default: "'{}'::character"
+description: Define a list of trusted domains or IP addresses to which local requests
+  are allowed when local requests for webhooks and integrations are disabled.
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: true

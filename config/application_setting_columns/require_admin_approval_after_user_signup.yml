@@ -1,0 +1,14 @@
+---
+api_type: boolean
+attr: require_admin_approval_after_user_signup
+clusterwide: false
+column: require_admin_approval_after_user_signup
+db_type: boolean
+default: 'true'
+description: When enabled, any user that signs up for an account using the registration
+  form is placed under a **Pending approval** state and has to be explicitly [approved](../administration/moderate_users.md)
+  by an administrator.
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: true

@@ -65,7 +65,7 @@ describe('WorkItemAddRelationshipForm', () => {
       { text: 'is blocked by', value: LINKED_ITEM_TYPE_VALUE.BLOCKED_BY },
     ]);
     expect(findLinkWorkItemButton().attributes().disabled).toBe('true');
-    expect(findMaxWorkItemNote().text()).toBe('Add a maximum of 10 items at a time.');
+    expect(findMaxWorkItemNote().text()).toBe('Add up to 10 items at a time.');
   });
 
   it('renders work item token input with default props', () => {

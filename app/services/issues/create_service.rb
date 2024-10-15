@@ -158,8 +158,6 @@ module Issues
       issue.run_after_commit do
         NewIssueWorker.perform_async(issue.id, user.id, issue.class.to_s)
         Issues::PlacementWorker.perform_async(nil, issue.project_id)
-        # issue.namespace_id can point to either a project through project namespace or a group.
-        Onboarding::IssueCreatedWorker.perform_async(issue.namespace_id)
       end
     end
   end

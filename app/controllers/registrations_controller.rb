@@ -28,7 +28,7 @@ class RegistrationsController < Devise::RegistrationsController
 
   feature_category :instance_resiliency
 
-  helper_method :arkose_labs_enabled?, :registration_path_params, :preregistration_tracking_label
+  helper_method :arkose_labs_enabled?, :preregistration_tracking_label, :onboarding_status
 
   def new
     @resource = build_resource
@@ -100,8 +100,13 @@ class RegistrationsController < Devise::RegistrationsController
   def after_successful_create_hook(user)
     accept_pending_invitations
     persist_accepted_terms_if_required(user)
+    execute_system_hooks(user)
     notify_new_instance_access_request(user)
     track_successful_user_creation(user)
+  end
+
+  def execute_system_hooks(user)
+    SystemHooksService.new.execute_hooks_for(user, :create)
   end
 
   def notify_new_instance_access_request(user)
@@ -146,19 +151,16 @@ class RegistrationsController < Devise::RegistrationsController
   end
   strong_memoize_attr :onboarding_status
 
+  # rubocop:disable Gitlab/NoCodeCoverageComment -- Fully tested in EE and tested in Foss through feature specs in spec/features/invites_spec.rb
+  # :nocov:
   def onboarding_status_params
-    # We'll override this in the trial registrations controller so we can add on trial param
-    # and make it so we can figure out the registration_type with the same code.
-    params.to_unsafe_h.deep_symbolize_keys
+    # Onboarding::Status does not use any params in CE, we'll override in EE
+    {}
   end
+  # rubocop:enable Gitlab/NoCodeCoverageComment
 
   def allow_flash_content?(user)
     user.blocked_pending_approval? || onboarding_status.single_invite?
-  end
-
-  # overridden in EE
-  def registration_path_params
-    {}
   end
 
   def track_successful_user_creation(user)

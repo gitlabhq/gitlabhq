@@ -268,7 +268,6 @@ RSpec.describe Issues::SetCrmContactsService, feature_category: :team_planning d
         let(:params) { { add_ids: [contacts[3].id] } }
 
         before do
-          stub_feature_flags(enforce_check_group_level_work_items_license: true)
           stub_licensed_features(epics: true)
         end
 

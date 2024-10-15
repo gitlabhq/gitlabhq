@@ -37,6 +37,19 @@ export const getQueryResponse = {
                 },
               ],
             },
+            reviewers: {
+              nodes: [
+                {
+                  __typename: 'UserCore',
+                  id: 'gid://gitlab/User/789',
+                  avatarUrl: 'avatar/url',
+                  name: 'Bart Simpson',
+                  username: 'bsimpson',
+                  webUrl: 'url/bsimpson',
+                  webPath: '/bsimpson',
+                },
+              ],
+            },
             author: {
               __typename: 'UserCore',
               id: 'gid://gitlab/User/456',
@@ -62,6 +75,8 @@ export const getQueryResponse = {
             conflicts: false,
             sourceBranchExists: true,
             targetBranchExists: true,
+            targetBranch: 'main',
+            targetBranchPath: '/target-branch',
             approved: false,
             approvedBy: {
               nodes: [
@@ -69,6 +84,10 @@ export const getQueryResponse = {
                   id: 1,
                 },
               ],
+            },
+            taskCompletionStatus: {
+              completedCount: 0,
+              count: 1,
             },
           },
         ],

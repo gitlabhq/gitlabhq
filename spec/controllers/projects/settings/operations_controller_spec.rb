@@ -277,7 +277,7 @@ RSpec.describe Projects::Settings::OperationsController, feature_category: :inci
     end
   end
 
-  context 'error tracking', feature_category: :error_tracking do
+  context 'error tracking', feature_category: :observability do
     describe 'GET #show' do
       context 'with existing setting' do
         let!(:error_tracking_setting) do

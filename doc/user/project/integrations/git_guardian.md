@@ -99,7 +99,7 @@ When working with the GitGuardian integration, you might encounter the following
 
 ### `500` HTTP errors
 
-You might get a HTTP `500` error.
+You might get an HTTP `500` error.
 
 This issue occurs for when requests time out for commits with a lot of changed files.
 
@@ -107,9 +107,9 @@ If this happens with a commit with more than 50 files changed,
 the workaround is to break down your changes into smaller commits and push
 them one by one.
 
-### `Filename: ensure this value has at most 256 characters`
+### Error: `Filename: ensure this value has at most 256 characters`
 
-You might get a HTTP `400` error that states `Filename: ensure this value has at most 256 characters`.
+You might get an HTTP `400` error that states `Filename: ensure this value has at most 256 characters`.
 
 This issue occurs when some of the changed files you are pushing in that commit have the filename (not the path) longer then 256 characters.
 

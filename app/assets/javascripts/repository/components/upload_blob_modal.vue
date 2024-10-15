@@ -9,6 +9,7 @@ import {
   GlButton,
   GlAlert,
 } from '@gitlab/ui';
+import FileIcon from '~/vue_shared/components/file_icon.vue';
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { contentTypeMultipartFormData } from '~/lib/utils/headers';
@@ -42,6 +43,7 @@ export default {
     GlButton,
     UploadDropzone,
     GlAlert,
+    FileIcon,
   },
   i18n: {
     COMMIT_LABEL,
@@ -213,7 +215,7 @@ export default {
       @primary.prevent="submitForm"
     >
       <upload-dropzone
-        class="gl-h-200! gl-mb-4"
+        class="gl-mb-6 gl-h-26"
         single-file-selection
         :valid-file-mimetypes="$options.validFileMimetypes"
         :is-file-valid="() => true"
@@ -223,9 +225,12 @@ export default {
           v-if="file"
           class="card upload-dropzone-card upload-dropzone-border gl-h-full gl-w-full gl-items-center gl-justify-center gl-p-3"
         >
-          <img v-if="filePreviewURL" :src="filePreviewURL" class="gl-h-11" />
-          <div>{{ formattedFileSize }}</div>
-          <div>{{ file.name }}</div>
+          <file-icon :file-name="file.name" :size="24" />
+          <div class="gl-mb-2">
+            {{ file.name }}
+            &middot;
+            <span class="gl-text-subtle">{{ formattedFileSize }}</span>
+          </div>
           <gl-button
             category="tertiary"
             variant="confirm"

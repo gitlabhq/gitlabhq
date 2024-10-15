@@ -1,0 +1,12 @@
+---
+api_type: boolean
+attr: require_admin_two_factor_authentication
+clusterwide: true
+column: require_admin_two_factor_authentication
+db_type: boolean
+default: 'false'
+description: Allow administrators to require 2FA for all administrators on the instance.
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: true

@@ -1,6 +1,6 @@
 - breadcrumb_title _("Dashboard")
 - page_title _("Dashboard")
-- billable_users_url = help_page_path('subscriptions/self_managed/index', anchor: 'billable-users')
+- billable_users_url = help_page_path('subscriptions/self_managed/index.md', anchor: 'billable-users')
 - billable_users_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer nofollow">'.html_safe % { url: billable_users_url }
 
 = render_if_exists 'shared/manual_quarterly_reconciliation_banner'
@@ -87,7 +87,7 @@
 
           = feature_entry(_('LDAP'),
             enabled: Gitlab.config.ldap.enabled,
-            doc_href: help_page_path('administration/auth/ldap/index'))
+            doc_href: help_page_path('administration/auth/ldap/index.md'))
 
           = feature_entry(_('Gravatar'),
             href: general_admin_application_settings_path(anchor: 'js-account-settings'),
@@ -96,18 +96,18 @@
           = feature_entry(_('OmniAuth'),
             href: general_admin_application_settings_path(anchor: 'js-signin-settings'),
             enabled: Gitlab::Auth.omniauth_enabled?,
-            doc_href: help_page_path('integration/omniauth'))
+            doc_href: help_page_path('integration/omniauth.md'))
 
           = feature_entry(_('Reply by email'),
             enabled: Gitlab::Email::IncomingEmail.enabled?,
-            doc_href: help_page_path('administration/reply_by_email'))
+            doc_href: help_page_path('administration/reply_by_email.md'))
 
           = render_if_exists 'admin/dashboard/elastic_and_geo'
 
           = feature_entry(_('Container Registry'),
             href: ci_cd_admin_application_settings_path(anchor: 'js-registry-settings'),
             enabled: Gitlab.config.registry.enabled,
-            doc_href: help_page_path('user/packages/container_registry/index'))
+            doc_href: help_page_path('user/packages/container_registry/index.md'))
 
           = feature_entry(_('GitLab Pages'),
             enabled: Gitlab.config.pages.enabled,

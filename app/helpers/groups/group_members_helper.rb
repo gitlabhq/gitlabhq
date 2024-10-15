@@ -14,7 +14,7 @@ module Groups::GroupMembersHelper
     banned:,
     include_relations:,
     search:,
-    pending_members:,
+    pending_members_count:,
     placeholder_users:
   )
     {

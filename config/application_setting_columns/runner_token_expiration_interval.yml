@@ -1,0 +1,14 @@
+---
+api_type: integer
+attr: runner_token_expiration_interval
+clusterwide: false
+column: runner_token_expiration_interval
+db_type: integer
+default:
+description: Set the expiration time (in seconds) of authentication tokens of newly
+  registered instance runners. Minimum value is 7200 seconds. For more information,
+  see [Automatically rotate authentication tokens](../ci/runners/configure_runners.md#automatically-rotate-runner-authentication-tokens).
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: false

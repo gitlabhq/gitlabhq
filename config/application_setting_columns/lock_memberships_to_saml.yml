@@ -1,0 +1,12 @@
+---
+api_type:
+attr: lock_memberships_to_saml
+clusterwide: false
+column: lock_memberships_to_saml
+db_type: boolean
+default: 'false'
+description:
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

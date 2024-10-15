@@ -4,22 +4,23 @@ module Ci
   module Catalog
     module Resources
       class ReleaseService
-        def initialize(release, user, components_data)
+        def initialize(release, user, metadata)
           @release = release
           @user = user
-          @components_data = components_data
+          @metadata = metadata
           @project = release.project
           @errors = []
         end
 
         def execute
-          track_release_duration do
+          resource_version = track_release_duration do
+            check_access
             validate_catalog_resource
             create_version
           end
 
           if errors.empty?
-            ServiceResponse.success
+            ServiceResponse.success(payload: { version: resource_version })
           else
             ServiceResponse.error(message: errors.join(', '))
           end
@@ -27,7 +28,7 @@ module Ci
 
         private
 
-        attr_reader :project, :errors, :release, :user, :components_data
+        attr_reader :project, :errors, :release, :user, :metadata
 
         def track_release_duration
           name = :gitlab_ci_catalog_release_duration_seconds
@@ -37,13 +38,23 @@ module Ci
           histogram = ::Gitlab::Metrics.histogram(name, comment, {}, buckets)
           start_time = ::Gitlab::Metrics::System.monotonic_time
 
-          yield
+          result = yield
 
           duration = ::Gitlab::Metrics::System.monotonic_time - start_time
           histogram.observe({}, duration.seconds)
+
+          result
+        end
+
+        def check_access
+          return if Ability.allowed?(user, :publish_catalog_version, release)
+
+          errors << 'You are not authorized to publish a version to the CI/CD catalog'
         end
 
         def validate_catalog_resource
+          return if errors.present?
+
           response = Ci::Catalog::Resources::ValidateService.new(project, release.sha).execute
           return if response.success?
 
@@ -53,10 +64,12 @@ module Ci
         def create_version
           return if errors.present?
 
-          response = Ci::Catalog::Resources::Versions::CreateService.new(release, user, components_data).execute
-          return if response.success?
+          response = Ci::Catalog::Resources::Versions::CreateService.new(release, user, metadata).execute
+          return response.payload[:version] if response.success?
 
           errors << response.message
+
+          nil
         end
       end
     end

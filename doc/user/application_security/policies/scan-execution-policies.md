@@ -3,6 +3,8 @@ redirect_to: 'scan_execution_policies.md'
 remove_date: '2024-10-25'
 ---
 
+<!-- markdownlint-disable -->
+
 This document was moved to [another location](scan_execution_policies.md).
 
 <!-- This redirect file can be deleted after <2024-10-25>. -->

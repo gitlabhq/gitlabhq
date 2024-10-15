@@ -1,6 +1,6 @@
 - issuable = local_assigns.fetch(:issuable)
 - form = local_assigns.fetch(:form)
-- contribution_help_link = help_page_path('user/project/merge_requests/allow_collaboration')
+- contribution_help_link = help_page_path('user/project/merge_requests/allow_collaboration.md')
 - contribution_help_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: contribution_help_link }
 
 - return unless issuable.is_a?(MergeRequest)

@@ -1,5 +1,5 @@
 ---
-stage: Verify
+stage: Govern
 group: Pipeline Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -200,7 +200,7 @@ job_with_secrets:
 ### `400: missing token` status code
 
 This error indicates that one or more basic components necessary for ID tokens are
-either missing or not configured as expect.
+either missing or not configured as expected.
 
 To find the problem, an administrator can look for more details in the instance's
 `exceptions_json.log` for the specific method that failed.

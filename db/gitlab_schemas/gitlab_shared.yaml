@@ -6,4 +6,4 @@ allow_cross_joins:
   - gitlab_internal
 allow_cross_transactions:
   - gitlab_internal
-cell_local: false
+require_sharding_key: false

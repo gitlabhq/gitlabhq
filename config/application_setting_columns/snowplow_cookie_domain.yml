@@ -1,0 +1,12 @@
+---
+api_type: string
+attr: snowplow_cookie_domain
+clusterwide: false
+column: snowplow_cookie_domain
+db_type: character
+default:
+description: The Snowplow cookie domain. (for example, `.gitlab.com`)
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

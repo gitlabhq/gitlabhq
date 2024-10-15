@@ -93,11 +93,11 @@ ul.content-list {
       font-weight: $gl-font-weight-bold;
     }
 
-    a:not(.gfm-project_member) {
-      color: $gl-text-color;
+    a {
+      @apply gl-text-default;
 
       &.inline-link {
-        color: $blue-600;
+        @apply gl-text-link;
       }
     }
 
@@ -163,10 +163,6 @@ ul.content-list {
 
   .badge-secondary {
     color: $gl-text-color-secondary;
-  }
-
-  .avatar-cell {
-    align-self: flex-start;
   }
 }
 

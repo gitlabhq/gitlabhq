@@ -66,6 +66,21 @@ RSpec.describe Gitlab::Email::ServiceDeskReceiver, feature_category: :service_de
         it_behaves_like 'received successfully'
       end
 
+      context 'when in a X-Forwarded-To header' do
+        let(:email) do
+          <<~EMAIL
+          From: from@example.com
+          To: to@example.com
+          X-Forwarded-To: #{service_desk_email}
+          Subject: Issue titile
+
+          Issue description
+          EMAIL
+        end
+
+        it_behaves_like 'received successfully'
+      end
+
       context 'when in a Cc header' do
         let(:email) do
           <<~EMAIL

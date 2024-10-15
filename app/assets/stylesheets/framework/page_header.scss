@@ -21,6 +21,11 @@
     @include media-breakpoint-up(sm) {
       margin-left: 4px;
     }
+
+    &.s24 {
+      margin-top: -2px;
+      margin-right: 4px;
+    }
   }
 
   .commit-committer-link,

@@ -4,7 +4,7 @@ module Sidebars
   module UserSettings
     module Menus
       class CommentTemplatesMenu < ::Sidebars::Menu
-        include UsersHelper
+        include ::UsersHelper
 
         override :link
         def link

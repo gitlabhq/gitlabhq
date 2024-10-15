@@ -1,0 +1,12 @@
+---
+api_type: boolean
+attr: email_restrictions_enabled
+clusterwide: true
+column: email_restrictions_enabled
+db_type: boolean
+default: 'false'
+description: Enable restriction for sign-up by email.
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: true

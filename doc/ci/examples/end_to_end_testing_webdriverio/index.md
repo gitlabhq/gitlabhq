@@ -22,7 +22,7 @@ environment, reducing the effort to assess the impact of changes. Thus, when we 
 and it will immediately be clear that the application can still be properly built and deployed. After all, you can _see_ it
 running!
 
-![dependencies.io](img/deployed_dependency_update.png)
+![dependencies.io](img/deployed_dependency_update_v11_8.png)
 
 However, looking at the freshly deployed code to check whether it still looks and behaves as
 expected is repetitive manual work, which means it is a prime candidate for automation. This is

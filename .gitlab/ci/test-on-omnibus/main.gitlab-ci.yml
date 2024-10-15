@@ -73,6 +73,7 @@ instance:
     - .qa
   variables:
     QA_SCENARIO: Test::Instance::Image
+    QA_RUN_IN_PARALLEL: false
   rules:
     - !reference [.rules:test:smoke-for-omnibus-mr, rules]
     - !reference [.rules:test:feature-flags-set, rules]  # always run instance to validate ff change
@@ -511,6 +512,21 @@ ai-gateway-no-license:
   rules:
     - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Integration::AiGatewayNoLicense/
+    - !reference [.rules:test:manual, rules]
+
+# ========== continuous-vulnerability-scanning ===========
+
+continuous-vulnerabiity-scanning:
+  extends:
+    - .qa
+    - .failure-videos
+  variables:
+    QA_SCENARIO: Test::Integration::ContinuousVulnerabilityScanning
+    QA_MOCK_GITHUB: "true"
+  rules:
+    - !reference [.rules:test:ee-only, rules]
+    - !reference [.rules:test:qa, rules]
+    - if: $QA_SUITES =~ /Test::Integration::ContinuousVulnerabilityScanning/
     - !reference [.rules:test:manual, rules]
 
 # ------------------------------------------

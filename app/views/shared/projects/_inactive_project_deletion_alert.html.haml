@@ -1,5 +1,5 @@
 - if show_inactive_project_deletion_banner?(@project)
-  - link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('administration/inactive_project_deletion') }
+  - link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('administration/inactive_project_deletion.md') }
   - link_end = '</a>'.html_safe
   - deletion_date = inactive_project_deletion_date(@project)
   - title = _('Due to inactivity, this project is scheduled to be deleted on %{deletion_date}. %{link_start}Why is this scheduled?%{link_end}').html_safe % { deletion_date: deletion_date, link_start: link_start, link_end: link_end }

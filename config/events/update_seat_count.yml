@@ -1,0 +1,13 @@
+---
+description: tracks when a user updates the number of seats (users) during the subscription process.
+action: update_seat_count
+product_group: acquisition
+milestone: '14.8'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74828
+distributions:
+  - ce
+  - ee
+tiers:
+  - free
+  - premium
+  - ultimate

@@ -48,7 +48,7 @@ POST /groups/:id/export
 
 | Attribute | Type           | Required | Description                              |
 | --------- | -------------- | -------- | ---------------------------------------- |
-| `id`      | integer/string | yes      | ID of the group owned by the authenticated user |
+| `id`      | integer/string | yes      | ID of the group |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/export"
@@ -70,7 +70,7 @@ GET /groups/:id/export/download
 
 | Attribute | Type           | Required | Description                              |
 | --------- | -------------- | -------- | ---------------------------------------- |
-| `id`      | integer/string | yes      | ID of the group owned by the authenticated user |
+| `id`      | integer/string | yes      | ID of the group |
 
 ```shell
 group=1

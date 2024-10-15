@@ -7,7 +7,7 @@
 %section.js-search-settings-section
   = render ::Layouts::PageHeadingComponent.new(_('Integrations')) do |c|
     - c.with_description do
-      - integrations_link = link_to('', help_page_url('user/project/integrations/index'))
+      - integrations_link = link_to('', help_page_url('user/project/integrations/index.md'))
       - webhooks_link = link_to('', project_hooks_path(@project))
       = safe_format(_("%{integrations_link_start}Integrations%{link_end} enable you to make third-party applications part of your GitLab workflow. If the available integrations don't meet your needs, consider using a %{webhooks_link_start}webhook%{link_end}."), tag_pair(integrations_link, :integrations_link_start, :link_end), tag_pair(webhooks_link, :webhooks_link_start, :link_end))
     end

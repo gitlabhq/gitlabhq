@@ -54,7 +54,7 @@ export default {
 
 <template>
   <gl-icon
-    v-gl-tooltip="{ placement: tooltipPlacement }"
+    v-gl-tooltip="{ placement: tooltipPlacement, boundary: 'viewport' }"
     :aria-label="visibilityTooltip"
     :name="visibilityIcon"
     :title="visibilityTooltip"

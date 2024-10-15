@@ -68,6 +68,10 @@ module Banzai
 
           if backref_node
             backref_node[:href] += rand_suffix
+
+            footnote_id = backref_node['data-footnote-backref-idx']
+            backref_node[:title] = format(_("Back to reference %{footnote_id}"), footnote_id: footnote_id)
+            backref_node['aria-label'] = backref_node[:title]
             backref_node.append_class('footnote-backref')
           end
 

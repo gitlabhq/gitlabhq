@@ -33,11 +33,11 @@ RSpec.describe Ci::ResourceGroup, feature_category: :continuous_delivery do
     end
   end
 
-  describe '#assign_resource_to', :ci_partitionable do
+  describe '#assign_resource_to' do
     include Ci::PartitioningHelpers
 
     before do
-      stub_current_partition_id(ci_testing_partition_id_for_check_constraints)
+      stub_current_partition_id(ci_testing_partition_id)
     end
 
     subject { resource_group.assign_resource_to(build) }
@@ -74,11 +74,11 @@ RSpec.describe Ci::ResourceGroup, feature_category: :continuous_delivery do
     end
   end
 
-  describe '#release_resource_from', :ci_partitionable do
+  describe '#release_resource_from' do
     include Ci::PartitioningHelpers
 
     before do
-      stub_current_partition_id(ci_testing_partition_id_for_check_constraints)
+      stub_current_partition_id(ci_testing_partition_id)
     end
 
     subject { resource_group.release_resource_from(build) }

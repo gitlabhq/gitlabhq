@@ -17,6 +17,24 @@ module Gitlab
       include AsyncIndexes::MigrationHelpers
       include AsyncConstraints::MigrationHelpers
       include WraparoundVacuumHelpers
+      include PartitionHelpers
+
+      INTEGER_IDS_YET_TO_INITIALIZED_TO_BIGINT_FILE_PATH = 'db/integer_ids_not_yet_initialized_to_bigint.yml'
+
+      TABLE_INT_IDS_YAML_FILE_COMMENT = <<-MESSAGE.strip_heredoc
+        # -- DON'T MANUALLY EDIT --
+        # Contains the list of integer IDs which were converted to bigint for new installations in
+        # https://gitlab.com/gitlab-org/gitlab/-/issues/438124, but they are still integers for existing instances.
+        # On initialize_conversion_of_integer_to_bigint those integer IDs will be removed automatically from here.
+      MESSAGE
+
+      PENDING_INT_IDS_ERROR_MSG = "'%{table}' table still has %{int_ids} integer IDs. "\
+        "Please include them in the 'columns' param and in your backfill migration. "\
+        "For more info: https://gitlab.com/gitlab-org/gitlab/-/issues/482470"
+
+      ENFORCE_INITIALIZE_ALL_INT_IDS_FROM_MILESTONE = '17.4'
+
+      DEFAULT_TIMESTAMP_COLUMNS = %i[created_at updated_at].freeze
 
       def define_batchable_model(table_name, connection: self.connection, primary_key: nil)
         super(table_name, connection: connection, primary_key: primary_key)
@@ -29,8 +47,6 @@ module Gitlab
       def each_batch_range(table_name, connection: self.connection, **kwargs)
         super(table_name, connection: connection, **kwargs)
       end
-
-      DEFAULT_TIMESTAMP_COLUMNS = %i[created_at updated_at].freeze
 
       # Adds `created_at` and `updated_at` columns with timezone information.
       #
@@ -744,7 +760,17 @@ module Gitlab
       # columns - The name, or array of names, of the column(s) that we want to convert to bigint.
       # primary_key - The name of the primary key column (most often :id)
       def initialize_conversion_of_integer_to_bigint(table, columns, primary_key: :id)
-        mappings = Array(columns).map do |c|
+        integer_ids = table_integer_ids
+        columns = Array(columns)
+        pending_int_ids = Array(integer_ids[table.to_s]) - columns.map(&:to_s)
+
+        # This check can be removed once we convert all integer IDs to bigint
+        # in https://gitlab.com/gitlab-org/gitlab/-/issues/465805
+        if can_enforce_initializing_all_int_ids? && pending_int_ids.present?
+          raise format(PENDING_INT_IDS_ERROR_MSG, table: table, int_ids: pending_int_ids)
+        end
+
+        mappings = columns.map do |c|
           {
             c => {
               from_type: :int,
@@ -760,6 +786,11 @@ module Gitlab
           primary_key: primary_key,
           old_bigint_column_naming: true
         )
+
+        deleted = integer_ids.delete(table.to_s)
+        return unless can_enforce_initializing_all_int_ids? && deleted.present?
+
+        update_table_integer_ids_file(integer_ids)
       end
 
       # Reverts `initialize_conversion_of_integer_to_bigint`
@@ -774,6 +805,12 @@ module Gitlab
         remove_rename_triggers(table, trigger_name)
 
         temporary_columns.each { |column| remove_column(table, column, if_exists: true) }
+
+        return unless can_enforce_initializing_all_int_ids?
+
+        integer_ids = table_integer_ids
+        integer_ids[table.to_s] = columns.map(&:to_s)
+        update_table_integer_ids_file(integer_ids)
       end
       alias_method :cleanup_conversion_of_integer_to_bigint, :revert_initialize_conversion_of_integer_to_bigint
 
@@ -1206,20 +1243,6 @@ into similar problems in the future (e.g. when new tables are created).
       end
       # rubocop:enable Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
 
-      def partition?(table_name)
-        if view_exists?(:postgres_partitions)
-          Gitlab::Database::PostgresPartition.partition_exists?(table_name)
-        else
-          Gitlab::Database::PostgresPartition.legacy_partition_exists?(table_name)
-        end
-      end
-
-      def table_partitioned?(table_name)
-        Gitlab::Database::PostgresPartitionedTable
-          .find_by_name_in_current_schema(table_name)
-          .present?
-      end
-
       # While it is safe to call `change_column_default` on a column without
       # default it would still require access exclusive lock on the table
       # and for tables with high autovacuum(wraparound prevention) it will
@@ -1242,6 +1265,10 @@ into similar problems in the future (e.g. when new tables are created).
         execute(<<~SQL.squish)
           LOCK TABLE #{only_param} #{tables_param} IN #{mode_param} MODE #{nowait_param}
         SQL
+      end
+
+      def table_integer_ids
+        YAML.safe_load_file(File.join(INTEGER_IDS_YET_TO_INITIALIZED_TO_BIGINT_FILE_PATH))
       end
 
       private
@@ -1388,6 +1415,22 @@ into similar problems in the future (e.g. when new tables are created).
             #{not_valid};
           SQL
         end
+      end
+
+      def update_table_integer_ids_file(integer_ids)
+        return unless Rails.env.development?
+
+        File.open(INTEGER_IDS_YET_TO_INITIALIZED_TO_BIGINT_FILE_PATH, 'w') do |file|
+          file.write(TABLE_INT_IDS_YAML_FILE_COMMENT)
+          file.write(integer_ids.to_yaml)
+        end
+      end
+
+      def can_enforce_initializing_all_int_ids?
+        return false unless respond_to?(:milestone)
+
+        Gitlab::VersionInfo.parse_from_milestone(milestone) >
+          Gitlab::VersionInfo.parse_from_milestone(ENFORCE_INITIALIZE_ALL_INT_IDS_FROM_MILESTONE)
       end
     end
   end

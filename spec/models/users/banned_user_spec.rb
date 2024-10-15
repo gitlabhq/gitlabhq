@@ -25,8 +25,9 @@ RSpec.describe Users::BannedUser, feature_category: :user_management do
   describe 'scopes' do
     describe '.by_detumbled_email' do
       let_it_be(:other_user) { create(:user, :banned, email: 'other_user+1@example.org') }
+      let_it_be(:other_user_unconfirmed_email) { create(:email, user: other_user, email: 'user+3@example.org') }
 
-      it 'returns banned user records matching the given email' do
+      it 'returns banned user records with confirmed email matching the given email' do
         results = described_class.by_detumbled_email('USER+2@EXAMPLE.ORG')
         expect(results).to contain_exactly(user.banned_user)
       end

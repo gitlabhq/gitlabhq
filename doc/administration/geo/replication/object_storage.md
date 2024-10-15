@@ -56,7 +56,7 @@ For LFS, follow the documentation to
 [set up LFS object storage](../../lfs/index.md#storing-lfs-objects-in-remote-object-storage).
 
 For CI job artifacts, there is similar documentation to configure
-[jobs artifact object storage](../../job_artifacts.md#using-object-storage)
+[jobs artifact object storage](../../cicd/job_artifacts.md#using-object-storage)
 
 For user uploads, there is similar documentation to configure [upload object storage](../../uploads.md#using-object-storage)
 
@@ -69,7 +69,7 @@ configure the **secondary** in a few ways:
 - Use a separate object store and enable the **Allow this secondary node to replicate
   content on Object Storage** setting.
 
-GitLab does not currently support the case where both:
+GitLab does not support the case where both:
 
 - The **primary** site uses local storage.
 - A **secondary** site uses object storage.

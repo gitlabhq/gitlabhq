@@ -304,6 +304,10 @@
 .python-patterns: &python-patterns
   - '{Pipfile,*/Pipfile,*/*/Pipfile}'
 
+.ruby-dependency-patterns: &ruby-dependency-patterns
+  - '{Gemfile.lock,*/Gemfile.lock,*/*/Gemfile.lock}'
+  - '{Gemfile.next.lock,*/Gemfile.next.lock,*/*/Gemfile.next.lock}'
+
 .dependency-patterns: &dependency-patterns
   - '{Gemfile.lock,*/Gemfile.lock,*/*/Gemfile.lock}'
   - '{Gemfile.next.lock,*/Gemfile.next.lock,*/*/Gemfile.next.lock}'
@@ -353,6 +357,10 @@
 
 .lib-gitlab-patterns: &lib-gitlab-patterns
   - "{,ee/,jh/}lib/{,ee/,jh/}gitlab/**/*"
+
+.db-docs-patterns: &db-docs-patterns
+  - "{,ee/,jh/}{app/models}/**/*"
+  - "db/docs/**/*"
 
 # Patterns to match pure Ruby code
 .ruby-patterns: &ruby-patterns
@@ -926,6 +934,19 @@
     - !reference [".rails:rules:predictive-default-rules", rules]
     - !reference [".rails:rules:system:predictive-default-rules", rules]
 
+######################
+# DB rules #
+######################
+.db:rules:docs-up-to-date:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-merge-request-labels-pipeline-expedite
+      when: never
+    - <<: *if-merge-request-labels-run-all-rspec
+    - <<: *if-merge-request
+      changes: *db-docs-patterns
+
 ################
 # Shared rules #
 ################
@@ -1125,6 +1146,9 @@
       when: never
     - <<: *if-not-ee
       when: never
+    # The security mirror doesn't use the package registry
+    - <<: *if-security-schedule
+      when: never
     # That would run for any project that has a "maintenance" pipeline schedule
     # but in fact, the cache package is only uploaded for gitlab.com/gitlab-org/gitlab and jihulab.com/gitlab-cn/gitlab
     - <<: *if-schedule-maintenance
@@ -1314,7 +1338,7 @@
   rules:
     - <<: *if-not-dot-com-gitlab-org-default-branch
       when: never
-    - !reference [.frontend:rules:default-frontend-jobs-with-docs-changes, rules]
+    - !reference [.frontend:rules:default-frontend-jobs, rules]
 
 # .frontend:rules:default-frontend-jobs, with a additional rules when MR is not approved
 .frontend:rules:frontend_fixture:
@@ -1620,6 +1644,8 @@
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-schedule
       allow_failure: true
+    - <<: *if-default-branch-schedule-nightly
+      allow_failure: true
     # Rules to support .qa:rules:test-on-omnibus-ee
     - <<: *if-merge-request
       changes: *dependency-patterns
@@ -1709,6 +1735,7 @@
     PROCESS_TEST_RESULTS: "true"
     KNAPSACK_GENERATE_REPORT: "true"
     QA_SAVE_TEST_METRICS: "true"
+    QA_RUN_IN_PARALLEL: "false" # disable single job parallelization due to incompatibility with knapsack and coverband
 
 .qa:rules:e2e-schedule-blocking:
   rules:
@@ -1807,28 +1834,20 @@
 
 .qa:rules:e2e:test-on-cng:
   rules:
-    # Until https://gitlab.com/gitlab-org/quality/quality-engineering/CNG-mirror is stable enough,
-    # test-on-cng should not be part of development flow.
-    # Once it's ready, delete the two following rules, and uncomment the commented lines below.
-    - !reference [".qa:rules:e2e-test-never-run", rules]
-    - <<: *if-dot-com-gitlab-org-schedule
-      variables:
-        KNAPSACK_GENERATE_REPORT: "true"
-        PROCESS_TEST_RESULTS: "true"
-        QA_SAVE_TEST_METRICS: "true"
-      allow_failure: true
-    # - <<: *if-merge-request-targeting-stable-branch
-    #   when: never
-    # - <<: *if-security-merge-request
-    #   when: never
-    # - <<: *if-security-schedule
-    #   when: never
-    # - !reference [".qa:rules:e2e-blocking-base-before", rules]
-    # - !reference [".prevent-tier-2-and-below", rules]
-    # - !reference [".qa:rules:e2e-blocking-base-after", rules]
-    # - !reference [".qa:rules:e2e-schedule-blocking", rules]
-    # - <<: *if-merge-request
-    #   changes: *cng-orchestrator-patterns
+    - <<: *if-default-branch-schedule-nightly  # already executed in the 2-hourly schedule
+      when: never
+    # TODO: Enable for stable branches once cng is fully enabled in mr pipelines
+    - <<: *if-merge-request-targeting-stable-branch
+      when: never
+    # TODO: Check security fork is able to build cng images before enabling
+    - <<: *if-security-merge-request
+      when: never
+    - <<: *if-security-schedule
+      when: never
+    - !reference [".qa:rules:e2e-blocking-base-before", rules]
+    - !reference [".prevent-tier-2-and-below", rules]
+    - !reference [".qa:rules:e2e-blocking-base-after", rules]
+    - !reference [".qa:rules:e2e-schedule-blocking", rules]
 
 .qa:rules:test-on-omnibus-nightly:
   rules:
@@ -2494,6 +2513,11 @@
       changes: *code-backstage-patterns
       when: always
 
+.rails:rules:rails-next-dependency-check:
+  rules:
+    - <<: *if-merge-request
+      changes: *ruby-dependency-patterns
+
 #########################
 # Static analysis rules #
 #########################
@@ -2525,6 +2549,13 @@
         RUN_ALL_RUBOCOP: "true"
     - <<: *if-default-refs
       changes: *code-backstage-qa-patterns
+
+.static-analysis:rules:ensure-application-settings-have-definition-file:
+  rules:
+    - <<: *if-default-refs
+      changes:
+        - db/structure.sql
+        - config/application_setting_columns/*.yml
 
 .static-analysis:rules:haml-lint:
   rules:
@@ -3353,6 +3384,12 @@
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
     - !reference [".releases:rules:canonical-dot-com-security-gitlab-stable-branch-only", rules]
+
+.release-environments:rules:ai-gateway-tagging:
+  rules:
+    - if: '$AIGW_PIPELINE_TRIGGER_TOKEN == null'
+      when: never
+    - if: '$CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+-ee$/'
 
 ###################
 # Benchmark rules #

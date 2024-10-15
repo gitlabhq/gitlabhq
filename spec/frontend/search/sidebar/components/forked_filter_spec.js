@@ -126,7 +126,7 @@ describe('ForksFilter', () => {
 
       expect(trackEventSpy).toHaveBeenCalledWith(
         EVENT_CLICK_ZOEKT_INCLUDE_FORKS_ON_SEARCH_RESULTS_PAGE,
-        { property: 'test' },
+        {},
         undefined,
       );
     });

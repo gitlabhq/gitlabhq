@@ -37,17 +37,13 @@ When a branch is protected, the default behavior enforces these restrictions on 
 |:-------------------------|:----------------------------------------|
 | Protect a branch         | At least the Maintainer role.           |
 | Push to the branch       | Anyone with **Allowed** permission. (1) |
-| Force push to the branch | No one. (3)                             |
+| Force push to the branch | No one.                                 |
 | Delete the branch        | No one. (2)                             |
 
 1. Users with the Developer role can create a project in a group, but might not be allowed to
    initially push to the [default branch](default.md).
 1. No one can delete a protected branch using Git commands, however, users with at least Maintainer
    role can [delete a protected branch from the UI or API](#delete-a-protected-branch).
-1. If the `group_protected_branches` feature flag is enabled _and_ the same branch is
-   protected at both the group and project levels, force push settings configured
-   for that branch at the project level are ignored. All other protections continue
-   to use project level settings.
 
 You can implement a [merge request approval policy](../../../application_security/policies/merge_request_approval_policies.md#approval_settings)
 to prevent protected branches being unprotected or deleted.
@@ -133,13 +129,10 @@ FLAG:
 On self-managed GitLab, by default this feature is not available.
 To make it available, an administrator can
 [enable the feature flag](../../../../administration/feature_flags.md)
-named `group_protected_branches`. On GitLab.com and GitLab Dedicated, this feature is not available.
+named `group_protected_branches`. On GitLab Dedicated, this feature is not available.
 
 Group owners can create protected branches for a group. These settings are inherited
-by all projects in the group and can't be overridden by project settings. If a
-specific branch is configured with **Allowed to force push** settings at both the
-group and project levels, the **Allowed to force push** setting at the _project_ level
-is ignored in favor of the group level setting.
+by all projects in the group and can't be overridden by project settings.
 
 Prerequisites:
 
@@ -207,7 +200,7 @@ check in directly to a protected branch:
 1. From the **Allowed to push and merge** list, select **No one**.
 1. Select **Protect**.
 
-Alternatively, you can [create](index.md#create-a-branch-rule) or [edit](index.md#edit-a-branch-rule) a branch rule. Then:
+Alternatively, you can [create](branch_rules.md#create-a-branch-rule) or [edit](branch_rules.md#edit-a-branch-rule-target) a branch rule. Then:
 
 1. Select **Edit** in the **Allowed to merge** section.
 1. Select **Developers and Maintainers**.
@@ -225,15 +218,13 @@ You can allow everyone with write access to push to the protected branch.
 1. From the **Allowed to push and merge** list, select **Developers + Maintainers**.
 1. Select **Protect**.
 
-Alternatively, you can [create](index.md#create-a-branch-rule) or [edit](index.md#edit-a-branch-rule) a branch rule. Then:
+Alternatively, you can [create](branch_rules.md#create-a-branch-rule) or [edit](branch_rules.md#edit-a-branch-rule-target) a branch rule. Then:
 
 1. Select **Edit** in the **Allowed to push and merge** section.
 1. Select **Developers and Maintainers**.
 1. Select **Save changes**.
 
 ## Allow deploy keys to push to a protected branch
-
-> - More restrictions on deploy keys [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/425926) in GitLab 16.5 [with a flag](../../../../administration/feature_flags.md) named `check_membership_in_protected_ref_access`. Disabled by default.
 
 You can push to a protected branch with a [deploy key](../../deploy_keys/index.md).
 
@@ -246,8 +237,7 @@ Prerequisites:
 - The deploy key must have [write access](../../deploy_keys/index.md#permissions) to your project
   repository.
 - The owner of the deploy key must have at least read access to the project.
-- If the `check_membership_in_protected_ref_access` feature flag is enabled, the owner of the
-  deploy key must also be a member of the project.
+- The owner of the deploy key must also be a member of the project.
 
 To allow a deploy key to push to a protected branch:
 
@@ -285,7 +275,7 @@ To enable force pushes on branches that are already protected:
 1. Select **Add protected branch**.
 1. In the list of protected branches, next to the branch, turn on the **Allowed to force push** toggle.
 
-Alternatively, you can [create](index.md#create-a-branch-rule) or [edit](index.md#edit-a-branch-rule) a branch rule. Then:
+Alternatively, you can [create](branch_rules.md#create-a-branch-rule) or [edit](branch_rules.md#edit-a-branch-rule-target) a branch rule. Then:
 
 1. In the list of protected branches, next to the branch, turn on the **Allowed to force push** toggle.
 
@@ -309,11 +299,6 @@ As the most permissive option determines the behavior, the resulting permissions
 - **Allow force push:** Of the three settings, `Yes` is most permissive,
   and controls branch behavior as a result. Even though the branch also matched `v1.x` and `v*`
   (which each have stricter permissions), any user that can push to this branch can also force push.
-
-NOTE:
-Force push settings for a branch at the project level are overridden by group level settings
-if the `group_protected_branches` feature flag is enabled and a group owner has set
-[group level protection for the same branch](#for-all-projects-in-a-group).
 
 ## Require Code Owner approval on a protected branch
 
@@ -344,7 +329,7 @@ To enable Code Owner's approval on branches that are already protected:
 1. Select **Add protected branch**.
 1. In the list of protected branches, next to the branch, turn on the **Code owner approval** toggle.
 
-Alternatively, you can [create](index.md#create-a-branch-rule) or [edit](index.md#edit-a-branch-rule) a branch rule.
+Alternatively, you can [create](branch_rules.md#create-a-branch-rule) or [edit](branch_rules.md#edit-a-branch-rule-target) a branch rule.
 Then, in the list of protected branches, next to the branch,
 turn on the **Code owner approval** toggle.
 

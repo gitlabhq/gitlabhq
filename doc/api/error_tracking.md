@@ -1,6 +1,6 @@
 ---
 stage: Monitor
-group: Observability
+group: Platform Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -23,7 +23,7 @@ GET /projects/:id/error_tracking/settings
 
 | Attribute | Type    | Required | Description           |
 | --------- | ------- | -------- | --------------------- |
-| `id`      | integer | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`      | integer | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/error_tracking/settings"
@@ -59,7 +59,7 @@ Supported attributes:
 
 | Attribute    | Type    | Required | Description                                                                                                                                                     |
 | ------------ | ------- |----------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `id`         | integer | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user.                                            |
+| `id`         | integer | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths).                                            |
 | `active`     | boolean | yes      | Pass `true` to enable the error tracking setting configuration or `false` to disable it.                                                                        |
 | `integrated` | boolean | yes      | Pass `true` to enable the integrated error tracking backend. |
 
@@ -92,7 +92,7 @@ PATCH /projects/:id/error_tracking/settings
 
 | Attribute    | Type    | Required | Description           |
 | ------------ | ------- | -------- | --------------------- |
-| `id`         | integer | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`         | integer | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 | `active`     | boolean | yes      | Pass `true` to enable the already configured error tracking settings or `false` to disable it. |
 | `integrated` | boolean | no       | Pass `true` to enable the integrated error tracking backend. |
 
@@ -125,7 +125,7 @@ GET /projects/:id/error_tracking/client_keys
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/error_tracking/client_keys"
@@ -160,7 +160,7 @@ POST /projects/:id/error_tracking/client_keys
 
 | Attribute  | Type | Required | Description |
 | ---------  | ---- | -------- | ----------- |
-| `id`       | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`       | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --header "Content-Type: application/json" \
@@ -188,7 +188,7 @@ DELETE /projects/:id/error_tracking/client_keys/:key_id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 | `key_id`  | integer | yes | The ID of the client key. |
 
 ```shell

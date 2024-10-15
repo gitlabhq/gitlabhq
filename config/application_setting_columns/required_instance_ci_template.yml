@@ -1,0 +1,12 @@
+---
+api_type:
+attr: required_instance_ci_template
+clusterwide: false
+column: required_instance_ci_template
+db_type: text
+default:
+description:
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: false

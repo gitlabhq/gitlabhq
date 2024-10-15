@@ -58,6 +58,7 @@ class Member < ApplicationRecord
     },
     if: :project_bot?
   validate :access_level_inclusion
+  validate :user_is_not_placeholder
 
   scope :with_invited_user_state, -> do
     joins('LEFT JOIN users as invited_user ON invited_user.email = members.invite_email')
@@ -611,6 +612,14 @@ class Member < ApplicationRecord
     errors.add(:access_level, "is not included in the list")
   end
 
+  def user_is_not_placeholder
+    if Gitlab::Import::PlaceholderUserCreator.placeholder_email_pattern.match?(invite_email)
+      errors.add(:invite_email, _('must not be a placeholder email'))
+    elsif user&.placeholder?
+      errors.add(:user_id, _("must not be a placeholder user"))
+    end
+  end
+
   def send_invite
     run_after_commit_or_now { Members::InviteMailer.initial_email(self, @raw_invite_token).deliver_later }
   end
@@ -621,8 +630,6 @@ class Member < ApplicationRecord
   end
 
   def post_create_access_request_hook
-    return if Feature.disabled?(:group_access_request_webhooks, source)
-
     system_hook_service.execute_hooks_for(self, :request)
   end
 
@@ -655,8 +662,6 @@ class Member < ApplicationRecord
   end
 
   def post_destroy_access_request_hook
-    return if Feature.disabled?(:group_access_request_webhooks, source)
-
     system_hook_service.execute_hooks_for(self, :revoke)
   end
 

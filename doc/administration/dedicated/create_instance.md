@@ -37,9 +37,11 @@ complete your onboarding to create a new instance.
 ### Encrypted Data At Rest (BYOK)
 
 NOTE:
-To enable BYOK, you must do it before onboarding.
+To enable BYOK, you must do it before onboarding. If enabled, it is not possible to later disable BYOK.
 
 You can opt to encrypt your GitLab data at rest with AWS KMS keys, which must be made accessible to GitLab Dedicated infrastructure. Due to key rotation requirements, GitLab Dedicated only supports keys with AWS-managed key material (the [AWS_KMS](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#key-origin) origin type).
+
+Encryption for data in motion (moving over a network) is performed with TLS using keys generated and managed by GitLab Dedicated components, and is not covered by BYOK.
 
 In GitLab Dedicated, you can use KMS keys in two ways:
 
@@ -159,7 +161,7 @@ information required to create your GitLab Dedicated instance.
 1. Confirm account details: Confirm key attributes of your GitLab Dedicated account:
    - Reference architecture: Corresponds with the number of users you provided to your account team
      when beginning the onboarding process. For more information, see
-     [reference architectures](../../subscriptions/gitlab_dedicated/index.md#availability-and-scalability).
+     [reference architectures](../../subscriptions/gitlab_dedicated/data_residency_and_high_availability.md#availability-and-scalability).
    - Total repository storage size: Corresponds with the storage size you provided to your account
      team when beginning the onboarding process.
    - If you need to make changes to these attributes,
@@ -170,7 +172,7 @@ information required to create your GitLab Dedicated instance.
      `gitlab-dedicated.com`. You choose the subdomain name where your instance is accessible from.
      For example, `customer_name.gitlab-dedicated.com`. You can add a custom hostname in a later step.
    - Desired primary region: Primary AWS region in which your data is stored. Note the
-     [available AWS regions](../../subscriptions/gitlab_dedicated/index.md#available-aws-regions).
+     [available AWS regions](../../subscriptions/gitlab_dedicated/data_residency_and_high_availability.md#available-aws-regions).
    - Desired secondary region: Secondary AWS region in which your data is stored. This region is
      used to recover your GitLab Dedicated instance in case of a disaster.
    - Desired backup region: An AWS region where the primary backups of your data are replicated.
@@ -227,7 +229,7 @@ Consider the following notes:
 
 #### GitLab release rollout schedule
 
-GitLab Dedicated tenant instances are [upgraded](../../subscriptions/gitlab_dedicated/index.md#upgrades) to the minor GitLab release within [the pre-selected window](#maintenance-window) using the schedule described below.
+GitLab Dedicated tenant instances are [upgraded](../../subscriptions/gitlab_dedicated/maintenance.md#upgrades-and-patches) to the minor GitLab release within [the pre-selected window](#maintenance-window) using the schedule described below.
 
 Where **T** is the date of a [minor GitLab release](../../policy/maintenance.md) `N`. GitLab Dedicated instances are upgraded to the `N-1` release as follows:
 

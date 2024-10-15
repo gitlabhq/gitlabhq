@@ -58,16 +58,6 @@ RSpec.describe PostReceive, :clean_gitlab_redis_shared_state, feature_category: 
         perform
       end
     end
-
-    context 'with ProjectSnippet' do
-      let(:gl_repository) { "snippet-#{snippet.id}" }
-      let(:snippet) { create(:snippet, type: 'ProjectSnippet', project: nil, author: project.first_owner) }
-
-      it 'returns false and logs an error' do
-        expect(Gitlab::GitLogger).to receive(:error).with("POST-RECEIVE: #{error_message}")
-        expect(perform).to be(false)
-      end
-    end
   end
 
   describe '#process_project_changes' do

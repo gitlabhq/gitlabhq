@@ -1,0 +1,4 @@
+fragment MergeTrainCarIndex on MergeRequest {
+  # Overridden in EE
+  id
+}

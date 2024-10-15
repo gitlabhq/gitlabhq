@@ -5,7 +5,7 @@
   expanded: expanded) do |c|
   - c.with_description do
     = _('Users can render diagrams in AsciiDoc, Markdown, reStructuredText, and Textile documents using Kroki.')
-    = link_to _('Learn more.'), help_page_path('administration/integration/kroki'), target: '_blank', rel: 'noopener noreferrer'
+    = link_to _('Learn more.'), help_page_path('administration/integration/kroki.md'), target: '_blank', rel: 'noopener noreferrer'
   - c.with_body do
     = gitlab_ui_form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-kroki-settings'), html: { class: 'fieldset-form', id: 'kroki-settings' } do |f|
       = form_errors(@application_setting) if expanded

@@ -3,7 +3,7 @@ table_name: self_managed_prometheus_alert_events
 classes:
 - SelfManagedPrometheusAlertEvent
 feature_categories:
-- metrics
+- observability
 description: TODO
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18046
 milestone: '12.4'

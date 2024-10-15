@@ -7,17 +7,16 @@ RSpec.describe WebIde::DefaultOauthApplication, feature_category: :web_ide do
   let_it_be(:oauth_application) { create(:oauth_application, owner: nil) }
 
   describe '#feature_enabled?' do
-    where(:vscode_web_ide, :web_ide_oauth, :expectation) do
+    where(:vscode_web_ide, :expectation) do
       [
-        [ref(:current_user), false, false],
-        [false, ref(:current_user), false],
-        [ref(:current_user), ref(:current_user), true]
+        [ref(:current_user), true],
+        [false, false]
       ]
     end
 
     with_them do
       it 'returns the expected value' do
-        stub_feature_flags(vscode_web_ide: vscode_web_ide, web_ide_oauth: web_ide_oauth)
+        stub_feature_flags(vscode_web_ide: vscode_web_ide)
 
         expect(described_class.feature_enabled?(current_user)).to be(expectation)
       end

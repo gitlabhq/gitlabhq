@@ -1,0 +1,13 @@
+---
+api_type: boolean
+attr: automatic_purchased_storage_allocation
+clusterwide: true
+column: automatic_purchased_storage_allocation
+db_type: boolean
+default: 'false'
+description: Enabling this permits automatic allocation of purchased storage in a
+  namespace. Relevant only to EE distributions.
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: true

@@ -9,7 +9,7 @@ RSpec.describe QueueBackfillCiJobVariablesProjectId, migration: :gitlab_ci, feat
   it 'schedules a new batched migration' do
     reversible_migration do |migration|
       migration.before -> {
-        expect(batched_migration).not_to have_scheduled_batched_migration
+        expect(batched_migration).not_to have_scheduled_batched_migration(gitlab_schema: :gitlab_ci)
       }
 
       migration.after -> {

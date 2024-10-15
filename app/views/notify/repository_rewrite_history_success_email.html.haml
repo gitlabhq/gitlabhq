@@ -1,0 +1,4 @@
+%p
+  = s_('Notify|Repository history rewrite succeeded on %{project_url}.') % { project_url: @project.web_url }
+%p
+  = s_('Notify|Repository size is now %{repository_size} MiB.') % { repository_size: "%.1f" % (@project.repository.size || 0) }

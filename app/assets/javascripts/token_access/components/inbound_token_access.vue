@@ -26,6 +26,7 @@ import GroupsAndProjectsListbox from './groups_and_projects_listbox.vue';
 import TokenAccessTable from './token_access_table.vue';
 
 export default {
+  CI_JOB_TOKEN_ALLOWLIST: 'ci-job-token-allowlist',
   i18n: {
     radioGroupTitle: s__('CICD|Authorized groups and projects'),
     radioGroupDescription: s__(
@@ -353,14 +354,16 @@ export default {
           </template>
 
           <template #form>
-            <strong>{{ $options.i18n.addGroupOrProject }}</strong>
             <gl-form @submit.prevent="addGroupOrProject">
               <gl-form-group
+                :label-for="$options.CI_JOB_TOKEN_ALLOWLIST"
+                :label="$options.i18n.addGroupOrProject"
                 :state="!isGroupOrProjectPathInScope"
                 :invalid-feedback="$options.projectInScopeError"
                 data-testid="group-or-project-form-group"
               >
                 <groups-and-projects-listbox
+                  :id="$options.CI_JOB_TOKEN_ALLOWLIST"
                   :placeholder="$options.i18n.addProjectPlaceholder"
                   :is-valid="!isGroupOrProjectPathInScope"
                   :value="groupOrProjectPath"

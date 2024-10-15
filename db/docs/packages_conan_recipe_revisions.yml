@@ -1,0 +1,12 @@
+---
+table_name: packages_conan_recipe_revisions
+classes:
+- Packages::Conan::RecipeRevision
+feature_categories:
+- package_registry
+description: Conan package recipe revisions
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164844
+milestone: '17.5'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  project_id: projects

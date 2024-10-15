@@ -41,7 +41,7 @@ module LooseForeignKeys
                 delete_query
               elsif async_nullify?
                 update_query
-              elsif update_column_to? && Feature.enabled?(:loose_foreign_keys_update_column_to, Feature.current_request)
+              elsif update_column_to?
                 update_target_column_query
               else
                 logger.error("Invalid on_delete argument: #{loose_foreign_key_definition.on_delete}")

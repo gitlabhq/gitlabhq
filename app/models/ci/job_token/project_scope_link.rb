@@ -15,6 +15,8 @@ module Ci
       belongs_to :target_project, class_name: 'Project'
       belongs_to :added_by, class_name: 'User'
 
+      validates :job_token_policies, json_schema: { filename: 'ci_job_token_policies' }, allow_blank: true
+
       scope :with_access_direction, ->(direction) { where(direction: direction) }
       scope :with_source, ->(project)   { where(source_project: project) }
       scope :with_target, ->(project)   { where(target_project: project) }

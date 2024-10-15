@@ -11,7 +11,7 @@ RSpec.describe RapidDiffs::DiffFileHeaderComponent, type: :component, feature_ca
     expect(header).to have_text(diff_file.file_path)
   end
 
-  it "renders submodule info" do
+  it "renders submodule info", quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/489868' do
     allow(diff_file).to receive(:submodule?).and_return(true)
     allow_next_instance_of(SubmoduleHelper) do |instance|
       allow(instance).to receive(:submodule_links).and_return(nil)

@@ -18,7 +18,7 @@ module Types
       alpha: { milestone: '15.7' }
     value 'EPIC', value: 'epic',
       description: 'Epic issue type. ' \
-                   'Available only when feature epics is available and the feature flag `work_item_epics` is enabled.',
+        'Available only when feature epics is available and the feature flag `work_item_epics` is enabled.',
       alpha: { milestone: '16.7' }
   end
 end

@@ -1,0 +1,13 @@
+---
+api_type: integer
+attr: issues_create_limit
+clusterwide: true
+column: issues_create_limit
+db_type: integer
+default: '0'
+description: Max number of issue creation requests per minute per user. Disabled by
+  default.
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: true

@@ -64,10 +64,23 @@ RSpec.describe Ci::CreatePipelineService, :ci_config_feature_flag_correctness, f
         end
 
         it 'contains errors and masks variables' do
-          error_message = "Included file `xxxxxxxxxx/gitlab-ci.txt` does not have YAML extension!"
+          error_message = "Included file `[MASKED]xx/gitlab-ci.txt` does not have YAML extension!"
           expect(pipeline.yaml_errors).to eq(error_message)
           expect(pipeline.error_messages.map(&:content)).to contain_exactly(error_message)
           expect(pipeline.errors.full_messages).to contain_exactly(error_message)
+        end
+
+        context 'when consistent_ci_variable_masking feature is disabled' do
+          before do
+            stub_feature_flags(consistent_ci_variable_masking: false)
+          end
+
+          it 'contains errors and masks variables in the old style' do
+            error_message = "Included file `xxxxxxxxxx/gitlab-ci.txt` does not have YAML extension!"
+            expect(pipeline.yaml_errors).to eq(error_message)
+            expect(pipeline.error_messages.map(&:content)).to contain_exactly(error_message)
+            expect(pipeline.errors.full_messages).to contain_exactly(error_message)
+          end
         end
       end
 

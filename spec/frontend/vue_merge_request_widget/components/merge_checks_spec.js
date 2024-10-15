@@ -250,4 +250,27 @@ describe('Merge request merge checks component', () => {
       expect(findMergeChecks().length).toBe(1);
     });
   });
+
+  describe('checking merge checks', () => {
+    const findMergeChecks = () => wrapper.findAllByTestId('merge-check');
+
+    beforeEach(() => {
+      mountComponent({
+        mergeabilityChecks: [
+          { identifier: 'discussions_not_resolved', status: 'CHECKING' },
+          { identifier: 'not_approved', status: 'SUCCESS' },
+        ],
+      });
+
+      return waitForPromises();
+    });
+
+    it('renders checking text', () => {
+      expect(wrapper.text()).toBe('Checking if merge request can be merged...');
+    });
+
+    it('renders checks expanded by default', () => {
+      expect(findMergeChecks()).toHaveLength(1);
+    });
+  });
 });

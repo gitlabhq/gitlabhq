@@ -17,6 +17,7 @@ import FollowersTab from './followers_tab.vue';
 import FollowingTab from './following_tab.vue';
 
 export default {
+  name: 'ProfileTabs',
   i18n: {
     personalProjectsErrorMessage: s__(
       'UserProfile|An error occurred loading the personal projects. Please refresh the page to try again.',

@@ -11,7 +11,7 @@ class JwksController < Doorkeeper::OpenidConnect::DiscoveryController
 
   def payload
     [
-      Rails.application.secrets.openid_connect_signing_key,
+      Rails.application.credentials.openid_connect_signing_key,
       Gitlab::CurrentSettings.ci_jwt_signing_key
     ].compact.map do |key_data|
       OpenSSL::PKey::RSA.new(key_data)

@@ -21,11 +21,6 @@ module Types
       null: true
 
     # rubocop:disable GraphQL/ExtractType -- These are stored as user preferences
-    field :use_web_ide_extension_marketplace, GraphQL::Types::Boolean,
-      description: 'Whether Web IDE Extension Marketplace is enabled for the user.',
-      null: false,
-      deprecated: { reason: 'Use `extensions_marketplace_opt_in_status` instead', milestone: '16.11' }
-
     field :use_work_items_view, GraphQL::Types::Boolean,
       description: 'Use work item view instead of legacy issue view.',
       null: true

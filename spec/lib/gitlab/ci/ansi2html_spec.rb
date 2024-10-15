@@ -2,6 +2,7 @@
 
 require 'fast_spec_helper'
 require 'oj'
+require_relative '../../../../app/models/concerns/checksummable'
 
 RSpec.describe Gitlab::Ci::Ansi2html, feature_category: :continuous_integration do
   subject { described_class }
@@ -152,6 +153,10 @@ RSpec.describe Gitlab::Ci::Ansi2html, feature_category: :continuous_integration 
 
     it "groups carriage returns with newlines" do
       expect(convert_html("#{line_prefix}\r\n#{line_prefix}")).to eq('<span><br/></span>')
+    end
+
+    it "replaces consecutive linefeeds with line break tag" do
+      expect(convert_html("#{line_prefix}\r\r\n#{line_prefix}")).to eq('<span><br/></span>')
     end
 
     it 'replaces invalid UTF-8 data' do

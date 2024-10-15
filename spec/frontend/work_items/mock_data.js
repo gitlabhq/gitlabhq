@@ -608,6 +608,11 @@ export const mockBlockingLinkedItem = {
             iconName: 'issue-type-task',
             __typename: 'WorkItemType',
           },
+          namespace: {
+            id: 'gid://gitlab/Group/1',
+            fullPath: 'test-project-path',
+            __typename: 'Namespace',
+          },
           reference: 'test-project-path#1',
           title: 'Task 1201',
           state: 'OPEN',
@@ -642,6 +647,11 @@ export const mockBlockedByLinkedItem = {
             iconName: 'issue-type-task',
             __typename: 'WorkItemType',
           },
+          namespace: {
+            id: 'gid://gitlab/Group/1',
+            fullPath: 'test-project-path',
+            __typename: 'Namespace',
+          },
           reference: 'test-project-path#1',
           title: 'Task 1201',
           state: 'OPEN',
@@ -665,6 +675,11 @@ export const mockBlockedByLinkedItem = {
             name: 'Task',
             iconName: 'issue-type-task',
             __typename: 'WorkItemType',
+          },
+          namespace: {
+            id: 'gid://gitlab/Group/1',
+            fullPath: 'test-project-path',
+            __typename: 'Namespace',
           },
           reference: 'test-project-path#1',
           title: 'Task 1202',
@@ -700,6 +715,11 @@ export const mockLinkedItems = {
             iconName: 'issue-type-task',
             __typename: 'WorkItemType',
           },
+          namespace: {
+            id: 'gid://gitlab/Group/1',
+            fullPath: 'test-project-path',
+            __typename: 'Namespace',
+          },
           reference: 'test-project-path#83',
           title: 'Task 1201',
           state: 'OPEN',
@@ -724,6 +744,11 @@ export const mockLinkedItems = {
             iconName: 'issue-type-objective',
             __typename: 'WorkItemType',
           },
+          namespace: {
+            id: 'gid://gitlab/Group/2',
+            fullPath: 'test-project-path',
+            __typename: 'Namespace',
+          },
           reference: 'test-project-path#55',
           title: 'Multilevel Objective 1',
           state: 'OPEN',
@@ -747,6 +772,11 @@ export const mockLinkedItems = {
             name: 'Objective',
             iconName: 'issue-type-objective',
             __typename: 'WorkItemType',
+          },
+          namespace: {
+            id: 'gid://gitlab/Group/3',
+            fullPath: 'test-project-path',
+            __typename: 'Namespace',
           },
           reference: 'test-project-path#56',
           title: 'Multilevel Objective 2',
@@ -827,6 +857,11 @@ export const workItemSingleLinkedItemResponse = {
                       iconName: 'issue-type-task',
                       __typename: 'WorkItemType',
                     },
+                    namespace: {
+                      id: 'gid://gitlab/Group/1',
+                      fullPath: 'test-project-path',
+                      __typename: 'Namespace',
+                    },
                     reference: 'test-project-path#1',
                     title: 'Task 1201',
                     state: 'OPEN',
@@ -864,7 +899,7 @@ export const workItemBlockedByLinkedItemsResponse = {
   },
 };
 
-export const workItemDevelopmentNodes = [
+export const workItemDevelopmentMRNodes = [
   {
     fromMrDescription: true,
     mergeRequest: {
@@ -1049,15 +1084,47 @@ export const workItemDevelopmentNodes = [
   },
 ];
 
+export const workItemDevelopmentFeatureFlagNodes = [
+  {
+    active: true,
+    id: 'gid://gitlab/Operations::FeatureFlag/1',
+    name: 'flag1',
+    path: 'http://127.0.0.1:3000/flightjs/Flight/-/feature_flags/1/edit',
+    reference: '[feature_flag:1]',
+    __typename: 'FeatureFlag',
+  },
+  {
+    active: false,
+    id: 'gid://gitlab/Operations::FeatureFlag/2',
+    name: 'flag2',
+    path: 'http://127.0.0.1:3000/flightjs/Flight/-/feature_flags/2/edit',
+    reference: '[feature_flag:2]',
+    __typename: 'FeatureFlag',
+  },
+  {
+    active: false,
+    id: 'gid://gitlab/Operations::FeatureFlag/3',
+    name: 'flag3',
+    path: 'http://127.0.0.1:3000/flightjs/Flight/-/feature_flags/3/edit',
+    reference: '[feature_flag:3]',
+    __typename: 'FeatureFlag',
+  },
+];
+
 export const workItemDevelopmentFragmentResponse = (
-  nodes = workItemDevelopmentNodes,
+  mrNodes = workItemDevelopmentMRNodes,
   willAutoCloseByMergeRequest = false,
+  featureFlagNodes = workItemDevelopmentFeatureFlagNodes,
 ) => {
   return {
     type: 'DEVELOPMENT',
     willAutoCloseByMergeRequest,
+    featureFlags: {
+      nodes: featureFlagNodes,
+      __typename: 'FeatureFlagConnection',
+    },
     closingMergeRequests: {
-      nodes,
+      nodes: mrNodes,
       __typename: 'WorkItemClosingMergeRequestConnection',
     },
     __typename: 'WorkItemWidgetDevelopment',
@@ -1343,6 +1410,7 @@ export const workItemResponseFactory = ({
               __typename: 'WorkItemWidgetHierarchy',
               type: 'HIERARCHY',
               hasChildren: true,
+              rolledUpCountsByType: [],
               hasParent,
               children: {
                 nodes: [
@@ -1612,6 +1680,7 @@ export const workItemHierarchyNoUpdatePermissionResponse = {
           type: 'HIERARCHY',
           parent: null,
           hasChildren: true,
+          depthLimitReachedByType: [],
           rolledUpCountsByType: [],
           children: {
             pageInfo: {
@@ -1780,6 +1849,7 @@ export const workItemTask = {
   widgets: [
     workItemObjectiveMetadataWidgets.ASSIGNEES,
     workItemObjectiveMetadataWidgets.LINKED_ITEMS,
+    workItemObjectiveMetadataWidgets.MILESTONE,
     {
       type: 'HIERARCHY',
       hasChildren: false,
@@ -2010,6 +2080,7 @@ export const workItemObjectiveWithChild = {
     iconName: 'issue-type-objective',
     __typename: 'WorkItemType',
   },
+  webUrl: 'http://gdk.test/gitlab-org/gitlab/-/issues/1',
   namespace: {
     __typename: 'Project',
     id: '1',
@@ -2065,6 +2136,7 @@ export const workItemObjectiveWithoutChild = {
     iconName: 'issue-type-objective',
     __typename: 'WorkItemType',
   },
+  webUrl: 'http://gdk.test/gitlab-org/gitlab/-/issues/1',
   namespace: {
     __typename: 'Project',
     id: '1',
@@ -2150,6 +2222,7 @@ export const workItemHierarchyTreeEmptyResponse = {
           type: 'HIERARCHY',
           parent: null,
           hasChildren: true,
+          depthLimitReachedByType: [],
           rolledUpCountsByType: [],
           children: {
             pageInfo: {
@@ -2206,6 +2279,18 @@ export const mockHierarchyChildren = [
   },
 ];
 
+export const mockDepthLimitReachedByType = [
+  {
+    workItemType: {
+      id: 'gid://gitlab/WorkItems::Type/8',
+      name: 'Epic',
+      __typename: 'WorkItemType',
+    },
+    depthLimitReached: false,
+    __typename: 'WorkItemTypeDepthLimitReachedByType',
+  },
+];
+
 export const mockRolledUpCountsByType = [
   {
     countsByState: {
@@ -2255,6 +2340,7 @@ export const mockHierarchyWidget = {
   type: 'HIERARCHY',
   parent: null,
   hasChildren: true,
+  depthLimitReachedByType: mockDepthLimitReachedByType,
   rolledUpCountsByType: mockRolledUpCountsByType,
   children: {
     pageInfo: {
@@ -2722,6 +2808,32 @@ export const mockMilestoneWidgetResponse = {
   title: 'v4.0',
 };
 
+export const mockEmptyAncestorWidgetResponse = {
+  data: {
+    workItemUpdate: {
+      workItem: {
+        id: 'gid://gitlab/WorkItem/2733',
+        title: 'Objective progress child 1',
+        widgets: [
+          {
+            type: 'HIERARCHY',
+            hasParent: false,
+            parent: null,
+            ancestors: {
+              nodes: [],
+              __typename: 'WorkItemConnection',
+            },
+            __typename: 'WorkItemWidgetHierarchy',
+          },
+        ],
+        __typename: 'WorkItem',
+      },
+      errors: [],
+      __typename: 'WorkItemUpdatePayload',
+    },
+  },
+};
+
 export const mockParentWidgetResponse = {
   id: 'gid://gitlab/WorkItem/716',
   iid: '122',
@@ -2735,6 +2847,101 @@ export const mockParentWidgetResponse = {
     __typename: 'WorkItemType',
   },
   __typename: 'WorkItem',
+};
+
+export const mockAncestorWidgetResponse = {
+  data: {
+    workItemUpdate: {
+      workItem: {
+        id: 'gid://gitlab/WorkItem/2733',
+        title: 'Objective progress child 1',
+        widgets: [
+          {
+            type: 'HIERARCHY',
+            hasParent: true,
+            parent: {
+              id: 'gid://gitlab/WorkItem/1296',
+              iid: '149',
+              title: 'Objective 333',
+              confidential: false,
+              webUrl: 'http://gdk.test:3000/gitlab-org/gitlab-test/-/work_items/149',
+              workItemType: {
+                id: 'gid://gitlab/WorkItems::Type/6',
+                name: 'Objective',
+                iconName: 'issue-type-objective',
+                __typename: 'WorkItemType',
+              },
+              __typename: 'WorkItem',
+            },
+            ancestors: {
+              nodes: [
+                {
+                  id: 'gid://gitlab/WorkItem/663',
+                  iid: '71',
+                  confidential: false,
+                  workItemType: {
+                    id: 'gid://gitlab/WorkItems::Type/6',
+                    name: 'Objective',
+                    iconName: 'issue-type-objective',
+                    __typename: 'WorkItemType',
+                  },
+                  title: 'Objective 3',
+                  state: 'OPEN',
+                  reference: 'gitlab-org/gitlab-test#71',
+                  createdAt: '2023-04-24T10:48:19Z',
+                  closedAt: null,
+                  webUrl: 'http://gdk.test:3000/gitlab-org/gitlab-test/-/work_items/71',
+                  widgets: [
+                    {
+                      type: 'HIERARCHY',
+                      hasParent: false,
+                      parent: null,
+                      __typename: 'WorkItemWidgetHierarchy',
+                    },
+                  ],
+                  __typename: 'WorkItem',
+                },
+                {
+                  id: 'gid://gitlab/WorkItem/1296',
+                  iid: '149',
+                  confidential: false,
+                  workItemType: {
+                    id: 'gid://gitlab/WorkItems::Type/6',
+                    name: 'Objective',
+                    iconName: 'issue-type-objective',
+                    __typename: 'WorkItemType',
+                  },
+                  title: 'Objective 333',
+                  state: 'OPEN',
+                  reference: 'gitlab-org/gitlab-test#149',
+                  createdAt: '2023-12-18T16:54:47Z',
+                  closedAt: null,
+                  webUrl: 'http://gdk.test:3000/gitlab-org/gitlab-test/-/work_items/149',
+                  widgets: [
+                    {
+                      type: 'HIERARCHY',
+                      hasParent: true,
+                      parent: {
+                        id: 'gid://gitlab/WorkItem/663',
+                        __typename: 'WorkItem',
+                      },
+                      __typename: 'WorkItemWidgetHierarchy',
+                    },
+                  ],
+                  __typename: 'WorkItem',
+                },
+              ],
+              __typename: 'WorkItemConnection',
+            },
+            __typename: 'WorkItemWidgetHierarchy',
+          },
+        ],
+        __typename: 'WorkItem',
+      },
+      errors: [],
+      __typename: 'WorkItemUpdatePayload',
+    },
+  },
 };
 
 export const projectMilestonesResponse = {
@@ -4498,6 +4705,36 @@ export const allowedChildrenTypesResponse = {
   },
 };
 
+export const allowedParentTypesResponse = {
+  data: {
+    workItem: {
+      id: 'gid://gitlab/WorkItem/1',
+      workItemType: {
+        id: 'gid://gitlab/WorkItems::Type/6',
+        name: 'Objective',
+        widgetDefinitions: [
+          {
+            type: 'HIERARCHY',
+            allowedParentTypes: {
+              nodes: [
+                {
+                  id: 'gid://gitlab/WorkItems::Type/6',
+                  name: 'Objective',
+                  __typename: 'WorkItemType',
+                },
+              ],
+              __typename: 'WorkItemTypeConnection',
+            },
+            __typename: 'WorkItemWidgetDefinitionHierarchy',
+          },
+        ],
+        __typename: 'WorkItemType',
+      },
+      __typename: 'WorkItem',
+    },
+  },
+};
+
 export const generateWorkItemsListWithId = (count) =>
   Array.from({ length: count }, (_, i) => ({ id: `gid://gitlab/WorkItem/${i + 1}` }));
 
@@ -4657,6 +4894,7 @@ export const createWorkItemQueryResponse = {
             hasChildren: false,
             parent: null,
             hasParent: false,
+            rolledUpCountsByType: [],
             children: {
               nodes: [],
               __typename: 'WorkItemConnection',
@@ -4917,3 +5155,114 @@ export const mockMoveWorkItemMutationResponse = ({ error = undefined } = {}) => 
     },
   },
 });
+
+export const mockUserPreferences = (useWorkItemsView = true) => ({
+  data: {
+    currentUser: {
+      id: '1',
+      userPreferences: {
+        useWorkItemsView,
+      },
+    },
+  },
+});
+
+export const mockProjectPermissionsQueryResponse = ({ createDesign = true } = {}) => ({
+  data: {
+    workspace: {
+      id: 'gid://gitlab/Project/1',
+      userPermissions: {
+        createDesign,
+        __typename: 'ProjectPermissions',
+      },
+      __typename: 'Project',
+    },
+  },
+});
+
+export const mockUploadDesignMutationResponse = {
+  data: {
+    designManagementUpload: {
+      designs: [
+        {
+          id: 'gid://gitlab/DesignManagement::Design/10',
+          event: 'CREATION',
+          filename: 'Screenshot_2024-09-16_at_12.08.41_PM.png',
+          notesCount: 0,
+          image:
+            'http://127.0.0.1:3000/gitlab-org/gitlab-shell/-/design_management/designs/10/316e83ef399ac9ec00250426f7e2ae01fffa8133/raw_image',
+          imageV432x230: null,
+          description: null,
+          descriptionHtml: '',
+          fullPath: 'designs/issue-41/Screenshot_2024-09-16_at_12.08.41_PM.png',
+          currentUserTodos: {
+            nodes: [],
+            __typename: 'TodoConnection',
+          },
+          __typename: 'Design',
+          imported: false,
+          diffRefs: {
+            baseSha: '2ac26f2354eb7f4a18f69db273017393f41bd840',
+            startSha: '2ac26f2354eb7f4a18f69db273017393f41bd840',
+            headSha: '316e83ef399ac9ec00250426f7e2ae01fffa8133',
+            __typename: 'DiffRefs',
+          },
+          discussions: {
+            nodes: [],
+            __typename: 'DiscussionConnection',
+          },
+          versions: {
+            nodes: [
+              {
+                id: 'gid://gitlab/DesignManagement::Version/10',
+                sha: '316e83ef399ac9ec00250426f7e2ae01fffa8133',
+                createdAt: '2024-09-16T23:33:27Z',
+                author: {
+                  id: 'gid://gitlab/User/1',
+                  name: 'Administrator',
+                  avatarUrl:
+                    'https://www.gravatar.com/avatar/f7da9a67cfc0e7a1927ea66dd241a7a31e1df50bb91b0fcd8f6d5fb20fb2f4c3?s=80&d=identicon',
+                  __typename: 'UserCore',
+                },
+                __typename: 'DesignVersion',
+              },
+            ],
+            __typename: 'DesignVersionConnection',
+          },
+        },
+      ],
+      skippedDesigns: [],
+      errors: [],
+      __typename: 'DesignManagementUploadPayload',
+    },
+  },
+};
+
+export const mockUploadSkippedDesignMutationResponse = {
+  data: {
+    designManagementUpload: {
+      designs: [],
+      skippedDesigns: [
+        {
+          id: 'gid://gitlab/DesignManagement::Design/14',
+          filename: 'Version_test_1.png',
+          __typename: 'Design',
+        },
+      ],
+      errors: [],
+      __typename: 'DesignManagementUploadPayload',
+    },
+  },
+};
+
+export const mockUploadErrorDesignMutationResponse = {
+  errors: [
+    {
+      message:
+        "The resource that you are attempting to access does not exist or you don't have permission to perform this action",
+    },
+  ],
+  data: {
+    designManagementUpload: null,
+  },
+};

@@ -392,14 +392,18 @@ When developing a new integration, we also recommend you gate the availability b
 
 ## Documentation
 
+Add documentation for the integration:
+
+- Add a page in `doc/user/project/integrations`.
+- Link it from the [Integrations overview](../../user/project/integrations/index.md).
+- After the documentation has merged, [add an entry](../../development/documentation/site_architecture/global_nav.md#add-a-navigation-entry)
+  to the documentation navigation under the [Integrations category title](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/24c8ab629383b47a6d6351a9d48325cb43ed5287/content/_data/navigation.yaml?page=3#L2822).
+
+You can also refer to our general [documentation guidelines](../documentation/index.md).
+
 You can provide help text in the integration form, including links to off-site documentation,
 as described above in [Customize the frontend form](#customize-the-frontend-form). Refer to
 our [usability guidelines](https://design.gitlab.com/usability/contextual-help) for help text.
-
-For more detailed documentation, provide a page in `doc/user/project/integrations`,
-and link it from the [Integrations overview](../../user/project/integrations/index.md).
-
-You can also refer to our general [documentation guidelines](../documentation/index.md).
 
 ## Testing
 

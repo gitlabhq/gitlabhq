@@ -56,11 +56,12 @@ module Gitlab
 
             validates :publish,
               absence: { message: "can only be used within a `pages` job" },
-              unless: -> { pages_job? }
+              unless: -> { config.is_a?(Hash) && pages_job? }
 
+            # The below validation should be removed entirely with the FF cleanup
             validates :pages,
               absence: { message: "can only be used within a `pages` job" },
-              unless: -> { pages_job? }
+              unless: -> { (config.is_a?(Hash) && pages_job?) || ::Gitlab::Ci::Config::FeatureFlags.enabled?(:customizable_pages_job_name) }
           end
 
           entry :before_script, Entry::Commands,
@@ -147,11 +148,7 @@ module Gitlab
             :allow_failure, :publish, :pages, :manual_confirmation, :run
 
           def self.matching?(name, config)
-            if ::Gitlab::Ci::Config::FeatureFlags.enabled?(:pipeline_run_keyword, type: :gitlab_com_derisk)
-              !name.to_s.start_with?('.') && config.is_a?(Hash) && (config.key?(:script) || config.key?(:run))
-            else
-              !name.to_s.start_with?('.') && config.is_a?(Hash) && config.key?(:script)
-            end
+            !name.to_s.start_with?('.') && config.is_a?(Hash) && (config.key?(:script) || config.key?(:run))
           end
 
           def self.visible?
@@ -189,7 +186,7 @@ module Gitlab
               publish: publish,
               pages: pages,
               manual_confirmation: self.manual_confirmation,
-              run: ::Gitlab::Ci::Config::FeatureFlags.enabled?(:pipeline_run_keyword, type: :gitlab_com_derisk) ? run : nil
+              run: run
             ).compact
           end
 
@@ -204,7 +201,11 @@ module Gitlab
           end
 
           def pages_job?
-            name == :pages
+            return name == :pages unless ::Gitlab::Ci::Config::FeatureFlags.enabled?(:customizable_pages_job_name)
+
+            return true if config[:pages].present?
+
+            name == :pages && config[:pages] != false # legacy behavior, overridable with `pages: false`
           end
 
           def self.allowed_keys

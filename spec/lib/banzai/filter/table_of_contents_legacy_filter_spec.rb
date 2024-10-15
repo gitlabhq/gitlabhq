@@ -6,7 +6,7 @@ require 'spec_helper'
 # The current markdown parser now properly handles adding anchors to headers.
 # The Ruby parser is now only for benchmarking purposes.
 # issue: https://gitlab.com/gitlab-org/gitlab/-/issues/454601
-RSpec.describe Banzai::Filter::TableOfContentsLegacyFilter, feature_category: :team_planning do
+RSpec.describe Banzai::Filter::TableOfContentsLegacyFilter, feature_category: :markdown do
   include FilterSpecHelper
 
   def header(level, text)

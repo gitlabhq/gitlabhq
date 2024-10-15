@@ -37,8 +37,8 @@ To see the latest code coverage for each project in your group:
 1. Select **Analyze > Repository analytics**.
 1. In the **Latest test coverage results** section, from the **Select projects** dropdown list, choose the projects you want to check.
 
-You can download code coverage data for specific projects using
-[code coverage history](../../../ci/testing/code_coverage.md#view-history-of-project-code-coverage).
+You can download code coverage data for specific projects to view
+[code coverage history](../../../ci/testing/code_coverage.md#view-code-coverage-history).
 
 ## Download historic test coverage data
 

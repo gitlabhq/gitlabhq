@@ -6,7 +6,6 @@ module Types
       graphql_name 'Note'
 
       include ActionView::Helpers::SanitizeHelper
-      include MarkupHelper
 
       connection_type_class Types::CountableConnectionType
 

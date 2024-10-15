@@ -11,11 +11,11 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-When you add a cryptographic signature to your commit, you provide extra assurance that a commit
-originated from you, rather than an impersonator. If GitLab can verify a commit
-author's identity with a public GPG key, the commit is marked **Verified** in the
-GitLab UI. You can then configure [push rules](../push_rules.md)
-for your project to reject individual unsigned commits, or reject all
+When you add a digital signature to your commit, you provide extra assurance that a commit
+originated from you, rather than an impersonator. A digital signature is a cryptographic output
+used to verify authenticity. If GitLab can verify a commit author's identity with a public [GPG key](gpg.md),
+the commit is marked **Verified** in the GitLab UI. You can then configure
+[push rules](../push_rules.md) for your project to reject individual unsigned commits, or reject all
 commits from unverified users.
 
 Sign commits with your:
@@ -26,8 +26,7 @@ Sign commits with your:
 
 ## Verify commits
 
-You can review commits for a merge request, or for an entire project, to confirm
-they are signed.
+To review commits for a merge request, or for an entire project, and verify they are signed:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. To review commits:
@@ -35,26 +34,43 @@ they are signed.
    - For a merge request:
      1. Select **Code > Merge requests**, then select your merge request.
      1. Select **Commits**.
-1. Identify the commit you want to review. Signed commits show either a **Verified**
-   or **Unverified** badge, depending on the verification status of the signature.
-   Unsigned commits do not display a badge:
+1. Identify the commit you want to review. Depending on the verification status of the signature,
+   signed commits display either a **Verified** or **Unverified** badge.
 
-   ![Signed and unsigned commits](img/project_signed_and_unsigned_commits.png)
+   ![A list of commits with verified and unverified badges.](img/project_signed_and_unsigned_commits_v17_4.png)
 
-1. To display the signature details for a commit, select **Verified** to see
+   Unsigned commits do not display a badge.
+
+1. To display the signature details for a commit, select **Verified** or **Unverified** to see
    the fingerprint or key ID:
 
-   ![Signed commit with verified signature](img/project_signed_commit_verified_signature.png)
+   ![Verified signature details for a commit.](img/project_signed_commit_verified_signature_v17_4.png)
 
-   ![Signed commit with unverified signature](img/project_signed_commit_unverified_signature.png)
+   ![Unverified signature details for a commit.](img/project_signed_commit_unverified_signature_v17_4.png)
 
 You can also [use the Commits API](../../../../api/commits.md#get-signature-of-a-commit)
 to check a commit's signature.
 
 ### Verify commits made in the web UI
 
-GitLab signs the commits created using the web UI using SSH.
-To verify these commits locally, use the [Web Commits API](../../../../api/web_commits.md#get-public-signing-key) to get the GitLab public key for signing web commits.
+GitLab uses SSH to sign commits created through the web UI.
+To verify these commits locally, obtain the GitLab public key for signing web commits
+using the [Web Commits API](../../../../api/web_commits.md#get-public-signing-key).
+
+### Use gitmailmap with verified commits
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/425042) in GitLab 17.5 [with a flag](../../../../administration/feature_flags.md) named `check_for_mailmapped_commit_emails`. Disabled by default.
+
+FLAG:
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+The [`gitmailmap`](https://git-scm.com/docs/gitmailmap) feature allows users to map author names and email addresses.
+GitLab uses these email addresses to provide links to the commit author.
+When using a `mailmap` author mapping, it's possible to have a verified commit with an unverified author email.
+
+For SSH signatures with `mailmap` author mappings, GitLab displays an orange verified label with a warning sign.
+To restore the green verified label, verify the mapped email address, or remove the `mailmap` entry.
 
 ## Troubleshooting
 

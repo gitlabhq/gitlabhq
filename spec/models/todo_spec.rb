@@ -331,6 +331,13 @@ RSpec.describe Todo, feature_category: :team_planning do
         end
       end
     end
+
+    context 'when todo is for an expired SSH key' do
+      let_it_be(:key) { create(:key, user: current_user) }
+      let_it_be(:todo) { build(:todo, target: key, project: nil, group: nil, user: current_user) }
+
+      it { is_expected.to eq("http://localhost/-/user_settings/ssh_keys/#{key.id}") }
+    end
   end
 
   describe '#self_added?' do

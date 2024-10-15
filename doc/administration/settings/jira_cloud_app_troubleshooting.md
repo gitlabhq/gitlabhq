@@ -132,7 +132,7 @@ Depending on how you installed the app, you might want to check the following:
     self-managed GitLab instance.
   - [Reinstall the app](jira_cloud_app.md#install-the-gitlab-for-jira-cloud-app-manually). This method might remove all [synced data](../../integration/jira/connect-app.md#gitlab-data-synced-to-jira) from the [Jira development panel](../../integration/jira/development_panel.md).
 
-## `Failed to update the GitLab instance`
+## Error: `Failed to update the GitLab instance`
 
 When you set up the GitLab for Jira Cloud app, you might get a `Failed to update the GitLab instance` error after you enter your self-managed instance URL.
 
@@ -249,7 +249,7 @@ For the second log, you might have one of the following scenarios:
   - `json.exception.class` and `json.exception.message` are present.
   - `json.exception.class` and `json.exception.message` contain whether an issue occurred while contacting the self-managed instance.
 
-## `Failed to link group`
+## Error: `Failed to link group`
 
 When you link a group, you might get the following error:
 
@@ -279,7 +279,7 @@ This error can be returned for multiple reasons.
      JiraConnectInstallation.delete_all
      ```
 
-## `Failed to load Jira Connect Application ID`
+## Error: `Failed to load Jira Connect Application ID`
 
 When you sign in to the GitLab for Jira Cloud app after you point the app
 to your self-managed instance, you might get the following error:
@@ -305,7 +305,7 @@ To resolve this issue:
 1. If you [installed the app from the official Atlassian Marketplace listing](jira_cloud_app.md#install-the-gitlab-for-jira-cloud-app-from-the-atlassian-marketplace),
    ensure [**Jira Connect Proxy URL**](jira_cloud_app.md#set-up-your-instance) is set to `https://gitlab.com` with no trailing slash.
 
-## `Missing required parameter: client_id`
+## Error: `Missing required parameter: client_id`
 
 When you sign in to the GitLab for Jira Cloud app after you point the app
 to your self-managed instance, you might get the following error:
@@ -318,3 +318,15 @@ To resolve this issue, ensure all prerequisites for your installation method hav
 
 - [Prerequisites for connecting the GitLab for Jira Cloud app](jira_cloud_app.md#prerequisites)
 - [Prerequisites for installing the GitLab for Jira Cloud app manually](jira_cloud_app.md#prerequisites-1)
+
+## Error: `Failed to sign in to GitLab`
+
+When you sign in to the GitLab for Jira Cloud app after you point the app
+to your self-managed instance, you might get the following error:
+
+```plaintext
+Failed to sign in to GitLab
+```
+
+To resolve this issue, ensure the **Trusted** and **Confidential** checkboxes are cleared in
+the [OAuth application](jira_cloud_app.md#set-up-oauth-authentication) created for the app.

@@ -1,0 +1,13 @@
+---
+api_type: integer
+attr: mirror_max_delay
+clusterwide: false
+column: mirror_max_delay
+db_type: integer
+default: '300'
+description: Maximum time (in minutes) between updates that a mirror can have when
+  scheduled to synchronize. Premium and Ultimate only.
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: true

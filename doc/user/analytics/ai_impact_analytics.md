@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # AI Impact analytics
 
 DETAILS:
-**Tier:** For a limited time, Ultimate. In the future, GitLab Duo Enterprise.
+**Tier:** For a limited time, Ultimate. On October 17, 2024, [GitLab Duo Enterprise](https://about.gitlab.com/gitlab-duo/#pricing).
 **Offering:** GitLab.com, Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/443696) in GitLab 16.11 [with a flag](../../administration/feature_flags.md) named `ai_impact_analytics_dashboard`. Disabled by default.

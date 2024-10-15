@@ -2,15 +2,15 @@
   - if callout?
     = callout
   .gl-flex.gl-justify-between.gl-items-start.gl-gap-x-3.gl-pt-5
+    .gl-shrink-0.gl-px-2.gl-py-0.-gl-mr-3.sm:gl-p-2.sm:gl-mr-0
+      = render Pajamas::ButtonComponent.new(category: :tertiary, size: :small, icon: 'chevron-lg-right', icon_classes: '!-gl-mx-2', button_text_classes: 'gl-sr-only', button_options: @button_options.merge(class: 'settings-toggle js-settings-toggle', 'aria-label': aria_label)) do
+        = button_text
     .gl-grow
       %h2{ class: title_classes }
         = heading || @heading
       - if description || @description
         %p.gl-text-subtle.gl-m-0
           = description || @description
-    .gl-shrink-0.gl-px-2
-      = render Pajamas::ButtonComponent.new(button_options: @button_options.merge(class: 'gl-min-w-12 js-settings-toggle')) do
-        = button_text
   .settings-content
-    .gl-mt-5
+    .gl-pl-7.sm:gl-pl-8.gl-mt-5
       = body

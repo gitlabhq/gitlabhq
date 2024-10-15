@@ -1,0 +1,12 @@
+---
+api_type: boolean
+attr: disable_overriding_approvers_per_merge_request
+clusterwide: false
+column: disable_overriding_approvers_per_merge_request
+db_type: boolean
+default: 'false'
+description: Prevent editing approval rules in projects and merge requests
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

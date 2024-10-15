@@ -1,0 +1,13 @@
+---
+api_type: integer
+attr: gitaly_timeout_default
+clusterwide: false
+column: gitaly_timeout_default
+db_type: integer
+default: '55'
+description: Default Gitaly timeout, in seconds. This timeout is not enforced for
+  Git fetch/push operations or Sidekiq jobs. Set to `0` to disable timeouts.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

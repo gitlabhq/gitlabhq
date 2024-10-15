@@ -182,7 +182,7 @@ To set up OneLogin as your identity provider:
 ### Configure assertions
 
 NOTE:
-The attributes are case-sensitive.
+The attributes are case-insensitive.
 
 At minimum, you must configure the following assertions:
 

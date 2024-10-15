@@ -1,0 +1,13 @@
+---
+api_type: string
+attr: default_snippet_visibility
+clusterwide: false
+column: default_snippet_visibility
+db_type: integer
+default: '0'
+description: What visibility level new snippets receive. Can take `private`, `internal`
+  and `public` as a parameter. Default is `private`.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

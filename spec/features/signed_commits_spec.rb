@@ -161,6 +161,47 @@ RSpec.describe 'GPG signed commits', :js, feature_category: :source_code_managem
         expect(page).to have_content "GPG Key ID: #{GpgHelpers::User1.primary_keyid}"
       end
     end
+
+    # The below situation can occur when using the git mailmap feature.
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/425042.
+    context 'when user commit email is not verified and the commit is signed and verified' do
+      let(:commit) { project.commit('7b5160f9bb23a3d58a0accdbe89da13b96b1ece9') }
+
+      before do
+        create(:ssh_signature, user: user_1, commit_sha: commit.sha, project: project, verification_status: :verified)
+        allow(commit).to receive(:author_email).and_return('unverified@email.org')
+      end
+
+      it 'label is mapped verified' do
+        visit project_commit_path(project, commit.sha)
+        wait_for_all_requests
+
+        page.find('.gl-badge', text: 'Verified').click
+
+        within '.popover' do
+          expect(page).to have_content 'This commit was previously signed with a verified signature and verified committer email address. However the committer email address is no longer verified to the same user.'
+          expect(page).to have_content "SSH key fingerprint: #{commit.signature.key_fingerprint_sha256}"
+        end
+      end
+
+      context 'when the check_for_mailmapped_commit_emails feature flag is disabled' do
+        before do
+          stub_feature_flags(check_for_mailmapped_commit_emails: false)
+        end
+
+        it 'label is verified' do
+          visit project_commit_path(project, commit.sha)
+          wait_for_all_requests
+
+          page.find('.gl-badge', text: 'Verified').click
+
+          within '.popover' do
+            expect(page).to have_content 'Verified commit This commit was signed with a verified signature and the committer email was verified to belong to the same user.'
+            expect(page).to have_content "SSH key fingerprint: #{commit.signature.key_fingerprint_sha256}"
+          end
+        end
+      end
+    end
   end
 
   context 'view signed commit on the tree view' do

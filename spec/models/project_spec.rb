@@ -1023,6 +1023,12 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
   it_behaves_like 'a BulkUsersByEmailLoad model'
 
+  describe '#notification_group' do
+    it 'is expected to be an alias' do
+      expect(build(:project).method(:notification_group).original_name).to eq(:group)
+    end
+  end
+
   describe '#all_pipelines' do
     let_it_be(:project) { create(:project) }
 
@@ -1321,6 +1327,31 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     describe '#ci_inbound_job_token_scope_enabled?' do
       it_behaves_like 'a ci_cd_settings predicate method', prefix: 'ci_', default: true do
         let(:delegated_method) { :inbound_job_token_scope_enabled? }
+      end
+
+      where(:ci_cd_settings_attrs, :instance_enabled, :expectation) do
+        nil | true | true
+        nil | false | true
+        { inbound_job_token_scope_enabled: true } | true | true
+        { inbound_job_token_scope_enabled: true } | false | true
+        { inbound_job_token_scope_enabled: false } | true | true
+        { inbound_job_token_scope_enabled: false } | false | false
+      end
+
+      with_them do
+        let_it_be(:project) { create(:project) }
+
+        before do
+          if ci_cd_settings_attrs.nil?
+            allow(project).to receive(:ci_cd_settings).and_return(nil)
+          else
+            project.ci_cd_settings.update_attribute(:inbound_job_token_scope_enabled, ci_cd_settings_attrs[:inbound_job_token_scope_enabled])
+          end
+
+          allow(::Gitlab::CurrentSettings).to receive(:enforce_ci_inbound_job_token_scope_enabled?).and_return(instance_enabled)
+        end
+
+        it { expect(project.ci_inbound_job_token_scope_enabled?).to be(expectation) }
       end
     end
 
@@ -2605,7 +2636,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   describe '#service_desk_enabled?' do
     let_it_be(:namespace) { create(:namespace) }
 
-    subject(:project) { build(:project, :private, namespace: namespace, service_desk_enabled: true) }
+    subject(:project) { build(:project, :private, :service_desk_enabled, namespace: namespace) }
 
     before do
       allow(Gitlab::Email::IncomingEmail).to receive(:enabled?).and_return(true)
@@ -2618,8 +2649,18 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
+  describe '#default_service_desk_subaddress_part', feature_category: :service_desk do
+    let_it_be(:project) { create(:project, :service_desk_enabled) }
+
+    subject { project.default_service_desk_subaddress_part }
+
+    it 'contains the full path slug, project id and default suffix' do
+      is_expected.to eq("#{project.full_path_slug}-#{project.id}-issue-")
+    end
+  end
+
   describe '#service_desk_address', feature_category: :service_desk do
-    let_it_be(:project, reload: true) { create(:project, service_desk_enabled: true) }
+    let_it_be(:project, reload: true) { create(:project, :service_desk_enabled) }
 
     subject { project.service_desk_address }
 
@@ -5679,10 +5720,9 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     subject { project.predefined_project_variables.to_runner_variables }
 
     specify do
-      expect(subject).to include
-      [
+      expect(subject).to include(
         { key: 'CI_CONFIG_PATH', value: Ci::Pipeline::DEFAULT_CONFIG_PATH, public: true, masked: false }
-      ]
+      )
     end
 
     context 'when ci config path is overridden' do
@@ -5691,10 +5731,9 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       end
 
       it do
-        expect(subject).to include
-        [
+        expect(subject).to include(
           { key: 'CI_CONFIG_PATH', value: 'random.yml', public: true, masked: false }
-        ]
+        )
       end
     end
   end
@@ -8555,12 +8594,15 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   end
 
   shared_examples 'all_runners' do
-    let_it_be_with_refind(:project) { create(:project, group: create(:group)) }
+    let_it_be(:group) { create(:group) }
+    let_it_be_with_refind(:project) { create(:project, group: group) }
+    let_it_be(:other_group) { create(:group) }
+    let_it_be(:other_project) { create(:project) }
     let_it_be(:instance_runner) { create(:ci_runner, :instance) }
-    let_it_be(:group_runner) { create(:ci_runner, :group, groups: [project.group]) }
-    let_it_be(:other_group_runner) { create(:ci_runner, :group) }
+    let_it_be(:group_runner) { create(:ci_runner, :group, groups: [group]) }
+    let_it_be(:other_group_runner) { create(:ci_runner, :group, groups: [other_group]) }
     let_it_be(:project_runner) { create(:ci_runner, :project, projects: [project]) }
-    let_it_be(:other_project_runner) { create(:ci_runner, :project) }
+    let_it_be(:other_project_runner) { create(:ci_runner, :project, projects: [other_project]) }
 
     subject { project.all_runners }
 
@@ -9438,14 +9480,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  context 'with loose foreign key on organization_id' do
-    it_behaves_like 'cleanup by a loose foreign key' do
-      let_it_be(:parent) { create(:organization) }
-      let_it_be(:group) { create(:group, organization: parent) }
-      let_it_be(:model) { create(:project, group: group, organization: parent) }
-    end
-  end
-
   describe 'catalog resource process sync events worker' do
     let_it_be_with_reload(:project) { create(:project, name: 'Test project', description: 'Test description') }
 
@@ -9663,6 +9697,25 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
     it 'returns projects that contain any overlap with the provided traversal_ids array' do
       expect(described_class.by_any_overlap_with_traversal_ids(project_1.namespace_id)).to contain_exactly(project_1, project_2)
+    end
+  end
+
+  describe '#crm_group' do
+    context 'when project does not belong to group' do
+      let(:project) { build(:project) }
+
+      it 'returns nil' do
+        expect(project.crm_group).to be_nil
+      end
+    end
+
+    context 'when project belongs to a group' do
+      let(:group) { build(:group) }
+      let(:project) { build(:project, group: group) }
+
+      it 'returns the group.crm_group' do
+        expect(project.crm_group).to be(group.crm_group)
+      end
     end
   end
 end

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class DropNotNullToCiDeletedProjectId < Gitlab::Database::Migration[2.2]
-  milestone '17.4'
+  milestone '17.5'
   disable_ddl_transaction!
 
   TABLE_NAME = :ci_deleted_objects

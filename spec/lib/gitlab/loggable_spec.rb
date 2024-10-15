@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Loggable, feature_category: :logging do
+RSpec.describe Gitlab::Loggable, feature_category: :observability do
   subject(:klass_instance) do
     Class.new do
       include Gitlab::Loggable

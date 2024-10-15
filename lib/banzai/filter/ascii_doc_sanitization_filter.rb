@@ -77,10 +77,10 @@ module Banzai
             return unless node.name == 'a' || node.name == 'div' || SECTION_HEADINGS.any?(node.name)
             return unless node.has_attribute?('id')
 
-            return if node['id'] =~ PREFIXED_ID_PATTERN
+            return if PREFIXED_ID_PATTERN.match?(node['id'])
 
             if (pattern = FOOTNOTE_LINK_ID_PATTERNS[node.name.to_sym])
-              return if node['id'] =~ pattern
+              return if node['id']&.match?(pattern)
             end
 
             node.remove_attribute('id')

@@ -64,6 +64,11 @@ export default {
       required: false,
       default: () => [],
     },
+    fluxNamespace: {
+      type: String,
+      required: false,
+      default: '',
+    },
     fluxApiError: {
       type: String,
       required: false,
@@ -210,7 +215,7 @@ export default {
       data-testid="flux-connection-status"
       :class="$options.badgeContainerClasses"
       :configuration="configuration"
-      :namespace="namespace"
+      :namespace="fluxNamespace"
       :resource-type-param="fluxConnectionParams"
     >
       <span class="gl-mr-3">{{ $options.i18n.syncStatusLabel }}</span>

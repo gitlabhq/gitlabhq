@@ -1,0 +1,12 @@
+---
+api_type: string
+attr: grafana_url
+clusterwide: false
+column: grafana_url
+db_type: character
+default: "'/-/grafana'::character"
+description: Grafana URL.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

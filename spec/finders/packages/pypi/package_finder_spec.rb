@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Pypi::PackageFinder do
+RSpec.describe Packages::Pypi::PackageFinder, feature_category: :package_registry do
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, group: group) }

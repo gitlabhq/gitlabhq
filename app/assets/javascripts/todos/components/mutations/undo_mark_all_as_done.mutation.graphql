@@ -1,0 +1,9 @@
+mutation undoMarkAllAsDone($todoIDs: [TodoID!]!) {
+  undoMarkAllAsDone: todoRestoreMany(input: { ids: $todoIDs }) {
+    todos {
+      id
+      state
+    }
+    errors
+  }
+}

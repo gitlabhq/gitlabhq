@@ -15,6 +15,7 @@ import blobInfoQuery from 'shared_queries/repository/blob_info.query.graphql';
 import highlightMixin from '~/repository/mixins/highlight_mixin';
 import projectInfoQuery from '../queries/project_info.query.graphql';
 import getRefMixin from '../mixins/get_ref';
+import { getRefType } from '../utils/ref_type';
 import { DEFAULT_BLOB_INFO, TEXT_FILE_TYPE, LFS_STORAGE, LEGACY_FILE_TYPES } from '../constants';
 import BlobButtonGroup from './blob_button_group.vue';
 import ForkSuggestion from './fork_suggestion.vue';
@@ -62,7 +63,7 @@ export default {
           projectPath: this.projectPath,
           filePath: [this.path],
           ref: this.currentRef,
-          refType: this.refType?.toUpperCase() || null,
+          refType: getRefType(this.refType),
           shouldFetchRawText: true,
         };
 

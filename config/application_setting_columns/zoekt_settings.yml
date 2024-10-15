@@ -1,0 +1,12 @@
+---
+api_type:
+attr: zoekt_settings
+clusterwide: false
+column: zoekt_settings
+db_type: jsonb
+default: "'{}'::jsonb"
+description:
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: true

@@ -45,6 +45,12 @@ RSpec.describe Users::BanService, feature_category: :user_management do
 
         ban_user
       end
+
+      it 'bans duplicate users' do
+        expect(AntiAbuse::BanDuplicateUsersWorker).to receive(:perform_async).with(user.id)
+
+        ban_user
+      end
     end
 
     context 'when failed' do

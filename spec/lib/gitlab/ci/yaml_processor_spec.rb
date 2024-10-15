@@ -1698,7 +1698,7 @@ module Gitlab
             expect(subject.dig(:options, :before_script)).to eq ["bundle install"]
             expect(subject.dig(:options, :script)).to eq %w[rspec]
             expect(subject.dig(:options, :image, :name)).to eq 'image:test'
-            expect(subject.dig(:when)).to eq 'always'
+            expect(subject[:when]).to eq 'always'
           end
         end
       end
@@ -3819,19 +3819,6 @@ module Gitlab
         end
 
         context 'on pages option' do
-          context 'when not in a pages job' do
-            let(:config) do
-              <<-EOYML
-              not-pages:
-                script: echo
-                pages:
-                  path_prefix: 'foo'
-              EOYML
-            end
-
-            it_behaves_like 'returns errors', 'jobs:not-pages pages can only be used within a `pages` job'
-          end
-
           context 'when in a pages job' do
             let(:config) do
               <<-EOYML

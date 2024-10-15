@@ -303,8 +303,8 @@ module QA
 
           # Print difference in the description
           #
-          expected_body = expected_item[:body]
-          actual_body = actual_item[:body]
+          expected_body = remove_backticks(expected_item[:body])
+          actual_body = remove_backticks(actual_item[:body])
           body_msg = "#{msg} same description. diff:\n#{differ.diff(expected_body, actual_body)}"
           expect(actual_body).to eq(expected_body), body_msg
 
@@ -317,8 +317,8 @@ module QA
 
           # Print amount difference first
           #
-          expected_comments = expected_item[:comments]
-          actual_comments = actual_item[:comments]
+          expected_comments = expected_item[:comments].map { |comment| remove_backticks(comment) }
+          actual_comments = actual_item[:comments].map { |comment| remove_backticks(comment) }
           comment_count_msg = <<~MSG
             #{msg} same amount of comments. Source: #{expected_comments.length}, Target: #{actual_comments.length}
           MSG
@@ -427,6 +427,16 @@ module QA
       # @return [Regex]
       def created_by_pattern
         @created_by_pattern ||= /\n\n \*By .+ on \S+\*/
+      end
+
+      # Remove backticks from string
+      #
+      # @param [String] text
+      # @return [String] modified text
+      def remove_backticks(text)
+        return unless text.present?
+
+        text.delete('`')
       end
 
       # Source project url

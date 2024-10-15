@@ -41,6 +41,10 @@ RSpec.describe PersonalAccessTokens::ExpiringWorker, type: :worker, feature_cate
         expect { worker.perform }.to change { expiring_token.reload.expire_notification_delivered }.from(false).to(true)
       end
 
+      it 'marks the notification as delivered with new column', :freeze_time do
+        expect { worker.perform }.to change { expiring_token.reload.seven_days_notification_sent_at }.from(nil).to(Time.current)
+      end
+
       it 'avoids N+1 queries', :use_sql_query_cache do
         control = ActiveRecord::QueryRecorder.new(skip_cached: false) { worker.perform }
 

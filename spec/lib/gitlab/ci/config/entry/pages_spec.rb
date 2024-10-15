@@ -6,12 +6,12 @@ RSpec.describe Gitlab::Ci::Config::Entry::Pages, feature_category: :pages do
   subject(:entry) { described_class.new(config) }
 
   describe 'validation' do
-    context 'when value given is not a hash' do
+    context 'when value given is neither a hash nor a boolean' do
       let(:config) { 'value' }
 
       it 'is invalid' do
         expect(entry).not_to be_valid
-        expect(entry.errors).to include('pages config should be a hash')
+        expect(entry.errors).to include('pages config should be a hash or a boolean value')
       end
     end
 

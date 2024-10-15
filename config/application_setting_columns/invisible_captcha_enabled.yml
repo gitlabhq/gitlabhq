@@ -1,0 +1,12 @@
+---
+api_type: boolean
+attr: invisible_captcha_enabled
+clusterwide: true
+column: invisible_captcha_enabled
+db_type: boolean
+default: 'false'
+description: Enable Invisible CAPTCHA spam detection during sign-up. Disabled by default.
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: true

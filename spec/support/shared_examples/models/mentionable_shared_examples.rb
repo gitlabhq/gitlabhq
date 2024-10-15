@@ -146,7 +146,7 @@ RSpec.shared_examples 'an editable mentionable' do
     context 'when the markdown cache is stale' do
       before do
         expect(subject).to receive(:latest_cached_markdown_version).at_least(:once) do
-          (Gitlab::MarkdownCache::CACHE_COMMONMARK_VERSION + 1) << 16
+          Gitlab::MarkdownCache::CACHE_COMMONMARK_VERSION_SHIFTED + 1
         end
       end
 

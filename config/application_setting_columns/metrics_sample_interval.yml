@@ -1,0 +1,12 @@
+---
+api_type:
+attr: metrics_sample_interval
+clusterwide: true
+column: metrics_sample_interval
+db_type: integer
+default: '15'
+description:
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: false

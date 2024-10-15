@@ -12,6 +12,10 @@ module Gitlab
       def name
         @name || _('Deploy Token')
       end
+
+      def impersonated?
+        false
+      end
     end
   end
 end

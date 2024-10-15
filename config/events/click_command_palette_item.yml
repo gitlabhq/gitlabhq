@@ -1,0 +1,18 @@
+---
+description: Tracks user interactions with items in the command palette.
+action: click_command_palette_item
+product_group: personal_productivity
+milestone: '16.3'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129483
+distributions:
+  - ce
+  - ee
+tiers:
+  - free
+  - premium
+  - ultimate
+additional_properties:
+  label:
+    description: The type of command palette item that was clicked
+  property:
+    description: Nav_panel_unknown

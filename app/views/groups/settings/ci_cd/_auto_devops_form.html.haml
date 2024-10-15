@@ -4,7 +4,7 @@
     .form-group
       = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-3' }) do |c|
         - c.with_body do
-          - learn_more_link = link_to _('Learn more.'), help_page_path('topics/autodevops/index'), target: '_blank', rel: 'noopener noreferrer'
+          - learn_more_link = link_to _('Learn more.'), help_page_path('topics/autodevops/index.md'), target: '_blank', rel: 'noopener noreferrer'
           - help_text = s_('GroupSettings|The Auto DevOps pipeline runs if no alternative CI configuration file is found.')
           - badge = gl_badge_tag badge_for_auto_devops_scope(group), variant: :info
           - label = s_('GroupSettings|Default to Auto DevOps pipeline for all projects within this group')

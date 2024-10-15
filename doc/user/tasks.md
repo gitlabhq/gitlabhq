@@ -170,9 +170,11 @@ The previous URL with `/work_items/` still works.
 
 ## Remove a task from an issue
 
+> - Minimum required role [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/404799) from Reporter to Guest in GitLab 17.0.
+
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- You must have at least the Guest role for the project.
 
 You can remove a task from an issue. The task is not deleted, but the two are no longer connected.
 It's not possible to connect them again.

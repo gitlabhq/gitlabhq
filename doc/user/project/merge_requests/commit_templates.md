@@ -72,6 +72,7 @@ GitLab creates a squash commit message with this template:
 > - `reviewed_by` variable [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378352) in GitLab 15.7.
 > - `local_reference` variable [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/199823) in GitLab 16.1.
 > - `source_project_id` variables [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128553) in GitLab 16.3.
+> - `merge_request_author` variable [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152510) in GitLab 17.1.
 
 Commit message templates support these variables:
 
@@ -91,6 +92,7 @@ Commit message templates support these variables:
 | `%{reviewed_by}`   | Line-separated list of the merge request reviewers, based on users who submit a review via batch comments, in a `Reviewed-by` Git commit trailer format. | `Reviewed-by: Sidney Jones <sjones@example.com>` <br> `Reviewed-by: Zhang Wei <zwei@example.com>` |
 | `%{approved_by}`   | Line-separated list of the merge request approvers in a `Approved-by` Git commit trailer format. | `Approved-by: Sidney Jones <sjones@example.com>` <br> `Approved-by: Zhang Wei <zwei@example.com>` |
 | `%{merged_by}`     | User who merged the merge request. | `Alex Garcia <agarcia@example.com>` |
+| `%{merge_request_author}` | Name and email of the merge request author. | `Zane Doe <zdoe@example.com>` |
 | `%{co_authored_by}` | Names and emails of commit authors in a `Co-authored-by` Git commit trailer format. Limited to authors of 100 most recent commits in merge request. | `Co-authored-by: Zane Doe <zdoe@example.com>` <br> `Co-authored-by: Blake Smith <bsmith@example.com>` |
 | `%{all_commits}`   | Messages from all commits in the merge request. Limited to 100 most recent commits. Skips commit bodies exceeding 100 KiB and merge commit messages. | `* Feature introduced` <br><br> `This commit implements feature` <br> `Changelog:added` <br><br> `* Bug fixed` <br><br> `* Documentation improved` <br><br>`This commit introduced better docs.`|
 

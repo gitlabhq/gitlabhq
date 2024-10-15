@@ -29,6 +29,8 @@ events:
   unique: user.id
 - name: i_package_terraform_module_user
   unique: user.id
+- name: i_package_ml_model_user
+  unique: user.id
 distribution:
 - ee
 - ce

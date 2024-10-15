@@ -1,0 +1,13 @@
+---
+api_type: integer
+attr: terminal_max_session_time
+clusterwide: false
+column: terminal_max_session_time
+db_type: integer
+default: '0'
+description: Maximum time for web terminal websocket connection (in seconds). Set
+  to `0` for unlimited time.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

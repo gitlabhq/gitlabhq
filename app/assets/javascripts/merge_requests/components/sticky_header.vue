@@ -210,7 +210,7 @@ export default {
                 <gl-link
                   :title="getNoteableData.target_branch"
                   :href="getNoteableData.target_branch_path"
-                  class="gl-ml-2 gl-mt-2 gl-max-w-26 gl-truncate gl-rounded-base gl-bg-blue-50 gl-px-2 gl-text-sm !gl-text-blue-500 gl-font-monospace"
+                  class="gl-ml-2 gl-mt-2 gl-max-w-26 gl-truncate gl-rounded-base gl-bg-blue-50 gl-px-2 gl-text-sm !gl-text-link gl-font-monospace"
                 >
                   {{ getNoteableData.target_branch }}
                 </gl-link>

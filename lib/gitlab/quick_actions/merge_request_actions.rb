@@ -351,8 +351,7 @@ module Gitlab
         end
         types MergeRequest
         condition do
-          quick_action_target.persisted? &&
-            reviewers_to_remove?(@updates) &&
+          reviewers_to_remove?(@updates) &&
             current_user.can?(:"admin_#{quick_action_target.to_ability_name}", project)
         end
         parse_params do |unassign_reviewer_param|
@@ -360,11 +359,23 @@ module Gitlab
           extract_users(unassign_reviewer_param) if quick_action_target.allows_multiple_reviewers?
         end
         command :unassign_reviewer, :remove_reviewer do |users = nil|
+          current_reviewers = quick_action_target.reviewers
+          # if preceding commands have been executed already, we need to use the updated reviewer_ids
+          current_reviewers = User.find(@updates[:reviewer_ids]) if @updates[:reviewer_ids].present?
+
           if quick_action_target.allows_multiple_reviewers? && users&.any?
             @updates[:reviewer_ids] ||= quick_action_target.reviewers.map(&:id)
             @updates[:reviewer_ids] -= users.map(&:id)
           else
             @updates[:reviewer_ids] = []
+          end
+
+          removed_reviewers = current_reviewers.select { |user| @updates[:reviewer_ids].exclude?(user.id) }
+          # only generate the message here if the change would not be traceable otherwise
+          # because all reviewers have been assigned and removed immediately
+          if removed_reviewers.present? && !reviewers_to_remove?(@updates)
+            @execution_message[:unassign_reviewer] = _("Removed %{reviewer_text} %{reviewer_references}.") %
+              { reviewer_text: 'reviewer'.pluralize(removed_reviewers.size), reviewer_references: removed_reviewers.map(&:to_reference).to_sentence }
           end
         end
       end

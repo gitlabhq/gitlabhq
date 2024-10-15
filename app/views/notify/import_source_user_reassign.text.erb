@@ -7,8 +7,8 @@
 <% reassigned_by_name = reassigned_by.name %>
 <% reassigned_by_username = "#{reassigned_by.to_reference} - #{user_url(reassigned_by)}" %>
 <% destination_group = "#{@source_user.namespace.name} (/#{@source_user.namespace.full_path})" %>
-<% help_link = help_page_url('user/project/import/index', anchor: 'accept-contribution-reassignment') %>
-<% report_link = help_page_url('user/report_abuse') %>
+<% help_link = help_page_url('user/project/import/index.md', anchor: 'accept-contribution-reassignment') %>
+<% report_link = help_page_url('user/report_abuse.md') %>
 <%= s_('UserMapping|%{reassigned_by_name} (%{reassigned_by_username}) wants to reassign contributions made by %{source_name} (%{source_username}) on %{source_hostname} to you in %{destination_group}.') % { reassigned_by_name: reassigned_by_name,
     reassigned_by_username: reassigned_by_username,
     source_name: source_name,
@@ -16,7 +16,7 @@
     source_hostname: source_hostname,
     destination_group: destination_group } %>
 
-<%= s_('UserMapping|Review reassignment details') %>: <%= import_source_user_url(@source_user) %>
+<%= s_('UserMapping|Review reassignment details') %>: <%= import_source_user_url(@source_user.reassignment_token) %>
 
 <%= s_('UserMapping|Import details:') %>
 <%= safe_format(s_('UserMapping|Imported from: %{source_hostname}'), source_hostname: source_hostname) %>

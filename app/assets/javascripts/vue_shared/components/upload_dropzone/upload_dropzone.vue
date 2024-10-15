@@ -198,7 +198,7 @@ export default {
         v-show="dragging && !enableDragBehavior"
         class="card upload-dropzone-border upload-dropzone-overlay gl-absolute gl-flex gl-h-full gl-w-full gl-items-center gl-justify-center gl-p-4"
       >
-        <div v-show="!isDragDataValid" class="mw-50 gl-text-center">
+        <div v-show="!isDragDataValid" class="gl-max-w-1/2 gl-text-center">
           <slot name="invalid-drag-data-slot">
             <h3 :class="{ 'gl-inline gl-text-base': !displayAsCard }">
               {{ __('Oh no!') }}
@@ -210,7 +210,7 @@ export default {
             }}</span>
           </slot>
         </div>
-        <div v-show="isDragDataValid" class="mw-50 gl-text-center">
+        <div v-show="isDragDataValid" class="gl-max-w-1/2 gl-text-center">
           <slot name="valid-drag-data-slot">
             <h3 :class="{ 'gl-inline gl-text-base': !displayAsCard }">
               {{ __('Incoming!') }}

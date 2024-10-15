@@ -98,7 +98,7 @@ You can find information in:
 - `json.exception.message`
 - `json.message`
 
-### `Test Failed. Save Anyway` error
+### Error: `Test Failed. Save Anyway`
 
 When you configure an integration on an uninitialized repository, the integration might fail with
 a `Test Failed. Save Anyway` error. This error occurs because the integration uses push data

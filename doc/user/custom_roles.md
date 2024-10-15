@@ -52,7 +52,7 @@ Prerequisites:
 - You must have the Owner role for the group.
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > Roles and Permissions**.
+1. Select **Settings > Roles and permissions**.
 1. Select **New role**.
 1. In **Base role to use as template**, select an existing default role.
 1. In **Role name**, enter the custom role's title.
@@ -60,7 +60,7 @@ Prerequisites:
 1. Select the **Permissions** for the new custom role.
 1. Select **Create role**.
 
-In **Settings > Roles and Permissions**, the list of all custom roles displays the:
+In **Settings > Roles and permissions**, the list of all custom roles displays the:
 
 - Custom role name.
 - Role ID.
@@ -76,7 +76,7 @@ Prerequisites:
 After you create a custom role for your self-managed instance, you can assign that custom role to a user in any group or subgroup in that instance.
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Roles and Permissions**.
+1. Select **Settings > Roles and permissions**.
 1. Select **New role**.
 1. In **Base role to use as template**, select an existing default role.
 1. In **Role name**, enter the custom role's title.
@@ -84,7 +84,7 @@ After you create a custom role for your self-managed instance, you can assign th
 1. Select the **Permissions** for the new custom role.
 1. Select **Create role**.
 
-In **Settings > Roles and Permissions**, the list of all custom roles displays the:
+In **Settings > Roles and permissions**, the list of all custom roles displays the:
 
 - Custom role name.
 - Role ID.
@@ -108,7 +108,7 @@ Prerequisites:
 - You must have the Owner role for the group.
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > Roles and Permissions**.
+1. Select **Settings > Roles and permissions**.
 1. Select the vertical ellipsis (**{ellipsis_v}**) for the custom role, then
    select **Edit role**.
 1. Modify the role as needed.
@@ -121,7 +121,7 @@ Prerequisites:
 - You must be an administrator for the self-managed instance.
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Roles and Permissions**.
+1. Select **Settings > Roles and permissions**.
 1. Select the vertical ellipsis (**{ellipsis_v}**) for the custom role, then
    select **Edit role**.
 1. Modify the role as needed.
@@ -140,7 +140,7 @@ You can remove a custom role from a group only if no members have that role. See
 1. On the left sidebar:
    - For self-managed, at the bottom, select **Admin**.
    - For SaaS, select **Search or go to** and find your group.
-1. Select **Settings > Roles and Permissions**.
+1. Select **Settings > Roles and permissions**.
 1. Select **Custom Roles**.
 1. In the **Actions** column, select **Delete role** (**{remove}**) and confirm.
 
@@ -199,7 +199,7 @@ If you are assigning a custom role to an existing:
 
    Where:
 
-   - `<project_id` and `<group_id>`: The `id` or [URL-encoded path of the project or group](../api/rest/index.md#namespaced-path-encoding) associated with the membership receiving the custom role.
+   - `<project_id` and `<group_id>`: The `id` or [URL-encoded path of the project or group](../api/rest/index.md#namespaced-paths) associated with the membership receiving the custom role.
    - `<member_role_id>`: The `id` of the member role created in the previous section.
    - `<user_id>`: The `id` of the user receiving a custom role.
 
@@ -293,13 +293,13 @@ For example, let's say we have 5 users in Group A, and they are assigned the fol
 
 Group B invites Group A. The following table shows the maximum role that each the users in Group A will have in Group B:
 
-| Scenario                                                       | User A | User B              | User C                       | User D    | User E                            |
-|----------------------------------------------------------------|--------|---------------------|------------------------------|-----------|-----------------------------------|
-| Group B invites Group A with Guest                             | Guest  | Guest               | Guest                        | Guest     | Guest                             |
-| Group B invites Group A with Guest + `read_code`               | Guest  | Guest + `read_code` | Guest + `read_vulnerability` | Guest     | Guest                             |
-| Group B invites Group A with Guest + `read_vulnerability`      | Guest  | Guest + `read_code` | Guest + `read_vulnerability` | Guest     | Guest                             |
-| Group B invites Group A with Developer                         | Guest  | Guest + `read_code` | Guest + `read_vulnerability` | Developer | Developer                         |
-| Group B invites Group A with Developer + `admin_vulnerability` | Guest  | Guest + `read_code` | Guest + `read_vulnerability` | Developer | Developer + `admin_vulnerability` |
+| Scenario                                                       | User A | User B              | User C                       | User D                       | User E                            |
+|----------------------------------------------------------------|--------|---------------------|------------------------------|------------------------------|-----------------------------------|
+| Group B invites Group A with Guest                             | Guest  | Guest               | Guest                        | Guest                        | Guest                             |
+| Group B invites Group A with Guest + `read_code`               | Guest  | Guest + `read_code` | Guest + `read_vulnerability` | Guest + `read_vulnerability` | Guest + `read_vulnerability`      |
+| Group B invites Group A with Guest + `read_vulnerability`      | Guest  | Guest + `read_code` | Guest + `read_vulnerability` | Guest + `read_vulnerability` | Guest + `read_vulnerability`      |
+| Group B invites Group A with Developer                         | Guest  | Guest + `read_code` | Guest + `read_vulnerability` | Developer                    | Developer                         |
+| Group B invites Group A with Developer + `admin_vulnerability` | Guest  | Guest + `read_code` | Guest + `read_vulnerability` | Developer                    | Developer + `admin_vulnerability` |
 
 When User C is invited to Group B with the same default role (Guest), but different custom permissions with the same base access level (`read_code` and `read_vulnerability`), User C retains the custom permission from Group A (`read_vulnerability`).
 
@@ -318,7 +318,7 @@ You can assign custom roles and permissions to the following:
 You can sync users to custom roles with following authentication providers:
 
 - See [Configure SAML Group Links](group/saml_sso/group_sync.md#configure-saml-group-links).
-- See [Manage group memberships via LDAP](group/access_and_permissions.md#manage-group-memberships-via-ldap).
+- See [Manage group memberships via LDAP](group/access_and_permissions.md#manage-group-memberships-with-ldap).
 
 ## Known issues
 

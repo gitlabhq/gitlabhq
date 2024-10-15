@@ -8,12 +8,4 @@ RSpec.describe RegistrationsHelper, feature_category: :user_management do
       expect(helper.signup_username_data_attributes.keys).to include(:min_length, :min_length_message, :max_length, :max_length_message, :testid)
     end
   end
-
-  describe '#register_omniauth_params' do
-    it 'adds intent to register' do
-      allow(helper).to receive(:glm_tracking_params).and_return({})
-
-      expect(helper.register_omniauth_params({})).to eq({})
-    end
-  end
 end

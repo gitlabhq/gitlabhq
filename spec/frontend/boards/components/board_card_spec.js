@@ -15,6 +15,8 @@ import { mockLabelList, mockIssue, DEFAULT_COLOR } from '../mock_data';
 describe('Board card', () => {
   let wrapper;
 
+  const findBoardCardButton = () => wrapper.find('button.board-card-button');
+
   Vue.use(VueApollo);
 
   const mockSetActiveBoardItemResolver = jest.fn();
@@ -34,6 +36,7 @@ describe('Board card', () => {
     item = mockIssue,
     selectedBoardItems = [],
     activeBoardItem = {},
+    mountOptions = {},
   } = {}) => {
     mockApollo.clients.defaultClient.cache.writeQuery({
       query: isShowingLabelsQuery,
@@ -78,16 +81,17 @@ describe('Board card', () => {
         allowSubEpics: false,
         ...provide,
       },
+      ...mountOptions,
     });
   };
 
   const selectCard = async () => {
-    wrapper.trigger('click');
+    findBoardCardButton().trigger('click');
     await nextTick();
   };
 
   const multiSelectCard = async () => {
-    wrapper.trigger('click', { ctrlKey: true });
+    findBoardCardButton().trigger('click', { ctrlKey: true });
     await nextTick();
   };
 
@@ -96,12 +100,24 @@ describe('Board card', () => {
   });
 
   describe('when GlLabel is clicked in BoardCardInner', () => {
-    it("doesn't call setSelectedBoardItemsMutation", () => {
+    it("doesn't call setSelectedBoardItemsMutation", async () => {
       mountComponent();
 
-      wrapper.findComponent(GlLabel).trigger('mouseup');
+      await wrapper.findComponent(GlLabel).trigger('mouseup');
 
       expect(mockSetSelectedBoardItemsResolver).toHaveBeenCalledTimes(0);
+    });
+  });
+
+  describe('when issuable title is clicked in BoardCardInner and issuesListDrawer feature is enabled', () => {
+    it('calls mockSetSelectedBoardItemsResolver', async () => {
+      mountComponent({ provide: { glFeatures: { issuesListDrawer: true } } });
+
+      await wrapper.findByTestId('board-card-title-link').trigger('click');
+
+      await waitForPromises();
+
+      expect(mockSetActiveBoardItemResolver).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -129,7 +145,7 @@ describe('Board card', () => {
 
   describe('when mouseup event is called on the card', () => {
     beforeEach(() => {
-      mountComponent();
+      mountComponent({ mountOptions: { attachTo: document.body } });
     });
 
     describe('when not using multi-select', () => {
@@ -146,6 +162,8 @@ describe('Board card', () => {
           expect.anything(),
           expect.anything(),
         );
+
+        expect(document.activeElement).toEqual(findBoardCardButton().element);
       });
     });
 
@@ -197,10 +215,12 @@ describe('Board card', () => {
         },
       });
 
-      expect(wrapper.classes()).toEqual(
+      expect(findBoardCardButton().classes()).toEqual(
         expect.arrayContaining(['gl-pl-4', 'gl-border-l-solid', 'gl-border-l-4']),
       );
-      expect(wrapper.attributes('style')).toContain(`border-left-color: ${DEFAULT_COLOR}`);
+      expect(findBoardCardButton().attributes('style')).toContain(
+        `border-left-color: ${DEFAULT_COLOR}`,
+      );
     });
 
     it('does not render border if color is not present', () => {

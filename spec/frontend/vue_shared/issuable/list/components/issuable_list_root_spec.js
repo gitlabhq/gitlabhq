@@ -4,6 +4,7 @@ import { nextTick } from 'vue';
 import VueDraggable from 'vuedraggable';
 import { TEST_HOST } from 'helpers/test_constants';
 import { DRAG_DELAY } from '~/sortable/constants';
+import EmptyResult from '~/vue_shared/components/empty_result.vue';
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import PageSizeSelector from '~/vue_shared/components/page_size_selector.vue';
 import IssuableBulkEditSidebar from '~/vue_shared/issuable/list/components/issuable_bulk_edit_sidebar.vue';
@@ -256,6 +257,12 @@ describe('IssuableListRoot component', () => {
     createComponent({ issuables: [] });
 
     expect(wrapper.find('p.js-issuable-empty-state').text()).toBe('Issuable empty state');
+  });
+
+  it('renders EmptyResult when there are no search results', () => {
+    createComponent({ issuables: [], initialFilterValue: ['test'] });
+
+    expect(wrapper.findComponent(EmptyResult).exists()).toBe(true);
   });
 
   describe('pagination', () => {

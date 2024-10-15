@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::SnippetSearchResults do
   include SearchHelpers
 
-  let_it_be(:snippet) { create(:snippet, content: 'foo', file_name: 'foo') }
+  let_it_be(:snippet) { create(:personal_snippet, content: 'foo', file_name: 'foo') }
 
   let(:results) { described_class.new(snippet.author, 'foo') }
 
@@ -30,7 +30,7 @@ RSpec.describe Gitlab::SnippetSearchResults do
 
   describe '#objects' do
     it 'uses page and per_page to paginate results' do
-      snippet2 = create(:snippet, :public, content: 'foo', file_name: 'foo')
+      snippet2 = create(:personal_snippet, :public, content: 'foo', file_name: 'foo')
 
       expect(results.objects('snippet_titles', page: 1, per_page: 1).to_a).to eq([snippet2])
       expect(results.objects('snippet_titles', page: 2, per_page: 1).to_a).to eq([snippet])

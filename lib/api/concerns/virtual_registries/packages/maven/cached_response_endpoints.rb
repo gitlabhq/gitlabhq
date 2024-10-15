@@ -13,11 +13,11 @@ module API
 
               helpers do
                 def cached_responses
-                  upstream.cached_responses.search_by_relative_path(params[:search])
+                  upstream.cached_responses.default.search_by_relative_path(params[:search])
                 end
 
                 def cached_response
-                  upstream.cached_responses.find_by_relative_path!(declared_params[:cached_response_id])
+                  upstream.cached_responses.default.find_by_relative_path!(declared_params[:cached_response_id])
                 end
               end
 

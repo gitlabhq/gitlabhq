@@ -89,16 +89,14 @@ Administrators can find a user's maximum permissions for a group or project.
 
 ## Unable to remove billable members with badge `Project Invite/Group Invite`
 
-```plaintext
-Members who were invited via a group invitation cannot be removed. You can either remove the entire group, or ask an Owner of the invited group to remove the member.
-```
+The following error typically occurs when the user belongs to an external group that has been shared with your [projects](../project/members/sharing_projects_groups.md) or [groups](../project/members/sharing_projects_groups.md#invite-a-group-to-a-group):
 
-This error typically occurs when the user you're trying to remove is part of an external group that has been [shared with one or more of your projects](../project/members/sharing_projects_groups.md) or [groups](../project/members/sharing_projects_groups.md#invite-a-group-to-a-group). To remove the user as a billable member, follow one of the options:
+`Members who were invited via a group invitation cannot be removed. You can either remove the entire group, or ask an Owner of the invited group to remove the member.`
+
+To remove the user as a billable member, follow one of these options:
 
 - Remove the invited group membership from your project or group members page.
 - Recommended. Remove the user directly from the invited group, if you have access to the group.
-
-The feature request to **Update `billable_members` endpoint to include invited group** is currently being worked on. For more information, see [issue 386583](https://gitlab.com/gitlab-org/gitlab/-/issues/386583)
 
 ## Missing or insufficient permission, delete button disabled
 

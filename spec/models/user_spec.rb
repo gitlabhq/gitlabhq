@@ -970,11 +970,27 @@ RSpec.describe User, feature_category: :user_profile do
           expect(user.errors.messages[:email].first).to eq(expected_error)
         end
 
+        it 'allows example@test.com if user is placeholder or import user' do
+          placeholder_user = build(:user, :placeholder, email: "example@test.com")
+          import_user = build(:user, :import_user, email: "example@test.com")
+
+          expect(placeholder_user).to be_valid
+          expect(import_user).to be_valid
+        end
+
         it 'does not allow user to update email to a non-allowlisted domain' do
           user = create(:user, email: "info@test.example.com")
 
           expect { user.update!(email: "test@notexample.com") }
             .to raise_error(StandardError, 'Validation failed: Email is not allowed. Please use your regular email address. Check with your administrator.')
+        end
+
+        it 'allows placeholder and import users to update email to a non-allowlisted domain' do
+          placeholder_user = create(:user, :placeholder, email: "info@test.example.com")
+          import_user = create(:user, :import_user, email: "info2@test.example.com")
+
+          expect(placeholder_user.update!(email: "test@notexample.com")).to eq(true)
+          expect(import_user.update!(email: "test2@notexample.com")).to eq(true)
         end
       end
 
@@ -1386,6 +1402,14 @@ RSpec.describe User, feature_category: :user_profile do
 
         expect(described_class.by_username('CAMELCASED'))
           .to contain_exactly(user)
+      end
+    end
+
+    describe '.by_detumbled_emails' do
+      it 'finds the users with the same detumbled email address' do
+        user = create(:user, email: 'user+gitlab@example.com')
+
+        expect(described_class.by_detumbled_emails('user@example.com')).to contain_exactly(user)
       end
     end
 
@@ -2627,7 +2651,9 @@ RSpec.describe User, feature_category: :user_profile do
   describe 'needs_new_otp_secret?', :freeze_time do
     let(:user) { create(:user) }
 
-    context 'when two-factor is not enabled' do
+    context 'when no OTP is enabled' do
+      let(:user) { create(:user, :two_factor_via_webauthn) }
+
       it 'returns true if otp_secret_expires_at is nil' do
         expect(user.needs_new_otp_secret?).to eq(true)
       end
@@ -2645,8 +2671,8 @@ RSpec.describe User, feature_category: :user_profile do
       end
     end
 
-    context 'when two-factor is enabled' do
-      let(:user) { create(:user, :two_factor) }
+    context 'when OTP is enabled' do
+      let(:user) { create(:user, :two_factor_via_otp) }
 
       it 'returns false even if ttl is expired' do
         user.otp_secret_expires_at = 10.minutes.ago
@@ -3912,30 +3938,48 @@ RSpec.describe User, feature_category: :user_profile do
           stub_application_setting(allow_project_creation_for_guest_and_below: false)
         end
 
-        [
-          Gitlab::Access::NO_ACCESS,
-          Gitlab::Access::MINIMAL_ACCESS,
-          Gitlab::Access::GUEST
-        ].each do |role|
-          context "when users highest role is #{role}" do
-            it "returns false" do
-              allow(user).to receive(:highest_role).and_return(role)
-              expect(user.can_create_project?).to be_falsey
+        context 'with users having various membership access_levels' do
+          [
+            Gitlab::Access::NO_ACCESS,
+            Gitlab::Access::MINIMAL_ACCESS,
+            Gitlab::Access::GUEST
+          ].each do |role|
+            context "when users highest role is #{role}" do
+              it "returns false" do
+                allow(user).to receive(:highest_role).and_return(role)
+                expect(user.can_create_project?).to be_falsey
+              end
+            end
+          end
+
+          [
+            Gitlab::Access::REPORTER,
+            Gitlab::Access::DEVELOPER,
+            Gitlab::Access::MAINTAINER,
+            Gitlab::Access::OWNER,
+            Gitlab::Access::ADMIN
+          ].each do |role|
+            context "when users highest role is #{role}" do
+              it "returns true" do
+                allow(user).to receive(:highest_role).and_return(role)
+                expect(user.can_create_project?).to be_truthy
+              end
             end
           end
         end
 
-        [
-          Gitlab::Access::REPORTER,
-          Gitlab::Access::DEVELOPER,
-          Gitlab::Access::MAINTAINER,
-          Gitlab::Access::OWNER,
-          Gitlab::Access::ADMIN
-        ].each do |role|
-          context "when users highest role is #{role}" do
+        context 'when user does not have any membership records' do
+          context 'when user is admin', :enable_admin_mode do
+            let(:user) { create(:admin) }
+
             it "returns true" do
-              allow(user).to receive(:highest_role).and_return(role)
               expect(user.can_create_project?).to be_truthy
+            end
+          end
+
+          context 'when user is not admin' do
+            it "returns false" do
+              expect(user.can_create_project?).to be_falsey
             end
           end
         end
@@ -4042,6 +4086,18 @@ RSpec.describe User, feature_category: :user_profile do
         confirmed_email.email,
         original_email
       )
+    end
+  end
+
+  describe '#verified_detumbled_emails' do
+    let_it_be(:user) { create(:user, email: 'user+1@example.com') }
+
+    it 'returns only confirmed unique detumbled emails' do
+      create(:email, :confirmed,  email: 'user+2@example.com', user: user)
+      create(:email, :confirmed,  email: 'other_user+1@example.com', user: user)
+      create(:email, user: user)
+
+      expect(user.verified_detumbled_emails).to contain_exactly('user@example.com', 'other_user@example.com')
     end
   end
 
@@ -4884,7 +4940,8 @@ RSpec.describe User, feature_category: :user_profile do
     let_it_be(:private_group) { create(:group) }
     let_it_be(:child_group) { create(:group, parent: private_group) }
 
-    let_it_be(:project_group) { create(:group) }
+    let_it_be(:project_group_parent) { create(:group) }
+    let_it_be(:project_group) { create(:group, parent: project_group_parent) }
     let_it_be(:project) { create(:project, group: project_group) }
 
     before_all do
@@ -4894,10 +4951,22 @@ RSpec.describe User, feature_category: :user_profile do
 
     subject { user.authorized_groups }
 
-    it { is_expected.to contain_exactly private_group, child_group, project_group }
+    it { is_expected.to contain_exactly private_group, child_group, project_group, project_group_parent }
+
+    context 'when fix_user_authorized_groups is disabled' do
+      before do
+        stub_feature_flags(fix_user_authorized_groups: false)
+      end
+
+      it 'omits ancestor groups of projects' do
+        is_expected.to include project_group
+        is_expected.not_to include project_group_parent
+      end
+    end
 
     context 'with shared memberships' do
       let_it_be(:shared_group) { create(:group) }
+      let_it_be(:shared_group_descendant) { create(:group, parent: shared_group) }
       let_it_be(:other_group) { create(:group) }
       let_it_be(:shared_with_project_group) { create(:group) }
 
@@ -4907,8 +4976,19 @@ RSpec.describe User, feature_category: :user_profile do
         create(:group_group_link, shared_group: shared_with_project_group, shared_with_group: project_group)
       end
 
-      it { is_expected.to include shared_group }
+      it { is_expected.to include shared_group, shared_group_descendant }
       it { is_expected.not_to include other_group, shared_with_project_group }
+
+      context 'when fix_user_authorized_groups is disabled' do
+        before do
+          stub_feature_flags(fix_user_authorized_groups: false)
+        end
+
+        it 'omits subgroups of shared groups' do
+          is_expected.to include shared_group
+          is_expected.not_to include shared_group_descendant
+        end
+      end
     end
 
     context 'when a new column is added to namespaces table' do
@@ -6043,6 +6123,8 @@ RSpec.describe User, feature_category: :user_profile do
   end
 
   describe '#allow_password_authentication_for_web?' do
+    subject(:allow_password_authentication_for_web?) { user.allow_password_authentication_for_web? }
+
     context 'regular user' do
       let(:user) { build(:user) }
 
@@ -6062,9 +6144,13 @@ RSpec.describe User, feature_category: :user_profile do
 
       expect(user.allow_password_authentication_for_web?).to be_falsey
     end
+
+    it_behaves_like 'OmniAuth user password authentication'
   end
 
   describe '#allow_password_authentication_for_git?' do
+    subject(:allow_password_authentication_for_git?) { user.allow_password_authentication_for_git? }
+
     context 'regular user' do
       let(:user) { build(:user) }
 
@@ -6084,6 +6170,8 @@ RSpec.describe User, feature_category: :user_profile do
 
       expect(user.allow_password_authentication_for_git?).to be_falsey
     end
+
+    it_behaves_like 'OmniAuth user password authentication'
   end
 
   describe '#assigned_open_merge_requests_count' do
@@ -7329,35 +7417,40 @@ RSpec.describe User, feature_category: :user_profile do
   describe '#valid_password?' do
     subject(:validate_password) { user.valid_password?(password) }
 
+    let(:password) { user.password }
+
     context 'user with disallowed password' do
       let(:user) { create(:user, :disallowed_password) }
-      let(:password) { user.password }
 
       it { is_expected.to eq(false) }
     end
 
     context 'using a correct password' do
-      let(:user) { create(:user) }
-      let(:password) { user.password }
+      context 'with a regular user' do
+        let(:user) { create(:user) }
+        let(:password) { user.password }
 
-      it { is_expected.to eq(true) }
+        it { is_expected.to eq(true) }
 
-      context 'when password authentication is disabled' do
-        before do
-          stub_application_setting(password_authentication_enabled_for_web: false)
-          stub_application_setting(password_authentication_enabled_for_git: false)
+        context 'when password authentication for web is disabled' do
+          before do
+            stub_application_setting(password_authentication_enabled_for_web: false)
+            stub_application_setting(password_authentication_enabled_for_git: true)
+          end
+
+          it { is_expected.to eq(false) }
         end
 
-        it { is_expected.to eq(false) }
-      end
+        context 'when user with LDAP identity' do
+          before do
+            create(:identity, provider: 'ldapmain', user: user)
+          end
 
-      context 'when user with LDAP identity' do
-        before do
-          create(:identity, provider: 'ldapmain', user: user)
+          it { is_expected.to eq(false) }
         end
-
-        it { is_expected.to eq(false) }
       end
+
+      it_behaves_like 'OmniAuth user password authentication'
     end
 
     context 'using a wrong password' do
@@ -8738,6 +8831,55 @@ RSpec.describe User, feature_category: :user_profile do
       let(:project) { user_member_project }
 
       it { is_expected.to be_truthy }
+    end
+  end
+
+  context 'banned user normalized email reuse check' do
+    let_it_be(:existing_user) { create(:user) }
+
+    shared_examples 'does not perform the check' do
+      specify do
+        expect(::Users::BannedUser).not_to receive(:by_detumbled_email)
+
+        subject
+      end
+    end
+
+    context 'when email has other validation errors' do
+      subject(:new_user) { build(:user, email: existing_user.email).tap(&:valid?) }
+
+      it_behaves_like 'does not perform the check'
+    end
+
+    context 'when email has no other validation errors' do
+      let(:error_message) { 'Email is not allowed. Please enter a different email address and try again.' }
+      let(:tumbled_email) { 'person+inbox1@test.com' }
+      let(:normalized_email) { 'person@test.com' }
+      let!(:banned_user) { create(:user, :banned, email: normalized_email) }
+
+      subject(:new_user) { build(:user, email: tumbled_email).tap(&:valid?) }
+
+      it 'performs the check and adds an error' do
+        subject
+
+        expect(new_user.errors.full_messages).to include(error_message)
+      end
+
+      context 'and does not match normalized email of a banned user' do
+        let(:tumbled_email) { 'unique+tumbled@email.com' }
+
+        it 'does not add an error' do
+          expect(new_user.errors.full_messages).not_to include(error_message)
+        end
+      end
+
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(block_banned_user_normalized_email_reuse: false)
+        end
+
+        it_behaves_like 'does not perform the check'
+      end
     end
   end
 end

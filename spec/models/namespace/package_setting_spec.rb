@@ -87,21 +87,29 @@ RSpec.describe Namespace::PackageSetting, feature_category: :package_registry do
     end
   end
 
-  describe '#duplicates_allowed?' do
+  shared_examples 'package types without package_settings' do
+    package_types = Packages::Package.package_types.keys - Namespace::PackageSetting::PACKAGES_WITH_SETTINGS
+    package_types.each do |package_type|
+      context "with package_type:#{package_type}" do
+        let_it_be(:package) { create("#{package_type}_package", package_name_and_version(package_type)) }
+        let_it_be(:package_settings) { package.project.namespace.package_settings }
+
+        it 'raises an error' do
+          expect { subject }.to raise_error(Namespace::PackageSetting::PackageSettingNotImplemented)
+        end
+      end
+    end
+  end
+
+  describe '.duplicates_allowed?' do
     using RSpec::Parameterized::TableSyntax
 
     subject { described_class.duplicates_allowed?(package) }
 
     context 'package types with package_settings' do
-      # As more package types gain settings they will be added to this list
-      [
-        { format: :maven_package, package_name: 'foo' },
-        { format: :generic_package, package_name: 'foo' },
-        { format: :nuget_package, package_name: 'foo' },
-        { format: :terraform_module_package, package_name: 'foo/bar' }
-      ].each do |type|
-        context "with package_type: #{type[:format]}" do
-          let_it_be(:package) { create(type[:format], name: type[:package_name], version: '1.0.0-beta') }
+      Namespace::PackageSetting::PACKAGES_WITH_SETTINGS.each do |package_type|
+        context "with package_type: #{package_type}" do
+          let_it_be(:package) { create("#{package_type}_package", package_name_and_version(package_type)) }
           let_it_be(:package_type) { package.package_type }
           let_it_be(:package_setting) { package.project.namespace.package_settings }
 
@@ -114,29 +122,101 @@ RSpec.describe Namespace::PackageSetting, feature_category: :package_registry do
           end
 
           with_them do
-            context "for #{type[:format]}" do
-              before do
-                package_setting.update!(
-                  "#{package_type}_duplicates_allowed" => duplicates_allowed,
-                  "#{package_type}_duplicate_exception_regex" => duplicate_exception_regex
-                )
-              end
-
-              it { is_expected.to be(result) }
+            before do
+              package_setting.update!(
+                "#{package_type}_duplicates_allowed" => duplicates_allowed,
+                "#{package_type}_duplicate_exception_regex" => duplicate_exception_regex
+              )
             end
+
+            it { is_expected.to be(result) }
           end
         end
       end
     end
 
-    context 'package types without package_settings' do
-      %i[npm_package conan_package pypi_package composer_package golang_package debian_package].each do |format|
-        context "with package_type:#{format}" do
-          let_it_be(:package) { create(format) } # rubocop:disable Rails/SaveBang
-          let_it_be(:package_setting) { package.project.namespace.package_settings }
+    it_behaves_like 'package types without package_settings'
+  end
 
-          it 'raises an error' do
-            expect { subject }.to raise_error(Namespace::PackageSetting::PackageSettingNotImplemented)
+  describe '.duplicates_allowed_for_package?' do
+    using RSpec::Parameterized::TableSyntax
+
+    subject { described_class.duplicates_allowed_for_package?(package) }
+
+    context 'with no package given' do
+      let(:package) { nil }
+
+      it { is_expected.to be true }
+    end
+
+    context 'package types with package_settings' do
+      Namespace::PackageSetting::PACKAGES_WITH_SETTINGS.each do |package_type|
+        context "with package_type: #{package_type}" do
+          let_it_be(:package) { create("#{package_type}_package", package_name_and_version(package_type)) }
+          let_it_be(:package_settings) { package.package_settings }
+
+          where(:duplicates_allowed, :result) do
+            true  | true
+            false | false
+          end
+
+          with_them do
+            before do
+              package_settings.update!("#{package_type}_duplicates_allowed" => duplicates_allowed)
+            end
+
+            it { is_expected.to be result }
+          end
+        end
+      end
+    end
+
+    it_behaves_like 'package types without package_settings'
+  end
+
+  describe '.matches_duplicate_exception?' do
+    subject { described_class.matches_duplicate_exception?(package) }
+
+    context 'with no package given' do
+      let(:package) { nil }
+
+      it { is_expected.to be true }
+    end
+
+    context 'package types with package_settings' do
+      Namespace::PackageSetting::PACKAGES_WITH_SETTINGS.each do |package_type|
+        context "with package_type: #{package_type}" do
+          let_it_be(:package) { create("#{package_type}_package", package_name_and_version(package_type)) }
+          let_it_be(:package_setting) { package.package_settings }
+
+          context 'when regexp matches package name' do
+            before do
+              package_setting.update!(
+                "#{package_type}_duplicate_exception_regex" => package.name
+              )
+            end
+
+            it { is_expected.to be true }
+          end
+
+          context 'when regexp matches package version' do
+            before do
+              package_setting.update!(
+                "#{package_type}_duplicate_exception_regex" => package.version
+              )
+            end
+
+            it { is_expected.to be true }
+          end
+
+          context 'when regexp does not match either package name or version' do
+            before do
+              package_setting.update!(
+                "#{package_type}_duplicate_exception_regex" => 'zz42'
+              )
+            end
+
+            it { is_expected.to be false }
           end
         end
       end
@@ -150,5 +230,15 @@ RSpec.describe Namespace::PackageSetting, feature_category: :package_registry do
           settings_attribute_name: attribute,
           settings_association: :package_settings
       end
+  end
+
+  def package_name_and_version(package_type)
+    package_name = 'foo'
+    version = '1.0.0-beta'
+
+    package_name = 'foo/bar' if package_type == 'terraform_module'
+    version = 'v1.0.1' if package_type == 'golang'
+
+    { name: package_name, version: version }
   end
 end

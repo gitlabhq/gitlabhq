@@ -537,13 +537,57 @@ RSpec.describe API::Tags, feature_category: :source_code_management do
       end
     end
 
-    context 'when authenticated', 'as a maintainer' do
-      let(:current_user) { user }
+    context 'when authenticated as a guest' do
+      let(:current_user) { create(:user, guest_of: project) }
+
+      it_behaves_like '403 response' do
+        let(:request) { delete api(route, current_user) }
+      end
+    end
+
+    context 'when authenticated as a developer' do
+      let(:current_user) { create(:user, developer_of: project) }
 
       it_behaves_like 'repository delete tag'
 
       context 'requesting with the escaped project full path' do
         let(:project_id) { CGI.escape(project.full_path) }
+
+        it_behaves_like 'repository delete tag'
+      end
+
+      context 'when the tag is protected' do
+        before do
+          create(:protected_tag, project: project, name: tag_name)
+        end
+
+        it_behaves_like '403 response' do
+          let(:request) { delete api(route, current_user) }
+        end
+      end
+    end
+
+    context 'when authenticated as a maintainer' do
+      let(:current_user) { create(:user, maintainer_of: project) }
+
+      it_behaves_like 'repository delete tag'
+
+      context 'when the tag is protected' do
+        before do
+          create(:protected_tag, project: project, name: tag_name)
+        end
+
+        it_behaves_like 'repository delete tag'
+      end
+    end
+
+    context 'when authenticated as an owner' do
+      let(:current_user) { create(:user, owner_of: project) }
+
+      context 'when the tag is protected' do
+        before do
+          create(:protected_tag, project: project, name: tag_name)
+        end
 
         it_behaves_like 'repository delete tag'
       end

@@ -41,6 +41,12 @@ export function resolveLoadPaths() {
       'app/assets/stylesheets/_jh',
       // loaded last
       'vendor/assets/stylesheets', // empty
+      /*
+       This load path is added in order to be able to consume the bootstrap SCSS
+       from @gitlab/ui which has been vendored with:
+       https://gitlab.com/gitlab-org/gitlab-ui/-/merge_requests/4333
+       */
+      'node_modules/@gitlab/ui/src/vendor',
       'node_modules',
     ],
   };

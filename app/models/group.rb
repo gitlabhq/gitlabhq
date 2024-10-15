@@ -20,6 +20,7 @@ class Group < Namespace
   include ChronicDurationAttribute
   include RunnerTokenExpirationInterval
   include Importable
+  include IdInOrdered
 
   extend ::Gitlab::Utils::Override
 
@@ -39,6 +40,10 @@ class Group < Namespace
   has_many :all_owner_members, -> { non_request.all_owners }, as: :source, class_name: 'GroupMember'
   has_many :group_members, -> { non_request.non_minimal_access }, dependent: :destroy, as: :source # rubocop:disable Cop/ActiveRecordDependent
   has_many :non_invite_group_members, -> { non_request.non_minimal_access.non_invite }, class_name: 'GroupMember', as: :source
+  has_many :request_group_members, -> do
+    request.non_minimal_access
+  end, inverse_of: :group, class_name: 'GroupMember', as: :source
+
   has_many :namespace_members, -> { non_request.non_minimal_access.unscope(where: %i[source_id source_type]) },
     foreign_key: :member_namespace_id, inverse_of: :group, class_name: 'GroupMember'
   alias_method :members, :group_members
@@ -99,6 +104,9 @@ class Group < Namespace
   # AR defaults to nullify when trying to delete via has_many associations unless we set dependent: :delete_all
   has_many :crm_organizations, class_name: 'CustomerRelations::Organization', inverse_of: :group, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
   has_many :contacts, class_name: 'CustomerRelations::Contact', inverse_of: :group, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
+  has_one :crm_settings, class_name: 'Group::CrmSettings', inverse_of: :group
+  # Groups for which this is the source of CRM contacts/organizations
+  has_many :crm_targets, class_name: 'Group::CrmSettings', inverse_of: :source_group
 
   has_many :cluster_groups, class_name: 'Clusters::Group'
   has_many :clusters, through: :cluster_groups, class_name: 'Clusters::Cluster'
@@ -143,8 +151,6 @@ class Group < Namespace
   delegate :subgroup_runner_token_expiration_interval, :subgroup_runner_token_expiration_interval=, :subgroup_runner_token_expiration_interval_human_readable, :subgroup_runner_token_expiration_interval_human_readable=, to: :namespace_settings, allow_nil: true
   delegate :project_runner_token_expiration_interval, :project_runner_token_expiration_interval=, :project_runner_token_expiration_interval_human_readable, :project_runner_token_expiration_interval_human_readable=, to: :namespace_settings, allow_nil: true
 
-  has_one :crm_settings, class_name: 'Group::CrmSettings', inverse_of: :group
-
   accepts_nested_attributes_for :variables, allow_destroy: true
   accepts_nested_attributes_for :group_feature, update_only: true
 
@@ -179,11 +185,10 @@ class Group < Namespace
 
   scope :with_users, -> { includes(:users) }
 
-  scope :with_onboarding_progress, -> { joins(:onboarding_progress) }
-
   scope :with_non_archived_projects, -> { includes(:non_archived_projects) }
 
   scope :with_non_invite_group_members, -> { includes(:non_invite_group_members) }
+  scope :with_request_group_members, -> { includes(:request_group_members) }
 
   scope :by_id, ->(groups) { where(id: groups) }
 
@@ -950,7 +955,7 @@ class Group < Namespace
   end
 
   # Note: this method is overridden in EE to check the work_item_epics feature flag  which also enables this feature
-  def namespace_work_items_enabled?(_user = nil)
+  def namespace_work_items_enabled?
     ::Feature.enabled?(:namespace_level_work_items, self, type: :development)
   end
 
@@ -1007,6 +1012,10 @@ class Group < Namespace
   end
   strong_memoize_attr :readme_project
 
+  def notification_group
+    self
+  end
+
   def group_readme
     readme_project&.repository&.readme
   end
@@ -1020,6 +1029,21 @@ class Group < Namespace
       full_path: full_path
     }
   end
+
+  def crm_group
+    Group.id_in_ordered(traversal_ids.reverse)
+      .joins(:crm_settings)
+      .where.not(crm_settings: { source_group_id: nil })
+      .first&.crm_settings&.source_group || root_ancestor
+  end
+  strong_memoize_attr :crm_group
+
+  def crm_group?
+    return true if root? && crm_settings&.source_group_id.nil?
+
+    crm_targets.present?
+  end
+  strong_memoize_attr :crm_group?
 
   private
 

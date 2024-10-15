@@ -2,80 +2,86 @@
 stage: Create
 group: Remote Development
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Set up the GitLab agent for workspaces."
+description: "Set up the GitLab agent to create and manage workspaces in a project."
 ---
 
-# Tutorial: Set up the GitLab agent
+# Tutorial: Set up the GitLab agent for workspaces
 
-In this tutorial, you'll learn how to set up a cluster agent for remote development workspace.
-
-The goal is to configure the workspace project (WP) with the agent project (AP), so that users in a root group (RG) or nested group (NG) can create and manage workspaces.
-For this use, we'll use the group/project layout illustrated in the diagram below.
+This tutorial shows you how to set up the GitLab agent so users
+can create and manage workspaces in a project. For this tutorial, the following hierarchy is used:
 
 ```mermaid
 %%{init: {'theme':'neutral'}}%%
 graph TD;
     classDef active fill:lightgreen, stroke:#green, color:green, stroke-width:1px;
 
-    rootGroup[Root Group - RG]
-    nestedGroup[Nested group - NG]
-    p1[Workspace Project - WP]
-    p2[Agent Project - AP]
-    ag[Agent remotedev]
+    topGroup[Top-level group]
+    subGroup[Subgroup]
+    workspaceProject[Workspace project]
+    agentProject[Agent project]
+    workspaceAgent[Workspace agent]
 
-    rootGroup --> nestedGroup
+    topGroup --> subGroup
 
-    nestedGroup --> p1
-    nestedGroup --> p2
-    p2 -.- ag
+    subGroup --> workspaceProject
+    subGroup --> agentProject
+    agentProject -.- workspaceAgent
 
-    class p1 active;
+    class workspaceProject active;
 ```
 
-To set up the agent for the workspace project, you have to:
+To set up the GitLab agent, you're going to:
 
-1. [Configure the `remote_development` module in the AP](#configure-the-remote_development-module-in-ap)
-1. [Allow the AP for workspace use in the NG](#allow-the-ap-for-workspace-use-in-the-ng)
-1. [Grant workspace users necessary permissions](#grant-workspace-users-necessary-permissions)
+1. [Configure the `remote_development` module in the agent project](#configure-the-remote_development-module-in-the-agent-project).
+1. [Allow the GitLab agent in a group](#allow-the-gitlab-agent-in-a-group).
+1. [Grant workspace users the necessary permissions](#grant-workspace-users-the-necessary-permissions).
 
 ## Prerequisites
 
-- The [workspace infrastructure](configuration.md#set-up-workspace-infrastructure) must be set up.
-- You must be an administrator or group owner.
+- GitLab agent must be [installed](../clusters/agent/install/index.md) and [configured](gitlab_agent_configuration.md).
+- You must [set up workspace infrastructure](configuration.md#set-up-workspace-infrastructure).
+- You must have administrator access to the instance or the Owner role for the group.
 
-## Configure the `remote_development` module in AP
+## Configure the `remote_development` module in the agent project
 
-1. On the left sidebar, select **Search or go to** and find the AP.
-1. In the project, create a file `.gitlab/agents/{agentName}/config.yaml` (where `agentName` is the name of the agent created when setting up the workspace infrastructure).
-1. In the `config.yaml` file, use the following configuration for [workspace settings](gitlab_agent_configuration.md#workspace-settings):
+To configure the `remote_development` module in the agent project:
 
-```yaml
-remote_development:
-  enabled: true
-  # reference only, please update to actual dns_zone to the load balancer exposed by the Ingress controller.
-  dns_zone: workspaces.localdev.me
-```
+1. On the left sidebar, select **Search or go to** and find your project.
+1. In your project, create a `.gitlab/agents/<agentName>/config.yaml` file.
+   `agentName` is the name of the agent you configured when you set up workspace infrastructure.
+1. In `config.yaml`, use the following configuration for [workspace settings](gitlab_agent_configuration.md#workspace-settings):
 
-## Allow the AP for workspace use in the NG
+   ```yaml
+   remote_development:
+     enabled: true
+     dns_zone: "<workspaces.example.dev>" # DNS zone of the URL where workspaces are available
+   ```
 
-When the agent has the `remote_development` module configured, the next step is to allow the agent for workspace creation in a parent group of the workspace project.
+Next, you'll allow the GitLab agent in a group.
 
-With the current design, allowing the AP with either the NG or RG (any parent group of the WP), would both make the agent available for the WP. Why should we choose NG over RG?
+## Allow the GitLab agent in a group
 
-Because any nested projects under the selected group can use the agent after configuration, so you must carefully consider the group where you allow an agent for workspaces.
+When you allow an agent in a group, the group and its subgroups can use that agent.
+Carefully consider the group where you allow the GitLab agent.
 
-To allow NG with AP:
+To allow the GitLab agent in a group:
 
-1. On the left sidebar, select **Search or go to** and find the NG group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. On the left sidebar, select **Settings > Workspaces**.
 1. In the **Group agents** section, select the **All agents** tab.
-1. From the list of available agents, find the agent with status **Blocked**, and select **Allow**.
+1. For the GitLab agent, select **Allow**.
 1. On the confirmation dialog, select **Allow agent**.
 
-## Grant workspace users necessary permissions
+Now it's time to grant workspace users the necessary permissions to create and manage workspaces.
 
-One final step is to grant users, who would create and manage WP workspaces, necessary permissions.
+## Grant workspace users the necessary permissions
 
-To manage WP workspaces by using AP as the agent, users must have at least the Developer role for both AP and WP. For more information about [user roles](../permissions.md) and [how to add users to a project](../project/members/index.md#add-users-to-a-project), or [how to add users to a group](../group/index.md#add-users-to-a-group).
+You can grant users with at least the Developer role for the workspace and agent projects
+the necessary permissions to create and manage workspaces.
 
-You're all set! WP is allowed with AP. Users with necessary permissions can go to the WP workspaces tab and create or manage workspaces as they like.
+To grant workspace users the necessary permissions, see:
+
+- [Add users to a project](../project/members/index.md#add-users-to-a-project).
+- [Add users to a group](../group/index.md#add-users-to-a-group).
+
+You've done it! Users can now create and manage workspaces in a project.

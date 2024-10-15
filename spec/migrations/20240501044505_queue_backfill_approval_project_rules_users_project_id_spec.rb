@@ -3,7 +3,8 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe QueueBackfillApprovalProjectRulesUsersProjectId, feature_category: :source_code_management do
+RSpec.describe QueueBackfillApprovalProjectRulesUsersProjectId, migration: :gitlab_main_cell,
+  feature_category: :source_code_management do
   let!(:batched_migration) { described_class::MIGRATION }
 
   it 'schedules a new batched migration' do

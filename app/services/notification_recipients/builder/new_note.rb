@@ -29,7 +29,7 @@ module NotificationRecipients
         if note.for_project_noteable?
           project.group
         else
-          target.try(:group)
+          target.try(:group) || target.try(:namespace)
         end
       end
 

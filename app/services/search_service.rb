@@ -173,8 +173,17 @@ class SearchService
   end
 
   def log_redacted_search_results(filtered_results)
-    logger.error(message: "redacted_search_results", filtered: filtered_results, current_user_id: current_user&.id,
-      query: params[:search])
+    request_info = {
+      class: self.class.name,
+      message: 'redacted_search_results',
+      filtered: filtered_results,
+      current_user_id: current_user&.id,
+      query: params[:search],
+      "meta.search.type": search_type,
+      "meta.search.level": level
+    }
+
+    logger.error(request_info)
   end
 
   def logger

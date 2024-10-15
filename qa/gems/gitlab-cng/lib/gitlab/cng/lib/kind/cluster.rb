@@ -17,6 +17,10 @@ module Gitlab
         HTTP_PORT = 32080
         SSH_PORT = 32022
 
+        METRICS_CHART_NAME = "metrics-server"
+        METRICS_CHART_URL = "https://kubernetes-sigs.github.io/metrics-server/"
+        METRICS_CHART_VERSION = "^3.12"
+
         # Destroy kind cluster
         #
         # @param [String] name
@@ -54,6 +58,13 @@ module Gitlab
 
         attr_reader :ci, :name, :docker_hostname, :host_http_port, :host_ssh_port
 
+        # Helm client instance
+        #
+        # @return [Helm::Client]
+        def helm_client
+          @helm_client ||= Helm::Client.new
+        end
+
         # Create kind cluster
         #
         # @return [void]
@@ -67,6 +78,26 @@ module Gitlab
               "--wait", "30s",
               "--config", ci ? ci_config : default_config
             ])
+          end
+        end
+
+        # Install metrics-server on cluster
+        #
+        # Avoids "FailedGetResourceMetric" cluster errors and adds support for resource monitoring
+        #
+        # @return [void]
+        def install_metrics_server
+          Helpers::Spinner.spin("installing metrics server", raise_on_error: false) do
+            helm_client.add_helm_chart(METRICS_CHART_NAME, METRICS_CHART_URL)
+            helm_client.upgrade(
+              METRICS_CHART_NAME,
+              "#{METRICS_CHART_NAME}/#{METRICS_CHART_NAME}",
+              namespace: "kube-system",
+              timeout: "1m",
+              values: { "args" => ["--kubelet-insecure-tls"] }.to_yaml,
+              # use atomic to avoid leaving broken state if install fails
+              args: ["--atomic", "--version", METRICS_CHART_VERSION]
+            )
           end
         end
 

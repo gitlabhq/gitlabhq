@@ -1,0 +1,12 @@
+---
+api_type:
+attr: productivity_analytics_start_date
+clusterwide: false
+column: productivity_analytics_start_date
+db_type: timestamp
+default:
+description:
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

@@ -1,4 +1,4 @@
-import { parsePikadayDate } from '~/lib/utils/datetime_utility';
+import { newDate } from '~/lib/utils/datetime_utility';
 
 /**
  * This method is to be used with `Array.prototype.sort` function
@@ -14,8 +14,8 @@ import { parsePikadayDate } from '~/lib/utils/datetime_utility';
 export function sortMilestonesByDueDate(milestoneA, milestoneB) {
   const rawDueDateA = milestoneA.due_date || milestoneA.dueDate;
   const rawDueDateB = milestoneB.due_date || milestoneB.dueDate;
-  const dueDateA = rawDueDateA ? parsePikadayDate(rawDueDateA) : null;
-  const dueDateB = rawDueDateB ? parsePikadayDate(rawDueDateB) : null;
+  const dueDateA = rawDueDateA ? newDate(rawDueDateA) : null;
+  const dueDateB = rawDueDateB ? newDate(rawDueDateB) : null;
   const expiredA = milestoneA.expired || Date.now() > dueDateA?.getTime();
   const expiredB = milestoneB.expired || Date.now() > dueDateB?.getTime();
 

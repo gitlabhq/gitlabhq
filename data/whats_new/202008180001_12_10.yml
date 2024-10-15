@@ -44,7 +44,7 @@
   description: |
     Until now, the only way to get Jira issues into GitLab was manually, with our CSV importer, or by hand-rolling your own migration utility.
 
-    GitLab 12.10 includes an [MVC](https://about.gitlab.com/handbook/product/product-principles/#the-minimal-viable-change-mvc) to automatically import your Jira issues into GitLab. This is the first of [many planned enhancements](https://gitlab.com/groups/gitlab-org/-/epics/2738) to make transitioning from Jira to GitLab as frictionless as possible.
+    GitLab 12.10 includes an [MVC](https://about.gitlab.com/handbook/product/product-principles/#the-minimal-valuable-change-mvc) to automatically import your Jira issues into GitLab. This is the first of [many planned enhancements](https://gitlab.com/groups/gitlab-org/-/epics/2738) to make transitioning from Jira to GitLab as frictionless as possible.
   stage: Plan
   self-managed: true
   gitlab-com: true

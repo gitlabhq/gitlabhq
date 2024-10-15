@@ -1,0 +1,9 @@
+---
+name: todos_for_ssh_key_expiry
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/490325
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166168
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/497334
+milestone: '17.5'
+group: group::personal productivity
+type: gitlab_com_derisk
+default_enabled: false

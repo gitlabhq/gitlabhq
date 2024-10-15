@@ -13,6 +13,7 @@ export default {
     return {
       environment: {
         name: '',
+        description: '',
         externalUrl: '',
         clusterAgentId: null,
       },
@@ -31,6 +32,7 @@ export default {
           variables: {
             input: {
               name: this.environment.name,
+              description: this.environment.description,
               externalUrl: this.environment.externalUrl,
               projectPath: this.projectPath,
               clusterAgentId: this.environment.clusterAgentId,

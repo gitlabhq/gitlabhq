@@ -183,6 +183,22 @@ RSpec.describe UsersHelper, feature_category: :user_management do
     end
   end
 
+  describe '#impersonation_enabled' do
+    context 'when impersonation is enabled' do
+      before do
+        stub_config_setting(impersonation_enabled: true)
+      end
+
+      it 'allows the admin to impersonate a  user' do
+        expect(helper.impersonation_enabled?).to eq(true)
+      end
+
+      it 'allows impersonation tokens' do
+        expect(helper.impersonation_tokens_enabled?).to eq(true)
+      end
+    end
+  end
+
   describe '#can_impersonate_user' do
     let(:user) { create(:user) }
     let(:impersonation_in_progress) { false }
@@ -607,7 +623,7 @@ RSpec.describe UsersHelper, feature_category: :user_management do
     end
   end
 
-  describe '#user_profile_tabs_app_data' do
+  describe '#user_profile_app_data' do
     before do
       allow(helper).to receive(:current_user).and_return(user)
       allow(helper).to receive(:user_calendar_path).with(user, :json).and_return('/users/root/calendar.json')
@@ -620,7 +636,7 @@ RSpec.describe UsersHelper, feature_category: :user_management do
     it 'returns expected hash' do
       allow(helper).to receive(:can?).with(user, :create_snippet).and_return(true)
 
-      expect(helper.user_profile_tabs_app_data(user)).to match({
+      expect(helper.user_profile_app_data(user)).to match({
         followees_count: 3,
         followers_count: 2,
         user_calendar_path: '/users/root/calendar.json',
@@ -639,7 +655,7 @@ RSpec.describe UsersHelper, feature_category: :user_management do
       end
 
       it 'returns nil for new_snippet_path property' do
-        expect(helper.user_profile_tabs_app_data(user)[:new_snippet_path]).to be_nil
+        expect(helper.user_profile_app_data(user)[:new_snippet_path]).to be_nil
       end
     end
   end

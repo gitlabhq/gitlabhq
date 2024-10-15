@@ -1,12 +1,19 @@
+import { createTestingPinia } from '@pinia/testing';
 import { INLINE_DIFF_VIEW_TYPE, INLINE_DIFF_LINES_KEY } from '~/diffs/constants';
-import createState from '~/diffs/store/modules/diff_state';
 import * as types from '~/diffs/store/mutation_types';
-import mutations from '~/diffs/store/mutations';
 import * as utils from '~/diffs/store/utils';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { getDiffFileMock } from '../../mock_data/diff_file';
 
-// eslint-disable-next-line jest/no-disabled-tests
-describe.skip('DiffsStoreMutations', () => {
+describe('DiffsStoreMutations', () => {
+  createTestingPinia({ stubActions: false });
+  let store;
+
+  beforeEach(() => {
+    store = useLegacyDiffs();
+    store.$reset();
+  });
+
   describe('SET_BASE_CONFIG', () => {
     it.each`
       prop                    | value
@@ -15,68 +22,50 @@ describe.skip('DiffsStoreMutations', () => {
       ${'endpointUpdateUser'} | ${'/user/preferences'}
       ${'diffViewType'}       | ${'parallel'}
     `('should set the $prop property into state', ({ prop, value }) => {
-      const state = {};
+      store[types.SET_BASE_CONFIG]({ [prop]: value });
 
-      mutations[types.SET_BASE_CONFIG](state, { [prop]: value });
-
-      expect(state[prop]).toEqual(value);
+      expect(store[prop]).toEqual(value);
     });
   });
 
   describe('SET_LOADING', () => {
     it('should set loading state', () => {
-      const state = {};
+      store[types.SET_LOADING](false);
 
-      mutations[types.SET_LOADING](state, false);
-
-      expect(state.isLoading).toEqual(false);
+      expect(store.isLoading).toEqual(false);
     });
   });
 
   describe('SET_BATCH_LOADING_STATE', () => {
     it('should set loading state', () => {
-      const state = {};
+      store[types.SET_BATCH_LOADING_STATE](false);
 
-      mutations[types.SET_BATCH_LOADING_STATE](state, false);
-
-      expect(state.batchLoadingState).toEqual(false);
+      expect(store.batchLoadingState).toEqual(false);
     });
   });
 
   describe('SET_RETRIEVING_BATCHES', () => {
     it('should set retrievingBatches state', () => {
-      const state = {};
+      store[types.SET_RETRIEVING_BATCHES](false);
 
-      mutations[types.SET_RETRIEVING_BATCHES](state, false);
-
-      expect(state.retrievingBatches).toEqual(false);
+      expect(store.retrievingBatches).toEqual(false);
     });
   });
 
   describe('SET_DIFF_FILES', () => {
     it('should set diffFiles in state', () => {
-      const state = {};
+      store[types.SET_DIFF_FILES](['file', 'another file']);
 
-      mutations[types.SET_DIFF_FILES](state, ['file', 'another file']);
-
-      expect(state.diffFiles.length).toEqual(2);
-    });
-
-    it('should not set anything except diffFiles in state', () => {
-      const state = {};
-
-      mutations[types.SET_DIFF_FILES](state, ['file', 'another file']);
-
-      expect(Object.keys(state)).toEqual(['diffFiles']);
+      expect(store.diffFiles.length).toEqual(2);
     });
   });
 
   describe('SET_DIFF_METADATA', () => {
     it('should overwrite state with the camelCased data that is passed in', () => {
       const diffFileMockData = getDiffFileMock();
-      const state = {
+      store.$patch({
         diffFiles: [],
-      };
+      });
       const diffMock = {
         diff_files: [diffFileMockData],
       };
@@ -84,96 +73,94 @@ describe.skip('DiffsStoreMutations', () => {
         other_key: 'value',
       };
 
-      mutations[types.SET_DIFF_METADATA](state, diffMock);
-      expect(state.diffFiles[0]).toEqual(diffFileMockData);
+      store[types.SET_DIFF_METADATA](diffMock);
+      expect(store.diffFiles[0]).toEqual(diffFileMockData);
 
-      mutations[types.SET_DIFF_METADATA](state, metaMock);
-      expect(state.diffFiles[0]).toEqual(diffFileMockData);
-      expect(state.otherKey).toEqual('value');
+      store[types.SET_DIFF_METADATA](metaMock);
+      expect(store.diffFiles[0]).toEqual(diffFileMockData);
+      expect(store.otherKey).toEqual('value');
     });
   });
 
   describe('SET_DIFF_DATA_BATCH', () => {
     it('should set diff data batch type properly', () => {
       const mockFile = getDiffFileMock();
-      const state = {
+      store.$patch({
         diffFiles: [],
         treeEntries: { [mockFile.file_path]: { fileHash: mockFile.file_hash } },
-      };
+      });
       const diffMock = {
         diff_files: [mockFile],
       };
 
-      mutations[types.SET_DIFF_DATA_BATCH](state, diffMock);
+      store[types.SET_DIFF_DATA_BATCH](diffMock);
 
-      expect(state.diffFiles[0].collapsed).toEqual(false);
-      expect(state.treeEntries[mockFile.file_path].diffLoaded).toBe(true);
+      expect(store.diffFiles[0].collapsed).toEqual(false);
+      expect(store.treeEntries[mockFile.file_path].diffLoaded).toBe(true);
     });
 
     it('should update diff position by default', () => {
       const mockFile = getDiffFileMock();
-      const state = {
+      store.$patch({
         diffFiles: [mockFile, { ...mockFile, file_hash: 'foo', file_path: 'foo' }],
         treeEntries: { [mockFile.file_path]: { fileHash: mockFile.file_hash } },
-      };
+      });
       const diffMock = {
         diff_files: [mockFile],
       };
 
-      mutations[types.SET_DIFF_DATA_BATCH](state, diffMock);
+      store[types.SET_DIFF_DATA_BATCH](diffMock);
 
-      expect(state.diffFiles[1].file_hash).toBe(mockFile.file_hash);
-      expect(state.treeEntries[mockFile.file_path].diffLoaded).toBe(true);
+      expect(store.diffFiles[1].file_hash).toBe(mockFile.file_hash);
+      expect(store.treeEntries[mockFile.file_path].diffLoaded).toBe(true);
     });
 
     it('should not update diff position', () => {
       const mockFile = getDiffFileMock();
-      const state = {
+      store.$patch({
         diffFiles: [mockFile, { ...mockFile, file_hash: 'foo', file_path: 'foo' }],
         treeEntries: { [mockFile.file_path]: { fileHash: mockFile.file_hash } },
-      };
+      });
       const diffMock = {
         diff_files: [mockFile],
         updatePosition: false,
       };
 
-      mutations[types.SET_DIFF_DATA_BATCH](state, diffMock);
+      store[types.SET_DIFF_DATA_BATCH](diffMock);
 
-      expect(state.diffFiles[0].file_hash).toBe(mockFile.file_hash);
-      expect(state.treeEntries[mockFile.file_path].diffLoaded).toBe(true);
+      expect(store.diffFiles[0].file_hash).toBe(mockFile.file_hash);
+      expect(store.treeEntries[mockFile.file_path].diffLoaded).toBe(true);
     });
   });
 
   describe('SET_COVERAGE_DATA', () => {
     it('should set coverage data properly', () => {
-      const state = { coverageFiles: {} };
+      store.$patch({ coverageFiles: {} });
       const coverage = { 'app.js': { 1: 0, 2: 1 } };
 
-      mutations[types.SET_COVERAGE_DATA](state, coverage);
+      store[types.SET_COVERAGE_DATA](coverage);
 
-      expect(state.coverageFiles).toEqual(coverage);
-      expect(state.coverageLoaded).toEqual(true);
+      expect(store.coverageFiles).toEqual(coverage);
+      expect(store.coverageLoaded).toEqual(true);
     });
   });
 
   describe('SET_DIFF_TREE_ENTRY', () => {
     it('should set tree entry', () => {
       const file = getDiffFileMock();
-      const state = { treeEntries: { [file.file_path]: {} } };
+      store.$patch({ treeEntries: { [file.file_path]: {} } });
 
-      mutations[types.SET_DIFF_TREE_ENTRY](state, file);
+      store[types.SET_DIFF_TREE_ENTRY](file);
 
-      expect(state.treeEntries[file.file_path].diffLoaded).toBe(true);
+      expect(store.treeEntries[file.file_path].diffLoaded).toBe(true);
     });
   });
 
   describe('SET_DIFF_VIEW_TYPE', () => {
     it('should set diff view type properly', () => {
-      const state = {};
+      store[types.SET_DIFF_VIEW_TYPE](INLINE_DIFF_VIEW_TYPE);
 
-      mutations[types.SET_DIFF_VIEW_TYPE](state, INLINE_DIFF_VIEW_TYPE);
-
-      expect(state.diffViewType).toEqual(INLINE_DIFF_VIEW_TYPE);
+      expect(store.diffViewType).toEqual(INLINE_DIFF_VIEW_TYPE);
     });
   });
 
@@ -202,7 +189,7 @@ describe.skip('DiffsStoreMutations', () => {
         file_hash: options.fileHash,
         [INLINE_DIFF_LINES_KEY]: [],
       };
-      const state = { diffFiles: [diffFile], diffViewType: 'viewType' };
+      store.$patch({ diffFiles: [diffFile], diffViewType: 'viewType' });
       const lines = [{ old_line: 1, new_line: 1 }];
 
       jest.spyOn(utils, 'findDiffFile').mockImplementation(() => diffFile);
@@ -210,9 +197,9 @@ describe.skip('DiffsStoreMutations', () => {
       jest.spyOn(utils, 'addLineReferences').mockImplementation(() => lines);
       jest.spyOn(utils, 'addContextLines').mockImplementation(() => null);
 
-      mutations[types.ADD_CONTEXT_LINES](state, options);
+      store[types.ADD_CONTEXT_LINES](options);
 
-      expect(utils.findDiffFile).toHaveBeenCalledWith(state.diffFiles, options.fileHash);
+      expect(utils.findDiffFile).toHaveBeenCalledWith(store.diffFiles, options.fileHash);
       expect(utils.removeMatchLine).toHaveBeenCalledWith(
         diffFile,
         options.lineNumbers,
@@ -240,9 +227,9 @@ describe.skip('DiffsStoreMutations', () => {
   describe('ADD_COLLAPSED_DIFFS', () => {
     it('should update the state with the given data for the given file hash', () => {
       const fileHash = 123;
-      const state = {
+      store.$patch({
         diffFiles: [{}, { content_sha: 'abc', file_hash: fileHash, existing_field: 0 }],
-      };
+      });
       const data = {
         diff_files: [
           {
@@ -255,11 +242,11 @@ describe.skip('DiffsStoreMutations', () => {
         ],
       };
 
-      mutations[types.ADD_COLLAPSED_DIFFS](state, { file: state.diffFiles[1], data });
+      store[types.ADD_COLLAPSED_DIFFS]({ file: store.diffFiles[1], data });
 
-      expect(state.diffFiles[1].file_hash).toEqual(fileHash);
-      expect(state.diffFiles[1].existing_field).toEqual(1);
-      expect(state.diffFiles[1].extra_field).toEqual(1);
+      expect(store.diffFiles[1].file_hash).toEqual(fileHash);
+      expect(store.diffFiles[1].existing_field).toEqual(1);
+      expect(store.diffFiles[1].extra_field).toEqual(1);
     });
   });
 
@@ -275,7 +262,7 @@ describe.skip('DiffsStoreMutations', () => {
         start_sha: 'ed13df29948c41ba367caa757ab3ec4892509910',
       };
 
-      const state = {
+      store.$patch({
         latestDiff: true,
         diffFiles: [
           {
@@ -288,7 +275,7 @@ describe.skip('DiffsStoreMutations', () => {
             ],
           },
         ],
-      };
+      });
       const discussion = {
         id: 1,
         line_code: 'ABC_1',
@@ -297,7 +284,7 @@ describe.skip('DiffsStoreMutations', () => {
         original_position: diffPosition,
         position: diffPosition,
         diff_file: {
-          file_hash: state.diffFiles[0].file_hash,
+          file_hash: store.diffFiles[0].file_hash,
         },
       };
 
@@ -305,13 +292,13 @@ describe.skip('DiffsStoreMutations', () => {
         ABC_1: diffPosition,
       };
 
-      mutations[types.SET_LINE_DISCUSSIONS_FOR_FILE](state, {
+      store[types.SET_LINE_DISCUSSIONS_FOR_FILE]({
         discussion,
         diffPositionByLineCode,
       });
 
-      expect(state.diffFiles[0][INLINE_DIFF_LINES_KEY][0].discussions.length).toEqual(1);
-      expect(state.diffFiles[0][INLINE_DIFF_LINES_KEY][0].discussions[0].id).toEqual(1);
+      expect(store.diffFiles[0][INLINE_DIFF_LINES_KEY][0].discussions.length).toEqual(1);
+      expect(store.diffFiles[0][INLINE_DIFF_LINES_KEY][0].discussions[0].id).toEqual(1);
     });
 
     it('should add discussions to the given file', () => {
@@ -326,7 +313,7 @@ describe.skip('DiffsStoreMutations', () => {
         type: 'file',
       };
 
-      const state = {
+      store.$patch({
         latestDiff: true,
         diffFiles: [
           {
@@ -335,7 +322,7 @@ describe.skip('DiffsStoreMutations', () => {
             discussions: [],
           },
         ],
-      };
+      });
       const discussion = {
         id: 1,
         line_code: 'ABC_1',
@@ -344,7 +331,7 @@ describe.skip('DiffsStoreMutations', () => {
         original_position: diffPosition,
         position: diffPosition,
         diff_file: {
-          file_hash: state.diffFiles[0].file_hash,
+          file_hash: store.diffFiles[0].file_hash,
         },
       };
 
@@ -352,13 +339,13 @@ describe.skip('DiffsStoreMutations', () => {
         ABC_1: diffPosition,
       };
 
-      mutations[types.SET_LINE_DISCUSSIONS_FOR_FILE](state, {
+      store[types.SET_LINE_DISCUSSIONS_FOR_FILE]({
         discussion,
         diffPositionByLineCode,
       });
 
-      expect(state.diffFiles[0].discussions.length).toEqual(1);
-      expect(state.diffFiles[0].discussions[0].id).toEqual(1);
+      expect(store.diffFiles[0].discussions.length).toEqual(1);
+      expect(store.diffFiles[0].discussions[0].id).toEqual(1);
     });
 
     it('should not duplicate discussions on line', () => {
@@ -372,7 +359,7 @@ describe.skip('DiffsStoreMutations', () => {
         start_sha: 'ed13df29948c41ba367caa757ab3ec4892509910',
       };
 
-      const state = {
+      store.$patch({
         latestDiff: true,
         diffFiles: [
           {
@@ -385,7 +372,7 @@ describe.skip('DiffsStoreMutations', () => {
             ],
           },
         ],
-      };
+      });
       const discussion = {
         id: 1,
         line_code: 'ABC_1',
@@ -394,7 +381,7 @@ describe.skip('DiffsStoreMutations', () => {
         original_position: diffPosition,
         position: diffPosition,
         diff_file: {
-          file_hash: state.diffFiles[0].file_hash,
+          file_hash: store.diffFiles[0].file_hash,
         },
       };
 
@@ -402,21 +389,21 @@ describe.skip('DiffsStoreMutations', () => {
         ABC_1: diffPosition,
       };
 
-      mutations[types.SET_LINE_DISCUSSIONS_FOR_FILE](state, {
+      store[types.SET_LINE_DISCUSSIONS_FOR_FILE]({
         discussion,
         diffPositionByLineCode,
       });
 
-      expect(state.diffFiles[0][INLINE_DIFF_LINES_KEY][0].discussions.length).toEqual(1);
-      expect(state.diffFiles[0][INLINE_DIFF_LINES_KEY][0].discussions[0].id).toEqual(1);
+      expect(store.diffFiles[0][INLINE_DIFF_LINES_KEY][0].discussions.length).toEqual(1);
+      expect(store.diffFiles[0][INLINE_DIFF_LINES_KEY][0].discussions[0].id).toEqual(1);
 
-      mutations[types.SET_LINE_DISCUSSIONS_FOR_FILE](state, {
+      store[types.SET_LINE_DISCUSSIONS_FOR_FILE]({
         discussion,
         diffPositionByLineCode,
       });
 
-      expect(state.diffFiles[0][INLINE_DIFF_LINES_KEY][0].discussions.length).toEqual(1);
-      expect(state.diffFiles[0][INLINE_DIFF_LINES_KEY][0].discussions[0].id).toEqual(1);
+      expect(store.diffFiles[0][INLINE_DIFF_LINES_KEY][0].discussions.length).toEqual(1);
+      expect(store.diffFiles[0][INLINE_DIFF_LINES_KEY][0].discussions[0].id).toEqual(1);
     });
 
     it('updates existing discussion', () => {
@@ -430,7 +417,7 @@ describe.skip('DiffsStoreMutations', () => {
         start_sha: 'ed13df29948c41ba367caa757ab3ec4892509910',
       };
 
-      const state = {
+      store.$patch({
         latestDiff: true,
         diffFiles: [
           {
@@ -443,7 +430,7 @@ describe.skip('DiffsStoreMutations', () => {
             ],
           },
         ],
-      };
+      });
       const discussion = {
         id: 1,
         line_code: 'ABC_1',
@@ -452,7 +439,7 @@ describe.skip('DiffsStoreMutations', () => {
         original_position: diffPosition,
         position: diffPosition,
         diff_file: {
-          file_hash: state.diffFiles[0].file_hash,
+          file_hash: store.diffFiles[0].file_hash,
         },
       };
 
@@ -460,15 +447,15 @@ describe.skip('DiffsStoreMutations', () => {
         ABC_1: diffPosition,
       };
 
-      mutations[types.SET_LINE_DISCUSSIONS_FOR_FILE](state, {
+      store[types.SET_LINE_DISCUSSIONS_FOR_FILE]({
         discussion,
         diffPositionByLineCode,
       });
 
-      expect(state.diffFiles[0][INLINE_DIFF_LINES_KEY][0].discussions.length).toEqual(1);
-      expect(state.diffFiles[0][INLINE_DIFF_LINES_KEY][0].discussions[0].id).toEqual(1);
+      expect(store.diffFiles[0][INLINE_DIFF_LINES_KEY][0].discussions.length).toEqual(1);
+      expect(store.diffFiles[0][INLINE_DIFF_LINES_KEY][0].discussions[0].id).toEqual(1);
 
-      mutations[types.SET_LINE_DISCUSSIONS_FOR_FILE](state, {
+      store[types.SET_LINE_DISCUSSIONS_FOR_FILE]({
         discussion: {
           ...discussion,
           resolved: true,
@@ -477,8 +464,8 @@ describe.skip('DiffsStoreMutations', () => {
         diffPositionByLineCode,
       });
 
-      expect(state.diffFiles[0][INLINE_DIFF_LINES_KEY][0].discussions[0].notes.length).toBe(1);
-      expect(state.diffFiles[0][INLINE_DIFF_LINES_KEY][0].discussions[0].resolved).toBe(true);
+      expect(store.diffFiles[0][INLINE_DIFF_LINES_KEY][0].discussions[0].notes.length).toBe(1);
+      expect(store.diffFiles[0][INLINE_DIFF_LINES_KEY][0].discussions[0].resolved).toBe(true);
     });
 
     it('should not duplicate inline diff discussions', () => {
@@ -492,7 +479,7 @@ describe.skip('DiffsStoreMutations', () => {
         start_sha: 'ed13df29948c41ba367caa757ab3ec4892509910',
       };
 
-      const state = {
+      store.$patch({
         latestDiff: true,
         diffFiles: [
           {
@@ -521,7 +508,7 @@ describe.skip('DiffsStoreMutations', () => {
             ],
           },
         ],
-      };
+      });
       const discussion = {
         id: 2,
         line_code: 'ABC_2',
@@ -530,7 +517,7 @@ describe.skip('DiffsStoreMutations', () => {
         original_position: diffPosition,
         position: diffPosition,
         diff_file: {
-          file_hash: state.diffFiles[0].file_hash,
+          file_hash: store.diffFiles[0].file_hash,
         },
       };
 
@@ -538,12 +525,12 @@ describe.skip('DiffsStoreMutations', () => {
         ABC_2: diffPosition,
       };
 
-      mutations[types.SET_LINE_DISCUSSIONS_FOR_FILE](state, {
+      store[types.SET_LINE_DISCUSSIONS_FOR_FILE]({
         discussion,
         diffPositionByLineCode,
       });
 
-      expect(state.diffFiles[0][INLINE_DIFF_LINES_KEY][0].discussions.length).toBe(1);
+      expect(store.diffFiles[0][INLINE_DIFF_LINES_KEY][0].discussions.length).toBe(1);
     });
 
     it('should add legacy discussions to the given line', () => {
@@ -558,7 +545,7 @@ describe.skip('DiffsStoreMutations', () => {
         line_code: 'ABC_1',
       };
 
-      const state = {
+      store.$patch({
         latestDiff: true,
         diffFiles: [
           {
@@ -571,14 +558,14 @@ describe.skip('DiffsStoreMutations', () => {
             ],
           },
         ],
-      };
+      });
       const discussion = {
         id: 1,
         line_code: 'ABC_1',
         diff_discussion: true,
         active: true,
         diff_file: {
-          file_hash: state.diffFiles[0].file_hash,
+          file_hash: store.diffFiles[0].file_hash,
         },
       };
 
@@ -586,13 +573,13 @@ describe.skip('DiffsStoreMutations', () => {
         ABC_1: diffPosition,
       };
 
-      mutations[types.SET_LINE_DISCUSSIONS_FOR_FILE](state, {
+      store[types.SET_LINE_DISCUSSIONS_FOR_FILE]({
         discussion,
         diffPositionByLineCode,
       });
 
-      expect(state.diffFiles[0][INLINE_DIFF_LINES_KEY][0].discussions.length).toEqual(1);
-      expect(state.diffFiles[0][INLINE_DIFF_LINES_KEY][0].discussions[0].id).toEqual(1);
+      expect(store.diffFiles[0][INLINE_DIFF_LINES_KEY][0].discussions.length).toEqual(1);
+      expect(store.diffFiles[0][INLINE_DIFF_LINES_KEY][0].discussions[0].id).toEqual(1);
     });
 
     it('should add discussions by line_codes and positions attributes', () => {
@@ -606,7 +593,7 @@ describe.skip('DiffsStoreMutations', () => {
         start_sha: 'ed13df29948c41ba367caa757ab3ec4892509910',
       };
 
-      const state = {
+      store.$patch({
         latestDiff: true,
         diffFiles: [
           {
@@ -619,7 +606,7 @@ describe.skip('DiffsStoreMutations', () => {
             ],
           },
         ],
-      };
+      });
       const discussion = {
         id: 1,
         line_code: 'ABC_2',
@@ -630,7 +617,7 @@ describe.skip('DiffsStoreMutations', () => {
         position: {},
         positions: [diffPosition],
         diff_file: {
-          file_hash: state.diffFiles[0].file_hash,
+          file_hash: store.diffFiles[0].file_hash,
         },
       };
 
@@ -638,17 +625,17 @@ describe.skip('DiffsStoreMutations', () => {
         ABC_1: diffPosition,
       };
 
-      mutations[types.SET_LINE_DISCUSSIONS_FOR_FILE](state, {
+      store[types.SET_LINE_DISCUSSIONS_FOR_FILE]({
         discussion,
         diffPositionByLineCode,
       });
 
-      expect(state.diffFiles[0][INLINE_DIFF_LINES_KEY][0].discussions).toHaveLength(1);
-      expect(state.diffFiles[0][INLINE_DIFF_LINES_KEY][0].discussions[0].id).toBe(1);
+      expect(store.diffFiles[0][INLINE_DIFF_LINES_KEY][0].discussions).toHaveLength(1);
+      expect(store.diffFiles[0][INLINE_DIFF_LINES_KEY][0].discussions[0].id).toBe(1);
     });
 
     it('should add discussion to file', () => {
-      const state = {
+      store.$patch({
         latestDiff: true,
         diffFiles: [
           {
@@ -657,23 +644,23 @@ describe.skip('DiffsStoreMutations', () => {
             [INLINE_DIFF_LINES_KEY]: [],
           },
         ],
-      };
+      });
       const discussion = {
         id: 1,
         line_code: 'ABC_1',
         diff_discussion: true,
         resolvable: true,
         diff_file: {
-          file_hash: state.diffFiles[0].file_hash,
+          file_hash: store.diffFiles[0].file_hash,
         },
       };
 
-      mutations[types.SET_LINE_DISCUSSIONS_FOR_FILE](state, {
+      store[types.SET_LINE_DISCUSSIONS_FOR_FILE]({
         discussion,
         diffPositionByLineCode: null,
       });
 
-      expect(state.diffFiles[0].discussions.length).toEqual(1);
+      expect(store.diffFiles[0].discussions.length).toEqual(1);
     });
 
     describe('expanded state', () => {
@@ -688,7 +675,7 @@ describe.skip('DiffsStoreMutations', () => {
           start_sha: 'ed13df29948c41ba367caa757ab3ec4892509910',
         };
 
-        const state = {
+        store.$patch({
           latestDiff: true,
           diffFiles: [
             {
@@ -701,7 +688,7 @@ describe.skip('DiffsStoreMutations', () => {
               ],
             },
           ],
-        };
+        });
         const discussion = {
           id: 1,
           line_code: 'ABC_2',
@@ -712,7 +699,7 @@ describe.skip('DiffsStoreMutations', () => {
           position: {},
           positions: [diffPosition],
           diff_file: {
-            file_hash: state.diffFiles[0].file_hash,
+            file_hash: store.diffFiles[0].file_hash,
           },
         };
 
@@ -720,12 +707,12 @@ describe.skip('DiffsStoreMutations', () => {
           ABC_1: diffPosition,
         };
 
-        mutations[types.SET_LINE_DISCUSSIONS_FOR_FILE](state, {
+        store[types.SET_LINE_DISCUSSIONS_FOR_FILE]({
           discussion,
           diffPositionByLineCode,
         });
 
-        expect(state.diffFiles[0][INLINE_DIFF_LINES_KEY][0].discussionsExpanded).toBe(true);
+        expect(store.diffFiles[0][INLINE_DIFF_LINES_KEY][0].discussionsExpanded).toBe(true);
       });
 
       it('should collapse resolved discussion', () => {
@@ -739,7 +726,7 @@ describe.skip('DiffsStoreMutations', () => {
           start_sha: 'ed13df29948c41ba367caa757ab3ec4892509910',
         };
 
-        const state = {
+        store.$patch({
           latestDiff: true,
           diffFiles: [
             {
@@ -752,7 +739,7 @@ describe.skip('DiffsStoreMutations', () => {
               ],
             },
           ],
-        };
+        });
         const discussion = {
           id: 1,
           line_code: 'ABC_2',
@@ -763,7 +750,7 @@ describe.skip('DiffsStoreMutations', () => {
           position: {},
           positions: [diffPosition],
           diff_file: {
-            file_hash: state.diffFiles[0].file_hash,
+            file_hash: store.diffFiles[0].file_hash,
           },
           resolved: true,
         };
@@ -772,12 +759,12 @@ describe.skip('DiffsStoreMutations', () => {
           ABC_1: diffPosition,
         };
 
-        mutations[types.SET_LINE_DISCUSSIONS_FOR_FILE](state, {
+        store[types.SET_LINE_DISCUSSIONS_FOR_FILE]({
           discussion,
           diffPositionByLineCode,
         });
 
-        expect(state.diffFiles[0][INLINE_DIFF_LINES_KEY][0].discussionsExpanded).toBe(false);
+        expect(store.diffFiles[0][INLINE_DIFF_LINES_KEY][0].discussionsExpanded).toBe(false);
       });
 
       it('should keep resolved state for expanded discussion update', () => {
@@ -791,7 +778,7 @@ describe.skip('DiffsStoreMutations', () => {
           start_sha: 'ed13df29948c41ba367caa757ab3ec4892509910',
         };
 
-        const state = {
+        store.$patch({
           latestDiff: true,
           diffFiles: [
             {
@@ -804,7 +791,7 @@ describe.skip('DiffsStoreMutations', () => {
               ],
             },
           ],
-        };
+        });
         const discussion = {
           id: 1,
           line_code: 'ABC_2',
@@ -815,7 +802,7 @@ describe.skip('DiffsStoreMutations', () => {
           position: {},
           positions: [diffPosition],
           diff_file: {
-            file_hash: state.diffFiles[0].file_hash,
+            file_hash: store.diffFiles[0].file_hash,
           },
         };
 
@@ -823,24 +810,83 @@ describe.skip('DiffsStoreMutations', () => {
           ABC_1: diffPosition,
         };
 
-        mutations[types.SET_LINE_DISCUSSIONS_FOR_FILE](state, {
+        store[types.SET_LINE_DISCUSSIONS_FOR_FILE]({
           discussion,
           diffPositionByLineCode,
         });
 
-        mutations[types.SET_LINE_DISCUSSIONS_FOR_FILE](state, {
+        store[types.SET_LINE_DISCUSSIONS_FOR_FILE]({
           discussion: { ...discussion, resolved: true },
           diffPositionByLineCode,
         });
 
-        expect(state.diffFiles[0][INLINE_DIFF_LINES_KEY][0].discussionsExpanded).toBe(true);
+        expect(store.diffFiles[0][INLINE_DIFF_LINES_KEY][0].discussionsExpanded).toBe(true);
+      });
+
+      it('should keep expanded state when re-adding existing discussions', () => {
+        const diffPosition = {
+          base_sha: 'ed13df29948c41ba367caa757ab3ec4892509910',
+          head_sha: 'b921914f9a834ac47e6fd9420f78db0f83559130',
+          new_line: null,
+          new_path: '500-lines-4.txt',
+          old_line: 5,
+          old_path: '500-lines-4.txt',
+          start_sha: 'ed13df29948c41ba367caa757ab3ec4892509910',
+        };
+
+        store.$patch({
+          latestDiff: true,
+          diffFiles: [
+            {
+              file_hash: 'ABC',
+              discussions: [],
+              [INLINE_DIFF_LINES_KEY]: [
+                {
+                  line_code: 'ABC_1',
+                  discussions: [],
+                },
+              ],
+            },
+          ],
+        });
+        const discussion = {
+          id: 1,
+          line_code: 'ABC_2',
+          line_codes: ['ABC_1'],
+          diff_discussion: true,
+          resolvable: true,
+          original_position: {},
+          position: {},
+          positions: [diffPosition],
+          diff_file: {
+            file_hash: store.diffFiles[0].file_hash,
+          },
+        };
+
+        const diffPositionByLineCode = {
+          ABC_1: diffPosition,
+        };
+
+        store[types.SET_LINE_DISCUSSIONS_FOR_FILE]({
+          discussion,
+          diffPositionByLineCode,
+        });
+
+        store[types.SET_EXPAND_ALL_DIFF_DISCUSSIONS](false);
+
+        store[types.SET_LINE_DISCUSSIONS_FOR_FILE]({
+          discussion,
+          diffPositionByLineCode,
+        });
+
+        expect(store.diffFiles[0][INLINE_DIFF_LINES_KEY][0].discussionsExpanded).toBe(false);
       });
     });
   });
 
   describe('REMOVE_LINE_DISCUSSIONS', () => {
     it('should remove the existing discussions on the given line', () => {
-      const state = {
+      store.$patch({
         diffFiles: [
           {
             file_hash: 'ABC',
@@ -863,90 +909,82 @@ describe.skip('DiffsStoreMutations', () => {
             ],
           },
         ],
-      };
+      });
 
-      mutations[types.REMOVE_LINE_DISCUSSIONS_FOR_FILE](state, {
+      store[types.REMOVE_LINE_DISCUSSIONS_FOR_FILE]({
         fileHash: 'ABC',
         lineCode: 'ABC_1',
       });
 
-      expect(state.diffFiles[0][INLINE_DIFF_LINES_KEY][0].discussions.length).toEqual(0);
+      expect(store.diffFiles[0][INLINE_DIFF_LINES_KEY][0].discussions.length).toEqual(0);
     });
   });
 
   describe('TOGGLE_FOLDER_OPEN', () => {
     it('toggles entry opened prop', () => {
-      const state = {
+      store.$patch({
         treeEntries: {
           path: {
             opened: false,
           },
         },
-      };
+      });
 
-      mutations[types.TOGGLE_FOLDER_OPEN](state, 'path');
+      store[types.TOGGLE_FOLDER_OPEN]('path');
 
-      expect(state.treeEntries.path.opened).toBe(true);
+      expect(store.treeEntries.path.opened).toBe(true);
     });
   });
 
   describe('TREE_ENTRY_DIFF_LOADING', () => {
     it('sets the entry loading state to true by default', () => {
-      const state = {
+      store.$patch({
         treeEntries: {
           path: {
             diffLoading: false,
           },
         },
-      };
+      });
 
-      mutations[types.TREE_ENTRY_DIFF_LOADING](state, { path: 'path' });
+      store[types.TREE_ENTRY_DIFF_LOADING]({ path: 'path' });
 
-      expect(state.treeEntries.path.diffLoading).toBe(true);
+      expect(store.treeEntries.path.diffLoading).toBe(true);
     });
 
     it('sets the entry loading state to the provided value', () => {
-      const state = {
+      store.$patch({
         treeEntries: {
           path: {
             diffLoading: true,
           },
         },
-      };
+      });
 
-      mutations[types.TREE_ENTRY_DIFF_LOADING](state, { path: 'path', loading: false });
+      store[types.TREE_ENTRY_DIFF_LOADING]({ path: 'path', loading: false });
 
-      expect(state.treeEntries.path.diffLoading).toBe(false);
+      expect(store.treeEntries.path.diffLoading).toBe(false);
     });
   });
 
   describe('SET_SHOW_TREE_LIST', () => {
     it('sets showTreeList', () => {
-      const state = createState();
+      store[types.SET_SHOW_TREE_LIST](true);
 
-      mutations[types.SET_SHOW_TREE_LIST](state, true);
-
-      expect(state.showTreeList).toBe(true, 'Failed to toggle showTreeList to true');
+      expect(store.showTreeList).toBe(true, 'Failed to toggle showTreeList to true');
     });
   });
 
   describe('SET_CURRENT_DIFF_FILE', () => {
     it('updates currentDiffFileId', () => {
-      const state = createState();
+      store[types.SET_CURRENT_DIFF_FILE]('somefileid');
 
-      mutations[types.SET_CURRENT_DIFF_FILE](state, 'somefileid');
-
-      expect(state.currentDiffFileId).toBe('somefileid');
+      expect(store.currentDiffFileId).toBe('somefileid');
     });
   });
 
   describe('SET_DIFF_FILE_VIEWED', () => {
-    let state;
-
     beforeEach(() => {
-      state = {
-        viewedDiffFileIds: { 123: true },
-      };
+      store.viewedDiffFileIds = { 123: true };
     });
 
     it.each`
@@ -954,19 +992,17 @@ describe.skip('DiffsStoreMutations', () => {
       ${'abc'} | ${true}  | ${{ 123: true, abc: true }}
       ${'123'} | ${false} | ${{ 123: false }}
     `('sets the viewed files list to $bool for the id $id', ({ id, bool, outcome }) => {
-      mutations[types.SET_DIFF_FILE_VIEWED](state, { id, seen: bool });
+      store[types.SET_DIFF_FILE_VIEWED]({ id, seen: bool });
 
-      expect(state.viewedDiffFileIds).toEqual(outcome);
+      expect(store.viewedDiffFileIds).toEqual(outcome);
     });
   });
 
   describe('Set highlighted row', () => {
     it('sets highlighted row', () => {
-      const state = createState();
+      store[types.SET_HIGHLIGHTED_ROW]('ABC_123');
 
-      mutations[types.SET_HIGHLIGHTED_ROW](state, 'ABC_123');
-
-      expect(state.highlightedRow).toBe('ABC_123');
+      expect(store.highlightedRow).toBe('ABC_123');
     });
   });
 
@@ -979,11 +1015,11 @@ describe.skip('DiffsStoreMutations', () => {
           { line_code: '124', hasForm: false },
         ],
       };
-      const state = {
+      store.$patch({
         diffFiles: [file],
-      };
+      });
 
-      mutations[types.TOGGLE_LINE_HAS_FORM](state, {
+      store[types.TOGGLE_LINE_HAS_FORM]({
         lineCode: '123',
         hasForm: true,
         fileHash: 'hash',
@@ -996,81 +1032,81 @@ describe.skip('DiffsStoreMutations', () => {
 
   describe('SET_TREE_DATA', () => {
     it('sets treeEntries and tree in state', () => {
-      const state = {
+      store.$patch({
         treeEntries: {},
         tree: [],
         isTreeLoaded: false,
-      };
+      });
 
-      mutations[types.SET_TREE_DATA](state, {
+      store[types.SET_TREE_DATA]({
         treeEntries: { file: { name: 'index.js' } },
         tree: ['tree'],
       });
 
-      expect(state.treeEntries).toEqual({
+      expect(store.treeEntries).toEqual({
         file: {
           name: 'index.js',
         },
       });
 
-      expect(state.tree).toEqual(['tree']);
-      expect(state.isTreeLoaded).toEqual(true);
+      expect(store.tree).toEqual(['tree']);
+      expect(store.isTreeLoaded).toEqual(true);
     });
   });
 
   describe('SET_RENDER_TREE_LIST', () => {
     it('sets renderTreeList', () => {
-      const state = {
+      store.$patch({
         renderTreeList: true,
-      };
+      });
 
-      mutations[types.SET_RENDER_TREE_LIST](state, false);
+      store[types.SET_RENDER_TREE_LIST](false);
 
-      expect(state.renderTreeList).toBe(false);
+      expect(store.renderTreeList).toBe(false);
     });
   });
 
   describe('SET_SHOW_WHITESPACE', () => {
     it('sets showWhitespace', () => {
-      const state = {
+      store.$patch({
         showWhitespace: true,
         diffFiles: ['test'],
-      };
+      });
 
-      mutations[types.SET_SHOW_WHITESPACE](state, false);
+      store[types.SET_SHOW_WHITESPACE](false);
 
-      expect(state.showWhitespace).toBe(false);
-      expect(state.diffFiles).toEqual([]);
+      expect(store.showWhitespace).toBe(false);
+      expect(store.diffFiles).toEqual([]);
     });
   });
 
   describe('REQUEST_FULL_DIFF', () => {
     it('sets isLoadingFullFile to true', () => {
-      const state = {
+      store.$patch({
         diffFiles: [{ file_path: 'test', isLoadingFullFile: false }],
-      };
+      });
 
-      mutations[types.REQUEST_FULL_DIFF](state, 'test');
+      store[types.REQUEST_FULL_DIFF]('test');
 
-      expect(state.diffFiles[0].isLoadingFullFile).toBe(true);
+      expect(store.diffFiles[0].isLoadingFullFile).toBe(true);
     });
   });
 
   describe('RECEIVE_FULL_DIFF_ERROR', () => {
     it('sets isLoadingFullFile to false', () => {
-      const state = {
+      store.$patch({
         diffFiles: [{ file_path: 'test', isLoadingFullFile: true }],
-      };
+      });
 
-      mutations[types.RECEIVE_FULL_DIFF_ERROR](state, 'test');
+      store[types.RECEIVE_FULL_DIFF_ERROR]('test');
 
-      expect(state.diffFiles[0].isLoadingFullFile).toBe(false);
+      expect(store.diffFiles[0].isLoadingFullFile).toBe(false);
     });
   });
 
   describe('RECEIVE_FULL_DIFF_SUCCESS', () => {
     it('sets isLoadingFullFile to false', () => {
-      const state = {
+      store.$patch({
         diffFiles: [
           {
             file_path: 'test',
@@ -1079,15 +1115,15 @@ describe.skip('DiffsStoreMutations', () => {
             [INLINE_DIFF_LINES_KEY]: [],
           },
         ],
-      };
+      });
 
-      mutations[types.RECEIVE_FULL_DIFF_SUCCESS](state, { filePath: 'test', data: [] });
+      store[types.RECEIVE_FULL_DIFF_SUCCESS]({ filePath: 'test', data: [] });
 
-      expect(state.diffFiles[0].isLoadingFullFile).toBe(false);
+      expect(store.diffFiles[0].isLoadingFullFile).toBe(false);
     });
 
     it('sets isShowingFullFile to true', () => {
-      const state = {
+      store.$patch({
         diffFiles: [
           {
             file_path: 'test',
@@ -1096,34 +1132,34 @@ describe.skip('DiffsStoreMutations', () => {
             [INLINE_DIFF_LINES_KEY]: [],
           },
         ],
-      };
+      });
 
-      mutations[types.RECEIVE_FULL_DIFF_SUCCESS](state, { filePath: 'test', data: [] });
+      store[types.RECEIVE_FULL_DIFF_SUCCESS]({ filePath: 'test', data: [] });
 
-      expect(state.diffFiles[0].isShowingFullFile).toBe(true);
+      expect(store.diffFiles[0].isShowingFullFile).toBe(true);
     });
   });
 
   describe('SET_FILE_COLLAPSED', () => {
     it('sets collapsed', () => {
-      const state = {
+      store.$patch({
         diffFiles: [{ file_path: 'test', viewer: { automaticallyCollapsed: false } }],
-      };
+      });
 
-      mutations[types.SET_FILE_COLLAPSED](state, { filePath: 'test', collapsed: true });
+      store[types.SET_FILE_COLLAPSED]({ filePath: 'test', collapsed: true });
 
-      expect(state.diffFiles[0].viewer.automaticallyCollapsed).toBe(true);
+      expect(store.diffFiles[0].viewer.automaticallyCollapsed).toBe(true);
     });
   });
 
   describe('SET_CURRENT_VIEW_DIFF_FILE_LINES', () => {
     it(`sets the highlighted lines`, () => {
       const file = { file_path: 'test', [INLINE_DIFF_LINES_KEY]: [] };
-      const state = {
+      store.$patch({
         diffFiles: [file],
-      };
+      });
 
-      mutations[types.SET_CURRENT_VIEW_DIFF_FILE_LINES](state, {
+      store[types.SET_CURRENT_VIEW_DIFF_FILE_LINES]({
         filePath: 'test',
         lines: ['test'],
       });
@@ -1135,18 +1171,18 @@ describe.skip('DiffsStoreMutations', () => {
   describe('ADD_CURRENT_VIEW_DIFF_FILE_LINES', () => {
     it('pushes to inline lines', () => {
       const file = { file_path: 'test', [INLINE_DIFF_LINES_KEY]: [] };
-      const state = {
+      store.$patch({
         diffFiles: [file],
-      };
+      });
 
-      mutations[types.ADD_CURRENT_VIEW_DIFF_FILE_LINES](state, {
+      store[types.ADD_CURRENT_VIEW_DIFF_FILE_LINES]({
         filePath: 'test',
         line: 'test',
       });
 
       expect(file[INLINE_DIFF_LINES_KEY]).toEqual(['test']);
 
-      mutations[types.ADD_CURRENT_VIEW_DIFF_FILE_LINES](state, {
+      store[types.ADD_CURRENT_VIEW_DIFF_FILE_LINES]({
         filePath: 'test',
         line: 'test2',
       });
@@ -1158,15 +1194,15 @@ describe.skip('DiffsStoreMutations', () => {
   describe('TOGGLE_DIFF_FILE_RENDERING_MORE', () => {
     it('toggles renderingLines on file', () => {
       const file = { file_path: 'test', renderingLines: false };
-      const state = {
+      store.$patch({
         diffFiles: [file],
-      };
+      });
 
-      mutations[types.TOGGLE_DIFF_FILE_RENDERING_MORE](state, 'test');
+      store[types.TOGGLE_DIFF_FILE_RENDERING_MORE]('test');
 
       expect(file.renderingLines).toBe(true);
 
-      mutations[types.TOGGLE_DIFF_FILE_RENDERING_MORE](state, 'test');
+      store[types.TOGGLE_DIFF_FILE_RENDERING_MORE]('test');
 
       expect(file.renderingLines).toBe(false);
     });
@@ -1174,41 +1210,41 @@ describe.skip('DiffsStoreMutations', () => {
 
   describe('SET_DIFF_FILE_VIEWER', () => {
     it("should update the correct diffFile's viewer property", () => {
-      const state = {
+      store.$patch({
         diffFiles: [
           { file_path: 'SearchString', viewer: 'OLD VIEWER' },
           { file_path: 'OtherSearchString' },
           { file_path: 'SomeOtherString' },
         ],
-      };
+      });
 
-      mutations[types.SET_DIFF_FILE_VIEWER](state, {
+      store[types.SET_DIFF_FILE_VIEWER]({
         filePath: 'SearchString',
         viewer: 'NEW VIEWER',
       });
 
-      expect(state.diffFiles[0].viewer).toEqual('NEW VIEWER');
-      expect(state.diffFiles[1].viewer).not.toBeDefined();
-      expect(state.diffFiles[2].viewer).not.toBeDefined();
+      expect(store.diffFiles[0].viewer).toEqual('NEW VIEWER');
+      expect(store.diffFiles[1].viewer).not.toBeDefined();
+      expect(store.diffFiles[2].viewer).not.toBeDefined();
 
-      mutations[types.SET_DIFF_FILE_VIEWER](state, {
+      store[types.SET_DIFF_FILE_VIEWER]({
         filePath: 'OtherSearchString',
         viewer: 'NEW VIEWER',
       });
 
-      expect(state.diffFiles[0].viewer).toEqual('NEW VIEWER');
-      expect(state.diffFiles[1].viewer).toEqual('NEW VIEWER');
-      expect(state.diffFiles[2].viewer).not.toBeDefined();
+      expect(store.diffFiles[0].viewer).toEqual('NEW VIEWER');
+      expect(store.diffFiles[1].viewer).toEqual('NEW VIEWER');
+      expect(store.diffFiles[2].viewer).not.toBeDefined();
     });
   });
 
   describe('SET_SHOW_SUGGEST_POPOVER', () => {
     it('sets showSuggestPopover to false', () => {
-      const state = { showSuggestPopover: true };
+      store.$patch({ showSuggestPopover: true });
 
-      mutations[types.SET_SHOW_SUGGEST_POPOVER](state);
+      store[types.SET_SHOW_SUGGEST_POPOVER]();
 
-      expect(state.showSuggestPopover).toBe(false);
+      expect(store.showSuggestPopover).toBe(false);
     });
   });
 
@@ -1218,11 +1254,11 @@ describe.skip('DiffsStoreMutations', () => {
       ${true}  | ${false}
       ${false} | ${true}
     `('sets viewDiffsFileByFile to $value', ({ value, opposite }) => {
-      const state = { viewDiffsFileByFile: opposite };
+      store.$patch({ viewDiffsFileByFile: opposite });
 
-      mutations[types.SET_FILE_BY_FILE](state, value);
+      store[types.SET_FILE_BY_FILE](value);
 
-      expect(state.viewDiffsFileByFile).toBe(value);
+      expect(store.viewDiffsFileByFile).toBe(value);
     });
   });
 
@@ -1233,53 +1269,53 @@ describe.skip('DiffsStoreMutations', () => {
       ${{ abc: [] }}      | ${{ abc: ['123'] }}
       ${{}}               | ${{ abc: ['123'] }}
     `('sets mrReviews to $newReviews', ({ newReviews, oldReviews }) => {
-      const state = { mrReviews: oldReviews };
+      store.$patch({ mrReviews: oldReviews });
 
-      mutations[types.SET_MR_FILE_REVIEWS](state, newReviews);
+      store[types.SET_MR_FILE_REVIEWS](newReviews);
 
-      expect(state.mrReviews).toStrictEqual(newReviews);
+      expect(store.mrReviews).toStrictEqual(newReviews);
     });
   });
 
   describe('TOGGLE_FILE_COMMENT_FORM', () => {
     it('toggles diff files hasCommentForm', () => {
-      const state = { diffFiles: [{ file_path: 'path', hasCommentForm: false }] };
+      store.$patch({ diffFiles: [{ file_path: 'path', hasCommentForm: false }] });
 
-      mutations[types.TOGGLE_FILE_COMMENT_FORM](state, 'path');
+      store[types.TOGGLE_FILE_COMMENT_FORM]('path');
 
-      expect(state.diffFiles[0].hasCommentForm).toEqual(true);
+      expect(store.diffFiles[0].hasCommentForm).toEqual(true);
     });
   });
 
   describe('SET_FILE_COMMENT_FORM', () => {
     it('toggles diff files hasCommentForm', () => {
-      const state = { diffFiles: [{ file_path: 'path', hasCommentForm: false }] };
+      store.$patch({ diffFiles: [{ file_path: 'path', hasCommentForm: false }] });
       const expanded = true;
 
-      mutations[types.SET_FILE_COMMENT_FORM](state, { filePath: 'path', expanded });
+      store[types.SET_FILE_COMMENT_FORM]({ filePath: 'path', expanded });
 
-      expect(state.diffFiles[0].hasCommentForm).toEqual(expanded);
+      expect(store.diffFiles[0].hasCommentForm).toEqual(expanded);
     });
   });
 
   describe('ADD_DRAFT_TO_FILE', () => {
     it('adds draft to diff file', () => {
-      const state = { diffFiles: [{ file_path: 'path', drafts: [] }] };
+      store.$patch({ diffFiles: [{ file_path: 'path', drafts: [] }] });
 
-      mutations[types.ADD_DRAFT_TO_FILE](state, { filePath: 'path', draft: 'test' });
+      store[types.ADD_DRAFT_TO_FILE]({ filePath: 'path', draft: 'test' });
 
-      expect(state.diffFiles[0].drafts.length).toEqual(1);
-      expect(state.diffFiles[0].drafts[0]).toEqual('test');
+      expect(store.diffFiles[0].drafts.length).toEqual(1);
+      expect(store.diffFiles[0].drafts[0]).toEqual('test');
     });
   });
 
   describe('SET_FILE_FORCED_OPEN', () => {
     it('sets the forceOpen property of a diff file viewer correctly', () => {
-      const state = { diffFiles: [{ file_path: 'abc', viewer: { forceOpen: 'not-a-boolean' } }] };
+      store.$patch({ diffFiles: [{ file_path: 'abc', viewer: { forceOpen: 'not-a-boolean' } }] });
 
-      mutations[types.SET_FILE_FORCED_OPEN](state, { filePath: 'abc', force: true });
+      store[types.SET_FILE_FORCED_OPEN]({ filePath: 'abc', force: true });
 
-      expect(state.diffFiles[0].viewer.forceOpen).toBe(true);
+      expect(store.diffFiles[0].viewer.forceOpen).toBe(true);
     });
   });
 
@@ -1291,13 +1327,13 @@ describe.skip('DiffsStoreMutations', () => {
         diff_file: { file_hash: fileHash },
         expandedOnDiff: false,
       };
-      const state = {
+      store.$patch({
         diffFiles: [{ file_hash: fileHash, discussions: [discussion] }],
-      };
+      });
 
-      mutations[types.TOGGLE_FILE_DISCUSSION_EXPAND](state, { discussion });
+      store[types.TOGGLE_FILE_DISCUSSION_EXPAND]({ discussion });
 
-      expect(state.diffFiles[0].discussions[0].expandedOnDiff).toBe(true);
+      expect(store.diffFiles[0].discussions[0].expandedOnDiff).toBe(true);
     });
 
     it('collapses expanded discussion', () => {
@@ -1305,19 +1341,19 @@ describe.skip('DiffsStoreMutations', () => {
         diff_file: { file_hash: fileHash },
         expandedOnDiff: true,
       };
-      const state = {
+      store.$patch({
         diffFiles: [{ file_hash: fileHash, discussions: [discussion] }],
-      };
+      });
 
-      mutations[types.TOGGLE_FILE_DISCUSSION_EXPAND](state, { discussion });
+      store[types.TOGGLE_FILE_DISCUSSION_EXPAND]({ discussion });
 
-      expect(state.diffFiles[0].discussions[0].expandedOnDiff).toBe(false);
+      expect(store.diffFiles[0].discussions[0].expandedOnDiff).toBe(false);
     });
   });
 
   describe('SET_EXPAND_ALL_DIFF_DISCUSSIONS', () => {
     it('expands all discussions', () => {
-      const state = {
+      store.$patch({
         diffFiles: [
           {
             [INLINE_DIFF_LINES_KEY]: [
@@ -1330,37 +1366,34 @@ describe.skip('DiffsStoreMutations', () => {
             discussions: [{ expandedOnDiff: false }],
           },
         ],
-      };
+      });
 
-      mutations[types.SET_EXPAND_ALL_DIFF_DISCUSSIONS](state, true);
+      store[types.SET_EXPAND_ALL_DIFF_DISCUSSIONS](true);
 
-      expect(state.diffFiles[0][INLINE_DIFF_LINES_KEY][0].discussionsExpanded).toBe(true);
-      expect(state.diffFiles[0].discussions[0].expandedOnDiff).toBe(true);
-      expect(state.diffFiles[1].discussions[0].expandedOnDiff).toBe(true);
+      expect(store.diffFiles[0][INLINE_DIFF_LINES_KEY][0].discussionsExpanded).toBe(true);
+      expect(store.diffFiles[0].discussions[0].expandedOnDiff).toBe(true);
+      expect(store.diffFiles[1].discussions[0].expandedOnDiff).toBe(true);
     });
   });
 
   describe('SET_LINKED_FILE_HASH', () => {
-    it('set linked file hash', () => {
-      const state = {};
+    it('sets linked file hash', () => {
       const file = getDiffFileMock();
 
-      mutations[types.SET_LINKED_FILE_HASH](state, file.file_hash);
+      store[types.SET_LINKED_FILE_HASH](file.file_hash);
 
-      expect(state.linkedFileHash).toBe(file.file_hash);
+      expect(store.linkedFileHash).toBe(file.file_hash);
     });
   });
 
   describe('SET_COLLAPSED_STATE_FOR_ALL_FILES', () => {
     it('sets collapsed state for all files', () => {
-      const state = {
-        diffFiles: [getDiffFileMock(), getDiffFileMock()],
-      };
+      store.diffFiles = [getDiffFileMock(), getDiffFileMock()];
 
-      mutations[types.SET_COLLAPSED_STATE_FOR_ALL_FILES](state, { collapsed: true });
+      store[types.SET_COLLAPSED_STATE_FOR_ALL_FILES]({ collapsed: true });
 
       expect(
-        state.diffFiles.every(
+        store.diffFiles.every(
           ({ viewer }) => viewer.manuallyCollapsed && !viewer.automaticallyCollapsed,
         ),
       ).toBe(true);

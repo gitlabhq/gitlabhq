@@ -1,0 +1,12 @@
+---
+api_type: boolean
+attr: updating_name_disabled_for_users
+clusterwide: false
+column: updating_name_disabled_for_users
+db_type: boolean
+default: 'false'
+description: "[Disable user profile name changes](../administration/settings/account_and_limit_settings.md#disable-user-profile-name-changes)."
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

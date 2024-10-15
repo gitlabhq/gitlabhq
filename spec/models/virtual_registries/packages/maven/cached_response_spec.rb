@@ -6,6 +6,12 @@ RSpec.describe VirtualRegistries::Packages::Maven::CachedResponse, type: :model,
   subject(:cached_response) { build(:virtual_registries_packages_maven_cached_response) }
 
   it { is_expected.to include_module(FileStoreMounter) }
+  it { is_expected.to include_module(::UpdateNamespaceStatistics) }
+
+  it_behaves_like 'updates namespace statistics' do
+    let(:statistic_source) { cached_response }
+    let(:non_statistic_attribute) { :relative_path }
+  end
 
   describe 'validations' do
     %i[group file relative_path content_type downloads_count size].each do |attr|
@@ -16,13 +22,14 @@ RSpec.describe VirtualRegistries::Packages::Maven::CachedResponse, type: :model,
       it { is_expected.to validate_length_of(attr).is_at_most(255) }
     end
     it { is_expected.to validate_numericality_of(:downloads_count).only_integer.is_greater_than(0) }
+    it { is_expected.to validate_length_of(:file_final_path).is_at_most(1024) }
 
     context 'with persisted cached response' do
       before do
         cached_response.save!
       end
 
-      it { is_expected.to validate_uniqueness_of(:relative_path).scoped_to(:upstream_id) }
+      it { is_expected.to validate_uniqueness_of(:relative_path).scoped_to(:upstream_id, :status) }
 
       context 'when upstream_id is nil' do
         let(:new_cached_response) { build(:virtual_registries_packages_maven_cached_response) }
@@ -30,6 +37,33 @@ RSpec.describe VirtualRegistries::Packages::Maven::CachedResponse, type: :model,
         before do
           cached_response.update!(upstream_id: nil)
           new_cached_response.upstream = nil
+        end
+
+        it 'does not validate uniqueness of relative_path' do
+          new_cached_response.validate
+          expect(new_cached_response.errors.messages_for(:relative_path)).not_to include 'has already been taken'
+        end
+      end
+
+      context 'with a similar cached response in a different status' do
+        let!(:cached_response_in_error) do
+          create(
+            :virtual_registries_packages_maven_cached_response,
+            :error,
+            group_id: cached_response.group_id,
+            upstream_id: cached_response.upstream_id,
+            relative_path: cached_response.relative_path
+          )
+        end
+
+        let(:new_cached_response) do
+          build(
+            :virtual_registries_packages_maven_cached_response,
+            :error,
+            group_id: cached_response.group_id,
+            upstream_id: cached_response.upstream_id,
+            relative_path: cached_response.relative_path
+          )
         end
 
         it 'does not validate uniqueness of relative_path' do
@@ -46,6 +80,51 @@ RSpec.describe VirtualRegistries::Packages::Maven::CachedResponse, type: :model,
         .class_name('VirtualRegistries::Packages::Maven::Upstream')
         .inverse_of(:cached_responses)
     end
+  end
+
+  describe 'scopes' do
+    describe '.orphan' do
+      subject { described_class.orphan }
+
+      let_it_be(:cached_response) { create(:virtual_registries_packages_maven_cached_response) }
+      let_it_be(:orphan_cached_response) { create(:virtual_registries_packages_maven_cached_response, :orphan) }
+
+      it { is_expected.to contain_exactly(orphan_cached_response) }
+    end
+
+    describe '.pending_destruction' do
+      subject { described_class.pending_destruction }
+
+      let_it_be(:cached_response) { create(:virtual_registries_packages_maven_cached_response, :orphan, :processing) }
+      let_it_be(:pending_destruction_cached_response) do
+        create(:virtual_registries_packages_maven_cached_response, :orphan)
+      end
+
+      it { is_expected.to contain_exactly(pending_destruction_cached_response) }
+    end
+
+    describe '.for_group' do
+      let_it_be(:cached_response1) { create(:virtual_registries_packages_maven_cached_response) }
+      let_it_be(:cached_response2) { create(:virtual_registries_packages_maven_cached_response) }
+      let_it_be(:cached_response3) { create(:virtual_registries_packages_maven_cached_response) }
+
+      let(:groups) { [cached_response1.group, cached_response2.group] }
+
+      subject { described_class.for_group(groups) }
+
+      it { is_expected.to match_array([cached_response1, cached_response2]) }
+    end
+  end
+
+  describe '.next_pending_destruction' do
+    subject { described_class.next_pending_destruction }
+
+    let_it_be(:cached_response) { create(:virtual_registries_packages_maven_cached_response) }
+    let_it_be(:pending_destruction_cached_response) do
+      create(:virtual_registries_packages_maven_cached_response, :orphan)
+    end
+
+    it { is_expected.to eq(pending_destruction_cached_response) }
   end
 
   describe 'object storage key' do

@@ -140,6 +140,46 @@ RSpec.describe Emails::Projects do
     end
   end
 
+  describe '#repository_rewrite_history_success_email' do
+    let(:recipient) { user }
+
+    subject { Notify.repository_rewrite_history_success_email(project, user) }
+
+    it_behaves_like 'an email sent to a user'
+    it_behaves_like 'an email sent from GitLab'
+    it_behaves_like 'it should not have Gmail Actions links'
+    it_behaves_like 'a user cannot unsubscribe through footer link'
+    it_behaves_like 'appearance header and footer enabled'
+    it_behaves_like 'appearance header and footer not enabled'
+
+    it 'has the correct subject and body' do
+      is_expected.to have_subject("#{project.name} | Project history rewrite has completed")
+      is_expected.to have_body_text(project.full_path)
+      is_expected.to have_body_text("Repository history rewrite succeeded on")
+    end
+  end
+
+  describe '#repository_rewrite_history_failure_email' do
+    let(:recipient) { user }
+    let(:error) { 'Some error' }
+
+    subject { Notify.repository_rewrite_history_failure_email(project, user, error) }
+
+    it_behaves_like 'an email sent to a user'
+    it_behaves_like 'an email sent from GitLab'
+    it_behaves_like 'it should not have Gmail Actions links'
+    it_behaves_like 'a user cannot unsubscribe through footer link'
+    it_behaves_like 'appearance header and footer enabled'
+    it_behaves_like 'appearance header and footer not enabled'
+
+    it 'has the correct subject and body' do
+      is_expected.to have_subject("#{project.name} | Project history rewrite failure")
+      is_expected.to have_body_text(project.full_path)
+      is_expected.to have_body_text("Repository history rewrite failed on")
+      is_expected.to have_body_text(error)
+    end
+  end
+
   describe '.inactive_project_deletion_warning_email' do
     let(:recipient) { user }
     let(:deletion_date) { "2022-01-10" }
@@ -165,6 +205,64 @@ RSpec.describe Emails::Projects do
         "been logged by GitLab")
       is_expected.to have_body_text("This email supersedes any previous emails about scheduled deletion you may " \
         "have received for #{project_link}.")
+    end
+  end
+
+  describe '.project_was_exported_email' do
+    let(:recipient) { user }
+
+    subject { Notify.project_was_exported_email(user, project) }
+
+    it_behaves_like 'an email sent to a user'
+    it_behaves_like 'an email sent from GitLab'
+    it_behaves_like 'it should not have Gmail Actions links'
+    it_behaves_like 'a user cannot unsubscribe through footer link'
+    it_behaves_like 'appearance header and footer enabled'
+    it_behaves_like 'appearance header and footer not enabled'
+
+    it 'has the correct subject and body' do
+      is_expected.to have_subject("#{project.name} | Project was exported")
+      is_expected.to have_body_text("Project #{project.name} was exported successfully.")
+      is_expected.to have_body_text("The download link will expire in 24 hours.")
+    end
+  end
+
+  describe '.project_was_moved_email' do
+    let(:recipient) { user }
+    let(:old_path_with_namespace) { project.path_with_namespace }
+
+    subject { Notify.project_was_moved_email(project.id, user.id, old_path_with_namespace) }
+
+    it_behaves_like 'an email sent from GitLab'
+    it_behaves_like 'it should not have Gmail Actions links'
+    it_behaves_like 'a user cannot unsubscribe through footer link'
+    it_behaves_like 'appearance header and footer enabled'
+    it_behaves_like 'appearance header and footer not enabled'
+
+    it 'has the correct subject and body' do
+      is_expected.to have_subject("#{project.name} | Project was moved")
+      is_expected.to have_body_text("Project #{project.path_with_namespace} was moved to another location.")
+      is_expected.to have_body_text("To update the remote url in your local repository run (for ssh):")
+    end
+  end
+
+  describe '.project_was_not_exported_email' do
+    let(:recipient) { user }
+
+    errors =  ['Some error']
+
+    subject { Notify.project_was_not_exported_email(user, project, errors) }
+
+    it_behaves_like 'an email sent to a user'
+    it_behaves_like 'an email sent from GitLab'
+    it_behaves_like 'it should not have Gmail Actions links'
+    it_behaves_like 'a user cannot unsubscribe through footer link'
+    it_behaves_like 'appearance header and footer enabled'
+    it_behaves_like 'appearance header and footer not enabled'
+
+    it 'has the correct subject and body' do
+      is_expected.to have_subject("#{project.name} | Project export error")
+      is_expected.to have_body_text("#{project.name} | Project export error")
     end
   end
 end

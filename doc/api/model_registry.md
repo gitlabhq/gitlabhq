@@ -21,12 +21,12 @@ GET /projects/:id/packages/ml_models/:model_version_id/files/(*path/):file_name
 
 Parameters:
 
-| Attribute          | Type              | Required | Description                                                                                                         |
-|--------------------|-------------------|----------|---------------------------------------------------------------------------------------------------------------------|
-| `id`               | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
-| `model_version_id` | integer           | yes      | The model version ID for the file                                                                                   |
-| `path`             | string            | yes      | File directory path                                                                                                 |
-| `filename`        | string            | yes      | Filename                                                                                                           |
+| Attribute          | Type              | Required | Description                                                                            |
+|--------------------|-------------------|----------|----------------------------------------------------------------------------------------|
+| `id`               | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths)    |
+| `model_version_id` | integer           | yes      | The model version ID for the file                                                      |
+| `path`             | string            | yes      | File directory path                                                                    |
+| `filename`         | string            | yes      | Filename                                                                               |
 
 ```shell
 curl --header "Authorization: Bearer <your_access_token>" "https://gitlab.example.com/api/v4/projects/:id/packages/ml_models/:model_version_id/files/(*path/):filename

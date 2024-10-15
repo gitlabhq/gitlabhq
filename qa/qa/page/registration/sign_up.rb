@@ -4,7 +4,7 @@ module QA
   module Page
     module Registration
       class SignUp < Page::Base
-        view 'app/views/devise/shared/_signup_box_form.html.haml' do
+        view 'app/views/devise/registrations/_signup_box_form.html.haml' do
           element 'new-user-first-name-field'
           element 'new-user-last-name-field'
           element 'new-user-email-field'

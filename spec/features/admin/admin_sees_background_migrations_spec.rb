@@ -193,7 +193,7 @@ RSpec.describe "Admin > Admin sees background migrations", feature_category: :da
     visit admin_background_migrations_path
 
     within '#content-body' do
-      expect(page).to have_link('Learn more', href: help_page_path('update/background_migrations'))
+      expect(page).to have_link('Learn more', href: help_page_path('update/background_migrations.md'))
     end
   end
 

@@ -53,7 +53,7 @@ export default {
     <manifests-empty-state v-else-if="manifests.length === 0" />
 
     <div v-else data-testid="main-area">
-      <ul class="gl-pl-0">
+      <ul class="gl-list-none gl-pl-0">
         <li v-for="(manifest, index) in manifests" :key="index">
           <manifest-row
             :dependency-proxy-image-prefix="dependencyProxyImagePrefix"

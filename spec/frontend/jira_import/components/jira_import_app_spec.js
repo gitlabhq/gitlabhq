@@ -17,8 +17,6 @@ import {
 describe('JiraImportApp', () => {
   let wrapper;
 
-  const inProgressIllustration = 'in-progress-illustration.svg';
-
   const setupIllustration = 'setup-illustration.svg';
 
   const getFormComponent = () => wrapper.findComponent(JiraImportForm);
@@ -40,7 +38,6 @@ describe('JiraImportApp', () => {
   } = {}) =>
     shallowMount(JiraImportApp, {
       propsData: {
-        inProgressIllustration,
         isJiraConfigured,
         issuesPath,
         jiraIntegrationPath,
@@ -175,7 +172,7 @@ describe('JiraImportApp', () => {
     });
 
     it('receives the illustration', () => {
-      expect(getProgressComponent().props('illustration')).toBe(inProgressIllustration);
+      expect(getProgressComponent().props('illustration')).toBe(setupIllustration);
     });
 
     it('receives the name of the most recent import initiator', () => {

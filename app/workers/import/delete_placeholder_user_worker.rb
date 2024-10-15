@@ -36,7 +36,8 @@ module Import
     end
 
     def placeholder_user_referenced?(source_user)
-      PlaceholderReferences::AliasResolver.models_with_columns.any? do |model, columns|
+      PlaceholderReferences::AliasResolver.models_with_data.any? do |model, data|
+        columns = data[:columns].values - data[:columns_ignored_on_deletion].to_a
         (columns & ::Gitlab::ImportExport::Base::RelationFactory::USER_REFERENCES).any? do |user_reference_column|
           model.where(user_reference_column => source_user.placeholder_user_id).any? # rubocop:disable CodeReuse/ActiveRecord -- Adding a scope for all possible models would not be feasible here
         end

@@ -1,0 +1,13 @@
+---
+api_type: boolean
+attr: remember_me_enabled
+clusterwide: false
+column: remember_me_enabled
+db_type: boolean
+default: 'true'
+description: Enable [**Remember me** setting](../administration/settings/account_and_limit_settings.md#turn-remember-me-on-or-off).
+  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369133) in GitLab 16.0.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

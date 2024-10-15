@@ -1,5 +1,5 @@
 ---
-stage: Verify
+stage: Govern
 group: Pipeline Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -98,3 +98,17 @@ You can find your subscription ID in:
 
 - The [Azure Portal](https://learn.microsoft.com/en-us/azure/azure-portal/get-subscription-tenant-id#find-your-azure-subscription).
 - The [Azure CLI](https://learn.microsoft.com/en-us/cli/azure/manage-azure-subscriptions-azure-cli#get-the-active-subscription).
+
+## `The secrets provider can not be found. Check your CI/CD variables and try again.` message
+
+You might receive this error when attempting to start a job configured to access Azure Key Vault:
+
+```plaintext
+The secrets provider can not be found. Check your CI/CD variables and try again.
+```
+
+The job can't be created because one or more of the required variables are not defined:
+
+- `AZURE_KEY_VAULT_SERVER_URL`
+- `AZURE_CLIENT_ID`
+- `AZURE_TENANT_ID`

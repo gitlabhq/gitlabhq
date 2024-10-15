@@ -1,0 +1,12 @@
+---
+api_type: string
+attr: after_sign_up_text
+clusterwide: true
+column: after_sign_up_text
+db_type: text
+default:
+description: Text shown to the user after signing up.
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

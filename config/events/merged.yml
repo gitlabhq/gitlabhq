@@ -1,0 +1,22 @@
+---
+description: Tracks when a merge request is merged
+action: merged
+identifiers:
+- project
+- namespace
+- user
+product_group: code_review
+milestone: '15.6'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40379
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate
+additional_properties:
+  label:
+    description: Always `usage_activity_by_stage_monthly.create.merge_requests_users`
+  property:
+    description: Always `merge_request_action`

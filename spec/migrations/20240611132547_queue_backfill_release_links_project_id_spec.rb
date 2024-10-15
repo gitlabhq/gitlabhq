@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe QueueBackfillReleaseLinksProjectId, feature_category: :release_orchestration do
+RSpec.describe QueueBackfillReleaseLinksProjectId, migration: :gitlab_main_cell, feature_category: :release_orchestration do
   let!(:batched_migration) { described_class::MIGRATION }
 
   it 'schedules a new batched migration' do

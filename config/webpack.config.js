@@ -134,6 +134,7 @@ const alias = {
   test_helpers: path.join(ROOT_PATH, 'spec/frontend_integration/test_helpers'),
   public: path.join(ROOT_PATH, 'public'),
   storybook_addons: path.resolve(ROOT_PATH, 'storybook/config/addons'),
+  storybook_helpers: path.resolve(ROOT_PATH, 'storybook/helpers'),
 };
 
 if (IS_EE) {
@@ -848,6 +849,7 @@ module.exports = {
       'process.env.GITLAB_WEB_IDE_PUBLIC_PATH': JSON.stringify(GITLAB_WEB_IDE_PUBLIC_PATH),
       'process.env.PDF_JS_WORKER_PUBLIC_PATH': JSON.stringify(PDF_JS_WORKER_PUBLIC_PATH),
       'process.env.PDF_JS_CMAPS_PUBLIC_PATH': JSON.stringify(PDF_JS_CMAPS_PUBLIC_PATH),
+      'window.IS_VITE': JSON.stringify(false),
       ...(IS_PRODUCTION ? {} : { LIVE_RELOAD: DEV_SERVER_LIVERELOAD }),
     }),
 

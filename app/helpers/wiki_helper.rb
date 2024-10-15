@@ -130,7 +130,11 @@ module WikiHelper
   private
 
   def wiki_page_render_api_endpoint_params(page)
-    { id: page.container.id, slug: ERB::Util.url_encode(page.slug), params: { version: page.version.id } }
+    {
+      id: page.container.id,
+      slug: ERB::Util.url_encode(page.slug).gsub(/%2f/i, '/'),
+      params: { version: page.version.id }
+    }
   end
 
   def wiki_page_info(page, uploads_path: '')
@@ -145,8 +149,8 @@ module WikiHelper
       slug: page.slug,
       path: wiki_page_path(page.wiki, page),
       wiki_path: wiki_path(page.wiki),
-      help_path: help_page_path('user/project/wiki/index'),
-      markdown_help_path: help_page_path('user/markdown'),
+      help_path: help_page_path('user/project/wiki/index.md'),
+      markdown_help_path: help_page_path('user/markdown.md'),
       markdown_preview_path: wiki_page_path(page.wiki, page, action: :preview_markdown),
       create_path: wiki_path(page.wiki, action: :create)
     }

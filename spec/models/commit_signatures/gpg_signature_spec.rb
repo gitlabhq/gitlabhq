@@ -92,4 +92,10 @@ RSpec.describe CommitSignatures::GpgSignature do
       expect(signature.signed_by_user).to eq(gpg_key.user)
     end
   end
+
+  describe '#reverified_status' do
+    it 'returns existing verification status' do
+      expect(signature.reverified_status).to eq(signature.verification_status)
+    end
+  end
 end

@@ -10,6 +10,7 @@ jest.mock('~/ide/init_gitlab_web_ide');
 jest.mock('~/ide/init_legacy_web_ide');
 
 const MOCK_MISMATCH_CALLBACK_URL = 'https://example.com/ide/redirect';
+
 const MOCK_DATA_SET = {
   callbackUrls: JSON.stringify([`${TEST_HOST}/-/ide/oauth_redirect`]),
   useNewWebIde: true,
@@ -72,6 +73,38 @@ describe('startIde', () => {
 
       expect(renderErrorSpy).toHaveBeenCalledTimes(1);
       expect(initGitlabWebIDE).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('when there is a case mismatch in the domain name of the callback URL', () => {
+    it('renders error page', async () => {
+      const parsedUrl = new URL(TEST_HOST);
+
+      setupMockIdeElement({
+        callbackUrls: JSON.stringify([
+          `${parsedUrl.protocol}//${parsedUrl.host.toUpperCase()}/-/ide/oauth_redirect`,
+        ]),
+        useNewWebIde: true,
+      });
+
+      await startIde();
+
+      expect(renderErrorSpy).not.toHaveBeenCalled();
+      expect(initGitlabWebIDE).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('when the callback URL is invalid', () => {
+    it('renders error page', async () => {
+      setupMockIdeElement({
+        callbackUrls: JSON.stringify(['/-/ide/oauth_redirect']),
+        useNewWebIde: true,
+      });
+
+      await startIde();
+
+      expect(renderErrorSpy).not.toHaveBeenCalled();
+      expect(initGitlabWebIDE).toHaveBeenCalledTimes(1);
     });
   });
 

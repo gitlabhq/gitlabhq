@@ -41,4 +41,16 @@ module CommitSignature
   def signed_by_user
     raise NoMethodError, 'must implement `signed_by_user` method'
   end
+
+  def reverified_status
+    return verification_status unless Feature.enabled?(:check_for_mailmapped_commit_emails, project)
+    return verification_status unless verified? && ssh?
+
+    verified_emails = signed_by_user&.verified_emails
+    if verified_emails&.exclude?(commit.author_email)
+      'unverified_author_email'
+    else
+      verification_status
+    end
+  end
 end

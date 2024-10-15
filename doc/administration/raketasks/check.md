@@ -438,7 +438,7 @@ to remove the database entries.
 
 ### Update dangling object storage references
 
-If you have [migrated from object storage to local storage](../job_artifacts.md#migrating-from-object-storage-to-local-storage) and files were missing, then dangling database references remain.
+If you have [migrated from object storage to local storage](../cicd/job_artifacts.md#migrating-from-object-storage-to-local-storage) and files were missing, then dangling database references remain.
 
 This is visible in the migration logs with errors like the following:
 

@@ -1,0 +1,12 @@
+---
+api_type: string
+attr: default_preferred_language
+clusterwide: false
+column: default_preferred_language
+db_type: text
+default: "'en'::text"
+description: Default preferred language for users who are not logged in.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

@@ -1,9 +1,9 @@
 <script>
 import BlobChunks from '~/search/results/components/blob_chunks.vue';
-import { GL_DARK } from '~/constants';
 import {
   DEFAULT_SHOW_CHUNKS,
   CODE_THEME_DEFAULT,
+  CODE_THEME_NONE,
   CODE_THEME_DARK,
   CODE_THEME_MONOKAI,
   CODE_THEME_SOLARIZED_DARK,
@@ -35,6 +35,7 @@ export default {
   data() {
     return {
       showMore: false,
+      numberOfChunksToShow: DEFAULT_SHOW_CHUNKS,
     };
   },
   computed: {
@@ -43,18 +44,6 @@ export default {
     },
     codeTheme() {
       return gon?.user_color_scheme || CODE_THEME_DEFAULT;
-    },
-    dividerTheme() {
-      switch (this.codeTheme) {
-        case CODE_THEME_SOLARIZED_LIGHT:
-        case CODE_THEME_DEFAULT:
-          return this.systemColorScheme === GL_DARK ? BORDER_LIGHT : BORDER_DARK;
-        case CODE_THEME_MONOKAI:
-        case CODE_THEME_SOLARIZED_DARK:
-        case CODE_THEME_DARK:
-        default:
-          return this.systemColorScheme !== GL_DARK ? BORDER_DARK : BORDER_LIGHT;
-      }
     },
   },
   mounted() {
@@ -71,10 +60,30 @@ export default {
     },
     chunksToShow(file) {
       if (this.showMore) {
+        this.numberOfChunksToShow = file.chunks.length;
         return file.chunks;
       }
 
+      this.numberOfChunksToShow = DEFAULT_SHOW_CHUNKS;
       return file.chunks.slice(0, DEFAULT_SHOW_CHUNKS);
+    },
+    isLast(index) {
+      return index + 1 === this.numberOfChunksToShow;
+    },
+    dividerTheme(index) {
+      if (this.isLast(index)) return '';
+
+      switch (this.codeTheme) {
+        case CODE_THEME_SOLARIZED_LIGHT:
+        case CODE_THEME_DEFAULT:
+        case CODE_THEME_NONE:
+          return BORDER_LIGHT;
+        case CODE_THEME_MONOKAI:
+        case CODE_THEME_SOLARIZED_DARK:
+        case CODE_THEME_DARK:
+        default:
+          return BORDER_DARK;
+      }
     },
   },
 };
@@ -85,8 +94,8 @@ export default {
     <div
       v-for="(chunk, index) in chunksToShow(file)"
       :key="`chunk${index}`"
-      class="chunks-block !gl-border-b gl-rounded-none last:gl-border-0"
-      :class="[codeTheme, dividerTheme]"
+      class="chunks-block gl-rounded-none"
+      :class="[codeTheme, dividerTheme(index)]"
     >
       <blob-chunks
         :chunk="chunk"

@@ -76,5 +76,5 @@ To limit the data that Duo Chat has access to, follow the instructions for
 
 To disable GitLab Duo Chat in VS Code:
 
-1. Go to **Settings > Extensions > GitLab Workflow (GitLab VS Code Extension)**.
+1. Go to **Settings > Extensions > GitLab Workflow**.
 1. Clear the **Enable GitLab Duo Chat assistant** checkbox.

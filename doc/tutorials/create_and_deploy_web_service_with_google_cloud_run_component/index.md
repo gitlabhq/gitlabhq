@@ -170,7 +170,7 @@ Google Cloud infrastructure.
        - docker:24.0.5-dind
      image: docker:git
      before_script:
-      - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+       - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
      script:
        - docker build -t $CI_REGISTRY_IMAGE:$IMAGE_TAG --build-arg="name=Cloud Run" .
        - docker push $CI_REGISTRY_IMAGE:$IMAGE_TAG
@@ -182,13 +182,13 @@ Google Cloud infrastructure.
          source: $CI_REGISTRY_IMAGE:$IMAGE_TAG
          target: $AR_IMAGE:$IMAGE_TAG
 
-   - component: gitlab.com/google-gitlab-components/cloud-run/deploy-cloud-run@0.1.0
-     inputs:
-       stage: deploy
-       image: $AR_IMAGE:$IMAGE_TAG
-       project_id: PROJECT
-       region: LOCATION
-       service: python-service
+     - component: gitlab.com/google-gitlab-components/cloud-run/deploy-cloud-run@0.1.0
+       inputs:
+         stage: deploy
+         image: $AR_IMAGE:$IMAGE_TAG
+         project_id: PROJECT
+         region: LOCATION
+         service: python-service
 
    ```
 

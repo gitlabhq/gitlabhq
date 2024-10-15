@@ -179,20 +179,6 @@ RSpec.describe IdeController, feature_category: :web_ide do
         end
       end
 
-      describe 'with web_ide_oauth flag off' do
-        before do
-          stub_feature_flags(web_ide_oauth: false)
-        end
-
-        it 'does not create oauth application' do
-          expect(Doorkeeper::Application).not_to receive(:new)
-
-          subject
-
-          expect(web_ide_oauth_application).to be_nil
-        end
-      end
-
       it 'ensures web_ide_oauth_application' do
         expect(Doorkeeper::Application).to receive(:new).and_call_original
 
@@ -259,14 +245,6 @@ RSpec.describe IdeController, feature_category: :web_ide do
 
       it 'with vscode_web_ide flag off, returns not_found' do
         stub_feature_flags(vscode_web_ide: false)
-
-        oauth_redirect
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-
-      it 'with web_ide_oauth flag off, returns not_found' do
-        stub_feature_flags(web_ide_oauth: false)
 
         oauth_redirect
 

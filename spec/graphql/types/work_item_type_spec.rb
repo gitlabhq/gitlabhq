@@ -3,10 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe GitlabSchema.types['WorkItem'], feature_category: :team_planning do
-  before do
-    stub_feature_flags(enforce_check_group_level_work_items_license: true)
-  end
-
   specify { expect(described_class.graphql_name).to eq('WorkItem') }
 
   specify { expect(described_class).to require_graphql_authorizations(:read_work_item) }

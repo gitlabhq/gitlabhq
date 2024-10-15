@@ -51,18 +51,6 @@ RSpec.describe Import::ReassignPlaceholderUserRecordsWorker, feature_category: :
         it_behaves_like 'an invalid source user'
       end
 
-      context 'when the feature flag is disabled' do
-        before do
-          stub_feature_flags(importer_user_mapping: false)
-        end
-
-        it 'does not enqueue service to map records to real users' do
-          expect(Import::ReassignPlaceholderUserRecordsService).not_to receive(:new)
-
-          perform_multiple(job_args)
-        end
-      end
-
       it 'queues a DeletePlaceholderUserWorker with the source user ID' do
         expect(Import::DeletePlaceholderUserWorker)
           .to receive(:perform_async).with(import_source_user.id)

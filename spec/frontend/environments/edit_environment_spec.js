@@ -1,9 +1,10 @@
 import { GlLoadingIcon } from '@gitlab/ui';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import EditEnvironment from '~/environments/components/edit_environment.vue';
+import EnvironmentForm from '~/environments/components/environment_form.vue';
 import { createAlert } from '~/alert';
 import { visitUrl } from '~/lib/utils/url_utility';
 import getEnvironment from '~/environments/graphql/queries/environment.query.graphql';
@@ -17,6 +18,7 @@ const environment = {
   id: '1',
   name: 'foo',
   externalUrl: 'https://foo.example.com',
+  description: 'this is description',
   clusterAgent: null,
   kubernetesNamespace: null,
   fluxResourcePath: null,
@@ -62,7 +64,7 @@ describe('~/environments/components/edit.vue', () => {
   };
 
   const createWrapperWithApollo = async ({ mutationHandler = updateEnvironmentSuccess } = {}) => {
-    wrapper = mountExtended(EditEnvironment, {
+    wrapper = shallowMountExtended(EditEnvironment, {
       propsData: { environment: {} },
       provide: {
         ...provide,
@@ -73,9 +75,7 @@ describe('~/environments/components/edit.vue', () => {
     await waitForPromises();
   };
 
-  const findNameInput = () => wrapper.findByLabelText('Name');
-  const findExternalUrlInput = () => wrapper.findByLabelText('External URL');
-  const findForm = () => wrapper.findByRole('form', { name: 'Edit environment' });
+  const findForm = () => wrapper.findComponent(EnvironmentForm);
 
   const showsLoading = () => wrapper.findComponent(GlLoadingIcon).exists();
 
@@ -92,31 +92,14 @@ describe('~/environments/components/edit.vue', () => {
 
     it('sets the title to Edit environment', async () => {
       await createWrapperWithApollo();
-
-      const header = wrapper.findByRole('heading', { name: 'Edit environment' });
-      expect(header.exists()).toBe(true);
-    });
-
-    it('renders a disabled "Name" field', async () => {
-      await createWrapperWithApollo();
-
-      const nameInput = findNameInput();
-      expect(nameInput.attributes().disabled).toBe('disabled');
-      expect(nameInput.element.value).toBe(environment.name);
-    });
-
-    it('renders an "External URL" field', async () => {
-      await createWrapperWithApollo();
-
-      const urlInput = findExternalUrlInput();
-      expect(urlInput.element.value).toBe(environment.externalUrl);
+      expect(findForm().props('title')).toBe('Edit environment');
     });
   });
 
   describe('on submit', () => {
     it('performs the updateEnvironment apollo mutation', async () => {
       await createWrapperWithApollo();
-      await findForm().trigger('submit');
+      findForm().vm.$emit('submit');
 
       expect(updateEnvironmentSuccess).toHaveBeenCalled();
     });
@@ -127,15 +110,16 @@ describe('~/environments/components/edit.vue', () => {
       });
 
       it('shows loader after form is submitted', async () => {
-        expect(showsLoading()).toBe(false);
+        expect(findForm().props('loading')).toBe(false);
 
-        await findForm().trigger('submit');
+        findForm().vm.$emit('submit');
+        await nextTick();
 
-        expect(showsLoading()).toBe(true);
+        expect(findForm().props('loading')).toBe(true);
       });
 
       it('submits the updated environment on submit', async () => {
-        await findForm().trigger('submit');
+        findForm().vm.$emit('submit');
         await waitForPromises();
 
         expect(visitUrl).toHaveBeenCalledWith(environmentUpdateSuccess.environment.path);
@@ -150,11 +134,11 @@ describe('~/environments/components/edit.vue', () => {
       });
 
       it('shows errors on error', async () => {
-        await findForm().trigger('submit');
+        findForm().vm.$emit('submit');
         await waitForPromises();
 
         expect(createAlert).toHaveBeenCalledWith({ message: 'uh oh!' });
-        expect(showsLoading()).toBe(false);
+        expect(findForm().props('loading')).toBe(false);
       });
     });
   });

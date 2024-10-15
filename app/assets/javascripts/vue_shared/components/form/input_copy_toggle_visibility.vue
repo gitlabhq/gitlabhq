@@ -80,6 +80,7 @@ export default {
 
     return {
       valueIsVisible: this.initialVisibility,
+      mousetrap: null,
     };
   },
   computed: {
@@ -107,11 +108,11 @@ export default {
     },
   },
   mounted() {
-    this.$options.mousetrap = new Mousetrap(this.$refs.input.$el);
-    this.$options.mousetrap.bind(MOUSETRAP_COPY_KEYBOARD_SHORTCUT, this.handleFormInputCopy);
+    this.mousetrap = new Mousetrap(this.$refs.input.$el);
+    this.mousetrap.bind(MOUSETRAP_COPY_KEYBOARD_SHORTCUT, this.handleFormInputCopy);
   },
   beforeDestroy() {
-    this.$options.mousetrap?.unbind(MOUSETRAP_COPY_KEYBOARD_SHORTCUT);
+    this.mousetrap?.unbind(MOUSETRAP_COPY_KEYBOARD_SHORTCUT);
   },
 
   methods: {
@@ -155,7 +156,6 @@ export default {
       this.$emit('input', newValue);
     },
   },
-  mousetrap: null,
 };
 </script>
 <template>

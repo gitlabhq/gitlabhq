@@ -5,18 +5,17 @@ require 'spec_helper'
 RSpec.describe API::Ci::Triggers, feature_category: :pipeline_composition do
   let_it_be(:user) { create(:user) }
   let_it_be(:user2) { create(:user) }
-
-  let!(:trigger_token) { 'secure_token' }
-  let!(:trigger_token_2) { 'secure_token_2' }
-  let!(:project) { create(:project, :repository, creator: user) }
-  let!(:maintainer) { create(:project_member, :maintainer, user: user, project: project) }
-  let!(:developer) { create(:project_member, :developer, user: user2, project: project) }
-  let!(:trigger) { create(:ci_trigger, project: project, token: trigger_token, owner: user) }
-  let!(:trigger2) { create(:ci_trigger, project: project, token: trigger_token_2, owner: user2) }
-  let!(:trigger_request) { create(:ci_trigger_request, trigger: trigger, created_at: '2015-01-01 12:13:14') }
+  let_it_be_with_reload(:project) { create(:project, :repository, creator: user) }
+  let_it_be_with_reload(:project2) { create(:project, :repository) }
+  let_it_be(:trigger_token) { 'secure_token' }
+  let_it_be(:trigger_token_2) { 'secure_token_2' }
+  let_it_be(:maintainer) { create(:project_member, :maintainer, user: user, project: project) }
+  let_it_be(:developer) { create(:project_member, :developer, user: user2, project: project) }
+  let_it_be(:trigger) { create(:ci_trigger, project: project, token: trigger_token, owner: user) }
+  let_it_be(:trigger2) { create(:ci_trigger, project: project, token: trigger_token_2, owner: user2) }
+  let_it_be(:trigger_request) { create(:ci_trigger_request, trigger: trigger, created_at: '2015-01-01 12:13:14') }
 
   describe 'POST /projects/:project_id/trigger/pipeline' do
-    let!(:project2) { create(:project, :repository) }
     let(:options) do
       {
         token: trigger_token
@@ -121,6 +120,16 @@ RSpec.describe API::Ci::Triggers, feature_category: :pipeline_composition do
 
           expect(response).to have_gitlab_http_status(:created)
         end
+      end
+    end
+
+    it_behaves_like 'logs inbound authorizations via job token', :created, :not_found do
+      let(:accessed_project) { project }
+      let(:origin_project) { project2 }
+
+      let(:perform_request) do
+        post api("/projects/#{accessed_project.id}/ref/master/trigger/pipeline?token=#{job_token}"),
+          params: { ref: 'master' }
       end
     end
 

@@ -1,13 +1,14 @@
 <script>
 import { GlTokenSelector, GlAlert } from '@gitlab/ui';
 import { debounce } from 'lodash';
+
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { isNumeric } from '~/lib/utils/number_utils';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { isValidURL } from '~/lib/utils/url_utility';
-
 import { highlighter } from 'ee_else_ce/gfm_auto_complete';
+import workItemAncestorsQuery from '../../graphql/work_item_ancestors.query.graphql';
 
 import groupWorkItemsQuery from '../../graphql/group_work_items.query.graphql';
 import projectWorkItemsQuery from '../../graphql/project_work_items.query.graphql';
@@ -19,7 +20,7 @@ import {
   I18N_WORK_ITEM_NO_MATCHES_FOUND,
   sprintfWorkItem,
 } from '../../constants';
-import { isReference } from '../../utils';
+import { formatAncestors, isReference } from '../../utils';
 
 export default {
   components: {
@@ -95,15 +96,30 @@ export default {
         return !this.isSearchingByReference;
       },
       update(data) {
-        return data.workItemsByReference.nodes;
+        return this.filterItems(data.workItemsByReference.nodes);
       },
       error() {
         this.error = sprintfWorkItem(I18N_WORK_ITEM_SEARCH_ERROR, this.childrenTypeName);
       },
     },
+    ancestorIds: {
+      query: workItemAncestorsQuery,
+      variables() {
+        return {
+          id: this.parentWorkItemId,
+        };
+      },
+      update(data) {
+        return formatAncestors(data.workItem).flatMap((ancestor) => [ancestor.id]);
+      },
+      skip() {
+        return !this.parentWorkItemId;
+      },
+    },
   },
   data() {
     return {
+      ancestorIds: [],
       workspaceWorkItems: [],
       workItemsByReference: [],
       searchTerm: '',
@@ -202,9 +218,13 @@ export default {
     },
     filterItems(items) {
       return (
-        items?.filter(
-          (wi) => !this.childrenIds.includes(wi.id) && this.parentWorkItemId !== wi.id,
-        ) || []
+        items?.filter((wi) => {
+          return (
+            !this.childrenIds.includes(wi.id) &&
+            this.parentWorkItemId !== wi.id &&
+            !this.ancestorIds.includes(wi.id)
+          );
+        }) || []
       );
     },
   },

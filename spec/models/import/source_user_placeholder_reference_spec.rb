@@ -21,6 +21,7 @@ RSpec.describe Import::SourceUserPlaceholderReference, feature_category: :import
     it { is_expected.not_to allow_value({}).for(:composite_key) }
     it { is_expected.not_to allow_value({ id: 'foo' }).for(:composite_key) }
     it { is_expected.not_to allow_value(1).for(:composite_key) }
+    it { is_expected.not_to allow_values('Member', 'GroupMember', 'ProjectMember').for(:model) }
 
     describe '#validate_numeric_or_composite_key_present' do
       def validation_errors(...)
@@ -217,14 +218,14 @@ RSpec.describe Import::SourceUserPlaceholderReference, feature_category: :import
     subject(:from_serialized) { described_class.from_serialized(serialized) }
 
     context 'when serialized reference is valid' do
-      let(:serialized) { '[{"key":1},"Model",2,null,3,"foo",4]' }
+      let(:serialized) { '[{"key":1},"Issue",2,null,3,"foo",4]' }
 
       it 'returns a valid SourceUserPlaceholderReference' do
         expect(from_serialized).to be_a(described_class)
           .and(be_valid)
           .and(have_attributes(
             composite_key: { key: 1 },
-            model: 'Model',
+            model: 'Issue',
             numeric_key: nil,
             namespace_id: 2,
             source_user_id: 3,
@@ -239,7 +240,7 @@ RSpec.describe Import::SourceUserPlaceholderReference, feature_category: :import
     end
 
     context 'when serialized reference has different number of elements than expected' do
-      let(:serialized) { '[{"key":1},"Model",2,null,3]' }
+      let(:serialized) { '[{"key":1},"Issue",2,null,3]' }
 
       it 'raises an exception' do
         expect { from_serialized }.to raise_error(described_class::SerializationError)

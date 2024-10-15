@@ -1,0 +1,12 @@
+---
+api_type:
+attr: dingtalk_integration_enabled
+clusterwide: false
+column: dingtalk_integration_enabled
+db_type: boolean
+default: 'false'
+description:
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: true
+not_null: true

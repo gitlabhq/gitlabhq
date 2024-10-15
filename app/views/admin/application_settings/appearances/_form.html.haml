@@ -1,4 +1,4 @@
-- parsed_with_gfm = (_("Content parsed with %{link}.") % { link: link_to('GitLab Flavored Markdown', help_page_path('user/markdown'), target: '_blank') }).html_safe
+- parsed_with_gfm = (_("Content parsed with %{link}.") % { link: link_to('GitLab Flavored Markdown', help_page_path('user/markdown.md'), target: '_blank') }).html_safe
 
 = gitlab_ui_form_for @appearance, url: admin_application_settings_appearances_path, html: { class: 'gl-mt-3' } do |f|
   = form_errors(@appearance)

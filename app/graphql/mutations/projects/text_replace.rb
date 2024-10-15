@@ -40,7 +40,12 @@ module Mutations
       def resolve(project_path:, replacements:)
         project = authorized_find!(project_path)
 
-        result = Repositories::RewriteHistoryService.new(project, current_user).execute(redactions: replacements)
+        result =
+          if Feature.enabled?(:async_rewrite_history, project)
+            Repositories::RewriteHistoryService.new(project, current_user).async_execute(redactions: replacements)
+          else
+            Repositories::RewriteHistoryService.new(project, current_user).execute(redactions: replacements)
+          end
 
         return { errors: result.errors } if result.error?
 

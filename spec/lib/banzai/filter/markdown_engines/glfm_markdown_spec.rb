@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::Filter::MarkdownEngines::GlfmMarkdown, feature_category: :team_planning do
+RSpec.describe Banzai::Filter::MarkdownEngines::GlfmMarkdown, feature_category: :markdown do
   it 'defaults to generating sourcepos' do
     engine = described_class.new({})
     expected = <<~TEXT

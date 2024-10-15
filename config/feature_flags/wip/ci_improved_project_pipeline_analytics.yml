@@ -1,0 +1,9 @@
+---
+name: ci_improved_project_pipeline_analytics
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/444468
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167848
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/497254
+milestone: '17.5'
+group: group::runner
+type: wip
+default_enabled: false

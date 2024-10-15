@@ -82,7 +82,7 @@ RSpec.describe BulkImports::Pipeline::Context, feature_category: :importers do
       expect(Gitlab::Import::SourceUserMapper).to receive(:new).with(
         namespace: group.root_ancestor,
         import_type: Import::SOURCE_DIRECT_TRANSFER,
-        source_hostname: bulk_import.configuration.source_hostname
+        source_hostname: bulk_import.configuration.url
       )
 
       subject.source_user_mapper

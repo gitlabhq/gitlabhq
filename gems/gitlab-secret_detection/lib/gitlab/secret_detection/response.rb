@@ -7,7 +7,8 @@ module Gitlab
     # +status+:: One of values from SecretDetection::Status indicating the scan operation's status
     # +results+:: Array of SecretDetection::Finding values. Default value is nil.
     class Response
-      attr_reader :status, :results
+      attr_reader :results
+      attr_accessor :status
 
       def initialize(status, results = nil)
         @status = status

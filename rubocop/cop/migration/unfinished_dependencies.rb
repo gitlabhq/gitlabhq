@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require_relative '../../migration_helpers'
-require_relative '../../batched_background_migrations_dictionary'
+require_relative '../../../lib/gitlab/utils/batched_background_migrations_dictionary'
 
 module RuboCop
   module Cop
@@ -43,7 +43,9 @@ module RuboCop
         private
 
         def fetch_finalized_by(queued_migration_version)
-          BatchedBackgroundMigrationsDictionary.new(queued_migration_version).finalized_by
+          ::Gitlab::Utils::BatchedBackgroundMigrationsDictionary
+            .new(queued_migration_version)
+            .finalized_by
         end
       end
     end

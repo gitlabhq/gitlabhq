@@ -1,0 +1,12 @@
+---
+api_type: boolean
+attr: suggest_pipeline_enabled
+clusterwide: false
+column: suggest_pipeline_enabled
+db_type: boolean
+default: 'true'
+description: Enable pipeline suggestion banner.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

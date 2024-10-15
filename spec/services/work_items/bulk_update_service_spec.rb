@@ -43,22 +43,44 @@ RSpec.describe WorkItems::BulkUpdateService, feature_category: :team_planning do
     let(:parent) { group }
 
     context 'when the user can read the parent' do
-      let(:current_user) { developer }
+      context 'when the user can update the work item' do
+        let(:current_user) { developer }
 
-      it { is_expected.to be_success }
+        it { is_expected.to be_success }
 
-      it 'updates all work items scoped to the group hierarchy' do
-        expect do
-          service_result
-        end.to change { work_item1.reload.label_ids }.from([label1.id]).to([label2.id])
-          .and change { work_item2.reload.label_ids }.from([label1.id]).to([label2.id])
-          .and not_change { work_item3.reload.label_ids }.from([label1.id])
-          .and not_change { work_item4.reload.label_ids }.from([label3.id])
-          .and not_change { work_item5.reload.label_ids }.from([label1.id])
-      end
+        it 'updates all work items scoped to the group hierarchy' do
+          expect do
+            service_result
+          end.to not_change { work_item1.reload.label_ids }.from([label1.id])
+            .and change { work_item2.reload.label_ids }.from([label1.id]).to([label2.id])
+            .and not_change { work_item3.reload.label_ids }.from([label1.id])
+            .and not_change { work_item4.reload.label_ids }.from([label3.id])
+            .and not_change { work_item5.reload.label_ids }.from([label1.id])
+        end
 
-      it 'returns update count' do
-        expect(service_result[:updated_work_item_count]).to eq(2)
+        it 'returns update count' do
+          expect(service_result[:updated_work_item_count]).to eq(1)
+        end
+
+        context 'with EE license', if: Gitlab.ee? do
+          before do
+            stub_licensed_features(epics: true)
+          end
+
+          it 'updates all work items scoped to the group hierarchy' do
+            expect do
+              service_result
+            end.to change { work_item1.reload.label_ids }.from([label1.id]).to([label2.id])
+              .and change { work_item2.reload.label_ids }.from([label1.id]).to([label2.id])
+              .and not_change { work_item3.reload.label_ids }.from([label1.id])
+              .and not_change { work_item4.reload.label_ids }.from([label3.id])
+              .and not_change { work_item5.reload.label_ids }.from([label1.id])
+          end
+
+          it 'returns update count' do
+            expect(service_result[:updated_work_item_count]).to eq(2)
+          end
+        end
       end
 
       context 'when the user cannot update the work item' do

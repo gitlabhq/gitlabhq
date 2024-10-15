@@ -15,16 +15,3 @@ export const xAxisLabelFormatter = (val) => {
   const year = date.getUTCFullYear();
   return month === 0 ? `${year}` : getMonthNames(true)[month];
 };
-
-/**
- * Formats provided date to YYYY-MM-DD format
- * @param {Date}
- * @returns {String}  - formatted value
- */
-export const dateFormatter = (date) => {
-  const year = date.getUTCFullYear();
-  const month = date.getUTCMonth();
-  const day = date.getUTCDate();
-
-  return `${year}-${`0${month + 1}`.slice(-2)}-${`0${day}`.slice(-2)}`;
-};

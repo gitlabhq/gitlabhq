@@ -161,8 +161,7 @@ module Projects
     end
 
     # Overridden in EE
-    def remove_paid_features
-    end
+    def remove_paid_features; end
 
     def invalidate_personal_projects_counts
       # If the project was moved out of a personal namespace,

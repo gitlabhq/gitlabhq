@@ -11,6 +11,7 @@ import {
   getNodesOrDefault,
   toggleQueryPollingByVisibility,
   etagQueryHeaders,
+  calculateGraphQLPaginationQueryParams,
 } from '~/graphql_shared/utils';
 
 const mockType = 'Group';
@@ -189,6 +190,32 @@ describe('etagQueryHeaders', () => {
         'X-GITLAB-GRAPHQL-RESOURCE-ETAG': 'myResource',
         'X-Requested-With': 'XMLHttpRequest',
       },
+    });
+  });
+});
+
+describe('calculateGraphQLPaginationQueryParams', () => {
+  const mockRouteQuery = { start_cursor: 'mockStartCursor', end_cursor: 'mockEndCursor' };
+
+  describe('when `startCursor` is defined', () => {
+    it('sets start cursor query param', () => {
+      expect(
+        calculateGraphQLPaginationQueryParams({
+          startCursor: 'newMockStartCursor',
+          routeQuery: mockRouteQuery,
+        }),
+      ).toEqual({ start_cursor: 'newMockStartCursor' });
+    });
+  });
+
+  describe('when `endCursor` is defined', () => {
+    it('sets end cursor query param', () => {
+      expect(
+        calculateGraphQLPaginationQueryParams({
+          endCursor: 'newMockEndCursor',
+          routeQuery: mockRouteQuery,
+        }),
+      ).toEqual({ end_cursor: 'newMockEndCursor' });
     });
   });
 });

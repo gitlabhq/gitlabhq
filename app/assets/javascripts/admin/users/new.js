@@ -1,3 +1,9 @@
+import Vue from 'vue';
+import VueApollo from 'vue-apollo';
+import createDefaultClient from '~/lib/graphql';
+import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import NewUserOrganizationField from './components/new_user_organization_field.vue';
+
 const DATA_ATTR_REGEX_PATTERN = 'data-user-internal-regex-pattern';
 const DATA_ATTR_REGEX_OPTIONS = 'data-user-internal-regex-options';
 export const ID_USER_EXTERNAL = 'user_external';
@@ -52,4 +58,36 @@ export const setupInternalUserRegexHandler = () => {
   };
 
   setupListeners();
+};
+
+export const initAdminUserOrganizationField = () => {
+  Vue.use(VueApollo);
+
+  const el = document.getElementById('js-admin-user-organization-field');
+
+  if (!el) return false;
+
+  const {
+    dataset: { appData },
+  } = el;
+
+  const { hasMultipleOrganizations, initialOrganization } = convertObjectPropsToCamelCase(
+    JSON.parse(appData),
+    { deep: true },
+  );
+
+  const apolloProvider = new VueApollo({
+    defaultClient: createDefaultClient(),
+  });
+
+  return new Vue({
+    el,
+    name: 'AdminUserOrganizationFieldRoot',
+    apolloProvider,
+    render(createElement) {
+      return createElement(NewUserOrganizationField, {
+        props: { hasMultipleOrganizations, initialOrganization },
+      });
+    },
+  });
 };

@@ -190,8 +190,7 @@ module Groups
     end
 
     # Overridden in EE
-    def remove_paid_features_for_projects(old_root_ancestor_id)
-    end
+    def remove_paid_features_for_projects(old_root_ancestor_id); end
 
     # rubocop: disable CodeReuse/ActiveRecord
     def update_children_and_projects_visibility
@@ -221,8 +220,7 @@ module Groups
     end
 
     # Overridden in EE
-    def update_project_settings(updated_project_ids)
-    end
+    def update_project_settings(updated_project_ids); end
 
     def update_two_factor_authentication
       return if namespace_parent_allows_two_factor_auth

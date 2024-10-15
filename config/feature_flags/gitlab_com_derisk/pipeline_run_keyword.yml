@@ -1,9 +1,0 @@
----
-name: pipeline_run_keyword
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/440487
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146333
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/471925
-milestone: '17.2'
-group: group::pipeline authoring
-type: gitlab_com_derisk
-default_enabled: false

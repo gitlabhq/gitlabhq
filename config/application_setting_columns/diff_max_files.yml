@@ -1,0 +1,12 @@
+---
+api_type: integer
+attr: diff_max_files
+clusterwide: true
+column: diff_max_files
+db_type: integer
+default: '1000'
+description: Maximum [files in a diff](../administration/diff_limits.md).
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: true

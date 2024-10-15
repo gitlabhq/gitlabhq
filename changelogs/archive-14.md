@@ -1684,7 +1684,7 @@
 - [Use StrongParameters for ExtractsRef](gitlab-org/gitlab@32683c2db708bee85276c90dd977d3502e486a5e) ([merge request](gitlab-org/gitlab!79997))
 - [Remove label hover state css override in right sidebars](gitlab-org/gitlab@9aeb49557fe36b303083ad1fe57510e91b714c3e) ([merge request](gitlab-org/gitlab!80211))
 - [Change minutes field to shared_runners_duration](gitlab-org/gitlab@ee407a3d340b0e3ef261af6101a001d2fe041da6) ([merge request](gitlab-org/gitlab!80197)) **GitLab Enterprise Edition**
-- [Don't record the exception when the repostory already exists](gitlab-org/gitlab@2219fe6d68c3508e2056409d36518332bdbf43f5) ([merge request](gitlab-org/gitlab!80090))
+- [Don't record the exception when the repository already exists](gitlab-org/gitlab@2219fe6d68c3508e2056409d36518332bdbf43f5) ([merge request](gitlab-org/gitlab!80090))
 - [Allow sorting epics by created & updated dates](gitlab-org/gitlab@8ba1fafb9d6bdd69d41f5869e6176f594a767270) ([merge request](gitlab-org/gitlab!80173)) **GitLab Enterprise Edition**
 - [Use StrongParameters for ProjectsController](gitlab-org/gitlab@06c8a4e53594067570413c4a63ddb4597d295113) ([merge request](gitlab-org/gitlab!79956))
 - [Reject reply by email to notification if the from email is not verified](gitlab-org/gitlab@6c33182ce0898ce0d29207c83623d1f6617c2b48) ([merge request](gitlab-org/gitlab!79932))

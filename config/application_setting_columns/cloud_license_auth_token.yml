@@ -1,0 +1,12 @@
+---
+api_type:
+attr: cloud_license_auth_token
+clusterwide: false
+column: encrypted_cloud_license_auth_token
+db_type: text
+default:
+description:
+encrypted: true
+gitlab_com_different_than_default: false
+jihu: false
+not_null: false

@@ -1,0 +1,29 @@
+{
+  "schema": "iglu:com.snowplowanalytics.snowplow/payload_data/jsonschema/1-0-4",
+  "data": [
+    {
+      "e": "pv",
+      "url": "http://gdk.test:3000/flightjs/Flight/-/blame/master/ADOPTERS.md",
+      "page": "GitLab",
+      "refr": "http://gdk.test:3000/flightjs/Flight/-/blob/master/ADOPTERS.md",
+      "eid": "3260bdb2-0c11-4f0b-a98f-1c34fe42a929",
+      "tv": "js-3.24.2",
+      "tna": "gl",
+      "p": "web",
+      "cookie": "1",
+      "cs": "UTF-8",
+      "lang": "en-US",
+      "res": "1512x982",
+      "cd": "30",
+      "tz": "America/New_York",
+      "dtm": "1727474223286",
+      "cx": "eyJzY2hlbWEiOiJpZ2x1OmNvbS5zbm93cGxvd2FuYWx5dGljcy5zbm93cGxvdy9jb250ZXh0cy9qc29uc2NoZW1hLzEtMC0wIiwiZGF0YSI6W3sic2NoZW1hIjoiaWdsdTpjb20uZ2l0bGFiL2dpdGxhYl9zdGFuZGFyZC9qc29uc2NoZW1hLzEtMS0xIiwiZGF0YSI6eyJlbnZpcm9ubWVudCI6ImRldmVsb3BtZW50Iiwic291cmNlIjoiZ2l0bGFiLWphdmFzY3JpcHQiLCJjb3JyZWxhdGlvbl9pZCI6IjAxSjhUUVNFSENHMUVXQ0ZTUDVUS0tZTlBZIiwicGxhbiI6ImRlZmF1bHQiLCJleHRyYSI6e30sInVzZXJfaWQiOjEsImlzX2dpdGxhYl90ZWFtX21lbWJlciI6bnVsbCwibmFtZXNwYWNlX2lkIjozMSwicHJvamVjdF9pZCI6NiwiZmVhdHVyZV9lbmFibGVkX2J5X25hbWVzcGFjZV9pZHMiOm51bGwsInJlYWxtIjoic2VsZi1tYW5hZ2VkIiwiaW5zdGFuY2VfaWQiOiJjMGI5YmJiMS1mZGY4LTQyYTEtYWYyNS0wNDM3MTFhZjBjNmIiLCJob3N0X25hbWUiOiJtYWNib29rLXByby5sYW4iLCJpbnN0YW5jZV92ZXJzaW9uIjoiMTcuNS4wIiwiY29udGV4dF9nZW5lcmF0ZWRfYXQiOiIyMDI0LTA5LTI3VDIxOjU3OjAwLjEzMVoiLCJnb29nbGVfYW5hbHl0aWNzX2lkIjoiIn19LHsic2NoZW1hIjoiaWdsdTpjb20uc25vd3Bsb3dhbmFseXRpY3Muc25vd3Bsb3cvd2ViX3BhZ2UvanNvbnNjaGVtYS8xLTAtMCIsImRhdGEiOnsiaWQiOiJkMDNkOTViZS1iYzc0LTQzOGUtYmQ3Yy0zOWRmNjYyNDkxNTUifX0seyJzY2hlbWEiOiJpZ2x1OmNvbS5nb29nbGUuYW5hbHl0aWNzL2Nvb2tpZXMvanNvbnNjaGVtYS8xLTAtMCIsImRhdGEiOnt9fSx7InNjaGVtYSI6ImlnbHU6b3JnLnczL1BlcmZvcm1hbmNlVGltaW5nL2pzb25zY2hlbWEvMS0wLTAiLCJkYXRhIjp7Im5hdmlnYXRpb25TdGFydCI6MTcyNzQ3NDIxOTU1OCwicmVkaXJlY3RTdGFydCI6MCwicmVkaXJlY3RFbmQiOjAsImZldGNoU3RhcnQiOjE3Mjc0NzQyMTk1NjEsImRvbWFpbkxvb2t1cFN0YXJ0IjoxNzI3NDc0MjE5NTYxLCJkb21haW5Mb29rdXBFbmQiOjE3Mjc0NzQyMTk1NjEsImNvbm5lY3RTdGFydCI6MTcyNzQ3NDIxOTU2MSwic2VjdXJlQ29ubmVjdGlvblN0YXJ0IjowLCJjb25uZWN0RW5kIjoxNzI3NDc0MjE5NTYxLCJyZXF1ZXN0U3RhcnQiOjE3Mjc0NzQyMTk1NjIsInJlc3BvbnNlU3RhcnQiOjE3Mjc0NzQyMjAzODksInJlc3BvbnNlRW5kIjoxNzI3NDc0MjIwMzk5LCJ1bmxvYWRFdmVudFN0YXJ0IjowLCJ1bmxvYWRFdmVudEVuZCI6MCwiZG9tTG9hZGluZyI6MTcyNzQ3NDIyMDM5MiwiZG9tSW50ZXJhY3RpdmUiOjE3Mjc0NzQyMjA1MTMsImRvbUNvbnRlbnRMb2FkZWRFdmVudFN0YXJ0IjoxNzI3NDc0MjIxODQyLCJkb21Db250ZW50TG9hZGVkRXZlbnRFbmQiOjE3Mjc0NzQyMjE4NDIsImRvbUNvbXBsZXRlIjoxNzI3NDc0MjIxOTU1LCJsb2FkRXZlbnRTdGFydCI6MTcyNzQ3NDIyMTk1NiwibG9hZEV2ZW50RW5kIjoxNzI3NDc0MjIxOTU2fX1dfQ",
+      "vp": "1512x823",
+      "ds": "1512x1109",
+      "vid": "1",
+      "sid": "5e0e58c0-90e3-4f4a-ae3e-ec67bb5c3f17",
+      "duid": "08e09788-377e-4eff-9d13-0ba6e89b316c",
+      "stm": "1727474223288"
+    }
+  ]
+}

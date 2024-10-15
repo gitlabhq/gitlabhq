@@ -4,7 +4,7 @@
   = f.gitlab_ui_checkbox_component :lfs_enabled, checkbox_options: { checked: @group.lfs_enabled? } do |c|
     - c.with_label do
       = _('Projects in this group can use Git LFS')
-      = link_to sprite_icon('question-o'), help_page_path('topics/git/lfs/index'), class: 'gl-ml-2'
+      = link_to sprite_icon('question-o'), help_page_path('topics/git/lfs/index.md'), class: 'gl-ml-2'
     - c.with_help_text do
       = _('This setting can be overridden in each project.')
 .form-group.gl-form-group{ role: 'group' }
@@ -20,7 +20,7 @@
   %legend.col-form-label.col-form-label
     = _('Two-factor authentication')
   - label = _("All users in this group must set up two-factor authentication")
-  - help_link = link_to sprite_icon('question-o'), help_page_path('security/two_factor_authentication', anchor: 'enforce-2fa-for-all-users-in-a-group'), class: 'gl-ml-2'
+  - help_link = link_to sprite_icon('question-o'), help_page_path('security/two_factor_authentication.md', anchor: 'enforce-2fa-for-all-users-in-a-group'), class: 'gl-ml-2'
   = f.gitlab_ui_checkbox_component :require_two_factor_authentication, '%{label}%{help_link}'.html_safe % { label: label, help_link: help_link }
 
 .form-group.gl-form-group{ role: 'group' }

@@ -1,0 +1,12 @@
+---
+api_type:
+attr: metrics_port
+clusterwide: true
+column: metrics_port
+db_type: integer
+default: '8089'
+description:
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

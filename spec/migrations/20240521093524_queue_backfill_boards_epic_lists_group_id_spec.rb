@@ -3,7 +3,8 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe QueueBackfillBoardsEpicListsGroupId, feature_category: :portfolio_management do
+RSpec.describe QueueBackfillBoardsEpicListsGroupId, migration: :gitlab_main_cell,
+  feature_category: :portfolio_management do
   let!(:batched_migration) { described_class::MIGRATION }
 
   it 'schedules a new batched migration' do

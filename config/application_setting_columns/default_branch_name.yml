@@ -1,0 +1,12 @@
+---
+api_type: string
+attr: default_branch_name
+clusterwide: false
+column: default_branch_name
+db_type: text
+default:
+description: "[Instance-level custom initial branch name](../user/project/repository/branches/default.md#instance-level-custom-initial-branch-name)."
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

@@ -1,0 +1,13 @@
+---
+api_type: integer
+attr: failed_login_attempts_unlock_period_in_minutes
+clusterwide: false
+column: failed_login_attempts_unlock_period_in_minutes
+db_type: integer
+default:
+description: Time period in minutes after which the user is unlocked when maximum
+  number of failed sign-in attempts reached.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: false

@@ -1,0 +1,21 @@
+---
+description: Tracks when a user has published a NuGet package to the package registry
+action: cli_metadata
+identifiers:
+- project
+- namespace
+- user
+product_group: package_registry
+milestone: '13.5'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41846#note_419970912
+distributions:
+- ce
+tiers:
+- free
+- premium
+- ultimate
+additional_properties:
+  label:
+    description: Always `redis_hll_counters.user_packages.user_packages_total_unique_counts_monthly`
+  property:
+    description: Always `i_package_nuget_user`

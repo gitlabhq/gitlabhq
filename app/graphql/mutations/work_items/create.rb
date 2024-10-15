@@ -47,7 +47,7 @@ module Mutations
         required: false,
         description: 'Full path of the project the work item is associated with.',
         deprecated: {
-          reason: 'Please use namespace_path instead. That will cover for both projects and groups',
+          reason: 'Please use namespacePath instead. That will cover for both projects and groups',
           milestone: '15.10'
         }
       argument :title,

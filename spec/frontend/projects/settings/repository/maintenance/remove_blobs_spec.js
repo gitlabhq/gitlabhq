@@ -32,13 +32,19 @@ describe('Remove blobs', () => {
     return createMockApollo([[removeBlobsMutation, resolverMock]]);
   };
 
-  const createComponent = (mutationResponse = REMOVE_MUTATION_SUCCESS) => {
+  const createComponent = (
+    mutationResponse = REMOVE_MUTATION_SUCCESS,
+    features = { asyncRewriteHistory: true },
+  ) => {
     mutationMock = jest.fn().mockResolvedValue(mutationResponse);
     getContentWrapperHeight.mockReturnValue(TEST_HEADER_HEIGHT);
     wrapper = shallowMountExtended(RemoveBlobs, {
       apolloProvider: createMockApolloProvider(mutationMock),
       provide: {
         projectPath: TEST_PROJECT_PATH,
+        glFeatures: {
+          ...features,
+        },
       },
     });
   };
@@ -166,9 +172,10 @@ describe('Remove blobs', () => {
             await waitForPromises();
 
             expect(createAlert).toHaveBeenCalledWith({
-              message: 'Run housekeeping to remove old versions from repository.',
+              message:
+                'You will receive an email notification when the process is complete. Run housekeeping to remove old versions from repository.',
               primaryButton: { clickHandler: expect.any(Function), text: 'Go to housekeeping' },
-              title: 'Blobs removed',
+              title: 'Blobs removal is scheduled.',
               variant: VARIANT_WARNING,
             });
           });
@@ -194,6 +201,21 @@ describe('Remove blobs', () => {
             });
           });
         });
+      });
+    });
+  });
+
+  describe('when async_rewrite_history is off', () => {
+    it('generates a housekeeping alert', async () => {
+      createComponent(REMOVE_MUTATION_SUCCESS, { features: { asyncRewriteHistory: false } });
+      findModal().vm.$emit('primary');
+      await waitForPromises();
+
+      expect(createAlert).toHaveBeenCalledWith({
+        message: 'Run housekeeping to remove old versions from repository.',
+        primaryButton: { clickHandler: expect.any(Function), text: 'Go to housekeeping' },
+        title: 'Blobs removed',
+        variant: VARIANT_WARNING,
       });
     });
   });

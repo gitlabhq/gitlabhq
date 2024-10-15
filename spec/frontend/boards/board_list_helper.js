@@ -15,6 +15,7 @@ export default function createComponent({
   componentProps = {},
   listProps = {},
   apolloQueryHandlers = [],
+  apolloResolvers = {},
   provide = {},
   data = {},
   stubs = {
@@ -22,14 +23,18 @@ export default function createComponent({
     BoardNewItem,
     BoardCard,
   },
+  mountOptions = {},
   issuesCount,
 } = {}) {
   Vue.use(VueApollo);
 
-  const fakeApollo = createMockApollo([
-    [listQuery, jest.fn().mockResolvedValue(boardListQueryResponse({ issuesCount }))],
-    ...apolloQueryHandlers,
-  ]);
+  const fakeApollo = createMockApollo(
+    [
+      [listQuery, jest.fn().mockResolvedValue(boardListQueryResponse({ issuesCount }))],
+      ...apolloQueryHandlers,
+    ],
+    apolloResolvers,
+  );
 
   const list = {
     ...mockList,
@@ -67,6 +72,7 @@ export default function createComponent({
       ...provide,
     },
     stubs,
+    ...mountOptions,
     data() {
       return {
         ...data,

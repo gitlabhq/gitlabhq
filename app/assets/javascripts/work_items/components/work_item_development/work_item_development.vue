@@ -85,6 +85,9 @@ export default {
     linkedMergeRequests() {
       return this.workItemDevelopment?.closingMergeRequests?.nodes || [];
     },
+    featureFlags() {
+      return this.workItemDevelopment?.featureFlags?.nodes || [];
+    },
     shouldShowEmptyState() {
       return this.isRelatedDevelopmentListEmpty ? this.workItemsAlphaEnabled : true;
     },
@@ -92,7 +95,7 @@ export default {
       return this.workItemDevelopment && this.shouldShowEmptyState;
     },
     isRelatedDevelopmentListEmpty() {
-      return !this.error && this.linkedMergeRequests.length === 0;
+      return !this.error && this.linkedMergeRequests.length === 0 && this.featureFlags.length === 0;
     },
     showAutoCloseInformation() {
       return (
@@ -171,7 +174,11 @@ export default {
         :aria-label="__('Add branch or merge request')"
       />
     </div>
-    <template v-if="isRelatedDevelopmentListEmpty">
+    <work-item-development-relationship-list
+      v-if="!isRelatedDevelopmentListEmpty"
+      :work-item-dev-widget="workItemDevelopment"
+    />
+    <template v-else>
       <span v-if="!canUpdate" class="gl-text-secondary">{{ __('None') }}</span>
       <template v-else>
         <gl-button category="secondary" size="small" data-testid="create-mr-button">{{
@@ -182,6 +189,5 @@ export default {
         }}</gl-button>
       </template>
     </template>
-    <work-item-development-relationship-list v-else :work-item-dev-widget="workItemDevelopment" />
   </div>
 </template>

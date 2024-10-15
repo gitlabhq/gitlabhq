@@ -1,7 +1,7 @@
 .nothing-here-block {
   text-align: center;
   padding: 16px;
-  color: $gl-text-color;
+  @apply gl-text-default;
   font-weight: $gl-font-weight-normal;
   font-size: 14px;
 
@@ -22,12 +22,12 @@
 
 .row-content-block {
   margin-top: 0;
-  background-color: $gray-10;
+  @apply gl-bg-subtle;
   padding: $gl-padding;
   margin-bottom: 0;
-  border-top: 1px solid $border-color;
-  border-bottom: 1px solid $border-color;
-  color: $gl-text-color;
+  @apply gl-border-t;
+  @apply gl-border-b;
+  @apply gl-text-default;
 
   &.top-block {
     border-top: 0;
@@ -53,11 +53,11 @@
   }
 
   &.content-component-block {
-    background-color: $body-bg;
+    @apply gl-bg-default;
   }
 
   .title {
-    color: $gl-text-color;
+    @apply gl-text-heading;
   }
 
   > p:last-child {
@@ -67,7 +67,7 @@
 
 .content-block {
   padding: $gl-padding 0;
-  border-bottom: 1px solid $border-color;
+  @apply gl-border-b;
 
   > .controls {
     float: right;
@@ -97,12 +97,12 @@
     white-space: nowrap;
 
     h4 {
-      color: $gl-text-color;
+      @apply gl-text-heading;
       font-size: 17px;
     }
 
     p {
-      color: $gl-text-color;
+      @apply gl-text-default;
       margin-bottom: $gl-padding;
     }
   }

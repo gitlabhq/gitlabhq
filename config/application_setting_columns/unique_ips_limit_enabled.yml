@@ -1,0 +1,13 @@
+---
+api_type: boolean
+attr: unique_ips_limit_enabled
+clusterwide: false
+column: unique_ips_limit_enabled
+db_type: boolean
+default: 'false'
+description: "(**If enabled, requires:** `unique_ips_limit_per_user` and `unique_ips_limit_time_window`)
+  Limit sign in from multiple IPs."
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

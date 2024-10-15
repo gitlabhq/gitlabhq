@@ -106,7 +106,7 @@ RSpec.describe Gitlab::Database::Partitioning::IntRangeStrategy, feature_categor
           model.create!(external_id: 15)
         end
 
-        it 'returns missing partitions' do
+        it 'returns missing partitions', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/444872' do
           expect(missing_partitions.size).to eq(7)
 
           expect(missing_partitions).to include(

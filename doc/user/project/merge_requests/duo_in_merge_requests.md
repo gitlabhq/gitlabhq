@@ -16,7 +16,7 @@ GitLab Duo is designed to provide contextually relevant information during the l
 ## Generate a description by summarizing code changes
 
 DETAILS:
-**Tier:** For a limited time, Ultimate. In the future, Ultimate with [GitLab Duo Enterprise](../../../subscriptions/subscription-add-ons.md).
+**Tier:** For a limited time, Ultimate. On October 17, 2024, Ultimate with [GitLab Duo Enterprise](https://about.gitlab.com/gitlab-duo/#pricing).
 **Offering:** GitLab.com
 **Status:** Beta
 
@@ -41,7 +41,7 @@ Provide feedback on this feature in [issue 443236](https://gitlab.com/gitlab-org
 ## Summarize a code review
 
 DETAILS:
-**Tier:** For a limited time, Ultimate. In the future, Ultimate with [GitLab Duo Enterprise](../../../subscriptions/subscription-add-ons.md).
+**Tier:** For a limited time, Ultimate. On October 17, 2024, Ultimate with [GitLab Duo Enterprise](https://about.gitlab.com/gitlab-duo/#pricing).
 **Offering:** GitLab.com
 **Status:** Experiment
 
@@ -65,7 +65,7 @@ Provide feedback on this experimental feature in [issue 408991](https://gitlab.c
 ## Generate a merge commit message
 
 DETAILS:
-**Tier: GitLab.com and Self-managed:** For a limited time, Ultimate. In the future, Ultimate with [GitLab Duo Enterprise](../../../subscriptions/subscription-add-ons.md). **GitLab Dedicated:** GitLab Duo Enterprise.
+**Tier: GitLab.com and Self-managed:** For a limited time, Ultimate. On October 17, 2024, Ultimate with [GitLab Duo Enterprise](https://about.gitlab.com/gitlab-duo/#pricing). **GitLab Dedicated:** GitLab Duo Enterprise.
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10453) in GitLab 16.2 as an [experiment](../../../policy/experiment-beta-support.md#experiment) [with a flag](../../../administration/feature_flags.md) named `generate_commit_message_flag`. Disabled by default.
@@ -84,6 +84,30 @@ To generate a commit message with GitLab Duo:
 1. Select the **Edit commit message** checkbox on the merge widget.
 1. Select **Generate commit message**.
 1. Review the commit message provide and choose **Insert** to add it to the commit.
+
+**Data usage**: When you use this feature, the following data is sent to the large language model referenced above:
+
+- Contents of the file
+- The filename
+
+## GitLab Duo code review
+
+DETAILS:
+**Tier: GitLab.com:** For a limited time, Ultimate. On October 17, 2024, Ultimate with [GitLab Duo Enterprise](https://about.gitlab.com/gitlab-duo/#pricing). **GitLab Dedicated:** GitLab Duo Enterprise.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14825) in GitLab 17.5 as an [experiment](../../../policy/experiment-beta-support.md#experiment).
+> - Feature flag `ai_review_merge_request` [disabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/456106).
+
+FLAG:
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+When your merge request is ready to be reviewed, you can choose to have GitLab Duo Code Review perform an initial review.
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Code > Merge requests** and find your merge request.
+1. In a comment box type the quick action `/duo_code_review`.
 
 **Data usage**: When you use this feature, the following data is sent to the large language model referenced above:
 

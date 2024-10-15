@@ -1,0 +1,12 @@
+---
+api_type:
+attr: rate_limits_unauthenticated_git_http
+clusterwide: true
+column: rate_limits_unauthenticated_git_http
+db_type: jsonb
+default: "'{}'::jsonb"
+description:
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: true

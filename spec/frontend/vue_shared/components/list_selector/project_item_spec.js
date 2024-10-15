@@ -1,5 +1,5 @@
-import { GlAvatar } from '@gitlab/ui';
-import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { GlAvatar, GlButton } from '@gitlab/ui';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ProjectItem from '~/vue_shared/components/list_selector/project_item.vue';
 
 describe('GroupItem spec', () => {
@@ -13,7 +13,7 @@ describe('GroupItem spec', () => {
   };
 
   const createComponent = (props) => {
-    wrapper = mountExtended(ProjectItem, {
+    wrapper = shallowMountExtended(ProjectItem, {
       propsData: {
         data: MOCK_PROJECT,
         ...props,
@@ -22,7 +22,7 @@ describe('GroupItem spec', () => {
   };
 
   const findAvatar = () => wrapper.findComponent(GlAvatar);
-  const findDeleteButton = () => wrapper.findByRole('button', { fullName: 'Delete Group 1' });
+  const findDeleteButton = () => wrapper.findComponent(GlButton);
 
   beforeEach(() => createComponent());
 
@@ -51,7 +51,7 @@ describe('GroupItem spec', () => {
     });
 
     it('emits a delete event if the delete button is clicked', () => {
-      findDeleteButton().trigger('click');
+      findDeleteButton().vm.$emit('click');
 
       expect(wrapper.emitted('delete')).toEqual([[MOCK_PROJECT.id]]);
     });

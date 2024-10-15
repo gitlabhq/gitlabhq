@@ -72,6 +72,15 @@ module GraphqlTriggers
 
     ::GitlabSchema.subscriptions.trigger('workItemUpdated', { work_item_id: work_item.to_gid }, work_item)
   end
+
+  def self.issuable_todo_updated(issuable, user)
+    return if ::Feature.disabled?(:realtime_issuable_todo, user)
+    return unless issuable.respond_to?(:to_gid)
+
+    ::GitlabSchema.subscriptions.trigger(
+      :issuable_todo_updated, { issuable_id: issuable.to_gid }, issuable
+    )
+  end
 end
 
 GraphqlTriggers.prepend_mod

@@ -46,7 +46,7 @@ RSpec.describe Repositories::GitHttpController, feature_category: :source_code_m
           .to publish_event(Users::ActivityEvent)
           .with({
             user_id: user.id,
-            namespace_id: project.namespace_id
+            namespace_id: project.root_ancestor.id
           })
       else
         expect { get :info_refs, params: params }

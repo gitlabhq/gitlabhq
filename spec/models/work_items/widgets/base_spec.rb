@@ -30,4 +30,14 @@ RSpec.describe WorkItems::Widgets::Base do
 
     it { is_expected.to eq({ label_ids: [1, 2] }) }
   end
+
+  describe 'non-existent callback class' do
+    it "returns nil" do
+      allow(::WorkItems::DataSync::Widgets).to receive(:const_get).with(
+        "Assignees", false
+      ).and_raise(NameError)
+
+      expect(WorkItems::Widgets::Assignees.new(work_item).sync_data_callback_class).to be_nil
+    end
+  end
 end

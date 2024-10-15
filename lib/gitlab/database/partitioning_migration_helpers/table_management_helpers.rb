@@ -127,6 +127,73 @@ module Gitlab
           end
         end
 
+        # Creates a partitioned copy of an existing table, using a LIST partitioning strategy on a int/bigint column.
+        # One partition is created per column_name value. Also installs a trigger on the original table to copy writes
+        # into the partitioned table.
+        # To copy over historic data from before creation of the partitioned table, use the
+        # `enqueue_partitioning_data_migration` helper in a post-deploy migration.
+        #
+        # A copy of the original table is required as PG currently does not support partitioning existing tables.
+        #
+        # Example:
+        #
+        #   partition_table_by_list :ci_runners, :runner_type, primary_key: ['id', 'runner_type'],
+        #     partition_mappings: { instance_type: 1, group_type: 2, project_type: 3 },
+        #     partition_name_format: "%{partition_name}_%{table_name}",
+        #     create_partitioned_table_fn: ->(name) { create_custom_partitioned_table(name) }
+        #
+        # Options are:
+        #   :primary_key - a array specifying the primary query of the new table
+        #   :partition_name_format - the format to be used when naming partitions.
+        #     The %{table_name} and %{partition_name} variables are made available.
+        #     If not specified, a default is generated
+        #   :partition_mappings - a hash specifying the mappings between partition name and respective column value(s)
+        #   :create_partitioned_table_fn - a lambda allowing a custom function to create the partitioned table
+        #     If not specified, the partitioned table will be created with the same schema as the non-partitioned table
+        #
+        def partition_table_by_list(
+          table_name, column_name,
+          primary_key:, partition_mappings: nil, partition_name_format: nil, create_partitioned_table_fn: nil
+        )
+          Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas.require_ddl_mode!
+
+          assert_table_is_allowed(table_name)
+
+          assert_not_in_transaction_block(scope: ERROR_SCOPE)
+
+          current_primary_key = Array.wrap(connection.primary_key(table_name))
+          raise "primary key not defined for #{table_name}" if current_primary_key.blank?
+
+          partition_column = find_column_definition(table_name, column_name)
+          raise "partition column #{column_name} does not exist on #{table_name}" if partition_column.nil?
+
+          primary_key = Array.wrap(primary_key).map(&:to_s)
+          raise "the partition column must be part of the primary key" unless primary_key.include?(column_name.to_s)
+
+          primary_key_objects = connection.columns(table_name).select { |column| primary_key.include?(column.name) }
+
+          if partition_mappings.nil?
+            distinct_partitions = Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas.with_suppressed do
+              Gitlab::Database::QueryAnalyzers::GitlabSchemasValidateConnection.with_suppressed do
+                define_batchable_model(table_name, connection: connection).distinct(column_name).pluck(column_name)
+              end
+            end
+
+            partition_mappings = distinct_partitions.to_h { |partition_id| [partition_id, partition_id] }
+          end
+
+          raise 'partition_mappings must contain more than one partition' unless partition_mappings.count > 1
+
+          partitioned_table_name = make_partitioned_table_name(table_name)
+
+          with_lock_retries do
+            create_list_partitioned_copy(
+              table_name, partitioned_table_name, partition_column, primary_key_objects, create_partitioned_table_fn)
+            create_list_partitions(partitioned_table_name, partition_mappings, partition_name_format)
+            create_trigger_to_sync_tables(table_name, partitioned_table_name, current_primary_key)
+          end
+        end
+
         # Clean up a partitioned copy of an existing table. First, deletes the database function and trigger that were
         # used to copy writes to the partitioned table, then removes the partitioned table (also removing partitions).
         #
@@ -305,7 +372,7 @@ module Gitlab
           function_name = make_sync_function_name(source_table_name)
           trigger_name = make_sync_trigger_name(source_table_name)
 
-          create_sync_function(function_name, partitioned_table_name, unique_key)
+          create_sync_function(function_name, source_table_name, partitioned_table_name, unique_key)
           create_comment('FUNCTION', function_name, "Partitioning migration: table sync for #{source_table_name} table")
 
           create_sync_trigger(source_table_name, trigger_name, function_name)
@@ -388,12 +455,18 @@ module Gitlab
           connection.columns(table).find { |c| c.name == column.to_s }
         end
 
-        def create_range_id_partitioned_copy(source_table_name, partitioned_table_name, partition_column, primary_keys)
+        def create_partitioned_copy(
+          source_table_name, partitioning_type, partitioned_table_name, partition_column, primary_keys,
+          create_partitioned_table_fn = nil
+        )
+
           if table_exists?(partitioned_table_name)
             Gitlab::AppLogger.warn "Partitioned table not created because it already exists " \
               "(this may be due to an aborted migration or similar): table_name: #{partitioned_table_name} "
             return
           end
+
+          return create_partitioned_table_fn.call(partitioned_table_name) if create_partitioned_table_fn.is_a?(Proc)
 
           tmp_partitioning_column_name = "#{partition_column.name}_tmp"
 
@@ -406,7 +479,7 @@ module Gitlab
                 LIKE #{source_table_name} INCLUDING ALL EXCLUDING INDEXES,
                  #{temporary_columns_statement},
                 PRIMARY KEY (#{temporary_columns})
-              ) PARTITION BY RANGE (#{tmp_partitioning_column_name})
+              ) PARTITION #{partitioning_type} (#{tmp_partitioning_column_name})
             SQL
 
             primary_keys.each do |key|
@@ -414,6 +487,19 @@ module Gitlab
               rename_column(partitioned_table_name, "#{key.name}_tmp", key.name)
             end
           end
+        end
+
+        def create_list_partitioned_copy(
+          source_table_name, partitioned_table_name, partition_column, primary_keys, create_partitioned_table_fn = nil
+        )
+          create_partitioned_copy(
+            source_table_name, 'BY LIST', partitioned_table_name, partition_column, primary_keys,
+            create_partitioned_table_fn
+          )
+        end
+
+        def create_range_id_partitioned_copy(source_table_name, partitioned_table_name, partition_column, primary_keys)
+          create_partitioned_copy(source_table_name, 'BY RANGE', partitioned_table_name, partition_column, primary_keys)
         end
 
         def create_range_partitioned_copy(source_table_name, partitioned_table_name, partition_column, primary_key)
@@ -466,6 +552,15 @@ module Gitlab
           end
         end
 
+        def create_list_partitions(table_name, partition_mappings, partition_name_format = nil)
+          partition_name_format ||= "%{table_name}_%{partition_name}"
+
+          partition_mappings.each_pair do |partition_name, partition_values|
+            partition_name = format(partition_name_format, table_name: table_name, partition_name: partition_name)
+            create_list_partition_safely(partition_name, table_name, partition_values)
+          end
+        end
+
         def create_int_range_partitions(table_name, partition_size, min_id, max_id)
           lower_bound = min_id
           upper_bound = min_id + partition_size
@@ -494,6 +589,16 @@ module Gitlab
           create_range_partition(partition_name, table_name, lower_bound, upper_bound)
         end
 
+        def create_list_partition_safely(partition_name, table_name, partition_values)
+          if table_exists?(table_for_list_partition(partition_name))
+            Gitlab::AppLogger.warn "Partition not created because it already exists " \
+              "(this may be due to an aborted migration or similar): partition_name: #{partition_name}"
+            return
+          end
+
+          create_list_partition(partition_name, table_name, partition_values)
+        end
+
         def drop_sync_trigger(source_table_name)
           trigger_name = make_sync_trigger_name(source_table_name)
           drop_trigger(source_table_name, trigger_name)
@@ -502,14 +607,14 @@ module Gitlab
           drop_function(function_name)
         end
 
-        def create_sync_function(name, partitioned_table_name, unique_key)
+        def create_sync_function(name, source_table_name, partitioned_table_name, unique_key)
           if function_exists?(name)
             Gitlab::AppLogger.warn "Partitioning sync function not created because it already exists " \
               "(this may be due to an aborted migration or similar): function name: #{name}"
             return
           end
 
-          unique_key = Array.wrap(unique_key)
+          unique_key = Array.wrap(unique_key).map(&:to_s)
 
           delimiter = ",\n    "
           column_names = connection.columns(partitioned_table_name).map(&:name)

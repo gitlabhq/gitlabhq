@@ -202,27 +202,31 @@ export default {
       return !discussionItem.resolved || isHashTargeted(discussionItem);
     };
 
-    const addDiscussion = (discussions) =>
-      discussions.filter(({ id }) => discussion.id !== id).concat(discussion);
-
     const file = state.diffFiles.find((diff) => diff.file_hash === fileHash);
     // a file batch might not be loaded yet when we try to add a discussion
     if (!file) return;
     const diffLines = file[INLINE_DIFF_LINES_KEY];
 
+    const addDiscussion = (discussions) =>
+      discussions.filter(({ id }) => discussion.id !== id).concat(discussion);
+
     if (diffLines.length && positionType !== FILE_DIFF_POSITION_TYPE) {
       const line = diffLines.find(isTargetLine);
       // skip if none of the discussion positions matched a diff position
       if (!line) return;
-      const discussions = addDiscussion(line.discussions || []);
+      const originalDiscussions = line.discussions || [];
+      if (originalDiscussions.includes(discussion)) return;
+      const discussions = addDiscussion(originalDiscussions);
       Object.assign(line, {
         discussions,
         discussionsExpanded: line.discussionsExpanded || discussions.some(isExpandedDiscussion),
       });
     } else {
+      const originalDiscussions = file.discussions || [];
+      if (originalDiscussions.includes(discussion)) return;
       Object.assign(discussion, { expandedOnDiff: isExpandedDiscussion(discussion) });
       Object.assign(file, {
-        discussions: addDiscussion(file.discussions || []),
+        discussions: addDiscussion(originalDiscussions),
       });
     }
   },

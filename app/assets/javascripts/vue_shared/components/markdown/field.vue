@@ -397,12 +397,13 @@ export default {
       <div class="zen-backdrop">
         <slot name="textarea"></slot>
         <a
-          class="zen-control zen-control-leave js-zen-leave gl-text-gray-500"
+          v-gl-tooltip.placement.left
+          class="zen-control zen-control-leave js-zen-leave gl-button btn-default-tertiary btn-icon btn-sm"
           href="#"
-          :aria-label="__('Leave zen mode')"
-        >
-          <gl-icon :size="16" name="minimize" />
-        </a>
+          :title="__('Exit full screen')"
+          :aria-label="__('Exit full screen')"
+          ><gl-icon variant="subtle" :size="24" name="minimize"
+        /></a>
         <markdown-toolbar
           :markdown-docs-path="markdownDocsPath"
           :can-attach-file="canAttachFile"

@@ -1,0 +1,14 @@
+---
+description: Triggered when automatic closing of incidents is disabled in Incident Management
+action: disabled_auto_close_incident
+identifiers:
+product_group: respond
+milestone: "<13.9"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40379
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

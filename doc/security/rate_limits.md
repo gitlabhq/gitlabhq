@@ -53,6 +53,7 @@ You can set these rate limits in the **Admin** area of your instance:
 - [Incident management rate limits](../administration/settings/incident_management_rate_limits.md)
 - [Projects API rate limits](../administration/settings/rate_limit_on_projects_api.md)
 - [Groups API rate limits](../administration/settings/rate_limit_on_groups_api.md)
+- [Organizations API rate limits](../administration/settings/rate_limit_on_organizations_api.md)
 
 You can set these rate limits using the Rails console:
 

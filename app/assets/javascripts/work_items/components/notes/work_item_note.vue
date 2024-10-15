@@ -6,6 +6,7 @@ import toast from '~/vue_shared/plugins/global_toast';
 import { __ } from '~/locale';
 import Tracking from '~/tracking';
 import { updateDraft, clearDraft } from '~/lib/utils/autosave';
+import { scrollToTargetOnResize } from '~/lib/utils/resize_observer';
 import { renderMarkdown } from '~/notes/utils';
 import { getLocationHash } from '~/lib/utils/url_utility';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -169,6 +170,10 @@ export default {
       return getLocationHash();
     },
     noteUrl() {
+      const routeParamType = this.$route?.params?.type;
+      if (routeParamType && !this.note.url.includes(routeParamType)) {
+        return this.note.url.replace('work_items', routeParamType);
+      }
       return this.note.url;
     },
     hasAwardEmojiPermission() {
@@ -195,6 +200,11 @@ export default {
     discussionResolvedBy() {
       return this.note.discussion.resolvedBy;
     },
+  },
+  mounted() {
+    if (this.isTarget) {
+      scrollToTargetOnResize();
+    }
   },
   apollo: {
     workItem: {
@@ -362,7 +372,7 @@ export default {
             :author="author"
             :created-at="note.createdAt"
             :note-id="note.id"
-            :note-url="note.url"
+            :note-url="noteUrl"
             :is-internal-note="note.internal"
           >
             <span v-if="note.createdAt" class="gl-hidden sm:gl-inline">&middot;</span>

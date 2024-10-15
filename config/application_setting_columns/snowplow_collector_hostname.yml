@@ -1,0 +1,12 @@
+---
+api_type: string
+attr: snowplow_collector_hostname
+clusterwide: false
+column: snowplow_collector_hostname
+db_type: character
+default:
+description: The Snowplow collector hostname. (for example, `snowplow.trx.gitlab.net`)
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

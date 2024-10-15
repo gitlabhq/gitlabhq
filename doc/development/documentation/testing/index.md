@@ -19,7 +19,8 @@ Merge requests containing changes to Markdown (`.md`) files run these CI/CD jobs
   - Miscellaneous tests: [`lint-docs.sh`](#tests-in-lint-docsh), including
     [`mermaidlint`](#mermaid-chart-linting) for invalid Mermaid charts
 - `docs-lint links`: Checks the validity of internal links in the documentation suite.
-- `ui-docs-links lint`: Checks the validity of links from UI elements, such as files in `app/views` files.
+- `ui-docs-links lint` and `eslint-docs`: Checks the validity of links from UI elements, such as files in `app/views`
+  files.
 
 ## Tests in `lint-doc.sh`
 
@@ -98,10 +99,13 @@ It's important to:
   run in CI/CD pipelines. It's important to use same configuration we use in
   CI/CD pipelines, which can be different than the default configuration of the tool.
 
-### Run Vale or markdownlint locally
+### Run Vale, markdownlint, or link checks locally
 
-Installation and configuration instructions for [markdownlint](markdownlint.md)
-and [Vale](vale.md) are available.
+Installation and configuration instructions are available for:
+
+- [markdownlint](markdownlint.md).
+- [Vale](vale.md).
+- [Lychee](links.md) and UI link checkers.
 
 ### Run `lint-doc.sh` locally
 
@@ -139,65 +143,6 @@ The output should be similar to:
 ✔ 0 errors, 0 warnings and 0 suggestions in 1 file.
 ✔ Linting passed
 ```
-
-### Run documentation link tests locally
-
-To run documentation link tests locally, you can either:
-
-- Run a link check for a single project that contains documentation.
-- Run a link check across entire local copy of the [GitLab documentation site](https://docs.gitlab.com).
-
-#### Check a single project
-
-To check the links on a single project:
-
-1. Install [Lychee](https://lychee.cli.rs/installation/).
-1. Change into the root directory of the project.
-1. Run `lychee --offline --include-fragments <doc_directory>` where `<doc_directory>` it the directory that contains
-   documentation to check. For example: `lychee --offline --include-fragments doc`.
-
-#### Check all GitLab Docs site projects
-
-To check links on the entire [GitLab documentation site](https://docs.gitlab.com):
-
-1. Make sure you have all the documentation projects cloned in the same directory as your `gitlab-docs` clone. You can
-   run `make clone-all-docs-projects` to clone any projects you don't have in that location. If you want to update
-   the documentation projects, run `make update-all-projects`.
-1. Go to the [`gitlab-docs`](https://gitlab.com/gitlab-org/gitlab-docs) directory.
-1. Run `make internal-links-and-anchors-check`, which builds the GitLab Docs site with `nanoc` and checks links on the
-   built site by using `nanoc`.
-
-### Run UI link tests locally
-
-To test documentation links in the GitLab UI locally:
-
-1. Open the `gitlab` directory in a terminal window.
-1. Run:
-
-   ```shell
-   bundle exec haml-lint -i DocumentationLinks
-   ```
-
-If you receive an error the first time you run this test, run `bundle install`, which
-installs the dependencies for GitLab, and try again.
-
-If you don't want to install all of the dependencies to test the links, you can:
-
-1. Open the `gitlab` directory in a terminal window.
-1. Install `haml-lint`:
-
-   ```shell
-   gem install haml_lint
-   ```
-
-1. Run:
-
-   ```shell
-   haml-lint -i DocumentationLinks
-   ```
-
-If you manually install `haml-lint` with this process, it does not update automatically
-and you should make sure your version matches the version used by GitLab.
 
 ## Update linter configuration
 
@@ -321,8 +266,8 @@ Some, but not all, linting can be disabled on documentation files:
 
 - [Vale tests can be disabled](vale.md#disable-vale-tests) for all or part of a file.
 - [`markdownlint` tests can be disabled](markdownlint.md#disable-markdownlint-tests) for all or part of a file.
-- [Documentation link tests](#run-documentation-link-tests-locally) cannot be disabled.
-- [UI link tests](#run-ui-link-tests-locally) cannot be disabled.
+- [Documentation link tests](links.md#run-documentation-link-tests-locally) cannot be disabled.
+- [UI link tests](links.md#run-ui-link-tests-locally) cannot be disabled.
 
 ## Tool versions used in CI/CD pipelines
 
@@ -357,14 +302,16 @@ in the relevant projects:
 - <https://gitlab.com/gitlab-org/charts/gitlab/-/blob/master/.gitlab-ci.yml>
 - <https://gitlab.com/gitlab-org/cloud-native/gitlab-operator/-/blob/master/.gitlab-ci.yml>
 
-We also run some documentation tests in the:
+We also run some documentation tests in these projects:
 
-- GitLab CLI project: <https://gitlab.com/gitlab-org/cli/-/blob/main/.gitlab-ci.yml>
-- GitLab Development Kit project:
-  <https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/.gitlab/ci/test.gitlab-ci.yml>.
-- Gitaly project: <https://gitlab.com/gitlab-org/gitaly/-/blob/master/.gitlab-ci.yml>.
+- GitLab CLI: <https://gitlab.com/gitlab-org/cli/-/blob/main/.gitlab-ci.yml>
+- GitLab Development Kit:
+  <https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/.gitlab/ci/test.gitlab-ci.yml>
+- Gitaly: <https://gitlab.com/gitlab-org/gitaly/-/blob/master/.gitlab-ci.yml>
 - GitLab Duo Plugin for JetBrains: <https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin/-/blob/main/.gitlab-ci.yml>
-- GitLab VS Code Extension project: <https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/blob/main/.gitlab-ci.yml>.
-- GitLab Plugin for Neovim project: <https://gitlab.com/gitlab-org/editor-extensions/gitlab.vim/-/blob/main/.gitlab-ci.yml>.
-- GitLab Language Server project: <https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/blob/main/.gitlab-ci.yml>.
-- GitLab Extension for Visual Studio project: <https://gitlab.com/gitlab-org/editor-extensions/gitlab-visual-studio-extension/-/blob/main/.gitlab-ci.yml>.
+- GitLab Workflow extension for VS Code: <https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/blob/main/.gitlab-ci.yml>
+- GitLab Plugin for Neovim: <https://gitlab.com/gitlab-org/editor-extensions/gitlab.vim/-/blob/main/.gitlab-ci.yml>
+- GitLab Language Server: <https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/blob/main/.gitlab-ci.yml>
+- GitLab Extension for Visual Studio: <https://gitlab.com/gitlab-org/editor-extensions/gitlab-visual-studio-extension/-/blob/main/.gitlab-ci.yml>
+- AI Gateway: <https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/.gitlab/ci/lint.gitlab-ci.yml>
+- Prompt Library: <https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library/-/blob/main/.gitlab-ci.yml>

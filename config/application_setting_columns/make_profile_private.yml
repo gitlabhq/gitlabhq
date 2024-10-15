@@ -1,0 +1,12 @@
+---
+api_type:
+attr: make_profile_private
+clusterwide: false
+column: make_profile_private
+db_type: boolean
+default: 'true'
+description:
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

@@ -1,0 +1,12 @@
+---
+api_type:
+attr: users_get_by_id_limit_allowlist
+clusterwide: false
+column: users_get_by_id_limit_allowlist
+db_type: text[]
+default: "'{}'::text[]"
+description:
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: true

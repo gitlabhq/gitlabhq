@@ -26,7 +26,7 @@ module QA
 
   RSpec.describe 'Manage', :orchestrated, :runner, :requires_admin, :smtp, product_group: :import_and_integrate do
     describe 'Pipeline status emails' do
-      let(:executor) { "qa-runner-#{Time.now.to_i}" }
+      let(:executor) { "qa-runner-#{SecureRandom.hex(6)}" }
       let(:emails) { %w[foo@bar.com baz@buzz.com] }
       let(:project) { create(:project, name: 'pipeline-status-project') }
       let!(:runner) { create(:project_runner, project: project, name: executor, tags: [executor]) }
@@ -41,11 +41,13 @@ module QA
         setup_pipeline_emails(emails)
       end
 
-      describe 'when pipeline passes', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/366240' do
+      describe 'when pipeline passes',
+        :blocking, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/366240' do
         include_examples 'notifies on a pipeline', 0
       end
 
-      describe 'when pipeline fails', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/366241' do
+      describe 'when pipeline fails',
+        :blocking, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/366241' do
         include_examples 'notifies on a pipeline', 1
       end
 

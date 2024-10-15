@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Compliance frameworks report
 
 DETAILS:
-**Tier:** Ultimate
+**Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/422973) in GitLab 16.5 [with a flag](../../../administration/feature_flags.md) named `compliance_framework_report_ui`. Disabled by default.

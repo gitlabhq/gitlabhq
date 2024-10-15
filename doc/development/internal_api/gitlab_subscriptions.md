@@ -87,7 +87,7 @@ Parameters:
 
 | Attribute | Type           | Required | Description |
 | --------- | -------------- | -------- | ----------- |
-| `id`      | integer/string | yes      | ID or [URL-encoded path of the namespace](../../api/rest/index.md#namespaced-path-encoding) |
+| `id`      | integer/string | yes      | ID or [URL-encoded path of the namespace](../../api/rest/index.md#namespaced-paths) |
 
 Example request:
 
@@ -132,7 +132,7 @@ Parameters:
 
 | Attribute | Type           | Required | Description |
 | --------- | -------------- | -------- | ----------- |
-| `id`      | integer/string | yes      | ID or [URL-encoded path of the namespace](../../api/rest/index.md#namespaced-path-encoding) |
+| `id`      | integer/string | yes      | ID or [URL-encoded path of the namespace](../../api/rest/index.md#namespaced-paths) |
 | `shared_runners_minutes_limit` | integer | no | Compute minutes quota |
 | `extra_shared_runners_minutes_limit` |  integer | no | Extra compute minutes |
 | `additional_purchased_storage_size` |  integer | no | Additional storage size |
@@ -352,6 +352,76 @@ deprecated and then [removed in a future milestone](https://gitlab.com/gitlab-or
 
 This API is used by CustomersDot to manage add-on purchases, excluding Compute Minutes
 and Storage packs.
+
+#### Create multiple subscription add-on purchases (Internal)
+
+Use a POST command to create, update, and deprovision multiple subscription add-on purchases. Possible add-on types are `duo_pro`, `duo_enterprise`, and `product_analytics`.
+
+```plaintext
+POST /namespaces/:id/subscription_add_on_purchase
+```
+
+Supported attributes:
+
+| Attribute   | Type    | Required | Description |
+|:------------|:--------|:---------|:------------|
+| `quantity` | integer | No | Amount of units in the subscription add-on purchase. Must be a non-negative integer. (Example: Number of seats for Duo Pro add-on)  |
+| `started_on` | date | Yes | Date the subscription add-on purchase became available |
+| `expires_on` | date | Yes | Expiration date of the subscription add-on purchase |
+| `purchase_xid` | string | No | Identifier for the subscription add-on purchase (Example: Subscription name for a Code Suggestions add-on) |
+| `trial` | boolean | No | Whether the add-on is a trial |
+
+If successful, returns [`201`](../../api/rest/troubleshooting.md#status-codes) and the following response attributes:
+
+| Attribute       | Type    | Description |
+|:----------------|:--------|:------------|
+| `namespace_id`  | integer | Unique identifier for the namespace associated with the purchase |
+| `namespace_name`| string  | Name of the namespace linked to the purchase |
+| `add_on`        | integer | Type of add-on related to the purchase. Possible add-on types are `Code Suggestions` alias Duo Pro, `Duo Enterprise` and `Product Analytics`  |
+| `quantity`      | integer | Number of units purchased for the subscription add-on |
+| `started_on`    | date    | Date the subscription add-on became active |
+| `expires_on`    | date    | Date the subscription add-on will expire |
+| `purchase_xid`  | string  | Unique identifier for the subscription add-on purchase |
+| `trial`         | boolean | Indicates whether the add-on is part of a trial |
+
+Example request for create/update:
+
+```shell
+curl --request POST \
+--header --header "X-CUSTOMERS-DOT-INTERNAL-TOKEN: <json-web-token>" \
+--header "Content-Type: application/json" \
+--data '{ "add_on_purchases": { "duo_pro": [{ "quantity": 1, "started_on": "<YYYY-MM-DD>", "expires_on": "<YYYY-MM-DD>", "purchase_xid": "A-S0000001", "trial": false }] } }' \
+"https://gitlab.com/api/v4/internal/gitlab_subscriptions/namespaces/1234/subscription_add_on_purchases"
+```
+
+Example request for deprovision:
+
+```shell
+curl --request POST \
+--header --header "X-CUSTOMERS-DOT-INTERNAL-TOKEN: <json-web-token>" \
+--header "Content-Type: application/json" \
+--data '{ "add_on_purchases": { "duo_pro": [{ "started_on": "<YYYY-MM-DD>", "expires_on": "<YYYY-MM-DD>" }] } }' \
+"https://gitlab.com/api/v4/internal/gitlab_subscriptions/namespaces/1234/subscription_add_on_purchases"
+```
+
+The dates should reflect the day prior to the request, i.e., yesterday.
+
+Example response:
+
+```json
+[
+  {
+    "namespace_id": 1234,
+    "namespace_name": "namespace-name",
+    "add_on": "Code Suggestions",
+    "quantity": 1,
+    "started_on": "2024-01-01",
+    "expires_on": "2024-12-31",
+    "purchase_xid": "A-S0000001",
+    "trial": false
+  }
+]
+```
 
 #### Create a subscription add-on purchase
 

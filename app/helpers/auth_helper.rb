@@ -33,6 +33,20 @@ module AuthHelper
     Gitlab::Auth.omniauth_enabled?
   end
 
+  def enabled_button_based_providers_for_signup
+    if Gitlab.config.omniauth.allow_single_sign_on.is_a?(Array)
+      enabled_button_based_providers & Gitlab.config.omniauth.allow_single_sign_on
+    elsif Gitlab.config.omniauth.allow_single_sign_on
+      enabled_button_based_providers
+    else
+      []
+    end
+  end
+
+  def signup_button_based_providers_enabled?
+    omniauth_enabled? && enabled_button_based_providers_for_signup.any?
+  end
+
   def provider_has_custom_icon?(name)
     icon_for_provider(name.to_s)
   end
@@ -179,11 +193,63 @@ module AuthHelper
 
     if owner.is_a?(Group)
       group_link = link_to(owner.name, group_path(owner))
-      _("%{group_link} added this OAuth application ").html_safe % { group_link: group_link }
+      safe_format(_("%{group_link} added this OAuth application "), group_link: group_link)
     else
       user_link = link_to(owner.name, user_path(owner))
-      _("%{user_link} added this OAuth application ").html_safe % { user_link: user_link }
+      safe_format(_("%{user_link} added this OAuth application "), user_link: user_link)
     end
+  end
+
+  def delete_otp_authenticator_data(password_required)
+    message = if password_required
+                _('Are you sure you want to delete this one-time password authenticator? ' \
+                  'Enter your password to continue.')
+              else
+                _('Are you sure you want to delete this one-time password authenticator?')
+              end
+
+    { button_text: _('Delete one-time password authenticator'),
+      message: message,
+      path: destroy_otp_profile_two_factor_auth_path,
+      password_required: password_required.to_s }
+  end
+
+  def delete_webauthn_device_data(path)
+    { button_text: _('Delete WebAuthn device'),
+      icon: 'remove',
+      message: _('Are you sure you want to delete this WebAuthn device?'),
+      path: path,
+      password_required: 'false' }
+  end
+
+  def disable_two_factor_authentication_data(password_required)
+    message = if password_required
+                _('Are you sure you want to invalidate your one-time password authenticator and WebAuthn devices? ' \
+                  'Enter your password to continue. This action cannot be undone.')
+              else
+                _('Are you sure you want to invalidate your one-time password authenticator and WebAuthn devices?')
+              end
+
+    { button_text: _('Disable two-factor authentication'),
+      message: message,
+      path: profile_two_factor_auth_path,
+      password_required: password_required.to_s }
+  end
+
+  def codes_two_factor_authentication_data(password_required)
+    message = if password_required
+                _('Are you sure you want to regenerate recovery codes? ' \
+                  'Enter your password to continue.')
+              else
+                _('Are you sure you want to regenerate recovery codes?')
+              end
+
+    { button_text: _('Regenerate recovery codes'),
+      message: message,
+      method: 'post',
+      path: codes_profile_two_factor_auth_path,
+      password_required: password_required.to_s,
+      variant: 'default' }
   end
 
   extend self

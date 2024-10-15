@@ -48,7 +48,7 @@ To generate a SAML Response:
    - Go to the GitLab single sign-on URL for the group.
    - Select **Authorize** or attempt to sign
 1. For Self Managed Instance:
-   - Go to the instance home page  
+   - Go to the instance home page
    - Click on the `SAML Login` button to sign in
 1. A SAML response is displayed in the tracer console that resembles this
    [example SAML response](index.md#example-saml-response).
@@ -277,9 +277,24 @@ you must set `attribute_statements` in the SAML configuration to
 
 ## User sign in banner error messages
 
-### Message: "SAML authentication failed: Extern UID has already been taken"
+### Message: "SAML authentication failed: SAML NameID is missing from your SAML response."
 
-This error suggests you are signed in as a GitLab user but have already linked your SAML identity to a different GitLab user. Sign out and then try to sign in again using SAML, which should log you into GitLab with the linked user account.
+You might get an error that states `SAML authentication failed: SAML NameID is missing from your SAML response. Please contact your administrator.`
+
+This issue occurs when you try sign into GitLab using Group SSO, but your SAML response did not include a `NameID`.
+
+To resolve this issue:
+
+- Contact your administrator to ensure your IdP account has an assigned `NameID`.
+- Use a [SAML debugging tool](#saml-debugging-tools) to verify that your SAML response has a valid `NameID`.
+
+### Message: "SAML authentication failed: Extern uid has already been taken."
+
+You might get an error that states `SAML authentication failed: Extern uid has already been taken. Please contact your administrator to generate a unique external_uid (NameID).`
+
+This issue occurs when you try to link your existing GitLab account to a SAML identity using Group SSO, but there is an existing GitLab account with your current `NameID`.
+
+To resolve this issue, tell your administrator to re-generate a unique `Extern UID` (`NameID`) for your IdP account. Make sure this new `Extern UID` adheres to the [GitLab `NameID` constraints](index.md#manage-user-saml-identity).
 
 If you do not wish to use that GitLab user with the SAML login, you can [unlink the GitLab account from the SAML app](index.md#unlink-accounts).
 
@@ -403,7 +418,7 @@ If the user receives a `404` after signing in successfully, check if you have IP
 
 Because SAML SSO for groups is a paid feature, your subscription expiring can result in a `404` error when you're signing in using SAML SSO on GitLab.com.
 If all users are receiving a `404` when attempting to sign in using SAML, confirm
-[there is an active subscription](../../../subscriptions/gitlab_com/index.md#view-your-gitlabcom-subscription) being used in this SAML SSO namespace.
+[there is an active subscription](../../../subscriptions/gitlab_com/index.md#view-gitlabcom-subscription) being used in this SAML SSO namespace.
 
 If you receive a `404` during setup when using "verify configuration", make sure you have used the correct
 [SHA-1 generated fingerprint](../../../integration/saml.md#configure-saml-on-your-idp).

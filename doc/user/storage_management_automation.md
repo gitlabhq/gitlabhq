@@ -88,7 +88,7 @@ The storage management and cleanup automation methods described in this page use
 For more information about use cases for the `python-gitlab` library,
 see [Efficient DevSecOps workflows: Hands-on `python-gitlab` API automation](https://about.gitlab.com/blog/2023/02/01/efficient-devsecops-workflows-hands-on-python-gitlab-api-automation/).
 
-For more information about other API client libraries, see [Third-party clients](../api/rest/index.md#third-party-clients).
+For more information about other API client libraries, see [Third-party clients](../api/rest/third_party_clients.md).
 
 NOTE:
 Use [GitLab Duo Code Suggestions](project/repository/code_suggestions/index.md) to write code more efficiently.
@@ -202,7 +202,7 @@ Here's an example of an algorithm to analyze multiple subgroups and projects:
 The shell approach with `glab` might be more suitable for smaller analyses. For larger analyses, you should use a script that
 uses the API client libraries. This type of script can improve readability, data storage, flow control, testing, and reusability.
 
-To ensure the script doesn't reach [API rate limits](../api/rest/index.md#rate-limits), the following
+To ensure the script doesn't reach [API rate limits](../security/rate_limits.md), the following
 example code is not optimized for parallel API requests.
 
 To implement this algorithm:
@@ -1190,7 +1190,7 @@ generate-package:
 
 ### Generate storage usage with forks
 
-Use the following projects to test storage usage with [cost factors for forks](usage_quotas.md#view-project-fork-storage-usage):
+Use the following projects to test storage usage with [cost factors for forks](storage_usage_quotas.md#view-project-fork-storage-usage):
 
 - Fork [`gitlab-org/gitlab`](https://gitlab.com/gitlab-org/gitlab) into a new namespace or group (includes LFS, Git repository).
 - Fork [`gitlab-com/www-gitlab-com`](https://gitlab.com/gitlab-com/www-gitlab-com) into a new namespace or group.

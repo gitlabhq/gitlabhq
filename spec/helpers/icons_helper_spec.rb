@@ -258,7 +258,8 @@ RSpec.describe IconsHelper do
   describe 'gl_loading_icon' do
     it 'returns the default spinner markup' do
       expect(gl_loading_icon.to_s)
-        .to eq '<div class="gl-spinner-container" role="status"><span aria-label="Loading" class="gl-spinner gl-spinner-sm gl-spinner-dark !gl-align-text-bottom"></span></div>'
+        .to eq '<div class="gl-spinner-container" role="status"><span aria-hidden class="gl-spinner gl-spinner-sm gl-spinner-dark !gl-align-text-bottom"></span><span class="gl-sr-only !gl-absolute">Loading</span>
+</div>'
     end
 
     context 'when css_class is provided' do

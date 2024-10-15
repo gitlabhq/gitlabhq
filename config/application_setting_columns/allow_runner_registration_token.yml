@@ -1,0 +1,12 @@
+---
+api_type: boolean
+attr: allow_runner_registration_token
+clusterwide: false
+column: allow_runner_registration_token
+db_type: boolean
+default: 'true'
+description: Allow using a registration token to create a runner. Defaults to `true`.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

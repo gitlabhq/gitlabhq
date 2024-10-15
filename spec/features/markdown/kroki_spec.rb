@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'kroki rendering', :js, feature_category: :team_planning do
+RSpec.describe 'kroki rendering', :js, feature_category: :markdown do
   let_it_be(:project) { create(:project, :public) }
 
   before do

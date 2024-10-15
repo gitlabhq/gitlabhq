@@ -1,0 +1,14 @@
+---
+api_type: float
+attr: external_authorization_service_timeout
+clusterwide: false
+column: external_authorization_service_timeout
+db_type: double
+default: '0.5'
+description: 'The timeout after which an authorization request is aborted, in seconds.
+  When a request times out, access is denied to the user. (min: 0.001, max: 10, step:
+  0.001).'
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: false

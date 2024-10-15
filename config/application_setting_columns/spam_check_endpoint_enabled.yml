@@ -1,0 +1,13 @@
+---
+api_type: boolean
+attr: spam_check_endpoint_enabled
+clusterwide: true
+column: spam_check_endpoint_enabled
+db_type: boolean
+default: 'false'
+description: Enables spam checking using external Spam Check API endpoint. Default
+  is `false`.
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: true

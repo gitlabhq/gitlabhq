@@ -1,0 +1,9 @@
+---
+name: auto_ban_via_detumbled_email
+feature_issue_url: https://gitlab.com/gitlab-org/modelops/anti-abuse/team-tasks/-/issues/814
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166673
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/491796
+milestone: '17.5'
+group: group::anti-abuse
+type: gitlab_com_derisk
+default_enabled: false

@@ -12,7 +12,7 @@ export const PROJECT_WIKI_ATTACHMENT_IMAGE_SVG_HTML = `<p data-sourcepos="1:1-1:
 
 export const PROJECT_WIKI_ATTACHMENT_VIDEO_HTML = `<p data-sourcepos="1:1-1:132" dir="auto">
   <span class="media-container video-container">
-    <video src="/group1/project1/-/wikis/test-file.mp4" controls="true" data-setup="{}" data-title="test-file" width="400" preload="metadata" data-canonical-src="test-file.mp4">
+    <video src="/group1/project1/-/wikis/test-file.mp4" controls="true" data-setup="{}" data-title="test-file" preload="metadata" data-canonical-src="test-file.mp4">
     </video>
     <a href="/group1/project1/-/wikis/test-file.mp4" target="_blank" rel="noopener noreferrer" title="Download 'test-file'" data-canonical-src="test-file.mp4">test-file</a>
   </span>

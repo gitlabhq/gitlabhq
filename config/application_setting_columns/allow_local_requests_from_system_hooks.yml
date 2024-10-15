@@ -1,0 +1,12 @@
+---
+api_type: boolean
+attr: allow_local_requests_from_system_hooks
+clusterwide: false
+column: allow_local_requests_from_system_hooks
+db_type: boolean
+default: 'true'
+description: Allow requests to the local network from system hooks.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

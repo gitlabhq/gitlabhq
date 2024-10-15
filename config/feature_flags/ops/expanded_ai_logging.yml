@@ -1,0 +1,8 @@
+---
+name: expanded_ai_logging
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137689
+rollout_issue_url:
+milestone: '16.7'
+type: ops
+group: group::ai framework
+default_enabled: false

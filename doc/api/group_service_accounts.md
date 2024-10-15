@@ -32,7 +32,7 @@ Parameters:
 
 | Attribute    | Type     | Required   | Description                                                     |
 |:-------------|:---------|:-----------|:----------------------------------------------------------------|
-| `id`         | integer/string | yes  | The ID or [URL-encoded path of the target group](rest/index.md#namespaced-path-encoding). |
+| `id`         | integer/string | yes  | The ID or [URL-encoded path of the target group](rest/index.md#namespaced-paths). |
 | `order_by`   | string   | no         | Orders list of users by `username` or `id`. Default is `id`.    |
 | `sort`       | string   | no         | Specifies sorting by `asc` or `desc`. Default is `desc`.        |
 
@@ -77,7 +77,7 @@ Supported attributes:
 
 | Attribute                  | Type           | Required                  | Description                                                                    |
 |:---------------------------|:---------------|:--------------------------|:-------------------------------------------------------------------------------|
-| `id`         | integer/string | yes  | The ID or [URL-encoded path of the target group](rest/index.md#namespaced-path-encoding). |
+| `id`         | integer/string | yes  | The ID or [URL-encoded path of the target group](rest/index.md#namespaced-paths). |
 | `name`       | string | no | The name of the user. If not specified, the default `Service account user` name is used. |
 | `username`   | string | no | The username of the user. If not specified, it's automatically generated. |
 
@@ -113,7 +113,7 @@ Parameters:
 
 | Attribute                  | Type           | Required                  | Description                                                                    |
 |:---------------------------|:---------------|:--------------------------|:-------------------------------------------------------------------------------|
-| `id`          | integer/string | yes  | The ID or [URL-encoded path of the target group](rest/index.md#namespaced-path-encoding). |
+| `id`          | integer/string | yes  | The ID or [URL-encoded path of the target group](rest/index.md#namespaced-paths). |
 | `user_id`     | integer | yes      | The ID of a service account user.                            |
 | `hard_delete` | boolean | no       | If true, contributions that would usually be [moved to a Ghost User](../user/profile/account/delete_account.md#associated-records) are instead deleted, as well as groups owned solely by this service account user. |
 
@@ -137,11 +137,11 @@ Parameters:
 
 | Attribute | Type            | Required | Description |
 | --------- | --------------- | -------- | ----------- |
-| `id`      | integer/string | yes  | The ID or [URL-encoded path of the target group](rest/index.md#namespaced-path-encoding). |
+| `id`      | integer/string | yes  | The ID or [URL-encoded path of the target group](rest/index.md#namespaced-paths). |
 | `user_id` | integer | yes      | The ID of a service account user.                            |
 | `name`    | string  | yes      | The name of the personal access token. |
 | `scopes`  | array   | yes      | Array of scopes of the personal access token. See [personal access token scopes](../user/profile/personal_access_tokens.md#personal-access-token-scopes) for possible values. |
-| `expires_at` | date | no      | The personal access token expiry date. When left blank, the token follows the [standard rule of expiry for personal access tokens](../user/profile/personal_access_tokens.md#access-token-expiration). |
+| `expires_at` | date | no      | The personal access token expiry date. When left blank, the token follows the [standard rule of expiry for personal access tokens](../user/profile/personal_access_tokens.md#access-token-expiration). To specify no expiration date, set this value to `null`. |
 
 Example request:
 
@@ -180,7 +180,7 @@ Parameters:
 
 | Attribute | Type            | Required | Description |
 | --------- | --------------- | -------- | ----------- |
-| `id`         | integer/string | yes  | The ID or [URL-encoded path of the target group](rest/index.md#namespaced-path-encoding). |
+| `id`         | integer/string | yes  | The ID or [URL-encoded path of the target group](rest/index.md#namespaced-paths). |
 | `user_id`    | integer | yes      | The ID of the service account user.                            |
 | `token_id`   | integer | yes      | The ID of the token. |
 

@@ -1,0 +1,12 @@
+---
+api_type: string
+attr: static_objects_external_storage_url
+clusterwide: false
+column: static_objects_external_storage_url
+db_type: character
+default:
+description: URL to an external storage for repository static objects.
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

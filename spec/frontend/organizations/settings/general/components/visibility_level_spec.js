@@ -22,9 +22,15 @@ describe('VisibilityLevel', () => {
   };
 
   const createComponent = () => {
-    wrapper = mountExtended(VisibilityLevel, { provide: defaultProvide });
+    wrapper = mountExtended(VisibilityLevel, {
+      provide: defaultProvide,
+      stubs: {
+        SettingsBlock,
+      },
+    });
   };
 
+  const findSettingsBlockTitle = () => wrapper.findByTestId('settings-block-title');
   const findSettingsBlock = () => wrapper.findComponent(SettingsBlock);
   const findVisibilityLevelRadioButtons = () => wrapper.findComponent(VisibilityLevelRadioButtons);
   const findHelpPageLink = () => wrapper.findComponent(HelpPageLink);
@@ -34,9 +40,8 @@ describe('VisibilityLevel', () => {
   });
 
   it('renders settings block with title and description', () => {
-    expect(findSettingsBlock().text()).toContain(
-      'Visibility Choose organization visibility level.',
-    );
+    expect(findSettingsBlockTitle().text()).toBe('Visibility');
+    expect(findSettingsBlock().text()).toContain('Choose organization visibility level.');
   });
 
   it('renders visibility level field with the current visibility as the only option', () => {

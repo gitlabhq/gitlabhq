@@ -4,7 +4,7 @@ module WebIde
   module DefaultOauthApplication
     class << self
       def feature_enabled?(current_user)
-        Feature.enabled?(:vscode_web_ide, current_user) && Feature.enabled?(:web_ide_oauth, current_user)
+        Feature.enabled?(:vscode_web_ide, current_user)
       end
 
       def oauth_application

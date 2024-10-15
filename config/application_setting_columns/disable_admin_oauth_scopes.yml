@@ -1,0 +1,15 @@
+---
+api_type: boolean
+attr: disable_admin_oauth_scopes
+clusterwide: false
+column: disable_admin_oauth_scopes
+db_type: boolean
+default: 'false'
+description: Stops administrators from connecting their GitLab accounts to non-trusted
+  OAuth 2.0 applications that have the `api`, `read_api`, `read_repository`, `write_repository`,
+  `read_registry`, `write_registry`, or `sudo` scopes. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375043)
+  in GitLab 15.6.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

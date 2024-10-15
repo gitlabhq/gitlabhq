@@ -55,7 +55,6 @@ RSpec/InstanceVariable:
     - 'spec/features/merge_request/user_sees_pipelines_spec.rb'
     - 'spec/features/merge_requests/user_lists_merge_requests_spec.rb'
     - 'spec/features/projects/diffs/diff_show_spec.rb'
-    - 'spec/features/triggers_spec.rb'
     - 'spec/finders/admin/plans_finder_spec.rb'
     - 'spec/finders/groups_finder_spec.rb'
     - 'spec/frontend/fixtures/listbox.rb'

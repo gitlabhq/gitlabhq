@@ -13,7 +13,7 @@ class DeploymentMetrics
   end
 
   def has_metrics?
-    deployment.success? && prometheus_adapter&.configured?
+    deployment&.success? && prometheus_adapter&.configured?
   end
 
   def metrics

@@ -226,6 +226,11 @@ module Auth
       return if path.has_repository?
       return unless actions.include?('push')
 
+      find_or_create_repository_from_path(path)
+    end
+
+    # Overridden in EE
+    def find_or_create_repository_from_path(path)
       ContainerRepository.find_or_create_from_path!(path)
     end
 
@@ -323,7 +328,8 @@ module Auth
     end
 
     def repository_path_push_protected?
-      return false if Feature.disabled?(:container_registry_protected_containers, project)
+      return false if Feature.disabled?(:container_registry_protected_containers, project&.root_ancestor)
+      return false if current_user&.can_admin_all_resources?
 
       push_scopes = scopes.select { |scope| scope[:actions].include?('push') || scope[:actions].include?('*') }
 

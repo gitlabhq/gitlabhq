@@ -10,13 +10,6 @@ module Users
     idempotent!
     deduplicate :until_executed
 
-    def handle_event(event)
-      user = User.find_by_id(event.data[:user_id])
-      namespace = Namespace.find_by_id(event.data[:namespace_id])
-
-      return unless user && namespace
-
-      Members::ActivityService.new(user, namespace).execute
-    end
+    def handle_event(_event); end
   end
 end

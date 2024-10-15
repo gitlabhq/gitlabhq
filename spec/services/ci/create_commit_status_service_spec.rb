@@ -257,9 +257,31 @@ RSpec.describe Ci::CreateCommitStatusService, :clean_gitlab_redis_cache, feature
         }
       end
 
+      before do
+        stub_const("#{described_class}::DEFAULT_LIMIT_PIPELINES", 3)
+      end
+
       it 'update the correct pipeline', :sidekiq_might_not_need_inline do
         expect { response }
           .to not_change { ::Ci::Pipeline.count }.from(2)
+          .and change { ::Ci::Stage.count }.by(1)
+          .and change { ::CommitStatus.count }.by(1)
+
+        expect(first_pipeline.reload.status).to eq('created')
+        expect(other_pipeline.reload.status).to eq('success')
+      end
+
+      it 'create a status on an old pipeline', :sidekiq_might_not_need_inline do
+        # 3 pipelines more are created to validate that it is possible to set a status on the 4th.
+        (0..2).each do |_|
+          project.ci_pipelines.build(source: :push, sha: commit.id, ref: 'master', status: 'created').tap do |p|
+            p.ensure_project_iid!
+            p.save!
+          end
+        end
+
+        expect { response }
+          .to not_change { ::Ci::Pipeline.count }.from(5)
           .and change { ::Ci::Stage.count }.by(1)
           .and change { ::CommitStatus.count }.by(1)
 
@@ -481,14 +503,14 @@ RSpec.describe Ci::CreateCommitStatusService, :clean_gitlab_redis_cache, feature
     end
   end
 
-  context 'with partitions', :ci_partitionable do
+  context 'with partitions' do
     include Ci::PartitioningHelpers
 
-    let(:current_partition_id) { ci_testing_partition_id_for_check_constraints }
+    let(:current_partition_id) { ci_testing_partition_id }
     let(:params) { { state: 'running' } }
 
     before do
-      stub_current_partition_id(ci_testing_partition_id_for_check_constraints)
+      stub_current_partition_id(ci_testing_partition_id)
     end
 
     it 'creates records in the current partition' do

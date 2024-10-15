@@ -3,6 +3,5 @@
 - breadcrumb_title _("Edit")
 - page_title _("Edit"), @group.name, _("Groups")
 
-%h1.page-title.gl-text-size-h-display= _('Edit group: %{group_name}') % { group_name: @group.name }
-%hr
+= render ::Layouts::PageHeadingComponent.new(_('Edit group: %{group_name}') % { group_name: @group.name })
 = render 'form', visibility_level: @group.visibility_level

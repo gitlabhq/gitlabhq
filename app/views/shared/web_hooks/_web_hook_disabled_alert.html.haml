@@ -8,6 +8,6 @@
     - c.with_body do
       = s_('Webhooks|A webhook in this project was automatically disabled after being retried multiple times.')
       = succeed '.' do
-        = link_to _('Learn more'), help_page_path('user/project/integrations/webhooks', anchor: 'troubleshooting'), target: '_blank', rel: 'noopener noreferrer'
+        = link_to _('Learn more'), help_page_path('user/project/integrations/webhooks.md', anchor: 'troubleshooting'), target: '_blank', rel: 'noopener noreferrer'
     - c.with_actions do
       = link_button_to s_('Webhooks|Go to webhooks'), project_hooks_path(@project), class: 'gl-alert-action', variant: :confirm

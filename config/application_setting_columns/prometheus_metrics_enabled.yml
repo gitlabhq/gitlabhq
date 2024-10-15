@@ -1,0 +1,12 @@
+---
+api_type: boolean
+attr: prometheus_metrics_enabled
+clusterwide: false
+column: prometheus_metrics_enabled
+db_type: boolean
+default: 'true'
+description: Enable Prometheus metrics.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

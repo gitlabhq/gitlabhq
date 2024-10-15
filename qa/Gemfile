@@ -2,8 +2,8 @@
 
 source 'https://rubygems.org'
 
-gem 'gitlab-qa', '~> 14', '>= 14.14.0', require: 'gitlab/qa'
-gem 'gitlab_quality-test_tooling', '~> 1.38.1', require: false
+gem 'gitlab-qa', '~> 14', '>= 14.17.0', require: 'gitlab/qa'
+gem 'gitlab_quality-test_tooling', '~> 1.39.0', require: false
 gem 'gitlab-utils', path: '../gems/gitlab-utils'
 gem 'activesupport', '~> 7.0.8.4' # This should stay in sync with the root's Gemfile
 gem 'allure-rspec', '~> 2.25.0'
@@ -11,20 +11,19 @@ gem 'capybara', '~> 3.40.0'
 gem 'capybara-screenshot', '~> 1.0.26'
 gem 'rake', '~> 13', '>= 13.2.1'
 gem 'rspec', '~> 3.13'
-gem 'selenium-webdriver', '= 4.24.0'
-gem 'airborne', '~> 0.3.7', require: false # airborne is messing with rspec sandboxed mode so not requiring by default
+gem 'selenium-webdriver', '= 4.25.0'
 gem 'rest-client', '~> 2.1.0'
 gem 'rspec_junit_formatter', '~> 0.6.0'
 gem 'faker', '~> 3.4', '>= 3.4.2'
 gem 'knapsack', '~> 4.0'
-gem 'parallel_tests', '~> 4.7', '>= 4.7.1'
+gem 'parallel_tests', '~> 4.7', '>= 4.7.2'
 gem 'rotp', '~> 6.3.0'
 gem 'parallel', '~> 1.26', '>= 1.26.3'
 gem 'rainbow', '~> 3.1.1'
 gem 'rspec-parameterized', '~> 1.0.2'
 gem 'octokit', '~> 9.1.0', require: false
 gem "faraday-retry", "~> 2.2", ">= 2.2.1"
-gem 'zeitwerk', '~> 2.6', '>= 2.6.18'
+gem 'zeitwerk', '~> 2.7'
 gem 'influxdb-client', '~> 3.1'
 gem 'terminal-table', '~> 3.0.2', require: false
 gem 'slack-notifier', '~> 2.4', require: false

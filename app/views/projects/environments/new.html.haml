@@ -3,4 +3,4 @@
 - page_title s_("Environments|New environment")
 - add_page_specific_style 'page_bundles/environments'
 
-#js-new-environment{ data: { project_environments_path: project_environments_path(@project), project_path: @project.full_path, kas_tunnel_url: ::Gitlab::Kas.tunnel_url } }
+#js-new-environment{ data: { project_environments_path: project_environments_path(@project), project_path: @project.full_path, kas_tunnel_url: ::Gitlab::Kas.tunnel_url, markdown_preview_path: preview_markdown_path(@project) } }

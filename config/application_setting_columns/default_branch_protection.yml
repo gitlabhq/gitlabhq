@@ -1,0 +1,13 @@
+---
+api_type: integer
+attr: default_branch_protection
+clusterwide: false
+column: default_branch_protection
+db_type: integer
+default: '2'
+description: "[Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/408314) in
+  GitLab 17.0. Use `default_branch_protection_defaults` instead."
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: false

@@ -5,7 +5,7 @@ module API
     feature_category :container_registry
 
     after_validation do
-      if Feature.disabled?(:container_registry_protected_containers, user_project)
+      if Feature.disabled?(:container_registry_protected_containers, user_project.root_ancestor)
         render_api_error!("'container_registry_protected_containers' feature flag is disabled", :not_found)
       end
 

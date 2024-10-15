@@ -8,6 +8,7 @@ import { TYPE_ISSUE } from '~/issues/constants';
 import {
   formatDate,
   localeDateFormat,
+  newDate,
   parseSeconds,
   stringifyTime,
 } from '~/lib/utils/datetime_utility';
@@ -128,7 +129,7 @@ export default {
       return formatDate(date, TIME_DATE_FORMAT);
     },
     formatShortDate(date) {
-      return localeDateFormat.asDate.format(date);
+      return localeDateFormat.asDate.format(newDate(date));
     },
     getSummary(summary, note) {
       return summary ?? note?.body;

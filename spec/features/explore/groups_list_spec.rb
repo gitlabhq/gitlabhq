@@ -97,7 +97,7 @@ RSpec.describe 'Explore Groups page', :js, feature_category: :groups_and_project
       end
 
       it 'loads results for next page' do
-        expect(page).to have_selector('.gl-pagination .page-item a.page-link', count: 3)
+        expect(page).to have_selector('.gl-pagination a', count: 3)
 
         # Check first page
         expect(page).to have_content(public_group.full_name)
@@ -106,7 +106,7 @@ RSpec.describe 'Explore Groups page', :js, feature_category: :groups_and_project
         expect(page).not_to have_selector("#group-#{group.id}")
 
         # Go to next page
-        find('.gl-pagination .page-item:last-of-type a.page-link').click
+        find_by_testid('gl-pagination-next').click
 
         wait_for_requests
 

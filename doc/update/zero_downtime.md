@@ -49,11 +49,14 @@ In addition to the above, please be aware of the following considerations:
 
 - Most of the time, you can safely upgrade from a patch release to the next minor release if the patch release is not the latest.
   For example, upgrading from `16.3.2` to `16.4.1` should be safe even if `16.3.3` has been released. You should verify the
-  [version specific upgrading instructions](index.md#version-specific-upgrading-instructions) relevant to your [upgrade path](index.md#upgrade-paths) and be aware of any required upgrade stops.
-- Some releases may include [background migrations](index.md#check-for-background-migrations-before-upgrading). These migrations are performed in the background by Sidekiq and are often used for migrating data. Background migrations are only added in the monthly releases.
-  - Certain major or minor releases may require a set of background migrations to be finished. While this doesn't require downtime (if the above conditions are met), it's required that you [wait for background migrations to complete](index.md#check-for-background-migrations-before-upgrading) between each major or minor release upgrade.
+  version-specific upgrading instructions relevant to your [upgrade path](upgrade_paths.md) and be aware of any required upgrade stops:
+  - [GitLab 17 changes](versions/gitlab_17_changes.md)
+  - [GitLab 16 changes](versions/gitlab_16_changes.md)
+  - [GitLab 15 changes](versions/gitlab_15_changes.md)
+- Some releases may include [background migrations](background_migrations.md). These migrations are performed in the background by Sidekiq and are often used for migrating data. Background migrations are only added in the monthly releases.
+  - Certain major or minor releases may require a set of background migrations to be finished. While this doesn't require downtime (if the above conditions are met), it's required that you [wait for background migrations to complete](background_migrations.md) between each major or minor release upgrade.
   - The time necessary to complete these migrations can be reduced by increasing the number of Sidekiq workers that can process jobs in the
-    `background_migration` queue. To see the size of this queue, [check for background migrations before upgrading](index.md#check-for-background-migrations-before-upgrading).
+    `background_migration` queue. To see the size of this queue, [check for background migrations before upgrading](background_migrations.md).
 - [PostgreSQL major version upgrades](../administration/postgresql/replication_and_failover.md#near-zero-downtime-upgrade-of-postgresql-in-a-patroni-cluster) are a separate process and not covered by zero-downtime upgrades (smaller upgrades are covered).
 - Zero-downtime upgrades are supported for any GitLab components you've deployed with the GitLab Linux package. If you've deployed select components via a supported third party service, such as PostgreSQL in AWS RDS or Redis in GCP Memorystore, upgrades for those services will need to be performed separately as per their standard processes.
 - As a general guideline, the larger amount of data you have, the more time it will take for the upgrade to complete. In testing, any database smaller than 10 GB shouldn't generally take longer than an hour, but your mileage may vary.
@@ -391,7 +394,7 @@ below:
       gitlab-ctl stop nginx
       ```
 
-   1. Stop the Geo Logcursor process to ensure it fails over to another node:
+   1. Stop the Geo Log Cursor process to ensure it fails over to another node:
 
       ```shell
       gitlab-ctl stop geo-logcursor
@@ -441,7 +444,7 @@ below:
       gitlab-ctl stop nginx
       ```
 
-   1. Stop the Geo Logcursor process to ensure it fails over to another node:
+   1. Stop the Geo Log Cursor process to ensure it fails over to another node:
 
       ```shell
       gitlab-ctl stop geo-logcursor

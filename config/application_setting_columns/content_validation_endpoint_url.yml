@@ -1,0 +1,12 @@
+---
+api_type:
+attr: content_validation_endpoint_url
+clusterwide: false
+column: content_validation_endpoint_url
+db_type: text
+default:
+description:
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: true
+not_null: false

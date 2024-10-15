@@ -1,0 +1,13 @@
+---
+api_type: boolean
+attr: maintenance_mode
+clusterwide: false
+column: maintenance_mode
+db_type: boolean
+default: 'false'
+description: When instance is in maintenance mode, non-administrative users can sign
+  in with read-only access and make read-only API requests. Premium and Ultimate only.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

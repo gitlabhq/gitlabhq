@@ -3,7 +3,7 @@
 module QA
   RSpec.describe 'Verify', :runner, product_group: :pipeline_authoring do
     describe 'Pipeline with customizable variable' do
-      let(:executor) { "qa-runner-#{Time.now.to_i}" }
+      let(:executor) { "qa-runner-#{SecureRandom.hex(6)}" }
       let(:pipeline_job_name) { 'customizable-variable' }
       let(:variable_custom_value) { 'Custom Foo' }
       let(:project) { create(:project, name: 'project-with-customizable-variable-pipeline') }

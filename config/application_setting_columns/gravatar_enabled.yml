@@ -1,0 +1,12 @@
+---
+api_type: boolean
+attr: gravatar_enabled
+clusterwide: true
+column: gravatar_enabled
+db_type: boolean
+default:
+description: Enable Gravatar.
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

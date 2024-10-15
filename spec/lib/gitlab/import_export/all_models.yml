@@ -28,6 +28,7 @@ issues:
 - own_resource_label_events
 - own_description_versions
 - own_events
+- own_subscriptions
 - sync_object
 - last_edited_by
 - todos
@@ -97,6 +98,7 @@ events:
 - group
 - target
 - push_event_payload
+- personal_namespace
 notes:
 - award_emoji
 - project
@@ -227,6 +229,7 @@ merge_requests:
 - merge_request_context_commits
 - merge_request_context_commit_diff_files
 - merge_request_stage_events
+- merge_schedule
 - events
 - merge_requests_closing_issues
 - cached_closes_issues
@@ -274,6 +277,7 @@ merge_requests:
 - scan_result_policy_reads_through_violations
 - scan_result_policy_reads_through_approval_rules
 - running_scan_result_policy_violations
+- completed_scan_result_policy_violations
 external_pull_requests:
 - project
 merge_request_diff:
@@ -293,6 +297,8 @@ merge_request_diff_files:
 merge_request_context_commits:
 - merge_request
 - diff_files
+merge_schedule:
+- merge_request
 cleanup_schedule:
 - merge_request
 ci_pipelines:
@@ -345,7 +351,6 @@ ci_pipelines:
 - job_artifacts
 - vulnerabilities_finding_pipelines
 - vulnerability_findings
-- vulnerability_state_transitions
 - pipeline_config
 - security_scans
 - security_findings
@@ -459,6 +464,7 @@ builds:
 - tag_links
 - tag_taggings
 - tags
+- simple_tags
 - security_scans
 - dast_site_profiles_build
 - dast_site_profile
@@ -868,7 +874,6 @@ project:
 - design_management_repository_state
 - compliance_standards_adherence
 - compliance_requirements
-- compliance_checks
 - scan_result_policy_reads
 - scan_result_policy_violations
 - project_state
@@ -894,6 +899,7 @@ project:
 - observability_traces
 - observability_logs
 - security_exclusions
+- security_statistics
 award_emoji:
 - awardable
 - user

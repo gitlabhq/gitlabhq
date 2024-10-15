@@ -25,7 +25,7 @@ module Integrations
 
     def self.help
       build_help_page_url(
-        'user/project/integrations/youtrack', s_("IssueTracker|Use JetBrains YouTrack as this project's issue tracker.")
+        'user/project/integrations/youtrack.md', s_("IssueTracker|Use JetBrains YouTrack as this project's issue tracker.")
       )
     end
 

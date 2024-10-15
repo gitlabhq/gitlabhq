@@ -149,16 +149,10 @@ module API
           authorize_update_source_member!(source_type, member)
 
           result = ::Members::UpdateService
-            .new(current_user, declared_params(include_missing: false))
+            .new(current_user, declared_params(include_missing: false).merge({ source: source }))
             .execute(member)
 
-          updated_member = result[:members].first
-
-          if result[:status] == :success
-            present_members updated_member
-          else
-            render_validation_error!(updated_member)
-          end
+          present_put_membership_response(result)
         end
         # rubocop: enable CodeReuse/ActiveRecord
 

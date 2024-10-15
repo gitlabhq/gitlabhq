@@ -1,0 +1,23 @@
+mutation editModelVersion(
+  $projectPath: ID!
+  $modelId: MlModelID!
+  $version: String!
+  $description: String!
+) {
+  mlModelVersionEdit(
+    input: {
+      projectPath: $projectPath
+      modelId: $modelId
+      version: $version
+      description: $description
+    }
+  ) {
+    modelVersion {
+      id
+      _links {
+        showPath
+      }
+    }
+    errors
+  }
+}

@@ -13,7 +13,7 @@ module Groups
       end
 
       before_action only: [:index, :show] do
-        push_frontend_feature_flag(:container_registry_protected_containers, group)
+        push_frontend_feature_flag(:container_registry_protected_containers, group.root_ancestor)
       end
 
       feature_category :container_registry

@@ -1,0 +1,12 @@
+---
+api_type: string
+attr: slack_app_id
+clusterwide: false
+column: slack_app_id
+db_type: character
+default:
+description: The client ID of the GitLab for Slack app.
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

@@ -1,0 +1,20 @@
+= render ::Layouts::SettingsBlockComponent.new(_('Organizations API rate limits'),
+  id: 'js-organizations-api-limits-settings',
+  testid: 'organizations-api-limits-settings',
+  expanded: expanded_by_default?) do |c|
+  - c.with_description do
+    = _('Set the per-user rate limits for the requests to Organizations API.')
+    = link_to _('Learn more.'), help_page_path('administration/settings/rate_limit_on_organizations_api.md'), target: '_blank', rel: 'noopener noreferrer'
+  - c.with_body do
+    = gitlab_ui_form_for @application_setting, url: network_admin_application_settings_path(anchor: 'js-organizations-api-limits-settings'), html: { class: 'fieldset-form' } do |f|
+      = form_errors(@application_setting)
+
+      %fieldset
+        = _("Set to 0 to disable the limits.")
+
+      %fieldset
+        .form-group
+          = f.label :create_organization_api_limit, format(_('Maximum requests to the %{api_name} API per %{timeframe} per user'), api_name: 'POST /organizations', timeframe: 'minute'), class: 'label-bold'
+          = f.number_field :create_organization_api_limit, min: 0, class: 'form-control gl-form-input'
+
+      = f.submit _('Save changes'), pajamas_button: true

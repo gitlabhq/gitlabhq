@@ -1,13 +1,31 @@
 import WorkItemList from 'ee_else_ce/work_items/pages/work_items_list_app.vue';
+import CreateWorkItem from '../pages/create_work_item.vue';
+import WorkItemDetail from '../pages/work_item_root.vue';
 import DesignDetail from '../components/design_management/design_preview/design_details.vue';
-import { ROUTES } from '../constants';
+import { ROUTES, WORK_ITEM_BASE_ROUTE_MAP } from '../constants';
 
-function getRoutes(isGroup) {
+function generateTypeRegex(routeMap) {
+  const types = Object.keys(routeMap);
+  return types.join('|');
+}
+
+function getRoutes() {
   const routes = [
     {
-      path: '/:iid',
+      path: `/:type(${generateTypeRegex(WORK_ITEM_BASE_ROUTE_MAP)})`,
+      name: ROUTES.index,
+      component: WorkItemList,
+    },
+    {
+      path: `/:type(${generateTypeRegex(WORK_ITEM_BASE_ROUTE_MAP)})/new`,
+      name: ROUTES.new,
+      component: CreateWorkItem,
+      props: ({ params: { type } }) => ({ workItemTypeName: WORK_ITEM_BASE_ROUTE_MAP[type] }),
+    },
+    {
+      path: `/:type(${generateTypeRegex(WORK_ITEM_BASE_ROUTE_MAP)})/:iid`,
       name: ROUTES.workItem,
-      component: () => import('../pages/work_item_root.vue'),
+      component: WorkItemDetail,
       props: true,
       children: [
         {
@@ -24,22 +42,6 @@ function getRoutes(isGroup) {
       ],
     },
   ];
-
-  if (isGroup) {
-    routes.unshift({
-      path: '/',
-      name: ROUTES.index,
-      component: WorkItemList,
-    });
-  }
-
-  if (gon.features?.workItemsAlpha) {
-    routes.unshift({
-      path: '/new',
-      name: ROUTES.new,
-      component: () => import('../pages/create_work_item.vue'),
-    });
-  }
 
   return routes;
 }

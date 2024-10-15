@@ -8,7 +8,7 @@ module Gitlab
       class DefaultValues
         extend Helpers::CI
 
-        IMAGE_REPOSITORY = "registry.gitlab.com/gitlab-org/quality/quality-engineering/cng-mirror"
+        IMAGE_REPOSITORY = "registry.gitlab.com/gitlab-org/build/cng-mirror"
 
         class << self
           # Main common chart values

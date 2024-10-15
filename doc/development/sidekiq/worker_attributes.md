@@ -248,38 +248,19 @@ We require Sidekiq workers to make an explicit decision around whether they need
 primary database node for all reads and writes, or whether reads can be served from replicas. This is
 enforced by a RuboCop rule, which ensures that the `data_consistency` field is set.
 
-When setting this field, consider the following trade-off:
-
-- Ensure immediately consistent reads, but increase load on the primary database.
-- Prefer read replicas to add relief to the primary, but increase the likelihood of stale reads that have to be retried.
-
-To maintain the same behavior compared to before this field was introduced, set it to `:always`, so
-database operations only target the primary. Reasons for having to do so include workers
-that mostly or exclusively perform writes, or workers that read their own writes and who might run
-into data consistency issues should a stale record be read back from a replica. **Try to avoid
-these scenarios, since `:always` should be considered the exception, not the rule.**
-
-To allow for reads to be served from replicas, we added two additional consistency modes: `:sticky` and `:delayed`. A RuboCop rule
-reminds the developer when `:always` data consistency mode is used. If workers require the primary database, you can disable the rule in-line.
-
-When you declare either `:sticky` or `:delayed` consistency, workers become eligible for database
-load-balancing.
-
-In both cases, if the replica is not up-to-date and the time from scheduling the job was less than the minimum delay interval,
- the jobs sleep up to the minimum delay interval (0.8 seconds). This gives the replication process time to finish.
-The difference is in what happens when there is still replication lag after the delay: `sticky` workers
-switch over to the primary right away, whereas `delayed` workers fail fast and are retried once.
-If the workers still encounter replication lag, they switch to the primary instead. **If your worker never performs any writes,
-it is strongly advised to apply `:sticky` or `:delayed` consistency settings, since the worker never needs to rely on the primary database node.**
+Before `data_consistency` was introduced, the default behavior mimicked that of `:always`. Since jobs are
+now enqueued along with the current database LSN, the replica (for `:sticky` or `:delayed`) is guaranteed
+to be caught up to that point, or the job will be retried, or use the primary. This means that the data
+will be consistent at least to the point at which the job was enqueued.
 
 The table below shows the `data_consistency` attribute and its values, ordered by the degree to which
 they prefer read replicas and wait for replicas to catch up:
 
 | **Data consistency**  | **Description**  | **Guideline** |
 |--------------|-----------------------------|----------|
-| `:always`    | The job is required to use the primary database (default). | It should be used for workers that primarily perform writes, have strict requirements around data consistency when reading their own writes, or are cron jobs. |
-| `:sticky`    | The job prefers replicas, but switches to the primary for writes or when encountering replication lag. | It should be used for jobs that require to be executed as fast as possible but can sustain a small initial queuing delay.  |
-| `:delayed`   | The job prefers replicas, but switches to the primary for writes. When encountering replication lag before the job starts, the job is retried once. If the replica is still not up to date on the next retry, it switches to the primary. | It should be used for jobs where delaying execution further typically does not matter, such as cache expiration or web hooks execution. |
+| `:always`    | The job is required to use the primary database for all queries. (Deprecated) | **Deprecated** Only needed for jobs that encounter edge cases around primary stickiness. |
+| `:sticky`    | The job prefers replicas, but switches to the primary for writes or when encountering replication lag. (Default) | This is the default option. It should be used for jobs that require to be executed as fast as possible. Replicas are guaranteed to be caught up to the point at which the job was enqueued in Sidekiq. |
+| `:delayed`   | The job prefers replicas, but switches to the primary for writes. When encountering replication lag before the job starts, the job is retried once. If the replica is still not up to date on the next retry, it switches to the primary. | It should be used for jobs where delaying execution further typically does not matter, such as cache expiration or web hooks execution. It should not be used for jobs where retry is disabled, such as cron jobs. |
 
 In all cases workers read either from a replica that is fully caught up,
 or from the primary node, so data consistency is always ensured.
@@ -365,6 +346,10 @@ class PausedWorker
   # ...
 end
 ```
+
+WARNING:
+In case you want to remove the middleware for a worker, please set the strategy to `:deprecated` to disable it and wait until
+a required stop before removing it completely. That ensures that all paused jobs are resumed correctly.
 
 ## Concurrency limit
 

@@ -11,13 +11,19 @@ if [[ "${WITH_LOAD_BALANCER}" == "true" ]]; then
   gdk reconfigure
 fi
 
-gdk start
+if [[ "${QA_GITALY_TRANSACTIONS_ENABLED}" == "true" ]]; then
+  gdk config set gitaly.transactions.enabled true
+  gdk config set praefect.enabled false
+  gdk reconfigure
+fi
 
 # Split logs in to multiple files when running in CI
 if [ -z "$CI" ]; then
+  gdk start
+
   exec "$@" | tee -a ${HOME}/gitlab-development-kit/gitlab/log/gdk-container.log
 else
-  logs=("gitaly" "gitlab-workhorse" "postgresql" "rails-background-jobs" "redis" "sshd" "vite" "rails-web" "webpack")
+  logs=("gitaly" "gitlab-workhorse" "postgresql" "rails-background-jobs" "redis" "sshd" "vite" "rails-web" "webpack" "gitlab-http-router")
   for log in "${logs[@]}"; do
     gdk tail $log &>${CI_BUILDS_DIR}/gdk.${log}.log &
   done
@@ -26,6 +32,8 @@ else
   for logfile in ${HOME}/gitlab-development-kit/gitlab/log/*.log; do
     tail -f $logfile &>${CI_BUILDS_DIR}/$(basename $logfile) &
   done
+
+  gdk start
 
   exec "$@"
 fi

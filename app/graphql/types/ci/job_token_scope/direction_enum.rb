@@ -14,7 +14,7 @@ module Types
         value 'INBOUND',
           value: :inbound,
           description: 'Target projects in the inbound allowlist can access the scope project ' \
-                       'through their job tokens.'
+            'through their job tokens.'
       end
     end
   end

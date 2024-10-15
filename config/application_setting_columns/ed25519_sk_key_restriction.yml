@@ -1,0 +1,13 @@
+---
+api_type: integer
+attr: ed25519_sk_key_restriction
+clusterwide: false
+column: ed25519_sk_key_restriction
+db_type: integer
+default: '0'
+description: The minimum allowed curve size (in bits) of an uploaded ED25519_SK key.
+  Default is `0` (no restriction). `-1` disables ED25519_SK keys.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

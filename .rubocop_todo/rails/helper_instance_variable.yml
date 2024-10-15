@@ -45,7 +45,6 @@ Rails/HelperInstanceVariable:
     - 'app/helpers/tags_helper.rb'
     - 'app/helpers/timeboxes_helper.rb'
     - 'app/helpers/tree_helper.rb'
-    - 'app/helpers/users_helper.rb'
     - 'app/helpers/web_ide_button_helper.rb'
     - 'app/helpers/webpack_helper.rb'
     - 'app/helpers/wiki_helper.rb'

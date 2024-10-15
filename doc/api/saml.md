@@ -28,9 +28,9 @@ Supported attributes:
 
 | Attribute         | Type    | Required | Description           |
 |:------------------|:--------|:---------|:----------------------|
-| `id`              | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
+| `id`              | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths) |
 
-If successful, returns [`200`](rest/index.md#status-codes) and the following
+If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the following
 response attributes:
 
 | Attribute    | Type   | Description               |
@@ -67,7 +67,7 @@ Supported attributes:
 
 | Attribute | Type           | Required | Description               |
 | --------- | -------------- | -------- | ------------------------- |
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths) |
 | `uid`     | string         | yes      | External UID of the user. |
 
 Example request:
@@ -101,7 +101,7 @@ Supported attributes:
 
 | Attribute | Type   | Required | Description               |
 | --------- | ------ | -------- | ------------------------- |
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths) |
 | `uid`     | string | yes      | External UID of the user. |
 
 Example request:
@@ -124,7 +124,7 @@ Supported attributes:
 
 | Attribute | Type    | Required | Description               |
 | --------- | ------- | -------- | ------------------------- |
-| `id`      | integer | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding). |
+| `id`      | integer | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
 | `uid`     | string  | yes      | External UID of the user. |
 
 Example request:
@@ -146,15 +146,15 @@ Example response:
 
 ### Get a single SAML identity
 
-Use the Users API to [get a single SAML identity](../api/users.md#for-administrators).
+Use the Users API to [get a single SAML identity](../api/users.md#as-an-administrator).
 
 ### Update `extern_uid` field for a SAML identity
 
-Use the Users API to [update the `extern_uid` field of a user](../api/users.md#user-modification).
+Use the Users API to [update the `extern_uid` field of a user](../api/users.md#modify-a-user).
 
 ### Delete a single SAML identity
 
-Use the Users API to [delete a single identity of a user](../api/users.md#delete-authentication-identity-from-user).
+Use the Users API to [delete a single identity of a user](../api/users.md#delete-authentication-identity-from-a-user).
 
 ## SAML group links
 
@@ -178,9 +178,9 @@ Supported attributes:
 
 | Attribute | Type           | Required | Description |
 |:----------|:---------------|:---------|:------------|
-| `id`      | integer/string | yes      | ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding). |
+| `id`      | integer/string | yes      | ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
 
-If successful, returns [`200`](rest/index.md#status-codes) and the following response attributes:
+If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the following response attributes:
 
 | Attribute           | Type    | Description |
 |:--------------------|:--------|:------------|
@@ -223,10 +223,10 @@ Supported attributes:
 
 | Attribute         | Type           | Required | Description |
 |:------------------|:---------------|:---------|:------------|
-| `id`              | integer/string | yes      | ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding). |
+| `id`              | integer/string | yes      | ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
 | `saml_group_name` | string         | yes      | Name of the SAML group. |
 
-If successful, returns [`200`](rest/index.md#status-codes) and the following response attributes:
+If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the following response attributes:
 
 | Attribute        | Type    | Description |
 |:-----------------|:--------|:------------|
@@ -262,12 +262,12 @@ Supported attributes:
 
 | Attribute         | Type              | Required | Description |
 |:------------------|:------------------|:---------|:------------|
-| `id`              | integer or string | yes      | ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding). |
+| `id`              | integer or string | yes      | ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
 | `saml_group_name` | string            | yes      | Name of the SAML group. |
 | `access_level`    | integer           | yes      | [Role (`access_level`)](members.md#roles) for members of the SAML group. |
 | `member_role_id`  | integer           | no       | [Member Role ID (`member_role_id`)](member_roles.md) for members of the SAML group. |
 
-If successful, returns [`201`](rest/index.md#status-codes) and the following response attributes:
+If successful, returns [`201`](rest/troubleshooting.md#status-codes) and the following response attributes:
 
 | Attribute        | Type    | Description |
 |:-----------------|:--------|:------------|
@@ -303,7 +303,7 @@ Supported attributes:
 
 | Attribute         | Type           | Required | Description |
 |:------------------|:---------------|:---------|:------------|
-| `id`              | integer/string | yes      | ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding). |
+| `id`              | integer/string | yes      | ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
 | `saml_group_name` | string         | yes      | Name of the SAML group. |
 
 Example request:
@@ -312,4 +312,4 @@ Example request:
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/saml_group_links/saml-group-1"
 ```
 
-If successful, returns [`204`](rest/index.md#status-codes) status code without any response body.
+If successful, returns [`204`](rest/troubleshooting.md#status-codes) status code without any response body.

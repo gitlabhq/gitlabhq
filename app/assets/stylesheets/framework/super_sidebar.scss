@@ -530,7 +530,7 @@ $command-palette-spacing: px-to-rem(14px);
   }
 
   @include gl-media-breakpoint-up(sm) {
-    padding: 5rem 1rem 0;
+    padding: 0.2rem 1rem  0;
   }
 
   .vertical-align-normalization {
@@ -736,4 +736,8 @@ $scroll-scrim-height: 2.25rem;
   .bottom-scrim-wrapper {
     margin-top: 0;
   }
+}
+
+.custom-gradient-progress .progress-bar {
+  background: linear-gradient(90deg, #ffb177 0%, #936fff 100%);
 }

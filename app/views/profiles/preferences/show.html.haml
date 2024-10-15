@@ -49,7 +49,7 @@
     %p.gl-text-secondary
       = s_('Preferences|Customize the appearance of the syntax.')
       = succeed '.' do
-        = link_to _('Learn more'), help_page_path('user/profile/preferences', anchor: 'change-the-syntax-highlighting-theme'), target: '_blank', rel: 'noopener noreferrer'
+        = link_to _('Learn more'), help_page_path('user/profile/preferences.md', anchor: 'change-the-syntax-highlighting-theme'), target: '_blank', rel: 'noopener noreferrer'
     .syntax-theme.row
       - Gitlab::ColorSchemes.each do |scheme|
         %label.col-6.col-sm-4.col-md-3.col-lg-auto.gl-mb-5
@@ -76,11 +76,11 @@
     %p.gl-text-secondary
       = s_('Preferences|Customize the behavior of the system layout and default views.')
       = succeed '.' do
-        = link_to _('Learn more'), help_page_path('user/profile/preferences', anchor: 'behavior'), target: '_blank', rel: 'noopener noreferrer'
+        = link_to _('Learn more'), help_page_path('user/profile/preferences.md', anchor: 'behavior'), target: '_blank', rel: 'noopener noreferrer'
     .form-group
       = f.label :layout, class: 'label-bold' do
         = s_('Preferences|Keyboard shortcuts')
-      - shortcuts_help_link = link_to('', help_page_path('user/shortcuts'), target: '_blank', rel: 'noopener noreferrer')
+      - shortcuts_help_link = link_to('', help_page_path('user/shortcuts.md'), target: '_blank', rel: 'noopener noreferrer')
       = f.gitlab_ui_checkbox_component :keyboard_shortcuts_enabled,
         s_('Preferences|Enable keyboard shortcuts'),
         help_text: safe_format(s_('Preferences|%{link_start}List of keyboard shortcuts%{link_end}'), tag_pair(shortcuts_help_link, :link_start, :link_end))
@@ -141,11 +141,11 @@
     %p.gl-text-secondary
       = _('Customize language and region related settings.')
       = succeed '.' do
-        = link_to _('Learn more'), help_page_path('user/profile/preferences', anchor: 'localization'), target: '_blank', rel: 'noopener noreferrer'
+        = link_to _('Learn more'), help_page_path('user/profile/preferences.md', anchor: 'localization'), target: '_blank', rel: 'noopener noreferrer'
 
     .js-listbox-input{ data: { label: _('Language'), description: s_('Preferences|This feature is experimental and translations are not yet complete.'), name: 'user[preferred_language]', items: language_choices.to_json, value: current_user.preferred_language, block: true.to_s, toggle_class: 'gl-form-input-xl' } }
     %p.-gl-mt-5
-      = link_to help_page_url('development/i18n/translation'), class: 'text-nowrap', target: '_blank', rel: 'noopener noreferrer' do
+      = link_to help_page_url('development/i18n/translation.md'), class: 'text-nowrap', target: '_blank', rel: 'noopener noreferrer' do
         = _("Help translate GitLab into your language")
         %span{ aria: { label: _('Open new window') } }
           = sprite_icon('external-link')
@@ -162,7 +162,7 @@
     %p.gl-text-secondary
       = s_('Preferences|Configure how dates and times display for you.')
       = succeed '.' do
-        = link_to _('Learn more'), help_page_path('user/profile/preferences', anchor: 'show-exact-times-instead-of-relative-times'), target: '_blank', rel: 'noopener noreferrer'
+        = link_to _('Learn more'), help_page_path('user/profile/preferences.md', anchor: 'show-exact-times-instead-of-relative-times'), target: '_blank', rel: 'noopener noreferrer'
     .form-group
       = f.gitlab_ui_checkbox_component :time_display_relative,
         s_('Preferences|Use relative times'),
@@ -181,7 +181,7 @@
     %p.gl-text-secondary
       = s_('Preferences|Turns on or off the ability to follow or be followed by other users.')
       = succeed '.' do
-        = link_to _('Learn more'), help_page_path('user/profile/index', anchor: 'follow-users'), target: '_blank', rel: 'noopener noreferrer'
+        = link_to _('Learn more'), help_page_path('user/profile/index.md', anchor: 'follow-users'), target: '_blank', rel: 'noopener noreferrer'
     .form-group
       = f.gitlab_ui_checkbox_component :enabled_following,
       s_('Preferences|Enable follow users')

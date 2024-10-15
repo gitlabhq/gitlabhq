@@ -203,7 +203,7 @@ While GitLab Geo helps remote teams work more efficiently by using a local GitLa
 Learn more about using [Geo as a disaster recovery solution](../administration/geo/disaster_recovery/index.md).
 
 Geo replicates your database, your Git repositories, and a few other assets.
-Learn more about [replication limitations](../administration/geo/replication/datatypes.md#limitations-on-replicationverification).
+Learn more about the [data types Geo replicates](../administration/geo/replication/datatypes.md#replicated-data-types).
 
 ## Support for GitLab self-managed
 

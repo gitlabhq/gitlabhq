@@ -5,6 +5,43 @@ require "spec_helper"
 RSpec.describe AuthHelper, feature_category: :system_access do
   include LoginHelpers
 
+  describe "#enabled_button_based_providers_for_signup" do
+    [[true, %w[github gitlab]],
+      [false, []],
+      [['github'], ['github']],
+      [[], []]].each do |(allow_single_sign_on, result)|
+      context "when allow_single_sign_on is #{allow_single_sign_on}" do
+        before do
+          allow(helper).to receive(:enabled_button_based_providers) { %w[github gitlab] }
+          stub_omniauth_config(allow_single_sign_on: allow_single_sign_on)
+        end
+
+        it "returns #{result}" do
+          expect(helper.enabled_button_based_providers_for_signup).to eq(result)
+        end
+      end
+    end
+  end
+
+  describe "#signup_button_based_providers_enabled?" do
+    [[true, true, true],
+      [true, ['github'], true],
+      [false, true, false],
+      [true, false, false],
+      [true, [], false]].each do |(omniauth_enable, allow_single_sign_on, result)|
+      context "when omniauth is #{omniauth_enable} and allow_single_sign_on is #{allow_single_sign_on}" do
+        before do
+          allow(Gitlab::Auth).to receive(:omniauth_enabled?).and_return(omniauth_enable)
+          stub_omniauth_config(allow_single_sign_on: allow_single_sign_on)
+        end
+
+        it "returns #{result}" do
+          expect(helper.signup_button_based_providers_enabled?).to eq(result)
+        end
+      end
+    end
+  end
+
   describe "button_based_providers" do
     it 'returns all enabled providers from devise' do
       allow(helper).to receive(:auth_providers) { [:twitter, :github] }
@@ -407,6 +444,99 @@ RSpec.describe AuthHelper, feature_category: :system_access do
 
       it 'returns the provider' do
         expect(saml_providers).to match_array([saml_provider_1_name.to_sym, saml_provider_2_name.to_sym])
+      end
+    end
+  end
+
+  describe '#delete_otp_authenticator_data' do
+    context 'when password is required' do
+      it 'returns data to delete the OTP authenticator' do
+        expect(helper.delete_otp_authenticator_data(true)).to match(a_hash_including({
+          button_text: _('Delete one-time password authenticator'),
+          message: _('Are you sure you want to delete this one-time password authenticator? ' \
+            'Enter your password to continue.'),
+          path: destroy_otp_profile_two_factor_auth_path,
+          password_required: 'true'
+        }))
+      end
+    end
+
+    context 'when password is not required' do
+      it 'returns data to delete the OTP authenticator' do
+        expect(helper.delete_otp_authenticator_data(false)).to match(a_hash_including({
+          button_text: _('Delete one-time password authenticator'),
+          message: _('Are you sure you want to delete this one-time password authenticator?'),
+          path: destroy_otp_profile_two_factor_auth_path,
+          password_required: 'false'
+        }))
+      end
+    end
+  end
+
+  describe '#delete_webauthn_device_data' do
+    let(:path) { 'test/path' }
+
+    it 'returns data to delete a WebAuthn device' do
+      expect(helper.delete_webauthn_device_data(path)).to match(a_hash_including({
+        button_text: _('Delete WebAuthn device'),
+        icon: 'remove',
+        message: _('Are you sure you want to delete this WebAuthn device?'),
+        path: path,
+        password_required: 'false'
+      }))
+    end
+  end
+
+  describe '#disable_two_factor_authentication_data' do
+    context 'when password is required' do
+      it 'returns data to disable two-factor authentication' do
+        expect(helper.disable_two_factor_authentication_data(true)).to match(a_hash_including({
+          button_text: _('Disable two-factor authentication'),
+          message: _('Are you sure you want to invalidate your one-time password authenticator and WebAuthn devices? ' \
+            'Enter your password to continue. This action cannot be undone.'),
+          path: profile_two_factor_auth_path,
+          password_required: 'true'
+        }))
+      end
+    end
+
+    context 'when password is not required' do
+      it 'returns data to disable two-factor authentication' do
+        expect(helper.disable_two_factor_authentication_data(false)).to match(a_hash_including({
+          button_text: _('Disable two-factor authentication'),
+          message: _('Are you sure you want to invalidate your one-time password authenticator and WebAuthn devices?'),
+          path: profile_two_factor_auth_path,
+          password_required: 'false'
+        }))
+      end
+    end
+  end
+
+  describe '#codes_two_factor_authentication_data' do
+    context 'when password is required' do
+      it 'returns data to delete the OTP authenticator' do
+        expect(helper.codes_two_factor_authentication_data(true)).to match(a_hash_including({
+          button_text: _('Regenerate recovery codes'),
+          message: _('Are you sure you want to regenerate recovery codes? ' \
+            'Enter your password to continue.'),
+          method: 'post',
+          path: codes_profile_two_factor_auth_path,
+          password_required: 'true',
+          variant: 'default'
+        }))
+      end
+    end
+
+    context 'when password is not required' do
+      it 'returns data to delete the OTP authenticator' do
+        expect(helper.codes_two_factor_authentication_data(false)).to match(a_hash_including({
+          button_text: _('Regenerate recovery codes'),
+          message: _('Are you sure you want to regenerate recovery codes?'),
+          method: 'post',
+          path: codes_profile_two_factor_auth_path,
+          password_required: 'false',
+          variant: 'default'
+        }))
       end
     end
   end

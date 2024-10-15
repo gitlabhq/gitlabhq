@@ -16,3 +16,4 @@ This page is a work in progress. If you have access to the GitLab Slack workspac
 - [Event definition guide](event_definition_guide.md)
 - [Metric definition guide](metric_definition_guide.md)
 - [Local setup and debugging](local_setup_and_debugging.md)
+- [Internal Events CLI contribution guide](../cli_contribution_guidelines.md)

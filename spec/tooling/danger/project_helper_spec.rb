@@ -30,9 +30,6 @@ RSpec.describe Tooling::Danger::ProjectHelper, feature_category: :tooling do
     end
 
     where(:path, :expected_categories) do
-      'glfm_specification/example_snapshots/prosemirror_json.yml' | [:frontend]
-      'glfm_specification/input/glfm_anything.yml' | [:frontend, :backend]
-
       'doc/api/graphql/reference/index.md'               | [:docs, :backend]
       'doc/api/graphql/reference/some_other_file.txt'    | [:docs, :backend]
       'doc/api/openapi/openapi.yaml'                     | [:docs, :backend]

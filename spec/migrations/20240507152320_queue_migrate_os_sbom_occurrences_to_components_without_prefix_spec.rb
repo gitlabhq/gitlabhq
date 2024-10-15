@@ -3,7 +3,8 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe QueueMigrateOsSbomOccurrencesToComponentsWithoutPrefix, feature_category: :software_composition_analysis do
+RSpec.describe QueueMigrateOsSbomOccurrencesToComponentsWithoutPrefix, migration: :gitlab_sec,
+  feature_category: :software_composition_analysis do
   let!(:batched_migration) { described_class::MIGRATION }
 
   it 'schedules a new batched migration' do

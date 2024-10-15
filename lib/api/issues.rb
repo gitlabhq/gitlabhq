@@ -3,10 +3,15 @@
 module API
   class Issues < ::API::Base
     include PaginationParams
+    include APIGuard
     helpers Helpers::IssuesHelpers
     helpers SpammableActions::CaptchaCheck::RestApiActionsSupport
 
     before { authenticate_non_get! }
+
+    allow_access_with_scope :ai_workflows, if: ->(request) do
+      request.get? || request.head? || request.post? || request.put?
+    end
 
     feature_category :team_planning
     urgency :low

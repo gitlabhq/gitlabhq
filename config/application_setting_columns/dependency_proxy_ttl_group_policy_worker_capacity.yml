@@ -1,0 +1,12 @@
+---
+api_type:
+attr: dependency_proxy_ttl_group_policy_worker_capacity
+clusterwide: false
+column: dependency_proxy_ttl_group_policy_worker_capacity
+db_type: smallint
+default: '2'
+description:
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

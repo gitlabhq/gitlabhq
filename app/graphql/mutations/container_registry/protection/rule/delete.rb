@@ -7,7 +7,7 @@ module Mutations
         class Delete < ::Mutations::BaseMutation
           graphql_name 'DeleteContainerRegistryProtectionRule'
           description 'Deletes a container registry protection rule. ' \
-                      'Available only when feature flag `container_registry_protected_containers` is enabled.'
+            'Available only when feature flag `container_registry_protected_containers` is enabled.'
 
           authorize :admin_container_image
 
@@ -23,11 +23,12 @@ module Mutations
             description: 'Container registry protection rule that was deleted successfully.'
 
           def resolve(id:, **_kwargs)
-            if Feature.disabled?(:container_registry_protected_containers)
+            container_registry_protection_rule = authorized_find!(id: id)
+            project = container_registry_protection_rule.project
+
+            if Feature.disabled?(:container_registry_protected_containers, project.root_ancestor)
               raise_resource_not_available_error!("'container_registry_protected_containers' feature flag is disabled")
             end
-
-            container_registry_protection_rule = authorized_find!(id: id)
 
             response = ::ContainerRegistry::Protection::DeleteRuleService.new(container_registry_protection_rule,
               current_user: current_user).execute

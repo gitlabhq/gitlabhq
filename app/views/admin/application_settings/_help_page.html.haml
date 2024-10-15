@@ -16,7 +16,7 @@
     .form-group
       = f.label :help_page_documentation_base_url, _('Documentation pages URL'), class: 'gl-font-bold'
       = f.text_field :help_page_documentation_base_url, class: 'form-control gl-form-input', placeholder: 'https://docs.gitlab.com'
-      - docs_link_url = help_page_path('administration/settings/help_page', anchor: 'destination-requirements')
+      - docs_link_url = help_page_path('administration/settings/help_page.md', anchor: 'destination-requirements')
       - docs_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: docs_link_url }
       %span.form-text.text-muted#support_help_block= html_escape(_('Requests for pages at %{code_start}%{help_text_url}%{code_end} redirect to the URL. The destination must meet certain requirements. %{docs_link_start}Learn more%{docs_link_end}.')) % { code_start: '<code>'.html_safe, help_text_url: help_url, code_end: '</code>'.html_safe, docs_link_start: docs_link_start, docs_link_end: '</a>'.html_safe }
   = f.submit _('Save changes'), pajamas_button: true

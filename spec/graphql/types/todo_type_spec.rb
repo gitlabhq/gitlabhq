@@ -23,7 +23,8 @@ RSpec.describe GitlabSchema.types['Todo'], feature_category: :team_planning do
       :created_at,
       :note,
       :member_access_type,
-      :target_url
+      :target_url,
+      :snoozed_until
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)

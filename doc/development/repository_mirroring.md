@@ -22,7 +22,7 @@ Specific details may have changed since then, but it should still serve as a goo
 ## Explanation of mirroring process
 
 GitLab performs these steps when an
-[API call](../api/projects.md#start-the-pull-mirroring-process-for-a-project)
+[API call](../api/project_pull_mirroring.md#start-the-pull-mirroring-process-for-a-project)
 triggers a pull mirror. Scheduled mirror updates are similar, but do not start with the API call:
 
 1. The request originates from an API call, and triggers the `start_pull_mirroring_service` in

@@ -69,7 +69,7 @@ module Types
         define_singleton_method(:as) do |new_name|
           if @renamed && graphql_name != new_name
             raise "Conflicting names for ID of #{model_name}: " \
-                  "#{graphql_name} and #{new_name}"
+              "#{graphql_name} and #{new_name}"
           end
 
           @renamed = true

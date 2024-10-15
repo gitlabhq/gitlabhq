@@ -18,7 +18,7 @@ RSpec.describe 'Alert Management index', :js, feature_category: :incident_manage
       expect(page).to have_content('Alerts')
       expect(page).to have_content('Surface alerts in GitLab')
       expect(page).not_to have_selector('.gl-table')
-      page.within('.content-wrapper') do
+      page.within('#content-body') do
         expect(page).not_to have_css('[data-testid="search-icon"]')
       end
     end
@@ -27,7 +27,7 @@ RSpec.describe 'Alert Management index', :js, feature_category: :incident_manage
       it 'renders correctly' do
         expect(page).to have_content('Alerts')
         expect(page).to have_selector('.gl-table')
-        page.within('.content-wrapper') do
+        page.within('#content-body') do
           expect(page).to have_css('[data-testid="search-icon"]')
         end
       end

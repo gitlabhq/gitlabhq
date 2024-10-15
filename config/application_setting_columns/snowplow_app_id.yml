@@ -1,0 +1,12 @@
+---
+api_type: string
+attr: snowplow_app_id
+clusterwide: false
+column: snowplow_app_id
+db_type: character
+default:
+description: The Snowplow site name / application ID. (for example, `gitlab`)
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

@@ -114,10 +114,10 @@ module InternalEventsCli
     def prompt_for_additional_properties
       cli.say Text::ADDITIONAL_PROPERTIES_INTRO
 
-      available_props = [:label, :property, :value]
+      available_props = [:label, :property, :value, :add_extra_prop]
 
       while available_props.any?
-        disabled = format_warning('(already defined)')
+        disabled = format_help('(already defined)')
 
         # rubocop:disable Rails/NegateInclude -- this isn't Rails
         options = [
@@ -136,7 +136,16 @@ module InternalEventsCli
             value: :value,
             name: 'Number (attribute will be named `value`)',
             disabled: disabled
-          ) { !available_props.include?(:value) }
+          ) { !available_props.include?(:value) },
+          disableable_option(
+            value: :add_extra_prop,
+            name: 'Add extra property (attribute will be named the input custom name)',
+            disabled: format_warning('(option disabled - use label/property/value first)')
+          ) do
+            !((!available_props.include?(:label) &&
+                !available_props.include?(:property)) ||
+                !available_props.include?(:value))
+          end
         ]
         # rubocop:enable Rails/NegateInclude
 
@@ -144,20 +153,41 @@ module InternalEventsCli
           "Which additional property do you want to add to the event?",
           options,
           help: format_help("(will reprompt for multiple)"),
-          **select_opts
+          **select_opts,
+          &disabled_format_callback
         )
 
         if selected_property == :none
           available_props.clear
+        elsif selected_property == :add_extra_prop
+          property_name = prompt_for_add_extra_properties
+          property_description = prompt_for_text('Describe what the field will include:')
+          assign_extra_properties(property_name, property_description)
         else
           available_props.delete(selected_property)
           property_description = prompt_for_text('Describe what the field will include:')
-
-          event.additional_properties ||= {}
-          event.additional_properties[selected_property.to_s] = {
-            'description' => property_description || 'TODO'
-          }
+          assign_extra_properties(selected_property, property_description)
         end
+      end
+    end
+
+    def assign_extra_properties(property, description = nil)
+      event.additional_properties ||= {}
+      event.additional_properties[property.to_s] = {
+        'description' => description || 'TODO'
+      }
+    end
+
+    def prompt_for_add_extra_properties
+      primary_props = %w[label property value]
+
+      prompt_for_text('Define a name for the attribute:', **input_opts) do |q|
+        q.required true
+        q.validate ->(input) { input =~ NAME_REGEX && primary_props.none?(input) }
+        q.modify :trim
+        q.messages[:required?] = Text::ADDITIONAL_PROPERTIES_ADD_MORE_HELP
+        q.messages[:valid?] = format_warning("Invalid property name. Only lowercase/numbers/underscores allowed. " \
+                                             "Ensure %{value} is not one of `property, label, value`.")
       end
     end
 

@@ -3,6 +3,8 @@ redirect_to: '../topics/git/add_files.md'
 remove_date: '2024-09-26'
 ---
 
+<!-- markdownlint-disable -->
+
 This document was moved to [another location](../topics/git/add_files.md).
 
 <!-- This redirect file can be deleted after <2024-09-26>. -->

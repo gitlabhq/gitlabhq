@@ -1,0 +1,12 @@
+---
+api_type: boolean
+attr: snowplow_enabled
+clusterwide: false
+column: snowplow_enabled
+db_type: boolean
+default: 'false'
+description: Enable snowplow tracking.
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: true

@@ -7,5 +7,7 @@
   "deploy_keys": [],
   "hooks": [],
   "shared_runners_enabled": true,
-  "ci_config_path": "config/path"
+  "ci_config_path": "config/path",
+  "merge_commit_template": "merge commit message template",
+  "squash_commit_template": "squash commit message template"
 }

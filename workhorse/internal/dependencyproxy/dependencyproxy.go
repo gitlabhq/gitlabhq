@@ -14,9 +14,11 @@ import (
 
 	"gitlab.com/gitlab-org/labkit/log"
 
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper/fail"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/senddata"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/transport"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload"
 )
 
 const dialTimeout = 10 * time.Second
@@ -36,7 +38,7 @@ var httpClients sync.Map
 // Injector provides functionality for injecting dependencies
 type Injector struct {
 	senddata.Prefix
-	uploadHandler http.Handler
+	uploadHandler upload.BodyUploadHandler
 }
 
 type entryParams struct {
@@ -50,9 +52,33 @@ type entryParams struct {
 }
 
 type uploadConfig struct {
-	Headers http.Header
-	Method  string
-	URL     string
+	Headers                  http.Header
+	Method                   string
+	URL                      string
+	AuthorizedUploadResponse authorizeUploadResponse
+}
+
+type authorizeUploadResponse struct {
+	TempPath            string
+	RemoteObject        api.RemoteObject
+	MaximumSize         int64
+	UploadHashFunctions []string
+}
+
+func (u *uploadConfig) ExtractUploadAuthorizeFields() *api.Response {
+	tempPath := u.AuthorizedUploadResponse.TempPath
+	remoteID := u.AuthorizedUploadResponse.RemoteObject.RemoteTempObjectID
+
+	if tempPath == "" && remoteID == "" {
+		return nil
+	}
+
+	return &api.Response{
+		TempPath:            tempPath,
+		RemoteObject:        u.AuthorizedUploadResponse.RemoteObject,
+		MaximumSize:         u.AuthorizedUploadResponse.MaximumSize,
+		UploadHashFunctions: u.AuthorizedUploadResponse.UploadHashFunctions,
+	}
 }
 
 type nullResponseWriter struct {
@@ -80,7 +106,7 @@ func NewInjector() *Injector {
 }
 
 // SetUploadHandler sets the upload handler for the Injector
-func (p *Injector) SetUploadHandler(uploadHandler http.Handler) {
+func (p *Injector) SetUploadHandler(uploadHandler upload.BodyUploadHandler) {
 	p.uploadHandler = uploadHandler
 }
 
@@ -94,21 +120,13 @@ func (p *Injector) Inject(w http.ResponseWriter, r *http.Request, sendData strin
 
 	dependencyResponse, err := p.fetchURL(r.Context(), params)
 	if err != nil {
-		status := http.StatusBadGateway
-
-		if os.IsTimeout(err) {
-			status = http.StatusGatewayTimeout
-		}
-
-		fail.Request(w, r, err, fail.WithStatus(status))
+		handleFetchError(w, r, err)
 		return
 	}
 	defer func() { _ = dependencyResponse.Body.Close() }()
+
 	if dependencyResponse.StatusCode >= 400 {
-		w.WriteHeader(dependencyResponse.StatusCode)
-		// We swallow errors for now as we need to investigate further, see
-		// https://gitlab.com/gitlab-org/gitlab/-/issues/459952.
-		_, _ = io.Copy(w, dependencyResponse.Body)
+		handleErrorResponse(w, dependencyResponse)
 		return
 	}
 
@@ -123,7 +141,7 @@ func (p *Injector) Inject(w http.ResponseWriter, r *http.Request, sendData strin
 		t := time.AfterFunc(uploadRequestGracePeriod, cancel) // call cancel function after 60 seconds
 
 		context.AfterFunc(ctx, func() {
-			if !t.Stop() { // if ctx is cancelled and time still running, we stop the timer
+			if !t.Stop() { // if ctx is canceled and time still running, we stop the timer
 				<-t.C // drain the channel because it's recommended in the docs: https://pkg.go.dev/time#Timer.Stop
 			}
 		})
@@ -134,13 +152,7 @@ func (p *Injector) Inject(w http.ResponseWriter, r *http.Request, sendData strin
 		fail.Request(w, r, fmt.Errorf("dependency proxy: failed to create request: %w", err))
 	}
 
-	// forward headers from dependencyResponse to rails and client
-	for key, values := range dependencyResponse.Header {
-		saveFileRequest.Header.Del(key)
-		for _, value := range values {
-			saveFileRequest.Header.Add(key, value)
-		}
-	}
+	forwardHeaders(dependencyResponse.Header, saveFileRequest)
 
 	p.forwardHeadersToResponse(w, dependencyResponse.Header, params.ResponseHeaders)
 
@@ -149,7 +161,12 @@ func (p *Injector) Inject(w http.ResponseWriter, r *http.Request, sendData strin
 	saveFileRequest.ContentLength = dependencyResponse.ContentLength
 
 	nrw := &nullResponseWriter{header: make(http.Header)}
-	p.uploadHandler.ServeHTTP(nrw, saveFileRequest)
+	apiResponse := params.UploadConfig.ExtractUploadAuthorizeFields()
+	if apiResponse != nil {
+		p.uploadHandler.ServeHTTPWithAPIResponse(nrw, saveFileRequest, apiResponse)
+	} else {
+		p.uploadHandler.ServeHTTP(nrw, saveFileRequest)
+	}
 
 	if nrw.status != http.StatusOK {
 		fields := log.Fields{"code": nrw.status}
@@ -158,6 +175,28 @@ func (p *Injector) Inject(w http.ResponseWriter, r *http.Request, sendData strin
 	}
 }
 
+func handleFetchError(w http.ResponseWriter, r *http.Request, err error) {
+	status := http.StatusBadGateway
+	if os.IsTimeout(err) {
+		status = http.StatusGatewayTimeout
+	}
+	fail.Request(w, r, err, fail.WithStatus(status))
+}
+
+func handleErrorResponse(w http.ResponseWriter, dependencyResponse *http.Response) {
+	w.WriteHeader(dependencyResponse.StatusCode)
+	_, _ = io.Copy(w, dependencyResponse.Body) // swallow errors for investigation, see https://gitlab.com/gitlab-org/gitlab/-/issues/459952.
+}
+
+// forwardHeaders forwards headers from the dependency response to the saveFileRequest.
+func forwardHeaders(dependencyHeader http.Header, saveFileRequest *http.Request) {
+	for key, values := range dependencyHeader {
+		saveFileRequest.Header.Del(key)
+		for _, value := range values {
+			saveFileRequest.Header.Add(key, value)
+		}
+	}
+}
 func (p *Injector) fetchURL(ctx context.Context, params *entryParams) (*http.Response, error) {
 	r, err := http.NewRequestWithContext(ctx, "GET", params.URL, nil)
 	if err != nil {
@@ -205,14 +244,14 @@ func (p *Injector) unpackParams(sendData string) (*entryParams, error) {
 		return nil, fmt.Errorf("dependency proxy: unpack sendData: %w", err)
 	}
 
-	if err := p.validateParams(params); err != nil {
+	if err := p.validateParams(&params); err != nil {
 		return nil, fmt.Errorf("dependency proxy: invalid params: %w", err)
 	}
 
 	return &params, nil
 }
 
-func (p *Injector) validateParams(params entryParams) error {
+func (p *Injector) validateParams(params *entryParams) error {
 	var uploadMethod = params.UploadConfig.Method
 	if uploadMethod != "" && uploadMethod != http.MethodPost && uploadMethod != http.MethodPut {
 		return fmt.Errorf("invalid upload method %s", uploadMethod)

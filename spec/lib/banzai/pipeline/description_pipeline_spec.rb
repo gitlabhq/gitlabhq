@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::Pipeline::DescriptionPipeline, feature_category: :team_planning do
+RSpec.describe Banzai::Pipeline::DescriptionPipeline, feature_category: :markdown do
   let_it_be(:project) { create(:project) }
 
   def parse(html)

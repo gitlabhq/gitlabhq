@@ -340,11 +340,12 @@ RSpec.describe TodosFinder, feature_category: :team_planning do
 
   describe '.todo_types' do
     it 'returns the expected types' do
+      shared_types = %w[Commit Issue WorkItem MergeRequest DesignManagement::Design AlertManagement::Alert Namespace Project Key]
       expected_result =
         if Gitlab.ee?
-          %w[Epic Issue WorkItem MergeRequest DesignManagement::Design AlertManagement::Alert Namespace Project]
+          %w[Epic Vulnerability] + shared_types
         else
-          %w[Issue WorkItem MergeRequest DesignManagement::Design AlertManagement::Alert Namespace Project]
+          shared_types
         end
 
       expect(described_class.todo_types).to contain_exactly(*expected_result)

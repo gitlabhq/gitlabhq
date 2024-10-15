@@ -1,6 +1,6 @@
 <script>
 import { GlFormRadio } from '@gitlab/ui';
-import { dateInWords, parsePikadayDate } from '~/lib/utils/datetime_utility';
+import { dateInWords, newDate } from '~/lib/utils/datetime_utility';
 import { __ } from '~/locale';
 import { dateFields } from '../../constants';
 import SidebarFormattedDate from './sidebar_formatted_date.vue';
@@ -45,7 +45,7 @@ export default {
         return this.$options.i18n.noDate;
       }
 
-      return dateInWords(parsePikadayDate(dateFixed), true);
+      return dateInWords(newDate(dateFixed), true);
     },
     formattedInheritedDate() {
       const dateFromMilestones = this.issuable[dateFields[this.dateType].dateFromMilestones];
@@ -53,7 +53,7 @@ export default {
         return this.$options.i18n.noDate;
       }
 
-      return dateInWords(parsePikadayDate(dateFromMilestones), true);
+      return dateInWords(newDate(dateFromMilestones), true);
     },
   },
   i18n: {

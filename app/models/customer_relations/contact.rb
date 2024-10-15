@@ -27,7 +27,7 @@ class CustomerRelations::Contact < ApplicationRecord
   validates :description, length: { maximum: 1024 }
   validates :email, uniqueness: { case_sensitive: false, scope: :group_id }
   validate :validate_email_format
-  validate :validate_root_group
+  validate :validate_crm_group
 
   scope :order_scope_asc, ->(field) { order(arel_table[field].asc.nulls_last) }
   scope :order_scope_desc, ->(field) { order(arel_table[field].desc.nulls_last) }
@@ -156,9 +156,9 @@ class CustomerRelations::Contact < ApplicationRecord
     self.errors.add(:email, I18n.t(:invalid, scope: 'valid_email.validations.email')) unless ValidateEmail.valid?(self.email)
   end
 
-  def validate_root_group
-    return if group&.root?
+  def validate_crm_group
+    return if group&.crm_group?
 
-    self.errors.add(:base, _('contacts can only be added to root groups'))
+    self.errors.add(:base, _('contacts can only be added to root groups and groups configured as CRM targets'))
   end
 end

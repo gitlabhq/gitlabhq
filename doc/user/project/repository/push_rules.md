@@ -13,7 +13,7 @@ DETAILS:
 
 > - Maximum regular expression length for push rules [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/411901) from 255 to 511 characters in GitLab 16.3.
 
-Push rules are [pre-receive Git hooks](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks) you
+Push rules are [`pre-receive` Git hooks](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks#:~:text=pre%2Dreceive,with%20the%20push.) you
 can enable in a user-friendly interface. Push rules give you more control over what
 can and can't be pushed to your repository. While GitLab offers
 [protected branches](../repository/branches/protected.md), you may need more specific rules, such as:
@@ -33,7 +33,7 @@ For custom push rules use [server hooks](../../../administration/server_hooks.md
 ## Enable global push rules
 
 You can create push rules for all new projects to inherit, but they can be overridden
-at the project level or the [group level](../../group/access_and_permissions.md#group-push-rules).
+in a project or [group](../../group/access_and_permissions.md#group-push-rules).
 All projects created after you configure global push rules inherit this
 configuration. However, each existing project must be updated manually, using the
 process described in [Override global push rules per project](#override-global-push-rules-per-project).
@@ -71,7 +71,7 @@ These push rules apply only to commits and not [tags](tags/index.md).
 
 - **Reject unverified users**: Users must have a [confirmed email address](../../../security/user_email_confirmation.md).
 - **Check whether the commit author is a GitLab user**: The commit author and committer must have an email address that's been verified by GitLab.
-- **Commit author's email**: Both the author's and committer's email addresses must match the regular expression.
+- **Commit author's email**: Both the author and committer email addresses must match the regular expression.
   To allow any email address, leave empty.
 
 ## Validate commit messages
@@ -104,7 +104,7 @@ Use these rules for your commit messages.
   the expression. To allow any commit message, leave empty.
   Uses multiline mode, which can be disabled by using `(?-m)`.
 
-## Reject commits that aren't DCO certified
+## Reject commits that aren't signed-off
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98810) in GitLab 15.5.
 
@@ -322,7 +322,7 @@ read [issue #19185](https://gitlab.com/gitlab-org/gitlab/-/issues/19185).
 ### Bulk update push rules for _all_ projects
 
 To update the push rules to be the same for all projects,
-you need to use [the rails console](../../../administration/operations/rails_console.md#starting-a-rails-console-session),
+use the [Rails console](../../../administration/operations/rails_console.md#starting-a-rails-console-session),
 or write a script to update each project using the [push rules API endpoint](../../../api/project_push_rules.md).
 
 For example, to enable **Check whether the commit author is a GitLab user** and **Do not allow users to remove Git tags with `git push`** checkboxes,

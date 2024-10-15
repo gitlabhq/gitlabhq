@@ -38,6 +38,8 @@ workflow:
     QA_ALLOW_LOCAL_REQUESTS: "true"
     QA_SUITE_STATUS_ENV_FILE: $CI_PROJECT_DIR/suite_status.env
     CNG_FORCE_COLOR: "true"
+    QA_RUN_IN_PARALLEL: "true"
+    QA_PARALLEL_PROCESSES: 4
     # disable selective test execution until pipeline setup is implemented to support it correctly
     KNAPSACK_TEST_FILE_PATTERN: ""
     QA_TESTS: ""
@@ -87,7 +89,7 @@ workflow:
   needs:
     - build-cng
     - download-knapsack-report
-  parallel: 5
+  parallel: 10
 
 # ==========================================
 # Pre stage
@@ -102,12 +104,7 @@ build-cng:
   needs: [build-cng-env]
   variables:
     # use larger runner for complex rails build jobs
-    RAILS_BUILD_RUNNER_TAG: e2e
-  # quality specific fork, see: https://gitlab.com/gitlab-org/quality/quality-engineering/team-tasks/-/issues/2839
-  trigger:
-    project: ${CI_PROJECT_NAMESPACE}/quality/quality-engineering/CNG-mirror
-    branch: $TRIGGER_BRANCH
-    strategy: depend
+    HIGH_CAPACITY_RUNNER_TAG: e2e
 
 download-knapsack-report:
   extends:
@@ -129,7 +126,6 @@ cng-instance:
   variables:
     DEPLOYMENT_TYPE: kind
     EXTRA_DEPLOY_VALUES: --env COVERBAND_ENABLED=${COVERBAND_ENABLED}
-  allow_failure: true
 
 # Test run against environment with minimum supported redis version defined in lib/system_check/app/redis_version_check.rb
 cng-qa-min-redis-version:

@@ -12,6 +12,8 @@ additional_properties:
     description: TODO
   value:
     description: Time the CLI ran before closing (seconds)
+  custom_key:
+    description: The extra custom property name
 product_group: analytics_instrumentation
 milestone: '16.6'
 introduced_by_url: TODO

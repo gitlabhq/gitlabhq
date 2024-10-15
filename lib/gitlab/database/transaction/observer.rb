@@ -35,7 +35,7 @@ module Gitlab
 
         def self.register!
           ActiveSupport::Notifications.subscribe('sql.active_record') do |event|
-            sql = event.payload.dig(:sql).to_s
+            sql = event.payload[:sql].to_s
             cmd = extract_sql_command(sql)
 
             if cmd.start_with?(*INSTRUMENTED_STATEMENTS)

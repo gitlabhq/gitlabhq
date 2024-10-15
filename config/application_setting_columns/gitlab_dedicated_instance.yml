@@ -1,0 +1,12 @@
+---
+api_type: boolean
+attr: gitlab_dedicated_instance
+clusterwide: false
+column: gitlab_dedicated_instance
+db_type: boolean
+default: 'false'
+description: Indicates whether the instance was provisioned for GitLab Dedicated.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

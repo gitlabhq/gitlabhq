@@ -61,6 +61,40 @@ RSpec.describe 'getting a collection of projects', feature_category: :source_cod
     end
   end
 
+  describe 'min_access_level' do
+    let_it_be(:project_with_owner_access) { create(:project, :private) }
+
+    before_all do
+      project_with_owner_access.add_owner(current_user)
+    end
+
+    context 'when min_access_level is OWNER' do
+      let(:filters) { { min_access_level: :OWNER } }
+
+      it 'returns only projects user has owner access to' do
+        post_graphql(query, current_user: current_user)
+
+        expect(graphql_data_at(:projects, :nodes))
+          .to contain_exactly(a_graphql_entity_for(project_with_owner_access))
+      end
+    end
+
+    context 'when min_access_level is DEVELOPER' do
+      let(:filters) { { min_access_level: :DEVELOPER } }
+
+      it 'returns only projects user has developer or higher access to' do
+        post_graphql(query, current_user: current_user)
+
+        expect(graphql_data_at(:projects, :nodes))
+        .to contain_exactly(
+          *projects.map { |project| a_graphql_entity_for(project) },
+          a_graphql_entity_for(other_project),
+          a_graphql_entity_for(project_with_owner_access)
+        )
+      end
+    end
+  end
+
   context 'when providing full_paths filter' do
     let(:project_full_paths) { projects.map(&:full_path) }
     let(:filters) { { full_paths: project_full_paths } }
@@ -111,6 +145,23 @@ RSpec.describe 'getting a collection of projects', feature_category: :source_cod
           hash_including('message' => _('You cannot provide more than 50 full_paths'))
         )
       end
+    end
+  end
+
+  context 'when providing the programming_language_name argument' do
+    let_it_be(:project) { projects.first }
+    let_it_be(:ruby) { create(:programming_language, name: 'Ruby') }
+    let_it_be(:repository_language) do
+      create(:repository_language, project: project, programming_language: ruby, share: 1)
+    end
+
+    let(:filters) { { programming_language_name: 'ruby' } }
+
+    it 'returns the expected projects' do
+      post_graphql(query, current_user: current_user)
+
+      expect(graphql_data_at(:projects, :nodes))
+        .to contain_exactly(a_graphql_entity_for(project))
     end
   end
 end
