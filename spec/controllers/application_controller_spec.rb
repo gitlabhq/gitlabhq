@@ -1108,4 +1108,22 @@ RSpec.describe ApplicationController, feature_category: :shared do
       expect(response.headers['Retry-After']).to eq(50)
     end
   end
+
+  context 'When Regexp::TimeoutError is raised' do
+    before do
+      sign_in user
+    end
+
+    controller(described_class) do
+      def index
+        raise Regexp::TimeoutError
+      end
+    end
+
+    it 'returns a plaintext error response with 503 status' do
+      get :index
+
+      expect(response).to have_gitlab_http_status(:service_unavailable)
+    end
+  end
 end

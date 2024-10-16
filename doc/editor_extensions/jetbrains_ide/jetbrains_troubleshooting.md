@@ -21,6 +21,15 @@ To enable debug logs in JetBrains:
 1. Add this line: `com.gitlab.plugin`
 1. Select **OK** or **Save**.
 
+To enable GitLab Language Server debug logs:
+
+1. In your IDE, on the top bar, select your IDE name, then select **Settings**.
+1. On the left sidebar, select **Tools > GitLab Duo**.
+1. Select **GitLab Language Server** to expand the section.
+1. In **Logging > Log Level**, enter `debug`.
+1. Select **Apply**.
+1. Below **Enable GitLab Language Server**, select **Restart Language Server**.
+
 The debug logs are available in the `idea.log` log file.
 
 ## Error: `unable to find valid certification path to requested target`

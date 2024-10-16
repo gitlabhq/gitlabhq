@@ -1,4 +1,4 @@
-import { GlTable, GlButton } from '@gitlab/ui';
+import { GlTable, GlButton, GlPagination } from '@gitlab/ui';
 import Vue from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
@@ -10,6 +10,7 @@ import actions from '~/badges/store/actions';
 import BadgeList from '~/badges/components/badge_list.vue';
 import Badge from '~/badges/components/badge.vue';
 import { createDummyBadge } from '../dummy_badge';
+import { MOCK_PAGINATION } from '../mock_data';
 
 Vue.use(Vuex);
 
@@ -29,6 +30,7 @@ describe('BadgeList component', () => {
   const findEditButton = () => wrapper.findByTestId('edit-badge-button');
   const findDeleteButton = () => wrapper.findByTestId('delete-badge');
   const findBadge = () => wrapper.findComponent(Badge);
+  const findPagination = () => wrapper.findComponent(GlPagination);
 
   const createComponent = (customState) => {
     mockedActions = Object.fromEntries(Object.keys(actions).map((name) => [name, jest.fn()]));
@@ -83,6 +85,17 @@ describe('BadgeList component', () => {
   });
 
   describe('for group badges', () => {
+    it('renders a row for each badge', () => {
+      createComponent({
+        kind: GROUP_BADGE,
+        badges,
+      });
+
+      const rows = findTable().find('tbody').findAll('tr');
+
+      expect(rows).toHaveLength(numberOfDummyBadges);
+    });
+
     it('renders a message if no badges exist', () => {
       createComponent({
         kind: GROUP_BADGE,
@@ -143,6 +156,61 @@ describe('BadgeList component', () => {
       findDeleteButton().trigger('click');
 
       expect(mockedActions.updateBadgeInModal).toHaveBeenCalled();
+    });
+  });
+
+  describe('Pagination', () => {
+    describe.each`
+      isLoading | nextPage | previousPage | expected
+      ${true}   | ${2}     | ${null}      | ${false}
+      ${true}   | ${null}  | ${1}         | ${false}
+      ${true}   | ${null}  | ${null}      | ${false}
+      ${false}  | ${2}     | ${null}      | ${true}
+      ${false}  | ${null}  | ${1}         | ${true}
+      ${false}  | ${null}  | ${null}      | ${false}
+    `('template', ({ isLoading, nextPage, previousPage, expected }) => {
+      beforeEach(() => {
+        createComponent({
+          isLoading,
+          pagination: {
+            ...MOCK_PAGINATION,
+            nextPage,
+            previousPage,
+          },
+        });
+      });
+
+      it(`does${expected ? '' : ' not'} render pagination when isLoading is ${isLoading}, nextPage is ${nextPage}, and previousPage is ${previousPage}`, () => {
+        expect(findPagination().exists()).toBe(expected);
+      });
+    });
+
+    describe('events', () => {
+      beforeEach(() => {
+        createComponent({
+          pagination: MOCK_PAGINATION,
+        });
+      });
+
+      it('calls actions.loadBadges with the correct page when @input is emitted with valid page', () => {
+        findPagination().vm.$emit('input', MOCK_PAGINATION.nextPage);
+
+        expect(mockedActions.loadBadges).toHaveBeenCalledWith(expect.any(Object), {
+          page: MOCK_PAGINATION.nextPage,
+        });
+      });
+
+      it('does not call actions.loadBadges when user tries to navigate before page 1', () => {
+        findPagination().vm.$emit('input', 0);
+
+        expect(mockedActions.loadBadges).not.toHaveBeenCalled();
+      });
+
+      it('does not call actions.loadBadges when user tries to navigate past the last page', () => {
+        findPagination().vm.$emit('input', MOCK_PAGINATION.totalPages + 1);
+
+        expect(mockedActions.loadBadges).not.toHaveBeenCalled();
+      });
     });
   });
 });

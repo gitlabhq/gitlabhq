@@ -702,6 +702,8 @@ $ide-commit-header-height: 48px;
   }
 }
 
+// These are composite classes for use with Vue Transition
+// https://vuejs.org/guide/built-ins/transition
 .commit-form-slide-up-enter-active,
 .commit-form-slide-up-leave-active {
   position: absolute;

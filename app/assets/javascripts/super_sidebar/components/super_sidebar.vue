@@ -40,10 +40,6 @@ export default {
       import('ee_component/contextual_sidebar/components/trial_status_widget.vue'),
     TrialStatusPopover: () =>
       import('ee_component/contextual_sidebar/components/trial_status_popover.vue'),
-    DuoProTrialStatusWidget: () =>
-      import('ee_component/contextual_sidebar/components/duo_pro_trial_status_widget.vue'),
-    DuoProTrialStatusPopover: () =>
-      import('ee_component/contextual_sidebar/components/duo_pro_trial_status_popover.vue'),
   },
   mixins: [Tracking.mixin()],
   i18n: {
@@ -51,7 +47,7 @@ export default {
     primaryNavigation: s__('Navigation|Primary navigation'),
     adminArea: s__('Navigation|Admin'),
   },
-  inject: ['showTrialStatusWidget', 'showDuoProTrialStatusWidget', 'showTrialWidget'],
+  inject: ['showTrialStatusWidget', 'showTrialWidget'],
   props: {
     sidebarData: {
       type: Object,
@@ -235,12 +231,6 @@ export default {
           class="super-sidebar-nav-item gl-relative gl-mb-1 gl-flex gl-items-center gl-rounded-base gl-p-3 gl-leading-normal !gl-text-default !gl-no-underline"
         />
         <trial-status-popover />
-      </div>
-      <div v-else-if="showDuoProTrialStatusWidget" class="gl-p-2">
-        <duo-pro-trial-status-widget
-          class="super-sidebar-nav-item gl-relative gl-mb-1 gl-flex gl-items-center gl-rounded-base gl-p-3 gl-leading-normal !gl-text-default !gl-no-underline"
-        />
-        <duo-pro-trial-status-popover />
       </div>
       <div class="contextual-nav gl-flex gl-grow gl-flex-col gl-overflow-hidden">
         <div

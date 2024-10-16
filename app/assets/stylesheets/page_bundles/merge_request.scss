@@ -274,6 +274,8 @@ $comparison-empty-state-height: 62px;
   }
 }
 
+// These are composite classes for use with Vue Transition
+// https://vuejs.org/guide/built-ins/transition
 .survey-slide-up-enter {
   transform: translateY(10px);
   opacity: 0;

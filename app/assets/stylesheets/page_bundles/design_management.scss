@@ -37,6 +37,8 @@ $t-gray-a-16-design-pin: rgba($black, 0.16);
   }
 }
 
+// These are composite classes for use with Vue Transition
+// https://vuejs.org/guide/built-ins/transition
 .design-disclosure-enter-to {
   transform: translateX(0);
 }

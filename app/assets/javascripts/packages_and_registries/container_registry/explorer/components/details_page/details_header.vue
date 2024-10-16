@@ -109,13 +109,15 @@ export default {
       return n__('%d tag', '%d tags', this.imageDetails.tagsCount);
     },
     cleanupTextAndTooltip() {
-      if (!this.imageDetails.project.containerExpirationPolicy?.enabled) {
+      if (!this.imageDetails.project.containerTagsExpirationPolicy?.enabled) {
         return { text: CLEANUP_DISABLED_TEXT, tooltip: CLEANUP_DISABLED_TOOLTIP };
       }
       return {
         [UNSCHEDULED_STATUS]: {
           text: sprintf(CLEANUP_UNSCHEDULED_TEXT, {
-            time: this.timeFormatted(this.imageDetails.project.containerExpirationPolicy.nextRunAt),
+            time: this.timeFormatted(
+              this.imageDetails.project.containerTagsExpirationPolicy.nextRunAt,
+            ),
           }),
         },
         [SCHEDULED_STATUS]: { text: CLEANUP_SCHEDULED_TEXT, tooltip: CLEANUP_SCHEDULED_TOOLTIP },

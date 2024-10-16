@@ -121,6 +121,11 @@ class ApplicationController < BaseActionController
     render plain: e.message, status: :service_unavailable
   end
 
+  rescue_from Regexp::TimeoutError do |e|
+    log_exception(e)
+    head :service_unavailable
+  end
+
   def redirect_back_or_default(default: root_path, options: {})
     redirect_back(fallback_location: default, **options)
   end

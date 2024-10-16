@@ -795,6 +795,8 @@
     padding: 16px 20px;
   }
 
+  // These are composite classes for use with Vue Transition
+  // https://vuejs.org/guide/built-ins/transition
   .help-state-toggle-enter-active {
     transition: all 0.8s ease;
   }

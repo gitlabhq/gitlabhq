@@ -253,6 +253,8 @@ ul.related-merge-requests > li gl-emoji {
   }
 }
 
+// These are composite classes for use with Vue Transition
+// https://vuejs.org/guide/built-ins/transition
 .issuable-header-slide-enter-active,
 .issuable-header-slide-leave-active {
   @apply gl-transition-all;

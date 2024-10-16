@@ -286,7 +286,10 @@ describe('Details Header', () => {
                 ...defaultImage,
                 expirationPolicyCleanupStatus: status,
                 project: {
-                  containerExpirationPolicy: { enabled: true, nextRunAt: '2021-01-03T14:29:21Z' },
+                  containerTagsExpirationPolicy: {
+                    enabled: true,
+                    nextRunAt: '2021-01-03T14:29:21Z',
+                  },
                 },
               },
             },

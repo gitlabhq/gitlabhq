@@ -12643,6 +12643,9 @@ msgstr ""
 msgid "ClusterAgents|Are you sure you want to revoke this token? You cannot undo this action."
 msgstr ""
 
+msgid "ClusterAgents|Bootstrap the agent with Flux"
+msgstr ""
+
 msgid "ClusterAgents|CI/CD workflow with restricted access"
 msgstr ""
 
@@ -12763,6 +12766,12 @@ msgstr ""
 msgid "ClusterAgents|How do I update an agent?"
 msgstr ""
 
+msgid "ClusterAgents|If Flux is installed in the cluster, you can install and register the agent from the command line:"
+msgstr ""
+
+msgid "ClusterAgents|If you're %{linkStart}bootstrapping the agent with Flux%{linkEnd}, you can close this dialog."
+msgstr ""
+
 msgid "ClusterAgents|Install using Helm (recommended)"
 msgstr ""
 
@@ -12823,6 +12832,9 @@ msgid "ClusterAgents|Recommended"
 msgstr ""
 
 msgid "ClusterAgents|Register"
+msgstr ""
+
+msgid "ClusterAgents|Register agent with the UI"
 msgstr ""
 
 msgid "ClusterAgents|Registering agent"
@@ -12919,6 +12931,9 @@ msgid "ClusterAgents|You can connect to your cluster from the command line. Conf
 msgstr ""
 
 msgid "ClusterAgents|You can connect to your cluster from the command line. To use this feature, configure %{monotypeStart}user_access%{monotypeEnd} in the agent configuration project."
+msgstr ""
+
+msgid "ClusterAgents|You can view a list of options with %{codeStart}--help%{codeEnd}."
 msgstr ""
 
 msgid "ClusterAgents|You cannot see this token again after you close this window."
@@ -20449,31 +20464,13 @@ msgstr ""
 msgid "DuoProTrial|Code completion and code generation with Code Suggestions"
 msgstr ""
 
-msgid "DuoProTrial|Day %{daysUsed}/%{duration}"
-msgstr ""
-
-msgid "DuoProTrial|GitLab Duo Pro Trial"
-msgstr ""
-
 msgid "DuoProTrial|GitLab Duo Pro is designed to make teams more efficient throughout the software development lifecycle with:"
 msgstr ""
 
 msgid "DuoProTrial|GitLab Duo Pro is only available for purchase for Premium and Ultimate users."
 msgstr ""
 
-msgid "DuoProTrial|Learn about GitLab Duo"
-msgstr ""
-
-msgid "DuoProTrial|Learn about features"
-msgstr ""
-
-msgid "DuoProTrial|Looking to do more with AI?"
-msgstr ""
-
 msgid "DuoProTrial|Organizational user controls"
-msgstr ""
-
-msgid "DuoProTrial|Purchase now"
 msgstr ""
 
 msgid "DuoProTrial|Sign in with a different account"
@@ -20488,9 +20485,6 @@ msgstr ""
 msgid "DuoProTrial|Test Generation"
 msgstr ""
 
-msgid "DuoProTrial|To regain access to features like Code Suggestions and Chat, purchase the subscription add-on for GitLab Duo Pro."
-msgstr ""
-
 msgid "DuoProTrial|To start a GitLab Duo trial, you must have the Owner role of a top-level group that has an active subscription or trial."
 msgstr ""
 
@@ -20501,20 +20495,6 @@ msgid "DuoProTrial|You do not have access to trial GitLab Duo"
 msgstr ""
 
 msgid "DuoProTrial|You have successfully started a Duo Pro trial that will expire on %{exp_date}. To give members access to new GitLab Duo Pro features, %{assign_link_start}assign them%{assign_link_end} to GitLab Duo Pro seats."
-msgstr ""
-
-msgid "DuoProTrial|You no longer have access to GitLab Duo Pro features"
-msgstr ""
-
-msgid "DuoProTrial|You've got %{daysRemaining} day left in your GitLab Duo Pro trial"
-msgid_plural "DuoProTrial|You've got %{daysRemaining} days left in your GitLab Duo Pro trial"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "DuoProTrial|Your %{duration}-day trial has ended"
-msgstr ""
-
-msgid "DuoProTrial|Your trial ends on %{strongStart}%{trialEndDate}%{strongEnd}. To continue using features in GitLab Duo Pro, purchase a subscription add-on."
 msgstr ""
 
 msgid "Duplicate packages"
@@ -57922,6 +57902,12 @@ msgstr ""
 msgid "TrialWidget|GitLab Duo Enterprise Trial"
 msgstr ""
 
+msgid "TrialWidget|GitLab Duo Pro"
+msgstr ""
+
+msgid "TrialWidget|GitLab Duo Pro Trial"
+msgstr ""
+
 msgid "TrialWidget|Learn more"
 msgstr ""
 
@@ -57932,6 +57918,9 @@ msgid "TrialWidget|Upgrade"
 msgstr ""
 
 msgid "TrialWidget|Your trial of GitLab Duo Enterprise has ended"
+msgstr ""
+
+msgid "TrialWidget|Your trial of GitLab Duo Pro has ended"
 msgstr ""
 
 msgid "Trials|%{planName} Trial"

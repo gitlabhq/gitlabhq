@@ -4,7 +4,8 @@ require 'spec_helper'
 
 RSpec.describe Clusters::Agents::Authorizations::UserAccess::Finder, feature_category: :deployment_management do
   describe '#execute' do
-    let_it_be(:organization) { create(:group) }
+    let_it_be(:parent_group) { create(:group) }
+    let_it_be(:organization) { create(:group, parent: parent_group) }
     let_it_be(:agent_configuration_project) { create(:project, namespace: organization) }
     let_it_be(:agent) { create(:cluster_agent, project: agent_configuration_project) }
     let_it_be(:deployment_project) { create(:project, namespace: organization) }
@@ -192,6 +193,24 @@ RSpec.describe Clusters::Agents::Authorizations::UserAccess::Finder, feature_cat
             is_expected.to contain_exactly(authorization_1)
           end
         end
+      end
+    end
+
+    context 'with group authorizations inherited from a parent group' do
+      let!(:authorization_1) do
+        create(:agent_user_access_group_authorization, agent: agent, group: parent_group)
+      end
+
+      let(:params) { { project: deployment_project } }
+
+      before_all do
+        parent_group.add_developer(deployment_developer)
+      end
+
+      it 'returns authorization' do
+        is_expected.to contain_exactly(authorization_1)
+
+        expect(subject.first.access_level).to eq(Gitlab::Access::DEVELOPER)
       end
     end
   end

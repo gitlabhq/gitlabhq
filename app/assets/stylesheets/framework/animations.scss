@@ -215,6 +215,8 @@ $skeleton-line-widths: (
   }
 }
 
+// These are composite classes for use with Vue Transition
+// https://vuejs.org/guide/built-ins/transition
 .slide-down-enter-active {
   transition: transform 0.2s;
 }
@@ -222,6 +224,14 @@ $skeleton-line-widths: (
 .slide-down-enter,
 .slide-down-leave-to {
   transform: translateY(-30%);
+}
+
+.slide-in-fwd-bottom-enter-active {
+  animation: slide-in-fwd-bottom 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+.slide-in-fwd-bottom-leave-active {
+  animation: slide-in-fwd-bottom 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) both reverse;
 }
 
 @keyframes spin {
@@ -262,10 +272,3 @@ $skeleton-line-widths: (
   }
 }
 
-.slide-in-fwd-bottom-enter-active {
-  animation: slide-in-fwd-bottom 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
-}
-
-.slide-in-fwd-bottom-leave-active {
-  animation: slide-in-fwd-bottom 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) both reverse;
-}

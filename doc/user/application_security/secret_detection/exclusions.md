@@ -29,6 +29,10 @@ In the [first iteration](https://gitlab.com/groups/gitlab-org/-/epics/14878) of 
 - Exclusions can only be defined for each project.
 - Exclusions apply only to [secret push protection](secret_push_protection/index.md).
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an overview, see [Secret Detection Exclusions - Demonstration](https://www.youtube.com/watch?v=vh_Uh4_4aoc).
+<!-- Video published on 2024-10-12 -->
+
 ## Add an exclusion
 
 Define an exclusion to avoid false positives from secret detection.

@@ -41,7 +41,7 @@ To configure access:
 - In the agent configuration file, define a `user_access` keyword with the following parameters:
 
   - `projects`: A list of projects whose members should have access. You can authorize up to 500 projects.
-  - `groups`: A list of groups whose members should have access. You can authorize up to 500 projects.
+  - `groups`: A list of groups whose members should have access. You can authorize up to 500 groups. It grants access to the group and all its descendants.
   - `access_as`: Required. For plain access, the value is `{ agent: {...} }`.
 
 After you configure access, requests are forwarded to the API server using

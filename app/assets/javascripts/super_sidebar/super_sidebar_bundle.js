@@ -35,7 +35,6 @@ const getTrialStatusWidgetData = (sidebarData) => {
 
     return {
       showTrialStatusWidget: true,
-      showDuoProTrialStatusWidget: false,
       showTrialWidget: false,
       trialDaysUsed: Number(trialDaysUsed),
       trialDuration: Number(trialDuration),
@@ -46,39 +45,6 @@ const getTrialStatusWidgetData = (sidebarData) => {
       daysRemaining,
       trialEndDate: new Date(trialEndDate),
       trialDiscoverPagePath,
-    };
-  }
-
-  if (
-    sidebarData.duo_pro_trial_status_widget_data_attrs &&
-    sidebarData.duo_pro_trial_status_popover_data_attrs
-  ) {
-    const {
-      trialDaysUsed,
-      trialDuration,
-      percentageComplete,
-      groupId,
-      featureId,
-      dismissEndpoint,
-    } = convertObjectPropsToCamelCase(sidebarData.duo_pro_trial_status_widget_data_attrs);
-
-    const { daysRemaining, trialEndDate, purchaseNowUrl, learnAboutButtonUrl } =
-      convertObjectPropsToCamelCase(sidebarData.duo_pro_trial_status_popover_data_attrs);
-
-    return {
-      showDuoProTrialStatusWidget: true,
-      showTrialStatusWidget: false,
-      showTrialWidget: false,
-      trialDaysUsed: Number(trialDaysUsed),
-      trialDuration: Number(trialDuration),
-      percentageComplete: Number(percentageComplete),
-      groupId,
-      featureId,
-      dismissEndpoint,
-      daysRemaining,
-      trialEndDate: new Date(trialEndDate),
-      purchaseNowUrl,
-      learnAboutButtonUrl,
     };
   }
 
@@ -97,7 +63,6 @@ const getTrialStatusWidgetData = (sidebarData) => {
     return {
       showTrialWidget: true,
       showTrialStatusWidget: false,
-      showDuoProTrialStatusWidget: false,
       trialType,
       daysRemaining: Number(daysRemaining),
       percentageComplete: Number(percentageComplete),
@@ -112,7 +77,6 @@ const getTrialStatusWidgetData = (sidebarData) => {
   return {
     showTrialWidget: false,
     showTrialStatusWidget: false,
-    showDuoProTrialStatusWidget: false,
   };
 };
 
