@@ -91,7 +91,6 @@
 - './ee/spec/features/groups/iterations/user_views_iteration_cadence_spec.rb'
 - './ee/spec/features/groups/iterations/user_views_iteration_spec.rb'
 - './ee/spec/features/groups/ldap_group_links_spec.rb'
-- './ee/spec/features/groups/members/leave_group_spec.rb'
 - './ee/spec/features/groups/members/list_members_spec.rb'
 - './ee/spec/features/groups/members/manage_groups_spec.rb'
 - './ee/spec/features/groups/members/manage_members_spec.rb'

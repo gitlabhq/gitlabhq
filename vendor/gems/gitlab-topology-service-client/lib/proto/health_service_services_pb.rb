@@ -11,16 +11,16 @@ module Gitlab
         # Public read-only service
         class Service
 
-          include GRPC::GenericService
+          include ::GRPC::GenericService
 
           self.marshal_class_method = :encode
           self.unmarshal_class_method = :decode
           self.service_name = 'gitlab.cells.topology_service.HealthService'
 
           # (Lightweight) Used for checking if application is ready to accept requests
-          rpc :ReadinessProbe, Gitlab::Cells::TopologyService::ReadinessProbeRequest, Gitlab::Cells::TopologyService::ReadinessProbeResponse
+          rpc :ReadinessProbe, ::Gitlab::Cells::TopologyService::ReadinessProbeRequest, ::Gitlab::Cells::TopologyService::ReadinessProbeResponse
           # (Lightweight) Used for checking if application is alive, or whether it should be restarted
-          rpc :LivenessProbe, Gitlab::Cells::TopologyService::LivenessProbeRequest, Gitlab::Cells::TopologyService::LivenessProbeResponse
+          rpc :LivenessProbe, ::Gitlab::Cells::TopologyService::LivenessProbeRequest, ::Gitlab::Cells::TopologyService::LivenessProbeResponse
         end
 
         Stub = Service.rpc_stub_class

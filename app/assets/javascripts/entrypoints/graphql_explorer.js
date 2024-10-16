@@ -19,8 +19,28 @@ const apolloClient = createDefaultClient(
 const graphiqlContainer = document.getElementById('graphiql-container');
 
 function apolloFetcher(graphQLParams) {
+  let query = gql(graphQLParams.query);
+
+  /*
+    GraphiQL allows multiple named operations to be declared in the editor.
+    When the user clicks execute, they are prompted to select one of the operations.
+    We must filter the query to only contain the selected operation so we execute the correct query
+    and avoid an `Ambiguous GraphQL document: contains 2 operations` error.
+  */
+  if (graphQLParams.operationName) {
+    query = {
+      ...query,
+      definitions: query.definitions.filter((definition) => {
+        return (
+          definition.kind !== 'OperationDefinition' ||
+          definition.name.value === graphQLParams.operationName
+        );
+      }),
+    };
+  }
+
   return apolloClient.subscribe({
-    query: gql(graphQLParams.query),
+    query,
     variables: graphQLParams.variables,
     operationName: graphQLParams.operationName,
   });

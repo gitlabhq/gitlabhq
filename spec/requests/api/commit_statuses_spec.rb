@@ -140,7 +140,7 @@ RSpec.describe API::CommitStatuses, :clean_gitlab_redis_cache, feature_category:
 
     context 'developer user' do
       context 'uses only required parameters' do
-        valid_statues = %w[pending running success failed canceled]
+        valid_statues = %w[pending running success failed canceled skipped]
         valid_statues.each do |status|
           context "for #{status}" do
             context 'when pipeline for sha does not exists' do

@@ -29,17 +29,6 @@ module Features
     end
 
     # Registers webauthn device via UI
-    # Remove after `webauthn_without_totp` feature flag is deleted.
-    def register_webauthn_device(webauthn_device = nil, name: 'My device')
-      webauthn_device ||= FakeWebauthnDevice.new(page, name)
-      webauthn_device.respond_to_webauthn_registration
-      click_on 'Set up new device'
-      expect(page).to have_content('Your device was successfully set up')
-      fill_in 'Pick a name', with: name
-      click_on 'Register device'
-      webauthn_device
-    end
-
     def webauthn_device_registration(webauthn_device: nil, name: 'My device', password: 'fake')
       webauthn_device ||= FakeWebauthnDevice.new(page, name)
       webauthn_device.respond_to_webauthn_registration

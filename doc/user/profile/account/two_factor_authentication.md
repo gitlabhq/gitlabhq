@@ -277,12 +277,6 @@ Configure FortiToken Cloud in GitLab. On your GitLab server:
 
 ### Set up a WebAuthn device
 
-> - Optional one-time password authentication for WebAuthn devices [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378844) in GitLab 15.10 [with a flag](../../../administration/feature_flags.md) named `webauthn_without_totp`. [Enabled on GitLab.com and self-managed by default](https://gitlab.com/gitlab-org/gitlab/-/issues/232671).
-
-FLAG:
-On self-managed GitLab, by default, optional one-time password authentication for WebAuthn devices is not available. To enable the feature, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `webauthn_without_totp`.
-On GitLab.com, this feature is available. On GitLab Dedicated, this feature is not available.
-
 WebAuthn is [supported by](https://caniuse.com/#search=webauthn) the following:
 
 - Desktop browsers:

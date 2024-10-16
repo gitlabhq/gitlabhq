@@ -61,7 +61,7 @@ module API
         requires :sha,          type: String, desc: 'The commit hash',
           documentation: { example: '18f3e63d05582537db6d183d9d557be09e1f90c8' }
         requires :state,        type: String, desc: 'The state of the status',
-          values: %w[pending running success failed canceled],
+          values: %w[pending running success failed canceled skipped],
           documentation: { example: 'pending' }
         optional :ref,          type: String, desc: 'The ref',
           documentation: { example: 'develop' }

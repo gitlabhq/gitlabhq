@@ -134,8 +134,6 @@ module Gitlab
             log.info "Correct LDAP account has been found. identity to user: #{gl_user.username}."
             gl_user.identities.build(provider: ldap_person.provider, extern_uid: ldap_person.dn)
           end
-
-          identity
         end
 
         def find_or_build_ldap_user

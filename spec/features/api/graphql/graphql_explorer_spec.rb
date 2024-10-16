@@ -44,6 +44,22 @@ RSpec.describe 'GraphQL Explorer', :js, feature_category: :api do
     expect_response(%("currentUser": { "id": "#{user.to_gid}" }))
   end
 
+  it 'allows user to execute one of multiple named queries' do
+    visit '/-/graphql-explorer'
+
+    fill_in_editor(
+      'query currentUserId { currentUser { ...UserIdFragment } } ' \
+        'query currentUsername { currentUser { username } } ' \
+        'fragment UserIdFragment on User { id }'
+    )
+    sleep 0.1 # GraphiQL needs to parse the query in the background before we click execute
+
+    click_execute_button
+    find('.graphiql-dropdown-item', text: 'currentUserId').click
+
+    expect_response(%("currentUser": { "id": "#{user.to_gid}" }))
+  end
+
   it 'allows user to execute a mutation' do
     visit '/-/graphql-explorer'
 

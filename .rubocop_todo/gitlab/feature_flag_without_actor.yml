@@ -61,7 +61,6 @@ Gitlab/FeatureFlagWithoutActor:
     - 'app/views/admin/application_settings/_invitation_flow_enforcement.html.haml'
     - 'app/views/admin/application_settings/general.html.haml'
     - 'app/views/admin/projects/show.html.haml'
-    - 'app/views/authentication/_register.html.haml'
     - 'app/views/devise/shared/_language_switcher.html.haml'
     - 'app/views/explore/projects/_projects.html.haml'
     - 'app/views/layouts/notify.html.haml'

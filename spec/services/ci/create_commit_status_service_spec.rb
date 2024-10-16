@@ -18,7 +18,7 @@ RSpec.describe Ci::CreateCommitStatusService, :clean_gitlab_redis_cache, feature
   let(:params) { { state: 'pending' } }
   let(:job) { response.payload[:job] }
 
-  %w[pending running success failed canceled].each do |status|
+  %w[pending running success failed canceled skipped].each do |status|
     context "for #{status}" do
       let(:params) { { state: status } }
 
@@ -46,7 +46,7 @@ RSpec.describe Ci::CreateCommitStatusService, :clean_gitlab_redis_cache, feature
       execute_service(state: 'pending')
     end
 
-    %w[running success failed canceled].each do |status|
+    %w[running success failed canceled skipped].each do |status|
       context "for #{status}" do
         let(:params) { { state: status } }
 

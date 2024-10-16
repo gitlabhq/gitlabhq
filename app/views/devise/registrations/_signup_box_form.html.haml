@@ -91,7 +91,8 @@
     - elsif show_recaptcha_sign_up?
       = recaptcha_tags nonce: content_security_policy_nonce
 
-  = render 'devise/shared/terms_of_service_notice', button_text: button_text
+  = render_if_exists 'devise/registrations/opt_in_to_email', f: f
+  = render 'devise/shared/terms_of_service_notice', button_text: button_text, css_class: 'gl-mt-2'
 
   = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, block: true,
     button_options: { class: "#{button_class} gl-mt-4",

@@ -77,14 +77,11 @@
       %p
         = _('Set up a hardware device to enable two-factor authentication (2FA).')
       %p
-        - if Feature.enabled?(:webauthn_without_totp)
-          = _("Not all browsers support WebAuthn. You must save your recovery codes after you first register a two-factor authenticator to be able to sign in, even from an unsupported browser.")
-        - else
-          = _("Not all browsers support WebAuthn. Therefore, we require that you set up a two-factor authentication app first. That way you'll always be able to sign in, even from an unsupported browser.")
+        = _("Not all browsers support WebAuthn. You must save your recovery codes after you first register a two-factor authenticator to be able to sign in, even from an unsupported browser.")
     .col-lg-8
       - if @webauthn_registration.errors.present?
         = form_errors(@webauthn_registration)
-      = render "authentication/register", target_path: create_webauthn_profile_two_factor_auth_path
+      #js-device-registration{ data: device_registration_data(current_password_required: current_password_required?, target_path: create_webauthn_profile_two_factor_auth_path, webauthn_error: @webauthn_error) }
 
       %hr
 

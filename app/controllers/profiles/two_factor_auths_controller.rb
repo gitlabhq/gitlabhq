@@ -19,7 +19,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
       ::Users::ValidateManualOtpService.new(current_user).execute(params[:pin_code])
     validated = (otp_validation_result[:status] == :success)
 
-    if validated && current_user.otp_backup_codes? && Feature.enabled?(:webauthn_without_totp)
+    if validated && current_user.otp_backup_codes?
       ActiveSession.destroy_all_but_current(current_user, session)
       Users::UpdateService.new(current_user, user: current_user, otp_required_for_login: true).execute!
       redirect_to profile_two_factor_auth_path, notice: _("Your Time-based OTP device was registered!")
@@ -50,21 +50,16 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
     if @webauthn_registration.persisted?
       session.delete(:challenge)
 
-      if Feature.enabled?(:webauthn_without_totp)
-
-        if current_user.otp_backup_codes?
-          redirect_to profile_two_factor_auth_path, notice: notice
-        else
-
-          Users::UpdateService.new(current_user, user: current_user).execute! do |user|
-            @codes = current_user.generate_otp_backup_codes!
-          end
-          helpers.dismiss_two_factor_auth_recovery_settings_check
-          flash[:notice] = notice
-          render 'create'
-        end
-      else
+      if current_user.otp_backup_codes?
         redirect_to profile_two_factor_auth_path, notice: notice
+      else
+
+        Users::UpdateService.new(current_user, user: current_user).execute! do |user|
+          @codes = current_user.generate_otp_backup_codes!
+        end
+        helpers.dismiss_two_factor_auth_recovery_settings_check
+        flash[:notice] = notice
+        render 'create'
       end
     else
       @qr_code = build_qr_code
@@ -131,7 +126,6 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
   end
 
   def validate_current_password
-    return if Feature.disabled?(:webauthn_without_totp) && params[:action] == 'create_webauthn'
     return if current_user.valid_password?(params[:current_password])
 
     current_user.increment_failed_attempts!
