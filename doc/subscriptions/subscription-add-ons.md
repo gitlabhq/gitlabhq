@@ -93,6 +93,40 @@ You can assign or remove seats in bulk for multiple users.
 
 Administrators of self-managed instances can use a [Rake task](../raketasks/user_management.md#bulk-assign-users-to-gitlab-duo-pro) to assign or remove seats in bulk.
 
+## View assigned GitLab Duo users
+
+Prerequisites:
+
+- You must purchase a GitLab Duo add-on, or have an active GitLab Duo trial.
+- For self-managed and GitLab Dedicated:
+  - The GitLab Duo Pro add-on is available in GitLab 16.8 and later.
+  - The GitLab Duo Enterprise add-on is only available in GitLab 17.3 and later.
+
+After you purchase GitLab Duo, you can assign seats to users to grant access to the add-on.
+
+### For GitLab.com
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings > GitLab Duo**.
+1. From the filter bar, select **Assigned seat** and **Yes**.
+1. User list is filtered to only users assigned a GitLab Duo seat. 
+
+### For self-managed
+
+Prerequisites:
+
+- You must be an administrator.
+- GitLab 17.5 or later
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **GitLab Duo**.
+   - If the **GitLab Duo** menu item is not available, synchronize your subscription
+     after purchase:
+     1. On the left sidebar, select **Subscription**.
+     1. In **Subscription details**, to the right of **Last sync**, select
+        synchronize subscription (**{retry}**).
+1. To filter by users assigned to a GitLab Duo seat, in the **Filter users** bar, select **Assigned seat**, then select **Yes**.
+
 ## Purchase additional GitLab Duo seats
 
 You can purchase additional GitLab Duo Pro or GitLab Duo Enterprise seats for your group namespace or self-managed instance. After you complete the purchase, the seats are added to the total number of GitLab Duo seats in your subscription.

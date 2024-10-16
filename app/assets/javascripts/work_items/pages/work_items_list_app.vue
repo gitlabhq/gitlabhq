@@ -239,6 +239,7 @@ export default {
         search: this.searchQuery,
         ...this.apiFilterParams,
         ...this.pageParams,
+        excludeProjects: this.workItemType === WORK_ITEM_TYPE_ENUM_EPIC,
         includeDescendants: !this.apiFilterParams.fullPath,
         types: this.apiFilterParams.types || this.workItemType || this.defaultWorkItemTypes,
         isGroup: this.isGroup,

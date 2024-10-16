@@ -21,6 +21,7 @@ class Group < Namespace
   include RunnerTokenExpirationInterval
   include Importable
   include IdInOrdered
+  include Members::Enumerable
 
   extend ::Gitlab::Utils::Override
 
@@ -40,6 +41,7 @@ class Group < Namespace
   has_many :all_owner_members, -> { non_request.all_owners }, as: :source, class_name: 'GroupMember'
   has_many :group_members, -> { non_request.non_minimal_access }, dependent: :destroy, as: :source # rubocop:disable Cop/ActiveRecordDependent
   has_many :non_invite_group_members, -> { non_request.non_minimal_access.non_invite }, class_name: 'GroupMember', as: :source
+  has_many :non_invite_owner_members, -> { non_request.non_invite.all_owners }, class_name: 'GroupMember', as: :source
   has_many :request_group_members, -> do
     request.non_minimal_access
   end, inverse_of: :group, class_name: 'GroupMember', as: :source
@@ -506,7 +508,7 @@ class Group < Namespace
   def owned_by?(user)
     return false unless user
 
-    all_owner_members.non_invite.exists?(user: user)
+    non_invite_owner_members.exists?(user: user)
   end
 
   def add_members(users, access_level, current_user: nil, expires_at: nil)

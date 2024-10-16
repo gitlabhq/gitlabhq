@@ -160,7 +160,7 @@ export default Node.create({
 
     return [
       createPlugin('@', 'reference', 'user', { limit: 10, filterOnBackend: true }),
-      createPlugin('#', 'reference', 'issue'),
+      createPlugin('#', 'reference', 'issue', { filterOnBackend: true }),
       createPlugin('$', 'reference', 'snippet'),
       createPlugin('~', 'referenceLabel', 'label', { limit: 20 }),
       createPlugin('&', 'reference', 'epic'),

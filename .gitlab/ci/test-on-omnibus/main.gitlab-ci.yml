@@ -578,6 +578,7 @@ e2e-test-report:
 upload-knapsack-report:
   extends:
     - .upload-knapsack-report
+    - .rules:report:upload-knapsack-report
 
 export-test-metrics:
   extends:

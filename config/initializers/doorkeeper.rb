@@ -129,4 +129,6 @@ Doorkeeper.configure do
   # Use a custom class for generating the application secret.
   # https://doorkeeper.gitbook.io/guides/configuration/other-configurations#custom-application-secret-generator
   application_secret_generator 'Gitlab::DoorkeeperSecretStoring::Token::UniqueApplicationToken'
+
+  custom_access_token_attributes [:organization_id]
 end

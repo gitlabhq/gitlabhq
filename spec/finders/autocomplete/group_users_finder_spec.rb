@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Autocomplete::GroupUsersFinder, feature_category: :team_planning do
+RSpec.describe Autocomplete::GroupUsersFinder, feature_category: :text_editors do
   let_it_be(:parent_group) { create(:group) }
   let_it_be(:group) { create(:group, parent: parent_group) }
   let_it_be(:subgroup) { create(:group, parent: group) }

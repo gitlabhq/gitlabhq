@@ -19,7 +19,6 @@ module Projects
         blob_path: project_blob_path(project, pipeline.sha),
         has_test_report: pipeline.has_test_reports?,
         empty_state_image_path: image_path('illustrations/empty-todos-md.svg'),
-        empty_dag_svg_path: image_path('illustrations/empty-state/empty-dag-md.svg'),
         artifacts_expired_image_path: image_path('illustrations/empty-state/empty-pipeline-md.svg'),
         tests_count: pipeline.test_report_summary.total[:count]
       }

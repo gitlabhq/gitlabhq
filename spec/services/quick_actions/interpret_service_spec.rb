@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe QuickActions::InterpretService, feature_category: :team_planning do
+RSpec.describe QuickActions::InterpretService, feature_category: :text_editors do
   include AfterNextHelpers
 
   let_it_be(:group) { create(:group) }

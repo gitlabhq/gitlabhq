@@ -11,7 +11,7 @@ RSpec.describe Oauth::TokensController, feature_category: :system_access do
         post '/oauth/token', params: { grant_type: 'password', username: user.username, password: with_password }
       end
 
-      context 'when user does not have two factor enabled' do
+      context 'when user does not have two factor enabled', :with_default_organization do
         let_it_be(:user) { create(:user, password: password) }
 
         it 'authenticates successfully' do

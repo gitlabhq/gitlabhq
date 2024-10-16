@@ -167,6 +167,12 @@ describeSkipVue3(skipReason, () => {
           types: ['ISSUE', 'INCIDENT', 'TASK'],
         }),
       );
+
+      expect(defaultQueryHandler).toHaveBeenCalledWith(
+        expect.objectContaining({
+          excludeProjects: false,
+        }),
+      );
     });
 
     it('calls `getParameterByName` to get the `show` param', () => {
@@ -207,6 +213,21 @@ describeSkipVue3(skipReason, () => {
           sort: CREATED_DESC,
           state: STATUS_OPEN,
           types: type,
+        }),
+      );
+    });
+  });
+
+  describe('when workItemType EPIC is provided', () => {
+    it('sends excludeProjects variable in GraphQL query', async () => {
+      const type = 'EPIC';
+      mountComponent({ provide: { workItemType: type } });
+
+      await waitForPromises();
+
+      expect(defaultQueryHandler).toHaveBeenCalledWith(
+        expect.objectContaining({
+          excludeProjects: true,
         }),
       );
     });

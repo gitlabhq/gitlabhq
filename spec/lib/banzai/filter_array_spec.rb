@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Banzai::FilterArray, feature_category: :team_planning do
+RSpec.describe Banzai::FilterArray, feature_category: :markdown do
   describe '#insert_after' do
     it 'inserts an element after a provided element' do
       filters = described_class.new(%w[a b c])

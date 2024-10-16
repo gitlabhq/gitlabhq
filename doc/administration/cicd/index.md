@@ -131,6 +131,20 @@ WARNING:
 Any command that changes data directly could be damaging if not run correctly, or under the right conditions.
 We highly recommend running them in a test environment with a backup of the instance ready to be restored, just in case.
 
+### Cancel all running pipelines and their jobs
+
+```ruby
+admin = User.find(user_id) # replace user_id with the id of the admin you want to cancel the pipeline
+# Iterate over each cancelable pipeline
+Ci::Pipeline.cancelable.find_each do |pipeline|
+  Ci::CancelPipelineService.new(
+    pipeline: pipeline,
+    current_user: user,
+    cascade_to_children: false # the children are included in the outer loop
+  )
+end
+```
+
 ### Cancel stuck pending pipelines
 
 ```ruby

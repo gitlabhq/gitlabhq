@@ -37,5 +37,9 @@ FactoryBot.define do
         }
       end
     end
+
+    trait :with_labels do
+      labels { [association(:label)] }
+    end
   end
 end

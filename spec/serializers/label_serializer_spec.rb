@@ -37,7 +37,7 @@ RSpec.describe LabelSerializer do
       subject { serializer.represent_appearance(resource) }
 
       it 'serializes only attributes used for appearance' do
-        expect(subject.keys).to eq([:id, :title, :color, :project_id, :text_color])
+        expect(subject.keys).to match_array([:id, :title, :color, :project_id, :text_color])
         expect(subject[:id]).to eq(resource.id)
         expect(subject[:title]).to eq(resource.title)
         expect(subject[:color]).to be_color(resource.color)

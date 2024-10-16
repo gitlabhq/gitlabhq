@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MarkupHelper, feature_category: :team_planning do
+RSpec.describe MarkupHelper, feature_category: :markdown do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) do
     user = create(:user, username: 'gfm')

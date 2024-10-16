@@ -1,0 +1,9 @@
+---
+name: search_sidekiq_default_concurrency_limit
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/498212
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169034
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/498992
+milestone: '17.6'
+group: group::global search
+type: ops
+default_enabled: true

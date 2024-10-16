@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::UploadsController, feature_category: :team_planning do
+RSpec.describe Banzai::UploadsController, feature_category: :markdown do
   describe '#show' do
     let_it_be(:user) { create(:user) }
 

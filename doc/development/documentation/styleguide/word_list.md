@@ -52,6 +52,26 @@ thereafter. If the first word in a sentence, do not capitalize `factor` or `auth
 
 - Two-factor authentication (2FA) helps secure your account. Set up 2FA when you first sign in.
 
+## ability, able
+
+Avoid using **ability** because it focuses more on the user's
+capabilities rather than the product's features or functions, 
+which makes it vague and ambiguous.
+
+Do not use **ability** or **able** to refer to permissions or rights that a user needs to perform a task.
+
+Use:
+
+- You do not have the rights to change this setting.
+- You must have permission to change this setting.
+
+Instead of:
+
+- You're not able to change this setting.
+- You must have the ability to change this setting.
+
+See also [**enable**](#enable).
+
 ## above
 
 Try to avoid using **above** when referring to an example or table in a documentation page. If required, use **previous** instead. For example:
@@ -1681,8 +1701,8 @@ Use:
 
 If you write a phrase like, "On the **Issues** page," ensure steps for how to get to the page are nearby. Otherwise, people might not know what the **Issues** page is.
 
-The page name should be visible in the UI at the top of the page.
-If it is not, you should be able to get the name from the breadcrumb.
+The page name should be visible in the UI at the top of the page,
+or included in the breadcrumb.
 
 The docs should match the case in the UI, and the page name should be bold. For example:
 

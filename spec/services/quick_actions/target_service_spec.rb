@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe QuickActions::TargetService, feature_category: :team_planning do
+RSpec.describe QuickActions::TargetService, feature_category: :text_editors do
   let_it_be(:group) { create(:group) }
   let_it_be_with_reload(:project) { create(:project, group: group) }
   let_it_be(:user) { create(:user, maintainer_of: project) }

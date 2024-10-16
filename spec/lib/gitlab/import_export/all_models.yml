@@ -883,7 +883,7 @@ project:
 - dora_performance_scores
 - xray_reports
 - member_approvals
-- zoekt_repository
+- zoekt_repositories
 - security_policy_management_project_linked_configurations
 - security_policy_project_linked_projects
 - security_policy_project_linked_namespaces

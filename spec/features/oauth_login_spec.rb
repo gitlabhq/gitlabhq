@@ -151,6 +151,7 @@ RSpec.describe 'OAuth Login', :allow_forgery_protection, feature_category: :syst
     before do
       sign_in(user)
 
+      create(:organization, :default)
       create(:oauth_access_token, application: application, resource_owner_id: user.id, scopes: 'api')
     end
 

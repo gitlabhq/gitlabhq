@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::DataBuilder::Emoji, feature_category: :team_planning do
+RSpec.describe Gitlab::DataBuilder::Emoji, feature_category: :markdown do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
   let_it_be(:issue) { create(:issue, project: project) }

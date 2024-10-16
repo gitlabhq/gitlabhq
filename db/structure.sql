@@ -2635,6 +2635,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_fd4a1be98713() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "container_repositories"
+  WHERE "container_repositories"."id" = NEW."container_repository_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_ff16c1fd43ea() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -9893,6 +9909,7 @@ CREATE TABLE container_repository_states (
     verification_retry_count smallint DEFAULT 0 NOT NULL,
     verification_checksum bytea,
     verification_failure text,
+    project_id bigint,
     CONSTRAINT check_c96417dbc5 CHECK ((char_length(verification_failure) <= 255))
 );
 
@@ -14716,6 +14733,7 @@ CREATE TABLE oauth_access_grants (
     scopes character varying,
     code_challenge text,
     code_challenge_method text,
+    organization_id bigint DEFAULT 1 NOT NULL,
     CONSTRAINT oauth_access_grants_code_challenge CHECK ((char_length(code_challenge) <= 128)),
     CONSTRAINT oauth_access_grants_code_challenge_method CHECK ((char_length(code_challenge_method) <= 5))
 );
@@ -14739,6 +14757,7 @@ CREATE TABLE oauth_access_tokens (
     revoked_at timestamp without time zone,
     created_at timestamp without time zone NOT NULL,
     scopes character varying,
+    organization_id bigint DEFAULT 1 NOT NULL,
     CONSTRAINT check_70f294ef54 CHECK ((expires_in IS NOT NULL))
 );
 
@@ -14803,7 +14822,8 @@ ALTER SEQUENCE oauth_device_grants_id_seq OWNED BY oauth_device_grants.id;
 CREATE TABLE oauth_openid_requests (
     id bigint NOT NULL,
     access_grant_id bigint NOT NULL,
-    nonce character varying NOT NULL
+    nonce character varying NOT NULL,
+    organization_id bigint DEFAULT 1 NOT NULL
 );
 
 CREATE SEQUENCE oauth_openid_requests_id_seq
@@ -27526,6 +27546,12 @@ CREATE UNIQUE INDEX idx_o11y_metric_issue_conn_on_issue_id_metric_type_name ON o
 
 CREATE UNIQUE INDEX idx_o11y_trace_issue_conn_on_issue_id_trace_identifier ON observability_traces_issues_connections USING btree (issue_id, trace_identifier);
 
+CREATE INDEX idx_oauth_access_grants_on_organization_id ON oauth_access_grants USING btree (organization_id);
+
+CREATE INDEX idx_oauth_access_tokens_on_organization_id ON oauth_access_tokens USING btree (organization_id);
+
+CREATE INDEX idx_oauth_openid_requests_on_organization_id ON oauth_openid_requests USING btree (organization_id);
+
 CREATE UNIQUE INDEX idx_on_approval_group_rules_any_approver_type ON approval_group_rules USING btree (group_id, rule_type) WHERE (rule_type = 4);
 
 CREATE UNIQUE INDEX idx_on_approval_group_rules_group_id_type_name ON approval_group_rules USING btree (group_id, rule_type, name);
@@ -28725,6 +28751,8 @@ CREATE INDEX index_container_repository_on_name_trigram ON container_repositorie
 CREATE INDEX index_container_repository_states_failed_verification ON container_repository_states USING btree (verification_retry_at NULLS FIRST) WHERE (verification_state = 3);
 
 CREATE INDEX index_container_repository_states_needs_verification ON container_repository_states USING btree (verification_state) WHERE ((verification_state = 0) OR (verification_state = 3));
+
+CREATE INDEX index_container_repository_states_on_project_id ON container_repository_states USING btree (project_id);
 
 CREATE INDEX index_container_repository_states_on_verification_state ON container_repository_states USING btree (verification_state);
 
@@ -34014,6 +34042,8 @@ CREATE TRIGGER trigger_fbd42ed69453 BEFORE INSERT OR UPDATE ON external_status_c
 
 CREATE TRIGGER trigger_fbd8825b3057 BEFORE INSERT OR UPDATE ON boards_epic_board_labels FOR EACH ROW EXECUTE FUNCTION trigger_fbd8825b3057();
 
+CREATE TRIGGER trigger_fd4a1be98713 BEFORE INSERT OR UPDATE ON container_repository_states FOR EACH ROW EXECUTE FUNCTION trigger_fd4a1be98713();
+
 CREATE TRIGGER trigger_ff16c1fd43ea BEFORE INSERT OR UPDATE ON geo_event_log FOR EACH ROW EXECUTE FUNCTION trigger_ff16c1fd43ea();
 
 CREATE TRIGGER trigger_fff8735b6b9a BEFORE INSERT OR UPDATE ON vulnerability_finding_signatures FOR EACH ROW EXECUTE FUNCTION trigger_fff8735b6b9a();
@@ -34596,6 +34626,9 @@ ALTER TABLE ONLY approval_merge_request_rules
 ALTER TABLE ONLY deploy_keys_projects
     ADD CONSTRAINT fk_58a901ca7e FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY oauth_access_grants
+    ADD CONSTRAINT fk_59cdb2323c FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY packages_tags
     ADD CONSTRAINT fk_5a230894f6 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -34677,6 +34710,9 @@ ALTER TABLE ONLY ci_pipeline_chat_data
 ALTER TABLE ONLY cluster_agent_tokens
     ADD CONSTRAINT fk_64f741f626 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY container_repository_states
+    ADD CONSTRAINT fk_6591698505 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY import_placeholder_memberships
     ADD CONSTRAINT fk_66286fb5e6 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -34715,6 +34751,9 @@ ALTER TABLE ONLY protected_environment_approval_rules
 
 ALTER TABLE ONLY deploy_tokens
     ADD CONSTRAINT fk_7082f8a288 FOREIGN KEY (creator_id) REFERENCES users(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY oauth_openid_requests
+    ADD CONSTRAINT fk_7092424b77 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY protected_branch_push_access_levels
     ADD CONSTRAINT fk_7111b68cdb FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
@@ -34943,6 +34982,9 @@ ALTER TABLE ONLY work_item_type_custom_fields
 
 ALTER TABLE ONLY workspaces_agent_configs
     ADD CONSTRAINT fk_94660551c8 FOREIGN KEY (cluster_agent_id) REFERENCES cluster_agents(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY oauth_access_tokens
+    ADD CONSTRAINT fk_94884daa35 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY dast_site_profiles_builds
     ADD CONSTRAINT fk_94e80df60e FOREIGN KEY (dast_site_profile_id) REFERENCES dast_site_profiles(id) ON DELETE CASCADE;

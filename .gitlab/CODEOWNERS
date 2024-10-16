@@ -985,6 +985,7 @@ lib/gitlab/checks/**
 /doc/solutions/integrations/index.md @jfullam @brianwald @Darwinjs
 /doc/solutions/integrations/servicenow.md @ashrafkhamis
 /doc/subscriptions/ @fneill
+/doc/subscriptions/gitlab_com/ @lyspin
 /doc/subscriptions/gitlab_dedicated/ @lyspin
 /doc/topics/ @msedlakjakubowski
 /doc/topics/autodevops/ @phillipwells
@@ -1046,6 +1047,7 @@ lib/gitlab/checks/**
 /doc/user/get_started/get_started_projects.md @lciutacu
 /doc/user/gitlab_duo/ @sselhorn @jglassman1 @fneill
 /doc/user/gitlab_duo_chat/ @sselhorn @jglassman1 @fneill
+/doc/user/glql/ @msedlakjakubowski
 /doc/user/group/access_and_permissions.md @lciutacu
 /doc/user/group/clusters/ @phillipwells
 /doc/user/group/compliance_frameworks.md @eread
@@ -1167,9 +1169,9 @@ lib/gitlab/checks/**
 /doc/user/ssh.md @jglassman1
 /doc/user/ssh_troubleshooting.md @jglassman1
 /doc/user/storage_management_automation.md @fneill
+/doc/user/storage_usage_quotas.md @fneill
 /doc/user/tasks.md @msedlakjakubowski
 /doc/user/todos.md @sselhorn
-/doc/user/storage_usage_quotas.md @fneill
 /doc/user/workspace/ @ashrafkhamis
 # End rake-managed-docs-block
 

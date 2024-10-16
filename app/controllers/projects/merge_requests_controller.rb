@@ -47,7 +47,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:reviewer_assign_drawer, current_user)
     push_frontend_feature_flag(:vulnerability_code_flow, project)
     push_frontend_feature_flag(:pipeline_vulnerability_code_flow, project)
-    push_frontend_feature_flag(:issue_autocomplete_backend_filtering, project)
     push_frontend_feature_flag(:realtime_issuable_todo, current_user)
   end
 

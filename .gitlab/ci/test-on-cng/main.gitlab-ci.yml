@@ -164,6 +164,6 @@ notify-slack:
 upload-knapsack-report:
   extends:
     - .upload-knapsack-report
-    - .rules:report:process-results
+    - .rules:report:upload-knapsack-report
   variables:
     QA_KNAPSACK_REPORT_FILE_PATTERN: $CI_PROJECT_DIR/qa/tmp/knapsack/*/*.json
