@@ -1,10 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'protected ref deploy_key access' do
-  let_it_be(:described_instance) { described_class.model_name.singular }
-  let_it_be(:protected_ref_name) { described_class.module_parent.model_name.singular }
-  let_it_be(:project) { create(:project, :in_group) }
-  let_it_be(:protected_ref) { create(protected_ref_name, project: project) } # rubocop:disable Rails/SaveBang -- False positive because factory name is dynamic
+  include_context 'for protected ref access'
 
   describe 'associations' do
     it { is_expected.to belong_to(:deploy_key) }
@@ -18,7 +15,7 @@ RSpec.shared_examples 'protected ref deploy_key access' do
         end
 
         it 'is valid' do
-          level = build(described_instance, protected_ref_name => protected_ref, deploy_key: deploy_key)
+          level = build(described_factory, protected_ref_name => protected_ref, deploy_key: deploy_key)
 
           expect(level).to be_valid
         end
@@ -26,7 +23,7 @@ RSpec.shared_examples 'protected ref deploy_key access' do
 
       context 'when deploy_key_id is invalid' do
         subject(:access_level) do
-          build(described_instance, protected_ref_name => protected_ref, deploy_key_id: 0)
+          build(described_factory, protected_ref_name => protected_ref, deploy_key_id: 0)
         end
 
         it 'is not valid', :aggregate_failures do
@@ -39,11 +36,11 @@ RSpec.shared_examples 'protected ref deploy_key access' do
         let(:deploy_key) { create(:deploy_keys_project, :write_access, project: project).deploy_key }
 
         before do
-          create(described_instance, protected_ref_name => protected_ref, deploy_key: deploy_key)
+          create(described_factory, protected_ref_name => protected_ref, deploy_key: deploy_key)
         end
 
         subject(:access_level) do
-          build(described_instance, protected_ref_name => protected_ref, deploy_key: deploy_key)
+          build(described_factory, protected_ref_name => protected_ref, deploy_key: deploy_key)
         end
 
         it 'is not valid', :aggregate_failures do
@@ -54,7 +51,7 @@ RSpec.shared_examples 'protected ref deploy_key access' do
 
       context 'when deploy key is not enabled for the project' do
         subject(:access_level) do
-          build(described_instance, protected_ref_name => protected_ref, deploy_key: create(:deploy_key))
+          build(described_factory, protected_ref_name => protected_ref, deploy_key: create(:deploy_key))
         end
 
         it 'is not valid', :aggregate_failures do
@@ -66,7 +63,7 @@ RSpec.shared_examples 'protected ref deploy_key access' do
       context 'when deploy key is not active for the project' do
         subject(:access_level) do
           deploy_key = create(:deploy_keys_project, :readonly_access, project: project).deploy_key
-          build(described_instance, protected_ref_name => protected_ref, deploy_key: deploy_key)
+          build(described_factory, protected_ref_name => protected_ref, deploy_key: deploy_key)
         end
 
         it 'is not valid', :aggregate_failures do
@@ -88,7 +85,7 @@ RSpec.shared_examples 'protected ref deploy_key access' do
 
     context "when this #{described_class.model_name.singular} is tied to a deploy key" do
       let!(:access_level) do
-        create(described_instance, protected_ref_name => protected_ref, deploy_key: deploy_key)
+        create(described_factory, protected_ref_name => protected_ref, deploy_key: deploy_key)
       end
 
       context 'and user is not a project member' do
@@ -161,13 +158,13 @@ RSpec.shared_examples 'protected ref deploy_key access' do
     subject { access_level.type }
 
     context 'when deploy_key is present and deploy_key_id is nil' do
-      let(:access_level) { build(described_instance, deploy_key: build(:deploy_key)) }
+      let(:access_level) { build(described_factory, deploy_key: build(:deploy_key)) }
 
       it { is_expected.to eq(:deploy_key) }
     end
 
     context 'when deploy_key_id is present and deploy_key is nil' do
-      let(:access_level) { build(described_instance, deploy_key_id: 0) }
+      let(:access_level) { build(described_factory, deploy_key_id: 0) }
 
       it { is_expected.to eq(:deploy_key) }
     end
@@ -178,13 +175,13 @@ RSpec.shared_examples 'protected ref deploy_key access' do
 
     context 'when deploy_key is present' do
       let(:deploy_key) { build(:deploy_key) }
-      let(:access_level) { build(described_instance, deploy_key: deploy_key) }
+      let(:access_level) { build(described_factory, deploy_key: deploy_key) }
 
       it { is_expected.to eq(deploy_key.title) }
     end
 
     context 'when deploy_key_id is present and deploy_key is nil' do
-      let(:access_level) { build(described_instance, deploy_key_id: 0) }
+      let(:access_level) { build(described_factory, deploy_key_id: 0) }
 
       it { is_expected.to eq('Deploy key') }
     end

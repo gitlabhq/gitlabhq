@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'protected branch access' do
-  include_examples 'protected ref access', :protected_branch
+  it_behaves_like 'protected ref access'
 
   it { is_expected.to belong_to(:protected_branch) }
 
   describe '#project' do
+    include_context 'for protected ref access'
+
     it 'delegates project to protected_branch association' do
       allow(protected_ref).to receive(:project)
 
@@ -20,6 +22,8 @@ RSpec.shared_examples 'protected branch access' do
   end
 
   describe '#protected_branch_group' do
+    include_context 'for protected ref access'
+
     it 'looks for the group attached to protected_branch' do
       allow(protected_ref).to receive(:group)
 

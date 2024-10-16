@@ -1,13 +1,12 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'protected ref access' do |association|
+RSpec.shared_examples 'protected ref access' do
   include ExternalAuthorizationServiceHelpers
 
-  let_it_be(:project) { create(:project) }
-  let_it_be(:protected_ref) { create(association, project: project) } # rubocop:disable Rails/SaveBang -- False positive because factory name is dynamic
+  include_context 'for protected ref access'
 
   describe 'validations' do
-    subject { build(described_class.model_name.singular) }
+    subject { build(described_factory) }
 
     context 'when role?' do
       it { is_expected.to validate_inclusion_of(:access_level).in_array(described_class.allowed_access_levels) }
@@ -15,8 +14,7 @@ RSpec.shared_examples 'protected ref access' do |association|
       it { is_expected.to validate_presence_of(:access_level) }
 
       it do
-        is_expected.to validate_uniqueness_of(:access_level)
-          .scoped_to("#{described_class.module_parent.model_name.singular}_id")
+        is_expected.to validate_uniqueness_of(:access_level).scoped_to(protected_ref_fk)
       end
     end
 
@@ -30,8 +28,7 @@ RSpec.shared_examples 'protected ref access' do |association|
       it { is_expected.not_to validate_inclusion_of(:access_level).in_array(described_class.allowed_access_levels) }
 
       it do
-        is_expected.not_to validate_uniqueness_of(:access_level)
-          .scoped_to("#{described_class.module_parent.model_name.singular}_id")
+        is_expected.not_to validate_uniqueness_of(:access_level).scoped_to(protected_ref_fk)
       end
     end
   end
@@ -52,27 +49,19 @@ RSpec.shared_examples 'protected ref access' do |association|
   end
 
   describe '#check_access(user, current_project)' do
-    let_it_be(:group) { create(:group) }
-    # Making a project public to avoid false positives tests
-    let_it_be(:project) { create(:project, :public, group: group) }
     let_it_be(:current_user) { create(:user) }
-    let_it_be(:protected_ref) { create(association, project: project) }
 
     let(:access_level) { ::Gitlab::Access::DEVELOPER }
     let(:current_project) { project }
-    let(:described_instance) do
-      described_class.new(
-        association => protected_ref,
-        access_level: access_level
-      )
-    end
 
     before_all do
       project.add_developer(current_user)
     end
 
-    subject do
-      described_instance.check_access(current_user, current_project)
+    subject(:check_access) do
+      described_class
+        .new(protected_ref_name => protected_ref, access_level: access_level)
+        .check_access(current_user, current_project)
     end
 
     context 'when current_user is nil' do

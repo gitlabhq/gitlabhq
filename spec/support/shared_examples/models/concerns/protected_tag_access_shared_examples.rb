@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'protected tag access' do
-  include_examples 'protected ref access', :protected_tag
-
-  let_it_be(:protected_tag) { create(:protected_tag) }
+  include_examples 'protected ref access'
 
   it { is_expected.to belong_to(:protected_tag) }
 
   describe '#project' do
+    let_it_be(:protected_tag) { create(:protected_tag) }
+
     it 'delegates project to protected_tag association' do
       allow(protected_tag).to receive(:project)
 
