@@ -29,7 +29,7 @@ To configure Microsoft Teams to listen for notifications from GitLab:
 
 1. In Microsoft Teams, find and select the workflow template "Post to a channel when a webhook request is received".
 
-   ![Selecting a workflow webhook in Microsoft Teams](img/microsoft_teams_select_webhook_workflow.png)
+   ![Selecting a workflow webhook in Microsoft Teams](img/microsoft_teams_select_webhook_workflow_v17_4.png)
 
 1. Enter a name for the webhook. The name is displayed next to every message that
    comes in through the webhook. Select **Next**.

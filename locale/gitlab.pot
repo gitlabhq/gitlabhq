@@ -56399,9 +56399,6 @@ msgstr ""
 msgid "This vulnerability was automatically resolved because its vulnerability type was disabled in this project or removed from GitLab's default ruleset. For details about SAST rule changes, see https://docs.gitlab.com/ee/user/application_security/sast/rules#important-rule-changes."
 msgstr ""
 
-msgid "This will invalidate your registered applications and WebAuthn devices."
-msgstr ""
-
 msgid "This will remove the fork relationship between this project and %{fork_source}."
 msgstr ""
 

@@ -101,7 +101,6 @@
 - ee/spec/features/remote_development/workspaces_dropdown_group_spec.rb
 - ee/spec/features/search/elastic/global_search_spec.rb
 - ee/spec/features/search/elastic/project_search_spec.rb
-- ee/spec/features/search/elastic/project_search_redactions_issue_spec.rb
 - ee/spec/features/search/elastic/project_search_redactions_work_item_spec.rb
 - ee/spec/features/search/elastic/snippet_search_spec.rb
 - ee/spec/features/security/dashboard_access_spec.rb

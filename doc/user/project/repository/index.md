@@ -135,7 +135,7 @@ This graph can help you visualize the Git flow strategy used in the repository.
 
 To view the repository history graph, go to your project's **Code > Repository graph**.
 
-![repository Git flow](img/repo_graph.png)
+![repository Git flow](img/repo_graph_v9_4.png)
 
 ## Repository path changes
 

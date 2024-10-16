@@ -22,7 +22,7 @@ user's sessions and include:
 When you add a Jupyter Notebook (with `.ipynb` extension) to your repository,
 it's rendered into HTML when you view it:
 
-![Jupyter Notebook Rich Output](../img/jupyter_notebook.png)
+![Jupyter Notebook Rich Output](../img/jupyter_notebook_v13_11.png)
 
 Interactive features, including JavaScript plots, don't work when viewed in
 GitLab.

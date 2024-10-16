@@ -127,7 +127,7 @@ To add a GPG key to your user settings:
 1. To add the key to your account, select **Add key**. GitLab shows the key's
    fingerprint, email address, and creation date:
 
-   ![GPG key single page](img/profile_settings_gpg_keys_single_key.png)
+   ![GPG key single page](img/profile_settings_gpg_keys_single_key_v9_5.png)
 
 After you add a key, you cannot edit it. Instead, remove the offending key and re-add it.
 

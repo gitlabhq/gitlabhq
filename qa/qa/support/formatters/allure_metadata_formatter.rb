@@ -61,7 +61,7 @@ module QA
           return example.issue('Quarantine issue', issue_link) if issue_link.is_a?(String)
           return issue_link.each { |link| example.issue('Quarantine issue', link) } if issue_link.is_a?(Array)
         rescue StandardError => e
-          log(:error, "Failed to add quarantine issue linkt for example '#{example.description}', error: #{e}")
+          log(:error, "Failed to add quarantine issue link for example '#{example.description}', error: #{e}")
         end
 
         # Add failure issues link
@@ -71,8 +71,8 @@ module QA
         def add_failure_issues_link(example)
           return unless example.execution_result.status == :failed
 
-          search_query = ERB::Util.url_encode("Failure in #{example.file_path.gsub('./qa/specs/features/', '')}")
-          search_url = "https://gitlab.com/gitlab-org/gitlab/-/issues?scope=all&state=opened&search=#{search_query}"
+          search_query = ERB::Util.url_encode(example.file_path.gsub('./qa/specs/features/', '').to_s)
+          search_url = "https://gitlab.com/gitlab-org/gitlab/-/issues?scope=all&state=opened&type=issue&search=#{search_query}"
           example.issue('Failure issues', search_url)
         rescue StandardError => e
           log(:error, "Failed to add failure issue link for example '#{example.description}', error: #{e}")
@@ -87,7 +87,7 @@ module QA
 
           example.add_link(name: "Job(#{Runtime::Env.ci_job_name})", url: Runtime::Env.ci_job_url)
         rescue StandardError => e
-          log(:error, "Failed to add failure issue link for example '#{example.description}', error: #{e}")
+          log(:error, "Failed to add ci job link for example '#{example.description}', error: #{e}")
         end
 
         # Mark test as flaky

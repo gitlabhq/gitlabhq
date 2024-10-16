@@ -33,8 +33,7 @@ module Types
       field :system, GraphQL::Types::Boolean,
         null: false,
         description: 'Indicates whether the note was created by the system or by a user.'
-      field :system_note_icon_name,
-        GraphQL::Types::String,
+      field :system_note_icon_name, GraphQL::Types::String,
         null: true,
         description: 'Name of the icon corresponding to a system note.'
 
@@ -63,6 +62,10 @@ module Types
       field :system_note_metadata, Types::Notes::SystemNoteMetadataType,
         null: true,
         description: 'Metadata for the given note if it is a system note.'
+
+      field :external_author, GraphQL::Types::String,
+        null: true,
+        description: 'Email address of non-GitLab user adding the note. For guests, the email address is obfuscated.'
 
       def system_note_icon_name
         SystemNoteHelper.system_note_icon_name(object) if object.system?

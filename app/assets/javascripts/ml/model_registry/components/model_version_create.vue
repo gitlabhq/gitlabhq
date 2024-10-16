@@ -1,13 +1,5 @@
 <script>
-import {
-  GlAlert,
-  GlButton,
-  GlForm,
-  GlFormGroup,
-  GlFormInput,
-  GlModal,
-  GlModalDirective,
-} from '@gitlab/ui';
+import { GlAlert, GlButton, GlForm, GlFormGroup, GlFormInput } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
 import { visitUrlWithAlerts } from '~/lib/utils/url_utility';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
@@ -15,33 +7,32 @@ import { semverRegex } from '~/lib/utils/regexp';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import createModelVersionMutation from '../graphql/mutations/create_model_version.mutation.graphql';
-import { MODEL_VERSION_CREATION_MODAL_ID } from '../constants';
 
 export default {
   name: 'ModelVersionCreate',
   components: {
     GlAlert,
     GlButton,
-    GlModal,
     GlForm,
     GlFormGroup,
     GlFormInput,
     MarkdownEditor,
     ImportArtifactZone: () => import('./import_artifact_zone.vue'),
   },
-  directives: {
-    GlModal: GlModalDirective,
-  },
-  inject: ['projectPath', 'maxAllowedFileSize', 'latestVersion', 'markdownPreviewPath'],
+  inject: ['maxAllowedFileSize', 'latestVersion', 'modelGid'],
   props: {
-    modelGid: {
-      type: String,
-      required: true,
-    },
     disableAttachments: {
       type: Boolean,
       required: false,
       default: false,
+    },
+    projectPath: {
+      type: String,
+      required: true,
+    },
+    markdownPreviewPath: {
+      type: String,
+      required: true,
     },
   },
   data() {
@@ -71,12 +62,6 @@ export default {
     autocompleteDataSources() {
       return gl.GfmAutoComplete?.dataSources;
     },
-    actionPrimary() {
-      return {
-        text: s__('MlModelRegistry|Create & import'),
-        attributes: { variant: 'confirm', disabled: this.submitButtonDisabled },
-      };
-    },
     isSemver() {
       return semverRegex.test(this.version);
     },
@@ -87,7 +72,7 @@ export default {
       }
       if (!this.isSemver) {
         this.submitDisabled();
-        return this.$options.modal.versionInvalid;
+        return this.$options.i18n.versionInvalid;
       }
       this.submitAvailable();
       return null;
@@ -122,9 +107,7 @@ export default {
 
       return data;
     },
-    async create($event) {
-      $event.preventDefault();
-
+    async create() {
       this.errorMessage = '';
       try {
         if (!this.versionData) {
@@ -146,7 +129,7 @@ export default {
         this.errorMessage = error;
       }
     },
-    resetModal() {
+    resetForm() {
       this.version = null;
       this.description = '';
       this.errorMessage = null;
@@ -165,21 +148,16 @@ export default {
       this.importErrorsText = error;
     },
   },
-  i18n: {
-    allSucceeded: s__('MlModelRegistry|Artifacts uploaded successfully.'),
-    someFailed: s__('MlModelRegistry|Artifact uploads completed with errors.'),
-  },
   descriptionFormFieldProps: {
     placeholder: s__('MlModelRegistry|Enter a model version description'),
     id: 'model-version-description',
     name: 'model-version-description',
   },
-  modal: {
-    id: MODEL_VERSION_CREATION_MODAL_ID,
-    actionSecondary: {
-      text: __('Cancel'),
-      attributes: { variant: 'default' },
-    },
+  i18n: {
+    allSucceeded: s__('MlModelRegistry|Artifacts uploaded successfully.'),
+    someFailed: s__('MlModelRegistry|Artifact uploads completed with errors.'),
+    actionPrimaryText: s__('MlModelRegistry|Create & import'),
+    actionSecondaryText: __('Cancel'),
     versionDescription: s__('MlModelRegistry|Enter a semantic version.'),
     versionValid: s__('MlModelRegistry|Version is valid semantic version.'),
     versionInvalid: s__('MlModelRegistry|Version is not a valid semantic version.'),
@@ -194,79 +172,77 @@ export default {
 
 <template>
   <div>
-    <gl-button v-gl-modal="$options.modal.id" variant="confirm" category="primary">{{
-      $options.modal.buttonTitle
-    }}</gl-button>
-    <gl-modal
-      :modal-id="$options.modal.id"
-      :title="$options.modal.title"
-      :action-primary="actionPrimary"
-      :action-secondary="$options.modal.actionSecondary"
-      size="lg"
-      @primary="create"
-      @secondary="resetModal"
-    >
-      <gl-form>
-        <gl-form-group
-          data-testid="versionDescriptionId"
-          label="Version:"
-          label-for="versionId"
-          :state="isSemver"
-          :invalid-feedback="!version ? '' : invalidFeedback"
-          :valid-feedback="isSemver ? $options.modal.versionValid : ''"
-          :description="versionDescription"
-        >
-          <gl-form-input
-            id="versionId"
-            v-model="version"
-            data-testid="versionId"
-            type="text"
-            :placeholder="$options.modal.versionPlaceholder"
-            autocomplete="off"
-          />
-        </gl-form-group>
-        <gl-form-group
-          label="Description"
-          label-for="descriptionId"
-          class="common-note-form gfm-form js-main-target-form new-note gl-grow"
-          optional
-          :optional-text="$options.modal.optionalText"
-        >
-          <markdown-editor
-            ref="markdownEditor"
-            data-testid="descriptionId"
-            :value="description"
-            enable-autocomplete
-            :autocomplete-data-sources="autocompleteDataSources"
-            :enable-content-editor="true"
-            :form-field-props="$options.descriptionFormFieldProps"
-            :render-markdown-path="markdownPreviewPath"
-            :markdown-docs-path="markdownDocPath"
-            :disable-attachments="disableAttachments"
-            :placeholder="$options.modal.descriptionPlaceholder"
-            :restricted-tool-bar-items="markdownEditorRestrictedToolBarItems"
-            @input="setDescription"
-          />
-        </gl-form-group>
-        <gl-form-group
-          id="uploadArtifactsHeader"
-          data-testid="uploadArtifactsHeader"
-          label="Upload artifacts"
-          label-for="versionImportArtifactZone"
-        >
-          <import-artifact-zone
-            id="versionImportArtifactZone"
-            ref="importArtifactZoneRef"
-            class="gl-px-3 gl-py-0"
-            :submit-on-select="false"
-            @error="onImportError"
-          />
-        </gl-form-group>
-      </gl-form>
+    <gl-form>
+      <gl-form-group
+        data-testid="versionDescriptionId"
+        label="Version:"
+        label-for="versionId"
+        :state="isSemver"
+        :invalid-feedback="!version ? '' : invalidFeedback"
+        :valid-feedback="isSemver ? $options.i18n.versionValid : ''"
+        :description="versionDescription"
+      >
+        <gl-form-input
+          id="versionId"
+          v-model="version"
+          data-testid="versionId"
+          type="text"
+          :placeholder="$options.i18n.versionPlaceholder"
+          autocomplete="off"
+        />
+      </gl-form-group>
+      <gl-form-group
+        label="Description"
+        label-for="descriptionId"
+        class="common-note-form gfm-form js-main-target-form new-note gl-grow"
+        optional
+        :optional-text="$options.i18n.optionalText"
+      >
+        <markdown-editor
+          ref="markdownEditor"
+          data-testid="descriptionId"
+          :value="description"
+          enable-autocomplete
+          :autocomplete-data-sources="autocompleteDataSources"
+          :enable-content-editor="true"
+          :form-field-props="$options.descriptionFormFieldProps"
+          :render-markdown-path="markdownPreviewPath"
+          :markdown-docs-path="markdownDocPath"
+          :disable-attachments="disableAttachments"
+          :placeholder="$options.i18n.descriptionPlaceholder"
+          :restricted-tool-bar-items="markdownEditorRestrictedToolBarItems"
+          @input="setDescription"
+        />
+      </gl-form-group>
+      <gl-form-group
+        id="uploadArtifactsHeader"
+        data-testid="uploadArtifactsHeader"
+        label="Upload artifacts"
+        label-for="versionImportArtifactZone"
+      >
+        <import-artifact-zone
+          id="versionImportArtifactZone"
+          ref="importArtifactZoneRef"
+          class="gl-px-3 gl-py-0"
+          :submit-on-select="false"
+          @error="onImportError"
+        />
+      </gl-form-group>
+    </gl-form>
 
-      <gl-alert v-if="errorMessage" variant="danger" @dismiss="hideAlert">{{
-        errorMessage
-      }}</gl-alert>
-    </gl-modal>
+    <gl-alert v-if="errorMessage" variant="danger" @dismiss="hideAlert">{{
+      errorMessage
+    }}</gl-alert>
+    <gl-button data-testid="secondary-button" variant="default" @click="resetForm"
+      >{{ $options.i18n.actionSecondaryText }}
+    </gl-button>
+
+    <gl-button
+      data-testid="primary-button"
+      variant="confirm"
+      :disabled="submitButtonDisabled"
+      @click="create"
+      >{{ $options.i18n.actionPrimaryText }}
+    </gl-button>
   </div>
 </template>

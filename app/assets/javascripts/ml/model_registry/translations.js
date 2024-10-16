@@ -49,3 +49,5 @@ export const makeLoadCandidatesErrorMessage = (message) =>
   sprintf(s__('MlModelRegistry|Failed to load model candidates with error: %{message}'), {
     message,
   });
+
+export const CREATE_MODEL_LINK_TITLE = s__('MlModelRegistry|Create model');

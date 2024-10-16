@@ -5,8 +5,8 @@
 
 
 .js-two-factor-auth{ 'data-two-factor-skippable' => "#{two_factor_skippable?}", 'data-two_factor_skip_url' => skip_profile_two_factor_auth_path }
-  - if @destroy_error
-    = render Pajamas::AlertComponent.new(title: @destroy_error[:message],
+  - if @error
+    = render Pajamas::AlertComponent.new(title: @error[:message],
       variant: :danger,
       alert_options: { class: 'gl-mb-5' },
       dismissible: false) do |c|
@@ -23,20 +23,8 @@
       - if current_user.two_factor_otp_enabled?
         %p
           = _("You've already enabled two-factor authentication using a one-time password authenticator. In order to register a different device, you must first delete this authenticator.")
-        - if Feature.enabled?(:two_factor_actions)
-          .gl-inline-block.gl-w-full.sm:gl-w-auto
-            .js-two-factor-action-confirm{ data: delete_otp_authenticator_data(current_password_required?) }
-        - else
-          = gitlab_ui_form_for(:user, url: destroy_otp_profile_two_factor_auth_path, method: :delete, html: { class: 'sm:gl-inline-block' }) do |f|
-            - if current_password_required?
-              .form-group
-                = f.label :password, _('Current password')
-                = f.password_field :password, class: 'form-control gl-form-input js-password', name: "current_password"
-
-            = render Pajamas::ButtonComponent.new(variant: :danger,
-              type: :submit,
-              button_options: { class: 'gl-w-full sm:gl-w-auto' }) do
-              = _('Delete one-time password authenticator')
+        .gl-inline-block.gl-w-full.sm:gl-w-auto
+          .js-two-factor-action-confirm{ data: delete_otp_authenticator_data(current_password_required?) }
 
       - else
         %p
@@ -60,8 +48,8 @@
               %p.gl-mb-0.two-factor-new-manual-content
                 = _('Time based: Yes')
         = form_tag profile_two_factor_auth_path, method: :post do |f|
-          - if @error
-            = render Pajamas::AlertComponent.new(title: @error[:message],
+          - if @otp_error
+            = render Pajamas::AlertComponent.new(title: @otp_error[:message],
               variant: :danger,
               alert_options: { class: 'gl-mb-3' },
               dismissible: false) do |c|
@@ -145,21 +133,11 @@
       - if current_user.two_factor_enabled?
         %p
           = _('If you lose your recovery codes you can generate new ones, invalidating all previous codes.')
-        - if @error
-          = render Pajamas::AlertComponent.new(title: @error[:message],
-            variant: :danger,
-            alert_options: { class: 'gl-mb-3' },
-            dismissible: false) do |c|
-            - c.with_body do
-              = troubleshooting_link
-        - if Feature.enabled?(:two_factor_actions)
-          .gl-flex.gl-flex-wrap.gl-gap-3
-            .gl-w-full.sm:gl-w-auto
-              .js-two-factor-action-confirm{ data: disable_two_factor_authentication_data(current_password_required?) }
-            .gl-w-full.sm:gl-w-auto
-              .js-two-factor-action-confirm{ data: codes_two_factor_authentication_data(current_password_required?) }
-        - else
-          .js-manage-two-factor-form{ data: { current_password_required: current_password_required?.to_s, profile_two_factor_auth_path: profile_two_factor_auth_path, profile_two_factor_auth_method: 'delete', codes_profile_two_factor_auth_path: codes_profile_two_factor_auth_path, codes_profile_two_factor_auth_method: 'post' } }
+        .gl-flex.gl-flex-wrap.gl-gap-3
+          .gl-w-full.sm:gl-w-auto
+            .js-two-factor-action-confirm{ data: disable_two_factor_authentication_data(current_password_required?) }
+          .gl-w-full.sm:gl-w-auto
+            .js-two-factor-action-confirm{ data: codes_two_factor_authentication_data(current_password_required?) }
       - else
         %p
           = _("Register a one-time password authenticator or a WebAuthn device first.")

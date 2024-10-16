@@ -298,7 +298,7 @@ The table includes the following details about each request:
 - Elapsed time of the request
 - Relative time for when the request was made
 
-![Recent deliveries](img/webhook_logs.png)
+![Recent deliveries](img/webhook_logs_v14_4.png)
 
 #### Inspect request and response details
 
@@ -349,7 +349,7 @@ To test a webhook:
 
 You can also test a webhook from its edit page.
 
-![Webhook testing](img/webhook_testing.png)
+![Webhook testing](img/webhook_testing_v9_4.png)
 
 ## Webhook reference
 
@@ -409,7 +409,7 @@ An auto-disabled webhook appears in the list of project or group webhooks as:
 - **Fails to connect** if the webhook is [temporarily disabled](#temporarily-disabled-webhooks)
 - **Failed to connect** if the webhook is [permanently disabled](#permanently-disabled-webhooks)
 
-![Badges on failing webhooks](img/failed_badges.png)
+![Badges on failing webhooks](img/failed_badges_v14_9.png)
 
 #### Temporarily disabled webhooks
 

@@ -2,7 +2,6 @@
 import { GlLink } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import IssuableDescription from '~/vue_shared/issuable/show/components/issuable_description.vue';
-import { MODEL_VERSION_CREATION_MODAL_ID } from '../constants';
 import EmptyState from './model_list_empty_state.vue';
 
 export default {
@@ -17,6 +16,7 @@ export default {
       importPath: '',
     };
   },
+  inject: ['createModelVersionPath'],
   props: {
     model: {
       type: Object,
@@ -58,7 +58,6 @@ export default {
     title: s__('MlModelRegistry|Manage versions of your machine learning model'),
     description: s__('MlModelRegistry|Use versions to track performance, parameters, and metadata'),
     primaryText: s__('MlModelRegistry|Create model version'),
-    modalId: MODEL_VERSION_CREATION_MODAL_ID,
   },
 };
 </script>
@@ -91,7 +90,7 @@ export default {
       :title="$options.emptyState.title"
       :description="$options.emptyState.description"
       :primary-text="$options.emptyState.primaryText"
-      :modal-id="$options.emptyState.modalId"
+      :primary-link="createModelVersionPath"
     />
   </div>
 </template>

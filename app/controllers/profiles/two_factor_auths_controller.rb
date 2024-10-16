@@ -139,8 +139,8 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
     error_message = { message: _('You must provide a valid current password.') }
     if params[:action] == 'create_webauthn'
       @webauthn_error = error_message
-    elsif params[:action] == 'destroy_otp' || Feature.enabled?(:two_factor_actions)
-      @destroy_error = error_message
+    elsif params[:action] == 'create'
+      @otp_error = error_message
     else
       @error = error_message
     end

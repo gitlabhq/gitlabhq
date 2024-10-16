@@ -36,4 +36,14 @@ RSpec.describe NotePresenter, feature_category: :team_planning do
       is_expected.to include(obfuscated_email)
     end
   end
+
+  describe '#external_author' do
+    let!(:note_text) { "note body" }
+    let!(:note) { build(:note, :system, author: Users::Internal.support_bot, note: note_text) }
+    let!(:note_metadata) { build(:note_metadata, note: note, email_participant: email) }
+
+    subject { presenter.external_author }
+
+    it_behaves_like 'a note content field with obfuscated email address'
+  end
 end

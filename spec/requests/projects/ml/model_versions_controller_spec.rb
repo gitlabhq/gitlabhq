@@ -64,9 +64,55 @@ RSpec.describe Projects::Ml::ModelVersionsController, feature_category: :mlops d
     end
   end
 
+  describe 'new' do
+    let(:model_id) { model.id }
+    let(:request_project) { model.project }
+
+    subject(:show_request) do
+      response
+    end
+
+    before do
+      new_model_version
+      show_request
+    end
+
+    it 'renders the template' do
+      is_expected.to render_template('projects/ml/model_versions/new')
+    end
+
+    it 'fetches the correct model' do
+      show_request
+
+      expect(assigns(:model)).to eq(model)
+    end
+
+    context 'when model id does not exist' do
+      let(:model_id) { non_existing_record_id }
+
+      it { is_expected.to have_gitlab_http_status(:not_found) }
+    end
+
+    context 'when model id are correct but project is not' do
+      let(:request_project) { another_project }
+
+      it { is_expected.to have_gitlab_http_status(:not_found) }
+    end
+
+    context 'when user does not have access' do
+      let(:model_registry_enabled) { false }
+
+      it { is_expected.to have_gitlab_http_status(:not_found) }
+    end
+  end
+
   private
 
   def show_model_version
     get project_ml_model_version_path(request_project, model_id, version_id)
+  end
+
+  def new_model_version
+    get new_project_ml_model_version_path(request_project, model_id)
   end
 end

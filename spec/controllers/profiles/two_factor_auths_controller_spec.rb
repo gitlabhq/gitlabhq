@@ -36,7 +36,7 @@ RSpec.describe Profiles::TwoFactorAuthsController, feature_category: :system_acc
     it 'requires the current password', :aggregate_failures do
       go
 
-      error = assigns[:error] || assigns[:destroy_error]
+      error = assigns[:error] || assigns[:otp_error]
       expect(error).to eq(error_message)
       expect(response).to render_template(:show)
     end

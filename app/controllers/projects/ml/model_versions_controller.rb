@@ -14,6 +14,12 @@ module Projects
         @model = @model_version.model
       end
 
+      def new
+        @model = ::Ml::Model.by_project_id_and_id(@project, params[:model_model_id])
+
+        render_404 unless @model
+      end
+
       private
 
       def authorize_read_model_registry!

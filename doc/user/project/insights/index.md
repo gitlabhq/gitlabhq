@@ -187,10 +187,10 @@ Use `type` to define the chart type.
 
 | Name  | Example: |
 | ----- | ------- |
-| `bar` | ![Insights example bar chart](img/insights_example_bar_chart.png) |
-| `bar` (time series, that is when `group_by` is used) | ![Insights example bar time series chart](img/insights_example_bar_time_series_chart.png) |
-| `line` | ![Insights example stacked bar chart](img/insights_example_line_chart.png) |
-| `stacked-bar` | ![Insights example stacked bar chart](img/insights_example_stacked_bar_chart.png) |
+| `bar` | ![Insights example bar chart](img/insights_example_bar_chart_v11_10.png) |
+| `bar` (time series, that is when `group_by` is used) | ![Insights example bar time series chart](img/insights_example_bar_time_series_chart_v11_10.png) |
+| `line` | ![Insights example stacked bar chart](img/insights_example_line_chart_v11_10.png) |
+| `stacked-bar` | ![Insights example stacked bar chart](img/insights_example_stacked_bar_chart_v11_10.png) |
 
 The `dora` data source supports the `bar` and `line` [chart types](#type).
 

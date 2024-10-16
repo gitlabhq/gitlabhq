@@ -47,7 +47,7 @@ describe QA::Support::Formatters::AllureMetadataFormatter do
       expect(rspec_example).to have_received(:add_link).with(name: "Job(#{ci_job})", url: ci_job_url)
       expect(rspec_example).to have_received(:issue).with(
         'Failure issues',
-        'https://gitlab.com/gitlab-org/gitlab/-/issues?scope=all&state=opened&search=Failure%20in%20spec.rb'
+        'https://gitlab.com/gitlab-org/gitlab/-/issues?scope=all&state=opened&type=issue&search=spec.rb'
       )
     end
   end

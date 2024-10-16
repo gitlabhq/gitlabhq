@@ -15,7 +15,7 @@ export default {
   },
   inject: ['mlflowTrackingUrl'],
   props: {
-    modalId: {
+    primaryLink: {
       type: String,
       required: true,
     },
@@ -49,7 +49,7 @@ export default {
     :description="description"
   >
     <template #actions>
-      <gl-button v-gl-modal="modalId" variant="confirm" class="gl-mx-2 gl-mb-3">{{
+      <gl-button :href="primaryLink" variant="confirm" class="gl-mx-2 gl-mb-3">{{
         primaryText
       }}</gl-button>
       <gl-button v-gl-modal="$options.mlflowModalId" class="gl-mx-2 gl-mb-3 gl-mr-3">

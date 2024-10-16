@@ -52,7 +52,7 @@ Complete these steps in GitLab:
    - **ZenTao API token**: Use the key you generated when you [configured ZenTao](#configure-zentao).
    - **ZenTao Product ID**: To display issues from a single ZenTao product in a given GitLab project. The Product ID can be found in the ZenTao product page under **Settings > Overview**.
 
-   ![ZenTao settings page](img/zentao_product_id.png)
+   ![ZenTao settings page](img/zentao_product_id_v14_4.png)
 
 1. Optional. Select **Test settings**.
 1. Select **Save changes**.

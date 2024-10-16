@@ -1,0 +1,6 @@
+- add_to_breadcrumbs s_('ModelRegistry|Model registry'), project_ml_models_path(@project)
+- add_to_breadcrumbs @model.name, project_ml_model_path(@project, @model)
+- breadcrumb_title @model.name
+- page_title @model.name
+
+#js-mount-new-ml-model-version{ data: { view_model: new_ml_model_version_data(@model, @current_user) } }

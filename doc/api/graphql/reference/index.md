@@ -20125,6 +20125,7 @@ Code Quality report for a pipeline.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="codesuggestioneventevent"></a>`event` | [`AiUsageCodeSuggestionEvent!`](#aiusagecodesuggestionevent) | Type of the event. |
+| <a id="codesuggestioneventid"></a>`id` | [`ID!`](#id) | ID of the code suggestion event. |
 | <a id="codesuggestioneventlanguage"></a>`language` | [`String`](#string) | Programming language in the context of the suggestion. |
 | <a id="codesuggestioneventsuggestionsize"></a>`suggestionSize` | [`String`](#string) | Size of the code suggestion. |
 | <a id="codesuggestioneventtimestamp"></a>`timestamp` | [`Time!`](#time) | When the event happened. |
@@ -28820,6 +28821,7 @@ Describes where code is deployed for a project organized by folder.
 | <a id="notebodyhtml"></a>`bodyHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of the content of the note. |
 | <a id="notecreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of the note creation. |
 | <a id="notediscussion"></a>`discussion` | [`Discussion`](#discussion) | Discussion the note is a part of. |
+| <a id="noteexternalauthor"></a>`externalAuthor` | [`String`](#string) | Email address of non-GitLab user adding the note. For guests, the email address is obfuscated. |
 | <a id="noteid"></a>`id` | [`NoteID!`](#noteid) | ID of the note. |
 | <a id="noteimported"></a>`imported` | [`Boolean`](#boolean) | Indicates whether the note was imported. |
 | <a id="noteinternal"></a>`internal` | [`Boolean`](#boolean) | Indicates if the note is internal. |

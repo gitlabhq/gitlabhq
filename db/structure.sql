@@ -2283,6 +2283,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_b8eecea7f351() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."group_id" IS NULL THEN
+  SELECT "group_id"
+  INTO NEW."group_id"
+  FROM "dependency_proxy_manifests"
+  WHERE "dependency_proxy_manifests"."id" = NEW."dependency_proxy_manifest_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_c17a166692a2() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -8015,7 +8031,8 @@ CREATE TABLE bulk_import_exports (
     user_id bigint,
     CONSTRAINT check_24cb010672 CHECK ((char_length(relation) <= 255)),
     CONSTRAINT check_8f0f357334 CHECK ((char_length(error) <= 255)),
-    CONSTRAINT check_9ee6d14d33 CHECK ((char_length(jid) <= 255))
+    CONSTRAINT check_9ee6d14d33 CHECK ((char_length(jid) <= 255)),
+    CONSTRAINT check_e84b7c0730 CHECK ((num_nonnulls(group_id, project_id) = 1))
 );
 
 CREATE SEQUENCE bulk_import_exports_id_seq
@@ -10585,6 +10602,7 @@ CREATE TABLE dependency_proxy_manifest_states (
     verification_retry_count smallint DEFAULT 0 NOT NULL,
     verification_checksum bytea,
     verification_failure text,
+    group_id bigint,
     CONSTRAINT check_fdd5d9791b CHECK ((char_length(verification_failure) <= 255))
 );
 
@@ -28901,6 +28919,8 @@ CREATE INDEX index_dependency_proxy_blobs_on_status ON dependency_proxy_blobs US
 
 CREATE INDEX index_dependency_proxy_group_settings_on_group_id ON dependency_proxy_group_settings USING btree (group_id);
 
+CREATE INDEX index_dependency_proxy_manifest_states_on_group_id ON dependency_proxy_manifest_states USING btree (group_id);
+
 CREATE INDEX index_dependency_proxy_manifests_on_group_id_status_read_at_id ON dependency_proxy_manifests USING btree (group_id, status, read_at, id);
 
 CREATE INDEX index_dependency_proxy_manifests_on_status ON dependency_proxy_manifests USING btree (status);
@@ -34011,6 +34031,8 @@ CREATE TRIGGER trigger_b4520c29ea74 BEFORE INSERT OR UPDATE ON approval_merge_re
 
 CREATE TRIGGER trigger_b75e5731e305 BEFORE INSERT OR UPDATE ON dast_profiles_pipelines FOR EACH ROW EXECUTE FUNCTION trigger_b75e5731e305();
 
+CREATE TRIGGER trigger_b8eecea7f351 BEFORE INSERT OR UPDATE ON dependency_proxy_manifest_states FOR EACH ROW EXECUTE FUNCTION trigger_b8eecea7f351();
+
 CREATE TRIGGER trigger_c17a166692a2 BEFORE INSERT OR UPDATE ON audit_events_streaming_headers FOR EACH ROW EXECUTE FUNCTION trigger_c17a166692a2();
 
 CREATE TRIGGER trigger_c59fe6f31e71 BEFORE INSERT OR UPDATE ON security_orchestration_policy_rule_schedules FOR EACH ROW EXECUTE FUNCTION trigger_c59fe6f31e71();
@@ -35468,6 +35490,9 @@ ALTER TABLE ONLY user_achievements
 
 ALTER TABLE ONLY metrics_users_starred_dashboards
     ADD CONSTRAINT fk_d76a2b9a8c FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY dependency_proxy_manifest_states
+    ADD CONSTRAINT fk_d79f184865 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE p_ci_pipelines
     ADD CONSTRAINT fk_d80e161c54 FOREIGN KEY (ci_ref_id) REFERENCES ci_refs(id) ON DELETE SET NULL;

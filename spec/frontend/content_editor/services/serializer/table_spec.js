@@ -149,7 +149,7 @@ it('correctly renders a table with checkboxes', () => {
 <tr>
 <td>
 
-* [ ] &nbsp;
+* [ ] 
 </td>
 <td>Item 1</td>
 <td>Description 1</td>

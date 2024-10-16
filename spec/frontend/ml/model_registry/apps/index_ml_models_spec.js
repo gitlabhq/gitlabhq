@@ -4,7 +4,6 @@ import VueApollo from 'vue-apollo';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { IndexMlModels } from '~/ml/model_registry/apps';
 import ModelRow from '~/ml/model_registry/components/model_row.vue';
-import ModelCreate from '~/ml/model_registry/components/model_create.vue';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
 import EmptyState from '~/ml/model_registry/components/model_list_empty_state.vue';
@@ -14,7 +13,6 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import getModelsQuery from '~/ml/model_registry/graphql/queries/get_models.query.graphql';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { MODEL_CREATION_MODAL_ID } from '~/ml/model_registry/constants';
 import { describeSkipVue3, SkipReason } from 'helpers/vue3_conditional';
 import { modelsQuery, modelWithOneVersion, modelWithoutVersion } from '../graphql_mock_data';
 
@@ -25,6 +23,7 @@ const defaultProps = {
   canWriteModelRegistry: false,
   maxAllowedFileSize: 99999,
   markdownPreviewPath: '/markdown-preview',
+  createModelPath: 'path/to/project/-/ml/models/new,',
 };
 
 const skipReason = new SkipReason({
@@ -69,7 +68,7 @@ describeSkipVue3(skipReason, () => {
   const findTitleArea = () => wrapper.findComponent(TitleArea);
   const findModelCountMetadataItem = () => findTitleArea().findComponent(MetadataItem);
   const findBadge = () => wrapper.findComponent(GlExperimentBadge);
-  const findModelCreate = () => wrapper.findComponent(ModelCreate);
+  const findModelCreate = () => wrapper.findByTestId('create-model-button');
   const findActionsDropdown = () => wrapper.findComponent(ActionsDropdown);
   const findSearchableList = () => wrapper.findComponent(SearchableList);
 
@@ -103,7 +102,6 @@ describeSkipVue3(skipReason, () => {
         description:
           'Create your machine learning using GitLab directly or using the MLflow client',
         primaryText: 'Create model',
-        modalId: MODEL_CREATION_MODAL_ID,
       });
     });
   });

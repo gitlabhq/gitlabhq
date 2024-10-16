@@ -2,7 +2,6 @@ import { GlTab } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ModelDetail from '~/ml/model_registry/components/model_detail.vue';
 import EmptyState from '~/ml/model_registry/components/model_list_empty_state.vue';
-import { MODEL_VERSION_CREATION_MODAL_ID } from '~/ml/model_registry/constants';
 import { model, modelWithoutVersion } from '../graphql_mock_data';
 
 let wrapper;
@@ -10,7 +9,7 @@ let wrapper;
 const createWrapper = (modelProp = model) => {
   wrapper = shallowMountExtended(ModelDetail, {
     propsData: { model: modelProp },
-    provide: { maxAllowedFileSize: 99999 },
+    provide: { createModelVersionPath: 'versions/new' },
     stubs: { GlTab },
   });
 };
@@ -43,7 +42,7 @@ describe('ShowMlModel', () => {
         title: 'Manage versions of your machine learning model',
         description: 'Use versions to track performance, parameters, and metadata',
         primaryText: 'Create model version',
-        modalId: MODEL_VERSION_CREATION_MODAL_ID,
+        primaryLink: 'versions/new',
       });
     });
   });

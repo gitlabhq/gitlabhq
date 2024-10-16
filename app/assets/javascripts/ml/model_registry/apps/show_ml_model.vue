@@ -1,5 +1,5 @@
 <script>
-import { GlBadge, GlTab, GlTabs } from '@gitlab/ui';
+import { GlBadge, GlButton, GlTab, GlTabs } from '@gitlab/ui';
 import VueRouter from 'vue-router';
 import { n__, s__, sprintf } from '~/locale';
 import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
@@ -7,7 +7,6 @@ import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import { MODEL_ENTITIES } from '~/ml/model_registry/constants';
 import ModelVersionList from '~/ml/model_registry/components/model_version_list.vue';
 import ModelDetail from '~/ml/model_registry/components/model_detail.vue';
-import ModelVersionCreate from '~/ml/model_registry/components/model_version_create.vue';
 import ActionsDropdown from '~/ml/model_registry/components/actions_dropdown.vue';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { visitUrlWithAlerts } from '~/lib/utils/url_utility';
@@ -47,13 +46,13 @@ export default {
     ActionsDropdown,
     DeleteDisclosureDropdownItem,
     TitleArea,
+    GlButton,
     GlTabs,
     GlTab,
     GlBadge,
     MetadataItem,
     LoadOrErrorOrShow,
     DeleteModel,
-    ModelVersionCreate,
     ModelEdit,
   },
   router: new VueRouter({
@@ -67,6 +66,8 @@ export default {
       maxAllowedFileSize: this.maxAllowedFileSize,
       latestVersion: this.latestVersion,
       markdownPreviewPath: this.markdownPreviewPath,
+      createModelVersionPath: this.createModelVersionPath,
+      modelGid: this.modelGid,
     };
   },
   props: {
@@ -83,6 +84,10 @@ export default {
       required: true,
     },
     indexModelsPath: {
+      type: String,
+      required: true,
+    },
+    createModelVersionPath: {
       type: String,
       required: true,
     },
@@ -172,6 +177,9 @@ export default {
       });
     },
   },
+  i18n: {
+    createModelVersionLinkTitle: s__('MlModelRegistry|Create model version'),
+  },
   modelVersionEntity: MODEL_ENTITIES.modelVersion,
   ROUTE_DETAILS,
   ROUTE_VERSIONS,
@@ -189,7 +197,14 @@ export default {
 
           <template #right-actions>
             <model-edit v-if="canWriteModelRegistry" :model="model" />
-            <model-version-create v-if="canWriteModelRegistry" :model-gid="modelGid" />
+            <gl-button
+              v-if="canWriteModelRegistry"
+              data-testid="model-version-create-button"
+              variant="confirm"
+              :href="createModelVersionPath"
+              >{{ $options.i18n.createModelVersionLinkTitle }}</gl-button
+            >
+
             <actions-dropdown>
               <delete-disclosure-dropdown-item
                 v-if="canWriteModelRegistry"

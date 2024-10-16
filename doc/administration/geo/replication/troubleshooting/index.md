@@ -14,5 +14,6 @@ When working with Geo, you might encounter the following issues:
 
 - Basic troubleshooting and [common errors](common.md)
 - [Client and HTTP response code errors](client_http.md)
+- [PostgreSQL replication errors](postgresql_replication.md)
 - [Replication errors](replication.md)
 - [Synchronization errors](synchronization.md)

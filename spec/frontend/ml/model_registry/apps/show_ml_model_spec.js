@@ -9,7 +9,6 @@ import CandidateList from '~/ml/model_registry/components/candidate_list.vue';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
-import ModelVersionCreate from '~/ml/model_registry/components/model_version_create.vue';
 import ModelDetail from '~/ml/model_registry/components/model_detail.vue';
 import ModelEdit from '~/ml/model_registry/components/model_edit.vue';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -93,6 +92,7 @@ describe('ml/model_registry/apps/show_ml_model', () => {
         maxAllowedFileSize: 99999,
         latestVersion: '',
         markdownPreviewPath: '/markdown-preview',
+        createModelVersionPath: 'project/path/create/model/version',
       },
       stubs: { GlTab, DeleteModel, LoadOrErrorOrShow },
     });
@@ -112,7 +112,7 @@ describe('ml/model_registry/apps/show_ml_model', () => {
   const findActionsDropdown = () => wrapper.findComponent(ActionsDropdown);
   const findDeleteButton = () => wrapper.findComponent(DeleteDisclosureDropdownItem);
   const findDeleteModel = () => wrapper.findComponent(DeleteModel);
-  const findModelVersionCreate = () => wrapper.findComponent(ModelVersionCreate);
+  const findModelVersionCreateButton = () => wrapper.findByTestId('model-version-create-button');
   const findLoadOrErrorOrShow = () => wrapper.findComponent(LoadOrErrorOrShow);
   const findModelEdit = () => wrapper.findComponent(ModelEdit);
 
@@ -150,21 +150,18 @@ describe('ml/model_registry/apps/show_ml_model', () => {
     });
   });
 
-  describe('ModelVersionCreate', () => {
+  describe('Model version create button', () => {
     beforeEach(() => createWrapper());
 
     it('displays version creation button', () => {
-      expect(findModelVersionCreate().props()).toEqual({
-        modelGid: 'gid://gitlab/Ml::Model/1',
-        disableAttachments: false,
-      });
+      expect(findModelVersionCreateButton().exists()).toBe(true);
     });
 
     describe('when user has no permission to write model registry', () => {
       it('does not display version creation', () => {
         createWrapper({ canWriteModelRegistry: false });
 
-        expect(findModelVersionCreate().exists()).toBe(false);
+        expect(findModelVersionCreateButton().exists()).toBe(false);
       });
     });
   });

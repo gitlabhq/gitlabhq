@@ -180,7 +180,7 @@ export default {
       ref="mainPipelineContainer"
       class="pipeline-graph gl-position-relative gl-flex gl-whitespace-nowrap gl-rounded-lg"
       :class="{
-        'pipeline-graph-container gl-pipeline-min-h gl-mt-3 gl-items-start gl-overflow-auto gl-bg-gray-10 gl-pb-8 gl-pt-3':
+        'pipeline-graph-container gl-pipeline-min-h gl-mt-3 gl-items-start gl-overflow-auto gl-bg-subtle gl-pb-8 gl-pt-3':
           !isLinkedPipeline,
         'gl-bg-gray-50 sm:gl-ml-5': isLinkedPipeline,
       }"
