@@ -363,10 +363,12 @@ these steps:
 Rendered diagrams are cached. To see the updates, try these steps:
 
 - If the diagram is in a Markdown file, make a small change to the Markdown file, and commit it. This triggers a re-render.
-- [Clear your GitLab cache](../raketasks/maintenance.md#clear-redis-cache).
+- [Invalidate the Markdown cache](../invalidate_markdown_cache.md#invalidate-the-cache) to force any cached Markdown
+in the database or Redis to be cleared.
 
 If you're still not seeing the updated URL, check the following:
 
 - Ensure the PlantUML server is accessible from your GitLab instance.
 - Verify that the PlantUML integration is enabled in your GitLab settings.
 - Check the GitLab logs for errors related to PlantUML rendering.
+- [Clear your GitLab Redis cache](../raketasks/maintenance.md#clear-redis-cache).

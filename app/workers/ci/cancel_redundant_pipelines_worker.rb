@@ -10,11 +10,12 @@ module Ci
     deduplicate :until_executed
     urgency :high
 
-    def perform(pipeline_id)
-      Ci::Pipeline.find_by_id(pipeline_id).try do |pipeline|
-        Ci::PipelineCreation::CancelRedundantPipelinesService
-          .new(pipeline)
-          .execute
+    def perform(pipeline_id, options = {})
+      relation = Ci::Pipeline.all
+      relation = relation.in_partition(options['partition_id']) if options['partition_id'].present?
+
+      relation.find_by_id(pipeline_id).try do |pipeline|
+        Ci::PipelineCreation::CancelRedundantPipelinesService.new(pipeline).execute
       end
     end
   end

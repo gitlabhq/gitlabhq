@@ -552,6 +552,18 @@ RSpec.describe Todo, feature_category: :team_planning do
     end
   end
 
+  describe '.pending_for_expiring_ssh_keys' do
+    it 'returns only todos matching the given key ids' do
+      todo1 = create(:todo, target_type: Key, target_id: 1, action: described_class::SSH_KEY_EXPIRING_SOON, state: :pending)
+      todo2 = create(:todo, target_type: Key, target_id: 2, action: described_class::SSH_KEY_EXPIRING_SOON, state: :pending)
+      create(:todo, target_type: Key, target_id: 3, action: described_class::SSH_KEY_EXPIRING_SOON, state: :done)
+      create(:todo, target_type: Issue, target_id: 1, action: described_class::ASSIGNED, state: :pending)
+      todos = described_class.pending_for_expiring_ssh_keys([1, 2, 3])
+
+      expect(todos).to contain_exactly(todo1, todo2)
+    end
+  end
+
   describe '.for_user' do
     it 'returns the expected todos' do
       user1 = create(:user)

@@ -164,23 +164,27 @@ class TodoService
     resolve_todos_for_target(awardable, current_user)
   end
 
+  # When a SSH key is expiring soon we should:
+  #
+  # * create a todo for the user owning that SSH key
+  #
+  def ssh_key_expiring_soon(ssh_keys)
+    create_ssh_key_todos(Array(ssh_keys), ::Todo::SSH_KEY_EXPIRING_SOON)
+  end
+
   # When a SSH key expired we should:
   #
+  # * resolve any corresponding "expiring soon" todo
   # * create a todo for the user owning that SSH key
   #
   def ssh_key_expired(ssh_keys)
     ssh_keys = Array(ssh_keys)
 
-    ssh_keys.each do |ssh_key|
-      user = ssh_key.user
-      attributes = {
-        target_id: ssh_key.id,
-        target_type: Key,
-        action: ::Todo::SSH_KEY_EXPIRED,
-        author_id: user.id
-      }
-      create_todos(user, attributes, nil, nil)
-    end
+    # Resolve any pending "expiring soon" todos for these keys
+    expiring_key_todos = ::Todo.pending_for_expiring_ssh_keys(ssh_keys.map(&:id))
+    expiring_key_todos.batch_update(state: :done, resolved_by_action: :system_done)
+
+    create_ssh_key_todos(ssh_keys, ::Todo::SSH_KEY_EXPIRED)
   end
 
   # When user marks a target as todo
@@ -404,6 +408,19 @@ class TodoService
     project = merge_request.project
     attributes = attributes_for_todo(project, merge_request, todo_author, Todo::UNMERGEABLE)
     create_todos(todo_author, attributes, project.namespace, project)
+  end
+
+  def create_ssh_key_todos(ssh_keys, action)
+    ssh_keys.each do |ssh_key|
+      user = ssh_key.user
+      attributes = {
+        target_id: ssh_key.id,
+        target_type: Key,
+        action: action,
+        author_id: user.id
+      }
+      create_todos(user, attributes, nil, nil)
+    end
   end
 
   def attributes_for_target(target)

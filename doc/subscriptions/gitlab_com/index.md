@@ -83,11 +83,16 @@ You can view and [manage renewal invoice](../self_managed/index.md#manage-renewa
 
 ### Renew for fewer seats
 
-You can renew your subscription for fewer seats, as long as the seat total is equal to or greater than the billable user quantity at the time of renewal.
-If you want to renew for fewer seats, you can do either of the following:
+Subscription renewals with fewer seats must have or exceed the current number of billable users.
+Before you renew your subscription, [reduce the number of billable users](#remove-users-from-subscription)
+if it exceeds the number of seats you want to renew for.
 
-- [Manually renew](../self_managed/index.md#renew-subscription-manually) within 15 days of subscription renewal date, and **specify the desired seat quantity** on the renewal page. To reduce billable user quantity, [remove users from your subscription](#remove-users-from-subscription).
-- Disable automatic subscription renewal and work with the Sales team to renew it for the number of seats you want.
+To manually renew your subscription for fewer seats, you can either:
+
+- [Manually renew](../self_managed/index.md#renew-subscription-manually) within 15 days of the
+subscription renewal date. Ensure that you specify the seat quantity when you renew.
+- [Disable automatic renewal of your subscription](../self_managed/index.md#enable-or-disable-automatic-subscription-renewal),
+and contact the GitLab Sales team to renew it for the number of seats you want.
 
 ### Automatic subscription renewal
 

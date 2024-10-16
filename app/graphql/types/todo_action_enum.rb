@@ -16,5 +16,6 @@ module Types
     value 'okr_checkin_requested', value: 12, description: 'An OKR assigned to the user requires an update.'
     value 'added_approver', value: 13, description: 'User was added as an approver.'
     value 'ssh_key_expired', value: 14, description: 'SSH key of the user has expired.'
+    value 'ssh_key_expiring_soon', value: 15, description: 'SSH key of the user will expire soon.'
   end
 end

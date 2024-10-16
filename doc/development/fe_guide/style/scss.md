@@ -222,7 +222,7 @@ In the following example, you add the utility classes `gl-fixed` and `gl-inset-x
 <style>
   .my-class {
     top: $header-height;
-    z-index: 999;
+    min-height: $comparison-empty-state-height;
     position: fixed;
     left: 0px;
     right: 0px;
@@ -235,7 +235,7 @@ In the following example, you add the utility classes `gl-fixed` and `gl-inset-x
 <style>
   .my-class {
     top: $header-height;
-    z-index: 999;
+    min-height: $comparison-empty-state-height;
   }
 </style>
 ```

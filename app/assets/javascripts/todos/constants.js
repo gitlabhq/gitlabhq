@@ -25,6 +25,7 @@ export const TODO_ACTION_TYPE_REVIEW_SUBMITTED = 'review_submitted';
 export const TODO_ACTION_TYPE_OKR_CHECKIN_REQUESTED = 'okr_checkin_requested';
 export const TODO_ACTION_TYPE_ADDED_APPROVER = 'added_approver';
 export const TODO_ACTION_TYPE_SSH_KEY_EXPIRED = 'ssh_key_expired';
+export const TODO_ACTION_TYPE_SSH_KEY_EXPIRING_SOON = 'ssh_key_expiring_soon';
 
 export const TODO_EMPTY_TITLE_POOL = [
   s__("Todos|Good job! Looks like you don't have anything left on your To-Do List"),

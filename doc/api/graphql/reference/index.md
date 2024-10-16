@@ -39370,6 +39370,7 @@ Values for sorting timelogs.
 | <a id="todoactionenumreview_requested"></a>`review_requested` | Review was requested from the user. |
 | <a id="todoactionenumreview_submitted"></a>`review_submitted` | Merge request authored by the user received a review. |
 | <a id="todoactionenumssh_key_expired"></a>`ssh_key_expired` | SSH key of the user has expired. |
+| <a id="todoactionenumssh_key_expiring_soon"></a>`ssh_key_expiring_soon` | SSH key of the user will expire soon. |
 | <a id="todoactionenumunmergeable"></a>`unmergeable` | Merge request authored by the user could not be merged. |
 
 ### `TodoSort`

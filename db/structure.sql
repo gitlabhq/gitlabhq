@@ -1275,6 +1275,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_38bfee591e40() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."group_id" IS NULL THEN
+  SELECT "group_id"
+  INTO NEW."group_id"
+  FROM "dependency_proxy_blobs"
+  WHERE "dependency_proxy_blobs"."id" = NEW."dependency_proxy_blob_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_3d1a58344b29() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -10507,6 +10523,7 @@ CREATE TABLE dependency_proxy_blob_states (
     verification_retry_count smallint DEFAULT 0 NOT NULL,
     verification_checksum bytea,
     verification_failure text,
+    group_id bigint,
     CONSTRAINT check_8e4f76fffe CHECK ((char_length(verification_failure) <= 255))
 );
 
@@ -28870,6 +28887,8 @@ CREATE INDEX index_dependency_proxy_blob_states_needs_verification ON dependency
 
 CREATE INDEX index_dependency_proxy_blob_states_on_dependency_proxy_blob_id ON dependency_proxy_blob_states USING btree (dependency_proxy_blob_id);
 
+CREATE INDEX index_dependency_proxy_blob_states_on_group_id ON dependency_proxy_blob_states USING btree (group_id);
+
 CREATE INDEX index_dependency_proxy_blob_states_on_verification_state ON dependency_proxy_blob_states USING btree (verification_state);
 
 CREATE INDEX index_dependency_proxy_blob_states_pending_verification ON dependency_proxy_blob_states USING btree (verified_at NULLS FIRST) WHERE (verification_state = 0);
@@ -33868,6 +33887,8 @@ CREATE TRIGGER trigger_3691f9f6a69f BEFORE INSERT OR UPDATE ON remote_developmen
 
 CREATE TRIGGER trigger_388de55cd36c BEFORE INSERT OR UPDATE ON ci_builds_runner_session FOR EACH ROW EXECUTE FUNCTION trigger_388de55cd36c();
 
+CREATE TRIGGER trigger_38bfee591e40 BEFORE INSERT OR UPDATE ON dependency_proxy_blob_states FOR EACH ROW EXECUTE FUNCTION trigger_38bfee591e40();
+
 CREATE TRIGGER trigger_3d1a58344b29 BEFORE INSERT OR UPDATE ON alert_management_alert_assignees FOR EACH ROW EXECUTE FUNCTION trigger_3d1a58344b29();
 
 CREATE TRIGGER trigger_3e067fa9bfe3 BEFORE INSERT OR UPDATE ON incident_management_timeline_event_tag_links FOR EACH ROW EXECUTE FUNCTION trigger_3e067fa9bfe3();
@@ -34997,6 +35018,9 @@ ALTER TABLE ONLY milestones
 
 ALTER TABLE ONLY boards_epic_list_user_preferences
     ADD CONSTRAINT fk_95eac55851 FOREIGN KEY (epic_list_id) REFERENCES boards_epic_lists(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY dependency_proxy_blob_states
+    ADD CONSTRAINT fk_95ee495fd6 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY issues
     ADD CONSTRAINT fk_96b1dd429c FOREIGN KEY (milestone_id) REFERENCES milestones(id) ON DELETE SET NULL;

@@ -34,6 +34,7 @@ import {
   TODO_ACTION_TYPE_OKR_CHECKIN_REQUESTED,
   TODO_ACTION_TYPE_ADDED_APPROVER,
   TODO_ACTION_TYPE_SSH_KEY_EXPIRED,
+  TODO_ACTION_TYPE_SSH_KEY_EXPIRING_SOON,
 } from '../constants';
 import GroupToken from './filtered_search_tokens/group_token.vue';
 import ProjectToken from './filtered_search_tokens/project_token.vue';
@@ -173,6 +174,11 @@ export const ACTION_TYPES = [
     id: '14',
     value: TODO_ACTION_TYPE_SSH_KEY_EXPIRED,
     title: s__('Todos|SSH key expired'),
+  },
+  {
+    id: '15',
+    value: TODO_ACTION_TYPE_SSH_KEY_EXPIRING_SOON,
+    title: s__('Todos|SSH key expiring soon'),
   },
 ];
 

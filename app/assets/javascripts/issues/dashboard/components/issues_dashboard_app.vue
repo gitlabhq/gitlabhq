@@ -354,6 +354,7 @@ export default {
         hasBlockedIssuesFeature: this.hasBlockedIssuesFeature,
         hasIssuableHealthStatusFeature: this.hasIssuableHealthStatusFeature,
         hasIssueWeightsFeature: this.hasIssueWeightsFeature,
+        hasManualSort: false,
       });
     },
     tabCounts() {

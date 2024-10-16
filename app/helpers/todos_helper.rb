@@ -31,6 +31,7 @@ module TodosHelper
       s_("Todos|requested an OKR update for %{what}"), what: todo.target.title
     )
     when Todo::SSH_KEY_EXPIRED then s_('Todos|Your SSH key has expired')
+    when Todo::SSH_KEY_EXPIRING_SOON then s_('Todos|Your SSH key is expiring soon')
     end
   end
 
@@ -205,7 +206,8 @@ module TodosHelper
       { id: Todo::MARKED, text: s_('Todos|Added') },
       { id: Todo::BUILD_FAILED, text: s_('Todos|Pipelines') },
       { id: Todo::MEMBER_ACCESS_REQUESTED, text: s_('Todos|Member access requested') },
-      { id: Todo::SSH_KEY_EXPIRED, text: s_('Todos|SSH key expired') }
+      { id: Todo::SSH_KEY_EXPIRED, text: s_('Todos|SSH key expired') },
+      { id: Todo::SSH_KEY_EXPIRING_SOON, text: s_('Todos|SSH key expiring soon') }
     ]
   end
 

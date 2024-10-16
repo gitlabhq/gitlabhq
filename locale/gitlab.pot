@@ -14311,6 +14311,9 @@ msgstr ""
 msgid "ComplianceFrameworks|The compliance framework must be edited in top-level group %{linkStart}namespace%{linkEnd}"
 msgstr ""
 
+msgid "ComplianceFrameworks|The default framework can't be deleted"
+msgstr ""
+
 msgid "ComplianceFrameworks|There can be only one default framework."
 msgstr ""
 
@@ -26310,9 +26313,6 @@ msgstr ""
 msgid "GroupRoadmap|%{dateWord} – No end date"
 msgstr ""
 
-msgid "GroupRoadmap|%{startDateInWords} – %{endDateInWords}"
-msgstr ""
-
 msgid "GroupRoadmap|Loading epics"
 msgstr ""
 
@@ -26349,10 +26349,10 @@ msgstr ""
 msgid "GroupRoadmap|To view the roadmap, add a start or due date to one of the %{linkStart}child epics%{linkEnd}."
 msgstr ""
 
-msgid "GroupRoadmap|To view the roadmap, add a start or due date to one of your epics in this group or its subgroups; from %{startDate} to %{endDate}."
+msgid "GroupRoadmap|To view the roadmap, add a start or due date to one of your epics in this group or its subgroups; from %{dateRange}."
 msgstr ""
 
-msgid "GroupRoadmap|To widen your search, change or remove filters; from %{startDate} to %{endDate}."
+msgid "GroupRoadmap|To widen your search, change or remove filters; from %{dateRange}."
 msgstr ""
 
 msgid "GroupRoadmap|View epics list"
@@ -57258,6 +57258,9 @@ msgstr ""
 msgid "Todos|SSH key expired"
 msgstr ""
 
+msgid "Todos|SSH key expiring soon"
+msgstr ""
+
 msgid "Todos|Something went wrong. Please try again."
 msgstr ""
 
@@ -57295,6 +57298,9 @@ msgid "Todos|You're all done!"
 msgstr ""
 
 msgid "Todos|Your SSH key has expired"
+msgstr ""
+
+msgid "Todos|Your SSH key is expiring soon"
 msgstr ""
 
 msgid "Todos|Your To-Do List shows what to work on next"

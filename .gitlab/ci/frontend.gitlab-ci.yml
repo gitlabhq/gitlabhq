@@ -369,7 +369,7 @@ jest vue3 mr:
   parallel: 6
   script:
     - run_timed_command "yarn jest:ci:vue3-mr:without-fixtures"
-  allow_failure: true
+  allow_failure: false
 
 jest-with-fixtures vue3 mr:
   extends:
@@ -420,7 +420,6 @@ jest vue3 predictive:
     - "detect-tests"
   script:
     - if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]] || [[ -s "$RSPEC_MATCHING_JS_FILES_PATH" ]]; then run_timed_command "yarn jest:ci:vue3-mr:predictive-without-fixtures"; fi
-  allow_failure: false
 
 jest-with-fixtures vue3 predictive:
   extends:
