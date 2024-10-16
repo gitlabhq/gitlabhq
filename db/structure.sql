@@ -11256,7 +11256,8 @@ CREATE TABLE epic_issues (
     epic_id bigint NOT NULL,
     issue_id bigint NOT NULL,
     relative_position integer,
-    namespace_id bigint
+    namespace_id bigint,
+    work_item_parent_link_id bigint
 );
 
 CREATE SEQUENCE epic_issues_id_seq
@@ -11345,6 +11346,7 @@ CREATE TABLE epics (
     issue_id bigint,
     imported smallint DEFAULT 0 NOT NULL,
     imported_from smallint DEFAULT 0 NOT NULL,
+    work_item_parent_link_id bigint,
     CONSTRAINT check_450724d1bb CHECK ((issue_id IS NOT NULL)),
     CONSTRAINT check_ca608c40b3 CHECK ((char_length(color) <= 7)),
     CONSTRAINT check_fcfb4a93ff CHECK ((lock_version IS NOT NULL))
@@ -17849,7 +17851,8 @@ CREATE TABLE related_epic_links (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     link_type smallint DEFAULT 0 NOT NULL,
-    group_id bigint
+    group_id bigint,
+    issue_link_id bigint
 );
 
 CREATE SEQUENCE related_epic_links_id_seq
@@ -31361,7 +31364,13 @@ CREATE UNIQUE INDEX index_unique_epics_on_issue_id ON epics USING btree (issue_i
 
 CREATE UNIQUE INDEX index_unique_issuable_resource_links_on_unique_issue_link ON issuable_resource_links USING btree (issue_id, link) WHERE is_unique;
 
+CREATE UNIQUE INDEX index_unique_issue_link_id_on_related_epic_links ON related_epic_links USING btree (issue_link_id);
+
 CREATE UNIQUE INDEX index_unique_issue_metrics_issue_id ON issue_metrics USING btree (issue_id);
+
+CREATE UNIQUE INDEX index_unique_parent_link_id_on_epic_issues ON epic_issues USING btree (work_item_parent_link_id);
+
+CREATE UNIQUE INDEX index_unique_parent_link_id_on_epics ON epics USING btree (work_item_parent_link_id);
 
 CREATE UNIQUE INDEX index_unique_project_authorizations_on_unique_project_user ON project_authorizations USING btree (project_id, user_id) WHERE is_unique;
 
@@ -34557,6 +34566,9 @@ ALTER TABLE ONLY agent_user_access_group_authorizations
 ALTER TABLE ONLY group_crm_settings
     ADD CONSTRAINT fk_54592e5f57 FOREIGN KEY (source_group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY epic_issues
+    ADD CONSTRAINT fk_54dd5d38a7 FOREIGN KEY (work_item_parent_link_id) REFERENCES work_item_parent_links(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY terraform_states
     ADD CONSTRAINT fk_558901b030 FOREIGN KEY (locked_by_user_id) REFERENCES users(id) ON DELETE SET NULL;
 
@@ -34739,6 +34751,9 @@ ALTER TABLE ONLY protected_tag_create_access_levels
 
 ALTER TABLE ONLY environments
     ADD CONSTRAINT fk_75c2098045 FOREIGN KEY (cluster_agent_id) REFERENCES cluster_agents(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY epics
+    ADD CONSTRAINT fk_765e132668 FOREIGN KEY (work_item_parent_link_id) REFERENCES work_item_parent_links(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY notes
     ADD CONSTRAINT fk_76db6d50c6 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
@@ -35117,6 +35132,9 @@ ALTER TABLE ONLY vulnerability_reads
 
 ALTER TABLE ONLY member_approvals
     ADD CONSTRAINT fk_b2e4a4b68a FOREIGN KEY (member_id) REFERENCES members(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY related_epic_links
+    ADD CONSTRAINT fk_b30520b698 FOREIGN KEY (issue_link_id) REFERENCES issue_links(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY issues
     ADD CONSTRAINT fk_b37be69be6 FOREIGN KEY (work_item_type_id) REFERENCES work_item_types(id);

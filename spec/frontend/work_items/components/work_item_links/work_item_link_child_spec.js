@@ -26,6 +26,7 @@ import {
   workItemHierarchyTreeResponse,
   workItemHierarchyPaginatedTreeResponse,
   workItemHierarchyTreeFailureResponse,
+  workItemHierarchyNoChildrenTreeResponse,
 } from '../../mock_data';
 
 jest.mock('~/alert');
@@ -60,6 +61,7 @@ describe('WorkItemLinkChild', () => {
     workItemTreeQueryHandler = getWorkItemTreeQueryHandler,
     isExpanded = false,
     showTaskWeight = false,
+    props = {},
   } = {}) => {
     const mockApollo = createMockApollo([[getWorkItemTreeQuery, workItemTreeQueryHandler]], {
       Mutation: {
@@ -85,6 +87,7 @@ describe('WorkItemLinkChild', () => {
         workItemType,
         workItemFullPath,
         showTaskWeight,
+        ...props,
       },
       stubs: {
         WorkItemChildrenWrapper,
@@ -285,5 +288,57 @@ describe('WorkItemLinkChild', () => {
         });
       });
     });
+  });
+  describe('drag & drop', () => {
+    const allowedChildrenByType = { Issue: ['Task'], Epic: ['Epic', 'Issue'] };
+    const getWorkItemTreeNoChildrenQueryHandler = jest
+      .fn()
+      .mockResolvedValue(workItemHierarchyNoChildrenTreeResponse);
+
+    it('emits drag & drop events from children wrapper', () => {
+      createComponent({
+        isExpanded: true,
+      });
+
+      findTreeChildren().vm.$emit('drag', 'Task');
+      expect(wrapper.emitted('drag')).toEqual([['Task']]);
+
+      findTreeChildren().vm.$emit('drop');
+      expect(wrapper.emitted('drop').length).toBe(1);
+    });
+
+    it.each`
+      draggedItemType | childItemType | showChildrenDropzone
+      ${'Task'}       | ${'Task'}     | ${false}
+      ${'Task'}       | ${'Issue'}    | ${true}
+      ${'Task'}       | ${'Epic'}     | ${false}
+      ${'Issue'}      | ${'Task'}     | ${false}
+      ${'Issue'}      | ${'Issue'}    | ${false}
+      ${'Issue'}      | ${'Epic'}     | ${true}
+      ${'Epic'}       | ${'Task'}     | ${false}
+      ${'Epic'}       | ${'Issue'}    | ${false}
+      ${'Epic'}       | ${'Epic'}     | ${true}
+    `(
+      'shows children dropzone is $showChildrenDropzone when dragging $draggedItemType in $childItemType for orphans',
+      async ({ draggedItemType, childItemType, showChildrenDropzone }) => {
+        createComponent({
+          workItemTreeQueryHandler: getWorkItemTreeNoChildrenQueryHandler,
+          props: {
+            allowedChildrenByType,
+            draggedItemType,
+            childItem: {
+              ...workItemEpic,
+              workItemType: {
+                ...workItemEpic.workItemType,
+                name: childItemType,
+              },
+            },
+          },
+        });
+        await waitForPromises();
+
+        expect(findTreeChildren().exists()).toBe(showChildrenDropzone);
+      },
+    );
   });
 });

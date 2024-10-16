@@ -15,7 +15,9 @@ RSpec.describe API::NpmGroupPackages, feature_category: :package_registry do
       subject { get(url) }
     end
 
-    it_behaves_like 'handling get metadata requests for packages in multiple projects'
+    context 'when qurantined shared example', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/496617' do
+      it_behaves_like 'handling get metadata requests for packages in multiple projects'
+    end
 
     context 'with mixed group and project visibilities' do
       subject { get(url, headers: headers) }

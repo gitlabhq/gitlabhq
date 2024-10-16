@@ -1,10 +1,10 @@
-#import "../fragments/container_expiration_policy.fragment.graphql"
+#import "../fragments/container_tags_expiration_policy.fragment.graphql"
 
 query getProjectExpirationPolicy($projectPath: ID!) {
   project(fullPath: $projectPath) {
     id
-    containerExpirationPolicy {
-      ...ContainerExpirationPolicyFields
+    containerTagsExpirationPolicy {
+      ...ContainerTagsExpirationPolicyFields
     }
   }
 }

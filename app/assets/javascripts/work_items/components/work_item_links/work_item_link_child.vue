@@ -59,15 +59,20 @@ export default {
       required: false,
       default: false,
     },
-    allowedChildTypes: {
-      type: Array,
+    draggedItemType: {
+      type: String,
       required: false,
-      default: () => [],
+      default: null,
     },
     showTaskWeight: {
       type: Boolean,
       required: false,
       default: true,
+    },
+    allowedChildrenByType: {
+      type: Object,
+      required: false,
+      default: () => {},
     },
   },
   data() {
@@ -180,11 +185,14 @@ export default {
     shouldShowWeight() {
       return this.childItemType === WORK_ITEM_TYPE_VALUE_TASK ? this.showTaskWeight : true;
     },
-    allowedChildren() {
-      return this.allowedChildTypes.length > 0;
+    allowedChildTypes() {
+      return this.allowedChildrenByType?.[this.childItemType] || [];
+    },
+    draggedItemTypeIsAllowed() {
+      return this.allowedChildTypes.includes(this.draggedItemType);
     },
     showChildrenDropzone() {
-      return !this.hasChildren && this.allowedChildren;
+      return !this.hasChildren && this.draggedItemTypeIsAllowed;
     },
   },
   methods: {
@@ -280,6 +288,10 @@ export default {
         :is-top-level="false"
         :show-task-weight="showTaskWeight"
         :has-indirect-children="hasIndirectChildren"
+        :dragged-item-type="draggedItemType"
+        :allowed-children-by-type="allowedChildrenByType"
+        @drag="$emit('drag', $event)"
+        @drop="$emit('drop')"
         @removeChild="$emit('removeChild', childItem)"
         @error="$emit('error', $event)"
         @click="$emit('click', $event)"

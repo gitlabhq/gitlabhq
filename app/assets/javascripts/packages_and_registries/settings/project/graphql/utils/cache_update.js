@@ -11,9 +11,9 @@ export const updateContainerExpirationPolicy =
     const sourceData = client.readQuery(queryAndParams);
 
     const data = produce(sourceData, (draftState) => {
-      draftState.project.containerExpirationPolicy = {
-        ...draftState.project.containerExpirationPolicy,
-        ...updatedData.updateContainerExpirationPolicy.containerExpirationPolicy,
+      draftState.project.containerTagsExpirationPolicy = {
+        ...draftState.project.containerTagsExpirationPolicy,
+        ...updatedData.updateContainerExpirationPolicy.containerTagsExpirationPolicy,
       };
     });
 

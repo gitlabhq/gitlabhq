@@ -7,7 +7,7 @@ describe('Registry settings cache update', () => {
   const payload = (value) => ({
     data: {
       updateContainerExpirationPolicy: {
-        containerExpirationPolicy: {
+        containerTagsExpirationPolicy: {
           ...value,
         },
       },
@@ -16,7 +16,7 @@ describe('Registry settings cache update', () => {
 
   const cacheMock = {
     project: {
-      containerExpirationPolicy: {
+      containerTagsExpirationPolicy: {
         enabled: false,
       },
     },
@@ -45,7 +45,7 @@ describe('Registry settings cache update', () => {
         ...queryAndVariables,
         data: {
           project: {
-            containerExpirationPolicy: {
+            containerTagsExpirationPolicy: {
               enabled: true,
             },
           },
@@ -60,7 +60,7 @@ describe('Registry settings cache update', () => {
         ...queryAndVariables,
         data: {
           project: {
-            containerExpirationPolicy: {
+            containerTagsExpirationPolicy: {
               enabled: false,
             },
           },

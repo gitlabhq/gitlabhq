@@ -10,6 +10,7 @@ module Gitlab
     class CurrentUserMode
       include Gitlab::Utils::StrongMemoize
       NotRequestedError = Class.new(StandardError)
+      NonSidekiqEnvironmentError = Class.new(StandardError)
 
       # RequestStore entries
       CURRENT_REQUEST_BYPASS_SESSION_ADMIN_ID_RS_KEY = { res: :current_user_mode, data: :bypass_session_admin_id }.freeze
@@ -83,6 +84,20 @@ module Gitlab
 
         def current_admin
           Gitlab::SafeRequestStore[CURRENT_REQUEST_ADMIN_MODE_USER_RS_KEY]
+        end
+
+        def optionally_run_in_admin_mode(user)
+          raise NonSidekiqEnvironmentError unless Gitlab::Runtime.sidekiq?
+
+          unless Gitlab::CurrentSettings.admin_mode && user.admin? # rubocop:disable Cop/UserAdmin -- policy checks should be enforced further down the stack
+            return yield
+          end
+
+          bypass_session!(user.id) do
+            with_current_admin(user) do
+              yield
+            end
+          end
         end
       end
 

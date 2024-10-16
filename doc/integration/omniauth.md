@@ -347,52 +347,6 @@ omniauth:
 
 ::EndTabs
 
-## Use a custom OmniAuth provider
-
-NOTE:
-The following information only applies to self-compiled installations.
-
-If you have to integrate with an authentication solution other than the [OmniAuth](https://github.com/omniauth/omniauth) providers included with GitLab,
-you can use a custom OmniAuth provider.
-
-These steps are general. Read the OmniAuth provider's documentation for the exact
-implementation details.
-
-1. Stop GitLab:
-
-   ```shell
-   sudo service gitlab stop
-   ```
-
-1. Add the gem to your [`Gemfile`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/Gemfile):
-
-   ```shell
-   gem "omniauth-your-auth-provider"
-   ```
-
-1. Install the new OmniAuth provider gem:
-
-   ```shell
-   sudo -u git -H bundle install --without development test mysql --path vendor/bundle --no-deployment
-   ```
-
-   These commands are the same as the commands for [installing gems](../install/installation.md#install-gems)
-   during initial installation, with `--path vendor/bundle --no-deployment` instead of `--deployment`.
-
-1. Start GitLab:
-
-   ```shell
-   sudo service gitlab start
-   ```
-
-### Custom OmniAuth provider examples
-
-If you have successfully set up a provider that is not already integrated with GitLab,
-let us know.
-
-We can't officially support every possible authentication mechanism available,
-but we'd like to at least help those with specific needs.
-
 ## Keep OmniAuth user profiles up to date
 
 You can enable profile syncing from selected OmniAuth providers.

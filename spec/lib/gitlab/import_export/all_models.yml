@@ -964,6 +964,7 @@ epic_issues:
 - issue
 - epic
 - work_item
+- work_item_parent_link
 feature_flag_issues:
 - issue
 - feature_flag
@@ -1073,10 +1074,12 @@ epic:
 - epic_board_positions
 - work_item
 - own_subscriptions
+- work_item_parent_link
 epic_issue:
 - epic
 - issue
 - work_item
+- work_item_parent_link
 system_note_metadata:
 - note
 - description_version

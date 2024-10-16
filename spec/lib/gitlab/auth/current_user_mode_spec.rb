@@ -408,5 +408,38 @@ RSpec.describe Gitlab::Auth::CurrentUserMode, :request_store, feature_category: 
         end
       end
     end
+
+    describe '.optionally_run_in_admin_mode' do
+      let(:admin) { build_stubbed(:admin) }
+
+      context 'when invoked from a sidekiq context', :with_sidekiq_context do
+        before do
+          stub_application_setting(admin_mode: true)
+        end
+
+        it 'yields without changing the admin mode for non-admin users' do
+          expect { |b| described_class.optionally_run_in_admin_mode(user, &b) }.to yield_control
+          expect(described_class.bypass_session_admin_id).to be_nil
+        end
+
+        it 'runs in admin mode for admin users' do
+          described_class.optionally_run_in_admin_mode(admin) do
+            expect(described_class.bypass_session_admin_id).to eq(admin.id)
+          end
+        end
+
+        it 'resets the admin mode after yielding for admin users' do
+          described_class.optionally_run_in_admin_mode(admin) { -> {} }
+          expect(described_class.bypass_session_admin_id).to be_nil
+        end
+      end
+
+      context 'when invoked from a non-sidekiq context' do
+        it 'raises an exception' do
+          expect { described_class.optionally_run_in_admin_mode(admin) }
+            .to raise_error(Gitlab::Auth::CurrentUserMode::NonSidekiqEnvironmentError)
+        end
+      end
+    end
   end
 end

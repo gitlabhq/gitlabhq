@@ -540,6 +540,26 @@ RSpec.describe ApplicationWorker, feature_category: :shared do
     end
   end
 
+  describe '.concurrency_limit_resume' do
+    around do |example|
+      Sidekiq::Testing.fake!(&example)
+    end
+
+    context 'when the worker is not marked as deferred' do
+      it 'concurrency_limit_resume key is nil' do
+        worker.perform_async
+        expect(Sidekiq::Queues[worker.queue].first['concurrency_limit_resume']).to eq nil
+      end
+    end
+
+    context 'when the concurrency limited worker is marked as resume' do
+      it 'sets defaults if no arguments are passed' do
+        worker.concurrency_limit_resume.perform_async
+        expect(Sidekiq::Queues[worker.queue].first['concurrency_limit_resume']).to eq(true)
+      end
+    end
+  end
+
   describe '.with_status' do
     around do |example|
       Sidekiq::Testing.fake!(&example)

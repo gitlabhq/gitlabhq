@@ -75,6 +75,10 @@ module ApplicationWorker
       set(rescheduled_once: true)
     end
 
+    def concurrency_limit_resume
+      set(concurrency_limit_resume: true)
+    end
+
     def generated_queue_name
       Gitlab::SidekiqConfig::WorkerRouter.queue_name_from_worker_name(self)
     end

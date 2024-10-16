@@ -24,6 +24,7 @@ import {
   getShowLabelsFromLocalStorage,
 } from '../../utils';
 import getWorkItemTreeQuery from '../../graphql/work_item_tree.query.graphql';
+import namespaceWorkItemTypesQuery from '../../graphql/namespace_work_item_types.query.graphql';
 import WorkItemChildrenLoadMore from '../shared/work_item_children_load_more.vue';
 import WorkItemMoreActions from '../shared/work_item_more_actions.vue';
 import WorkItemActionsSplitButton from './work_item_actions_split_button.vue';
@@ -108,10 +109,12 @@ export default {
       workItem: {},
       disableContent: false,
       showLabelsLocalStorageKey: WORKITEM_TREE_SHOWLABELS_LOCALSTORAGEKEY,
+      workItemTypes: [],
+      hierarchyWidget: null,
+      draggedItemType: null,
     };
   },
   apollo: {
-    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     hierarchyWidget: {
       query: getWorkItemTreeQuery,
       variables() {
@@ -137,6 +140,20 @@ export default {
         if (this.hasNextPage && this.children.length === 0) {
           this.fetchNextPage();
         }
+      },
+    },
+    workItemTypes: {
+      query: namespaceWorkItemTypesQuery,
+      variables() {
+        return {
+          fullPath: this.fullPath,
+        };
+      },
+      update(data) {
+        return data.workspace?.workItemTypes?.nodes;
+      },
+      skip() {
+        return !this.canUpdate;
       },
     },
   },
@@ -217,6 +234,17 @@ export default {
     },
     showTaskWeight() {
       return this.workItemType !== WORK_ITEM_TYPE_VALUE_EPIC;
+    },
+    allowedChildrenByType() {
+      return this.workItemTypes.reduce((acc, type) => {
+        const definition = type.widgetDefinitions?.find(
+          (widgetDefinition) => widgetDefinition.type === WIDGET_TYPE_HIERARCHY,
+        );
+        if (definition?.allowedChildTypes?.nodes?.length > 0) {
+          acc[type.name] = definition.allowedChildTypes.nodes.map((a) => a.name);
+        }
+        return acc;
+      }, {});
     },
   },
   mounted() {
@@ -354,9 +382,12 @@ export default {
           :work-item-type="workItemType"
           :show-labels="showLabels"
           :disable-content="disableContent"
-          :allowed-child-types="allowedChildTypes"
           :show-task-weight="showTaskWeight"
           :has-indirect-children="hasIndirectChildren"
+          :allowed-children-by-type="allowedChildrenByType"
+          :dragged-item-type="draggedItemType"
+          @drag="draggedItemType = $event"
+          @drop="draggedItemType = null"
           @error="error = $event"
           @show-modal="showModal"
         />

@@ -1,4 +1,4 @@
-fragment ContainerExpirationPolicyFields on ContainerExpirationPolicy {
+fragment ContainerTagsExpirationPolicyFields on ContainerTagsExpirationPolicy {
   cadence
   enabled
   keepN

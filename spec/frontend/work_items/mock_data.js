@@ -5266,3 +5266,98 @@ export const mockUploadErrorDesignMutationResponse = {
     designManagementUpload: null,
   },
 };
+
+export const namespaceWorkItemTypesQueryResponse = {
+  data: {
+    workspace: {
+      id: 'gid://gitlab/Namespaces/1',
+      workItemTypes: {
+        nodes: [
+          {
+            __typename: 'WorkItemType',
+            id: 'gid://gitlab/WorkItems::Type/1',
+            name: 'Issue',
+            widgetDefinitions: [
+              {
+                type: 'HIERARCHY',
+                allowedChildTypes: {
+                  nodes: [
+                    {
+                      id: 'gid://gitlab/WorkItems::Type/5',
+                      name: 'Task',
+                      __typename: 'WorkItemType',
+                    },
+                  ],
+                  __typename: 'WorkItemTypeConnection',
+                },
+                __typename: 'WorkItemWidgetDefinitionHierarchy',
+              },
+            ],
+          },
+        ],
+      },
+    },
+  },
+};
+
+export const workItemHierarchyNoChildrenTreeResponse = {
+  data: {
+    workItem: {
+      id: 'gid://gitlab/WorkItem/3',
+      iid: '3',
+      archived: false,
+      workItemType: {
+        id: 'gid://gitlab/WorkItems::Type/2411',
+        name: 'Objective',
+        iconName: 'issue-type-objective',
+        __typename: 'WorkItemType',
+      },
+      title: 'New title without children',
+      userPermissions: {
+        deleteWorkItem: true,
+        updateWorkItem: true,
+        setWorkItemMetadata: true,
+        adminParentLink: true,
+        createNote: true,
+        adminWorkItemLink: true,
+        __typename: 'WorkItemPermissions',
+      },
+      confidential: false,
+      reference: 'test-project-path#2',
+      namespace: {
+        __typename: 'Project',
+        id: '1',
+        fullPath: 'test-project-path',
+        name: 'Project name',
+        fullName: 'Project name',
+      },
+      widgets: [
+        {
+          type: 'DESCRIPTION',
+          __typename: 'WorkItemWidgetDescription',
+        },
+        {
+          type: 'HIERARCHY',
+          parent: null,
+          hasChildren: false,
+          depthLimitReachedByType: [],
+          rolledUpCountsByType: [],
+          children: {
+            pageInfo: {
+              hasNextPage: false,
+              hasPreviousPage: false,
+              startCursor: null,
+              endCursor: null,
+              __typename: 'PageInfo',
+            },
+            count: 0,
+            nodes: [],
+            __typename: 'WorkItemConnection',
+          },
+          __typename: 'WorkItemWidgetHierarchy',
+        },
+      ],
+      __typename: 'WorkItem',
+    },
+  },
+};

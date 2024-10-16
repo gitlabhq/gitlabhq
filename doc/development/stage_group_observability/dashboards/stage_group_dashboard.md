@@ -17,7 +17,7 @@ contents, and how they can be customized.
 
 ### Error budget panels
 
-![A panel showing metrics for a 28-day error budget including availability, budget remaining, and budget spent](img/stage_group_dashboards_28d_budget.png)
+![A panel showing metrics for a 28-day error budget including availability, budget remaining, and budget spent](img/stage_group_dashboards_28d_budget_v14_10.png)
 
 The top panels display the [error budget](../index.md#error-budget).
 These panels always show the 28 days before the end time selected in the
@@ -27,7 +27,7 @@ and stage.
 
 ### Metrics panels
 
-![A time series graph displaying worker metrics for jobs-per-second completion rates](img/stage_group_dashboards_metrics.png)
+![A time series graph displaying worker metrics for jobs-per-second completion rates](img/stage_group_dashboards_metrics_v14_10.png)
 
 Although most of the metrics displayed in the panels are self-explanatory in their title and nearby
 description, note the following:
@@ -74,16 +74,16 @@ Example debugging workflow:
    [Code Review group's dashboard](https://dashboards.gitlab.net/d/stage-groups-code_review/stage-groups-group-dashboard-create-code-review?orgId=1).
 1. Sidekiq Error Rate panel shows an elevated error rate, specifically `UpdateMergeRequestsWorker`.
 
-  ![A histogram showing error rate metrics from different worker events](img/stage_group_dashboards_debug_1.png)
+  ![A histogram showing error rate metrics from different worker events](img/stage_group_dashboards_debug_1_v14_10.png)
 
 1. If you select **Kibana: Kibana Sidekiq failed request logs** in the **Extra links** section, you can filter for `UpdateMergeRequestsWorker` and read through the logs.
 
-  ![Debug 2](img/stage_group_dashboards_debug_2.png)
+  ![Debug 2](img/stage_group_dashboards_debug_2_v14_10.png)
 
 1. With [Sentry](https://sentry.gitlab.net/gitlab/gitlabcom/) you can find the exception where you
    can filter by transaction type and `correlation_id` from Kibana's result item.
 
-  ![Debug 3](img/stage_group_dashboards_debug_3.png)
+  ![Debug 3](img/stage_group_dashboards_debug_3_v14_10.png)
 
 1. A precise exception, including a stack trace, job arguments, and other information should now appear.
 
@@ -162,7 +162,7 @@ stageGroupDashboards.dashboard('source_code')
 .stageGroupDashboardTrailer()
 ```
 
-![Stage Group Dashboard Customization](img/stage_group_dashboards_time_customization.png)
+![Stage Group Dashboard Customization](img/stage_group_dashboards_time_customization_v14_10.png)
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 If you want to see the workflow in action, we've recorded a pairing session on customizing a dashboard,

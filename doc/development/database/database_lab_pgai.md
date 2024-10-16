@@ -6,9 +6,6 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # Database Lab access using the `pgai` Ruby gem
 
-WARNING:
-The `pgai` gem has not yet been updated to use the new database lab instances so you will only be able to access `gitlab-production-main` and `gitlab-production-ci` using this tool.
-
 [@mbobin](https://gitlab.com/mbobin) created the [`pgai` Ruby Gem](https://gitlab.com/mbobin/pgai/#pgai) that
 greatly simplifies access to a database clone, with support for:
 

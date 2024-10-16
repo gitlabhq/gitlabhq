@@ -32,16 +32,16 @@ export default {
     FETCH_SETTINGS_ERROR_MESSAGE,
   },
   apollo: {
-    containerExpirationPolicy: {
+    containerTagsExpirationPolicy: {
       query: expirationPolicyQuery,
       variables() {
         return {
           projectPath: this.projectPath,
         };
       },
-      update: (data) => data.project?.containerExpirationPolicy,
+      update: (data) => data.project?.containerTagsExpirationPolicy,
       result({ data }) {
-        this.workingCopy = { ...get(data, 'project.containerExpirationPolicy', {}) };
+        this.workingCopy = { ...get(data, 'project.containerTagsExpirationPolicy', {}) };
       },
       error(e) {
         this.fetchSettingsError = e;
@@ -51,16 +51,16 @@ export default {
   data() {
     return {
       fetchSettingsError: false,
-      containerExpirationPolicy: null,
+      containerTagsExpirationPolicy: null,
       workingCopy: {},
     };
   },
   computed: {
     isEnabled() {
-      return this.containerExpirationPolicy || this.enableHistoricEntries;
+      return this.containerTagsExpirationPolicy || this.enableHistoricEntries;
     },
     isLoading() {
-      return this.$apollo.queries.containerExpirationPolicy.loading;
+      return this.$apollo.queries.containerTagsExpirationPolicy.loading;
     },
     showDisabledFormMessage() {
       return !this.isEnabled && !this.fetchSettingsError;
@@ -69,10 +69,10 @@ export default {
       return this.isAdmin ? UNAVAILABLE_ADMIN_FEATURE_TEXT : UNAVAILABLE_USER_FEATURE_TEXT;
     },
     isEdited() {
-      if (isEmpty(this.containerExpirationPolicy) && isEmpty(this.workingCopy)) {
+      if (isEmpty(this.containerTagsExpirationPolicy) && isEmpty(this.workingCopy)) {
         return false;
       }
-      return !isEqual(this.containerExpirationPolicy, this.workingCopy);
+      return !isEqual(this.containerTagsExpirationPolicy, this.workingCopy);
     },
   },
 };

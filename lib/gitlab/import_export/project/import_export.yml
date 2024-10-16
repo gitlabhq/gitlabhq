@@ -1057,10 +1057,12 @@ excluded_attributes:
     - :start_date_sourcing_epic_id
     - :due_date_sourcing_epic_id
     - :issue_id
+    - :work_item_parent_link_id
   epic_issue:
     - :epic_id
     - :issue_id
     - :namespace_id
+    - :work_item_parent_link_id
   system_note_metadata:
     - :description_version_id
     - :note_id

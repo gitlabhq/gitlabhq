@@ -16,7 +16,8 @@ RSpec.describe SystemCheck::IncomingEmail::ImapAuthenticationCheck do
   describe '#load_config' do
     subject { system_check.send(:load_config) }
 
-    context 'returns no mailbox configurations with mailroom default configuration' do
+    context 'returns no mailbox configurations with mailroom default configuration',
+      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/448844' do
       it { is_expected.to be_nil }
     end
 

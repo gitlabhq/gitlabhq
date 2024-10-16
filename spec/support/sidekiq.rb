@@ -18,6 +18,10 @@ RSpec.configure do |config|
     redis_queues_metadata_cleanup!
   end
 
+  def with_sidekiq_context
+    allow(Sidekiq).to receive(:server?).and_return(true)
+  end
+
   # As we'll review the examples with this tag, we should either:
   # - fix the example to not require Sidekiq inline mode (and remove this tag)
   # - explicitly keep the inline mode and change the tag for `:sidekiq_inline` instead
@@ -27,6 +31,18 @@ RSpec.configure do |config|
 
   config.around(:example, :sidekiq_inline) do |example|
     gitlab_sidekiq_inline { example.run }
+  end
+
+  config.before(:example, :sidekiq_inline) do
+    with_sidekiq_context
+  end
+
+  config.before(:example, :sidekiq_might_not_need_inline) do
+    with_sidekiq_context
+  end
+
+  config.before(:example, :with_sidekiq_context) do
+    with_sidekiq_context
   end
 
   # Some specs need to run mailers through Sidekiq explicitly, rather

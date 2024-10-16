@@ -66,11 +66,6 @@ export default {
       required: false,
       default: false,
     },
-    allowedChildTypes: {
-      type: Array,
-      required: false,
-      default: () => [],
-    },
     isTopLevel: {
       type: Boolean,
       required: false,
@@ -89,6 +84,16 @@ export default {
       type: Boolean,
       required: false,
       default: true,
+    },
+    allowedChildrenByType: {
+      type: Object,
+      required: false,
+      default: () => {},
+    },
+    draggedItemType: {
+      type: String,
+      required: false,
+      default: null,
     },
   },
   data() {
@@ -290,8 +295,9 @@ export default {
         parentId: toParentId,
       };
     },
-    handleDragOnStart() {
+    handleDragOnStart(params) {
       sortableStart();
+      this.$emit('drag', params.item.dataset.childType);
       this.dragCancelled = false;
       // Attach listener to detect `ESC` key press to cancel drag.
       document.addEventListener('keyup', this.handleDocumentKeyup);
@@ -299,6 +305,7 @@ export default {
     async handleDragOnEnd(params) {
       clearTimeout(this.toggleTimer);
       sortableEnd();
+      this.$emit('drop');
       document.removeEventListener('keyup', this.handleDocumentKeyup);
       // Drag was cancelled, prevent reordering.
       if (this.dragCancelled) return;
@@ -524,10 +531,14 @@ export default {
       :show-labels="showLabels"
       :work-item-full-path="fullPath"
       :show-task-weight="showTaskWeight"
-      :allowed-child-types="allowedChildTypes"
+      :dragged-item-type="draggedItemType"
+      :allowed-children-by-type="allowedChildrenByType"
       :is-top-level="isTopLevel"
       :data-child-title="child.title"
+      :data-child-type="child.workItemType.name"
       class="!gl-border-x-0 !gl-border-b-1 !gl-border-t-0 !gl-border-solid !gl-pb-2 last:!gl-border-b-0 last:!gl-pb-0"
+      @drag="$emit('drag', $event)"
+      @drop="$emit('drop')"
       @mouseover="prefetchWorkItem(child)"
       @mouseout="clearPrefetching"
       @removeChild="removeChild"

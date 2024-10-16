@@ -175,7 +175,4 @@ the added benefit and safety of an isolated writeable environment.
 
 #### Simplified access through `pgai` Ruby gem
 
-WARNING:
-The `pgai` gem has not yet been updated to use the new database lab instances so you will only be able to access the legacy instance using this tool.
-
 For instructions on using the `pgai` Ruby gem, see: [Database Lab access using the pgai Ruby gem](database_lab_pgai.md).

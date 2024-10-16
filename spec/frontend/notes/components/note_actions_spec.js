@@ -1,4 +1,8 @@
-import { GlDisclosureDropdown, GlDisclosureDropdownItem } from '@gitlab/ui';
+import {
+  GlDisclosureDropdown,
+  GlDisclosureDropdownItem,
+  GlDisclosureDropdownGroup,
+} from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
@@ -26,6 +30,7 @@ describe('noteActions', () => {
   const findUserAccessRoleBadgeText = (idx) => findUserAccessRoleBadge(idx).text().trim();
   const findTimelineButton = () => wrapper.findComponent(TimelineEventButton);
   const findReportAbuseButton = () => wrapper.find(`[data-testid="report-abuse-button"]`);
+  const findDisclosureDropdownGroup = () => wrapper.findComponent(GlDisclosureDropdownGroup);
 
   const setupStoreForIncidentTimelineEvents = ({
     userCanAdd,
@@ -53,6 +58,7 @@ describe('noteActions', () => {
             close: mockCloseDropdown,
           },
         }),
+        GlDisclosureDropdownGroup,
         GlDisclosureDropdownItem,
       },
     });
@@ -117,6 +123,32 @@ describe('noteActions', () => {
 
     it('should render emoji link', () => {
       expect(wrapper.find('[data-testid="note-emoji-button"]').exists()).toBe(true);
+    });
+
+    describe('actions dropdown group', () => {
+      it('should render the dropdown group when canReportAsAbuse is true', async () => {
+        wrapper.setProps({ canReportAsAbuse: true });
+        await nextTick();
+        expect(findDisclosureDropdownGroup().exists()).toBe(true);
+      });
+
+      it('should render the dropdown group when canEdit is true', async () => {
+        wrapper.setProps({ canEdit: true });
+        await nextTick();
+        expect(findDisclosureDropdownGroup().exists()).toBe(true);
+      });
+
+      it('should render the dropdown group when both canReportAsAbuse and canEdit are true', async () => {
+        wrapper.setProps({ canReportAsAbuse: true, canEdit: true });
+        await nextTick();
+        expect(findDisclosureDropdownGroup().exists()).toBe(true);
+      });
+
+      it('should not render the dropdown group when neither canReportAsAbuse nor canEdit is true', async () => {
+        wrapper.setProps({ canReportAsAbuse: false, canEdit: false });
+        await nextTick();
+        expect(findDisclosureDropdownGroup().exists()).toBe(false);
+      });
     });
 
     describe('actions dropdown', () => {

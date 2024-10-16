@@ -1,5 +1,5 @@
-export const containerExpirationPolicyData = () => ({
-  __typename: 'ContainerExpirationPolicy',
+export const containerTagsExpirationPolicyData = () => ({
+  __typename: 'ContainerTagsExpirationPolicy',
   cadence: 'EVERY_DAY',
   enabled: true,
   keepN: 'TEN_TAGS',
@@ -13,8 +13,8 @@ export const expirationPolicyPayload = (override) => ({
   data: {
     project: {
       id: '1',
-      containerExpirationPolicy: {
-        ...containerExpirationPolicyData(),
+      containerTagsExpirationPolicy: {
+        ...containerTagsExpirationPolicyData(),
         ...override,
       },
     },
@@ -24,7 +24,7 @@ export const expirationPolicyPayload = (override) => ({
 export const emptyExpirationPolicyPayload = () => ({
   data: {
     project: {
-      containerExpirationPolicy: {},
+      containerTagsExpirationPolicy: {},
     },
   },
 });
@@ -33,7 +33,7 @@ export const nullExpirationPolicyPayload = () => ({
   data: {
     project: {
       id: '1',
-      containerExpirationPolicy: null,
+      containerTagsExpirationPolicy: null,
     },
   },
 });
@@ -41,8 +41,8 @@ export const nullExpirationPolicyPayload = () => ({
 export const expirationPolicyMutationPayload = ({ override, errors = [] } = {}) => ({
   data: {
     updateContainerExpirationPolicy: {
-      containerExpirationPolicy: {
-        ...containerExpirationPolicyData(),
+      containerTagsExpirationPolicy: {
+        ...containerTagsExpirationPolicyData(),
         ...override,
       },
       errors,

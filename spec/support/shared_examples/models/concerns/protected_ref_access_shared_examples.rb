@@ -33,6 +33,19 @@ RSpec.shared_examples 'protected ref access' do
     end
   end
 
+  describe 'scopes' do
+    describe '::for_role' do
+      subject(:for_role) { described_class.for_role }
+
+      let_it_be(:developer_access) { create(described_factory, :developer_access) }
+      let_it_be(:maintainer_access) { create(described_factory, :maintainer_access) }
+
+      it 'includes all role based access levels' do
+        expect(for_role).to contain_exactly(developer_access, maintainer_access)
+      end
+    end
+  end
+
   describe '::human_access_levels' do
     subject { described_class.human_access_levels }
 

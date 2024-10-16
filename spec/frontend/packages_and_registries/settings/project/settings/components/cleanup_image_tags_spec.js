@@ -19,7 +19,7 @@ import expirationPolicyQuery from '~/packages_and_registries/settings/project/gr
 import {
   expirationPolicyPayload,
   emptyExpirationPolicyPayload,
-  containerExpirationPolicyData,
+  containerTagsExpirationPolicyData,
   nullExpirationPolicyPayload,
 } from '../mock_data';
 
@@ -65,12 +65,12 @@ describe('Cleanup image tags project settings', () => {
 
   describe('isEdited status', () => {
     it.each`
-      description                                  | apiResponse                       | workingCopy                                                   | result
-      ${'empty response and no changes from user'} | ${emptyExpirationPolicyPayload()} | ${{}}                                                         | ${false}
-      ${'empty response and changes from user'}    | ${emptyExpirationPolicyPayload()} | ${{ enabled: true }}                                          | ${true}
-      ${'response and no changes'}                 | ${expirationPolicyPayload()}      | ${containerExpirationPolicyData()}                            | ${false}
-      ${'response and changes'}                    | ${expirationPolicyPayload()}      | ${{ ...containerExpirationPolicyData(), nameRegex: '12345' }} | ${true}
-      ${'response and empty'}                      | ${expirationPolicyPayload()}      | ${{}}                                                         | ${true}
+      description                                  | apiResponse                       | workingCopy                                                       | result
+      ${'empty response and no changes from user'} | ${emptyExpirationPolicyPayload()} | ${{}}                                                             | ${false}
+      ${'empty response and changes from user'}    | ${emptyExpirationPolicyPayload()} | ${{ enabled: true }}                                              | ${true}
+      ${'response and no changes'}                 | ${expirationPolicyPayload()}      | ${containerTagsExpirationPolicyData()}                            | ${false}
+      ${'response and changes'}                    | ${expirationPolicyPayload()}      | ${{ ...containerTagsExpirationPolicyData(), nameRegex: '12345' }} | ${true}
+      ${'response and empty'}                      | ${expirationPolicyPayload()}      | ${{}}                                                             | ${true}
     `('$description', async ({ apiResponse, workingCopy, result }) => {
       mountComponentWithApollo({
         provide: { ...defaultProvidedValues, enableHistoricEntries: true },

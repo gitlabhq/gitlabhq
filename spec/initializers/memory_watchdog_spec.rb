@@ -61,7 +61,7 @@ RSpec.describe 'memory watchdog', feature_category: :cloud_connector do
     end
 
     context 'when runtime is unsupported' do
-      it 'does not register life-cycle hook' do
+      it 'does not register life-cycle hook', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/468232' do
         expect(Gitlab::Cluster::LifecycleEvents).not_to receive(:on_worker_start)
 
         run_initializer

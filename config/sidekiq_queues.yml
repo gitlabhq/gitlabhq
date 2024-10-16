@@ -827,6 +827,8 @@
   - 1
 - - security_sync_policy_violation_comment
   - 1
+- - security_sync_project_policies
+  - 1
 - - security_sync_project_policy
   - 1
 - - security_sync_scan_policies
