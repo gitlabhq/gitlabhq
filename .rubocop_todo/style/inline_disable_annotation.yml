@@ -390,7 +390,6 @@ Style/InlineDisableAnnotation:
     - 'app/models/concerns/from_set_operator.rb'
     - 'app/models/concerns/from_union.rb'
     - 'app/models/concerns/has_repository.rb'
-    - 'app/models/concerns/has_wiki_page_meta_attributes.rb'
     - 'app/models/concerns/ignorable_columns.rb'
     - 'app/models/concerns/integrations/reset_secret_fields.rb'
     - 'app/models/concerns/issuable.rb'

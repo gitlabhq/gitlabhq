@@ -292,11 +292,11 @@ We should follow these best practices for end-to-end tests:
 
 Continued reading:
 
-- [Beginner's Guide](beginners_guide.md)
+- [Beginner's Guide](beginners_guide/index.md)
 - [Style Guide](style_guide.md)
 - [Best Practices](best_practices.md)
 - [Testing with feature flags](feature_flags.md)
-- [Flows](flows.md)
+- [Flows](beginners_guide/flows.md)
 - [RSpec metadata/tags](rspec_metadata_tests.md)
 - [Execution context selection](execution_context_selection.md)
 - [Troubleshooting](troubleshooting.md)

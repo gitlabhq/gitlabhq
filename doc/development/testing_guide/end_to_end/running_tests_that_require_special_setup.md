@@ -546,7 +546,7 @@ end
 
 You can verify whether GitLab is appropriately redirecting your session to the `canary` or `non-canary` nodes with the `menu.canary?` method.
 
-The above spec is verbose, written specifically this way to ensure the idea behind the implementation is clear. We recommend following the practices detailed within our [Beginner's guide to writing end-to-end tests](beginners_guide.md).
+The above spec is verbose, written specifically this way to ensure the idea behind the implementation is clear. We recommend following the practices detailed within our [Beginner's guide to writing end-to-end tests](beginners_guide/index.md).
 
 ## Tests for GitLab as OpenID Connect (OIDC) and OAuth provider
 

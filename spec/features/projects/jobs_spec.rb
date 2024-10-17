@@ -610,8 +610,8 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
       end
 
       it 'does not show environment information banner' do
-        expect(page).not_to have_selector('.js-environment-container')
-        expect(page).not_to have_selector('.environment-information')
+        expect(page).not_to have_selector('[data-testid="jobs-environment-container"]')
+        expect(page).not_to have_selector('[data-testid="jobs-environment-info"]')
         expect(page).not_to have_text(environment.name)
       end
     end
@@ -634,7 +634,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
         it 'shows deployment message' do
           expected_text = 'This job is an out-of-date deployment to staging. View the most recent deployment.'
 
-          expect(page).to have_css('.environment-information', text: expected_text)
+          expect(page).to have_css('[data-testid="jobs-environment-info"]', text: expected_text)
         end
 
         it 'renders a link to the most recent deployment' do
@@ -658,7 +658,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
         it 'shows deployment message' do
           expected_text = 'The deployment of this job to staging did not succeed.'
 
-          expect(page).to have_css('.environment-information', text: expected_text)
+          expect(page).to have_css('[data-testid="jobs-environment-info"]', text: expected_text)
         end
       end
 
@@ -671,7 +671,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
           it 'shows deployment message' do
             expected_text = 'This job is creating a deployment to staging'
 
-            expect(page).to have_css('.environment-information', text: expected_text)
+            expect(page).to have_css('[data-testid="jobs-environment-info"]', text: expected_text)
             expect(find_by_testid('job-environment-link')['href']).to match("environments/#{environment.id}")
           end
 
@@ -681,8 +681,8 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
             it 'shows that deployment will be overwritten' do
               expected_text = 'This job is creating a deployment to staging'
 
-              expect(page).to have_css('.environment-information', text: expected_text)
-              expect(page).to have_css('.environment-information', text: 'latest deployment')
+              expect(page).to have_css('[data-testid="jobs-environment-info"]', text: expected_text)
+              expect(page).to have_css('[data-testid="jobs-environment-info"]', text: 'latest deployment')
               expect(find_by_testid('job-environment-link')['href']).to match("environments/#{environment.id}")
             end
           end
@@ -695,9 +695,9 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
             expected_text = 'This job is creating a deployment to staging'
 
             expect(page).to have_css(
-              '.environment-information', text: expected_text)
+              '[data-testid="jobs-environment-info"]', text: expected_text)
             expect(page).not_to have_css(
-              '.environment-information', text: 'latest deployment')
+              '[data-testid="jobs-environment-info"]', text: 'latest deployment')
             expect(find_by_testid('job-environment-link')['href']).to match("environments/#{environment.id}")
           end
         end
@@ -711,7 +711,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
           expected_text = 'The deployment of this job to staging did not succeed'
 
           expect(page).to have_css(
-            '.environment-information', text: expected_text)
+            '[data-testid="jobs-environment-info"]', text: expected_text)
         end
       end
 
@@ -723,9 +723,9 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
           expected_text = 'This job is creating a deployment to staging'
 
           expect(page).to have_css(
-            '.environment-information', text: expected_text)
+            '[data-testid="jobs-environment-info"]', text: expected_text)
           expect(page).not_to have_css(
-            '.environment-information', text: 'latest deployment')
+            '[data-testid="jobs-environment-info"]', text: 'latest deployment')
         end
       end
     end

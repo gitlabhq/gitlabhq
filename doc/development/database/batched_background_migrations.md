@@ -367,17 +367,30 @@ Namespace.each_batch(of: 100) do |relation|
 end
 ```
 
-In some cases, only a subset of records must be examined. If only 10% of the 1000 records
-need examination, apply a filter to the initial relation when the jobs are created:
+#### Using a composite or partial index to iterate a subset of the table
+
+When applying additional filters, it is important to ensure they are properly
+covered by an index to optimize `EachBatch` performance.
+In the below examples we need an index on `(type, id)` or `id WHERE type IS NULL`
+to support the filters. See
+[the `EachBatch` documentation for more information](iterating_tables_in_batches.md).
+
+If you have a suitable index and you want to iterate only a subset of the table
+you can apply a `where` clause before the `each_batch` like:
 
 ```ruby
+# Works well if there is an index like either of:
+#  - `id WHERE type IS NULL`
+#  - `(type, id)`
+# Does not work well otherwise.
 Namespace.where(type: nil).each_batch(of: 100) do |relation|
   relation.update_all(type: 'User')
 end
 ```
 
-In the first example, we don't know how many records will be updated in each batch.
-In the second (filtered) example, we know exactly 100 will be updated with each batch.
+An advantage of this approach is that you get consistent batch sizes. But it is
+only suitable where there is an index that matches the `where` clauses as well
+as the batching strategy.
 
 `BatchedMigrationJob` provides a `scope_to` helper method to apply additional filters and achieve this:
 
@@ -385,6 +398,11 @@ In the second (filtered) example, we know exactly 100 will be updated with each 
 
    ```ruby
    class BackfillNamespaceType < BatchedMigrationJob
+
+     # Works well if there is an index like either of:
+     #  - `id WHERE type IS NULL`
+     #  - `(type, id)`
+     # Does not work well otherwise.
      scope_to ->(relation) { relation.where(type: nil) }
      operation_name :update_all
      feature_category :source_code_management
@@ -424,10 +442,6 @@ In the second (filtered) example, we know exactly 100 will be updated with each 
      end
    end
    ```
-
-NOTE:
-When applying additional filters, it is important to ensure they are properly covered by an index to optimize `EachBatch` performance.
-In the example above we need an index on `(type, id)` to support the filters. See [the `EachBatch` documentation for more information](iterating_tables_in_batches.md).
 
 ### Access data for multiple databases
 

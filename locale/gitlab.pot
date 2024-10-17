@@ -34952,6 +34952,9 @@ msgstr ""
 msgid "MlModelRegistry|New model"
 msgstr ""
 
+msgid "MlModelRegistry|No description available. To add a description, click \"Edit model\" above."
+msgstr ""
+
 msgid "MlModelRegistry|No description provided"
 msgstr ""
 

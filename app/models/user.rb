@@ -341,6 +341,7 @@ class User < ApplicationRecord
   validate :namespace_move_dir_allowed, if: :username_changed?, unless: :new_record?
 
   validate :unique_email, if: :email_changed?
+  validates_with AntiAbuse::UniqueDetumbledEmailValidator, if: :email_changed?
   validate :notification_email_verified, if: :notification_email_changed?
   validate :public_email_verified, if: :public_email_changed?
   validate :commit_email_verified, if: :commit_email_changed?
@@ -1253,15 +1254,6 @@ class User < ApplicationRecord
 
       errors.add(:email, _('is linked to an account pending deletion.'), help_page_url: help_page_url)
     end
-
-    banned_user_email_reuse_check unless errors.include?(:email)
-  end
-
-  def banned_user_email_reuse_check
-    return unless ::Feature.enabled?(:block_banned_user_normalized_email_reuse, ::Feature.current_request)
-    return unless ::Users::BannedUser.by_detumbled_email(email).exists?
-
-    errors.add(:email, _('is not allowed. Please enter a different email address and try again.'))
   end
 
   def commit_email_or_default

@@ -70,7 +70,6 @@ Style/GuardClause:
     - 'app/models/concerns/cacheable_attributes.rb'
     - 'app/models/concerns/cascading_namespace_setting_attribute.rb'
     - 'app/models/concerns/deprecated_assignee.rb'
-    - 'app/models/concerns/has_wiki_page_meta_attributes.rb'
     - 'app/models/concerns/issuable_link.rb'
     - 'app/models/concerns/metric_image_uploading.rb'
     - 'app/models/concerns/milestoneish.rb'

@@ -95,7 +95,7 @@ module Users
         unique_internal(User.where(user_type: :duo_code_review_bot), 'GitLab-Duo-Code-Reviewer', email_pattern) do |u|
           u.bio = 'The reviewer bot for GitLab Duo Code Review'
           u.name = 'Duo Code Reviewer'
-          u.avatar = bot_avatar(image: 'support-bot.png') # todo: add an avatar for duo_code_review_bot
+          u.avatar = bot_avatar(image: 'duo-bot.png') # todo: add an avatar for duo_code_review_bot
           u.confirmed_at = Time.zone.now
           u.private_profile = true
         end

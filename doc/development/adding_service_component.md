@@ -19,7 +19,7 @@ The following outline re-uses the [maturity metric](https://handbook.gitlab.com/
   - [Handling service dependencies](#handling-service-dependencies)
 - Viable
   - [Bundled with GitLab installations](#bundling-a-service-with-gitlab)
-  - [End-to-end testing in GitLab QA](testing_guide/end_to_end/beginners_guide.md)
+  - [End-to-end testing in GitLab QA](testing_guide/end_to_end/beginners_guide/index.md)
   - [Release management](#release-management)
   - [Enabled on GitLab.com](feature_flags/controls.md#enabling-a-feature-for-gitlabcom)
 - Complete

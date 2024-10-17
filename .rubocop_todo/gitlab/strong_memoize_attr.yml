@@ -86,7 +86,6 @@ Gitlab/StrongMemoizeAttr:
     - 'app/models/concerns/discussion_on_diff.rb'
     - 'app/models/concerns/has_repository.rb'
     - 'app/models/concerns/has_wiki.rb'
-    - 'app/models/concerns/has_wiki_page_meta_attributes.rb'
     - 'app/models/concerns/redis_cacheable.rb'
     - 'app/models/concerns/resolvable_discussion.rb'
     - 'app/models/concerns/security/latest_pipeline_information.rb'

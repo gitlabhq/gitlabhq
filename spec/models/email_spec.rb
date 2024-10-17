@@ -59,6 +59,22 @@ RSpec.describe Email do
     let_it_be(:unconfirmed_secondary_email) { create(:email, user: confirmed_user) }
     let_it_be(:confirmed_secondary_email) { create(:email, :confirmed, user: confirmed_user) }
 
+    describe '.users_by_detumbled_email_count' do
+      before do
+        # Create users with primary and secondary emails that detumble to the same email: user@example.com.
+        user = create(:user, email: 'user+A@example.com') # New user with a matching primary email
+        create(:user, email: 'user+B@example.com') # New user with a matching primary email
+        create(:email, user: user, email: 'user+C@example.com') # Duplicate user with a matching secondary email
+        create(:email, email: 'user+D@example.com') # New user with a matching secondary email
+      end
+
+      # We created 4 emails but this method should only return a count of 3 since one user
+      # has a primary and secondary email that detumble to the same email address.
+      it 'return the count of unique users with the same detumbled email address' do
+        expect(described_class.users_by_detumbled_email_count('user@example.com')).to eq(3)
+      end
+    end
+
     describe '.confirmed' do
       it 'returns confirmed emails' do
         expect(described_class.confirmed).to contain_exactly(

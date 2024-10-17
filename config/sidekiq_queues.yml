@@ -23,12 +23,6 @@
 #     chance = (queue weight / total weight of all queues) * 100
 ---
 :queues:
-- - abuse_new_abuse_report
-  - 1
-- - abuse_spam_abuse_events
-  - 1
-- - abuse_trust_score
-  - 1
 - - activity_pub
   - 1
 - - adjourned_project_deletion

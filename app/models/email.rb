@@ -11,6 +11,12 @@ class Email < ApplicationRecord
 
   validate :unique_email, if: ->(email) { email.email_changed? }
 
+  scope :users_by_detumbled_email_count, ->(email) do
+    normalized_email = ::Gitlab::Utils::Email.normalize_email(email)
+
+    where(detumbled_email: normalized_email).distinct.count(:user_id)
+  end
+
   scope :confirmed, -> { where.not(confirmed_at: nil) }
   scope :unconfirmed, -> { where(confirmed_at: nil) }
   scope :unconfirmed_and_created_before, ->(created_cut_off) { unconfirmed.where('created_at < ?', created_cut_off) }

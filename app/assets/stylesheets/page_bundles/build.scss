@@ -41,12 +41,6 @@
     }
   }
 
-  .environment-information {
-    border: 1px solid var(--gl-border-color-default);
-    padding: 8px $gl-padding 12px;
-    border-radius: $gl-border-radius-base;
-  }
-
   .build-loader-animation {
     @include build-loader-animation;
     float: left;

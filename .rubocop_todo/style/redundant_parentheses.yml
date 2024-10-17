@@ -5,7 +5,6 @@ Style/RedundantParentheses:
     - 'app/graphql/resolvers/concerns/caching_array_resolver.rb'
     - 'app/graphql/resolvers/tree_resolver.rb'
     - 'app/models/ci/build_metadata.rb'
-    - 'app/models/concerns/has_wiki_page_meta_attributes.rb'
     - 'app/services/lfs/file_transformer.rb'
     - 'app/services/members/invite_service.rb'
     - 'app/services/projects/lfs_pointers/lfs_object_download_list_service.rb'

@@ -58,7 +58,6 @@ Style/IfUnlessModifier:
     - 'app/models/concerns/ci/artifactable.rb'
     - 'app/models/concerns/deprecated_assignee.rb'
     - 'app/models/concerns/group_descendant.rb'
-    - 'app/models/concerns/has_wiki_page_meta_attributes.rb'
     - 'app/models/concerns/ignorable_columns.rb'
     - 'app/models/concerns/issuable.rb'
     - 'app/models/concerns/issuable_link.rb'

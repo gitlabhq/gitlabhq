@@ -8834,51 +8834,148 @@ RSpec.describe User, feature_category: :user_profile do
     end
   end
 
-  context 'banned user normalized email reuse check' do
-    let_it_be(:existing_user) { create(:user) }
+  context 'normalized email reuse check' do
+    let(:error_message) { 'Email is not allowed. Please enter a different email address and try again.' }
 
-    shared_examples 'does not perform the check' do
+    subject(:new_user) { build(:user, email: tumbled_email).tap(&:valid?) }
+
+    shared_examples 'adds a validation error' do
       specify do
-        expect(::Users::BannedUser).not_to receive(:by_detumbled_email)
-
-        subject
-      end
-    end
-
-    context 'when email has other validation errors' do
-      subject(:new_user) { build(:user, email: existing_user.email).tap(&:valid?) }
-
-      it_behaves_like 'does not perform the check'
-    end
-
-    context 'when email has no other validation errors' do
-      let(:error_message) { 'Email is not allowed. Please enter a different email address and try again.' }
-      let(:tumbled_email) { 'person+inbox1@test.com' }
-      let(:normalized_email) { 'person@test.com' }
-      let!(:banned_user) { create(:user, :banned, email: normalized_email) }
-
-      subject(:new_user) { build(:user, email: tumbled_email).tap(&:valid?) }
-
-      it 'performs the check and adds an error' do
         subject
 
         expect(new_user.errors.full_messages).to include(error_message)
       end
+    end
 
-      context 'and does not match normalized email of a banned user' do
-        let(:tumbled_email) { 'unique+tumbled@email.com' }
+    shared_examples 'checking normalized email reuse limit' do
+      before do
+        stub_const("AntiAbuse::UniqueDetumbledEmailValidator::NORMALIZED_EMAIL_ACCOUNT_LIMIT", 2)
+      end
 
-        it 'does not add an error' do
-          expect(new_user.errors.full_messages).not_to include(error_message)
+      context 'when the normalized email limit has been reached by unique users' do
+        before do
+          create(:user, email: tumbled_email.split('@').join('1@'))
+        end
+
+        it_behaves_like 'adds a validation error'
+
+        it 'performs the normalized email limit check' do
+          expect(Email).to receive(:users_by_detumbled_email_count).and_call_original
+
+          subject
         end
       end
 
-      context 'when feature flag is disabled' do
+      context 'when the normalized email limit has been reached by non-unique users' do
         before do
-          stub_feature_flags(block_banned_user_normalized_email_reuse: false)
+          user = described_class.find_by(email: normalized_email)
+          create(:email, user: user, email: tumbled_email.split('@').join('1@'))
         end
 
-        it_behaves_like 'does not perform the check'
+        it 'does not add an error' do
+          expect(new_user.errors).to be_empty
+        end
+      end
+
+      context 'when the normalized email limit has not been reached' do
+        it 'does not add an error' do
+          expect(new_user.errors).to be_empty
+        end
+      end
+
+      context 'when the feature flag is disabled' do
+        before do
+          stub_feature_flags(limit_normalized_email_reuse: false)
+        end
+
+        it 'does not perform the check' do
+          expect(Email).not_to receive(:users_by_detumbled_email_count)
+
+          subject
+        end
+      end
+    end
+
+    context 'when email has other validation errors' do
+      subject(:new_user) { build(:user, email: 'invalid-email').tap(&:valid?) }
+
+      it 'does not perform the normalized email checks' do
+        expect(::Users::BannedUser).not_to receive(:by_detumbled_email)
+        expect(Email).not_to receive(:users_by_detumbled_email_count)
+
+        subject
+      end
+    end
+
+    context 'when the email has not changed' do
+      it 'does not perform the normalized email checks' do
+        user = create(:user)
+
+        expect(::Users::BannedUser).not_to receive(:by_detumbled_email)
+        expect(Email).not_to receive(:users_by_detumbled_email_count)
+
+        user.valid?
+      end
+    end
+
+    context 'when email has no other validation errors' do
+      context 'when the email is associated with a banned user' do
+        let(:tumbled_email) { 'banned+inbox1@test.com' }
+        let(:normalized_email) { 'banned@test.com' }
+
+        before do
+          create(:user, :banned, email: normalized_email)
+        end
+
+        it_behaves_like 'adds a validation error'
+
+        it 'performs the banned user check' do
+          expect(::Users::BannedUser).to receive(:by_detumbled_email).and_call_original
+
+          subject
+        end
+
+        it 'does not perform the normalized email limit check' do
+          expect(Email).not_to receive(:users_by_detumbled_email_count)
+
+          subject
+        end
+
+        context 'and does not match normalized email of a banned user' do
+          let(:tumbled_email) { 'unique+tumbled@email.com' }
+
+          it 'does not add an error' do
+            expect(new_user.errors).to be_empty
+          end
+        end
+
+        context 'when feature flag is disabled' do
+          before do
+            stub_feature_flags(block_banned_user_normalized_email_reuse: false)
+          end
+
+          it 'does not perform the check' do
+            expect(::Users::BannedUser).not_to receive(:by_detumbled_email)
+          end
+
+          it_behaves_like 'checking normalized email reuse limit'
+        end
+      end
+
+      context 'when the email is not associated with a banned user' do
+        let(:tumbled_email) { 'active+inbox1@test.com' }
+        let(:normalized_email) { 'active@test.com' }
+
+        before do
+          create(:user, email: normalized_email)
+        end
+
+        it 'performs the check and does not add an error' do
+          expect(::Users::BannedUser).to receive(:by_detumbled_email).and_call_original
+          expect(new_user.errors).to be_empty
+        end
+
+        it_behaves_like 'checking normalized email reuse limit'
       end
     end
   end

@@ -1360,10 +1360,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/fonts/-/fonts-1.3.0.tgz#df89c1bb6714e4a8a5d3272568aa4de7fb337267"
   integrity sha512-DoMUIN3DqjEn7wvcxBg/b7Ite5fTdF5EmuOZoBRo2j0UBGweDXmNBi+9HrTZs4cBU660dOxcf1hATFcG3npbPg==
 
-"@gitlab/query-language@^0.0.5-a-20241003":
-  version "0.0.5-a-20241003"
-  resolved "https://registry.yarnpkg.com/@gitlab/query-language/-/query-language-0.0.5-a-20241003.tgz#c5bd8a19341c54dd76e46aa49c1ba6a3513eafaf"
-  integrity sha512-o5wjw82EG5qK/vPxoxRdSn/nXJ/EL2uP2UFJyUxdB+e6F+OU6jtGMxQi/lX4rwR3v4KKZSDvJjxZWbRIUuLxaw==
+"@gitlab/query-language@^0.0.5-a-20241017":
+  version "0.0.5-a-20241017"
+  resolved "https://registry.yarnpkg.com/@gitlab/query-language/-/query-language-0.0.5-a-20241017.tgz#31107a3e92a4c796f33f7862a88915297914c108"
+  integrity sha512-mqI2zbWuYaP/Wtm0D3H0YcPv6sYQ/CdaFBG/UG856h94533CCZ+leZBr5/YkI0vBiws1VcAloLeamCHacaUlDw==
   dependencies:
     "@bjorn3/browser_wasi_shim" "^0.2.19"
 

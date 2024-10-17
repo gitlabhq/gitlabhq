@@ -103,11 +103,11 @@ the feature flag enabled. To ensure tests pass in both scenarios:
 1. Create another selector inside the new component or file.
 1. Give it the same name as the old one.
 
-Selectors are connected to a specific frontend file in the [page object](page_objects.md),
+Selectors are connected to a specific frontend file in the [page object](beginners_guide/page_objects.md),
 and checked for availability inside our `qa:selectors` test. If the mentioned selector
 is missing inside that frontend file, the test fails. To ensure selectors are
 available when a feature flag is enabled or disabled, add the new selector to the
-[page object](page_objects.md), leaving the old selector in place.
+[page object](beginners_guide/page_objects.md), leaving the old selector in place.
 The test uses the correct selector and still detects missing selectors.
 
 If a new feature changes an existing frontend file that already has a selector,
