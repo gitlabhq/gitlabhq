@@ -7,6 +7,7 @@ RSpec.describe QA::Tools::ReadinessCheck do
   let(:wait) { 1 }
   let(:msg_base) { "Gitlab readiness check failed, valid sign_in page did not appear within #{wait} seconds! Reason:" }
   let(:dot_com) { false }
+  let(:release) { false }
 
   let(:response) { instance_double(RestClient::Response, code: code, body: body) }
   let(:code) { 200 }
@@ -15,6 +16,7 @@ RSpec.describe QA::Tools::ReadinessCheck do
   before do
     allow(Capybara).to receive_message_chain("current_session.using_wait_time").and_yield
     allow(QA::Runtime::Env).to receive(:running_on_dot_com?).and_return(dot_com)
+    allow(QA::Runtime::Env).to receive(:running_on_release?).and_return(release)
     allow(QA::Support::GitlabAddress).to receive(:address_with_port).with(with_default_port: false).and_return(url)
     allow(readiness_check).to receive(:get).with("#{url}/users/sign_in").and_return(response)
   end
@@ -67,10 +69,8 @@ RSpec.describe QA::Tools::ReadinessCheck do
     end
   end
 
-  context "when running on dot com" do
-    let(:dot_com) { true }
-
-    context "with successfull check" do
+  context "with live environment" do
+    shared_examples "successful ui check" do
       before do
         allow(QA::Runtime::Browser).to receive(:visit).with(:gitlab, QA::Page::Main::Login)
       end
@@ -80,14 +80,28 @@ RSpec.describe QA::Tools::ReadinessCheck do
       end
     end
 
-    context "with unsuccessfull check" do
+    shared_examples "unsuccessful ui check" do
       before do
         allow(QA::Runtime::Browser).to receive(:visit).with(:gitlab, QA::Page::Main::Login).and_raise("not loaded")
       end
 
-      it "raises an error on validation" do
+      it "validates readiness" do
         expect { readiness_check.perform }.to raise_error("#{msg_base} not loaded")
       end
+    end
+
+    context "when running on .com" do
+      let(:dot_com) { true }
+
+      it_behaves_like "successful ui check"
+      it_behaves_like "unsuccessful ui check"
+    end
+
+    context "when running on release" do
+      let(:release) { true }
+
+      it_behaves_like "successful ui check"
+      it_behaves_like "unsuccessful ui check"
     end
   end
 end

@@ -43,6 +43,11 @@ RSpec.describe QA::Runtime::Namespace do
   end
 
   describe '.path' do
+    before do
+      allow(QA::Runtime::Scenario).to receive(:gitlab_address).and_return("http://gitlab.test")
+      described_class.instance_variable_set(:@sandbox_name, nil)
+    end
+
     it 'is always cached' do
       path = described_class.path
       expect(described_class.path).to eq(path)
