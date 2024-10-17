@@ -3092,6 +3092,15 @@ CREATE TABLE p_ci_pipeline_variables (
 )
 PARTITION BY LIST (partition_id);
 
+CREATE TABLE p_ci_pipelines_config (
+    pipeline_id bigint NOT NULL,
+    partition_id bigint NOT NULL,
+    content text NOT NULL,
+    project_id bigint,
+    CONSTRAINT check_b2a19dd79a CHECK ((project_id IS NOT NULL))
+)
+PARTITION BY LIST (partition_id);
+
 CREATE TABLE p_ci_runner_machine_builds (
     partition_id bigint NOT NULL,
     build_id bigint NOT NULL,
@@ -9020,23 +9029,6 @@ CREATE TABLE ci_pipelines (
     auto_canceled_by_partition_id bigint,
     CONSTRAINT check_2ba2a044b9 CHECK ((project_id IS NOT NULL)),
     CONSTRAINT check_d7e99a025e CHECK ((lock_version IS NOT NULL))
-);
-
-CREATE TABLE p_ci_pipelines_config (
-    pipeline_id bigint NOT NULL,
-    partition_id bigint NOT NULL,
-    content text NOT NULL,
-    project_id bigint,
-    CONSTRAINT check_b2a19dd79a CHECK ((project_id IS NOT NULL))
-)
-PARTITION BY LIST (partition_id);
-
-CREATE TABLE ci_pipelines_config (
-    pipeline_id bigint NOT NULL,
-    partition_id bigint NOT NULL,
-    content text NOT NULL,
-    project_id bigint,
-    CONSTRAINT check_b2a19dd79a CHECK ((project_id IS NOT NULL))
 );
 
 CREATE TABLE ci_project_mirrors (
@@ -22026,8 +22018,6 @@ ALTER TABLE ONLY p_ci_pipeline_variables ATTACH PARTITION ci_pipeline_variables 
 
 ALTER TABLE ONLY p_ci_pipelines ATTACH PARTITION ci_pipelines FOR VALUES IN ('100', '101', '102');
 
-ALTER TABLE ONLY p_ci_pipelines_config ATTACH PARTITION ci_pipelines_config FOR VALUES IN ('100', '101', '102');
-
 ALTER TABLE ONLY p_ci_stages ATTACH PARTITION ci_stages FOR VALUES IN ('100', '101');
 
 ALTER TABLE ONLY abuse_events ALTER COLUMN id SET DEFAULT nextval('abuse_events_id_seq'::regclass);
@@ -24329,12 +24319,6 @@ ALTER TABLE ONLY p_ci_pipeline_variables
 ALTER TABLE ONLY ci_pipeline_variables
     ADD CONSTRAINT ci_pipeline_variables_pkey PRIMARY KEY (id, partition_id);
 
-ALTER TABLE ONLY p_ci_pipelines_config
-    ADD CONSTRAINT p_ci_pipelines_config_pkey PRIMARY KEY (pipeline_id, partition_id);
-
-ALTER TABLE ONLY ci_pipelines_config
-    ADD CONSTRAINT ci_pipelines_config_pkey PRIMARY KEY (pipeline_id, partition_id);
-
 ALTER TABLE ONLY p_ci_pipelines
     ADD CONSTRAINT p_ci_pipelines_pkey PRIMARY KEY (id, partition_id);
 
@@ -25282,6 +25266,9 @@ ALTER TABLE ONLY p_ci_finished_pipeline_ch_sync_events
 
 ALTER TABLE ONLY p_ci_job_annotations
     ADD CONSTRAINT p_ci_job_annotations_pkey PRIMARY KEY (id, partition_id);
+
+ALTER TABLE ONLY p_ci_pipelines_config
+    ADD CONSTRAINT p_ci_pipelines_config_pkey PRIMARY KEY (pipeline_id, partition_id);
 
 ALTER TABLE ONLY p_ci_runner_machine_builds
     ADD CONSTRAINT p_ci_runner_machine_builds_pkey PRIMARY KEY (build_id, partition_id);
@@ -28061,10 +28048,6 @@ CREATE INDEX index_batched_jobs_on_batched_migration_id_and_status ON batched_ba
 
 CREATE UNIQUE INDEX index_batched_migrations_on_gl_schema_and_unique_configuration ON batched_background_migrations USING btree (gitlab_schema, job_class_name, table_name, column_name, job_arguments);
 
-CREATE INDEX index_p_ci_pipelines_config_on_project_id ON ONLY p_ci_pipelines_config USING btree (project_id);
-
-CREATE INDEX index_bb7e299984 ON ci_pipelines_config USING btree (project_id);
-
 CREATE INDEX index_board_assignees_on_assignee_id ON board_assignees USING btree (assignee_id);
 
 CREATE UNIQUE INDEX index_board_assignees_on_board_id_and_assignee_id ON board_assignees USING btree (board_id, assignee_id);
@@ -30316,6 +30299,8 @@ CREATE INDEX index_p_ci_finished_build_ch_sync_events_on_project_id ON ONLY p_ci
 CREATE UNIQUE INDEX index_p_ci_job_annotations_on_partition_id_job_id_name ON ONLY p_ci_job_annotations USING btree (partition_id, job_id, name);
 
 CREATE INDEX index_p_ci_job_annotations_on_project_id ON ONLY p_ci_job_annotations USING btree (project_id);
+
+CREATE INDEX index_p_ci_pipelines_config_on_project_id ON ONLY p_ci_pipelines_config USING btree (project_id);
 
 CREATE INDEX index_p_ci_runner_machine_builds_on_project_id ON ONLY p_ci_runner_machine_builds USING btree (project_id);
 
@@ -33637,8 +33622,6 @@ ALTER INDEX p_ci_job_artifacts_pkey ATTACH PARTITION ci_job_artifacts_pkey;
 
 ALTER INDEX p_ci_pipeline_variables_pkey ATTACH PARTITION ci_pipeline_variables_pkey;
 
-ALTER INDEX p_ci_pipelines_config_pkey ATTACH PARTITION ci_pipelines_config_pkey;
-
 ALTER INDEX p_ci_pipelines_pkey ATTACH PARTITION ci_pipelines_pkey;
 
 ALTER INDEX p_ci_stages_pkey ATTACH PARTITION ci_stages_pkey;
@@ -33648,8 +33631,6 @@ ALTER INDEX p_ci_job_artifacts_job_id_file_type_partition_id_idx ATTACH PARTITIO
 ALTER INDEX p_ci_pipelines_ci_ref_id_id_idx ATTACH PARTITION idx_ci_pipelines_artifacts_locked;
 
 ALTER INDEX index_p_ci_builds_on_execution_config_id ATTACH PARTITION index_0928d9f200;
-
-ALTER INDEX index_p_ci_pipelines_config_on_project_id ATTACH PARTITION index_bb7e299984;
 
 ALTER INDEX p_ci_builds_metadata_build_id_idx ATTACH PARTITION index_ci_builds_metadata_on_build_id_and_has_exposed_artifacts;
 

@@ -121,9 +121,9 @@ When you save a new policy, GitLab validates its contents against [this JSON sch
 If you're not familiar with how to read [JSON schemas](https://json-schema.org/),
 the following sections and tables provide an alternative.
 
-| Field             | Type                          | Required | Possible values | Description                               |
-|-------------------|-------------------------------|----------|-----------------|-------------------------------------------|
-| `approval_policy` | `array` of Merge Request Approval Policy | true     |                 | List of merge request approval policies (maximum 5). |
+| Field             | Type                                     | Required | Description                                          |
+|-------------------|------------------------------------------|----------|------------------------------------------------------|
+| `approval_policy` | `array` of merge request approval policy objects | true     | List of merge request approval policies (maximum 5). |
 
 ## Merge request approval policy schema
 
@@ -138,6 +138,7 @@ the following sections and tables provide an alternative.
 | `actions`           | `array` of actions | false    |                 | List of actions that the policy enforces.                |
 | `approval_settings` | `object`           | false    |                 | Project settings that the policy overrides.              |
 | `fallback_behavior` | `object`           | false    |                 | Settings that affect invalid or unenforceable rules.     |
+| `policy_scope`      | `object` of [`policy_scope`](index.md#scope) | false |  | Defines the scope of the policy based on the projects, groups, or compliance framework labels you specify. |
 
 ## `scan_finding` rule type
 
@@ -277,70 +278,11 @@ On self-managed GitLab, by default the `fallback_behavior` field is available. T
 |--------|----------|----------|--------------------|----------------------------------------------------------------------------------------------------------------------|
 | `fail` | `string` | false    | `open` or `closed` | `closed` (default): Invalid or unenforceable rules of a policy require approval. `open`: Invalid or unenforceable rules of a policy do not require approval. |
 
-## Security policy scopes
+## Policy scope schema
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135398) in GitLab 16.7 [with a flag](../../../administration/feature_flags.md) named `security_policies_policy_scope`. Enabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/443594) in GitLab 16.11. Feature flag `security_policies_policy_scope` removed.
-> - Scoping by group [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/468384) in GitLab 17.4.
-
-Security policy enforcement depends first on establishing a link between the group, subgroup, or
-project on which you want to enforce policies, and the security policy project that contains the
-policies. For example, if you are linking policies to a group, a group owner must create the link to
-the security policy project. Then, all policies in the security policy project are inherited by all
-projects in the group.
-
-You can refine a security policy's scope to:
-
-- _Include_ only projects containing a compliance framework label.
-- _Include_ or _exclude_ selected projects from enforcement.
-- _Include_ selected groups. Optionally use this with the `projects` object to exclude selected projects.
-
-### Policy scope schema
-
-| Field | Type | Required | Possible values | Description |
-|-------|------|----------|-----------------|-------------|
-| `policy_scope` | `object` | false | `compliance_frameworks`, `projects`, `groups` | Scopes the policy based on compliance framework labels, projects, or groups you define. |
-
-### `policy_scope` scope type
-
-| Field | Type | Possible values | Description |
-|-------|------|-----------------|-------------|
-| `compliance_frameworks` | `array` |  | List of IDs of the compliance frameworks in scope of enforcement, in an array of objects with key `id`. |
-| `projects` | `object` |  `including`, `excluding` | Use `excluding:` or `including:` then list the IDs of the projects you wish to include or exclude, in an array of objects with key `id`. |
-| `groups` | `object` | `including` | Use `including:` then list the IDs of the groups you wish to include, in an array of objects with key `id`. |
-
-### Example `policy.yml` with security policy scopes
-
-```yaml
----
-approval_policy:
-- name: critical vulnerability CS approvals
-  description: critical severity level only for container scanning
-  enabled: true
-  rules:
-  - type: scan_finding
-    branches:
-    - main
-    scanners:
-    - container_scanning
-    vulnerabilities_allowed: 1
-    severity_levels:
-    - critical
-    vulnerability_states: []
-  actions:
-  - type: require_approval
-    approvals_required: 1
-    user_approvers:
-    - adalberto.dare
-  policy_scope:
-    compliance_frameworks:
-      - id: 2
-      - id: 11
-    projects:
-      including:
-        - id: 24
-        - id: 27
-```
+To customize policy enforcement, you can define a policy's scope to either include or exclude
+specified projects, groups, or compliance framework labels. For more details, see
+[Scope](index.md#scope).
 
 ## Example security merge request approval policies project
 

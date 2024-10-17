@@ -111,6 +111,9 @@ panels:
           - in_review
 ```
 
+NOTE:
+Only labels that exactly match the specified filters are applied.
+
 ### DORA Performers score panel
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386843) in GitLab 16.3 [with a flag](../../administration/feature_flags.md) named `dora_performers_score_panel`. Disabled by default.

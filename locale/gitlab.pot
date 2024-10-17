@@ -3888,6 +3888,9 @@ msgstr ""
 msgid "AdminSelfHostedModels|Configure AI Features"
 msgstr ""
 
+msgid "AdminSelfHostedModels|Configure GitLab Duo by adding and managing your own self-hosted models."
+msgstr ""
+
 msgid "AdminSelfHostedModels|Create model"
 msgstr ""
 
@@ -3916,6 +3919,9 @@ msgid "AdminSelfHostedModels|Endpoint"
 msgstr ""
 
 msgid "AdminSelfHostedModels|Get started with Self‑hosted models"
+msgstr ""
+
+msgid "AdminSelfHostedModels|Get started with self-hosted models"
 msgstr ""
 
 msgid "AdminSelfHostedModels|If necessary, provide the model identifier in the form of provider/model-name"
@@ -3981,9 +3987,6 @@ msgstr ""
 msgid "AdminSelfHostedModels|Self-hosted models"
 msgstr ""
 
-msgid "AdminSelfHostedModels|Self-hosted models are an experimental feature."
-msgstr ""
-
 msgid "AdminSelfHostedModels|Specify the URL endpoint where your self-hosted model is accessible"
 msgstr ""
 
@@ -4003,6 +4006,9 @@ msgid "AdminSelfHostedModels|To remove %{boldStart}%{modelName}%{boldEnd}, you m
 msgstr ""
 
 msgid "AdminSelfHostedModels|You are about to delete the %{boldStart}%{modelName}%{boldEnd} self-hosted model. This action cannot be undone."
+msgstr ""
+
+msgid "AdminSelfHostedModels|You do not currently have any self-hosted models. %{linkStart}Add a self-hosted model%{linkEnd} to get started."
 msgstr ""
 
 msgid "AdminSelfHostedModels|Your self-hosted model was successfully deleted."

@@ -6,6 +6,14 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # Vue 3 Testing
 
+## Running unit tests using Vue 3
+
+To run unit tests using Vue 3, set the `VUE_VERSION` environment variable to `3` when executing jest.
+
+```shell
+VUE_VERSION=3 yarn jest #[file-path]
+```
+
 ## Testing Caveats
 
 ### Ref management when mocking composables
@@ -115,4 +123,89 @@ describe('MyComponent', () => {
     // pass
   })
 })
+```
+
+### Vue Apollo troubleshooting
+
+You might encounter some unit test failures on components that execute Apollo mutations and
+update the in-memory query cache, for example:
+
+```shell
+ApolloError: 'get' on proxy: property '[property]' is a read-only and non-configurable data property on the proxy target but the proxy did not return its actual value (expected '#<Object>' but got '#<Object>')
+```
+
+This error happens because Apollo tries to access or modify
+a [Vue reactive object](https://vuejs.org/guide/essentials/reactivity-fundamentals.html) when we call the
+`writeQuery` or `updateQuery` methods. As a general rule, never use a component's property in operations
+that update Apollo's cache. If you must, use the `toRaw` utility to remove the Vue's reactivity proxy from
+the target object.
+
+The following example comes from a real-life scenario where this failure happened and provides two alternatives
+to fix the test failure:
+
+```html
+<script>
+import { toRaw } from 'vue';
+
+export default {
+  props: {
+    namespace: {
+      type: String,
+      required: true,
+    },
+    agent: {
+      type: Object,
+      required: true,
+    },
+  },
+
+  methods: {
+    async execute() {
+      try {
+        await this.$apollo.mutate({
+          mutation: createClusterAgentMappingMutation,
+          update(store) {
+            store.updateQuery(
+              {
+                query: getAgentsWithAuthorizationStatusQuery,
+                variables: { namespace },
+              },
+              (sourceData) =>
+                produce(sourceData, (draftData) => {
+                  const { mappedAgents, unmappedAgents } = draftData.namespace;
+
+                  /*
+                  * BAD: The error described in this section is caused by adding a Vue reactive
+                  * object the nodes array. `this.agent` is a component property hence it is wrapped
+                  * with a reactivity proxy.
+                  */
+                  mappedAgents.nodes.push(this.agent);
+                  unmappedAgents.nodes = removeFrom.nodes.filter((node) => node.id !== agent.id);
+
+                  /*
+                  * PREFERRED FIX: Use `toRaw` to remove the reactivity proxy.
+                  */
+                  mappedAgents.nodes.push(toRaw(this.agent));
+                  unmappedAgents.nodes = removeFrom.nodes.filter((node) => node.id !== agent.id);
+
+                  /*
+                  * ALTERNATIVE FIX: Only use data that already exists in the in-memory cache.
+                  */
+                  const targetAgentIndex = removeFrom.nodes.findIndex((node) => node.id === agent.id);
+
+                  mappedAgents.nodes.push(removeFrom.nodes[targetAgentIndex]);
+                  unmappedAgents.nodes.splice(targetAgentIndex, 1);
+                }),
+            );
+          },
+        });
+      } catch (e) {
+        Sentry.captureException(e);
+        this.$emit('error', e);
+      }
+    },
+  },
+};
+</script>
+
 ```

@@ -1,6 +1,6 @@
 import { GlKeysetPagination } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import Pagination from '~/vue_shared/components/incubation/pagination.vue';
+import Pagination from '~/ml/experiment_tracking/components/pagination.vue';
 
 describe('~/vue_shared/incubation/components/pagination.vue', () => {
   let wrapper;

@@ -9,7 +9,6 @@ RSpec.describe Types::MemberInterface do
       access_level
       created_by
       created_at
-      last_activity_on
       updated_at
       expires_at
       user
@@ -18,8 +17,6 @@ RSpec.describe Types::MemberInterface do
 
     expect(described_class).to have_graphql_fields(*expected_fields)
   end
-
-  it { expect(described_class.fields['lastActivityOn']).to have_graphql_type(Types::TimeType) }
 
   describe '.resolve_type' do
     subject { described_class.resolve_type(object, {}) }

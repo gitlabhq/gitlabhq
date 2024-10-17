@@ -4,7 +4,7 @@ module QA
   RSpec.describe 'Package', :object_storage, product_group: :package_registry do
     describe 'Maven group level endpoint', :external_api_calls, quarantine: {
       type: :investigating,
-      issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/471172",
+      issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/499660",
       only: { job: /gdk-qa-.*/ }
     } do
       include Runtime::Fixtures

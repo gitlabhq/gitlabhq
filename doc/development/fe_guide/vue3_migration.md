@@ -388,3 +388,8 @@ In [commit adding VueApollo v4 support](https://gitlab.com/gitlab-org/gitlab/-/c
 
 - We might need to add additional imports to our facades (our code in GitLab uses `ApolloMutation` component)
 - We need to update aliases not only for webpack but also for jest so our tests could also consume our facade
+
+## Unit testing
+
+For more information about implementing unit tests or fixing tests that fail while using Vue 3,
+read the [Vue 3 testing guide](../testing_guide/testing_vue3.md).

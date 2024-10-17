@@ -1,10 +1,10 @@
 <script>
 import { GlTableLite, GlEmptyState, GlLink } from '@gitlab/ui';
-import Pagination from '~/vue_shared/components/incubation/pagination.vue';
 import { FEATURE_NAME, FEATURE_FEEDBACK_ISSUE } from '~/ml/experiment_tracking/constants';
 import * as constants from '~/ml/experiment_tracking/routes/experiments/index/constants';
 import * as translations from '~/ml/experiment_tracking/routes/experiments/index/translations';
 import ModelExperimentsHeader from '~/ml/experiment_tracking/components/model_experiments_header.vue';
+import Pagination from '~/ml/experiment_tracking/components/pagination.vue';
 
 export default {
   name: 'MlExperimentsIndexApp',
