@@ -2580,7 +2580,6 @@
 - './ee/spec/workers/elastic_cluster_reindexing_cron_worker_spec.rb'
 - './ee/spec/workers/elastic_delete_project_worker_spec.rb'
 - './ee/spec/workers/elastic_full_index_worker_spec.rb'
-- './ee/spec/workers/elastic_index_bulk_cron_worker_spec.rb'
 - './ee/spec/workers/elastic_indexing_control_worker_spec.rb'
 - './ee/spec/workers/elastic_index_initial_bulk_cron_worker_spec.rb'
 - './ee/spec/workers/elastic/migration_worker_spec.rb'

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::BackfillUsersWithDefaults,
-  schema: 20230818083610,
+  schema: 20230721095222,
   feature_category: :user_profile do
   let(:users) { table(:users) }
   let(:columns) { [:project_view, :hide_no_ssh_key, :hide_no_password, :notified_of_own_activity] }

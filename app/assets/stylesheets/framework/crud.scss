@@ -61,6 +61,10 @@ $crud-header-min-height: px-to-rem(49px);
     tr:last-of-type td {
       border-bottom-width: 0;
     }
+
+    tr th, tr td {
+      border-color: var(--gl-border-color-section);
+    }
   }
 
   table.gl-table.b-table.b-table-stacked-sm {
@@ -81,7 +85,7 @@ $crud-header-min-height: px-to-rem(49px);
 
   .content-list > li {
     padding-inline: $gl-spacing-scale-5;
-    border-bottom-color: var(--gl-border-color-default);
+    @apply gl-border-b-section #{!important};
   }
 }
 

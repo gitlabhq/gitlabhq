@@ -1,0 +1,47 @@
+- name: Introducing Duo Quick Chat
+  description: |
+    Introducing Duo Quick Chat, an AI-powered chat designed to work exactly where you are in your code. Duo Quick Chat operates directly on the lines you're editing, offering real-time assistance without ever moving you away from your code. Whether you're refactoring, fixing bugs, or writing tests, Duo Quick Chat provides suggestions and explanations on the spot, ensuring that you stay fully focused without switching context.
+  stage: create
+  self-managed: true
+  gitlab-com: true
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/gitlab_duo_chat/#in-the-editor-window
+  image_url: https://img.youtube.com/v1/5JbAM5g2VbQ/hqdefault.jpg
+  published_at: 2024-10-17
+  release: 17.5
+
+- name: Use self-hosted model for GitLab Duo Code Suggestions
+  description: |
+    You can now host your own supported large language models (LLMs) and configure them to make suggestions to developers while they write code. This feature is in beta and available with an Ultimate and Duo Enterprise subscription on self-managed GitLab environments.
+  stage: ai-powered
+  self-managed: true
+  gitlab-com: false
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/administration/self_hosted_models/
+  image_url: https://about.gitlab.com/images/17_5/self-hosted-beta.png
+  published_at: 2024-10-17
+  release: 17.5
+
+- name: Export Code suggestion usage events
+  description: |
+    Users can export raw code suggestion events from the GraphQL API. This way you can import the data into your data analysis tool to get deeper insights into acceptance rates across more dimensions, such as suggestion size, language, and user.
+  stage: plan
+  self-managed: true
+  gitlab-com: true
+  available_in: [Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/api/graphql/reference/#codesuggestionevent
+  published_at: 2024-10-17
+  release: 17.5
+
+- name: Have a conversation with GitLab Duo Chat about your merge request
+  description: |
+    In response to your feedback, GitLab Duo Chat is now aware of merge requests. Whether you are a reviewer or an author, you can now converse with Chat about a merge request to quickly dig into it, or learn what to do next. Simply open your merge request and open Duo Chat, then start the conversation.
+    This new feature complements our exiting feature, where you can quickly populate the description of a merge request by asking GitLab Duo to summarize code changes, so that reviewers can get a general understanding of what the merge request is about.
+  stage: ai-powered
+  self-managed: true
+  gitlab-com: true
+  available_in: [Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/gitlab_duo_chat/examples#ask-about-a-specific-merge-request
+  image_url: https://img.youtube.com/v1/4muvSFuWWL4/hqdefault.jpg
+  published_at: 2024-10-17
+  release: 17.5

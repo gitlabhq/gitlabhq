@@ -14200,6 +14200,9 @@ msgstr ""
 msgid "ComplianceFrameworks|Compliance frameworks that are linked to an active policy can't be deleted"
 msgstr ""
 
+msgid "ComplianceFrameworks|Compliance frameworks that have a scoped policy can't be deleted"
+msgstr ""
+
 msgid "ComplianceFrameworks|Compliance pipeline configuration (optional)"
 msgstr ""
 
@@ -22932,6 +22935,9 @@ msgstr ""
 msgid "Failed to generate description"
 msgstr ""
 
+msgid "Failed to generate export"
+msgstr ""
+
 msgid "Failed to generate export, please try again later."
 msgstr ""
 
@@ -30101,13 +30107,7 @@ msgstr ""
 msgid "IssuesAnalytics|Closed"
 msgstr ""
 
-msgid "IssuesAnalytics|Create issues for projects in your group to track and see metrics for them."
-msgstr ""
-
 msgid "IssuesAnalytics|Failed to load chart. Please try again."
-msgstr ""
-
-msgid "IssuesAnalytics|Get started with issue analytics"
 msgstr ""
 
 msgid "IssuesAnalytics|Issues Opened vs Closed"

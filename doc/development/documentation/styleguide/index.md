@@ -13,7 +13,7 @@ For guidelines on specific words, see [the word list](word_list.md).
 ## The GitLab voice
 
 The GitLab brand guidelines define the
-[voice used by the larger organization](https://design.gitlab.com/brand-overview/brand-voice).
+[voice used by the larger organization](https://design.gitlab.com/brand-overview/introduction/#brand-personality).
 
 Building on that guidance, the voice in the GitLab documentation strives to be concise,
 direct, and precise. The goal is to provide information that's easy to search and scan.

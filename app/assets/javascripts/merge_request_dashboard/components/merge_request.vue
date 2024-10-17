@@ -104,7 +104,11 @@ export default {
       <assigned-users :users="mergeRequest.reviewers.nodes" type="REVIEWERS" />
     </td>
     <td class="gl-py-4 gl-pl-3 gl-pr-5 gl-align-top">
-      <div class="gl-flex gl-justify-end gl-gap-3" :aria-label="statsAriaLabel">
+      <div
+        class="gl-flex gl-justify-end gl-gap-3"
+        :aria-label="statsAriaLabel"
+        :title="statsAriaLabel"
+      >
         <div class="gl-whitespace-nowrap">
           <gl-icon name="comments" class="!gl-align-middle" />
           {{ mergeRequest.userNotesCount }}

@@ -1,6 +1,7 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlButton, GlTabs, GlTab, GlLink, GlBadge } from '@gitlab/ui';
+import Markdown from '~/vue_shared/components/markdown/non_gfm_markdown.vue';
 import DocLine from './doc_line.vue';
 
 export default {
@@ -11,6 +12,7 @@ export default {
     GlLink,
     GlBadge,
     DocLine,
+    Markdown,
   },
   props: {
     position: {
@@ -104,9 +106,7 @@ export default {
               :class="$options.colorScheme"
               class="border-0 bg-transparent m-0 code highlight text-wrap"
             ><doc-line v-for="(tokens, tokenIndex) in hover.tokens" :key="tokenIndex" :language="hover.language" :tokens="tokens" /></pre>
-            <p v-else ref="doc-output" class="p-3 m-0">
-              {{ hover.value }}
-            </p>
+            <markdown v-else ref="doc-output" class="gl-p-3" :markdown="hover.value" />
           </div>
         </div>
         <div v-if="definitionPath || isCurrentDefinition" class="popover-body border-top">

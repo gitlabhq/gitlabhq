@@ -84,7 +84,7 @@ Now let's change the previous example so that the user is not a member of either
 - When the user signs in to a group with `SAML1`, the user is given the `Owner` role in that group.
 - When the user signs in with `SAML2`, the user is removed from the group because they are not a member of either configured group link.
 
-### How role conflicts are resolved
+### Role prioritization
 
 #### Members of multiple mapped SAML groups
 

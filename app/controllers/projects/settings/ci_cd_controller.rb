@@ -77,6 +77,26 @@ module Projects
         private_runner_setup_scripts
       end
 
+      def export_job_token_authorizations
+        response = ::Ci::JobToken::ExportAuthorizationsService
+          .new(current_user: current_user, accessed_project: @project)
+          .execute
+
+        respond_to do |format|
+          format.csv do
+            if response.success?
+              send_data(response.payload.fetch(:data),
+                type: 'text/csv; charset=utf-8',
+                filename: response.payload.fetch(:filename))
+            else
+              flash[:alert] = _('Failed to generate export')
+
+              redirect_to project_settings_ci_cd_path(@project)
+            end
+          end
+        end
+      end
+
       private
 
       def authorize_reset_cache!

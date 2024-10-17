@@ -1,0 +1,8 @@
+# Lints against outdated documentation links rendered in the product and enforces extension-less
+# paths.
+# For now, we disable the cop on all HAML files to not conflict with the `DocumentationLinks` HAML
+# linter. We'll eventually consolidate both cops into `Gitlab/DocumentationLinks/Link`.
+Gitlab/DocumentationLinks/Link:
+  Exclude:
+    - app/views/**/*.haml
+    - ee/app/views/**/*.haml

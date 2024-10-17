@@ -103,7 +103,7 @@ module Gitlab
 
         standard_context = Tracking::StandardContext.new(
           project_id: project&.id,
-          user_id: user&.id,
+          user: user,
           namespace_id: namespace&.id,
           plan_name: namespace&.actual_plan_name,
           feature_enabled_by_namespace_ids: feature_enabled_by_namespace_ids,

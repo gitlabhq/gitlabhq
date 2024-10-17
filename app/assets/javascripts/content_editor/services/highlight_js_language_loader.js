@@ -240,6 +240,7 @@ export default {
   twig: () => import(/* webpackChunkName: 'hl-twig' */ 'highlight.js/lib/languages/twig'),
   typescript: () =>
     import(/* webpackChunkName: 'hl-typescript' */ 'highlight.js/lib/languages/typescript'),
+  ts: () => import(/* webpackChunkName: 'hl-typescript' */ 'highlight.js/lib/languages/typescript'),
   vala: () => import(/* webpackChunkName: 'hl-vala' */ 'highlight.js/lib/languages/vala'),
   vbnet: () => import(/* webpackChunkName: 'hl-vbnet' */ 'highlight.js/lib/languages/vbnet'),
   'vbscript-html': () =>

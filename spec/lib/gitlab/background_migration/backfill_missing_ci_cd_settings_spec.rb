@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::BackfillMissingCiCdSettings, schema: 20230728020644, feature_category: :source_code_management do # rubocop:disable Layout/LineLength
+RSpec.describe Gitlab::BackgroundMigration::BackfillMissingCiCdSettings, schema: 20230721095222, feature_category: :source_code_management do # rubocop:disable Layout/LineLength
   let(:projects_table) { table(:projects) }
   let(:namespaces_table) { table(:namespaces) }
   let(:ci_cd_settings_table) { table(:project_ci_cd_settings) }

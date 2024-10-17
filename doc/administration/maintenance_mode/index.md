@@ -59,7 +59,7 @@ The banner can be customized with a specific message.
 
 An error is displayed when a user tries to perform a write operation that isn't allowed.
 
-![Maintenance Mode banner and error message](img/maintenance_mode_error_message.png)
+![Maintenance Mode banner and error message](img/maintenance_mode_error_message_v17.6.png)
 
 NOTE:
 In some cases, the visual feedback from an action could be misleading. For example, when starring a project, the **Star** button changes to show the **Unstar** action. However, this is only the frontend update, and it doesn't take into account the failed status of the POST request. These visual bugs are to be fixed [in follow-up iterations](https://gitlab.com/gitlab-org/gitlab/-/issues/295197).

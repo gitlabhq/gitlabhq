@@ -1325,19 +1325,19 @@
   resolved "https://registry.yarnpkg.com/@gitlab/at.js/-/at.js-1.5.7.tgz#1ee6f838cc4410a1d797770934df91d90df8179e"
   integrity sha512-c6ySRK/Ma7lxwpIVbSAF3P+xiTLrNTGTLRx4/pHK111AdFxwgUwrYF6aVZFXvmG65jHOJHoa0eQQ21RW6rm0Rg==
 
-"@gitlab/cluster-client@^2.2.1":
-  version "2.2.1"
-  resolved "https://registry.yarnpkg.com/@gitlab/cluster-client/-/cluster-client-2.2.1.tgz#9d14336d653c1df92d2d764a7eff74b5a3a43119"
-  integrity sha512-YtpSfFxro0q/YRhBuZWiSfHQ44JyTfuwQgE8F77+0v5xOuvoeXR81mmJzF6ByejKVAee9auvjdd4eHSUQ5MqsQ==
+"@gitlab/cluster-client@^2.3.0":
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/cluster-client/-/cluster-client-2.3.0.tgz#0ef446e842e0b2ae16e5249e59037e3118731b36"
+  integrity sha512-XKy8A8Hr5GU3ZU+VHDKO2IV/RX5QvhzxPap4a/5f17fDeLdzQbpjxzN+FS3P5SV/5U2KI7PY1qzW8Rc5W2PdmQ==
   dependencies:
     axios "^0.24.0"
     core-js "^3.29.1"
     mitt "^3.0.1"
 
-"@gitlab/eslint-plugin@20.2.1":
-  version "20.2.1"
-  resolved "https://registry.yarnpkg.com/@gitlab/eslint-plugin/-/eslint-plugin-20.2.1.tgz#2414f621ef3d88e90405436460febbfb247b4f91"
-  integrity sha512-n0ISWpRI/h6ZO8bfX10EY4u3y31Pdo9T2ieaRo1dSaC0nz7ZXHd23ykJ2gQDmYogjh6EHGS/SiqL1chMA4C+eQ==
+"@gitlab/eslint-plugin@20.4.1":
+  version "20.4.1"
+  resolved "https://registry.yarnpkg.com/@gitlab/eslint-plugin/-/eslint-plugin-20.4.1.tgz#79cf7679528a1769d32faf20bab9ac9614aebf8a"
+  integrity sha512-OXCP04WFYa7TkVNXb2gFcgW4BlS2jvlQ/xk7BbvZ3vuHBGzQH9v6Hec709bVJ25iKe2mpHi2C4V5RMaiZUeZew==
   dependencies:
     "@typescript-eslint/eslint-plugin" "^7.14.1"
     eslint-config-airbnb-base "^15.0.0"

@@ -246,9 +246,9 @@ A vulnerability's status can be:
 
 - **Detected**: The default state for a newly discovered vulnerability. Appears as "Needs triage" in the UI.
 - **Confirmed**: A user has seen this vulnerability and confirmed it to be accurate.
-- **Dismissed**: A user has seen this vulnerability and dismissed it because it is not accurate or
-  otherwise not to be resolved. Dismissed vulnerabilities are ignored if detected in subsequent
-  scans.
+- **Dismissed**: A user has seen this vulnerability and dismissed it for one of the available
+  [reasons](#vulnerability-dismissal-reasons). Dismissed vulnerabilities are ignored if detected in
+  subsequent scans.
 - **Resolved**: The vulnerability has been fixed or is no longer present. If a resolved
   vulnerability is reintroduced and detected again, its record is reinstated and its status set to
   detected.
@@ -259,13 +259,19 @@ A vulnerability's status can be:
 > - Enabled on GitLab.com in GitLab 15.11. For self-managed customers, [contact Support](https://about.gitlab.com/support/) if you would like to use this feature in GitLab 15.11.
 > - Enabled by default in GitLab 16.0.
 
-When dismissing a vulnerability, one of the following reasons must be chosen to clarify why it is being dismissed:
+When you dismiss a vulnerability you must choose one of the following reasons:
 
-- **Acceptable risk**: The vulnerability is known, and has not been remediated or mitigated, but is considered to be an acceptable business risk.
-- **False positive**: An error in reporting in which a test result incorrectly indicates the presence of a vulnerability in a system when the vulnerability is not present.
-- **Mitigating control**: A management, operational, or technical control (that is, safeguard or countermeasure) employed by an organization that provides equivalent or comparable protection for an information system.
-- **Used in tests**: The finding is not a vulnerability because it is part of a test or is test data.
-- **Not applicable**: The vulnerability is known, and has not been remediated or mitigated, but is considered to be in a part of the application that will not be updated.
+- **Acceptable risk**: The vulnerability is known, and has not been remediated or mitigated, but is
+  considered to be an acceptable business risk.
+- **False positive**: An error in reporting in which a test result incorrectly indicates the
+  presence of a vulnerability in a system when the vulnerability is not present.
+- **Mitigating control**: The vulnerability's risk is mitigated by a management, operational, or
+  technical control (that is, safeguard or countermeasure) employed by an organization that provides
+  equivalent or comparable protection for an information system.
+- **Used in tests**: The finding is not a vulnerability because it is part of a test or is test
+  data.
+- **Not applicable**: The vulnerability is known, and has not been remediated or mitigated, but is
+  considered to be in a part of the application that will not be updated.
 
 ## Change the status of a vulnerability
 

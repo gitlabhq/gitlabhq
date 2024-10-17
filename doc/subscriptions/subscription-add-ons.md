@@ -164,14 +164,14 @@ Prerequisites:
 ## Start GitLab Duo Pro trial
 
 DETAILS:
-**Tier:** Premium, Ultimate
+**Tier:** Premium
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 ### On GitLab.com
 
 Prerequisites:
 
-- You must be an owner of a top-level group that has an active paid subscription or Ultimate trial.
+- You must have the Owner role for a top-level group that has an active paid Premium subscription.
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > Billing**.
@@ -186,11 +186,53 @@ Prerequisites:
 
 Prerequisites:
 
-- You must have an active paid Premium or Ultimate subscription. GitLab Duo Pro trials are not available to free users of self-managed at this time.
+- You must have an active paid Premium subscription.
+- You must have GitLab 16.8 or later and your instance must be able to [synchronize your subscription data](self_managed/index.md#subscription-data-synchronization) with GitLab.
+- GitLab Duo requires GitLab 17.2 and later for the best user experience and results. Earlier versions might continue to work, however the experience may be degraded.
+
+1. Go to the [GitLab Duo Pro trial page](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?toggle=gitlab-duo-pro).
+1. Complete the fields.
+
+   - To find your subscription name:
+     1. In the Customers Portal, on the **Subscriptions & purchases** page, find the subscription you want to apply the trial to.
+     1. At the top of the page, the subscription name appears in a badge.
+
+        ![Subscription name](img/subscription_name.png)
+   - Ensure the email address you submit for trial registration matches the email address of the [subscription contact](customers_portal.md#change-your-subscription-contact).
+1. Select **Submit**.
+
+The trial automatically synchronizes to your instance within 24 hours. After the trial has synchronized, [assign seats](#assign-gitlab-duo-seats) to users that you want to access GitLab Duo.
+
+## Start GitLab Duo Enterprise trial
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+
+### On GitLab.com
+
+Prerequisites:
+
+- You must have the Owner role for a top-level group that has an active paid Ultimate subscription.
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings > Billing**.
+1. Select **Start a free GitLab Duo Enterprise trial**.
+1. Complete the fields.
+1. Select **Continue**.
+1. If prompted, select the group that the trial should be applied to.
+1. Select **Activate my trial**.
+1. [Assign seats](#assign-gitlab-duo-seats) to the users who need access.
+
+### On GitLab self-managed and GitLab Dedicated
+
+Prerequisites:
+
+- You must have an active paid Ultimate subscription.
 - You must have GitLab 16.8 or later and your instance must be able to [synchronize your subscription data](self_managed/index.md#subscription-data-synchronization) with GitLab.
 - GitLab Duo requires GitLab 17.2 and later for the best user experience and results. Earlier versions may continue to work, however the experience may be degraded.
 
-1. Go to the [GitLab Duo Pro trial page](https://about.gitlab.com/solutions/gitlab-duo-pro/self-managed-and-gitlab-dedicated-trial/).
+1. Go to the [GitLab Duo Enterprise trial page](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?toggle=gitlab-duo-enterprise).
 1. Complete the fields.
 
    - To find your subscription name:
@@ -254,10 +296,3 @@ To [continue using](https://about.gitlab.com/gitlab-duo/) GitLab Duo Pro or GitL
 - Purchase GitLab Duo Pro or Duo Enterprise
 
 GitLab Duo Enterprise is available only for Ultimate subscriptions.
-
-If you have already purchased GitLab Duo Pro or Enterprise, to avoid losing access, you must
-assign remaining seats before October 17, 2024.
-
-If you have an Ultimate subscription and purchased GitLab Duo Pro with the option to
-upgrade to Duo Enterprise, you must upgrade before October 17, 2024. If you
-don't upgrade, you will lose access to GitLab Duo Enterprise features.

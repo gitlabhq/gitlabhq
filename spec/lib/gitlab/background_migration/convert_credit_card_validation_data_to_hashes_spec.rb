@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::ConvertCreditCardValidationDataToHashes, schema: 20230821081603, feature_category: :user_profile do # rubocop:disable Layout/LineLength
+RSpec.describe Gitlab::BackgroundMigration::ConvertCreditCardValidationDataToHashes, schema: 20230721095222, feature_category: :user_profile do # rubocop:disable Layout/LineLength
   let(:users_table) { table(:users) }
   let(:credit_card_validations_table) { table(:user_credit_card_validations) }
   let(:rows) { 5 }

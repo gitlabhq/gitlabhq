@@ -40,8 +40,8 @@ $item-remove-button-space: 42px;
 
   &:hover,
   &:focus-within {
-    background-color: var(--gl-background-color-default);
-    border-color: var(--gl-border-color-default);
+    background-color: var(--gl-background-color-section);
+    border-color: var(--gl-border-color-section);
   }
 
   .merge-request-status.closed {

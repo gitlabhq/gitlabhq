@@ -62,6 +62,7 @@ exports[`Merge request dashboard merge request component renders template 1`] = 
     <div
       aria-label="5 comments, 100 file additions, 50 file deletions"
       class="gl-flex gl-gap-3 gl-justify-end"
+      title="5 comments, 100 file additions, 50 file deletions"
     >
       <div
         class="gl-whitespace-nowrap"

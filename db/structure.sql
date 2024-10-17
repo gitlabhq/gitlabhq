@@ -17539,8 +17539,7 @@ CREATE TABLE project_statistics (
     container_registry_size bigint DEFAULT 0 NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     updated_at timestamp with time zone DEFAULT now() NOT NULL,
-    root_namespace_id bigint,
-    vulnerability_count integer DEFAULT 0 NOT NULL
+    root_namespace_id bigint
 );
 
 CREATE SEQUENCE project_statistics_id_seq

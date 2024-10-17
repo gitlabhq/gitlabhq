@@ -146,6 +146,69 @@ def perform(project_id)
 end
 ```
 
+## Concurrency Limit
+
+To prevent system overload and ensure reliable operations, we strongly recommend setting a
+[concurrency limit](worker_attributes.md#concurrency-limit) for all workers. Limiting the number of jobs each worker
+can schedule helps mitigate the risk of overwhelming the system, which could lead to severe incidents.
+
+This guidance applies both to .com and self-managed customers. A single worker scheduling thousands of jobs can easily disrupt the normal functioning of an SM instance.
+
+NOTE:
+If Sidekiq only has 20 threads and the limit for a specific job is 200 then it will never be able to hit this 200 concurrency so it will not be limited.
+
+### Static Concurrency Limit
+
+For a static limit, consider the following example:
+
+```ruby
+class LimitedWorker
+  include ApplicationWorker
+
+  concurrency_limit -> { 100 if Feature.enabled?(:concurrency_limit_some_worker, Feature.current_request) }
+
+  # ...
+end
+```
+
+Alternatively, you can set a fixed limit directly:
+
+```ruby
+concurrency_limit -> { 250 }
+```
+
+NOTE:
+Keep in mind that using a static limit means any updates or changes require merging an MR and waiting for the next deployment to take effect.
+
+### Instance-Configurable Concurrency Limit
+
+If you want to allow instance administrators to control the concurrency limit:
+
+```ruby
+concurrency_limit -> { ApplicationSetting.current.some_feature_concurrent_sidekiq_jobs }
+```
+
+This approach also allows having separate limits for .com and self-managed instances. To achieve this, you can:
+
+1. Create a migration to add the configuration option with a default set to the self-managed limit.
+1. In the same MR, ship a migration to update the limit for .com only.
+
+### How to pick the limit
+
+To determine an appropriate limit, you can use this PromQL query as a guide in [Mimir](https://dashboards.gitlab.net/explore):
+
+```promql
+(
+  sum by (worker) (rate(sidekiq_enqueued_jobs_total{environment="gprd", worker="ElasticCommitIndexerWorker"}[1m]))
+)
+*
+(
+  sum by (worker) (rate(sidekiq_jobs_completion_seconds_sum{environment="gprd", worker="ElasticCommitIndexerWorker"}[1m]))
+  /
+  sum by (worker) (rate(sidekiq_jobs_completion_count{environment="gprd", worker="ElasticCommitIndexerWorker"}[1m]))
+)
+```
+
 ## Deferring Sidekiq workers
 
 Sidekiq workers are deferred by two ways,
