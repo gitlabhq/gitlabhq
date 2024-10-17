@@ -34,9 +34,13 @@ RSpec.describe Mutations::Ci::JobTokenScope::AddGroupOrProject, feature_category
 
     context 'when we add a project' do
       let_it_be(:target_project) { create(:project) }
+      let_it_be(:target_project_path) { target_project.full_path }
 
-      let(:target_project_path) { target_project.full_path }
-      let(:mutation_args) { { project_path: project.full_path, target_path: target_project_path } }
+      let(:policies) { %w[read_project read_package] }
+
+      let(:mutation_args) do
+        { project_path: project.full_path, target_path: target_project_path, job_token_policies: policies }
+      end
 
       it_behaves_like 'when user is not logged in'
 
@@ -52,9 +56,24 @@ RSpec.describe Mutations::Ci::JobTokenScope::AddGroupOrProject, feature_category
           end
 
           it 'adds target project to the inbound job token scope by default' do
-            expect do
-              expect(resolver).to include(ci_job_token_scope: be_present, errors: be_empty)
-            end.to change { Ci::JobToken::ProjectScopeLink.count }.by(1)
+            expect { resolver }.to change { Ci::JobToken::ProjectScopeLink.count }.by(1)
+            expect(resolver).to include(ci_job_token_scope: be_present, errors: be_empty)
+
+            project_link = Ci::JobToken::ProjectScopeLink.last
+
+            expect(project_link.source_project).to eq(project)
+            expect(project_link.target_project).to eq(target_project)
+            expect(project_link.added_by).to eq(current_user)
+            expect(project_link.job_token_policies).to eq(policies)
+          end
+
+          context 'when the policies provided are invalid' do
+            let(:policies) { %w[read_issue read_project] }
+
+            it 'returns an error message' do
+              expect(resolver.fetch(:errors))
+              .to include('Validation failed: Job token policies must be a valid json schema')
+            end
           end
         end
 
@@ -75,9 +94,13 @@ RSpec.describe Mutations::Ci::JobTokenScope::AddGroupOrProject, feature_category
 
     context 'when we add a group' do
       let_it_be(:target_group) { create(:group, :private) }
+      let_it_be(:target_group_path) { target_group.full_path }
 
-      let(:target_group_path) { target_group.full_path }
-      let(:mutation_args) { { project_path: project.full_path, target_path: target_group_path } }
+      let(:policies) { %w[read_project read_package] }
+
+      let(:mutation_args) do
+        { project_path: project.full_path, target_path: target_group_path, job_token_policies: policies }
+      end
 
       it_behaves_like 'when user is not logged in'
 
@@ -93,9 +116,26 @@ RSpec.describe Mutations::Ci::JobTokenScope::AddGroupOrProject, feature_category
           end
 
           it 'adds target group to the job token scope' do
-            expect do
-              expect(resolver).to include(ci_job_token_scope: be_present, errors: be_empty)
-            end.to change { Ci::JobToken::GroupScopeLink.count }.by(1)
+            expect { resolver }.to change { Ci::JobToken::GroupScopeLink.count }.by(1)
+            expect(resolver).to include(ci_job_token_scope: be_present, errors: be_empty)
+
+            group_link = Ci::JobToken::GroupScopeLink.last
+
+            expect(group_link.source_project).to eq(project)
+            expect(group_link.target_group).to eq(target_group)
+            expect(group_link.added_by).to eq(current_user)
+            expect(group_link.job_token_policies).to eq(policies)
+          end
+
+          context 'when the policies provided are invalid' do
+            let(:policies) { %w[read_issue read_project] }
+
+            it 'returns an error message' do
+              response = resolver
+
+              expect(response.fetch(:errors))
+              .to include('Validation failed: Job token policies must be a valid json schema')
+            end
           end
         end
 

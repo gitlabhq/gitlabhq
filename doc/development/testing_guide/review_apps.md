@@ -8,7 +8,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 Review apps are deployed using the `start-review-app-pipeline` job which triggers a child pipeline containing a series of jobs to perform the various tasks needed to deploy a review app.
 
-![start-review-app-pipeline job](img/review-app-parent-pipeline.png)
+![start-review-app-pipeline job](img/review-app-parent-pipeline_v14_4.png)
 
 For any of the following scenarios, the `start-review-app-pipeline` job would be automatically started (only when the merge request is approved):
 

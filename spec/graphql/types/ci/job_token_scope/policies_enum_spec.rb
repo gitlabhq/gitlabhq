@@ -1,0 +1,45 @@
+# frozen_string_literal: true
+
+require 'spec_helper'
+
+RSpec.describe GitlabSchema.types['CiJobTokenScopePolicies'], feature_category: :secrets_management do
+  it 'exposes all policies' do
+    expect(described_class.values.keys).to contain_exactly(*%w[
+      ADMIN_CONTAINER_IMAGE
+      ADMIN_SECURE_FILES
+      ADMIN_TERRAFORM_STATE
+      BUILD_CREATE_CONTAINER_IMAGE
+      BUILD_DESTROY_CONTAINER_IMAGE
+      BUILD_DOWNLOAD_CODE
+      BUILD_PUSH_CODE
+      BUILD_READ_CONTAINER_IMAGE
+      CREATE_DEPLOYMENT
+      CREATE_ENVIRONMENT
+      CREATE_ON_DEMAND_DAST_SCAN
+      CREATE_PACKAGE
+      CREATE_RELEASE
+      DESTROY_CONTAINER_IMAGE
+      DESTROY_DEPLOYMENT
+      DESTROY_ENVIRONMENT
+      DESTROY_PACKAGE
+      DESTROY_RELEASE
+      READ_BUILD
+      READ_CONTAINER_IMAGE
+      READ_DEPLOYMENT
+      READ_ENVIRONMENT
+      READ_GROUP
+      READ_JOB_ARTIFACTS
+      READ_PACKAGE
+      READ_PIPELINE
+      READ_PROJECT
+      READ_RELEASE
+      READ_SECURE_FILES
+      READ_TERRAFORM_STATE
+      STOP_ENVIRONMENT
+      UPDATE_DEPLOYMENT
+      UPDATE_ENVIRONMENT
+      UPDATE_PIPELINE
+      UPDATE_RELEASE
+    ])
+  end
+end

@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Set up your self-hosted model infrastructure
 
 DETAILS:
-**Tier:** For a limited time, Ultimate. On October 17, 2024, Ultimate with [GitLab Duo Enterprise](https://about.gitlab.com/gitlab-duo/#pricing).
+**Tier:** Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
 **Offering:** Self-managed
 **Status:** Beta
 
@@ -42,7 +42,7 @@ Install one of the following GitLab-approved LLM models:
 | Mistral      | [Mistral 7B Text](https://huggingface.co/mistralai/Mistral-7B-v0.3)                     | **{check-circle}** Yes                | **{dotted-circle}** No               |**{dotted-circle}** No        |
 | Mistral      | [Mixtral 8x22B Text](https://huggingface.co/mistralai/Mixtral-8x22B-v0.1)       | **{check-circle}** Yes                | **{dotted-circle}** No               | **{dotted-circle}** No        |
 | Mistral      | [Mixtral 8x7B Text](https://huggingface.co/mistralai/Mixtral-8x7B-v0.1)        | **{check-circle}** Yes                | **{dotted-circle}** No               | **{dotted-circle}** No        |
-| Claude 3     | [Claude 3.5 Sonnet](https://www.anthropic.com/news/claude-3-5-sonnet)        | **{dotted-circle}** No                | **{check-circle}** Yes               | **{check-circle}** Yes        |
+| Claude 3     | [Claude 3.5 Sonnet](https://www.anthropic.com/news/claude-3-5-sonnet)        | **{check-circle}** Yes                | **{check-circle}** Yes               | **{check-circle}** Yes        |
 
 The following models are under evaluation, and support is limited:
 

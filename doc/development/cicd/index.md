@@ -27,7 +27,7 @@ be used for different scenarios.
 The following is a simplified diagram of the CI architecture. Some details are left out to focus on
 the main components.
 
-![CI software architecture](img/ci_architecture.png)
+![CI software architecture](img/ci_architecture_v13_0.png)
 <!-- Editable diagram available at https://app.diagrams.net/#G1LFl-KW4fgpBPzz8VIH9rsOlAH4t0xwKj -->
 
 On the left side we have the events that can trigger a pipeline based on various events (triggered by a user or automation):
@@ -230,7 +230,7 @@ See [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/16111) for the fu
 This diagram shows how the [Compute quota](../../ci/pipelines/compute_minutes.md)
 feature and its components work.
 
-![compute quota architecture](img/ci_minutes.png)
+![compute quota architecture](img/ci_minutes_v13_9.png)
 <!-- Editable diagram available at https://app.diagrams.net/?libs=general;flowchart#G1XjLPvJXbzMofrC3eKRyDEk95clV6ypOb -->
 
 Watch a walkthrough of this feature in details in the video below.

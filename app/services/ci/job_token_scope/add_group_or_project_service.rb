@@ -5,13 +5,13 @@ module Ci
     class AddGroupOrProjectService < ::BaseService
       include EditScopeValidations
 
-      def execute(target)
+      def execute(target, policies: [])
         validate_target_exists!(target)
 
         if target.is_a?(::Group)
-          ::Ci::JobTokenScope::AddGroupService.new(project, current_user).execute(target)
+          ::Ci::JobTokenScope::AddGroupService.new(project, current_user).execute(target, policies: policies)
         else
-          ::Ci::JobTokenScope::AddProjectService.new(project, current_user).execute(target)
+          ::Ci::JobTokenScope::AddProjectService.new(project, current_user).execute(target, policies: policies)
         end
 
       rescue EditScopeValidations::NotFoundError => e

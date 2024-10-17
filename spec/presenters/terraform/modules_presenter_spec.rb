@@ -9,7 +9,7 @@ RSpec.describe ::Terraform::ModulesPresenter do
   let_it_be(:package1) { create(:terraform_module_package, version: '1.0.1', project: project, name: package_name) }
   let_it_be(:package2) { create(:terraform_module_package, version: '1.0.10', project: project, name: package_name) }
 
-  let(:packages) { project.packages.terraform_module.with_name(package_name) }
+  let(:packages) { ::Packages::TerraformModule::Package.for_projects(project).with_name(package_name) }
   let(:presenter) { described_class.new(packages, module_system) }
 
   describe '#modules' do

@@ -3,13 +3,15 @@
 require 'spec_helper'
 
 RSpec.describe Ci::JobTokenScope::AddGroupOrProjectService, feature_category: :continuous_integration do
-  subject(:service_execute) { described_class.new(source_project, current_user).execute(target) }
-
   let_it_be(:source_project) { create(:project) }
   let_it_be(:target_project) { create(:project) }
   let_it_be(:target_group) { create(:group) }
   let_it_be(:current_user) { create(:user) }
+  let_it_be(:policies) { %w[read_project read_package] }
+
   let(:response_success) { ServiceResponse.success }
+
+  subject(:service_execute) { described_class.new(source_project, current_user).execute(target, policies: policies) }
 
   describe '#execute' do
     context 'when group is a target to add' do
@@ -24,7 +26,7 @@ RSpec.describe Ci::JobTokenScope::AddGroupOrProjectService, feature_category: :c
 
       it 'calls AddGroupService to add a target' do
         expect(add_group_service_double)
-          .to receive(:execute).with(target)
+          .to receive(:execute).with(target, policies: policies)
           .and_return(response_success)
 
         expect(service_execute).to eq(response_success)
@@ -34,6 +36,7 @@ RSpec.describe Ci::JobTokenScope::AddGroupOrProjectService, feature_category: :c
     context 'when project is a target to add' do
       let(:target) { target_project }
       let(:add_project_service_double) { instance_double(::Ci::JobTokenScope::AddProjectService) }
+      let(:policies) { %w[read_project] }
 
       before do
         allow(::Ci::JobTokenScope::AddProjectService).to receive(:new)
@@ -43,7 +46,7 @@ RSpec.describe Ci::JobTokenScope::AddGroupOrProjectService, feature_category: :c
 
       it 'calls AddProjectService to add a target' do
         expect(add_project_service_double)
-          .to receive(:execute).with(target)
+          .to receive(:execute).with(target, policies: policies)
           .and_return(response_success)
 
         expect(service_execute).to eq(response_success)

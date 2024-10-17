@@ -15,6 +15,9 @@ class Member < ApplicationRecord
   include UpdateHighestRole
   include RestrictedSignup
   include Gitlab::Experiment::Dsl
+  include IgnorableColumns
+
+  ignore_column :last_activity_on, remove_with: '17.8', remove_after: '2024-12-23'
 
   AVATAR_SIZE = 40
   ACCESS_REQUEST_APPROVERS_TO_BE_NOTIFIED_LIMIT = 10
@@ -306,7 +309,6 @@ class Member < ApplicationRecord
   scope :order_updated_desc, -> { order(updated_at: :desc) }
   scope :on_project_and_ancestors, ->(project) { where(source: [project] + project.ancestors) }
   scope :with_static_role, -> { where(member_role_id: nil) }
-  scope :no_activity_today, -> { where('last_activity_on < ?', Date.today) }
 
   before_validation :set_member_namespace_id, on: :create
   before_validation :generate_invite_token, on: :create, if: ->(member) { member.invite_email.present? && !member.invite_accepted_at? }

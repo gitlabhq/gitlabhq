@@ -39908,6 +39908,9 @@ msgstr ""
 msgid "PipelineEditorTutorial|If you’re using a self-managed GitLab instance, %{linkStart}make sure your instance has runners available.%{linkEnd}"
 msgstr ""
 
+msgid "PipelineEditorTutorial|Learn how to set up and use GitLab CI/CD with guided tutorials, videos, and best practices in %{linkStart}GitLab University%{linkEnd}."
+msgstr ""
+
 msgid "PipelineEditorTutorial|Learn more about %{linkStart}GitLab CI/CD concepts%{linkEnd}"
 msgstr ""
 
@@ -39936,6 +39939,9 @@ msgid "PipelineEditorTutorial|View %{linkStart}.gitlab-ci.yml syntax reference%{
 msgstr ""
 
 msgid "PipelineEditorTutorial|⚙️ Pipeline configuration reference"
+msgstr ""
+
+msgid "PipelineEditorTutorial|🎓 Learn CI/CD with GitLab University"
 msgstr ""
 
 msgid "PipelineEditorTutorial|💡 Tip: Visualize and validate your pipeline"
@@ -64392,9 +64398,6 @@ msgid "cannot be enabled because parent group has shared Runners disabled"
 msgstr ""
 
 msgid "cannot be enabled unless all domains have TLS certificates"
-msgstr ""
-
-msgid "cannot be enabled until a valid credit card is on file"
 msgstr ""
 
 msgid "cannot be enabled until identity verification is completed"

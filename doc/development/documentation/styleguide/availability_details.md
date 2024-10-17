@@ -57,21 +57,12 @@ For tier, choose one:
 Document add-ons by using the phrase `with` and the add-on.
 For example, `with GitLab Duo Pro`.
 
-As of August, 2024, all GitLab Duo features except Code Suggestions have
-forward-looking tier statements. Use these type of statements until further notice.
-
 The possibilities are:
 
 ```markdown
-**Tier:** For a limited time, Premium or Ultimate. On October 17, 2024, Premium with GitLab Duo Pro or Ultimate with [GitLab Duo Pro or Enterprise](https://about.gitlab.com/gitlab-duo/#pricing).
-**Tier:** For a limited time, Ultimate. On October 17, 2024, Ultimate with [GitLab Duo Pro or Enterprise](https://about.gitlab.com/gitlab-duo/#pricing).
-**Tier:** For a limited time, Ultimate. On October 17, 2024, Ultimate with [GitLab Duo Enterprise](https://about.gitlab.com/gitlab-duo/#pricing).
-```
-
-You might have to differentiate which add-on applies for each offering (GitLab.com, Dedicated, self-managed). If you have to differentiate, use this format:
-
-```markdown
-**Tier: GitLab.com and Self-managed:** For a limited time, Premium or Ultimate. On October 17, 2024, Premium with GitLab Duo Pro or Ultimate with [GitLab Duo Pro or Enterprise](https://about.gitlab.com/gitlab-duo/#pricing). **GitLab Dedicated:** GitLab Duo Pro or Enterprise.
+**Tier:** Premium with GitLab Duo Pro, Ultimate with GitLab Duo Pro or Enterprise
+**Tier:** Ultimate with GitLab Duo Pro or Enterprise
+**Tier:** Ultimate with GitLab Duo Enterprise
 ```
 
 NOTE:

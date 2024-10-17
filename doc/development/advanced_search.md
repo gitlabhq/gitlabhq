@@ -89,7 +89,7 @@ The `__elasticsearch__` methods would return a proxy object, for example:
 
 These proxy objects would talk to Elasticsearch server directly (see top half of the diagram).
 
-![Elasticsearch Architecture](img/elasticsearch_architecture.svg)
+![Elasticsearch Architecture](img/elasticsearch_architecture_v12_3.svg)
 
 In the planned new design, each model would have a pair of corresponding sub-classed proxy objects, in which
 model-specific logic is located. For example, `Snippet` would have `SnippetClassProxy` being a subclass

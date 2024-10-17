@@ -12,8 +12,6 @@
 .js-pipeline-container{ data: { controller_action: "#{controller.action_name}" } }
   #js-pipeline-header-vue{ data: js_pipeline_header_data(@project, @pipeline) }
 
-  = render_if_exists 'projects/pipelines/cc_validation_required_alert', pipeline: @pipeline
-
   - if pipeline_has_errors
     = render Pajamas::AlertComponent.new(title: s_('Pipelines|Unable to create pipeline'),
       variant: :danger,

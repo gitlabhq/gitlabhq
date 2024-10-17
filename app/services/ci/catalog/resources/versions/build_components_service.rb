@@ -89,7 +89,7 @@ module Ci
               name: metadata[:name],
               project: version.project,
               spec: metadata[:spec],
-              resource_type: metadata[:component_type], # https://gitlab.com/gitlab-org/gitlab/-/issues/490377
+              component_type: metadata[:component_type],
               version: version,
               catalog_resource: version.catalog_resource,
               created_at: Time.current

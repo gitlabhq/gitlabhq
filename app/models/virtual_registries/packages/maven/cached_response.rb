@@ -24,6 +24,7 @@ module VirtualRegistries
           :content_type,
           :downloads_count,
           :size,
+          :file_sha1,
           presence: true
         validates :relative_path,
           :object_storage_key,

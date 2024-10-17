@@ -10,4 +10,4 @@ level: error
 nonword: true
 scope: raw
 tokens:
-- ^\*\*Tier:\*\*.*(free|premium|ultimate|, Free|Ultimate,)
+- ^\*\*Tier:\*\*.*(free(?!-)|premium|ultimate|, Free|Ultimate,)

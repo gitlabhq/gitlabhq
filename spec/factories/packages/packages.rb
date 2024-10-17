@@ -62,7 +62,9 @@ FactoryBot.define do
       end
     end
 
-    factory :terraform_module_package do
+    # TODO: Remove with the rollout of the FF terraform_extract_terraform_package_model
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/490007
+    factory :terraform_module_package_legacy do
       sequence(:name) { |n| "module-#{n}/system" }
       version { '1.0.0' }
       package_type { :terraform_module }

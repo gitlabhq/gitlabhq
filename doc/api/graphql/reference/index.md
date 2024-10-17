@@ -2997,6 +2997,7 @@ Input type: `CiJobTokenScopeAddGroupOrProjectInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationcijobtokenscopeaddgrouporprojectclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcijobtokenscopeaddgrouporprojectjobtokenpolicies"></a>`jobTokenPolicies` **{warning-solid}** | [`[CiJobTokenScopePolicies!]`](#cijobtokenscopepolicies) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.5. |
 | <a id="mutationcijobtokenscopeaddgrouporprojectprojectpath"></a>`projectPath` | [`ID!`](#id) | Project that the CI job token scope belongs to. |
 | <a id="mutationcijobtokenscopeaddgrouporprojecttargetpath"></a>`targetPath` | [`ID!`](#id) | Group or project to be added to the CI job token scope. |
 
@@ -36905,6 +36906,48 @@ Direction of access.
 | ----- | ----------- |
 | <a id="cijobtokenscopedirectioninbound"></a>`INBOUND` | Target projects in the inbound allowlist can access the scope project through their job tokens. |
 | <a id="cijobtokenscopedirectionoutbound"></a>`OUTBOUND` | Job token scope project can access target project in the outbound allowlist. |
+
+### `CiJobTokenScopePolicies`
+
+CI_JOB_TOKEN policy.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="cijobtokenscopepoliciesadmin_container_image"></a>`ADMIN_CONTAINER_IMAGE` | Admin Container Image. |
+| <a id="cijobtokenscopepoliciesadmin_secure_files"></a>`ADMIN_SECURE_FILES` | Admin Secure Files. |
+| <a id="cijobtokenscopepoliciesadmin_terraform_state"></a>`ADMIN_TERRAFORM_STATE` | Admin Terraform State. |
+| <a id="cijobtokenscopepoliciesbuild_create_container_image"></a>`BUILD_CREATE_CONTAINER_IMAGE` | Build Create Container Image. |
+| <a id="cijobtokenscopepoliciesbuild_destroy_container_image"></a>`BUILD_DESTROY_CONTAINER_IMAGE` | Build Destroy Container Image. |
+| <a id="cijobtokenscopepoliciesbuild_download_code"></a>`BUILD_DOWNLOAD_CODE` | Build Download Code. |
+| <a id="cijobtokenscopepoliciesbuild_push_code"></a>`BUILD_PUSH_CODE` | Build Push Code. |
+| <a id="cijobtokenscopepoliciesbuild_read_container_image"></a>`BUILD_READ_CONTAINER_IMAGE` | Build Read Container Image. |
+| <a id="cijobtokenscopepoliciescreate_deployment"></a>`CREATE_DEPLOYMENT` | Create Deployment. |
+| <a id="cijobtokenscopepoliciescreate_environment"></a>`CREATE_ENVIRONMENT` | Create Environment. |
+| <a id="cijobtokenscopepoliciescreate_on_demand_dast_scan"></a>`CREATE_ON_DEMAND_DAST_SCAN` | Create On Demand Dast Scan. |
+| <a id="cijobtokenscopepoliciescreate_package"></a>`CREATE_PACKAGE` | Create Package. |
+| <a id="cijobtokenscopepoliciescreate_release"></a>`CREATE_RELEASE` | Create Release. |
+| <a id="cijobtokenscopepoliciesdestroy_container_image"></a>`DESTROY_CONTAINER_IMAGE` | Destroy Container Image. |
+| <a id="cijobtokenscopepoliciesdestroy_deployment"></a>`DESTROY_DEPLOYMENT` | Destroy Deployment. |
+| <a id="cijobtokenscopepoliciesdestroy_environment"></a>`DESTROY_ENVIRONMENT` | Destroy Environment. |
+| <a id="cijobtokenscopepoliciesdestroy_package"></a>`DESTROY_PACKAGE` | Destroy Package. |
+| <a id="cijobtokenscopepoliciesdestroy_release"></a>`DESTROY_RELEASE` | Destroy Release. |
+| <a id="cijobtokenscopepoliciesread_build"></a>`READ_BUILD` | Read Build. |
+| <a id="cijobtokenscopepoliciesread_container_image"></a>`READ_CONTAINER_IMAGE` | Read Container Image. |
+| <a id="cijobtokenscopepoliciesread_deployment"></a>`READ_DEPLOYMENT` | Read Deployment. |
+| <a id="cijobtokenscopepoliciesread_environment"></a>`READ_ENVIRONMENT` | Read Environment. |
+| <a id="cijobtokenscopepoliciesread_group"></a>`READ_GROUP` | Read Group. |
+| <a id="cijobtokenscopepoliciesread_job_artifacts"></a>`READ_JOB_ARTIFACTS` | Read Job Artifacts. |
+| <a id="cijobtokenscopepoliciesread_package"></a>`READ_PACKAGE` | Read Package. |
+| <a id="cijobtokenscopepoliciesread_pipeline"></a>`READ_PIPELINE` | Read Pipeline. |
+| <a id="cijobtokenscopepoliciesread_project"></a>`READ_PROJECT` | Read Project. |
+| <a id="cijobtokenscopepoliciesread_release"></a>`READ_RELEASE` | Read Release. |
+| <a id="cijobtokenscopepoliciesread_secure_files"></a>`READ_SECURE_FILES` | Read Secure Files. |
+| <a id="cijobtokenscopepoliciesread_terraform_state"></a>`READ_TERRAFORM_STATE` | Read Terraform State. |
+| <a id="cijobtokenscopepoliciesstop_environment"></a>`STOP_ENVIRONMENT` | Stop Environment. |
+| <a id="cijobtokenscopepoliciesupdate_deployment"></a>`UPDATE_DEPLOYMENT` | Update Deployment. |
+| <a id="cijobtokenscopepoliciesupdate_environment"></a>`UPDATE_ENVIRONMENT` | Update Environment. |
+| <a id="cijobtokenscopepoliciesupdate_pipeline"></a>`UPDATE_PIPELINE` | Update Pipeline. |
+| <a id="cijobtokenscopepoliciesupdate_release"></a>`UPDATE_RELEASE` | Update Release. |
 
 ### `CiPipelineCreationStatus`
 

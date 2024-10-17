@@ -85,13 +85,13 @@ For example, let's debug the "Group Members" page. In the left corner of the
 performance bar, **Database queries** shows the total number of database queries
 and the number of executed cached queries:
 
-![Performance Bar Database Queries](img/performance_bar_members_page.png)
+![Performance Bar Database Queries](img/performance_bar_members_page_v13_6.png)
 
 The page included 55 cached queries. Selecting the number displays a modal window
 with more details about queries. Cached queries are marked with the `cached` label
 below the query. You can see multiple duplicate cached queries in this modal window:
 
-![Performance Bar Cached Queries Modal](img/performance_bar_cached_queries.png)
+![Performance Bar Cached Queries Modal](img/performance_bar_cached_queries_v13_6.png)
 
 Select the ellipsis (**{ellipsis_h}**) to expand the actual stack trace:
 
@@ -137,7 +137,7 @@ move the repeated line of code outside of the loop, passing the result to each r
 After [fixing the cached query](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44626/diffs#27c2761d66e496495be07d0925697f7e62b5bd14), the performance bar now shows only
 6 cached queries:
 
-![Performance Bar Fixed Cached Queries](img/performance_bar_fixed_cached_queries.png)
+![Performance Bar Fixed Cached Queries](img/performance_bar_fixed_cached_queries_v13_6.png)
 
 ## How to measure the impact of the change
 

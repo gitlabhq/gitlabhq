@@ -21,7 +21,7 @@ Do not include the deprecation announcement in the merge request that introduces
 Use a separate MR to create a deprecation entry. For steps to create a deprecation entry, see
 [Update the deprecations doc](https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#update-the-deprecations-doc).
 
-![Deprecation, End of Support, Removal process](img/deprecation_removal_process.png)
+![Deprecation, End of Support, Removal process](img/deprecation_removal_process_v15_1.png)
 
 ## How are Community Contributions to a deprecated feature handled?
 

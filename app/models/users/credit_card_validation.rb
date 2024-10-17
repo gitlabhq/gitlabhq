@@ -4,7 +4,6 @@ module Users
   class CreditCardValidation < ApplicationRecord
     include IgnorableColumns
 
-    RELEASE_DAY = Date.new(2021, 5, 17)
     DAILY_VERIFICATION_LIMIT = 5
 
     self.table_name = 'user_credit_card_validations'

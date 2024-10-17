@@ -24,6 +24,31 @@ RSpec.describe Packages::Conan::SearchService, feature_category: :package_regist
       end
     end
 
+    context 'with query ending with /*' do
+      let(:query) { "#{conan_package.name}/*" }
+
+      it 'make a correct search without appending like operator' do
+        result = subject.execute
+
+        expect(result.status).to eq :success
+        expect(result.payload).to eq(results: [conan_package.conan_recipe])
+      end
+    end
+
+    context 'with query including username and version as *' do
+      let(:query) do
+        "#{conan_package.name}/*@#{conan_package.conan_metadatum.package_username}/" \
+          "#{conan_package.conan_metadatum.package_channel}"
+      end
+
+      it 'processes the query correctly' do
+        result = subject.execute
+
+        expect(result.status).to eq :success
+        expect(result.payload).to eq(results: [conan_package.conan_recipe])
+      end
+    end
+
     context 'with only wildcard' do
       let(:query) { '*' }
 

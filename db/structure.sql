@@ -8142,11 +8142,12 @@ CREATE TABLE catalog_resource_components (
     version_id bigint NOT NULL,
     project_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
-    resource_type smallint DEFAULT 1 NOT NULL,
     name text NOT NULL,
     spec jsonb DEFAULT '{}'::jsonb NOT NULL,
     last_30_day_usage_count integer DEFAULT 0 NOT NULL,
     last_30_day_usage_count_updated_at timestamp with time zone DEFAULT '1970-01-01 00:00:00+00'::timestamp with time zone NOT NULL,
+    component_type smallint DEFAULT 1,
+    CONSTRAINT check_47c5537132 CHECK ((component_type IS NOT NULL)),
     CONSTRAINT check_ddca729980 CHECK ((char_length(name) <= 255))
 );
 
@@ -20298,6 +20299,8 @@ CREATE TABLE virtual_registries_packages_maven_cached_responses (
     content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
     status smallint DEFAULT 0 NOT NULL,
     file_final_path text,
+    file_md5 bytea,
+    file_sha1 bytea NOT NULL,
     CONSTRAINT check_28c64d513d CHECK ((char_length(object_storage_key) <= 255)),
     CONSTRAINT check_30b7e853d9 CHECK ((char_length(upstream_etag) <= 255)),
     CONSTRAINT check_3f121b03fd CHECK ((char_length(file_final_path) <= 1024)),

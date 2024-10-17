@@ -49,7 +49,7 @@ export default {
   <div>
     <h3 class="gl-mb-5 gl-mt-0 gl-text-lg">{{ $options.i18n.title }}</h3>
     <p class="gl-mb-3">{{ $options.i18n.firstParagraph }}</p>
-    <ul>
+    <ul class="gl-mb-0">
       <li>
         <gl-sprintf :message="$options.i18n.browseExamples">
           <template #link="{ content }">

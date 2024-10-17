@@ -11,8 +11,6 @@
   = render_if_exists "layouts/tanuki_bot_chat"
 
   .content-wrapper{ class: "#{@content_wrapper_class}" }
-    = dispensable_render_if_exists 'layouts/header/verification_reminder'
-
     -# Broadcast messages
     .broadcast-wrapper
       = dispensable_render_if_exists "shared/token_expiration_banner"

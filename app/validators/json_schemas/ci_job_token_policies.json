@@ -29,6 +29,7 @@
       "read_environment",
       "read_group",
       "read_job_artifacts",
+      "read_package",
       "read_pipeline",
       "read_project",
       "read_release",

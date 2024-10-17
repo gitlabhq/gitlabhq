@@ -6,6 +6,7 @@ module Packages
       include ActiveRecord::Sanitization::ClassMethods
 
       WILDCARD = '*'
+      SLASH = '/'
 
       def execute
         ServiceResponse.success(payload: { results: search_results })
@@ -35,7 +36,7 @@ module Packages
       end
 
       def build_query
-        return "#{sanitized_query}%" if params[:query].end_with?(WILDCARD)
+        return "#{sanitized_query}%" if params[:query].end_with?(WILDCARD) && !sanitized_query.end_with?(SLASH)
 
         sanitized_query
       end

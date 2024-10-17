@@ -564,7 +564,7 @@ ruby heapviz.rb heap.json
 
 Fragmented Ruby heap snapshot could look like this:
 
-![Ruby heap fragmentation](img/memory_ruby_heap_fragmentation.png)
+![Ruby heap fragmentation](img/memory_ruby_heap_fragmentation_v12_3.png)
 
 Memory fragmentation could be reduced by tuning GC parameters [as described in this post](https://www.speedshop.co/2017/12/04/malloc-doubles-ruby-memory.html). This should be considered as a tradeoff, as it may affect overall performance of memory allocation and GC cycles.
 

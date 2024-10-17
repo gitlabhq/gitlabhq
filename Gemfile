@@ -593,7 +593,7 @@ group :test do
   # Moved in `test` because https://gitlab.com/gitlab-org/gitlab/-/issues/217527
   gem 'derailed_benchmarks', require: false # rubocop:todo Gemfile/MissingFeatureCategory
 
-  gem 'gitlab_quality-test_tooling', '~> 1.39.0', require: false, feature_category: :tooling
+  gem 'gitlab_quality-test_tooling', '~> 2.0.0', require: false, feature_category: :tooling
 end
 
 gem 'octokit', '~> 9.0', feature_category: :importers
@@ -630,7 +630,7 @@ gem 'ssh_data', '~> 1.3' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'spamcheck', '~> 1.3.0' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # Gitaly GRPC protocol definitions
-gem 'gitaly', '~> 17.4.0.pre.rc1', feature_category: :gitaly
+gem 'gitaly', '~> 17.5.0.pre.rc1', feature_category: :gitaly
 
 # KAS GRPC protocol definitions
 gem 'gitlab-kas-grpc', '~> 17.4.0.pre.rc1', feature_category: :deployment_management

@@ -67,6 +67,7 @@ export const CI_HELP_LINK = 'CI_HELP_LINK';
 export const CI_NEEDS_LINK = 'CI_NEEDS_LINK';
 export const CI_RUNNERS_LINK = 'CI_RUNNERS_LINK';
 export const CI_YAML_LINK = 'CI_YAML_LINK';
+export const GITLAB_UNIVERSITY_LINK = 'GITLAB_UNIVERSITY_LINK';
 
 export const pipelineEditorTrackingOptions = {
   label: 'pipeline_editor',
@@ -81,6 +82,7 @@ export const pipelineEditorTrackingOptions = {
       [CI_NEEDS_LINK]: 'visit_help_drawer_link_needs',
       [CI_RUNNERS_LINK]: 'visit_help_drawer_link_runners',
       [CI_YAML_LINK]: 'visit_help_drawer_link_yaml',
+      [GITLAB_UNIVERSITY_LINK]: 'visit_help_drawer_link_gitlab_university',
     },
     openHelpDrawer: 'open_help_drawer',
     resimulatePipeline: 'resimulate_pipeline',

@@ -23,7 +23,7 @@ module RuboCop
       #   describe 'some test' do
       #     before do
       #       Runtime::Feature.enable(:flag)
-      class FeatureFlags < RuboCop::Cop::Cop
+      class FeatureFlags < RuboCop::Cop::Base
         APPLY_MESSAGE = "Apply the `feature_flag: { name: :flag }` metadata to the test to use `%{feature}` in " \
           "end-to-end tests."
         BLOCK_MESSAGE = "Feature flags must specify a name. Use a block with `feature_flag: { name: :flag }` instead."

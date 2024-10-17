@@ -859,16 +859,6 @@ RSpec.describe Member, feature_category: :groups_and_projects do
         expect(group.members.excluding_users(active_group_member.user_id)).not_to include active_group_member
       end
     end
-
-    describe '.no_activity_today' do
-      let_it_be(:active_group_member) { create(:group_member, group: group) }
-      let_it_be(:inactive_group_member) { create(:group_member, group: group, last_activity_on: 1.month.ago) }
-
-      it 'returns members with no activity today' do
-        expect(group.members.no_activity_today).to include inactive_group_member
-        expect(group.members.no_activity_today).not_to include active_group_member
-      end
-    end
   end
 
   describe 'Delegate methods' do

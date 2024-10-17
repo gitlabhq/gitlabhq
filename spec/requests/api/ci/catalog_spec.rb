@@ -96,7 +96,7 @@ RSpec.describe API::Ci::Catalog, feature_category: :pipeline_composition do
             { 'inputs' => { 'world' => { 'default' => 'abc' } } }
           ]
         )
-        expect(components.map(&:resource_type)).to all(eq('template'))
+        expect(components.map(&:component_type)).to all(eq('template'))
       end
 
       context 'when the release was already published' do

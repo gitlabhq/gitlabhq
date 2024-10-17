@@ -10,6 +10,7 @@ classes:
 - Packages::MlModel::Package
 - Packages::Package
 - Packages::Pypi::Package
+- Packages::TerraformModule::Package
 - Packages::Rpm::Package
 - Packages::Rubygems::Package
 feature_categories:

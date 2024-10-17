@@ -2,8 +2,6 @@
 SidekiqLoadBalancing/WorkerDataConsistency:
   Exclude:
     - 'app/workers/admin_email_worker.rb'
-    - 'app/workers/analytics/usage_trends/count_job_trigger_worker.rb'
-    - 'app/workers/analytics/usage_trends/counter_job_worker.rb'
     - 'app/workers/approve_blocked_pending_approval_users_worker.rb'
     - 'app/workers/authorized_keys_worker.rb'
     - 'app/workers/authorized_project_update/periodic_recalculate_worker.rb'
@@ -286,8 +284,6 @@ SidekiqLoadBalancing/WorkerDataConsistency:
     - 'ee/app/workers/analytics/cycle_analytics/consistency_worker.rb'
     - 'ee/app/workers/analytics/cycle_analytics/incremental_worker.rb'
     - 'ee/app/workers/analytics/cycle_analytics/reaggregation_worker.rb'
-    - 'ee/app/workers/analytics/devops_adoption/create_all_snapshots_worker.rb'
-    - 'ee/app/workers/analytics/devops_adoption/create_snapshot_worker.rb'
     - 'ee/app/workers/app_sec/dast/profile_schedule_worker.rb'
     - 'ee/app/workers/app_sec/dast/scanner_profiles_builds/consistency_worker.rb'
     - 'ee/app/workers/app_sec/dast/scans/consistency_worker.rb'

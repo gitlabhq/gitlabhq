@@ -36,10 +36,6 @@ export default {
       type: Boolean,
       required: true,
     },
-    isCreditCardValidationRequired: {
-      type: Boolean,
-      required: false,
-    },
     updatePath: {
       type: String,
       required: true,

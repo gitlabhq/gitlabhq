@@ -420,7 +420,7 @@ whereas the `message` may repeat the location.
 As a visual example, this screenshot highlights where these fields are used when viewing a
 vulnerability as part of a pipeline view.
 
-![Example Vulnerability](img/example_vuln.png)
+![Example Vulnerability](img/example_vuln_v13_0.png)
 
 For instance, a `message` for a vulnerability
 reported by Dependency Scanning gives information on the vulnerable dependency,

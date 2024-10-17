@@ -13,7 +13,6 @@ export default (containerId = 'toggle-shared-runners-form') => {
     isDisabledAndUnoverridable,
     isEnabled,
     updatePath,
-    isCreditCardValidationRequired,
     identityVerificationPath,
 
     // optional
@@ -37,7 +36,6 @@ export default (containerId = 'toggle-shared-runners-form') => {
         props: {
           isDisabledAndUnoverridable: parseBoolean(isDisabledAndUnoverridable),
           isEnabled: parseBoolean(isEnabled),
-          isCreditCardValidationRequired: parseBoolean(isCreditCardValidationRequired),
           updatePath,
 
           groupName,

@@ -60,7 +60,7 @@ in the catalog.
      ([example](https://gitlab.com/components/secret-detection/-/blob/646d0fcbbf3c2a3e4b576f1884543c874041c633/.gitlab-ci.yml#L11-23)).
    - Contains a `release` job to publish newly released tags to the catalog
      ([example](https://gitlab.com/components/secret-detection/-/blob/646d0fcbbf3c2a3e4b576f1884543c874041c633/.gitlab-ci.yml#L50-58)).
-1. For official component projects, upload the [official avatar image](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/cicd/img/avatar_component_project.png) to the component project.
+1. For official component projects, upload the [official avatar image](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/cicd/img/avatar_component_project_v16_8.png) to the component project.
 
 ### Best practices for official components
 

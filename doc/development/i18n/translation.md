@@ -30,7 +30,7 @@ GitLab is being translated into many languages. To select a language to contribu
 
 The online translation editor is the easiest way to contribute translations.
 
-![Crowdin Editor](img/crowdin-editor.png)
+![Crowdin Editor](img/crowdin-editor_v10_1.png)
 
 - Strings for translation are listed in the left panel.
 - Translations are entered into the central panel. Multiple translations are required for strings

@@ -1304,7 +1304,7 @@ RSpec.describe API::VirtualRegistries::Packages::Maven, :aggregate_failures, fea
     context 'with a valid user' do
       let(:headers) { { 'Private-Token' => personal_access_token.token } }
 
-      context 'when the handle request service returns download_file' do
+      context 'with successul handle request service responses' do
         let_it_be(:cached_response) do
           create(
             :virtual_registries_packages_maven_cached_response,
@@ -1320,23 +1320,39 @@ RSpec.describe API::VirtualRegistries::Packages::Maven, :aggregate_failures, fea
           allow(::VirtualRegistries::Packages::Maven::HandleFileRequestService).to receive(:new).and_call_original
         end
 
-        it 'returns the workhorse send_url response' do
-          request
+        context 'when the handle request service returns download_file' do
+          it 'returns the workhorse send_url response' do
+            request
 
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response.media_type).to eq(cached_response.content_type)
-          # this is a direct download from the file system, workhorse is not involved
-          expect(response.headers[Gitlab::Workhorse::SEND_DATA_HEADER]).to eq(nil)
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response.media_type).to eq(cached_response.content_type)
+            # this is a direct download from the file system, workhorse is not involved
+            expect(response.headers[Gitlab::Workhorse::SEND_DATA_HEADER]).to eq(nil)
+          end
+        end
+
+        context 'when the handle request service returns download_digest' do
+          let(:path) { "#{super()}.sha1" }
+
+          it 'returns the requested digest' do
+            request
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response.media_type).to eq('text/plain')
+            expect(response.body).to eq(cached_response.file_sha1)
+          end
         end
       end
 
       context 'with service response errors' do
         where(:reason, :expected_status) do
-          :path_not_present            | :bad_request
-          :unauthorized                | :unauthorized
-          :no_upstreams                | :bad_request
-          :file_not_found_on_upstreams | :not_found
-          :upstream_not_available      | :bad_request
+          :path_not_present                     | :bad_request
+          :unauthorized                         | :unauthorized
+          :no_upstreams                         | :bad_request
+          :file_not_found_on_upstreams          | :not_found
+          :digest_not_found_in_cached_responses | :not_found
+          :upstream_not_available               | :bad_request
+          :fips_unsupported_md5                 | :bad_request
         end
 
         with_them do
@@ -1413,7 +1429,7 @@ RSpec.describe API::VirtualRegistries::Packages::Maven, :aggregate_failures, fea
         api(url),
         file_key: :file,
         headers: headers,
-        params: { file: file_upload },
+        params: { file: file_upload, 'file.md5' => 'md5', 'file.sha1' => 'sha1' },
         send_rewritten_field: true
       )
     end
@@ -1428,7 +1444,9 @@ RSpec.describe API::VirtualRegistries::Packages::Maven, :aggregate_failures, fea
           downloads_count: 1,
           upstream_etag: nil,
           upstream_checked_at: Time.zone.now,
-          downloaded_at: Time.zone.now
+          downloaded_at: Time.zone.now,
+          file_sha1: kind_of(String),
+          file_md5: kind_of(String)
         )
       end
     end

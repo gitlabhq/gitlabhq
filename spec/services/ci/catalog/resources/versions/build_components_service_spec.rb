@@ -86,7 +86,7 @@ RSpec.describe Ci::Catalog::Resources::Versions::BuildComponentsService, feature
         response = execute
 
         expect(response).to be_error
-        expect(response.message).to include("'invalid' is not a valid resource_type")
+        expect(response.message).to include("'invalid' is not a valid component_type")
       end
     end
   end

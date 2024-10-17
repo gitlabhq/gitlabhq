@@ -69,7 +69,7 @@ Determine where the test should be placed by
 determine which feature the test belongs to, and then place it in a subdirectory
 under the stage.
 
-![DevOps lifecycle by stages](img/gl-devops-lifecycle-by-stage-numbers_V12_10.png)
+![DevOps lifecycle by stages](img/gl-devops-lifecycle-by-stage_v12_10.png)
 
 If the test is Enterprise Edition only, the test is created in the `features/ee`
 directory, but follow the same DevOps lifecycle format.

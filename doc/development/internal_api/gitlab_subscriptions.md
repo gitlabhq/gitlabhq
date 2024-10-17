@@ -217,6 +217,108 @@ Example response:
 }
 ```
 
+#### Create a subscription
+
+Use a POST command to create a subscription.
+
+```plaintext
+POST /internal/gitlab_subscriptions/namespaces/:id/gitlab_subscription
+```
+
+| Attribute   | Type    | Required | Description |
+|:------------|:--------|:---------|:------------|
+| `start_date` | date   | yes      | Start date of subscription |
+| `end_date`  | date    | no       | End date of subscription |
+| `plan_code` | string  | no       | Subscription tier code |
+| `seats`     | integer | no       | Number of seats in subscription |
+| `max_seats_used` | integer | no  | Highest number of billable users in the current subscription term |
+| `auto_renew` | boolean | no      | Whether subscription auto-renews on end date |
+| `trial`     | boolean | no       | Whether subscription is a trial |
+| `trial_starts_on` | date | no    | Start date of trial |
+| `trial_ends_on` | date | no      | End date of trial |
+
+Example request:
+
+```shell
+curl --request POST --header "X-CUSTOMERS-DOT-INTERNAL-TOKEN: <json-web-token>" "https://gitlab.com/api/v4/internal/gitlab_subscriptions/namespaces/1234/gitlab_subscription?start_date="2020-07-15"&plan="premium"&seats=10"
+```
+
+Example response:
+
+```json
+{
+  "plan": {
+    "code":"premium",
+    "name":"premium",
+    "trial":false,
+    "auto_renew":null,
+    "upgradable":false
+  },
+  "usage": {
+    "seats_in_subscription":10,
+    "seats_in_use":1,
+    "max_seats_used":0,
+    "seats_owed":0
+  },
+  "billing": {
+    "subscription_start_date":"2020-07-15",
+    "subscription_end_date":null,
+    "trial_ends_on":null
+  }
+}
+```
+
+#### Update a subscription
+
+Use a PUT command to update an existing subscription.
+
+```plaintext
+PUT /internal/gitlab_subscriptions/namespaces/:id/gitlab_subscription
+```
+
+| Attribute   | Type    | Required | Description |
+|:------------|:--------|:---------|:------------|
+| `start_date` | date   | no       | Start date of subscription |
+| `end_date`  | date    | no       | End date of subscription |
+| `plan_code` | string  | no       | Subscription tier code |
+| `seats`     | integer | no       | Number of seats in subscription |
+| `max_seats_used` | integer | no  | Highest number of billable users in the current subscription term |
+| `auto_renew` | boolean | no      | Whether subscription auto-renews on end date |
+| `trial`     | boolean | no       | Whether subscription is a trial |
+| `trial_starts_on` | date | no    | Start date of trial. Required if trial is true. |
+| `trial_ends_on` | date | no      | End date of trial |
+
+Example request:
+
+```shell
+curl --request PUT --header "X-CUSTOMERS-DOT-INTERNAL-TOKEN: <json-web-token>" "https://gitlab.com/api/v4/internal/gitlab_subscriptions/namespaces/1234/gitlab_subscription?max_seats_used=0"
+```
+
+Example response:
+
+```json
+{
+  "plan": {
+    "code":"premium",
+    "name":"premium",
+    "trial":false,
+    "auto_renew":null,
+    "upgradable":false
+  },
+  "usage": {
+    "seats_in_subscription":80,
+    "seats_in_use":82,
+    "max_seats_used":0,
+    "seats_owed":2
+  },
+  "billing": {
+    "subscription_start_date":"2020-07-15",
+    "subscription_end_date":"2021-07-15",
+    "trial_ends_on":null
+  }
+}
+```
+
 ### Upcoming Reconciliations
 
 The `upcoming_reconciliations` endpoint is used by [CustomersDot](https://gitlab.com/gitlab-org/customers-gitlab-com) (`customers.gitlab.com`)

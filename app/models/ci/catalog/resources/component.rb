@@ -6,6 +6,9 @@ module Ci
       # This class represents a CI/CD Catalog resource component.
       # The data will be used as metadata of a component.
       class Component < ::ApplicationRecord
+        include IgnorableColumns
+        ignore_column :resource_type, remove_with: '17.8', remove_after: '2024-11-18'
+
         self.table_name = 'catalog_resource_components'
 
         belongs_to :project, inverse_of: :ci_components
@@ -17,7 +20,7 @@ module Ci
         # an error about the save callback that is auto generated for this association.
         include BulkInsertSafe
 
-        enum resource_type: { template: 1 }
+        enum component_type: { template: 1 }
 
         validates :spec, json_schema: { filename: 'catalog_resource_component_spec' }
         validates :version, :catalog_resource, :project, :name, presence: true

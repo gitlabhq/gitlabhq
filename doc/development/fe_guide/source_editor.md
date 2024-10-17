@@ -87,7 +87,7 @@ with additional functions on the instance level:
    property on the HTML element that should contain the editor. When bootstrapping,
    Source Editor shows the loader automatically.
 
-   ![Source Editor: loading state](img/editor_lite_loading.png)
+   ![Source Editor: loading state](img/editor_lite_loading_v13_6.png)
 
 1. Update syntax highlighting if the filename changes.
 
@@ -240,7 +240,7 @@ theoretical button has been clicked.
 
 This script would result in an alert containing the editor's content when `someButton` is clicked.
 
-![Source Editor new extension's result](img/editor_lite_create_ext.png)
+![Source Editor new extension's result](img/editor_lite_create_ext_v13_6.png)
 
 ### Tips
 

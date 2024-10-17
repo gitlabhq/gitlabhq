@@ -157,7 +157,7 @@ module Gitlab
       def package_url(package, **options)
         project = package.project
 
-        if package.infrastructure_package?
+        if package.terraform_module?
           return instance.project_infrastructure_registry_url(project, package,
 **options)
         end

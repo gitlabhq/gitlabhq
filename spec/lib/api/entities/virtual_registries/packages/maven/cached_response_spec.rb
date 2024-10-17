@@ -9,6 +9,7 @@ RSpec.describe API::Entities::VirtualRegistries::Packages::Maven::CachedResponse
 
   it do
     is_expected.to include(:cached_response_id, :group_id, :upstream_id, :upstream_checked_at, :created_at, :updated_at,
-      :file, :size, :downloaded_at, :downloads_count, :relative_path, :upstream_etag, :content_type)
+      :file, :file_md5, :file_sha1, :size, :downloaded_at, :downloads_count, :relative_path, :upstream_etag,
+      :content_type)
   end
 end

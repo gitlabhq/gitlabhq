@@ -143,7 +143,7 @@ The Jaeger search UI returns a query for the `Correlation-ID` of the current req
 This search should return a single trace result. Selecting this result shows the detail of the
 trace in a hierarchical time-line.
 
-![Jaeger Search UI](img/distributed_tracing_jaeger_ui.png)
+![Jaeger Search UI](img/distributed_tracing_jaeger_ui_v11_9.png)
 
 ## Using Jaeger without the GitLab Developer Kit
 
