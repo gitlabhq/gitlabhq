@@ -229,7 +229,7 @@ including a large number of false positives.
 
 To search for other types of secrets in your repositories, you can [customize analyzer rulesets](#customize-analyzer-rulesets).
 
-To propose a new detection rule for all users of pipeline secret detection, create a merge request against the [file containing the default rules](https://gitlab.com/gitlab-org/security-products/analyzers/secrets/-/blob/master/gitleaks.toml).
+To propose a new detection rule for all users of pipeline secret detection, [see our single source of truth for our rules](https://gitlab.com/gitlab-org/security-products/secret-detection/secret-detection-rules/-/blob/main/README.md) and follow the guidance to create a merge request.
 
 If you operate a cloud or SaaS product and you're interested in partnering with GitLab to better protect your users, learn more about our [partner program for leaked credential notifications](../automatic_response.md#partner-program-for-leaked-credential-notifications).
 

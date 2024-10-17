@@ -82,12 +82,12 @@ module Types
       alpha: { milestone: '15.6' },
       resolver: Resolvers::IssuesResolver,
       description: 'Find issues visible to the current user. ' \
-                   'At least one filter must be provided.'
+        'At least one filter must be provided.'
     field :jobs,
       ::Types::Ci::JobType.connection_type,
       null: true,
       description: 'All jobs on this GitLab instance. ' \
-                   'Returns an empty result for users without administrator access.',
+        'Returns an empty result for users without administrator access.',
       resolver: ::Resolvers::Ci::AllJobsResolver
     field :merge_request, Types::MergeRequestType,
       null: true,
@@ -155,7 +155,7 @@ module Types
       null: true,
       resolver: Resolvers::Ci::RunnersResolver,
       description: "Get all runners in the GitLab instance (project and shared). " \
-                   "Access is restricted to users with administrator access."
+        "Access is restricted to users with administrator access."
     field :snippets,
       Types::SnippetType.connection_type,
       null: true,

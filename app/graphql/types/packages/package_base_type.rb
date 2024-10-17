@@ -28,7 +28,7 @@ module Types
         alpha: { milestone: '17.0' },
         description:
         'Whether any matching package protection rule exists for this package. ' \
-        'Available only when feature flag `packages_protected_packages` is enabled.'
+          'Available only when feature flag `packages_protected_packages` is enabled.'
       field :status, Types::Packages::PackageStatusEnum, null: false, description: 'Package status.'
       field :status_message, GraphQL::Types::String, null: true, description: 'Status message.'
       field :tags, Types::Packages::PackageTagType.connection_type, null: true, description: 'Package tags.'

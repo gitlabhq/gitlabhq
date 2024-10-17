@@ -10,8 +10,10 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-Publish PyPI packages in your project's package registry. Then install the
-packages whenever you need to use them as a dependency.
+The Python Package Index (PyPI) is the official third-party software repository for Python.
+Use the GitLab PyPI package registry to publish and share Python packages in your GitLab projects,
+groups, and organizations. This integration enables you to manage your Python dependencies alongside
+your code, providing a seamless workflow for Python development within GitLab.
 
 The package registry works with:
 
@@ -122,7 +124,7 @@ https://gitlab.example.com/api/v4/groups/<group_id>/-/packages/pypi
 Prerequisites:
 
 - You must [authenticate with the package registry](#authenticate-with-the-package-registry).
-- Your [version string must be valid](#ensure-your-version-string-is-valid).
+- Your [version string must be valid](#use-valid-version-strings).
 - The maximum allowed package size is 5 GB.
 - The maximum length of the `description` field is 4000 characters. Longer `description` strings are truncated.
 - You can't upload the same version of a package multiple times. If you try,
@@ -132,28 +134,6 @@ Prerequisites:
   at the group-level registry (see [Install from the group level](#install-from-the-group-level)).
 
 You can then [publish a package by using twine](#publish-a-pypi-package-by-using-twine).
-
-### Ensure your version string is valid
-
-If your version string (for example, `0.0.1`) isn't valid, it gets rejected.
-GitLab uses the following regex to validate the version string.
-
-```ruby
-\A(?:
-    v?
-    (?:([0-9]+)!)?                                                 (?# epoch)
-    ([0-9]+(?:\.[0-9]+)*)                                          (?# release segment)
-    ([-_\.]?((a|b|c|rc|alpha|beta|pre|preview))[-_\.]?([0-9]+)?)?  (?# pre-release)
-    ((?:-([0-9]+))|(?:[-_\.]?(post|rev|r)[-_\.]?([0-9]+)?))?       (?# post release)
-    ([-_\.]?(dev)[-_\.]?([0-9]+)?)?                                (?# dev release)
-    (?:\+([a-z0-9]+(?:[-_\.][a-z0-9]+)*))?                         (?# local version)
-)\z}xi
-```
-
-You can experiment with the regex and try your version strings by using this
-[regular expression editor](https://rubular.com/r/FKM6d07ouoDaFV).
-
-For more details about the regex, review this [documentation](https://www.python.org/dev/peps/pep-0440/#appendix-b-parsing-version-strings-with-regular-expressions).
 
 ### Publish a PyPI package by using twine
 
@@ -227,13 +207,7 @@ pip install --index-url https://<personal_access_token_name>:<personal_access_to
 - `<project_id>` is either the project's [URL-encoded](../../../api/rest/index.md#namespaced-paths)
   path (for example, `group%2Fproject`), or the project's ID (for example `42`).
 
-In these commands, you can use `--extra-index-url` instead of `--index-url`. However, using
-`--extra-index-url` makes you vulnerable to dependency confusion attacks because it checks the PyPi
-repository for the package before it checks the custom repository. `--extra-index-url` adds the
-provided URL as an additional registry which the client checks if the package is present.
-`--index-url` tells the client to check for the package on the provided URL only.
-
-If you were following the guide and want to install the
+In these commands, you can use `--extra-index-url` instead of `--index-url`. If you were following the guide and want to install the
 `MyPyPiPackage` package, you can run:
 
 ```shell
@@ -249,6 +223,19 @@ Collecting mypypipackage
 Installing collected packages: mypypipackage
 Successfully installed mypypipackage-0.0.1
 ```
+
+#### Security implications
+
+The security implications of using `--extra-index-url` versus `--index-url` when installing PyPI
+packages are significant and worth understanding in detail. If you use:
+
+- `--index-url`: This option replaces the default [PyPI index](https://pypi.org)
+  with the specified URL. It's more secure because it only checks the specified index for packages.
+  Use this option when you want to ensure packages are only installed from a trusted, private source
+  (like the GitLab PyPI registry).
+- `--extra-index-url`: This option adds an additional index to search, alongside the default PyPI index.
+  It's less secure and more open to dependency confusion attacks, because it checks both the default PyPI
+  and the additional index for packages.
 
 ### Install from the group level
 
@@ -312,6 +299,45 @@ machine gitlab.example.com
 login __token__
 password <your_personal_token>
 ```
+
+## Versioning PyPI packages
+
+Proper versioning is important for managing PyPI packages effectively. Follow these best practices to ensure your packages are versioned correctly.
+
+### Use semantic versioning (SemVer)
+
+Adopt semantic versioning for your packages. The version number should be in the format `MAJOR.MINOR.PATCH`:
+
+- Increment `MAJOR` version for incompatible API changes.
+- Increment `MINOR` version for backwards-compatible new features.
+- Increment `PATCH` version for backwards-compatible bug fixes.
+
+For example: 1.0.0, 1.1.0, 1.1.1.
+
+#### Start with 0.1.0
+
+For new projects, start with version 0.1.0. This indicates an initial development phase where the API is not yet stable.
+
+### Use valid version strings
+
+Ensure your version string is valid according to PyPI standards. GitLab uses a specific regex to validate version strings:
+
+```ruby
+\A(?:
+    v?
+    (?:([0-9]+)!)?                                                 (?# epoch)
+    ([0-9]+(?:\.[0-9]+)*)                                          (?# release segment)
+    ([-_\.]?((a|b|c|rc|alpha|beta|pre|preview))[-_\.]?([0-9]+)?)?  (?# pre-release)
+    ((?:-([0-9]+))|(?:[-_\.]?(post|rev|r)[-_\.]?([0-9]+)?))?       (?# post release)
+    ([-_\.]?(dev)[-_\.]?([0-9]+)?)?                                (?# dev release)
+    (?:\+([a-z0-9]+(?:[-_\.][a-z0-9]+)*))?                         (?# local version)
+)\z}xi
+```
+
+You can experiment with the regex and try your version strings by using this
+[regular expression editor](https://rubular.com/r/FKM6d07ouoDaFV).
+
+For more details about the regex, see the [Python documentation](https://www.python.org/dev/peps/pep-0440/#appendix-b-parsing-version-strings-with-regular-expressions).
 
 ## Troubleshooting
 

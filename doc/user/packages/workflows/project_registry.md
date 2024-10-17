@@ -60,7 +60,7 @@ If you're using npm, create an `.npmrc` file. Add the appropriate URL for publis
 packages to your project. Finally, add a section to your `package.json` file.
 
 Follow the instructions in the
-[GitLab package registry npm documentation](../npm_registry/index.md#authentication-to-the-package-registry). After
+[GitLab package registry npm documentation](../npm_registry/index.md#authenticate-to-the-package-registry). After
 you do this, you can publish your npm package to your project using `npm publish`, as described in the
 [publishing packages](../npm_registry/index.md#publish-to-gitlab-package-registry) section.
 

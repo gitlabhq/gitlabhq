@@ -6,7 +6,7 @@ module Types
       class RuleType < ::Types::BaseObject
         graphql_name 'PackagesProtectionRule'
         description 'A packages protection rule designed to protect packages ' \
-                    'from being pushed by users with a certain access level.'
+          'from being pushed by users with a certain access level.'
 
         authorize :admin_package
 

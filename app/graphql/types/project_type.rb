@@ -136,7 +136,7 @@ module Types
     field :merge_requests_ff_only_enabled, GraphQL::Types::Boolean,
       null: true,
       description: 'Indicates if no merge commits should be created and all merges should instead be ' \
-                   'fast-forwarded, which means that merging is only allowed if the branch could be fast-forwarded.'
+        'fast-forwarded, which means that merging is only allowed if the branch could be fast-forwarded.'
 
     field :shared_runners_enabled, GraphQL::Types::Boolean,
       null: true,
@@ -167,7 +167,7 @@ module Types
     field :public_jobs, GraphQL::Types::Boolean,
       null: true,
       description: 'Indicates if there is public access to pipelines and job details of the project, ' \
-                   'including output logs and artifacts.',
+        'including output logs and artifacts.',
       method: :public_builds
 
     field :open_issues_count, GraphQL::Types::Int,
@@ -181,12 +181,12 @@ module Types
     field :allow_merge_on_skipped_pipeline, GraphQL::Types::Boolean,
       null: true,
       description: 'If `only_allow_merge_if_pipeline_succeeds` is true, indicates if merge requests of ' \
-                   'the project can also be merged with skipped jobs.'
+        'the project can also be merged with skipped jobs.'
 
     field :autoclose_referenced_issues, GraphQL::Types::Boolean,
       null: true,
       description: 'Indicates if issues referenced by merge requests and commits within the default branch ' \
-                   'are closed automatically.'
+        'are closed automatically.'
 
     field :import_status, GraphQL::Types::String,
       null: true,
@@ -207,12 +207,12 @@ module Types
     field :printing_merge_request_link_enabled, GraphQL::Types::Boolean,
       null: true,
       description: 'Indicates if a link to create or view a merge request should display after a push to Git ' \
-                   'repositories of the project from the command line.'
+        'repositories of the project from the command line.'
 
     field :remove_source_branch_after_merge, GraphQL::Types::Boolean,
       null: true,
       description: 'Indicates if `Delete source branch` option should be enabled by default for all ' \
-                   'new merge requests of the project.'
+        'new merge requests of the project.'
 
     field :request_access_enabled, GraphQL::Types::Boolean,
       null: true,
@@ -303,7 +303,7 @@ module Types
       Types::EnvironmentType.connection_type,
       null: true,
       description: 'Environments of the project. ' \
-                   'This field can only be resolved for one project in any single request.',
+        'This field can only be resolved for one project in any single request.',
       resolver: Resolvers::EnvironmentsResolver do
       extension ::Gitlab::Graphql::Limit::FieldCallCount, limit: 1
     end
@@ -319,7 +319,7 @@ module Types
       null: true,
       calls_gitaly: true,
       description: 'Environments for this project with nested folders, ' \
-                   'can only be resolved for one project in any single request',
+        'can only be resolved for one project in any single request',
       resolver: Resolvers::Environments::NestedEnvironmentsResolver do
       extension ::Gitlab::Graphql::Limit::FieldCallCount, limit: 1
     end
