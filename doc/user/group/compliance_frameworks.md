@@ -20,7 +20,7 @@ to the projects on which it is applied.
 Compliance frameworks are created on top-level groups. If a project is moved outside of its existing top-level group,
 its frameworks are removed.
 
-You can apply multiple compliance frameworks to a project.
+You can apply up to 20 compliance frameworks to each project.
 
 ## Prerequisites
 

@@ -6,7 +6,7 @@ gemspec
 
 group :test do
   gem "climate_control", "~> 1.2.0"
-  gem "gitlab-styles", "~> 13.0.0"
+  gem "gitlab-styles", "~> 13.0.1"
   gem "pry", "~> 0.14.2"
   gem "rspec", "~> 3.13"
   gem "simplecov", "~> 0.22.0"

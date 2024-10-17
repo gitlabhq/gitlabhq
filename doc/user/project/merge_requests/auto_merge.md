@@ -52,7 +52,7 @@ Prerequisites:
   see [issue 443395](https://gitlab.com/gitlab-org/gitlab/-/issues/443395).
 
 To do this when pushing from the command line, use the `merge_request.merge_when_pipeline_succeeds`
-[push option](../push_options.md).
+[push option](../../../topics/git/commit.md#push-options).
 
 To do this from the GitLab user interface:
 

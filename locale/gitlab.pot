@@ -28872,18 +28872,6 @@ msgstr ""
 msgid "Increment suggestion line start"
 msgstr ""
 
-msgid "Incubation|%{featureName} is in incubating phase"
-msgstr ""
-
-msgid "Incubation|GitLab incubates features to explore new use cases. These features are updated regularly, and support is limited."
-msgstr ""
-
-msgid "Incubation|Give feedback on this feature"
-msgstr ""
-
-msgid "Incubation|Learn more about incubating features"
-msgstr ""
-
 msgid "Indent line"
 msgstr ""
 
