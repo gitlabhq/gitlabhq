@@ -19,31 +19,15 @@ module ProtectedRefDeployKeyAccess
   end
 
   def type
-    return :deploy_key if deploy_key_id.present? || deploy_key.present?
+    return :deploy_key if deploy_key_id || deploy_key
 
     super
-  end
-
-  def humanize
-    return humanize_deploy_key if deploy_key?
-
-    super
-  end
-
-  def check_access(current_user, current_project = project)
-    super do
-      break deploy_key_access_allowed?(current_user) if deploy_key?
-
-      yield if block_given?
-    end
   end
 
   private
 
   def humanize_deploy_key
-    return deploy_key.title if deploy_key.present?
-
-    'Deploy key'
+    deploy_key&.title || 'Deploy key'
   end
 
   def deploy_key?
@@ -56,7 +40,10 @@ module ProtectedRefDeployKeyAccess
     errors.add(:deploy_key, 'is not enabled for this project')
   end
 
-  def deploy_key_access_allowed?(current_user)
+  # current_project is only available when evaluating a group-level protected
+  # branch. We only allow role based access levels at the group-level so we can
+  # ignore it here.
+  def deploy_key_access_allowed?(current_user, _current_project)
     deploy_key_owned_by?(current_user) && valid_deploy_key_status?
   end
 
@@ -65,16 +52,16 @@ module ProtectedRefDeployKeyAccess
   end
 
   def valid_deploy_key_status?
-    deploy_key.user.can?(:read_project, project) &&
+    deploy_key.user.can?(:read_project, protected_ref_project) &&
       deploy_key_owner_project_member? &&
       deploy_key_has_write_access_to_project?
   end
 
   def deploy_key_owner_project_member?
-    project.member?(deploy_key.user)
+    protected_ref_project.member?(deploy_key.user)
   end
 
   def deploy_key_has_write_access_to_project?
-    DeployKey.with_write_access_for_project(project, deploy_key: deploy_key).exists?
+    DeployKey.with_write_access_for_project(protected_ref_project, deploy_key: deploy_key).exists?
   end
 end

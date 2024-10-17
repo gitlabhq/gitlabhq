@@ -84,7 +84,7 @@ difficult, but several tools exist including:
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com
+**Offering:** GitLab.com, Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/443557) to direct transfer migrations for self-managed instances in GitLab 17.4 [with flags](../../../administration/feature_flags.md) named `importer_user_mapping` and `bulk_import_importer_user_mapping`. Disabled by default.
 
@@ -92,8 +92,14 @@ FLAG:
 The availability of this feature is controlled by feature flags.
 For more information, see the history.
 
-This method of user contributions and membership mapping is enabled for GitLab.com [direct transfer migrations](../../group/import/index.md). For the method available on
-self-managed GitLab instances, see [User contributions and membership mapping](../../group/import/direct_transfer_migrations.md#user-contributions-and-membership-mapping).
+This method of user contributions and membership mapping is available for
+[direct transfer migrations](../../group/import/index.md) on:
+
+- GitLab.com
+- GitLab self-managed when two feature flags are enabled
+
+For information on the other method available for GitLab self-managed without enabled feature flags,
+see [User contributions and membership mapping](../../group/import/direct_transfer_migrations.md#user-contributions-and-membership-mapping).
 
 With user contribution and membership mapping, you can assign imported contributions and memberships to users on the
 destination instance after import has completed. Unlike the previous method of user contribution and membership mapping,
@@ -107,9 +113,6 @@ Each user on the destination instance that is assigned a mapping can:
 - [Explicitly accept](#accept-contribution-reassignment) the assignment before any imported contributions are
   attributed to them.
 - Reject the assignment.
-
-This feature is an [experiment](../../../policy/experiment-beta-support.md). If you find a bug, open an issue in
-[epic 12378](https://gitlab.com/groups/gitlab-org/-/epics/12378).
 
 ### Requirements
 

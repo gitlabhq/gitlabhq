@@ -5,19 +5,19 @@ RSpec.shared_examples 'protected branch access' do
 
   it { is_expected.to belong_to(:protected_branch) }
 
-  describe '#project' do
+  describe '#protected_ref_project' do
     include_context 'for protected ref access'
 
-    it 'delegates project to protected_branch association' do
+    it 'delegates to protected_branch.project' do
       allow(protected_ref).to receive(:project)
 
-      described_class.new(protected_branch: protected_ref).project
+      described_class.new(protected_branch: protected_ref).protected_ref_project
 
       expect(protected_ref).to have_received(:project)
     end
 
     it 'does not error when protected_branch is nil' do
-      expect(described_class.new.project).to be_nil
+      expect(described_class.new.protected_ref_project).to be_nil
     end
   end
 

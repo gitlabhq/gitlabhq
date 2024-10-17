@@ -79,8 +79,11 @@ DETAILS:
 > - Full support for mapping inherited membership [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/458834) in GitLab 17.1.
 > - Removed from GitLab.com direct transfer migrations in GitLab 17.5 in favor of [the alternative](../../project/import/index.md#user-contribution-and-membership-mapping).
 
-This method of user contributions and membership mapping is for self-managed GitLab instances. For the method available
-on GitLab.com, see [User contribution and membership mapping](../../project/import/index.md#user-contribution-and-membership-mapping).
+This method of user contributions and membership mapping is available for
+GitLab self-managed without enabled feature flags.
+For information on the other method available for GitLab self-managed
+with enabled feature flags and for GitLab.com,
+see [User contribution and membership mapping](../../project/import/index.md#user-contribution-and-membership-mapping).
 
 Users are never created during a migration. Instead, contributions and membership of users on the source instance are
 mapped to users on the destination instance. The type of mapping of a user's membership depends on the

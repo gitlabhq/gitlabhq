@@ -12,6 +12,7 @@ import {
   PLACEHOLDER_STATUS_AWAITING_APPROVAL,
   PLACEHOLDER_STATUS_REASSIGNING,
 } from '~/import_entities/import_groups/constants';
+import importSourceUsersQuery from '../graphql/queries/import_source_users.query.graphql';
 import importSourceUserReassignMutation from '../graphql/mutations/reassign.mutation.graphql';
 import importSourceUserKeepAsPlaceholderMutation from '../graphql/mutations/keep_as_placeholder.mutation.graphql';
 import importSourceUseResendNotificationMutation from '../graphql/mutations/resend_notification.mutation.graphql';
@@ -49,7 +50,7 @@ export default {
       isLoadingMore: false,
       isValidated: false,
       search: '',
-      selectedUser: null,
+      selectedUserToReassign: null,
     };
   },
 
@@ -90,7 +91,7 @@ export default {
     },
 
     userSelectInvalid() {
-      return this.isValidated && !this.selectedUser;
+      return this.isValidated && !this.selectedUserToReassign;
     },
 
     userItems() {
@@ -98,7 +99,7 @@ export default {
     },
 
     dontReassignSelected() {
-      return !isNull(this.selectedUser) && isEmpty(this.selectedUser);
+      return !isNull(this.selectedUserToReassign) && isEmpty(this.selectedUserToReassign);
     },
 
     toggleText() {
@@ -106,15 +107,15 @@ export default {
         return s__("UserMapping|Don't reassign");
       }
 
-      if (this.selectedUser) {
-        return `@${this.selectedUser.username}`;
+      if (this.selectedUserToReassign) {
+        return `@${this.selectedUserToReassign.username}`;
       }
 
       return s__('UserMapping|Select user');
     },
 
     selectedUserValue() {
-      return this.selectedUser?.value;
+      return this.selectedUserToReassign?.value;
     },
 
     confirmText() {
@@ -131,7 +132,7 @@ export default {
 
   created() {
     if (this.statusIsAwaitingApproval || this.statusIsReassigning) {
-      this.selectedUser = this.sourceUser.reassignToUser;
+      this.selectedUserToReassign = this.sourceUser.reassignToUser;
     }
 
     this.debouncedSetSearch = debounce(this.setSearch, DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
@@ -174,14 +175,14 @@ export default {
 
     onSelect(value) {
       if (value === '') {
-        this.selectedUser = {};
+        this.selectedUserToReassign = {};
         try {
           this.$refs.userSelect.closeAndFocus();
         } catch {
           // ignore when we can't close listbox
         }
       } else {
-        this.selectedUser = this.userItems.find((user) => user.value === value);
+        this.selectedUserToReassign = this.userItems.find((user) => user.value === value);
       }
     },
 
@@ -242,23 +243,24 @@ export default {
     onConfirm() {
       this.isValidated = true;
       if (!this.userSelectInvalid) {
-        const hasSelectedUser = Boolean(this.selectedUser.id);
+        const hasSelectedUserToReassign = Boolean(this.selectedUserToReassign.id);
         this.isConfirmLoading = true;
         this.$apollo
           .mutate({
-            mutation: hasSelectedUser
+            mutation: hasSelectedUserToReassign
               ? importSourceUserReassignMutation
               : importSourceUserKeepAsPlaceholderMutation,
             variables: {
               id: this.sourceUser.id,
-              ...(hasSelectedUser ? { userId: this.selectedUser.id } : {}),
+              ...(hasSelectedUserToReassign ? { userId: this.selectedUserToReassign.id } : {}),
             },
+            refetchQueries: [hasSelectedUserToReassign ? {} : importSourceUsersQuery],
           })
           .then(({ data }) => {
             const { errors } = getFirstPropertyValue(data);
             if (errors?.length) {
               createAlert({ message: errors.join() });
-            } else if (!hasSelectedUser) {
+            } else if (!hasSelectedUserToReassign) {
               this.$emit('confirm');
             }
           })

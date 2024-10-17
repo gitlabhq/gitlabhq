@@ -480,6 +480,78 @@ tests = [
     ]
   },
 
+  {
+    explanation: 'https://gitlab.com/gitlab-org/gitlab/-/issues/466068#note_2131393513',
+    changed_file: 'ee/app/policies/ee/group_policy.rb',
+    expected: %w[
+      spec/policies/group_policy_spec.rb
+      ee/spec/policies/group_policy_spec.rb
+      ee/spec/features/groups/groups_security_credentials_spec.rb
+    ]
+  },
+
+  {
+    explanation: 'https://gitlab.com/gitlab-org/gitlab/-/issues/466068#note_2132805842',
+    changed_file: 'lib/gitlab/ci/mask_secret.rb',
+    expected: %w[
+      ee/spec/lib/gitlab/ci/google_cloud/generate_build_environment_variables_service_spec.rb
+      ee/spec/models/dast_site_profile_spec.rb
+      ee/spec/models/ee/project_spec.rb
+      spec/features/admin_variables_spec.rb
+      spec/features/group_variables_spec.rb
+      spec/features/project_group_variables_spec.rb
+      spec/features/project_variables_spec.rb
+      spec/lib/expand_variables_spec.rb
+      spec/lib/gitlab/ci/build/rules/rule/clause/exists_spec.rb
+      spec/lib/gitlab/ci/config/external/file/artifact_spec.rb
+      spec/lib/gitlab/ci/config/external/file/base_spec.rb
+      spec/lib/gitlab/ci/config/external/file/local_spec.rb
+      spec/lib/gitlab/ci/config/external/file/project_spec.rb
+      spec/lib/gitlab/ci/config/external/file/remote_spec.rb
+      spec/lib/gitlab/ci/config/external/file/template_spec.rb
+      spec/lib/gitlab/ci/config/external/mapper/matcher_spec.rb
+      spec/lib/gitlab/ci/config/interpolation/functions/expand_vars_spec.rb
+      spec/lib/gitlab/ci/mask_secret_spec.rb
+      spec/lib/gitlab/ci/variables/collection/item_spec.rb
+      spec/models/ci/build_spec.rb
+      spec/models/clusters/kubernetes_namespace_spec.rb
+      spec/models/clusters/platforms/kubernetes_spec.rb
+      spec/models/integrations/apple_app_store_spec.rb
+      spec/models/integrations/diffblue_cover_spec.rb
+      spec/models/integrations/google_play_spec.rb
+      spec/models/integrations/harbor_spec.rb
+      spec/models/project_spec.rb
+      spec/requests/api/admin/ci/variables_spec.rb
+      spec/requests/api/ci/variables_spec.rb
+      spec/requests/api/graphql/ci/group_variables_spec.rb
+      spec/requests/api/graphql/ci/inherited_ci_variables_spec.rb
+      spec/requests/api/graphql/ci/instance_variables_spec.rb
+      spec/requests/api/graphql/ci/project_variables_spec.rb
+      spec/requests/api/group_variables_spec.rb
+      spec/services/ci/change_variable_service_spec.rb
+      spec/services/ci/create_pipeline_service/creation_errors_and_warnings_spec.rb
+    ]
+  },
+
+  {
+    explanation: 'https://gitlab.com/gitlab-org/gitlab/-/issues/466068#note_2132808426',
+    changed_file: 'lib/gitlab/ci/build/rules/rule/clause/changes.rb',
+    expected: %w[
+      spec/lib/gitlab/ci/build/rules/rule/clause/changes_spec.rb
+      spec/lib/gitlab/ci/build/rules/rule_spec.rb
+      spec/lib/gitlab/ci/config/external/rules_spec.rb
+    ]
+  },
+
+  {
+    explanation: 'https://gitlab.com/gitlab-org/gitlab/-/issues/466068#note_2138440847',
+    changed_file: 'app/services/merge_requests/mergeability/check_open_status_service.rb',
+    expected: %w[
+      ee/spec/graphql/ee/types/merge_request_type_spec.rb
+      spec/services/merge_requests/mergeability/check_open_status_service_spec.rb
+    ]
+  },
+
   # Why is it commented out?
   #
   # We cannot uncomment this, as this "spec" would fail as soon as we add/remove a file in
@@ -513,6 +585,38 @@ tests = [
   #     ee/spec/features/merge_request/sidebar_spec.rb
   #     ee/spec/features/projects/navbar_spec.rb
   #     ee/spec/lib/sidebars/groups/menus/epics_menu_spec.rb
+  #   ]
+  # },
+
+  # Why is it commented out?
+  #
+  # We cannot uncomment this, as this "spec" would fail as soon as we add/remove a file in
+  # the "spec/features" folder hierarchy that would contain the word navbar/sidebar.
+  #
+  # {
+  #   explanation: 'https://gitlab.com/gitlab-org/gitlab/-/issues/466068#note_1939569462',
+  #   changed_file: 'lib/api/hooks/events.rb',
+  #   expected: %w[
+  #     ee/spec/requests/api/group_hooks_spec.rb
+  #     ee/spec/requests/api/project_hooks_spec.rb
+  #     spec/requests/api/project_hooks_spec.rb
+  #     spec/requests/api/system_hooks_spec.rb
+  #   ]
+  # }
+
+  # Why is it commented out?
+  #
+  # We cannot uncomment this, as this "spec" would fail as soon as we add/remove a file in
+  # the "spec/features" folder hierarchy that would contain the word navbar/sidebar.
+  #
+  # {
+  #   explanation: 'https://gitlab.com/gitlab-org/gitlab/-/issues/466068#note_1939569462',
+  #   changed_file: 'ee/lib/api/group_hooks.rb',
+  #   expected: %w[
+  #     ee/spec/requests/api/group_hooks_spec.rb
+  #     ee/spec/requests/api/project_hooks_spec.rb
+  #     spec/requests/api/project_hooks_spec.rb
+  #     spec/requests/api/system_hooks_spec.rb
   #   ]
   # },
 

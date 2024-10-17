@@ -222,3 +222,73 @@ mapping:
   # See https://gitlab.com/gitlab-org/gitlab/-/issues/466068#note_1988359861
   - source: '(?<prefix>ee/)?lib/sidebars/(?<rest>.+)\.rb'
     test: '%{prefix}spec/features/**/{navbar,sidebar}_spec.rb'
+
+  # See https://gitlab.com/gitlab-org/gitlab/-/issues/466068#note_2131393513
+  - source: 'ee/app/policies/ee/group_policy\.rb'
+    test: 'ee/spec/features/groups/groups_security_credentials_spec.rb'
+
+  # Any change to lib/gitlab/ci/mask_secret.rb should trigger any spec relying on masking CI secrets
+  # The list below was computed by searching for the following terms:
+  #
+  #   - `[MASKED]` in any `spec` folder
+  #   - `masked: true` in any `spec` folder
+  #
+  # See https://gitlab.com/gitlab-org/gitlab/-/issues/466068#note_2132805842
+  - source: 'lib/gitlab/ci/mask_secret\.rb'
+    test:
+      - ee/spec/lib/gitlab/ci/google_cloud/generate_build_environment_variables_service_spec.rb
+      - ee/spec/models/dast_site_profile_spec.rb
+      - ee/spec/models/ee/project_spec.rb
+      - spec/features/admin_variables_spec.rb
+      - spec/features/group_variables_spec.rb
+      - spec/features/project_group_variables_spec.rb
+      - spec/features/project_variables_spec.rb
+      - spec/lib/expand_variables_spec.rb
+      - spec/lib/gitlab/ci/build/rules/rule/clause/exists_spec.rb
+      - spec/lib/gitlab/ci/config/external/file/artifact_spec.rb
+      - spec/lib/gitlab/ci/config/external/file/base_spec.rb
+      - spec/lib/gitlab/ci/config/external/file/local_spec.rb
+      - spec/lib/gitlab/ci/config/external/file/project_spec.rb
+      - spec/lib/gitlab/ci/config/external/file/remote_spec.rb
+      - spec/lib/gitlab/ci/config/external/file/template_spec.rb
+      - spec/lib/gitlab/ci/config/external/mapper/matcher_spec.rb
+      - spec/lib/gitlab/ci/config/interpolation/functions/expand_vars_spec.rb
+      - spec/lib/gitlab/ci/mask_secret_spec.rb
+      - spec/lib/gitlab/ci/variables/collection/item_spec.rb
+      - spec/models/ci/build_spec.rb
+      - spec/models/clusters/kubernetes_namespace_spec.rb
+      - spec/models/clusters/platforms/kubernetes_spec.rb
+      - spec/models/integrations/apple_app_store_spec.rb
+      - spec/models/integrations/diffblue_cover_spec.rb
+      - spec/models/integrations/google_play_spec.rb
+      - spec/models/integrations/harbor_spec.rb
+      - spec/models/project_spec.rb
+      - spec/requests/api/admin/ci/variables_spec.rb
+      - spec/requests/api/ci/variables_spec.rb
+      - spec/requests/api/graphql/ci/group_variables_spec.rb
+      - spec/requests/api/graphql/ci/inherited_ci_variables_spec.rb
+      - spec/requests/api/graphql/ci/instance_variables_spec.rb
+      - spec/requests/api/graphql/ci/project_variables_spec.rb
+      - spec/requests/api/group_variables_spec.rb
+      - spec/services/ci/change_variable_service_spec.rb
+      - spec/services/ci/create_pipeline_service/creation_errors_and_warnings_spec.rb
+
+  # See https://gitlab.com/gitlab-org/gitlab/-/issues/466068#note_2132808426
+  - source: 'lib/gitlab/ci/build/rules/(?<rest>.+)\.rb'
+    test:
+      - spec/lib/gitlab/ci/build/rules/rule_spec.rb
+      - spec/lib/gitlab/ci/config/external/rules_spec.rb
+
+  # See https://gitlab.com/gitlab-org/gitlab/-/issues/466068#note_2138440847
+  - source: 'app/services/merge_requests/mergeability/(?<rest>.+)\.rb'
+    test: ee/spec/graphql/ee/types/merge_request_type_spec.rb
+
+  # Any change to the (ee/)lib/api/hooks folder, or any files in (ee/)lib/api/ with the `hook` substring in them
+  # should map to specs that contain the words `hook` in both {ee/,}spec/requests/api
+  #
+  # See https://gitlab.com/gitlab-org/gitlab/-/issues/466068#note_1939569462
+  - source:
+    - '(?<prefix>ee/)?lib/api/hooks/(?<rest>.+)\.rb'
+    - '(?<prefix>ee/)?lib/api/(?<rest>.+hook.+)\.rb'
+    test:
+      - '{ee/,}spec/requests/api/**/*hook*_spec.rb'
