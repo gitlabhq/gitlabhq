@@ -11,7 +11,7 @@ module QA
 
         def initialize
           @image = 'registry.gitlab.com/gitlab-org/security-products/dast/webgoat-8.0@sha256:' \
-                   'bc09fe2e0721dfaeee79364115aeedf2174cce0947b9ae5fe7c33312ee019a4e'
+            'bc09fe2e0721dfaeee79364115aeedf2174cce0947b9ae5fe7c33312ee019a4e'
           @name = 'webgoatserver'
           super
         end
@@ -20,24 +20,23 @@ module QA
           return if running?
 
           command = %W[docker run -d --rm --network #{network} --name #{name} --hostname #{host_name}]
-          command.push("-e", "WEBGOAT_PORT=#{host_network? ? server_port : DEFAULT_SERVER_PORT}")
-          command.push("-e", "WEBGOAT_SSRF_PORT=#{host_network? ? admin_port : DEFAULT_ADMIN_PORT}")
-          command.push("-p", DEFAULT_SERVER_PORT, "-p", WEBGOAT_SSRF_PORT) unless host_network?
+          command.push("-e", "WEBGOAT_PORT=#{host_network? ? server_port_host : DEFAULT_SERVER_PORT}")
+          command.push("-e", "WEBGOAT_SSRF_PORT=#{host_network? ? admin_port_host : DEFAULT_ADMIN_PORT}")
+          command.push("-p", DEFAULT_SERVER_PORT, "-p", DEFAULT_ADMIN_PORT) unless host_network?
           command.push(image)
 
           shell command.join(" ")
         end
 
         def ip_address
-          ip_address = `docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' #{name}`.strip
-          return host_name if ip_address.empty?
-
-          ip_address
+          @ip_address ||= shell("docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' #{name}")
+            .strip
+            .then { |addr| addr.empty? ? host_name : addr }
         end
 
         def public_port
           @public_port ||= if host_network?
-                             server_port
+                             server_port_host
                            elsif docker_network?
                              DEFAULT_SERVER_PORT
                            else
@@ -47,7 +46,7 @@ module QA
 
         def admin_port
           @admin_port ||= if host_network?
-                            admin_port_random
+                            admin_port_host
                           elsif docker_network?
                             DEFAULT_ADMIN_PORT
                           else
@@ -59,11 +58,11 @@ module QA
 
         attr_reader :name, :image
 
-        def server_port
+        def server_port_host
           @server_port ||= random_port
         end
 
-        def admin_port_random
+        def admin_port_host
           @admin_port_random ||= random_port
         end
 
