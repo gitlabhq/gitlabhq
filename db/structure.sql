@@ -34651,9 +34651,6 @@ ALTER TABLE ONLY status_check_responses
 ALTER TABLE ONLY merge_request_metrics
     ADD CONSTRAINT fk_56067dcb44 FOREIGN KEY (target_project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY vulnerability_feedback
-    ADD CONSTRAINT fk_563ff1912e FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE SET NULL;
-
 ALTER TABLE ONLY merge_request_diffs
     ADD CONSTRAINT fk_56ac6fc9c0 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -35031,9 +35028,6 @@ ALTER TABLE ONLY oauth_access_tokens
 
 ALTER TABLE ONLY dast_site_profiles_builds
     ADD CONSTRAINT fk_94e80df60e FOREIGN KEY (dast_site_profile_id) REFERENCES dast_site_profiles(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY vulnerability_feedback
-    ADD CONSTRAINT fk_94f7c8a81e FOREIGN KEY (comment_author_id) REFERENCES users(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY milestones
     ADD CONSTRAINT fk_95650a40d4 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
@@ -36304,9 +36298,6 @@ ALTER TABLE ONLY protected_environment_deploy_access_levels
 ALTER TABLE ONLY smartcard_identities
     ADD CONSTRAINT fk_rails_4689f889a9 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY vulnerability_feedback
-    ADD CONSTRAINT fk_rails_472f69b043 FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY user_custom_attributes
     ADD CONSTRAINT fk_rails_47b91868a8 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
@@ -36819,9 +36810,6 @@ ALTER TABLE ONLY work_item_progresses
 
 ALTER TABLE ONLY packages_conan_metadata
     ADD CONSTRAINT fk_rails_8c68cfec8b FOREIGN KEY (package_id) REFERENCES packages_packages(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY vulnerability_feedback
-    ADD CONSTRAINT fk_rails_8c77e5891a FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY import_placeholder_memberships
     ADD CONSTRAINT fk_rails_8cdeffd260 FOREIGN KEY (source_user_id) REFERENCES import_source_users(id) ON DELETE CASCADE;
@@ -37410,9 +37398,6 @@ ALTER TABLE ONLY user_callouts
 
 ALTER TABLE ONLY scan_result_policies
     ADD CONSTRAINT fk_rails_de9e5d2ce6 FOREIGN KEY (security_orchestration_policy_configuration_id) REFERENCES security_orchestration_policy_configurations(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY vulnerability_feedback
-    ADD CONSTRAINT fk_rails_debd54e456 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY service_desk_custom_email_verifications
     ADD CONSTRAINT fk_rails_debe4c4acc FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

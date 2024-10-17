@@ -73,7 +73,7 @@ Supported attributes:
 | `repository_checksum_failed`  | boolean  | No       | Limit projects where the repository checksum calculation has failed. Premium and Ultimate only. |
 | `repository_storage`          | string   | No       | Limit results to projects stored on `repository_storage`. _(administrators only)_ |
 | `search_namespaces`           | boolean  | No       | Include ancestor namespaces when matching search criteria. Default is `false`. |
-| `search`                      | string   | No       | Return list of projects matching the search criteria. |
+| `search`                      | string   | No       | Return list of projects with a `path`, `name`, or `description` matching the search criteria (case-insensitive, substring match). Multiple terms can be provided, separated by an escaped space, either `+` or `%20`, and will be ANDed together. Example: `one+two` will match substrings `one` and `two` (in any order). |
 | `simple`                      | boolean  | No       | Return only limited fields for each project. This operation is a no-op without authentication where only simple fields are returned. |
 | `sort`                        | string   | No       | Return projects sorted in `asc` or `desc` order. Default is `desc`. |
 | `starred`                     | boolean  | No       | Limit by projects starred by the current user. |
