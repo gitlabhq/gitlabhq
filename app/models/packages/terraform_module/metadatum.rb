@@ -33,7 +33,7 @@ module Packages
       private
 
       def terraform_module_package_type
-        return if package&.terraform_module?
+        return if legacy_package&.terraform_module?
 
         errors.add(:base, _('Package type must be Terraform Module'))
       end

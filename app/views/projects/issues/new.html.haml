@@ -1,10 +1,20 @@
 - add_page_specific_style 'page_bundles/merge_request'
 - add_page_specific_style 'page_bundles/labels'
-- add_to_breadcrumbs _("Issues"), project_issues_path(@project)
-- breadcrumb_title _("New")
+- add_page_specific_style 'page_bundles/issuable_list'
+- add_page_specific_style 'page_bundles/issues_list'
+- add_page_specific_style 'page_bundles/issues_show'
+- add_work_items_stylesheet
+- add_page_specific_style 'page_bundles/design_management'
 - page_title _("New Issue")
+- if Feature.disabled?(:work_items_view_preference, current_user) || !current_user&.user_preference&.use_work_items_view
+  - add_to_breadcrumbs _("Issues"), project_issues_path(@project)
+  - breadcrumb_title _("New")
 
-.page-title-holder
-  %h1.page-title.gl-text-size-h-display= _("New Issue")
+- if Feature.enabled?(:work_items_view_preference, current_user) && current_user&.user_preference&.use_work_items_view
+  #js-work-items{ data: work_items_show_data(@project, current_user) }
+- else
+  .page-title-holder
+    %h1.page-title.gl-text-size-h-display= _("New Issue")
+  = render "form"
 
-= render "form"
+

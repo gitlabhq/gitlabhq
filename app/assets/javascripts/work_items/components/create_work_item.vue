@@ -165,7 +165,14 @@ export default {
           return;
         }
         if (this.workItemTypes?.length === 1) {
-          this.selectedWorkItemTypeId = this.workItemTypes[0]?.id;
+          const workItemType = this.workItemTypes[0];
+          await setNewWorkItemCache(
+            this.fullPath,
+            workItemType?.widgetDefinitions,
+            workItemType.name,
+            workItemType.id,
+          );
+          this.selectedWorkItemTypeId = workItemType?.id;
         } else {
           this.workItemTypes.forEach(async (workItemType) => {
             await setNewWorkItemCache(

@@ -17,19 +17,51 @@ RSpec.describe Packages::TerraformModule::Metadata::CreateService, feature_categ
         expect { execute }.to change { Packages::TerraformModule::Metadatum.count }.by(1)
         expect(package.terraform_module_metadatum.fields).to eq(metadata_hash)
       end
+
+      context 'when terraform_extract_terraform_package_model is disabled' do
+        let_it_be(:package) { create(:terraform_module_package_legacy) }
+
+        before do
+          stub_feature_flags(terraform_extract_terraform_package_model: false)
+        end
+
+        it 'creates a new metadata' do
+          expect { execute }.to change { Packages::TerraformModule::Metadatum.count }.by(1)
+          expect(package.terraform_module_metadatum.fields).to eq(metadata_hash)
+        end
+      end
     end
 
     context 'with existing metadata' do
-      before do
-        create(:terraform_module_metadatum, package: package)
+      context 'when terraform_extract_terraform_package_model is enabled' do
+        before do
+          create(:terraform_module_metadatum, package: package)
+        end
+
+        it 'updates the existing metadata' do
+          expect(package.terraform_module_metadatum.fields).not_to eq(metadata_hash)
+
+          expect { execute }.not_to change { Packages::TerraformModule::Metadatum.count }
+          expect(execute).to be_success
+          expect(package.terraform_module_metadatum.fields).to eq(metadata_hash)
+        end
       end
 
-      it 'updates the existing metadata' do
-        expect(package.terraform_module_metadatum.fields).not_to eq(metadata_hash)
+      context 'when terraform_extract_terraform_package_model is disabled' do
+        let_it_be(:package) { create(:terraform_module_package_legacy) }
 
-        expect { execute }.not_to change { Packages::TerraformModule::Metadatum.count }
-        expect(execute).to be_success
-        expect(package.terraform_module_metadatum.fields).to eq(metadata_hash)
+        before do
+          create(:terraform_module_metadatum, legacy_package: package)
+          stub_feature_flags(terraform_extract_terraform_package_model: false)
+        end
+
+        it 'updates the existing metadata' do
+          expect(package.terraform_module_metadatum.fields).not_to eq(metadata_hash)
+
+          expect { execute }.not_to change { Packages::TerraformModule::Metadatum.count }
+          expect(execute).to be_success
+          expect(package.terraform_module_metadatum.fields).to eq(metadata_hash)
+        end
       end
     end
 
@@ -45,6 +77,25 @@ RSpec.describe Packages::TerraformModule::Metadata::CreateService, feature_categ
 
         expect { execute }.not_to change { Packages::TerraformModule::Metadatum.count }
         expect(execute).to be_error
+      end
+
+      context 'when terraform_extract_terraform_package_model is disabled' do
+        let_it_be(:package) { create(:terraform_module_package_legacy) }
+
+        before do
+          stub_feature_flags(terraform_extract_terraform_package_model: false)
+        end
+
+        it 'does not create a new metadata and tracks the exception' do
+          expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+            instance_of(ActiveRecord::RecordInvalid),
+            class: described_class.name,
+            package_id: package.id
+          )
+
+          expect { execute }.not_to change { Packages::TerraformModule::Metadatum.count }
+          expect(execute).to be_error
+        end
       end
     end
   end

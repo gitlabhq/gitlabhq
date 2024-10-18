@@ -109,7 +109,7 @@ features is limited by our linters, so, use regular Markdown and follow the rule
 linked style guide. You can't use Kramdown-specific markup (for example, `{:.class}`).
 
 For a complete Kramdown reference, see the
-[GitLab Markdown Guide](https://handbook.gitlab.com/handbook/markdown-guide/).
+[GitLab Markdown Guide](https://handbook.gitlab.com/docs/markdown-guide/).
 
 The Markdown format is tested by using [markdownlint](../testing/markdownlint.md) and [Vale](../testing/vale.md).
 

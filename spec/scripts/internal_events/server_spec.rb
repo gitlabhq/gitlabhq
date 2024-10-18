@@ -4,6 +4,8 @@ require 'spec_helper'
 require_relative '../../../scripts/internal_events/server'
 
 RSpec.describe Server, feature_category: :service_ping do
+  include WaitHelpers
+
   let(:server) { described_class.new }
   let(:port) { Gitlab::Tracking::Destinations::SnowplowMicro.new.uri.port }
   let(:events) { server.events }
@@ -24,7 +26,7 @@ RSpec.describe Server, feature_category: :service_ping do
   # rubocop:enable RSpec/ExpectOutput
 
   describe 'GET /i -> trigger a single event provided through query params (backend)' do
-    subject(:response) { with_retry { Net::HTTP.get_response url_for("/i?#{query_params}") } }
+    subject(:response) { await { Net::HTTP.get_response url_for("/i?#{query_params}") } }
 
     context 'with an internal event' do
       let(:query_params) { internal_event_fixture('snowplow_events/internal_event_query_params') }
@@ -77,7 +79,7 @@ RSpec.describe Server, feature_category: :service_ping do
   end
 
   describe 'POST /com.snowplowanalytics.snowplow/tp2 -> trigger events provided through request body (frontend)' do
-    subject(:response) { with_retry { Net::HTTP.post url_for('/com.snowplowanalytics.snowplow/tp2'), body } }
+    subject(:response) { await { Net::HTTP.post url_for('/com.snowplowanalytics.snowplow/tp2'), body } }
 
     context 'when triggered on-click' do
       let(:body) { internal_event_fixture('snowplow_events/internal_event_on_click.json') }
@@ -178,7 +180,7 @@ RSpec.describe Server, feature_category: :service_ping do
 
   describe 'OPTIONS /com.snowplowanalytics.snowplow/tp2' do
     subject(:response) do
-      with_retry { Net::HTTP.new('localhost', port).options('/com.snowplowanalytics.snowplow/tp2') }
+      await { Net::HTTP.new('localhost', port).options('/com.snowplowanalytics.snowplow/tp2') }
     end
 
     it 'applies the correct headers' do
@@ -190,7 +192,7 @@ RSpec.describe Server, feature_category: :service_ping do
   end
 
   describe 'GET /micro/good -> list tracked structured events' do
-    subject(:response) { with_retry { Net::HTTP.get_response url_for("/micro/good") } }
+    subject(:response) { await { Net::HTTP.get_response url_for("/micro/good") } }
 
     it 'successfully returns tracked events' do
       expect(response.code).to eq('200')
@@ -201,7 +203,7 @@ RSpec.describe Server, feature_category: :service_ping do
       let(:query_params) { internal_event_fixture('snowplow_events/non_internal_event_without_context') }
 
       before do
-        with_retry { Net::HTTP.get url_for("/i?#{query_params}") }
+        await { Net::HTTP.get url_for("/i?#{query_params}") }
       end
 
       it 'successfully returns tracked events' do
@@ -224,14 +226,12 @@ RSpec.describe Server, feature_category: :service_ping do
 
   private
 
-  def with_retry(retried: false)
-    yield
-  rescue Errno::ECONNREFUSED, Errno::EADDRNOTAVAIL
-    return if retried
-
-    retried = true
-
-    retry
+  def await
+    wait_for('server response to be available', max_wait_time: 2.seconds) do
+      yield
+    rescue Errno::ECONNREFUSED, Errno::EADDRNOTAVAIL
+      nil
+    end
   end
 
   def url_for(path)

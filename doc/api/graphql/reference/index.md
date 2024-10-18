@@ -36478,7 +36478,7 @@ LLMs supported by the self-hosted model features.
 | <a id="aiacceptedselfhostedmodelscodellama"></a>`CODELLAMA` | Code-Llama Instruct: Suitable for code suggestions. |
 | <a id="aiacceptedselfhostedmodelscodestral"></a>`CODESTRAL` | Codestral: Suitable for code suggestions. |
 | <a id="aiacceptedselfhostedmodelsdeepseekcoder"></a>`DEEPSEEKCODER` | Deepseek Coder base or instruct. |
-| <a id="aiacceptedselfhostedmodelsgpt"></a>`GPT` | GPT: Suitable for code generation. |
+| <a id="aiacceptedselfhostedmodelsgpt"></a>`GPT` | GPT: Suitable for code suggestions. |
 | <a id="aiacceptedselfhostedmodelsllama3"></a>`LLAMA3` | LLaMA 3: Suitable for code suggestions and duo chat. |
 | <a id="aiacceptedselfhostedmodelsmistral"></a>`MISTRAL` | Mistral: Suitable for code suggestions and duo chat. |
 

@@ -23,29 +23,14 @@ module Gitlab
       end
 
       def list_all_blobs(limit: nil, bytes_limit: 0, dynamic_timeout: nil, ignore_alternate_object_directories: false)
-        repository = @gitaly_repo
-
-        if ignore_alternate_object_directories
-          repository = @gitaly_repo.dup.tap do |g_repo|
-            g_repo.git_alternate_object_directories = Google::Protobuf::RepeatedField.new(:string)
-          end
-        end
-
-        request = Gitaly::ListAllBlobsRequest.new(
-          repository: repository,
-          limit: limit,
-          bytes_limit: bytes_limit
-        )
-
-        timeout =
-          if dynamic_timeout
-            [dynamic_timeout, GitalyClient.medium_timeout].min
-          else
-            GitalyClient.medium_timeout
-          end
-
-        response = Gitlab::GitalyClient.call(repository.storage_name, :blob_service, :list_all_blobs, request, timeout: timeout)
+        response = list_all_blobs_response(limit: limit, bytes_limit: bytes_limit, dynamic_timeout: dynamic_timeout, ignore_alternate_object_directories: ignore_alternate_object_directories)
         GitalyClient::BlobsStitcher.new(GitalyClient::ListBlobsAdapter.new(response))
+      end
+
+      def list_oversized_blobs(file_size_limit_megabytes: 100, limit: nil, bytes_limit: 0, dynamic_timeout: nil, ignore_alternate_object_directories: false)
+        response = list_all_blobs_response(limit: limit, bytes_limit: bytes_limit, dynamic_timeout: dynamic_timeout, ignore_alternate_object_directories: ignore_alternate_object_directories)
+        file_size_limit_bytes = ::Gitlab::Utils.try_megabytes_to_bytes(file_size_limit_megabytes)
+        BlobsStitcher.new(GitalyClient::ListBlobsAdapter.new(response), filter_function: ->(blob) { blob.size&.> file_size_limit_bytes })
       end
 
       def list_blobs(revisions, limit: 0, bytes_limit: 0, with_paths: false, dynamic_timeout: nil)
@@ -157,6 +142,31 @@ module Gitlab
       end
 
       private
+
+      def list_all_blobs_response(limit: nil, bytes_limit: 0, dynamic_timeout: nil, ignore_alternate_object_directories: false)
+        repository = @gitaly_repo
+
+        if ignore_alternate_object_directories
+          repository = @gitaly_repo.dup.tap do |g_repo|
+            g_repo.git_alternate_object_directories = Google::Protobuf::RepeatedField.new(:string)
+          end
+        end
+
+        request = Gitaly::ListAllBlobsRequest.new(
+          repository: repository,
+          limit: limit,
+          bytes_limit: bytes_limit
+        )
+
+        timeout =
+          if dynamic_timeout
+            [dynamic_timeout, GitalyClient.medium_timeout].min
+          else
+            GitalyClient.medium_timeout
+          end
+
+        Gitlab::GitalyClient.call(repository.storage_name, :blob_service, :list_all_blobs, request, timeout: timeout)
+      end
 
       def create_new_lfs_pointers_request(revisions, limit, not_in)
         # If the check happens for a change which is using a quarantine

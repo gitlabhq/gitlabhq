@@ -11,12 +11,17 @@ module Packages
 
         def execute
           metadata = ::Packages::TerraformModule::Metadatum.new(
-            package: package,
             project: package.project,
             fields: metadata_hash,
             updated_at: Time.current,
             created_at: Time.current
           )
+
+          if Feature.enabled?(:terraform_extract_terraform_package_model, Feature.current_request)
+            metadata.package = package
+          else
+            metadata.legacy_package = package
+          end
 
           if metadata.valid?
             ::Packages::TerraformModule::Metadatum.upsert(metadata.attributes, returning: false)

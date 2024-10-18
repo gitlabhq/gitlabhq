@@ -436,7 +436,7 @@ For example:
 
 - Your instance must be able to synchronize your subscription data with GitLab.
 
-## cloud native
+## cloud-native
 
 When you're talking about using a Kubernetes cluster to host GitLab, you're talking about a **cloud-native version of GitLab**.
 This version is different than the larger, more monolithic **Linux package** that is used to deploy GitLab.

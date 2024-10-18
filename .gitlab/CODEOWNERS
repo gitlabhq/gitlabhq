@@ -1632,6 +1632,13 @@ ee/lib/gitlab/llm/chain/agents/single_action_executor.rb
 ee/lib/gitlab/llm/chain/streamed_zero_shot_answer.rb
 ee/lib/gitlab/llm/completions/chat.rb
 
+[Code Suggestions] @code-creation-team/backend-engineers
+ee/lib/api/code_suggestions.rb
+ee/lib/code_suggestions/
+ee/lib/ai/context/dependencies/
+ee/app/services/ai/repository_xray/
+ee/app/workers/ai/repository_xray/
+
 # Fulfillment::Utilization
 ^[Usage Quotas] @gitlab-org/fulfillment/utilization/fe
 /**/javascripts/usage_quotas/

@@ -228,4 +228,34 @@ RSpec.describe Gitlab::GitalyClient::BlobService do
       subject
     end
   end
+
+  describe '#list_oversized_blobs' do
+    subject { client.list_oversized_blobs(**expected_params.merge(file_size_limit_megabytes: 100)) }
+
+    let(:expected_params) { { limit: 0, bytes_limit: 0 } }
+
+    before do
+      ::Gitlab::GitalyClient.clear_stubs!
+    end
+
+    it 'sends a list all blobs message' do
+      expect_next_instance_of(Gitaly::BlobService::Stub) do |service|
+        expect(service).to receive(:list_all_blobs)
+        .with(gitaly_request_with_params(expected_params), kind_of(Hash)).and_return(
+          [
+            Gitaly::ListBlobsResponse.new(
+              blobs: [
+                Gitaly::ListBlobsResponse::Blob.new(oid: '678909', size: 114857600, data: "0x01"),
+                Gitaly::ListBlobsResponse::Blob.new(oid: '678910', size: 2, data: "0x02"),
+                Gitaly::ListBlobsResponse::Blob.new(size: 114857600, data: ""),
+                Gitaly::ListBlobsResponse::Blob.new(oid: '678910', data: "0x03")
+              ])
+          ])
+      end
+
+      blobs = subject.to_a
+      expect(blobs.size).to eq(1)
+      expect(blobs.first.id).to eq('678909')
+    end
+  end
 end
