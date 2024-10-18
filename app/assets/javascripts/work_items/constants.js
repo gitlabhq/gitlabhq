@@ -277,9 +277,6 @@ export const TODO_DONE_ICON = 'todo-done';
 export const TODO_DONE_STATE = 'done';
 export const TODO_PENDING_STATE = 'pending';
 
-export const EMOJI_THUMBSUP = 'thumbsup';
-export const EMOJI_THUMBSDOWN = 'thumbsdown';
-
 export const WORK_ITEM_TO_ISSUABLE_MAP = {
   [WIDGET_TYPE_ASSIGNEES]: 'assignees',
   [WIDGET_TYPE_LABELS]: 'labels',

@@ -17,7 +17,8 @@ module Gitlab
         user_session_destroyed: 'Counter of user sessions being destroyed',
         user_two_factor_authenticated: 'Counter of two factor authentications',
         user_sessionless_authentication: 'Counter of sessionless authentications',
-        user_blocked: 'Counter of sign in attempts when user is blocked'
+        user_blocked: 'Counter of sign in attempts when user is blocked',
+        user_csrf_token_invalid: 'Counter of CSRF token validation failures'
       }.freeze
 
       def initialize(opts)
@@ -59,6 +60,13 @@ module Gitlab
 
       def user_session_destroyed!
         self.class.user_session_destroyed_counter_increment!
+      end
+
+      def user_csrf_token_mismatch!
+        label = @opts[:controller].class.name
+        label = 'other' unless label == 'GraphqlController'
+
+        self.class.user_csrf_token_invalid_counter.increment(controller: label)
       end
 
       def self.each_counter

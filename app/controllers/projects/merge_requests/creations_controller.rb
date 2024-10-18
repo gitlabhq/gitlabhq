@@ -110,7 +110,7 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
   def get_target_projects
     MergeRequestTargetProjectFinder
       .new(current_user: current_user, source_project: @project, project_feature: :repository)
-      .execute(include_routes: false, search: params[:search]).limit(20)
+      .execute(include_routes: false, include_fork_networks: true, search: params[:search]).limit(20)
   end
 
   def build_merge_request

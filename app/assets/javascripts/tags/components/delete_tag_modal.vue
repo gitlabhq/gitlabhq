@@ -88,7 +88,9 @@ export default {
       this.$refs.modal.show();
     },
     submitForm() {
-      this.$refs.form.submit();
+      if (!this.deleteButtonDisabled) {
+        this.$refs.form.submit();
+      }
     },
     closeModal() {
       this.$refs.modal.hide();
@@ -117,7 +119,7 @@ export default {
       </gl-sprintf>
     </p>
 
-    <form ref="form" :action="path" method="post">
+    <form ref="form" :action="path" method="post" @submit.prevent="submitForm">
       <div v-if="isProtected" class="gl-mt-4">
         <p>
           <gl-sprintf :message="$options.i18n.confirmationTextProtectedTag">

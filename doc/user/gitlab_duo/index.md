@@ -195,6 +195,17 @@ DETAILS:
 - LLM: Anthropic [Claude 3 Haiku](https://docs.anthropic.com/en/docs/about-claude/models#claude-3-a-new-generation-of-ai)
 - [View documentation](../project/issues/managing_issues.md#populate-an-issue-with-issue-description-generation).
 
+### Code Review
+
+DETAILS:
+**Tier:** Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
+**Offering:** GitLab.com
+**Status:** Experiment
+
+- Automated code review of the proposed changes in your merge request.
+- LLM: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
+- [View documentation](../project/merge_requests/duo_in_merge_requests.md#have-gitlab-duo-review-your-code).
+
 ### Code Review Summary
 
 DETAILS:
@@ -228,17 +239,6 @@ DETAILS:
 - Automate tasks and help increase productivity in your development workflow.
 - LLM: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
 - [View documentation](../duo_workflow/index.md).
-
-### GitLab Duo Code Review
-
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com
-**Status:** Experiment
-
-- Automated code review of the proposed changes in your merge request.
-- LLM: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
-- [View documentation](../project/merge_requests/duo_in_merge_requests.md#gitlab-duo-code-review).
 
 ## Disable GitLab Duo features for specific groups or projects or an entire instance
 

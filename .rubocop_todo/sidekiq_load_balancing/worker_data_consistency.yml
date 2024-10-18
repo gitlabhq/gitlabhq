@@ -70,7 +70,6 @@ SidekiqLoadBalancing/WorkerDataConsistency:
     - 'app/workers/counters/cleanup_refresh_worker.rb'
     - 'app/workers/create_commit_signature_worker.rb'
     - 'app/workers/create_note_diff_file_worker.rb'
-    - 'app/workers/create_pipeline_worker.rb'
     - 'app/workers/database/drop_detached_partitions_worker.rb'
     - 'app/workers/database/partition_management_worker.rb'
     - 'app/workers/delete_diff_files_worker.rb'

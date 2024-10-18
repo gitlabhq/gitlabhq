@@ -74,6 +74,7 @@ For visibility, all `/chatops` commands that target production must be executed 
 and cross-posted (with the command results) to the responsible team's Slack channel.
 
 - [ ] [Incrementally roll out](https://docs.gitlab.com/ee/development/feature_flags/controls.html#process) the feature on production.
+  - Example: `/chatops run feature set <feature-flag-name> <rollout-percentage> --actors`.
   - Between every step wait for at least 15 minutes and monitor the appropriate graphs on https://dashboards.gitlab.net.
 - [ ] After the feature has been 100% enabled, wait for [at least one day before releasing the feature](#release-the-feature).
 

@@ -1,4 +1,5 @@
 import { WIDGET_TYPE_LINKED_ITEMS, NEW_WORK_ITEM_IID } from '~/work_items/constants';
+import { EMOJI_THUMBS_UP, EMOJI_THUMBS_DOWN } from '~/emoji/constants';
 
 export const mockAssignees = [
   {
@@ -108,7 +109,7 @@ export const mockMilestone = {
 };
 
 export const mockAwardEmojiThumbsUp = {
-  name: 'thumbsup',
+  name: EMOJI_THUMBS_UP,
   __typename: 'AwardEmoji',
   user: {
     id: 'gid://gitlab/User/5',
@@ -118,7 +119,7 @@ export const mockAwardEmojiThumbsUp = {
 };
 
 export const mockAwardEmojiThumbsDown = {
-  name: 'thumbsdown',
+  name: EMOJI_THUMBS_DOWN,
   __typename: 'AwardEmoji',
   user: {
     id: 'gid://gitlab/User/5',

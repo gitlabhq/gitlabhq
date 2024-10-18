@@ -14,6 +14,7 @@ import {
   TOKEN_TYPE_WEIGHT,
   TOKEN_TYPE_HEALTH,
 } from '~/vue_shared/components/filtered_search_bar/constants';
+import { EMOJI_THUMBS_UP, EMOJI_THUMBS_DOWN } from '~/emoji/constants';
 
 export const getServiceDeskIssuesQueryResponse = {
   data: {
@@ -174,8 +175,8 @@ export const filteredTokens = [
   { type: TOKEN_TYPE_RELEASE, value: { data: 'v4', operator: OPERATOR_IS } },
   { type: TOKEN_TYPE_RELEASE, value: { data: 'v20', operator: OPERATOR_NOT } },
   { type: TOKEN_TYPE_RELEASE, value: { data: 'v30', operator: OPERATOR_NOT } },
-  { type: TOKEN_TYPE_MY_REACTION, value: { data: 'thumbsup', operator: OPERATOR_IS } },
-  { type: TOKEN_TYPE_MY_REACTION, value: { data: 'thumbsdown', operator: OPERATOR_NOT } },
+  { type: TOKEN_TYPE_MY_REACTION, value: { data: EMOJI_THUMBS_UP, operator: OPERATOR_IS } },
+  { type: TOKEN_TYPE_MY_REACTION, value: { data: EMOJI_THUMBS_DOWN, operator: OPERATOR_NOT } },
   { type: TOKEN_TYPE_CONFIDENTIAL, value: { data: 'yes', operator: OPERATOR_IS } },
   { type: TOKEN_TYPE_ITERATION, value: { data: '4', operator: OPERATOR_IS } },
   { type: TOKEN_TYPE_ITERATION, value: { data: '12', operator: OPERATOR_IS } },
@@ -201,8 +202,8 @@ export const urlParams = {
   'or[label_name][]': ['comedy', 'sitcom'],
   release_tag: ['v3', 'v4'],
   'not[release_tag]': ['v20', 'v30'],
-  my_reaction_emoji: 'thumbsup',
-  'not[my_reaction_emoji]': 'thumbsdown',
+  my_reaction_emoji: EMOJI_THUMBS_UP,
+  'not[my_reaction_emoji]': EMOJI_THUMBS_DOWN,
   confidential: 'yes',
   iteration_id: ['4', '12'],
   'not[iteration_id]': ['20', '42'],
@@ -237,8 +238,8 @@ export const locationSearch = [
   'release_tag=v4',
   'not[release_tag]=v20',
   'not[release_tag]=v30',
-  'my_reaction_emoji=thumbsup',
-  'not[my_reaction_emoji]=thumbsdown',
+  `my_reaction_emoji=${EMOJI_THUMBS_UP}`,
+  `not[my_reaction_emoji]=${EMOJI_THUMBS_DOWN}`,
   'confidential=yes',
   'iteration_id=4',
   'iteration_id=12',

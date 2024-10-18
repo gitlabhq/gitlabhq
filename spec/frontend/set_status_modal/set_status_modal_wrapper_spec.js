@@ -13,6 +13,7 @@ import { AVAILABILITY_STATUS } from '~/set_status_modal/constants';
 import SetStatusForm from '~/set_status_modal/set_status_form.vue';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import { BV_HIDE_MODAL } from '~/lib/utils/constants';
+import { EMOJI_THUMBS_UP } from '~/emoji/constants';
 
 jest.mock('~/alert');
 
@@ -103,9 +104,9 @@ describe('SetStatusModalWrapper', () => {
     });
 
     it('passes emoji to `SetStatusForm`', async () => {
-      await getEmojiPicker().vm.$emit('click', 'thumbsup');
+      await getEmojiPicker().vm.$emit('click', EMOJI_THUMBS_UP);
 
-      expect(wrapper.findComponent(SetStatusForm).props('emoji')).toBe('thumbsup');
+      expect(wrapper.findComponent(SetStatusForm).props('emoji')).toBe(EMOJI_THUMBS_UP);
     });
   });
 

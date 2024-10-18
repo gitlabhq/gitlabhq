@@ -1,0 +1,9 @@
+---
+migration_job_name: RestoreOptInToGitlabCom
+description: We deleted the email_opted_in field from the user table on GitLab.com. This was done by mistake. We would like to restore the values from the temporary table with a backup from Snowflake. We need to restore it to the onboarding_status column in the user_details table.
+feature_category: activation
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165155
+milestone: '17.6'
+queued_migration_version: 20241004100956
+finalize_after: '2024-11-16'
+finalized_by: # version of the migration that finalized this BBM

@@ -2,6 +2,7 @@ import {
   CoreV1Api,
   Configuration,
   WatchApi,
+  webSocketWatchManager,
   EVENT_DATA,
   EVENT_TIMEOUT,
   EVENT_ERROR,
@@ -53,68 +54,101 @@ export const mapEventItem = ({
   type,
 }) => ({ lastTimestamp, eventTime, message, reason, source, type });
 
-export const watchWorkloadItems = ({
+export const subscribeToSocket = async ({ watchId, watchParams, configuration, cacheParams }) => {
+  const { updateQueryCache, updateConnectionStatusFn } = cacheParams;
+
+  try {
+    const watcher = await webSocketWatchManager.initConnection({
+      message: { watchId, watchParams },
+      configuration,
+    });
+
+    const handleConnectionStatus = (status) => {
+      if (updateConnectionStatusFn) {
+        updateConnectionStatusFn(status);
+      }
+    };
+
+    watcher.on(EVENT_DATA, watchId, (data) => {
+      updateQueryCache(data);
+      handleConnectionStatus(connectionStatus.connected);
+    });
+
+    watcher.on(EVENT_ERROR, watchId, () => {
+      handleConnectionStatus(connectionStatus.disconnected);
+    });
+  } catch (err) {
+    throw new Error(s__('KubernetesDashboard|Failed to establish WebSocket connection'));
+  }
+};
+
+export const watchWorkloadItems = async ({
   client,
   query,
   configuration,
   namespace,
   watchPath,
   queryField,
+  watchParams,
 }) => {
   const config = new Configuration(configuration);
   const watcherApi = new WatchApi(config);
 
-  updateConnectionStatus(client, {
-    configuration,
-    namespace,
-    resourceType: queryField,
-    status: connectionStatus.connecting,
-  });
+  const updateStatus = (status) =>
+    updateConnectionStatus(client, {
+      configuration,
+      namespace,
+      resourceType: queryField,
+      status,
+    });
 
-  watcherApi
-    .subscribeToStream(watchPath, { watch: true })
-    .then((watcher) => {
-      let result = [];
+  const updateQueryCache = (data) => {
+    const result = data.map(mapWorkloadItem);
+    client.writeQuery({
+      query,
+      variables: { configuration, namespace },
+      data: { [queryField]: result },
+    });
+  };
+
+  const watchFunction = async () => {
+    try {
+      const watcher = await watcherApi.subscribeToStream(watchPath, { watch: true });
 
       watcher.on(EVENT_DATA, (data) => {
-        result = data.map(mapWorkloadItem);
-        client.writeQuery({
-          query,
-          variables: { configuration, namespace },
-          data: { [queryField]: result },
-        });
-        updateConnectionStatus(client, {
-          configuration,
-          namespace,
-          resourceType: queryField,
-          status: connectionStatus.connected,
-        });
+        updateQueryCache(data);
+        updateStatus(connectionStatus.connected);
       });
 
       watcher.on(EVENT_TIMEOUT, () => {
-        result = [];
-
-        updateConnectionStatus(client, {
-          configuration,
-          namespace,
-          resourceType: queryField,
-          status: connectionStatus.disconnected,
-        });
+        updateStatus(connectionStatus.disconnected);
       });
 
       watcher.on(EVENT_ERROR, () => {
-        result = [];
-        updateConnectionStatus(client, {
-          configuration,
-          namespace,
-          resourceType: queryField,
-          status: connectionStatus.disconnected,
-        });
+        updateStatus(connectionStatus.disconnected);
       });
-    })
-    .catch((err) => {
-      handleClusterError(err);
-    });
+    } catch (err) {
+      await handleClusterError(err);
+    }
+  };
+
+  updateStatus(connectionStatus.connecting);
+
+  if (gon?.features?.useWebsocketForK8sWatch && watchParams) {
+    const watchId = namespace ? `${queryField}-n-${namespace}` : `${queryField}-all-namespaces`;
+    const cacheParams = {
+      updateQueryCache,
+      updateConnectionStatusFn: updateStatus,
+    };
+
+    try {
+      await subscribeToSocket({ watchId, watchParams, configuration, cacheParams });
+    } catch {
+      await watchFunction();
+    }
+  } else {
+    await watchFunction();
+  }
 };
 
 export const getK8sPods = ({
@@ -135,6 +169,12 @@ export const getK8sPods = ({
   return podsApi
     .then((res) => {
       const watchPath = buildWatchPath({ resource: 'pods', namespace });
+      const watchParams = {
+        version: 'v1',
+        resource: 'pods',
+        namespace,
+      };
+
       watchWorkloadItems({
         client,
         query,
@@ -142,6 +182,7 @@ export const getK8sPods = ({
         namespace,
         watchPath,
         queryField,
+        watchParams,
       });
 
       const data = res?.items || [];

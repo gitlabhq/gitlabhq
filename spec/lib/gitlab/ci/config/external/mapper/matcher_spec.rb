@@ -59,19 +59,6 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper::Matcher, feature_category: 
             /`{"invalid":"\[MASKED\]xxxxxx.yml"}` does not have a valid subkey for include. Valid subkeys are:/
           )
         end
-
-        context 'when consistent_ci_variable_masking feature is disabled' do
-          before do
-            stub_feature_flags(consistent_ci_variable_masking: false)
-          end
-
-          it 'raises an error with a sentence masked in the old style' do
-            expect { process }.to raise_error(
-              Gitlab::Ci::Config::External::Mapper::AmbigiousSpecificationError,
-              /`{"invalid":"xxxxxxxxxxxxxx.yml"}` does not have a valid subkey for include. Valid subkeys are:/
-            )
-          end
-        end
       end
     end
 

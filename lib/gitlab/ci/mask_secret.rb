@@ -11,7 +11,7 @@ module Gitlab
         token_size = token.bytesize
         masked_string_size = MASKED_STRING.bytesize
 
-        mask = if Feature.enabled?(:consistent_ci_variable_masking, :instance) && token_size >= masked_string_size
+        mask = if token_size >= masked_string_size
                  MASKED_STRING + ('x' * (token_size - masked_string_size))
                else
                  # While masked variables can't be less than 8 characters, this fallback case

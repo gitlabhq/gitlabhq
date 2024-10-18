@@ -9,12 +9,14 @@ RSpec.describe Gitlab::Database::Triggers::AssignDesiredShardingKey, feature_cat
   let(:connection) { ActiveRecord::Base.connection }
   let(:trigger) { described_class.new(**attributes) }
   let(:trigger_name) { trigger.name }
+  let(:parent_table_pk) { nil }
 
   let(:attributes) do
     {
       table: table_name,
       sharding_key: :project_id,
       parent_table: :_test_project_parent,
+      parent_table_primary_key: parent_table_pk,
       parent_sharding_key: :parent_project_id,
       foreign_key: :project_fk_id,
       connection: connection
@@ -140,6 +142,31 @@ RSpec.describe Gitlab::Database::Triggers::AssignDesiredShardingKey, feature_cat
 
         expect_function_to_exist(trigger_name)
         expect_valid_function_trigger(table_name, trigger_name, trigger_name, before: %w[insert update])
+      end
+    end
+
+    context 'when parent_table_primary_key is provided' do
+      let(:parent_table_pk) { :custom_primary_key }
+
+      before do
+        connection.execute('DROP TABLE IF EXISTS _test_project_parent CASCADE;')
+
+        connection.execute(<<~SQL)
+          CREATE TABLE _test_project_parent (
+            custom_primary_key bigint NOT NULL PRIMARY KEY,
+            parent_project_id bigint);
+
+          INSERT INTO _test_project_parent (custom_primary_key, parent_project_id) VALUES
+            (#{valid_project_parent_id}, #{valid_project_parent_sharding_key}),
+            (#{invalid_project_parent_id}, NULL);
+        SQL
+      end
+
+      it 'assigns the sharding key' do
+        create_trigger
+
+        record = model.create!(project_fk_id: valid_project_parent_id)
+        expect(record.reload).to have_attributes(project_id: valid_project_parent_sharding_key)
       end
     end
   end

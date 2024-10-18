@@ -146,19 +146,6 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Exists, feature_category:
                   "rules:exists:project `invalid/path/[MASKED]xxxx` is not a valid project path"
                 )
               end
-
-              context 'when consistent_ci_variable_masking feature is disabled' do
-                before do
-                  stub_feature_flags(consistent_ci_variable_masking: false)
-                end
-
-                it 'raises an error with the variable masked in the old style' do
-                  expect { satisfied_by? }.to raise_error(
-                    Gitlab::Ci::Build::Rules::Rule::Clause::ParseError,
-                    "rules:exists:project `invalid/path/xxxxxxxxxxxx` is not a valid project path"
-                  )
-                end
-              end
             end
           end
 
@@ -211,20 +198,6 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Exists, feature_category:
                     "rules:exists:ref `invalid/ref/[MASKED]xxxx` is not a valid ref " \
                     "in project `#{other_project.full_path}`"
                   )
-                end
-
-                context 'when consistent_ci_variable_masking feature is disabled' do
-                  before do
-                    stub_feature_flags(consistent_ci_variable_masking: false)
-                  end
-
-                  it 'raises an error with the variable masked in the old style' do
-                    expect { satisfied_by? }.to raise_error(
-                      Gitlab::Ci::Build::Rules::Rule::Clause::ParseError,
-                      "rules:exists:ref `invalid/ref/xxxxxxxxxxxx` is not a valid ref " \
-                        "in project `#{other_project.full_path}`"
-                    )
-                  end
                 end
               end
             end

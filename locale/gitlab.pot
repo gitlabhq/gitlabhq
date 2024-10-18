@@ -31468,6 +31468,9 @@ msgstr ""
 msgid "KubernetesDashboard|Failed"
 msgstr ""
 
+msgid "KubernetesDashboard|Failed to establish WebSocket connection"
+msgstr ""
+
 msgid "KubernetesDashboard|Job"
 msgstr ""
 
@@ -34736,9 +34739,6 @@ msgstr[1] ""
 msgid "MlModelRegistry|(Optional)"
 msgstr ""
 
-msgid "MlModelRegistry|Add a model"
-msgstr ""
-
 msgid "MlModelRegistry|All artifact uploads failed or were canceled."
 msgstr ""
 
@@ -34773,9 +34773,6 @@ msgid "MlModelRegistry|Create"
 msgstr ""
 
 msgid "MlModelRegistry|Create & import"
-msgstr ""
-
-msgid "MlModelRegistry|Create a model version"
 msgstr ""
 
 msgid "MlModelRegistry|Create model"
@@ -34994,13 +34991,7 @@ msgstr ""
 msgid "MlModelRegistry|Setting up the client"
 msgstr ""
 
-msgid "MlModelRegistry|Start tracking your machine learning models"
-msgstr ""
-
 msgid "MlModelRegistry|Status"
-msgstr ""
-
-msgid "MlModelRegistry|Store and manage your machine learning models and versions"
 msgstr ""
 
 msgid "MlModelRegistry|Subfolder"
@@ -37985,9 +37976,6 @@ msgid "Only SSH"
 msgstr ""
 
 msgid "Only accessible by %{membersPageLinkStart}project members%{membersPageLinkEnd}. Membership must be explicitly granted."
-msgstr ""
-
-msgid "Only active projects show up in the search and on the dashboard."
 msgstr ""
 
 msgid "Only effective when remote storage is enabled. Set to 0 for no size limit."
@@ -46351,22 +46339,13 @@ msgstr ""
 msgid "Restore"
 msgstr ""
 
+msgid "Restore %{context}"
+msgstr ""
+
 msgid "Restore deployment"
 msgstr ""
 
-msgid "Restore group"
-msgstr ""
-
-msgid "Restore project"
-msgstr ""
-
 msgid "Restoring projects"
-msgstr ""
-
-msgid "Restoring the group will prevent the group, its subgroups and projects from being deleted on this date."
-msgstr ""
-
-msgid "Restoring the project will prevent the project from being removed on this date and restore people's ability to make changes to it."
 msgstr ""
 
 msgid "Restrict access by IP address"
@@ -55149,9 +55128,6 @@ msgstr ""
 msgid "The report has been successfully prepared."
 msgstr ""
 
-msgid "The repository can be committed to, and issues, comments and other entities can be created."
-msgstr ""
-
 msgid "The repository for this project does not exist."
 msgstr ""
 
@@ -55686,6 +55662,9 @@ msgstr ""
 msgid "Third Party Advisory Link"
 msgstr ""
 
+msgid "This %{context} has been scheduled for deletion on %{strongStart}%{date}%{strongEnd}. To cancel the scheduled deletion, you can restore this %{context}, including all its resources."
+msgstr ""
+
 msgid "This %{issuableType} is confidential and should only be visible to team members with at least Reporter access."
 msgstr ""
 
@@ -55948,9 +55927,6 @@ msgid "This group cannot be invited to a project inside a group with enforced SS
 msgstr ""
 
 msgid "This group does not have any group runners yet."
-msgstr ""
-
-msgid "This group has been scheduled for permanent deletion on %{date}"
 msgstr ""
 
 msgid "This group has no active access tokens."
@@ -56298,9 +56274,6 @@ msgid "This project reached the limit of custom domains. (Max %d)"
 msgstr ""
 
 msgid "This project was scheduled for deletion, but failed with the following message:"
-msgstr ""
-
-msgid "This project will be deleted on %{date}"
 msgstr ""
 
 msgid "This project's pipeline configuration is located outside this repository"

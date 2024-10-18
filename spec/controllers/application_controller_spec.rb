@@ -1126,4 +1126,17 @@ RSpec.describe ApplicationController, feature_category: :shared do
       expect(response).to have_gitlab_http_status(:service_unavailable)
     end
   end
+
+  describe 'cross-site request forgery protection handling' do
+    describe '#handle_unverified_request' do
+      it 'increments counter of invalid CSRF tokens detected' do
+        stub_authentication_activity_metrics do |metrics|
+          expect(metrics).to increment(:user_csrf_token_invalid_counter)
+        end
+
+        expect { described_class.new.handle_unverified_request }
+          .to raise_error(ActionController::InvalidAuthenticityToken)
+      end
+    end
+  end
 end

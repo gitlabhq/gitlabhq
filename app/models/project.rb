@@ -730,6 +730,7 @@ class Project < ApplicationRecord
   scope :with_jira_dvcs_server, -> { joins(:feature_usage).merge(ProjectFeatureUsage.with_jira_dvcs_integration_enabled(cloud: false)) }
   scope :by_name, ->(name) { where('projects.name LIKE ?', "#{sanitize_sql_like(name)}%") }
   scope :inc_routes, -> { includes(:route, namespace: :route) }
+  scope :include_fork_networks, -> { includes(:fork_network) }
   scope :with_statistics, -> { includes(:statistics) }
   scope :with_namespace, -> { includes(:namespace) }
   scope :joins_namespace, -> { joins(:namespace) }

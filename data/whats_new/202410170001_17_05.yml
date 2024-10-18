@@ -6,7 +6,7 @@
   gitlab-com: true
   available_in: [Premium, Ultimate]
   documentation_link: https://docs.gitlab.com/ee/user/gitlab_duo_chat/#in-the-editor-window
-  image_url: https://img.youtube.com/v1/5JbAM5g2VbQ/hqdefault.jpg
+  image_url: https://img.youtube.com/vi/5JbAM5g2VbQ/hqdefault.jpg
   published_at: 2024-10-17
   release: 17.5
 
@@ -42,6 +42,6 @@
   gitlab-com: true
   available_in: [Ultimate]
   documentation_link: https://docs.gitlab.com/ee/user/gitlab_duo_chat/examples#ask-about-a-specific-merge-request
-  image_url: https://img.youtube.com/v1/4muvSFuWWL4/hqdefault.jpg
+  image_url: https://img.youtube.com/vi/4muvSFuWWL4/hqdefault.jpg
   published_at: 2024-10-17
   release: 17.5

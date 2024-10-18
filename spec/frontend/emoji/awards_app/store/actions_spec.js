@@ -4,6 +4,7 @@ import testAction from 'helpers/vuex_action_helper';
 import * as actions from '~/emoji/awards_app/store/actions';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import { EMOJI_THUMBS_UP, EMOJI_THUMBS_DOWN } from '~/emoji/constants';
 
 jest.mock('~/sentry/sentry_browser_wrapper');
 jest.mock('~/vue_shared/plugins/global_toast');
@@ -42,10 +43,10 @@ describe('Awards app actions', () => {
           window.gon = { relative_url_root: relativeRootUrl };
           mock
             .onGet(`${relativeRootUrl || ''}/awards`, { params: { per_page: 100, page: '1' } })
-            .reply(HTTP_STATUS_OK, ['thumbsup'], { 'x-next-page': '2' });
+            .reply(HTTP_STATUS_OK, [EMOJI_THUMBS_UP], { 'x-next-page': '2' });
           mock
             .onGet(`${relativeRootUrl || ''}/awards`, { params: { per_page: 100, page: '2' } })
-            .reply(HTTP_STATUS_OK, ['thumbsdown']);
+            .reply(HTTP_STATUS_OK, [EMOJI_THUMBS_DOWN]);
         });
 
         it('commits FETCH_AWARDS_SUCCESS', async () => {
@@ -53,7 +54,7 @@ describe('Awards app actions', () => {
             actions.fetchAwards,
             '1',
             { path: '/awards' },
-            [{ type: 'FETCH_AWARDS_SUCCESS', payload: ['thumbsup'] }],
+            [{ type: 'FETCH_AWARDS_SUCCESS', payload: [EMOJI_THUMBS_UP] }],
             [{ type: 'fetchAwards', payload: '2' }],
           );
         });
@@ -146,7 +147,7 @@ describe('Awards app actions', () => {
       });
 
       describe('removing an award', () => {
-        const mockData = { id: 1, name: 'thumbsup', user: { id: 1 } };
+        const mockData = { id: 1, name: EMOJI_THUMBS_UP, user: { id: 1 } };
 
         describe('success', () => {
           beforeEach(() => {
@@ -156,7 +157,7 @@ describe('Awards app actions', () => {
           it('commits REMOVE_AWARD', () => {
             testAction(
               actions.toggleAward,
-              'thumbsup',
+              EMOJI_THUMBS_UP,
               {
                 path: '/awards',
                 currentUserId: 1,
@@ -169,7 +170,7 @@ describe('Awards app actions', () => {
 
         describe('error', () => {
           const currentUserId = 1;
-          const name = 'thumbsup';
+          const name = EMOJI_THUMBS_UP;
 
           beforeEach(() => {
             mock

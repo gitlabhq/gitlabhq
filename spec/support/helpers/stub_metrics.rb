@@ -11,6 +11,8 @@ module StubMetrics
         .and_return(double("#{metric} - #{description}"))
     end
 
+    yield authentication_metrics if block_given?
+
     debug_authentication_activity_metrics if debug
   end
 

@@ -8,7 +8,11 @@ import { scrollToElement } from '~/lib/utils/common_utils';
 import * as Emoji from '~/emoji';
 import { dispose, fixTitle } from '~/tooltips';
 import { createAlert } from '~/alert';
-import { FREQUENTLY_USED_EMOJIS_STORAGE_KEY } from '~/emoji/constants';
+import {
+  EMOJI_THUMBS_UP,
+  EMOJI_THUMBS_DOWN,
+  FREQUENTLY_USED_EMOJIS_STORAGE_KEY,
+} from '~/emoji/constants';
 import axios from './lib/utils/axios_utils';
 import { isInVueNoteablePage } from './lib/utils/dom_utils';
 import { __ } from './locale';
@@ -355,8 +359,8 @@ export class AwardsHandler {
 
   checkMutuality(votesBlock, emoji) {
     const awardUrl = this.getAwardUrl();
-    if (emoji === 'thumbsup' || emoji === 'thumbsdown') {
-      const mutualVote = emoji === 'thumbsup' ? 'thumbsdown' : 'thumbsup';
+    if (emoji === EMOJI_THUMBS_UP || emoji === EMOJI_THUMBS_DOWN) {
+      const mutualVote = emoji === EMOJI_THUMBS_UP ? EMOJI_THUMBS_DOWN : EMOJI_THUMBS_UP;
       const $emojiButton = votesBlock.find(`[data-name="${mutualVote}"]`).closest('button');
       const isAlreadyVoted = $emojiButton.hasClass('active');
       if (isAlreadyVoted) {
@@ -375,7 +379,7 @@ export class AwardsHandler {
     if (counterNumber > 1) {
       counter.text(counterNumber - 1);
       this.removeYouFromUserList($emojiButton);
-    } else if (emoji === 'thumbsup' || emoji === 'thumbsdown') {
+    } else if (emoji === EMOJI_THUMBS_UP || emoji === EMOJI_THUMBS_DOWN) {
       dispose($emojiButton);
       counter.text('0');
       this.removeYouFromUserList($emojiButton);

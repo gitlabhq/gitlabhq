@@ -2958,6 +2958,18 @@ CREATE TABLE p_ci_build_tags (
 )
 PARTITION BY LIST (partition_id);
 
+CREATE TABLE p_ci_build_trace_metadata (
+    build_id bigint NOT NULL,
+    partition_id bigint NOT NULL,
+    trace_artifact_id bigint,
+    last_archival_attempt_at timestamp with time zone,
+    archived_at timestamp with time zone,
+    archival_attempts smallint DEFAULT 0 NOT NULL,
+    checksum bytea,
+    remote_checksum bytea
+)
+PARTITION BY LIST (partition_id);
+
 CREATE TABLE p_ci_builds (
     status character varying,
     finished_at timestamp without time zone,
@@ -8335,29 +8347,6 @@ CREATE SEQUENCE ci_build_trace_chunks_id_seq
     CACHE 1;
 
 ALTER SEQUENCE ci_build_trace_chunks_id_seq OWNED BY ci_build_trace_chunks.id;
-
-CREATE TABLE p_ci_build_trace_metadata (
-    build_id bigint NOT NULL,
-    partition_id bigint NOT NULL,
-    trace_artifact_id bigint,
-    last_archival_attempt_at timestamp with time zone,
-    archived_at timestamp with time zone,
-    archival_attempts smallint DEFAULT 0 NOT NULL,
-    checksum bytea,
-    remote_checksum bytea
-)
-PARTITION BY LIST (partition_id);
-
-CREATE TABLE ci_build_trace_metadata (
-    build_id bigint NOT NULL,
-    partition_id bigint NOT NULL,
-    trace_artifact_id bigint,
-    last_archival_attempt_at timestamp with time zone,
-    archived_at timestamp with time zone,
-    archival_attempts smallint DEFAULT 0 NOT NULL,
-    checksum bytea,
-    remote_checksum bytea
-);
 
 CREATE TABLE ci_builds (
     status character varying,
@@ -22010,8 +21999,6 @@ ALTER TABLE ONLY namespace_descendants ATTACH PARTITION gitlab_partitions_static
 
 ALTER TABLE ONLY namespace_descendants ATTACH PARTITION gitlab_partitions_static.namespace_descendants_31 FOR VALUES WITH (modulus 32, remainder 31);
 
-ALTER TABLE ONLY p_ci_build_trace_metadata ATTACH PARTITION ci_build_trace_metadata FOR VALUES IN ('100', '101', '102');
-
 ALTER TABLE ONLY p_ci_builds ATTACH PARTITION ci_builds FOR VALUES IN ('100');
 
 ALTER TABLE ONLY p_ci_builds_metadata ATTACH PARTITION ci_builds_metadata FOR VALUES IN ('100');
@@ -24227,12 +24214,6 @@ ALTER TABLE ONLY ci_build_report_results
 ALTER TABLE ONLY ci_build_trace_chunks
     ADD CONSTRAINT ci_build_trace_chunks_pkey PRIMARY KEY (id);
 
-ALTER TABLE ONLY p_ci_build_trace_metadata
-    ADD CONSTRAINT p_ci_build_trace_metadata_pkey PRIMARY KEY (build_id, partition_id);
-
-ALTER TABLE ONLY ci_build_trace_metadata
-    ADD CONSTRAINT ci_build_trace_metadata_pkey PRIMARY KEY (build_id, partition_id);
-
 ALTER TABLE ONLY p_ci_builds_metadata
     ADD CONSTRAINT p_ci_builds_metadata_pkey PRIMARY KEY (id, partition_id);
 
@@ -25261,6 +25242,9 @@ ALTER TABLE ONLY p_ci_build_sources
 
 ALTER TABLE ONLY p_ci_build_tags
     ADD CONSTRAINT p_ci_build_tags_pkey PRIMARY KEY (id, partition_id);
+
+ALTER TABLE ONLY p_ci_build_trace_metadata
+    ADD CONSTRAINT p_ci_build_trace_metadata_pkey PRIMARY KEY (build_id, partition_id);
 
 ALTER TABLE ONLY p_ci_builds_execution_configs
     ADD CONSTRAINT p_ci_builds_execution_configs_pkey PRIMARY KEY (id, partition_id);
@@ -27324,10 +27308,6 @@ CREATE INDEX ca_aggregations_last_consistency_check_updated_at ON analytics_cycl
 CREATE INDEX ca_aggregations_last_full_run_at ON analytics_cycle_analytics_aggregations USING btree (last_full_run_at NULLS FIRST) WHERE (enabled IS TRUE);
 
 CREATE INDEX ca_aggregations_last_incremental_run_at ON analytics_cycle_analytics_aggregations USING btree (last_incremental_run_at NULLS FIRST) WHERE (enabled IS TRUE);
-
-CREATE INDEX index_p_ci_build_trace_metadata_on_trace_artifact_id ON ONLY p_ci_build_trace_metadata USING btree (trace_artifact_id);
-
-CREATE INDEX ci_build_trace_metadata_trace_artifact_id_idx ON ci_build_trace_metadata USING btree (trace_artifact_id);
 
 CREATE INDEX p_ci_builds_status_created_at_project_id_idx ON ONLY p_ci_builds USING btree (status, created_at, project_id) WHERE ((type)::text = 'Ci::Build'::text);
 
@@ -30298,6 +30278,8 @@ CREATE INDEX index_p_ci_build_tags_on_build_id_and_partition_id ON ONLY p_ci_bui
 CREATE INDEX index_p_ci_build_tags_on_project_id ON ONLY p_ci_build_tags USING btree (project_id);
 
 CREATE UNIQUE INDEX index_p_ci_build_tags_on_tag_id_and_build_id_and_partition_id ON ONLY p_ci_build_tags USING btree (tag_id, build_id, partition_id);
+
+CREATE INDEX index_p_ci_build_trace_metadata_on_trace_artifact_id ON ONLY p_ci_build_trace_metadata USING btree (trace_artifact_id);
 
 CREATE INDEX index_p_ci_builds_execution_configs_on_pipeline_id ON ONLY p_ci_builds_execution_configs USING btree (pipeline_id);
 
@@ -33619,10 +33601,6 @@ ALTER INDEX index_on_namespace_descendants_outdated ATTACH PARTITION gitlab_part
 
 ALTER INDEX namespace_descendants_pkey ATTACH PARTITION gitlab_partitions_static.namespace_descendants_31_pkey;
 
-ALTER INDEX p_ci_build_trace_metadata_pkey ATTACH PARTITION ci_build_trace_metadata_pkey;
-
-ALTER INDEX index_p_ci_build_trace_metadata_on_trace_artifact_id ATTACH PARTITION ci_build_trace_metadata_trace_artifact_id_idx;
-
 ALTER INDEX p_ci_builds_status_created_at_project_id_idx ATTACH PARTITION ci_builds_gitlab_monitor_metrics;
 
 ALTER INDEX p_ci_builds_metadata_pkey ATTACH PARTITION ci_builds_metadata_pkey;
@@ -35010,7 +34988,7 @@ ALTER TABLE ONLY packages_debian_group_architectures
     ADD CONSTRAINT fk_92714bcab1 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY work_item_type_custom_fields
-    ADD CONSTRAINT fk_9447fad7b4 FOREIGN KEY (work_item_type_id) REFERENCES work_item_types(id) ON DELETE CASCADE;
+    ADD CONSTRAINT fk_9447fad7b4 FOREIGN KEY (work_item_type_id) REFERENCES work_item_types(correct_id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY workspaces_agent_configs
     ADD CONSTRAINT fk_94660551c8 FOREIGN KEY (cluster_agent_id) REFERENCES cluster_agents(id) ON DELETE CASCADE;

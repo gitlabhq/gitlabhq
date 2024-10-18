@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'spec_helper'
 
 RSpec.describe Gitlab::Auth::Activity do
   describe '.each_counter' do
@@ -26,6 +26,30 @@ RSpec.describe Gitlab::Auth::Activity do
       described_class.each_counter do |method, name, description|
         expect(method).to eq "#{name}_counter"
         expect(description).to start_with('Counter of')
+      end
+    end
+  end
+
+  describe '#user_csrf_token_mismatch!' do
+    context 'when GraphQL controller is being used' do
+      it 'increments correct counter with GraphQL label' do
+        metrics = described_class.new(controller: GraphqlController.new)
+
+        expect(described_class.user_csrf_token_invalid_counter)
+          .to receive(:increment).with(controller: 'GraphqlController')
+
+        metrics.user_csrf_token_mismatch!
+      end
+    end
+
+    context 'when another controller is being used' do
+      it 'increments correct count with a non-specific label' do
+        metrics = described_class.new(controller: ApplicationController.new)
+
+        expect(described_class.user_csrf_token_invalid_counter)
+          .to receive(:increment).with(controller: 'other')
+
+        metrics.user_csrf_token_mismatch!
       end
     end
   end

@@ -33,9 +33,6 @@ describe('Pipeline Url Component', () => {
   const createComponent = (props) => {
     wrapper = shallowMountExtended(PipelineUrlComponent, {
       propsData: { ...defaultProps, ...props },
-      provide: {
-        targetProjectFullPath: projectPath,
-      },
     });
   };
 

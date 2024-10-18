@@ -3,6 +3,7 @@ import Vue from 'vue';
 import { mapActions, mapState } from 'vuex';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import AwardsList from '~/vue_shared/components/awards_list.vue';
+import { EMOJI_THUMBS_UP, EMOJI_THUMBS_DOWN } from '~/emoji/constants';
 import createstore from './store';
 
 export default (el) => {
@@ -39,7 +40,7 @@ export default (el) => {
           awards: this.awards,
           canAwardEmoji: this.canAwardEmoji,
           currentUserId: this.currentUserId,
-          defaultAwards: showDefaultAwardEmojis ? ['thumbsup', 'thumbsdown'] : [],
+          defaultAwards: showDefaultAwardEmojis ? [EMOJI_THUMBS_UP, EMOJI_THUMBS_DOWN] : [],
           selectedClass: 'selected',
         },
         on: {

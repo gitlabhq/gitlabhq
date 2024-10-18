@@ -144,6 +144,14 @@ class ApplicationController < BaseActionController
     end
   end
 
+  def handle_unverified_request
+    Gitlab::Auth::Activity
+      .new(controller: self)
+      .user_csrf_token_mismatch!
+
+    super
+  end
+
   def render(*args)
     super.tap do
       # Set a header for custom error pages to prevent them from being intercepted by gitlab-workhorse

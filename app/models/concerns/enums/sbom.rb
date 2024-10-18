@@ -20,7 +20,8 @@ module Enums
       deb: 11,
       'cbl-mariner': 12,
       wolfi: 13,
-      cargo: 14
+      cargo: 14,
+      swift: 15
     }.with_indifferent_access.freeze
 
     REACHABILITY_TYPES = {
@@ -38,6 +39,7 @@ module Enums
       nuget
       pypi
       cargo
+      swift
     ].freeze
 
     CONTAINER_SCANNING_PURL_TYPES = %w[

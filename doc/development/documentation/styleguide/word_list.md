@@ -1029,6 +1029,7 @@ the following are the names of GitLab Duo features:
 - GitLab Duo AI Impact Dashboard
 - GitLab Duo Chat
 - GitLab Duo Code Explanation
+- GitLab Duo Code Review
 - GitLab Duo Code Review Summary
 - GitLab Duo Code Suggestions
 - GitLab Duo for the CLI

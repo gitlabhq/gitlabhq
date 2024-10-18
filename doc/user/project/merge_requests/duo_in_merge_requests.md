@@ -90,11 +90,12 @@ To generate a commit message with GitLab Duo:
 - Contents of the file
 - The filename
 
-## GitLab Duo code review
+## Have GitLab Duo review your code
 
 DETAILS:
 **Tier:** Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com
+**Status:** Experiment
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14825) in GitLab 17.5 as an [experiment](../../../policy/experiment-beta-support.md#experiment).
 > - Feature flag `ai_review_merge_request` [disabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/456106).
