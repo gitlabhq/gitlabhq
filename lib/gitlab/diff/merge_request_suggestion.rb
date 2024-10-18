@@ -116,6 +116,8 @@ module Gitlab
       strong_memoize_attr :latest_merge_request_diff
 
       def position
+        raise TargetLineNotFound if suggestion_target_line.nil?
+
         {
           position_type: "text",
           old_path: @path,

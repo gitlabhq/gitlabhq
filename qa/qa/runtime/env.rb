@@ -410,10 +410,6 @@ module QA
         ENV['QA_HOSTNAME']
       end
 
-      def cache_namespace_name?
-        enabled?(ENV['CACHE_NAMESPACE_NAME'], default: true)
-      end
-
       def knapsack?
         ENV['CI_NODE_TOTAL'].to_i > 1 && ENV['NO_KNAPSACK'] != "true"
       end

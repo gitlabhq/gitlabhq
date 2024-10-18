@@ -7,7 +7,14 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
     # We disable a memory instrumentation feature
     # as this requires a special patched Ruby
     allow(Gitlab::Memory::Instrumentation).to receive(:available?) { false }
+
+    # We disable Thread.current.name there could be state leak from other specs.
     allow(Thread.current).to receive(:name).and_return(nil)
+    Thread.current[:sidekiq_capsule] = Sidekiq::Capsule.new('test', Sidekiq.default_configuration)
+  end
+
+  after do
+    Thread.current[:sidekiq_capsule] = nil
   end
 
   describe '#call', :request_store do

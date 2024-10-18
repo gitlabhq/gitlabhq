@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Undo changes
 
 Git provides options for undoing changes. You can undo changes at any point in the
-[Git workflow](get_started.md#step-3-understand-the-git-workflow).
+[Git workflow](get_started.md#understand-the-git-workflow).
 
 The method to use to undo changes depends on if the changes are:
 

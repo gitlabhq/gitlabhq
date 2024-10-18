@@ -11,8 +11,13 @@ RSpec.configure do |config|
     # see https://github.com/sidekiq/sidekiq/issues/6069
     Sidekiq::Testing.inline!
 
+    # Set a thread-local sidekiq capsule as it may be accessed in the
+    # Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkerExecutionTracker
+    Thread.current[:sidekiq_capsule] = Sidekiq::Capsule.new('test', Sidekiq.default_configuration)
+
     yield
   ensure
+    Thread.current[:sidekiq_capsule] = nil
     Sidekiq::Testing.fake! # fake is the default so we reset it to that
     redis_queues_cleanup!
     redis_queues_metadata_cleanup!

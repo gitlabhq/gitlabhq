@@ -69,7 +69,5 @@ For more information, see [Update your fork](update_fork.md).
 - [Get started learning Git](get_started.md)
   - [Install Git](how_to_install_git/index.md)
   - [Common Git commands](commands.md)
-<!--
-- [Advanced operation](advanced_operations.md)
--->
+<!-- - [Advanced operation](advanced_operations.md) -->
 - [Git cheat sheet](https://about.gitlab.com/images/press/git-cheat-sheet.pdf)

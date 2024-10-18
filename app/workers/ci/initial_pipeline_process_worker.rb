@@ -4,7 +4,7 @@ module Ci
   class InitialPipelineProcessWorker
     include ApplicationWorker
 
-    data_consistency :always
+    data_consistency :sticky, feature_flag: :sticky_initial_pipeline_process_worker
 
     sidekiq_options retry: 3
     include PipelineQueue

@@ -17,7 +17,7 @@ Learning Git is part of a larger workflow:
 
 ![Workflow](img/get_started_git_v16_11.png)
 
-## Step 1: Understand repositories and working directories
+## Understand repositories and working directories
 
 A Git repository is essentially a directory that contains all the files,
 folders, and version history of a project.
@@ -40,7 +40,7 @@ For more information, see:
 
 - [Repositories](../../user/project/repository/index.md)
 
-## Step 2: Learn about branching and merging
+## Learn about branching and merging
 
 In Git, you use branches so that you and your team can work on different features,
 bug fixes, or experiments simultaneously, without interfering with each other's work.
@@ -60,7 +60,7 @@ For more information, see:
 
 - [Branches](../../user/project/repository/branches/index.md)
 
-## Step 3: Understand the Git workflow
+## Understand the Git workflow
 
 A typical Git workflow involves the following steps:
 
@@ -83,7 +83,7 @@ For more information, see:
 - [Tutorial: Make your first Git commit](../../tutorials/make_first_git_commit/index.md)
 - [Forks](../../user/project/repository/forking_workflow.md)
 
-## Step 4: Install Git
+## Install Git
 
 Before you start using Git commands and contributing to GitLab projects, you must download
 and install the Git client on your computer. The installation process varies depending on
@@ -91,7 +91,7 @@ your operating system.
 
 For information on how to install Git, see [Install Git](how_to_install_git/index.md).
 
-## Step 5: Familiarize yourself with Git commands
+## Familiarize yourself with Git commands
 
 To work with Git from the command line, you need to use various Git commands.
 Some of the most commonly used commands include:
@@ -121,13 +121,13 @@ To learn how to generate and add SSH keys to your GitLab account,
 see [Generate an SSH key pair](../user/ssh.md).
 -->
 
-## Step 6: Practice using Git
+## Practice using Git
 
 The best way to learn Git is by using it in practice. Create a test project,
 experiment with different commands, and try out various workflows.
 GitLab provides a web-based interface for many Git operations,
 but it is also used to understand how to use Git from the command line.
 
-For a hands-on approach to learning Git commands, see the [Tutorial: Make your first Git commit](../../tutorials/make_first_git_commit/index.md). 
+For a hands-on approach to learning Git commands, see the [Tutorial: Make your first Git commit](../../tutorials/make_first_git_commit/index.md).
 
 For other helpful resources, see [Tutorials: Learn Git](../../tutorials/learn_git.md).

@@ -13,10 +13,10 @@ module QA
             element 'project-create-button'
           end
 
-          def import!(gitlab_repo_path, name)
+          def import!(gitlab_repo_path, name, namespace)
             fill_git_repository_url_link(gitlab_repo_path)
             fill_project_name(name)
-            choose_test_namespace
+            choose_namespace(namespace)
             click_create_button
 
             wait_for_success
@@ -30,10 +30,6 @@ module QA
 
           def fill_project_name(name)
             fill_in 'project_name', with: name
-          end
-
-          def choose_test_namespace
-            choose_namespace(Runtime::Namespace.path)
           end
 
           def choose_namespace(namespace)

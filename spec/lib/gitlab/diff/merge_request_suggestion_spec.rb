@@ -25,8 +25,9 @@ RSpec.describe Gitlab::Diff::MergeRequestSuggestion, feature_category: :vulnerab
     end
 
     let_it_be(:diff) { File.read(File.join(fixtures_folder, 'input.diff')) }
+    let(:mr_suggestion) { described_class.new(diff, filepath, merge_request) }
 
-    subject(:attributes_hash) { described_class.new(diff, filepath, merge_request).note_attributes_hash }
+    subject(:attributes_hash) { mr_suggestion.note_attributes_hash }
 
     before do
       merge_request.reload
@@ -58,6 +59,13 @@ RSpec.describe Gitlab::Diff::MergeRequestSuggestion, feature_category: :vulnerab
       let_it_be(:filepath) { 'cwe-123.rb' }
 
       it 'raises an error' do
+        expect { attributes_hash }.to raise_exception(described_class::TargetLineNotFound)
+      end
+    end
+
+    context 'when suggestion_target_line is nil' do
+      it 'raises an error' do
+        expect(mr_suggestion).to receive(:suggestion_target_line).and_return(nil)
         expect { attributes_hash }.to raise_exception(described_class::TargetLineNotFound)
       end
     end

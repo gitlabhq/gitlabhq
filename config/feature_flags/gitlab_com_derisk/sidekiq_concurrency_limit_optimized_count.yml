@@ -1,0 +1,9 @@
+---
+name: sidekiq_concurrency_limit_optimized_count
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/490936
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169561
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/496335
+milestone: '17.6'
+group: group::scalability
+type: gitlab_com_derisk
+default_enabled: false

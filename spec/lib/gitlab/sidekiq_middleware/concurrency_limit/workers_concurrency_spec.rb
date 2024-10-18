@@ -30,9 +30,17 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersConcurrency, 
     ]
   end
 
+  let(:concurrency_tracking_hash_content) do
+    (1..current_concurrency).flat_map { |i| [i, i] }
+  end
+
   before do
     stub_const('TestConcurrencyLimitWorker', worker_class)
     allow(described_class).to receive(:sidekiq_workers).and_return([sidekiq_worker] * current_concurrency)
+    Gitlab::Redis::QueuesMetadata.with do |c|
+      prefix = Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService::REDIS_KEY_PREFIX
+      c.hset("#{prefix}:{#{worker_class.name.underscore}}:executing", *concurrency_tracking_hash_content)
+    end
   end
 
   describe '.current_for' do
@@ -41,9 +49,20 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersConcurrency, 
     context 'without cache' do
       let(:skip_cache) { true }
 
-      it 'returns the current concurrency', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/451677' do
-        expect(described_class).to receive(:workers_uncached).and_call_original
+      it 'looks up current concurrency from hash' do
+        expect(described_class).not_to receive(:workers_uncached)
         expect(current_for).to eq(current_concurrency)
+      end
+
+      context 'when sidekiq_concurrency_limit_optimized_count feature flag is disabled' do
+        before do
+          stub_feature_flags(sidekiq_concurrency_limit_optimized_count: false)
+        end
+
+        it 'returns the current concurrency', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/451677' do
+          expect(described_class).to receive(:workers_uncached).and_call_original
+          expect(current_for).to eq(current_concurrency)
+        end
       end
     end
 
@@ -55,10 +74,21 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersConcurrency, 
         cache_setup!(tally: cached_value, lease: true)
       end
 
-      it 'returns cached current_for' do
-        expect(described_class).not_to receive(:workers_uncached)
+      it 'looks up current concurrency from hash' do
+        expect(described_class).not_to receive(:workers)
+        expect(current_for).to eq(current_concurrency)
+      end
 
-        expect(current_for).to eq(20)
+      context 'when sidekiq_concurrency_limit_optimized_count feature flag is disabled' do
+        before do
+          stub_feature_flags(sidekiq_concurrency_limit_optimized_count: false)
+        end
+
+        it 'returns cached current_for' do
+          expect(described_class).not_to receive(:workers_uncached)
+
+          expect(current_for).to eq(20)
+        end
       end
     end
   end

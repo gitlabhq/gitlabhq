@@ -16,7 +16,7 @@ module QA
             element 'select-namespace-dropdown'
           end
 
-          def fork_project(namespace = Runtime::Namespace.path)
+          def fork_project(namespace)
             choose_namespace(namespace)
             click_element('fork-privacy-button', privacy_level: 'public')
             click_element('fork-project-button')

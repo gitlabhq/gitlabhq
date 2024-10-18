@@ -22,13 +22,29 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::Server, feature_cate
   end
 
   before do
+    Thread.current[:sidekiq_capsule] = Sidekiq::Capsule.new('test', Sidekiq.default_configuration)
     stub_const('TestConcurrencyLimitWorker', worker_class)
+  end
+
+  after do
+    Thread.current[:sidekiq_capsule] = nil
   end
 
   around do |example|
     with_sidekiq_server_middleware do |chain|
       chain.add described_class
       Sidekiq::Testing.inline! { example.run }
+    end
+  end
+
+  shared_examples 'skip execution tracking' do
+    it do
+      expect(Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService)
+        .not_to receive(:track_execution_start)
+      expect(Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService)
+        .not_to receive(:track_execution_end)
+
+      TestConcurrencyLimitWorker.perform_async('foo')
     end
   end
 
@@ -45,6 +61,8 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::Server, feature_cate
 
         TestConcurrencyLimitWorker.perform_async('foo')
       end
+
+      it_behaves_like 'skip execution tracking'
     end
 
     context 'when there are jobs in the queue' do
@@ -115,6 +133,30 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::Server, feature_cate
           expect(Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService).not_to receive(:add_to_queue!)
 
           TestConcurrencyLimitWorker.perform_async('foo')
+        end
+
+        it 'tracks execution concurrency' do
+          expect(Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService)
+            .to receive(:track_execution_start)
+          expect(Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService).to receive(:track_execution_end)
+
+          TestConcurrencyLimitWorker.perform_async('foo')
+        end
+
+        context 'when limit is set to zero' do
+          before do
+            allow(::Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersMap).to receive(:limit_for).and_return(0)
+          end
+
+          it_behaves_like 'skip execution tracking'
+        end
+
+        context 'when limit is not defined' do
+          before do
+            ::Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersMap.remove_instance_variable(:@data)
+          end
+
+          it_behaves_like 'skip execution tracking'
         end
       end
 

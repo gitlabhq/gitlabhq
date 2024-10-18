@@ -43,10 +43,6 @@ module QA
           click_element('panel-link', panel_name: 'create_from_template')
         end
 
-        def choose_test_namespace
-          choose_namespace(Runtime::Namespace.path)
-        end
-
         def choose_namespace(namespace)
           # The current group is the default, we use end_with? in case we want to select the top level group
           return if find_element('select-namespace-dropdown').text.end_with?(namespace)

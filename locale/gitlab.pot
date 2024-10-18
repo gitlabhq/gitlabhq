@@ -11761,6 +11761,9 @@ msgstr ""
 msgid "CiCatalog|The project will be findable in the CI/CD Catalog after the project has at least one release."
 msgstr ""
 
+msgid "CiCatalog|There was a problem fetching the CI/CD Catalog releases."
+msgstr ""
+
 msgid "CiCatalog|There was a problem fetching the CI/CD Catalog setting."
 msgstr ""
 

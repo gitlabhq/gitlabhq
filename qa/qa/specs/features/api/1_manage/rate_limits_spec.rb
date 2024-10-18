@@ -16,11 +16,11 @@ module QA
       it 'throttles authenticated api requests by user',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347881' do
         with_application_settings(
-          throttle_authenticated_api_requests_per_period: 5,
+          throttle_authenticated_api_requests_per_period: 100,
           throttle_authenticated_api_period_in_seconds: 60,
           throttle_authenticated_api_enabled: true
         ) do
-          5.times do
+          100.times do
             res = RestClient.get request.url
             expect(res.code).to be(200)
           end
@@ -30,15 +30,15 @@ module QA
           end
         end
       end
-    end
 
-    private
+      private
 
-    def with_application_settings(**hargs)
-      QA::Runtime::ApplicationSettings.set_application_settings(**hargs)
-      yield
-    ensure
-      QA::Runtime::ApplicationSettings.restore_application_settings(*hargs.keys)
+      def with_application_settings(**hargs)
+        QA::Runtime::ApplicationSettings.set_application_settings(**hargs)
+        yield
+      ensure
+        QA::Runtime::ApplicationSettings.restore_application_settings(*hargs.keys)
+      end
     end
   end
 end

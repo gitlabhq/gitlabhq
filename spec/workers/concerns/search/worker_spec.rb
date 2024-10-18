@@ -24,6 +24,6 @@ RSpec.describe Search::Worker, feature_category: :global_search do
     limit = 55
     expect(Search).to receive(:default_concurrency_limit).and_return(limit)
 
-    expect(Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersMap.limit_for(worker: worker_class)&.call).to eq(limit)
+    expect(Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersMap.limit_for(worker: worker_class)).to eq(limit)
   end
 end

@@ -42,11 +42,7 @@ RSpec.configure do |config|
   config.example_status_persistence_file_path = ENV.fetch('RSPEC_LAST_RUN_RESULTS_FILE', 'tmp/examples.txt')
 
   config.prepend_before do |example|
-    if QA::Runtime::Env.parallel_run?
-      QA::Runtime::Logger.info("Starting test - PID #{Process.pid}: #{Rainbow(example.full_description).bright}")
-    else
-      QA::Runtime::Logger.info("Starting test: #{Rainbow(example.full_description).bright}")
-    end
+    QA::Runtime::Logger.info("Starting test: #{Rainbow(example.full_description).bright}")
 
     QA::Runtime::Example.current = example
 

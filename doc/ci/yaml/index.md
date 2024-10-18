@@ -4677,9 +4677,7 @@ DETAILS:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440487) in GitLab 17.3 [with a flag](../../administration/feature_flags.md) named `pipeline_run_keyword`. Disabled by default. Requires GitLab Runner 17.1.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/471925) in GitLab 17.5. Feature flag `pipeline_run_keyword` removed.
 
-FLAG:
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
+NOTE:
 This feature is available for testing, but not ready for production use.
 
 Use `run` to define a series of [steps](../steps/index.md) to be executed in a job. Each step can be either a script or a predefined step.

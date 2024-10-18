@@ -164,7 +164,10 @@ You can change how long users can remain signed in without activity.
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
-1. Expand **Account and limit**. The set duration is in **Session duration (minutes)**.
+1. Expand **Account and limit**.
+1. Fill in the **Session duration (minutes)** field.
+1. Select **Save changes**.
+1. Restart GitLab to apply the changes.
 
    WARNING:
    Setting **Session duration (minutes)** to `0` breaks your GitLab instance.

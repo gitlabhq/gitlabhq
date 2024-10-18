@@ -338,7 +338,14 @@ These flaky tests can fail depending on the order they run with other tests. For
 
 - <https://gitlab.com/gitlab-org/gitlab/-/issues/327668>
 
-To identify the tests that lead to such failure, we can use `scripts/rspec_bisect_flaky`,
+To identify test ordering issues in a single file you can run
+`scripts/rspec_check_order_dependence`:
+
+```shell
+scripts/rspec_check_order_dependence spec/models/project_spec.rb
+```
+
+To identify the ordering issues across different files, you can use `scripts/rspec_bisect_flaky`,
 which would give us the minimal test combination to reproduce the failure:
 
 1. First obtain the list of specs that ran before the flaky test. You can search

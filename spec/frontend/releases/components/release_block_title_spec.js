@@ -1,20 +1,35 @@
 import { GlLink, GlBadge } from '@gitlab/ui';
 import { merge } from 'lodash';
 import originalRelease from 'test_fixtures/api/releases/release.json';
+import { stubComponent } from 'helpers/stub_component';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import CiCdCatalogWrapper from '~/releases/components/ci_cd_catalog_wrapper.vue';
 import ReleaseBlockTitle from '~/releases/components/release_block_title.vue';
 
-describe('Release block header', () => {
+describe('ReleaseBlockTitle', () => {
   let wrapper;
   let release;
 
-  const factory = (releaseUpdates = {}) => {
+  const detailsPagePath = '/path';
+
+  const createComponent = ({ isCatalogRelease = false, releaseUpdates = {} } = {}) => {
     wrapper = shallowMountExtended(ReleaseBlockTitle, {
       propsData: {
         release: merge({}, release, releaseUpdates),
       },
-      stubs: { GlBadge },
+      stubs: {
+        CiCdCatalogWrapper: {
+          ...stubComponent(CiCdCatalogWrapper),
+          render() {
+            return this.$scopedSlots.default({
+              detailsPagePath,
+              isCatalogRelease,
+            });
+          },
+        },
+        GlBadge,
+      },
     });
   };
 
@@ -22,13 +37,14 @@ describe('Release block header', () => {
     release = convertObjectPropsToCamelCase(originalRelease, { deep: true });
   });
 
-  const findPlainHeader = () => wrapper.findByTestId('release-block-title');
-  const findHeaderLink = () => wrapper.findComponent(GlLink);
   const findBadge = () => wrapper.findComponent(GlBadge);
+  const findCatalogBadge = () => wrapper.findByTestId('catalog-badge');
+  const findHeaderLink = () => wrapper.findComponent(GlLink);
+  const findPlainHeader = () => wrapper.findByTestId('release-block-title');
 
   describe('when _links.self is provided', () => {
     beforeEach(() => {
-      factory();
+      createComponent();
     });
 
     it('renders the title as a link', () => {
@@ -45,7 +61,7 @@ describe('Release block header', () => {
 
   describe('when _links.self is missing', () => {
     beforeEach(() => {
-      factory({ _links: { self: null } });
+      createComponent({ releaseUpdates: { _links: { self: null } } });
     });
 
     it('renders a plain header', () => {
@@ -56,7 +72,7 @@ describe('Release block header', () => {
 
   describe('upcoming release', () => {
     beforeEach(() => {
-      factory({ upcomingRelease: true, historicalRelease: false });
+      createComponent({ releaseUpdates: { upcomingRelease: true, historicalRelease: false } });
     });
 
     it('shows a badge that the release is upcoming', () => {
@@ -69,7 +85,7 @@ describe('Release block header', () => {
 
   describe('historical release', () => {
     beforeEach(() => {
-      factory({ upcomingRelease: false, historicalRelease: true });
+      createComponent({ releaseUpdates: { upcomingRelease: false, historicalRelease: true } });
     });
 
     it('shows a badge that the release is historical', () => {
@@ -79,6 +95,32 @@ describe('Release block header', () => {
       expect(badge.attributes('title')).toBe(
         'This release was created with a date in the past. Evidence collection at the moment of the release is unavailable.',
       );
+    });
+  });
+
+  describe('ci/cd catalog badge', () => {
+    describe('when the release is not a catalog release', () => {
+      beforeEach(() => {
+        createComponent();
+      });
+
+      it('does not render a catalog badge', () => {
+        expect(findCatalogBadge().exists()).toBe(false);
+      });
+    });
+
+    describe('when the release is a catalog release', () => {
+      beforeEach(() => {
+        createComponent({ isCatalogRelease: true });
+      });
+
+      it('renders a catalog badge', () => {
+        expect(findCatalogBadge().exists()).toBe(true);
+      });
+
+      it('assigns the correct href to the badge', () => {
+        expect(findCatalogBadge().attributes('href')).toBe(detailsPagePath);
+      });
     });
   });
 });
