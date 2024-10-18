@@ -3,12 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe Ci::JobTokenScope::AddGroupService, feature_category: :continuous_integration do
-  let(:service) { described_class.new(project, current_user) }
-
   let_it_be(:project) { create(:project, ci_outbound_job_token_scope_enabled: true).tap(&:save!) }
   let_it_be(:target_group) { create(:group, :private) }
   let_it_be(:current_user) { create(:user) }
   let_it_be(:policies) { %w[read_project read_package] }
+
+  let(:service) { described_class.new(project, current_user) }
 
   shared_examples 'adds group' do |_context|
     it 'adds the group to the scope', :aggregate_failures do

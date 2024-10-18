@@ -248,7 +248,9 @@ To change the number of job artifacts listed, change the number in `limit(50)`.
 ### Delete old builds and artifacts
 
 WARNING:
-These commands remove data permanently from database and storage. Before running them, we highly recommend seeking guidance from a Support Engineer, or running them in a test environment with a backup of the instance ready to be restored, just in case.
+These commands remove data permanently. Before running them in a production environment,
+you should try them in a test environment first and make a backup of the instance
+that can be restored if needed.
 
 #### Delete old artifacts for a project
 
@@ -354,6 +356,48 @@ Rerun the deletion with shorter durations as needed, for example `3.months.ago`,
 
 The method `erase_erasable_artifacts!` is synchronous, and upon execution the artifacts are immediately removed;
 they are not scheduled by a background queue.
+
+### Delete old pipelines
+
+WARNING:
+These commands remove data permanently. Before running them in a production environment,
+consider seeking guidance from a Support Engineer. You should also try them in a test environment first
+and make a backup of the instance that can be restored if needed.
+
+Deleting a pipeline also removes that pipeline's:
+
+- Job artifacts
+- Job logs
+- Job metadata
+- Pipeline metadata
+
+Removing job and pipeline metadata can help reduce the size of the CI tables in the database.
+The CI tables are usually the largest tables in an instance's database.
+
+#### Delete old pipelines for a project
+
+```ruby
+project = Project.find_by_full_path('path/to/project')
+user = User.find(1)
+project.ci_pipelines.where("finished_at < ?", 1.year.ago).each_batch do |batch|
+  batch.each do |pipeline|
+    puts "Erasing pipeline #{pipeline.id}"
+    ::Ci::DestroyPipelineService.new(pipeline.project, user).execute(pipeline)
+  end
+end
+```
+
+#### Delete old pipelines instance-wide
+
+```ruby
+user = User.find(1)
+Ci::Pipeline.where("finished_at < ?", 1.year.ago).each_batch do |batch|
+  batch.each do |pipeline|
+    puts "Erasing pipeline #{pipeline.id} for project #{pipeline.project_id}"
+    ::Ci::DestroyPipelineService.new(pipeline.project, user).execute(pipeline)
+  end
+end
+```
 
 ## Job artifact upload fails with error 500
 
@@ -546,3 +590,17 @@ sequenceDiagram
       W->>C: 401 Unauthorized
     end
 ```
+
+## `413 Request Entity Too Large` error
+
+If the artifacts are too large, the job might fail with the following error:
+
+```plaintext
+Uploading artifacts as "archive" to coordinator... too large archive <job-id> responseStatus=413 Request Entity Too Large status=413" at end of a build job on pipeline when trying to store artifacts to <object-storage>.
+```
+
+You might need to:
+
+- Increase the [maximum artifacts size](../settings/continuous_integration.md#maximum-artifacts-size).
+- If you are using NGINX as a proxy server, increase the file upload size limit which is limited to 1 MB by default.
+  Set a higher value for `client-max-body-size` in the NGINX configuration file.

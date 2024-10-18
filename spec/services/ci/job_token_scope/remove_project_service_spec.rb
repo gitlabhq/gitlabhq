@@ -18,6 +18,7 @@ RSpec.describe Ci::JobTokenScope::RemoveProjectService, feature_category: :conti
     it 'removes the project from the scope' do
       expect do
         expect(result).to be_success
+        expect(result.payload).to eq(link)
       end.to change { Ci::JobToken::ProjectScopeLink.count }.by(-1)
     end
   end

@@ -274,11 +274,9 @@ If, after using the `/rebase`
 [quick action](../../user/project/quick_actions.md#issues-merge-requests-and-epics),
 you see this error, a rebase cannot be scheduled:
 
-<!-- vale gitlab_base.CurrentStatus  = NO -->
 ```plaintext
 This merge request is currently in an unmergeable state, and cannot be rebased.
 ```
-<!-- vale gitlab_base.CurrentStatus  = YES -->
 
 This error occurs if any of these conditions are true:
 

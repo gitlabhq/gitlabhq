@@ -4,14 +4,14 @@ group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Continuous Integration and Deployment Admin area settings
+# CI/CD Admin area settings
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed
 
-The [**Admin** area](index.md) has the instance settings for Auto DevOps, runners, and
-job artifacts.
+The [**Admin** area](index.md) has the instance settings for CI/CD-related features,
+including runners, job artifacts, and the package registry.
 
 ## Auto DevOps
 
@@ -25,13 +25,12 @@ for all projects:
    which is used for Auto Deploy and Auto Review Apps.
 1. Select **Save changes** for the changes to take effect.
 
-From now on, every existing project and newly created ones that don't have a
+Every existing project and newly created ones that don't have a
 `.gitlab-ci.yml` use the Auto DevOps pipelines.
 
-If you want to disable it for a specific project, you can do so in
-[its settings](../../topics/autodevops/index.md#enable-or-disable-auto-devops).
+## Runners
 
-## Enable instance runners for new projects
+### Enable instance runners for new projects
 
 You can set all new projects to have instance runners available by default.
 
@@ -42,44 +41,7 @@ You can set all new projects to have instance runners available by default.
 
 Any time a new project is created, the instance runners are available.
 
-## Enable runner registrations tokens
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147559) in GitLab 16.11
-
-WARNING:
-The ability to pass a runner registration token, and support for certain configuration arguments was deprecated in GitLab 15.6 and will be removed in GitLab 18.0. Runner authentication tokens should be used instead. For more information, see [Migrating to the new runner registration workflow](../../ci/runners/new_creation_workflow.md).
-
-In GitLab 17.0, the use of runner registration tokens to create runners will be disabled in all GitLab instances.
-Users must use runner authentication tokens instead.
-If you have not yet [migrated to the use of runner authentication tokens](../../ci/runners/new_creation_workflow.md),
-you can enable runner registration tokens. This setting and support for runner registration tokens will be removed in GitLab 18.0.
-
-1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > CI/CD**.
-1. Expand **Runners**.
-1. Select the **Allow runner registration token** checkbox.
-
-## Instance runners compute quota
-
-As an administrator you can set either a global or namespace-specific
-limit on the number of [compute minutes](../../ci/pipelines/compute_minutes.md) you can use.
-
-## Enable a project runner for multiple projects
-
-If you have already registered a [project runner](../../ci/runners/runners_scope.md#project-runners)
-you can assign that runner to other projects.
-
-To enable a project runner for more than one project:
-
-1. On the left sidebar, at the bottom, select **Admin**.
-1. From the left sidebar, select **CI/CD > Runners**.
-1. Select the runner you want to edit.
-1. In the upper-right corner, select **Edit** (**{pencil}**).
-1. Under **Restrict projects for this runner**, search for a project.
-1. To the left of the project, select **Enable**.
-1. Repeat this process for each additional project.
-
-## Add a message for instance runners
+### Add a message for instance runners
 
 To display details about the instance runners in all projects'
 runner settings:
@@ -97,7 +59,98 @@ To view the rendered details:
 
 ![A project's runner settings shows a message about shared runner guidelines.](img/continuous_integration_shared_runner_details_v14_10.png)
 
-## Maximum artifacts size
+### Enable a project runner for multiple projects
+
+If you have already registered a [project runner](../../ci/runners/runners_scope.md#project-runners)
+you can assign that runner to other projects.
+
+To enable a project runner for more than one project:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. From the left sidebar, select **CI/CD > Runners**.
+1. Select the runner you want to edit.
+1. In the upper-right corner, select **Edit** (**{pencil}**).
+1. Under **Restrict projects for this runner**, search for a project.
+1. To the left of the project, select **Enable**.
+1. Repeat this process for each additional project.
+
+### Disable runner version management
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114041) in GitLab 15.10.
+
+By default, GitLab instances periodically fetch official runner version data from GitLab.com to [determine whether the runners need upgrades](../../ci/runners/runners_scope.md#determine-which-runners-need-to-be-upgraded).
+
+To disable your instance fetching this data:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > CI/CD**.
+1. Expand **Runners**.
+1. In the **Runner version management** section, clear the **Fetch GitLab Runner release version data from GitLab.com** checkbox.
+1. Select **Save changes**.
+
+### Restrict runner registration by all users in an instance
+
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/368008) in GitLab 15.5.
+
+GitLab administrators can adjust who is allowed to register runners, by showing and hiding areas of the UI.
+This setting does not affect the ability to create a runner from the UI or through an authenticated API call.
+
+When the registration sections are hidden in the UI, members of the project or group must contact administrators to enable runner registration in the group or project. If you plan to prevent registration, ensure users have access to the runners they need to run jobs.
+
+By default, all members of a project and group are able to register runners.
+
+To restrict all users in an instance from registering runners:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > CI/CD**.
+1. Expand **Runners**.
+1. In the **Runner registration** section, clear the **Members of the project can register runners** and
+   **Members of the group can register runners** checkboxes to remove runner registration from the UI.
+1. Select **Save changes**.
+
+NOTE:
+After you disable runner registration by members of a project, the registration
+token automatically rotates. The token is no longer valid and you must
+use the new registration token for the project.
+
+### Restrict runner registration by all members in a group
+
+Prerequisites:
+
+- Runner registration must be enabled for [all users in the instance](#restrict-runner-registration-by-all-users-in-an-instance).
+
+GitLab administrators can adjust group permissions to restrict runner registration by group members.
+
+To restrict runner registration by members in a specific group:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Overview > Groups** and find your group.
+1. Select **Edit**.
+1. Clear the **New group runners can be registered** checkbox if you want to disable runner registration by all members in the group. If the setting is read-only, you must enable runner registration for the [instance](#restrict-runner-registration-by-all-users-in-an-instance).
+1. Select **Save changes**.
+
+### Allow runner registrations tokens
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147559) in GitLab 16.11
+
+WARNING:
+The ability to pass a runner registration token, and support for certain configuration arguments
+was deprecated in GitLab 15.6 and will be removed in GitLab 18.0. Runner authentication tokens should be used instead.
+For more information, see [Migrating to the new runner registration workflow](../../ci/runners/new_creation_workflow.md).
+
+In GitLab 17.0, the use of runner registration tokens to create runners will be disabled in all GitLab instances.
+Users must use runner authentication tokens instead.
+If you have not yet [migrated to the use of runner authentication tokens](../../ci/runners/new_creation_workflow.md),
+you can allow runner registration tokens. This setting and support for runner registration tokens will be removed in GitLab 18.0.
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > CI/CD**.
+1. Expand **Runners**.
+1. Select the **Allow runner registration token** checkbox.
+
+## Artifacts
+
+### Maximum artifacts size
 
 An administrator can set the maximum size of the
 [job artifacts](../../administration/cicd/job_artifacts.md) for:
@@ -129,7 +182,7 @@ The value is in MB, and the default value is 100 MB per job. An administrator ca
   1. Change the value of **Maximum artifacts size** (in MB).
   1. Select **Save changes** for the changes to take effect.
 
-## Default artifacts expiration
+### Default artifacts expiration
 
 The default expiration time of the [job artifacts](../../administration/cicd/job_artifacts.md)
 can be set in the **Admin** area of your GitLab instance. The syntax of duration is
@@ -151,7 +204,7 @@ be updated for artifacts created before this setting was changed.
 The administrator may need to manually search for and expire previously-created
 artifacts, as described in the [troubleshooting documentation](../../administration/cicd/job_artifacts_troubleshooting.md#delete-old-builds-and-artifacts).
 
-## Keep the latest artifacts for all jobs in the latest successful pipelines
+### Keep the latest artifacts for all jobs in the latest successful pipelines
 
 When enabled (default), the artifacts of the most recent pipeline for each Git ref
 ([branches and tags](https://git-scm.com/book/en/v2/Git-Internals-Git-References))
@@ -176,6 +229,21 @@ A new pipeline must run before the latest artifacts can expire and be deleted.
 
 NOTE:
 All application settings have a [customizable cache expiry interval](../../administration/application_settings_cache.md) which can delay the settings affect.
+
+### Disable the external redirect page for job artifacts
+
+By default, GitLab Pages shows an external redirect page when a user tries to view
+a job artifact served by GitLab Pages. This page warns about the potential for
+malicious user-generated content, as described in
+[issue 352611](https://gitlab.com/gitlab-org/gitlab/-/issues/352611).
+
+Self-managed administrators can disable the external redirect warning page,
+so you can view job artifact pages directly:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > CI/CD**.
+1. Expand **Continuous Integration and Deployment**.
+1. Deselect **Enable the external redirect page for job artifacts**.
 
 ## Archive jobs
 
@@ -252,7 +320,7 @@ from the **Admin** area:
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > CI/CD**.
 1. Expand the **Continuous Integration and Deployment** section.
-<!-- vale gitlab_base.CurrentStatus  = NO -->
+<!-- vale gitlab_base.CurrentStatus = NO -->
 1. In the **CI/CD limits** section, you can set the following limits:
    - **Maximum number of jobs in a single pipeline**
    - **Total number of jobs in currently active pipelines**
@@ -262,36 +330,21 @@ from the **Admin** area:
    - **Maximum number of runners registered per group**
    - **Maximum number of runners registered per project**
    - **Maximum number of downstream pipelines in a pipeline's hierarchy tree**
-<!-- vale gitlab_base.CurrentStatus  = YES -->
+<!-- vale gitlab_base.CurrentStatus = YES -->
 
-## Enable or disable the pipeline suggestion banner
+## Disable the pipeline suggestion banner
 
 By default, a banner displays in merge requests with no pipeline suggesting a
 walkthrough on how to add one.
 
 ![A banner displays guidance on how to get started with GitLab Pipelines.](img/suggest_pipeline_banner_v14_5.png)
 
-To enable or disable the banner:
+To disable the banner:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > CI/CD**.
-1. Select or clear the **Enable pipeline suggestion banner** checkbox.
+1. Clear the **Enable pipeline suggestion banner** checkbox.
 1. Select **Save changes**.
-
-## Enable or disable the external redirect page for job artifacts
-
-By default, GitLab Pages shows an external redirect page when a user tries to view
-a job artifact served by GitLab Pages. This page warns about the potential for
-malicious user-generated content, as described in
-[issue 352611](https://gitlab.com/gitlab-org/gitlab/-/issues/352611).
-
-Self-managed administrators can disable the external redirect warning page,
-so you can view job artifact pages directly:
-
-1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > CI/CD**.
-1. Expand **Continuous Integration and Deployment**.
-1. Deselect **Enable the external redirect page for job artifacts**.
 
 ## Required pipeline configuration
 
@@ -398,74 +451,3 @@ To set the maximum file size:
 1. Find the package type you would like to adjust.
 1. Enter the maximum file size, in bytes.
 1. Select **Save size limits**.
-
-## Restrict runner registration by all users in an instance
-
-> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/368008) in GitLab 15.5.
-
-GitLab administrators can adjust who is allowed to register runners, by showing and hiding areas of the UI.
-This setting does not affect the ability to create a runner from the UI or through an authenticated API call.
-
-When the registration sections are hidden in the UI, members of the project or group must contact administrators to enable runner registration in the group or project. If you plan to prevent registration, ensure users have access to the runners they need to run jobs.
-
-By default, all members of a project and group are able to register runners.
-
-To restrict all users in an instance from registering runners:
-
-1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > CI/CD**.
-1. Expand **Runners**.
-1. In the **Runner registration** section, clear the **Members of the project can register runners** and
-   **Members of the group can register runners** checkboxes to remove runner registration from the UI.
-1. Select **Save changes**.
-
-NOTE:
-After you disable runner registration by members of a project, the registration
-token automatically rotates. The token is no longer valid and you must
-use the new registration token for the project.
-
-## Restrict runner registration by all members in a group
-
-Prerequisites:
-
-- Runner registration must be enabled for [all users in the instance](#restrict-runner-registration-by-all-users-in-an-instance).
-
-GitLab administrators can adjust group permissions to restrict runner registration by group members.
-
-To restrict runner registration by members in a specific group:
-
-1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Overview > Groups** and find your group.
-1. Select **Edit**.
-1. Clear the **New group runners can be registered** checkbox if you want to disable runner registration by all members in the group. If the setting is read-only, you must enable runner registration for the [instance](#restrict-runner-registration-by-all-users-in-an-instance).
-1. Select **Save changes**.
-
-## Disable runner version management
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114041) in GitLab 15.10.
-
-By default, GitLab instances periodically fetch official runner version data from GitLab.com to [determine whether the runners need upgrades](../../ci/runners/runners_scope.md#determine-which-runners-need-to-be-upgraded).
-
-To disable your instance fetching this data:
-
-1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > CI/CD**.
-1. Expand **Runners**.
-1. In the **Runner version management** section, clear the **Fetch GitLab Runner release version data from GitLab.com** checkbox.
-1. Select **Save changes**.
-
-## Troubleshooting
-
-### `413 Request Entity Too Large` error
-
-If the artifacts are too large, the job might fail with the following error:
-
-```plaintext
-Uploading artifacts as "archive" to coordinator... too large archive <job-id> responseStatus=413 Request Entity Too Large status=413" at end of a build job on pipeline when trying to store artifacts to <object-storage>.
-```
-
-You might need to:
-
-- Increase the [maximum artifacts size](#maximum-artifacts-size).
-- If you are using NGINX as a proxy server, increase the file upload size limit which is limited to 1 MB by default.
-  Set a higher value for `client-max-body-size` in the NGINX configuration file.

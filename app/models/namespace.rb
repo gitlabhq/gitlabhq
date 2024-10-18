@@ -159,7 +159,7 @@ class Namespace < ApplicationRecord
   validate :parent_organization_match, if: :require_organization?
 
   attribute :organization_id, :integer, default: -> do
-    return 1 if Feature.enabled?(:namespace_model_default_org)
+    return 1 if Feature.enabled?(:namespace_model_default_org, Feature.current_request)
 
     columns_hash['organization_id'].default
   end

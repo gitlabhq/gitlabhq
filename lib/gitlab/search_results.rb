@@ -181,7 +181,7 @@ module Gitlab
       scope = limit_projects
       scope = scope.non_archived unless filters[:include_archived]
 
-      scope.search(query)
+      scope.search(query, include_namespace: true, use_minimum_char_limit: false)
     end
 
     def issues(finder_params = {})

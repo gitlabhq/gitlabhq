@@ -2,7 +2,7 @@
 
 class AddIndexOnProjectIdToPackagesNugetSymbols < Gitlab::Database::Migration[2.2]
   disable_ddl_transaction!
-  milestone '17.5'
+  milestone '17.6'
 
   INDEX_NAME = :index_packages_nuget_symbols_on_project_id
 

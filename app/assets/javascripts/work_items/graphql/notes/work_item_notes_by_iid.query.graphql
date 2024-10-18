@@ -13,6 +13,7 @@ query workItemNotesByIid($fullPath: ID!, $iid: String!, $after: String, $pageSiz
       widgets {
         ... on WorkItemWidgetNotes {
           type
+          discussionLocked
           discussions(first: $pageSize, after: $after, filter: ALL_NOTES) {
             pageInfo {
               ...PageInfo

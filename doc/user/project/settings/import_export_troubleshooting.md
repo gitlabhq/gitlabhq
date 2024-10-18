@@ -46,8 +46,6 @@ If there are too many users for manual configuration to be feasible,
 you can set all user profiles to use a public email address using the
 [Rails console](../../../administration/operations/rails_console.md#starting-a-rails-console-session):
 
-<!-- vale gitlab_base.CurrentStatus  = NO -->
-
 ```ruby
 User.where("public_email IS NULL OR public_email = '' ").find_each do |u|
   next if u.bot?
@@ -57,8 +55,6 @@ User.where("public_email IS NULL OR public_email = '' ").find_each do |u|
   u.save!
 end
 ```
-
-<!-- vale gitlab_base.CurrentStatus  = YES -->
 
 ## Import workarounds for large repositories
 

@@ -167,6 +167,8 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
   end
 
   it 'ensures all organization_id columns are not nullable, have no default, and have a foreign key' do
+    loose_foreign_keys = Gitlab::Database::LooseForeignKeys.definitions.group_by(&:from_table)
+
     sql = <<~SQL
       SELECT c.table_name,
         CASE WHEN c.column_default IS NOT NULL THEN 'has default' ELSE NULL END,
@@ -184,27 +186,24 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
     # To add a table to this list, create an issue under https://gitlab.com/groups/gitlab-org/-/epics/11670.
     # Use https://gitlab.com/gitlab-org/gitlab/-/issues/476206 as an example.
     work_in_progress = {
-      "dependency_list_export_parts" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/476207',
       "dependency_list_exports" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/476208',
       "namespaces" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/476209',
       "organization_users" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/476210',
       "projects" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/476211',
       "push_rules" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/476212',
       "raw_usage_data" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/476213',
-      "sbom_source_packages" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/476214',
-      "sbom_sources" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/476215',
       "snippets" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/476216',
-      "vulnerability_export_parts" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/476218',
+      "upcoming_reconciliations" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/476217',
       "vulnerability_exports" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/476219',
       "personal_access_tokens" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/477750',
-      "sbom_components" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/469436',
-      "sbom_component_versions" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/483194',
       "subscription_user_add_on_assignments" => "https://gitlab.com/gitlab-org/gitlab/-/issues/480697",
       "topics" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/463254',
       "oauth_access_tokens" => "https://gitlab.com/gitlab-org/gitlab/-/issues/496717",
       "oauth_access_grants" => "https://gitlab.com/gitlab-org/gitlab/-/issues/496717",
       "oauth_openid_requests" => "https://gitlab.com/gitlab-org/gitlab/-/issues/496717"
     }
+
+    has_lfk = ->(lfks) { lfks.any? { |k| k.options[:column] == 'organization_id' && k.to_table == 'organizations' } }
 
     organization_id_columns = ApplicationRecord.connection.select_rows(sql)
     violations = organization_id_columns.reject { |column| work_in_progress[column[0]] }
@@ -216,6 +215,8 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
           violation[2].concat(' / not null constraint missing')
         end
       end
+
+      violation.delete_at(3) if violation[3] && has_lfk.call(loose_foreign_keys.fetch(violation[0], {}))
 
       "  #{violation[0]} - #{violation[1..].compact.join(', ')}" if violation[1..].any?
     end

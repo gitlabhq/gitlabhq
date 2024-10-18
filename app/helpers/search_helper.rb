@@ -365,8 +365,14 @@ module SearchHelper
 
   # Autocomplete results for the current user's projects
   def projects_autocomplete(term, limit = 5)
-    current_user.authorized_projects.order_id_desc.search(term, include_namespace: true, use_minimum_char_limit: false)
-      .sorted_by_stars_desc.non_archived.limit(limit).map do |p|
+    projects = if Feature.enabled?(:autocomplete_projects_use_search_service, current_user)
+                 search_using_search_service(current_user, 'projects', term, limit)
+               else
+                 current_user.authorized_projects.order_id_desc.search(term, include_namespace: true, use_minimum_char_limit: false)
+                   .sorted_by_stars_desc.non_archived.limit(limit)
+               end
+
+    projects.map do |p|
       {
         category: "Projects",
         id: p.id,
@@ -385,10 +391,7 @@ module SearchHelper
       return []
     end
 
-    ::SearchService
-      .new(current_user, { scope: 'users', per_page: limit, search: term })
-      .search_objects
-      .map do |user|
+    search_using_search_service(current_user, 'users', term, limit).map do |user|
       {
         category: "Users",
         id: user.id,
@@ -602,6 +605,14 @@ module SearchHelper
 
   def wiki_blob_link(wiki_blob)
     project_wiki_path(wiki_blob.project, wiki_blob.basename)
+  end
+
+  def search_using_search_service(user, scope, term, limit, additional_params = {})
+    params = { scope: scope, search: term }.merge(additional_params)
+    ::SearchService
+      .new(user, params)
+      .search_objects
+      .first(limit)
   end
 end
 

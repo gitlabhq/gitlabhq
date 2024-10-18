@@ -561,6 +561,14 @@ RSpec.describe SearchHelper, feature_category: :global_search do
         expect(projects_autocomplete(search_term).pluck(:id)).to eq([project_2.id])
       end
 
+      context 'when the search term is Gitlab::Search::Params::MIN_TERM_LENGTH characters long' do
+        let(:search_term) { 'te' }
+
+        it 'returns the project' do
+          expect(projects_autocomplete(search_term).pluck(:id)).to eq([project_2.id])
+        end
+      end
+
       context 'when a project namespace matches the search term but the project does not' do
         let_it_be(:group) { create(:group, name: 'test group') }
         let_it_be(:project_3) { create(:project, name: 'nothing', namespace: group) }
@@ -571,6 +579,37 @@ RSpec.describe SearchHelper, feature_category: :global_search do
 
         it 'returns all projects matching the term' do
           expect(projects_autocomplete(search_term).pluck(:id)).to match_array([project_2.id, project_3.id])
+        end
+      end
+
+      context 'with feature flag autocomplete_projects_use_search_service disabled' do
+        before do
+          stub_feature_flags(autocomplete_projects_use_search_service: false)
+        end
+
+        it 'returns the project' do
+          expect(projects_autocomplete(search_term).pluck(:id)).to eq([project_2.id])
+        end
+
+        context 'when the search term is Gitlab::Search::Params::MIN_TERM_LENGTH characters long' do
+          let(:search_term) { 'te' }
+
+          it 'returns the project' do
+            expect(projects_autocomplete(search_term).pluck(:id)).to eq([project_2.id])
+          end
+        end
+
+        context 'when a project namespace matches the search term but the project does not' do
+          let_it_be(:group) { create(:group, name: 'test group') }
+          let_it_be(:project_3) { create(:project, name: 'nothing', namespace: group) }
+
+          before do
+            group.add_owner(user)
+          end
+
+          it 'returns all projects matching the term' do
+            expect(projects_autocomplete(search_term).pluck(:id)).to match_array([project_2.id, project_3.id])
+          end
         end
       end
     end

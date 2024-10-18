@@ -20,7 +20,7 @@ be accessed without authentication if the repository is publicly accessible.
 
 This command provides essentially the same features as the `git ls-tree`
 command. For more information, refer to the section
-[Tree Objects](https://git-scm.com/book/en/v2/Git-Internals-Git-Objects/#_tree_objects)
+[Tree Objects](https://git-scm.com/book/en/v2/Git-Internals-Git-Objects.html#_tree_objects)
 in the Git internals documentation.
 
 WARNING:

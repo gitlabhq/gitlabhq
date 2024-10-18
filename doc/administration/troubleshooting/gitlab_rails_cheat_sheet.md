@@ -50,7 +50,7 @@ This content has been moved to [Troubleshooting Repository mirroring](../../user
 
 ## CI
 
-This content has been moved to [Troubleshooting CI/CD](../cicd/index.md#cicd-troubleshooting-rails-console-commands).
+This content has been moved to [CI/CD maintenance](../cicd/maintenance.md).
 
 ## License
 

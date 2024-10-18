@@ -3248,6 +3248,7 @@ export const mockWorkItemNotesByIidResponse = {
           },
           {
             type: 'NOTES',
+            discussionLocked: false,
             discussions: {
               pageInfo: {
                 hasNextPage: true,
@@ -3483,6 +3484,7 @@ export const mockMoreWorkItemNotesResponse = {
           },
           {
             type: 'NOTES',
+            discussionLocked: false,
             discussions: {
               pageInfo: {
                 hasNextPage: true,
@@ -3840,6 +3842,7 @@ export const mockWorkItemNotesResponseWithComments = (resolved = false) => {
             },
             {
               type: 'NOTES',
+              discussionLocked: false,
               discussions: {
                 pageInfo: {
                   hasNextPage: false,
@@ -4263,6 +4266,7 @@ export const workItemNotesWithSystemNotesWithChangedDescription = {
           },
           {
             type: 'NOTES',
+            discussionLocked: false,
             discussions: {
               pageInfo: {
                 hasNextPage: false,

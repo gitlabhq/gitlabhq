@@ -74,24 +74,20 @@ If you want to build, test, and deploy your app:
 
 Auto DevOps runs pipelines automatically only if a [`Dockerfile` or matching buildpack](stages.md#auto-build) exists.
 
-Depending on your instance type, you can enable or disable Auto DevOps at the
-following levels:
+You can enable or disable Auto DevOps for a project or an entire group. Instance administrators
+can also [set Auto DevOps as the default](../../administration/settings/continuous_integration.md#auto-devops)
+for all projects in an instance.
 
-| Instance type       | [Project](#per-project) | [Group](#per-group) | [Instance](#per-instance) (**Admin** area) |
-|---------------------|------------------------|------------------------|------------------------|
-| GitLab SaaS         | **{check-circle}** Yes | **{check-circle}** Yes | **{dotted-circle}** No |
-| GitLab self-managed | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
-
-Before enabling Auto DevOps, consider [preparing it for deployment](requirements.md). If you don't, Auto DevOps can build and test your app,
-but cannot deploy it.
+Before enabling Auto DevOps, consider [preparing it for deployment](requirements.md).
+If you don't, Auto DevOps can build and test your app, but cannot deploy it.
 
 #### Per project
 
 To use Auto DevOps for individual projects, you can enable it in a
 project-by-project basis. If you intend to use it for more projects,
 you can enable it for a [group](#per-group) or an
-[instance](#per-instance). This can save you the time of
-enabling it in each project.
+[instance](../../administration/settings/continuous_integration.md#auto-devops).
+This can save you the time of enabling it in each project.
 
 Prerequisites:
 
@@ -146,42 +142,6 @@ Auto DevOps pipeline for any project that belongs to that group:
 1. Make sure the project doesn't contain a `.gitlab-ci.yml` file.
 1. Select **Build > Pipelines**.
 1. To trigger the Auto DevOps pipeline, select **New pipeline**.
-
-#### Per instance
-
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
-
-To enable Auto DevOps by default for all projects, you can enable it for the entire instance.
-You can still disable Auto DevOps for each group and project
-where you don't want to run it.
-
-Even when disabled for an instance, group Owners and project Maintainers
-can still enable Auto DevOps for specific groups and projects.
-
-Prerequisites:
-
-- You must be an administrator for the instance.
-
-To enable Auto DevOps for your instance:
-
-1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > CI/CD**.
-1. Expand **Auto DevOps**.
-1. Select the **Default to Auto DevOps pipeline** checkbox.
-1. Optional. Add the Auto DevOps [base domain](requirements.md#auto-devops-base-domain).
-1. Select **Save changes**.
-
-When enabled, Auto DevOps attempts to run pipelines in every project. If the
-pipeline fails in a particular project, it disables itself.
-GitLab administrators can change this in the [Auto DevOps settings](../../administration/settings/continuous_integration.md#auto-devops).
-
-If a `.gitlab-ci.yml` file is present,
-it remains unchanged and Auto DevOps does not affect it.
-
-To disable Auto DevOps for the instance, follow the same process
-and clear the **Default to Auto DevOps pipeline** checkbox.
 
 ### Deploy your app to a cloud provider
 

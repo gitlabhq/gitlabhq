@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe ImportExportUploader do
   let(:model) { build_stubbed(:import_export_upload) }
   let(:upload) { create(:upload, model: model) }
-  let(:import_export_upload) { ImportExportUpload.new }
+  let(:import_export_upload) { build(:import_export_upload) }
 
   subject { described_class.new(model, :import_file) }
 

@@ -8,5 +8,7 @@ description: Used to store the location of the imported or exported archives fil
   of groups or projects when using the feature Import/Export
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/a2bf1641546a1d3eeb3e9f44734854f655c0adef
 milestone: '11.1'
-gitlab_schema: gitlab_main
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/463854
+gitlab_schema: gitlab_main_cell
+sharding_key:
+   project_id: projects
+   group_id: namespaces

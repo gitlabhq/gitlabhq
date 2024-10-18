@@ -276,11 +276,39 @@ RSpec.describe Gitlab::SearchResults, feature_category: :global_search do
       let(:query) { 'Test' }
 
       describe 'filtering' do
-        let_it_be(:group) { create(:group) }
+        let_it_be(:group) { create(:group, name: 'my-group') }
         let_it_be(:unarchived_result) { create(:project, :public, group: group, name: 'Test1') }
         let_it_be(:archived_result) { create(:project, :archived, :public, group: group, name: 'Test2') }
 
         it_behaves_like 'search results filtered by archived'
+
+        it 'returns the project' do
+          expect(results.objects('projects')).to eq([unarchived_result])
+        end
+
+        context 'when the query is Gitlab::Search::Params::MIN_TERM_LENGTH characters long' do
+          let(:query) { 'Te' }
+
+          it 'returns the project' do
+            expect(results.objects('projects')).to eq([unarchived_result])
+          end
+        end
+
+        context 'when the query is less than Gitlab::Search::Params::MIN_TERM_LENGTH characters long' do
+          let(:query) { 'T' }
+
+          it 'does not return the project' do
+            expect(results.objects('projects')).not_to eq([unarchived_result])
+          end
+        end
+
+        context 'when the query does not match the project name but it matches the group name' do
+          let(:query) { 'group' }
+
+          it 'returns the project' do
+            expect(results.objects('projects')).to eq([unarchived_result])
+          end
+        end
       end
     end
 

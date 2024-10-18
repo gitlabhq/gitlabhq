@@ -438,25 +438,30 @@ Switchboard Tenant Admins can also manage email notifications for other users wi
 
 You will see an alert confirming that your notification preferences have been updated.
 
-### Access to application logs
+### Application logs
 
-GitLab [application logs](../../administration/logs/index.md) are delivered to an S3 bucket in the GitLab tenant account, which can be shared with you. Logs stored in the S3 bucket are retained indefinitely, until the 1 year retention policy is fully enforced. GitLab team members can view more information in this confidential issue:
-`https://gitlab.com/gitlab-com/gl-infra/gitlab-dedicated/team/-/issues/483`.
+GitLab delivers [application logs](../../administration/logs/index.md) to an Amazon S3 bucket in the GitLab tenant account, which can be shared with you.
 
-To gain read only access to this bucket:
+Logs stored in the S3 bucket are retained indefinitely, until the one year retention policy is fully enforced. GitLab team members can view more information in confidential issue [483](https://gitlab.com/gitlab-com/gl-infra/gitlab-dedicated/team/-/issues/483).
 
-1. Open a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650) with the title "Customer Log Access". In the body of the ticket, include a list of IAM Principal ARNs (users or roles) that are fetching the logs from S3.
-1. GitLab then informs you of the name of the S3 bucket. Your nominated users/roles are then able to list and get all objects in the S3 bucket.
+#### Request bucket access
 
-You can use the [AWS CLI](https://aws.amazon.com/cli/) to verify that access to the S3 bucket works as expected.
+To gain read only access to the S3 bucket with your application logs:
+
+1. Open a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650) with the title `Customer Log Access`.
+1. In the body of the ticket, include a list of IAM Principal Amazon Resource Names (users or roles) that require access to the logs from the S3 bucket.
+
+GitLab provides the name of the S3 bucket. Your authorized users or roles can then access all objects in the bucket. To verify access, you can use the [AWS CLI](https://aws.amazon.com/cli/).
 
 #### Bucket contents and structure
 
-The S3 bucket contains a combination of **infrastructure logs** and **application logs** from the GitLab [log system](../../administration/logs/index.md). The logs in the bucket are encrypted using an AWS KMS key that is managed by GitLab. If you choose to enable [BYOK](../../administration/dedicated/create_instance.md#encrypted-data-at-rest-byok), the application logs are not encrypted with the key you provide.
+The Amazon S3 bucket contains a combination of infrastructure logs and application logs from the GitLab [log system](../../administration/logs/index.md).
+
+The logs in the bucket are encrypted using an AWS KMS key managed by GitLab. If you choose to enable [BYOK](../../administration/dedicated/create_instance.md#encrypted-data-at-rest-byok), the application logs are not encrypted with the key you provide.
 
 <!-- vale gitlab_base.Spelling = NO -->
 
-The logs in the S3 bucket are organized by date in `YYYY/MM/DD/HH` format. For example, there would be a directory like `2023/10/12/13`. That directory would contain the logs from October 12, 2023 at 1300 UTC. The logs are streamed into the bucket with [Amazon Kinesis Data Firehose](https://aws.amazon.com/firehose/).
+The logs in the S3 bucket are organized by date in `YYYY/MM/DD/HH` format. For example, a directory named `2023/10/12/13` contains logs from October 12, 2023 at 13:00 UTC. The logs are streamed into the bucket with [Amazon Kinesis Data Firehose](https://aws.amazon.com/firehose/).
 
 <!-- vale gitlab_base.Spelling = YES -->
 

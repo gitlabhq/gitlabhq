@@ -12295,7 +12295,8 @@ CREATE TABLE import_export_uploads (
     group_id bigint,
     remote_import_url text,
     user_id bigint,
-    CONSTRAINT check_58f0d37481 CHECK ((char_length(remote_import_url) <= 2048))
+    CONSTRAINT check_58f0d37481 CHECK ((char_length(remote_import_url) <= 2048)),
+    CONSTRAINT check_e54579866d CHECK ((num_nonnulls(group_id, project_id) = 1))
 );
 
 CREATE SEQUENCE import_export_uploads_id_seq
@@ -24189,6 +24190,9 @@ ALTER TABLE ci_job_variables
 
 ALTER TABLE p_ci_pipeline_variables
     ADD CONSTRAINT check_6e932dbabf CHECK ((project_id IS NOT NULL)) NOT VALID;
+
+ALTER TABLE p_ci_stages
+    ADD CONSTRAINT check_74835fc631 CHECK ((project_id IS NOT NULL)) NOT VALID;
 
 ALTER TABLE sprints
     ADD CONSTRAINT check_ccd8a1eae0 CHECK ((start_date IS NOT NULL)) NOT VALID;

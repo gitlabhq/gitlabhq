@@ -21,7 +21,7 @@ module Ci
         end
 
         if link.destroy
-          ServiceResponse.success
+          ServiceResponse.success(payload: link)
         else
           ServiceResponse.error(message: link.errors.full_messages.to_sentence, payload: { project_link: link })
         end
