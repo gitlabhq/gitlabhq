@@ -13,7 +13,7 @@ RSpec.describe 'Issue board filters', :js, feature_category: :team_planning do
   let_it_be(:release_2) { create(:release, tag: 'v2.0', project: project, milestones: [milestone_2]) }
   let_it_be(:issue_1) { create(:issue, project: project, milestone: milestone_1, author: user) }
   let_it_be(:issue_2) { create(:labeled_issue, project: project, milestone: milestone_2, assignees: [user], labels: [project_label], confidential: true) }
-  let_it_be(:award_emoji1) { create(:award_emoji, name: 'thumbsup', user: user, awardable: issue_1) }
+  let_it_be(:award_emoji1) { create(:award_emoji, name: AwardEmoji::THUMBS_UP, user: user, awardable: issue_1) }
 
   let(:filtered_search) { find_by_testid('issue-board-filtered-search') }
   let(:filter_input) { find('.gl-filtered-search-term-input') }
@@ -159,7 +159,7 @@ RSpec.describe 'Issue board filters', :js, feature_category: :team_planning do
 
         expect_filtered_search_dropdown_results(filter_dropdown, 3)
 
-        click_on 'thumbsup'
+        click_on AwardEmoji::THUMBS_UP
         filter_submit.click
 
         expect(find('[data-testid="board-list"]:nth-child(1)')).to have_selector('.board-card', count: 1)

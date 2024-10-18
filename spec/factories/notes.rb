@@ -197,11 +197,11 @@ FactoryBot.define do
     end
 
     trait :downvote do
-      note { "thumbsdown" }
+      note { AwardEmoji::THUMBS_DOWN }
     end
 
     trait :upvote do
-      note { "thumbsup" }
+      note { AwardEmoji::THUMBS_UP }
     end
 
     trait :with_attachment do

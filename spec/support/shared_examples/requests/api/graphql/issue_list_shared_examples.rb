@@ -168,12 +168,12 @@ RSpec.shared_examples 'graphql issue list request spec' do
       using RSpec::Parameterized::TableSyntax
 
       where(:value, :issue_list) do
-        'thumbsup'   | lazy { voted_issues }
-        'ANY'        | lazy { voted_issues }
-        'any'        | lazy { voted_issues }
-        'AnY'        | lazy { voted_issues }
-        'NONE'       | lazy { no_award_issues }
-        'thumbsdown' | lazy { [] }
+        AwardEmoji::THUMBS_UP   | lazy { voted_issues }
+        'ANY'                   | lazy { voted_issues }
+        'any'                   | lazy { voted_issues }
+        'AnY'                   | lazy { voted_issues }
+        'NONE'                  | lazy { no_award_issues }
+        AwardEmoji::THUMBS_DOWN | lazy { [] }
       end
 
       with_them do
@@ -458,8 +458,8 @@ RSpec.shared_examples 'graphql issue list request spec' do
       let(:requested_fields) { 'upvotes downvotes' }
 
       before do
-        create_list(:award_emoji, 2, name: 'thumbsup', awardable: issue_a)
-        create_list(:award_emoji, 2, name: 'thumbsdown', awardable: issue_b)
+        create_list(:award_emoji, 2, name: AwardEmoji::THUMBS_UP, awardable: issue_a)
+        create_list(:award_emoji, 2, name: AwardEmoji::THUMBS_DOWN, awardable: issue_b)
       end
 
       include_examples 'N+1 query check'

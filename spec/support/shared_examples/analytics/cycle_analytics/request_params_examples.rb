@@ -152,7 +152,7 @@ RSpec.shared_examples 'unlicensed cycle analytics request params' do
           weight: 1,
           epic_id: 2,
           iteration_id: 3,
-          my_reaction_emoji: 'thumbsup',
+          my_reaction_emoji: AwardEmoji::THUMBS_UP,
           not: { assignee_username: 'test' }
         )
       end

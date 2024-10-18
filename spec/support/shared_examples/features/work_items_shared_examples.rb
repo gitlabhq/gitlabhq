@@ -479,17 +479,17 @@ RSpec.shared_examples 'work items award emoji' do
     within(award_section_selector) do
       expect(page).to have_selector(selected_award_button_selector)
 
-      # As the user2 has already awarded the `:thumbsup:` emoji, the emoji count will be 2
+      # As the user2 has already awarded the `:thumbs_up:` emoji, the emoji count will be 2
       expect(first(award_button_selector)).to have_content '2'
     end
-    expect(page.find(tooltip_selector)).to have_content("John and you reacted with :thumbsup:")
+    expect(page.find(tooltip_selector)).to have_content("John and you reacted with :#{AwardEmoji::THUMBS_UP}:")
   end
 
   it 'removes award from work item for current user' do
     select_emoji
 
     page.within(award_section_selector) do
-      # As the user2 has already awarded the `:thumbsup:` emoji, the emoji count will be 2
+      # As the user2 has already awarded the `:thumbs_up:` emoji, the emoji count will be 2
       expect(first(award_button_selector)).to have_content '2'
     end
 

@@ -2,7 +2,7 @@
 data_category: optional
 key_path: redis_hll_counters.testing.users_visiting_testing_license_compliance_full_report_weekly
 description: Count of visiting the license compliance full report
-product_group: static_analysis
+product_group: composition_analysis
 value_type: number
 status: removed
 removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152166

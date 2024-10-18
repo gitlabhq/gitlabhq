@@ -61,7 +61,7 @@ RSpec.describe WorkItems::Callbacks::AwardEmoji, feature_category: :team_plannin
     end
 
     context 'when removing emoji' do
-      let(:params) { { action: :remove, name: 'thumbsup' } }
+      let(:params) { { action: :remove, name: AwardEmoji::THUMBS_UP } }
 
       context 'when user has no access' do
         let(:current_user) { unauthorized_user }

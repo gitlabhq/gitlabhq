@@ -61,7 +61,21 @@ RSpec.describe 'Organizations (GraphQL fixtures)', feature_category: :cell do
       sign_in(current_user)
     end
 
-    describe 'organizations' do
+    describe 'current user organizations' do
+      base_input_path = 'organizations/shared/graphql/queries/'
+      base_output_path = 'graphql/organizations/'
+      query_name = 'current_user_organizations.query.graphql'
+
+      it "#{base_output_path}#{query_name}.json" do
+        query = get_graphql_query_as_string("#{base_input_path}#{query_name}")
+
+        post_graphql(query, current_user: current_user, variables: { search: '', first: 3 })
+
+        expect_graphql_errors_to_be_empty
+      end
+    end
+
+    describe 'instance organizations' do
       base_input_path = 'organizations/shared/graphql/queries/'
       base_output_path = 'graphql/organizations/'
       query_name = 'organizations.query.graphql'

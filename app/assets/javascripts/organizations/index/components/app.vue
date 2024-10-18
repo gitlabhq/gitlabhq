@@ -4,7 +4,7 @@ import { __, s__ } from '~/locale';
 import { createAlert } from '~/alert';
 import { DEFAULT_PER_PAGE } from '~/api';
 import OrganizationsView from '~/organizations/shared/components/organizations_view.vue';
-import organizationsQuery from '../../shared/graphql/queries/organizations.query.graphql';
+import currentUserOrganizationsQuery from '../../shared/graphql/queries/current_user_organizations.query.graphql';
 
 export default {
   name: 'OrganizationsIndexApp',
@@ -33,7 +33,7 @@ export default {
   },
   apollo: {
     organizations: {
-      query: organizationsQuery,
+      query: currentUserOrganizationsQuery,
       variables() {
         return this.pagination;
       },

@@ -452,7 +452,7 @@ If you want to renew with fewer seats, you can do either of the following:
 
 ### Renew subscription manually
 
-30 days before a subscription expires, a banner with the subscription expiry date displays for
+15 days before a subscription expires, a banner with the subscription expiry date displays for
 administrators in the GitLab user interface.
 
 You cannot manually renew your subscription more than 15 days before the subscription

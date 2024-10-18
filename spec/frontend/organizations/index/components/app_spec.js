@@ -1,13 +1,13 @@
 import { GlButton } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import organizationsGraphQlResponse from 'test_fixtures/graphql/organizations/organizations.query.graphql.json';
+import currentUserOrganizationsGraphQlResponse from 'test_fixtures/graphql/organizations/current_user_organizations.query.graphql.json';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
 import { DEFAULT_PER_PAGE } from '~/api';
-import organizationsQuery from '~/organizations/shared/graphql/queries/organizations.query.graphql';
+import currentUserOrganizationsQuery from '~/organizations/shared/graphql/queries/current_user_organizations.query.graphql';
 import OrganizationsIndexApp from '~/organizations/index/components/app.vue';
 import OrganizationsView from '~/organizations/shared/components/organizations_view.vue';
 import { pageInfoEmpty } from 'jest/organizations/mock_data';
@@ -25,17 +25,17 @@ describe('OrganizationsIndexApp', () => {
     data: {
       currentUser: { organizations },
     },
-  } = organizationsGraphQlResponse;
+  } = currentUserOrganizationsGraphQlResponse;
 
   const organizationEmpty = {
     nodes: [],
     pageInfo: pageInfoEmpty,
   };
 
-  const successHandler = jest.fn().mockResolvedValue(organizationsGraphQlResponse);
+  const successHandler = jest.fn().mockResolvedValue(currentUserOrganizationsGraphQlResponse);
 
   const createComponent = (handler = successHandler) => {
-    mockApollo = createMockApollo([[organizationsQuery, handler]]);
+    mockApollo = createMockApollo([[currentUserOrganizationsQuery, handler]]);
 
     wrapper = shallowMountExtended(OrganizationsIndexApp, {
       apolloProvider: mockApollo,

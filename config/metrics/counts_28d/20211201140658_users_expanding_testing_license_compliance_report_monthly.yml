@@ -2,7 +2,7 @@
 data_category: optional
 key_path: redis_hll_counters.testing.users_expanding_testing_license_compliance_report_monthly
 description: Count of expanding the license compliance widget
-product_group: static_analysis
+product_group: composition_analysis
 value_type: number
 status: active
 milestone: '14.6'

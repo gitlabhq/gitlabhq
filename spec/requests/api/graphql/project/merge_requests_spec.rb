@@ -371,8 +371,8 @@ RSpec.describe 'getting merge request listings nested in a project', feature_cat
       let(:requested_fields) { 'upvotes downvotes awardEmoji { nodes { name } }' }
 
       before do
-        create_list(:award_emoji, 2, name: 'thumbsup', awardable: merge_request_a)
-        create_list(:award_emoji, 2, name: 'thumbsdown', awardable: merge_request_b)
+        create_list(:award_emoji, 2, name: AwardEmoji::THUMBS_UP, awardable: merge_request_a)
+        create_list(:award_emoji, 2, name: AwardEmoji::THUMBS_DOWN, awardable: merge_request_b)
       end
 
       include_examples 'N+1 query check'

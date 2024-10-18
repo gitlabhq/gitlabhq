@@ -1519,7 +1519,7 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
       })
     end
 
-    let(:emoji_name) { 'thumbsup' }
+    let(:emoji_name) { AwardEmoji::THUMBS_UP }
 
     it "toggles the award emoji" do
       expect do

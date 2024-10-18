@@ -9,7 +9,7 @@ RSpec.describe 'Adding an AwardEmoji', feature_category: :shared do
   let_it_be(:project) { create(:project) }
   let_it_be(:awardable) { create(:note, project: project) }
 
-  let(:emoji_name) { 'thumbsup' }
+  let(:emoji_name) { AwardEmoji::THUMBS_UP }
   let(:mutation) do
     variables = {
       awardable_id: GitlabSchema.id_from_object(awardable).to_s,

@@ -7,7 +7,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
 import { DEFAULT_PER_PAGE } from '~/api';
-import organizationsQuery from '~/admin/organizations/index/graphql/queries/organizations.query.graphql';
+import organizationsQuery from '~/organizations/shared/graphql/queries/organizations.query.graphql';
 import OrganizationsIndexApp from '~/admin/organizations/index/components/app.vue';
 import OrganizationsView from '~/organizations/shared/components/organizations_view.vue';
 import { MOCK_NEW_ORG_URL } from 'jest/organizations/shared/mock_data';
@@ -22,9 +22,7 @@ describe('AdminOrganizationsIndexApp', () => {
   let mockApollo;
 
   const {
-    data: {
-      currentUser: { organizations },
-    },
+    data: { organizations },
   } = organizationsGraphQlResponse;
 
   const organizationEmpty = {
@@ -32,11 +30,7 @@ describe('AdminOrganizationsIndexApp', () => {
     pageInfo: pageInfoEmpty,
   };
 
-  const successHandler = jest.fn().mockResolvedValue({
-    data: {
-      organizations,
-    },
-  });
+  const successHandler = jest.fn().mockResolvedValue(organizationsGraphQlResponse);
 
   const createComponent = (handler = successHandler) => {
     mockApollo = createMockApollo([[organizationsQuery, handler]]);

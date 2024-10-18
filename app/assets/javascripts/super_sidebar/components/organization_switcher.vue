@@ -1,6 +1,6 @@
 <script>
 import { GlDisclosureDropdown, GlAvatar, GlIcon, GlLoadingIcon, GlLink } from '@gitlab/ui';
-import getCurrentUserOrganizations from '~/organizations/shared/graphql/queries/organizations.query.graphql';
+import getCurrentUserOrganizations from '~/organizations/shared/graphql/queries/current_user_organizations.query.graphql';
 import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { s__, __ } from '~/locale';

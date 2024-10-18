@@ -9,7 +9,7 @@ RSpec.describe 'Removing an AwardEmoji', feature_category: :shared do
   let_it_be(:project) { awardable.project }
   let_it_be(:current_user) { create(:user, guest_of: project) }
 
-  let(:emoji_name) { 'thumbsup' }
+  let(:emoji_name) { AwardEmoji::THUMBS_UP }
   let(:input) { { awardable_id: GitlabSchema.id_from_object(awardable).to_s, name: emoji_name } }
 
   let(:mutation) do
@@ -40,7 +40,8 @@ RSpec.describe 'Removing an AwardEmoji', feature_category: :shared do
     it 'returns an error' do
       post_graphql_mutation(mutation, current_user: current_user)
 
-      expect(mutation_response['errors']).to include('User has not awarded emoji of type thumbsup on the awardable')
+      expect(mutation_response['errors'])
+        .to include("User has not awarded emoji of type #{AwardEmoji::THUMBS_UP} on the awardable")
     end
   end
 

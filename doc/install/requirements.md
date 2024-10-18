@@ -207,7 +207,7 @@ GitLab supports the following web browsers:
 
 GitLab supports:
 
-- The current and earlier major versions of these browsers
+- The two most recent major versions of these browsers
 - The current minor version of a supported major version
 
 Running GitLab with JavaScript disabled in these browsers is not supported.

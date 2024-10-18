@@ -85,7 +85,7 @@ RSpec.describe Banzai::Filter::EmojiFilter, feature_category: :markdown do
 
   it 'has a data-name attribute' do
     doc = filter(':-1:')
-    expect(doc.css('gl-emoji').first.attr('data-name')).to eq 'thumbsdown'
+    expect(doc.css('gl-emoji').first.attr('data-name')).to eq AwardEmoji::THUMBS_DOWN
   end
 
   it 'has a data-unicode-version attribute' do

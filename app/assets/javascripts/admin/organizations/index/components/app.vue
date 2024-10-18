@@ -4,7 +4,7 @@ import { __, s__ } from '~/locale';
 import OrganizationsView from '~/organizations/shared/components/organizations_view.vue';
 import { DEFAULT_PER_PAGE } from '~/api';
 import { createAlert } from '~/alert';
-import organizationsQuery from '../graphql/queries/organizations.query.graphql';
+import organizationsQuery from '~/organizations/shared/graphql/queries/organizations.query.graphql';
 
 export default {
   name: 'AdminOrganizationsIndexApp',

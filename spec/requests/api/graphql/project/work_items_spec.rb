@@ -772,14 +772,14 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
         post_graphql(query, current_user: current_user)
       end
 
-      let(:item_filter_params) { { my_reaction_emoji: 'thumbsup' } }
+      let(:item_filter_params) { { my_reaction_emoji: AwardEmoji::THUMBS_UP } }
 
       it 'returns items with the reaction emoji' do
         expect(item_ids).to contain_exactly(item1.to_global_id.to_s)
       end
 
       context 'when using NOT' do
-        let(:item_filter_params) { { not: { my_reaction_emoji: 'thumbsup' } } }
+        let(:item_filter_params) { { not: { my_reaction_emoji: AwardEmoji::THUMBS_UP } } }
 
         it 'returns items without the reaction emoji' do
           expect(item_ids).to contain_exactly(item2.to_global_id.to_s, confidential_item.to_global_id.to_s)

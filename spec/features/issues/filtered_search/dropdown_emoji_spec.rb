@@ -12,8 +12,8 @@ RSpec.describe 'Dropdown emoji', :js, feature_category: :team_planning do
 
   before do
     project.add_maintainer(user)
-    create_list(:award_emoji, 2, user: user, name: 'thumbsup')
-    create_list(:award_emoji, 1, user: user, name: 'thumbsdown')
+    create_list(:award_emoji, 2, user: user, name: AwardEmoji::THUMBS_UP)
+    create_list(:award_emoji, 1, user: user, name: AwardEmoji::THUMBS_DOWN)
     create_list(:award_emoji, 3, user: user, name: 'star')
   end
 
@@ -42,7 +42,7 @@ RSpec.describe 'Dropdown emoji', :js, feature_category: :team_planning do
       it 'loads all the emojis when opened' do
         select_tokens 'My-Reaction', '='
 
-        # Expect None, Any, star, thumbsup, thumbsdown
+        # Expect None, Any, star, thumbs_up, thumbs_down
         expect_suggestion_count 5
       end
 

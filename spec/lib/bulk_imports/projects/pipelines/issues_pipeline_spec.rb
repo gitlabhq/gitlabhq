@@ -186,7 +186,7 @@ RSpec.describe BulkImports::Projects::Pipelines::IssuesPipeline, feature_categor
             ],
             'award_emoji' => [
               {
-                'name' => 'thumbsup',
+                'name' => AwardEmoji::THUMBS_UP,
                 'user_id' => 22
               }
             ]
@@ -200,7 +200,7 @@ RSpec.describe BulkImports::Projects::Pipelines::IssuesPipeline, feature_categor
           aggregate_failures do
             expect(notes.count).to eq 1
             expect(notes[0].note).to include("Description changed")
-            expect(issue.award_emoji.first.name).to eq "thumbsup"
+            expect(issue.award_emoji.first.name).to eq AwardEmoji::THUMBS_UP
           end
         end
       end

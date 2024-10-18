@@ -369,7 +369,7 @@ RSpec.describe Snippets::NotesController, feature_category: :team_planning do
 
   describe 'POST toggle_award_emoji' do
     let(:note) { create(:note_on_personal_snippet, noteable: public_snippet) }
-    let(:emoji_name) { 'thumbsup' }
+    let(:emoji_name) { AwardEmoji::THUMBS_UP }
 
     before do
       sign_in(user)

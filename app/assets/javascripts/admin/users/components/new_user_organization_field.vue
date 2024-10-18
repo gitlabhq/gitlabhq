@@ -3,10 +3,12 @@ import { GlAvatarLabeled } from '@gitlab/ui';
 import OrganizationSelect from '~/vue_shared/components/entity_select/organization_select.vue';
 import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';
 import { s__ } from '~/locale';
+import organizationsQuery from '~/organizations/shared/graphql/queries/organizations.query.graphql';
 import OrganizationRoleField from './organization_role_field.vue';
 
 export default {
   AVATAR_SHAPE_OPTION_RECT,
+  organizationsQuery,
   inputName: 'user[organization_id]',
   inputId: 'user_organization_id',
   i18n: {
@@ -38,11 +40,14 @@ export default {
   <div>
     <organization-select
       v-if="hasMultipleOrganizations"
+      :query="$options.organizationsQuery"
+      query-path="organizations"
       block
       :initial-selection="initialSelection"
       :input-name="$options.inputName"
       :input-id="$options.inputId"
       toggle-class="gl-form-input-xl"
+      :searchable="false"
     >
       <template #label>
         <span class="gl-sr-only">{{ $options.i18n.organizationSelectLabel }}</span>

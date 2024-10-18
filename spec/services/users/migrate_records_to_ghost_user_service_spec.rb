@@ -104,10 +104,10 @@ RSpec.describe Users::MigrateRecordsToGhostUserService, feature_category: :user_
           let(:awardable) { create(:issue) }
 
           let!(:existing_award_emoji) do
-            create(:award_emoji, user: Users::Internal.ghost, name: "thumbsup", awardable: awardable)
+            create(:award_emoji, user: Users::Internal.ghost, name: AwardEmoji::THUMBS_UP, awardable: awardable)
           end
 
-          let!(:award_emoji) { create(:award_emoji, user: user, name: "thumbsup", awardable: awardable) }
+          let!(:award_emoji) { create(:award_emoji, user: user, name: AwardEmoji::THUMBS_UP, awardable: awardable) }
 
           it "migrates the award emoji regardless" do
             service.execute

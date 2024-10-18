@@ -370,10 +370,11 @@ end
 #### Using a composite or partial index to iterate a subset of the table
 
 When applying additional filters, it is important to ensure they are properly
-covered by an index to optimize `EachBatch` performance.
+[covered by an index](iterating_tables_in_batches.md#example-2-iteration-with-filters)
+to optimize `EachBatch` performance.
 In the below examples we need an index on `(type, id)` or `id WHERE type IS NULL`
 to support the filters. See
-[the `EachBatch` documentation for more information](iterating_tables_in_batches.md).
+the [`EachBatch` documentation](iterating_tables_in_batches.md) for more information.
 
 If you have a suitable index and you want to iterate only a subset of the table
 you can apply a `where` clause before the `each_batch` like:

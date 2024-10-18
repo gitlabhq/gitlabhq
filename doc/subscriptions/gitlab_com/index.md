@@ -71,7 +71,7 @@ The following information is displayed:
 
 ## Renew GitLab.com subscription
 
-30 days before a subscription expires, a banner with the subscription expiry date displays for group owners in the GitLab user interface.
+15 days before a subscription expires, a banner with the subscription expiry date displays for group owners in the GitLab user interface.
 
 Before you renew your GitLab.com subscription, you should [review your account](../self_managed/index.md#review-your-account).
 

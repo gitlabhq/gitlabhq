@@ -4,6 +4,7 @@ import NewUserOrganizationField from '~/admin/users/components/new_user_organiza
 import OrganizationRoleField from '~/admin/users/components/organization_role_field.vue';
 import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';
 import OrganizationSelect from '~/vue_shared/components/entity_select/organization_select.vue';
+import organizationsQuery from '~/organizations/shared/graphql/queries/organizations.query.graphql';
 
 describe('NewUserOrganizationField', () => {
   let wrapper;
@@ -50,9 +51,14 @@ describe('NewUserOrganizationField', () => {
     });
 
     it('renders organization select with default organization selected', () => {
-      expect(findOrganizationSelect().props('initialSelection')).toEqual({
-        text: defaultPropsData.initialOrganization.name,
-        value: defaultPropsData.initialOrganization.id,
+      expect(findOrganizationSelect().props()).toMatchObject({
+        searchable: false,
+        query: organizationsQuery,
+        queryPath: 'organizations',
+        initialSelection: {
+          text: defaultPropsData.initialOrganization.name,
+          value: defaultPropsData.initialOrganization.id,
+        },
       });
     });
   });

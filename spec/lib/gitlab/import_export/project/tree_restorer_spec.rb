@@ -374,7 +374,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, feature_category: :i
         it 'has award emoji for a snippet' do
           award_emoji = @project.snippets.first.award_emoji
 
-          expect(award_emoji.map(&:name)).to contain_exactly('thumbsup', 'coffee')
+          expect(award_emoji.map(&:name)).to contain_exactly(AwardEmoji::THUMBS_UP, 'coffee')
         end
 
         it 'snippet has notes' do
@@ -384,7 +384,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, feature_category: :i
         it 'snippet has award emojis on notes' do
           award_emoji = @project.snippets.first.notes.first.award_emoji.first
 
-          expect(award_emoji.name).to eq('thumbsup')
+          expect(award_emoji.name).to eq(AwardEmoji::THUMBS_UP)
         end
 
         it 'restores `ci_cd_settings` : `group_runners_enabled` setting' do
@@ -534,7 +534,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, feature_category: :i
           it 'has award emoji' do
             award_emoji = MergeRequest.find_by_title('MR1').award_emoji
 
-            expect(award_emoji.map(&:name)).to contain_exactly('thumbsup', 'drum')
+            expect(award_emoji.map(&:name)).to contain_exactly(AwardEmoji::THUMBS_UP, 'drum')
           end
 
           context 'notes' do

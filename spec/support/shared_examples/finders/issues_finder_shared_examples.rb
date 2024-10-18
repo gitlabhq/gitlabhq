@@ -744,51 +744,51 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
           end
         end
 
-        context 'user searches by "thumbsup" reaction' do
-          let(:params) { { my_reaction_emoji: 'thumbsup' } }
+        context 'user searches by "thumbs_up" reaction' do
+          let(:params) { { my_reaction_emoji: AwardEmoji::THUMBS_UP } }
 
-          it 'returns items that the user thumbsup to' do
+          it 'returns items that the user thumbs_up to' do
             expect(items).to contain_exactly(item1)
           end
 
           context 'using NOT' do
-            let(:params) { { not: { my_reaction_emoji: 'thumbsup' } } }
+            let(:params) { { not: { my_reaction_emoji: AwardEmoji::THUMBS_UP } } }
 
-            it 'returns items that the user did not thumbsup to' do
+            it 'returns items that the user did not thumbs_up to' do
               expect(items).to contain_exactly(item2, item3, item4, item5)
             end
           end
         end
 
-        context 'user2 searches by "thumbsup" reaction' do
+        context 'user2 searches by "thumbs_up" reaction' do
           let(:search_user) { user2 }
 
-          let(:params) { { my_reaction_emoji: 'thumbsup' } }
+          let(:params) { { my_reaction_emoji: AwardEmoji::THUMBS_UP } }
 
-          it 'returns items that the user2 thumbsup to' do
+          it 'returns items that the user2 thumbs_up to' do
             expect(items).to contain_exactly(item2)
           end
 
           context 'using NOT' do
-            let(:params) { { not: { my_reaction_emoji: 'thumbsup' } } }
+            let(:params) { { not: { my_reaction_emoji: AwardEmoji::THUMBS_UP } } }
 
-            it 'returns items that the user2 thumbsup to' do
+            it 'returns items that the user2 thumbs_up to' do
               expect(items).to contain_exactly(item3)
             end
           end
         end
 
-        context 'user searches by "thumbsdown" reaction' do
-          let(:params) { { my_reaction_emoji: 'thumbsdown' } }
+        context 'user searches by "thumbs_down" reaction' do
+          let(:params) { { my_reaction_emoji: AwardEmoji::THUMBS_DOWN } }
 
-          it 'returns items that the user thumbsdown to' do
+          it 'returns items that the user thumbs_down to' do
             expect(items).to contain_exactly(item3)
           end
 
           context 'using NOT' do
-            let(:params) { { not: { my_reaction_emoji: 'thumbsdown' } } }
+            let(:params) { { not: { my_reaction_emoji: AwardEmoji::THUMBS_DOWN } } }
 
-            it 'returns items that the user thumbsdown to' do
+            it 'returns items that the user thumbs_down to' do
               expect(items).to contain_exactly(item1, item2, item4, item5)
             end
           end

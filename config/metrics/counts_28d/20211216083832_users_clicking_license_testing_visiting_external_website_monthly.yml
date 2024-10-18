@@ -2,7 +2,7 @@
 data_category: optional
 key_path: redis_hll_counters.testing.users_clicking_license_testing_visiting_external_website_monthly
 description: Count of users clicking licence to visit external information website
-product_group: static_analysis
+product_group: composition_analysis
 value_type: number
 status: removed
 removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152166

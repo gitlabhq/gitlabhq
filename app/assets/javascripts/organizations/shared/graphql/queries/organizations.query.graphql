@@ -1,22 +1,13 @@
 #import "~/graphql_shared/fragments/page_info.fragment.graphql"
-#import "../fragments/organization.fragment.graphql"
+#import "~/organizations/shared/graphql/fragments/organization.fragment.graphql"
 
-query getCurrentUserOrganizations(
-  $search: String
-  $first: Int
-  $last: Int
-  $before: String
-  $after: String
-) {
-  currentUser {
-    id
-    organizations(search: $search, first: $first, last: $last, before: $before, after: $after) {
-      nodes {
-        ...Organization
-      }
-      pageInfo {
-        ...PageInfo
-      }
+query getOrganizations($first: Int, $last: Int, $before: String, $after: String) {
+  organizations(first: $first, last: $last, before: $before, after: $after) {
+    nodes {
+      ...Organization
+    }
+    pageInfo {
+      ...PageInfo
     }
   }
 }

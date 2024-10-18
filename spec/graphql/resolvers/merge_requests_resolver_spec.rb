@@ -328,7 +328,7 @@ RSpec.describe Resolvers::MergeRequestsResolver, feature_category: :code_review_
       end
 
       it 'does not return anything' do
-        result = resolve_mr(project, my_reaction_emoji: "thumbsup")
+        result = resolve_mr(project, my_reaction_emoji: AwardEmoji::THUMBS_UP)
 
         expect(result).to be_empty
       end

@@ -536,7 +536,7 @@ RSpec.describe Projects::NotesController, type: :controller, feature_category: :
 
       context 'when creating a note with quick actions' do
         context 'with commands that return changes' do
-          let(:note_text) { "/react :thumbsup:\n/estimate 1d\n/spend 3h" }
+          let(:note_text) { "/react :#{AwardEmoji::THUMBS_UP}:\n/estimate 1d\n/spend 3h" }
           let(:extra_request_params) { { format: :json } }
 
           it 'includes changes in commands_changes' do
@@ -1011,7 +1011,7 @@ RSpec.describe Projects::NotesController, type: :controller, feature_category: :
 
     subject { post(:toggle_award_emoji, params: request_params.merge(name: emoji_name)) }
 
-    let(:emoji_name) { 'thumbsup' }
+    let(:emoji_name) { AwardEmoji::THUMBS_UP }
 
     it { is_expected.to have_request_urgency(:low) }
 

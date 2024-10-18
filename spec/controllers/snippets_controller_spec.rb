@@ -407,17 +407,17 @@ RSpec.describe SnippetsController do
     describe 'POST #toggle_award_emoji' do
       it "toggles the award emoji" do
         expect do
-          post(:toggle_award_emoji, params: { id: personal_snippet.to_param, name: "thumbsup" })
+          post(:toggle_award_emoji, params: { id: personal_snippet.to_param, name: AwardEmoji::THUMBS_UP })
         end.to change { personal_snippet.award_emoji.count }.from(0).to(1)
 
         expect(response).to have_gitlab_http_status(:ok)
       end
 
       it "removes the already awarded emoji" do
-        post(:toggle_award_emoji, params: { id: personal_snippet.to_param, name: "thumbsup" })
+        post(:toggle_award_emoji, params: { id: personal_snippet.to_param, name: AwardEmoji::THUMBS_UP })
 
         expect do
-          post(:toggle_award_emoji, params: { id: personal_snippet.to_param, name: "thumbsup" })
+          post(:toggle_award_emoji, params: { id: personal_snippet.to_param, name: AwardEmoji::THUMBS_UP })
         end.to change { personal_snippet.award_emoji.count }.from(1).to(0)
 
         expect(response).to have_gitlab_http_status(:ok)

@@ -7,9 +7,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # GitLab Duo Workflow
 
 DETAILS:
+**Tier:** Ultimate
 **Offering:** GitLab.com
 **Status:** Experiment
-**Tier:** Ultimate
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14153) in GitLab 17.4 [with a flag](../../administration/feature_flags.md) named `duo_workflow`. Enabled for GitLab team members only. This feature is an [experiment](../../policy/experiment-beta-support.md).
 

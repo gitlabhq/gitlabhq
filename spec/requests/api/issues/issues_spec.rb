@@ -378,7 +378,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       it 'returns issues reacted by the authenticated user' do
         issue2 = create(:issue, project: project, author: user, assignees: [user])
         create(:award_emoji, awardable: issue2, user: user2, name: 'star')
-        create(:award_emoji, awardable: issue, user: user2, name: 'thumbsup')
+        create(:award_emoji, awardable: issue, user: user2, name: AwardEmoji::THUMBS_UP)
 
         get api('/issues', user2), params: { my_reaction_emoji: 'Any', scope: 'all' }
 
