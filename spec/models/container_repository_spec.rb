@@ -792,21 +792,6 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
                               .and change(repository, :status_updated_at).from(nil).to(Time.zone.now)
                               .and change(repository, :next_delete_attempt_at).to(nil)
     end
-
-    context 'when the feature set_delete_failed_container_repository is disabled' do
-      before do
-        stub_feature_flags(set_delete_failed_container_repository: false)
-      end
-
-      it 'updates deletion status attributes', :freeze_time do
-        expect { subject }.to change(repository, :status).from(nil).to('delete_ongoing')
-                                .and change(repository, :delete_started_at).from(nil).to(Time.zone.now)
-                                .and change(repository, :status_updated_at).from(nil).to(Time.zone.now)
-                                .and not_change(repository, :next_delete_attempt_at)
-
-        expect(repository.updated_at).to eq(Time.zone.now)
-      end
-    end
   end
 
   describe '#set_delete_scheduled_status', :freeze_time do
@@ -841,21 +826,6 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
                                 .and change(repository, :next_delete_attempt_at).to(minutes_delay.minute.from_now)
 
         expect(repository.status_updated_at).to eq(Time.zone.now)
-      end
-
-      context 'when the feature set_delete_failed_container_repository is disabled' do
-        before do
-          stub_feature_flags(set_delete_failed_container_repository: false)
-        end
-
-        it 'updates delete attributes' do
-          expect { subject }.to change(repository, :status).from('delete_ongoing').to('delete_scheduled')
-                                  .and change(repository, :delete_started_at).to(nil)
-                                  .and not_change(repository, :failed_deletion_count)
-                                  .and not_change(repository, :next_delete_attempt_at)
-
-          expect(repository.status_updated_at).to eq(Time.zone.now)
-        end
       end
     end
   end

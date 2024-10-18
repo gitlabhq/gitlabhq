@@ -36,18 +36,17 @@ This access can also [be restricted](#limit-job-token-scope-for-public-or-intern
 | [Deployments API](../../api/deployments.md)                                                           | `GET` requests are public by default. |
 | [Environments API](../../api/environments.md)                                                         | `GET` requests are public by default. |
 | [Job artifacts API](../../api/job_artifacts.md#get-job-artifacts)                                     | `GET` requests are public by default. |
-| [Jobs API](../../api/jobs.md#get-job-tokens-job)                                                      | To get the job token's job. |
+| [API endpoint to get the job of a job token](../../api/jobs.md#get-job-tokens-job)                    | To get the job token's job. |
 | [Package registry](../../user/packages/package_registry/index.md#to-build-packages)                   |         |
 | [Packages API](../../api/packages.md)                                                                 | `GET` requests are public by default. |
 | [Pipeline triggers](../../api/pipeline_triggers.md)                                                   | Used with the `token=` parameter to [trigger a multi-project pipeline](../pipelines/downstream_pipelines.md#trigger-a-multi-project-pipeline-by-using-the-api). |
-| [Pipelines API](../../api/pipelines.md#update-pipeline-metadata)                                      | To update pipeline metadata. |
+| [Update pipeline metadata API endpoint](../../api/pipelines.md#update-pipeline-metadata)                           | To update pipeline metadata. |
 | [Release links API](../../api/releases/links.md)                                                      |         |
 | [Releases API](../../api/releases/index.md)                                                           | `GET` requests are public by default. |
 | [Secure files](../secure_files/index.md#use-secure-files-in-cicd-jobs)                                | The `download-secure-files` tool authenticates with a CI/CD job token by default. |
 | [Terraform plan](../../user/infrastructure/index.md)                                                  |         |
 
-A job token can access a project's resources without any configuration, but it might
-give extra permissions that aren't necessary. There is [a proposal](https://gitlab.com/groups/gitlab-org/-/epics/3559)
+Other API endpoints are not accessible using a job token. There is [a proposal](https://gitlab.com/groups/gitlab-org/-/epics/3559)
 to redesign the feature for more granular control of access permissions.
 
 ## GitLab CI/CD job token security

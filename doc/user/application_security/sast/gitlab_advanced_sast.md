@@ -84,7 +84,7 @@ On GitLab self-managed, you must also use a GitLab version that supports Advance
   - The latest template includes Advanced SAST in GitLab 17.2 or later. Note that you [should not mix latest and stable templates](../index.md#template-editions) in a single project.
 - At a minimum, GitLab Advanced SAST requires version 17.1 or later.
 
-### Enabling Advanced SAST scanning
+### Enable Advanced SAST scanning
 
 Advanced SAST is included in the standard GitLab SAST CI/CD template, but isn't yet enabled by default.
 To enable it, set the CI/CD variable `GITLAB_ADVANCED_SAST_ENABLED` to `true`.

@@ -41,44 +41,122 @@ ensure coverage for all of these dependency types. To cover as much of your risk
 we encourage you to use all of our security scanners. For a comparison of these features, see
 [Dependency Scanning compared to Container Scanning](../../comparison_dependency_and_container_scanning.md).
 
-## Supported package managers
+## Supported package types
 
-For a list of supported package managers, see the analyzer's
-[supported files](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning/#supported-files).
+The vulnerability scanning of SBOM files is performed in GitLab by the same scanner used by
+[Continuous Vulnerability Scanning](../../continuous_vulnerability_scanning/index.md).
+In order for security scanning to work for your package manager, advisory information must be
+available for the components present in the SBOM report.
+
+See [Supported package types](../../continuous_vulnerability_scanning/index.md#supported-package-types).
 
 ## Dependency detection workflow
 
 The dependency detection workflow is as follows:
 
-1. The application to be scanned provides a CycloneDX SBOM file or creates one.
+1. The application to be scanned provides a
+   [CycloneDX SBOM report](../../../../ci/yaml/artifacts_reports.md#artifactsreportscyclonedx)
+   or creates one by [enabling the GitLab Dependency Scanning analyzer](#enabling-the-analyzer).
 1. GitLab checks each of the dependencies listed in the SBOM against the GitLab Advisory Database.
-1. If the dependency scanning job is run on the default branch: vulnerabilities are created, and can be seen in the vulnerability report.
+1. If the SBOM report is declared by a CI/CD job on the default branch: vulnerabilities are created,
+   and can be seen in the vulnerability report.
 
-   If the dependency scanning job is run on a non-default branch: security findings are created, and can be seen in the pipeline security tab and MR security widget.
+   If the SBOM report is declared by a CI/CD job on a non-default branch: no vulnerability
+   scanning takes place. Improvement to the feature is being tracked in
+   [Epic 14636](https://gitlab.com/groups/gitlab-org/-/epics/14636) so that security findings are
+   created, and can be seen in the pipeline security tab and MR security widget.
 
 ## Configuration
 
-Enable the dependency scanning analyzer to ensure it scans your application’s dependencies for known vulnerabilities.
-You can then adjust its behavior by configuring the CI/CD component's inputs.
+- Enable the dependency scanning analyzer to generate a CycloneDX SBOM containing your
+  application's dependencies. Once this report is uploaded to GitLab, the dependencies are scanned
+  for known vulnerabilities.
+- You can adjust the analyzer behavior by configuring the CI/CD component's inputs.
+
+For a list of languages and package managers supported by the analyzer, see
+[supported files](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning/#supported-files).
+
+After a
+[CycloneDX SBOM report](../../../../ci/yaml/artifacts_reports.md#artifactsreportscyclonedx)
+is uploaded, GitLab automatically scans all
+[supported package types](../../continuous_vulnerability_scanning/index.md#supported-package-types)
+present in the report.
 
 ## Enabling the analyzer
 
+The Dependency Scanning analyzer produces a CycloneDX SBOM report compatible with GitLab. If your
+application can't generate such a report, you can use the GitLab analyzer to produce one.
+
 Prerequisites:
 
+- A [supported lock file or dependency graph](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning/#supported-files)
+  must exist in the repository or must be passed as an artifact to the `dependency-scanning` job.
 - The component's [stage](https://gitlab.com/explore/catalog/components/dependency-scanning) is required in the `.gitlab-ci.yml` file.
 - With self-managed runners you need a GitLab Runner with the
   [`docker`](https://docs.gitlab.com/runner/executors/docker.html) or
   [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html) executor.
   - If you're using SaaS runners on GitLab.com, this is enabled by default.
-- A [supported lock file or dependency graph](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning/#supported-files)
-  must be in the repository.
-  Alternatively, configure the CI/CD job to output either as a job artifact,
-  ensuring the artifacts are generated in a stage before the `dependency-scanning`
-  job's stage. See the following example.
 
-To enable the analyzer, use the `main` [dependency scanning CI/CD component](https://gitlab.com/explore/catalog/components/dependency-scanning).
+To enable the analyzer, use the `main` [dependency scanning CI/CD component](https://gitlab.com/explore/catalog/components/dependency-scanning):
 
-### Enabling the analyzer for a Maven project
+```yaml
+include:
+  - component: $CI_SERVER_FQDN/components/dependency-scanning/main@0
+```
+
+### Language-specific instructions
+
+If your project doesn't have a supported lock file dependency graph commited to its
+repository, you need to provide one.
+
+The examples below show how to create a file that is supported by the GitLab analyzer for popular
+languages and package managers.
+
+#### Gradle
+
+To enable the CI/CD component on a Gradle project:
+
+1. Edit the `build.gradle` or `build.gradle.kts` to use the
+   [gradle-dependency-lock-plugin](https://github.com/nebula-plugins/gradle-dependency-lock-plugin/wiki/Usage#example).
+1. Configure the `.gitlab-ci.yml` file to generate the `dependencies.lock` artifacts, and pass them
+   to the `dependency-scanning` job.
+
+The following example demonstrates how to configure the component
+for a Gradle project.
+
+```yaml
+stages:
+  - build
+  - test
+
+# Define the image that contains Java and Gradle
+image: gradle:8.0-jdk11
+
+include:
+  - component: $CI_SERVER_FQDN/components/dependency-scanning/main@0
+
+build:
+  # Running in the build stage ensures that the dependency-scanning job
+  # receives the maven.graph.json artifacts.
+  stage: build
+  script:
+    - gradle generateLock saveLock
+    - gradle assemble
+  # generateLock saves the lock file in the build/ directory of a project
+  # and saveLock copies it into the root of a project. To avoid duplicates
+  # and get an accurate location of the dependency, use find to remove the
+  # lock files in the build/ directory only.
+  after_script:
+    - find . -path '*/build/dependencies.lock' -print -delete
+  # Collect all dependencies.lock artifacts and pass them onto jobs
+  # in sequential stages.
+  artifacts:
+    paths:
+      - "**/dependencies.lock"
+
+```
+
+#### Maven
 
 The following example `.gitlab-ci.yml` demonstrates how to enable the CI/CD
 component on a Maven project. The dependency graph is output as a job artifact
@@ -107,48 +185,6 @@ build:
     paths:
       - "**/*.jar"
       - "**/maven.graph.json"
-
-```
-
-### Enabling the analyzer for a Gradle project
-
-To enable the CI/CD component on a Gradle project:
-
-1. Edit the `build.gradle` or `build.gradle.kts` to use the [gradle-dependency-lock-plugin](https://github.com/nebula-plugins/gradle-dependency-lock-plugin/wiki/Usage#example).
-1. Configure the `.gitlab-ci.yml` file to generate the `dependencies.lock` artifacts, and pass them to the `dependency-scanning` job.
-
-The following example demonstrates how to configure the component
-for a Gradle project.
-
-```yaml
-stages:
-  - build
-  - test
-
-# Define the image that contains Java and Gradle
-image: gradle:8.0-jdk11
-
-include:
-  - component: $CI_SERVER_FQDN/components/dependency-scanning/main@0.4.0
-
-build:
-  # Running in the build stage ensures that the dependency-scanning job
-  # receives the maven.graph.json artifacts.
-  stage: build
-  script:
-    - gradle generateLock saveLock
-    - gradle assemble
-  # generateLock saves the lock file in the build/ directory of a project
-  # and saveLock copies it into the root of a project. To avoid duplicates
-  # and get an accurate location of the dependency, use find to remove the
-  # lock files in the build/ directory only.
-  after_script:
-    - find . -path '*/build/dependencies.lock' -print -delete
-  # Collect all dependencies.lock artifacts and pass them onto jobs
-  # in sequential stages.
-  artifacts:
-    paths:
-      - "**/dependencies.lock"
 
 ```
 
@@ -222,7 +258,7 @@ stages:
   - merge-cyclonedx-sboms
 
 include:
-  - component: $CI_SERVER_FQDN/components/dependency-scanning/main@0.4.0
+  - component: $CI_SERVER_FQDN/components/dependency-scanning/main@0
 
 merge cyclonedx sboms:
   stage: merge-cyclonedx-sboms

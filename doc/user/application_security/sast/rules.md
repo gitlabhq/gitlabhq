@@ -16,6 +16,15 @@ It automatically chooses which analyzers to run based on which programming langu
 Each analyzer processes the code, then uses rules to find possible weaknesses in source code.
 The analyzer's rules determine what types of weaknesses it reports.
 
+## Scope of rules
+
+GitLab SAST focuses on security weaknesses and vulnerabilities. It does not aim to find general bugs or assess overall code quality or maintainability.
+
+GitLab manages the detection ruleset with a focus on identifying actionable security weaknesses and vulnerabilities.
+The ruleset is designed to provide broad coverage against the most impactful vulnerabilities while minimizing false positives (reported vulnerabilities where no vulnerability exists).
+
+GitLab SAST is designed to be used in its default configuration, but you can [configure detection rules](#configure-rules-in-your-projects) if needed.
+
 ## Source of rules
 
 ### Advanced SAST
