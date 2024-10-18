@@ -20,7 +20,7 @@ module QA
           end
 
           def set_description(description)
-            fill_element('milestone-description-field', description)
+            fill_editor_element('milestone-description-field', description)
           end
         end
       end

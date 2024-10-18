@@ -62,7 +62,7 @@ GEM
     re2 (2.4.3)
       mini_portile2 (~> 2.8.5)
     regexp_parser (2.8.2)
-    rexml (3.2.6)
+    rexml (3.3.8)
     rspec (3.12.0)
       rspec-core (~> 3.12.0)
       rspec-expectations (~> 3.12.0)
@@ -148,4 +148,4 @@ DEPENDENCIES
   rubocop-rspec (~> 2.22)
 
 BUNDLED WITH
-   2.4.22
+   2.5.21

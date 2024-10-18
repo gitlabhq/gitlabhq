@@ -1568,8 +1568,7 @@ GEM
     retriable (3.1.2)
     reverse_markdown (1.4.0)
       nokogiri
-    rexml (3.3.2)
-      strscan
+    rexml (3.3.8)
     rinku (2.0.0)
     rotp (6.3.0)
     rouge (4.3.0)
@@ -1792,7 +1791,6 @@ GEM
       unicode-display_width (>= 1.5, < 3.0)
       unicode_utils (~> 1.4)
     strings-ansi (0.2.0)
-    strscan (3.1.0)
     swd (2.0.3)
       activesupport (>= 3)
       attr_required (>= 0.0.5)

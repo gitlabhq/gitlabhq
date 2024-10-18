@@ -103,6 +103,10 @@ module QA
           element 'artifacts-dropdown'
         end
 
+        view 'app/assets/javascripts/content_editor/components/formatting_toolbar.vue' do
+          element 'code-suggestion'
+        end
+
         view 'app/assets/javascripts/vue_shared/components/markdown/apply_suggestion.vue' do
           element 'apply-suggestion-dropdown'
           element 'commit-message-field'
@@ -149,6 +153,7 @@ module QA
         end
 
         def start_review
+          has_active_element?('start-review-button', wait: 0.5)
           click_element('start-review-button')
 
           # After clicking the button, wait for it to disappear
@@ -198,7 +203,7 @@ module QA
           click_element('dismiss-suggestion-popover-button') if has_element?('dismiss-suggestion-popover-button',
             wait: 1)
 
-          fill_element('reply-field', text)
+          fill_editor_element('reply-field', text)
         end
 
         def click_discussions_tab
@@ -445,10 +450,20 @@ module QA
         def add_suggestion_to_diff(suggestion, line)
           find("a[data-linenumber='#{line}']").hover
           click_element('left-comment-button')
-          click_element('suggestion-button')
-          initial_content = find_element('reply-field').value
-          fill_element('reply-field', '')
-          fill_element('reply-field', initial_content.gsub(/(```suggestion:-0\+0\n).*(\n```)/, "\\1#{suggestion}\\2"))
+
+          if has_element?('suggestion-button', wait: 0.5)
+            click_element('suggestion-button')
+            initial_content = find_element('reply-field').value
+            fill_editor_element('reply-field', '')
+            fill_editor_element('reply-field',
+              initial_content.gsub(/(```suggestion:-0\+0\n).*(\n```)/, "\\1#{suggestion}\\2"))
+          else
+            click_element('code-suggestion')
+            suggestion_field = find_element('suggestion-field')
+            suggestion_field.set(suggestion)
+            has_active_element?('comment-now-button', wait: 0.5)
+          end
+
           click_element('comment-now-button')
           wait_for_requests
         end

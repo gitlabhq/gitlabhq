@@ -1340,7 +1340,7 @@ The GitLab registry is what users use to store their own Docker images.
 Because of that the Registry is client facing, meaning that we expose it directly
 on the web server (or load balancers, LB for short).
 
-![GitLab Registry diagram](img/gitlab-registry-architecture.png)
+![User login process with GitLab Container Registry.](img/gitlab-registry-architecture.png)
 
 The flow described by the diagram above:
 

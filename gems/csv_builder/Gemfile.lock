@@ -37,7 +37,7 @@ GEM
     rack (3.0.8)
     rainbow (3.1.1)
     regexp_parser (2.8.1)
-    rexml (3.2.6)
+    rexml (3.3.8)
     rspec (3.12.0)
       rspec-core (~> 3.12.0)
       rspec-expectations (~> 3.12.0)
@@ -97,4 +97,4 @@ DEPENDENCIES
   rubocop-rspec (~> 2.22)
 
 BUNDLED WITH
-   2.4.17
+   2.5.21

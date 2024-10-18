@@ -5665,6 +5665,9 @@ msgstr ""
 msgid "All protected branches"
 msgstr ""
 
+msgid "All required approvals given"
+msgstr ""
+
 msgid "All required approvals must be given."
 msgstr ""
 

@@ -47,7 +47,8 @@ module QA
 
         def add_annotation(note)
           click_element('design-image-button')
-          fill_element('note-textarea', note)
+          fill_editor_element('note-textarea', note)
+          has_active_element?('save-comment-button', wait: 0.5)
           click_element('save-comment-button')
 
           # It takes a moment for the annotation to be saved.

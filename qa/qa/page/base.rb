@@ -276,6 +276,21 @@ module QA
         find_element(name).set(content)
       end
 
+      # fill in editor element, whether plain text or rich text
+      def fill_editor_element(name, content)
+        element = find_element name
+
+        if element.tag_name == 'textarea'
+          element.set content
+        else
+          mod = page.driver.browser.capabilities.platform_name.include?("mac") ? :command : :control
+          prosemirror = element.find '[contenteditable].ProseMirror'
+          prosemirror.send_keys [mod, 'a']
+          prosemirror.send_keys :delete
+          prosemirror.send_keys content
+        end
+      end
+
       def select_element(name, value)
         element = find_element(name)
 

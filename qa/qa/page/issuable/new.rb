@@ -37,7 +37,7 @@ module QA
         end
 
         def fill_description(description)
-          fill_element('issuable-form-description-field', description)
+          fill_editor_element('issuable-form-description-field', description)
         end
 
         def choose_milestone(milestone)

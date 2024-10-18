@@ -67,7 +67,7 @@ GEM
     rainbow (3.1.1)
     rake (13.1.0)
     regexp_parser (2.8.3)
-    rexml (3.2.6)
+    rexml (3.3.8)
     rspec (3.12.0)
       rspec-core (~> 3.12.0)
       rspec-expectations (~> 3.12.0)
@@ -139,4 +139,4 @@ DEPENDENCIES
   webmock
 
 BUNDLED WITH
-   2.4.21
+   2.5.21

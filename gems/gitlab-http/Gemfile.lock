@@ -119,7 +119,7 @@ GEM
     rainbow (3.1.1)
     rake (13.0.6)
     regexp_parser (2.8.1)
-    rexml (3.2.5)
+    rexml (3.3.8)
     rouge (4.3.0)
     rspec (3.12.0)
       rspec-core (~> 3.12.0)
@@ -214,4 +214,4 @@ DEPENDENCIES
   webrick (~> 1.8)
 
 BUNDLED WITH
-   2.4.14
+   2.5.21

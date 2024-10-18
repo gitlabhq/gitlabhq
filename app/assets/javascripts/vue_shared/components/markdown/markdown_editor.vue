@@ -394,17 +394,13 @@ export default {
         :editable="!disabled"
         :disable-attachments="disableAttachments"
         :code-suggestions-config="codeSuggestionsConfig"
+        :data-testid="formFieldProps['data-testid'] || 'markdown-editor-form-field'"
         @initialized="setEditorAsAutofocused"
         @change="updateMarkdownFromContentEditor"
         @keydown="onKeydown"
         @enableMarkdownEditor="onEditingModeChange('markdownField')"
       />
-      <input
-        v-bind="formFieldProps"
-        :value="markdown"
-        data-testid="markdown-editor-form-field"
-        type="hidden"
-      />
+      <input v-bind="formFieldProps" :value="markdown" type="hidden" />
     </div>
   </div>
 </template>
