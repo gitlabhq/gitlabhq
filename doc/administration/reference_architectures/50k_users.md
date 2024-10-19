@@ -2420,7 +2420,7 @@ Each Webservice pod (Puma and Workhorse) is recommended to be run with the follo
 - 5 GB memory (request)
 - 7 GB memory (limit)
 
-For 500 RPS or 25,000 users we recommend a total Puma worker count of around 308 so in turn it's recommended to run at
+For 1000 RPS or 50,000 users we recommend a total Puma worker count of around 308 so in turn it's recommended to run at
 least 77 Webservice pods.
 
 For further information on Webservice resource usage, see the Charts documentation on [Webservice resources](https://docs.gitlab.com/charts/charts/gitlab/webservice/#resources).
