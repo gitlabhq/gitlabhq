@@ -367,7 +367,9 @@ Prometheus metrics are exposed to monitor workers using concurrency limit middle
 
 - `sidekiq_concurrency_limit_deferred_jobs_total`
 - `sidekiq_concurrency_limit_queue_jobs`
+- `sidekiq_concurrency_limit_queue_jobs_total`
 - `sidekiq_concurrency_limit_max_concurrent_jobs`
+- `sidekiq_concurrency_limit_current_concurrent_jobs_total`
 
 WARNING:
 If there is a sustained workload over the limit, the `LIST` is going to grow until the limit is disabled or

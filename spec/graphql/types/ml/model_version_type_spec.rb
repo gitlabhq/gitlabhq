@@ -16,6 +16,13 @@ RSpec.describe GitlabSchema.types['MlModelVersion'], feature_category: :mlops do
             id
             latestVersion {
               id
+              createdAt
+              author {
+                id
+                username
+                webUrl
+                avatarUrl
+              }
               version
               packageId
               description
@@ -41,6 +48,13 @@ RSpec.describe GitlabSchema.types['MlModelVersion'], feature_category: :mlops do
             id
             latestVersion {
               id
+              createdAt
+              author {
+                id
+                username
+                webUrl
+                avatarUrl
+              }
               version
               packageId
               description
@@ -70,7 +84,7 @@ RSpec.describe GitlabSchema.types['MlModelVersion'], feature_category: :mlops do
   end
 
   it 'includes all fields' do
-    expected_fields = %w[id version created_at _links candidate package_id description description_html]
+    expected_fields = %w[id version created_at _links candidate package_id description description_html author]
 
     expect(described_class).to include_graphql_fields(*expected_fields)
   end
@@ -81,6 +95,13 @@ RSpec.describe GitlabSchema.types['MlModelVersion'], feature_category: :mlops do
     expect(version_data).to eq({
       'id' => "gid://gitlab/Ml::ModelVersion/#{model_version.id}",
       'version' => model_version.version,
+      'createdAt' => model_version.created_at.iso8601,
+      'author' => {
+        'id' => current_user.to_global_id.to_s,
+        'username' => current_user.username,
+        'webUrl' => "http://localhost/#{current_user.username}",
+        'avatarUrl' => current_user.avatar_url
+      },
       'description' => 'A description',
       'descriptionHtml' => '<p data-sourcepos="1:1-1:13" dir="auto">A description</p>',
       'packageId' => "gid://gitlab/Packages::Package/#{model_version.package_id}",
@@ -98,9 +119,17 @@ RSpec.describe GitlabSchema.types['MlModelVersion'], feature_category: :mlops do
   it 'computes the correct properties with markdown' do
     version_data = data_markdown.dig('data', 'mlModel', 'latestVersion')
     version = model_version_markdown
+    user = project_markdown.owner
     expect(version_data).to eq({
       'id' => "gid://gitlab/Ml::ModelVersion/#{version.id}",
       'version' => version.version,
+      'createdAt' => version.created_at.iso8601,
+      'author' => {
+        'id' => user.to_global_id.to_s,
+        'username' => user.username,
+        'webUrl' => "http://localhost/#{user.username}",
+        'avatarUrl' => user.avatar_url
+      },
       'description' => 'A **description**',
       'descriptionHtml' =>
         '<p data-sourcepos="1:1-1:17" dir="auto">A <strong data-sourcepos="1:3-1:17">description</strong></p>',

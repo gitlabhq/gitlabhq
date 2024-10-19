@@ -2,7 +2,9 @@
 redirect_to: 'beginners_guide/index.md'
 remove_date: '2025-01-03'
 ---
+
 <!-- markdownlint-disable -->
+
 This document was moved to [another location](beginners_guide/index.md).
 
 <!-- This redirect file can be deleted after <2025-01-03>. -->

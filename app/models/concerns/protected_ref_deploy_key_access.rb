@@ -9,7 +9,8 @@ module ProtectedRefDeployKeyAccess
     protected_ref_fk = "#{module_parent.model_name.singular}_id"
     validates :deploy_key_id, uniqueness: { scope: protected_ref_fk, allow_nil: true }
     validates :deploy_key, presence: true, if: :deploy_key_id
-    validate :validate_deploy_key_membership, if: :deploy_key
+    validate :validate_deploy_key_owner_project_membership, if: :deploy_key
+    validate :validate_deploy_key_project_access, if: :deploy_key
   end
 
   class_methods do
@@ -34,7 +35,13 @@ module ProtectedRefDeployKeyAccess
     type == :deploy_key
   end
 
-  def validate_deploy_key_membership
+  def validate_deploy_key_owner_project_membership
+    return if deploy_key_owner_project_member?
+
+    errors.add(:deploy_key, 'owner is not a project member')
+  end
+
+  def validate_deploy_key_project_access
     return if deploy_key_has_write_access_to_project?
 
     errors.add(:deploy_key, 'is not enabled for this project')

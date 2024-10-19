@@ -294,11 +294,11 @@ Continued reading:
 
 - [Beginner's Guide](beginners_guide/index.md)
 - [Style Guide](style_guide.md)
-- [Best Practices](best_practices.md)
-- [Testing with feature flags](feature_flags.md)
+- [Best Practices](best_practices/index.md)
+- [Testing with feature flags](best_practices/feature_flags.md)
 - [Flows](beginners_guide/flows.md)
-- [RSpec metadata/tags](rspec_metadata_tests.md)
-- [Execution context selection](execution_context_selection.md)
+- [RSpec metadata/tags](best_practices/rspec_metadata_tests.md)
+- [Execution context selection](best_practices/execution_context_selection.md)
 - [Troubleshooting](troubleshooting.md)
 
 ## Where can you ask for help?

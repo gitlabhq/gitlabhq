@@ -157,7 +157,7 @@ Things to note:
 
 - The name of the element and the `data-testid` must match and be kebab cased
 - If the element appears on the page unconditionally, add `required: true` to the element. See
-  [Dynamic element validation](../dynamic_element_validation.md)
+  [Dynamic element validation](../best_practices/dynamic_element_validation.md)
 - You should not see `data-qa-selector` classes in Page Objects.
   We should use the [`data-testid`](#data-testid-vs-data-qa-selector)
   method of definition

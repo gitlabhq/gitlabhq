@@ -103,9 +103,7 @@ Users can still create branches, but not tags, with the protected names.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325415) in GitLab 15.11.
 
-You can permit the owner of a [deploy key](deploy_keys/index.md) to create protected tags.
-The deploy key works, even if the user isn't a member of the related project. However, the owner of the deploy
-key must have at least read access to the project.
+You can permit a [deploy key](deploy_keys/index.md) to create protected tags.
 
 Prerequisites:
 
@@ -115,6 +113,8 @@ Prerequisites:
   project.
 - The deploy key must have [write access](deploy_keys/index.md#permissions) to your project
   repository.
+- The owner of the deploy key must have at least read access to the project.
+- The owner of the deploy key must also be a member of the project.
 
 To allow a deploy key to create a protected tag:
 

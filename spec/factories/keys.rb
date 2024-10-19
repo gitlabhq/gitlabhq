@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :key do
-    title
+    sequence(:title) { |n| "title #{n}" }
     key do
       # Larger keys take longer to generate, and since this factory gets called frequently,
       # let's only create the smallest one we need.
@@ -31,8 +31,28 @@ FactoryBot.define do
     end
 
     factory :deploy_key, class: 'DeployKey' do
+      transient do
+        # rubocop:disable Lint/EmptyBlock -- block is required by factorybot
+        readonly_access_to {}
+        write_access_to {}
+        # rubocop:enable Lint/EmptyBlock
+      end
+
       after(:build) { Gitlab::ExclusiveLease.set_skip_transaction_check_flag(true) }
-      after(:create) { Gitlab::ExclusiveLease.set_skip_transaction_check_flag(nil) }
+
+      after(:create) do |deploy_key, evaluator|
+        Gitlab::ExclusiveLease.set_skip_transaction_check_flag(nil)
+        Array.wrap(evaluator.readonly_access_to).each do |project|
+          create(:deploy_keys_project, :readonly_access, deploy_key: deploy_key, project: project)
+        end
+        Array.wrap(evaluator.write_access_to).each do |project|
+          create(:deploy_keys_project, :write_access, deploy_key: deploy_key, project: project)
+        end
+      end
+
+      trait :owned do
+        user
+      end
 
       trait :private do
         public { false }

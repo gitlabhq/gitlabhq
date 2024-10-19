@@ -132,7 +132,6 @@ Lint/UnusedBlockArgument:
     - 'ee/spec/services/security/ingestion/ingest_report_slice_service_spec.rb'
     - 'ee/spec/services/security/vulnerability_counting_service_spec.rb'
     - 'ee/spec/services/todo_service_spec.rb'
-    - 'ee/spec/support/shared_examples/finders/security/findings_finder_shared_examples.rb'
     - 'ee/spec/support/shared_examples/graphql/geo/geo_registry_type_shared_examples.rb'
     - 'ee/spec/support/shared_examples/lib/gitlab/middleware/maintenance_mode_gitlab_ee_instance_shared_examples.rb'
     - 'ee/spec/support/shared_examples/lib/gitlab/middleware/read_only_gitlab_ee_instance_shared_examples.rb'

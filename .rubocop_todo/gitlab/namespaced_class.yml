@@ -315,7 +315,6 @@ Gitlab/NamespacedClass:
     - 'app/models/upload.rb'
     - 'app/models/user.rb'
     - 'app/models/user_agent_detail.rb'
-    - 'app/models/user_canonical_email.rb'
     - 'app/models/user_custom_attribute.rb'
     - 'app/models/user_detail.rb'
     - 'app/models/user_highest_role.rb'

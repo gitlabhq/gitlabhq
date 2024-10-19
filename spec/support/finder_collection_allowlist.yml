@@ -59,7 +59,6 @@
 - Repositories::BranchNamesFinder
 - Repositories::ChangelogTagFinder
 - Repositories::TreeFinder
-- Security::FindingsFinder
 - Security::PipelineVulnerabilitiesFinder
 - Security::ScanExecutionPoliciesFinder
 - Security::ScanResultPoliciesFinder

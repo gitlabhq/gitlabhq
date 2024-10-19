@@ -11,7 +11,7 @@ DETAILS:
 **Offering:** Self-managed
 
 Geo is the solution for widely distributed development teams and for providing
-a warm-standby as part of a disaster recovery strategy.
+a warm-standby as part of a disaster recovery strategy. Geo is **not** an out of the box HA solution.
 
 WARNING:
 Geo undergoes significant changes from release to release. Upgrades are

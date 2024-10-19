@@ -12,7 +12,7 @@ RSpec.describe Pajamas::ProgressComponent, type: :component do
 
   describe "value" do
     it "sets the width of the progressbar" do
-      expect(page).to have_css ".progress-bar[style='width: #{value}%;']"
+      expect(page).to have_css ".gl-progress[style='width: #{value}%;']"
     end
   end
 
@@ -21,7 +21,7 @@ RSpec.describe Pajamas::ProgressComponent, type: :component do
 
     with_them do
       it "adds variant class" do
-        expect(page).to have_css ".progress-bar.bg-#{variant}"
+        expect(page).to have_css ".gl-progress.gl-progress-bar-#{variant}"
       end
     end
 
@@ -29,7 +29,7 @@ RSpec.describe Pajamas::ProgressComponent, type: :component do
       let(:variant) { :nope }
 
       it "adds the default variant class" do
-        expect(page).to have_css ".progress-bar.bg-primary"
+        expect(page).to have_css ".gl-progress.gl-progress-bar-primary"
       end
     end
   end

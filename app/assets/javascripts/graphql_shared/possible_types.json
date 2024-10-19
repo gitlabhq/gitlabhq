@@ -24,6 +24,7 @@
     "Note"
   ],
   "CiRunnerCloudProvisioning": [
+    "CiRunnerGkeProvisioning",
     "CiRunnerGoogleCloudProvisioning"
   ],
   "CiVariable": [

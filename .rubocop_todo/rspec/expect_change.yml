@@ -261,7 +261,6 @@ RSpec/ExpectChange:
     - 'spec/requests/api/graphql/mutations/issues/create_spec.rb'
     - 'spec/requests/api/graphql/mutations/timelogs/delete_spec.rb'
     - 'spec/requests/api/graphql/mutations/work_items/create_from_task_spec.rb'
-    - 'spec/requests/api/graphql/mutations/work_items/create_spec.rb'
     - 'spec/requests/api/graphql/mutations/work_items/delete_spec.rb'
     - 'spec/requests/api/graphql/mutations/work_items/update_spec.rb'
     - 'spec/requests/api/groups_spec.rb'

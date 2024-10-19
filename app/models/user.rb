@@ -289,7 +289,6 @@ class User < ApplicationRecord
   has_one :user_preference
   has_one :user_detail
   has_one :user_highest_role
-  has_one :user_canonical_email
   has_one :credit_card_validation, class_name: '::Users::CreditCardValidation'
   has_one :phone_number_validation, class_name: '::Users::PhoneNumberValidation'
   has_one :atlassian_identity, class_name: 'Atlassian::Identity'

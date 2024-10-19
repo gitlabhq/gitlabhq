@@ -5875,6 +5875,9 @@ msgstr ""
 msgid "An empty GitLab User field will add the FogBugz user's full name (e.g. \"By John Smith\") in the description of all issues and comments. It will also associate and/or assign these issues and comments with the project creator."
 msgstr ""
 
+msgid "An epic’s color is shown in roadmaps and epic boards."
+msgstr ""
+
 msgid "An error has occurred"
 msgstr ""
 
@@ -42392,6 +42395,9 @@ msgstr ""
 msgid "Progress"
 msgstr ""
 
+msgid "Progress bar"
+msgstr ""
+
 msgid "Progress tracking"
 msgstr ""
 
@@ -45897,9 +45903,6 @@ msgstr ""
 msgid "Reports|Tool"
 msgstr ""
 
-msgid "Reports|Vulnerability Name"
-msgstr ""
-
 msgid "Reports|metrics report"
 msgstr ""
 
@@ -47456,6 +47459,9 @@ msgid "Runners|The time it takes for an instance runner to pick up a job. Jobs w
 msgstr ""
 
 msgid "Runners|The user is not allowed to create a runner"
+msgstr ""
+
+msgid "Runners|The user is not allowed to provision a GKE runner"
 msgstr ""
 
 msgid "Runners|The user is not allowed to provision a cloud runner"
@@ -50581,6 +50587,9 @@ msgid "See an AI-generated summary of your code changes."
 msgstr ""
 
 msgid "See example DevOps Score page in our documentation."
+msgstr ""
+
+msgid "See examples."
 msgstr ""
 
 msgid "See our website for help"

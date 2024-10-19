@@ -326,14 +326,14 @@ Additional information on test execution and possible options are described in [
 
 Before submitting the test for code review, there are a few housecleaning tasks to do:
 
-1. Ensure that the test name follows the recommended [naming convention](../best_practices.md#test-naming).
-1. Ensure that the spec is [linked to a test case](../best_practices.md#link-a-test-to-its-test-case).
+1. Ensure that the test name follows the recommended [naming convention](../best_practices/index.md#test-naming).
+1. Ensure that the spec is [linked to a test case](../best_practices/index.md#link-a-test-to-its-test-case).
 1. Ensure that the spec has the correct `product_group` metadata. See [Product sections, stages, groups, and categories](https://handbook.gitlab.com/handbook/product/categories/) for the comprehensive list of groups.
 1. Ensure that the relevant [RSpec metadata](../rspec_metadata_tests.md) are added to the spec.
 1. Ensure the page object elements are named according to the [recommended naming convention](../style_guide.md#element-naming-convention).
 
 NOTE:
-For more information, see [End-to-end testing best practices](../best_practices.md) and [End-to-end testing style guide](../style_guide.md).
+For more information, see [End-to-end testing best practices](../best_practices/index.md) and [End-to-end testing style guide](../style_guide.md).
 
 ## End-to-end test merge request template
 

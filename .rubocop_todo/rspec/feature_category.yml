@@ -3606,7 +3606,6 @@ RSpec/FeatureCategory:
     - 'spec/models/uploads/fog_spec.rb'
     - 'spec/models/uploads/local_spec.rb'
     - 'spec/models/user_agent_detail_spec.rb'
-    - 'spec/models/user_canonical_email_spec.rb'
     - 'spec/models/user_mentions/commit_user_mention_spec.rb'
     - 'spec/models/user_mentions/issue_user_mention_spec.rb'
     - 'spec/models/user_mentions/merge_request_user_mention_spec.rb'

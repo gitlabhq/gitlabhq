@@ -5,7 +5,7 @@ module UserStatusCleanup
   class BatchWorker
     include ApplicationWorker
 
-    data_consistency :always
+    data_consistency :sticky
 
     # rubocop:disable Scalability/CronWorkerContext
     include CronjobQueue

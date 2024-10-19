@@ -169,7 +169,7 @@ RSpec.shared_examples 'work item drawer' do
 
       it 'shows time tracking progress bar' do
         within_testid('work-item-time-tracking') do
-          expect(page).to have_selector('.progress-bar')
+          expect(page).to have_selector('.gl-progress')
         end
       end
 

@@ -2,7 +2,9 @@
 redirect_to: 'beginners_guide/flows.md'
 remove_date: '2025-01-03'
 ---
+
 <!-- markdownlint-disable -->
+
 This document was moved to [another location](beginners_guide/flows.md).
 
 <!-- This redirect file can be deleted after <2025-01-03>. -->

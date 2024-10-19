@@ -25,6 +25,17 @@ module Gitlab
 
         Sidekiq.logger.info payload
       end
+
+      def worker_stats_log(worker_name, limit, queue_size, current)
+        payload = parse_job({
+          'class' => worker_name
+        })
+        payload['concurrency_limit'] = limit
+        payload['concurrency_limit_queue_size'] = queue_size
+        payload['current_concurrency'] = current
+
+        Sidekiq.logger.info payload
+      end
     end
   end
 end

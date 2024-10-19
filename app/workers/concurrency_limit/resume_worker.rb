@@ -25,9 +25,13 @@ module ConcurrencyLimit
         next unless queue_size > 0
         next if limit < 0 # do not re-queue jobs if circuit-broken
 
+        current = current_concurrency(worker: worker)
+        Gitlab::SidekiqLogging::ConcurrencyLimitLogger.instance.worker_stats_log(
+          worker.name, limit, queue_size, current
+        )
+
         reschedule_job = true
 
-        current = current_concurrency(worker: worker)
         processing_limit = if limit > 0
                              limit - current
                            else

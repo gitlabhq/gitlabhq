@@ -4,8 +4,8 @@ require 'spec_helper'
 
 RSpec.describe BranchRules::UpdateService, feature_category: :source_code_management do
   let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:user) { create(:user) }
-  let_it_be(:deploy_key_id) { create(:deploy_keys_project, :write_access, project: project).deploy_key_id }
+  let_it_be(:user) { create(:user, guest_of: project) }
+  let_it_be(:deploy_key_id) { create(:deploy_key, user: user, write_access_to: project).id }
   let_it_be(:protected_branch, reload: true) { create(:protected_branch, project: project) }
 
   describe '#execute' do
@@ -133,7 +133,7 @@ RSpec.describe BranchRules::UpdateService, feature_category: :source_code_manage
           create(
             :protected_branch_push_access_level,
             protected_branch: protected_branch,
-            deploy_key: create(:deploy_keys_project, :write_access, project: project).deploy_key
+            deploy_key: create(:deploy_key, user: create(:user, guest_of: project), write_access_to: project)
           )
         end
 

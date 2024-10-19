@@ -7,12 +7,6 @@ RSpec.shared_examples 'common user build items' do
     expect(user.created_by_id).to eq(current_user&.id)
   end
 
-  it 'calls UpdateCanonicalEmailService' do
-    expect(Users::UpdateCanonicalEmailService).to receive(:new).and_call_original
-
-    user
-  end
-
   context 'when organization_id is in the params' do
     it 'creates personal namespace in specified organization' do
       expect(user.namespace.organization).to eq(organization)

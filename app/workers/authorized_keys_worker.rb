@@ -3,7 +3,7 @@
 class AuthorizedKeysWorker
   include ApplicationWorker
 
-  data_consistency :always
+  data_consistency :sticky
 
   sidekiq_options retry: 3
 

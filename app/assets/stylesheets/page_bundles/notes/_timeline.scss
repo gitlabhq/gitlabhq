@@ -76,10 +76,9 @@
 
   .timeline-entry:not(.draft-note):last-child::before {
     @apply gl-bg-default;
-
-    // stylelint-disable-next-line gitlab/no-gl-class
-    .gl-dark .modal-body & {
-      @apply gl-bg-strong;
+    
+    .modal-body & {
+      @apply gl-bg-overlap;
     }
   }
 }

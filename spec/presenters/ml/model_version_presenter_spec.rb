@@ -25,4 +25,16 @@ RSpec.describe Ml::ModelVersionPresenter, feature_category: :mlops do
 
     it { is_expected.to eq("/#{project.full_path}/-/packages/#{model_version.package_id}") }
   end
+
+  describe '#import_path' do
+    subject { presenter.import_path }
+
+    it { is_expected.to eq("/api/v4/projects/#{project.id}/packages/ml_models/#{model_version.id}/files/") }
+  end
+
+  describe '#auhor' do
+    subject { presenter.author }
+
+    it { is_expected.to eq(model_version.package.creator) }
+  end
 end

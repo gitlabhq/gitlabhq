@@ -10,6 +10,10 @@ module Ml
       "#{model_version.model.name} / #{model_version.version}"
     end
 
+    def author
+      model_version.package.creator
+    end
+
     def path
       project_ml_model_version_path(
         model_version.model.project,

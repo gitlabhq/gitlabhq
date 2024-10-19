@@ -3290,7 +3290,6 @@ RSpec/NamedSubject:
     - 'spec/services/users/assigned_issues_count_service_spec.rb'
     - 'spec/services/users/keys_count_service_spec.rb'
     - 'spec/services/users/reject_service_spec.rb'
-    - 'spec/services/users/update_canonical_email_service_spec.rb'
     - 'spec/services/users/update_service_spec.rb'
     - 'spec/services/vs_code/settings/create_or_update_service_spec.rb'
     - 'spec/services/vs_code/settings/delete_service_spec.rb'
