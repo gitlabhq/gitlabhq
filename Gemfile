@@ -510,7 +510,7 @@ group :development, :test do
   gem 'spring', '~> 4.1.0' # rubocop:todo Gemfile/MissingFeatureCategory
   gem 'spring-commands-rspec', '~> 1.0.4' # rubocop:todo Gemfile/MissingFeatureCategory
 
-  gem 'gitlab-styles', '~> 12.0.1', feature_category: :tooling
+  gem 'gitlab-styles', '~> 13.0.1', feature_category: :tooling
   gem 'haml_lint', '~> 0.58', feature_category: :tooling
 
   gem 'bundler-audit', '~> 0.9.1', require: false # rubocop:todo Gemfile/MissingFeatureCategory
@@ -716,7 +716,7 @@ gem 'cvss-suite', '~> 3.0.1', require: 'cvss_suite' # rubocop:todo Gemfile/Missi
 gem 'arr-pm', '~> 0.0.12' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # Remote Development
-gem 'devfile', '~> 0.0.28.pre.alpha1', feature_category: :workspaces
+gem 'devfile', '~> 0.1.0', feature_category: :workspaces
 
 # Apple plist parsing
 gem 'CFPropertyList', '~> 3.0.0' # rubocop:todo Gemfile/MissingFeatureCategory

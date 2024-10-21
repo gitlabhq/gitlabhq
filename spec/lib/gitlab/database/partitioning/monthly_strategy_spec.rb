@@ -295,6 +295,81 @@ RSpec.describe Gitlab::Database::Partitioning::MonthlyStrategy, feature_category
           end
         end
       end
+
+      context 'with a time retention policy of 1 month' do
+        let(:retention_period) { 1.month }
+
+        subject(:partitions_to_remove) { described_class.new(model, partitioning_key, retain_for: retention_period).extra_partitions }
+
+        it 'prunes the unbounded partition and the partitions for May-June and June-July' do
+          expect(subject).to contain_exactly(
+            Gitlab::Database::Partitioning::TimePartition.new(
+              model.table_name,
+              nil,
+              '2020-05-01',
+              partition_name: '_test_partitioned_test_000000'
+            ),
+            Gitlab::Database::Partitioning::TimePartition.new(
+              model.table_name,
+              '2020-05-01',
+              '2020-06-01',
+              partition_name: '_test_partitioned_test_202005'
+            ),
+            Gitlab::Database::Partitioning::TimePartition.new(
+              model.table_name,
+              '2020-06-01',
+              '2020-07-01',
+              partition_name: '_test_partitioned_test_202006'
+            )
+          )
+        end
+
+        it 'contains partitions starting at least one month in the past' do
+          prune_to = partitions_to_remove.map(&:to).max
+          expect(1.month.ago).to be_after(prune_to)
+
+          strategy = described_class.new(model, partitioning_key, retain_for: retention_period)
+          desired_partitions = strategy.current_partitions - strategy.extra_partitions + strategy.missing_partitions
+          # Double check this is equivalent to the private method
+          expect(desired_partitions).to contain_exactly(*strategy.send(:desired_partitions))
+        end
+
+        context 'when the retain_non_empty_partitions is true' do
+          subject { described_class.new(model, partitioning_key, retain_for: retention_period, retain_non_empty_partitions: true).extra_partitions }
+
+          it 'prunes empty partitions' do
+            expect(subject).to contain_exactly(
+              Gitlab::Database::Partitioning::TimePartition.new(
+                model.table_name,
+                nil,
+                '2020-05-01',
+                partition_name: '_test_partitioned_test_000000'
+              ),
+              Gitlab::Database::Partitioning::TimePartition.new(
+                model.table_name,
+                '2020-05-01',
+                '2020-06-01',
+                partition_name: '_test_partitioned_test_202005'
+              ),
+              Gitlab::Database::Partitioning::TimePartition.new(
+                model.table_name,
+                '2020-06-01',
+                '2020-07-01',
+                partition_name: '_test_partitioned_test_202006'
+              )
+            )
+          end
+
+          it 'does not prune non-empty partitions' do
+            connection.execute("INSERT INTO #{table_name} (created_at) VALUES (('2020-05-15'))") # inserting one record into _test_partitioned_test_202005
+
+            expect(subject).to contain_exactly(
+              Gitlab::Database::Partitioning::TimePartition.new(model.table_name, nil, '2020-05-01', partition_name: '_test_partitioned_test_000000'),
+              Gitlab::Database::Partitioning::TimePartition.new(model.table_name, '2020-06-01', '2020-07-01', partition_name: '_test_partitioned_test_202006')
+            )
+          end
+        end
+      end
     end
   end
 

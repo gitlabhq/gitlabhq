@@ -45,7 +45,6 @@ Performance/StringIdentifierArgument:
     - 'config/initializers/wikicloth_redos_patch.rb'
     - 'config/routes.rb'
     - 'ee/app/finders/geo/framework_registry_finder.rb'
-    - 'ee/app/graphql/ee/types/group_type.rb'
     - 'ee/app/helpers/ee/gitlab_routing_helper.rb'
     - 'ee/app/models/ee/namespace_setting.rb'
     - 'ee/app/models/ee/project.rb'

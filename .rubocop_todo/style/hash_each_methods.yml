@@ -104,7 +104,6 @@ Style/HashEachMethods:
     - 'spec/factories/ci/reports/codequality_degradations.rb'
     - 'spec/finders/packages/group_packages_finder_spec.rb'
     - 'spec/helpers/application_helper_spec.rb'
-    - 'spec/initializers/secret_token_spec.rb'
     - 'spec/lib/gitlab/ci/parsers/terraform/tfplan_spec.rb'
     - 'spec/lib/gitlab/ci/status/build/failed_spec.rb'
     - 'spec/lib/gitlab/database/load_balancing/setup_spec.rb'

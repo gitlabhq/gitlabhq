@@ -1199,7 +1199,7 @@ If you need to emphasize an area in a screenshot, use an arrow.
 - Use the arrow style shown in the following image.
 - If you have multiple arrows, make them parallel when possible.
 
-![callout example](img/callouts.png)
+![callout example](img/callouts_v14_6.png)
 
 #### Image requirements
 

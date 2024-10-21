@@ -241,6 +241,44 @@ describe('Diffs tree list component', () => {
     });
   });
 
+  describe('diff tree set current file auto scoll', () => {
+    const filePaths = [];
+
+    for (let i = 1; i <= 10; i += 1) {
+      const fileName = `${i.toString().padStart(2, '0')}.txt`;
+      filePaths.push([fileName, 'folder/']);
+    }
+
+    const createFile = (name, path = '') => ({
+      file_hash: name,
+      path: `${path}${name}`,
+      new_path: `${path}${name}`,
+      file_path: `${path}${name}`,
+    });
+
+    const setupFiles = (diffFiles) => {
+      const { treeEntries, tree } = generateTreeList(diffFiles);
+      store.commit(`diffs/${SET_TREE_DATA}`, {
+        treeEntries,
+        tree: sortTree(tree),
+      });
+    };
+
+    beforeEach(() => {
+      createComponent();
+      setupFiles(filePaths.map(([name, path]) => createFile(name, path)));
+    });
+
+    it('auto scroll', async () => {
+      wrapper.vm.$refs.scroller.scrollToItem = jest.fn();
+      store.state.diffs.currentDiffFileId = '05.txt';
+      await nextTick();
+
+      expect(wrapper.vm.currentDiffFileId).toBe('05.txt');
+      expect(wrapper.vm.$refs.scroller.scrollToItem).toHaveBeenCalledWith(5);
+    });
+  });
+
   describe('linked file', () => {
     const filePaths = [
       ['nested-1.rb', 'folder/sub-folder/'],

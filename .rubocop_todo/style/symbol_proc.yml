@@ -59,7 +59,6 @@ Style/SymbolProc:
     - 'ee/app/models/concerns/epic_tree_sorting.rb'
     - 'ee/app/models/ee/issue.rb'
     - 'ee/app/serializers/ee/fork_namespace_entity.rb'
-    - 'ee/app/serializers/ee/group_child_entity.rb'
     - 'ee/app/serializers/ee/issue_sidebar_basic_entity.rb'
     - 'ee/app/serializers/ee/member_entity.rb'
     - 'ee/app/serializers/ee/merge_request_widget_entity.rb'

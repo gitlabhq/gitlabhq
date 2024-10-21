@@ -29,10 +29,6 @@ module Gitlab
           end
         end
 
-        def known_event?(event_name)
-          events.key?(event_name)
-        end
-
         private
 
         def events

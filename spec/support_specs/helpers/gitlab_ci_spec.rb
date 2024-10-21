@@ -5,7 +5,7 @@ require 'rspec-parameterized'
 
 require_relative '../../support/helpers/gitlab_ci'
 
-RSpec.describe Support::GitlabCi, feature_category: :tooling do # rubocop:disable RSpec/FilePath -- Avoid deep nesting
+RSpec.describe Support::GitlabCi, feature_category: :tooling do # rubocop:disable RSpec/SpecFilePathFormat -- Avoid deep nesting
   using RSpec::Parameterized::TableSyntax
 
   describe '.predictive_job?' do

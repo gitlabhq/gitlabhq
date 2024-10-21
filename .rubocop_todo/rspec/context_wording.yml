@@ -1356,7 +1356,6 @@ RSpec/ContextWording:
     - 'spec/initializers/carrierwave_s3_encryption_headers_patch_spec.rb'
     - 'spec/initializers/mail_encoding_patch_spec.rb'
     - 'spec/initializers/rack_multipart_patch_spec.rb'
-    - 'spec/initializers/secret_token_spec.rb'
     - 'spec/initializers/settings_spec.rb'
     - 'spec/initializers/validate_database_config_spec.rb'
     - 'spec/lib/api/entities/application_setting_spec.rb'

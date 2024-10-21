@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::WebIde::Settings, feature_category: :web_ide do # rubocop:disable RSpec/FilePath -- This cop fails because the spec is named 'settings_integration_spec.rb' but describes ::WebIde::Settings class. But we want it that way, because it's an integration spec, not a unit spec, but we still want to be able to use `described_class`
+RSpec.describe ::WebIde::Settings, feature_category: :web_ide do # rubocop:disable RSpec/SpecFilePathFormat -- This cop fails because the spec is named 'settings_integration_spec.rb' but describes ::WebIde::Settings class. But we want it that way, because it's an integration spec, not a unit spec, but we still want to be able to use `described_class`
   let_it_be(:user) { create(:user) }
 
   let(:expected_vscode_extension_gallery_setting) do

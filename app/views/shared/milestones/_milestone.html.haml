@@ -52,20 +52,19 @@
           = format(s_('Milestone|%{percentage}%{percent}'), percentage: milestone.percent_complete, percent: '%')
 
     -# MENU
-    - if can_admin_milestone
-      - show_delete = @project.present? || @group.present?
-      .gl-w-6.gl-flex.gl-items-center
-        .js-vue-milestone-actions{ data: { id: milestone.id,
-          title: milestone.title,
-          is_active: milestone.active?.to_s,
-          show_delete: show_delete.to_s,
-          size: "small",
-          milestone_url: Gitlab::UrlBuilder.build(milestone, only_path: true),
-          edit_url: edit_milestone_path(milestone),
-          close_url: milestone_path(milestone, milestone: { state_event: :close }),
-          reopen_url: milestone_path(milestone, milestone: { state_event: :activate }),
-          promote_url: can_promote ? promote_project_milestone_path(milestone.project, milestone) : '',
-          group_name: can_promote ? @project.group.name : '',
-          issue_count: milestone.issues.count,
-          merge_request_count: milestone.merge_requests.count
-        } }
+    - show_delete = (@project.present? || @group.present?) && can_admin_milestone
+    .gl-w-6.gl-flex.gl-items-center
+      .js-vue-milestone-actions{ data: { id: milestone.id,
+        title: milestone.title,
+        is_active: milestone.active?.to_s,
+        show_delete: show_delete.to_s,
+        size: "small",
+        milestone_url: Gitlab::UrlBuilder.build(milestone, only_path: true),
+        edit_url: can_admin_milestone ? edit_milestone_path(milestone) : '',
+        close_url: can_admin_milestone ? milestone_path(milestone, milestone: { state_event: :close }) : '',
+        reopen_url: can_admin_milestone ? milestone_path(milestone, milestone: { state_event: :activate }) : '',
+        promote_url: can_promote ? promote_project_milestone_path(milestone.project, milestone) : '',
+        group_name: can_promote ? @project.group.name : '',
+        issue_count: milestone.issues.count,
+        merge_request_count: milestone.merge_requests.count
+      } }

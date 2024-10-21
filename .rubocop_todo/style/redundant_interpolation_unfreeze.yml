@@ -1,0 +1,17 @@
+---
+# Cop supports --autocorrect.
+Style/RedundantInterpolationUnfreeze:
+  Details: grace period
+  Exclude:
+    - 'app/validators/nested_attributes_duplicates_validator.rb'
+    - 'ee/db/seeds/data_seeder/data_seeder.rb'
+    - 'lib/gitlab/patch/active_record_connection_pool.rb'
+    - 'lib/gitlab/slug/environment.rb'
+    - 'lib/gitlab/ssh_public_key.rb'
+    - 'spec/features/ics/dashboard_issues_spec.rb'
+    - 'spec/features/ics/group_issues_spec.rb'
+    - 'spec/features/ics/project_issues_spec.rb'
+    - 'spec/lib/gitlab/gfm/uploads_rewriter_spec.rb'
+    - 'spec/lib/gitlab/middleware/go_spec.rb'
+    - 'spec/requests/api/members_spec.rb'
+    - 'spec/services/git/wiki_push_service_spec.rb'

@@ -20,7 +20,6 @@ RSpec/ScatteredLet:
     - 'ee/spec/models/approval_wrapped_any_approver_rule_spec.rb'
     - 'ee/spec/models/dast_site_validation_spec.rb'
     - 'ee/spec/models/ee/ci/build_dependencies_spec.rb'
-    - 'ee/spec/models/ee/user_spec.rb'
     - 'ee/spec/models/epic_spec.rb'
     - 'ee/spec/models/iteration_spec.rb'
     - 'ee/spec/models/preloaders/environments/protected_environment_preloader_spec.rb'

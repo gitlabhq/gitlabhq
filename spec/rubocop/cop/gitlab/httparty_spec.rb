@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/gitlab/httparty'
 
-RSpec.describe RuboCop::Cop::Gitlab::HTTParty do # rubocop:disable RSpec/FilePath
+RSpec.describe RuboCop::Cop::Gitlab::HTTParty do # rubocop:disable RSpec/SpecFilePathFormat
   shared_examples('registering include offense') do
     it 'registers an offense when the class includes HTTParty' do
       expect_offense(source)

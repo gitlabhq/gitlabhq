@@ -7,6 +7,8 @@ class ProtectedTag < ApplicationRecord
   validates :name, uniqueness: { scope: :project_id }
   validates :project, presence: true
 
+  scope :preload_access_levels, -> { preload(:create_access_levels) }
+
   protected_ref_access_levels :create
 
   def self.protected?(project, ref_name)

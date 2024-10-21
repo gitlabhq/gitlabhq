@@ -1,0 +1,6 @@
+---
+# Cop supports --autocorrect.
+Style/EmptyLiteral:
+  Details: grace period
+  Exclude:
+    - 'lib/gitlab/api_authentication/builder.rb'

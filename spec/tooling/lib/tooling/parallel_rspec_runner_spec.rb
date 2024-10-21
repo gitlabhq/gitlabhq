@@ -6,7 +6,7 @@ require 'fileutils'
 
 require_relative '../../../../tooling/lib/tooling/parallel_rspec_runner'
 
-RSpec.describe Tooling::ParallelRSpecRunner, feature_category: :tooling do # rubocop:disable RSpec/FilePath -- parallel_r_spec_runner_spec.rb is too long
+RSpec.describe Tooling::ParallelRSpecRunner, feature_category: :tooling do # rubocop:disable RSpec/SpecFilePathFormat -- parallel_r_spec_runner_spec.rb is too long
   describe '#run' do
     let(:test_dir) { 'spec' }
     let(:node_tests) { %w[01_spec.rb 03_spec.rb] }

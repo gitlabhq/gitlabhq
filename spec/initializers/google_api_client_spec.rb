@@ -5,7 +5,7 @@
 require 'spec_helper'
 require 'google/apis/core/base_service'
 
-RSpec.describe Google::Apis::Core::HttpCommand do # rubocop:disable RSpec/FilePath
+RSpec.describe Google::Apis::Core::HttpCommand do # rubocop:disable RSpec/SpecFilePathFormat
   context('with a successful response') do
     let(:client) { Google::Apis::Core::BaseService.new('', '').client }
     let(:command) { described_class.new(:get, 'https://www.googleapis.com/zoo/animals') }

@@ -4,7 +4,7 @@ require 'fast_spec_helper'
 require 'capybara'
 require 'support/capybara_slow_finder'
 
-RSpec.describe Capybara::Node::Base::SlowFinder do # rubocop:disable RSpec/FilePath
+RSpec.describe Capybara::Node::Base::SlowFinder do # rubocop:disable RSpec/SpecFilePathFormat
   context 'without timeout' do
     context 'when element is found' do
       let(:slow_finder) do

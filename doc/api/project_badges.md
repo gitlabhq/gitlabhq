@@ -21,9 +21,9 @@ DETAILS:
 - **%{project_name}**: Replaced by the project name.
 - **%{project_id}**: Replaced by the project ID.
 - **%{project_namespace}**: Replaced by the project's namespace full path.
-- **%{group_name}**: Replaced by the project's group name.
+- **%{group_name}**: Replaced by the project's top-level group name.
 - **%{gitlab_server}**: Replaced by the project's server name.
-- **%{gitlab_pages_domain}**: Replaced by the project's domain name.
+- **%{gitlab_pages_domain}**: Replaced by the domain name hosting GitLab Pages.
 - **%{default_branch}**: Replaced by the project default branch.
 - **%{commit_sha}**: Replaced by the project's last commit SHA.
 - **%{latest_tag}**: Replaced by the project's last tag.

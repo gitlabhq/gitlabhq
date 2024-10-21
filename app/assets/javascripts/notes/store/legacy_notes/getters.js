@@ -4,7 +4,6 @@ import { isInMRPage } from '~/lib/utils/common_utils';
 import { doesHashExistInUrl } from '~/lib/utils/url_utility';
 import { badgeState } from '~/merge_requests/components/merge_request_header.vue';
 import { useBatchComments } from '~/batch_comments/store';
-import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import * as constants from '../../constants';
 import { collapseSystemNotes } from '../../stores/collapse_utils';
 
@@ -130,7 +129,7 @@ export function userCanReply() {
 }
 
 export function openState() {
-  return isInMRPage() ? badgeState.this : this.noteableData.this;
+  return isInMRPage() ? badgeState.state : this.noteableData.state;
 }
 
 export function getUserData() {
@@ -234,7 +233,7 @@ export function unresolvedDiscussionsIdsByDate() {
 }
 
 export function unresolvedDiscussionsIdsByDiff() {
-  const authoritativeFiles = useLegacyDiffs().diffFiles;
+  const authoritativeFiles = this.tryStore('legacyDiffs').diffFiles;
 
   return this.allResolvableDiscussions
     .filter((d) => !d.resolved && d.active)

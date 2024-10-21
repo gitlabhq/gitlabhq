@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe PartitionedTable do
+RSpec.describe PartitionedTable, feature_category: :database do
   subject { my_class.partitioned_by(key, strategy: :monthly) }
 
   let(:key) { :foo }

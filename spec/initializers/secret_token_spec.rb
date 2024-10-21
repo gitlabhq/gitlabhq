@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_relative '../../config/initializers/01_secret_token'
 
-# rubocop:disable RSpec/FilePath -- The initializer name starts with `01` because we want to run it ASAP
+# rubocop:disable RSpec/SpecFilePathFormat -- The initializer name starts with `01` because we want to run it ASAP
 # rubocop:disable RSpec/FeatureCategory -- This is a shared responsibility
 RSpec.describe SecretsInitializer do
   let(:rails_env_name) { 'test' }
@@ -266,4 +266,4 @@ RSpec.describe SecretsInitializer do
   end
 end
 # rubocop:enable RSpec/FeatureCategory
-# rubocop:enable RSpec/FilePath
+# rubocop:enable RSpec/SpecFilePathFormat

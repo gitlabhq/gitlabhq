@@ -1,0 +1,6 @@
+---
+# Cop supports --autocorrect.
+Lint/ImplicitStringConcatenation:
+  Details: grace period
+  Exclude:
+    - 'qa/qa/tools/generate_perf_testdata.rb'

@@ -1,7 +1,7 @@
 ---
 # Cop supports --autocorrect.
 Lint/RedundantCopDisableDirective:
-  # Offense count: 575
+  # Offense count: 573
   # Temporarily disabled due to too many offenses
   Enabled: false
   Exclude:
@@ -53,6 +53,7 @@ Lint/RedundantCopDisableDirective:
     - 'app/models/merge_request_diff_commit.rb'
     - 'app/models/ml/model_version.rb'
     - 'app/models/user.rb'
+    - 'app/models/wiki_page/meta.rb'
     - 'app/models/work_items/type.rb'
     - 'app/policies/issue_policy.rb'
     - 'app/presenters/ci/build_runner_presenter.rb'
@@ -201,6 +202,7 @@ Lint/RedundantCopDisableDirective:
     - 'ee/lib/ee/gitlab/background_migration/migrate_vulnerabilities_feedback_to_vulnerabilities_state_transition.rb'
     - 'ee/lib/ee/gitlab/background_migration/populate_denormalized_columns_for_sbom_occurrences.rb'
     - 'ee/lib/ee/gitlab/background_migration/purge_stale_security_scans.rb'
+    - 'ee/lib/ee/gitlab/event_store.rb'
     - 'ee/lib/ee/gitlab/usage_data.rb'
     - 'ee/lib/elastic/latest/git_class_proxy.rb'
     - 'ee/lib/gitlab/analytics/type_of_work/tasks_by_type.rb'
@@ -216,6 +218,7 @@ Lint/RedundantCopDisableDirective:
     - 'ee/spec/features/trials/lead_creation_form_validation_spec.rb'
     - 'ee/spec/helpers/ee/releases_helper_spec.rb'
     - 'ee/spec/lib/banzai/filter/references/iterations_cadence_reference_filter_spec.rb'
+    - 'ee/spec/lib/cloud_connector/self_signed/access_data_reader_spec.rb'
     - 'ee/spec/lib/code_suggestions/instructions_extractor_spec.rb'
     - 'ee/spec/lib/ee/gitlab/background_migration/backfill_missing_vulnerability_dismissal_details_spec.rb'
     - 'ee/spec/lib/ee/gitlab/background_migration/delete_orphaned_transferred_project_approval_rules_spec.rb'
@@ -256,6 +259,7 @@ Lint/RedundantCopDisableDirective:
     - 'lib/gitlab/analytics/cycle_analytics/base_query_builder.rb'
     - 'lib/gitlab/analytics/cycle_analytics/records_fetcher.rb'
     - 'lib/gitlab/application_context.rb'
+    - 'lib/gitlab/auth/current_user_mode.rb'
     - 'lib/gitlab/background_migration/backfill_desired_sharding_key_partition_job.rb'
     - 'lib/gitlab/background_migration/backfill_epic_basic_fields_to_work_item_record.rb'
     - 'lib/gitlab/background_migration/backfill_finding_id_in_vulnerabilities.rb'
@@ -455,7 +459,6 @@ Lint/RedundantCopDisableDirective:
     - 'spec/support/shared_examples/models/boards/listable_shared_examples.rb'
     - 'spec/support/shared_examples/models/concerns/incident_management/escalatable_shared_examples.rb'
     - 'spec/support/shared_examples/models/concerns/protected_ref_access_shared_examples.rb'
-    - 'spec/support/shared_examples/models/concerns/protected_ref_deploy_key_access_shared_examples.rb'
     - 'spec/support/shared_examples/models/cycle_analytics_stage_shared_examples.rb'
     - 'spec/support/shared_examples/models/packages/debian/distribution_key_shared_examples.rb'
     - 'spec/support/shared_examples/requests/api/rubygems_packages_shared_examples.rb'

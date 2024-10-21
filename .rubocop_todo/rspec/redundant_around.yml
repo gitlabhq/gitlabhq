@@ -1,0 +1,6 @@
+---
+# Cop supports --autocorrect.
+RSpec/RedundantAround:
+  Details: grace period
+  Exclude:
+    - 'spec/spec_helper.rb'

@@ -21,7 +21,6 @@ import mrWidgetEventHub from '~/vue_merge_request_widget/event_hub';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_NOTE } from '~/graphql_shared/constants';
 import { useBatchComments } from '~/batch_comments/store';
-import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import notesEventHub from '../../event_hub';
 
 import promoteTimelineEvent from '../../graphql/promote_timeline_event.mutation.graphql';
@@ -57,7 +56,8 @@ export function updateLockedAttribute({ locked, fullPath }) {
 
 export function expandDiscussion(data) {
   if (data.discussionId) {
-    useLegacyDiffs().renderFileForDiscussionId(data.discussionId);
+    // tryStore only used for migration, refactor the store to avoid using this helper
+    this.tryStore('legacyDiffs').renderFileForDiscussionId(data.discussionId);
   }
 
   this[types.EXPAND_DISCUSSION](data);
@@ -254,7 +254,8 @@ export function removeNote(note) {
   this.updateResolvableDiscussionsCounts();
 
   if (isInMRPage()) {
-    useLegacyDiffs().removeDiscussionsFromDiff(discussion);
+    // tryStore only used for migration, refactor the store to avoid using this helper
+    this.tryStore('legacyDiffs').removeDiscussionsFromDiff(discussion);
   }
 }
 
@@ -272,7 +273,6 @@ export function updateNote({ endpoint, note }) {
 }
 
 export function updateOrCreateNotes(notes) {
-  const { notesById } = this;
   const debouncedFetchDiscussions = (isFetching) => {
     if (!isFetching) {
       this[types.SET_FETCHING_DISCUSSIONS](true);
@@ -291,7 +291,7 @@ export function updateOrCreateNotes(notes) {
   };
 
   notes.forEach((note) => {
-    if (notesById[note.id]) {
+    if (this.notesById[note.id]) {
       this[types.UPDATE_NOTE](note);
     } else if (note.type === constants.DISCUSSION_NOTE || note.type === constants.DIFF_NOTE) {
       const discussion = utils.findNoteObjectById(this.discussions, note.discussion_id);

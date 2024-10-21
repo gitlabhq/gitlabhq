@@ -8689,7 +8689,8 @@ CREATE TABLE ci_job_variables (
     source smallint DEFAULT 0 NOT NULL,
     raw boolean DEFAULT false NOT NULL,
     partition_id bigint NOT NULL,
-    project_id bigint
+    project_id bigint,
+    CONSTRAINT check_567d1ccb72 CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE ci_job_variables_id_seq
@@ -24173,9 +24174,6 @@ ALTER TABLE workspaces
 ALTER TABLE vulnerability_scanners
     ADD CONSTRAINT check_37608c9db5 CHECK ((char_length(vendor) <= 255)) NOT VALID;
 
-ALTER TABLE ci_job_variables
-    ADD CONSTRAINT check_567d1ccb72 CHECK ((project_id IS NOT NULL)) NOT VALID;
-
 ALTER TABLE p_ci_pipeline_variables
     ADD CONSTRAINT check_6e932dbabf CHECK ((project_id IS NOT NULL)) NOT VALID;
 
@@ -27298,8 +27296,6 @@ CREATE INDEX analytics_repository_languages_on_project_id ON analytics_language_
 
 CREATE UNIQUE INDEX any_approver_project_rule_type_unique_index ON approval_project_rules USING btree (project_id) WHERE (rule_type = 3);
 
-CREATE INDEX approval_mr_rule_index_merge_request_id ON approval_merge_request_rules USING btree (merge_request_id);
-
 CREATE INDEX bulk_import_export_uploads_batch_id ON bulk_import_export_uploads USING btree (batch_id);
 
 CREATE UNIQUE INDEX bulk_import_trackers_uniq_relation_by_entity ON bulk_import_trackers USING btree (bulk_import_entity_id, relation);
@@ -27407,6 +27403,8 @@ CREATE INDEX idx_alert_management_alerts_on_created_at_project_id_with_issue ON 
 CREATE INDEX idx_analytics_devops_adoption_segments_on_namespace_id ON analytics_devops_adoption_segments USING btree (namespace_id);
 
 CREATE INDEX idx_analytics_devops_adoption_snapshots_finalized ON analytics_devops_adoption_snapshots USING btree (namespace_id, end_time) WHERE (recorded_at >= end_time);
+
+CREATE INDEX idx_approval_merge_request_rules_on_mr_id_config_id_and_id ON approval_merge_request_rules USING btree (merge_request_id, security_orchestration_policy_configuration_id, id);
 
 CREATE INDEX idx_approval_merge_request_rules_on_scan_result_policy_id ON approval_merge_request_rules USING btree (scan_result_policy_id);
 

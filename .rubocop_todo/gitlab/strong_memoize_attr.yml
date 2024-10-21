@@ -525,7 +525,6 @@ Gitlab/StrongMemoizeAttr:
     - 'lib/gitlab/diff/suggestion.rb'
     - 'lib/gitlab/discussions_diff/file_collection.rb'
     - 'lib/gitlab/email/handler/service_desk_handler.rb'
-    - 'lib/gitlab/email/receiver.rb'
     - 'lib/gitlab/external_authorization/response.rb'
     - 'lib/gitlab/gfm/reference_rewriter.rb'
     - 'lib/gitlab/gfm/uploads_rewriter.rb'

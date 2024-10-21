@@ -56,5 +56,17 @@ RSpec.describe ::Gitlab::LetsEncrypt::Order, feature_category: :pages do
 
       expect(described_class.new(acme_order).challenge_error).to eq(error)
     end
+
+    context 'when requesting authorizations raises error' do
+      subject { order.challenge_error }
+
+      let(:acme_order) { acme_order_double }
+
+      before do
+        allow(acme_order).to receive(:authorizations).and_raise(StandardError, 'ACME authorization error')
+      end
+
+      it { is_expected.to eq 'ACME authorization error' }
+    end
   end
 end

@@ -13,7 +13,7 @@ class WebHookLog < ApplicationRecord
 
   self.primary_key = :id
 
-  partitioned_by :created_at, strategy: :monthly, retain_for: 3.months
+  partitioned_by :created_at, strategy: :monthly, retain_for: 1.month
 
   belongs_to :web_hook
 

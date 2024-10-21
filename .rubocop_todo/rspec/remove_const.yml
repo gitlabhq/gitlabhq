@@ -1,0 +1,5 @@
+---
+RSpec/RemoveConst:
+  Details: grace period
+  Exclude:
+    - 'spec/support/helpers/click_house_schema_helpers.rb'

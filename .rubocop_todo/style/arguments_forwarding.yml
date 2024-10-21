@@ -1,6 +1,7 @@
 ---
 # Cop supports --autocorrect.
 Style/ArgumentsForwarding:
+  Details: grace period
   Exclude:
     - 'app/controllers/admin/users_controller.rb'
     - 'app/controllers/application_controller.rb'
@@ -15,7 +16,6 @@ Style/ArgumentsForwarding:
     - 'app/models/application_record.rb'
     - 'app/models/ci/build_trace_chunk.rb'
     - 'app/models/ci/partition.rb'
-    - 'app/models/ci/runner.rb'
     - 'app/models/ci/unlock_pipeline_request.rb'
     - 'app/models/commit.rb'
     - 'app/models/commit_collection.rb'
@@ -47,6 +47,7 @@ Style/ArgumentsForwarding:
     - 'app/workers/projects/inactive_projects_deletion_cron_worker.rb'
     - 'config/initializers/6_labkit_middleware.rb'
     - 'config/initializers/mail_starttls_patch.rb'
+    - 'config/initializers/rest-client-hostname_override.rb'
     - 'ee/app/controllers/ee/application_controller.rb'
     - 'ee/app/models/ci/instance_runner_failed_jobs.rb'
     - 'ee/app/models/dast_site_profile.rb'
@@ -97,7 +98,9 @@ Style/ArgumentsForwarding:
     - 'lib/gitlab/cluster/lifecycle_events.rb'
     - 'lib/gitlab/color_modes.rb'
     - 'lib/gitlab/color_schemes.rb'
+    - 'lib/gitlab/config/entry/inheritable.rb'
     - 'lib/gitlab/config/entry/simplifiable.rb'
+    - 'lib/gitlab/config/entry/validatable.rb'
     - 'lib/gitlab/container_repository/tags/cache.rb'
     - 'lib/gitlab/counters/buffered_counter.rb'
     - 'lib/gitlab/current_settings.rb'
@@ -147,6 +150,7 @@ Style/ArgumentsForwarding:
     - 'lib/gitlab/markdown_cache/redis/store.rb'
     - 'lib/gitlab/memory/watchdog/configuration.rb'
     - 'lib/gitlab/merge_requests/mergeability/redis_interface.rb'
+    - 'lib/gitlab/metrics/subscribers/active_record.rb'
     - 'lib/gitlab/metrics/transaction.rb'
     - 'lib/gitlab/namespaced_session_store.rb'
     - 'lib/gitlab/pagination/keyset/in_operator_optimization/order_by_columns.rb'
@@ -163,7 +167,6 @@ Style/ArgumentsForwarding:
     - 'lib/gitlab/set_cache.rb'
     - 'lib/gitlab/shard_health_cache.rb'
     - 'lib/gitlab/sidekiq_middleware/concurrency_limit/client.rb'
-    - 'lib/gitlab/sidekiq_middleware/concurrency_limit/concurrency_limit_service.rb'
     - 'lib/gitlab/sidekiq_middleware/concurrency_limit/server.rb'
     - 'lib/gitlab/sidekiq_middleware/duplicate_jobs/client.rb'
     - 'lib/gitlab/sidekiq_middleware/duplicate_jobs/duplicate_job.rb'
@@ -173,6 +176,7 @@ Style/ArgumentsForwarding:
     - 'lib/gitlab/sidekiq_middleware/pause_control/server.rb'
     - 'lib/gitlab/sidekiq_middleware/pause_control/strategy_handler.rb'
     - 'lib/gitlab/sidekiq_middleware/worker_context.rb'
+    - 'lib/gitlab/sidekiq_sharding/validator.rb'
     - 'lib/gitlab/terraform/state_migration_helper.rb'
     - 'lib/gitlab/themes.rb'
     - 'lib/gitlab/utils/measuring.rb'
@@ -190,7 +194,6 @@ Style/ArgumentsForwarding:
     - 'qa/qa/page/component/snippet.rb'
     - 'qa/qa/page/project/web_ide/vscode.rb'
     - 'qa/qa/resource/protected_branch.rb'
-    - 'qa/qa/runtime/browser.rb'
     - 'qa/qa/scenario/actable.rb'
     - 'rubocop/code_reuse_helpers.rb'
     - 'spec/lib/gitlab/pagination/offset_pagination_spec.rb'

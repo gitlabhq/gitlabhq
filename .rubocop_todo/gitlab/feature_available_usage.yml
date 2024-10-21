@@ -20,7 +20,6 @@ Gitlab/FeatureAvailableUsage:
     - 'ee/app/controllers/projects/subscriptions_controller.rb'
     - 'ee/app/finders/autocomplete/vulnerabilities_autocomplete_finder.rb'
     - 'ee/app/finders/ee/alert_management/http_integrations_finder.rb'
-    - 'ee/app/graphql/ee/types/group_type.rb'
     - 'ee/app/graphql/mutations/instance_security_dashboard/remove_project.rb'
     - 'ee/app/helpers/ee/application_helper.rb'
     - 'ee/app/helpers/ee/boards_helper.rb'

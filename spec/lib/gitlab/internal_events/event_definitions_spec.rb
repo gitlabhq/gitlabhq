@@ -88,25 +88,5 @@ RSpec.describe Gitlab::InternalEvents::EventDefinitions, feature_category: :prod
         described_class.load_configurations
       end
     end
-
-    describe ".known_events" do
-      it 'has known events', :aggregate_failures do
-        expect(described_class.known_event?('event1')).to be_truthy
-        expect(described_class.known_event?('event2')).to be_truthy
-        expect(described_class.known_event?('event3')).to be_falsy
-      end
-
-      context 'when a metric fails to load' do
-        before do
-          allow(definition1).to receive(:available?).and_raise(ArgumentError)
-        end
-
-        it 'loads the healthy metrics', :aggregate_failures do
-          expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).at_least(:once)
-          expect(described_class.known_event?('event1')).to be_falsy
-          expect(described_class.known_event?('event2')).to be_truthy
-        end
-      end
-    end
   end
 end

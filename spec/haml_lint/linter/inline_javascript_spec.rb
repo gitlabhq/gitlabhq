@@ -7,7 +7,7 @@ require 'rspec-parameterized'
 
 require_relative '../../../haml_lint/linter/inline_javascript'
 
-RSpec.describe HamlLint::Linter::InlineJavaScript, :uses_fast_spec_helper_but_runs_slow do # rubocop:disable RSpec/FilePath
+RSpec.describe HamlLint::Linter::InlineJavaScript, :uses_fast_spec_helper_but_runs_slow do # rubocop:disable RSpec/SpecFilePathFormat
   using RSpec::Parameterized::TableSyntax
 
   include_context 'linter'

@@ -18,6 +18,7 @@ class ProtectedBranch < ApplicationRecord
   scope :sorted_by_namespace_and_name, -> { order(:namespace_id, :name) }
 
   scope :for_group, ->(group) { where(group: group) }
+  scope :preload_access_levels, -> { preload(:push_access_levels, :merge_access_levels) }
 
   protected_ref_access_levels :merge, :push
 

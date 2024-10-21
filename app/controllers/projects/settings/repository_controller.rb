@@ -95,8 +95,8 @@ module Projects
 
       # rubocop: disable CodeReuse/ActiveRecord
       def define_protected_refs
-        @protected_branches = fetch_protected_branches(@project)
-        @protected_tags = @project.protected_tags.order(:name).page(pagination_params[:page])
+        @protected_branches = fetch_protected_branches(@project).preload_access_levels
+        @protected_tags = @project.protected_tags.preload_access_levels.order(:name).page(pagination_params[:page])
         @protected_branch = @project.protected_branches.new
         @protected_tag = @project.protected_tags.new
 

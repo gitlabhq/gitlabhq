@@ -29,6 +29,9 @@ module Types
             'resolved for one catalog resource in any single request.',
           resolver: Resolvers::Ci::Catalog::Resources::VersionsResolver
 
+        field :visibility_level, Types::VisibilityLevelsEnum, null: true,
+          description: 'Visibility level of the catalog resource.'
+
         field :verification_level, Types::Ci::Catalog::Resources::VerificationLevelEnum, null: true,
           description: 'Verification level of the catalog resource.'
 

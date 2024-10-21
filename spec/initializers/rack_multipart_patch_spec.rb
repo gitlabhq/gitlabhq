@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Rack::Multipart do # rubocop:disable RSpec/FilePath
+RSpec.describe Rack::Multipart do # rubocop:disable RSpec/SpecFilePathFormat
   def multipart_fixture(name, length, boundary = "AaB03x")
     data = <<EOF
 --#{boundary}\r

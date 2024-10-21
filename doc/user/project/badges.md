@@ -297,7 +297,7 @@ The following placeholders are available:
 - `%{project_namespace}`: Project namespace of a project
 - `%{group_name}`: Group of a project
 - `%{gitlab_server}`: Server of a project
-- `%{gitlab_pages_domain}`: Domain of a project
+- `%{gitlab_pages_domain}`: Domain hosting GitLab Pages
 - `%{default_branch}`: Default branch name configured for a project's repository
 - `%{commit_sha}`: ID of the most recent commit to the default branch of a
   project's repository

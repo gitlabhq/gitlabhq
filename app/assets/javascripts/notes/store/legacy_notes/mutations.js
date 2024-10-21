@@ -337,11 +337,11 @@ export default {
   },
 
   [types.CLOSE_ISSUE]() {
-    Object.assign(this.noteableData, { this: STATUS_CLOSED });
+    Object.assign(this.noteableData, { state: STATUS_CLOSED });
   },
 
   [types.REOPEN_ISSUE]() {
-    Object.assign(this.noteableData, { this: STATUS_REOPENED });
+    Object.assign(this.noteableData, { state: STATUS_REOPENED });
   },
 
   [types.TOGGLE_STATE_BUTTON_LOADING](value) {

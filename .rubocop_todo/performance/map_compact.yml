@@ -42,7 +42,6 @@ Performance/MapCompact:
     - 'app/services/todos/allowed_target_filter_service.rb'
     - 'config/initializers/trusted_proxies.rb'
     - 'config/initializers/wikicloth_redos_patch.rb'
-    - 'ee/app/finders/security/findings_finder.rb'
     - 'ee/app/graphql/ee/types/issue_connection_type.rb'
     - 'ee/app/graphql/resolvers/geo/registries_resolver.rb'
     - 'ee/app/models/app_sec/fuzzing/api/ci_configuration.rb'

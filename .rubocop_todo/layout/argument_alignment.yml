@@ -12,7 +12,6 @@ Layout/ArgumentAlignment:
     - 'app/graphql/mutations/todos/restore_many.rb'
     - 'app/graphql/mutations/uploads/delete.rb'
     - 'app/graphql/mutations/user_callouts/create.rb'
-    - 'app/graphql/mutations/work_items/create.rb'
     - 'app/graphql/mutations/work_items/create_from_task.rb'
     - 'app/graphql/mutations/work_items/delete.rb'
     - 'app/graphql/mutations/work_items/update.rb'

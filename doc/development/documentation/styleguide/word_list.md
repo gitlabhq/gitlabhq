@@ -55,7 +55,7 @@ thereafter. If the first word in a sentence, do not capitalize `factor` or `auth
 ## ability, able
 
 Avoid using **ability** because it focuses more on the user's
-capabilities rather than the product's features or functions, 
+capabilities rather than the product's features or functions,
 which makes it vague and ambiguous.
 
 Do not use **ability** or **able** to refer to permissions or rights that a user needs to perform a task.
@@ -134,7 +134,7 @@ Use title case for **Admin Mode**. The UI uses title case.
 
 Use **administrator access** instead of **admin** when talking about a user's access level.
 
-![admin access level](img/admin_access_level.png)
+![admin access level](img/admin_access_level_v15_9.png)
 
 An **administrator** is not a [role](#roles) or [permission](#permissions).
 

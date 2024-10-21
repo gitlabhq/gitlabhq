@@ -52,6 +52,24 @@ RSpec.describe Sidebars::Groups::Menus::IssuesMenu, feature_category: :navigatio
     let(:count_service) { ::Groups::OpenIssuesCountService }
   end
 
+  context 'when count query times out' do
+    let(:count_service) { ::Groups::OpenIssuesCountService }
+
+    before do
+      allow_next_instance_of(count_service) do |service|
+        allow(service).to receive(:count).and_raise(ActiveRecord::QueryCanceled)
+      end
+    end
+
+    it 'logs the error and returns a null count' do
+      expect(Gitlab::ErrorTracking).to receive(:log_exception).with(
+        ActiveRecord::QueryCanceled, group_id: group.id, query: 'group_sidebar_issues_count'
+      )
+
+      expect(menu.pill_count).to be_nil
+    end
+  end
+
   it_behaves_like 'serializable as super_sidebar_menu_args' do
     let(:extra_attrs) do
       {

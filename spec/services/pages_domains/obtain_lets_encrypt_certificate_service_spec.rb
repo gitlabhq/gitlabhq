@@ -223,13 +223,5 @@ RSpec.describe PagesDomains::ObtainLetsEncryptCertificateService, feature_catego
     end
 
     it_behaves_like 'saves error, deletes acme order and sends notification'
-
-    context 'when error occurs when retrieving authorizations from error' do
-      before do
-        allow(api_order).to receive(:challenge_error).and_raise(StandardError, 'ACME authorizations error message')
-      end
-
-      it_behaves_like 'saves error, deletes acme order and sends notification'
-    end
   end
 end

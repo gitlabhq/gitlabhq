@@ -1,6 +1,7 @@
 import AxiosMockAdapter from 'axios-mock-adapter';
+import { createTestingPinia } from '@pinia/testing';
+import { createPinia, setActivePinia } from 'pinia';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
-import testAction from 'helpers/vuex_action_helper';
 import { TEST_HOST } from 'spec/test_constants';
 import actionCable from '~/actioncable_consumer';
 import Api from '~/api';
@@ -8,19 +9,24 @@ import { createAlert } from '~/alert';
 import toast from '~/vue_shared/plugins/global_toast';
 import { EVENT_ISSUABLE_VUE_APP_CHANGE } from '~/issuable/constants';
 import axios from '~/lib/utils/axios_utils';
-import { HTTP_STATUS_OK, HTTP_STATUS_SERVICE_UNAVAILABLE } from '~/lib/utils/http_status';
+import {
+  HTTP_STATUS_OK,
+  HTTP_STATUS_SERVICE_UNAVAILABLE,
+  HTTP_STATUS_UNPROCESSABLE_ENTITY,
+} from '~/lib/utils/http_status';
 import * as notesConstants from '~/notes/constants';
-import createStore from '~/notes/stores';
-import * as actions from '~/notes/stores/actions';
-import * as mutationTypes from '~/notes/stores/mutation_types';
-import mutations from '~/notes/stores/mutations';
+import * as types from '~/notes/stores/mutation_types';
 import * as utils from '~/notes/stores/utils';
 import updateIssueLockMutation from '~/sidebar/queries/update_issue_lock.mutation.graphql';
 import updateMergeRequestLockMutation from '~/sidebar/queries/update_merge_request_lock.mutation.graphql';
 import promoteTimelineEvent from '~/notes/graphql/promote_timeline_event.mutation.graphql';
 import mrWidgetEventHub from '~/vue_merge_request_widget/event_hub';
 import notesEventHub from '~/notes/event_hub';
-import { resetStore } from '../../helpers';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
+import { useNotes } from '~/notes/store/legacy_notes';
+import { createCustomGetters, createTestPiniaAction } from 'helpers/pinia_helpers';
+import { useBatchComments } from '~/batch_comments/store';
+import { globalAccessorPlugin } from '~/pinia';
 import {
   discussionMock,
   notesDataMock,
@@ -40,19 +46,29 @@ jest.mock('~/alert', () => ({
 
 jest.mock('~/vue_shared/plugins/global_toast');
 
-// eslint-disable-next-line jest/no-disabled-tests
-describe.skip('Actions Notes Store', () => {
-  let commit;
-  let dispatch;
-  let state;
+describe('Actions Notes Store', () => {
+  let getters = {};
   let store;
+  let testAction;
   let axiosMock;
 
   beforeEach(() => {
-    store = createStore();
-    commit = jest.fn();
-    dispatch = jest.fn();
-    state = {};
+    getters = {};
+    setActivePinia(createPinia());
+    createTestingPinia({
+      stubActions: false,
+      plugins: [
+        createCustomGetters(() => ({
+          legacyNotes: getters,
+          batchComments: {},
+          legacyDiffs: {},
+        })),
+        globalAccessorPlugin,
+      ],
+    });
+    useLegacyDiffs();
+    store = useNotes();
+    testAction = createTestPiniaAction(store);
     axiosMock = new AxiosMockAdapter(axios);
 
     // This is necessary as we query Close issue button at the top of issue page when clicking bottom button
@@ -62,7 +78,6 @@ describe.skip('Actions Notes Store', () => {
   });
 
   afterEach(() => {
-    resetStore(store);
     axiosMock.restore();
     resetHTMLFixture();
 
@@ -72,10 +87,10 @@ describe.skip('Actions Notes Store', () => {
   describe('setNotesData', () => {
     it('should set received notes data', () => {
       return testAction(
-        actions.setNotesData,
+        store.setNotesData,
         notesDataMock,
         { notesData: {} },
-        [{ type: 'SET_NOTES_DATA', payload: notesDataMock }],
+        [{ type: store[types.SET_NOTES_DATA], payload: notesDataMock }],
         [],
       );
     });
@@ -84,10 +99,10 @@ describe.skip('Actions Notes Store', () => {
   describe('setNoteableData', () => {
     it('should set received issue data', () => {
       return testAction(
-        actions.setNoteableData,
+        store.setNoteableData,
         noteableDataMock,
         { noteableData: {} },
-        [{ type: 'SET_NOTEABLE_DATA', payload: noteableDataMock }],
+        [{ type: store[types.SET_NOTEABLE_DATA], payload: noteableDataMock }],
         [],
       );
     });
@@ -96,10 +111,10 @@ describe.skip('Actions Notes Store', () => {
   describe('setUserData', () => {
     it('should set received user data', () => {
       return testAction(
-        actions.setUserData,
+        store.setUserData,
         userDataMock,
         { userData: {} },
-        [{ type: 'SET_USER_DATA', payload: userDataMock }],
+        [{ type: store[types.SET_USER_DATA], payload: userDataMock }],
         [],
       );
     });
@@ -108,10 +123,10 @@ describe.skip('Actions Notes Store', () => {
   describe('setLastFetchedAt', () => {
     it('should set received timestamp', () => {
       return testAction(
-        actions.setLastFetchedAt,
+        store.setLastFetchedAt,
         'timestamp',
         { lastFetchedAt: {} },
-        [{ type: 'SET_LAST_FETCHED_AT', payload: 'timestamp' }],
+        [{ type: store[types.SET_LAST_FETCHED_AT], payload: 'timestamp' }],
         [],
       );
     });
@@ -120,10 +135,10 @@ describe.skip('Actions Notes Store', () => {
   describe('setInitialNotes', () => {
     it('should set initial notes', () => {
       return testAction(
-        actions.setInitialNotes,
+        store.setInitialNotes,
         [individualNote],
         { notes: [] },
-        [{ type: 'ADD_OR_UPDATE_DISCUSSIONS', payload: [individualNote] }],
+        [{ type: store[types.ADD_OR_UPDATE_DISCUSSIONS], payload: [individualNote] }],
         [],
       );
     });
@@ -132,10 +147,10 @@ describe.skip('Actions Notes Store', () => {
   describe('setTargetNoteHash', () => {
     it('should set target note hash', () => {
       return testAction(
-        actions.setTargetNoteHash,
+        store.setTargetNoteHash,
         'hash',
         { notes: [] },
-        [{ type: 'SET_TARGET_NOTE_HASH', payload: 'hash' }],
+        [{ type: store[types.SET_TARGET_NOTE_HASH], payload: 'hash' }],
         [],
       );
     });
@@ -144,10 +159,10 @@ describe.skip('Actions Notes Store', () => {
   describe('toggleDiscussion', () => {
     it('should toggle discussion', () => {
       return testAction(
-        actions.toggleDiscussion,
+        store.toggleDiscussion,
         { discussionId: discussionMock.id },
-        { notes: [discussionMock] },
-        [{ type: 'TOGGLE_DISCUSSION', payload: { discussionId: discussionMock.id } }],
+        { discussions: [discussionMock] },
+        [{ type: store[types.TOGGLE_DISCUSSION], payload: { discussionId: discussionMock.id } }],
         [],
       );
     });
@@ -155,12 +170,13 @@ describe.skip('Actions Notes Store', () => {
 
   describe('expandDiscussion', () => {
     it('should expand discussion', () => {
+      const spy = jest.spyOn(useLegacyDiffs(), 'renderFileForDiscussionId');
       return testAction(
-        actions.expandDiscussion,
+        store.expandDiscussion,
         { discussionId: discussionMock.id },
-        { notes: [discussionMock] },
-        [{ type: 'EXPAND_DISCUSSION', payload: { discussionId: discussionMock.id } }],
-        [{ type: 'diffs/renderFileForDiscussionId', payload: discussionMock.id }],
+        { discussions: [discussionMock] },
+        [{ type: store[types.EXPAND_DISCUSSION], payload: { discussionId: discussionMock.id } }],
+        [{ type: spy, payload: discussionMock.id }],
       );
     });
   });
@@ -168,33 +184,57 @@ describe.skip('Actions Notes Store', () => {
   describe('collapseDiscussion', () => {
     it('should commit collapse discussion', () => {
       return testAction(
-        actions.collapseDiscussion,
+        store.collapseDiscussion,
         { discussionId: discussionMock.id },
-        { notes: [discussionMock] },
-        [{ type: 'COLLAPSE_DISCUSSION', payload: { discussionId: discussionMock.id } }],
+        { discussions: [discussionMock] },
+        [{ type: store[types.COLLAPSE_DISCUSSION], payload: { discussionId: discussionMock.id } }],
         [],
       );
     });
   });
 
   describe('async methods', () => {
-    beforeEach(() => {
-      axiosMock.onAny().reply(HTTP_STATUS_OK, {});
-    });
-
     describe('closeMergeRequest', () => {
       it('sets state as closed', async () => {
-        await store.dispatch('closeIssuable', { notesData: { closeIssuePath: '' } });
-        expect(store.state.noteableData.state).toEqual('closed');
-        expect(store.state.isToggleStateButtonLoading).toEqual(false);
+        const eventHandler = jest.fn();
+        document.addEventListener(EVENT_ISSUABLE_VUE_APP_CHANGE, eventHandler);
+
+        const data = { foo: 1 };
+        axiosMock.onPut('/close').replyOnce(HTTP_STATUS_OK, data);
+        store.notesData.closePath = '/close';
+
+        await store.closeIssuable();
+
+        document.removeEventListener(EVENT_ISSUABLE_VUE_APP_CHANGE, eventHandler);
+
+        expect(store.noteableData.state).toEqual('closed');
+        expect(store.isToggleStateButtonLoading).toEqual(false);
+        expect(eventHandler.mock.calls[0][0].detail).toStrictEqual({
+          data,
+          isClosed: true,
+        });
       });
     });
 
     describe('reopenMergeRequest', () => {
       it('sets state as reopened', async () => {
-        await store.dispatch('reopenIssuable', { notesData: { reopenIssuePath: '' } });
-        expect(store.state.noteableData.state).toEqual('reopened');
-        expect(store.state.isToggleStateButtonLoading).toEqual(false);
+        const eventHandler = jest.fn();
+        document.addEventListener(EVENT_ISSUABLE_VUE_APP_CHANGE, eventHandler);
+
+        const data = { foo: 1 };
+        axiosMock.onPut('/reopen').replyOnce(HTTP_STATUS_OK, data);
+        store.notesData.reopenPath = '/reopen';
+
+        await store.reopenIssuable();
+
+        document.removeEventListener(EVENT_ISSUABLE_VUE_APP_CHANGE, eventHandler);
+
+        expect(store.noteableData.state).toEqual('reopened');
+        expect(store.isToggleStateButtonLoading).toEqual(false);
+        expect(eventHandler.mock.calls[0][0].detail).toStrictEqual({
+          data,
+          isClosed: false,
+        });
       });
     });
   });
@@ -206,27 +246,27 @@ describe.skip('Actions Notes Store', () => {
         expect(event.detail.isClosed).toEqual(false);
       });
 
-      store.dispatch('emitStateChangedEvent', { id: '1', state: 'closed' });
+      store.emitStateChangedEvent({ id: '1', state: 'closed' });
     });
   });
 
   describe('toggleStateButtonLoading', () => {
     it('should set loading as true', () => {
       return testAction(
-        actions.toggleStateButtonLoading,
+        store.toggleStateButtonLoading,
         true,
         {},
-        [{ type: 'TOGGLE_STATE_BUTTON_LOADING', payload: true }],
+        [{ type: store[types.TOGGLE_STATE_BUTTON_LOADING], payload: true }],
         [],
       );
     });
 
     it('should set loading as false', () => {
       return testAction(
-        actions.toggleStateButtonLoading,
+        store.toggleStateButtonLoading,
         false,
         {},
-        [{ type: 'TOGGLE_STATE_BUTTON_LOADING', payload: false }],
+        [{ type: store[types.TOGGLE_STATE_BUTTON_LOADING], payload: false }],
         [],
       );
     });
@@ -234,15 +274,21 @@ describe.skip('Actions Notes Store', () => {
 
   describe('toggleIssueLocalState', () => {
     it('sets issue state as closed', () => {
-      return testAction(actions.toggleIssueLocalState, 'closed', {}, [{ type: 'CLOSE_ISSUE' }], []);
+      return testAction(
+        store.toggleIssueLocalState,
+        'closed',
+        {},
+        [{ type: store[types.CLOSE_ISSUE] }],
+        [],
+      );
     });
 
     it('sets issue state as reopened', () => {
       return testAction(
-        actions.toggleIssueLocalState,
+        store.toggleIssueLocalState,
         'reopened',
         {},
-        [{ type: 'REOPEN_ISSUE' }],
+        [{ type: store[types.REOPEN_ISSUE] }],
         [],
       );
     });
@@ -259,10 +305,10 @@ describe.skip('Actions Notes Store', () => {
 
     const notesChannelParams = () => ({
       channel: 'Noteable::NotesChannel',
-      project_id: store.state.notesData.projectId,
-      group_id: store.state.notesData.groupId,
-      noteable_type: store.state.notesData.noteableType,
-      noteable_id: store.state.notesData.noteableId,
+      project_id: store.notesData.projectId,
+      group_id: store.notesData.groupId,
+      noteable_type: store.notesData.noteableType,
+      noteable_id: store.notesData.noteableId,
     });
 
     const notifyNotesChannel = () => {
@@ -274,8 +320,8 @@ describe.skip('Actions Notes Store', () => {
     it('creates the Action Cable subscription', () => {
       jest.spyOn(actionCable.subscriptions, 'create');
 
-      store.dispatch('setNotesData', notesDataMock);
-      store.dispatch('initPolling');
+      store.setNotesData(notesDataMock);
+      store.initPolling();
 
       expect(actionCable.subscriptions.create).toHaveBeenCalledTimes(1);
       expect(actionCable.subscriptions.create).toHaveBeenCalledWith(
@@ -285,12 +331,11 @@ describe.skip('Actions Notes Store', () => {
     });
 
     it('prevents `fetchUpdatedNotes` being called multiple times within time limit when action cable receives contineously new events', () => {
-      const getters = { getNotesDataByProp: () => 123456789 };
+      store.fetchUpdatedNotes.mockResolvedValue();
+      getters = { getNotesDataByProp: () => 123456789 };
 
-      store.dispatch('setNotesData', notesDataMock);
-      actions.initPolling({ commit, state: store.state, getters, dispatch });
-
-      dispatch.mockClear();
+      store.setNotesData(notesDataMock);
+      store.initPolling();
 
       notifyNotesChannel();
       notifyNotesChannel();
@@ -298,8 +343,7 @@ describe.skip('Actions Notes Store', () => {
 
       jest.runOnlyPendingTimers();
 
-      expect(dispatch).toHaveBeenCalledTimes(1);
-      expect(dispatch).toHaveBeenCalledWith('fetchUpdatedNotes');
+      expect(store.fetchUpdatedNotes).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -309,25 +353,25 @@ describe.skip('Actions Notes Store', () => {
       axiosMock.onGet(notesDataMock.notesPath).reply(HTTP_STATUS_OK, response);
 
     beforeEach(() => {
-      return store.dispatch('setNotesData', notesDataMock);
+      return store.setNotesData(notesDataMock);
     });
 
     it('calls the endpoint and stores last fetched state', async () => {
       successMock();
 
-      await store.dispatch('fetchUpdatedNotes');
+      await store.fetchUpdatedNotes();
 
-      expect(store.state.lastFetchedAt).toBe('123456');
+      expect(store.lastFetchedAt).toBe('123456');
     });
   });
 
   describe('setNotesFetchedState', () => {
     it('should set notes fetched state', () => {
       return testAction(
-        actions.setNotesFetchedState,
+        store.setNotesFetchedState,
         true,
         {},
-        [{ type: 'SET_NOTES_FETCHED_STATE', payload: true }],
+        [{ type: store[types.SET_NOTES_FETCHED_STATE], payload: true }],
         [],
       );
     });
@@ -349,53 +393,54 @@ describe.skip('Actions Notes Store', () => {
     });
 
     it('commits DELETE_NOTE and dispatches updateMergeRequestWidget', () => {
-      const note = { path: endpoint, id: 1 };
+      const note = { path: endpoint, id: 1, discussion_id: 1, individual_note: true };
 
       return testAction(
-        actions.removeNote,
+        store.removeNote,
         note,
-        store.state,
+        { discussions: [note] },
         [
           {
-            type: 'DELETE_NOTE',
+            type: store[types.DELETE_NOTE],
             payload: note,
           },
         ],
         [
           {
-            type: 'updateMergeRequestWidget',
+            type: store.updateMergeRequestWidget,
           },
           {
-            type: 'updateResolvableDiscussionsCounts',
+            type: store.updateResolvableDiscussionsCounts,
           },
         ],
       );
     });
 
     it('dispatches removeDiscussionsFromDiff on merge request page', () => {
-      const note = { path: endpoint, id: 1 };
+      const note = { path: endpoint, id: 1, discussion_id: 1, individual_note: true };
+      const spy = jest.spyOn(useLegacyDiffs(), 'removeDiscussionsFromDiff');
 
       document.body.dataset.page = 'projects:merge_requests:show';
 
       return testAction(
-        actions.removeNote,
+        store.removeNote,
         note,
-        store.state,
+        { discussions: [note] },
         [
           {
-            type: 'DELETE_NOTE',
+            type: store[types.DELETE_NOTE],
             payload: note,
           },
         ],
         [
           {
-            type: 'updateMergeRequestWidget',
+            type: store.updateMergeRequestWidget,
           },
           {
-            type: 'updateResolvableDiscussionsCounts',
+            type: store.updateResolvableDiscussionsCounts,
           },
           {
-            type: 'diffs/removeDiscussionsFromDiff',
+            type: spy,
           },
         ],
       );
@@ -418,20 +463,17 @@ describe.skip('Actions Notes Store', () => {
     });
 
     it('dispatches removeNote', () => {
-      const note = { path: endpoint, id: 1 };
+      const note = { path: endpoint, id: 1, discussion_id: 1, individual_note: true };
 
       return testAction(
-        actions.deleteNote,
+        store.deleteNote,
         note,
-        {},
+        { discussions: [note] },
         [],
         [
           {
-            type: 'removeNote',
-            payload: {
-              id: 1,
-              path: 'http://test.host/note',
-            },
+            type: store.removeNote,
+            payload: note,
           },
         ],
       );
@@ -451,24 +493,24 @@ describe.skip('Actions Notes Store', () => {
 
       it('commits ADD_NEW_NOTE and dispatches updateMergeRequestWidget', () => {
         return testAction(
-          actions.createNewNote,
+          store.createNewNote,
           { endpoint: `${TEST_HOST}`, data: {} },
           store.state,
           [
             {
-              type: 'ADD_NEW_NOTE',
+              type: store[types.ADD_NEW_NOTE],
               payload: res,
             },
           ],
           [
             {
-              type: 'updateMergeRequestWidget',
+              type: store.updateMergeRequestWidget,
             },
             {
-              type: 'startTaskList',
+              type: store.startTaskList,
             },
             {
-              type: 'updateResolvableDiscussionsCounts',
+              type: store.updateResolvableDiscussionsCounts,
             },
           ],
         );
@@ -486,7 +528,7 @@ describe.skip('Actions Notes Store', () => {
 
       it('does not commit ADD_NEW_NOTE or dispatch updateMergeRequestWidget', () => {
         return testAction(
-          actions.createNewNote,
+          store.createNewNote,
           { endpoint: `${TEST_HOST}`, data: {} },
           store.state,
           [],
@@ -499,6 +541,9 @@ describe.skip('Actions Notes Store', () => {
   describe('toggleResolveNote', () => {
     const res = {
       resolved: true,
+      expanded: true,
+      discussion_id: 1,
+      id: 1,
     };
 
     beforeEach(() => {
@@ -508,21 +553,25 @@ describe.skip('Actions Notes Store', () => {
     describe('as note', () => {
       it('commits UPDATE_NOTE and dispatches updateMergeRequestWidget', () => {
         return testAction(
-          actions.toggleResolveNote,
+          store.toggleResolveNote,
           { endpoint: `${TEST_HOST}`, isResolved: true, discussion: false },
-          store.state,
+          {
+            discussions: [
+              { resolved: false, discussion_id: 1, id: 1, individual_note: true, notes: [] },
+            ],
+          },
           [
             {
-              type: 'UPDATE_NOTE',
+              type: store[types.UPDATE_NOTE],
               payload: res,
             },
           ],
           [
             {
-              type: 'updateResolvableDiscussionsCounts',
+              type: store.updateResolvableDiscussionsCounts,
             },
             {
-              type: 'updateMergeRequestWidget',
+              type: store.updateMergeRequestWidget,
             },
           ],
         );
@@ -532,21 +581,25 @@ describe.skip('Actions Notes Store', () => {
     describe('as discussion', () => {
       it('commits UPDATE_DISCUSSION and dispatches updateMergeRequestWidget', () => {
         return testAction(
-          actions.toggleResolveNote,
+          store.toggleResolveNote,
           { endpoint: `${TEST_HOST}`, isResolved: true, discussion: true },
-          store.state,
+          {
+            discussions: [
+              { resolved: false, discussion_id: 1, id: 1, individual_note: true, notes: [] },
+            ],
+          },
           [
             {
-              type: 'UPDATE_DISCUSSION',
+              type: store[types.UPDATE_DISCUSSION],
               payload: res,
             },
           ],
           [
             {
-              type: 'updateResolvableDiscussionsCounts',
+              type: store.updateResolvableDiscussionsCounts,
             },
             {
-              type: 'updateMergeRequestWidget',
+              type: store.updateMergeRequestWidget,
             },
           ],
         );
@@ -558,7 +611,7 @@ describe.skip('Actions Notes Store', () => {
     it('calls mrWidget checkStatus', () => {
       jest.spyOn(mrWidgetEventHub, '$emit').mockImplementation(() => {});
 
-      actions.updateMergeRequestWidget();
+      store.updateMergeRequestWidget();
 
       expect(mrWidgetEventHub.$emit).toHaveBeenCalledWith('mr.discussion.updated');
     });
@@ -567,10 +620,10 @@ describe.skip('Actions Notes Store', () => {
   describe('setCommentsDisabled', () => {
     it('should set comments disabled state', () => {
       return testAction(
-        actions.setCommentsDisabled,
+        store.setCommentsDisabled,
         true,
         null,
-        [{ type: 'DISABLE_COMMENTS', payload: true }],
+        [{ type: store[types.DISABLE_COMMENTS], payload: true }],
         [],
       );
     });
@@ -579,10 +632,10 @@ describe.skip('Actions Notes Store', () => {
   describe('updateResolvableDiscussionsCounts', () => {
     it('commits UPDATE_RESOLVABLE_DISCUSSIONS_COUNTS', () => {
       return testAction(
-        actions.updateResolvableDiscussionsCounts,
+        store.updateResolvableDiscussionsCounts,
         null,
         {},
-        [{ type: 'UPDATE_RESOLVABLE_DISCUSSIONS_COUNTS' }],
+        [{ type: store[types.UPDATE_RESOLVABLE_DISCUSSIONS_COUNTS] }],
         [],
       );
     });
@@ -592,99 +645,94 @@ describe.skip('Actions Notes Store', () => {
     it('commits CONVERT_TO_DISCUSSION with noteId', () => {
       const noteId = 'dummy-note-id';
       return testAction(
-        actions.convertToDiscussion,
+        store.convertToDiscussion,
         noteId,
         {},
-        [{ type: 'CONVERT_TO_DISCUSSION', payload: noteId }],
+        [{ type: store[types.CONVERT_TO_DISCUSSION], payload: noteId }],
         [],
       );
     });
   });
 
   describe('updateOrCreateNotes', () => {
+    beforeEach(() => {
+      store.fetchDiscussions.mockResolvedValue();
+    });
+
     it('Prevents `fetchDiscussions` being called multiple times within time limit', () => {
       const note = { id: 1234, type: notesConstants.DIFF_NOTE };
-      const getters = { notesById: {} };
-      state = { discussions: [note], notesData: { discussionsPath: '' } };
-      commit.mockImplementation((type, value) => {
-        if (type === mutationTypes.SET_FETCHING_DISCUSSIONS) {
-          mutations[type](state, value);
-        }
-      });
+      getters = { notesById: {} };
+      store.$patch({ discussions: [note], notesData: { discussionsPath: '' } });
 
-      actions.updateOrCreateNotes({ commit, state, getters, dispatch }, [note]);
-      actions.updateOrCreateNotes({ commit, state, getters, dispatch }, [note]);
+      store.updateOrCreateNotes([note]);
+      store.updateOrCreateNotes([note]);
 
       jest.runOnlyPendingTimers();
 
-      actions.updateOrCreateNotes({ commit, state, getters, dispatch }, [note]);
+      store.updateOrCreateNotes([note]);
 
-      expect(dispatch).toHaveBeenCalledTimes(2);
+      expect(store.fetchDiscussions).toHaveBeenCalledTimes(2);
     });
 
     it('Updates existing note', () => {
       const note = { id: 1234 };
-      const getters = { notesById: { 1234: note } };
+      store.discussions = [{ notes: [note] }];
 
-      actions.updateOrCreateNotes({ commit, state, getters, dispatch }, [note]);
+      store.updateOrCreateNotes([note]);
 
-      expect(commit.mock.calls).toEqual([[mutationTypes.UPDATE_NOTE, note]]);
+      expect(store[types.UPDATE_NOTE]).toHaveBeenCalledWith(note);
     });
 
     it('Creates a new note if none exisits', () => {
       const note = { id: 1234 };
-      const getters = { notesById: {} };
-      actions.updateOrCreateNotes({ commit, state, getters, dispatch }, [note]);
 
-      expect(commit.mock.calls).toEqual([[mutationTypes.ADD_NEW_NOTE, note]]);
+      store.updateOrCreateNotes([note]);
+
+      expect(store[types.ADD_NEW_NOTE]).toHaveBeenCalledWith(note);
     });
 
     describe('Discussion notes', () => {
       let note;
-      let getters;
 
       beforeEach(() => {
-        note = { id: 1234 };
-        getters = { notesById: {} };
+        note = { id: 1234, discussion_id: 1234 };
       });
 
       it('Adds a reply to an existing discussion', () => {
-        state = { discussions: [note] };
+        store.discussions = [{ id: 1234, notes: [] }];
         const discussionNote = {
           ...note,
           type: notesConstants.DISCUSSION_NOTE,
           discussion_id: 1234,
         };
 
-        actions.updateOrCreateNotes({ commit, state, getters, dispatch }, [discussionNote]);
+        store.updateOrCreateNotes([discussionNote]);
 
-        expect(commit.mock.calls).toEqual([
-          [mutationTypes.ADD_NEW_REPLY_TO_DISCUSSION, discussionNote],
-        ]);
+        expect(store[types.ADD_NEW_REPLY_TO_DISCUSSION]).toHaveBeenCalledWith(discussionNote);
       });
 
       it('fetches discussions for diff notes', () => {
-        state = { discussions: [], notesData: { discussionsPath: 'Hello world' } };
+        store.$patch({ discussions: [], notesData: { discussionsPath: 'Hello world' } });
         const diffNote = { ...note, type: notesConstants.DIFF_NOTE, discussion_id: 1234 };
 
-        actions.updateOrCreateNotes({ commit, state, getters, dispatch }, [diffNote]);
+        store.updateOrCreateNotes([diffNote]);
 
-        expect(dispatch.mock.calls).toEqual([
-          ['fetchDiscussions', { path: state.notesData.discussionsPath }],
-        ]);
+        expect(store.fetchDiscussions).toHaveBeenCalledWith({
+          path: store.notesData.discussionsPath,
+        });
       });
 
       it('Adds a new note', () => {
-        state = { discussions: [] };
+        store.discussions = [];
         const discussionNote = {
           ...note,
           type: notesConstants.DISCUSSION_NOTE,
           discussion_id: 1234,
         };
 
-        actions.updateOrCreateNotes({ commit, state, getters, dispatch }, [discussionNote]);
+        store.updateOrCreateNotes([discussionNote]);
 
-        expect(commit.mock.calls).toEqual([[mutationTypes.ADD_NEW_NOTE, discussionNote]]);
+        expect(store[types.ADD_NEW_NOTE]).toHaveBeenCalledWith(discussionNote);
       });
     });
   });
@@ -692,21 +740,19 @@ describe.skip('Actions Notes Store', () => {
   describe('replyToDiscussion', () => {
     const payload = { endpoint: TEST_HOST, data: {} };
 
-    it('updates discussion if response contains disussion', () => {
+    it('updates discussion if response contains discussion', () => {
       const discussion = { notes: [] };
       axiosMock.onAny().reply(HTTP_STATUS_OK, { discussion });
 
       return testAction(
-        actions.replyToDiscussion,
+        store.replyToDiscussion,
         payload,
-        {
-          notesById: {},
-        },
-        [{ type: mutationTypes.UPDATE_DISCUSSION, payload: discussion }],
+        { discussions: [discussion] },
+        [{ type: store[types.UPDATE_DISCUSSION], payload: discussion }],
         [
-          { type: 'updateMergeRequestWidget' },
-          { type: 'startTaskList' },
-          { type: 'updateResolvableDiscussionsCounts' },
+          { type: store.updateMergeRequestWidget },
+          { type: store.startTaskList },
+          { type: store.updateResolvableDiscussionsCounts },
         ],
       );
     });
@@ -716,12 +762,10 @@ describe.skip('Actions Notes Store', () => {
       axiosMock.onAny().reply(HTTP_STATUS_OK, res);
 
       return testAction(
-        actions.replyToDiscussion,
+        store.replyToDiscussion,
         payload,
-        {
-          notesById: {},
-        },
-        [{ type: mutationTypes.ADD_NEW_REPLY_TO_DISCUSSION, payload: res }],
+        {},
+        [{ type: store[types.ADD_NEW_REPLY_TO_DISCUSSION], payload: res }],
         [],
       );
     });
@@ -731,36 +775,36 @@ describe.skip('Actions Notes Store', () => {
     it('commits CONVERT_TO_DISCUSSION with noteId', () => {
       const noteId = 'dummy-id';
       return testAction(
-        actions.removeConvertedDiscussion,
+        store.removeConvertedDiscussion,
         noteId,
         {},
-        [{ type: 'REMOVE_CONVERTED_DISCUSSION', payload: noteId }],
+        [{ type: store[types.REMOVE_CONVERTED_DISCUSSION], payload: noteId }],
         [],
       );
     });
   });
 
   describe('resolveDiscussion', () => {
-    let getters;
     let discussionId;
 
     beforeEach(() => {
       discussionId = discussionMock.id;
-      state.discussions = [discussionMock];
+      store.discussions = [discussionMock];
       getters = {
         isDiscussionResolved: () => false,
       };
     });
 
     it('when unresolved, dispatches action', () => {
+      axiosMock.onAny().reply(HTTP_STATUS_OK, discussionMock);
       return testAction(
-        actions.resolveDiscussion,
+        store.resolveDiscussion,
         { discussionId },
-        { ...state, ...getters },
+        undefined,
         [],
         [
           {
-            type: 'toggleResolveNote',
+            type: store.toggleResolveNote,
             payload: {
               endpoint: discussionMock.resolve_path,
               isResolved: false,
@@ -774,13 +818,7 @@ describe.skip('Actions Notes Store', () => {
     it('when resolved, does nothing', () => {
       getters.isDiscussionResolved = (id) => id === discussionId;
 
-      return testAction(
-        actions.resolveDiscussion,
-        { discussionId },
-        { ...state, ...getters },
-        [],
-        [],
-      );
+      return testAction(store.resolveDiscussion, { discussionId }, undefined, [], []);
     });
   });
 
@@ -789,19 +827,16 @@ describe.skip('Actions Notes Store', () => {
     const payload = { endpoint: TEST_HOST, data: { 'note[note]': 'some text' }, flashContainer };
 
     describe('if response contains errors', () => {
-      const res = { errors: { something: ['went wrong'] } };
-      const error = { message: 'Unprocessable entity', response: { data: res } };
+      const axiosError = { message: 'Unprocessable entity', errors: { something: ['went wrong'] } };
 
       it('throws an error', async () => {
-        await expect(
-          actions.saveNote(
-            {
-              commit() {},
-              dispatch: () => Promise.reject(error),
-            },
-            payload,
-          ),
-        ).rejects.toEqual(error);
+        axiosMock.onAny().reply(HTTP_STATUS_UNPROCESSABLE_ENTITY, axiosError);
+        try {
+          await store.saveNote(payload);
+        } catch (error) {
+          expect(error.response.data.message).toBe(axiosError.message);
+          expect(error.response.data.errors).toStrictEqual(axiosError.errors);
+        }
         expect(createAlert).not.toHaveBeenCalled();
       });
     });
@@ -810,29 +845,20 @@ describe.skip('Actions Notes Store', () => {
       const res = { valid: true };
 
       it('returns the response', async () => {
-        const data = await actions.saveNote(
-          {
-            commit() {},
-            dispatch: () => Promise.resolve(res),
-          },
-          payload,
-        );
-        expect(data).toBe(res);
+        axiosMock.onAny().reply(HTTP_STATUS_OK, res);
+        const data = await store.saveNote(payload);
+        expect(data).toStrictEqual(res);
         expect(createAlert).not.toHaveBeenCalled();
       });
 
       it('dispatches clearDrafts is command names contains submit_review', async () => {
+        const spy = jest.spyOn(useBatchComments(), 'clearDrafts');
         const response = { command_names: ['submit_review'], valid: true };
-        dispatch = jest.fn().mockResolvedValue(response);
-        await actions.saveNote(
-          {
-            commit() {},
-            dispatch,
-          },
-          payload,
-        );
+        axiosMock.onAny().reply(HTTP_STATUS_OK, response);
+        await store.saveNote(payload);
 
-        expect(dispatch).toHaveBeenCalledWith('batchComments/clearDrafts');
+        expect(spy).toHaveBeenCalled();
+        spy.mockReset();
       });
     });
   });
@@ -845,71 +871,52 @@ describe.skip('Actions Notes Store', () => {
 
     beforeEach(() => {
       jest.spyOn(Api, 'applySuggestion').mockReturnValue(Promise.resolve());
-      dispatch.mockReturnValue(Promise.resolve());
       flashContainer = {};
     });
 
-    const testSubmitSuggestion = async (expectFn) => {
-      await actions.submitSuggestion(
-        { commit, dispatch },
-        { discussionId, noteId, suggestionId, flashContainer },
-      );
-
-      expectFn();
+    const submitSuggestion = async () => {
+      await store.submitSuggestion({ discussionId, noteId, suggestionId, flashContainer });
     };
 
-    it('when service success, commits and resolves discussion', () => {
-      testSubmitSuggestion(() => {
-        expect(commit.mock.calls).toEqual([
-          [mutationTypes.SET_RESOLVING_DISCUSSION, true],
-          [mutationTypes.SET_RESOLVING_DISCUSSION, false],
-        ]);
-
-        expect(dispatch.mock.calls).toEqual([['resolveDiscussion', { discussionId }]]);
-        expect(createAlert).not.toHaveBeenCalled();
-      });
+    it('when service success, commits and resolves discussion', async () => {
+      await submitSuggestion();
+      expect(store[types.SET_RESOLVING_DISCUSSION]).toHaveBeenNthCalledWith(1, true);
+      expect(store[types.SET_RESOLVING_DISCUSSION]).toHaveBeenNthCalledWith(2, false);
+      expect(store.resolveDiscussion).toHaveBeenCalledWith({ discussionId });
+      expect(createAlert).not.toHaveBeenCalled();
     });
 
-    it('when service fails, creates an alert with error message', () => {
+    it('when service fails, creates an alert with error message', async () => {
       const response = { response: { data: { message: TEST_ERROR_MESSAGE } } };
 
       Api.applySuggestion.mockReturnValue(Promise.reject(response));
 
-      return testSubmitSuggestion(() => {
-        expect(commit.mock.calls).toEqual([
-          [mutationTypes.SET_RESOLVING_DISCUSSION, true],
-          [mutationTypes.SET_RESOLVING_DISCUSSION, false],
-        ]);
-        expect(createAlert).toHaveBeenCalledWith({
-          message: TEST_ERROR_MESSAGE,
-          parent: flashContainer,
-        });
+      await submitSuggestion();
+      expect(store[types.SET_RESOLVING_DISCUSSION]).toHaveBeenNthCalledWith(1, true);
+      expect(store[types.SET_RESOLVING_DISCUSSION]).toHaveBeenNthCalledWith(2, false);
+      expect(createAlert).toHaveBeenCalledWith({
+        message: TEST_ERROR_MESSAGE,
+        parent: flashContainer,
       });
     });
 
-    it('when service fails, and no error message available, uses default message', () => {
+    it('when service fails, and no error message available, uses default message', async () => {
       const response = { response: 'foo' };
 
       Api.applySuggestion.mockReturnValue(Promise.reject(response));
 
-      return testSubmitSuggestion(() => {
-        expect(commit.mock.calls).toEqual([
-          [mutationTypes.SET_RESOLVING_DISCUSSION, true],
-          [mutationTypes.SET_RESOLVING_DISCUSSION, false],
-        ]);
-        expect(createAlert).toHaveBeenCalledWith({
-          message: 'Something went wrong while applying the suggestion. Please try again.',
-          parent: flashContainer,
-        });
+      await submitSuggestion();
+      expect(store[types.SET_RESOLVING_DISCUSSION]).toHaveBeenNthCalledWith(1, true);
+      expect(store[types.SET_RESOLVING_DISCUSSION]).toHaveBeenNthCalledWith(2, false);
+      expect(createAlert).toHaveBeenCalledWith({
+        message: 'Something went wrong while applying the suggestion. Please try again.',
+        parent: flashContainer,
       });
     });
 
-    it('when resolve discussion fails, fail gracefully', () => {
-      dispatch.mockReturnValue(Promise.reject());
-
-      return testSubmitSuggestion(() => {
-        expect(createAlert).not.toHaveBeenCalled();
-      });
+    it('when resolve discussion fails, fail gracefully', async () => {
+      await submitSuggestion();
+      expect(createAlert).not.toHaveBeenCalled();
     });
   });
 
@@ -921,92 +928,77 @@ describe.skip('Actions Notes Store', () => {
 
     beforeEach(() => {
       jest.spyOn(Api, 'applySuggestionBatch');
-      dispatch.mockReturnValue(Promise.resolve());
       Api.applySuggestionBatch.mockReturnValue(Promise.resolve());
-      state = { batchSuggestionsInfo };
+      const discussions = batchSuggestionsInfoMock.map(({ discussionId, noteId }) => {
+        return { id: discussionId, notes: [{ id: noteId, suggestions: [] }] };
+      });
+      store.$patch({ discussions, batchSuggestionsInfo });
       flashContainer = {};
     });
 
-    const testSubmitSuggestionBatch = async (expectFn) => {
-      await actions.submitSuggestionBatch({ commit, dispatch, state }, { flashContainer });
-
-      expectFn();
+    const submitSuggestionBatch = async () => {
+      await store.submitSuggestionBatch({ flashContainer });
     };
 
-    it('when service succeeds, commits, resolves discussions, resets batch and applying batch state', () => {
-      testSubmitSuggestionBatch(() => {
-        expect(commit.mock.calls).toEqual([
-          [mutationTypes.SET_APPLYING_BATCH_STATE, true],
-          [mutationTypes.SET_RESOLVING_DISCUSSION, true],
-          [mutationTypes.CLEAR_SUGGESTION_BATCH],
-          [mutationTypes.SET_APPLYING_BATCH_STATE, false],
-          [mutationTypes.SET_RESOLVING_DISCUSSION, false],
-        ]);
-
-        expect(dispatch.mock.calls).toEqual([
-          ['resolveDiscussion', { discussionId: discussionIds[0] }],
-          ['resolveDiscussion', { discussionId: discussionIds[1] }],
-        ]);
-
-        expect(createAlert).not.toHaveBeenCalled();
+    it('when service succeeds, commits, resolves discussions, resets batch and applying batch state', async () => {
+      await submitSuggestionBatch();
+      expect(store[types.SET_APPLYING_BATCH_STATE]).toHaveBeenNthCalledWith(1, true);
+      expect(store[types.SET_RESOLVING_DISCUSSION]).toHaveBeenNthCalledWith(1, true);
+      expect(store[types.CLEAR_SUGGESTION_BATCH]).toHaveBeenCalled();
+      expect(store[types.SET_APPLYING_BATCH_STATE]).toHaveBeenNthCalledWith(2, false);
+      expect(store[types.SET_RESOLVING_DISCUSSION]).toHaveBeenNthCalledWith(2, false);
+      expect(store.resolveDiscussion).toHaveBeenNthCalledWith(1, {
+        discussionId: discussionIds[0],
       });
+      expect(store.resolveDiscussion).toHaveBeenNthCalledWith(2, {
+        discussionId: discussionIds[1],
+      });
+      expect(createAlert).not.toHaveBeenCalled();
     });
 
-    it('when service fails, flashes error message, resets applying batch state', () => {
+    it('when service fails, flashes error message, resets applying batch state', async () => {
       const response = { response: { data: { message: TEST_ERROR_MESSAGE } } };
 
       Api.applySuggestionBatch.mockReturnValue(Promise.reject(response));
 
-      testSubmitSuggestionBatch(() => {
-        expect(commit.mock.calls).toEqual([
-          [mutationTypes.SET_APPLYING_BATCH_STATE, true],
-          [mutationTypes.SET_RESOLVING_DISCUSSION, true],
-          [mutationTypes.SET_APPLYING_BATCH_STATE, false],
-          [mutationTypes.SET_RESOLVING_DISCUSSION, false],
-        ]);
-
-        expect(createAlert).toHaveBeenCalledWith({
-          message: TEST_ERROR_MESSAGE,
-          parent: flashContainer,
-        });
+      await submitSuggestionBatch();
+      expect(store[types.SET_APPLYING_BATCH_STATE]).toHaveBeenNthCalledWith(1, true);
+      expect(store[types.SET_RESOLVING_DISCUSSION]).toHaveBeenNthCalledWith(1, true);
+      expect(store[types.SET_APPLYING_BATCH_STATE]).toHaveBeenNthCalledWith(2, false);
+      expect(store[types.SET_RESOLVING_DISCUSSION]).toHaveBeenNthCalledWith(2, false);
+      expect(createAlert).toHaveBeenCalledWith({
+        message: TEST_ERROR_MESSAGE,
+        parent: flashContainer,
       });
     });
 
-    it('when service fails, and no error message available, uses default message', () => {
+    it('when service fails, and no error message available, uses default message', async () => {
       const response = { response: 'foo' };
 
       Api.applySuggestionBatch.mockReturnValue(Promise.reject(response));
 
-      testSubmitSuggestionBatch(() => {
-        expect(commit.mock.calls).toEqual([
-          [mutationTypes.SET_APPLYING_BATCH_STATE, true],
-          [mutationTypes.SET_RESOLVING_DISCUSSION, true],
-          [mutationTypes.SET_APPLYING_BATCH_STATE, false],
-          [mutationTypes.SET_RESOLVING_DISCUSSION, false],
-        ]);
-
-        expect(createAlert).toHaveBeenCalledWith({
-          message:
-            'Something went wrong while applying the batch of suggestions. Please try again.',
-          parent: flashContainer,
-        });
+      await submitSuggestionBatch();
+      expect(store[types.SET_APPLYING_BATCH_STATE]).toHaveBeenNthCalledWith(1, true);
+      expect(store[types.SET_RESOLVING_DISCUSSION]).toHaveBeenNthCalledWith(1, true);
+      expect(store[types.SET_APPLYING_BATCH_STATE]).toHaveBeenNthCalledWith(2, false);
+      expect(store[types.SET_RESOLVING_DISCUSSION]).toHaveBeenNthCalledWith(2, false);
+      expect(createAlert).toHaveBeenCalledWith({
+        message: 'Something went wrong while applying the batch of suggestions. Please try again.',
+        parent: flashContainer,
       });
     });
 
-    it('when resolve discussions fails, fails gracefully, resets batch and applying batch state', () => {
-      dispatch.mockReturnValue(Promise.reject());
+    it('when resolve discussions fails, fails gracefully, resets batch and applying batch state', async () => {
+      store.resolveDiscussion.mockRejectedValue();
 
-      testSubmitSuggestionBatch(() => {
-        expect(commit.mock.calls).toEqual([
-          [mutationTypes.SET_APPLYING_BATCH_STATE, true],
-          [mutationTypes.SET_RESOLVING_DISCUSSION, true],
-          [mutationTypes.CLEAR_SUGGESTION_BATCH],
-          [mutationTypes.SET_APPLYING_BATCH_STATE, false],
-          [mutationTypes.SET_RESOLVING_DISCUSSION, false],
-        ]);
+      await submitSuggestionBatch();
 
-        expect(createAlert).not.toHaveBeenCalled();
-      });
+      expect(store[types.SET_APPLYING_BATCH_STATE]).toHaveBeenNthCalledWith(1, true);
+      expect(store[types.SET_RESOLVING_DISCUSSION]).toHaveBeenNthCalledWith(1, true);
+      expect(store[types.CLEAR_SUGGESTION_BATCH]).toHaveBeenCalled();
+      expect(store[types.SET_APPLYING_BATCH_STATE]).toHaveBeenNthCalledWith(2, false);
+      expect(store[types.SET_RESOLVING_DISCUSSION]).toHaveBeenNthCalledWith(2, false);
+      expect(createAlert).not.toHaveBeenCalled();
     });
   });
 
@@ -1015,10 +1007,10 @@ describe.skip('Actions Notes Store', () => {
 
     it("adds a suggestion's info to the current batch", () => {
       return testAction(
-        actions.addSuggestionInfoToBatch,
+        store.addSuggestionInfoToBatch,
         suggestionInfo,
         { batchSuggestionsInfo: [] },
-        [{ type: 'ADD_SUGGESTION_TO_BATCH', payload: suggestionInfo }],
+        [{ type: store[types.ADD_SUGGESTION_TO_BATCH], payload: suggestionInfo }],
         [],
       );
     });
@@ -1029,10 +1021,10 @@ describe.skip('Actions Notes Store', () => {
 
     it("removes a suggestion's info the current batch", () => {
       return testAction(
-        actions.removeSuggestionInfoFromBatch,
+        store.removeSuggestionInfoFromBatch,
         suggestionInfo.suggestionId,
         { batchSuggestionsInfo: [suggestionInfo] },
-        [{ type: 'REMOVE_SUGGESTION_FROM_BATCH', payload: suggestionInfo.suggestionId }],
+        [{ type: store[types.REMOVE_SUGGESTION_FROM_BATCH], payload: suggestionInfo.suggestionId }],
         [],
       );
     });
@@ -1043,43 +1035,39 @@ describe.skip('Actions Notes Store', () => {
     const filter = 0;
 
     beforeEach(() => {
-      dispatch.mockReturnValue(new Promise(() => {}));
+      store.fetchDiscussions.mockResolvedValueOnce();
     });
 
     it('clears existing discussions', () => {
-      actions.filterDiscussion({ commit, dispatch }, { path, filter, persistFilter: false });
+      store.filterDiscussion({ path, filter, persistFilter: false });
 
-      expect(commit.mock.calls).toEqual([[mutationTypes.CLEAR_DISCUSSIONS]]);
+      expect(store[types.CLEAR_DISCUSSIONS]).toHaveBeenCalledTimes(1);
     });
 
     it('fetches discussions with filter and persistFilter false', () => {
-      actions.filterDiscussion({ commit, dispatch }, { path, filter, persistFilter: false });
+      store.filterDiscussion({ path, filter, persistFilter: false });
 
-      expect(dispatch.mock.calls).toEqual([
-        ['setLoadingState', true],
-        ['fetchDiscussions', { path, filter, persistFilter: false }],
-      ]);
+      expect(store.setLoadingState).toHaveBeenCalledWith(true);
+      expect(store.fetchDiscussions).toHaveBeenCalledWith({ path, filter, persistFilter: false });
     });
 
     it('fetches discussions with filter and persistFilter true', () => {
-      actions.filterDiscussion({ commit, dispatch }, { path, filter, persistFilter: true });
+      store.filterDiscussion({ path, filter, persistFilter: true });
 
-      expect(dispatch.mock.calls).toEqual([
-        ['setLoadingState', true],
-        ['fetchDiscussions', { path, filter, persistFilter: true }],
-      ]);
+      expect(store.setLoadingState).toHaveBeenCalledWith(true);
+      expect(store.fetchDiscussions).toHaveBeenCalledWith({ path, filter, persistFilter: true });
     });
   });
 
   describe('setDiscussionSortDirection', () => {
     it('calls the correct mutation with the correct args', () => {
       return testAction(
-        actions.setDiscussionSortDirection,
+        store.setDiscussionSortDirection,
         { direction: notesConstants.DESC, persist: false },
         {},
         [
           {
-            type: mutationTypes.SET_DISCUSSIONS_SORT,
+            type: store[types.SET_DISCUSSIONS_SORT],
             payload: { direction: notesConstants.DESC, persist: false },
           },
         ],
@@ -1091,10 +1079,10 @@ describe.skip('Actions Notes Store', () => {
   describe('setSelectedCommentPosition', () => {
     it('calls the correct mutation with the correct args', () => {
       return testAction(
-        actions.setSelectedCommentPosition,
+        store.setSelectedCommentPosition,
         {},
         {},
-        [{ type: mutationTypes.SET_SELECTED_COMMENT_POSITION, payload: {} }],
+        [{ type: store[types.SET_SELECTED_COMMENT_POSITION], payload: {} }],
         [],
       );
     });
@@ -1112,16 +1100,16 @@ describe.skip('Actions Notes Store', () => {
       it('dispatches requestDeleteDescriptionVersion', () => {
         axiosMock.onDelete(endpoint).replyOnce(HTTP_STATUS_OK);
         return testAction(
-          actions.softDeleteDescriptionVersion,
+          store.softDeleteDescriptionVersion,
           payload,
           {},
           [],
           [
             {
-              type: 'requestDeleteDescriptionVersion',
+              type: store.requestDeleteDescriptionVersion,
             },
             {
-              type: 'receiveDeleteDescriptionVersion',
+              type: store.receiveDeleteDescriptionVersion,
               payload: payload.versionId,
             },
           ],
@@ -1135,16 +1123,16 @@ describe.skip('Actions Notes Store', () => {
         axiosMock.onDelete(endpoint).replyOnce(HTTP_STATUS_SERVICE_UNAVAILABLE);
         await expect(
           testAction(
-            actions.softDeleteDescriptionVersion,
+            store.softDeleteDescriptionVersion,
             payload,
             {},
             [],
             [
               {
-                type: 'requestDeleteDescriptionVersion',
+                type: store.requestDeleteDescriptionVersion,
               },
               {
-                type: 'receiveDeleteDescriptionVersionError',
+                type: store.receiveDeleteDescriptionVersionError,
                 payload: new Error(errorMessage),
               },
             ],
@@ -1158,22 +1146,19 @@ describe.skip('Actions Notes Store', () => {
 
   describe('setConfidentiality', () => {
     it('calls the correct mutation with the correct args', () => {
-      return testAction(
-        actions.setConfidentiality,
-        true,
-        { noteableData: { confidential: false } },
-        [{ type: mutationTypes.SET_ISSUE_CONFIDENTIAL, payload: true }],
-      );
+      return testAction(store.setConfidentiality, true, { noteableData: { confidential: false } }, [
+        { type: store[types.SET_ISSUE_CONFIDENTIAL], payload: true },
+      ]);
     });
   });
 
   describe('updateAssignees', () => {
     it('update the assignees state', () => {
       return testAction(
-        actions.updateAssignees,
+        store.updateAssignees,
         [userDataMock.id],
-        { state: noteableDataMock },
-        [{ type: mutationTypes.UPDATE_ASSIGNEES, payload: [userDataMock.id] }],
+        { discussions: [noteableDataMock] },
+        [{ type: store[types.UPDATE_ASSIGNEES], payload: [userDataMock.id] }],
         [],
       );
     });
@@ -1184,9 +1169,7 @@ describe.skip('Actions Notes Store', () => {
     ${'issue'}   | ${'merge_request'}
   `('updateLockedAttribute for issuableType=$issuableType', ({ issuableType }) => {
     // Payload for mutation query
-    state = { noteableData: { discussion_locked: false } };
     const targetType = issuableType;
-    const getters = { getNoteableData: { iid: '1', targetType } };
 
     // Target state after mutation
     const locked = true;
@@ -1205,17 +1188,18 @@ describe.skip('Actions Notes Store', () => {
     };
 
     beforeEach(() => {
+      store.$patch({ noteableData: { discussion_locked: false, iid: '1', targetType } });
       jest.spyOn(utils.gqClient, 'mutate').mockResolvedValue(mockResolvedValue());
     });
 
     it('calls gqClient mutation one time', () => {
-      actions.updateLockedAttribute({ commit: () => {}, state, getters }, actionArgs);
+      store.updateLockedAttribute(actionArgs);
 
       expect(utils.gqClient.mutate).toHaveBeenCalledTimes(1);
     });
 
     it('calls gqClient mutation with the correct values', () => {
-      actions.updateLockedAttribute({ commit: () => {}, state, getters }, actionArgs);
+      store.updateLockedAttribute(actionArgs);
 
       expect(utils.gqClient.mutate).toHaveBeenCalledWith({
         mutation: targetMutation(),
@@ -1224,14 +1208,9 @@ describe.skip('Actions Notes Store', () => {
     });
 
     describe('on success of mutation', () => {
-      it('calls commit with the correct values', () => {
-        const commitSpy = jest.fn();
-
-        return actions
-          .updateLockedAttribute({ commit: commitSpy, state, getters }, actionArgs)
-          .then(() => {
-            expect(commitSpy).toHaveBeenCalledWith(mutationTypes.SET_ISSUABLE_LOCK, locked);
-          });
+      it('calls commit with the correct values', async () => {
+        await store.updateLockedAttribute(actionArgs);
+        expect(store[types.SET_ISSUABLE_LOCK]).toHaveBeenCalledWith(locked);
       });
     });
   });
@@ -1240,10 +1219,10 @@ describe.skip('Actions Notes Store', () => {
     it('update the assignees state', () => {
       const updatedPosition = { discussionId: 1, position: { test: true } };
       return testAction(
-        actions.updateDiscussionPosition,
+        store.updateDiscussionPosition,
         updatedPosition,
-        { state: { discussions: [] } },
-        [{ type: mutationTypes.UPDATE_DISCUSSION_POSITION, payload: updatedPosition }],
+        undefined,
+        [{ type: store[types.UPDATE_DISCUSSION_POSITION], payload: updatedPosition }],
         [],
       );
     });
@@ -1255,7 +1234,6 @@ describe.skip('Actions Notes Store', () => {
       addError: 'addError: Create error',
       addGenericError: 'addGenericError',
     };
-    const commitSpy = jest.fn();
 
     describe('for successful request', () => {
       const timelineEventSuccessResponse = {
@@ -1274,7 +1252,7 @@ describe.skip('Actions Notes Store', () => {
       });
 
       it('calls gqClient mutation with the correct values', () => {
-        actions.promoteCommentToTimelineEvent({ commit: () => {} }, actionArgs);
+        store.promoteCommentToTimelineEvent(actionArgs);
 
         expect(utils.gqClient.mutate).toHaveBeenCalledTimes(1);
         expect(utils.gqClient.mutate).toHaveBeenCalledWith({
@@ -1287,19 +1265,13 @@ describe.skip('Actions Notes Store', () => {
         });
       });
 
-      it('returns success response', () => {
+      it('returns success response', async () => {
         jest.spyOn(notesEventHub, '$emit').mockImplementation(() => {});
 
-        return actions.promoteCommentToTimelineEvent({ commit: commitSpy }, actionArgs).then(() => {
-          expect(notesEventHub.$emit).toHaveBeenLastCalledWith(
-            'comment-promoted-to-timeline-event',
-          );
-          expect(toast).toHaveBeenCalledWith('Comment added to the timeline.');
-          expect(commitSpy).toHaveBeenCalledWith(
-            mutationTypes.SET_PROMOTE_COMMENT_TO_TIMELINE_PROGRESS,
-            false,
-          );
-        });
+        await store.promoteCommentToTimelineEvent(actionArgs);
+        expect(notesEventHub.$emit).toHaveBeenLastCalledWith('comment-promoted-to-timeline-event');
+        expect(toast).toHaveBeenCalledWith('Comment added to the timeline.');
+        expect(store[types.SET_PROMOTE_COMMENT_TO_TIMELINE_PROGRESS]).toHaveBeenCalledWith(false);
       });
     });
 
@@ -1319,7 +1291,7 @@ describe.skip('Actions Notes Store', () => {
         ${false}   | ${'addError: Create error'} | ${false}     | ${null}
       `(
         'should show an error when submission fails',
-        ({ mockReject, message, captureError, error }) => {
+        async ({ mockReject, message, captureError, error }) => {
           const expectedAlertArgs = {
             captureError,
             error,
@@ -1331,15 +1303,9 @@ describe.skip('Actions Notes Store', () => {
             jest.spyOn(utils.gqClient, 'mutate').mockResolvedValue(errorResponse);
           }
 
-          return actions
-            .promoteCommentToTimelineEvent({ commit: commitSpy }, actionArgs)
-            .then(() => {
-              expect(createAlert).toHaveBeenCalledWith(expectedAlertArgs);
-              expect(commitSpy).toHaveBeenCalledWith(
-                mutationTypes.SET_PROMOTE_COMMENT_TO_TIMELINE_PROGRESS,
-                false,
-              );
-            });
+          await store.promoteCommentToTimelineEvent(actionArgs);
+          expect(createAlert).toHaveBeenCalledWith(expectedAlertArgs);
+          expect(store[types.SET_PROMOTE_COMMENT_TO_TIMELINE_PROGRESS]).toHaveBeenCalledWith(false);
         },
       );
     });
@@ -1348,10 +1314,10 @@ describe.skip('Actions Notes Store', () => {
   describe('setFetchingState', () => {
     it('commits SET_NOTES_FETCHING_STATE', () => {
       return testAction(
-        actions.setFetchingState,
+        store.setFetchingState,
         true,
         null,
-        [{ type: mutationTypes.SET_NOTES_FETCHING_STATE, payload: true }],
+        [{ type: store[types.SET_NOTES_FETCHING_STATE], payload: true }],
         [],
       );
     });
@@ -1361,28 +1327,29 @@ describe.skip('Actions Notes Store', () => {
     const discussion = { notes: [] };
 
     it('updates the discussions and dispatches `updateResolvableDiscussionsCounts`', () => {
-      axiosMock.onAny().reply(HTTP_STATUS_OK, { discussion });
+      axiosMock.onAny().reply(HTTP_STATUS_OK, [discussion]);
       return testAction(
-        actions.fetchDiscussions,
+        store.fetchDiscussions,
         {},
-        { noteableType: notesConstants.EPIC_NOTEABLE_TYPE },
+        undefined,
         [
-          { type: mutationTypes.ADD_OR_UPDATE_DISCUSSIONS, payload: { discussion } },
-          { type: mutationTypes.SET_FETCHING_DISCUSSIONS, payload: false },
+          { type: store[types.ADD_OR_UPDATE_DISCUSSIONS], payload: [discussion] },
+          { type: store[types.SET_FETCHING_DISCUSSIONS], payload: false },
         ],
-        [{ type: 'updateResolvableDiscussionsCounts' }],
+        [{ type: store.updateResolvableDiscussionsCounts }],
       );
     });
 
-    it('dispatches `fetchDiscussionsBatch` action with notes_filter 0 for merge request', () => {
-      return testAction(
-        actions.fetchDiscussions,
+    it('dispatches `fetchDiscussionsBatch` action with notes_filter 0 for merge request', async () => {
+      const mock = store.fetchDiscussionsBatch.mockReturnValueOnce(Promise.resolve());
+      await testAction(
+        store.fetchDiscussions,
         { path: 'test-path', filter: 'test-filter', persistFilter: 'test-persist-filter' },
-        { noteableType: notesConstants.MERGE_REQUEST_NOTEABLE_TYPE },
+        { noteableData: { merge_params: {} } },
         [],
         [
           {
-            type: 'fetchDiscussionsBatch',
+            type: mock,
             payload: {
               config: {
                 params: { notes_filter: 0, persist_filter: false },
@@ -1396,14 +1363,15 @@ describe.skip('Actions Notes Store', () => {
     });
 
     it('dispatches `fetchDiscussionsBatch` action if noteable is an Issue', () => {
+      const mock = store.fetchDiscussionsBatch.mockReturnValueOnce(Promise.resolve());
       return testAction(
-        actions.fetchDiscussions,
+        store.fetchDiscussions,
         { path: 'test-path', filter: 'test-filter', persistFilter: 'test-persist-filter' },
-        { noteableType: notesConstants.ISSUE_NOTEABLE_TYPE },
+        undefined,
         [],
         [
           {
-            type: 'fetchDiscussionsBatch',
+            type: mock,
             payload: {
               config: {
                 params: { notes_filter: 'test-filter', persist_filter: 'test-persist-filter' },
@@ -1417,14 +1385,15 @@ describe.skip('Actions Notes Store', () => {
     });
 
     it('dispatches `fetchDiscussionsBatch` action if noteable is a MergeRequest', () => {
+      const mock = store.fetchDiscussionsBatch.mockReturnValueOnce(Promise.resolve());
       return testAction(
-        actions.fetchDiscussions,
+        store.fetchDiscussions,
         { path: 'test-path', filter: 'test-filter', persistFilter: 'test-persist-filter' },
-        { noteableType: notesConstants.MERGE_REQUEST_NOTEABLE_TYPE },
+        { noteableData: { merge_params: {} } },
         [],
         [
           {
-            type: 'fetchDiscussionsBatch',
+            type: mock,
             payload: {
               config: {
                 params: { notes_filter: 0, persist_filter: false },
@@ -1448,30 +1417,35 @@ describe.skip('Actions Notes Store', () => {
     const actionPayload = { config, path: 'test-path', perPage: 20 };
 
     it('updates the discussions and dispatches `updateResolvableDiscussionsCounts if there are no headers', () => {
-      axiosMock.onAny().reply(HTTP_STATUS_OK, { discussion }, {});
+      axiosMock.onAny().reply(HTTP_STATUS_OK, [discussion], {});
       return testAction(
-        actions.fetchDiscussionsBatch,
+        store.fetchDiscussionsBatch,
         actionPayload,
         null,
         [
-          { type: mutationTypes.ADD_OR_UPDATE_DISCUSSIONS, payload: { discussion } },
-          { type: mutationTypes.SET_DONE_FETCHING_BATCH_DISCUSSIONS, payload: true },
-          { type: mutationTypes.SET_FETCHING_DISCUSSIONS, payload: false },
+          { type: store[types.ADD_OR_UPDATE_DISCUSSIONS], payload: [discussion] },
+          { type: store[types.SET_DONE_FETCHING_BATCH_DISCUSSIONS], payload: true },
+          { type: store[types.SET_FETCHING_DISCUSSIONS], payload: false },
         ],
-        [{ type: 'updateResolvableDiscussionsCounts' }],
+        [{ type: store.updateResolvableDiscussionsCounts }],
       );
     });
 
     it('dispatches itself if there is `x-next-page-cursor` header', () => {
-      axiosMock.onAny().reply(HTTP_STATUS_OK, { discussion }, { 'x-next-page-cursor': 1 });
+      axiosMock.onAny().replyOnce(HTTP_STATUS_OK, [discussion], { 'x-next-page-cursor': 1 });
+      axiosMock.onAny().replyOnce(HTTP_STATUS_OK, []);
       return testAction(
-        actions.fetchDiscussionsBatch,
+        store.fetchDiscussionsBatch,
         actionPayload,
         null,
-        [{ type: mutationTypes.ADD_OR_UPDATE_DISCUSSIONS, payload: { discussion } }],
+        [{ type: store[types.ADD_OR_UPDATE_DISCUSSIONS], payload: [discussion] }],
         [
           {
-            type: 'fetchDiscussionsBatch',
+            type: store.fetchDiscussionsBatch,
+            payload: actionPayload,
+          },
+          {
+            type: store.fetchDiscussionsBatch,
             payload: { ...actionPayload, perPage: 30, cursor: 1 },
           },
         ],
@@ -1482,10 +1456,10 @@ describe.skip('Actions Notes Store', () => {
   describe('toggleAllDiscussions', () => {
     it('commits SET_EXPAND_ALL_DISCUSSIONS', () => {
       return testAction(
-        actions.toggleAllDiscussions,
+        store.toggleAllDiscussions,
         undefined,
-        { allDiscussionsExpanded: false },
-        [{ type: mutationTypes.SET_EXPAND_ALL_DISCUSSIONS, payload: true }],
+        { discussions: [{ expanded: false }] },
+        [{ type: store[types.SET_EXPAND_ALL_DISCUSSIONS], payload: true }],
         [],
       );
     });

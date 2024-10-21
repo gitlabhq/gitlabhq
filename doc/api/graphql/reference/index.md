@@ -8368,6 +8368,45 @@ Input type: `ProjectSyncForkInput`
 | <a id="mutationprojectsyncforkdetails"></a>`details` | [`ForkDetails`](#forkdetails) | Updated fork details. |
 | <a id="mutationprojectsyncforkerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
+### `Mutation.projectTargetBranchRuleCreate`
+
+Input type: `ProjectTargetBranchRuleCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationprojecttargetbranchrulecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprojecttargetbranchrulecreatename"></a>`name` | [`String!`](#string) | Name for the target branch rule. |
+| <a id="mutationprojecttargetbranchrulecreateprojectid"></a>`projectId` | [`ProjectID!`](#projectid) | Project ID for the target branch rule. |
+| <a id="mutationprojecttargetbranchrulecreatetargetbranch"></a>`targetBranch` | [`String!`](#string) | Target branch for the target branch rule. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationprojecttargetbranchrulecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprojecttargetbranchrulecreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationprojecttargetbranchrulecreatetargetbranchrule"></a>`targetBranchRule` | [`ProjectTargetBranchRule`](#projecttargetbranchrule) | Target branch rule after mutation. |
+
+### `Mutation.projectTargetBranchRuleDestroy`
+
+Input type: `ProjectTargetBranchRuleDestroyInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationprojecttargetbranchruledestroyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprojecttargetbranchruledestroyid"></a>`id` | [`ProjectsTargetBranchRuleID!`](#projectstargetbranchruleid) | ID for the target branch rule. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationprojecttargetbranchruledestroyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprojecttargetbranchruledestroyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.projectTextReplace`
 
 DETAILS:
@@ -15749,6 +15788,30 @@ The edge type for [`ProjectSecurityExclusion`](#projectsecurityexclusion).
 | <a id="projectsecurityexclusionedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="projectsecurityexclusionedgenode"></a>`node` | [`ProjectSecurityExclusion`](#projectsecurityexclusion) | The item at the end of the edge. |
 
+#### `ProjectTargetBranchRuleConnection`
+
+The connection type for [`ProjectTargetBranchRule`](#projecttargetbranchrule).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projecttargetbranchruleconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
+| <a id="projecttargetbranchruleconnectionedges"></a>`edges` | [`[ProjectTargetBranchRuleEdge]`](#projecttargetbranchruleedge) | A list of edges. |
+| <a id="projecttargetbranchruleconnectionnodes"></a>`nodes` | [`[ProjectTargetBranchRule]`](#projecttargetbranchrule) | A list of nodes. |
+| <a id="projecttargetbranchruleconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `ProjectTargetBranchRuleEdge`
+
+The edge type for [`ProjectTargetBranchRule`](#projecttargetbranchrule).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projecttargetbranchruleedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="projecttargetbranchruleedgenode"></a>`node` | [`ProjectTargetBranchRule`](#projecttargetbranchrule) | The item at the end of the edge. |
+
 #### `ProjectWikiRepositoryRegistryConnection`
 
 The connection type for [`ProjectWikiRepositoryRegistry`](#projectwikirepositoryregistry).
@@ -19264,6 +19327,7 @@ Check user's permission for the car.
 | <a id="cicatalogresourcestarcount"></a>`starCount` | [`Int!`](#int) | Number of times the catalog resource has been starred. |
 | <a id="cicatalogresourcestarrerspath"></a>`starrersPath` | [`String`](#string) | Relative path to the starrers page for the catalog resource project. |
 | <a id="cicatalogresourceverificationlevel"></a>`verificationLevel` | [`CiCatalogResourceVerificationLevel`](#cicatalogresourceverificationlevel) | Verification level of the catalog resource. |
+| <a id="cicatalogresourcevisibilitylevel"></a>`visibilityLevel` | [`VisibilityLevelsEnum`](#visibilitylevelsenum) | Visibility level of the catalog resource. |
 | <a id="cicatalogresourcewebpath"></a>`webPath` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.1. **Status**: Experiment. Web path of the catalog resource. |
 
 #### Fields with arguments
@@ -30253,6 +30317,7 @@ Project-level settings for product analytics provider.
 | <a id="projectstatisticsdetailspaths"></a>`statisticsDetailsPaths` | [`ProjectStatisticsRedirect`](#projectstatisticsredirect) | Redirects for Statistics of the project. |
 | <a id="projectsuggestioncommitmessage"></a>`suggestionCommitMessage` | [`String`](#string) | Commit message used to apply merge request suggestions. |
 | <a id="projecttaglist"></a>`tagList` **{warning-solid}** | [`String`](#string) | **Deprecated** in GitLab 13.12. Use `topics`. |
+| <a id="projecttargetbranchrules"></a>`targetBranchRules` | [`ProjectTargetBranchRuleConnection`](#projecttargetbranchruleconnection) | Target branch rules of the project. (see [Connections](#connections)) |
 | <a id="projectterraformstates"></a>`terraformStates` | [`TerraformStateConnection`](#terraformstateconnection) | Terraform states associated with the project. (see [Connections](#connections)) |
 | <a id="projecttimelogcategories"></a>`timelogCategories` **{warning-solid}** | [`TimeTrackingTimelogCategoryConnection`](#timetrackingtimelogcategoryconnection) | **Introduced** in GitLab 15.3. **Status**: Experiment. Timelog categories for the project. |
 | <a id="projecttopics"></a>`topics` | [`[String!]`](#string) | List of project topics. |
@@ -32508,6 +32573,17 @@ Represents the source of a security policy belonging to a project.
 | <a id="projectstatisticsredirectrepository"></a>`repository` | [`String!`](#string) | Redirection Route for repository. |
 | <a id="projectstatisticsredirectsnippets"></a>`snippets` | [`String!`](#string) | Redirection Route for snippets. |
 | <a id="projectstatisticsredirectwiki"></a>`wiki` | [`String!`](#string) | Redirection Route for wiki. |
+
+### `ProjectTargetBranchRule`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projecttargetbranchrulecreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the target branch rule was created. |
+| <a id="projecttargetbranchruleid"></a>`id` | [`ProjectsTargetBranchRuleID!`](#projectstargetbranchruleid) | ID of the target branch rule. |
+| <a id="projecttargetbranchrulename"></a>`name` | [`String!`](#string) | Name of the target branch rule. |
+| <a id="projecttargetbranchruletargetbranch"></a>`targetBranch` | [`String!`](#string) | Target branch for the target branch rule. |
 
 ### `ProjectValueStreamAnalyticsFlowMetrics`
 
@@ -40931,6 +41007,12 @@ An example `ProjectsBranchRuleID` is: `"gid://gitlab/Projects::BranchRule/1"`.
 A `ProjectsSavedReplyID` is a global ID. It is encoded as a string.
 
 An example `ProjectsSavedReplyID` is: `"gid://gitlab/Projects::SavedReply/1"`.
+
+### `ProjectsTargetBranchRuleID`
+
+A `ProjectsTargetBranchRuleID` is a global ID. It is encoded as a string.
+
+An example `ProjectsTargetBranchRuleID` is: `"gid://gitlab/Projects::TargetBranchRule/1"`.
 
 ### `ReleaseID`
 
