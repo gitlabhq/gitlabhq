@@ -38,7 +38,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob,
       end
     end
 
-    it_behaves_like 'scheduling with deduplication class', 'UntilExecuting'
+    it_behaves_like 'scheduling with deduplication class', 'UntilExecuted'
 
     context 'when the deduplication depends on a FF' do
       before do
@@ -52,7 +52,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob,
           stub_feature_flags(my_feature_flag: true)
         end
 
-        it_behaves_like 'scheduling with deduplication class', 'UntilExecuting'
+        it_behaves_like 'scheduling with deduplication class', 'UntilExecuted'
       end
 
       context 'when the feature flag is disabled' do
@@ -68,7 +68,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob,
   describe '#perform' do
     it 'calls perform on the strategy' do
       expect do |block|
-        expect_next_instance_of(Gitlab::SidekiqMiddleware::DuplicateJobs::Strategies::UntilExecuting) do |strategy|
+        expect_next_instance_of(Gitlab::SidekiqMiddleware::DuplicateJobs::Strategies::UntilExecuted) do |strategy|
           expect(strategy).to receive(:perform).with(job, &block)
         end
 

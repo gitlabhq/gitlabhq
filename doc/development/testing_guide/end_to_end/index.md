@@ -272,7 +272,7 @@ and the section below.
 
 ### Running tests that require special setup
 
-Learn how to perform [tests that require special setup or consideration to run on your local environment](running_tests_that_require_special_setup.md).
+Learn how to perform [tests that require special setup or consideration to run on your local environment](running_tests/running_tests_that_require_special_setup.md).
 
 ## How do you write tests?
 

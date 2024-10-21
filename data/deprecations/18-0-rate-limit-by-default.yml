@@ -8,6 +8,7 @@
   # and a link to the deprecation issue
   reporter: joshlambert
   stage: systems
+  window: "1"
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/480914
   impact: low  # Can be one of: [critical, high, medium, low]
   scope: instance  # Can be one or a combination of: [instance, group, project]

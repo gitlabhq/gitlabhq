@@ -62,14 +62,14 @@ you to use.
    Wiki: Read and Write
    ```
 
-   ![Bitbucket OAuth settings page](img/bitbucket_oauth_settings_page.png)
+   ![Bitbucket OAuth settings page](img/bitbucket_oauth_settings_page_v8_15.png)
 
 1. Select **Save**.
 1. Select your newly created OAuth consumer, and you should now see a **Key** and
    **Secret** in the list of OAuth consumers. Keep this page open as you continue
    the configuration.
 
-   ![Bitbucket OAuth key](img/bitbucket_oauth_keys.png)
+   ![Bitbucket OAuth key](img/bitbucket_oauth_keys_v8_12.png)
 
 1. On your GitLab server, open the configuration file:
 

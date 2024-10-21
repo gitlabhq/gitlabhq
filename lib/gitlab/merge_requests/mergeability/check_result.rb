@@ -7,6 +7,7 @@ module Gitlab
         FAILED_STATUS = :failed
         INACTIVE_STATUS = :inactive
         WARNING_STATUS = :warning
+        CHECKING_STATUS = :checking
 
         attr_reader :status, :payload
 
@@ -20,6 +21,10 @@ module Gitlab
 
         def self.failed(payload: {})
           new(status: FAILED_STATUS, payload: default_payload.merge(**payload))
+        end
+
+        def self.checking(payload: {})
+          new(status: CHECKING_STATUS, payload: default_payload.merge(**payload))
         end
 
         def self.inactive(payload: {})
@@ -55,6 +60,14 @@ module Gitlab
 
         def success?
           status == SUCCESS_STATUS
+        end
+
+        def checking?
+          status == CHECKING_STATUS
+        end
+
+        def unsuccessful?
+          failed? || checking?
         end
       end
     end

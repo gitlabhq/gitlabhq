@@ -8,6 +8,7 @@
   # and a link to the deprecation issue
   reporter: dhershkovitch
   stage: verify
+  window: "2"
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/424417
   body: |  # (required) Don't change this line.
     The `previousStageJobsOrNeeds` field in GraphQL will be removed as it has been replaced by the `previousStageJobs` and `needs` fields.

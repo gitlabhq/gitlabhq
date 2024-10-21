@@ -13,6 +13,9 @@ module Gitlab
         # client - An instance of Gitlab::GithubImport::Client.
         # project - An instance of Project.
         def import(client, project)
+          # We don't import collaborators/members yet if the user mapping feature is enabled
+          return skip_to_next_stage(project) if import_settings(project).user_mapping_enabled?
+
           return skip_to_next_stage(project) if import_settings(project).disabled?(:collaborators_import) ||
             !has_push_access?(client, project.import_source)
 

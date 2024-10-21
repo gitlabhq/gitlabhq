@@ -38,7 +38,7 @@ Sign in to the AliCloud platform and create an application on it. AliCloud gener
    1. Select the **aliuid** and **profile** checkboxes.
    1. Select **OK**.
 
-   ![AliCloud OAuth scope](img/alicloud_scope.png)
+   ![AliCloud OAuth scope](img/alicloud_scope_v14_10.png)
 
 1. Create a secret in the application details page:
 

@@ -34,7 +34,7 @@ RSpec.shared_examples 'cloneable and moveable work item' do
   end
 
   it 'returns a new work item with the same attributes' do
-    new_work_item = service.execute
+    new_work_item = service.execute[:work_item]
 
     expect(new_work_item).to be_persisted
     expect(new_work_item).to have_attributes(original_work_item_attrs)
@@ -72,7 +72,7 @@ RSpec.shared_examples 'cloneable and moveable widget data' do
       end
 
       it 'clones and moves widget data' do
-        new_work_item = service.execute
+        new_work_item = service.execute[:work_item]
         widget_value = send(eval_value, new_work_item)
 
         if operations.include?(described_class)

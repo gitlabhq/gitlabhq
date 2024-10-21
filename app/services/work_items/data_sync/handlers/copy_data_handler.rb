@@ -49,6 +49,7 @@ module WorkItems
           # create the new work item
           ::WorkItems::DataSync::BaseCreateService.new(
             original_work_item: work_item,
+            operation: params[:operation],
             container: target_namespace,
             current_user: current_user,
             params: create_params
@@ -74,3 +75,5 @@ module WorkItems
     end
   end
 end
+
+WorkItems::DataSync::Handlers::CopyDataHandler.prepend_mod

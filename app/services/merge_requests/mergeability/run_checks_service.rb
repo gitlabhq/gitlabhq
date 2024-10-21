@@ -21,7 +21,7 @@ module MergeRequests
 
           result_hash << check_result
 
-          break result_hash if check_result.failed? && !execute_all
+          break result_hash if check_result.unsuccessful? && !execute_all
         end
 
         logger.commit
@@ -29,10 +29,10 @@ module MergeRequests
         return ServiceResponse.success(payload: { results: results }) if all_results_success?
 
         ServiceResponse.error(
-          message: 'Checks failed.',
+          message: 'Checks were not successful',
           payload: {
             results: results,
-            failed_check: failed_check
+            unsuccessful_check: unsuccessful_check
           }
         )
       end
@@ -65,13 +65,13 @@ module MergeRequests
       end
 
       def all_results_success?
-        results.none?(&:failed?)
+        results.none?(&:unsuccessful?)
       end
 
-      def failed_check
+      def unsuccessful_check
         # NOTE: the identifier could be string when we retrieve it from the cache
         # so let's make sure we always return symbols here.
-        results.find(&:failed?)&.payload&.fetch(:identifier)&.to_sym
+        results.find(&:unsuccessful?)&.payload&.fetch(:identifier)&.to_sym
       end
     end
   end

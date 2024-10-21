@@ -6,7 +6,7 @@ import { debounce, clamp } from 'lodash';
 import { InternalEvents } from '~/tracking';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
-import { sprintf } from '~/locale';
+import { s__, sprintf } from '~/locale';
 import {
   ARROW_DOWN_KEY,
   ARROW_UP_KEY,
@@ -52,7 +52,6 @@ import CommandPaletteItems from '../command_palette/command_palette_items.vue';
 import FakeSearchInput from '../command_palette/fake_search_input.vue';
 import {
   COMMON_HANDLES,
-  SEARCH_OR_COMMAND_MODE_PLACEHOLDER,
   COMMAND_HANDLE,
   USER_HANDLE,
   PROJECT_HANDLE,
@@ -79,7 +78,7 @@ export default {
     SEARCH_DESCRIBED_BY_WITH_RESULTS,
     SEARCH_DESCRIBED_BY_DEFAULT,
     SEARCH_DESCRIBED_BY_UPDATED,
-    SEARCH_OR_COMMAND_MODE_PLACEHOLDER,
+    SEARCH_OR_COMMAND_MODE_PLACEHOLDER: s__('GlobalSearch|Type to search...'),
     SEARCH_RESULTS_LOADING,
     MIN_SEARCH_TERM,
     COMMAND_PALETTE_TIP,

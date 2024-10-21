@@ -76,7 +76,7 @@ Install and configure the Jenkins plugin to authorize the connection to GitLab.
 1. Enter the GitLab server's URL in **GitLab host URL**.
 1. To test the connection, select **Test Connection**.
 
-   ![Jenkins plugin configuration](img/jenkins_gitlab_plugin_config.png)
+   ![Jenkins plugin configuration](img/jenkins_gitlab_plugin_config_v8_3.png)
 
 For more information, see
 [Jenkins-to-GitLab authentication](https://github.com/jenkinsci/gitlab-plugin#jenkins-to-gitlab-authentication).

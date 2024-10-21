@@ -11,12 +11,14 @@ DETAILS:
 **Offering:** Self-managed
 **Status:** Experiment
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9290) in GitLab 17.2. This feature is an [experiment](../../../policy/experiment-beta-support.md#experiment).
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9290) in GitLab 17.2 with [several feature flags](#feature-flags). Disabled by default. This feature is an [experiment](../../../policy/experiment-beta-support.md#experiment).
+> - Listing epics using the [GraphQL API](../../../api/graphql/reference/index.md) [introduced](https://gitlab.com/groups/gitlab-org/-/epics/12852) in GitLab 17.4.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/470685) in GitLab 17.6.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available.
-To make it available, an administrator can enable the feature flags listed in [Feature flags](#feature-flags).
-On GitLab.com and GitLab Dedicated, this feature is not available. This feature is available for testing, but not ready for production use.
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
 
 DISCLAIMER:
 This page contains information related to upcoming products, features, and functionality.
@@ -55,7 +57,7 @@ Because this is an experimental feature,
 
 ## Feedback
 
-If you run into any issue while trying out this change, you can use
+If you run into any issues while trying out this change, you can use
 [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/463598) to provide more details.
 
 ## Related topics

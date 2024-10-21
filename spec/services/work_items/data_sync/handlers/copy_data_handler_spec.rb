@@ -29,19 +29,32 @@ RSpec.describe WorkItems::DataSync::Handlers::CopyDataHandler, feature_category:
 
     before do
       allow(WorkItems::DataSync::BaseCreateService).to receive(:new).and_return(base_create_service)
-      allow(base_create_service).to receive(:execute)
     end
 
     it 'calls BaseCreateService with correct parameters' do
+      result = ServiceResponse.success(payload: { work_item: instance_double(WorkItem) })
+
+      allow(base_create_service).to receive(:execute)
+
       expect(WorkItems::DataSync::BaseCreateService).to receive(:new).with(
         original_work_item: work_item,
         container: target_namespace,
         current_user: current_user,
+        operation: anything,
         params: copy_data_handler.create_params
-      )
-      expect(base_create_service).to receive(:execute).with(skip_system_notes: true)
+      ).and_return(base_create_service)
+      expect(base_create_service).to receive(:execute).with(skip_system_notes: true).and_return(result)
+      allow(copy_data_handler).to receive(:maintaining_elasticsearch?).and_return(false)
 
       copy_data_handler.execute
+    end
+
+    context 'when BaseCreateService raises an error' do
+      it 'raises error' do
+        allow(base_create_service).to receive(:execute).and_raise("Some error")
+
+        expect { copy_data_handler.execute }.to raise_error("Some error")
+      end
     end
   end
 

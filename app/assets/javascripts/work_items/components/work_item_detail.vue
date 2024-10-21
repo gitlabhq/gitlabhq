@@ -418,6 +418,9 @@ export default {
         variables: { id: this.workItem.id, atVersion: null },
       };
     },
+    iid() {
+      return this.workItemIid || this.workItem.iid;
+    },
   },
   mounted() {
     if (this.modalWorkItemId) {
@@ -594,7 +597,7 @@ export default {
         variables: {
           files: this.filesToBeSaved,
           projectPath: this.fullPath,
-          iid: this.workItemIid,
+          iid: this.iid,
         },
         context: {
           hasUpload: true,
@@ -634,7 +637,7 @@ export default {
         cache,
         todos,
         fullPath: this.workItemFullPath,
-        iid: this.workItemIid,
+        iid: this.iid,
       });
     },
   },
@@ -663,7 +666,7 @@ export default {
       @deleteWorkItem="$emit('deleteWorkItem', { workItemType, workItemId: workItem.id })"
       @toggleWorkItemConfidentiality="toggleConfidentiality"
       @error="updateError = $event"
-      @promotedToObjective="$emit('promotedToObjective', workItemIid)"
+      @promotedToObjective="$emit('promotedToObjective', iid)"
       @toggleEditMode="enableEditMode"
       @workItemStateUpdated="$emit('workItemStateUpdated')"
       @toggleReportAbuseModal="toggleReportAbuseModal"
@@ -742,7 +745,7 @@ export default {
                 :subscribed-to-notifications="workItemNotificationsSubscribed"
                 :work-item-type="workItemType"
                 :work-item-type-id="workItemTypeId"
-                :work-item-iid="workItemIid"
+                :work-item-iid="iid"
                 :can-delete="canDelete"
                 :can-update="canUpdate"
                 :is-confidential="workItem.confidential"
@@ -758,7 +761,7 @@ export default {
                 @deleteWorkItem="$emit('deleteWorkItem', { workItemType, workItemId: workItem.id })"
                 @toggleWorkItemConfidentiality="toggleConfidentiality"
                 @error="updateError = $event"
-                @promotedToObjective="$emit('promotedToObjective', workItemIid)"
+                @promotedToObjective="$emit('promotedToObjective', iid)"
                 @workItemStateUpdated="$emit('workItemStateUpdated')"
                 @toggleReportAbuseModal="toggleReportAbuseModal"
               />
@@ -787,7 +790,7 @@ export default {
             <work-item-created-updated
               v-if="!editMode"
               :full-path="workItemFullPath"
-              :work-item-iid="workItemIid"
+              :work-item-iid="iid"
               :update-in-progress="updateInProgress"
             />
           </div>
@@ -812,7 +815,7 @@ export default {
                   :work-item-id="workItem.id"
                   :work-item-fullpath="workItemFullPath"
                   :award-emoji="workItemAwardEmoji.awardEmoji"
-                  :work-item-iid="workItemIid"
+                  :work-item-iid="iid"
                   @error="updateError = $event"
                   @emoji-updated="$emit('work-item-emoji-updated', $event)"
                 />
@@ -844,7 +847,7 @@ export default {
               v-if="hasDesignWidget"
               :class="{ 'gl-mt-0': isDrawer }"
               :work-item-id="workItem.id"
-              :work-item-iid="workItemIid"
+              :work-item-iid="iid"
               :upload-error="designUploadError"
               @dismissError="designUploadError = null"
             />
@@ -856,7 +859,7 @@ export default {
               :work-item-type="workItemType"
               :parent-work-item-type="workItem.workItemType.name"
               :work-item-id="workItem.id"
-              :work-item-iid="workItemIid"
+              :work-item-iid="iid"
               :can-update="canUpdate"
               :can-update-children="canUpdateChildren"
               :confidential="workItem.confidential"
@@ -869,7 +872,7 @@ export default {
               v-if="workItemLinkedItems"
               :is-group="isGroupWorkItem"
               :work-item-id="workItem.id"
-              :work-item-iid="workItemIid"
+              :work-item-iid="iid"
               :work-item-full-path="workItemFullPath"
               :work-item-type="workItem.workItemType.name"
               :can-admin-work-item-link="canAdminWorkItemLink"

@@ -30,6 +30,8 @@ RSpec.describe Gitlab::GithubImport::Importer::CollaboratorImporter, feature_cat
 
   describe '#execute' do
     before do
+      # We don't import collaborators/members if the user mapping feature is enabled
+      stub_feature_flags(github_user_mapping: false)
       allow_next_instance_of(Gitlab::GithubImport::UserFinder) do |finder|
         allow(finder).to receive(:find).with(github_user_id, user.username).and_return(user.id)
       end

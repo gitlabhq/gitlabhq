@@ -31,6 +31,7 @@ Lint/ConstantDefinitionInBlock:
     - 'lib/tasks/gitlab/db.rake'
     - 'lib/tasks/gitlab/db/validate_config.rake'
     - 'lib/tasks/gitlab/docs/compile_deprecations.rake'
+    - 'lib/tasks/gitlab/docs/compile_windows.rake'
     - 'lib/tasks/gitlab/graphql.rake'
     - 'lib/tasks/gitlab/refresh_project_statistics_build_artifacts_size.rake'
     - 'lib/tasks/gitlab/snippets.rake'

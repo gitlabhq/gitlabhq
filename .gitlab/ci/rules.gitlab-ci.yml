@@ -296,6 +296,7 @@
   - "data/deprecations/**/*"
   - "tooling/docs/**/*"
   - "lib/tasks/gitlab/docs/compile_deprecations.rake"
+  - "lib/tasks/gitlab/docs/compile_windows.rake"
 
 .nodejs-patterns: &nodejs-patterns
   - '{package.json,*/package.json,*/*/package.json}'

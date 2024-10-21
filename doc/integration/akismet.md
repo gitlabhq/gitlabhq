@@ -45,7 +45,7 @@ To use Akismet:
 1. Fill in the API key from step 3.
 1. Save the configuration.
 
-![Screenshot of Akismet settings](img/akismet_settings.png)
+![Screenshot of Akismet settings](img/akismet_settings_v8_5.png)
 
 ## Train the Akismet filter
 
@@ -61,12 +61,12 @@ From here you can review if entries are really spam. If one of them is not reall
 spam, you can use the **Submit as ham** button to tell Akismet that it falsely
 recognized an entry as spam.
 
-![Screenshot of spam logs](img/spam_log.png)
+![Screenshot of spam logs](img/spam_log_v8_11.png)
 
 If an entry that is actually spam was not recognized as such, you can also submit
 this information to Akismet. The **Submit as spam** button is only displayed
 to administrator users.
 
-![Screenshot of Issue](img/submit_issue.png)
+![Screenshot of Issue](img/submit_issue_v8_11.png)
 
 Training Akismet helps it to recognize spam more accurately in the future.

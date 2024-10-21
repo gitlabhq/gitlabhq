@@ -13736,9 +13736,6 @@ msgstr ""
 msgid "CommandPalette|Settings"
 msgstr ""
 
-msgid "CommandPalette|Type %{commandHandle} for command, %{userHandle} for user, %{projectHandle} for project, %{pathHandle} for project file, or perform generic search..."
-msgstr ""
-
 msgid "CommandPalette|command"
 msgstr ""
 
@@ -25502,6 +25499,9 @@ msgid "GlobalSearch|Type for new suggestions to appear below."
 msgstr ""
 
 msgid "GlobalSearch|Type to filter labels."
+msgstr ""
+
+msgid "GlobalSearch|Type to search..."
 msgstr ""
 
 msgid "GlobalSearch|Users"

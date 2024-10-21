@@ -165,19 +165,12 @@ RSpec.describe Members::DestroyService, feature_category: :groups_and_projects d
           # We need to account for other places involved in the Member deletion process that
           # uses ExclusiveLease.
 
-          # 1. `UpdateHighestRole` concern uses locks to peform work
+          # `UpdateHighestRole` concern uses locks to peform work
           # whenever a Member is committed, so that needs to be accounted for.
           lock_key_for_update_highest_role = "update_highest_role:#{member_to_delete.user_id}"
 
           expect(Gitlab::ExclusiveLease)
             .to receive(:new).with(lock_key_for_update_highest_role, timeout: 10.minutes.to_i).and_call_original
-
-          # 2. `Users::RefreshAuthorizedProjectsService` also uses locks to perform work,
-          # whenever a user's authorizations has to be refreshed, so that needs to be accounted for as well.
-          lock_key_for_authorizations_refresh = "refresh_authorized_projects:#{member_to_delete.user_id}"
-
-          expect(Gitlab::ExclusiveLease)
-            .to receive(:new).with(lock_key_for_authorizations_refresh, timeout: 1.minute.to_i).and_call_original
 
           # We do not use any locks for the member deletion process, from within this service.
           expect(Gitlab::ExclusiveLease)

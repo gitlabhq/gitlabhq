@@ -27,20 +27,32 @@ RSpec.describe WorkItems::DataSync::MoveService, feature_category: :team_plannin
     context 'when user cannot read original work item' do
       let(:current_user) { target_project_member }
 
-      it 'raises error' do
-        expect { service.execute }.to raise_error(
-          described_class::MoveError, 'Cannot move work item due to insufficient permissions!'
-        )
+      it 'does not raise error' do
+        expect { service.execute }.not_to raise_error
+      end
+
+      it 'returns error response' do
+        response = service.execute
+
+        expect(response.success?).to be false
+        expect(response.error?).to be true
+        expect(response.message).to eq('Cannot move work item due to insufficient permissions!')
       end
     end
 
     context 'when user cannot create work items in target namespace' do
       let(:current_user) { source_project_member }
 
-      it 'raises error' do
-        expect { service.execute }.to raise_error(
-          described_class::MoveError, 'Cannot move work item due to insufficient permissions!'
-        )
+      it 'does not raise error' do
+        expect { service.execute }.not_to raise_error
+      end
+
+      it 'returns error response' do
+        response = service.execute
+
+        expect(response.success?).to be false
+        expect(response.error?).to be true
+        expect(response.message).to eq('Cannot move work item due to insufficient permissions!')
       end
     end
   end
@@ -51,10 +63,16 @@ RSpec.describe WorkItems::DataSync::MoveService, feature_category: :team_plannin
     context 'when moving project level work item to a group' do
       let(:target_namespace) { group }
 
-      it 'raises error' do
-        expect { service.execute }.to raise_error(
-          described_class::MoveError, 'Cannot move work item between Projects and Groups.'
-        )
+      it 'does not raise error' do
+        expect { service.execute }.not_to raise_error
+      end
+
+      it 'returns error response' do
+        response = service.execute
+
+        expect(response.success?).to be false
+        expect(response.error?).to be true
+        expect(response.message).to eq('Cannot move work item between Projects and Groups.')
       end
     end
 
@@ -67,20 +85,32 @@ RSpec.describe WorkItems::DataSync::MoveService, feature_category: :team_plannin
         target_namespace.project.update!(pending_delete: false)
       end
 
-      it 'raises error' do
-        expect { service.execute }.to raise_error(
-          described_class::MoveError, 'Cannot move work item to target namespace as it is pending deletion.'
-        )
+      it 'does not raise error' do
+        expect { service.execute }.not_to raise_error
+      end
+
+      it 'returns error response' do
+        response = service.execute
+
+        expect(response.success?).to be false
+        expect(response.error?).to be true
+        expect(response.message).to eq('Cannot move work item to target namespace as it is pending deletion.')
       end
     end
 
     context 'when moving unsupported work item type' do
       let(:original_work_item) { task_work_item }
 
-      it 'raises error' do
-        expect { service.execute }.to raise_error(
-          described_class::MoveError, 'Cannot move work items of \'Task\' type.'
-        )
+      it 'does not raise error' do
+        expect { service.execute }.not_to raise_error
+      end
+
+      it 'returns error response' do
+        response = service.execute
+
+        expect(response.success?).to be false
+        expect(response.error?).to be true
+        expect(response.message).to eq('Cannot move work items of \'Task\' type.')
       end
     end
 
@@ -93,8 +123,16 @@ RSpec.describe WorkItems::DataSync::MoveService, feature_category: :team_plannin
         end
       end
 
-      it 'raises error' do
-        expect { service.execute }.to raise_error(described_class::MoveError, error_message)
+      it 'does not raise error' do
+        expect { service.execute }.not_to raise_error
+      end
+
+      it 'returns error response' do
+        response = service.execute
+
+        expect(response.success?).to be false
+        expect(response.error?).to be true
+        expect(response.message).to eq('Something went wrong')
       end
     end
 

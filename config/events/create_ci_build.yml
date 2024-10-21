@@ -1,5 +1,5 @@
 ---
-description: Tracks the number of Ci Builds created
+description: Tracks the number of CI Builds created
 internal_events: true
 action: create_ci_build
 identifiers:
