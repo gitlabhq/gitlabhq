@@ -207,7 +207,8 @@ RSpec.describe ApplicationRecord do
       let(:session) { Gitlab::Database::LoadBalancing::Session.new }
 
       before do
-        allow(::Gitlab::Database::LoadBalancing::Session).to receive(:current).and_return(session)
+        allow(::Gitlab::Database::LoadBalancing::SessionMap)
+          .to receive(:current).with(described_class.load_balancer).and_return(session)
         allow(session).to receive(:fallback_to_replicas_for_ambiguous_queries).and_yield
       end
 

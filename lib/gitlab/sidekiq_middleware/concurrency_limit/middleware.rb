@@ -45,6 +45,7 @@ module Gitlab
 
         def should_defer_schedule?
           return false if Feature.disabled?(:sidekiq_concurrency_limit_middleware, Feature.current_request, type: :ops)
+          return false if job['at'] # scheduled jobs can be later assessed on enqueue
           return false if resumed?
           return false if worker_limit == 0
 

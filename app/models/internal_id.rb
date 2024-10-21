@@ -191,7 +191,7 @@ class InternalId < ApplicationRecord
 
       # `init` computes the maximum based on actual records. We use the
       # primary to make sure we have up to date results
-      Gitlab::Database::LoadBalancing::Session.current.use_primary do
+      Gitlab::Database::LoadBalancing::SessionMap.current(subject.load_balancer).use_primary do
         instance = subject.is_a?(::Class) ? nil : subject
 
         init.call(instance, scope) || 0

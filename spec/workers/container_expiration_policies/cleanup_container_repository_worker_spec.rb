@@ -24,7 +24,12 @@ RSpec.describe ContainerExpirationPolicies::CleanupContainerRepositoryWorker, fe
         service_response = cleanup_service_response(repository: repository)
         expect(ContainerExpirationPolicies::CleanupService)
           .to receive(:new).with(repository).and_return(double(execute: service_response))
-        expect(Gitlab::Database::LoadBalancing::Session.current).to receive(:use_replicas_for_read_queries).and_call_original
+
+        expect(Gitlab::Database::LoadBalancing::SessionMap).to receive(:with_sessions).with([::ApplicationRecord, ::Ci::ApplicationRecord]).and_call_original
+        expect_next_instance_of(Gitlab::Database::LoadBalancing::ScopedSessions) do |inst|
+          expect(inst).to receive(:use_replicas_for_read_queries).and_call_original
+        end
+
         expect_log_extra_metadata(service_response: service_response)
         expect_log_info(project_id: project.id, container_repository_id: repository.id)
 

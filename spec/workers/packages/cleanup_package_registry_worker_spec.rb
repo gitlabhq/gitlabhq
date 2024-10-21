@@ -116,7 +116,12 @@ RSpec.describe Packages::CleanupPackageRegistryWorker, feature_category: :packag
 
       context 'with load balancing enabled', :db_load_balancing do
         it 'reads the count from the replica' do
-          expect(Gitlab::Database::LoadBalancing::Session.current).to receive(:use_replicas_for_read_queries).and_call_original
+          expect(Gitlab::Database::LoadBalancing::SessionMap).to receive(:with_sessions)
+            .with([Packages::PackageFile, Packages::Cleanup::Policy]).and_call_original
+
+          expect_next_instance_of(Gitlab::Database::LoadBalancing::ScopedSessions) do |inst|
+            expect(inst).to receive(:use_replicas_for_read_queries).and_call_original
+          end
 
           perform
         end

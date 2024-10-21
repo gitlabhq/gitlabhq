@@ -4,7 +4,7 @@ module Ci
   class BuildFinishedWorker # rubocop:disable Scalability/IdempotentWorker
     include ApplicationWorker
 
-    data_consistency :always
+    data_consistency :sticky, feature_flag: :sticky_build_finished_worker
 
     sidekiq_options retry: 3
     include PipelineQueue

@@ -58,7 +58,7 @@ module UseSqlFunctionForPrimaryKeyLookups
       return unless verification_arel.ast == arel.ast
 
       if table_name == "namespaces" && Feature.enabled?(:log_sql_function_namespace_lookups, Feature.current_request)
-        using_primary = Gitlab::Database::LoadBalancing::Session.current.use_primary?
+        using_primary = Gitlab::Database::LoadBalancing::SessionMap.current(load_balancer).use_primary?
         Gitlab::AppLogger.info(
           message: "Namespaces lookup using function",
           backtrace: caller,

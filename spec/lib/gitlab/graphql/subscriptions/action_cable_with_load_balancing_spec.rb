@@ -100,7 +100,12 @@ RSpec.describe Gitlab::Graphql::Subscriptions::ActionCableWithLoadBalancing, fea
 
     context 'when WAL locations are not present' do
       it 'uses the primary' do
-        expect(::Gitlab::Database::LoadBalancing::Session.current).to receive(:use_primary!)
+        expect(Gitlab::Database::LoadBalancing::SessionMap)
+          .to receive(:with_sessions).with(Gitlab::Database::LoadBalancing.base_models).and_call_original
+
+        expect_next_instance_of(Gitlab::Database::LoadBalancing::ScopedSessions) do |inst|
+          expect(inst).to receive(:use_primary!).and_call_original
+        end
 
         handle_event!(wal_locations: {})
       end
@@ -119,7 +124,8 @@ RSpec.describe Gitlab::Graphql::Subscriptions::ActionCableWithLoadBalancing, fea
       it 'does not use the primary' do
         stub_replica_available!(true)
 
-        expect(::Gitlab::Database::LoadBalancing::Session.current).not_to receive(:use_primary!)
+        expect(Gitlab::Database::LoadBalancing::SessionMap)
+          .not_to receive(:with_sessions).with(Gitlab::Database::LoadBalancing.base_models).and_call_original
 
         handle_event!
       end
@@ -129,7 +135,12 @@ RSpec.describe Gitlab::Graphql::Subscriptions::ActionCableWithLoadBalancing, fea
       it 'uses the primary' do
         stub_replica_available!(false)
 
-        expect(::Gitlab::Database::LoadBalancing::Session.current).to receive(:use_primary!)
+        expect(Gitlab::Database::LoadBalancing::SessionMap)
+          .to receive(:with_sessions).with(Gitlab::Database::LoadBalancing.base_models).and_call_original
+
+        expect_next_instance_of(Gitlab::Database::LoadBalancing::ScopedSessions) do |inst|
+          expect(inst).to receive(:use_primary!).and_call_original
+        end
 
         handle_event!
       end

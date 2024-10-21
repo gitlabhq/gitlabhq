@@ -13,7 +13,7 @@ module Gitlab
             inner.call
           ensure
             ::Gitlab::Database::LoadBalancing.release_hosts
-            ::Gitlab::Database::LoadBalancing::Session.clear_session
+            ::Gitlab::Database::LoadBalancing::SessionMap.clear_session
           end
         end
       end

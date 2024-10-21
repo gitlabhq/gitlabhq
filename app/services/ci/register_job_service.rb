@@ -144,7 +144,7 @@ module Ci
       # We want to reset a load balancing session to discard the side
       # effects of writes that could have happened prior to this moment.
       #
-      ::Gitlab::Database::LoadBalancing::Session.clear_session
+      ::Gitlab::Database::LoadBalancing::SessionMap.clear_session
 
       @metrics.observe_queue_time(:retrieve, @runner.runner_type) do
         queue_query_proc.call

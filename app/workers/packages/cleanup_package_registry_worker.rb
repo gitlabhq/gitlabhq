@@ -53,7 +53,9 @@ module Packages
     end
 
     def use_replica_if_available(&block)
-      ::Gitlab::Database::LoadBalancing::Session.current.use_replicas_for_read_queries(&block)
+      ::Gitlab::Database::LoadBalancing::SessionMap
+        .with_sessions([Packages::PackageFile, Packages::Cleanup::Policy])
+        .use_replicas_for_read_queries(&block)
     end
   end
 end

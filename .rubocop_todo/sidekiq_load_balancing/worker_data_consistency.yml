@@ -19,7 +19,6 @@ SidekiqLoadBalancing/WorkerDataConsistency:
     - 'app/workers/chaos/sleep_worker.rb'
     - 'app/workers/chat_notification_worker.rb'
     - 'app/workers/ci/archive_traces_cron_worker.rb'
-    - 'app/workers/ci/build_finished_worker.rb'
     - 'app/workers/ci/build_prepare_worker.rb'
     - 'app/workers/ci/build_schedule_worker.rb'
     - 'app/workers/ci/build_trace_chunk_flush_worker.rb'

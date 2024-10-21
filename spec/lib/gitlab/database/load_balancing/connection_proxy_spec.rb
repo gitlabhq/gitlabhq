@@ -39,7 +39,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::ConnectionProxy do
         arel = double(:arel, locked: true)
         session = Gitlab::Database::LoadBalancing::Session.new
 
-        allow(Gitlab::Database::LoadBalancing::Session).to receive(:current)
+        allow(Gitlab::Database::LoadBalancing::SessionMap).to receive(:current).with(load_balancer)
           .and_return(session)
 
         expect(session).to receive(:write!)
@@ -68,8 +68,8 @@ RSpec.describe Gitlab::Database::LoadBalancing::ConnectionProxy do
       it 'runs the query on the primary and sticks to it' do
         session = Gitlab::Database::LoadBalancing::Session.new
 
-        allow(Gitlab::Database::LoadBalancing::Session).to receive(:current)
-          .and_return(session)
+        allow(Gitlab::Database::LoadBalancing::SessionMap)
+          .to receive(:current).with(load_balancer).and_return(session)
 
         expect(session).to receive(:write!)
         expect(proxy).to receive(:write_using_load_balancer).with(name, 'foo')
@@ -96,8 +96,8 @@ RSpec.describe Gitlab::Database::LoadBalancing::ConnectionProxy do
         end
       end
 
-      allow(Gitlab::Database::LoadBalancing::Session).to receive(:current)
-        .and_return(session)
+      allow(Gitlab::Database::LoadBalancing::SessionMap)
+        .to receive(:current).with(model_class.load_balancer).and_return(session)
     end
 
     after do
@@ -137,8 +137,8 @@ RSpec.describe Gitlab::Database::LoadBalancing::ConnectionProxy do
     let(:session) { Gitlab::Database::LoadBalancing::Session.new }
 
     before do
-      allow(Gitlab::Database::LoadBalancing::Session).to receive(:current)
-        .and_return(session)
+      allow(Gitlab::Database::LoadBalancing::SessionMap)
+        .to receive(:current).with(load_balancer).and_return(session)
     end
 
     context 'session fallbacks ambiguous queries to replicas' do
@@ -231,7 +231,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::ConnectionProxy do
       let(:session) { double(:session) }
 
       before do
-        allow(Gitlab::Database::LoadBalancing::Session).to receive(:current)
+        allow(Gitlab::Database::LoadBalancing::SessionMap).to receive(:current).with(load_balancer)
           .and_return(session)
         allow(session).to receive(:fallback_to_replicas_for_ambiguous_queries?).and_return(true)
         allow(session).to receive(:use_primary?).and_return(false)
@@ -259,7 +259,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::ConnectionProxy do
     let(:connection) { double(:connection) }
 
     before do
-      allow(Gitlab::Database::LoadBalancing::Session).to receive(:current)
+      allow(Gitlab::Database::LoadBalancing::SessionMap).to receive(:current).with(load_balancer)
         .and_return(session)
     end
 
@@ -319,7 +319,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::ConnectionProxy do
     let(:connection) { double(:connection) }
 
     before do
-      allow(Gitlab::Database::LoadBalancing::Session).to receive(:current)
+      allow(Gitlab::Database::LoadBalancing::SessionMap).to receive(:current).with(load_balancer)
         .and_return(session)
     end
 

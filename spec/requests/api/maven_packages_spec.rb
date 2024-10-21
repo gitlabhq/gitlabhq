@@ -39,6 +39,10 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
   let(:version) { '1.0-SNAPSHOT' }
   let(:param_path) { "#{package_name}/#{version}" }
 
+  before do
+    Gitlab::Database::LoadBalancing::SessionMap.clear_session
+  end
+
   shared_examples 'handling groups and subgroups for' do |shared_example_name, shared_example_args = {}, visibilities: { public: :redirect }|
     context 'within a group' do
       visibilities.each do |visibility, not_found_response|
@@ -1317,11 +1321,11 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
       end
 
       def expect_use_primary
-        lb_session = ::Gitlab::Database::LoadBalancing::Session.current
+        lb_session = ::Gitlab::Database::LoadBalancing::SessionMap.current(ApplicationRecord.load_balancer)
 
         expect(lb_session).to receive(:use_primary).and_call_original
 
-        allow(::Gitlab::Database::LoadBalancing::Session).to receive(:current).and_return(lb_session)
+        allow(::Gitlab::Database::LoadBalancing::SessionMap).to receive(:current).and_return(lb_session)
       end
     end
 

@@ -18,8 +18,9 @@ module PersonalAccessTokens
       # would be updated when using #touch).
       return unless update?
 
+      lb = @personal_access_token.load_balancer
       try_obtain_lease do
-        ::Gitlab::Database::LoadBalancing::Session.without_sticky_writes do
+        ::Gitlab::Database::LoadBalancing::SessionMap.current(lb).without_sticky_writes do
           @personal_access_token.update_column(:last_used_at, Time.zone.now)
         end
       end
