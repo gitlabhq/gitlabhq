@@ -628,7 +628,87 @@ Example response:
 }
 ```
 
-### Compute quota provisioning
+### Compute Minutes provisioning
+
+The compute minutes endpoints are used by [CustomersDot](https://gitlab.com/gitlab-org/customers-gitlab-com) (`customers.gitlab.com`)
+to apply additional packs of compute minutes, for personal namespaces or top-level groups in GitLab.com.
+
+#### Create an additional pack
+
+Use a POST command to create additional packs.
+
+```plaintext
+POST /internal/gitlab_subscriptions/namespaces/:id/minutes
+```
+
+| Attribute   | Type    | Required | Description |
+|:------------|:--------|:---------|:------------|
+| `packs`     | array   | yes      | An array of purchased compute packs |
+| `packs[expires_at]` | date   | yes      | Expiry date of the purchased pack|
+| `packs[number_of_minutes]`  | integer    | yes       | Number of additional compute minutes |
+| `packs[purchase_xid]` | string  | yes       | The unique ID of the purchase |
+
+Example request:
+
+```shell
+curl --request POST \
+  --url "http://localhost:3000/api/v4/internal/gitlab_subscriptions/namespaces/123/minutes" \
+  --header 'Content-Type: application/json' \
+  --header 'X-CUSTOMERS-DOT-INTERNAL-TOKEN: <json-web-token>' \
+  --data '{
+    "packs": [
+      {
+        "number_of_minutes": 10000,
+        "expires_at": "2022-01-01",
+        "purchase_xid": "C-00123456"
+      }
+    ]
+  }'
+```
+
+Example response:
+
+```json
+[
+  {
+    "namespace_id": 123,
+    "expires_at": "2022-01-01",
+    "number_of_minutes": 10000,
+    "purchase_xid": "C-00123456"
+  }
+]
+```
+
+#### Move additional packs
+
+Use a `PATCH` command to move additional packs from one namespace to another.
+
+```plaintext
+PATCH /internal/gitlab_subscriptions/namespaces/:id/minutes/move/:target_id
+```
+
+| Attribute   | Type    | Required | Description |
+|:------------|:--------|:---------|:------------|
+| `id` | string | yes | The ID of the namespace to transfer packs from |
+| `target_id`  | string | yes | The ID of the target namespace to transfer the packs to |
+
+Example request:
+
+```shell
+curl --request PATCH \
+  --url "http://localhost:3000/api/v4/internal/gitlab_subscriptions/namespaces/123/minutes/move/321" \
+  --header "X-CUSTOMERS-DOT-INTERNAL-TOKEN: <json-web-token>"
+```
+
+Example response:
+
+```json
+{
+  "message": "202 Accepted"
+}
+```
+
+### Compute quota provisioning (being migrated)
 
 > - [Renamed](https://gitlab.com/groups/gitlab-com/-/epics/2150) from "CI/CD minutes" to "compute quota" and "compute minutes" in GitLab 16.1.
 

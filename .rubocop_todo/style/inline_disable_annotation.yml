@@ -1493,7 +1493,6 @@ Style/InlineDisableAnnotation:
     - 'ee/app/workers/geo/bulk_mark_pending_batch_worker.rb'
     - 'ee/app/workers/geo/bulk_mark_verification_pending_batch_worker.rb'
     - 'ee/app/workers/geo/container_repository_sync_worker.rb'
-    - 'ee/app/workers/geo/file_removal_worker.rb'
     - 'ee/app/workers/geo/hashed_storage_attachments_migration_worker.rb'
     - 'ee/app/workers/geo/metrics_update_worker.rb'
     - 'ee/app/workers/geo/prune_event_log_worker.rb'

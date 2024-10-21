@@ -26,16 +26,6 @@
   }
 }
 
-.md-header-tab {
-  @include media-breakpoint-down(xs) {
-    flex: 1;
-    flex-direction: column;
-    width: 100%;
-    border-bottom: 1px solid $border-color;
-    text-align: center;
-  }
-}
-
 .nav-links {
   li.md-header-toolbar {
     margin-left: auto;

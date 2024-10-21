@@ -1,0 +1,18 @@
+---
+description: Tracks when a user successfully updates the milestone for a work item.
+action: updated_milestone
+product_group: project_management
+milestone: '16.8'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140636
+distributions:
+  - ce
+  - ee
+tiers:
+  - free
+  - premium
+  - ultimate
+additional_properties:
+  label:
+    description: hardcoded value item_milestone
+  property:
+    description: type of work item

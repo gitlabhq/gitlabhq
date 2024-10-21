@@ -1,6 +1,6 @@
 import { produce } from 'immer';
 import VueApollo from 'vue-apollo';
-import { isEmpty } from 'lodash';
+import { isEmpty, map, pick, isEqual } from 'lodash';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
 import { issuesListClient } from '~/issues/list';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
@@ -322,7 +322,7 @@ export const setNewWorkItemCache = async (
   }
 
   const workItemTitleCase = convertEachWordToTitleCase(workItemType.split('_').join(' '));
-  const availableWidgets = widgetDefinitions?.flatMap((i) => i.type);
+  const availableWidgets = widgetDefinitions?.flatMap((i) => i.type) || [];
   const currentUserId = convertToGraphQLId(TYPENAME_USER, gon?.current_user_id);
   const baseURL = getBaseURL();
 
@@ -522,8 +522,21 @@ export const setNewWorkItemCache = async (
 
   const draftData = JSON.parse(getDraft(autosaveKey));
 
+  // get the widgets stored in draft data
+  const draftDataWidgets = map(draftData?.workspace?.workItem?.widgets, pick('type')) || [];
+
+  // this is to fix errors when we are introducing a new widget and the cache always updates from the old widgets
+  // Like if we we introduce a new widget , the user might always see the cached data until hits cancel
+  const draftWidgetsAreSameAsCacheDigits = isEqual(
+    draftDataWidgets.sort(),
+    availableWidgets.sort(),
+  );
+
   const isValidDraftData =
-    !isEmpty(draftData) && getStorageDraftString && draftData?.workspace?.workItem;
+    draftData?.workspace?.workItem &&
+    getStorageDraftString &&
+    draftData?.workspace?.workItem &&
+    isEmpty(draftWidgetsAreSameAsCacheDigits);
 
   /** check in case of someone plays with the localstorage, we need to be sure */
   if (!isValidDraftData) {

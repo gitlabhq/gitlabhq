@@ -133,14 +133,14 @@ To configure your workspace to use the user namespaces feature in Kubernetes:
 
 Prerequisites:
 
-- SSH access must be enabled for the images specified in your [`devfile`](index.md#devfile).
+- You must enable SSH access for the images specified in your [devfile](index.md#devfile).
   For more information, see [update your workspace container image](#update-your-workspace-container-image).
-- A TCP load balancer must be configured that points to the GitLab workspaces proxy.
+- You must configure a TCP load balancer that points to the GitLab workspaces proxy.
   For more information, see [update your DNS records](set_up_workspaces_proxy.md#update-your-dns-records).
 
 To connect to a workspace with an SSH client:
 
-1. Get your `gitlab-workspaces-proxy-ssh` service external IP address:
+1. Get the external IP address of your `gitlab-workspaces-proxy-ssh` service:
 
    ```shell
    kubectl -n gitlab-workspaces get service gitlab-workspaces-proxy-ssh

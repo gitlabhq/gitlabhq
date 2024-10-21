@@ -4,49 +4,53 @@ require 'spec_helper'
 
 RSpec.describe Ci::PipelineMessage, feature_category: :continuous_integration do
   describe 'validations' do
-    subject { described_class.new(pipeline: pipeline, content: content) }
+    it { is_expected.to validate_presence_of(:project_id) }
 
-    let(:pipeline) { create(:ci_pipeline) }
+    describe 'for content' do
+      subject { described_class.new(pipeline: pipeline, content: content, project_id: pipeline.project_id) }
 
-    context 'when message content is longer than the limit' do
-      let(:content) { 'x' * (described_class::MAX_CONTENT_LENGTH + 1) }
+      let_it_be(:pipeline) { create(:ci_pipeline) }
 
-      it 'is truncated with ellipsis' do
-        subject.save!
+      context 'when message content is longer than the limit' do
+        let(:content) { 'x' * (described_class::MAX_CONTENT_LENGTH + 1) }
 
-        expect(subject.content).to end_with('x...')
-        expect(subject.content.length).to eq(described_class::MAX_CONTENT_LENGTH)
-      end
-    end
+        it 'is truncated with ellipsis' do
+          subject.save!
 
-    context 'when message is not present' do
-      let(:content) { '' }
-
-      it 'returns an error' do
-        expect(subject.save).to be_falsey
-        expect(subject.errors[:content]).to be_present
-      end
-    end
-
-    context 'when message content is valid' do
-      let(:content) { 'valid message content' }
-
-      it 'is saved with default error severity' do
-        subject.save!
-
-        expect(subject.content).to eq(content)
-        expect(subject.severity).to eq('error')
-        expect(subject).to be_error
+          expect(subject.content).to end_with('x...')
+          expect(subject.content.length).to eq(described_class::MAX_CONTENT_LENGTH)
+        end
       end
 
-      it 'is persist the defined severity' do
-        subject.severity = :warning
+      context 'when message is not present' do
+        let(:content) { '' }
 
-        subject.save!
+        it 'returns an error' do
+          expect(subject.save).to be_falsey
+          expect(subject.errors[:content]).to be_present
+        end
+      end
 
-        expect(subject.content).to eq(content)
-        expect(subject.severity).to eq('warning')
-        expect(subject).to be_warning
+      context 'when message content is valid' do
+        let(:content) { 'valid message content' }
+
+        it 'is saved with default error severity' do
+          subject.save!
+
+          expect(subject.content).to eq(content)
+          expect(subject.severity).to eq('error')
+          expect(subject).to be_error
+        end
+
+        it 'is persist the defined severity' do
+          subject.severity = :warning
+
+          subject.save!
+
+          expect(subject.content).to eq(content)
+          expect(subject.severity).to eq('warning')
+          expect(subject).to be_warning
+        end
       end
     end
   end

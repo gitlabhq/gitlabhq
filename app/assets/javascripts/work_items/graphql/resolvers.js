@@ -13,24 +13,17 @@ import {
   WIDGET_TYPE_DESCRIPTION,
   WIDGET_TYPE_CRM_CONTACTS,
   NEW_WORK_ITEM_IID,
-  CLEAR_VALUE,
 } from '../constants';
 import workItemByIidQuery from './work_item_by_iid.query.graphql';
 
 // eslint-disable-next-line max-params
 const updateWidget = (draftData, widgetType, newData, nodePath) => {
-  if (!newData) return;
+  /** set all other values other than when it is undefined including null/0 or empty array as well */
+  /** we have to make sure we do not pass values when custom types are introduced */
+  if (newData === undefined) return;
 
   const widget = findWidget(widgetType, draftData.workspace.workItem);
   set(widget, nodePath, newData);
-};
-
-const updateHealthStatusWidget = (draftData, healthStatus) => {
-  if (!healthStatus) return;
-
-  const newValue = healthStatus === CLEAR_VALUE ? null : healthStatus;
-  const widget = findWidget(WIDGET_TYPE_HEALTH_STATUS, draftData.workspace.workItem);
-  set(widget, 'healthStatus', newValue);
 };
 
 const updateRolledUpDatesWidget = (draftData, rolledUpDates) => {
@@ -104,6 +97,11 @@ export const updateNewWorkItemCache = (input, cache) => {
           newData: description,
           nodePath: 'description',
         },
+        {
+          widgetType: WIDGET_TYPE_HEALTH_STATUS,
+          newData: healthStatus,
+          nodePath: 'healthStatus',
+        },
       ];
 
       widgetUpdates.forEach(({ widgetType, newData, nodePath }) => {
@@ -111,7 +109,6 @@ export const updateNewWorkItemCache = (input, cache) => {
       });
 
       updateRolledUpDatesWidget(draftData, rolledUpDates);
-      updateHealthStatusWidget(draftData, healthStatus);
 
       if (title) draftData.workspace.workItem.title = title;
       if (confidential !== undefined) draftData.workspace.workItem.confidential = confidential;

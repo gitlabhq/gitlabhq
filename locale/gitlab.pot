@@ -16153,10 +16153,7 @@ msgstr ""
 msgid "Couldn't find event type filters where audit event type(s): %{missing_filters}"
 msgstr ""
 
-msgid "Couldn't link %{issuable}. You must have at least the Reporter role in both projects."
-msgstr ""
-
-msgid "Couldn't link epics. You must have at least the Guest role in the epic's group."
+msgid "Couldn't link %{issuables}. You must have at least the Guest role in both %{issuable}'s %{projects_or_groups}."
 msgstr ""
 
 msgid "Couldn't link issues. You must have at least the Guest role in both projects."
@@ -31142,9 +31139,6 @@ msgid "Job|Full log viewer"
 msgstr ""
 
 msgid "Job|Full screen mode is not available"
-msgstr ""
-
-msgid "Job|Give feedback"
 msgstr ""
 
 msgid "Job|Job artifacts"

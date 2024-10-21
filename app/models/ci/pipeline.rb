@@ -1430,7 +1430,7 @@ module Ci
     private
 
     def add_message(severity, content)
-      messages.build(severity: severity, content: content)
+      messages.build(severity: severity, content: content, project_id: project_id)
     end
 
     def merge_request_diff_sha

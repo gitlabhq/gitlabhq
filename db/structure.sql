@@ -8847,6 +8847,7 @@ CREATE TABLE ci_pipeline_messages (
     content text NOT NULL,
     pipeline_id bigint NOT NULL,
     partition_id bigint NOT NULL,
+    project_id bigint,
     CONSTRAINT check_58ca2981b2 CHECK ((char_length(content) <= 10000))
 );
 

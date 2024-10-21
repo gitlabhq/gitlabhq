@@ -26126,6 +26126,28 @@ Represents an SSH key.
 | <a id="keytitle"></a>`title` | [`String!`](#string) | Title of the key. |
 | <a id="keyweburl"></a>`webUrl` | [`String`](#string) | URL of this object. |
 
+### `KubernetesAnnotation`
+
+Annotation to apply to associated Kubernetes objects of a workspace.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="kubernetesannotationkey"></a>`key` | [`String!`](#string) | Key of the annotation. |
+| <a id="kubernetesannotationvalue"></a>`value` | [`String!`](#string) | Value of the annotation. |
+
+### `KubernetesLabel`
+
+Label to apply to associated Kubernetes objects of a workspace.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="kuberneteslabelkey"></a>`key` | [`String!`](#string) | Key of the label. |
+| <a id="kuberneteslabelvalue"></a>`value` | [`String!`](#string) | Value of the label. |
+
 ### `Label`
 
 #### Fields
@@ -36415,17 +36437,22 @@ Represents a workspaces agent config.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="workspacesagentconfigallowprivilegeescalation"></a>`allowPrivilegeEscalation` | [`Boolean!`](#boolean) | Allow privilege escalation. |
+| <a id="workspacesagentconfigannotations"></a>`annotations` | [`[KubernetesAnnotation!]!`](#kubernetesannotation) | Annotations to apply to Kubernetes objects. |
 | <a id="workspacesagentconfigclusteragent"></a>`clusterAgent` | [`ClusterAgent!`](#clusteragent) | Cluster agent that the workspaces agent config belongs to. |
 | <a id="workspacesagentconfigcreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the workspaces agent config was created. |
 | <a id="workspacesagentconfigdefaultmaxhoursbeforetermination"></a>`defaultMaxHoursBeforeTermination` | [`Int!`](#int) | Default max hours before worksapce termination of the workspaces agent config. |
+| <a id="workspacesagentconfigdefaultruntimeclass"></a>`defaultRuntimeClass` | [`String!`](#string) | Default Kubernetes RuntimeClass. |
 | <a id="workspacesagentconfigdnszone"></a>`dnsZone` | [`String!`](#string) | DNS zone where workspaces are available. |
 | <a id="workspacesagentconfigenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether remote development is enabled for the GitLab agent. |
 | <a id="workspacesagentconfiggitlabworkspacesproxynamespace"></a>`gitlabWorkspacesProxyNamespace` | [`String!`](#string) | Namespace where gitlab-workspaces-proxy is installed. |
 | <a id="workspacesagentconfigid"></a>`id` | [`RemoteDevelopmentWorkspacesAgentConfigID!`](#remotedevelopmentworkspacesagentconfigid) | Global ID of the workspaces agent config. |
+| <a id="workspacesagentconfiglabels"></a>`labels` | [`[KubernetesLabel!]!`](#kuberneteslabel) | Labels to apply to Kubernetes objects. |
 | <a id="workspacesagentconfigmaxhoursbeforeterminationlimit"></a>`maxHoursBeforeTerminationLimit` | [`Int!`](#int) | Max hours before worksapce termination limit of the workspaces agent config. |
 | <a id="workspacesagentconfignetworkpolicyenabled"></a>`networkPolicyEnabled` | [`Boolean!`](#boolean) | Whether the network policy of the workspaces agent config is enabled. |
 | <a id="workspacesagentconfigprojectid"></a>`projectId` | [`ID`](#id) | ID of the project that the workspaces agent config belongs to. |
 | <a id="workspacesagentconfigupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of the last update to any mutable workspaces agent config property. |
+| <a id="workspacesagentconfigusekubernetesusernamespaces"></a>`useKubernetesUserNamespaces` | [`Boolean!`](#boolean) | Indicates whether to use user namespaces in Kubernetes. |
 | <a id="workspacesagentconfigworkspacesperuserquota"></a>`workspacesPerUserQuota` | [`Int!`](#int) | Maximum number of workspaces per user. |
 | <a id="workspacesagentconfigworkspacesquota"></a>`workspacesQuota` | [`Int!`](#int) | Maximum number of workspaces for the GitLab agent. |
 

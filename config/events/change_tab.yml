@@ -1,0 +1,18 @@
+---
+description: Tracks when a user switches between different tabs in the clusters section.
+action: change_tab
+product_group: environments
+milestone: '14.6'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75223
+distributions:
+  - ce
+  - ee
+tiers:
+  - free
+  - premium
+  - ultimate
+additional_properties:
+  label:
+    description: hardcoded value kubernetes_section_tabs
+  property:
+    description: name of the tab

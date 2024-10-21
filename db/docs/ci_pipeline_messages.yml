@@ -8,4 +8,14 @@ description: TODO
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/33762
 milestone: '13.2'
 gitlab_schema: gitlab_ci
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/458483
+desired_sharding_key:
+  project_id:
+    references: projects
+    backfill_via:
+      parent:
+        foreign_key: pipeline_id
+        table: p_ci_pipelines
+        sharding_key: project_id
+        belongs_to: pipeline
+        foreign_key_name: fk_rails_8d3b04e3e1_p
+desired_sharding_key_migration_job_name: BackfillCiPipelineMessagesProjectId

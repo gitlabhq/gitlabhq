@@ -16,6 +16,9 @@ jest.mock('~/ci/job_log_viewer/lib/generate_stream');
 jest.mock('~/lib/utils/common_utils');
 
 const mockLog = [{ content: [{ text: 'line' }], sections: [] }];
+const mockLogWithTimestamp = [
+  { content: [{ text: 'line' }], sections: [], timestamp: '2024-10-16T20:27:04.773359Z' },
+];
 
 describe('LogViewerApp', () => {
   let wrapper;
@@ -31,6 +34,7 @@ describe('LogViewerApp', () => {
 
   const findLogViewerTopBar = () => wrapper.findComponent(LogViewerTopBar);
   const findLogViewer = () => wrapper.findComponent(LogViewer);
+  const findUtcHint = () => wrapper.findByTestId('utc-hint');
 
   beforeEach(() => {
     stubPerformanceWebAPI();
@@ -87,5 +91,24 @@ describe('LogViewerApp', () => {
       error,
     });
     expect(findLogViewer().props()).toEqual({ loading: false, log: [] });
+  });
+
+  describe('UTC hint', () => {
+    it.each`
+      log                     | condition                         | expectation       | expectedValue
+      ${mockLogWithTimestamp} | ${'log has timestamps'}           | ${'is shown'}     | ${true}
+      ${mockLog}              | ${'log does not have timestamps'} | ${'is not shown'} | ${false}
+    `('$expectation when $condition', async ({ log, expectedValue }) => {
+      fetchLogLines.mockResolvedValue(log);
+
+      createWrapper({
+        mountFn: mountExtended,
+        attachTo: document.body,
+      });
+
+      await waitForPromises();
+
+      expect(findUtcHint().exists()).toBe(expectedValue);
+    });
   });
 });

@@ -94,9 +94,9 @@ describe('Abuse Report Note', () => {
 
   describe('Editing', () => {
     // this should be changed: https://gitlab.com/gitlab-org/gitlab/-/issues/481897
-    it('should not show edit button', () => {
+    it('should show edit button', () => {
       expect(findNoteActions().props()).toMatchObject({
-        showEditButton: false,
+        showEditButton: true,
       });
     });
 

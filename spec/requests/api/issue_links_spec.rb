@@ -88,7 +88,7 @@ RSpec.describe API::IssueLinks, feature_category: :team_planning do
       end
 
       context 'when user does not have access to given issue' do
-        it 'returns 404' do
+        it 'returns 403' do
           perform_request(non_member, params: { target_project_id: project.id, target_issue_iid: target_issue.iid })
 
           expect(response).to have_gitlab_http_status(:forbidden)

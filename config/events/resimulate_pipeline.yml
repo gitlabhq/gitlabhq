@@ -1,0 +1,16 @@
+---
+description: Tracks the re-validation of the pipeline after the configuration has changed.
+action: resimulate_pipeline
+product_group: pipeline_authoring
+milestone: '15.3'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95141
+distributions:
+  - ce
+  - ee
+tiers:
+  - free
+  - premium
+  - ultimate
+additional_properties:
+  label:
+    description: pipeline_editor

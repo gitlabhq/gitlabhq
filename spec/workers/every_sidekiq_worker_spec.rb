@@ -237,7 +237,6 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'Geo::ContainerRepositorySyncWorker' => 1,
         'Geo::DestroyWorker' => 3,
         'Geo::EventWorker' => 3,
-        'Geo::FileRemovalWorker' => 3,
         'Geo::ReverificationBatchWorker' => 0,
         'Geo::BulkMarkPendingBatchWorker' => 0,
         'Geo::BulkMarkVerificationPendingBatchWorker' => 0,

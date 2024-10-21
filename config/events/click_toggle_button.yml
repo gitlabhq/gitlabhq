@@ -1,0 +1,18 @@
+---
+description: Tracks when the user clicks to toggle the move card position option.
+action: click_toggle_button
+product_group: project_management
+milestone: '15.3'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93669
+distributions:
+  - ce
+  - ee
+tiers:
+  - free
+  - premium
+  - ultimate
+additional_properties:
+  label:
+    description: variation of the action, such as 'move_to_start', 'move_to_end' or 'toggle_list', to differentiate between similar user interactions.
+  property:
+    description: State of button. Either `collapsed` or `expanded`

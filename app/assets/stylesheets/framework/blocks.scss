@@ -74,10 +74,6 @@
   }
 }
 
-.content-block-small {
-  padding: 4px 0;
-}
-
 .landing {
   margin: $gl-padding auto;
   overflow: hidden;
@@ -92,29 +88,8 @@
     align-self: center;
   }
 
-  .inner-content {
-    text-align: left;
-    white-space: nowrap;
-
-    h4 {
-      @apply gl-text-heading;
-      font-size: 17px;
-    }
-
-    p {
-      @apply gl-text-default;
-      margin-bottom: $gl-padding;
-    }
-  }
-
   @include media-breakpoint-down(sm) {
     flex-direction: column;
-
-    .inner-content {
-      white-space: normal;
-      padding: 0 28px;
-      text-align: center;
-    }
   }
 }
 

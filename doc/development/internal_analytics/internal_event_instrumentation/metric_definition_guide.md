@@ -64,6 +64,9 @@ distribution:
 tier:
 - premium
 - ultimate
+tiers:
+- premium
+- ultimate
 performance_indicator_type: []
 milestone: "<13.9"
 ```
@@ -89,6 +92,8 @@ data_category: optional
 distribution:
   - ee
 tier:
+  - ultimate
+tiers:
   - ultimate
 time_frame: 7d
 events:
@@ -117,6 +122,8 @@ data_category: optional
 distribution:
 - ee
 tier:
+- ultimate
+tiers:
 - ultimate
 events:
 - name: exclude_anonymised_users
