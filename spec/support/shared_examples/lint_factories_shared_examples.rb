@@ -253,7 +253,6 @@ RSpec.shared_examples 'Lint factories' do |with_factory_defaults, without_factor
 
   shared_context 'with stubbed storage' do
     before do
-      stub_composer_cache_object_storage # [:composer_cache_file, :object_storage]
       stub_package_file_object_storage # [:package_file, :object_storage]
       debian_component_file_object_storage # [:debian_project_component_file, :object_storage]
       debian_distribution_release_file_object_storage # [:debian_project_distribution, :object_storage]

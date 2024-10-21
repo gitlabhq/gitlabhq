@@ -10,7 +10,8 @@ module QA
       context 'with a malformed URL' do
         let(:path) { %(/-/merge_requests?sort=created_date&state=<th:t=\"%24{dfb}%23foreach) }
 
-        it 'returns 400 or 302', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/426509' do
+        it 'returns 400 or 302',
+          :blocking, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/426509' do
           # Ruby's URI module automatically encodes query parameters:
           # https://github.com/ruby/uri/blob/f4999b61daa40f2c99fdc7159e2c85c036b22c67/lib/uri/generic.rb#L849
           #

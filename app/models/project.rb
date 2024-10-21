@@ -2981,7 +2981,7 @@ class Project < ApplicationRecord
   end
 
   def allow_protected_branches_for_group?
-    Feature.enabled?(:group_protected_branches, group) || Feature.enabled?(:allow_protected_branches_for_group, group)
+    Feature.enabled?(:group_protected_branches, group)
   end
 
   def deploy_token_create_url(opts = {})

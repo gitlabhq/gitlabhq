@@ -1319,7 +1319,6 @@ lib/gitlab/checks/**
 /app/views/shared/access_tokens/
 /app/views/shared/members/_two_factor_auth_badge.html.haml
 /app/views/shared/tokens/
-/app/workers/authorized_keys_worker.rb
 /app/workers/authorized_project_update/
 /app/workers/authorized_projects_worker.rb
 /app/workers/personal_access_tokens/

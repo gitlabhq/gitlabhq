@@ -921,7 +921,7 @@ GEM
       faraday (~> 2.0)
       graphql-client
     graphlyte (1.0.0)
-    graphql (2.3.17)
+    graphql (2.3.18)
       base64
       fiber-storage
     graphql-client (0.23.0)

@@ -6,3 +6,13 @@ html, body, #graphiql-container {
   overflow: hidden;
   width: 100%;
 }
+
+.graphiql-container .graphiql-logo {
+  height: 24px;
+  padding: 0 15px;
+
+  a {
+    display: inline-block;
+    height: 100%;
+  }
+}

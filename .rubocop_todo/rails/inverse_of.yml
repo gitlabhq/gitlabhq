@@ -33,7 +33,6 @@ Rails/InverseOf:
     - 'app/models/merge_request/metrics.rb'
     - 'app/models/namespace.rb'
     - 'app/models/notification_setting.rb'
-    - 'app/models/packages/composer/cache_file.rb'
     - 'app/models/packages/maven/metadatum.rb'
     - 'app/models/project.rb'
     - 'app/models/project_label.rb'

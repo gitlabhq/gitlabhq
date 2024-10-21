@@ -508,6 +508,7 @@ module ApplicationSettingsHelper
       :allow_runner_registration_token,
       :user_defaults_to_private_profile,
       :deactivation_email_additional_text,
+      :resource_token_expiry_inherited_members,
       :projects_api_rate_limit_unauthenticated,
       :group_api_limit,
       :group_invited_groups_api_limit,

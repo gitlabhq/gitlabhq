@@ -623,7 +623,7 @@ To work around the issue, give these users the Guest role or higher to any proje
 ## Related topics
 
 - [Custom roles](custom_roles.md)
-- [The GitLab principles behind permissions](https://handbook.gitlab.com/handbook/product/gitlab-the-product/#permissions-in-gitlab)
+- [The GitLab principles behind permissions](https://handbook.gitlab.com/handbook/product/categories/gitlab-the-product/#permissions-in-gitlab)
 - [Members](project/members/index.md)
 - Customize permissions on [protected branches](project/repository/branches/protected.md)
 - [LDAP user permissions](group/access_and_permissions.md#manage-group-memberships-with-ldap)

@@ -249,8 +249,7 @@ module SearchHelper
   end
 
   def should_show_work_items_as_epics_in_results?
-    ::Feature.enabled?(:search_epics_uses_work_items_index, current_user) &&
-      ::Elastic::DataMigrationService.migration_has_finished?(:backfill_work_items)
+    ::Elastic::DataMigrationService.migration_has_finished?(:backfill_work_items)
   end
 
   def should_show_zoekt_results?(_scope, _search_type)

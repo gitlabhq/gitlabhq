@@ -8,7 +8,7 @@ module Ci
       BATCH_SIZE = 25
       PAGE_SIZE = 500
       MAX_CANCELLATIONS_PER_PIPELINE = 3000
-      ID_BATCH_SIZE = 1000
+      PK_BATCH_SIZE = 1000
 
       def initialize(pipeline)
         @pipeline = pipeline
@@ -32,17 +32,17 @@ module Ci
 
       attr_reader :pipeline, :project
 
-      def cancelable_status_pipeline_ids
+      def cancelable_status_pipeline_pks
         project.all_pipelines
           .for_ref(pipeline.ref)
           .id_not_in(pipeline.id)
           .with_status(Ci::Pipeline::CANCELABLE_STATUSES)
           .order_id_desc # Query the most recently created cancellable Pipelines
           .limit(MAX_CANCELLATIONS_PER_PIPELINE)
-          .pluck(:id) # rubocop:disable CodeReuse/ActiveRecord
+          .pluck_primary_key
           .reverse # Once we have the most recent Pipelines, cancel oldest & upstreams first
       end
-      strong_memoize_attr :cancelable_status_pipeline_ids
+      strong_memoize_attr :cancelable_status_pipeline_pks
 
       def ref_head_sha
         project.commit(pipeline.ref).try(:id)
@@ -50,8 +50,8 @@ module Ci
       strong_memoize_attr :ref_head_sha
 
       def auto_cancel_all_pipelines_with_cancelable_statuses
-        cancelable_status_pipeline_ids.each_slice(ID_BATCH_SIZE) do |ids_batch|
-          Ci::Pipeline.id_in(ids_batch).order_id_asc.each do |cancelable|
+        cancelable_status_pipeline_pks.each_slice(PK_BATCH_SIZE) do |pks_batch|
+          Ci::Pipeline.primary_key_in(pks_batch).order_id_asc.each do |cancelable|
             case cancelable.source.to_sym
             when *Enums::Ci::Pipeline.ci_sources.keys
               # Newer pipelines are not cancelable. This doesn't normally occur
@@ -82,7 +82,7 @@ module Ci
         Gitlab::AppLogger.info(
           class: self.class.name,
           message: "Canceling redundant pipelines",
-          cancellable_count: cancelable_status_pipeline_ids.count,
+          cancellable_count: cancelable_status_pipeline_pks.count,
           skipped_for_old_age: @skipped_for_old_age,
           conservatively_cancelled: @conservatively_cancelled,
           aggressively_cancelled: @aggressively_cancelled,
@@ -101,7 +101,7 @@ module Ci
 
           @configured_to_not_cancel += 1
         when 'conservative'
-          return unless conservative_cancellable_pipeline_ids.include?(cancelable.id)
+          return unless conservative_cancelable_pipeline_pks.include?(cancelable.id)
 
           @conservatively_cancelled += 1
 
@@ -117,12 +117,12 @@ module Ci
         end
       end
 
-      def conservative_cancellable_pipeline_ids
-        cancelable_status_pipeline_ids.each_slice(ID_BATCH_SIZE).with_object([]) do |ids_batch, conservative_ids|
-          conservative_ids.concat(::Ci::Pipeline.id_in(ids_batch).conservative_interruptible.ids) # rubocop:disable CodeReuse/ActiveRecord
+      def conservative_cancelable_pipeline_pks
+        cancelable_status_pipeline_pks.each_slice(PK_BATCH_SIZE).with_object([]) do |pks_batch, conservative_pks|
+          conservative_pks.concat(::Ci::Pipeline.primary_key_in(pks_batch).conservative_interruptible.pluck_primary_key)
         end
       end
-      strong_memoize_attr :conservative_cancellable_pipeline_ids
+      strong_memoize_attr :conservative_cancelable_pipeline_pks
 
       def cancel_pipeline(cancelable_pipeline, safe_cancellation:)
         Gitlab::AppLogger.info(

@@ -48,7 +48,6 @@ module Gitlab
           sha: commit,
           chat_data: {
             chat_name_id: chat_name.id,
-            project_id: project.id,
             command: name,
             arguments: arguments,
             response_url: response_url
@@ -75,6 +74,7 @@ module Gitlab
       # pipeline - The `Ci::Pipeline` to create the chat data for.
       def build_chat_data(pipeline)
         pipeline.build_chat_data(
+          project_id: project.id,
           chat_name_id: chat_name.id,
           response_url: response_url
         )

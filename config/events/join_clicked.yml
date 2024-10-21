@@ -1,0 +1,20 @@
+---
+description: Tracks when a user joins based on an invite
+action: join_clicked
+identifiers:
+- project
+- namespace
+- user
+product_group: acquisition
+milestone: '14.0'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164498
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate
+additional_properties:
+  label:
+    description: Always 'invite_email'

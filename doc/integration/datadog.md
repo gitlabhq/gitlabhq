@@ -11,7 +11,7 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 The Datadog integration enables you to send CI/CD pipeline and job information to
-[Datadog](https://www.datadoghq.com/). The [Datadog CI Visibility](https://app.datadoghq.com/ci)
+[Datadog](https://www.datadoghq.com/). The [Datadog CI Pipeline Visibility](https://www.datadoghq.com/product/ci-cd-monitoring/)
 product helps you monitor for job failures and performance issues, then troubleshoot them.
 It's based on [Webhooks](../user/project/integrations/webhooks.md),
 and only requires configuration on GitLab.

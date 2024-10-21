@@ -1,7 +1,6 @@
 ---
 table_name: packages_composer_cache_files
-classes:
-- Packages::Composer::CacheFile
+classes: []
 feature_categories:
 - package_registry
 description: Composer packages cached SHA files (deprecated)

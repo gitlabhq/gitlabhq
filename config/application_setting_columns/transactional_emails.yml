@@ -1,0 +1,15 @@
+---
+api_type:
+attr: transactional_emails
+clusterwide: false
+column: transactional_emails
+db_type: jsonb
+default: "'{}'::jsonb"
+description: >
+  Settings for transactional emails.
+  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/168245) in
+  GitLab 17.6 to support options for group and project access token expiry.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

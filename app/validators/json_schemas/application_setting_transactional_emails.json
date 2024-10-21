@@ -1,0 +1,13 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Application transactional emails",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "resource_token_expiry_inherited_members": {
+      "type": "boolean",
+      "default": true,
+      "description": "Should expiry notification emails for project and group access tokens be sent to inherited members, or only direct members of the project or group."
+    }
+  }
+}

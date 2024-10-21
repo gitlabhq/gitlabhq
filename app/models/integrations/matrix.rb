@@ -88,7 +88,7 @@ module Integrations
     end
 
     def notify(message, _opts)
-      context = project_level? ? { project: project } : { skip_project_check: true }
+      context = { no_sourcepos: true }.merge(project_level? ? { project: project } : { skip_project_check: true })
 
       body = {
         body: message.summary,

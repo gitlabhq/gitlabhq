@@ -316,7 +316,6 @@ Style/ClassAndModuleChildren:
     - 'app/services/repositories/base_service.rb'
     - 'app/services/repositories/destroy_service.rb'
     - 'app/uploaders/dependency_proxy/file_uploader.rb'
-    - 'app/uploaders/packages/composer/cache_uploader.rb'
     - 'app/uploaders/packages/debian/component_file_uploader.rb'
     - 'app/uploaders/packages/debian/distribution_release_file_uploader.rb'
     - 'app/uploaders/packages/package_file_uploader.rb'

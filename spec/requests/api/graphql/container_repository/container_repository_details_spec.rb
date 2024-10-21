@@ -391,6 +391,7 @@ RSpec.describe 'container repository details', feature_category: :container_regi
       allow_next_instances_of(ContainerRegistry::GitlabApiClient, nil) do |client|
         allow(client).to receive(:supports_gitlab_api?).and_return(true)
         allow(client).to receive(:tags).and_return(response_body)
+        stub_container_registry_gitlab_api_repository_details(client, path: container_repository.path, sizing: :self)
       end
     end
 
@@ -417,15 +418,13 @@ RSpec.describe 'container repository details', feature_category: :container_regi
       }
     end
 
-    context 'quarantine', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/439529' do
-      it_behaves_like 'a working graphql query' do # OK
-        before do
-          subject
-        end
+    it_behaves_like 'a working graphql query' do
+      before do
+        subject
+      end
 
-        it 'matches the JSON schema' do
-          expect(container_repository_details_response).to match_schema('graphql/container_repository_details')
-        end
+      it 'matches the JSON schema' do
+        expect(container_repository_details_response).to match_schema('graphql/container_repository_details')
       end
     end
 

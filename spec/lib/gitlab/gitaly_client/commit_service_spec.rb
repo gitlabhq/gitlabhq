@@ -786,6 +786,7 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
     let(:before) { nil }
     let(:after) { nil }
     let(:pagination_params) { nil }
+    let(:skip) { '100' }
 
     shared_examples 'a ListCommits request' do
       before do
@@ -803,7 +804,8 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
             before: before,
             after: after,
             pagination_params: pagination_params,
-            order: order
+            order: order,
+            skip: 100
           )
 
           expect(service).to receive(:list_commits).with(expected_request, kind_of(Hash)).and_return([])

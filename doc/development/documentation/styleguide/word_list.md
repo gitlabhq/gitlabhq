@@ -1729,6 +1729,18 @@ Examples:
 
 See also: [child](#child), and [subgroup](#subgroup).
 
+## per
+
+Do not use **per** because it can have several different meanings.
+
+Use the specific prepositional phrase instead:
+
+- for each
+- through
+- by
+- every
+- according to
+
 ## permissions
 
 Do not use [**roles**](#roles) and **permissions** interchangeably. Each user is assigned a role. Each role includes a set of permissions.

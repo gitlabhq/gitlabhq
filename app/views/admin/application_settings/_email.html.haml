@@ -24,4 +24,10 @@
       .form-text.text-muted
         = _('Text added to the body of user deactivation email messages. 1000 character limit.')
 
+    - if Feature.enabled?(:pat_expiry_inherited_members_notification, :instance)
+      .form-group
+        = f.label :resource_token_expiry_inherited_members, _('Expiry notification emails about group and project access tokens should be sent to:')
+        = f.gitlab_ui_radio_component :resource_token_expiry_inherited_members, true, _('All direct and inherited members of the group or project')
+        = f.gitlab_ui_radio_component :resource_token_expiry_inherited_members, false, _('Only direct members of the group or project')
+
   = f.submit _('Save changes'), pajamas_button: true, data: { testid: 'save-changes-button' }

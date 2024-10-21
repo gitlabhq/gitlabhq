@@ -11,12 +11,12 @@
 
   .system-note {
     .note-text {
-      color: var(--gl-text-color-default);
+      @apply gl-text-default;
     }
   }
 
   .diff-file {
-    border: 1px solid $border-color;
+    @apply gl-border;
     margin: 0;
   }
 
@@ -26,10 +26,10 @@
 }
 
 .timeline-entry {
-  color: var(--gl-text-color-default);
+  @apply gl-text-default;
 
   &:not(.note-form).internal-note .timeline-content {
-    background-color: var(--orange-50) !important;
+    @apply gl-bg-orange-50 #{!important};
   }
 
   .timeline-entry-inner {
@@ -39,7 +39,7 @@
   &:target,
   &.target {
     .timeline-content {
-      background-color: var(--blue-50) !important;
+      @apply gl-bg-blue-50 #{!important};
     }
 
     + .discussion-reply-holder {
@@ -76,7 +76,7 @@
 
   .timeline-entry:not(.draft-note):last-child::before {
     @apply gl-bg-default;
-    
+
     .modal-body & {
       @apply gl-bg-overlap;
     }

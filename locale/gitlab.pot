@@ -5610,6 +5610,9 @@ msgstr ""
 msgid "All child items must be confidential in order to turn on confidentiality."
 msgstr ""
 
+msgid "All direct and inherited members of the group or project"
+msgstr ""
+
 msgid "All environments"
 msgstr ""
 
@@ -22625,6 +22628,9 @@ msgstr ""
 msgid "Expiring soon"
 msgstr ""
 
+msgid "Expiry notification emails about group and project access tokens should be sent to:"
+msgstr ""
+
 msgid "Explain why you're reporting the user."
 msgstr ""
 
@@ -29458,9 +29464,6 @@ msgid "Interval"
 msgstr ""
 
 msgid "Introducing Your DevOps Reports"
-msgstr ""
-
-msgid "Introducing: Summarize code changes"
 msgstr ""
 
 msgid "Invalid 'schemaVersion' '%{schema_version}'"
@@ -37973,6 +37976,9 @@ msgid "Only SSH"
 msgstr ""
 
 msgid "Only accessible by %{membersPageLinkStart}project members%{membersPageLinkEnd}. Membership must be explicitly granted."
+msgstr ""
+
+msgid "Only direct members of the group or project"
 msgstr ""
 
 msgid "Only effective when remote storage is enabled. Set to 0 for no size limit."
@@ -48722,6 +48728,9 @@ msgstr ""
 msgid "Secrets|Edit secret"
 msgstr ""
 
+msgid "Secrets|Enable the Secrets Manager to securely store and manage sensitive information for this project."
+msgstr ""
+
 msgid "Secrets|Enter a value for the secret"
 msgstr ""
 
@@ -48756,6 +48765,12 @@ msgid "Secrets|Rotation reminder"
 msgstr ""
 
 msgid "Secrets|Secrets"
+msgstr ""
+
+msgid "Secrets|Secrets Manager"
+msgstr ""
+
+msgid "Secrets|Secrets Manager has been provisioned for this project."
 msgstr ""
 
 msgid "Secrets|Secrets represent sensitive information your CI job needs to complete work. This sensitive information can be items like API tokens, database credentials, or private keys. Unlike CI/CD variables, which are always presented to a job, secrets must be explicitly required by a job."
@@ -50575,9 +50590,6 @@ msgid "SecurityTxt|Content for security.txt"
 msgstr ""
 
 msgid "SecurityTxt|When present, this will be publicly available at %{codeOpen}https://gitlab.example.com/.well-known/security.txt%{codeClose}. Maximum 2048 characters."
-msgstr ""
-
-msgid "See an AI-generated summary of your code changes."
 msgstr ""
 
 msgid "See example DevOps Score page in our documentation."

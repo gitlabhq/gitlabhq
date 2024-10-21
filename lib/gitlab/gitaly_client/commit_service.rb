@@ -298,6 +298,7 @@ module Gitlab
         )
 
         request.order = params[:order].upcase if params[:order].present?
+        request.skip = params[:skip].to_i if params[:skip].present?
 
         if params[:commit_message_patterns]
           request.commit_message_patterns += Array.wrap(params[:commit_message_patterns])
@@ -307,7 +308,14 @@ module Gitlab
         request.before = GitalyClient.timestamp(params[:before]) if params[:before]
         request.after = GitalyClient.timestamp(params[:after]) if params[:after]
 
-        response = gitaly_client_call(@repository.storage, :commit_service, :list_commits, request, timeout: GitalyClient.medium_timeout)
+        response = gitaly_client_call(
+          @repository.storage,
+          :commit_service,
+          :list_commits,
+          request,
+          timeout: GitalyClient.medium_timeout
+        )
+
         consume_commits_response(response)
       end
 

@@ -45,6 +45,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { expect(setting.project_api_limit).to eq(400) }
     it { expect(setting.project_invited_groups_api_limit).to eq(60) }
     it { expect(setting.projects_api_limit).to eq(2000) }
+    it { expect(setting.resource_token_expiry_inherited_members).to eq(true) }
     it { expect(setting.user_contributed_projects_api_limit).to eq(100) }
     it { expect(setting.user_projects_api_limit).to eq(300) }
     it { expect(setting.user_starred_projects_api_limit).to eq(100) }
@@ -95,6 +96,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { expect(described_class).to validate_jsonb_schema(['application_setting_package_registry']) }
     it { expect(described_class).to validate_jsonb_schema(['application_setting_service_ping_settings']) }
     it { expect(described_class).to validate_jsonb_schema(['application_setting_sign_in_restrictions']) }
+    it { expect(described_class).to validate_jsonb_schema(['application_setting_transactional_emails']) }
 
     it { is_expected.to allow_value(nil).for(:home_page_url) }
     it { is_expected.to allow_value(http).for(:home_page_url) }

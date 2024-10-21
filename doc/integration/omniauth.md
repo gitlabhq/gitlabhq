@@ -470,7 +470,7 @@ then override the icon in one of two ways:
 
 - **Embed an image directly in a configuration file**: This example creates a Base64-encoded
   version of your image you can serve through a
-  [Data URL](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URLs):
+  [Data URL](https://developer.mozilla.org/en-US/docs/Web/URI/Schemes/data):
 
   1. Encode your image file with a GNU `base64` command (such as `base64 -w 0 <logo.png>`)
      which returns a single-line `<base64-data>` string.

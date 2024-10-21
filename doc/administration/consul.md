@@ -318,7 +318,7 @@ To enable the gossip protocol:
    sudo gitlab-ctl reconfigure
    ```
 
-To [enable encryption in an existing datacenter](https://learn.hashicorp.com/tutorials/consul/gossip-encryption-secure#enable-on-an-existing-consul-datacenter),
+To [enable encryption in an existing datacenter](https://developer.hashicorp.com/consul/docs/security/encryption#enable-on-an-existing-consul-datacenter),
 manually set these options for a rolling update.
 
 ## Upgrade the Consul nodes

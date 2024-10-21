@@ -2825,7 +2825,6 @@ RSpec/ContextWording:
     - 'spec/uploaders/lfs_object_uploader_spec.rb'
     - 'spec/uploaders/namespace_file_uploader_spec.rb'
     - 'spec/uploaders/object_storage_spec.rb'
-    - 'spec/uploaders/packages/composer/cache_uploader_spec.rb'
     - 'spec/uploaders/packages/debian/component_file_uploader_spec.rb'
     - 'spec/uploaders/packages/debian/distribution_release_file_uploader_spec.rb'
     - 'spec/uploaders/packages/package_file_uploader_spec.rb'

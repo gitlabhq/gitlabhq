@@ -3745,7 +3745,6 @@ Layout/LineLength:
     - 'spec/models/namespace_statistics_spec.rb'
     - 'spec/models/note_spec.rb'
     - 'spec/models/notification_setting_spec.rb'
-    - 'spec/models/packages/composer/cache_file_spec.rb'
     - 'spec/models/packages/composer/metadatum_spec.rb'
     - 'spec/models/packages/conan/metadatum_spec.rb'
     - 'spec/models/packages/debian/file_entry_spec.rb'
