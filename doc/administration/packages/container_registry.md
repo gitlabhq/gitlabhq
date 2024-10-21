@@ -970,7 +970,7 @@ To configure a notification endpoint for a Linux package installation:
      }
    ]
 
-   gitlab_rails['registry_notification_secret'] = 'AUTHORIZATION_EXAMPLE_TOKEN' # Must match the auth token in registry['notifications'] 
+   gitlab_rails['registry_notification_secret'] = 'AUTHORIZATION_EXAMPLE_TOKEN' # Must match the auth token in registry['notifications']
    ```
 
    NOTE:
@@ -1340,7 +1340,7 @@ The GitLab registry is what users use to store their own Docker images.
 Because of that the Registry is client facing, meaning that we expose it directly
 on the web server (or load balancers, LB for short).
 
-![User login process with GitLab Container Registry.](img/gitlab-registry-architecture.png)
+![User login process with GitLab Container Registry.](img/gitlab-registry-architecture_v14_3.png)
 
 The flow described by the diagram above:
 

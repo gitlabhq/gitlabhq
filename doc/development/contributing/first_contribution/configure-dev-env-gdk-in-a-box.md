@@ -16,7 +16,7 @@ sample projects, and administrator access with which you can test functionality.
 
 It requires 30 GB of disk space.
 
-![GDK](../img/gdk_home.png)
+![GDK](../img/gdk_home_v15_11.png)
 
 If you prefer to use GDK locally without a VM, use the steps in [Install the GDK development environment](configure-dev-env-gdk.md)
 

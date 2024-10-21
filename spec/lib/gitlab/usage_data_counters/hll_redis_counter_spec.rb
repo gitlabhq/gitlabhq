@@ -251,7 +251,7 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
             it "raises an error with an instructive message" do
               expect do
                 described_class.track_event('g_analytics_productivity', values: entity1, property_name: 'project')
-              end.to raise_error(described_class::UnfinishedEventMigrationError, /migration\.html/)
+              end.to raise_error(described_class::UnfinishedEventMigrationError, /migration\.md/)
             end
           end
 
@@ -383,7 +383,7 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
           it "raises an error with an instructive message" do
             expect do
               described_class.unique_events(event_names: 'g_analytics_productivity', property_name: 'project', start_date: 7.days.ago, end_date: Date.current)
-            end.to raise_error(described_class::UnfinishedEventMigrationError, /migration\.html/)
+            end.to raise_error(described_class::UnfinishedEventMigrationError, /migration\.md/)
           end
         end
 

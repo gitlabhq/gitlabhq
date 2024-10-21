@@ -18,7 +18,7 @@ export default {
     };
   },
   metadataDatabaseHelpPagePath: helpPagePath(
-    'administration/packages/container_registry_metadata_database',
+    'administration/packages/container_registry_metadata_database.md',
   ),
   methods: {
     hideAlert() {

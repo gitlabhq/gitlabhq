@@ -78,7 +78,7 @@ module EnforcesTwoFactorAuthentication
 
   def mfa_help_page_url
     Rails.application.routes.url_helpers.help_page_url(
-      'user/profile/account/two_factor_authentication.html',
+      'user/profile/account/two_factor_authentication.md',
       anchor: 'enable-two-factor-authentication'
     )
   end

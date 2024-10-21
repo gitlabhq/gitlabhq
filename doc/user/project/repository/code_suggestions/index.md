@@ -89,6 +89,18 @@ To use Code Suggestions:
 AI is non-deterministic, so you may not get the same suggestion every time with the same input.
 To generate quality code, write clear, descriptive, specific tasks.
 
+All editor extensions from GitLab, except Neovim, add an icon to your IDE's status bar. For example, in
+Visual Studio:
+
+![The status bar in Visual Studio.](../../../../editor_extensions/img/visual_studio_status_bar_v17_4.png)
+
+| Icon | Status | Meaning |
+| :--- | :----- | :------ |
+| **{tanuki-ai}** | **Ready** | You've configured and enabled GitLab Duo, and you're using a language that supports Code Suggestions. |
+| **{tanuki-ai-off}** | **Not configured** | You haven't entered a personal access token, or you're using a language that Code Suggestions doesn't support. |
+| ![The status icon for fetching Code Suggestions.](../../../../editor_extensions/img/code_suggestions_loading_v17_4.svg) | **Loading suggestion** | GitLab Duo is fetching Code Suggestions for you. |
+| ![The status icon for a Code Suggestions error.](../../../../editor_extensions/img/code_suggestions_error_v17_4.svg) | **Error** | GitLab Duo has encountered an error. |
+
 ## Best practices
 
 To get the best results from code generation:

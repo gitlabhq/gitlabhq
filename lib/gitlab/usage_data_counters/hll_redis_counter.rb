@@ -150,7 +150,7 @@ module Gitlab
           return if used_in_aggregate_metric
 
           if property_name && legacy_events.include?(event_name)
-            link = Rails.application.routes.url_helpers.help_page_url("ee/development/internal_analytics/internal_event_instrumentation/migration.html#backend-1")
+            link = Rails.application.routes.url_helpers.help_page_url('ee/development/internal_analytics/internal_event_instrumentation/migration.md#backend-1')
             message = "Event #{event_name} has been invoked with property_name.\n" \
                       "When an event gets migrated to Internal Events, its name needs to be removed " \
                       "from hll_redis_legacy_events.yml and added to hll_redis_key_overrides.yml: #{link}"

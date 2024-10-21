@@ -148,6 +148,87 @@ You can map up to 100 services.
 
 For more information about deployment tracking in Jira, see [Set up deployment tracking](https://support.atlassian.com/jira-service-management-cloud/docs/set-up-deployment-tracking/).
 
+### Set up deployment gating with GitLab
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** GitLab.com
+
+You can set up deployment gating to bring change requests from GitLab to Jira Service Management for approval.
+With deployment gating, any GitLab deployments to your selected environments are automatically sent
+to Jira Service Management and are only deployed if they're approved.
+
+#### Create the service account token
+
+To create a service account token in GitLab, you must first create a personal access token.
+This token authenticates the service account token used to manage GitLab deployments in Jira Service Management.
+
+To create the service account token:
+
+1. [Create a service account user](../../api/user_service_accounts.md#create-a-service-account-user).
+1. [Add the service account to a group or project](../../api/members.md#add-a-member-to-a-group-or-project)
+   by using your personal access token.
+1. [Add the service account to protected environments](../../ci/environments/protected_environments.md#protecting-environments).
+1. [Generate a service account token](../../api/group_service_accounts.md#create-a-personal-access-token-for-a-service-account-user)
+   by using your personal access token.
+1. Copy the service account token value.
+
+#### Enable deployment gating
+
+To enable deployment gating:
+
+- In GitLab:
+
+  1. On the left sidebar, select **Search or go to** and find your project.
+  1. Select **Settings > Integrations**.
+  1. Select **GitLab for Jira Cloud app**.
+  1. Under **Deployment gating**, select the **Enable deployment gating** checkbox.
+  1. In the **Environment tiers** text box, enter the names of the environments you want to enable deployment gating for.
+     You can enter multiple environment names separated by commas (for example, `production, staging, testing, development`).
+     Use lowercase letters only.
+  1. Select **Save changes**.
+
+- In Jira Service Management:
+
+  1. [Set up deployment gating](https://support.atlassian.com/jira-service-management-cloud/docs/set-up-deployment-gating/).
+  1. In the **Service account token** text box, [paste the service account token value you copied from GitLab](#create-the-service-account-token).
+
+#### Add the service account to protected environments
+
+To add the service account to your protected environments in GitLab:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > CI/CD**.
+1. Expand **Protected environments** and select **Protect an environment**.
+1. From the **Select environment** dropdown list, select an environment to protect (for example, **staging**).
+1. From the **Allowed to deploy** dropdown list, select who can deploy to this environment (for example, **Developers + Maintainers**).
+1. From the **Approvers** dropdown list, select the [service account you created](#create-the-service-account-token).
+1. Select **Protect**.
+
+#### Example API requests
+
+- Create a service account user:
+
+  ```shell
+  curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --data "name=<name_of_your_choice>&username=<username_of_your_choice>"  "<https://gitlab.com/api/v4/groups/<group_id>/service_accounts"
+  ```
+
+- Add the service account to a group or project by using your personal access token:
+
+  ```shell
+  curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+       --data "user_id=<service_account_id>&access_level=30" "https://gitlab.com/api/v4/groups/<group_id>/members"
+  curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+       --data "user_id=<service_account_id>&access_level=30" "https://gitlab.com/api/v4/projects/<project_id>/members"
+  ```
+
+- Generate a service account token by using your personal access token:
+
+  ```shell
+  curl --request POST --header "PRIVATE-TOKEN: <your_access_token>"
+  "https://gitlab.com/api/v4/groups/<group_id>/service_accounts/<service_account_id>/personal_access_tokens" --data "scopes[]=api,read_user,read_repository" --data "name=service_accounts_token"
+  ```
+
 ## Update the GitLab for Jira Cloud app
 
 Most updates to the app are automatic. For more information, see the

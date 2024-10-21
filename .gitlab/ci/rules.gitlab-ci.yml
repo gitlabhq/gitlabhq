@@ -1707,9 +1707,6 @@
   rules:
     - !reference [".qa:rules:e2e-test-never-run", rules]
     - <<: *if-merge-request-labels-run-all-e2e
-    # Run tests automatically for MRs that touch Ruby version files
-    - <<: *if-merge-request
-      changes: *ruby-version-patterns
     # Run tests automatically for MRs that touch QA files
     - <<: *if-merge-request
       changes: *qa-patterns
@@ -1819,6 +1816,9 @@
     - <<: *if-default-branch-schedule-nightly  # already executed in the 2-hourly schedule
       when: never
     - !reference [".qa:rules:e2e-blocking-base-before", rules]
+    # Run tests automatically for MRs that touch Ruby version files
+    - <<: *if-merge-request
+      changes: *ruby-version-patterns
     - !reference [".prevent-tier-1", rules]
     - !reference [".qa:rules:e2e-blocking-base-after", rules]
     # Certain components trigger a rebuild of the e2e GDK image so we want to test it too

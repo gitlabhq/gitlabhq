@@ -108,8 +108,8 @@ describe('SearchTypeIndicator', () => {
 
   describe.each`
     searchType    | docsLink
-    ${'advanced'} | ${'/help/user/search/advanced_search'}
-    ${'zoekt'}    | ${'/help/user/search/exact_code_search'}
+    ${'advanced'} | ${'/help/user/search/advanced_search.md'}
+    ${'zoekt'}    | ${'/help/user/search/exact_code_search.md'}
   `('documentation link for $searchType', ({ searchType, docsLink }) => {
     beforeEach(() => {
       getterSpies.currentScope = jest.fn(() => 'blobs');
@@ -127,8 +127,8 @@ describe('SearchTypeIndicator', () => {
 
   describe.each`
     searchType | advancedSearchAvailable | zoektAvailable | syntaxdocsLink
-    ${'basic'} | ${true}                 | ${false}       | ${'/help/user/search/advanced_search#syntax'}
-    ${'basic'} | ${true}                 | ${true}        | ${'/help/user/search/exact_code_search#syntax'}
+    ${'basic'} | ${true}                 | ${false}       | ${'/help/user/search/advanced_search.md#syntax'}
+    ${'basic'} | ${true}                 | ${true}        | ${'/help/user/search/exact_code_search.md#syntax'}
   `(
     'Syntax documentation $searchType',
     ({ searchType, advancedSearchAvailable, zoektAvailable, syntaxdocsLink }) => {

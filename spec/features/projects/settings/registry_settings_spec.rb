@@ -10,7 +10,7 @@ RSpec.describe 'Project > Settings > Packages and registries > Container registr
   let(:container_registry_enabled) { true }
   let(:container_registry_enabled_on_project) { ProjectFeature::ENABLED }
 
-  let(:help_page_href) { help_page_path('administration/packages/container_registry_metadata_database') }
+  let(:help_page_href) { help_page_path('administration/packages/container_registry_metadata_database.md') }
 
   subject { visit project_settings_packages_and_registries_path(project) }
 

@@ -16,7 +16,7 @@ RSpec.describe 'Container Registry', :js, feature_category: :container_registry 
     create(:container_repository, name: '')
   end
 
-  let(:help_page_href) { help_page_path('administration/packages/container_registry_metadata_database') }
+  let(:help_page_href) { help_page_path('administration/packages/container_registry_metadata_database.md') }
 
   before do
     sign_in(user)

@@ -676,6 +676,24 @@ job1:
         done
 ```
 
+### As part of a string
+
+You can use variables as part of a string. You can surround the variables with curly brackets (`{}`)
+to help distinguish the variable name from the surrounding text. Without curly brackets,
+the adjacent text is interpreted as part of the variable name. For example:
+
+```yaml
+job:
+  variables:
+    FLAGS: '-al'
+    DIR: 'path/to/directory'
+    LS_CMD: 'ls "$FLAGS"'
+    CD_CMD: 'cd "${DIR}_files"'
+  script:
+    - 'eval "$LS_CMD"'  # Executes 'ls -al'
+    - 'eval "$CD_CMD"'  # Executes 'cd path/to/directory_files'
+```
+
 ## Use CI/CD variables in other variables
 
 You can use variables inside other variables:

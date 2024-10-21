@@ -16,15 +16,6 @@ like IntelliJ, PyCharm, GoLand, Webstorm, and Rubymine. The plugin supports thes
 While coding, accept Code Suggestions by pressing <kbd>Tab</kbd>. To dismiss Code Suggestions,
 press <kbd>Escape</kbd>.
 
-This JetBrains plugin adds an icon to your IDE's status bar:
-
-| Icon | Status | Meaning |
-| :--- | :----- | :------ |
-| **{tanuki-ai}** | **Ready** | You've configured and enabled GitLab Duo, and you're using a language that supports Code Suggestions. |
-| **{tanuki-ai-off}** | **Not configured** | You haven't entered a personal access token, or you're using a language that Code Suggestions doesn't support. |
-| ![The status icon for fetching Code Suggestions.](../img/code_suggestions_loading_v17_4.svg) | **Loading suggestion** | GitLab Duo is fetching Code Suggestions for you. |
-| ![The status icon for a Code Suggestions error.](../img/code_suggestions_error_v17_4.svg) | **Error** | GitLab Duo has encountered an error. |
-
 ## Download the extension
 
 Download the plugin from the [JetBrains Plugin Marketplace](https://plugins.jetbrains.com/plugin/22325-gitlab-duo).

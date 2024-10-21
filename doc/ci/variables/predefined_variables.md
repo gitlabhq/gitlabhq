@@ -229,6 +229,16 @@ defines deployment variables that you can use with the integration.
 The [documentation for each integration](../../user/project/integrations/index.md)
 explains if the integration has any deployment variables available.
 
+## Auto DevOps variables
+
+When [Auto DevOps](../../topics/autodevops/index.md) is enabled, some additional
+[pre-pipeline](#variable-availability) variables are made available:
+
+- `AUTO_DEVOPS_EXPLICITLY_ENABLED`: Has a value of `1` to indicate Auto DevOps is enabled.
+- `STAGING_ENABLED`: See [Auto DevOps deployment strategy](../../topics/autodevops/requirements.md#auto-devops-deployment-strategy).
+- `INCREMENTAL_ROLLOUT_MODE`: See [Auto DevOps deployment strategy](../../topics/autodevops/requirements.md#auto-devops-deployment-strategy).
+- `INCREMENTAL_ROLLOUT_ENABLED`: Deprecated.
+
 ## Integration variables
 
 Some integrations make variables available in jobs. These variables are available

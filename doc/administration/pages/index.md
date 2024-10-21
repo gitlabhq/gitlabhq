@@ -744,7 +744,7 @@ opened) it's refreshed. This extends the time the archive remains in memory from
 After an archive reaches `zip_cache_expiration`, it's marked as expired and removed on the next
 `zip_cache_cleanup` interval.
 
-![A timeline shows the ZIP cache refresh extends the ZIP cache expiration time.](img/zip_cache_configuration.png)
+![A timeline shows the ZIP cache refresh extends the ZIP cache expiration time.](img/zip_cache_configuration_v13_7.png)
 
 ### HTTP Strict Transport Security (HSTS) support
 

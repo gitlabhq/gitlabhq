@@ -415,10 +415,7 @@ merge request is closed or merged.
 ## User defined job names
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/232505) in GitLab 17.5 with a flag `customizable_pages_job_name`, disabled by default.
-
-Historically, the pages deploy job needed to be named `pages` in order to
-trigger a pages deployment. With the `pages` setting, this is no longer
-necessary.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169095) in GitLab 17.6.
 
 To trigger a pages deployment from any job, include the `pages` property in the
 job definition. It can either be a hash or simply a boolean set to `true`

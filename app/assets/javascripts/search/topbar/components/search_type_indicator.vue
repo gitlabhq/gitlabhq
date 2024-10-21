@@ -33,12 +33,12 @@ export default {
     ),
     more: __('Learn more.'),
   },
-  zoektHelpUrl: helpPagePath('user/search/exact_code_search'),
-  zoektSyntaxHelpUrl: helpPagePath('user/search/exact_code_search', {
+  zoektHelpUrl: helpPagePath('user/search/exact_code_search.md'),
+  zoektSyntaxHelpUrl: helpPagePath('user/search/exact_code_search.md', {
     anchor: 'syntax',
   }),
-  advancedSearchHelpUrl: helpPagePath('user/search/advanced_search'),
-  advancedSearchSyntaxHelpUrl: helpPagePath('user/search/advanced_search', {
+  advancedSearchHelpUrl: helpPagePath('user/search/advanced_search.md'),
+  advancedSearchSyntaxHelpUrl: helpPagePath('user/search/advanced_search.md', {
     anchor: 'syntax',
   }),
   components: {

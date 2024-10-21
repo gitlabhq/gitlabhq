@@ -18,7 +18,7 @@ module Backup
         Be sure to stop Puma, Sidekiq, and any other process that
         connects to the database before proceeding. For Omnibus
         installs, see the following link for more information:
-        #{help_page_url('raketasks/backup_restore.html', 'restore-for-omnibus-gitlab-installations')}
+        #{help_page_url('raketasks/backup_restore.md', 'restore-for-omnibus-gitlab-installations')}
 
         Before restoring the database, we will remove all existing
         tables to avoid future upgrade problems. Be aware that if you have

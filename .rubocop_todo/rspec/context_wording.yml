@@ -398,7 +398,6 @@ RSpec/ContextWording:
     - 'ee/spec/models/concerns/approver_migrate_hook_spec.rb'
     - 'ee/spec/models/concerns/ee/issuable_spec.rb'
     - 'ee/spec/models/concerns/ee/participable_spec.rb'
-    - 'ee/spec/models/concerns/elastic/project_spec.rb'
     - 'ee/spec/models/concerns/elastic/repository_spec.rb'
     - 'ee/spec/models/concerns/epic_tree_sorting_spec.rb'
     - 'ee/spec/models/concerns/geo/verification_state_spec.rb'

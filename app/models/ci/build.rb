@@ -483,8 +483,6 @@ module Ci
     end
 
     def pages_generator?
-      return Gitlab.config.pages.enabled && name == 'pages' unless ::Feature.enabled?(:customizable_pages_job_name, project)
-
       return false unless Gitlab.config.pages.enabled
       return true if options[:pages].is_a?(Hash) || options[:pages] == true
 

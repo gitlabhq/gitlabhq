@@ -23,9 +23,10 @@ external architecture, ensuring maximum levels of security.
 
 To set up your self-hosted model infrastructure:
 
+1. Install the latest version of GitLab
+1. Install the GitLab AI Gateway.
 1. Install the large language model (LLM) serving infrastructure.
 1. Configure your GitLab instance.
-1. Install the GitLab AI Gateway.
 
 ## Install large language model serving infrastructure
 
@@ -36,12 +37,12 @@ Install one of the following GitLab-approved LLM models:
 | Model family | Model                                                                              | Code completion | Code generation | GitLab Duo Chat |
 |--------------|------------------------------------------------------------------------------------|-----------------|-----------------|---------|
 | Mistral      | [Codestral 22B](https://huggingface.co/mistralai/Codestral-22B-v0.1) (see [setup instructions](litellm_proxy_setup.md#example-setup-for-codestral-with-ollama))                                         | **{check-circle}** Yes               | **{check-circle}** Yes               | **{dotted-circle}** No        |
-| Mistral      | [Mistral 7B](https://huggingface.co/mistralai/Mistral-7B-v0.1)                     | **{dotted-circle}** No                | **{check-circle}** Yes               | **{check-circle}** Yes        |
-| Mistral      | [Mixtral 8x22B](https://huggingface.co/mistral-community/Mixtral-8x22B-v0.1)       | **{dotted-circle}** No                | **{check-circle}** Yes               | **{check-circle}** Yes        |
-| Mistral      | [Mixtral 8x7B](https://huggingface.co/mistralai/Mixtral-8x7B-Instruct-v0.1)        | **{dotted-circle}** No                | **{check-circle}** Yes               | **{check-circle}** Yes        |
-| Mistral      | [Mistral 7B Text](https://huggingface.co/mistralai/Mistral-7B-v0.3)                     | **{check-circle}** Yes                | **{dotted-circle}** No               |**{dotted-circle}** No        |
-| Mistral      | [Mixtral 8x22B Text](https://huggingface.co/mistralai/Mixtral-8x22B-v0.1)       | **{check-circle}** Yes                | **{dotted-circle}** No               | **{dotted-circle}** No        |
-| Mistral      | [Mixtral 8x7B Text](https://huggingface.co/mistralai/Mixtral-8x7B-v0.1)        | **{check-circle}** Yes                | **{dotted-circle}** No               | **{dotted-circle}** No        |
+| Mistral      | [Mistral 7B](https://huggingface.co/mistralai/Mistral-7B-v0.1)                     | **{check-circle}** Yes               | **{dotted-circle}** No               | **{dotted-circle}** No        |
+| Mistral      | [Mistral 7B-it](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.3)                     | **{check-circle}** Yes                | **{check-circle}** Yes               | **{check-circle}** Yes        |
+| Mistral      | [Mixtral 8x7B](https://huggingface.co/mistralai/Mixtral-8x7B-v0.1)        | **{check-circle}** Yes                |  **{dotted-circle}** No               |  **{dotted-circle}** No        |
+| Mistral      | [Mixtral 8x7B-it](https://huggingface.co/mistralai/Mixtral-8x7B-Instruct-v0.1)        | **{check-circle}** Yes                | **{check-circle}** Yes               | **{check-circle}** Yes        |
+| Mistral      | [Mixtral 8x22B](https://huggingface.co/mistralai/Mixtral-8x22B-v0.1)       |  **{check-circle}** Yes                | **{dotted-circle}** No               | **{dotted-circle}** No        |
+| Mistral      | [Mixtral 8x22B-it](https://huggingface.co/mistralai/Mixtral-8x22B-Instruct-v0.1)       |  **{check-circle}** Yes                | **{check-circle}** Yes               | **{check-circle}** Yes        |
 | Claude 3     | [Claude 3.5 Sonnet](https://www.anthropic.com/news/claude-3-5-sonnet)        | **{check-circle}** Yes                | **{check-circle}** Yes               | **{check-circle}** Yes        |
 
 The following models are under evaluation, and support is limited:
@@ -67,8 +68,12 @@ The following models are under evaluation, and support is limited:
 
 To host your models, you should use:
 
-- For non-cloud on-premise deployments, [vLLM](https://docs.vllm.ai/en/stable/).
-- For cloud deployments, AWS Bedrock or Azure as a cloud providers.
+- For non-cloud on-premise model deployments, [vLLM](https://docs.vllm.ai/en/stable/).
+- For cloud-hosted model deployments, we currently support AWS Bedrock or Azure OpenAI as cloud providers.
+
+## GitLab AI Gateway
+
+[Install the GitLab AI Gateway](../../install/install_ai_gateway.md).
 
 ## Configure your GitLab instance
 
@@ -99,10 +104,6 @@ Prerequisites:
       ```shell
       sudo gitlab-ctl reconfigure
       ```
-
-## GitLab AI Gateway
-
-[Install the GitLab AI Gateway](../../install/install_ai_gateway.md).
 
 ## Enable logging
 
@@ -179,7 +180,7 @@ Logging in the `application.json`, `production_json.log`, and `production.log` f
 
 ### The `llm.log` file
 
-The [`llm.log` file](../../administration/logs/index.md#llmlog) in your instance is populated only when the `:expanded_ai_logging` feature flag is enabled. When this feature flag is active, full logging is enabled, capturing all prompts, inputs, and outputs in `llm.log` on your GitLab self-managed instance.
+When the `:expanded_ai_logging` feature flag is enabled, the [`llm.log` file](../../administration/logs/index.md#llmlog) in your GitLab instance captures code generation and Chat events that occur through your instance. The log file does not capture anything when the feature flag is not enabled. Code completion logs are captured directly in the AI Gateway.
 
 For more information on:
 
