@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 17.5.1 (2024-10-22)
+
+### Security (2 changes)
+
+- [Fixed HTML injection in Global Search bug](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a7e8948dba537f4e625c155ab6554919c17377d6) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4542))
+- [Limit max size of manifest file upload](https://gitlab.com/gitlab-org/security/gitlab/-/commit/9bedc6764bd1de6fa694f15898cded41733982f4) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4541))
+
 ## 17.5.0 (2024-10-16)
 
 ### Added (145 changes)
