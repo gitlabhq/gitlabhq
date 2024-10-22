@@ -337,8 +337,8 @@ remote_development:
 
 Use this setting to specify whether to use the user namespaces feature in Kubernetes.
 
-User namespaces isolate the user running inside the container from the user in the host.
-In Kubernetes 1.30, this feature is in beta.
+[User namespaces](https://kubernetes.io/docs/concepts/workloads/pods/user-namespaces/) isolate the user
+running inside the container from the user on the host.
 
 The default value is `false`. Before you set the value to `true`, ensure your Kubernetes cluster supports user namespaces.
 

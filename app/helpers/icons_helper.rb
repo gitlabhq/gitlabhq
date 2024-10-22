@@ -84,7 +84,7 @@ module IconsHelper
   end
 
   def external_snippet_icon(name)
-    content_tag(:span, "", class: "gl-snippet-icon gl-snippet-icon-#{name}")
+    content_tag(:span, "", class: "gl-snippet-icon gl-snippet-icon-#{name}") # rubocop:disable Tailwind/StringInterpolation -- Not a CSS utility class
   end
 
   def audit_icon(name, css_class: nil)

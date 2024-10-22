@@ -105,6 +105,13 @@ module Gitlab
           Gitlab::Metrics.counter(name, comment)
         end
 
+        def self.duplicate_job_name_errors_counter
+          name = :gitlab_ci_duplicate_job_name_errors_counter
+          comment = 'Counter of duplicate job name errors'
+
+          Gitlab::Metrics.counter(name, comment)
+        end
+
         def ci_minutes_exceeded_builds_counter
           name = :ci_minutes_exceeded_builds_counter
           comment = 'Count of builds dropped due to compute minutes exceeded'

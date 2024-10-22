@@ -321,14 +321,16 @@ describe('WorkItemActions component', () => {
       expect(wrapper.emitted('toggleWorkItemConfidentiality')[0]).toEqual([true]);
     });
 
-    it.each`
-      props                             | propName                  | value
-      ${{ isParentConfidential: true }} | ${'isParentConfidential'} | ${true}
-      ${{ canUpdate: false }}           | ${'canUpdate'}            | ${false}
-    `('does not render when $propName is $value', ({ props }) => {
-      createComponent(props);
-
+    it('does not render when canUpdate is false', () => {
+      createComponent({ canUpdate: false });
       expect(findConfidentialityToggleButton().exists()).toBe(false);
+    });
+
+    it('is disabled when item has confidential parent', () => {
+      createComponent({ isParentConfidential: true });
+      expect(findConfidentialityToggleButton().props('item')).toMatchObject({
+        extraAttrs: { disabled: true },
+      });
     });
   });
 

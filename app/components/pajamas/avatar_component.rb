@@ -27,7 +27,7 @@ module Pajamas
     private
 
     def avatar_classes
-      classes = ["gl-avatar", "gl-avatar-s#{@size}", @class]
+      classes = ["gl-avatar", "gl-avatar-s#{@size}", @class] # rubocop:disable Tailwind/StringInterpolation -- Not a CSS utility class
       if @item.is_a?(User) || @item.is_a?(AvatarEmail)
         classes.push("gl-avatar-circle")
       else
@@ -36,7 +36,7 @@ module Pajamas
 
       unless src
         classes.push("gl-avatar-identicon")
-        classes.push("gl-avatar-identicon-bg#{((@item.id || 0) % 7) + 1}")
+        classes.push("gl-avatar-identicon-bg#{((@item.id || 0) % 7) + 1}") # rubocop:disable Tailwind/StringInterpolation -- Not a CSS utility class
       end
 
       classes.join(' ')

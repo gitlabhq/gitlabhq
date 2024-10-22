@@ -19,6 +19,8 @@ Before making changes, ensure either the SAML response includes the `groups` att
 and the `AttributeValue` value matches the **SAML Group Name** in GitLab,
 or that all groups are removed from GitLab to disable Group Sync.
 
+SAML group sync allows users to be assigned to pre-existing GitLab groups with specific permissions based on the user's group assignment in the SAML identity provider (IdP). This feature allows you to create a many-to-many mapping between SAML IdP groups and GitLab groups. For example, if the user `@amelia` is assigned to the `security` group in the SAML IdP, SAML group sync allows you to assign `@amelia` to the `security-gitlab` and `vulnerability` GitLab groups with `maintainer` and `reporter` permissions, respectively. SAML group sync does not create groups. You [create groups separately](../index.md#create-a-group), and then create the mapping.
+
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For a demo of Group Sync using Azure, see [Demo: SAML Group Sync](https://youtu.be/Iqvo2tJfXjg).
 
@@ -34,8 +36,7 @@ Prerequisites:
 When SAML is enabled, users with the Owner role see a new menu
 item in group **Settings > SAML Group Links**.
 
-- You can configure one or more **SAML Group Links** to map a SAML identity
-  provider (IdP) group name to a GitLab role.
+- You can configure one or more **SAML Group Links** to map a SAML IdP group name to a GitLab role.
 - Members of the SAML IdP group are added as members of the GitLab
   group on their next SAML sign-in.
 - Group membership is evaluated each time a user signs in using SAML.

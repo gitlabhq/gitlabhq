@@ -13849,6 +13849,12 @@ msgstr ""
 msgid "Commit statistics for %{ref} %{start_time} - %{end_time}"
 msgstr ""
 
+msgid "Commit to a new branch"
+msgstr ""
+
+msgid "Commit to the current %{branchName} branch"
+msgstr ""
+
 msgid "CommitBoxTitle|Commit"
 msgstr ""
 
@@ -16204,6 +16210,9 @@ msgstr ""
 msgid "Create a merge request branch target."
 msgstr ""
 
+msgid "Create a merge request for this change"
+msgstr ""
+
 msgid "Create a merge request, or edit your criteria and try again."
 msgstr ""
 
@@ -18229,9 +18238,6 @@ msgid "Delete diagram"
 msgstr ""
 
 msgid "Delete epic"
-msgstr ""
-
-msgid "Delete file"
 msgstr ""
 
 msgid "Delete group"
@@ -23560,7 +23566,7 @@ msgstr ""
 msgid "Filter users"
 msgstr ""
 
-msgid "Filter: %{filter_name})"
+msgid "Filter: %{filter_name}"
 msgstr ""
 
 msgid "Finalizing"
@@ -62193,6 +62199,9 @@ msgstr ""
 msgid "WorkItem|Are you sure you want to cancel editing?"
 msgstr ""
 
+msgid "WorkItem|Are you sure you want to close this %{workItemType}?"
+msgstr ""
+
 msgid "WorkItem|Are you sure you want to close this blocked %{workItemType}?"
 msgstr ""
 
@@ -62212,6 +62221,9 @@ msgid "WorkItem|Cancel"
 msgstr ""
 
 msgid "WorkItem|Child items"
+msgstr ""
+
+msgid "WorkItem|Child items of a confidential parent must be confidential. Turn off confidentiality on the parent item first."
 msgstr ""
 
 msgid "WorkItem|Child removal reverted"
@@ -62572,6 +62584,9 @@ msgid "WorkItem|The current objective"
 msgstr ""
 
 msgid "WorkItem|The current task"
+msgstr ""
+
+msgid "WorkItem|This %{workItemType} has open child items. If you close this %{workItemType}, they will remain open."
 msgstr ""
 
 msgid "WorkItem|This %{workItemType} is confidential and should only be visible to team members with at least Reporter access"
@@ -64974,6 +64989,9 @@ msgid "estimateCommand|%{slash_command} overwrites the total estimated time."
 msgstr ""
 
 msgid "event"
+msgstr ""
+
+msgid "example-branch-name"
 msgstr ""
 
 msgid "example.com"

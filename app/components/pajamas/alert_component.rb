@@ -29,7 +29,7 @@ module Pajamas
     end
 
     def base_class
-      classes = ["gl-alert-#{@variant}"]
+      classes = ["gl-alert-#{@variant}"] # rubocop:disable Tailwind/StringInterpolation -- Not a CSS utility class
       classes.push('gl-alert-not-dismissible') unless @dismissible
       classes.push('gl-alert-no-icon') unless @show_icon
       classes.push('gl-alert-has-title') if @title
@@ -48,7 +48,7 @@ module Pajamas
     end
 
     def icon_classes
-      "gl-alert-icon#{' gl-alert-icon-no-title' if @title.nil?}"
+      "gl-alert-icon#{' gl-alert-icon-no-title' if @title.nil?}" # rubocop:disable Tailwind/StringInterpolation -- Not a CSS utility class
     end
 
     def dismissible_button_options

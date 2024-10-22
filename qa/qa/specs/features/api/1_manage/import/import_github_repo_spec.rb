@@ -10,7 +10,7 @@ module QA
       end
 
       context 'when imported via api' do
-        it 'imports project', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347670' do
+        it 'imports project', :blocking, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347670' do
           expect_project_import_finished_successfully
 
           aggregate_failures do

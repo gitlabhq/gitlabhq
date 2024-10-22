@@ -202,7 +202,6 @@ Style/RedundantSelf:
     - 'ee/lib/ee/gitlab/auth/ldap/sync/proxy.rb'
     - 'ee/lib/ee/gitlab/auth/ldap/sync/users.rb'
     - 'ee/lib/ee/gitlab/background_migration/delete_invalid_epic_issues.rb'
-    - 'ee/lib/elastic/instance_proxy_util.rb'
     - 'ee/lib/elastic/latest/commit_config.rb'
     - 'ee/lib/elastic/latest/issue_config.rb'
     - 'ee/lib/elastic/latest/note_config.rb'

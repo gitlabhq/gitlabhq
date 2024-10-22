@@ -82,7 +82,7 @@ workflow:
     QA_ALLOW_LOCAL_REQUESTS: "true"
     QA_SUITE_STATUS_ENV_FILE: $CI_PROJECT_DIR/suite_status.env
     CNG_FORCE_COLOR: "true"
-    QA_RUN_IN_PARALLEL: "true"
+    QA_RUN_IN_PARALLEL: "false" # TODO: consider re-enabling after https://gitlab.com/groups/gitlab-org/quality/quality-engineering/-/epics/99 is completed
     QA_PARALLEL_PROCESSES: 4
   before_script:
     - echo "SUITE_RAN=true" > "$QA_SUITE_STATUS_ENV_FILE"

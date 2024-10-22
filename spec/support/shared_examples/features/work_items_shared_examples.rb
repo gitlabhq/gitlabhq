@@ -422,6 +422,8 @@ RSpec.shared_examples 'work items notifications' do
 
         click_button(class: 'gl-toggle')
 
+        wait_for_requests
+
         expect(page).to have_button(class: 'gl-toggle is-checked')
       end
     end

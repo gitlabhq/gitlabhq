@@ -13,7 +13,6 @@ Style/RedundantParentheses:
     - 'ee/app/controllers/groups/billings_controller.rb'
     - 'ee/app/helpers/ee/projects_helper.rb'
     - 'ee/app/models/push_rule.rb'
-    - 'ee/app/models/search/index.rb'
     - 'ee/app/services/concerns/approval_rules/updater.rb'
     - 'ee/app/services/merge_trains/refresh_service.rb'
     - 'ee/lib/ee/gitlab/git_access.rb'

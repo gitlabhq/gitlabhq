@@ -1235,3 +1235,10 @@ Gitlab/NoFindInWorkers:
   Include:
     - app/workers/**/*
     - ee/app/workers/**/*
+
+Tailwind/StringInterpolation:
+  Enabled: true
+  Include:
+  - '{,ee/,jh/}app/helpers/**/*.rb'
+  - '{,ee/,jh/}app/components/**/*.{haml,rb}'
+  - '{,ee/,jh/}app/views/**/*.haml'

@@ -1363,7 +1363,6 @@
 - './ee/spec/models/namespaces/free_user_cap_spec.rb'
 - './ee/spec/models/namespaces/storage/root_excess_size_spec.rb'
 - './ee/spec/models/namespaces/storage/root_size_spec.rb'
-- './ee/spec/models/note_spec.rb'
 - './ee/spec/models/packages/package_file_spec.rb'
 - './ee/spec/models/path_lock_spec.rb'
 - './ee/spec/models/plan_spec.rb'

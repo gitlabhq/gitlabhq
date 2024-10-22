@@ -1647,7 +1647,6 @@ Layout/LineLength:
     - 'ee/spec/models/merge_requests/compliance_violation_spec.rb'
     - 'ee/spec/models/merge_requests/external_status_check_spec.rb'
     - 'ee/spec/models/namespace_setting_spec.rb'
-    - 'ee/spec/models/note_spec.rb'
     - 'ee/spec/models/packages/package_file_spec.rb'
     - 'ee/spec/models/project_import_data_spec.rb'
     - 'ee/spec/models/project_import_state_spec.rb'

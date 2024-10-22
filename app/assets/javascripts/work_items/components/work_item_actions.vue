@@ -53,6 +53,9 @@ export default {
   i18n: {
     enableConfidentiality: s__('WorkItem|Turn on confidentiality'),
     disableConfidentiality: s__('WorkItem|Turn off confidentiality'),
+    confidentialParentTooltip: s__(
+      'WorkItem|Child items of a confidential parent must be confidential. Turn off confidentiality on the parent item first.',
+    ),
     notifications: s__('WorkItem|Notifications'),
     notificationOn: s__('WorkItem|Notifications turned on.'),
     notificationOff: s__('WorkItem|Notifications turned off.'),
@@ -236,10 +239,18 @@ export default {
     canPromoteToObjective() {
       return this.canUpdate && this.workItemType === WORK_ITEM_TYPE_VALUE_KEY_RESULT;
     },
-    confidentialItemText() {
-      return this.isConfidential
-        ? this.$options.i18n.disableConfidentiality
-        : this.$options.i18n.enableConfidentiality;
+    confidentialItem() {
+      return {
+        text: this.isConfidential
+          ? this.$options.i18n.disableConfidentiality
+          : this.$options.i18n.enableConfidentiality,
+        extraAttrs: {
+          disabled: this.isParentConfidential,
+        },
+      };
+    },
+    confidentialTooltip() {
+      return this.isParentConfidential ? this.$options.i18n.confidentialParentTooltip : '';
     },
     lockDiscussionText() {
       return this.isDiscussionLocked ? __('Unlock discussion') : __('Lock discussion');
@@ -474,12 +485,12 @@ export default {
       </gl-disclosure-dropdown-item>
 
       <gl-disclosure-dropdown-item
-        v-if="canUpdate && !isParentConfidential"
+        v-if="canUpdate"
+        v-gl-tooltip.left.viewport.d0="confidentialTooltip"
+        :item="confidentialItem"
         :data-testid="$options.confidentialityTestId"
         @action="handleToggleWorkItemConfidentiality"
-      >
-        <template #list-item>{{ confidentialItemText }}</template>
-      </gl-disclosure-dropdown-item>
+      />
 
       <gl-disclosure-dropdown-item
         :data-testid="$options.copyReferenceTestId"

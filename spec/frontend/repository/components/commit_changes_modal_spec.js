@@ -1,16 +1,24 @@
-import { GlFormTextarea, GlModal, GlFormInput, GlToggle, GlForm, GlSprintf } from '@gitlab/ui';
+import {
+  GlFormTextarea,
+  GlModal,
+  GlFormCheckbox,
+  GlFormInput,
+  GlFormRadioGroup,
+  GlForm,
+  GlSprintf,
+  GlFormRadio,
+} from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { RENDER_ALL_SLOTS_TEMPLATE, stubComponent } from 'helpers/stub_component';
-import DeleteBlobModal from '~/repository/components/delete_blob_modal.vue';
+import CommitChangesModal from '~/repository/components/commit_changes_modal.vue';
 import { sprintf } from '~/locale';
 
 jest.mock('~/lib/utils/csrf', () => ({ token: 'mock-csrf-token' }));
 
 const initialProps = {
   modalId: 'Delete-blob',
-  modalTitle: 'Delete File',
   deletePath: 'some/path',
   commitMessage: 'Delete File',
   targetBranch: 'some-target-branch',
@@ -20,15 +28,15 @@ const initialProps = {
   emptyRepo: false,
 };
 
-const { i18n } = DeleteBlobModal;
+const { i18n } = CommitChangesModal;
 
-describe('DeleteBlobModal', () => {
+describe('CommitChangesModal', () => {
   let wrapper;
 
   const createComponentFactory =
     (mountFn) =>
     (props = {}) => {
-      wrapper = mountFn(DeleteBlobModal, {
+      wrapper = mountFn(CommitChangesModal, {
         propsData: {
           ...initialProps,
           ...props,
@@ -50,6 +58,11 @@ describe('DeleteBlobModal', () => {
   const findModal = () => wrapper.findComponent(GlModal);
   const findForm = () => findModal().findComponent(GlForm);
   const findCommitTextarea = () => findForm().findComponent(GlFormTextarea);
+  const findFormRadioGroup = () => findForm().findComponent(GlFormRadioGroup);
+  const findRadioGroup = () => findForm().findAllComponents(GlFormRadio);
+  const findCurrentBranchRadioOption = () => findRadioGroup().at(0);
+  const findNewBranchRadioOption = () => findRadioGroup().at(1);
+  const findCreateMrCheckbox = () => findForm().findComponent(GlFormCheckbox);
   const findTargetInput = () => findForm().findComponent(GlFormInput);
   const findCommitHint = () => wrapper.find('[data-testid="hint"]');
 
@@ -92,13 +105,10 @@ describe('DeleteBlobModal', () => {
   it('renders Modal component', () => {
     createComponent();
 
-    const { modalTitle: title } = initialProps;
-
     expect(findModal().props()).toMatchObject({
-      title,
       size: 'md',
       actionPrimary: {
-        text: 'Delete file',
+        text: 'Commit changes',
       },
       actionCancel: {
         text: 'Cancel',
@@ -112,32 +122,53 @@ describe('DeleteBlobModal', () => {
       expect(findForm().attributes('action')).toBe(initialProps.deletePath);
     });
 
-    it.each`
-      component         | defaultValue                  | canPushCode | targetBranch                 | originalBranch                 | exist
-      ${GlFormTextarea} | ${initialProps.commitMessage} | ${true}     | ${initialProps.targetBranch} | ${initialProps.originalBranch} | ${true}
-      ${GlFormInput}    | ${initialProps.targetBranch}  | ${true}     | ${initialProps.targetBranch} | ${initialProps.originalBranch} | ${true}
-      ${GlFormInput}    | ${undefined}                  | ${false}    | ${initialProps.targetBranch} | ${initialProps.originalBranch} | ${false}
-      ${GlToggle}       | ${'true'}                     | ${true}     | ${initialProps.targetBranch} | ${initialProps.originalBranch} | ${true}
-      ${GlToggle}       | ${undefined}                  | ${true}     | ${'same-branch'}             | ${'same-branch'}               | ${false}
-    `(
-      'has the correct form fields',
-      ({ component, defaultValue, canPushCode, targetBranch, originalBranch, exist }) => {
-        createComponent({
-          canPushCode,
-          targetBranch,
-          originalBranch,
-        });
-        const formField = wrapper.findComponent(component);
+    it('shows the correct form fields when commit to current branch', () => {
+      createComponent();
+      expect(findCommitTextarea().exists()).toBe(true);
+      expect(findRadioGroup()).toHaveLength(2);
+      expect(findCurrentBranchRadioOption().text()).toContain(initialProps.originalBranch);
+      expect(findNewBranchRadioOption().text()).toBe('Commit to a new branch');
+    });
 
-        if (!exist) {
-          expect(formField.exists()).toBe(false);
-          return;
-        }
+    it('shows the correct form fields when commit to new branch', async () => {
+      createComponent();
+      expect(findTargetInput().exists()).toBe(false);
 
-        expect(formField.exists()).toBe(true);
-        expect(formField.attributes('value')).toBe(defaultValue);
-      },
-    );
+      findFormRadioGroup().vm.$emit('input', true);
+      await nextTick();
+
+      expect(findTargetInput().exists()).toBe(true);
+      expect(findCreateMrCheckbox().text()).toBe('Create a merge request for this change');
+    });
+
+    it('shows the correct form fields when `canPushToBranch` is `false`', () => {
+      createComponent({ canPushToBranch: false, canPushCode: true });
+      expect(wrapper.vm.$data.form.fields.branch_name.value).toBe('');
+      expect(findCommitTextarea().exists()).toBe(true);
+      expect(findRadioGroup().exists()).toBe(false);
+      expect(findTargetInput().exists()).toBe(true);
+      expect(findCreateMrCheckbox().text()).toBe('Create a merge request for this change');
+    });
+
+    it('clear branch name when new branch option is selected', async () => {
+      createComponent();
+      expect(wrapper.vm.$data.form.fields.branch_name).toEqual({
+        feedback: null,
+        required: true,
+        state: true,
+        value: 'main',
+      });
+
+      findFormRadioGroup().vm.$emit('input', true);
+      await nextTick();
+
+      expect(wrapper.vm.$data.form.fields.branch_name).toEqual({
+        feedback: null,
+        required: true,
+        state: true,
+        value: '',
+      });
+    });
 
     it.each`
       input                     | value                          | emptyRepo | canPushCode | canPushToBranch | exist
@@ -181,6 +212,7 @@ describe('DeleteBlobModal', () => {
 
     beforeEach(async () => {
       createFullComponent();
+      findFormRadioGroup().vm.$emit('input', true);
       await nextTick();
     });
 
@@ -219,6 +251,9 @@ describe('DeleteBlobModal', () => {
 
     describe('invalid form', () => {
       beforeEach(async () => {
+        findFormRadioGroup().vm.$emit('input', true);
+        await nextTick();
+
         await fillForm({ targetText: '', commitText: '' });
       });
 
@@ -236,6 +271,8 @@ describe('DeleteBlobModal', () => {
 
     describe('valid form', () => {
       beforeEach(async () => {
+        findFormRadioGroup().vm.$emit('input', true);
+        await nextTick();
         await fillForm({
           targetText: 'some valid target branch',
           commitText: 'some valid commit message',

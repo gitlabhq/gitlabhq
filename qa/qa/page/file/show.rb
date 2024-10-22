@@ -35,8 +35,8 @@ module QA
           click_element('question-icon')
         end
 
-        def click_delete_file
-          click_on 'Delete file'
+        def click_commit_changes
+          click_on 'Commit changes'
         end
       end
     end

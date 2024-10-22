@@ -310,6 +310,8 @@ You can view the contents of a job log in full screen mode by clicking **Show fu
 
 To use full screen mode, your web browser must also support it. If your web browser does not support full screen mode, then the option is not available.
 
+Job logs divided into sections can be collapsed or expanded. For more details, see [Expand and collapse job log sections](../yaml/script.md#expand-and-collapse-job-log-sections).
+
 ## Deployment jobs
 
 Deployment jobs are a specific kind of CI job in that they deploy code to

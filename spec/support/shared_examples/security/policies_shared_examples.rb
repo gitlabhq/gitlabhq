@@ -46,3 +46,51 @@ RSpec.shared_examples 'merge request approval policy editor' do
     expect(page).to have_current_path(project_merge_request_path(policy_management_project, 1))
   end
 end
+
+# Requires the url to the policy editor:
+# - path_to_merge_request_approval_policy_editor
+# - path_to_merge_request_approval_policy_editor
+RSpec.shared_examples 'merge request approval policy invalid policy properties' do
+  let(:merge_request_approval_policy_with_exceeding_number_of_rules) do
+    fixture_file('security_orchestration/merge_request_approval_policy_with_exceeding_number_of_rules.yml', dir: 'ee')
+  end
+
+  it "fails to create a policy without name" do
+    click_button _('Configure with a merge request')
+
+    expect(page).to have_content('Empty policy name')
+    expect(page).to have_current_path(path_to_merge_request_approval_policy_editor)
+  end
+
+  it "fails to create a policy without approvers" do
+    fill_in _('Name'), with: 'Missing approvers'
+    click_button _('Configure with a merge request')
+
+    expect(page).to have_content('Required approvals exceed eligible approvers.')
+    expect(page).to have_current_path(path_to_merge_request_approval_policy_editor)
+  end
+
+  it "fails to create a policy without rules" do
+    fill_in _('Name'), with: 'Missing rules'
+
+    page.within(find_by_testid('actions-section')) do
+      select_from_listbox 'Roles', from: 'Choose approver type'
+      select_from_listbox 'Owner', from: 'Choose specific role'
+    end
+
+    click_button _('Configure with a merge request')
+
+    expect(page).to have_content("Invalid policy YAML")
+    expect(page).to have_current_path(path_to_merge_request_approval_policy_editor)
+  end
+
+  it "fails to create policy with exceeding number of rules" do
+    click_button _('.yaml mode')
+    editor_set_value(merge_request_approval_policy_with_exceeding_number_of_rules.to_s)
+
+    click_button _('Configure with a merge request')
+
+    expect(page).to have_content("Invalid policy YAML")
+    expect(page).to have_current_path(path_to_merge_request_approval_policy_editor)
+  end
+end

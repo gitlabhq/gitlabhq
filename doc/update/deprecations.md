@@ -4175,6 +4175,32 @@ However, since certificate-based integration with Kubernetes clusters is depreca
 
 </div>
 
+Whether your existing project access tokens have expiry dates automatically applied depends on what GitLab offering you have, and when you upgraded to GitLab 16.0 or later:
+
+- On GitLab.com, during the 16.0 milestone, existing project access tokens without an expiry date were automatically given an expiry date of 365 days later than the current date.
+- On GitLab self-managed, if you upgraded from GitLab 15.11 or earlier to GitLab 16.0 or later:
+  - On or before July 23, 2024, existing project access tokens without an expiry date were automatically given an expiry date of 365 days later than the current date.
+    This change is a breaking change.
+  - On or after July 24, 2024, existing project access tokens without an expiry date did not have an expiry date set.
+
+On GitLab self-managed, if you do a new install of one of the following GitLab versions, your existing project access tokens do not have expiry dates automatically applied:
+
+- 16.0.9
+- 16.1.7
+- 16.2.10
+- 16.3.8
+- 16.4.6
+- 16.5.9
+- 16.6.9
+- 16.7.9
+- 16.8.9
+- 16.9.10
+- 16.10.9
+- 16.11.7
+- 17.0.5
+- 17.1.3
+- 17.2.1
+
 Access tokens that have no expiration date are valid indefinitely, which presents a security risk if the access token
 is divulged. Because access tokens that have an expiration date are better, from GitLab 15.3 we
 [populate a default expiration date](https://gitlab.com/gitlab-org/gitlab/-/issues/348660).

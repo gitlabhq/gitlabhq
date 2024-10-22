@@ -13,7 +13,9 @@ a base64-encoded ASCII text file with a `.gitlab-license` extension.
 The first time you sign in to your GitLab instance, a note with a
 link to the **Add license** page should be displayed.
 
-Otherwise, to add your license:
+Otherwise, add your license in the Admin area.
+
+## Add license in the Admin area
 
 1. Sign in to GitLab as an administrator.
 1. On the left sidebar, at the bottom, select **Admin**.

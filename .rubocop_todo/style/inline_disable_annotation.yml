@@ -1345,7 +1345,6 @@ Style/InlineDisableAnnotation:
     - 'ee/app/models/protected_environments/approval_rules/summarizable.rb'
     - 'ee/app/models/protected_environments/authorizable.rb'
     - 'ee/app/models/requirements_management/requirement.rb'
-    - 'ee/app/models/search/namespace_index_assignment.rb'
     - 'ee/app/models/security/training.rb'
     - 'ee/app/models/vulnerabilities/finding.rb'
     - 'ee/app/policies/merge_request_diff_policy.rb'

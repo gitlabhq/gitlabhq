@@ -1,0 +1,25 @@
+query openChildItemCount($fullPath: ID!, $iid: String!) {
+  namespace(fullPath: $fullPath) {
+    id
+    workItem(iid: $iid) {
+      id
+      widgets {
+        ... on WorkItemWidgetHierarchy {
+          type
+          rolledUpCountsByType {
+            countsByState {
+              opened
+              all
+              closed
+            }
+            workItemType {
+              id
+              name
+              iconName
+            }
+          }
+        }
+      }
+    }
+  }
+}

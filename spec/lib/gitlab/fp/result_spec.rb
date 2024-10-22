@@ -14,15 +14,15 @@ RSpec.describe Gitlab::Fp::Result, feature_category: :shared do
     context 'when checked with .ok? and .err?' do
       it 'works with ok result' do
         result = Gitlab::Fp::Result.ok(:success)
-        expect(result.ok?).to eq(true)
-        expect(result.err?).to eq(false)
+        expect(result.ok?).to be(true)
+        expect(result.err?).to be(false)
         expect(result.unwrap).to eq(:success)
       end
 
       it 'works with error result' do
         result = Gitlab::Fp::Result.err(:failure)
-        expect(result.err?).to eq(true)
-        expect(result.ok?).to eq(false)
+        expect(result.err?).to be(true)
+        expect(result.ok?).to be(false)
         expect(result.unwrap_err).to eq(:failure)
       end
     end
@@ -97,7 +97,7 @@ RSpec.describe Gitlab::Fp::Result, feature_category: :shared do
             .and_then(->(value) { Gitlab::Fp::Result.ok(value + 1) })
             .and_then(->(value) { Gitlab::Fp::Result.ok(value + 1) })
 
-        expect(final_result.ok?).to eq(true)
+        expect(final_result.ok?).to be(true)
         expect(final_result.unwrap).to eq(3)
       end
 
@@ -108,7 +108,7 @@ RSpec.describe Gitlab::Fp::Result, feature_category: :shared do
             .and_then(->(value) { Gitlab::Fp::Result.err("invalid: #{value}") })
             .and_then(->(value) { Gitlab::Fp::Result.ok(value + 1) })
 
-        expect(final_result.err?).to eq(true)
+        expect(final_result.err?).to be(true)
         expect(final_result.unwrap_err).to eq('invalid: 1')
       end
     end
@@ -137,7 +137,7 @@ RSpec.describe Gitlab::Fp::Result, feature_category: :shared do
             .and_then(::MyModuleUsingResult.method(:double))
             .and_then(::MyModuleUsingResult::MyClassUsingResult.method(:triple))
 
-        expect(final_result.ok?).to eq(true)
+        expect(final_result.ok?).to be(true)
         expect(final_result.unwrap).to eq(6)
       end
 
@@ -150,7 +150,7 @@ RSpec.describe Gitlab::Fp::Result, feature_category: :shared do
             .and_then(::MyModuleUsingResult.method(:return_err))
             .and_then(::MyModuleUsingResult.method(:double))
 
-        expect(final_result.err?).to eq(true)
+        expect(final_result.err?).to be(true)
         expect(final_result.unwrap_err).to eq('invalid: 6')
       end
     end
@@ -195,7 +195,7 @@ RSpec.describe Gitlab::Fp::Result, feature_category: :shared do
             .map(->(value) { value + 1 })
             .map(->(value) { value + 1 })
 
-        expect(final_result.ok?).to eq(true)
+        expect(final_result.ok?).to be(true)
         expect(final_result.unwrap).to eq(3)
       end
 
@@ -206,7 +206,7 @@ RSpec.describe Gitlab::Fp::Result, feature_category: :shared do
             .and_then(->(value) { Gitlab::Fp::Result.err("invalid: #{value}") })
             .map(->(value) { value + 1 })
 
-        expect(final_result.err?).to eq(true)
+        expect(final_result.err?).to be(true)
         expect(final_result.unwrap_err).to eq('invalid: 1')
       end
     end
@@ -231,7 +231,7 @@ RSpec.describe Gitlab::Fp::Result, feature_category: :shared do
             .map(::MyModuleNotUsingResult.method(:double))
             .map(::MyModuleNotUsingResult::MyClassNotUsingResult.method(:triple))
 
-        expect(final_result.ok?).to eq(true)
+        expect(final_result.ok?).to be(true)
         expect(final_result.unwrap).to eq(6)
       end
 
@@ -243,7 +243,7 @@ RSpec.describe Gitlab::Fp::Result, feature_category: :shared do
             .and_then(->(value) { Gitlab::Fp::Result.err("invalid: #{value}") })
             .map(::MyModuleUsingResult.method(:double))
 
-        expect(final_result.err?).to eq(true)
+        expect(final_result.err?).to be(true)
         expect(final_result.unwrap_err).to eq('invalid: 2')
       end
     end

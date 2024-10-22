@@ -169,6 +169,8 @@ export default {
     '.pika-single',
     '.atwho-container',
     '.tippy-content .gl-new-dropdown-panel',
+    '#blocked-by-issues-modal',
+    '#open-children-warning-modal',
   ],
 };
 </script>
