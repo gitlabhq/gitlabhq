@@ -26,11 +26,11 @@ pipelines and pipelines that failed with an invalid YAML. To filter pipelines ba
 
 View successful pipelines:
 
-![Successful pipelines](img/pipelines_success_chart.png)
+![Successful pipelines](img/pipelines_success_chart_v12_9.png)
 
 View pipeline duration history:
 
-![Pipeline duration](img/pipelines_duration_chart.png)
+![Pipeline duration](img/pipelines_duration_chart_v13_12.png)
 
 ## View CI/CD analytics
 

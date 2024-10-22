@@ -19916,6 +19916,9 @@ msgstr ""
 msgid "DiscordService|Send notifications about project events to a Discord channel."
 msgstr ""
 
+msgid "Discover Duo Enterprise"
+msgstr ""
+
 msgid "Discover Duo Pro"
 msgstr ""
 
@@ -20339,6 +20342,57 @@ msgid "DuoCodeReview|I finished my review and found nothing to comment on. Nice 
 msgstr ""
 
 msgid "DuoCodeReview|I have encountered some issues while I was reviewing. Please try again later."
+msgstr ""
+
+msgid "DuoEnterpriseDiscover|AI Impact analytics dashboard measures the ROI of AI"
+msgstr ""
+
+msgid "DuoEnterpriseDiscover|AI-assisted root cause analysis for CI/CD job failures, and suggested fixes to quickly remedy broken pipelines."
+msgstr ""
+
+msgid "DuoEnterpriseDiscover|AI-powered vulnerability explanation and resolution features to remediate vulnerabilities and uplevel skills."
+msgstr ""
+
+msgid "DuoEnterpriseDiscover|Advanced troubleshooting"
+msgstr ""
+
+msgid "DuoEnterpriseDiscover|Boost productivity with smart code assistance"
+msgstr ""
+
+msgid "DuoEnterpriseDiscover|Discussion, merge request, and code summaries for efficient and effective communication."
+msgstr ""
+
+msgid "DuoEnterpriseDiscover|Fortify your code"
+msgstr ""
+
+msgid "DuoEnterpriseDiscover|GitLab Duo Code Suggestions"
+msgstr ""
+
+msgid "DuoEnterpriseDiscover|GitLab Duo Code review summary"
+msgstr ""
+
+msgid "DuoEnterpriseDiscover|GitLab Duo Root cause analysis"
+msgstr ""
+
+msgid "DuoEnterpriseDiscover|GitLab Duo Vulnerability explanation"
+msgstr ""
+
+msgid "DuoEnterpriseDiscover|Granular usage data, performance improvements, and productivity metrics to evaluate the effectiveness of AI in software development."
+msgstr ""
+
+msgid "DuoEnterpriseDiscover|Measure the ROI of AI"
+msgstr ""
+
+msgid "DuoEnterpriseDiscover|Summarization and templating"
+msgstr ""
+
+msgid "DuoEnterpriseDiscover|Why GitLab Duo Enterprise?"
+msgstr ""
+
+msgid "DuoEnterpriseDiscover|Write secure code faster with AI-powered suggestions in more than 20 languages, and chat with your AI companion throughout development."
+msgstr ""
+
+msgid "DuoEnterpriseDiscover|Your end-to-end AI partner"
 msgstr ""
 
 msgid "DuoEnterpriseTrial|Activate my trial"
@@ -58855,9 +58909,6 @@ msgstr ""
 msgid "UsageQuota|%{percentageRemaining}%% namespace storage remaining."
 msgstr ""
 
-msgid "UsageQuota|%{percentageRemaining}%% purchased storage remaining."
-msgstr ""
-
 msgid "UsageQuota|%{storage_limit_link_start}A namespace storage limit%{link_end} of %{limit} will soon be enforced for the %{strong_start}%{namespace_name}%{strong_end} namespace. %{extra_message}"
 msgstr ""
 
@@ -58895,6 +58946,9 @@ msgid "UsageQuota|Container Registry"
 msgstr ""
 
 msgid "UsageQuota|Dependency proxy"
+msgstr ""
+
+msgid "UsageQuota|Excess storage usage"
 msgstr ""
 
 msgid "UsageQuota|Filter charts by year"
@@ -59047,9 +59101,6 @@ msgstr ""
 msgid "UsageQuota|This table omits projects that used 0 compute minutes or 0 instance runners duration"
 msgstr ""
 
-msgid "UsageQuota|Total excess storage"
-msgstr ""
-
 msgid "UsageQuota|Total purchased storage"
 msgstr ""
 
@@ -59096,6 +59147,9 @@ msgid "UsageQuota|User settings %{gt} Usage quotas"
 msgstr ""
 
 msgid "UsageQuota|Wiki content."
+msgstr ""
+
+msgid "UsageQuota|You have used %{percentageUsed}%% of your total storage."
 msgstr ""
 
 msgid "UsageTrends|Could not load the issues and merge requests chart. Please refresh the page to try again."

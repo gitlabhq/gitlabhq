@@ -34,7 +34,7 @@
   &:focus,
   &:focus-within,
   &:active {
-    @include gl-focus;
+    @apply gl-focus;
   }
 
   &:hover {

@@ -43,7 +43,7 @@
 }
 
 a.ci-icon:focus {
-  @include gl-focus;
+  @apply gl-focus;
 }
 
 .ci-icon {

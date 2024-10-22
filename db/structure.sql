@@ -6794,7 +6794,8 @@ CREATE TABLE approval_group_rules_users (
     id bigint NOT NULL,
     approval_group_rule_id bigint NOT NULL,
     user_id bigint NOT NULL,
-    group_id bigint
+    group_id bigint,
+    CONSTRAINT check_6db3034f1c CHECK ((group_id IS NOT NULL))
 );
 
 CREATE SEQUENCE approval_group_rules_users_id_seq
@@ -19074,7 +19075,8 @@ CREATE TABLE snippets (
     secret boolean DEFAULT false NOT NULL,
     repository_read_only boolean DEFAULT false NOT NULL,
     imported_from smallint DEFAULT 0 NOT NULL,
-    organization_id bigint
+    organization_id bigint,
+    CONSTRAINT check_82c1d40fab CHECK ((num_nonnulls(organization_id, project_id) = 1))
 );
 
 CREATE SEQUENCE snippets_id_seq

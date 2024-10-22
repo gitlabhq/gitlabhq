@@ -1,14 +1,14 @@
 <script>
-import { GlIcon, GlLink, GlSprintf } from '@gitlab/ui';
+import { GlLink, GlSprintf, GlAnimatedUploadIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
 import { VALID_DATA_TRANSFER_TYPE, VALID_IMAGE_FILE_MIMETYPE } from './constants';
 import { isValidImage } from './utils';
 
 export default {
   components: {
-    GlIcon,
     GlLink,
     GlSprintf,
+    GlAnimatedUploadIcon,
   },
   props: {
     displayAsCard: {
@@ -66,6 +66,7 @@ export default {
     return {
       dragCounter: 0,
       isDragDataValid: true,
+      animateUploadIcon: false,
     };
   },
   computed: {
@@ -74,8 +75,7 @@ export default {
     },
     iconStyles() {
       return {
-        size: this.displayAsCard ? 24 : 16,
-        class: this.displayAsCard ? 'gl-mb-2' : 'gl-mr-3',
+        class: this.displayAsCard ? 'gl-mb-3' : 'gl-mr-3',
       };
     },
     validMimeTypeString() {
@@ -143,6 +143,12 @@ export default {
     onFileInputChange(e) {
       this.$emit('change', this.singleFileSelection ? e.target.files[0] : e.target.files);
     },
+    onMouseEnter() {
+      this.animateUploadIcon = true;
+    },
+    onMouseLeave() {
+      this.animateUploadIcon = false;
+    },
   },
 };
 </script>
@@ -162,13 +168,15 @@ export default {
         class="card upload-dropzone-card upload-dropzone-border gl-mb-0 gl-h-full gl-w-full gl-items-center gl-justify-center gl-px-5 gl-py-4"
         type="button"
         @click="openFileUpload"
+        @mouseenter="onMouseEnter"
+        @mouseleave="onMouseLeave"
       >
         <div
           :class="{ 'gl-flex-col': displayAsCard }"
           class="gl-flex gl-items-center gl-justify-center gl-text-center"
           data-testid="dropzone-area"
         >
-          <gl-icon name="upload" :size="iconStyles.size" :class="iconStyles.class" />
+          <gl-animated-upload-icon :is-on="animateUploadIcon" :class="iconStyles.class" />
           <p class="gl-mb-0" data-testid="upload-text">
             <slot name="upload-text" :open-file-upload="openFileUpload">
               <gl-sprintf

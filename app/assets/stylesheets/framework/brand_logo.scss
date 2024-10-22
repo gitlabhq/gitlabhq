@@ -11,6 +11,6 @@
 
   &:focus,
   &:active {
-    @include gl-focus;
+    @apply gl-focus;
   }
 }

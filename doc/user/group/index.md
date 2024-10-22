@@ -438,7 +438,7 @@ You can add a new project to a group in two ways:
 - Select a group, and then select **New project**. You can then continue [creating your project](../../user/project/index.md).
 - While you are creating a project, select a group from the dropdown list.
 
-  ![Select group](img/select_group_dropdown_13_10.png)
+  ![Select group](img/select_group_dropdown_v13_10.png)
 
 ### Specify who can add projects to a group
 

@@ -120,7 +120,7 @@ label {
     background: var(--gl-control-background-color-default);
     border-color: var(--gl-control-border-color-default);
     @apply gl-text-default;
-    @include gl-focus;
+    @apply gl-focus;
   }
 }
 
@@ -264,5 +264,5 @@ label {
 
 .add-issuable-form-input-wrapper.focus,
 .issue-token-remove-button:focus {
-  @include gl-focus;
+  @apply gl-focus;
 }

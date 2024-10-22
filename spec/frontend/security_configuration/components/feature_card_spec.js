@@ -1,6 +1,5 @@
-import { GlIcon } from '@gitlab/ui';
-import { mount } from '@vue/test-utils';
-import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import { GlIcon, GlLink, GlButton } from '@gitlab/ui';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { securityFeatures } from 'jest/security_configuration/mock_data';
 import FeatureCard from '~/security_configuration/components/feature_card.vue';
 import FeatureCardBadge from '~/security_configuration/components/feature_card_badge.vue';
@@ -18,19 +17,19 @@ describe('FeatureCard component', () => {
   let wrapper;
 
   const createComponent = (propsData) => {
-    wrapper = extendedWrapper(
-      mount(FeatureCard, {
-        propsData,
-        stubs: {
-          ManageViaMr: true,
-          FeatureCardBadge: true,
-        },
-      }),
-    );
+    wrapper = shallowMountExtended(FeatureCard, {
+      propsData,
+      stubs: {
+        ManageViaMr: true,
+        FeatureCardBadge: true,
+      },
+    });
   };
 
-  const findLinks = ({ text, href }) =>
-    wrapper.findAll(`a[href="${href}"]`).filter((link) => link.text() === text);
+  const findLinks = ({ text, href, isButton = true }) =>
+    wrapper
+      .findAllComponents(isButton ? GlButton : GlLink)
+      .filter((link) => link.text() === text && link.attributes('href') === href);
 
   const findBadge = () => wrapper.findComponent(FeatureCardBadge);
 
@@ -59,14 +58,14 @@ describe('FeatureCard component', () => {
     const expectGuideAction = action === 'guide';
 
     const enableLinks = findEnableLinks();
-    expect(enableLinks.exists()).toBe(expectEnableAction);
+
     if (expectEnableAction) {
       expect(enableLinks).toHaveLength(1);
       expect(enableLinks.at(0).props('category')).toBe('secondary');
     }
 
     const configureLinks = findConfigureLinks();
-    expect(configureLinks.exists()).toBe(expectConfigureAction);
+
     if (expectConfigureAction) {
       expect(configureLinks).toHaveLength(1);
       expect(configureLinks.at(0).props('category')).toBe('secondary');
@@ -79,7 +78,7 @@ describe('FeatureCard component', () => {
     }
 
     const configGuideLinks = findConfigGuideLinks();
-    expect(configGuideLinks.exists()).toBe(expectGuideAction);
+
     if (expectGuideAction) {
       expect(configGuideLinks).toHaveLength(1);
     }
@@ -108,8 +107,8 @@ describe('FeatureCard component', () => {
     });
 
     it('shows the help link', () => {
-      const links = findLinks({ text: 'Learn more', href: feature.helpPath });
-      expect(links.exists()).toBe(true);
+      const links = findLinks({ text: 'Learn more', href: feature.helpPath, isButton: false });
+
       expect(links).toHaveLength(1);
     });
 
@@ -241,7 +240,7 @@ describe('FeatureCard component', () => {
             text: feature.secondary.configurationText,
             href: feature.secondary.configurationPath,
           });
-          expect(links.exists()).toBe(true);
+
           expect(links).toHaveLength(1);
         });
       });
@@ -293,7 +292,7 @@ describe('FeatureCard component', () => {
             text: 'Configuration guide',
             href: feature.secondary.configurationHelpPath,
           });
-          expect(links.exists()).toBe(true);
+
           expect(links).toHaveLength(1);
         });
       });

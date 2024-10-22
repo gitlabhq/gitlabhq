@@ -530,7 +530,7 @@ security_trainings:
 snippets:
   - table: organizations
     column: organization_id
-    on_delete: async_nullify
+    on_delete: async_delete
 terraform_state_versions:
   - table: ci_builds
     column: ci_build_id

@@ -109,7 +109,7 @@ After you purchase GitLab Duo, you can assign seats to users to grant access to 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > GitLab Duo**.
 1. From the filter bar, select **Assigned seat** and **Yes**.
-1. User list is filtered to only users assigned a GitLab Duo seat. 
+1. User list is filtered to only users assigned a GitLab Duo seat.
 
 ### For self-managed
 
@@ -197,7 +197,7 @@ Prerequisites:
      1. In the Customers Portal, on the **Subscriptions & purchases** page, find the subscription you want to apply the trial to.
      1. At the top of the page, the subscription name appears in a badge.
 
-        ![Subscription name](img/subscription_name.png)
+        ![Subscription name](img/subscription_name_v17_0.png)
    - Ensure the email address you submit for trial registration matches the email address of the [subscription contact](customers_portal.md#change-your-subscription-contact).
 1. Select **Submit**.
 
@@ -239,7 +239,7 @@ Prerequisites:
      1. In the Customers Portal, on the **Subscriptions & purchases** page, find the subscription you want to apply the trial to.
      1. At the top of the page, the subscription name appears in a badge.
 
-        ![Subscription name](img/subscription_name.png)
+        ![Subscription name](img/subscription_name_v17_0.png)
    - Ensure the email you submit for trial registration matches the email of the [subscription contact](customers_portal.md#change-your-subscription-contact).
 1. Select **Submit**.
 

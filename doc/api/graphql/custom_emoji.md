@@ -84,7 +84,7 @@ explorer. GraphiQL explorer is available for:
 1. Paste the `query` listed above into the left window of your GraphiQL explorer tool.
 1. Select **Play** to get the result shown here:
 
-![GraphiQL explore custom emoji query](img/custom_emoji_query_example.png)
+![GraphiQL explore custom emoji query](img/custom_emoji_query_example_v14_1.png)
 
 For more information on:
 

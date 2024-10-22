@@ -1905,6 +1905,9 @@ GEM
       unf_ext
     unf_ext (0.0.8.2)
     unicode-display_width (2.4.2)
+    unicode-emoji (3.6.0)
+      unicode-version (~> 1.0)
+    unicode-version (1.4.0)
     unicode_utils (1.4.0)
     uniform_notifier (1.16.0)
     unleash (3.2.2)
@@ -2335,6 +2338,7 @@ DEPENDENCIES
   tty-prompt (~> 0.23)
   typhoeus (~> 1.4.0)
   undercover (~> 0.5.0)
+  unicode-emoji (~> 3.6)
   unleash (~> 3.2.2)
   valid_email (~> 0.1)
   validates_hostname (~> 1.0.13)

@@ -311,19 +311,19 @@ After you run the `rollout 100%` job, you cannot scale down, and must
 
 Without `INCREMENTAL_ROLLOUT_MODE` and without `STAGING_ENABLED`:
 
-![Staging and rollout disabled](img/rollout_staging_disabled.png)
+![Staging and rollout disabled](img/rollout_staging_disabled_v11_0.png)
 
 Without `INCREMENTAL_ROLLOUT_MODE` and with `STAGING_ENABLED`:
 
-![Staging enabled](img/staging_enabled.png)
+![Staging enabled](img/staging_enabled_v11_0.png)
 
 With `INCREMENTAL_ROLLOUT_MODE` set to `manual` and without `STAGING_ENABLED`:
 
-![Rollout enabled](img/rollout_enabled.png)
+![Rollout enabled](img/rollout_enabled_v10_8.png)
 
 With `INCREMENTAL_ROLLOUT_MODE` set to `manual` and with `STAGING_ENABLED`:
 
-![Rollout and staging enabled](img/rollout_staging_enabled.png)
+![Rollout and staging enabled](img/rollout_staging_enabled_v11_0.png)
 
 ## Timed incremental rollout to production
 

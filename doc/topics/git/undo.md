@@ -241,7 +241,7 @@ provides a clear timeline and development structure. However, you
 only need this procedure if your work was merged into a branch that
 other developers use as the base for their work.
 
-![Use revert to keep branch flowing](img/revert.png)
+![Use revert to keep branch flowing](img/revert_v14_0.png)
 
 To revert changes introduced in a specific commit `B`:
 
@@ -257,7 +257,7 @@ Even with an updated history, old commits can still be
 accessed by commit SHA. This is the case at least until all the automated cleanup
 of detached commits is performed, or a cleanup is run manually. Even the cleanup might not remove old commits if there are still refs pointing to them.
 
-![Modifying history causes problems on remote branch](img/rebase_reset.png)
+![Modifying history causes problems on remote branch](img/rebase_reset_v10_0.png)
 
 ### When changing history is acceptable
 

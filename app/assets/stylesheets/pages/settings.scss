@@ -51,7 +51,7 @@
 }
 
 .settings-section:not(.settings-section-no-bottom) ~ .settings-section {
-  @include gl-border-t;
+  @apply gl-border-t;
   padding-top: $gl-spacing-scale-6;
 }
 

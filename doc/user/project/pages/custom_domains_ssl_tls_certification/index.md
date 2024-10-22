@@ -95,7 +95,7 @@ For projects living in other GitLab instances (CE or EE), contact
 your sysadmin asking for this information (which IP address is Pages
 server running on your instance).
 
-![DNS `A` record pointing to GitLab.com Pages server](img/dns_add_new_a_record_example_updated_2018.png)
+![DNS `A` record pointing to GitLab.com Pages server](img/dns_add_new_a_record_v11_2.png)
 
 WARNING:
 If you use your root domain for your GitLab Pages website
@@ -122,7 +122,7 @@ Whether it's a user or a project website, the DNS record
 should point to your Pages domain (`namespace.gitlab.io`),
 without any path.
 
-![DNS `CNAME` record pointing to GitLab.com project](img/dns_cname_record_example.png)
+![DNS `CNAME` record pointing to GitLab.com project](img/dns_cname_record_example_v9_0.png)
 
 ##### For both root and subdomains
 

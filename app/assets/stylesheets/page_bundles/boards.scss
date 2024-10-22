@@ -77,7 +77,7 @@
 // pseudo-element that is the same size as our element, then
 // animate opacity/transform to give a soothing single pulse
 .board-column-highlighted::after {
-  @include gl-focus;
+  @apply gl-focus;
   content: '';
   position: absolute;
   top: -1px;

@@ -119,7 +119,7 @@
   padding: 0;
 
   &:hover {
-    @include gl-focus;
+    @apply gl-focus;
   }
 
   &.scrolling {

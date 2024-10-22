@@ -287,7 +287,7 @@ You can also create an epic by
 If an issue belongs to an epic, you can go to the parent epic with the
 link in the right sidebar.
 
-![containing epic](img/containing_epic.png)
+![containing epic](img/containing_epic_v10_3.png)
 
 ## View epics list
 
@@ -372,7 +372,7 @@ Each option contains a button that can toggle the order between **Ascending** an
 The sort option and order is saved and used wherever you browse epics, including the
 [Roadmap](../roadmap/index.md).
 
-![epics sort](img/epics_sort_14_7.png)
+![epics sort](img/epics_sort_v14_7.png)
 
 ## Change activity sort order
 

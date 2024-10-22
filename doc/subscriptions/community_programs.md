@@ -26,7 +26,7 @@ To add a license to a project:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. On the overview page, select **Add LICENSE**. If the license you want is not available as a license template, manually copy the entire, unaltered [text of your chosen license](https://opensource.org/license) into the `LICENSE` file. GitLab defaults to **All rights reserved** if users do not perform this action.
 
-![Add license](img/add-license.png)
+![Add license](img/add-license_v15_7.png)
 
 Applicants must add the correct license to each project in their respective groups or namespaces. When you're sure you're using OSI-approved licenses for your projects, you can take your screenshots.
 
@@ -50,7 +50,7 @@ Benefits of the GitLab Open Source Program apply to all projects in a GitLab nam
 1. Select your project avatar. If you haven't specified an avatar for your project, the avatar displays as a single letter.
 1. Take a screenshot of the project overview that clearly displays the license you've chosen for your project.
 
-![License overview](img/license-overview.png)
+![License overview](img/license-overview_v14_0.png)
 
 #### Screenshot 2: License contents
 
@@ -58,7 +58,7 @@ Benefits of the GitLab Open Source Program apply to all projects in a GitLab nam
 1. Select **Code > Repository** and locate the project's `LICENSE` file.
 1. Take a screenshot of the contents of the file. Make sure the screenshot includes the title of the license.
 
-![License file](img/license-file.png)
+![License file](img/license-file_v14_0.png)
 
 #### Screenshot 3: Publicly visible settings
 
@@ -71,7 +71,7 @@ To be eligible for the GitLab Open Source Program, projects must be publicly vis
 1. Select the **Users can request access** checkbox.
 1. Take a screenshot of this view. Include as much of the publicly visible settings as possible. Make sure to include your project's name in the upper-left of the screenshot.
 
-![Publicly visible setting](img/publicly-visible.png)
+![Publicly visible setting](img/publicly-visible_v14_0.png)
 
 NOTE:
 Exceptions to this public visibility requirement apply in select circumstances (for example, in cases where a project in an applicant's namespace may hold sensitive data). Email `opensource@gitlab.com` with details of your use case to request written permission for exceptions.

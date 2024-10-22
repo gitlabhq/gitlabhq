@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::ResolveVulnerabilitiesForRemovedAnalyzers,
+  schema: 20241015185528,
   feature_category: :static_application_security_testing do
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }

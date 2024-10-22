@@ -12,11 +12,8 @@ exports[`Upload dropzone component correctly overrides description and drop mess
       class="gl-flex gl-flex-col gl-items-center gl-justify-center gl-text-center"
       data-testid="dropzone-area"
     >
-      <gl-icon-stub
-        class="gl-mb-2"
-        name="upload"
-        size="24"
-        variant="current"
+      <gl-animated-upload-icon-stub
+        class="gl-mb-3"
       />
       <p
         class="gl-mb-0"
@@ -80,11 +77,8 @@ exports[`Upload dropzone component when dragging renders correct template when d
       class="gl-flex gl-flex-col gl-items-center gl-justify-center gl-text-center"
       data-testid="dropzone-area"
     >
-      <gl-icon-stub
-        class="gl-mb-2"
-        name="upload"
-        size="24"
-        variant="current"
+      <gl-animated-upload-icon-stub
+        class="gl-mb-3"
       />
       <p
         class="gl-mb-0"
@@ -150,11 +144,8 @@ exports[`Upload dropzone component when dragging renders correct template when d
       class="gl-flex gl-flex-col gl-items-center gl-justify-center gl-text-center"
       data-testid="dropzone-area"
     >
-      <gl-icon-stub
-        class="gl-mb-2"
-        name="upload"
-        size="24"
-        variant="current"
+      <gl-animated-upload-icon-stub
+        class="gl-mb-3"
       />
       <p
         class="gl-mb-0"
@@ -220,11 +211,8 @@ exports[`Upload dropzone component when dragging renders correct template when d
       class="gl-flex gl-flex-col gl-items-center gl-justify-center gl-text-center"
       data-testid="dropzone-area"
     >
-      <gl-icon-stub
-        class="gl-mb-2"
-        name="upload"
-        size="24"
-        variant="current"
+      <gl-animated-upload-icon-stub
+        class="gl-mb-3"
       />
       <p
         class="gl-mb-0"
@@ -291,11 +279,8 @@ exports[`Upload dropzone component when dragging renders correct template when d
       class="gl-flex gl-flex-col gl-items-center gl-justify-center gl-text-center"
       data-testid="dropzone-area"
     >
-      <gl-icon-stub
-        class="gl-mb-2"
-        name="upload"
-        size="24"
-        variant="current"
+      <gl-animated-upload-icon-stub
+        class="gl-mb-3"
       />
       <p
         class="gl-mb-0"
@@ -362,11 +347,8 @@ exports[`Upload dropzone component when dragging renders correct template when d
       class="gl-flex gl-flex-col gl-items-center gl-justify-center gl-text-center"
       data-testid="dropzone-area"
     >
-      <gl-icon-stub
-        class="gl-mb-2"
-        name="upload"
-        size="24"
-        variant="current"
+      <gl-animated-upload-icon-stub
+        class="gl-mb-3"
       />
       <p
         class="gl-mb-0"
@@ -433,11 +415,8 @@ exports[`Upload dropzone component when no slot provided renders default dropzon
       class="gl-flex gl-flex-col gl-items-center gl-justify-center gl-text-center"
       data-testid="dropzone-area"
     >
-      <gl-icon-stub
-        class="gl-mb-2"
-        name="upload"
-        size="24"
-        variant="current"
+      <gl-animated-upload-icon-stub
+        class="gl-mb-3"
       />
       <p
         class="gl-mb-0"

@@ -122,7 +122,7 @@ You can ask GitLab Duo Chat to explain selected code:
 1. Select some code in your IDE.
 1. In Duo Chat, type `/explain`.
 
-   ![Selecting code and asking GitLab Duo Chat to explain using the /explain slash command.](img/code_selection_duo_chat.png)
+   ![Selecting code and asking GitLab Duo Chat to explain using the /explain slash command.](img/code_selection_duo_chat_v17_4.png)
 
 You can also add additional instructions to be considered. For example:
 

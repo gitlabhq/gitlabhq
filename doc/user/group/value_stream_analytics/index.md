@@ -508,7 +508,7 @@ To learn more about the implementation, see the blog post [Applying GitLab Label
 
 #### Example for custom value stream configuration
 
-![Example configuration](img/object_hierarchy_example_V14_10.png "Example custom value stream configuration")
+![Example configuration](img/object_hierarchy_v14_10.png "Example custom value stream configuration")
 
 In the example above, two independent value streams are set up for two teams that are using different development workflows in the **Test Group** (top-level namespace).
 
@@ -769,7 +769,7 @@ a duration that is half of the selected date range.
 For example, if you select a 30-day range, a forecast for the following 15 days
 is displayed.
 
-![Forecast deployment frequency](img/forecast_deployment_frequency.png)
+![Forecast deployment frequency](img/forecast_deployment_frequency_v16_5.png)
 
 Provide feedback on this experimental feature in [issue 416833](https://gitlab.com/gitlab-org/gitlab/-/issues/416833).
 

@@ -74,7 +74,7 @@
 .dropdown-menu-close {
   &:active,
   &:focus {
-    @include gl-focus;
+    @apply gl-focus;
   }
 }
 
@@ -632,7 +632,7 @@
   outline: 0;
 
   &:focus {
-    @include gl-focus;
+    @apply gl-focus;
   }
 
   &:hover {

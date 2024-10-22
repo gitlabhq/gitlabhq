@@ -1,4 +1,4 @@
-import { GlIcon, GlSprintf } from '@gitlab/ui';
+import { GlAnimatedUploadIcon, GlSprintf } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import UploadDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
@@ -12,7 +12,7 @@ describe('Upload dropzone component', () => {
 
   const findDropzoneCard = () => wrapper.find('.upload-dropzone-card');
   const findDropzoneArea = () => wrapper.findByTestId('dropzone-area');
-  const findIcon = () => wrapper.findComponent(GlIcon);
+  const findIcon = () => wrapper.findComponent(GlAnimatedUploadIcon);
   const findUploadText = () => wrapper.findByTestId('upload-text').text();
   const findFileInput = () => wrapper.find('input[type="file"]');
 
@@ -162,14 +162,30 @@ describe('Upload dropzone component', () => {
     createComponent({ props: { displayAsCard: false } });
     expect(findDropzoneArea().classes()).not.toContain('gl-flex-col');
     expect(findIcon().classes()).toEqual(['gl-mr-3']);
-    expect(findIcon().props('size')).toBe(16);
   });
 
   it('applies correct classes when displaying in card mode', () => {
     createComponent({ props: { displayAsCard: true } });
     expect(findDropzoneArea().classes()).toContain('gl-flex-col');
-    expect(findIcon().classes()).toEqual(['gl-mb-2']);
-    expect(findIcon().props('size')).toBe(24);
+    expect(findIcon().classes()).toEqual(['gl-mb-3']);
+  });
+
+  it('animates icon on hover', async () => {
+    createComponent();
+
+    findDropzoneCard().trigger('mouseenter');
+    await nextTick();
+
+    expect(findIcon().props('isOn')).toEqual(true);
+  });
+
+  it('does not animate icon on mouse leave', async () => {
+    createComponent();
+
+    findDropzoneCard().trigger('mouseleave');
+    await nextTick();
+
+    expect(findIcon().props('isOn')).toEqual(false);
   });
 
   it('correctly overrides description and drop messages', () => {

@@ -261,6 +261,8 @@ gem 'rouge', '~> 4.3.0', feature_category: :shared
 gem 'truncato', '~> 0.7.12', feature_category: :team_planning
 gem 'nokogiri', '~> 1.16', feature_category: :shared
 gem 'gitlab-glfm-markdown', '~> 0.0.21', feature_category: :markdown
+gem 'tanuki_emoji', '~> 0.9', feature_category: :markdown
+gem 'unicode-emoji', '~> 3.6', feature_category: :markdown
 
 # Calendar rendering
 gem 'icalendar', '~> 2.10.1', feature_category: :system_access
@@ -376,7 +378,6 @@ gem 'terser', '1.0.2' # rubocop:todo Gemfile/MissingFeatureCategory
 
 gem 'click_house-client', path: 'gems/click_house-client', require: 'click_house/client' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'addressable', '~> 2.8' # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'tanuki_emoji', '~> 0.9' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'gon', '~> 6.4.0' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'request_store', '~> 1.5.1' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'base32', '~> 0.3.0' # rubocop:todo Gemfile/MissingFeatureCategory

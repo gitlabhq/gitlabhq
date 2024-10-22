@@ -762,6 +762,8 @@
 {"name":"unf_ext","version":"0.0.8.2","platform":"x64-mingw32","checksum":"f7e4c01774c91eb22e30d53dfc40ffbbb5a175f785c8f6f1be17ad96a0b29ed0"},
 {"name":"unf_ext","version":"0.0.8.2","platform":"x86-mingw32","checksum":"6d44c13c98924bebd15ebdd4ed196ead403a0770ac03304570873349fda2a208"},
 {"name":"unicode-display_width","version":"2.4.2","platform":"ruby","checksum":"6a10205d1a19ca790c4e53064ba93f09d9eb234bf6bd135d9deb6001c21428be"},
+{"name":"unicode-emoji","version":"3.6.0","platform":"ruby","checksum":"9d333b0bec74bbf0992b77ce59c809b762f0d1b4018ea454f524491fabc8e5ec"},
+{"name":"unicode-version","version":"1.4.0","platform":"ruby","checksum":"56409a354a042df2e9acd547f58f81c6ee24839560b47f4907b1c097b6677563"},
 {"name":"unicode_utils","version":"1.4.0","platform":"ruby","checksum":"b922d0cf2313b6b7136ada6645ce7154ffc86418ca07d53b058efe9eb72f2a40"},
 {"name":"uniform_notifier","version":"1.16.0","platform":"ruby","checksum":"99b39ee4a0864e3b49f375b5e5803eb26d35ed6eb1719c96407573a87bc4dbb5"},
 {"name":"unleash","version":"3.2.2","platform":"ruby","checksum":"0f6e56498de920de66a01bceffb93933693ade646bb853fc70eb16bd1026b93b"},

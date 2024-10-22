@@ -1,6 +1,7 @@
 query todos_count(
   $projectId: [ID!]
   $groupId: [ID!]
+  $authorId: [ID!]
   $action: [TodoActionEnum!]
   $type: [TodoTargetEnum!]
 ) {
@@ -10,6 +11,7 @@ query todos_count(
       state: [pending]
       projectId: $projectId
       groupId: $groupId
+      authorId: $authorId
       action: $action
       type: $type
     ) {
@@ -19,6 +21,7 @@ query todos_count(
       state: [done]
       projectId: $projectId
       groupId: $groupId
+      authorId: $authorId
       action: $action
       type: $type
     ) {
@@ -28,6 +31,7 @@ query todos_count(
       state: [pending, done]
       projectId: $projectId
       groupId: $groupId
+      authorId: $authorId
       action: $action
       type: $type
     ) {

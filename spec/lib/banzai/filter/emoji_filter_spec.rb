@@ -99,6 +99,24 @@ RSpec.describe Banzai::Filter::EmojiFilter, feature_category: :markdown do
     expect(doc.to_html).to match(/^This deserves a <gl-emoji.+>, big time\.\z/)
   end
 
+  context 'when TanukiEmoji can not find the emoji' do
+    it 'alpha code is not replaced with tag' do
+      allow(TanukiEmoji).to receive(:find_by_alpha_code).and_return(nil)
+
+      doc = filter(':smile:')
+
+      expect(doc.css('gl-emoji').size).to eq 0
+    end
+
+    it 'unicode emoji is not replaced with tag' do
+      allow(TanukiEmoji).to receive(:find_by_codepoints).and_return(nil)
+
+      doc = filter('👍')
+
+      expect(doc.css('gl-emoji').size).to eq 0
+    end
+  end
+
   it 'ignores backref emoji in footnote references' do
     footnote = <<~HTML
       <p>↩ Test<sup data-sourcepos="1:9-1:12" class="footnote-ref"><a href="#fn-1" id="fnref-1" data-footnote-ref>1</a></sup></p>
@@ -135,6 +153,24 @@ RSpec.describe Banzai::Filter::EmojiFilter, feature_category: :markdown do
     it_behaves_like 'limits the number of filtered items' do
       let(:text) { '⏯ :play_pause: ⏯ :play_pause: ⏯ :play_pause:' }
       let(:ends_with) { '</gl-emoji> ⏯ :play_pause:' }
+    end
+  end
+
+  context 'when using TanukiEmoji' do
+    # the regex doesn't find emoji components, and they are not really meant to be used
+    # by themselves, so ignore them.
+    let(:exclude_components) { "🏻🏼🏽🏾🏿" }
+
+    it 'finds all unicode emoji codepoints with regex' do
+      TanukiEmoji.index.all.each do |emoji| # rubocop:disable Rails/FindEach -- not a Rails model
+        next if exclude_components.include?(emoji.codepoints)
+
+        expect(described_class.emoji_unicode_pattern.match?(emoji.codepoints)).to be_truthy
+
+        emoji.codepoints_alternates.each do |alternate|
+          expect(described_class.emoji_unicode_pattern.match?(alternate)).to be_truthy
+        end
+      end
     end
   end
 

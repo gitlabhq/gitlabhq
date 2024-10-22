@@ -130,7 +130,7 @@ To create a milestone:
 1. Optional. Enter description, start date, and due date.
 1. Select **New milestone**.
 
-![New milestone](img/milestones_new_project_milestone.png)
+![New milestone](img/milestones_new_project_milestone_v16_11.png)
 
 ## Edit a milestone
 

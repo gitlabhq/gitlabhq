@@ -10,13 +10,5 @@ milestone: '16.5'
 gitlab_schema: gitlab_main_cell
 allow_cross_foreign_keys:
 - gitlab_main_clusterwide
-desired_sharding_key:
-  group_id:
-    references: namespaces
-    backfill_via:
-      parent:
-        foreign_key: approval_group_rule_id
-        table: approval_group_rules
-        sharding_key: group_id
-        belongs_to: approval_group_rule
-desired_sharding_key_migration_job_name: BackfillApprovalGroupRulesUsersGroupId
+sharding_key:
+  group_id: namespaces

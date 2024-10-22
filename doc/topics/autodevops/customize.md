@@ -356,7 +356,7 @@ To use an external managed provider:
    Because the built-in PostgreSQL setup for review apps and staging is sufficient, you might only need to
    disable the installation for `production`.
 
-   ![Auto Metrics](img/disable_postgres.png)
+   ![Auto Metrics](img/disable_postgres_v12_4.png)
 
 1. Define the `DATABASE_URL` variable as an environment-scoped variable
    available to your application. This should be a URL in the following format:

@@ -55,6 +55,29 @@ describe('TodosApp', () => {
     expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(false);
   });
 
+  it('fetches the todos and counts when filters change', async () => {
+    const filters = {
+      groupId: ['1'],
+      projectId: ['2'],
+      authorId: ['3'],
+      type: ['4'],
+      action: ['assigned'],
+      sort: 'CREATED_DESC',
+    };
+    findFilterBar().vm.$emit('filters-changed', filters);
+    await waitForPromises();
+
+    expect(todosQuerySuccessHandler).toHaveBeenLastCalledWith({
+      ...filters,
+      state: ['pending'],
+      first: 20,
+      last: null,
+      after: null,
+      before: null,
+    });
+    expect(todosCountsQuerySuccessHandler).toHaveBeenLastCalledWith(filters);
+  });
+
   it('passes the default status to the filter bar', () => {
     createComponent();
 
