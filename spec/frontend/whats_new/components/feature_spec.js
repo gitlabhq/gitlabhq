@@ -34,7 +34,7 @@ describe("What's new single feature", () => {
   it('renders the date', () => {
     createWrapper({ feature: exampleFeature });
 
-    expect(findReleaseDate().text()).toBe('April 22, 2021');
+    expect(findReleaseDate().text()).toBe('Apr 22, 2021');
   });
 
   it('renders image link', () => {
@@ -66,7 +66,7 @@ describe("What's new single feature", () => {
     it('renders the date', () => {
       createWrapper({ feature: exampleFeature });
 
-      expect(findReleaseDate().text()).toBe('April 22, 2021');
+      expect(findReleaseDate().text()).toBe('Apr 22, 2021');
     });
   });
 

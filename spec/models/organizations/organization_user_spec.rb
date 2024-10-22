@@ -42,16 +42,13 @@ RSpec.describe Organizations::OrganizationUser, type: :model, feature_category: 
         end
       end
 
-      context 'when user is not available' do
-        before do
+      context 'when user is destroyed' do
+        it 'destroys the organization_user record' do
+          organization_user_id = organization_user.id
+
           user.destroy!
-        end
 
-        it 'does not prevent deletion' do
-          organization_user.reload
-
-          expect { organization_user.destroy! }.not_to raise_error
-          expect(organization_user).to be_destroyed
+          expect(described_class.exists?(organization_user_id)).to be_falsy
         end
       end
     end
@@ -61,13 +58,6 @@ RSpec.describe Organizations::OrganizationUser, type: :model, feature_category: 
     it_behaves_like 'cleanup by a loose foreign key' do
       let_it_be(:parent) { create(:organization) }
       let_it_be(:model) { create(:organization_user, organization: parent) }
-    end
-  end
-
-  context 'with loose foreign key on organization_users.user_id' do
-    it_behaves_like 'cleanup by a loose foreign key' do
-      let_it_be(:parent) { create(:user) }
-      let_it_be(:model) { create(:organization_user, user: parent) }
     end
   end
 

@@ -28,20 +28,24 @@ export default {
 </script>
 
 <template>
-  <gl-card>
-    <h4 class="gl-heading-4">{{ __('Statistics') }}</h4>
-    <slot name="footer">
-      <gl-loading-icon v-if="isLoading" size="lg" class="my-3" />
+  <gl-card class="gl-h-full" footer-class="gl-h-full gl-py-0">
+    <template #default>
+      <h3 class="gl-m-0 gl-inline-flex gl-items-center gl-gap-2 gl-self-center gl-text-base">
+        {{ __('Statistics') }}
+      </h3>
+    </template>
+    <template #footer>
+      <gl-loading-icon v-if="isLoading" size="md" class="my-3" />
       <template v-else>
         <p
           v-for="statistic in getStatistics(statisticsLabels)"
           :key="statistic.key"
-          class="js-stats"
+          :class="['js-stats', 'gl-py-4', 'gl-m-0', 'gl-border-b', 'last:gl-border-b-0']"
         >
           {{ statistic.label }}
           <span class="light gl-float-right">{{ statistic.value }}</span>
         </p>
       </template>
-    </slot>
+    </template>
   </gl-card>
 </template>

@@ -3633,9 +3633,6 @@ msgstr ""
 msgid "AdminArea|Active users"
 msgstr ""
 
-msgid "AdminArea|All users created in the instance, including users who are not %{billable_users_link_start}billable users%{billable_users_link_end}."
-msgstr ""
-
 msgid "AdminArea|Are you sure?"
 msgstr ""
 
@@ -3693,15 +3690,6 @@ msgstr ""
 msgid "AdminArea|Instance OAuth applications"
 msgstr ""
 
-msgid "AdminArea|Latest groups"
-msgstr ""
-
-msgid "AdminArea|Latest projects"
-msgstr ""
-
-msgid "AdminArea|Latest users"
-msgstr ""
-
 msgid "AdminArea|Maintainer"
 msgstr ""
 
@@ -3750,6 +3738,9 @@ msgstr ""
 msgid "AdminArea|Total Non-Billable users"
 msgstr ""
 
+msgid "AdminArea|Total Users"
+msgstr ""
+
 msgid "AdminArea|Total users"
 msgstr ""
 
@@ -3757,9 +3748,6 @@ msgid "AdminArea|Totals"
 msgstr ""
 
 msgid "AdminArea|Updated %{last_update_time}"
-msgstr ""
-
-msgid "AdminArea|Users"
 msgstr ""
 
 msgid "AdminArea|Users statistics"
@@ -36518,6 +36506,9 @@ msgid "Not confidential"
 msgstr ""
 
 msgid "Not eligible to rotate token with access level higher than the user"
+msgstr ""
+
+msgid "Not enabled"
 msgstr ""
 
 msgid "Not found"

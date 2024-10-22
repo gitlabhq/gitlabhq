@@ -1,7 +1,12 @@
 <script>
 import { GlTooltip, GlIcon } from '@gitlab/ui';
 import dateFormat from '~/lib/dateformat';
-import { getDayDifference, getTimeago, dateInWords, newDate } from '~/lib/utils/datetime_utility';
+import {
+  getDayDifference,
+  getTimeago,
+  localeDateFormat,
+  newDate,
+} from '~/lib/utils/datetime_utility';
 import { __ } from '~/locale';
 
 export default {
@@ -73,9 +78,9 @@ export default {
     },
     standardDateFormat() {
       const today = new Date();
-      const isDueInCurrentYear = today.getFullYear() === this.issueDueDate.getFullYear();
-
-      return dateInWords(this.issueDueDate, true, isDueInCurrentYear);
+      return today.getFullYear() === this.issueDueDate.getFullYear()
+        ? localeDateFormat.asDateWithoutYear.format(this.issueDueDate)
+        : localeDateFormat.asDate.format(this.issueDueDate);
     },
   },
 };

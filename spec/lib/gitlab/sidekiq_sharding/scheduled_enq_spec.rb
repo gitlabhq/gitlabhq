@@ -62,6 +62,13 @@ RSpec.describe Gitlab::SidekiqSharding::ScheduledEnq, :allow_unrouted_sidekiq_ca
 
     context 'with invalid job hashes' do
       it_behaves_like 'uses sharding router'
+
+      context 'with class that does not exist on this process' do
+        let(:job_hash) { { class: 'invalidclass', args: [], queue: 'default', store: 'another_shard' } }
+        let(:store_name) { 'another_shard' }
+
+        it_behaves_like 'uses sharding router'
+      end
     end
 
     context 'with classes not including ApplicationWorker' do

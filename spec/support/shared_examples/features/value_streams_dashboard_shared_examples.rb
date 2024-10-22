@@ -45,10 +45,9 @@ RSpec.shared_examples 'does not render usage overview background aggregation not
 end
 
 RSpec.shared_examples 'renders metrics comparison tables' do
-  let(:metric_tables) { page.all("[data-testid='panel-dora-chart']") }
-  let(:lifecycle_metrics_table) { metric_tables[0] }
-  let(:dora_metrics_table) { metric_tables[1] }
-  let(:security_metrics_table) { metric_tables[2] }
+  let(:lifecycle_metrics_table) { find_by_testid('panel-vsd-lifecycle-metrics-table') }
+  let(:dora_metrics_table) { find_by_testid('panel-vsd-dora-metrics-table') }
+  let(:security_metrics_table) { find_by_testid('panel-vsd-security-metrics-table') }
 
   def expect_row_content(id, name, values)
     row = find_by_testid("dora-chart-metric-#{id}")

@@ -30,19 +30,24 @@ AI Impact analytics displays key metrics and metric trends for a project or grou
 
 ### Key metrics
 
-- **GitLab Duo seats: Assigned and used**: Percentage of assigned licensed seats that have used at least one AI feature in the last 30 days.
 - **Code Suggestions: Unique users**: Percentage of users that engage with Code Suggestions every month. It is calculated as the number of monthly unique Code Suggestions users divided by total monthly [unique contributors](../../user/profile/contributions_calendar.md#user-contribution-events). Only unique code contributors, meaning users with `pushed` events, are included in the calculation.
 - **Code Suggestions: Acceptance rate**: Percentage of code suggestions provided by GitLab Duo that have been accepted by code contributors in the last 30 days.
+- **Duo Chat: Unique users**: Percentage of users that engage with Duo Chat every month. It is calculated as the number of monthly unique Duo Chat users divided by the total GitLab Duo assigned users.
 
 ### Metric trends
 
 The **Metric trends** table displays metrics for the last six months, with monthly values, percentage changes in the past six months, and trend sparklines.
+
+#### Lifecycle metrics
 
 - [**Cycle time**](../group/value_stream_analytics/index.md#lifecycle-metrics)
 - [**Lead time**](../group/value_stream_analytics/index.md#lifecycle-metrics)
 - [**Deployment frequency**](dora_metrics.md#deployment-frequency)
 - [**Change failure rate**](dora_metrics.md#change-failure-rate)
 - [**Critical vulnerabilities over time**](../application_security/vulnerability_report/index.md)
+
+#### AI usage metrics
+
 - **Code Suggestions usage**: Monthly user engagement with AI Code Suggestions.
 
   - The month-over-month comparison of the AI Usage unique users rate gives a more accurate indication of this metric, as it eliminates factors such as developer experience level and project type or complexity.

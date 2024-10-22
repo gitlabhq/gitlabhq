@@ -28,7 +28,7 @@ For a video explanation, see [DORA metrics: User analytics](https://www.youtube.
 
 GitLab provides different analytics and insights about DORA metrics, which are available in the following Analytics features:
 
-- DORA metrics in the [Value Streams Dashboard](value_streams_dashboard.md), which are available out-of-the-box and help you identify trends, patterns, and opportunities for improvement. These metrics are displayed in the [metrics comparison panel](value_streams_dashboard.md#devsecops-metrics-comparison-panel) and the [DORA Performers score panel](value_streams_dashboard.md#dora-performers-score-panel).
+- DORA metrics in the [Value Streams Dashboard](value_streams_dashboard.md), which are available out-of-the-box and help you identify trends, patterns, and opportunities for improvement. These metrics are displayed in the [DORA metrics comparison panel](value_streams_dashboard.md#devsecops-metrics-comparison-panels) and the [DORA Performers score panel](value_streams_dashboard.md#dora-performers-score-panel).
 - DORA metrics in [CI/CD analytics charts](ci_cd_analytics.md), which show pipeline success rates and duration, and the history of DORA metrics over time.
 - DORA metrics in [Insights reports](../project/insights/index.md), where you can also use [DORA query parameters](../../user/project/insights/index.md#dora-query-parameters) to create custom charts.
 - [(DORA) key metrics API](../../api/dora/metrics.md), which includes all metrics.

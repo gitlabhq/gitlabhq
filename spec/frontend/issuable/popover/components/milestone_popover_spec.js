@@ -140,7 +140,7 @@ describe('Milestone Popover', () => {
 
     it.each`
       startDate       | dueDate         | expectedText
-      ${'2024-04-01'} | ${'2024-04-30'} | ${'Apr 1 – Apr 30, 2024'}
+      ${'2024-04-01'} | ${'2024-04-30'} | ${'Apr 1 – 30, 2024'}
       ${'2024-03-01'} | ${null}         | ${'Started Mar 1, 2024'}
       ${'2024-04-20'} | ${null}         | ${'Starts Apr 20, 2024'}
       ${null}         | ${'2024-04-20'} | ${'Ends Apr 20, 2024'}

@@ -1,8 +1,8 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlBadge, GlIcon, GlLink, GlButton } from '@gitlab/ui';
+import { localeDateFormat, newDate } from '~/lib/utils/datetime_utility';
 import SafeHtml from '~/vue_shared/directives/safe_html';
-import { dateInWords, isValidDate } from '~/lib/utils/datetime_utility';
 
 export default {
   components: {
@@ -22,14 +22,10 @@ export default {
   },
   computed: {
     releaseDate() {
-      const { published_at } = this.feature;
-      const date = new Date(`${published_at}T00:00:00`); // eslint-disable-line camelcase
-
-      if (!isValidDate(date) || date.getTime() === 0) {
-        return '';
+      if (!this.feature.published_at) {
+        return undefined;
       }
-
-      return dateInWords(date);
+      return localeDateFormat.asDate.format(newDate(this.feature.published_at));
     },
   },
 };

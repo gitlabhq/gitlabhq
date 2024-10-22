@@ -44,7 +44,7 @@ When product analytics is enabled and onboarded, two built-in dashboards are ava
 
 ### Value Stream Management dashboard
 
-- **Value Streams Dashboard** displays metrics related to [DevOps performance, security exposure, and workstream optimization](../analytics/value_streams_dashboard.md#devsecops-metrics-comparison-panel).
+- **Value Streams Dashboard** displays metrics related to [DevOps performance, security exposure, and workstream optimization](../analytics/value_streams_dashboard.md#devsecops-metrics-comparison-panels).
 
 ## Custom dashboards
 

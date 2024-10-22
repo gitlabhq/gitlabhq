@@ -112,7 +112,7 @@ describe('CE IssueCardTimeInfo component', () => {
           });
           const dueDate = findDueDate();
 
-          expect(dueDate.text()).toBe('Nov 30 – Dec 12, 2020');
+          expect(dueDate.text()).toBe('Nov 30 – Dec 12, 2020');
         });
       });
 

@@ -42,11 +42,7 @@ If you upgrade to the Ultimate tier, you get access to historical data, and can 
 
 ## Value Streams Dashboard panels
 
-The Value Streams Dashboard panels have a default configuration, but you can also [customize the dashboard panels](#customize-the-dashboard-panels). The Value Streams Dashboard includes four panels:
-
-- Overview
-- DevSecOps metrics comparison
-- DORA Performers score
+The Value Streams Dashboard panels have a default configuration, but you can also [customize the dashboard panels](#customize-the-dashboard-panels).
 
 ### Overview panel
 
@@ -72,15 +68,19 @@ For more information, see [epic 10417](https://gitlab.com/groups/gitlab-org/-/ep
 NOTE:
 To view metrics on the Overview panel, the [background aggregation](#enable-or-disable-overview-background-aggregation) must be enabled.
 
-### DevSecOps metrics comparison panel
+### DevSecOps metrics comparison panels
 
 > - Contributor count metric at the group level [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/433353) to GitLab.com in GitLab 16.9.
 
-The DevSecOps metrics comparison displays DORA4, vulnerability, and flow metrics for a group or project
+The DevSecOps metrics comparison panels display metrics for a group or project
 in the month-to-date, last month, the month before, and the past 180 days.
-This visualization helps you understand whether the key DevSecOps metrics improve month over month.
+These visualizations help you understand whether the key DevSecOps metrics improve month over month. The Value Stream Dashboard displays three DevSecOps metric comparison panels:
 
-In the comparison panel, you can:
+- Lifecycle metrics
+- DORA metrics
+- Security metrics
+
+In each comparison panel, you can:
 
 - Compare the performance between groups, projects, and teams at a glance.
 - Identify the teams and projects that are the largest value contributors, overperforming, or underperforming.
@@ -94,15 +94,15 @@ The sparkline for the past six months represents value trends over this time per
 The sparkline color ranges from blue to green, where green indicates a positive trend, and blue indicates a negative trend.
 Sparklines help you identify patterns in metric trends (such as seasonal changes) over time.
 
-#### Filter the DevSecOps metrics comparison panel by labels
+#### Filter a DevSecOps metrics comparison panel by labels
 
 Label filters are appended as query parameters to the URL of the drill-down report of each eligible metric and automatically applied.
-If the comparison panel from the configuration file is enabled with `filters.labels`, the drill-down links inherit the labels from the panel filter.
+If a comparison panel from the configuration file is enabled with `filters.labels`, the drill-down links inherit the labels from the panel filter.
 
 ```yaml
 panels:
-  - title: 'Group dora and issue metrics'
-    visualization: dora_chart
+  - title: 'Group dora metrics'
+    visualization: vsd_dora_metrics_table
     queryOverrides:
       namespace: my-dora-group
       filters:
