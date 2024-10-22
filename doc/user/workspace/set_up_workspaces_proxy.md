@@ -169,6 +169,13 @@ To install the Helm chart for the proxy:
      https://gitlab.com/api/v4/projects/gitlab-org%2fworkspaces%2fgitlab-workspaces-proxy/packages/helm/devel
    ```
 
+   For Helm chart 0.1.13 and earlier, use the following command:
+
+   ```shell
+   helm repo add gitlab-workspaces-proxy \
+     https://gitlab.com/api/v4/projects/gitlab-org%2fremote-development%2fgitlab-workspaces-proxy/packages/helm/devel
+   ```
+
 1. Modify the `ingress.className` parameter if you're using a different Ingress class:
 
    ```shell

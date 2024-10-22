@@ -4,6 +4,7 @@ import autoMergeMixin from 'ee_else_ce/vue_merge_request_widget/mixins/auto_merg
 import autoMergeEnabledQuery from 'ee_else_ce/vue_merge_request_widget/queries/states/auto_merge_enabled.query.graphql';
 import { createAlert } from '~/alert';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { fetchPolicies } from '~/lib/graphql';
 import { __ } from '~/locale';
 import { AUTO_MERGE_STRATEGIES } from '../../constants';
 import eventHub from '../../event_hub';
@@ -16,6 +17,7 @@ export default {
   apollo: {
     state: {
       query: autoMergeEnabledQuery,
+      fetchPolicy: fetchPolicies.NETWORK_ONLY,
       variables() {
         return this.mergeRequestQueryVariables;
       },
@@ -41,14 +43,14 @@ export default {
   },
   data() {
     return {
-      state: {},
+      state: null,
       isCancellingAutoMerge: false,
       isRemovingSourceBranch: false,
     };
   },
   computed: {
     loading() {
-      return this.$apollo.queries.state.loading && Object.keys(this.state).length === 0;
+      return this.$apollo.queries.state.loading || !this.state;
     },
     stateRemoveSourceBranch() {
       if (!this.state.mergeRequest.shouldRemoveSourceBranch) return false;

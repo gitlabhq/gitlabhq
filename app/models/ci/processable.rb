@@ -99,12 +99,7 @@ module Ci
     end
 
     def assign_resource_from_resource_group(processable)
-      if Feature.enabled?(:assign_resource_worker_deduplicate_until_executing, processable.project) &&
-          Feature.disabled?(:assign_resource_worker_deduplicate_until_executing_override, processable.project)
-        Ci::ResourceGroups::AssignResourceFromResourceGroupWorkerV2.perform_async(processable.resource_group_id)
-      else
-        Ci::ResourceGroups::AssignResourceFromResourceGroupWorker.perform_async(processable.resource_group_id)
-      end
+      Ci::ResourceGroups::AssignResourceFromResourceGroupWorker.perform_async(processable.resource_group_id)
     end
 
     def self.select_with_aggregated_needs(project)

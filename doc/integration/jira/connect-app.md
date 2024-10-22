@@ -154,6 +154,8 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com
 
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/473774) in GitLab 17.6.
+
 You can set up deployment gating to bring change requests from GitLab to Jira Service Management for approval.
 With deployment gating, any GitLab deployments to your selected environments are automatically sent
 to Jira Service Management and are only deployed if they're approved.

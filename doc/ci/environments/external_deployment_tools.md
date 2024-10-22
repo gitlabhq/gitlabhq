@@ -22,7 +22,7 @@ For example, the following features are available by setting up tracking:
 
 NOTE:
 Some of the features are not available because GitLab can't authorize and leverage those external deployments, including
-[Protected Environments](protected_environments.md), [Deployment Approvals](deployment_approvals.md), [Deployment safety](deployment_safety.md), and [Environment rollback](index.md#environment-rollback).
+[Protected Environments](protected_environments.md), [Deployment Approvals](deployment_approvals.md), [Deployment safety](deployment_safety.md), and [Deployment rollback](index.md#deployment-rollback).
 
 ## How to set up deployment tracking
 

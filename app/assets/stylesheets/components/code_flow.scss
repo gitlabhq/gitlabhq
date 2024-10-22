@@ -8,3 +8,7 @@ $code-flow-tabs-height: 51px;
 .code-flow-content {
   height: calc(100vh - #{$performance-bar-height} - #{$top-bar-height} - var(--broadcast-message-height, 0px) - #{$detail-page-header-height} - #{$vulnerability-page-title-height} - #{$content-wrapper-padding} - #{$code-flow-tabs-height});
 }
+
+.code-flow-content-modal {
+  height: var(--modal-content-height);
+}

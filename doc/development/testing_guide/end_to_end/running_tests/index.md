@@ -94,10 +94,11 @@ See the section above for situations that might require adjustment to the comman
    - [Google Chrome](https://www.google.com/chrome/)
    - [Docker Desktop](https://docs.docker.com/desktop/install/windows-install/)
    - [Git](https://git-scm.com/download/win)
-   - [Ruby](https://rubyinstaller.org/downloads/). Please refer to the [`.ruby-version` file](../../../../../.ruby-version) for the exact version of Ruby to install.
+   - [Ruby](https://rubyinstaller.org/downloads/). Refer to the [`.ruby-version` file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.ruby-version)
+     for the exact version of Ruby to install.
 
    NOTE:
-   Please be aware that [Docker Desktop must be set to use Linux containers](https://learn.microsoft.com/en-us/virtualization/windowscontainers/quick-start/quick-start-windows-10-linux#run-your-first-linux-container).
+   Be aware that [Docker Desktop must be set to use Linux containers](https://learn.microsoft.com/en-us/virtualization/windowscontainers/quick-start/quick-start-windows-10-linux#run-your-first-linux-container).
 
 1. Use the following command to start an instance that you can visit at `http://127.0.0.1`. You might need to grant admin rights if asked:
 

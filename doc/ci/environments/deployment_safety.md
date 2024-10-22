@@ -102,7 +102,7 @@ can be prevented in some circumstances.
 > - Job retries for rollback deployments checkbox [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/410427) in GitLab 16.3.
 
 You might need to quickly roll back to a stable, outdated deployment.
-By default, pipeline job retries for [deployment rollback](index.md#environment-rollback) are enabled.
+By default, pipeline job retries for [deployment rollback](index.md#deployment-rollback) are enabled.
 
 To disable pipeline retries, clear the **Allow job retries for rollback deployments** checkbox. You should disable pipeline retries in sensitive projects.
 

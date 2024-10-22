@@ -84,6 +84,7 @@ RSpec.describe Projects::Ml::ModelRegistryHelper, feature_category: :mlops do
       is_expected.to eq({
         'projectPath' => project.full_path,
         'indexModelsPath' => "/#{project.full_path}/-/ml/models",
+        'editModelPath' => "/#{project.full_path}/-/ml/models/#{model.id}/edit",
         'createModelVersionPath' => "/#{project.full_path}/-/ml/models/#{model.id}/versions/new",
         'canWriteModelRegistry' => true,
         'maxAllowedFileSize' => 10737418240,
@@ -92,6 +93,42 @@ RSpec.describe Projects::Ml::ModelRegistryHelper, feature_category: :mlops do
         'modelName' => 'cool_model',
         'latestVersion' => model.latest_version.version,
         'markdownPreviewPath' => "/#{project.full_path}/-/preview_markdown"
+      })
+    end
+
+    context 'when user does not have write access to model registry' do
+      before do
+        allow(Ability).to receive(:allowed?).and_call_original
+        allow(Ability).to receive(:allowed?)
+                            .with(user, :write_model_registry, project)
+                            .and_return(false)
+      end
+
+      it 'canWriteModelRegistry is false' do
+        expect(parsed['canWriteModelRegistry']).to eq(false)
+      end
+    end
+  end
+
+  describe '#edit_ml_model_data' do
+    let_it_be(:model) do
+      build_stubbed(:ml_models, :with_latest_version_and_package, project: project, name: 'cool_model',
+        description: 'desc')
+    end
+
+    subject(:parsed) { Gitlab::Json.parse(helper.edit_ml_model_data(model, user)) }
+
+    it 'generates the correct data' do
+      stub_member_access_level(project, owner: user)
+
+      is_expected.to eq({
+        'projectPath' => project.full_path,
+        'canWriteModelRegistry' => true,
+        'markdownPreviewPath' => "/#{project.full_path}/-/preview_markdown",
+        'modelPath' => "/#{project.full_path}/-/ml/models/#{model.id}",
+        'modelId' => model.id,
+        'modelName' => 'cool_model',
+        'modelDescription' => 'desc'
       })
     end
 

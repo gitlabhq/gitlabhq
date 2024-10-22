@@ -32,6 +32,7 @@ RSpec/BeEq:
     - 'ee/spec/elastic/migrate/20240130144625_reindex_epics_to_update_analyzer_spec.rb'
     - 'ee/spec/elastic/migrate/20240814231502_remove_work_item_access_level_from_work_item_spec.rb'
     - 'ee/spec/elastic/migrate/20241002103536_reindex_merge_requests_for_title_completion_spec.rb'
+    - 'ee/spec/elastic/migrate/20241017094601_add_embedding_to_work_items_opensearch_spec.rb'
     - 'ee/spec/features/admin/admin_emails_spec.rb'
     - 'ee/spec/features/admin/admin_settings_spec.rb'
     - 'ee/spec/features/admin/users/users_spec.rb'

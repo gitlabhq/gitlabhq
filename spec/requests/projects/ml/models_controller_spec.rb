@@ -73,7 +73,7 @@ RSpec.describe Projects::Ml::ModelsController, feature_category: :mlops do
     end
 
     context 'when model project does not match project id' do
-      let(:request_project) { create(:project) }
+      let_it_be(:request_project) { create(:project) }
 
       it { is_expected.to have_gitlab_http_status(:not_found) }
     end
@@ -97,6 +97,48 @@ RSpec.describe Projects::Ml::ModelsController, feature_category: :mlops do
 
     it 'renders the template' do
       is_expected.to render_template('projects/ml/models/new')
+    end
+
+    context 'when user does not have access' do
+      let(:write_model_registry) { false }
+
+      it { is_expected.to have_gitlab_http_status(:not_found) }
+    end
+  end
+
+  describe 'edit' do
+    let(:model_id) { model1.id }
+    let(:request_project) { model1.project }
+
+    subject(:edit_request) do
+      edit_model
+      response
+    end
+
+    before do
+      edit_request
+    end
+
+    it 'renders the template' do
+      is_expected.to render_template('projects/ml/models/edit')
+    end
+
+    it 'fetches the correct model' do
+      edit_request
+
+      expect(assigns(:model)).to eq(model1)
+    end
+
+    context 'when model id does not exist' do
+      let(:model_id) { non_existing_record_id }
+
+      it { is_expected.to have_gitlab_http_status(:not_found) }
+    end
+
+    context 'when model project does not match project id' do
+      let(:request_project) { create(:project) }
+
+      it { is_expected.to have_gitlab_http_status(:not_found) }
     end
 
     context 'when user does not have access' do
@@ -155,5 +197,9 @@ RSpec.describe Projects::Ml::ModelsController, feature_category: :mlops do
 
   def new_model
     get new_project_ml_model_path(project)
+  end
+
+  def edit_model
+    get edit_project_ml_model_path(request_project, model_id)
   end
 end

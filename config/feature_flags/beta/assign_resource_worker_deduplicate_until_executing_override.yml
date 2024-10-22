@@ -1,9 +1,0 @@
----
-name: assign_resource_worker_deduplicate_until_executing_override
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/436988
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160564/
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/460793
-milestone: '17.3'
-group: group::environments
-type: beta
-default_enabled: false

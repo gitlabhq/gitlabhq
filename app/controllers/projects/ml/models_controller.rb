@@ -4,8 +4,8 @@ module Projects
   module Ml
     class ModelsController < ::Projects::ApplicationController
       before_action :authorize_read_model_registry!
-      before_action :authorize_write_model_registry!, only: [:destroy, :new]
-      before_action :set_model, only: [:show, :destroy]
+      before_action :authorize_write_model_registry!, only: [:destroy, :new, :edit]
+      before_action :set_model, only: [:show, :destroy, :edit]
       feature_category :mlops
 
       MAX_MODELS_PER_PAGE = 20
@@ -15,6 +15,8 @@ module Projects
       def new; end
 
       def show; end
+
+      def edit; end
 
       def destroy
         @model.destroy!

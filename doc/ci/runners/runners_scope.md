@@ -673,7 +673,7 @@ project.
 1. Go to the project's **Settings > CI/CD** and expand the **Runners** section.
 1. Select the runner name and find the **IP Address** row.
 
-![Project runner IP address](img/project_runner_ip_address.png)
+![Project runner IP address](img/project_runner_ip_address_v10_7.png)
 
 ## Enable use of runner registration tokens in projects and groups
 

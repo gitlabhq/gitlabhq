@@ -1296,6 +1296,60 @@ blobs start being deleted is anything permanent done.
 You can run garbage collection in the background without the need to schedule it or require read-only mode,
 if you migrate to the [metadata database](container_registry_metadata_database.md).
 
+## Scaling by component
+
+This section outlines the potential performance bottlenecks as registry traffic increases by component.
+Each subsection is roughly ordered by recommendations that benefit from smaller to larger registry workloads.
+The registry is not included in the [reference architectures](../reference_architectures/index.md),
+and there are no scaling guides which target number of seats or requests per second.
+
+### Database
+
+1. **Move to a separate database**: As database load increases, scale vertically by moving the registry metadata database
+   to a separate physical database. A separate database can increase the amount of resources available
+   to the registry database while isolating the traffic produced by the registry.
+1. **Move to a HA PostgreSQL third-party solution**: Similar to [Praefect](../reference_architectures/5k_users.md#praefect-ha-postgresql-third-party-solution),
+   moving to a reputable provider or solution enables HA and is suitable for multi-node registry deployments.
+   You must pick a provider that supports native Postgres partitioning, triggers, and functions,
+   as the registry makes heavy use of these.
+
+### Registry server
+
+1. **Move to a separate node**: A [separate node](#configure-gitlab-and-registry-to-run-on-separate-nodes-linux-package-installations)
+   is one way to scale vertically to increase the resources available to the container registry server process.
+1. **Run multiple registry nodes behind a load balancer**: While the registry can handle
+   a high amount of traffic with a single large node, the registry is generally intended to
+   scale horizontally with multiple deployments. Configuring multiple smaller nodes
+   also enables techniques such as autoscaling.
+
+### Redis Cache
+
+Enabling the [Redis](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/configuration.md?ref_type=heads#redis)
+cache improves performance, but also enables features such as renaming repositories.
+
+1. **Redis Server**: A single Redis instance is supported and is the simplest way
+   to access the benefits of the Redis caching.
+1. **Redis Sentinel**: Redis Sentinel is also supported and enables the cache to be HA.
+1. **Redis Cluster**: Redis Cluster can also be used for further scaling as deployments grow.
+
+### Storage
+
+1. **Local file system**: A local file system is the default and is relatively performant,
+   but not suitable for multi-node deployments or a large amount of registry data.
+1. **Object storage**: [Use object storage](#use-object-storage) to enable the practical storage
+   of a larger amount of registry data. Object storage is also suitable for multi-node registry deployments.
+
+### Online garbage collection
+
+1. **Adjust defaults**: If online garbage collection is not reliably clearing the [review queues](container_registry_metadata_database.md#queue-monitoring),
+   you can adjust the `interval` settings in the `manifests` and `blobs` sections under the
+   [`gc`](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/configuration.md?ref_type=heads#gc)
+   configuration section. The default is `5s`, and these can be configured with milliseconds as well,
+   for example `500ms`.
+1. **Scale horizontally with the registry server**: If you are scaling the registry application horizontally
+   with multi-node deployments, online garbage collection automatically scales without
+   the need for configuration changes.
+
 ## Configure GitLab and Registry to run on separate nodes (Linux package installations)
 
 By default, package assumes that both services are running on the same node.

@@ -18,16 +18,26 @@ module QA
           Env.namespace_name || "qa-test-#{time.strftime('%Y-%m-%d-%H-%M-%S')}-#{SecureRandom.hex(8)}"
         end
 
-        # Predefined top level group name
+        # Top level group name
         #
         # @return [String]
         def sandbox_name
-          @sandbox_name ||= Runtime::Env.sandbox_name ||
-            if !QA::Runtime::Env.running_on_dot_com? && QA::Runtime::Env.run_in_parallel?
-              "gitlab-qa-sandbox-group-#{SecureRandom.hex(4)}-#{Time.now.wday + 1}"
-            else
-              "gitlab-qa-sandbox-group-#{Time.now.wday + 1}"
-            end
+          return "gitlab-qa-sandbox-group-#{Time.now.wday + 1}" if live_env?
+
+          "qa-sandbox-#{SecureRandom.hex(6)}"
+        end
+
+        private
+
+        # Test is running on live environment with limitations for top level group creation
+        #
+        # @return [Boolean]
+        def live_env?
+          return @live_env unless @live_env.nil?
+
+          # Memoize the result of this check so every call doesn't parse gitlab address and check hostname
+          # There is no case to change gitlab address in the middle of test process so it should be safe to do
+          @live_env = Runtime::Env.running_on_dot_com? || Runtime::Env.running_on_release?
         end
       end
     end

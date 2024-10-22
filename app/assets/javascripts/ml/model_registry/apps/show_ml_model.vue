@@ -15,7 +15,6 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import DeleteDisclosureDropdownItem from '../components/delete_disclosure_dropdown_item.vue';
 import LoadOrErrorOrShow from '../components/load_or_error_or_show.vue';
 import DeleteModel from '../components/functional/delete_model.vue';
-import ModelEdit from '../components/model_edit.vue';
 
 const ROUTE_DETAILS = 'details';
 const ROUTE_VERSIONS = 'versions';
@@ -53,7 +52,6 @@ export default {
     MetadataItem,
     LoadOrErrorOrShow,
     DeleteModel,
-    ModelEdit,
   },
   router: new VueRouter({
     routes,
@@ -66,6 +64,7 @@ export default {
       maxAllowedFileSize: this.maxAllowedFileSize,
       latestVersion: this.latestVersion,
       markdownPreviewPath: this.markdownPreviewPath,
+      editModelPath: this.editModelPath,
       createModelVersionPath: this.createModelVersionPath,
       modelGid: this.modelGid,
     };
@@ -84,6 +83,10 @@ export default {
       required: true,
     },
     indexModelsPath: {
+      type: String,
+      required: true,
+    },
+    editModelPath: {
       type: String,
       required: true,
     },
@@ -179,6 +182,7 @@ export default {
   },
   i18n: {
     createModelVersionLinkTitle: s__('MlModelRegistry|Create model version'),
+    editModelButtonLabel: s__('MlModelRegistry|Edit model'),
   },
   modelVersionEntity: MODEL_ENTITIES.modelVersion,
   ROUTE_DETAILS,
@@ -196,7 +200,13 @@ export default {
           </template>
 
           <template #right-actions>
-            <model-edit v-if="canWriteModelRegistry" :model="model" />
+            <gl-button
+              v-if="canWriteModelRegistry"
+              data-testid="edit-model-button"
+              variant="confirm"
+              :href="editModelPath"
+              >{{ $options.i18n.editModelButtonLabel }}</gl-button
+            >
             <gl-button
               v-if="canWriteModelRegistry"
               data-testid="model-version-create-button"

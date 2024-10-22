@@ -139,6 +139,7 @@ RSpec/ContainExactly:
     - 'spec/lib/gitlab/database/load_balancing/host_list_spec.rb'
     - 'spec/lib/gitlab/database/loose_foreign_keys_spec.rb'
     - 'spec/lib/gitlab/database/migrations/instrumentation_spec.rb'
+    - 'spec/lib/gitlab/database/partitioning/monthly_strategy_spec.rb'
     - 'spec/lib/gitlab/database_spec.rb'
     - 'spec/lib/gitlab/feature_categories_spec.rb'
     - 'spec/lib/gitlab/graphql/pagination/keyset/connection_spec.rb'

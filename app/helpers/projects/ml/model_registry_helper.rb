@@ -35,6 +35,7 @@ module Projects
         data = {
           projectPath: project.full_path,
           index_models_path: project_ml_models_path(project),
+          edit_model_path: edit_project_ml_model_path(project, model.id),
           create_model_version_path: new_project_ml_model_version_path(project, model_model_id: model.id),
           can_write_model_registry: can_write_model_registry?(user, project),
           mlflow_tracking_url: mlflow_tracking_url(project),
@@ -43,6 +44,22 @@ module Projects
           max_allowed_file_size: max_allowed_file_size(project),
           latest_version: model.latest_version&.version,
           markdown_preview_path: preview_markdown_path(project)
+        }
+
+        to_json(data)
+      end
+
+      def edit_ml_model_data(model, user)
+        project = model.project
+
+        data = {
+          projectPath: project.full_path,
+          can_write_model_registry: can_write_model_registry?(user, project),
+          markdown_preview_path: preview_markdown_path(project),
+          model_path: project_ml_model_path(project, model),
+          model_id: model.id,
+          model_name: model.name,
+          model_description: model.description.to_s
         }
 
         to_json(data)

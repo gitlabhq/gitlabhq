@@ -37,7 +37,8 @@ How to enable:
    export GITLAB_SIMULATE_SAAS=0
    export GITLAB_LICENSE_MODE=test
    export CUSTOMER_PORTAL_URL=https://customers.staging.gitlab.com
-   export OVERRIDE_OBSERVABILITY_URL=https://observe.staging.gitlab.com
+   export OVERRIDE_OBSERVABILITY_QUERY_URL=https://observe.staging.gitlab.com
+   export OVERRIDE_OBSERVABILITY_INGEST_URL=https://observe.staging.gitlab.com
    ```
 
    On a non-GDK/GCK instance, you can set the variables using `gitlab_rails['env']` in the `gitlab.rb` file:
@@ -46,7 +47,8 @@ How to enable:
    gitlab_rails['env'] = {
    'GITLAB_LICENSE_MODE' => 'test',
    'CUSTOMER_PORTAL_URL' => 'https://customers.staging.gitlab.com',
-   'OVERRIDE_OBSERVABILITY_URL' => 'https://observe.staging.gitlab.com'
+   'OVERRIDE_OBSERVABILITY_QUERY_URL' => 'https://observe.staging.gitlab.com',
+   'OVERRIDE_OBSERVABILITY_INGEST_URL' => 'https://observe.staging.gitlab.com'
    }
    ```
 

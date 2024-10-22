@@ -10,7 +10,6 @@ import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import ModelDetail from '~/ml/model_registry/components/model_detail.vue';
-import ModelEdit from '~/ml/model_registry/components/model_edit.vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
@@ -87,6 +86,7 @@ describe('ml/model_registry/apps/show_ml_model', () => {
         modelName: 'MyModel',
         projectPath: 'project/path',
         indexModelsPath: 'index/path',
+        editModelPath: 'edit/modal/path',
         mlflowTrackingUrl: 'path/to/tracking',
         canWriteModelRegistry,
         maxAllowedFileSize: 99999,
@@ -114,7 +114,7 @@ describe('ml/model_registry/apps/show_ml_model', () => {
   const findDeleteModel = () => wrapper.findComponent(DeleteModel);
   const findModelVersionCreateButton = () => wrapper.findByTestId('model-version-create-button');
   const findLoadOrErrorOrShow = () => wrapper.findComponent(LoadOrErrorOrShow);
-  const findModelEdit = () => wrapper.findComponent(ModelEdit);
+  const findModelEditButton = () => wrapper.findByTestId('edit-model-button');
 
   describe('Title', () => {
     beforeEach(() => createWrapper());
@@ -166,18 +166,20 @@ describe('ml/model_registry/apps/show_ml_model', () => {
     });
   });
 
-  describe('ModelEdit', () => {
+  describe('Model edit button', () => {
     beforeEach(() => createWrapper());
 
     it('displays model edit button', () => {
-      expect(findModelEdit().props('model')).toEqual(model);
-      expect(findModelEdit().props('disableAttachments')).toBe(false);
+      expect(findModelEditButton().props()).toMatchObject({
+        variant: 'confirm',
+        category: 'primary',
+      });
     });
 
     describe('when user has no permission to write model registry', () => {
       it('does not display model edit button', () => {
         createWrapper({ canWriteModelRegistry: false });
-        expect(findModelEdit().exists()).toBe(false);
+        expect(findModelEditButton().exists()).toBe(false);
       });
     });
   });

@@ -90,8 +90,6 @@ For user contributions to be mapped, each user must complete the following befor
 
 1. Connect your Bitbucket account in [GitLab profile service sign-in](https://gitlab.com/-/profile/account).
 
-1. [Set your public email](../../profile/index.md#set-your-public-email).
-
 ## Import your Bitbucket repositories
 
 > - Ability to re-import projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23905) in GitLab 15.9.

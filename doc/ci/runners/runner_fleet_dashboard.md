@@ -22,7 +22,7 @@ The runner fleet dashboard shows:
 - Compute minutes used by instance runners
 - Job queue times (available only with [ClickHouse](#enable-more-ci-analytics-features-with-clickhouse))
 
-![Runner fleet dashboard](img/runner_fleet_dashboard.png)
+![Runner fleet dashboard](img/runner_fleet_dashboard_v17_1.png)
 
 ## View the runner fleet dashboard
 

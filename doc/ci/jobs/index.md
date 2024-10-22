@@ -77,7 +77,7 @@ can find the reason:
 
 In each place, if you hover over the failed job you can see the reason it failed.
 
-![Pipeline detail](img/job_failure_reason.png)
+![Pipeline detail](img/job_failure_reason_v10_7.png)
 
 You can also see the reason it failed on the Job detail page.
 

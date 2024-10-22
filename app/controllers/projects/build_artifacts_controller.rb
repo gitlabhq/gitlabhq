@@ -2,7 +2,6 @@
 
 class Projects::BuildArtifactsController < Projects::ApplicationController
   include ExtractsPath
-  include RendersBlob
 
   before_action :authorize_read_build!
   before_action :extract_ref_name_and_path
