@@ -258,6 +258,12 @@ module SearchHelper
 
   private
 
+  def formatted_count(scope)
+    return "0" if @timeout
+
+    @search_results&.formatted_count(scope) || "0"
+  end
+
   # Autocomplete results for various settings pages
   def default_autocomplete
     [
@@ -446,7 +452,7 @@ module SearchHelper
 
     if @scope == scope
       li_class = 'active'
-      count = @timeout ? 0 : @search_results.formatted_count(scope)
+      count = formatted_count(scope)
     else
       badge_class = 'js-search-count hidden'
       badge_data = { url: search_count_path(search_params) }
@@ -469,7 +475,7 @@ module SearchHelper
     result = { label: label, scope: scope_name, data: data, link: search_path(search_params), active: active_scope }
 
     if active_scope
-      result[:count] = !@timeout ? @search_results.formatted_count(scope_name) : "0"
+      result[:count] = formatted_count(scope_name)
     end
 
     result[:count_link] = search_count_path(search_params) unless active_scope

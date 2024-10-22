@@ -1,18 +1,11 @@
-const { readFile } = require('node:fs/promises');
-const { relative, join } = require('node:path');
+const { relative } = require('node:path');
 const { setTimeout: setTimeoutPromise } = require('node:timers/promises');
 const axios = require('axios');
+const { parse, getLocalQuarantinedFiles } = require('./jest_vue3_quarantine_utils');
 const FixtureCISequencer = require('./fixture_ci_sequencer');
 
 const url =
   'https://gitlab-org.gitlab.io/frontend/playground/fast-jest-vue-3-quarantine/gitlab.txt';
-
-function parse(quarantineFileContent) {
-  return quarantineFileContent
-    .split('\n')
-    .map((line) => line.trim())
-    .filter((line) => line && !line.startsWith('#'));
-}
 
 // See https://gitlab.com/gitlab-org/frontend/playground/fast-jest-vue-3-quarantine for details
 // about how to fast quarantine files.
@@ -32,14 +25,6 @@ async function getFastQuarantinedFiles(n = 0, maxRetries = 3) {
 
     throw error;
   }
-}
-
-async function getLocalQuarantinedFiles() {
-  const content = await readFile(join(__dirname, 'quarantined_vue3_specs.txt'), {
-    encoding: 'UTF-8',
-  });
-
-  return parse(content);
 }
 
 async function getQuarantinedFiles() {

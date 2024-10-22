@@ -2,6 +2,8 @@
     {
         "start_line": 7,
         "start_char": 1,
+        "end_line": 7,
+        "end_char": 12,
         "definition_path": "main.go#L4",
         "hover": [
             {
@@ -38,6 +40,8 @@
     {
         "start_line": 7,
         "start_char": 13,
+        "end_line": 7,
+        "end_char": 20,
         "definition_path": "morestrings/reverse.go#L12",
         "hover": [
             {
@@ -78,6 +82,8 @@
     {
         "start_line": 8,
         "start_char": 1,
+        "end_line": 8,
+        "end_char": 12,
         "definition_path": "main.go#L4",
         "hover": [
             {
@@ -114,6 +120,8 @@
     {
         "start_line": 8,
         "start_char": 13,
+        "end_line": 8,
+        "end_char": 18,
         "definition_path": "morestrings/reverse.go#L5",
         "hover": [
             {
@@ -151,6 +159,8 @@
     {
         "start_line": 6,
         "start_char": 5,
+        "end_line": 6,
+        "end_char": 9,
         "definition_path": "main.go#L7",
         "hover": [
             {
@@ -172,6 +182,8 @@
     {
         "start_line": 3,
         "start_char": 2,
+        "end_line": 3,
+        "end_char": 35,
         "definition_path": "main.go#L4",
         "hover": [
             {

@@ -136,7 +136,9 @@ describe('ml/model_registry/components/model_version_detail.vue', () => {
     it('renders no description provided label', () => {
       expect(findDescription().exists()).toBe(false);
       expect(findEmptyDescriptionState().exists()).toBe(true);
-      expect(findEmptyDescriptionState().text()).toContain('No description provided');
+      expect(findEmptyDescriptionState().text()).toContain(
+        'No description available. To add a description, click "Edit model version" above.',
+      );
     });
   });
 });

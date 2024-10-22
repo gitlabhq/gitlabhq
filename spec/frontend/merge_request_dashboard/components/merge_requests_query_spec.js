@@ -93,7 +93,11 @@ describe('Merge requests query component', () => {
 
     await waitForPromises();
 
-    expect(reviewerQueryMock).toHaveBeenCalledWith({ perPage: 20, state: 'opened' });
+    expect(reviewerQueryMock).toHaveBeenCalledWith({
+      perPage: 20,
+      state: 'opened',
+      sort: 'UPDATED_DESC',
+    });
   });
 
   it('calls assigneeQueryMock for assignee query', async () => {
@@ -101,7 +105,11 @@ describe('Merge requests query component', () => {
 
     await waitForPromises();
 
-    expect(assigneeQueryMock).toHaveBeenCalledWith({ perPage: 20, state: 'opened' });
+    expect(assigneeQueryMock).toHaveBeenCalledWith({
+      perPage: 20,
+      state: 'opened',
+      sort: 'UPDATED_DESC',
+    });
   });
 
   it.each([

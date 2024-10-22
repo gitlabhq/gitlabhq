@@ -38921,6 +38921,7 @@ Package type of a package protection rule resource.
 | Value | Description |
 | ----- | ----------- |
 | <a id="packagesprotectionrulepackagetypenpm"></a>`NPM` **{warning-solid}** | **Introduced** in GitLab 16.5. **Status**: Experiment. Packages of the npm format. |
+| <a id="packagesprotectionrulepackagetypepypi"></a>`PYPI` **{warning-solid}** | **Introduced** in GitLab 17.6. **Status**: Experiment. Packages of the PyPI format. |
 
 ### `PipelineAnalyticsJobStatus`
 

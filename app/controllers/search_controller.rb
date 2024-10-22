@@ -65,35 +65,10 @@ class SearchController < ApplicationController
 
     @search_level = @search_service_presenter.level
     @search_type = search_type
+    @scope = @search_service_presenter.scope
 
-    @global_search_duration_s = Benchmark.realtime do
-      @scope = @search_service_presenter.scope
-      @search_results = @search_service_presenter.search_results
-      @search_objects = @search_service_presenter.search_objects
-      @search_highlight = @search_service_presenter.search_highlight
-    end
-
-    return if @search_results.respond_to?(:failed?) && @search_results.failed?(@scope)
-
-    Gitlab::Metrics::GlobalSearchSlis.record_apdex(
-      elapsed: @global_search_duration_s,
-      search_type: @search_type,
-      search_level: @search_level,
-      search_scope: @scope
-    )
-
-    increment_search_counters
-  ensure
-    if @search_type
-      # If we raise an error somewhere in the @global_search_duration_s benchmark block, we will end up here
-      # with a 200 status code, but an empty @global_search_duration_s.
-      Gitlab::Metrics::GlobalSearchSlis.record_error_rate(
-        error: @global_search_duration_s.nil? || (status < 200 || status >= 400),
-        search_type: @search_type,
-        search_level: @search_level,
-        search_scope: @scope
-      )
-    end
+    # separate following lines to method that is conditionally triggered when not zoekt multi-result search
+    haml_search_results unless multi_match?(scope: @scope, search_type: search_type)
   end
 
   def count
@@ -155,6 +130,40 @@ class SearchController < ApplicationController
   def opensearch; end
 
   private
+
+  def multi_match?(search_type:, scope:) # rubocop: disable Lint/UnusedMethodArgument -- This is being overridden in EE
+    false
+  end
+
+  def haml_search_results
+    @global_search_duration_s = Benchmark.realtime do
+      @search_results = @search_service_presenter.search_results
+      @search_objects = @search_service_presenter.search_objects
+      @search_highlight = @search_service_presenter.search_highlight
+    end
+
+    return if @search_results.respond_to?(:failed?) && @search_results.failed?(@scope)
+
+    Gitlab::Metrics::GlobalSearchSlis.record_apdex(
+      elapsed: @global_search_duration_s,
+      search_type: @search_type,
+      search_level: @search_level,
+      search_scope: @scope
+    )
+
+    increment_search_counters
+  ensure
+    if @search_type
+      # If we raise an error somewhere in the @global_search_duration_s benchmark block, we will end up here
+      # with a 200 status code, but an empty @global_search_duration_s.
+      Gitlab::Metrics::GlobalSearchSlis.record_error_rate(
+        error: @global_search_duration_s.nil? || (status < 200 || status >= 400),
+        search_type: @search_type,
+        search_level: @search_level,
+        search_scope: @scope
+      )
+    end
+  end
 
   def update_scope_for_code_search
     return if params[:scope] == 'blobs'

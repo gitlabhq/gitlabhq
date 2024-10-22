@@ -35003,6 +35003,9 @@ msgstr ""
 msgid "MlModelRegistry|New model"
 msgstr ""
 
+msgid "MlModelRegistry|No description available. To add a description, click \"Edit model version\" above."
+msgstr ""
+
 msgid "MlModelRegistry|No description available. To add a description, click \"Edit model\" above."
 msgstr ""
 
@@ -38682,7 +38685,7 @@ msgstr ""
 msgid "PackageRegistry|%{count} packages were not published to the registry. Remove these packages and try again."
 msgstr ""
 
-msgid "PackageRegistry|%{linkStart}Wildcards%{linkEnd} such as `@my-scope/my-package-*` are supported."
+msgid "PackageRegistry|%{linkStart}Wildcards%{linkEnd} such as `my-package-*` are supported."
 msgstr ""
 
 msgid "PackageRegistry|%{name} version %{version} was first created %{datetime}"

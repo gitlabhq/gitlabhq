@@ -786,7 +786,6 @@ Layout/LineLength:
     - 'ee/app/models/ee/merge_request/metrics.rb'
     - 'ee/app/models/ee/merge_request_diff.rb'
     - 'ee/app/models/ee/milestone_release.rb'
-    - 'ee/app/models/ee/namespace.rb'
     - 'ee/app/models/ee/packages/package_file.rb'
     - 'ee/app/models/ee/pages_deployment.rb'
     - 'ee/app/models/ee/project.rb'

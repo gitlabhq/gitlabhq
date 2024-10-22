@@ -1236,4 +1236,34 @@ RSpec.describe SearchHelper, feature_category: :global_search do
       expect(should_show_zoekt_results?(:some_scope, :some_type)).to be false
     end
   end
+
+  describe '#formatted_count' do
+    context 'when @timeout is set' do
+      it 'returns "0"' do
+        @timeout = true
+        @scope = 'projects'
+
+        expect(formatted_count(@scope)).to eq("0")
+      end
+    end
+
+    context 'when @search_results is defined' do
+      it 'delegates formatted_count to @search_results' do
+        @scope = 'projects'
+        @search_results = double
+
+        allow(@search_results).to receive(:formatted_count).with(@scope)
+        expect(@search_results).to receive(:formatted_count).with(@scope)
+
+        formatted_count(@scope)
+      end
+    end
+
+    context 'when @search_results is not defined' do
+      it 'returns "0"' do
+        @scope = 'projects'
+        expect(formatted_count(@scope)).to eq("0")
+      end
+    end
+  end
 end

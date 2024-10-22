@@ -261,7 +261,6 @@ Style/GuardClause:
     - 'ee/app/models/ee/issue_assignee.rb'
     - 'ee/app/models/ee/member.rb'
     - 'ee/app/models/ee/merge_request.rb'
-    - 'ee/app/models/ee/namespace.rb'
     - 'ee/app/models/ee/project.rb'
     - 'ee/app/models/ee/project_group_link.rb'
     - 'ee/app/models/ee/project_member.rb'

@@ -96,6 +96,8 @@ class Ci::PipelineEntity < Grape::Entity
     pipeline.failed_builds.size
   end
 
+  expose :pipeline_schedule, using: Ci::PipelineScheduleEntity
+
   private
 
   alias_method :pipeline, :object

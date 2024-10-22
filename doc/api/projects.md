@@ -42,7 +42,291 @@ Use the alternative attributes instead.
 | `marked_for_deletion_at` | `marked_for_deletion_on`. Premium and Ultimate tier only. |
 | `approvals_before_merge` | [Merge request approvals API](merge_request_approvals.md). Premium and Ultimate tier only. |
 
-## List all projects
+## Get a single project
+
+Get a specific project. This endpoint can be accessed without authentication if
+the project is publicly accessible.
+
+```plaintext
+GET /projects/:id
+```
+
+Supported attributes:
+
+| Attribute                | Type              | Required | Description |
+|:-------------------------|:------------------|:---------|:------------|
+| `id`                     | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `license`                | boolean           | No       | Include project license data. |
+| `statistics`             | boolean           | No       | Include project statistics. Available only to users with at least the Reporter role. |
+| `with_custom_attributes` | boolean           | No       | Include [custom attributes](custom_attributes.md) in response. _(administrators only)_ |
+
+Example response:
+
+```json
+{
+  "id": 3,
+  "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  "description_html": "<p data-sourcepos=\"1:1-1:56\" dir=\"auto\">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>",
+  "default_branch": "main",
+  "visibility": "private",
+  "ssh_url_to_repo": "git@example.com:diaspora/diaspora-project-site.git",
+  "http_url_to_repo": "http://example.com/diaspora/diaspora-project-site.git",
+  "web_url": "http://example.com/diaspora/diaspora-project-site",
+  "readme_url": "http://example.com/diaspora/diaspora-project-site/blob/main/README.md",
+  "tag_list": [ //deprecated, use `topics` instead
+    "example",
+    "disapora project"
+  ],
+  "topics": [
+    "example",
+    "disapora project"
+  ],
+  "owner": {
+    "id": 3,
+    "name": "Diaspora",
+    "created_at": "2013-09-30T13:46:02Z"
+  },
+  "name": "Diaspora Project Site",
+  "name_with_namespace": "Diaspora / Diaspora Project Site",
+  "path": "diaspora-project-site",
+  "path_with_namespace": "diaspora/diaspora-project-site",
+  "issues_enabled": true,
+  "open_issues_count": 1,
+  "merge_requests_enabled": true,
+  "jobs_enabled": true,
+  "wiki_enabled": true,
+  "snippets_enabled": false,
+  "can_create_merge_request_in": true,
+  "resolve_outdated_diff_discussions": false,
+  "container_registry_enabled": false, // deprecated, use container_registry_access_level instead
+  "container_registry_access_level": "disabled",
+  "security_and_compliance_access_level": "disabled",
+  "container_expiration_policy": {
+    "cadence": "7d",
+    "enabled": false,
+    "keep_n": null,
+    "older_than": null,
+    "name_regex": null, // to be deprecated in GitLab 13.0 in favor of `name_regex_delete`
+    "name_regex_delete": null,
+    "name_regex_keep": null,
+    "next_run_at": "2020-01-07T21:42:58.658Z"
+  },
+  "created_at": "2013-09-30T13:46:02Z",
+  "updated_at": "2013-09-30T13:46:02Z",
+  "last_activity_at": "2013-09-30T13:46:02Z",
+  "creator_id": 3,
+  "namespace": {
+    "id": 3,
+    "name": "Diaspora",
+    "path": "diaspora",
+    "kind": "group",
+    "full_path": "diaspora",
+    "avatar_url": "http://localhost:3000/uploads/group/avatar/3/foo.jpg",
+    "web_url": "http://localhost:3000/groups/diaspora"
+  },
+  "import_url": null,
+  "import_type": null,
+  "import_status": "none",
+  "import_error": null,
+  "permissions": {
+    "project_access": {
+      "access_level": 10,
+      "notification_level": 3
+    },
+    "group_access": {
+      "access_level": 50,
+      "notification_level": 3
+    }
+  },
+  "archived": false,
+  "avatar_url": "http://example.com/uploads/project/avatar/3/uploads/avatar.png",
+  "license_url": "http://example.com/diaspora/diaspora-client/blob/main/LICENSE",
+  "license": {
+    "key": "lgpl-3.0",
+    "name": "GNU Lesser General Public License v3.0",
+    "nickname": "GNU LGPLv3",
+    "html_url": "http://choosealicense.com/licenses/lgpl-3.0/",
+    "source_url": "http://www.gnu.org/licenses/lgpl-3.0.txt"
+  },
+  "shared_runners_enabled": true,
+  "group_runners_enabled": true,
+  "forks_count": 0,
+  "star_count": 0,
+  "runners_token": "b8bc4a7a29eb76ea83cf79e4908c2b",
+  "ci_default_git_depth": 50,
+  "ci_forward_deployment_enabled": true,
+  "ci_forward_deployment_rollback_allowed": true,
+  "ci_allow_fork_pipelines_to_run_in_parent_project": true,
+  "ci_separated_caches": true,
+  "ci_restrict_pipeline_cancellation_role": "developer",
+  "ci_pipeline_variables_minimum_override_role": "maintainer",
+  "ci_push_repository_for_job_token_allowed": false,
+  "public_jobs": true,
+  "shared_with_groups": [
+    {
+      "group_id": 4,
+      "group_name": "Twitter",
+      "group_full_path": "twitter",
+      "group_access_level": 30
+    },
+    {
+      "group_id": 3,
+      "group_name": "Gitlab Org",
+      "group_full_path": "gitlab-org",
+      "group_access_level": 10
+    }
+  ],
+  "repository_storage": "default",
+  "only_allow_merge_if_pipeline_succeeds": false,
+  "allow_merge_on_skipped_pipeline": false,
+  "allow_pipeline_trigger_approve_deployment": false,
+  "restrict_user_defined_variables": false,
+  "only_allow_merge_if_all_discussions_are_resolved": false,
+  "remove_source_branch_after_merge": false,
+  "printing_merge_requests_link_enabled": true,
+  "request_access_enabled": false,
+  "merge_method": "merge",
+  "squash_option": "default_on",
+  "auto_devops_enabled": true,
+  "auto_devops_deploy_strategy": "continuous",
+  "approvals_before_merge": 0, // Deprecated. Use merge request approvals API instead.
+  "mirror": false,
+  "mirror_user_id": 45,
+  "mirror_trigger_builds": false,
+  "only_mirror_protected_branches": false,
+  "mirror_overwrites_diverged_branches": false,
+  "external_authorization_classification_label": null,
+  "packages_enabled": true,
+  "service_desk_enabled": false,
+  "service_desk_address": null,
+  "autoclose_referenced_issues": true,
+  "suggestion_commit_message": null,
+  "enforce_auth_checks_on_uploads": true,
+  "merge_commit_template": null,
+  "squash_commit_template": null,
+  "issue_branch_template": "gitlab/%{id}-%{title}",
+  "marked_for_deletion_at": "2020-04-03", // Deprecated in favor of marked_for_deletion_on. Planned for removal in a future version of the REST API.
+  "marked_for_deletion_on": "2020-04-03",
+  "compliance_frameworks": [ "sox" ],
+  "warn_about_potentially_unwanted_characters": true,
+  "statistics": {
+    "commit_count": 37,
+    "storage_size": 1038090,
+    "repository_size": 1038090,
+    "wiki_size" : 0,
+    "lfs_objects_size": 0,
+    "job_artifacts_size": 0,
+    "pipeline_artifacts_size": 0,
+    "packages_size": 0,
+    "snippets_size": 0,
+    "uploads_size": 0,
+    "container_registry_size": 0
+  },
+  "container_registry_image_prefix": "registry.example.com/diaspora/diaspora-client",
+  "_links": {
+    "self": "http://example.com/api/v4/projects",
+    "issues": "http://example.com/api/v4/projects/1/issues",
+    "merge_requests": "http://example.com/api/v4/projects/1/merge_requests",
+    "repo_branches": "http://example.com/api/v4/projects/1/repository_branches",
+    "labels": "http://example.com/api/v4/projects/1/labels",
+    "events": "http://example.com/api/v4/projects/1/events",
+    "members": "http://example.com/api/v4/projects/1/members",
+    "cluster_agents": "http://example.com/api/v4/projects/1/cluster_agents"
+  }
+}
+```
+
+Users of [GitLab Ultimate](https://about.gitlab.com/pricing/)
+can also see the `only_allow_merge_if_all_status_checks_passed`
+parameters using GitLab 15.5 and later:
+
+```json
+{
+  "id": 1,
+  "project_id": 3,
+  "only_allow_merge_if_all_status_checks_passed": false,
+  ...
+}
+```
+
+If the project is a fork, the `forked_from_project` field appears in the response.
+For this field, if the upstream project is private, a valid token for authentication must be provided.
+The field `mr_default_target_self` appears as well. If this value is `false`, then all merge requests
+target the upstream project by default.
+
+```json
+{
+   "id":3,
+
+   ...
+
+   "mr_default_target_self": false,
+   "forked_from_project":{
+      "id":13083,
+      "description":"GitLab Community Edition",
+      "name":"GitLab Community Edition",
+      "name_with_namespace":"GitLab.org / GitLab Community Edition",
+      "path":"gitlab-foss",
+      "path_with_namespace":"gitlab-org/gitlab-foss",
+      "created_at":"2013-09-26T06:02:36.000Z",
+      "default_branch":"main",
+      "tag_list":[], //deprecated, use `topics` instead
+      "topics":[],
+      "ssh_url_to_repo":"git@gitlab.com:gitlab-org/gitlab-foss.git",
+      "http_url_to_repo":"https://gitlab.com/gitlab-org/gitlab-foss.git",
+      "web_url":"https://gitlab.com/gitlab-org/gitlab-foss",
+      "avatar_url":"https://gitlab.com/uploads/-/system/project/avatar/13083/logo-extra-whitespace.png",
+      "license_url": "https://gitlab.com/gitlab-org/gitlab/-/blob/main/LICENSE",
+      "license": {
+        "key": "mit",
+        "name": "MIT License",
+        "nickname": null,
+        "html_url": "http://choosealicense.com/licenses/mit/",
+        "source_url": "https://opensource.org/licenses/MIT"
+      },
+      "star_count":3812,
+      "forks_count":3561,
+      "last_activity_at":"2018-01-02T11:40:26.570Z",
+      "namespace": {
+            "id": 72,
+            "name": "GitLab.org",
+            "path": "gitlab-org",
+            "kind": "group",
+            "full_path": "gitlab-org",
+            "parent_id": null
+      },
+      "repository_storage": "default"
+   }
+
+   ...
+
+}
+```
+
+### Templates for issues and merge requests
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+
+Users of [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/)
+can also see the `issues_template` and `merge_requests_template` parameters for managing
+[issue and merge request description templates](../user/project/description_templates.md).
+
+```json
+{
+  "id": 3,
+  "issues_template": null,
+  "merge_requests_template": null,
+  ...
+}
+```
+
+## List projects
+
+List projects.
+
+### List all projects
 
 > - The `_links.cluster_agents` attribute in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347047) in GitLab 15.0.
 
@@ -306,7 +590,7 @@ Example request:
 curl --globoff --request GET "https://gitlab.example.com/api/v4/projects?custom_attributes[location]=Antarctica&custom_attributes[role]=Developer"
 ```
 
-### Pagination limits
+#### Pagination limits
 
 You can use [offset-based pagination](rest/index.md#offset-based-pagination) to access
 [up to 50,000 projects](https://gitlab.com/gitlab-org/gitlab/-/issues/34565).
@@ -314,7 +598,7 @@ You can use [offset-based pagination](rest/index.md#offset-based-pagination) to 
 Use [keyset pagination](rest/index.md#keyset-based-pagination) to retrieve projects beyond this limit.
 Keyset pagination supports only `order_by=id`. Other sorting options aren't available.
 
-## List a user's projects
+### List a user's projects
 
 Get a list of visible projects owned by the given user. When accessed without
 authentication, only public projects are returned.
@@ -613,7 +897,7 @@ Example response:
 ]
 ```
 
-## List projects a user has contributed to
+### List projects a user has contributed to
 
 Get a list of visible projects a given user has contributed to.
 
@@ -863,7 +1147,7 @@ Example response:
 ]
 ```
 
-## Search for projects by name
+### Search for projects by name
 
 Search for projects by name that are accessible to the authenticated user. If this endpoint is accessed without
 authentication, it lists projects that are publicly accessible.
@@ -886,287 +1170,11 @@ Example request:
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects?search=test"
 ```
 
-## Get a single project
+## List attributes
 
-Get a specific project. This endpoint can be accessed without authentication if
-the project is publicly accessible.
+List attributes of a project.
 
-```plaintext
-GET /projects/:id
-```
-
-Supported attributes:
-
-| Attribute                | Type              | Required | Description |
-|:-------------------------|:------------------|:---------|:------------|
-| `id`                     | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
-| `license`                | boolean           | No       | Include project license data. |
-| `statistics`             | boolean           | No       | Include project statistics. Available only to users with at least the Reporter role. |
-| `with_custom_attributes` | boolean           | No       | Include [custom attributes](custom_attributes.md) in response. _(administrators only)_ |
-
-Example response:
-
-```json
-{
-  "id": 3,
-  "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-  "description_html": "<p data-sourcepos=\"1:1-1:56\" dir=\"auto\">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>",
-  "default_branch": "main",
-  "visibility": "private",
-  "ssh_url_to_repo": "git@example.com:diaspora/diaspora-project-site.git",
-  "http_url_to_repo": "http://example.com/diaspora/diaspora-project-site.git",
-  "web_url": "http://example.com/diaspora/diaspora-project-site",
-  "readme_url": "http://example.com/diaspora/diaspora-project-site/blob/main/README.md",
-  "tag_list": [ //deprecated, use `topics` instead
-    "example",
-    "disapora project"
-  ],
-  "topics": [
-    "example",
-    "disapora project"
-  ],
-  "owner": {
-    "id": 3,
-    "name": "Diaspora",
-    "created_at": "2013-09-30T13:46:02Z"
-  },
-  "name": "Diaspora Project Site",
-  "name_with_namespace": "Diaspora / Diaspora Project Site",
-  "path": "diaspora-project-site",
-  "path_with_namespace": "diaspora/diaspora-project-site",
-  "issues_enabled": true,
-  "open_issues_count": 1,
-  "merge_requests_enabled": true,
-  "jobs_enabled": true,
-  "wiki_enabled": true,
-  "snippets_enabled": false,
-  "can_create_merge_request_in": true,
-  "resolve_outdated_diff_discussions": false,
-  "container_registry_enabled": false, // deprecated, use container_registry_access_level instead
-  "container_registry_access_level": "disabled",
-  "security_and_compliance_access_level": "disabled",
-  "container_expiration_policy": {
-    "cadence": "7d",
-    "enabled": false,
-    "keep_n": null,
-    "older_than": null,
-    "name_regex": null, // to be deprecated in GitLab 13.0 in favor of `name_regex_delete`
-    "name_regex_delete": null,
-    "name_regex_keep": null,
-    "next_run_at": "2020-01-07T21:42:58.658Z"
-  },
-  "created_at": "2013-09-30T13:46:02Z",
-  "updated_at": "2013-09-30T13:46:02Z",
-  "last_activity_at": "2013-09-30T13:46:02Z",
-  "creator_id": 3,
-  "namespace": {
-    "id": 3,
-    "name": "Diaspora",
-    "path": "diaspora",
-    "kind": "group",
-    "full_path": "diaspora",
-    "avatar_url": "http://localhost:3000/uploads/group/avatar/3/foo.jpg",
-    "web_url": "http://localhost:3000/groups/diaspora"
-  },
-  "import_url": null,
-  "import_type": null,
-  "import_status": "none",
-  "import_error": null,
-  "permissions": {
-    "project_access": {
-      "access_level": 10,
-      "notification_level": 3
-    },
-    "group_access": {
-      "access_level": 50,
-      "notification_level": 3
-    }
-  },
-  "archived": false,
-  "avatar_url": "http://example.com/uploads/project/avatar/3/uploads/avatar.png",
-  "license_url": "http://example.com/diaspora/diaspora-client/blob/main/LICENSE",
-  "license": {
-    "key": "lgpl-3.0",
-    "name": "GNU Lesser General Public License v3.0",
-    "nickname": "GNU LGPLv3",
-    "html_url": "http://choosealicense.com/licenses/lgpl-3.0/",
-    "source_url": "http://www.gnu.org/licenses/lgpl-3.0.txt"
-  },
-  "shared_runners_enabled": true,
-  "group_runners_enabled": true,
-  "forks_count": 0,
-  "star_count": 0,
-  "runners_token": "b8bc4a7a29eb76ea83cf79e4908c2b",
-  "ci_default_git_depth": 50,
-  "ci_forward_deployment_enabled": true,
-  "ci_forward_deployment_rollback_allowed": true,
-  "ci_allow_fork_pipelines_to_run_in_parent_project": true,
-  "ci_separated_caches": true,
-  "ci_restrict_pipeline_cancellation_role": "developer",
-  "ci_pipeline_variables_minimum_override_role": "maintainer",
-  "ci_push_repository_for_job_token_allowed": false,
-  "public_jobs": true,
-  "shared_with_groups": [
-    {
-      "group_id": 4,
-      "group_name": "Twitter",
-      "group_full_path": "twitter",
-      "group_access_level": 30
-    },
-    {
-      "group_id": 3,
-      "group_name": "Gitlab Org",
-      "group_full_path": "gitlab-org",
-      "group_access_level": 10
-    }
-  ],
-  "repository_storage": "default",
-  "only_allow_merge_if_pipeline_succeeds": false,
-  "allow_merge_on_skipped_pipeline": false,
-  "allow_pipeline_trigger_approve_deployment": false,
-  "restrict_user_defined_variables": false,
-  "only_allow_merge_if_all_discussions_are_resolved": false,
-  "remove_source_branch_after_merge": false,
-  "printing_merge_requests_link_enabled": true,
-  "request_access_enabled": false,
-  "merge_method": "merge",
-  "squash_option": "default_on",
-  "auto_devops_enabled": true,
-  "auto_devops_deploy_strategy": "continuous",
-  "approvals_before_merge": 0, // Deprecated. Use merge request approvals API instead.
-  "mirror": false,
-  "mirror_user_id": 45,
-  "mirror_trigger_builds": false,
-  "only_mirror_protected_branches": false,
-  "mirror_overwrites_diverged_branches": false,
-  "external_authorization_classification_label": null,
-  "packages_enabled": true,
-  "service_desk_enabled": false,
-  "service_desk_address": null,
-  "autoclose_referenced_issues": true,
-  "suggestion_commit_message": null,
-  "enforce_auth_checks_on_uploads": true,
-  "merge_commit_template": null,
-  "squash_commit_template": null,
-  "issue_branch_template": "gitlab/%{id}-%{title}",
-  "marked_for_deletion_at": "2020-04-03", // Deprecated in favor of marked_for_deletion_on. Planned for removal in a future version of the REST API.
-  "marked_for_deletion_on": "2020-04-03",
-  "compliance_frameworks": [ "sox" ],
-  "warn_about_potentially_unwanted_characters": true,
-  "statistics": {
-    "commit_count": 37,
-    "storage_size": 1038090,
-    "repository_size": 1038090,
-    "wiki_size" : 0,
-    "lfs_objects_size": 0,
-    "job_artifacts_size": 0,
-    "pipeline_artifacts_size": 0,
-    "packages_size": 0,
-    "snippets_size": 0,
-    "uploads_size": 0,
-    "container_registry_size": 0
-  },
-  "container_registry_image_prefix": "registry.example.com/diaspora/diaspora-client",
-  "_links": {
-    "self": "http://example.com/api/v4/projects",
-    "issues": "http://example.com/api/v4/projects/1/issues",
-    "merge_requests": "http://example.com/api/v4/projects/1/merge_requests",
-    "repo_branches": "http://example.com/api/v4/projects/1/repository_branches",
-    "labels": "http://example.com/api/v4/projects/1/labels",
-    "events": "http://example.com/api/v4/projects/1/events",
-    "members": "http://example.com/api/v4/projects/1/members",
-    "cluster_agents": "http://example.com/api/v4/projects/1/cluster_agents"
-  }
-}
-```
-
-Users of [GitLab Ultimate](https://about.gitlab.com/pricing/)
-can also see the `only_allow_merge_if_all_status_checks_passed`
-parameters using GitLab 15.5 and later:
-
-```json
-{
-  "id": 1,
-  "project_id": 3,
-  "only_allow_merge_if_all_status_checks_passed": false,
-  ...
-}
-```
-
-If the project is a fork, the `forked_from_project` field appears in the response.
-For this field, if the upstream project is private, a valid token for authentication must be provided.
-The field `mr_default_target_self` appears as well. If this value is `false`, then all merge requests
-target the upstream project by default.
-
-```json
-{
-   "id":3,
-
-   ...
-
-   "mr_default_target_self": false,
-   "forked_from_project":{
-      "id":13083,
-      "description":"GitLab Community Edition",
-      "name":"GitLab Community Edition",
-      "name_with_namespace":"GitLab.org / GitLab Community Edition",
-      "path":"gitlab-foss",
-      "path_with_namespace":"gitlab-org/gitlab-foss",
-      "created_at":"2013-09-26T06:02:36.000Z",
-      "default_branch":"main",
-      "tag_list":[], //deprecated, use `topics` instead
-      "topics":[],
-      "ssh_url_to_repo":"git@gitlab.com:gitlab-org/gitlab-foss.git",
-      "http_url_to_repo":"https://gitlab.com/gitlab-org/gitlab-foss.git",
-      "web_url":"https://gitlab.com/gitlab-org/gitlab-foss",
-      "avatar_url":"https://gitlab.com/uploads/-/system/project/avatar/13083/logo-extra-whitespace.png",
-      "license_url": "https://gitlab.com/gitlab-org/gitlab/-/blob/main/LICENSE",
-      "license": {
-        "key": "mit",
-        "name": "MIT License",
-        "nickname": null,
-        "html_url": "http://choosealicense.com/licenses/mit/",
-        "source_url": "https://opensource.org/licenses/MIT"
-      },
-      "star_count":3812,
-      "forks_count":3561,
-      "last_activity_at":"2018-01-02T11:40:26.570Z",
-      "namespace": {
-            "id": 72,
-            "name": "GitLab.org",
-            "path": "gitlab-org",
-            "kind": "group",
-            "full_path": "gitlab-org",
-            "parent_id": null
-      },
-      "repository_storage": "default"
-   }
-
-   ...
-
-}
-```
-
-### Templates for issues and merge requests
-
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
-
-Users of [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/)
-can also see the `issues_template` and `merge_requests_template` parameters for managing
-[issue and merge request description templates](../user/project/description_templates.md).
-
-```json
-{
-  "id": 3,
-  "issues_template": null,
-  "merge_requests_template": null,
-  ...
-}
-```
-
-## Get a project's users
+### List users
 
 Get the users list of a project.
 
@@ -1205,7 +1213,7 @@ Example response:
 ]
 ```
 
-## List a project's groups
+### List groups
 
 Get a list of ancestor groups for this project.
 
@@ -1247,7 +1255,7 @@ Example response:
 ]
 ```
 
-## List a project's shareable groups
+### List shareable groups
 
 Get a list of groups that can be shared with a project
 
@@ -1285,7 +1293,81 @@ Example response:
 ]
 ```
 
-## Create a project
+### List a project's invited groups
+
+Get a list of invited groups in a project. When accessed without authentication, only public invited groups are returned.
+This endpoint is rate-limited to 60 requests per minute per:
+
+- User for authenticated users.
+- IP address for unauthenticated users.
+
+By default, this request returns 20 results at a time because the API results [are paginated](rest/index.md#pagination).
+
+```plaintext
+GET /projects/:id/invited_groups
+```
+
+Supported attributes:
+
+| Attribute                | Type             | Required | Description |
+|:-------------------------|:-----------------|:---------|:------------|
+| `id`                     | integer/string   | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths) |
+| `search`                 | string           | no       | Return the list of authorized groups matching the search criteria |
+| `min_access_level`       | integer          | no       | Limit to groups where current user has at least the specified [role (`access_level`)](members.md#roles) |
+| `relation`               | array of strings | no       | Filter the groups by relation (direct or inherited) |
+| `with_custom_attributes` | boolean          | no       | Include [custom attributes](custom_attributes.md) in response (administrators only) |
+
+Example response:
+
+```json
+[
+  {
+    "id": 35,
+    "web_url": "https://gitlab.example.com/groups/twitter",
+    "name": "Twitter",
+    "avatar_url": null,
+    "full_name": "Twitter",
+    "full_path": "twitter"
+  }
+]
+```
+
+### List programming languages used
+
+Get the list and usage percentage of programming languages used in a project.
+
+```plaintext
+GET /projects/:id/languages
+```
+
+Supported attributes:
+
+| Attribute | Type              | Required | Description |
+|:----------|:------------------|:---------|:------------|
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/languages"
+```
+
+Example response:
+
+```json
+{
+  "Ruby": 66.69,
+  "JavaScript": 22.98,
+  "HTML": 7.91,
+  "CoffeeScript": 2.42
+}
+```
+
+## Manage projects
+
+Manage a project, including creation, deletion, and archival.
+
+### Create a project
 
 > - `operations_access_level` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/385798) in GitLab 16.0.
 > - `model_registry_access_level` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412734) in GitLab 16.7.
@@ -1402,7 +1484,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your-token>" \
      --url "https://gitlab.example.com/api/v4/projects/"
 ```
 
-## Create a project for a user
+### Create a project for a user
 
 > - `operations_access_level` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/385798) in GitLab 16.0.
 > - `model_registry_access_level` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412734) in GitLab 16.7.
@@ -1514,7 +1596,7 @@ settings with access control options can be one of:
 | `snippets_access_level`                | string | No       | Set visibility of [snippets](../user/snippets.md#change-default-visibility-of-snippets). |
 | `wiki_access_level`                    | string | No       | Set visibility of [wiki](../user/project/wiki/index.md#enable-or-disable-a-project-wiki). |
 
-## Edit a project
+### Edit a project
 
 > - `operations_access_level` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/385798) in GitLab 16.0.
 > - `model_registry_access_level` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412734) in GitLab 16.7.
@@ -1649,77 +1731,66 @@ Supported project visibility attributes:
 | `snippets_access_level`                | string | No       | Set visibility of [snippets](../user/snippets.md#change-default-visibility-of-snippets). |
 | `wiki_access_level`                    | string | No       | Set visibility of [wiki](../user/project/wiki/index.md#enable-or-disable-a-project-wiki). |
 
-## List a project's invited groups
+### Import members
 
-Get a list of invited groups in a project. When accessed without authentication, only public invited groups are returned.
-This endpoint is rate-limited to 60 requests per minute per:
+Import members from another project.
 
-- User for authenticated users.
-- IP address for unauthenticated users.
+If the importing member's role for the target project is:
 
-By default, this request returns 20 results at a time because the API results [are paginated](rest/index.md#pagination).
+- Maintainer, then members with the Owner role for the source project are imported with the Maintainer role.
+- Owner, then members with the Owner role for the source project are imported with the Owner role.
 
 ```plaintext
-GET /projects/:id/invited_groups
+POST /projects/:id/import_project_members/:project_id
 ```
 
 Supported attributes:
 
-| Attribute                | Type             | Required | Description |
-|:-------------------------|:-----------------|:---------|:------------|
-| `id`                     | integer/string   | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths) |
-| `search`                 | string           | no       | Return the list of authorized groups matching the search criteria |
-| `min_access_level`       | integer          | no       | Limit to groups where current user has at least the specified [role (`access_level`)](members.md#roles) |
-| `relation`               | array of strings | no       | Filter the groups by relation (direct or inherited) |
-| `with_custom_attributes` | boolean          | no       | Include [custom attributes](custom_attributes.md) in response (administrators only) |
-
-Example response:
-
-```json
-[
-  {
-    "id": 35,
-    "web_url": "https://gitlab.example.com/groups/twitter",
-    "name": "Twitter",
-    "avatar_url": null,
-    "full_name": "Twitter",
-    "full_path": "twitter"
-  }
-]
-```
-
-## Get a list of programming languages used in a project
-
-Get the list and usage percentage of programming languages used in a project.
-
-```plaintext
-GET /projects/:id/languages
-```
-
-Supported attributes:
-
-| Attribute | Type              | Required | Description |
-|:----------|:------------------|:---------|:------------|
-| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| Attribute    | Type              | Required | Description |
+|:-------------|:------------------|:---------|:------------|
+| `id`         | integer or string | Yes      | The ID or [URL-encoded path](rest/index.md#namespaced-paths) of the target project to receive the members. |
+| `project_id` | integer or string | Yes      | The ID or [URL-encoded path](rest/index.md#namespaced-paths) of the source project to import the members from. |
 
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/languages"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/import_project_members/32"
 ```
 
-Example response:
+Returns:
+
+- `200 OK` on success.
+- `404 Project Not Found` if the target or source project does not exist or cannot be accessed by the requester.
+- `422 Unprocessable Entity` if the import of project members does not complete successfully.
+
+Example responses:
+
+- When all emails were successfully sent (`200` HTTP status code):
+
+  ```json
+  {  "status":  "success"  }
+  ```
+
+- When there was any error importing 1 or more members (`200` HTTP status code):
+
+  ```json
+  {
+    "status": "error",
+    "message": {
+                 "john_smith": "Some individual error message",
+                 "jane_smith": "Some individual error message"
+               },
+    "total_members_count": 3
+  }
+  ```
+
+- When there is a system error (`404` and `422` HTTP status codes):
 
 ```json
-{
-  "Ruby": 66.69,
-  "JavaScript": 22.98,
-  "HTML": 7.91,
-  "CoffeeScript": 2.42
-}
+{  "message":  "Import failed"  }
 ```
 
-## Archive a project
+### Archive a project
 
 Archive a project.
 
@@ -1862,7 +1933,7 @@ Example response:
 }
 ```
 
-## Unarchive a project
+### Unarchive a project
 
 Unarchive a project.
 
@@ -2005,7 +2076,7 @@ Example response:
 }
 ```
 
-## Delete a project
+### Delete a project
 
 Delete a project. This endpoint:
 
@@ -2038,7 +2109,7 @@ Supported attributes:
 | `full_path`          | string            | no       | Full path of project to use with `permanently_remove`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396500) in GitLab 15.11. To find the project path, use `path_with_namespace` from [get single project](projects.md#get-a-single-project). Premium and Ultimate only. |
 | `permanently_remove` | boolean/string    | no       | Immediately deletes a project if it is marked for deletion. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396500) in GitLab 15.11. Premium and Ultimate only. |
 
-## Restore a project that is marked for deletion
+### Restore a project marked for deletion
 
 DETAILS:
 **Tier:** Premium, Ultimate
@@ -2056,161 +2127,7 @@ Supported attributes:
 |:----------|:------------------|:---------|:------------|
 | `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 
-## Upload a project avatar
-
-Upload an avatar to the specified project.
-
-```plaintext
-PUT /projects/:id
-```
-
-Supported attributes:
-
-| Attribute | Type              | Required | Description |
-|:----------|:------------------|:---------|:------------|
-| `avatar`  | string            | Yes      | The file to be uploaded. |
-| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
-
-To upload an avatar from your file system, use the `--form` argument. This causes
-cURL to post data using the header `Content-Type: multipart/form-data`. The
-`file=` parameter must point to an image file on your file system and be
-preceded by `@`. For example:
-
-Example request:
-
-```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
-     --form "avatar=@dk.png" "https://gitlab.example.com/api/v4/projects/5"
-```
-
-Example response:
-
-```json
-{
-  "avatar_url": "https://gitlab.example.com/uploads/-/system/project/avatar/2/dk.png"
-}
-```
-
-## Download a project avatar
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144039) in GitLab 16.9.
-
-Download a project avatar. You can access this endpoint without authentication if the project is publicly accessible.
-
-```plaintext
-GET /projects/:id/avatar
-```
-
-Supported attributes:
-
-| Attribute | Type              | Required | Description |
-|:----------|:------------------|:---------|:------------|
-| `id`      | integer or string | yes      | ID or [URL-encoded path](rest/index.md#namespaced-paths) of the project. |
-
-Example request:
-
-```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/4/avatar"
-```
-
-## Remove a project avatar
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92604) in GitLab 15.4.
-
-To remove a project avatar, use a blank value for the `avatar` attribute.
-
-Example request:
-
-```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
-     --data "avatar=" "https://gitlab.example.com/api/v4/projects/5"
-```
-
-## Share a project with a group
-
-Share a project with a group.
-
-```plaintext
-POST /projects/:id/share
-```
-
-Supported attributes:
-
-| Attribute      | Type              | Required | Description |
-|:---------------|:------------------|:---------|:------------|
-| `group_access` | integer           | Yes      | The [role (`access_level`)](members.md#roles) to grant the group. |
-| `group_id`     | integer           | Yes      | The ID of the group to share with. |
-| `id`           | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
-| `expires_at`   | string            | No       | Share expiration date in ISO 8601 format. For example, `2016-09-26`. |
-
-## Delete a shared project link within a group
-
-Unshare the project from the group. Returns `204` and no content on success.
-
-```plaintext
-DELETE /projects/:id/share/:group_id
-```
-
-Supported attributes:
-
-| Attribute  | Type              | Required | Description |
-|:-----------|:------------------|:---------|:------------|
-| `group_id` | integer           | Yes      | The ID of the group. |
-| `id`       | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
-
-Example request:
-
-```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/share/17"
-```
-
-## Get groups to which a user can transfer a project
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371006) in GitLab 15.4
-
-Retrieve a list of groups to which the user can transfer a project.
-
-```plaintext
-GET /projects/:id/transfer_locations
-```
-
-Supported attributes:
-
-| Attribute | Type              | Required | Description |
-|:----------|:------------------|:---------|:------------|
-| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
-| `search`  | string            | No       | The group names to search for. |
-
-Example request:
-
-```shell
-curl --request GET "https://gitlab.example.com/api/v4/projects/1/transfer_locations"
-```
-
-Example response:
-
-```json
-[
-  {
-    "id": 27,
-    "web_url": "https://gitlab.example.com/groups/gitlab",
-    "name": "GitLab",
-    "avatar_url": null,
-    "full_name": "GitLab",
-    "full_path": "GitLab"
-  },
-  {
-    "id": 31,
-    "web_url": "https://gitlab.example.com/groups/foobar",
-    "name": "FooBar",
-    "avatar_url": null,
-    "full_name": "FooBar",
-    "full_path": "FooBar"
-  }
-]
-```
-
-## Transfer a project to a new namespace
+### Transfer a project to a new namespace
 
 Transfer a project to a new namespace.
 
@@ -2348,63 +2265,162 @@ Example response:
 }
 ```
 
-## Import project members
+#### List groups available for project transfer
 
-Import members from another project.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371006) in GitLab 15.4
 
-If the importing member's role for the target project is:
-
-- Maintainer, then members with the Owner role for the source project are imported with the Maintainer role.
-- Owner, then members with the Owner role for the source project are imported with the Owner role.
+Retrieve a list of groups to which the user can transfer a project.
 
 ```plaintext
-POST /projects/:id/import_project_members/:project_id
+GET /projects/:id/transfer_locations
 ```
 
 Supported attributes:
 
-| Attribute    | Type              | Required | Description |
-|:-------------|:------------------|:---------|:------------|
-| `id`         | integer or string | Yes      | The ID or [URL-encoded path](rest/index.md#namespaced-paths) of the target project to receive the members. |
-| `project_id` | integer or string | Yes      | The ID or [URL-encoded path](rest/index.md#namespaced-paths) of the source project to import the members from. |
+| Attribute | Type              | Required | Description |
+|:----------|:------------------|:---------|:------------|
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `search`  | string            | No       | The group names to search for. |
 
 Example request:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/import_project_members/32"
+curl --request GET "https://gitlab.example.com/api/v4/projects/1/transfer_locations"
 ```
 
-Returns:
-
-- `200 OK` on success.
-- `404 Project Not Found` if the target or source project does not exist or cannot be accessed by the requester.
-- `422 Unprocessable Entity` if the import of project members does not complete successfully.
-
-Example responses:
-
-- When all emails were successfully sent (`200` HTTP status code):
-
-  ```json
-  {  "status":  "success"  }
-  ```
-
-- When there was any error importing 1 or more members (`200` HTTP status code):
-
-  ```json
-  {
-    "status": "error",
-    "message": {
-                 "john_smith": "Some individual error message",
-                 "jane_smith": "Some individual error message"
-               },
-    "total_members_count": 3
-  }
-  ```
-
-- When there is a system error (`404` and `422` HTTP status codes):
+Example response:
 
 ```json
-{  "message":  "Import failed"  }
+[
+  {
+    "id": 27,
+    "web_url": "https://gitlab.example.com/groups/gitlab",
+    "name": "GitLab",
+    "avatar_url": null,
+    "full_name": "GitLab",
+    "full_path": "GitLab"
+  },
+  {
+    "id": 31,
+    "web_url": "https://gitlab.example.com/groups/foobar",
+    "name": "FooBar",
+    "avatar_url": null,
+    "full_name": "FooBar",
+    "full_path": "FooBar"
+  }
+]
+```
+
+### Upload a project avatar
+
+Upload an avatar to the specified project.
+
+```plaintext
+PUT /projects/:id
+```
+
+Supported attributes:
+
+| Attribute | Type              | Required | Description |
+|:----------|:------------------|:---------|:------------|
+| `avatar`  | string            | Yes      | The file to be uploaded. |
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+
+To upload an avatar from your file system, use the `--form` argument. This causes
+cURL to post data using the header `Content-Type: multipart/form-data`. The
+`file=` parameter must point to an image file on your file system and be
+preceded by `@`. For example:
+
+Example request:
+
+```shell
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
+     --form "avatar=@dk.png" "https://gitlab.example.com/api/v4/projects/5"
+```
+
+Example response:
+
+```json
+{
+  "avatar_url": "https://gitlab.example.com/uploads/-/system/project/avatar/2/dk.png"
+}
+```
+
+### Download a project avatar
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144039) in GitLab 16.9.
+
+Download a project avatar. You can access this endpoint without authentication if the project is publicly accessible.
+
+```plaintext
+GET /projects/:id/avatar
+```
+
+Supported attributes:
+
+| Attribute | Type              | Required | Description |
+|:----------|:------------------|:---------|:------------|
+| `id`      | integer or string | yes      | ID or [URL-encoded path](rest/index.md#namespaced-paths) of the project. |
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/4/avatar"
+```
+
+### Remove a project avatar
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92604) in GitLab 15.4.
+
+To remove a project avatar, use a blank value for the `avatar` attribute.
+
+Example request:
+
+```shell
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
+     --data "avatar=" "https://gitlab.example.com/api/v4/projects/5"
+```
+
+## Share projects
+
+Share a project with a group.
+
+### Share a project with a group
+
+Share a project with a group.
+
+```plaintext
+POST /projects/:id/share
+```
+
+Supported attributes:
+
+| Attribute      | Type              | Required | Description |
+|:---------------|:------------------|:---------|:------------|
+| `group_access` | integer           | Yes      | The [role (`access_level`)](members.md#roles) to grant the group. |
+| `group_id`     | integer           | Yes      | The ID of the group to share with. |
+| `id`           | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `expires_at`   | string            | No       | Share expiration date in ISO 8601 format. For example, `2016-09-26`. |
+
+### Delete a shared project link in a group
+
+Unshare the project from the group. Returns `204` and no content on success.
+
+```plaintext
+DELETE /projects/:id/share/:group_id
+```
+
+Supported attributes:
+
+| Attribute  | Type              | Required | Description |
+|:-----------|:------------------|:---------|:------------|
+| `group_id` | integer           | Yes      | The ID of the group. |
+| `id`       | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+
+Example request:
+
+```shell
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/share/17"
 ```
 
 ## Start the housekeeping task for a project

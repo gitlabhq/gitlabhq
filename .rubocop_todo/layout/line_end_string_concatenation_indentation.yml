@@ -142,7 +142,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'ee/app/models/concerns/audit_events/gcp_externally_destinationable.rb'
     - 'ee/app/models/ee/member.rb'
     - 'ee/app/models/ee/merge_request.rb'
-    - 'ee/app/models/ee/namespace.rb'
     - 'ee/app/models/ee/vulnerability.rb'
     - 'ee/app/models/incident_management/oncall_shift.rb'
     - 'ee/app/models/integrations/google_cloud_platform/artifact_registry.rb'

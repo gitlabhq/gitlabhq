@@ -7,12 +7,15 @@ module Types
         graphql_name 'PackagesProtectionRulePackageType'
         description 'Package type of a package protection rule resource'
 
-        ::Packages::Protection::Rule.package_types.each_key do |package_type|
-          value package_type.upcase,
-            value: package_type,
-            alpha: { milestone: '16.5' },
-            description: "Packages of the #{package_type} format"
-        end
+        value 'NPM',
+          value: 'npm',
+          alpha: { milestone: '16.5' },
+          description: "Packages of the npm format."
+
+        value 'PYPI',
+          value: 'pypi',
+          alpha: { milestone: '17.6' },
+          description: "Packages of the PyPI format."
       end
     end
   end

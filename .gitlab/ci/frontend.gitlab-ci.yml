@@ -432,6 +432,28 @@ jest-with-fixtures vue3 predictive:
     - if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]] || [[ -s "$RSPEC_MATCHING_JS_FILES_PATH" ]]; then run_timed_command "yarn jest:ci:vue3-mr:predictive-with-fixtures"; fi
   allow_failure: false
 
+jest vue3 check quarantined:
+  extends:
+    - jest vue3 mr
+    - .frontend:rules:jest-vue3-check-quarantined
+  needs:
+    - !reference [jest vue3 mr, needs]
+    - "detect-tests"
+  script:
+    - if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]] || [[ -s "$RSPEC_MATCHING_JS_FILES_PATH" ]]; then run_timed_command "yarn jest:ci:vue3-mr:check-quarantined-without-fixtures"; fi
+  parallel: 1
+
+jest-with-fixtures vue3 check quarantined:
+  extends:
+    - jest-with-fixtures vue3 mr
+    - .frontend:rules:jest-vue3-check-quarantined
+  needs:
+    - !reference [jest-with-fixtures vue3 mr, needs]
+    - "detect-tests"
+  script:
+    - if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]] || [[ -s "$RSPEC_MATCHING_JS_FILES_PATH" ]]; then run_timed_command "yarn jest:ci:vue3-mr:check-quarantined-with-fixtures"; fi
+  parallel: 1
+
 jest-integration:
   extends:
     - .frontend-test-base

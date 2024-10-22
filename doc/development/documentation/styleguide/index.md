@@ -1406,6 +1406,7 @@ To create accessible and easily maintainable diagrams, follow these guidelines:
 - Include a title and brief description for the diagram.
 - For complex processes, consider creating multiple simple diagrams instead of one large diagram.
 - Validate diagrams work well when viewed on different devices and screen sizes.
+- Do not include links. Links embedded in diagrams with [`click` actions](https://mermaid.js.org/syntax/classDiagram.html#interaction) are not testable with our link checking tools.
 - Update diagrams along with documentation or code when processes change to maintain accuracy.
 
 #### Create a diagram

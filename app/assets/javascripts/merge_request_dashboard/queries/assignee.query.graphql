@@ -9,6 +9,7 @@ query requestingReview(
   $mergedAfter: Time
   $perPage: Int!
   $afterCursor: String
+  $sort: MergeRequestSort = UPDATED_DESC
 ) {
   currentUser {
     id
@@ -20,7 +21,7 @@ query requestingReview(
       mergedAfter: $mergedAfter
       first: $perPage
       after: $afterCursor
-      sort: UPDATED_DESC
+      sort: $sort
     ) {
       pageInfo {
         ...PageInfo

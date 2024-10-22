@@ -1403,6 +1403,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_468b8554e533() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "vulnerability_scanners"
+  WHERE "vulnerability_scanners"."id" = NEW."scanner_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_46ebe375f632() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -3352,6 +3368,7 @@ CREATE TABLE security_findings (
     overridden_uuid uuid,
     partition_number integer DEFAULT 1 NOT NULL,
     finding_data jsonb DEFAULT '{}'::jsonb NOT NULL,
+    project_id bigint,
     CONSTRAINT check_6c2851a8c9 CHECK ((uuid IS NOT NULL)),
     CONSTRAINT check_b9508c6df8 CHECK ((char_length(project_fingerprint) <= 40))
 )
@@ -33895,6 +33912,8 @@ CREATE TRIGGER trigger_43484cb41aca BEFORE INSERT OR UPDATE ON wiki_repository_s
 CREATE TRIGGER trigger_44558add1625 BEFORE INSERT OR UPDATE ON merge_request_assignees FOR EACH ROW EXECUTE FUNCTION trigger_44558add1625();
 
 CREATE TRIGGER trigger_44ff19ad0ab2 BEFORE INSERT OR UPDATE ON packages_pypi_metadata FOR EACH ROW EXECUTE FUNCTION trigger_44ff19ad0ab2();
+
+CREATE TRIGGER trigger_468b8554e533 BEFORE INSERT OR UPDATE ON security_findings FOR EACH ROW EXECUTE FUNCTION trigger_468b8554e533();
 
 CREATE TRIGGER trigger_46ebe375f632 BEFORE INSERT OR UPDATE ON epic_issues FOR EACH ROW EXECUTE FUNCTION trigger_46ebe375f632();
 

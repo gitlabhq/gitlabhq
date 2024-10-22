@@ -116,7 +116,7 @@ After you purchase GitLab Duo, you can assign seats to users to grant access to 
 Prerequisites:
 
 - You must be an administrator.
-- GitLab 17.5 or later
+- You must have GitLab 17.5 or later.
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **GitLab Duo**.
@@ -229,8 +229,7 @@ Prerequisites:
 Prerequisites:
 
 - You must have an active paid Ultimate subscription.
-- You must have GitLab 16.8 or later and your instance must be able to [synchronize your subscription data](self_managed/index.md#subscription-data-synchronization) with GitLab.
-- GitLab Duo requires GitLab 17.2 and later for the best user experience and results. Earlier versions may continue to work, however the experience may be degraded.
+- You must have GitLab 17.3 or later and your instance must be able to [synchronize your subscription data](self_managed/index.md#subscription-data-synchronization) with GitLab.
 
 1. Go to the [GitLab Duo Enterprise trial page](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?toggle=gitlab-duo-enterprise).
 1. Complete the fields.

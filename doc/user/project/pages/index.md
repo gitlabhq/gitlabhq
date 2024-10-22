@@ -412,26 +412,15 @@ To restore a stopped deployment that has not been deleted yet, see
 Parallel Pages deployments, created by a merge request with a `path_prefix`, are automatically deleted when the
 merge request is closed or merged.
 
-## User defined job names
+## User-defined job names
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/232505) in GitLab 17.5 with a flag `customizable_pages_job_name`, disabled by default.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169095) in GitLab 17.6.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169095) in GitLab 17.6. Feature flag `customizable_pages_job_name` removed.
 
-To trigger a pages deployment from any job, include the `pages` property in the
-job definition. It can either be a hash or simply a boolean set to `true`
+To trigger a Pages deployment from any job, include the `pages` property in the
+job definition. It can either be a hash or a Boolean set to `true`.
 
-```yaml
-deploy-my-pages-site:
-  stage: deploy
-  script:
-    - npm run build
-  pages: true
-  artifacts:
-    paths:
-    - public
-```
-
-This also works:
+For example, using `true`:
 
 ```yaml
 deploy-pages-review-app:
@@ -445,8 +434,21 @@ deploy-pages-review-app:
     - public
 ```
 
+For example, using a hash:
+
+```yaml
+deploy-my-pages-site:
+  stage: deploy
+  script:
+    - npm run build
+  pages: true
+  artifacts:
+    paths:
+    - public
+```
+
 If the `pages` property of a job named `pages` is set to `false`, no
-deployment will be triggered.
+deployment is triggered:
 
 ```yaml
 pages:

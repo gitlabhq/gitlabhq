@@ -16,6 +16,28 @@ RSpec.describe Projects::Settings::PackagesAndRegistriesController, feature_cate
     stub_container_registry_config(enabled: container_registry_enabled)
   end
 
+  shared_examples 'pushed feature flag' do |feature_flag_name|
+    let(:feature_flag_name_camelized) { feature_flag_name.to_s.camelize(:lower).to_sym }
+
+    it "pushes feature flag :#{feature_flag_name} to the view" do
+      subject
+
+      expect(response.body).to have_pushed_frontend_feature_flags(feature_flag_name_camelized => true)
+    end
+
+    context "when feature flag :#{feature_flag_name} is disabled" do
+      before do
+        stub_feature_flags(feature_flag_name.to_sym => false)
+      end
+
+      it "does not push feature flag :#{feature_flag_name} to the view" do
+        subject
+
+        expect(response.body).to have_pushed_frontend_feature_flags(feature_flag_name_camelized => false)
+      end
+    end
+  end
+
   describe 'GET #show' do
     context 'when user is authorized' do
       let(:user) { project.creator }
@@ -27,41 +49,9 @@ RSpec.describe Projects::Settings::PackagesAndRegistriesController, feature_cate
         allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(true)
       end
 
-      it 'pushes the feature flag "packages_protected_packages" to the view' do
-        subject
-
-        expect(response.body).to have_pushed_frontend_feature_flags(packagesProtectedPackages: true)
-      end
-
-      context 'when feature flag "packages_protected_packages" is disabled' do
-        before do
-          stub_feature_flags(packages_protected_packages: false)
-        end
-
-        it 'does not push the feature flag "packages_protected_packages" to the view' do
-          subject
-
-          expect(response.body).not_to have_pushed_frontend_feature_flags(packagesProtectedPackages: true)
-        end
-      end
-
-      it 'pushes the feature flag "container_registry_protected_containers" to the view' do
-        subject
-
-        expect(response.body).to have_pushed_frontend_feature_flags(containerRegistryProtectedContainers: true)
-      end
-
-      context 'when feature flag "container_registry_protected_containers" is disabled' do
-        before do
-          stub_feature_flags(container_registry_protected_containers: false)
-        end
-
-        it 'does not push the feature flag "container_registry_protected_containers" to the view' do
-          subject
-
-          expect(response.body).not_to have_pushed_frontend_feature_flags(containerRegistryProtectedContainers: true)
-        end
-      end
+      it_behaves_like 'pushed feature flag', :packages_protected_packages
+      it_behaves_like 'pushed feature flag', :packages_protected_packages_pypi
+      it_behaves_like 'pushed feature flag', :container_registry_protected_containers
     end
   end
 

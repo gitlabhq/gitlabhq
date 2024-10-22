@@ -789,4 +789,26 @@ RSpec.describe SearchController, feature_category: :global_search do
       end
     end
   end
+
+  context 'when CE edition', unless: Gitlab.ee? do
+    describe '#multi_match?' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:search_type, :scope) do
+        'basic'    | 'blobs'
+        'advanced' | 'blobs'
+        'zoekt'    | 'blobs'
+        'basic'    | 'issues'
+        'advanced' | 'issues'
+        'zoekt'    | 'issues'
+      end
+
+      with_them do
+        it 'returns false' do
+          result = subject.send(:multi_match?, search_type: search_type, scope: scope)
+          expect(result).to be(false)
+        end
+      end
+    end
+  end
 end

@@ -1,7 +1,7 @@
 <script>
 import { convertCandidateFromGraphql } from '~/ml/model_registry/utils';
 import IssuableDescription from '~/vue_shared/issuable/show/components/issuable_description.vue';
-import * as i18n from '../translations';
+import { s__, __ } from '~/locale';
 import CandidateDetail from './candidate_detail.vue';
 
 export default {
@@ -65,7 +65,13 @@ export default {
       };
     },
   },
-  i18n,
+  i18n: {
+    EMPTY_VERSION_CARD_DESCRIPTION: s__(
+      'MlModelRegistry|No description available. To add a description, click "Edit model version" above.',
+    ),
+    DESCRIPTION_LABEL: __('Description'),
+    MLFLOW_ID_LABEL: s__('MlModelRegistry|MLflow run ID'),
+  },
 };
 </script>
 
@@ -88,7 +94,7 @@ export default {
         />
       </div>
       <div v-else class="gl-text-secondary" data-testid="emptyDescriptionState">
-        {{ $options.i18n.NO_DESCRIPTION_PROVIDED_LABEL }}
+        {{ $options.i18n.EMPTY_VERSION_CARD_DESCRIPTION }}
       </div>
     </div>
 

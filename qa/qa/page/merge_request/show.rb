@@ -322,6 +322,10 @@ module QA
           click_element('merge-button', text: 'Set to auto-merge')
         end
 
+        def auto_mergeable?
+          has_element?('merge-button', text: 'Set to auto-merge', wait: 10)
+        end
+
         def merged?
           # Reloads the page at this point to avoid the problem of the merge status failing to update
           # That's the transient UX issue this test is checking for, so if the MR is merged but the UI still shows the

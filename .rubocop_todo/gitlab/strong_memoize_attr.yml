@@ -281,7 +281,6 @@ Gitlab/StrongMemoizeAttr:
     - 'ee/app/models/ee/group.rb'
     - 'ee/app/models/ee/list.rb'
     - 'ee/app/models/ee/merge_request.rb'
-    - 'ee/app/models/ee/namespace.rb'
     - 'ee/app/models/ee/project.rb'
     - 'ee/app/models/ee/snippet.rb'
     - 'ee/app/models/gitlab/seat_link_data.rb'

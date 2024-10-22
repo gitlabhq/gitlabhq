@@ -31,19 +31,32 @@ describe('GlobalSearchTopbar', () => {
     preloadStoredFrequentItems: jest.fn(),
   };
 
-  const createComponent = (initialState = {}, defaultBranchName = '', stubs = {}) => {
+  const getterSpies = {
+    currentScope: jest.fn(),
+  };
+
+  const createComponent = ({
+    initialState = {},
+    defaultBranchName = '',
+    stubs = {},
+    featureFlag = {},
+  } = {}) => {
     const store = new Vuex.Store({
       state: {
         query: MOCK_QUERY,
         ...initialState,
       },
       actions: actionSpies,
+      getters: getterSpies,
     });
 
     wrapper = shallowMount(GlobalSearchTopbar, {
       store,
       propsData: { defaultBranchName },
       stubs,
+      provide: {
+        glFeatures: featureFlag,
+      },
     });
   };
 
@@ -67,9 +80,11 @@ describe('GlobalSearchTopbar', () => {
     `('Seachbox options for searchType: $searchType', ({ searchType, hasRegexSearch }) => {
       beforeEach(() => {
         createComponent({
-          query: { repository_ref: 'master' },
-          searchType,
-          defaultBranchName: 'master',
+          initialState: {
+            query: { repository_ref: 'master' },
+            searchType,
+            defaultBranchName: 'master',
+          },
         });
       });
 
@@ -93,7 +108,7 @@ describe('GlobalSearchTopbar', () => {
       ${'zoekt'}    | ${true}
     `('syntax options drawer with searchType: $searchType', ({ searchType, showSyntaxOptions }) => {
       beforeEach(() => {
-        createComponent({ query: { repository_ref: '' }, searchType });
+        createComponent({ initialState: { query: { repository_ref: '' }, searchType } });
       });
 
       it('renders button correctly', () => {
@@ -111,7 +126,7 @@ describe('GlobalSearchTopbar', () => {
       ${'zoekt'}    | ${SYNTAX_OPTIONS_ZOEKT_DOCUMENT}
     `('syntax options drawer with searchType: $searchType', ({ searchType, documentPath }) => {
       beforeEach(() => {
-        createComponent({ query: { repository_ref: '' }, searchType });
+        createComponent({ initialState: { query: { repository_ref: '' }, searchType } });
       });
 
       it('renders drawer with correct document', () => {
@@ -123,10 +138,13 @@ describe('GlobalSearchTopbar', () => {
       it('dispatched correct click action', () => {
         const drawerToggleSpy = jest.fn();
 
-        createComponent({ query: { repository_ref: '' }, searchType: 'advanced' }, '', {
-          MarkdownDrawer: stubComponent(MarkdownDrawer, {
-            methods: { toggleDrawer: drawerToggleSpy },
-          }),
+        createComponent({
+          initialState: { query: { repository_ref: '' }, searchType: 'advanced' },
+          stubs: {
+            MarkdownDrawer: stubComponent(MarkdownDrawer, {
+              methods: { toggleDrawer: drawerToggleSpy },
+            }),
+          },
         });
 
         findSyntaxOptionButton().vm.$emit('click');
@@ -148,7 +166,10 @@ describe('GlobalSearchTopbar', () => {
       `the syntax option based on component state`,
       ({ state, defaultBranchName, hasSyntaxOptions }) => {
         beforeEach(() => {
-          createComponent({ ...state }, defaultBranchName);
+          createComponent({
+            initialState: { ...state },
+            defaultBranchName,
+          });
         });
 
         describe(`repository: ${state.query.repository_ref}, searchType: ${state.searchType}`, () => {
@@ -165,41 +186,57 @@ describe('GlobalSearchTopbar', () => {
   });
 
   describe('actions', () => {
-    beforeEach(() => {
-      createComponent();
+    describe.each`
+      FF                                    | scope       | searchType    | called
+      ${{ zoektMultimatchFrontend: false }} | ${'blobs'}  | ${'zoekt'}    | ${true}
+      ${{ zoektMultimatchFrontend: false }} | ${'issues'} | ${'advanced'} | ${true}
+      ${{ zoektMultimatchFrontend: false }} | ${'blobs'}  | ${'advanced'} | ${true}
+      ${{ zoektMultimatchFrontend: true }}  | ${'issues'} | ${'advanced'} | ${true}
+      ${{ zoektMultimatchFrontend: true }}  | ${'issues'} | ${'advanced'} | ${true}
+      ${{ zoektMultimatchFrontend: true }}  | ${'blobs'}  | ${'zoekt'}    | ${false}
+    `('hitting enter inside search box', ({ FF, scope, searchType, called }) => {
+      beforeEach(() => {
+        getterSpies.currentScope = jest.fn(() => scope);
+        createComponent({
+          featureFlag: FF,
+          initialState: { searchType },
+        });
+      });
+
+      it(`calls applyQuery ${called ? '' : 'NOT '}`, async () => {
+        await nextTick();
+        findGlSearchBox().vm.$emit('keydown', new KeyboardEvent({ key: ENTER_KEY }));
+        expect(actionSpies.applyQuery).toHaveBeenCalledTimes(called ? 1 : 0);
+      });
     });
 
-    it('clicking search button inside search box calls applyQuery', async () => {
-      await nextTick();
+    describe.each`
+      search    | reload
+      ${''}     | ${0}
+      ${'test'} | ${1}
+    `('clicking regular expression button', ({ search, reload }) => {
+      beforeEach(() => {
+        createComponent({
+          initialState: { query: { search }, searchType: 'zoekt' },
+          stubs: { GlSearchBoxByType },
+        });
+      });
 
-      findGlSearchBox().vm.$emit('keydown', new KeyboardEvent({ key: ENTER_KEY }));
-      expect(actionSpies.applyQuery).toHaveBeenCalled();
-    });
-  });
-
-  describe.each`
-    search    | reload
-    ${''}     | ${0}
-    ${'test'} | ${1}
-  `('clicking regular expression button', ({ search, reload }) => {
-    beforeEach(() => {
-      createComponent({ query: { search }, searchType: 'zoekt' }, '', { GlSearchBoxByType });
-    });
-
-    it(`calls setQuery and ${!reload ? 'NOT ' : ''}applyQuery if there is a search term`, () => {
-      findRegulareExpressionToggle().vm.$emit('click');
-      expect(actionSpies.setQuery).toHaveBeenCalled();
-      expect(actionSpies.applyQuery).toHaveBeenCalledTimes(reload);
-    });
-  });
-
-  describe('onCreate', () => {
-    beforeEach(() => {
-      createComponent();
+      it(`calls setQuery and ${!reload ? 'NOT ' : ''}applyQuery if there is a search term`, () => {
+        findRegulareExpressionToggle().vm.$emit('click');
+        expect(actionSpies.setQuery).toHaveBeenCalled();
+        expect(actionSpies.applyQuery).toHaveBeenCalledTimes(reload);
+      });
     });
 
-    it('calls preloadStoredFrequentItems', () => {
-      expect(actionSpies.preloadStoredFrequentItems).toHaveBeenCalled();
+    describe('onCreate', () => {
+      beforeEach(() => {
+        createComponent();
+      });
+
+      it('calls preloadStoredFrequentItems', () => {
+        expect(actionSpies.preloadStoredFrequentItems).toHaveBeenCalled();
+      });
     });
   });
 });

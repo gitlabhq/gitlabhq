@@ -424,7 +424,8 @@ module MergeRequestsHelper
               query: 'assigneeOrReviewerMergeRequests',
               variables: {
                 state: 'merged',
-                mergedAfter: 2.weeks.ago.to_time.iso8601
+                mergedAfter: 2.weeks.ago.to_time.iso8601,
+                sort: 'MERGED_AT_DESC'
               }
             }
           ]

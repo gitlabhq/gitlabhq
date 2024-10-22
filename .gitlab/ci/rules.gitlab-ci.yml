@@ -1523,6 +1523,12 @@
     - <<: *if-default-refs
       changes: ["tooling/eslint-config/**/*", "spec/tooling/frontend/eslint-config/**/*"]
 
+.frontend:rules:jest-vue3-check-quarantined:
+  rules:
+    - <<: *if-not-merge-request
+      when: never
+    - !reference [.frontend:rules:jest, rules]
+
 ################
 # Memory rules #
 ################

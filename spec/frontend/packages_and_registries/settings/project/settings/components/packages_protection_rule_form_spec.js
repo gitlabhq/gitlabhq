@@ -20,6 +20,9 @@ describe('Packages Protection Rule Form', () => {
 
   const defaultProvidedValues = {
     projectPath: 'path',
+    glFeatures: {
+      packagesProtectedPackagesPypi: true,
+    },
   };
 
   const findPackageNamePatternInput = () =>
@@ -55,14 +58,30 @@ describe('Packages Protection Rule Form', () => {
 
   describe('form fields', () => {
     describe('form field "packageType"', () => {
-      it('contains only the options for npm', () => {
+      const packageTypeSelectOptions = () =>
+        findPackageTypeSelect()
+          .findAll('option')
+          .wrappers.map((option) => option.element.value);
+
+      it('contains available options', () => {
         mountComponent();
 
         expect(findPackageTypeSelect().exists()).toBe(true);
-        const packageTypeSelectOptions = findPackageTypeSelect()
-          .findAll('option')
-          .wrappers.map((option) => option.element.value);
-        expect(packageTypeSelectOptions).toEqual(['NPM']);
+        expect(packageTypeSelectOptions()).toEqual(['NPM', 'PYPI']);
+      });
+
+      describe('when feature flag packagesProtectedPackagesPypi is disabled', () => {
+        it('contains available options without option "PYPI"', () => {
+          mountComponent({
+            provide: {
+              ...defaultProvidedValues,
+              glFeatures: { packagesProtectedPackagesPypi: false },
+            },
+          });
+
+          expect(findPackageTypeSelect().exists()).toBe(true);
+          expect(packageTypeSelectOptions()).toEqual(['NPM']);
+        });
       });
     });
 

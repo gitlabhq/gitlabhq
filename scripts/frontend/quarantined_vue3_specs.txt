@@ -123,11 +123,6 @@ ee/spec/frontend/security_configuration/dast_profiles/components/dast_profiles_l
 ee/spec/frontend/security_configuration/dast_profiles/dast_scanner_profiles_form/components/dast_scanner_profiles_form_spec.js
 ee/spec/frontend/security_dashboard/components/project/security_scanner_alert_spec.js
 ee/spec/frontend/security_dashboard/components/shared/empty_states/dashboard_has_no_vulnerabilities_spec.js
-ee/spec/frontend/security_dashboard/components/shared/filtered_search/tokens/activity_token_spec.js
-ee/spec/frontend/security_dashboard/components/shared/filtered_search/tokens/cluster_token_spec.js
-ee/spec/frontend/security_dashboard/components/shared/filtered_search/tokens/severity_token_spec.js
-ee/spec/frontend/security_dashboard/components/shared/filtered_search/tokens/status_token_spec.js
-ee/spec/frontend/security_dashboard/components/shared/filtered_search/tokens/tool_token_spec.js
 ee/spec/frontend/security_dashboard/components/shared/filters/querystring_sync_spec.js
 ee/spec/frontend/security_dashboard/components/shared/vulnerability_details_graphql/details_section_spec.js
 ee/spec/frontend/security_dashboard/components/shared/vulnerability_report/container_scanning_for_registry_tab_spec.js
@@ -162,7 +157,6 @@ ee/spec/frontend/usage_quotas/code_suggestions/components/health_check_list_spec
 ee/spec/frontend/usage_quotas/code_suggestions/components/saas_add_on_eligible_user_list_spec.js
 ee/spec/frontend/usage_quotas/pipelines/components/app_spec.js
 ee/spec/frontend/usage_quotas/seats/components/subscription_user_list_spec.js
-ee/spec/frontend/usage_quotas/storage/components/namespace_storage_app_spec.js
 ee/spec/frontend/users/identity_verification/components/credit_card_verification_spec.js
 ee/spec/frontend/users/identity_verification/components/international_phone_input_spec.js
 ee/spec/frontend/users/identity_verification/components/phone_verification_spec.js
@@ -172,11 +166,8 @@ ee/spec/frontend/vue_merge_request_widget/components/mr_widget_pipeline_containe
 ee/spec/frontend/vue_merge_request_widget/components/states/mr_widget_ready_to_merge_spec.js
 ee/spec/frontend/vue_shared/components/groups_list/groups_list_item_spec.js
 ee/spec/frontend/vue_shared/components/projects_list/projects_list_item_spec.js
-ee/spec/frontend/vue_shared/components/reports/report_issues_spec.js
-ee/spec/frontend/vue_shared/components/reports/report_item_spec.js
 ee/spec/frontend/vue_shared/purchase_flow/components/checkout/sprintf_with_links_spec.js
 ee/spec/frontend/vue_shared/security_reports/components/security_training_promo_spec.js
-ee/spec/frontend/vulnerabilities/code_flow/code_flow_steps_section_spec.js
 ee/spec/frontend/vulnerabilities/generic_report/types/list_graphql_spec.js
 ee/spec/frontend/vulnerabilities/related_issues_spec.js
 ee/spec/frontend/vulnerabilities/vulnerability_file_content_viewer_spec.js
@@ -240,10 +231,8 @@ spec/frontend/ci/runner/admin_runner_show/admin_runner_show_app_spec.js
 spec/frontend/ci/runner/admin_runners/admin_runners_app_spec.js
 spec/frontend/ci/runner/components/cells/link_cell_spec.js
 spec/frontend/ci/runner/components/registration/registration_instructions_spec.js
-spec/frontend/ci/runner/components/runner_bulk_delete_spec.js
 spec/frontend/ci/runner/components/runner_details_spec.js
 spec/frontend/ci/runner/components/runner_form_fields_spec.js
-spec/frontend/ci/runner/components/runner_managers_detail_spec.js
 spec/frontend/ci/runner/components/runner_managers_table_spec.js
 spec/frontend/ci/runner/components/runner_platforms_radio_spec.js
 spec/frontend/ci/runner/components/runner_tags_spec.js
@@ -408,7 +397,6 @@ spec/frontend/search/sidebar/components/branch_dropdown_spec.js
 spec/frontend/search/sidebar/components/checkbox_filter_spec.js
 spec/frontend/search/sidebar/components/label_dropdown_items_spec.js
 spec/frontend/search/topbar/components/app_spec.js
-spec/frontend/security_configuration/components/feature_card_spec.js
 spec/frontend/sessions/new/components/email_verification_spec.js
 spec/frontend/set_status_modal/set_status_modal_wrapper_spec.js
 spec/frontend/set_status_modal/user_profile_set_status_wrapper_spec.js
@@ -433,7 +421,6 @@ spec/frontend/super_sidebar/components/organization_switcher_spec.js
 spec/frontend/super_sidebar/components/sidebar_hover_peek_behavior_spec.js
 spec/frontend/super_sidebar/components/sidebar_peek_behavior_spec.js
 spec/frontend/super_sidebar/components/sidebar_portal_spec.js
-spec/frontend/super_sidebar/components/super_sidebar_spec.js
 spec/frontend/super_sidebar/components/user_menu_spec.js
 spec/frontend/tags/components/delete_tag_modal_spec.js
 spec/frontend/tags/init_delete_tag_modal_spec.js
@@ -490,7 +477,6 @@ spec/frontend/vue_shared/directives/tooltip_on_truncate_spec.js
 spec/frontend/vue_shared/directives/track_event_spec.js
 spec/frontend/vue_shared/issuable/show/components/issuable_header_spec.js
 spec/frontend/vue_shared/issuable/sidebar/components/issuable_sidebar_root_spec.js
-spec/frontend/webhooks/components/form_custom_headers_spec.js
 spec/frontend/webhooks/components/form_url_app_spec.js
 spec/frontend/work_items/components/design_management/design_preview/design_overlay_spec.js
 spec/frontend/work_items/components/work_item_description_rendered_spec.js
