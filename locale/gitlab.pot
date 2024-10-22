@@ -1618,9 +1618,6 @@ msgstr ""
 msgid "(Limited to %{quota} compute minutes per month)"
 msgstr ""
 
-msgid "(No changes)"
-msgstr ""
-
 msgid "(UTC %{offset})"
 msgstr ""
 

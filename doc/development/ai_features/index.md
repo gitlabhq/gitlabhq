@@ -379,14 +379,16 @@ J --> K[::GitlabSchema.subscriptions.trigger]
 
 ## How to implement a new action
 
-Implementing a new AI action will require changes in the GitLab monolith as well as in the AI Gateway.
+Implementing a new AI action will require changes across different components.
 We'll use the example of wanting to implement an action that allows users to rewrite issue descriptions according to
 a given prompt.
 
 ### 1. Add your action to the Cloud Connector feature list
 
 The Cloud Connector configuration stores the permissions needed to access your service, as well as additional metadata.
-For more information, see [Cloud Connector: Configuration](../cloud_connector/configuration.md).
+If there's still not an entry for your feature, you'll need to add one in two places:
+
+- In the GitLab monolith:
 
 ```yaml
 # ee/config/cloud_connector/access_data.yml
@@ -400,6 +402,23 @@ services:
         unit_primitives:
           - rewrite_issue_description
 ```
+
+- In [`customers-gitlab-com`](https://gitlab.com/gitlab-org/customers-gitlab-com):
+
+```yaml
+# config/cloud_connector.yml
+
+services:
+  # ...
+  rewrite_description:
+    backend: 'gitlab-ai-gateway'
+    bundled_with:
+      duo_enterprise:
+        unit_primitives:
+          - rewrite_issue_description
+```
+
+For more information, see [Cloud Connector: Configuration](../cloud_connector/configuration.md).
 
 ### 2. Create an Agent definition in the AI Gateway
 
