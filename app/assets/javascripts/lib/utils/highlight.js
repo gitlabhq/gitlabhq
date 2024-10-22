@@ -22,7 +22,7 @@ export default function highlight(string, match = '', matchPrefix = '<b>', match
   }
 
   if (!match) {
-    return string;
+    return sanitize(string.toString(), { ALLOWED_TAGS: [] });
   }
 
   const sanitizedValue = sanitize(string.toString(), { ALLOWED_TAGS: [] });
