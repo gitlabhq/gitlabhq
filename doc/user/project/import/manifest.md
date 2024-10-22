@@ -31,7 +31,7 @@ repositories like the Android Open Source Project (AOSP).
 
 ## Manifest format
 
-A manifest must be an XML file. There must be one `remote` tag with a `review`
+A manifest must be an XML file up to 1 MB in size. There must be one `remote` tag with a `review`
 attribute that contains a URL to a Git server, and each `project` tag must have
 a `name` and `path` attribute. GitLab then builds the URL to the repository
 by combining the URL from the `remote` tag with a project name.

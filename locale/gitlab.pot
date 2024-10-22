@@ -32614,6 +32614,9 @@ msgstr ""
 msgid "Manifest import"
 msgstr ""
 
+msgid "ManifestImport|Import manifest files cannot exceed %{size} MB"
+msgstr ""
+
 msgid "Manual"
 msgstr ""
 
