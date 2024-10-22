@@ -3,9 +3,12 @@
 class Import::ManifestController < Import::BaseController
   extend ::Gitlab::Utils::Override
 
+  MAX_MANIFEST_SIZE_IN_MB = 1
+
   before_action :disable_query_limiting, only: [:create]
   before_action :verify_import_enabled
   before_action :ensure_import_vars, only: [:create, :status]
+  before_action :check_file_size, only: [:upload]
 
   def new
   end
@@ -23,7 +26,7 @@ class Import::ManifestController < Import::BaseController
     unless can?(current_user, :import_projects, group)
       @errors = ["You don't have enough permissions to import projects in the selected group"]
 
-      render :new && return
+      render(:new) && return
     end
 
     manifest = Gitlab::ManifestImport::Manifest.new(params[:manifest].tempfile)
@@ -106,5 +109,15 @@ class Import::ManifestController < Import::BaseController
 
   def disable_query_limiting
     Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/23147')
+  end
+
+  def check_file_size
+    return if params[:manifest].tempfile.size <= MAX_MANIFEST_SIZE_IN_MB.megabytes
+
+    @errors = [
+      format(s_("ManifestImport|Import manifest files cannot exceed %{size} MB"), size: MAX_MANIFEST_SIZE_IN_MB)
+    ]
+
+    render(:new)
   end
 end
