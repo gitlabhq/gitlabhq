@@ -56,7 +56,7 @@ RSpec.describe GitlabSchema.types['Note'], feature_category: :team_planning do
 
   context 'when system note with issue_email_participants action', feature_category: :service_desk do
     let_it_be(:note_text) { "added #{email}" }
-    # Create project and issue separately because we need to public project.
+    # Create project and issue separately because we need a public project.
     # rubocop:disable RSpec/FactoryBot/AvoidCreate -- Notes::RenderService updates #note and #cached_markdown_version
     let_it_be(:issue) { create(:issue, project: project) }
     let_it_be(:note) do
@@ -69,13 +69,13 @@ RSpec.describe GitlabSchema.types['Note'], feature_category: :team_planning do
     describe '#body' do
       subject { resolve_field(:body, note, current_user: user) }
 
-      it_behaves_like 'a note content field with obfuscated email address'
+      it_behaves_like 'a field with obfuscated email address'
     end
 
     describe '#body_html' do
       subject { resolve_field(:body_html, note, current_user: user) }
 
-      it_behaves_like 'a note content field with obfuscated email address'
+      it_behaves_like 'a field with obfuscated email address'
     end
   end
 
@@ -83,12 +83,12 @@ RSpec.describe GitlabSchema.types['Note'], feature_category: :team_planning do
     let(:note_text) { 'Note body from external participant' }
 
     let!(:note) { build(:note, note: note_text, project: project, author: Users::Internal.support_bot) }
-    let!(:note_metadata) { build(:note_metadata, note: note, email_participant: email) }
+    let!(:note_metadata) { build(:note_metadata, note: note) }
 
     describe '#external_author' do
       subject { resolve_field(:external_author, note, current_user: user) }
 
-      it_behaves_like 'a note content field with obfuscated email address'
+      it_behaves_like 'a field with obfuscated email address'
     end
   end
 

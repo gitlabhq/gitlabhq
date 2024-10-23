@@ -61,7 +61,7 @@ which GitLab uses to determine discovered vulnerabilities based on differences b
 > - Support for the arm64 architecture was [introduced](https://gitlab.com/groups/gitlab-org/-/epics/13757) in GitLab 17.0.
 
 - [GitLab Runner](../../../ci/runners/index.md) available, with the
-  [`docker` executor](https://docs.gitlab.com/runner/executors/docker.html) on Linux/amd64 or Linux/arm64.
+  [`docker` executor](https://docs.gitlab.com/runner/executors/docker.html) or the [Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes/) on Linux/amd64 or Linux/arm64.
 - Target application deployed. For more details, read [Deployment options](#application-deployment-options).
 - `dast` stage added to the CI/CD pipeline definition. This should be added after the deploy step, for example:
 

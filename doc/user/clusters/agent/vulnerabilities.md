@@ -74,9 +74,9 @@ For every target namespace, all images in the following workload resources are s
 
 ### Enable via scan execution policies
 
-To enable scanning of all images within your Kubernetes cluster via scan execution policies, we can use the
+To enable scanning of images in your Kubernetes cluster by using scan execution policies, use the
 [scan execution policy editor](../../application_security/policies/scan_execution_policies.md#scan-execution-policy-editor)
-To create a new schedule rule.
+to create a new schedule rule.
 
 NOTE:
 The Kubernetes agent must be running in your cluster to scan running container images
@@ -105,7 +105,7 @@ The keys for a schedule rule are:
 
 - `cadence` (required): a [CRON expression](https://docs.oracle.com/cd/E12058_01/doc/doc.1014/e12030/cron_expressions.htm) for when the scans are run
 - `agents:<agent-name>` (required): The name of the agent to use for scanning
-- `agents:<agent-name>:namespaces` (optional): The Kubernetes namespaces to scan. If omitted, all namespaces are scanned
+- `agents:<agent-name>:namespaces` (required): The Kubernetes namespaces to scan.
 
 NOTE:
 Other elements of the [CRON syntax](https://docs.oracle.com/cd/E12058_01/doc/doc.1014/e12030/cron_expressions.htm) may work in the cadence field if supported by the [cron](https://github.com/robfig/cron) we are using in our implementation, however, GitLab does not officially test or support them.

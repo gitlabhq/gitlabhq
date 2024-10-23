@@ -1394,7 +1394,18 @@ The GitLab registry is what users use to store their own Docker images.
 Because of that the Registry is client facing, meaning that we expose it directly
 on the web server (or load balancers, LB for short).
 
-![User login process with GitLab Container Registry.](img/gitlab-registry-architecture_v14_3.png)
+```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
+flowchart LR
+    A[User] --->|1: Docker login<br>on port 443| C{Frontend load<br>balancer}
+    C --->|2: connection attempt<br>without token fails| D[Registry]
+    C --->|5: connect with <br>token succeeds| D[Registry]
+    C --->|3: Docker<br>requests token| E[API frontend]
+    E --->|4:API returns<br>signed token| C
+
+    linkStyle 1 stroke-width:4px,stroke:red
+    linkStyle 2 stroke-width:4px,stroke:green
+```
 
 The flow described by the diagram above:
 

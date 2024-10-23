@@ -3,6 +3,6 @@
 FactoryBot.define do
   factory :note_metadata, class: 'Notes::NoteMetadata' do
     note
-    email_participant { 'email@example.com' }
+    email_participant { 'user@example.com' }
   end
 end

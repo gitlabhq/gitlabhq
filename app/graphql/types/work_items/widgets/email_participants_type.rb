@@ -13,10 +13,10 @@ module Types
         implements Types::WorkItems::WidgetInterface
 
         field :email_participants,
-          [GraphQL::Types::String],
+          Types::WorkItems::EmailParticipantType.connection_type,
           null: true,
           description: 'Collection of email participants associated with the work item.',
-          method: :email_participants_emails
+          method: :issue_email_participants
       end
       # rubocop:enable Graphql/AuthorizeTypes
     end

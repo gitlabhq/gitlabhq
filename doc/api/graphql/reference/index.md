@@ -13515,6 +13515,29 @@ The edge type for [`Email`](#email).
 | <a id="emailedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="emailedgenode"></a>`node` | [`Email`](#email) | The item at the end of the edge. |
 
+#### `EmailParticipantTypeConnection`
+
+The connection type for [`EmailParticipantType`](#emailparticipanttype).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="emailparticipanttypeconnectionedges"></a>`edges` | [`[EmailParticipantTypeEdge]`](#emailparticipanttypeedge) | A list of edges. |
+| <a id="emailparticipanttypeconnectionnodes"></a>`nodes` | [`[EmailParticipantType]`](#emailparticipanttype) | A list of nodes. |
+| <a id="emailparticipanttypeconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `EmailParticipantTypeEdge`
+
+The edge type for [`EmailParticipantType`](#emailparticipanttype).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="emailparticipanttypeedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="emailparticipanttypeedgenode"></a>`node` | [`EmailParticipantType`](#emailparticipanttype) | The item at the end of the edge. |
+
 #### `EnvironmentConnection`
 
 The connection type for [`Environment`](#environment).
@@ -22445,6 +22468,14 @@ Events that describe the history and progress of a Duo Workflow.
 | <a id="emailemail"></a>`email` | [`String!`](#string) | Email address. |
 | <a id="emailid"></a>`id` | [`ID!`](#id) | Internal ID of the email. |
 | <a id="emailupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp the email was last updated. |
+
+### `EmailParticipantType`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="emailparticipanttypeemail"></a>`email` | [`String!`](#string) | Email address of the email participant. For guests, the email address is obfuscated. |
 
 ### `Environment`
 
@@ -36202,7 +36233,7 @@ Represents email participants widget.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="workitemwidgetemailparticipantsemailparticipants"></a>`emailParticipants` | [`[String!]`](#string) | Collection of email participants associated with the work item. |
+| <a id="workitemwidgetemailparticipantsemailparticipants"></a>`emailParticipants` | [`EmailParticipantTypeConnection`](#emailparticipanttypeconnection) | Collection of email participants associated with the work item. (see [Connections](#connections)) |
 | <a id="workitemwidgetemailparticipantstype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
 
 ### `WorkItemWidgetHealthStatus`

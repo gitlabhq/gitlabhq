@@ -1190,6 +1190,66 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
       end
     end
 
+    describe 'email participants widget' do
+      let_it_be(:email) { 'user@example.com' }
+      let_it_be(:obfuscated_email) { 'us*****@e*****.c**' }
+      let_it_be(:issue_email_participant) { create(:issue_email_participant, issue_id: work_item.id, email: email) }
+
+      let(:work_item_fields) do
+        <<~GRAPHQL
+          id
+          widgets {
+            type
+            ... on WorkItemWidgetEmailParticipants {
+              emailParticipants {
+                nodes {
+                  email
+                }
+              }
+            }
+          }
+        GRAPHQL
+      end
+
+      it 'contains the email' do
+        expect(work_item_data).to include(
+          'widgets' => array_including(
+            hash_including(
+              'type' => 'EMAIL_PARTICIPANTS',
+              'emailParticipants' => {
+                'nodes' => containing_exactly(
+                  hash_including(
+                    'email' => email
+                  )
+                )
+              }
+            )
+          )
+        )
+      end
+
+      context 'when user has the guest role' do
+        let(:current_user) { guest }
+
+        it 'contains the obfuscated email' do
+          expect(work_item_data).to include(
+            'widgets' => array_including(
+              hash_including(
+                'type' => 'EMAIL_PARTICIPANTS',
+                'emailParticipants' => {
+                  'nodes' => containing_exactly(
+                    hash_including(
+                      'email' => obfuscated_email
+                    )
+                  )
+                }
+              )
+            )
+          )
+        end
+      end
+    end
+
     context 'when an Issue Global ID is provided' do
       let(:global_id) { Issue.find(work_item.id).to_gid.to_s }
 

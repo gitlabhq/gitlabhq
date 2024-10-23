@@ -65941,6 +65941,9 @@ msgstr ""
 msgid "n/a"
 msgstr ""
 
+msgid "name: %{name} exists in more than one image pull secret, image pull secrets must have a unique 'name'"
+msgstr ""
+
 msgid "needs to be between 10 minutes and 1 month"
 msgstr ""
 

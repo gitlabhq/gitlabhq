@@ -171,7 +171,8 @@ usually a good idea.
 1. Reproduce the failure locally
    - Find RSpec `seed` from the CI job log
    - OR Run `while :; do bin/rspec <spec> || break; done` in a loop to find a `seed`
-1. Reduce the examples by bisecting the spec failure with `bin/rspec --seed <previously found> --bisect <spec>`
+1. Reduce the examples by bisecting the spec failure with
+   `bin/rspec --seed <previously found> --require ./config/initializers/macos.rb --bisect <spec>`
 1. Look at the remaining examples and watch for state leakage
    - e.g. Updating records created with `let_it_be` is a common source of problems
 1. Once fixed, rerun the specs with `seed`
@@ -334,16 +335,12 @@ once per day, for monitoring with the
 
 #### Order-dependent flaky tests
 
-These flaky tests can fail depending on the order they run with other tests. For example:
+To identify ordering issues in a single file read about
+[how to reproduce a flaky test locally](#how-to-reproduce-a-flaky-test-locally).
+
+Some flaky tests can fail depending on the order they run with other tests. For example:
 
 - <https://gitlab.com/gitlab-org/gitlab/-/issues/327668>
-
-To identify test ordering issues in a single file you can run
-`scripts/rspec_check_order_dependence`:
-
-```shell
-scripts/rspec_check_order_dependence spec/models/project_spec.rb
-```
 
 To identify the ordering issues across different files, you can use `scripts/rspec_bisect_flaky`,
 which would give us the minimal test combination to reproduce the failure:

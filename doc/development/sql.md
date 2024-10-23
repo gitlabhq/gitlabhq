@@ -225,8 +225,30 @@ Project.select(:id, :user_id).joins(:merge_requests)
 
 ## Plucking IDs
 
-Never use ActiveRecord's `pluck` to pluck a set of values into memory only to
-use them as an argument for another query. For example, this executes an
+Be very careful using ActiveRecord's `pluck` to load a set of values into memory only to
+use them as an argument for another query. In general, moving query logic out of PostgreSQL
+and into Ruby is detrimental because PostgreSQL has a query optimizer that performs better
+when it has relatively more context about the desired operation.
+
+If, for some reason, you need to `pluck` and use the results in a *single* query then,
+most likely, a materialized CTE will be a better choice:
+
+```sql
+WITH ids AS MATERIALIZED (
+  SELECT id FROM table...
+)
+SELECT * FROM projects
+WHERE id IN (SELECT id FROM ids);
+```
+
+which will make PostgreSQL pluck the values into an internal array.
+
+Some pluck-related mistakes that you should avoid:
+
+- Passing too many integers into a query. While not explicitly limited, PostgreSQL has a
+practical arity limit of a couple thousand IDs. We don't want to run up against this limit.
+- Generating gigantic query text that can cause problems for our logging infrastructure.
+- Accidentally scanning an entire table. For example, this executes an
 extra unnecessary database query and load a lot of unnecessary data into memory:
 
 ```ruby
@@ -241,9 +263,10 @@ Instead you can just use sub-queries which perform far better:
 MergeRequest.where(source_project_id: Project.all.select(:id))
 ```
 
-The _only_ time you should use `pluck` is when you actually need to operate on
-the values in Ruby itself (for example, writing them to a file). In almost all other cases
-you should ask yourself "Can I not just use a sub-query?".
+A few specific reasons you might choose `pluck`:
+
+- You actually need to operate on the values in Ruby itself. For example, writing them to a file.
+- The values get cached or memoized in order to be reused in **multiple related queries**.
 
 In line with our `CodeReuse/ActiveRecord` cop, you should only use forms like
 `pluck(:id)` or `pluck(:user_id)` within model code. In the former case, you can
@@ -251,7 +274,9 @@ use the `ApplicationRecord`-provided `.pluck_primary_key` helper method instead.
 In the latter, you should add a small helper method to the relevant model.
 
 If you have strong reasons to use `pluck`, it could make sense to limit the number
-of records plucked. `MAX_PLUCK` defaults to `1_000` in `ApplicationRecord`.
+of records plucked. `MAX_PLUCK` defaults to `1_000` in `ApplicationRecord`. In all cases,
+you should still consider using a subquery and make sure that using `pluck` is a reliably
+better option.
 
 ## Inherit from ApplicationRecord
 

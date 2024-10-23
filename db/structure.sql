@@ -5479,7 +5479,8 @@ CREATE TABLE agent_activity_events (
     sha bytea,
     detail text,
     agent_project_id bigint,
-    CONSTRAINT check_068205e735 CHECK ((char_length(detail) <= 255))
+    CONSTRAINT check_068205e735 CHECK ((char_length(detail) <= 255)),
+    CONSTRAINT check_9e09ffbd0f CHECK ((agent_project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE agent_activity_events_id_seq
@@ -21439,6 +21440,7 @@ CREATE TABLE workspaces_agent_configs (
     default_runtime_class text DEFAULT ''::text NOT NULL,
     annotations jsonb DEFAULT '{}'::jsonb NOT NULL,
     labels jsonb DEFAULT '{}'::jsonb NOT NULL,
+    image_pull_secrets jsonb DEFAULT '[]'::jsonb NOT NULL,
     CONSTRAINT check_58759a890a CHECK ((char_length(dns_zone) <= 256)),
     CONSTRAINT check_720388a28c CHECK ((char_length(default_runtime_class) <= 253)),
     CONSTRAINT check_dca877fba1 CHECK ((default_max_hours_before_termination <= 8760)),
