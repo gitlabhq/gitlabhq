@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13266) in GitLab 17.2 [with a flag](../../../administration/feature_flags.md) named `pipeline_execution_policy_type`. Enabled by default. 
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13266) in GitLab 17.2 [with a flag](../../../administration/feature_flags.md) named `pipeline_execution_policy_type`. Enabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/454278) in GitLab 17.3. Feature flag `pipeline_execution_policy_type` removed.
 
 Use Pipeline execution policies to enforce CI/CD jobs for all applicable projects.
@@ -134,11 +134,11 @@ Prerequisites:
 
 - Users triggering pipelines run in those projects on which a policy containing the `content` type
   is enforced must have at minimum read-only access to the project containing the CI/CD
-- In projects that enforce pipeline execution policies, users must have at least read-only access to the project that contains the CI/CD configuration to trigger the pipeline. 
+- In projects that enforce pipeline execution policies, users must have at least read-only access to the project that contains the CI/CD configuration to trigger the pipeline.
 
   In GitLab 17.4 and later, you can grant the required read-only access for the CI/CD configuration file
   specified in a security policy project using the `content` type. To do so, enable the setting **Pipeline execution policies** in the general settings of the security policy project.
-  Enabling this setting grants the user who triggered the pipeline access to 
+  Enabling this setting grants the user who triggered the pipeline access to
   read the CI/CD configuration file enforced by the pipeline execution policy. This setting does not grant the user access to any other parts of the project where the configuration file is stored.
 
 ### Policy scope schema
@@ -210,6 +210,10 @@ If the variable is defined in the pipeline execution policy, the group or projec
 This behavior is independent from the pipeline execution policy strategy.
 
 You can [define project or group variables in the UI](../../../ci/variables/index.md#define-a-cicd-variable-in-the-ui).
+
+## Behavior with `[skip ci]`
+
+To prevent a regular pipeline from triggering, users can push a commit to a protected branch with `[skip ci]` in the commit message. However, jobs defined with a pipeline execution policy are always triggered, as the policy ingores the `[skip ci]` directive. This prevents developers from skipping the execution of jobs defined in the policy, which ensures that critical security and compliance checks are always performed.
 
 ## Examples
 

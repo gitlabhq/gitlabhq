@@ -32784,6 +32784,9 @@ msgstr ""
 msgid "Manifest import"
 msgstr ""
 
+msgid "ManifestImport|Import manifest files cannot exceed %{size} MB"
+msgstr ""
+
 msgid "Manual"
 msgstr ""
 
@@ -57941,6 +57944,18 @@ msgstr ""
 msgid "TrialWidget|See upgrade options"
 msgstr ""
 
+msgid "TrialWidget|Ultimate"
+msgstr ""
+
+msgid "TrialWidget|Ultimate Trial"
+msgstr ""
+
+msgid "TrialWidget|Ultimate with GitLab Duo Enterprise"
+msgstr ""
+
+msgid "TrialWidget|Ultimate with GitLab Duo Enterprise Trial"
+msgstr ""
+
 msgid "TrialWidget|Upgrade"
 msgstr ""
 
@@ -57950,45 +57965,19 @@ msgstr ""
 msgid "TrialWidget|Your trial of GitLab Duo Pro has ended"
 msgstr ""
 
-msgid "Trials|%{planName} Trial"
+msgid "TrialWidget|Your trial of Ultimate has ended"
 msgstr ""
 
-msgid "Trials|Compare all plans"
+msgid "TrialWidget|Your trial of Ultimate with GitLab Duo Enterprise has ended"
 msgstr ""
 
 msgid "Trials|Create a new group to start your GitLab Ultimate trial."
-msgstr ""
-
-msgid "Trials|Day %{daysUsed}/%{duration}"
-msgstr ""
-
-msgid "Trials|Don't lose out on additional GitLab features"
-msgstr ""
-
-msgid "Trials|Learn about features"
-msgstr ""
-
-msgid "Trials|Looking to do more with GitLab?"
-msgstr ""
-
-msgid "Trials|Upgrade to regain access to powerful features like advanced team management for code, security, and reporting."
 msgstr ""
 
 msgid "Trials|You can apply your Ultimate and GitLab Duo Enterprise trial to a group."
 msgstr ""
 
 msgid "Trials|You can apply your trial to a new group or an existing group."
-msgstr ""
-
-msgid "Trials|You've got %{daysRemaining} day remaining on GitLab %{planName}!"
-msgid_plural "Trials|You've got %{daysRemaining} days remaining on GitLab %{planName}!"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "Trials|Your 30-day trial has ended"
-msgstr ""
-
-msgid "Trials|Your trial ends on %{strongStart}%{trialEndDate}%{strongEnd}. We hope you’re enjoying the features of GitLab %{planName}. To keep those features after your trial ends, you’ll need to buy a subscription. (You can also choose GitLab Premium if it meets your needs.)"
 msgstr ""
 
 msgid "Trial|Activate my trial"

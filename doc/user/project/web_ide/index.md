@@ -150,10 +150,10 @@ To create a [merge request](../merge_requests/index.md) in the Web IDE:
 
 For more information, see [View missed notifications](#view-missed-notifications).
 
-## Use the command palette
+## Use the Command Palette
 
-You can use the command palette to access many commands.
-To open the command palette and run a command in the Web IDE:
+You can use the Command Palette to access many commands.
+To open the Command Palette and run a command in the Web IDE:
 
 1. Press <kbd>Shift</kbd>+<kbd>Command</kbd>+<kbd>P</kbd>.
 1. Enter or select the command.

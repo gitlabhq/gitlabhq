@@ -4,25 +4,14 @@ module API
   module Admin
     class Token < ::API::Base
       feature_category :system_access
+      AUDIT_SOURCE = :api_admin_token
 
       helpers do
-        def identify_token(token)
-          if token.start_with?(Gitlab::CurrentSettings.current_application_settings.personal_access_token_prefix,
-            ApplicationSetting.defaults[:personal_access_token_prefix])
-            handle_personal_access_token(token)
-          elsif token.start_with?(DeployToken::DEPLOY_TOKEN_PREFIX)
-            handle_deploy_token(token)
-          else
-            raise ArgumentError, 'Token type not supported.'
-          end
-        end
+        def identify_token(plaintext)
+          token = ::Authn::AgnosticTokenIdentifier.token_for(plaintext, AUDIT_SOURCE)
+          raise ArgumentError, 'Token type not supported.' if token.blank?
 
-        def handle_personal_access_token(token)
-          PersonalAccessToken.find_by_token(token)
-        end
-
-        def handle_deploy_token(token)
-          DeployToken.find_by_token(token)
+          token.revocable
         end
       end
 

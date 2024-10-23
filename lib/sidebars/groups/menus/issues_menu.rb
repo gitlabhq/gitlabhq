@@ -37,11 +37,10 @@ module Sidebars
           strong_memoize(:pill_count) do
             count_service = ::Groups::OpenIssuesCountService
 
-            count = ApplicationRecord.with_fast_read_statement_timeout do # rubocop:disable Performance/ActiveRecordSubtransactionMethods -- this is called outside a transaction
-              count_service.new(context.group, context.current_user).count
-            end
-
-            format_cached_count(count_service::CACHED_COUNT_THRESHOLD, count)
+            format_cached_count(
+              count_service::CACHED_COUNT_THRESHOLD,
+              count_service.new(context.group, context.current_user, fast_timeout: true).count
+            )
           end
         rescue ActiveRecord::QueryCanceled => e # rubocop:disable Database/RescueQueryCanceled -- used with fast_read_statement_timeout to prevent counts from slowing down the request
           Gitlab::ErrorTracking.log_exception(e, group_id: context.group.id, query: 'group_sidebar_issues_count')

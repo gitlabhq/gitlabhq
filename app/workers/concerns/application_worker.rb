@@ -75,8 +75,8 @@ module ApplicationWorker
       set(rescheduled_once: true)
     end
 
-    def concurrency_limit_resume
-      set(concurrency_limit_resume: true)
+    def concurrency_limit_resume(buffered_at)
+      set(concurrency_limit_resume: true, concurrency_limit_buffered_at: buffered_at)
     end
 
     def generated_queue_name

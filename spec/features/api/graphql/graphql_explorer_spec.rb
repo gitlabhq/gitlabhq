@@ -85,19 +85,6 @@ RSpec.describe 'GraphQL Explorer', :js, feature_category: :api do
     expect_response('"workItemUpdated": { "title": "My new title" }')
   end
 
-  context 'when new_graphql_explorer is disabled' do
-    before do
-      stub_feature_flags(new_graphql_explorer: false)
-    end
-
-    it 'redirects to legacy GraphQL explorer' do
-      visit '/-/graphql-explorer'
-
-      expect(page).to have_current_path('/-/graphql-explorer-legacy')
-      expect(page.body).to include('<div id="graphiql-container" data-graphql-endpoint-path="/api/graphql"')
-    end
-  end
-
   def fill_in_editor(text)
     within '.graphiql-editor' do
       current_scope.click # focus the editor

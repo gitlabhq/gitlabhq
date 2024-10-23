@@ -18,36 +18,6 @@ Vue.use(GlToast);
 Vue.use(VueApollo);
 
 const getTrialStatusWidgetData = (sidebarData) => {
-  if (sidebarData.trial_status_widget_data_attrs && sidebarData.trial_status_popover_data_attrs) {
-    const {
-      trialDaysUsed,
-      trialDuration,
-      navIconImagePath,
-      percentageComplete,
-      planName,
-      plansHref,
-      trialDiscoverPagePath,
-    } = convertObjectPropsToCamelCase(sidebarData.trial_status_widget_data_attrs);
-
-    const { daysRemaining, trialEndDate } = convertObjectPropsToCamelCase(
-      sidebarData.trial_status_popover_data_attrs,
-    );
-
-    return {
-      showTrialStatusWidget: true,
-      showTrialWidget: false,
-      trialDaysUsed: Number(trialDaysUsed),
-      trialDuration: Number(trialDuration),
-      navIconImagePath,
-      percentageComplete: Number(percentageComplete),
-      planName,
-      plansHref,
-      daysRemaining,
-      trialEndDate: new Date(trialEndDate),
-      trialDiscoverPagePath,
-    };
-  }
-
   if (sidebarData.trial_widget_data_attrs) {
     const {
       trialType,
@@ -62,7 +32,6 @@ const getTrialStatusWidgetData = (sidebarData) => {
 
     return {
       showTrialWidget: true,
-      showTrialStatusWidget: false,
       trialType,
       daysRemaining: Number(daysRemaining),
       percentageComplete: Number(percentageComplete),
@@ -76,7 +45,6 @@ const getTrialStatusWidgetData = (sidebarData) => {
 
   return {
     showTrialWidget: false,
-    showTrialStatusWidget: false,
   };
 };
 

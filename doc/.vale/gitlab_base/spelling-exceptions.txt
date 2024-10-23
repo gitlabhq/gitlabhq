@@ -183,6 +183,7 @@ colocate
 colocated
 colocating
 commit's
+Command Palette
 CommonMark
 compilable
 composable

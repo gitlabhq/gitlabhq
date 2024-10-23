@@ -418,9 +418,22 @@ merge request is closed or merged.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169095) in GitLab 17.6. Feature flag `customizable_pages_job_name` removed.
 
 To trigger a Pages deployment from any job, include the `pages` property in the
-job definition. It can either be a hash or a Boolean set to `true`.
+job definition. It can either be a Boolean set to `true` or a hash.
 
 For example, using `true`:
+
+```yaml
+deploy-my-pages-site:
+  stage: deploy
+  script:
+    - npm run build
+  pages: true
+  artifacts:
+    paths:
+      - public
+```
+
+For example, using a hash:
 
 ```yaml
 deploy-pages-review-app:
@@ -429,19 +442,6 @@ deploy-pages-review-app:
     - npm run build
   pages:
     path_prefix: '/_staging'
-  artifacts:
-    paths:
-    - public
-```
-
-For example, using a hash:
-
-```yaml
-deploy-my-pages-site:
-  stage: deploy
-  script:
-    - npm run build
-  pages: true
   artifacts:
     paths:
     - public

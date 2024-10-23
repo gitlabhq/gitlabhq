@@ -320,6 +320,27 @@ RSpec.describe Gitlab::InstrumentationHelper, :clean_gitlab_redis_repository_cac
     end
   end
 
+  describe '.buffering_duration_for_job' do
+    where(:concurrency_limit_buffered_at, :time_now, :expected_duration) do
+      "2019-06-01T02:00:00.000+0000" | "2019-06-01T02:00:01.000+0000" | 1
+      1571825569                     | "2019-10-23T12:13:16.000+0200" | 27
+      -1                             | "2019-06-01T02:00:00.000+0200" | nil
+      0                              | "2019-06-01T02:00:00.000+0200" | nil
+      ""                             | "2019-06-01T02:00:00.000+0200" | nil
+      nil                            | "2019-06-01T02:00:00.000+0000" | nil
+    end
+
+    with_them do
+      let(:job) { { 'concurrency_limit_buffered_at' => concurrency_limit_buffered_at } }
+
+      it "returns the correct duration" do
+        travel_to(Time.iso8601(time_now)) do
+          expect(described_class.buffering_duration_for_job(job)).to eq(expected_duration)
+        end
+      end
+    end
+  end
+
   describe '.enqueue_latency_for_scheduled_job' do
     where(:scheduled_at, :enqueued_at, :expected_duration) do
       "2019-06-01T02:00:00.000+0000" | "2019-06-01T02:00:00.001+0000" | 0.001

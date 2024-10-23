@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'PipelineDestroy', feature_category: :continuous_integration do
+RSpec.describe 'PipelineDestroy', feature_category: :pipeline_composition do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project) }

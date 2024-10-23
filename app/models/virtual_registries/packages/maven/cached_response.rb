@@ -87,6 +87,7 @@ module VirtualRegistries
         # See https://github.com/rails/rails/issues/51817.
         def stale?(registry:)
           return true unless registry
+          return false if registry.cache_validity_hours == 0
 
           (upstream_checked_at + registry.cache_validity_hours.hours).past?
         end

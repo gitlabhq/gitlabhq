@@ -99,7 +99,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::Server, feature_cate
           expect(Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService).not_to receive(:add_to_queue!)
 
           Gitlab::ApplicationContext.with_raw_context do
-            TestConcurrencyLimitWorker.concurrency_limit_resume.perform_async('foo')
+            TestConcurrencyLimitWorker.concurrency_limit_resume(Time.now.utc.tv_sec).perform_async('foo')
           end
         end
       end
@@ -112,7 +112,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::Server, feature_cate
 
           related_class = 'Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService'
           Gitlab::ApplicationContext.with_raw_context(related_class: related_class) do
-            TestConcurrencyLimitWorker.concurrency_limit_resume.perform_async('foo')
+            TestConcurrencyLimitWorker.concurrency_limit_resume(Time.now.utc.tv_sec).perform_async('foo')
           end
         end
       end

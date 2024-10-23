@@ -445,7 +445,6 @@ RSpec.shared_examples 'handling get dist tags requests' do |scope: :project|
     end
 
     context 'when authenticated' do
-      let(:auth) { :oauth }
       let(:headers) { build_token_auth_header(token.plaintext_token) }
 
       context 'with guest user' do
@@ -455,7 +454,7 @@ RSpec.shared_examples 'handling get dist tags requests' do |scope: :project|
           project.add_guest(user)
         end
 
-        context 'when non-private' do
+        context 'when internal' do
           before do
             project.update!(visibility: 'internal')
           end
@@ -480,7 +479,18 @@ RSpec.shared_examples 'handling get dist tags requests' do |scope: :project|
           project.add_reporter(user)
         end
 
-        it_behaves_like 'accept package tags request', status: :ok
+        context 'with authentication methods' do
+          %i[oauth personal_access_token job_token deploy_token].each do |auth|
+            context "with #{auth}" do
+              let(:auth) { auth }
+              let(:headers) do
+                build_headers_for_auth_type(auth)
+              end
+
+              it_behaves_like 'accept package tags request', status: :ok
+            end
+          end
+        end
       end
     end
   end
@@ -586,7 +596,16 @@ RSpec.shared_examples 'handling create dist tag requests' do |scope: :project|
   shared_examples 'handling all conditions' do
     subject { put(url, env: env, headers: headers) }
 
-    it_behaves_like 'handling different package names, visibilities and user roles for tags create or delete', action: :create, scope: scope
+    context 'with unauthenticated requests' do
+      let(:package_name) { 'unscoped-package' }
+
+      it_behaves_like "reject create package tag request", status: :unauthorized
+    end
+
+    it_behaves_like 'handles non-existent packages, for tags create or delete',
+      non_guest_role: :developer, action: :create, scope: scope
+    it_behaves_like 'handles authenticated requests, for tags create or delete',
+      non_guest_role: :developer, action: :create, scope: scope
   end
 
   context 'with a group namespace' do
@@ -621,7 +640,14 @@ RSpec.shared_examples 'handling delete dist tag requests' do |scope: :project|
   shared_examples 'handling all conditions' do
     subject { delete(url, headers: headers) }
 
-    it_behaves_like 'handling different package names, visibilities and user roles for tags create or delete', action: :delete, scope: scope
+    context 'with unauthenticated requests' do
+      let(:package_name) { 'unscoped-package' }
+
+      it_behaves_like "reject delete package tag request", status: :unauthorized
+    end
+
+    it_behaves_like 'handles non-existent packages, for tags create or delete', non_guest_role: :maintainer, action: :delete, scope: scope
+    it_behaves_like 'handles authenticated requests, for tags create or delete', non_guest_role: :maintainer, action: :delete, scope: scope
   end
 
   context 'with a group namespace' do
@@ -637,128 +663,86 @@ RSpec.shared_examples 'handling delete dist tag requests' do |scope: :project|
   end
 end
 
-RSpec.shared_examples 'handling different package names, visibilities and user roles for tags create or delete' do |action:, scope: :project|
+RSpec.shared_examples 'handles non-existent packages, for tags create or delete' do |non_guest_role:, action:, scope: :project|
   using RSpec::Parameterized::TableSyntax
 
-  role = action == :create ? :developer : :maintainer
-
-  where(:auth, :package_name_type, :visibility, :user_role, :expected_result, :expected_status) do
-    nil                    | :scoped_naming_convention    | :public   | nil    | :reject   | :unauthorized
-    nil                    | :scoped_no_naming_convention | :public   | nil    | :reject   | :unauthorized
-    nil                    | :unscoped                    | :public   | nil    | :reject   | :unauthorized
-    nil                    | :non_existing                | :public   | nil    | :reject   | :unauthorized
-    nil                    | :scoped_naming_convention    | :private  | nil    | :reject   | :unauthorized
-    nil                    | :scoped_no_naming_convention | :private  | nil    | :reject   | :unauthorized
-    nil                    | :unscoped                    | :private  | nil    | :reject   | :unauthorized
-    nil                    | :non_existing                | :private  | nil    | :reject   | :unauthorized
-    nil                    | :scoped_naming_convention    | :internal | nil    | :reject   | :unauthorized
-    nil                    | :scoped_no_naming_convention | :internal | nil    | :reject   | :unauthorized
-    nil                    | :unscoped                    | :internal | nil    | :reject   | :unauthorized
-    nil                    | :non_existing                | :internal | nil    | :reject   | :unauthorized
-
-    :oauth                 | :scoped_naming_convention    | :public   | :guest | :reject   | :forbidden
-    :oauth                 | :scoped_naming_convention    | :public   | role   | :accept   | :ok
-    :oauth                 | :scoped_no_naming_convention | :public   | :guest | :reject   | :forbidden
-    :oauth                 | :scoped_no_naming_convention | :public   | role   | :accept   | :ok
-    :oauth                 | :unscoped                    | :public   | :guest | :reject   | :forbidden
-    :oauth                 | :unscoped                    | :public   | role   | :accept   | :ok
-    :oauth                 | :non_existing                | :public   | :guest | :reject   | :forbidden
-    :oauth                 | :non_existing                | :public   | role   | :reject   | :not_found
-    :oauth                 | :scoped_naming_convention    | :private  | :guest | :reject   | :forbidden
-    :oauth                 | :scoped_naming_convention    | :private  | role   | :accept   | :ok
-    :oauth                 | :scoped_no_naming_convention | :private  | :guest | :reject   | :forbidden
-    :oauth                 | :scoped_no_naming_convention | :private  | role   | :accept   | :ok
-    :oauth                 | :unscoped                    | :private  | :guest | :reject   | :forbidden
-    :oauth                 | :unscoped                    | :private  | role   | :accept   | :ok
-    :oauth                 | :non_existing                | :private  | :guest | :reject   | :forbidden
-    :oauth                 | :non_existing                | :private  | role   | :reject   | :not_found
-    :oauth                 | :scoped_naming_convention    | :internal | :guest | :reject   | :forbidden
-    :oauth                 | :scoped_naming_convention    | :internal | role   | :accept   | :ok
-    :oauth                 | :scoped_no_naming_convention | :internal | :guest | :reject   | :forbidden
-    :oauth                 | :scoped_no_naming_convention | :internal | role   | :accept   | :ok
-    :oauth                 | :unscoped                    | :internal | :guest | :reject   | :forbidden
-    :oauth                 | :unscoped                    | :internal | role   | :accept   | :ok
-    :oauth                 | :non_existing                | :internal | :guest | :reject   | :forbidden
-    :oauth                 | :non_existing                | :internal | role   | :reject   | :not_found
-
-    :personal_access_token | :scoped_naming_convention    | :public   | :guest | :reject   | :forbidden
-    :personal_access_token | :scoped_naming_convention    | :public   | role   | :accept   | :ok
-    :personal_access_token | :scoped_no_naming_convention | :public   | :guest | :reject   | :forbidden
-    :personal_access_token | :scoped_no_naming_convention | :public   | role   | :accept   | :ok
-    :personal_access_token | :unscoped                    | :public   | :guest | :reject   | :forbidden
-    :personal_access_token | :unscoped                    | :public   | role   | :accept   | :ok
-    :personal_access_token | :non_existing                | :public   | :guest | :reject   | :forbidden
-    :personal_access_token | :non_existing                | :public   | role   | :reject   | :not_found
-    :personal_access_token | :scoped_naming_convention    | :private  | :guest | :reject   | :forbidden
-    :personal_access_token | :scoped_naming_convention    | :private  | role   | :accept   | :ok
-    :personal_access_token | :scoped_no_naming_convention | :private  | :guest | :reject   | :forbidden
-    :personal_access_token | :scoped_no_naming_convention | :private  | role   | :accept   | :ok
-    :personal_access_token | :unscoped                    | :private  | :guest | :reject   | :forbidden
-    :personal_access_token | :unscoped                    | :private  | role   | :accept   | :ok
-    :personal_access_token | :non_existing                | :private  | :guest | :reject   | :forbidden
-    :personal_access_token | :non_existing                | :private  | role   | :reject   | :not_found
-    :personal_access_token | :scoped_naming_convention    | :internal | :guest | :reject   | :forbidden
-    :personal_access_token | :scoped_naming_convention    | :internal | role   | :accept   | :ok
-    :personal_access_token | :scoped_no_naming_convention | :internal | :guest | :reject   | :forbidden
-    :personal_access_token | :scoped_no_naming_convention | :internal | role   | :accept   | :ok
-    :personal_access_token | :unscoped                    | :internal | :guest | :reject   | :forbidden
-    :personal_access_token | :unscoped                    | :internal | role   | :accept   | :ok
-    :personal_access_token | :non_existing                | :internal | :guest | :reject   | :forbidden
-    :personal_access_token | :non_existing                | :internal | role   | :reject   | :not_found
-
-    :job_token             | :scoped_naming_convention    | :public   | role   | :accept   | :ok
-    :job_token             | :scoped_no_naming_convention | :public   | role   | :accept   | :ok
-    :job_token             | :unscoped                    | :public   | role   | :accept   | :ok
-    :job_token             | :non_existing                | :public   | role   | :reject   | :not_found
-    :job_token             | :scoped_naming_convention    | :private  | role   | :accept   | :ok
-    :job_token             | :scoped_no_naming_convention | :private  | role   | :accept   | :ok
-    :job_token             | :unscoped                    | :private  | role   | :accept   | :ok
-    :job_token             | :non_existing                | :private  | role   | :reject   | :not_found
-    :job_token             | :scoped_naming_convention    | :internal | role   | :accept   | :ok
-    :job_token             | :scoped_no_naming_convention | :internal | role   | :accept   | :ok
-    :job_token             | :unscoped                    | :internal | role   | :accept   | :ok
-    :job_token             | :non_existing                | :internal | role   | :reject   | :not_found
-
-    :deploy_token          | :scoped_naming_convention    | :public   | nil    | :accept   | :ok
-    :deploy_token          | :scoped_no_naming_convention | :public   | nil    | :accept   | :ok
-    :deploy_token          | :unscoped                    | :public   | nil    | :accept   | :ok
-    :deploy_token          | :non_existing                | :public   | nil    | :reject   | :not_found
-    :deploy_token          | :scoped_naming_convention    | :private  | nil    | :accept   | :ok
-    :deploy_token          | :scoped_no_naming_convention | :private  | nil    | :accept   | :ok
-    :deploy_token          | :unscoped                    | :private  | nil    | :accept   | :ok
-    :deploy_token          | :non_existing                | :private  | nil    | :reject   | :not_found
-    :deploy_token          | :scoped_naming_convention    | :internal | nil    | :accept   | :ok
-    :deploy_token          | :scoped_no_naming_convention | :internal | nil    | :accept   | :ok
-    :deploy_token          | :unscoped                    | :internal | nil    | :accept   | :ok
-    :deploy_token          | :non_existing                | :internal | nil    | :reject   | :not_found
+  let(:package_name) { 'non-existing-package' }
+  let(:headers) do
+    user_role ? build_token_auth_header(personal_access_token.token) : {}
   end
 
-  with_them do
-    let(:headers) do
-      build_headers_for_auth_type(auth)
+  before do
+    project.add_role(user, user_role)
+  end
+
+  context 'with project scope', if: scope == :project do
+    where(:user_role, :expected_result, :expected_status) do
+      :guest         | "reject #{action} package tag request" | :forbidden
+      non_guest_role | "reject #{action} package tag request" | :not_found
     end
+
+    with_them do
+      it_behaves_like params[:expected_result], status: params[:expected_status]
+    end
+  end
+
+  context 'with group scope', if: scope == :group do
+    let(:user_role) { :guest }
+
+    it_behaves_like 'returning response status with error', status: :not_found
+  end
+
+  context 'with instance scope', if: scope == :instance do
+    let(:user_role) { :guest }
+
+    it_behaves_like "reject #{action} package tag request", status: :not_found
+  end
+end
+
+RSpec.shared_examples 'handles authenticated requests, for tags create or delete' do |non_guest_role:, action:, scope:|
+  let(:package_name_type) { :scoped_naming_convention }
+
+  before do
+    package.update!(name: set_package_name_from_group_and_package_type(package_name_type, group))
+  end
+
+  context 'with guest user' do
+    let(:headers) { build_token_auth_header(token.plaintext_token) }
+    let(:user_role) { :guest }
+
+    %i[public internal private].each do |visibility|
+      context "with #{visibility} project" do
+        before do
+          project.add_guest(user)
+          project.update!(visibility: visibility.to_s)
+        end
+
+        it_behaves_like "reject #{action} package tag request", status: :forbidden
+      end
+    end
+  end
+
+  context 'with user having required role' do
+    let(:headers) { build_token_auth_header(token.plaintext_token) }
+    let(:user_role) { non_guest_role }
 
     before do
-      project.send("add_#{user_role}", user) if user_role
-      project.update!(visibility: visibility.to_s)
+      project.send(:"add_#{non_guest_role}", user)
+      project.update!(visibility: 'private')
     end
 
-    example_name = "#{params[:expected_result]} #{action} package tag request"
-    status = params[:expected_status]
+    context 'with authentication methods' do
+      %i[oauth personal_access_token job_token deploy_token].each do |auth|
+        context "with #{auth}" do
+          let(:auth) { auth }
+          let(:headers) do
+            build_headers_for_auth_type(auth)
+          end
 
-    if scope == :instance && params[:package_name_type] != :scoped_naming_convention
-      example_name = "reject #{action} package tag request"
-      # Due to #authenticate_non_get, anonymous requests on private resources
-      # are rejected with unauthorized status
-      status = params[:auth].nil? ? :unauthorized : :not_found
+          it_behaves_like "accept #{action} package tag request", status: :ok
+        end
+      end
     end
-
-    status = :not_found if scope == :group && params[:package_name_type] == :non_existing && params[:auth].present?
-
-    # Check the error message for :not_found
-    example_name = 'returning response status with error' if status == :not_found
-
-    it_behaves_like example_name, status: status
   end
 end
 

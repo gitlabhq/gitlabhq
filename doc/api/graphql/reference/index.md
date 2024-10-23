@@ -20468,6 +20468,7 @@ Represents finding.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="comparedsecurityreportfindingdescription"></a>`description` | [`String`](#string) | Description of the vulnerability finding. |
+| <a id="comparedsecurityreportfindingdetails"></a>`details` **{warning-solid}** | [`[VulnerabilityDetail!]!`](#vulnerabilitydetail) | **Introduced** in GitLab 17.6. **Status**: Experiment. Details of the vulnerability finding. |
 | <a id="comparedsecurityreportfindingfoundbypipelineiid"></a>`foundByPipelineIid` | [`String`](#string) | IID of the pipeline. |
 | <a id="comparedsecurityreportfindingidentifiers"></a>`identifiers` **{warning-solid}** | [`[VulnerabilityIdentifier!]`](#vulnerabilityidentifier) | **Introduced** in GitLab 16.3. **Status**: Experiment. Identifiers of the vulnerability finding. |
 | <a id="comparedsecurityreportfindinglocation"></a>`location` **{warning-solid}** | [`VulnerabilityLocation`](#vulnerabilitylocation) | **Introduced** in GitLab 16.3. **Status**: Experiment. Location of the vulnerability finding. |

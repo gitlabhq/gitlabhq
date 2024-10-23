@@ -35,12 +35,6 @@ jest.mock('~/super_sidebar/utils', () => ({
   trackContextAccess: jest.fn(),
 }));
 
-const trialStatusWidgetStubTestId = 'trial-status-widget';
-const TrialStatusWidgetStub = { template: `<div data-testid="${trialStatusWidgetStubTestId}" />` };
-const trialStatusPopoverStubTestId = 'trial-status-popover';
-const TrialStatusPopoverStub = {
-  template: `<div data-testid="${trialStatusPopoverStubTestId}" />`,
-};
 const trialWidgetStubTestId = 'trial-widget';
 const TrialWidgetStub = { template: `<div data-testid="${trialWidgetStubTestId}" />` };
 const UserBarStub = {
@@ -62,8 +56,6 @@ describe('SuperSidebar component', () => {
   const findSidebarPortalTarget = () => wrapper.findComponent(SidebarPortalTarget);
   const findPeekBehavior = () => wrapper.findComponent(SidebarPeekBehavior);
   const findHoverPeekBehavior = () => wrapper.findComponent(SidebarHoverPeekBehavior);
-  const findTrialStatusWidget = () => wrapper.findByTestId(trialStatusWidgetStubTestId);
-  const findTrialStatusPopover = () => wrapper.findByTestId(trialStatusPopoverStubTestId);
   const findTrialWidget = () => wrapper.findByTestId(trialWidgetStubTestId);
   const findSidebarMenu = () => wrapper.findComponent(SidebarMenu);
   const findAdminLink = () => wrapper.findByTestId('sidebar-admin-link');
@@ -79,7 +71,6 @@ describe('SuperSidebar component', () => {
 
     wrapper = shallowMountExtended(SuperSidebar, {
       provide: {
-        showTrialStatusWidget: false,
         showTrialWidget: false,
         ...provide,
       },
@@ -87,8 +78,6 @@ describe('SuperSidebar component', () => {
         sidebarData,
       },
       stubs: {
-        TrialStatusWidget: TrialStatusWidgetStub,
-        TrialStatusPopover: TrialStatusPopoverStub,
         TrialWidget: TrialWidgetStub,
         UserBar: stubComponent(UserBar, UserBarStub),
       },
@@ -206,13 +195,6 @@ describe('SuperSidebar component', () => {
       wrapper.destroy();
 
       expect(Mousetrap.unbind).toHaveBeenCalledWith(['mod+\\']);
-    });
-
-    it('does not render trial status widget', () => {
-      createWrapper();
-
-      expect(findTrialStatusWidget().exists()).toBe(false);
-      expect(findTrialStatusPopover().exists()).toBe(false);
     });
 
     it('does not render trial widget', () => {
@@ -334,17 +316,6 @@ describe('SuperSidebar component', () => {
 
     it('allows overflow with scroll scrim', () => {
       expect(findNavContainer().element.tagName).toContain('SCROLL-SCRIM');
-    });
-  });
-
-  describe('when a trial is active', () => {
-    beforeEach(() => {
-      createWrapper({ provide: { showTrialStatusWidget: true } });
-    });
-
-    it('renders trial status widget', () => {
-      expect(findTrialStatusWidget().exists()).toBe(true);
-      expect(findTrialStatusPopover().exists()).toBe(true);
     });
   });
 

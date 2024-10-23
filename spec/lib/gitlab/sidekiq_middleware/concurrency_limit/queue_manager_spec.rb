@@ -74,13 +74,18 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::QueueManager,
   describe '#resume_processing!' do
     let(:jobs) { [[1], [2], [3]] }
     let(:setter) { instance_double('Sidekiq::Job::Setter') }
+    let(:buffered_at) { Time.now.utc }
 
     it 'puts jobs back into the queue and respects order' do
-      jobs.each do |j|
-        service.add_to_queue!(j, worker_context)
+      travel_to(buffered_at) do
+        jobs.each do |j|
+          service.add_to_queue!(j, worker_context)
+        end
       end
 
-      expect(worker_class).to receive(:concurrency_limit_resume).twice.and_return(setter)
+      expect(worker_class).to receive(:concurrency_limit_resume)
+          .with(a_value_within(1).of(buffered_at.to_f)).twice.and_return(setter)
+
       expect(setter).to receive(:perform_async).with(1).ordered
       expect(setter).to receive(:perform_async).with(2).ordered
       expect(setter).not_to receive(:perform_async).with(3).ordered
@@ -96,14 +101,17 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::QueueManager,
     end
 
     it 'drops a set after execution' do
-      jobs.each do |j|
-        service.add_to_queue!(j, worker_context)
+      travel_to(buffered_at) do
+        jobs.each do |j|
+          service.add_to_queue!(j, worker_context)
+        end
       end
 
       expect(Gitlab::ApplicationContext).to receive(:with_raw_context)
         .with(stored_context)
         .exactly(jobs.count).times.and_call_original
-      expect(worker_class).to receive(:concurrency_limit_resume).exactly(3).times.and_return(setter)
+      expect(worker_class).to receive(:concurrency_limit_resume)
+          .with(a_value_within(1).of(buffered_at.to_f)).exactly(3).times.and_return(setter)
       expect(setter).to receive(:perform_async).exactly(jobs.count).times
 
       expect { service.resume_processing!(limit: jobs.count) }

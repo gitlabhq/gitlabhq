@@ -55,8 +55,15 @@ module Gitlab
         payload['message'] = "#{base_message(payload)}: start"
         payload['job_status'] = 'start'
 
-        scheduling_latency_s = ::Gitlab::InstrumentationHelper.queue_duration_for_job(payload)
-        payload['scheduling_latency_s'] = scheduling_latency_s if scheduling_latency_s
+        buffering_duration_s = ::Gitlab::InstrumentationHelper.buffering_duration_for_job(payload)
+        payload['concurrency_limit_buffering_duration_s'] = buffering_duration_s if buffering_duration_s
+
+        queue_duration_s = ::Gitlab::InstrumentationHelper.queue_duration_for_job(payload)
+
+        if queue_duration_s
+          payload['queue_duration_s'] = queue_duration_s
+          payload['scheduling_latency_s'] = queue_duration_s + buffering_duration_s.to_f
+        end
 
         enqueue_latency_s = ::Gitlab::InstrumentationHelper.enqueue_latency_for_scheduled_job(payload)
         payload['enqueue_latency_s'] = enqueue_latency_s if enqueue_latency_s

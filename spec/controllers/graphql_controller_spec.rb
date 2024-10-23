@@ -586,20 +586,6 @@ RSpec.describe GraphqlController, feature_category: :integrations do
           allow(Gitlab).to receive(:dev_or_test_env?).and_return(false)
         end
 
-        context 'with legacy introspection query' do
-          let_it_be(:legacy_query) { CachedIntrospectionQuery.legacy_query_string }
-
-          it 'caches the legacy and non-legacy query separately' do
-            expect(GitlabSchema).to receive(:execute).exactly(:twice)
-
-            post :execute, params: { query: query, operationName: 'IntrospectionQuery' }
-            post :execute, params: { query: query, operationName: 'IntrospectionQuery' }
-
-            post :execute, params: { query: legacy_query, operationName: 'IntrospectionQuery' }
-            post :execute, params: { query: legacy_query, operationName: 'IntrospectionQuery' }
-          end
-        end
-
         it 'caches IntrospectionQuery even when operationName is not given' do
           expect(GitlabSchema).to receive(:execute).exactly(:once)
 

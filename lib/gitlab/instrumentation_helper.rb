@@ -166,6 +166,23 @@ module Gitlab
       round_elapsed_time(enqueued_at_time)
     end
 
+    # Returns the buffering duration for a Sidekiq job in seconds, as a float, if the
+    # `concurrency_limit_buffered_at` field is available.
+    #
+    # * If the job doesn't contain sufficient information, returns nil
+    # * If the job has a start time in the future, returns 0
+    # * If the job contains an invalid start time value, returns nil
+    # @param [Hash] job a Sidekiq job, represented as a hash
+    def self.buffering_duration_for_job(job)
+      buffered_at = job['concurrency_limit_buffered_at']
+      return unless buffered_at
+
+      buffered_at_time = convert_to_time(buffered_at)
+      return unless buffered_at_time
+
+      round_elapsed_time(buffered_at_time)
+    end
+
     # Returns the time it took for a scheduled job to be enqueued in seconds, as a float,
     # if the `scheduled_at` and `enqueued_at` fields are available.
     #

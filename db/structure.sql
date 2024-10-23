@@ -15245,27 +15245,6 @@ CREATE TABLE packages_cleanup_policies (
     CONSTRAINT check_e53f35ab7b CHECK ((char_length(keep_n_duplicated_package_files) <= 255))
 );
 
-CREATE TABLE packages_composer_cache_files (
-    id bigint NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
-    delete_at timestamp with time zone,
-    namespace_id bigint,
-    file_store smallint DEFAULT 1 NOT NULL,
-    file text NOT NULL,
-    file_sha256 bytea NOT NULL,
-    CONSTRAINT check_84f5ba81f5 CHECK ((char_length(file) <= 255))
-);
-
-CREATE SEQUENCE packages_composer_cache_files_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE packages_composer_cache_files_id_seq OWNED BY packages_composer_cache_files.id;
-
 CREATE TABLE packages_composer_metadata (
     package_id bigint NOT NULL,
     target_sha bytea NOT NULL,
@@ -22825,8 +22804,6 @@ ALTER TABLE ONLY p_ci_pipelines ALTER COLUMN id SET DEFAULT nextval('ci_pipeline
 
 ALTER TABLE ONLY packages_build_infos ALTER COLUMN id SET DEFAULT nextval('packages_build_infos_id_seq'::regclass);
 
-ALTER TABLE ONLY packages_composer_cache_files ALTER COLUMN id SET DEFAULT nextval('packages_composer_cache_files_id_seq'::regclass);
-
 ALTER TABLE ONLY packages_conan_file_metadata ALTER COLUMN id SET DEFAULT nextval('packages_conan_file_metadata_id_seq'::regclass);
 
 ALTER TABLE ONLY packages_conan_metadata ALTER COLUMN id SET DEFAULT nextval('packages_conan_metadata_id_seq'::regclass);
@@ -25291,9 +25268,6 @@ ALTER TABLE ONLY packages_build_infos
 ALTER TABLE ONLY packages_cleanup_policies
     ADD CONSTRAINT packages_cleanup_policies_pkey PRIMARY KEY (project_id);
 
-ALTER TABLE ONLY packages_composer_cache_files
-    ADD CONSTRAINT packages_composer_cache_files_pkey PRIMARY KEY (id);
-
 ALTER TABLE ONLY packages_composer_metadata
     ADD CONSTRAINT packages_composer_metadata_pkey PRIMARY KEY (package_id);
 
@@ -27340,8 +27314,6 @@ CREATE INDEX code_owner_approval_required ON protected_branches USING btree (pro
 
 CREATE UNIQUE INDEX commit_user_mentions_on_commit_id_and_note_id_unique_index ON commit_user_mentions USING btree (commit_id, note_id);
 
-CREATE INDEX composer_cache_files_index_on_deleted_at ON packages_composer_cache_files USING btree (delete_at, id);
-
 CREATE UNIQUE INDEX custom_email_unique_constraint ON service_desk_settings USING btree (custom_email);
 
 CREATE UNIQUE INDEX dast_scanner_profiles_builds_on_ci_build_id ON dast_scanner_profiles_builds USING btree (ci_build_id);
@@ -28761,8 +28733,6 @@ CREATE INDEX index_compliance_frameworks_id_where_frameworks_not_null ON complia
 CREATE INDEX index_compliance_management_frameworks_on_name_trigram ON compliance_management_frameworks USING gin (name gin_trgm_ops);
 
 CREATE INDEX index_compliance_requirements_on_namespace_id ON compliance_requirements USING btree (namespace_id);
-
-CREATE INDEX index_composer_cache_files_where_namespace_id_is_null ON packages_composer_cache_files USING btree (id) WHERE (namespace_id IS NULL);
 
 CREATE INDEX index_container_expiration_policies_on_next_run_at_and_enabled ON container_expiration_policies USING btree (next_run_at, enabled);
 
@@ -30327,8 +30297,6 @@ CREATE INDEX index_packages_build_infos_on_project_id ON packages_build_infos US
 CREATE INDEX index_packages_build_infos_package_id_id ON packages_build_infos USING btree (package_id, id);
 
 CREATE INDEX index_packages_build_infos_package_id_pipeline_id_id ON packages_build_infos USING btree (package_id, pipeline_id, id);
-
-CREATE UNIQUE INDEX index_packages_composer_cache_namespace_and_sha ON packages_composer_cache_files USING btree (namespace_id, file_sha256);
 
 CREATE UNIQUE INDEX index_packages_composer_metadata_on_package_id_and_target_sha ON packages_composer_metadata USING btree (package_id, target_sha);
 
@@ -34710,9 +34678,6 @@ ALTER TABLE ONLY merge_requests
 ALTER TABLE ONLY member_approvals
     ADD CONSTRAINT fk_619f381144 FOREIGN KEY (member_role_id) REFERENCES member_roles(id) ON DELETE SET NULL;
 
-ALTER TABLE ONLY work_item_widget_definitions
-    ADD CONSTRAINT fk_61bfa96db5 FOREIGN KEY (work_item_type_id) REFERENCES work_item_types(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY deployment_approvals
     ADD CONSTRAINT fk_61cdbdc5b9 FOREIGN KEY (approval_rule_id) REFERENCES protected_environment_approval_rules(id) ON DELETE SET NULL;
 
@@ -35823,9 +35788,6 @@ ALTER TABLE ONLY virtual_registries_packages_maven_cached_responses
 ALTER TABLE ONLY security_policies
     ADD CONSTRAINT fk_rails_08722e8ac7 FOREIGN KEY (security_policy_management_project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY work_item_hierarchy_restrictions
-    ADD CONSTRAINT fk_rails_08cd7fef58 FOREIGN KEY (child_type_id) REFERENCES work_item_types(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY trending_projects
     ADD CONSTRAINT fk_rails_09feecd872 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -36060,9 +36022,6 @@ ALTER TABLE ONLY lfs_file_locks
 ALTER TABLE ONLY project_alerting_settings
     ADD CONSTRAINT fk_rails_27a84b407d FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY work_item_hierarchy_restrictions
-    ADD CONSTRAINT fk_rails_27bb3a10ba FOREIGN KEY (parent_type_id) REFERENCES work_item_types(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY user_credit_card_validations
     ADD CONSTRAINT fk_rails_27ebc03cbf FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
@@ -36272,9 +36231,6 @@ ALTER TABLE ONLY merge_request_assignees
 
 ALTER TABLE ONLY packages_dependency_links
     ADD CONSTRAINT fk_rails_4437bf4070 FOREIGN KEY (dependency_id) REFERENCES packages_dependencies(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY work_item_related_link_restrictions
-    ADD CONSTRAINT fk_rails_4513f0061c FOREIGN KEY (target_type_id) REFERENCES work_item_types(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY ci_builds
     ADD CONSTRAINT fk_rails_4540ead625_p FOREIGN KEY (upstream_pipeline_partition_id, upstream_pipeline_id) REFERENCES p_ci_pipelines(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE NOT VALID;
@@ -37068,9 +37024,6 @@ ALTER TABLE ONLY bulk_import_trackers
 ALTER TABLE ONLY pool_repositories
     ADD CONSTRAINT fk_rails_af3f8c5d62 FOREIGN KEY (shard_id) REFERENCES shards(id) ON DELETE RESTRICT;
 
-ALTER TABLE ONLY work_item_related_link_restrictions
-    ADD CONSTRAINT fk_rails_b013a0fa65 FOREIGN KEY (source_type_id) REFERENCES work_item_types(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY resource_label_events
     ADD CONSTRAINT fk_rails_b126799f57 FOREIGN KEY (label_id) REFERENCES labels(id) ON DELETE SET NULL;
 
@@ -37115,9 +37068,6 @@ ALTER TABLE batched_background_migration_job_transition_logs
 
 ALTER TABLE ONLY approval_project_rules_protected_branches
     ADD CONSTRAINT fk_rails_b7567b031b FOREIGN KEY (protected_branch_id) REFERENCES protected_branches(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY packages_composer_cache_files
-    ADD CONSTRAINT fk_rails_b82cea43a0 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY abuse_trust_scores
     ADD CONSTRAINT fk_rails_b903079eb4 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
@@ -37667,6 +37617,21 @@ ALTER TABLE ONLY work_item_colors
 
 ALTER TABLE ONLY work_item_dates_sources
     ADD CONSTRAINT fk_work_item_dates_sources_on_namespace_id FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY work_item_hierarchy_restrictions
+    ADD CONSTRAINT fk_work_item_hierarchy_restrictions_child_type_id FOREIGN KEY (child_type_id) REFERENCES work_item_types(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE ONLY work_item_hierarchy_restrictions
+    ADD CONSTRAINT fk_work_item_hierarchy_restrictions_parent_type_id FOREIGN KEY (parent_type_id) REFERENCES work_item_types(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE ONLY work_item_related_link_restrictions
+    ADD CONSTRAINT fk_work_item_related_link_restrictions_source_type_id FOREIGN KEY (source_type_id) REFERENCES work_item_types(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE ONLY work_item_related_link_restrictions
+    ADD CONSTRAINT fk_work_item_related_link_restrictions_target_type_id FOREIGN KEY (target_type_id) REFERENCES work_item_types(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE ONLY work_item_widget_definitions
+    ADD CONSTRAINT fk_work_item_widget_definitions_work_item_type_id FOREIGN KEY (work_item_type_id) REFERENCES work_item_types(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY zoekt_indices
     ADD CONSTRAINT fk_zoekt_indices_on_zoekt_replica_id FOREIGN KEY (zoekt_replica_id) REFERENCES zoekt_replicas(id) ON DELETE SET NULL;

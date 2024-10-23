@@ -40,4 +40,16 @@ describe('highlight', () => {
 
     expect(highlight('123', '2', '<hello>', '</hello>')).toBe(expected);
   });
+
+  it(`should prevent xss with no match`, () => {
+    const expected = '';
+
+    expect(highlight('<script>alert(document.domain)</script>', '')).toBe(expected);
+  });
+
+  it(`should prevent xss with match`, () => {
+    const expected = 'test';
+
+    expect(highlight('test<script>alert(document.domain)</script>', 'alert')).toBe(expected);
+  });
 });

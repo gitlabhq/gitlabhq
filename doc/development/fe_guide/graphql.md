@@ -1158,9 +1158,6 @@ If you are using Chrome and keep seeing `200` HTTP status codes, it might be thi
 
 We use [subscriptions](https://www.apollographql.com/docs/react/data/subscriptions/) to receive real-time updates from GraphQL API via websockets. Currently, the number of existing subscriptions is limited, you can check a list of available ones in [GraphqiQL explorer](https://gitlab.com/-/graphql-explorer)
 
-**NOTE:**
-We cannot test subscriptions using GraphiQL, because they require an ActionCable client, which GraphiQL does not support at the moment.
-
 Refer to the [Real-time widgets developer guide](../real_time.md) for a comprehensive introduction to subscriptions.
 
 ### Best Practices

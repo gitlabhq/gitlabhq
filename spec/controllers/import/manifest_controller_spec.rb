@@ -35,11 +35,31 @@ RSpec.describe Import::ManifestController, :clean_gitlab_redis_shared_state, fea
     context 'with an invalid manifest' do
       it 'displays an error' do
         post :upload, params: {
-               group_id: group.id,
-               manifest: fixture_file_upload('spec/fixtures/invalid_manifest.xml')
-             }
+          group_id: group.id,
+          manifest: fixture_file_upload('spec/fixtures/invalid_manifest.xml')
+        }
 
         expect(assigns(:errors)).to be_present
+      end
+    end
+
+    context 'with an oversized manifest' do
+      before do
+        stub_const("#{described_class}::MAX_MANIFEST_SIZE_IN_MB", 0)
+      end
+
+      it 'displays an error' do
+        post :upload, params: {
+          group_id: group.id,
+          manifest: fixture_file_upload('spec/fixtures/aosp_manifest.xml')
+        }
+
+        expect(assigns(:errors)).to include(
+          format(
+            s_("ManifestImport|Import manifest files cannot exceed %{size} MB"),
+            size: described_class::MAX_MANIFEST_SIZE_IN_MB
+          )
+        )
       end
     end
 

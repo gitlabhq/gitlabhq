@@ -290,6 +290,8 @@ module InternalEventsCli
         )
       end
 
+      assign_shared_attr(:tiers) { |metric| [*metric.tier] }
+
       assign_shared_attr(:distribution) do |metric|
         metric.tier.include?('free') ? %w[ce ee] : %w[ee]
       end
@@ -532,6 +534,7 @@ module InternalEventsCli
         fields[:section] << find_section(event.product_group)
         fields[:distribution] << event.distributions&.sort
         fields[:tier] << event.tiers&.sort
+        fields[:tiers] << event.tiers&.sort
       end
 
       # Keep event values if every selected event is the same

@@ -46,7 +46,7 @@ module Gitlab
         end
 
         def serialize(args, context)
-          { args: args, context: context }.to_json
+          { args: args, context: context, buffered_at: Time.now.utc.to_f }.to_json
         end
 
         def deserialize(json)
@@ -62,7 +62,7 @@ module Gitlab
             worker_klass = @worker_name.safe_constantize
             next if worker_klass.nil?
 
-            worker_klass.concurrency_limit_resume.perform_async(*args)
+            worker_klass.concurrency_limit_resume(job['buffered_at']).perform_async(*args)
           end
         end
 

@@ -174,7 +174,7 @@ the duration of a job. It gives a CI/CD job access to a limited number of API en
 API authentication uses the job token by using the authorization of the user triggering the job.
 
 The job token is secured by its short lifetime and limited scope. This token could be leaked if
-multiple jobs run on the same machine (for example, with the [shell runner](https://docs.gitlab.com/runner/security/#usage-of-shell-executor)).
+multiple jobs run on the same machine (for example, with the [shell runner](https://docs.gitlab.com/runner/security/#usage-of-shell-executor)). You can use the [project allow list](../../ci/jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist) to further limit what the job token can access.
 On Docker Machine runners, you should configure
 [`MaxBuilds=1`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runnersmachine-section)
 to ensure runner machines run only one build

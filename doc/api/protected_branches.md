@@ -340,17 +340,23 @@ The following example response includes:
 }
 ```
 
-### Example with user / group level access
+### Example with user push access and group merge access
 
 DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Elements in the `allowed_to_push` / `allowed_to_merge` / `allowed_to_unprotect` array should take the
-form `{user_id: integer}`, `{group_id: integer}`, or `{access_level: integer}`. Each user must have access to the project and each group must [have this project shared](../user/project/members/sharing_projects_groups.md). These access levels allow [more granular control over protected branch access](../user/project/repository/branches/protected.md).
+form `{user_id: integer}`, `{group_id: integer}`, or `{access_level: integer}`.
+Each user must have access to the project and each group must [have this project shared](../user/project/members/sharing_projects_groups.md).
+These access levels allow more granular control over protected branch access.
+For more information, see [Add a group to protected branches](../user/project/repository/branches/protected.md#add-a-group-to-protected-branches).
+
+The following example request creates a protected branch with user push access and group merge access.
+The `user_id` is `2` and the `group_id` is `3`.
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/protected_branches?name=*-stable&allowed_to_push%5B%5D%5Buser_id%5D=1"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/protected_branches?name=*-stable&allowed_to_push%5B%5D%5Buser_id%5D=2&allowed_to_merge%5B%5D%5Bgroup_id%5D=3"
 ```
 
 The following example response includes:
@@ -368,7 +374,7 @@ The following example response includes:
     {
       "id":  1001,
       "access_level": null,
-      "user_id": 1,
+      "user_id": 2,
       "group_id": null,
       "access_level_description": "Administrator"
     }
@@ -376,10 +382,10 @@ The following example response includes:
   "merge_access_levels": [
     {
       "id":  2001,
-      "access_level": 40,
+      "access_level": null
       "user_id": null,
-      "group_id": null,
-      "access_level_description": "Maintainers"
+      "group_id": 3,
+      "access_level_description": "Example Merge Group"
     }
   ],
   "unprotect_access_levels": [
