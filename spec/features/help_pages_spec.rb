@@ -34,7 +34,7 @@ RSpec.describe 'Help Pages', feature_category: :shared do
     before do
       stub_application_setting(version_check_enabled: true)
       allow(User).to receive(:single_user).and_return(double(user, requires_usage_stats_consent?: false))
-      allow(user).to receive(:can_read_all_resources?).and_return(true)
+      allow(user).to receive(:can_admin_all_resources?).and_return(true)
 
       sign_in(user)
       visit help_path
