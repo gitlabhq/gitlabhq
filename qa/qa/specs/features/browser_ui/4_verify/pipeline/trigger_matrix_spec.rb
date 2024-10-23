@@ -16,7 +16,6 @@ module QA
 
       after do
         runner.remove_via_api!
-        project.remove_via_api!
       end
 
       it 'creates 2 trigger jobs and passes corresponding matrix variables', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348000' do

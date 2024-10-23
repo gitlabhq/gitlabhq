@@ -9,10 +9,6 @@ module QA
       let(:api_client) { Runtime::API::Client.new(:gitlab, user: rate_limited_user) }
       let!(:request) { Runtime::API::Request.new(api_client, '/users') }
 
-      after do
-        rate_limited_user.remove_via_api!
-      end
-
       it 'throttles authenticated api requests by user',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347881' do
         with_application_settings(

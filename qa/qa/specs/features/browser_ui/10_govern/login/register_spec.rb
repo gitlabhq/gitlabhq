@@ -80,13 +80,6 @@ module QA
             Support::Waiter.wait_until(max_duration: 120, sleep_interval: 3) { !user.exists? }
           end
 
-          after do
-            if recreated_user
-              recreated_user.api_client = admin_api_client
-              recreated_user.remove_via_api!
-            end
-          end
-
           it 'allows recreating with same credentials', :blocking, :external_api_calls,
             testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347868' do
             expect(Page::Main::Menu.perform(&:signed_in?)).to be_falsy

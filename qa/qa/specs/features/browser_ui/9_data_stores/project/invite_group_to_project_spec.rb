@@ -52,23 +52,12 @@ module QA
             personal_namespace: Runtime::User.username)
         end
 
-        after do
-          project.remove_via_api!
-          group.remove_via_api!
-        end
-
         it_behaves_like 'invites group to project'
       end
 
       context 'with a group project', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/349340' do
         let(:group) { create(:group, path: "group-for-group-project-#{SecureRandom.hex(8)}") }
-
         let(:project) { create(:project, :private, name: 'group-project', description: 'test group project') }
-
-        after do
-          project.remove_via_api!
-          group.remove_via_api!
-        end
 
         it_behaves_like 'invites group to project'
       end

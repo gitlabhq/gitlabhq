@@ -43,13 +43,6 @@ module QA
         followed_user_api_client.personal_access_token
       end
 
-      after do
-        project&.api_client = admin_api_client
-        project&.remove_via_api!
-        followed_user&.remove_via_api!
-        following_user&.remove_via_api!
-      end
-
       it 'can be followed and their activity seen', :blocking,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347678' do
         Flow::Login.sign_in(as: following_user)

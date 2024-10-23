@@ -32,10 +32,6 @@ module QA
           end
         end
 
-        after do
-          project.remove_via_api!
-        end
-
         it 'creates an issue', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/377890' do
           with_slack_tab do
             Vendor::Slack::Page::Chat.perform do |chat_page|
@@ -91,10 +87,6 @@ module QA
 
           context 'with target project' do
             let(:target) { create(:project, :with_readme, name: 'target_slack_project') }
-
-            after do
-              target.remove_via_api!
-            end
 
             it 'moves an issue', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/377894' do
               with_slack_tab do

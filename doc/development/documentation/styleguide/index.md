@@ -1116,6 +1116,13 @@ For example:
 1. Recommended. Enter a description for the job.
 ```
 
+### Documenting keyboard shortcuts and commands
+
+Write UI instructions instead of keyboard commands when both options exist.
+This guideline applies to GitLab and third-party applications, like VS Code.
+
+Keyboard commands for GitLab are documented in [GitLab keyboard shortcuts](../../../user/shortcuts.md).
+
 ### Documenting multiple fields at once
 
 If the UI text sufficiently explains the fields in a section, do not include a task step for every field.

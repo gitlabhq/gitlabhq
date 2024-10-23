@@ -230,6 +230,26 @@ To temporarily change the statement timeout:
    (for example the backup or the Rails command).
 1. Revert the edit in `/var/opt/gitlab/gitlab-rails/etc/database.yml`.
 
+### Observe (RE)INDEX progress report
+
+In some situations, you might want to observe the progress of a `CREATE INDEX` or `REINDEX` operation. For example, you can do this to confirm whether the `CREATE INDEX` or `REINDEX` operation is active, or to check which phase the operation is in.
+
+Prerequisites:
+
+- You must use PostgreSQL version 12 or later.
+
+To observe a `CREATE INDEX` or `REINDEX` operation:
+
+- Use the built-in [`pg_stat_progress_create_index` view](https://www.postgresql.org/docs/current/progress-reporting.html#CREATE-INDEX-PROGRESS-REPORTING).
+
+For example, from a database console session, run the following command:
+
+```sql
+SELECT * FROM  pg_stat_progress_create_index \watch 0.2
+```
+
+To learn more about producing human-friendly output and writing data to log files, see [this snippet](https://gitlab.com/-/snippets/3750940).
+
 ## Troubleshooting
 
 ### Database is not accepting commands to avoid wraparound data loss

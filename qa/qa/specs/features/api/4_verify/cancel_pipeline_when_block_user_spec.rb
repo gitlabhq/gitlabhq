@@ -25,11 +25,6 @@ module QA
         Support::Waiter.wait_until { !pipeline_schedule[:id].nil? && pipeline_schedule[:active] == true }
       end
 
-      after do
-        user.remove_via_api!
-        project.remove_via_api!
-      end
-
       it 'pipeline schedule is canceled', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347999' do
         user.block!
 
