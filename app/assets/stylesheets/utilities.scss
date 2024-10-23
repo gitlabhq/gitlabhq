@@ -56,9 +56,6 @@ $type-scale: (
   top: $calc-application-header-height;
 }
 
-// stylelint-disable-next-line gitlab/no-gl-class
-.gl-h-64 { height: px-to-rem($grid-size * 8); }
-
 // Migrate this to Gitlab UI when FF is removed
 // https://gitlab.com/groups/gitlab-org/-/epics/2882
 // stylelint-disable-next-line gitlab/no-gl-class
@@ -68,14 +65,6 @@ $type-scale: (
 // stylelint-disable-next-line gitlab/no-gl-class
 .gl-z-dropdown-menu\! {
   z-index: $zindex-dropdown-menu !important;
-}
-
-// This is used to help prevent issues with margin collapsing.
-// See https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Box_Model/Mastering_margin_collapsing.
-// stylelint-disable-next-line gitlab/no-gl-class
-.gl-force-block-formatting-context::after {
-  content: '';
-  display: flex;
 }
 
 // Will be moved to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1465

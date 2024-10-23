@@ -28,8 +28,6 @@ RSpec/NoExpectationExample:
     - 'ee/spec/models/ci/minutes/project_monthly_usage_spec.rb'
     - 'ee/spec/models/concerns/elastic/repository_spec.rb'
     - 'ee/spec/models/ee/project_spec.rb'
-    - 'ee/spec/models/remote_development/remote_development_agent_config_spec.rb'
-    - 'ee/spec/models/remote_development/workspaces_agent_config_spec.rb'
     - 'ee/spec/requests/api/boards_spec.rb'
     - 'ee/spec/services/boards/lists/update_service_spec.rb'
     - 'ee/spec/services/ee/merge_requests/update_service_spec.rb'

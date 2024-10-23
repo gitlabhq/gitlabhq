@@ -679,7 +679,7 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
     it 'points to the page defined in label_url_method' do
       reference = "~#{label.name}"
 
-      result = reference_filter("See #{reference}", { project: nil, group: group, label_url_method: :group_url } )
+      result = reference_filter("See #{reference}", { project: nil, group: group, label_url_method: :group_url })
 
       expect(result.css('a').first.attr('href')).to eq(urls.group_url(group, label_name: label.name))
     end
@@ -687,7 +687,7 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
     it 'finds labels also in ancestor groups' do
       reference = "~#{label.name}"
 
-      result = reference_filter("See #{reference}", { project: nil, group: subgroup, label_url_method: :group_url } )
+      result = reference_filter("See #{reference}", { project: nil, group: subgroup, label_url_method: :group_url })
 
       expect(result.css('a').first.attr('href')).to eq(urls.group_url(subgroup, label_name: label.name))
     end
@@ -697,7 +697,7 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
       label = create(:label, project: project)
       reference = "#{project.full_path}~#{label.name}"
 
-      result = reference_filter("See #{reference}", { project: nil, group: group } )
+      result = reference_filter("See #{reference}", { project: nil, group: group })
 
       expect(result.css('a').first.attr('href')).to eq(urls.project_issues_url(project, label_name: label.name))
       expect(result.css('a').first.text).to eq "#{label.name} in #{project.full_name}"

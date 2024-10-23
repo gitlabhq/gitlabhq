@@ -117,6 +117,9 @@ After you link to a GitLab group:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460663) in GitLab 17.2 [with a flag](../../administration/feature_flags.md) named `enable_jira_connect_configuration`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/467117) in GitLab 17.4. Feature flag `enable_jira_connect_configuration` removed.
 
+NOTE:
+This feature was added as a community contribution and is developed and maintained by the GitLab community only.
+
 Prerequisites:
 
 - The GitLab for Jira Cloud app must be [installed](#install-the-gitlab-for-jira-cloud-app).
@@ -155,6 +158,9 @@ DETAILS:
 **Offering:** GitLab.com
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/473774) in GitLab 17.6.
+
+NOTE:
+This feature was added as a community contribution and is developed and maintained by the GitLab community only.
 
 You can set up deployment gating to bring change requests from GitLab to Jira Service Management for approval.
 With deployment gating, any GitLab deployments to your selected environments are automatically sent

@@ -25,44 +25,27 @@ RSpec.describe API::ProjectTemplates, feature_category: :source_code_management 
   end
 
   describe 'GET /projects/:id/templates/:type' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:type, :key) do
+      'dockerfiles' | 'Binary'
+      'gitignores' | 'Actionscript'
+      'gitlab_ci_ymls' | 'Android'
+      'licenses' | '0bsd'
+    end
+
+    with_them do
+      it "return the response" do
+        get api("/projects/#{public_project.id}/templates/#{type}")
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(response).to match_response_schema('public_api/v4/template_list')
+        expect(json_response).to satisfy_one { |template| template['key'] == key }
+      end
+    end
+
     it_behaves_like 'accepts project paths with dots' do
       subject { get api("/projects/#{url_encoded_path}/templates/dockerfiles") }
-    end
-
-    it 'returns dockerfiles' do
-      get api("/projects/#{public_project.id}/templates/dockerfiles")
-
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(response).to include_pagination_headers
-      expect(response).to match_response_schema('public_api/v4/template_list')
-      expect(json_response).to satisfy_one { |template| template['key'] == 'Binary' }
-    end
-
-    it 'returns gitignores' do
-      get api("/projects/#{public_project.id}/templates/gitignores")
-
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(response).to include_pagination_headers
-      expect(response).to match_response_schema('public_api/v4/template_list')
-      expect(json_response).to satisfy_one { |template| template['key'] == 'Actionscript' }
-    end
-
-    it 'returns gitlab_ci_ymls' do
-      get api("/projects/#{public_project.id}/templates/gitlab_ci_ymls")
-
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(response).to include_pagination_headers
-      expect(response).to match_response_schema('public_api/v4/template_list')
-      expect(json_response).to satisfy_one { |template| template['key'] == 'Android' }
-    end
-
-    it 'returns licenses' do
-      get api("/projects/#{public_project.id}/templates/licenses")
-
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(response).to include_pagination_headers
-      expect(response).to match_response_schema('public_api/v4/template_list')
-      expect(json_response).to satisfy_one { |template| template['key'] == '0bsd' }
     end
 
     it 'returns issue templates' do

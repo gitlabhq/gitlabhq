@@ -75,11 +75,14 @@ RSpec.describe 'Commit > User view commits', feature_category: :source_code_mana
 
     context 'when displayed with rapid_diffs' do
       it 'passes axe automated accessibility testing' do
-        visit "#{project_commit_path(project, sha)}?rapid_diffs=true"
+        visit project_commit_path(project, sha, rapid_diffs: true)
 
         wait_for_requests # ensures page is fully loaded
 
-        expect(page).to be_axe_clean.within('#content-body').skipping :'link-name', :'valid-lang'
+        # remove 'valid-lang' when 'lang' attribute is removed from the highlighted code
+        # https://gitlab.com/gitlab-org/gitlab/-/issues/466594
+        # remove 'color-contrast' when code highlight themes conform to a contrast of 4.5:1
+        expect(page).to be_axe_clean.within('#content-body').skipping :'valid-lang', :'color-contrast'
       end
     end
   end

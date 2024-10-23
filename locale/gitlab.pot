@@ -32349,6 +32349,9 @@ msgstr[1] ""
 msgid "Line changes"
 msgstr ""
 
+msgid "Line number %{number}"
+msgstr ""
+
 msgid "Link"
 msgstr ""
 
@@ -35031,6 +35034,9 @@ msgid "MlModelRegistry|User canceled upload."
 msgstr ""
 
 msgid "MlModelRegistry|Using the MLflow client"
+msgstr ""
+
+msgid "MlModelRegistry|Version created %{timeAgo} by %{author}"
 msgstr ""
 
 msgid "MlModelRegistry|Version description"
@@ -49574,6 +49580,9 @@ msgstr ""
 msgid "SecurityOrchestration|Invalid policy type"
 msgstr ""
 
+msgid "SecurityOrchestration|Invalid syntax"
+msgstr ""
+
 msgid "SecurityOrchestration|Latest scan run against %{agent}"
 msgstr ""
 
@@ -49877,6 +49886,12 @@ msgid "SecurityOrchestration|Summary of syntax changes:"
 msgstr ""
 
 msgid "SecurityOrchestration|The compliance pipeline will continue to override the new pipeline execution policy until it is removed from the compliance framework configuration."
+msgstr ""
+
+msgid "SecurityOrchestration|The current YAML syntax is invalid so you cannot edit the actions in rule mode. To resolve the issue, switch to YAML mode and fix the syntax."
+msgstr ""
+
+msgid "SecurityOrchestration|The current YAML syntax is invalid so you cannot edit the conditions in rule mode. To resolve the issue, switch to YAML mode and fix the syntax."
 msgstr ""
 
 msgid "SecurityOrchestration|The following branches do not exist on this development project: %{branches}. Please review all protected branches to ensure the values are accurate before updating this policy."

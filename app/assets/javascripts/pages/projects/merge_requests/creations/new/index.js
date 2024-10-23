@@ -4,6 +4,7 @@ import { mountMarkdownEditor } from 'ee_else_ce/vue_shared/components/markdown/m
 
 import { findTargetBranch } from 'ee_else_ce/pages/projects/merge_requests/creations/new/branch_finder';
 
+import { parseBoolean } from '~/lib/utils/common_utils';
 import initPipelines from '~/commit/pipelines/pipelines_bundle';
 import MergeRequest from '~/merge_request';
 import CompareApp from '~/merge_requests/components/compare_app.vue';
@@ -118,11 +119,23 @@ if (mrNewCompareNode) {
   });
 } else {
   const mrNewSubmitNode = document.querySelector('.js-merge-request-new-submit');
+  const { projectId, targetBranch, sourceBranch, canSummarize } =
+    document.querySelector('.js-markdown-editor').dataset;
   // eslint-disable-next-line no-new
   new MergeRequest({
     action: mrNewSubmitNode.dataset.mrSubmitAction,
   });
   initPipelines();
   // eslint-disable-next-line no-new
-  new IssuableTemplateSelectors({ warnTemplateOverride: true, editor: mountMarkdownEditor() });
+  new IssuableTemplateSelectors({
+    warnTemplateOverride: true,
+    editor: mountMarkdownEditor({
+      provide: {
+        projectId,
+        targetBranch,
+        sourceBranch,
+        canSummarize: parseBoolean(canSummarize ?? false),
+      },
+    }),
+  });
 }

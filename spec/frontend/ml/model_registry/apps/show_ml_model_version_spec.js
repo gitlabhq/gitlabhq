@@ -1,24 +1,26 @@
-import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
+import { GlIcon, GlSprintf, GlLink } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { visitUrlWithAlerts } from '~/lib/utils/url_utility';
 import { createAlert } from '~/alert';
 import { ShowMlModelVersion } from '~/ml/model_registry/apps';
 import ModelVersionDetail from '~/ml/model_registry/components/model_version_detail.vue';
 import ModelVersionActionsDropdown from '~/ml/model_registry/components/model_version_actions_dropdown.vue';
-import ModeldVersionEdit from '~/ml/model_registry/components/model_version_edit.vue';
+import ModelVersionEdit from '~/ml/model_registry/components/model_version_edit.vue';
 import deleteModelVersionMutation from '~/ml/model_registry/graphql/mutations/delete_model_version.mutation.graphql';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import LoadOrErrorOrShow from '~/ml/model_registry/components/load_or_error_or_show.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import getModelVersionQuery from '~/ml/model_registry/graphql/queries/get_model_version.query.graphql';
 import waitForPromises from 'helpers/wait_for_promises';
+import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
 import {
   deleteModelVersionResponses,
-  modelVersionQuery,
-  modelVersionWithCandidate,
+  modelVersionQueryWithAuthor,
+  modelVersionWithCandidateAndAuthor,
 } from '../graphql_mock_data';
 
 Vue.use(VueApollo);
@@ -42,7 +44,7 @@ describe('ml/model_registry/apps/show_model_version.vue', () => {
   });
 
   const createWrapper = (
-    resolver = jest.fn().mockResolvedValue(modelVersionQuery),
+    resolver = jest.fn().mockResolvedValue(modelVersionQueryWithAuthor),
     deleteResolver = jest.fn().mockResolvedValue(deleteModelVersionResponses.success),
     canWriteModelRegistry = true,
   ) => {
@@ -52,7 +54,7 @@ describe('ml/model_registry/apps/show_model_version.vue', () => {
     ];
     apolloProvider = createMockApollo(requestHandlers);
 
-    wrapper = shallowMount(ShowMlModelVersion, {
+    wrapper = shallowMountExtended(ShowMlModelVersion, {
       propsData: {
         modelName: 'blah',
         versionName: '1.2.3',
@@ -68,6 +70,9 @@ describe('ml/model_registry/apps/show_model_version.vue', () => {
       apolloProvider,
       stubs: {
         LoadOrErrorOrShow,
+        GlSprintf,
+        GlLink,
+        TimeAgoTooltip,
       },
     });
   };
@@ -76,7 +81,9 @@ describe('ml/model_registry/apps/show_model_version.vue', () => {
   const findModelVersionDetail = () => wrapper.findComponent(ModelVersionDetail);
   const findModelVersionActionsDropdown = () => wrapper.findComponent(ModelVersionActionsDropdown);
   const findLoadOrErrorOrShow = () => wrapper.findComponent(LoadOrErrorOrShow);
-  const findEditButton = () => wrapper.findComponent(ModeldVersionEdit);
+  const findEditButton = () => wrapper.findComponent(ModelVersionEdit);
+  const findModelMetadata = () => wrapper.findByTestId('metadata');
+  const findTimeAgoTooltip = () => wrapper.findComponent(TimeAgoTooltip);
 
   it('renders the title', () => {
     createWrapper();
@@ -85,7 +92,7 @@ describe('ml/model_registry/apps/show_model_version.vue', () => {
   });
 
   it('Requests data with the right parameters', async () => {
-    const resolver = jest.fn().mockResolvedValue(modelVersionQuery);
+    const resolver = jest.fn().mockResolvedValue(modelVersionQueryWithAuthor);
 
     createWrapper(resolver);
 
@@ -104,7 +111,24 @@ describe('ml/model_registry/apps/show_model_version.vue', () => {
 
     await waitForPromises();
 
-    expect(findModelVersionDetail().props('modelVersion')).toMatchObject(modelVersionWithCandidate);
+    expect(findModelVersionDetail().props('modelVersion')).toMatchObject(
+      modelVersionWithCandidateAndAuthor,
+    );
+  });
+
+  it('Show version metadata', async () => {
+    createWrapper();
+
+    await waitForPromises();
+
+    expect(findModelMetadata().findComponent(GlIcon).props('name')).toBe('machine-learning');
+    expect(findModelMetadata().text()).toBe('Version created in 3 years by Root');
+
+    expect(findTimeAgoTooltip().props('time')).toBe(modelVersionWithCandidateAndAuthor.createdAt);
+    expect(findTimeAgoTooltip().props('tooltipPlacement')).toBe('top');
+
+    expect(findModelMetadata().findComponent(GlLink).attributes('href')).toBe('path/to/user');
+    expect(findModelMetadata().findComponent(GlLink).text()).toBe('Root');
   });
 
   it('Shows error message on error', async () => {

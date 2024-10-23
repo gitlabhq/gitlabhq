@@ -215,7 +215,7 @@ RSpec.describe Banzai::Filter::References::SnippetReferenceFilter, feature_categ
     it 'links to a valid reference' do
       reference = "#{project.full_path}$#{snippet.id}"
 
-      result = reference_filter("See #{reference}", { project: nil, group: create(:group) } )
+      result = reference_filter("See #{reference}", { project: nil, group: create(:group) })
 
       expect(result.css('a').first.attr('href')).to eq(urls.project_snippet_url(project, snippet))
     end

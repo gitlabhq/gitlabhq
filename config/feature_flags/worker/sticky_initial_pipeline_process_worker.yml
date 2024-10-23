@@ -1,9 +1,0 @@
----
-name: sticky_initial_pipeline_process_worker
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/483012
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169466
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/499557
-milestone: '17.6'
-group: group::ci platform
-type: worker
-default_enabled: false

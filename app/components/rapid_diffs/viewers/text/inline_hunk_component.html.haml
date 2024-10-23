@@ -1,10 +1,10 @@
 - if @diff_hunk.header
-  %tr
-    %td{ colspan: '2' }= render RapidDiffs::Viewers::Text::ExpandLinesComponent.new(directions: @diff_hunk.expand_directions)
-    %td= @diff_hunk.header_text
+  %tr.rd-hunk-header.rd-hunk-header-inline
+    %td.rd-hunk-header-buttons{ colspan: '2' }= render RapidDiffs::Viewers::Text::ExpandLinesComponent.new(directions: @diff_hunk.expand_directions)
+    %td.rd-hunk-header-content= @diff_hunk.header_text
 
 - @diff_hunk.lines.each do |line|
-  %tr
+  %tr.rd-hunk-lines.rd-hunk-lines-inline
     = render RapidDiffs::Viewers::Text::LineNumberComponent.new(diff_file: @diff_file, line: line, position: :old)
-    = render RapidDiffs::Viewers::Text::LineNumberComponent.new(diff_file: @diff_file, line: line, position: :new)
-    %td= line.text_content
+    = render RapidDiffs::Viewers::Text::LineNumberComponent.new(diff_file: @diff_file, line: line, position: :new, border: :right)
+    = render RapidDiffs::Viewers::Text::LineContentComponent.new(line: line, position: nil)

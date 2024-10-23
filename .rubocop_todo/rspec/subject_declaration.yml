@@ -2,7 +2,6 @@
 RSpec/SubjectDeclaration:
   Details: grace period
   Exclude:
-    - 'ee/spec/features/remote_development/workspaces_dropdown_group_spec.rb'
     - 'ee/spec/finders/app_sec/fuzzing/coverage/corpuses_finder_spec.rb'
     - 'ee/spec/helpers/ee/lock_helper_spec.rb'
     - 'ee/spec/helpers/nav/new_dropdown_helper_spec.rb'

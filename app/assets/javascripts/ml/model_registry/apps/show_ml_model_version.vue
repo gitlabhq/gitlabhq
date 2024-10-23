@@ -1,4 +1,5 @@
 <script>
+import { GlSprintf, GlIcon, GlLink } from '@gitlab/ui';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { createAlert, VARIANT_DANGER } from '~/alert';
@@ -6,8 +7,10 @@ import { s__, sprintf } from '~/locale';
 import { setUrlFragment, visitUrlWithAlerts } from '~/lib/utils/url_utility';
 import getModelVersionQuery from '~/ml/model_registry/graphql/queries/get_model_version.query.graphql';
 import deleteModelVersionMutation from '~/ml/model_registry/graphql/mutations/delete_model_version.mutation.graphql';
-import { convertToGraphQLId } from '~/graphql_shared/utils';
+import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { makeLoadVersionsErrorMessage } from '~/ml/model_registry/translations';
+import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import timeagoMixin from '~/vue_shared/mixins/timeago';
 import ModelVersionDetail from '../components/model_version_detail.vue';
 import LoadOrErrorOrShow from '../components/load_or_error_or_show.vue';
 import ModelVersionActionsDropdown from '../components/model_version_actions_dropdown.vue';
@@ -21,7 +24,12 @@ export default {
     ModelVersionActionsDropdown,
     TitleArea,
     ModelVersionEdit,
+    GlIcon,
+    GlLink,
+    GlSprintf,
+    TimeAgoTooltip,
   },
+  mixins: [timeagoMixin],
   provide() {
     return {
       projectPath: this.projectPath,
@@ -122,6 +130,15 @@ export default {
         variant: 'success',
       };
     },
+    createdMessage() {
+      return s__('MlModelRegistry|Version created %{timeAgo} by %{author}');
+    },
+    authorId() {
+      return getIdFromGraphQLId(`${this.modelVersion.author.id}`);
+    },
+    showCreatedDetail() {
+      return this.modelVersion?.author && this.modelVersion?.createdAt;
+    },
   },
   methods: {
     handleError(error) {
@@ -172,7 +189,31 @@ export default {
   <div>
     <div class="gl-flex gl-flex-wrap gl-justify-between gl-py-3 sm:gl-flex-nowrap">
       <div class="gl-min-w-0 gl-grow gl-flex-col">
-        <title-area :title="title" />
+        <title-area :title="title">
+          <template #metadata-versions-count>
+            <div
+              v-if="showCreatedDetail"
+              class="detail-page-header-body mb-3 gl-flex-wrap gl-gap-x-2"
+              data-testid="metadata"
+            >
+              <gl-icon name="machine-learning" />
+              <gl-sprintf :message="createdMessage">
+                <template #timeAgo>
+                  <time-ago-tooltip :time="modelVersion.createdAt" />
+                </template>
+                <template #author>
+                  <gl-link
+                    class="js-user-link gl-font-bold !gl-text-gray-500"
+                    :href="modelVersion.author.webUrl"
+                    :data-user-id="authorId"
+                  >
+                    <span class="sm:gl-inline">{{ modelVersion.author.name }}</span>
+                  </gl-link>
+                </template>
+              </gl-sprintf>
+            </div>
+          </template>
+        </title-area>
       </div>
       <div class="gl-mt-3 gl-flex gl-items-start gl-gap-3">
         <model-version-edit

@@ -11,4 +11,5 @@
 .container-fluid{ class: [container_class] }
   = render "commit_box"
   = render "ci_menu"
-  = render RapidDiffs::DiffFileComponent.with_collection(@diffs.diff_files, parallel_view: diff_view == :parallel)
+  .code{ class: user_color_scheme }
+    = render RapidDiffs::DiffFileComponent.with_collection(@diffs.diff_files, parallel_view: diff_view == :parallel)

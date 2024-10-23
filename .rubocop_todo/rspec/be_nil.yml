@@ -21,7 +21,6 @@ RSpec/BeNil:
     - 'ee/spec/models/ai/feature_setting_spec.rb'
     - 'ee/spec/models/application_setting_spec.rb'
     - 'ee/spec/models/ee/project_spec.rb'
-    - 'ee/spec/models/remote_development/workspaces_agent_config_spec.rb'
     - 'ee/spec/models/search/zoekt/task_spec.rb'
     - 'ee/spec/models/work_items/widgets/progress_spec.rb'
     - 'ee/spec/presenters/subscription_presenter_spec.rb'

@@ -131,7 +131,6 @@ RSpec/ExampleWithoutDescription:
     - 'ee/spec/models/protected_environment_spec.rb'
     - 'ee/spec/models/protected_environments/approval_rule_spec.rb'
     - 'ee/spec/models/protected_environments/deploy_access_level_spec.rb'
-    - 'ee/spec/models/remote_development/remote_development_namespace_cluster_agent_mapping_spec.rb'
     - 'ee/spec/models/sbom/occurrence_spec.rb'
     - 'ee/spec/models/security/finding_spec.rb'
     - 'ee/spec/models/security/orchestration_policy_configuration_spec.rb'

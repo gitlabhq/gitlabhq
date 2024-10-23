@@ -114,6 +114,25 @@ export const modelVersionWithCandidate = {
   },
 };
 
+export const modelVersionWithCandidateAndAuthor = {
+  id: 'gid://gitlab/Ml::ModelVersion/1',
+  author: {
+    id: 'gid://gitlab/User/1',
+    name: 'Root',
+    avatarUrl: 'path/to/avatar',
+    webUrl: 'path/to/user',
+  },
+  createdAt: '2023-12-06T12:41:48Z',
+  version: '1.0.4999',
+  packageId: 'gid://gitlab/Packages::Package/12',
+  description: 'A model version description',
+  descriptionHtml: 'A model version description',
+  candidate,
+  _links: {
+    showPath: '/root/test-project/-/ml/models/1/versions/5000',
+  },
+};
+
 export const graphqlCandidates = [
   {
     id: 'gid://gitlab/Ml::Candidate/1',
@@ -365,6 +384,16 @@ export const modelVersionQuery = {
       id: 'gid://gitlab/Ml::Model/1',
       name: 'blah',
       version: modelVersionWithCandidate,
+    },
+  },
+};
+
+export const modelVersionQueryWithAuthor = {
+  data: {
+    mlModel: {
+      id: 'gid://gitlab/Ml::Model/1',
+      name: 'blah',
+      version: modelVersionWithCandidateAndAuthor,
     },
   },
 };

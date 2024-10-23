@@ -156,6 +156,8 @@ gitaly-transactions:
     QA_CAN_TEST_PRAEFECT: "true"
     KNAPSACK_TEST_FILE_PATTERN: "qa/specs/features/**/3_create/**/*_spec.rb"
     QA_GITALY_TRANSACTIONS_ENABLED: "true"
+    QA_RUN_IN_PARALLEL: true
+    QA_PARALLEL_PROCESSES: 6
   rules:
     - !reference [.rules:test:qa-parallel, rules]
     - if: $QA_SUITES =~ /Test::Instance::All/

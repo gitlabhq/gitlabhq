@@ -303,11 +303,13 @@ RSpec.describe Gitlab::Fp::Result, feature_category: :shared do
 
   describe '#==' do
     it 'implements equality' do
+      # rubocop:disable RSpec/IdenticalEqualityAssertion -- We are testing equality
       expect(Gitlab::Fp::Result.ok(1)).to eq(Gitlab::Fp::Result.ok(1))
       expect(Gitlab::Fp::Result.err('error')).to eq(Gitlab::Fp::Result.err('error'))
       expect(Gitlab::Fp::Result.ok(1)).not_to eq(Gitlab::Fp::Result.ok(2))
       expect(Gitlab::Fp::Result.err('error')).not_to eq(Gitlab::Fp::Result.err('other error'))
       expect(Gitlab::Fp::Result.ok(1)).not_to eq(Gitlab::Fp::Result.err(1))
+      # rubocop:enable RSpec/IdenticalEqualityAssertion
     end
   end
 

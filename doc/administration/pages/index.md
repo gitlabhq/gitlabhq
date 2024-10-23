@@ -156,8 +156,7 @@ You should not use the GitLab domain to serve user pages. For more information s
 Depending on your needs, you can set up GitLab Pages in 4 different ways.
 
 The following examples are listed from the easiest setup to the most
-advanced one. The absolute minimum requirement is to set up the wildcard DNS
-because that is needed in all configurations.
+advanced one.
 
 ### Wildcard domains
 
@@ -498,7 +497,7 @@ In that case, the Pages daemon is running, NGINX still proxies requests to
 the daemon but the daemon is also able to receive requests from the outside
 world. Custom domains and TLS are supported.
 
-1. Place the wildcard LTS certificate for `*.example.io` and the key inside `/etc/gitlab/ssl`.
+1. Place the wildcard TLS certificate for `*.example.io` and the key inside `/etc/gitlab/ssl`.
 1. In `/etc/gitlab/gitlab.rb` specify the following configuration:
 
    ```ruby

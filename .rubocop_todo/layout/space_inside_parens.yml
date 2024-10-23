@@ -2,11 +2,6 @@
 # Cop supports --autocorrect.
 Layout/SpaceInsideParens:
   Exclude:
-    - 'spec/lib/banzai/filter/references/alert_reference_filter_spec.rb'
-    - 'spec/lib/banzai/filter/references/feature_flag_reference_filter_spec.rb'
-    - 'spec/lib/banzai/filter/references/label_reference_filter_spec.rb'
-    - 'spec/lib/banzai/filter/references/merge_request_reference_filter_spec.rb'
-    - 'spec/lib/banzai/filter/references/snippet_reference_filter_spec.rb'
     - 'spec/lib/banzai/filter/repository_link_filter_spec.rb'
     - 'spec/lib/error_tracking/sentry_client/projects_spec.rb'
     - 'spec/lib/error_tracking/sentry_client/repo_spec.rb'
