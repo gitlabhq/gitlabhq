@@ -8,7 +8,6 @@ import { createAlert } from '~/alert';
 import { ShowMlModelVersion } from '~/ml/model_registry/apps';
 import ModelVersionDetail from '~/ml/model_registry/components/model_version_detail.vue';
 import ModelVersionActionsDropdown from '~/ml/model_registry/components/model_version_actions_dropdown.vue';
-import ModelVersionEdit from '~/ml/model_registry/components/model_version_edit.vue';
 import deleteModelVersionMutation from '~/ml/model_registry/graphql/mutations/delete_model_version.mutation.graphql';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import LoadOrErrorOrShow from '~/ml/model_registry/components/load_or_error_or_show.vue';
@@ -43,11 +42,11 @@ describe('ml/model_registry/apps/show_model_version.vue', () => {
     apolloProvider = null;
   });
 
-  const createWrapper = (
+  const createWrapper = ({
     resolver = jest.fn().mockResolvedValue(modelVersionQueryWithAuthor),
     deleteResolver = jest.fn().mockResolvedValue(deleteModelVersionResponses.success),
     canWriteModelRegistry = true,
-  ) => {
+  } = {}) => {
     const requestHandlers = [
       [getModelVersionQuery, resolver],
       [deleteModelVersionMutation, deleteResolver],
@@ -61,6 +60,7 @@ describe('ml/model_registry/apps/show_model_version.vue', () => {
         modelId: 1,
         modelVersionId: 2,
         projectPath: 'path/to/project',
+        editModelVersionPath: 'edit/model/version/path',
         canWriteModelRegistry,
         importPath: 'path/to/import',
         modelPath: 'path/to/model',
@@ -81,9 +81,9 @@ describe('ml/model_registry/apps/show_model_version.vue', () => {
   const findModelVersionDetail = () => wrapper.findComponent(ModelVersionDetail);
   const findModelVersionActionsDropdown = () => wrapper.findComponent(ModelVersionActionsDropdown);
   const findLoadOrErrorOrShow = () => wrapper.findComponent(LoadOrErrorOrShow);
-  const findEditButton = () => wrapper.findComponent(ModelVersionEdit);
   const findModelMetadata = () => wrapper.findByTestId('metadata');
   const findTimeAgoTooltip = () => wrapper.findComponent(TimeAgoTooltip);
+  const findModelVersionEditButton = () => wrapper.findByTestId('edit-model-version-button');
 
   it('renders the title', () => {
     createWrapper();
@@ -91,10 +91,28 @@ describe('ml/model_registry/apps/show_model_version.vue', () => {
     expect(findTitleArea().props('title')).toBe('blah / 1.2.3');
   });
 
+  describe('Model version edit button', () => {
+    beforeEach(() => createWrapper());
+
+    it('displays model version edit button', () => {
+      expect(findModelVersionEditButton().props()).toMatchObject({
+        variant: 'confirm',
+        category: 'primary',
+      });
+    });
+
+    describe('when user has no permission to write model registry', () => {
+      it('does not display model edit button', () => {
+        createWrapper({ canWriteModelRegistry: false });
+        expect(findModelVersionEditButton().exists()).toBe(false);
+      });
+    });
+  });
+
   it('Requests data with the right parameters', async () => {
     const resolver = jest.fn().mockResolvedValue(modelVersionQueryWithAuthor);
 
-    createWrapper(resolver);
+    createWrapper({ resolver });
 
     await waitForPromises();
 
@@ -133,7 +151,7 @@ describe('ml/model_registry/apps/show_model_version.vue', () => {
 
   it('Shows error message on error', async () => {
     const error = new Error('Failure!');
-    createWrapper(jest.fn().mockRejectedValue(error));
+    createWrapper({ resolver: jest.fn().mockRejectedValue(error) });
 
     await waitForPromises();
 
@@ -180,7 +198,7 @@ describe('ml/model_registry/apps/show_model_version.vue', () => {
 
   it('Displays an alert upon failed delete mutation', async () => {
     const failedDeleteResolver = jest.fn().mockResolvedValue(deleteModelVersionResponses.failure);
-    createWrapper(undefined, failedDeleteResolver);
+    createWrapper({ deleteResolver: failedDeleteResolver });
 
     findModelVersionActionsDropdown().vm.$emit('delete-model-version');
 
@@ -195,7 +213,7 @@ describe('ml/model_registry/apps/show_model_version.vue', () => {
 
   it('Logs to sentry upon failed delete mutation', async () => {
     const failedDeleteResolver = jest.fn().mockResolvedValue(deleteModelVersionResponses.failure);
-    createWrapper(undefined, failedDeleteResolver);
+    createWrapper({ deleteResolver: failedDeleteResolver });
 
     findModelVersionActionsDropdown().vm.$emit('delete-model-version');
 
@@ -207,17 +225,5 @@ describe('ml/model_registry/apps/show_model_version.vue', () => {
         tags: { vue_component: 'show_ml_model_version' },
       },
     );
-  });
-
-  it('Does not display the edit button when user is not allowed to write', async () => {
-    createWrapper(undefined, undefined, false);
-    await waitForPromises();
-    expect(findEditButton().exists()).toBe(false);
-  });
-
-  it('Displays the edit button when user is allowed to write', async () => {
-    createWrapper(undefined, undefined, true);
-    await waitForPromises();
-    expect(findEditButton().exists()).toBe(true);
   });
 });

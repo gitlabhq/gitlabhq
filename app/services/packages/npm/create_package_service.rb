@@ -74,8 +74,6 @@ module Packages
       end
 
       def current_package_protected?
-        return false if Feature.disabled?(:packages_protected_packages, project)
-
         unless current_user.is_a?(User)
           return project.package_protection_rules.for_package_type(:npm).for_package_name(name).exists?
         end

@@ -343,10 +343,7 @@ describe('packages_list_row', () => {
   });
 
   describe('badge "protected"', () => {
-    const mountComponentForBadgeProtected = ({
-      packageEntityProtectionRuleExists = true,
-      glFeaturesPackagesProtectedPackages = true,
-    } = {}) =>
+    const mountComponentForBadgeProtected = ({ packageEntityProtectionRuleExists = true } = {}) =>
       mountComponent({
         packageEntity: {
           ...packageWithoutTags,
@@ -354,7 +351,6 @@ describe('packages_list_row', () => {
         },
         provide: {
           ...defaultProvide,
-          glFeatures: { packagesProtectedPackages: glFeaturesPackagesProtectedPackages },
         },
       });
 
@@ -374,14 +370,6 @@ describe('packages_list_row', () => {
     describe('when package is not protected', () => {
       it('does not show badge', () => {
         mountComponentForBadgeProtected({ packageEntityProtectionRuleExists: false });
-
-        expect(findProtectedBadge().exists()).toBe(false);
-      });
-    });
-
-    describe('when feature flag ":packages_protected_packages" disabled', () => {
-      it('does not show badge', () => {
-        mountComponentForBadgeProtected({ glFeaturesPackagesProtectedPackages: false });
 
         expect(findProtectedBadge().exists()).toBe(false);
       });

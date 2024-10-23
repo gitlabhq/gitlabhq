@@ -85,7 +85,7 @@ export default {
       return Boolean(this.packageEntity.tags?.nodes?.length);
     },
     showBadgeProtected() {
-      return this.glFeatures.packagesProtectedPackages && this.packageEntity.protectionRuleExists;
+      return this.packageEntity.protectionRuleExists;
     },
     nonDefaultRow() {
       return this.packageEntity.status && this.packageEntity.status !== PACKAGE_DEFAULT_STATUS;

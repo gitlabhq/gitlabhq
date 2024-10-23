@@ -5,19 +5,20 @@
 - placeholder = model.is_a?(MergeRequest) ? _('Describe the goal of the changes and what reviewers should be aware of.') : _('Write a description or drag your files here…')
 - no_issuable_templates = issuable_templates(ref_project, model.to_ability_name).empty?
 - preview_url = preview_markdown_path(project, target_type: model.class.name)
-- is_merge_request = model.is_a?(MergeRequest)
 
 .form-group
   .gl-flex
     = form.label :description, _('Description'), class: 'gl-block'
-  - if is_merge_request
+    - if model.is_a?(MergeRequest)
+      = render_if_exists "/shared/form_elements/summarize_merge_request"
+  - if model.is_a?(MergeRequest)
     = hidden_field_tag :merge_request_diff_head_sha, model.diff_head_sha
 
   - if model.is_a?(Issuable)
     = render 'shared/issuable/form/template_selector', issuable: model
 
   = render 'shared/form_elements/apply_template_warning', issuable: model
-  - if is_merge_request
+  - if model.is_a?(MergeRequest)
     = render 'shared/form_elements/apply_generated_description_warning', issuable: model
 
   .js-markdown-editor{ data: { render_markdown_path: preview_url,
@@ -26,11 +27,7 @@
                                testid: 'issuable-form-description-field',
                                form_field_placeholder: placeholder,
                                autofocus: 'false',
-                               form_field_classes: 'js-gfm-input markdown-area note-textarea rspec-issuable-form-description',
-                               project_id: @project.id,
-                               source_branch: is_merge_request ? @merge_request.source_branch : nil,
-                               target_branch: is_merge_request ? @merge_request.target_branch : nil,
-                               can_summarize: is_merge_request ? can?(current_user, :summarize_new_merge_request, @project).to_s : nil } }
+                               form_field_classes: 'js-gfm-input markdown-area note-textarea rspec-issuable-form-description' } }
     = form.hidden_field :description
 
   - if no_issuable_templates && can?(current_user, :push_code, model.project)

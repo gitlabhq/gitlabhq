@@ -501,6 +501,7 @@ RSpec.describe Gitlab::Usage::MetricDefinition, feature_category: :service_ping 
   end
 
   describe 'dump_metrics_yaml' do
+    let(:include_paths) { false }
     let(:other_attributes) do
       {
         description: 'Test metric definition',
@@ -529,6 +530,9 @@ RSpec.describe Gitlab::Usage::MetricDefinition, feature_category: :service_ping 
           File.join(metric2, '**', '*.yml')
         ]
       )
+
+      write_metric(metric1, path, yaml_content)
+      write_metric(metric2, other_path, other_yaml_content)
     end
 
     after do
@@ -536,13 +540,31 @@ RSpec.describe Gitlab::Usage::MetricDefinition, feature_category: :service_ping 
       FileUtils.rm_rf(metric2)
     end
 
-    subject { described_class.dump_metrics_yaml }
+    subject { described_class.dump_metrics_yaml(include_paths: include_paths) }
 
     it 'returns a YAML with both metrics in a sequence' do
-      write_metric(metric1, path, yaml_content)
-      write_metric(metric2, other_path, other_yaml_content)
-
       is_expected.to eq([attributes, other_attributes].map(&:deep_stringify_keys).to_yaml)
+    end
+
+    context "with true include_paths" do
+      let(:include_paths) { true }
+
+      it 'returns a YAML including filepaths' do
+        metrics = YAML.safe_load(subject)
+        added_attribute = ['file_path']
+
+        # First metric
+        serialized_metric = metrics[0]
+        expect(serialized_metric).to include(attributes.deep_stringify_keys)
+        expect(serialized_metric.keys - attributes.keys.map(&:to_s)).to eq added_attribute
+        expect(serialized_metric['file_path']).to end_with(path)
+
+        # Second metric
+        serialized_metric = metrics[1]
+        expect(serialized_metric).to include(other_attributes.deep_stringify_keys)
+        expect(serialized_metric.keys - other_attributes.keys.map(&:to_s)).to eq added_attribute
+        expect(serialized_metric['file_path']).to end_with(other_path)
+      end
     end
   end
 end

@@ -1,5 +1,5 @@
 <script>
-import { GlSprintf, GlIcon, GlLink } from '@gitlab/ui';
+import { GlButton, GlSprintf, GlIcon, GlLink } from '@gitlab/ui';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { createAlert, VARIANT_DANGER } from '~/alert';
@@ -14,16 +14,15 @@ import timeagoMixin from '~/vue_shared/mixins/timeago';
 import ModelVersionDetail from '../components/model_version_detail.vue';
 import LoadOrErrorOrShow from '../components/load_or_error_or_show.vue';
 import ModelVersionActionsDropdown from '../components/model_version_actions_dropdown.vue';
-import ModelVersionEdit from '../components/model_version_edit.vue';
 
 export default {
   name: 'ShowMlModelVersionApp',
   components: {
+    GlButton,
     LoadOrErrorOrShow,
     ModelVersionDetail,
     ModelVersionActionsDropdown,
     TitleArea,
-    ModelVersionEdit,
     GlIcon,
     GlLink,
     GlSprintf,
@@ -70,6 +69,10 @@ export default {
       required: true,
     },
     modelPath: {
+      type: String,
+      required: true,
+    },
+    editModelVersionPath: {
       type: String,
       required: true,
     },
@@ -182,6 +185,9 @@ export default {
       }
     },
   },
+  i18n: {
+    editModelVersionButtonLabel: s__('MlModelRegistry|Edit model version'),
+  },
 };
 </script>
 
@@ -216,10 +222,13 @@ export default {
         </title-area>
       </div>
       <div class="gl-mt-3 gl-flex gl-items-start gl-gap-3">
-        <model-version-edit
-          v-if="modelVersion && canWriteModelRegistry"
-          :model-with-version="modelWithModelVersion"
-        />
+        <gl-button
+          v-if="canWriteModelRegistry"
+          data-testid="edit-model-version-button"
+          variant="confirm"
+          :href="editModelVersionPath"
+          >{{ $options.i18n.editModelVersionButtonLabel }}</gl-button
+        >
         <model-version-actions-dropdown @delete-model-version="deleteModelVersion" />
       </div>
     </div>

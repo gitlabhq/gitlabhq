@@ -31,7 +31,7 @@ If you store data locally, see how to
 ## Supported object storage providers
 
 GitLab is tightly integrated with the Fog library, so you can see which
-[providers](https://fog.io/about/provider_documentation.html) can be used
+[providers](https://fog.github.io/about/provider_documentation.html) can be used
 with GitLab.
 
 Specifically, GitLab has been tested by vendors and customers on a number of object storage providers:

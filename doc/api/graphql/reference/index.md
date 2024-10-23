@@ -3750,7 +3750,7 @@ Input type: `CreateNoteInput`
 
 ### `Mutation.createPackagesProtectionRule`
 
-Creates a protection rule to restrict access to project packages. Available only when feature flag `packages_protected_packages` is enabled.
+Creates a protection rule to restrict access to project packages.
 
 DETAILS:
 **Introduced** in GitLab 16.5.
@@ -4319,7 +4319,7 @@ Input type: `DeleteContainerRegistryProtectionRuleInput`
 
 ### `Mutation.deletePackagesProtectionRule`
 
-Deletes a protection rule for packages. Available only when feature flag `packages_protected_packages` is enabled.
+Deletes a protection rule for packages.
 
 DETAILS:
 **Introduced** in GitLab 16.6.
@@ -10115,7 +10115,7 @@ Input type: `UpdatePackagesCleanupPolicyInput`
 
 ### `Mutation.updatePackagesProtectionRule`
 
-Updates a package protection rule to restrict access to project packages. You can prevent users without certain permissions from altering packages. Available only when feature flag `packages_protected_packages` is enabled.
+Updates a package protection rule to restrict access to project packages. You can prevent users without certain permissions from altering packages.
 
 DETAILS:
 **Introduced** in GitLab 16.6.
@@ -29250,7 +29250,7 @@ Represents a package with pipelines in the Package Registry.
 | <a id="packagepackagetype"></a>`packageType` | [`PackageTypeEnum!`](#packagetypeenum) | Package type. |
 | <a id="packagepipelines"></a>`pipelines` | [`PipelineConnection`](#pipelineconnection) | Pipelines that built the package. Max page size 20. (see [Connections](#connections)) |
 | <a id="packageproject"></a>`project` | [`Project!`](#project) | Project where the package is stored. |
-| <a id="packageprotectionruleexists"></a>`protectionRuleExists` **{warning-solid}** | [`Boolean!`](#boolean) | **Introduced** in GitLab 17.0. **Status**: Experiment. Whether any matching package protection rule exists for this package. Available only when feature flag `packages_protected_packages` is enabled. |
+| <a id="packageprotectionruleexists"></a>`protectionRuleExists` | [`Boolean!`](#boolean) | Whether any matching package protection rule exists for the package. |
 | <a id="packagestatus"></a>`status` | [`PackageStatus!`](#packagestatus) | Package status. |
 | <a id="packagestatusmessage"></a>`statusMessage` | [`String`](#string) | Status message. |
 | <a id="packagetags"></a>`tags` | [`PackageTagConnection`](#packagetagconnection) | Package tags. (see [Connections](#connections)) |
@@ -29273,7 +29273,7 @@ Represents a package in the Package Registry.
 | <a id="packagebasename"></a>`name` | [`String!`](#string) | Name of the package. |
 | <a id="packagebasepackagetype"></a>`packageType` | [`PackageTypeEnum!`](#packagetypeenum) | Package type. |
 | <a id="packagebaseproject"></a>`project` | [`Project!`](#project) | Project where the package is stored. |
-| <a id="packagebaseprotectionruleexists"></a>`protectionRuleExists` **{warning-solid}** | [`Boolean!`](#boolean) | **Introduced** in GitLab 17.0. **Status**: Experiment. Whether any matching package protection rule exists for this package. Available only when feature flag `packages_protected_packages` is enabled. |
+| <a id="packagebaseprotectionruleexists"></a>`protectionRuleExists` | [`Boolean!`](#boolean) | Whether any matching package protection rule exists for the package. |
 | <a id="packagebasestatus"></a>`status` | [`PackageStatus!`](#packagestatus) | Package status. |
 | <a id="packagebasestatusmessage"></a>`statusMessage` | [`String`](#string) | Status message. |
 | <a id="packagebasetags"></a>`tags` | [`PackageTagConnection`](#packagetagconnection) | Package tags. (see [Connections](#connections)) |
@@ -29344,7 +29344,7 @@ Represents a package details in the Package Registry.
 | <a id="packagedetailstypepackagetype"></a>`packageType` | [`PackageTypeEnum!`](#packagetypeenum) | Package type. |
 | <a id="packagedetailstypepipelines"></a>`pipelines` | [`PipelineConnection`](#pipelineconnection) | Pipelines that built the package. Max page size 20. (see [Connections](#connections)) |
 | <a id="packagedetailstypeproject"></a>`project` | [`Project!`](#project) | Project where the package is stored. |
-| <a id="packagedetailstypeprotectionruleexists"></a>`protectionRuleExists` **{warning-solid}** | [`Boolean!`](#boolean) | **Introduced** in GitLab 17.0. **Status**: Experiment. Whether any matching package protection rule exists for this package. Available only when feature flag `packages_protected_packages` is enabled. |
+| <a id="packagedetailstypeprotectionruleexists"></a>`protectionRuleExists` | [`Boolean!`](#boolean) | Whether any matching package protection rule exists for the package. |
 | <a id="packagedetailstypepublicpackage"></a>`publicPackage` | [`Boolean`](#boolean) | Indicates if there is public access to the package. |
 | <a id="packagedetailstypepypisetupurl"></a>`pypiSetupUrl` | [`String`](#string) | Url of the PyPi project setup endpoint. |
 | <a id="packagedetailstypepypiurl"></a>`pypiUrl` | [`String`](#string) | Url of the PyPi project endpoint. |
@@ -38953,7 +38953,7 @@ Package type of a package protection rule resource.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="packagesprotectionrulepackagetypenpm"></a>`NPM` **{warning-solid}** | **Introduced** in GitLab 16.5. **Status**: Experiment. Packages of the npm format. |
+| <a id="packagesprotectionrulepackagetypenpm"></a>`NPM` | Packages of the npm format. |
 | <a id="packagesprotectionrulepackagetypepypi"></a>`PYPI` **{warning-solid}** | **Introduced** in GitLab 17.6. **Status**: Experiment. Packages of the PyPI format. |
 
 ### `PipelineAnalyticsJobStatus`

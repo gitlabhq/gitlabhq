@@ -66,10 +66,7 @@ export default {
       return Boolean(this.packageEntity.tags?.nodes && this.packageEntity.tags?.nodes.length);
     },
     showBadgeProtected() {
-      return (
-        Boolean(this.glFeatures.packagesProtectedPackages) &&
-        Boolean(this.packageEntity?.protectionRuleExists)
-      );
+      return Boolean(this.packageEntity?.protectionRuleExists);
     },
   },
   mounted() {

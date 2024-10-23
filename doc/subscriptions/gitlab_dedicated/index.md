@@ -7,80 +7,96 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GitLab Dedicated
 
-GitLab Dedicated is a fully isolated, single-tenant SaaS solution that is:
+GitLab Dedicated is a single-tenant SaaS solution that is:
 
-- Hosted and managed by GitLab, Inc.
-- Deployed on AWS in a cloud [region](data_residency_and_high_availability.md#available-aws-regions) of your choice.
+- Fully isolated.
+- Deployed in your preferred AWS cloud region.
+- Hosted and maintained by GitLab.
 
-GitLab Dedicated removes the overhead of platform management to increase your operational efficiency, reduce risk, and enhance the speed and agility of your organization. Each GitLab Dedicated instance is highly available with disaster recovery and deployed into the cloud region of your choice. GitLab teams fully manage the maintenance and operations of each isolated instance, so customers can access our latest product improvements while meeting the most complex compliance standards.
+Each instance provides:
 
-It's the offering of choice for enterprises and organizations in highly regulated industries that have complex regulatory, compliance, and data residency requirements.
+- [High availability](data_residency_and_high_availability.md) with disaster recovery.
+- [Regular updates](maintenance.md) with the latest features.
+- Enterprise-grade security measures.
+
+With GitLab Dedicated, you can:
+
+- Increase operational efficiency.
+- Reduce infrastructure management overhead.
+- Improve organizational agility.
+- Meet strict compliance requirements.
 
 ## Available features
 
-### Advanced search
-
-GitLab Dedicated uses the [advanced search functionality](../../integration/advanced_search/elasticsearch.md).
+This section lists the key features that are available for GitLab Dedicated.
 
 ### Security
 
+GitLab Dedicated provides the following security features to protect your data and control access to your instance.
+
 #### Authentication and authorization
 
-GitLab Dedicated supports instance-level [SAML OmniAuth](../../integration/saml.md) functionality using a single SAML provider. Your GitLab Dedicated instance acts as the service provider, and you must provide the necessary [configuration](../../integration/saml.md#configure-saml-support-in-gitlab) in order for GitLab to communicate with your IdP. For more information, see how to [configure SAML](../../administration/dedicated/configure_instance.md#saml) for your instance.
+You can configure [SAML single sign-on (SSO)](../../integration/saml.md) using a single SAML provider for authentication. Your instance acts as the service provider, and you provide the necessary configuration for GitLab to communicate with your Identity Provider (IdP). SAML request signing, group sync, and SAML groups are supported.
 
-- SAML [request signing](../../integration/saml.md#sign-saml-authentication-requests-optional), [group sync](../../user/group/saml_sso/group_sync.md#configure-saml-group-sync), and [SAML groups](../../integration/saml.md#configure-users-based-on-saml-group-membership) are supported.
+For more information, see how to configure [SAML](../../administration/dedicated/configure_instance.md#saml) for your instance.
 
 #### Secure networking
 
-GitLab Dedicated offers public connectivity by default with support for IP allowlists. You can [optionally specify a list of IP addresses](../../administration/dedicated/configure_instance.md#ip-allowlist) that can access your GitLab Dedicated instance. Subsequently, when an IP not on the allowlist tries to access your instance the connection is refused.
+Two connectivity options are available:
 
-Private connectivity using [AWS PrivateLink](https://aws.amazon.com/privatelink/) is also offered as an option. Both [inbound](../../administration/dedicated/configure_instance.md#inbound-private-link) and [outbound](../../administration/dedicated/configure_instance.md#outbound-private-link) PrivateLinks are supported. When connecting to internal resources over an outbound PrivateLink with non public certificates, you can specify a list of certificates that are trusted by GitLab. These certificates can be provided when [updating your instance configuration](../../administration/dedicated/configure_instance.md#custom-certificates).
+- Public connectivity with IP allowlists: By default, your instance is publicly accessible. You can [configure an IP allowlist](../../administration/dedicated/configure_instance.md#ip-allowlist) to restrict access to specified IP addresses.
+- Private connectivity with AWS PrivateLink: You can configure [AWS PrivateLink](https://aws.amazon.com/privatelink/) for [inbound](../../administration/dedicated/configure_instance.md#inbound-private-link) and [outbound](../../administration/dedicated/configure_instance.md#outbound-private-link) connections.
 
-#### Encryption
+For private connections to internal resources using non-public certificates, you can also [specify trusted certificates](../../administration/dedicated/configure_instance.md#custom-certificates).
+
+#### Data encryption
 
 Data is encrypted at rest and in transit using the latest encryption standards.
 
-#### Bring your own key encryption
+Optionally, you can use your own AWS Key Management Service (KMS) encryption key for data at rest. This option gives you full control over the data you store in GitLab.
 
-During onboarding, you can specify an AWS KMS encryption key stored in your own AWS account that GitLab uses to encrypt the data for your Dedicated instance. This gives you full control over the data you store in GitLab.
+For more information, see [Encrypted data at rest (BYOK)](../../administration/dedicated/create_instance.md#encrypted-data-at-rest-byok).
 
-#### SMTP
+#### Email service
 
-Email sent from GitLab Dedicated uses [Amazon Simple Email Service (Amazon SES)](https://aws.amazon.com/ses/). The connection to Amazon SES is encrypted.
+By default, [Amazon Simple Email Service (Amazon SES)](https://aws.amazon.com/ses/) is used to send emails securely. As an alternative, you can [configure your own email service](../../administration/dedicated/configure_instance.md#smtp-email-service) using SMTP.
 
-If you would rather send application email using an SMTP server instead of Amazon SES, you can [configure your own email service](../../administration/dedicated/configure_instance.md#smtp-email-service).
+### Compliance
 
-### Compliance and certifications
+GitLab Dedicated adheres to various regulations, certifications, and compliance frameworks to ensure the security, and reliability of your data.
 
-GitLab Dedicated is trusted by highly regulated customers in part due to our ability to transparently demonstrate compliance with various regulations, certifications, and compliance frameworks.
+#### View compliance and certification details
 
 You can view compliance and certification details, and download compliance artifacts from the [GitLab Dedicated Trust Center](https://trust.gitlab.com/?product=gitlab-dedicated).
 
 #### Access controls
 
-GitLab Dedicated adheres to the
-[principle of least privilege](https://handbook.gitlab.com/handbook/security/access-management-policy/#principle-of-least-privilege)
-to control access to customer tenant environments. Tenant AWS accounts live under
-a top-level GitLab Dedicated AWS parent organization. Access to the AWS Organization
-is restricted to select GitLab team members. All user accounts within the AWS Organization
-follow the overall [GitLab Access Management Policy](https://handbook.gitlab.com/handbook/security/access-management-policy/).
-Direct access to customer tenant environments is restricted to a single Hub account.
-The GitLab Dedicated Control Plane uses the Hub account to perform automated actions
-over tenant accounts when managing environments. Similarly, GitLab Dedicated engineers
-do not have direct access to customer tenant environments.
-In [break glass](https://gitlab.com/gitlab-com/gl-infra/gitlab-dedicated/team/-/blob/main/engineering/breaking_glass.md)
-situations, where access to resources in the tenant environment is required to
-address a high-severity issue, GitLab engineers must go through the Hub account
-to manage those resources. This is done via an approval process, and after permission
-is granted, the engineer will assume an IAM role on a temporary basis to access
-tenant resources through the Hub account. All actions within the hub account and
-tenant account are logged to CloudTrail.
+GitLab Dedicated implements strict access controls to protect your environment:
 
-Inside tenant accounts, GitLab leverages Intrusion Detection and Malware Scanning capabilities from AWS GuardDuty. Infrastructure logs are monitored by the GitLab Security Incident Response Team to detect anomalous events.
+- Follows the [principle of least privilege](https://handbook.gitlab.com/handbook/security/access-management-policy/#principle-of-least-privilege).
+- Restricts access to the AWS organization to select GitLab team members.
+- User accounts follow the [Access Management Policy](https://handbook.gitlab.com/handbook/security/access-management-policy/).
+- Uses a single Hub account for automated actions and emergency access.
+- GitLab Dedicated engineers do not have direct access to customer environments.
+
+In [emergency situations](https://gitlab.com/gitlab-com/gl-infra/gitlab-dedicated/incident-management/-/blob/main/procedures/break-glass.md#break-glass-procedure), GitLab engineers must:
+
+1. Use the Hub account to access customer resources.
+1. Request access through an approval process.
+1. Assume a temporary IAM role through the Hub account.
+
+All actions in the Hub and tenant accounts are logged to CloudTrail.
+
+#### Monitoring
+
+In tenant accounts, GitLab Dedicated uses:
+
+- AWS GuardDuty for intrusion detection and malware scanning.
+- Infrastructure log monitoring by the GitLab Security Incident Response Team to detect anomalous events.
 
 #### Audit and observability
 
-GitLab Dedicated provides access to [application logs](../../administration/dedicated/configure_instance.md#application-logs).
+You can access [application logs](../../administration/dedicated/configure_instance.md#application-logs) for auditing and observability purposes. These logs provide insights into system activities and user actions, helping you monitor your instance and maintain compliance requirements.
 
 ### Bring your own domain
 
@@ -103,7 +119,11 @@ Custom hostnames for GitLab Pages are not supported. If you use GitLab Pages, th
 
 ### Application
 
-GitLab Dedicated comes with the self-managed [Ultimate feature set](https://about.gitlab.com/pricing/feature-comparison/) with the exception of the [unsupported features](#features-that-are-not-available) listed below.
+GitLab Dedicated comes with the self-managed [Ultimate feature set](https://about.gitlab.com/pricing/feature-comparison/) with the exception of the [Unavailable features](#unavailable-features) listed below.
+
+#### Advanced search
+
+GitLab Dedicated uses the [advanced search functionality](../../integration/advanced_search/elasticsearch.md).
 
 #### GitLab Pages
 
@@ -146,16 +166,6 @@ To use self-managed runners, install [GitLab Runner](https://docs.gitlab.com/run
 
 You can use [GitLab as an OpenID Connect identity provider](../../integration/openid_connect_provider.md). If you use an IP allowlist to restrict access to your instance, you can [enable OpenID Connect requests](../../administration/dedicated/configure_instance.md#enable-openid-connect-for-your-ip-allowlist) while maintaining your IP restrictions.
 
-#### Migration
-
-To help you migrate your data to GitLab Dedicated, choose from the following options:
-
-1. When migrating from another GitLab instance, you can import groups and projects by either:
-   - Using [direct transfer](../../user/group/import/index.md).
-   - Using the [direct transfer](../../api/bulk_imports.md) API.
-1. When migrating from third-party services, you can use [the GitLab importers](../../user/project/import/index.md#supported-import-sources).
-1. You can also engage [Professional Services](../../user/project/import/index.md#migrate-by-engaging-professional-services).
-
 ### Pre-production environments
 
 GitLab Dedicated supports pre-production environments that match the configuration of production environments. You can use pre-production environments to:
@@ -176,31 +186,34 @@ Limitations:
 - No SLA commitment.
 - Cannot run newer versions than production.
 
-## Features that are not available
+## Unavailable features
 
-### GitLab application features
+This section lists the features that are not available for GitLab Dedicated.
+
+### Application features
 
 The following GitLab application features are not available:
 
 - LDAP, smart card, or Kerberos authentication
 - Multiple login providers
-- FortiAuthenticator, or FortiToken 2FA
-- Reply-by email
+- FortiAuthenticator or FortiToken 2FA
+- Reply by email
 - Service Desk
 - Some GitLab Duo AI capabilities
-  - View the [list of AI features to see which ones are supported](../../user/ai_features.md).
-  - Refer to our [direction page](https://about.gitlab.com/direction/saas-platforms/dedicated/#supporting-ai-features-on-gitlab-dedicated) for more information.
+  - View the [list of supported AI features](../../user/ai_features.md)
+  - For more information, see the [Supporting AI Features on GitLab Dedicated](https://about.gitlab.com/direction/saas-platforms/dedicated/#supporting-ai-features-on-gitlab-dedicated)
 - Features other than [available features](#available-features) that must be configured outside of the GitLab user interface
-- Any functionality or feature behind a Feature Flag that is toggled `off` by default.
+- Any functionality or feature behind a feature flag that is turned `off` by default
 
-The following features will not be supported:
+The following features are not supported:
 
-- Mattermost
-- [Server-side Git hooks](../../administration/server_hooks.md).
-  GitLab Dedicated is a SaaS service, and access to the underlying infrastructure is only available to GitLab Inc. team members. Due to the nature of server side configuration, there is a possible security concern of running arbitrary code on Dedicated services, as well as the possible impact that can have on the service SLA. Use the alternative [push rules](../../user/project/repository/push_rules.md) or [webhooks](../../user/project/integrations/webhooks.md) instead.
-- Interacting with GitLab [Feature Flags](../../administration/feature_flags.md). [Feature flags support the development and rollout of new or experimental features](https://handbook.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#when-to-use-feature-flags) on GitLab.com. Features behind feature flags are not considered ready for production use, are experimental and therefore unsafe for GitLab Dedicated. Stability and SLAs may be affected by changing default settings.
+- [Mattermost](../../integration/mattermost/index.md)
+- [Server-side Git hooks](../../administration/server_hooks.md)
 
-### GitLab Dedicated service features
+NOTE:
+Access to the underlying infrastructure is only available to GitLab team members. Due to the server-side configuration, there is a security concern with running arbitrary code on services, and the possible impact on the service SLA. As an alternative, use [push rules](../../user/project/repository/push_rules.md) or [webhooks](../../user/project/integrations/webhooks.md) instead.
+
+### Operational features
 
 The following operational features are not available:
 
@@ -209,13 +222,28 @@ The following operational features are not available:
 - Self-serve purchasing and configuration
 - Multiple login providers
 - Support for deploying to non-AWS cloud providers, such as GCP or Azure
-- Observability Dashboard using Switchboard
+- Observability dashboard in Switchboard
 
-## Planned features
+### Feature flags
 
-For more information about the planned improvements to GitLab Dedicated,
-see the [category direction page](https://about.gitlab.com/direction/saas-platforms/dedicated/).
+[Feature flags](../../administration/feature_flags.md) are not available for GitLab Dedicated.
 
-## Interested in GitLab Dedicated?
+Feature flags support the development and rollout of new or experimental features on GitLab.com. Features behind feature flags are not considered ready for production use, are experimental and therefore unsafe for GitLab Dedicated. Stability and SLAs may be affected by changing default settings.
 
-Learn more about GitLab Dedicated and [talk to an expert](https://about.gitlab.com/dedicated/).
+## Migrate to GitLab Dedicated
+
+To migrate your data to GitLab Dedicated:
+
+- From another GitLab instance:
+  - Use [direct transfer](../../user/group/import/index.md).
+  - Use the [direct transfer API](../../api/bulk_imports.md).
+- From third-party services:
+  - Use [the import sources](../../user/project/import/index.md#supported-import-sources).
+- For complex migrations:
+  - Engage [Professional Services](../../user/project/import/index.md#migrate-by-engaging-professional-services).
+
+## Get started
+
+For more information about GitLab Dedicated or to request a demo, see [GitLab Dedicated](https://about.gitlab.com/solutions/gitlab-dedicated/).
+
+For more information on setting up your GitLab Dedicated instance, see [Create your GitLab Dedicated instance](../../administration/dedicated/create_instance.md).

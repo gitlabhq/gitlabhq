@@ -336,3 +336,13 @@ if they have the same or a higher role in the parent group.
 To view and update direct memberships, [filter the group to show direct members](index.md#filter-a-group).
 
 [Issue 337539](https://gitlab.com/gitlab-org/gitlab/-/issues/337539#note_1277786161) proposes a redesigned members page that lists both direct and indirect memberships with the ability to filter by type.
+
+### Cannot clone or pull using SSH after enabling IP restrictions
+
+If you have issues with Git SSH operations after adding IP address restrictions,
+check if your connection defaults to IPv6.
+
+Some operating systems prioritize IPv6 over IPv4 when both are available,
+which might not be obvious from the Git terminal feedback.
+
+If your connection uses IPv6, you can resolve this issue by adding the IPv6 address to the allowlist.

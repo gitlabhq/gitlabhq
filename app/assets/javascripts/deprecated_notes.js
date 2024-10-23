@@ -547,6 +547,10 @@ export default class Notes {
         renderGFM(discussionElement);
         const $discussion = $(discussionElement).unwrap();
 
+        if (noteEntity.on_image) {
+          discussionElement.classList.add('discussion-notes', 'gl-block');
+        }
+
         if (!this.isParallelView() || row.hasClass('js-temp-notes-holder') || noteEntity.on_image) {
           // insert the note and the reply button after the temp row
           row.after($discussion);

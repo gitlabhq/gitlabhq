@@ -215,7 +215,8 @@ $dark-diff-match-color: rgba($white, 0.1);
 $diff-image-info-color: #808080;
 $diff-view-modes-color: #808080;
 $diff-view-modes-border: #c1c1c1;
-$diff-jagged-border-gradient-color: $gray-100;
+$diff-jagged-border-gradient-color: $gray-200;
+$diff-jagged-bg-color: var(--gl-background-color-subtle);
 
 /*
  * Fonts

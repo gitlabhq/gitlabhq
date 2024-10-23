@@ -26,14 +26,6 @@ RSpec.describe API::ProjectPackagesProtectionRules, :aggregate_failures, feature
   end
 
   shared_examples 'rejecting project packages protection rules request when enough permissions' do
-    context 'when feature flag is disabled' do
-      before do
-        stub_feature_flags(packages_protected_packages: false)
-      end
-
-      it_behaves_like 'returning response status', :not_found
-    end
-
     it_behaves_like 'rejecting protection rules request when invalid project'
   end
 

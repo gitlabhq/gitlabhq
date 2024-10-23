@@ -172,8 +172,16 @@ module Gitlab
           definitions[key_path]&.to_context
         end
 
-        def dump_metrics_yaml
-          @metrics_yaml ||= definitions.values.map(&:to_h).map(&:deep_stringify_keys).to_yaml
+        def dump_metrics_yaml(include_paths:)
+          @metrics_yaml ||= {}
+          @metrics_yaml[include_paths.to_s] ||= begin
+            metrics = definitions.values.map do |definition|
+              result = definition.to_h
+              result[:file_path] = Pathname.new(definition.path).relative_path_from(Rails.root).to_s if include_paths
+              result
+            end
+            metrics.map(&:deep_stringify_keys).to_yaml
+          end
         end
 
         private

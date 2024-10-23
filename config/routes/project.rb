@@ -481,7 +481,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           resources :candidates, only: [:show, :destroy], controller: 'candidates', param: :iid
           resources :models, only: [:index, :show, :edit, :destroy, :new], controller: 'models', param: :model_id do
             resources :versions, only: [:new], controller: 'model_versions'
-            resources :versions, only: [:show], controller: 'model_versions', param: :model_version_id
+            resources :versions, only: [:show, :edit], controller: 'model_versions', param: :model_version_id
           end
           post :preview_markdown
         end

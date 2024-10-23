@@ -36,7 +36,7 @@ module Projects
           projectPath: project.full_path,
           index_models_path: project_ml_models_path(project),
           edit_model_path: edit_project_ml_model_path(project, model.id),
-          create_model_version_path: new_project_ml_model_version_path(project, model_model_id: model.id),
+          create_model_version_path: new_project_ml_model_version_path(project, model.id),
           can_write_model_registry: can_write_model_registry?(user, project),
           mlflow_tracking_url: mlflow_tracking_url(project),
           model_id: model.id,
@@ -91,8 +91,26 @@ module Projects
           can_write_model_registry: can_write_model_registry?(user, project),
           import_path: model_version_artifact_import_path(project.id, model_version.id),
           model_path: project_ml_model_path(project, model_version.model),
+          edit_model_version_path: edit_project_ml_model_version_path(project, model_version.model.id,
+            model_version.id),
           max_allowed_file_size: max_allowed_file_size(project),
           markdown_preview_path: preview_markdown_path(project)
+        }
+
+        to_json(data)
+      end
+
+      def edit_ml_model_version_data(model_version, user)
+        project = model_version.project
+
+        data = {
+          projectPath: project.full_path,
+          can_write_model_registry: can_write_model_registry?(user, project),
+          markdown_preview_path: preview_markdown_path(project),
+          model_version_path: project_ml_model_version_path(project, model_version.model.id, model_version.id),
+          model_gid: model_version.model.to_global_id.to_s,
+          model_version_description: model_version.description.to_s,
+          model_version_version: model_version.version
         }
 
         to_json(data)

@@ -34856,9 +34856,6 @@ msgstr ""
 msgid "MlModelRegistry|Edit model version"
 msgstr ""
 
-msgid "MlModelRegistry|Edit version"
-msgstr ""
-
 msgid "MlModelRegistry|Enter a model description"
 msgstr ""
 

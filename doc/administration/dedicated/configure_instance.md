@@ -135,7 +135,7 @@ To add a custom hostname after your instance is created, submit a [support ticke
 
 ### SMTP email service
 
-You can configure an [SMTP](../../subscriptions/gitlab_dedicated/index.md#smtp) email service for your GitLab Dedicated instance.
+You can configure an [SMTP](../../subscriptions/gitlab_dedicated/index.md#email-service) email service for your GitLab Dedicated instance.
 
 To configure an SMTP email service, submit a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650) with the credentials and settings for your SMTP server.
 

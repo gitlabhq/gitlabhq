@@ -703,27 +703,27 @@ table.code {
     display: block;
     width: 100%;
     height: 10px;
-    @apply gl-bg-default;
+    @apply gl-bg-subtle;
     background-image: linear-gradient(45deg,
     transparent,
     transparent 73%,
     $diff-jagged-border-gradient-color 75%,
-    $white 80%),
+    $diff-jagged-bg-color 80%),
       linear-gradient(225deg,
     transparent,
     transparent 73%,
     $diff-jagged-border-gradient-color 75%,
-    $white 80%),
+    $diff-jagged-bg-color 80%),
       linear-gradient(135deg,
     transparent,
     transparent 73%,
     $diff-jagged-border-gradient-color 75%,
-    $white 80%),
+    $diff-jagged-bg-color 80%),
       linear-gradient(-45deg,
     transparent,
     transparent 73%,
     $diff-jagged-border-gradient-color 75%,
-    $white 80%);
+    $diff-jagged-bg-color 80%);
     background-position: 5px 5px, 0 5px, 0 5px, 5px 5px;
     background-size: 10px 10px;
     background-repeat: repeat;

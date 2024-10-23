@@ -442,19 +442,66 @@ RSpec.describe API::UsageData, feature_category: :service_ping do
 
   describe 'GET /usage_data/metric_definitions' do
     let(:endpoint) { '/usage_data/metric_definitions' }
-    let(:metric_yaml) do
-      { 'key_path' => 'counter.category.event', 'description' => 'Metric description' }.to_yaml
+    let(:include_paths) { false }
+    let(:metrics) do
+      {
+        'counter.category.event' => metric1,
+        'counter.category.event2' => metric2
+      }
+    end
+
+    let(:metric1_attributes) do
+      { 'key_path' => 'counter.category.event', 'description' => 'Metric description' }
+    end
+
+    let(:metric2_attributes) do
+      { 'key_path' => 'counter.category.event2', 'description' => 'Metric description2' }
+    end
+
+    let(:metric1) { Gitlab::Usage::MetricDefinition.new('/metrics/test_metric1.yml', metric1_attributes.dup) }
+    let(:metric2) { Gitlab::Usage::MetricDefinition.new('/metrics/test_metric2.yml', metric2_attributes.dup) }
+    let(:metric_yaml) { [metric1_attributes, metric2_attributes].to_yaml }
+
+    before do
+      allow(Gitlab::Usage::MetricDefinition).to receive(:definitions).and_return(metrics)
+    end
+
+    around do |example|
+      Gitlab::Usage::MetricDefinition.instance_variable_set(:@metrics_yaml, nil)
+      example.run
+      Gitlab::Usage::MetricDefinition.instance_variable_set(:@metrics_yaml, nil)
     end
 
     context 'without authentication' do
       it 'returns a YAML file', :aggregate_failures do
-        allow(Gitlab::Usage::MetricDefinition).to receive(:dump_metrics_yaml).and_return(metric_yaml)
-
-        get api(endpoint)
+        get(api(endpoint), params: { include_paths: include_paths })
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response.media_type).to eq('application/yaml')
         expect(response.body).to eq(metric_yaml)
+      end
+    end
+
+    context "without include_paths passed" do
+      it 'uses false include_paths by default', :aggregate_failures do
+        get(api(endpoint))
+
+        expect(response.body).to eq(metric_yaml)
+      end
+    end
+
+    context "with include_paths being true" do
+      let(:include_paths) { true }
+
+      it 'passes include_paths value', :aggregate_failures do
+        get(api(endpoint), params: { include_paths: include_paths })
+
+        payload = YAML.safe_load(response.body)
+        expect(payload.length).to be 2
+        expect(payload[0]).to include(metric1_attributes)
+        expect(payload[0]['file_path']).to end_with('metrics/test_metric1.yml')
+        expect(payload[1]).to include(metric2_attributes)
+        expect(payload[1]['file_path']).to end_with('metrics/test_metric2.yml')
       end
     end
   end

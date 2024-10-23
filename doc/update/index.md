@@ -5,7 +5,7 @@ description: Latest version instructions.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Upgrade GitLab
+# Upgrading GitLab
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -17,20 +17,39 @@ Upgrading GitLab is a relatively straightforward process, but the complexity can
 - How old your GitLab version is.
 - If you're upgrading to a major version.
 
+If possible, you should test out the upgrade in a test environment before updating your production instance. Your test
+environment should mimic your production environment as closely as possible.
+
 Make sure to read the whole page as it contains information related to every upgrade method.
+
+## Upgrade GitLab
 
 To upgrade GitLab:
 
+1. Create an [upgrade plan](plan_your_upgrade.md) to document your upgrade steps.
 1. Familiarize yourself with the [maintenance policy documentation](../policy/maintenance.md).
 1. Read the [release posts](https://about.gitlab.com/releases/categories/releases/) for versions you're passing over.
    In particular, deprecations, removals, and important notes on upgrading.
-1. Check for [background migrations](background_migrations.md).
-1. [Plan your upgrade](plan_your_upgrade.md).
+1. Determine what [upgrade path](upgrade_paths.md) you should take. Your upgrade might require multiple upgrades. If
+   relevant, check [OS compatibility with the target GitLab version](../administration/package_information/supported_os.md).
+1. Check for [background migrations](background_migrations.md). All migrations must finish running before each upgrade.
+1. If available in your starting version, consider [turning on maintenance mode](../administration/maintenance_mode/index.md)
+   during the upgrade.
 1. Consult changes for different versions of GitLab to ensure compatibility before upgrading:
    - [GitLab 17 changes](versions/gitlab_17_changes.md)
    - [GitLab 16 changes](versions/gitlab_16_changes.md)
    - [GitLab 15 changes](versions/gitlab_15_changes.md)
+1. Perform [pre-upgrade checks](#pre-upgrade-and-post-upgrade-checks).
+1. Pause [running CI/CD pipelines and jobs](#cicd-pipelines-and-jobs-during-upgrades).
+1. Follow [upgrade steps for additional features](#upgrade-steps-for-additional-features), if relevant.
 1. Follow the [upgrade steps based on your installation method](#upgrade-based-on-installation-method).
+1. If your GitLab instance has any runners associated with it, upgrade them to match the current GitLab version.
+   This step ensures [compatibility with GitLab versions](https://docs.gitlab.com/runner/#gitlab-runner-versions).
+1. If you encounter problems with the upgrade, [get support](#getting-support).
+1. [Disable maintenance mode](../administration/maintenance_mode/index.md#disable-maintenance-mode) if you had enabled
+   it.
+1. Unpause [running CI/CD pipelines and jobs](#cicd-pipelines-and-jobs-during-upgrades).
+1. Perform [post-upgrade checks](#pre-upgrade-and-post-upgrade-checks).
 
 ## Upgrade based on installation method
 
@@ -88,7 +107,45 @@ can still be found in the Git repository:
 
 ::EndTabs
 
-## Dealing with running CI/CD pipelines and jobs
+## Pre-upgrade and post-upgrade checks
+
+Immediately before and after the upgrade, perform the pre-upgrade and post-upgrade checks
+to ensure the major components of GitLab are working:
+
+1. [Check the general configuration](../administration/raketasks/maintenance.md#check-gitlab-configuration):
+
+   ```shell
+   sudo gitlab-rake gitlab:check
+   ```
+
+1. Confirm that encrypted database values [can be decrypted](../administration/raketasks/check.md#verify-database-values-can-be-decrypted-using-the-current-secrets):
+
+   ```shell
+   sudo gitlab-rake gitlab:doctor:secrets
+   ```
+
+1. In GitLab UI, check that:
+   - Users can sign in.
+   - The project list is visible.
+   - Project issues and merge requests are accessible.
+   - Users can clone repositories from GitLab.
+   - Users can push commits to GitLab.
+
+1. For GitLab CI/CD, check that:
+   - Runners pick up jobs.
+   - Docker images can be pushed and pulled from the registry.
+
+1. If using Geo, run the relevant checks on the primary and each secondary:
+
+   ```shell
+   sudo gitlab-rake gitlab:geo:check
+   ```
+
+1. If using Elasticsearch, verify that searches are successful.
+
+If something goes wrong, [get support](#getting-support).
+
+## CI/CD pipelines and jobs during upgrades
 
 If you upgrade your GitLab instance while the GitLab Runner is processing jobs, the trace updates fail. When GitLab is back online, the trace updates should self-heal. However, depending on the error, the GitLab Runner either retries, or eventually terminates, job handling.
 
@@ -147,6 +204,58 @@ Edition, follow the guides below based on the installation method:
 To downgrade your Enterprise Edition installation back to Community
 Edition, you can follow [this guide](../downgrade_ee_to_ce/index.md) to make the process as smooth as
 possible.
+
+## Upgrade steps for additional features
+
+Some GitLab features have additional steps.
+
+### External Gitaly
+
+If you're using an external Gitaly server, it must be upgraded to the newer
+version prior to upgrading the application server.
+
+### Geo
+
+If you're using Geo:
+
+- Review [Geo upgrade documentation](../administration/geo/replication/upgrading_the_geo_sites.md).
+- Read about the Geo version-specific update instructions:
+  - [GitLab 17](versions/gitlab_17_changes.md)
+  - [GitLab 16](versions/gitlab_16_changes.md)
+  - [GitLab 15](versions/gitlab_15_changes.md)
+- Review Geo-specific steps when [upgrading the database](https://docs.gitlab.com/omnibus/settings/database.html#upgrading-a-geo-instance).
+- Create an upgrade and rollback plan for _each_ Geo site (primary and each secondary).
+
+### GitLab agent for Kubernetes
+
+If you have Kubernetes clusters connected with GitLab, [upgrade your GitLab agents for Kubernetes](../user/clusters/agent/install/index.md#update-the-agent-version) to match your new GitLab version.
+
+### Elasticsearch
+
+Before updating GitLab, confirm advanced search migrations are complete by
+[checking for pending advanced search migrations](background_migrations.md#check-for-pending-advanced-search-migrations).
+
+After updating GitLab, you may have to upgrade
+[Elasticsearch if the new version breaks compatibility](../integration/advanced_search/elasticsearch.md#version-requirements).
+Updating Elasticsearch is **out of scope for GitLab Support**.
+
+## Getting support
+
+If something goes wrong:
+
+- Copy any errors and gather any logs to later analyze, and then [roll back to the last working version](plan_your_upgrade.md#rollback-plan).
+  You can use the following tools to help you gather data:
+  - [`gitlabsos`](https://gitlab.com/gitlab-com/support/toolbox/gitlabsos) if
+    you installed GitLab using the Linux package or Docker.
+  - [`kubesos`](https://gitlab.com/gitlab-com/support/toolbox/kubesos/) if
+    you installed GitLab using the Helm Charts.
+
+For support:
+
+- [Contact GitLab Support](https://support.gitlab.com/hc/en-us) and, if you have one, your Customer Success Manager.
+- If [the situation qualifies](https://about.gitlab.com/support/#definitions-of-support-impact) and
+  [your plan includes emergency support](https://about.gitlab.com/support/#priority-support),
+  create an emergency ticket.
 
 ## Related topics
 

@@ -10,16 +10,12 @@ description: "Documentation for the REST API for Package Protection Rules in Git
 DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed
-**Status:** Experiment
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151741) in GitLab 17.1 [with a flag](../administration/feature_flags.md) named `packages_protected_packages`. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/472655) in GitLab 17.5.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/472655) in GitLab 17.6. Feature flag `packages_protected_packages` removed.
 
-FLAG:
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-This API manages the protection rules for packages. This feature is an experiment.
+This API manages the protection rules for packages.
 
 ## List package protection rules
 

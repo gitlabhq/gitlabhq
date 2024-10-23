@@ -190,7 +190,34 @@ RSpec.describe Projects::Ml::ModelRegistryHelper, feature_category: :mlops do
         'maxAllowedFileSize' => 10737418240,
         "importPath" => "/api/v4/projects/#{project.id}/packages/ml_models/#{model_version.id}/files/",
         "modelPath" => "/#{project.full_path}/-/ml/models/1",
+        "editModelVersionPath" => "/#{project.full_path}/-/ml/models/1/versions/#{model_version.id}/edit",
         "markdownPreviewPath" => "/#{project.full_path}/-/preview_markdown"
+      })
+    end
+  end
+
+  describe '#edit_ml_model_version_data' do
+    let_it_be(:model) do
+      build_stubbed(:ml_models, :with_latest_version_and_package, project: project, id: 1)
+    end
+
+    let_it_be(:model_version) do
+      model.latest_version
+    end
+
+    subject(:parsed) { Gitlab::Json.parse(helper.edit_ml_model_version_data(model_version, user)) }
+
+    it 'generates the correct data' do
+      stub_member_access_level(project, owner: user)
+
+      is_expected.to eq({
+        "projectPath" => project.full_path,
+        "canWriteModelRegistry" => true,
+        "markdownPreviewPath" => "/#{project.full_path}/-/preview_markdown",
+        "modelVersionPath" => "/#{project.full_path}/-/ml/models/1/versions/#{model_version.id}",
+        "modelGid" => model.to_global_id.to_s,
+        "modelVersionDescription" => model_version.description,
+        "modelVersionVersion" => model_version.version
       })
     end
 

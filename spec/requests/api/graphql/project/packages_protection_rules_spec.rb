@@ -65,20 +65,4 @@ RSpec.describe 'getting the packages protection rules linked to a project', :agg
       expect(graphql_data_at(:project, :packagesProtectionRules, :nodes)).to eq []
     end
   end
-
-  context "when feature flag ':packages_protected_packages' disabled" do
-    let_it_be(:package_protection_rule) { create(:package_protection_rule, project: project) }
-
-    before do
-      stub_feature_flags(packages_protected_packages: false)
-
-      subject
-    end
-
-    it_behaves_like 'a working graphql query'
-
-    it 'returns no package protection rules' do
-      expect(graphql_data_at(:project, :packagesProtectionRules, :nodes)).to eq []
-    end
-  end
 end

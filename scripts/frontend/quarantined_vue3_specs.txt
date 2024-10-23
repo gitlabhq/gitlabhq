@@ -118,7 +118,6 @@ ee/spec/frontend/saml_providers/saml_settings_form_spec.js
 ee/spec/frontend/security_configuration/components/app_spec.js
 ee/spec/frontend/security_configuration/components/dynamic_fields_spec.js
 ee/spec/frontend/security_configuration/components/expandable_section_spec.js
-ee/spec/frontend/security_configuration/dast_pre_scan_verification/components/pre_scan_verification_configurator_spec.js
 ee/spec/frontend/security_configuration/dast_profiles/components/dast_profiles_list_spec.js
 ee/spec/frontend/security_configuration/dast_profiles/dast_scanner_profiles_form/components/dast_scanner_profiles_form_spec.js
 ee/spec/frontend/security_dashboard/components/project/security_scanner_alert_spec.js
@@ -428,7 +427,6 @@ spec/frontend/tooltips/components/tooltips_spec.js
 spec/frontend/tooltips/index_spec.js
 spec/frontend/usage_quotas/storage/components/container_registry_usage_spec.js
 spec/frontend/usage_quotas/storage/components/namespace_storage_app_spec.js
-spec/frontend/users/profile/actions/components/user_actions_app_spec.js
 spec/frontend/users_select/index_spec.js
 spec/frontend/vue_alerts_spec.js
 spec/frontend/vue_merge_request_widget/components/checks/conflicts_spec.js

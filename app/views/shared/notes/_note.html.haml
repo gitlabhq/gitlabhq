@@ -16,7 +16,7 @@
         = icon_for_system_note(note)
     - else
       .timeline-avatar.gl-float-left
-        %a.image-diff-avatar-link{ href: user_path(note.author) }
+        %a.image-diff-avatar-link.gl-block{ href: user_path(note.author) }
           = render Pajamas::AvatarComponent.new(note.author, size: 32, alt: '')
           - if note.is_a?(DiffNote) && note.on_image?
             - if show_image_comment_badge && note_counter == 0

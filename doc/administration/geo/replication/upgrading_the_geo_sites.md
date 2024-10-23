@@ -39,7 +39,8 @@ and all **secondary** sites:
    to protect the disaster recovery (DR) capability of the **secondary** sites.
 1. SSH into each node of the **primary** site.
 1. [Upgrade GitLab on the **primary** site](../../../update/package/index.md#upgrade-using-the-official-repositories).
-1. Perform testing on the **primary** site, particularly if you paused replication in step 1 to protect DR. [There are some suggestions for post-upgrade testing](../../../update/plan_your_upgrade.md#pre-upgrade-and-post-upgrade-checks) in the upgrade documentation.
+1. Perform testing on the **primary** site, particularly if you paused replication in step 1 to protect DR.
+   [There are some suggestions for post-upgrade testing](../../../update/index.md#pre-upgrade-and-post-upgrade-checks) in the upgrade documentation.
 1. Ensure that the secrets in the `/etc/gitlab/gitlab-secrets.json` file of both the primary site and the secondary site are the same. The file must be the same on all of a site's nodes.
 1. SSH into each node of **secondary** sites.
 1. [Upgrade GitLab on each **secondary** site](../../../update/package/index.md#upgrade-using-the-official-repositories).

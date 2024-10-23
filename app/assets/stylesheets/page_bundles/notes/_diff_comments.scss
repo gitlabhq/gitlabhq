@@ -354,7 +354,8 @@
 
 .code-commit .notes-content,
 .diff-viewer > .image ~ .note-container {
-  @apply gl-bg-default;
+  @apply gl-bg-subtle;
+  @apply gl-rounded-b-base;
 
   li.note-comment {
     padding: $gl-padding-8 $gl-padding-8 $gl-padding-8 $gl-padding;
@@ -365,6 +366,7 @@
 
     .note-body {
       padding: $gl-padding-4 0 $gl-padding-8;
+      @apply -gl-mt-4;
       margin-left: $note-spacing-left;
     }
   }

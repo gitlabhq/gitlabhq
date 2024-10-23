@@ -292,3 +292,19 @@ mapping:
     - '(?<prefix>ee/)?lib/api/(?<rest>.+hook.+)\.rb'
     test:
       - '{ee/,}spec/requests/api/**/*hook*_spec.rb'
+
+  # Registration/Onboarding
+  - source: 'ee/app/(controllers|services)/registrations/.*'
+    test: 'ee/spec/features/registrations/saas/*_spec.rb'
+
+  # ultimate trials
+  - source: 'ee/app/controllers/gitlab_subscriptions/trials_controller\.rb'
+    test: 'ee/spec/features/gitlab_subscriptions/trials/creation_*_spec.rb'
+
+  # duo pro trials
+  - source: 'ee/app/controllers/gitlab_subscriptions/trials/duo_pro_controller\.rb'
+    test: 'ee/spec/features/gitlab_subscriptions/trials/duo_pro/*_spec.rb'
+
+  # duo enterprise trials
+  - source: 'ee/app/controllers/gitlab_subscriptions/trials/duo_enterprise_controller\.rb'
+    test: 'ee/spec/features/gitlab_subscriptions/trials/duo_enterprise/*_spec.rb'

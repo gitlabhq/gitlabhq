@@ -9,8 +9,7 @@ module Types
 
         value 'NPM',
           value: 'npm',
-          alpha: { milestone: '16.5' },
-          description: "Packages of the npm format."
+          description: 'Packages of the npm format.'
 
         value 'PYPI',
           value: 'pypi',

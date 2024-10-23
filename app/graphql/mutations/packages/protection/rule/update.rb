@@ -7,8 +7,7 @@ module Mutations
         class Update < ::Mutations::BaseMutation
           graphql_name 'UpdatePackagesProtectionRule'
           description 'Updates a package protection rule to restrict access to project packages. ' \
-            'You can prevent users without certain permissions from altering packages. ' \
-            'Available only when feature flag `packages_protected_packages` is enabled.'
+            'You can prevent users without certain permissions from altering packages.'
 
           authorize :admin_package
 
@@ -48,10 +47,6 @@ module Mutations
 
           def resolve(id:, **kwargs)
             package_protection_rule = authorized_find!(id: id)
-
-            if Feature.disabled?(:packages_protected_packages, package_protection_rule.project)
-              raise_resource_not_available_error!("'packages_protected_packages' feature flag is disabled")
-            end
 
             response = ::Packages::Protection::UpdateRuleService.new(package_protection_rule,
               current_user: current_user, params: kwargs).execute

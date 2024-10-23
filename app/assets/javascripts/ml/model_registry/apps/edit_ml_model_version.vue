@@ -1,10 +1,10 @@
 <script>
-import ModelEdit from '../components/model_edit.vue';
+import ModelVersionEdit from '../components/model_version_edit.vue';
 
 export default {
-  name: 'EditMlModel',
+  name: 'EditMlModelVersion',
   components: {
-    ModelEdit,
+    ModelVersionEdit,
   },
   props: {
     projectPath: {
@@ -19,29 +19,31 @@ export default {
       type: String,
       required: true,
     },
-    modelPath: {
+    modelVersionPath: {
       type: String,
       required: true,
     },
-    modelId: {
-      type: Number,
-      required: true,
-    },
-    modelName: {
+    modelGid: {
       type: String,
       required: true,
     },
-    modelDescription: {
+    modelVersionVersion: {
+      type: String,
+      required: true,
+    },
+    modelVersionDescription: {
       type: String,
       required: true,
     },
   },
   computed: {
-    model() {
+    modelWithModelVersion() {
       return {
-        id: this.modelId,
-        name: this.modelName,
-        description: this.modelDescription,
+        id: this.modelGid,
+        version: {
+          version: this.modelVersionVersion,
+          description: this.modelVersionDescription,
+        },
       };
     },
   },
@@ -49,12 +51,12 @@ export default {
 </script>
 
 <template>
-  <model-edit
+  <model-version-edit
     v-if="canWriteModelRegistry"
-    :model="model"
+    :model-with-version="modelWithModelVersion"
     :project-path="projectPath"
     :markdown-preview-path="markdownPreviewPath"
-    :model-path="modelPath"
+    :model-version-path="modelVersionPath"
     :disable-attachments="false"
   />
 </template>
