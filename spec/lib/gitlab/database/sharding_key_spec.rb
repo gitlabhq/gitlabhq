@@ -196,7 +196,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
       "upcoming_reconciliations" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/476217',
       "vulnerability_exports" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/476219',
       "personal_access_tokens" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/477750',
-      "subscription_user_add_on_assignments" => "https://gitlab.com/gitlab-org/gitlab/-/issues/480697",
       "topics" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/463254',
       "oauth_access_tokens" => "https://gitlab.com/gitlab-org/gitlab/-/issues/496717",
       "oauth_access_grants" => "https://gitlab.com/gitlab-org/gitlab/-/issues/496717",

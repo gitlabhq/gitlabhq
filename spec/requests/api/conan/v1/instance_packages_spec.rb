@@ -114,6 +114,8 @@ RSpec.describe API::Conan::V1::InstancePackages, feature_category: :package_regi
 
     describe "DELETE /api/v4/packages/conan/v1/conans/:package_name/package_version/:package_username" \
       "/:package_channel" do
+      let_it_be_with_reload(:package) { create(:conan_package, project: project) }
+
       subject { delete api("/packages/conan/v1/conans/#{recipe_path}"), headers: headers }
 
       it_behaves_like 'delete package endpoint'

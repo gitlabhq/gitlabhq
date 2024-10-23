@@ -63,7 +63,7 @@ GEM
       method_source (~> 1.0)
     public_suffix (5.0.3)
     racc (1.7.3)
-    rack (3.0.8)
+    rack (3.1.8)
     rainbow (3.1.1)
     rake (13.1.0)
     regexp_parser (2.8.3)

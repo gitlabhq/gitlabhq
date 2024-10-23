@@ -598,7 +598,7 @@ RSpec.shared_examples 'delete package endpoint' do
     end
 
     it 'deletes a package' do
-      expect { subject }.to change { Packages::Package.count }.from(2).to(1)
+      expect { subject }.to change { Packages::Package.count }.by(-1)
     end
   end
 end

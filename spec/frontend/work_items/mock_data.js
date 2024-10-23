@@ -5110,6 +5110,11 @@ export const createWorkItemQueryResponse = {
             __typename: 'WorkItemWidgetLinkedItems',
           },
           {
+            type: 'ITERATION',
+            iteration: null,
+            __typename: 'WorkItemWidgetIteration',
+          },
+          {
             type: 'CURRENT_USER_TODOS',
             currentUserTodos: {
               nodes: [],

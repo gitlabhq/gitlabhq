@@ -32,6 +32,7 @@ import {
   WIDGET_TYPE_ROLLEDUP_DATES,
   WIDGET_TYPE_CRM_CONTACTS,
   WIDGET_TYPE_LINKED_ITEMS,
+  WIDGET_TYPE_ITERATION,
 } from '../constants';
 import createWorkItemMutation from '../graphql/create_work_item.mutation.graphql';
 import namespaceWorkItemTypesQuery from '../graphql/namespace_work_item_types.query.graphql';
@@ -66,6 +67,7 @@ export default {
     WorkItemColor: () => import('ee_component/work_items/components/work_item_color.vue'),
     WorkItemRolledupDates: () =>
       import('ee_component/work_items/components/work_item_rolledup_dates.vue'),
+    WorkItemIteration: () => import('ee_component/work_items/components/work_item_iteration.vue'),
   },
   inject: ['fullPath'],
   props: {
@@ -206,6 +208,9 @@ export default {
     workItemLabels() {
       return findWidget(WIDGET_TYPE_LABELS, this.workItem);
     },
+    workItemIteration() {
+      return findWidget(WIDGET_TYPE_ITERATION, this.workItem);
+    },
     workItemHealthStatus() {
       return findWidget(WIDGET_TYPE_HEALTH_STATUS, this.workItem);
     },
@@ -305,6 +310,9 @@ export default {
     workItemStartDateIsFixed() {
       return this.workItemRolledupDates?.startDateIsFixed;
     },
+    workItemIterationId() {
+      return this.workItemIteration?.iteration?.id;
+    },
     workItemId() {
       return this.workItem?.id;
     },
@@ -403,6 +411,12 @@ export default {
       if (this.isWidgetSupported(WIDGET_TYPE_LABELS)) {
         workItemCreateInput.labelsWidget = {
           labelIds: this.workItemLabelIds,
+        };
+      }
+
+      if (this.isWidgetSupported(WIDGET_TYPE_ITERATION)) {
+        workItemCreateInput.iterationWidget = {
+          iterationId: this.workItemIterationId,
         };
       }
 
@@ -508,6 +522,7 @@ export default {
           <gl-form-select
             id="work-item-type"
             v-model="selectedWorkItemTypeId"
+            data-testid="work-item-types-select"
             :options="formOptions"
           />
         </gl-form-group>
@@ -582,6 +597,19 @@ export default {
                 :can-update="canUpdate"
                 :full-path="fullPath"
                 :is-group="isGroup"
+                :work-item-id="workItemId"
+                :work-item-iid="workItemIid"
+                :work-item-type="selectedWorkItemTypeName"
+                @error="$emit('error', $event)"
+              />
+            </template>
+            <template v-if="workItemIteration">
+              <work-item-iteration
+                class="work-item-attributes-item"
+                :full-path="fullPath"
+                :is-group="isGroup"
+                :iteration="workItemIteration.iteration"
+                :can-update="canUpdate"
                 :work-item-id="workItemId"
                 :work-item-iid="workItemIid"
                 :work-item-type="selectedWorkItemTypeName"

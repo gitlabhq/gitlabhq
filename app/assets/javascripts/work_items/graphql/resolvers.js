@@ -12,6 +12,7 @@ import {
   WIDGET_TYPE_HEALTH_STATUS,
   WIDGET_TYPE_DESCRIPTION,
   WIDGET_TYPE_CRM_CONTACTS,
+  WIDGET_TYPE_ITERATION,
   NEW_WORK_ITEM_IID,
 } from '../constants';
 import workItemByIidQuery from './work_item_by_iid.query.graphql';
@@ -61,6 +62,7 @@ export const updateNewWorkItemCache = (input, cache) => {
     labels,
     rolledUpDates,
     crmContacts,
+    iteration,
   } = input;
 
   const query = workItemByIidQuery;
@@ -101,6 +103,11 @@ export const updateNewWorkItemCache = (input, cache) => {
           widgetType: WIDGET_TYPE_HEALTH_STATUS,
           newData: healthStatus,
           nodePath: 'healthStatus',
+        },
+        {
+          widgetType: WIDGET_TYPE_ITERATION,
+          newData: iteration,
+          nodePath: 'iteration',
         },
       ];
 

@@ -36313,9 +36313,6 @@ ALTER TABLE ONLY project_repository_storage_moves
 ALTER TABLE ONLY ml_candidate_metadata
     ADD CONSTRAINT fk_rails_5117dddf22 FOREIGN KEY (candidate_id) REFERENCES ml_candidates(id) ON DELETE CASCADE;
 
-ALTER TABLE zoekt_tasks
-    ADD CONSTRAINT fk_rails_51af186590 FOREIGN KEY (zoekt_node_id) REFERENCES zoekt_nodes(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY merge_request_merge_schedules
     ADD CONSTRAINT fk_rails_5294434bc3 FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;
 

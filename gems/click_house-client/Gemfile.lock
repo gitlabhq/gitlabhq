@@ -37,7 +37,7 @@ GEM
       racc
     public_suffix (5.0.3)
     racc (1.7.1)
-    rack (3.1.6)
+    rack (3.1.8)
     rainbow (3.1.1)
     rake (13.0.6)
     regexp_parser (2.8.1)

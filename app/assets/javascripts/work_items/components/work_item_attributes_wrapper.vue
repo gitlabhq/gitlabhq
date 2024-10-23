@@ -261,6 +261,7 @@ export default {
       <work-item-iteration
         class="work-item-attributes-item"
         :full-path="fullPath"
+        :is-group="isGroup"
         :iteration="workItemIteration.iteration"
         :can-update="canUpdate"
         :work-item-id="workItem.id"

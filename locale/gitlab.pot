@@ -57968,10 +57968,13 @@ msgstr ""
 msgid "TrialWidget|Your trial of Ultimate with GitLab Duo Enterprise has ended"
 msgstr ""
 
+msgid "Trials|Create a new group and start your trial of Ultimate with GitLab Duo Enterprise."
+msgstr ""
+
 msgid "Trials|Create a new group to start your GitLab Ultimate trial."
 msgstr ""
 
-msgid "Trials|You can apply your Ultimate and GitLab Duo Enterprise trial to a group."
+msgid "Trials|You can apply your trial of Ultimate with GitLab Duo Enterprise to a group."
 msgstr ""
 
 msgid "Trials|You can apply your trial to a new group or an existing group."
@@ -57983,7 +57986,10 @@ msgstr ""
 msgid "Trial|Allowed characters: +, 0-9, -, and spaces."
 msgstr ""
 
-msgid "Trial|Apply your combined trial to an existing group"
+msgid "Trial|Apply your trial to a new group"
+msgstr ""
+
+msgid "Trial|Apply your trial to a new or existing group"
 msgstr ""
 
 msgid "Trial|By clicking \"%{buttonText}\" you accept the %{gitlabSubscriptionAgreement} and acknowledge the %{privacyStatement} and %{cookiePolicy}"

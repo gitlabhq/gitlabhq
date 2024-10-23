@@ -36,7 +36,7 @@ GEM
       ast (~> 2.4.1)
       racc
     racc (1.7.1)
-    rack (3.0.8)
+    rack (3.1.8)
     rainbow (3.1.1)
     regexp_parser (2.8.1)
     rexml (3.3.8)

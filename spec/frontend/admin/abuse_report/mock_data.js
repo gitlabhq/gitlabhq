@@ -593,3 +593,12 @@ export const editAbuseReportNoteResponse = {
     },
   },
 };
+
+export const editAbuseReportNoteResponseWithErrors = {
+  data: {
+    updateAbuseReportNote: {
+      errors: ['foo', 'bar'],
+      note: null,
+    },
+  },
+};

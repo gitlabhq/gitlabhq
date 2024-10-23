@@ -31,6 +31,23 @@ input LocalLabelInput {
   title: String
 }
 
+input LocalIterationCadence {
+  id: ID!
+  title: String
+}
+
+input LocalIterationInput {
+  description: String
+  id: ID!
+  iid: String
+  title: String
+  startDate: String
+  dueDate: String
+  webUrl: String
+  updatedAt: String
+  iterationCadence: [LocalIterationCadence]
+}
+
 input LocalCrmContactsInput {
   firstName: String
   lastName: String
@@ -65,6 +82,7 @@ input LocalUpdateNewWorkItemInput {
   description: String
   confidential: Boolean
   labels: [LocalLabelInput]
+  iteration: [LocalIterationInput]
   rolledUpDates: [LocalRolledUpDatesInput]
   crmContacts: [LocalCrmContactsInput]
 }

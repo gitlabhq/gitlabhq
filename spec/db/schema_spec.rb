@@ -222,7 +222,7 @@ RSpec.describe 'Database schema',
     vulnerability_export_parts: %w[start_id end_id],
     zoekt_indices: %w[namespace_id], # needed for cells sharding key
     zoekt_repositories: %w[namespace_id project_identifier], # needed for cells sharding key
-    zoekt_tasks: %w[project_identifier partition_id zoekt_repository_id], # needed for: cells sharding key, partitioning, and performance reasons
+    zoekt_tasks: %w[project_identifier partition_id zoekt_repository_id zoekt_node_id], # needed for: cells sharding key, partitioning, and performance reasons
     # TODO: To remove with https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155256
     approval_group_rules: %w[approval_policy_rule_id],
     approval_project_rules: %w[approval_policy_rule_id],

@@ -11,6 +11,7 @@ module MergeRequests
       destroy_requested_changes(merge_request) if state == 'approved'
 
       if reviewer
+        return error("Reviewer has approved") if reviewer.approved? && state != 'requested_changes'
         return error("Failed to update reviewer") unless reviewer.update(state: state)
 
         trigger_merge_request_reviewers_updated(merge_request)

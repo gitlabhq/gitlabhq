@@ -13,6 +13,7 @@ import {
   mockAbuseReport,
   mockDiscussionWithNoReplies,
   editAbuseReportNoteResponse,
+  editAbuseReportNoteResponseWithErrors,
 } from '../../mock_data';
 
 jest.mock('~/alert');
@@ -26,6 +27,9 @@ describe('Abuse Report Edit Note', () => {
   const mockNote = mockDiscussionWithNoReplies[0];
 
   const mutationSuccessHandler = jest.fn().mockResolvedValue(editAbuseReportNoteResponse);
+  const mutationSuccessWithErrorHandler = jest
+    .fn()
+    .mockResolvedValue(editAbuseReportNoteResponseWithErrors);
 
   const findAbuseReportCommentForm = () => wrapper.findComponent(AbuseReportCommentForm);
 
@@ -73,6 +77,16 @@ describe('Abuse Report Edit Note', () => {
       });
     });
 
+    it('should emit `cancelEditing` when editing cancelled', async () => {
+      createComponent();
+
+      findAbuseReportCommentForm().vm.$emit('cancelEditing');
+
+      await waitForPromises();
+
+      expect(wrapper.emitted('cancelEditing')).toHaveLength(1);
+    });
+
     it('should call the mutation with provided noteText', async () => {
       expect(findAbuseReportCommentForm().props('isSubmitting')).toBe(true);
 
@@ -94,35 +108,51 @@ describe('Abuse Report Edit Note', () => {
       expect(clearDraft).toHaveBeenCalledWith(`${mockNote.id}-comment`);
     });
 
-    it('should emit `cancelEditing` event', async () => {
+    it('should emit `updateNote` with provided note', async () => {
       await waitForPromises();
 
-      expect(wrapper.emitted('cancelEditing')).toHaveLength(1);
+      const { note } = editAbuseReportNoteResponse.data.updateAbuseReportNote;
+      expect(wrapper.emitted('updateNote')).toStrictEqual([[note]]);
     });
 
-    it.each`
-      description                     | errorResponse
-      ${'with an error response'}     | ${new Error('The note could not be found')}
-      ${'without an error ressponse'} | ${null}
-    `('should show an error when mutation fails $description', async ({ errorResponse }) => {
-      createComponent({
-        mutationHandler: jest.fn().mockRejectedValue(errorResponse),
+    describe('handling an error response', () => {
+      const bootstrap = (handler) => {
+        createComponent({ mutationHandler: handler });
+        findAbuseReportCommentForm().vm.$emit('submitForm', {
+          commentText: noteText,
+        });
+      };
+
+      it.each`
+        description                     | errorResponse
+        ${'with an error response'}     | ${new Error('The note could not be found')}
+        ${'without an error ressponse'} | ${null}
+      `('should show an error when mutation fails $description', async ({ errorResponse }) => {
+        bootstrap(jest.fn().mockRejectedValue(errorResponse));
+
+        await waitForPromises();
+
+        const errorMessage = errorResponse
+          ? 'Comment could not be updated: the note could not be found.'
+          : 'Something went wrong while editing your comment. Please try again.';
+
+        expect(createAlert).toHaveBeenCalledWith({
+          message: errorMessage,
+          captureError: true,
+          parent: wrapper.vm.$el,
+        });
       });
 
-      findAbuseReportCommentForm().vm.$emit('submitForm', {
-        commentText: noteText,
-      });
+      it('should show correct error message when mutation is successful but contains errors', async () => {
+        bootstrap(mutationSuccessWithErrorHandler);
 
-      await waitForPromises();
+        await waitForPromises();
 
-      const errorMessage = errorResponse
-        ? 'Comment could not be updated: the note could not be found.'
-        : 'Something went wrong while editing your comment. Please try again.';
-
-      expect(createAlert).toHaveBeenCalledWith({
-        message: errorMessage,
-        captureError: true,
-        parent: wrapper.vm.$el,
+        expect(createAlert).toHaveBeenCalledWith({
+          message: 'Comment could not be updated: foo. bar.',
+          captureError: true,
+          parent: wrapper.vm.$el,
+        });
       });
     });
   });

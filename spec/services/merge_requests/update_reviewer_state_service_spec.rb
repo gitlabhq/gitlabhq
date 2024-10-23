@@ -101,6 +101,24 @@ RSpec.describe MergeRequests::UpdateReviewerStateService, feature_category: :cod
           create(:approval, user: current_user, merge_request: merge_request)
         end
 
+        describe 'updating state of reviewer' do
+          where(:initial_state, :new_state, :status) do
+            'approved'       | 'reviewed'          | :error
+            'approved'       | 'review_started'    | :error
+            'approved'       | 'requested_changes' | :success
+          end
+
+          with_them do
+            it do
+              reviewer.update!(state: initial_state)
+
+              result = service.execute(merge_request, new_state)
+
+              expect(result[:status]).to eq status
+            end
+          end
+        end
+
         it 'removes approval when state is requested_changes' do
           expect_next_instance_of(
             MergeRequests::RemoveApprovalService,
