@@ -3,7 +3,6 @@
 class ProjectSetting < ApplicationRecord
   include ::Gitlab::Utils::StrongMemoize
   include EachBatch
-  include IgnorableColumns
   include CascadingProjectSettingAttribute
 
   ALLOWED_TARGET_PLATFORMS = %w[ios osx tvos watchos android].freeze

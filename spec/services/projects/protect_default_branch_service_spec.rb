@@ -260,24 +260,8 @@ RSpec.describe Projects::ProtectDefaultBranchService, feature_category: :source_
     let_it_be_with_reload(:project) { create(:project, :repository, group: group) }
     let_it_be(:protected_branch) { create(:protected_branch, project: nil, group: group, name: project.default_branch) }
 
-    context 'when feature flag `group_protected_branches` disabled' do
-      before do
-        stub_feature_flags(group_protected_branches: false)
-      end
-
-      it 'return false' do
-        expect(service.protected_branch_exists?).to eq(false)
-      end
-    end
-
-    context 'when feature flag `group_protected_branches` enabled' do
-      before do
-        stub_feature_flags(group_protected_branches: true)
-      end
-
-      it 'return true' do
-        expect(service.protected_branch_exists?).to eq(true)
-      end
+    it 'return true' do
+      expect(service.protected_branch_exists?).to eq(true)
     end
   end
 

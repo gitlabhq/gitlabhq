@@ -13,7 +13,6 @@ module Ci
     include TaggableQueries
     include Presentable
     include EachBatch
-    include IgnorableColumns
     include Ci::HasRunnerExecutor
     include Ci::HasRunnerStatus
     include Ci::Taggable

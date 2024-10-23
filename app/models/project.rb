@@ -44,7 +44,6 @@ class Project < ApplicationRecord
   include IssueParent
   include WorkItems::Parent
   include UpdatedAtFilterable
-  include IgnorableColumns
   include CrossDatabaseIgnoredTables
   include UseSqlFunctionForPrimaryKeyLookups
   include Importable
@@ -2975,13 +2974,9 @@ class Project < ApplicationRecord
   end
 
   def group_protected_branches
-    return root_namespace.protected_branches if allow_protected_branches_for_group? && root_namespace.is_a?(Group)
+    return root_namespace.protected_branches if root_namespace.is_a?(Group)
 
     ProtectedBranch.none
-  end
-
-  def allow_protected_branches_for_group?
-    Feature.enabled?(:group_protected_branches, group)
   end
 
   def deploy_token_create_url(opts = {})

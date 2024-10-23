@@ -173,7 +173,7 @@ module Gitlab
         end
 
         def legacy_events
-          YAML.safe_load(File.read(LEGACY_EVENTS_PATH))
+          YAML.safe_load(File.read(LEGACY_EVENTS_PATH)).to_set
         end
 
         strong_memoize_attr :key_overrides

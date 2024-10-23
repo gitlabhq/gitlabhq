@@ -125,12 +125,7 @@ DETAILS:
 **Offering:** Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106532) in GitLab 15.9 [with a flag](../../../../administration/feature_flags.md) named `group_protected_branches`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available.
-To make it available, an administrator can
-[enable the feature flag](../../../../administration/feature_flags.md)
-named `group_protected_branches`. On GitLab Dedicated, this feature is not available.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/500250) in GitLab 17.6. Feature flag `group_protected_branches` removed.
 
 Group owners can create protected branches for a group. These settings are inherited
 by all projects in the group and can't be overridden by project settings.

@@ -575,7 +575,9 @@ class AiFeaturesCatalogue
   }.freeze
 ```
 
-When the feature flag `ai_gateway_agents` is enabled, the `aigw_service_class` will be used to process the AI action.
+1. Create `prompt_migration_#{feature_name}` feature flag (e.g `prompt_migration_generate_description`)
+
+When the feature flag is enabled, the `aigw_service_class` will be used to process the AI action.
 Once you've validated the correct functioning of your action, you can remove the `aigw_service_class` key and replace
 the `service_class` with the new `AiGateway::Completions` class to make it the permanent provider.
 

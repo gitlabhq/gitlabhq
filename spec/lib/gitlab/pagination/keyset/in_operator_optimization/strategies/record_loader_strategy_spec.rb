@@ -26,8 +26,6 @@ RSpec.describe Gitlab::Pagination::Keyset::InOperatorOptimization::Strategies::R
     Class.new(ApplicationRecord) do
       self.table_name = 'projects'
 
-      include IgnorableColumns
-
       ignore_column :name, remove_with: '16.4', remove_after: '2023-08-22'
     end
   end

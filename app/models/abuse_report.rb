@@ -8,7 +8,6 @@ class AbuseReport < ApplicationRecord
   include Gitlab::Utils::StrongMemoize
   include Mentionable
   include Noteable
-  include IgnorableColumns
 
   ignore_column :assignee_id, remove_with: '16.9', remove_after: '2024-01-19'
 

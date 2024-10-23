@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class UserDetail < ApplicationRecord
-  include IgnorableColumns
   extend ::Gitlab::Utils::Override
 
   ignore_column :requires_credit_card_verification, remove_with: '16.1', remove_after: '2023-06-22'

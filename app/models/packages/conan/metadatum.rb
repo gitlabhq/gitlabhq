@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class Packages::Conan::Metadatum < ApplicationRecord
-  include IgnorableColumns
-
   ignore_columns %i[os architecture build_type compiler compiler_version compiler_libcxx compiler_cppstd],
     remove_with: '17.6', remove_after: '2024-10-22'
   NONE_VALUE = '_'

@@ -4,7 +4,6 @@ module BatchedGitRefUpdates
   class Deletion < ApplicationRecord
     PARTITION_DURATION = 1.day
 
-    include IgnorableColumns
     include BulkInsertSafe
     include PartitionedTable
     include EachBatch

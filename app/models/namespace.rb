@@ -18,7 +18,6 @@ class Namespace < ApplicationRecord
   include Ci::NamespaceSettings
   include Referable
   include CrossDatabaseIgnoredTables
-  include IgnorableColumns
   include UseSqlFunctionForPrimaryKeyLookups
   include Todoable
 

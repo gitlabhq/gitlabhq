@@ -2,8 +2,6 @@
 
 module Users
   class PhoneNumberValidation < ApplicationRecord
-    include IgnorableColumns
-
     # SMS send attempts subsequent to the first one will have wait times of 1
     # min, 3 min, 5 min after each one respectively. Wait time between the fifth
     # attempt and so on will be 10 minutes.

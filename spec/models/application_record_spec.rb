@@ -325,7 +325,6 @@ RSpec.describe ApplicationRecord do
     context 'with an ignored column' do
       let(:test_model) do
         Class.new(ApplicationRecord) do
-          include IgnorableColumns
           self.table_name = :_test_tests
 
           ignore_columns :ignore_me, remove_after: '2100-01-01', remove_with: '99.12'

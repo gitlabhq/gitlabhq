@@ -4,6 +4,8 @@ module Gitlab
   module Database
     # This abstract class is used for models which need to exist in multiple de-composed databases.
     class SharedModel < ActiveRecord::Base
+      include IgnorableColumns
+
       self.abstract_class = true
 
       # if shared model is used, this allows to limit connections

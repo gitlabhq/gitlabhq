@@ -19342,7 +19342,8 @@ CREATE TABLE subscription_user_add_on_assignments (
     user_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    organization_id bigint
+    organization_id bigint,
+    CONSTRAINT check_7d21f9cebf CHECK ((organization_id IS NOT NULL))
 );
 
 CREATE SEQUENCE subscription_user_add_on_assignments_id_seq

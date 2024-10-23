@@ -38,7 +38,7 @@ If a restriction is imposed on any key type, users cannot upload new SSH keys th
 requirement. Any existing keys that don't meet it are disabled but not removed and users cannot
 pull or push code using them.
 
-If you have a restricted key, a warning icon (**{warning-icon}**) is visible to you in the **SSH keys** section of your profile.
+If you have a restricted key, a warning icon (**{warning}**) is visible to you in the **SSH keys** section of your profile.
 To learn why that key is restricted, hover over the icon.
 
 ## Default settings

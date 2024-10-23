@@ -3,7 +3,6 @@
 module Ci
   class JobArtifact < Ci::ApplicationRecord
     include Ci::Partitionable
-    include IgnorableColumns
     include AfterCommitQueue
     include UpdateProjectStatistics
     include UsageStatistics

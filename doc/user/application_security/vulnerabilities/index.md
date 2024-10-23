@@ -123,7 +123,7 @@ To resolve the vulnerability:
 1. Select **Secure > Vulnerability report**.
 1. Optional. To remove the default filters, select **Clear** (**{clear}**).
 1. Above the list of vulnerabilities, select the filter bar.
-1. In the dropdown list that appears, select **Tool**, then select all the values in the **SAST** category.
+1. In the dropdown list that appears, select **Activity**, then select **Vulnerability Resolution available** in the **GitLab Duo (AI)** category.
 1. Select outside the filter field. The vulnerability severity totals and list of matching vulnerabilities are updated.
 1. Select the SAST vulnerability you want resolved.
    - A blue icon is shown next to vulnerabilities that support Vulnerability Resolution.

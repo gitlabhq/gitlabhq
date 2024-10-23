@@ -7866,24 +7866,8 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
     subject { create(:project, group: group) }
 
-    context 'when feature flag `group_protected_branches` enabled' do
-      before do
-        stub_feature_flags(group_protected_branches: true)
-      end
-
-      it 'return all protected branches' do
-        expect(subject.all_protected_branches).to match_array([group_protected_branch, project_protected_branch])
-      end
-    end
-
-    context 'when feature flag `group_protected_branches` disabled' do
-      before do
-        stub_feature_flags(group_protected_branches: false)
-      end
-
-      it 'return only project-level protected branches' do
-        expect(subject.all_protected_branches).to match_array([project_protected_branch])
-      end
+    it 'return all protected branches' do
+      expect(subject.all_protected_branches).to match_array([group_protected_branch, project_protected_branch])
     end
   end
 

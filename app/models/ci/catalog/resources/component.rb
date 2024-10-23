@@ -6,7 +6,6 @@ module Ci
       # This class represents a CI/CD Catalog resource component.
       # The data will be used as metadata of a component.
       class Component < ::ApplicationRecord
-        include IgnorableColumns
         ignore_column :resource_type, remove_with: '17.8', remove_after: '2024-11-18'
 
         self.table_name = 'catalog_resource_components'

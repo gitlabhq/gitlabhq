@@ -9,7 +9,6 @@ module Ci
       # (DB function name: `insert_catalog_resource_sync_event`).
       class SyncEvent < ::ApplicationRecord
         include PartitionedTable
-        include IgnorableColumns
 
         PARTITION_DURATION = 1.day
 

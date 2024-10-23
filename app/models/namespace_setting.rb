@@ -4,7 +4,6 @@ class NamespaceSetting < ApplicationRecord
   include CascadingNamespaceSettingAttribute
   include Sanitizable
   include ChronicDurationAttribute
-  include IgnorableColumns
 
   ignore_column :third_party_ai_features_enabled, remove_with: '16.11', remove_after: '2024-04-18'
   ignore_column :code_suggestions, remove_with: '17.0', remove_after: '2024-05-16'

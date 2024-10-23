@@ -15,7 +15,6 @@ class Member < ApplicationRecord
   include UpdateHighestRole
   include RestrictedSignup
   include Gitlab::Experiment::Dsl
-  include IgnorableColumns
 
   ignore_column :last_activity_on, remove_with: '17.8', remove_after: '2024-12-23'
 
