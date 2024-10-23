@@ -2,6 +2,21 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 17.4.3 (2024-10-22)
+
+### Fixed (1 change)
+
+- [Fix Zoekt global code search](https://gitlab.com/gitlab-org/security/gitlab/-/commit/3f7555bec895f46e787c4942ad4f6feb2aa40cd7) **GitLab Enterprise Edition**
+
+### Changed (1 change)
+
+- [Backport LabKit v1.21.2 update to fix broken dependency](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ac25dc56806e6426b24ed951feba202b1a694023)
+
+### Security (2 changes)
+
+- [Fixed HTML injection in Global Search bug](https://gitlab.com/gitlab-org/security/gitlab/-/commit/38e43a2bd1156111126995dee37d08cbeb607c55) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4504))
+- [Limit max size of manifest file upload](https://gitlab.com/gitlab-org/security/gitlab/-/commit/d85364ec8c87ed3ca31b3d9575906267e9d23c4d) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4532))
+
 ## 17.4.2 (2024-10-09)
 
 ### Fixed (1 change)
