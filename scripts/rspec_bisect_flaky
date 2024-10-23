@@ -25,5 +25,6 @@ for file in "${files[@]}"; do
   bin/rspec "$file" "$target"
 done
 
-# Do a full bisect given we did not find candidates with speedy cases 
-bin/rspec --bisect=verbose "$@"
+# Do a full bisect given we did not find candidates with speedy cases
+# Explicitly require macos.rb to ensure fork works correctly https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170190
+bin/rspec --require ./config/initializers/macos.rb --bisect=verbose "$@"

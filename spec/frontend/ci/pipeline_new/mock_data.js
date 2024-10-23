@@ -37,12 +37,6 @@ export const mockError = {
   total_warnings: 7,
 };
 
-export const mockCreditCardValidationRequiredError = {
-  errors: ['Credit card required to be on file in order to run CI jobs'],
-  warnings: [],
-  total_warnings: 0,
-};
-
 export const mockIdentityVerificationRequiredError = {
   errors: ['Identity verification is required in order to run CI jobs'],
   warnings: [],

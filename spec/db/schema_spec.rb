@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('ee', 'spec', 'db', 'schema_support') if Gitlab.ee?
+require Rails.root.join('ee/spec/db/schema_support') if Gitlab.ee?
 
 RSpec.describe 'Database schema',
   # These skip a bit of unnecessary setup for each spec invocation,
@@ -61,13 +61,20 @@ RSpec.describe 'Database schema',
     abuse_reports: %w[reporter_id user_id],
     abuse_report_notes: %w[discussion_id],
     ai_code_suggestion_events: %w[user_id],
-    application_settings: %w[performance_bar_allowed_group_id slack_app_id snowplow_app_id eks_account_id eks_access_key_id],
+    application_settings: %w[performance_bar_allowed_group_id slack_app_id snowplow_app_id eks_account_id
+      eks_access_key_id],
     approvals: %w[user_id project_id],
     approver_groups: %w[target_id],
     approvers: %w[target_id user_id],
-    analytics_cycle_analytics_aggregations: %w[last_full_issues_id last_full_merge_requests_id last_incremental_issues_id last_full_run_issues_id last_full_run_merge_requests_id last_incremental_merge_requests_id last_consistency_check_issues_stage_event_hash_id last_consistency_check_issues_issuable_id last_consistency_check_merge_requests_stage_event_hash_id last_consistency_check_merge_requests_issuable_id],
-    analytics_cycle_analytics_merge_request_stage_events: %w[author_id group_id merge_request_id milestone_id project_id stage_event_hash_id state_id],
-    analytics_cycle_analytics_issue_stage_events: %w[author_id group_id issue_id milestone_id project_id stage_event_hash_id state_id sprint_id],
+    analytics_cycle_analytics_aggregations: %w[last_full_issues_id last_full_merge_requests_id
+      last_incremental_issues_id last_full_run_issues_id last_full_run_merge_requests_id
+      last_incremental_merge_requests_id last_consistency_check_issues_stage_event_hash_id
+      last_consistency_check_issues_issuable_id last_consistency_check_merge_requests_stage_event_hash_id
+      last_consistency_check_merge_requests_issuable_id],
+    analytics_cycle_analytics_merge_request_stage_events: %w[author_id group_id merge_request_id milestone_id
+      project_id stage_event_hash_id state_id],
+    analytics_cycle_analytics_issue_stage_events: %w[author_id group_id issue_id milestone_id project_id
+      stage_event_hash_id state_id sprint_id],
     analytics_cycle_analytics_stage_event_hashes: %w[organization_id],
     audit_events: %w[author_id entity_id target_id],
     user_audit_events: %w[author_id user_id target_id],
@@ -80,7 +87,8 @@ RSpec.describe 'Database schema',
     broadcast_messages: %w[namespace_id],
     chat_names: %w[chat_id team_id user_id],
     chat_teams: %w[team_id],
-    ci_builds: %w[project_id runner_id user_id erased_by_id trigger_request_id partition_id auto_canceled_by_partition_id execution_config_id upstream_pipeline_partition_id],
+    ci_builds: %w[project_id runner_id user_id erased_by_id trigger_request_id partition_id
+      auto_canceled_by_partition_id execution_config_id upstream_pipeline_partition_id],
     ci_builds_metadata: %w[partition_id project_id build_id],
     ci_build_needs: %w[project_id],
     ci_builds_runner_session: %w[project_id],
@@ -160,7 +168,8 @@ RSpec.describe 'Database schema',
     oauth_device_grants: %w[resource_owner_id application_id],
     packages_nuget_symbols: %w[project_id],
     packages_package_files: %w[project_id],
-    p_ci_builds: %w[erased_by_id trigger_request_id partition_id auto_canceled_by_partition_id execution_config_id upstream_pipeline_partition_id],
+    p_ci_builds: %w[erased_by_id trigger_request_id partition_id auto_canceled_by_partition_id execution_config_id
+      upstream_pipeline_partition_id],
     p_ci_builds_metadata: %w[project_id build_id partition_id],
     p_batched_git_ref_updates_deletions: %w[project_id partition_id],
     p_catalog_resource_sync_events: %w[catalog_resource_id project_id partition_id],
@@ -237,11 +246,14 @@ RSpec.describe 'Database schema',
           let(:indexes) { connection.indexes(table) }
           let(:columns) { connection.columns(table) }
           let(:foreign_keys) { to_foreign_keys(Gitlab::Database::PostgresForeignKey.by_constrained_table_name(table)) }
-          let(:loose_foreign_keys) { Gitlab::Database::LooseForeignKeys.definitions.group_by(&:from_table).fetch(table, []) }
+          let(:loose_foreign_keys) do
+            Gitlab::Database::LooseForeignKeys.definitions.group_by(&:from_table).fetch(table, [])
+          end
+
           let(:all_foreign_keys) { foreign_keys + loose_foreign_keys }
           let(:composite_primary_key) { Array.wrap(connection.primary_key(table)) }
 
-          context 'all foreign keys' do
+          context 'with all foreign keys' do
             # for index to be effective, the FK constraint has to be at first place
             it 'are indexed' do
               indexed_columns = indexes.filter_map do |index|
@@ -268,7 +280,7 @@ RSpec.describe 'Database schema',
             end
           end
 
-          context 'columns ending with _id' do
+          context 'with columns ending with _id' do
             let(:column_names) { columns.map(&:name) }
             let(:column_names_with_id) { column_names.select { |column_name| column_name.ends_with?('_id') } }
             let(:ignored_columns) { ignored_fk_columns(table) }
@@ -289,7 +301,7 @@ RSpec.describe 'Database schema',
             end
           end
 
-          context 'btree indexes' do
+          context 'with btree indexes' do
             it 'only has existing indexes in the ignored duplicate indexes duplicate_indexes.yml' do
               table_ignored_indexes = (ignored_indexes[table] || {}).to_a.flatten.uniq
               indexes_by_name = indexes.map(&:name)
@@ -409,7 +421,7 @@ RSpec.describe 'Database schema',
     end
   end
 
-  context 'existence of Postgres schemas' do
+  context 'with existence of Postgres schemas' do
     let_it_be(:schemas) do
       sql = <<~SQL
         SELECT schema_name FROM
@@ -439,7 +451,7 @@ RSpec.describe 'Database schema',
     end
   end
 
-  context 'primary keys' do
+  context 'with primary keys' do
     it 'expects every table to have a primary key defined' do
       Gitlab::Database::EachDatabase.each_connection do |connection, _|
         schemas_for_connection = Gitlab::Database.gitlab_schemas_for_connection(connection)
@@ -478,19 +490,21 @@ RSpec.describe 'Database schema',
     end
   end
 
-  context 'index names' do
+  context 'with index names' do
     it 'disallows index names with a _ccnew[0-9]* suffix' do
       # During REINDEX operations, Postgres generates a temporary index with a _ccnew[0-9]* suffix
-      # Since indexes are being considered temporary and subject to removal if they stick around for longer. See Gitlab::Database::Reindexing.
+      # Since indexes are being considered temporary and subject to removal if they stick around for longer.
+      # See Gitlab::Database::Reindexing.
       #
       # Hence we disallow adding permanent indexes with this suffix.
-      problematic_indexes = Gitlab::Database::PostgresIndex.match("#{Gitlab::Database::Reindexing::ReindexConcurrently::TEMPORARY_INDEX_PATTERN}$").all
+      problematic_indexes = Gitlab::Database::PostgresIndex.match(
+        "#{Gitlab::Database::Reindexing::ReindexConcurrently::TEMPORARY_INDEX_PATTERN}$").all
 
       expect(problematic_indexes).to be_empty
     end
   end
 
-  context 'ID columns' do
+  context 'with ID columns' do
     it_behaves_like 'All IDs are bigint'
   end
 

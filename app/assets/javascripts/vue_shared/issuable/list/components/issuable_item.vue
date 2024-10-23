@@ -20,8 +20,8 @@ import timeagoMixin from '~/vue_shared/mixins/timeago';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import WorkItemPrefetch from '~/work_items/components/work_item_prefetch.vue';
-import { STATE_OPEN, STATE_CLOSED } from '~/work_items/constants';
-import { isAssigneesWidget, isLabelsWidget } from '~/work_items/utils';
+import { STATE_OPEN, STATE_CLOSED, LINKED_CATEGORIES_MAP } from '~/work_items/constants';
+import { isAssigneesWidget, isLabelsWidget, findLinkedItemsWidget } from '~/work_items/utils';
 
 export default {
   components: {
@@ -34,6 +34,8 @@ export default {
     IssuableAssignees,
     WorkItemTypeIcon,
     WorkItemPrefetch,
+    WorkItemRelationshipIcons: () =>
+      import('~/work_items/components/shared/work_item_relationship_icons.vue'),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -145,11 +147,17 @@ export default {
         []
       );
     },
+    filteredLinkedItems() {
+      const linkedItems = findLinkedItemsWidget(this.issuable)?.linkedItems?.nodes || [];
+      return linkedItems.filter((item) => {
+        return item.linkType !== LINKED_CATEGORIES_MAP.RELATES_TO;
+      });
+    },
     createdAt() {
       return this.timeFormatted(this.issuable.createdAt);
     },
-    isNotOpen() {
-      return ![STATUS_OPEN, STATE_OPEN].includes(this.issuable.state);
+    isOpen() {
+      return [STATUS_OPEN, STATE_OPEN].includes(this.issuable.state);
     },
     isClosed() {
       return [STATUS_CLOSED, STATE_CLOSED].includes(this.issuable.state);
@@ -473,7 +481,7 @@ export default {
       <ul v-if="showIssuableMeta" class="controls gl-gap-3">
         <!-- eslint-disable-next-line @gitlab/vue-prefer-dollar-scopedslots -->
         <li v-if="$slots.status" data-testid="issuable-status" class="!gl-mr-0">
-          <gl-badge v-if="isNotOpen" :variant="statusBadgeVariant">
+          <gl-badge v-if="!isOpen" :variant="statusBadgeVariant">
             <slot name="status"></slot>
           </gl-badge>
           <slot v-else name="status"></slot>
@@ -504,6 +512,14 @@ export default {
           </div>
         </li>
         <slot name="statistics"></slot>
+        <work-item-relationship-icons
+          v-if="isOpen && filteredLinkedItems.length > 0"
+          :work-item-type="type"
+          :linked-work-items="filteredLinkedItems"
+          :work-item-full-path="workItemFullPath"
+          :work-item-iid="issuableIid"
+          :work-item-web-url="issuableLinkHref"
+        />
       </ul>
       <div
         v-gl-tooltip.bottom

@@ -2,16 +2,16 @@
 
 require 'spec_helper'
 
-RSpec.describe ::InstanceMetadata::Kas do
+RSpec.describe AppConfig::KasMetadata, feature_category: :api do
   it 'has InstanceMetadataPolicy as declarative policy' do
-    expect(described_class.declarative_policy_class).to eq("InstanceMetadataPolicy")
+    expect(described_class.declarative_policy_class).to eq("AppConfig::InstanceMetadataPolicy")
   end
 
   context 'when KAS is enabled' do
     it 'has the correct properties' do
       allow(Gitlab::Kas).to receive(:enabled?).and_return(true)
 
-      expect(subject).to have_attributes(
+      expect(described_class.new).to have_attributes(
         enabled: Gitlab::Kas.enabled?,
         version: Gitlab::Kas.version,
         external_url: Gitlab::Kas.external_url
@@ -23,7 +23,7 @@ RSpec.describe ::InstanceMetadata::Kas do
     it 'has the correct properties' do
       allow(Gitlab::Kas).to receive(:enabled?).and_return(false)
 
-      expect(subject).to have_attributes(
+      expect(described_class.new).to have_attributes(
         enabled: Gitlab::Kas.enabled?,
         version: nil,
         external_url: nil

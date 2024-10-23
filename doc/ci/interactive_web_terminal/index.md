@@ -77,7 +77,3 @@ terminal blocks the job from finishing for the duration configured in
 close the terminal window.
 
 ![finished job with terminal open](img/finished_job_with_terminal_open_v11_2.png)
-
-## Interactive web terminals for the Web IDE
-
-To run interactive web terminals for the Web IDE, see [Web IDE](../../user/project/web_ide/index.md).

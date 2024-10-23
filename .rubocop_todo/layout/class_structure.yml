@@ -69,7 +69,6 @@ Layout/ClassStructure:
     - 'app/models/gpg_key.rb'
     - 'app/models/hooks/web_hook.rb'
     - 'app/models/identity.rb'
-    - 'app/models/instance_metadata/kas.rb'
     - 'app/models/integration.rb'
     - 'app/models/integrations/base_chat_notification.rb'
     - 'app/models/integrations/base_ci.rb'

@@ -5368,7 +5368,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
       it 'wraps around to max size of a signed smallint' do
         expect { drop_with_exit_code }
-        .to change { build.reload.metadata&.exit_code }.from(nil).to(2)
+        .to change { build.reload.metadata&.exit_code }.from(nil).to(32767)
       end
     end
   end

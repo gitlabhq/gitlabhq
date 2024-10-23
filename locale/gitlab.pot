@@ -5737,7 +5737,7 @@ msgstr ""
 msgid "Allow projects and subgroups to override the group setting"
 msgstr ""
 
-msgid "Allow projects to enable secret push protection. This does not enable secret push protection. When you enable this feature, you accept the %{link_start}GitLab Testing Agreement%{link_end}."
+msgid "Allow projects to enable secret push protection. This does not enable secret push protection."
 msgstr ""
 
 msgid "Allow public access to pipelines and job details, including output logs and artifacts."
@@ -8917,34 +8917,10 @@ msgstr ""
 msgid "Billings|In a seat"
 msgstr ""
 
-msgid "Billings|Instance runners cannot be enabled until a valid credit card is on file."
-msgstr ""
-
 msgid "Billings|Seats in use / Seats available"
 msgstr ""
 
 msgid "Billings|Seats in use / Seats in subscription"
-msgstr ""
-
-msgid "Billings|To use free compute minutes on instance runners, you'll need to validate your account with a credit card. If you prefer not to provide one, you can run pipelines by bringing your own runners and disabling instance runners for your project. This is required to discourage and reduce abuse on GitLab infrastructure. %{strongStart}GitLab will not charge your card, it will only be used for validation.%{strongEnd} %{linkStart}Learn more%{linkEnd}."
-msgstr ""
-
-msgid "Billings|To use free compute minutes on instance runners, you'll need to validate your account with a credit card. This is required to discourage and reduce abuse on GitLab infrastructure. %{strongStart}GitLab will not charge your card, it will only be used for validation.%{strongEnd}"
-msgstr ""
-
-msgid "Billings|User validation required"
-msgstr ""
-
-msgid "Billings|Validate account"
-msgstr ""
-
-msgid "Billings|Validate user account"
-msgstr ""
-
-msgid "Billings|You'll now be able to take advantage of free compute minutes on instance runners."
-msgstr ""
-
-msgid "Billings|Your account has been validated"
 msgstr ""
 
 msgid "Billing|%d user has been successfully assigned a seat."
@@ -16715,9 +16691,6 @@ msgid "CredentialsInventory|SSH Keys"
 msgstr ""
 
 msgid "Credit card"
-msgstr ""
-
-msgid "Credit card required to be on file in order to run CI jobs"
 msgstr ""
 
 msgid "Credit card validation record saved"
@@ -29128,9 +29101,6 @@ msgid "Instance audit events"
 msgstr ""
 
 msgid "Instance overview"
-msgstr ""
-
-msgid "Instance runners enabled cannot be enabled until a valid credit card is on file"
 msgstr ""
 
 msgid "Instance runners help link"
@@ -60352,18 +60322,6 @@ msgid "Various settings that affect GitLab performance."
 msgstr ""
 
 msgid "Verification status"
-msgstr ""
-
-msgid "VerificationReminder|Pipeline failing? To keep GitLab spam and abuse free we ask that you verify your identity."
-msgstr ""
-
-msgid "VerificationReminder|Until then, instance runners will be unavailable. %{validateLinkStart}Validate your account%{validateLinkEnd} or %{docsLinkStart}use your own runners%{docsLinkEnd}."
-msgstr ""
-
-msgid "VerificationReminder|Your account has been validated"
-msgstr ""
-
-msgid "VerificationReminder|You’ll now be able to take advantage of free compute minutes on instance runners."
 msgstr ""
 
 msgid "Verifications status"

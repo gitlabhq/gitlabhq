@@ -57,37 +57,6 @@ RSpec.describe Gitlab::Ci::Build::AutoRetry, feature_category: :pipeline_composi
       it { is_expected.to eq(result) }
     end
 
-    context 'when ci_retry_on_exit_codes feature flag is disabled' do
-      where(:description, :retry_count, :options, :failure_reason, :exit_code, :result) do
-        "matching exit code" | 0 | { exit_codes: [255, 137], max: 2 } | nil | 137 | false
-        "not matching exit code" | 0 | { exit_codes: [255], max: 2 } | nil | 1 | false
-        "exit_code is not an integer" | 0 | { exit_codes: ["137"], max: 2 } | nil | 137 | false
-        # retry:when && retry:exit_codes
-        # EC: exit_codes
-        # FR: failure_reason
-        "matching EC & FR" | 0 | { exit_codes: [3], when: %w[script_failure], max: 2 } | :script_failure | 3 | true
-        "matching EC only" | 0 | { exit_codes: [3], when: %w[script_failure], max: 2 } | :api_failure | 3 | false
-        "matching FR only" | 0 | { exit_codes: [1], when: %w[script_failure], max: 2 } | :script_failure | 137 | true
-        "not matching EC & FR" | 0 | { exit_codes: [1], when: %w[script_failure], max: 2 } | :api_failure | 137 | false
-      end
-
-      with_them do
-        before do
-          # shouldn't retry on matching exit code
-          stub_feature_flags(ci_retry_on_exit_codes: false)
-
-          allow(build).to receive(:retries_count) { retry_count }
-
-          build.options[:retry] = options
-          build.failure_reason = failure_reason
-          build.metadata.exit_code = exit_code
-          allow(build).to receive(:retryable?).and_return(true)
-        end
-
-        it { is_expected.to eq(result) }
-      end
-    end
-
     context 'when build is not retryable' do
       before do
         allow(build).to receive(:retryable?).and_return(false)

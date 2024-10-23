@@ -107,16 +107,16 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
         if allowed_to_be_missing_foreign_key.include?("#{table_name}.#{column_name}")
           expect(has_foreign_key?(table_name, column_name)).to eq(false),
             "The column `#{table_name}.#{column_name}` has a foreign key so cannot be " \
-            "allowed_to_be_missing_foreign_key. " \
-            "If this is a foreign key referencing the specified table #{referenced_table_name} " \
-            "then you must remove it from allowed_to_be_missing_foreign_key"
+              "allowed_to_be_missing_foreign_key. " \
+              "If this is a foreign key referencing the specified table #{referenced_table_name} " \
+              "then you must remove it from allowed_to_be_missing_foreign_key"
         else
           next if Gitlab::Database::PostgresPartition.partition_exists?(table_name)
 
           expect(has_foreign_key?(table_name, column_name, to_table_name: referenced_table_name)).to eq(true),
             "Missing a foreign key constraint for `#{table_name}.#{column_name}` " \
-            "referencing #{referenced_table_name}. " \
-            "All sharding keys must have a foreign key constraint"
+              "referencing #{referenced_table_name}. " \
+              "All sharding keys must have a foreign key constraint"
         end
       end
     end
@@ -135,11 +135,11 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
         if allowed_to_be_missing_not_null.include?("#{table_name}.#{column_name}")
           expect(not_nullable || has_null_check_constraint).to eq(false),
             "You must remove `#{table_name}.#{column_name}` from allowed_to_be_missing_not_null " \
-            "since it now has a valid constraint."
+              "since it now has a valid constraint."
         else
           expect(not_nullable || has_null_check_constraint).to eq(true),
             "Missing a not null constraint for `#{table_name}.#{column_name}` . " \
-            "All sharding keys must be not nullable or have a NOT NULL check constraint"
+              "All sharding keys must be not nullable or have a NOT NULL check constraint"
         end
       else
         allowed_columns = allowed_to_be_missing_not_null & sharding_key_columns.map { |c| "#{table_name}.#{c}" }
@@ -149,18 +149,18 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
           if allowed_columns.length != sharding_key_columns.length
             expect(allowed_columns.length).to eq(sharding_key_columns.length),
               "`#{table_name}` has sharding keys #{sharding_key_columns.to_sentence} but " \
-              "allowed_to_be_missing_not_null contains only #{allowed_columns.to_sentence}. " \
-              "allowed_to_be_missing_not_null must contain all sharding key columns, or none"
+                "allowed_to_be_missing_not_null contains only #{allowed_columns.to_sentence}. " \
+                "allowed_to_be_missing_not_null must contain all sharding key columns, or none"
           else
             expect(has_null_check_constraint).to eq(false),
               "You must remove #{allowed_columns.to_sentence} from allowed_to_be_missing_not_null " \
-              "since there is now a valid constraint"
+                "since there is now a valid constraint"
           end
         else
           expect(has_null_check_constraint).to eq(true),
             "Missing a not null constraint for #{sharding_key_columns.to_sentence} on `#{table_name}`. " \
-            "All sharding keys must have a NOT NULL check constraint. For more information on constraints for " \
-            "multiple columns, see https://docs.gitlab.com/ee/development/database/not_null_constraints.html#not-null-constraints-for-multiple-columns"
+              "All sharding keys must have a NOT NULL check constraint. For more information on constraints for " \
+              "multiple columns, see https://docs.gitlab.com/ee/development/database/not_null_constraints.html#not-null-constraints-for-multiple-columns"
         end
       end
     end
@@ -234,7 +234,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
     allowed_to_be_missing_sharding_key.each do |exempted_table|
       expect(tables_missing_sharding_key(starting_from_milestone: starting_from_milestone)).to include(exempted_table),
         "`#{exempted_table}` is not missing a `sharding_key`. " \
-        "You must remove this table from the `allowed_to_be_missing_sharding_key` list."
+          "You must remove this table from the `allowed_to_be_missing_sharding_key` list."
     end
   end
 
@@ -246,7 +246,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
 
       expect(entry&.sharding_key&.keys).to include(column),
         "`#{exemption}` is not a `sharding_key`. " \
-        "You must remove this entry from the `allowed_to_be_missing_not_null` list."
+          "You must remove this entry from the `allowed_to_be_missing_not_null` list."
     end
   end
 
@@ -258,7 +258,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
 
       expect(entry&.sharding_key&.keys).to include(column),
         "`#{exemption}` is not a `sharding_key`. " \
-        "You must remove this entry from the `allowed_to_be_missing_foreign_key` list."
+          "You must remove this entry from the `allowed_to_be_missing_foreign_key` list."
     end
   end
 
@@ -284,10 +284,10 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
       # rubocop:disable Layout/LineLength -- sorry, long URL
       expect(fks).to be_empty,
         "#{entry.table_name} is exempted from sharding, but has foreign key references to it.\n" \
-        "For more information, see " \
-        "https://docs.gitlab.com/ee/development/database/multiple_databases.html#exempting-certain-tables-from-having-sharding-keys.\n" \
-        "The tables with foreign key references are:\n\n" \
-        "#{fks.map(&:constrained_table_name).join("\n")}"
+          "For more information, see " \
+          "https://docs.gitlab.com/ee/development/database/multiple_databases.html#exempting-certain-tables-from-having-sharding-keys.\n" \
+          "The tables with foreign key references are:\n\n" \
+          "#{fks.map(&:constrained_table_name).join("\n")}"
       # rubocop:enable Layout/LineLength
 
       lfks = referenced_loose_foreign_keys(entry.table_name)
@@ -296,10 +296,10 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
       # rubocop:disable Layout/LineLength -- sorry, long URL
       expect(lfks).to be_empty,
         "#{entry.table_name} is exempted from sharding, but has loose foreign key references to it.\n" \
-        "For more information, see " \
-        "https://docs.gitlab.com/ee/development/database/multiple_databases.html#exempting-certain-tables-from-having-sharding-keys.\n" \
-        "The tables with loose foreign key references are:\n\n" \
-        "#{lfks.map(&:from_table).join("\n")}"
+          "For more information, see " \
+          "https://docs.gitlab.com/ee/development/database/multiple_databases.html#exempting-certain-tables-from-having-sharding-keys.\n" \
+          "The tables with loose foreign key references are:\n\n" \
+          "#{lfks.map(&:from_table).join("\n")}"
       # rubocop:enable Layout/LineLength
     end
   end
@@ -321,11 +321,11 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
       if entry.sharding_key.present? || entry.desired_sharding_key.present?
         expect(entry.sharding_key_issue_url).not_to be_present,
           "You must remove `sharding_key_issue_url` from #{entry.table_name} now that it " \
-          "has a valid sharding key/desired sharding key."
+            "has a valid sharding key/desired sharding key."
       else
         expect(entry.sharding_key_issue_url).to match(issue_url_regex),
           "Invalid `sharding_key_issue_url` url for #{entry.table_name}. Please use the following format: " \
-          "https://gitlab.com/gitlab-org/gitlab/-/issues/XXX"
+            "https://gitlab.com/gitlab-org/gitlab/-/issues/XXX"
       end
     end
   end

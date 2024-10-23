@@ -20,7 +20,6 @@ import SafeHtml from '~/vue_shared/directives/safe_html';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { s__, __, n__ } from '~/locale';
 import {
-  CC_VALIDATION_REQUIRED_ERROR,
   IDENTITY_VERIFICATION_REQUIRED_ERROR,
   CONFIG_VARIABLES_TIMEOUT,
   FILE_TYPE,
@@ -70,8 +69,6 @@ export default {
     GlLoadingIcon,
     RefsDropdown,
     VariableValuesListbox,
-    CcValidationRequiredAlert: () =>
-      import('ee_component/billings/components/cc_validation_required_alert.vue'),
     PipelineAccountVerificationAlert: () =>
       import('ee_component/vue_shared/components/pipeline_account_verification_alert.vue'),
   },
@@ -143,7 +140,6 @@ export default {
       totalWarnings: 0,
       isWarningDismissed: false,
       submitted: false,
-      ccAlertDismissed: false,
     };
   },
   apollo: {
@@ -229,9 +225,6 @@ export default {
     },
     descriptions() {
       return this.form[this.refFullName]?.descriptions ?? {};
-    },
-    ccRequiredError() {
-      return this.error === CC_VALIDATION_REQUIRED_ERROR && !this.ccAlertDismissed;
     },
     identityVerificationRequiredError() {
       return this.error === IDENTITY_VERIFICATION_REQUIRED_ERROR;
@@ -348,7 +341,6 @@ export default {
     },
     async createPipeline() {
       this.submitted = true;
-      this.ccAlertDismissed = false;
 
       const { data } = await this.$apollo.mutate({
         mutation: createPipelineMutation,
@@ -391,7 +383,6 @@ export default {
       this.totalWarnings = totalWarnings;
     },
     dismissError() {
-      this.ccAlertDismissed = true;
       this.error = null;
     },
     createListItemsFromVariableOptions(key) {
@@ -406,11 +397,7 @@ export default {
 
 <template>
   <gl-form @submit.prevent="createPipeline">
-    <cc-validation-required-alert v-if="ccRequiredError" class="gl-pb-5" @dismiss="dismissError" />
-    <pipeline-account-verification-alert
-      v-else-if="identityVerificationRequiredError"
-      class="gl-mb-4"
-    />
+    <pipeline-account-verification-alert v-if="identityVerificationRequiredError" class="gl-mb-4" />
     <gl-alert
       v-else-if="error"
       :title="errorTitle"

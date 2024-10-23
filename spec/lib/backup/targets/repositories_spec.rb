@@ -233,6 +233,15 @@ RSpec.describe Backup::Targets::Repositories, feature_category: :backup_restore 
       expect(strategy).to have_received(:finish!)
     end
 
+    it 'logs an error if gitaly-backup exits with non-zero error code' do
+      expect(strategy).to receive(:finish!).and_raise(::Backup::Error, 'gitaly-backup exit status 1')
+
+      allow(repositories).to receive(:logger).and_return(Gitlab::BackupLogger)
+
+      expect(Gitlab::BackupLogger).to receive(:error).with('gitaly-backup exit status 1')
+      repositories.restore(destination, backup_id)
+    end
+
     context 'when restoring object pools' do
       it 'schedules restoring of the pool', :sidekiq_might_not_need_inline do
         pool_repository = create(:pool_repository, :failed)

@@ -966,7 +966,6 @@ RSpec/ContextWording:
     - 'spec/controllers/uploads_controller_spec.rb'
     - 'spec/controllers/users/terms_controller_spec.rb'
     - 'spec/db/production/settings_spec.rb'
-    - 'spec/db/schema_spec.rb'
     - 'spec/docs_screenshots/container_registry_docs.rb'
     - 'spec/docs_screenshots/wiki_docs.rb'
     - 'spec/experiments/application_experiment_spec.rb'

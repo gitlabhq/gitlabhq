@@ -174,9 +174,7 @@ class CommitStatus < Ci::ApplicationRecord
       commit_status.allow_failure = true if reason.force_allow_failure?
       # Windows exit codes can reach a max value of 32-bit unsigned integer
       # We only allow a smallint for exit_code in the db, hence the added limit of 32767
-      if reason.exit_code && Feature.enabled?(:ci_retry_on_exit_codes, Feature.current_request)
-        commit_status.exit_code = reason.exit_code % 32768
-      end
+      commit_status.exit_code = reason.exit_code
     end
 
     before_transition [:skipped, :manual] => :created do |commit_status, transition|

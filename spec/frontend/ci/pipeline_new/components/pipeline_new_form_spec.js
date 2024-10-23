@@ -2,10 +2,8 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlForm, GlSprintf, GlLoadingIcon, GlIcon } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
-import CreditCardValidationRequiredAlert from 'ee_component/billings/components/cc_validation_required_alert.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { TEST_HOST } from 'helpers/test_constants';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
 import {
@@ -22,7 +20,6 @@ import { resolvers } from '~/ci/pipeline_new/graphql/resolvers';
 import RefsDropdown from '~/ci/pipeline_new/components/refs_dropdown.vue';
 import VariableValuesListbox from '~/ci/pipeline_new/components/variable_values_listbox.vue';
 import {
-  mockCreditCardValidationRequiredError,
   mockCiConfigVariablesResponse,
   mockCiConfigVariablesResponseWithoutDesc,
   mockEmptyCiConfigVariablesResponse,
@@ -71,7 +68,6 @@ describe('Pipeline New Form', () => {
   const findWarningAlertSummary = () => findWarningAlert().findComponent(GlSprintf);
   const findWarnings = () => wrapper.findAllByTestId('run-pipeline-warning');
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
-  const findCCAlert = () => wrapper.findComponent(CreditCardValidationRequiredAlert);
   const getFormPostParams = () => JSON.parse(mock.history.post[0].data);
 
   const advanceToNextFetch = (milliseconds) => {
@@ -528,44 +524,6 @@ describe('Pipeline New Form', () => {
         createComponentWithApollo({ props: { canViewPipelineEditor: false } });
 
         expect(findPipelineConfigButton().exists()).toBe(false);
-      });
-
-      it('does not show the credit card validation required alert', () => {
-        expect(findCCAlert().exists()).toBe(false);
-      });
-
-      describe('when the error response is credit card validation required', () => {
-        beforeEach(async () => {
-          mock
-            .onPost(pipelinesPath)
-            .reply(HTTP_STATUS_BAD_REQUEST, mockCreditCardValidationRequiredError);
-
-          window.gon = {
-            subscriptions_url: TEST_HOST,
-            payment_form_url: TEST_HOST,
-          };
-
-          findForm().vm.$emit('submit', dummySubmitEvent);
-
-          await waitForPromises();
-        });
-
-        it('shows credit card validation required alert', () => {
-          expect(findErrorAlert().exists()).toBe(false);
-          expect(findCCAlert().exists()).toBe(true);
-        });
-
-        it('clears error and hides the alert on dismiss', async () => {
-          expect(findCCAlert().exists()).toBe(true);
-          expect(wrapper.vm.$data.error).toBe(mockCreditCardValidationRequiredError.errors[0]);
-
-          findCCAlert().vm.$emit('dismiss');
-
-          await nextTick();
-
-          expect(findCCAlert().exists()).toBe(false);
-          expect(wrapper.vm.$data.error).toBe(null);
-        });
       });
     });
 

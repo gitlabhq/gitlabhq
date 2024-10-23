@@ -159,7 +159,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::SessionMap, feature_category: :d
   end
 
   describe '.without_sticky_writes' do
-    let(:dbs) { [::ApplicationRecord, ::Ci::ApplicationRecord] }
+    let(:dbs) { Gitlab::Database.database_base_models.values }
     let(:names) { dbs.map { |m| m.load_balancer.name }.uniq }
 
     let(:scoped_session) { Gitlab::Database::LoadBalancing::ScopedSessions.new(dbs, {}) }

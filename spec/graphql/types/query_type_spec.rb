@@ -57,8 +57,8 @@ RSpec.describe GitlabSchema.types['Query'], feature_category: :shared do
     subject { described_class.fields['metadata'] }
 
     it 'returns metadata' do
-      is_expected.to have_graphql_type(Types::MetadataType)
-      is_expected.to have_graphql_resolver(Resolvers::MetadataResolver)
+      is_expected.to have_graphql_type(Types::AppConfig::InstanceMetadataType)
+      is_expected.to have_graphql_resolver(Resolvers::AppConfig::InstanceMetadataResolver)
     end
   end
 

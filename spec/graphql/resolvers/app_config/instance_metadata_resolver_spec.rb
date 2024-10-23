@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Resolvers::MetadataResolver do
+RSpec.describe Resolvers::AppConfig::InstanceMetadataResolver, feature_category: :api do
   include GraphqlHelpers
 
   describe '#resolve' do
@@ -10,7 +10,7 @@ RSpec.describe Resolvers::MetadataResolver do
       expect(resolve(described_class)).to have_attributes(
         version: Gitlab::VERSION,
         revision: Gitlab.revision,
-        kas: kind_of(InstanceMetadata::Kas))
+        kas: kind_of(AppConfig::KasMetadata))
     end
   end
 end

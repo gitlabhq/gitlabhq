@@ -465,7 +465,9 @@ module Ci
     end
 
     def exit_code=(value)
-      ensure_metadata.exit_code = value
+      return unless value
+
+      ensure_metadata.exit_code = value.to_i.clamp(0, Gitlab::Database::MAX_SMALLINT_VALUE)
     end
 
     def auto_retry_expected?

@@ -41,6 +41,10 @@
   }
 }
 
+.gfm-form .note-textarea, .md .ProseMirror {
+  resize: vertical !important;
+}
+
 .note-image-attach {
   margin-left: 45px;
   float: none;

@@ -248,7 +248,6 @@ Style/ClassAndModuleChildren:
     - 'app/models/error_tracking/error.rb'
     - 'app/models/error_tracking/error_event.rb'
     - 'app/models/group/crm_settings.rb'
-    - 'app/models/instance_metadata/kas.rb'
     - 'app/models/issue/email.rb'
     - 'app/models/issue/metrics.rb'
     - 'app/models/issues/csv_import.rb'

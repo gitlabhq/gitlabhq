@@ -246,54 +246,6 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
     end
   end
 
-  describe '#ensure_shading_key_id' do
-    context 'with instance runner' do
-      let(:runner) { create(:ci_runner, :instance) }
-
-      it { expect(runner).to be_valid }
-
-      context 'when sharding_key_id points to an invalid record ID' do
-        before do
-          runner.sharding_key_id = non_existing_record_id
-        end
-
-        it 'updates the sharding_key_id before saving' do
-          expect { runner.save! }.to change { runner.sharding_key_id }.to(nil)
-        end
-      end
-    end
-
-    context 'with group runner' do
-      let!(:runner) { create(:ci_runner, :group, groups: [group]) }
-
-      it { expect(runner).to be_valid }
-
-      context 'when sharding_key_id is not present' do
-        before do
-          runner.sharding_key_id = nil
-        end
-
-        it 'updates the sharding_key_id before saving' do
-          expect { runner.save! }.to change { runner.sharding_key_id }.to(group.id)
-        end
-      end
-    end
-
-    context 'with project runner' do
-      let!(:runner) { create(:ci_runner, :project, projects: [project]) }
-
-      context 'when sharding_key_id is not present' do
-        before do
-          runner.sharding_key_id = nil
-        end
-
-        it 'updates the sharding_key_id before saving' do
-          expect { runner.save! }.to change { runner.sharding_key_id }.to(project.id)
-        end
-      end
-    end
-  end
-
   describe 'constraints' do
     it '.UPDATE_CONTACT_COLUMN_EVERY' do
       expect(described_class::UPDATE_CONTACT_COLUMN_EVERY.max)

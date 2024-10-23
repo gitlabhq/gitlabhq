@@ -290,6 +290,25 @@ To help avoid being impacted by this breaking change, create new access tokens w
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
+### Deprecate CI job implementation of Repository X-Ray
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.6</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/500146).
+
+</div>
+
+GitLab 18.0 removes the Repository X-Ray CI job:
+
+- The initial implementation of [Repository X-Ray](https://docs.gitlab.com/ee/user/project/repository/code_suggestions/repository_xray.html), using a CI job, is deprecated in GitLab 17.6.
+- This CI job is being replaced by an automated [background job](https://docs.gitlab.com/ee/user/project/repository/code_suggestions/repository_xray.html#how-repository-x-ray-works), triggered when a new commit is pushed to your project's default branch.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
 ### Deprecate License Scanning CI/CD artifact report type
 
 <div class="deprecation-notes">

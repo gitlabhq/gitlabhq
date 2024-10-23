@@ -61,28 +61,6 @@ RSpec.describe Gitlab::Ci::Config::Entry::Retry do
         end
       end
     end
-
-    context 'when ci_retry_on_exit_codes feature flag is disabled', :hash do
-      before do
-        stub_feature_flags(ci_retry_on_exit_codes: false)
-      end
-
-      context 'when `exit_codes` is an integer' do
-        let(:exit_codes) { 255 }
-
-        it 'deletes the attribute exit_codes' do
-          expect(value).to eq({})
-        end
-      end
-
-      context 'when `exit_codes` is an array' do
-        let(:exit_codes) { [255, 137] }
-
-        it 'deletes the attribute exit_codes' do
-          expect(value).to eq({})
-        end
-      end
-    end
   end
 
   describe 'validation' do

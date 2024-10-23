@@ -94,9 +94,9 @@ module Types
       description: 'Find a merge request.' do
       argument :id, ::Types::GlobalIDType[::MergeRequest], required: true, description: 'Global ID of the merge request.'
     end
-    field :metadata, Types::MetadataType,
+    field :metadata, Types::AppConfig::InstanceMetadataType,
       null: true,
-      resolver: Resolvers::MetadataResolver,
+      resolver: Resolvers::AppConfig::InstanceMetadataResolver,
       description: 'Metadata about GitLab.'
     field :milestone, ::Types::MilestoneType,
       null: true,

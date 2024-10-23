@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe InstanceMetadataPolicy do
-  subject { described_class.new(user, InstanceMetadata.new) }
+RSpec.describe AppConfig::InstanceMetadataPolicy, feature_category: :api do
+  subject { described_class.new(user, AppConfig::InstanceMetadata.new) }
 
   context 'for any logged-in user' do
     let(:user) { create(:user) }

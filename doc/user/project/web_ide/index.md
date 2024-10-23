@@ -225,21 +225,6 @@ To view any notification you might have missed:
 1. On the bottom status bar, on the right, select the bell icon (**{notifications}**) for a list of notifications.
 1. Select the notification you want to view.
 
-## Interactive web terminals
-
-DETAILS:
-**Status**: Beta
-
-When you set up a remote development server in the Web IDE, you can use interactive web terminals to:
-
-- Access a remote shell on the server.
-- Interact with the server's file system and execute commands remotely.
-
-You cannot use interactive web terminals to interact with a runner.
-However, you can use a terminal to install dependencies and compile and debug code.
-
-For more information, see [Remote development](../remote_development/index.md).
-
 ## Extension marketplace
 
 DETAILS:
