@@ -52,7 +52,7 @@ db:migrate:multi-version-upgrade:
     - .db-job-base
     - .rails:rules:db:migrate:multi-version-upgrade
   variables:
-    UPGRADE_STOP_DUMP_URL: "https://gitlab.com/gitlab-org/quality/pg-dump-generator/-/raw/main/pg_dumps/ee/latest_upgrade_stop.gz"
+    UPGRADE_STOP_DUMP_URL: "https://gitlab.com/gitlab-org/quality/pg-dump-generator/-/raw/main/pg_dumps/ee/17.3.5.gz"
   script:
     - curl -o latest_upgrade_stop.gz $UPGRADE_STOP_DUMP_URL
     - gunzip -c latest_upgrade_stop.gz > gitlabhq_production
