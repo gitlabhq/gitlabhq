@@ -27,7 +27,7 @@ RSpec.describe VersionCheckHelper do
           stub_application_setting(version_check_enabled: enabled)
           allow(User).to receive(:single_user).and_return(double(user, requires_usage_stats_consent?: consent))
           allow(helper).to receive(:current_user).and_return(user)
-          allow(user).to receive(:can_read_all_resources?).and_return(is_admin)
+          allow(user).to receive(:can_admin_all_resources?).and_return(is_admin)
         end
 
         it 'returns correct results' do
