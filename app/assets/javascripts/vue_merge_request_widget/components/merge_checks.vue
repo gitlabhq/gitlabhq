@@ -193,7 +193,7 @@ export default {
     </state-container>
     <div
       v-if="showChecks"
-      class="gl-relative gl-border-t-1 gl-border-gray-100 gl-bg-gray-10 gl-border-t-solid"
+      class="gl-border-t gl-relative gl-border-t-section gl-bg-subtle"
       data-testid="merge-checks-full"
     >
       <div>
@@ -203,7 +203,7 @@ export default {
           :key="index"
           class="gl-pl-9 gl-pr-4"
           :class="{
-            'gl-border-b-1 gl-border-gray-100 gl-border-b-solid': index !== sortedChecks.length - 1,
+            'gl-border-b gl-border-b-section': index !== sortedChecks.length - 1,
           }"
           :check="check"
           :mr="mr"

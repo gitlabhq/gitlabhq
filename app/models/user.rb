@@ -1288,14 +1288,10 @@ class User < ApplicationRecord
       direct_groups_cte = Gitlab::SQL::CTE.new(:direct_groups, groups)
       direct_groups_cte_alias = direct_groups_cte.table.alias(Group.table_name)
 
-      groups_from_authorized_projects = Group.id_in(authorized_projects.select(:namespace_id))
+      groups_from_authorized_projects = Group.id_in(authorized_projects.select(:namespace_id)).self_and_ancestors
       groups_from_shares = Group.joins(:shared_with_group_links)
                              .where(group_group_links: { shared_with_group_id: Group.from(direct_groups_cte_alias) })
-
-      if Feature.enabled?(:fix_user_authorized_groups, self)
-        groups_from_authorized_projects = groups_from_authorized_projects.self_and_ancestors
-        groups_from_shares = groups_from_shares.self_and_descendants
-      end
+                             .self_and_descendants
 
       Group
         .with(direct_groups_cte.to_arel)

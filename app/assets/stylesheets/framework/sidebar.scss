@@ -31,14 +31,6 @@
     }
   }
 
-  &.is-merge-request {
-    @include media-breakpoint-up(lg) {
-      .content-wrapper {
-        padding-right: $right-sidebar-collapsed-width;
-      }
-    }
-  }
-
   .sidebar-collapsed-icon {
     .btn {
       background-color: $gray-10;
@@ -85,7 +77,7 @@
   }
 
   @include media-breakpoint-only(sm) {
-    &:not(.wiki-sidebar):not(.build-sidebar):not(.issuable-bulk-update-sidebar) .content-wrapper {
+    &:not(.wiki-sidebar):not(.build-sidebar):not(.issuable-bulk-update-sidebar):not(.is-merge-request) .content-wrapper {
       padding-right: $right-sidebar-collapsed-width;
     }
   }

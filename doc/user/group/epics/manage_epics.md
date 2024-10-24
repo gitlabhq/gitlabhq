@@ -130,6 +130,7 @@ DETAILS:
 **Offering:** Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/464063) in GitLab 17.4 [with a flag](../../../administration/feature_flags.md) named `issues_list_drawer`. Disabled by default.
+> - Feature flag name was [changed] to `epics_list_drawer` in GitLab 17.6.
 
 FLAG:
 The availability of this feature is controlled by a feature flag.

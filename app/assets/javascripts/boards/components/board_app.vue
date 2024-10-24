@@ -92,7 +92,9 @@ export default {
 
   computed: {
     issuesDrawerEnabled() {
-      return Boolean(this.glFeatures.issuesListDrawer);
+      return Boolean(
+        this.isIssueBoard ? this.glFeatures.issuesListDrawer : this.glFeatures.epicsListDrawer,
+      );
     },
     listQueryVariables() {
       return {

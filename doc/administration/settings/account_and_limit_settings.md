@@ -303,10 +303,24 @@ DETAILS:
 **Tier:** Ultimate
 **Offering:** Self-managed
 
+> - Maximum allowable lifetime limit [extended to 400 days](https://gitlab.com/gitlab-org/gitlab/-/issues/461901) in GitLab 17.5 [with a flag](../feature_flags.md) named `buffered_token_expiration_limit`. Disabled by default.
+
+FLAG:
+The availability of the extended maximum allowable lifetime limit is controlled by a feature flag.
+For more information, see the history.
+
 Users can optionally specify a maximum lifetime in days for
 access tokens, this includes [personal](../../user/profile/personal_access_tokens.md),
 [group](../../user/group/settings/group_access_tokens.md), and [project](../../user/project/settings/project_access_tokens.md) access tokens.
-This lifetime is not a requirement, and can be set to any value greater than 0 and less than or equal to 365. If this setting is left blank, the default allowable lifetime of access tokens is 365 days.
+This lifetime is not a requirement, and can be set to any value greater than 0 and less than or equal to:
+
+- 365 days by default.
+- 400 days, if you enable the `buffered_token_expiration_limit` feature flag.
+
+If this setting is left blank, the default allowable lifetime of access tokens is:
+
+- 365 days by default.
+- 400 days, if you enable the `buffered_token_expiration_limit` feature flag.
 
 Access tokens are the only tokens needed for programmatic access to GitLab.
 However, organizations with security requirements may want to enforce more protection by

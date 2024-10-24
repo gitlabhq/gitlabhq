@@ -111,6 +111,9 @@ file.md @group-x/subgroup-y
 file.md @group-x @group-x/subgroup-y
 ```
 
+NOTE:
+You cannot set a member of a group or subgroup as a Code Owner if [Global SAML group memberships lock](../../group/saml_sso/group_sync.md#global-saml-group-memberships-lock) is enabled.
+
 #### Group inheritance and eligibility
 
 ```mermaid

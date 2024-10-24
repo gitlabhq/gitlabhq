@@ -68,13 +68,6 @@ compile-production-assets as-if-foss:
     - .as-if-foss
     - .qa:rules:test-on-omnibus-ce:follow-up
 
-follow-up:compile-production-assets:
-  extends:
-    - compile-production-assets
-    - .qa:rules:follow-up-e2e
-  needs:
-    - manual:e2e-test-pipeline-generate
-
 compile-test-assets:
   extends:
     - .compile-assets-base

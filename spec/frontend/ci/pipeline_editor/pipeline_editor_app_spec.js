@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { GlAlert, GlButton, GlLoadingIcon, GlSprintf } from '@gitlab/ui';
+import { GlAlert, GlButton, GlLoadingIcon, GlSprintf, GlToast } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -62,6 +62,8 @@ const defaultProvide = {
   usesExternalConfig: false,
 };
 
+Vue.use(GlToast);
+
 describe('Pipeline editor app component', () => {
   let wrapper;
 
@@ -71,6 +73,7 @@ describe('Pipeline editor app component', () => {
   let mockGetTemplate;
   let mockLatestCommitShaQuery;
   let mockPipelineQuery;
+  const showToastMock = jest.fn();
 
   const createComponent = ({ options = {}, provide = {}, stubs = {} } = {}) => {
     wrapper = shallowMount(PipelineEditorApp, {
@@ -123,7 +126,11 @@ describe('Pipeline editor app component', () => {
     });
 
     const options = {
-      mocks: {},
+      mocks: {
+        $toast: {
+          show: showToastMock,
+        },
+      },
       apolloProvider: mockApollo,
     };
 
@@ -349,8 +356,8 @@ describe('Pipeline editor app component', () => {
           findEditorHome().vm.$emit('commit', { type: COMMIT_SUCCESS });
         });
 
-        it('shows a confirmation message', () => {
-          expect(findAlert().text()).toBe(updateSuccessMessage);
+        it('shows a toast message for successful commit type', () => {
+          expect(showToastMock).toHaveBeenCalledWith(updateSuccessMessage);
         });
 
         it('scrolls to the top of the page to bring attention to the confirmation message', () => {
@@ -382,8 +389,24 @@ describe('Pipeline editor app component', () => {
         });
       });
 
+      describe('and the commit mutation succeeds with unknown success commit type', () => {
+        const defaultSuccessMessage = 'Your action succeeded.';
+
+        beforeEach(async () => {
+          await createComponentWithApollo({ stubs: { PipelineEditorMessages } });
+
+          findEditorHome().vm.$emit('commit', { type: 'unknown' });
+        });
+
+        it('shows a toast message for unknown successful commit type', () => {
+          expect(showToastMock).toHaveBeenCalledWith(defaultSuccessMessage);
+        });
+      });
+
       describe('when the commit succeeds with a redirect', () => {
         const newBranch = 'new-branch';
+        const updateSuccessWithRedirectMessage =
+          'Your changes have been successfully committed. Now redirecting to the new merge request page.';
 
         beforeEach(async () => {
           await createComponentWithApollo({ stubs: { PipelineEditorMessages } });
@@ -392,6 +415,10 @@ describe('Pipeline editor app component', () => {
             type: COMMIT_SUCCESS_WITH_REDIRECT,
             params: { sourceBranch: newBranch, targetBranch: mockDefaultBranch },
           });
+        });
+
+        it('shows a toast message for successful commit with redirect type', () => {
+          expect(showToastMock).toHaveBeenCalledWith(updateSuccessWithRedirectMessage);
         });
 
         it('redirects to the merge request page with source and target branches', () => {

@@ -4953,17 +4953,6 @@ RSpec.describe User, feature_category: :user_profile do
 
     it { is_expected.to contain_exactly private_group, child_group, project_group, project_group_parent }
 
-    context 'when fix_user_authorized_groups is disabled' do
-      before do
-        stub_feature_flags(fix_user_authorized_groups: false)
-      end
-
-      it 'omits ancestor groups of projects' do
-        is_expected.to include project_group
-        is_expected.not_to include project_group_parent
-      end
-    end
-
     context 'with shared memberships' do
       let_it_be(:shared_group) { create(:group) }
       let_it_be(:shared_group_descendant) { create(:group, parent: shared_group) }
@@ -4978,17 +4967,6 @@ RSpec.describe User, feature_category: :user_profile do
 
       it { is_expected.to include shared_group, shared_group_descendant }
       it { is_expected.not_to include other_group, shared_with_project_group }
-
-      context 'when fix_user_authorized_groups is disabled' do
-        before do
-          stub_feature_flags(fix_user_authorized_groups: false)
-        end
-
-        it 'omits subgroups of shared groups' do
-          is_expected.to include shared_group
-          is_expected.not_to include shared_group_descendant
-        end
-      end
     end
 
     context 'when a new column is added to namespaces table' do

@@ -515,7 +515,6 @@ RSpec/BeEq:
     - 'ee/spec/services/search/project_service_spec.rb'
     - 'ee/spec/services/search/rake_task_executor_service_spec.rb'
     - 'ee/spec/services/search/zoekt/indexing_task_service_spec.rb'
-    - 'ee/spec/services/search/zoekt/scheduling_service_spec.rb'
     - 'ee/spec/services/security/configuration/project_set_continuous_vulnerability_scanning_service_spec.rb'
     - 'ee/spec/services/security/orchestration/create_bot_service_spec.rb'
     - 'ee/spec/services/security/scan_result_policies/generate_policy_violation_comment_service_spec.rb'

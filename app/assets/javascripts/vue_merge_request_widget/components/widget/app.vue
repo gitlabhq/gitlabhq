@@ -61,7 +61,7 @@ export default {
       :key="widget.name || index"
       :mr="mr"
       class="mr-widget-section"
-      :class="{ 'gl-border-t': index > 0 }"
+      :class="{ 'gl-border-t gl-border-t-section': index > 0 }"
     />
   </section>
 </template>

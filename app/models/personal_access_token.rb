@@ -21,6 +21,7 @@ class PersonalAccessToken < ApplicationRecord
 
   # PATs are 20 characters + optional configurable settings prefix (0..20)
   TOKEN_LENGTH_RANGE = (20..40)
+  MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS_BUFFERED = 400
   MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS = 365
 
   serialize :scopes, Array # rubocop:disable Cop/ActiveRecordSerialize
@@ -117,10 +118,18 @@ class PersonalAccessToken < ApplicationRecord
     !Gitlab::CurrentSettings.require_personal_access_token_expiry?
   end
 
+  def max_expiration_lifetime_in_days
+    if ::Feature.enabled?(:buffered_token_expiration_limit) # rubocop:disable Gitlab/FeatureFlagWithoutActor -- Group setting but checked at user
+      MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS_BUFFERED
+    else
+      MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS
+    end
+  end
+
   def expires_at_before_instance_max_expiry_date
     return unless expires_at
 
-    max_expiry_date = Date.current.advance(days: MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS)
+    max_expiry_date = Date.current.advance(days: max_expiration_lifetime_in_days)
     return unless expires_at > max_expiry_date
 
     errors.add(

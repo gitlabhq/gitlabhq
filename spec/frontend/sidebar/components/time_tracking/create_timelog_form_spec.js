@@ -6,6 +6,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { stubComponent } from 'helpers/stub_component';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
+import { newDate } from '~/lib/utils/datetime_utility';
 import CreateTimelogForm from '~/sidebar/components/time_tracking/create_timelog_form.vue';
 import createTimelogMutation from '~/sidebar/queries/create_timelog.mutation.graphql';
 import { TYPENAME_ISSUE, TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constants';
@@ -171,7 +172,7 @@ describe('Create Timelog Form', () => {
       'calls the mutation with all the fields when the the form is submitted and issuable type is $issuableType',
       async ({ issuableType, typeConstant }) => {
         const timeSpent = '2d';
-        const spentAt = '2022-11-20T21:53:00+0000';
+        const spentAt = newDate('2022-11-20T00:00:00+0000');
         const summary = 'Example';
 
         mountComponent({ providedProps: { issuableType } });
@@ -184,7 +185,12 @@ describe('Create Timelog Form', () => {
         await waitForPromises();
 
         expect(rejectedMutationMock).toHaveBeenCalledWith({
-          input: { timeSpent, spentAt, summary, issuableId: convertToGraphQLId(typeConstant, '1') },
+          input: {
+            timeSpent,
+            spentAt: '2022-11-20',
+            summary,
+            issuableId: convertToGraphQLId(typeConstant, '1'),
+          },
         });
       },
     );
@@ -253,7 +259,7 @@ describe('Create Timelog Form', () => {
           id: 'gid://gitlab/WorkItem/1',
           timeTrackingWidget: {
             timelog: {
-              spentAt: '2020-07-06T00:00:00+0000',
+              spentAt: newDate('2020-07-06T00:00:00.000Z'),
               summary: '',
               timeSpent: '2d',
             },

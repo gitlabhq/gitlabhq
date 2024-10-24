@@ -32,7 +32,6 @@ RSpec/RepeatedSubjectCall:
     - 'ee/spec/services/sbom/ingestion/tasks/ingest_components_spec.rb'
     - 'ee/spec/services/sbom/ingestion/tasks/ingest_occurrences_spec.rb'
     - 'ee/spec/services/sbom/ingestion/tasks/ingest_sources_spec.rb'
-    - 'ee/spec/services/search/zoekt/scheduling_service_spec.rb'
     - 'ee/spec/services/security/orchestration/assign_service_spec.rb'
     - 'ee/spec/workers/namespaces/cascade_duo_features_enabled_worker_spec.rb'
     - 'ee/spec/workers/search/zoekt/lost_node_event_worker_spec.rb'

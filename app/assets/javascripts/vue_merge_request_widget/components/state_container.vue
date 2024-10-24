@@ -118,7 +118,7 @@ export default {
         <div
           v-if="isCollapsible"
           :class="{ 'md:gl-hidden': !collapseOnDesktop }"
-          class="gl-ml-3 gl-h-6 gl-border-l-1 gl-border-gray-100 gl-pl-3 gl-border-l-solid"
+          class="gl-border-l gl-ml-3 gl-h-6 gl-pl-3"
         >
           <gl-button
             v-gl-tooltip

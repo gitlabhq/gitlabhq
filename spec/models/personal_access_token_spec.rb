@@ -295,6 +295,10 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
     end
 
     context 'validates expires_at' do
+      before do
+        stub_feature_flags(buffered_token_expiration_limit: false)
+      end
+
       let(:max_expiration_date) { Date.current + described_class::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS }
 
       it "can't be blank" do
@@ -332,6 +336,45 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
           personal_access_token.expires_at = nil
 
           expect(personal_access_token).to be_valid
+        end
+      end
+    end
+
+    context 'validates buffered expires_at' do
+      let(:max_expiration_date) { Date.current + described_class::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS_BUFFERED }
+      let(:max_unbuffered_expiration_date) { Date.current + described_class::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS }
+
+      it "can't be blank" do
+        personal_access_token.expires_at = nil
+
+        expect(personal_access_token).not_to be_valid
+        expect(personal_access_token.errors[:expires_at].first).to eq("can't be blank")
+      end
+
+      context 'when expires_in is less than MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS_BUFFERED days' do
+        it 'is valid' do
+          personal_access_token.expires_at = max_expiration_date - 1.day
+
+          expect(personal_access_token).to be_valid
+        end
+      end
+
+      context 'when expires_in is less than MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS days' do
+        it 'is valid' do
+          personal_access_token.expires_at = max_unbuffered_expiration_date - 1.day
+
+          expect(personal_access_token).to be_valid
+        end
+      end
+
+      context 'when expires_in is more than MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS_BUFFERED days', :freeze_time do
+        it 'is invalid' do
+          personal_access_token.expires_at = max_expiration_date + 1.day
+
+          expect(personal_access_token).not_to be_valid
+          expect(personal_access_token.errors.full_messages.to_sentence).to eq(
+            "Expiration date must be before #{max_expiration_date}"
+          )
         end
       end
     end

@@ -1506,6 +1506,15 @@ Do not use bold.
 
 Do not use **Minimal Access permissions**. A user who is assigned the Minimal Access role has a set of associated permissions.
 
+## model registry
+
+When documenting the GitLab model registry features and functionality, use lowercase.
+
+Use:
+
+- The GitLab model registry supports A, B, and C.
+- You can publish a model to your project's model registry.
+
 ## n/a, N/A, not applicable
 
 When possible, use **not applicable**. Spelling out the phrase helps non-English speaking users and avoids

@@ -91,6 +91,10 @@ RSpec.configure do |config|
 
   config.infer_spec_type_from_file_location!
 
+  config.define_derived_metadata(file_path: %r{(ee)?/spec/presenters/(ee)?}) do |metadata|
+    metadata[:type] = :presenter
+  end
+
   # Add :full_backtrace tag to an example if full_backtrace output is desired
   config.before(:each, full_backtrace: true) do |example|
     config.full_backtrace = true
@@ -197,6 +201,7 @@ RSpec.configure do |config|
   config.include RedisHelpers
   config.include Rails.application.routes.url_helpers, type: :routing
   config.include Rails.application.routes.url_helpers, type: :component
+  config.include Rails.application.routes.url_helpers, type: :presenter
   config.include PolicyHelpers, type: :policy
   config.include ExpectRequestWithStatus, type: :request
   config.include IdempotentWorkerHelper, type: :worker

@@ -38,9 +38,6 @@ RSpec.describe 'Database schema',
     p_ci_pipelines: [%w[auto_canceled_by_partition_id auto_canceled_by_id]], # index on auto_canceled_by_id is sufficient
     p_ci_pipeline_variables: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
     p_ci_stages: [%w[partition_id pipeline_id]], # the index on pipeline_id is sufficient
-    # `search_index_id index_type` is the composite foreign key configured for `search_namespace_index_assignments`,
-    # but in Search::NamespaceIndexAssignment model, only `search_index_id` is used as foreign key and indexed
-    search_namespace_index_assignments: [%w[search_index_id index_type]],
     slack_integrations_scopes: [%w[slack_api_scope_id]],
     snippets: %w[organization_id], # this index is added in an async manner, hence it needs to be ignored in the first phase.
     users: [%w[accepted_term_id]],
@@ -52,7 +49,8 @@ RSpec.describe 'Database schema',
   # See: https://docs.gitlab.com/ee/development/migration_style_guide.html#dropping-a-database-table
   REMOVED_FKS = {
     # example_table: %w[example_column]
-    alert_management_alerts: %w[prometheus_alert_id]
+    alert_management_alerts: %w[prometheus_alert_id],
+    search_namespace_index_assignments: [%w[search_index_id index_type]]
   }.with_indifferent_access.freeze
 
   # List of columns historically missing a FK, don't add more columns

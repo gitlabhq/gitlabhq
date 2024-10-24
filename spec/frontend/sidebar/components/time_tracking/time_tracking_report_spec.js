@@ -7,6 +7,7 @@ import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
+import { localeDateFormat } from '~/lib/utils/datetime_utility';
 import TimeTrackingReport from '~/sidebar/components/time_tracking/time_tracking_report.vue';
 import getIssueTimelogsQuery from '~/sidebar/queries/get_issue_timelogs.query.graphql';
 import getMrTimelogsQuery from '~/sidebar/queries/get_mr_timelogs.query.graphql';
@@ -97,7 +98,11 @@ describe('TimeTrackingReport component', () => {
       const date = wrapper.findByText('May 1, 2020');
       const tooltip = getBinding(date.element, 'gl-tooltip');
 
-      expect(tooltip.value).toBe('May 1, 2020, 00:00 (UTC: +0000)');
+      expect(tooltip.value).toBe(
+        localeDateFormat.asDateTimeFull.format(
+          getIssueTimelogsQueryResponse.data.issuable.timelogs.nodes[0].spentAt,
+        ),
+      );
     });
   });
 

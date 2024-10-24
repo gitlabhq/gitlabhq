@@ -86,7 +86,7 @@ export default {
   <div
     class="gl-flex"
     :class="{
-      'gl-border-t gl-py-3 gl-pl-7': level === 2,
+      'gl-border-t gl-border-t-section gl-py-3 gl-pl-7': level === 2,
     }"
   >
     <status-icon

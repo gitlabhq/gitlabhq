@@ -2,6 +2,7 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlTable } from '@gitlab/ui';
 import { mountExtended, extendedWrapper } from 'helpers/vue_test_utils_helper';
+import { localeDateFormat } from '~/lib/utils/datetime_utility';
 import TimelogsTable from '~/time_tracking/components/timelogs_table.vue';
 import TimelogSourceCell from '~/time_tracking/components/timelog_source_cell.vue';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
@@ -125,7 +126,9 @@ describe('TimelogsTable component', () => {
       it('shows the spent at value with in the correct format', () => {
         mountComponent();
 
-        expect(findRowSpentAt(0).text()).toBe('March 27, 2023, 21:00 (UTC: +0000)');
+        expect(findRowSpentAt(0).text()).toBe(
+          localeDateFormat.asDateTimeFull.format(baseTimelogMock.spentAt),
+        );
       });
     });
 

@@ -82,11 +82,6 @@ related_epic_links:
 requirements_management_test_reports:
   idx_test_reports_on_issue_id_created_at_and_id:
   - index_requirements_management_test_reports_on_issue_id
-search_namespace_index_assignments:
-  index_search_namespace_index_assignments_uniqueness_index_type:
-  - index_search_namespace_index_assignments_on_namespace_id
-  index_search_namespace_index_assignments_uniqueness_on_index_id:
-  - index_search_namespace_index_assignments_on_namespace_id
 sprints:
   sequence_is_unique_per_iterations_cadence_id:
   - index_sprints_iterations_cadence_id

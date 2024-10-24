@@ -7,10 +7,7 @@ import { CODE_SNIPPET_SOURCES } from '~/ci/pipeline_editor/components/code_snipp
 import PipelineEditorMessages from '~/ci/pipeline_editor/components/ui/pipeline_editor_messages.vue';
 import {
   COMMIT_FAILURE,
-  COMMIT_SUCCESS,
-  COMMIT_SUCCESS_WITH_REDIRECT,
   DEFAULT_FAILURE,
-  DEFAULT_SUCCESS,
   LOAD_FAILURE_UNKNOWN,
   PIPELINE_FAILURE,
 } from '~/ci/pipeline_editor/constants';
@@ -30,43 +27,6 @@ describe('Pipeline Editor messages', () => {
 
   const findCodeSnippetAlert = () => wrapper.findComponent(CodeSnippetAlert);
   const findAlert = () => wrapper.findComponent(GlAlert);
-
-  describe('success alert', () => {
-    it('shows a message for successful commit type', () => {
-      createComponent({ successType: COMMIT_SUCCESS, showSuccess: true });
-
-      expect(findAlert().text()).toBe(wrapper.vm.$options.success[COMMIT_SUCCESS]);
-    });
-
-    it('shows a message for successful commit with redirect type', () => {
-      createComponent({ successType: COMMIT_SUCCESS_WITH_REDIRECT, showSuccess: true });
-
-      expect(findAlert().text()).toBe(wrapper.vm.$options.success[COMMIT_SUCCESS_WITH_REDIRECT]);
-    });
-
-    it('does not show alert when there is a successType but visibility is off', () => {
-      createComponent({ successType: COMMIT_SUCCESS, showSuccess: false });
-
-      expect(findAlert().exists()).toBe(false);
-    });
-
-    it('shows a success alert with default copy if `showSuccess` is true and the `successType` is not valid,', () => {
-      createComponent({ successType: 'random', showSuccess: true });
-
-      expect(findAlert().text()).toBe(wrapper.vm.$options.success[DEFAULT_SUCCESS]);
-    });
-
-    it('emit `hide-success` event when clicking on the dismiss button', async () => {
-      const expectedEvent = 'hide-success';
-
-      createComponent({ successType: COMMIT_SUCCESS, showSuccess: true });
-      expect(wrapper.emitted(expectedEvent)).not.toBeDefined();
-
-      await findAlert().vm.$emit('dismiss');
-
-      expect(wrapper.emitted(expectedEvent)).toBeDefined();
-    });
-  });
 
   describe('failure alert', () => {
     it.each`

@@ -2,7 +2,7 @@
 import { GlIcon, GlDatepicker, GlTooltipDirective, GlLink, GlPopover } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { TYPE_ISSUE } from '~/issues/constants';
-import { formatDate, localeDateFormat, newDate } from '~/lib/utils/datetime_utility';
+import { localeDateFormat, newDate, toISODateFormat } from '~/lib/utils/datetime_utility';
 import { __, sprintf } from '~/locale';
 import { dateFields, dateTypes, Tracking } from '../../constants';
 import { dueDateQueries, startDateQueries } from '../../queries/constants';
@@ -204,7 +204,7 @@ export default {
       this.setDate(date, isFixed);
     },
     setDate(date, isFixed = true) {
-      const formattedDate = date ? formatDate(date, 'yyyy-mm-dd') : null;
+      const formattedDate = date ? toISODateFormat(date) : null;
       this.loading = true;
       this.$refs.editable.collapse();
       this.$apollo

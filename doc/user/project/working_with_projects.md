@@ -58,7 +58,7 @@ For example, if in your personal namespace `alex` you have a project `my-project
 you can access the project either at `https://gitlab.example.com/alex/my-project` or `https://gitlab.example.com/projects/123456`.
 
 NOTE:
-From GitLab 17.5, you can also use `https://gitlab.example.com/-/p/<id>` for this endpoint.
+In GitLab 17.5 and later, you can also use `https://gitlab.example.com/-/p/<id>` for this endpoint.
 
 You might also need the project ID if you want to interact with the project using the [GitLab API](../../api/index.md).
 
@@ -75,10 +75,10 @@ To view all projects for the GitLab instance:
 1. On the left sidebar, select **Search or go to**.
 1. Select **Explore**.
 
-On the left sidebar, **Projects** is selected. On the right, the list shows
-all projects for the instance.
+On the left sidebar, **Projects** is selected.
+A list of all projects for the instance is displayed.
 
-If you are not authenticated, then the list shows public projects only.
+If you are not authenticated, the list shows public projects only.
 
 ## View projects you are a member of
 
@@ -139,9 +139,9 @@ Components published in the CI/CD catalog require a project description.
 
 ## Star a project
 
-You can add a star to projects you use frequently to make them easier to find.
+You can star projects you use frequently to make them easier to find.
 
-To add a star to a project:
+To star a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. In the upper-right corner of the page, select **Star**.

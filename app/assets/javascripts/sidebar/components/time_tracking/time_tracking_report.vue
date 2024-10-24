@@ -6,7 +6,6 @@ import { TYPENAME_ISSUE, TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constan
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPE_ISSUE } from '~/issues/constants';
 import {
-  formatDate,
   localeDateFormat,
   newDate,
   parseSeconds,
@@ -17,8 +16,6 @@ import { WIDGET_TYPE_TIME_TRACKING } from '~/work_items/constants';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import { timelogQueries } from '../../queries/constants';
 import deleteTimelogMutation from '../../queries/delete_timelog.mutation.graphql';
-
-const TIME_DATE_FORMAT = 'mmmm d, yyyy, HH:MM ("UTC:" o)';
 
 export default {
   i18n: {
@@ -126,7 +123,7 @@ export default {
       return this.removingIds.includes(timelogId);
     },
     formatDate(date) {
-      return formatDate(date, TIME_DATE_FORMAT);
+      return localeDateFormat.asDateTimeFull.format(newDate(date));
     },
     formatShortDate(date) {
       return localeDateFormat.asDate.format(newDate(date));

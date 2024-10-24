@@ -22,7 +22,6 @@ import PackageTags from '~/packages_and_registries/shared/components/package_tag
 import PublishMessage from '~/packages_and_registries/shared/components/publish_message.vue';
 import PublishMethod from '~/packages_and_registries/package_registry/components/list/publish_method.vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   name: 'PackageListRow',
@@ -38,7 +37,6 @@ export default {
     ListItem,
     ProtectedBadge,
   },
-  mixins: [glFeatureFlagsMixin()],
   inject: ['isGroupPage', 'canDeletePackages'],
   props: {
     packageEntity: {

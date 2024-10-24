@@ -71,7 +71,7 @@ export default {
               >
               <button
                 :aria-label="__('Close')"
-                class="gl-ml-4 gl-border-0 gl-border-l-2 gl-border-solid gl-border-gray-100 gl-bg-transparent gl-p-0 gl-pl-2"
+                class="gl-ml-4 gl-border-0 gl-border-l-2 gl-border-solid gl-bg-transparent gl-p-0 gl-pl-2"
                 type="button"
                 data-testid="close"
                 @click="dismiss"

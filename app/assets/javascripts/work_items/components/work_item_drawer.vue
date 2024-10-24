@@ -108,7 +108,7 @@ export default {
       const regex = new RegExp(`groups\/${escapedFullPath}\/-\/(work_items|epics)\/\\d+`);
       const isWorkItemPath = regex.test(workItem.webUrl);
 
-      if (isWorkItemPath || this.issueAsWorkItem) {
+      if (this.$router && (isWorkItemPath || this.issueAsWorkItem)) {
         this.$router.push({
           name: 'workItem',
           params: {

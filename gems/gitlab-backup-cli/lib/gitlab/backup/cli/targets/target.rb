@@ -20,16 +20,16 @@ module Gitlab
             false
           end
 
-          # dump task backup to `destination`
+          # dump task backup to `path`
           #
-          # @param [String] destination fully qualified backup task destination
-          # or a backup id - a unique identifier for a cloud backup
-          def dump(destination)
+          # @param [String] path fully qualified backup task destination
+          # @param [String] backup_id unique identifier for the backup
+          def dump(path, backup_id)
             raise NotImplementedError
           end
 
-          # restore task backup from `source`
-          def restore(source)
+          # restore task backup from `path`
+          def restore(path, backup_id)
             raise NotImplementedError
           end
         end

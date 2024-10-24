@@ -6618,6 +6618,7 @@ CREATE TABLE application_settings (
     allow_top_level_group_owners_to_create_service_accounts boolean DEFAULT false NOT NULL,
     sign_in_restrictions jsonb DEFAULT '{}'::jsonb NOT NULL,
     transactional_emails jsonb DEFAULT '{}'::jsonb NOT NULL,
+    identity_verification_settings jsonb DEFAULT '{}'::jsonb NOT NULL,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_dep_proxy_ttl_policies_worker_capacity_positive CHECK ((dependency_proxy_ttl_group_policy_worker_capacity >= 0)),
     CONSTRAINT app_settings_ext_pipeline_validation_service_url_text_limit CHECK ((char_length(external_pipeline_validation_service_url) <= 255)),
@@ -6687,7 +6688,8 @@ CREATE TABLE application_settings (
     CONSTRAINT check_e2dd6e290a CHECK ((char_length(jira_connect_application_key) <= 255)),
     CONSTRAINT check_e5024c8801 CHECK ((char_length(elasticsearch_username) <= 255)),
     CONSTRAINT check_e5aba18f02 CHECK ((char_length(container_registry_version) <= 255)),
-    CONSTRAINT check_ef6176834f CHECK ((char_length(encrypted_cloud_license_auth_token_iv) <= 255))
+    CONSTRAINT check_ef6176834f CHECK ((char_length(encrypted_cloud_license_auth_token_iv) <= 255)),
+    CONSTRAINT check_identity_verification_settings_is_hash CHECK ((jsonb_typeof(identity_verification_settings) = 'object'::text))
 );
 
 COMMENT ON COLUMN application_settings.content_validation_endpoint_url IS 'JiHu-specific column';
@@ -18574,49 +18576,6 @@ CREATE SEQUENCE scim_oauth_access_tokens_id_seq
 
 ALTER SEQUENCE scim_oauth_access_tokens_id_seq OWNED BY scim_oauth_access_tokens.id;
 
-CREATE TABLE search_indices (
-    id bigint NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
-    bucket_number integer,
-    path text NOT NULL,
-    type text NOT NULL,
-    number_of_shards integer DEFAULT 2 NOT NULL,
-    number_of_replicas integer DEFAULT 1 NOT NULL,
-    CONSTRAINT check_75c11e6d37 CHECK ((char_length(type) <= 255)),
-    CONSTRAINT check_ab47e7ff85 CHECK ((char_length(path) <= 255))
-);
-
-CREATE SEQUENCE search_indices_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE search_indices_id_seq OWNED BY search_indices.id;
-
-CREATE TABLE search_namespace_index_assignments (
-    id bigint NOT NULL,
-    namespace_id bigint,
-    search_index_id bigint NOT NULL,
-    namespace_id_non_nullable bigint NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
-    namespace_id_hashed integer NOT NULL,
-    index_type text NOT NULL,
-    CONSTRAINT check_64cf4e670a CHECK ((char_length(index_type) <= 255))
-);
-
-CREATE SEQUENCE search_namespace_index_assignments_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE search_namespace_index_assignments_id_seq OWNED BY search_namespace_index_assignments.id;
-
 CREATE SEQUENCE security_findings_id_seq
     START WITH 1
     INCREMENT BY 1
@@ -23045,10 +23004,6 @@ ALTER TABLE ONLY scim_identities ALTER COLUMN id SET DEFAULT nextval('scim_ident
 
 ALTER TABLE ONLY scim_oauth_access_tokens ALTER COLUMN id SET DEFAULT nextval('scim_oauth_access_tokens_id_seq'::regclass);
 
-ALTER TABLE ONLY search_indices ALTER COLUMN id SET DEFAULT nextval('search_indices_id_seq'::regclass);
-
-ALTER TABLE ONLY search_namespace_index_assignments ALTER COLUMN id SET DEFAULT nextval('search_namespace_index_assignments_id_seq'::regclass);
-
 ALTER TABLE ONLY security_findings ALTER COLUMN id SET DEFAULT nextval('security_findings_id_seq'::regclass);
 
 ALTER TABLE ONLY security_orchestration_policy_configurations ALTER COLUMN id SET DEFAULT nextval('security_orchestration_policy_configurations_id_seq'::regclass);
@@ -25706,12 +25661,6 @@ ALTER TABLE ONLY scim_identities
 
 ALTER TABLE ONLY scim_oauth_access_tokens
     ADD CONSTRAINT scim_oauth_access_tokens_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY search_indices
-    ADD CONSTRAINT search_indices_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY search_namespace_index_assignments
-    ADD CONSTRAINT search_namespace_index_assignments_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY security_findings
     ADD CONSTRAINT security_findings_pkey PRIMARY KEY (id, partition_number);
@@ -31053,20 +31002,6 @@ CREATE UNIQUE INDEX index_scim_identities_on_user_id_and_group_id ON scim_identi
 
 CREATE UNIQUE INDEX index_scim_oauth_access_tokens_on_group_id_and_token_encrypted ON scim_oauth_access_tokens USING btree (group_id, token_encrypted);
 
-CREATE UNIQUE INDEX index_search_indices_on_id_and_type ON search_indices USING btree (id, type);
-
-CREATE UNIQUE INDEX index_search_indices_on_type_and_bucket_number ON search_indices USING btree (type, bucket_number);
-
-CREATE UNIQUE INDEX index_search_indices_on_type_and_path ON search_indices USING btree (type, path);
-
-CREATE INDEX index_search_namespace_index_assignments_on_namespace_id ON search_namespace_index_assignments USING btree (namespace_id);
-
-CREATE INDEX index_search_namespace_index_assignments_on_search_index_id ON search_namespace_index_assignments USING btree (search_index_id);
-
-CREATE UNIQUE INDEX index_search_namespace_index_assignments_uniqueness_index_type ON search_namespace_index_assignments USING btree (namespace_id, index_type);
-
-CREATE UNIQUE INDEX index_search_namespace_index_assignments_uniqueness_on_index_id ON search_namespace_index_assignments USING btree (namespace_id, search_index_id);
-
 CREATE INDEX p_ci_builds_user_id_name_created_at_idx ON ONLY p_ci_builds USING btree (user_id, name, created_at) WHERE (((type)::text = 'Ci::Build'::text) AND ((name)::text = ANY (ARRAY[('container_scanning'::character varying)::text, ('dast'::character varying)::text, ('dependency_scanning'::character varying)::text, ('license_management'::character varying)::text, ('license_scanning'::character varying)::text, ('sast'::character varying)::text, ('coverage_fuzzing'::character varying)::text, ('apifuzzer_fuzz'::character varying)::text, ('apifuzzer_fuzz_dnd'::character varying)::text, ('secret_detection'::character varying)::text])));
 
 CREATE INDEX index_secure_ci_builds_on_user_id_name_created_at ON ci_builds USING btree (user_id, name, created_at) WHERE (((type)::text = 'Ci::Build'::text) AND ((name)::text = ANY (ARRAY[('container_scanning'::character varying)::text, ('dast'::character varying)::text, ('dependency_scanning'::character varying)::text, ('license_management'::character varying)::text, ('license_scanning'::character varying)::text, ('sast'::character varying)::text, ('coverage_fuzzing'::character varying)::text, ('apifuzzer_fuzz'::character varying)::text, ('apifuzzer_fuzz_dnd'::character varying)::text, ('secret_detection'::character varying)::text])));
@@ -35763,9 +35698,6 @@ ALTER TABLE ONLY ip_restrictions
 ALTER TABLE ONLY terraform_state_versions
     ADD CONSTRAINT fk_rails_04f176e239 FOREIGN KEY (terraform_state_id) REFERENCES terraform_states(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY search_namespace_index_assignments
-    ADD CONSTRAINT fk_rails_06f9b905d3 FOREIGN KEY (namespace_id) REFERENCES namespaces(id);
-
 ALTER TABLE ONLY issue_assignment_events
     ADD CONSTRAINT fk_rails_07683f8e80 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;
 
@@ -37571,9 +37503,6 @@ ALTER TABLE ONLY pages_deployment_states
 
 ALTER TABLE ONLY packages_terraform_module_metadata
     ADD CONSTRAINT fk_rails_terraform_module_metadata_project_id FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY search_namespace_index_assignments
-    ADD CONSTRAINT fk_search_index_id_and_type FOREIGN KEY (search_index_id, index_type) REFERENCES search_indices(id, type) ON DELETE CASCADE;
 
 ALTER TABLE ONLY security_orchestration_policy_configurations
     ADD CONSTRAINT fk_security_policy_configurations_management_project_id FOREIGN KEY (security_policy_management_project_id) REFERENCES projects(id) ON DELETE CASCADE;

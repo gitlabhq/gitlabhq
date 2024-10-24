@@ -39,6 +39,40 @@ RSpec.describe Gitlab::EventStore::Subscription, feature_category: :shared do
     end
   end
 
+  describe '#consume_event' do
+    let(:event) { event_klass.new(data: { name: 'Bob', id: 123 }) }
+
+    subject(:consume_event) { subscription.consume_event(event) }
+
+    it { is_expected.to be_present }
+
+    it 'triggers the execution of the worker' do
+      expect(worker).to receive(:perform_async)
+
+      consume_event
+    end
+
+    context 'when event is invalid' do
+      let(:event) { event_klass.new(data: { name: 'Bob' }) }
+
+      it 'raises InvalidEvent error' do
+        expect { consume_event }.to raise_error(Gitlab::EventStore::InvalidEvent)
+      end
+    end
+
+    context 'with delayed dispatching of event' do
+      let(:delay) { 1.minute }
+
+      it { is_expected.to be_present }
+
+      it 'dispatches the events to the worker with batch parameters and delay' do
+        expect(worker).to receive(:perform_in)
+
+        consume_event
+      end
+    end
+  end
+
   describe '#consume_events' do
     let(:event1) { event_klass.new(data: { name: 'Bob', id: 123 }) }
     let(:event2) { event_klass.new(data: { name: 'Alice', id: 456 }) }

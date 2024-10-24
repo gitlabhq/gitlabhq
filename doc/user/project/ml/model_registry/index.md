@@ -14,9 +14,6 @@ DETAILS:
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9423) in GitLab 16.8 as an [experiment](../../../../policy/experiment-beta-support.md#experiment) release [with a flag](../../../../administration/feature_flags.md) named `model_registry`. Disabled by default. To enable the feature, an administrator can [enable the feature flag](../../../../administration/feature_flags.md) named `model_registry`.
 > - [Changed](https://gitlab.com/groups/gitlab-org/-/epics/9423) to beta in GitLab 17.1.
 
-NOTE:
-Model registry is in [beta](../../../../policy/experiment-beta-support.md). [Provide feedback](https://gitlab.com/groups/gitlab-org/-/epics/9423).
-
 Model registry allows data scientists and developers to manage their machine learning
 models, along with all metadata associated with their creation: parameters, performance
 metrics, artifacts, logs, and more. For the full list of supported features,
@@ -172,7 +169,3 @@ if a new version can be deployed without changes to the application:
 - Prerelease: 2.0.1-alpha1 - A prerelease version of the model, with an alpha release.
 - Prerelease: 2.0.1-rc2 - A release candidate version of the model.
 - New Feature: 2.1.0 - A new feature has been added to the model, so the minor version is incremented.
-
-## Related topics
-
-- Development details, feedback, and feature requests in [epic 9423](https://gitlab.com/groups/gitlab-org/-/epics/9423).

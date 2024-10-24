@@ -210,7 +210,7 @@ class ProjectPolicy < BasePolicy
 
   with_scope :subject
   condition(:model_registry_enabled) do
-    Feature.enabled?(:model_registry, @subject) && @subject.feature_available?(:model_registry, @user)
+    @subject.feature_available?(:model_registry, @user)
   end
 
   with_scope :subject

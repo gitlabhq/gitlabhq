@@ -211,16 +211,6 @@ e2e-test-pipeline-generate:
       - '*-pipeline.yml'
       - "${CI_PROJECT_DIR}/qa_tests_vars.env"
 
-# This is the manual start of the chain of E2E jobs
-# After playing this, it'll follow up with:
-# follow-up:compile-production-assets -> follow-up:build-assets-image --\
-#                                                                       \-> follow-up:e2e:test-on-omnibus-ee
-# follow-up:build-qa-image ---------------------------------------------/
-manual:e2e-test-pipeline-generate:
-  extends:
-    - e2e-test-pipeline-generate
-    - .qa:rules:manual-e2e
-
 # This is the start of the chain of E2E jobs for CE
 # After playing this, it'll follow up with:
 # compile-production-assets as-if-foss -> build-assets-image as-if-foss --\

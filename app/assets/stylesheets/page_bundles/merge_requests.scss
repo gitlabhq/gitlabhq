@@ -435,9 +435,7 @@
 }
 
 .mr-section-container {
-  border: 1px solid var(--gl-border-color-default);
-  border-radius: $gl-border-radius-base;
-  background: var(--white, $white);
+  @apply gl-bg-section gl-border gl-border-section gl-rounded-base;
 
   &:not(:first-child) {
     @apply gl-mt-5;

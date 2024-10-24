@@ -450,6 +450,19 @@ describe('Work Item Note', () => {
       expect(findAwardsList().props('note')).toBe(mockWorkItemCommentNote);
       expect(findAwardsList().props('workItemIid')).toBe('1');
     });
+
+    it('passes external author to note header', () => {
+      const externalAuthor = 'user@example.com';
+
+      createComponent({
+        note: {
+          ...mockWorkItemCommentNote,
+          externalAuthor,
+        },
+      });
+
+      expect(findNoteHeader().props('emailParticipant')).toBe(externalAuthor);
+    });
   });
 
   it('calls the work item query', () => {

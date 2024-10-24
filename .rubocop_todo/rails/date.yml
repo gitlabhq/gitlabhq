@@ -125,7 +125,6 @@ Rails/Date:
     - 'ee/spec/services/personal_access_tokens/create_service_audit_log_spec.rb'
     - 'ee/spec/services/projects/update_service_spec.rb'
     - 'ee/spec/services/search/elastic/destroy_expired_subscription_service_spec.rb'
-    - 'ee/spec/services/search/zoekt/scheduling_service_spec.rb'
     - 'ee/spec/services/timebox/event_aggregation_service_spec.rb'
     - 'ee/spec/services/timebox_report_service_spec.rb'
     - 'ee/spec/support/shared_examples/requests/api/graphql/issue_list_shared_examples.rb'

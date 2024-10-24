@@ -10,7 +10,7 @@ import {
 } from '@gitlab/ui';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { issuableTypeText, TYPE_ISSUE } from '~/issues/constants';
-import { formatDate } from '~/lib/utils/datetime_utility';
+import { newDate, toISODateFormat } from '~/lib/utils/datetime_utility';
 import { TYPENAME_ISSUE, TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constants';
 import { joinPaths } from '~/lib/utils/url_utility';
 import { s__, sprintf } from '~/locale';
@@ -119,9 +119,7 @@ export default {
                 id: this.workItemId,
                 timeTrackingWidget: {
                   timelog: {
-                    spentAt: this.spentAt
-                      ? formatDate(this.spentAt, 'isoDateTime')
-                      : formatDate(Date.now(), 'isoDateTime'),
+                    spentAt: this.spentAt ? toISODateFormat(this.spentAt) : newDate(Date.now()),
                     summary: this.summary,
                     timeSpent: this.timeSpent,
                   },
@@ -152,9 +150,7 @@ export default {
           variables: {
             input: {
               timeSpent: this.timeSpent,
-              spentAt: this.spentAt
-                ? formatDate(this.spentAt, 'isoDateTime')
-                : formatDate(Date.now(), 'isoDateTime'),
+              spentAt: this.spentAt ? toISODateFormat(this.spentAt) : newDate(Date.now()),
               summary: this.summary,
               issuableId: this.getIssuableId(),
             },
