@@ -5,14 +5,18 @@ require 'spec_helper'
 RSpec.describe 'Merge requests > User mass updates', :js, feature_category: :code_review_workflow do
   include ListboxHelpers
 
-  let(:project) { create(:project, :repository) }
-  let(:user)    { project.creator }
-  let(:user2) { create(:user) }
-  let!(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:user)    { project.creator }
+  let_it_be(:user2) { create(:user) }
+  let_it_be(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+  let_it_be(:merged_merge_request) { create(:merge_request, :merged, source_project: project, target_project: project) }
 
-  before do
+  before_all do
     project.add_maintainer(user)
     project.add_maintainer(user2)
+  end
+
+  before do
     sign_in(user)
   end
 
@@ -43,7 +47,6 @@ RSpec.describe 'Merge requests > User mass updates', :js, feature_category: :cod
     end
 
     it 'does not exist in merged state' do
-      merge_request.close
       visit project_merge_requests_path(project, state: 'merged')
 
       click_button 'Bulk edit'
@@ -80,7 +83,7 @@ RSpec.describe 'Merge requests > User mass updates', :js, feature_category: :cod
   end
 
   context 'milestone' do
-    let(:milestone) { create(:milestone, project: project) }
+    let!(:milestone) { create(:milestone, project: project) }
 
     describe 'set milestone' do
       before do

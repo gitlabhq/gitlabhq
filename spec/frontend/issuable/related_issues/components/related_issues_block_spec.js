@@ -242,7 +242,7 @@ describe('RelatedIssuesBlock', () => {
     it('is expanded by default', () => {
       const toggleButton = findToggleButton();
 
-      expect(toggleButton.props('icon')).toBe('chevron-up');
+      expect(toggleButton.props('icon')).toBe('chevron-lg-up');
       expect(toggleButton.props('disabled')).toBe(false);
       expect(toggleButton.attributes('aria-expanded')).toBe('true');
       expect(findRelatedIssuesBody().exists()).toBe(true);
@@ -254,7 +254,7 @@ describe('RelatedIssuesBlock', () => {
 
       const toggleButton = findToggleButton();
 
-      expect(toggleButton.props('icon')).toBe('chevron-down');
+      expect(toggleButton.props('icon')).toBe('chevron-lg-down');
       expect(toggleButton.attributes('aria-expanded')).toBe('false');
       expect(findRelatedIssuesBody().exists()).toBe(false);
     });

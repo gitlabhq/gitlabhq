@@ -61,10 +61,11 @@ module Emails
     # rubocop: enable CodeReuse/ActiveRecord
 
     # resource owners are sent mail about expiring access tokens which belong to a bot user
-    def bot_resource_access_token_about_to_expire_email(recipient, resource, token_name)
+    def bot_resource_access_token_about_to_expire_email(recipient, resource, token_name, params = {})
+      params = params.with_indifferent_access
       @user = recipient
       @token_name = token_name
-      @days_to_expire = PersonalAccessToken::DAYS_TO_EXPIRE
+      @days_to_expire = params.fetch(:days_to_expire, PersonalAccessToken::DAYS_TO_EXPIRE)
       @resource = resource
       if resource.is_a?(Group)
         @target_url = group_settings_access_tokens_url(resource)
@@ -95,13 +96,15 @@ module Emails
       email_with_layout(to: @user.notification_email_or_default, subject: subject(_("A new personal access token has been created")))
     end
 
-    def access_token_about_to_expire_email(user, token_names)
+    def access_token_about_to_expire_email(user, token_names, params = {})
       return unless user
+
+      params = params.with_indifferent_access
 
       @user = user
       @token_names = token_names
       @target_url = user_settings_personal_access_tokens_url
-      @days_to_expire = PersonalAccessToken::DAYS_TO_EXPIRE
+      @days_to_expire = params.fetch(:days_to_expire, PersonalAccessToken::DAYS_TO_EXPIRE)
 
       email_with_layout(to: @user.notification_email_or_default, subject: subject(_("Your personal access tokens will expire in %{days_to_expire} days or less") % { days_to_expire: @days_to_expire }))
     end

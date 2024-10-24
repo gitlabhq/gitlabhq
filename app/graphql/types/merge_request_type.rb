@@ -278,6 +278,9 @@ module Types
     field :retargeted, GraphQL::Types::Boolean, null: true,
       description: 'Indicates if merge request was retargeted.'
 
+    field :hidden, GraphQL::Types::Boolean, null: true,
+      description: 'Indicates the merge request is hidden because the author has been banned.', method: :hidden?
+
     markdown_field :title_html, null: true
     markdown_field :description_html, null: true
 

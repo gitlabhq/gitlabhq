@@ -59,5 +59,6 @@ fragment MergeRequestFragment on MergeRequest {
     completedCount
     count
   }
+  hidden
   ...MergeRequestApprovalFragment
 }

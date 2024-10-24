@@ -73,10 +73,10 @@ import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import MergeRequestReviewers from '~/issuable/components/merge_request_reviewers.vue';
 import setSortPreferenceMutation from '~/issues/list/queries/set_sort_preference.mutation.graphql';
 import issuableEventHub from '~/issues/list/eventhub';
+import getMergeRequestsQuery from 'ee_else_ce/merge_requests/list/queries/get_merge_requests.query.graphql';
+import getMergeRequestsCountsQuery from 'ee_else_ce/merge_requests/list/queries/get_merge_requests_counts.query.graphql';
 import { AutocompleteCache } from '../../utils/autocomplete_cache';
 import { i18n, BRANCH_LIST_REFRESH_INTERVAL } from '../constants';
-import getMergeRequestsQuery from '../queries/get_merge_requests.query.graphql';
-import getMergeRequestsCountsQuery from '../queries/get_merge_requests_counts.query.graphql';
 import searchLabelsQuery from '../queries/search_labels.query.graphql';
 import MergeRequestStatistics from './merge_request_statistics.vue';
 import MergeRequestMoreActionsDropdown from './more_actions_dropdown.vue';
@@ -432,7 +432,7 @@ export default {
       );
     },
     sortOptions() {
-      return getSortOptions({ hasManualSort: false });
+      return getSortOptions({ hasManualSort: false, hasMergedDate: this.state === STATUS_MERGED });
     },
     tabCounts() {
       const { openedMergeRequests, closedMergeRequests, mergedMergeRequests, allMergeRequests } =
@@ -469,6 +469,16 @@ export default {
     },
     isBulkEditButtonDisabled() {
       return this.showBulkEditSidebar || !this.mergeRequests.length;
+    },
+  },
+  watch: {
+    state: {
+      handler(val) {
+        document
+          .querySelector('.js-status-dropdown-container')
+          ?.classList.toggle('gl-hidden', val === STATUS_MERGED);
+      },
+      immediate: true,
     },
   },
   created() {
@@ -628,7 +638,7 @@ export default {
       this.$apollo
         .mutate({
           mutation: setSortPreferenceMutation,
-          variables: { input: { issuesSort: sortKey } },
+          variables: { input: { mergeRequestsSort: sortKey } },
         })
         .then(({ data }) => {
           if (data.userPreferencesUpdate.errors.length) {
@@ -805,7 +815,7 @@ export default {
     </template>
 
     <template #reviewers="{ issuable = {} }">
-      <li v-if="getReviewers(issuable).length" class="!gl-mr-0">
+      <li v-if="getReviewers(issuable).length" class="issuable-reviewers !gl-mr-0">
         <merge-request-reviewers
           :reviewers="getReviewers(issuable)"
           :icon-size="16"

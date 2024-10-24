@@ -338,10 +338,6 @@ RSpec.configure do |config|
       # Keep-around refs should only be turned off for specific projects/repositories.
       stub_feature_flags(disable_keep_around_refs: false)
 
-      # The Vue version of the merge request list app is missing a lot of information
-      # disabling this for now whilst we work on it across multiple merge requests
-      stub_feature_flags(vue_merge_request_list: false)
-
       # Work in progress reviewer sidebar that does not have most of the features yet
       stub_feature_flags(reviewer_assign_drawer: false)
 

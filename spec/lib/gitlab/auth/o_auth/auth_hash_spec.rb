@@ -220,19 +220,6 @@ RSpec.describe Gitlab::Auth::OAuth::AuthHash, aggregate_failures: true, feature_
         expect(auth_hash.username).to be_empty
         expect(auth_hash.errors).to eq({ identity_provider_email: _("must be 254 characters or less.") })
       end
-
-      context 'when the feature flag is disabled' do
-        before do
-          stub_feature_flags(omniauth_validate_email_length: false)
-        end
-
-        it 'normalizes the string' do
-          expect(auth_hash).to receive(:mb_chars_unicode_normalize).and_call_original
-
-          expect(auth_hash.username).to eq('longemail' * 300)
-          expect(auth_hash.errors).to be_empty
-        end
-      end
     end
 
     context 'when the local part of the email address is longer than 254 characters after normalization' do
@@ -248,19 +235,6 @@ RSpec.describe Gitlab::Auth::OAuth::AuthHash, aggregate_failures: true, feature_
 
         expect(auth_hash.username).to be_empty
         expect(auth_hash.errors).to eq({ identity_provider_email: _("must be 254 characters or less.") })
-      end
-
-      context 'when the feature flag is disabled' do
-        before do
-          stub_feature_flags(omniauth_validate_email_length: false)
-        end
-
-        it 'normalizes the string' do
-          expect(auth_hash).to receive(:mb_chars_unicode_normalize).and_call_original
-
-          expect(auth_hash.username).not_to be_empty
-          expect(auth_hash.errors).to be_empty
-        end
       end
     end
   end

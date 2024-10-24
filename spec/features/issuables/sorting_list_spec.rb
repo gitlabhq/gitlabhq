@@ -46,7 +46,7 @@ RSpec.describe 'Sort Issuable List', feature_category: :team_planning do
         let(:issuable_type) { :merge_request }
 
         it 'is "created date"' do
-          visit_merge_requests_with_state(project, 'open')
+          visit_merge_requests_with_state(project, 'opened')
 
           expect(selected_sort_order).to eq('created date')
           expect(first_merge_request).to include(last_created_issuable.title)
@@ -95,7 +95,7 @@ RSpec.describe 'Sort Issuable List', feature_category: :team_planning do
       let(:issuable_type) { :merge_request }
 
       it 'supports sorting in asc and desc order' do
-        visit_merge_requests_with_state(project, 'open')
+        visit_merge_requests_with_state(project, 'opened')
 
         select_from_listbox('Updated date', from: 'Created date')
 
@@ -210,7 +210,7 @@ RSpec.describe 'Sort Issuable List', feature_category: :team_planning do
   end
 
   def selected_sort_order
-    find('.filter-dropdown-container .gl-new-dropdown button').text.downcase
+    find('.sort-dropdown-container').text.downcase
   end
 
   def visit_merge_requests_with_state(project, state)

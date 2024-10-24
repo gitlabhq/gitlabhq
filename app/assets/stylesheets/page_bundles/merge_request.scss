@@ -54,7 +54,8 @@ $comparison-empty-state-height: 62px;
   }
 }
 
-.mr-list {
+.mr-list,
+.issuable-list {
   .merge-request {
     padding: 10px $gl-padding;
     display: flex;

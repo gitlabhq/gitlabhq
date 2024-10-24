@@ -18,6 +18,9 @@ module Mutations
       argument :issues_sort, Types::IssueSortEnum,
         required: false,
         description: 'Sort order for issue lists.'
+      argument :merge_requests_sort, Types::MergeRequestSortEnum,
+        required: false,
+        description: 'Sort order for issue lists.'
       argument :use_work_items_view, GraphQL::Types::Boolean,
         required: false,
         description: 'Use work item view instead of legacy issue view.'

@@ -326,6 +326,7 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
       allow(helper).to receive(:current_user).and_return(current_user)
       allow(helper).to receive(:can?).with(current_user, :create_merge_request_in, project).and_return(true)
       allow(helper).to receive(:can?).with(current_user, :admin_merge_request, project).and_return(true)
+      allow(helper).to receive(:can?).with(current_user, :create_merge_request_from, project).and_return(true)
       allow(helper).to receive(:issuables_count_for_state).and_return(5)
       allow(helper).to receive(:url_for).and_return("/rss-url")
       allow(helper).to receive(:export_csv_project_merge_requests_path).and_return('/csv-url')

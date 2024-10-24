@@ -22908,6 +22908,9 @@ msgstr ""
 msgid "Failed to create branch target"
 msgstr ""
 
+msgid "Failed to create compliance requirement"
+msgstr ""
+
 msgid "Failed to create framework"
 msgstr ""
 
@@ -56299,6 +56302,9 @@ msgid "This merge request is from a private project to an internal project."
 msgstr ""
 
 msgid "This merge request is from an internal project to a public project."
+msgstr ""
+
+msgid "This merge request is hidden because its author has been banned."
 msgstr ""
 
 msgid "This merge request was merged. To apply this suggestion, edit this file directly."

@@ -124,7 +124,7 @@ export default {
             v-gl-tooltip
             :title="collapsed ? expandDetailsTooltip : collapseDetailsTooltip"
             :aria-label="collapsed ? expandDetailsTooltip : collapseDetailsTooltip"
-            :icon="collapsed ? 'chevron-down' : 'chevron-up'"
+            :icon="collapsed ? 'chevron-lg-down' : 'chevron-lg-up'"
             category="tertiary"
             size="small"
             class="gl-align-top"

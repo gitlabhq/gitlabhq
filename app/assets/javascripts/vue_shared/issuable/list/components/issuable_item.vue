@@ -238,6 +238,13 @@ export default {
         gon.current_user_use_work_items_view
       );
     },
+    hiddenIssuableTitle() {
+      if (this.isMergeRequest) {
+        return __('This merge request is hidden because its author has been banned.');
+      }
+
+      return __('This issue is hidden because its author has been banned.');
+    },
   },
   methods: {
     hasSlotContents(slotName) {
@@ -359,7 +366,7 @@ export default {
           v-if="issuable.hidden"
           v-gl-tooltip
           name="spam"
-          :title="__('This issue is hidden because its author has been banned.')"
+          :title="hiddenIssuableTitle"
           :aria-label="__('Hidden')"
         />
         <work-item-prefetch

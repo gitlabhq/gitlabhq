@@ -169,9 +169,14 @@ DETAILS:
 **Offering:** Self-managed
 **Status:** Beta
 
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12972) in GitLab 17.1 [with a flag](../../administration/feature_flags.md) named `ai_custom_model`. Disabled by default.
+> - [Enabled on self-managed](https://gitlab.com/groups/gitlab-org/-/epics/15176) in GitLab 17.6.
 > - GitLab Duo add-on required in GitLab 17.6 and later.
 
-- Host a GitLab-approved model that's different from the default.
+Self-managed users can experience a fully managed self-hosted environment, but they also have the option to use GitLab cloud connector and default AI vendors.
+
+- **Using GitLab.com AI Gateway and Cloud Connector**: Leverage the GitLab-managed AI Gateway to connect with external large language model (LLM) providers (for example, Google Vertex AI or Anthropic), using external public providers.
+- **Using a Fully Self-Hosted and Managed Solution**: Deploy and manage your own AI Gateway and LLMs entirely within your infrastructure, without depending on external public providers.
 - [View documentation](../../administration/self_hosted_models/index.md).
 
 ### Merge Request Summary

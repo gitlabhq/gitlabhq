@@ -31,7 +31,7 @@ RSpec.describe 'User sorts merge requests', :js, feature_category: :code_review_
 
     visit(project_merge_requests_path(project))
 
-    expect(find('.filter-dropdown-container button.gl-new-dropdown-toggle')).to have_content('Milestone')
+    expect(find('.sort-dropdown-container')).to have_content('Milestone')
 
     visit(merge_requests_group_path(group))
 
@@ -68,7 +68,7 @@ RSpec.describe 'User sorts merge requests', :js, feature_category: :code_review_
     it 'sorts by popularity' do
       pajamas_sort_by(s_('SortOptions|Popularity'), from: s_('SortOptions|Created date'))
 
-      page.within('.mr-list') do
+      page.within('.issuable-list') do
         page.within('li.merge-request:nth-child(1)') do
           expect(page).to have_content(merge_request.title)
           expect(page).to have_content('2 1')

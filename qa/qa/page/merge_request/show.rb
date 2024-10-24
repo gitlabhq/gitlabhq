@@ -234,7 +234,7 @@ module QA
 
         def expand_merge_checks
           within_element('.mr-widget-section') do
-            click_element('chevron-down-icon')
+            click_element('chevron-lg-down-icon')
           end
         end
 

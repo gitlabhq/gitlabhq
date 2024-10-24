@@ -77,6 +77,8 @@ export const UPDATED_ASC = 'UPDATED_ASC';
 export const UPDATED_DESC = 'UPDATED_DESC';
 export const WEIGHT_ASC = 'WEIGHT_ASC';
 export const WEIGHT_DESC = 'WEIGHT_DESC';
+export const MERGED_AT_ASC = 'MERGED_AT_ASC';
+export const MERGED_AT_DESC = 'MERGED_AT_DESC';
 
 export const API_PARAM = 'apiParam';
 export const URL_PARAM = 'urlParam';
@@ -134,6 +136,8 @@ export const urlSortParams = {
   [WEIGHT_DESC]: 'weight_desc',
   [BLOCKING_ISSUES_ASC]: 'blocking_issues_asc',
   [BLOCKING_ISSUES_DESC]: 'blocking_issues_desc',
+  [MERGED_AT_ASC]: 'merged_at_asc',
+  [MERGED_AT_DESC]: 'merged_at_desc',
 };
 
 export const wildcardFilterValues = [
@@ -158,23 +162,28 @@ export const filtersMap = {
   [TOKEN_TYPE_APPROVED_BY]: {
     [API_PARAM]: {
       [NORMAL_FILTER]: 'approvedBy',
+      [WILDCARD_FILTER]: 'approvedBy',
     },
     [URL_PARAM]: {
       [OPERATOR_IS]: {
         [NORMAL_FILTER]: 'approved_by_usernames[]',
+        [WILDCARD_FILTER]: 'approved_by_usernames[]',
       },
       [OPERATOR_NOT]: {
         [NORMAL_FILTER]: 'not[approved_by_usernames][]',
+        [WILDCARD_FILTER]: 'not[approved_by_usernames][]',
       },
     },
   },
   [TOKEN_TYPE_APPROVER]: {
     [API_PARAM]: {
       [NORMAL_FILTER]: 'approver',
+      [WILDCARD_FILTER]: 'approver',
     },
     [URL_PARAM]: {
       [OPERATOR_IS]: {
         [NORMAL_FILTER]: 'approver[]',
+        [WILDCARD_FILTER]: 'approver[]',
       },
     },
   },

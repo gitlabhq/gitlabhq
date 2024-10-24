@@ -157,6 +157,24 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
     end
   end
 
+  describe 'personal access token is about to expire' do
+    let_it_be(:user) { create(:user) }
+
+    subject { Notify.access_token_about_to_expire_email(user, ['example token']) }
+
+    it { is_expected.to deliver_to(user) }
+    it { is_expected.to have_subject(/^Your personal access tokens will expire in 7 days or less$/i) }
+    it { is_expected.to have_body_text(/#{user_settings_personal_access_tokens_path}/) }
+    it { is_expected.to have_body_text(/example token/) }
+
+    context 'when passed days_to_expire parameter' do
+      subject { Notify.access_token_about_to_expire_email(user, ['example token'], days_to_expire: 42) }
+
+      it { is_expected.to have_subject(/^Your personal access tokens will expire in 42 days or less$/i) }
+      it { is_expected.to have_body_text('42') }
+    end
+  end
+
   describe 'resource access token is about to expire' do
     let_it_be(:user) { create(:user) }
 
@@ -203,6 +221,12 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
       it 'includes the email reason' do
         is_expected.to have_body_text _('You are receiving this email because you are an Owner of the Group.')
       end
+
+      context 'when passed days_to_expire parameter' do
+        subject { Notify.bot_resource_access_token_about_to_expire_email(user, resource, expiring_token.name, days_to_expire: 42) }
+
+        it { is_expected.to have_body_text('42') }
+      end
     end
 
     context 'when access token belongs to a project' do
@@ -225,6 +249,12 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
 
       it 'includes the email reason' do
         is_expected.to have_body_text _('You are receiving this email because you are either an Owner or Maintainer of the project.')
+      end
+
+      context 'when passed days_to_expire parameter' do
+        subject { Notify.bot_resource_access_token_about_to_expire_email(user, resource, expiring_token.name, days_to_expire: 42) }
+
+        it { is_expected.to have_body_text('42') }
       end
     end
   end

@@ -28,7 +28,9 @@ By default, they inherit permissions from the user who created them.
 You can use the personal access tokens API to programmatically take action,
 such as [rotating a personal access token](../../api/personal_access_tokens.md#rotate-a-personal-access-token).
 
-You receive an email when tokens are seven days or less from expiration.
+You
+[receive an email](../../user/profile/personal_access_tokens.md#personal-access-token-expiry-emails)
+when your personal access tokens are expiring soon.
 
 ## OAuth 2.0 tokens
 
@@ -67,9 +69,9 @@ licensed seats.
 You can use the [project access tokens API](../../api/project_access_tokens.md) to programmatically take
 action, such as [rotating a project access token](../../api/project_access_tokens.md#rotate-a-project-access-token).
 
-Direct members of a project with at least the Maintainer role receive
-an email when project access tokens are seven days or less from
-expiration. Inherited members do not receive an email.
+Direct members of a project with at least the Maintainer role
+[receive an email](../../user/project/settings/project_access_tokens.md#project-access-token-expiry-emails)
+when project access tokens are nearly expired. Inherited members do not receive an email.
 
 ## Group access tokens
 
@@ -89,9 +91,9 @@ Bot users for groups are service accounts and do not count as licensed seats.
 You can use the [group access tokens API](../../api/group_access_tokens.md) to programmatically take
 action, such as [rotating a group access token](../../api/group_access_tokens.md#rotate-a-group-access-token).
 
-Direct members of a group with the Owner role receive an email when
-group access tokens are seven days or less from expiration. Inherited
-members do not receive an email.
+Direct members of a group with the Owner role
+[receive an email](../../user/group/settings/group_access_tokens.md#group-access-token-expiry-emails)
+when group access tokens are nearly expired. Inherited members do not receive an email.
 
 ## Deploy tokens
 

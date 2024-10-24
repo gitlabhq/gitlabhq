@@ -11,7 +11,7 @@ The [AI gateway](https://handbook.gitlab.com/handbook/engineering/architecture/d
 
 ## Install the GitLab AI Gateway
 
-### Install by using Docker
+### Install using Docker
 
 Prerequisites:
 
@@ -34,19 +34,39 @@ GitLab version is `v17.5.0`, use `self-hosted-v17.5.0-ee` tag.
 
 #### Start a container from the image
 
-For Docker images with version `self-hosted-17.4.0-ee` and later, run the following:
+1. For Docker images with version `self-hosted-17.4.0-ee` and later, run the following:
+
+   ```shell
+   docker run -p 5052:5052 \
+    -e AIGW_GITLAB_URL=<your_gitlab_instance> \
+    -e AIGW_GITLAB_API_URL=https://<your_gitlab_domain>/api/v4/ \
+    <image>
+   ```
+
+   From the container host, accessing `http://localhost:5052/docs` should open the AI Gateway API documentation.
+
+1. Ensure that port `5052` is forwarded to the container from the host and is included in the `AI_GATEWAY_URL` environment variable.
+
+If you encounter issues loading the PEM file, resulting in errors like `JWKError`, you may need to resolve an SSL certificate error.
+
+To fix this, set the appropriate certificate bundle path in the Docker container by using the following environment variables:
+
+- `SSL_CERT_FILE=/path/to/ca-bundle.pem`
+- `REQUESTS_CA_BUNDLE=/path/to/ca-bundle.pem`
+
+Replace `/path/to/ca-bundle.pem` with the actual path to your certificate bundle.
+
+#### Additional Configuration
+
+If you encounter authentication issues during health checks, bypass the authentication temporarily by setting the following environment variable:
 
 ```shell
-docker run -p 5052:5052 \
- -e AIGW_GITLAB_URL=<your_gitlab_instance> \
- -e AIGW_GITLAB_API_URL=https://<your_gitlab_domain>/api/v4/ \
- <image>
+-e AIGW_AUTH__BYPASS_EXTERNAL=true
 ```
 
-From the container host, accessing `http://localhost:5052/docs`
-should open the AI Gateway API documentation.
+This can be helpful for troubleshooting, but you should disable this after fixing the issues.
 
-### Install by using the AI Gateway Helm chart
+### Install using the AI Gateway Helm chart
 
 Prerequisites:
 
@@ -111,6 +131,10 @@ https://gitlab.com/api/v4/projects/gitlab-org%2fcharts%2fai-gateway-helm-chart/p
 This step can take will take a few seconds in order for all resources to be allocated
 and the AI Gateway to start.
 
+You might need to set up your own **Ingress Controller** for the AI Gateway if your existing `nginx` Ingress controller does not serve services in a different namespace. Make sure Ingress is set up correctly for multi-namespace deployments.
+
+For versions of the `ai-gateway` Helm chart, use `helm search repo ai-gateway --versions` to find the appropriate chart version.
+
 Wait for your pods to get up and running:
 
 ```shell
@@ -147,3 +171,20 @@ To upgrade the AI Gateway, download the newest Docker image tag.
 
 For information on alternative ways to install the AI Gateway, see
 [issue 463773](https://gitlab.com/gitlab-org/gitlab/-/issues/463773).
+
+## Health Check and Debugging
+
+To debug issues with your self-hosted Duo installation, run the following command:
+
+```shell
+sudo gitlab-rake gitlab:duo:verify_self_hosted_setup
+```
+
+Ensure that:
+
+- The environment variable `AI_GATEWAY_URL` is correctly set.
+- Duo access has been explicitly enabled for the root user through `/admin/code_suggestions`.
+
+If access issues persist, check that authentication is correctly configured, and that the health check passes.
+
+In case of persistent issues, the error message may suggest bypassing authentication with `AIGW_AUTH__BYPASS_EXTERNAL=true`, but only do this for troubleshooting.

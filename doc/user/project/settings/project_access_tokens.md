@@ -166,6 +166,18 @@ automatically applied:
 - 17.1.3
 - 17.2.1
 
+### Project access token expiry emails
+
+> - Sixty and thirty day expiry notification emails [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/464040) in GitLab 17.6 [with a flag](../../../administration/feature_flags.md) named `expiring_pats_30d_60d_notifications`. Disabled by default.
+
+FLAG:
+The availability of the sixty and thirty day expiry notification emails is controlled by a feature flag. For more information, see the history.
+
+GitLab runs a check every day at 1:00 AM UTC to identify project access tokens that are expiring in the near future. Direct members of the project with at least the Maintainer role are notified by email when these tokens expire in a certain number of days. The number of days differs depending on the version of GitLab:
+
+- In GitLab 17.6 and later, project maintainers and owners are notified by email when the check identifies their project access tokens as expiring in the next sixty days. An additional email is sent when the check identifies their project access tokens as expiring in the next thirty days.
+- Project maintainers and owners are notified by email when the check identifies their project access tokens as expiring in the next seven days.
+
 ## Bot users for projects
 
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/462217) in GitLab 17.2 [with a flag](../../../administration/feature_flags.md) named `retain_resource_access_token_user_after_revoke`. Disabled by default. When enabled new bot users are made members with no expiry date and, when the token is later revoked or expires, the bot user is retained. It is not deleted and its records are not moved to the Ghost User.

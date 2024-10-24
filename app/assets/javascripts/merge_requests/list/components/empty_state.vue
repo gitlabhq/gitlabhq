@@ -34,7 +34,7 @@ export default {
   computed: {
     title() {
       if (this.hasSearch) {
-        return __('Sorry, your filter produced no results');
+        return __('No results found');
       }
 
       if (!this.hasMergeRequests) {
@@ -51,7 +51,7 @@ export default {
     },
     description() {
       if (this.hasSearch) {
-        return __('To widen your search, change or remove filters above');
+        return __('To widen your search, change or remove filters above.');
       }
 
       if (!this.hasMergeRequests) {

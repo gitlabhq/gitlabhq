@@ -69,15 +69,13 @@
 
 .markdown-area {
   border-radius: 0;
-  background: $white;
-  border: 1px solid $gray-50;
   min-height: 140px;
   max-height: 500px;
   padding: 5px;
   box-shadow: none;
   width: 100%;
   resize: none !important;
-  @apply gl-transition-box-shadow;
+  @apply gl-bg-transparent gl-border gl-border-subtle gl-transition-box-shadow;
 }
 
 .md-suggestion-diff {

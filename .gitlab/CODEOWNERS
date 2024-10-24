@@ -1743,10 +1743,12 @@ ee/app/workers/ai/repository_xray/
 [JH Technical Writer] @jihulab/maintainers/technical-writer
 /jh/doc/
 
-^[Geo]
+[Geo]
 /doc/**/geo/ @gitlab-org/geo-team/geo-backend
 /ee/**/geo/ @gitlab-org/geo-team/geo-backend
 /qa/**/geo/ @gitlab-org/geo-team/geo-backend
 geo_* @gitlab-org/geo-team/geo-backend
+
+^[Geo Frontend]
 app/assets/**/geo_* @zcuddy
 frontend/**/geo_* @zcuddy

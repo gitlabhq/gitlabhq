@@ -398,6 +398,7 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
       let_it_be(:expired_token) { create(:personal_access_token, expires_at: 2.days.ago) }
       let_it_be(:revoked_token) { create(:personal_access_token, revoked: true) }
       let_it_be(:valid_token_and_notified) { create(:personal_access_token, expires_at: 2.days.from_now, expire_notification_delivered: true) }
+      let_it_be(:valid_token_and_7d_notified) { create(:personal_access_token, expires_at: 2.days.from_now, seven_days_notification_sent_at: Time.current) }
       let_it_be(:valid_token) { create(:personal_access_token, expires_at: 2.days.from_now) }
       let_it_be(:long_expiry_token) { create(:personal_access_token, expires_at: described_class::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS.days.from_now) }
 
@@ -414,24 +415,105 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
       end
     end
 
-    describe '.expiring_and_not_notified_without_impersonation' do
+    context 'with existing tokens' do
       let_it_be(:expired_token) { create(:personal_access_token, expires_at: 2.days.ago) }
       let_it_be(:revoked_token) { create(:personal_access_token, revoked: true) }
+      let_it_be(:impersonation_token) { create(:personal_access_token, :impersonation) }
       let_it_be(:valid_token_and_notified) { create(:personal_access_token, expires_at: 2.days.from_now, expire_notification_delivered: true) }
+      let_it_be(:valid_token_and_7d_notified) { create(:personal_access_token, expires_at: 2.days.from_now, seven_days_notification_sent_at: Time.current) }
       let_it_be(:valid_token) { create(:personal_access_token, expires_at: 2.days.from_now, impersonation: false) }
+      let_it_be(:thirty_days_token) { create(:personal_access_token, expires_at: 28.days.from_now) }
+      let_it_be(:sixty_days_token) { create(:personal_access_token, expires_at: 55.days.from_now) }
       let_it_be(:long_expiry_token) { create(:personal_access_token, expires_at: described_class::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS.days.from_now) }
 
-      context 'when token is there to be notified' do
-        it "has only unnotified tokens" do
-          expect(described_class.expiring_and_not_notified_without_impersonation).to contain_exactly(valid_token)
+      describe '.scope_for_notification_interval' do
+        let(:interval) { :seven_days }
+
+        subject(:scope) { described_class.scope_for_notification_interval(interval) }
+
+        it 'returns a scope including expected tokens' do
+          expect(scope).to contain_exactly(valid_token)
+        end
+
+        context 'with invalid interval' do
+          let(:interval) { :one_million_days }
+
+          it 'throws an error' do
+            expect(described_class::NOTIFICATION_INTERVALS.keys).not_to include(interval)
+
+            expect { scope }.to raise_error(KeyError)
+          end
+        end
+
+        context 'with min_expires_at' do
+          let_it_be(:five_days_token) { create(:personal_access_token, expires_at: 5.days.from_now, impersonation: false) }
+          let(:min_expires_at) { 4.days.from_now }
+          let(:max_expires_at) { 8.days.from_now }
+
+          subject(:scope) { described_class.scope_for_notification_interval(:seven_days, min_expires_at: min_expires_at, max_expires_at: max_expires_at) }
+
+          it 'excludes tokens expiring before min_expires_at' do
+            expect(scope).to include(five_days_token)
+            expect(scope).not_to include(valid_token)
+            expect(scope).not_to include(thirty_days_token)
+            expect(scope).not_to include(sixty_days_token)
+          end
+
+          context 'with past min_expires_at' do
+            let(:min_expires_at) { 3.days.ago }
+
+            it 'overrides default expiration interval' do
+              expect(scope).to include(expired_token)
+              expect(scope).to include(valid_token)
+              expect(scope).to include(five_days_token)
+            end
+          end
+
+          context 'with truncated max_expires_at' do
+            let(:min_expires_at) { 1.minute.ago }
+            let(:max_expires_at) { 4.days.from_now }
+
+            it 'overrides default expiration interval' do
+              expect(scope).to include(valid_token)
+              expect(scope).not_to include(five_days_token)
+            end
+          end
+        end
+
+        context 'with 30d interval' do
+          let(:interval) { :thirty_days }
+
+          it 'returns a scope including expected tokens' do
+            expect(scope).to include(thirty_days_token)
+            expect(scope).not_to include(valid_token)
+            expect(scope).not_to include(sixty_days_token)
+          end
+        end
+
+        context 'with 60d interval' do
+          let(:interval) { :sixty_days }
+
+          it 'returns a scope including expected tokens' do
+            expect(scope).to include(sixty_days_token)
+            expect(scope).not_to include(valid_token)
+            expect(scope).not_to include(thirty_days_token)
+          end
         end
       end
 
-      context 'when no token is there to be notified' do
-        it "return empty array" do
-          valid_token.update!(impersonation: true)
+      describe '.expiring_and_not_notified_without_impersonation' do
+        context 'when token is there to be notified' do
+          it "has only unnotified tokens" do
+            expect(described_class.expiring_and_not_notified_without_impersonation).to contain_exactly(valid_token)
+          end
+        end
 
-          expect(described_class.expiring_and_not_notified_without_impersonation).to be_empty
+        context 'when no token is there to be notified' do
+          it "return empty array" do
+            valid_token.update!(impersonation: true)
+
+            expect(described_class.expiring_and_not_notified_without_impersonation).to be_empty
+          end
         end
       end
     end
@@ -505,6 +587,22 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
   describe '.simple_sorts' do
     it 'includes overridden keys' do
       expect(described_class.simple_sorts.keys).to include(*%w[expires_at_asc_id_desc])
+    end
+  end
+
+  describe '.notification_interval' do
+    let(:interval) { :seven_days }
+
+    subject(:notification_interval) { described_class.notification_interval(interval) }
+
+    it { is_expected.to eq(7) }
+
+    context 'with invalid interval' do
+      let(:interval) { :not_real_interval }
+
+      it 'raises error' do
+        expect { notification_interval }.to raise_error(KeyError)
+      end
     end
   end
 

@@ -52,8 +52,9 @@
 
 .common-note-form {
   .md-area {
-    border: 1px solid $gray-400;
-    @apply gl-bg-default gl-rounded-lg;
+    @apply gl-rounded-lg;
+    border: 1px solid var(--gl-control-border-color-default);
+    background: var(--gl-control-background-color-default);
     transition: border-color ease-in-out 0.15s,
       box-shadow ease-in-out 0.15s;
 

@@ -263,7 +263,7 @@ export default {
 
 <template>
   <div
-    class="md-header gl-border-b gl-z-2 gl-rounded-lg gl-rounded-bl-none gl-rounded-br-none gl-border-gray-100 gl-bg-white gl-px-3"
+    class="md-header gl-border-b gl-z-2 gl-rounded-lg gl-rounded-b-none gl-border-default gl-px-3"
     :class="{ 'md-header-preview': previewMarkdown }"
   >
     <div class="gl-flex gl-flex-wrap gl-items-center">

@@ -6078,7 +6078,6 @@ CREATE TABLE application_settings (
     require_admin_two_factor_authentication boolean DEFAULT false NOT NULL,
     shared_runners_enabled boolean DEFAULT true NOT NULL,
     max_artifacts_size integer DEFAULT 100 NOT NULL,
-    runners_registration_token character varying,
     max_pages_size integer DEFAULT 100 NOT NULL,
     require_two_factor_authentication boolean DEFAULT false,
     two_factor_grace_period integer DEFAULT 48,

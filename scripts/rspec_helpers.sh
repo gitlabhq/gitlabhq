@@ -270,7 +270,7 @@ function auto_retry_exit_code_if_known_flaky_tests() {
 
     if [[ "${CI_AUTO_RETRY_JOBS_WITH_FLAKY_TESTS_NOTIFICATIONS_ENABLED}" == "true" ]]; then
       comment=$(cat <<-EOF
-Job ${CI_JOB_URL} failed because of a flaky test, and was auto-retried.
+Job ${CI_JOB_NAME} (${CI_JOB_URL}, ${CI_PIPELINE_URL}) failed because of a flaky test, and was auto-retried.
 
 ${found_known_flaky_tests_output}
 EOF

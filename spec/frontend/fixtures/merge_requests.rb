@@ -130,6 +130,8 @@ RSpec
   end
 
   it 'merge_requests/merge_request_list.html' do
+    stub_feature_flags(vue_merge_request_list: false)
+
     create(:merge_request, source_project: project, target_project: project)
 
     get :index, params: {

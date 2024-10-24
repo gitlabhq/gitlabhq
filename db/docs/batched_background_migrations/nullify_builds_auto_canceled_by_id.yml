@@ -1,0 +1,8 @@
+---
+migration_job_name: NullifyBuildsAutoCanceledById
+description: Fixes records that have values in thic column pointing to non-existing pipelines
+feature_category: continuous_integration
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170253
+milestone: '17.6'
+queued_migration_version: 20241023102608
+finalized_by: # version of the migration that finalized this BBM

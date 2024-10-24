@@ -231,16 +231,26 @@ module MergeRequestsHelper
     }
   end
 
+  def default_merge_request_sort
+    return params[:sort] if params[:sort]
+
+    case params[:state]
+    when 'merged', 'closed' then sort_value_recently_updated
+    end
+  end
+
   def project_merge_requests_list_data(project, current_user)
+    merge_project = merge_request_source_project_for_project(project)
+
     {
       autocomplete_award_emojis_path: autocomplete_award_emojis_path,
       full_path: project.full_path,
       has_any_merge_requests: project_merge_requests(project).exists?.to_s,
-      initial_sort: current_user&.user_preference&.issues_sort,
+      initial_sort: default_merge_request_sort || current_user&.user_preference&.merge_requests_sort,
       is_public_visibility_restricted:
         Gitlab::CurrentSettings.restricted_visibility_levels&.include?(Gitlab::VisibilityLevel::PUBLIC).to_s,
       is_signed_in: current_user.present?.to_s,
-      new_merge_request_path: can?(current_user, :create_merge_request_in, project) && project_new_merge_request_path(project),
+      new_merge_request_path: merge_project && project_new_merge_request_path(merge_project),
       show_export_button: "true",
       issuable_type: :merge_request,
       issuable_count: issuables_count_for_state(:merge_request, params[:state]),

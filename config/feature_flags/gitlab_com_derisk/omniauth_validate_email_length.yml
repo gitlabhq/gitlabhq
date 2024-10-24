@@ -1,9 +1,0 @@
----
-name: omniauth_validate_email_length
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/460714
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161205
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/475077
-milestone: '17.4'
-group: group::authentication
-type: gitlab_com_derisk
-default_enabled: false

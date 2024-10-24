@@ -7,6 +7,15 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Troubleshooting GitLab Duo Self-Hosted Models
 
+DETAILS:
+**Tier:** Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
+**Offering:** Self-managed
+**Status:** Beta
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12972) in GitLab 17.1 [with a flag](../../administration/feature_flags.md) named `ai_custom_model`. Disabled by default.
+> - [Enabled on self-managed](https://gitlab.com/groups/gitlab-org/-/epics/15176) in GitLab 17.6.
+> - GitLab Duo add-on required in GitLab 17.6 and later.
+
 When working with GitLab Duo Self-Hosted Models, you might encounter issues.
 
 Before you begin troubleshooting, you should:
@@ -166,7 +175,7 @@ docker exec -it <ai-gateway-container> sh
 curl '<your-aigateway-endpoint>/monitoring/healthz'
 ```
 
-If the response is not `200`, this means that AI Gateway is not installed correctly. To resolve, follow the [documentation on how to install AI Gateway](install_infrastructure.md).
+If the response is not `200`, this means that AI Gateway is not installed correctly. To resolve, follow the [documentation on how to install AI Gateway](../../install/install_ai_gateway.md).
 
 ## Check that AI Gateway environmental variables are set up correctly
 
@@ -216,3 +225,101 @@ To resolve this:
 ```shell
 docker run --network host -e AIGW_GITLAB_URL=<your-gitlab-endpoint> -e AIGW_FASTAPI__METRICS_PORT=8083 <image>
 ```
+
+## vLLM 404 Error
+
+If you encounter a **404 error** while using vLLM, follow these steps to resolve the issue:
+
+1. Create a chat template file named `chat_template.jinja` with the following content:
+
+   ```jinja
+   {%- for message in messages %}
+     {%- if message["role"] == "user" %}
+       {{- "[INST] " + message["content"] + "[/INST]" }}
+     {%- elif message["role"] == "assistant" %}
+       {{- message["content"] }}
+     {%- elif message["role"] == "system" %}
+       {{- bos_token }}{{- message["content"] }}
+     {%- endif %}
+   {%- endfor %}
+   ```
+
+1. When running the vLLM command, ensure you specify the `--served-model-name`. For example:
+
+   ```shell
+   vllm serve "mistralai/Mistral-7B-Instruct-v0.3" --port <port> --max-model-len 17776 --served-model-name mistral --chat-template chat_template.jinja
+   ```
+
+1. Check the vLLM server URL in the GitLab UI to make sure that URL includes the `/v1` suffix. The correct format is:
+
+   ```shell
+   http(s)://<your-host>:<your-port>/v1
+   ```
+
+## Code Suggestions access error
+
+If you are experiencing issues accessing Code Suggestions after setup, try the following steps:
+
+1. In the Rails console, check and verify the license parameters:
+
+   ```shell
+   sudo gitlab-rails console
+   user = User.find(id) # Replace id with the user provisioned with GitLab Duo Enterprise seat
+   Ability.allowed?(user, :access_code_suggestions) # Must return true
+   ```
+
+1. Check if the necessary features are enabled and available:
+
+   ```shell
+   Feature.enabled?(:self_hosted_models_beta_ended) # Should be false
+   ::Ai::FeatureSetting.code_suggestions_self_hosted? # Should be true
+   ```
+
+1. If any feature is enabled and does not need to be, disable it:
+
+   ```ruby
+   Feature.disable(:self_hosted_models_beta_ended)
+   ```
+
+## Verify GitLab setup
+
+To verify your GitLab self-managed setup, run the following command:
+
+```shell
+gitlab-rake gitlab:duo:verify_self_hosted_setup
+```
+
+## No logs generated in AI Gateway server
+
+If no logs are generated in the **AI Gateway server**, follow these steps to troubleshoot:
+
+1. Ensure the `expanded_ai_logging` feature flag is enabled:
+
+   ```ruby
+   Feature.enable(:expanded_ai_logging)
+   ```
+
+1. Run the following commands to view the GitLab Rails logs for any errors:
+
+   ```shell
+   sudo gitlab-ctl tail
+   sudo gitlab-ctl tail sidekiq
+   ```
+
+1. Look for keywords like "Error" or "Exception" in the logs to identify any underlying issues.
+
+## SSL certificate errors and key de-serialization issues in AI Gateway Container
+
+When attempting to initiate a Duo Chat inside the AI Gateway container, SSL certificate errors and key deserialization issues may occur.
+
+The system might encounter issues loading the PEM file, resulting in errors like:
+
+```plaintext
+JWKError: Could not deserialize key data. The data may be in an incorrect format, the provided password may be incorrect, or it may be encrypted with an unsupported algorithm.
+```
+
+To resolve the SSL certificate error:
+
+- Set the appropriate certificate bundle path in the Docker container using the following environment variables:
+  - `SSL_CERT_FILE=/path/to/ca-bundle.pem`
+  - `REQUESTS_CA_BUNDLE=/path/to/ca-bundle.pem`

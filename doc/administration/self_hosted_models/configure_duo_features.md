@@ -1,7 +1,7 @@
 ---
 stage: AI-Powered
 group: Custom Models
-description: Configure your GitLab instance with Switchboard.
+description: Configure your GitLab instance to use self-hosted models.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -13,16 +13,45 @@ DETAILS:
 **Status:** Beta
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12972) in GitLab 17.1 [with a flag](../../administration/feature_flags.md) named `ai_custom_model`. Disabled by default.
+> - [Enabled on self-managed](https://gitlab.com/groups/gitlab-org/-/epics/15176) in GitLab 17.6.
 > - GitLab Duo add-on required in GitLab 17.6 and later.
-
-FLAG:
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
 
 To configure your GitLab instance to access the available self-hosted models in your infrastructure:
 
+1. Use a [locally hosted or GitLab.com AI Gateway](index.md#self-managed-customer-configuration-types).
+1. Configure your GitLab instance.
 1. Configure the self-hosted model.
 1. Configure the GitLab Duo features to use your self-hosted model.
+
+## Configure your GitLab instance
+
+Prerequisites:
+
+- [Upgrade to the latest version of GitLab](../../update/index.md).
+
+To configure your GitLab instance to access the AI Gateway:
+
+1. Where your GitLab instance is installed, update the `/etc/gitlab/gitlab.rb` file:
+
+   ```shell
+   sudo vim /etc/gitlab/gitlab.rb
+   ```
+
+1. Add and save the following environment variables:
+
+   ```ruby
+   gitlab_rails['env'] = {
+   'GITLAB_LICENSE_MODE' => 'production',
+   'CUSTOMER_PORTAL_URL' => 'https://customers.gitlab.com',
+   'AI_GATEWAY_URL' => '<path_to_your_ai_gateway>:<port>'
+   }
+   ```
+
+1. Run reconfigure:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
 
 ## Configure the self-hosted model
 

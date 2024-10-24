@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User views closed merge requests', feature_category: :code_review_workflow do
+RSpec.describe 'User views closed merge requests', :js, feature_category: :code_review_workflow do
   let!(:closed_merge_request) { create(:closed_merge_request, source_project: project, target_project: project) }
   let!(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
   let(:project) { create(:project, :public) }

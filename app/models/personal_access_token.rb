@@ -11,6 +11,12 @@ class PersonalAccessToken < ApplicationRecord
 
   extend ::Gitlab::Utils::Override
 
+  NOTIFICATION_INTERVALS = {
+    seven_days: 0..7,
+    thirty_days: 8..30,
+    sixty_days: 31..60
+  }.freeze
+
   add_authentication_token_field :token,
     digest: true,
     format_with_prefix: :prefix_from_application_current_settings
@@ -34,7 +40,8 @@ class PersonalAccessToken < ApplicationRecord
   before_save :ensure_token
 
   scope :active, -> { not_revoked.not_expired }
-  scope :expiring_and_not_notified, ->(date) { where(["revoked = false AND expire_notification_delivered = false AND expires_at >= CURRENT_DATE AND expires_at <= ?", date]) }
+  # this scope must use a string condition, otherwise Postgres will not use the correct indices
+  scope :expiring_and_not_notified, ->(date) { where(["revoked = false AND expire_notification_delivered = false AND seven_days_notification_sent_at IS NULL AND expires_at >= CURRENT_DATE AND expires_at <= ?", date]) }
   scope :expired_today_and_not_notified, -> { where(["revoked = false AND expires_at = CURRENT_DATE AND after_expiry_notification_delivered = false"]) }
   scope :expired_before, ->(date) { expired.where(arel_table[:expires_at].lt(date)) }
   scope :inactive, -> { where("revoked = true OR expires_at < CURRENT_DATE") }
@@ -53,7 +60,9 @@ class PersonalAccessToken < ApplicationRecord
   scope :owner_is_human, -> { includes(:user).references(:user).merge(User.human) }
   scope :last_used_before, ->(date) { where("last_used_at <= ?", date) }
   scope :last_used_after, ->(date) { where("last_used_at >= ?", date) }
-  scope :expiring_and_not_notified_without_impersonation, -> { where(["(revoked = false AND expire_notification_delivered = false AND expires_at >= CURRENT_DATE AND expires_at <= :date) and impersonation = false", { date: DAYS_TO_EXPIRE.days.from_now.to_date }]) }
+  scope :expiring_and_not_notified_without_impersonation, -> {
+    expiring_and_not_notified(DAYS_TO_EXPIRE.days.from_now.to_date).without_impersonation
+  }
 
   validates :scopes, presence: true
   validates :expires_at, presence: true, on: :create, unless: :allow_expires_at_to_be_empty?
@@ -84,6 +93,29 @@ class PersonalAccessToken < ApplicationRecord
 
   def self.search(query)
     fuzzy_search(query, [:name])
+  end
+
+  def self.notification_interval(interval)
+    NOTIFICATION_INTERVALS.fetch(interval).max
+  end
+
+  def self.scope_for_notification_interval(interval, min_expires_at: nil, max_expires_at: nil)
+    interval_range = NOTIFICATION_INTERVALS.fetch(interval).minmax
+    min_expiry_date, max_expiry_date = interval_range.map { |range| Date.current + range }
+    min_expiry_date = min_expires_at if min_expires_at
+    max_expiry_date = max_expires_at if max_expires_at
+    interval_attr = "#{interval}_notification_sent_at"
+
+    sql_string = <<~SQL
+      revoked = FALSE
+      AND #{interval_attr} IS NULL
+      AND expire_notification_delivered = FALSE
+      AND expires_at BETWEEN ? AND ?
+    SQL
+
+    # this scope must use a string condition rather than activerecord syntax,
+    # otherwise Postgres will not use the correct indices
+    where(sql_string, min_expiry_date, max_expiry_date).without_impersonation
   end
 
   def hook_attrs
