@@ -44,7 +44,9 @@ class Dashboard::TodosController < Dashboard::ApplicationController
     updated_ids = TodoService.new.resolve_todos(@todos, current_user, resolved_by_action: :mark_all_done)
 
     respond_to do |format|
-      format.html { redirect_to dashboard_todos_path, status: :found, notice: _('Everything on your to-do list is marked as done.') }
+      format.html do
+        redirect_to dashboard_todos_path, status: :found, notice: _('Everything on your to-do list is marked as done.')
+      end
       format.js { head :ok }
       format.json { render json: todos_counts.merge(updated_ids: updated_ids) }
     end

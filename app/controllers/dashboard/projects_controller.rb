@@ -66,8 +66,12 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
   end
 
   def load_projects(finder_params)
-    @all_user_projects = ProjectsFinder.new(params: { non_public: true, archived: false, not_aimed_for_deletion: true }, current_user: current_user).execute
-    @all_starred_projects = ProjectsFinder.new(params: { starred: true, archived: false, not_aimed_for_deletion: true }, current_user: current_user).execute
+    @all_user_projects = ProjectsFinder.new(
+      params: { non_public: true, archived: false,
+                not_aimed_for_deletion: true }, current_user: current_user).execute
+    @all_starred_projects = ProjectsFinder.new(
+      params: { starred: true, archived: false,
+                not_aimed_for_deletion: true }, current_user: current_user).execute
 
     finder_params[:use_cte] = true if use_cte_for_finder?
 

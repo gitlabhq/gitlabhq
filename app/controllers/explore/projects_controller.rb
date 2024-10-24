@@ -118,11 +118,16 @@ class Explore::ProjectsController < Explore::ApplicationController
   end
 
   def load_topics
-    @topics = Projects::TopicsFinder.new(params: params.permit(:search)).execute.page(pagination_params[:page]).without_count
+    @topics =
+      Projects::TopicsFinder.new(params: params.permit(:search)).execute.page(pagination_params[:page]).without_count
   end
 
   def load_topic
-    topic_name = Feature.enabled?(:explore_topics_cleaned_path) ? URI.decode_www_form_component(params[:topic_name]) : params[:topic_name]
+    topic_name = if Feature.enabled?(:explore_topics_cleaned_path)
+                   URI.decode_www_form_component(params[:topic_name])
+                 else
+                   params[:topic_name]
+                 end
 
     @topic = Projects::Topic.find_by_name_case_insensitive(topic_name)
   end
@@ -164,7 +169,8 @@ class Explore::ProjectsController < Explore::ApplicationController
   end
 
   def show_alert_if_search_is_disabled
-    if current_user || (params[:name].blank? && params[:search].blank?) || !html_request? || Feature.disabled?(:disable_anonymous_project_search, type: :ops)
+    if current_user || (params[:name].blank? && params[:search].blank?) || !html_request? || Feature.disabled?(
+      :disable_anonymous_project_search, type: :ops)
       return
     end
 

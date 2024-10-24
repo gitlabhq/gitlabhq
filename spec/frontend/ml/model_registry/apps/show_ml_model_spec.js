@@ -1,13 +1,13 @@
-import { GlBadge, GlTab, GlTabs } from '@gitlab/ui';
+import { GlBadge, GlTab, GlTabs, GlIcon, GlSprintf, GlLink } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
+import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { ShowMlModel } from '~/ml/model_registry/apps';
 import ModelVersionList from '~/ml/model_registry/components/model_version_list.vue';
 import CandidateList from '~/ml/model_registry/components/candidate_list.vue';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
-import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import ModelDetail from '~/ml/model_registry/components/model_detail.vue';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -90,11 +90,11 @@ describe('ml/model_registry/apps/show_ml_model', () => {
         mlflowTrackingUrl: 'path/to/tracking',
         canWriteModelRegistry,
         maxAllowedFileSize: 99999,
-        latestVersion: '',
+        latestVersion: '1.0.0',
         markdownPreviewPath: '/markdown-preview',
         createModelVersionPath: 'project/path/create/model/version',
       },
-      stubs: { GlTab, DeleteModel, LoadOrErrorOrShow },
+      stubs: { GlTab, DeleteModel, LoadOrErrorOrShow, GlSprintf, TimeAgoTooltip },
     });
 
     return waitForPromises();
@@ -108,13 +108,14 @@ describe('ml/model_registry/apps/show_ml_model', () => {
   const findModelDetail = () => wrapper.findComponent(ModelDetail);
   const findCandidateList = () => wrapper.findComponent(CandidateList);
   const findTitleArea = () => wrapper.findComponent(TitleArea);
-  const findVersionCountMetadataItem = () => findTitleArea().findComponent(MetadataItem);
+  const findModelMetadata = () => wrapper.findByTestId('metadata');
   const findActionsDropdown = () => wrapper.findComponent(ActionsDropdown);
   const findDeleteButton = () => wrapper.findComponent(DeleteDisclosureDropdownItem);
   const findDeleteModel = () => wrapper.findComponent(DeleteModel);
   const findModelVersionCreateButton = () => wrapper.findByTestId('model-version-create-button');
   const findLoadOrErrorOrShow = () => wrapper.findComponent(LoadOrErrorOrShow);
   const findModelEditButton = () => wrapper.findByTestId('edit-model-button');
+  const findTimeAgoTooltip = () => wrapper.findComponent(TimeAgoTooltip);
 
   describe('Title', () => {
     beforeEach(() => createWrapper());
@@ -123,8 +124,16 @@ describe('ml/model_registry/apps/show_ml_model', () => {
       expect(findTitleArea().props('title')).toBe('MyModel');
     });
 
-    it('sets version metadata item to version count', () => {
-      expect(findVersionCountMetadataItem().props('text')).toBe(`${model.versionCount} version`);
+    it('sets model metadata correctly', () => {
+      expect(findModelMetadata().findComponent(GlIcon).props('name')).toBe('machine-learning');
+      expect(findModelMetadata().text()).toBe('Model created in 3 years by Root');
+
+      expect(findTimeAgoTooltip().props('time')).toBe(model.createdAt);
+      expect(findTimeAgoTooltip().props('tooltipPlacement')).toBe('top');
+      expect(findTimeAgoTooltip().vm.tooltipText).toBe('December 6, 2023 at 12:41:48 PM GMT');
+
+      expect(findModelMetadata().findComponent(GlLink).attributes('href')).toBe('path/to/user');
+      expect(findModelMetadata().findComponent(GlLink).text()).toBe('Root');
     });
 
     it('renders the extra actions button', () => {
@@ -134,7 +143,7 @@ describe('ml/model_registry/apps/show_ml_model', () => {
 
   describe('Delete button', () => {
     describe('when user has permission to write model registry', () => {
-      it('displays create button', () => {
+      it('displays delete button', () => {
         createWrapper();
 
         expect(findDeleteButton().props('actionPrimaryText')).toBe('Delete model');

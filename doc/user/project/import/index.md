@@ -443,6 +443,73 @@ file with a URL host (`lfs.url`) different from the repository URL host, LFS fil
 If you prefer, you can engage GitLab Professional Services to migrate groups and projects to GitLab instead of doing it
 yourself. For more information, see the [Professional Services Full Catalog](https://about.gitlab.com/services/catalog/).
 
+## Sidekiq configuration
+
+Importers rely heavily on Sidekiq jobs to handle the import and export of groups and projects.
+Some of these jobs might consume significant resources (CPU and memory) and
+take a long time to complete, which might affect the execution of other jobs.
+To resolve this issue, you should route importer jobs to a dedicated Sidekiq queue and
+assign a dedicated Sidekiq process to handle that queue.
+
+For example, you can use the following configuration:
+
+```conf
+sidekiq['concurrency'] = 20
+
+sidekiq['routing_rules'] = [
+  # Route import and export jobs to the importer queue
+  ['feature_category=importers', 'importers'],
+
+  # Route all other jobs to the default queue by using wildcard matching
+  ['*', 'default']
+]
+
+sidekiq['queue_groups'] = [
+  # Run a dedicated process for the importer queue
+  'importers',
+
+  # Run a separate process for the default and mailer queues
+  'default,mailers'
+]
+```
+
+In this setup:
+
+- A dedicated Sidekiq process handles import and export jobs through the importer queue.
+- Another Sidekiq process handles all other jobs (the default and mailer queues).
+- Both Sidekiq processes are configured to run with 20 concurrent threads by default.
+  For memory-constrained environments, you might want to reduce this number.
+
+If your instance has enough resources to support more concurrent jobs,
+you can configure additional Sidekiq processes to speed up migrations.
+For example:
+
+```conf
+sidekiq['queue_groups'] = [
+  # Run three processes for importer jobs
+  'importers',
+  'importers',
+  'importers',
+
+  # Run a separate process for the default and mailer queues
+  'default,mailers'
+]
+```
+
+With this setup, multiple Sidekiq processes handle import and export jobs concurrently,
+which speeds up migration as long as the instance has sufficient resources.
+
+For the maximum number of Sidekiq processes, keep the following in mind:
+
+- The number of processes should not exceed the number of available CPU cores.
+- Each process can use up to 2 GB of memory, so ensure the instance
+  has enough memory for any additional processes.
+- Each process adds one database connection per thread
+  as defined in `sidekiq['concurrency']`.
+
+For more information, see [running multiple Sidekiq processes](../../../administration/sidekiq/extra_sidekiq_processes.md)
+and [processing specific job classes](../../../administration/sidekiq/processing_specific_job_classes.md).
+
 ## Troubleshooting
 
 ### Imported repository is missing branches
@@ -495,7 +562,7 @@ For GitLab.com (GitLab team members only):
    ```plaintext
    json.class: "RepositoryImportWorker" AND json.correlation_id.keyword: "<CORRELATION_ID>"
    ```
-   
+
    or
 
    ```plaintext

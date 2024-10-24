@@ -31,16 +31,74 @@ You can also see all migrated entities with any failures related to them using a
 
 ## Stale imports
 
-When troubleshooting group migration, an import may not complete because the import workers took
-longer than 8 hours to execute. In this case, the `status` of either a `BulkImport` or
-`BulkImport::Entity` is `3` (`timeout`):
+Migrations might stall or finish with a `timeout` status due to issues on the source or destination instance.
+To resolve these issues, inspect the logs from both the source and destination instances.
 
-```ruby
-# Get relevant import records
-import = BulkImports::Entity.where(namespace_id: Group.id).map(&:bulk_import)
+### Source instance
 
-import.status #=> 3 means that the import timed out.
+On the source instance, stale imports are often due to excessive memory usage,
+which might restart Sidekiq processes and interrupt export jobs.
+The destination instance might wait for the export files until the migration eventually times out.
+
+To check if the [group](../../../api/group_relations_export.md#export-status) or [project](../../../api/project_relations_export.md#export-status) relations were successfully exported,
+run the following command:
+
+```shell
+curl --request GET --location "https://example.gitlab.com/api/v4/projects/:ID/export_relations/status" \
+--header "PRIVATE-TOKEN: <your_access_token>"
 ```
+
+If a relation has a status other than `1`, the relation was not successfully exported
+and the issue is on the source instance.
+
+You can also run the following command to search for interrupted export jobs.
+Keep in mind that Sidekiq logs might rotate after restarts, so be sure to
+check the rotated logs as well.
+
+```shell
+grep `BulkImports::RelationBatchExportWorker` sidekiq.log | grep "interrupted_count"
+```
+
+If Sidekiq restarts are causing the issue:
+
+- Configure a separate Sidekiq process for export jobs.
+  For more information, see [Sidekiq configuration](../../project/import/index.md#sidekiq-configuration).
+  If the problem persists, reduce Sidekiq concurrency to limit the number of jobs processed simultaneously.
+- Increase Sidekiq memory limits:
+  If your instance has available memory, [increase the maximum RSS limit](../../../administration/sidekiq/sidekiq_memory_killer.md#configuring-the-limits) for Sidekiq processes.
+  For example, you can increase the limit from 2 GB to 3 GB to prevent frequent restarts.
+- Increase maximum interruption count:
+  To allow more interruptions before a job fails, you can increase the maximum interruption count for
+  [`BulkImports::RelationBatchExportWorker`](https://gitlab.com/gitlab-org/gitlab/-/blob/b8e11d267cdd4a00807984f98a9d8d8cfa51602e/app/workers/bulk_imports/relation_batch_export_worker.rb#L4):
+
+  1. Add the following configuration to increase the limit to `20` (the default value is `3`):
+
+     ```ruby
+     sidekiq_options max_retries_after_interruption: 20
+     ```
+
+  1. Restart Sidekiq for the changes to take effect.
+
+You can now trigger a new migration or use the
+[relations export API](../../../api/project_relations_export.md#schedule-new-export) to manually trigger the export.
+Check the [export status](../../../api/project_relations_export.md#export-status) to see if
+relations are being exported successfully.
+
+For example, to trigger the export of a specific project, run the following command:
+
+```shell
+curl --request POST --location "https://example.gitlab.com/api/v4/projects/:ID/export_relations" \
+--header "PRIVATE-TOKEN: <your_access_token>" \
+--form 'batched="true"'
+```
+
+### Destination instance
+
+In rare cases, the destination instance might fail to migrate a group or project successfully.
+For more information, see [issue 498720](https://gitlab.com/gitlab-org/gitlab/-/issues/498720).
+
+To resolve this issue, migrate the groups or projects that failed by using the [import API](../../../api/import.md).
+With this API, you can migrate specific groups and projects individually.
 
 ## Error: `404 Group Not Found`
 

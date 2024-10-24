@@ -1,11 +1,14 @@
 # frozen_string_literal: true
 
 module SendFileUpload
-  def send_upload(file_upload, send_params: {}, redirect_params: {}, attachment: nil, proxy: false, disposition: 'attachment')
+  def send_upload(
+    file_upload, send_params: {}, redirect_params: {}, attachment: nil, proxy: false,
+    disposition: 'attachment')
     content_type = content_type_for(attachment)
 
     if attachment
-      response_disposition = ActionDispatch::Http::ContentDisposition.format(disposition: disposition, filename: attachment)
+      response_disposition = ActionDispatch::Http::ContentDisposition.format(disposition: disposition,
+        filename: attachment)
 
       # Response-Content-Type will not override an existing Content-Type in
       # Google Cloud Storage, so the metadata needs to be cleared on GCS for

@@ -151,4 +151,24 @@ RSpec.describe GitlabSchema.types['Note'], feature_category: :team_planning do
       note_author
     end
   end
+
+  describe '#position' do
+    subject(:note_position) { resolve_field(:position, note, current_user: user) }
+
+    context 'when note is a diff note' do
+      let(:note) { build_stubbed(:diff_note_on_commit, project: project) }
+
+      it 'fetches the note position' do
+        expect(note_position).to eq(note.position)
+      end
+    end
+
+    context 'when note is a regular note with position set' do
+      let(:note) { build_stubbed(:note, project: project, position: '{}') }
+
+      it 'returns nil' do
+        expect(note_position).to be_nil
+      end
+    end
+  end
 end

@@ -87,6 +87,10 @@ module Types
       def note_project
         object.project
       end
+
+      def position
+        object.position if object.position.is_a?(Gitlab::Diff::Position)
+      end
     end
   end
 end

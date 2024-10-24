@@ -343,12 +343,19 @@ export const modelWithoutVersion = {
 
 export const model = {
   id: 'gid://gitlab/Ml::Model/1',
+  createdAt: '2023-12-06T12:41:48Z',
+  author: {
+    id: 'gid://gitlab/User/1',
+    name: 'Root',
+    avatarUrl: 'path/to/avatar',
+    webUrl: 'path/to/user',
+  },
   description: 'A model description',
   descriptionHtml: 'A model description',
   name: 'gitlab_amazing_model',
   versionCount: 1,
   candidateCount: 0,
-  latestVersion: modelVersionWithCandidate,
+  latestVersion: modelVersionWithCandidateAndAuthor,
 };
 
 export const modelDetailQuery = {

@@ -3840,6 +3840,9 @@ msgstr ""
 msgid "AdminSelfHostedModels|API token (if needed)"
 msgstr ""
 
+msgid "AdminSelfHostedModels|Accept GitLab Testing Agreement"
+msgstr ""
+
 msgid "AdminSelfHostedModels|Add a new AI model that can be used for GitLab Duo features."
 msgstr ""
 
@@ -3867,13 +3870,10 @@ msgstr ""
 msgid "AdminSelfHostedModels|An error occurred while updating the sefl-hosted model, please try again."
 msgstr ""
 
-msgid "AdminSelfHostedModels|By enabling self-hosted models, you accept the %{link_start}GitLab Testing Agreement%{link_end}."
-msgstr ""
-
 msgid "AdminSelfHostedModels|Configure AI Features"
 msgstr ""
 
-msgid "AdminSelfHostedModels|Configure GitLab Duo by adding and managing your own self-hosted models."
+msgid "AdminSelfHostedModels|Configure GitLab Duo by adding and managing your own %{self_hosted_models_link_start}self-hosted models%{self_hosted_models_link_end}. To get started, you must first accept the %{gitlab_testing_agreement_link_start}GitLab Testing Agreement%{gitlab_testing_agreement_link_end}."
 msgstr ""
 
 msgid "AdminSelfHostedModels|Create model"
@@ -3895,9 +3895,6 @@ msgid "AdminSelfHostedModels|Edit self-hosted model"
 msgstr ""
 
 msgid "AdminSelfHostedModels|Edit the AI model that can be used for GitLab Duo features."
-msgstr ""
-
-msgid "AdminSelfHostedModels|Enable self-hosted models"
 msgstr ""
 
 msgid "AdminSelfHostedModels|Endpoint"
@@ -34941,6 +34938,9 @@ msgid "MlModelRegistry|Metadata"
 msgstr ""
 
 msgid "MlModelRegistry|Model card"
+msgstr ""
+
+msgid "MlModelRegistry|Model created %{timeAgo} by %{author}"
 msgstr ""
 
 msgid "MlModelRegistry|Model deleted successfully"

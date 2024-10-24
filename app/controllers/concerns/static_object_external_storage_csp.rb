@@ -9,7 +9,8 @@ module StaticObjectExternalStorageCSP
       next unless Gitlab::CurrentSettings.static_objects_external_storage_enabled?
 
       default_connect_src = p.directives['connect-src'] || p.directives['default-src']
-      connect_src_values = Array.wrap(default_connect_src) | [Gitlab::CurrentSettings.static_objects_external_storage_url]
+      connect_src_values =
+        Array.wrap(default_connect_src) | [Gitlab::CurrentSettings.static_objects_external_storage_url]
       p.connect_src(*connect_src_values)
     end
   end

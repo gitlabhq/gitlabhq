@@ -23,6 +23,7 @@ export default function initWorkItemLinks() {
     wiHasIssuableHealthStatusFeature,
     wiIssuesListPath,
     wiLabelsManagePath,
+    wiNewCommentTemplatePaths,
     wiReportAbusePath,
   } = workItemLinksRoot.dataset;
 
@@ -42,6 +43,7 @@ export default function initWorkItemLinks() {
       hasIssuableHealthStatusFeature: wiHasIssuableHealthStatusFeature,
       issuesListPath: wiIssuesListPath,
       labelsManagePath: wiLabelsManagePath,
+      newCommentTemplatePaths: JSON.parse(wiNewCommentTemplatePaths),
       reportAbusePath: wiReportAbusePath,
     },
     render: (createElement) =>

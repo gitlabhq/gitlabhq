@@ -138,24 +138,30 @@ module WikiActions
   def handle_redirection
     redir = find_redirection(params[:id]) unless params[:redirect_limit_reached] || params[:no_redirect]
     if redir.is_a?(Hash) && redir[:error]
+      message = safe_format(
+        s_('Wiki|The page at %{code_start}%{redirected_from}%{code_end} redirected too many times. ' \
+          'You are now editing the page at %{code_start}%{redirected_from}%{code_end}.'),
+        tag_pair(helpers.content_tag(:code), :code_start, :code_end),
+        redirected_from: params[:id]
+      )
       redirect_to(
         "#{wiki_page_path(wiki, params[:id])}?redirect_limit_reached=true",
         status: :found,
-        notice: safe_format(s_('Wiki|The page at %{code_start}%{redirected_from}%{code_end} redirected too many times. You are now editing the page at %{code_start}%{redirected_from}%{code_end}.'),
-          tag_pair(helpers.content_tag(:code), :code_start, :code_end),
-          redirected_from: params[:id]
-        )
+        notice: message
       )
     elsif redir
       redirected_from = params[:redirected_from] || params[:id]
+      message = safe_format(
+        s_('Wiki|The page at %{code_start}%{redirected_from}%{code_end} ' \
+          'has been moved to %{code_start}%{redirected_to}%{code_end}.'),
+        tag_pair(helpers.content_tag(:code), :code_start, :code_end),
+        redirected_from: redirected_from,
+        redirected_to: redir
+      )
       redirect_to(
         "#{wiki_page_path(wiki, redir)}?redirected_from=#{redirected_from}",
         status: :found,
-        notice: safe_format(s_('Wiki|The page at %{code_start}%{redirected_from}%{code_end} has been moved to %{code_start}%{redirected_to}%{code_end}.'),
-          tag_pair(helpers.content_tag(:code), :code_start, :code_end),
-          redirected_from: redirected_from,
-          redirected_to: redir
-        )
+        notice: message
       )
     elsif show_create_form?
       handle_create_form
@@ -170,7 +176,12 @@ module WikiActions
     title = params[:id]
     if params[:redirected_from] # override the notice if redirected
       redirected_link = helpers.link_to('', "#{wiki_page_path(wiki, params[:redirected_from])}?no_redirect=true")
-      flash[:notice] = safe_format(s_('Wiki|The page at %{code_start}%{redirected_from}%{code_end} tried to redirect to %{code_start}%{redirected_to}%{code_end}, but it does not exist. You are now editing the page at %{code_start}%{redirected_to}%{code_end}. %{link_start}Edit page at %{code_start}%{redirected_from}%{code_end} instead.%{link_end}'),
+      flash[:notice] = safe_format(
+        s_('Wiki|The page at %{code_start}%{redirected_from}%{code_end} tried to redirect to ' \
+          '%{code_start}%{redirected_to}%{code_end}, but it does not exist. You are now ' \
+          'editing the page at %{code_start}%{redirected_to}%{code_end}. %{link_start}Edit ' \
+          'page at %{code_start}%{redirected_from}%{code_end} instead.%{link_end}'
+          ),
         tag_pair(helpers.content_tag(:code), :code_start, :code_end),
         tag_pair(redirected_link, :link_start, :link_end),
         redirected_from: params[:redirected_from],
@@ -220,7 +231,8 @@ module WikiActions
 
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def create
-    response = WikiPages::CreateService.new(container: container, current_user: current_user, params: wiki_params).execute
+    response = WikiPages::CreateService.new(container: container, current_user: current_user,
+      params: wiki_params).execute
     @page = response.payload[:page]
 
     if response.success?
@@ -237,7 +249,8 @@ module WikiActions
   def history
     if page
       @commits_count = page.count_versions
-      @commits = Kaminari.paginate_array(page.versions(page: pagination_params[:page].to_i), total_count: page.count_versions)
+      @commits = Kaminari.paginate_array(page.versions(page: pagination_params[:page].to_i),
+        total_count: page.count_versions)
         .page(pagination_params[:page])
 
       render 'shared/wikis/history'
@@ -367,7 +380,8 @@ module WikiActions
   end
 
   def set_encoding_error
-    flash.now[:notice] = _("The content of this page is not encoded in UTF-8. Edits can only be made via the Git repository.")
+    flash.now[:notice] =
+      _("The content of this page is not encoded in UTF-8. Edits can only be made via the Git repository.")
   end
 
   def file_blob

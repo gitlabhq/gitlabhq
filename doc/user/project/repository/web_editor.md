@@ -99,6 +99,32 @@ To upload a file in the Web Editor:
    that's not your repository's [default branch](branches/default.md).
 1. Select **Upload file**.
 
+## Delete a file
+
+NOTE:
+You cannot delete a file from a [protected branch](../protected_branches.md)
+without the necessary [permissions](../../permissions.md).
+
+To delete a file in the Web Editor:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Go to the file you want to delete.
+1. Select **Delete**.
+1. In **Commit message**, enter a reason for the commit.
+1. Choose between the following options:
+   - To delete a file from the prefilled target branch, select **Commit changes**.
+   - To delete a file from a new branch and commit changes:
+     1. Select **Commit to a new branch**.
+     1. Enter a branch name.
+     1. Ensure the **Create a merge request for this change** checkbox is cleared.
+     1. Select **Commit changes**.
+   - To delete a file from a new branch, commit changes, and create a merge request:
+     1. In **Target branch**, enter a branch name.
+     1. Select **Commit to a new branch**.
+     1. Enter a branch name.
+     1. Ensure the **Create a merge request for this change** checkbox is selected.
+     1. Select **Commit changes**.
+
 ## Create a directory
 
 To create a directory in the Web Editor:

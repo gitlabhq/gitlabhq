@@ -1,17 +1,18 @@
 <script>
-import { GlBadge, GlButton, GlTab, GlTabs } from '@gitlab/ui';
+import { GlBadge, GlButton, GlTab, GlTabs, GlSprintf, GlIcon, GlLink } from '@gitlab/ui';
 import VueRouter from 'vue-router';
 import { n__, s__, sprintf } from '~/locale';
-import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import { MODEL_ENTITIES } from '~/ml/model_registry/constants';
 import ModelVersionList from '~/ml/model_registry/components/model_version_list.vue';
 import ModelDetail from '~/ml/model_registry/components/model_detail.vue';
 import ActionsDropdown from '~/ml/model_registry/components/actions_dropdown.vue';
-import { convertToGraphQLId } from '~/graphql_shared/utils';
+import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { visitUrlWithAlerts } from '~/lib/utils/url_utility';
 import getModelQuery from '~/ml/model_registry/graphql/queries/get_model.query.graphql';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import timeagoMixin from '~/vue_shared/mixins/timeago';
 import DeleteDisclosureDropdownItem from '../components/delete_disclosure_dropdown_item.vue';
 import LoadOrErrorOrShow from '../components/load_or_error_or_show.vue';
 import DeleteModel from '../components/functional/delete_model.vue';
@@ -49,10 +50,14 @@ export default {
     GlTabs,
     GlTab,
     GlBadge,
-    MetadataItem,
     LoadOrErrorOrShow,
     DeleteModel,
+    TimeAgoTooltip,
+    GlSprintf,
+    GlIcon,
+    GlLink,
   },
+  mixins: [timeagoMixin],
   router: new VueRouter({
     routes,
   }),
@@ -155,6 +160,15 @@ export default {
     isLoading() {
       return this.$apollo.queries.model.loading;
     },
+    createdMessage() {
+      return s__('MlModelRegistry|Model created %{timeAgo} by %{author}');
+    },
+    authorId() {
+      return getIdFromGraphQLId(`${this.model.author.id}`);
+    },
+    showCreatedDetail() {
+      return this.model?.author && this.model?.createdAt;
+    },
   },
   methods: {
     goTo(name) {
@@ -196,7 +210,27 @@ export default {
       <div>
         <title-area :title="modelName">
           <template #metadata-versions-count>
-            <metadata-item icon="machine-learning" :text="versionsCountLabel" />
+            <div
+              v-if="showCreatedDetail"
+              class="detail-page-header-body gl-flex-wrap gl-gap-x-2"
+              data-testid="metadata"
+            >
+              <gl-icon name="machine-learning" />
+              <gl-sprintf :message="createdMessage">
+                <template #timeAgo>
+                  <time-ago-tooltip :time="model.createdAt" />
+                </template>
+                <template #author>
+                  <gl-link
+                    class="js-user-link gl-font-bold !gl-text-gray-500"
+                    :href="model.author.webUrl"
+                    :data-user-id="authorId"
+                  >
+                    <span class="sm:gl-inline">{{ model.author.name }}</span>
+                  </gl-link>
+                </template>
+              </gl-sprintf>
+            </div>
           </template>
 
           <template #right-actions>
@@ -234,10 +268,11 @@ export default {
         <load-or-error-or-show :is-loading="isLoading" :error-message="errorMessage">
           <gl-tabs class="gl-mt-4" :value="tabIndex">
             <gl-tab
+              v-if="latestVersion"
               :title="s__('MlModelRegistry|Model card')"
               @click="goTo($options.ROUTE_DETAILS)"
             />
-            <gl-tab @click="goTo($options.ROUTE_VERSIONS)">
+            <gl-tab v-if="latestVersion" @click="goTo($options.ROUTE_VERSIONS)">
               <template #title>
                 {{ s__('MlModelRegistry|Versions') }}
                 <gl-badge class="gl-tab-counter-badge">{{ versionCount }}</gl-badge>

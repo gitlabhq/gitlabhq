@@ -62,7 +62,7 @@ DETAILS:
 - Helps you write code more efficiently by generating code and showing suggestions as you type.
 - LLMs for code completion:
   - Vertex AI Codey [`code-gecko`](https://console.cloud.google.com/vertex-ai/publishers/google/model-garden/code-gecko).
-  - Vertex AI [Codestral*](https://console.cloud.google.com/vertex-ai/publishers/mistralai/model-garden/codestral).
+  - Vertex AI [Codestral](https://console.cloud.google.com/vertex-ai/publishers/mistralai/model-garden/codestral).
     Codestral does not involve any additional third-party LLM subprocessing because it is hosted entirely within Google Vertex AI.
 - LLM for code generation: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet).
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://youtu.be/ds7SG1wgcVM)

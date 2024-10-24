@@ -15,7 +15,7 @@ Personal access tokens can be an alternative to [OAuth2](../../api/oauth2.md) an
 - Authenticate with the [GitLab API](../../api/rest/index.md#personalprojectgroup-access-tokens).
 - Authenticate with Git using HTTP Basic Authentication.
 
-In both cases, you authenticate with a personal access token in place of your password.
+In both cases, you authenticate with a personal access token in place of your password. Username is not evaluated as part of the authentication process.
 
 Personal access tokens are:
 

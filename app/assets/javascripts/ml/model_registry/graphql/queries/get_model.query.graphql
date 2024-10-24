@@ -1,6 +1,13 @@
 query getModel($id: MlModelID!) {
   mlModel(id: $id) {
     id
+    createdAt
+    author {
+      id
+      name
+      avatarUrl
+      webUrl
+    }
     description
     descriptionHtml
     name
@@ -8,6 +15,13 @@ query getModel($id: MlModelID!) {
     candidateCount
     latestVersion {
       id
+      createdAt
+      author {
+        id
+        name
+        avatarUrl
+        webUrl
+      }
       version
       packageId
       description
