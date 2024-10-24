@@ -209,6 +209,9 @@ To determine an appropriate limit, you can use this PromQL query as a guide in [
 )
 ```
 
+NOTE:
+The [concurrency limit may be momentarily exceeded](https://gitlab.com/gitlab-org/gitlab/-/issues/490936#note_2172737349) and should not be relied on as a strict limit.
+
 ## Deferring Sidekiq workers
 
 Sidekiq workers are deferred by two ways,

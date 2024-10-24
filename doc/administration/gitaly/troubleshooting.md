@@ -333,7 +333,7 @@ You might see the following in Gitaly and Praefect logs:
 ```shell
 {
   ...
-  "error":"rpc error: code = PermissionDenied desc = permission denied",
+  "error":"rpc error: code = PermissionDenied desc = permission denied: token has expired",
   "grpc.code":"PermissionDenied",
   "grpc.meta.client_name":"gitlab-web",
   "grpc.request.fullMethod":"/gitaly.ServerService/ServerInfo",
@@ -361,16 +361,6 @@ continue to listen on the old address after a `sudo gitlab-ctl reconfigure`.
 
 When this occurs, run `sudo gitlab-ctl restart` to resolve the issue. This should no longer be
 necessary because [this issue](https://gitlab.com/gitlab-org/gitaly/-/issues/2521) is resolved.
-
-## Errors in Gitaly logs when accessing repositories from a standalone Gitaly node
-
-You might see permission-denied errors in the Gitaly logs when you access a repository
-from a standalone Gitaly node. This error occurs even though file permissions are correct.
-It's likely that the Gitaly node is
-experiencing [clock drift](https://en.wikipedia.org/wiki/Clock_drift).
-
-Ensure that the GitLab and Gitaly nodes are synchronized and use an NTP time
-server to keep them synchronized if possible.
 
 ## Health check warnings
 

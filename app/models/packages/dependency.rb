@@ -6,14 +6,10 @@ class Packages::Dependency < ApplicationRecord
   has_many :dependency_links, class_name: 'Packages::DependencyLink'
   belongs_to :project
 
-  validates :name, :version_pattern, presence: true
+  validates :name, :version_pattern, :project_id, presence: true
 
   validates :name, uniqueness: { scope: :version_pattern }, unless: :project_id
   validates :name, uniqueness: { scope: %i[version_pattern project_id] }, if: :project_id
-
-  # TODO: remove the update operation when all packages dependencies have a `project_id`.
-  # https://gitlab.com/gitlab-org/gitlab/-/issues/481541
-  scope :without_project, -> { where(project_id: nil) }
 
   NAME_VERSION_PATTERN_TUPLE_MATCHING = '(name, version_pattern) = (?, ?)'
   MAX_STRING_LENGTH = 255
@@ -27,13 +23,8 @@ class Packages::Dependency < ApplicationRecord
     names_and_version_patterns.each_slice(chunk_size) do |tuples|
       where_statement = Array.new(tuples.size, NAME_VERSION_PATTERN_TUPLE_MATCHING)
                              .join(' OR ')
-      # Additionally, we look up for dependencies with `project_id IS NULL` to avoid creating duplicates:
-      # a dependency with `project_id` and the same dependency without `project_id`.
-      #
-      # TODO: remove `nil` value when all packages dependencies have a `project_id`.
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/481541
       ids = where(where_statement, *tuples.flatten)
-              .where(project_id: [project_id, nil])
+              .where(project_id: project_id)
               .limit(max_rows_limit + 1)
               .pluck(:id)
       matched_ids.concat(ids)

@@ -49717,6 +49717,9 @@ msgstr ""
 msgid "SecurityOrchestration|Policy exceeds the maximum of %{limit} actions"
 msgstr ""
 
+msgid "SecurityOrchestration|Policy has reached the maximum of %{actionsCount} %{actions}"
+msgstr ""
+
 msgid "SecurityOrchestration|Policy is invalid"
 msgstr ""
 
@@ -64168,6 +64171,11 @@ msgstr[1] ""
 
 msgid "access:"
 msgstr ""
+
+msgid "action"
+msgid_plural "actions"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "active project"
 msgstr ""

@@ -196,6 +196,14 @@ VERSION=<migration ID> bundle exec rails db:migrate:main
 
 After a table has been created, it should be added to the database dictionary, following the steps mentioned in the [database dictionary guide](database/database_dictionary.md#adding-tables).
 
+### Migration checksum
+
+When a migration is first executed, a new file is created in [db/schema_migrations](https://gitlab.com/gitlab-org/gitlab/-/tree/v17.5.0-ee/db/schema_migrations) containing a `SHA` generated from the migration's timestamp. The name of this new file is the same as the [timestamp portion](#migration-timestamp-age) of the migration filename, for example [db/schema_migrations/20241021120146](https://gitlab.com/gitlab-org/gitlab/blob/aa7cfb42c312/db/schema_migrations/20241021120146).
+
+This new `db/schema_migration/<timestamp>` file indicates that the migration was executed successfuly and the result recorded in `db/structure.sql`. The presence of this file prevents the same migration from being executed twice, and therefore, it's necessary to include this file in the merge request that adds the new migration.
+
+See [Development change: Database schema version handling outside of structure.sql](https://gitlab.com/gitlab-org/gitlab/-/issues/218590) for more details about the `db/schema_migrations` directory.
+
 ## Avoiding downtime
 
 The document ["Avoiding downtime in migrations"](database/avoiding_downtime_in_migrations.md) specifies

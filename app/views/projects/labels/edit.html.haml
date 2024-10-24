@@ -1,4 +1,5 @@
 - add_to_breadcrumbs _("Labels"), project_labels_path(@project)
+- add_to_breadcrumbs @label.name, project_labels_path(@project)
 - breadcrumb_title _("Edit")
 - page_title _("Edit"), @label.name, _("Labels")
 - show_lock_on_merge = @project.supports_lock_on_merge?

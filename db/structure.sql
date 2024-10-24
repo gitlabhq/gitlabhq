@@ -15636,7 +15636,8 @@ CREATE TABLE packages_dependencies (
     id bigint NOT NULL,
     name character varying(255) NOT NULL,
     version_pattern character varying(255) NOT NULL,
-    project_id bigint
+    project_id bigint,
+    CONSTRAINT check_83faf1f5e7 CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE packages_dependencies_id_seq

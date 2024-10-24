@@ -1,7 +1,7 @@
 - breadcrumb_title _("Edit")
-- page_title _("Milestones")
-
-- render "header_title"
+- add_to_breadcrumbs _('Milestones'), group_milestones_path(@group)
+- add_to_breadcrumbs @milestone.title, milestone_path(@milestone)
+- page_title _('Edit'), @milestone.title, _('Milestones')
 
 %h1.page-title.gl-text-size-h-display
   = _('Edit milestone')

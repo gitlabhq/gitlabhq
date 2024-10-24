@@ -63,7 +63,7 @@ It can take a few hours to validate a certificate provisioned through ACM. To av
 
 Below is a diagram of the recommended architecture.
 
-![AWS architecture diagram](img/aws_ha_architecture_diagram_v17_0.png)
+![Scaled down 2 Availability Zone Non-HA AWS architecture](img/aws_ha_architecture_diagram_v17_0.png)
 
 ## AWS costs
 

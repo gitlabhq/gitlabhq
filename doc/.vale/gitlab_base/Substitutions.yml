@@ -9,6 +9,8 @@ extends: substitution
 message: "Use '%s' instead of '%s'."
 link: https://handbook.gitlab.com/handbook/communication/top-misused-terms/
 level: error
+action:
+  name: replace
 ignorecase: true
 swap:
   admin user: administrator
