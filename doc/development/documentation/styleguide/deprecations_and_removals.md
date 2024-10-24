@@ -102,7 +102,19 @@ To remove a page:
    Use [feature X](link-to-docs.md) instead.
    ```
 
-1. Remove the page's entry from the global navigation by editing [`navigation.yaml`](https://gitlab.com/gitlab-org/gitlab-docs/blob/main/content/_data/navigation.yaml) in `gitlab-docs`.
+1. Edit the [`navigation.yaml`](https://gitlab.com/gitlab-org/gitlab-docs/blob/main/content/_data/navigation.yaml) in `gitlab-docs`
+   to remove the page's entry from the global navigation.
+1. Search the [Deprecations and Removals](../../../update/deprecations.md) page for
+   links to the removed page. These are full URLs like: `https://docs.gitlab.com/ee/user/deprecated_page.html`.
+   If you find any links, update the relevant [YAML files](https://gitlab.com/gitlab-org/gitlab/-/tree/master/data/deprecations):
+
+   - In the `body:` section, remove links to the removed page.
+   - In the `documentation_url:` section, if the entry links to the page, delete the link.
+   - Run the Rake task to update the documentation:
+
+     ```shell
+     bin/rake gitlab:docs:compile_deprecations
+     ```
 
 This content is removed from the documentation as part of the Technical Writing team's
 [regularly scheduled tasks](https://handbook.gitlab.com/handbook/product/ux/technical-writing/#regularly-scheduled-tasks).
@@ -132,6 +144,18 @@ To remove a topic:
 
    <!--- end_remove -->
    ```
+
+1. Search the [Deprecations and Removals](../../../update/deprecations.md) page for
+   links to the removed page. These are full URLs like: `https://docs.gitlab.com/ee/user/deprecated_page.html`.
+   If you find any links, update the relevant [YAML files](https://gitlab.com/gitlab-org/gitlab/-/tree/master/data/deprecations):
+
+   - In the `body:` section, remove links to the removed page.
+   - In the `documentation_url:` section, if the entry links to the page, delete the link.
+   - Run the Rake task to update the documentation:
+
+     ```shell
+     bin/rake gitlab:docs:compile_deprecations
+     ```
 
 This content is removed from the documentation as part of the Technical Writing team's
 [regularly scheduled tasks](https://handbook.gitlab.com/handbook/product/ux/technical-writing/#regularly-scheduled-tasks).

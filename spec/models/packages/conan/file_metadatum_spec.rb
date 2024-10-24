@@ -3,56 +3,33 @@
 require 'spec_helper'
 
 RSpec.describe Packages::Conan::FileMetadatum, type: :model do
+  let_it_be(:package_file) { create(:conan_package_file, :conan_recipe_file) }
+
   describe 'relationships' do
     it { is_expected.to belong_to(:package_file) }
+
+    it 'belongs to recipe_revision' do
+      is_expected.to belong_to(:recipe_revision).class_name('Packages::Conan::RecipeRevision')
+        .inverse_of(:file_metadata)
+    end
+
+    it 'belongs to package_revision' do
+      is_expected.to belong_to(:package_revision).class_name('Packages::Conan::PackageRevision')
+        .inverse_of(:file_metadata)
+    end
+
+    it 'belongs to package_reference' do
+      is_expected.to belong_to(:package_reference).class_name('Packages::Conan::PackageReference')
+        .inverse_of(:file_metadata)
+    end
   end
 
   describe 'validations' do
-    let(:package_file) { create(:conan_package_file, :conan_recipe_file) }
-
     it { is_expected.to validate_presence_of(:package_file) }
-    it { is_expected.to validate_presence_of(:recipe_revision) }
+    it { is_expected.to validate_absence_of(:recipe_revision) }
+    it { is_expected.to validate_absence_of(:package_revision) }
 
-    describe '#recipe_revision' do
-      it { is_expected.to allow_value("0").for(:recipe_revision) }
-      it { is_expected.not_to allow_value(nil).for(:recipe_revision) }
-    end
-
-    describe '#package_revision_for_package_file' do
-      context 'recipe file' do
-        let(:conan_file_metadatum) { build(:conan_file_metadatum, :recipe_file, package_file: package_file) }
-
-        it 'is valid with empty value' do
-          conan_file_metadatum.package_revision = nil
-
-          expect(conan_file_metadatum).to be_valid
-        end
-
-        it 'is invalid with value' do
-          conan_file_metadatum.package_revision = '0'
-
-          expect(conan_file_metadatum).to be_invalid
-        end
-      end
-
-      context 'package file' do
-        let(:conan_file_metadatum) { build(:conan_file_metadatum, :package_file, package_file: package_file) }
-
-        it 'is valid with default value' do
-          conan_file_metadatum.package_revision = '0'
-
-          expect(conan_file_metadatum).to be_valid
-        end
-
-        it 'is invalid with non-default value' do
-          conan_file_metadatum.package_revision = 'foo'
-
-          expect(conan_file_metadatum).to be_invalid
-        end
-      end
-    end
-
-    describe '#conan_package_reference_for_package_file' do
+    describe '#conan_package_reference' do
       context 'recipe file' do
         let(:conan_file_metadatum) { build(:conan_file_metadatum, :recipe_file, package_file: package_file) }
 
@@ -100,6 +77,34 @@ RSpec.describe Packages::Conan::FileMetadatum, type: :model do
 
         expect(conan_file_metadatum).not_to be_valid
         expect(conan_file_metadatum.errors.to_a).to contain_exactly('Package type must be Conan')
+      end
+    end
+  end
+
+  describe '#recipe_revision_value' do
+    let(:conan_file_metadatum) { build(:conan_file_metadatum, :recipe_file, package_file: package_file) }
+
+    it 'returns the default recipe revision value' do
+      expect(conan_file_metadatum.recipe_revision_value).to eq(
+        Packages::Conan::FileMetadatum::DEFAULT_REVISION)
+    end
+  end
+
+  describe '#package_revision_value' do
+    context 'recipe file' do
+      let(:conan_file_metadatum) { build(:conan_file_metadatum, :recipe_file, package_file: package_file) }
+
+      it 'returns nil' do
+        expect(conan_file_metadatum.package_revision_value).to be_nil
+      end
+    end
+
+    context 'package file' do
+      let(:conan_file_metadatum) { build(:conan_file_metadatum, :package_file, package_file: package_file) }
+
+      it 'returns the default package revision value' do
+        expect(conan_file_metadatum.package_revision_value).to eq(
+          Packages::Conan::FileMetadatum::DEFAULT_REVISION)
       end
     end
   end

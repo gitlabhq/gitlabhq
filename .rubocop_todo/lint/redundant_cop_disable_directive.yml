@@ -291,7 +291,6 @@ Lint/RedundantCopDisableDirective:
     - 'lib/gitlab/background_migration/migrate_vulnerabilities_feedback_to_vulnerabilities_state_transition.rb'
     - 'lib/gitlab/background_migration/populate_denormalized_columns_for_sbom_occurrences.rb'
     - 'lib/gitlab/background_migration/populate_latest_pipeline_ids.rb'
-    - 'lib/gitlab/background_migration/populate_resolved_on_default_branch_column.rb'
     - 'lib/gitlab/background_migration/populate_vulnerability_dismissal_fields.rb'
     - 'lib/gitlab/background_migration/purge_stale_security_scans.rb'
     - 'lib/gitlab/background_migration/resolve_vulnerabilities_for_removed_analyzers.rb'

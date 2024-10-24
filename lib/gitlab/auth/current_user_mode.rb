@@ -86,6 +86,8 @@ module Gitlab
           Gitlab::SafeRequestStore[CURRENT_REQUEST_ADMIN_MODE_USER_RS_KEY]
         end
 
+        # Execute the given block with admin privileges if the user is an admin and admin mode is enabled.
+        # Otherwise, execute the block with regular user permissions.
         def optionally_run_in_admin_mode(user)
           raise NonSidekiqEnvironmentError unless Gitlab::Runtime.sidekiq?
 

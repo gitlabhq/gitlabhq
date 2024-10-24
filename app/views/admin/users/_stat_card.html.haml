@@ -1,0 +1,7 @@
+= render Pajamas::CardComponent.new do |c|
+  - c.with_body do
+    %div
+      = render Pajamas::SingleStatComponent.new(title: title, stat_value: value)
+      - if href && link_title
+        = render Pajamas::ButtonComponent.new(size: :small, button_options: { class: 'gl-w-max' }, variant: :link, block: false, href: href) do
+          = link_title

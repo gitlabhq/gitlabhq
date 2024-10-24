@@ -196,6 +196,7 @@ export const LINUX_PLATFORM = 'linux';
 export const MACOS_PLATFORM = 'osx';
 export const WINDOWS_PLATFORM = 'windows';
 export const GOOGLE_CLOUD_PLATFORM = 'google_cloud';
+export const GOOGLE_KUBERNETES_ENGINE = 'gke';
 
 // Stages for the google cloud setup
 export const GOOGLE_CLOUD_SETUP_START = 'google_cloud_setup_start';

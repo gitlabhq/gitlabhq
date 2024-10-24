@@ -1,6 +1,6 @@
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { localeDateFormat, newDate } from '~/lib/utils/datetime_utility';
-import RichTimestampTooltip from '~/vue_shared/components/rich_timestamp_tooltip.vue';
+import RichTimestampTooltip from '~/work_items/components/rich_timestamp_tooltip.vue';
 
 describe('RichTimestampTooltip', () => {
   const currentDate = new Date();

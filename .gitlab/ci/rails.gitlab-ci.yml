@@ -47,6 +47,7 @@ setup-test-env:
       - ${TMP_TEST_FOLDER}/repositories/
       - ${TMP_TEST_FOLDER}/second_storage/
       - ${TMP_TEST_GITLAB_WORKHORSE_PATH}/
+      - ${TMP_TEST_FOLDER}/openbao/bin/
       - log/*.log
     when: always
 

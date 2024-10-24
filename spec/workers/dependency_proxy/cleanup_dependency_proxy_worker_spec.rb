@@ -2,7 +2,13 @@
 
 require 'spec_helper'
 
-RSpec.describe DependencyProxy::CleanupDependencyProxyWorker, feature_category: :virtual_registry do
+RSpec.describe DependencyProxy::CleanupDependencyProxyWorker, type: :worker, feature_category: :virtual_registry do
+  it_behaves_like 'worker with data consistency', described_class, data_consistency: :sticky
+
+  it 'has :until_executing deduplicate strategy' do
+    expect(described_class.get_deduplicate_strategy).to eq(:until_executing)
+  end
+
   describe '#perform' do
     subject { described_class.new.perform }
 

@@ -274,6 +274,7 @@ DETAILS:
 **Status:** Experiment
 
 > - Introduced in GitLab 16.11 as an [experiment](../../policy/experiment-beta-support.md#experiment) feature [with a flag](../../administration/feature_flags.md) named `generate_cube_query`. Disabled by default.
+> - GitLab Duo add-on required in GitLab 17.6 and later.
 
 Prerequisites:
 

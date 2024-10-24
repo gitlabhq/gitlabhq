@@ -69,7 +69,7 @@ module API
           def build_package_file_upload_url(file_name)
             options = url_options(file_name).merge(
               conan_package_reference: params[:conan_package_reference],
-              package_revision: ::Packages::Conan::FileMetadatum::DEFAULT_PACKAGE_REVISION
+              package_revision: ::Packages::Conan::FileMetadatum::DEFAULT_REVISION
             )
 
             package_file_url(options)
@@ -86,7 +86,7 @@ module API
               package_username: params[:package_username],
               package_channel: params[:package_channel],
               file_name: file_name,
-              recipe_revision: ::Packages::Conan::FileMetadatum::DEFAULT_RECIPE_REVISION
+              recipe_revision: ::Packages::Conan::FileMetadatum::DEFAULT_REVISION
             }
           end
 

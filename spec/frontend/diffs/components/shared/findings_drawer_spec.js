@@ -92,15 +92,4 @@ describe('FindingsDrawer', () => {
       expect(findTitle().text()).toBe(`Name ${mockFindingsMultiple[0].title}`);
     });
   });
-
-  describe('Active Index Handling', () => {
-    it('watcher sets active index on drawer prop change', async () => {
-      wrapper = createWrapper();
-      const newFinding = { findings: mockFindingsMultiple, index: 2 };
-
-      await wrapper.setProps({ drawer: newFinding });
-      await nextTick();
-      expect(findTitle().text()).toBe(`Name ${mockFindingsMultiple[2].title}`);
-    });
-  });
 });

@@ -42,10 +42,7 @@ Note that tests are using `Chrome` web browser by default so it should be instal
 
 ## CI
 
-Tests are executed in merge request pipelines as part of the development lifecycle.
-
-- [e2e:test-on-omnibus](../doc/development/testing_guide/end_to_end/index.md#using-the-test-on-omnibus-job)
-- [e2e:test-on-gdk](../doc/development/testing_guide/end_to_end/index.md#using-the-test-on-gdk-job)
+Tests are executed in merge request pipelines as part of the development lifecycle. CI pipeline setup and different types of environments are described in [test pipelines](../doc/development/testing_guide/end_to_end/test_pipelines.md) documentation page.
 
 ### Including tests in other projects
 

@@ -76,6 +76,8 @@ DETAILS:
 **Tier:** Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
+> - GitLab Duo add-on required in GitLab 17.6 and later.
+
 The GitLab CLI includes features powered by [GitLab Duo](../../user/ai_features.md). These include:
 
 - [`glab duo ask`](https://gitlab.com/gitlab-org/cli/-/blob/main/docs/source/duo/ask.md)

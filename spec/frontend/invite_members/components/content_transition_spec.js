@@ -1,6 +1,6 @@
 import { groupBy, mapValues } from 'lodash';
 import { shallowMount } from '@vue/test-utils';
-import ContentTransition from '~/vue_shared/components/content_transition.vue';
+import ContentTransition from '~/invite_members/components/content_transition.vue';
 
 const TEST_CURRENT_SLOT = 'default';
 const TEST_TRANSITION_NAME = 'test_transition_name';

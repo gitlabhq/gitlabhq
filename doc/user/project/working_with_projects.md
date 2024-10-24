@@ -197,6 +197,12 @@ You can [view projects that are pending deletion](#view-projects-pending-deletio
 and use the Rails console to
 [find projects that are pending deletion](troubleshooting.md#find-projects-that-are-pending-deletion).
 
+If the user who scheduled the project deletion loses access to the project (for example, by leaving the project, having their role downgraded, or being banned from the project) before the deletion occurs,
+the deletion job will instead restore and unarchive the project, so the project will no longer be scheduled for deletion.
+
+   WARNING:
+   If the user who scheduled the project deletion regains Owner role or administrator access before the job runs, then the job removes the project permanently.
+
 ### Delete a project immediately
 
 DETAILS:

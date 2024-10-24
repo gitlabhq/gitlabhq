@@ -79,7 +79,6 @@ Migration/UpdateLargeTable:
     - :vulnerabilities
     - :vulnerability_finding_links
     - :vulnerability_occurrence_identifiers
-    - :vulnerability_occurrence_pipelines
     - :vulnerability_occurrences
     - :vulnerability_reads
     - :web_hook_logs

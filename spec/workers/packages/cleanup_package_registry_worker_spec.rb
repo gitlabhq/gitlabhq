@@ -2,7 +2,13 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::CleanupPackageRegistryWorker, feature_category: :package_registry do
+RSpec.describe Packages::CleanupPackageRegistryWorker, type: :worker, feature_category: :package_registry do
+  it_behaves_like 'worker with data consistency', described_class, data_consistency: :sticky
+
+  it 'has :until_executing deduplicate strategy' do
+    expect(described_class.get_deduplicate_strategy).to eq(:until_executing)
+  end
+
   describe '#perform' do
     let_it_be_with_reload(:package_files) { create_list(:package_file, 2, :pending_destruction) }
     let_it_be(:policy) { create(:packages_cleanup_policy, :runnable) }
@@ -112,19 +118,6 @@ RSpec.describe Packages::CleanupPackageRegistryWorker, feature_category: :packag
         expect(worker).to receive(:log_extra_metadata_on_done).with(:pending_cleanup_policies_count, 1)
 
         perform
-      end
-
-      context 'with load balancing enabled', :db_load_balancing do
-        it 'reads the count from the replica' do
-          expect(Gitlab::Database::LoadBalancing::SessionMap).to receive(:with_sessions)
-            .with([Packages::PackageFile, Packages::Cleanup::Policy]).and_call_original
-
-          expect_next_instance_of(Gitlab::Database::LoadBalancing::ScopedSessions) do |inst|
-            expect(inst).to receive(:use_replicas_for_read_queries).and_call_original
-          end
-
-          perform
-        end
       end
     end
   end

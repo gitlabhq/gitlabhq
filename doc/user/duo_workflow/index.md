@@ -39,7 +39,7 @@ These are examples of known GitLab Duo Workflow that have successfully executed,
 Before you can use GitLab Duo Workflow in VS Code:
 
 1. Install the [GitLab Workflow extension for VS Code](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow).
-   Minimum version 5.8.0.
+   Minimum version 5.16.0.
 1. In VS Code, [set the Docker socket file path](#install-docker-and-set-the-socket-file-path).
 
 ### Install Docker and set the socket file path
@@ -126,6 +126,7 @@ Duo Workflow has the following limitations:
 
 If you encounter issues:
 
+1. Ensure that you have the latest version of the GitLab Workflow extension.
 1. Check that your open project in VS Code corresponds to the GitLab project you want to interact with.
 1. Ensure that you've checked out the branch as well.
 1. Check your Docker and Docker socket configuration:

@@ -12,6 +12,7 @@ DETAILS:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/443696) in GitLab 16.11 [with a flag](../../administration/feature_flags.md) named `ai_impact_analytics_dashboard`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/451873) in GitLab 17.2. Feature flag `ai_impact_analytics_dashboard` removed.
+> - GitLab Duo add-on required in GitLab 17.6 and later.
 
 AI Impact analytics displays software development life cycle (SDLC) metrics for a project or group in the month-to-date and the past six months.
 

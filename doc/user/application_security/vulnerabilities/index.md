@@ -38,6 +38,7 @@ DETAILS:
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10368) in GitLab 16.0 as an [experiment](../../../policy/experiment-beta-support.md#experiment) on GitLab.com.
 > - Promoted to [beta](../../../policy/experiment-beta-support.md#beta) status in GitLab 16.2.
 > - [Generally available](https://gitlab.com/groups/gitlab-org/-/epics/10642) in GitLab 17.2.
+> - GitLab Duo add-on required in GitLab 17.6 and later.
 
 GitLab can help you with a vulnerability by using a large language model to:
 
@@ -96,6 +97,7 @@ DETAILS:
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10779) in GitLab 16.7 as an [experiment](../../../policy/experiment-beta-support.md#experiment) on GitLab.com.
 > - Changed to beta in GitLab 17.3.
+> - GitLab Duo add-on required in GitLab 17.6 and later.
 
 Use GitLab Duo Vulnerability resolution to automatically create a merge request that
 resolves the vulnerability. By default, it is powered by Anthropic's [`claude-3.5-sonnet`](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet) model.

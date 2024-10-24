@@ -4,7 +4,7 @@ import { shallowMount, mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import Papa from 'papaparse';
 import CsvViewer from '~/blob/csv/csv_viewer.vue';
-import PapaParseAlert from '~/vue_shared/components/papa_parse_alert.vue';
+import PapaParseAlert from '~/blob/components/papa_parse_alert.vue';
 import { MAX_ROWS_TO_RENDER } from '~/blob/csv/constants';
 
 const validCsv = 'one,two,three';

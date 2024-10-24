@@ -4725,6 +4725,9 @@ msgstr ""
 msgid "AdminUsers|Role Promotions"
 msgstr ""
 
+msgid "AdminUsers|Role promotions"
+msgstr ""
+
 msgid "AdminUsers|Search by name, email, or username"
 msgstr ""
 
@@ -4816,6 +4819,9 @@ msgid "AdminUsers|Users can still be invited to your instance and/or add themsel
 msgstr ""
 
 msgid "AdminUsers|Validate user account"
+msgstr ""
+
+msgid "AdminUsers|View"
 msgstr ""
 
 msgid "AdminUsers|View pending member requests"
@@ -34645,6 +34651,9 @@ msgstr ""
 msgid "MlExperimentTracking|-"
 msgstr ""
 
+msgid "MlExperimentTracking|Are you sure you would like to delete this model?"
+msgstr ""
+
 msgid "MlExperimentTracking|Artifacts"
 msgstr ""
 
@@ -34681,7 +34690,7 @@ msgstr ""
 msgid "MlExperimentTracking|Deleting this experiment will also delete its candidates and their associated metadata."
 msgstr ""
 
-msgid "MlExperimentTracking|Deleting this model will delete the associated model versions, candidates and artifacts."
+msgid "MlExperimentTracking|Deleting this model also deletes all its versions, including any imported or uploaded artifacts, and their associated settings."
 msgstr ""
 
 msgid "MlExperimentTracking|Details"
@@ -34830,9 +34839,6 @@ msgid "MlModelRegistry|Delete model version"
 msgstr ""
 
 msgid "MlModelRegistry|Delete model version?"
-msgstr ""
-
-msgid "MlModelRegistry|Delete model?"
 msgstr ""
 
 msgid "MlModelRegistry|Deleting this model version will delete the associated artifacts."
@@ -36524,6 +36530,9 @@ msgid "Note creation requests"
 msgstr ""
 
 msgid "Note parameters are invalid: %{errors}"
+msgstr ""
+
+msgid "Note:"
 msgstr ""
 
 msgid "Note: As an administrator you may like to configure %{github_integration_link}, which will allow login via GitHub and allow importing repositories without generating a personal access token."
@@ -44360,9 +44369,6 @@ msgstr ""
 msgid "ProtectedEnvironments|Add deployment rules"
 msgstr ""
 
-msgid "ProtectedEnvironments|Allowed to approve"
-msgstr ""
-
 msgid "ProtectedEnvironments|Allowed to deploy"
 msgstr ""
 
@@ -46679,6 +46685,12 @@ msgstr ""
 msgid "Runners|1. Environment"
 msgstr ""
 
+msgid "Runners|1.2 Node Pools"
+msgstr ""
+
+msgid "Runners|1.2 Set up the Node pools for your Kubernetes cluster."
+msgstr ""
+
 msgid "Runners|2. Install and register GitLab Runner"
 msgstr ""
 
@@ -46710,6 +46722,9 @@ msgid "Runners|Active"
 msgstr ""
 
 msgid "Runners|Active runners"
+msgstr ""
+
+msgid "Runners|Add Node Pool"
 msgstr ""
 
 msgid "Runners|Add notes such as the runner owner or what it should be used for."
@@ -46996,6 +47011,18 @@ msgstr ""
 msgid "Runners|Idle"
 msgstr ""
 
+msgid "Runners|Image Type"
+msgstr ""
+
+msgid "Runners|Image Type help"
+msgstr ""
+
+msgid "Runners|Image Type is required."
+msgstr ""
+
+msgid "Runners|Image Type must have the right format."
+msgstr ""
+
 msgid "Runners|In GitLab Runner 15.6, the use of registration tokens and runner parameters in the 'register' command was deprecated. They have been replaced by authentication tokens. %{linkStart}How does this impact my current registration workflow?%{linkEnd}"
 msgstr ""
 
@@ -47152,6 +47179,39 @@ msgstr ""
 msgid "Runners|No, keep instance runners enabled"
 msgstr ""
 
+msgid "Runners|Node count"
+msgstr ""
+
+msgid "Runners|Node count help"
+msgstr ""
+
+msgid "Runners|Node count is required."
+msgstr ""
+
+msgid "Runners|Node count must have the right format."
+msgstr ""
+
+msgid "Runners|Node pool label key"
+msgstr ""
+
+msgid "Runners|Node pool label value"
+msgstr ""
+
+msgid "Runners|Node pool labels"
+msgstr ""
+
+msgid "Runners|Node pool name"
+msgstr ""
+
+msgid "Runners|Node pool name help"
+msgstr ""
+
+msgid "Runners|Node pool name is required."
+msgstr ""
+
+msgid "Runners|Node pool name must have the right format."
+msgstr ""
+
 msgid "Runners|Not accepting jobs"
 msgstr ""
 
@@ -47194,6 +47254,9 @@ msgid "Runners|Permanently delete runner"
 msgid_plural "Runners|Permanently delete %d runners"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Runners|Plan the node count size to ensure you can accomodate your workload"
+msgstr ""
 
 msgid "Runners|Platform"
 msgstr ""
@@ -47262,6 +47325,15 @@ msgid "Runners|Registration token"
 msgstr ""
 
 msgid "Runners|Registration token copied!"
+msgstr ""
+
+msgid "Runners|Remove Node Pool"
+msgstr ""
+
+msgid "Runners|Remove Node pool"
+msgstr ""
+
+msgid "Runners|Remove Node pool label"
 msgstr ""
 
 msgid "Runners|Reset token"
@@ -47420,6 +47492,9 @@ msgstr ""
 msgid "Runners|Something went wrong while fetching the tags suggestions"
 msgstr ""
 
+msgid "Runners|Specific Image for the Nodes in the Node Pool to use"
+msgstr ""
+
 msgid "Runners|Specific geographical location where you can run your resources."
 msgstr ""
 
@@ -47466,6 +47541,9 @@ msgid "Runners|The ID of the machine hosting the runner."
 msgstr ""
 
 msgid "Runners|The deployment name is invalid"
+msgstr ""
+
+msgid "Runners|The name of node pool"
 msgstr ""
 
 msgid "Runners|The project, group or instance where the runner was registered. Instance runners are always owned by Administrator."

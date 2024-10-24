@@ -6,7 +6,7 @@ module DependencyProxy
     include CronjobQueue # rubocop:disable Scalability/CronWorkerContext
     include DependencyProxy::Expireable
 
-    data_consistency :always
+    data_consistency :sticky
 
     feature_category :virtual_registry
 
@@ -25,27 +25,19 @@ module DependencyProxy
     private
 
     def log_counts
-      use_replica_if_available do
-        expired_blob_count = DependencyProxy::Blob.pending_destruction.count
-        expired_manifest_count = DependencyProxy::Manifest.pending_destruction.count
-        processing_blob_count = DependencyProxy::Blob.processing.count
-        processing_manifest_count = DependencyProxy::Manifest.processing.count
-        error_blob_count = DependencyProxy::Blob.error.count
-        error_manifest_count = DependencyProxy::Manifest.error.count
+      expired_blob_count = DependencyProxy::Blob.pending_destruction.count
+      expired_manifest_count = DependencyProxy::Manifest.pending_destruction.count
+      processing_blob_count = DependencyProxy::Blob.processing.count
+      processing_manifest_count = DependencyProxy::Manifest.processing.count
+      error_blob_count = DependencyProxy::Blob.error.count
+      error_manifest_count = DependencyProxy::Manifest.error.count
 
-        log_extra_metadata_on_done(:expired_dependency_proxy_blob_count, expired_blob_count)
-        log_extra_metadata_on_done(:expired_dependency_proxy_manifest_count, expired_manifest_count)
-        log_extra_metadata_on_done(:processing_dependency_proxy_blob_count, processing_blob_count)
-        log_extra_metadata_on_done(:processing_dependency_proxy_manifest_count, processing_manifest_count)
-        log_extra_metadata_on_done(:error_dependency_proxy_blob_count, error_blob_count)
-        log_extra_metadata_on_done(:error_dependency_proxy_manifest_count, error_manifest_count)
-      end
-    end
-
-    def use_replica_if_available(&block)
-      ::Gitlab::Database::LoadBalancing::SessionMap
-        .with_sessions([::ApplicationRecord, ::Ci::ApplicationRecord])
-        .use_replicas_for_read_queries(&block)
+      log_extra_metadata_on_done(:expired_dependency_proxy_blob_count, expired_blob_count)
+      log_extra_metadata_on_done(:expired_dependency_proxy_manifest_count, expired_manifest_count)
+      log_extra_metadata_on_done(:processing_dependency_proxy_blob_count, processing_blob_count)
+      log_extra_metadata_on_done(:processing_dependency_proxy_manifest_count, processing_manifest_count)
+      log_extra_metadata_on_done(:error_dependency_proxy_blob_count, error_blob_count)
+      log_extra_metadata_on_done(:error_dependency_proxy_manifest_count, error_manifest_count)
     end
   end
 end

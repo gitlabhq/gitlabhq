@@ -4,7 +4,7 @@ import { getTimeago, localeDateFormat, newDate } from '~/lib/utils/datetime_util
 import { truncateSha } from '~/lib/utils/text_utility';
 import { __, sprintf } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
-import ExpandButton from '~/vue_shared/components/expand_button.vue';
+import ExpandButton from './expand_button.vue';
 
 export default {
   name: 'EvidenceBlock',

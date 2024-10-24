@@ -6,7 +6,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import WorkItemLinkChildMetadata from 'ee_else_ce/work_items/components/shared/work_item_link_child_metadata.vue';
 
 import { createAlert } from '~/alert';
-import RichTimestampTooltip from '~/vue_shared/components/rich_timestamp_tooltip.vue';
+import RichTimestampTooltip from '~/work_items/components/rich_timestamp_tooltip.vue';
 import WorkItemStateBadge from '~/work_items/components/work_item_state_badge.vue';
 import WorkItemLinkChildContents from '~/work_items/components/shared/work_item_link_child_contents.vue';
 import { WORK_ITEM_TYPE_VALUE_OBJECTIVE } from '~/work_items/constants';

@@ -48,8 +48,6 @@ $type-scale: (
   }
 }
 
-.box-shadow-default { box-shadow: 0 2px 4px 0 $t-gray-a-24; }
-
 // stylelint-disable-next-line gitlab/no-gl-class
 .gl-top-app-header {
   top: $calc-application-header-height;
@@ -64,12 +62,6 @@ $type-scale: (
 // stylelint-disable-next-line gitlab/no-gl-class
 .gl-z-dropdown-menu\! {
   z-index: $zindex-dropdown-menu !important;
-}
-
-// Will be moved to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1465
-// stylelint-disable-next-line gitlab/no-gl-class
-.gl-focus-ring-border-1-gray-900\! {
-  @include gl-focus($gl-border-size-1, $gray-900, true);
 }
 
 // stylelint-disable-next-line gitlab/no-gl-class

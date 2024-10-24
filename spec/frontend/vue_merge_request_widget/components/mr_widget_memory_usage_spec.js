@@ -5,7 +5,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import MemoryUsage from '~/vue_merge_request_widget/components/deployment/memory_usage.vue';
 import MRWidgetService from '~/vue_merge_request_widget/services/mr_widget_service';
-import MemoryGraph from '~/vue_shared/components/memory_graph.vue';
+import MemoryGraph from '~/vue_merge_request_widget/components/memory_graph.vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
 const url = '/root/acets-review-apps/environments/15/deployments/1/metrics';

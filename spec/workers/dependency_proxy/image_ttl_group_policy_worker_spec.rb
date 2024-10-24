@@ -2,8 +2,14 @@
 
 require 'spec_helper'
 
-RSpec.describe DependencyProxy::ImageTtlGroupPolicyWorker, feature_category: :virtual_registry do
+RSpec.describe DependencyProxy::ImageTtlGroupPolicyWorker, type: :worker, feature_category: :virtual_registry do
   let(:worker) { described_class.new }
+
+  it_behaves_like 'worker with data consistency', described_class, data_consistency: :sticky
+
+  it 'has :until_executing deduplicate strategy' do
+    expect(described_class.get_deduplicate_strategy).to eq(:until_executing)
+  end
 
   describe '#perform' do
     let_it_be(:policy) { create(:image_ttl_group_policy) }
@@ -44,18 +50,6 @@ RSpec.describe DependencyProxy::ImageTtlGroupPolicyWorker, feature_category: :vi
         expect(worker).to receive(:log_extra_metadata_on_done).with(:error_dependency_proxy_manifest_count, 1)
 
         subject
-      end
-
-      context 'with load balancing enabled', :db_load_balancing do
-        it 'reads the counts from the replica' do
-          expect(Gitlab::Database::LoadBalancing::SessionMap).to receive(:with_sessions).with([::ApplicationRecord, ::Ci::ApplicationRecord]).and_call_original
-
-          expect_next_instance_of(Gitlab::Database::LoadBalancing::ScopedSessions) do |inst|
-            expect(inst).to receive(:use_replicas_for_read_queries).and_call_original
-          end
-
-          subject
-        end
       end
     end
   end

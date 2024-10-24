@@ -4,7 +4,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import Api from '~/api';
 import InviteGroupsModal from '~/invite_members/components/invite_groups_modal.vue';
 import InviteModalBase from '~/invite_members/components/invite_modal_base.vue';
-import ContentTransition from '~/vue_shared/components/content_transition.vue';
+import ContentTransition from '~/invite_members/components/content_transition.vue';
 import GroupSelect from '~/invite_members/components/group_select.vue';
 import InviteGroupNotification from '~/invite_members/components/invite_group_notification.vue';
 import { stubComponent } from 'helpers/stub_component';

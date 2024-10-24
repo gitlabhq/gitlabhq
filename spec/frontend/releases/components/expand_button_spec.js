@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
-import ExpandButton from '~/vue_shared/components/expand_button.vue';
+import ExpandButton from '~/releases/components/expand_button.vue';
 
 const text = {
   expanded: 'Expanded!',

@@ -13,7 +13,7 @@ import getModelQuery from '~/ml/model_registry/graphql/queries/get_model.query.g
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
-import DeleteDisclosureDropdownItem from '../components/delete_disclosure_dropdown_item.vue';
+import DeleteModelDisclosureDropdownItem from '../components/delete_model_disclosure_dropdown_item.vue';
 import LoadOrErrorOrShow from '../components/load_or_error_or_show.vue';
 import DeleteModel from '../components/functional/delete_model.vue';
 
@@ -44,7 +44,7 @@ export default {
   name: 'ShowMlModelApp',
   components: {
     ActionsDropdown,
-    DeleteDisclosureDropdownItem,
+    DeleteModelDisclosureDropdownItem,
     TitleArea,
     GlButton,
     GlTabs,
@@ -197,6 +197,8 @@ export default {
   i18n: {
     createModelVersionLinkTitle: s__('MlModelRegistry|Create model version'),
     editModelButtonLabel: s__('MlModelRegistry|Edit model'),
+    tabTitle: s__('MlModelRegistry|Model card'),
+    tabInnerTitle: s__('MlModelRegistry|Versions'),
   },
   modelVersionEntity: MODEL_ENTITIES.modelVersion,
   ROUTE_DETAILS,
@@ -250,15 +252,8 @@ export default {
             >
 
             <actions-dropdown>
-              <delete-disclosure-dropdown-item
+              <delete-model-disclosure-dropdown-item
                 v-if="canWriteModelRegistry"
-                :action-primary-text="s__('MlModelRegistry|Delete model')"
-                :modal-title="s__('MlModelRegistry|Delete model?')"
-                :delete-confirmation-text="
-                  s__(
-                    'MlExperimentTracking|Deleting this model will delete the associated model versions, candidates and artifacts.',
-                  )
-                "
                 @confirm-deletion="deleteModel"
               />
             </actions-dropdown>

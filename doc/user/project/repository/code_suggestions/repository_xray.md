@@ -12,6 +12,7 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12060) in GitLab 16.7.
+> - GitLab Duo add-on required in GitLab 17.6 and later.
 
 Repository X-Ray automatically enriches code generation requests for [GitLab Duo Code Suggestions](index.md) by providing additional context about a project's dependencies to improve the accuracy and relevance of code recommendations.
 

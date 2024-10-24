@@ -1,25 +1,18 @@
 import { GlModal, GlDisclosureDropdownItem } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import DeleteDisclosureDropdownItem from '~/ml/model_registry/components/delete_disclosure_dropdown_item.vue';
-
-const MODAL_BODY = 'MODAL_BODY';
-const MODAL_TITLE = 'MODAL_TITLE';
+import DeleteModelDisclosureDropdownItem from '~/ml/model_registry/components/delete_model_disclosure_dropdown_item.vue';
 
 describe('DeleteButton', () => {
   let wrapper;
 
   const findModal = () => wrapper.findComponent(GlModal);
   const findDeleteButton = () => wrapper.findComponent(GlDisclosureDropdownItem);
-  const findModalText = () => wrapper.findByText(MODAL_BODY);
+  const findModalText = () =>
+    wrapper.findByText('Are you sure you would like to delete this model?');
+  const findNote = () => wrapper.findByTestId('confirmation-note');
 
   beforeEach(() => {
-    wrapper = shallowMountExtended(DeleteDisclosureDropdownItem, {
-      propsData: {
-        deleteConfirmationText: MODAL_BODY,
-        actionPrimaryText: 'Delete!',
-        modalTitle: MODAL_TITLE,
-      },
-    });
+    wrapper = shallowMountExtended(DeleteModelDisclosureDropdownItem, {});
   });
 
   it('mounts the modal', () => {
@@ -32,11 +25,18 @@ describe('DeleteButton', () => {
 
   describe('when modal is opened', () => {
     it('displays modal title', () => {
-      expect(findModal().props('title')).toBe(MODAL_TITLE);
+      expect(findModal().props('title')).toBe('Delete model');
     });
 
     it('displays modal body', () => {
       expect(findModalText().exists()).toBe(true);
+    });
+
+    it('displays modal note', () => {
+      expect(findNote().text()).toContain('Note:');
+      expect(findNote().text()).toContain(
+        'Deleting this model also deletes all its versions, including any imported or uploaded artifacts, and their associated settings.',
+      );
     });
 
     it('submits the form when primary action is clicked', () => {

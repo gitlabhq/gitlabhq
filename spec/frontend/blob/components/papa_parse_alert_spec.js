@@ -1,7 +1,7 @@
 import { GlAlert } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
-import PapaParseAlert from '~/vue_shared/components/papa_parse_alert.vue';
+import PapaParseAlert from '~/blob/components/papa_parse_alert.vue';
 
 describe('app/assets/javascripts/vue_shared/components/papa_parse_alert.vue', () => {
   let wrapper;

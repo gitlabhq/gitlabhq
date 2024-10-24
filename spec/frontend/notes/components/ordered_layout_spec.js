@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import orderedLayout from '~/vue_shared/components/ordered_layout.vue';
+import orderedLayout from '~/notes/components/ordered_layout.vue';
 
 const children = `
     <template v-slot:header>

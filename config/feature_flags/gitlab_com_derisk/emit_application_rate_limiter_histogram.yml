@@ -1,0 +1,9 @@
+---
+name: emit_application_rate_limiter_histogram
+feature_issue_url: https://gitlab.com/gitlab-com/gl-infra/production-engineering/-/work_items/25767
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169655
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/499992
+milestone: '17.6'
+group: group::scalability
+type: gitlab_com_derisk
+default_enabled: false

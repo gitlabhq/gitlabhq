@@ -52,7 +52,7 @@ describe('CommitMessageField', () => {
 
     it('is added on textarea focus', () => {
       expect(wrapper.attributes('class').split(' ')).toEqual(
-        expect.arrayContaining(['gl-outline-none', 'gl-focus-ring-border-1-gray-900!']),
+        expect.arrayContaining(['gl-outline-none', 'focus:gl-focus']),
       );
     });
 
@@ -61,7 +61,7 @@ describe('CommitMessageField', () => {
       await nextTick();
 
       expect(wrapper.attributes('class').split(' ')).not.toEqual(
-        expect.arrayContaining(['gl-outline-none', 'gl-focus-ring-border-1-gray-900!']),
+        expect.arrayContaining(['gl-outline-none', 'focus:gl-focus']),
       );
     });
   });

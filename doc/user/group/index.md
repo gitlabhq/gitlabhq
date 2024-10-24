@@ -213,7 +213,11 @@ You can also delete a group from the groups dashboard:
 
 On GitLab [Premium](https://about.gitlab.com/pricing/premium/) and [Ultimate](https://about.gitlab.com/pricing/ultimate/), this action adds a background job to mark a group for deletion. By default, the job schedules the deletion seven days in the future. You can modify this retention period through the [instance settings](../../administration/settings/visibility_and_access_controls.md#deletion-protection).
 
-If the user who set up the deletion is removed from the group before the deletion occurs, the group deletion job is canceled.
+If the user who scheduled the group deletion loses access to the group (for example, by leaving the group, having their role downgraded, or being banned from the group) before the deletion occurs,
+the deletion job will instead restore and unarchive the group, so the group will no longer be scheduled for deletion.
+
+   WARNING:
+   If the user who scheduled the group deletion regains Owner role or administrator access before the job runs, then the job removes the group permanently.
 
 ### View groups pending deletion
 

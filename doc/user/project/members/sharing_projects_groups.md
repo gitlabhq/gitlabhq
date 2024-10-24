@@ -154,7 +154,7 @@ To view a group's shared projects:
 1. On the group page, select the **Shared projects** tab.
 
 A list of shared projects is displayed.
-You can also use the REST API to [list a group's shared projects](../../../api/groups.md#list-a-groups-shared-projects).
+You can also use the REST API to [list a group's shared projects](../../../api/groups.md#list-shared-projects).
 
 ### Prevent a project from being shared with groups
 

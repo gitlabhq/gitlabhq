@@ -115,7 +115,7 @@ RSpec.describe Atlassian::JiraConnect::Serializers::DeploymentEntity, feature_ca
         deployment.update!(status: 'blocked')
       end
 
-      let_it_be(:integration) do
+      let_it_be_with_reload(:integration) do
         create(:jira_cloud_app_integration, jira_cloud_app_enable_deployment_gating: true,
           jira_cloud_app_deployment_gating_environments: "production", project: project)
       end
@@ -154,16 +154,6 @@ RSpec.describe Atlassian::JiraConnect::Serializers::DeploymentEntity, feature_ca
         end
       end
 
-      context 'when the integration jira_cloud_app_deployment_gating_environments is empty' do
-        before do
-          integration.update!(jira_cloud_app_deployment_gating_environments: "")
-        end
-
-        it 'does not include initiate_deployment_gating in the commands' do
-          expect(commands).to be(nil)
-        end
-      end
-
       context 'when the integration jira_cloud_app_deployment_gating_environments is not matching with tier' do
         before do
           integration.update!(jira_cloud_app_deployment_gating_environments: "development")
@@ -193,13 +183,6 @@ RSpec.describe Atlassian::JiraConnect::Serializers::DeploymentEntity, feature_ca
           expect(commands).to include(
             { 'command' => 'initiate_deployment_gating' }
           )
-        end
-      end
-
-      context 'when the enable_jira_cloud_deployment_gating ff is disabled' do
-        it 'does not includes initiate_deployment_gating in the commands' do
-          stub_feature_flags(enable_jira_cloud_deployment_gating: false)
-          expect(commands).to be(nil)
         end
       end
     end

@@ -17,10 +17,12 @@ import {
   RUNNER_REGISTRATION_POLLING_INTERVAL_MS,
   I18N_FETCH_ERROR,
   GOOGLE_CLOUD_PLATFORM,
+  GOOGLE_KUBERNETES_ENGINE,
 } from '../../constants';
 import { captureException } from '../../sentry_utils';
 
 import GoogleCloudRegistrationInstructions from './google_cloud_registration_instructions.vue';
+import GkeRegistrationInstructions from './gke_registration_instructions.vue';
 import PlatformsDrawer from './platforms_drawer.vue';
 import CliCommand from './cli_command.vue';
 import { commandPrompt, registerCommand, runCommand } from './utils';
@@ -35,6 +37,7 @@ export default {
     ClipboardButton,
     CliCommand,
     GoogleCloudRegistrationInstructions,
+    GkeRegistrationInstructions,
     PlatformsDrawer,
     RunnerPlatformsRadioGroup,
     RunnerGoogleCloudOption,
@@ -146,6 +149,18 @@ export default {
     showGoogleCloudRegistration() {
       return this.platform === GOOGLE_CLOUD_PLATFORM;
     },
+    showGKERegistration() {
+      return this.platform === GOOGLE_KUBERNETES_ENGINE;
+    },
+    gkeRegistrationProject() {
+      return this.glFeatures.gkeRunnersFf && this.projectPath.length > 0;
+    },
+    gkeRegistrationGroup() {
+      return this.glFeatures.gkeRunnersFfGroup && this.groupPath.length > 0;
+    },
+    displayGkeRegistration() {
+      return this.gkeRegistrationGroup || this.gkeRegistrationProject;
+    },
   },
   watch: {
     isRunnerOnline(newVal, oldVal) {
@@ -192,17 +207,30 @@ export default {
     </h2>
     <runner-platforms-radio-group :value="platform" @input="onSelectPlatform">
       <template #cloud-options>
-        <runner-google-cloud-option :checked="platform" @input="onSelectPlatform" />
+        <runner-google-cloud-option
+          :checked="platform"
+          :display-gke-registration="displayGkeRegistration"
+          @input="onSelectPlatform"
+        />
       </template>
     </runner-platforms-radio-group>
     <hr aria-hidden="true" />
 
-    <template v-if="showGoogleCloudRegistration">
-      <google-cloud-registration-instructions
-        :token="token"
-        :group-path="groupPath"
-        :project-path="projectPath"
-      />
+    <template v-if="showGoogleCloudRegistration || showGKERegistration">
+      <template v-if="showGoogleCloudRegistration">
+        <google-cloud-registration-instructions
+          :token="token"
+          :group-path="groupPath"
+          :project-path="projectPath"
+        />
+      </template>
+      <template v-if="showGKERegistration">
+        <gke-registration-instructions
+          :token="token"
+          :group-path="groupPath"
+          :project-path="projectPath"
+        />
+      </template>
     </template>
     <template v-else>
       <p>

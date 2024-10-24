@@ -25,7 +25,6 @@ allow_cross_joins:
       - vulnerability_issue_links
       - vulnerability_merge_request_links
       - vulnerability_occurrence_identifiers
-      - vulnerability_occurrence_pipelines
       - vulnerability_occurrences
       - vulnerability_reads
       - vulnerability_remediations
@@ -77,7 +76,6 @@ allow_cross_transactions:
       - vulnerability_issue_links
       - vulnerability_merge_request_links
       - vulnerability_occurrence_identifiers
-      - vulnerability_occurrence_pipelines
       - vulnerability_occurrences
       - vulnerability_reads
       - vulnerability_remediations
@@ -127,7 +125,6 @@ allow_cross_foreign_keys:
       - vulnerability_issue_links
       - vulnerability_merge_request_links
       - vulnerability_occurrence_identifiers
-      - vulnerability_occurrence_pipelines
       - vulnerability_occurrences
       - vulnerability_reads
       - vulnerability_remediations

@@ -17,7 +17,7 @@ import { visitUrlWithAlerts } from '~/lib/utils/url_utility';
 import destroyModelMutation from '~/ml/model_registry/graphql/mutations/destroy_model.mutation.graphql';
 import getModelQuery from '~/ml/model_registry/graphql/queries/get_model.query.graphql';
 import ActionsDropdown from '~/ml/model_registry/components/actions_dropdown.vue';
-import DeleteDisclosureDropdownItem from '~/ml/model_registry/components/delete_disclosure_dropdown_item.vue';
+import DeleteModelDisclosureDropdownItem from '~/ml/model_registry/components/delete_model_disclosure_dropdown_item.vue';
 import DeleteModel from '~/ml/model_registry/components/functional/delete_model.vue';
 import LoadOrErrorOrShow from '~/ml/model_registry/components/load_or_error_or_show.vue';
 import { destroyModelResponses, model, modelDetailQuery } from '../graphql_mock_data';
@@ -110,7 +110,7 @@ describe('ml/model_registry/apps/show_ml_model', () => {
   const findTitleArea = () => wrapper.findComponent(TitleArea);
   const findModelMetadata = () => wrapper.findByTestId('metadata');
   const findActionsDropdown = () => wrapper.findComponent(ActionsDropdown);
-  const findDeleteButton = () => wrapper.findComponent(DeleteDisclosureDropdownItem);
+  const findDeleteButton = () => wrapper.findComponent(DeleteModelDisclosureDropdownItem);
   const findDeleteModel = () => wrapper.findComponent(DeleteModel);
   const findModelVersionCreateButton = () => wrapper.findByTestId('model-version-create-button');
   const findLoadOrErrorOrShow = () => wrapper.findComponent(LoadOrErrorOrShow);
@@ -146,7 +146,7 @@ describe('ml/model_registry/apps/show_ml_model', () => {
       it('displays delete button', () => {
         createWrapper();
 
-        expect(findDeleteButton().props('actionPrimaryText')).toBe('Delete model');
+        expect(findDeleteButton().exists()).toBe(true);
       });
     });
 

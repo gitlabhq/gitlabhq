@@ -12,6 +12,7 @@ The following GitLab features are deprecated and no longer recommended for use.
 - Each deprecated feature will be removed in a future release.
 - Some features cause breaking changes when they are removed.
 - On GitLab.com, deprecated features can be removed at any time during the month leading up to the release.
+- To view documentation for a removed feature, see the [GitLab Docs archive](https://docs.gitlab.com/archives/).
 
 For advanced searching and filtering of this deprecation information, try
 [a tool built by our Customer Success team](https://gitlab-com.gitlab.io/cs-tools/gitlab-cs-tools/what-is-new-since/?tab=deprecations).

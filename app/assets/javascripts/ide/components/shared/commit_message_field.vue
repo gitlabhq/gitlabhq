@@ -72,7 +72,7 @@ export default {
   <fieldset
     class="gl-rounded-base gl-px-5 gl-py-4 gl-shadow-inner-1-gray-400"
     :class="{
-      'gl-focus-ring-border-1-gray-900! gl-outline-none': isFocused,
+      'gl-outline-none focus:gl-focus': isFocused,
     }"
   >
     <div

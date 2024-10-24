@@ -1,9 +1,0 @@
----
-name: enable_jira_cloud_deployment_gating
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/473774
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160155
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/474542
-milestone: '17.3'
-group: group::environments
-type: wip
-default_enabled: false

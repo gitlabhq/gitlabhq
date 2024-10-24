@@ -408,6 +408,24 @@ export const projectRunnerCloudProvisioningSteps = {
   },
 };
 
+export const projectGkeProvisioningSteps = {
+  ...projectRunnerCloudProvisioningSteps,
+  runnerCloudProvisioning: {
+    ...projectRunnerCloudProvisioningSteps.runnerCloudProvisioning,
+    __typename: 'CiRunnerGkeProvisioning',
+    provisioningSteps: [
+      {
+        __typename: 'CiRunnerGkeProvisioningStep',
+        instructions: 'mock project setup terraform file',
+      },
+      {
+        __typename: 'CiRunnerGkeProvisioningStep',
+        instructions: 'mock project apply terraform script',
+      },
+    ],
+  },
+};
+
 export const groupRunnerCloudProvisioningSteps = {
   __typename: 'Group',
   id: 'gid://gitlab/Group/24',
@@ -421,6 +439,24 @@ export const groupRunnerCloudProvisioningSteps = {
       },
       {
         __typename: 'CiRunnerCloudProvisioningStep',
+        instructions: 'mock group apply terraform script',
+      },
+    ],
+  },
+};
+
+export const groupGkeProvisioningSteps = {
+  ...groupRunnerCloudProvisioningSteps,
+  runnerCloudProvisioning: {
+    ...groupRunnerCloudProvisioningSteps.runnerCloudProvisioning,
+    __typename: 'CiRunnerGkeProvisioning',
+    provisioningSteps: [
+      {
+        __typename: 'CiRunnerGkeProvisioningStep',
+        instructions: 'mock group setup terraform file',
+      },
+      {
+        __typename: 'CiRunnerGkeProvisioningStep',
         instructions: 'mock group apply terraform script',
       },
     ],

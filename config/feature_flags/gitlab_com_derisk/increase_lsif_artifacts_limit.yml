@@ -1,0 +1,9 @@
+---
+name: increase_lsif_artifacts_limit
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/497150
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170393
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/500624
+milestone: '17.6'
+group: group::code review
+type: gitlab_com_derisk
+default_enabled: false

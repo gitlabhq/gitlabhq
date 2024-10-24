@@ -131,8 +131,8 @@ Breaking change. [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/4
 
 The `default_branch_protection` field is deprecated in GitLab 17.0 for the following APIs:
 
-- [New group API](../groups.md#new-group).
-- [Update group API](../groups.md#update-group).
+- [New group API](../groups.md#create-a-group).
+- [Update group API](../groups.md#update-group-attributes).
 - [Application API](../settings.md#change-application-settings)
 
 You should use the `default_branch_protection_defaults` field instead, which provides more finer grained control

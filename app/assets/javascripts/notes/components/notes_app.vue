@@ -7,7 +7,6 @@ import { getDraft, getAutoSaveKeyFromDiscussion } from '~/lib/utils/autosave';
 import highlightCurrentUser from '~/behaviors/markdown/highlight_current_user';
 import { scrollToTargetOnResize } from '~/lib/utils/resize_observer';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
-import OrderedLayout from '~/vue_shared/components/ordered_layout.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import DraftNote from '~/batch_comments/components/draft_note.vue';
 import { getLocationHash } from '~/lib/utils/url_utility';
@@ -25,6 +24,7 @@ import CommentForm from './comment_form.vue';
 import DiscussionFilterNote from './discussion_filter_note.vue';
 import NoteableDiscussion from './noteable_discussion.vue';
 import NoteableNote from './noteable_note.vue';
+import OrderedLayout from './ordered_layout.vue';
 import SidebarSubscription from './sidebar_subscription.vue';
 import NotesActivityHeader from './notes_activity_header.vue';
 

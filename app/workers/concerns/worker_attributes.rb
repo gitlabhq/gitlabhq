@@ -85,7 +85,7 @@ module WorkerAttributes
     #
     #  - *data_consistency* values:
     #    - 'always' - The job is required to use the primary database (default).
-    #    - 'sticky' - The uses a replica as long as possible. It switches to primary either on write or long replication lag.
+    #    - 'sticky' - The job uses a replica as long as possible. It switches to primary either on write or long replication lag.
     #    - 'delayed' - The job would switch to primary only on write. It would use replica always.
     #      If there's a long replication lag the job will be delayed, and only if the replica is not up to date on the next retry,
     #      it will switch to the primary.

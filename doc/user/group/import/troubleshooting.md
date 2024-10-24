@@ -114,7 +114,7 @@ To solve this, you must change the source group path to include a non-numerical 
   1. Expand **Advanced**.
   1. Under **Change group URL**, change the group URL to include non-numeric characters.
 
-- The [Groups API](../../../api/groups.md#update-group).
+- The [Groups API](../../../api/groups.md#update-group-attributes).
 
 ## Other `404` errors
 

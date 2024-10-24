@@ -21,42 +21,6 @@ module QA
         :last_name,
         :email
 
-      def self.default
-        Resource::User.init do |user|
-          user.username = Runtime::User.ldap_user? ? Runtime::User.ldap_username : Runtime::User.username
-          user.password = Runtime::User.ldap_user? ? Runtime::User.ldap_password : Runtime::User.password
-        end
-      end
-
-      def self.fabricate_or_use(username = nil, password = nil)
-        if Runtime::Env.signup_disabled? && !Runtime::Env.personal_access_tokens_disabled?
-          fabricate_via_api! do |user|
-            user.username = username
-            user.password = password
-          end
-        else
-          fabricate! do |user|
-            user.username = username if username
-            user.password = password if password
-          end
-        end
-      end
-
-      # Get users from the API
-      #
-      # @param [Integer] per_page the number of pages to traverse (used for pagination)
-      # @return [Array<Hash>] parsed response body
-      def self.all(per_page: 100)
-        response = nil
-        Resource::User.init do |user|
-          response = user.get(Runtime::API::Request.new(
-            Runtime::API::Client.as_admin, '/users', per_page: per_page.to_s
-          ).url)
-
-          raise ResourceQueryError unless response.code == 200
-        end.parse_body(response)
-      end
-
       def initialize
         @admin = false
         @hard_delete_on_api_removal = false
@@ -65,11 +29,11 @@ module QA
         @email_domain = 'example.com'
       end
 
-      # Override api_client to make sure admin pat is always used
-      #
-      # @return [QA::Runtime::API::Client]
-      def api_client
-        @api_client ||= Runtime::API::Client.as_admin
+      def self.default
+        Resource::User.init do |user|
+          user.username = Runtime::User.ldap_user? ? Runtime::User.ldap_username : Runtime::User.username
+          user.password = Runtime::User.ldap_user? ? Runtime::User.ldap_password : Runtime::User.password
+        end
       end
 
       def admin?
@@ -191,6 +155,35 @@ module QA
           name: name,
           skip_confirmation: true
         }.merge(ldap_post_body)
+      end
+
+      def self.fabricate_or_use(username = nil, password = nil)
+        if Runtime::Env.signup_disabled? && !Runtime::Env.personal_access_tokens_disabled?
+          fabricate_via_api! do |user|
+            user.username = username
+            user.password = password
+          end
+        else
+          fabricate! do |user|
+            user.username = username if username
+            user.password = password if password
+          end
+        end
+      end
+
+      # Get users from the API
+      #
+      # @param [Integer] per_page the number of pages to traverse (used for pagination)
+      # @return [Array<Hash>] parsed response body
+      def self.all(per_page: 100)
+        response = nil
+        Resource::User.init do |user|
+          response = user.get(Runtime::API::Request.new(
+            Runtime::API::Client.as_admin, '/users', per_page: per_page.to_s
+          ).url)
+
+          raise ResourceQueryError unless response.code == 200
+        end.parse_body(response)
       end
 
       def approve!

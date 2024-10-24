@@ -108,6 +108,47 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
       end
     end
 
+    context 'when the emit_application_rate_limiter_histogram feature flag is enabled' do
+      before do
+        if described_class.instance_variable_defined?(:@application_rate_limiter_histogram)
+          described_class.remove_instance_variable(:@application_rate_limiter_histogram)
+        end
+      end
+
+      it 'observe histogram metrics using a memoized histogram instance' do
+        histogram_double = instance_double(Prometheus::Client::Histogram)
+        expect(Gitlab::Metrics).to receive(:histogram)
+          .once
+          .with(
+            :gitlab_application_rate_limiter_throttle_utilization_ratio,
+            "The utilization-ratio of a throttle.",
+            { peek: nil, throttle_key: nil, feature_category: nil },
+            described_class::LIMIT_USAGE_BUCKET
+          )
+          .and_return(histogram_double)
+        expect(histogram_double).to receive(:observe).twice
+
+        subject.throttled?(:test_action, scope: [])
+        subject.throttled?(:test_action, scope: [])
+      end
+    end
+
+    context 'when the emit_application_rate_limiter_histogram feature flag is disabled' do
+      before do
+        if described_class.instance_variable_defined?(:@application_rate_limiter_histogram)
+          described_class.remove_instance_variable(:@application_rate_limiter_histogram)
+        end
+
+        stub_feature_flags(emit_application_rate_limiter_histogram: false)
+      end
+
+      it 'does not emit metrics' do
+        expect(Gitlab::Metrics).not_to receive(:histogram)
+
+        subject.throttled?(:test_action, scope: [])
+      end
+    end
+
     shared_examples 'throttles based on key and scope' do
       let(:start_time) { Time.current.beginning_of_hour }
 
@@ -339,11 +380,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
     end
   end
 
-  context 'when interval is 0' do
-    let(:rate_limits) { { test_action: { threshold: 1, interval: 0 } } }
-    let(:scope) { user }
-    let(:start_time) { Time.current.beginning_of_hour }
-
+  shared_examples 'returns false' do
     it 'returns false' do
       travel_to(start_time) do
         expect(subject.throttled?(:test_action, scope: scope)).to eq(false)
@@ -352,6 +389,34 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
       travel_to(start_time + 1.minute) do
         expect(subject.throttled?(:test_action, scope: scope)).to eq(false)
       end
+    end
+  end
+
+  context 'when interval is 0' do
+    let(:rate_limits) { { test_action: { threshold: 1, interval: 0 } } }
+    let(:scope) { user }
+    let(:start_time) { Time.current.beginning_of_hour }
+
+    it_behaves_like 'returns false'
+  end
+
+  context 'when threshold is 0' do
+    let(:rate_limits) { { test_action: { threshold: 0, interval: 1 } } }
+    let(:scope) { user }
+    let(:start_time) { Time.current.beginning_of_hour }
+
+    before do
+      if described_class.instance_variable_defined?(:@application_rate_limiter_histogram)
+        described_class.remove_instance_variable(:@application_rate_limiter_histogram)
+      end
+    end
+
+    it_behaves_like 'returns false'
+
+    it 'does not observe any histogram metrics' do
+      expect(Gitlab::Metrics).not_to receive(:histogram)
+
+      subject.throttled?(:test_action, scope: [])
     end
   end
 end

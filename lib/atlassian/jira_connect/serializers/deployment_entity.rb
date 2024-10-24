@@ -137,8 +137,6 @@ module Atlassian
         end
 
         def generate_deployment_commands_from_integration_configuration
-          return unless Feature.enabled?(:enable_jira_cloud_deployment_gating) # rubocop:disable Gitlab/FeatureFlagWithoutActor -- flag must be global
-
           jira_cloud_app_integration = project.jira_cloud_app_integration
 
           return unless jira_cloud_app_integration&.active

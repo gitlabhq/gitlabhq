@@ -366,7 +366,6 @@ Gitlab/StrongMemoizeAttr:
     - 'ee/lib/ee/gitlab/analytics/cycle_analytics/stage_events.rb'
     - 'ee/lib/ee/gitlab/auth/o_auth/auth_hash.rb'
     - 'ee/lib/ee/gitlab/background_migration/migrate_approver_to_approval_rules.rb'
-    - 'ee/lib/ee/gitlab/background_migration/populate_resolved_on_default_branch_column.rb'
     - 'ee/lib/ee/gitlab/checks/base_checker.rb'
     - 'ee/lib/ee/gitlab/checks/diff_check.rb'
     - 'ee/lib/ee/gitlab/ci/matching/runner_matcher.rb'

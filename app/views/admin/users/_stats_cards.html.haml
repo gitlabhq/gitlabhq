@@ -1,0 +1,12 @@
+= render 'admin/users/stat_card', title: s_('AdminUsers|Pending approval'),
+                                  value: limited_counter_with_delimiter(User.blocked_pending_approval),
+                                  href: admin_users_path(filter: "blocked_pending_approval"),
+                                  link_title: s_('AdminUsers|Filter list')
+= render 'admin/users/stat_card', title: s_('AdminUsers|Administrators'),
+                                  value: limited_counter_with_delimiter(User.admins),
+                                  href: admin_users_path(filter: "admins"),
+                                  link_title: s_('AdminUsers|Filter list')
+= render 'admin/users/stat_card', title: s_('AdminUsers|Without two-factor authentication'),
+                                  value: limited_counter_with_delimiter(User.without_two_factor),
+                                  href: admin_users_path(filter: "two_factor_disabled"),
+                                  link_title: s_('AdminUsers|Filter list')

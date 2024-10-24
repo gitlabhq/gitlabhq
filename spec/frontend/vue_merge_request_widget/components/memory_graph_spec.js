@@ -1,6 +1,6 @@
 import { GlSparklineChart } from '@gitlab/ui/dist/charts';
 import { shallowMount } from '@vue/test-utils';
-import MemoryGraph from '~/vue_shared/components/memory_graph.vue';
+import MemoryGraph from '~/vue_merge_request_widget/components/memory_graph.vue';
 
 describe('MemoryGraph', () => {
   let wrapper;

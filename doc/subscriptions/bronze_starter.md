@@ -112,12 +112,12 @@ Bronze-level subscribers:
 
 - APIs:
   - LDAP synchronization:
-    - Certain fields in the [group details API](../api/groups.md#details-of-a-group)
-    - [syncing groups](../api/groups.md#sync-group-with-ldap)
+    - Certain fields in the [group details API](../api/groups.md#get-a-single-group)
+    - [syncing groups](../api/groups.md#sync-a-group-with-ldap)
     - Listing, adding, and deleting [group links](../api/group_ldap_links.md)
     - [Push rules](../api/group_push_rules.md)
     - [Audit events](../api/audit_events.md), including
-      [group audit events](../api/groups.md#group-audit-events) and
+      [group audit events](../api/groups.md#list-audit-events) and
       [project audit events](../api/audit_events.md#project-audit-events)
   - Projects API: certain fields in the [Create project API](../api/projects.md)
   - [Resource iteration events API](../api/resource_iteration_events.md)

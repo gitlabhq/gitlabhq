@@ -36,6 +36,7 @@ DETAILS:
 **Status:** Experiment
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10762) in GitLab 16.3 as an [experiment](../../../policy/experiment-beta-support.md#experiment).
+> - GitLab Duo add-on required in GitLab 17.6 and later.
 
 Generate a detailed description for an issue based on a short summary you provide.
 
@@ -678,10 +679,6 @@ The assignee is changed without having to refresh the page.
 
 To prevent duplication of issues on the same topic, GitLab searches for similar issues
 when you create a new issue.
-
-Prerequisites:
-
-- [GraphQL](../../../api/graphql/index.md) must be enabled.
 
 As you type in the title text box of the **New issue** page, GitLab searches titles and descriptions
 across all issues in the current project. Only issues you have access to are returned.

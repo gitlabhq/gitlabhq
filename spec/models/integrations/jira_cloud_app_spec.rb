@@ -36,11 +36,6 @@ RSpec.describe Integrations::JiraCloudApp, feature_category: :integrations do
       expect(fields.pluck(:name)).to eq(%w[jira_cloud_app_service_ids jira_cloud_app_enable_deployment_gating
         jira_cloud_app_deployment_gating_environments])
     end
-
-    it 'does not return deployment gating fields when flag is disabled' do
-      stub_feature_flags(enable_jira_cloud_deployment_gating: false)
-      expect(fields.pluck(:name)).to eq(%w[jira_cloud_app_service_ids])
-    end
   end
 
   describe '#sections' do
@@ -92,16 +87,6 @@ RSpec.describe Integrations::JiraCloudApp, feature_category: :integrations do
       integration.validate
 
       expect(integration.errors).not_to be_empty
-    end
-
-    it 'does not raise an error if ff is disabled, gating is enabled but empty environment names' do
-      stub_feature_flags(enable_jira_cloud_deployment_gating: false)
-      integration.jira_cloud_app_enable_deployment_gating = true
-      integration.jira_cloud_app_deployment_gating_environments = ""
-
-      integration.validate
-
-      expect(integration.errors).to be_empty
     end
   end
 

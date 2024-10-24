@@ -43,7 +43,6 @@ Style/StringConcatenation:
     - 'ee/lib/api/project_mirror.rb'
     - 'ee/lib/ee/gitlab/auth/ldap/person.rb'
     - 'ee/lib/ee/gitlab/background_migration/populate_latest_pipeline_ids.rb'
-    - 'ee/lib/ee/gitlab/background_migration/populate_resolved_on_default_branch_column.rb'
     - 'ee/lib/gitlab/geo/git_ssh_proxy.rb'
     - 'ee/lib/omni_auth/strategies/kerberos.rb'
     - 'ee/lib/tasks/gitlab/license.rake'

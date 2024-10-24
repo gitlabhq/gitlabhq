@@ -14,6 +14,8 @@ module Packages
         inverse_of: :package_revisions
       belongs_to :project
 
+      has_many :file_metadata, inverse_of: :package_revision, class_name: 'Packages::Conan::FileMetadatum'
+
       validates :package, :package_reference, :project, presence: true
       validates :revision, presence: true, bytesize: { maximum: -> { REVISION_LENGTH_MAX } },
         uniqueness: { scope: [:package_id, :package_reference_id] }

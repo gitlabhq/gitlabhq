@@ -461,7 +461,6 @@ RSpec/ContextWording:
     - 'ee/spec/models/saml_provider_spec.rb'
     - 'ee/spec/models/status_page/project_setting_spec.rb'
     - 'ee/spec/models/vulnerabilities/feedback_spec.rb'
-    - 'ee/spec/models/vulnerabilities/finding_pipeline_spec.rb'
     - 'ee/spec/models/vulnerabilities/finding_spec.rb'
     - 'ee/spec/models/vulnerabilities/statistic_spec.rb'
     - 'ee/spec/policies/app_sec/fuzzing/coverage/corpus_policy_spec.rb'
