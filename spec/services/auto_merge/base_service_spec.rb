@@ -76,7 +76,7 @@ RSpec.describe AutoMerge::BaseService, feature_category: :code_review_workflow d
       end
 
       it 'calls AutoMergeProcessWorker' do
-        expect(AutoMergeProcessWorker).to receive(:perform_async).with(merge_request.id).once
+        expect(AutoMergeProcessWorker).to receive(:perform_async).with({ 'merge_request_id' => merge_request.id }).once
 
         subject
       end

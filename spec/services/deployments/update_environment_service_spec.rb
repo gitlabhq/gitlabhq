@@ -3,14 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe Deployments::UpdateEnvironmentService, feature_category: :continuous_delivery do
-  let(:user) { create(:user) }
-  let(:project) { create(:project, :repository) }
-  let(:options) { { name: environment_name } }
-  let(:pipeline) do
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :repository, developers: [user]) }
+  let_it_be(:pipeline) do
     create(
       :ci_pipeline,
       sha: 'b83d6e391c22777fca1ed3012fce84f633d7fed0',
-      project: project
+      project: project,
+      user: user
     )
   end
 
@@ -22,12 +22,14 @@ RSpec.describe Deployments::UpdateEnvironmentService, feature_category: :continu
       tag: false,
       environment: environment_name,
       options: { environment: options },
+      user: user,
       project: project)
   end
 
   let(:deployment) { job.deployment }
   let(:environment) { deployment.environment }
   let(:environment_name) { 'production' }
+  let(:options) { { name: environment_name } }
 
   subject(:service) { described_class.new(deployment) }
 
@@ -263,6 +265,58 @@ RSpec.describe Deployments::UpdateEnvironmentService, feature_category: :continu
 
         expect { subject.execute }
           .to change { environment.reset.tier }.from(nil).to('other')
+      end
+    end
+
+    context 'when cluster agent is specified' do
+      let(:agent) { create(:cluster_agent, project: project) }
+
+      let(:options) { { name: environment_name, kubernetes: { agent: agent_path } } }
+
+      context 'when the agent does not exist' do
+        let(:agent_path) { "#{project.full_path}:non-existent-agent" }
+
+        it 'does not assign a cluster agent' do
+          expect { subject.execute }.not_to change { environment.cluster_agent }
+        end
+      end
+
+      context 'when the agent exists' do
+        let(:agent_path) { "#{project.full_path}:#{agent.name}" }
+
+        context 'and the user no longer exists' do
+          before do
+            job.update!(user: nil)
+          end
+
+          it 'does not assign a cluster agent' do
+            expect { subject.execute }.not_to change { environment.cluster_agent }
+          end
+        end
+
+        context 'and the user is not authorized' do
+          it 'does not assign a cluster agent' do
+            expect { subject.execute }.not_to change { environment.cluster_agent }
+          end
+        end
+
+        context 'and the user is authorized' do
+          before do
+            agent.user_access_project_authorizations.create!(project: project, config: {})
+          end
+
+          it 'assigns the cluster agent to the environment' do
+            expect { subject.execute }.to change { environment.cluster_agent }.from(nil).to(agent)
+          end
+
+          context 'when the agent path contains variables' do
+            let(:agent_path) { "$CI_PROJECT_PATH:#{agent.name}" }
+
+            it 'expands variables and assigns the cluster agent to the environment' do
+              expect { subject.execute }.to change { environment.cluster_agent }.from(nil).to(agent)
+            end
+          end
+        end
       end
     end
   end

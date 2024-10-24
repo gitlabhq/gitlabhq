@@ -10,10 +10,10 @@ require 'json_schemer'
 require 'delegate'
 
 require_relative './cli/helpers'
-require_relative './cli/usage_viewer'
-require_relative './cli/metric_definer'
-require_relative './cli/event_definer'
-require_relative './cli/flow_advisor'
+require_relative './cli/flows/usage_viewer'
+require_relative './cli/flows/metric_definer'
+require_relative './cli/flows/event_definer'
+require_relative './cli/flows/flow_advisor'
 require_relative './cli/global_state'
 require_relative './cli/metric'
 require_relative './cli/event'
@@ -36,22 +36,22 @@ class Cli
       menu.enum "."
 
       menu.choice "New Event -- track when a specific scenario occurs on gitlab instances\n     " \
-                  "ex) a user applies a label to an issue", :new_event
+        "ex) a user applies a label to an issue", :new_event
       menu.choice "New Metric -- track the count of existing events over time\n     " \
-                  "ex) count unique users who assign labels to issues per month", :new_metric
+        "ex) count unique users who assign labels to issues per month", :new_metric
       menu.choice 'View Usage -- look at code and testing examples for existing events & metrics', :view_usage
       menu.choice '...am I in the right place?', :help_decide
     end
 
     case task
     when :new_event
-      InternalEventsCli::EventDefiner.new(cli).run
+      InternalEventsCli::Flows::EventDefiner.new(cli).run
     when :new_metric
-      InternalEventsCli::MetricDefiner.new(cli).run
+      InternalEventsCli::Flows::MetricDefiner.new(cli).run
     when :view_usage
-      InternalEventsCli::UsageViewer.new(cli).run
+      InternalEventsCli::Flows::UsageViewer.new(cli).run
     when :help_decide
-      InternalEventsCli::FlowAdvisor.new(cli).run
+      InternalEventsCli::Flows::FlowAdvisor.new(cli).run
     end
   end
 end

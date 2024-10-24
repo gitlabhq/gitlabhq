@@ -490,8 +490,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'scripts/failed_tests.rb'
     - 'scripts/flaky_examples/prune-old-flaky-examples'
     - 'scripts/generate_rspec_pipeline.rb'
-    - 'scripts/internal_events/cli.rb'
-    - 'scripts/internal_events/cli/event_definer.rb'
     - 'scripts/lint-docs-redirects.rb'
     - 'scripts/qa/testcases-check'
     - 'scripts/trigger-build.rb'

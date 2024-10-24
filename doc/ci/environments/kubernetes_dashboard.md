@@ -63,6 +63,29 @@ Prerequisites:
 
 ::EndTabs
 
+### Configure a dashboard for a dynamic environment
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467912) in GitLab 17.6.
+
+To configure a dashboard for a dynamic environment:
+
+- Specify the agent in your `.gitlab-ci.yml` file. You must specify the full path to the agent configuration project,
+followed by a colon and the name of the agent.
+
+For example:
+
+```yaml
+deploy_review_app:
+  stage: deploy
+  script: make deploy
+  environment:
+    name: review/$CI_COMMIT_REF_SLUG
+    kubernetes:
+      agent: path/to/agent/project:agent-name
+```
+
+For more information, see the [CI/CD YAML syntax reference](../yaml/index.md#environmentkubernetes).
+
 ## View a dashboard
 
 > - Kubernetes watch API integration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/422945) in GitLab 16.6 [with a flag](../../administration/feature_flags.md) named `k8s_watch_api`. Disabled by default.

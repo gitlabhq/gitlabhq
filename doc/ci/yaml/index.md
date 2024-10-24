@@ -2345,8 +2345,10 @@ Every time the review app is deployed, that lifetime is also reset to `1 day`.
 
 #### `environment:kubernetes`
 
-Use the `kubernetes` keyword to configure deployments to a
-[Kubernetes cluster](../../user/infrastructure/clusters/index.md) that is associated with your project.
+> - `agent` keyword [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467912) in GitLab 17.6.
+
+Use the `kubernetes` keyword to configure the [dashboard for Kubernetes](../environments/kubernetes_dashboard.md)
+for an environment.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
@@ -2359,21 +2361,19 @@ deploy:
   environment:
     name: production
     kubernetes:
-      namespace: production
+      agent: path/to/agent/project:agent-name
 ```
 
 This configuration sets up the `deploy` job to deploy to the `production`
-environment, using the `production`
-[Kubernetes namespace](https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/).
+environment, and associates the [agent](../../user/clusters/agent/index.md)
+named `agent-name` with the environment.
 
 **Additional details**:
 
-- Kubernetes configuration is not supported for Kubernetes clusters
-  [managed by GitLab](../../user/project/clusters/gitlab_managed_clusters.md).
-
-**Related topics**:
-
-- [Available settings for `kubernetes`](../environments/configure_kubernetes_deployments.md).
+- To use the dashboard, you must
+  [install the GitLab agent for Kubernetes](../../user/clusters/agent/install/index.md) and
+  [configure `user_access`](../../user/clusters/agent/user_access.md)
+  for the environment's project or its parent group.
 
 #### `environment:deployment_tier`
 
