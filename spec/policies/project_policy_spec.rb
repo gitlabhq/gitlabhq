@@ -330,6 +330,30 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     end
   end
 
+  context 'manage_trigger' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:role, :allowed) do
+      :owner      | true
+      :maintainer | true
+      :developer  | false
+      :reporter   | false
+      :guest      | false
+    end
+
+    with_them do
+      let(:current_user) { public_send(role) }
+
+      it 'grants manage_trigger permission based on admin_build permission' do
+        if allowed
+          expect_allowed(:manage_trigger)
+        else
+          expect_disallowed(:manage_trigger)
+        end
+      end
+    end
+  end
+
   context 'builds feature' do
     context 'when builds are disabled' do
       let(:current_user) { owner }

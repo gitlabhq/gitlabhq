@@ -92,6 +92,21 @@ describe('TodosMarkAllDoneButton', () => {
       expect(markAllAsDoneMutationSuccessHandler).toHaveBeenCalled();
     });
 
+    it('forwards filters when available', async () => {
+      createComponent({
+        props: {
+          filters: {
+            authorId: 10,
+          },
+        },
+      });
+      clickButton();
+
+      await nextTick();
+
+      expect(markAllAsDoneMutationSuccessHandler).toHaveBeenCalledWith({ authorId: 10 });
+    });
+
     it('shows a toast message on success', async () => {
       createComponent();
       clickButton();

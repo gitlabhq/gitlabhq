@@ -500,7 +500,7 @@ Group permissions for project planning features including iterations, milestones
 | Manage group milestones |       |    ✓     |     ✓     |     ✓      |   ✓   |       |
 | Manage iterations       |       |    ✓     |     ✓     |     ✓      |   ✓   |       |
 
-Group permisisons for [epics](group/epics/index.md):
+Group permissions for [epics](group/epics/index.md):
 
 | Action                                                                        | Guest | Reporter | Developer | Maintainer | Owner | Notes |
 |:------------------------------------------------------------------------------|:------|:---------|:----------|:-----------|:------|:------|

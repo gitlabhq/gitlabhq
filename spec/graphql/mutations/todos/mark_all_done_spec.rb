@@ -2,16 +2,17 @@
 
 require 'spec_helper'
 
-RSpec.describe Mutations::Todos::MarkAllDone do
+RSpec.describe Mutations::Todos::MarkAllDone, feature_category: :notifications do
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }
   let_it_be(:author) { create(:user) }
   let_it_be(:other_user) { create(:user) }
+  let_it_be(:other_project) { create(:project) }
 
   let_it_be(:todo1) { create(:todo, user: current_user, author: author, state: :pending) }
   let_it_be(:todo2) { create(:todo, user: current_user, author: author, state: :done) }
-  let_it_be(:todo3) { create(:todo, user: current_user, author: author, state: :pending) }
+  let_it_be(:todo3) { create(:todo, user: current_user, author: author, state: :pending, project: other_project) }
 
   let_it_be(:other_user_todo) { create(:todo, user: other_user, author: author, state: :pending) }
 
@@ -40,6 +41,15 @@ RSpec.describe Mutations::Todos::MarkAllDone do
       expect(other_user_todo.reload.state).to eq('pending')
 
       expect(todos).to be_empty
+    end
+
+    it 'filters todos to mark as done' do
+      todos = mutation_for(current_user).resolve(project_id: other_project.id)[:todos]
+
+      expect(todo1.reload.state).to eq('pending')
+      expect(todo3.reload.state).to eq('done')
+
+      expect(todos).to contain_exactly(todo3)
     end
 
     context 'when user is not logged in' do

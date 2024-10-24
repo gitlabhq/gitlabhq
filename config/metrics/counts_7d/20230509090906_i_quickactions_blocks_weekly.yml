@@ -17,4 +17,5 @@ performance_indicator_type: []
 distribution:
 - ee
 tier:
-- starter
+- premium
+- ultimate

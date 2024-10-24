@@ -281,7 +281,7 @@ The configuration is applied during the next maintenance window.
 
 ### SAML
 
-You can [configure SAML single sign-on (SSO)](../../integration/saml.md#configure-saml-support-in-gitlab) for your GitLab Dedicated instance.
+You can [configure SAML single sign-on (SSO)](../../integration/saml.md#configure-saml-support-in-gitlab) for your GitLab Dedicated instance. Optionally, you can configure more than one SAML identity provider (IdP).
 
 The following SAML SSO options are available:
 
@@ -291,8 +291,11 @@ The following SAML SSO options are available:
 
 Prerequisites:
 
-- You must [set up the identity provider (IdP)](../../integration/saml.md#set-up-identity-providers) before you can configure SAML for GitLab Dedicated.
+- You must [set up the identity provider](../../integration/saml.md#set-up-identity-providers) before you can configure SAML for GitLab Dedicated.
 - To configure GitLab to sign SAML authentication requests, you must create a private key and public certificate pair for your GitLab Dedicated instance.
+
+NOTE:
+You can only configure one SAML IdP with Switchboard. If you configured a SAML IdP on your GitLab Dedicated instance before the introduction of support for multiple IdPs, you can manage that provider through Switchboard. To configure additional SAML IdPs, [submit a support request](#activate-saml-with-a-support-request).
 
 #### Activate SAML with Switchboard
 
@@ -326,7 +329,7 @@ To activate SAML for your GitLab Dedicated instance:
 
 #### Activate SAML with a Support Request
 
-If you are unable to use Switchboard to activate or update SAML for your GitLab Dedicated instance, you can open a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650):
+If you are unable to use Switchboard to activate or update SAML for your GitLab Dedicated instance, or if you need to configure more than one SAML IdP, then you can open a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650):
 
 1. To make the necessary changes, include the desired [SAML configuration block](../../integration/saml.md#configure-saml-support-in-gitlab) for your GitLab application in your support ticket. At a minimum, GitLab needs the following information to enable SAML for your instance:
    - IDP SSO Target URL
@@ -366,7 +369,7 @@ If you are unable to use Switchboard to activate or update SAML for your GitLab 
 1. After GitLab deploys the SAML configuration to your instance, you are notified on your support ticket.
 1. To verify the SAML configuration is successful:
    - Check that the SSO login button description is displayed on your instance's login page.
-   - Go to the metadata URL of your instance (`https://INSTANCE-URL/users/auth/saml/metadata`). This page can be used to simplify much of the configuration of the identity provider, as well as manually validate the settings.
+   - Go to the metadata URL of your instance, which is provided by GitLab in the support ticket. This page can be used to simplify much of the configuration of the identity provider, as well as manually validate the settings.
 
 #### Request signing
 

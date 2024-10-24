@@ -184,7 +184,7 @@ export default {
       </gl-tabs>
 
       <div v-if="showMarkAllAsDone" class="gl-my-3 gl-mr-5 gl-flex gl-items-center gl-justify-end">
-        <todos-mark-all-done-button @change="updateCounts" />
+        <todos-mark-all-done-button :filters="queryFilterValues" @change="updateCounts" />
       </div>
     </div>
 

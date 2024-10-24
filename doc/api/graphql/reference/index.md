@@ -9603,8 +9603,13 @@ Input type: `TodosMarkAllDoneInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="mutationtodosmarkalldoneaction"></a>`action` | [`[TodoActionEnum!]`](#todoactionenum) | Action to be filtered. |
+| <a id="mutationtodosmarkalldoneauthorid"></a>`authorId` | [`[ID!]`](#id) | ID of an author. |
 | <a id="mutationtodosmarkalldoneclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationtodosmarkalldonegroupid"></a>`groupId` | [`[ID!]`](#id) | ID of a group. |
+| <a id="mutationtodosmarkalldoneprojectid"></a>`projectId` | [`[ID!]`](#id) | ID of a project. |
 | <a id="mutationtodosmarkalldonetargetid"></a>`targetId` | [`TodoableID`](#todoableid) | Global ID of the to-do item's parent. Issues, merge requests, designs, and epics are supported. If argument is omitted, all pending to-do items of the current user are marked as done. |
+| <a id="mutationtodosmarkalldonetype"></a>`type` | [`[TodoTargetEnum!]`](#todotargetenum) | Type of the todo. |
 
 #### Fields
 

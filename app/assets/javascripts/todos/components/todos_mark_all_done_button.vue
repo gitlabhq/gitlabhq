@@ -10,6 +10,13 @@ export default {
   components: {
     GlButton,
   },
+  props: {
+    filters: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
+  },
   data() {
     return {
       isLoading: false,
@@ -36,6 +43,7 @@ export default {
       return this.performMutation(async () => {
         const resp = await this.$apollo.mutate({
           mutation: markAllAsDoneMutation,
+          variables: this.filters,
         });
         const data = resp.data.markAllAsDone;
 

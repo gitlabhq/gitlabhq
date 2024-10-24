@@ -15,7 +15,7 @@ RSpec.describe Gitlab::Usage::MetricDefinition, feature_category: :service_ping 
       time_frame: 'none',
       data_source: 'database',
       distribution: %w[ee ce],
-      tier: %w[free starter premium ultimate],
+      tier: %w[free premium ultimate],
       tiers: %w[free premium ultimate],
       data_category: 'standard',
       removed_by_url: 'http://gdk.test'

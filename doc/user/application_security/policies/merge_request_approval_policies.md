@@ -252,7 +252,7 @@ the bot message is sent as long as at least one of those policies has the `send_
 > - Feature flag `scan_result_policies_block_force_push` [was removed](https://gitlab.com/gitlab-org/gitlab/-/issues/432123) in GitLab 16.8.
 
 FLAG:
-On self-managed GitLab, by default the `block_branch_modification` field is available. To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `scan_result_policies_block_unprotecting_branches`. On GitLab.com and GitLab Dedicated, this feature is available.
+The availability of the `block_group_branch_modification` setting is controlled by a feature flag. For more information, see the history.
 
 The settings set in the policy overwrite settings in the project.
 
