@@ -16,7 +16,7 @@ module VirtualRegistries
         update_namespace_statistics namespace_statistics_name: :dependency_proxy_size
 
         # Used in destroying stale cached responses in DestroyOrphanCachedResponsesWorker
-        enum :status, default: 0, processing: 1, error: 3
+        enum :status, default: 0, processing: 1, pending_destruction: 2, error: 3
 
         validates :group, top_level_group: true, presence: true
         validates :relative_path,
@@ -47,8 +47,6 @@ module VirtualRegistries
         scope :search_by_relative_path, ->(query) do
           fuzzy_search(query, [:relative_path], use_minimum_char_limit: false)
         end
-        scope :orphan, -> { where(upstream: nil) }
-        scope :pending_destruction, -> { orphan.default }
         scope :for_group, ->(group) { where(group: group) }
 
         def self.next_pending_destruction

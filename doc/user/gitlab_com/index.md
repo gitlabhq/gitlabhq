@@ -260,7 +260,7 @@ the default value [is the same as for self-managed instances](../../administrati
 
 If you are near or over the repository size limit, you can either:
 
-- [Reduce your repository size with Git](../project/repository/repository_size.md#reduce-repository-size).
+- [Reduce your repository size with Git](../project/repository/repository_size.md#methods-to-reduce-repository-size).
 - [Purchase additional storage](https://about.gitlab.com/pricing/licensing-faq/#can-i-buy-more-storage).
 
 NOTE:

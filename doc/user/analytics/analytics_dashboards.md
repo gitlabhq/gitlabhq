@@ -52,7 +52,7 @@ Use custom dashboards to design and create visualizations for the metrics that a
 You can create custom dashboards with the dashboard designer.
 
 - Each project can have an unlimited number of dashboards.
-  The only limitation might be the [repository size limit](../project/repository/repository_size.md#storage-limits).
+  The only limitation might be the [repository size limit](../project/repository/repository_size.md#size-and-storage-limits).
 - Each dashboard can reference one or more [visualizations](#define-a-chart-visualization).
 - Visualizations are shared across dashboards.
 

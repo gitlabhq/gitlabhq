@@ -304,7 +304,7 @@ Expunging file history requires rewriting Git history. This action is destructiv
 
 If you need to remove large files from your repository's history, to reduce
 the total size of your repository, see
-[Reduce repository size](../../../user/project/repository/repository_size.md#reduce-repository-size).
+[Reduce repository size](../../../user/project/repository/repository_size.md#methods-to-reduce-repository-size).
 
 ## Related topics
 

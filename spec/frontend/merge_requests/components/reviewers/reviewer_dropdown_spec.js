@@ -16,19 +16,19 @@ let setReviewersMutationMock;
 
 Vue.use(VueApollo);
 
-const createMockUser = () => ({
+const createMockUser = ({ id = 1, name = 'Administrator', username = 'root' } = {}) => ({
   __typename: 'UserCore',
-  id: 'gid://gitlab/User/1',
+  id: `gid://gitlab/User/${id}`,
   avatarUrl:
     'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon',
-  name: 'Administrator',
-  username: 'root',
-  webUrl: '/root',
-  webPath: '/root',
+  webUrl: `/${username}`,
+  webPath: `/${username}`,
   status: null,
   mergeRequestInteraction: {
     canMerge: true,
   },
+  username,
+  name,
 });
 
 function createComponent(
@@ -39,7 +39,7 @@ function createComponent(
     data: {
       workspace: {
         id: 1,
-        users: [createMockUser()],
+        users: [createMockUser(), createMockUser({ id: 2, name: 'Nonadmin', username: 'bob' })],
       },
     },
   });
@@ -131,25 +131,62 @@ describe('Reviewer dropdown component', () => {
       });
     });
 
-    it('renders users from autocomplete endpoint', async () => {
-      findDropdown().vm.$emit('shown');
+    describe('with the user already selected', () => {
+      it('renders users from autocomplete endpoint and skips "ineligible" pre-selected reviewers', async () => {
+        findDropdown().vm.$emit('shown');
 
-      await waitForPromises();
+        await waitForPromises();
 
-      expect(findDropdown().props('items')).toEqual(
-        expect.arrayContaining([
-          expect.objectContaining({
-            options: expect.arrayContaining([
-              expect.objectContaining({
-                secondaryText: '@root',
-                text: 'Administrator',
-                value: 'root',
-                mergeRequestInteraction: { canMerge: true },
-              }),
-            ]),
-          }),
-        ]),
-      );
+        expect(findDropdown().props('items')).toEqual(
+          expect.arrayContaining([
+            expect.objectContaining({
+              options: expect.arrayContaining([
+                expect.objectContaining({
+                  secondaryText: '@bob',
+                  text: 'Nonadmin',
+                  value: 'bob',
+                  mergeRequestInteraction: { canMerge: true },
+                }),
+              ]),
+            }),
+          ]),
+        );
+      });
+    });
+
+    describe('with the user not already selected', () => {
+      beforeEach(async () => {
+        createComponent(true, {});
+
+        await waitForPromises();
+      });
+
+      it('renders users from autocomplete endpoint', async () => {
+        findDropdown().vm.$emit('shown');
+
+        await waitForPromises();
+
+        expect(findDropdown().props('items')).toEqual(
+          expect.arrayContaining([
+            expect.objectContaining({
+              options: expect.arrayContaining([
+                expect.objectContaining({
+                  secondaryText: '@root',
+                  text: 'Administrator',
+                  value: 'root',
+                  mergeRequestInteraction: { canMerge: true },
+                }),
+                expect.objectContaining({
+                  secondaryText: '@bob',
+                  text: 'Nonadmin',
+                  value: 'bob',
+                  mergeRequestInteraction: { canMerge: true },
+                }),
+              ]),
+            }),
+          ]),
+        );
+      });
     });
 
     it('updates reviewers when dropdown is closed', () => {

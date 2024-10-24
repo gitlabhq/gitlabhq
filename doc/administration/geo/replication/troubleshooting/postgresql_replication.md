@@ -50,6 +50,49 @@ If the secondary site is not able to reconnect, use the following steps to remov
 1. Follow either the steps [to remove that Geo site](../remove_geo_site.md) if it's no longer required,
    or [re-initiate the replication process](../../setup/database.md#step-3-initiate-the-replication-process), which recreates the replication slot correctly.
 
+### Message: `"Error during verification","error":"File is not checksummable"`
+
+If you encounter these errors in your primary site `geo.log`, they're also reflected in the UI under **Admin > Geo > Sites**. To remove those errors, you can identify the particular blob that generates the message so that you can inspect it.
+
+1. In a Puma or Sidekiq node in the primary site, [open a Rails console](../../../../administration/operations/rails_console.md#starting-a-rails-console-session).
+1. Run the following snippet to find the affected artifacts containing the `File is not checksummable` message:
+
+NOTE:
+The example provided below uses `JobArtifact` blob type; however, the same solution applies to any blob type that Geo uses.
+
+```ruby
+
+artifacts = Ci::JobArtifact.verification_failed.where("verification_failure like '%File is not checksummable%'");1
+puts "Found #{artifacts.count} artifacts that failed verification with 'File is not checksummable'. The first one:"
+pp artifacts.first
+```
+
+If you determine that the affected files need to be recovered then you can explore these options (non-exhaustive) to recover the missing files:
+
+- Check if the secondary site has the object and manually copy them to the primary.
+- Look through old backups and manually copy the object back into the primary site.
+- Spot check some to try to determine that it's probably fine to destroy the records, for example, if they are all very old artifacts, then maybe they are not critical data.
+
+Often, these kinds of errors happen when a file is checksummed by Geo, and then goes missing from the primary site. After you identify the affected files, you should check the projects that the files belong to from the UI to decide if it's acceptable to delete the file reference. If so, you can destroy the references with the following irreversible snippet:
+
+```ruby
+def destroy_artifacts_not_checksummable
+  artifacts = Ci::JobArtifact.verification_failed.where("verification_failure like '%File is not checksummable%'");1
+  puts "Found #{artifacts.count} artifacts that failed verification with 'File is not checksummable'."
+  puts "Enter 'y' to continue: "
+  prompt = STDIN.gets.chomp
+  if prompt != 'y'
+    puts "Exiting without action..."
+    return
+  end
+
+  puts "Destroying all..."
+  artifacts.destroy_all
+end
+
+destroy_artifacts_not_checksummable
+```
+
 ## Message: `WARNING: oldest xmin is far in the past` and `pg_wal` size growing
 
 If a replication slot is inactive,

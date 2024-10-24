@@ -28,11 +28,5 @@ FactoryBot.define do
       upstream_checked_at { 30.minutes.ago }
       upstream_etag { 'test' }
     end
-
-    trait :orphan do
-      after(:create) do |entry|
-        entry.update_attribute(:upstream_id, nil)
-      end
-    end
   end
 end

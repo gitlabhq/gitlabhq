@@ -7,10 +7,12 @@ module QA
 
       let(:followed_user_api_client) { Runtime::API::Client.new(:gitlab, user: followed_user) }
 
-      let(:followed_user) { create(:user, name: "followed_user_#{SecureRandom.hex(8)}", api_client: admin_api_client) }
+      let(:followed_user) do
+        create(:user, name: "QA User followed_user_#{SecureRandom.hex(8)}", api_client: admin_api_client)
+      end
 
       let(:following_user) do
-        create(:user, name: "following_user_#{SecureRandom.hex(8)}", api_client: admin_api_client)
+        create(:user, name: "QA User following_user_#{SecureRandom.hex(8)}", api_client: admin_api_client)
       end
 
       let(:group) do

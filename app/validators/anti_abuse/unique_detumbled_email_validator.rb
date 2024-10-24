@@ -9,8 +9,15 @@ module AntiAbuse
 
       email = record.email
 
-      return unless prevent_banned_user_email_reuse?(email) || limit_normalized_email_reuse?(email)
+      if prevent_banned_user_email_reuse?(email)
+        reason = 'Detumbled email is associated with a banned user'
+      elsif limit_normalized_email_reuse?(email)
+        reason = 'Detumbled email has reached the reuse limit'
+      else
+        return
+      end
 
+      log_failed_validation(record, reason)
       record.errors.add(:email, _('is not allowed. Please enter a different email address and try again.'))
     end
 
@@ -26,6 +33,14 @@ module AntiAbuse
       return false unless ::Feature.enabled?(:limit_normalized_email_reuse, ::Feature.current_request)
 
       Email.users_by_detumbled_email_count(email) >= NORMALIZED_EMAIL_ACCOUNT_LIMIT
+    end
+
+    def log_failed_validation(record, reason)
+      ::Gitlab::AppLogger.info(
+        message: 'Email failed validation check',
+        reason: reason,
+        username: record.username
+      )
     end
   end
 end

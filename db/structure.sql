@@ -27704,6 +27704,8 @@ CREATE INDEX idx_user_credit_card_validations_on_similar_to_meta_data ON user_cr
 
 CREATE INDEX idx_user_details_on_provisioned_by_group_id_user_id ON user_details USING btree (provisioned_by_group_id, user_id);
 
+CREATE INDEX idx_vreg_pkgs_maven_cached_responses_on_group_id_status ON virtual_registries_packages_maven_cached_responses USING btree (group_id, status);
+
 CREATE INDEX idx_vreg_pkgs_maven_cached_responses_on_relative_path_trigram ON virtual_registries_packages_maven_cached_responses USING gin (relative_path gin_trgm_ops);
 
 CREATE UNIQUE INDEX idx_vregs_pkgs_mvn_cached_resp_on_uniq_default_upt_id_relpath ON virtual_registries_packages_maven_cached_responses USING btree (upstream_id, relative_path) WHERE (status = 0);
@@ -31573,8 +31575,6 @@ CREATE UNIQUE INDEX index_users_star_projects_on_user_id_and_project_id ON users
 CREATE UNIQUE INDEX index_verification_codes_on_phone_and_visitor_id_code ON ONLY verification_codes USING btree (visitor_id_code, phone, created_at);
 
 COMMENT ON INDEX index_verification_codes_on_phone_and_visitor_id_code IS 'JiHu-specific index';
-
-CREATE INDEX index_virtual_reg_pkgs_maven_cached_responses_on_group_id ON virtual_registries_packages_maven_cached_responses USING btree (group_id);
 
 CREATE INDEX index_virtual_reg_pkgs_maven_reg_upstreams_on_group_id ON virtual_registries_packages_maven_registry_upstreams USING btree (group_id);
 
@@ -35781,9 +35781,6 @@ ALTER TABLE ONLY search_namespace_index_assignments
 
 ALTER TABLE ONLY issue_assignment_events
     ADD CONSTRAINT fk_rails_07683f8e80 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;
-
-ALTER TABLE ONLY virtual_registries_packages_maven_cached_responses
-    ADD CONSTRAINT fk_rails_0816e694a3 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY security_policies
     ADD CONSTRAINT fk_rails_08722e8ac7 FOREIGN KEY (security_policy_management_project_id) REFERENCES projects(id) ON DELETE CASCADE;

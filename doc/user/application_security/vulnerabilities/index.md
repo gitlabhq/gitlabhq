@@ -217,6 +217,46 @@ The following data is shared with third-party AI APIs:
 - Entire file that contains the vulnerable lines of code
 - Vulnerable lines of code (line numbers)
 
+## Vulnerability Resolution in a merge request
+
+DETAILS:
+**Tier:** Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Status:** Beta
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10779) in GitLab 17.6. This is a [beta](../../../policy/experiment-beta-support.md#beta) feature.
+
+Use GitLab Duo Vulnerability resolution to automatically create a merge request suggestion comment that
+resolves the vulnerability finding. By default, it is powered by Anthropic's [`claude-3.5-sonnet`](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet) model.
+
+To resolve the vulnerability finding:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Merge requests**.
+1. Select a merge request.
+   - Vulnerability findings supported by Vulnerability Resolution are indicated by the tanuki AI icon (**{tanuki-ai}**).
+1. Select the supported findings to open the security finding dialog.
+1. In the lower-right corner, select **Resolve with AI**.
+
+A comment containing the AI remediation suggestions is opened in the merge request. Review the suggested changes, then apply the merge request suggestion according to your standard workflow.
+
+Provide feedback on this feature in [issue 476553](https://gitlab.com/gitlab-org/gitlab/-/issues/476553).
+
+### Troubleshooting
+
+Vulnerability Resolution in a merge request sometimes cannot generate a suggested fix. Common causes include:
+
+- **False positive detected:** Before proposing a fix, the AI model assesses whether the vulnerability is valid. It may judge that the vulnerability is not a true vulnerability, or isn't worth fixing.
+  - This can happen if the vulnerability occurs in test code. Your organization might still choose to fix vulnerabilities even if they happen in test code, but models sometimes assess these to be false positives.
+  - If you agree that the vulnerability is a false-positive or is not worth fixing, you should [dismiss the vulnerability](#vulnerability-status-values) and [select a matching reason](#vulnerability-dismissal-reasons).
+    - To customize your SAST configuration or report a problem with a GitLab SAST rule, see [SAST rules](../sast/rules.md).
+- **Temporary or unexpected error:** The error message may state that "an unexpected error has occurred", "the upstream AI provider request timed out", "something went wrong", or a similar cause.
+  - These errors may be caused by temporary problems with the AI provider or with GitLab Duo.
+  - A new request may succeed, so you can try to resolve the vulnerability again.
+  - If you continue to see these errors, contact GitLab for assistance.
+- **Resolution target could not be found in the merge request, unable to create suggestion:**
+  - This error may occur when the target branch has not run a full security scan pipeline. See the [merge request documentation](../index.md#ultimate).
+
 ## Vulnerability code flow
 
 DETAILS:

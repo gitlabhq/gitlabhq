@@ -91,7 +91,7 @@ export const NAMESPACE_STORAGE_TYPES = [
 
 export const storageTypeHelpPaths = {
   lfsObjects: helpPagePath('/user/project/repository/repository_size', {
-    anchor: 'repository-cleanup',
+    anchor: 'clean-up-repository',
   }),
   containerRegistry: helpPagePath(
     'user/packages/container_registry/reduce_container_registry_storage',

@@ -42,6 +42,11 @@ export default {
       required: false,
       default: () => [],
     },
+    visibleReviewers: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   data() {
     return {
@@ -57,10 +62,10 @@ export default {
       const items = [];
       let users;
 
-      if (this.selectedReviewers.length && !this.search) {
+      if (this.selectedReviewersToShow.length && !this.search) {
         items.push({
           text: __('Reviewers'),
-          options: this.selectedReviewers.map((user) => this.mapUser(user)),
+          options: this.selectedReviewersToShow.map((user) => this.mapUser(user)),
         });
       }
 
@@ -81,6 +86,11 @@ export default {
       });
 
       return items;
+    },
+    selectedReviewersToShow() {
+      return this.selectedReviewers.filter((user) =>
+        this.visibleReviewers.map((gqlUser) => gqlUser.id).includes(user.id),
+      );
     },
   },
   watch: {

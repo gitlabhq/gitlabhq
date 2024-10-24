@@ -83,26 +83,6 @@ RSpec.describe VirtualRegistries::Packages::Maven::CachedResponse, type: :model,
   end
 
   describe 'scopes' do
-    describe '.orphan' do
-      subject { described_class.orphan }
-
-      let_it_be(:cached_response) { create(:virtual_registries_packages_maven_cached_response) }
-      let_it_be(:orphan_cached_response) { create(:virtual_registries_packages_maven_cached_response, :orphan) }
-
-      it { is_expected.to contain_exactly(orphan_cached_response) }
-    end
-
-    describe '.pending_destruction' do
-      subject { described_class.pending_destruction }
-
-      let_it_be(:cached_response) { create(:virtual_registries_packages_maven_cached_response, :orphan, :processing) }
-      let_it_be(:pending_destruction_cached_response) do
-        create(:virtual_registries_packages_maven_cached_response, :orphan)
-      end
-
-      it { is_expected.to contain_exactly(pending_destruction_cached_response) }
-    end
-
     describe '.for_group' do
       let_it_be(:cached_response1) { create(:virtual_registries_packages_maven_cached_response) }
       let_it_be(:cached_response2) { create(:virtual_registries_packages_maven_cached_response) }
@@ -121,7 +101,7 @@ RSpec.describe VirtualRegistries::Packages::Maven::CachedResponse, type: :model,
 
     let_it_be(:cached_response) { create(:virtual_registries_packages_maven_cached_response) }
     let_it_be(:pending_destruction_cached_response) do
-      create(:virtual_registries_packages_maven_cached_response, :orphan)
+      create(:virtual_registries_packages_maven_cached_response, :pending_destruction)
     end
 
     it { is_expected.to eq(pending_destruction_cached_response) }
@@ -325,9 +305,16 @@ RSpec.describe VirtualRegistries::Packages::Maven::CachedResponse, type: :model,
   end
 
   context 'with loose foreign key on virtual_registries_packages_maven_cached_responses.upstream_id' do
-    it_behaves_like 'cleanup by a loose foreign key' do
+    it_behaves_like 'update by a loose foreign key' do
       let_it_be(:parent) { create(:virtual_registries_packages_maven_upstream) }
       let_it_be(:model) { create(:virtual_registries_packages_maven_cached_response, upstream: parent) }
+    end
+  end
+
+  context 'with loose foreign key on virtual_registries_packages_maven_cached_responses.group_id' do
+    it_behaves_like 'update by a loose foreign key' do
+      let_it_be(:parent) { create(:group) }
+      let_it_be(:model) { create(:virtual_registries_packages_maven_cached_response, group: parent) }
     end
   end
 

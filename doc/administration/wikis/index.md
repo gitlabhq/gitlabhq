@@ -81,7 +81,7 @@ The wiki counts as part of the [namespace storage size](../settings/account_and_
 so you should keep your wiki repositories as compact as possible.
 
 For more information about tools to compact repositories,
-read the documentation on [reducing repository size](../../user/project/repository/repository_size.md#reduce-repository-size).
+read the documentation on [reducing repository size](../../user/project/repository/repository_size.md#methods-to-reduce-repository-size).
 
 ## Allow URI includes for AsciiDoc
 

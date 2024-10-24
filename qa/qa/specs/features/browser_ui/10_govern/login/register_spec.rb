@@ -16,9 +16,13 @@ module QA
       end
     end
 
-    describe 'while LDAP is enabled', :blocking, :orchestrated, :ldap_no_tls,
+    describe 'while LDAP is enabled', :orchestrated, :ldap_no_tls,
       testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347934' do
       let!(:personal_access_token) { Runtime::Env.personal_access_token }
+
+      around do |example|
+        with_application_settings(require_admin_approval_after_user_signup: false) { example.run }
+      end
 
       before do
         # When LDAP is enabled, a previous test might have created a token for the LDAP 'tanuki' user who is not
@@ -30,8 +34,6 @@ module QA
 
         ldap_username = Runtime::Env.ldap_username
         Runtime::Env.ldap_username = nil
-
-        set_require_admin_approval_after_user_signup(false)
 
         Runtime::Env.ldap_username = ldap_username
       end

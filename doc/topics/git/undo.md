@@ -326,7 +326,7 @@ it's no longer accessible in your repository's history.
 Replaces a list of strings with `***REMOVED***`.
 
 Alternatively, to completely delete specific files from a repository, see
-[Remove blobs](../../user/project/repository/repository_size.md#remove-blobs).
+[Remove blobs](../../user/project/repository/repository_size.md#remove-files).
 
 Prerequisites:
 
@@ -368,7 +368,7 @@ These tools are faster because they do not provide the same
 feature set as `git filter-branch` does, but focus on specific use cases.
 
 For more information about purging files from the repository history and GitLab storage,
-see [Reduce repository size](../../user/project/repository/repository_size.md#reduce-repository-size).
+see [Reduce repository size](../../user/project/repository/repository_size.md#methods-to-reduce-repository-size).
 
 ## Undo commits by removing them
 
@@ -529,7 +529,7 @@ git checkout -- <file>
 
 These commands remove the file from current branches, but do not expunge it from your repository's history.
 To completely remove all traces of the file, past and present, from your repository, see
-[Remove blobs](../../user/project/repository/repository_size.md#remove-blobs).
+[Remove blobs](../../user/project/repository/repository_size.md#remove-files).
 
 ## Related topics
 

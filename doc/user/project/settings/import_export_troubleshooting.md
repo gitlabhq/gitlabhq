@@ -85,7 +85,7 @@ reduce the repository size for another import attempt:
    ```
 
 1. To reduce the repository size, work on this `smaller-tmp-main` branch:
-   [identify and remove large files](../repository/repository_size.md#reduce-repository-size)
+   [identify and remove large files](../repository/repository_size.md#methods-to-reduce-repository-size)
    or [interactively rebase and fixup](../../../topics/git/git_rebase.md#rebase-interactively-by-using-git)
    to reduce the number of commits.
 
@@ -169,6 +169,39 @@ Rather than attempting to push all changes at once, this workaround:
    git push -u origin --all
    git push -u origin --tags
    ```
+
+## Sidekiq process fails to export a project
+
+Occasionally the Sidekiq process can fail to export a project, for example if
+it is terminated during execution.
+
+GitLab.com users should [contact Support](https://about.gitlab.com/support/#contact-support) to resolve this issue.
+
+Self-managed users can use the Rails console to bypass the Sidekiq process and
+manually trigger the project export:
+
+```ruby
+project = Project.find(1)
+current_user = User.find_by(username: 'my-user-name')
+RequestStore.begin!
+ActiveRecord::Base.logger = Logger.new(STDOUT)
+params = {}
+
+::Projects::ImportExport::ExportService.new(project, current_user, params).execute(nil)
+```
+
+This makes the export available through the UI, but does not trigger an email to the user.
+To manually trigger the project export and send an email:
+
+```ruby
+project = Project.find(1)
+current_user = User.find_by(username: 'my-user-name')
+RequestStore.begin!
+ActiveRecord::Base.logger = Logger.new(STDOUT)
+params = {}
+
+ProjectExportWorker.new.perform(current_user.id, project.id)
+```
 
 ## Manually execute export steps
 

@@ -125,7 +125,7 @@ To manage your storage, if you are a namespace Owner, you can [purchase more sto
 
 Depending on your role, you can also use the following methods to manage or reduce your storage:
 
-- [Reduce repository size](project/repository/repository_size.md#reduce-repository-size).
+- [Reduce repository size](project/repository/repository_size.md#methods-to-reduce-repository-size).
 
 To automate storage usage analysis and management, see [storage management automation](storage_management_automation.md).
 
