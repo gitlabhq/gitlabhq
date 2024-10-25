@@ -221,9 +221,9 @@ describe('graph component', () => {
         'gl-border-0',
         '!gl-rounded-base',
         'hover:gl-bg-gray-50',
-        'dark:hover:gl-bg-gray-200',
+        '[.gl-dark_&]:hover:gl-bg-gray-200',
         'focus:gl-bg-gray-50',
-        'dark:focus:gl-bg-gray-200',
+        '[.gl-dark_&]:focus:gl-bg-gray-200',
         'hover:gl-text-strong',
         'focus:gl-text-strong',
       ];

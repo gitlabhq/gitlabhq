@@ -34,9 +34,9 @@ describe('Note preview', () => {
 
   Vue.use(VueApollo);
 
-  const createComponent = ({ noteId = '1' }) => {
+  const createComponent = ({ noteId = '1', queryHandlers = [[noteQuery, noteQueryHandler]] }) => {
     wrapper = shallowMount(NotePreview, {
-      apolloProvider: createMockApollo([[noteQuery, noteQueryHandler]]),
+      apolloProvider: createMockApollo(queryHandlers),
       propsData: {
         noteId,
       },
@@ -68,5 +68,16 @@ describe('Note preview', () => {
 
     expect(findNoteableNote().exists()).toBe(true);
     expect(findNoteableNote().props('showReplyButton')).toBe(false);
+  });
+
+  it('renders nothing if note returns null', async () => {
+    createComponent({
+      noteId: '1234',
+      queryHandlers: [[noteQuery, jest.fn().mockResolvedValue({ data: { note: null } })]],
+    });
+
+    await waitForPromises();
+
+    expect(wrapper.html()).toBe('');
   });
 });

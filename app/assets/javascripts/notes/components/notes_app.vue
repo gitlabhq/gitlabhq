@@ -112,7 +112,7 @@ export default {
       return this.noteableData.noteableType;
     },
     previewNoteId() {
-      if (!this.isLoading || !this.targetNoteHash) return null;
+      if (!this.isLoading || !this.targetNoteHash?.startsWith('note_')) return null;
       return this.targetNoteHash.replace('note_', '');
     },
     allDiscussions() {

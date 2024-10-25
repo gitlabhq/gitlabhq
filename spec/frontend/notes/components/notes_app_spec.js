@@ -386,10 +386,11 @@ describe('note_app', () => {
 
   describe('preview note shown inside skeleton notes', () => {
     it.each`
-      urlHash       | exists
-      ${''}         | ${false}
-      ${'note_123'} | ${true}
-    `('url is `$urlHash`', ({ urlHash, exists }) => {
+      urlHash        | exists
+      ${''}          | ${false}
+      ${'heading_1'} | ${false}
+      ${'note_123'}  | ${true}
+    `('`$exists` when url hash is `$urlHash`', ({ urlHash, exists }) => {
       jest.spyOn(urlUtility, 'getLocationHash').mockReturnValue(urlHash);
 
       store = createStore();
