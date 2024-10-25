@@ -21305,7 +21305,6 @@ CREATE TABLE workspaces (
     namespace text NOT NULL,
     desired_state text NOT NULL,
     actual_state text NOT NULL,
-    editor text DEFAULT 'webide'::text NOT NULL,
     devfile_ref text NOT NULL,
     devfile_path text NOT NULL,
     devfile text,
@@ -21328,7 +21327,6 @@ CREATE TABLE workspaces (
     CONSTRAINT check_8e4db5ffc2 CHECK ((char_length(actual_state) <= 32)),
     CONSTRAINT check_9e42558c35 CHECK ((char_length(url) <= 1024)),
     CONSTRAINT check_b70eddcbc1 CHECK ((char_length(desired_state) <= 32)),
-    CONSTRAINT check_d7ed376e49 CHECK ((char_length(editor) <= 256)),
     CONSTRAINT check_dc58d56169 CHECK ((char_length(devfile_path) <= 2048)),
     CONSTRAINT check_eb32879a3d CHECK ((char_length(devfile) <= 65535)),
     CONSTRAINT check_ffa8cad434 CHECK ((char_length(url_prefix) <= 256))

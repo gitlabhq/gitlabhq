@@ -17,4 +17,7 @@ module.exports = {
     // this from happening. For now, we are simply blocking the only problematic occurrence.
     '[link:page-slug]',
   ],
+  corePlugins: {
+    container: false,
+  },
 };

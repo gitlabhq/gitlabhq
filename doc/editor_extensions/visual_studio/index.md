@@ -19,6 +19,7 @@ Download the extension from the
 The extension requires:
 
 - Visual Studio 2022, either AMD64 or Arm64.
+- The [IntelliCode](https://visualstudio.microsoft.com/services/intellicode/) component for Visual Studio.
 - GitLab version 16.1 and later.
   - GitLab Duo Code Suggestions requires GitLab version 16.8 or later.
 - You are not using Visual Studio for Mac, as it is unsupported.

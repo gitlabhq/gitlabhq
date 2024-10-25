@@ -3,8 +3,6 @@
 Layout/SpaceInsideParens:
   Exclude:
     - 'spec/lib/banzai/filter/repository_link_filter_spec.rb'
-    - 'spec/lib/error_tracking/sentry_client/projects_spec.rb'
-    - 'spec/lib/error_tracking/sentry_client/repo_spec.rb'
     - 'spec/lib/feature/gitaly_spec.rb'
     - 'spec/lib/gitlab/auth/o_auth/auth_hash_spec.rb'
     - 'spec/lib/gitlab/ci/config/entry/reports_spec.rb'

@@ -21,7 +21,7 @@ RSpec.describe ErrorTracking::SentryClient::Repo, feature_category: :observabili
     it_behaves_like 'calls sentry api'
     it_behaves_like 'Sentry API response size limit'
 
-    it { is_expected.to all( be_a(Gitlab::ErrorTracking::Repo)) }
+    it { is_expected.to all(be_a(Gitlab::ErrorTracking::Repo)) }
 
     it { expect(subject.length).to eq(1) }
 
