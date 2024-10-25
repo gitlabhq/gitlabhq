@@ -1128,7 +1128,7 @@ If a job times out, the `after_script` commands do not execute.
 - You can [ignore non-zero exit codes](script.md#ignore-non-zero-exit-codes).
 - [Use color codes with `after_script`](script.md#add-color-codes-to-script-output)
   to make job logs easier to review.
-- [Create custom collapsible sections](script.md#custom-collapsible-sections)
+- [Create custom collapsible sections](../jobs/job_logs.md#custom-collapsible-sections)
   to simplify job log output.
 
 ### `allow_failure`
@@ -1643,7 +1643,7 @@ job:
 - You can [ignore non-zero exit codes](script.md#ignore-non-zero-exit-codes).
 - [Use color codes with `before_script`](script.md#add-color-codes-to-script-output)
   to make job logs easier to review.
-- [Create custom collapsible sections](script.md#custom-collapsible-sections)
+- [Create custom collapsible sections](../jobs/job_logs.md#custom-collapsible-sections)
   to simplify job log output.
 
 ### `cache`
@@ -4761,7 +4761,7 @@ job2:
 - You can [ignore non-zero exit codes](script.md#ignore-non-zero-exit-codes).
 - [Use color codes with `script`](script.md#add-color-codes-to-script-output)
   to make job logs easier to review.
-- [Create custom collapsible sections](script.md#custom-collapsible-sections)
+- [Create custom collapsible sections](../jobs/job_logs.md#custom-collapsible-sections)
   to simplify job log output.
 
 ### `secrets`

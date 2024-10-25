@@ -42,7 +42,7 @@ independently from each other.
 
 When you access a pipeline, you can see the related jobs for that pipeline.
 
-Selecting an individual job shows you its job log, and allows you to:
+Selecting an individual job shows you its [job log](job_logs.md), and allows you to:
 
 - Cancel the job.
 - Retry the job, if it failed.
@@ -302,16 +302,6 @@ For example, if you start rolling out new code and:
 
 ![Pipelines example](img/pipeline_delayed_job_v14_2.png)
 
-## View job logs in full screen mode
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363617) in GitLab 16.7.
-
-You can view the contents of a job log in full screen mode by clicking **Show full screen**.
-
-To use full screen mode, your web browser must also support it. If your web browser does not support full screen mode, then the option is not available.
-
-Job logs divided into sections can be collapsed or expanded. For more details, see [Expand and collapse job log sections](../yaml/script.md#expand-and-collapse-job-log-sections).
-
 ## Deployment jobs
 
 Deployment jobs are a specific kind of CI job in that they deploy code to
@@ -337,12 +327,6 @@ The behavior of deployment jobs can be controlled with
 and [ensuring only one deployment job runs at a time](../environments/deployment_safety.md#ensure-only-one-deployment-job-runs-at-a-time).
 
 ## Troubleshooting
-
-### Job log slow to update
-
-When you visit the job log page for a running job, there could be a delay of up to
-60 seconds before a log update. The default refresh time is 60 seconds, but after
-the log is viewed in the UI one time, log updates should occur every 3 seconds.
 
 ### `get_sources` job section fails because of an HTTP/2 problem
 

@@ -17,13 +17,10 @@ export default {
     };
   },
   computed: {
-    deleteConfirmationText() {
-      return sprintf(
-        s__('MlModelRegistry|Are you sure you want to delete model version %{versionName}?'),
-        {
-          versionName: this.versionName,
-        },
-      );
+    modalTitle() {
+      return sprintf(s__('MlModelRegistry|Delete version %{versionName}'), {
+        versionName: this.versionName,
+      });
     },
   },
   methods: {
@@ -34,7 +31,7 @@ export default {
   modal: {
     id: 'ml-model-version-delete-modal',
     actionPrimary: {
-      text: s__('MlModelRegistry|Delete model version'),
+      text: s__('MlModelRegistry|Delete version'),
       attributes: { variant: 'danger' },
     },
     actionCancel: {
@@ -42,7 +39,12 @@ export default {
     },
   },
   i18n: {
-    modalTitle: s__('MlModelRegistry|Delete model version?'),
+    deleteConfirmationText: s__(
+      'MlModelRegistry|Are you sure you want to delete this model version?',
+    ),
+    deleteConfirmationNote: s__(
+      'MlModelRegistry|Deleting this version also deletes all of its imported or uploaded artifacts and its settings.',
+    ),
   },
 };
 </script>
@@ -60,13 +62,17 @@ export default {
 
       <gl-modal
         :modal-id="$options.modal.id"
-        :title="$options.i18n.modalTitle"
+        :title="modalTitle"
         :action-primary="$options.modal.actionPrimary"
         :action-cancel="$options.modal.actionCancel"
         @primary="deleteModelVersion"
       >
         <p>
-          {{ deleteConfirmationText }}
+          {{ $options.i18n.deleteConfirmationText }}
+        </p>
+        <p>
+          <b>{{ __('Note:') }}</b>
+          {{ $options.i18n.deleteConfirmationNote }}
         </p>
       </gl-modal>
     </template>

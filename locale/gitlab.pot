@@ -34775,7 +34775,7 @@ msgstr ""
 msgid "MlModelRegistry|An error has occurred when saving the model."
 msgstr ""
 
-msgid "MlModelRegistry|Are you sure you want to delete model version %{versionName}?"
+msgid "MlModelRegistry|Are you sure you want to delete this model version?"
 msgstr ""
 
 msgid "MlModelRegistry|Artifact file creation failed"
@@ -34844,7 +34844,16 @@ msgstr ""
 msgid "MlModelRegistry|Delete model version?"
 msgstr ""
 
+msgid "MlModelRegistry|Delete version"
+msgstr ""
+
+msgid "MlModelRegistry|Delete version %{versionName}"
+msgstr ""
+
 msgid "MlModelRegistry|Deleting this model version will delete the associated artifacts."
+msgstr ""
+
+msgid "MlModelRegistry|Deleting this version also deletes all of its imported or uploaded artifacts and its settings."
 msgstr ""
 
 msgid "MlModelRegistry|Description"

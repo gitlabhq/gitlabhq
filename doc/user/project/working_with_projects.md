@@ -211,15 +211,15 @@ DETAILS:
 
 > - Option to delete projects immediately from the **Admin** area and as a group setting removed [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
 
-Prerequisites:
-
-- You must have the Owner role for the project.
-- The project must be [marked for deletion](#delete-a-project).
-
 If you don't want to wait for delayed deletion, you can delete a project immediately. To do this, perform the steps for [deleting a projects](#delete-a-project) again.
 
 In the first cycle of deleting a project, the project is moved to the delayed deletion queue and automatically deleted after the retention period has passed.
 If during this delayed deletion time you run a second deletion cycle, the project is deleted immediately.
+
+Prerequisites:
+
+- You must have the Owner role for the project.
+- The project must be [marked for deletion](#delete-a-project).
 
 To immediately delete a project marked for deletion:
 
