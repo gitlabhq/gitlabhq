@@ -200,6 +200,12 @@ Audit event types belong to the following product categories.
 | [`container_repository_deletion_marked`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152967) | Triggered when a project's container repository is marked for deletion | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [17.2](https://gitlab.com/gitlab-org/gitlab/-/issues/362290) | Project |
 | [`container_repository_tags_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156066) | Triggered when a project's container repository tag is deleted | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [17.2](https://gitlab.com/gitlab-org/gitlab/-/issues/362290) | Project |
 
+### Continuous-integration
+
+| Name | Description | Saved to database | Streamed | Introduced in | Scope |
+|:------------|:------------|:------------------|:---------|:--------------|:--------------|
+| [`multi_project_downstream_pipeline_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/168626) | Triggered when multi project downstream pipeline is created | **{dotted-circle}** No | **{check-circle}** Yes | GitLab [17.6](https://gitlab.com/gitlab-org/gitlab/-/issues/481325) | Project |
+
 ### Continuous delivery
 
 | Name | Description | Saved to database | Streamed | Introduced in | Scope |

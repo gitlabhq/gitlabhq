@@ -306,6 +306,7 @@ export default {
             :work-item-id="workItemId"
             :autofocus="autofocus"
             :comment-button-text="commentButtonText"
+            :is-discussion-internal="isInternalThread"
             :is-discussion-locked="isDiscussionLocked"
             :is-work-item-confidential="isWorkItemConfidential"
             :is-discussion-resolved="isDiscussionResolved"

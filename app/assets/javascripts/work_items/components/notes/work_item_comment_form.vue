@@ -121,6 +121,11 @@ export default {
       required: false,
       default: null,
     },
+    isDiscussionInternal: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     isDiscussionResolved: {
       type: Boolean,
       required: false,
@@ -238,6 +243,8 @@ export default {
       <form class="common-note-form gfm-form js-main-target-form new-note gl-grow">
         <comment-field-layout
           :with-alert-container="isWorkItemConfidential"
+          :is-internal-note="isDiscussionInternal || isNoteInternal"
+          :note="commentText"
           :noteable-data="getWorkItemData"
           :noteable-type="workItemTypeKey"
         >

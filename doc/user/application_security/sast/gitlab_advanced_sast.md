@@ -142,6 +142,14 @@ Pipelines now include an Advanced SAST job.
 
 ## Vulnerability code flow
 
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/458062) in GitLab 17.2 [with a flag](../../../administration/feature_flags.md) named `vulnerability_code_flow`. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/465776) in GitLab 17.4.
+
+FLAG:
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
 For some vulnerabilities detected by Advanced SAST, a **Code flow** tab is available in the [Vulnerability Page](../vulnerabilities/index.md).
 A vulnerability's code flow is the path the data takes from the user input (source) to the vulnerable line of code (sink),
 through all assignments, manipulation, and sanitization. This information helps you understand and evaluate the

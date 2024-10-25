@@ -665,44 +665,4 @@ RSpec.describe Ci::RunnerManager, feature_category: :fleet_visibility, type: :mo
       it { is_expected.to contain_exactly existing_build }
     end
   end
-
-  describe '#copy_runner_fields' do
-    let(:runner_manager) { build(:ci_runner_machine, runner: runner) }
-
-    before do
-      runner_manager.runner_type = nil
-      runner_manager.sharding_key_id = nil
-    end
-
-    shared_examples 'when sharding_key_id is not present' do
-      before do
-        runner_manager.save!
-      end
-
-      it 'sets runner_type and sharding_key_id from runner', :aggregate_failures do
-        expect(runner_manager.runner_type).to eq(runner.runner_type)
-        expect(runner_manager.sharding_key_id).to eq(runner.sharding_key_id)
-      end
-    end
-
-    context 'with instance runner' do
-      let(:runner) { build(:ci_runner, :instance) }
-
-      it { expect(runner).to be_valid }
-
-      it_behaves_like 'when sharding_key_id is not present'
-    end
-
-    context 'with group runner' do
-      let(:runner) { build(:ci_runner, :group, groups: [group]) }
-
-      it_behaves_like 'when sharding_key_id is not present'
-    end
-
-    context 'with project runner' do
-      let(:runner) { build(:ci_runner, :project, projects: [project]) }
-
-      it_behaves_like 'when sharding_key_id is not present'
-    end
-  end
 end

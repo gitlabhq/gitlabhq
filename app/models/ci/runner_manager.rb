@@ -64,8 +64,6 @@ module Ci
 
     validate :no_sharding_key_id, if: :instance_type?
 
-    before_validation :copy_runner_fields
-
     cached_attr_reader :version, :revision, :platform, :architecture, :ip_address, :contacted_at, :executor_type
 
     # The `STALE_TIMEOUT` constant defines the how far past the last contact or creation date a runner manager
@@ -179,14 +177,6 @@ module Ci
       return unless new_version && Gitlab::Ci::RunnerReleases.instance.enabled?
 
       Ci::Runners::ProcessRunnerVersionUpdateWorker.perform_async(new_version)
-    end
-
-    def copy_runner_fields
-      return if runner_type && sharding_key_id
-      return unless runner
-
-      self.runner_type = runner.runner_type
-      self.sharding_key_id = runner.sharding_key_id
     end
 
     def no_sharding_key_id

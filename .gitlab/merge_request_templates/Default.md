@@ -10,6 +10,12 @@ especially important if they didn't participate in the discussion.
 
 %{first_multiline_commit}
 
+## References
+**Please include [cross links](https://handbook.gitlab.com/handbook/communication/#start-with-a-merge-request:~:text=Cross%20link%20issues,alternate%20if%20duplicate.) to any resources that are relevant to this MR**
+This will give reviewers and future readers helpful context to give an efficient review of the changes introduced.
+
+- 
+
 ## MR acceptance checklist
 
 **Please evaluate this MR against the [MR acceptance checklist](https://docs.gitlab.com/ee/development/code_review.html#acceptance-checklist).**

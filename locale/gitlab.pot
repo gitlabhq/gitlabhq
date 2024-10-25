@@ -36595,6 +36595,9 @@ msgstr ""
 msgid "Notes|This internal note will always remain confidential"
 msgstr ""
 
+msgid "Notes|Uploaded files will be accessible to anyone with the file URL. Use caution when sharing file URLs."
+msgstr ""
+
 msgid "Notes|You're only seeing %{boldStart}other activity%{boldEnd} in the feed. To add a comment, switch to one of the following options."
 msgstr ""
 

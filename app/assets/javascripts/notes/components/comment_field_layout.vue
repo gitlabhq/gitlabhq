@@ -1,25 +1,38 @@
 <script>
+import { s__ } from '~/locale';
 import NoteableWarning from '~/vue_shared/components/notes/noteable_warning.vue';
 import EmailParticipantsWarning from './email_participants_warning.vue';
-import AttachmentsWarning from './attachments_warning.vue';
 
+const ATTACHMENT_REGEXP = /!?\[.*?\]\(\/uploads\/[0-9a-f]{32}\/.*?\)/;
 const DEFAULT_NOTEABLE_TYPE = 'Issue';
 
 export default {
+  i18n: {
+    attachmentWarning: s__(
+      'Notes|Attachments are sent by email. Attachments over 10 MB are sent as links to your GitLab instance, and only accessible to project members.',
+    ),
+    confidentialAttachmentWarning: s__(
+      'Notes|Uploaded files will be accessible to anyone with the file URL. Use caution when sharing file URLs.',
+    ),
+  },
   components: {
-    AttachmentsWarning,
     EmailParticipantsWarning,
     NoteableWarning,
   },
   props: {
-    noteableData: {
-      type: Object,
-      required: true,
-    },
     isInternalNote: {
       type: Boolean,
       required: false,
       default: false,
+    },
+    note: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    noteableData: {
+      type: Object,
+      required: true,
     },
     noteableType: {
       type: String,
@@ -31,21 +44,26 @@ export default {
       required: false,
       default: false,
     },
-    containsLink: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
   },
   computed: {
+    containsLink() {
+      return ATTACHMENT_REGEXP.test(this.note);
+    },
     isLocked() {
       return Boolean(this.noteableData.discussion_locked);
     },
     isConfidential() {
       return Boolean(this.noteableData.confidential);
     },
-    hasWarning() {
+    hasWarningAbove() {
       return this.isConfidential || this.isLocked;
+    },
+    hasWarningBelow() {
+      return (
+        this.showConfidentialAttachmentWarning ||
+        this.showAttachmentWarning ||
+        this.showEmailParticipantsWarning
+      );
     },
     emailParticipants() {
       return this.noteableData.issue_email_participants?.map(({ email }) => email) || [];
@@ -55,6 +73,9 @@ export default {
     },
     showAttachmentWarning() {
       return this.showEmailParticipantsWarning && this.containsLink;
+    },
+    showConfidentialAttachmentWarning() {
+      return (this.isConfidential || this.isInternalNote) && this.containsLink;
     },
   },
 };
@@ -67,7 +88,7 @@ export default {
       data-testid="comment-field-alert-container"
     ></div>
     <noteable-warning
-      v-if="hasWarning"
+      v-if="hasWarningAbove"
       class="-gl-mb-3 gl-rounded-lg gl-rounded-bl-none gl-rounded-br-none gl-pb-5 gl-pt-4"
       :is-locked="isLocked"
       :is-confidential="isConfidential"
@@ -76,21 +97,27 @@ export default {
       :confidential-noteable-docs-path="noteableData.confidential_issues_docs_path"
     />
     <slot></slot>
-    <attachments-warning
-      v-if="showAttachmentWarning"
-      :class="{
-        'gl-py-3': !showEmailParticipantsWarning,
-        '-gl-mt-3 gl-pb-3 gl-pt-4': showEmailParticipantsWarning,
-      }"
-    />
-    <email-participants-warning
-      v-if="showEmailParticipantsWarning"
-      class="gl-rounded-lg !gl-rounded-tl-none !gl-rounded-tr-none gl-border-t-1"
-      :class="{
-        '-gl-mt-3 gl-pb-3 gl-pt-4': !showAttachmentWarning,
-        'gl-mt-1 gl-py-3': showAttachmentWarning,
-      }"
-      :emails="emailParticipants"
-    />
+    <div
+      v-if="hasWarningBelow"
+      class="-gl-mt-3 gl-rounded-lg gl-rounded-t-none gl-bg-orange-50 gl-pb-1 gl-pt-4 gl-text-orange-600"
+    >
+      <div
+        v-if="showConfidentialAttachmentWarning"
+        class="gl-border-b gl-border-b-white gl-px-4 gl-py-2 last:gl-border-none"
+      >
+        {{ $options.i18n.confidentialAttachmentWarning }}
+      </div>
+      <div
+        v-if="showAttachmentWarning"
+        class="gl-border-b gl-border-b-white gl-px-4 gl-py-2 last:gl-border-none"
+      >
+        {{ $options.i18n.attachmentWarning }}
+      </div>
+      <email-participants-warning
+        v-if="showEmailParticipantsWarning"
+        class="gl-px-4 gl-py-2"
+        :emails="emailParticipants"
+      />
+    </div>
   </div>
 </template>

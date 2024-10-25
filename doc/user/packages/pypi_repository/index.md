@@ -25,9 +25,9 @@ clients use, see the [PyPI API documentation](../../../api/packages/pypi.md).
 
 Learn how to [build a PyPI package](../workflows/build_packages.md#pypi).
 
-## Authenticate with the package registry
+## Authenticate with the GitLab package registry
 
-Before you can publish to the package registry, you must authenticate.
+Before you can publish to the GitLab package registry, you must authenticate.
 
 To do this, you can use:
 
@@ -35,80 +35,61 @@ To do this, you can use:
   with the scope set to `api`.
 - A [deploy token](../../project/deploy_tokens/index.md) with the scope set to
   `read_package_registry`, `write_package_registry`, or both.
-- A [CI job token](#authenticate-with-a-ci-job-token).
+- A [CI job token](../../../ci/jobs/ci_job_token.md).
 
 Do not use authentication methods other than the methods documented here. Undocumented authentication methods might be removed in the future.
 
+The `TWINE_USERNAME` and `TWINE_PASSWORD` environment variables are used to authenticate with a GitLab token.
+
 ### Authenticate with a personal access token
 
-To authenticate with a personal access token, edit the `~/.pypirc` file and add:
-
-```ini
-[distutils]
-index-servers =
-    gitlab
-
-[gitlab]
-repository = https://gitlab.example.com/api/v4/projects/<project_id>/packages/pypi
-username = <your_personal_access_token_name>
-password = <your_personal_access_token>
-```
-
-The `<project_id>` is either the project's
-[URL-encoded](../../../api/rest/index.md#namespaced-paths)
-path (for example, `group%2Fproject`), or the project's ID (for example `42`).
-
-### Authenticate with a deploy token
-
-To authenticate with a deploy token, edit your `~/.pypirc` file and add:
-
-```ini
-[distutils]
-index-servers =
-    gitlab
-
-[gitlab]
-repository = https://gitlab.example.com/api/v4/projects/<project_id>/packages/pypi
-username = <deploy token username>
-password = <deploy token>
-```
-
-The `<project_id>` is either the project's
-[URL-encoded](../../../api/rest/index.md#namespaced-paths)
-path (for example, `group%2Fproject`), or the project's ID (for example `42`).
-
-### Authenticate with a CI job token
-
-To authenticate with [GitLab CI/CD](../../../ci/index.md),
-you must authenticate with a personal access token,
-deploy token, or a `CI_JOB_TOKEN`.
-You only need one authentication method to use PyPI commands in
-a CI/CD job.
-
-For example:
+To authenticate with a personal access token, update the `TWINE_USERNAME` and `TWINE_PASSWORD` environment variables:
 
 ```yaml
 image: python:latest
 
 run:
+  variables:
+    TWINE_USERNAME: <your_personal_access_token_name>
+    TWINE_PASSWORD: <your_personal_access_token>
   script:
     - pip install build twine
     - python -m build
-    - TWINE_PASSWORD=${CI_JOB_TOKEN} TWINE_USERNAME=gitlab-ci-token python -m twine upload --repository-url ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/pypi dist/*
+    - python -m twine upload --repository-url ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/pypi dist/*
 ```
 
-You can also use `CI_JOB_TOKEN` in a `~/.pypirc` file that you check in to
-GitLab:
+### Authenticate with a deploy token
 
-```ini
-[distutils]
-index-servers =
-    gitlab
+To authenticate with a deploy token, update the `TWINE_USERNAME` and `TWINE_PASSWORD` environment variables:
 
-[gitlab]
-repository = https://gitlab.example.com/api/v4/projects/${env.CI_PROJECT_ID}/packages/pypi
-username = gitlab-ci-token
-password = ${env.CI_JOB_TOKEN}
+```yaml
+image: python:latest
+
+run:
+  variables:
+    TWINE_USERNAME: <deploy token username>
+    TWINE_PASSWORD: <deploy token>
+  script:
+    - pip install build twine
+    - python -m build
+    - python -m twine upload --repository-url ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/pypi dist/*
+```
+
+### Authenticate with a CI job token
+
+To authenticate with a CI job token, update the `TWINE_USERNAME` and `TWINE_PASSWORD` environment variables:
+
+```yaml
+image: python:latest
+
+run:
+  variables:
+    TWINE_USERNAME: gitlab-ci-token
+    TWINE_PASSWORD: $CI_JOB_TOKEN
+  script:
+    - pip install build twine
+    - python -m build
+    - python -m twine upload --repository-url ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/pypi dist/*
 ```
 
 ### Authenticate to access packages within a group
@@ -123,7 +104,7 @@ https://gitlab.example.com/api/v4/groups/<group_id>/-/packages/pypi
 
 Prerequisites:
 
-- You must [authenticate with the package registry](#authenticate-with-the-package-registry).
+- You must [authenticate with the package registry](#authenticate-with-the-gitlab-package-registry).
 - Your [version string must be valid](#use-valid-version-strings).
 - The maximum allowed package size is 5 GB.
 - The maximum length of the `description` field is 4000 characters. Longer `description` strings are truncated.
@@ -136,6 +117,17 @@ Prerequisites:
 You can then [publish a package by using twine](#publish-a-pypi-package-by-using-twine).
 
 ### Publish a PyPI package by using twine
+
+Define your repository source, edit the `~/.pypirc` file and add:
+
+```ini
+[distutils]
+index-servers =
+    gitlab
+
+[gitlab]
+repository = https://gitlab.example.com/api/v4/projects/<project_id>/packages/pypi
+```
 
 To publish a PyPI package, run a command like:
 
@@ -160,7 +152,7 @@ If you didn't use a `.pypirc` file to define your repository source, you can
 publish to the repository with the authentication inline:
 
 ```shell
-TWINE_PASSWORD=<personal_access_token or deploy_token> TWINE_USERNAME=<username or deploy_token_username> python3 -m twine upload --repository-url https://gitlab.example.com/api/v4/projects/<project_id>/packages/pypi dist/*
+TWINE_PASSWORD=<personal_access_token or deploy_token or $CI_JOB_TOKEN> TWINE_USERNAME=<username or deploy_token_username or gitlab-ci-token> python3 -m twine upload --repository-url https://gitlab.example.com/api/v4/projects/<project_id>/packages/pypi dist/*
 ```
 
 If you didn't follow the steps on this page, ensure your package was properly
@@ -173,7 +165,7 @@ python -m twine upload --repository <source_name> dist/<package_file>
 ```
 
 - `<package_file>` is your package filename, ending in `.tar.gz` or `.whl`.
-- `<source_name>` is the [source name used during setup](#authenticate-with-the-package-registry).
+- `<source_name>` is the [source name used during setup](#authenticate-with-the-gitlab-package-registry).
 
 ### Publishing packages with the same name or version
 

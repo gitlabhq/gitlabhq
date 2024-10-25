@@ -29,6 +29,7 @@ import PersistedSearch from '~/packages_and_registries/shared/components/persist
 import MetadataDatabaseAlert from '~/packages_and_registries/shared/components/container_registry_metadata_database_alert.vue';
 import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
+import { helpPagePath } from '~/helpers/help_page_helper';
 
 import { $toast } from 'jest/packages_and_registries/shared/mocks';
 import {
@@ -136,7 +137,7 @@ describe('List Page', () => {
     expect(findRegistryHeader().props()).toMatchObject({
       imagesCount: 2,
       metadataLoading: false,
-      helpPagePath: '',
+      helpPagePath: helpPagePath('user/packages/container_registry/index'),
       hideExpirationPolicyData: false,
       showCleanupPolicyLink: false,
       expirationPolicy: {},

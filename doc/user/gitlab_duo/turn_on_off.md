@@ -333,6 +333,10 @@ You can use command-line tools such as `curl` to verify the connectivity.
     curl --verbose --proxy "http://USERNAME:PASSWORD@example.com:8080" "https://customers.gitlab.com"
     ```
 
+1. Optional. If you are using a [proxy server](#allow-outbound-connections-from-the-gitlab-instance) between the GitLab 
+   application and the public internet,
+   [disable DNS rebinding protection](../../security/webhooks.md#enforce-dns-rebinding-attack-protection).
+
 1. [Manually synchronize subscription data](../../subscriptions/self_managed/index.md#manually-synchronize-subscription-data).
    - Verify that the GitLab instance [synchronizes your subscription data with GitLab](https://about.gitlab.com/pricing/licensing-faq/cloud-licensing/).
 
