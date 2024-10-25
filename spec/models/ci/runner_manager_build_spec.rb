@@ -14,6 +14,7 @@ RSpec.describe Ci::RunnerManagerBuild, model: true, feature_category: :fleet_vis
 
   describe 'validation' do
     it { is_expected.to validate_presence_of(:build) }
+    it { is_expected.to validate_presence_of(:project_id) }
   end
 
   describe 'partitioning' do

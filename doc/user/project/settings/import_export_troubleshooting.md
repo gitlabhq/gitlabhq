@@ -6,6 +6,10 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 
 # Troubleshooting file export project migrations
 
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+
 If you have problems with [migrating projects by using file exports](import_export.md), see the possible solutions below.
 
 ## Troubleshooting commands

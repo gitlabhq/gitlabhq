@@ -3106,7 +3106,8 @@ CREATE TABLE p_ci_runner_machine_builds (
     partition_id bigint NOT NULL,
     build_id bigint NOT NULL,
     runner_machine_id bigint NOT NULL,
-    project_id bigint
+    project_id bigint,
+    CONSTRAINT check_149ee35c38 CHECK ((project_id IS NOT NULL))
 )
 PARTITION BY LIST (partition_id);
 
@@ -24124,9 +24125,6 @@ ALTER TABLE ONLY chat_names
 
 ALTER TABLE ONLY chat_teams
     ADD CONSTRAINT chat_teams_pkey PRIMARY KEY (id);
-
-ALTER TABLE p_ci_runner_machine_builds
-    ADD CONSTRAINT check_149ee35c38 CHECK ((project_id IS NOT NULL)) NOT VALID;
 
 ALTER TABLE workspaces
     ADD CONSTRAINT check_2a89035b04 CHECK ((personal_access_token_id IS NOT NULL)) NOT VALID;

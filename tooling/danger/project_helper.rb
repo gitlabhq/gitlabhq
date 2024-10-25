@@ -127,6 +127,7 @@ module Tooling
           spec/lib/generators/usage_metric_definition_generator_spec\.rb |
           spec/support/matchers/internal_events_matchers\.rb |
           spec/support_specs/matchers/internal_events_matchers_spec\.rb |
+          (spec/)?scripts/internal_events/\S+\.rb |
           generator_templates/usage_metric_definition/metric_definition\.yml)\z}x => [:backend, :analytics_instrumentation],
         %r{gitlab/usage_data(_spec)?\.rb} => [:analytics_instrumentation],
         [%r{\.haml\z}, %r{data: \{ track}] => [:analytics_instrumentation],

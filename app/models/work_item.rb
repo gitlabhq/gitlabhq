@@ -116,6 +116,17 @@ class WorkItem < Issue
     end
   end
 
+  def create_dates_source_from_current_dates
+    create_dates_source(
+      due_date: due_date,
+      start_date: start_date,
+      start_date_is_fixed: due_date.present? || start_date.present?,
+      due_date_is_fixed: due_date.present? || start_date.present?,
+      start_date_fixed: start_date,
+      due_date_fixed: due_date
+    )
+  end
+
   def noteable_target_type_name
     'issue'
   end

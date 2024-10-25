@@ -6,6 +6,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Jira migration options
 
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+
 You have several options to migrate your Jira projects to GitLab. Before you decide on a migration strategy,
 first decide if you even need to move your Jira issues to GitLab. In many cases, the Jira issue data is no longer
 relevant or actionable. By starting fresh in GitLab, you can focus on setting up your processes and workflows to

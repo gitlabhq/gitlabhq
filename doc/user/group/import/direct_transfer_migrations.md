@@ -73,7 +73,6 @@ GitLab 16.8.
 ## User contributions and membership mapping
 
 DETAILS:
-**Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed, GitLab Dedicated
 
 > - Mapping of shared and inherited shared members as direct members was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129017) in GitLab 16.3.

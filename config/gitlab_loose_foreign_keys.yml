@@ -420,6 +420,9 @@ p_ci_runner_machine_builds:
   - table: ci_runner_machines
     column: runner_machine_id
     on_delete: async_delete
+  - table: projects
+    column: project_id
+    on_delete: async_delete
 p_ci_stages:
   - table: projects
     column: project_id

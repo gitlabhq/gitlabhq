@@ -30,6 +30,7 @@ module Members
       end
 
       enqueue_jobs_that_needs_to_be_run_only_once_per_hierarchy(member, unassign_issuables)
+      publish_events_once(member)
 
       member
     end
@@ -41,6 +42,12 @@ module Members
     end
 
     private
+
+    def publish_events_once(member)
+      return if recursive_call?
+
+      publish_destroyed_event(member)
+    end
 
     # These actions need to be executed only once per hierarchy because the underlying services
     # apply these actions to the entire hierarchy anyway, so there is no need to execute them recursively.
@@ -214,6 +221,21 @@ module Members
           member.source_id,
           source_type,
           current_user_id
+        )
+      end
+    end
+
+    def publish_destroyed_event(member)
+      member.run_after_commit_or_now do
+        Gitlab::EventStore.publish(
+          Members::DestroyedEvent.new(
+            data: {
+              root_namespace_id: member.source.root_ancestor.id,
+              source_id: member.source_id,
+              source_type: member.source_type,
+              user_id: member.user_id
+            }
+          )
         )
       end
     end

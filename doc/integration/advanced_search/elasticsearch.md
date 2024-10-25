@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 This page describes how to enable advanced search. When enabled,
 advanced search provides faster search response times and [improved search features](../../user/search/advanced_search.md).

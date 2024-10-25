@@ -8,8 +8,8 @@ exports[`Merge request dashboard collapsible section renders section 1`] = `
     <header
       class="gl-bg-gray-10 gl-px-5 gl-py-4 gl-rounded-tl-base gl-rounded-tr-base"
     >
-      <h5
-        class="gl-m-0"
+      <h2
+        class="gl-m-0 h5"
       >
         <gl-button-stub
           aria-label="Collapse approved merge requests"
@@ -30,7 +30,7 @@ exports[`Merge request dashboard collapsible section renders section 1`] = `
         >
           3
         </gl-badge-stub>
-      </h5>
+      </h2>
     </header>
     <div
       data-testid="section-content"

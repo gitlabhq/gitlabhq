@@ -83,7 +83,6 @@ difficult, but several tools exist including:
 ## User contribution and membership mapping
 
 DETAILS:
-**Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/443557) to direct transfer migrations for self-managed instances in GitLab 17.4 [with flags](../../../administration/feature_flags.md) named `importer_user_mapping` and `bulk_import_importer_user_mapping`. Disabled by default.

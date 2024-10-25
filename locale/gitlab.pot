@@ -49712,10 +49712,16 @@ msgstr ""
 msgid "SecurityOrchestration|New merge request approval policy"
 msgstr ""
 
+msgid "SecurityOrchestration|New pipeline execution policy"
+msgstr ""
+
 msgid "SecurityOrchestration|New policy"
 msgstr ""
 
 msgid "SecurityOrchestration|New scan execution policy"
+msgstr ""
+
+msgid "SecurityOrchestration|New vulnerability management policy"
 msgstr ""
 
 msgid "SecurityOrchestration|No actions defined - policy will not run."

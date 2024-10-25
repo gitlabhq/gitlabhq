@@ -66,7 +66,7 @@ export default {
         :class="{ 'gl-rounded-base': !open }"
         class="gl-rounded-tl-base gl-rounded-tr-base gl-bg-gray-10 gl-px-5 gl-py-4"
       >
-        <h5 class="gl-m-0">
+        <h2 class="h5 gl-m-0">
           <gl-button
             :icon="toggleButtonIcon"
             size="small"
@@ -81,7 +81,7 @@ export default {
           <gl-badge v-if="!loading || count" class="gl-ml-1" variant="neutral" size="sm">{{
             count
           }}</gl-badge>
-        </h5>
+        </h2>
       </header>
       <div v-if="open" data-testid="section-content">
         <slot></slot>

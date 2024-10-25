@@ -49,6 +49,15 @@ RSpec.describe Members::DestroyService, feature_category: :groups_and_projects d
 
       described_class.new(current_user).execute(member, **opts)
     end
+
+    it 'triggers members destroyed event' do
+      expect(Gitlab::EventStore)
+        .to receive(:publish)
+        .with(an_instance_of(Members::DestroyedEvent))
+        .and_call_original
+
+      described_class.new(current_user).execute(member, **opts)
+    end
   end
 
   shared_examples 'a service destroying a member with access' do

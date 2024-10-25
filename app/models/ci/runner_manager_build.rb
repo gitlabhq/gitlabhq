@@ -20,7 +20,7 @@ module Ci
 
     validates :build, presence: true
     validates :runner_manager, presence: true
-    validates :project_id, presence: true, on: :create
+    validates :project_id, presence: true
 
     scope :for_build, ->(build_id) { where(build_id: build_id) }
 
