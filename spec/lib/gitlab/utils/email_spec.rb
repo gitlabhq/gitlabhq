@@ -61,6 +61,10 @@ RSpec.describe Gitlab::Utils::Email, feature_category: :service_desk do
       'added user@example.com and hello@example.com' | 'added us*****@e*****.c** and he*****@e*****.c**'
       'removed user@example.com, hello@example.com and bye@example.com' |
         'removed us*****@e*****.c**, he*****@e*****.c** and by*****@e*****.c**'
+      'added user#@example.com, hello!@example.com and bye$@example.com' |
+        'added us*****@e*****.c**, he*****@e*****.c** and by*****@e*****.c**'
+      'added user_@example.com, hello}@example.com and !#$%&\'*+-/=?^_{|}~@example.com' |
+        'added us*****@e*****.c**, he*****@e*****.c** and !#*****@e*****.c**'
     end
 
     with_them do

@@ -11,6 +11,7 @@ module Gitlab
         property: [String],
         value: [Integer, Float]
       }.freeze
+      CUSTOM_PROPERTIES_CLASSES = [String, Integer, Float].freeze
 
       def initialize(event_name, additional_properties, kwargs)
         @event_name = event_name
@@ -56,10 +57,13 @@ module Gitlab
         # skip base properties validation. To be done in a separate MR as we have some non-compliant definitions
         custom_properties = additional_properties.except(*BASE_ADDITIONAL_PROPERTIES.keys)
         event_definition_attributes = Gitlab::Tracking::EventDefinition.find(event_name).to_h
+        allowed_types = CUSTOM_PROPERTIES_CLASSES
         custom_properties.each_key do |key|
           unless event_definition_attributes[:additional_properties].include?(key)
             raise InvalidPropertyError, "Unknown additional property: #{key}"
           end
+
+          validate_property!(custom_properties, key, *allowed_types)
         end
       end
     end

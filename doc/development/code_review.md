@@ -119,16 +119,17 @@ page, with these behaviors:
 - It doesn't pick people whose Slack or [GitLab status](../user/profile/index.md#set-your-current-status):
   - Contains the string `OOO`, `PTO`, `Parental Leave`, `Friends and Family`, or `Conference`.
   - Emoji is from one of these categories:
-    - **On leave** - 🌴 `:palm_tree:`, 🏖️ `:beach:`, ⛱ `:beach_umbrella:`, 🏖 `:beach_with_umbrella:`, 🌞 `:sun_with_face:`, 🎡 `:ferris_wheel:`, 🏙 `:cityscape:`
-    - **Out sick** - 🌡️ `:thermometer:`, 🤒 `:face_with_thermometer:`
+    - **On leave** - 🌴 `palm_tree`, 🏖️ `beach`, ⛱ `beach_umbrella`, 🏖 `beach_with_umbrella`, 🌞 `sun_with_face`, 🎡 `ferris_wheel`, 🏙 `cityscape`
+    - **Out sick** - 🌡️ `thermometer`, 🤒 `face_with_thermometer`
+  - Important: The status emojis are not detected when present on the free text input **status message**. They have to be set on your GitLab **status emoji** by clicking on the emoji selector beside the text input.
 - It doesn't pick people who are already assigned a number of reviews that is equal to
   or greater than their chosen "review limit". The review limit is the maximum number of
   reviews people are ready to handle at a time. Set a review limit by using one of the following
   as a Slack or [GitLab status](../user/profile/index.md#set-your-current-status):
-  - 2️⃣ - `:two:`
-  - 3️⃣ - `:three:`
-  - 4️⃣ - `:four:`
-  - 5️⃣ - `:five:`
+  - 2️⃣ - `two`
+  - 3️⃣ - `three`
+  - 4️⃣ - `four`
+  - 5️⃣ - `five`
 
   The minimum review limit is 2️⃣. The reason for not being able to completely turn oneself off
   for reviews has been discussed [in this issue](https://gitlab.com/gitlab-org/quality/engineering-productivity/team/-/issues/377).

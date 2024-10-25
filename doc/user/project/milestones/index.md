@@ -10,7 +10,10 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-Milestones in GitLab are a way to track issues and merge requests created to achieve a broader goal in a certain period of time.
+Milestones in GitLab are a way to track issues and merge requests created to achieve a broader goal
+in a certain period of time, such as a program increment or upcoming release.
+When you use milestones together with [iterations](../../group/iterations/index.md), you can track
+work across two concurrent timeboxes with different start and end dates.
 
 Milestones allow you to organize issues and merge requests into a cohesive group, with an optional start date and an optional due date.
 
@@ -18,11 +21,14 @@ Milestones allow you to organize issues and merge requests into a cohesive group
 
 Milestones can be used to track releases. To do so:
 
-1. Set the milestone due date to represent the release date of your release and leave the milestone start date blank.
+1. Set the milestone due date to represent the release date of your release.
+   If you do not have a defined start date for your release cycle, you can leave the milestone start
+   date blank.
 1. Set the milestone title to the version of your release, such as `Version 9.4`.
-1. Add an issue to your release by associating the desired milestone from the issue's right-hand sidebar.
+1. Add issues to your release by selecting the milestone from the issue's right sidebar.
 
-Additionally, you can integrate milestones with the [Releases feature](../releases/index.md#associate-milestones-with-a-release).
+Additionally, to automatically generate release evidence when you create your release, integrate
+milestones with the [Releases feature](../releases/index.md#associate-milestones-with-a-release).
 
 ## Project milestones and group milestones
 
@@ -44,7 +50,7 @@ To view the milestone list:
 1. Select **Plan > Milestones**.
 
 In a project, GitLab displays milestones that belong to the project.
-In a group, GitLab displays milestones that belong to the group and all projects in the group.
+In a group, GitLab displays milestones that belong to the group and all projects and subgroups in the group.
 
 ### View milestones in a project with issues turned off
 
@@ -98,16 +104,19 @@ The tabs below the title and description show the following:
 The milestone view contains a [burndown and burnup chart](burndown_and_burnup_charts.md),
 showing the progress of completing a milestone.
 
-![burndown chart](img/burndown_and_burnup_charts_v15_3.png)
+![burndown and burnup chart](img/burndown_and_burnup_charts_v15_3.png)
 
 #### Milestone sidebar
 
-The milestone sidebar on the milestone view shows the following:
+The sidebar on the milestone view shows the following:
 
 - Percentage complete, which is calculated as number of closed issues divided by total number of issues.
 - The start date and due date.
 - The total time spent on all issues and merge requests assigned to the milestone.
 - The total issue weight of all issues assigned to the milestone.
+- The count of total, open, closed, and merged merge requests.
+- Links to associated releases.
+- The milestone's reference you can copy to your clipboard.
 
 ![Project milestone page](img/milestones_project_milestone_page_sidebar_v13_11.png)
 
@@ -185,7 +194,8 @@ To delete a milestone:
 ## Promote a project milestone to a group milestone
 
 If you are expanding the number of projects in a group, you might want to share the same milestones
-among this group's projects. You can also promote project milestones to group milestones to
+among this group's projects.
+You can promote project milestones to the parent group to
 make them available to other projects in the same group.
 
 Promoting a milestone merges all project milestones across all projects in this group with the same
@@ -223,7 +233,11 @@ To assign or unassign a milestone:
    You can select from both project and group milestones.
 1. Select the milestone you want to assign.
 
-You can also use the `/assign` [quick action](../quick_actions.md) in a comment.
+To assign or unassign a milestone, you can also:
+
+- Use the `/milestone` [quick action](../quick_actions.md) in a comment or description
+- Drag an issue to a [milestone list](../issue_board.md#milestone-lists) in a board
+- [Bulk edit issues](../issues/managing_issues.md#bulk-edit-issues-from-a-project) from the issues list
 
 ## Filter issues and merge requests by milestone
 

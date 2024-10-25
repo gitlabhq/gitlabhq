@@ -8,7 +8,20 @@ RSpec.describe Packages::Conan::CreatePackageService, feature_category: :package
   subject(:service) { described_class.new(project, user, params) }
 
   describe '#execute' do
-    subject(:package) { service.execute }
+    let(:package) { service_response.payload.fetch(:package) }
+
+    subject(:service_response) { service.execute }
+
+    shared_examples 'returning an error service response and not creating conan package' do |message:|
+      it_behaves_like 'returning an error service response', message: message
+      it { is_expected.to have_attributes(reason: :record_invalid) }
+
+      it 'does not create a conan package' do
+        expect { service_response }
+        .to not_change { Packages::Package.conan.count }
+        .and not_change { Packages::PackageFile.count }
+      end
+    end
 
     context 'valid params' do
       let(:params) do
@@ -20,6 +33,8 @@ RSpec.describe Packages::Conan::CreatePackageService, feature_category: :package
         }
       end
 
+      it_behaves_like 'returning a success service response'
+
       it 'creates a new package' do
         expect(package).to be_valid
         expect(package.name).to eq(params[:package_name])
@@ -30,8 +45,14 @@ RSpec.describe Packages::Conan::CreatePackageService, feature_category: :package
       end
 
       it_behaves_like 'assigns the package creator'
-      it_behaves_like 'assigns build to package'
-      it_behaves_like 'assigns status to package'
+
+      it_behaves_like 'assigns build to package' do
+        subject { super().payload.fetch(:package) }
+      end
+
+      it_behaves_like 'assigns status to package' do
+        subject { super().payload.fetch(:package) }
+      end
     end
 
     context 'invalid params' do
@@ -44,13 +65,13 @@ RSpec.describe Packages::Conan::CreatePackageService, feature_category: :package
         }
       end
 
-      it 'fails' do
-        expect { package }.to raise_error(ActiveRecord::RecordInvalid, /Conan metadatum package username is invalid/)
-      end
+      it_behaves_like 'returning an error service response and not creating conan package',
+        message: 'Validation failed: Conan metadatum package username is invalid'
     end
 
     context 'with existing recipe' do
       let_it_be(:existing_package) { create(:conan_package, project: project) }
+
       let(:params) do
         {
           package_name: existing_package.name,
@@ -60,9 +81,8 @@ RSpec.describe Packages::Conan::CreatePackageService, feature_category: :package
         }
       end
 
-      it 'does not create a conan package with same recipe' do
-        expect { package }.to raise_error(ActiveRecord::RecordInvalid, /Package recipe already exists/)
-      end
+      it_behaves_like 'returning an error service response and not creating conan package',
+        message: 'Validation failed: Package recipe already exists'
     end
   end
 end

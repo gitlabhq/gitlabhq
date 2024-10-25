@@ -1,7 +1,7 @@
 <script>
 import { GlFormGroup } from '@gitlab/ui';
 import { s__ } from '~/locale';
-import ChronicDurationInput from '~/vue_shared/components/chronic_duration_input.vue';
+import ChronicDurationInput from '~/admin/application_settings/runner_token_expiration/components/chronic_duration_input.vue';
 import ExpirationIntervalDescription from './expiration_interval_description.vue';
 
 export default {

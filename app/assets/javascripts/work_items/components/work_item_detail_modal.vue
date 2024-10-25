@@ -3,6 +3,7 @@ import { GlAlert, GlModal } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import { removeHierarchyChild } from '../graphql/cache_utils';
 import deleteWorkItemMutation from '../graphql/delete_work_item.mutation.graphql';
+import { INJECTION_LINK_CHILD_PREVENT_ROUTER_NAVIGATION } from '../constants';
 
 export default {
   WORK_ITEM_DETAIL_MODAL_ID: 'work-item-detail-modal',
@@ -14,6 +15,9 @@ export default {
     GlAlert,
     GlModal,
     WorkItemDetail: () => import('./work_item_detail.vue'),
+  },
+  provide: {
+    [INJECTION_LINK_CHILD_PREVENT_ROUTER_NAVIGATION]: true,
   },
   props: {
     parentId: {

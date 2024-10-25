@@ -127,13 +127,6 @@ RSpec.shared_examples 'User updates wiki page' do
       end
     end
 
-    it "disables the submit button", :js do
-      page.within(".wiki-form") do
-        fill_in(:wiki_title, with: "")
-        expect(page).to have_button('Save changes', disabled: true)
-      end
-    end
-
     it 'shows the emoji autocompletion dropdown', :js do
       find('#wiki_content').native.send_keys('')
       fill_in(:wiki_content, with: ':')

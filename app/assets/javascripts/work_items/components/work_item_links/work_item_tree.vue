@@ -16,6 +16,7 @@ import {
   WORKITEM_TREE_SHOWLABELS_LOCALSTORAGEKEY,
   WORK_ITEM_TYPE_VALUE_EPIC,
   WIDGET_TYPE_HIERARCHY,
+  INJECTION_LINK_CHILD_PREVENT_ROUTER_NAVIGATION,
 } from '../../constants';
 import {
   findHierarchyWidgets,
@@ -48,6 +49,11 @@ export default {
     WorkItemRolledUpData,
   },
   inject: ['hasSubepicsFeature'],
+  provide() {
+    return {
+      [INJECTION_LINK_CHILD_PREVENT_ROUTER_NAVIGATION]: !this.isDrawer,
+    };
+  },
   props: {
     fullPath: {
       type: String,
@@ -95,6 +101,11 @@ export default {
       type: Array,
       required: false,
       default: () => [],
+    },
+    isDrawer: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   data() {

@@ -1665,7 +1665,8 @@ class User < ApplicationRecord
 
     counts = Organizations::OrganizationUser
       .owners
-      .joins('INNER JOIN ownerships ON ownerships.organization_id = organization_users.organization_id')
+      .where('organization_users.organization_id = organizations.id')
+      .group(:organization_id)
       .having('count(organization_users.user_id) = 1')
 
     Organizations::Organization

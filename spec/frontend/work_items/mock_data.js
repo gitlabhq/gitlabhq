@@ -1898,14 +1898,15 @@ export const workItemEpic = {
   namespace: {
     __typename: 'Project',
     id: '1',
-    fullPath: 'test-project-path',
+    fullPath: 'gitlab-org/gitlab-test',
     name: 'Project name',
   },
   createdAt: '2022-08-03T12:41:54Z',
   closedAt: null,
-  webUrl: '/gitlab-org/gitlab-test/-/work_items/4',
+  webUrl: 'http://127.0.0.1:3000/groups/gitlab-org/gitlab-test/-/work_items/4',
   widgets: [
     workItemObjectiveMetadataWidgets.ASSIGNEES,
+    workItemObjectiveMetadataWidgets.LINKED_ITEMS,
     {
       type: 'HIERARCHY',
       hasChildren: false,

@@ -7,7 +7,7 @@
     "dev-server": "NODE_OPTIONS=\"${NODE_OPTIONS:=--max-old-space-size=5120}\" node scripts/frontend/webpack_dev_server.js",
     "file-coverage": "scripts/frontend/file_test_coverage.js",
     "lint-docs": "scripts/lint-doc.sh",
-    "internal:eslint": "eslint --cache --max-warnings 0 --report-unused-disable-directives --ext .js,.vue,.graphql",
+    "internal:eslint": "eslint --cache --max-warnings 0 --report-unused-disable-directives",
     "internal:stylelint": "stylelint -q --rd '{ee/,}app/assets/{stylesheets/**/*.{css,scss},builds/tailwind.css}'",
     "preinternal:stylelint": "yarn run tailwindcss:build",
     "prejest": "yarn check-dependencies",
@@ -76,7 +76,7 @@
     "@gitlab/fonts": "^1.3.0",
     "@gitlab/query-language": "^0.0.5-a-20241017",
     "@gitlab/svgs": "3.119.0",
-    "@gitlab/ui": "97.3.0",
+    "@gitlab/ui": "98.4.0",
     "@gitlab/web-ide": "^0.0.1-dev-20240909013227",
     "@mattiasbuelens/web-streams-adapter": "^0.1.0",
     "@rails/actioncable": "7.0.8-4",
@@ -254,6 +254,8 @@
     "yaml": "^2.0.0-10"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^3.1.0",
+    "@eslint/js": "^9.13.0",
     "@gitlab/eslint-plugin": "20.4.1",
     "@gitlab/stylelint-config": "6.2.2",
     "@graphql-eslint/eslint-plugin": "3.20.1",

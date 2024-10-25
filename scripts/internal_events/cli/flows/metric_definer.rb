@@ -418,8 +418,15 @@ module InternalEventsCli
             q.convert ->(input) { input.split(',').map(&:to_i).uniq }
             q.validate %r{^(\d|\s|,)*$}
             q.messages[:valid?] = "Inputs for #{formatted_prop} must be numeric"
-          else
+          elsif property == 'property' || property == 'label'
             q.convert ->(input) { input.split(',').map(&:strip).uniq }
+          else
+            q.convert ->(input) do
+              input.split(',').map do |value|
+                val = value.strip
+                cast_if_numeric(val)
+              end.uniq
+            end
           end
         end
 
@@ -429,6 +436,13 @@ module InternalEventsCli
         @selected_filters[action][property] = inputs.join(',')
 
         inputs.map { |input| { property => input } }.uniq
+      end
+
+      def cast_if_numeric(text)
+        float = Float(text)
+        float % 1 == 0 ? float.to_i : float
+      rescue ArgumentError
+        text
       end
 
       # Helper for #prompt_for_event_filters

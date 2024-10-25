@@ -25,7 +25,7 @@ This page collects a set of architectural documents and diagrams for GitLab Dedi
 The following diagram shows a high-level overview of the architecture for GitLab Dedicated,
 where various AWS accounts managed by GitLab and customers are controlled by a Switchboard application.
 
-![Diagram of a high-level overview of the GitLab Dedicated architecture.](img/high_level_architecture_diagram_v17_0.png)
+![Diagram of a high-level overview of the GitLab Dedicated architecture.](img/high_level_architecture_diagram_v18_0.png)
 
 When managing GitLab Dedicated tenant instances:
 

@@ -85,10 +85,7 @@ Tracking classes already have three built-in properties:
 - `value`(numeric)
 
 The arbitrary naming and typing of the these three properties is due to constraints from the data extraction process.
-It's recommended to use these properties first, even if their name does not match with the data you want to track.
-This recommendation is particularly important if you want to leverage these attributes as
-[metric filters](metric_definition_guide.md#filters). You can further describe what is the actual data being tracked
-by using the `description` property in the YAML definition of the event. For an example, see
+It's recommended to use these properties first, even if their name does not match with the data you want to track. You can further describe what is the actual data being tracked by using the `description` property in the YAML definition of the event. For an example, see
 [`create_ci_internal_pipeline.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/537ea367dab731e886e6040d8399c430fdb67ab7/config/events/create_ci_internal_pipeline.yml):
 
 ```ruby
@@ -127,9 +124,7 @@ track_internal_event(
 )
 ```
 
-Please add custom properties only in addition to the built-in properties.
-
-Custom rules can not be used as [metric filters](metric_definition_guide.md#filters).
+Please add custom properties only in addition to the built-in properties. Additional properties can only have string or numeric values.
 
 #### Controller and API helpers
 

@@ -3,5 +3,4 @@
 Lint/Void:
   Details: grace period
   Exclude:
-    - 'ee/lib/gitlab/llm/ai_message.rb'
     - 'spec/lib/gitlab/import_export/json/streaming_serializer_spec.rb'

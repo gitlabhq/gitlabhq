@@ -4866,42 +4866,41 @@ RSpec.describe User, feature_category: :user_profile do
   end
 
   describe '#solo_owned_organizations' do
-    let_it_be_with_refind(:user) { create(:user) }
+    let_it_be(:user) { create(:user) }
 
-    subject(:solo_owned_organizations) { user.solo_owned_organizations }
+    subject { user.solo_owned_organizations }
 
     context 'no owned organizations' do
       it { is_expected.to be_empty }
     end
 
     context 'has owned organizations' do
-      let(:organization) { create(:organization) }
-
-      before do
-        organization.add_owner(user)
+      let_it_be(:solo_owned_organizations) { create_list(:organization_owner, 2, user: user).map(&:organization) }
+      let_it_be(:multi_owned_organization) do
+        create(:organization, organization_users: [
+          create(:organization_owner, user: user),
+          create(:organization_owner, user: create(:user))
+        ])
       end
 
-      context 'not solo owner' do
-        let_it_be(:user2) { create(:user) }
-
-        before do
-          organization.add_owner(user2)
-        end
-
-        it { is_expected.to be_empty }
+      it 'returns solo-owned organizations' do
+        is_expected.to match_array(solo_owned_organizations)
       end
 
-      context 'solo owner' do
-        it { is_expected.to include(organization) }
+      it 'does not return multi owned organizations' do
+        is_expected.not_to include(multi_owned_organization)
+      end
+    end
+
+    context 'solo owner with other members' do
+      let_it_be(:organization) do
+        create(:organization, organization_users: [
+          create(:organization_owner, user: user),
+          create(:organization_user, user: create(:user))
+        ])
       end
 
-      context 'solo owner with other members' do
-        before do
-          create(:organization_user, organization: organization)
-        end
-
-        it { is_expected.to include(organization) }
-      end
+      it { is_expected.to include(organization) }
     end
   end
 

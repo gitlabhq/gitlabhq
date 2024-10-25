@@ -38691,9 +38691,6 @@ msgstr ""
 msgid "Package type must be Terraform Module"
 msgstr ""
 
-msgid "PackageRegistry|%{count} packages were not published to the registry. Remove these packages and try again."
-msgstr ""
-
 msgid "PackageRegistry|%{linkStart}Wildcards%{linkEnd} such as `my-package-*` are supported."
 msgstr ""
 
@@ -38905,6 +38902,9 @@ msgid "PackageRegistry|Failed to load the package data"
 msgstr ""
 
 msgid "PackageRegistry|Failed to load version data"
+msgstr ""
+
+msgid "PackageRegistry|Failed to publish %{count} packages. Delete these packages and try again."
 msgstr ""
 
 msgid "PackageRegistry|For more information on Composer packages in GitLab, %{linkStart}see the documentation.%{linkEnd}"
@@ -39218,7 +39218,7 @@ msgstr ""
 msgid "PackageRegistry|There was an error publishing %{count} packages"
 msgstr ""
 
-msgid "PackageRegistry|There was an error publishing a %{packageName} package"
+msgid "PackageRegistry|There was an error publishing %{packageName}"
 msgstr ""
 
 msgid "PackageRegistry|This NuGet package has no dependencies."

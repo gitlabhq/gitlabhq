@@ -104,34 +104,48 @@ Even if a change request meets the minimum lead time, it might not be applied du
 
 ### Bring your own domain (BYOD)
 
-You can add a [custom hostname](../../subscriptions/gitlab_dedicated/index.md#bring-your-own-domain) for your GitLab Dedicated instance. Optionally, you can also provide a custom hostname for the bundled container registry and KAS services.
+You can use a [custom hostname](../../subscriptions/gitlab_dedicated/index.md#bring-your-own-domain) to access your GitLab Dedicated instance. You can also provide a custom hostname for the bundled container registry and Kubernetes Agent Server (KAS) services.
 
-Prerequisites:
+#### Let's Encrypt certificates
 
-- Access to your domain's server control panel to set up DNS records.
+GitLab Dedicated integrates with [Let's Encrypt](https://letsencrypt.org/), a free, automated, and open source certificate authority. When you use a custom hostname, Let's Encrypt automatically issues and renews SSL/TLS certificates for your domain.
+
+This integration uses the [`http-01` challenge](https://letsencrypt.org/docs/challenge-types/#http-01-challenge) to obtain certificates through Let's Encrypt.
 
 #### Set up DNS records
 
-Custom domains require a:
+To use a custom hostname with GitLab Dedicated, you must update your domain's DNS records.
 
-- `CNAME` record: Add a `CNAME` record that points your custom hostname to `tenant_name.gitlab-dedicated.com`.
+Prerequisites:
 
-  ```plaintext
-  gitlab.my-company.com.  CNAME  tenant_name.gitlab-dedicated.com
-  ```
+- Access to your domain host's DNS settings.
 
-- `CAA` record: If your domain has an existing `CAA` (Certification Authority Authorization) record, [add a `CAA` record for Let's Encrypt](https://letsencrypt.org/docs/caa/). This allows Let's Encrypt to also issue certificates for your domain.
+To set up DNS records for a custom hostname with GitLab Dedicated:
 
-  ```plaintext
-  example.com.  IN  CAA 0 issue "pki.goog"
-  example.com.  IN  CAA 0 issue "letsencrypt.org"
-  ```
+1. Sign in to your domain host's website.
 
-  In this example, the `CAA` record defines Google Trust Services (`"pki.goog"`) and Let's Encrypt (`"letsencrypt.org"`) as certificate authorities that are allowed to issue certificates for your domain.
+1. Go to the DNS settings.
 
-#### Add a custom hostname
+1. Add a `CNAME` record that points your custom hostname to your GitLab Dedicated tenant. For example:
 
-To add a custom hostname after your instance is created, submit a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650).
+   ```plaintext
+    gitlab.my-company.com.  CNAME  my-tenant.gitlab-dedicated.com
+   ```
+
+1. Optional. If your domain has an existing `CAA` record, update it to include [Let's Encrypt](https://letsencrypt.org/docs/caa/) as a valid certificate authority. If your domain does not have any `CAA` records, you can skip this step. For example:
+
+   ```plaintext
+   example.com.  IN  CAA 0 issue "pki.goog"
+   example.com.  IN  CAA 0 issue "letsencrypt.org"
+   ```
+
+   In this example, the `CAA` record defines Google Trust Services (`pki.goog`) and Let's Encrypt (`letsencrypt.org`) as certificate authorities that are allowed to issue certificates for your domain.
+
+1. Save your changes and wait for the DNS changes to propagate.
+
+#### Add your custom hostname
+
+To add a custom hostname to your existing GitLab Dedicated instance, submit a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650).
 
 ### SMTP email service
 

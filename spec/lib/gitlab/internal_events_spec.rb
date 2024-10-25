@@ -219,6 +219,11 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
             name: event_name,
             time_framed: time_framed,
             filter: { label: 'label_name', value: 16.17 }
+          ),
+          Gitlab::Usage::EventSelectionRule.new(
+            name: event_name,
+            time_framed: time_framed,
+            filter: { custom: 'custom_property' }
           )
         ]
       end
@@ -236,6 +241,27 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
           described_class.track_event(
             event_name,
             additional_properties: additional_properties,
+            user: user,
+            project: project
+          )
+
+          expect_redis_tracking
+        end
+      end
+
+      context 'when event selection rule has a filter on a custom property' do
+        let(:custom_properties) { { custom: 'custom_property' } }
+        let(:redis_arguments) do
+          [
+            "filter:[custom:custom_property]-#{week_suffix}",
+            "#{event_name}-#{week_suffix}"
+          ]
+        end
+
+        it 'updates the correct redis keys' do
+          described_class.track_event(
+            event_name,
+            additional_properties: custom_properties,
             user: user,
             project: project
           )

@@ -1,3 +1,0 @@
-rules:
-  # https://gitlab.com/gitlab-org/gitlab/issues/28716
-  import/no-cycle: off

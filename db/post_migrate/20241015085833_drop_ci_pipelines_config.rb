@@ -4,9 +4,9 @@ class DropCiPipelinesConfig < Gitlab::Database::Migration[2.2]
   milestone '17.6'
 
   def up
-    execute(<<~SQL)
-      ALTER TABLE p_ci_pipelines_config DETACH PARTITION ci_pipelines_config;
+    drop_table(:ci_pipelines_config, if_exists: true)
 
+    execute(<<~SQL)
       CREATE TABLE IF NOT EXISTS #{fully_qualified_partition_name(100)}
         PARTITION OF p_ci_pipelines_config FOR VALUES IN (100);
 
@@ -16,8 +16,6 @@ class DropCiPipelinesConfig < Gitlab::Database::Migration[2.2]
       CREATE TABLE IF NOT EXISTS #{fully_qualified_partition_name(102)}
         PARTITION OF p_ci_pipelines_config FOR VALUES IN (102);
     SQL
-
-    drop_table(:ci_pipelines_config, if_exists: true)
   end
 
   def down

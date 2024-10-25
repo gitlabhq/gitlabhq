@@ -366,6 +366,38 @@
     - path: config/metrics/counts_7d/count_distinct_user_id_from_failed_usage_attempts_under_60s_weekly.yml
       content: spec/fixtures/scripts/internal_events/metrics/user_id_7d_single_event_all_additional_props.yml
 
+- description: Create a weekly/monthly metric for a single event with custom additional properties filters
+  inputs:
+    files:
+    - path: config/events/internal_events_cli_used.yml
+      content: spec/fixtures/scripts/internal_events/events/event_with_multiple_custom_properties.yml
+    keystrokes:
+    - "2\n" # Enum-select: New Metric -- calculate how often one or more existing events occur over time
+    - "1\n" # Enum-select: Single event -- count occurrences of a specific event or user interaction
+    - "internal_events_cli_used" # Filters to this event
+    - "\n" # Select: config/events/internal_events_cli_used.yml
+    - "\e[B\e[B\e[B" # Arrow down to: Weekly count of unique users where label/value is...
+    - "\n" # Select: Weekly count of unique users where label/value is...
+    - "failure\n" # Input value for "label" filter
+    - "metrics\n" # Input value for "custom_key1" filter
+    - "\n" # Skip "custom_key2" filter
+    - "30,13\n" # Input value for "custom_key3" filter
+    - "12.4\n" # Input value for "custom_key4" filter
+    - "who tried and failed to define an internal event using the CLI\n" # Input description
+    - "failed_usage_attempts_under_60s\n" # Input metric key path
+    - "\n" # Submit weekly description for monthly
+    - "\n" # Submit weekly name for monthly
+    - "1\n" # Enum-select: Copy & continue
+    - "y\n" # Create file
+    - "y\n" # Create file
+    - "5\n" # Exit
+  outputs:
+    files:
+    - path: config/metrics/counts_28d/count_distinct_user_id_from_failed_usage_attempts_under_60s_monthly.yml
+      content: spec/fixtures/scripts/internal_events/metrics/user_id_28d_single_event_custom_key_filter.yml
+    - path: config/metrics/counts_7d/count_distinct_user_id_from_failed_usage_attempts_under_60s_weekly.yml
+      content: spec/fixtures/scripts/internal_events/metrics/user_id_7d_single_event_custom_key_filter.yml
+
 - description: Create a weekly/monthly metric for multiple events with and without additional properties
   inputs:
     files:

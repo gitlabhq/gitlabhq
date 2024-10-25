@@ -14,6 +14,7 @@ import WorkItemRelationshipIcons from '~/work_items/components/shared/work_item_
 
 import {
   workItemTask,
+  workItemEpic,
   workItemObjectiveWithChild,
   confidentialWorkItemTask,
   closedWorkItemTask,
@@ -32,6 +33,8 @@ describe('WorkItemLinkChildContents', () => {
   const mockAssignees = ASSIGNEES.assignees.nodes;
   const mockLabels = LABELS.labels.nodes;
 
+  const mockRouterPush = jest.fn();
+
   const findStatusBadgeComponent = () =>
     wrapper.findByTestId('item-status-icon').findComponent(WorkItemStateBadge);
   const findConfidentialIconComponent = () => wrapper.findByTestId('confidential-icon');
@@ -48,13 +51,23 @@ describe('WorkItemLinkChildContents', () => {
     canUpdate = true,
     childItem = workItemTask,
     showLabels = true,
+    workItemFullPath = 'test-project-path',
+    isGroup = false,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemLinkChildContents, {
       propsData: {
         canUpdate,
         childItem,
         showLabels,
-        workItemFullPath: 'test-project-path',
+        workItemFullPath,
+      },
+      provide: {
+        isGroup,
+      },
+      mocks: {
+        $router: {
+          push: mockRouterPush,
+        },
       },
     });
   };
@@ -128,6 +141,29 @@ describe('WorkItemLinkChildContents', () => {
       findTitleEl().vm.$emit('click', eventObj);
 
       expect(wrapper.emitted('click')).toEqual([[eventObj]]);
+    });
+
+    describe('when the linked item can be navigated to via Vue Router', () => {
+      const preventDefault = jest.fn();
+      beforeEach(() => {
+        createComponent({
+          childItem: workItemEpic,
+          isGroup: true,
+          workItemFullPath: 'gitlab-org/gitlab-test',
+        });
+
+        findTitleEl().vm.$emit('click', { preventDefault });
+      });
+
+      it('pushes a new router state', () => {
+        expect(mockRouterPush).toHaveBeenCalled();
+      });
+      it('prevents the default event behaviour', () => {
+        expect(preventDefault).toHaveBeenCalled();
+      });
+      it('does not emit a click event', () => {
+        expect(wrapper.emitted('click')).not.toBeDefined();
+      });
     });
   });
 

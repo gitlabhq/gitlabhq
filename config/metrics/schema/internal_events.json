@@ -44,7 +44,12 @@
                   "type": "number"
                 }
               },
-              "additionalProperties": false
+              "additionalProperties": {
+                "type": [
+                  "string",
+                  "number"
+                ]
+              }
             }
           },
           "additionalProperties": false

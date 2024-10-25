@@ -17,8 +17,8 @@ DETAILS:
 Import your projects from Gitea to GitLab.
 
 WARNING:
-Importing from Gitea to GitLab.com is [currently unavailable](https://status.gitlab.com). We don't have an
-estimated time for resolution. For more information, please [contact support](https://about.gitlab.com/support/).
+Importing from Gitea to GitLab.com is [unavailable](https://status.gitlab.com).
+For more information, contact [GitLab Support](https://about.gitlab.com/support/).
 
 The Gitea importer can import:
 

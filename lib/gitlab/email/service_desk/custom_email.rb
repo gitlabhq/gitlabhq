@@ -8,6 +8,7 @@ module Gitlab
       # incoming_email and service_desk_email.
       module CustomEmail
         REPLY_ADDRESS_KEY_REGEXP = /\+([0-9a-f]{32})@/
+        EMAIL_REGEXP_WITH_ANCHORS = /\A(?>[a-zA-Z0-9]+|[\-._]+){1,255}@[\w\-.]{1,255}\.{1}[a-zA-Z]{2,63}\z/
 
         class << self
           def reply_address(issue, reply_key)
@@ -53,7 +54,7 @@ module Gitlab
 
           def find_service_desk_setting_from_reply_address(email, key)
             potential_custom_email = email.sub("+#{key}", '')
-            return unless Gitlab::Utils::Email::EMAIL_REGEXP_WITH_ANCHORS.match?(potential_custom_email)
+            return unless EMAIL_REGEXP_WITH_ANCHORS.match?(potential_custom_email)
 
             ServiceDeskSetting.find_by_custom_email(potential_custom_email)
           end

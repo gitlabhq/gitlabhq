@@ -439,7 +439,6 @@ spec/frontend/vue_merge_request_widget/components/widget/widget_spec.js
 spec/frontend/vue_popovers_spec.js
 spec/frontend/vue_shared/components/alert_details_table_spec.js
 spec/frontend/vue_shared/components/badges/beta_badge_spec.js
-spec/frontend/vue_shared/components/chronic_duration_input_spec.js
 spec/frontend/vue_shared/components/color_picker/color_picker_spec.js
 spec/frontend/vue_shared/components/color_select_dropdown/dropdown_contents_spec.js
 spec/frontend/vue_shared/components/confirm_modal_spec.js
@@ -465,7 +464,6 @@ spec/frontend/vue_shared/components/registry/registry_search_spec.js
 spec/frontend/vue_shared/components/runner_instructions/instructions/runner_aws_instructions_spec.js
 spec/frontend/vue_shared/components/runner_instructions/runner_instructions_modal_spec.js
 spec/frontend/vue_shared/components/segmented_control_button_group_spec.js
-spec/frontend/vue_shared/components/slot_switch_spec.js
 spec/frontend/vue_shared/components/smart_virtual_list_spec.js
 spec/frontend/vue_shared/components/source_viewer/components/chunk_spec.js
 spec/frontend/vue_shared/components/tooltip_on_truncate_spec.js

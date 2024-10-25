@@ -84,11 +84,11 @@ RSpec.describe Gitlab::Cng::Kind::Cluster do
 
         it "creates cluster with ci specific configuration", :aggregate_failures do
           expect { cluster.create }.to output(/Cluster '#{name}' created/).to_stdout
-          expect(helm).not_to have_received(:add_helm_chart).with(
+          expect(helm).to have_received(:add_helm_chart).with(
             "metrics-server",
             "https://kubernetes-sigs.github.io/metrics-server/"
           )
-          expect(helm).not_to have_received(:upgrade).with(
+          expect(helm).to have_received(:upgrade).with(
             "metrics-server",
             "metrics-server/metrics-server",
             namespace: "kube-system",

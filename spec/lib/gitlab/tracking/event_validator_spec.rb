@@ -51,11 +51,12 @@ RSpec.describe Gitlab::Tracking::EventValidator, feature_category: :service_ping
       end
     end
 
-    context 'when a base additional property is invalid' do
+    context 'when an additional property is invalid' do
       [
         { label: 123 },
         { value: 'test_value' },
-        { property: true }
+        { property: true },
+        { lang: [1, 2] }
       ].each do |invalid_property|
         context "when #{invalid_property.each_key.first} is invalid" do
           let(:additional_properties) { invalid_property }

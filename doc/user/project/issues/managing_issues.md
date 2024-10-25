@@ -43,8 +43,11 @@ Generate a detailed description for an issue based on a short summary you provid
 Prerequisites:
 
 - You must belong to at least one group with the [experiment and beta features setting](../../gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features) enabled.
-- You must have permission to view the issue.
+- You must have permission to create an issue.
 - Only available for the plain text editor.
+- Only available when creating a new issue.
+  For a proposal to add support for generating descriptions when editing existing issues, see
+  [issue 474141](https://gitlab.com/gitlab-org/gitlab/-/issues/474141).
 
 To generate an issue description:
 
@@ -58,22 +61,6 @@ Provide feedback on this experimental feature in [issue 409844](https://gitlab.c
 
 **Data usage**: When you use this feature, the text you enter is sent to
 the [large language model listed on the GitLab Duo page](../../gitlab_duo/index.md#issue-description-generation).
-
-### Remove a task list item
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377307) in GitLab 15.9.
-
-Prerequisites:
-
-- You must have at least the Reporter role for the project, or be the author or assignee of the issue.
-
-In an issue description with task list items:
-
-1. Hover over a task list item and select the options menu (**{ellipsis_v}**).
-1. Select **Delete**.
-
-The task list item is removed from the issue description.
-Any nested task list items are moved up a nested level.
 
 ## Bulk edit issues from a project
 
@@ -153,14 +140,16 @@ To move an issue:
 1. Search for a project to move the issue to.
 1. Select **Move**.
 
+You can also use the `/move` [quick action](../quick_actions.md) in a comment or description.
+
 ### Moving tasks when the parent issue is moved
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371252) in GitLab 16.9 [with a flag](../../../administration/feature_flags.md) named `move_issue_children`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/371252) in GitLab 16.11.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/371252) in GitLab 17.3. Feature flag `move_issue_children` removed.
 
-When you move an issue to another project, all its child tasks are also
-moved to the target project and remain associated as child tasks on the moved issue.
+When you move an issue to another project, all its child tasks are also moved to the target project
+and remain as child tasks of the moved issue.
 Each task is moved the same way as the parent, that is, it's closed in the original project and
 copied to the target project.
 
@@ -224,7 +213,31 @@ To do it:
 
 1. To exit the Rails console, enter `quit`.
 
-## Reorder list items in the issue description
+## Description lists and task lists
+
+When you use ordered lists, unordered lists, or task lists in issue descriptions, you can:
+
+- Reorder list items with drag and drop
+- Delete list items
+- [Convert task list items to GitLab Tasks](../../tasks.md#from-a-task-list-item)
+
+### Delete a task list item
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377307) in GitLab 15.9.
+
+Prerequisites:
+
+- You must have at least the Reporter role for the project, or be the author or assignee of the issue.
+
+In an issue description with task list items:
+
+1. Hover over a task list item and select the options menu (**{ellipsis_v}**).
+1. Select **Delete**.
+
+The task list item is removed from the issue description.
+Any nested task list items are moved up a nested level.
+
+### Reorder list items in the issue description
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15260) in GitLab 15.0.
 
@@ -261,6 +274,8 @@ To close an issue, you can either:
   1. Select **Plan > Issues**, then select your issue to view it.
   1. In the upper-right corner, select **Issue actions** (**{ellipsis_v}**) and then **Close issue**.
 
+You can also use the `/close` [quick action](../quick_actions.md) in a comment or description.
+
 ### Reopen a closed issue
 
 Prerequisites:
@@ -269,6 +284,8 @@ Prerequisites:
 
 To reopen a closed issue, in the upper-right corner, select **Issue actions** (**{ellipsis_v}**) and then **Reopen issue**.
 A reopened issue is no different from any other open issue.
+
+You can also use the `/reopen` [quick action](../quick_actions.md) in a comment or description.
 
 ### Closing issues automatically
 
@@ -438,13 +455,12 @@ DETAILS:
 
 You can promote an issue to an [epic](../../group/epics/index.md) in the immediate parent group.
 
-NOTE:
-Promoting a confidential issue to an epic makes all information
-related to the issue public, as epics are public to group members.
+Promoting a confidential issue to an epic creates a
+[confidential epic](../../group/epics/manage_epics.md#make-an-epic-confidential), retaining
+confidentiality.
 
 When an issue is promoted to an epic:
 
-- If the issue was confidential, an additional warning is displayed first.
 - An epic is created in the same group as the project of the issue.
 - Subscribers of the issue are notified that the epic was created.
 
@@ -494,7 +510,11 @@ To add an issue to an [iteration](../../group/iterations/index.md):
 1. From the dropdown list, select the iteration to add this issue to.
 1. Select any area outside the dropdown list.
 
-Alternatively, you can use the `/iteration` [quick action](../quick_actions.md#issues-merge-requests-and-epics).
+To add an issue to an iteration, you can also:
+
+- Use the `/iteration` [quick action](../quick_actions.md#issues-merge-requests-and-epics)
+- Drag an issue into an iteration list in a board
+- Bulk edit issues from the issues list
 
 ## View all issues assigned to you
 
@@ -557,8 +577,7 @@ To filter the list issues for text in a title or description:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Issues**.
 1. Above the list of issues, in the **Search or filter results** text box, enter the searched phrase.
-1. In the dropdown list that appears, select **Search for this text**.
-1. Select the text box again, and in the dropdown list that appears, select **Search Within**, and then either **Titles** or **Descriptions**.
+1. In the dropdown list that appears, select **Search within**, and then either **Titles** or **Descriptions**.
 1. Press <kbd>Enter</kbd> or select the search icon (**{search}**).
 
 Filtering issues uses [PostgreSQL full text search](https://www.postgresql.org/docs/current/textsearch-intro.html)
@@ -567,7 +586,7 @@ to match meaningful and significant words to answer a query.
 For example, if you search for `I am securing information for M&A`,
 GitLab can return results with `securing`, `secured`,
 or `information` in the title or description.
-However, GitLab won't match the sentence or the words `I`, `am` or `M&A` exactly,
+However, GitLab doesn't match the sentence or the words `I`, `am` or `M&A` exactly,
 as they aren't deemed lexically meaningful or significant.
 It's a limitation of PostgreSQL full text search.
 
@@ -591,7 +610,7 @@ You can use the OR operator (**is one of: `||`**) when you [filter the list of i
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Issues**.
-1. In the **Search** box, type the issue ID. For example, enter filter `#10` to return only issue 10.
+1. In the **Search** box, type `#` followed by the issue ID. For example, enter filter `#10` to return only issue 10.
 
 ![filter issues by specific ID](img/issue_search_by_id_v15_0.png)
 

@@ -176,11 +176,17 @@ module API
           end
 
           def find_or_create_package
-            package || ::Packages::Conan::CreatePackageService.new(
+            return package if package
+
+            service_response = ::Packages::Conan::CreatePackageService.new(
               project,
               current_user,
               params.merge(build: current_authenticated_job)
             ).execute
+
+            bad_request!(service_response.message) if service_response.error?
+
+            service_response[:package]
           end
 
           def track_push_package_event

@@ -1,12 +1,14 @@
 import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
-import ChronicDurationInput from '~/vue_shared/components/chronic_duration_input.vue';
+import { GlFormInput } from '@gitlab/ui';
+import ChronicDurationInput from '~/admin/application_settings/runner_token_expiration/components/chronic_duration_input.vue';
 
 const MOCK_VALUE = 2 * 3600 + 20 * 60;
 
-describe('vue_shared/components/chronic_duration_input', () => {
+describe('admin/application_settings/runner_token_expiration/components/chronic_duration_input', () => {
   let wrapper;
   let textElement;
+  let textFormInput;
   let hiddenElement;
 
   afterEach(() => {
@@ -15,8 +17,10 @@ describe('vue_shared/components/chronic_duration_input', () => {
   });
 
   const findComponents = () => {
-    textElement = wrapper.find('input[type=text]').element;
+    textElement = wrapper.findComponent(GlFormInput).element;
     hiddenElement = wrapper.find('input[type=hidden]').element;
+
+    textFormInput = wrapper.findComponent(GlFormInput);
   };
 
   const createComponent = (props = {}) => {
@@ -44,8 +48,7 @@ describe('vue_shared/components/chronic_duration_input', () => {
     const createAndDispatch = async (initialValue, humanReadableInput) => {
       createComponent({ value: initialValue });
       await nextTick();
-      textElement.value = humanReadableInput;
-      textElement.dispatchEvent(new Event('input'));
+      textFormInput.vm.$emit('input', humanReadableInput);
     };
 
     describe('when starting with no value and receiving human-readable input', () => {
@@ -111,8 +114,7 @@ describe('vue_shared/components/chronic_duration_input', () => {
       });
 
       it('emits valid with user input', async () => {
-        textElement.value = '1m10s';
-        textElement.dispatchEvent(new Event('input'));
+        textFormInput.vm.$emit('input', '1m10s');
         await nextTick();
 
         expect(wrapper.emitted('valid')).toEqual([
@@ -126,8 +128,7 @@ describe('vue_shared/components/chronic_duration_input', () => {
         expect(hiddenElement.validity.customError).toBe(false);
         expect(hiddenElement.validationMessage).toBe('');
 
-        textElement.value = '';
-        textElement.dispatchEvent(new Event('input'));
+        textFormInput.vm.$emit('input', '');
         await nextTick();
 
         expect(wrapper.emitted('valid')).toEqual([
@@ -144,8 +145,7 @@ describe('vue_shared/components/chronic_duration_input', () => {
       });
 
       it('emits invalid with user input', async () => {
-        textElement.value = 'gobbledygook';
-        textElement.dispatchEvent(new Event('input'));
+        textFormInput.vm.$emit('input', 'gobbledygook');
         await nextTick();
 
         expect(wrapper.emitted('valid')).toEqual([
@@ -203,8 +203,7 @@ describe('vue_shared/components/chronic_duration_input', () => {
         });
 
         it('emits valid when input is integer', async () => {
-          textElement.value = '2hr20min';
-          textElement.dispatchEvent(new Event('input'));
+          textFormInput.vm.$emit('input', '2hr20min');
           await nextTick();
 
           expect(wrapper.emitted('change')).toEqual([[MOCK_VALUE]]);
@@ -221,8 +220,7 @@ describe('vue_shared/components/chronic_duration_input', () => {
         });
 
         it('emits valid when input is decimal', async () => {
-          textElement.value = '1.5s';
-          textElement.dispatchEvent(new Event('input'));
+          textFormInput.vm.$emit('input', '1.5s');
           await nextTick();
 
           expect(wrapper.emitted('change')).toEqual([[1.5]]);
@@ -245,8 +243,7 @@ describe('vue_shared/components/chronic_duration_input', () => {
         });
 
         it('emits valid when input is integer', async () => {
-          textElement.value = '2hr20min';
-          textElement.dispatchEvent(new Event('input'));
+          textFormInput.vm.$emit('input', '2hr20min');
           await nextTick();
 
           expect(wrapper.emitted('change')).toEqual([[MOCK_VALUE]]);
@@ -263,8 +260,7 @@ describe('vue_shared/components/chronic_duration_input', () => {
         });
 
         it('emits invalid when input is decimal', async () => {
-          textElement.value = '1.5s';
-          textElement.dispatchEvent(new Event('input'));
+          textFormInput.vm.$emit('input', '1.5s');
           await nextTick();
 
           expect(wrapper.emitted('change')).toBeUndefined();
@@ -310,8 +306,7 @@ describe('vue_shared/components/chronic_duration_input', () => {
       });
 
       it('passes updated prop via v-model', async () => {
-        textElement.value = '2hr20min';
-        textElement.dispatchEvent(new Event('input'));
+        textFormInput.vm.$emit('input', '2hr20min');
         await nextTick();
 
         expect(textElement.value).toBe('2hr20min');
@@ -321,8 +316,7 @@ describe('vue_shared/components/chronic_duration_input', () => {
 
     describe('change', () => {
       it('passes user input to parent via v-model', async () => {
-        textElement.value = '2hr20min';
-        textElement.dispatchEvent(new Event('input'));
+        textFormInput.vm.$emit('input', '2hr20min');
         await nextTick();
 
         expect(wrapper.findComponent(ChronicDurationInput).props('value')).toBe(MOCK_VALUE);
@@ -369,8 +363,7 @@ describe('vue_shared/components/chronic_duration_input', () => {
     });
 
     it('creates form data with user-specified value', async () => {
-      textElement.value = '1m10s';
-      textElement.dispatchEvent(new Event('input'));
+      textFormInput.vm.$emit('input', '1m10s');
       await nextTick();
 
       const formData = new FormData(wrapper.find('[data-testid=myForm]').element);

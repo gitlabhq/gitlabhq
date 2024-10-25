@@ -387,9 +387,9 @@ gem 'gitlab-license', '~> 2.5', feature_category: :shared
 gem 'rack-attack', '~> 6.7.0' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # Sentry integration
-gem 'sentry-ruby', '~> 5.19.0', feature_category: :observability
-gem 'sentry-rails', '~> 5.19.0', feature_category: :observability
-gem 'sentry-sidekiq', '~> 5.19.0', feature_category: :observability
+gem 'sentry-ruby', '~> 5.21.0', feature_category: :observability
+gem 'sentry-rails', '~> 5.21.0', feature_category: :observability
+gem 'sentry-sidekiq', '~> 5.21.0', feature_category: :observability
 
 # PostgreSQL query parsing
 #
@@ -582,7 +582,7 @@ group :test do
 
   gem 'shoulda-matchers', '~> 5.1.0', require: false # rubocop:todo Gemfile/MissingFeatureCategory
   gem 'email_spec', '~> 2.2.0' # rubocop:todo Gemfile/MissingFeatureCategory
-  gem 'webmock', '~> 3.23.0', feature_category: :shared
+  gem 'webmock', '~> 3.24.0', feature_category: :shared
   gem 'rails-controller-testing' # rubocop:todo Gemfile/MissingFeatureCategory
   gem 'concurrent-ruby', '~> 1.1' # rubocop:todo Gemfile/MissingFeatureCategory
   gem 'test-prof', '~> 1.4.0', feature_category: :tooling

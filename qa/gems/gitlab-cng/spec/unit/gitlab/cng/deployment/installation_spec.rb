@@ -41,6 +41,12 @@ RSpec.describe Gitlab::Cng::Deployment::Installation, :aggregate_failures do
       )
     end
 
+    let(:resources_values) do
+      Gitlab::Cng::Deployment::ResourcePresets.resource_values(
+        ci ? Gitlab::Cng::Deployment::ResourcePresets::HIGH : Gitlab::Cng::Deployment::ResourcePresets::DEFAULT
+      )
+    end
+
     let(:expected_values_yml) do
       {
         global: {
@@ -55,7 +61,7 @@ RSpec.describe Gitlab::Cng::Deployment::Installation, :aggregate_failures do
           license: { secret: "gitlab-license" }
         },
         **config_values
-      }.deep_stringify_keys.to_yaml
+      }.deep_merge(resources_values).deep_stringify_keys.to_yaml
     end
 
     before do

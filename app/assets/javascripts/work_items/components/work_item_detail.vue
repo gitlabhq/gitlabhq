@@ -864,6 +864,7 @@ export default {
               :can-update-children="canUpdateChildren"
               :confidential="workItem.confidential"
               :allowed-child-types="allowedChildTypes"
+              :is-drawer="isDrawer"
               @show-modal="openInModal"
               @addChild="$emit('addChild')"
               @childrenLoaded="hasChildren = $event"

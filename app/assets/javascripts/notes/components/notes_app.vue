@@ -199,7 +199,7 @@ export default {
     }
 
     eventHub.$on('notesApp.updateIssuableConfidentiality', this.setConfidentiality);
-    Mousetrap.bind(keysFor(ISSUABLE_COMMENT_OR_REPLY), this.quoteReply);
+    Mousetrap.bind(keysFor(ISSUABLE_COMMENT_OR_REPLY), (e) => this.quoteReply(e));
   },
   updated() {
     this.$nextTick(() => {
@@ -233,9 +233,15 @@ export default {
       const node = el.nodeType === Node.TEXT_NODE ? el.parentNode : el;
       return node.closest('.js-noteable-discussion');
     },
-    async quoteReply() {
+    async quoteReply(e) {
       const discussionEl = this.getDiscussionInSelection();
       const text = await CopyAsGFM.selectionToGfm();
+
+      // Prevent 'r' being written.
+      if (e && typeof e.preventDefault === 'function') {
+        e.preventDefault();
+      }
+
       if (!discussionEl) {
         this.replyInMainEditor(text);
       } else {
