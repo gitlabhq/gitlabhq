@@ -2864,7 +2864,8 @@ UPDATE
 SET
   severity = NEW.severity,
   state = NEW.state,
-  resolved_on_default_branch = NEW.resolved_on_default_branch
+  resolved_on_default_branch = NEW.resolved_on_default_branch,
+  auto_resolved = NEW.auto_resolved
 WHERE vulnerability_id = NEW.id;
 RETURN NULL;
 
@@ -6644,6 +6645,7 @@ CREATE TABLE application_settings (
     sign_in_restrictions jsonb DEFAULT '{}'::jsonb NOT NULL,
     transactional_emails jsonb DEFAULT '{}'::jsonb NOT NULL,
     identity_verification_settings jsonb DEFAULT '{}'::jsonb NOT NULL,
+    elasticsearch_retry_on_failure integer DEFAULT 0 NOT NULL,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_dep_proxy_ttl_policies_worker_capacity_positive CHECK ((dependency_proxy_ttl_group_policy_worker_capacity >= 0)),
     CONSTRAINT app_settings_ext_pipeline_validation_service_url_text_limit CHECK ((char_length(external_pipeline_validation_service_url) <= 255)),
@@ -14589,6 +14591,7 @@ CREATE TABLE namespace_settings (
     enterprise_users_extensions_marketplace_opt_in_status smallint DEFAULT 0 NOT NULL,
     spp_repository_pipeline_access boolean,
     lock_spp_repository_pipeline_access boolean DEFAULT false NOT NULL,
+    archived boolean DEFAULT false NOT NULL,
     CONSTRAINT check_0ba93c78c7 CHECK ((char_length(default_branch_name) <= 255)),
     CONSTRAINT namespace_settings_unique_project_download_limit_alertlist_size CHECK ((cardinality(unique_project_download_limit_alertlist) <= 100)),
     CONSTRAINT namespace_settings_unique_project_download_limit_allowlist_size CHECK ((cardinality(unique_project_download_limit_allowlist) <= 100))
@@ -20400,6 +20403,7 @@ CREATE TABLE vulnerabilities (
     detected_at timestamp with time zone DEFAULT now(),
     finding_id bigint,
     cvss jsonb DEFAULT '[]'::jsonb,
+    auto_resolved boolean DEFAULT false NOT NULL,
     CONSTRAINT check_4d8a873f1f CHECK ((finding_id IS NOT NULL))
 );
 
@@ -20819,6 +20823,7 @@ CREATE TABLE vulnerability_reads (
     archived boolean DEFAULT false NOT NULL,
     identifier_names text[] DEFAULT '{}'::text[] NOT NULL,
     has_vulnerability_resolution boolean DEFAULT false,
+    auto_resolved boolean DEFAULT false NOT NULL,
     CONSTRAINT check_380451bdbe CHECK ((char_length(location_image) <= 2048)),
     CONSTRAINT check_4b1a1bf5ea CHECK ((has_merge_request IS NOT NULL)),
     CONSTRAINT check_a105eb825a CHECK ((char_length(cluster_agent_id) <= 10)),

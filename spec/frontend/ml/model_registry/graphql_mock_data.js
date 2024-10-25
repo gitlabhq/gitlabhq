@@ -8,6 +8,12 @@ export const graphqlPageInfo = {
 export const graphqlModelVersions = [
   {
     createdAt: '2021-08-10T09:33:54Z',
+    author: {
+      id: 'gid://gitlab/User/1',
+      name: 'Root',
+      avatarUrl: 'path/to/avatar',
+      webUrl: 'path/to/user',
+    },
     id: 'gid://gitlab/Ml::ModelVersion/243',
     version: '1.0.1',
     _links: {
@@ -17,6 +23,12 @@ export const graphqlModelVersions = [
   },
   {
     createdAt: '2021-08-10T09:33:54Z',
+    author: {
+      id: 'gid://gitlab/User/1',
+      name: 'Root',
+      avatarUrl: 'path/to/avatar',
+      webUrl: 'path/to/user',
+    },
     id: 'gid://gitlab/Ml::ModelVersion/244',
     version: '1.0.2',
     _links: {

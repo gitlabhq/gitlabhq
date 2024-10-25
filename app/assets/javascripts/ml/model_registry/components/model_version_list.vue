@@ -10,15 +10,13 @@ import {
   SORT_KEY_CREATED_AT,
   SORT_KEY_ORDER,
 } from '../constants';
-import SearchableList from './searchable_list.vue';
+import SearchableTable from './searchable_table.vue';
 import EmptyState from './model_list_empty_state.vue';
-import ModelVersionRow from './model_version_row.vue';
 
 export default {
   components: {
     EmptyState,
-    ModelVersionRow,
-    SearchableList,
+    SearchableTable,
   },
   inject: ['createModelVersionPath'],
   props: {
@@ -102,13 +100,14 @@ export default {
 };
 </script>
 <template>
-  <searchable-list
+  <searchable-table
     show-search
     :page-info="pageInfo"
-    :items="versions"
+    :model-versions="versions"
     :error-message="errorMessage"
     :is-loading="isLoading"
     :sortable-fields="$options.sortableFields"
+    can-write-model-registry
     @fetch-page="fetchPage"
   >
     <template #empty-state>
@@ -119,9 +118,5 @@ export default {
         :primary-link="createModelVersionPath"
       />
     </template>
-
-    <template #item="{ item }">
-      <model-version-row :model-version="item" />
-    </template>
-  </searchable-list>
+  </searchable-table>
 </template>

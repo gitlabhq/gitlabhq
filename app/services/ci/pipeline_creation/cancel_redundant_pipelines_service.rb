@@ -25,7 +25,11 @@ module Ci
         return if pipeline.parent_pipeline? # skip if child pipeline
         return unless project.auto_cancel_pending_pipelines?
 
-        auto_cancel_all_pipelines_with_cancelable_statuses
+        cancelable_pipelines.each do |cancelable_pipe|
+          configured_cancellation_for(cancelable_pipe)
+        end
+
+        log_cancelable_pipeline_outcomes
       end
 
       private
@@ -49,8 +53,8 @@ module Ci
       end
       strong_memoize_attr :ref_head_sha
 
-      def auto_cancel_all_pipelines_with_cancelable_statuses
-        cancelable_status_pipeline_pks.each_slice(PK_BATCH_SIZE) do |pks_batch|
+      def cancelable_pipelines
+        cancelable_status_pipeline_pks.each_slice(PK_BATCH_SIZE).with_object([]) do |pks_batch, cancelables|
           Ci::Pipeline.primary_key_in(pks_batch).order_id_asc.each do |cancelable|
             case cancelable.source.to_sym
             when *Enums::Ci::Pipeline.ci_sources.keys
@@ -74,24 +78,11 @@ module Ci
               next
             end
 
-            # Cancel method based on configured strategy
-            configured_cancellation_for(cancelable)
+            # Keep the actual Pipeline instantiated
+            # so we can cancel it directly.
+            cancelables << cancelable
           end
         end
-
-        Gitlab::AppLogger.info(
-          class: self.class.name,
-          message: "Canceling redundant pipelines",
-          cancellable_count: cancelable_status_pipeline_pks.count,
-          skipped_for_old_age: @skipped_for_old_age,
-          conservatively_cancelled: @conservatively_cancelled,
-          aggressively_cancelled: @aggressively_cancelled,
-          configured_to_not_cancel: @configured_to_not_cancel,
-          canceled_by_pipeline_id: pipeline.id,
-          project_id: pipeline.project_id,
-          ref: pipeline.ref,
-          sha: pipeline.sha
-        )
       end
 
       def configured_cancellation_for(cancelable)
@@ -141,6 +132,22 @@ module Ci
           cascade_to_children: false,
           safe_cancellation: safe_cancellation
         ).force_execute
+      end
+
+      def log_cancelable_pipeline_outcomes
+        Gitlab::AppLogger.info(
+          class: self.class.name,
+          message: "Canceling redundant pipelines",
+          cancellable_count: cancelable_status_pipeline_pks.count,
+          skipped_for_old_age: @skipped_for_old_age,
+          conservatively_cancelled: @conservatively_cancelled,
+          aggressively_cancelled: @aggressively_cancelled,
+          configured_to_not_cancel: @configured_to_not_cancel,
+          canceled_by_pipeline_id: pipeline.id,
+          project_id: pipeline.project_id,
+          ref: pipeline.ref,
+          sha: pipeline.sha
+        )
       end
 
       def pipelines_created_after

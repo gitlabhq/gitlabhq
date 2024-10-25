@@ -33189,6 +33189,9 @@ msgstr ""
 msgid "Maximum number of mirrors that can be synchronizing at the same time."
 msgstr ""
 
+msgid "Maximum number of possible retries for Elasticsearch search requests."
+msgstr ""
+
 msgid "Maximum number of projects."
 msgstr ""
 
@@ -35104,10 +35107,19 @@ msgstr ""
 msgid "Model version not found"
 msgstr ""
 
+msgid "ModelRegistry|Created"
+msgstr ""
+
+msgid "ModelRegistry|Created by"
+msgstr ""
+
 msgid "ModelRegistry|Model registry"
 msgstr ""
 
 msgid "ModelRegistry|New model"
+msgstr ""
+
+msgid "ModelRegistry|Version"
 msgstr ""
 
 msgid "Modified"
@@ -46438,6 +46450,9 @@ msgstr ""
 msgid "Retry migration"
 msgstr ""
 
+msgid "Retry on failure"
+msgstr ""
+
 msgid "Retry verification"
 msgstr ""
 
@@ -57028,6 +57043,9 @@ msgid "To continue, you need to select the link in the confirmation email we sen
 msgstr ""
 
 msgid "To define internal users, first enable new users set to external"
+msgstr ""
+
+msgid "To disable the setting, set this value to 0."
 msgstr ""
 
 msgid "To edit the pipeline configuration, you must go to the project or external site that hosts the file."

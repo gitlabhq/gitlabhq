@@ -166,6 +166,7 @@ info: Analysis of Application Settings for Cells 1.0.
 | `elasticsearch_password` | `true` | `bytea` | `string` | `false` | `null` | `true` | `false`| `true` |
 | `elasticsearch_pause_indexing` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
 | `elasticsearch_requeue_workers` | `false` | `boolean` | `boolean` | `true` | `false` | `true` | `false`| `true` |
+| `elasticsearch_retry_on_failure` | `false` | `integer` | `integer` | `true` | `0` | `false` | `false`| `true` |
 | `elasticsearch_search` | `false` | `boolean` | `boolean` | `true` | `false` | `true` | `false`| `true` |
 | `elasticsearch_url` | `false` | `character` | `string` | `false` | `'http://localhost:9200'::character` | `true` | `false`| `true` |
 | `elasticsearch_username` | `false` | `text` | `string` | `false` | `null` | `true` | `false`| `true` |

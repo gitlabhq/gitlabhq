@@ -478,11 +478,14 @@ export default {
       const workItemTypeName = this.selectedWorkItemTypeName || this.workItemTypeName;
       const autosaveKey = getNewWorkItemAutoSaveKey(this.fullPath, workItemTypeName);
       clearDraft(autosaveKey);
+
+      const selectedWorkItemWidgets = this.selectedWorkItemType.widgetDefinitions || [];
+
       setNewWorkItemCache(
         this.fullPath,
-        this.workItemTypes[0]?.widgetDefinitions,
+        selectedWorkItemWidgets,
         this.selectedWorkItemTypeName,
-        this.workItemTypes[0]?.id,
+        this.selectedWorkItemTypeId,
       );
     },
   },

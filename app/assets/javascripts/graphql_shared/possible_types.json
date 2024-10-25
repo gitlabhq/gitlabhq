@@ -161,6 +161,10 @@
     "Discussion",
     "Note"
   ],
+  "RoleInterface": [
+    "MemberRole",
+    "StandardRole"
+  ],
   "SecurityPolicySource": [
     "GroupSecurityPolicySource",
     "ProjectSecurityPolicySource"

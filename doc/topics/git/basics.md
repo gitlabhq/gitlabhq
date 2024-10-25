@@ -21,15 +21,23 @@ commits, and merge requests. For more information, see [Get started learning Git
 
 To learn more about commonly used Git commands, see [Git commands](commands.md).
 
+## Create a project
+
+The `git push` command sends your local repository changes to a remote repository.
+You can create a project from a local repository or import an existing repository.
+After you add a repository, GitLab creates a project in your chosen namespace.
+For more information, see [Create a project](project.md).
+
 ## Clone a repository
 
-The `git clone` command creates a copy of a remote repository on your computer. You can work on the code locally
-and push changes back to the remote repository. For more information, see [Clone a Git repository](clone.md).
+The `git clone` command creates a copy of a remote repository on your computer.
+You can work on the code locally and push changes back to the remote repository.
+For more information, see [Clone a Git repository](clone.md).
 
 ## Create a branch
 
-The `git checkout -b <name-of-branch>` command creates a new branch in your repository. A branch is a copy of the
-files in your repository that you can modify without affecting the default branch.
+The `git checkout -b <name-of-branch>` command creates a new branch in your repository.
+A branch is a copy of the files in your repository that you can modify without affecting the default branch.
 For more information, see [Create a branch](branch.md).
 
 ## Stage, commit, and push changes
@@ -54,20 +62,20 @@ For more information, see [Add files to a branch](add_files.md).
 
 A merge request is a request to merge changes from one branch into another branch.
 Merge requests provide a way to collaborate and review code changes.
-For more information, see [Merge requests](merge.md).
+For more information, see [Merge requests](../../user/project/merge_requests/index.md)
+and [Merge your branch](merge.md).
 
-<!-- Add when the update fork page is complete
 ## Update your fork
 
 A fork is a personal copy of the repository and all its branches, which you create in a
 namespace of your choice. You can make changes in your own fork and submit them using `git push`.
-For more information, see [Update your fork](update_fork.md).
--->
+For more information, see [Update a fork](forks.md).
 
 ## Related topics
 
 - [Get started learning Git](get_started.md)
   - [Install Git](how_to_install_git/index.md)
   - [Common Git commands](commands.md)
-<!-- - [Advanced operation](advanced_operations.md) -->
+- [Advanced operations](advanced.md)
+- [Troubleshooting Git](troubleshooting_git.md)
 - [Git cheat sheet](https://about.gitlab.com/images/press/git-cheat-sheet.pdf)

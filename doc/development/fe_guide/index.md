@@ -156,7 +156,3 @@ Running into a Frontend development problem? Check out [this troubleshooting gui
 #### Browser support
 
 For supported browsers, see our [requirements](../../install/requirements.md#supported-web-browsers).
-
-Use [BrowserStack](https://www.browserstack.com/) to test with our supported browsers.
-Sign in to BrowserStack with the credentials saved in the **Engineering** vault of the GitLab
-[shared 1Password account](https://handbook.gitlab.com/handbook/security/password-guidelines/#1password-for-teams).

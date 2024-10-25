@@ -46,8 +46,8 @@ export const WORK_ITEM_TYPE_VALUE_EPIC = 'Epic';
 export const WORK_ITEM_TYPE_VALUE_INCIDENT = 'Incident';
 export const WORK_ITEM_TYPE_VALUE_ISSUE = 'Issue';
 export const WORK_ITEM_TYPE_VALUE_TASK = 'Task';
-export const WORK_ITEM_TYPE_VALUE_TEST_CASE = 'Test case';
-export const WORK_ITEM_TYPE_VALUE_REQUIREMENTS = 'Requirements';
+export const WORK_ITEM_TYPE_VALUE_TEST_CASE = 'Test Case';
+export const WORK_ITEM_TYPE_VALUE_REQUIREMENTS = 'Requirement';
 export const WORK_ITEM_TYPE_VALUE_KEY_RESULT = 'Key Result';
 export const WORK_ITEM_TYPE_VALUE_OBJECTIVE = 'Objective';
 

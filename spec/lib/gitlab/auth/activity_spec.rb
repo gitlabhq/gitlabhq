@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Auth::Activity do
+RSpec.describe Gitlab::Auth::Activity, feature_category: :system_access do
   describe '.each_counter' do
     it 'has all static counters defined' do
       described_class.each_counter do |counter|
@@ -36,7 +36,7 @@ RSpec.describe Gitlab::Auth::Activity do
         metrics = described_class.new(controller: GraphqlController.new)
 
         expect(described_class.user_csrf_token_invalid_counter)
-          .to receive(:increment).with(controller: 'GraphqlController')
+          .to receive(:increment).with(controller: 'GraphqlController', auth: 'other')
 
         metrics.user_csrf_token_mismatch!
       end
@@ -47,7 +47,7 @@ RSpec.describe Gitlab::Auth::Activity do
         metrics = described_class.new(controller: ApplicationController.new)
 
         expect(described_class.user_csrf_token_invalid_counter)
-          .to receive(:increment).with(controller: 'other')
+          .to receive(:increment).with(controller: 'other', auth: 'other')
 
         metrics.user_csrf_token_mismatch!
       end
