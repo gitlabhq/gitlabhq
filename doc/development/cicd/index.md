@@ -70,7 +70,7 @@ looks for the next jobs to be transitioned towards completion. While doing that,
 updates the status of jobs, stages and the overall pipeline.
 
 On the right side of the diagram we have a list of [runners](../../ci/runners/index.md)
-connected to the GitLab instance. These can be shared runners, group runners, or project runners.
+connected to the GitLab instance. These can be instance runners, group runners, or project runners.
 The communication between runners and the Rails server occurs through a set of API endpoints, grouped as
 the `Runner API Gateway`.
 
@@ -126,7 +126,7 @@ Once all jobs are completed for the current stage, the server "unlocks" all the 
 After the runner is [registered](https://docs.gitlab.com/runner/register/) using the registration token, the server knows what type of jobs it can execute. This depends on:
 
 - The type of runner it is registered as:
-  - a shared runner
+  - an instance runner
   - a group runner
   - a project runner
 - Any associated tags.
@@ -143,8 +143,8 @@ This API endpoint runs [`Ci::RegisterJobService`](https://gitlab.com/gitlab-org/
 
 There are 3 top level queries that this service uses to gather the majority of the jobs and they are selected based on the level where the runner is registered to:
 
-- Select jobs for shared runner (instance-wide)
-  - Utilizes a fair scheduling algorithm which prioritizes projects with fewer running builds
+- Select jobs for instance runner (instance-wide)
+  - Uses a fair scheduling algorithm which prioritizes projects with fewer running builds
 - Select jobs for group runner
 - Select jobs for project runner
 

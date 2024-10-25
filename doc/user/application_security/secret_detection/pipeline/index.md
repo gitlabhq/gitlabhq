@@ -137,8 +137,8 @@ For more information, see:
 Prerequisites:
 
 - Linux-based GitLab Runner with the [`docker`](https://docs.gitlab.com/runner/executors/docker.html) or
-  [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html) executor. If you're using the
-  shared runners on GitLab.com, this is enabled by default.
+  [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html) executor. If you're using
+  hosted runners for GitLab.com, this is enabled by default.
   - Windows Runners are not supported.
   - CPU architectures other than amd64 are not supported.
 - GitLab CI/CD configuration (`.gitlab-ci.yml`) must include the `test` stage.

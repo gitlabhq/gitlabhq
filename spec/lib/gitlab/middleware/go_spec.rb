@@ -27,7 +27,7 @@ RSpec.describe Gitlab::Middleware::Go, feature_category: :source_code_management
     describe 'when go-get=1' do
       before do
         env['QUERY_STRING'] = 'go-get=1'
-        env['PATH_INFO'] = +"/#{path}"
+        env['PATH_INFO'] = "/#{path}"
       end
 
       shared_examples 'go-get=1' do |enabled_protocol:|

@@ -7,7 +7,7 @@ RSpec.describe Gitlab::BackgroundMigration::BatchingStrategies::PrimaryKeyBatchi
   let(:batching_strategy) { described_class.new(connection: ActiveRecord::Base.connection) }
   let(:namespaces) { table(:namespaces) }
 
-  let!(:namespace1) { namespaces.create!(name: 'batchtest1', path: 'batch-test1') }
+  let!(:namespace1) { namespaces.create!(name: 'batchtest999', path: 'batch-test1') }
   let!(:namespace2) { namespaces.create!(name: 'batchtest2', path: 'batch-test2') }
   let!(:namespace3) { namespaces.create!(name: 'batchtest3', path: 'batch-test3') }
   let!(:namespace4) { namespaces.create!(name: 'batchtest4', path: 'batch-test4') }
@@ -76,6 +76,24 @@ RSpec.describe Gitlab::BackgroundMigration::BatchingStrategies::PrimaryKeyBatchi
 
         expect(batch_bounds).to eq([namespace4.id, namespace4.id])
       end
+    end
+  end
+
+  context 'when job class requires not to reset order' do
+    let(:job_class) do
+      Class.new(Gitlab::BackgroundMigration::BatchedMigrationJob) do
+        scope_to ->(r) { r.order(:name) }
+
+        def self.reset_order
+          false
+        end
+      end
+    end
+
+    it 'does not reset order' do
+      batch_bounds = batching_strategy.next_batch(:namespaces, :id, batch_min_value: namespace1.id, batch_size: 3, job_arguments: [], job_class: job_class)
+
+      expect(batch_bounds).to eq([namespace2.id, namespace4.id])
     end
   end
 end

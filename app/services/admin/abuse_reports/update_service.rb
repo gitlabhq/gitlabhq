@@ -23,7 +23,7 @@ module Admin
 
       def label_ids
         params[:label_ids].filter_map do |id|
-          GitlabSchema.parse_gid(id, expected_type: ::Admin::AbuseReportLabel).model_id
+          GitlabSchema.parse_gid(id, expected_type: ::AntiAbuse::Reports::Label).model_id
         rescue Gitlab::Graphql::Errors::ArgumentError
         end
       end

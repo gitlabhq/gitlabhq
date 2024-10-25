@@ -12,16 +12,16 @@ RSpec.describe Admin::AbuseReportLabels::CreateService, feature_category: :insid
 
     shared_examples 'creates a label with the correct values' do
       it 'creates a label with the correct values', :aggregate_failures do
-        expect { execute }.to change { Admin::AbuseReportLabel.count }.from(0).to(1)
+        expect { execute }.to change { AntiAbuse::Reports::Label.count }.from(0).to(1)
 
-        label = Admin::AbuseReportLabel.last
+        label = AntiAbuse::Reports::Label.last
         expect(label.title).to eq params[:title]
         expect(label.color).to eq color_in_hex
       end
 
       it 'returns the persisted label' do
         result = execute
-        expect(result).to be_an_instance_of(Admin::AbuseReportLabel)
+        expect(result).to be_an_instance_of(AntiAbuse::Reports::Label)
         expect(result.persisted?).to eq true
       end
     end
@@ -39,7 +39,7 @@ RSpec.describe Admin::AbuseReportLabels::CreateService, feature_category: :insid
       let!(:existing_label) { create(:abuse_report_label, title: params[:title]) }
 
       it 'does not create the label' do
-        expect { execute }.not_to change { Admin::AbuseReportLabel.count }
+        expect { execute }.not_to change { AntiAbuse::Reports::Label.count }
       end
 
       it 'returns the label with errors' do

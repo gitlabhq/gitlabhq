@@ -1,3 +1,0 @@
-# frozen_string_literal: true
-
-required_stops.add_comment_for_finalized_migrations

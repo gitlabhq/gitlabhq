@@ -276,7 +276,7 @@ You can use these fake tokens as examples:
 | Application secret    | `04f294d1eaca42b8692017b426d53bbc8fe75f827734f0260710b83a556082df` |
 | CI/CD variable        | `Li8j-mLUVA3eZYjPfd_H`                                             |
 | Project runner token  | `yrnZW46BrtBFqM7xDzE7dddd`                                         |
-| Shared runner token   | `6Vk7ZsosqQyfreAxXTZr`                                             |
+| Instance runner token | `6Vk7ZsosqQyfreAxXTZr`                                             |
 | Trigger token         | `be20d8dcc028677c931e04f3871a9b`                                   |
 | Webhook secret token  | `6XhDroRcYPM5by_h-HLY`                                             |
 | Health check token    | `Tu7BgjR9qeZTEyRzGG2P`                                             |

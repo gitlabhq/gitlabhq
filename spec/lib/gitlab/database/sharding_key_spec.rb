@@ -198,7 +198,8 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
       "topics" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/463254',
       "oauth_access_tokens" => "https://gitlab.com/gitlab-org/gitlab/-/issues/496717",
       "oauth_access_grants" => "https://gitlab.com/gitlab-org/gitlab/-/issues/496717",
-      "oauth_openid_requests" => "https://gitlab.com/gitlab-org/gitlab/-/issues/496717"
+      "oauth_openid_requests" => "https://gitlab.com/gitlab-org/gitlab/-/issues/496717",
+      "oauth_device_grants" => "https://gitlab.com/gitlab-org/gitlab/-/issues/496717"
     }
 
     has_lfk = ->(lfks) { lfks.any? { |k| k.options[:column] == 'organization_id' && k.to_table == 'organizations' } }

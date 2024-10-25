@@ -29,7 +29,7 @@ RSpec.describe API::Members, feature_category: :groups_and_projects do
 
   shared_examples 'GET /:source_type/:id/members/(all)' do |source_type, all|
     let(:members_url) do
-      (+"/#{source_type.pluralize}/#{source.id}/members").tap do |url|
+      "/#{source_type.pluralize}/#{source.id}/members".tap do |url|
         url << "/all" if all
       end
     end

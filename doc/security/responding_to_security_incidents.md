@@ -186,13 +186,13 @@ If you suspect unauthorized modifications to project settings, consider taking t
 
 Before you ask GitLab for help, search the [GitLab documentation](https://docs.gitlab.com/). You should engage support once you have performed the preliminary investigation on your end and have additional questions or need of assistance. Eligibility for assistance from GitLab Support is [determined by your license](https://about.gitlab.com/support/#gitlab-support-service-levels).
 
-### Security Best Practices
+### Security best practices
 
 Review the [GitLab Security documentation](../security/index.md) for what suggestions will work best for your environment and needs. If you are running a self-managed GitLab instance, consider reviewing our [diagram of GitLab components](../development/architecture.md#simplified-component-overview) to familiarise yourself with the various parts of a GitLab installation.
 
 #### Hardening Recommendations
 
-Consider reviewing the [GitLab Hardening Recommendations](../security/hardening.md) for recommendations on improving the security posture of your GitLab environment.
+For more information about improving the security posture of your GitLab environment, see the [hardening recommendations](../security/hardening.md).
 
 You can also consider implementing abuse rate limiting as detailed in [Git abuse rate limit](../user/group/reporting/git_abuse_rate_limit.md). Setting abuse rate limits may be helpful to automatically mitigate certain types of security incidents.
 

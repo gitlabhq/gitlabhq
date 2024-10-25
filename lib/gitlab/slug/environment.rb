@@ -21,7 +21,7 @@ module Gitlab
         slugified = name.to_s.downcase.gsub(/[^a-z0-9]/, '-')
 
         # Must start with a letter
-        slugified = +"env-#{slugified}" unless slugified.match?(/^[a-z]/)
+        slugified = "env-#{slugified}" unless slugified.match?(/^[a-z]/)
 
         # Repeated dashes are invalid (OpenShift limitation)
         slugified.squeeze!('-')

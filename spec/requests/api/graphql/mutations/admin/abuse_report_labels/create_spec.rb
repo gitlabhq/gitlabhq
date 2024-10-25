@@ -26,7 +26,7 @@ RSpec.describe Mutations::Admin::AbuseReportLabels::Create, feature_category: :i
     it_behaves_like 'a mutation that returns a top-level access error'
 
     it 'does not create the label' do
-      expect { subject }.not_to change { Admin::AbuseReportLabel.count }
+      expect { subject }.not_to change { AntiAbuse::Reports::Label.count }
     end
   end
 
@@ -34,7 +34,7 @@ RSpec.describe Mutations::Admin::AbuseReportLabels::Create, feature_category: :i
     let_it_be(:current_user) { create(:admin) }
 
     it 'creates the label' do
-      expect { subject }.to change { Admin::AbuseReportLabel.count }.to(1)
+      expect { subject }.to change { AntiAbuse::Reports::Label.count }.to(1)
 
       expect(mutation_response).to include('label' => a_hash_including(params))
     end
@@ -43,7 +43,7 @@ RSpec.describe Mutations::Admin::AbuseReportLabels::Create, feature_category: :i
       it 'does not create the label', :aggregate_failures do
         create(:abuse_report_label, title: params['title'])
 
-        expect { subject }.not_to change { Label.count }
+        expect { subject }.not_to change { AntiAbuse::Reports::Label.count }
 
         expect(mutation_response).to include({
           'label' => nil,

@@ -22,7 +22,7 @@ This section covers some general information and recommendations regarding the p
 
 ## Recommendations
 
-The [Hardening Guide](hardening.md) contains additional general recommendations that can be implemented for hardening an install.
+For more information about improving the security posture of your GitLab environment, see the [hardening recommendations](hardening.md).
 
 ### Antivirus software
 

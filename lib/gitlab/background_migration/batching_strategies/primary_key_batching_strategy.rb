@@ -24,17 +24,19 @@ module Gitlab
 
           arel_column = model_class.arel_table[column_name]
           relation = model_class.where(arel_column.gteq(batch_min_value))
+          reset_order = true
 
           if job_class
             relation = filter_batch(relation,
               table_name: table_name, column_name: column_name,
               job_class: job_class, job_arguments: job_arguments
             )
+            reset_order = job_class.reset_order if job_class.respond_to?(:reset_order)
           end
 
           next_batch_bounds = nil
 
-          relation.each_batch(of: batch_size, column: column_name) do |batch| # rubocop:disable Lint/UnreachableLoop
+          relation.each_batch(of: batch_size, column: column_name, reset_order: reset_order) do |batch| # rubocop:disable Lint/UnreachableLoop
             next_batch_bounds = batch.pick(arel_column.minimum, arel_column.maximum)
 
             break

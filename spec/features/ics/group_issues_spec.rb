@@ -87,7 +87,7 @@ RSpec.describe 'Group Issues Calendar Feed', feature_category: :groups_and_proje
 
         expect(body).to have_text("SUMMARY:test title (in #{project.full_path})")
         # line length for ics is 75 chars
-        expected_description = (+"DESCRIPTION:Find out more at #{issue_url(issue)}").insert(75, ' ')
+        expected_description = "DESCRIPTION:Find out more at #{issue_url(issue)}".insert(75, ' ')
         expect(body).to have_text(expected_description)
         expect(body).to have_text("DTSTART;VALUE=DATE:#{Date.tomorrow.strftime('%Y%m%d')}")
         expect(body).to have_text("URI:#{issue_url(issue)}")

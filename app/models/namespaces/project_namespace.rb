@@ -63,3 +63,5 @@ module Namespaces
     end
   end
 end
+
+Namespaces::ProjectNamespace.prepend_mod

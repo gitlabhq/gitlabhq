@@ -8,9 +8,9 @@ module Admin
     end
 
     def execute
-      return Admin::AbuseReportLabel.none unless current_user&.can_admin_all_resources?
+      return AntiAbuse::Reports::Label.none unless current_user&.can_admin_all_resources?
 
-      items = Admin::AbuseReportLabel.all
+      items = AntiAbuse::Reports::Label.all
       items = by_search(items)
 
       items.order(title: :asc) # rubocop: disable CodeReuse/ActiveRecord

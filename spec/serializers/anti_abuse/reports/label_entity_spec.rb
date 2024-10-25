@@ -3,7 +3,7 @@
 require "spec_helper"
 
 RSpec.describe AntiAbuse::Reports::LabelEntity, feature_category: :insider_threat do
-  let_it_be(:abuse_report_label) { build_stubbed(:label) }
+  let_it_be(:abuse_report_label) { build_stubbed(:abuse_report_label) }
 
   let(:entity) do
     described_class.new(abuse_report_label)

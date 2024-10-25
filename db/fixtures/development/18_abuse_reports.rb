@@ -16,7 +16,22 @@ module Db
                   user.assign_personal_namespace(Organizations::Organization.default_organization)
                 end
 
-              ::AbuseReport.create(reporter: ::User.take, user: reported_user, message: 'User sends spam')
+              label_title = "abuse_report_label_#{i}"
+              ::AntiAbuse::Reports::Label.create(
+                title: label_title,
+                description: FFaker::Lorem.sentence,
+                color: "#{::Gitlab::Color.color_for(label_title)}"
+              )
+
+              label_ids = ::AntiAbuse::Reports::Label.pluck(:id).sample(rand(5))
+
+              ::AbuseReport.create(
+                reporter: ::User.take,
+                user: reported_user,
+                message: 'User sends spam',
+                label_ids: label_ids
+              )
+
               print '.'
             end
           end

@@ -54,7 +54,7 @@ module Gitlab
 
       return key_content if parts.empty?
 
-      parts.each_with_object(+"#{ssh_type} ").with_index do |(part, content), index|
+      parts.each_with_object("#{ssh_type} ").with_index do |(part, content), index|
         content << part
 
         if self.new(content).valid?

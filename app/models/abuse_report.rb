@@ -21,8 +21,9 @@ class AbuseReport < ApplicationRecord
   belongs_to :resolved_by, class_name: 'User', inverse_of: :resolved_abuse_reports
 
   has_many :events, class_name: 'ResourceEvents::AbuseReportEvent', inverse_of: :abuse_report
-  has_many :label_links, as: :target, inverse_of: :target
-  has_many :labels, through: :label_links
+  has_many :label_links, inverse_of: :abuse_report, class_name: 'AntiAbuse::Reports::LabelLink'
+  has_many :labels, through: :label_links, source: :abuse_report_label,
+    class_name: 'AntiAbuse::Reports::Label'
   has_many :admin_abuse_report_assignees, class_name: "Admin::AbuseReportAssignee"
   has_many :assignees, class_name: "User", through: :admin_abuse_report_assignees
 
