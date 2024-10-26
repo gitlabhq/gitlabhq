@@ -1,0 +1,19 @@
+---
+description: Invoking an action on a todo (or multiple), like marking as pending/done/snoozing
+internal_events: true
+action: click_todo_item_action
+identifiers:
+- user
+additional_properties:
+  label:
+    description: Action triggered (pending, done, all_done, undo all done)
+product_group: personal_productivity
+milestone: '17.6'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170590
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

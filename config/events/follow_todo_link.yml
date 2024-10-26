@@ -1,0 +1,19 @@
+---
+description: Tracks what kind of Todos a user interacts with
+internal_events: true
+action: follow_todo_link
+identifiers:
+- user
+additional_properties:
+  label:
+    description: Type of the todo interacted with (e.g. Merge Request, Issue, etc.)
+product_group: personal_productivity
+milestone: '17.6'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170590
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

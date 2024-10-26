@@ -12,6 +12,7 @@ import {
   ENTITY_TYPES,
   FILTERED_SEARCH_TERM,
 } from '~/vue_shared/components/filtered_search_bar/constants';
+import Tracking from '~/tracking';
 import {
   TODO_TARGET_TYPE_ISSUE,
   TODO_TARGET_TYPE_WORK_ITEM,
@@ -35,6 +36,8 @@ import {
   TODO_ACTION_TYPE_ADDED_APPROVER,
   TODO_ACTION_TYPE_SSH_KEY_EXPIRED,
   TODO_ACTION_TYPE_SSH_KEY_EXPIRING_SOON,
+  INSTRUMENT_TODO_SORT_CHANGE,
+  INSTRUMENT_TODO_FILTER_CHANGE,
 } from '../constants';
 import GroupToken from './filtered_search_tokens/group_token.vue';
 import ProjectToken from './filtered_search_tokens/project_token.vue';
@@ -243,6 +246,20 @@ const FILTERS = [
   },
 ];
 
+function reduceFilter(filterValues) {
+  const result = new Set();
+  for (const [key, value] of Object.entries(filterValues)) {
+    if (Array.isArray(value)) {
+      if (value.some((x) => x && x?.trim?.())) {
+        result.add(key);
+      }
+    } else if (value) {
+      result.add(key);
+    }
+  }
+  return result;
+}
+
 export default {
   SORT_OPTIONS,
   i18n: {
@@ -257,6 +274,7 @@ export default {
     GlFilteredSearch,
     GlAlert,
   },
+  mixins: [Tracking.mixin()],
   props: {
     todosStatus: {
       type: Array,
@@ -334,6 +352,22 @@ export default {
       );
     },
   },
+  watch: {
+    filters: {
+      handler(newValue, oldValue) {
+        const reduceNew = reduceFilter(newValue);
+        if (reduceNew.size === 0) {
+          return;
+        }
+        const reducedOld = reduceFilter(oldValue);
+        for (const filter of reduceNew) {
+          if (!reducedOld.has(filter)) {
+            this.track(INSTRUMENT_TODO_FILTER_CHANGE, { label: `filter_${filter}` });
+          }
+        }
+      },
+    },
+  },
   created() {
     let urlDidChangeFilters = false;
     const searchParams = new URLSearchParams(window.location.search);
@@ -368,12 +402,19 @@ export default {
     }
   },
   methods: {
+    trackSortBy() {
+      this.track(INSTRUMENT_TODO_SORT_CHANGE, {
+        label: this.isAscending ? `${this.sortBy}_ASC` : `${this.sortBy}_DESC`,
+      });
+    },
     onSortByChange(value) {
       this.sortBy = value;
+      this.trackSortBy();
       this.sendFilterChanged();
     },
     onDirectionChange(isAscending) {
       this.isAscending = isAscending;
+      this.trackSortBy();
       this.sendFilterChanged();
     },
     dismissFullTextSearchWarning() {

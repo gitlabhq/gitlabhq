@@ -34,3 +34,15 @@ export const TODO_EMPTY_TITLE_POOL = [
   s__('Todos|Nothing left to do. High five!'),
   s__('Todos|Henceforth, you shall be known as "To-Do Destroyer"'),
 ];
+
+export const STATUS_BY_TAB = [['pending'], ['done'], ['pending', 'done']];
+
+/**
+ * Instrumentation
+ */
+export const INSTRUMENT_TODO_ITEM_CLICK = 'click_todo_item_action';
+export const INSTRUMENT_TODO_ITEM_FOLLOW = 'follow_todo_link';
+export const INSTRUMENT_TODO_SORT_CHANGE = 'sort_todo_list';
+export const INSTRUMENT_TODO_FILTER_CHANGE = 'filter_todo_list';
+
+export const INSTRUMENT_TAB_LABELS = ['status_pending', 'status_done', 'status_all'];

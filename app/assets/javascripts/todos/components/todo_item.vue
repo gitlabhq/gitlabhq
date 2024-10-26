@@ -1,12 +1,13 @@
 <script>
 import { GlLink } from '@gitlab/ui';
-import { TODO_STATE_DONE, TODO_STATE_PENDING } from '../constants';
+import { INSTRUMENT_TODO_ITEM_FOLLOW, TODO_STATE_DONE, TODO_STATE_PENDING } from '../constants';
 import TodoItemTitle from './todo_item_title.vue';
 import TodoItemBody from './todo_item_body.vue';
 import TodoItemTimestamp from './todo_item_timestamp.vue';
 import TodoItemActions from './todo_item_actions.vue';
 
 export default {
+  TRACK_ACTION: INSTRUMENT_TODO_ITEM_FOLLOW,
   components: {
     GlLink,
     TodoItemTitle,
@@ -42,6 +43,9 @@ export default {
     fadeTodo() {
       return this.fadeDoneTodo && this.isDone;
     },
+    trackingLabel() {
+      return this.todo.targetType ?? 'UNKNOWN';
+    },
   },
 };
 </script>
@@ -53,6 +57,8 @@ export default {
   >
     <gl-link
       :href="targetUrl"
+      :data-track-label="trackingLabel"
+      :data-track-action="$options.TRACK_ACTION"
       class="gl-flex gl-flex-wrap gl-gap-x-2 !gl-text-gray-900 !gl-no-underline !gl-outline-none sm:gl-flex-nowrap sm:gl-items-center"
     >
       <div

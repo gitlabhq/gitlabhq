@@ -4482,6 +4482,32 @@ RSpec.describe User, feature_category: :user_profile do
       expect(user.followees).to contain_exactly(followee1, followee2)
     end
 
+    it 'provides the number of followers' do
+      user = create :user
+      follower1 = create :user
+      follower2 = create :user
+
+      expect(follower1.follow(user)).to be_truthy
+      expect(follower2.follow(user)).to be_truthy
+
+      follower1.block!
+
+      expect(user.followers).to contain_exactly(follower2)
+    end
+
+    it 'provides the number of followees' do
+      user = create :user
+      followee1 = create(:user)
+      followee2 = create(:user)
+
+      expect(user.follow(followee1)).to be_truthy
+      expect(user.follow(followee2)).to be_truthy
+
+      followee1.block!
+
+      expect(user.followees).to contain_exactly(followee2)
+    end
+
     it 'follow itself is not possible' do
       user = create :user
 

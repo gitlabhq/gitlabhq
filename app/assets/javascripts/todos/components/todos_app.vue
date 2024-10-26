@@ -3,6 +3,12 @@ import { GlLoadingIcon, GlKeysetPagination, GlLink, GlBadge, GlTab, GlTabs } fro
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { createAlert } from '~/alert';
 import { s__ } from '~/locale';
+import Tracking from '~/tracking';
+import {
+  INSTRUMENT_TAB_LABELS,
+  INSTRUMENT_TODO_FILTER_CHANGE,
+  STATUS_BY_TAB,
+} from '~/todos/constants';
 import getTodosQuery from './queries/get_todos.query.graphql';
 import getTodosCountQuery from './queries/get_todos_count.query.graphql';
 import TodoItem from './todo_item.vue';
@@ -11,7 +17,6 @@ import TodosFilterBar, { SORT_OPTIONS } from './todos_filter_bar.vue';
 import TodosMarkAllDoneButton from './todos_mark_all_done_button.vue';
 
 const ENTRIES_PER_PAGE = 20;
-const STATUS_BY_TAB = [['pending'], ['done'], ['pending', 'done']];
 
 export default {
   components: {
@@ -26,7 +31,7 @@ export default {
     TodoItem,
     TodosMarkAllDoneButton,
   },
-
+  mixins: [Tracking.mixin()],
   data() {
     return {
       cursor: {
@@ -138,6 +143,9 @@ export default {
       };
     },
     tabChanged(tabIndex) {
+      this.track(INSTRUMENT_TODO_FILTER_CHANGE, {
+        label: INSTRUMENT_TAB_LABELS[tabIndex],
+      });
       this.currentTab = tabIndex;
       this.cursor = {
         first: ENTRIES_PER_PAGE,

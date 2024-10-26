@@ -9,6 +9,8 @@ import TodoItem from '~/todos/components/todo_item.vue';
 import TodosFilterBar from '~/todos/components/todos_filter_bar.vue';
 import getTodosQuery from '~/todos/components/queries/get_todos.query.graphql';
 import getTodosCountQuery from '~/todos/components/queries/get_todos_count.query.graphql';
+import { INSTRUMENT_TAB_LABELS, STATUS_BY_TAB } from '~/todos/constants';
+import { mockTracking, unmockTracking } from 'jest/__helpers__/tracking_helper';
 import { todosResponse, todosCountsResponse } from '../mock_data';
 
 Vue.use(VueApollo);
@@ -38,6 +40,10 @@ describe('TodosApp', () => {
 
   beforeEach(() => {
     createComponent();
+  });
+
+  it('should have a tracking event for each tab', () => {
+    expect(STATUS_BY_TAB.length).toBe(INSTRUMENT_TAB_LABELS.length);
   });
 
   it('shows a loading state while fetching todos', () => {
@@ -85,14 +91,24 @@ describe('TodosApp', () => {
   });
 
   it.each`
-    tabIndex | status
-    ${1}     | ${['done']}
-    ${2}     | ${['pending', 'done']}
-  `('updates the filter bar status when the tab changes', async ({ tabIndex, status }) => {
+    tabIndex | status                 | label
+    ${0}     | ${['pending']}         | ${'status_pending'}
+    ${1}     | ${['done']}            | ${'status_done'}
+    ${2}     | ${['pending', 'done']} | ${'status_all'}
+  `('updates the filter bar status when the tab changes', async ({ tabIndex, status, label }) => {
     createComponent();
+    // Navigate to another tab that isn't the target
+    findGlTabs().vm.$emit('input', tabIndex === 0 ? 1 : tabIndex - 1);
+    await nextTick();
+
+    const trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
     findGlTabs().vm.$emit('input', tabIndex);
     await nextTick();
 
+    expect(trackingSpy).toHaveBeenCalledWith(undefined, 'filter_todo_list', {
+      label,
+    });
     expect(findFilterBar().props('todosStatus')).toEqual(status);
+    unmockTracking();
   });
 });

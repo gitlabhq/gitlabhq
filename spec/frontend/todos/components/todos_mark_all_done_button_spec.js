@@ -7,6 +7,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import markAllAsDoneMutation from '~/todos/components/mutations/mark_all_as_done.mutation.graphql';
 import undoMarkAllAsDoneMutation from '~/todos/components/mutations/undo_mark_all_as_done.mutation.graphql';
 import TodosMarkAllDoneButton from '~/todos/components/todos_mark_all_done_button.vue';
+import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import {
   todosMarkAllAsDoneResponse,
   todosUndoMarkAllAsDoneResponse,
@@ -83,6 +84,19 @@ describe('TodosMarkAllDoneButton', () => {
       expect(findButton().props('loading')).toBe(true);
     });
 
+    it('emits instrumentation event', async () => {
+      const trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
+      createComponent();
+      clickButton();
+
+      await nextTick();
+
+      expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_todo_item_action', {
+        label: 'mark_all_as_done',
+      });
+      unmockTracking();
+    });
+
     it('marks all todos as done when clicked', async () => {
       createComponent();
       clickButton();
@@ -148,6 +162,19 @@ describe('TodosMarkAllDoneButton', () => {
       await waitForPromises();
       toastMock.show.mock.calls[0][1].action.onClick();
     };
+
+    it('emits instrumentation event', async () => {
+      const trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
+      createComponent();
+
+      await triggerUndo();
+      await nextTick();
+
+      expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_todo_item_action', {
+        label: 'undo_mark_all_as_done',
+      });
+      unmockTracking();
+    });
 
     it('sets the loading state while processing', async () => {
       createComponent();

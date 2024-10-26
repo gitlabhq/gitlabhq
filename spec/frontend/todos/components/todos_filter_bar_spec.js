@@ -3,9 +3,11 @@ import { GlSorting, GlFilteredSearch, GlAlert } from '@gitlab/ui';
 import { cloneDeep } from 'lodash';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import TodosFilterBar from '~/todos/components/todos_filter_bar.vue';
+import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 
 describe('TodosFilterBar', () => {
   let wrapper;
+  let trackingSpy;
 
   const mockGroupId = '33';
   const mockProjectId = '12';
@@ -65,7 +67,12 @@ describe('TodosFilterBar', () => {
         todosStatus: ['pending'],
       },
     });
+    trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
   };
+
+  afterEach(() => {
+    unmockTracking();
+  });
 
   it('passes the correct props to the `GlFilteredSearch` component', () => {
     createComponent();
@@ -120,6 +127,121 @@ describe('TodosFilterBar', () => {
     expect(window.location.search).toBe(
       `?group_id=${mockGroupId}&project_id=${mockProjectId}&author_id=${mockAuthorId}&type=${mockTypeParam.url}&action_id=${mockActionParam.url}`,
     );
+  });
+
+  it('emits telemetry events upon selecting new filters (not submit!)', async () => {
+    createComponent();
+
+    findGlFilteredSearch().vm.$emit(
+      'input',
+      generateFilterTokens({
+        groupId: mockGroupId,
+      }),
+    );
+    await nextTick();
+    expect(trackingSpy).toHaveBeenCalledWith(undefined, 'filter_todo_list', {
+      label: 'filter_groupId',
+    });
+
+    findGlFilteredSearch().vm.$emit(
+      'input',
+      generateFilterTokens({
+        projectId: mockProjectId,
+      }),
+    );
+    await nextTick();
+    expect(trackingSpy).toHaveBeenCalledWith(undefined, 'filter_todo_list', {
+      label: 'filter_projectId',
+    });
+
+    findGlFilteredSearch().vm.$emit(
+      'input',
+      generateFilterTokens({
+        authorId: mockAuthorId,
+      }),
+    );
+    await nextTick();
+    expect(trackingSpy).toHaveBeenCalledWith(undefined, 'filter_todo_list', {
+      label: 'filter_authorId',
+    });
+
+    findGlFilteredSearch().vm.$emit(
+      'input',
+      generateFilterTokens({
+        type: mockTypeParam.api,
+      }),
+    );
+    await nextTick();
+    expect(trackingSpy).toHaveBeenCalledWith(undefined, 'filter_todo_list', {
+      label: 'filter_type',
+    });
+
+    findGlFilteredSearch().vm.$emit(
+      'input',
+      generateFilterTokens({
+        action: mockActionParam.api,
+      }),
+    );
+    await nextTick();
+    expect(trackingSpy).toHaveBeenCalledWith(undefined, 'filter_todo_list', {
+      label: 'filter_action',
+    });
+
+    expect(trackingSpy).toHaveBeenCalledTimes(5);
+  });
+
+  it('does not emit telemetry events on changing a filter', async () => {
+    createComponent();
+
+    findGlFilteredSearch().vm.$emit(
+      'input',
+      generateFilterTokens({
+        groupId: mockGroupId,
+      }),
+    );
+    await nextTick();
+    expect(trackingSpy).toHaveBeenCalledWith(undefined, 'filter_todo_list', {
+      label: 'filter_groupId',
+    });
+    expect(trackingSpy).toHaveBeenCalledTimes(1);
+
+    findGlFilteredSearch().vm.$emit(
+      'input',
+      generateFilterTokens({
+        groupId: mockGroupId + mockGroupId,
+      }),
+    );
+    await nextTick();
+    expect(trackingSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not emit telemetry events on removing a filter', async () => {
+    createComponent();
+
+    findGlFilteredSearch().vm.$emit(
+      'input',
+      generateFilterTokens({
+        groupId: mockGroupId,
+        projectId: mockProjectId,
+      }),
+    );
+    await nextTick();
+    expect(trackingSpy).toHaveBeenCalledWith(undefined, 'filter_todo_list', {
+      label: 'filter_groupId',
+    });
+    expect(trackingSpy).toHaveBeenCalledWith(undefined, 'filter_todo_list', {
+      label: 'filter_projectId',
+    });
+    expect(trackingSpy).toHaveBeenCalledTimes(2);
+
+    findGlFilteredSearch().vm.$emit(
+      'input',
+      generateFilterTokens({
+        groupId: mockGroupId,
+      }),
+    );
+    await nextTick();
+    expect(trackingSpy).toHaveBeenCalledTimes(2);
   });
 
   it('shows a warning message when trying to text-search and only submits the supported filter tokens', async () => {
@@ -177,19 +299,29 @@ describe('TodosFilterBar', () => {
     createComponent();
     findGlSorting().vm.$emit('sortByChange', 'UPDATED');
 
+    expect(trackingSpy).toHaveBeenCalledWith(undefined, 'sort_todo_list', {
+      label: 'UPDATED_DESC',
+    });
     expect(wrapper.emitted('filters-changed')[0][0].sort).toBe('UPDATED_DESC');
     expect(window.location.search).toBe('?sort=UPDATED_DESC');
+    unmockTracking();
   });
 
   it('emits the `filter-changed` event and updates the URL when the sort direction is changed', () => {
     createComponent();
     findGlSorting().vm.$emit('sortDirectionChange', true);
 
+    expect(trackingSpy).toHaveBeenCalledWith(undefined, 'sort_todo_list', {
+      label: 'CREATED_ASC',
+    });
     expect(wrapper.emitted('filters-changed')[0][0].sort).toBe('CREATED_ASC');
     expect(window.location.search).toBe('?sort=CREATED_ASC');
 
     findGlSorting().vm.$emit('sortDirectionChange', false);
 
+    expect(trackingSpy).toHaveBeenCalledWith(undefined, 'sort_todo_list', {
+      label: 'CREATED_DESC',
+    });
     expect(wrapper.emitted('filters-changed')[1][0].sort).toBe('CREATED_DESC');
     expect(window.location.search).toBe('');
   });

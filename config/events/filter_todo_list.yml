@@ -1,0 +1,19 @@
+---
+description: Changes to the filter of the Todo List
+internal_events: true
+action: filter_todo_list
+identifiers:
+- user
+additional_properties:
+  label:
+    description: The type by which the todo list is filtered
+product_group: personal_productivity
+milestone: '17.6'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170590
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

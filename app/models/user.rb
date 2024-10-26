@@ -182,7 +182,7 @@ class User < ApplicationRecord
 
   # Followers
   has_many :followed_users, foreign_key: :follower_id, class_name: 'Users::UserFollowUser'
-  has_many :followees, through: :followed_users
+  has_many :followees, -> { active }, through: :followed_users
 
   has_many :following_users, foreign_key: :followee_id, class_name: 'Users::UserFollowUser'
   has_many :followers, -> { active }, through: :following_users
