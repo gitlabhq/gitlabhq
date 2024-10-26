@@ -14,10 +14,12 @@ module Gitlab
           resolved_class = job['wrapped'].to_s.safe_constantize || worker_class
 
           if load_balancing_enabled?(resolved_class)
-            job['worker_data_consistency'] = resolved_class.get_data_consistency
+            job['worker_data_consistency'] = resolved_class.get_least_restrictive_data_consistency
+            job['worker_data_consistency_per_db'] = resolved_class.get_data_consistency_per_database
             set_data_consistency_locations!(job) unless job['wal_locations']
           else
             job['worker_data_consistency'] = ::WorkerAttributes::DEFAULT_DATA_CONSISTENCY
+            job['worker_data_consistency_per_db'] = ::WorkerAttributes::DEFAULT_DATA_CONSISTENCY_PER_DB
           end
 
           yield

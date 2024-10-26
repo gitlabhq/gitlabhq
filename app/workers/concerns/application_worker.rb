@@ -86,7 +86,7 @@ module ApplicationWorker
     def validate_worker_attributes!
       # Since the delayed data_consistency will use sidekiq built in retry mechanism, it is required that this mechanism
       # is not disabled.
-      if retry_disabled? && get_data_consistency == :delayed
+      if retry_disabled? && get_data_consistency_per_database.value?(:delayed)
         raise ArgumentError, "Retry support cannot be disabled if data_consistency is set to :delayed"
       end
     end
@@ -104,7 +104,7 @@ module ApplicationWorker
     end
 
     override :data_consistency
-    def data_consistency(data_consistency, feature_flag: nil)
+    def data_consistency(default, overrides: nil, feature_flag: nil)
       super
 
       validate_worker_attributes!

@@ -277,6 +277,31 @@ class DelayedWorker
 end
 ```
 
+### Overriding data consistency for a decomposed database
+
+GitLab uses multiple decomposed databases. Sidekiq workers usage of the respective databases may be skewed towards
+a particular database. For example, `PipelineProcessWorker` has a higher write traffic to the `ci` database compared to the
+`main` database. In the event of edge cases around primary stickiness, having separate data consistency defined for each
+database allows the worker to more efficiently use read replicas.
+
+If the `overrides` keyword argument is set, the `Gitlab::Database::LoadBalancing::SidekiqServerMiddleware` loads the load
+balancing strategy using the data consistency which most prefers the read replicas.
+The order of preference in increasing preference is: `:always`, `:sticky`, then `:delayed`.
+
+The overrides only apply if the GitLab instance is using multiple databases or `Gitlab::Database.database_mode == Gitlab::Database::MODE_MULTIPLE_DATABASES`.
+
+To set a data consistency for a worker, use the `data_consistency` class method with the `overrides` keyword argument:
+
+```ruby
+class MultipleDataConsistencyWorker
+  include ApplicationWorker
+
+  data_consistency :always, overrides: { ci: :sticky }
+
+  # ...
+end
+```
+
 ### `feature_flag` property
 
 The `feature_flag` property allows you to toggle a job's `data_consistency`,

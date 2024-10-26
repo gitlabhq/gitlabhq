@@ -11,8 +11,14 @@ module WorkerAttributes
   # Urgencies that workers can declare through the `urgencies` attribute
   VALID_URGENCIES = [:high, :low, :throttled].freeze
 
-  VALID_DATA_CONSISTENCIES = [:always, :sticky, :delayed].freeze
+  # Ordered in increasing restrictiveness
+  VALID_DATA_CONSISTENCIES = [:delayed, :sticky, :always].freeze
+  LOAD_BALANCED_DATA_CONSISTENCIES = [:delayed, :sticky].freeze
+
   DEFAULT_DATA_CONSISTENCY = :always
+  DEFAULT_DATA_CONSISTENCY_PER_DB = Gitlab::Database::LoadBalancing.each_load_balancer.to_h do |lb|
+    [lb.name, DEFAULT_DATA_CONSISTENCY]
+  end.freeze
 
   NAMESPACE_WEIGHTS = {
     auto_devops: 2,
@@ -83,35 +89,67 @@ module WorkerAttributes
     #  Workers with data_consistency set to :delayed or :sticky, calling #perform_async
     #  will be delayed in order to give replication process enough time to complete.
     #
-    #  - *data_consistency* values:
+    #  - *default* - The default data_consistency value. Valid values are:
     #    - 'always' - The job is required to use the primary database (default).
     #    - 'sticky' - The job uses a replica as long as possible. It switches to primary either on write or long replication lag.
     #    - 'delayed' - The job would switch to primary only on write. It would use replica always.
     #      If there's a long replication lag the job will be delayed, and only if the replica is not up to date on the next retry,
     #      it will switch to the primary.
+    #  - *overrides* - allows you to override data consistency for specific database connections. Only used in multiple
+    #    database mode. Valid for values in `Gitlab::Database.database_base_models.keys`
     #  - *feature_flag* - allows you to toggle a job's `data_consistency, which permits you to safely toggle load balancing capabilities for a specific job.
     #    If disabled, job will default to `:always`, which means that the job will always use the primary.
-    def data_consistency(data_consistency, feature_flag: nil)
-      raise ArgumentError, "Invalid data consistency: #{data_consistency}" unless VALID_DATA_CONSISTENCIES.include?(data_consistency)
+    def data_consistency(default, overrides: nil, feature_flag: nil)
+      validate_data_consistency(default, overrides)
       raise ArgumentError, 'Data consistency is already set' if class_attributes[:data_consistency]
 
       set_class_attribute(:data_consistency_feature_flag, feature_flag) if feature_flag
-      set_class_attribute(:data_consistency, data_consistency)
+      set_class_attribute(:data_consistency, default)
+
+      # only override data consistency when using multiple databases
+      overrides = nil unless Gitlab::Database.database_mode == Gitlab::Database::MODE_MULTIPLE_DATABASES
+      set_class_attribute(:data_consistency_per_database, compute_data_consistency_per_database(default, overrides))
+    end
+
+    def validate_data_consistency(data_consistency, db_specific)
+      valid_default = VALID_DATA_CONSISTENCIES.include?(data_consistency)
+      raise ArgumentError, "Invalid data consistency: #{data_consistency}" unless valid_default
+
+      return unless db_specific
+
+      valid_db_specific_hash = db_specific.values.all? { |dc| VALID_DATA_CONSISTENCIES.include?(dc) }
+      raise ArgumentError, "Invalid data consistency: #{db_specific}" unless valid_db_specific_hash
     end
 
     # If data_consistency is not set to :always, worker will try to utilize load balancing capabilities and use the replica
     def utilizes_load_balancing_capabilities?
-      get_data_consistency != :always
+      get_data_consistency_per_database.values.any? { |v| LOAD_BALANCED_DATA_CONSISTENCIES.include?(v) }
     end
 
-    def get_data_consistency
-      get_class_attribute(:data_consistency) || DEFAULT_DATA_CONSISTENCY
+    def get_least_restrictive_data_consistency
+      consistencies = get_data_consistency_per_database.values
+      VALID_DATA_CONSISTENCIES.find { |dc| consistencies.include?(dc) } || DEFAULT_DATA_CONSISTENCY # rubocop:disable Gitlab/NoFindInWorkers -- not ActiveRecordFind
+    end
+
+    def get_data_consistency_per_database
+      dc_hash = get_class_attribute(:data_consistency_per_database) if get_data_consistency_feature_flag_enabled?
+      dc_hash || DEFAULT_DATA_CONSISTENCY_PER_DB
+    end
+
+    def compute_data_consistency_per_database(default, overrides)
+      hash = overrides || {}
+
+      Gitlab::Database::LoadBalancing.each_load_balancer do |lb|
+        hash[lb.name] ||= default || DEFAULT_DATA_CONSISTENCY
+      end
+
+      hash
     end
 
     def get_data_consistency_feature_flag_enabled?
       return true unless get_class_attribute(:data_consistency_feature_flag)
 
-      Feature.enabled?(get_class_attribute(:data_consistency_feature_flag), type: :worker)
+      Feature.enabled?(get_class_attribute(:data_consistency_feature_flag), Feature.current_request, type: :worker)
     end
 
     # Set this attribute on a job when it will call to services outside of the

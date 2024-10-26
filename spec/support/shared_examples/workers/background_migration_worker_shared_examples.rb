@@ -7,7 +7,7 @@ RSpec.shared_examples 'it runs background migration jobs' do |tracking_database|
 
   describe 'defining the job attributes' do
     it 'defines the data_consistency as always' do
-      expect(described_class.get_data_consistency).to eq(:always)
+      expect(described_class.get_data_consistency_per_database.values.uniq).to eq([:always])
     end
 
     it 'defines the retry count in sidekiq_options' do

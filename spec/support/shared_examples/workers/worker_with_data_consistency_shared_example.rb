@@ -19,9 +19,9 @@ RSpec.shared_examples 'worker with data consistency' do |worker_class, data_cons
     end
   end
 
-  describe '.get_data_consistency' do
+  describe '.get_data_consistency_per_database' do
     it 'returns correct data consistency' do
-      expect(worker_class.get_data_consistency).to eq(data_consistency)
+      expect(worker_class.get_data_consistency_per_database.values.uniq).to eq([data_consistency])
     end
   end
 end

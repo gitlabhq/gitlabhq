@@ -15,7 +15,7 @@ RSpec.describe 'Mailer retries', :sidekiq_mailers, feature_category: :shared do
     mail
 
     expect(Sidekiq::Queues['mailers'].first).to include('worker_data_consistency' => 'delayed')
-    expect(ActionMailer::MailDeliveryJob.get_data_consistency).to eq(:delayed)
+    expect(ActionMailer::MailDeliveryJob.get_data_consistency_per_database.values.uniq).to eq([:delayed])
   end
 
   it 'sets store for mailers to ActionMailer::MailDeliveryJob routing target' do
