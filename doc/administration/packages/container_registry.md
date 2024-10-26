@@ -1461,3 +1461,27 @@ The GitLab container registry is compatible with the basic functionality provide
 including all the supported storage backends. To migrate to the GitLab container registry
 you can follow the instructions on this page, and use the same storage backend as the Distribution Registry.
 The GitLab container registry should accept the same configuration that you are using for the Distribution Registry.
+
+## Max retries for deleting container images
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/480652) in GitLab 17.5 [with a flag](../../administration/feature_flags.md) named `set_delete_failed_container_repository`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/490354) in GitLab 17.6. Feature flag `set_delete_failed_container_repository` removed.
+
+Errors could happen when deleting container images, so deletions are retried to ensure
+the error is not a transient issue. Deletion is retried up to 10 times, with a back off delay
+between retries. This delay gives more time between retries for any transient errors to resolve.
+
+Setting a maximum number of retries also helps detect if there are any persistent errors
+that haven't been solved in between retries. After a deletion fails the maximum number of retries,
+the container repository `status` is set to `delete_failed`. With this status, the
+repository no longer retries deletions.
+
+You should investigate any container repositories with a `delete_failed` status and
+try to resolve the issue. After the issue is resolved, you can set the repository status
+back to `delete_scheduled` so images can start to be deleted again. To update the repository status,
+from the rails console:
+
+```ruby
+container_repository = ContainerRepository.find(<id>)
+container_repository.update(status: 'delete_scheduled')
+```
