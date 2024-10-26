@@ -52,7 +52,7 @@ export default {
 </script>
 
 <template>
-  <div class="stats gl-text-gray-500">
+  <div class="stats gl-text-subtle">
     <item-stats-value
       v-if="displayValue(item.subgroupCount)"
       :title="__('Subgroups')"

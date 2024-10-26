@@ -1771,7 +1771,25 @@ msgstr ""
 msgid "/"
 msgstr ""
 
+msgid "/clear"
+msgstr ""
+
 msgid "/day"
+msgstr ""
+
+msgid "/help"
+msgstr ""
+
+msgid "/reset"
+msgstr ""
+
+msgid "/summarize_comments"
+msgstr ""
+
+msgid "/troubleshoot"
+msgstr ""
+
+msgid "/vulnerability_explain"
 msgstr ""
 
 msgid "0 B"
@@ -18169,6 +18187,9 @@ msgstr ""
 msgid "Delete account"
 msgstr ""
 
+msgid "Delete all messages in the current conversation."
+msgstr ""
+
 msgid "Delete asset"
 msgstr ""
 
@@ -22647,6 +22668,9 @@ msgid "Expiring soon"
 msgstr ""
 
 msgid "Expiry notification emails about group and project access tokens should be sent to:"
+msgstr ""
+
+msgid "Explain current vulnerability."
 msgstr ""
 
 msgid "Explain why you're reporting the user."
@@ -32018,6 +32042,9 @@ msgid "Learn more."
 msgstr ""
 
 msgid "Learn more: %{url}"
+msgstr ""
+
+msgid "Learn what Duo Chat can do."
 msgstr ""
 
 msgid "LearnGitLab|%d task to go"
@@ -42698,9 +42725,6 @@ msgstr ""
 msgid "ProjectMaintenance|Blobs removal is scheduled."
 msgstr ""
 
-msgid "ProjectMaintenance|Blobs removed"
-msgstr ""
-
 msgid "ProjectMaintenance|Cancel"
 msgstr ""
 
@@ -42752,9 +42776,6 @@ msgstr ""
 msgid "ProjectMaintenance|Removing blobs by ID cannot be undone. Are you sure you want to continue?"
 msgstr ""
 
-msgid "ProjectMaintenance|Run housekeeping to remove old versions from repository."
-msgstr ""
-
 msgid "ProjectMaintenance|Something went wrong while redacting text."
 msgstr ""
 
@@ -42764,9 +42785,6 @@ msgstr ""
 msgid "ProjectMaintenance|Strings to redact"
 msgstr ""
 
-msgid "ProjectMaintenance|Text redacted"
-msgstr ""
-
 msgid "ProjectMaintenance|Text redaction removal is scheduled."
 msgstr ""
 
@@ -42774,9 +42792,6 @@ msgid "ProjectMaintenance|To confirm, enter the following:"
 msgstr ""
 
 msgid "ProjectMaintenance|To ensure that a full backup is available in case changes need to be restored, you should make an %{docs_link_start}export of the project%{docs_link_end}."
-msgstr ""
-
-msgid "ProjectMaintenance|To remove old versions from the repository, run housekeeping."
 msgstr ""
 
 msgid "ProjectMaintenance|Yes, redact matching strings"
@@ -46310,6 +46325,9 @@ msgid "Resend unlock instructions"
 msgstr ""
 
 msgid "Reset"
+msgstr ""
+
+msgid "Reset conversation and ignore previous messages."
 msgstr ""
 
 msgid "Reset error tracking access token"
@@ -53887,6 +53905,9 @@ msgstr ""
 msgid "Summarize my pending comments"
 msgstr ""
 
+msgid "Summarize the comments in the current issue."
+msgstr ""
+
 msgid "Summary"
 msgstr ""
 
@@ -58206,6 +58227,9 @@ msgid "Trigger|Description"
 msgstr ""
 
 msgid "Trigger|Trigger description"
+msgstr ""
+
+msgid "Troubleshoot failed CI/CD jobs with Root Cause Analysis."
 msgstr ""
 
 msgid "Trust user"

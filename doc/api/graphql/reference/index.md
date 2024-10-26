@@ -161,6 +161,18 @@ This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
+### `Query.aiSlashCommands`
+
+Get available Duo Chat slash commands for the current user for a specific URL.
+
+Returns [`[SlashCommand!]`](#slashcommand).
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="queryaislashcommandsurl"></a>`url` | [`String!`](#string) | URL of the page the user is currently on. |
+
 ### `Query.auditEventDefinitions`
 
 Definitions for all audit events available on the instance.
@@ -33815,6 +33827,18 @@ State of a Sentry error.
 | ---- | ---- | ----------- |
 | <a id="sentryerrortagslevel"></a>`level` | [`String`](#string) | Severity level of the Sentry Error. |
 | <a id="sentryerrortagslogger"></a>`logger` | [`String`](#string) | Logger of the Sentry Error. |
+
+### `SlashCommand`
+
+Duo Chat slash command.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="slashcommandcommand"></a>`command` | [`String!`](#string) | Full slash command including the leading `/`. |
+| <a id="slashcommanddescription"></a>`description` | [`String!`](#string) | Description of what the slash command does. |
+| <a id="slashcommandname"></a>`name` | [`String!`](#string) | Name of the slash command. |
 
 ### `Snippet`
 
