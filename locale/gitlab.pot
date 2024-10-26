@@ -6037,6 +6037,9 @@ msgstr ""
 msgid "An error occurred while fetching reviewers."
 msgstr ""
 
+msgid "An error occurred while fetching secrets, please try again."
+msgstr ""
+
 msgid "An error occurred while fetching tags. Retry the search."
 msgstr ""
 
@@ -20467,6 +20470,9 @@ msgstr ""
 msgid "DuoProDiscover|Improve developer experience"
 msgstr ""
 
+msgid "DuoProDiscover|Maintain control over the data that's sent to an external large language model (LLM) service. Your organization's proprietary data and code are never used to train external AI models."
+msgstr ""
+
 msgid "DuoProDiscover|Maintain control over the data that's sent to an external large language model (LLM) service. Your organization's proprietary data or code are never used to train external AI models."
 msgstr ""
 
@@ -20489,6 +20495,9 @@ msgid "DuoProDiscover|Streamline communication, facilitate knowledge sharing, an
 msgstr ""
 
 msgid "DuoProDiscover|Streamline the refactoring process with AI-powered recommendations to optimize code structure and improve readability."
+msgstr ""
+
+msgid "DuoProDiscover|The GitLab %{link_start}AI Transparency Center%{link_end} details how GitLab upholds ethics and transparency in its AI-powered features."
 msgstr ""
 
 msgid "DuoProDiscover|The GitLab %{link_start}AI Transparency Center%{link_end} details how we uphold ethics and transparency in our AI-powered features."
@@ -48848,6 +48857,9 @@ msgstr[1] ""
 msgid "Secrets"
 msgstr ""
 
+msgid "Secrets represent sensitive information your CI job needs to complete work."
+msgstr ""
+
 msgid "Secrets|Actions"
 msgstr ""
 
@@ -57956,19 +57968,10 @@ msgstr ""
 msgid "TrialDiscoverPage|A single application eliminates complex integrations, data checkpoints, and toolchain maintenance, resulting in greater productivity and lower cost."
 msgstr ""
 
-msgid "TrialDiscoverPage|Access advanced features"
-msgstr ""
-
-msgid "TrialDiscoverPage|Access advanced features, build more efficiently, strengthen security and compliance."
-msgstr ""
-
 msgid "TrialDiscoverPage|Break down silos to coordinate seamlessly across development, operations, and security with a consistent experience across the development lifecycle."
 msgstr ""
 
 msgid "TrialDiscoverPage|Burn down charts"
-msgstr ""
-
-msgid "TrialDiscoverPage|Calculate seats"
 msgstr ""
 
 msgid "TrialDiscoverPage|Code owners"
@@ -57983,22 +57986,10 @@ msgstr ""
 msgid "TrialDiscoverPage|Collaboration made easy"
 msgstr ""
 
-msgid "TrialDiscoverPage|Compare all plans"
-msgstr ""
-
 msgid "TrialDiscoverPage|Create a more advanced workflow for issues, merge requests, and epics by using scoped, mutually exclusive labels."
 msgstr ""
 
 msgid "TrialDiscoverPage|Dependency scanning"
-msgstr ""
-
-msgid "TrialDiscoverPage|Discover"
-msgstr ""
-
-msgid "TrialDiscoverPage|Discover Premium & Ultimate"
-msgstr ""
-
-msgid "TrialDiscoverPage|Documentation"
 msgstr ""
 
 msgid "TrialDiscoverPage|Dynamic application security testing (DAST)"
@@ -58043,9 +58034,6 @@ msgstr ""
 msgid "TrialDiscoverPage|Scoped Labels"
 msgstr ""
 
-msgid "TrialDiscoverPage|Speed. Efficiency. Trust."
-msgstr ""
-
 msgid "TrialDiscoverPage|Target the right approvers for your merge request by assigning owners to specific files."
 msgstr ""
 
@@ -58059,6 +58047,42 @@ msgid "TrialDiscoverPage|Visualize your epics and milestones in a timeline."
 msgstr ""
 
 msgid "TrialDiscoverPage|Your software, deployed your way"
+msgstr ""
+
+msgid "TrialDiscover|Deliver value faster with metrics derived from a unified data store to increase revenue, accelerate speed."
+msgstr ""
+
+msgid "TrialDiscover|Discover"
+msgstr ""
+
+msgid "TrialDiscover|Duo Enterprise"
+msgstr ""
+
+msgid "TrialDiscover|End-to-end security and compliance, built right into the platform your developers already use."
+msgstr ""
+
+msgid "TrialDiscover|GitLab Value Streams Dashboard"
+msgstr ""
+
+msgid "TrialDiscover|How to use GitLab for Agile software development"
+msgstr ""
+
+msgid "TrialDiscover|One platform to empower Dev, Sec, and Ops teams"
+msgstr ""
+
+msgid "TrialDiscover|Reliable and feature rich automations help remove cognitive load and unnecessary repetitive work."
+msgstr ""
+
+msgid "TrialDiscover|Security Dashboard - Advanced Security Testing"
+msgstr ""
+
+msgid "TrialDiscover|Ship software faster and more securely with AI integrated into your entire DevSecOps lifecycle."
+msgstr ""
+
+msgid "TrialDiscover|Streamline communication to build, test, package, and deploy secure software in a fraction of the time."
+msgstr ""
+
+msgid "TrialDiscover|Why Ultimate & GitLab Duo Enterprise?"
 msgstr ""
 
 msgid "TrialRegistration|To complete registration, we need additional details from you."
@@ -58110,6 +58134,18 @@ msgid "TrialWidget|Your trial of Ultimate has ended"
 msgstr ""
 
 msgid "TrialWidget|Your trial of Ultimate with GitLab Duo Enterprise has ended"
+msgstr ""
+
+msgid "TrialsDiscover|Enhance productivity"
+msgstr ""
+
+msgid "TrialsDiscover|Gain actionable insights"
+msgstr ""
+
+msgid "TrialsDiscover|Improve collaboration"
+msgstr ""
+
+msgid "TrialsDiscover|Increase security"
 msgstr ""
 
 msgid "Trials|Create a new group and start your trial of Ultimate with GitLab Duo Enterprise."
