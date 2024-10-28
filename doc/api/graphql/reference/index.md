@@ -3880,6 +3880,55 @@ Input type: `CreateTestCaseInput`
 | <a id="mutationcreatetestcaseerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationcreatetestcasetestcase"></a>`testCase` | [`Issue`](#issue) | Test case created. |
 
+### `Mutation.customFieldCreate`
+
+DETAILS:
+**Introduced** in GitLab 17.6.
+**Status**: Experiment.
+
+Input type: `CustomFieldCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationcustomfieldcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcustomfieldcreatefieldtype"></a>`fieldType` | [`CustomFieldType!`](#customfieldtype) | Type of custom field. |
+| <a id="mutationcustomfieldcreategrouppath"></a>`groupPath` | [`ID!`](#id) | Group path where the custom field is created. |
+| <a id="mutationcustomfieldcreatename"></a>`name` | [`String!`](#string) | Name of the custom field. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationcustomfieldcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcustomfieldcreatecustomfield"></a>`customField` | [`CustomField`](#customfield) | Created custom field. |
+| <a id="mutationcustomfieldcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
+### `Mutation.customFieldUpdate`
+
+DETAILS:
+**Introduced** in GitLab 17.6.
+**Status**: Experiment.
+
+Input type: `CustomFieldUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationcustomfieldupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcustomfieldupdateid"></a>`id` | [`IssuablesCustomFieldID!`](#issuablescustomfieldid) | Global ID of the custom field. |
+| <a id="mutationcustomfieldupdatename"></a>`name` | [`String!`](#string) | Name of the custom field. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationcustomfieldupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcustomfieldupdatecustomfield"></a>`customField` | [`CustomField`](#customfield) | Updated custom field. |
+| <a id="mutationcustomfieldupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.customerRelationsContactCreate`
 
 Input type: `CustomerRelationsContactCreateInput`
@@ -21420,11 +21469,13 @@ Represents a custom field.
 | ---- | ---- | ----------- |
 | <a id="customfieldactive"></a>`active` | [`Boolean!`](#boolean) | Whether the custom field is active. |
 | <a id="customfieldcreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp when the custom field was created. |
+| <a id="customfieldcreatedby"></a>`createdBy` | [`UserCore`](#usercore) | User that created the custom field. |
 | <a id="customfieldfieldtype"></a>`fieldType` | [`CustomFieldType!`](#customfieldtype) | Type of custom field. |
 | <a id="customfieldid"></a>`id` | [`IssuablesCustomFieldID!`](#issuablescustomfieldid) | Global ID of the custom field. |
 | <a id="customfieldname"></a>`name` | [`String!`](#string) | Name of the custom field. |
 | <a id="customfieldselectoptions"></a>`selectOptions` | [`[CustomFieldSelectOption!]`](#customfieldselectoption) | Available options for a select field. |
 | <a id="customfieldupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp when the custom field was last updated. |
+| <a id="customfieldupdatedby"></a>`updatedBy` | [`UserCore`](#usercore) | User that last updated the custom field. |
 | <a id="customfieldworkitemtypes"></a>`workItemTypes` | [`[WorkItemType!]`](#workitemtype) | Work item types that the custom field is available on. |
 
 ### `CustomFieldSelectOption`

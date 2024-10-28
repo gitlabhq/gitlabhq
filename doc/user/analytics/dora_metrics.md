@@ -76,7 +76,7 @@ The first step is to benchmark the cadence of code releases between groups and p
 
 Lead time for changes is the amount of time it takes a code change to get into production.
 
-**Lead time for changes** is not the same as **Lead time**. In the value stream, lead time measures the time it takes for work on an issue to move from the moment it's requested (Issue created) to the moment it's fulfilled and delivered (Issue closed).
+**Lead time for changes** is not the same as **Lead time**. In value stream analytics, lead time measures the time it takes for work on an issue to move from the moment it's requested (Issue created) to the moment it's fulfilled and delivered (Issue closed).
 
 For software leaders, lead time for changes reflects the efficiency of CI/CD pipelines and visualizes how quickly work is delivered to customers.
 Over time, the lead time for changes should decrease, while your team's performance should increase. Low lead time for changes means more efficient CI/CD pipelines.
@@ -94,6 +94,7 @@ The first step is to benchmark the CI/CD pipelines' efficiency between groups an
 - Using Value Stream Analytics to identify bottlenecks in the processes.
 - Breaking the changes down into smaller iterations.
 - Adding automation.
+- Improving the performance of your pipelines. 
 
 ## Time to restore service
 
@@ -104,7 +105,7 @@ Low time to restore service means the organization can take risks with new innov
 
 ### How time to restore service is calculated
 
-In GitLab, time to restore service is measured as the median time an incident was open for on a production environment.
+In GitLab, time to restore service is measured as the median time an incident was open on a production environment.
 GitLab calculates the number of seconds an incident was open on a production environment in the given time period. This assumes:
 
 - [GitLab incidents](../../operations/incident_management/incidents.md) are tracked.
@@ -117,17 +118,18 @@ The first step is to benchmark the team response and recover from service interr
 
 - Improving the observability into the production environment.
 - Improving response workflows.
+- Improving deployment frequency and lead time for changes so fixes can get into production more efficiently. 
 
 ## Change failure rate
 
-Change failure rate is how often a change cause failure in production.
+Change failure rate is how often a change causes a failure in production.
 
 Software leaders can use the change failure rate metric to gain insights into the quality of the code being shipped.
 High change failure rate may indicate an inefficient deployment process or insufficient automated testing coverage.
 
 ### How change failure rate is calculated
 
-In GitLab, change failure rate is measured as the percentage of deployments that cause an incident in production in the given time period.
+In GitLab, change failure rate is measured as the percentage of deployments that cause an incident in production in a given time period.
 GitLab calculates change failure rate as the number of incidents divided by the number of deployments to a production environment. This calculation assumes:
 
 - [GitLab incidents](../../operations/incident_management/incidents.md) are tracked.
@@ -227,7 +229,7 @@ These deployment records are not created for pull-based deployments, for example
 
 To track DORA metrics in these cases, you can [create a deployment record](../../api/deployments.md#create-a-deployment) using the Deployments API.
 You must set the environment name where the deployment tier is configured, because the tier variable is specified for the given environment, not for the deployments.
-For more information, see [Track deployments of an external deployment tool](../../ci/environments/external_deployment_tools.md).
+For more information, see [track deployments of an external deployment tool](../../ci/environments/external_deployment_tools.md).
 
 ### Measure DORA metrics with Jira
 
@@ -239,7 +241,7 @@ For more information, see [Track deployments of an external deployment tool](../
 For PagerDuty, you can set up a [webhook to automatically create a GitLab incident for each PagerDuty incident](../../operations/incident_management/manage_incidents.md#using-the-pagerduty-webhook).
 This configuration requires you to make changes in both PagerDuty and GitLab.
 
-For others incident management tools, you can set up the
+For other incident management tools, you can set up the
 [HTTP integration](../../operations/incident_management/integrations.md#http-endpoints),
 and use it to automatically:
 
@@ -252,8 +254,8 @@ The table below provides an overview of the DORA metrics' availability in projec
 
 | Metric                    | Level             | Comments |
 |---------------------------|-------------------|----------|
-| `deployment_frequency`    | Project           |          |
-| `deployment_frequency`    | Group             |          |
+| `deployment_frequency`    | Project           | Unit in deployment count. |
+| `deployment_frequency`    | Group             | Unit in deployment count. Aggregation method is average.  |
 | `lead_time_for_changes`   | Project           | Unit in seconds. Aggregation method is median. |
 | `lead_time_for_changes`   | Group             | Unit in seconds. Aggregation method is median. |
 | `time_to_restore_service` | Project and group | Unit in days. Aggregation method is median. (Available in UI chart in GitLab 15.1 and later) |

@@ -64535,6 +64535,9 @@ msgstr ""
 msgid "can only be changed by a group admin."
 msgstr ""
 
+msgid "can only have a maximum of %{limit} active custom fields."
+msgstr ""
+
 msgid "can only have one escalation policy"
 msgstr ""
 

@@ -6,13 +6,13 @@ module Packages
       include ::Gitlab::Utils::StrongMemoize
 
       ERROR_REASON_INVALID_PARAMETER = :invalid_parameter
-      ERROR_REASON_PACKAGE_PROTECTED = :package_protected
+      ERROR_RESPONSE_PACKAGE_PROTECTED =
+        ServiceResponse.error(message: 'Package protected.', reason: :package_protected)
+      ERROR_RESPONSE_UNAUTHORIZED = ServiceResponse.error(message: 'Unauthorized', reason: :unauthorized)
 
       def execute
-        if current_package_protected?
-          return ServiceResponse.error(message: 'Package protected.',
-            reason: ERROR_REASON_PACKAGE_PROTECTED)
-        end
+        return ERROR_RESPONSE_UNAUTHORIZED unless can_create_package?
+        return ERROR_RESPONSE_PACKAGE_PROTECTED if current_package_protected?
 
         ::Packages::Package.transaction do
           meta = Packages::Pypi::Metadatum.new(

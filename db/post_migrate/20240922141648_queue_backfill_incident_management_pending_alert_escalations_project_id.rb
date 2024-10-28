@@ -10,32 +10,12 @@ class QueueBackfillIncidentManagementPendingAlertEscalationsProjectId < Gitlab::
   SUB_BATCH_SIZE = 100
 
   def up
-    queue_batched_background_migration(
-      MIGRATION,
-      :incident_management_pending_alert_escalations,
-      :id,
-      :project_id,
-      :alert_management_alerts,
-      :project_id,
-      :alert_id,
-      job_interval: DELAY_INTERVAL,
-      batch_size: BATCH_SIZE,
-      batch_class_name: 'LooseIndexScanBatchingStrategy',
-      sub_batch_size: SUB_BATCH_SIZE
-    )
+    # no-op because there was a bug in the original migration, which has been
+    # fixed by https://gitlab.com/gitlab-org/gitlab/-/merge_requests/168212
   end
 
   def down
-    delete_batched_background_migration(
-      MIGRATION,
-      :incident_management_pending_alert_escalations,
-      :id,
-      [
-        :project_id,
-        :alert_management_alerts,
-        :project_id,
-        :alert_id
-      ]
-    )
+    # no-op because there was a bug in the original migration, which has been
+    # fixed by https://gitlab.com/gitlab-org/gitlab/-/merge_requests/168212
   end
 end

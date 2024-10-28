@@ -24,9 +24,21 @@ RSpec.describe Packages::Pypi::CreatePackageService, :aggregate_failures, featur
     }
   end
 
-  describe '#execute' do
-    subject(:execute_service) { described_class.new(project, user, params).execute }
+  subject(:execute_service) { described_class.new(project, user, params).execute }
 
+  shared_examples 'an error response while not creating a pypi package' do |message:, reason:|
+    it_behaves_like 'returning an error service response', message: message
+    it { is_expected.to have_attributes(reason: reason) }
+
+    it 'does not create any pypi-related package records' do
+      expect { execute_service }
+        .to not_change { Packages::Package.count }
+        .and not_change { Packages::Package.pypi.count }
+        .and not_change { Packages::PackageFile.count }
+    end
+  end
+
+  describe '#execute' do
     let(:created_package) { Packages::Package.pypi.last }
 
     context 'without an existing package' do
@@ -150,16 +162,9 @@ RSpec.describe Packages::Pypi::CreatePackageService, :aggregate_failures, featur
           params[:md5_digest] = md5
         end
 
-        it_behaves_like 'returning an error service response',
-          message: 'Validation failed: File name has already been taken' do
-          it { is_expected.to have_attributes(reason: :invalid_parameter) }
-        end
-
-        it 'does not create a pypi package' do
-          expect { execute_service }
-            .to change { Packages::Package.pypi.count }.by(0)
-            .and change { Packages::PackageFile.count }.by(0)
-        end
+        it_behaves_like 'an error response while not creating a pypi package',
+          message: 'Validation failed: File name has already been taken',
+          reason: :invalid_parameter
 
         context 'with a pending_destruction package' do
           before do
@@ -197,6 +202,22 @@ RSpec.describe Packages::Pypi::CreatePackageService, :aggregate_failures, featur
           expect(created_package.package_files.map(&:file_name).sort).to eq ['another.tgz', 'foo.tgz']
         end
       end
+    end
+
+    context 'with unauthorized user' do
+      let_it_be(:user) { create(:user) }
+
+      it_behaves_like 'an error response while not creating a pypi package',
+        message: 'Unauthorized',
+        reason: :unauthorized
+    end
+
+    context 'without user' do
+      let_it_be(:user) { nil }
+
+      it_behaves_like 'an error response while not creating a pypi package',
+        message: 'Unauthorized',
+        reason: :unauthorized
     end
 
     context 'with package protection rule for different roles and package_name_patterns' do
@@ -245,8 +266,9 @@ RSpec.describe Packages::Pypi::CreatePackageService, :aggregate_failures, featur
       end
 
       shared_examples 'an error service response for unauthorized' do
-        it_behaves_like 'returning an error service response', message: 'Unauthorized'
-        it { is_expected.to have_attributes(reason: :invalid_parameter) }
+        it_behaves_like 'an error response while not creating a pypi package',
+          message: 'Unauthorized',
+          reason: :unauthorized
       end
 
       before do

@@ -10162,6 +10162,8 @@ CREATE TABLE custom_fields (
     archived_at timestamp with time zone,
     field_type smallint NOT NULL,
     name text NOT NULL,
+    created_by_id bigint,
+    updated_by_id bigint,
     CONSTRAINT check_b047b04af9 CHECK ((char_length(name) <= 255))
 );
 
@@ -28765,6 +28767,10 @@ CREATE UNIQUE INDEX index_custom_emoji_on_namespace_id_and_name ON custom_emoji 
 
 CREATE INDEX index_custom_field_select_options_on_namespace_id ON custom_field_select_options USING btree (namespace_id);
 
+CREATE INDEX index_custom_fields_on_created_by_id ON custom_fields USING btree (created_by_id);
+
+CREATE INDEX index_custom_fields_on_updated_by_id ON custom_fields USING btree (updated_by_id);
+
 CREATE UNIQUE INDEX index_custom_software_licenses_on_project_id_and_name ON custom_software_licenses USING btree (project_id, name);
 
 CREATE INDEX index_customer_relations_contacts_on_group_id ON customer_relations_contacts USING btree (group_id);
@@ -36232,6 +36238,9 @@ ALTER TABLE ONLY ci_builds
 ALTER TABLE ONLY upcoming_reconciliations
     ADD CONSTRAINT fk_rails_497b4938ac FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY custom_fields
+    ADD CONSTRAINT fk_rails_4a74c8558e FOREIGN KEY (created_by_id) REFERENCES users(id) ON DELETE SET NULL;
+
 ALTER TABLE ONLY group_deletion_schedules
     ADD CONSTRAINT fk_rails_4b8c694a6c FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -36627,6 +36636,9 @@ ALTER TABLE ONLY dependency_proxy_manifest_states
 
 ALTER TABLE ONLY ci_job_artifact_states
     ADD CONSTRAINT fk_rails_80a9cba3b2_p FOREIGN KEY (partition_id, job_artifact_id) REFERENCES p_ci_job_artifacts(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE ONLY custom_fields
+    ADD CONSTRAINT fk_rails_80c4a47616 FOREIGN KEY (updated_by_id) REFERENCES users(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY approval_merge_request_rules_users
     ADD CONSTRAINT fk_rails_80e6801803 FOREIGN KEY (approval_merge_request_rule_id) REFERENCES approval_merge_request_rules(id) ON DELETE CASCADE;
