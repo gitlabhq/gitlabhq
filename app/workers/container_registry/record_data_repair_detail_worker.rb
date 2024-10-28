@@ -7,7 +7,7 @@ module ContainerRegistry
     include LimitedCapacity::Worker
     include Gitlab::Utils::StrongMemoize
 
-    data_consistency :always # rubocop:disable SidekiqLoadBalancing/WorkerDataConsistency
+    data_consistency :always
     queue_namespace :container_repository
     feature_category :container_registry
     urgency :low

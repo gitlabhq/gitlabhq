@@ -4,7 +4,7 @@ module Members
   class ExpiringEmailNotificationWorker # rubocop:disable Scalability/CronWorkerContext
     include ApplicationWorker
 
-    data_consistency :always # rubocop:disable SidekiqLoadBalancing/WorkerDataConsistency
+    data_consistency :always
     feature_category :system_access
     urgency :low
     idempotent!

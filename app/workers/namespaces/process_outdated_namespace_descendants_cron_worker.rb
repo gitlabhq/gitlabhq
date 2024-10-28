@@ -6,7 +6,7 @@ module Namespaces
 
     include ApplicationWorker
 
-    data_consistency :always # rubocop: disable SidekiqLoadBalancing/WorkerDataConsistency -- The worker updates data
+    data_consistency :always
 
     # rubocop:disable Scalability/CronWorkerContext -- This worker does not perform work scoped to a context
     include CronjobQueue

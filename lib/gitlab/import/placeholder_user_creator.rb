@@ -30,6 +30,8 @@ module Gitlab
         user.assign_personal_namespace(namespace.organization)
         user.save!
 
+        log_placeholder_user_creation(user)
+
         user
       end
 
@@ -81,6 +83,16 @@ module Gitlab
         uniquify.string(->(unique_number) { format(base_pattern, unique_number) }) do |str|
           lambda_for_uniqueness.call(str)
         end
+      end
+
+      def log_placeholder_user_creation(user)
+        ::Import::Framework::Logger.info(
+          message: 'Placeholder user created',
+          source_user_id: source_user.id,
+          import_type: source_user.import_type,
+          namespace_id: source_user.namespace_id,
+          user_id: user.id
+        )
       end
     end
   end

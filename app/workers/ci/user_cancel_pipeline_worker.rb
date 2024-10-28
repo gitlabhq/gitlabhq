@@ -4,7 +4,7 @@ module Ci
   class UserCancelPipelineWorker
     include ApplicationWorker
 
-    data_consistency :always # rubocop:disable SidekiqLoadBalancing/WorkerDataConsistency -- Lots of updates to ci_builds
+    data_consistency :always
     feature_category :continuous_integration
     idempotent!
     deduplicate :until_executed

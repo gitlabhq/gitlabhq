@@ -82,6 +82,6 @@ class PartitionCiBuildTraceMetadata3 < Gitlab::Database::Migration[2.2]
   def already_partitioned?
     ::Gitlab::Database::PostgresPartition
       .for_parent_table(:p_ci_build_trace_metadata)
-      .partition_exists?(:ci_build_trace_metadata)
+      .any?
   end
 end

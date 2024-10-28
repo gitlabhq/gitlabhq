@@ -64,7 +64,7 @@ class PersonalAccessToken < ApplicationRecord
     expiring_and_not_notified(DAYS_TO_EXPIRE.days.from_now.to_date).without_impersonation
   }
 
-  validates :scopes, presence: true
+  validates :name, :scopes, presence: true
   validates :expires_at, presence: true, on: :create, unless: :allow_expires_at_to_be_empty?
 
   validate :validate_scopes

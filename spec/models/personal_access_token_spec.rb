@@ -190,7 +190,7 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
     end
   end
 
-  describe ".active?" do
+  describe '#active?' do
     let(:active_personal_access_token) { build(:personal_access_token) }
     let(:revoked_personal_access_token) { build(:personal_access_token, :revoked) }
     let(:expired_personal_access_token) { build(:personal_access_token, :expired) }
@@ -208,7 +208,7 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
     end
   end
 
-  describe 'revoke!' do
+  describe '#revoke!' do
     let(:active_personal_access_token) { create(:personal_access_token) }
 
     it 'revokes the token' do
@@ -232,69 +232,80 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
     end
   end
 
-  context "validations" do
+  describe 'validations' do
     let(:personal_access_token) { build(:personal_access_token) }
 
-    it "requires at least one scope" do
-      personal_access_token.scopes = []
+    describe 'name' do
+      it "requires a name" do
+        personal_access_token.name = nil
 
-      expect(personal_access_token).not_to be_valid
-      expect(personal_access_token.errors[:scopes].first).to eq "can't be blank"
+        expect(personal_access_token).not_to be_valid
+        expect(personal_access_token.errors[:name].first).to eq "can't be blank"
+      end
     end
 
-    it "allows creating a token with API scopes" do
-      personal_access_token.scopes = [:api, :read_user]
+    describe 'scopes' do
+      it "requires at least one scope" do
+        personal_access_token.scopes = []
 
-      expect(personal_access_token).to be_valid
-    end
-
-    it "allows creating a token with `admin_mode` scope" do
-      personal_access_token.scopes = [:api, :admin_mode]
-
-      expect(personal_access_token).to be_valid
-    end
-
-    context 'when registry is disabled' do
-      before do
-        stub_container_registry_config(enabled: false)
+        expect(personal_access_token).not_to be_valid
+        expect(personal_access_token.errors[:scopes].first).to eq "can't be blank"
       end
 
-      it "rejects creating a token with read_registry scope" do
-        personal_access_token.scopes = [:read_registry]
+      it "allows creating a token with API scopes" do
+        personal_access_token.scopes = [:api, :read_user]
+
+        expect(personal_access_token).to be_valid
+      end
+
+      it "allows creating a token with `admin_mode` scope" do
+        personal_access_token.scopes = [:api, :admin_mode]
+
+        expect(personal_access_token).to be_valid
+      end
+
+      context 'when registry is disabled' do
+        before do
+          stub_container_registry_config(enabled: false)
+        end
+
+        it "rejects creating a token with read_registry scope" do
+          personal_access_token.scopes = [:read_registry]
+
+          expect(personal_access_token).not_to be_valid
+          expect(personal_access_token.errors[:scopes].first).to eq "can only contain available scopes"
+        end
+
+        it "allows revoking a token with read_registry scope" do
+          personal_access_token.scopes = [:read_registry]
+
+          personal_access_token.revoke!
+
+          expect(personal_access_token).to be_revoked
+        end
+      end
+
+      context 'when registry is enabled' do
+        before do
+          stub_container_registry_config(enabled: true)
+        end
+
+        it "allows creating a token with read_registry scope" do
+          personal_access_token.scopes = [:read_registry]
+
+          expect(personal_access_token).to be_valid
+        end
+      end
+
+      it "rejects creating a token with unavailable scopes" do
+        personal_access_token.scopes = [:openid, :api]
 
         expect(personal_access_token).not_to be_valid
         expect(personal_access_token.errors[:scopes].first).to eq "can only contain available scopes"
       end
-
-      it "allows revoking a token with read_registry scope" do
-        personal_access_token.scopes = [:read_registry]
-
-        personal_access_token.revoke!
-
-        expect(personal_access_token).to be_revoked
-      end
     end
 
-    context 'when registry is enabled' do
-      before do
-        stub_container_registry_config(enabled: true)
-      end
-
-      it "allows creating a token with read_registry scope" do
-        personal_access_token.scopes = [:read_registry]
-
-        expect(personal_access_token).to be_valid
-      end
-    end
-
-    it "rejects creating a token with unavailable scopes" do
-      personal_access_token.scopes = [:openid, :api]
-
-      expect(personal_access_token).not_to be_valid
-      expect(personal_access_token.errors[:scopes].first).to eq "can only contain available scopes"
-    end
-
-    context 'validates expires_at' do
+    describe 'expires_at' do
       before do
         stub_feature_flags(buffered_token_expiration_limit: false)
       end
@@ -340,7 +351,7 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
       end
     end
 
-    context 'validates buffered expires_at' do
+    describe 'buffered expires_at' do
       let(:max_expiration_date) { Date.current + described_class::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS_BUFFERED }
       let(:max_unbuffered_expiration_date) { Date.current + described_class::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS }
 
@@ -615,31 +626,6 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
 
       it 'returns ordered list in combination of expires_at ascending and id descending' do
         expect(described_class.order_expires_at_asc_id_desc).to eq [earlier_token_2, earlier_token, later_token]
-      end
-    end
-  end
-
-  # During the implementation of Admin Mode for API, tokens of
-  # administrators should automatically get the `admin_mode` scope as well
-  # See https://gitlab.com/gitlab-org/gitlab/-/issues/42692
-  describe '`admin_mode scope' do
-    subject { create(:personal_access_token, user: user, scopes: ['api']) }
-
-    context 'with feature flag enabled' do
-      context 'with administrator user' do
-        let_it_be(:user) { create(:user, :admin) }
-
-        it 'does not add `admin_mode` scope before created' do
-          expect(subject.scopes).to contain_exactly('api')
-        end
-      end
-
-      context 'with normal user' do
-        let_it_be(:user) { create(:user) }
-
-        it 'does not add `admin_mode` scope before created' do
-          expect(subject.scopes).to contain_exactly('api')
-        end
       end
     end
   end

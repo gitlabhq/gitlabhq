@@ -133,6 +133,7 @@ by all projects in the group and can't be overridden by project settings.
 Prerequisites:
 
 - You must have the Owner role for the group.
+- The group must be a top-level group. Subgroups are not supported.
 
 To protect a branch for all the projects in a group:
 

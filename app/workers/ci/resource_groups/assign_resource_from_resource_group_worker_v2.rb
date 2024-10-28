@@ -19,7 +19,7 @@ module Ci
     class AssignResourceFromResourceGroupWorkerV2
       include ApplicationWorker
 
-      data_consistency :always # rubocop: disable SidekiqLoadBalancing/WorkerDataConsistency -- see comment above
+      data_consistency :always
 
       sidekiq_options retry: 3
       include PipelineQueue

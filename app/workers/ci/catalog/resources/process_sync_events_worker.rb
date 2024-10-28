@@ -20,7 +20,7 @@ module Ci
 
         feature_category :pipeline_composition
 
-        data_consistency :always # rubocop:disable SidekiqLoadBalancing/WorkerDataConsistency -- We should not sync stale data
+        data_consistency :always
         urgency :high
 
         idempotent!
