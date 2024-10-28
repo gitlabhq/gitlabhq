@@ -137,8 +137,8 @@ See [database guidelines](database/index.md).
 
 The following integration guides are internal. Some integrations require access to administrative accounts of third-party services and are available only for GitLab team members to contribute to:
 
-- [Jira integration development](https://gitlab.com/gitlab-org/manage/import-and-integrate/team/-/blob/main/integrations/jira.md)
-- [GitLab for Slack app development](https://gitlab.com/gitlab-org/manage/import-and-integrate/team/-/blob/main/integrations/slack.md)
+- [Jira integration development](https://gitlab.com/gitlab-org/foundations/import-and-integrate/team/-/blob/main/integrations/jira.md)
+- [GitLab for Slack app development](https://gitlab.com/gitlab-org/foundations/import-and-integrate/team/-/blob/main/integrations/slack.md)
 
 ## Testing guides
 

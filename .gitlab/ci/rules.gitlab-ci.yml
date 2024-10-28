@@ -3019,8 +3019,6 @@
       changes:
         - ".gitlab/ci/test-metadata.gitlab-ci.yml"
         - "scripts/rspec_helpers.sh"
-      when: manual
-      allow_failure: true
     - <<: *if-merge-request-not-approved
       when: never
     - <<: *if-merge-request
@@ -3362,25 +3360,14 @@
     - <<: *if-merge-request-labels-run-observability-e2e-tests-current-branch
       when: never
     - <<: *if-merge-request-labels-run-observability-e2e-tests-main-branch
-      allow_failure: true
     - <<: *if-merge-request
       changes: *observability-code-patterns
-      allow_failure: true
-    - <<: *if-merge-request
-      changes: *code-patterns
-      when: manual
-      allow_failure: true
 
 .observability-backend-current-branch:rules:
   rules:
     - <<: *if-merge-request-labels-run-observability-e2e-tests-main-branch
       when: never
     - <<: *if-merge-request-labels-run-observability-e2e-tests-current-branch
-      allow_failure: true
-    - <<: *if-merge-request
-      changes: *code-patterns
-      when: manual
-      allow_failure: true
 
 ##########################
 # Pre-merge checks rules #

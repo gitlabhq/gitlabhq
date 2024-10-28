@@ -206,10 +206,6 @@ function install_tff_gem() {
   run_timed_command "gem install test_file_finder --no-document --version 0.3.1"
 }
 
-function install_activesupport_gem() {
-  run_timed_command "gem install activesupport --no-document --version 6.1.7.2"
-}
-
 function install_junit_merge_gem() {
   run_timed_command "gem install junit_merge --no-document --version 0.1.2"
 }

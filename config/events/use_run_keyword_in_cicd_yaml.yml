@@ -1,0 +1,18 @@
+---
+description: Usage of run keyword in CICD Yaml
+internal_events: true
+action: use_run_keyword_in_cicd_yaml
+identifiers:
+- project
+- namespace
+- user
+product_group: pipeline_authoring
+milestone: '17.6'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169408
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

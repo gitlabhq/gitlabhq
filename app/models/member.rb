@@ -82,6 +82,10 @@ class Member < ApplicationRecord
     Member.default_scoped.from_union([group_members, project_members]).merge(self)
   end
 
+  scope :including_user_ids, ->(user_ids) do
+    where(user_id: user_ids)
+  end
+
   scope :excluding_users, ->(user_ids) do
     where.not(user_id: user_ids)
   end

@@ -4,7 +4,11 @@ module Gitlab
   module SidekiqMiddleware
     module ConcurrencyLimit
       class QueueManager
-        attr_reader :redis_key
+        include ExclusiveLeaseGuard
+
+        LEASE_TIMEOUT = 10.seconds
+
+        attr_reader :redis_key, :worker_name
 
         def initialize(worker_name:, prefix:)
           @worker_name = worker_name
@@ -28,18 +32,28 @@ module Gitlab
         end
 
         def resume_processing!(limit:)
-          with_redis do |redis|
-            jobs = next_batch_from_queue(redis, limit: limit)
-            break if jobs.empty?
+          try_obtain_lease do
+            with_redis do |redis|
+              jobs = next_batch_from_queue(redis, limit: limit)
+              break if jobs.empty?
 
-            jobs.each { |job| send_to_processing_queue(deserialize(job)) }
-            remove_processed_jobs(redis, limit: jobs.length)
+              jobs.each { |job| send_to_processing_queue(deserialize(job)) }
+              remove_processed_jobs(redis, limit: jobs.length)
 
-            jobs.length
+              jobs.length
+            end
           end
         end
 
         private
+
+        def lease_timeout
+          LEASE_TIMEOUT
+        end
+
+        def lease_key
+          @lease_key ||= "concurrency_limit:queue_manager:{#{worker_name.underscore}}"
+        end
 
         def with_redis(&)
           Gitlab::Redis::SharedState.with(&) # rubocop:disable CodeReuse/ActiveRecord -- Not active record
@@ -58,8 +72,8 @@ module Gitlab
 
           Gitlab::ApplicationContext.with_raw_context(context) do
             args = job['args']
-            Gitlab::SidekiqLogging::ConcurrencyLimitLogger.instance.resumed_log(@worker_name, args)
-            worker_klass = @worker_name.safe_constantize
+            Gitlab::SidekiqLogging::ConcurrencyLimitLogger.instance.resumed_log(worker_name, args)
+            worker_klass = worker_name.safe_constantize
             next if worker_klass.nil?
 
             worker_klass.concurrency_limit_resume(job['buffered_at']).perform_async(*args)

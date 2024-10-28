@@ -5456,39 +5456,6 @@ export const mockUploadErrorDesignMutationResponse = {
   },
 };
 
-export const namespaceWorkItemTypesQueryResponse = {
-  data: {
-    workspace: {
-      id: 'gid://gitlab/Namespaces/1',
-      workItemTypes: {
-        nodes: [
-          {
-            __typename: 'WorkItemType',
-            id: 'gid://gitlab/WorkItems::Type/1',
-            name: 'Issue',
-            widgetDefinitions: [
-              {
-                type: 'HIERARCHY',
-                allowedChildTypes: {
-                  nodes: [
-                    {
-                      id: 'gid://gitlab/WorkItems::Type/5',
-                      name: 'Task',
-                      __typename: 'WorkItemType',
-                    },
-                  ],
-                  __typename: 'WorkItemTypeConnection',
-                },
-                __typename: 'WorkItemWidgetDefinitionHierarchy',
-              },
-            ],
-          },
-        ],
-      },
-    },
-  },
-};
-
 export const workItemHierarchyNoChildrenTreeResponse = {
   data: {
     workItem: {

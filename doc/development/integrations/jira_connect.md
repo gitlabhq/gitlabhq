@@ -125,9 +125,9 @@ If you use Gitpod and you get an error about Jira not being able to access the d
 
 ## Setup without Jira
 
-If you do not require Jira to test with, you can use the [Jira connect test tool](https://gitlab.com/gitlab-org/manage/import-and-integrate/jira-connect-test-tool) and your local GDK.
+If you do not require Jira to test with, you can use the [Jira connect test tool](https://gitlab.com/gitlab-org/foundations/import-and-integrate/jira-connect-test-tool) and your local GDK.
 
-1. Clone the [**Jira-connect-test-tool**](https://gitlab.com/gitlab-org/manage/import-and-integrate/jira-connect-test-tool) `git clone git@gitlab.com:gitlab-org/manage/integrations/jira-connect-test-tool.git`.
+1. Clone the [**Jira-connect-test-tool**](https://gitlab.com/gitlab-org/foundations/import-and-integrate/jira-connect-test-tool) `git clone git@gitlab.com:gitlab-org/manage/integrations/jira-connect-test-tool.git`.
 1. Start the app `bundle exec rackup`. (The app requires your GDK GitLab to be available on `http://127.0.0.1:3000`.).
 1. Open `config/gitlab.yml` and uncomment the `jira_connect` config.
 1. If running GDK on a domain other than `localhost`, you must add the domain to `additional_iframe_ancestors`. For example:

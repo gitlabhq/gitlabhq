@@ -16,7 +16,7 @@ DETAILS:
 > - [Enabled on self-managed](https://gitlab.com/groups/gitlab-org/-/epics/15176) in GitLab 17.6.
 > - GitLab Duo add-on required in GitLab 17.6 and later.
 
-There are multiple platforms available to host your self-hosted Large Language Models (LLMs). Each platform has unique features and benefits that can cater to different needs. The following documentation summarises some of the most popular options:
+There are multiple platforms available to host your self-hosted Large Language Models (LLMs). Each platform has unique features and benefits that can cater to different needs. The following documentation summarises the currently supported options:
 
 ## For non-cloud on-premise model deployments
 

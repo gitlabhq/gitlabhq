@@ -12,7 +12,7 @@ which are part of our [main Rails project](https://gitlab.com/gitlab-org/gitlab)
 
 Also see our [direction page](https://about.gitlab.com/direction/manage/import_and_integrate/integrations/) for an overview of our strategy around integrations.
 
-This guide is a work in progress. You're welcome to ping `@gitlab-org/manage/import-and-integrate`
+This guide is a work in progress. You're welcome to ping `@gitlab-org/foundations/import-and-integrate`
 if you need clarification or spot any outdated information.
 
 ## Add a new integration

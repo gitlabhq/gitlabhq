@@ -1,51 +1,7 @@
 #!/usr/bin/env bash
 
-function retrieve_tests_metadata() {
-  mkdir -p $(dirname "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}") $(dirname "${FLAKY_RSPEC_SUITE_REPORT_PATH}") "${RSPEC_PROFILING_FOLDER_PATH}"
-
-  curl --fail --location -o "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}" "https://gitlab-org.gitlab.io/gitlab/${KNAPSACK_RSPEC_SUITE_REPORT_PATH}" ||
-    echo "{}" > "${KNAPSACK_RSPEC_SUITE_REPORT_PATH:-unknown_file}"
-
-  curl --fail --location -o "${FLAKY_RSPEC_SUITE_REPORT_PATH}" "https://gitlab-org.gitlab.io/gitlab/${FLAKY_RSPEC_SUITE_REPORT_PATH}" ||
-    echo "{}" > "${FLAKY_RSPEC_SUITE_REPORT_PATH}"
-
-  curl --fail --location -o "${RSPEC_FAST_QUARANTINE_PATH}" "https://gitlab-org.gitlab.io/quality/engineering-productivity/fast-quarantine/${RSPEC_FAST_QUARANTINE_PATH}" ||
-    echo "" > "${RSPEC_FAST_QUARANTINE_PATH}"
-}
-
 function update_tests_metadata() {
-  local rspec_flaky_folder_path="$(dirname "${FLAKY_RSPEC_SUITE_REPORT_PATH:-unknown_folder}")/"
-  local knapsack_folder_path="$(dirname "${KNAPSACK_RSPEC_SUITE_REPORT_PATH:-unknown_folder}")/"
-
-  if [[ ! -f "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}" ]]; then
-    curl --fail --location -o "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}" "https://gitlab-org.gitlab.io/gitlab/${KNAPSACK_RSPEC_SUITE_REPORT_PATH}" ||
-      echo "{}" > "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}"
-  fi
-
-  if [[ ! -f "${FLAKY_RSPEC_SUITE_REPORT_PATH}" ]]; then
-    curl --fail --location -o "${FLAKY_RSPEC_SUITE_REPORT_PATH}" "https://gitlab-org.gitlab.io/gitlab/${FLAKY_RSPEC_SUITE_REPORT_PATH}" ||
-      echo "{}" > "${FLAKY_RSPEC_SUITE_REPORT_PATH}"
-  fi
-
-  if [[ ! -f "${RSPEC_FAST_QUARANTINE_PATH}" ]]; then
-    curl --fail --location -o "${RSPEC_FAST_QUARANTINE_PATH}" "https://gitlab-org.gitlab.io/quality/engineering-productivity/fast-quarantine/${RSPEC_FAST_QUARANTINE_PATH}" ||
-      echo "" > "${RSPEC_FAST_QUARANTINE_PATH}"
-  fi
-
-  if [[ "$AVERAGE_KNAPSACK_REPORT" == "true" ]]; then
-    # a comma separated list of file names matching the glob
-    local new_reports="$(printf '%s,' ${knapsack_folder_path:-unknown_folder}rspec*.json)"
-    scripts/pipeline/average_reports.rb -i "${KNAPSACK_RSPEC_SUITE_REPORT_PATH:-unknown_file}" -n "${new_reports}"
-  else
-    scripts/merge-reports "${KNAPSACK_RSPEC_SUITE_REPORT_PATH:-unknown_file}" ${knapsack_folder_path:-unknown_folder}rspec*.json
-  fi
-
-  export FLAKY_RSPEC_GENERATE_REPORT="true"
-  scripts/merge-reports "${FLAKY_RSPEC_SUITE_REPORT_PATH:-unknown_file}" ${rspec_flaky_folder_path:-unknown_folder}all_*.json
-
-  # Prune flaky tests that weren't flaky in the last 7 days, *after* updating the flaky tests detected
-  # in this pipeline, so that first_flaky_at for tests that are still flaky is maintained.
-  scripts/flaky_examples/prune-old-flaky-examples "${FLAKY_RSPEC_SUITE_REPORT_PATH:-unknown_file}"
+  scripts/setup/tests-metadata.rb update
 
   if [[ "$CI_PIPELINE_SOURCE" == "schedule" ]]; then
     if [[ -n "$RSPEC_PROFILING_PGSSLKEY" ]]; then
@@ -626,7 +582,7 @@ function cleanup_individual_job_reports() {
     rspec/retried_tests_*_report.txt \
     ${RSPEC_LAST_RUN_RESULTS_FILE:-unknown_folder} \
     ${RSPEC_PROFILING_FOLDER_PATH:-unknown_folder}/**/*
-  rmdir ${RSPEC_PROFILING_FOLDER_PAT:-unknown_folder} || true
+  rmdir ${RSPEC_PROFILING_FOLDER_PATH:-unknown_folder} || true
 }
 
 function generate_flaky_tests_reports() {

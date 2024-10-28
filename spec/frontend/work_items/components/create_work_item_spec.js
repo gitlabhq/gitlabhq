@@ -213,6 +213,7 @@ describe('Create work item component', () => {
           expectedWorkItemTypeData.widgetDefinitions,
           expectedWorkItemTypeData.name,
           expectedWorkItemTypeData.id,
+          expectedWorkItemTypeData.iconName,
         );
       },
     );

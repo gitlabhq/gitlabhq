@@ -21,7 +21,7 @@ GitLab is being translated into many languages. To select a language to contribu
    - If the language you want is available, proceed to the next step.
    - If the language you want is not available,
      [open an issue](https://gitlab.com/gitlab-org/gitlab/-/issues?scope=all&utf8=✓&state=all&label_name[]=Category%3AInternationalization).
-     Notify our Crowdin administrators by including `@gitlab-org/manage/import-and-integrate` in your issue.
+     Notify our Crowdin administrators by including `@gitlab-org/foundations/import-and-integrate` in your issue.
    - After the issue and any merge requests are complete, restart this procedure.
 
 1. View the list of files and folders. Select `gitlab.pot` to open the translation editor.

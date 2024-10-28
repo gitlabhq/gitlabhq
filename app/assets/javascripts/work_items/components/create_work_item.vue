@@ -173,6 +173,7 @@ export default {
             workItemType?.widgetDefinitions,
             workItemType.name,
             workItemType.id,
+            workItemType.iconName,
           );
           this.selectedWorkItemTypeId = workItemType?.id;
         } else {
@@ -182,6 +183,7 @@ export default {
               workItemType?.widgetDefinitions,
               workItemType.name,
               workItemType.id,
+              workItemType.iconName,
             );
           });
           this.showWorkItemTypeSelect = true;
@@ -233,6 +235,9 @@ export default {
     },
     selectedWorkItemTypeName() {
       return this.selectedWorkItemType?.name;
+    },
+    selectedWorkItemTypeIconName() {
+      return this.selectedWorkItemType?.iconName;
     },
     formOptions() {
       return [{ value: null, text: s__('WorkItem|Select type') }, ...this.workItemTypesForSelect];
@@ -486,6 +491,7 @@ export default {
         selectedWorkItemWidgets,
         this.selectedWorkItemTypeName,
         this.selectedWorkItemTypeId,
+        this.selectedWorkItemTypeIconName,
       );
     },
   },

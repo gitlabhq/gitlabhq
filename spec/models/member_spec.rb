@@ -851,6 +851,15 @@ RSpec.describe Member, feature_category: :groups_and_projects do
       end
     end
 
+    describe '.including_user_ids' do
+      let_it_be(:active_group_member) { create(:group_member, group: group) }
+
+      it 'includes members with given user ids' do
+        expect(group.members.including_user_ids(active_group_member.user_id)).to include active_group_member
+        expect(group.members.including_user_ids(non_existing_record_id)).to be_empty
+      end
+    end
+
     describe '.excluding_users' do
       let_it_be(:active_group_member) { create(:group_member, group: group) }
 

@@ -297,6 +297,7 @@ export const setNewWorkItemCache = async (
   widgetDefinitions,
   workItemType,
   workItemTypeId,
+  workItemTypeIconName,
   // eslint-disable-next-line max-params
 ) => {
   const workItemAttributesWrapperOrder = [
@@ -586,7 +587,7 @@ export const setNewWorkItemCache = async (
               workItemType: {
                 id: workItemTypeId || 'mock-work-item-type-id',
                 name: workItemTitleCase,
-                iconName: 'issue-type-epic',
+                iconName: workItemTypeIconName,
                 __typename: 'WorkItemType',
               },
               userPermissions: {

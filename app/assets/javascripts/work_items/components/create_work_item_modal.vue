@@ -108,6 +108,7 @@ export default {
           this.workItemTypes[0]?.widgetDefinitions,
           this.workItemTypeName,
           this.workItemTypes[0]?.id,
+          this.workItemTypes[0]?.iconName,
         );
       },
       error() {
@@ -169,6 +170,7 @@ export default {
           this.workItemTypes[0]?.widgetDefinitions,
           this.workItemTypeName,
           this.workItemTypes[0]?.id,
+          this.workItemTypes[0]?.iconName,
         );
       }
       this.hideModal();

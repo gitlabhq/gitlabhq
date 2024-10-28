@@ -76,11 +76,19 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::QueueManager,
     let(:setter) { instance_double('Sidekiq::Job::Setter') }
     let(:buffered_at) { Time.now.utc }
 
+    before do
+      service.remove_instance_variable(:@lease) if service.instance_variable_defined?(:@lease)
+    end
+
     it 'puts jobs back into the queue and respects order' do
       travel_to(buffered_at) do
         jobs.each do |j|
           service.add_to_queue!(j, worker_context)
         end
+      end
+
+      expect_next_instance_of(Gitlab::ExclusiveLease) do |el|
+        expect(el).to receive(:try_obtain).and_call_original
       end
 
       expect(worker_class).to receive(:concurrency_limit_resume)
@@ -107,6 +115,10 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::QueueManager,
         end
       end
 
+      expect_next_instance_of(Gitlab::ExclusiveLease) do |el|
+        expect(el).to receive(:try_obtain).and_call_original
+      end
+
       expect(Gitlab::ApplicationContext).to receive(:with_raw_context)
         .with(stored_context)
         .exactly(jobs.count).times.and_call_original
@@ -116,6 +128,24 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::QueueManager,
 
       expect { service.resume_processing!(limit: jobs.count) }
         .to change { service.has_jobs_in_queue? }.from(true).to(false)
+    end
+
+    context 'when exclusive lease is already being held' do
+      before do
+        service.exclusive_lease.try_obtain
+      end
+
+      it 'does not perform enqueue' do
+        travel_to(buffered_at) do
+          jobs.each do |j|
+            service.add_to_queue!(j, worker_context)
+          end
+        end
+
+        expect(worker_class).not_to receive(:concurrency_limit_resume)
+
+        service.resume_processing!(limit: 2)
+      end
     end
   end
 end

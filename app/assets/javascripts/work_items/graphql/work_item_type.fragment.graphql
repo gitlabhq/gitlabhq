@@ -1,6 +1,7 @@
 fragment WorkItemTypeFragment on WorkItemType {
   id
   name
+  iconName
   widgetDefinitions {
     type
     ... on WorkItemWidgetDefinitionHierarchy {

@@ -56,9 +56,9 @@ The following models are under evaluation, and support is limited:
 
 ## Hardware Requirements
 
-For optimal performance, the following hardware specifications are recommended for hosting these models:
+For optimal performance, the following hardware specifications are recommended as baselines for hosting these models. Hosting requirements may vary depending model to model, so we recommend checking model vendor documentation as well:
 
 - **CPU**: Minimum 8 cores (16 threads recommended).
 - **RAM**: At least 32 GB (64 GB or more recommended for larger models).
-- **GPU**: NVIDIA A100 or equivalent for optimal inference performance.
+- **GPU**: 2x NVIDIA A100 or equivalent for optimal inference performance.
 - **Storage**: SSD with sufficient space for model weights and data.

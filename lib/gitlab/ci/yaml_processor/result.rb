@@ -43,6 +43,12 @@ module Gitlab
           @included_templates ||= @ci_config.included_templates
         end
 
+        def uses_keyword?(keyword)
+          jobs.values.any? do |job|
+            job[keyword].present?
+          end
+        end
+
         def included_components
           @ci_config.included_components
         end

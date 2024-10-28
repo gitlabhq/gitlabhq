@@ -61,6 +61,7 @@ How to enable:
 1. Restart your instance (e.g. `gdk restart`).
 1. Follow the [instructions to activate your new license](../../administration/license.md#activate-gitlab-ee).
 1. Test out the GitLab Observability feature by navigating to a project and selecting Tracing, Metrics, or Logs from the Monitor section of the navigation menu.
+1. If you are seeing 404 errors you might need to manually [refresh](../../subscriptions/self_managed/index.md#manually-synchronize-subscription-data) your license data.
 
 ### Use the purpose built `devvm`
 
