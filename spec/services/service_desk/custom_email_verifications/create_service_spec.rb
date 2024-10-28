@@ -61,6 +61,11 @@ RSpec.describe ServiceDesk::CustomEmailVerifications::CreateService, feature_cat
           error_message: error_identifier.to_s
         )).once
 
+        expect(Gitlab::AppLogger).to receive(:warn).with(logger_params.merge(
+          error_message: error.message,
+          error_class: error.class.to_s
+        )).once
+
         response = service.execute
 
         expect(response).to be_error
@@ -135,19 +140,41 @@ RSpec.describe ServiceDesk::CustomEmailVerifications::CreateService, feature_cat
           )
         end
 
-        context 'when providing invalid SMTP credentials' do
+        context 'when email delivery raises an error' do
           before do
             allow(Notify).to receive(:service_desk_verification_result_email).and_return(message_delivery)
           end
 
-          it_behaves_like 'a verification process with ramp up error' do
-            let(:error) { SocketError }
+          context 'when error_identifier is smtp_host_issue' do
             let(:error_identifier) { 'smtp_host_issue' }
-          end
 
-          it_behaves_like 'a verification process with ramp up error' do
-            let(:error) { OpenSSL::SSL::SSLError }
-            let(:error_identifier) { 'smtp_host_issue' }
+            it_behaves_like 'a verification process with ramp up error' do
+              let(:error) { SocketError.new }
+            end
+
+            it_behaves_like 'a verification process with ramp up error' do
+              let(:error) { OpenSSL::SSL::SSLError.new }
+            end
+
+            it_behaves_like 'a verification process with ramp up error' do
+              let(:error) { Net::SMTPServerBusy.new('Server busy') }
+            end
+
+            it_behaves_like 'a verification process with ramp up error' do
+              let(:error) { Net::SMTPSyntaxError.new('Syntax error') }
+            end
+
+            it_behaves_like 'a verification process with ramp up error' do
+              let(:error) { Net::SMTPFatalError.new('Fatal error') }
+            end
+
+            it_behaves_like 'a verification process with ramp up error' do
+              let(:error) { Net::SMTPUnsupportedCommand.new('Unsupported command') }
+            end
+
+            it_behaves_like 'a verification process with ramp up error' do
+              let(:error) { Net::SMTPUnknownError.new('Unknown error') }
+            end
           end
 
           it_behaves_like 'a verification process with ramp up error' do
@@ -156,7 +183,7 @@ RSpec.describe ServiceDesk::CustomEmailVerifications::CreateService, feature_cat
           end
 
           it_behaves_like 'a verification process with ramp up error' do
-            let(:error) { Net::ReadTimeout }
+            let(:error) { Net::ReadTimeout.new }
             let(:error_identifier) { 'read_timeout' }
           end
         end

@@ -1792,6 +1792,19 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_7e2eed79e46e() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  NEW."assignee_id_convert_to_bigint" := NEW."assignee_id";
+  NEW."id_convert_to_bigint" := NEW."id";
+  NEW."reporter_id_convert_to_bigint" := NEW."reporter_id";
+  NEW."resolved_by_id_convert_to_bigint" := NEW."resolved_by_id";
+  NEW."user_id_convert_to_bigint" := NEW."user_id";
+  RETURN NEW;
+END;
+$$;
+
 CREATE FUNCTION trigger_81b4c93e7133() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -5401,6 +5414,11 @@ CREATE TABLE abuse_reports (
     assignee_id bigint,
     mitigation_steps text,
     evidence jsonb,
+    assignee_id_convert_to_bigint bigint,
+    id_convert_to_bigint bigint DEFAULT 0 NOT NULL,
+    reporter_id_convert_to_bigint bigint,
+    resolved_by_id_convert_to_bigint bigint,
+    user_id_convert_to_bigint bigint,
     CONSTRAINT abuse_reports_links_to_spam_length_check CHECK ((cardinality(links_to_spam) <= 20)),
     CONSTRAINT check_4b0a5120e0 CHECK ((char_length(screenshot) <= 255)),
     CONSTRAINT check_ab1260fa6c CHECK ((char_length(reported_from_url) <= 512)),
@@ -33880,6 +33898,8 @@ CREATE TRIGGER trigger_77d9fbad5b12 BEFORE INSERT OR UPDATE ON packages_debian_p
 CREATE TRIGGER trigger_7a8b08eed782 BEFORE INSERT OR UPDATE ON boards_epic_board_positions FOR EACH ROW EXECUTE FUNCTION trigger_7a8b08eed782();
 
 CREATE TRIGGER trigger_7de792ddbc05 BEFORE INSERT OR UPDATE ON dast_site_validations FOR EACH ROW EXECUTE FUNCTION trigger_7de792ddbc05();
+
+CREATE TRIGGER trigger_7e2eed79e46e BEFORE INSERT OR UPDATE ON abuse_reports FOR EACH ROW EXECUTE FUNCTION trigger_7e2eed79e46e();
 
 CREATE TRIGGER trigger_81b4c93e7133 BEFORE INSERT OR UPDATE ON pages_deployment_states FOR EACH ROW EXECUTE FUNCTION trigger_81b4c93e7133();
 

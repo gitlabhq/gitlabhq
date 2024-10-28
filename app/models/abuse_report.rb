@@ -1,6 +1,12 @@
 # frozen_string_literal: true
 
 class AbuseReport < ApplicationRecord
+  ignore_column :assignee_id_convert_to_bigint, remove_with: '17.9', remove_after: '2025-01-16'
+  ignore_column :id_convert_to_bigint, remove_with: '17.9', remove_after: '2025-01-16'
+  ignore_column :reporter_id_convert_to_bigint, remove_with: '17.9', remove_after: '2025-01-16'
+  ignore_column :resolved_by_id_convert_to_bigint, remove_with: '17.9', remove_after: '2025-01-16'
+  ignore_column :user_id_convert_to_bigint, remove_with: '17.9', remove_after: '2025-01-16'
+
   include CacheMarkdownField
   include Sortable
   include Gitlab::FileTypeDetection

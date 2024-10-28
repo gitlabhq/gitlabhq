@@ -1,5 +1,5 @@
 ---
-redirect_to: '../jobs/job_logs.md#job_log_timestamps'
+redirect_to: '../jobs/job_logs.md#job-log-timestamps'
 remove_date: '2025-01-24'
 ---
 

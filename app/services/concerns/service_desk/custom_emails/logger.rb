@@ -5,9 +5,9 @@ module ServiceDesk
     module Logger
       private
 
-      def log_warning(error_message: nil)
+      def log_warning(**args)
         with_context do
-          Gitlab::AppLogger.warn(build_log_message(error_message: error_message))
+          Gitlab::AppLogger.warn(build_log_message(**args))
         end
       end
 
@@ -30,11 +30,10 @@ module ServiceDesk
         'custom_email'
       end
 
-      def build_log_message(error_message: nil)
+      def build_log_message(**args)
         {
-          category: log_category,
-          error_message: error_message
-        }.compact
+          category: log_category
+        }.merge(args).compact
       end
     end
   end
