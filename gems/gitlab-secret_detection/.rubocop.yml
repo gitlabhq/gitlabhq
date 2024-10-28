@@ -4,5 +4,8 @@ inherit_from:
 AllCops:
   NewCops: enable
 
+Style/HashSyntax:
+  EnforcedShorthandSyntax: consistent
+
 RSpec/MultipleMemoizedHelpers:
   Max: 25

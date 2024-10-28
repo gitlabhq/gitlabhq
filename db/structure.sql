@@ -21490,7 +21490,7 @@ CREATE TABLE xray_reports (
     updated_at timestamp with time zone NOT NULL,
     lang text NOT NULL,
     payload jsonb NOT NULL,
-    file_checksum bytea NOT NULL,
+    file_checksum bytea,
     CONSTRAINT check_6da5a3b473 CHECK ((char_length(lang) <= 255))
 );
 

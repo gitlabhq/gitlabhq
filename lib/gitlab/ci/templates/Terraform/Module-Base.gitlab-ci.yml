@@ -28,7 +28,4 @@ variables:
     - tar -vczf "${TAR_FILENAME}" -C "${TERRAFORM_MODULE_DIR}" --exclude=./.git .
     # Uploads the Terraform module artifact to the GitLab Terraform Module Registry, see
     # docs/user/packages/terraform_module_registry/index.html#publish-a-terraform-module
-    - 'curl --fail-with-body --location --header "JOB-TOKEN: ${CI_JOB_TOKEN}"
-        --upload-file "$TAR_FILENAME"
-        --upload-file "${TAR_FILENAME}"
-        "${UPLOAD_URL}"'
+    - 'curl --fail-with-body --location --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file "${TAR_FILENAME}" "${UPLOAD_URL}"'

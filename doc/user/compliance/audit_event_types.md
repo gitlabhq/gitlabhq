@@ -471,6 +471,7 @@ Audit event types belong to the following product categories.
 
 | Name | Description | Saved to database | Streamed | Introduced in | Scope |
 |:------------|:------------|:------------------|:---------|:--------------|:--------------|
+| [`project_security_exclusion_applied`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166511) | Triggered when a project security exclusion is applied in one of the security scanners | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [17.6](https://gitlab.com/gitlab-org/gitlab/-/issues/492465) | Project |
 | [`project_security_exclusion_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166511) | Triggered when a project security exclusion is created | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [17.5](https://gitlab.com/gitlab-org/gitlab/-/issues/492464) | Project |
 | [`project_security_exclusion_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166511) | Triggered when a project security exclusion is deleted | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [17.5](https://gitlab.com/gitlab-org/gitlab/-/issues/492464) | Project |
 | [`project_security_exclusion_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166511) | Triggered when a project security exclusion is updated | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [17.5](https://gitlab.com/gitlab-org/gitlab/-/issues/492464) | Project |

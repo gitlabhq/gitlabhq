@@ -52,13 +52,13 @@ If you're installing:
 - From an instance:
 
   ```shell
-  //your_domain_name/api/v4/projects/your_project_id/packages/npm/:_authToken="${NPM_TOKEN}"
+  //your_domain_name/api/v4/packages/npm/:_authToken="${NPM_TOKEN}"
   ```
 
 - From a group:
 
   ```shell
-  //your_domain_name/api/v4/projects/your_project_id/packages/npm/:_authToken="${NPM_TOKEN}"
+  //your_domain_name/api/v4/groups/your_group_id/-/packages/npm/:_authToken="${NPM_TOKEN}"
   ```
 
 - From a project:

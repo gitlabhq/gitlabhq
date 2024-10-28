@@ -15,21 +15,21 @@ RSpec.describe TokenAuthenticatableStrategies::Base, feature_category: :system_a
 
   let(:concrete_strategy) do
     Class.new(described_class) do
-      def get_token(instance)
-        instance[token_field]
+      def get_token(token_owner_record)
+        token_owner_record[token_field]
       end
 
-      def set_token(instance, token)
-        instance[token_field] = token if token
+      def set_token(token_owner_record, token)
+        token_owner_record[token_field] = token if token
       end
 
-      def token_set?(instance)
-        instance[token_field].present?
+      def token_set?(token_owner_record)
+        token_owner_record[token_field].present?
       end
     end
   end
 
-  let(:instance) { test_class.new }
+  let(:token_owner_record) { test_class.new }
 
   subject(:strategy) { concrete_strategy.new(test_class, field, options) }
 
@@ -76,7 +76,7 @@ RSpec.describe TokenAuthenticatableStrategies::Base, feature_category: :system_a
     subject(:strategy) { described_class.new(test_class, field, options) }
 
     it 'raises a NotImplementedError error' do
-      expect { strategy.find_token_authenticatable(instance) }.to raise_error(NotImplementedError)
+      expect { strategy.find_token_authenticatable(token_owner_record) }.to raise_error(NotImplementedError)
     end
   end
 
@@ -84,7 +84,7 @@ RSpec.describe TokenAuthenticatableStrategies::Base, feature_category: :system_a
     subject(:strategy) { described_class.new(test_class, field, options) }
 
     it 'raises a NotImplementedError error' do
-      expect { strategy.get_token(instance) }.to raise_error(NotImplementedError)
+      expect { strategy.get_token(token_owner_record) }.to raise_error(NotImplementedError)
     end
   end
 
@@ -92,7 +92,7 @@ RSpec.describe TokenAuthenticatableStrategies::Base, feature_category: :system_a
     subject(:strategy) { described_class.new(test_class, field, options) }
 
     it 'raises a NotImplementedError error' do
-      expect { strategy.set_token(instance, 'foo') }.to raise_error(NotImplementedError)
+      expect { strategy.set_token(token_owner_record, 'foo') }.to raise_error(NotImplementedError)
     end
   end
 
@@ -127,10 +127,10 @@ RSpec.describe TokenAuthenticatableStrategies::Base, feature_category: :system_a
   describe '#ensure_token' do
     let(:token_prefix) { nil }
     let(:token_generator) { nil }
-    let(:instance) { test_class.new(name: 'foo', token_prefix: token_prefix) }
+    let(:token_owner_record) { test_class.new(name: 'foo', token_prefix: token_prefix) }
     let(:random_bytes) { 'random-bytes' }
 
-    subject(:token) { strategy.ensure_token(instance) }
+    subject(:token) { strategy.ensure_token(token_owner_record) }
 
     before do
       allow(described_class).to receive(:random_bytes).and_return(random_bytes)
@@ -177,7 +177,7 @@ RSpec.describe TokenAuthenticatableStrategies::Base, feature_category: :system_a
       let(:cell_setting) { {} }
       let(:options) do
         super().merge(
-          routable_token: { n: ->(instance) { instance.name } },
+          routable_token: { n: ->(token_owner_record) { token_owner_record.name } },
           format_with_prefix: :token_prefix
         )
       end
@@ -186,7 +186,7 @@ RSpec.describe TokenAuthenticatableStrategies::Base, feature_category: :system_a
         allow(Settings).to receive(:cell).and_return(cell_setting)
       end
 
-      context 'when instance does not respond to #user' do
+      context 'when token_owner_record does not respond to #user' do
         it 'generates a non routable token' do
           expect(Devise).to receive(:friendly_token).and_return('devise_token')
 
@@ -194,12 +194,12 @@ RSpec.describe TokenAuthenticatableStrategies::Base, feature_category: :system_a
         end
       end
 
-      context 'when instance responds to #user' do
+      context 'when token_owner_record responds to #user' do
         let(:user) { build(:user) }
 
         before do
           stub_feature_flags(routable_token: user)
-          allow(instance).to receive(:user).and_return(user)
+          allow(token_owner_record).to receive(:user).and_return(user)
         end
 
         context 'when Settings.cells.id is not present' do
@@ -229,15 +229,15 @@ RSpec.describe TokenAuthenticatableStrategies::Base, feature_category: :system_a
   end
 
   describe '#ensure_token!' do
-    subject(:token) { strategy.ensure_token!(instance) }
+    subject(:token) { strategy.ensure_token!(token_owner_record) }
 
     it 'populates and saves the token' do
-      expect(instance).to receive(:save!)
+      expect(token_owner_record).to receive(:save!)
       expect(token).to be_present
     end
 
     context 'when token is already present' do
-      let(:instance) { test_class.new(token: 'foo') }
+      let(:token_owner_record) { test_class.new(token: 'foo') }
 
       it 'does not overwrite the token' do
         expect(token).to eq('foo')
@@ -247,34 +247,34 @@ RSpec.describe TokenAuthenticatableStrategies::Base, feature_category: :system_a
 
   describe '#reset_token!' do
     it 'populates and saves the token' do
-      expect(instance).to receive(:save!)
+      expect(token_owner_record).to receive(:save!)
 
-      strategy.reset_token!(instance)
+      strategy.reset_token!(token_owner_record)
 
-      expect(strategy.get_token(instance)).to be_present
+      expect(strategy.get_token(token_owner_record)).to be_present
     end
 
     context 'when token is already present' do
-      let(:instance) { test_class.new(token: 'foo') }
+      let(:token_owner_record) { test_class.new(token: 'foo') }
 
       it 'overwrites the token' do
-        expect(instance).to receive(:save!)
+        expect(token_owner_record).to receive(:save!)
 
-        strategy.reset_token!(instance)
+        strategy.reset_token!(token_owner_record)
 
-        expect(strategy.get_token(instance)).to be_present
-        expect(strategy.get_token(instance)).not_to eq('foo')
+        expect(strategy.get_token(token_owner_record)).to be_present
+        expect(strategy.get_token(token_owner_record)).not_to eq('foo')
       end
     end
 
     context 'when database is not in read & write' do
       it 'does not save the token the token' do
         expect(Gitlab::Database).to receive(:read_write?).and_return(false)
-        expect(instance).not_to receive(:save!)
+        expect(token_owner_record).not_to receive(:save!)
 
-        strategy.reset_token!(instance)
+        strategy.reset_token!(token_owner_record)
 
-        expect(strategy.get_token(instance)).to be_present
+        expect(strategy.get_token(token_owner_record)).to be_present
       end
     end
   end
@@ -283,24 +283,24 @@ RSpec.describe TokenAuthenticatableStrategies::Base, feature_category: :system_a
     let(:options) { super().merge(expires_at: ->(_) { 1.day.from_now }) }
 
     before do
-      strategy.ensure_token(instance)
+      strategy.ensure_token(token_owner_record)
     end
 
     it 'returns the expires_at date' do
-      expect(strategy.expires_at(instance)).to be_within(1.minute).of(1.day.from_now)
+      expect(strategy.expires_at(token_owner_record)).to be_within(1.minute).of(1.day.from_now)
     end
   end
 
   describe '#expired?' do
     before do
-      strategy.ensure_token(instance)
+      strategy.ensure_token(token_owner_record)
     end
 
     context 'when expires_at is in the future' do
       let(:options) { super().merge(expires_at: ->(_) { 1.day.from_now }) }
 
       it 'returns false when expires_at is in the future' do
-        expect(strategy.expired?(instance)).to be(false)
+        expect(strategy.expired?(token_owner_record)).to be(false)
       end
     end
 
@@ -308,7 +308,7 @@ RSpec.describe TokenAuthenticatableStrategies::Base, feature_category: :system_a
       let(:options) { super().merge(expires_at: ->(_) { 1.day.ago }) }
 
       it 'returns true when expires_at is in the past' do
-        expect(strategy.expired?(instance)).to be(true)
+        expect(strategy.expired?(token_owner_record)).to be(true)
       end
     end
   end
@@ -327,9 +327,9 @@ RSpec.describe TokenAuthenticatableStrategies::Base, feature_category: :system_a
 
   describe '#token_with_expiration' do
     it 'delegates to API::Support::TokenWithExpiration' do
-      expect(API::Support::TokenWithExpiration).to receive(:new).with(strategy, instance)
+      expect(API::Support::TokenWithExpiration).to receive(:new).with(strategy, token_owner_record)
 
-      strategy.token_with_expiration(instance)
+      strategy.token_with_expiration(token_owner_record)
     end
   end
 end

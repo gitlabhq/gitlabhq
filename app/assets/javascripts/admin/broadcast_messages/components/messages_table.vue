@@ -104,7 +104,7 @@ export default {
   >
     <template #cell(preview)="{ item: { message, theme, broadcast_type, dismissable } }">
       <gl-broadcast-message :theme="theme" :type="broadcast_type" :dismissible="dismissable">
-        {{ message }}
+        <span v-safe-html="message"></span>
       </gl-broadcast-message>
     </template>
 

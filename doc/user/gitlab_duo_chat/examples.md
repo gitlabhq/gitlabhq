@@ -366,7 +366,7 @@ To start a new conversation, but keep the previous conversations visible in the 
 In both cases, the conversation history will not be considered when you ask new questions.
 Deleting or resetting might help improve the answers when you switch contexts, because Duo Chat will not get confused by the unrelated conversations.
 
-## Supported slash commands
+## GitLab Duo Chat slash commands
 
 Duo Chat has a list of supported commands, each of which is preceded by a slash (`/`).
 Use the following commands to quickly accomplish specific tasks.

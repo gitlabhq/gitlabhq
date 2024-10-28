@@ -447,14 +447,6 @@ To manage your own email notification preferences:
 
 You will see an alert confirming that your notification preferences have been updated.
 
-Switchboard Tenant Admins can also manage email notifications for other users with access to their organization's tenant:
-
-1. From the **Users** page, open the dropdown in the **Email notifications** column next to the user's email.
-1. To turn off email notifications for that user, select **No**.
-1. To turn on email notifications for that user, select **Yes**.
-
-You will see an alert confirming that your notification preferences have been updated.
-
 ### Application logs
 
 GitLab delivers [application logs](../../administration/logs/index.md) to an Amazon S3 bucket in the GitLab tenant account, which can be shared with you.

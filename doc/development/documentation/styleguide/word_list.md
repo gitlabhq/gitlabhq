@@ -1327,6 +1327,12 @@ Instead of:
 - This setting is turned on at the group level.
 - This is a project-level setting.
 
+## lifecycle, life cycle, life-cycle
+
+Use one word for **lifecycle**. Do not use **life cycle** or **life-cycle**.
+
+([Vale](../testing/vale.md) rule: [`SubstitutionWarning.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab_base/SubstitutionWarning.yml))
+
 ## list
 
 Do not use **list** when referring to a [**dropdown list**](#dropdown-list).

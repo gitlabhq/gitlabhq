@@ -1706,16 +1706,21 @@
         MR_CODE_PATTERNS: "true"
 
 .qa:e2e-test-schedule-variables: &qa-e2e-test-schedule-variables
-  variables:
-    CREATE_TEST_FAILURE_ISSUES: "true"
-    PROCESS_TEST_RESULTS: "true"
-    KNAPSACK_GENERATE_REPORT: "true"
-    QA_SAVE_TEST_METRICS: "true"
-    QA_RUN_IN_PARALLEL: "false" # disable single job parallelization due to incompatibility with knapsack and coverband
+  CREATE_TEST_FAILURE_ISSUES: "true"
+  PROCESS_TEST_RESULTS: "true"
+  QA_SAVE_TEST_METRICS: "true"
 
 .qa:rules:e2e-schedule-blocking:
   rules:
-    - <<: [*if-dot-com-gitlab-org-schedule, *qa-e2e-test-schedule-variables]
+    - <<: *if-default-branch-schedule-nightly
+      variables:
+        <<: *qa-e2e-test-schedule-variables
+        KNAPSACK_GENERATE_REPORT: "true"
+        QA_RUN_IN_PARALLEL: "false"
+    - <<: *if-dot-com-gitlab-org-schedule
+      variables:
+        <<: *qa-e2e-test-schedule-variables
+        KNAPSACK_GENERATE_REPORT: "false"
 
 .qa:rules:code-suggestions-eval-base:
   rules:
@@ -1827,11 +1832,10 @@
       changes: *gdk-component-patterns
     - <<: *if-dot-com-gitlab-org-schedule
       variables:
-        CREATE_TEST_FAILURE_ISSUES: "true"
-        PROCESS_TEST_RESULTS: "true"
+        <<: *qa-e2e-test-schedule-variables
         KNAPSACK_GENERATE_REPORT: "true"
-        QA_SAVE_TEST_METRICS: "true"
         COVERBAND_ENABLED: "true"
+        QA_RUN_IN_PARALLEL: "false"
 
 .qa:rules:e2e:test-on-cng:
   rules:
@@ -1846,20 +1850,7 @@
     - !reference [".qa:rules:e2e-blocking-base-before", rules]
     - !reference [".prevent-tier-2-and-below", rules]
     - !reference [".qa:rules:e2e-blocking-base-after", rules]
-    - <<: *if-default-branch-schedule-nightly
-      variables:
-        CREATE_TEST_FAILURE_ISSUES: "true"
-        PROCESS_TEST_RESULTS: "true"
-        KNAPSACK_GENERATE_REPORT: "true"
-        QA_SAVE_TEST_METRICS: "true"
-        QA_RUN_IN_PARALLEL: "false" # disable single job parallelization due to incompatibility with knapsack
-    - <<: *if-dot-com-gitlab-org-schedule
-      variables:
-        CREATE_TEST_FAILURE_ISSUES: "true"
-        PROCESS_TEST_RESULTS: "true"
-        KNAPSACK_GENERATE_REPORT: "false"
-        QA_SAVE_TEST_METRICS: "true"
-        QA_RUN_IN_PARALLEL: "true"
+    - !reference [".qa:rules:e2e-schedule-blocking", rules]
 
 .qa:rules:test-on-omnibus-nightly:
   rules:
@@ -1869,10 +1860,9 @@
     - <<: *if-default-branch-schedule-nightly
       allow_failure: true
       variables:
+        <<: *qa-e2e-test-schedule-variables
         KNAPSACK_GENERATE_REPORT: "true"
-        PROCESS_TEST_RESULTS: "true"
-        CREATE_TEST_FAILURE_ISSUES: "true"
-        QA_SAVE_TEST_METRICS: "true"
+        QA_RUN_IN_PARALLEL: "false"
 
 .qa:rules:fulfillment-e2e-quarantine-report:
   rules:

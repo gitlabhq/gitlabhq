@@ -54,6 +54,7 @@ You might need to modify the system configuration (CPU cores and RAM) before sta
 1. In VS Code, install the **Remote - SSH** extension:
    - [VS Code](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-ssh)
    - [VSCodium](https://open-vsx.org/extension/jeanp413/open-remote-ssh)
+1. Make sure that VS Code has access to the local network (**Privacy & Security > Local Network**).
 1. Connect VS Code to the VM:
    - Select **Remote-SSH: Connect to host** from the command palette.
    - Enter the SSH host: `debian@gdk.local`
