@@ -4,21 +4,13 @@ group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Secure and Govern glossary
+# Security glossary
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-The glossary of terms aims to achieve the following:
-
-- Promote a ubiquitous language that can be used everywhere - with customers, on issues, in Slack, in code.
-- Improve the effectiveness of communication between team members.
-- Reduce the potential for miscommunication.
-- Bring new team members and community contributors up to speed faster, reducing the time to productivity.
-
-The definitions of the terms outlined in this document are in the context of the GitLab
-products. Therefore, a term may have a different meaning to users outside of GitLab.
+This glossary provides definitions for terms related to security features in GitLab. While some terms may have different meanings elsewhere, these definitions are specific to GitLab.
 
 ## Analyzer
 

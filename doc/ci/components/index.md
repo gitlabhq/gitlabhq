@@ -723,6 +723,66 @@ To mirror a GitLab.com component in your self-managed instance:
 1. Publish [a new release](../../user/project/releases/index.md) in the self-hosted component project by
    [running a pipeline](../pipelines/index.md#run-a-pipeline-manually) for a tag (usually the latest tag).
 
+## CI/CD component security best practices
+
+### For component users
+
+As anyone can publish components to the catalog, you should carefully review components before using them in your project.
+Use of GitLab CI/CD components is at your own risk and GitLab cannot guarantee the security of third-party components.
+
+When using third-party CI/CD components, consider the following security best practices:
+
+- **Audit and review component source code**: Carefully examine the code to ensure it's free of malicious content.
+- **Minimize access to credentials and tokens**:
+  - Audit the component's source code to verify that any credentials or tokens are only used
+    to perform actions that you expect and authorize.
+  - Use minimally scoped access tokens.
+  - Avoid using long-lived access tokens or credentials.
+  - Audit use of credentials and tokens used by CI/CD components.
+- **Use pinned versions**: Pin CI/CD components to a specific commit SHA (preferred)
+  or release version tag to ensure the integrity of the component used in a pipeline.
+  Only use release tags if you trust the component maintainer. Avoid using `latest`.
+- **Store secrets securely**: Do not store secrets in CI/CD configuration files.
+  Avoid storing secrets and credentials in project settings if you can use an external secret management
+  solution instead.
+- **Use ephemeral, isolated runner environments**: Run component jobs in temporary,
+  isolated environments when possible. Be aware of [security risks](https://docs.gitlab.com/runner/security)
+  with self-managed GitLab Runners.
+- **Securely handle cache and artifacts**: Do not pass cache or artifacts from other jobs
+  in your pipeline to CI/CD component jobs unless absolutely necessary.
+- **Limit CI_JOB_TOKEN access**: Restrict [CI/CD job token (`CI_JOB_TOKEN`) project access and permissions](../../ci/jobs/ci_job_token.md#control-job-token-access-to-your-project)
+  for projects using CI/CD components.
+- **Review CI/CD component changes**: Carefully review all changes to the CI/CD component configuration
+  before changing to use an updated commit SHA or release tag for the component.
+- **Audit custom container images**: Carefully review any custom container images used by the CI/CD component
+  to ensure they are free of malicious content.
+
+### For component maintainers
+
+To maintain secure and trustworthy CI/CD components and ensure the integrity of the pipeline configuration
+you deliver to users, follow these best practices:
+
+- **Use two-factor authentication (2FA)**: Ensure all CI/CD component project maintainers
+  and owners have [2FA enabled](../../user/profile/account/two_factor_authentication.md#enable-two-factor-authentication),
+  or enforce [2FA for all users in the group](../../security/two_factor_authentication.md#enforce-2fa-for-all-users-in-a-group).
+- **Use protected branches**:
+  - Use [protected branches](../../user/project/repository/branches/protected.md)
+    for component project releases.
+  - Protect the default branch, and protect all release branches [using wildcard rules](../../user/project/repository/branches/protected.md#protect-multiple-branches-with-wildcard-rules).
+  - Require everyone submit merge requests for changes to protected branches. Set the
+    **Allowed to push and merge** option to `No one` for protected branches.
+  - Block force pushes to protected branches.
+- **Sign all commits**: [Sign all commits](../../user/project/repository/signed_commits/index.md) to the component project.
+- **Discourage using `latest`**: Avoid including examples in your `README.md` that use `@latest`.
+- **Limit dependency on caches and artifacts from other jobs**: Only use cache and artifacts
+  from other jobs in CI/CD components if absolutely necessary
+- **Update CI/CD component dependencies**: Check for and apply updates to dependencies regularly.
+- **Review changes carefully**:
+  - Carefully review all changes to the CI/CD component pipeline configuration before
+    merging into default or release branches.
+  - Use [merge request approvals](../../user/project/merge_requests/approvals/index.md)
+    for all user-facing changes to CI/CD component catalog projects.
+
 ## Troubleshooting
 
 ### `content not found` message
