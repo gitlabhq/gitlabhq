@@ -1962,9 +1962,41 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
       expect(Gitlab::Json.parse(helper.dashboard_projects_app_data)).to eq(
         {
           'initial_sort' => 'created_desc',
-          'programming_languages' => ProgrammingLanguage.most_popular
+          'programming_languages' => ProgrammingLanguage.most_popular,
+          'empty_state_projects_svg_path' => helper.image_path('illustrations/empty-state/empty-projects-md.svg'),
+          'empty_state_search_svg_path' => helper.image_path('illustrations/empty-state/empty-search-md.svg')
         }
       )
+    end
+  end
+
+  describe '#show_dashboard_projects_welcome_page?' do
+    where(:request_path, :authorized_projects, :result) do
+      [
+        [:root_path, [], true],
+        [:root_dashboard_path, [], true],
+        [:dashboard_projects_path, [], true],
+        [:contributed_dashboard_projects_path, [], true],
+        [:root_path, [ref(:project)], false],
+        [:root_dashboard_path, [ref(:project)], false],
+        [:dashboard_projects_path, [ref(:project)], false],
+        [:contributed_dashboard_projects_path, [ref(:project)], false],
+        [:starred_dashboard_projects_path, [], false],
+        [:starred_dashboard_projects_path, [ref(:project)], false]
+      ]
+    end
+
+    with_them do
+      let(:request) { instance_double(ActionDispatch::Request, path: helper.send(request_path)) }
+
+      before do
+        allow(helper).to receive(:request).and_return(request)
+        allow(user).to receive(:authorized_projects).and_return(authorized_projects)
+      end
+
+      it 'returns the correct boolean response' do
+        expect(helper.show_dashboard_projects_welcome_page?).to eq(result)
+      end
     end
   end
 end

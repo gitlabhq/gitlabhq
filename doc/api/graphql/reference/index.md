@@ -21578,6 +21578,17 @@ Represents a product analytics dashboard visualization.
 | <a id="customizablepermissionrequirements"></a>`requirements` | [`[MemberRolePermission!]`](#memberrolepermission) | Requirements of the permission. |
 | <a id="customizablepermissionvalue"></a>`value` | [`MemberRolePermission!`](#memberrolepermission) | Value of the permission. |
 
+### `CveEnrichmentType`
+
+Represents a CVE's Enrichment (EPSS score).
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cveenrichmenttypecve"></a>`cve` | [`String!`](#string) | CVE identifier of relevant vulnerability. |
+| <a id="cveenrichmenttypeepssscore"></a>`epssScore` | [`Float!`](#float) | EPSS score for the CVE. |
+
 ### `CvssType`
 
 Represents a vulnerability's CVSS score.
@@ -23143,17 +23154,6 @@ Check permissions for the current user on an epic.
 | <a id="epicpermissionsreadepic"></a>`readEpic` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_epic` on this resource. |
 | <a id="epicpermissionsreadepiciid"></a>`readEpicIid` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_epic_iid` on this resource. |
 | <a id="epicpermissionsupdateepic"></a>`updateEpic` | [`Boolean!`](#boolean) | If `true`, the user can perform `update_epic` on this resource. |
-
-### `EpssType`
-
-Represents a CVE's EPSS score.
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="epsstypecve"></a>`cve` | [`String!`](#string) | CVE identifier of relevant vulnerability. |
-| <a id="epsstypescore"></a>`score` | [`Float!`](#float) | EPSS score for the CVE. |
 
 ### `EscalationPolicyType`
 
@@ -35346,6 +35346,7 @@ Represents a vulnerability.
 | <a id="vulnerabilitycommenters"></a>`commenters` | [`UserCoreConnection!`](#usercoreconnection) | All commenters on this noteable. (see [Connections](#connections)) |
 | <a id="vulnerabilityconfirmedat"></a>`confirmedAt` | [`Time`](#time) | Timestamp of when the vulnerability state was changed to confirmed. |
 | <a id="vulnerabilityconfirmedby"></a>`confirmedBy` | [`UserCore`](#usercore) | User that confirmed the vulnerability. |
+| <a id="vulnerabilitycveenrichment"></a>`cveEnrichment` | [`CveEnrichmentType`](#cveenrichmenttype) | Enrichment (EPSS score) for CVE vulnerabilities. |
 | <a id="vulnerabilitycvss"></a>`cvss` | [`[CvssType!]!`](#cvsstype) | CVSS information for the vulnerability. |
 | <a id="vulnerabilitydescription"></a>`description` | [`String`](#string) | Description of the vulnerability. |
 | <a id="vulnerabilitydescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `description`. |
@@ -35355,7 +35356,6 @@ Represents a vulnerability.
 | <a id="vulnerabilitydismissalreason"></a>`dismissalReason` | [`VulnerabilityDismissalReason`](#vulnerabilitydismissalreason) | Reason for dismissal. Returns `null` for states other than `dismissed`. |
 | <a id="vulnerabilitydismissedat"></a>`dismissedAt` | [`Time`](#time) | Timestamp of when the vulnerability state was changed to dismissed. |
 | <a id="vulnerabilitydismissedby"></a>`dismissedBy` | [`UserCore`](#usercore) | User that dismissed the vulnerability. |
-| <a id="vulnerabilityepss"></a>`epss` | [`EpssType`](#epsstype) | EPSS score for CVE vulnerabilities. |
 | <a id="vulnerabilityexternalissuelinks"></a>`externalIssueLinks` | [`VulnerabilityExternalIssueLinkConnection!`](#vulnerabilityexternalissuelinkconnection) | List of external issue links related to the vulnerability. (see [Connections](#connections)) |
 | <a id="vulnerabilityfalsepositive"></a>`falsePositive` | [`Boolean`](#boolean) | Indicates whether the vulnerability is a false positive. |
 | <a id="vulnerabilityhasremediations"></a>`hasRemediations` | [`Boolean`](#boolean) | Indicates whether there is a remediation available for this vulnerability. |

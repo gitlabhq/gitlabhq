@@ -43954,6 +43954,12 @@ msgstr ""
 msgid "Projects|An error occurred deleting the project. Please refresh the page to try again."
 msgstr ""
 
+msgid "Projects|Projects are where you can store your code, access issues, wiki, and other features of GitLab."
+msgstr ""
+
+msgid "Projects|You don't have any projects yet."
+msgstr ""
+
 msgid "Project|already in use"
 msgstr ""
 
@@ -48631,6 +48637,9 @@ msgid "Search merge requests"
 msgstr ""
 
 msgid "Search milestones"
+msgstr ""
+
+msgid "Search must be at least 3 characters."
 msgstr ""
 
 msgid "Search or filter commits"

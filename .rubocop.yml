@@ -1199,10 +1199,8 @@ Style/SymbolProc:
     - each_batch
     - each_sub_batch
 
-# Short-hand Hash syntax does not work prior 3.1.
-# See https://gitlab.com/gitlab-org/gitlab/-/issues/435940#note_1703307479
 Style/HashSyntax:
-  EnforcedShorthandSyntax: never
+  EnforcedShorthandSyntax: either_consistent
 
 Gitlab/LicenseAvailableUsage:
   Enabled: true

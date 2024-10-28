@@ -16,40 +16,43 @@ RSpec.describe 'dashboard/projects/index.html.haml', feature_category: :groups_a
       stub_feature_flags(your_work_projects_vue: true)
     end
 
-    context 'when projects exist' do
+    context 'when show_dashboard_projects_welcome_page? is true' do
       before do
-        assign(:projects, [build(:project, name: 'awesome stuff')])
-        allow(view).to receive(:any_projects?).and_return(true)
+        allow(view).to receive(:show_dashboard_projects_welcome_page?).and_return(true)
         render
       end
 
-      it 'renders #js-your-work-projects-app and not legacy project list' do
-        render
-
-        expect(rendered).to have_selector('#js-your-work-projects-app')
-        expect(rendered).not_to render_template('dashboard/projects/_projects')
+      it 'renders the zero_authorized_projects partial and not the projects Vue app' do
+        expect(rendered).not_to have_selector('#js-your-work-projects-app')
+        expect(rendered).to render_template('dashboard/projects/_zero_authorized_projects')
       end
 
-      it 'shows the "New project" button' do
-        expect(rendered).to have_link('New project')
+      it 'does not render the "New project" button' do
+        expect(rendered).not_to have_link('New project')
       end
 
-      it 'shows the "Explore projects" button' do
-        expect(rendered).to have_link('Explore projects')
+      it 'does not render the "Explore projects" button' do
+        expect(rendered).not_to have_link('Explore projects')
       end
     end
 
-    context 'when projects do not exist' do
+    context 'when show_dashboard_projects_welcome_page? is false' do
       before do
-        allow(view).to receive(:any_projects?).and_return(false)
+        allow(view).to receive(:show_dashboard_projects_welcome_page?).and_return(false)
         render
       end
 
-      it 'renders #js-your-work-projects-app and does not render HAML empty state' do
-        render
-
+      it 'renders the projects Vue app and not the zero_authorized_projects partial' do
         expect(rendered).to have_selector('#js-your-work-projects-app')
         expect(rendered).not_to render_template('dashboard/projects/_zero_authorized_projects')
+      end
+
+      it 'does render the "New project" button' do
+        expect(rendered).to have_link('New project')
+      end
+
+      it 'does render the "Explore projects" button' do
+        expect(rendered).to have_link('Explore projects')
       end
     end
   end

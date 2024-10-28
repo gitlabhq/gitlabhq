@@ -83,6 +83,9 @@ secret_detection:
       - gl-dependency-scanning-report.json  # GitLab-specific
     access: 'developer'
     expire_in: 1 week  # GitLab-specific
+  after_script:
+    # Remove sboms in test fixtures so that they are not ingested and scanned.
+    - find spec ee/spec qa -path '**/fixtures/**/gl-sbom*.cdx.json' -delete
 
 gemnasium-dependency_scanning:
   variables:

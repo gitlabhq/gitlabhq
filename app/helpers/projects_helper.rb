@@ -663,8 +663,21 @@ module ProjectsHelper
   def dashboard_projects_app_data
     {
       initial_sort: project_list_sort_by,
-      programming_languages: programming_languages
+      programming_languages: programming_languages,
+      empty_state_projects_svg_path: image_path('illustrations/empty-state/empty-projects-md.svg'),
+      empty_state_search_svg_path: image_path('illustrations/empty-state/empty-search-md.svg')
     }.to_json
+  end
+
+  def show_dashboard_projects_welcome_page?
+    dashboard_projects_landing_paths = [
+      root_path,
+      root_dashboard_path,
+      dashboard_projects_path,
+      contributed_dashboard_projects_path
+    ]
+
+    dashboard_projects_landing_paths.include?(request.path) && !current_user.authorized_projects.present?
   end
 
   private

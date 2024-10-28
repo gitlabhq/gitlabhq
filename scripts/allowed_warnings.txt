@@ -36,3 +36,6 @@ Done in [0-9]+ms.
 # This can be removed once we do not compile legacy utils any longer
 .+ - No utility classes were detected in your source files. If this is unexpected, double-check the `content` option in your Tailwind CSS configuration.
 .+ - https://tailwindcss.com/docs/content-configuration
+
+# The next major version of the view_component gem will require Rails >= 7.1
+Support for Rails versions < 7.1 is deprecated and will be removed from ViewComponent 4.0.0

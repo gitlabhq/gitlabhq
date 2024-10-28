@@ -6,9 +6,10 @@ import inactiveProjectsGraphQlResponse from 'test_fixtures/graphql/projects/your
 import personalProjectsGraphQlResponse from 'test_fixtures/graphql/projects/your_work/personal_projects.query.graphql.json';
 import membershipProjectsGraphQlResponse from 'test_fixtures/graphql/projects/your_work/membership_projects.query.graphql.json';
 import contributedProjectsGraphQlResponse from 'test_fixtures/graphql/projects/your_work/contributed_projects.query.graphql.json';
-import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import TabView from '~/projects/your_work/components/tab_view.vue';
 import ProjectsList from '~/vue_shared/components/projects_list/projects_list.vue';
+import ProjectsListEmptyState from '~/vue_shared/components/projects_list/projects_list_empty_state.vue';
 import { formatGraphQLProjects } from '~/vue_shared/components/projects_list/utils';
 import { DEFAULT_PER_PAGE } from '~/api';
 import { createAlert } from '~/alert';
@@ -47,7 +48,7 @@ describe('TabView', () => {
   const createComponent = ({ handler, propsData = {} } = {}) => {
     mockApollo = createMockApollo([handler]);
 
-    wrapper = mountExtended(TabView, {
+    wrapper = shallowMountExtended(TabView, {
       apolloProvider: mockApollo,
       propsData: { ...defaultPropsData, ...propsData },
       provide: { programmingLanguages },
@@ -56,6 +57,7 @@ describe('TabView', () => {
 
   const findProjectsList = () => wrapper.findComponent(ProjectsList);
   const findPagination = () => wrapper.findComponent(GlKeysetPagination);
+  const findEmptyState = () => wrapper.findComponent(ProjectsListEmptyState);
 
   afterEach(() => {
     mockApollo = null;
@@ -263,6 +265,39 @@ describe('TabView', () => {
             minAccessLevel: ACCESS_LEVEL_OWNER_STRING,
           });
         });
+      });
+    });
+  });
+
+  describe('empty state', () => {
+    describe('when there are no results', () => {
+      beforeEach(async () => {
+        createComponent({
+          handler: [PERSONAL_TAB.query, jest.fn().mockResolvedValue({ nodes: [] })],
+          propsData: { tab: PERSONAL_TAB },
+        });
+        await waitForPromises();
+      });
+
+      it('renders an empty state', () => {
+        expect(findEmptyState().exists()).toBe(true);
+      });
+    });
+
+    describe('when there are results', () => {
+      beforeEach(async () => {
+        createComponent({
+          handler: [
+            PERSONAL_TAB.query,
+            jest.fn().mockResolvedValue(personalProjectsGraphQlResponse),
+          ],
+          propsData: { tab: PERSONAL_TAB },
+        });
+        await waitForPromises();
+      });
+
+      it('does not render an empty state', () => {
+        expect(findEmptyState().exists()).toBe(false);
       });
     });
   });
