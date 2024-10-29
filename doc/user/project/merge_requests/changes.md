@@ -224,7 +224,7 @@ DETAILS:
 
 > - Introduced in GitLab 15.11 as an [experiment](../../../policy/experiment-beta-support.md#experiment) on GitLab.com.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) in GitLab 16.8.
-> - GitLab Duo add-on required in GitLab 17.6 and later.
+> - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
 If you spend a lot of time trying to understand code that others have created, or
 you struggle to understand code written in a language you are not familiar with,

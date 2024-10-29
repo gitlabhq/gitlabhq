@@ -293,4 +293,17 @@ dast:
 
 ### Crawler doesn't reach expected pages
 
+#### Try disabling the cache
+
 If DAST incorrectly caches your application pages, it can lead to DAST being unable to properly crawl your application. If you see that some pages are unexpectedly not found by the crawler, try setting `DAST_USE_CACHE: "false"` variable to see if that helps. Note that it can significantly decrease the performance of the scan. Make sure to only disable cache when absolutely necessary. If you have a subscription, [create a support ticket](https://about.gitlab.com/support/) to investigate why cache is preventing your website from being crawled.
+
+#### Specifying target paths directly
+
+The crawler typically begins at the defined target URL and attempts to find further pages by interacting with the site. However, there are two ways to specify paths directly for the crawler to start from:
+
+- Using a sitemap.xml: [Sitemap](https://www.sitemaps.org/protocol.html) is a well defined protocol to specify the pages in a website. DAST's crawler looks for a sitemap.xml file at `<target URL>/sitemap.xml` and takes all specified URLs as a starting point for the crawler. [Sitemap Index](https://www.sitemaps.org/protocol.html#index) files are not supported.
+- Using `DAST_TARGET_PATHS`: This configuration variable allows specifying input paths for the crawler. Example: `DAST_TARGET_PATHS: /,/page/1.html,/page/2.html`.
+
+#### Make sure requests are not getting blocked
+
+By default DAST only allows requests to the target URL's domain. If your website makes requests to domains other than the target's, use `DAST_SCOPE_ALLOW_HOSTS` to specify such hosts. Example: "example.com" makes an authentication request to "auth.example.com" to renew the authentication token. Because the domain is not allowed, the request gets blocked and the crawler fails to find new pages.

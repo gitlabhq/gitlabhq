@@ -241,16 +241,14 @@ export default {
       <div class="build-page" data-testid="job-content">
         <!-- Header Section -->
         <header>
-          <div class="build-header gl-flex">
-            <job-header
-              :status="job.status"
-              :time="headerTime"
-              :user="job.user"
-              :should-render-triggered-label="shouldRenderTriggeredLabel"
-              :name="jobName"
-              @clickedSidebarButton="toggleSidebar"
-            />
-          </div>
+          <job-header
+            :status="job.status"
+            :time="headerTime"
+            :user="job.user"
+            :should-render-triggered-label="shouldRenderTriggeredLabel"
+            :name="jobName"
+            @clickedSidebarButton="toggleSidebar"
+          />
           <gl-alert
             v-if="shouldRenderHeaderCallout"
             variant="danger"

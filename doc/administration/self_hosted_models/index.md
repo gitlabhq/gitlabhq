@@ -14,7 +14,7 @@ DETAILS:
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12972) in GitLab 17.1 [with a flag](../../administration/feature_flags.md) named `ai_custom_model`. Disabled by default.
 > - [Enabled on self-managed](https://gitlab.com/groups/gitlab-org/-/epics/15176) in GitLab 17.6.
-> - GitLab Duo add-on required in GitLab 17.6 and later.
+> - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
 Self-hosted models allow organizations to maintain full control over data privacy, security, and the deployment of large language models (LLMs) within their own infrastructure. By deploying self-hosted models, you can manage the entire lifecycle of requests made to LLM backends for GitLab Duo features, ensuring that all requests stay within your enterprise network and avoid external dependencies.
 

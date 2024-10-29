@@ -14,7 +14,7 @@ DETAILS:
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12972) in GitLab 17.1 [with a flag](../../administration/feature_flags.md) named `ai_custom_model`. Disabled by default.
 > - [Enabled on self-managed](https://gitlab.com/groups/gitlab-org/-/epics/15176) in GitLab 17.6.
-> - GitLab Duo add-on required in GitLab 17.6 and later.
+> - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
 There are multiple platforms available to host your self-hosted Large Language Models (LLMs). Each platform has unique features and benefits that can cater to different needs. The following documentation summarises the currently supported options:
 

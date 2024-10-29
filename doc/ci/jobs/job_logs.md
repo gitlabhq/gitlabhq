@@ -195,7 +195,7 @@ job:
 
 Here's an example log output with `FF_TIMESTAMPS` enabled:
 
-![Timestamps for each log line](img/ci_log_timestamp_v17_1.png)
+![Timestamps for each log line](img/ci_log_timestamp_v17_6.png)
 
 To provide feedback on this feature, leave a comment on [issue 463391](https://gitlab.com/gitlab-org/gitlab/-/issues/463391).
 

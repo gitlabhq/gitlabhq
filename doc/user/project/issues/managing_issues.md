@@ -36,7 +36,7 @@ DETAILS:
 **Status:** Experiment
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10762) in GitLab 16.3 as an [experiment](../../../policy/experiment-beta-support.md#experiment).
-> - GitLab Duo add-on required in GitLab 17.6 and later.
+> - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
 Generate a detailed description for an issue based on a short summary you provide.
 

@@ -207,12 +207,10 @@
 
 // Used in EE for Web Terminal
 @mixin build-log-bar($height) {
-  height: $height;
+  height: auto;
   min-height: $height;
-  background: var(--white, $white);
-  border: 1px solid var(--gl-border-color-default);
-  color: var(--gl-text-color-default);
   padding: $grid-size;
+  @apply gl-bg-section gl-border gl-border-section gl-text-default;
 }
 
 @mixin job-log-top-bar {
@@ -220,12 +218,7 @@
   z-index: 2;
   position: sticky;
   top: calc(#{$calc-application-header-height} - 1px);
-  border-radius: $gl-border-radius-base $gl-border-radius-base 0 0;
-  box-shadow: 0 -4px 0 0 var(--white);
-
-  .gl-dark & {
-    box-shadow: 0 -4px 0 0 var(--gray-10);
-  }
+  @apply gl-rounded-t-lg;
 }
 
 /*

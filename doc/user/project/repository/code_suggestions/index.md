@@ -16,7 +16,7 @@ DETAILS:
 > - [Introduced support for Code Generation](https://gitlab.com/gitlab-org/gitlab/-/issues/415583) in GitLab 16.3.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/435271) in GitLab 16.7.
 > - Subscription changed to require GitLab Duo Pro on February 15, 2024.
-> - GitLab Duo add-on required in GitLab 17.6 and later.
+> - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
 NOTE:
 GitLab Duo requires GitLab 17.2 and later for the best user experience and results. Earlier versions may continue to work, however the experience may be degraded.

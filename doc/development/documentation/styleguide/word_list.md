@@ -1126,6 +1126,17 @@ You can also use **GitLab Workflow for VS Code** or **GitLab Workflow**.
 
 For terms in VS Code, see [VS Code user interface](#vs-code-user-interface)
 
+## GraphiQL
+
+Use **GraphiQL** or **GraphQL explorer** to refer to this tool.
+
+In most cases, you should use **GraphiQL** on its own with no descriptor.
+
+Do not use:
+
+- GraphiQL explorer tool
+- GraphiQL explorer
+
 ## group access token
 
 Use sentence case for **group access token**.

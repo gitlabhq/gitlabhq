@@ -44,7 +44,7 @@ export default {
     <gl-link v-if="path" :href="path" class="!gl-text-link" data-testid="job-sidebar-value-link">
       {{ value }}
     </gl-link>
-    <span v-else
+    <span v-else class="gl-text-subtle"
       >{{ value }}
       <gl-link
         v-if="hasHelpURL"

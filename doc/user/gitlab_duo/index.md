@@ -48,7 +48,7 @@ DETAILS:
 **Tier:** Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - GitLab Duo add-on required in GitLab 17.6 and later.
+> - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
 - Helps everyone get up to speed by summarizing the lengthy conversations in an issue.
 - LLM: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
@@ -100,7 +100,7 @@ DETAILS:
 **Tier:** Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - GitLab Duo add-on required in GitLab 17.6 and later.
+> - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
 - `glab duo ask` helps you discover or recall `git` commands when and where you need them.
 - LLM: Anthropic [Claude 3 Haiku](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-haiku)
@@ -112,7 +112,7 @@ DETAILS:
 **Tier:** Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - GitLab Duo add-on required in GitLab 17.6 and later.
+> - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
 - Helps you merge more quickly by generating meaningful commit messages.
 - LLM: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
@@ -126,7 +126,7 @@ DETAILS:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123692) in GitLab 16.2 as an [experiment](../../policy/experiment-beta-support.md#experiment) on GitLab.com.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/441681) and moved to GitLab Duo Chat in GitLab 17.3.
-> - GitLab Duo add-on required in GitLab 17.6 and later.
+> - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
 - Helps you determine the root cause for a CI/CD job failure by analyzing the logs.
 - LLM: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
@@ -139,7 +139,7 @@ DETAILS:
 **Tier:** Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - GitLab Duo add-on required in GitLab 17.6 and later.
+> - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
 - Helps you understand vulnerabilities, how they can be exploited, and how to fix them.
 - LLM: Anthropic [Claude 3 Haiku](https://docs.anthropic.com/en/docs/about-claude/models#claude-3-a-new-generation-of-ai)
@@ -152,7 +152,7 @@ DETAILS:
 **Tier:** Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
 **Offering:** GitLab.com, Self-managed
 
-> - GitLab Duo add-on required in GitLab 17.6 and later.
+> - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
 - Measure the AI effectiveness and impact on SDLC metrics.
 - Visualize which metrics improved as a result of investments in AI.
@@ -171,7 +171,7 @@ DETAILS:
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12972) in GitLab 17.1 [with a flag](../../administration/feature_flags.md) named `ai_custom_model`. Disabled by default.
 > - [Enabled on self-managed](https://gitlab.com/groups/gitlab-org/-/epics/15176) in GitLab 17.6.
-> - GitLab Duo add-on required in GitLab 17.6 and later.
+> - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
 Self-managed users can experience a fully managed self-hosted environment, but they also have the option to use GitLab cloud connector and default AI vendors.
 
@@ -186,7 +186,7 @@ DETAILS:
 **Offering:** GitLab.com
 **Status:** Beta
 
-> - GitLab Duo add-on required in GitLab 17.6 and later.
+> - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
 - Helps populate a merge request more quickly by generating a description based on the code changes.
 - LLM: Vertex AI Codey [`text-bison`](https://console.cloud.google.com/vertex-ai/publishers/google/model-garden/text-bison)
@@ -200,7 +200,7 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Status:** Beta
 
-> - GitLab Duo add-on required in GitLab 17.6 and later.
+> - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
 - Help resolve a vulnerability by generating a merge request that addresses it.
 - LLM: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
@@ -216,7 +216,7 @@ DETAILS:
 **Offering:** GitLab.com
 **Status:** Experiment
 
-> - GitLab Duo add-on required in GitLab 17.6 and later.
+> - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
 - Helps populate an issue more quickly by generating a more in-depth description, based on a short summary you provide.
 - LLM: Anthropic [Claude 3 Haiku](https://docs.anthropic.com/en/docs/about-claude/models#claude-3-a-new-generation-of-ai)
@@ -229,7 +229,7 @@ DETAILS:
 **Offering:** GitLab.com
 **Status:** Experiment
 
-> - GitLab Duo add-on required in GitLab 17.6 and later.
+> - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
 - Automated code review of the proposed changes in your merge request.
 - LLM: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
@@ -242,7 +242,7 @@ DETAILS:
 **Offering:** GitLab.com
 **Status:** Experiment
 
-> - GitLab Duo add-on required in GitLab 17.6 and later.
+> - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
 - Helps make merge request handover to reviewers easier by summarizing all the comments in a merge request review.
 - LLM: Vertex AI Codey [`text-bison`](https://console.cloud.google.com/vertex-ai/publishers/google/model-garden/text-bison)

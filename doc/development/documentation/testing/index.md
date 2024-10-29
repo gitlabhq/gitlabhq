@@ -22,6 +22,14 @@ Merge requests containing changes to Markdown (`.md`) files run these CI/CD jobs
 - `ui-docs-links lint` and `eslint-docs`: Checks the validity of links from UI elements, such as files in `app/views`
   files.
 
+A few files are generated from scripts, and a CI/CD test fails when the source is updated without
+regenerating the documentation:
+
+- `doc/api/graphql/reference/index.md` ([update process](../../rake_tasks.md#update-graphql-documentation-and-schema-definitions))
+- `doc/update/deprecations.md` ([update process](../../deprecation_guidelines/index.md#update-the-deprecations-and-removals-documentation))
+
+For a full list of automated files, see [Automated pages](../site_architecture/automation.md).
+
 ## Tests in `lint-doc.sh`
 
 The tests in
