@@ -81,10 +81,12 @@ describe('TokenAccess component', () => {
     return createMockApollo(requestHandlers);
   };
 
-  const createComponent = (requestHandlers, mountFn = shallowMountExtended) => {
+  const createComponent = (requestHandlers, mountFn = shallowMountExtended, provide = {}) => {
     wrapper = mountFn(InboundTokenAccess, {
       provide: {
         fullPath: projectPath,
+        enforceAllowlist: false,
+        ...provide,
       },
       apolloProvider: createMockApolloProvider(requestHandlers),
       mocks: {
@@ -574,6 +576,28 @@ describe('TokenAccess component', () => {
       await waitForPromises();
 
       expect(createAlert).toHaveBeenCalledWith({ message });
+    });
+  });
+
+  describe('when allowlist is enforced by admin', () => {
+    beforeEach(async () => {
+      const requestHandlers = [
+        [inboundGetCIJobTokenScopeQuery, inboundJobTokenScopeDisabledResponseHandler],
+        [
+          inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery,
+          inboundGroupsAndProjectsWithScopeResponseHandler,
+        ],
+      ];
+      const provide = { enforceAllowlist: true };
+
+      createComponent(requestHandlers, shallowMountExtended, provide);
+      await waitForPromises();
+    });
+
+    it('hides alert, options, and submit button', () => {
+      expect(findTokenDisabledAlert().exists()).toBe(false);
+      expect(findRadioGroup().exists()).toBe(false);
+      expect(findSaveChangesBtn().exists()).toBe(false);
     });
   });
 });

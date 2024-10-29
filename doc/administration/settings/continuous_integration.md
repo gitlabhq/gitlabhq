@@ -332,6 +332,19 @@ from the **Admin** area:
    - **Maximum number of downstream pipelines in a pipeline's hierarchy tree**
 <!-- vale gitlab_base.CurrentStatus = YES -->
 
+## Job token permissions
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/496647) in GitLab 17.6.
+
+You can configure the [CI/CD job token access setting](../../ci/jobs/ci_job_token.md#control-job-token-access-to-your-project)
+for all projects from the **Admin** area.
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > CI/CD**.
+1. Expand the **Continuous Integration and Deployment** section.
+1. Enable **Enable and enforce job token allowlist for all projects** setting to
+   require all projects to control job token access with the allowlist.
+
 ## Disable the pipeline suggestion banner
 
 By default, a banner displays in merge requests with no pipeline suggesting a

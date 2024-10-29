@@ -8,4 +8,5 @@ description: Routing table for ci_stages
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145217
 milestone: '16.10'
 gitlab_schema: gitlab_ci
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/458490
+sharding_key:
+  project_id: projects

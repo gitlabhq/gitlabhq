@@ -6,6 +6,8 @@
 - user_fields = { color_mode_id: user_color_mode_id, theme: user_theme_id, gitpod_enabled: @user.gitpod_enabled, sourcegraph_enabled: @user.sourcegraph_enabled, extensions_marketplace_enabled: @user.extensions_marketplace_enabled }.to_json
 - fixed_help_text = s_('Preferences|Content will be a maximum of 1280 pixels wide.')
 - fluid_help_text = s_('Preferences|Content will span %{percentage} of the page width.').html_safe % { percentage: '100%' }
+- plain_text_editor_help_text = s_('Preferences|Type in plain text, using Markdown.')
+- rich_text_editor_help_text = s_('Preferences|Type in rich text, as you see it.')
 - @color_modes = Gitlab::ColorModes::available_modes.to_json
 - @themes = Gitlab::Themes::available_themes.to_json
 - extensions_marketplace_url = ::WebIde::ExtensionsMarketplace.marketplace_home_url
@@ -78,7 +80,7 @@
       = succeed '.' do
         = link_to _('Learn more'), help_page_path('user/profile/preferences.md', anchor: 'behavior'), target: '_blank', rel: 'noopener noreferrer'
     .form-group
-      = f.label :layout, class: 'label-bold' do
+      = f.label :keyboard_shortcuts_enabled, class: 'label-bold' do
         = s_('Preferences|Keyboard shortcuts')
       - shortcuts_help_link = link_to('', help_page_path('user/shortcuts.md'), target: '_blank', rel: 'noopener noreferrer')
       = f.gitlab_ui_checkbox_component :keyboard_shortcuts_enabled,
@@ -89,6 +91,14 @@
         = s_('Preferences|Layout width')
       = f.gitlab_ui_radio_component :layout, layout_choices[0][1], layout_choices[0][0], help_text: fixed_help_text
       = f.gitlab_ui_radio_component :layout, layout_choices[1][1], layout_choices[1][0], help_text: fluid_help_text
+
+    .form-group
+      = f.label :text_editor, class: 'label-bold' do
+        = s_('Preferences|Default text editor')
+        .gl-text-subtle{ class: '!gl-font-normal' }
+          = s_('Preferences|Choose the default editor for writing content. You can switch editors temporarily when editing.')
+      = f.gitlab_ui_radio_component :text_editor, text_editor_choices[0][1], text_editor_choices[0][0], help_text: rich_text_editor_help_text
+      = f.gitlab_ui_radio_component :text_editor, text_editor_choices[1][1], text_editor_choices[1][0], help_text: plain_text_editor_help_text
 
     - if Feature.enabled?(:ui_for_organizations, current_user)
       #js-home-organization-setting{ data: { app_data: home_organization_setting_app_data } }

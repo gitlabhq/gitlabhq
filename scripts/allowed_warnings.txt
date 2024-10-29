@@ -31,11 +31,5 @@ warning: IO::Buffer is experimental and both the Ruby and C interface may change
 Rebuilding...
 Done in [0-9]+ms.
 
-# We are in the midst of legacy util to Tailwind migration and for linting purposes we are checking
-# whether someone uses legacy utils. If no legacy utils are found, tailwind sends a warning
-# This can be removed once we do not compile legacy utils any longer
-.+ - No utility classes were detected in your source files. If this is unexpected, double-check the `content` option in your Tailwind CSS configuration.
-.+ - https://tailwindcss.com/docs/content-configuration
-
 # The next major version of the view_component gem will require Rails >= 7.1
 Support for Rails versions < 7.1 is deprecated and will be removed from ViewComponent 4.0.0

@@ -77,8 +77,8 @@ RSpec.describe 'issuable templates', :js, feature_category: :team_planning do
     end
 
     it 'applies correctly in the rich text editor' do
-      visit new_project_issue_path project
-      click_button "Switch to rich text editing"
+      stub_feature_flags(rich_text_editor_as_default: true)
+
       visit new_project_issue_path(project, { issuable_template: 'bug' })
 
       expect(page).to have_content(template_content)

@@ -9,6 +9,13 @@ module PreferencesHelper
     ]
   end
 
+  def text_editor_choices
+    [
+      [s_('TextEditor|Rich text editor'), :rich_text_editor],
+      [s_('TextEditor|Plain text editor'), :plain_text_editor]
+    ]
+  end
+
   # Returns an Array usable by a select field for more user-friendly option text
   def dashboard_choices
     dashboards = User.dashboards.keys
@@ -137,7 +144,7 @@ module PreferencesHelper
   def integration_views
     [].tap do |views|
       views << { name: 'gitpod', message: gitpod_enable_description, message_url: gitpod_url_placeholder, help_link: help_page_path('integration/gitpod.md') } if Gitlab::CurrentSettings.gitpod_enabled
-      views << { name: 'sourcegraph', message: sourcegraph_url_message, message_url: Gitlab::CurrentSettings.sourcegraph_url, help_link: help_page_path('user/profile/preferences.md', anchor: 'sourcegraph') } if Gitlab::Sourcegraph.feature_available? && Gitlab::CurrentSettings.sourcegraph_enabled
+      views << { name: 'sourcegraph', message: sourcegraph_url_message, message_url: Gitlab::CurrentSettings.sourcegraph_url, help_link: help_page_path('user/profile/preferences.md', anchor: 'integrate-your-gitlab-instance-with-sourcegraph') } if Gitlab::Sourcegraph.feature_available? && Gitlab::CurrentSettings.sourcegraph_enabled
       views << extensions_marketplace_view if WebIde::ExtensionsMarketplace.feature_enabled?(user: current_user)
     end
   end

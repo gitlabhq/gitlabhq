@@ -67,7 +67,11 @@ module Gitlab
         gon.current_user_avatar_url = current_user.avatar_url
         gon.time_display_relative = current_user.time_display_relative
         gon.time_display_format = current_user.time_display_format
-        gon.current_user_use_work_items_view = current_user.user_preference&.use_work_items_view || false
+
+        if current_user.user_preference
+          gon.current_user_use_work_items_view = current_user.user_preference.use_work_items_view || false
+          gon.text_editor = current_user.user_preference.text_editor
+        end
       end
 
       if current_organization && Feature.enabled?(:ui_for_organizations, current_user)

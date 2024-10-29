@@ -8,4 +8,5 @@ description: TODO
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/acc22a8422cd1471819510aa375c455b5ea009c5
 milestone: '9.3'
 gitlab_schema: gitlab_ci
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/458490
+sharding_key:
+  project_id: projects

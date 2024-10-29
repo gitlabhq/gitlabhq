@@ -182,7 +182,7 @@ module Gitlab
         # @param [String] chart_reference
         # @return [void]
         def run_deploy(chart_reference)
-          args = []
+          args = ["--atomic"]
           args.push(*component_version_values.flat_map { |v| ["--set", v] }) if ci
           args.push("--set", cli_values.join(",")) unless cli_values.empty?
           values = DefaultValues.common_values(gitlab_domain)
@@ -194,7 +194,14 @@ module Gitlab
             .to_yaml
 
           Helpers::Spinner.spin("running helm deployment") do
-            helm.upgrade(name, chart_reference, namespace: namespace, timeout: timeout, values: values, args: args)
+            opts = {
+              namespace: namespace,
+              timeout: timeout,
+              values: values,
+              # remove --atomic on last attempt so failed deployment is not removed on failure
+              args: @deployment_attempts == retry_attempts ? args.reject { |a| a == "--atomic" } : args
+            }
+            helm.upgrade(name, chart_reference, **opts)
           rescue Helm::Client::Error => e
             @deployment_attempts += 1
             handle_deploy_failure(e) if @deployment_attempts > retry_attempts

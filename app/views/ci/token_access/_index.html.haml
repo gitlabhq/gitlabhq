@@ -1,1 +1,1 @@
-#js-ci-token-access-app{ data: { full_path: @project.full_path } }
+#js-ci-token-access-app{ data: { full_path: @project.full_path, enforce_allowlist: Gitlab::CurrentSettings.enforce_ci_inbound_job_token_scope_enabled?.to_s } }

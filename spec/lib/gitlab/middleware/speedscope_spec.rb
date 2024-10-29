@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'stackprof'
 
-RSpec.describe Gitlab::Middleware::Speedscope do
+RSpec.describe Gitlab::Middleware::Speedscope, feature_category: :shared do
   let(:app) { proc { |env| [200, { 'Content-Type' => 'text/plain' }, ['Hello world!']] } }
   let(:middleware) { described_class.new(app) }
 
@@ -103,6 +103,22 @@ RSpec.describe Gitlab::Middleware::Speedscope do
             expect(StackProf).to receive(:run).with(hash_including(interval: 10_100))
 
             middleware.call(env)
+          end
+        end
+
+        context 'when the request is for JSON' do
+          let(:env) do
+            Rack::MockRequest.env_for(
+              '/', params: { 'performance_bar' => 'flamegraph' }, 'HTTP_ACCEPT' => 'application/json'
+            )
+          end
+
+          it 'returns a stackprof report as JSON' do
+            status, headers, body = middleware.call(env)
+
+            expect(status).to eq(200)
+            expect(headers).to eq({ 'Content-Type' => 'application/json' })
+            expect(body.first).to include('"mode":"wall"')
           end
         end
       end

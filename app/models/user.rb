@@ -434,6 +434,7 @@ class User < ApplicationRecord
     :home_organization, :home_organization_id, :home_organization_id=,
     :dpop_enabled, :dpop_enabled=,
     :use_work_items_view, :use_work_items_view=,
+    :text_editor, :text_editor=,
     to: :user_preference
 
   delegate :path, to: :namespace, allow_nil: true, prefix: true

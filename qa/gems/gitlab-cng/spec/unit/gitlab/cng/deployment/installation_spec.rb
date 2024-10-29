@@ -135,7 +135,16 @@ RSpec.describe Gitlab::Cng::Deployment::Installation, :aggregate_failures do
 
         it "retries deployment" do
           expect { expect { installation.create }.to raise_error(SystemExit) }.to output.to_stdout
-          expect(helmclient).to have_received(:upgrade).twice
+          expect(helmclient).to have_received(:upgrade).with(
+            "gitlab",
+            chart_reference,
+            hash_including(args: ["--atomic"])
+          )
+          expect(helmclient).to have_received(:upgrade).with(
+            "gitlab",
+            chart_reference,
+            hash_including(args: [])
+          )
         end
       end
     end

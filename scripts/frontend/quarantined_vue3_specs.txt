@@ -211,7 +211,6 @@ spec/frontend/ci/job_details/components/log/line_header_spec.js
 spec/frontend/ci/job_details/components/log/line_spec.js
 spec/frontend/ci/job_details/components/log/log_spec.js
 spec/frontend/ci/job_details/components/sidebar/job_sidebar_retry_button_spec.js
-spec/frontend/ci/job_details/components/sidebar/stages_dropdown_spec.js
 spec/frontend/ci/jobs_page/job_page_app_spec.js
 spec/frontend/ci/pipeline_details/graph/components/job_group_dropdown_spec.js
 spec/frontend/ci/pipeline_details/header/components/header_badges_spec.js

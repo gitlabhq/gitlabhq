@@ -98,6 +98,7 @@ workflow:
         --admin-password "${GITLAB_ADMIN_PASSWORD}" \
         --admin-token "${GITLAB_QA_ADMIN_ACCESS_TOKEN}" \
         --chart-sha "${GITLAB_HELM_CHART_REF}" \
+        --retry 1 \
         --ci \
         ${EXTRA_DEPLOY_VALUES}
   after_script:

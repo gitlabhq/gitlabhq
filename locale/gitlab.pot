@@ -10575,6 +10575,9 @@ msgstr ""
 msgid "CICD|CI/CD job token can be used to authenticate a Git push to this repository, using the permissions of the user that started the job."
 msgstr ""
 
+msgid "CICD|Configure CI/CD job token settings for all projects."
+msgstr ""
+
 msgid "CICD|Continuous deployment to production"
 msgstr ""
 
@@ -10594,6 +10597,9 @@ msgid "CICD|Developer"
 msgstr ""
 
 msgid "CICD|Disabling this feature is a permanent change."
+msgstr ""
+
+msgid "CICD|Enable and enforce job token allowlist for all projects."
 msgstr ""
 
 msgid "CICD|Enable feature to limit job token access to the following projects."
@@ -10650,10 +10656,16 @@ msgstr ""
 msgid "CICD|Use separate caches for protected branches"
 msgstr ""
 
+msgid "CICD|When enabled, all projects must use their allowlist to control CI/CD job token access between projects. The option to allow access from all groups and projects is hidden. %{link_start}Learn More.%{link_end}"
+msgstr ""
+
 msgid "CICD|group enabled"
 msgstr ""
 
 msgid "CICD|instance enabled"
+msgstr ""
+
+msgid "CID|Job token permissions"
 msgstr ""
 
 msgid "CODEOWNERS rule violation"
@@ -41393,6 +41405,9 @@ msgstr ""
 msgid "Preferences|Choose the appearance of the application."
 msgstr ""
 
+msgid "Preferences|Choose the default editor for writing content. You can switch editors temporarily when editing."
+msgstr ""
+
 msgid "Preferences|Choose the navigation theme."
 msgstr ""
 
@@ -41430,6 +41445,9 @@ msgid "Preferences|Customize the behavior of the system layout and default views
 msgstr ""
 
 msgid "Preferences|Customize the colors of removed and added lines in diffs."
+msgstr ""
+
+msgid "Preferences|Default text editor"
 msgstr ""
 
 msgid "Preferences|Diff colors"
@@ -41532,6 +41550,12 @@ msgid "Preferences|Time preferences"
 msgstr ""
 
 msgid "Preferences|Turns on or off the ability to follow or be followed by other users."
+msgstr ""
+
+msgid "Preferences|Type in plain text, using Markdown."
+msgstr ""
+
+msgid "Preferences|Type in rich text, as you see it."
 msgstr ""
 
 msgid "Preferences|Use exact code search instead of advanced search to search for code in GitLab."
@@ -54811,6 +54835,12 @@ msgid "Text added to the body of user deactivation email messages. 1000 characte
 msgstr ""
 
 msgid "Text style"
+msgstr ""
+
+msgid "TextEditor|Plain text editor"
+msgstr ""
+
+msgid "TextEditor|Rich text editor"
 msgstr ""
 
 msgid "Thank you for your business."

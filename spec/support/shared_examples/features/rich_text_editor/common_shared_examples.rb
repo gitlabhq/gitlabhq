@@ -15,6 +15,7 @@ RSpec.shared_examples 'rich text editor - common' do
     wait_until_hidden_field_is_updated(/Typing text in the content editor/)
 
     begin
+      stub_feature_flags(rich_text_editor_as_default: true)
       refresh
     rescue Selenium::WebDriver::Error::UnexpectedAlertOpenError
     end

@@ -82,6 +82,10 @@ project's pipeline:
 If your project is public or internal, some publicly accessible resources can be accessed
 with a job token from any project. These resources can also be [limited to only projects on the allowlist](#limit-job-token-scope-for-public-or-internal-projects).
 
+Self-managed instance administrators can override this setting from the **Admin** area.
+If the **Only this project and any groups and projects in the allowlist** setting is enforced,
+the CI/CD job token will always be restricted to the project's allowlist.
+
 ### Add a group or project to the job token allowlist
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/346298/) in GitLab 15.9. [Deployed behind the `:inbound_ci_scoped_job_token` feature flag](../../user/feature_flags.md), enabled by default.

@@ -43,6 +43,7 @@ class UserPreference < ApplicationRecord
 
   enum :visibility_pipeline_id_type, { id: 0, iid: 1 }, scopes: false
 
+  enum text_editor_type: { plain_text_editor: 1, rich_text_editor: 2 }
   enum extensions_marketplace_opt_in_status: Enums::WebIde::ExtensionsMarketplaceOptInStatus.statuses
   enum organization_groups_projects_display: { projects: 0, groups: 1 }
 
@@ -107,6 +108,14 @@ class UserPreference < ApplicationRecord
     else
       super(value)
     end
+  end
+
+  def text_editor
+    text_editor_type || (Feature.enabled?(:rich_text_editor_as_default, user) ? :rich_text_editor : :plain_text_editor)
+  end
+
+  def text_editor=(value)
+    self.text_editor_type = value
   end
 
   private

@@ -278,6 +278,7 @@ module ApplicationSettingsHelper
       :email_author_in_body,
       :email_confirmation_setting,
       :enabled_git_access_protocol,
+      :enforce_ci_inbound_job_token_scope_enabled,
       :enforce_terms,
       :error_tracking_enabled,
       :error_tracking_api_url,
