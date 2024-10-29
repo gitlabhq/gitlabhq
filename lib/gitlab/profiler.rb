@@ -155,7 +155,6 @@ module Gitlab
       klass.send(:remove_method, meth) if klass.instance_methods(false).include?(meth) # rubocop:disable GitlabSecurity/PublicSend
     end
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def self.log_load_times_by_model(logger)
       return unless logger.respond_to?(:load_times_by_model)
 
@@ -167,7 +166,6 @@ module Gitlab
         logger.info("#{model} total (#{query_count}): #{time.round(2)}ms")
       end
     end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     def self.with_profiler(profiler_options)
       require 'stackprof'

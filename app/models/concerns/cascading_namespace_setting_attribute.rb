@@ -229,14 +229,12 @@ module CascadingNamespaceSettingAttribute
   def cascaded_ancestor_value(attribute)
     return unless namespace.has_parent?
 
-    # rubocop:disable GitlabSecurity/SqlInjection
     self.class
-      .select(attribute)
-      .joins("join unnest(ARRAY[#{namespace_ancestor_ids.join(',')}]) with ordinality t(namespace_id, ord) USING (namespace_id)")
-      .where("#{attribute} IS NOT NULL")
-      .order('t.ord')
-      .limit(1).first&.read_attribute(attribute)
-    # rubocop:enable GitlabSecurity/SqlInjection
+  .select(attribute)
+  .joins("join unnest(ARRAY[#{namespace_ancestor_ids.join(',')}]) with ordinality t(namespace_id, ord) USING (namespace_id)")
+  .where("#{attribute} IS NOT NULL")
+  .order('t.ord')
+  .limit(1).first&.read_attribute(attribute)
   end
 
   def application_setting_value(attribute)

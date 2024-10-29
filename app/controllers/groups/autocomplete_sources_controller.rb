@@ -46,7 +46,6 @@ class Groups::AutocompleteSourcesController < Groups::ApplicationController
     GroupIssuableAutocompleteSerializer.new
   end
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def target
     # TODO https://gitlab.com/gitlab-org/gitlab/-/issues/388541
     # type_id is a misnomer. QuickActions::TargetService actually requires an iid.
@@ -54,7 +53,6 @@ class Groups::AutocompleteSourcesController < Groups::ApplicationController
       .new(container: @group, current_user: current_user)
       .execute(params[:type], params[:type_id])
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 end
 
 Groups::AutocompleteSourcesController.prepend_mod

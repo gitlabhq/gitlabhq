@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.shared_examples 'Debian Distribution Key' do |container|
-  let_it_be_with_refind(:distribution_key) { create("debian_#{container}_distribution_key") } # rubocop:disable Rails/SaveBang
+  let_it_be_with_refind(:distribution_key) { create("debian_#{container}_distribution_key") }
 
   subject { distribution_key }
 

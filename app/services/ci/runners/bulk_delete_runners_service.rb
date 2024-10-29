@@ -45,13 +45,10 @@ module Ci
       end
 
       def compute_authorized_runners
-        # rubocop:disable CodeReuse/ActiveRecord
         @current_user.ci_owned_runners.load # preload the owned runners to avoid an N+1
         authorized_runners, unauthorized_runners =
           @runners.limit(RUNNER_LIMIT)
                   .partition { |runner| Ability.allowed?(@current_user, :delete_runner, runner) }
-        # rubocop:enable CodeReuse/ActiveRecord
-
         [authorized_runners.map(&:id), unauthorized_runners.map(&:id)]
       end
 

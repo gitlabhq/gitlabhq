@@ -139,7 +139,6 @@ Database/AvoidUsingPluckWithoutLimit:
     - 'ee/app/services/approval_rules/params_filtering_service.rb'
     - 'ee/app/services/click_house/data_ingestion/ci_finished_builds_sync_service.rb'
     - 'ee/app/services/ee/groups/destroy_service.rb'
-    - 'ee/app/services/ee/search/global_service.rb'
     - 'ee/app/services/epics/update_dates_service.rb'
     - 'ee/app/services/gitlab_subscriptions/preview_billable_user_change_service.rb'
     - 'ee/app/services/security/merge_request_security_report_generation_service.rb'

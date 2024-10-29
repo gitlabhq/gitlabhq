@@ -55,7 +55,7 @@ RSpec.describe Gitlab::ImportExport::Project::RelationSaver do
       end
 
       it 'successfully serializes without errors' do
-        result = relation_saver.save # rubocop:disable Rails/SaveBang
+        result = relation_saver.save
 
         expect(result).to eq(true)
         expect(shared.errors).to be_empty
@@ -81,7 +81,7 @@ RSpec.describe Gitlab::ImportExport::Project::RelationSaver do
       end
 
       it 'successfully serializes without errors' do
-        result = relation_saver.save # rubocop:disable Rails/SaveBang
+        result = relation_saver.save
 
         expect(result).to eq(true)
         expect(shared.errors).to be_empty
@@ -92,7 +92,7 @@ RSpec.describe Gitlab::ImportExport::Project::RelationSaver do
       let(:relation) { 'unknown' }
 
       it 'returns false and register the error' do
-        result = relation_saver.save # rubocop:disable Rails/SaveBang
+        result = relation_saver.save
 
         expect(result).to eq(false)
         expect(shared.errors).to be_present
@@ -105,7 +105,7 @@ RSpec.describe Gitlab::ImportExport::Project::RelationSaver do
           allow(serializer).to receive(:serialize_root).and_raise('Error!')
         end
 
-        result = relation_saver.save # rubocop:disable Rails/SaveBang
+        result = relation_saver.save
 
         expect(result).to eq(false)
         expect(shared.errors).to include('Error!')

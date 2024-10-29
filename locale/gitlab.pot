@@ -2086,6 +2086,9 @@ msgstr ""
 msgid "A non-confidential work item cannot have a confidential parent."
 msgstr ""
 
+msgid "A parent group has selected \"Only direct members.\" It cannot be overridden by this group."
+msgstr ""
+
 msgid "A parent must be provided when bulk updating issuables"
 msgstr ""
 
@@ -3573,9 +3576,6 @@ msgstr ""
 msgid "AdminAIPoweredFeatures|AI-powered features"
 msgstr ""
 
-msgid "AdminAIPoweredFeatures|AI-powered features that can be enabled, disabled, or linked to a cloud-based or self-hosted model."
-msgstr ""
-
 msgid "AdminAIPoweredFeatures|Add self-hosted model"
 msgstr ""
 
@@ -3586,9 +3586,6 @@ msgid "AdminAIPoweredFeatures|Compatible models"
 msgstr ""
 
 msgid "AdminAIPoweredFeatures|Disabled"
-msgstr ""
-
-msgid "AdminAIPoweredFeatures|Features that can be enabled, disabled, or linked to a cloud-based or self-hosted model."
 msgstr ""
 
 msgid "AdminAIPoweredFeatures|Main feature"
@@ -3603,40 +3600,16 @@ msgstr ""
 msgid "AdminAIPoweredFeatures|Sub feature"
 msgstr ""
 
-msgid "AdminAiPoweredFeatures|%{feature_name}"
-msgstr ""
-
 msgid "AdminAiPoweredFeatures|%{selected_model} is incompatible with the %{title} feature"
 msgstr ""
 
 msgid "AdminAiPoweredFeatures|AI vendor"
 msgstr ""
 
-msgid "AdminAiPoweredFeatures|AI-powered features"
-msgstr ""
-
-msgid "AdminAiPoweredFeatures|Choose the AI model to use with %{feature_name}."
-msgstr ""
-
 msgid "AdminAiPoweredFeatures|Disabled"
 msgstr ""
 
-msgid "AdminAiPoweredFeatures|Model provider"
-msgstr ""
-
 msgid "AdminAiPoweredFeatures|Self-hosted model"
-msgstr ""
-
-msgid "AdminAiPoweredFeatures|Turn off"
-msgstr ""
-
-msgid "AdminAiPoweredFeatures|Turn off %{feature_name} for the instance."
-msgstr ""
-
-msgid "AdminAiPoweredFeatures|Turn on %{feature_name}, powered by a GitLab-selected AI Vendor. The model must be configured for the instance."
-msgstr ""
-
-msgid "AdminAiPoweredFeatures|Turn on %{feature_name}, powered by a self-hosted model."
 msgstr ""
 
 msgid "AdminArea|%{billable_users_link_start}Learn more%{billable_users_link_end} about what defines a billable user"
@@ -20314,7 +20287,7 @@ msgstr ""
 msgid "DuoChat|Search %{categoryLabel}..."
 msgstr ""
 
-msgid "DuoChat|The issue, epic, or code you're viewing"
+msgid "DuoChat|The issue, epic, merge request, or code you're viewing"
 msgstr ""
 
 msgid "DuoChat|There was an error communicating with GitLab Duo Chat. Please try again later."
@@ -22685,6 +22658,9 @@ msgstr ""
 msgid "Expiry notification emails about group and project access tokens should be sent to:"
 msgstr ""
 
+msgid "Expiry notification emails about group and project access tokens within this group should be sent to:"
+msgstr ""
+
 msgid "Explain current vulnerability."
 msgstr ""
 
@@ -23212,9 +23188,6 @@ msgid "Feature flag was not removed."
 msgstr ""
 
 msgid "Feature flag was successfully removed."
-msgstr ""
-
-msgid "Feature settings updated successfully"
 msgstr ""
 
 msgid "FeatureFlags|%d user"
@@ -66241,6 +66214,9 @@ msgstr ""
 msgid "organizations can only be added to root groups and groups configured as CRM targets"
 msgstr ""
 
+msgid "overdue"
+msgstr ""
+
 msgid "packages"
 msgstr ""
 
@@ -66262,6 +66238,9 @@ msgid "parent must be in the same project or group as child."
 msgstr ""
 
 msgid "password"
+msgstr ""
+
+msgid "past due"
 msgstr ""
 
 msgid "pending comment"
@@ -66644,6 +66623,9 @@ msgid "unicode domains should use IDNA encoding"
 msgstr ""
 
 msgid "unsubscribed %{emails}"
+msgstr ""
+
+msgid "upcoming"
 msgstr ""
 
 msgid "updated"

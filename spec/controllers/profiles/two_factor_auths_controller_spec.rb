@@ -273,9 +273,11 @@ RSpec.describe Profiles::TwoFactorAuthsController, feature_category: :system_acc
     let(:client) { WebAuthn::FakeClient.new('http://localhost', encoding: :base64) }
     let(:credential) { create_credential(client: client, rp_id: request.host) }
 
-    let(:params) { { device_registration: { name: 'touch id', device_response: device_response } } } # rubocop:disable Rails/SaveBang
+    let(:params) { { device_registration: { name: 'touch id', device_response: device_response } } }
 
-    let(:params_with_password) { { device_registration: { name: 'touch id', device_response: device_response }, current_password: user.password } } # rubocop:disable Rails/SaveBang
+    let(:params_with_password) do
+      { device_registration: { name: 'touch id', device_response: device_response }, current_password: user.password }
+    end
 
     before do
       session[:challenge] = challenge

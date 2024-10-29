@@ -2,7 +2,7 @@
 
 require 'sidekiq/api'
 
-Sidekiq::Worker.extend ActiveSupport::Concern # rubocop:disable Cop/SidekiqApiUsage
+Sidekiq::Worker.extend ActiveSupport::Concern
 
 module ApplicationWorker
   extend ActiveSupport::Concern
@@ -125,7 +125,7 @@ module ApplicationWorker
       sidekiq_options queue: queue_name # rubocop:disable Cop/SidekiqOptionsQueue
 
       store_name = ::Gitlab::SidekiqConfig::WorkerRouter.global.store(self)
-      sidekiq_options store: store_name # rubocop:disable Cop/SidekiqOptionsQueue
+      sidekiq_options store: store_name
     end
 
     def queue_namespace(new_namespace = nil)

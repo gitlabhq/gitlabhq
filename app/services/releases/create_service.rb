@@ -6,8 +6,18 @@ module Releases
       return error(_('Access Denied'), 403) unless allowed?
       return error(_('You are not allowed to create this tag as it is protected.'), 403) unless can_create_tag?
       return error(_('Release already exists'), 409) if release
-      return error(format(_("Milestone(s) not found: %{milestones}"), milestones: inexistent_milestone_titles.join(', ')), 400) if inexistent_milestone_titles.any? # rubocop:disable Layout/LineLength
-      return error(format(_("Milestone id(s) not found: %{milestones}"), milestones: inexistent_milestone_ids.join(', ')), 400) if inexistent_milestone_ids.any? # rubocop:disable Layout/LineLength
+
+      if inexistent_milestone_titles.any?
+        return error(
+          format(_("Milestone(s) not found: %{milestones}"),
+            milestones: inexistent_milestone_titles.join(', ')), 400)
+      end
+
+      if inexistent_milestone_ids.any?
+        return error(
+          format(_("Milestone id(s) not found: %{milestones}"),
+            milestones: inexistent_milestone_ids.join(', ')), 400)
+      end
 
       # should be found before the creation of new tag
       # because tag creation can spawn new pipeline

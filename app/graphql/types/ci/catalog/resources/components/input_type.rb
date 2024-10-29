@@ -5,7 +5,6 @@ module Types
     module Catalog
       module Resources
         module Components
-          # rubocop: disable Graphql/AuthorizeTypes -- Authorization handled by ComponentType -> VersionType
           class InputType < BaseObject
             graphql_name 'CiCatalogResourceComponentInput'
 
@@ -21,7 +20,6 @@ module Types
             field :type, Types::Ci::Catalog::Resources::Components::InputTypeEnum, null: true,
               description: 'Type of the input.'
           end
-          # rubocop: enable Graphql/AuthorizeTypes
         end
       end
     end

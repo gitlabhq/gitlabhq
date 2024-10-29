@@ -119,8 +119,6 @@ module Gitlab
       set_attr_readers
     end
 
-    # rubocop: disable Metrics/CyclomaticComplexity
-    # rubocop: disable Metrics/PerceivedComplexity
     # rubocop: disable Metrics/AbcSize
     def to_lazy_hash
       {}.tap do |hash|
@@ -151,8 +149,6 @@ module Gitlab
         hash[:bulk_import_entity_id] = -> { bulk_import_entity_id } if set_values.include?(:bulk_import_entity_id)
       end
     end
-    # rubocop: enable Metrics/CyclomaticComplexity
-    # rubocop: enable Metrics/PerceivedComplexity
     # rubocop: enable Metrics/AbcSize
 
     def use

@@ -19,7 +19,7 @@ RSpec.describe Gitlab::Gfm::UploadsRewriter do
     end
 
     let(:text) do
-      "Text and #{image_uploader.markdown_link} and #{zip_uploader.markdown_link}".freeze # rubocop:disable Style/RedundantFreeze
+      "Text and #{image_uploader.markdown_link} and #{zip_uploader.markdown_link}".freeze
     end
 
     def referenced_files(text, project)

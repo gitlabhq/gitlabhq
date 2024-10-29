@@ -280,7 +280,6 @@ module IssuableActions
     @project || @group # rubocop:disable Gitlab/ModuleWithInstanceVariables
   end
 
-  # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def finder_params_for_issuable
     {
       notes_filter: notes_filter,
@@ -288,7 +287,6 @@ module IssuableActions
       per_page: params[:per_page]
     }
   end
-  # rubocop:enable Gitlab/ModuleWithInstanceVariables
 end
 
 IssuableActions.prepend_mod_with('IssuableActions')

@@ -33,7 +33,7 @@ module Ml
                               order(model_id: :desc, semver_major: :desc, semver_minor: :desc, semver_patch: :desc)
                                 .select('DISTINCT ON (model_id) *')
                             }
-    scope :by_version, ->(version) { where("version LIKE ?", "#{sanitize_sql_like(version)}%") } # rubocop:disable GitlabSecurity/SqlInjection -- we are sanitizing
+    scope :by_version, ->(version) { where("version LIKE ?", "#{sanitize_sql_like(version)}%") }
     scope :for_model, ->(model) { where(project: model.project, model: model) }
     scope :including_relations, -> { includes(:project, :model, :candidate) }
     scope :order_by_version, ->(order) { reorder(version: order) }

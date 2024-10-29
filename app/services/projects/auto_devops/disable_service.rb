@@ -21,12 +21,10 @@ module Projects
       # is an expensive operation. See
       # https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/21172#note_99037378
       # for more context.
-      # rubocop: disable CodeReuse/ActiveRecord
       def first_pipeline_failure?
         auto_devops_pipelines.success.limit(1).count == 0 &&
           auto_devops_pipelines.failed.limit(1).count.nonzero?
       end
-      # rubocop: enable CodeReuse/ActiveRecord
 
       def disable_auto_devops
         project.auto_devops_attributes = { enabled: false }

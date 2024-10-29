@@ -15,7 +15,6 @@ RSpec
   let(:project) { create(:project, :repository, namespace: namespace, path: 'merge-requests-project') }
   let(:user) { project.first_owner }
 
-  # rubocop: disable Layout/TrailingWhitespace
   let(:description) do
     <<~MARKDOWN.strip_heredoc
     - [ ] Task List Item
@@ -23,7 +22,6 @@ RSpec
     - [ ] Task List Item 2
     MARKDOWN
   end
-  # rubocop: enable Layout/TrailingWhitespace
 
   let(:merge_request) do
     create(

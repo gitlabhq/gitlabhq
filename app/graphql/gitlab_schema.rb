@@ -189,4 +189,4 @@ class GitlabSchema < GraphQL::Schema
   end
 end
 
-GitlabSchema.prepend_mod_with('GitlabSchema') # rubocop: disable Cop/InjectEnterpriseEditionModule
+GitlabSchema.prepend_mod_with('GitlabSchema')

@@ -37,9 +37,7 @@ module FromUnion
     #
     # alias_as - The alias to use for the sub query. Defaults to the name of the
     #            table of the current model.
-    # rubocop: disable Gitlab/Union
     extend FromSetOperator
     define_set_operator Gitlab::SQL::Union
-    # rubocop: enable Gitlab/Union
   end
 end

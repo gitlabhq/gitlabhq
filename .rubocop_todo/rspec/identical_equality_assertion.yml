@@ -12,8 +12,6 @@ RSpec/IdenticalEqualityAssertion:
     - 'spec/lib/gitlab/ci/ansi2json/state_spec.rb'
     - 'spec/lib/gitlab/color_spec.rb'
     - 'spec/lib/gitlab/daemon_spec.rb'
-    - 'spec/lib/gitlab/fp/message_spec.rb'
-    - 'spec/lib/gitlab/fp/result_spec.rb'
     - 'spec/lib/gitlab/global_anonymous_id_spec.rb'
     - 'spec/lib/gitlab/graphql/lazy_spec.rb'
     - 'spec/lib/gitlab/render_timeout_spec.rb'

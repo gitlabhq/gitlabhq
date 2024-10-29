@@ -68,7 +68,7 @@ module Feature
   end
 
   InvalidFeatureFlagError = Class.new(Exception) # rubocop:disable Lint/InheritException
-  InvalidOperation = Class.new(ArgumentError) # rubocop:disable Lint/InheritException
+  InvalidOperation = Class.new(ArgumentError)
 
   class << self
     delegate :group, to: :flipper

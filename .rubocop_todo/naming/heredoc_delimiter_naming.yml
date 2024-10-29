@@ -32,7 +32,6 @@ Naming/HeredocDelimiterNaming:
     - 'lib/gitlab/sql/set_operator.rb'
     - 'lib/gitlab/utils/delegator_override/validator.rb'
     - 'lib/tasks/gitlab/docs/compile_deprecations.rake'
-    - 'lib/tasks/gitlab/docs/compile_windows.rake'
     - 'lib/tasks/gitlab/password.rake'
     - 'rubocop/cop/database/multiple_databases.rb'
     - 'rubocop/cop/database/rescue_query_canceled.rb'

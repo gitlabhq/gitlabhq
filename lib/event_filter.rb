@@ -48,7 +48,6 @@ class EventFilter
     end
   end
 
-  # rubocop: disable Metrics/CyclomaticComplexity
   # This method build specialized in-operator optimized queries based on different
   # filter parameters. All queries will benefit from the index covering the following columns:
   # * author_id target_type action id
@@ -119,7 +118,6 @@ class EventFilter
       in_operator_params(array_data: array_data)
     end
   end
-  # rubocop: enable Metrics/CyclomaticComplexity
 
   private
 

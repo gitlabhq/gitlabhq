@@ -56,18 +56,14 @@ end
 # rubocop:disable Layout/EmptyLineAfterGuardClause
 # rubocop:disable Performance/ReverseEach
 # rubocop:disable Style/PerlBackrefs
-# rubocop:disable Style/RedundantRegexpCharacterClass
 # rubocop:disable Performance/StringInclude
 # rubocop:disable Style/IfUnlessModifier
 # rubocop:disable Layout/LineLength
-# rubocop:disable Lint/DeprecatedClassMethods
 # rubocop:disable Lint/UselessAssignment
 # rubocop:disable Lint/RedundantStringCoercion
 # rubocop:disable Style/StringLiteralsInInterpolation
-# rubocop:disable Lint/UriEscapeUnescape
 # rubocop:disable Style/For
 # rubocop:disable Style/SlicingWithRange
-# rubocop:disable Style/GuardClause
 # rubocop:disable Cop/LineBreakAfterGuardClauses
 # rubocop:disable Layout/MultilineHashBraceLayout
 module WikiCloth
@@ -254,17 +250,13 @@ end
 # rubocop:enable Layout/EmptyLineAfterGuardClause
 # rubocop:enable Performance/ReverseEach
 # rubocop:enable Style/PerlBackrefs
-# rubocop:enable Style/RedundantRegexpCharacterClass
 # rubocop:enable Performance/StringInclude
 # rubocop:enable Style/IfUnlessModifier
 # rubocop:enable Layout/LineLength
-# rubocop:enable Lint/DeprecatedClassMethods
 # rubocop:enable Lint/UselessAssignment
 # rubocop:enable Lint/RedundantStringCoercion
 # rubocop:enable Style/StringLiteralsInInterpolation
-# rubocop:enable Lint/UriEscapeUnescape
 # rubocop:enable Style/For
 # rubocop:enable Style/SlicingWithRange
-# rubocop:enable Style/GuardClause
 # rubocop:enable Cop/LineBreakAfterGuardClauses
 # rubocop:enable Layout/MultilineHashBraceLayout

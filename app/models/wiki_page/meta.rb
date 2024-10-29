@@ -124,7 +124,6 @@ class WikiPage
     end
     strong_memoize_attr :canonical_slug
 
-    # rubocop:disable Gitlab/ModuleWithInstanceVariables -- Technical debt
     def canonical_slug=(slug)
       return if @canonical_slug == slug
 
@@ -140,7 +139,6 @@ class WikiPage
 
       @canonical_slug = slug
     end
-    # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
     def update_state(created, known_slugs, wiki_page, updates)
       update_wiki_page_attributes(updates)
@@ -173,7 +171,7 @@ class WikiPage
       end
       slugs.insert_all(slug_attrs) unless !is_new && slug_attrs.size == 1
 
-      @canonical_slug = canonical_slug if is_new || strings.size == 1 # rubocop:disable Gitlab/ModuleWithInstanceVariables -- Technical debt
+      @canonical_slug = canonical_slug if is_new || strings.size == 1
     end
 
     def slug_attributes(slug, canonical_slug, is_new, creation)

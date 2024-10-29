@@ -33,7 +33,7 @@ module Gitlab
           :unknown
         end
       end
-      module_function :sort_and_direction # rubocop: disable Style/AccessModifierDeclarations
+      module_function :sort_and_direction
     end
   end
 end

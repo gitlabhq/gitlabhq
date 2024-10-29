@@ -18,7 +18,6 @@ module Labels
       # rubocop: disable CodeReuse/ActiveRecord
       link_ids = group_labels_applied_to_issues.pluck("label_links.id") +
         group_labels_applied_to_merge_requests.pluck("label_links.id")
-      # rubocop: disable CodeReuse/ActiveRecord
 
       Label.transaction do
         labels_to_transfer.find_each do |label|
@@ -36,7 +35,6 @@ module Labels
 
     attr_reader :current_user, :old_group, :project
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def labels_to_transfer
       Label
         .from_union([

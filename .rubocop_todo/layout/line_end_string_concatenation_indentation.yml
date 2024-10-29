@@ -402,7 +402,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'lib/gitlab/config_checker/external_database_checker.rb'
     - 'lib/gitlab/database/background_migration/batched_migration_runner.rb'
     - 'lib/gitlab/database/decomposition/migrate.rb'
-    - 'lib/gitlab/database/dictionary.rb'
     - 'lib/gitlab/database/gitlab_schema.rb'
     - 'lib/gitlab/database/migration_helpers/wraparound_vacuum_helpers.rb'
     - 'lib/gitlab/database/migrations/pg_backend_pid.rb'

@@ -1,3 +1,4 @@
 ---
+# Cop supports --autocorrect.
 Gemspec/AddRuntimeDependency:
   Details: grace period

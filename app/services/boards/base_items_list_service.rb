@@ -136,11 +136,9 @@ module Boards
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def label_links(items, label_ids)
       labels_filter.label_link_query(items, label_ids: label_ids)
     end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     # rubocop: disable CodeReuse/ActiveRecord
     def with_list_label(items)

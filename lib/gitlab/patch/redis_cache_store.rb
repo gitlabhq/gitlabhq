@@ -5,7 +5,7 @@ module Gitlab
     module RedisCacheStore
       # We will try keep patched code explicit and matching the original signature in
       # https://github.com/rails/rails/blob/v7.1.3.4/activesupport/lib/active_support/cache/redis_cache_store.rb#L324
-      def read_multi_entries(names, **options) # rubocop:disable Style/ArgumentsForwarding -- Overridden patch
+      def read_multi_entries(names, **options)
         return super unless enable_rails_cache_pipeline_patch?
         return super unless use_patched_mget?
 

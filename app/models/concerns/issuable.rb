@@ -710,15 +710,15 @@ module Issuable
   end
 
   def old_escalation_status(assoc)
-    @_old_escalation_status ||= assoc.fetch(:escalation_status, escalation_status.status_name) # rubocop:disable Gitlab/ModuleWithInstanceVariables -- This is only used here
+    @_old_escalation_status ||= assoc.fetch(:escalation_status, escalation_status.status_name)
   end
 
   def old_total_time_spent(assoc)
-    @_old_total_time_spent ||= assoc.fetch(:total_time_spent, total_time_spent) # rubocop:disable Gitlab/ModuleWithInstanceVariables -- This is only used here
+    @_old_total_time_spent ||= assoc.fetch(:total_time_spent, total_time_spent)
   end
 
   def old_time_change(assoc)
-    @_old_time_change ||= assoc.fetch(:time_change, time_change) # rubocop:disable Gitlab/ModuleWithInstanceVariables -- This is only used here
+    @_old_time_change ||= assoc.fetch(:time_change, time_change)
   end
 end
 

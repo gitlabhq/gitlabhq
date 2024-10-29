@@ -34,8 +34,6 @@ RSpec/MetadataStyle:
     - 'spec/lib/gitlab/ssh_public_key_spec.rb'
     - 'spec/lib/gitlab/tab_width_spec.rb'
     - 'spec/lib/gitlab/themes_spec.rb'
-    - 'spec/migrations/20230804053643_add_ticket_work_item_type_spec.rb'
-    - 'spec/migrations/20230815160428_rename_plans_titles_with_legacy_plan_names_spec.rb'
     - 'spec/models/ci/build_need_spec.rb'
     - 'spec/models/ci/build_runner_session_spec.rb'
     - 'spec/models/ci/runner_manager_build_spec.rb'

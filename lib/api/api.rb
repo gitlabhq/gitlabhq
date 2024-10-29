@@ -406,7 +406,7 @@ module API
     mount ::API::Internal::Workhorse
     mount ::API::Internal::Shellhorse
 
-    route :any, '*path', feature_category: :not_owned do # rubocop:todo Gitlab/AvoidFeatureCategoryNotOwned
+    route :any, '*path', feature_category: :not_owned do
       error!('404 Not Found', 404)
     end
   end

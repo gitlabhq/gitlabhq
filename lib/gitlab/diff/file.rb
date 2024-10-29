@@ -350,17 +350,13 @@ module Gitlab
         old_blob && new_blob && old_blob.binary? != new_blob.binary?
       end
 
-      # rubocop: disable CodeReuse/ActiveRecord
       def size
         valid_blobs.sum(&:size)
       end
-      # rubocop: enable CodeReuse/ActiveRecord
 
-      # rubocop: disable CodeReuse/ActiveRecord
       def raw_size
         valid_blobs.sum(&:raw_size)
       end
-      # rubocop: enable CodeReuse/ActiveRecord
 
       def empty?
         valid_blobs.map(&:empty?).all?

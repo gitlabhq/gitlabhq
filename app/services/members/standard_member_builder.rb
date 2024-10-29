@@ -17,7 +17,7 @@ module Members
     attr_reader :source, :invitee, :existing_members
 
     def find_or_initialize_member_by_user(user_id)
-      existing_members[user_id] || source.members_and_requesters.build(user_id: user_id) # rubocop:disable CodeReuse/ActiveRecord
+      existing_members[user_id] || source.members_and_requesters.build(user_id: user_id)
     end
   end
 end

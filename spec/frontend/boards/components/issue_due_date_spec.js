@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+import { GlIcon } from '@gitlab/ui';
 import IssueDueDate from '~/boards/components/issue_due_date.vue';
 import { localeDateFormat, toISODateFormat } from '~/lib/utils/datetime_utility';
 
@@ -11,6 +12,7 @@ const createComponent = (dueDate = new Date(), closed = false) =>
   });
 
 const findTime = (wrapper) => wrapper.find('time');
+const findIcon = (wrapper) => wrapper.findComponent(GlIcon);
 
 describe('Issue Due Date component', () => {
   let wrapper;
@@ -59,18 +61,24 @@ describe('Issue Due Date component', () => {
     expect(findTime(wrapper).text()).toBe(expected);
   });
 
-  it('should contain the correct `.gl-text-danger` css class for overdue issue that is open', () => {
+  it('should contain the correct icon for overdue issue that is open', () => {
     date.setDate(date.getDate() - 17);
     wrapper = createComponent(date);
 
-    expect(findTime(wrapper).classes('gl-text-danger')).toBe(true);
+    expect(findIcon(wrapper).props()).toMatchObject({
+      variant: 'danger',
+      name: 'calendar-overdue',
+    });
   });
 
-  it('should not contain the `.gl-text-danger` css class for overdue issue that is closed', () => {
+  it('should not contain the overdue icon for overdue issue that is closed', () => {
     date.setDate(date.getDate() - 17);
     const closed = true;
     wrapper = createComponent(date, closed);
 
-    expect(findTime(wrapper).classes('gl-text-danger')).toBe(false);
+    expect(findIcon(wrapper).props()).toMatchObject({
+      variant: 'default',
+      name: 'calendar',
+    });
   });
 });

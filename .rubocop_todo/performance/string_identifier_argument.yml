@@ -21,7 +21,6 @@ Performance/StringIdentifierArgument:
     - 'app/models/concerns/sanitizable.rb'
     - 'app/models/concerns/signature_type.rb'
     - 'app/models/concerns/token_authenticatable.rb'
-    - 'app/models/concerns/token_authenticatable_strategies/base.rb'
     - 'app/models/integrations/base_third_party_wiki.rb'
     - 'app/models/integrations/field.rb'
     - 'app/models/namespace_statistics.rb'

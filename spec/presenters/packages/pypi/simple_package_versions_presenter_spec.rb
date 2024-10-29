@@ -49,14 +49,14 @@ RSpec.describe ::Packages::Pypi::SimplePackageVersionsPresenter, :aggregate_fail
 
     context 'for project' do
       let(:project_or_group) { project }
-      let(:expected_link) { "<a href=\"http://localhost/api/v4/projects/#{project.id}/packages/pypi/files/#{file.file_sha256}/#{filename}#sha256=#{file.file_sha256}\" data-requires-python=\"#{expected_python_version}\">#{filename}</a>" } # rubocop:disable Layout/LineLength
+      let(:expected_link) { "<a href=\"http://localhost/api/v4/projects/#{project.id}/packages/pypi/files/#{file.file_sha256}/#{filename}#sha256=#{file.file_sha256}\" data-requires-python=\"#{expected_python_version}\">#{filename}</a>" }
 
       it_behaves_like 'pypi package presenter'
     end
 
     context 'for group' do
       let(:project_or_group) { group }
-      let(:expected_link) { "<a href=\"http://localhost/api/v4/groups/#{group.id}/-/packages/pypi/files/#{file.file_sha256}/#{filename}#sha256=#{file.file_sha256}\" data-requires-python=\"#{expected_python_version}\">#{filename}</a>" } # rubocop:disable Layout/LineLength
+      let(:expected_link) { "<a href=\"http://localhost/api/v4/groups/#{group.id}/-/packages/pypi/files/#{file.file_sha256}/#{filename}#sha256=#{file.file_sha256}\" data-requires-python=\"#{expected_python_version}\">#{filename}</a>" }
 
       it_behaves_like 'pypi package presenter'
     end

@@ -6,7 +6,7 @@ RSpec.describe Gitlab::QuickActions::Dsl do
   before do
     stub_const('DummyClass', Struct.new(:project))
     DummyClass.class_eval do
-      include Gitlab::QuickActions::Dsl # rubocop:disable RSpec/DescribedClass
+      include Gitlab::QuickActions::Dsl
 
       desc 'A command with no args'
       command :no_args, :none do

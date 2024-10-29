@@ -64,7 +64,7 @@ module BulkImports
 
       def on_finish; end
 
-      private # rubocop:disable Lint/UselessAccessModifier
+      private
 
       def run_pipeline_step(step, class_name = nil, entry = nil)
         raise MarkedAsFailedError if context.entity.failed?

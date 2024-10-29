@@ -32,13 +32,11 @@ class ForkNamespaceEntity < Grape::Entity
 
   private
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def membership(user, object, memberships)
     return unless user
 
     memberships[object.id]
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   def markdown_description(namespace)
     markdown_field(namespace, :description)

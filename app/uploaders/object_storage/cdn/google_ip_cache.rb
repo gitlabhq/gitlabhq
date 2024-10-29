@@ -1,4 +1,3 @@
-# rubocop:disable Naming/FileName
 # frozen_string_literal: true
 
 module ObjectStorage
@@ -56,5 +55,3 @@ module ObjectStorage
     end
   end
 end
-
-# rubocop:enable Naming/FileName

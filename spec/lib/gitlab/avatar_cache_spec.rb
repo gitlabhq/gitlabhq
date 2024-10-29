@@ -4,7 +4,7 @@ require "spec_helper"
 
 RSpec.describe Gitlab::AvatarCache, :clean_gitlab_redis_cache do
   def with(&blk)
-    Gitlab::Redis::Cache.with(&blk) # rubocop:disable CodeReuse/ActiveRecord
+    Gitlab::Redis::Cache.with(&blk)
   end
 
   def read(key, subkey)

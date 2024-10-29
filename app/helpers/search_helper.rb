@@ -335,7 +335,6 @@ module SearchHelper
   end
 
   # Autocomplete results for the current user's groups
-  # rubocop: disable CodeReuse/ActiveRecord
   def groups_autocomplete(term, limit = 5)
     current_user.authorized_groups.order_id_desc.search(term, use_minimum_char_limit: false).limit(limit).map do |group|
       {
@@ -348,7 +347,6 @@ module SearchHelper
       }
     end
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   def issue_autocomplete(term)
     return [] unless @project.present? && current_user && term =~ /\A#{Issue.reference_prefix}\d+\z/

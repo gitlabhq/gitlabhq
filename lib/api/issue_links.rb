@@ -59,7 +59,6 @@ module API
           desc: 'The type of the relation (“relates_to”, “blocks”, “is_blocked_by”),'\
            'defaults to “relates_to”)'
       end
-      # rubocop: disable CodeReuse/ActiveRecord
       post ':id/issues/:issue_iid/links' do
         source_issue = find_project_issue(params[:issue_iid])
         target_issue = find_project_issue(declared_params[:target_issue_iid],
@@ -77,8 +76,6 @@ module API
           render_api_error!(result[:message], result[:http_status])
         end
       end
-      # rubocop: enable CodeReuse/ActiveRecord
-
       desc 'Get an issue link' do
         detail 'Gets details about an issue link. This feature was introduced in GitLab 15.1.'
         success Entities::IssueLink

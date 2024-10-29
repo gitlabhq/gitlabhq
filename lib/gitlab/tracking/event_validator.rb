@@ -58,9 +58,10 @@ module Gitlab
         custom_properties = additional_properties.except(*BASE_ADDITIONAL_PROPERTIES.keys)
         event_definition_attributes = Gitlab::Tracking::EventDefinition.find(event_name).to_h
         allowed_types = CUSTOM_PROPERTIES_CLASSES
+
         custom_properties.each_key do |key|
-          unless event_definition_attributes[:additional_properties].include?(key)
-            raise InvalidPropertyError, "Unknown additional property: #{key}"
+          unless event_definition_attributes[:additional_properties]&.include?(key)
+            raise InvalidPropertyError, "Unknown additional property: #{key} for event_name: #{event_name}"
           end
 
           validate_property!(custom_properties, key, *allowed_types)

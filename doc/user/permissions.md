@@ -183,18 +183,9 @@ Project permissions for [compliance](compliance/index.md) features including com
 
 ### Machine learning model registry and experiment
 
-Project permissions for [model registry](project/ml/model_registry/index.md) and [model experiments](project/ml/experiment_tracking/index.md).
+Access to the model registry is based on a combination of the user's access level for the project, the model registry, and to experiments.
 
-| Action                                                            | Guest | Reporter | Developer | Maintainer | Owner | Notes |
-| ----------------------------------------------------------------- | :---: | :------: | :-------: | :--------: | :---: | ----- |
-| View [models and versions](project/ml/model_registry/index.md)    |       |    ✓     |     ✓     |     ✓      |   ✓   |       |
-| View [model experiments](project/ml/experiment_tracking/index.md) |       |    ✓     |     ✓     |     ✓      |   ✓   |       |
-| Create models, versions, and artifacts                            |       |          |     ✓     |     ✓      |   ✓   |       |
-| Edit models, versions, and artifacts                              |       |          |     ✓     |     ✓      |   ✓   |       |
-| Delete models, versions, and artifacts                            |       |          |     ✓     |     ✓      |   ✓   |       |
-| Create experiments and candidates                                 |       |          |     ✓     |     ✓      |   ✓   |       |
-| Edit experiments and candidates                                   |       |          |     ✓     |     ✓      |   ✓   |       |
-| Delete experiments and candidates                                 |       |          |     ✓     |     ✓      |   ✓   |       |
+More updates to this documentation are planned for GitLab 17.6.
 
 ### Monitoring
 

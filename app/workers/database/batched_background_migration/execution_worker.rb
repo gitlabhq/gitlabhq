@@ -30,7 +30,7 @@ module Database
           worker = new
           worker.remove_failed_jobs
 
-          bulk_perform_async(args) # rubocop:disable Scalability/BulkPerformWithContext
+          bulk_perform_async(args)
         end
       end
 

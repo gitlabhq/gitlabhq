@@ -1,3 +1,4 @@
 ---
+# Cop supports --autocorrect.
 RSpec/DuplicatedMetadata:
   Details: grace period

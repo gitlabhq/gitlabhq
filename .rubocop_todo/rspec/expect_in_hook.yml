@@ -59,7 +59,6 @@ RSpec/ExpectInHook:
     - 'ee/spec/services/gitlab_subscriptions/reconciliations/calculate_seat_count_data_service_spec.rb'
     - 'ee/spec/services/groups/update_repository_storage_service_spec.rb'
     - 'ee/spec/services/members/await_service_spec.rb'
-    - 'ee/spec/services/merge_requests/mergeability/check_approved_service_spec.rb'
     - 'ee/spec/services/merge_requests/mergeability/check_blocked_by_other_mrs_service_spec.rb'
     - 'ee/spec/services/projects/create_from_template_service_spec.rb'
     - 'ee/spec/services/projects/mark_for_deletion_service_spec.rb'

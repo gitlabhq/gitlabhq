@@ -68,14 +68,11 @@ end
 # rubocop:disable Layout/BlockEndNewline
 # rubocop:disable Style/PerlBackrefs
 # rubocop:disable Style/RegexpLiteralMixedPreserve
-# rubocop:disable Style/RedundantRegexpCharacterClass
 # rubocop:disable Performance/StringInclude
 # rubocop:disable Layout/LineLength
 # rubocop:disable Style/RedundantSelf
 # rubocop:disable Style/SymbolProc
 # rubocop:disable Layout/SpaceInsideParens
-# rubocop:disable Style/GuardClause
-# rubocop:disable Style/RedundantRegexpEscape
 module WikiCloth
   class WikiCloth
     def render(opt={})
@@ -249,11 +246,8 @@ end
 # rubocop:enable Layout/BlockEndNewline
 # rubocop:enable Style/PerlBackrefs
 # rubocop:enable Style/RegexpLiteralMixedPreserve
-# rubocop:enable Style/RedundantRegexpCharacterClass
 # rubocop:enable Performance/StringInclude
 # rubocop:enable Layout/LineLength
 # rubocop:enable Style/RedundantSelf
 # rubocop:enable Style/SymbolProc
 # rubocop:enable Layout/SpaceInsideParens
-# rubocop:enable Style/GuardClause
-# rubocop:enable Style/RedundantRegexpEscape

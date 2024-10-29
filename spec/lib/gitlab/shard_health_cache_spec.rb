@@ -36,7 +36,7 @@ RSpec.describe Gitlab::ShardHealthCache, :clean_gitlab_redis_cache do
     end
 
     it 'returns 0 if no shards are available' do
-      described_class.update([]) # rubocop:disable Rails/SaveBang
+      described_class.update([])
 
       expect(described_class.healthy_shard_count).to eq(0)
     end

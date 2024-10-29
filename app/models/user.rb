@@ -159,7 +159,7 @@ class User < ApplicationRecord
     dependent: :destroy, # rubocop:disable Cop/ActiveRecordDependent
     foreign_key: :owner_id,
     inverse_of: :owner,
-    autosave: true # rubocop:disable Cop/ActiveRecordDependent
+    autosave: true
 
   # Profile
   has_many :keys, -> { regular_keys }, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
@@ -1476,11 +1476,9 @@ class User < ApplicationRecord
     several_namespaces? || admin
   end
 
-  # rubocop: disable Style/ArgumentsForwarding -- https://gitlab.com/gitlab-org/gitlab/-/issues/433045
   def can?(action, subject = :global, **opts)
     Ability.allowed?(self, action, subject, **opts)
   end
-  # rubocop: enable Style/ArgumentsForwarding
 
   def confirm_deletion_with_password?
     !password_automatically_set? && allow_password_authentication?

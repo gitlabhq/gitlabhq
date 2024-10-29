@@ -27,11 +27,9 @@ module Gitlab
         Gitlab::Usage::Metrics::Query.for(:sum, relation, column)
       end
 
-      # rubocop: disable CodeReuse/ActiveRecord
       def histogram(relation, column, buckets:, bucket_size: buckets.size)
         Gitlab::Usage::Metrics::Query.for(:histogram, relation, column, buckets: buckets, bucket_size: bucket_size)
       end
-      # rubocop: enable CodeReuse/ActiveRecord
 
       # For estimated distinct count use exact query instead of hll
       # buckets query, because it can't be used to obtain estimations without
@@ -77,9 +75,7 @@ module Gitlab
 
       def stage_manage_events(time_period)
         # rubocop: disable CodeReuse/ActiveRecord
-        # rubocop: disable UsageData/LargeTable
         estimate_batch_distinct_count(::Event.where(time_period), :author_id)
-        # rubocop: enable UsageData/LargeTable
         # rubocop: enable CodeReuse/ActiveRecord
       end
     end

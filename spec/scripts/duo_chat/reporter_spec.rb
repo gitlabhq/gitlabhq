@@ -111,7 +111,7 @@ RSpec.describe Reporter, feature_category: :ai_abstraction_layer do
       end
 
       context 'when a note does not already exist' do
-        let(:note) { nil } # rubocop: disable RSpec/VerifiedDoubles -- an internal detail of Gitlab gem.
+        let(:note) { nil }
 
         it 'saves the report as a markdown file and creates a new MR note containing the report content' do
           expect(File).to receive(:write).with(base_dir, reporter.markdown_report)

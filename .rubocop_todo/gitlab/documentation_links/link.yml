@@ -25,7 +25,6 @@ Gitlab/DocumentationLinks/Link:
     - 'ee/app/helpers/vulnerabilities_helper.rb'
     - 'ee/app/models/integrations/github.rb'
     - 'ee/app/presenters/ee/merge_request_presenter.rb'
-    - 'ee/app/presenters/gitlab_subscriptions/trials/duo_enterprise_status_widget_presenter.rb'
     - 'ee/lib/api/managed_licenses.rb'
     - 'ee/lib/ee/gitlab/namespace_storage_size_error_message.rb'
     - 'ee/lib/gitlab/checks/secrets_check.rb'

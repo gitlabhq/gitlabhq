@@ -60,7 +60,6 @@ RSpec/VerifiedDoubleReference:
     - 'ee/spec/requests/projects/security/policies_controller_spec.rb'
     - 'ee/spec/serializers/dashboard_environments_project_entity_spec.rb'
     - 'ee/spec/serializers/vulnerabilities/finding_entity_spec.rb'
-    - 'ee/spec/services/ai/duo_workflows/start_workflow_service_spec.rb'
     - 'ee/spec/services/analytics/cycle_analytics/consistency_check_service_spec.rb'
     - 'ee/spec/services/analytics/forecasting/build_forecast_service_spec.rb'
     - 'ee/spec/services/app_sec/dast/scans/run_service_spec.rb'

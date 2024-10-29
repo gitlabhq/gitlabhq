@@ -4,7 +4,6 @@ module Gitlab
   module Analytics
     module CycleAnalytics
       module Aggregated
-        # rubocop: disable CodeReuse/ActiveRecord
         class BaseQueryBuilder
           include StageQueryHelpers
 
@@ -122,7 +121,6 @@ module Gitlab
             User.by_username(username).first
           end
         end
-        # rubocop: enable CodeReuse/ActiveRecord
       end
     end
   end

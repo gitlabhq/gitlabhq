@@ -14,8 +14,16 @@ RSpec.shared_examples 'container repository name regex' do
   it { is_expected.to match('my/awesome/image.test') }
   it { is_expected.to match('my/awesome/image--test') }
   it { is_expected.to match('my/image__test') }
+
   # this example tests for catastrophic backtracking
-  it { is_expected.to match('user1/project/a_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb------------x') } # rubocop:disable Layout/LineLength -- Avoid formatting to keep one-line test blocks
+  specify do
+    string =
+      'user1/project/a_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb' \
+        'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb' \
+        'bbbbbbbbbb------------x'
+    is_expected.to match(string)
+  end
+
   it { is_expected.not_to match('user1/project/a_bbbbb-------------') }
   it { is_expected.not_to match('my/image-.test') }
   it { is_expected.not_to match('my/image___test') }

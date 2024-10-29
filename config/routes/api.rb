@@ -3,5 +3,5 @@
 match '/api/graphql', via: [:get, :post], to: 'graphql#execute'
 get '/-/graphql-explorer', to: API::Graphql::GraphqlExplorerController.action(:show)
 
-::API::API.logger Rails.logger # rubocop:disable Gitlab/RailsLogger
+::API::API.logger Rails.logger
 mount ::API::API => '/'

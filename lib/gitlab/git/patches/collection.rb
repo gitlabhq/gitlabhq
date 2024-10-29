@@ -20,13 +20,11 @@ module Gitlab
           size < MAX_PATCH_SIZE
         end
 
-        # rubocop: disable CodeReuse/ActiveRecord
         # `@patches` is not an `ActiveRecord` relation, but an `Enumerable`
         # We're using sum from `ActiveSupport`
         def size
           @size ||= @patches.sum(&:size)
         end
-        # rubocop: enable CodeReuse/ActiveRecord
       end
     end
   end

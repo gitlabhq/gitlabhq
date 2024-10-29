@@ -130,7 +130,6 @@ module GraphqlHelpers
   # NB: Arguments are passed from the client's perspective. If there is an argument
   # `foo` aliased as `bar`, then we would pass `args: { bar: the_value }`, and
   # types are checked before resolution.
-  # rubocop:disable Metrics/ParameterLists
   def resolve_field(
     field,                        # An instance of `BaseField`, or the name of a field on the current described_class
     object,                       # The current object of the `BaseObject` this field 'belongs' to

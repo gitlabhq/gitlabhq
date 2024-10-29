@@ -161,7 +161,7 @@ RSpec.shared_examples 'dependency endpoint success' do |user_type, status, add_m
 
         subject
 
-        expect(response.body).to eq(expected_response) # rubocop:disable Security/MarshalLoad
+        expect(response.body).to eq(expected_response)
         expect(response).to have_gitlab_http_status(status)
       end
 

@@ -248,7 +248,7 @@ module DiffHelper
   def conflicts(allow_tree_conflicts: false)
     return unless merge_request.cannot_be_merged? && merge_request.source_branch_exists? && merge_request.target_branch_exists?
 
-    conflicts_service = MergeRequests::Conflicts::ListService.new(merge_request, allow_tree_conflicts: allow_tree_conflicts) # rubocop:disable CodeReuse/ServiceClass
+    conflicts_service = MergeRequests::Conflicts::ListService.new(merge_request, allow_tree_conflicts: allow_tree_conflicts)
 
     return unless allow_tree_conflicts || conflicts_service.can_be_resolved_in_ui?
 
@@ -267,7 +267,7 @@ module DiffHelper
 
     cached_conflicts_with_types do
       # We set skip_content to true since we don't really need the content to list the conflicts and their types
-      conflicts_service = MergeRequests::Conflicts::ListService.new( # rubocop:disable CodeReuse/ServiceClass
+      conflicts_service = MergeRequests::Conflicts::ListService.new(
         merge_request,
         allow_tree_conflicts: true,
         skip_content: true

@@ -84,22 +84,18 @@ module Gitlab
     #
     # When `with_depth` is `true`, a `depth` column is included where it starts with `1` for the base objects
     # and incremented as we go down the descendant tree
-    # rubocop: disable CodeReuse/ActiveRecord
     def base_and_descendants(with_depth: false)
       outer_select_relation = unscoped_model.all
       outer_select_relation = outer_select_relation.select(objects_table[Arel.star]) if with_depth # Otherwise Active Record will not select `depth` as it's not a table column
 
       read_only(base_and_descendants_cte(with_depth: with_depth).apply_to(outer_select_relation))
     end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     # Returns a relation that includes ID of the descendants_base set of objects
     # and all their descendants IDs (recursively).
-    # rubocop: disable CodeReuse/ActiveRecord
     def base_and_descendant_ids
       read_only(base_and_descendant_ids_cte.apply_to(unscoped_model.select(objects_table[:id])))
     end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     # Returns a relation that includes the base objects, their ancestors,
     # and the descendants of the base objects.

@@ -123,7 +123,6 @@ class GroupSeeder
   end
 
   def create_user
-    # rubocop:disable Style/SymbolProc -- Incorrect rubocop advice.
     User.create!(
       username: FFaker::Internet.unique.user_name,
       name: FFaker::Name.name,
@@ -133,7 +132,6 @@ class GroupSeeder
     ) do |user|
       user.assign_personal_namespace(@organization)
     end
-    # rubocop:enable Style/SymbolProc
   end
 
   def create_member(user_id, group_id)

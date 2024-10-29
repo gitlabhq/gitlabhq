@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 namespace :gitlab do
-  require 'set' # rubocop:disable Lint/RedundantRequireStatement -- Ruby 3.1 and earlier needs this. Drop this line after Ruby 3.2+ is only supported.
+  require 'set' # -- Ruby 3.1 and earlier needs this. Drop this line after Ruby 3.2+ is only supported.
 
   namespace :cleanup do
     desc "GitLab | Cleanup | Block users that have been removed in LDAP"
@@ -287,7 +287,6 @@ new_sha: Gitlab::Git::SHA1_BLANK_SHA }
       end
     end
 
-    # rubocop:disable Gitlab/RailsLogger
     def logger
       return @logger if defined?(@logger)
 
@@ -305,6 +304,5 @@ new_sha: Gitlab::Git::SHA1_BLANK_SHA }
                   Rails.logger
                 end
     end
-    # rubocop:enable Gitlab/RailsLogger
   end
 end

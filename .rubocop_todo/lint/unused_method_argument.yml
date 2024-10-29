@@ -183,7 +183,6 @@ Lint/UnusedMethodArgument:
     - 'app/workers/gitlab/jira_import/import_issue_worker.rb'
     - 'app/workers/issues/rebalancing_worker.rb'
     - 'app/workers/personal_access_tokens/expired_notification_worker.rb'
-    - 'app/workers/personal_access_tokens/expiring_worker.rb'
     - 'app/workers/process_commit_worker.rb'
     - 'app/workers/projects/inactive_projects_deletion_cron_worker.rb'
     - 'app/workers/projects/refresh_build_artifacts_size_statistics_worker.rb'

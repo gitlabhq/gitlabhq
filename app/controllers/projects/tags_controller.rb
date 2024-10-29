@@ -13,7 +13,6 @@ class Projects::TagsController < Projects::ApplicationController
   feature_category :source_code_management
   urgency :low, [:new, :show, :index]
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def index
     begin
       tags_params = params
@@ -45,7 +44,6 @@ class Projects::TagsController < Projects::ApplicationController
       format.atom { render layout: 'xml', status: status }
     end
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   # rubocop: disable CodeReuse/ActiveRecord
   def show

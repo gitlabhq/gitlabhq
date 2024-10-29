@@ -53,12 +53,12 @@ module Groups
       private
 
       def user_role
-        # rubocop:disable CodeReuse/ActiveRecord, Style/MultilineTernaryOperator
+        # rubocop:disable Style/MultilineTernaryOperator
         access_level = group.parent ?
           current_user&.group_members&.find_by(source_id: group.parent&.id)&.access_level :
           Gitlab::Access::OWNER
         Gitlab::Access.human_access(access_level)
-        # rubocop:enable CodeReuse/ActiveRecord, Style/MultilineTernaryOperator
+        # rubocop:enable Style/MultilineTernaryOperator
       end
 
       def import_file

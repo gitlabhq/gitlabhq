@@ -6,7 +6,6 @@ module Gitlab
       include Enumerable
 
       # Regex to find a run of deleted lines followed by the same number of added lines
-      # rubocop: disable Lint/MixedRegexpCaptureTypes
       LINE_PAIRS_PATTERN = %r{
         # Runs start at the beginning of the string (the first line) or after a space (for an unchanged line)
         (?:\A|\s)
@@ -21,8 +20,6 @@ module Gitlab
         # Runs end at the end of the string (the last line) or before a space (for an unchanged line)
         (?=\s|\z)
       }x
-      # rubocop: enable Lint/MixedRegexpCaptureTypes
-
       def initialize(lines)
         @lines = lines
       end

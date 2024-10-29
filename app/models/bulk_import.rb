@@ -52,13 +52,10 @@ class BulkImport < ApplicationRecord
       transition any => :canceled
     end
 
-    # rubocop:disable Style/SymbolProc
     after_transition any => [:finished, :failed, :timeout] do |bulk_import|
       bulk_import.update_has_failures
       bulk_import.send_completion_notification
     end
-    # rubocop:enable Style/SymbolProc
-
     after_transition any => [:canceled] do |bulk_import|
       bulk_import.run_after_commit do
         bulk_import.propagate_cancel

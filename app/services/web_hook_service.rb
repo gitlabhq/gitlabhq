@@ -234,13 +234,11 @@ class WebHookService
   # Make response headers more stylish
   # Net::HTTPHeader has downcased hash with arrays: { 'content-type' => ['text/html; charset=utf-8'] }
   # This method format response to capitalized hash with strings: { 'Content-Type' => 'text/html; charset=utf-8' }
-  # rubocop:disable Style/HashTransformValues
   def safe_response_headers(response)
     response.headers.each_capitalized.first(RESPONSE_HEADERS_COUNT_LIMIT).to_h do |header_key, header_value|
       [enforce_utf8(header_key), string_size_limit(enforce_utf8(header_value), RESPONSE_HEADERS_SIZE_LIMIT)]
     end
   end
-  # rubocop:enable Style/HashTransformValues
 
   def safe_response_body(response)
     return '' unless response.body

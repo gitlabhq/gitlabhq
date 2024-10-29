@@ -93,7 +93,7 @@ RSpec.describe "Issues > User edits issue", :js, feature_category: :team_plannin
 
           expect(page).to have_content(
             format(
-              _("Someone edited this %{model_name} at the same time you did. Please check out the %{link_to_model} and make sure your changes will not unintentionally remove theirs."), # rubocop:disable Layout/LineLength
+              _("Someone edited this %{model_name} at the same time you did. Please check out the %{link_to_model} and make sure your changes will not unintentionally remove theirs."),
               model_name: _('issue'),
               link_to_model: _('issue')
             )

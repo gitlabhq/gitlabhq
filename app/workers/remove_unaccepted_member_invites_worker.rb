@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class RemoveUnacceptedMemberInvitesWorker # rubocop:disable Scalability/IdempotentWorker
+class RemoveUnacceptedMemberInvitesWorker
   include ApplicationWorker
 
   data_consistency :always

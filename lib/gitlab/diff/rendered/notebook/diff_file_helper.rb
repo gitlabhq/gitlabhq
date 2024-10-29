@@ -4,7 +4,7 @@ module Gitlab
     module Rendered
       module Notebook
         module DiffFileHelper
-          require 'set' # rubocop:disable Lint/RedundantRequireStatement -- Ruby 3.1 and earlier needs this. Drop this line after Ruby 3.2+ is only supported.
+          require 'set' # -- Ruby 3.1 and earlier needs this. Drop this line after Ruby 3.2+ is only supported.
 
           EMBEDDED_IMAGE_PATTERN = '    ![](data:image'
 

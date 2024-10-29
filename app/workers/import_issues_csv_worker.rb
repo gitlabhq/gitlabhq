@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ImportIssuesCsvWorker # rubocop:disable Scalability/IdempotentWorker
+class ImportIssuesCsvWorker
   include ApplicationWorker
 
   data_consistency :always

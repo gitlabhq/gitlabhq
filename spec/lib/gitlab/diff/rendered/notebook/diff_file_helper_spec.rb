@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 require 'rspec-parameterized'
-require 'set' # rubocop:disable Lint/RedundantRequireStatement -- Ruby 3.1 and earlier needs this. Drop this line after Ruby 3.2+ is only supported.
+require 'set' # -- Ruby 3.1 and earlier needs this. Drop this line after Ruby 3.2+ is only supported.
 
 MOCK_LINE = Struct.new(:text, :type, :index, :old_pos, :new_pos)
 

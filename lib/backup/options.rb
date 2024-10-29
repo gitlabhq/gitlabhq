@@ -186,7 +186,7 @@ module Backup
     end
     # rubocop:enable Metrics/ParameterLists
 
-    # rubocop:disable Metrics/CyclomaticComplexity, Metrics/AbcSize -- TODO: Complexity will be solved in the Unified Backup implementation (https://gitlab.com/groups/gitlab-org/-/epics/11635)
+    # rubocop:disable Metrics/AbcSize -- TODO: Complexity will be solved in the Unified Backup implementation (https://gitlab.com/groups/gitlab-org/-/epics/11635)
     # Extract supported options from defined ENV variables
     def extract_from_env!
       # We've used lowercase `force` as the key while ENV normally is defined using UPPERCASE letters
@@ -212,7 +212,7 @@ module Backup
 
       extract_skippables!(ENV['SKIP']) if ENV['SKIP'].present?
     end
-    # rubocop:enable Metrics/CyclomaticComplexity, Metrics/AbcSize
+    # rubocop:enable Metrics/AbcSize
 
     def update_from_backup_information!(backup_information)
       self.repositories_storages += backup_information[:repositories_storages]&.split(',') || []

@@ -2,7 +2,6 @@
 
 # This class includes overriding Kernel#format method
 # what makes impossible to use it here
-# rubocop:disable Style/FormatString
 module Gitlab
   module GithubImport
     class MarkdownText
@@ -87,4 +86,3 @@ module Gitlab
     end
   end
 end
-# rubocop:enable Style/FormatString

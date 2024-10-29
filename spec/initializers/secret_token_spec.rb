@@ -91,7 +91,10 @@ RSpec.describe SecretsInitializer do
     let(:rsa_key) { /\A-----BEGIN RSA PRIVATE KEY-----\n.+\n-----END RSA PRIVATE KEY-----\n\Z/m }
 
     around do |example|
-      original_credentials = Rails.application.credentials
+      # We store Rails.application.credentials as a hash so that we can revert to the original
+      # values after the example has run. Assigning Rails.application.credentials= directly doesn't work.
+      original_credentials = Rails.application.credentials.to_h
+
       # Ensure we clear any existing `encrypted_settings_key_base` credential
       allowed_keys.each do |key|
         Rails.application.credentials.public_send(:"#{key}=", nil)
@@ -99,7 +102,9 @@ RSpec.describe SecretsInitializer do
 
       example.run
 
-      Rails.application.credentials = original_credentials
+      original_credentials.each do |key, value|
+        Rails.application.credentials.public_send(:"#{key}=", value)
+      end
     end
 
     before do

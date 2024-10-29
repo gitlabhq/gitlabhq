@@ -2,7 +2,6 @@
 
 module Issues
   class ReferencedMergeRequestsService < Issues::BaseService
-    # rubocop: disable CodeReuse/ActiveRecord
     def execute(issue)
       referenced = referenced_merge_requests(issue)
       closed_by = closed_by_merge_requests(issue)
@@ -14,7 +13,6 @@ module Issues
 
       [sort_by_iid(referenced), sort_by_iid(closed_by)]
     end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     def referenced_merge_requests(issue)
       merge_requests = extract_merge_requests(issue)

@@ -22,13 +22,11 @@ module Gitlab
           @params[:state] = :opened if in_progress?
         end
 
-        # rubocop: disable CodeReuse/ActiveRecord
         def build
           query = finder.execute
           query = stage.start_event.apply_query_customization(query)
           apply_end_event_query_customization(query)
         end
-        # rubocop: enable CodeReuse/ActiveRecord
 
         private
 

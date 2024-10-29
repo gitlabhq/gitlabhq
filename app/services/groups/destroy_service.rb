@@ -94,7 +94,6 @@ module Groups
       group.users_ids_of_direct_members
     end
 
-    # rubocop:disable CodeReuse/ActiveRecord
     def destroy_associated_users
       current_user_id = current_user.id
       bot_ids = users_to_destroy
@@ -105,7 +104,6 @@ module Groups
         end
       end
     end
-    # rubocop:enable CodeReuse/ActiveRecord
 
     # rubocop:disable CodeReuse/ActiveRecord
     def users_to_destroy

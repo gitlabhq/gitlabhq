@@ -64,7 +64,6 @@ module Gitlab
       @limited_blobs_count ||= blobs(limit: count_limit).count
     end
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def limited_notes_count
       return @limited_notes_count if defined?(@limited_notes_count)
 
@@ -78,7 +77,6 @@ module Gitlab
 
       @limited_notes_count
     end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     def wiki_blobs_count
       @wiki_blobs_count ||= wiki_blobs(limit: count_limit).count

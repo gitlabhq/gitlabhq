@@ -131,7 +131,6 @@ Style/SymbolProc:
     - 'qa/qa/page/profile/two_factor_auth.rb'
     - 'qa/qa/specs/features/browser_ui/3_create/merge_request/rebase_merge_request_spec.rb'
     - 'qa/qa/specs/features/ee/browser_ui/3_create/merge_request/approval_rules_spec.rb'
-    - 'qa/qa/specs/features/ee/browser_ui/4_verify/pipeline_subscription_with_group_owned_project_spec.rb'
     - 'rubocop/cop/gitlab/mark_used_feature_flags.rb'
     - 'rubocop/cop/gitlab/namespaced_class.rb'
     - 'scripts/qa/testcases-check'

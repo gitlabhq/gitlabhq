@@ -124,7 +124,6 @@ module Gitlab
             end
           end
 
-          # rubocop: disable CodeReuse/ActiveRecord
           def slice_nodes(sliced, encoded_cursor, before_or_after)
             order = Gitlab::Pagination::Keyset::Order.extract_keyset_order_object(sliced)
             order = order.reversed_order if before_or_after == :before
@@ -132,7 +131,6 @@ module Gitlab
             decoded_cursor = ordering_from_encoded_json(encoded_cursor)
             order.apply_cursor_conditions(sliced, decoded_cursor)
           end
-          # rubocop: enable CodeReuse/ActiveRecord
 
           def limit_value
             # note: only first _or_ last can be specified, not both

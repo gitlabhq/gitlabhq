@@ -24,7 +24,6 @@ module Ci
         @destroyed_ids = []
       end
 
-      # rubocop: disable CodeReuse/ActiveRecord
       def execute(update_stats: true)
         if @skip_projects_on_refresh
           exclude_artifacts_undergoing_stats_refresh
@@ -60,7 +59,6 @@ module Ci
           statistics_updates: statistics_updates_per_project
         )
       end
-      # rubocop: enable CodeReuse/ActiveRecord
 
       private
 

@@ -89,7 +89,7 @@ module Gitlab
         end
 
         if @list_queues
-          puts queue_groups.map(&:sort) # rubocop:disable Rails/Output
+          puts queue_groups.map(&:sort)
 
           return
         end

@@ -29,9 +29,7 @@ module FromIntersect
     #
     # alias_as - The alias to use for the sub query. Defaults to the name of the
     #            table of the current model.
-    # rubocop: disable Gitlab/Intersect
     extend FromSetOperator
     define_set_operator Gitlab::SQL::Intersect
-    # rubocop: enable Gitlab/Intersect
   end
 end

@@ -36,13 +36,13 @@ module SidebarsHelper
     Sidebars::Context.new(**context_data, **args)
   end
 
-  def super_sidebar_context(user, group:, project:, panel:, panel_type:) # rubocop:disable Metrics/AbcSize
+  def super_sidebar_context(user, group:, project:, panel:, panel_type:)
     return super_sidebar_logged_out_context(panel: panel, panel_type: panel_type) unless user
 
     super_sidebar_logged_in_context(user, group: group, project: project, panel: panel, panel_type: panel_type)
   end
 
-  def super_sidebar_logged_out_context(panel:, panel_type:) # rubocop:disable Metrics/AbcSize
+  def super_sidebar_logged_out_context(panel:, panel_type:)
     super_sidebar_instance_version_data.merge(super_sidebar_whats_new_data).merge({
       is_logged_in: false,
       context_switcher_links: context_switcher_links,
@@ -59,7 +59,7 @@ module SidebarsHelper
     })
   end
 
-  def super_sidebar_logged_in_context(user, group:, project:, panel:, panel_type:) # rubocop:disable Metrics/AbcSize
+  def super_sidebar_logged_in_context(user, group:, project:, panel:, panel_type:)
     super_sidebar_logged_out_context(panel: panel, panel_type: panel_type).merge({
       is_logged_in: true,
       is_admin: user.can_admin_all_resources?,

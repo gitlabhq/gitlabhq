@@ -19,6 +19,7 @@ module Groups
         :emails_disabled,
         :emails_enabled,
         :show_diff_preview_in_email,
+        :token_expiry_notify_inherited,
         :mentions_disabled,
         :lfs_enabled,
         :name,

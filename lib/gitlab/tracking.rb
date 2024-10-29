@@ -55,7 +55,7 @@ module Gitlab
 
       private
 
-      def track_struct_event(destination, category, action, label:, property:, value:, contexts:) # rubocop:disable Metrics/ParameterLists
+      def track_struct_event(destination, category, action, label:, property:, value:, contexts:)
         destination
           .event(category, action, label: label, property: property, value: value, context: contexts)
       rescue StandardError => error

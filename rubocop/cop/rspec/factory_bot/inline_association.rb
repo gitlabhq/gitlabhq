@@ -99,7 +99,7 @@ module RuboCop
           def inside_assocation_definition?(node)
             node.each_ancestor(:block).any? do |parent|
               name = association_definition(parent)
-              name && !SKIP_NAMES.include?(name) # rubocop:disable Rails/NegateInclude
+              name && !SKIP_NAMES.include?(name)
             end
           end
         end
