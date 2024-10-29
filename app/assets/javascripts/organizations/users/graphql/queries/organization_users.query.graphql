@@ -25,6 +25,12 @@ query getOrganizationUsers(
           createdAt
           lastActivityOn
         }
+        accessLevel {
+          stringValue
+        }
+        userPermissions {
+          adminOrganization
+        }
       }
       pageInfo {
         ...PageInfo

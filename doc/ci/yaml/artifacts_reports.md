@@ -352,7 +352,7 @@ GitLab can display the results of one or more reports in the
 ## `artifacts:reports:repository_xray`
 
 DETAILS:
-**Tier:** Ultimate
+**Tier:** Premium, Ultimate
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/432235) in GitLab 16.7.
 

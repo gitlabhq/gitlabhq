@@ -1442,7 +1442,6 @@ RSpec/BeEq:
     - 'spec/services/packages/maven/metadata/create_plugins_xml_service_spec.rb'
     - 'spec/services/packages/npm/create_package_service_spec.rb'
     - 'spec/services/pages/delete_service_spec.rb'
-    - 'spec/services/pages_domains/update_service_spec.rb'
     - 'spec/services/projects/auto_devops/disable_service_spec.rb'
     - 'spec/services/projects/autocomplete_service_spec.rb'
     - 'spec/services/projects/batch_open_issues_count_service_spec.rb'

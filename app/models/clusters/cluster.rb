@@ -324,9 +324,7 @@ module Clusters
         .where(environment_scope: environment_scope)
         .where.not(id: id)
 
-      if duplicate_management_clusters.any?
-        errors.add(:environment_scope, 'cannot add duplicated environment scope')
-      end
+      errors.add(:environment_scope, 'cannot add duplicated environment scope') if duplicate_management_clusters.any?
     end
 
     def unique_environment_scope
@@ -395,15 +393,11 @@ module Clusters
     end
 
     def no_groups
-      if groups.any?
-        errors.add(:cluster, 'cannot have groups assigned')
-      end
+      errors.add(:cluster, 'cannot have groups assigned') if groups.any?
     end
 
     def no_projects
-      if projects.any?
-        errors.add(:cluster, 'cannot have projects assigned')
-      end
+      errors.add(:cluster, 'cannot have projects assigned') if projects.any?
     end
   end
 end

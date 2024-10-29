@@ -74,7 +74,7 @@ module ApplicationSettingImplementation
         disabled_direct_code_suggestions: false,
         disabled_oauth_sign_in_sources: [],
         disable_password_authentication_for_users_with_sso_identities: false,
-        dns_rebinding_protection_enabled: true,
+        dns_rebinding_protection_enabled: Settings.gitlab['dns_rebinding_protection_enabled'],
         domain_allowlist: Settings.gitlab['domain_allowlist'],
         dsa_key_restriction: default_min_key_size(:dsa),
         ecdsa_key_restriction: default_min_key_size(:ecdsa),

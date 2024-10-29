@@ -1,7 +1,12 @@
-import { NEW_WORK_ITEM_IID } from '~/work_items/constants';
+import {
+  NEW_WORK_ITEM_IID,
+  WORK_ITEM_TYPE_ENUM_ISSUE,
+  WORK_ITEM_TYPE_ENUM_EPIC,
+} from '~/work_items/constants';
 import {
   autocompleteDataSources,
   markdownPreviewPath,
+  newWorkItemPath,
   isReference,
   getWorkItemIcon,
   workItemRoadmapPath,
@@ -109,6 +114,34 @@ describe('markdownPreviewPath', () => {
     expect(markdownPreviewPath({ fullPath: 'group', iid: '2', isGroup: true })).toBe(
       '/foobar/groups/group/-/preview_markdown?target_type=WorkItem&target_id=2',
     );
+  });
+});
+
+describe('newWorkItemPath', () => {
+  beforeEach(() => {
+    gon.relative_url_root = '/foobar';
+  });
+
+  it('returns correct path', () => {
+    expect(newWorkItemPath({ fullPath: 'group/project' })).toBe(
+      '/foobar/group/project/-/work_items/new',
+    );
+  });
+
+  it('returns correct path for workItemType', () => {
+    expect(
+      newWorkItemPath({ fullPath: 'group/project', workItemTypeName: WORK_ITEM_TYPE_ENUM_ISSUE }),
+    ).toBe('/foobar/group/project/-/issues/new');
+  });
+
+  it('returns correct data sources with group context', () => {
+    expect(
+      newWorkItemPath({
+        fullPath: 'group',
+        isGroup: true,
+        workItemTypeName: WORK_ITEM_TYPE_ENUM_EPIC,
+      }),
+    ).toBe('/foobar/groups/group/-/epics/new');
   });
 });
 

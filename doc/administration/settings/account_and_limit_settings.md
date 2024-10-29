@@ -105,6 +105,10 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** Self-managed
 
+NOTE:
+The repository size limit includes repository files and LFS, but does not include artifacts, uploads,
+wiki, packages, containers, or snippets. The repository size limit applies to both private and public projects.
+
 Repositories in your GitLab instance can grow quickly, especially if you are
 using LFS. Their size can grow exponentially, rapidly consuming available storage.
 To prevent this from happening, you can set a hard limit for your repositories' size.
@@ -149,10 +153,6 @@ These settings can be found in:
 The first push of a new project, including LFS objects, is checked for size.
 If the sum of their sizes exceeds the maximum allowed repository size, the push
 is rejected.
-
-NOTE:
-The repository size limit includes repository files and LFS, but does not include artifacts, uploads,
-wiki, packages, or snippets. The repository size limit applies to both private and public projects.
 
 For details on manually purging files, see [reducing the repository size using Git](../../user/project/repository/repository_size.md#methods-to-reduce-repository-size).
 

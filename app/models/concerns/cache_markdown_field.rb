@@ -40,9 +40,7 @@ module CacheMarkdownField
     # Banzai is less strict about authors, so don't always have an author key
     context[:author] = self.author if self.respond_to?(:author)
 
-    if Feature.enabled?(:personal_snippet_reference_filters, context[:author])
-      context[:user] = self.parent_user
-    end
+    context[:user] = self.parent_user if Feature.enabled?(:personal_snippet_reference_filters, context[:author])
 
     context
   end

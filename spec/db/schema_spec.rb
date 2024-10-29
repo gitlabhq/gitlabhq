@@ -110,6 +110,8 @@ RSpec.describe 'Database schema',
     ci_runners: %w[sharding_key_id], # This value is meant to populate the partitioned table, no other usage
     ci_runner_machines: %w[sharding_key_id], # This value is meant to populate the partitioned table, no other usage
     ci_runner_projects: %w[runner_id],
+    ci_runners_e59bb2812d: %w[sharding_key_id], # This field is only used in the partitions, and has the appropriate FKs
+    instance_type_ci_runners_e59bb2812d: %w[sharding_key_id], # This field is always NULL in this partition
     ci_sources_pipelines: %w[partition_id source_partition_id source_job_id],
     ci_sources_projects: %w[partition_id],
     ci_stages: %w[partition_id project_id pipeline_id],

@@ -2,7 +2,7 @@
 import { __, s__ } from '~/locale';
 import { createAlert } from '~/alert';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import organizationUsersQuery from '../graphql/organization_users.query.graphql';
+import organizationUsersQuery from '../graphql/queries/organization_users.query.graphql';
 import { ORGANIZATION_USERS_PER_PAGE } from '../constants';
 import UsersView from './users_view.vue';
 
@@ -51,8 +51,16 @@ export default {
         const { nodes, pageInfo } = data.organization.organizationUsers;
         this.pageInfo = pageInfo;
 
-        return nodes.map(({ badges, user }) => {
-          return { ...user, id: getIdFromGraphQLId(user.id), badges, email: user.publicEmail };
+        return nodes.map(({ id, badges, accessLevel, userPermissions, user }) => {
+          return {
+            ...user,
+            gid: id,
+            id: getIdFromGraphQLId(user.id),
+            badges,
+            accessLevel,
+            userPermissions,
+            email: user.publicEmail,
+          };
         });
       },
       error(error) {

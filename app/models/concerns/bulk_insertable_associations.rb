@@ -102,9 +102,7 @@ module BulkInsertableAssociations
     items.each do |item|
       item[reflection.foreign_key] = primary_key_value
 
-      if reflection.type
-        item[reflection.type] = self.class.polymorphic_name
-      end
+      item[reflection.type] = self.class.polymorphic_name if reflection.type
     end
   end
 

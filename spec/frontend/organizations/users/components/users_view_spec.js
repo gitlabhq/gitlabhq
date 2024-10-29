@@ -1,5 +1,5 @@
-import { GlLoadingIcon, GlKeysetPagination } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { GlLoadingIcon, GlKeysetPagination, GlCollapsibleListbox } from '@gitlab/ui';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import UsersView from '~/organizations/users/components/users_view.vue';
 import UsersTable from '~/vue_shared/components/users_table/users_table.vue';
 import { pageInfoMultiplePages } from 'jest/organizations/mock_data';
@@ -9,7 +9,7 @@ describe('UsersView', () => {
   let wrapper;
 
   const createComponent = (props = {}) => {
-    wrapper = shallowMount(UsersView, {
+    wrapper = mountExtended(UsersView, {
       propsData: {
         loading: false,
         users: MOCK_USERS_FORMATTED,
@@ -64,6 +64,48 @@ describe('UsersView', () => {
       findGlKeysetPagination().vm.$emit('prev');
 
       expect(wrapper.emitted('prev')).toHaveLength(1);
+    });
+  });
+
+  describe('Organization role', () => {
+    describe('when user has permissions to change organization role', () => {
+      const users = MOCK_USERS_FORMATTED.map((user) => ({
+        ...user,
+        userPermissions: { ...user.userPermissions, adminOrganization: true },
+      }));
+
+      beforeEach(() => {
+        createComponent({
+          loading: false,
+          users,
+        });
+      });
+
+      it('renders listbox with role options', () => {
+        expect(wrapper.findComponent(GlCollapsibleListbox).props()).toMatchObject({
+          items: [
+            {
+              text: 'User',
+              value: 'DEFAULT',
+            },
+            {
+              text: 'Owner',
+              value: 'OWNER',
+            },
+          ],
+          selected: users[0].accessLevel.stringValue,
+        });
+      });
+    });
+
+    describe('when does not have permissions to change organization role', () => {
+      beforeEach(() => {
+        createComponent({ loading: false, users: MOCK_USERS_FORMATTED });
+      });
+
+      it('renders role as text', () => {
+        expect(wrapper.findByRole('cell', { name: 'User' }).exists()).toBe(true);
+      });
     });
   });
 });

@@ -222,7 +222,6 @@ RSpec/VerifiedDoubleReference:
     - 'spec/services/issues/close_service_spec.rb'
     - 'spec/services/merge_requests/after_create_service_spec.rb'
     - 'spec/services/merge_requests/mergeability/check_lfs_file_locks_service_spec.rb'
-    - 'spec/services/pages_domains/create_acme_order_service_spec.rb'
     - 'spec/services/projects/destroy_service_spec.rb'
     - 'spec/services/projects/fork_service_spec.rb'
     - 'spec/services/repositories/replicate_service_spec.rb'

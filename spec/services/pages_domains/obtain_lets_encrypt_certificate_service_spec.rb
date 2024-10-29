@@ -95,7 +95,7 @@ RSpec.describe PagesDomains::ObtainLetsEncryptCertificateService, feature_catego
   end
 
   %w[pending processing].each do |status|
-    context "there is an order in '#{status}' status" do
+    context "when there is an order in '#{status}' status" do
       let(:existing_order) do
         create(:pages_domain_acme_order, pages_domain: pages_domain)
       end
@@ -180,7 +180,7 @@ RSpec.describe PagesDomains::ObtainLetsEncryptCertificateService, feature_catego
     end
 
     before do
-      expect(api_order).to receive(:certificate) { certificate }
+      allow(api_order).to receive(:certificate).and_return(certificate)
     end
 
     it 'saves private_key and certificate for domain' do

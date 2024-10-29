@@ -517,7 +517,7 @@ module QA
       # Uses the API to wait until a pull mirroring update is successful (pull mirroring is treated as an import)
       def wait_for_pull_mirroring
         mirror_succeeded = Support::Retrier.retry_until(
-          max_duration: 180,
+          max_duration: 360,
           raise_on_failure: false,
           sleep_interval: 1
         ) do
@@ -525,7 +525,10 @@ module QA
           api_resource[:import_status] == "finished"
         end
 
-        raise "Mirroring failed with error: #{api_resource[:import_error]}" unless mirror_succeeded
+        return if mirror_succeeded
+
+        mirror_error = api_resource[:import_error] || 'Did not complete within 360 seconds'
+        raise "Mirroring was not successful: #{mirror_error}}"
       end
 
       def remove_via_api!

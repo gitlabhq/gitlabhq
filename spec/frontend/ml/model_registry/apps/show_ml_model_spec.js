@@ -1,4 +1,4 @@
-import { GlBadge, GlTab, GlTabs, GlIcon, GlSprintf, GlLink } from '@gitlab/ui';
+import { GlAvatar, GlBadge, GlTab, GlTabs, GlIcon, GlSprintf, GlLink } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
@@ -302,6 +302,52 @@ describe('ml/model_registry/apps/show_ml_model', () => {
         await waitForPromises();
 
         expect(visitUrlWithAlerts).not.toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('Sidebar', () => {
+    beforeEach(() => createWrapper());
+
+    const findSidebarAuthorLink = () => wrapper.findByTestId('sidebar-author-link');
+    const findAvatar = () => wrapper.findComponent(GlAvatar);
+    const findLatestVersionLink = () => wrapper.findByTestId('sidebar-latest-version-link');
+    const findVersionCount = () => wrapper.findByTestId('sidebar-version-count');
+
+    it('displays sidebar author link', () => {
+      expect(findSidebarAuthorLink().attributes('href')).toBe('path/to/user');
+      expect(findSidebarAuthorLink().text()).toBe('Root');
+    });
+
+    it('displays sidebar avatar', () => {
+      expect(findAvatar().props('src')).toBe('path/to/avatar');
+    });
+
+    it('displays sidebar latest version link', () => {
+      expect(findLatestVersionLink().attributes('href')).toBe(
+        '/root/test-project/-/ml/models/1/versions/5000',
+      );
+      expect(findLatestVersionLink().text()).toBe('1.0.4999');
+    });
+
+    it('displays sidebar version count', () => {
+      expect(findVersionCount().text()).toBe('1');
+    });
+
+    describe('when model does not get loaded', () => {
+      const error = new Error('Failure!');
+      beforeEach(() => createWrapper({ modelDetailsResolver: jest.fn().mockRejectedValue(error) }));
+
+      it('does not display sidebar author link', () => {
+        expect(findSidebarAuthorLink().exists()).toBe(false);
+      });
+
+      it('does not display sidebar latest version link', () => {
+        expect(findLatestVersionLink().exists()).toBe(false);
+      });
+
+      it('does not display sidebar version count', () => {
+        expect(findVersionCount().exists()).toBe(false);
       });
     });
   });

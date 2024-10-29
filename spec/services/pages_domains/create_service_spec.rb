@@ -22,7 +22,7 @@ RSpec.describe ::PagesDomains::CreateService, feature_category: :pages do
   end
 
   context 'when the user has the required permissions' do
-    before do
+    before_all do
       project.add_maintainer(user)
     end
 

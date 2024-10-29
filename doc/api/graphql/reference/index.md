@@ -29338,6 +29338,7 @@ An organization user badge.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="organizationuserpermissionsadminorganization"></a>`adminOrganization` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_organization` on this resource. |
 | <a id="organizationuserpermissionsdeleteuser"></a>`deleteUser` | [`Boolean!`](#boolean) | If `true`, the user can perform `delete_user` on this resource. |
 | <a id="organizationuserpermissionsremoveuser"></a>`removeUser` | [`Boolean!`](#boolean) | If `true`, the user can perform `remove_user` on this resource. |
 

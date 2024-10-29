@@ -169,7 +169,7 @@ RSpec.describe 'Organizations (GraphQL fixtures)', feature_category: :cell do
     end
 
     describe 'organization users' do
-      base_input_path = 'organizations/users/graphql/'
+      base_input_path = 'organizations/users/graphql/queries/'
       base_output_path = 'graphql/organizations/'
       query_name = 'organization_users.query.graphql'
 

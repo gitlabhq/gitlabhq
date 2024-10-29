@@ -7,6 +7,7 @@ RSpec.describe Types::PermissionTypes::OrganizationUser, feature_category: :cell
     expected_permissions = %i[
       remove_user
       delete_user
+      admin_organization
     ]
 
     expect(described_class).to have_graphql_fields(expected_permissions)

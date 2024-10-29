@@ -13,6 +13,16 @@ export const MOCK_PATHS = {
   adminUser: '/admin/users/:id',
 };
 
-export const MOCK_USERS_FORMATTED = users.map(({ badges, user }) => {
-  return { ...user, id: getIdFromGraphQLId(user.id), badges, email: user.publicEmail };
-});
+export const MOCK_USERS_FORMATTED = users.map(
+  ({ id, badges, user, accessLevel, userPermissions }) => {
+    return {
+      ...user,
+      gid: id,
+      id: getIdFromGraphQLId(user.id),
+      badges,
+      accessLevel,
+      userPermissions,
+      email: user.publicEmail,
+    };
+  },
+);

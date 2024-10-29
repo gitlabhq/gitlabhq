@@ -4,6 +4,9 @@ import { s__, __ } from '~/locale';
 export const RESOURCE_TYPE_GROUPS = 'groups';
 export const RESOURCE_TYPE_PROJECTS = 'projects';
 
+export const ACCESS_LEVEL_DEFAULT = 'default';
+export const ACCESS_LEVEL_OWNER = 'owner';
+
 export const ORGANIZATION_ROOT_ROUTE_NAME = 'root';
 
 export const FORM_FIELD_NAME = 'name';

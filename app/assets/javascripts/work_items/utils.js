@@ -27,6 +27,7 @@ import {
   WORK_ITEM_TYPE_ENUM_OBJECTIVE,
   WORK_ITEM_TYPE_ENUM_KEY_RESULT,
   WORK_ITEM_TYPE_ENUM_REQUIREMENTS,
+  WORK_ITEM_TYPE_ROUTE_WORK_ITEM,
   NEW_WORK_ITEM_GID,
   DEFAULT_PAGE_SIZE_CHILD_ITEMS,
 } from './constants';
@@ -152,6 +153,15 @@ export const markdownPreviewPath = ({ fullPath, iid, isGroup = false }) => {
   const domain = gon.relative_url_root || '';
   const basePath = isGroup ? `groups/${fullPath}` : fullPath;
   return `${domain}/${basePath}/-/preview_markdown?target_type=WorkItem&target_id=${iid}`;
+};
+
+// the path for creating a new work item of that type, e.g. /groups/gitlab-org/-/epics/new
+export const newWorkItemPath = ({ fullPath, isGroup = false, workItemTypeName }) => {
+  const domain = gon.relative_url_root || '';
+  const basePath = isGroup ? `groups/${fullPath}` : fullPath;
+  const type =
+    WORK_ITEMS_TYPE_MAP[workItemTypeName]?.routeParamName || WORK_ITEM_TYPE_ROUTE_WORK_ITEM;
+  return `${domain}/${basePath}/-/${type}/new`;
 };
 
 export const getDisplayReference = (workItemFullPath, workitemReference) => {

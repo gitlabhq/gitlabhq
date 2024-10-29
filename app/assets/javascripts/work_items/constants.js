@@ -171,6 +171,7 @@ export const WORK_ITEMS_TYPE_MAP = {
     icon: `issue-type-issue`,
     name: s__('WorkItem|Issue'),
     value: WORK_ITEM_TYPE_VALUE_ISSUE,
+    routeParamName: 'issues',
   },
   [WORK_ITEM_TYPE_ENUM_TASK]: {
     icon: `issue-type-task`,
@@ -201,6 +202,7 @@ export const WORK_ITEMS_TYPE_MAP = {
     icon: `epic`,
     name: s__('WorkItem|Epic'),
     value: WORK_ITEM_TYPE_VALUE_EPIC,
+    routeParamName: 'epics',
   },
 };
 

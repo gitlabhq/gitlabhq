@@ -273,14 +273,43 @@ RSpec.shared_examples 'namespace traversal' do
       expect(group.self_and_descendants).to contain_exactly(group, nested_group, deep_nested_group, very_deep_nested_group)
     end
 
+    it 'includes project namespaces when scope is Namespace' do
+      expect(very_deep_nested_group.self_and_descendants(skope: Namespace))
+        .to contain_exactly(very_deep_nested_group)
+      expect(deep_nested_group.self_and_descendants(skope: Namespace))
+        .to contain_exactly(deep_nested_group, very_deep_nested_group)
+      expect(nested_group.self_and_descendants(skope: Namespace))
+        .to contain_exactly(nested_group, deep_nested_group, very_deep_nested_group, project_namespace)
+      expect(group.self_and_descendants(skope: Namespace))
+        .to contain_exactly(group, nested_group, deep_nested_group, very_deep_nested_group, project_namespace)
+    end
+
     describe '#recursive_self_and_descendants' do
       let_it_be(:groups) { [group, nested_group, deep_nested_group] }
 
       it_behaves_like 'recursive version', :self_and_descendants
-    end
 
-    it 'does not include project namespaces' do
-      expect(group.self_and_descendants.to_a).not_to include(project_namespace)
+      it 'returns the correct descendants' do
+        expect(very_deep_nested_group.recursive_self_and_descendants)
+          .to contain_exactly(very_deep_nested_group)
+        expect(deep_nested_group.recursive_self_and_descendants)
+          .to contain_exactly(deep_nested_group, very_deep_nested_group)
+        expect(nested_group.recursive_self_and_descendants)
+          .to contain_exactly(nested_group, deep_nested_group, very_deep_nested_group)
+        expect(group.recursive_self_and_descendants)
+          .to contain_exactly(group, nested_group, deep_nested_group, very_deep_nested_group)
+      end
+
+      it 'includes project namespaces when scope is Namespace' do
+        expect(very_deep_nested_group.recursive_self_and_descendants(skope: Namespace))
+          .to contain_exactly(very_deep_nested_group)
+        expect(deep_nested_group.recursive_self_and_descendants(skope: Namespace))
+          .to contain_exactly(deep_nested_group, very_deep_nested_group)
+        expect(nested_group.recursive_self_and_descendants(skope: Namespace))
+          .to contain_exactly(nested_group, deep_nested_group, very_deep_nested_group, project_namespace)
+        expect(group.recursive_self_and_descendants(skope: Namespace))
+          .to contain_exactly(group, nested_group, deep_nested_group, very_deep_nested_group, project_namespace)
+      end
     end
   end
 
@@ -297,8 +326,22 @@ RSpec.shared_examples 'namespace traversal' do
 
     it { is_expected.to contain_exactly(group.id, nested_group.id, deep_nested_group.id, very_deep_nested_group.id) }
 
+    it 'includes project namespaces when when scope is Namespace' do
+      expect(group.self_and_descendant_ids(skope: Namespace).pluck(:id))
+        .to contain_exactly(
+          group.id, nested_group.id, deep_nested_group.id, very_deep_nested_group.id, project_namespace.id
+        )
+    end
+
     describe '#recursive_self_and_descendant_ids' do
       it_behaves_like 'recursive version', :self_and_descendant_ids
+
+      it 'includes project namespaces when when scope is Namespace' do
+        expect(group.recursive_self_and_descendant_ids(skope: Namespace).pluck(:id))
+          .to contain_exactly(
+            group.id, nested_group.id, deep_nested_group.id, very_deep_nested_group.id, project_namespace.id
+          )
+      end
     end
   end
 end

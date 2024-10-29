@@ -157,9 +157,7 @@ module BulkInsertSafe
 
       # Handle insertions for tables with a composite primary key
       primary_keys = connection.schema_cache.primary_keys(table_name)
-      if unique_by.blank? && (composite_primary_key || primary_key != primary_keys)
-        unique_by = primary_keys
-      end
+      unique_by = primary_keys if unique_by.blank? && (composite_primary_key || primary_key != primary_keys)
 
       transaction do
         items.each_slice(batch_size).flat_map do |item_batch|

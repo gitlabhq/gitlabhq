@@ -5,7 +5,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
-import organizationUsersQuery from '~/organizations/users/graphql/organization_users.query.graphql';
+import organizationUsersQuery from '~/organizations/users/graphql/queries/organization_users.query.graphql';
 import OrganizationsUsersApp from '~/organizations/users/components/app.vue';
 import OrganizationsUsersView from '~/organizations/users/components/users_view.vue';
 import { ORGANIZATION_USERS_PER_PAGE } from '~/organizations/users/constants';

@@ -18,48 +18,42 @@ RSpec.describe ::Gitlab::LetsEncrypt::Order, feature_category: :pages do
   end
 
   describe '#new_challenge' do
-    it 'returns challenge' do
-      expect(order.new_challenge).to be_a(::Gitlab::LetsEncrypt::Challenge)
-    end
+    it { expect(order.new_challenge).to be_a ::Gitlab::LetsEncrypt::Challenge }
   end
 
   describe '#request_certificate' do
-    let(:private_key) do
-      OpenSSL::PKey::RSA.new(4096).to_pem
+    let(:private_key) { OpenSSL::PKey::RSA.new(4096).to_pem }
+
+    before do
+      allow(acme_order).to receive(:finalize)
     end
 
     it 'generates csr and finalizes order' do
-      expect(acme_order).to receive(:finalize) do |csr:|
-        expect do
-          csr.csr # it's being evaluated lazily
-        end.not_to raise_error
-      end
-
       order.request_certificate(domain: 'example.com', private_key: private_key)
+
+      expect(acme_order).to have_received(:finalize) do |csr:|
+        # it's being evaluated lazily
+        expect { csr.csr }.not_to raise_error
+      end
     end
   end
 
   describe '#challenge_error' do
-    it 'returns error if challenge has errors' do
-      challenge = acme_challenge_double
-
-      # error just to give an example
-      error = {
+    let(:acme_order) { acme_order_double(authorizations: [acme_authorization_double(challenge)]) }
+    let(:challenge) { acme_challenge_double(error: expected_challenge_error) }
+    let(:expected_challenge_error) do
+      {
         "type" => "urn:ietf:params:acme:error:dns",
         "detail" => "No valid IP addresses found for test.example.com",
         "status" => 400
       }
-
-      allow(challenge).to receive(:error).and_return(error)
-
-      acme_order = acme_order_double(authorizations: [acme_authorization_double(challenge)])
-
-      expect(described_class.new(acme_order).challenge_error).to eq(error)
     end
 
-    context 'when requesting authorizations raises error' do
-      subject { order.challenge_error }
+    subject(:challenge_order) { order.challenge_error }
 
+    it { is_expected.to eq expected_challenge_error }
+
+    context 'when requesting authorizations raises error' do
       let(:acme_order) { acme_order_double }
 
       before do

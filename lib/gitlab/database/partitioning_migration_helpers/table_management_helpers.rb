@@ -9,7 +9,8 @@ module Gitlab
         include ::Gitlab::Database::MigrationHelpers::LooseForeignKeyHelpers
 
         ALLOWED_TABLES = %w[group_audit_events project_audit_events instance_audit_events user_audit_events
-          audit_events web_hook_logs merge_request_diff_files merge_request_diff_commits].freeze
+          audit_events web_hook_logs merge_request_diff_files merge_request_diff_commits
+          ci_runners ci_runner_machines].freeze
 
         ERROR_SCOPE = 'table partitioning'
 

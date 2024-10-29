@@ -136,7 +136,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
               "since it now has a valid constraint."
         else
           expect(not_nullable || has_null_check_constraint).to eq(true),
-            "Missing a not null constraint for `#{table_name}.#{column_name}` . " \
+            "Missing a not null constraint for `#{table_name}.#{column_name}`. " \
               "All sharding keys must be not nullable or have a NOT NULL check constraint"
         end
       else

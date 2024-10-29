@@ -442,7 +442,6 @@ Lint/RedundantCopDisableDirective:
     - 'spec/scripts/duo_chat/reporter_spec.rb'
     - 'spec/services/alert_management/metric_images/upload_service_spec.rb'
     - 'spec/services/boards/lists/list_service_spec.rb'
-    - 'spec/services/pages_domains/create_acme_order_service_spec.rb'
     - 'spec/support/finder_collection.rb'
     - 'spec/support/forgery_protection.rb'
     - 'spec/support/helpers/database/multiple_databases_helpers.rb'

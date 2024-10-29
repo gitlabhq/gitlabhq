@@ -35072,6 +35072,9 @@ msgstr ""
 msgid "MlModelRegistry|Provide the max allowed file size"
 msgstr ""
 
+msgid "MlModelRegistry|Publisher"
+msgstr ""
+
 msgid "MlModelRegistry|Save changes"
 msgstr ""
 
@@ -35088,6 +35091,9 @@ msgid "MlModelRegistry|Subfolder cannot contain spaces"
 msgstr ""
 
 msgid "MlModelRegistry|This model has no candidates"
+msgstr ""
+
+msgid "MlModelRegistry|Total versions"
 msgstr ""
 
 msgid "MlModelRegistry|Triggered by"
@@ -38407,6 +38413,9 @@ msgid "Organization|Organization navigation"
 msgstr ""
 
 msgid "Organization|Organization overview"
+msgstr ""
+
+msgid "Organization|Organization role"
 msgstr ""
 
 msgid "Organization|Organization settings"

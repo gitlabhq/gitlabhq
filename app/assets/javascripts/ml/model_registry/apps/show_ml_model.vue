@@ -1,5 +1,5 @@
 <script>
-import { GlBadge, GlButton, GlTab, GlTabs, GlSprintf, GlIcon, GlLink } from '@gitlab/ui';
+import { GlAvatar, GlBadge, GlButton, GlTab, GlTabs, GlSprintf, GlIcon, GlLink } from '@gitlab/ui';
 import VueRouter from 'vue-router';
 import { n__, s__, sprintf } from '~/locale';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
@@ -46,6 +46,7 @@ export default {
     ActionsDropdown,
     DeleteModelDisclosureDropdownItem,
     TitleArea,
+    GlAvatar,
     GlButton,
     GlTabs,
     GlTab,
@@ -169,6 +170,12 @@ export default {
     showCreatedDetail() {
       return this.model?.author && this.model?.createdAt;
     },
+    showModelAuthor() {
+      return this.model?.author;
+    },
+    showModelLatestVersion() {
+      return Boolean(this.model?.latestVersion);
+    },
   },
   methods: {
     goTo(name) {
@@ -197,8 +204,11 @@ export default {
   i18n: {
     createModelVersionLinkTitle: s__('MlModelRegistry|Create model version'),
     editModelButtonLabel: s__('MlModelRegistry|Edit model'),
-    tabTitle: s__('MlModelRegistry|Model card'),
-    tabInnerTitle: s__('MlModelRegistry|Versions'),
+    tabModelCardTitle: s__('MlModelRegistry|Model card'),
+    tabVersionsTitle: s__('MlModelRegistry|Versions'),
+    versionCountTitle: s__('MlModelRegistry|Total versions'),
+    latestVersionTitle: s__('MlModelRegistry|Latest version'),
+    authorTitle: s__('MlModelRegistry|Publisher'),
   },
   modelVersionEntity: MODEL_ENTITIES.modelVersion,
   ROUTE_DETAILS,
@@ -260,23 +270,62 @@ export default {
           </template>
         </title-area>
 
-        <load-or-error-or-show :is-loading="isLoading" :error-message="errorMessage">
-          <gl-tabs class="gl-mt-4" :value="tabIndex">
-            <gl-tab
-              v-if="latestVersion"
-              :title="s__('MlModelRegistry|Model card')"
-              @click="goTo($options.ROUTE_DETAILS)"
-            />
-            <gl-tab v-if="latestVersion" @click="goTo($options.ROUTE_VERSIONS)">
-              <template #title>
-                {{ s__('MlModelRegistry|Versions') }}
-                <gl-badge class="gl-tab-counter-badge">{{ versionCount }}</gl-badge>
-              </template>
-            </gl-tab>
+        <div class="gl-grid gl-gap-3 md:gl-grid-cols-4">
+          <div class="gl-pr-8 md:gl-col-span-3">
+            <load-or-error-or-show :is-loading="isLoading" :error-message="errorMessage">
+              <gl-tabs class="gl-mt-4" :value="tabIndex">
+                <gl-tab
+                  v-if="latestVersion"
+                  :title="$options.i18n.tabModelCardTitle"
+                  @click="goTo($options.ROUTE_DETAILS)"
+                />
+                <gl-tab v-if="latestVersion" @click="goTo($options.ROUTE_VERSIONS)">
+                  <template #title>
+                    {{ $options.i18n.tabVersionsTitle }}
+                    <gl-badge class="gl-tab-counter-badge">{{ versionCount }}</gl-badge>
+                  </template>
+                </gl-tab>
 
-            <router-view :model-id="model.id" :model="model" />
-          </gl-tabs>
-        </load-or-error-or-show>
+                <router-view :model-id="model.id" :model="model" />
+              </gl-tabs>
+            </load-or-error-or-show>
+          </div>
+
+          <div class="gl-pt-6 md:gl-col-span-1">
+            <div>
+              <div class="gl-text-lg gl-font-bold">{{ $options.i18n.authorTitle }}</div>
+              <div v-if="showModelAuthor" class="gl-pt-2 gl-text-gray-500">
+                <gl-link
+                  data-testid="sidebar-author-link"
+                  class="js-user-link gl-font-bold !gl-text-gray-500"
+                  :href="model.author.webUrl"
+                >
+                  <gl-avatar :label="model.author.name" :src="model.author.avatarUrl" :size="24" />
+                  {{ model.author.name }}
+                </gl-link>
+              </div>
+            </div>
+            <div class="gl-mt-5">
+              <div class="gl-text-lg gl-font-bold">{{ $options.i18n.latestVersionTitle }}</div>
+              <div v-if="showModelLatestVersion" class="gl-pt-2 gl-text-gray-500">
+                <gl-link
+                  data-testid="sidebar-latest-version-link"
+                  :href="model.latestVersion._links.showPath"
+                >
+                  {{ model.latestVersion.version }}
+                </gl-link>
+              </div>
+            </div>
+            <div class="gl-mt-5">
+              <div class="gl-text-lg gl-font-bold">{{ $options.i18n.versionCountTitle }}</div>
+              <div v-if="showCreatedDetail" class="gl-pt-2 gl-text-gray-500">
+                <span data-testid="sidebar-version-count">
+                  {{ versionCount }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </template>
   </delete-model>

@@ -30,7 +30,7 @@ RSpec.describe PagesDomains::UpdateService, feature_category: :pages do
 
     context 'when it updates the domain successfully' do
       it 'updates the domain' do
-        expect(service.execute(pages_domain)).to eq(true)
+        expect(service.execute(pages_domain)).to be true
       end
 
       it 'publishes a PagesDomainUpdatedEvent' do
