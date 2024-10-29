@@ -48345,7 +48345,7 @@ msgstr ""
 msgid "ScanResultPolicy|Prevent %{linkStart}group branch%{linkEnd} modification %{exceptSelection}"
 msgstr ""
 
-msgid "ScanResultPolicy|Prevent %{linkStart}group branch%{linkEnd} modification %{exceptSelection} matching the wildcard pattern: %{projectSelection}"
+msgid "ScanResultPolicy|Prevent %{linkStart}group branch%{linkEnd} modification %{exceptSelection} matching the full paths: %{groupSelection}"
 msgstr ""
 
 msgid "ScanResultPolicy|Prevent approval by commit author"
@@ -49628,7 +49628,7 @@ msgstr ""
 msgid "SecurityOrchestration|Every time a pipeline runs for %{branches}%{branchExceptionsString}"
 msgstr ""
 
-msgid "SecurityOrchestration|Ex: development/*"
+msgid "SecurityOrchestration|Ex: top_level_group"
 msgstr ""
 
 msgid "SecurityOrchestration|Exception branches"
@@ -50279,9 +50279,6 @@ msgid "SecurityOrchestration|compliance frameworks"
 msgstr ""
 
 msgid "SecurityOrchestration|default"
-msgstr ""
-
-msgid "SecurityOrchestration|except branches"
 msgstr ""
 
 msgid "SecurityOrchestration|except groups"

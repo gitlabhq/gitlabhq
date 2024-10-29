@@ -5,6 +5,8 @@ module Gitlab
     class CommentFormatter < BaseFormatter
       attr_writer :author_id
 
+      attr_accessor :gitlab_issuable
+
       def attributes
         {
           project: project,
@@ -19,10 +21,24 @@ module Gitlab
         }
       end
 
+      def project_association
+        :notes
+      end
+
+      def create_record
+        gitlab_issuable.notes.create!(attributes)
+      end
+
+      def contributing_user_formatters
+        {
+          author_id: author
+        }
+      end
+
       private
 
       def author
-        @author ||= UserFormatter.new(client, raw_data[:user])
+        @author ||= UserFormatter.new(client, raw_data[:user], project, source_user_mapper)
       end
 
       def author_id

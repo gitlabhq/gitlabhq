@@ -655,4 +655,10 @@ FactoryBot.define do
       project.namespace.namespace_settings.update!(allow_runner_registration_token: true)
     end
   end
+
+  trait :import_user_mapping_enabled do
+    import_data_attributes do
+      { data: { user_contribution_mapping_enabled: true } }
+    end
+  end
 end

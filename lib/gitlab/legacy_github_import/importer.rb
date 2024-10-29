@@ -3,6 +3,11 @@
 module Gitlab
   module LegacyGithubImport
     class Importer
+      include Gitlab::Utils::StrongMemoize
+
+      PLACEHOLDER_LOAD_SLEEP = 3
+      PLACEHOLDER_LOAD_TIMEOUT = 300
+
       def self.refmap
         Gitlab::GithubImport.refmap
       end
@@ -18,8 +23,6 @@ module Gitlab
       end
 
       def client
-        return @client if defined?(@client)
-
         unless credentials
           raise Projects::ImportService::Error,
             "Unable to find project import data credentials for project ID: #{@project.id}"
@@ -38,6 +41,16 @@ module Gitlab
 
         @client = Client.new(credentials[:user], **opts)
       end
+      strong_memoize_attr :client
+
+      def source_user_mapper
+        Gitlab::Import::SourceUserMapper.new(
+          namespace: project.root_ancestor,
+          import_type: project.import_type,
+          source_hostname: client.host
+        )
+      end
+      strong_memoize_attr :source_user_mapper
 
       def execute
         # The ordering of importing is important here due to the way GitHub structures their data
@@ -67,6 +80,7 @@ module Gitlab
         # 2) https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89694/diffs#dfc4a8141aa296465ea3c50b095a30292fb6ebc4_180_182
         import_releases unless project.gitea_import?
 
+        wait_for_placeholder_references
         handle_errors
 
         true
@@ -118,7 +132,7 @@ module Gitlab
         fetch_resources(:issues, repo, state: :all, sort: :created, direction: :asc, per_page: 100) do |issues|
           issues.each do |raw|
             raw = raw.to_h
-            gh_issue = IssueFormatter.new(project, raw, client)
+            gh_issue = IssueFormatter.new(project, raw, client, source_user_mapper)
 
             begin
               issuable =
@@ -134,6 +148,8 @@ module Gitlab
             end
           end
         end
+
+        load_placeholder_references
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
@@ -141,7 +157,7 @@ module Gitlab
         fetch_resources(:pull_requests, repo, state: :all, sort: :created, direction: :asc, per_page: 100) do |prs|
           prs.each do |raw|
             raw = raw.to_h
-            gh_pull_request = PullRequestFormatter.new(project, raw, client)
+            gh_pull_request = PullRequestFormatter.new(project, raw, client, source_user_mapper)
 
             next unless gh_pull_request.valid?
 
@@ -166,6 +182,7 @@ module Gitlab
         end
 
         project.repository.after_remove_branch
+        load_placeholder_references
       end
 
       def restore_source_branch(pull_request)
@@ -223,6 +240,8 @@ module Gitlab
 
           create_comments(comments)
         end
+
+        load_placeholder_references
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
@@ -232,7 +251,7 @@ module Gitlab
           comments.each do |raw|
             raw = raw.to_h
 
-            comment = CommentFormatter.new(project, raw, client)
+            comment = CommentFormatter.new(project, raw, client, source_user_mapper)
 
             # GH does not return info about comment's parent, so we guess it by checking its URL!
             *_, parent, iid = URI(raw[:html_url]).path.split('/')
@@ -245,7 +264,8 @@ module Gitlab
 
             next unless issuable
 
-            issuable.notes.create!(comment.attributes)
+            comment.gitlab_issuable = issuable
+            comment.create!
           rescue StandardError => e
             errors << { type: :comment, url: Gitlab::UrlSanitizer.sanitize(raw[:html_url]), errors: e.message }
           end
@@ -314,6 +334,50 @@ module Gitlab
         imported!(resource_type)
       rescue ::Octokit::NotFound => e
         errors << { type: resource_type, errors: e.message }
+      end
+
+      def load_placeholder_references
+        return unless project.import_data.user_mapping_enabled?
+
+        ::Import::LoadPlaceholderReferencesWorker.perform_async(
+          project.import_type,
+          project.import_state.id,
+          'current_user_id' => project.creator_id
+        )
+      end
+
+      def placeholder_references_loaded?
+        return true unless project.import_data.user_mapping_enabled?
+
+        ::Import::PlaceholderReferences::Store.new(
+          import_source: project.import_type,
+          import_uid: project.import_state.id
+        ).empty?
+      end
+
+      def wait_for_placeholder_references
+        # Since this importer is synchronous, wait until all placeholder references have been saved
+        # to the database before completing the import
+        time_waited = 0
+
+        until time_waited >= PLACEHOLDER_LOAD_TIMEOUT || placeholder_references_loaded?
+          Kernel.sleep PLACEHOLDER_LOAD_SLEEP
+          time_waited += PLACEHOLDER_LOAD_SLEEP
+        end
+
+        if placeholder_references_loaded?
+          return if time_waited == 0
+
+          ::Import::Framework::Logger.info(
+            message: "Placeholder references finished loading to database after #{time_waited} seconds.",
+            import_source: project.import_type,
+            import_uid: project.import_state.id
+          )
+        else
+          timeout_error = "Timed out after waiting #{PLACEHOLDER_LOAD_TIMEOUT} seconds " \
+            "for placeholder references to finish saving"
+          errors << { type: :placeholder_references, errors: timeout_error }
+        end
       end
 
       def imported?(resource_type)

@@ -92,3 +92,12 @@ You also can:
 - Filter projects by name. If a filter is applied, **Import all projects**
   imports only selected projects.
 - Choose a different name for the project and a different namespace if you have the privileges to do so.
+
+## User contribution mapping
+
+User contributions are assigned to the project creator (usually the user who started the import process) by default.
+This method of user contribution mapping is available for GitLab self-managed without enabled feature flags.
+
+For information on the other method available for GitLab self-managed
+with enabled feature flags and for GitLab.com,
+see [User contribution and membership mapping](../../project/import/index.md#user-contribution-and-membership-mapping).

@@ -6,6 +6,11 @@
 # Don't use format parameter as file extension (old 3.0.x behavior)
 # See http://guides.rubyonrails.org/routing.html#route-globbing-and-wildcard-segments
 scope format: false do
+  get '/compare/:from...:to/', to: 'compare#rapid_diffs', as: 'rapid_diffs_compare',
+    constraints: ->(params) { params[:rapid_diffs] == 'true' && params[:from] =~ /.+/ && params[:to] =~ /.+/ }
+  get '/compare/:from..:to/', to: 'compare#rapid_diffs', as: 'rapid_diffs_compare_with_two_dots',
+    constraints: ->(params) { params[:rapid_diffs] == 'true' && params[:from] =~ /.+/ && params[:to] =~ /.+/ }, defaults: { straight: "true" }
+
   get '/compare/:from...:to/', to: 'compare#show', as: 'compare', constraints: { from: /.+/, to: /.+/ }
   get '/compare/:from..:to/', to: 'compare#show', as: 'compare_with_two_dots', constraints: { from: /.+/, to: /.+/ }, defaults: { straight: "true" }
 

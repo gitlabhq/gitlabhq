@@ -12,11 +12,11 @@ class Projects::CompareController < Projects::ApplicationController
   before_action :require_non_empty_project
   before_action :authorize_read_code!
   # Defining ivars
-  before_action :define_diffs, only: [:show, :diff_for_path]
-  before_action :define_environment, only: [:show]
-  before_action :define_diff_notes_disabled, only: [:show, :diff_for_path]
-  before_action :define_commits, only: [:show, :diff_for_path, :signatures]
-  before_action :merge_request, only: [:index, :show]
+  before_action :define_diffs, only: [:show, :diff_for_path, :rapid_diffs]
+  before_action :define_environment, only: [:show, :rapid_diffs]
+  before_action :define_diff_notes_disabled, only: [:show, :diff_for_path, :rapid_diffs]
+  before_action :define_commits, only: [:show, :diff_for_path, :signatures, :rapid_diffs]
+  before_action :merge_request, only: [:index, :show, :rapid_diffs]
   # Validation
   before_action :validate_refs!
 
@@ -70,6 +70,12 @@ class Projects::CompareController < Projects::ApplicationController
         }
       end
     end
+  end
+
+  def rapid_diffs
+    return render_404 unless ::Feature.enabled?(:rapid_diffs, current_user, type: :wip)
+
+    show
   end
 
   private

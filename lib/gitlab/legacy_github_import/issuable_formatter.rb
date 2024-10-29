@@ -17,6 +17,26 @@ module Gitlab
         { iid: number }
       end
 
+      def create!
+        record = super
+
+        return record unless assignee_id
+
+        # Fetch first assignee because Gitea's API only returns one assignee for issue assignees
+        assignee_record = record.method(project_assignee_association).call.first
+        push_placeholder_references(assignee_record, contributing_users: contributing_assignee_formatters)
+
+        record
+      end
+
+      def project_assignee_association
+        raise NotImplementedError
+      end
+
+      def contributing_assignee_formatters
+        raise NotImplementedError
+      end
+
       private
 
       def state
@@ -28,7 +48,7 @@ module Gitlab
       end
 
       def author
-        @author ||= UserFormatter.new(client, raw_data[:user])
+        @author ||= UserFormatter.new(client, raw_data[:user], project, source_user_mapper)
       end
 
       def author_id
@@ -37,7 +57,7 @@ module Gitlab
 
       def assignee
         if assigned?
-          @assignee ||= UserFormatter.new(client, raw_data[:assignee])
+          @assignee ||= UserFormatter.new(client, raw_data[:assignee], project, source_user_mapper)
         end
       end
 

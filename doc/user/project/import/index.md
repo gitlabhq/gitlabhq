@@ -86,6 +86,7 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/443557) to direct transfer migrations for self-managed instances in GitLab 17.4 [with flags](../../../administration/feature_flags.md) named `importer_user_mapping` and `bulk_import_importer_user_mapping`. Disabled by default.
+> - [Introduced to Gitea project import](https://gitlab.com/gitlab-org/gitlab/-/issues/467084) in GitLab 17.6 [with flags](../../../administration/feature_flags.md) named `importer_user_mapping` and `gitea_user_mapping`. Disabled by default.
 
 FLAG:
 The availability of this feature is controlled by feature flags.
@@ -128,6 +129,15 @@ to existing users on the destination instance.
 
 Until they are reassigned, contributions display as associated with the placeholder. Placeholder memberships
 do not display in member lists.
+
+#### Exceptions
+
+A placeholder user is created for each user on the source instance, except in the following scenarios:
+
+- You are importing a project from [Gitea](gitea.md) and the user has been deleted on Gitea before the import.
+  Contributions from these "ghost users" are mapped to the user who imported the project and not to a placeholder user.
+- You have exceeded your [placeholder user limit](#placeholder-user-limits). Contributions from any new users after exceeding your limit are
+  mapped to a single import user.
 
 #### Placeholder user attributes
 
