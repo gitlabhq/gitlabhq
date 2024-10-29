@@ -10,7 +10,7 @@ RSpec.describe ::SystemNotes::TimeTrackingService, feature_category: :team_plann
     let_it_be(:issue)     { create(:issue, project: project) }
     let_it_be(:work_item) { create(:work_item, project: project) }
 
-    subject(:note) { described_class.new(noteable: noteable, project: project, author: author).change_start_date_or_due_date(changed_dates) }
+    subject(:note) { described_class.new(noteable: noteable, container: project, author: author).change_start_date_or_due_date(changed_dates) }
 
     let(:start_date) { Date.today }
     let(:due_date) { 1.week.from_now.to_date }
@@ -189,7 +189,7 @@ RSpec.describe ::SystemNotes::TimeTrackingService, feature_category: :team_plann
   end
 
   describe '#change_time_estimate' do
-    subject { described_class.new(noteable: noteable, project: project, author: author).change_time_estimate }
+    subject { described_class.new(noteable: noteable, container: project, author: author).change_time_estimate }
 
     context 'when noteable is an issue' do
       let_it_be(:noteable, reload: true) { create(:issue, project: project) }
@@ -275,7 +275,7 @@ RSpec.describe ::SystemNotes::TimeTrackingService, feature_category: :team_plann
   end
 
   describe '#create_timelog' do
-    subject { described_class.new(noteable: noteable, project: project, author: author).created_timelog(timelog) }
+    subject { described_class.new(noteable: noteable, container: project, author: author).created_timelog(timelog) }
 
     context 'when the timelog has a positive time spent value' do
       let_it_be(:noteable, reload: true) { create(:issue, project: project) }
@@ -303,7 +303,7 @@ RSpec.describe ::SystemNotes::TimeTrackingService, feature_category: :team_plann
   end
 
   describe '#remove_timelog' do
-    subject { described_class.new(noteable: noteable, project: project, author: author).remove_timelog(timelog) }
+    subject { described_class.new(noteable: noteable, container: project, author: author).remove_timelog(timelog) }
 
     context 'when the timelog has a positive time spent value' do
       let_it_be(:noteable, reload: true) { create(:issue, project: project) }
@@ -331,7 +331,7 @@ RSpec.describe ::SystemNotes::TimeTrackingService, feature_category: :team_plann
   end
 
   describe '#change_time_spent' do
-    subject { described_class.new(noteable: noteable, project: project, author: author).change_time_spent }
+    subject { described_class.new(noteable: noteable, container: project, author: author).change_time_spent }
 
     context 'when noteable is an issue' do
       let_it_be(:noteable, reload: true) { create(:issue, project: project) }

@@ -631,6 +631,10 @@ RSpec.describe SystemNoteService, feature_category: :shared do
 
       described_class.approve_mr(noteable, author)
     end
+
+    it 'creates system note' do
+      expect { described_class.approve_mr(noteable, author) }.to change { Note.count }.by(1)
+    end
   end
 
   describe '.unapprove_mr' do
@@ -640,6 +644,10 @@ RSpec.describe SystemNoteService, feature_category: :shared do
       end
 
       described_class.unapprove_mr(noteable, author)
+    end
+
+    it 'creates system note' do
+      expect { described_class.approve_mr(noteable, author) }.to change { Note.count }.by(1)
     end
   end
 
@@ -832,6 +840,10 @@ RSpec.describe SystemNoteService, feature_category: :shared do
       end
 
       described_class.requested_changes(noteable, author)
+    end
+
+    it 'creates system note' do
+      expect { described_class.approve_mr(noteable, author) }.to change { Note.count }.by(1)
     end
   end
 end

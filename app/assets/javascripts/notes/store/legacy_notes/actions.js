@@ -224,6 +224,8 @@ export function fetchDiscussionsBatch({ path, config, cursor, perPage }) {
 }
 
 export function updateDiscussion(discussion) {
+  if (discussion == null) return null;
+
   this[types.UPDATE_DISCUSSION](discussion);
 
   return utils.findNoteObjectById(this.discussions, discussion.id);

@@ -17,7 +17,11 @@ import { userCounts } from '~/super_sidebar/user_counts_manager';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { stubComponent } from 'helpers/stub_component';
 import { sidebarData as mockSidebarData, loggedOutSidebarData } from '../mock_data';
-import { MOCK_DEFAULT_SEARCH_OPTIONS, MOCK_SEARCH_QUERY } from './global_search/mock_data';
+import {
+  MOCK_DEFAULT_SEARCH_OPTIONS,
+  MOCK_SEARCH_QUERY,
+  MOCK_SCOPED_SEARCH_OPTIONS,
+} from './global_search/mock_data';
 
 jest.mock('~/lib/utils/common_utils');
 
@@ -50,6 +54,7 @@ describe('UserBar component', () => {
       searchOptions: () => MOCK_DEFAULT_SEARCH_OPTIONS,
       isCommandMode: () => true,
       searchQuery: () => MOCK_SEARCH_QUERY,
+      scopedSearchOptions: () => MOCK_SCOPED_SEARCH_OPTIONS,
     },
   });
   const createWrapper = ({

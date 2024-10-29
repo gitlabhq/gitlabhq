@@ -430,7 +430,7 @@ export const assignDiscussionsToDiff = (
   const hash = getLocationHash();
 
   discussions
-    .filter((discussion) => discussion.diff_discussion)
+    .filter((discussion) => discussion?.diff_discussion)
     .forEach((discussion) => {
       commit(types.SET_LINE_DISCUSSIONS_FOR_FILE, {
         discussion,

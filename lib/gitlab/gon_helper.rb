@@ -161,6 +161,8 @@ module Gitlab
     # which has similar properties.
     # rubocop:disable Gitlab/AvoidCurrentOrganization -- This method follows the spirit of the rule
     def current_organization
+      return unless ::Current.organization_assigned
+
       ::Current.organization
     end
     # rubocop:enable Gitlab/AvoidCurrentOrganization

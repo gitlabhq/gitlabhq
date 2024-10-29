@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlBadge } from '@gitlab/ui';
+import { GlButton, GlBadge, GlTooltipDirective } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
 
 export default {
@@ -7,10 +7,18 @@ export default {
     GlButton,
     GlBadge,
   },
+  directives: {
+    GlTooltip: GlTooltipDirective,
+  },
   props: {
     title: {
       type: String,
       required: true,
+    },
+    helpContent: {
+      type: String,
+      required: false,
+      default: '',
     },
     count: {
       type: Number,
@@ -81,6 +89,13 @@ export default {
           <gl-badge v-if="!loading || count" class="gl-ml-1" variant="neutral" size="sm">{{
             count
           }}</gl-badge>
+          <gl-button
+            v-gl-tooltip
+            :title="helpContent"
+            icon="information-o"
+            variant="link"
+            class="gl-relative gl-top-2 gl-float-right gl-inline-flex"
+          />
         </h2>
       </header>
       <div v-if="open" data-testid="section-content">

@@ -7707,7 +7707,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       before do
         allow(project).to receive(:read_attribute).with(setting_name).and_return(project_setting)
         allow(namespace).to receive(:closest_setting).with(setting_name).and_return(group_setting)
-        allow(Gitlab::CurrentSettings).to receive(setting_name).and_return(global_setting)
+        stub_application_setting(setting_name => global_setting)
       end
 
       it 'returns closest non-nil value' do

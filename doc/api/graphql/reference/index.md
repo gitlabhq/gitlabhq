@@ -19856,15 +19856,6 @@ CI/CD variables given to a manual job.
 | <a id="ciminutesprojectmonthlyusageproject"></a>`project` | [`Project`](#project) | Project having the recorded usage. |
 | <a id="ciminutesprojectmonthlyusagesharedrunnersduration"></a>`sharedRunnersDuration` | [`Int`](#int) | Total duration (in seconds) of shared runners use by the project for the month. |
 
-### `CiPipelineCreationType`
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="cipipelinecreationtypepipelineid"></a>`pipelineId` **{warning-solid}** | [`ID`](#id) | **Introduced** in GitLab 17.4. **Status**: Experiment. ID of the created pipeline. |
-| <a id="cipipelinecreationtypestatus"></a>`status` **{warning-solid}** | [`CiPipelineCreationStatus`](#cipipelinecreationstatus) | **Introduced** in GitLab 17.4. **Status**: Experiment. Pipeline creation status. |
-
 ### `CiProjectVariable`
 
 CI/CD variables for a project.
@@ -29859,6 +29850,7 @@ Returns [`UserMergeRequestInteraction`](#usermergerequestinteraction).
 | <a id="pipelinetotaljobs"></a>`totalJobs` | [`Int!`](#int) | Total number of jobs in the pipeline. |
 | <a id="pipelinetrigger"></a>`trigger` | [`Boolean!`](#boolean) | If the pipeline was created by a Trigger request. |
 | <a id="pipelinetriggeredbypath"></a>`triggeredByPath` | [`String`](#string) | Path that triggered the pipeline. |
+| <a id="pipelinetroubleshootjobwithai"></a>`troubleshootJobWithAi` | [`Boolean!`](#boolean) | If the user can troubleshoot jobs of a pipeline. |
 | <a id="pipelineupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of the pipeline's last activity. |
 | <a id="pipelineupstream"></a>`upstream` | [`Pipeline`](#pipeline) | Pipeline that triggered the pipeline. |
 | <a id="pipelineuser"></a>`user` | [`UserCore`](#usercore) | Pipeline user. |
@@ -30748,22 +30740,6 @@ Returns [`[CiConfigVariable!]`](#ciconfigvariable).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="projectciconfigvariablesref"></a>`ref` | [`String!`](#string) | Ref. |
-
-##### `Project.ciPipelineCreation`
-
-Information about a pipeline creation.
-
-DETAILS:
-**Introduced** in GitLab 17.4.
-**Status**: Experiment.
-
-Returns [`CiPipelineCreationType`](#cipipelinecreationtype).
-
-###### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="projectcipipelinecreationid"></a>`id` | [`String!`](#string) | Unique ID associated with the pipeline creation. |
 
 ##### `Project.ciTemplate`
 
@@ -37310,14 +37286,6 @@ CI_JOB_TOKEN policy.
 | <a id="cijobtokenscopepoliciesupdate_pipeline"></a>`UPDATE_PIPELINE` | Update Pipeline. |
 | <a id="cijobtokenscopepoliciesupdate_release"></a>`UPDATE_RELEASE` | Update Release. |
 
-### `CiPipelineCreationStatus`
-
-| Value | Description |
-| ----- | ----------- |
-| <a id="cipipelinecreationstatuscreating"></a>`CREATING` | Pipeline is creating. |
-| <a id="cipipelinecreationstatusfailed"></a>`FAILED` | Pipeline has failed. |
-| <a id="cipipelinecreationstatussucceeded"></a>`SUCCEEDED` | Pipeline has succeeded. |
-
 ### `CiRunnerAccessLevel`
 
 | Value | Description |
@@ -37507,6 +37475,7 @@ Name of the check for the compliance standard.
 | <a id="compliancestandardsadherencechecknameat_least_two_approvals"></a>`AT_LEAST_TWO_APPROVALS` | At least two approvals. |
 | <a id="compliancestandardsadherencechecknameprevent_approval_by_merge_request_author"></a>`PREVENT_APPROVAL_BY_MERGE_REQUEST_AUTHOR` | Prevent approval by merge request author. |
 | <a id="compliancestandardsadherencechecknameprevent_approval_by_merge_request_committers"></a>`PREVENT_APPROVAL_BY_MERGE_REQUEST_COMMITTERS` | Prevent approval by merge request committers. |
+| <a id="compliancestandardsadherencechecknamesast"></a>`SAST` | Sast. |
 
 ### `ComplianceStandardsAdherenceStandard`
 
@@ -43050,6 +43019,7 @@ Defines which user roles, users, or groups can merge into a protected branch.
 | <a id="mergerequestsresolvernegatedparamsmyreactionemoji"></a>`myReactionEmoji` | [`String`](#string) | Filter by reaction emoji to exclude. |
 | <a id="mergerequestsresolvernegatedparamsreleasetag"></a>`releaseTag` | [`String`](#string) | Filter by release tag to exclude. |
 | <a id="mergerequestsresolvernegatedparamsreviewerusername"></a>`reviewerUsername` | [`String`](#string) | Username of the reviewer to exclude. |
+| <a id="mergerequestsresolvernegatedparamssourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Array of source branch names. No resolved merge requests will have one of these branches as their source. |
 
 ### `MonthSelectionInput`
 

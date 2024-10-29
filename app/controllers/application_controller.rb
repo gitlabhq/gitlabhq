@@ -554,7 +554,7 @@ class ApplicationController < BaseActionController
   end
 
   def set_current_organization
-    return if ::Current.lock_organization
+    return if ::Current.organization_assigned
 
     ::Current.organization = Gitlab::Current::Organization.new(
       params: params.permit(

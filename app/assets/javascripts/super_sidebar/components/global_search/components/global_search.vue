@@ -446,12 +446,10 @@ export default {
               :handle="commandChar"
               @updated="highlightFirstCommand"
             />
-
-            <global-search-default-items v-else-if="showDefaultItems" />
-
             <template v-else>
-              <global-search-autocomplete-items />
               <global-search-scoped-items v-if="showScopedSearchItems" />
+              <global-search-default-items v-if="showDefaultItems" />
+              <global-search-autocomplete-items v-else />
             </template>
           </div>
         </scroll-scrim>

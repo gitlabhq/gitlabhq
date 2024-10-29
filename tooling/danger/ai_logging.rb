@@ -10,10 +10,8 @@ module Tooling
         Please ensure proper warnings are included and review the [AI logging documentation](https://docs.gitlab.com/ee/development/ai_features/#logs).
 
         To resolve this:
-        1. Ensure you're using `GitLab::Llm::Logger.build.info` or `GitLab::Llm::Logger.build.error` for AI-related logging.
-        2. Add appropriate warnings to your AI logging calls.
-        3. Ensure you're not logging sensitive or personal information.
-        4. Consider if the logging should be gated behind the `expanded_ai_logging` feature flag.
+        1. Ensure you're not logging sensitive or personal information.
+        2. Consider if the logging should be gated behind the `expanded_ai_logging` feature flag - this means using `log_conditional_info` method.
 
         For more information, see: https://docs.gitlab.com/ee/user/gitlab_duo/data_usage.html
       MSG
@@ -48,11 +46,9 @@ module Tooling
       end
 
       def check_logger_or_path(file_content, file_path)
-        logger_pattern = /@logger\s*=\s*Gitlab::Llm::Logger\.build/
-        info_or_error_pattern = /logger\.((?:info(?!_or_debug)|error))(.*)$/
+        info_or_error_pattern = /log_(error|info|warn)\s*\(\s*([^)]*?)\s*message:/
 
-        (file_content.match?(logger_pattern) && file_content.match?(info_or_error_pattern)) ||
-          (file_path.include?("llm") && file_content.match?(info_or_error_pattern))
+        /llm|duo/.match?(file_path) && info_or_error_pattern.match?(file_content)
       end
     end
   end

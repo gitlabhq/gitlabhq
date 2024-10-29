@@ -1,6 +1,7 @@
 import { createAlert } from '~/alert';
 import { __ } from '~/locale';
 import { validateAdditionalProperties } from '~/tracking/utils';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import axios from './lib/utils/axios_utils';
 import { joinPaths } from './lib/utils/url_utility';
 
@@ -951,11 +952,15 @@ const Api = {
 
     const { data = {} } = { ...window.gl?.snowplowStandardContext };
     const { project_id, namespace_id } = data;
-    return axios.post(
-      url,
-      { event, project_id, namespace_id, additional_properties: additionalProperties },
-      { headers },
-    );
+    return axios
+      .post(
+        url,
+        { event, project_id, namespace_id, additional_properties: additionalProperties },
+        { headers },
+      )
+      .catch((error) => {
+        Sentry.captureException(error);
+      });
   },
 
   buildUrl(url) {

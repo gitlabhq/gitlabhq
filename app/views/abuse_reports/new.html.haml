@@ -1,11 +1,7 @@
 - page_title _("Report abuse to administrator")
 .row
   .col-lg-8
-    %h1.page-title.gl-text-size-h-display
-      = _("Report abuse to administrator")
-    %p
-      = _("Please use this form to report to the administrator users who create spam issues, comments or behave inappropriately.")
-      = _("A member of the abuse team will review your report as soon as possible.")
+    = render ::Layouts::PageHeadingComponent.new(_("Report abuse to administrator"), description: _("Please use this form to report to the administrator users who create spam issues, comments or behave inappropriately. A member of the abuse team will review your report as soon as possible."))
 
 = gitlab_ui_form_for @abuse_report, html: { class: 'js-quick-submit'} do |f|
   .row
@@ -32,8 +28,6 @@
       = f.label :screenshot do
         %span
           = s_('ReportAbuse|Screenshot')
-        .gl-font-normal
-          = s_('ReportAbuse|Screenshot of abuse')
       %div
         = render 'shared/file_picker_button', f: f, field: :screenshot, help_text: _("Screenshot must be less than 1 MB."), mime_types: valid_image_mimetypes
 
@@ -44,7 +38,8 @@
       .form-text.text-muted
         = _("Explain why you're reporting the user.")
 
-  = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm) do
-    = _('Send report')
-  = render Pajamas::ButtonComponent.new(href: @abuse_report.reported_from_url, button_options: { class: 'gl-ml-3' }) do
-    = _('Cancel')
+  .gl-flex.gl-gap-3
+    = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm) do
+      = _('Send report')
+    = render Pajamas::ButtonComponent.new(href: @abuse_report.reported_from_url) do
+      = _('Cancel')

@@ -95,6 +95,13 @@ module API
     end
     # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
+    def set_current_organization(user: current_user)
+      ::Current.organization = Gitlab::Current::Organization.new(
+        params: {},
+        user: user
+      ).organization
+    end
+
     def save_current_user_in_env(user)
       env[API_USER_ENV] = { user_id: user.id, username: user.username }
     end

@@ -30,7 +30,8 @@ RSpec.describe Ci::CreatePipelineService, :ci_config_feature_flag_correctness, :
       source_sha: nil,
       target_sha: nil,
       partition_id: nil,
-      save_on_errors: true)
+      save_on_errors: true,
+      pipeline_creation_request: nil)
       params = { ref: ref,
                  before: before,
                  after: after,
@@ -38,7 +39,8 @@ RSpec.describe Ci::CreatePipelineService, :ci_config_feature_flag_correctness, :
                  push_options: push_options,
                  source_sha: source_sha,
                  target_sha: target_sha,
-                 partition_id: partition_id }
+                 partition_id: partition_id,
+                 pipeline_creation_request: pipeline_creation_request }
 
       described_class.new(project, user, params).execute(source,
         save_on_errors: save_on_errors,
@@ -2035,6 +2037,26 @@ RSpec.describe Ci::CreatePipelineService, :ci_config_feature_flag_correctness, :
         it 'raises error' do
           expect { execute_service(partition_id: ci_testing_partition_id) }
             .to raise_error(ArgumentError, "Param `partition_id` is not allowed")
+        end
+      end
+    end
+
+    describe 'pipeline creation status updating' do
+      context 'when the pipeline creation succeeds' do
+        it 'updates the status with `succeeded`' do
+          expect(::Ci::PipelineCreation::Requests).to receive(:succeeded).with({ 'key' => '123', 'id' => '456' })
+
+          execute_service(pipeline_creation_request: { 'key' => '123', 'id' => '456' })
+        end
+      end
+
+      context 'when the pipeline creation fails' do
+        let_it_be_with_reload(:user) { create(:user) }
+
+        it 'updates the status with `failed`' do
+          expect(::Ci::PipelineCreation::Requests).to receive(:failed).with({ 'key' => '123', 'id' => '456' })
+
+          execute_service(pipeline_creation_request: { 'key' => '123', 'id' => '456' })
         end
       end
     end

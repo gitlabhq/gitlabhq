@@ -112,7 +112,7 @@ RSpec.describe Gitlab::CurrentSettings, feature_category: :shared do
         allow(Gitlab::ApplicationSettingFetcher).to receive(:current_application_settings).and_return(nil)
       end
 
-      context 'and the current organization is known' do
+      context 'and the current organization is known', :with_current_organization do
         before do
           allow(Organizations::OrganizationSetting).to receive(:for).and_return(organization_settings)
         end
@@ -148,8 +148,16 @@ RSpec.describe Gitlab::CurrentSettings, feature_category: :shared do
     end
 
     context 'when key is in neither' do
-      it 'raises NoMethodError' do
-        expect { described_class.foo }.to raise_error(NoMethodError)
+      context 'and the current organization is known', :with_current_organization do
+        it 'raises NoMethodError' do
+          expect { described_class.foo }.to raise_error(NoMethodError)
+        end
+      end
+
+      context 'and the current organization is unknown' do
+        it 'raises NoMethodError' do
+          expect { described_class.foo }.to raise_error(NoMethodError)
+        end
       end
     end
   end

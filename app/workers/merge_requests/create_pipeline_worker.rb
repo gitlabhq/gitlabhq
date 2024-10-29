@@ -28,13 +28,18 @@ module MergeRequests
       return unless merge_request
 
       allow_duplicate = params.with_indifferent_access[:allow_duplicate]
+      pipeline_creation_request = params.with_indifferent_access[:pipeline_creation_request]
       push_options = params.with_indifferent_access[:push_options]
 
       MergeRequests::CreatePipelineService
         .new(
           project: project,
           current_user: user,
-          params: { allow_duplicate: allow_duplicate, push_options: push_options }
+          params: {
+            allow_duplicate: allow_duplicate,
+            pipeline_creation_request: pipeline_creation_request,
+            push_options: push_options
+          }
         ).execute(merge_request)
 
       merge_request.update_head_pipeline

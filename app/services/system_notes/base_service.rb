@@ -2,12 +2,15 @@
 
 module SystemNotes
   class BaseService
-    attr_reader :noteable, :project, :author
+    attr_accessor :project, :group
+    attr_reader :noteable, :container, :author
 
-    def initialize(noteable: nil, author: nil, project: nil)
+    def initialize(container: nil, noteable: nil, author: nil)
+      @container = container
       @noteable = noteable
-      @project = project
       @author = author
+
+      handle_container_type(container)
     end
 
     protected
@@ -25,6 +28,17 @@ module SystemNotes
 
     def url_helpers
       @url_helpers ||= Gitlab::Routing.url_helpers
+    end
+
+    def handle_container_type(container)
+      case container
+      when Project
+        @project = container
+      when Group
+        @group = container
+      when Namespaces::ProjectNamespace
+        @project = container.project
+      end
     end
   end
 end

@@ -10,34 +10,34 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-Pipelines are the top-level component of continuous integration, delivery, and deployment.
+CI/CD pipelines are the fundamental component of GitLab CI/CD. Pipelines are configured
+in a `.gitlab-ci.yml` file by using [YAML keywords](../yaml/index.md).
 
-Pipelines comprise:
+Pipelines can run automatically for specific events, like when pushing to a branch,
+creating a merge request, or on a schedule. When needed, you can also run pipelines manually.
 
-- Jobs, which define *what* to do. For example, jobs that compile or test code.
-- Stages, which define *when* to run the jobs. For example, stages that run tests after stages that compile the code.
+Pipelines are composed of:
 
-Jobs are executed by [runners](../runners/index.md). Multiple jobs in the same stage are executed in parallel,
-if there are enough concurrent runners.
+- [Global YAML keywords](../yaml/index.md#global-keywords) that control the overall
+  behavior of the project's pipelines.
+- [Jobs](../jobs/index.md) that execute commands to accomplish a task. For example,
+  a job could compile, test, or deploy code. Jobs run independently from each other,
+  and are executed by [runners](../runners/index.md).
+- Stages, which define how to group jobs together. Stages run in sequence, while the jobs
+  in a stage run in parallel. For example, an early stage could have jobs that lint and compile
+  code, while later stages could have jobs that test and deploy code. If all jobs in a stage succeed,
+  the pipeline moves on to the next stage. If any job in a stage fails, the next stage
+  is not (usually) executed and the pipeline ends early.
 
-If *all* jobs in a stage succeed, the pipeline moves on to the next stage.
+A small pipeline could consist of three stages, executed in the following order:
 
-If *any* job in a stage fails, the next stage is not (usually) executed and the pipeline ends early.
+- A `build` stage, with a job called `compile` that compiles the project's code.
+- A `test` stage, with two jobs called `test1` and `test2` that run various tests on the code.
+  These tests would only run if the `compile` job completed successfully.
+- A `deploy` stage, with a job called `deploy-to-production`. This job would only run
+  if both jobs in the `test` stage started and completed successfully.
 
-In general, pipelines are executed automatically and require no intervention once created. However, there are
-also times when you can manually interact with a pipeline.
-
-A typical pipeline might consist of four stages, executed in the following order:
-
-- A `build` stage, with a job called `compile`.
-- A `test` stage, with two jobs called `test1` and `test2`.
-- A `staging` stage, with a job called `deploy-to-stage`.
-- A `production` stage, with a job called `deploy-to-prod`.
-
-NOTE:
-If you have a [mirrored repository that GitLab pulls from](../../user/project/repository/mirror/pull.md),
-you may need to enable pipeline triggering in your project's
-**Settings > Repository > Mirroring repositories > Trigger pipelines for mirror updates**.
+To get started with your first pipeline, see [Create and run your first GitLab CI/CD pipeline](../quick_start/index.md).
 
 ## Types of pipelines
 
@@ -61,20 +61,15 @@ Pipelines can be configured in many different ways:
 
 ## Configure a pipeline
 
-Pipelines and their component jobs and stages are defined in the CI/CD pipeline configuration file for each project.
+Pipelines and their component jobs and stages are defined with [YAML keywords](../yaml/index.md)
+in the CI/CD pipeline configuration file for each project. When editing CI/CD configuration
+in GitLab, you should use the [pipeline editor](../pipeline_editor/index.md).
 
-- [Jobs](../jobs/index.md) are the basic configuration component.
-- Stages are defined by using the [`stages`](../yaml/index.md#stages) keyword.
-
-For a list of configuration options for the CI/CD configuration file, see the [CI/CD YAML syntax reference](../yaml/index.md).
-
-You can also configure specific aspects of your pipelines through the GitLab UI. For example:
+You can also configure specific aspects of your pipelines through the GitLab UI:
 
 - [Pipeline settings](settings.md) for each project.
 - [Pipeline schedules](schedules.md).
 - [Custom CI/CD variables](../variables/index.md#for-a-project).
-
-The recommended tool for editing CI/CD configuration is the [pipeline editor](../pipeline_editor/index.md).
 
 If you use VS Code to edit your GitLab CI/CD configuration, the [GitLab Workflow extension for VS Code](../../editor_extensions/visual_studio_code/index.md)
 helps you [validate your configuration](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#validate-gitlab-ci-configuration)

@@ -23,7 +23,6 @@ export function initUserTracking() {
   window.snowplow('newTracker', opts.namespace, opts.hostname, opts);
 
   document.dispatchEvent(new Event('SnowplowInitialized'));
-  Tracking.flushPendingEvents();
 }
 
 /**
@@ -66,6 +65,8 @@ export function initDefaultTrackers() {
   if (window.snowplowOptions.linkClickTracking) {
     window.snowplow('enableLinkClickTracking');
   }
+
+  Tracking.flushPendingEvents();
 
   Tracking.bindDocument();
   Tracking.trackLoadEvents();

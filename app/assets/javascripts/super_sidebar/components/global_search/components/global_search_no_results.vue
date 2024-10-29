@@ -11,7 +11,7 @@ export default {
 
 <template>
   <ul class="gl-m-0 gl-list-none gl-p-0">
-    <li class="command-palette-px gl-py-5 gl-text-primary">
+    <li class="command-palette-px gl-border-t gl-border-t-dropdown gl-py-5 gl-text-primary">
       {{ $options.i18n.NO_SEARCH_RESULTS }}
     </li>
   </ul>

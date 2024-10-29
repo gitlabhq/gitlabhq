@@ -8,13 +8,30 @@ module MergeRequests
       create_detached_merge_request_pipeline(merge_request)
     end
 
+    def execute_async(merge_request)
+      pipeline_creation_request = nil
+
+      if Feature.enabled?(:ci_redis_pipeline_creations, merge_request.project)
+        pipeline_creation_request = ::Ci::PipelineCreation::Requests.start_for_merge_request(merge_request)
+
+        # We need to update the merge status here because a pipeline has begun creating and MRs that require a
+        # successful pipeline should not be mergable at this point.
+        GraphqlTriggers.merge_request_merge_status_updated(merge_request)
+      end
+
+      ::MergeRequests::CreatePipelineWorker.perform_async(
+        project.id, current_user.id, merge_request.id,
+        params.merge(pipeline_creation_request: pipeline_creation_request)
+      )
+    end
+
     def create_detached_merge_request_pipeline(merge_request)
-      Ci::CreatePipelineService
-        .new(pipeline_project(merge_request),
-          current_user,
-          ref: pipeline_ref_for_detached_merge_request_pipeline(merge_request),
-          push_options: params[:push_options])
-        .execute(:merge_request_event, merge_request: merge_request)
+      Ci::CreatePipelineService.new(pipeline_project(merge_request),
+        current_user,
+        ref: pipeline_ref_for_detached_merge_request_pipeline(merge_request),
+        push_options: params[:push_options],
+        pipeline_creation_request: params[:pipeline_creation_request]
+      ).execute(:merge_request_event, merge_request: merge_request)
     end
 
     def can_create_pipeline_for?(merge_request)
@@ -61,6 +78,8 @@ module MergeRequests
     end
 
     def cannot_create_pipeline_error
+      ::Ci::PipelineCreation::Requests.failed(params[:pipeline_creation_request])
+
       ServiceResponse.error(message: 'Cannot create a pipeline for this merge request.', payload: nil)
     end
   end

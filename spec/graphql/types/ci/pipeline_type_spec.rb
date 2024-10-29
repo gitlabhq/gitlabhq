@@ -21,7 +21,7 @@ RSpec.describe Types::Ci::PipelineType, feature_category: :continuous_integratio
 
     if Gitlab.ee?
       expected_fields += %w[
-        security_report_summary security_report_findings security_report_finding
+        security_report_summary security_report_findings security_report_finding troubleshoot_job_with_ai
         code_quality_reports dast_profile code_quality_report_summary compute_minutes
       ]
     end

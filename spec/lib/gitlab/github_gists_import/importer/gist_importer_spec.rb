@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubGistsImport::Importer::GistImporter, feature_category: :importers do
+RSpec.describe Gitlab::GithubGistsImport::Importer::GistImporter, :with_current_organization, feature_category: :importers do
   subject { described_class.new(gist_object, user.id) }
 
   let_it_be_with_reload(:user) { create(:user) }
@@ -41,7 +41,7 @@ RSpec.describe Gitlab::GithubGistsImport::Importer::GistImporter, feature_catego
         instance_double(ServiceResponse, error?: false)
       end
 
-      context 'when Current.organization is not set', :with_current_organization do
+      context 'when Current.organization is set' do
         it 'creates expected snippet and snippet repository' do
           expect_next_instance_of(Snippets::RepositoryValidationService) do |validator|
             expect(validator).to receive(:execute).and_return(validator_result)
@@ -58,7 +58,11 @@ RSpec.describe Gitlab::GithubGistsImport::Importer::GistImporter, feature_catego
       end
 
       context 'when Current.organization is not set' do
-        it 'still uses the default organization_id' do
+        before do
+          allow(::Current).to receive(:organization_id).and_return(nil)
+        end
+
+        it 'uses the default organization_id' do
           expect_next_instance_of(Snippets::RepositoryValidationService) do |validator|
             expect(validator).to receive(:execute).and_return(validator_result)
           end

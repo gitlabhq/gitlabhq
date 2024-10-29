@@ -94,13 +94,6 @@ module API
     end
 
     before do
-      ::Current.organization = Gitlab::Current::Organization.new(
-        params: {},
-        user: @current_user
-      ).organization
-    end
-
-    before do
       set_peek_enabled_for_current_request
     end
 

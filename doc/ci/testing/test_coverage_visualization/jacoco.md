@@ -8,17 +8,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed
-**Status:** Beta
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227345) in GitLab 17.3 [with a flag](../../../administration/feature_flags.md) named `jacoco_coverage_reports`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170513) in GitLab 17.6. Feature flag `jacoco_coverage_reports` removed.
 
 [Leave your feedback](https://gitlab.com/gitlab-org/gitlab/-/issues/479804)
-
-FLAG:
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
 
 For JaCoCo coverage reports to work, you must generate a properly formatted [JaCoCo XML file](https://www.jacoco.org/jacoco/trunk/coverage/jacoco.xml)
 that provides [line coverage](https://www.eclemma.org/jacoco/trunk/doc/counters.html).
@@ -27,10 +22,6 @@ The JaCoCo coverage reports visualization supports:
 
 - [Instructions (C0 Coverage)](https://www.eclemma.org/jacoco/trunk/doc/counters.html),
   `ci` (covered instructions) in reports.
-
-This feature is in [beta](../../../policy/experiment-beta-support.md). If you have any comments,
-use the [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/479804)
-to provide more details.
 
 ## Add JaCoCo coverage job
 

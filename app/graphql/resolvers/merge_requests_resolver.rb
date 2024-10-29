@@ -176,6 +176,13 @@ module Resolvers
       argument :reviewer_username, GraphQL::Types::String,
         required: false,
         description: 'Username of the reviewer to exclude.'
+      argument :source_branches, [GraphQL::Types::String],
+        required: false,
+        as: :source_branch,
+        description: <<~DESC
+                Array of source branch names.
+                No resolved merge requests will have one of these branches as their source.
+        DESC
     end
 
     validates mutually_exclusive: [:assignee_username, :assignee_wildcard_id]

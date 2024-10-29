@@ -112,6 +112,23 @@ RSpec.describe Import::BulkImports::UpdateSourceUsersService, :clean_gitlab_redi
       expect(import_source_user_4.source_username).to eq('johndoe')
       expect(result).to be_success
     end
+
+    context 'when bulk import configuration URL has a trailing slash' do
+      it 'removes the trailing slash' do
+        allow(bulk_import.configuration).to receive(:url).and_return("#{source_hostname}/")
+
+        expect_next_instance_of(BulkImports::Clients::Graphql) do |client|
+          expect(client).to receive(:parse).and_return('query')
+
+          expect(client).to receive(:execute).with('query', ids: source_user_identifiers, after: nil)
+            .and_return(graphql_response([node_0]))
+        end
+
+        expect(Import::SourceUser).to receive(:find_source_user).with(hash_including(source_hostname: source_hostname))
+
+        service.execute
+      end
+    end
   end
 
   describe '#fetch_users_data' do

@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Current, feature_category: :cell do
+  let_it_be(:current_organization) { create(:organization) }
+
   after do
     described_class.reset
   end
@@ -17,7 +19,7 @@ RSpec.describe Current, feature_category: :cell do
         it 'assigns the value and locks the organization setter' do
           expect do
             described_class.organization = value
-          end.to change { described_class.lock_organization }.from(nil).to(true)
+          end.to change { described_class.organization_assigned }.from(nil).to(true)
 
           expect(described_class.organization).to eq(value)
         end
@@ -30,12 +32,15 @@ RSpec.describe Current, feature_category: :cell do
 
         described_class.organization = set_value
 
-        expect(described_class.lock_organization).to be(true)
+        expect(described_class.organization_assigned).to be(true)
         expect(described_class.organization).to eq(set_value)
 
         expect do
           described_class.organization = '_new_value_'
-        end.to raise_error(ArgumentError)
+        end.to raise_error(
+          Current::OrganizationAlreadyAssignedError,
+          'Current.organization has already been set in the current thread and should not be set again.'
+        )
 
         expect(described_class.organization).to eq(set_value)
       end
@@ -59,8 +64,6 @@ RSpec.describe Current, feature_category: :cell do
   end
 
   describe '.organization_id' do
-    let_it_be(:current_organization) { create(:organization) }
-
     subject(:organization_id) { described_class.organization_id }
 
     context 'when organization is set' do
@@ -74,9 +77,46 @@ RSpec.describe Current, feature_category: :cell do
       end
     end
 
-    context 'when organization is not set' do
+    context 'when organization is nil' do
+      before do
+        described_class.organization = nil
+      end
+
       it 'returns nil' do
         expect(organization_id).to be_nil
+      end
+    end
+  end
+
+  describe '.organization' do
+    subject(:assigned_organization) { described_class.organization }
+
+    context 'when organization is not assigned' do
+      it 'raises an error' do
+        expect { assigned_organization }.to raise_error(
+          Current::OrganizationNotAssignedError,
+          'Assign an organization to Current.organization before calling it.'
+        )
+      end
+
+      context 'and environment is production' do
+        before do
+          stub_rails_env('production')
+        end
+
+        it 'returns nil' do
+          expect(assigned_organization).to be_nil
+        end
+      end
+    end
+
+    context 'when organization is assigned' do
+      before do
+        described_class.organization = current_organization
+      end
+
+      it 'returns assigned organization' do
+        expect(assigned_organization).to eq(current_organization)
       end
     end
   end

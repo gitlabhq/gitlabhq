@@ -6,6 +6,10 @@ module API
 
     feature_category :groups_and_projects
 
+    before do
+      set_current_organization
+    end
+
     desc 'Get topics' do
       detail 'This feature was introduced in GitLab 14.5.'
       success Entities::Projects::Topic

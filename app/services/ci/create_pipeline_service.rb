@@ -112,8 +112,12 @@ module Ci
       end
 
       if error_message = pipeline.full_error_messages.presence || pipeline.failure_reason.presence
+        ::Ci::PipelineCreation::Requests.failed(params[:pipeline_creation_request])
+
         ServiceResponse.error(message: error_message, payload: pipeline)
       else
+        ::Ci::PipelineCreation::Requests.succeeded(params[:pipeline_creation_request])
+
         ServiceResponse.success(payload: pipeline)
       end
 

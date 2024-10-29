@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
-import { GlLoadingIcon, GlTooltipDirective, GlIcon, GlButton } from '@gitlab/ui';
+import { GlLoadingIcon, GlTooltipDirective, GlButton, GlButtonGroup } from '@gitlab/ui';
 import { s__ } from '~/locale';
 
 export default {
@@ -11,9 +11,9 @@ export default {
   // eslint-disable-next-line @gitlab/require-i18n-strings
   name: 'Badge',
   components: {
-    GlIcon,
     GlLoadingIcon,
     GlButton,
+    GlButtonGroup,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -94,14 +94,12 @@ export default {
 
     <gl-loading-icon v-show="isLoading" size="sm" :inline="true" />
 
-    <div v-show="hasError" class="btn-group">
-      <div class="btn btn-default btn-sm disabled">
-        <gl-icon :size="16" class="gl-ml-3 gl-mr-3" name="doc-image" />
-      </div>
-      <div class="btn btn-default btn-sm disabled">
-        <span class="gl-ml-3 gl-mr-3">{{ s__('Badges|No badge image') }}</span>
-      </div>
-    </div>
+    <gl-button-group v-show="hasError">
+      <gl-button disabled icon="doc-image" />
+      <gl-button disabled>
+        {{ s__('Badges|No badge image') }}
+      </gl-button>
+    </gl-button-group>
 
     <gl-button
       v-show="hasError"

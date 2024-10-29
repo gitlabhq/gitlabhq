@@ -9,7 +9,7 @@ RSpec.describe ::SystemNotes::IncidentService, feature_category: :incident_manag
   let_it_be(:issuable_severity) { create(:issuable_severity, issue: noteable, severity: :medium) }
 
   describe '#change_incident_severity' do
-    subject(:change_severity) { described_class.new(noteable: noteable, project: project, author: author).change_incident_severity }
+    subject(:change_severity) { described_class.new(noteable: noteable, container: project, author: author).change_incident_severity }
 
     before do
       allow(Gitlab::AppLogger).to receive(:error).and_call_original
@@ -60,7 +60,7 @@ RSpec.describe ::SystemNotes::IncidentService, feature_category: :incident_manag
   describe '#change_incident_status' do
     let_it_be(:escalation_status) { create(:incident_management_issuable_escalation_status, issue: noteable) }
 
-    let(:service) { described_class.new(noteable: noteable, project: project, author: author) }
+    let(:service) { described_class.new(noteable: noteable, container: project, author: author) }
 
     context 'with a provided reason' do
       subject(:change_incident_status) { service.change_incident_status(' by changing the alert status') }

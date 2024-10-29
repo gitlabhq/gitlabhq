@@ -207,6 +207,8 @@ export const fetchDiscussionsBatch = ({ commit, dispatch }, { path, config, curs
 };
 
 export const updateDiscussion = ({ commit, state }, discussion) => {
+  if (discussion == null) return null;
+
   commit(types.UPDATE_DISCUSSION, discussion);
 
   return utils.findNoteObjectById(state.discussions, discussion.id);

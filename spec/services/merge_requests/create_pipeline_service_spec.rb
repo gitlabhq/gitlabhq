@@ -8,32 +8,38 @@ RSpec.describe MergeRequests::CreatePipelineService, :clean_gitlab_redis_cache, 
   let_it_be(:project, refind: true) { create(:project, :repository) }
   let_it_be(:user) { create(:user, developer_of: project) }
 
+  let(:merge_request) do
+    create(:merge_request,
+      source_branch: 'feature',
+      source_project: source_project,
+      target_branch: 'master',
+      target_project: project)
+  end
+
+  let(:source_project) { project }
+
+  let(:config) do
+    { rspec: { script: 'echo', only: ['merge_requests'] } }
+  end
+
   let(:service) { described_class.new(project: project, current_user: actor, params: params) }
   let(:actor) { user }
   let(:params) { {} }
 
+  before do
+    stub_ci_pipeline_yaml_file(YAML.dump(config))
+  end
+
   describe '#execute' do
+    let(:params) { { pipeline_creation_request: { 'key' => '123', 'id' => '456' } } }
+
     subject(:response) { service.execute(merge_request) }
 
-    before do
-      stub_ci_pipeline_yaml_file(YAML.dump(config))
-    end
-
-    let(:config) do
-      { rspec: { script: 'echo', only: ['merge_requests'] } }
-    end
-
-    let(:merge_request) do
-      create(:merge_request,
-        source_branch: 'feature',
-        source_project: source_project,
-        target_branch: 'master',
-        target_project: project)
-    end
-
-    let(:source_project) { project }
-
     it 'creates a detached merge request pipeline' do
+      expect(Ci::CreatePipelineService).to receive(:new).with(
+        anything, anything, a_hash_including(pipeline_creation_request: { 'key' => '123', 'id' => '456' })
+      ).and_call_original
+
       expect { response }.to change { Ci::Pipeline.count }.by(1)
 
       expect(response).to be_success
@@ -238,6 +244,36 @@ RSpec.describe MergeRequests::CreatePipelineService, :clean_gitlab_redis_cache, 
         expect(response).to be_success
         expect(environment).to be_present
         expect(environment.merge_request).to eq(merge_request)
+      end
+    end
+  end
+
+  describe '#execute_async' do
+    it 'queues a merge request pipeline creation' do
+      expect(MergeRequests::CreatePipelineWorker).to receive(:perform_async)
+      expect(GraphqlTriggers).to receive(:merge_request_merge_status_updated).with(merge_request)
+
+      service.execute_async(merge_request)
+
+      expect(
+        Ci::PipelineCreation::Requests.pipeline_creating_for_merge_request?(merge_request)
+      ).to be_truthy
+    end
+
+    context 'when the ci_redis_pipeline_creations ff is disabled' do
+      before do
+        stub_feature_flags(ci_redis_pipeline_creations: false)
+      end
+
+      it 'does nothing' do
+        expect(MergeRequests::CreatePipelineWorker).to receive(:perform_async)
+        expect(GraphqlTriggers).not_to receive(:merge_request_merge_status_updated).with(merge_request)
+
+        service.execute_async(merge_request)
+
+        expect(
+          Ci::PipelineCreation::Requests.pipeline_creating_for_merge_request?(merge_request)
+        ).to be_falsey
       end
     end
   end

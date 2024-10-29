@@ -8,7 +8,7 @@ RSpec.describe ::SystemNotes::ZoomService, feature_category: :integrations do
 
   let(:noteable)      { create(:issue, project: project) }
 
-  let(:service) { described_class.new(noteable: noteable, project: project, author: author) }
+  let(:service) { described_class.new(noteable: noteable, container: project, author: author) }
 
   describe '#zoom_link_added' do
     subject { service.zoom_link_added }

@@ -364,8 +364,8 @@ RSpec.describe Projects::ImportService, feature_category: :importers do
 
     context 'when DNS rebind protection is enabled' do
       before do
-        allow(Gitlab::CurrentSettings).to receive(:http_proxy_env?).and_return(false)
-        allow(Gitlab::CurrentSettings).to receive(:dns_rebinding_protection_enabled?).and_return(true)
+        stub_application_setting(http_proxy_env?: false)
+        stub_application_setting(dns_rebinding_protection_enabled?: true)
       end
 
       context 'when https url is provided' do

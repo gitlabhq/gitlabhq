@@ -8,6 +8,7 @@ RSpec.shared_context 'with current_organization setting', shared_context: :metad
   before do
     allow(Current).to receive(:organization).and_return(current_organization)
     allow(Current).to receive(:organization_id).and_return(current_organization.id)
+    allow(Current).to receive(:organization_assigned).and_return(true)
   end
 end
 

@@ -57,7 +57,8 @@ RSpec.describe ApplicationController, feature_category: :shared do
   end
 
   describe '#set_current_organization' do
-    let_it_be(:current_organization) { create(:organization, :default) }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:current_organization) { create(:organization, users: [user]) }
 
     before do
       sign_in user
@@ -68,7 +69,9 @@ RSpec.describe ApplicationController, feature_category: :shared do
     end
 
     it 'sets current organization' do
-      expect { get :index, format: :json }.to change { Current.organization }.from(nil).to(current_organization)
+      get :index, format: :json
+
+      expect(Current.organization).to eq(current_organization)
     end
 
     context 'when multiple calls in one example are done' do

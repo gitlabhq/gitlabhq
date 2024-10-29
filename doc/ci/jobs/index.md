@@ -4,43 +4,70 @@ group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Jobs
+# CI/CD Jobs
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-Jobs are fundamental elements of a GitLab CI/CD pipeline. Jobs are configured in the `.gitlab-ci.yml` file
-with a list of commands to run to accomplish tasks like building, testing, or deploying code.
+CI/CD jobs are the fundamental elements of a [GitLab CI/CD pipeline](../pipelines/index.md).
+Jobs are configured in the `.gitlab-ci.yml` file with a list of commands to execute
+to accomplish tasks like building, testing, or deploying code.
 
-Jobs are:
+Jobs:
 
-- Defined with constraints stating under what conditions they should be executed.
-- Top-level elements with an arbitrary name and must contain at least the [`script`](../yaml/index.md#script) clause.
-- Not limited in how many can be defined.
+- Are defined at the top-level of the YAML configuration.
+- Must have a unique name.
+- Must have either a [`script`](../yaml/index.md#script) section defining commands to run,
+  or a [`trigger`](../yaml/index.md#trigger) section to trigger a [downstream pipeline](../pipelines/downstream_pipelines.md)
+  to run.
+- Execute on a [runner](../runners/index.md), for example in a Docker container.
+- Run independently from other jobs.
+- Have a [job log](job_logs.md) with the full execution log for the job.
 
 For example:
 
 ```yaml
-job1:
-  script: "execute-script-for-job1"
+my-ruby-job:
+  script:
+    - bundle install
+    - bundle exec my_ruby_command
 
-job2:
-  script: "execute-script-for-job2"
+my-shell-script-job:
+  script:
+    - my_shell_script.sh
 ```
 
-The above example is the simplest possible CI/CD configuration with two separate
-jobs, where each of the jobs executes a different command.
-Of course a command can execute code directly (`./configure;make;make install`)
-or run a script (`test.sh`) in the repository.
+Jobs can be defined with [YAML keywords](../yaml/index.md) that define all aspects
+of the job's execution, including:
 
-Jobs are picked up by [runners](../runners/index.md) and executed in the
-environment of the runner. What is important is that each job is run
-independently from each other.
+- [Controlling](job_control.md) in which pipelines jobs should run.
+- Grouping jobs together in collections called [stages](../yaml/index.md#stages).
+  Stages run in sequence, while all jobs in a stage can run in parallel.
+- Using [caching](../caching/index.md) to speed up job execution.
+- Saving files as [artifacts](job_artifacts.md) which can be used by other jobs,
+  including in deployments.
 
 ## View jobs in a pipeline
 
 When you access a pipeline, you can see the related jobs for that pipeline.
+
+The order of jobs in a pipeline depends on the type of pipeline graph.
+
+- For [full pipeline graphs](../pipelines/index.md#pipeline-details), jobs are sorted by name.
+- For [pipeline mini graphs](../pipelines/index.md#pipeline-mini-graphs), jobs are sorted by status, and then by name.
+  The job status order is:
+
+  1. failed
+  1. warning
+  1. pending
+  1. running
+  1. manual
+  1. scheduled
+  1. canceled
+  1. success
+  1. skipped
+  1. created
 
 Selecting an individual job shows you its [job log](job_logs.md), and allows you to:
 
@@ -64,7 +91,7 @@ To view the full list of jobs that ran in a project:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Build > Jobs**.
 
-You can filter the list by [job status](#the-order-of-jobs-in-a-pipeline) and [job name](#job-name-limitations).
+You can filter the list by [job status](#view-jobs-in-a-pipeline) and [job name](#job-name-limitations).
 
 ## See why a job failed
 
@@ -84,26 +111,6 @@ You can also see the reason it failed on the Job detail page.
 ### Troubleshoot a failed job with Root Cause Analysis
 
 You can use GitLab Duo Root Cause Analysis in GitLab Duo Chat to [troubleshoot failed CI/CD jobs](../../user/gitlab_duo_chat/examples.md#troubleshoot-failed-cicd-jobs-with-root-cause-analysis).
-
-## The order of jobs in a pipeline
-
-The order of jobs in a pipeline depends on the type of pipeline graph.
-
-- For [full pipeline graphs](../pipelines/index.md#pipeline-details), jobs are sorted by name.
-- For [pipeline mini graphs](../pipelines/index.md#pipeline-mini-graphs), jobs are sorted by status, and then by name.
-
-The job status order is:
-
-- failed
-- warning
-- pending
-- running
-- manual
-- scheduled
-- canceled
-- success
-- skipped
-- created
 
 ## Job name limitations
 

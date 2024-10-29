@@ -99,13 +99,13 @@ use {
      },
      code_suggestions = {
        # For the full list of default languages, see the 'auto_filetypes' array in
-       # https://gitlab.com/gitlab-org/editor-extensions/gitlab.vim/-/blob/main/lua/gitlab/config/defaults.lua 
+       # https://gitlab.com/gitlab-org/editor-extensions/gitlab.vim/-/blob/main/lua/gitlab/config/defaults.lua
        auto_filetypes = { 'ruby', 'javascript' }, -- Default is { 'ruby' }
      }
    })
    ```
 
-1. Optional. [Configure Omni Completion](#configure-omni-completion).
+1. [Configure Omni Completion](#configure-omni-completion) to set up the key mapping to trigger Code Suggestions.
 1. Optional. [Configure `<Plug>` key mappings](#configure-plug-key-mappings).
 1. Optional. Set up helptags using `:helptags ALL` for access to
    [`:help gitlab.txt`](https://gitlab.com/gitlab-org/editor-extensions/gitlab.vim/-/blob/main/doc/gitlab.txt).

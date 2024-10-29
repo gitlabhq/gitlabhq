@@ -8,4 +8,5 @@ description: Allows efficient batch deletion of data in object storage.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/9bf76fe03f8edf4f67023448161af27abb8fb521
 milestone: '13.5'
 gitlab_schema: gitlab_ci
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/463245
+sharding_key:
+  project_id: projects

@@ -2056,9 +2056,6 @@ msgstr ""
 msgid "A maximum of %{limit} projects can be searched for at one time."
 msgstr ""
 
-msgid "A member of the abuse team will review your report as soon as possible."
-msgstr ""
-
 msgid "A new Auto DevOps pipeline has been created, go to the Pipelines page for details"
 msgstr ""
 
@@ -28932,6 +28929,9 @@ msgstr ""
 msgid "Includes LFS objects. It can be overridden per group, or per project. Set to 0 for no limit."
 msgstr ""
 
+msgid "Includes all merge requests you are assigned to and a reviewer has approved."
+msgstr ""
+
 msgid "Includes an MVC structure to help you get started"
 msgstr ""
 
@@ -41225,7 +41225,7 @@ msgstr ""
 msgid "Please use an email address or domain you control."
 msgstr ""
 
-msgid "Please use this form to report to the administrator users who create spam issues, comments or behave inappropriately."
+msgid "Please use this form to report to the administrator users who create spam issues, comments or behave inappropriately. A member of the abuse team will review your report as soon as possible."
 msgstr ""
 
 msgid "Please wait a few moments while we load the file history for this line."
@@ -45895,9 +45895,6 @@ msgstr ""
 msgid "ReportAbuse|Screenshot"
 msgstr ""
 
-msgid "ReportAbuse|Screenshot of abuse"
-msgstr ""
-
 msgid "ReportAbuse|Something else."
 msgstr ""
 
@@ -45920,9 +45917,6 @@ msgid "ReportAbuse|They're posting spam."
 msgstr ""
 
 msgid "ReportAbuse|They're violating a copyright or trademark."
-msgstr ""
-
-msgid "ReportAbuse|URL of this user posting spam"
 msgstr ""
 
 msgid "ReportAbuse|Why are you reporting this user?"
@@ -46576,6 +46570,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Reviewers"
+msgstr ""
+
+msgid "Reviewers left feedback, or requested changes from you, on these merge requests."
 msgstr ""
 
 msgid "Reviewing"
@@ -55896,6 +55893,12 @@ msgstr ""
 msgid "These guidelines for public avatars are displayed on the user settings page."
 msgstr ""
 
+msgid "These merge requests merged after %{date}. You were an assignee or a reviewer."
+msgstr ""
+
+msgid "These merge requests need a review from you."
+msgstr ""
+
 msgid "These runners are shared across projects in this group."
 msgstr ""
 
@@ -63855,6 +63858,9 @@ msgstr ""
 msgid "You're about to reduce the visibility of the project %{strong_start}%{project_name}%{strong_end}."
 msgstr ""
 
+msgid "You're assigned to these merge requests, but they don't have reviewers yet."
+msgstr ""
+
 msgid "You're at the first commit"
 msgstr ""
 
@@ -63913,6 +63919,9 @@ msgid "You've reached your limit of %{limit} projects created. Contact your GitL
 msgstr ""
 
 msgid "You've rejected %{user}"
+msgstr ""
+
+msgid "You've reviewed and approved these merge requests."
 msgstr ""
 
 msgid "You've successfully purchased the %{plan} plan subscription for 1 user and you'll receive a receipt by email. Your purchase may take a minute to sync, refresh the page if your subscription details haven't displayed yet."
@@ -64107,6 +64116,9 @@ msgid "Your activity"
 msgstr ""
 
 msgid "Your applications"
+msgstr ""
+
+msgid "Your assigned merge requests that are waiting for approvals, and reviews you have requested changes for."
 msgstr ""
 
 msgid "Your authorized applications"

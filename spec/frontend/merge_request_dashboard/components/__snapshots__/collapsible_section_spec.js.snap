@@ -30,6 +30,15 @@ exports[`Merge request dashboard collapsible section renders section 1`] = `
         >
           3
         </gl-badge-stub>
+        <gl-button-stub
+          buttontextclasses=""
+          category="primary"
+          class="gl-float-right gl-inline-flex gl-relative gl-top-2"
+          icon="information-o"
+          size="medium"
+          title=""
+          variant="link"
+        />
       </h2>
     </header>
     <div

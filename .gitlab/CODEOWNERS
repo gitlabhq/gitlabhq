@@ -22,6 +22,7 @@
 /doc/**/*.md
 /doc/**/*.jpg
 /doc/**/*.png
+/doc/**/*.svg
 /data/deprecations/*.yml
 
 ## Technical writing files that do not need `*` rule approval,

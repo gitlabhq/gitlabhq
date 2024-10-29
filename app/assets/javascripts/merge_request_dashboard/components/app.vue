@@ -56,7 +56,12 @@ export default {
           :class="{ 'gl-mb-4': i !== tab.lists.length - 1 }"
         >
           <template #default="{ mergeRequests, count, hasNextPage, loadMore, loading, error }">
-            <collapsible-section :count="count" :loading="loading || error" :title="list.title">
+            <collapsible-section
+              :count="count"
+              :loading="loading || error"
+              :title="list.title"
+              :help-content="list.helpContent"
+            >
               <div>
                 <div class="gl-overflow-x-auto">
                   <table class="gl-w-full">

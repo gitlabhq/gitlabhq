@@ -241,6 +241,10 @@
   - 1
 - - compliance_management_standards_gitlab_prevent_approval_by_committer_group
   - 1
+- - compliance_management_standards_gitlab_sast
+  - 1
+- - compliance_management_standards_gitlab_sast_group
+  - 1
 - - compliance_management_standards_group_base
   - 1
 - - compliance_management_standards_refresh

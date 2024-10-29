@@ -31,14 +31,6 @@ module Types
         description: 'Ref.'
     end
 
-    field :ci_pipeline_creation, ::Types::Ci::PipelineCreation,
-      null: true, authorize: :read_pipeline,
-      alpha: { milestone: '17.4' },
-      description: 'Information about a pipeline creation.' do
-      argument :id, type: ::GraphQL::Types::String,
-        required: true, description: 'Unique ID associated with the pipeline creation.'
-    end
-
     field :full_path, GraphQL::Types::ID,
       null: false,
       description: 'Full path of the project.'
@@ -849,10 +841,6 @@ module Types
       result.map do |var_key, var_config|
         { key: var_key, **var_config }
       end
-    end
-
-    def ci_pipeline_creation(id:)
-      ::Ci::PipelineCreationMetadata.find(project: project, id: id)
     end
 
     def job(id:)
