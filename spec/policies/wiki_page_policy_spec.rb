@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WikiPagePolicy do
+RSpec.describe WikiPagePolicy, feature_category: :wiki do
   include_context 'ProjectPolicyTable context'
   include ProjectHelpers
   include UserHelpers
@@ -20,14 +20,18 @@ RSpec.describe WikiPagePolicy do
     end
 
     with_them do
-      it 'grants the expected permissions' do
+      it 'grants the expected permissions', :aggregate_failures do
         enable_admin_mode!(user) if admin_mode
         update_feature_access_level(project, feature_access_level)
 
         if expected_count == 1
           expect(policy).to be_allowed(:read_wiki_page)
+          expect(policy).to be_allowed(:read_note)
+          expect(policy).to be_allowed(:create_note)
         else
           expect(policy).to be_disallowed(:read_wiki_page)
+          expect(policy).to be_disallowed(:read_note)
+          expect(policy).to be_disallowed(:create_note)
         end
       end
     end

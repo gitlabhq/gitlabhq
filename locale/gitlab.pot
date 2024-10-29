@@ -26247,6 +26247,9 @@ msgstr ""
 msgid "Group compute minutes were successfully reset."
 msgstr ""
 
+msgid "Group deletion is in progress"
+msgstr ""
+
 msgid "Group description (optional)"
 msgstr ""
 

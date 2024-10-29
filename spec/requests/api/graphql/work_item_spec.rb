@@ -315,8 +315,14 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
       end
 
       describe 'assignees widget' do
-        let(:assignees) { create_list(:user, 2) }
         let(:work_item) { create(:work_item, project: project, assignees: assignees) }
+        let(:assignees) do
+          [
+            create(:user, name: 'BBB'),
+            create(:user, name: 'AAA'),
+            create(:user, name: 'BBB')
+          ]
+        end
 
         let(:work_item_fields) do
           <<~GRAPHQL
@@ -337,7 +343,7 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
           GRAPHQL
         end
 
-        it 'returns widget information' do
+        it 'returns widget information, assignees are ordered by name ASC id DESC' do
           expect(work_item_data).to include(
             'id' => work_item.to_gid.to_s,
             'widgets' => include(
@@ -346,9 +352,11 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
                 'allowsMultipleAssignees' => boolean,
                 'canInviteMembers' => boolean,
                 'assignees' => {
-                  'nodes' => match_array(
-                    assignees.map { |a| { 'id' => a.to_gid.to_s, 'username' => a.username } }
-                  )
+                  'nodes' => [
+                    { 'id' => assignees[1].to_gid.to_s, 'username' => assignees[1].username },
+                    { 'id' => assignees[2].to_gid.to_s, 'username' => assignees[2].username },
+                    { 'id' => assignees[0].to_gid.to_s, 'username' => assignees[0].username }
+                  ]
                 }
               )
             )

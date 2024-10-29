@@ -7,3 +7,5 @@ description: stores the canonical version of user's primary email address (depre
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/27722
 milestone: '13.0'
 gitlab_schema: gitlab_main_clusterwide
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169963
+removed_in_milestone: '17.6'

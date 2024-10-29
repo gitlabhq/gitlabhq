@@ -601,6 +601,12 @@ class Commit
     id.match(Gitlab::Git::Commit::FULL_SHA_PATTERN).to_s
   end
 
+  def first_diffs_slice(limit, diff_options = {})
+    diff_options[:max_files] = limit
+
+    diffs(diff_options)
+  end
+
   private
 
   def tipping_refs(ref_prefix, limit: 0)

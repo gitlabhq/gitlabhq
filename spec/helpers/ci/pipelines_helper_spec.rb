@@ -130,8 +130,31 @@ RSpec.describe Ci::PipelinesHelper, feature_category: :continuous_integration do
         :project_path,
         :project_refs_endpoint,
         :settings_link,
-        :max_warnings
+        :max_warnings,
+        :is_maintainer
       )
+    end
+
+    describe 'is_maintainer' do
+      subject(:data) { helper.new_pipeline_data(project)[:is_maintainer] }
+
+      let_it_be(:user) { create(:user) }
+
+      before do
+        sign_in(user)
+      end
+
+      context 'when user is signed in but not a maintainer' do
+        it { expect(subject).to be_falsy }
+      end
+
+      context 'when user is signed in with a role that is maintainer or above' do
+        before_all do
+          project.add_maintainer(user)
+        end
+
+        it { expect(subject).to be_truthy }
+      end
     end
   end
 end

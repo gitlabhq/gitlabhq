@@ -1190,6 +1190,16 @@ RSpec.describe User, feature_category: :user_profile do
   end
 
   describe 'scopes' do
+    describe '.ordered_by_name_asc_id_desc' do
+      it 'returns users ordered by name ASC, id DESC' do
+        user1 = create(:user, name: 'BBB')
+        user2 = create(:user, name: 'AAA')
+        user3 = create(:user, name: 'BBB')
+
+        expect(described_class.ordered_by_name_asc_id_desc).to match([user2, user3, user1])
+      end
+    end
+
     context 'blocked users' do
       let_it_be(:active_user) { create(:user) }
       let_it_be(:blocked_user) { create(:user, :blocked) }

@@ -89,7 +89,8 @@ module Ci
         project_path: project.full_path,
         project_refs_endpoint: refs_project_path(project, sort: 'updated_desc'),
         settings_link: project_settings_ci_cd_path(project),
-        max_warnings: ::Gitlab::Ci::Warnings::MAX_LIMIT
+        max_warnings: ::Gitlab::Ci::Warnings::MAX_LIMIT,
+        is_maintainer: can?(current_user, :maintainer_access, project)
       }
     end
 

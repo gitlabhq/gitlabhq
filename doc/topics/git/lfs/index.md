@@ -292,10 +292,10 @@ It's important to understand the differences between untracking a file in Git LF
 If users check out historical branches or tags, they still need the LFS version of the file.
 - **Delete**: The file is removed but remains in your repository history.
 
-To delete a tracked file with Git LFS, see [Remove a file](../undo.md#remove-a-file).
+To delete a tracked file with Git LFS, see [Remove a file](../undo.md#remove-a-file-from-a-repository).
 
 To completely expunge all history of a file, past and present,
-see [Delete sensitive information from commits](../undo.md#delete-sensitive-information-from-commits).
+see [Handle sensitive information](../undo.md#handle-sensitive-information).
 
 WARNING:
 Expunging file history requires rewriting Git history. This action is destructive and irreversible.

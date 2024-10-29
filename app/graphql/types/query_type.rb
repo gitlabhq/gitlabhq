@@ -192,6 +192,11 @@ module Types
       null: true,
       description: 'Find users.',
       resolver: Resolvers::UsersResolver
+    field :wiki_page, Types::Wikis::WikiPageType,
+      null: true,
+      resolver: Resolvers::Wikis::WikiPageResolver,
+      alpha: { milestone: '17.6' },
+      description: 'Find a wiki page.'
     field :work_item, Types::WorkItemType,
       null: true,
       resolver: Resolvers::WorkItemResolver,

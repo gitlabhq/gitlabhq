@@ -270,6 +270,12 @@ Users can optionally specify a lifetime for
 [SSH keys](../../user/ssh.md).
 This lifetime is not a requirement, and can be set to any arbitrary number of days.
 
+> - Maximum allowable lifetime limit [extended to 400 days](https://gitlab.com/gitlab-org/gitlab/-/issues/461901) in GitLab 17.6 [with a flag](../feature_flags.md) named `buffered_token_expiration_limit`. Disabled by default.
+
+FLAG:
+The availability of the extended maximum allowable lifetime limit is controlled by a feature flag.
+For more information, see the history.
+
 SSH keys are user credentials to access GitLab.
 However, organizations with security requirements may want to enforce more protection by
 requiring the regular rotation of these keys.
@@ -289,8 +295,9 @@ To set a lifetime on how long SSH keys are valid:
 
 Once a lifetime for SSH keys is set, GitLab:
 
-- Requires users to set an expiration date that is no later than the allowed lifetime on new
-  SSH keys.
+- Requires users to set an expiration date that is no later than the allowed lifetime on new SSH keys. The maximum allowed lifetime is:
+  - 365 days by default.
+  - 400 days, if you enable the `buffered_token_expiration_limit` feature flag.
 - Applies the lifetime restriction to existing SSH keys. Keys with no expiry or a lifetime
   greater than the maximum immediately become invalid.
 
@@ -303,7 +310,7 @@ DETAILS:
 **Tier:** Ultimate
 **Offering:** Self-managed
 
-> - Maximum allowable lifetime limit [extended to 400 days](https://gitlab.com/gitlab-org/gitlab/-/issues/461901) in GitLab 17.5 [with a flag](../feature_flags.md) named `buffered_token_expiration_limit`. Disabled by default.
+> - Maximum allowable lifetime limit [extended to 400 days](https://gitlab.com/gitlab-org/gitlab/-/issues/461901) in GitLab 17.6 [with a flag](../feature_flags.md) named `buffered_token_expiration_limit`. Disabled by default.
 
 FLAG:
 The availability of the extended maximum allowable lifetime limit is controlled by a feature flag.

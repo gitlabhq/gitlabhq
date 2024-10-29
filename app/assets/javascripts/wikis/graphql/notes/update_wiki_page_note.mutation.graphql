@@ -1,0 +1,10 @@
+#import "./wiki_page_note.fragment.graphql"
+
+mutation updateWikiPageNote($input: UpdateNoteInput!) {
+  updateNote(input: $input) {
+    note {
+      ...WikiPageNote
+    }
+    errors
+  }
+}

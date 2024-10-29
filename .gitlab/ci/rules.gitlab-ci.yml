@@ -1479,7 +1479,7 @@
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
     - <<: *if-merge-request
-      changes: *code-backstage-patterns
+      when: never
     - <<: *if-default-branch-refs
       changes: *code-backstage-patterns
 
@@ -1717,6 +1717,7 @@
         <<: *qa-e2e-test-schedule-variables
         KNAPSACK_GENERATE_REPORT: "true"
         QA_RUN_IN_PARALLEL: "false"
+        COVERBAND_ENABLED: "true"
     - <<: *if-dot-com-gitlab-org-schedule
       variables:
         <<: *qa-e2e-test-schedule-variables

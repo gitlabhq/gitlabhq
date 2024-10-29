@@ -484,6 +484,8 @@ class Note < ApplicationRecord
       'alert_management_alert'
     elsif for_vulnerability?
       'security_resource'
+    elsif for_wiki_page?
+      'wiki_page'
     else
       noteable_type.demodulize.underscore
     end

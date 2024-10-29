@@ -34,7 +34,7 @@ module WorkItems
     def widget_preloads
       {
         last_edited_by: :last_edited_by,
-        assignees: :assignees,
+        assignees: :assignees_by_name_and_id,
         participants: WorkItem.participant_includes,
         parent: :work_item_parent,
         children: { work_item_children_by_relative_position: [:author, { project: :project_feature }] },

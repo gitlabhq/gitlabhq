@@ -1,17 +1,17 @@
-import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlLoadingIcon, GlTabs } from '@gitlab/ui';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import TodosApp from '~/todos/components/todos_app.vue';
 import TodoItem from '~/todos/components/todo_item.vue';
 import TodosFilterBar from '~/todos/components/todos_filter_bar.vue';
 import getTodosQuery from '~/todos/components/queries/get_todos.query.graphql';
-import getTodosCountQuery from '~/todos/components/queries/get_todos_count.query.graphql';
 import { INSTRUMENT_TAB_LABELS, STATUS_BY_TAB } from '~/todos/constants';
 import { mockTracking, unmockTracking } from 'jest/__helpers__/tracking_helper';
-import { todosResponse, todosCountsResponse } from '../mock_data';
+import getPendingTodosCount from '~/todos/components/queries/get_pending_todos_count.query.graphql';
+import { todosResponse, getPendingTodosCountResponse } from '../mock_data';
 
 Vue.use(VueApollo);
 
@@ -19,7 +19,7 @@ describe('TodosApp', () => {
   let wrapper;
 
   const todosQuerySuccessHandler = jest.fn().mockResolvedValue(todosResponse);
-  const todosCountsQuerySuccessHandler = jest.fn().mockResolvedValue(todosCountsResponse);
+  const todosCountsQuerySuccessHandler = jest.fn().mockResolvedValue(getPendingTodosCountResponse);
 
   const createComponent = ({
     todosQueryHandler = todosQuerySuccessHandler,
@@ -27,9 +27,9 @@ describe('TodosApp', () => {
   } = {}) => {
     const mockApollo = createMockApollo();
     mockApollo.defaultClient.setRequestHandler(getTodosQuery, todosQueryHandler);
-    mockApollo.defaultClient.setRequestHandler(getTodosCountQuery, todosCountsQueryHandler);
+    mockApollo.defaultClient.setRequestHandler(getPendingTodosCount, todosCountsQueryHandler);
 
-    wrapper = shallowMount(TodosApp, {
+    wrapper = shallowMountExtended(TodosApp, {
       apolloProvider: mockApollo,
     });
   };
@@ -37,10 +37,7 @@ describe('TodosApp', () => {
   const findTodoItems = () => wrapper.findAllComponents(TodoItem);
   const findGlTabs = () => wrapper.findComponent(GlTabs);
   const findFilterBar = () => wrapper.findComponent(TodosFilterBar);
-
-  beforeEach(() => {
-    createComponent();
-  });
+  const findPendingTodosCount = () => wrapper.findByTestId('pending-todos-count');
 
   it('should have a tracking event for each tab', () => {
     expect(STATUS_BY_TAB.length).toBe(INSTRUMENT_TAB_LABELS.length);
@@ -62,6 +59,8 @@ describe('TodosApp', () => {
   });
 
   it('fetches the todos and counts when filters change', async () => {
+    createComponent();
+
     const filters = {
       groupId: ['1'],
       projectId: ['2'],
@@ -82,6 +81,18 @@ describe('TodosApp', () => {
       before: null,
     });
     expect(todosCountsQuerySuccessHandler).toHaveBeenLastCalledWith(filters);
+  });
+
+  it('shows the pending todos count once it has been fetched', async () => {
+    createComponent();
+
+    expect(findPendingTodosCount().text()).toBe('-');
+
+    await waitForPromises();
+
+    expect(findPendingTodosCount().text()).toBe(
+      String(getPendingTodosCountResponse.data.currentUser.todos.count),
+    );
   });
 
   it('passes the default status to the filter bar', () => {

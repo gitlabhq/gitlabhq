@@ -25,7 +25,7 @@ module ConcurrencyLimit
         next unless queue_size > 0
         next if limit < 0 # do not re-queue jobs if circuit-broken
 
-        current = current_concurrency(worker: worker)
+        current = concurrent_worker_count(worker)
         Gitlab::SidekiqLogging::ConcurrencyLimitLogger.instance.worker_stats_log(
           worker.name, limit, queue_size, current
         )
@@ -48,18 +48,6 @@ module ConcurrencyLimit
     end
 
     private
-
-    def current_concurrency(worker:)
-      if ::Feature.enabled?(:sidekiq_concurrency_limit_optimized_count, Feature.current_request)
-        return concurrent_worker_count(worker)
-      end
-
-      @current_concurrency ||= ::Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersConcurrency.workers(
-        skip_cache: true
-      )
-
-      @current_concurrency[worker.name].to_i
-    end
 
     def concurrent_worker_count(worker)
       Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService.concurrent_worker_count(worker.name)

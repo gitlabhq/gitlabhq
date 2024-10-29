@@ -11,6 +11,8 @@ const indexedDB = new IDBFactory();
 Dexie.dependencies.indexedDB = indexedDB;
 Dexie.dependencies.IDBKeyRange = IDBKeyRange;
 
+process.env.PDF_JS_WORKER_PUBLIC_PATH = 'mock/path/pdf.worker.js';
+
 afterEach(() =>
   // give Promises a bit more time so they fail the right test
   // eslint-disable-next-line no-restricted-syntax

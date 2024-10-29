@@ -29,7 +29,7 @@ module Gitlab
             return false if limit == 0
             return true if limit < 0
 
-            current = ::Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersConcurrency.current_for(worker: worker)
+            current = current_count(worker)
 
             current >= limit
           end
@@ -41,6 +41,12 @@ module Gitlab
           end
 
           private
+
+          def current_count(worker)
+            worker_class = worker.is_a?(Class) ? worker : worker.class
+            worker_name = worker_class.name
+            ::Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService.concurrent_worker_count(worker_name)
+          end
 
           attr_reader :data
         end

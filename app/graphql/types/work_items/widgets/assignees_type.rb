@@ -14,6 +14,7 @@ module Types
 
         field :assignees, Types::UserType.connection_type,
           null: true,
+          method: :assignees_by_name_and_id,
           description: 'Assignees of the work item.'
 
         field :allows_multiple_assignees, GraphQL::Types::Boolean,

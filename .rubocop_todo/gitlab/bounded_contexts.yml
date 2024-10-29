@@ -1368,7 +1368,6 @@ Gitlab/BoundedContexts:
     - 'app/policies/todo_policy.rb'
     - 'app/policies/upload_policy.rb'
     - 'app/policies/user_policy.rb'
-    - 'app/policies/wiki_page/meta_policy.rb'
     - 'app/policies/wiki_page_policy.rb'
     - 'app/policies/wiki_policy.rb'
     - 'app/policies/work_item_policy.rb'

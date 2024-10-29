@@ -21,8 +21,8 @@ RSpec.describe Gitlab::Metrics::Samplers::ConcurrencyLimitSampler, feature_categ
 
       expect(Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService)
         .to receive(:queue_size).exactly(workers_with_limits.size).times.and_return(1)
-      expect(Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersConcurrency)
-          .to receive(:current_for).exactly(workers_with_limits.size).times.and_return(1)
+      expect(Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService)
+          .to receive(:concurrent_worker_count).exactly(workers_with_limits.size).times.and_return(1)
 
       queue_size_gauge_double = instance_double(Prometheus::Client::Counter)
       expect(Gitlab::Metrics).to receive(:counter)
@@ -51,8 +51,8 @@ RSpec.describe Gitlab::Metrics::Samplers::ConcurrencyLimitSampler, feature_categ
 
       expect(Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService)
         .to receive(:queue_size).exactly(workers_with_limits.size).times.and_return(0)
-      expect(Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersConcurrency)
-          .to receive(:current_for).exactly(workers_with_limits.size).times.and_return(0)
+      expect(Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService)
+          .to receive(:concurrent_worker_count).exactly(workers_with_limits.size).times.and_return(0)
 
       expect(Gitlab::Metrics).not_to receive(:counter)
 

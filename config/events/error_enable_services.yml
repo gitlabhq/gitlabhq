@@ -1,0 +1,15 @@
+---
+description: Tracks when enabling of Google Cloud run fails
+action: error_enable_services
+identifiers:
+- project
+- user
+product_group: 5-min-app
+milestone: '15.5'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96683
+distributions:
+- ce
+tiers:
+- free
+- premium
+- ultimate

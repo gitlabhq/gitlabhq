@@ -1,0 +1,15 @@
+---
+description: Tracks when the latest project release is accessed through the API
+action: get_latest_release
+identifiers:
+- project
+- user
+product_group: environments
+milestone: '15.5'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166618
+distributions:
+- ce
+tiers:
+- free
+- premium
+- ultimate

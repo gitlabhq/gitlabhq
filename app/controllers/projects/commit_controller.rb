@@ -9,6 +9,7 @@ class Projects::CommitController < Projects::ApplicationController
   include DiffForPath
   include DiffHelper
   include SourcegraphDecorator
+  include DiffsStreamResource
 
   # Authorize
   before_action :require_non_empty_project
@@ -154,10 +155,21 @@ class Projects::CommitController < Projects::ApplicationController
   def rapid_diffs
     return render_404 unless ::Feature.enabled?(:rapid_diffs, current_user, type: :wip)
 
+    streaming_offset = 5
+    @stream_url = diffs_stream_url(@commit, streaming_offset, diff_view)
+    @diffs_slice = @commit.first_diffs_slice(streaming_offset, commit_diff_options)
+
     show
   end
 
   private
+
+  def commit_diff_options
+    opts = diff_options
+    opts[:ignore_whitespace_change] = true if params[:format] == 'diff'
+    opts[:use_extra_viewer_as_main] = false
+    opts
+  end
 
   def create_new_branch?
     params[:create_merge_request].present? || !can?(current_user, :push_code, @project)
@@ -187,12 +199,7 @@ class Projects::CommitController < Projects::ApplicationController
   def define_commit_vars
     return git_not_found! unless commit
 
-    opts = diff_options
-    opts[:ignore_whitespace_change] = true if params[:format] == 'diff'
-    opts[:use_extra_viewer_as_main] = false
-
-    @diffs = commit.diffs(opts)
-
+    @diffs = commit.diffs(commit_diff_options)
     @environment = ::Environments::EnvironmentsByDeploymentsFinder.new(@project, current_user, commit: @commit, find_latest: true).execute.last
   end
 
@@ -260,6 +267,16 @@ class Projects::CommitController < Projects::ApplicationController
 
     payload[:metadata] ||= {}
     payload[:metadata]['meta.diffs_files_count'] = @diffs.size
+  end
+
+  def diffs_stream_resource_url(commit, offset, diff_view)
+    diffs_stream_namespace_project_commit_path(
+      namespace_id: commit.project.namespace.to_param,
+      project_id: commit.project.to_param,
+      id: commit.id,
+      offset: offset,
+      view: diff_view
+    )
   end
 end
 

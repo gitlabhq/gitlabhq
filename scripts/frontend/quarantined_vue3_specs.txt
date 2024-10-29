@@ -140,7 +140,6 @@ ee/spec/frontend/security_orchestration/components/policy_editor/scan_result/rul
 ee/spec/frontend/security_orchestration/components/policy_editor/scan_result/rule/scan_filters/status_filters_spec.js
 ee/spec/frontend/security_orchestration/components/policy_editor/section_layout_spec.js
 ee/spec/frontend/sidebar/components/sidebar_dropdown_widget_spec.js
-ee/spec/frontend/status_checks/components/actions_spec.js
 ee/spec/frontend/status_checks/components/modal_create_spec.js
 ee/spec/frontend/status_checks/mount_spec.js
 ee/spec/frontend/subscriptions/buy_addons_shared/components/checkout/addon_purchase_details_spec.js

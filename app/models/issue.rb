@@ -103,6 +103,9 @@ class Issue < ApplicationRecord
       ordered.first
     end
   end
+  has_many :assignees_by_name_and_id, -> { ordered_by_name_asc_id_desc },
+    class_name: "User", through: :issue_assignees,
+    source: :assignee
 
   has_one :search_data, class_name: 'Issues::SearchData'
   has_one :issuable_severity

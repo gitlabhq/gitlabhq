@@ -1230,8 +1230,6 @@ ee:
       - :issue
       - :due_at
     push_rule:
-      - :force_push_regex
-      - :delete_branch_regex
       - :commit_message_regex
       - :author_email_regex
       - :file_name_regex

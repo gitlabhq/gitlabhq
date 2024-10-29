@@ -3,7 +3,7 @@ import VueApollo from 'vue-apollo';
 import { GlForm, GlSprintf, GlLoadingIcon, GlIcon } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import createMockApollo from 'helpers/mock_apollo_helper';
-import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
 import {
@@ -37,6 +37,7 @@ Vue.use(VueApollo);
 jest.mock('~/lib/utils/url_utility', () => ({
   visitUrl: jest.fn(),
   joinPaths: jest.fn(),
+  setUrlFragment: jest.fn(),
 }));
 
 const pipelinesPath = '/root/project/-/pipelines';
@@ -68,6 +69,7 @@ describe('Pipeline New Form', () => {
   const findWarningAlertSummary = () => findWarningAlert().findComponent(GlSprintf);
   const findWarnings = () => wrapper.findAllByTestId('run-pipeline-warning');
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
+  const findCiCdSettingsLink = () => wrapper.findByTestId('ci-cd-settings-link');
   const getFormPostParams = () => JSON.parse(mock.history.post[0].data);
 
   const advanceToNextFetch = (milliseconds) => {
@@ -92,11 +94,15 @@ describe('Pipeline New Form', () => {
     await nextTick();
   };
 
-  const createComponentWithApollo = ({ props = {} } = {}) => {
+  const createComponentWithApollo = ({
+    props = {},
+    mountFn = shallowMountExtended,
+    stubs = {},
+  } = {}) => {
     const handlers = [[ciConfigVariablesQuery, mockCiConfigVariables]];
     mockApollo = createMockApollo(handlers, resolvers);
 
-    wrapper = shallowMountExtended(PipelineNewForm, {
+    wrapper = mountFn(PipelineNewForm, {
       apolloProvider: mockApollo,
       provide: {
         identityVerificationRequired: true,
@@ -112,9 +118,17 @@ describe('Pipeline New Form', () => {
         refParam: defaultBranch,
         settingsLink: '',
         maxWarnings: 25,
+        isMaintainer: true,
         ...props,
       },
+      stubs,
     });
+  };
+
+  const glFormGroupStub = {
+    'gl-form-group': {
+      template: '<div><slot name="description"></slot></div>',
+    },
   };
 
   beforeEach(() => {
@@ -538,6 +552,40 @@ describe('Pipeline New Form', () => {
 
       it('re-enables the submit button', () => {
         expect(findSubmitButton().props('disabled')).toBe(false);
+      });
+    });
+  });
+
+  describe('CI/CD settings page link', () => {
+    describe('when the user has a maintainer plus role', () => {
+      beforeEach(async () => {
+        mockCiConfigVariables.mockResolvedValue(mockCiConfigVariablesResponse);
+        createComponentWithApollo({
+          props: { isMaintainer: true, settingsLink: 'link' },
+          mountFn: mountExtended,
+          stubs: glFormGroupStub,
+        });
+        await waitForPromises();
+      });
+
+      it('displays the link', () => {
+        expect(findCiCdSettingsLink().exists()).toBe(true);
+      });
+    });
+
+    describe('when the user is not a maintainer or owner', () => {
+      beforeEach(async () => {
+        mockCiConfigVariables.mockResolvedValue(mockCiConfigVariablesResponse);
+        createComponentWithApollo({
+          props: { isMaintainer: false },
+          mountFn: mountExtended,
+          stubs: glFormGroupStub,
+        });
+        await waitForPromises();
+      });
+
+      it('does not display the link', () => {
+        expect(findCiCdSettingsLink().exists()).toBe(false);
       });
     });
   });

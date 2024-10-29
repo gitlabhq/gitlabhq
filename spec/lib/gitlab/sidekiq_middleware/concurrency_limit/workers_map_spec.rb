@@ -62,7 +62,8 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersMap, feature_
     with_them do
       before do
         allow(described_class).to receive(:limit_for).and_return(limit)
-        allow(::Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersConcurrency).to receive(:current_for)
+        allow(::Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService)
+          .to receive(:concurrent_worker_count)
           .and_return(current)
       end
 

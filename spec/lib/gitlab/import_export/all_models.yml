@@ -5,6 +5,7 @@ issues:
 - own_award_emoji
 - author
 - assignees
+- assignees_by_name_and_id
 - updated_by
 - milestone
 - iteration

@@ -1,11 +1,11 @@
 ---
 stage: AI-Powered
 group: Custom Models
-description: Get started with Self-Hosted AI Models.
+description: Get started with self-hosted AI models.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Get started with GitLab Duo Self-Hosted Models
+# GitLab Duo Self-Hosted Models
 
 DETAILS:
 **Tier:** Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
@@ -16,9 +16,11 @@ DETAILS:
 > - [Enabled on self-managed](https://gitlab.com/groups/gitlab-org/-/epics/15176) in GitLab 17.6.
 > - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
-Self-hosted models allow organizations to maintain full control over data privacy, security, and the deployment of large language models (LLMs) within their own infrastructure. By deploying self-hosted models, you can manage the entire lifecycle of requests made to LLM backends for GitLab Duo features, ensuring that all requests stay within your enterprise network and avoid external dependencies.
+To maintain full control over your data privacy, security, and the deployment of large language models (LLMs) in your own infrastructure, use GitLab Duo Self-Hosted Models.
 
-## Why Use Self-Hosted Models
+By deploying self-hosted models, you can manage the entire lifecycle of requests made to LLM backends for GitLab Duo features, ensuring that all requests stay within your enterprise network and avoiding external dependencies.
+
+## Why use self-hosted models
 
 With self-hosted models, you can:
 
@@ -34,17 +36,17 @@ This setup ensures enterprise-level privacy and flexibility, allowing seamless i
 
 The following are required:
 
-- A supported model (either cloud-based or on-premises).
-- A supported serving platform (either cloud-based or on-premises).
+- A [supported model](supported_models_and_hardware_requirements.md) (either cloud-based or on-premises).
+- A [supported serving platform](supported_llm_serving_platforms.md) (either cloud-based or on-premises).
 - A locally hosted or GitLab.com AI Gateway.
-- Duo [Enterprise Edition license](../../administration/license.md). For more information on licensing, see the [](../../administration/license.md).
+- GitLab [Enterprise Edition license](../../administration/license.md).
 
 ## Self-managed customer configuration types
 
 There are two configuration options for self-managed customers:
 
 - **GitLab.com AI Gateway customers**: Use the GitLab-hosted AI Gateway with external LLM providers (for example, Google Vertex or Anthropic).
-- **Self-Hosted AI Gateway customers**: Deploy your own AI Gateway and LLMs within your infrastructure, without relying on external public services.
+- **Self-hosted AI Gateway customers**: Deploy your own AI Gateway and LLMs within your infrastructure, without relying on external public services.
 
 ### Fully self-hosted architecture
 
@@ -56,7 +58,7 @@ sequenceDiagram
     actor User as User
     participant SelfHostedGitLab as Self-hosted GitLab
     participant SelfHostedAIGateway as Self-hosted AI Gateway
-    participant SelfHostedModel as Self-Hosted Model
+    participant SelfHostedModel as Self-hosted model
 
     User ->> SelfHostedGitLab: Send request
     SelfHostedGitLab ->> SelfHostedGitLab: Check if self-hosted model is configured
@@ -66,7 +68,7 @@ sequenceDiagram
     SelfHostedGitLab -->> User: Forward AI response
 ```
 
-### GitLab AI Vendor Architecture
+### GitLab AI vendor architecture
 
 In this configuration, your GitLab instance depends on and sends requests to the external GitLab AI Gateway, which communicates with external AI vendors such as Google Vertex or Anthropic. The response is then forwarded back to your GitLab instance.
 
@@ -89,22 +91,26 @@ sequenceDiagram
 
 For more details, see the [Blueprint](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/custom_models/).
 
-## Authentication for Self-Hosted Models
+## Authentication for self-hosted models
 
 The authentication process for self-hosted models is designed to be secure and efficient, comprising the following key components:
 
-- **Self-Issued Tokens**: In this architecture, access credentials are not synchronized with `cloud.gitlab.com`. Instead, tokens are self-issued dynamically, similar to the functionality on GitLab.com. This method provides users with immediate access while maintaining a high level of security.
+- **Self-issued tokens**: In this architecture, access credentials are not synchronized with `cloud.gitlab.com`. Instead, tokens are self-issued dynamically, similar to the functionality on GitLab.com. This method provides users with immediate access while maintaining a high level of security.
 
-- **Offline Environments**: In offline setups, there are no connections to `cloud.gitlab.com`. All requests are routed exclusively to the self-hosted AI Gateway.
+- **Offline environments**: In offline setups, there are no connections to `cloud.gitlab.com`. All requests are routed exclusively to the self-hosted AI Gateway.
 
-- **Token Minting and Verification**: The GitLab self-managed instance mints the token, which is then verified by the AI Gateway against the GitLab instance.
+- **Token minting and verification**: The GitLab self-managed instance mints the token, which is then verified by the AI Gateway against the GitLab instance.
+- **Model configuration and security**: When an administrator configures a model, they can incorporate an API key to authenticate requests. Additionally, you can enhance security by specifying connection IP addresses within your network, ensuring that only trusted IPs can interact with the model.
 
-- **Model Configuration and Security**: When an administrator configures a model, they can incorporate an API key to authenticate requests. Additionally, customers can enhance security by specifying connection IPs within their network, ensuring that only trusted IPs can interact with the model.
+As illustrated in the following diagram:
 
-### Sequence Diagram
+1. The authentication flow begins when the user configures the model through the GitLab instance and submits a request to access the GitLab Duo feature.
+1. The GitLab instance mints an access token, which the user forwards to GitLab and then to the AI Gateway for verification.
+1. Upon confirming the token's validity, the AI Gateway sends a request to the AI model, which uses the API key to authenticate the request and process it.
+1. The results are then relayed back to the GitLab instance, completing the flow by sending the response to the user, which is designed to be secure and efficient.
 
-   ```mermaid
-   %%{ init : { "theme" : "default", "themeVariables": { "actorBackground": "#ffffff", "actorBorder": "#34495e", "actorTextColor": "#34495e", "participantBackground": "#e0f7fa", "participantBorder": "#00796b", "participantTextColor": "#00796b", "sequenceNumberColor": "#00796b", "noteTextColor": "#34495e" } } }%%
+```mermaid
+%%{ init : { "theme" : "default", "themeVariables": { "actorBackground": "#ffffff", "actorBorder": "#34495e", "actorTextColor": "#34495e", "participantBackground": "#e0f7fa", "participantBorder": "#00796b", "participantTextColor": "#00796b", "sequenceNumberColor": "#00796b", "noteTextColor": "#34495e" } } }%%
    sequenceDiagram
       participant User as User
       participant GitLab as GitLab Instance
@@ -125,37 +131,31 @@ The authentication process for self-hosted models is designed to be secure and e
       AI Gateway->>GitLab: Send Result to GitLab
       GitLab->>User: Send Response
 
-   ```
-
-As illustrated in the diagram:
-
-1. The authentication flow begins when the user configures the model through the GitLab instance and submits a request to access the GitLab Duo feature.
-1. The GitLab instance mints an access token, which the user forwards to GitLab and then to the AI Gateway for verification.
-1. Upon confirming the token's validity, the AI Gateway sends a request to the AI model, which uses the API key to authenticate the request and process it.
-1. The results are then relayed back to the GitLab instance, completing the flow by sending the response to the user, which is designed to be secure and efficient.
+```
 
 ## Set up a self-hosted infrastructure
 
 To establish a fully isolated self-hosted infrastructure:
 
-1. **Install the Large Language Model (LLM) Serving Infrastructure**
+1. **Install the large language model (LLM) serving infrastructure**
 
    - We support various platforms for serving and hosting your LLMs, such as vLLM, AWS Bedrock, and Azure OpenAI. To help you choose the most suitable option for effectively deploying your models, see the [supported LLM platforms documentation](supported_llm_serving_platforms.md) for more information on each platform's features.
 
    - We provide a comprehensive matrix of supported models along with their specific features and hardware requirements. To help select models that best align with your infrastructure needs for optimal performance, see the [supported models and hardware requirements documentation](supported_models_and_hardware_requirements.md).
 
 1. **Install the GitLab AI Gateway**
-   - [Install the AI Gateway](../../install/install_ai_gateway.md) to efficiently configure your AI infrastructure.
+   [Install the AI Gateway](../../install/install_ai_gateway.md) to efficiently configure your AI infrastructure.
 
-1. **Configure Duo Features**
-   - See the [configure Duo features documentation](configure_duo_features.md) for instructions on how to customize your environment to effectively meet your operational needs.
+1. **Configure GitLab Duo features**
+   See the [Configure GitLab Duo features documentation](configure_duo_features.md) for instructions on how to customize your environment to effectively meet your operational needs.
 
-1. **Enable Logging**
-   - You can find configuration details for enabling logging within your environment. For help in using logs to track and manage your system's performance effectively, see the [logging documentation](logging.md).
+1. **Enable logging**
+   You can find configuration details for enabling logging within your environment. For help in using logs to track and manage your system's performance effectively, see the [logging documentation](logging.md).
 
 ## Related topics
 
-For more information and best practices to enhance your experience with self-hosted models, see [related topics](related_topics.md).
+- AWS Bedrock
+  - [Import Custom Models Into Amazon Bedrock](https://www.youtube.com/watch?v=CA2AXfWWdpA)
 
 ## Troubleshooting
 

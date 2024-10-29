@@ -233,6 +233,7 @@ export function unresolvedDiscussionsIdsByDate() {
 }
 
 export function unresolvedDiscussionsIdsByDiff() {
+  // WARNING: never use this in regular code, this is only needed to avoid circular dependencies
   const authoritativeFiles = this.tryStore('legacyDiffs').diffFiles;
 
   return this.allResolvableDiscussions

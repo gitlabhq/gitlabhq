@@ -496,7 +496,7 @@ in the order they are defined in the list. This syntax is the same as the `run` 
 
 Steps must have a name consisting only of alpha-numeric characters and underscores, and must not start with a number.
 
-For example, thisg step installs Go, then runs a second step that expects Go to already
+For example, this step installs Go, then runs a second step that expects Go to already
 have been installed:
 
 ```yaml

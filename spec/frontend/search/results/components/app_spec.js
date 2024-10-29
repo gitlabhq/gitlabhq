@@ -10,7 +10,13 @@ import getBlobSearchQuery from '~/search/graphql/blob_search_zoekt.query.graphql
 import GlobalSearchResultsApp from '~/search/results/components/app.vue';
 import ZoektBlobResults from '~/search/results/components/zoekt_blob_results.vue';
 import StatusBar from '~/search/results/components/status_bar.vue';
-import { MOCK_QUERY, mockGetBlobSearchQuery, mockGetBlobSearchQueryEmpty } from '../../mock_data';
+import mutations from '~/search/store/mutations';
+import {
+  MOCK_QUERY,
+  mockGetBlobSearchQuery,
+  mockGetBlobSearchQueryEmpty,
+  MOCK_NAVIGATION_DATA,
+} from '../../mock_data';
 
 Vue.use(Vuex);
 Vue.use(VueApollo);
@@ -42,7 +48,9 @@ describe('GlobalSearchResultsApp', () => {
         ...initialState,
       },
       getters: getterSpies,
+      mutations,
     });
+
     wrapper = shallowMountExtended(GlobalSearchResultsApp, {
       apolloProvider,
       store,
@@ -89,7 +97,11 @@ describe('GlobalSearchResultsApp', () => {
   describe('when component has no results', () => {
     beforeEach(async () => {
       createComponent({
-        initialState: { query: { scope: 'blobs' }, searchType: 'zoekt' },
+        initialState: {
+          query: { scope: 'blobs' },
+          searchType: 'zoekt',
+          navigation: MOCK_NAVIGATION_DATA,
+        },
         queryHandler: mockQueryEmpty,
       });
       jest.runOnlyPendingTimers();
@@ -110,11 +122,22 @@ describe('GlobalSearchResultsApp', () => {
       ${'blobs'}  | ${'advanced'} | ${false}
       ${'issues'} | ${'basic'}    | ${false}
     `(`has scope: $scope, searchType: $searchType`, ({ scope, searchType, isRendered }) => {
+      let spy;
       beforeEach(async () => {
         getterSpies.currentScope = jest.fn(() => scope);
-        createComponent({ initialState: { query: { scope }, searchType } });
+        createComponent({
+          initialState: { query: { scope }, searchType, navigation: MOCK_NAVIGATION_DATA },
+        });
+        spy = jest.spyOn(wrapper?.vm?.$store, 'commit');
         jest.advanceTimersByTime(500);
         await waitForPromises();
+      });
+
+      it(`${isRendered ? 'calls' : 'does not call'} mutation RECEIVE_NAVIGATION_COUNT`, () => {
+        expect(spy).toHaveBeenCalledWith('RECEIVE_NAVIGATION_COUNT', {
+          count: '369',
+          key: 'blobs',
+        });
       });
 
       it(`correctly renders components`, () => {

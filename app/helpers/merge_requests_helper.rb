@@ -447,18 +447,6 @@ module MergeRequestsHelper
       ]
     }
   end
-
-  def diffs_stream_url(merge_request, offset, diff_view)
-    return if offset > merge_request.diffs_for_streaming.diff_files.count
-
-    diffs_stream_namespace_project_merge_request_path(
-      id: merge_request.iid,
-      project_id: merge_request.project.to_param,
-      namespace_id: merge_request.project.namespace.to_param,
-      offset: offset,
-      view: diff_view
-    )
-  end
 end
 
 MergeRequestsHelper.prepend_mod_with('MergeRequestsHelper')

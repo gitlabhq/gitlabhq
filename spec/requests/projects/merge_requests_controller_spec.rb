@@ -228,6 +228,26 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
 
         expect(response.body.scan('<diff-file ').size).to eq(5)
       end
+
+      context 'for stream_url' do
+        it 'returns stream_url with offset' do
+          get diffs_project_merge_request_path(project, merge_request, rapid_diffs: 'true')
+
+          url = "/#{project.full_path}/-/merge_requests/#{merge_request.iid}/diffs_stream?offset=5&view=inline"
+
+          expect(assigns(:stream_url)).to eq(url)
+        end
+
+        context 'when view is set to parallel' do
+          it 'returns stream_url with parallel view' do
+            get diffs_project_merge_request_path(project, merge_request, rapid_diffs: 'true', view: 'parallel')
+
+            url = "/#{project.full_path}/-/merge_requests/#{merge_request.iid}/diffs_stream?offset=5&view=parallel"
+
+            expect(assigns(:stream_url)).to eq(url)
+          end
+        end
+      end
     end
 
     private

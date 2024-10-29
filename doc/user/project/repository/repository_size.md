@@ -212,7 +212,7 @@ GitLab sends an email notification with the recalculated repository size after t
 Use this method to permanently delete files containing sensitive or confidential information from your repository.
 
 NOTE:
-To replace strings with `***REMOVED***`, see [Redact text](../../../topics/git/undo.md#redact-text).
+To replace strings with `***REMOVED***`, see [Redact information](../../../topics/git/undo.md#redact-information).
 
 Prerequisites:
 

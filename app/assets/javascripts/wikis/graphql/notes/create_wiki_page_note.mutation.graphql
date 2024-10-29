@@ -1,0 +1,18 @@
+#import "./wiki_page_note.fragment.graphql"
+
+mutation createWikiPageNote($input: CreateNoteInput!) {
+  createNote(input: $input) {
+    note {
+      id
+      discussion {
+        id
+        notes {
+          nodes {
+            ...WikiPageNote
+          }
+        }
+      }
+    }
+    errors
+  }
+}

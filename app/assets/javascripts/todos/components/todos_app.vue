@@ -10,7 +10,7 @@ import {
   STATUS_BY_TAB,
 } from '~/todos/constants';
 import getTodosQuery from './queries/get_todos.query.graphql';
-import getTodosCountQuery from './queries/get_todos_count.query.graphql';
+import getPendingTodosCount from './queries/get_pending_todos_count.query.graphql';
 import TodoItem from './todo_item.vue';
 import TodosEmptyState from './todos_empty_state.vue';
 import TodosFilterBar, { SORT_OPTIONS } from './todos_filter_bar.vue';
@@ -44,11 +44,7 @@ export default {
       pageInfo: {},
       todos: [],
       currentTab: 0,
-      todosCount: {
-        pending: '-',
-        done: '-',
-        all: '-',
-      },
+      pendingTodosCount: '-',
       queryFilterValues: {
         groupId: [],
         projectId: [],
@@ -80,23 +76,13 @@ export default {
         Sentry.captureException(error);
       },
     },
-    todosCount: {
-      query: getTodosCountQuery,
+    pendingTodosCount: {
+      query: getPendingTodosCount,
       variables() {
         return this.queryFilterValues;
       },
-      update({
-        currentUser: {
-          pending: { count: pending },
-          done: { count: done },
-          all: { count: all },
-        } = {},
-      }) {
-        return {
-          pending,
-          done,
-          all,
-        };
+      update({ currentUser: { todos: { count } } = {} }) {
+        return count;
       },
     },
   },
@@ -172,21 +158,19 @@ export default {
         <gl-tab>
           <template #title>
             <span>{{ s__('Todos|To Do') }}</span>
-            <gl-badge pill size="sm" class="gl-tab-counter-badge">
-              {{ todosCount.pending }}
+            <gl-badge pill size="sm" class="gl-tab-counter-badge" data-testid="pending-todos-count">
+              {{ pendingTodosCount }}
             </gl-badge>
           </template>
         </gl-tab>
         <gl-tab>
           <template #title>
             <span>{{ s__('Todos|Done') }}</span>
-            <gl-badge pill size="sm" class="gl-tab-counter-badge"> {{ todosCount.done }} </gl-badge>
           </template>
         </gl-tab>
         <gl-tab>
           <template #title>
             <span>{{ s__('Todos|All') }}</span>
-            <gl-badge pill size="sm" class="gl-tab-counter-badge"> {{ todosCount.all }} </gl-badge>
           </template>
         </gl-tab>
       </gl-tabs>

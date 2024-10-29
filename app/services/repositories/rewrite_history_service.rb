@@ -50,14 +50,14 @@ module Repositories
     end
 
     def rewrite_history(blob_oids:, redactions:)
-      client = Gitlab::GitalyClient::CleanupService.new(project.repository)
+      client = Gitlab::Git::RepositoryCleaner.new(project.repository)
       client.rewrite_history(blobs: blob_oids, redactions: redactions)
 
       audit_removals(blob_oids) if blob_oids.present?
       audit_replacements if redactions.present?
 
       ServiceResponse.success
-    rescue ArgumentError => e
+    rescue ArgumentError, Gitlab::Git::BaseError => e
       ServiceResponse.error(message: e.message)
     ensure
       project.set_repository_writable!

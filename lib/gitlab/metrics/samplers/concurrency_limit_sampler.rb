@@ -11,16 +11,12 @@ module Gitlab
             queue_size = concurrent_limit_service.queue_size(w.name)
             report_queue_size(w.name, queue_size) if queue_size > 0
 
-            concurrent_worker_count = workers_concurrency.current_for(worker: w)
+            concurrent_worker_count = concurrent_limit_service.concurrent_worker_count(w.name)
             report_concurrent_workers(w.name, concurrent_worker_count) if concurrent_worker_count > 0
           end
         end
 
         private
-
-        def workers_concurrency
-          ::Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersConcurrency
-        end
 
         def worker_maps
           Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersMap

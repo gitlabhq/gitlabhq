@@ -293,7 +293,6 @@ Style/ClassAndModuleChildren:
     - 'app/models/protected_tag/create_access_level.rb'
     - 'app/policies/namespace/package_setting_policy.rb'
     - 'app/policies/namespace/root_storage_statistics_policy.rb'
-    - 'app/policies/wiki_page/meta_policy.rb'
     - 'app/serializers/ci/lint/job_entity.rb'
     - 'app/serializers/ci/lint/result_entity.rb'
     - 'app/serializers/ci/lint/result_serializer.rb'

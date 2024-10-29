@@ -36,6 +36,18 @@ RSpec.describe Issue, feature_category: :team_planning do
     it { is_expected.to have_many(:incident_management_timeline_events) }
     it { is_expected.to have_many(:assignment_events).class_name('ResourceEvents::IssueAssignmentEvent').inverse_of(:issue) }
 
+    describe '#assignees_by_name_and_id' do
+      it 'returns users ordered by name ASC, id DESC' do
+        user1 = create(:user, name: 'BBB')
+        user2 = create(:user, name: 'AAA')
+        user3 = create(:user, name: 'BBB')
+        users = [user1, user2, user3]
+        issue = create(:issue, project: reusable_project, assignees: users)
+
+        expect(issue.assignees_by_name_and_id).to match([user2, user3, user1])
+      end
+    end
+
     describe 'versions.most_recent' do
       it 'returns the most recent version' do
         issue = create(:issue, project: reusable_project)

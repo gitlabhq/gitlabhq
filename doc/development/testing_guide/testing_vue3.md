@@ -134,14 +134,17 @@ update the in-memory query cache, for example:
 ApolloError: 'get' on proxy: property '[property]' is a read-only and non-configurable data property on the proxy target but the proxy did not return its actual value (expected '#<Object>' but got '#<Object>')
 ```
 
-This error happens because Apollo tries to access or modify
-a [Vue reactive object](https://vuejs.org/guide/essentials/reactivity-fundamentals.html) when we call the
-`writeQuery` or `updateQuery` methods. As a general rule, never use a component's property in operations
-that update Apollo's cache. If you must, use the `toRaw` utility to remove the Vue's reactivity proxy from
-the target object.
+This error happens because Apollo tries to modify a [Vue reactive object](https://vuejs.org/guide/essentials/reactivity-fundamentals.html)
+when we call the `writeQuery` or `updateQuery` methods. Avoid using objects passed through a component's
+property in operations that update Apollo's cache. You should always rely on constructing new objects or
+data that already exists in the Apollo's cache. As a last resort, use the `cloneDeep` utility to remove
+the Vue's reactivity proxy from the target object.
 
-The following example comes from a real-life scenario where this failure happened and provides two alternatives
-to fix the test failure:
+In the following example, the component updates the Apollo's in-memory cache after the mutation succeeds
+by swapping the `agent` object between two arrays. The `agent` object is also available in the `agent`
+property, but it is reactive object. The incorrect approach references the `agent` object passed to
+the component as a property which causes the proxy error. The correct approach finds the `agent`
+object that is already stored in the Apollo's cache.
 
 ```html
 <script>
@@ -183,18 +186,21 @@ export default {
                   unmappedAgents.nodes = removeFrom.nodes.filter((node) => node.id !== agent.id);
 
                   /*
-                  * PREFERRED FIX: Use `toRaw` to remove the reactivity proxy.
-                  */
-                  mappedAgents.nodes.push(toRaw(this.agent));
-                  unmappedAgents.nodes = removeFrom.nodes.filter((node) => node.id !== agent.id);
-
-                  /*
-                  * ALTERNATIVE FIX: Only use data that already exists in the in-memory cache.
+                  * PREFERRED FIX: Only use data that already exists in the in-memory cache.
                   */
                   const targetAgentIndex = removeFrom.nodes.findIndex((node) => node.id === agent.id);
 
                   mappedAgents.nodes.push(removeFrom.nodes[targetAgentIndex]);
                   unmappedAgents.nodes.splice(targetAgentIndex, 1);
+
+
+                  /*
+                  * ALTERNATIVE (LAST RESORT) FIX: Use lodash `cloneDeep` to create a clone
+                  * of the object without Vue reactivity:
+                  */
+                  mappedAgents.nodes.push(cloneDeep(this.agent));
+                  unmappedAgents.nodes = removeFrom.nodes.filter((node) => node.id !== agent.id);
+
                 }),
             );
           },

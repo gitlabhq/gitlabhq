@@ -19,6 +19,7 @@ import { fetchPolicies } from '~/lib/graphql';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { s__, __, n__ } from '~/locale';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import {
   IDENTITY_VERIFICATION_REQUIRED_ERROR,
   CONFIG_VARIABLES_TIMEOUT,
@@ -47,6 +48,7 @@ const i18n = {
   warningTitle: __('The form contains the following warning:'),
   maxWarningsSummary: __('%{total} warnings found: showing first %{warningsDisplayed}'),
   removeVariableLabel: s__('CiVariables|Remove variable'),
+  learnMore: __('Learn more'),
 };
 
 export default {
@@ -119,6 +121,10 @@ export default {
     },
     maxWarnings: {
       type: Number,
+      required: true,
+    },
+    isMaintainer: {
+      type: Boolean,
       required: true,
     },
   },
@@ -392,6 +398,9 @@ export default {
       }));
     },
   },
+  learnMorePath: helpPagePath('ci/variables/index', {
+    anchor: 'cicd-variable-precedence',
+  }),
 };
 </script>
 
@@ -523,13 +532,19 @@ export default {
         </div>
       </div>
 
-      <template #description
-        ><gl-sprintf :message="$options.i18n.variablesDescription">
+      <template #description>
+        <gl-sprintf :message="$options.i18n.variablesDescription">
           <template #link="{ content }">
-            <gl-link :href="settingsLink">{{ content }}</gl-link>
+            <gl-link v-if="isMaintainer" :href="settingsLink" data-testid="ci-cd-settings-link">{{
+              content
+            }}</gl-link>
+            <template v-else>{{ content }}</template>
           </template>
-        </gl-sprintf></template
-      >
+        </gl-sprintf>
+        <gl-link :href="$options.learnMorePath" target="_blank">{{
+          $options.i18n.learnMore
+        }}</gl-link>
+      </template>
     </gl-form-group>
     <div class="gl-mb-4 gl-text-gray-500">
       <gl-sprintf :message="$options.i18n.overrideNoteText">

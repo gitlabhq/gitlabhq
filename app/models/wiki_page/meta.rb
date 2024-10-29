@@ -65,6 +65,8 @@ class WikiPage
       end
 
       def find_by_canonical_slug(canonical_slug, container)
+        return unless canonical_slug.present? && container.present?
+
         meta, conflict = with_canonical_slug(canonical_slug)
           .where(container_attrs(container))
           .limit(2)
@@ -75,6 +77,10 @@ class WikiPage
         end
 
         meta
+      end
+
+      def declarative_policy_class
+        'WikiPagePolicy'
       end
 
       private
@@ -92,7 +98,7 @@ class WikiPage
       def container_attrs(container)
         return { project_id: container.id } if container.is_a?(Project)
 
-        { namespace_id: container.id } if container.is_a?(Group)
+        { namespace_id: container.id } if container.is_a?(Namespace)
       end
     end
 

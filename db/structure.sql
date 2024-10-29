@@ -20107,23 +20107,6 @@ CREATE SEQUENCE user_callouts_id_seq
 
 ALTER SEQUENCE user_callouts_id_seq OWNED BY user_callouts.id;
 
-CREATE TABLE user_canonical_emails (
-    id bigint NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
-    user_id bigint NOT NULL,
-    canonical_email character varying NOT NULL
-);
-
-CREATE SEQUENCE user_canonical_emails_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE user_canonical_emails_id_seq OWNED BY user_canonical_emails.id;
-
 CREATE TABLE user_credit_card_validations (
     user_id bigint NOT NULL,
     credit_card_validated_at timestamp with time zone NOT NULL,
@@ -23392,8 +23375,6 @@ ALTER TABLE ONLY user_broadcast_message_dismissals ALTER COLUMN id SET DEFAULT n
 
 ALTER TABLE ONLY user_callouts ALTER COLUMN id SET DEFAULT nextval('user_callouts_id_seq'::regclass);
 
-ALTER TABLE ONLY user_canonical_emails ALTER COLUMN id SET DEFAULT nextval('user_canonical_emails_id_seq'::regclass);
-
 ALTER TABLE ONLY user_custom_attributes ALTER COLUMN id SET DEFAULT nextval('user_custom_attributes_id_seq'::regclass);
 
 ALTER TABLE ONLY user_details ALTER COLUMN user_id SET DEFAULT nextval('user_details_user_id_seq'::regclass);
@@ -26140,9 +26121,6 @@ ALTER TABLE ONLY user_broadcast_message_dismissals
 
 ALTER TABLE ONLY user_callouts
     ADD CONSTRAINT user_callouts_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY user_canonical_emails
-    ADD CONSTRAINT user_canonical_emails_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY user_credit_card_validations
     ADD CONSTRAINT user_credit_card_validations_pkey PRIMARY KEY (user_id);
@@ -31747,12 +31725,6 @@ CREATE INDEX index_user_agent_details_on_subject_id_and_subject_type ON user_age
 CREATE INDEX index_user_broadcast_message_dismissals_on_broadcast_message_id ON user_broadcast_message_dismissals USING btree (broadcast_message_id);
 
 CREATE UNIQUE INDEX index_user_callouts_on_user_id_and_feature_name ON user_callouts USING btree (user_id, feature_name);
-
-CREATE INDEX index_user_canonical_emails_on_canonical_email ON user_canonical_emails USING btree (canonical_email);
-
-CREATE UNIQUE INDEX index_user_canonical_emails_on_user_id ON user_canonical_emails USING btree (user_id);
-
-CREATE UNIQUE INDEX index_user_canonical_emails_on_user_id_and_canonical_email ON user_canonical_emails USING btree (user_id, canonical_email);
 
 CREATE INDEX index_user_credit_card_validations_on_stripe_card_fingerprint ON user_credit_card_validations USING btree (stripe_card_fingerprint);
 
@@ -37600,9 +37572,6 @@ ALTER TABLE ONLY project_feature_usages
 
 ALTER TABLE p_ci_builds_execution_configs
     ADD CONSTRAINT fk_rails_c26408d02c_p FOREIGN KEY (partition_id, pipeline_id) REFERENCES p_ci_pipelines(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-ALTER TABLE ONLY user_canonical_emails
-    ADD CONSTRAINT fk_rails_c2bd828b51 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY project_repositories
     ADD CONSTRAINT fk_rails_c3258dc63b FOREIGN KEY (shard_id) REFERENCES shards(id) ON DELETE RESTRICT;
