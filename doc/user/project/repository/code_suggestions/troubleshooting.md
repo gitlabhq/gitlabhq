@@ -45,8 +45,6 @@ If the settings are enabled, but suggestions are still not displayed, try the fo
    - In the bottom panel, on the right, select the dropdown list to filter the logs. Select **GitLab Workflow**.
 1. In the GitLab Workflow **Extension Settings**, clear and re-select the **GitLab Duo Code Suggestions** checkbox.
 
-To enable debug logging for the Language Server (LS), enable **GitLab › Ls: Debug**.
-
 ### Suggestions not displayed in JetBrains IDEs
 
 1. Ensure you have properly [set up the extension](https://gitlab.com/gitlab-org/editor-extensions/gitlab-intellij-plugin#setup).

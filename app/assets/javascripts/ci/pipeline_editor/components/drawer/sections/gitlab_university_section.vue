@@ -3,20 +3,22 @@ import { GlLink, GlSprintf } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import Tracking from '~/tracking';
 import { GITLAB_UNIVERSITY_LINK, pipelineEditorTrackingOptions } from '../../../constants';
+import PipelineEditorDrawerSection from '../pipeline_editor_drawer_section.vue';
 
 export default {
   name: 'GitLabUniversityCard',
   GITLAB_UNIVERSITY_LINK,
   GITLAB_UNIVERSITY_URL: 'https://university.gitlab.com/pages/ci-cd-content',
   i18n: {
-    title: s__('PipelineEditorTutorial|🎓 Learn CI/CD with GitLab University'),
+    title: s__('PipelineEditorTutorial|Learn CI/CD with GitLab University'),
     body: s__(
-      'PipelineEditorTutorial|Learn how to set up and use GitLab CI/CD with guided tutorials, videos, and best practices in %{linkStart}GitLab University%{linkEnd}.',
+      'PipelineEditorTutorial|Learn how to set up and use GitLab CI/CD with guided tutorials, videos, and best practices in %{linkStart}GitLab University.%{linkEnd}',
     ),
   },
   components: {
     GlLink,
     GlSprintf,
+    PipelineEditorDrawerSection,
   },
   mixins: [Tracking.mixin()],
   methods: {
@@ -28,8 +30,7 @@ export default {
 };
 </script>
 <template>
-  <div>
-    <h3 class="gl-mb-5 gl-mt-0 gl-text-lg">{{ $options.i18n.title }}</h3>
+  <pipeline-editor-drawer-section emoji="mortar_board" :title="$options.i18n.title">
     <p class="gl-mb-0">
       <gl-sprintf :message="$options.i18n.body">
         <template #link="{ content }">
@@ -43,5 +44,5 @@ export default {
         </template>
       </gl-sprintf>
     </p>
-  </div>
+  </pipeline-editor-drawer-section>
 </template>

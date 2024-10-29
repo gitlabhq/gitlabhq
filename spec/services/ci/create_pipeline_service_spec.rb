@@ -990,7 +990,7 @@ RSpec.describe Ci::CreatePipelineService, :ci_config_feature_flag_correctness, :
 
       context 'when trigger belongs to no one' do
         let(:user) {}
-        let(:trigger_request) { create(:ci_trigger_request) }
+        let(:trigger_request) { create(:ci_trigger_request, project_id: project.id) }
 
         it 'does not create a pipeline', :aggregate_failures do
           response = execute_service(trigger_request: trigger_request)
@@ -1003,7 +1003,7 @@ RSpec.describe Ci::CreatePipelineService, :ci_config_feature_flag_correctness, :
 
       context 'when trigger belongs to a developer' do
         let(:user) { create(:user) }
-        let(:trigger) { create(:ci_trigger, owner: user) }
+        let(:trigger) { create(:ci_trigger, owner: user, project: project) }
         let(:trigger_request) { create(:ci_trigger_request, trigger: trigger) }
 
         before do
@@ -1021,7 +1021,7 @@ RSpec.describe Ci::CreatePipelineService, :ci_config_feature_flag_correctness, :
 
       context 'when trigger belongs to a maintainer' do
         let(:user) { create(:user) }
-        let(:trigger) { create(:ci_trigger, owner: user) }
+        let(:trigger) { create(:ci_trigger, owner: user, project: project) }
         let(:trigger_request) { create(:ci_trigger_request, trigger: trigger) }
 
         before do

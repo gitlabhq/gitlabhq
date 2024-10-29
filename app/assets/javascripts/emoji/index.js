@@ -331,3 +331,9 @@ export function glEmojiTag(inputName, options) {
     name,
   )}"></gl-emoji>`;
 }
+
+export const getEmojisForCategory = async (category) => {
+  await initEmojiMap.promise;
+
+  return Object.values(emojiMap).filter((e) => e.c === category);
+};

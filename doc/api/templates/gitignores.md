@@ -124,9 +124,9 @@ Get a single `.gitignore` template:
 GET /templates/gitignores/:key
 ```
 
-| Attribute  | Type   | Required | Description                          |
-| ---------- | ------ | -------- | ------------------------------------ |
-| `key`      | string | yes      | The key of the `.gitignore` template |
+| Attribute | Type   | Required | Description |
+|-----------|--------|----------|-------------|
+| `key`     | string | yes      | The key of the `.gitignore` template |
 
 Example request:
 

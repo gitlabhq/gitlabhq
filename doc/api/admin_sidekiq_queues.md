@@ -29,18 +29,20 @@ This API endpoint is only available to administrators.
 DELETE /admin/sidekiq/queues/:queue_name
 ```
 
-| Attribute           | Type   | Required | Description                                                                                                                                  |
-|---------------------|--------|----------|----------------------------------------------------------------------------------------------------------------------------------------------|
-| `queue_name`        | string | yes      | The name of the queue to delete jobs from                                                                                                    |
-| `user`              | string | no       | The username of the user who scheduled the jobs                                                                                              |
-| `project`           | string | no       | The full path of the project where the jobs were scheduled from                                                                              |
-| `root_namespace`    | string | no       | The root namespace of the project                                                                                                            |
-| `subscription_plan` | string | no       | The subscription plan of the root namespace (GitLab.com only)                                                                                |
+| Attribute           | Type   | Required | Description |
+|---------------------|--------|----------|-------------|
+| `queue_name`        | string | yes      | The name of the queue to delete jobs from |
+| `user`              | string | no       | The username of the user who scheduled the jobs |
+| `project`           | string | no       | The full path of the project where the jobs were scheduled from |
+| `root_namespace`    | string | no       | The root namespace of the project |
+| `subscription_plan` | string | no       | The subscription plan of the root namespace (GitLab.com only) |
 | `caller_id`         | string | no       | The endpoint or background job that schedule the job (for example: `ProjectsController#create`, `/api/:version/projects/:id`, `PostReceive`) |
-| `feature_category`  | string | no       | The feature category of the background job (for example: `team_planning` or `code_review`)                                                  |
-| `worker_class`      | string | no       | The class of the background job worker (for example: `PostReceive` or `MergeWorker`)                                                         |
+| `feature_category`  | string | no       | The feature category of the background job (for example: `team_planning` or `code_review`) |
+| `worker_class`      | string | no       | The class of the background job worker (for example: `PostReceive` or `MergeWorker`) |
 
 At least one attribute, other than `queue_name`, is required.
+
+Example request:
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/admin/sidekiq/queues/authorized_projects?user=root"

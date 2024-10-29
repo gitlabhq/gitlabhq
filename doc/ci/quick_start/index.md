@@ -77,7 +77,7 @@ To create a `.gitlab-ci.yml` file in your project:
    If you're not sure, leave `master` or `main`.
    Then select the plus icon (**{plus}**) and **New file**:
 
-   ![New file](img/new_file_v13_6.png)
+   ![The new file button to create a file in the current folder.](img/new_file_v13_6.png)
 
 1. For the **Filename**, type `.gitlab-ci.yml` and in the larger window,
    paste this sample code:
@@ -123,15 +123,15 @@ Now take a look at your pipeline and the jobs within.
 
 1. Go to **Build > Pipelines**. A pipeline with three stages should be displayed:
 
-   ![Three stages](img/three_stages_v13_6.png)
+   ![The pipeline list shows a running pipeline with 3 stages](img/three_stages_v13_6.png)
 
 1. View a visual representation of your pipeline by selecting the pipeline ID:
 
-   ![Pipeline graph](img/pipeline_graph_v13_6.png)
+   ![The pipeline graph shows each job, its status, and its dependencies across all stages.](img/pipeline_graph_v13_6.png)
 
 1. View details of a job by selecting the job name. For example, `deploy-prod`:
 
-   ![Job details](img/job_details_v13_6.png)
+   ![The job details page shows the current status, timing information, and the output of logs.](img/job_details_v13_6.png)
 
 You have successfully created your first CI/CD pipeline in GitLab. Congratulations!
 

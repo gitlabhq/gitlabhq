@@ -443,7 +443,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
     end
 
     describe 'Variables' do
-      let(:trigger_request) { create(:ci_trigger_request) }
+      let(:trigger_request) { create(:ci_trigger_request, project_id: project.id) }
       let(:job) { create(:ci_build, pipeline: pipeline, trigger_request: trigger_request) }
 
       context 'when user is a maintainer' do

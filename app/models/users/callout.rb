@@ -94,7 +94,8 @@ module Users
       work_item_epic_feedback: 92, # EE-only
       branch_rules_tip_callout: 93,
       openssl_callout: 94,
-      duo_free_access_ending_banner: 95 # EE-only
+      duo_free_access_ending_banner: 95, # EE-only
+      new_mr_dashboard_banner: 96
     }
 
     validates :feature_name,

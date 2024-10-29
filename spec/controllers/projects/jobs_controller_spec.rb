@@ -23,7 +23,7 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
     project.add_guest(guest)
     create_default(:owner)
     create_default(:user)
-    create_default(:ci_trigger_request)
+    create_default(:ci_trigger_request, project_id: project.id)
     create_default(:ci_stage)
   end
 

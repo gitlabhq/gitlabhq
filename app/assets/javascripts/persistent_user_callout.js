@@ -4,7 +4,7 @@ import { parseBoolean } from './lib/utils/common_utils';
 import { __ } from './locale';
 import { visitUrl } from './lib/utils/url_utility';
 
-const DEFERRED_LINK_CLASS = 'deferred-link';
+const DEFERRED_LINK_CLASS = '.deferred-link';
 
 export default class PersistentUserCallout {
   constructor(container, options = container.dataset) {
@@ -38,9 +38,9 @@ export default class PersistentUserCallout {
 
     if (this.deferLinks) {
       this.container.addEventListener('click', (event) => {
-        const isDeferredLink = event.target.classList.contains(DEFERRED_LINK_CLASS);
-        if (isDeferredLink) {
-          const { href, target } = event.target;
+        const deferredLinkEl = event.target.closest(DEFERRED_LINK_CLASS);
+        if (deferredLinkEl) {
+          const { href, target } = deferredLinkEl;
 
           this.dismiss(event, { href, target });
         }

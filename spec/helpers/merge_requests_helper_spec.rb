@@ -433,4 +433,34 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
       end
     end
   end
+
+  describe '#show_mr_dashboard_banner?' do
+    include ApplicationHelper
+
+    using RSpec::Parameterized::TableSyntax
+
+    where(:query_string, :feature_flag_enabled, :search_page, :user_dismissed, :should_show) do
+      { assignee_user: 'test' } | true  | true  | false | true
+      { assignee_user: 'test' } | false | true  | false | false
+      { assignee_user: 'test' } | false | false | false | false
+      { assignee_user: 'test' } | false | false | true  | false
+      nil                       | false | false | false | false
+    end
+
+    with_them do
+      before do
+        stub_feature_flags(merge_request_dashboard: feature_flag_enabled)
+        allow(helper).to receive(:current_user).and_return(current_user)
+        allow(helper).to receive(:user_dismissed?)
+          .with(Users::CalloutsHelper::NEW_MR_DASHBOARD_BANNER).and_return(user_dismissed)
+        allow(helper).to receive(:request).and_return(double(query_string: query_string))
+        allow(helper).to receive(:current_page?)
+          .with(Gitlab::Routing.url_helpers.merge_requests_search_dashboard_path).and_return(search_page)
+      end
+
+      it do
+        expect(helper.show_mr_dashboard_banner?).to eq(should_show)
+      end
+    end
+  end
 end

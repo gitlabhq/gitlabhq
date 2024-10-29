@@ -70,7 +70,9 @@ RSpec.describe Ci::PipelineTriggerService, feature_category: :continuous_integra
           let(:params) { { token: trigger.token, ref: 'master', variables: nil } }
 
           it 'triggers a pipeline' do
-            expect { result }.to change { Ci::Pipeline.count }.by(1)
+            expect { result }
+              .to change { Ci::Pipeline.count }.by(1)
+              .and change { Ci::TriggerRequest.count }.by(1)
             expect(result[:pipeline].ref).to eq('master')
             expect(result[:pipeline].project).to eq(project)
             expect(result[:pipeline].user).to eq(trigger.owner)

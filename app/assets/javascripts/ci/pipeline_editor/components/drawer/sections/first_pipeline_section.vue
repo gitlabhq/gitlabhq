@@ -4,10 +4,11 @@ import { s__ } from '~/locale';
 import Tracking from '~/tracking';
 import { DOCS_URL } from 'jh_else_ce/lib/utils/url_utility';
 import { pipelineEditorTrackingOptions } from '../../../constants';
+import PipelineEditorDrawerSection from '../pipeline_editor_drawer_section.vue';
 
 export default {
   i18n: {
-    title: s__('PipelineEditorTutorial|🚀 Run your first pipeline'),
+    title: s__('PipelineEditorTutorial|Run your first pipeline'),
     firstParagraph: s__(
       'PipelineEditorTutorial|This template creates a simple test pipeline. To use it:',
     ),
@@ -27,6 +28,7 @@ export default {
   components: {
     GlLink,
     GlSprintf,
+    PipelineEditorDrawerSection,
   },
   mixins: [Tracking.mixin()],
   methods: {
@@ -39,8 +41,7 @@ export default {
 };
 </script>
 <template>
-  <div>
-    <h3 class="gl-mb-5 gl-mt-0 gl-text-lg">{{ $options.i18n.title }}</h3>
+  <pipeline-editor-drawer-section emoji="rocket" :title="$options.i18n.title">
     <p class="gl-mb-3">{{ $options.i18n.firstParagraph }}</p>
     <ol class="gl-mb-3">
       <li v-for="(item, i) in $options.i18n.listItems" :key="`li-${i}`">{{ item }}</li>
@@ -54,5 +55,5 @@ export default {
         </template>
       </gl-sprintf>
     </p>
-  </div>
+  </pipeline-editor-drawer-section>
 </template>

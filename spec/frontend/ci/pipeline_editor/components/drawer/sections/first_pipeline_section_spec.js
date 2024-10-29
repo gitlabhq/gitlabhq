@@ -1,28 +1,35 @@
-import { getByRole } from '@testing-library/dom';
-import { mount } from '@vue/test-utils';
+import { GlLink } from '@gitlab/ui';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
-import FirstPipelineCard from '~/ci/pipeline_editor/components/drawer/cards/first_pipeline_card.vue';
+import FirstPipelineSection from '~/ci/pipeline_editor/components/drawer/sections/first_pipeline_section.vue';
+import SectionComponent from '~/ci/pipeline_editor/components/drawer/pipeline_editor_drawer_section.vue';
 import { pipelineEditorTrackingOptions } from '~/ci/pipeline_editor/constants';
 
-describe('First pipeline card', () => {
+describe('First pipeline section', () => {
   let wrapper;
   let trackingSpy;
 
   const createComponent = () => {
-    wrapper = mount(FirstPipelineCard);
+    wrapper = mountExtended(FirstPipelineSection, {
+      stubs: ['gl-emoji'],
+    });
   };
 
-  const getLinkByName = (name) => getByRole(wrapper.element, 'link', { name });
-  const findRunnersLink = () => getLinkByName(/make sure your instance has runners available/i);
   const findInstructionsList = () => wrapper.find('ol');
   const findAllInstructions = () => findInstructionsList().findAll('li');
+  const findLink = () => wrapper.findComponent(GlLink);
+  const findSectionComponent = () => wrapper.findComponent(SectionComponent);
 
   beforeEach(() => {
     createComponent();
   });
 
-  it('renders the title', () => {
-    expect(wrapper.text()).toContain(wrapper.vm.$options.i18n.title);
+  it('assigns the correct emoji and title', () => {
+    expect(findSectionComponent().exists()).toBe(true);
+    expect(findSectionComponent().props()).toMatchObject({
+      emoji: 'rocket',
+      title: 'Run your first pipeline',
+    });
   });
 
   it('renders the content', () => {
@@ -31,7 +38,7 @@ describe('First pipeline card', () => {
   });
 
   it('renders the link', () => {
-    expect(findRunnersLink().href).toBe(wrapper.vm.$options.RUNNER_HELP_URL);
+    expect(findLink().attributes('href')).toBe(wrapper.vm.$options.RUNNER_HELP_URL);
   });
 
   describe('tracking', () => {
@@ -48,7 +55,7 @@ describe('First pipeline card', () => {
       const { label } = pipelineEditorTrackingOptions;
       const { runners } = pipelineEditorTrackingOptions.actions.helpDrawerLinks;
 
-      await findRunnersLink().click();
+      await findLink().vm.$emit('click');
 
       expect(trackingSpy).toHaveBeenCalledWith(undefined, runners, { label });
     });

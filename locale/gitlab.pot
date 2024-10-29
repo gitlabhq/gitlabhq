@@ -35108,6 +35108,9 @@ msgstr ""
 msgid "MlModelRegistry|Using the MLflow client"
 msgstr ""
 
+msgid "MlModelRegistry|Version card"
+msgstr ""
+
 msgid "MlModelRegistry|Version created %{timeAgo} by %{author}"
 msgstr ""
 
@@ -40025,7 +40028,10 @@ msgstr ""
 msgid "PipelineEditorTutorial|If you’re using a self-managed GitLab instance, %{linkStart}make sure your instance has runners available.%{linkEnd}"
 msgstr ""
 
-msgid "PipelineEditorTutorial|Learn how to set up and use GitLab CI/CD with guided tutorials, videos, and best practices in %{linkStart}GitLab University%{linkEnd}."
+msgid "PipelineEditorTutorial|Learn CI/CD with GitLab University"
+msgstr ""
+
+msgid "PipelineEditorTutorial|Learn how to set up and use GitLab CI/CD with guided tutorials, videos, and best practices in %{linkStart}GitLab University.%{linkEnd}"
 msgstr ""
 
 msgid "PipelineEditorTutorial|Learn more about %{linkStart}GitLab CI/CD concepts%{linkEnd}"
@@ -40034,7 +40040,13 @@ msgstr ""
 msgid "PipelineEditorTutorial|Make your pipeline more efficient with the %{linkStart}Needs keyword%{linkEnd}"
 msgstr ""
 
+msgid "PipelineEditorTutorial|Pipeline configuration reference"
+msgstr ""
+
 msgid "PipelineEditorTutorial|Resources to help with your CI/CD configuration:"
+msgstr ""
+
+msgid "PipelineEditorTutorial|Run your first pipeline"
 msgstr ""
 
 msgid "PipelineEditorTutorial|Select the pipeline ID to view the full details about your first pipeline run."
@@ -40049,22 +40061,13 @@ msgstr ""
 msgid "PipelineEditorTutorial|This template creates a simple test pipeline. To use it:"
 msgstr ""
 
+msgid "PipelineEditorTutorial|Tip: Visualize and validate your pipeline"
+msgstr ""
+
 msgid "PipelineEditorTutorial|Use the Visualize and Lint tabs in the pipeline editor to visualize your pipeline and check for any errors or warnings before committing your changes."
 msgstr ""
 
 msgid "PipelineEditorTutorial|View %{linkStart}.gitlab-ci.yml syntax reference%{linkEnd}"
-msgstr ""
-
-msgid "PipelineEditorTutorial|⚙️ Pipeline configuration reference"
-msgstr ""
-
-msgid "PipelineEditorTutorial|🎓 Learn CI/CD with GitLab University"
-msgstr ""
-
-msgid "PipelineEditorTutorial|💡 Tip: Visualize and validate your pipeline"
-msgstr ""
-
-msgid "PipelineEditorTutorial|🚀 Run your first pipeline"
 msgstr ""
 
 msgid "PipelineEditor|Configuration content has changed. Re-run validation for updated results."
@@ -60729,6 +60732,9 @@ msgstr ""
 msgid "View members"
 msgstr ""
 
+msgid "View merge requests you're involved with from start to finish by highlighting those that Needs Attention and those you are Following."
+msgstr ""
+
 msgid "View milestones"
 msgstr ""
 
@@ -60855,6 +60861,9 @@ msgid "VisibilityLevel|This visibility level is not allowed because the parent g
 msgstr ""
 
 msgid "VisibilityLevel|Unknown"
+msgstr ""
+
+msgid "Visit new homepage"
 msgstr ""
 
 msgid "Visual Studio Code (HTTPS)"
@@ -64187,6 +64196,9 @@ msgid "Your membership in %{project_or_group} %{project_or_group_name} will expi
 msgstr ""
 
 msgid "Your membership will expire in %{days_to_expire} days"
+msgstr ""
+
+msgid "Your merge requests have a new homepage!"
 msgstr ""
 
 msgid "Your name"

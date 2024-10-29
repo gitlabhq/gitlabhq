@@ -306,6 +306,10 @@ module MergeRequestsHelper
     data
   end
 
+  def show_mr_dashboard_banner?
+    request.query_string.present? && merge_request_dashboard_enabled?(current_user) && current_page?(merge_requests_search_dashboard_path) && show_new_mr_dashboard_banner?
+  end
+
   private
 
   def review_requested_merge_requests_count

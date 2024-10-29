@@ -1,6 +1,7 @@
 <script>
 import { GlSprintf } from '@gitlab/ui';
 import { s__ } from '~/locale';
+import PipelineEditorDrawerSection from '../pipeline_editor_drawer_section.vue';
 
 export default {
   i18n: {
@@ -14,12 +15,12 @@ export default {
   },
   components: {
     GlSprintf,
+    PipelineEditorDrawerSection,
   },
 };
 </script>
 <template>
-  <div>
-    <h3 class="gl-mb-5 gl-mt-0 gl-text-lg">{{ $options.i18n.title }}</h3>
+  <pipeline-editor-drawer-section emoji="wave" :title="$options.i18n.title">
     <p class="gl-mb-3">{{ $options.i18n.firstParagraph }}</p>
     <p class="gl-mb-0">
       <gl-sprintf :message="$options.i18n.secondParagraph">
@@ -28,5 +29,5 @@ export default {
         </template>
       </gl-sprintf>
     </p>
-  </div>
+  </pipeline-editor-drawer-section>
 </template>

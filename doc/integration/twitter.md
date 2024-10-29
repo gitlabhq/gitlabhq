@@ -2,6 +2,8 @@
 stage: Govern
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+remove_date: '2025-01-29'
+redirect_to: 'omniauth.md#supported-providers'
 ---
 
 # Twitter OAuth 1.0a OmniAuth Provider (removed)

@@ -9553,7 +9553,8 @@ CREATE TABLE ci_trigger_requests (
     variables text,
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
-    commit_id bigint
+    commit_id bigint,
+    project_id bigint
 );
 
 CREATE SEQUENCE ci_trigger_requests_id_seq
@@ -12922,11 +12923,19 @@ CREATE TABLE instance_integrations (
     group_mention_events boolean DEFAULT false NOT NULL,
     group_confidential_mention_events boolean DEFAULT false NOT NULL,
     category text DEFAULT 'common'::text,
-    type text,
     encrypted_properties bytea,
     encrypted_properties_iv bytea,
+    project_id bigint,
+    group_id bigint,
+    inherit_from_id bigint,
+    instance boolean DEFAULT true,
+    type_new text,
+    CONSTRAINT check_2f305455fe CHECK ((char_length(type_new) <= 255)),
     CONSTRAINT check_611836812c CHECK ((char_length(category) <= 255)),
-    CONSTRAINT check_69b7b09aa8 CHECK ((char_length(type) <= 255))
+    CONSTRAINT group_id_null_constraint CHECK ((group_id IS NULL)),
+    CONSTRAINT inherit_from_id_null_constraint CHECK ((inherit_from_id IS NULL)),
+    CONSTRAINT instance_is_true_constraint CHECK ((instance = true)),
+    CONSTRAINT project_id_null_constraint CHECK ((project_id IS NULL))
 );
 
 CREATE SEQUENCE instance_integrations_id_seq
@@ -28928,6 +28937,8 @@ CREATE INDEX index_ci_subscriptions_projects_on_upstream_project_id ON ci_subscr
 CREATE UNIQUE INDEX index_ci_subscriptions_projects_unique_subscription ON ci_subscriptions_projects USING btree (downstream_project_id, upstream_project_id);
 
 CREATE INDEX index_ci_trigger_requests_on_commit_id ON ci_trigger_requests USING btree (commit_id);
+
+CREATE INDEX index_ci_trigger_requests_on_project_id ON ci_trigger_requests USING btree (project_id);
 
 CREATE INDEX index_ci_trigger_requests_on_trigger_id_and_id ON ci_trigger_requests USING btree (trigger_id, id DESC);
 

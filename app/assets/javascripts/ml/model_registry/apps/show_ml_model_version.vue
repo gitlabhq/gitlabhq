@@ -1,5 +1,6 @@
 <script>
-import { GlButton, GlSprintf, GlIcon, GlLink } from '@gitlab/ui';
+import VueRouter from 'vue-router';
+import { GlTab, GlTabs, GlButton, GlSprintf, GlIcon, GlLink } from '@gitlab/ui';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { createAlert, VARIANT_DANGER } from '~/alert';
@@ -15,19 +16,34 @@ import ModelVersionDetail from '../components/model_version_detail.vue';
 import LoadOrErrorOrShow from '../components/load_or_error_or_show.vue';
 import ModelVersionActionsDropdown from '../components/model_version_actions_dropdown.vue';
 
+const ROUTE_DETAILS = 'details';
+
+const routes = [
+  {
+    path: '/',
+    name: ROUTE_DETAILS,
+    component: ModelVersionDetail,
+  },
+  { path: '*', redirect: { name: ROUTE_DETAILS } },
+];
+
 export default {
   name: 'ShowMlModelVersionApp',
   components: {
     GlButton,
     LoadOrErrorOrShow,
-    ModelVersionDetail,
     ModelVersionActionsDropdown,
     TitleArea,
+    GlTabs,
+    GlTab,
     GlIcon,
     GlLink,
     GlSprintf,
     TimeAgoTooltip,
   },
+  router: new VueRouter({
+    routes,
+  }),
   mixins: [timeagoMixin],
   provide() {
     return {
@@ -142,6 +158,9 @@ export default {
     showCreatedDetail() {
       return this.modelVersion?.author && this.modelVersion?.createdAt;
     },
+    tabIndex() {
+      return routes.findIndex(({ name }) => name === this.$route.name);
+    },
   },
   methods: {
     handleError(error) {
@@ -184,10 +203,16 @@ export default {
         this.handleDeleteError(error);
       }
     },
+    goTo(name) {
+      if (name !== this.$route.name) {
+        this.$router.push({ name });
+      }
+    },
   },
   i18n: {
     editModelVersionButtonLabel: s__('MlModelRegistry|Edit model version'),
   },
+  ROUTE_DETAILS,
 };
 </script>
 
@@ -234,7 +259,18 @@ export default {
     </div>
 
     <load-or-error-or-show :is-loading="isLoading" :error-message="errorMessage">
-      <model-version-detail :model-version="modelVersion" allow-artifact-import />
+      <gl-tabs class="gl-mt-4" :value="tabIndex">
+        <gl-tab
+          :title="s__('MlModelRegistry|Version card')"
+          @click="goTo($options.ROUTE_DETAILS)"
+        />
+      </gl-tabs>
+      <router-view
+        :model-version="modelVersion"
+        can-write-model-registry
+        import-path
+        allow-artifact-import
+      />
     </load-or-error-or-show>
   </div>
 </template>

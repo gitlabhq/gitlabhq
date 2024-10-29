@@ -115,7 +115,7 @@ RSpec.describe 'Database schema',
     ci_sources_pipelines: %w[partition_id source_partition_id source_job_id],
     ci_sources_projects: %w[partition_id],
     ci_stages: %w[partition_id project_id pipeline_id],
-    ci_trigger_requests: %w[commit_id],
+    ci_trigger_requests: %w[commit_id project_id],
     ci_job_artifact_states: %w[partition_id project_id],
     cluster_providers_aws: %w[security_group_id vpc_id access_key_id],
     cluster_providers_gcp: %w[gcp_project_id operation_id],
@@ -231,7 +231,8 @@ RSpec.describe 'Database schema',
     ai_testing_terms_acceptances: %w[user_id], # testing terms only have 1 entry, and if the user is deleted the record should remain
     namespace_settings: %w[early_access_program_joined_by_id], # isn't used inside product itself. Only through Snowflake
     workspaces_agent_config_versions: %w[item_id], # polymorphic associations
-    work_item_types: %w[correct_id] # temporary column that is not a foreign key
+    work_item_types: %w[correct_id], # temporary column that is not a foreign key
+    instance_integrations: %w[project_id group_id inherit_from_id] # these columns are not used in instance integrations
   }.with_indifferent_access.freeze
 
   context 'for table' do
