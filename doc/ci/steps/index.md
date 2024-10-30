@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
-**Status:** Experimental
+**Status:** Experiment
 
 Steps are reusable units of a job that when composed together replace the `script` used in a GitLab CI/CD job.
 While you are not required to use steps, the reusability, composability, testability, and independence
@@ -18,8 +18,9 @@ of steps make it easier to understand and maintain CI/CD pipeline.
 To get started, you can try the [Set up steps tutorial](../../tutorials/setup_steps/index.md).
 To start creating your own steps, see [Creating your own step](#create-your-own-step).
 
-Follow the team's progress building steps at the epic, [CI Steps: Composability in GitLab CI/CD](https://gitlab.com/groups/gitlab-org/-/epics/11535).
-To report a bug, create an issue in the [step-runner](https://gitlab.com/gitlab-org/step-runner/-/issues) project.
+This experimental feature is still in active development and might have breaking
+changes at any time. Review the [changelog](https://gitlab.com/gitlab-org/step-runner/-/blob/main/CHANGELOG.md)
+for full details on any breaking changes.
 
 CI/CD steps are different than [CI/CD components](../components/index.md). Components
 are reusable single pipeline configuration units. They are included in a pipeline when it is created,
@@ -299,7 +300,7 @@ Input names can only use alpha-numeric characters and underscores, and must not 
 Inputs must have a type, and they can optionally specify a default value. An input with no default value
 is a required input, it must be specified when using the step.
 
-Inputs must be one of the following types. The default input type is `string`.
+Inputs must be one of the following types.
 
 | Type      | Example                 | Description |
 |:----------|:------------------------|:------------|
@@ -336,14 +337,13 @@ Similar to inputs, output names can only use alpha-numeric characters and unders
 and must not start with a number. Outputs must have a type, and they can optionally specify a default value.
 The default value is returned when the step doesn't return the output.
 
-Outputs must be one of the following types. The default input type is `raw_string`.
+Outputs must be one of the following types.
 
 | Type         | Example                 | Description |
 |:-------------|:------------------------|:------------|
 | `array`      | `["a","b"]`             | A list of un-typed items. |
 | `boolean`    | `true`                  | True or false. |
 | `number`     | `56.77`                 | 64 bit float. |
-| `raw_string` | `brown cow`             | Text written without enclosing double-quotes. |
 | `string`     | `"brown cow"`           | Text.       |
 | `struct`     | `{"k1":"v1","k2":"v2"}` | Structured content. |
 

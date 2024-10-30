@@ -116,6 +116,8 @@ module.exports = (path, options = {}) => {
     '^shared_queries(/.*)$': '<rootDir>/app/graphql/queries$1',
     '^ee_else_ce(/.*)$': '<rootDir>/app/assets/javascripts$1',
     '^jh_else_ce(/.*)$': '<rootDir>/app/assets/javascripts$1',
+    '^jh_else_ee(/.*)$':
+      '<rootDir>/app/assets/javascripts/vue_shared/components/empty_component.js',
     '^any_else_ce(/.*)$': '<rootDir>/app/assets/javascripts$1',
     '^helpers(/.*)$': '<rootDir>/spec/frontend/__helpers__$1',
     '^vendor(/.*)$': '<rootDir>/vendor/assets/javascripts$1',

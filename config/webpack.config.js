@@ -744,6 +744,15 @@ module.exports = {
           'app/assets/javascripts/vue_shared/components/empty_component.js',
         );
       }),
+    !IS_EE &&
+      !IS_JH &&
+      new webpack.NormalModuleReplacementPlugin(/^jh_else_ee\/(.*)\.vue/, (resource) => {
+        // eslint-disable-next-line no-param-reassign
+        resource.request = path.join(
+          ROOT_PATH,
+          'app/assets/javascripts/vue_shared/components/empty_component.js',
+        );
+      }),
 
     new CopyWebpackPlugin({
       patterns: copyFilesPatterns,

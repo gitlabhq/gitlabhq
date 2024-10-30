@@ -183,6 +183,13 @@ module Resolvers
                 Array of source branch names.
                 No resolved merge requests will have one of these branches as their source.
         DESC
+      argument :target_branches, [GraphQL::Types::String],
+        required: false,
+        as: :target_branch,
+        description: <<~DESC
+                Array of target branch names.
+                No resolved merge requests will have one of these branches as their target.
+        DESC
     end
 
     validates mutually_exclusive: [:assignee_username, :assignee_wildcard_id]

@@ -121,7 +121,6 @@ describe('ide/init_gitlab_web_ide', () => {
           signIn: TEST_SIGN_IN_PATH,
         },
         featureFlags: {
-          settingsSync: true,
           crossOriginExtensionHost: false,
         },
         editorFont: {
@@ -269,7 +268,6 @@ describe('ide/init_gitlab_web_ide', () => {
         findRootElement(),
         expect.objectContaining({
           featureFlags: {
-            settingsSync: true,
             crossOriginExtensionHost: true,
           },
         }),
@@ -291,7 +289,6 @@ describe('ide/init_gitlab_web_ide', () => {
           findRootElement(),
           expect.objectContaining({
             featureFlags: {
-              settingsSync: true,
               crossOriginExtensionHost: true,
             },
           }),

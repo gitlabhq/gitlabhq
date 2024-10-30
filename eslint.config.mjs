@@ -1,6 +1,7 @@
 /* eslint-disable import/no-default-export */
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { existsSync } from 'node:fs';
 import localRules from 'eslint-plugin-local-rules';
 import js from '@eslint/js';
 import { FlatCompat } from '@eslint/eslintrc';
@@ -12,6 +13,23 @@ const compat = new FlatCompat({
   recommendedConfig: js.configs.recommended,
   allConfig: js.configs.all,
 });
+
+const extendConfigs = [
+  'plugin:@gitlab/default',
+  'plugin:@gitlab/i18n',
+  'plugin:no-jquery/slim',
+  'plugin:no-jquery/deprecated-3.4',
+  'plugin:no-unsanitized/recommended-legacy',
+  './tooling/eslint-config/conditionally_ignore.js',
+  'plugin:@gitlab/jest',
+];
+
+// Allowing JiHu to add rules on their side since the update from
+// eslintrc.yml to eslint.config.mjs is not allowing subdirectory
+// rewrite.
+if (existsSync(path.resolve(dirname, 'jh'))) {
+  extendConfigs.push('./jh/eslint.config.js');
+}
 
 const jestConfig = {
   files: ['{,ee/}spec/frontend/**/*.js'],
@@ -65,15 +83,7 @@ export default [
       'spec/fixtures/**/*.graphql',
     ],
   },
-  ...compat.extends(
-    'plugin:@gitlab/default',
-    'plugin:@gitlab/i18n',
-    'plugin:no-jquery/slim',
-    'plugin:no-jquery/deprecated-3.4',
-    'plugin:no-unsanitized/recommended-legacy',
-    './tooling/eslint-config/conditionally_ignore.js',
-    'plugin:@gitlab/jest',
-  ),
+  ...compat.extends(...extendConfigs),
   ...compat.plugins('no-jquery', '@graphql-eslint'),
   {
     files: ['**/*.{js,vue}'],
@@ -114,7 +124,7 @@ export default [
       'import/no-unresolved': [
         'error',
         {
-          ignore: ['^(ee|jh)_component/'],
+          ignore: ['^(ee|jh)_component/', '^jh_else_ee/'],
         },
       ],
 

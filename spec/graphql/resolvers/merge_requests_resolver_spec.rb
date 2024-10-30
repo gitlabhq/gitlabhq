@@ -175,6 +175,17 @@ RSpec.describe Resolvers::MergeRequestsResolver, feature_category: :code_review_
       end
     end
 
+    context 'with negated target branches argument' do
+      it 'excludes merge requests with given target branches from selection' do
+        mrs = [merge_request_3, merge_request_4]
+        branches = mrs.map(&:target_branch)
+        result = resolve_mr(project, not: { target_branches: branches })
+
+        expect(result).not_to include(merge_request_3, merge_request_4)
+        expect(result).to include(merge_request_1, merge_request_2, merge_request_5, merge_request_6)
+      end
+    end
+
     context 'with state argument' do
       it 'takes one argument' do
         result = resolve_mr(project, state: 'locked')

@@ -199,6 +199,14 @@ module.exports = function storybookWebpackConfig({ config }) {
     );
   }
 
+  if (!IS_EE && !IS_JH) {
+    config.plugins.push(
+      new webpack.NormalModuleReplacementPlugin(/^jh_else_ee\/(.*)\.vue/, (resource) => {
+        resource.request = EMPTY_VUE_COMPONENT_PATH;
+      }),
+    );
+  }
+
   const baseIntegrationTestHelpersPath = 'spec/frontend_integration/test_helpers';
 
   // Add any missing aliases from the main GitLab webpack config

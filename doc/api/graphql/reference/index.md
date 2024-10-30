@@ -43020,6 +43020,7 @@ Defines which user roles, users, or groups can merge into a protected branch.
 | <a id="mergerequestsresolvernegatedparamsreleasetag"></a>`releaseTag` | [`String`](#string) | Filter by release tag to exclude. |
 | <a id="mergerequestsresolvernegatedparamsreviewerusername"></a>`reviewerUsername` | [`String`](#string) | Username of the reviewer to exclude. |
 | <a id="mergerequestsresolvernegatedparamssourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Array of source branch names. No resolved merge requests will have one of these branches as their source. |
+| <a id="mergerequestsresolvernegatedparamstargetbranches"></a>`targetBranches` | [`[String!]`](#string) | Array of target branch names. No resolved merge requests will have one of these branches as their target. |
 
 ### `MonthSelectionInput`
 

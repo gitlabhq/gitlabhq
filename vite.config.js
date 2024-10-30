@@ -59,6 +59,13 @@ const JH_ALIAS_FALLBACK = [
   },
 ];
 
+const JH_ELSE_EE_ALIAS_FALLBACK = [
+  {
+    find: /^jh_else_ee\/(.*)\.vue/,
+    replacement: emptyComponent,
+  },
+];
+
 export default defineConfig({
   cacheDir: path.resolve(__dirname, 'tmp/cache/vite'),
   resolve: {
@@ -66,6 +73,7 @@ export default defineConfig({
       ...aliasArr,
       ...(IS_EE ? [] : EE_ALIAS_FALLBACK),
       ...(IS_JH ? [] : JH_ALIAS_FALLBACK),
+      ...(!IS_EE && !IS_JH ? JH_ELSE_EE_ALIAS_FALLBACK : []),
       {
         find: '~/',
         replacement: javascriptsPath,
