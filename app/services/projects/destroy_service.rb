@@ -15,7 +15,10 @@ module Projects
     end
 
     def execute
-      return false unless can?(current_user, :remove_project, project)
+      unless can?(current_user, :remove_project, project)
+        project.update_attribute(:pending_delete, false) if project.pending_delete?
+        return false
+      end
 
       project.update_attribute(:pending_delete, true)
 

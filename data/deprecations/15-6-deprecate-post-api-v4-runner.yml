@@ -5,6 +5,11 @@
   reporter: pedropombeiro  # (required) GitLab username of the person reporting the deprecation
   stage: Verify  # (required) String value of the stage that the feature was created in. e.g., Growth
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/379743  # (required) Link to the deprecation issue in GitLab
+  impact: critical
+  scope: instance, group, project
+  resolution_role: Admin
+  manual_task: true
+  window: "1"
   body: |  # (required) Do not modify this line, instead modify the lines below.
     The support for registration tokens and certain runner configuration arguments in the `POST` method operation on the `/api/v4/runners` endpoint is deprecated.
     This endpoint [registers](https://docs.gitlab.com/ee/api/runners.html#register-a-new-runner) a runner

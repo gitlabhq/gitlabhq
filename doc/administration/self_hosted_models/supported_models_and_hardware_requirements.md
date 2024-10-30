@@ -47,7 +47,6 @@ The following models are under evaluation, and support is limited:
 | DeepSeekCoder | [DeepSeek Coder 33b Instruct](https://huggingface.co/deepseek-ai/deepseek-coder-33b-instruct)        | **{check-circle}** Yes                | **{check-circle}** Yes               | **{dotted-circle}** No        |
 | DeepSeekCoder | [DeepSeek Coder 33b Base](https://huggingface.co/deepseek-ai/deepseek-coder-33b-base)        | **{check-circle}** Yes                | **{dotted-circle}** No               | **{dotted-circle}** No        |
 | GPT  | [GPT-3.5-Turbo](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure#gpt-35)        | **{check-circle}** Yes                | **{check-circle}** Yes               | **{dotted-circle}** No        |
-| GPT  | [GPT-4](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure#gpt-4)        | **{check-circle}** Yes                | **{check-circle}** Yes               | **{dotted-circle}** No        |
 | GPT  | [GPT-4 Turbo](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure#gpt-4)        | **{check-circle}** Yes                | **{check-circle}** Yes               | **{dotted-circle}** No        |
 | GPT  | [GPT-4o](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure#gpt-4o-and-gpt-4-turbo)        | **{check-circle}** Yes                | **{check-circle}** Yes               | **{dotted-circle}** No        |
 | GPT  | [GPT-4o-mini](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure#gpt-4o-and-gpt-4-turbo)        | **{check-circle}** Yes                | **{check-circle}** Yes               | **{dotted-circle}** No        |
@@ -60,5 +59,7 @@ For optimal performance, the following hardware specifications are recommended a
 
 - **CPU**: Minimum 8 cores (16 threads recommended).
 - **RAM**: At least 32 GB (64 GB or more recommended for larger models).
-- **GPU**: 2x NVIDIA A100 or equivalent for optimal inference performance.
+- **GPU**:
+  - **Minimum**: 2x NVIDIA A100 or equivalent for optimal inference performance.
+  - **Note**: For running Mixtral 8x22B and Mixtral 8x22B-it, it is recommended to use 8x NVIDIA A100 GPUs.
 - **Storage**: SSD with sufficient space for model weights and data.

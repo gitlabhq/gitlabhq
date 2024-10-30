@@ -284,7 +284,6 @@ spec/frontend/ide/components/merge_requests/item_spec.js
 spec/frontend/ide/components/merge_requests/list_spec.js
 spec/frontend/ide/components/nav_dropdown_button_spec.js
 spec/frontend/ide/components/new_dropdown/index_spec.js
-spec/frontend/ide/components/shared/commit_message_field_spec.js
 spec/frontend/ide/ide_router_extension_spec.js
 spec/frontend/ide/ide_router_spec.js
 spec/frontend/ide/sync_router_and_store_spec.js

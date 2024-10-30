@@ -49,10 +49,6 @@ class Packages::Package < ApplicationRecord
   has_many :nuget_symbols, inverse_of: :package, class_name: 'Packages::Nuget::Symbol'
   has_one :npm_metadatum, inverse_of: :package, class_name: 'Packages::Npm::Metadatum'
 
-  # TODO: Remove with the rollout of the FF terraform_extract_terraform_package_model
-  # https://gitlab.com/gitlab-org/gitlab/-/issues/490007
-  has_one :terraform_module_metadatum, inverse_of: :package, class_name: 'Packages::TerraformModule::Metadatum'
-
   has_many :build_infos, inverse_of: :package
   has_many :pipelines, through: :build_infos, disable_joins: true
   has_many :matching_package_protection_rules, ->(package) { where(package_type: package.package_type).for_package_name(package.name) }, through: :project, source: :package_protection_rules
@@ -76,17 +72,11 @@ class Packages::Package < ApplicationRecord
   validates :name, format: { with: Gitlab::Regex.npm_package_name_regex, message: Gitlab::Regex.npm_package_name_regex_message }, if: :npm?
   validates :name, format: { with: Gitlab::Regex.nuget_package_name_regex }, if: :nuget?
 
-  # TODO: Remove with the rollout of the FF terraform_extract_terraform_package_model
-  # https://gitlab.com/gitlab-org/gitlab/-/issues/490007
-  validates :name, format: { with: Gitlab::Regex.terraform_module_package_name_regex }, if: :terraform_module?
-
   validates :version, format: { with: Gitlab::Regex.nuget_version_regex }, if: :nuget?
   validates :version, format: { with: Gitlab::Regex.maven_version_regex }, if: -> { version? && maven? }
 
-  # TODO: Remove `terraform_module?` condition with the rollout of the FF terraform_extract_terraform_package_model
-  # https://gitlab.com/gitlab-org/gitlab/-/issues/490007
   validates :version, format: { with: Gitlab::Regex.semver_regex, message: Gitlab::Regex.semver_regex_message },
-    if: -> { npm? || terraform_module? }
+    if: -> { npm? }
 
   scope :for_projects, ->(project_ids) { where(project_id: project_ids) }
   scope :with_name, ->(name) { where(name: name) }
@@ -177,7 +167,7 @@ class Packages::Package < ApplicationRecord
   def self.inheritance_column = 'package_type'
 
   def self.inheritance_column_to_class_map
-    hash = {
+    {
       ml_model: 'Packages::MlModel::Package',
       golang: 'Packages::Go::Package',
       rubygems: 'Packages::Rubygems::Package',
@@ -187,14 +177,9 @@ class Packages::Package < ApplicationRecord
       composer: 'Packages::Composer::Package',
       helm: 'Packages::Helm::Package',
       generic: 'Packages::Generic::Package',
-      pypi: 'Packages::Pypi::Package'
-    }
-
-    if Feature.enabled?(:terraform_extract_terraform_package_model, Feature.current_request)
-      hash[:terraform_module] = 'Packages::TerraformModule::Package'
-    end
-
-    hash
+      pypi: 'Packages::Pypi::Package',
+      terraform_module: 'Packages::TerraformModule::Package'
+    }.freeze
   end
 
   def self.only_maven_packages_with_path(path, use_cte: false)

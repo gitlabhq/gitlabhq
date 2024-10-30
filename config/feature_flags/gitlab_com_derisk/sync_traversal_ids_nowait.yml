@@ -1,9 +1,0 @@
----
-name: sync_traversal_ids_nowait
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/468848
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158024
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/472155
-milestone: '17.3'
-group: group::tenant scale
-type: gitlab_com_derisk
-default_enabled: false

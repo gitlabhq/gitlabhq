@@ -11,11 +11,7 @@ module Packages
       def execute
         return packages if project && params[:package_name]
 
-        if Feature.enabled?(:terraform_extract_terraform_package_model, Feature.current_request)
-          ::Packages::TerraformModule::Package.none
-        else
-          ::Packages::Package.none
-        end
+        ::Packages::TerraformModule::Package.none
       end
 
       private
@@ -23,18 +19,10 @@ module Packages
       attr_reader :project, :params
 
       def packages
-        result = if Feature.enabled?(:terraform_extract_terraform_package_model, Feature.current_request)
-                   ::Packages::TerraformModule::Package
-                     .for_projects(project)
-                     .with_name(params[:package_name])
-                     .installable
-                 else
-                   project
-                     .packages
-                     .with_name(params[:package_name])
-                     .terraform_module
-                     .installable
-                 end
+        result = ::Packages::TerraformModule::Package
+                   .for_projects(project)
+                   .with_name(params[:package_name])
+                   .installable
 
         params[:package_version] ? result.with_version(params[:package_version]) : result.has_version.order_version_desc
       end

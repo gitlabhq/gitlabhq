@@ -137,7 +137,7 @@ As illustrated in the following diagram:
 
 To establish a fully isolated self-hosted infrastructure:
 
-1. **Install the large language model (LLM) serving infrastructure**
+1. **Install a Large Language Model (LLM) Serving Infrastructure**
 
    - We support various platforms for serving and hosting your LLMs, such as vLLM, AWS Bedrock, and Azure OpenAI. To help you choose the most suitable option for effectively deploying your models, see the [supported LLM platforms documentation](supported_llm_serving_platforms.md) for more information on each platform's features.
 

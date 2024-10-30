@@ -1,9 +1,0 @@
----
-name: terraform_extract_terraform_package_model
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/435834
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167045
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/490007
-milestone: '17.6'
-group: group::package registry
-type: gitlab_com_derisk
-default_enabled: false

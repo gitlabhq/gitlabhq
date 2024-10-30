@@ -295,3 +295,18 @@ To [continue using](https://about.gitlab.com/gitlab-duo/) GitLab Duo Pro or GitL
 - Purchase GitLab Duo Pro or Duo Enterprise
 
 GitLab Duo Enterprise is available only for Ultimate subscriptions.
+
+## Troubleshooting
+
+### Unable to use the UI to assign seats to your users
+
+On the **Usage Quotas** page, if you experience both of the following, you will be unable to use the UI to assign seats to your users:
+
+- The **Seats** tab does not load.
+- The following error message is displayed:
+
+  ```plaintext
+  An error occurred while loading billable members list.
+  ```
+
+As a workaround, you can use the GraphQL queries in [this snippet](https://gitlab.com/gitlab-org/gitlab/-/snippets/3763094) to assign seats to users.

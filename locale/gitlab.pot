@@ -3825,9 +3825,6 @@ msgstr ""
 msgid "AdminSelfHostedModels|API token"
 msgstr ""
 
-msgid "AdminSelfHostedModels|API token (if needed)"
-msgstr ""
-
 msgid "AdminSelfHostedModels|Accept GitLab Testing Agreement"
 msgstr ""
 
@@ -3837,16 +3834,10 @@ msgstr ""
 msgid "AdminSelfHostedModels|Add and manage models that can be used for GitLab AI features."
 msgstr ""
 
-msgid "AdminSelfHostedModels|Add self-hosted language models to use as backups for GitLab Duo features."
-msgstr ""
-
 msgid "AdminSelfHostedModels|Add self-hosted model"
 msgstr ""
 
 msgid "AdminSelfHostedModels|Add self-hosted models"
-msgstr ""
-
-msgid "AdminSelfHostedModels|An API key is set"
 msgstr ""
 
 msgid "AdminSelfHostedModels|An error occurred while deleting your self-hosted model. Please try again."
@@ -3861,13 +3852,7 @@ msgstr ""
 msgid "AdminSelfHostedModels|Configure GitLab Duo by adding and managing your own %{self_hosted_models_link_start}self-hosted models%{self_hosted_models_link_end}. To get started, you must first accept the %{gitlab_testing_agreement_link_start}GitLab Testing Agreement%{gitlab_testing_agreement_link_end}."
 msgstr ""
 
-msgid "AdminSelfHostedModels|Create model"
-msgstr ""
-
 msgid "AdminSelfHostedModels|Create self-hosted model"
-msgstr ""
-
-msgid "AdminSelfHostedModels|Define your set of self-hosted models"
 msgstr ""
 
 msgid "AdminSelfHostedModels|Delete self-hosted model"
@@ -3919,12 +3904,6 @@ msgid "AdminSelfHostedModels|Model uses an API token"
 msgstr ""
 
 msgid "AdminSelfHostedModels|Name"
-msgstr ""
-
-msgid "AdminSelfHostedModels|Name the deployment (must be unique)"
-msgstr ""
-
-msgid "AdminSelfHostedModels|New self-hosted model"
 msgstr ""
 
 msgid "AdminSelfHostedModels|Once the model is no longer in use, you can return here to delete it."
@@ -38781,9 +38760,6 @@ msgstr ""
 msgid "Package type must be NuGet"
 msgstr ""
 
-msgid "Package type must be Terraform Module"
-msgstr ""
-
 msgid "PackageRegistry|%{linkStart}Wildcards%{linkEnd} such as `my-package-*` are supported."
 msgstr ""
 
@@ -51100,18 +51076,6 @@ msgid "Selected tag is already in use. Choose another option."
 msgstr ""
 
 msgid "Selecting a GitLab user will add a link to the GitLab user in the descriptions of issues and comments (e.g. \"By %{link_open}@johnsmith%{link_close}\"). It will also associate and/or assign these issues and comments with the selected user."
-msgstr ""
-
-msgid "Self-Hosted Model was created"
-msgstr ""
-
-msgid "Self-Hosted Model was deleted"
-msgstr ""
-
-msgid "Self-Hosted Model was updated"
-msgstr ""
-
-msgid "Self-hosted models dropdown"
 msgstr ""
 
 msgid "Send"

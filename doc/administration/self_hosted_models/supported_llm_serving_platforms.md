@@ -23,6 +23,7 @@ There are multiple platforms available to host your self-hosted Large Language M
 1. [vLLM](https://docs.vllm.ai/en/latest/index.html).
    A high-performance inference server optimized for serving LLMs with memory efficiency. It supports model parallelism and integrates easily with existing workflows.
    - [vLLM Installation Guide](https://docs.vllm.ai/en/latest/getting_started/installation.html)
+   - [vLLM Supported Models](https://docs.vllm.ai/en/latest/models/supported_models.html)
 
 ## For cloud-hosted model deployments
 
@@ -34,3 +35,4 @@ There are multiple platforms available to host your self-hosted Large Language M
 1. [Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-services/openai/).
    Provides access to OpenAI's powerful models, enabling developers to integrate advanced AI capabilities into their applications with robust security and scalable infrastructure.
    - [Working with Azure OpenAI models](https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/working-with-models?tabs=powershell)
+   - [Azure OpenAI Service models](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure%2Cglobal-standard%2Cstandard-chat-completions)

@@ -64,8 +64,8 @@ You can now [configure the GitLab for Jira Cloud app](#configure-the-gitlab-for-
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview, see
-[Configure the GitLab for Jira Cloud app from the Atlassian Marketplace](https://youtu.be/SwR-g1s1zTo).
-<!-- Video published on 2020-02-01 -->
+[Installing the GitLab for Jira Cloud app from the Atlassian Marketplace for GitLab.com](https://youtu.be/52rB586_rs8?list=PL05JrBw4t0Koazgli_PmMQCER2pVH7vUT).
+<!-- Video published on 2024-10-30 -->
 
 ## Configure the GitLab for Jira Cloud app
 

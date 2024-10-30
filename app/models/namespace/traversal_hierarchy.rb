@@ -51,11 +51,7 @@ class Namespace
         %w[namespaces], url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/424279'
       ) do
         Namespace.transaction do
-          if sync_traversal_ids_nowait?
-            Gitlab::Database::Transaction::Settings.with('LOCK_TIMEOUT', LOCK_TIMEOUT) do
-              @root.lock!('FOR NO KEY UPDATE')
-            end
-          else
+          Gitlab::Database::Transaction::Settings.with('LOCK_TIMEOUT', LOCK_TIMEOUT) do
             @root.lock!('FOR NO KEY UPDATE')
           end
 
@@ -120,10 +116,6 @@ class Namespace
 
     def db_deadlock_counter
       Gitlab::Metrics.counter(:db_deadlock, 'Counts the times we have deadlocked in the database')
-    end
-
-    def sync_traversal_ids_nowait?
-      Feature.enabled?(:sync_traversal_ids_nowait, Feature.current_request)
     end
   end
 end

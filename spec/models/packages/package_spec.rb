@@ -21,11 +21,6 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
     it { is_expected.to have_one(:maven_metadatum).inverse_of(:package) }
     it { is_expected.to have_one(:nuget_metadatum).inverse_of(:package) }
     it { is_expected.to have_one(:npm_metadatum).inverse_of(:package) }
-
-    # TODO: Remove with the rollout of the FF terraform_extract_terraform_package_model
-    # https://gitlab.com/gitlab-org/gitlab/-/issues/490007
-    it { is_expected.to have_one(:terraform_module_metadatum).inverse_of(:package) }
-
     it { is_expected.to have_many(:nuget_symbols).inverse_of(:package) }
     it { is_expected.to have_many(:matching_package_protection_rules).through(:project).source(:package_protection_rules) }
   end
@@ -142,21 +137,6 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
         it { is_expected.not_to allow_value("@scope%2e%2e%fpackage").for(:name) }
         it { is_expected.not_to allow_value("@scope/sub/package").for(:name) }
       end
-
-      # TODO: Remove with the rollout of the FF terraform_extract_terraform_package_model
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/490007
-      context 'terraform module package' do
-        subject { build_stubbed(:terraform_module_package_legacy) }
-
-        it { is_expected.to allow_value('my-module/my-system').for(:name) }
-        it { is_expected.to allow_value('my/module').for(:name) }
-        it { is_expected.not_to allow_value('my-module').for(:name) }
-        it { is_expected.not_to allow_value('My-Module').for(:name) }
-        it { is_expected.not_to allow_value('my_module').for(:name) }
-        it { is_expected.not_to allow_value('my.module').for(:name) }
-        it { is_expected.not_to allow_value('../../../my-module').for(:name) }
-        it { is_expected.not_to allow_value('%2e%2e%2fmy-module').for(:name) }
-      end
     end
 
     describe '#version' do
@@ -189,10 +169,6 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
       end
 
       it_behaves_like 'validating version to be SemVer compliant for', :npm_package
-
-      # TODO: Remove with the rollout of the FF terraform_extract_terraform_package_model
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/490007
-      it_behaves_like 'validating version to be SemVer compliant for', :terraform_module_package_legacy
 
       context 'nuget package' do
         subject { build_stubbed(:nuget_package) }
@@ -1075,20 +1051,6 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
           it 'maps to the correct class' do
             is_expected.to eq(described_class.inheritance_column_to_class_map[package_format].constantize)
           end
-        end
-      end
-    end
-
-    context 'when terraform_extract_terraform_package_model is disabled' do
-      before do
-        stub_feature_flags(terraform_extract_terraform_package_model: false)
-      end
-
-      context 'for terraform module' do
-        let(:format) { :terraform_module }
-
-        it 'maps to Packages::Package' do
-          is_expected.to eq(described_class)
         end
       end
     end

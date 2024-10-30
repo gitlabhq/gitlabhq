@@ -95,21 +95,6 @@ RSpec.describe Namespace::TraversalHierarchy, type: :model, feature_category: :g
       end
     end
 
-    context 'when sync_traversal_ids_nowait feature flag is disabled' do
-      before do
-        stub_feature_flags(sync_traversal_ids_nowait: false)
-      end
-
-      it_behaves_like 'locked row', timeout: false do
-        let(:recorded_queries) { ActiveRecord::QueryRecorder.new }
-        let(:row) { root }
-
-        before do
-          recorded_queries.record { subject }
-        end
-      end
-    end
-
     context 'when deadlocked' do
       before do
         allow(root).to receive(:lock!) { raise ActiveRecord::Deadlocked }

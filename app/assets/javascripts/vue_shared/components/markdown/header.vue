@@ -272,7 +272,7 @@ export default {
     <div class="gl-flex gl-flex-wrap gl-items-center">
       <div
         data-testid="md-header-toolbar"
-        class="md-header-toolbar gl-flex gl-grow gl-items-start gl-gap-y-2 gl-py-3"
+        class="md-header-toolbar gl-flex gl-grow gl-items-start gl-gap-y-2 gl-bg-default gl-py-3"
       >
         <div class="gl-flex gl-flex-wrap gl-gap-y-2">
           <gl-button
