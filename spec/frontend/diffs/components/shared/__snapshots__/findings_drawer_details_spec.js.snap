@@ -16,6 +16,8 @@ exports[`Findings Drawer Details General Rendering matches the snapshot with det
     <gl-badge-stub
       class="text-capitalize"
       iconsize="md"
+      tag="span"
+      target="_self"
       variant="warning"
     >
       detected
@@ -78,6 +80,8 @@ exports[`Findings Drawer Details General Rendering matches the snapshot with dis
     <gl-badge-stub
       class="text-capitalize"
       iconsize="md"
+      tag="span"
+      target="_self"
       variant="warning"
     >
       detected

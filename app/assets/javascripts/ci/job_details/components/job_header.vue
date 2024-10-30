@@ -106,11 +106,11 @@ export default {
     </template>
 
     <template #description>
-      <ci-icon class="gl-mr-3" :status="status" show-status-text />
+      <ci-icon class="gl-mr-1" :status="status" show-status-text />
       <template v-if="shouldRenderTriggeredLabel">{{ __('Started') }}</template>
       <template v-else>{{ __('Created') }}</template>
 
-      <timeago-tooltip :time="time" class="gl-mx-2" />
+      <timeago-tooltip :time="time" />
 
       {{ __('by') }}
 
@@ -127,7 +127,7 @@ export default {
             :size="24"
             :src="avatarUrl"
             :label="user.name"
-            class="gl-mx-1 gl-hidden sm:gl-inline-flex"
+            class="gl-hidden sm:gl-inline-flex"
           />
           <strong class="author gl-inline sm:gl-hidden">@{{ user.username }}</strong>
           <gl-tooltip v-if="message" :target="() => $refs[$options.EMOJI_REF]">

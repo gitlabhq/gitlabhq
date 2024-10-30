@@ -3101,6 +3101,31 @@ Input type: `CiJobTokenScopeRemoveProjectInput`
 | <a id="mutationcijobtokenscoperemoveprojectclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationcijobtokenscoperemoveprojecterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
+### `Mutation.ciJobTokenScopeUpdatePolicies`
+
+DETAILS:
+**Introduced** in GitLab 17.6.
+**Status**: Experiment.
+
+Input type: `CiJobTokenScopeUpdatePoliciesInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationcijobtokenscopeupdatepoliciesclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcijobtokenscopeupdatepoliciesjobtokenpolicies"></a>`jobTokenPolicies` | [`[CiJobTokenScopePolicies!]!`](#cijobtokenscopepolicies) | List of policies added to the CI job token scope. |
+| <a id="mutationcijobtokenscopeupdatepoliciesprojectpath"></a>`projectPath` | [`ID!`](#id) | Project that the CI job token scope belongs to. |
+| <a id="mutationcijobtokenscopeupdatepoliciestargetpath"></a>`targetPath` | [`ID!`](#id) | Group or project that the CI job token targets. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationcijobtokenscopeupdatepoliciescijobtokenscope"></a>`ciJobTokenScope` | [`CiJobTokenScopeType`](#cijobtokenscopetype) | Updated CI job token access scope. |
+| <a id="mutationcijobtokenscopeupdatepoliciesclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcijobtokenscopeupdatepolicieserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.clusterAgentDelete`
 
 Input type: `ClusterAgentDeleteInput`
@@ -5858,6 +5883,29 @@ Input type: `ImportSourceUserCancelReassignmentInput`
 | <a id="mutationimportsourceusercancelreassignmentclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationimportsourceusercancelreassignmenterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationimportsourceusercancelreassignmentimportsourceuser"></a>`importSourceUser` | [`ImportSourceUser`](#importsourceuser) | Mapping of a user on source instance to a user on destination instance after mutation. |
+
+### `Mutation.importSourceUserKeepAllAsPlaceholder`
+
+DETAILS:
+**Introduced** in GitLab 17.6.
+**Status**: Experiment.
+
+Input type: `ImportSourceUserKeepAllAsPlaceholderInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationimportsourceuserkeepallasplaceholderclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationimportsourceuserkeepallasplaceholdernamespaceid"></a>`namespaceId` | [`NamespaceID!`](#namespaceid) | Global ID of the namespace. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationimportsourceuserkeepallasplaceholderclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationimportsourceuserkeepallasplaceholdererrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationimportsourceuserkeepallasplaceholderupdatedimportsourceusercount"></a>`updatedImportSourceUserCount` | [`Int`](#int) | Number of successfully updated mappings of users on source instance to their destination users. |
 
 ### `Mutation.importSourceUserKeepAsPlaceholder`
 

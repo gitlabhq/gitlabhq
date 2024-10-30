@@ -80,7 +80,9 @@ module MergeRequestsHelper
   end
 
   def merge_request_button_hidden?(merge_request, closed)
-    merge_request.closed? == closed || (merge_request.merged? == closed && !merge_request.closed?) || merge_request.closed_or_merged_without_fork?
+    merge_request.closed? == closed ||
+      (merge_request.merged? == closed && !merge_request.closed?) ||
+      merge_request.closed_or_merged_without_fork?
   end
 
   def merge_request_version_path(project, merge_request, merge_request_diff, start_sha = nil)
@@ -168,7 +170,11 @@ module MergeRequestsHelper
 
     if include_value
       sanitized_list = sanitize_name(reviewers.map(&:name).to_sentence)
-      ns_('NotificationEmail|Reviewer: %{users}', 'NotificationEmail|Reviewers: %{users}', reviewers.count) % { users: sanitized_list }
+      ns_(
+        'NotificationEmail|Reviewer: %{users}',
+        'NotificationEmail|Reviewers: %{users}',
+        reviewers.count
+      ) % { users: sanitized_list }
     else
       ns_('NotificationEmail|Reviewer', 'NotificationEmail|Reviewers', reviewers.count)
     end
@@ -185,7 +191,12 @@ module MergeRequestsHelper
       endpoint_metadata: @endpoint_metadata_url,
       endpoint_batch: diffs_batch_project_json_merge_request_path(project, merge_request, 'json', params),
       endpoint_coverage: @coverage_path,
-      endpoint_diff_for_path: diff_for_path_namespace_project_merge_request_path(format: 'json', id: merge_request.iid, namespace_id: project.namespace.to_param, project_id: project.path),
+      endpoint_diff_for_path: diff_for_path_namespace_project_merge_request_path(
+        format: 'json',
+        id: merge_request.iid,
+        namespace_id: project.namespace.to_param,
+        project_id: project.path
+      ),
       help_page_path: help_page_path('user/project/merge_requests/reviews/suggestions.md'),
       current_user_data: @current_user_data,
       update_current_user_path: @update_current_user_path,
@@ -220,7 +231,10 @@ module MergeRequestsHelper
       source_project_full_path: merge_request.source_project&.full_path,
       source_project_default_url: merge_request.source_project && default_url_to_repo(merge_request.source_project),
       target_branch: merge_request.target_branch,
-      reviewing_docs_path: help_page_path('user/project/merge_requests/merge_request_troubleshooting.md', anchor: "check-out-merge-requests-locally-through-the-head-ref")
+      reviewing_docs_path: help_page_path(
+        'user/project/merge_requests/merge_request_troubleshooting.md',
+        anchor: "check-out-merge-requests-locally-through-the-head-ref"
+      )
     }
   end
 
@@ -293,21 +307,37 @@ module MergeRequestsHelper
       blocksMerge: project.only_allow_merge_if_all_discussions_are_resolved?.to_s,
       imported: merge_request.imported?.to_s,
       tabs: [
-        ['show', _('Overview'), project_merge_request_path(project, merge_request), merge_request.related_notes.user.count],
+        [
+          'show',
+          _('Overview'),
+          project_merge_request_path(project, merge_request),
+          merge_request.related_notes.user.count
+        ],
         ['commits', _('Commits'), commits_project_merge_request_path(project, merge_request), @commits_count],
         ['diffs', _('Changes'), diffs_project_merge_request_path(project, merge_request), @diffs_count]
       ]
     }
 
     if project.builds_enabled?
-      data[:tabs].insert(2, ['pipelines', _('Pipelines'), pipelines_project_merge_request_path(project, merge_request), @number_of_pipelines])
+      data[:tabs].insert(
+        2,
+        [
+          'pipelines',
+          _('Pipelines'),
+          pipelines_project_merge_request_path(project, merge_request),
+          @number_of_pipelines
+        ]
+      )
     end
 
     data
   end
 
   def show_mr_dashboard_banner?
-    request.query_string.present? && merge_request_dashboard_enabled?(current_user) && current_page?(merge_requests_search_dashboard_path) && show_new_mr_dashboard_banner?
+    request.query_string.present? &&
+      merge_request_dashboard_enabled?(current_user) &&
+      current_page?(merge_requests_search_dashboard_path) &&
+      show_new_mr_dashboard_banner?
   end
 
   private
@@ -331,13 +361,20 @@ module MergeRequestsHelper
                 end
 
     branch = if merge_request.for_fork?
-               ERB::Util.html_escape(_('%{fork_icon} %{source_project_path}:%{source_branch}')) % { fork_icon: fork_icon.html_safe, source_project_path: merge_request.source_project_path, source_branch: merge_request.source_branch }
+               ERB::Util.html_escape(_('%{fork_icon} %{source_project_path}:%{source_branch}')) % {
+                 fork_icon: fork_icon.html_safe,
+                 source_project_path: merge_request.source_project_path,
+                 source_branch: merge_request.source_branch
+               }
              else
                merge_request.source_branch
              end
 
     branch_title = if merge_request.for_fork?
-                     ERB::Util.html_escape(_('%{source_project_path}:%{source_branch}')) % { source_project_path: merge_request.source_project_path, source_branch: merge_request.source_branch }
+                     ERB::Util.html_escape(_('%{source_project_path}:%{source_branch}')) % {
+                       source_project_path: merge_request.source_project_path,
+                       source_branch: merge_request.source_branch
+                     }
                    else
                      merge_request.source_branch
                    end
@@ -348,19 +385,38 @@ module MergeRequestsHelper
                     ''
                   end
 
-    link_to branch, branch_path, title: branch_title, class: 'ref-container gl-inline-block gl-truncate gl-max-w-26 gl-ml-2'
+    link_to branch,
+      branch_path,
+      title: branch_title,
+      class: 'ref-container gl-inline-block gl-truncate gl-max-w-26 gl-ml-2'
   end
 
   def merge_request_header(merge_request)
     link_to_author = link_to_member(merge_request.author, size: 24, extra_class: 'gl-font-bold gl-mr-2', avatar: false)
     copy_action_description = _('Copy branch name')
     copy_action_shortcut = 'b'
-    copy_button_title = "#{copy_action_description} <kbd class='flat ml-1' aria-hidden=true>#{copy_action_shortcut}</kbd>"
-    copy_button = clipboard_button(text: merge_request.source_branch, title: copy_button_title, aria_keyshortcuts: copy_action_shortcut, aria_label: copy_action_description, class: '!gl-hidden md:!gl-inline-block gl-mx-1 js-source-branch-copy')
+    copy_button_title = "#{copy_action_description} <kbd class='flat ml-1' " \
+      "aria-hidden=true>#{copy_action_shortcut}</kbd>"
+    copy_button = clipboard_button(
+      text: merge_request.source_branch,
+      title: copy_button_title,
+      aria_keyshortcuts: copy_action_shortcut,
+      aria_label: copy_action_description,
+      class: '!gl-hidden md:!gl-inline-block gl-mx-1 js-source-branch-copy'
+    )
 
-    target_branch = link_to merge_request.target_branch, project_tree_path(merge_request.target_project, merge_request.target_branch), title: merge_request.target_branch, class: 'ref-container gl-inline-block gl-truncate gl-max-w-26 gl-mx-2'
+    target_branch = link_to merge_request.target_branch,
+      project_tree_path(merge_request.target_project, merge_request.target_branch),
+      title: merge_request.target_branch,
+      class: 'ref-container gl-inline-block gl-truncate gl-max-w-26 gl-mx-2'
 
-    _('%{author} requested to merge %{source_branch} %{copy_button} into %{target_branch} %{created_at}').html_safe % { author: link_to_author.html_safe, source_branch: merge_request_source_branch(merge_request).html_safe, copy_button: copy_button.html_safe, target_branch: target_branch.html_safe, created_at: time_ago_with_tooltip(merge_request.created_at, html_class: 'gl-inline-block').html_safe }
+    _('%{author} requested to merge %{source_branch} %{copy_button} into %{target_branch} %{created_at}').html_safe % {
+      author: link_to_author.html_safe,
+      source_branch: merge_request_source_branch(merge_request).html_safe,
+      copy_button: copy_button.html_safe,
+      target_branch: target_branch.html_safe,
+      created_at: time_ago_with_tooltip(merge_request.created_at, html_class: 'gl-inline-block').html_safe
+    }
   end
 
   def hidden_merge_request_icon(merge_request)
@@ -416,7 +472,10 @@ module MergeRequestsHelper
           lists: [
             {
               title: _('Waiting for others'),
-              helpContent: _('Your assigned merge requests that are waiting for approvals, and reviews you have requested changes for.'),
+              helpContent: _(
+                'Your assigned merge requests that are waiting for approvals, ' \
+                  'and reviews you have requested changes for.'
+              ),
               query: 'assigneeOrReviewerMergeRequests',
               variables: {
                 reviewerReviewStates: %w[REVIEWED REQUESTED_CHANGES],
@@ -441,7 +500,9 @@ module MergeRequestsHelper
             },
             {
               title: _('Merged recently'),
-              helpContent: _('These merge requests merged after %{date}. You were an assignee or a reviewer.') % { date: 2.weeks.ago.to_date.to_formatted_s(:long) },
+              helpContent: _('These merge requests merged after %{date}. You were an assignee or a reviewer.') % {
+                date: 2.weeks.ago.to_date.to_formatted_s(:long)
+              },
               query: 'assigneeOrReviewerMergeRequests',
               variables: {
                 state: 'merged',

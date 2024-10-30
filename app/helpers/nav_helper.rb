@@ -35,7 +35,8 @@ module NavHelper
       end
     elsif current_path?('jobs#show')
       %w[page-gutter build-sidebar right-sidebar-expanded]
-    elsif current_controller?('wikis') && current_action?('show', 'create', 'edit', 'update', 'history', 'git_access', 'destroy', 'diff')
+    elsif current_controller?('wikis') &&
+        current_action?('show', 'create', 'edit', 'update', 'history', 'git_access', 'destroy', 'diff')
       %w[page-gutter wiki-sidebar right-sidebar-expanded]
     else
       []

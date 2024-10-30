@@ -14,7 +14,7 @@ module Ci
 
       TARGET_DOES_NOT_EXIST = 'The target does not exists'
 
-      def validate_edit!(source_project, target_project, current_user)
+      def validate_source_project_and_target_project_access!(source_project, target_project, current_user)
         unless can?(current_user, :admin_project, source_project)
           raise ValidationError, "Insufficient permissions to modify the job token scope"
         end
@@ -24,7 +24,7 @@ module Ci
         end
       end
 
-      def validate_group_add!(source_project, target_group, current_user)
+      def validate_source_project_and_target_group_access!(source_project, target_group, current_user)
         unless can?(current_user, :admin_project, source_project)
           raise ValidationError, "Insufficient permissions to modify the job token scope"
         end

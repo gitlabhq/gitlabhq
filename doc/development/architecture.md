@@ -476,7 +476,7 @@ Consul is a tool for service discovery and configuration. Consul is distributed,
 - Configuration:
   - [Omnibus](https://docs.gitlab.com/omnibus/settings/database.html#disabling-automatic-database-migration)
   - [Charts](https://docs.gitlab.com/charts/charts/gitlab/migrations/)
-  - [Source](../update/upgrading_from_source.md#10-install-libraries-migrations-etc)
+  - [Source](../update/upgrading_from_source.md#install-libraries-and-run-migrations)
 - Layer: Core Service (Data)
 
 #### Elasticsearch

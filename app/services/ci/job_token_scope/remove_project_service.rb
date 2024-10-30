@@ -6,7 +6,7 @@ module Ci
       include EditScopeValidations
 
       def execute(target_project, direction)
-        validate_edit!(project, target_project, current_user)
+        validate_source_project_and_target_project_access!(project, target_project, current_user)
 
         if project == target_project
           return ServiceResponse.error(message: "Source project cannot be removed from the job token scope")

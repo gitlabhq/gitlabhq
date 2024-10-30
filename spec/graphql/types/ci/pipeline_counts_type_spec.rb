@@ -5,8 +5,7 @@ require 'spec_helper'
 RSpec.describe GitlabSchema.types['PipelineCounts'], feature_category: :continuous_integration do
   include GraphqlHelpers
 
-  let(:current_user) { create(:user) }
-
+  let_it_be(:current_user) { create(:user) }
   let_it_be(:project) { create(:project, :private) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
   let_it_be(:failed_pipeline) { create(:ci_pipeline, :failed, project: project) }
@@ -15,7 +14,7 @@ RSpec.describe GitlabSchema.types['PipelineCounts'], feature_category: :continuo
   let_it_be(:sha_pipeline) { create(:ci_pipeline, :running, project: project, sha: 'deadbeef') }
   let_it_be(:on_demand_dast_scan) { create(:ci_pipeline, :success, project: project, source: 'ondemand_dast_scan') }
 
-  before do
+  before_all do
     project.add_developer(current_user)
   end
 

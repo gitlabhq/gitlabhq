@@ -211,6 +211,7 @@
   min-height: $height;
   padding: $grid-size;
   @apply gl-bg-section gl-border gl-border-section gl-text-default;
+  box-shadow: 0 -6px 0 0 var(--gl-background-color-default);
 }
 
 @mixin job-log-top-bar {

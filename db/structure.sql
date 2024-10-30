@@ -14672,7 +14672,8 @@ CREATE TABLE namespace_details (
     description text,
     description_html text,
     creator_id bigint,
-    pending_delete boolean DEFAULT false NOT NULL
+    pending_delete boolean DEFAULT false NOT NULL,
+    deleted_at timestamp with time zone
 );
 
 CREATE TABLE namespace_import_users (

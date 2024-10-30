@@ -6,7 +6,7 @@ module Ci
       include EditScopeValidations
 
       def execute(target_project, policies: [], direction: :inbound)
-        validate_edit!(project, target_project, current_user)
+        validate_source_project_and_target_project_access!(project, target_project, current_user)
 
         link = allowlist(direction)
           .add!(target_project, policies: policies, user: current_user)

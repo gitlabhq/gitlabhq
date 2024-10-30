@@ -26,6 +26,8 @@ exports[`Merge request dashboard collapsible section renders section 1`] = `
           class="gl-ml-1"
           iconsize="md"
           size="sm"
+          tag="span"
+          target="_self"
           variant="neutral"
         >
           3

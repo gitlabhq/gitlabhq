@@ -60,6 +60,7 @@ module Types
     mount_mutation Mutations::Environments::Stop
     mount_mutation Mutations::Environments::Update
     mount_mutation Mutations::Import::SourceUsers::CancelReassignment, alpha: { milestone: '17.2' }
+    mount_mutation Mutations::Import::SourceUsers::KeepAllAsPlaceholder, alpha: { milestone: '17.6' }
     mount_mutation Mutations::Import::SourceUsers::KeepAsPlaceholder, alpha: { milestone: '17.2' }
     mount_mutation Mutations::Import::SourceUsers::Reassign, alpha: { milestone: '17.2' }
     mount_mutation Mutations::Import::SourceUsers::ResendNotification, alpha: { milestone: '17.2' }
@@ -173,6 +174,7 @@ module Types
     mount_mutation Mutations::Ci::JobArtifact::Destroy
     mount_mutation Mutations::Ci::JobTokenScope::RemoveGroup
     mount_mutation Mutations::Ci::JobTokenScope::RemoveProject
+    mount_mutation Mutations::Ci::JobTokenScope::UpdateJobTokenPolicies, alpha: { milestone: '17.6' }
     mount_mutation Mutations::Ci::Pipeline::Cancel
     mount_mutation Mutations::Ci::Pipeline::Destroy
     mount_mutation Mutations::Ci::Pipeline::Retry

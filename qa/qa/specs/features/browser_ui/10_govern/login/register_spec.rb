@@ -75,6 +75,10 @@ module QA
           end
 
           it "allows to recreate deleted user with same credeintials",
+            quarantine: {
+              issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/500942',
+              type: :investigating
+            },
             testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/500257' do
             user.remove_via_api!
             # make sure user is deleted

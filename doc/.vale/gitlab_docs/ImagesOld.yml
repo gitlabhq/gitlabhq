@@ -1,0 +1,13 @@
+---
+# Suggestion: gitlab_docs.ImagesOld
+#
+# Checks for images that are not from supported versions of GitLab
+#
+# For a list of all options, see https://vale.sh/docs/topics/styles/
+extends: existence
+message: "Review this image. It might be out of date."
+link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#anchor-links
+level: suggestion
+scope: raw
+raw:
+  - '!\[[^\]]*\]\([^\)]*_v1(?![4567])[^\)]*\)'

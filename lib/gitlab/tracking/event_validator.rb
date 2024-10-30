@@ -43,7 +43,8 @@ module Gitlab
         return if hash[key].nil?
         return if class_names.include?(hash[key].class)
 
-        raise InvalidPropertyTypeError, "#{key} should be an instance of #{class_names.join(', ')}"
+        error = InvalidPropertyTypeError.new("#{key} should be an instance of #{class_names.join(', ')}")
+        log_invalid_property(error)
       end
 
       def validate_additional_properties!
@@ -61,11 +62,20 @@ module Gitlab
 
         custom_properties.each_key do |key|
           unless event_definition_attributes[:additional_properties]&.include?(key)
-            raise InvalidPropertyError, "Unknown additional property: #{key} for event_name: #{event_name}"
+            error = InvalidPropertyError.new("Unknown additional property: #{key} for event_name: #{event_name}")
+            log_invalid_property(error)
           end
 
           validate_property!(custom_properties, key, *allowed_types)
         end
+      end
+
+      def log_invalid_property(error)
+        Gitlab::ErrorTracking.track_and_raise_for_dev_exception(
+          error,
+          event_name: event_name,
+          additional_properties: additional_properties
+        )
       end
     end
   end

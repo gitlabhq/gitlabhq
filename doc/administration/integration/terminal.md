@@ -91,7 +91,7 @@ narrower set of rules, you can restrict it to URLs ending with `/terminal.ws`.
 This approach may still result in a few false positives.
 
 If you self-compiled your installation, you may need to make some changes to your configuration. Read
-[Upgrading Community Edition and Enterprise Edition from source](../../update/upgrading_from_source.md#nginx-configuration)
+[Upgrading Community Edition and Enterprise Edition from source](../../update/upgrading_from_source.md#new-configuration-for-nginx-or-apache)
 for more details.
 
 To disable web terminal support in GitLab, stop passing

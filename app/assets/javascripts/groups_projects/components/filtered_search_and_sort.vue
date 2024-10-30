@@ -113,7 +113,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-border-t gl-border-b gl-bg-gray-10 gl-p-5">
+  <div class="gl-border-t gl-bg-subtle gl-p-5">
     <div class="gl-flex gl-flex-col gl-gap-3 md:gl-flex-row">
       <div class="gl-grow">
         <filtered-search-bar

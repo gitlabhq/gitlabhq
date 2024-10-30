@@ -33,16 +33,17 @@ you can follow the steps below to configure the `pgai` Gem:
 1. Add the following snippet to your SSH configuration file at `~/.ssh/config`, replacing the variable values:
 
    ```plaintext
-   Host pgai-proxy
-     HostName <postgresai-proxy>
+   # lab servers
+   Host <postgresai-servers>
      User <postgresai-user>
      IdentityFile ~/.ssh/id_ed25519
-   ```
 
-1. Run the following command so you can accept the server key fingerprint:
-
-   ```shell
-   ssh pgai-proxy
+   # lab boxes
+   Host <postgresai-servers>
+     User <postgresai-user>
+     PreferredAuthentications publickey
+     IdentityFile ~/.ssh/id_ed25519
+     ProxyCommand ssh <postgresai-servers> -W %h:%p
    ```
 
 1. Run the following commands:
