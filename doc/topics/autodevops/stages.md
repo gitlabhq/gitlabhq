@@ -291,15 +291,15 @@ to set `DAST_WEBSITE` to any staging or production environment. DAST Full Scan
 actively attacks the target, which can take down your application and lead to
 data loss or corruption.
 
-### Disabling Auto DAST
+### Skipping Auto DAST
 
-You can disable DAST:
+You can skip DAST jobs:
 
 - On all branches by setting the `DAST_DISABLED` CI/CD variable to `"true"`.
 - Only on the default branch by setting the `DAST_DISABLED_FOR_DEFAULT_BRANCH`
   variable to `"true"`.
 - Only on feature branches by setting `REVIEW_DISABLED` variable to
-  `"true"`. This also disables the Review App.
+  `"true"`. This also skips the Review App.
 
 ## Auto Browser Performance Testing
 
@@ -525,4 +525,4 @@ for updates.
 
 This stage is enabled by default. You can disable it by adding the
 `CODE_INTELLIGENCE_DISABLED` CI/CD variable. Read more about
-[disabling Auto DevOps jobs](../../topics/autodevops/cicd_variables.md#job-disabling-variables).
+[disabling Auto DevOps jobs](../../topics/autodevops/cicd_variables.md#job-skipping-variables).

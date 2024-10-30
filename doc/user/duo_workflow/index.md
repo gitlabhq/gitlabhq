@@ -54,16 +54,16 @@ Before you can use GitLab Duo Workflow:
 
 ### Install Docker and set the socket file path
 
-GitLab Duo Workflow needs an execution platform where it can execute arbitrary code,
+GitLab Duo Workflow needs an execution platform like Docker where it can execute arbitrary code,
 read and write files, and make API calls to GitLab.
 
 #### Automated setup
 
-Installs Docker, Colima, and sets Docker socket path in VS Code settings.
+The setup script installs Docker and Colima, pulls the Docker base image, and sets Docker socket path in VS Code settings.
 You can run the script with the `--dry-run` flag to check the dependencies
 that get installed with the script.
 
-1. Download the [script](https://gitlab.com/-/snippets/3745948).
+1. Download the [setup script](https://gitlab.com/-/snippets/3745948).
 1. Run the script.
 
    ```shell
@@ -73,27 +73,34 @@ that get installed with the script.
 
 #### Manual setup
 
-Sets socket path if you have
-[Docker or Docker alternatives](https://handbook.gitlab.com/handbook/tools-and-tips/mac/#docker-desktop)
-installed already.
+If you have [Docker Desktop](https://handbook.gitlab.com/handbook/tools-and-tips/mac/#docker-desktop)
+or a container manager other than Colima installed already:
 
-1. Open VS Code, then open its settings:
-   - On Mac: <kbd>Cmd</kbd> + <kbd>,</kbd>
-   - On Windows and Linux: <kbd>Ctrl</kbd> + <kbd>,</kbd>
-1. In the upper-right corner, select the **Open Settings (JSON)** icon.
-1. Ensure the Docker socket settings are configured. If not, add this line to your settings file and save it:
+1. Pull the base Docker image:
+   
+   ```shell
+   docker pull registry.gitlab.com/gitlab-org/duo-workflow/default-docker-image/workflow-generic-image:v0.0.4
+   ```
 
-   - For Rancher Desktop
+1. Set the Docker socket path in VS Code:
+   1. Open VS Code, then open its settings:
+      - On Mac: <kbd>Cmd</kbd> + <kbd>,</kbd>
+      - On Windows and Linux: <kbd>Ctrl</kbd> + <kbd>,</kbd>
+   1. In the upper-right corner, select the **Open Settings (JSON)** icon.
+   1. Add the Docker socket path setting `gitlab.duoWorkflow.dockerSocket`, according to your container manager, and save your settings file.
+   Some examples for common container managers on macOS, where you would replace `<your_user>` with your user's home folder:
 
-     ```json
-     "gitlab.duoWorkflow.dockerSocket": "${userHome}/.rd/docker.sock",
-     ```
+      - Rancher Desktop:
 
-   - For Colima
+         ```json
+         "gitlab.duoWorkflow.dockerSocket": "/Users/<your_user>/.rd/docker.sock",
+         ```
 
-     ```json
-     "gitlab.duoWorkflow.dockerSocket": "${userHome}/.colima/default/docker.sock",
-     ```
+      - Colima:
+
+         ```json
+         "gitlab.duoWorkflow.dockerSocket": "/Users/<your_user>/.colima/default/docker.sock",
+         ```
 
 ## Use GitLab Duo Workflow in VS Code
 
@@ -135,8 +142,8 @@ If you encounter issues:
 1. Check that your open folder in VS Code corresponds to the GitLab project you want to interact with.
 1. Ensure that you've checked out the branch as well.
 1. Check your Docker and Docker socket configuration:
-   1. Try [manual](#manual-setup) Docker socket configuration.
-   1. If using Colima and encountering issues, try restarting it:
+   1. [Install Docker and set the socket file path](#install-docker-and-set-the-socket-file-path).
+   1. Restart your container manager. For example, if using Colima:
 
       ```shell
       colima stop

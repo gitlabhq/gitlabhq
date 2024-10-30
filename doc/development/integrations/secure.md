@@ -99,8 +99,8 @@ it's declared under the `reports:sast` key in the job definition, not because of
 
 ### Policies
 
-Certain GitLab workflows, such as [AutoDevOps](../../topics/autodevops/cicd_variables.md#job-disabling-variables),
-define CI/CD variables to indicate that given scans should be disabled. You can check for this by looking
+Certain GitLab workflows, such as [AutoDevOps](../../topics/autodevops/cicd_variables.md#job-skipping-variables),
+define CI/CD variables to indicate that given scans should be skipped. You can check for this by looking
 for variables such as:
 
 - `DEPENDENCY_SCANNING_DISABLED`
@@ -108,7 +108,7 @@ for variables such as:
 - `SAST_DISABLED`
 - `DAST_DISABLED`
 
-If appropriate based on the scanner type, you should then disable running the custom scanner.
+If appropriate based on the scanner type, you should then skip running the custom scanner.
 
 GitLab also defines a `CI_PROJECT_REPOSITORY_LANGUAGES` variable, which provides the list of
 languages in the repository. Depending on this value, your scanner may or may not do something different.

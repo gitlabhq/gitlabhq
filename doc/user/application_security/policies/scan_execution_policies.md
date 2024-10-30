@@ -26,7 +26,7 @@ Scan execution policies are enforced across all projects that are linked to the 
 static analysis, or other scanners that do not require a build in the project, are still able to
 run and be enforced.
 
-Scan execution policies, compared to pipeline execution policies, provide a faster path to configure GitLab security scans across multiple projects to manage security and compliance. 
+Scan execution policies, compared to pipeline execution policies, provide a faster path to configure GitLab security scans across multiple projects to manage security and compliance.
 
 If any of the following cases are true, use [pipeline execution policies](pipeline_execution_policies.md) instead:
 
@@ -430,4 +430,4 @@ To skip scan jobs with variables, you can use:
 - `SECRET_DETECTION_DISABLED: "true"` to skip secret detection jobs.
 - `DEPENDENCY_SCANNING_DISABLED: "true"` to skip dependency scanning jobs.
 
-For an overview of all variables that can skip jobs, see [CI/CD variables documentation](../../../topics/autodevops/cicd_variables.md#job-disabling-variables)
+For an overview of all variables that can skip jobs, see [CI/CD variables documentation](../../../topics/autodevops/cicd_variables.md#job-skipping-variables)

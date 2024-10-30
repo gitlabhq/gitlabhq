@@ -113,7 +113,7 @@ You can override this behavior by defining specific variables:
 
 These variables also affect Auto Build and Auto Container Scanning. If you don't want to build and push an image to
 `$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG`, include only `Jobs/Deploy.gitlab-ci.yml`, or
-[disable the `build` jobs](cicd_variables.md#job-disabling-variables).
+[skip the `build` jobs](cicd_variables.md#job-skipping-variables).
 
 If you use Auto Container Scanning and set a value for `$CI_APPLICATION_REPOSITORY`, then you should
 also update `$CS_DEFAULT_BRANCH_IMAGE`. For more information, see

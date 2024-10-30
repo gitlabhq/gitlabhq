@@ -87,9 +87,9 @@ Use these variables to integrate CI/CD with PostgreSQL databases.
 | `POSTGRES_CHART_REPOSITORY`             | Helm Chart repository used to search for PostgreSQL chart. Defaults to `https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami`. |
 | `POSTGRES_CHART_VERSION`                | Helm Chart version used for PostgreSQL chart. Defaults to `8.2.1`. |
 
-## Job-disabling variables
+## Job-skipping variables
 
-Use these variables to disable CI/CD jobs.
+ Use these variables to skip specific types of CI/CD jobs. When skipped, the CI/CD jobs don't get created or run.
 
 | **Job name**                           | **CI/CD variable**              | **GitLab version**    | **Description** |
 |----------------------------------------|---------------------------------|-----------------------|-----------------|
