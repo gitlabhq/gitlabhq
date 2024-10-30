@@ -33,20 +33,20 @@ With GitLab Ultimate, pipeline secret detection results are also processed so yo
 
 ## Detected secrets
 
-GitLab maintains the detection rules used in pipeline secret detection. The default ruleset contains
-more than 100 patterns.
+Pipeline secret detection scans the repository's content for specific patterns. Each pattern matches
+a specific type of secret and is specified in a rule by using a TOML syntax. The default set of
+rules is maintained by GitLab. In the Ultimate tier, you can customize the default ruleset to suit
+your needs. For details, see [Customize analyzer rulesets](#customize-analyzer-rulesets). To confirm
+which secrets are detected by pipeline secret detection, see
+[Detected secrets](../detected_secrets.md). To provide reliable, high-confidence results, pipeline
+secret detection only looks for passwords or other unstructured secrets in specific contexts like
+URLs.
 
-Most pipeline secret detection patterns search for specific types of secrets.
-Many services add prefixes or other structural details to their secrets so they can be identified if they're leaked.
-For example, GitLab [adds a `glpat-` prefix](../../../../administration/settings/account_and_limit_settings.md#personal-access-token-prefix) to project, group, and personal access tokens by default.
-
-To provide more reliable, high-confidence results, pipeline secret detection only looks for passwords or other unstructured secrets in specific contexts like URLs.
-
-A detected secret remains in the vulnerability report as "Still
-detected" even after the secret is removed from the scanned file. This
-is because the secret remains in the Git repository's history. To
-address a detected secret, remediate the leak, then triage the
-vulnerability.
+When a secret is detected a vulnerability is created for it. The vulnerability remains as "Still
+detected" even if the secret is removed from the scanned file and pipeline secret detection has been
+run again. This is because the secret remains in the Git repository's history. To understand how to
+remove a secret from the Git repository's history, see the tutorial
+[Remove a secret from your commits](../remove_secrets_tutorial.md).
 
 ## Coverage
 

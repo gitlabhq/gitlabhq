@@ -7588,9 +7588,6 @@ msgstr ""
 msgid "Ask a maintainer to check the import status for more details."
 msgstr ""
 
-msgid "Ask again later"
-msgstr ""
-
 msgid "Ask someone with write access to resolve it."
 msgstr ""
 

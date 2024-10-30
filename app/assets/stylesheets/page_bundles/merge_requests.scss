@@ -322,25 +322,7 @@
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-
-  @include media-breakpoint-up(xs) {
-    flex-wrap: nowrap;
-    white-space: nowrap;
-  }
-
-  @container mr-widget-extension (max-width: 600px) {
-    flex-direction: column;
-    align-items: flex-start;
-
-    .deployment-info {
-      margin-bottom: $gl-padding-8;
-    }
-
-    // stylelint-disable-next-line gitlab/no-gl-class
-    .gl-button {
-      margin-left: 0;
-    }
-  }
+  justify-content: space-between;
 
   > *:not(:last-child) {
     margin-right: 0.3em;
@@ -351,19 +333,9 @@
   }
 
   .deployment-info {
-    flex: 1;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    min-width: 100px;
-
-    display: grid;
+    white-space: nowrap;display: grid;
     grid-template-columns: max-content minmax(0, max-content) max-content;
     grid-gap: $gl-spacing-scale-2;
-
-    @include media-breakpoint-up(xs) {
-      min-width: 0;
-      max-width: 100%;
-    }
   }
 
   .dropdown-menu {

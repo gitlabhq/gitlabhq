@@ -4,8 +4,13 @@ module QA
   module Service
     module DockerRun
       class ContainerRegistryUtils < Base
-        def tag_image(current_tag, new_tag)
-          run_docker_command("tag #{current_tag} #{new_tag}")
+        def initialize(image:)
+          @image = image
+          super()
+        end
+
+        def tag_image(new_tag)
+          run_docker_command("tag #{@image} #{new_tag}")
         end
 
         def push_image(tag)

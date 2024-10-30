@@ -460,9 +460,7 @@ li.note {
 
 copy-code {
   position: absolute;
-  @apply gl-transition-all;
   opacity: 0;
-
   top: $gl-spacing-scale-3;
   right: $gl-spacing-scale-3;
 

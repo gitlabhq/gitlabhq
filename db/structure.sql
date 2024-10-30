@@ -935,6 +935,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_0c326daf67cf() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."namespace_id" IS NULL THEN
+  SELECT "group_id"
+  INTO NEW."namespace_id"
+  FROM "analytics_cycle_analytics_group_value_streams"
+  WHERE "analytics_cycle_analytics_group_value_streams"."id" = NEW."value_stream_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_0da002390fdc() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -6050,6 +6066,7 @@ ALTER SEQUENCE analytics_cycle_analytics_stage_event_hashes_id_seq OWNED BY anal
 CREATE TABLE analytics_cycle_analytics_value_stream_settings (
     value_stream_id bigint NOT NULL,
     project_ids_filter bigint[] DEFAULT '{}'::bigint[],
+    namespace_id bigint NOT NULL,
     CONSTRAINT project_ids_filter_array_check CHECK (((cardinality(project_ids_filter) <= 100) AND (array_position(project_ids_filter, NULL::bigint) IS NULL)))
 );
 
@@ -28161,6 +28178,8 @@ CREATE UNIQUE INDEX index_analytics_ca_group_value_streams_on_group_id_and_name 
 
 CREATE INDEX index_analytics_cycle_analytics_group_stages_custom_only ON analytics_cycle_analytics_group_stages USING btree (id) WHERE (custom = true);
 
+CREATE INDEX index_analytics_cycle_analytics_value_stream_settings_on_namesp ON analytics_cycle_analytics_value_stream_settings USING btree (namespace_id);
+
 CREATE UNIQUE INDEX index_analytics_dashboards_pointers_on_namespace_id ON analytics_dashboards_pointers USING btree (namespace_id);
 
 CREATE INDEX index_analytics_dashboards_pointers_on_target_project_id ON analytics_dashboards_pointers USING btree (target_project_id);
@@ -34231,6 +34250,8 @@ CREATE TRIGGER trigger_0a1b0adcf686 BEFORE INSERT OR UPDATE ON packages_debian_p
 
 CREATE TRIGGER trigger_0a29d4d42b62 BEFORE INSERT OR UPDATE ON approval_project_rules_protected_branches FOR EACH ROW EXECUTE FUNCTION trigger_0a29d4d42b62();
 
+CREATE TRIGGER trigger_0c326daf67cf BEFORE INSERT OR UPDATE ON analytics_cycle_analytics_value_stream_settings FOR EACH ROW EXECUTE FUNCTION trigger_0c326daf67cf();
+
 CREATE TRIGGER trigger_0da002390fdc BEFORE INSERT OR UPDATE ON operations_feature_flags_issues FOR EACH ROW EXECUTE FUNCTION trigger_0da002390fdc();
 
 CREATE TRIGGER trigger_0e13f214e504 BEFORE INSERT OR UPDATE ON merge_request_assignment_events FOR EACH ROW EXECUTE FUNCTION trigger_0e13f214e504();
@@ -35961,6 +35982,9 @@ ALTER TABLE ONLY packages_composer_metadata
 
 ALTER TABLE ONLY approval_project_rules_protected_branches
     ADD CONSTRAINT fk_e6ee913fc2 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY analytics_cycle_analytics_value_stream_settings
+    ADD CONSTRAINT fk_e6fcfdeb81 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY merge_requests
     ADD CONSTRAINT fk_e719a85f8a FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE SET NULL;
