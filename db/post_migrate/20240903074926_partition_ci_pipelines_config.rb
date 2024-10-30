@@ -5,6 +5,8 @@ class PartitionCiPipelinesConfig < Gitlab::Database::Migration[2.2]
   disable_ddl_transaction!
 
   def up
+    return if already_partitioned?
+
     with_lock_retries do
       lock_tables(:p_ci_pipelines, :ci_pipelines_config, mode: :access_exclusive)
 
@@ -36,5 +38,13 @@ class PartitionCiPipelinesConfig < Gitlab::Database::Migration[2.2]
       reverse_lock_order: true,
       name: :fk_rails_906c9a2533_p
     )
+  end
+
+  private
+
+  def already_partitioned?
+    ::Gitlab::Database::PostgresPartition
+      .for_parent_table(:p_ci_pipelines_config)
+      .any?
   end
 end
