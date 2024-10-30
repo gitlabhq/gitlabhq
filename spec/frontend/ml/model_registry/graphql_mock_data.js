@@ -330,6 +330,12 @@ export const modelWithOneVersion = {
   name: 'model_2',
   versionCount: 1,
   createdAt: '2023-12-06T12:41:48Z',
+  author: {
+    id: 'gid://gitlab/User/1',
+    name: 'name',
+    avatarUrl: 'avatarUrl',
+    webUrl: 'webUrl',
+  },
   latestVersion: {
     id: 'gid://gitlab/Ml::ModelVersion/1',
     version: '1.0.0',
@@ -348,6 +354,12 @@ export const modelWithoutVersion = {
   versionCount: 0,
   latestVersion: null,
   createdAt: '2023-12-06T12:41:48Z',
+  author: {
+    id: 'gid://gitlab/User/1',
+    name: 'name',
+    avatarUrl: 'avatarUrl',
+    webUrl: 'webUrl',
+  },
   _links: {
     showPath: '/my_project/-/ml/models/3',
   },
@@ -459,3 +471,5 @@ export const createModelVersionResponses = {
     },
   },
 };
+
+export const graphqlModels = [model];

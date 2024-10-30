@@ -238,7 +238,6 @@ Style/IfUnlessModifier:
     - 'config/initializers/default_url_options.rb'
     - 'config/initializers/direct_upload_support.rb'
     - 'config/initializers/doorkeeper.rb'
-    - 'config/initializers/geo.rb'
     - 'config/initializers/google_api_client.rb'
     - 'config/initializers/jira.rb'
     - 'config/initializers/kaminari_active_record_relation_methods_with_limit.rb'

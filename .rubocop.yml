@@ -1128,6 +1128,7 @@ Search/NamespacedClass:
   Enabled: true
   Exclude:
     - 'config/**/*.rb'
+    - 'ee/config/**/*.rb'
     - 'db/**/*.rb'
     - 'ee/db/**/*.rb'
     - 'ee/bin/**/*'

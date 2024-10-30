@@ -1,11 +1,9 @@
-import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { stubComponent } from 'helpers/stub_component';
 import PackagesListRow from '~/packages_and_registries/package_registry/components/list/package_list_row.vue';
 import PackagesListLoader from '~/packages_and_registries/shared/components/packages_list_loader.vue';
 import DeleteModal from '~/packages_and_registries/package_registry/components/delete_modal.vue';
 import RegistryList from '~/packages_and_registries/shared/components/registry_list.vue';
-import PackageErrorsCount from '~/packages_and_registries/package_registry/components/list/package_errors_count.vue';
 
 import {
   DELETE_PACKAGE_TRACKING_ACTION,
@@ -28,12 +26,6 @@ describe('packages_list', () => {
     id: 'gid://gitlab/Packages::Package/112',
     name: 'second-package',
   };
-  const errorPackage = {
-    ...packageData(),
-    id: 'gid://gitlab/Packages::Package/121',
-    status: 'ERROR',
-    name: 'error package',
-  };
 
   const defaultProps = {
     list: [firstPackage, secondPackage],
@@ -51,7 +43,6 @@ describe('packages_list', () => {
   const findEmptySlot = () => wrapper.findComponent(EmptySlotStub);
   const findRegistryList = () => wrapper.findComponent(RegistryList);
   const findPackagesListRow = () => wrapper.findComponent(PackagesListRow);
-  const findPackageErrorsCount = () => wrapper.findComponent(PackageErrorsCount);
   const findDeletePackagesModal = () => wrapper.findComponent(DeleteModal);
 
   const showMock = jest.fn();
@@ -134,10 +125,6 @@ describe('packages_list', () => {
     it('modal component props is empty', () => {
       expect(findDeletePackagesModal().props('itemsToBeDeleted')).toEqual([]);
       expect(findDeletePackagesModal().props('showRequestForwardingContent')).toBe(false);
-    });
-
-    it('renders PackageErrorsCount component', () => {
-      expect(findPackageErrorsCount().props('errorPackages')).toEqual([]);
     });
   });
 
@@ -279,38 +266,6 @@ describe('packages_list', () => {
         CANCEL_DELETE_PACKAGES_TRACKING_ACTION,
         expect.any(Object),
       );
-    });
-  });
-
-  describe('when error packages are present', () => {
-    beforeEach(() => {
-      mountComponent({ props: { list: [firstPackage, errorPackage] } });
-    });
-
-    it('renders PackageErrorsCount component with props', () => {
-      expect(findPackageErrorsCount().props('errorPackages')).toStrictEqual([errorPackage]);
-    });
-
-    it('and PackageErrorsCount component emits `confirm-delete`, modal component is shown', async () => {
-      findPackageErrorsCount().vm.$emit('confirm-delete', [errorPackage]);
-
-      expect(showMock).toHaveBeenCalledTimes(1);
-
-      await nextTick();
-
-      expect(findDeletePackagesModal().props('itemsToBeDeleted')).toStrictEqual([errorPackage]);
-    });
-
-    describe('when `hideErrorAlert` is true', () => {
-      beforeEach(() => {
-        mountComponent({
-          props: { list: [firstPackage, errorPackage], hideErrorAlert: true },
-        });
-      });
-
-      it('does not display alert message', () => {
-        expect(findPackageErrorsCount().exists()).toBe(false);
-      });
     });
   });
 

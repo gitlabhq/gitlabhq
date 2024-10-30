@@ -27,6 +27,12 @@ query getModels(
         name
         versionCount
         createdAt
+        author {
+          id
+          name
+          webUrl
+          avatarUrl
+        }
         latestVersion {
           id
           version

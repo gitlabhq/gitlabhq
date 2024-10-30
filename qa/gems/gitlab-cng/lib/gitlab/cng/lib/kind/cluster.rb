@@ -14,29 +14,50 @@ module Gitlab
         extend Helpers::Output
         extend Helpers::Shell
 
-        HTTP_PORT = 32080
-        SSH_PORT = 32022
+        CLUSTER_NAME = "gitlab"
 
         METRICS_CHART_NAME = "metrics-server"
         METRICS_CHART_URL = "https://kubernetes-sigs.github.io/metrics-server/"
         METRICS_CHART_VERSION = "^3.12"
 
-        # Destroy kind cluster
-        #
-        # @param [String] name
-        # @return [void]
-        def self.destroy(name)
-          log("Destroying cluster '#{name}'", :info, bright: true)
-          return log("Cluster not found, skipping!", :warn) unless execute_shell(%w[kind get clusters]).include?(name)
+        class << self
+          # Destroy kind cluster
+          #
+          # @param [String] name
+          # @return [void]
+          def destroy
+            log("Destroying cluster '#{CLUSTER_NAME}'", :info, bright: true)
 
-          Helpers::Spinner.spin("destroying cluster") do
-            puts execute_shell(%W[kind delete cluster --name #{name}])
+            unless execute_shell(%w[kind get clusters]).include?(CLUSTER_NAME)
+              return log("Cluster not found, skipping!", :warn)
+            end
+
+            Helpers::Spinner.spin("destroying cluster") do
+              puts execute_shell(%W[kind delete cluster --name #{CLUSTER_NAME}])
+            end
+          end
+
+          # Get configured port mapping
+          #
+          # @param [Integer] port
+          # @return [Integer]
+          def host_port_mapping(port)
+            yml = YAML.safe_load(File.read(kind_config_file))
+
+            yml["nodes"].first["extraPortMappings"].find { |mapping| mapping["hostPort"] == port }["containerPort"]
+          end
+
+          # Kind cluster configuration file
+          #
+          # @return [String]
+          def kind_config_file
+            File.join(Helpers::Utils.tmp_dir, "kind-config.yml")
           end
         end
 
-        def initialize(ci:, name:, host_http_port:, host_ssh_port:, docker_hostname: nil)
+        def initialize(ci:, host_http_port:, host_ssh_port:, docker_hostname: nil)
           @ci = ci
-          @name = name
+          @name = CLUSTER_NAME
           @host_http_port = host_http_port
           @host_ssh_port = host_ssh_port
           @docker_hostname = ci ? docker_hostname || "docker" : docker_hostname
@@ -126,14 +147,12 @@ module Gitlab
           execute_shell(%w[kind get clusters]).include?(name)
         end
 
-        # Create temporary kind config file
+        # Create kind config file
         #
         # @param [String] config_yml
         # @return [String]
         def tmp_config_file(config_yml)
-          File.join(Helpers::Utils.tmp_dir, "kind-config.yml").tap do |path|
-            File.write(path, config_yml)
-          end
+          self.class.kind_config_file.tap { |path| File.write(path, config_yml) }
         end
 
         # Temporary ci specific kind configuration file
@@ -159,10 +178,10 @@ module Gitlab
                       certSANs:
                         - "#{docker_hostname}"
                 extraPortMappings:
-                  - containerPort: #{HTTP_PORT}
+                  - containerPort: #{http_port}
                     hostPort: #{host_http_port}
                     listenAddress: "0.0.0.0"
-                  - containerPort: #{SSH_PORT}
+                  - containerPort: #{ssh_port}
                     hostPort: #{host_ssh_port}
                     listenAddress: "0.0.0.0"
           YML
@@ -193,15 +212,29 @@ module Gitlab
                       - "<%= docker_hostname %>"
             <% end -%>
               extraPortMappings:
-                - containerPort: #{HTTP_PORT}
+                - containerPort: #{http_port}
                   hostPort: #{host_http_port}
                   listenAddress: "0.0.0.0"
-                - containerPort: #{SSH_PORT}
+                - containerPort: #{ssh_port}
                   hostPort: #{host_ssh_port}
                   listenAddress: "0.0.0.0"
           YML
 
           tmp_config_file(template.result(binding))
+        end
+
+        # Random http port to expose outside cluster
+        #
+        # @return [Integer]
+        def http_port
+          @http_port ||= rand(30000..31000)
+        end
+
+        # Random ssh port to expose outside cluster
+        #
+        # @return [Integer]
+        def ssh_port
+          @ssh_port ||= rand(31001..32000)
         end
       end
     end

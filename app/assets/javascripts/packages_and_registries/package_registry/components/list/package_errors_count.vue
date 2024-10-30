@@ -2,19 +2,28 @@
 import { GlAlert, GlButton } from '@gitlab/ui';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import { s__, sprintf } from '~/locale';
+import { InternalEvents } from '~/tracking';
+import DeleteModal from '~/packages_and_registries/package_registry/components/delete_modal.vue';
 
 export default {
   name: 'PackageErrorsCount',
   components: {
     GlAlert,
     GlButton,
+    DeleteModal,
   },
+  mixins: [InternalEvents.mixin()],
   props: {
     errorPackages: {
       type: Array,
       required: false,
       default: () => [],
     },
+  },
+  data() {
+    return {
+      itemsToBeDeleted: [],
+    };
   },
   computed: {
     errorTitleAlert() {
@@ -63,8 +72,12 @@ export default {
     },
   },
   methods: {
-    handleClick() {
-      this.$emit('confirm-delete', [this.singleErrorPackage]);
+    deleteItemsConfirmation() {
+      this.$emit('confirm-delete', this.itemsToBeDeleted);
+    },
+    showConfirmationModal() {
+      this.itemsToBeDeleted = [this.singleErrorPackage];
+      this.$refs.deletePackagesModal.show();
     },
   },
   i18n: {
@@ -76,15 +89,37 @@ export default {
 </script>
 
 <template>
-  <gl-alert v-if="showErrorPackageAlert" class="gl-mt-5" variant="danger" :title="errorTitleAlert">
-    {{ errorMessageBodyAlert }}
-    <template #actions>
-      <gl-button v-if="singleErrorPackage" variant="confirm" @click="handleClick">{{
-        s__('PackageRegistry|Delete this package')
-      }}</gl-button>
-      <gl-button v-else :href="errorPackagesHref" variant="confirm">{{
-        s__('PackageRegistry|Show packages with errors')
-      }}</gl-button>
-    </template>
-  </gl-alert>
+  <div>
+    <gl-alert
+      v-if="showErrorPackageAlert"
+      class="gl-mt-5"
+      variant="danger"
+      :title="errorTitleAlert"
+    >
+      {{ errorMessageBodyAlert }}
+      <template #actions>
+        <gl-button
+          v-if="singleErrorPackage"
+          variant="confirm"
+          data-event-label="package_errors_alert"
+          data-event-tracking="click_delete_package_button"
+          @click="showConfirmationModal"
+          >{{ s__('PackageRegistry|Delete this package') }}</gl-button
+        >
+        <gl-button
+          v-else
+          :href="errorPackagesHref"
+          variant="confirm"
+          data-event-label="package_errors_alert"
+          data-event-tracking="click_show_packages_with_errors_link"
+          >{{ s__('PackageRegistry|Show packages with errors') }}</gl-button
+        >
+      </template>
+    </gl-alert>
+    <delete-modal
+      ref="deletePackagesModal"
+      :items-to-be-deleted="itemsToBeDeleted"
+      @confirm="deleteItemsConfirmation"
+    />
+  </div>
 </template>

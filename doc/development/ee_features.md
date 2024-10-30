@@ -320,6 +320,7 @@ is applied not only to models. Here's a list of other examples:
 - `ee/app/workers/foo_worker.rb`
 - `ee/app/views/foo.html.haml`
 - `ee/app/views/foo/_bar.html.haml`
+- `ee/config/initializers/foo_bar.rb`
 
 This works because for every path in the CE `eager-load/auto-load`
 path, we add the same `ee/`-prepended path in [`config/application.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/925d3d4ebc7a2c72964ce97623ae41b8af12538d/config/application.rb#L42-52).
@@ -585,6 +586,24 @@ In EE, the implementation `ee/app/models/ee/users.rb` would be:
 override :internal?
 def internal?
   super || bot?
+end
+```
+
+### Code in `config/initializers`
+
+Rails initialization code is located in
+
+- `config/initializers` for CE-only features
+- `ee/config/initializers` for EE features
+
+Use `Gitlab.ee { ... }`/`Gitlab.ee?` in `config/initializers` only when
+splitting is not possible. For example:
+
+```ruby
+SomeGem.configure do |config|
+  config.base = 'https://example.com'
+
+  config.encryption = true if Gitlab.ee?
 end
 ```
 

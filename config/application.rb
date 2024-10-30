@@ -165,7 +165,8 @@ module Gitlab
     Gitlab.ee { config.autoload_paths.push("#{config.root}/ee/lib/generators") }
     Gitlab.jh { config.autoload_paths.push("#{config.root}/jh/lib/generators") }
 
-    # Add JH initializer into rails initializers path
+    # Add EE/JH initializer into rails initializers path
+    Gitlab.ee { config.paths["config/initializers"] << "#{config.root}/ee/config/initializers" }
     Gitlab.jh { config.paths["config/initializers"] << "#{config.root}/jh/config/initializers" }
 
     # Only load the plugins named here, in the order given (default is alphabetical).

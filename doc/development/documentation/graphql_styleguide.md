@@ -23,54 +23,54 @@ To create a dedicated GraphQL page, create a new `.md` file in the
 `doc/api/graphql/` directory. Give the file a functional name, like
 `import_from_specific_location.md`.
 
-## Start the page with an explanation
+## Add metadata
 
-Include a page title that describes the GraphQL functionality in a few words,
-like:
+Add descriptive content and a title at the top of the page, for example:
 
 ```markdown
-# Search for [substitute kind of data]
+---
+stage: Create
+group: Source Code
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+---
+
+# List branch rules for a project by using GraphQL
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 ```
 
-Describe the search. One sentence may be all you need. More information may
-help readers learn how to use the example for their GitLab deployments.
+For help editing this content for your use case, ask a technical writer.
 
-## Include a procedure that uses GraphiQL
+## Add content
 
-GraphiQL can help readers test queries against their working deployments.
-Create a task to help guide them.
+Now add the body text. You can use this content as a starting point
+and replace the text with your own information.
 
-- Use the following title:
+```markdown
+You can query for branch rules in a given project by using:
 
-  ```markdown
-  ## Use GraphiQL
-  ```
+- GraphiQL.
+- [`cURL`](getting_started.md#command-line).
 
-- Include a code block with the query that anyone can include in their
-  instance of GraphiQL:
+## Use GraphiQL
 
-  ````markdown
-  ```graphql
-  query {
-    <insert queries here>
-  }
-  ```
-  ````
+You can use GraphiQL to list the branch rules for a project.
 
-- Tell the user what to do:
+1. Open GraphiQL:
+   - For GitLab.com, use: `https://gitlab.com/-/graphql-explorer`
+   - For self-managed GitLab, use: `https://gitlab.example.com/-/graphql-explorer`
+1. Copy the following text and paste it in the left window.
 
-  ```markdown
-  1. Open GraphiQL:
-     - For GitLab.com, use: `https://gitlab.com/-/graphql-explorer`
-     - For self-managed GitLab, use: `https://gitlab.example.com/-/graphql-explorer`
-  1. Paste the `query` listed previously into the left window of GraphiQL.
-  1. Select **Play**.
-  ```
+   <graphql codeblock here>
 
-- Include the results from GraphiQL.
-- Follow up with an example of what you can do with the output. Make sure the
-  example is something that readers can do on their own deployments.
-- Include a link to the [GraphQL API resources](../../api/graphql/reference/index.md).
+1. Select **Play**.
+
+## Related topics:
+
+- [GraphQL API reference](reference/index.md)
+```
 
 ## Add the GraphQL example to the global navigation
 

@@ -1,6 +1,5 @@
 <script>
-import { GlButton, GlExperimentBadge } from '@gitlab/ui';
-import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
+import { GlButton, GlExperimentBadge, GlIcon } from '@gitlab/ui';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
@@ -8,23 +7,21 @@ import { s__ } from '~/locale';
 import EmptyState from '../components/model_list_empty_state.vue';
 import * as i18n from '../translations';
 import { BASE_SORT_FIELDS } from '../constants';
-import ModelRow from '../components/model_row.vue';
 import ActionsDropdown from '../components/actions_dropdown.vue';
 import getModelsQuery from '../graphql/queries/get_models.query.graphql';
 import { makeLoadModelErrorMessage } from '../translations';
-import SearchableList from '../components/searchable_list.vue';
+import SearchableTable from '../components/searchable_table.vue';
 
 export default {
   name: 'IndexMlModels',
   components: {
-    ModelRow,
-    MetadataItem,
+    GlIcon,
     TitleArea,
     GlButton,
     GlExperimentBadge,
     EmptyState,
     ActionsDropdown,
-    SearchableList,
+    SearchableTable,
   },
   provide() {
     return {
@@ -144,7 +141,10 @@ export default {
         </div>
       </template>
       <template #metadata-models-count>
-        <metadata-item icon="machine-learning" :text="$options.i18n.modelsCountLabel(count)" />
+        <div class="detail-page-header-body gl-flex-wrap gl-gap-x-2" data-testid="metadata-item">
+          <gl-icon name="machine-learning" />
+          {{ $options.i18n.modelsCountLabel(count) }}
+        </div>
       </template>
       <template #right-actions>
         <gl-button
@@ -158,13 +158,14 @@ export default {
         <actions-dropdown />
       </template>
     </title-area>
-    <searchable-list
+    <searchable-table
       show-search
       :page-info="pageInfo"
-      :items="items"
+      :models="items"
       :error-message="errorMessage"
       :is-loading="isLoading"
       :sortable-fields="$options.sortableFields"
+      can-write-model-registry
       @fetch-page="fetchPage"
     >
       <template #empty-state>
@@ -175,10 +176,6 @@ export default {
           :primary-link="createModelPath"
         />
       </template>
-
-      <template #item="{ item }">
-        <model-row :model="item" />
-      </template>
-    </searchable-list>
+    </searchable-table>
   </div>
 </template>

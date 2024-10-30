@@ -34,7 +34,7 @@ RSpec.describe Gitlab::Cng::Commands::Subcommands::Deployment do
       })
     end
 
-    it "invokes kind cluster creation with correct arguments" do
+    it "invokes kind deployment creation with correct arguments" do
       invoke_command(command_name, [], {
         namespace: "gitlab",
         ci: false
@@ -61,14 +61,13 @@ RSpec.describe Gitlab::Cng::Commands::Subcommands::Deployment do
       expect(installation_instance).to have_received(:create)
     end
 
-    it "create kind cluster before deployment" do
+    it "creates kind cluster before deployment" do
       invoke_command(command_name, [], {
         namespace: "gitlab",
         ci: true
       })
 
-      expect(Gitlab::Cng::Kind::Cluster).to have_received(:new)
-        .with(name: "gitlab", ci: true, host_http_port: 80, host_ssh_port: 22)
+      expect(Gitlab::Cng::Kind::Cluster).to have_received(:new).with(ci: true, host_http_port: 80, host_ssh_port: 22)
       expect(cluster_instance).to have_received(:create)
     end
 

@@ -1298,6 +1298,93 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     end
   end
 
+  describe 'callbacks' do
+    describe 'before_save :ensure_runners_registration_token' do
+      it 'populates #runners_registration_token before save' do
+        application_setting = build(:application_setting)
+
+        # Don't use reader method as it lazily populates the token.
+        # See the tests for #runners_registration_token below.
+        expect(application_setting.attributes['runners_registration_token_encrypted']).to be_nil
+
+        application_setting.save!
+
+        expect(application_setting.attributes['runners_registration_token_encrypted']).to be_present
+      end
+    end
+
+    describe 'before_save :ensure_health_check_access_token' do
+      it 'populates #runners_registration_token before save' do
+        application_setting = build(:application_setting)
+
+        # Don't use reader method as it lazily populates the token.
+        # See the tests for #health_check_access_token below.
+        expect(application_setting.attributes['health_check_access_token']).to be_nil
+
+        application_setting.save!
+
+        expect(application_setting.attributes['health_check_access_token']).to be_present
+      end
+    end
+
+    describe 'before_save :ensure_error_tracking_access_token' do
+      it 'populates #runners_registration_token before save' do
+        application_setting = build(:application_setting)
+
+        # Don't use reader method as it lazily populates the token.
+        # See the tests for #error_tracking_access_token below.
+        expect(application_setting.attributes['error_tracking_access_token_encrypted']).to be_nil
+
+        application_setting.save!
+
+        expect(application_setting.attributes['error_tracking_access_token_encrypted']).to be_present
+      end
+    end
+  end
+
+  describe '#runners_registration_token' do
+    context 'when allowed by application setting' do
+      before do
+        stub_application_setting(allow_runner_registration_token: true)
+      end
+
+      it 'is lazily populated and persists the record' do
+        application_setting = build(:application_setting)
+
+        expect(application_setting.runners_registration_token).to be_present
+        expect(application_setting).to be_persisted
+      end
+    end
+
+    context 'when disallowed by application setting' do
+      before do
+        stub_application_setting(allow_runner_registration_token: false)
+      end
+
+      it 'is not lazily populated' do
+        expect(build(:application_setting).runners_registration_token).to be_nil
+      end
+    end
+  end
+
+  describe '#health_check_access_token' do
+    it 'is lazily populated and persists the record' do
+      application_setting = build(:application_setting)
+
+      expect(application_setting.health_check_access_token).to be_present
+      expect(application_setting).to be_persisted
+    end
+  end
+
+  describe '#error_tracking_access_token' do
+    it 'is lazily populated and persists the record' do
+      application_setting = build(:application_setting)
+
+      expect(application_setting.error_tracking_access_token).to be_present
+      expect(application_setting).to be_persisted
+    end
+  end
+
   context 'restrict creating duplicates' do
     let!(:current_settings) { described_class.create_from_defaults }
 
@@ -1718,5 +1805,9 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         expect(setting).not_to have_received(:reset_deletion_warning_redis_key)
       end
     end
+  end
+
+  it_behaves_like 'TokenAuthenticatable' do
+    let(:token_field) { :runners_registration_token }
   end
 end

@@ -20410,6 +20410,48 @@ msgstr ""
 msgid "DuoEnterpriseTrial|You have successfully started a Duo Enterprise trial that will expire on %{exp_date}. To give members access to new GitLab Duo Enterprise features, %{assign_link_start}assign them%{assign_link_end} to GitLab Duo Enterprise seats."
 msgstr ""
 
+msgid "DuoEnterprise|AI-assisted root cause analysis"
+msgstr ""
+
+msgid "DuoEnterprise|AI-powered vulnerability remediation"
+msgstr ""
+
+msgid "DuoEnterprise|Collaboration and summarization tools"
+msgstr ""
+
+msgid "DuoEnterprise|Easily get up to speed on issue discussions with concise overviews of proposed code changes"
+msgstr ""
+
+msgid "DuoEnterprise|Get started with these Duo Enterprise features:"
+msgstr ""
+
+msgid "DuoEnterprise|Need help enabling features? Check to make sure an administrator has %{link_start}configured GitLab Duo on your instance%{link_end}."
+msgstr ""
+
+msgid "DuoEnterprise|Quickly resolve CI/CD pipeline issues so developers can focus on critical tasks"
+msgstr ""
+
+msgid "DuoEnterprise|To get started using GitLab Duo Enterprise features, %{link_start}set up your IDE for success.%{link_end}."
+msgstr ""
+
+msgid "DuoEnterprise|Understand and remediate vulnerabilities more efficiently to mitigate security risks"
+msgstr ""
+
+msgid "DuoEnterprise|Welcome to GitLab Duo Enterprise!"
+msgstr ""
+
+msgid "DuoEnterprise|You have been assigned a GitLab Duo Enterprise seat"
+msgstr ""
+
+msgid "DuoEnterprise|You have been assigned a GitLab Duo Enterprise seat!"
+msgstr ""
+
+msgid "DuoEnterprise|You now have access to %{link_start}GitLab Duo Enterprise%{link_end}, the only AI solution that supports developers at every stage of the software development lifecycle."
+msgstr ""
+
+msgid "DuoEnterprise|You now have access to GitLab Duo Enterprise, the only AI solution that supports developers at every stage of the software development lifecycle."
+msgstr ""
+
 msgid "DuoFreeAccessEndingBanner|Buy Duo Pro"
 msgstr ""
 
@@ -34699,6 +34741,9 @@ msgstr ""
 msgid "MlExperimentTracking|Create new candidates"
 msgstr ""
 
+msgid "MlExperimentTracking|Created"
+msgstr ""
+
 msgid "MlExperimentTracking|Created at"
 msgstr ""
 
@@ -35137,10 +35182,19 @@ msgstr ""
 msgid "Model version not found"
 msgstr ""
 
+msgid "ModelRegistry|Author"
+msgstr ""
+
 msgid "ModelRegistry|Created"
 msgstr ""
 
 msgid "ModelRegistry|Created by"
+msgstr ""
+
+msgid "ModelRegistry|Latest version"
+msgstr ""
+
+msgid "ModelRegistry|Model name"
 msgstr ""
 
 msgid "ModelRegistry|Model registry"
@@ -35150,6 +35204,12 @@ msgid "ModelRegistry|New model"
 msgstr ""
 
 msgid "ModelRegistry|Version"
+msgstr ""
+
+msgid "ModelRegistry|version"
+msgstr ""
+
+msgid "ModelRegistry|versions"
 msgstr ""
 
 msgid "Modified"

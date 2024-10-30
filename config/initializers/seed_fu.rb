@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-SeedFu.fixture_paths += %W[ee/db/fixtures ee/db/fixtures/#{Rails.env}] if Gitlab.ee?
-
 require 'benchmark'
 
 seed_timer = Module.new do

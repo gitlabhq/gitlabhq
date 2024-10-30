@@ -4,7 +4,7 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# List branch rules for a project
+# List branch rules for a project by using GraphQL
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -12,24 +12,22 @@ DETAILS:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106954) in GitLab 15.8.
 
-This guide demonstrates how to use [GraphiQL explorer](getting_started.md#graphiql)
-to query for branch rules in a given project.
+You can query for branch rules in a given project by using:
 
-The [example query](#set-up-the-graphiql-explorer) looks for a project in a
-GitLab instance either by its full path for example `gitlab-org/gitlab-docs`.
-In the query we request all configured branch rules for a project.
+- GraphiQL.
+- [`cURL`](getting_started.md#command-line).
+- [The GitLab Development Kit (GDK)](#use-the-gdk).
 
-NOTE:
-You can run the same query directly with an HTTP endpoint, using `cURL`. For more
-information, see our guidance on getting started from the
-[command line](getting_started.md#command-line).
+## Use GraphiQL
 
-## Set up the GraphiQL explorer
+You can use GraphiQL to list the branch rules for a project.
 
-This procedure presents a substantive example that you can copy and paste into your own
-instance of the [GraphiQL explorer](https://gitlab.com/-/graphql-explorer):
-
-1. Copy the following code excerpt:
+1. Open GraphiQL:
+   - For GitLab.com, use: `https://gitlab.com/-/graphql-explorer`
+   - For self-managed GitLab, use: `https://gitlab.example.com/-/graphql-explorer`
+1. Copy the following text and paste it in the left window.
+   This query searches for a project by its full path, for example `gitlab-org/gitlab-docs`.
+   It requests all configured branch rules for the project.
 
    ```graphql
    query {
@@ -108,18 +106,14 @@ instance of the [GraphiQL explorer](https://gitlab.com/-/graphql-explorer):
    }
    ```
 
-1. Open the [GraphiQL explorer tool](https://gitlab.com/-/graphql-explorer).
-1. Paste the `query` listed above into the left window of your GraphiQL explorer tool.
-1. Select **Play** to get this result:
+1. Select **Play**.
 
-   ![GraphiQL explorer query for branch rules](img/list_branch_rules_query_example_v15_8.png)
-
-If no branch rules are displayed, it may be because:
+If no branch rules are displayed, it might be because:
 
 - No branch rules are configured.
-- Your role doesn't have permission to view branch rules. Administrators have access to all records.
+- Your role doesn't have permission to view branch rules. Administrators have access to all resources.
 
-## Run the query in the GDK
+## Use the GDK
 
 Instead of requesting access, it may be easier for you to run the query in the
 [GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit).
@@ -127,15 +121,17 @@ Instead of requesting access, it may be easier for you to run the query in the
 1. Sign in as the default admin, `root`, with the credentials from
    [the GDK documentation](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/gdk_commands.md#get-the-login-credentials).
 1. Ensure you have some branch rules configured for the `flightjs/Flight` project.
-1. Replace the full path in the query:
+1. In your GDK instance, open GraphiQL: `http://gdk.test:3000/-/graphql-explorer`.
+1. Copy the query and paste it in the left window.
+1. Replace the full path with the following path:
 
    ```graphql
    query {
      project(fullPath: "flightjs/Flight") {
    ```
 
-1. In your GDK instance, visit the GraphiQL explorer tool: `http://gdk.test:3000/-/graphql-explorer`.
-1. Paste the `query` listed above into the left window of your GraphiQL explorer tool.
-1. Select **Play** to view the result.
+1. Select **Play**.
 
-For more information on each field, see the [GraphQL API Resources](reference/index.md).
+## Related topics
+
+- [GraphQL API reference](reference/index.md)

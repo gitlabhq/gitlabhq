@@ -3,52 +3,42 @@
 require 'spec_helper'
 
 RSpec.describe TokenAuthenticatableStrategies::Encrypted, feature_category: :system_access do
-  let(:model) { double(:model) }
-  let(:token_owner_record) { double(:token_owner_record) }
-  let(:original_token) { 'my-value' }
-  let(:resource) { double(:resource) }
-  let(:options) { other_options.merge(encrypted: encrypted_option) }
-  let(:other_options) { {} }
+  let(:field) { 'token' }
+  let(:encrypted_field) { 'token_encrypted' }
+  let(:encrypted_option) { :required }
+  let(:options) { { encrypted: encrypted_option } }
+  let(:test_class) do
+    Struct.new(:name, field, encrypted_field) do
+      alias_method :read_attribute, :[]
+    end
+  end
 
-  let(:encrypted) do
+  let(:original_token) { 'my-value' }
+  let(:encrypted_token) do
     TokenAuthenticatableStrategies::EncryptionHelper.encrypt_token(original_token)
   end
 
-  let(:encrypted_with_static_iv) do
+  let(:encrypted_token_with_static_iv) do
     Gitlab::CryptoHelper.aes256_gcm_encrypt(original_token)
   end
 
+  let(:token_owner_record) { test_class.new }
+
   subject(:strategy) do
-    described_class.new(model, 'some_field', options)
-  end
-
-  describe '#token_fields' do
-    let(:encrypted_option) { :required }
-
-    it 'includes the encrypted field' do
-      expect(strategy.token_fields).to contain_exactly('some_field', 'some_field_encrypted')
-    end
-  end
-
-  describe '#sensitive_fields' do
-    let(:encrypted_option) { :required }
-
-    it 'includes the encrypted field' do
-      expect(strategy.sensitive_fields).to contain_exactly('some_field', 'some_field_encrypted')
-    end
+    described_class.new(test_class, field, options)
   end
 
   describe '#find_token_authenticatable' do
     shared_examples 'finds the resource' do
       it 'finds the resource by cleartext' do
-        expect(subject.find_token_authenticatable(original_token))
-          .to eq(resource)
+        expect(strategy.find_token_authenticatable(original_token))
+          .to eq(token_owner_record)
       end
     end
 
     shared_examples 'does not find any resource' do
       it 'does not find any resource by cleartext' do
-        expect(subject.find_token_authenticatable(original_token))
+        expect(strategy.find_token_authenticatable(original_token))
           .to be_nil
       end
     end
@@ -58,10 +48,12 @@ RSpec.describe TokenAuthenticatableStrategies::Encrypted, feature_category: :sys
       it_behaves_like 'finds the resource'
 
       context 'when a require_prefix_for_validation is provided' do
-        let(:other_options) { { format_with_prefix: :format_with_prefix_method, require_prefix_for_validation: true } }
+        let(:options) do
+          super().merge(format_with_prefix: :format_with_prefix_method, require_prefix_for_validation: true)
+        end
 
         before do
-          allow(resource).to receive(:format_with_prefix_method).and_return(standard_runner_token_prefix)
+          allow(token_owner_record).to receive(:format_with_prefix_method).and_return(standard_runner_token_prefix)
         end
 
         it_behaves_like 'does not find any resource'
@@ -75,15 +67,12 @@ RSpec.describe TokenAuthenticatableStrategies::Encrypted, feature_category: :sys
     end
 
     context 'when encryption is required' do
-      let(:encrypted_option) { :required }
-      let(:resource) { double(:encrypted_resource) }
-
       before do
-        allow(model).to receive(:where)
-          .and_return(model)
-        allow(model).to receive(:find_by)
-          .with('some_field_encrypted' => [encrypted, encrypted_with_static_iv])
-          .and_return(resource)
+        allow(test_class).to receive(:where)
+          .and_return(test_class)
+        allow(test_class).to receive(:find_by)
+          .with(encrypted_field => [encrypted_token, encrypted_token_with_static_iv])
+          .and_return(token_owner_record)
       end
 
       it_behaves_like 'finds the resource with/without setting require_prefix_for_validation'
@@ -91,44 +80,42 @@ RSpec.describe TokenAuthenticatableStrategies::Encrypted, feature_category: :sys
 
     context 'when encryption is optional' do
       let(:encrypted_option) { :optional }
-      let(:resource) { double(:encrypted_resource) }
 
       before do
-        allow(model).to receive(:where)
-          .and_return(model)
-        allow(model).to receive(:find_by)
-          .with('some_field_encrypted' => [encrypted, encrypted_with_static_iv])
-          .and_return(resource)
+        allow(test_class).to receive(:where)
+          .and_return(test_class)
+        allow(test_class).to receive(:find_by)
+          .with(encrypted_field => [encrypted_token, encrypted_token_with_static_iv])
+          .and_return(token_owner_record)
       end
 
       it_behaves_like 'finds the resource with/without setting require_prefix_for_validation'
 
       it 'uses insecure strategy when encrypted token cannot be found' do
-        allow(subject.send(:insecure_strategy))
+        allow(strategy.send(:insecure_strategy))
           .to receive(:find_token_authenticatable)
           .and_return('plaintext resource')
 
-        allow(model).to receive(:where)
-          .and_return(model)
-        allow(model).to receive(:find_by)
-          .with('some_field_encrypted' => [encrypted, encrypted_with_static_iv])
+        allow(test_class).to receive(:where)
+          .and_return(test_class)
+        allow(test_class).to receive(:find_by)
+          .with(encrypted_field => [encrypted_token, encrypted_token_with_static_iv])
           .and_return(nil)
 
-        expect(subject.find_token_authenticatable('my-value'))
+        expect(strategy.find_token_authenticatable('my-value'))
           .to eq 'plaintext resource'
       end
     end
 
     context 'when encryption is migrating' do
       let(:encrypted_option) { :migrating }
-      let(:resource) { double(:cleartext_resource) }
 
       before do
-        allow(model).to receive(:where)
-          .and_return(model)
-        allow(model).to receive(:find_by)
-          .with('some_field' => original_token)
-          .and_return(resource)
+        allow(test_class).to receive(:where)
+          .and_return(test_class)
+        allow(test_class).to receive(:find_by)
+          .with(field => original_token)
+          .and_return(token_owner_record)
       end
 
       it_behaves_like 'finds the resource with/without setting require_prefix_for_validation'
@@ -142,28 +129,28 @@ RSpec.describe TokenAuthenticatableStrategies::Encrypted, feature_category: :sys
       context 'when encrypted attribute exists' do
         before do
           allow(token_owner_record).to receive(:has_attribute?)
-            .with('some_field_encrypted')
+            .with(encrypted_field)
             .and_return(true)
         end
 
         it 'returns decrypted token when an encrypted with static iv token is present' do
           expect(token_owner_record).to receive(:read_attribute)
-            .with('some_field_encrypted').twice
+            .with(encrypted_field).twice
             .and_return(Gitlab::CryptoHelper.aes256_gcm_encrypt('my-test-value'))
 
-          expect(subject.ensure_token(token_owner_record)).to eq 'my-test-value'
+          expect(strategy.ensure_token(token_owner_record)).to eq 'my-test-value'
         end
       end
 
       context 'when encrypted attribute does not exist' do
         before do
           allow(token_owner_record).to receive(:has_attribute?)
-            .with('some_field_encrypted')
+            .with(encrypted_field)
             .and_return(false)
         end
 
         it 'raises an ArgumentError error' do
-          expect { subject.ensure_token(token_owner_record) }.to raise_error(ArgumentError)
+          expect { strategy.ensure_token(token_owner_record) }.to raise_error(ArgumentError)
         end
       end
     end
@@ -174,32 +161,32 @@ RSpec.describe TokenAuthenticatableStrategies::Encrypted, feature_category: :sys
       context 'when encrypted attribute exists' do
         before do
           allow(token_owner_record).to receive(:has_attribute?)
-            .with('some_field_encrypted')
+            .with(encrypted_field)
             .and_return(true)
         end
 
         it 'returns decrypted token when an encrypted with static iv token is present' do
           expect(token_owner_record).to receive(:read_attribute)
-            .with('some_field_encrypted').twice
+            .with(encrypted_field).twice
             .and_return(Gitlab::CryptoHelper.aes256_gcm_encrypt('my-test-value'))
 
-          expect(subject.ensure_token(token_owner_record)).to eq 'my-test-value'
+          expect(strategy.ensure_token(token_owner_record)).to eq 'my-test-value'
         end
       end
 
       context 'when encrypted attribute does not exist' do
         before do
           allow(token_owner_record).to receive(:has_attribute?)
-            .with('some_field_encrypted')
+            .with(encrypted_field)
             .and_return(false)
         end
 
         it 'returns unencrypted token' do
           expect(token_owner_record).to receive(:read_attribute)
-            .with('some_field').twice
+            .with(field).twice
             .and_return('my-test-value')
 
-          expect(subject.ensure_token(token_owner_record)).to eq 'my-test-value'
+          expect(strategy.ensure_token(token_owner_record)).to eq 'my-test-value'
         end
       end
     end
@@ -207,22 +194,20 @@ RSpec.describe TokenAuthenticatableStrategies::Encrypted, feature_category: :sys
 
   describe '#get_token' do
     context 'when encryption is required' do
-      let(:encrypted_option) { :required }
-
       it 'returns decrypted token when an encrypted with static iv token is present' do
         expect(token_owner_record).to receive(:read_attribute)
-          .with('some_field_encrypted')
+          .with(encrypted_field)
           .and_return(Gitlab::CryptoHelper.aes256_gcm_encrypt('my-test-value'))
 
-        expect(subject.get_token(token_owner_record)).to eq 'my-test-value'
+        expect(strategy.get_token(token_owner_record)).to eq 'my-test-value'
       end
 
       it 'returns decrypted token when an encrypted token is present' do
         expect(token_owner_record).to receive(:read_attribute)
-          .with('some_field_encrypted')
-          .and_return(encrypted)
+          .with(encrypted_field)
+          .and_return(encrypted_token)
 
-        expect(subject.get_token(token_owner_record)).to eq 'my-value'
+        expect(strategy.get_token(token_owner_record)).to eq 'my-value'
       end
     end
 
@@ -230,31 +215,31 @@ RSpec.describe TokenAuthenticatableStrategies::Encrypted, feature_category: :sys
       let(:encrypted_option) { :optional }
 
       it 'returns decrypted token when an encrypted token is present' do
-        expect(token_owner_record).to receive(:read_attribute)
-          .with('some_field_encrypted')
-          .and_return(encrypted)
+        allow(token_owner_record).to receive(:read_attribute)
+          .with(encrypted_field)
+          .and_return(encrypted_token)
 
-        expect(subject.get_token(token_owner_record)).to eq 'my-value'
+        expect(strategy.get_token(token_owner_record)).to eq 'my-value'
       end
 
       it 'returns decrypted token when an encrypted with static iv token is present' do
-        expect(token_owner_record).to receive(:read_attribute)
-          .with('some_field_encrypted')
+        allow(token_owner_record).to receive(:read_attribute)
+          .with(encrypted_field)
           .and_return(Gitlab::CryptoHelper.aes256_gcm_encrypt('my-test-value'))
 
-        expect(subject.get_token(token_owner_record)).to eq 'my-test-value'
+        expect(strategy.get_token(token_owner_record)).to eq 'my-test-value'
       end
 
       it 'returns the plaintext token when encrypted token is not present' do
-        expect(token_owner_record).to receive(:read_attribute)
-          .with('some_field_encrypted')
+        allow(token_owner_record).to receive(:read_attribute)
+          .with(encrypted_field)
           .and_return(nil)
 
-        expect(token_owner_record).to receive(:read_attribute)
-          .with('some_field')
+        allow(token_owner_record).to receive(:read_attribute)
+          .with(field)
           .and_return('cleartext value')
 
-        expect(subject.get_token(token_owner_record)).to eq 'cleartext value'
+        expect(strategy.get_token(token_owner_record)).to eq 'cleartext value'
       end
     end
 
@@ -262,38 +247,37 @@ RSpec.describe TokenAuthenticatableStrategies::Encrypted, feature_category: :sys
       let(:encrypted_option) { :migrating }
 
       it 'returns cleartext token when an encrypted token is present' do
-        expect(token_owner_record).not_to receive(:read_attribute)
-          .with('some_field_encrypted')
+        allow(token_owner_record).to receive(:read_attribute)
+          .with(encrypted_field)
+          .and_return(encrypted_token)
 
-        expect(token_owner_record).to receive(:read_attribute)
-          .with('some_field')
+        allow(token_owner_record).to receive(:read_attribute)
+          .with(field)
           .and_return('my-cleartext-value')
 
-        expect(subject.get_token(token_owner_record)).to eq 'my-cleartext-value'
+        expect(strategy.get_token(token_owner_record)).to eq 'my-cleartext-value'
       end
 
       it 'returns the cleartext token when encrypted token is not present' do
-        expect(token_owner_record).not_to receive(:read_attribute)
-          .with('some_field_encrypted')
+        allow(token_owner_record).to receive(:read_attribute)
+          .with(encrypted_field)
 
-        expect(token_owner_record).to receive(:read_attribute)
-          .with('some_field')
+        allow(token_owner_record).to receive(:read_attribute)
+          .with(field)
           .and_return('cleartext value')
 
-        expect(subject.get_token(token_owner_record)).to eq 'cleartext value'
+        expect(strategy.get_token(token_owner_record)).to eq 'cleartext value'
       end
     end
   end
 
   describe '#set_token' do
     context 'when encryption is required' do
-      let(:encrypted_option) { :required }
-
       it 'writes encrypted token and returns it' do
         expect(token_owner_record).to receive(:[]=)
-          .with('some_field_encrypted', encrypted)
+          .with(encrypted_field, encrypted_token)
 
-        expect(subject.set_token(token_owner_record, 'my-value')).to eq 'my-value'
+        expect(strategy.set_token(token_owner_record, 'my-value')).to eq 'my-value'
       end
     end
 
@@ -302,11 +286,11 @@ RSpec.describe TokenAuthenticatableStrategies::Encrypted, feature_category: :sys
 
       it 'writes encrypted token and removes plaintext token and returns it' do
         expect(token_owner_record).to receive(:[]=)
-          .with('some_field_encrypted', encrypted)
+          .with(encrypted_field, encrypted_token)
         expect(token_owner_record).to receive(:[]=)
-          .with('some_field', nil)
+          .with(field, nil)
 
-        expect(subject.set_token(token_owner_record, 'my-value')).to eq 'my-value'
+        expect(strategy.set_token(token_owner_record, 'my-value')).to eq 'my-value'
       end
     end
 
@@ -315,11 +299,11 @@ RSpec.describe TokenAuthenticatableStrategies::Encrypted, feature_category: :sys
 
       it 'writes encrypted token and writes plaintext token' do
         expect(token_owner_record).to receive(:[]=)
-          .with('some_field_encrypted', encrypted)
+          .with(encrypted_field, encrypted_token)
         expect(token_owner_record).to receive(:[]=)
-          .with('some_field', 'my-value')
+          .with(field, 'my-value')
 
-        expect(subject.set_token(token_owner_record, 'my-value')).to eq 'my-value'
+        expect(strategy.set_token(token_owner_record, 'my-value')).to eq 'my-value'
       end
     end
   end

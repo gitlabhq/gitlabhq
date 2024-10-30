@@ -83,8 +83,8 @@ module Gitlab
                   service: {
                     type: "NodePort",
                     nodePorts: {
-                      "gitlab-shell": Cng::Kind::Cluster::SSH_PORT,
-                      http: Cng::Kind::Cluster::HTTP_PORT
+                      "gitlab-shell": Cng::Kind::Cluster.host_port_mapping(host_ssh_port),
+                      http: Cng::Kind::Cluster.host_port_mapping(host_http_port)
                     }
                   }
                 }

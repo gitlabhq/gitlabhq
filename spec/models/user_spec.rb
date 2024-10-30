@@ -2368,6 +2368,10 @@ RSpec.describe User, feature_category: :user_profile do
     end
   end
 
+  it_behaves_like 'TokenAuthenticatable' do
+    let(:token_field) { :feed_token }
+  end
+
   describe 'feed token' do
     it 'ensures a feed token on read' do
       user = create(:user, feed_token: nil)

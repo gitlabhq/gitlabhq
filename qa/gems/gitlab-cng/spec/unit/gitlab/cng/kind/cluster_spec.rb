@@ -5,10 +5,9 @@ RSpec.describe Gitlab::Cng::Kind::Cluster do
     subject(:cluster) do
       described_class.new(
         ci: ci,
-        name: name,
         docker_hostname: docker_hostname,
-        host_http_port: 32080,
-        host_ssh_port: 32022
+        host_http_port: 80,
+        host_ssh_port: 22
       )
     end
 
@@ -19,6 +18,8 @@ RSpec.describe Gitlab::Cng::Kind::Cluster do
     let(:command_status) { instance_double(Process::Status, success?: true) }
     let(:clusters) { "kind" }
     let(:helm) { instance_double(Gitlab::Cng::Helm::Client, add_helm_chart: nil, upgrade: nil) }
+    let(:http_container_port) { 30080 }
+    let(:ssh_container_port) { 31022 }
 
     before do
       allow(Gitlab::Cng::Helpers::Utils).to receive(:tmp_dir).and_return("/tmp")
@@ -37,6 +38,9 @@ RSpec.describe Gitlab::Cng::Kind::Cluster do
         "--wait", "30s",
         "--config", tmp_config_path
       ]).and_return(["", command_status])
+
+      allow(cluster).to receive(:rand).with(30000..31000).and_return(http_container_port)
+      allow(cluster).to receive(:rand).with(31001..32000).and_return(ssh_container_port)
     end
 
     context "with ci specific setup" do
@@ -63,11 +67,11 @@ RSpec.describe Gitlab::Cng::Kind::Cluster do
                     certSANs:
                       - "#{docker_hostname}"
               extraPortMappings:
-                - containerPort: 32080
-                  hostPort: 32080
+                - containerPort: #{http_container_port}
+                  hostPort: 80
                   listenAddress: "0.0.0.0"
-                - containerPort: 32022
-                  hostPort: 32022
+                - containerPort: #{ssh_container_port}
+                  hostPort: 22
                   listenAddress: "0.0.0.0"
         YML
       end
@@ -117,11 +121,11 @@ RSpec.describe Gitlab::Cng::Kind::Cluster do
                   kubeletExtraArgs:
                     node-labels: "ingress-ready=true"
             extraPortMappings:
-              - containerPort: 32080
-                hostPort: 32080
+              - containerPort: #{http_container_port}
+                hostPort: 80
                 listenAddress: "0.0.0.0"
-              - containerPort: 32022
-                hostPort: 32022
+              - containerPort: #{ssh_container_port}
+                hostPort: 22
                 listenAddress: "0.0.0.0"
         YML
       end
@@ -152,7 +156,7 @@ RSpec.describe Gitlab::Cng::Kind::Cluster do
     end
   end
 
-  describe "with cleanup" do
+  describe "#destroy" do
     subject(:cluster) { described_class }
 
     before do
@@ -166,7 +170,7 @@ RSpec.describe Gitlab::Cng::Kind::Cluster do
       end
 
       it "deletes cluster" do
-        expect { cluster.destroy("gitlab") }.to output(/Destroying cluster 'gitlab'/).to_stdout
+        expect { cluster.destroy }.to output(/Destroying cluster 'gitlab'/).to_stdout
         expect(cluster).to have_received(:execute_shell).with(%w[kind delete cluster --name gitlab])
       end
     end
@@ -177,11 +181,52 @@ RSpec.describe Gitlab::Cng::Kind::Cluster do
       end
 
       it "deletes cluster" do
-        expect { cluster.destroy("gitlab") }.to output(
+        expect { cluster.destroy }.to output(
           match(/Destroying cluster 'gitlab'/).and(match(/Cluster not found, skipping!/))
         ).to_stdout
         expect(cluster).not_to have_received(:execute_shell).with(%w[kind delete cluster --name gitlab])
       end
+    end
+  end
+
+  describe "#host_port_mapping" do
+    let(:http_container_port) { 32080 }
+    let(:ssh_container_port) { 32022 }
+
+    before do
+      allow(File).to receive(:read).with(File.join(Gitlab::Cng::Helpers::Utils.tmp_dir, "kind-config.yml")).and_return(
+        <<~YML
+          apiVersion: kind.x-k8s.io/v1alpha4
+          kind: Cluster
+          networking:
+            apiServerAddress: "0.0.0.0"
+          nodes:
+            - role: control-plane
+              kubeadmConfigPatches:
+                - |
+                  kind: InitConfiguration
+                  nodeRegistration:
+                    kubeletExtraArgs:
+                      node-labels: "ingress-ready=true"
+                - |
+                  kind: ClusterConfiguration
+                  apiServer:
+                    certSANs:
+                      - "test"
+              extraPortMappings:
+                - containerPort: #{http_container_port}
+                  hostPort: 80
+                  listenAddress: "0.0.0.0"
+                - containerPort: #{ssh_container_port}
+                  hostPort: 22
+                  listenAddress: "0.0.0.0"
+        YML
+      )
+    end
+
+    it "return correct port mappings" do
+      expect(described_class.host_port_mapping(80)).to eq(http_container_port)
+      expect(described_class.host_port_mapping(22)).to eq(ssh_container_port)
     end
   end
 end

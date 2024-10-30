@@ -122,6 +122,7 @@ Consult these topics for information on contributing to specific GitLab features
   masked by query caching, memory profiling and why should we avoid cached
   queries.
 - [JSON guidelines](json.md) for how to handle JSON in a performant manner.
+- [GraphQL API optimizations](api_graphql_styleguide.md#optimizations) for how to optimize GraphQL code.
 
 ## Database guides
 

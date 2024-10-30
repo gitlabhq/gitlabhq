@@ -6031,40 +6031,46 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
   end
 
-  describe 'token format for builds transiting into pending' do
-    let(:partition_id) { 100 }
-    let(:ci_build) { described_class.new(partition_id: partition_id) }
+  describe 'TokenAuthenticatable' do
+    it_behaves_like 'TokenAuthenticatable' do
+      let(:token_field) { :token }
+    end
 
-    context 'when build is initialized without a token and transits to pending' do
-      let(:partition_id_prefix_in_16_bit_encode) { partition_id.to_s(16) + '_' }
+    describe 'token format for builds transiting into pending' do
+      let(:partition_id) { 100 }
+      let(:ci_build) { described_class.new(partition_id: partition_id) }
 
-      it 'generates a token' do
-        expect { ci_build.enqueue }
-          .to change { ci_build.token }.from(nil).to(a_string_starting_with("glcbt-#{partition_id_prefix_in_16_bit_encode}"))
+      context 'when build is initialized without a token and transits to pending' do
+        let(:partition_id_prefix_in_16_bit_encode) { partition_id.to_s(16) + '_' }
+
+        it 'generates a token' do
+          expect { ci_build.enqueue }
+            .to change { ci_build.token }.from(nil).to(a_string_starting_with("glcbt-#{partition_id_prefix_in_16_bit_encode}"))
+        end
+      end
+
+      context 'when build is initialized with a token and transits to pending' do
+        let(:token) { 'an_existing_secret_token' }
+
+        before do
+          ci_build.set_token(token)
+        end
+
+        it 'does not change the existing token' do
+          expect { ci_build.enqueue }
+            .not_to change { ci_build.token }.from(token)
+        end
       end
     end
 
-    context 'when build is initialized with a token and transits to pending' do
-      let(:token) { 'an_existing_secret_token' }
+    describe '#prefix_and_partition_for_token' do
+      # 100.to_s(16) -> 64
+      let(:ci_build) { described_class.new(partition_id: 100) }
 
-      before do
-        ci_build.set_token(token)
+      it 'is prefixed with static string and partition id' do
+        ci_build.ensure_token
+        expect(ci_build.token).to match(/^glcbt-64_[\w-]{20}$/)
       end
-
-      it 'does not change the existing token' do
-        expect { ci_build.enqueue }
-          .not_to change { ci_build.token }.from(token)
-      end
-    end
-  end
-
-  describe '#prefix_and_partition_for_token' do
-    # 100.to_s(16) -> 64
-    let(:ci_build) { described_class.new(partition_id: 100) }
-
-    it 'is prefixed with static string and partition id' do
-      ci_build.ensure_token
-      expect(ci_build.token).to match(/^glcbt-64_[\w-]{20}$/)
     end
   end
 

@@ -4,7 +4,6 @@ import PackagesListRow from '~/packages_and_registries/package_registry/componen
 import PackagesListLoader from '~/packages_and_registries/shared/components/packages_list_loader.vue';
 import RegistryList from '~/packages_and_registries/shared/components/registry_list.vue';
 import DeleteModal from '~/packages_and_registries/package_registry/components/delete_modal.vue';
-import PackageErrorsCount from '~/packages_and_registries/package_registry/components/list/package_errors_count.vue';
 import {
   DELETE_PACKAGE_TRACKING_ACTION,
   DELETE_PACKAGES_TRACKING_ACTION,
@@ -12,7 +11,6 @@ import {
   REQUEST_DELETE_PACKAGES_TRACKING_ACTION,
   CANCEL_DELETE_PACKAGE_TRACKING_ACTION,
   CANCEL_DELETE_PACKAGES_TRACKING_ACTION,
-  PACKAGE_ERROR_STATUS,
   PACKAGE_TYPE_MAVEN,
   PACKAGE_TYPE_NPM,
   PACKAGE_TYPE_PYPI,
@@ -30,7 +28,6 @@ export default {
   name: 'PackagesList',
   components: {
     DeleteModal,
-    PackageErrorsCount,
     PackagesListLoader,
     PackagesListRow,
     RegistryList,
@@ -42,11 +39,6 @@ export default {
       type: Array,
       required: false,
       default: () => [],
-    },
-    hideErrorAlert: {
-      type: Boolean,
-      required: false,
-      default: false,
     },
     isLoading: {
       type: Boolean,
@@ -63,7 +55,6 @@ export default {
   data() {
     return {
       itemsToBeDeleted: [],
-      errorPackages: [],
     };
   },
   computed: {
@@ -97,15 +88,6 @@ export default {
       const selectedPackageTypes = new Set(this.itemsToBeDeleted.map((item) => item.packageType));
       return this.packageTypesWithForwardingEnabled.some((type) => selectedPackageTypes.has(type));
     },
-  },
-  watch: {
-    list(newVal) {
-      this.errorPackages = newVal.filter((pkg) => pkg.status === PACKAGE_ERROR_STATUS);
-    },
-  },
-  created() {
-    this.errorPackages =
-      this.list.length > 0 ? this.list.filter((pkg) => pkg.status === PACKAGE_ERROR_STATUS) : [];
   },
   methods: {
     setItemsToBeDeleted(items) {
@@ -149,11 +131,6 @@ export default {
     </div>
 
     <template v-else>
-      <package-errors-count
-        v-if="!hideErrorAlert"
-        :error-packages="errorPackages"
-        @confirm-delete="setItemsToBeDeleted"
-      />
       <registry-list
         data-testid="packages-table"
         :hidden-delete="!canDeletePackages"

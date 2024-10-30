@@ -96,9 +96,9 @@ module Gitlab
             return print_deploy_args("kind") if options[:print_deploy_args] && options[:ci]
 
             if options[:create_cluster]
-              invoke(Commands::Create, :cluster, [], **symbolized_options.slice(
+              Kind::Cluster.new(**symbolized_options.slice(
                 :docker_hostname, :ci, :host_http_port, :host_ssh_port
-              ))
+              )).create
             end
 
             configuration_args = symbolized_options.slice(

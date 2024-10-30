@@ -1,7 +1,10 @@
+import { nextTick } from 'vue';
 import { GlAlert, GlButton } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
+import { stubComponent } from 'helpers/stub_component';
 import { TEST_HOST } from 'spec/test_constants';
+import DeleteModal from '~/packages_and_registries/package_registry/components/delete_modal.vue';
 import PackageErrorsCount from '~/packages_and_registries/package_registry/components/list/package_errors_count.vue';
 import { packageData } from '../../mock_data';
 
@@ -16,8 +19,11 @@ describe('PackageErrorsCount', () => {
     name: 'error package',
   };
 
+  const findDeletePackagesModal = () => wrapper.findComponent(DeleteModal);
   const findErrorPackageAlert = () => wrapper.findComponent(GlAlert);
   const findErrorAlertButton = () => findErrorPackageAlert().findComponent(GlButton);
+
+  const showMock = jest.fn();
 
   const mountComponent = ({ props = {}, stubs = {} } = {}) => {
     wrapper = shallowMountExtended(PackageErrorsCount, {
@@ -25,6 +31,11 @@ describe('PackageErrorsCount', () => {
         ...props,
       },
       stubs: {
+        DeleteModal: stubComponent(DeleteModal, {
+          methods: {
+            show: showMock,
+          },
+        }),
         ...stubs,
       },
     });
@@ -71,10 +82,32 @@ describe('PackageErrorsCount', () => {
         expect(findErrorAlertButton().text()).toBe('Delete this package');
       });
 
-      it('when clicked emits `confirm-delete` event', () => {
+      it('has tracking attributes', () => {
+        expect(findErrorAlertButton().attributes()).toMatchObject({
+          'data-event-tracking': 'click_delete_package_button',
+          'data-event-label': 'package_errors_alert',
+        });
+      });
+
+      it('should display the deletion modal when clicked on the `Delete this package` button', async () => {
         findErrorAlertButton().vm.$emit('click');
 
-        expect(wrapper.emitted('confirm-delete')[0][0]).toStrictEqual([errorPackage]);
+        await nextTick();
+
+        expect(showMock).toHaveBeenCalledTimes(1);
+
+        expect(findDeletePackagesModal().props('itemsToBeDeleted')).toStrictEqual([errorPackage]);
+      });
+
+      describe('when modal confirms', () => {
+        beforeEach(() => {
+          findErrorAlertButton().vm.$emit('click');
+          findDeletePackagesModal().vm.$emit('confirm');
+        });
+
+        it('emits delete when modal confirms', () => {
+          expect(wrapper.emitted('confirm-delete')[0][0]).toEqual([errorPackage]);
+        });
       });
     });
   });
@@ -111,6 +144,13 @@ describe('PackageErrorsCount', () => {
         expect(findErrorAlertButton().attributes('href')).toBe(
           `${TEST_HOST}/foo?type=maven&status=error`,
         );
+      });
+
+      it('has tracking attributes', () => {
+        expect(findErrorAlertButton().attributes()).toMatchObject({
+          'data-event-tracking': 'click_show_packages_with_errors_link',
+          'data-event-label': 'package_errors_alert',
+        });
       });
     });
   });

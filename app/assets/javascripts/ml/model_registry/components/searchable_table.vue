@@ -5,6 +5,7 @@ import { GRAPHQL_PAGE_SIZE, LIST_KEY_CREATED_AT } from '~/ml/model_registry/cons
 import { queryToObject, setUrlParams, updateHistory } from '~/lib/utils/url_utility';
 import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
 import LoadOrErrorOrShow from '~/ml/model_registry/components/load_or_error_or_show.vue';
+import ModelsTable from '~/ml/model_registry/components/models_table.vue';
 import ModelVersionsTable from '~/ml/model_registry/components/model_versions_table.vue';
 
 export default {
@@ -13,6 +14,7 @@ export default {
     RegistrySearch,
     LoadOrErrorOrShow,
     GlKeysetPagination,
+    ModelsTable,
     ModelVersionsTable,
   },
   directives: {
@@ -21,7 +23,13 @@ export default {
   props: {
     modelVersions: {
       type: Array,
-      required: true,
+      required: false,
+      default: () => [],
+    },
+    models: {
+      type: Array,
+      required: false,
+      default: () => [],
     },
     pageInfo: {
       type: Object,
@@ -70,10 +78,13 @@ export default {
   },
   computed: {
     isModelVersionsEmpty() {
-      return this.modelVersions && this.modelVersions.length === 0;
+      return this.modelVersions.length === 0;
+    },
+    isModelsEmpty() {
+      return this.models.length === 0;
     },
     isListEmpty() {
-      return this.isModelVersionsEmpty;
+      return this.isModelVersionsEmpty && this.isModelsEmpty;
     },
     parsedQuery() {
       const name = this.filters
@@ -151,7 +162,8 @@ export default {
     />
     <load-or-error-or-show :is-loading="isLoading" :error-message="errorMessage">
       <slot v-if="isListEmpty" name="empty-state"></slot>
-      <model-versions-table v-else-if="modelVersions" :items="modelVersions" />
+      <model-versions-table v-else-if="!isModelVersionsEmpty" :items="modelVersions" />
+      <models-table v-else-if="!isModelsEmpty" :items="models" />
       <gl-keyset-pagination
         v-if="pageInfo.hasPreviousPage || pageInfo.hasNextPage"
         v-bind="pageInfo"

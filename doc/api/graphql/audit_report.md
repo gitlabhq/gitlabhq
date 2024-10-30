@@ -4,54 +4,27 @@ group: Compliance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Set up an Audit Report with GraphQL
+# Create an audit report by using GraphQL
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-This page describes how you can use the GraphiQL explorer to set up an audit report
-for a specific subset of users.
+You can create an audit report for a specific subset of users by using:
 
-You can run the same query directly via a HTTP endpoint, using `cURL`. For more information, see our
-guidance on getting started from the [command line](getting_started.md#command-line).
+- GraphiQL.
+- [`cURL`](getting_started.md#command-line).
 
-The [example users query](#set-up-the-graphiql-explorer) looks for a subset of users in
-a GitLab instance either by username or
-[Global ID](../../development/api_graphql_styleguide.md#global-ids).
-The query includes:
+## Use GraphiQL
 
-- [`pageInfo`](#pageinfo)
-- [`nodes`](#nodes)
+You can use GraphiQL to query information about a subset of users.
 
-## `pageInfo`
-
-This contains the data needed to implement pagination. GitLab uses cursor-based
-[pagination](getting_started.md#pagination). For more information, see
-[Pagination](https://graphql.org/learn/pagination/) in the GraphQL documentation.
-
-## `nodes`
-
-In a GraphQL query, `nodes` is used to represent a collection of [`nodes` on a graph](https://en.wikipedia.org/wiki/Vertex_(graph_theory)).
-In this case, the collection of nodes is a collection of `User` objects. For each one,
-we output:
-
-- Their user's `id`.
-- The `membership` fragment, which represents a Project or Group membership belonging
-  to that user. Outputting a fragment is denoted with the `...memberships` notation.
-
-The GitLab GraphQL API is extensive and a large amount of data for a wide variety of entities can be output.
-See the official [reference documentation](reference/index.md) for the most up-to-date information.
-
-## Set up the GraphiQL explorer
-
-This procedure presents a substantive example that you can copy and paste into GraphiQL
-explorer. GraphiQL explorer is available for:
-
-- GitLab.com users at [https://gitlab.com/-/graphql-explorer](https://gitlab.com/-/graphql-explorer).
-- Self-managed users at `https://gitlab.example.com/-/graphql-explorer`.
-
-1. Copy the following code excerpt:
+1. Open GraphiQL:
+   - For GitLab.com, use: `https://gitlab.com/-/graphql-explorer`
+   - For self-managed GitLab, use: `https://gitlab.example.com/-/graphql-explorer`
+1. Copy the following text and paste it in the left window.
+   This query searches for a subset of users by username. Alternately, you can use their
+   [Global ID](../../development/api_graphql_styleguide.md#global-ids).
 
    ```graphql
    {
@@ -103,24 +76,40 @@ explorer. GraphiQL explorer is available for:
    }
    ```
 
-1. Open the [GraphiQL explorer tool](https://gitlab.com/-/graphql-explorer).
-1. Paste the `query` listed above into the left window of your GraphiQL explorer tool.
-1. Select **Play** to get the result shown here:
-
-![GraphiQL explorer search for boards](img/user_query_example_v13_2.png)
+1. Select **Play**.
 
 NOTE:
-[The GraphQL API returns a GlobalID, rather than a standard ID.](getting_started.md#queries-and-mutations) It also expects a GlobalID as an input rather than
-a single integer.
+[The GraphQL API returns a GlobalID, rather than a standard ID](getting_started.md#queries-and-mutations).
+It also expects a GlobalID as an input rather than a single integer.
 
-This GraphQL query returns the groups and projects that the user has been *explicitly* made a member of.
-Since the GraphiQL explorer uses the session token to authorize access to resources,
-the output is limited to the projects and groups accessible to the currently authenticated user.
+This query returns the groups and projects that the user has been explicitly made a member of.
 
-If you've signed in as an instance administrator, you would have access to all records, regardless of ownership.
+- Because GraphiQL uses the session token to authorize access to resources,
+  the output is limited to the projects and groups accessible to the currently authenticated user.
+- If you are signed in as an instance administrator, you have access to all resources.
 
-For more information on:
+The query includes:
 
-- GraphQL specific entities, such as Fragments and Interfaces, see the official
-  [GraphQL documentation](https://graphql.org/learn/).
-- Individual attributes, see the [GraphQL API Resources](reference/index.md).
+- [`pageInfo`](#pageinfo)
+- [`nodes`](#nodes)
+
+## `pageInfo`
+
+This contains the data needed to implement pagination. GitLab uses cursor-based
+[pagination](getting_started.md#pagination). For more information, see
+[Pagination](https://graphql.org/learn/pagination/) in the GraphQL documentation.
+
+## `nodes`
+
+In a GraphQL query, `nodes` represents a collection of [`nodes` on a graph](https://en.wikipedia.org/wiki/Vertex_(graph_theory)).
+In this case, the collection of nodes is a collection of `User` objects. For each one,
+the output includes:
+
+- The user's `id`.
+- The `membership` fragment, which represents project or group membership that belongs
+  to that user. Fragments are indicated by the `...memberships` notation.
+
+## Related topics
+
+- [GraphQL API reference](reference/index.md)
+- [GraphQL-specific entities, like fragments and interfaces](https://graphql.org/learn/)

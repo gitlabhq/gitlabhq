@@ -12,7 +12,7 @@ export const BASE_SORT_FIELDS = Object.freeze([
   },
   {
     orderBy: LIST_KEY_CREATED_AT,
-    label: s__('MlExperimentTracking|Created at'),
+    label: s__('MlExperimentTracking|Created'),
   },
 ]);
 
