@@ -38,12 +38,12 @@ and all **secondary** sites:
 1. Optional. [Pause replication on each **secondary** site](../replication/pause_resume_replication.md)
    to protect the disaster recovery (DR) capability of the **secondary** sites.
 1. SSH into each node of the **primary** site.
-1. [Upgrade GitLab on the **primary** site](../../../update/package/index.md#upgrade-using-the-official-repositories).
+1. [Upgrade GitLab on the **primary** site](../../../update/package/index.md#by-using-the-official-repositories-recommended).
 1. Perform testing on the **primary** site, particularly if you paused replication in step 1 to protect DR.
    [There are some suggestions for post-upgrade testing](../../../update/index.md#pre-upgrade-and-post-upgrade-checks) in the upgrade documentation.
 1. Ensure that the secrets in the `/etc/gitlab/gitlab-secrets.json` file of both the primary site and the secondary site are the same. The file must be the same on all of a site's nodes.
 1. SSH into each node of **secondary** sites.
-1. [Upgrade GitLab on each **secondary** site](../../../update/package/index.md#upgrade-using-the-official-repositories).
+1. [Upgrade GitLab on each **secondary** site](../../../update/package/index.md#by-using-the-official-repositories-recommended).
 1. If you paused replication in step 1, [resume replication on each **secondary**](../index.md#pausing-and-resuming-replication).
    Then, restart Puma and Sidekiq on each **secondary** site. This is to ensure they
    are initialized against the newer database schema that is now replicated from

@@ -177,13 +177,13 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-mb-3 gl-mt-3" data-testid="jobs-environment-container">
+  <div class="gl-my-4" data-testid="jobs-environment-container">
     <div
-      class="gl-border gl-rounded-base gl-px-5 gl-pb-4 gl-pt-3"
+      class="gl-border gl-flex gl-gap-3 gl-rounded-base gl-bg-subtle gl-p-4"
       data-testid="jobs-environment-info"
     >
       <ci-icon :status="iconStatus" />
-      <p class="gl-mb-0 gl-inline-block">
+      <p class="gl-mb-0 gl-inline-block gl-self-center">
         <gl-sprintf :message="environment">
           <template #environmentLink>
             <gl-link

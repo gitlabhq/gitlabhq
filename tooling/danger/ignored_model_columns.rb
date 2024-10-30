@@ -39,7 +39,7 @@ module Tooling
         _, index = file_lines.each_with_index.find do |file_line, index|
           next unless lines_to_search.include?(index)
 
-          file_line == searched_line && !exclude_indexes.include?(index) # rubocop:disable Rails/NegateInclude
+          file_line == searched_line && !exclude_indexes.include?(index)
         end
 
         index

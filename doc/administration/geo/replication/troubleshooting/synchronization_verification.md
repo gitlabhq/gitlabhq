@@ -66,115 +66,124 @@ console. The following sections describe how to use internal application
 commands in the Rails console to cause replication or verification for
 individual records synchronously or asynchronously.
 
+In the context of GitLab Geo, a **registry record** refers to registry tables in
+the Geo tracking database. Each record tracks a single replicable in the main
+GitLab database, such as an LFS file, or a project Git repository. The Rails
+models that correspond to Geo registry tables that can be queried are:
+
+- `CiSecureFileRegistry`
+- `ContainerRepositoryRegistry`
+- `DependencyProxyBlobRegistry`
+- `DependencyProxyManifestRegistry`
+- `JobArtifactRegistry`
+- `LfsObjectRegistry`
+- `MergeRequestDiffRegistry`
+- `PackageFileRegistry`
+- `PagesDeploymentRegistry`
+- `PipelineArtifactRegistry`
+- `ProjectWikiRepositoryRegistry`
+- `SnippetRepositoryRegistry`
+- `TerraformStateVersionRegistry`
+- `UploadRegistry`
+
+You can use Rails to perform basic troubleshooting. Troubleshooting steps vary
+depending on the object type.
+
+#### For blob types
+
 WARNING:
 Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
 
 [Start a Rails console session](../../../../administration/operations/rails_console.md#starting-a-rails-console-session)
-to enact the following, basic troubleshooting steps:
+on a **secondary site**.
 
-- **For Blob types** (using the `Packages::PackageFile` component as an example)
+Using the `Packages::PackageFile` component as an example:
 
-  - Find registry records that failed to sync:
+- Find registry records that failed to sync:
 
-    ```ruby
-    Geo::PackageFileRegistry.failed
-    ```
+  ```ruby
+  Geo::PackageFileRegistry.failed
+  ```
 
-    The term registry records, in this case, refers to registry tables in the
-    Geo tracking database. Each record, or row, tracks a single replicable in the
-    main GitLab database, such as an LFS file, or a project Git repository. Here
-    are some other Rails models that correspond to Geo registry tables that can
-    be queried like the above:
+- Find registry records that are missing on the primary site:
 
-    ```plaintext
-    CiSecureFileRegistry
-    ContainerRepositoryRegistry
-    DependencyProxyBlobRegistry
-    DependencyProxyManifestRegistry
-    JobArtifactRegistry
-    LfsObjectRegistry
-    MergeRequestDiffRegistry
-    PackageFileRegistry
-    PagesDeploymentRegistry
-    PipelineArtifactRegistry
-    ProjectWikiRepositoryRegistry
-    SnippetRepositoryRegistry
-    TerraformStateVersionRegistry
-    UploadRegistry
-    ```
+  ```ruby
+  Geo::PackageFileRegistry.where(last_sync_failure: 'The file is missing on the Geo primary site')
+  ```
 
-  - Find registry records that are missing on the primary site:
+- Resync a package file, synchronously, given an ID:
 
-    ```ruby
-    Geo::PackageFileRegistry.where(last_sync_failure: 'The file is missing on the Geo primary site')
-    ```
+  ```ruby
+  model_record = Packages::PackageFile.find(<id>)
+  model_record.replicator.sync
+  ```
 
-  - Resync a package file, synchronously, given an ID:
+- Resync a package file, synchronously, given a registry ID:
 
-    ```ruby
-    model_record = Packages::PackageFile.find(id)
-    model_record.replicator.sync
-    ```
+  ```ruby
+  registry = Geo::PackageFileRegistry.find(<registry_id>)
+  registry.replicator.sync
+  ```
 
-  - Resync a package file, synchronously, given a registry ID:
+- Resync a package file, asynchronously, given a registry ID.
+  Since GitLab 16.2, a component can be asynchronously replicated as follows:
 
-    ```ruby
-    registry = Geo::PackageFileRegistry.find(registry_id)
-    registry.replicator.sync
-    ```
+  ```ruby
+  registry = Geo::PackageFileRegistry.find(<registry_id>)
+  registry.replicator.enqueue_sync
+  ```
 
-  - Resync a package file, asynchronously, given a registry ID.
-    Since GitLab 16.2, a component can be asynchronously replicated as follows:
+- Reverify a package file, asynchronously, given a registry ID.
+  Since GitLab 16.2, a component can be asynchronously reverified as follows:
 
-    ```ruby
-    registry = Geo::PackageFileRegistry.find(registry_id)
-    registry.replicator.enqueue_sync
-    ```
+  ```ruby
+  registry = Geo::PackageFileRegistry.find(<registry_id>)
+  registry.replicator.verify_async
+  ```
 
-  - Reverify a package file, asynchronously, given a registry ID.
-    Since GitLab 16.2, a component can be asynchronously reverified as follows:
+#### For repository types
 
-    ```ruby
-    registry = Geo::PackageFileRegistry.find(registry_id)
-    registry.replicator.verify_async
-    ```
+WARNING:
+Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
 
-- **For Repository types** (using the `SnippetRepository` component as an example)
+[Start a Rails console session](../../../../administration/operations/rails_console.md#starting-a-rails-console-session)
+on a **secondary site**.
 
-  - Resync a snippet repository, synchronously, given an ID:
+Using the `SnippetRepository` component as an example:
 
-    ```ruby
-    model_record = Geo::SnippetRepositoryRegistry.find(id)
-    model_record.replicator.sync
-    ```
+- Resync a snippet repository, synchronously, given an ID:
 
-  - Resync a snippet repository, synchronously, given a registry ID
+  ```ruby
+  model_record = Geo::SnippetRepositoryRegistry.find(<id>)
+  model_record.replicator.sync
+  ```
 
-    ```ruby
-    registry = Geo::SnippetRepositoryRegistry.find(registry_id)
-    registry.replicator.sync
-    ```
+- Resync a snippet repository, synchronously, given a registry ID:
 
-  - Resync a snippet repository, asynchronously, given a registry ID.
-    Since GitLab 16.2, a component can be asynchronously replicated as follows:
+  ```ruby
+  registry = Geo::SnippetRepositoryRegistry.find(<registry_id>)
+  registry.replicator.sync
+  ```
 
-    ```ruby
-    registry = Geo::SnippetRepositoryRegistry.find(registry_id)
-    registry.replicator.enqueue_sync
-    ```
+- Since GitLab 16.2, a component can be asynchronously replicated. Resync a
+  snippet repository, asynchronously, given a registry ID:
 
-  - Reverify a snippet repository, asynchronously, given a registry ID.
-    Since GitLab 16.2, a component can be asynchronously reverified as follows:
+  ```ruby
+  registry = Geo::SnippetRepositoryRegistry.find(<registry_id>)
+  registry.replicator.enqueue_sync
+  ```
 
-    ```ruby
-    registry = Geo::SnippetRepositoryRegistry.find(registry_id)
-    registry.replicator.verify_async
-    ```
+- Since GitLab 16.2, a component can be asynchronously reverified. Reverify a
+  snippet repository, asynchronously, given a registry ID:
+
+  ```ruby
+  registry = Geo::SnippetRepositoryRegistry.find(<registry_id>)
+  registry.replicator.verify_async
+  ```
 
 ### Resync and reverify multiple components
 
-NOTE:
-There is an [issue to implement this functionality in the **Admin** area UI](https://gitlab.com/gitlab-org/gitlab/-/issues/364729).
+> - Bulk resync and reverify [added](https://gitlab.com/gitlab-org/gitlab/-/issues/364729) in GitLab 16.5.
 
 WARNING:
 Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
@@ -300,13 +309,13 @@ To validate if you are experiencing this issue:
 1. In the same Rails console, resync an affected project:
 
    ```ruby
-   Project.find_by_full_path('mygroup/mysubgroup/myproject').replicator.resync
+   Project.find_by_full_path('<mygroup/mysubgroup/myproject>').replicator.resync
    ```
 
 1. Look at the sync state:
 
    ```ruby
-   Project.find_by_full_path('mygroup/mysubgroup/myproject').replicator.registry
+   Project.find_by_full_path('<mygroup/mysubgroup/myproject>').replicator.registry
    ```
 
 1. If `last_sync_failure` no longer includes the error `fatal: could not read Username`, then you are

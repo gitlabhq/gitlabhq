@@ -33,6 +33,9 @@ To upgrade GitLab:
 1. Determine what [upgrade path](upgrade_paths.md) you should take. Your upgrade might require multiple upgrades. If
    relevant, check [OS compatibility with the target GitLab version](../administration/package_information/supported_os.md).
 1. Check for [background migrations](background_migrations.md). All migrations must finish running before each upgrade.
+   You must spread out upgrades between major and minor releases to allow time for background migrations to finish.
+1. Test your upgrade in a test environment first, and have a [rollback plan](plan_your_upgrade.md#rollback-plan)
+   to reduce the risk of unplanned outages and extended downtime.
 1. If available in your starting version, consider [turning on maintenance mode](../administration/maintenance_mode/index.md)
    during the upgrade.
 1. Consult changes for different versions of GitLab to ensure compatibility before upgrading:
@@ -41,7 +44,11 @@ To upgrade GitLab:
    - [GitLab 15 changes](versions/gitlab_15_changes.md)
 1. Perform [pre-upgrade checks](#pre-upgrade-and-post-upgrade-checks).
 1. Pause [running CI/CD pipelines and jobs](#cicd-pipelines-and-jobs-during-upgrades).
-1. Follow [upgrade steps for additional features](#upgrade-steps-for-additional-features), if relevant.
+1. If relevant, follow [upgrade steps for additional features](#upgrade-steps-for-additional-features):
+   - [Advanced search (Elasticsearch)](#elasticsearch).
+   - [Geo](#geo).
+   - [Gitaly running on its own server](#external-gitaly).
+   - [GitLab agent for Kubernetes](#gitlab-agent-for-kubernetes).
 1. Follow the [upgrade steps based on your installation method](#upgrade-based-on-installation-method).
 1. If your GitLab instance has any runners associated with it, upgrade them to match the current GitLab version.
    This step ensures [compatibility with GitLab versions](https://docs.gitlab.com/runner/#gitlab-runner-versions).
@@ -60,12 +67,8 @@ official ways to upgrade GitLab:
 
 :::TabTitle Linux packages (Omnibus)
 
-The [package upgrade guide](package/index.md)
-contains the steps needed to upgrade a package installed by official GitLab
-repositories.
-
-There are also instructions when you want to
-[upgrade to a specific version](package/index.md#upgrade-to-a-specific-version-using-the-official-repositories).
+As part of a GitLab upgrade, the [Linux package upgrade guide](package/index.md) contains the specific steps to follow
+to upgrade a Linux package instance.
 
 :::TabTitle Helm chart (Kubernetes)
 
@@ -211,8 +214,8 @@ Some GitLab features have additional steps.
 
 ### External Gitaly
 
-If you're using an external Gitaly server, it must be upgraded to the newer
-version prior to upgrading the application server.
+Upgrade Gitaly servers to the newer version before upgrading the application server. This prevents the gRPC client
+on the application server from sending RPCs that the old Gitaly version does not support.
 
 ### Geo
 

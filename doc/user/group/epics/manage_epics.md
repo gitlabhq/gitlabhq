@@ -195,7 +195,7 @@ The assignee is changed without having to refresh the page.
 ## Epic color
 
 DETAILS:
-**Tier:** Ultimate
+**Tier:** Premium, Ultimate
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79940) in GitLab 14.9 [with a flag](../../../administration/feature_flags.md) named `epic_color_highlight`. Disabled by default.
 > - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/365336) on GitLab.com, GitLab Dedicated, and self-managed in GitLab 16.11.

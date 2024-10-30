@@ -46,20 +46,21 @@ The following table describes the version types and their release cadence:
 We encourage everyone to run the [latest stable release](https://about.gitlab.com/releases/categories/releases/)
 to ensure that you can upgrade to the most secure and feature-rich GitLab experience.
 To make sure you can run the most recent stable release, we are working
-hard to keep the update process simple and reliable.
+hard to keep the update process reliable.
 
 If you are unable to follow our monthly release cycle, there are a couple of
 cases you must consider. Follow the
 [upgrade paths guide](../update/upgrade_paths.md) to safely upgrade
 between versions.
 
-NOTE:
-Version specific changes in Linux packages can be found in [the Linux package documentation](../update/package/index.md#version-specific-changes).
+Version-specific change documentation for Linux packages is available for:
 
-NOTE:
-Instructions are available for downloading the Linux package locally and [manually installing](../update/package/index.md#download-a-package-manually) it.
+- [GitLab 17](../update/versions/gitlab_17_changes.md)
+- [GitLab 16](../update/versions/gitlab_16_changes.md)
+- [GitLab 15](../update/versions/gitlab_15_changes.md)
 
-NOTE:
+Instructions are available for downloading the Linux package locally and [manually installing](../update/package/index.md#by-using-a-downloaded-package) it.
+
 A step-by-step guide to [upgrading the Linux package-bundled PostgreSQL is documented separately](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server).
 
 ## Upgrading major versions

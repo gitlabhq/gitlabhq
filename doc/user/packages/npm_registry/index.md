@@ -305,7 +305,8 @@ such as `80` for a URL starting with `http` or `443` for a URL starting with `ht
 In the GitLab project containing your `package.json`, edit or create a `.gitlab-ci.yml` file. For example:
 
 ```yaml
-image: node:latest
+default:
+  image: node:latest
 
 stages:
   - deploy

@@ -6,7 +6,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # Setting up local development for Duo Workflow
 
-Alternative to this detailed setup you can also [set up Duo Workflow directly with GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/duo_workflow.md?ref_type=heads).
+This detailed guide describes setting up the local development environment for [Duo Workflow](../../user/duo_workflow/index.md). Alternatively, you can also [set up Duo Workflow directly with GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/duo_workflow.md?ref_type=heads).
 
 ## Prerequisites
 

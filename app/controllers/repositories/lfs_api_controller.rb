@@ -78,25 +78,6 @@ module Repositories
       objects
     end
 
-    def legacy_download_objects!
-      existing_oids = project.lfs_objects_oids(oids: objects_oids)
-
-      objects.each do |object|
-        if existing_oids.include?(object[:oid])
-          object[:actions] = proxy_download_actions(object)
-
-          object[:authenticated] = true if ::Users::Anonymous.can?(:download_code, project)
-        else
-          object[:error] = {
-            code: 404,
-            message: _("Object does not exist on the server or you don't have permissions to access it")
-          }
-        end
-      end
-
-      objects
-    end
-
     def upload_objects!
       existing_oids = project.lfs_objects_oids(oids: objects_oids)
 

@@ -76,7 +76,7 @@ module Quality
     end
 
     def pattern(level)
-      @patterns[level] ||= "#{prefixes_for_pattern}spec/#{folders_pattern(level)}{,/**/}*#{suffix(level)}".freeze # rubocop:disable Style/RedundantFreeze
+      @patterns[level] ||= "#{prefixes_for_pattern}spec/#{folders_pattern(level)}{,/**/}*#{suffix(level)}".freeze
     end
 
     def regexp(level, start_with = false)

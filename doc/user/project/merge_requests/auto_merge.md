@@ -48,8 +48,6 @@ Prerequisites:
 - If your project configuration requires it, all threads in the
   merge request [must be resolved](index.md#resolve-a-thread).
 - The merge request must have received all required approvals.
-- Merge trains are not supported. For more information,
-  see [issue 443395](https://gitlab.com/gitlab-org/gitlab/-/issues/443395).
 
 To do this when pushing from the command line, use the `merge_request.merge_when_pipeline_succeeds`
 [push option](../../../topics/git/commit.md#push-options).

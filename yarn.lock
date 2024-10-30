@@ -1354,10 +1354,10 @@
     core-js "^3.29.1"
     mitt "^3.0.1"
 
-"@gitlab/eslint-plugin@20.4.1":
-  version "20.4.1"
-  resolved "https://registry.yarnpkg.com/@gitlab/eslint-plugin/-/eslint-plugin-20.4.1.tgz#79cf7679528a1769d32faf20bab9ac9614aebf8a"
-  integrity sha512-OXCP04WFYa7TkVNXb2gFcgW4BlS2jvlQ/xk7BbvZ3vuHBGzQH9v6Hec709bVJ25iKe2mpHi2C4V5RMaiZUeZew==
+"@gitlab/eslint-plugin@20.5.0":
+  version "20.5.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/eslint-plugin/-/eslint-plugin-20.5.0.tgz#c8de1256345932d933af9712613522e4bc4464b7"
+  integrity sha512-QNI/Lu0NZjHLTaWrhyKez03Cpc2ia87U32Xt1wtneEdghrScxRfbL+pgoVmiEZjzyaPg8LjTtmTWkPHgoDb0sQ==
   dependencies:
     "@typescript-eslint/eslint-plugin" "^7.14.1"
     eslint-config-airbnb-base "^15.0.0"

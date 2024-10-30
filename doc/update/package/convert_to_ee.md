@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed
 
-To convert an existing GitLab Community Edition (CE) server installed using the Omnibus GitLab
+To convert an existing GitLab Community Edition (CE) server installed using the Linux
 packages to GitLab [Enterprise Edition](https://about.gitlab.com/pricing/) (EE), you install the EE
 package on top of CE.
 
@@ -28,7 +28,7 @@ The steps can be summed up to:
 
 1. Make a [GitLab backup](../../administration/backup_restore/backup_gitlab.md).
 
-1. Find the currently installed GitLab version:
+1. Find the installed GitLab version:
 
    **For Debian/Ubuntu**
 
@@ -72,7 +72,7 @@ The steps can be summed up to:
    NOTE:
    If you want to use `dpkg`/`rpm` instead of `apt-get`/`yum`, go through the first
    step to find the current GitLab version, then follow
-   [Upgrade using a manually downloaded package](index.md#download-a-package-manually),
+   [Upgrade using a manually downloaded package](index.md#by-using-a-downloaded-package),
    and then [add your license](../../administration/license.md).
 
 1. Install the `gitlab-ee` package. The install automatically
@@ -123,4 +123,4 @@ The steps can be summed up to:
 1. Optional. [Set up the Elasticsearch integration](../../integration/advanced_search/elasticsearch.md) to enable [advanced search](../../user/search/advanced_search.md).
 
 That's it! You can now use GitLab Enterprise Edition! To upgrade to a newer
-version, follow [Upgrade using the official repositories](index.md#upgrade-using-the-official-repositories).
+version, follow [Upgrading Linux package instances](index.md).

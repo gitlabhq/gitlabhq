@@ -195,10 +195,14 @@ DETAILS:
 > - [Enabled on self-managed](https://gitlab.com/groups/gitlab-org/-/epics/15176) in GitLab 17.6.
 > - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
-Self-managed users can experience a fully managed self-hosted environment, but they also have the option to use GitLab cloud connector and default AI vendors.
+Use your own language models to power AI features in GitLab. Code Suggestions and Duo Chat are supported.
 
-- **Using GitLab.com AI Gateway and Cloud Connector**: Leverage the GitLab-managed AI Gateway to connect with external large language model (LLM) providers (for example, Google Vertex AI or Anthropic), using external public providers.
-- **Using a Fully Self-Hosted and Managed Solution**: Deploy and manage your own AI Gateway and LLMs entirely within your infrastructure, without depending on external public providers.
+You can use language model vendors provided by GitLab or fully manage language models in your self-hosted environment.
+
+- Use GitLab model vendors: Connect with default external model providers, like Google Vertex AI or Anthropic, by
+  using the GitLab-managed AI Gateway.
+- Host your own models: Deploy and manage your own AI Gateway and language models in your infrastructure,
+  without depending on GitLab-provided external language providers.
 - [View documentation](../../administration/self_hosted_models/index.md).
 
 ### Merge Request Summary

@@ -25,9 +25,12 @@ The restore overwrites all newer GitLab database content with the older state.
 The example below demonstrates the downgrade procedure when downgrading between minor
 and patch versions (for example, from 15.0.6 to 15.0.5).
 
-When downgrading between major versions, take into account the
-[specific version changes](index.md#version-specific-changes) that occurred when you upgraded
-to the major version you are downgrading from.
+When downgrading between major versions, you must take into account version-specific changes that occurred when you
+previously upgraded. For more information, see:
+
+- [GitLab 17 changes](../versions/gitlab_17_changes.md)
+- [GitLab 16 changes](../versions/gitlab_16_changes.md)
+- [GitLab 15 changes](../versions/gitlab_15_changes.md)
 
 These steps consist of:
 

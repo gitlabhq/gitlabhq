@@ -18,6 +18,16 @@ The availability of this feature is controlled by a feature flag.
 For more information, see the history.
 This feature is available for internal GitLab team members for testing, but not ready for production use.
 
+WARNING:
+This feature is considered [experimental](../../policy/experiment-beta-support.md) and is not intended for customer usage outside of initial design partners. We expect major changes to this feature.
+
+DISCLAIMER:
+This page contains information related to upcoming products, features, and functionality.
+It is important to note that the information presented is for informational purposes only.
+Please do not rely on this information for purchasing or planning purposes.
+The development, release, and timing of any products, features, or functionality may be subject to change or delay and remain at the
+sole discretion of GitLab Inc.
+
 Automate tasks and help increase productivity in your development workflow by using GitLab Duo Workflow.
 GitLab Duo Workflow, currently only in your IDE, takes the information you provide
 and uses AI to walk you through an implementation plan.

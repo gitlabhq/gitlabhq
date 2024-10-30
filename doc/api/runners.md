@@ -587,7 +587,7 @@ Example response:
 
 ## List project's runners
 
-List all runners available in the project, including from ancestor groups and [any allowed shared runners](../ci/runners/runners_scope.md#enable-instance-runners-for-a-project).
+List all runners available in the project, including from ancestor groups and [any allowed instance runners](../ci/runners/runners_scope.md#enable-instance-runners-for-a-project).
 
 Prerequisites:
 
@@ -738,7 +738,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 
 ## List group's runners
 
-List all runners available in the group as well as its ancestor groups, including [any allowed shared runners](../ci/runners/runners_scope.md#enable-instance-runners-for-a-group).
+List all runners available in the group as well as its ancestor groups, including [any allowed instance runners](../ci/runners/runners_scope.md#enable-instance-runners-for-a-group).
 
 Prerequisites:
 

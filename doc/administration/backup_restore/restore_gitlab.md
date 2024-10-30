@@ -34,7 +34,7 @@ You can only restore a backup to **exactly the same version and type (CE or EE)*
 of GitLab on which it was created. For example, CE 15.1.4.
 
 If your backup is a different version than the current installation, you must
-[downgrade](../../update/package/downgrade.md) or [upgrade](../../update/package/index.md#upgrade-to-a-specific-version-using-the-official-repositories) your GitLab installation
+[downgrade](../../update/package/downgrade.md) or [upgrade](../../update/package/index.md#upgrade-to-a-specific-version) your GitLab installation
 before restoring the backup.
 
 ### GitLab secrets must be restored

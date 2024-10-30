@@ -645,7 +645,9 @@ If your code is generally isolated (for example it's executed in a worker only) 
 
 Additionally, we have a RuboCop rule `Performance/ActiveRecordSubtransactionMethods` that prevents the usage of `.safe_find_or_create_by`. This rule can be disabled on a case by case basis via `# rubocop:disable Performance/ActiveRecordSubtransactionMethods`.
 
-## Alternative 1: `UPSERT`
+### Alternatives to .find_or_create_by
+
+#### Alternative 1: `UPSERT`
 
 The [`.upsert`](https://api.rubyonrails.org/v7.0.5/classes/ActiveRecord/Persistence/ClassMethods.html#method-i-upsert) method can be an alternative solution when the table is backed by a unique index.
 
@@ -695,7 +697,7 @@ To work around this, we have two options:
 - Remove the uniqueness validation from the `ActiveRecord` model.
 - Use the [`on` keyword](https://guides.rubyonrails.org/active_record_validations.html#on) and implement context-specific validation.
 
-### Alternative 2: Check existence and rescue
+#### Alternative 2: Check existence and rescue
 
 When the chance of concurrently creating the same record is very low, we can use a simpler approach:
 

@@ -468,6 +468,13 @@ For tests that are slow for a legitimate reason and to skip issue creation, add 
 | 2023-02-15 | 67.42 seconds | 44.66 seconds | - | 76.86 seconds | Top slow test eliminating the maximum |
 | 2023-06-15 | 50.13 seconds | 19.20 seconds | 27.12 | 45.40 seconds | Avg for top 100 slow tests|
 
+## Handling issues for flaky or slow tests
+
+The process around these issues is very lightweight. Feel free to close them or not, they're [managed automatically](https://gitlab.com/gitlab-org/ruby/gems/gitlab_quality-test_tooling/-/blob/main/lib/gitlab_quality/test_tooling/report/flaky_test_issue.rb):
+
+- If a flaky or slow test is fixed and the associated `[Test]` issue isn't closed manually, it will be closed automatically after [30 days of inactivity](https://gitlab.com/gitlab-org/quality/triage-ops/-/blob/master/policies/stages/hygiene/close-stale-unhealthy-test-issues.yml).
+- If the problem reoccurs, the closed issue is reopened automatically. This means, it is also okay to close an issue when you think you fixed it.
+
 ---
 
 [Return to Testing documentation](index.md)

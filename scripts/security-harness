@@ -45,13 +45,13 @@ def lefthook_hook_in_place?
 end
 
 def lefthook_available?
-  system('bundle exec lefthook run prepare-commit-msg &>/dev/null') # rubocop:disable GitlabSecurity/SystemCommandInjection
+  system('bundle exec lefthook run prepare-commit-msg &>/dev/null')
 end
 
 def uninstall_lefthook
   return unless lefthook_available?
 
-  system('bundle exec lefthook uninstall') # rubocop:disable GitlabSecurity/SystemCommandInjection
+  system('bundle exec lefthook uninstall')
   # `bundle exec lefthook uninstall` removes the `lefthook.yml` file so we checkout it again
   system("git checkout -- #{LEFTHOOK_GLOBAL_CONFIG_PATH}") # rubocop:disable GitlabSecurity/SystemCommandInjection
   puts "#{SHELL_YELLOW}Lefthook was uninstalled to let the security harness work properly.#{SHELL_CLEAR}"
@@ -60,7 +60,7 @@ end
 def install_lefthook
   return unless lefthook_available?
 
-  system('bundle exec lefthook install') # rubocop:disable GitlabSecurity/SystemCommandInjection
+  system('bundle exec lefthook install')
   puts "#{SHELL_GREEN}Lefthook was re-installed.#{SHELL_CLEAR}"
 end
 

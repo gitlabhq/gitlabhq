@@ -104,7 +104,7 @@ class GenerateRspecPipeline
   def rspec_files_per_test_level
     @rspec_files_per_test_level ||= begin
       all_remaining_rspec_files = all_rspec_files.dup
-      TEST_LEVELS.each_with_object(Hash.new { |h, k| h[k] = {} }) do |test_level, memo| # rubocop:disable Rails/IndexWith
+      TEST_LEVELS.each_with_object(Hash.new { |h, k| h[k] = {} }) do |test_level, memo|
         memo[test_level][:files] = all_remaining_rspec_files
           .grep(test_level_service.regexp(test_level, true))
           .tap { |files| files.each { |file| all_remaining_rspec_files.delete(file) } }
