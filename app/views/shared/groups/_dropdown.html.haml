@@ -1,5 +1,0 @@
-- options_hash = local_assigns.fetch(:options_hash, groups_sort_options_hash)
-- groups_sort_options = options_hash.map { |value, title| { value: value, text: title, href: filter_groups_path(sort: value) } }
-
-%div{ data: { testid: 'group_sort_by_dropdown' } }
-  = gl_redirect_listbox_tag groups_sort_options, project_list_sort_by, data: { placement: 'right' }

@@ -176,7 +176,7 @@
 }
 
 .job-log-line-number {
-  color: $gray-500;
+  @apply gl-text-gray-500;
   padding-right: $gl-padding-8;
   margin-right: $gl-padding-8;
   min-width: $job-line-number-width;

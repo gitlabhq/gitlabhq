@@ -199,7 +199,7 @@ export default {
             <code>&lt;name&gt;_&lt;type(optional)&gt;</code>
           </template>
           <template #example>
-            <code>ubuntu</code>
+            <code>ubuntu_containerd</code>
           </template>
           <!-- eslint-enable @gitlab/vue-require-i18n-strings -->
         </gl-sprintf>

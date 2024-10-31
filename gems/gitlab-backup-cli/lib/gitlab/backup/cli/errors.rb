@@ -6,6 +6,8 @@ module Gitlab
       module Errors
         autoload :DatabaseBackupError, 'gitlab/backup/cli/errors/database_backup_error'
         autoload :FileBackupError, 'gitlab/backup/cli/errors/file_backup_error'
+        autoload :FileRestoreError, 'gitlab/backup/cli/errors/file_restore_error'
+        autoload :GitalyBackupError, 'gitlab/backup/cli/errors/gitaly_backup_error'
       end
     end
   end

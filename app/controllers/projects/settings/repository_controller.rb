@@ -18,7 +18,6 @@ module Projects
       urgency :low, [:show, :create_deploy_token]
 
       def show
-        Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/482942')
         render_show
       end
 

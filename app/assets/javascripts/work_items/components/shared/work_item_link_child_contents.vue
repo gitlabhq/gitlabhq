@@ -198,8 +198,8 @@ export default {
       </gl-tooltip>
     </div>
     <div class="gl-flex gl-min-w-0 gl-grow gl-flex-col gl-flex-wrap">
-      <div class="gl-mb-2 gl-flex gl-min-w-0 gl-justify-between gl-gap-3">
-        <div class="item-title gl-min-w-0">
+      <div class="gl-mb-2 gl-min-w-0 gl-justify-between gl-gap-3 sm:gl-flex">
+        <div class="item-title gl-mb-2 gl-min-w-0 sm:gl-mb-0">
           <span v-if="childItem.confidential">
             <gl-icon
               v-gl-tooltip.top
@@ -221,7 +221,9 @@ export default {
             {{ childItem.title }}
           </gl-link>
         </div>
-        <div class="gl-flex gl-shrink-0 gl-items-center gl-justify-end gl-gap-3">
+        <div
+          class="gl-flex gl-shrink-0 gl-flex-row-reverse gl-items-center gl-justify-end gl-gap-3"
+        >
           <gl-avatars-inline
             v-if="assignees.length"
             :avatars="assignees"

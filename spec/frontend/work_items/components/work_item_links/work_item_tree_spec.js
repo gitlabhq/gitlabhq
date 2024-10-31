@@ -13,6 +13,7 @@ import WorkItemLinksForm from '~/work_items/components/work_item_links/work_item
 import WorkItemActionsSplitButton from '~/work_items/components/work_item_links/work_item_actions_split_button.vue';
 import WorkItemMoreActions from '~/work_items/components/shared/work_item_more_actions.vue';
 import WorkItemRolledUpData from '~/work_items/components/work_item_links/work_item_rolled_up_data.vue';
+import WorkItemRolledUpCount from '~/work_items/components/work_item_links/work_item_rolled_up_count.vue';
 import getWorkItemTreeQuery from '~/work_items/graphql/work_item_tree.query.graphql';
 import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
 import {
@@ -58,6 +59,7 @@ describe('WorkItemTree', () => {
   const findMoreActions = () => wrapper.findComponent(WorkItemMoreActions);
   const findCrudComponent = () => wrapper.findComponent(CrudComponent);
   const findRolledUpData = () => wrapper.findComponent(WorkItemRolledUpData);
+  const findRolledUpCount = () => wrapper.findComponent(WorkItemRolledUpCount);
 
   const createComponent = async ({
     workItemType = 'Objective',
@@ -360,17 +362,24 @@ describe('WorkItemTree', () => {
     createComponent({ shouldWaitForPromise: false });
 
     expect(findRolledUpData().exists()).toBe(false);
+    expect(findRolledUpCount().exists()).toBe(false);
 
     await waitForPromises();
 
     expect(findRolledUpData().exists()).toBe(true);
+    expect(findRolledUpCount().exists()).toBe(true);
 
     expect(findRolledUpData().props()).toEqual({
       workItemId: 'gid://gitlab/WorkItem/2',
       workItemIid: '2',
       workItemType: 'Objective',
-      rolledUpCountsByType: mockRolledUpCountsByType,
       fullPath: 'test/project',
+    });
+
+    expect(findRolledUpCount().props()).toEqual({
+      hideCountWhenZero: false,
+      infoType: 'badge',
+      rolledUpCountsByType: mockRolledUpCountsByType,
     });
   });
 

@@ -29,6 +29,12 @@ describe('Merge request dashboard collapsible section', () => {
     expect(wrapper.findByTestId('section-content').exists()).toBe(false);
   });
 
+  it('hides badge when count is null', () => {
+    createComponent(null);
+
+    expect(wrapper.findByTestId('merge-request-list-count').exists()).toBe(false);
+  });
+
   it('expands collapsed content', async () => {
     createComponent(1);
 

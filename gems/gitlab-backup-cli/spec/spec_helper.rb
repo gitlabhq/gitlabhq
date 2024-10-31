@@ -7,6 +7,7 @@ require 'thor'
 require 'gitlab/rspec/next_instance_of'
 
 ENV["RAILS_ENV"] ||= "test"
+GITLAB_PATH = File.expand_path(File.join(__dir__, '/fixtures/'))
 
 # Load spec support code
 Dir['spec/support/**/*.rb'].each { |f| load f }

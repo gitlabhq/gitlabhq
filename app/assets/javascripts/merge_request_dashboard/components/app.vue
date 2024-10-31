@@ -1,5 +1,6 @@
 <script>
 import { GlButton, GlIcon, GlAlert, GlTabs, GlTab, GlLink } from '@gitlab/ui';
+import TabTitle from './tab_title.vue';
 import MergeRequestsQuery from './merge_requests_query.vue';
 import CollapsibleSection from './collapsible_section.vue';
 import MergeRequest from './merge_request.vue';
@@ -12,6 +13,7 @@ export default {
     GlTabs,
     GlTab,
     GlLink,
+    TabTitle,
     MergeRequestsQuery,
     CollapsibleSection,
     MergeRequest,
@@ -33,6 +35,11 @@ export default {
       this.currentTab = key;
       this.$router.push({ path: key || '/' });
     },
+    queriesForTab(tab) {
+      return tab.lists
+        .filter((l) => !l.hideCount)
+        .map((list) => ({ query: list.query, variables: list.variables }));
+    },
   },
 };
 </script>
@@ -43,22 +50,24 @@ export default {
       <gl-tab
         v-for="tab in tabs"
         :key="tab.title"
-        :title="tab.title"
         :active="tab.key === currentTab"
         lazy
         @click="clickTab(tab)"
       >
+        <template #title>
+          <tab-title :title="tab.title" :queries="queriesForTab(tab)" :tab-key="tab.key" />
+        </template>
         <merge-requests-query
           v-for="(list, i) in tab.lists"
           :key="`list_${i}`"
           :query="list.query"
           :variables="list.variables"
+          :hide-count="list.hideCount"
           :class="{ 'gl-mb-4': i !== tab.lists.length - 1 }"
         >
           <template #default="{ mergeRequests, count, hasNextPage, loadMore, loading, error }">
             <collapsible-section
               :count="count"
-              :loading="loading || error"
               :title="list.title"
               :help-content="list.helpContent"
             >

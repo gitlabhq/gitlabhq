@@ -104,12 +104,24 @@ module Gitlab
           end
 
           def config(object_type)
-            Gitlab.config[object_type]
+            gitlab_config[object_type]
           end
 
           def env
             @env ||= ActiveSupport::EnvironmentInquirer.new(
               ENV["RAILS_ENV"].presence || ENV["RACK_ENV"].presence || "development")
+          end
+
+          def config_repositories_storages
+            gitlab_config.dig(env, 'repositories', 'storages')
+          end
+
+          def gitaly_backup_path
+            gitlab_config.dig(env, 'backup', 'gitaly_backup_path')
+          end
+
+          def gitaly_token
+            gitlab_config.dig(env, 'gitaly', 'token')
           end
 
           private

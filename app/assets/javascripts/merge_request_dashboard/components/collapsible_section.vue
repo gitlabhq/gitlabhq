@@ -25,11 +25,6 @@ export default {
       required: false,
       default: null,
     },
-    loading: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
   },
   data() {
     return {
@@ -86,9 +81,14 @@ export default {
             @click="toggleOpen"
           />
           {{ title }}
-          <gl-badge v-if="!loading || count" class="gl-ml-1" variant="neutral" size="sm">{{
-            count
-          }}</gl-badge>
+          <gl-badge
+            v-if="count !== null"
+            class="gl-ml-1"
+            variant="neutral"
+            size="sm"
+            data-testid="merge-request-list-count"
+            >{{ count }}</gl-badge
+          >
           <gl-button
             v-gl-tooltip
             :title="helpContent"

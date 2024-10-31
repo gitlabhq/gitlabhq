@@ -49,6 +49,14 @@ module Gitlab
             Shell::Command.new(cmd, *tar_args)
           end
 
+          def pack_from_stdin_cmd(target_directory:, target:, excludes: [])
+            pack_cmd(
+              archive_file: '-', # use stdin as list of files
+              target_directory: target_directory,
+              target: target,
+              excludes: excludes)
+          end
+
           # @param [Object] archive_file
           # @param [Object] target_directory
           # @return [Gitlab::Backup::Cli::Shell::Command]
@@ -62,6 +70,11 @@ module Gitlab
             ]
 
             Shell::Command.new(cmd, *tar_args)
+          end
+
+          def extract_from_stdin_cmd(target_directory:)
+            extract_cmd(archive_file: '-', # use stdin as file source content
+              target_directory: target_directory)
           end
 
           private

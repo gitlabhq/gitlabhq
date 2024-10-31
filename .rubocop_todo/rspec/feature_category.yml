@@ -4187,7 +4187,6 @@ RSpec/FeatureCategory:
     - 'spec/views/shared/_label_row.html.haml_spec.rb'
     - 'spec/views/shared/_milestones_sort_dropdown.html.haml_spec.rb'
     - 'spec/views/shared/gitlab_version/_security_patch_upgrade_alert.html.haml_spec.rb'
-    - 'spec/views/shared/groups/_dropdown.html.haml_spec.rb'
     - 'spec/views/shared/issuable/_sidebar.html.haml_spec.rb'
     - 'spec/views/shared/milestones/_issuable.html.haml_spec.rb'
     - 'spec/views/shared/milestones/_issuables.html.haml_spec.rb'

@@ -503,6 +503,7 @@ module MergeRequestsHelper
               helpContent: _('These merge requests merged after %{date}. You were an assignee or a reviewer.') % {
                 date: 2.weeks.ago.to_date.to_formatted_s(:long)
               },
+              hideCount: true,
               query: 'assigneeOrReviewerMergeRequests',
               variables: {
                 state: 'merged',

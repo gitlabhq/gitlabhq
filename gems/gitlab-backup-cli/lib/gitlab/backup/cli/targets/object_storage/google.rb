@@ -12,14 +12,15 @@ module Gitlab
 
             attr_accessor :object_type, :backup_bucket, :client, :config, :results
 
-            def initialize(object_type, options, config)
+            def initialize(object_type, remote_directory, config)
               @object_type = object_type
-              @backup_bucket = options.remote_directory
+              @backup_bucket = remote_directory
               @config = config
               @client = ::Google::Cloud::StorageTransfer.storage_transfer_service
             end
 
-            def dump(_, backup_id)
+            # @param [String] backup_id unique identifier for the backup
+            def dump(backup_id)
               response = find_or_create_job(backup_id, "backup")
               run_request = {
                 project_id: backup_job_spec(backup_id)[:project_id],
@@ -28,7 +29,8 @@ module Gitlab
               @results = client.run_transfer_job run_request
             end
 
-            def restore(_, backup_id)
+            # @param [String] backup_id unique identifier for the backup
+            def restore(backup_id)
               response = find_or_create_job(backup_id, "restore")
               run_request = {
                 project_id: restore_job_spec(backup_id)[:project_id],

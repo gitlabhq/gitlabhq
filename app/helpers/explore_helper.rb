@@ -21,10 +21,6 @@ module ExploreHelper
     request_path_with_options(options)
   end
 
-  def filter_groups_path(options = {})
-    request_path_with_options(options)
-  end
-
   def public_visibility_restricted?
     Gitlab::VisibilityLevel.public_visibility_restricted?
   end

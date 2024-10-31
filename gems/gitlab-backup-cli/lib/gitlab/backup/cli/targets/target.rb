@@ -6,14 +6,10 @@ module Gitlab
       module Targets
         # Abstract class used to implement a Backup Target
         class Target
-          # Backup creation and restore option flags
-          #
-          # TODO: Migrate to a unified backup specific Options implementation
-          # @return [::Backup::Options]
-          attr_reader :options
+          attr_reader :context
 
-          def initialize(options:)
-            @options = options
+          def initialize(context = nil)
+            @context = context
           end
 
           def asynchronous?
@@ -23,13 +19,12 @@ module Gitlab
           # dump task backup to `path`
           #
           # @param [String] path fully qualified backup task destination
-          # @param [String] backup_id unique identifier for the backup
-          def dump(path, backup_id)
+          def dump(path)
             raise NotImplementedError
           end
 
           # restore task backup from `path`
-          def restore(path, backup_id)
+          def restore(path)
             raise NotImplementedError
           end
         end

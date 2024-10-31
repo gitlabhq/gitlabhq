@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe Gitlab::Backup::Cli::GitlabConfig do
-  let(:config_fixture) { fixtures_path.join('gitlab.yml') }
+  let(:config_fixture) { fixtures_path.join('config/gitlab.yml') }
 
   subject(:gitlab_config) { described_class.new(config_fixture) }
 

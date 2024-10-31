@@ -239,8 +239,15 @@ To access the Groups page:
 For each group, the page displays their name, description, size, number of projects in the group,
 number of members, and whether the group is private, internal, or public. To edit a group, in the group's row, select **Edit**. To delete the group, in the group's row, select **Delete**.
 
-To change the sort order, select the sort dropdown list and select the desired order. The default
-sort order is by **Last created**.
+To change the sort order, select the sort dropdown list and choose the desired order.
+You can sort groups by:
+
+- Created date (default)
+- Updated date
+- Storage size
+
+The storage size option sorts groups by the total storage used, including Git repositories
+and Large File Storage (LFS) for all projects in the group. For more information, see [usage quotas](../user/storage_usage_quotas.md).
 
 To search for groups by name, enter your criteria in the search field. The group search is case
 insensitive, and applies partial matching.

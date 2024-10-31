@@ -41,10 +41,6 @@ module Gitlab
           execute_all_tasks
         end
 
-        def backup_options
-          @backup_options ||= build_backup_options!
-        end
-
         def metadata
           @metadata ||= read_metadata!
         end
@@ -57,14 +53,16 @@ module Gitlab
         private
 
         def execute_all_tasks
-          # TODO: when we migrate targets to the new codebase, recreate options to have only what we need here
-          # https://gitlab.com/gitlab-org/gitlab/-/issues/454906
           tasks = []
-          Gitlab::Backup::Cli::Tasks.build_each(context: context, options: backup_options) do |task|
+          Gitlab::Backup::Cli::Tasks.build_each(context: context) do |task|
+            # This is a temporary hack while we move away from options and use config instead
+            # This hack will be removed as part of https://gitlab.com/gitlab-org/gitlab/-/issues/498455
+            task.set_registry_bucket(registry_bucket) if task.is_a?(Gitlab::Backup::Cli::Tasks::Registry)
+
             Gitlab::Backup::Cli::Output.info("Executing restoration of #{task.human_name}...")
 
             duration = measure_duration do
-              tasks << { name: task.human_name, result: task.restore!(archive_directory, backup_id) }
+              tasks << { name: task.human_name, result: task.restore!(archive_directory) }
             end
 
             next if task.object_storage?
@@ -85,15 +83,6 @@ module Gitlab
 
         def read_metadata!
           @metadata = Gitlab::Backup::Cli::Metadata::BackupMetadata.load!(archive_directory)
-        end
-
-        def build_backup_options!
-          ::Backup::Options.new(
-            backup_id: backup_id,
-            remote_directory: backup_bucket,
-            container_registry_bucket: registry_bucket,
-            service_account_file: service_account_file
-          )
         end
 
         # @return [Pathname] temporary directory

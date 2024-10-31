@@ -24,6 +24,7 @@ exports[`Merge request dashboard collapsible section renders section 1`] = `
         Approved
         <gl-badge-stub
           class="gl-ml-1"
+          data-testid="merge-request-list-count"
           iconsize="md"
           size="sm"
           tag="span"

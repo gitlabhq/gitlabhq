@@ -142,23 +142,6 @@ RSpec.describe SortingHelper, feature_category: :shared do
     end
   end
 
-  describe '#groups_sort_options_hash' do
-    let(:expected_options) do
-      {
-        sort_value_name => sort_title_name,
-        sort_value_name_desc => sort_title_name_desc,
-        sort_value_recently_created => sort_title_recently_created,
-        sort_value_oldest_created => sort_title_oldest_created,
-        sort_value_latest_activity => sort_title_recently_updated,
-        sort_value_oldest_activity => sort_title_oldest_updated
-      }
-    end
-
-    it 'returns a hash of available sorting options for the groups' do
-      expect(groups_sort_options_hash).to eq(expected_options)
-    end
-  end
-
   describe 'with `projects` controller' do
     before do
       stub_controller_path 'projects'
