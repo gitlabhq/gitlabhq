@@ -2,18 +2,8 @@
 # Cop supports --autocorrect.
 Style/IfUnlessModifier:
   Exclude:
-    - 'app/helpers/admin/user_actions_helper.rb'
-    - 'app/helpers/blob_helper.rb'
-    - 'app/helpers/button_helper.rb'
-    - 'app/helpers/ci/status_helper.rb'
-    - 'app/helpers/diff_helper.rb'
     - 'app/helpers/dropdowns_helper.rb'
-    - 'app/helpers/emails_helper.rb'
-    - 'app/helpers/events_helper.rb'
-    - 'app/helpers/form_helper.rb'
-    - 'app/helpers/groups_helper.rb'
     - 'app/helpers/issuables_helper.rb'
-    - 'app/helpers/lazy_image_tag_helper.rb'
     - 'app/helpers/markup_helper.rb'
     - 'app/helpers/merge_requests_helper.rb'
     - 'app/helpers/nav_helper.rb'

@@ -80,7 +80,7 @@ describe('CE IssueCardTimeInfo component', () => {
           expect(dueDate.text()).toBe('Dec 12, 2020');
           expect(dueDate.attributes('title')).toBe('Due date');
           expect(findDateIcon().props()).toMatchObject({
-            variant: 'default',
+            variant: 'current',
             name: 'calendar',
           });
         });
@@ -105,7 +105,7 @@ describe('CE IssueCardTimeInfo component', () => {
             });
 
             expect(findDateIcon().props()).toMatchObject({
-              variant: 'default',
+              variant: 'current',
               name: 'calendar',
             });
           });

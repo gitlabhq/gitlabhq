@@ -3412,6 +3412,12 @@ class Project < ApplicationRecord
 
   private
 
+  def require_organization?
+    return false unless Feature.enabled?(:require_organization_on_project, Feature.current_request)
+
+    Gitlab::SafeRequestStore.fetch(:require_organization_on_project) { true } # rubocop:disable Style/RedundantFetchBlock -- This fetch has a different interface
+  end
+
   def with_redis(&block)
     Gitlab::Redis::Cache.with(&block)
   end

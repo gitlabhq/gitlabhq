@@ -46,9 +46,7 @@ module Gitlab
         end
 
         def changes
-          # rubocop:disable GitlabSecurity/PublicSend -- we want to call dynamic methods based on ANSI codes
           try("on_#{@command}", @ansi_stack)
-          # rubocop:enable GitlabSecurity/PublicSend
         end
 
         # rubocop:disable Style/SingleLineMethods

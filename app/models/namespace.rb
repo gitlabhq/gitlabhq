@@ -752,6 +752,12 @@ class Namespace < ApplicationRecord
 
   private
 
+  def require_organization?
+    return false unless Feature.enabled?(:require_organization, Feature.current_request)
+
+    Gitlab::SafeRequestStore.fetch(:require_organization) { true } # rubocop:disable Style/RedundantFetchBlock -- This fetch has a different interface
+  end
+
   def parent_organization_match
     return unless parent
     return if parent.organization_id == organization_id

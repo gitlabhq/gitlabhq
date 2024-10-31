@@ -878,9 +878,6 @@ msgstr[1] ""
 msgid "%{host} connection failed: %{error}."
 msgstr ""
 
-msgid "%{host} could not be reached. %{cta}"
-msgstr ""
-
 msgid "%{host} reachable."
 msgstr ""
 

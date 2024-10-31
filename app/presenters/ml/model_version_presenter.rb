@@ -37,5 +37,9 @@ module Ml
 
       path.delete_suffix('(/path/)')
     end
+
+    def artifacts_count
+      model_version.package.package_files.length
+    end
   end
 end

@@ -142,6 +142,12 @@ The optimization underlying mechanic is based on the concept of time efficiency.
 the exponential moving average of time efficiencies for the last N jobs and updates the batch
 size of the batched background migration to its optimal value.
 
+This mechanism, however, makes it hard for us to provide an accurate estimation for total
+execution time of the migration when using the [database migration pipeline](database_migration_pipeline.md).
+
+We are discussing the ways to fix this problem in
+[this issue](https://gitlab.com/gitlab-org/database-team/gitlab-com-database-testing/-/issues/162)
+
 ### Job retry mechanism
 
 The batched background migrations retry mechanism ensures that a job is executed again in case of failure.

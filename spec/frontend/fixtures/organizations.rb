@@ -183,7 +183,7 @@ RSpec.describe 'Organizations (GraphQL fixtures)', feature_category: :cell do
         post_graphql(
           query,
           current_user: current_user,
-          variables: { id: organization.to_global_id, before: '', after: '' }
+          variables: { id: organizations[1].to_global_id, before: '', after: '' }
         )
 
         expect_graphql_errors_to_be_empty

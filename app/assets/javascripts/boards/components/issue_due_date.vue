@@ -97,7 +97,7 @@ export default {
       class="board-card-info gl-mr-3 gl-cursor-help gl-text-secondary"
     >
       <gl-icon
-        :variant="isOverdue ? 'danger' : 'default'"
+        :variant="isOverdue ? 'danger' : 'current'"
         class="board-card-info-icon gl-mr-2"
         :name="iconName"
       />

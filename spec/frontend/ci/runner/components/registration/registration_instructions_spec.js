@@ -404,11 +404,6 @@ describe('RegistrationInstructions', () => {
           platform: GOOGLE_KUBERNETES_ENGINE,
           groupPath: 'mock/group/path',
         },
-        provide: {
-          glFeatures: {
-            gkeRunnersFfGroup: true,
-          },
-        },
       });
 
       await waitForPromises();
@@ -426,11 +421,6 @@ describe('RegistrationInstructions', () => {
           platform: GOOGLE_KUBERNETES_ENGINE,
           projectPath: 'mock/project/path',
         },
-        provide: {
-          glFeatures: {
-            gkeRunnersFfGroup: true,
-          },
-        },
       });
 
       await waitForPromises();
@@ -447,11 +437,6 @@ describe('RegistrationInstructions', () => {
         props: {
           platform: WINDOWS_PLATFORM,
           projectPath: 'mock/project/path',
-        },
-        provide: {
-          glFeatures: {
-            gkeRunnersFfGroup: true,
-          },
         },
       });
 

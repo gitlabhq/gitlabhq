@@ -128,7 +128,8 @@ RSpec.describe Git::ProcessRefChangesService, feature_category: :source_code_man
           it 'creates pipeline for branches and tags' do
             subject.execute
 
-            expect(Ci::Pipeline.pluck(:ref)).to contain_exactly('create', 'update', 'delete')
+            # We don't run a pipeline for a deletion
+            expect(Ci::Pipeline.pluck(:ref)).to contain_exactly('create', 'update')
           end
 
           it "creates exactly #{described_class::PIPELINE_PROCESS_LIMIT} pipelines" do
@@ -150,7 +151,8 @@ RSpec.describe Git::ProcessRefChangesService, feature_category: :source_code_man
           end
 
           it 'creates all pipelines' do
-            expect { subject.execute }.to change { Ci::Pipeline.count }.by(changes.count)
+            # We don't run a pipeline for a deletion
+            expect { subject.execute }.to change { Ci::Pipeline.count }.by(changes.count - 1)
           end
         end
       end

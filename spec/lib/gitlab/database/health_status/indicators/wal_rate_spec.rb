@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::HealthStatus::Indicators::WalRate, :aggregate_failures, feature_category: :database do # rubocop:disable Layout/LineLength
+RSpec.describe Gitlab::Database::HealthStatus::Indicators::WalRate, :aggregate_failures, feature_category: :database do
   it_behaves_like 'Prometheus Alert based health indicator' do
     let(:feature_flag) { :db_health_check_wal_rate }
     let(:sli_query_main) { 'WAL rate query for main' }

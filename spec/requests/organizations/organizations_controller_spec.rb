@@ -18,11 +18,11 @@ RSpec.describe Organizations::OrganizationsController, feature_category: :cell d
         it_behaves_like 'organization - action disabled by `ui_for_organizations` feature flag'
       end
 
-      context 'as an organization user' do
+      context 'as an organization owner' do
         let_it_be(:user) { create :user }
 
         before do
-          create :organization_user, organization: organization, user: user
+          create :organization_owner, organization: organization, user: user
         end
 
         it_behaves_like 'organization - successful response'

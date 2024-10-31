@@ -71,13 +71,11 @@ export default {
       >
         <template #organization-role="{ user }">
           <gl-collapsible-listbox
-            v-if="user.userPermissions.adminOrganization"
             :selected="user.accessLevel.stringValue"
             block
             toggle-class="gl-form-input-xl"
             :items="$options.roleListboxItems"
           />
-          <span v-else>{{ roleListboxItemText(user.accessLevel.stringValue) }}</span>
         </template>
       </users-table>
       <div class="gl-flex gl-justify-center">

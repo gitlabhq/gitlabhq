@@ -711,9 +711,9 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it { is_expected.to validate_numericality_of(:max_artifacts_size).only_integer.is_greater_than(0) }
     it { is_expected.to validate_length_of(:suggestion_commit_message).is_at_most(255) }
 
-    context 'when require_organization feature is disabled' do
+    context 'when require_organization_on_project feature is disabled' do
       before do
-        stub_feature_flags(require_organization: false)
+        stub_feature_flags(require_organization_on_project: false)
       end
 
       it { is_expected.not_to validate_presence_of(:organization) }

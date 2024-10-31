@@ -422,7 +422,7 @@ RSpec.describe ResourceAccessTokens::CreateService, feature_category: :system_ac
 
     context 'when require_organization feature is disabled' do
       before_all do
-        stub_feature_flags(require_organization: false)
+        stub_feature_flags(require_organization_on_project: false)
       end
 
       context 'when resource organization is not set', :enable_admin_mode do

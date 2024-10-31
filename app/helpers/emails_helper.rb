@@ -25,9 +25,7 @@ module EmailsHelper
     return unless url
 
     %w[merge_requests issues work_items commit].each do |action|
-      if url.split("/").include?(action)
-        return "View #{action.humanize.singularize}"
-      end
+      return "View #{action.humanize.singularize}" if url.split("/").include?(action)
     end
 
     nil
@@ -155,9 +153,7 @@ module EmailsHelper
 
     max_domain_length = list_id_max_length - Gitlab.config.gitlab.host.length - project.id.to_s.length - 2
 
-    if max_domain_length < 3
-      return "#{project.id}...#{Gitlab.config.gitlab.host}"
-    end
+    return "#{project.id}...#{Gitlab.config.gitlab.host}" if max_domain_length < 3
 
     if project_path_as_domain.length > max_domain_length
       project_path_as_domain = project_path_as_domain.slice(0, max_domain_length)

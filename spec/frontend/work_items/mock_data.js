@@ -1186,6 +1186,7 @@ export const workItemResponseFactory = ({
   hierarchyWidgetPresent = true,
   linkedItemsWidgetPresent = true,
   crmContactsWidgetPresent = true,
+  emailParticipantsWidgetPresent = true,
   colorWidgetPresent = true,
   labels = mockLabels,
   crmContacts = mockCrmContacts,
@@ -1539,6 +1540,12 @@ export const workItemResponseFactory = ({
           : {
               type: 'MOCK TYPE',
             },
+        emailParticipantsWidgetPresent
+          ? {
+              __typename: 'WorkItemWidgetEmailParticipants',
+              type: 'EMAIL_PARTICIPANTS',
+            }
+          : { type: 'MOCK TYPE' },
       ],
     },
   },
@@ -5514,6 +5521,59 @@ export const workItemHierarchyNoChildrenTreeResponse = {
         },
       ],
       __typename: 'WorkItem',
+    },
+  },
+};
+
+export const workItemEmailParticipantsResponse = {
+  data: {
+    workspace: {
+      id: 'gid://gitlab/Namespaces::ProjectNamespace/34',
+      workItem: {
+        id: 'gid://gitlab/WorkItem/689',
+        iid: '68',
+        widgets: [
+          {
+            type: 'EMAIL_PARTICIPANTS',
+            emailParticipants: {
+              nodes: [
+                {
+                  email: 'user@example.com',
+                  __typename: 'EmailParticipantType',
+                },
+              ],
+              __typename: 'EmailParticipantTypeConnection',
+            },
+            __typename: 'WorkItemWidgetEmailParticipants',
+          },
+        ],
+        __typename: 'WorkItem',
+      },
+      __typename: 'Namespace',
+    },
+  },
+};
+
+export const workItemEmailParticipantsEmptyResponse = {
+  data: {
+    workspace: {
+      id: 'gid://gitlab/Namespaces::ProjectNamespace/34',
+      workItem: {
+        id: 'gid://gitlab/WorkItem/689',
+        iid: '68',
+        widgets: [
+          {
+            type: 'EMAIL_PARTICIPANTS',
+            emailParticipants: {
+              nodes: [],
+              __typename: 'EmailParticipantTypeConnection',
+            },
+            __typename: 'WorkItemWidgetEmailParticipants',
+          },
+        ],
+        __typename: 'WorkItem',
+      },
+      __typename: 'Namespace',
     },
   },
 };

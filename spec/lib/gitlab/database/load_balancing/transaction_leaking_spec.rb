@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Load balancer behavior with errors inside a transaction', :redis, :delete, feature_category: :database do # rubocop:disable Layout/LineLength
+RSpec.describe 'Load balancer behavior with errors inside a transaction', :redis, :delete, feature_category: :database do
   include StubENV
   let(:model) { ActiveRecord::Base }
   let(:db_host) { model.connection_pool.db_config.host }

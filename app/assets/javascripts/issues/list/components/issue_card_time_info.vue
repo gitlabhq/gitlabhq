@@ -72,7 +72,7 @@ export default {
       :title="dueDateTitle"
       data-testid="issuable-due-date"
     >
-      <gl-icon :variant="isOverdue ? 'danger' : 'default'" :name="dateIcon" :size="12" />
+      <gl-icon :variant="isOverdue ? 'danger' : 'current'" :name="dateIcon" :size="12" />
       {{ dueDateText }}
     </span>
     <span

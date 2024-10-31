@@ -90,14 +90,12 @@ module Gitlab
           end
         end
 
-        # rubocop: disable CodeReuse/ActiveRecord
         def from_pipeline(pipeline)
           builds =
             self_and_downstreams_builds_of_pipeline(pipeline)
 
           from_builds(builds)
         end
-        # rubocop: enable CodeReuse/ActiveRecord
 
         private
 
@@ -153,11 +151,9 @@ module Gitlab
         end
         # rubocop: enable CodeReuse/ActiveRecord
 
-        # rubocop: disable CodeReuse/ActiveRecord
         def process_duration(periods)
           periods.sum(&:duration)
         end
-        # rubocop: enable CodeReuse/ActiveRecord
       end
     end
   end

@@ -16,9 +16,13 @@ DETAILS:
 NOTE:
 Scan result policies feature was renamed to merge request approval policies in GitLab 16.9.
 
-Use merge request approval policies to enforce project-level settings and approval rules based on scan results. For example, one type of scan
-result policy is a security approval policy that allows approval to be required based on the
+You can use merge request approval policies for multiple purposes, including:
+
+- Detect results from security and license scanners to enforce approval rules. For example, one type of merge request
+policy is a security approval policy that allows approval to be required based on the
 findings of one or more security scan jobs. Merge request approval policies are evaluated after a CI scanning job is fully executed and both vulnerability and license type policies are evaluated based on the job artifact reports that are published in the completed pipeline.
+- Enforce approval rules on all merge requests that meet certain conditions. For example, enforce that MRs are reviewed by multiple users with Developer and Maintainer roles for all MRs that target default branches.
+- Enforce settings for security and compliance on a project. For example, prevent users who have authored or committed changes to an MR from approving the MR. Or prevent users from pushing or force pushing to the default branch to ensure all changes go through an MR.
 
 NOTE:
 When a protected branch is created or deleted, the policy approval rules synchronize, with a delay of 1 minute.
@@ -284,7 +288,7 @@ To customize policy enforcement, you can define a policy's scope to either inclu
 specified projects, groups, or compliance framework labels. For more details, see
 [Scope](index.md#scope).
 
-## Example security merge request approval policies project
+## Example `policy.yml` in a security policy project
 
 You can use this example in a `.gitlab/security-policies/policy.yml` file stored in a
 [security policy project](index.md#security-policy-project):
@@ -386,11 +390,11 @@ actions:
 - If the merge request approval policy looks for pre-existing states (`detected`, `confirmed`, `resolved`, `dismissed`), the comparison is always done against the tip of the default branch (for example, `main`).
 - If the merge request approval policy looks for a combination of new and pre-existing vulnerabilty states, the comparison is done against the common ancestor of the source and target branches.
 - Merge request approval policies considers all supported pipeline sources (based on the [`CI_PIPELINE_SOURCE` variable](../../../ci/variables/predefined_variables.md)) when comparing results from both the source and target branches when determining if a merge request requires approval. Pipelines with source `webide` are not supported.
-- In GitLab 16.11 and later, the child pipelines of each of the selected pipelines are also considered for comparison. This is available [with a flag](../../../administration/feature_flags.md) named `approval_policy_parent_child_pipeline`.
+- In GitLab 16.11 and later, the child pipelines of each of the selected pipelines are also considered for comparison.
 
 ### Accepting risk and ignoring vulnerabilities in future merge requests
 
-For merge request approval policies that are scoped to newly detected findings(`new_needs_triage` or `new_dismissed` statuses), it's important to understand the implications of this vulnerability state. A finding is considered newly detected if it exists on the merge request's branch but not on the default branch. When a merge request whose branch contains newly detected findings is approved and merged, approvers are "accepting the risk" of those vulnerabilities. If one or more of the same vulnerabilities were detected after this time, their status would be `detected` and so not be out of scope of a policy aimed at `new_needs_triage` or `new_dismissed` findings. For example:
+For merge request approval policies that are scoped to newly detected findings (`new_needs_triage` or `new_dismissed` statuses), it's important to understand the implications of this vulnerability state. A finding is considered newly detected if it exists on the merge request's branch but not on the target branch. When a merge request with a branch that contains newly detected findings is approved and merged, approvers are "accepting the risk" of those vulnerabilities. If one or more of the same vulnerabilities is detected after this time, the status would be `detected`, so it would not be out of scope of a policy aimed at `new_needs_triage` or `new_dismissed` findings. For example:
 
 - A merge request approval policy is created to block critical SAST findings. If a SAST finding for CVE-1234 is approved, future merge requests with the same violation will not require approval in the project.
 

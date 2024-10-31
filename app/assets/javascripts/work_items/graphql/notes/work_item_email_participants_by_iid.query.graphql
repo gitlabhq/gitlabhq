@@ -1,0 +1,19 @@
+query workItemEmailParticipantsByIid($fullPath: ID!, $iid: String!) {
+  workspace: namespace(fullPath: $fullPath) {
+    id
+    workItem(iid: $iid) {
+      id
+      iid
+      widgets {
+        ... on WorkItemWidgetEmailParticipants {
+          type
+          emailParticipants {
+            nodes {
+              email
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -37,4 +37,10 @@ RSpec.describe Ml::ModelVersionPresenter, feature_category: :mlops do
 
     it { is_expected.to eq(model_version.package.creator) }
   end
+
+  describe '#artifacts_count' do
+    subject { presenter.artifacts_count }
+
+    it { is_expected.to eq(model_version.package.package_files.length) }
+  end
 end

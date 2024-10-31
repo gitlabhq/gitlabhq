@@ -21,11 +21,6 @@ export default {
       required: false,
       default: null,
     },
-    displayGkeRegistration: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
   },
 };
 </script>
@@ -45,7 +40,6 @@ export default {
         <!-- eslint-enable @gitlab/vue-require-i18n-strings -->
       </runner-platforms-radio>
       <runner-platforms-radio
-        v-if="displayGkeRegistration"
         :checked="checked"
         :value="$options.GOOGLE_KUBERNETES_ENGINE"
         @input="$emit('input', $event)"

@@ -106,6 +106,7 @@ RSpec.describe MergeRequests::UpdateReviewerStateService, feature_category: :cod
             'approved'       | 'reviewed'          | :error
             'approved'       | 'review_started'    | :error
             'approved'       | 'requested_changes' | :success
+            'approved'       | 'unapproved'        | :success
           end
 
           with_them do

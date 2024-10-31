@@ -230,7 +230,6 @@ RSpec/ReceiveMessages:
     - 'ee/spec/views/trial_registrations/new.html.haml_spec.rb'
     - 'ee/spec/workers/active_user_count_threshold_worker_spec.rb'
     - 'ee/spec/workers/anti_abuse/new_abuse_report_worker_spec.rb'
-    - 'ee/spec/workers/elastic/migration_worker_spec.rb'
     - 'qa/spec/page/logging_spec.rb'
     - 'qa/spec/resource/base_spec.rb'
     - 'qa/spec/resource/events/project_spec.rb'

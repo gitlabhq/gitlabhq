@@ -12304,6 +12304,30 @@ The edge type for [`CiJob`](#cijob).
 | <a id="cijobedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="cijobedgenode"></a>`node` | [`CiJob`](#cijob) | The item at the end of the edge. |
 
+#### `CiJobTokenAuthLogConnection`
+
+The connection type for [`CiJobTokenAuthLog`](#cijobtokenauthlog).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cijobtokenauthlogconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
+| <a id="cijobtokenauthlogconnectionedges"></a>`edges` | [`[CiJobTokenAuthLogEdge]`](#cijobtokenauthlogedge) | A list of edges. |
+| <a id="cijobtokenauthlogconnectionnodes"></a>`nodes` | [`[CiJobTokenAuthLog]`](#cijobtokenauthlog) | A list of nodes. |
+| <a id="cijobtokenauthlogconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `CiJobTokenAuthLogEdge`
+
+The edge type for [`CiJobTokenAuthLog`](#cijobtokenauthlog).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cijobtokenauthlogedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="cijobtokenauthlogedgenode"></a>`node` | [`CiJobTokenAuthLog`](#cijobtokenauthlog) | The item at the end of the edge. |
+
 #### `CiManualVariableConnection`
 
 The connection type for [`CiManualVariable`](#cimanualvariable).
@@ -19830,6 +19854,15 @@ CI/CD variables for a GitLab instance.
 | <a id="cijobartifactid"></a>`id` | [`CiJobArtifactID!`](#cijobartifactid) | ID of the artifact. |
 | <a id="cijobartifactname"></a>`name` | [`String`](#string) | File name of the artifact. |
 | <a id="cijobartifactsize"></a>`size` | [`BigInt!`](#bigint) | Size of the artifact in bytes. |
+
+### `CiJobTokenAuthLog`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cijobtokenauthloglastauthorizedat"></a>`lastAuthorizedAt` **{warning-solid}** | [`Time!`](#time) | **Introduced** in GitLab 17.6. **Status**: Experiment. Last authorization date time. |
+| <a id="cijobtokenauthlogoriginproject"></a>`originProject` **{warning-solid}** | [`Project!`](#project) | **Introduced** in GitLab 17.6. **Status**: Experiment. Origin project. |
 
 ### `CiJobTokenScopeType`
 
@@ -28774,6 +28807,7 @@ Version of a machine learning model.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mlmodelversion_links"></a>`_links` | [`MLModelVersionLinks!`](#mlmodelversionlinks) | Map of links to perform actions on the model version. |
+| <a id="mlmodelversionartifactscount"></a>`artifactsCount` | [`Int`](#int) | Number of files in the package. |
 | <a id="mlmodelversionauthor"></a>`author` | [`UserCore!`](#usercore) | User that created the model version. |
 | <a id="mlmodelversioncandidate"></a>`candidate` | [`MlCandidate!`](#mlcandidate) | Metrics, params and metadata for the model version. |
 | <a id="mlmodelversioncreatedat"></a>`createdAt` | [`Time!`](#time) | Date of creation. |
@@ -30429,6 +30463,7 @@ Project-level settings for product analytics provider.
 | <a id="projectciaccessauthorizedagents"></a>`ciAccessAuthorizedAgents` | [`ClusterAgentAuthorizationCiAccessConnection`](#clusteragentauthorizationciaccessconnection) | Authorized cluster agents for the project through ci_access keyword. (see [Connections](#connections)) |
 | <a id="projectcicdsettings"></a>`ciCdSettings` | [`ProjectCiCdSetting`](#projectcicdsetting) | CI/CD settings for the project. |
 | <a id="projectciconfigpathordefault"></a>`ciConfigPathOrDefault` | [`String!`](#string) | Path of the CI configuration file. |
+| <a id="projectcijobtokenauthlogs"></a>`ciJobTokenAuthLogs` **{warning-solid}** | [`CiJobTokenAuthLogConnection`](#cijobtokenauthlogconnection) | **Introduced** in GitLab 17.6. **Status**: Experiment. The CI Job Tokens authorization logs. |
 | <a id="projectcijobtokenscope"></a>`ciJobTokenScope` | [`CiJobTokenScopeType`](#cijobtokenscopetype) | The CI Job Tokens scope of access. |
 | <a id="projectcisubscribedprojects"></a>`ciSubscribedProjects` | [`CiSubscriptionsProjectConnection`](#cisubscriptionsprojectconnection) | Pipeline subscriptions for projects subscribed to the project. (see [Connections](#connections)) |
 | <a id="projectcisubscriptionsprojects"></a>`ciSubscriptionsProjects` | [`CiSubscriptionsProjectConnection`](#cisubscriptionsprojectconnection) | Pipeline subscriptions for the project. (see [Connections](#connections)) |

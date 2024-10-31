@@ -11,7 +11,6 @@ module Gitlab
           class Verifier < Base
             private
 
-            # rubocop: disable Metrics/CyclomaticComplexity
             def process_without_instrumentation(files)
               files.each do |file|
                 # When running a pipeline, some Ci::ProjectConfig sources prepend the config content with an
@@ -49,7 +48,6 @@ module Gitlab
                 verify_max_total_pipeline_size!
               end
             end
-            # rubocop: enable Metrics/CyclomaticComplexity
 
             def verify_max_includes!
               return if context.expandset.count <= context.max_includes

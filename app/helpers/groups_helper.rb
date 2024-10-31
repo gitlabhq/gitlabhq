@@ -40,9 +40,7 @@ module GroupsHelper
   end
 
   def group_icon_url(group, options = {})
-    if group.is_a?(String)
-      group = Group.find_by_full_path(group)
-    end
+    group = Group.find_by_full_path(group) if group.is_a?(String)
 
     group.try(:avatar_url) || ActionController::Base.helpers.image_path('no_group_avatar.png')
   end
@@ -312,7 +310,10 @@ module GroupsHelper
 
   def group_title_link(group, hidable: false, show_avatar: false)
     link_to(group_path(group), class: "group-path js-breadcrumb-item-text #{'hidable' if hidable}") do
-      icon = render Pajamas::AvatarComponent.new(group, alt: group.name, class: "avatar-tile", size: 16) if group.try(:avatar_url) || show_avatar
+      if group.try(:avatar_url) || show_avatar
+        icon = render Pajamas::AvatarComponent.new(group, alt: group.name, class: "avatar-tile", size: 16)
+      end
+
       [icon, simple_sanitize(group.name)].join.html_safe
     end
   end

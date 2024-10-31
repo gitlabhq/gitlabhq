@@ -19,11 +19,10 @@ variables:
 .terraform-module:deploy:
   stage: deploy
   image: curlimages/curl:8.10.1
-  variables:
-    TAR_FILENAME: /tmp/${TERRAFORM_MODULE_NAME}-${TERRAFORM_MODULE_SYSTEM}-${TERRAFORM_MODULE_VERSION}.tgz
-    UPLOAD_URL: ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/terraform/modules/${TERRAFORM_MODULE_NAME}/${TERRAFORM_MODULE_SYSTEM}/${TERRAFORM_MODULE_VERSION}/file
   script:
     - TERRAFORM_MODULE_NAME=$(echo "${TERRAFORM_MODULE_NAME}" | tr " _" -)  # module-name must not have spaces or underscores, so translate them to hyphens
+    - TAR_FILENAME="/tmp/${TERRAFORM_MODULE_NAME}-${TERRAFORM_MODULE_SYSTEM}-${TERRAFORM_MODULE_VERSION}.tgz"
+    - UPLOAD_URL="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/terraform/modules/${TERRAFORM_MODULE_NAME}/${TERRAFORM_MODULE_SYSTEM}/${TERRAFORM_MODULE_VERSION}/file"
     # Builds the Terraform module artifact: a gzipped tar archive with the contents from `$TERRAFORM_MODULE_DIR` without a `.git` directory.
     - tar -vczf "${TAR_FILENAME}" -C "${TERRAFORM_MODULE_DIR}" --exclude=./.git .
     # Uploads the Terraform module artifact to the GitLab Terraform Module Registry, see

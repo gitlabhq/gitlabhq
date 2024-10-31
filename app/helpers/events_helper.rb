@@ -193,9 +193,7 @@ module EventsHelper
     elsif event.commit_note?
       project_commit_url(event.project, event.note_target)
     elsif event.note?
-      if event.note_target
-        event_note_target_url(event)
-      end
+      event_note_target_url(event) if event.note_target
     elsif event.push_action?
       push_event_feed_url(event)
     elsif event.created_project_action?

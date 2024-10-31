@@ -69,11 +69,9 @@ module Ci
       params[:sort].present? ? items.ordered_by_date_and_group_name : items
     end
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def limit_by(items)
       items.limit(limit)
     end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     def limit
       return MAX_ITEMS unless params[:limit].present?

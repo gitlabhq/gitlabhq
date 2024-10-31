@@ -18,7 +18,6 @@ module Ci
       end
     end
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def clone!(job, variables: [], enqueue_if_actionable: false, start_pipeline: false)
       # Cloning a job requires a strict type check to ensure
       # the attributes being used for the clone are taken straight
@@ -65,7 +64,6 @@ module Ci
 
       new_job
     end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     private
 

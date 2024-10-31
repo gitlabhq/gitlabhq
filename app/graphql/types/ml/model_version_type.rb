@@ -22,6 +22,8 @@ module Types
         null: true,
         description: 'Description of the version.'
 
+      field :artifacts_count, GraphQL::Types::Int, null: true, description: 'Number of files in the package.'
+
       field :version, ::GraphQL::Types::String, null: false, description: 'Name of the version.'
 
       field :package_id, ::Types::GlobalIDType[::Packages::Package],

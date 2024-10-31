@@ -3621,7 +3621,6 @@ Gitlab/BoundedContexts:
     - 'ee/app/workers/zoekt/indexer_worker.rb'
     - 'ee/lib/arkose/data_exchange_payload.rb'
     - 'ee/lib/arkose/logger.rb'
-    - 'ee/lib/arkose/settings.rb'
     - 'ee/lib/arkose/verify_response.rb'
     - 'ee/lib/audit/application_setting_changes_auditor.rb'
     - 'ee/lib/audit/base_changes_auditor.rb'

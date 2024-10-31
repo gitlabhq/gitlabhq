@@ -2,16 +2,22 @@ import { GlFormCheckbox, GlIcon } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import { createMockDirective } from 'helpers/vue_mock_directive';
 import waitForPromises from 'helpers/wait_for_promises';
 import * as autosave from '~/lib/utils/autosave';
 import { ESC_KEY, ENTER_KEY } from '~/lib/utils/keys';
-import { STATE_OPEN } from '~/work_items/constants';
+import { STATE_OPEN, i18n } from '~/work_items/constants';
+import workItemEmailParticipantsByIidQuery from '~/work_items/graphql/notes/work_item_email_participants_by_iid.query.graphql';
 import * as confirmViaGlModal from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import CommentFieldLayout from '~/notes/components/comment_field_layout.vue';
 import WorkItemCommentForm from '~/work_items/components/notes/work_item_comment_form.vue';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import WorkItemStateToggle from '~/work_items/components/work_item_state_toggle.vue';
+import {
+  workItemEmailParticipantsResponse,
+  workItemEmailParticipantsEmptyResponse,
+} from '../../mock_data';
 
 Vue.use(VueApollo);
 
@@ -33,6 +39,14 @@ describe('Work item comment form component', () => {
 
   const mockAutosaveKey = 'test-auto-save-key';
 
+  const emailParticipantsSuccessHandler = jest
+    .fn()
+    .mockResolvedValue(workItemEmailParticipantsResponse);
+  const emailParticipantsEmptyHandler = jest
+    .fn()
+    .mockResolvedValue(workItemEmailParticipantsEmptyResponse);
+  const errorHandler = jest.fn().mockRejectedValue('Error');
+
   const findCommentFieldLayout = () => wrapper.findComponent(CommentFieldLayout);
   const findMarkdownEditor = () => wrapper.findComponent(MarkdownEditor);
   const findCancelButton = () => wrapper.findByTestId('cancel-button');
@@ -51,8 +65,13 @@ describe('Work item comment form component', () => {
     hasReplies = false,
     isDiscussionResolved = false,
     isDiscussionResolvable = false,
+    hasEmailParticipantsWidget = false,
+    emailParticipantsResponseHandler = emailParticipantsSuccessHandler,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemCommentForm, {
+      apolloProvider: createMockApollo([
+        [workItemEmailParticipantsByIidQuery, emailParticipantsResponseHandler],
+      ]),
       propsData: {
         fullPath: 'test-project-path',
         workItemIid: '1',
@@ -69,6 +88,7 @@ describe('Work item comment form component', () => {
         isDiscussionResolvable,
         isDiscussionResolved,
         hasReplies,
+        hasEmailParticipantsWidget,
       },
       directives: {
         GlTooltip: createMockDirective('gl-tooltip'),
@@ -105,6 +125,7 @@ describe('Work item comment form component', () => {
         confidential_issues_docs_path: '/help/user/tasks.html#confidential-tasks',
         discussion_locked: false,
         locked_discussion_docs_path: '/help/user/tasks.html#lock-discussion',
+        issue_email_participants: [],
       },
       noteableType: 'Task',
     });
@@ -132,6 +153,63 @@ describe('Work item comment form component', () => {
     createComponent();
 
     expect(findMarkdownEditor().props('value')).toBe('');
+  });
+
+  describe('email participants', () => {
+    it('skips calling the email participants query', async () => {
+      await createComponent();
+
+      expect(emailParticipantsSuccessHandler).not.toHaveBeenCalled();
+    });
+
+    describe('when workItemIid is missing', () => {
+      it('skips calling the email participants query', async () => {
+        await createComponent({ workItemIid: '' });
+
+        expect(emailParticipantsSuccessHandler).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('when email participants widget is available', () => {
+      const createComponentWithEmailParticipantsWidget = async (options = {}) => {
+        await createComponent({
+          hasEmailParticipantsWidget: true,
+          ...options,
+        });
+        await waitForPromises();
+      };
+
+      it('calls the email participants query and passes participants to CommentFieldLayout', async () => {
+        await createComponentWithEmailParticipantsWidget();
+
+        expect(emailParticipantsSuccessHandler).toHaveBeenCalled();
+        expect(findCommentFieldLayout().props('noteableData').issue_email_participants).toEqual([
+          { __typename: 'EmailParticipantType', email: 'user@example.com' },
+        ]);
+      });
+
+      describe('when email participants query returns empty result', () => {
+        it('passes correct data to CommentFieldLayout', async () => {
+          await createComponentWithEmailParticipantsWidget({
+            emailParticipantsResponseHandler: emailParticipantsEmptyHandler,
+          });
+
+          expect(findCommentFieldLayout().props('noteableData').issue_email_participants).toEqual(
+            [],
+          );
+        });
+      });
+
+      describe('when email participants query fails', () => {
+        it('passes correct data to CommentFieldLayout', async () => {
+          await createComponentWithEmailParticipantsWidget({
+            emailParticipantsResponseHandler: errorHandler,
+          });
+
+          expect(wrapper.emitted('error')).toEqual([[i18n.fetchError]]);
+        });
+      });
+    });
   });
 
   describe('on markdown editor input', () => {

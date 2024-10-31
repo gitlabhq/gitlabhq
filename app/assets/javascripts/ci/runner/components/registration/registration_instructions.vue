@@ -152,15 +152,6 @@ export default {
     showGKERegistration() {
       return this.platform === GOOGLE_KUBERNETES_ENGINE;
     },
-    gkeRegistrationProject() {
-      return this.glFeatures.gkeRunnersFf && this.projectPath.length > 0;
-    },
-    gkeRegistrationGroup() {
-      return this.glFeatures.gkeRunnersFfGroup && this.groupPath.length > 0;
-    },
-    displayGkeRegistration() {
-      return this.gkeRegistrationGroup || this.gkeRegistrationProject;
-    },
   },
   watch: {
     isRunnerOnline(newVal, oldVal) {
@@ -207,11 +198,7 @@ export default {
     </h2>
     <runner-platforms-radio-group :value="platform" @input="onSelectPlatform">
       <template #cloud-options>
-        <runner-google-cloud-option
-          :checked="platform"
-          :display-gke-registration="displayGkeRegistration"
-          @input="onSelectPlatform"
-        />
+        <runner-google-cloud-option :checked="platform" @input="onSelectPlatform" />
       </template>
     </runner-platforms-radio-group>
     <hr aria-hidden="true" />

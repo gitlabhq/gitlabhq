@@ -18,6 +18,8 @@ module Git
 
     private
 
+    alias_method :removing_branch?, :removing_ref?
+
     def hook_name
       :push_hooks
     end
@@ -223,10 +225,6 @@ module Git
 
     def updating_branch?
       !creating_branch? && !removing_branch?
-    end
-
-    def removing_branch?
-      Gitlab::Git.blank_ref?(newrev)
     end
 
     def creating_default_branch?

@@ -336,7 +336,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers::RestrictGitlabSchema, query_a
           migration: ->(klass) do
             def up
               update_column_in_batches(:projects, :archived, true) do |table, query|
-                query.where(table[:archived].eq(false)) # rubocop:disable CodeReuse/ActiveRecord
+                query.where(table[:archived].eq(false))
               end
             end
 

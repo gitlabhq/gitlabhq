@@ -565,6 +565,13 @@ module Types
       description: 'The CI Job Tokens scope of access.',
       resolver: Resolvers::Ci::JobTokenScopeResolver
 
+    field :ci_job_token_auth_logs, Types::Ci::JobTokenAuthLogType.connection_type,
+      null: true,
+      alpha: { milestone: '17.6' },
+      description: 'The CI Job Tokens authorization logs.',
+      extras: [:lookahead],
+      resolver: Resolvers::Ci::JobTokenAuthLogsResolver
+
     field :timelogs, Types::TimelogType.connection_type,
       null: true,
       description: 'Time logged on issues and merge requests in the project.',

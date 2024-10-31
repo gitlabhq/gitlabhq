@@ -17,6 +17,7 @@ RSpec.describe GitlabSchema.types['MlModelVersion'], feature_category: :mlops do
             latestVersion {
               id
               createdAt
+              artifactsCount
               author {
                 id
                 username
@@ -49,6 +50,7 @@ RSpec.describe GitlabSchema.types['MlModelVersion'], feature_category: :mlops do
             latestVersion {
               id
               createdAt
+              artifactsCount
               author {
                 id
                 username
@@ -96,6 +98,7 @@ RSpec.describe GitlabSchema.types['MlModelVersion'], feature_category: :mlops do
       'id' => "gid://gitlab/Ml::ModelVersion/#{model_version.id}",
       'version' => model_version.version,
       'createdAt' => model_version.created_at.iso8601,
+      'artifactsCount' => model_version.package.package_files.length,
       'author' => {
         'id' => current_user.to_global_id.to_s,
         'username' => current_user.username,
@@ -124,6 +127,7 @@ RSpec.describe GitlabSchema.types['MlModelVersion'], feature_category: :mlops do
       'id' => "gid://gitlab/Ml::ModelVersion/#{version.id}",
       'version' => version.version,
       'createdAt' => version.created_at.iso8601,
+      'artifactsCount' => version.package.package_files.length,
       'author' => {
         'id' => user.to_global_id.to_s,
         'username' => user.username,

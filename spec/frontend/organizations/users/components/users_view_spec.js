@@ -68,43 +68,23 @@ describe('UsersView', () => {
   });
 
   describe('Organization role', () => {
-    describe('when user has permissions to change organization role', () => {
-      const users = MOCK_USERS_FORMATTED.map((user) => ({
-        ...user,
-        userPermissions: { ...user.userPermissions, adminOrganization: true },
-      }));
-
-      beforeEach(() => {
-        createComponent({
-          loading: false,
-          users,
-        });
-      });
-
-      it('renders listbox with role options', () => {
-        expect(wrapper.findComponent(GlCollapsibleListbox).props()).toMatchObject({
-          items: [
-            {
-              text: 'User',
-              value: 'DEFAULT',
-            },
-            {
-              text: 'Owner',
-              value: 'OWNER',
-            },
-          ],
-          selected: users[0].accessLevel.stringValue,
-        });
-      });
+    beforeEach(() => {
+      createComponent();
     });
 
-    describe('when does not have permissions to change organization role', () => {
-      beforeEach(() => {
-        createComponent({ loading: false, users: MOCK_USERS_FORMATTED });
-      });
-
-      it('renders role as text', () => {
-        expect(wrapper.findByRole('cell', { name: 'User' }).exists()).toBe(true);
+    it('renders listbox with role options', () => {
+      expect(wrapper.findComponent(GlCollapsibleListbox).props()).toMatchObject({
+        items: [
+          {
+            text: 'User',
+            value: 'DEFAULT',
+          },
+          {
+            text: 'Owner',
+            value: 'OWNER',
+          },
+        ],
+        selected: MOCK_USERS_FORMATTED[0].accessLevel.stringValue,
       });
     });
   });

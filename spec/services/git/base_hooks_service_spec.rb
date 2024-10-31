@@ -290,6 +290,17 @@ RSpec.describe Git::BaseHooksService, feature_category: :source_code_management 
 
           expect(subject.execute[:status]).to eq(:success)
         end
+
+        context 'when the newrev is blank' do
+          let(:newrev) { Gitlab::Git::SHA1_BLANK_SHA }
+
+          it 'does not create a pipeline and returns success' do
+            expect(Ci::CreatePipelineService)
+              .not_to receive(:new)
+
+            expect(subject.execute[:status]).to eq(:success)
+          end
+        end
       end
 
       context "and there are errors" do

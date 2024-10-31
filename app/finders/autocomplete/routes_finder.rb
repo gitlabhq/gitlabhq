@@ -20,7 +20,7 @@ module Autocomplete
         .sort_by_path_length
         .fuzzy_search(@search, [:path])
         .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/421843')
-        .limit(LIMIT) # rubocop: disable CodeReuse/ActiveRecord
+        .limit(LIMIT)
     end
 
     private

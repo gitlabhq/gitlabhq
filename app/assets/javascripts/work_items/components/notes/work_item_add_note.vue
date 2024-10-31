@@ -4,11 +4,12 @@ import Tracking from '~/tracking';
 import { ASC } from '~/notes/constants';
 import { __ } from '~/locale';
 import { clearDraft } from '~/lib/utils/autosave';
+import { findWidget } from '~/issues/list/utils';
 import DiscussionReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
 import ResolveDiscussionButton from '~/notes/components/discussion_resolve_button.vue';
 import createNoteMutation from '../../graphql/notes/create_work_item_note.mutation.graphql';
 import workItemByIidQuery from '../../graphql/work_item_by_iid.query.graphql';
-import { TRACKING_CATEGORY_SHOW, i18n } from '../../constants';
+import { TRACKING_CATEGORY_SHOW, WIDGET_TYPE_EMAIL_PARTICIPANTS, i18n } from '../../constants';
 import WorkItemNoteSignedOut from './work_item_note_signed_out.vue';
 import WorkItemCommentLocked from './work_item_comment_locked.vue';
 import WorkItemCommentForm from './work_item_comment_form.vue';
@@ -199,6 +200,9 @@ export default {
     resolveDiscussionTitle() {
       return this.isDiscussionResolved ? __('Unresolve thread') : __('Resolve thread');
     },
+    hasEmailParticipantsWidget() {
+      return Boolean(findWidget(WIDGET_TYPE_EMAIL_PARTICIPANTS, this.workItem));
+    },
   },
   watch: {
     autofocus: {
@@ -314,6 +318,7 @@ export default {
             :full-path="fullPath"
             :has-replies="hasReplies"
             :work-item-iid="workItemIid"
+            :has-email-participants-widget="hasEmailParticipantsWidget"
             @toggleResolveDiscussion="$emit('resolve')"
             @submitForm="updateWorkItem"
             @cancelEditing="cancelEditing"
