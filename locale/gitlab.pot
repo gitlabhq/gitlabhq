@@ -9350,6 +9350,15 @@ msgstr ""
 msgid "Boards|Are you sure you want to delete this board?"
 msgstr ""
 
+msgid "Boards|Because this is the only board here, when this board is deleted, a new default Development board will be created."
+msgstr ""
+
+msgid "Boards|Because this is the only board in this group, when this board is deleted, a new default Development board will be created."
+msgstr ""
+
+msgid "Boards|Because this is the only board in this project, when this board is deleted, a new default Development board will be created."
+msgstr ""
+
 msgid "Boards|Blocked by %{blockedByCount} %{issuableType}"
 msgid_plural "Boards|Blocked by %{blockedByCount} %{issuableType}s"
 msgstr[0] ""

@@ -29,9 +29,13 @@ Repository X-Ray only enhances code generation requests and not code completion 
 
 ## How Repository X-Ray works
 
+> - Maximum number of libraries [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/500365) in GitLab 17.6.
+
 When a new commit is pushed to your project's default branch, the Repository X-Ray triggers a background job that scans and parses the applicable configuration files in your repository automatically.
 
 Typically, only one scanning job runs at a time in each project. This means that if a second scan is triggered while a scan is already in progress, that second scan waits until the first scan is complete before executing. This could result in a small delay before the latest configuration file data is parsed and updated in the database.
+
+When a code generation request is made, a maximum of 300 libraries from the parsed data is included in the prompt as additional context.
 
 ## Enable Repository X-Ray
 

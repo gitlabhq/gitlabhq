@@ -8,7 +8,10 @@ RSpec.describe ServiceDeskSettings::UpdateService, :aggregate_failures, feature_
       create(:service_desk_setting, outgoing_name: 'original name', custom_email: 'user@example.com')
     end
 
-    let_it_be(:credential) { create(:service_desk_custom_email_credential, project: settings.project) }
+    let_it_be(:credential) do
+      build(:service_desk_custom_email_credential, project: settings.project).save!(validate: false)
+    end
+
     let_it_be(:verification) { create(:service_desk_custom_email_verification, :finished, project: settings.project) }
     let_it_be(:user) { create(:user) }
 

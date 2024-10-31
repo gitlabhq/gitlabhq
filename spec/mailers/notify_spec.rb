@@ -1042,7 +1042,7 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
         end
 
         context 'when custom email is enabled' do
-          let_it_be(:credentials) { create(:service_desk_custom_email_credential, project: project) }
+          let_it_be(:credentials) { build(:service_desk_custom_email_credential, project: project).save!(validate: false) }
           let_it_be(:verification) { create(:service_desk_custom_email_verification, project: project) }
 
           let_it_be(:settings) do
@@ -1095,7 +1095,7 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
         end
 
         context 'when custom email is enabled' do
-          let_it_be(:credentials) { create(:service_desk_custom_email_credential, project: project) }
+          let_it_be(:credentials) { build(:service_desk_custom_email_credential, project: project).save!(validate: false) }
           let_it_be(:verification) { create(:service_desk_custom_email_verification, project: project) }
 
           let_it_be(:settings) do

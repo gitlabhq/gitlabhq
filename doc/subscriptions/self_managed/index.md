@@ -412,6 +412,8 @@ you want to either:
 
 Before your subscription renewal date, you should review your account.
 
+Contact the [support team](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293) if you need help accessing the Customers Portal, changing the contact person who manages your subscription, or renewing your subscription.
+
 ### Review your account
 
 You should regularly review your billing account settings and purchasing information.
@@ -436,10 +438,6 @@ For more information, see the documentation on:
 
 - [User statistics](../../administration/admin_area.md#users-statistics).
 - [Managing users and subscription seats](#manage-users-and-subscription-seats).
-
-Contact the [support team](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293)
-if you need assistance accessing the Customers Portal or if you need to change
-the contact person who manages your subscription.
 
 ### Renew for fewer seats
 
@@ -539,10 +537,6 @@ You can use the Customers Portal to enable or disable automatic subscription ren
      1. Optional: In **Would you like to add anything?**, enter any relevant information.
      1. Select **Cancel subscription**.
 
-If you have difficulty during the renewal process, contact the
-[Support team](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293)
-for assistance.
-
 ### Manage renewal invoice
 
 An invoice is generated for your renewal. To view or download this renewal invoice,
@@ -553,10 +547,6 @@ the card is charged for the invoice amount.
 
 If we are unable to process a payment or the auto-renewal fails for any other reason,
 you have 14 days to renew your subscription, after which your GitLab tier is downgraded.
-
-If you have difficulty during the renewal process, contact our
-[support team](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293)
-for help.
 
 ## Upgrade your subscription tier
 

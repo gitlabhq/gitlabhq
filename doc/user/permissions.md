@@ -221,6 +221,7 @@ Project permissions for [issues](project/issues/index.md):
 | Update metadata on issues                                             |       |    ✓     |     ✓     |     ✓      |   ✓   | Metadata includes labels, assignees, milestones, epics, weight, confidentiality, time tracking, and more.<br /><br />Guest users can only set metadata when creating an issue. They cannot change the metadata on existing issues. |
 | Close / reopen issues                                                 |       |    ✓     |     ✓     |     ✓      |   ✓   | Authors and assignees can close and reopen issues even if they don't have the Reporter role. |
 | Manage [design management](project/issues/design_management.md) files |       |    ✓     |     ✓     |     ✓      |   ✓   |       |
+| View email addresses of [external participants](project/service_desk/external_participants.md) |       |    ✓     |     ✓     |     ✓      |   ✓   | Email addresses of external participants are obfuscated for Guest users and non-members. |
 | Manage [issue boards](project/issue_board.md)                         |       |    ✓     |     ✓     |     ✓      |   ✓   |       |
 | Manage [milestones](project/milestones/index.md)                      |       |    ✓     |     ✓     |     ✓      |   ✓   |       |
 | Archive or reopen [requirements](project/requirements/index.md)       |       |    ✓     |     ✓     |     ✓      |   ✓   | Authors and assignees can archive and re-open even if they don't have the Reporter role. |

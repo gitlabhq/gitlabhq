@@ -245,12 +245,6 @@ module Gitlab
           # Do not enforce if proxy is used
           return false if http_proxy_env?
 
-          # In the test suite we use a lot of mocked urls that are either invalid or
-          # don't exist. In order to avoid modifying a ton of tests and factories
-          # we allow invalid urls unless the environment variable RSPEC_ALLOW_INVALID_URLS
-          # is not true
-          return false if Rails.env.test? && ENV['RSPEC_ALLOW_INVALID_URLS'] == 'true'
-
           true
         end
 

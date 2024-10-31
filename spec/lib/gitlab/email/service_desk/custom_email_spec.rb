@@ -99,7 +99,7 @@ RSpec.describe Gitlab::Email::ServiceDesk::CustomEmail, feature_category: :servi
         create(:service_desk_setting, project: project)
       end
 
-      let_it_be(:credential) { create(:service_desk_custom_email_credential, project: project) }
+      let_it_be(:credential) { build(:service_desk_custom_email_credential, project: project).save!(validate: false) }
       let_it_be(:verification) { create(:service_desk_custom_email_verification, :finished, project: project) }
 
       let(:email) { custom_email }

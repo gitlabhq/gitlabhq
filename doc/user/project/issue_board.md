@@ -11,6 +11,7 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - Milestones and iterations shown on issue cards [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25758) in GitLab 16.11.
+> - Ability to delete the last board in a group or project [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/499579) in GitLab 17.6.
 
 The issue board is a software project management tool used to plan,
 organize, and visualize a workflow for a feature or product release.
@@ -96,6 +97,8 @@ To delete the open issue board:
 1. In the upper-right corner of the issue board page, select **Configure board** (**{settings}**).
 1. Select **Delete board**.
 1. Select **Delete** to confirm.
+
+If the board you've deleted was the last one, a new `Development` board is created.
 
 ## Issue boards use cases
 
