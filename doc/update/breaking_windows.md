@@ -25,7 +25,6 @@ This window takes place on April 21 - 23, 2025 from 09:00 UTC to 22:00 UTC.
 
 | Deprecation | Impact | Stage | Scope |
 |-------------|--------|-------|-------|
-| [Rate limits for common User, Project, and Group API endpoints](https://gitlab.com/gitlab-org/gitlab/-/issues/480914) | Low | Systems | Instance |
 
 ## Window 2
 
@@ -33,7 +32,6 @@ This window takes place on April 28 - 30, 2025 from 09:00 UTC to 22:00 UTC.
 
 | Deprecation | Impact | Stage | Scope |
 |-------------|--------|-------|-------|
-| [Remove `previousStageJobsOrNeeds` from GraphQL](https://gitlab.com/gitlab-org/gitlab/-/issues/424417) |  | Verify |  |
 
 ## Window 3
 
@@ -41,4 +39,3 @@ This window takes place on May 5 - 7, 2025 from 09:00 UTC to 22:00 UTC.
 
 | Deprecation | Impact | Stage | Scope |
 |-------------|--------|-------|-------|
-| [Limited `scan` actions in a scan execution policy](https://gitlab.com/gitlab-org/gitlab/-/issues/472213) | Low | Govern | Instance |

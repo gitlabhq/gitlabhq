@@ -145,7 +145,7 @@ export default {
       this.queryFilterValues = { ...data };
     },
     updateCounts() {
-      this.$apollo.queries.todosCount.refetch();
+      this.$apollo.queries.pendingTodosCount.refetch();
     },
   },
 };

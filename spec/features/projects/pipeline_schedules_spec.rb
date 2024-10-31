@@ -27,7 +27,7 @@ RSpec.describe 'Pipeline Schedules', :js, feature_category: :continuous_integrat
       it 'edits the pipeline' do
         find_by_testid('edit-pipeline-schedule-btn').click
 
-        expect(page).to have_content(s_('PipelineSchedules|Edit Pipeline Schedule'))
+        expect(page).to have_content(s_('PipelineSchedules|Edit Scheduled Pipeline'))
         expect(page).to have_button(s_('PipelineSchedules|Save changes'))
       end
 
@@ -147,10 +147,10 @@ RSpec.describe 'Pipeline Schedules', :js, feature_category: :continuous_integrat
 
         it 'deletes the pipeline' do
           within_testid('pipeline-schedule-table-row') do
-            click_button s_('PipelineSchedules|Delete pipeline schedule')
+            click_button s_('PipelineSchedules|Delete scheduled pipeline')
           end
 
-          accept_gl_confirm(button_text: s_('PipelineSchedules|Delete pipeline schedule'))
+          accept_gl_confirm(button_text: s_('PipelineSchedules|Delete scheduled pipeline'))
 
           expect(page).not_to have_css('[data-testid="pipeline-schedule-table-row"]')
         end

@@ -400,6 +400,7 @@ export default {
     },
     submit() {
       this.$emit(this.isEditing ? 'update-variable' : 'add-variable', this.variableToEmit);
+      this.$refs.drawer.$el.scrollTo({ top: 0, behavior: 'smooth' });
     },
     trackVariableValidationErrors() {
       const property = this.getTrackingErrorProperty();
@@ -440,6 +441,7 @@ export default {
 <template>
   <div>
     <gl-drawer
+      ref="drawer"
       open
       data-testid="ci-variable-drawer"
       :header-height="getDrawerHeaderHeight"
@@ -663,10 +665,9 @@ export default {
       >
         {{ $options.i18n.variableReferenceDescription }}
       </gl-alert>
-      <div class="gl-flex">
+      <div class="gl-mb-5 gl-flex gl-gap-3">
         <gl-button
           category="primary"
-          class="gl-mr-3"
           variant="confirm"
           :disabled="!canSubmit"
           data-testid="ci-variable-confirm-button"
@@ -678,7 +679,6 @@ export default {
           v-gl-modal-directive="`delete-variable-${variable.key}`"
           variant="danger"
           category="secondary"
-          class="gl-mr-3"
           data-testid="ci-variable-delete-button"
           >{{ $options.i18n.deleteVariable }}</gl-button
         >

@@ -238,7 +238,7 @@ export default {
       return this.gitpodText || __('Gitpod');
     },
     computedShowGitpodButton() {
-      return this.showGitpodButton && this.gitpodEnabled;
+      return this.showGitpodButton && this.gitpodEnabled && this.gitpodUrl;
     },
     pipelineEditorAction() {
       if (!this.showPipelineEditorButton) {

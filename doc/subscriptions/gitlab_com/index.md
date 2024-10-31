@@ -305,8 +305,11 @@ and is not affected by the current search.
 ## Add seats to subscription
 
 Your subscription cost is based on the maximum number of seats you use during the billing period.
-Even if you reach the number of seats in your subscription, you can continue to add users.
-GitLab [bills you for the overage](../quarterly_reconciliation.md).
+
+- If [restricted access](../../administration/settings/sign_up_restrictions.md#turn-on-restricted-access)
+  is turned on, when there are no seats left in your subscription you must purchase more seats for groups to add new billable users.
+- If restricted access is turned off, when there are no seats left in your subscription groups can continue to add billable
+  users. GitLab [bills you for the overage](../quarterly_reconciliation.md).
 
 To add seats to a subscription:
 

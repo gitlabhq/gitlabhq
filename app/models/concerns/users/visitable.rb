@@ -49,7 +49,7 @@ module Users
         SQL
 
         ::Gitlab::Database::LoadBalancing::SessionMap
-          .current(connection.load_balancer).fallback_to_replicas_for_ambiguous_queries do
+          .current(load_balancer).fallback_to_replicas_for_ambiguous_queries do
           connection.execute(sql).to_a
         end
       end

@@ -9,6 +9,7 @@
   scope: project
   resolution_role: Developer
   manual_task: true
+  window: 2
   body: |  # (required) Don't change this line.
     The cloud native buildpack (CNB) builder image was updated to `heroku/builder:24` in the Auto DevOps Build project. While we don't expect the changes to be disruptive for the most part, this might be a breaking change for some users of Auto DevOps, and especially users of Auto Build. To better understand the impact of you workloads, review the following:
 

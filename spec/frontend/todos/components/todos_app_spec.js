@@ -7,6 +7,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import TodosApp from '~/todos/components/todos_app.vue';
 import TodoItem from '~/todos/components/todo_item.vue';
 import TodosFilterBar from '~/todos/components/todos_filter_bar.vue';
+import TodosMarkAllDoneButton from '~/todos/components/todos_mark_all_done_button.vue';
 import getTodosQuery from '~/todos/components/queries/get_todos.query.graphql';
 import { INSTRUMENT_TAB_LABELS, STATUS_BY_TAB } from '~/todos/constants';
 import { mockTracking, unmockTracking } from 'jest/__helpers__/tracking_helper';
@@ -37,6 +38,7 @@ describe('TodosApp', () => {
   const findTodoItems = () => wrapper.findAllComponents(TodoItem);
   const findGlTabs = () => wrapper.findComponent(GlTabs);
   const findFilterBar = () => wrapper.findComponent(TodosFilterBar);
+  const findMarkAllDoneButton = () => wrapper.findComponent(TodosMarkAllDoneButton);
   const findPendingTodosCount = () => wrapper.findByTestId('pending-todos-count');
 
   it('should have a tracking event for each tab', () => {
@@ -81,6 +83,17 @@ describe('TodosApp', () => {
       before: null,
     });
     expect(todosCountsQuerySuccessHandler).toHaveBeenLastCalledWith(filters);
+  });
+
+  it('re-fetches the pending todos count when mark all done button is clicked', async () => {
+    createComponent();
+    await waitForPromises();
+
+    expect(todosCountsQuerySuccessHandler).toHaveBeenCalledTimes(1);
+
+    findMarkAllDoneButton().vm.$emit('change');
+
+    expect(todosCountsQuerySuccessHandler).toHaveBeenCalledTimes(2);
   });
 
   it('shows the pending todos count once it has been fetched', async () => {

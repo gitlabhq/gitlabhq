@@ -93,7 +93,7 @@ export default {
         <gl-button
           :disabled="disabled"
           category="primary"
-          variant="confirm"
+          variant="default"
           :href="template.link"
           data-testid="template-link"
           @click="trackEvent(template.name)"

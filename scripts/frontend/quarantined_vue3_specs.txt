@@ -204,8 +204,6 @@ spec/frontend/ci/catalog/components/ci_catalog_home_spec.js
 spec/frontend/ci/catalog/components/list/ci_resources_list_item_spec.js
 spec/frontend/ci/catalog/components/pages/ci_resource_details_page_spec.js
 spec/frontend/ci/catalog/index_spec.js
-spec/frontend/ci/ci_variable_list/components/ci_variable_drawer_spec.js
-spec/frontend/ci/ci_variable_list/components/ci_variable_shared_spec.js
 spec/frontend/ci/job_details/components/log/line_header_spec.js
 spec/frontend/ci/job_details/components/log/line_spec.js
 spec/frontend/ci/job_details/components/log/log_spec.js
@@ -426,7 +424,6 @@ spec/frontend/usage_quotas/storage/components/namespace_storage_app_spec.js
 spec/frontend/users_select/index_spec.js
 spec/frontend/vue_alerts_spec.js
 spec/frontend/vue_merge_request_widget/components/checks/conflicts_spec.js
-spec/frontend/vue_merge_request_widget/components/merge_checks_spec.js
 spec/frontend/vue_merge_request_widget/components/mr_widget_pipeline_spec.js
 spec/frontend/vue_merge_request_widget/components/states/merge_failed_pipeline_confirmation_dialog_spec.js
 spec/frontend/vue_merge_request_widget/components/states/mr_widget_merging_spec.js

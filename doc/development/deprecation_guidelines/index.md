@@ -100,6 +100,32 @@ Related Handbook pages:
 - <https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#deprecations-removals-and-breaking-changes>
 - <https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#update-the-deprecations-doc>
 
+## Update the breaking change windows documentation
+
+The [breaking change windows](../../update/breaking_windows.md)
+documentation is generated based on the `window` value in the YAML files located in
+[`gitlab/data/deprecations`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/data/deprecations).
+
+To update the breaking change windows page when a YAML file is added,
+edited, or removed:
+
+1. From the command line, go to your local clone of the [`gitlab-org/gitlab`](https://gitlab.com/gitlab-org/gitlab) project.
+1. Create, edit, or remove the YAML file under [`data/deprecations`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/data/deprecations).
+1. Compile the breaking change windows documentation:
+
+   ```shell
+   bin/rake gitlab:docs:compile_windows
+   ```
+
+1. If needed, you can verify the documentation is up to date with:
+
+   ```shell
+   bin/rake gitlab:docs:check_windows
+   ```
+
+1. Commit the updated documentation and push the changes.
+1. Create a merge request.
+
 ## Update the related documentation
 
 When features are deprecated and removed, [update the related documentation](../documentation/styleguide/deprecations_and_removals.md).

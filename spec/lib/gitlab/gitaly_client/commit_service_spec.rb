@@ -1251,12 +1251,14 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
       [large_signed_text, *signed_by_user].each do |commit_id|
         expect(signatures[commit_id][:signature]).to be_present
         expect(signatures[commit_id][:signer]).to eq(:SIGNER_USER)
+        expect(signatures[commit_id][:author_email]).to be_present
       end
 
       signed_by_user.each do |commit_id|
         commit = project.commit(commit_id)
         expect(signatures[commit_id][:signed_text]).to include(commit.message)
         expect(signatures[commit_id][:signed_text]).to include(commit.description)
+        expect(signatures[commit_id][:author_email]).to eq(commit.author_email)
       end
 
       expect(signatures[large_signed_text][:signed_text].size).to eq(4971878)

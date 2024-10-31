@@ -47,33 +47,73 @@
       }
     },
     "additional_properties": {
-      "type": "object",
-      "properties": {
-        "label": {
+      "anyOf": [
+        {
+          "description": "Only base additional properties are provided",
           "type": "object",
           "properties": {
-            "description": {
-              "type": "string"
+            "label": {
+              "$ref": "#additional_prop"
+            },
+            "property": {
+              "$ref": "#additional_prop"
+            },
+            "value": {
+              "$ref": "#additional_prop"
+            }
+          },
+          "additionalProperties": {
+            "type": "null",
+            "x-error": "Either property/label or value must be used before defining other additional_properties"
+          }
+        },
+        {
+          "description": "All string-type base additional properties are provided, allowing custom properties",
+          "type": "object",
+          "properties": {
+            "label": {
+              "$ref": "#additional_prop"
+            },
+            "property": {
+              "$ref": "#additional_prop"
+            },
+            "value": {
+              "$ref": "#additional_prop"
             }
           },
           "required": [
-            "description"
+            "property",
+            "label"
           ],
-          "additionalProperties": false
+          "additionalProperties": {
+            "$ref": "#additional_prop"
+          }
         },
-        "property": {
+        {
+          "description": "All numeric-type base additional properties are provided, allowing custom properties",
           "type": "object",
           "properties": {
-            "description": {
-              "type": "string"
+            "label": {
+              "$ref": "#additional_prop"
+            },
+            "property": {
+              "$ref": "#additional_prop"
+            },
+            "value": {
+              "$ref": "#additional_prop"
             }
           },
           "required": [
-            "description"
+            "value"
           ],
-          "additionalProperties": false
-        },
-        "value": {
+          "additionalProperties": {
+            "$ref": "#additional_prop"
+          }
+        }
+      ],
+      "$defs": {
+        "additional_prop": {
+          "$anchor": "additional_prop",
           "type": "object",
           "properties": {
             "description": {
@@ -85,8 +125,7 @@
           ],
           "additionalProperties": false
         }
-      },
-      "additionalProperties": true
+      }
     },
     "iglu_schema_url": {
       "type": [

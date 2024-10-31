@@ -34,109 +34,30 @@ This setup ensures enterprise-level privacy and flexibility, allowing seamless i
 
 ### Prerequisites
 
-The following are required:
+Before setting up a self-hosted model infrastructure, you must have:
 
 - A [supported model](supported_models_and_hardware_requirements.md) (either cloud-based or on-premises).
 - A [supported serving platform](supported_llm_serving_platforms.md) (either cloud-based or on-premises).
 - A locally hosted or GitLab.com AI Gateway.
 - GitLab [Enterprise Edition license](../../administration/license.md).
 
-## Self-managed customer configuration types
+## Choose a configuration type
 
 There are two configuration options for self-managed customers:
 
-- **GitLab.com AI Gateway customers**: Use the GitLab-hosted AI Gateway with external LLM providers (for example, Google Vertex or Anthropic).
-- **Self-hosted AI Gateway customers**: Deploy your own AI Gateway and LLMs within your infrastructure, without relying on external public services.
+- [**GitLab.com AI Gateway**](configuration_types.md#gitlabcom-ai-gateway):
+  Use the GitLab-hosted AI Gateway with external
+  LLM providers (for example, Google Vertex or Anthropic).
+- [**Self-hosted AI Gateway**](configuration_types.md#self-hosted-ai-gateway):
+  Deploy your own AI Gateway and LLMs within
+  your infrastructure, without relying on external public services.
 
-### Fully self-hosted architecture
-
-In this configuration, the entire system is isolated within the enterprise, ensuring a fully self-hosted environment that safeguards data privacy.
-
-```mermaid
-%%{init: { "theme": "default", "fontFamily": "GitLab Sans", "sequence": { "actorFontSize": 12, "participantFontSize": 12, "messageFontSize": 12 } }}%%
-sequenceDiagram
-    actor User as User
-    participant SelfHostedGitLab as Self-hosted GitLab
-    participant SelfHostedAIGateway as Self-hosted AI Gateway
-    participant SelfHostedModel as Self-hosted model
-
-    User ->> SelfHostedGitLab: Send request
-    SelfHostedGitLab ->> SelfHostedGitLab: Check if self-hosted model is configured
-    SelfHostedGitLab ->> SelfHostedAIGateway: Forward request for AI processing
-    SelfHostedAIGateway ->> SelfHostedModel: Create prompt and perform request to AI model server
-    SelfHostedModel -->> SelfHostedAIGateway: Respond to the prompt
-    SelfHostedAIGateway -->> SelfHostedGitLab: Forward AI response
-    SelfHostedGitLab -->> User: Forward AI response
-```
-
-### GitLab AI vendor architecture
-
-In this configuration, your GitLab instance depends on and sends requests to the external GitLab AI Gateway, which communicates with external AI vendors such as Google Vertex or Anthropic. The response is then forwarded back to your GitLab instance.
-
-```mermaid
-%%{init: { "theme": "default", "fontFamily": "GitLab Sans", "sequence": { "actorFontSize": 12, "participantFontSize": 12, "messageFontSize": 12 } }}%%
-sequenceDiagram
-    actor User as User
-    participant SelfHostedGitLab as Self-hosted GitLab (Your Instance)
-    participant GitLabAIGateway as GitLab AI Gateway (External)
-    participant GitLabAIVendor as GitLab AI Vendor (External)
-
-    User ->> SelfHostedGitLab: Send request
-    SelfHostedGitLab ->> SelfHostedGitLab: Check if self-hosted model is configured
-    SelfHostedGitLab ->> GitLabAIGateway: Forward request for AI processing
-    GitLabAIGateway ->> GitLabAIVendor: Create prompt and send request to AI model server
-    GitLabAIVendor -->> GitLabAIGateway: Respond to the prompt
-    GitLabAIGateway -->> SelfHostedGitLab: Forward AI response
-    SelfHostedGitLab -->> User: Forward AI response
-```
-
-For more details, see the [Blueprint](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/custom_models/).
-
-## Authentication for self-hosted models
-
-The authentication process for self-hosted models is designed to be secure and efficient, comprising the following key components:
-
-- **Self-issued tokens**: In this architecture, access credentials are not synchronized with `cloud.gitlab.com`. Instead, tokens are self-issued dynamically, similar to the functionality on GitLab.com. This method provides users with immediate access while maintaining a high level of security.
-
-- **Offline environments**: In offline setups, there are no connections to `cloud.gitlab.com`. All requests are routed exclusively to the self-hosted AI Gateway.
-
-- **Token minting and verification**: The GitLab self-managed instance mints the token, which is then verified by the AI Gateway against the GitLab instance.
-- **Model configuration and security**: When an administrator configures a model, they can incorporate an API key to authenticate requests. Additionally, you can enhance security by specifying connection IP addresses within your network, ensuring that only trusted IPs can interact with the model.
-
-As illustrated in the following diagram:
-
-1. The authentication flow begins when the user configures the model through the GitLab instance and submits a request to access the GitLab Duo feature.
-1. The GitLab instance mints an access token, which the user forwards to GitLab and then to the AI Gateway for verification.
-1. Upon confirming the token's validity, the AI Gateway sends a request to the AI model, which uses the API key to authenticate the request and process it.
-1. The results are then relayed back to the GitLab instance, completing the flow by sending the response to the user, which is designed to be secure and efficient.
-
-```mermaid
-%%{ init : { "theme" : "default", "themeVariables": { "actorBackground": "#ffffff", "actorBorder": "#34495e", "actorTextColor": "#34495e", "participantBackground": "#e0f7fa", "participantBorder": "#00796b", "participantTextColor": "#00796b", "sequenceNumberColor": "#00796b", "noteTextColor": "#34495e" } } }%%
-   sequenceDiagram
-      participant User as User
-      participant GitLab as GitLab Instance
-      participant AI Gateway as AI Gateway
-      participant AIModel as AI Model
-
-      User->>GitLab: Configure Model
-      User->>GitLab: Request Access
-      GitLab->>GitLab: Mint Token
-      GitLab->>User: Send Token
-      User->>GitLab: Forward Minted Token
-      GitLab->>AI Gateway: Verify Token
-      AI Gateway->>GitLab: Token Validated
-      GitLab->>AI Gateway: Send Request to Model
-      AI Gateway->>AIModel: Send Request to Model
-      AIModel->>AIModel: Authenticate using API Key
-      AIModel->>AI Gateway: Process Request
-      AI Gateway->>GitLab: Send Result to GitLab
-      GitLab->>User: Send Response
-
-```
+Before setting up a self-hosted model infrastructure, you must decide which
+configuration type to implement.
 
 ## Set up a self-hosted infrastructure
 
-To establish a fully isolated self-hosted infrastructure:
+To set up a fully isolated self-hosted model infrastructure:
 
 1. **Install a Large Language Model (LLM) Serving Infrastructure**
 
@@ -155,9 +76,5 @@ To establish a fully isolated self-hosted infrastructure:
 
 ## Related topics
 
-- AWS Bedrock
-  - [Import Custom Models Into Amazon Bedrock](https://www.youtube.com/watch?v=CA2AXfWWdpA)
-
-## Troubleshooting
-
-To begin troubleshooting, run the debugging scripts to verify your self-hosted model setup. For further guidance on other actions you can take, see the [troubleshooting documentation](troubleshooting.md).
+- [Import custom models into Amazon Bedrock](https://www.youtube.com/watch?v=CA2AXfWWdpA)
+- [Troubleshooting](troubleshooting.md)

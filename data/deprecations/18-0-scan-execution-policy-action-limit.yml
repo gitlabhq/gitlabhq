@@ -7,7 +7,6 @@
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/472213
   impact: low
   scope: instance
-  window: "3"
   resolution_role: Maintainer
   manual_task: true
   body: |

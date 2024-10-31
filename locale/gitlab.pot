@@ -20656,10 +20656,10 @@ msgstr ""
 msgid "Edit Password"
 msgstr ""
 
-msgid "Edit Pipeline Schedule"
+msgid "Edit Release"
 msgstr ""
 
-msgid "Edit Release"
+msgid "Edit Scheduled Pipeline"
 msgstr ""
 
 msgid "Edit Slack integration"
@@ -40193,7 +40193,7 @@ msgstr ""
 msgid "PipelineSchedules|An error occurred while updating the pipeline schedule."
 msgstr ""
 
-msgid "PipelineSchedules|Are you sure you want to delete this pipeline schedule?"
+msgid "PipelineSchedules|Are you sure you want to delete this scheduled pipeline?"
 msgstr ""
 
 msgid "PipelineSchedules|Can have custom CI/CD variables."
@@ -40208,13 +40208,13 @@ msgstr ""
 msgid "PipelineSchedules|Cron timezone"
 msgstr ""
 
-msgid "PipelineSchedules|Delete pipeline schedule"
+msgid "PipelineSchedules|Delete scheduled pipeline"
 msgstr ""
 
 msgid "PipelineSchedules|Description"
 msgstr ""
 
-msgid "PipelineSchedules|Edit pipeline schedule"
+msgid "PipelineSchedules|Edit scheduled pipeline"
 msgstr ""
 
 msgid "PipelineSchedules|Explore plan limits"
@@ -40262,7 +40262,7 @@ msgstr ""
 msgid "PipelineSchedules|Provide a short description for this pipeline"
 msgstr ""
 
-msgid "PipelineSchedules|Run pipeline schedule"
+msgid "PipelineSchedules|Run scheduled pipeline"
 msgstr ""
 
 msgid "PipelineSchedules|Runs for a specific branch or tag."

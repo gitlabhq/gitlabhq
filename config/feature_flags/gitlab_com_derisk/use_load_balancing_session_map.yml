@@ -1,9 +1,0 @@
----
-name: use_load_balancing_session_map
-feature_issue_url: https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/3834
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/168642
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/496505
-milestone: '17.6'
-group: group::scalability
-type: gitlab_com_derisk
-default_enabled: false

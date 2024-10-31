@@ -18,7 +18,7 @@ export default ({ el, router }) => {
   const { projectPath, ref, isBlob, webIdeUrl, ...options } = convertObjectPropsToCamelCase(
     JSON.parse(el.dataset.options),
   );
-  const { webIdePromoPopoverImg, cssClasses } = el.dataset;
+  const { webIdePromoPopoverImg, cssClasses, defaultBranch } = el.dataset;
 
   // eslint-disable-next-line no-new
   new Vue({
@@ -37,7 +37,15 @@ export default ({ el, router }) => {
           webIdeUrl: isBlob
             ? webIdeUrl
             : webIDEUrl(
-                joinPaths('/', projectPath, 'edit', ref, '-', this.$route?.params.path || '', '/'),
+                joinPaths(
+                  '/',
+                  projectPath,
+                  'edit',
+                  ref || defaultBranch,
+                  '-',
+                  this.$route?.params.path || '',
+                  '/',
+                ),
               ),
           projectPath,
           cssClasses,

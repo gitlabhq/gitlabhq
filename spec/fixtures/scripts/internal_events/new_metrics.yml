@@ -379,6 +379,7 @@
     - "\e[B\e[B\e[B" # Arrow down to: Weekly count of unique users where label/value is...
     - "\n" # Select: Weekly count of unique users where label/value is...
     - "failure\n" # Input value for "label" filter
+    - "   \n" # Ignore whitespace to skip "property" filter
     - "metrics\n" # Input value for "custom_key1" filter
     - "\n" # Skip "custom_key2" filter
     - "30,13\n" # Input value for "custom_key3" filter

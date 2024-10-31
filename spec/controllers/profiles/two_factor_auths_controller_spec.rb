@@ -489,4 +489,31 @@ RSpec.describe Profiles::TwoFactorAuthsController, feature_category: :system_acc
 
     it_behaves_like 'user must enter a valid current password'
   end
+
+  describe 'PATCH skip' do
+    let(:user) { create(:user, otp_grace_period_started_at: Time.zone.now) }
+
+    def request
+      patch :skip
+    end
+
+    before do
+      stub_application_setting(require_two_factor_authentication: true)
+      stub_application_setting(two_factor_grace_period: 24)
+    end
+
+    it 'redirects the user to the root url' do
+      request
+
+      expect(response).to redirect_to root_url
+    end
+
+    it 'redirects back to 2fa page if grace period expired' do
+      travel_to(27.hours.from_now) do
+        request
+
+        expect(response).to redirect_to profile_two_factor_auth_url
+      end
+    end
+  end
 end

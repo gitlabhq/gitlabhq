@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-OUTPUT_FILE = 'doc/update/breaking_window.md'
+OUTPUT_FILE = 'doc/update/breaking_windows.md'
 DEPRECATIONS_PATH = 'data/deprecations'
 TARGET_MILESTONE = '18.0'
 
@@ -37,7 +37,7 @@ def write_metadata(file)
     stage: none
     group: none
     info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-    noindex: false
+    noindex: true
     ---
 
     # Breaking change deployments on GitLab.com

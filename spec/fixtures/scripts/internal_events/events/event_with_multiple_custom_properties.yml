@@ -9,6 +9,8 @@ identifiers:
 additional_properties:
   label:
     description: TODO
+  property:
+    description: TODO
   custom_key1:
     description: The extra custom property name 1
   custom_key2:

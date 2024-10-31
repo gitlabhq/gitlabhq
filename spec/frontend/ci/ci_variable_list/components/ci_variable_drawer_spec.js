@@ -254,7 +254,7 @@ describe('CI Variable Drawer', () => {
           },
         });
 
-        expect(findVisibilityRadioGroup().attributes('disabled')).toBe('true');
+        expect(findVisibilityRadioGroup().attributes().disabled).toBe('true');
       });
     });
 
@@ -609,6 +609,7 @@ describe('CI Variable Drawer', () => {
           ],
         ]);
         expect(wrapper.emitted('close-form')).toBeUndefined();
+        expect(wrapper.findComponent(GlDrawer).element.scrollTo).toHaveBeenCalledTimes(1);
       });
     });
 

@@ -26,9 +26,8 @@
   announcement_milestone: "XX.YY"
   # Change breaking_change to false if needed.
   breaking_change: true
-  # The stage and GitLab username of the person reporting the change,
-  # and a link to the deprecation issue
-  reporter: exampleuser
+  window: # Can be [1, 2, or 3] - The window when the breaking change will be deployed on GitLab.com
+  reporter: exampleuser # The GitLab username of the person reporting the change
   stage: stage
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/000000
   # Use the impact calculator https://gitlab-com.gitlab.io/gl-infra/breaking-change-impact-calculator/?
@@ -36,7 +35,6 @@
   scope:  # Can be one or a combination of: [instance, group, project]
   resolution_role:  # Can be one of: [Admin, Owner, Maintainer, Developer]
   manual_task:  # Can be true or false. Use this to denote whether a resolution action must be performed manually (true), or if it can be automated by using the API or other automation (false).
-  window: # Can be "1", "2" or "3"
   body: |  # (required) Don't change this line.
     <!-- START OF BODY COMMENT
 
