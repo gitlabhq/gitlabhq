@@ -18,11 +18,12 @@ module VirtualRegistries
         # Used in destroying stale cached responses in DestroyOrphanCachedResponsesWorker
         enum :status, default: 0, processing: 1, pending_destruction: 2, error: 3
 
+        ignore_column :downloads_count, remove_with: '17.8', remove_after: '2024-12-23'
+
         validates :group, top_level_group: true, presence: true
         validates :relative_path,
           :object_storage_key,
           :content_type,
-          :downloads_count,
           :size,
           :file_sha1,
           presence: true
@@ -32,7 +33,6 @@ module VirtualRegistries
           :content_type,
           length: { maximum: 255 }
         validates :file_final_path, length: { maximum: 1024 }
-        validates :downloads_count, numericality: { greater_than: 0, only_integer: true }
         validates :relative_path,
           uniqueness: { scope: [:upstream_id, :status] },
           if: -> { upstream.present? && default? }
@@ -63,7 +63,6 @@ module VirtualRegistries
             group_id: group_id,
             relative_path: relative_path
           ).tap do |record|
-            record.increment(:downloads_count) if record.persisted?
             record.update!(**updates)
           end
         rescue ActiveRecord::RecordInvalid => invalid
@@ -92,7 +91,7 @@ module VirtualRegistries
 
         def bump_statistics(include_upstream_checked_at: false)
           now = Time.zone.now
-          updates = { downloaded_at: now, downloads_count: downloads_count + 1 }
+          updates = { downloaded_at: now }
           updates[:upstream_checked_at] = now if include_upstream_checked_at
           update_columns(**updates)
         end

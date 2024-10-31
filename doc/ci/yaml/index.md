@@ -639,18 +639,18 @@ A configuration with different pipeline names depending on the pipeline conditio
 
 ```yaml
 variables:
-  PROJECT1_PIPELINE_NAME: 'Default pipeline name'  # A default is not required.
+  PROJECT1_PIPELINE_NAME: 'Default pipeline name'  # A default is not required
 
 workflow:
   name: '$PROJECT1_PIPELINE_NAME'
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-      variables:
-        PROJECT1_PIPELINE_NAME: 'MR pipeline: $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME'
     - if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby3/'
       variables:
         PROJECT1_PIPELINE_NAME: 'Ruby 3 pipeline'
-    - when: always  # Other pipelines can run, but use the default name
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      variables:
+        PROJECT1_PIPELINE_NAME: 'MR pipeline: $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME'
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH  # For default branch pipelines, use the default name
 ```
 
 **Additional details**:

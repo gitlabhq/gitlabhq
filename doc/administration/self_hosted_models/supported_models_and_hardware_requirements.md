@@ -34,22 +34,22 @@ Install one of the following GitLab-approved LLM models:
 | Mistral      | [Mixtral 8x22B](https://huggingface.co/mistralai/Mixtral-8x22B-v0.1)       |  **{check-circle}** Yes                | **{dotted-circle}** No               | **{dotted-circle}** No        |
 | Mistral      | [Mixtral 8x22B-it](https://huggingface.co/mistralai/Mixtral-8x22B-Instruct-v0.1)       |  **{check-circle}** Yes                | **{check-circle}** Yes               | **{check-circle}** Yes        |
 | Claude 3     | [Claude 3.5 Sonnet](https://www.anthropic.com/news/claude-3-5-sonnet)        | **{check-circle}** Yes                | **{check-circle}** Yes               | **{check-circle}** Yes        |
+| GPT  | [GPT-3.5-Turbo](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure#gpt-35)        | **{check-circle}** Yes                | **{check-circle}** Yes               | **{dotted-circle}** No        |
+| GPT  | [GPT-4 Turbo](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure#gpt-4)        | **{check-circle}** Yes                | **{check-circle}** Yes               | **{dotted-circle}** No        |
+| GPT  | [GPT-4o](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure#gpt-4o-and-gpt-4-turbo)        | **{check-circle}** Yes                | **{check-circle}** Yes               | **{dotted-circle}** No        |
+| GPT  | [GPT-4o-mini](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure#gpt-4o-and-gpt-4-turbo)        | **{check-circle}** Yes                | **{check-circle}** Yes               | **{dotted-circle}** No        |
 
 The following models are under evaluation, and support is limited:
 
 | Model family  | Model                                                                              | Code completion | Code generation | GitLab Duo Chat |
 |---------------|---------------------------------------------------------------------|-----------------|-----------------|---------|
 | CodeGemma     | [CodeGemma 2b](https://huggingface.co/google/codegemma-2b)                         | **{check-circle}** Yes               | **{dotted-circle}** No               | **{dotted-circle}** No        |
-| CodeGemma     | [CodeGemma 7b-it](https://huggingface.co/google/codegemma-7b-it) (Instruction)     | **{dotted-circle}** No                | **{check-circle}** Yes               | **{dotted-circle}** No        |
-| CodeGemma     | [CodeGemma 7b-code](https://huggingface.co/google/codegemma-7b) (Code)             | **{check-circle}** Yes               | **{dotted-circle}** No               | **{dotted-circle}** No        |
+| CodeGemma     | [CodeGemma 7b-it](https://huggingface.co/google/codegemma-7b-it)                   | **{dotted-circle}** No                | **{check-circle}** Yes               | **{dotted-circle}** No        |
+| CodeGemma     | [CodeGemma 7b-code](https://huggingface.co/google/codegemma-7b)                    | **{check-circle}** Yes               | **{dotted-circle}** No               | **{dotted-circle}** No        |
 | CodeLlama     | [Code-Llama 13b-code](https://huggingface.co/meta-llama/CodeLlama-13b-hf)          | **{check-circle}** Yes               | **{dotted-circle}** No               | **{dotted-circle}** No        |
 | CodeLlama     | [Code-Llama 13b](https://huggingface.co/meta-llama/CodeLlama-13b-Instruct-hf)      | **{dotted-circle}** No                | **{check-circle}** Yes               | **{dotted-circle}** No        |
 | DeepSeekCoder | [DeepSeek Coder 33b Instruct](https://huggingface.co/deepseek-ai/deepseek-coder-33b-instruct)        | **{check-circle}** Yes                | **{check-circle}** Yes               | **{dotted-circle}** No        |
 | DeepSeekCoder | [DeepSeek Coder 33b Base](https://huggingface.co/deepseek-ai/deepseek-coder-33b-base)        | **{check-circle}** Yes                | **{dotted-circle}** No               | **{dotted-circle}** No        |
-| GPT  | [GPT-3.5-Turbo](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure#gpt-35)        | **{check-circle}** Yes                | **{check-circle}** Yes               | **{dotted-circle}** No        |
-| GPT  | [GPT-4 Turbo](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure#gpt-4)        | **{check-circle}** Yes                | **{check-circle}** Yes               | **{dotted-circle}** No        |
-| GPT  | [GPT-4o](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure#gpt-4o-and-gpt-4-turbo)        | **{check-circle}** Yes                | **{check-circle}** Yes               | **{dotted-circle}** No        |
-| GPT  | [GPT-4o-mini](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure#gpt-4o-and-gpt-4-turbo)        | **{check-circle}** Yes                | **{check-circle}** Yes               | **{dotted-circle}** No        |
 
 <!-- vale gitlab_base.Spelling = YES -->
 

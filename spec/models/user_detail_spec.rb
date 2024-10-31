@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe UserDetail, feature_category: :system_access do
   it { is_expected.to belong_to(:user) }
+  it { is_expected.to belong_to(:bot_namespace).inverse_of(:bot_user_details) }
 
   specify do
     values = [:basics, :move_repository, :code_storage, :exploring, :ci, :other, :joining_team]
@@ -104,6 +105,50 @@ RSpec.describe UserDetail, feature_category: :system_access do
         end
 
         it { is_expected.not_to allow_value(onboarding_status).for(:onboarding_status) }
+      end
+
+      context 'when validating bot namespace user type' do
+        let(:namespace) { create(:namespace) }
+
+        context 'for a human user' do
+          let(:user) { build(:user) }
+          let(:user_detail) { build(:user_detail, user: user) }
+
+          it 'does not allow bot namespace to be set' do
+            user_detail.bot_namespace = namespace
+
+            expect(user_detail).not_to be_valid
+            expect(user_detail.errors).to contain_exactly _('Bot namespace must only be set for bot user types')
+          end
+
+          context 'when invalid bot_namespace is already set' do
+            before do
+              user_detail.save!
+              user_detail.update_column(:bot_namespace_id, namespace.id)
+            end
+
+            it 'is valid' do
+              expect(user_detail).to be_valid
+            end
+
+            it 'can be set back to nil' do
+              user_detail.bot_namespace = nil
+
+              expect(user_detail).to be_valid
+            end
+          end
+        end
+
+        context 'for a bot user' do
+          let(:user) { build(:user, :project_bot) }
+          let(:user_detail) { build(:user_detail, user: user) }
+
+          it 'allows bot namespace to be set' do
+            user_detail.bot_namespace = namespace
+
+            expect(user_detail).to be_valid
+          end
+        end
       end
     end
 

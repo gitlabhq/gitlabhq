@@ -21,6 +21,7 @@ export default class ProtectedBranchCreate {
     this.$form = $('.js-new-protected-branch');
     this.isLocalStorageAvailable = AccessorUtilities.canUseLocalStorage();
     this.forcePushToggle = initToggle(document.querySelector('.js-force-push-toggle'));
+    this.sectionSelector = options.sectionSelector;
     if (this.hasLicense) {
       this.codeOwnerToggle = initToggle(document.querySelector('.js-code-owner-toggle'));
     }
@@ -85,6 +86,7 @@ export default class ProtectedBranchCreate {
       accessLevelsData,
       groupsWithProjectAccess: true,
       testId,
+      sectionSelector: this.sectionSelector,
     });
 
     dropdown.$on('select', (selected) => {

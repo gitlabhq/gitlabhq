@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::CopyTaggingsToPCiBuildTags, feature_category: :continuous_integration do
+RSpec.describe Gitlab::BackgroundMigration::CopyTaggingsToPCiBuildTags, :suppress_partitioning_routing_analyzer,
+  feature_category: :continuous_integration do
   let(:ci_pipelines_table) { table(:ci_pipelines, database: :ci, primary_key: :id) }
   let(:ci_builds_table) { table(:p_ci_builds, database: :ci, primary_key: :id) }
   let(:ci_build_tags_table) { table(:p_ci_build_tags, database: :ci, primary_key: :id) }

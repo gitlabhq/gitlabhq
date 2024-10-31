@@ -20361,6 +20361,7 @@ CREATE TABLE user_details (
     project_authorizations_recalculated_at timestamp with time zone DEFAULT '2010-01-01 00:00:00+00'::timestamp with time zone NOT NULL,
     onboarding_status jsonb DEFAULT '{}'::jsonb NOT NULL,
     bluesky text DEFAULT ''::text NOT NULL,
+    bot_namespace_id bigint,
     CONSTRAINT check_18a53381cd CHECK ((char_length(bluesky) <= 256)),
     CONSTRAINT check_245664af82 CHECK ((char_length(webauthn_xid) <= 100)),
     CONSTRAINT check_444573ee52 CHECK ((char_length(skype) <= 500)),
@@ -31973,6 +31974,8 @@ CREATE INDEX index_user_custom_attributes_on_key_and_value ON user_custom_attrib
 
 CREATE UNIQUE INDEX index_user_custom_attributes_on_user_id_and_key ON user_custom_attributes USING btree (user_id, key);
 
+CREATE INDEX index_user_details_on_bot_namespace_id ON user_details USING btree (bot_namespace_id);
+
 CREATE INDEX index_user_details_on_enterprise_group_id_and_user_id ON user_details USING btree (enterprise_group_id, user_id);
 
 CREATE INDEX index_user_details_on_password_last_changed_at ON user_details USING btree (password_last_changed_at);
@@ -35098,6 +35101,9 @@ ALTER TABLE p_ci_pipelines
 
 ALTER TABLE ONLY user_namespace_callouts
     ADD CONSTRAINT fk_27a69fd1bd FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY user_details
+    ADD CONSTRAINT fk_27ac767d6a FOREIGN KEY (bot_namespace_id) REFERENCES namespaces(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY work_item_dates_sources
     ADD CONSTRAINT fk_283fb4ad36 FOREIGN KEY (start_date_sourcing_milestone_id) REFERENCES milestones(id) ON DELETE SET NULL;

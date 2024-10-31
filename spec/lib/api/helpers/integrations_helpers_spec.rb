@@ -49,7 +49,7 @@ RSpec.describe API::Helpers::IntegrationsHelpers, feature_category: :integration
           required: false,
           name: :use_inherited_settings,
           type: ::Grape::API::Boolean,
-          desc: 'Indicates whether or not to inherit default settings. Defaults to `false`.'
+          desc: 'Indicates whether to inherit the default settings. Defaults to `false`.'
         }
       )
     end

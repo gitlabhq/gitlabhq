@@ -55,7 +55,7 @@ To view the dependencies of a project or all projects in a group:
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Secure > Dependency list**.
 
-Details of each dependency are listed, sorted by decreasing severity of vulnerabilities (if any). You can sort the list instead by component name or packager.
+Details of each dependency are listed, sorted by decreasing severity of vulnerabilities (if any). You can sort the list instead by component name, packager, or license.
 
 | Field     | Description |
 |:----------|:-----------|

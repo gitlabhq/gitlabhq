@@ -59,7 +59,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillDesiredShardingKeyPartitionJ
   end
 
   describe '#perform' do
-    let(:ci_pipelines_table) { table(:ci_pipelines, primary_key: :id) }
+    let(:ci_pipelines_table) { table(:p_ci_pipelines, primary_key: :id) }
     let(:ci_builds_table) { table(:p_ci_builds, primary_key: :id) }
 
     let(:pipeline) { ci_pipelines_table.create!(partition_id: 100, project_id: 1) }

@@ -9,7 +9,6 @@ FactoryBot.define do
     size { 1.kilobyte }
     upstream_etag { OpenSSL::Digest.hexdigest('SHA256', 'test') }
     content_type { 'text/plain' }
-    downloads_count { 5 }
     file_final_path { '5f/9c/5f9c/@final/c7/4c/240c' }
     file_md5 { '54ce07f4124259b2ea58548e9d620004' }
     file_sha1 { 'bbde7c9fb6d74f9a2393bb36b0d4ac7e72c227ee' }

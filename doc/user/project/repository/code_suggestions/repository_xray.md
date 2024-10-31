@@ -72,10 +72,13 @@ The Repository X-Ray searches a maximum of two directory levels from the reposit
 
 1. For Python Pip, all configuration files matching the `*requirements*.txt` glob pattern are processed.
 
+<!--- start_remove The following content will be removed on remove_date: '2025-08-15' -->
+
 ## Enable Repository X-Ray in your CI pipeline (deprecated)
 
 WARNING:
-This feature was [deprecated](https://gitlab.com/groups/gitlab-org/-/epics/14100) in GitLab 17.4.
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/500146) in GitLab 17.6
+and is planned for removal in 18.0. Use [Enable Repository X-Ray](#enable-repository-x-ray) instead.
 
 Prerequisites:
 
@@ -143,3 +146,5 @@ This link can be either of the following:
 
 - Direct, that is, the project is in a group that has the Duo Pro add-on.
 - Indirect, for example, the parent group of the current project's group has the Duo Pro add-on.
+
+<!--- end_remove -->

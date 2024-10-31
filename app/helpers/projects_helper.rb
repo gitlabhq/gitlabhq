@@ -114,7 +114,7 @@ module ProjectsHelper
   end
 
   def link_to_data_loss_doc
-    link_to _('data loss'), help_page_path('user/project/repository/index.md', anchor: 'what-happens-when-a-repository-path-changes'), target: '_blank', rel: 'noopener'
+    link_to _('data loss'), help_page_path('user/project/repository/index.md', anchor: 'repository-path-changes'), target: '_blank', rel: 'noopener'
   end
 
   def transfer_project_message(project)
@@ -425,11 +425,11 @@ module ProjectsHelper
       lfsAvailable: Gitlab.config.lfs.enabled,
       lfsHelpPath: help_page_path('topics/git/lfs/index.md'),
       lfsObjectsExist: project.lfs_objects.exists?,
-      lfsObjectsRemovalHelpPath: help_page_path('topics/git/lfs/index.md', anchor: 'removing-objects-from-lfs'),
+      lfsObjectsRemovalHelpPath: help_page_path('topics/git/lfs/index.md', anchor: 'delete-a-git-lfs-file-from-repository-history'),
       pagesAvailable: Gitlab.config.pages.enabled,
       pagesAccessControlEnabled: Gitlab.config.pages.access_control,
       pagesAccessControlForced: ::Gitlab::Pages.access_control_is_forced?,
-      pagesHelpPath: help_page_path('user/project/pages/introduction.md', anchor: 'gitlab-pages-access-control'),
+      pagesHelpPath: help_page_path('user/project/pages/pages_access_control.md'),
       issuesHelpPath: help_page_path('user/project/issues/index.md'),
       membersPagePath: project_project_members_path(project),
       environmentsHelpPath: help_page_path('ci/environments/index.md'),

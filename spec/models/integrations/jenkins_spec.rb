@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Integrations::Jenkins do
+RSpec.describe Integrations::Jenkins, feature_category: :integrations do
   let_it_be(:project) { create(:project) }
   let(:jenkins_integration) { described_class.new(jenkins_params) }
   let(:jenkins_url) { 'http://jenkins.example.com/' }

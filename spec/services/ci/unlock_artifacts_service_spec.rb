@@ -122,38 +122,38 @@ RSpec.describe Ci::UnlockArtifactsService, feature_category: :continuous_integra
         it 'produces the expected SQL string' do
           expect(subject.squish).to eq <<~SQL.squish
             UPDATE
-                "ci_pipelines"
+                "p_ci_pipelines"
             SET
                 "locked" = 0
             WHERE
-                "ci_pipelines"."id" IN
+                "p_ci_pipelines"."id" IN
                     (SELECT
-                        "ci_pipelines"."id"
+                        "p_ci_pipelines"."id"
                     FROM
-                        "ci_pipelines"
+                        "p_ci_pipelines"
                     WHERE
-                        "ci_pipelines"."ci_ref_id" = #{ci_ref.id}
-                        AND "ci_pipelines"."locked" = 1
-                        AND "ci_pipelines"."id" < #{before_pipeline.id}
-                        AND "ci_pipelines"."id" NOT IN
+                        "p_ci_pipelines"."ci_ref_id" = #{ci_ref.id}
+                        AND "p_ci_pipelines"."locked" = 1
+                        AND "p_ci_pipelines"."id" < #{before_pipeline.id}
+                        AND "p_ci_pipelines"."id" NOT IN
                             (WITH RECURSIVE
                                 "base_and_descendants"
                             AS
                                 ((SELECT
-                                    "ci_pipelines".*
+                                    "p_ci_pipelines".*
                                 FROM
-                                    "ci_pipelines"
+                                    "p_ci_pipelines"
                                 WHERE
-                                    "ci_pipelines"."id" = #{before_pipeline.id})
+                                    "p_ci_pipelines"."id" = #{before_pipeline.id})
                             UNION
                                 (SELECT
-                                    "ci_pipelines".*
+                                    "p_ci_pipelines".*
                                 FROM
-                                    "ci_pipelines",
+                                    "p_ci_pipelines",
                                     "base_and_descendants",
                                     "ci_sources_pipelines"
                                 WHERE
-                                    "ci_sources_pipelines"."pipeline_id" = "ci_pipelines"."id"
+                                    "ci_sources_pipelines"."pipeline_id" = "p_ci_pipelines"."id"
                                     AND "ci_sources_pipelines"."source_pipeline_id" = "base_and_descendants"."id"
                                     AND "ci_sources_pipelines"."source_project_id" = "ci_sources_pipelines"."project_id"))
                             SELECT
@@ -161,11 +161,11 @@ RSpec.describe Ci::UnlockArtifactsService, feature_category: :continuous_integra
                             FROM
                                 "base_and_descendants"
                             AS
-                                "ci_pipelines")
+                                "p_ci_pipelines")
                     LIMIT 1
                     FOR UPDATE
                     SKIP LOCKED)
-            RETURNING ("ci_pipelines"."id")
+            RETURNING ("p_ci_pipelines"."id")
           SQL
         end
       end
@@ -176,23 +176,23 @@ RSpec.describe Ci::UnlockArtifactsService, feature_category: :continuous_integra
         it 'produces the expected SQL string' do
           expect(subject.squish).to eq <<~SQL.squish
             UPDATE
-                "ci_pipelines"
+                "p_ci_pipelines"
             SET
                 "locked" = 0
             WHERE
-                "ci_pipelines"."id" IN
+                "p_ci_pipelines"."id" IN
                     (SELECT
-                        "ci_pipelines"."id"
+                        "p_ci_pipelines"."id"
                     FROM
-                        "ci_pipelines"
+                        "p_ci_pipelines"
                     WHERE
-                        "ci_pipelines"."ci_ref_id" = #{ci_ref.id}
-                        AND "ci_pipelines"."locked" = 1
+                        "p_ci_pipelines"."ci_ref_id" = #{ci_ref.id}
+                        AND "p_ci_pipelines"."locked" = 1
                     LIMIT 1
                     FOR UPDATE
                         SKIP LOCKED)
             RETURNING
-                ("ci_pipelines"."id")
+                ("p_ci_pipelines"."id")
           SQL
         end
       end

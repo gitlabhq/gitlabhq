@@ -8,11 +8,14 @@ class UserDetail < ApplicationRecord
   REGISTRATION_OBJECTIVE_PAIRS = { basics: 0, move_repository: 1, code_storage: 2, exploring: 3, ci: 4, other: 5, joining_team: 6 }.freeze
 
   belongs_to :user
+  belongs_to :bot_namespace, class_name: 'Namespace', optional: true, inverse_of: :bot_user_details
 
   validates :pronouns, length: { maximum: 50 }
   validates :pronunciation, length: { maximum: 255 }
   validates :job_title, length: { maximum: 200 }
   validates :bio, length: { maximum: 255 }, allow_blank: true
+
+  validate :bot_namespace_user_type, if: :bot_namespace_id_changed?
 
   DEFAULT_FIELD_LENGTH = 500
 
@@ -81,6 +84,13 @@ class UserDetail < ApplicationRecord
     self.skype = '' if skype.nil?
     self.twitter = '' if twitter.nil?
     self.website_url = '' if website_url.nil?
+  end
+
+  def bot_namespace_user_type
+    return if user.bot?
+    return if bot_namespace_id.nil?
+
+    errors.add(:bot_namespace, _('must only be set for bot user types'))
   end
 end
 

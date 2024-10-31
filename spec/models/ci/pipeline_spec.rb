@@ -6052,4 +6052,26 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       end
     end
   end
+
+  describe 'routing table switch' do
+    context 'with ff disabled' do
+      before do
+        stub_feature_flags(described_class::ROUTING_FEATURE_FLAG => false)
+      end
+
+      it 'uses the legacy table' do
+        expect(described_class.table_name).to eq('ci_pipelines')
+      end
+    end
+
+    context 'with ff enabled' do
+      before do
+        stub_feature_flags(described_class::ROUTING_FEATURE_FLAG => true)
+      end
+
+      it 'uses the routing table' do
+        expect(described_class.table_name).to eq('p_ci_pipelines')
+      end
+    end
+  end
 end

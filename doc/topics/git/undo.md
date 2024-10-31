@@ -388,7 +388,7 @@ it's no longer accessible in your repository's history. This process replaces a 
 Alternatively, to completely delete specific files from a repository, see
 [Remove files](../../user/project/repository/repository_size.md#remove-files).
 
-To redact text from your repository, see [Redact text for repository](../../user/project/merge_requests/revert_changes.md#redact-text-from-repository).
+To redact text from your repository, see [Redact text from repository](../../user/project/merge_requests/revert_changes.md#redact-text-from-repository).
 
 ### Remove information from commits
 

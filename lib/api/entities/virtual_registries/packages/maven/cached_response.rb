@@ -18,7 +18,6 @@ module API
               :file_sha1,
               :size,
               :downloaded_at,
-              :downloads_count,
               :relative_path,
               :upstream_etag,
               :content_type,

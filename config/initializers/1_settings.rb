@@ -1013,6 +1013,7 @@ Settings.topology_service['private_key_file'] ||= '/home/git/gitlab/config/topol
 # Cells
 #
 Settings['cell'] ||= {}
+Settings.cell['id'] ||= 1
 Settings.cell['name'] ||= 'cell-1'
 
 #

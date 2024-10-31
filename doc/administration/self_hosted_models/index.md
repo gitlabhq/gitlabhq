@@ -62,6 +62,7 @@ sequenceDiagram
 
     User ->> SelfHostedGitLab: Send request
     SelfHostedGitLab ->> SelfHostedGitLab: Check if self-hosted model is configured
+    SelfHostedGitLab ->> SelfHostedAIGateway: Forward request for AI processing
     SelfHostedAIGateway ->> SelfHostedModel: Create prompt and perform request to AI model server
     SelfHostedModel -->> SelfHostedAIGateway: Respond to the prompt
     SelfHostedAIGateway -->> SelfHostedGitLab: Forward AI response

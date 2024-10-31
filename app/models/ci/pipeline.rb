@@ -35,12 +35,16 @@ module Ci
     INITIAL_PARTITION_VALUE = 100
     SECOND_PARTITION_VALUE = 101
     NEXT_PARTITION_VALUE = 102
+    ROUTING_FEATURE_FLAG = :pipelines_routing_table
 
     paginates_per 15
 
     sha_attribute :source_sha
     sha_attribute :target_sha
-    partitionable scope: ->(pipeline) { Ci::Pipeline.current_partition_value(pipeline.project) }
+    query_constraints :id, :partition_id
+    partitionable scope: ->(pipeline) { Ci::Pipeline.current_partition_value(pipeline.project) },
+      through: { table: :p_ci_pipelines, flag: ROUTING_FEATURE_FLAG }
+
     # Ci::CreatePipelineService returns Ci::Pipeline so this is the only place
     # where we can pass additional information from the service. This accessor
     # is used for storing the processed metadata for linting purposes.
@@ -511,11 +515,12 @@ module Ci
       return Ci::Pipeline.none if refs.empty?
 
       refs_values = refs.map { |ref| "(#{connection.quote(ref)})" }.join(",")
-      join_query = success.where("refs_values.ref = ci_pipelines.ref").order(id: :desc).limit(1)
+      query = Arel.sql(sanitize_sql_array(["refs_values.ref = #{quoted_table_name}.ref"]))
+      join_query = success.where(query).order(id: :desc).limit(1)
 
       Ci::Pipeline
         .from("(VALUES #{refs_values}) refs_values (ref)")
-        .joins("INNER JOIN LATERAL (#{join_query.to_sql}) #{Ci::Pipeline.table_name} ON TRUE")
+        .joins("INNER JOIN LATERAL (#{join_query.to_sql}) #{quoted_table_name} ON TRUE")
         .index_by(&:ref)
     end
 
@@ -598,6 +603,10 @@ module Ci
 
     def self.object_hierarchy(relation, options = {})
       ::Gitlab::Ci::PipelineObjectHierarchy.new(relation, options: options)
+    end
+
+    def self.internal_id_scope_usage
+      :ci_pipelines
     end
 
     def uses_needs?

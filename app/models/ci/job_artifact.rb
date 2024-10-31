@@ -49,7 +49,7 @@ module Ci
     validate :validate_file_format!, unless: :trace?, on: :create
 
     scope :not_expired, -> { where('expire_at IS NULL OR expire_at > ?', Time.current) }
-    scope :for_sha, ->(sha, project_id) { joins(job: :pipeline).where(ci_pipelines: { sha: sha, project_id: project_id }) }
+    scope :for_sha, ->(sha, project_id) { joins(job: :pipeline).merge(Ci::Pipeline.for_sha(sha).for_project(project_id)) }
     scope :for_job_ids, ->(job_ids) { where(job_id: job_ids) }
     scope :for_job_name, ->(name) { joins(:job).merge(Ci::Build.by_name(name)) }
     scope :created_at_before, ->(time) { where(arel_table[:created_at].lteq(time)) }

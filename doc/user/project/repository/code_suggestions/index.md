@@ -87,9 +87,6 @@ To use Code Suggestions:
    - To reject a suggestion, press <kbd>Esc</kbd>.
    - To ignore a suggestion, keep typing as you usually would.
 
-AI is non-deterministic, so you may not get the same suggestion every time with the same input.
-To generate quality code, write clear, descriptive, specific tasks.
-
 All editor extensions from GitLab, except Neovim, add an icon to your IDE's status bar. For example, in
 Visual Studio:
 

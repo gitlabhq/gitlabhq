@@ -274,38 +274,7 @@ module API
               desc: 'Colorize messages'
             }
           ],
-          'jenkins' => [
-            {
-              required: true,
-              name: :jenkins_url,
-              type: String,
-              desc: 'Jenkins root URL like https://jenkins.example.com'
-            },
-            {
-              required: false,
-              name: :enable_ssl_verification,
-              type: ::Grape::API::Boolean,
-              desc: 'Enable SSL verification'
-            },
-            {
-              required: true,
-              name: :project_name,
-              type: String,
-              desc: 'The URL-friendly project name. Example: my_project_name'
-            },
-            {
-              required: false,
-              name: :username,
-              type: String,
-              desc: 'A user with access to the Jenkins server, if applicable'
-            },
-            {
-              required: false,
-              name: :password,
-              type: String,
-              desc: 'The password of the user'
-            }
-          ],
+          'jenkins' => ::Integrations::Jenkins.api_arguments,
           'jira' => [
             {
               required: true,
@@ -680,7 +649,7 @@ module API
           required: false,
           name: :use_inherited_settings,
           type: ::Grape::API::Boolean,
-          desc: 'Indicates whether or not to inherit default settings. Defaults to `false`.'
+          desc: 'Indicates whether to inherit the default settings. Defaults to `false`.'
         }
       end
     end

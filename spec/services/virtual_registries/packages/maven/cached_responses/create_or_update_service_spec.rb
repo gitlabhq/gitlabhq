@@ -34,7 +34,6 @@ RSpec.describe VirtualRegistries::Packages::Maven::CachedResponses::CreateOrUpda
             group_id: registry.group.id,
             upstream_checked_at: Time.zone.now,
             downloaded_at: Time.zone.now,
-            downloads_count: 1,
             relative_path: "/#{path}",
             upstream_etag: etag,
             content_type: content_type,
@@ -65,9 +64,7 @@ RSpec.describe VirtualRegistries::Packages::Maven::CachedResponses::CreateOrUpda
         end
 
         it 'updates it', :freeze_time do
-          expect { execute }
-            .to change { cached_response.reload.downloads_count }.by(1)
-            .and not_change { upstream.cached_responses.count }
+          expect { execute }.to not_change { upstream.cached_responses.count }
 
           expect(execute).to be_success
 

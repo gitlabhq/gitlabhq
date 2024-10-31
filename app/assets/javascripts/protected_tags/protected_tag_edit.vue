@@ -40,6 +40,11 @@ export default {
       required: false,
       default: true,
     },
+    sectionSelector: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -109,6 +114,7 @@ export default {
     :search-enabled="searchEnabled"
     groups-with-project-access
     :block="true"
+    :section-selector="sectionSelector"
     @hidden="updatePermissions"
   />
 </template>

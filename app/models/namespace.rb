@@ -113,6 +113,9 @@ class Namespace < ApplicationRecord
   has_one :namespace_import_user, class_name: 'Import::NamespaceImportUser', foreign_key: :namespace_id, inverse_of: :namespace
   has_one :import_user, class_name: 'User', through: :namespace_import_user, foreign_key: :user_id
 
+  has_many :bot_user_details, class_name: 'UserDetail', foreign_key: 'bot_namespace_id', inverse_of: :bot_namespace
+  has_many :bot_users, through: :bot_user_details, source: :user
+
   validates :owner, presence: true, if: ->(n) { n.owner_required? }
   validates :organization, presence: true, if: :require_organization?
   validates :name,

@@ -1441,7 +1441,6 @@ RSpec.describe API::VirtualRegistries::Packages::Maven, :aggregate_failures, fea
         expect(response).to have_gitlab_http_status(:ok)
         expect(upstream.cached_responses.last).to have_attributes(
           relative_path: "/#{path}",
-          downloads_count: 1,
           upstream_etag: nil,
           upstream_checked_at: Time.zone.now,
           downloaded_at: Time.zone.now,
