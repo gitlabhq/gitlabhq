@@ -78,34 +78,34 @@ RSpec.describe Gitlab::Database::Partitioning::MonthlyStrategy, feature_category
         subject { described_class.new(model, partitioning_key, retain_for: 1.month).missing_partitions }
 
         it 'does not include the missing partition from May 2020 because it would be dropped' do
-          expect(subject).not_to include(Gitlab::Database::Partitioning::TimePartition.new(model.table_name, '2020-05-01', '2020-06-01'))
+          expect(subject).not_to include(Gitlab::Database::Partitioning::TimePartition.new(model.table_name, '2020-05-01', '2020-06-01', partition_name: "#{model.table_name}_202005"))
         end
 
         it 'detects the missing partition for 1 month ago (July 2020)' do
-          expect(subject).to include(Gitlab::Database::Partitioning::TimePartition.new(model.table_name, '2020-07-01', '2020-08-01'))
+          expect(subject).to include(Gitlab::Database::Partitioning::TimePartition.new(model.table_name, '2020-07-01', '2020-08-01', partition_name: "#{model.table_name}_202007"))
         end
       end
 
       it 'detects the gap and the missing partition in May 2020' do
-        expect(subject).to include(Gitlab::Database::Partitioning::TimePartition.new(model.table_name, '2020-05-01', '2020-06-01'))
+        expect(subject).to include(Gitlab::Database::Partitioning::TimePartition.new(model.table_name, '2020-05-01', '2020-06-01', partition_name: "#{model.table_name}_202005"))
       end
 
       it 'detects the missing partitions at the end of the range and expects a partition for July 2020' do
-        expect(subject).to include(Gitlab::Database::Partitioning::TimePartition.new(model.table_name, '2020-07-01', '2020-08-01'))
+        expect(subject).to include(Gitlab::Database::Partitioning::TimePartition.new(model.table_name, '2020-07-01', '2020-08-01', partition_name: "#{model.table_name}_202007"))
       end
 
       it 'detects the missing partitions at the end of the range and expects a partition for August 2020' do
-        expect(subject).to include(Gitlab::Database::Partitioning::TimePartition.new(model.table_name, '2020-08-01', '2020-09-01'))
+        expect(subject).to include(Gitlab::Database::Partitioning::TimePartition.new(model.table_name, '2020-08-01', '2020-09-01', partition_name: "#{model.table_name}_202008"))
       end
 
       it 'creates partitions 6 months out from now (Sep 2020 through Feb 2021)' do
         expect(subject).to include(
-          Gitlab::Database::Partitioning::TimePartition.new(model.table_name, '2020-09-01', '2020-10-01'),
-          Gitlab::Database::Partitioning::TimePartition.new(model.table_name, '2020-10-01', '2020-11-01'),
-          Gitlab::Database::Partitioning::TimePartition.new(model.table_name, '2020-11-01', '2020-12-01'),
-          Gitlab::Database::Partitioning::TimePartition.new(model.table_name, '2020-12-01', '2021-01-01'),
-          Gitlab::Database::Partitioning::TimePartition.new(model.table_name, '2021-01-01', '2021-02-01'),
-          Gitlab::Database::Partitioning::TimePartition.new(model.table_name, '2021-02-01', '2021-03-01')
+          Gitlab::Database::Partitioning::TimePartition.new(model.table_name, '2020-09-01', '2020-10-01', partition_name: "#{model.table_name}_202009"),
+          Gitlab::Database::Partitioning::TimePartition.new(model.table_name, '2020-10-01', '2020-11-01', partition_name: "#{model.table_name}_202010"),
+          Gitlab::Database::Partitioning::TimePartition.new(model.table_name, '2020-11-01', '2020-12-01', partition_name: "#{model.table_name}_202011"),
+          Gitlab::Database::Partitioning::TimePartition.new(model.table_name, '2020-12-01', '2021-01-01', partition_name: "#{model.table_name}_202012"),
+          Gitlab::Database::Partitioning::TimePartition.new(model.table_name, '2021-01-01', '2021-02-01', partition_name: "#{model.table_name}_202101"),
+          Gitlab::Database::Partitioning::TimePartition.new(model.table_name, '2021-02-01', '2021-03-01', partition_name: "#{model.table_name}_202102")
         )
       end
 
@@ -129,7 +129,8 @@ RSpec.describe Gitlab::Database::Partitioning::MonthlyStrategy, feature_category
         it 'detects exactly the set of partitions from June 2020 to March 2021' do
           months = %w[2020-07-01 2020-08-01 2020-09-01 2020-10-01 2020-11-01 2020-12-01 2021-01-01 2021-02-01 2021-03-01]
           expected = months[..-2].zip(months.drop(1)).map do |(from, to)|
-            Gitlab::Database::Partitioning::TimePartition.new(model.table_name, from, to)
+            partition_name = "#{model.table_name}_#{Date.parse(from).strftime('%Y%m')}"
+            Gitlab::Database::Partitioning::TimePartition.new(model.table_name, from, to, partition_name: partition_name)
           end
 
           expect(subject).to match_array(expected)
@@ -137,21 +138,21 @@ RSpec.describe Gitlab::Database::Partitioning::MonthlyStrategy, feature_category
       end
 
       it 'detects the missing catch-all partition at the beginning' do
-        expect(subject).to include(Gitlab::Database::Partitioning::TimePartition.new(model.table_name, nil, '2020-08-01'))
+        expect(subject).to include(Gitlab::Database::Partitioning::TimePartition.new(model.table_name, nil, '2020-08-01', partition_name: "#{model.table_name}_000000"))
       end
 
       it 'detects the missing partition for today and expects a partition for August 2020' do
-        expect(subject).to include(Gitlab::Database::Partitioning::TimePartition.new(model.table_name, '2020-08-01', '2020-09-01'))
+        expect(subject).to include(Gitlab::Database::Partitioning::TimePartition.new(model.table_name, '2020-08-01', '2020-09-01', partition_name: "#{model.table_name}_202008"))
       end
 
       it 'creates partitions 6 months out from now (Sep 2020 through Feb 2021' do
         expect(subject).to include(
-          Gitlab::Database::Partitioning::TimePartition.new(model.table_name, '2020-09-01', '2020-10-01'),
-          Gitlab::Database::Partitioning::TimePartition.new(model.table_name, '2020-10-01', '2020-11-01'),
-          Gitlab::Database::Partitioning::TimePartition.new(model.table_name, '2020-11-01', '2020-12-01'),
-          Gitlab::Database::Partitioning::TimePartition.new(model.table_name, '2020-12-01', '2021-01-01'),
-          Gitlab::Database::Partitioning::TimePartition.new(model.table_name, '2021-01-01', '2021-02-01'),
-          Gitlab::Database::Partitioning::TimePartition.new(model.table_name, '2021-02-01', '2021-03-01')
+          Gitlab::Database::Partitioning::TimePartition.new(model.table_name, '2020-09-01', '2020-10-01', partition_name: "#{model.table_name}_202009"),
+          Gitlab::Database::Partitioning::TimePartition.new(model.table_name, '2020-10-01', '2020-11-01', partition_name: "#{model.table_name}_202010"),
+          Gitlab::Database::Partitioning::TimePartition.new(model.table_name, '2020-11-01', '2020-12-01', partition_name: "#{model.table_name}_202011"),
+          Gitlab::Database::Partitioning::TimePartition.new(model.table_name, '2020-12-01', '2021-01-01', partition_name: "#{model.table_name}_202012"),
+          Gitlab::Database::Partitioning::TimePartition.new(model.table_name, '2021-01-01', '2021-02-01', partition_name: "#{model.table_name}_202101"),
+          Gitlab::Database::Partitioning::TimePartition.new(model.table_name, '2021-02-01', '2021-03-01', partition_name: "#{model.table_name}_202102")
         )
       end
 
@@ -174,7 +175,7 @@ RSpec.describe Gitlab::Database::Partitioning::MonthlyStrategy, feature_category
       end
 
       it 'detects a missing catch-all partition to add before the existing partition' do
-        expect(subject).to include(Gitlab::Database::Partitioning::TimePartition.new(model.table_name, nil, '2020-06-01'))
+        expect(subject).to include(Gitlab::Database::Partitioning::TimePartition.new(model.table_name, nil, '2020-06-01', partition_name: "#{model.table_name}_000000"))
       end
     end
   end
@@ -398,6 +399,32 @@ RSpec.describe Gitlab::Database::Partitioning::MonthlyStrategy, feature_category
         retain_non_empty_partitions: retain_non_empty_partitions,
         analyze_interval: analyze_interval
       })
+    end
+  end
+
+  describe '#partition_name' do
+    let(:model) { double('model', table_name: table_name) }
+    let(:partitioning_key) { double }
+    let(:table_name) { '_test_partitioned_test' }
+    let(:from) { Date.parse('2020-04-01 00:00:00') }
+    let(:to) { Date.parse('2020-05-01 00:00:00') }
+
+    subject(:partition_name) { described_class.new(model, partitioning_key).partition_name(from) }
+
+    it 'uses table_name as prefix' do
+      expect(partition_name).to start_with(table_name)
+    end
+
+    it 'uses Year-Month (from) as suffix' do
+      expect(partition_name).to end_with("_202004")
+    end
+
+    context 'without from date' do
+      let(:from) { nil }
+
+      it 'uses 000000 as suffix for first partition' do
+        expect(partition_name).to end_with("_000000")
+      end
     end
   end
 end

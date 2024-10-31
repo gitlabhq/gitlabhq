@@ -12,3 +12,4 @@ gitlab_schema: gitlab_sec
 # because the backfill migration was processed manually.
 # This migration is custom due to data consistency issues and cross-DB backfill.
 desired_sharding_key_migration_job_name: BackfillProjectIdToSecurityScans
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/501459

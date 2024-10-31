@@ -17,4 +17,4 @@ desired_sharding_key_migration_job_name: BackfillProjectIdToDependencyListExport
 #   organization_id: organizations
 #
 # A multi-column not-null constraint should be added on these columns.
-
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/501463

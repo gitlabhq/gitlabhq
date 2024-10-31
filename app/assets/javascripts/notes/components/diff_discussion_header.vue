@@ -137,7 +137,7 @@ export default {
       <toggle-replies-widget
         :collapsed="!discussion.expanded"
         :replies="replies"
-        class="gl-border-t -gl-mx-3 -gl-mb-3 gl-mt-4 !gl-border-x-0 !gl-border-b-0 gl-border-t-subtle"
+        class="gl-border-t -gl-mx-3 -gl-mb-3 gl-mt-4 !gl-border-x-0 !gl-border-b-0 gl-border-t-subtle dark:gl-border-t-section"
         @toggle="toggleDiscussionHandler"
       />
     </div>

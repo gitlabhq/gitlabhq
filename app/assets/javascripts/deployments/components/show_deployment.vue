@@ -5,6 +5,7 @@ import { toggleQueryPollingByVisibility, etagQueryHeaders } from '~/graphql_shar
 import { s__ } from '~/locale';
 import deploymentQuery from '../graphql/queries/deployment.query.graphql';
 import environmentQuery from '../graphql/queries/environment.query.graphql';
+import releaseQuery from '../graphql/queries/release.query.graphql';
 import DeploymentHeader from './deployment_header.vue';
 import DeploymentAside from './deployment_aside.vue';
 import DeploymentDeployBlock from './deployment_deploy_block.vue';
@@ -58,9 +59,25 @@ export default {
         this.errorMessage = this.$options.i18n.errorMessage;
       },
     },
+    release: {
+      query: releaseQuery,
+      variables() {
+        return { fullPath: this.projectPath, tagName: this.deployment?.ref };
+      },
+      update(data) {
+        return data?.project?.release;
+      },
+      skip() {
+        return !this.deployment?.tag;
+      },
+      error(error) {
+        captureException(error);
+        this.errorMessage = this.$options.i18n.errorMessage;
+      },
+    },
   },
   data() {
-    return { deployment: {}, environment: {}, errorMessage: '' };
+    return { deployment: {}, environment: {}, errorMessage: '', release: null };
   },
   computed: {
     hasError() {
@@ -104,6 +121,7 @@ export default {
           v-else
           :deployment="deployment"
           :environment="environment"
+          :release="release"
           :loading="isLoading"
         />
         <details-feedback class="gl-mt-6" />

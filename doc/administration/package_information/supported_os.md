@@ -75,7 +75,7 @@ These versions of Oracle Linux are supported.
 |:-----------------|:-------------------------------|:-------------|:----------------------------------------------------------------------------------------|:---------------------|:--------|
 | Oracle Linux 7   | GitLab CE / GitLab EE 8.14.0   | `x86_64`     | [Use CentOS installation documentation](https://about.gitlab.com/install/#centos-7)     | Dec 2024             | [Oracle Linux details](https://www.oracle.com/a/ocom/docs/elsp-lifetime-069338.pdf) |
 | Oracle Linux 8   | GitLab CE / GitLab EE 12.8.1   | `x86_64`     | [Use AlmaLinux installation documentation](https://about.gitlab.com/install/#almalinux) | July 2029            | [Oracle Linux details](https://www.oracle.com/a/ocom/docs/elsp-lifetime-069338.pdf) |
-| Oracle Linux 9   | GitLab CE / GitLab EE 16.0.0   | `x86_64`     | [Use AlmaLinux installation documentation](https://about.gitlab.com/install/#almalinux) | June 2032            | [Oracle Linux details](https://www.oracle.com/a/ocom/docs/elsp-lifetime-069338.pdf) |
+| Oracle Linux 9   | GitLab CE / GitLab EE 16.2.0   | `x86_64`     | [Use AlmaLinux installation documentation](https://about.gitlab.com/install/#almalinux) | June 2032            | [Oracle Linux details](https://www.oracle.com/a/ocom/docs/elsp-lifetime-069338.pdf) |
 
 ## Raspberry Pi OS
 

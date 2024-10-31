@@ -102,7 +102,7 @@ export default {
       :discussion-path="discussion.discussion_path"
       :diff-file="discussion.diff_file"
       :can-current-user-fork="false"
-      class="gl-border"
+      class="gl-border gl-border-section"
       :expanded="!isCollapsed"
     />
     <div v-if="isTextFile" class="diff-content">

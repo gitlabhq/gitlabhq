@@ -216,6 +216,12 @@ RSpec.describe Ci::RunnerManager, feature_category: :fleet_visibility, type: :mo
       it { is_expected.to contain_exactly(runner_manager_a1, runner_manager_a2) }
     end
 
+    context 'with numeric id for single runner' do
+      let(:runner_arg) { runner_a.id }
+
+      it { is_expected.to contain_exactly(runner_manager_a1, runner_manager_a2) }
+    end
+
     context 'with multiple runners' do
       let(:runner_arg) { [runner_a, runner_b] }
 

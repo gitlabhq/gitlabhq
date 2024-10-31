@@ -421,7 +421,6 @@ Style/ClassAndModuleChildren:
     - 'ee/app/models/dast/profile_schedule.rb'
     - 'ee/app/models/ee/ci/job_artifact.rb'
     - 'ee/app/models/elastic/reindexing_slice.rb'
-    - 'ee/app/models/elastic/reindexing_subtask.rb'
     - 'ee/app/models/elastic/reindexing_task.rb'
     - 'ee/app/models/epic/metrics.rb'
     - 'ee/app/models/epic/related_epic_link.rb'

@@ -421,7 +421,7 @@ export default {
     <div
       v-if="showMultiLineComment"
       data-testid="multiline-comment"
-      class="gl-border-b-1 gl-border-gray-100 gl-px-5 gl-py-3 gl-text-gray-500 gl-border-b-solid"
+      class="gl-border-b gl-border-section gl-px-5 gl-py-3 gl-text-subtle"
     >
       <gl-sprintf :message="__('Comment on lines %{startLine} to %{endLine}')">
         <template #startLine>

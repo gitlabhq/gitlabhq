@@ -67,7 +67,7 @@ $t-gray-a-16-design-pin: rgba($black, 0.16);
   height: $design-pin-diameter;
   width: $design-pin-diameter;
   box-sizing: content-box;
-  background-color: var(--purple-500, $purple-500);
+  @apply gl-bg-purple-500 dark:gl-bg-purple-700;
   color: var(--white, $white);
   font-weight: $gl-font-weight-bold;
   border-radius: 50%;

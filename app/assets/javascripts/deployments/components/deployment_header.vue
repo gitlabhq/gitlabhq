@@ -6,12 +6,15 @@ import {
   GlSkeletonLoader,
   GlSprintf,
   GlTooltipDirective as GlTooltip,
+  GlTruncateText,
 } from '@gitlab/ui';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { s__, __ } from '~/locale';
 import DeploymentStatusLink from '~/environments/components/deployment_status_link.vue';
 import DeploymentCommit from '~/environments/components/commit.vue';
+import { renderGFM } from '~/behaviors/markdown/render_gfm';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import { isFinished } from '../utils';
 
 export default {
@@ -21,6 +24,7 @@ export default {
     GlLink,
     GlSkeletonLoader,
     GlSprintf,
+    GlTruncateText,
     ClipboardButton,
     TimeAgoTooltip,
     DeploymentStatusLink,
@@ -28,6 +32,7 @@ export default {
   },
   directives: {
     GlTooltip,
+    SafeHtml,
   },
   props: {
     deployment: {
@@ -36,6 +41,11 @@ export default {
     },
     environment: {
       required: true,
+      type: Object,
+    },
+    release: {
+      required: false,
+      default: null,
       type: Object,
     },
     loading: {
@@ -99,14 +109,19 @@ export default {
       return this.isFinished(this.deployment) ? this.finishedAt : this.createdAt;
     },
   },
+  mounted() {
+    renderGFM(this.$refs['gfm-content']);
+  },
   methods: {
     isFinished,
   },
+  safeHtmlConfig: { ADD_TAGS: ['gl-emoji'] },
   i18n: {
     copyButton: __('Copy commit SHA'),
     needsApproval: s__('Deployment|Needs Approval'),
     startedTimeagoText: s__('Deployment|Started %{timeago} by %{username}'),
     finishedTimeagoText: s__('Deployment|Finished %{timeago} by %{username}'),
+    releaseNotes: s__('Deployment|%{releaseName} release notes:'),
   },
 };
 </script>
@@ -157,5 +172,22 @@ export default {
       </time-ago-tooltip>
     </div>
     <deployment-commit :commit="commit" />
+    <p v-if="release" class="gl-my-3 gl-font-bold">
+      <gl-sprintf :message="$options.i18n.releaseNotes">
+        <template #releaseName>
+          <gl-link :href="release.links.selfUrl" data-testid="release-page-link">
+            {{ release.name }}
+          </gl-link>
+        </template>
+      </gl-sprintf>
+    </p>
+    <gl-truncate-text v-if="release" :lines="2" :mobile-lines="2">
+      <div
+        ref="gfm-content"
+        v-safe-html:[$options.safeHtmlConfig]="release.descriptionHtml"
+        class="md gl-z-0"
+        data-testid="release-description-content"
+      ></div>
+    </gl-truncate-text>
   </div>
 </template>

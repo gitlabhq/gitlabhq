@@ -306,7 +306,7 @@ The value of the variable must:
 - Be a single line with no spaces.
 - Be 8 characters or longer.
 - Not match the name of an existing predefined or custom CI/CD variable.
-- Not include non-alpha-numeric characters other than `@`, `_`, `-`, `:`, or `+`.
+- Not include non-alphanumeric characters other than `@`, `_`, `-`, `:`, or `+`.
 
 Additionally, if [variable expansion](#prevent-cicd-variable-expansion) is enabled,
 the value can contain only:

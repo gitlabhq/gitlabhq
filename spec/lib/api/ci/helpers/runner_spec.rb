@@ -107,17 +107,23 @@ RSpec.describe API::Ci::Helpers::Runner, feature_category: :runner do
         expect(current_runner_manager.contacted_at).to eq 1.hour.ago
       end
 
-      context 'when a runner manager with nil runner_type and sharding_key_id already exists' do
+      context 'when a runner manager with nil sharding_key_id already exists' do
         before do
-          existing_runner_manager.update_columns(runner_type: nil, sharding_key_id: nil)
+          Ci::ApplicationRecord.connection.execute <<~SQL
+            ALTER TABLE group_type_ci_runner_machines_687967fa8a
+              DROP CONSTRAINT IF EXISTS check_sharding_key_id_nullness
+          SQL
+
+          existing_runner_manager.update_columns(sharding_key_id: nil)
         end
 
-        it 'reuses and updates existing runner manager', :aggregate_failures do
+        it 'reuses existing runner manager', :aggregate_failures do
           expect { current_runner_manager }.not_to raise_error
 
           expect(current_runner_manager).not_to be_nil
+          expect(current_runner_manager).to eq existing_runner_manager
           expect(current_runner_manager.reload.contacted_at).to eq 1.hour.ago
-          expect(current_runner_manager.runner_type).to be_nil
+          expect(current_runner_manager.runner_type).to eq runner.runner_type
           expect(current_runner_manager.sharding_key_id).to be_nil
         end
       end

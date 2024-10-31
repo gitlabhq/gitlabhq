@@ -255,6 +255,47 @@ For CSS properties that are unit-less (e.g `display: flex`) it is okay to use CS
 }
 ```
 
+The preferred way to use `@apply` is to combine multiple CSS classes in a single line or at most two,
+like in the example above. This approach keeps the CSS concise and easy to read:
+
+```css
+// Good
+.my-class {
+  @apply gl-mt-5 gl-flex gl-items-center;
+}
+```
+
+Avoid splitting classes across multiple lines, as shown below.
+
+```css
+// Avoid
+@apply gl-mt-5;
+@apply gl-flex;
+@apply gl-items-center;
+```
+
+The reason for this is that IDE extensions might only be able to detect conflicts when
+the CSS Classes are in one line:
+
+```css
+// ✅ Conflict detected: 'gl-bg-black' applies the same CSS properties as 'gl-bg-white'.(cssConflict)
+@apply gl-bg-white gl-bg-black;
+
+// ❌ No conflict detected
+@apply gl-bg-white;
+@apply gl-bg-black;
+```
+
+The exception to this rule is when working with `!important`. Since `!important` applies to
+the entire line, each class that requires it should be applied on its own line. For instance:
+
+```css
+@apply gl-flex gl-items-center;
+@apply gl-mt-5 #{!important};
+```
+
+This ensures that `!important` applies only where intended without affecting other classes in the same line.
+
 ## Naming
 
 Filenames should use `snake_case`.

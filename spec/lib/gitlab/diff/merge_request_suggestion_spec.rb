@@ -25,7 +25,8 @@ RSpec.describe Gitlab::Diff::MergeRequestSuggestion, feature_category: :vulnerab
     end
 
     let_it_be(:diff) { File.read(File.join(fixtures_folder, 'input.diff')) }
-    let(:mr_suggestion) { described_class.new(diff, filepath, merge_request) }
+    let_it_be(:prepend_text) { nil }
+    let(:mr_suggestion) { described_class.new(diff, filepath, merge_request, prepend_text) }
 
     subject(:attributes_hash) { mr_suggestion.note_attributes_hash }
 
@@ -34,6 +35,8 @@ RSpec.describe Gitlab::Diff::MergeRequestSuggestion, feature_category: :vulnerab
     end
 
     context 'when a valid diff is supplied' do
+      let_it_be(:suggestion) { File.read(File.join(fixtures_folder, 'suggestion.md')) }
+
       it 'returns a correctly formatted suggestion request payload' do
         position_payload = {
           position_type: 'text',
@@ -51,7 +54,15 @@ RSpec.describe Gitlab::Diff::MergeRequestSuggestion, feature_category: :vulnerab
         expect(attributes_hash[:noteable_type]).to eq(MergeRequest)
         expect(attributes_hash[:noteable_id]).to eq(merge_request.id)
         expect(attributes_hash[:position]).to eq(position_payload)
-        expect(attributes_hash[:note]).to eq(File.read(File.join(fixtures_folder, 'suggestion.md')))
+        expect(attributes_hash[:note]).to eq(suggestion)
+      end
+
+      context 'when a prepend text is present' do
+        let_it_be(:prepend_text) { 'prepend text' }
+
+        it 'returns a correctly formatted suggestion request payload' do
+          expect(attributes_hash[:note]).to eq("#{prepend_text}\n#{suggestion}")
+        end
       end
     end
 

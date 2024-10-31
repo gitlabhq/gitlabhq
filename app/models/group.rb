@@ -884,7 +884,7 @@ class Group < Namespace
   def parent_allows_two_factor_authentication?
     return true unless has_parent?
 
-    ancestor_settings = ancestors.find_by(parent_id: nil).namespace_settings
+    ancestor_settings = ancestors.find_top_level.namespace_settings
     ancestor_settings.allow_mfa_for_subgroups
   end
 

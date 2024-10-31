@@ -1,11 +1,12 @@
 <script>
-import { GlButton, GlIcon } from '@gitlab/ui';
+import { GlBadge, GlButton, GlIcon } from '@gitlab/ui';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { __ } from '~/locale';
 import FailedJobsList from './failed_jobs_list.vue';
 
 export default {
   components: {
+    GlBadge,
     GlButton,
     GlIcon,
     FailedJobsList,
@@ -45,6 +46,9 @@ export default {
     bodyClasses() {
       return this.isExpanded ? '' : 'gl-hidden';
     },
+    failedJobsCountLabel() {
+      return `${this.isMaximumJobLimitReached ? '100+' : this.currentFailedJobsCount}`;
+    },
     iconName() {
       return this.isExpanded ? 'chevron-down' : 'chevron-right';
     },
@@ -75,7 +79,7 @@ export default {
   <crud-component
     :id="$options.ariaControlsId"
     class="expandable-card"
-    :class="{ 'is-collapsed gl-border-white hover:gl-border-gray-100': !isExpanded }"
+    :class="{ 'is-collapsed gl-border-transparent hover:gl-border-default': !isExpanded }"
     data-testid="failed-jobs-card"
     @click="toggleWidget"
   >
@@ -88,11 +92,15 @@ export default {
         @click="toggleWidget"
       >
         <gl-icon :name="iconName" class="gl-mr-2" />
-        <span class="gl-font-bold gl-text-secondary">
+        <span class="gl-font-bold gl-text-subtle">
           {{ $options.i18n.failedJobsLabel }}
         </span>
-        <span> ({{ currentFailedJobsCount }}) </span>
       </gl-button>
+    </template>
+    <template #count>
+      <gl-badge>
+        {{ failedJobsCountLabel }}
+      </gl-badge>
     </template>
     <failed-jobs-list
       v-if="isExpanded"

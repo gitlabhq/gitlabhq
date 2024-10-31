@@ -46,7 +46,6 @@ module Users
           u.bio = 'System bot that monitors detected vulnerabilities for solutions ' \
                   'and creates merge requests with the fixes.'
           u.name = 'GitLab Security Bot'
-          u.website_url = Gitlab::Routing.url_helpers.help_page_url('user/application_security/security_bot/index.md')
           u.avatar = bot_avatar(image: 'security-bot.png')
           u.confirmed_at = Time.zone.now
           u.private_profile = true

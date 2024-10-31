@@ -4,7 +4,9 @@ group: Compliance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Compliance pipelines
+<!--- start_remove The following content will be removed on remove_date: '2025-08-15' -->
+
+# Compliance pipelines (deprecated)
 
 DETAILS:
 **Tier:** Ultimate
@@ -398,3 +400,5 @@ This error occurs because the pipeline execution policy includes the project's `
 jobs when the jobs have already been declared in the pipeline.
 
 To resolve this error, remove `include.project` from the separate YAML file linked in the pipeline execution policy.
+
+<!--- end_remove -->

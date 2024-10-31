@@ -1,0 +1,13 @@
+query relatedRelease($fullPath: ID!, $tagName: String!) {
+  project(fullPath: $fullPath) {
+    id
+    release(tagName: $tagName) {
+      id
+      name
+      descriptionHtml
+      links {
+        selfUrl
+      }
+    }
+  }
+}

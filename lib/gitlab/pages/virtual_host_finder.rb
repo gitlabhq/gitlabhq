@@ -34,7 +34,7 @@ module Gitlab
       end
 
       def by_namespace_domain(name)
-        namespace = Namespace.top_most.by_path(name)
+        namespace = Namespace.top_level.by_path(name)
 
         return if namespace.blank?
 

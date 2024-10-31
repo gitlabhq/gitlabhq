@@ -44,7 +44,7 @@ module API
 
         namespaces = current_user.admin ? Namespace.all : current_user.namespaces(owned_only: owned_only)
 
-        namespaces = namespaces.top_most if params[:top_level_only]
+        namespaces = namespaces.top_level if params[:top_level_only]
 
         namespaces = namespaces.without_project_namespaces.include_route
 

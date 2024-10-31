@@ -82,7 +82,7 @@ Configure a GitLab CI/CD job to use CI Steps with the `run` keyword. You cannot 
 The `run` keyword accepts a list of steps to run. Steps are run one at a time in the order they are defined in the list.
 Each list item has a `name` and either `step`, `script`, or `action`.
 
-Name must consist only of alpha-numeric characters and underscores, and must not start with a number.
+Name must consist only of alphanumeric characters and underscores, and must not start with a number.
 
 ### Run a step
 
@@ -296,7 +296,7 @@ The specification defines inputs and outputs that the step receives and returns.
 
 #### Specify inputs
 
-Input names can only use alpha-numeric characters and underscores, and must not start with a number.
+Input names can only use alphanumeric characters and underscores, and must not start with a number.
 Inputs must have a type, and they can optionally specify a default value. An input with no default value
 is a required input, it must be specified when using the step.
 
@@ -333,7 +333,7 @@ run:
 
 #### Specify outputs
 
-Similar to inputs, output names can only use alpha-numeric characters and underscores,
+Similar to inputs, output names can only use alphanumeric characters and underscores,
 and must not start with a number. Outputs must have a type, and they can optionally specify a default value.
 The default value is returned when the step doesn't return the output.
 
@@ -409,7 +409,7 @@ Steps can:
 #### Set environment variables
 
 Set environment variables by using the `env` keyword. Environment variable names can only use
-alpha-numeric characters and underscores, and must not start with a number.
+alphanumeric characters and underscores, and must not start with a number.
 
 Environment variables are made available either to the executable command or to all of the steps
 if running a sequence of steps. For example:
@@ -494,7 +494,7 @@ exec:
 A step declares it runs a sequence of steps using the `steps` keyword. Steps run one at a time
 in the order they are defined in the list. This syntax is the same as the `run` keyword.
 
-Steps must have a name consisting only of alpha-numeric characters and underscores, and must not start with a number.
+Steps must have a name consisting only of alphanumeric characters and underscores, and must not start with a number.
 
 For example, this step installs Go, then runs a second step that expects Go to already
 have been installed:

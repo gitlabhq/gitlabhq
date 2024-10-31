@@ -165,11 +165,11 @@
     margin-left: $note-spacing-left;
 
     .line_holder td:first-of-type {
-      @apply gl-border-l;
+      @apply gl-border-l gl-border-l-section;
     }
 
     .line_holder td:last-of-type {
-      @apply gl-border-r;
+      @apply gl-border-r gl-border-r-section;
     }
 
     .discussion-notes {
@@ -248,15 +248,10 @@
       border-left: 0;
 
       .discussion-notes .timeline-entry:first-of-type > .timeline-entry-inner {
-        @apply gl-bg-default;
-
-        // stylelint-disable-next-line gitlab/no-gl-class
-        .gl-dark & {
-          @apply gl-bg-strong gl-border-b-default;
-        }
+        @apply gl-bg-section dark:gl-border-b-section;
 
         .toggle-replies-widget {
-          @apply gl-border-b-subtle;
+          @apply gl-border-b-subtle dark:gl-border-b-section;
         }
 
         .toggle-replies-widget[aria-expanded="false"] {
@@ -317,7 +312,7 @@
 
 .diff-files-holder {
   .discussion-notes .timeline-entry:first-of-type > .timeline-entry-inner {
-    @apply gl-border-b gl-border-b-subtle;
+    @apply gl-border-b gl-border-b-subtle dark:gl-border-b-section;
   }
 }
 
@@ -386,16 +381,11 @@
 
   .timeline-entry-inner {
     margin-left: $note-spacing-left;
-    @apply gl-bg-subtle gl-border-l gl-border-r;
+    @apply gl-bg-subtle gl-border-l gl-border-l-section gl-border-r gl-border-r-section;
 
     .timeline-content {
       padding: $gl-padding-8 $gl-padding-8 $gl-padding-8 $gl-padding;
-      @apply gl-bg-default gl-border-b gl-border-b-subtle;
-
-      // stylelint-disable-next-line gitlab/no-gl-class
-      .gl-dark & {
-        @apply gl-bg-strong gl-border-b-default;
-      }
+      @apply gl-bg-section gl-border-b gl-border-b-subtle dark:gl-border-b-section;
     }
 
     .timeline-avatar {

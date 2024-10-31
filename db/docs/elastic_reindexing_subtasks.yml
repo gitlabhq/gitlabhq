@@ -1,7 +1,7 @@
 ---
 table_name: elastic_reindexing_subtasks
 classes:
-- Elastic::ReindexingSubtask
+- Search::Elastic::ReindexingSubtask
 feature_categories:
 - global_search
 description: TODO

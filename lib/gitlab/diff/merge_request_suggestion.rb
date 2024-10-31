@@ -10,11 +10,12 @@ module Gitlab
       SUGGESTION_HEADER = "```suggestion:"
       SUGGESTION_FOOTER = "```"
 
-      def initialize(diff, path, merge_request)
+      def initialize(diff, path, merge_request, prepend_text = nil)
         @diff = diff
         @path = path
         @merge_request = merge_request
         @project = merge_request.project
+        @prepend_text = prepend_text
       end
 
       def note_attributes_hash
@@ -100,7 +101,9 @@ module Gitlab
       end
 
       def suggestion
-        array = [SUGGESTION_HEADER + suggestion_meta]
+        array = []
+        array << @prepend_text if @prepend_text
+        array << [SUGGESTION_HEADER + suggestion_meta]
 
         diff_lines.each do |line|
           array << line.text(prefix: false) if line.added? || line.unchanged?

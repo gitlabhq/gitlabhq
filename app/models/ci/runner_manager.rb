@@ -36,7 +36,7 @@ module Ci
 
     EXECUTOR_TYPE_TO_NAMES = EXECUTOR_NAME_TO_TYPES.invert.freeze
 
-    belongs_to :runner
+    belongs_to :runner, class_name: 'Ci::Runner', inverse_of: :runner_managers
 
     enum creation_state: {
       started: 0,
@@ -83,8 +83,11 @@ module Ci
       ).where(created_before_stale_deadline)
     end
 
-    scope :for_runner, ->(runner_id) do
-      where(runner_id: runner_id)
+    scope :for_runner, ->(runner) do
+      scope = where(runner_id: runner)
+      scope = scope.where(runner_type: runner.runner_type) if runner.is_a?(Ci::Runner) # Use unique index if possible
+
+      scope
     end
 
     scope :with_system_xid, ->(system_xid) do
