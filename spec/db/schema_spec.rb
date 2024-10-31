@@ -109,10 +109,10 @@ RSpec.describe 'Database schema',
     p_ci_runner_machine_builds: %w[project_id],
     ci_runners: %w[sharding_key_id], # This value is meant to populate the partitioned table, no other usage
     ci_runner_machines: %w[sharding_key_id], # This value is meant to populate the partitioned table, no other usage
-    ci_runner_machines_687967fa8a: %w[sharding_key_id], # This field is only used in the partitions, and has the appropriate FKs
-    instance_type_ci_runner_machines_687967fa8a: %w[sharding_key_id], # This field is always NULL in this partition
-    group_type_ci_runner_machines_687967fa8a: %w[sharding_key_id], # No need for LFK, rows will be deleted by the FK to ci_runners
-    project_type_ci_runner_machines_687967fa8a: %w[sharding_key_id], # No need for LFK, rows will be deleted by the FK to ci_runners
+    ci_runner_machines_687967fa8a: %w[runner_id sharding_key_id], # This field is only used in the partitions, and has the appropriate FKs. runner_id temporarily ignored due to incident 18792
+    instance_type_ci_runner_machines_687967fa8a: %w[runner_id sharding_key_id], # This field is always NULL in this partition. runner_id temporarily ignored due to incident 18792
+    group_type_ci_runner_machines_687967fa8a: %w[runner_id sharding_key_id], # No need for LFK, rows will be deleted by the FK to ci_runners. runner_id temporarily ignored due to incident 18792
+    project_type_ci_runner_machines_687967fa8a: %w[runner_id sharding_key_id], # No need for LFK, rows will be deleted by the FK to ci_runners. runner_id temporarily ignored due to incident 18792
     ci_runner_projects: %w[runner_id],
     ci_runners_e59bb2812d: %w[sharding_key_id], # This field is only used in the partitions, and has the appropriate FKs
     instance_type_ci_runners_e59bb2812d: %w[sharding_key_id], # This field is always NULL in this partition

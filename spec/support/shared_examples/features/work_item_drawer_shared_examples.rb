@@ -12,6 +12,10 @@ RSpec.shared_examples 'work item drawer' do
     expect(page).to have_selector('[data-testid="work-item-drawer"]')
   end
 
+  it 'focus on first element of the drawer when clicking issue' do
+    expect(page).to have_selector('[data-testid="work-item-drawer-ref-link"]', focused: true)
+  end
+
   it 'closes drawer when clicking issue' do
     expect(page).to have_selector('[data-testid="work-item-drawer"]')
 

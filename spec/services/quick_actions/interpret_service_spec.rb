@@ -251,7 +251,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
       it 'returns the todo message' do
         _, _, message = service.execute(content, issuable)
 
-        expect(message).to eq(_('Added a to do.'))
+        expect(message).to eq(_('Added a to-do item.'))
       end
     end
 
@@ -267,7 +267,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
         TodoService.new.mark_todo(issuable, developer)
         _, _, message = service.execute(content, issuable)
 
-        expect(message).to eq(_('Marked to do as done.'))
+        expect(message).to eq(_('Marked to-do item as done.'))
       end
     end
 

@@ -434,9 +434,9 @@ end
 
 RSpec.shared_examples 'work items todos' do
   it 'adds item to the list' do
-    expect(page).to have_button s_('WorkItem|Add a to do')
+    expect(page).to have_button s_('WorkItem|Add a to-do item')
 
-    click_button s_('WorkItem|Add a to do')
+    click_button s_('WorkItem|Add a to-do item')
 
     expect(page).to have_button s_('WorkItem|Mark as done')
 
@@ -446,10 +446,10 @@ RSpec.shared_examples 'work items todos' do
   end
 
   it 'marks a todo as done' do
-    click_button s_('WorkItem|Add a to do')
+    click_button s_('WorkItem|Add a to-do item')
     click_button s_('WorkItem|Mark as done')
 
-    expect(page).to have_button s_('WorkItem|Add a to do')
+    expect(page).to have_button s_('WorkItem|Add a to-do item')
     within_testid('todos-shortcut-button') do
       expect(page).to have_content("")
     end

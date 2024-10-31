@@ -17902,6 +17902,7 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="addonuserorganizationssearch"></a>`search` | [`String`](#string) | Search query, which can be for the organization name or a path. |
+| <a id="addonuserorganizationssoloowned"></a>`soloOwned` | [`Boolean`](#boolean) | When true, returns only organizations solely owned by the user. |
 
 ##### `AddOnUser.reviewRequestedMergeRequests`
 
@@ -18837,6 +18838,7 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="autocompleteduserorganizationssearch"></a>`search` | [`String`](#string) | Search query, which can be for the organization name or a path. |
+| <a id="autocompleteduserorganizationssoloowned"></a>`soloOwned` | [`Boolean`](#boolean) | When true, returns only organizations solely owned by the user. |
 
 ##### `AutocompletedUser.reviewRequestedMergeRequests`
 
@@ -21310,6 +21312,7 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="currentuserorganizationssearch"></a>`search` | [`String`](#string) | Search query, which can be for the organization name or a path. |
+| <a id="currentuserorganizationssoloowned"></a>`soloOwned` | [`Boolean`](#boolean) | When true, returns only organizations solely owned by the user. |
 
 ##### `CurrentUser.reviewRequestedMergeRequests`
 
@@ -27041,6 +27044,7 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mergerequestassigneeorganizationssearch"></a>`search` | [`String`](#string) | Search query, which can be for the organization name or a path. |
+| <a id="mergerequestassigneeorganizationssoloowned"></a>`soloOwned` | [`Boolean`](#boolean) | When true, returns only organizations solely owned by the user. |
 
 ##### `MergeRequestAssignee.reviewRequestedMergeRequests`
 
@@ -27439,6 +27443,7 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mergerequestauthororganizationssearch"></a>`search` | [`String`](#string) | Search query, which can be for the organization name or a path. |
+| <a id="mergerequestauthororganizationssoloowned"></a>`soloOwned` | [`Boolean`](#boolean) | When true, returns only organizations solely owned by the user. |
 
 ##### `MergeRequestAuthor.reviewRequestedMergeRequests`
 
@@ -27883,6 +27888,7 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mergerequestparticipantorganizationssearch"></a>`search` | [`String`](#string) | Search query, which can be for the organization name or a path. |
+| <a id="mergerequestparticipantorganizationssoloowned"></a>`soloOwned` | [`Boolean`](#boolean) | When true, returns only organizations solely owned by the user. |
 
 ##### `MergeRequestParticipant.reviewRequestedMergeRequests`
 
@@ -28300,6 +28306,7 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mergerequestreviewerorganizationssearch"></a>`search` | [`String`](#string) | Search query, which can be for the organization name or a path. |
+| <a id="mergerequestreviewerorganizationssoloowned"></a>`soloOwned` | [`Boolean`](#boolean) | When true, returns only organizations solely owned by the user. |
 
 ##### `MergeRequestReviewer.reviewRequestedMergeRequests`
 
@@ -34944,6 +34951,7 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="usercoreorganizationssearch"></a>`search` | [`String`](#string) | Search query, which can be for the organization name or a path. |
+| <a id="usercoreorganizationssoloowned"></a>`soloOwned` | [`Boolean`](#boolean) | When true, returns only organizations solely owned by the user. |
 
 ##### `UserCore.reviewRequestedMergeRequests`
 
@@ -42370,6 +42378,7 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="userorganizationssearch"></a>`search` | [`String`](#string) | Search query, which can be for the organization name or a path. |
+| <a id="userorganizationssoloowned"></a>`soloOwned` | [`Boolean`](#boolean) | When true, returns only organizations solely owned by the user. |
 
 ###### `User.reviewRequestedMergeRequests`
 

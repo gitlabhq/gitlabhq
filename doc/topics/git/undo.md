@@ -146,7 +146,7 @@ The commit you want to undo is `B`.
 ### Revert commits and modify history
 
 The following sections document tasks that rewrite Git history. For more information, see
-[What happens during rebase](git_rebase.md#what-happens-during-rebase).
+[Rebase and resolve conflicts](git_rebase.md).
 
 #### Delete a specific commit
 

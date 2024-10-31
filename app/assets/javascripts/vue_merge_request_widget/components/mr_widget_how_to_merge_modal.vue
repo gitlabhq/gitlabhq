@@ -73,8 +73,8 @@ export default {
   },
   data() {
     return {
-      resolveConflictsFromCli: helpPagePath('user/project/merge_requests/conflicts', {
-        anchor: 'from-the-command-line',
+      resolveConflictsFromCli: helpPagePath('topics/git/git_rebase', {
+        anchor: 'resolve-conflicts-from-the-command-line',
       }),
     };
   },

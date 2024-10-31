@@ -54,23 +54,32 @@ thereafter. If the first word in a sentence, do not capitalize `factor` or `auth
 
 ## ability, able
 
-Avoid using **ability** because it focuses more on the user's
-capabilities rather than the product's features or functions,
-which makes it vague and ambiguous.
+Try to avoid using **ability** or **able** because they can be ambiguous.
+The usage of these words is similar to [allow and enable](#allow-enable).
 
-Do not use **ability** or **able** to refer to permissions or rights that a user needs to perform a task.
+Instead of talking about the abilities of the user, or
+the capabilities of the product, be direct and specific.
+
+You can, however, use these terms when you're talking about security, or
+preventing someone from being able to complete a task in the UI.
+
+Do not confuse **ability** or **able** with [permissions](#permissions) or [roles](#roles).
 
 Use:
 
-- You do not have the rights to change this setting.
-- You must have permission to change this setting.
+- You cannot change this setting.
+- To change this setting, you must have the Maintainer role.
+- Confirm you can sign in.
+- The external load balancer cannot connect.
+- Option to delete branches introduced in GitLab 17.1.
 
 Instead of:
 
-- You're not able to change this setting.
+- You are not able to change this setting.
 - You must have the ability to change this setting.
-
-See also [**enable**](#enable).
+- Verify you are able to sign in.
+- The external load balancer will not be able to connect.
+- Ability to delete branches introduced in GitLab 17.1.
 
 ## above
 

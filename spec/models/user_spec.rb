@@ -4909,42 +4909,11 @@ RSpec.describe User, feature_category: :user_profile do
   end
 
   describe '#solo_owned_organizations' do
-    let_it_be(:user) { create(:user) }
+    let_it_be(:organization_owner) { create(:user) }
 
-    subject { user.solo_owned_organizations }
+    subject { organization_owner.solo_owned_organizations }
 
-    context 'no owned organizations' do
-      it { is_expected.to be_empty }
-    end
-
-    context 'has owned organizations' do
-      let_it_be(:solo_owned_organizations) { create_list(:organization_owner, 2, user: user).map(&:organization) }
-      let_it_be(:multi_owned_organization) do
-        create(:organization, organization_users: [
-          create(:organization_owner, user: user),
-          create(:organization_owner, user: create(:user))
-        ])
-      end
-
-      it 'returns solo-owned organizations' do
-        is_expected.to match_array(solo_owned_organizations)
-      end
-
-      it 'does not return multi owned organizations' do
-        is_expected.not_to include(multi_owned_organization)
-      end
-    end
-
-    context 'solo owner with other members' do
-      let_it_be(:organization) do
-        create(:organization, organization_users: [
-          create(:organization_owner, user: user),
-          create(:organization_user, user: create(:user))
-        ])
-      end
-
-      it { is_expected.to include(organization) }
-    end
+    it_behaves_like 'resolves user solo-owned organizations'
   end
 
   describe '#can_remove_self?' do

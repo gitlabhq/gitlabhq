@@ -546,13 +546,13 @@ RSpec.describe 'Admin::Users', feature_category: :user_management do
 
       visit new_admin_user_identity_path(user)
 
-      check_breadcrumb('New Identity')
+      check_breadcrumb('New identity')
 
       visit admin_user_identities_path(user)
 
       find('.table').find(:link, 'Edit').click
 
-      check_breadcrumb('Edit Identity')
+      check_breadcrumb('Edit')
     end
 
     def check_breadcrumb(content)

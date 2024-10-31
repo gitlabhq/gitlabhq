@@ -103,10 +103,10 @@ describe('Sidebar Todo Widget', () => {
     });
 
     it('sets default tooltip title', () => {
-      expect(wrapper.findComponent(GlButton).attributes('title')).toBe('Add a to do');
+      expect(wrapper.findComponent(GlButton).attributes('title')).toBe('Add a to-do item');
     });
 
-    it('when user has a to do', async () => {
+    it('when user has a to-do item', async () => {
       createComponent({
         todosQueryHandler: jest.fn().mockResolvedValue(todosResponse),
       });

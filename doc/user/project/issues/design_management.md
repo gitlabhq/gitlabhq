@@ -260,7 +260,7 @@ To revisit a resolved discussion, expand **Resolved Comments** below the visible
 
 ## Add a to-do item for a design
 
-To add a [to-do item](../../todos.md) for a design, select **Add a to do** on the design sidebar.
+To add a [to-do item](../../todos.md) for a design, select **Add a to-do item** on the design sidebar.
 
 ## Refer to a design in Markdown
 

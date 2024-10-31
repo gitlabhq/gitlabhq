@@ -139,7 +139,7 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
     end
 
     it 'todos action is not displayed' do
-      expect(page).not_to have_button s_('WorkItem|Add a to do')
+      expect(page).not_to have_button s_('WorkItem|Add a to-do item')
     end
 
     it 'award button is disabled and add reaction is not displayed' do

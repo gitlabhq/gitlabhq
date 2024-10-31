@@ -61,7 +61,7 @@ RSpec.describe 'Group Boards', feature_category: :portfolio_management do
     before do
       project1.add_guest(user)
       project2.add_reporter(user)
-
+      stub_feature_flags(issues_list_drawer: false)
       sign_in(user)
 
       inspect_requests(inject_headers: { 'X-GITLAB-DISABLE-SQL-QUERY-LIMIT' => 'https://gitlab.com/gitlab-org/gitlab/-/issues/323426' }) do

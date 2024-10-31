@@ -79,7 +79,7 @@ describe('Alert Details Sidebar To Do', () => {
       it('renders a button for adding a To-Do', async () => {
         await nextTick();
 
-        expect(findToDoButton().text()).toBe('Add a to do');
+        expect(findToDoButton().text()).toBe('Add a to-do item');
       });
 
       it('calls `$apollo.mutate` with `createAlertTodoMutation` mutation and variables containing `iid`, `todoEvent`, & `projectPath`', async () => {

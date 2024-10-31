@@ -2,6 +2,7 @@
 
 module Resolvers
   class CustomEmojiResolver < BaseResolver
+    include LooksAhead
     include Gitlab::Graphql::Authorize::AuthorizeResource
 
     authorizes_object!
@@ -16,8 +17,14 @@ module Resolvers
 
     type Types::CustomEmojiType, null: true
 
-    def resolve(**args)
-      ::Groups::CustomEmojiFinder.new(object, args).execute
+    def resolve_with_lookahead(**args)
+      apply_lookahead(::Groups::CustomEmojiFinder.new(object, args).execute)
+    end
+
+    private
+
+    def unconditional_includes
+      [:group]
     end
   end
 end

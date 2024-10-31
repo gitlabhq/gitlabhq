@@ -1,9 +1,10 @@
 import { GlDrawer, GlLink } from '@gitlab/ui';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { stubComponent } from 'helpers/stub_component';
 
 import { TYPE_EPIC, TYPE_ISSUE } from '~/issues/constants';
 import { DETAIL_VIEW_QUERY_PARAM_NAME } from '~/work_items/constants';
@@ -11,7 +12,7 @@ import WorkItemDrawer from '~/work_items/components/work_item_drawer.vue';
 import WorkItemDetail from '~/work_items/components/work_item_detail.vue';
 import deleteWorkItemMutation from '~/work_items/graphql/delete_work_item.mutation.graphql';
 import workspacePermissionsQuery from '~/work_items/graphql/workspace_permissions.query.graphql';
-import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import { visitUrl, updateHistory, setUrlParams, removeParams } from '~/lib/utils/url_utility';
 import { makeDrawerUrlParam } from '~/work_items/utils';
 import { mockProjectPermissionsQueryResponse } from '../mock_data';
@@ -36,6 +37,7 @@ describe('WorkItemDrawer', () => {
   const findGlDrawer = () => wrapper.findComponent(GlDrawer);
   const findWorkItem = () => wrapper.findComponent(WorkItemDetail);
   const findLinkButton = () => wrapper.findByTestId('work-item-drawer-link-button');
+  const findReferenceLink = () => wrapper.findComponent(GlLink);
 
   const createComponent = ({
     open = false,
@@ -44,10 +46,13 @@ describe('WorkItemDrawer', () => {
     clickOutsideExcludeSelector = undefined,
     isGroup = true,
     workItemsViewPreference = false,
+    mountFn = shallowMountExtended,
+    stubs = { WorkItemDetail },
   } = {}) => {
     window.gon.current_user_use_work_items_view = true;
 
-    wrapper = shallowMountExtended(WorkItemDrawer, {
+    wrapper = mountFn(WorkItemDrawer, {
+      attachTo: document.body,
       propsData: {
         activeItem,
         open,
@@ -72,9 +77,7 @@ describe('WorkItemDrawer', () => {
           push: mockRouterPush,
         },
       },
-      stubs: {
-        WorkItemDetail,
-      },
+      stubs,
       apolloProvider: createMockApollo([
         [deleteWorkItemMutation, deleteWorkItemMutationHandler],
         [workspacePermissionsQuery, workspacePermissionsHandler],
@@ -86,6 +89,24 @@ describe('WorkItemDrawer', () => {
     createComponent();
 
     expect(findGlDrawer().props('open')).toBe(false);
+  });
+
+  it('focus on first item when drawer loads the active item', async () => {
+    createComponent({
+      mountFn: mountExtended,
+      stubs: {
+        GlDrawer: stubComponent(GlDrawer, {
+          template: `
+        <div>
+          <slot name="title"></slot>
+          <slot></slot>
+        </div>`,
+        }),
+      },
+    });
+    await nextTick();
+
+    expect(document.activeElement).toBe(findReferenceLink().element);
   });
 
   it('displays correct URL and text in link', () => {
@@ -306,6 +327,30 @@ describe('WorkItemDrawer', () => {
     });
     it('calls `setUrlParams` with `show` param', () => {
       expect(setUrlParams).toHaveBeenCalledWith({ [DETAIL_VIEW_QUERY_PARAM_NAME]: showParam });
+    });
+
+    it('focus on first item once drawer loads', async () => {
+      createComponent({
+        mountFn: mountExtended,
+        stubs: {
+          GlDrawer: stubComponent(GlDrawer, {
+            template: `
+          <div>
+            <slot name="title"></slot>
+            <slot></slot>
+          </div>`,
+          }),
+        },
+      });
+
+      await wrapper.setProps({
+        open: true,
+        activeItem,
+      });
+
+      await nextTick();
+
+      expect(document.activeElement).toBe(findReferenceLink().element);
     });
   });
 });

@@ -3184,7 +3184,7 @@ msgstr ""
 msgid "Add a title..."
 msgstr ""
 
-msgid "Add a to do"
+msgid "Add a to-do item"
 msgstr ""
 
 msgid "Add an SSH key"
@@ -3460,7 +3460,7 @@ msgstr ""
 msgid "Added %{timeAgo} by"
 msgstr ""
 
-msgid "Added a to do."
+msgid "Added a to-do item."
 msgstr ""
 
 msgid "Added an issue to an epic."
@@ -3525,7 +3525,7 @@ msgstr ""
 msgid "Adds a timeline event to incident."
 msgstr ""
 
-msgid "Adds a to do."
+msgid "Adds a to-do item."
 msgstr ""
 
 msgid "Adds an issue to an epic."
@@ -20656,9 +20656,6 @@ msgstr ""
 msgid "Edit Geo Site"
 msgstr ""
 
-msgid "Edit Identity"
-msgstr ""
-
 msgid "Edit Password"
 msgstr ""
 
@@ -20717,6 +20714,9 @@ msgid "Edit group application"
 msgstr ""
 
 msgid "Edit group: %{group_name}"
+msgstr ""
+
+msgid "Edit identity"
 msgstr ""
 
 msgid "Edit identity for %{user_name}"
@@ -32886,7 +32886,7 @@ msgstr ""
 msgid "Mark this issue as related to another issue"
 msgstr ""
 
-msgid "Mark to do as done"
+msgid "Mark to-do item as done"
 msgstr ""
 
 msgid "Markdown Help"
@@ -32970,7 +32970,7 @@ msgstr ""
 msgid "Marked this issue as related to %{issue_ref}."
 msgstr ""
 
-msgid "Marked to do as done."
+msgid "Marked to-do item as done."
 msgstr ""
 
 msgid "Marks"
@@ -32982,7 +32982,7 @@ msgstr ""
 msgid "Marks this issue as related to %{issue_ref}."
 msgstr ""
 
-msgid "Marks to do as done."
+msgid "Marks to-do item as done."
 msgstr ""
 
 msgid "Match not found; try refining your search query."
@@ -35881,9 +35881,6 @@ msgid "New File"
 msgstr ""
 
 msgid "New Group"
-msgstr ""
-
-msgid "New Identity"
 msgstr ""
 
 msgid "New Issue"
@@ -62377,7 +62374,7 @@ msgstr ""
 msgid "WorkItem|Add a title"
 msgstr ""
 
-msgid "WorkItem|Add a to do"
+msgid "WorkItem|Add a to-do item"
 msgstr ""
 
 msgid "WorkItem|Add up to %{MAX_WORK_ITEMS} items at a time."

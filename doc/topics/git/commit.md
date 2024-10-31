@@ -72,7 +72,7 @@ git push origin main
 ```
 
 Sometimes Git does not allow you to push to a repository. Instead,
-you must [force an update](git_rebase.md#force-pushing).
+you must [force an update](git_rebase.md#force-push-to-a-remote-branch).
 
 ## Push options
 

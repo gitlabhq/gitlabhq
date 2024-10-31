@@ -150,7 +150,7 @@ The parameter is of the form `variables[key]=value`, for example:
 curl --request POST \
      --form token=TOKEN \
      --form ref=main \
-     --form variables[UPLOAD_TO_S3]="true" \
+     --form "variables[UPLOAD_TO_S3]=true" \
      "https://gitlab.example.com/api/v4/projects/123456/trigger/pipeline"
 ```
 

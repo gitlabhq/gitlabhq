@@ -90,7 +90,7 @@ reduce the repository size for another import attempt:
 
 1. To reduce the repository size, work on this `smaller-tmp-main` branch:
    [identify and remove large files](../repository/repository_size.md#methods-to-reduce-repository-size)
-   or [interactively rebase and fixup](../../../topics/git/git_rebase.md#rebase-interactively-by-using-git)
+   or [interactively rebase and fixup](../../../topics/git/git_rebase.md#interactive-rebase)
    to reduce the number of commits.
 
    ```shell

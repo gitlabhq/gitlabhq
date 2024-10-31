@@ -45,13 +45,13 @@ module InternalEventsCli
     end
 
     def load_definitions(klass, fields, paths)
-      paths.map do |path|
+      paths.filter_map do |path|
         details = YAML.safe_load(File.read(path))
         relevant_fields = fields.map(&:to_s)
 
         klass.parse(**details.slice(*relevant_fields), file_path: path)
       rescue StandardError => e
-        cli.say format_error "Encountered an error while loading #{path}: #{e.message}"
+        puts "\n\n\e[31mEncountered an error while loading #{path}: #{e.message}\e[0m\n\n\n"
       end
     end
   end

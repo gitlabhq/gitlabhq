@@ -743,7 +743,7 @@ export const MOCK_COMMANDS = [
   {
     name: 'todo',
     aliases: [],
-    description: 'Add a to do',
+    description: 'Add a to-do item',
     warning: '',
     icon: '',
     params: [],

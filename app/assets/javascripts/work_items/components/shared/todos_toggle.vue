@@ -15,7 +15,7 @@ import {
 
 export default {
   i18n: {
-    addATodo: s__('WorkItem|Add a to do'),
+    addATodo: s__('WorkItem|Add a to-do item'),
     markAsDone: s__('WorkItem|Mark as done'),
   },
   directives: {

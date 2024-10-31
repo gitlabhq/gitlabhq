@@ -32,9 +32,9 @@ describe('SidebarTodo', () => {
   });
 
   it.each`
-    isTodo   | iconClass        | label             | icon
-    ${false} | ${''}            | ${'Add a to do'}  | ${'todo-add'}
-    ${true}  | ${'todo-undone'} | ${'Mark as done'} | ${'todo-done'}
+    isTodo   | iconClass        | label                 | icon
+    ${false} | ${''}            | ${'Add a to-do item'} | ${'todo-add'}
+    ${true}  | ${'todo-undone'} | ${'Mark as done'}     | ${'todo-done'}
   `(
     'renders proper button when `isTodo` prop is `$isTodo`',
     ({ isTodo, iconClass, label, icon }) => {

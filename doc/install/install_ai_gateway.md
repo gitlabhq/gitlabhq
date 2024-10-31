@@ -21,6 +21,8 @@ Prerequisites:
 The GitLab AI Gateway Docker image contains all necessary code and dependencies
 in a single container.
 
+The Docker image for the AI Gateway is around 340 MB (compressed) for the `linux/amd64` architecture and requires a minimum of 512 MB of RAM to operate. A GPU is not needed for the GitLab AI Gateway. To ensure better performance, especially under heavy usage, consider allocating more disk space, memory, and resources than the minimum requirements. Higher RAM and disk capacity can enhance the AI Gateway's efficiency during peak loads.
+
 #### Find the AI Gateway release
 
 Find the GitLab official Docker image at:

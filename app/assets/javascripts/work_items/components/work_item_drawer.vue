@@ -77,6 +77,21 @@ export default {
       handler(newValue) {
         if (newValue?.iid) {
           this.setDrawerParams();
+          // focus on header link when drawer is updated
+          this.$nextTick(() => {
+            this.focusOnHeaderLink();
+          });
+        }
+      },
+    },
+    open: {
+      immediate: true,
+      handler(newValue) {
+        if (newValue) {
+          // focus on header link when drawer is updated
+          this.$nextTick(() => {
+            this.focusOnHeaderLink();
+          });
         }
       },
     },
@@ -155,6 +170,9 @@ export default {
       }
       this.handleClose();
     },
+    focusOnHeaderLink() {
+      this.$refs?.workItemUrl?.$el?.focus();
+    },
   },
   i18n: {
     copyTooltipText: __('Copy item URL'),
@@ -188,6 +206,8 @@ export default {
     <template #title>
       <div class="gl-text gl-flex gl-w-full gl-items-center gl-gap-x-2 xl:gl-px-4">
         <gl-link
+          ref="workItemUrl"
+          data-testid="work-item-drawer-ref-link"
           :href="activeItem.webUrl"
           class="gl-text-sm gl-font-bold gl-text-default"
           @click="redirectToWorkItem"

@@ -79,4 +79,14 @@ RSpec.describe Organizations::UserOrganizationsFinder, '#execute', feature_categ
       it { is_expected.to contain_exactly(*expected_organizations) }
     end
   end
+
+  context 'when solo_owned parameter is true' do
+    let_it_be(:organization_owner) { create(:user) }
+
+    let(:current_user) { organization_owner }
+    let(:target_user) { organization_owner }
+    let(:params) { { solo_owned: true } }
+
+    it_behaves_like 'resolves user solo-owned organizations'
+  end
 end

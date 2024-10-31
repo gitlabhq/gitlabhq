@@ -574,9 +574,15 @@ such as database migrations and [Mailroom](../incoming_email.md).
 
 #### Deploying one environment over multiple data centers
 
-GitLab doesn't support deploying a single environment across multiple data centers. This limitation prevents potential split-brain issues
-if a data center fails. Several GitLab components such as Consul, Redis Sentinel, and Praefect require odd number of nodes to function correctly.
-Splitting these components over multiple data centers can impact this notably.
+GitLab doesn't support deploying a single environment across multiple data centers.
+These setups can result in significant issues, such as network latency or split-brain
+scenarios if a data center fails.
+
+Several GitLab components require an odd number of nodes to function correctly,
+such as Consul, Redis Sentinel, and Praefect. Splitting these components across
+multiple data centers can negatively impact their functionality.
+
+This limitation applies to all potential GitLab environment setups, including Cloud Native Hybrid alternatives.
 
 For deploying GitLab over multiple data centers or regions, we offer [GitLab Geo](../geo/index.md) as a comprehensive solution.
 

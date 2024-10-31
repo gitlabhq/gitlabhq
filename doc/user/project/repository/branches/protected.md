@@ -317,7 +317,7 @@ Deploy keys are not available in the **Allowed to merge** dropdown list.
 
 ## Allow force push on a protected branch
 
-You can allow [force pushes](../../../../topics/git/git_rebase.md#force-pushing) to
+You can allow [force pushes](../../../../topics/git/git_rebase.md#force-push-to-a-remote-branch) to
 protected branches.
 
 To protect a new branch and enable force push:

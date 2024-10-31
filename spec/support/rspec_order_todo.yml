@@ -266,7 +266,6 @@
 - './ee/spec/features/security/project/snippet/public_access_spec.rb'
 - './ee/spec/features/signup_spec.rb'
 - './ee/spec/features/subscriptions/expiring_subscription_message_spec.rb'
-- './ee/spec/features/subscriptions_spec.rb'
 - './ee/spec/features/trial_registrations/company_information_spec.rb'
 - './ee/spec/features/trial_registrations/signin_spec.rb'
 - './ee/spec/features/trial_registrations/signup_spec.rb'
