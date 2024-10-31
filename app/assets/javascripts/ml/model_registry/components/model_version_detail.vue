@@ -1,15 +1,12 @@
 <script>
-import { convertCandidateFromGraphql } from '~/ml/model_registry/utils';
 import IssuableDescription from '~/vue_shared/issuable/show/components/issuable_description.vue';
 import { s__, __ } from '~/locale';
-import CandidateDetail from './candidate_detail.vue';
 
 export default {
   name: 'ModelVersionDetail',
   components: {
     PackageFiles: () =>
       import('~/packages_and_registries/package_registry/components/details/package_files.vue'),
-    CandidateDetail,
     ImportArtifactZone: () => import('./import_artifact_zone.vue'),
     IssuableDescription,
   },
@@ -48,9 +45,6 @@ export default {
   computed: {
     packageType() {
       return 'ml_model';
-    },
-    candidate() {
-      return convertCandidateFromGraphql(this.modelVersion.candidate);
     },
     packageId() {
       return this.modelVersion.packageId;
@@ -114,12 +108,5 @@ export default {
         </template>
       </package-files>
     </template>
-
-    <div class="gl-mt-5">
-      <span class="gl-font-bold">{{ $options.i18n.MLFLOW_ID_LABEL }}:</span>
-      {{ candidate.info.eid }}
-    </div>
-
-    <candidate-detail :candidate="candidate" :show-info-section="false" />
   </div>
 </template>

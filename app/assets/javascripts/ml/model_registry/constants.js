@@ -37,3 +37,6 @@ export const UPLOAD_STATUS = {
   FAILED: 3,
   SUCCEEDED: 4,
 };
+
+export const ROUTE_DETAILS = 'details';
+export const ROUTE_PERFORMANCE = 'performance';

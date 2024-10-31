@@ -14,7 +14,6 @@ Gitlab/DocumentationLinks/Link:
     - 'app/presenters/commit_status_presenter.rb'
     - 'app/presenters/dev_ops_report/metric_presenter.rb'
     - 'app/presenters/key_presenter.rb'
-    - 'app/serializers/merge_request_widget_entity.rb'
     - 'ee/app/components/namespaces/combined_storage_users/base_alert_component.rb'
     - 'ee/app/helpers/ee/groups/settings_helper.rb'
     - 'ee/app/helpers/ee/import_helper.rb'

@@ -33,8 +33,8 @@ RSpec.describe Ci::JobArtifacts::CreateService, :clean_gitlab_redis_shared_state
           expect(authorize[:headers][:ProcessLsif]).to eq(true)
         end
 
-        it 'returns 500MB in bytes as maximum size' do
-          expect(authorize[:headers][:MaximumSize]).to eq(500.megabytes.to_i)
+        it 'returns 200MB in bytes as maximum size' do
+          expect(authorize[:headers][:MaximumSize]).to eq(200.megabytes.to_i)
         end
 
         context 'when increase_lsif_artifacts_limit is disabled' do

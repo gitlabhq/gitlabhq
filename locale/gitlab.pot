@@ -10378,6 +10378,9 @@ msgstr ""
 msgid "By quarter"
 msgstr ""
 
+msgid "By selecting Continue or registering through a third party, I agree that GitLab can contact me by email or telephone about its product, services, or events."
+msgstr ""
+
 msgid "By using a primary email tied to an Enterprise email address, you acknowledge that this account is an Enterprise User."
 msgstr ""
 
@@ -15773,6 +15776,9 @@ msgid "Copy ID"
 msgstr ""
 
 msgid "Copy KRB5 clone URL"
+msgstr ""
+
+msgid "Copy MLflow run ID"
 msgstr ""
 
 msgid "Copy SSH clone URL"
@@ -27634,9 +27640,6 @@ msgstr ""
 msgid "HttpDestinationValidator validates only http external audit event destinations."
 msgstr ""
 
-msgid "I agree that by clicking continue or registering through a third party GitLab may contact me via email and telephone about its product, services and events."
-msgstr ""
-
 msgid "I forgot my password"
 msgstr ""
 
@@ -35061,6 +35064,9 @@ msgid "MlModelRegistry|Package creation failed"
 msgstr ""
 
 msgid "MlModelRegistry|Parameters"
+msgstr ""
+
+msgid "MlModelRegistry|Performance"
 msgstr ""
 
 msgid "MlModelRegistry|Provide a subfolder name to organize your artifacts. Entering an existing subfolder's name will place artifacts in the existing folder"

@@ -8,6 +8,7 @@ import { visitUrlWithAlerts } from '~/lib/utils/url_utility';
 import { createAlert } from '~/alert';
 import { ShowMlModelVersion } from '~/ml/model_registry/apps';
 import ModelVersionDetail from '~/ml/model_registry/components/model_version_detail.vue';
+import ModelVersionPerformance from '~/ml/model_registry/components/model_version_performance.vue';
 import ModelVersionActionsDropdown from '~/ml/model_registry/components/model_version_actions_dropdown.vue';
 import deleteModelVersionMutation from '~/ml/model_registry/graphql/mutations/delete_model_version.mutation.graphql';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
@@ -26,6 +27,16 @@ import {
 jest.mock('~/ml/model_registry/components/model_version_detail.vue', () => {
   const { props } = jest.requireActual(
     '~/ml/model_registry/components/model_version_detail.vue',
+  ).default;
+  return {
+    props,
+    render() {},
+  };
+});
+
+jest.mock('~/ml/model_registry/components/model_version_performance.vue', () => {
+  const { props } = jest.requireActual(
+    '~/ml/model_registry/components/model_version_performance.vue',
   ).default;
   return {
     props,
@@ -102,6 +113,8 @@ describe('ml/model_registry/apps/show_model_version.vue', () => {
   const findModelVersionEditButton = () => wrapper.findByTestId('edit-model-version-button');
   const findTabs = () => wrapper.findComponent(GlTabs);
   const findDetailTab = () => wrapper.findAllComponents(GlTab).at(0);
+  const findPerformanceTab = () => wrapper.findAllComponents(GlTab).at(1);
+  const findModelVersionPerformance = () => wrapper.findComponent(ModelVersionPerformance);
 
   it('renders the title', () => {
     createWrapper();
@@ -148,6 +161,10 @@ describe('ml/model_registry/apps/show_model_version.vue', () => {
     it('has a details tab', () => {
       expect(findDetailTab().attributes('title')).toBe('Version card');
     });
+
+    it('has a performance tab', () => {
+      expect(findPerformanceTab().attributes('title')).toBe('Performance');
+    });
   });
 
   it('Show version metadata', async () => {
@@ -173,6 +190,7 @@ describe('ml/model_registry/apps/show_model_version.vue', () => {
 
       expect(findTabs().props('value')).toBe(0);
       expect(findModelVersionDetail().exists()).toBe(true);
+      expect(findModelVersionPerformance().exists()).toBe(false);
     });
 
     it('shows model details when location hash is default', async () => {
@@ -180,6 +198,18 @@ describe('ml/model_registry/apps/show_model_version.vue', () => {
 
       expect(findTabs().props('value')).toBe(0);
       expect(findModelVersionDetail().props('modelVersion')).toMatchObject(
+        modelVersionWithCandidateAndAuthor,
+      );
+    });
+
+    it('shows model performance when location hash is `#/performance`', async () => {
+      await createWrapper({ mountFn: mountExtended });
+
+      await wrapper.vm.$router.push({ path: '/performance' });
+
+      expect(findTabs().props('value')).toBe(1);
+      expect(findModelVersionDetail().exists()).toBe(false);
+      expect(findModelVersionPerformance().props('modelVersion')).toMatchObject(
         modelVersionWithCandidateAndAuthor,
       );
     });

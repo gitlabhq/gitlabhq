@@ -35,7 +35,7 @@ export default {
     SidebarHoverPeekBehavior,
     SidebarPortalTarget,
     ScrollScrim,
-    TrialWidget: () => import('ee_component/contextual_sidebar/components/trial_widget.vue'),
+    TrialWidget: () => import('jh_else_ee/contextual_sidebar/components/trial_widget.vue'),
   },
   mixins: [Tracking.mixin()],
   i18n: {

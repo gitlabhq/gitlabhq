@@ -7,6 +7,7 @@ import MergeRequestsFilters from '~/search/sidebar/components/merge_requests_fil
 import StatusFilter from '~/search/sidebar/components/status_filter/index.vue';
 import ArchivedFilter from '~/search/sidebar/components/archived_filter/index.vue';
 import SourceBranchFilter from '~/search/sidebar/components/source_branch_filter/index.vue';
+import LabelFilter from '~/search/sidebar/components/label_filter/index.vue';
 import { SEARCH_TYPE_ADVANCED, SEARCH_TYPE_BASIC } from '~/search/sidebar/constants';
 
 Vue.use(Vuex);
@@ -21,7 +22,9 @@ describe('GlobalSearch MergeRequestsFilters', () => {
 
   const createComponent = (
     initialState = {},
-    provide = { glFeatures: { searchMrFilterSourceBranch: true } },
+    provide = {
+      glFeatures: { searchMrFilterSourceBranch: true, searchMrFilterLabelIds: true },
+    },
   ) => {
     const store = new Vuex.Store({
       state: {
@@ -44,6 +47,7 @@ describe('GlobalSearch MergeRequestsFilters', () => {
   const findStatusFilter = () => wrapper.findComponent(StatusFilter);
   const findArchivedFilter = () => wrapper.findComponent(ArchivedFilter);
   const findSourceBranchFilter = () => wrapper.findComponent(SourceBranchFilter);
+  const findLabelFilter = () => wrapper.findComponent(LabelFilter);
 
   describe('Renders correctly with Archived Filter', () => {
     beforeEach(() => {
@@ -60,6 +64,10 @@ describe('GlobalSearch MergeRequestsFilters', () => {
 
     it('renders sourceBranchFilter', () => {
       expect(findSourceBranchFilter().exists()).toBe(true);
+    });
+
+    it('renders label filter', () => {
+      expect(findLabelFilter().exists()).toBe(true);
     });
   });
 
@@ -79,6 +87,10 @@ describe('GlobalSearch MergeRequestsFilters', () => {
     it('renders sourceBranchFilter', () => {
       expect(findSourceBranchFilter().exists()).toBe(true);
     });
+
+    it('will not render label filter', () => {
+      expect(findLabelFilter().exists()).toBe(false);
+    });
   });
 
   describe.each([true, false])(
@@ -88,16 +100,21 @@ describe('GlobalSearch MergeRequestsFilters', () => {
         createComponent(null, { glFeatures: { searchMrFilterSourceBranch } });
       });
 
-      it('renders StatusFilter', () => {
-        expect(findStatusFilter().exists()).toBe(true);
-      });
-
-      it('renders ArchivedFilter', () => {
-        expect(findArchivedFilter().exists()).toBe(true);
-      });
-
-      it('renders sourceBranchFilter', () => {
+      it(`${searchMrFilterSourceBranch ? 'will' : 'will not'} render sourceBranchFilter`, () => {
         expect(findSourceBranchFilter().exists()).toBe(searchMrFilterSourceBranch);
+      });
+    },
+  );
+
+  describe.each([true, false])(
+    'When feature flag search_mr_filter_label_ids is',
+    (searchMrFilterLabelIds) => {
+      beforeEach(() => {
+        createComponent(null, { glFeatures: { searchMrFilterLabelIds } });
+      });
+
+      it(`${searchMrFilterLabelIds ? 'will' : 'will not'} render label filter`, () => {
+        expect(findLabelFilter().exists()).toBe(searchMrFilterLabelIds);
       });
     },
   );

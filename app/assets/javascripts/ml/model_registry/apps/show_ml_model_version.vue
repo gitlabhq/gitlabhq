@@ -13,16 +13,21 @@ import { makeLoadVersionsErrorMessage } from '~/ml/model_registry/translations';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import ModelVersionDetail from '../components/model_version_detail.vue';
+import ModelVersionPerformance from '../components/model_version_performance.vue';
 import LoadOrErrorOrShow from '../components/load_or_error_or_show.vue';
 import ModelVersionActionsDropdown from '../components/model_version_actions_dropdown.vue';
-
-const ROUTE_DETAILS = 'details';
+import { ROUTE_DETAILS, ROUTE_PERFORMANCE } from '../constants';
 
 const routes = [
   {
     path: '/',
     name: ROUTE_DETAILS,
     component: ModelVersionDetail,
+  },
+  {
+    path: '/performance',
+    name: ROUTE_PERFORMANCE,
+    component: ModelVersionPerformance,
   },
   { path: '*', redirect: { name: ROUTE_DETAILS } },
 ];
@@ -213,6 +218,7 @@ export default {
     editModelVersionButtonLabel: s__('MlModelRegistry|Edit model version'),
   },
   ROUTE_DETAILS,
+  ROUTE_PERFORMANCE,
 };
 </script>
 
@@ -263,6 +269,10 @@ export default {
         <gl-tab
           :title="s__('MlModelRegistry|Version card')"
           @click="goTo($options.ROUTE_DETAILS)"
+        />
+        <gl-tab
+          :title="s__('MlModelRegistry|Performance')"
+          @click="goTo($options.ROUTE_PERFORMANCE)"
         />
       </gl-tabs>
       <router-view

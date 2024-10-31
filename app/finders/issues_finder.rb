@@ -14,6 +14,7 @@
 #     milestone_title: string (cannot be simultaneously used with milestone_wildcard_id)
 #     milestone_wildcard_id: 'none', 'any', 'upcoming', 'started' (cannot be simultaneously used with milestone_title)
 #     assignee_id: integer
+#     closed_by_id: integer
 #     search: string
 #     in: 'title', 'description', or a string joining them with comma
 #     label_name: string
