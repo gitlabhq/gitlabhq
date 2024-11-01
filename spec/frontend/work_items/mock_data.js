@@ -1209,6 +1209,7 @@ export const workItemResponseFactory = ({
   hasParent = false,
   healthStatus = 'onTrack',
   rolledUpHealthStatus = [],
+  weight = null,
   rolledUpWeight = 0,
   rolledUpCompletedWeight = 0,
   descriptionText = 'some **great** text',
@@ -1302,7 +1303,7 @@ export const workItemResponseFactory = ({
         weightWidgetPresent
           ? {
               type: 'WEIGHT',
-              weight: null,
+              weight,
               rolledUpWeight,
               rolledUpCompletedWeight,
               widgetDefinition: {
@@ -5191,6 +5192,18 @@ export const createWorkItemQueryResponse = {
               __typename: 'CustomerRelationsContactConnection',
             },
             __typename: 'WorkItemWidgetCrmContacts',
+          },
+          {
+            type: 'WEIGHT',
+            weight: 2,
+            rolledUpWeight: 0,
+            rolledUpCompletedWeight: 0,
+            widgetDefinition: {
+              editable: true,
+              rollUp: false,
+              __typename: 'WorkItemWidgetDefinitionWeight',
+            },
+            __typename: 'WorkItemWidgetWeight',
           },
         ],
         __typename: 'WorkItem',

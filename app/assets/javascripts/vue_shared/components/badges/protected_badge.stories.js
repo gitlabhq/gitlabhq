@@ -2,7 +2,7 @@ import ProtectedBadge from './protected_badge.vue';
 
 export default {
   component: ProtectedBadge,
-  title: 'vue_shared/protected-badge',
+  title: 'vue_shared/badges/protected-badge',
 };
 
 const template = `

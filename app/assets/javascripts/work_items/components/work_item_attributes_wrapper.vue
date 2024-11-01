@@ -129,9 +129,6 @@ export default {
     workItemWeight() {
       return this.isWidgetPresent(WIDGET_TYPE_WEIGHT);
     },
-    isWorkItemWeightEditable() {
-      return this.workItemWeight?.widgetDefinition?.editable;
-    },
     workItemProgress() {
       return this.isWidgetPresent(WIDGET_TYPE_PROGRESS);
     },
@@ -216,11 +213,12 @@ export default {
         @labelsUpdated="$emit('attributesUpdated', { type: $options.ListType.label, ids: $event })"
       />
     </template>
-    <template v-if="isWorkItemWeightEditable">
+    <template v-if="workItemWeight">
       <work-item-weight
         class="work-item-attributes-item"
         :can-update="canUpdate"
-        :weight="workItemWeight.weight"
+        :full-path="fullPath"
+        :widget="workItemWeight"
         :work-item-id="workItem.id"
         :work-item-iid="workItem.iid"
         :work-item-type="workItemType"

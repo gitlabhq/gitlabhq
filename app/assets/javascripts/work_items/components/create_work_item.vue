@@ -29,6 +29,7 @@ import {
   WIDGET_TYPE_DESCRIPTION,
   NEW_WORK_ITEM_GID,
   WIDGET_TYPE_LABELS,
+  WIDGET_TYPE_WEIGHT,
   WIDGET_TYPE_ROLLEDUP_DATES,
   WIDGET_TYPE_CRM_CONTACTS,
   WIDGET_TYPE_LINKED_ITEMS,
@@ -62,6 +63,7 @@ export default {
     WorkItemLoading,
     WorkItemCrmContacts,
     WorkItemProjectsListbox,
+    WorkItemWeight: () => import('ee_component/work_items/components/work_item_weight.vue'),
     WorkItemHealthStatus: () =>
       import('ee_component/work_items/components/work_item_health_status.vue'),
     WorkItemColor: () => import('ee_component/work_items/components/work_item_color.vue'),
@@ -213,6 +215,9 @@ export default {
     workItemIteration() {
       return findWidget(WIDGET_TYPE_ITERATION, this.workItem);
     },
+    workItemWeight() {
+      return findWidget(WIDGET_TYPE_WEIGHT, this.workItem);
+    },
     workItemHealthStatus() {
       return findWidget(WIDGET_TYPE_HEALTH_STATUS, this.workItem);
     },
@@ -278,6 +283,10 @@ export default {
     workItemLabelIds() {
       const labelsWidget = findWidget(WIDGET_TYPE_LABELS, this.workItem);
       return labelsWidget?.labels?.nodes?.map((label) => label.id) || [];
+    },
+    workItemWeightValue() {
+      const weightWidget = findWidget(WIDGET_TYPE_WEIGHT, this.workItem);
+      return weightWidget?.weight ?? null;
     },
     workItemCrmContactIds() {
       return this.workItemCrmContacts?.contacts?.nodes?.map((item) => item.id) || [];
@@ -422,6 +431,12 @@ export default {
       if (this.isWidgetSupported(WIDGET_TYPE_ITERATION)) {
         workItemCreateInput.iterationWidget = {
           iterationId: this.workItemIterationId,
+        };
+      }
+
+      if (this.isWidgetSupported(WIDGET_TYPE_WEIGHT)) {
+        workItemCreateInput.weightWidget = {
+          weight: this.workItemWeightValue,
         };
       }
 
@@ -619,6 +634,18 @@ export default {
                 :is-group="isGroup"
                 :iteration="workItemIteration.iteration"
                 :can-update="canUpdate"
+                :work-item-id="workItemId"
+                :work-item-iid="workItemIid"
+                :work-item-type="selectedWorkItemTypeName"
+                @error="$emit('error', $event)"
+              />
+            </template>
+            <template v-if="workItemWeight">
+              <work-item-weight
+                class="work-item-attributes-item"
+                :can-update="canUpdate"
+                :full-path="fullPath"
+                :widget="workItemWeight"
                 :work-item-id="workItemId"
                 :work-item-iid="workItemIid"
                 :work-item-type="selectedWorkItemTypeName"

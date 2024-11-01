@@ -85,6 +85,7 @@ input LocalUpdateNewWorkItemInput {
   iteration: [LocalIterationInput]
   rolledUpDates: [LocalRolledUpDatesInput]
   crmContacts: [LocalCrmContactsInput]
+  weight: Int
 }
 
 extend type Mutation {

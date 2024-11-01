@@ -2,7 +2,7 @@ import ConfirmDanger from './confirm_danger.vue';
 
 export default {
   component: ConfirmDanger,
-  title: 'vue_shared/modals/confirm_danger_modal',
+  title: 'vue_shared/confirm_danger/confirm_danger',
 };
 
 const Template = (args, { argTypes }) => ({

@@ -119,6 +119,7 @@ describe('Create work item component', () => {
         fullPath: 'full-path',
         hasIssuableHealthStatusFeature: false,
         hasIterationsFeature: true,
+        hasIssueWeightsFeature: false,
       },
     });
   };

@@ -1,18 +1,18 @@
-import BetaBadge from './beta_badge.vue';
+import HoverBadge from './hover_badge.vue';
 
 export default {
-  component: BetaBadge,
-  title: 'vue_shared/badges/beta-badge',
+  component: HoverBadge,
+  title: 'vue_shared/badges/hover-badge',
 };
 
 const template = `
     <div style="height:600px;" class="gl-flex gl-justify-center gl-items-center">
-      <beta-badge />
+      <hover-badge v-bind="$props" />
     </div>
   `;
 
 const Template = (args, { argTypes }) => ({
-  components: { BetaBadge },
+  components: { HoverBadge },
   data() {
     return { value: args.value };
   },
@@ -20,5 +20,10 @@ const Template = (args, { argTypes }) => ({
   template,
 });
 
+const defaultProps = {
+  title: 'Badge title',
+  label: 'A label',
+};
+
 export const Default = Template.bind({});
-Default.args = {};
+Default.args = defaultProps;
