@@ -3,12 +3,12 @@
 module Gitlab
   module BackgroundMigration
     # Updates issue_search_data.namespace_id with the associated issue's namespace_id
-    class BackfillIssueSearchDataNamespaceId < BatchedMigrationJob # rubocop:disable Search/NamespacedClass -- This is a migration class
+    class BackfillIssueSearchDataNamespaceId < BatchedMigrationJob
       feature_category :team_planning
       operation_name :backfill_issue_search_data_namespace_id
 
       # migrations only version of `issue_search_data` table
-      class IssueSearchData < ::ApplicationRecord # rubocop:disable Search/NamespacedClass -- Inline class for migration
+      class IssueSearchData < ::ApplicationRecord
         self.table_name = 'issue_search_data'
       end
 

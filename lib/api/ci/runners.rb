@@ -207,7 +207,7 @@ module API
           runner = get_runner(params.delete(:id))
           authenticate_update_runner!(runner)
           params[:active] = !params.delete(:paused) if params.include?(:paused)
-          update_service = ::Ci::Runners::UpdateRunnerService.new(runner)
+          update_service = ::Ci::Runners::UpdateRunnerService.new(current_user, runner)
 
           if update_service.execute(declared_params(include_missing: false)).success?
             present runner, with: Entities::Ci::RunnerDetails, current_user: current_user

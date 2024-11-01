@@ -3,12 +3,50 @@
 require 'spec_helper'
 
 RSpec.describe Ci::Runners::UpdateRunnerService, '#execute', feature_category: :runner do
-  subject(:execute) { described_class.new(runner).execute(params) }
+  subject(:execute) { described_class.new(current_user, runner).execute(params) }
 
   let(:runner) { create(:ci_runner, tag_list: %w[macos shared]) }
+  let(:params) { {} }
+  let(:current_user) { build_stubbed(:user) }
 
   before do
     allow(runner).to receive(:tick_runner_queue)
+  end
+
+  it 'does not track runner maintenance note change' do
+    expect { execute }.not_to trigger_internal_events('set_runner_maintenance_note')
+  end
+
+  context 'when maintenance note is specified' do
+    let(:params) { { maintenance_note: 'a note' } }
+
+    it 'tracks runner maintenance note change' do
+      expect { execute }
+        .to trigger_internal_events('set_runner_maintenance_note')
+        .with(user: current_user, additional_properties: { label: 'instance_type' })
+    end
+
+    context 'with group runner' do
+      let_it_be(:group) { create(:group) }
+      let(:runner) { create(:ci_runner, :group, groups: [group]) }
+
+      it 'tracks runner maintenance note change' do
+        expect { execute }
+          .to trigger_internal_events('set_runner_maintenance_note')
+          .with(user: current_user, namespace: group, additional_properties: { label: 'group_type' })
+      end
+    end
+
+    context 'with project runner' do
+      let_it_be(:project) { create(:project) }
+      let(:runner) { create(:ci_runner, :project, projects: [project]) }
+
+      it 'tracks runner maintenance note change' do
+        expect { execute }
+          .to trigger_internal_events('set_runner_maintenance_note')
+          .with(user: current_user, project: project, additional_properties: { label: 'project_type' })
+      end
+    end
   end
 
   context 'with description params' do

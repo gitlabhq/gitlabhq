@@ -16,10 +16,7 @@ module Gitlab
       operation_name :delete_all
       feature_category :database
 
-      # rubocop: disable Style/Documentation
       class ApprovalMergeRequestRuleSource < ::ApplicationRecord
-        # rubocop: enable Style/Documentation
-
         self.table_name = 'approval_merge_request_rule_sources'
       end
 

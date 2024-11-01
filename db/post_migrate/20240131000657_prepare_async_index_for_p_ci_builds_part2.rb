@@ -12,7 +12,7 @@ class PrepareAsyncIndexForPCiBuildsPart2 < Gitlab::Database::Migration[2.2]
     [[:commit_id_convert_to_bigint, :type, :ref], "p_ci_builds_commit_id_bigint_type_ref_idx", {}],
     [[:commit_id_convert_to_bigint, :artifacts_expire_at, :id],
       "p_ci_builds_commit_id_bigint_artifacts_expire_at_id_idx", {
-        where: "type::text = 'Ci::Build'::text AND (retried = false OR retried IS NULL) AND (name::text = ANY (ARRAY['sast'::character varying::text, 'secret_detection'::character varying::text, 'dependency_scanning'::character varying::text, 'container_scanning'::character varying::text, 'dast'::character varying::text]))" # rubocop:disable Layout/LineLength -- Where clause is just too long.
+        where: "type::text = 'Ci::Build'::text AND (retried = false OR retried IS NULL) AND (name::text = ANY (ARRAY['sast'::character varying::text, 'secret_detection'::character varying::text, 'dependency_scanning'::character varying::text, 'container_scanning'::character varying::text, 'dast'::character varying::text]))"
       }]
   ]
   TABLE_NAME = :p_ci_builds

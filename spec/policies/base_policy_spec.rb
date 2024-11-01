@@ -58,22 +58,6 @@ RSpec.describe BasePolicy do
         it 'prevents when user is admin' do
           is_expected.to be_disallowed(ability)
         end
-
-        context 'and feature flag prevent_job_token_admin_permissions is disabled' do
-          before do
-            stub_feature_flags(prevent_job_token_admin_permissions: false)
-          end
-
-          it 'does not prevent settings in admin mode' do
-            allow(Gitlab::CurrentSettings).to receive(:admin_mode).and_return(true)
-
-            is_expected.to be_allowed(ability)
-          end
-
-          it 'allows when user is admin' do
-            is_expected.to be_allowed(ability)
-          end
-        end
       end
 
       it 'prevented when not in admin mode' do

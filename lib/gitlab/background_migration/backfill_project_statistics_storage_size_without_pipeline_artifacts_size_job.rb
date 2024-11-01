@@ -2,12 +2,11 @@
 
 module Gitlab
   module BackgroundMigration
-    # rubocop:disable Style/Documentation
-    class BackfillProjectStatisticsStorageSizeWithoutPipelineArtifactsSizeJob < Gitlab::BackgroundMigration::BatchedMigrationJob # rubocop:disable Layout/LineLength
+    class BackfillProjectStatisticsStorageSizeWithoutPipelineArtifactsSizeJob < Gitlab::BackgroundMigration::BatchedMigrationJob
       class Project < ::ApplicationRecord
         self.table_name = 'projects'
 
-        has_one :statistics, class_name: '::Gitlab::BackgroundMigration::BackfillProjectStatisticsStorageSizeWithoutPipelineArtifactsSizeJob::ProjectStatistics' # rubocop:disable Layout/LineLength
+        has_one :statistics, class_name: '::Gitlab::BackgroundMigration::BackfillProjectStatisticsStorageSizeWithoutPipelineArtifactsSizeJob::ProjectStatistics'
       end
 
       class ProjectStatistics < ::ApplicationRecord
@@ -15,7 +14,7 @@ module Gitlab
 
         self.table_name = 'project_statistics'
 
-        belongs_to :project, class_name: '::Gitlab::BackgroundMigration::BackfillProjectStatisticsStorageSizeWithoutPipelineArtifactsSizeJob::Project' # rubocop:disable Layout/LineLength
+        belongs_to :project, class_name: '::Gitlab::BackgroundMigration::BackfillProjectStatisticsStorageSizeWithoutPipelineArtifactsSizeJob::Project'
 
         def update_storage_size(storage_size_components)
           new_storage_size = storage_size_components.sum { |component| method(component).call }
@@ -88,7 +87,6 @@ module Gitlab
         ]
       end
     end
-    # rubocop:enable Style/Documentation
   end
 end
 

@@ -38,7 +38,7 @@ module Gitlab
           )
         end
 
-        def milestone # rubocop:disable Lint/DuplicateMethods
+        def milestone
           @milestone ||= self.class.milestone
         end
       end

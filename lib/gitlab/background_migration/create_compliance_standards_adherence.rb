@@ -2,7 +2,6 @@
 
 module Gitlab
   module BackgroundMigration
-    # rubocop: disable Style/Documentation
     class CreateComplianceStandardsAdherence < BatchedMigrationJob
       feature_category :compliance_management
 
@@ -10,7 +9,6 @@ module Gitlab
         # no-op. The logic is defined in EE module.
       end
     end
-    # rubocop: enable Style/Documentation
   end
 end
 

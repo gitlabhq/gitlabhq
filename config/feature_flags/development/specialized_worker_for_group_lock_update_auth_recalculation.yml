@@ -5,4 +5,4 @@ rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/336592
 milestone: '14.2'
 type: development
 group: group::authentication
-default_enabled: false
+default_enabled: true

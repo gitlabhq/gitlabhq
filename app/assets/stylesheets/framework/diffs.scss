@@ -446,13 +446,10 @@ table.code {
     line-height: $code-line-height;
     font-size: $code-font-size;
     vertical-align: top;
+    word-wrap: break-word;
 
     span {
       white-space: break-spaces;
-
-      &.line {
-        word-wrap: break-word;
-      }
     }
 
     &.diff-line-num {

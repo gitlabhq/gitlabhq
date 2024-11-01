@@ -10,4 +10,4 @@ module Gitlab
   end
 end
 
-Gitlab::BackgroundMigration::UpdateWorkspacesConfigVersion.prepend_mod_with('Gitlab::BackgroundMigration::UpdateWorkspacesConfigVersion') # rubocop:disable Layout/LineLength
+Gitlab::BackgroundMigration::UpdateWorkspacesConfigVersion.prepend_mod_with('Gitlab::BackgroundMigration::UpdateWorkspacesConfigVersion')

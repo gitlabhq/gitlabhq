@@ -104,6 +104,20 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute', :freeze_time, f
           expect(Ci::Runner.tagged_with('tag1')).to include(runner)
           expect(Ci::Runner.tagged_with('tag2')).to include(runner)
         end
+
+        it 'does not track runner creation with maintenance note' do
+          expect { execute }.not_to trigger_internal_events('set_runner_maintenance_note')
+        end
+
+        context 'when maintenance note is specified' do
+          let(:args) { { maintenance_note: 'a note' } }
+
+          it 'tracks runner creation with maintenance note' do
+            expect { execute }
+              .to trigger_internal_events('set_runner_maintenance_note')
+              .with(additional_properties: { label: 'instance_type' })
+          end
+        end
       end
 
       context 'with runner token expiration interval', :freeze_time do
@@ -140,6 +154,20 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute', :freeze_time, f
         expect(runner.token).not_to eq(registration_token)
         expect(runner.token).not_to eq(project.runners_token)
         expect(runner).to be_project_type
+      end
+
+      it 'does not track runner creation with maintenance note' do
+        expect { execute }.not_to trigger_internal_events('set_runner_maintenance_note')
+      end
+
+      context 'when maintenance note is specified' do
+        let(:args) { { maintenance_note: 'a note' } }
+
+        it 'tracks runner creation with maintenance note' do
+          expect { execute }
+            .to trigger_internal_events('set_runner_maintenance_note')
+            .with(project: project, additional_properties: { label: 'project_type' })
+        end
       end
 
       context 'with runner registration disabled at instance level' do
@@ -225,6 +253,20 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute', :freeze_time, f
         expect(runner.token).not_to eq(registration_token)
         expect(runner.token).not_to eq(group.runners_token)
         expect(runner).to be_group_type
+      end
+
+      it 'does not track runner creation with maintenance note' do
+        expect { execute }.not_to trigger_internal_events('set_runner_maintenance_note')
+      end
+
+      context 'when maintenance note is specified' do
+        let(:args) { { maintenance_note: 'a note' } }
+
+        it 'tracks runner creation with maintenance note' do
+          expect { execute }
+            .to trigger_internal_events('set_runner_maintenance_note')
+            .with(namespace: group, additional_properties: { label: 'group_type' })
+        end
       end
 
       context 'with runner registration disabled at instance level' do

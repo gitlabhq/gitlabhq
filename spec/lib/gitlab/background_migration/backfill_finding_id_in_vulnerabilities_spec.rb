@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-RSpec.describe Gitlab::BackgroundMigration::BackfillFindingIdInVulnerabilities, schema: 20230912105945, feature_category: :vulnerability_management do # rubocop:disable Layout/LineLength
+RSpec.describe Gitlab::BackgroundMigration::BackfillFindingIdInVulnerabilities, schema: 20230912105945, feature_category: :vulnerability_management do
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }
   let(:users) { table(:users) }

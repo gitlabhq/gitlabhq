@@ -227,7 +227,7 @@ GET /projects/:id/repository/files/:file_path/raw
 |-------------|----------------|----------|------------|
 | `file_path` | string         | yes      | URL-encoded full path to new file, such as `lib%2Fclass%2Erb`. |
 | `id`        | integer or string | yes   | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
-| `lfs`       | boolean        | no       | Determines if the response should be Git LFS file contents, rather than the pointer. Ignored if the file is not tracked by Git LFS. Defaults to `false`. |
+| `lfs`       | boolean        | no       | Determines if the response should be Git LFS file contents, rather than the pointer. Ignored if the file is not tracked by Git LFS. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27892) in GitLab 15.7. |
 | `ref`       | string         | no       | The name of branch, tag or commit. Default is the `HEAD` of the project. |
 
 ```shell

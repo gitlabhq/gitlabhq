@@ -19,7 +19,6 @@ module Gitlab
         @result = { matches: 0, mismatches: 0, batches: 0, mismatches_details: [] }
       end
 
-      # rubocop:disable Metrics/AbcSize
       def execute(start_id:)
         current_start_id = start_id
 
@@ -52,7 +51,6 @@ module Gitlab
 
         build_result(next_start_id: current_start_id > max_id ? min_id : current_start_id)
       end
-      # rubocop:enable Metrics/AbcSize
 
       private
 
@@ -101,7 +99,6 @@ module Gitlab
         matches
       end
 
-      # rubocop: disable CodeReuse/ActiveRecord
       def min_id
         @min_id ||= source_model.minimum(source_sort_column)
       end
@@ -109,7 +106,6 @@ module Gitlab
       def max_id
         @max_id ||= source_model.maximum(source_sort_column)
       end
-      # rubocop: enable CodeReuse/ActiveRecord
 
       def metrics_counter
         @metrics_counter ||= Gitlab::Metrics.counter(

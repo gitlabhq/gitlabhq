@@ -55,7 +55,7 @@ RSpec.describe Gitlab::BackgroundMigration::ResolveVulnerabilitiesForRemovedAnal
     ]
   end
 
-  shared_context 'with vulnerability data' do # rubocop:disable RSpec/MultipleMemoizedHelpers -- we need to satifsy foreign keys
+  shared_context 'with vulnerability data' do
     let!(:vulnerabilities_to_resolve) do
       removed_scanners.map do |external_id|
         create_vulnerability(project_id: project.id, external_id: external_id)

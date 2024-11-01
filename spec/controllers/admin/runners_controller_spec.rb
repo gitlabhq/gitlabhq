@@ -107,7 +107,7 @@ RSpec.describe Admin::RunnersController, feature_category: :fleet_visibility do
 
     context 'with update succeeding' do
       it 'updates the runner and ticks the queue' do
-        expect_next_instance_of(Ci::Runners::UpdateRunnerService, runner) do |service|
+        expect_next_instance_of(Ci::Runners::UpdateRunnerService, user, runner) do |service|
           expect(service).to receive(:execute).with(anything).and_call_original
         end
 
@@ -122,7 +122,7 @@ RSpec.describe Admin::RunnersController, feature_category: :fleet_visibility do
 
     context 'with update failing' do
       it 'does not update runner or tick the queue' do
-        expect_next_instance_of(Ci::Runners::UpdateRunnerService, runner) do |service|
+        expect_next_instance_of(Ci::Runners::UpdateRunnerService, user, runner) do |service|
           expect(service).to receive(:execute).with(anything).and_return(ServiceResponse.error(message: 'failure'))
         end
 

@@ -100,7 +100,7 @@ class SyncFkReferencingPCiPipelines < Gitlab::Database::Migration[2.2]
   def up
     FOREIGN_KEYS.each do |options|
       with_lock_retries do
-        validate_foreign_key(options[:source_table], options[:column], name: options[:name]) # rubocop:disable Migration/WithLockRetriesDisallowedMethod -- this method should be added to the allowlist
+        validate_foreign_key(options[:source_table], options[:column], name: options[:name])
       end
       replace_foreign_key_for_new_referencing_table(options)
     end

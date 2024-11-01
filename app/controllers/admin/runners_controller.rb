@@ -25,7 +25,7 @@ class Admin::RunnersController < Admin::ApplicationController
   end
 
   def update
-    if Ci::Runners::UpdateRunnerService.new(@runner).execute(runner_params).success?
+    if Ci::Runners::UpdateRunnerService.new(current_user, @runner).execute(runner_params).success?
       respond_to do |format|
         format.html { redirect_to edit_admin_runner_path(@runner) }
       end

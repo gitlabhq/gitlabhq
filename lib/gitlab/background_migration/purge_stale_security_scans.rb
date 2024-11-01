@@ -2,7 +2,6 @@
 
 module Gitlab
   module BackgroundMigration
-    # rubocop:disable Style/Documentation
     class PurgeStaleSecurityScans # rubocop:disable Migration/BatchedMigrationBaseClass
       class SecurityScan < ::ApplicationRecord
         include EachBatch

@@ -10,7 +10,7 @@ module Gitlab
       operation_name :convert_credit_card_data
       feature_category :user_profile
 
-      class CreditCardValidation < ApplicationRecord # rubocop:disable Style/Documentation
+      class CreditCardValidation < ApplicationRecord
         self.table_name = 'user_credit_card_validations'
       end
 

@@ -8,12 +8,9 @@ module Gitlab
       operation_name :resolve_vulnerabilities_for_removed_analyzers
       feature_category :static_application_security_testing
 
-      # rubocop:disable Gitlab/DocUrl -- help_page_url is only for docs under the /help path
       RESOLVED_VULNERABILITY_COMMENT =
         'This vulnerability was automatically resolved because it was created by an analyzer that has ' \
           'been removed from GitLab SAST.'
-      # rubocop:enable Gitlab/DocUrl
-
       REMOVED_SCANNERS = %w[
         eslint
         gosec

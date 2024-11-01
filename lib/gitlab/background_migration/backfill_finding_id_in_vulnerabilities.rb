@@ -8,7 +8,7 @@ module Gitlab
       scope_to ->(relation) { relation.where(finding_id: nil) }
       feature_category :vulnerability_management
 
-      class VulnerabilitiesFindings < ApplicationRecord # rubocop:disable Style/Documentation
+      class VulnerabilitiesFindings < ApplicationRecord
         self.table_name = "vulnerability_occurrences"
       end
 

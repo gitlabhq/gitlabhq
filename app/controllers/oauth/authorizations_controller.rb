@@ -117,3 +117,5 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
     ) && !doorkeeper_application&.trusted?
   end
 end
+
+Oauth::AuthorizationsController.prepend_mod

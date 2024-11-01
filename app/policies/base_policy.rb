@@ -4,7 +4,7 @@ class BasePolicy < DeclarativePolicy::Base
   desc "User is an instance admin"
   with_options scope: :user, score: 0
   condition(:admin) do
-    next false if ::Feature.enabled?(:prevent_job_token_admin_permissions, @user) && @user&.from_ci_job_token?
+    next false if @user&.from_ci_job_token?
 
     if Gitlab::CurrentSettings.admin_mode
       Gitlab::Auth::CurrentUserMode.new(@user).admin_mode?
