@@ -19,6 +19,10 @@ tier:
 - free
 - premium
 - ultimate
+tiers:
+- free
+- premium
+- ultimate
 options:
   events:
   - p_ci_templates_security_cluster_image_scanning

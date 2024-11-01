@@ -5,13 +5,11 @@ description: Set up your self-hosted model GitLab AI Gateway
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab AI Gateway
+# Install the GitLab AI Gateway
 
 The [AI gateway](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/ai_gateway/) is a standalone service that gives access to AI-powered GitLab Duo features.
 
-## Install the GitLab AI Gateway
-
-### Install using Docker
+## Install using Docker
 
 Prerequisites:
 
@@ -23,7 +21,7 @@ in a single container.
 
 The Docker image for the AI Gateway is around 340 MB (compressed) for the `linux/amd64` architecture and requires a minimum of 512 MB of RAM to operate. A GPU is not needed for the GitLab AI Gateway. To ensure better performance, especially under heavy usage, consider allocating more disk space, memory, and resources than the minimum requirements. Higher RAM and disk capacity can enhance the AI Gateway's efficiency during peak loads.
 
-#### Find the AI Gateway release
+### Find the AI Gateway release
 
 Find the GitLab official Docker image at:
 
@@ -34,7 +32,7 @@ Find the GitLab official Docker image at:
 Use the image tag that corresponds to your GitLab version. For example, if the
 GitLab version is `v17.5.0`, use `self-hosted-v17.5.0-ee` tag.
 
-#### Start a container from the image
+### Start a container from the image
 
 1. For Docker images with version `self-hosted-17.4.0-ee` and later, run the following:
 
@@ -58,7 +56,7 @@ To fix this, set the appropriate certificate bundle path in the Docker container
 
 Replace `/path/to/ca-bundle.pem` with the actual path to your certificate bundle.
 
-#### Additional Configuration
+### Additional Configuration
 
 If you encounter authentication issues during health checks, bypass the authentication temporarily by setting the following environment variable:
 
@@ -68,7 +66,7 @@ If you encounter authentication issues during health checks, bypass the authenti
 
 This can be helpful for troubleshooting, but you should disable this after fixing the issues.
 
-### Install using the AI Gateway Helm chart
+## Install using the AI Gateway Helm chart
 
 Prerequisites:
 
@@ -80,7 +78,7 @@ Prerequisites:
 
 For more information, see [Test the GitLab chart on GKE or EKS](https://docs.gitlab.com/charts/quickstart/index.html).
 
-#### Add the AI Gateway Helm repository
+### Add the AI Gateway Helm repository
 
 Add the AI Gateway Helm repository to Helm’s configuration:
 
@@ -89,7 +87,7 @@ helm repo add ai-gateway \
 https://gitlab.com/api/v4/projects/gitlab-org%2fcharts%2fai-gateway-helm-chart/packages/helm/devel
 ```
 
-#### Install the AI Gateway
+### Install the AI Gateway
 
 1. Create the `ai-gateway` namespace:
 

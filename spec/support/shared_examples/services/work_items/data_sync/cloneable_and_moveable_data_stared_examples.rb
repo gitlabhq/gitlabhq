@@ -58,14 +58,25 @@ RSpec.shared_examples 'cloneable and moveable widget data' do
     work_item.reload.assignees
   end
 
+  def work_item_award_emoji(work_item)
+    work_item.reload.award_emoji.order(user_id: :asc, name: :asc).pluck(:user_id, :name)
+  end
+
   where(:widget_name, :eval_value, :before_lambda, :expected_data, :operations) do
-    :assignees | :work_item_assignees | -> { set_assignees } | ref(:assignees) | [ref(:move), ref(:clone)]
+    :assignees   | :work_item_assignees   | -> { set_assignees } | ref(:assignees)     | [ref(:move), ref(:clone)]
+    :award_emoji | :work_item_award_emoji | -> {}                | ref(:award_emojis)  | [ref(:move)]
   end
 
   with_them do
     context "with widget" do
       let(:move) { WorkItems::DataSync::MoveService }
       let(:clone) { WorkItems::DataSync::CloneService }
+      let!(:thumbs_ups) { create_list(:award_emoji, 2, name: 'thumbsup', awardable: original_work_item) }
+      let!(:thumbs_downs) { create_list(:award_emoji, 2, name: 'thumbsdown', awardable: original_work_item) }
+
+      let!(:award_emojis) do
+        original_work_item.reload.award_emoji.order(user_id: :asc, name: :asc).pluck(:user_id, :name)
+      end
 
       before do
         instance_exec(&before_lambda)

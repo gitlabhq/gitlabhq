@@ -88,18 +88,20 @@ This query returns the groups and projects that the user has been explicitly mad
   the output is limited to the projects and groups accessible to the currently authenticated user.
 - If you are signed in as an instance administrator, you have access to all resources.
 
+## Pagination and graph nodes
+
 The query includes:
 
 - [`pageInfo`](#pageinfo)
 - [`nodes`](#nodes)
 
-## `pageInfo`
+### `pageInfo`
 
 This contains the data needed to implement pagination. GitLab uses cursor-based
 [pagination](getting_started.md#pagination). For more information, see
 [Pagination](https://graphql.org/learn/pagination/) in the GraphQL documentation.
 
-## `nodes`
+### `nodes`
 
 In a GraphQL query, `nodes` represents a collection of [`nodes` on a graph](https://en.wikipedia.org/wiki/Vertex_(graph_theory)).
 In this case, the collection of nodes is a collection of `User` objects. For each one,

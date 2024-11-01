@@ -48408,7 +48408,7 @@ msgstr ""
 msgid "ScanResultPolicy|Prevent approval by merge request's author"
 msgstr ""
 
-msgid "ScanResultPolicy|Prevent project branch modification"
+msgid "ScanResultPolicy|Prevent branch modification"
 msgstr ""
 
 msgid "ScanResultPolicy|Prevent pushing and force pushing"

@@ -53,7 +53,7 @@ class Admin::GroupsController < Admin::ApplicationController
   def update
     @group.build_admin_note unless @group.admin_note
 
-    if @group.update(group_params)
+    if Groups::UpdateService.new(@group, current_user, group_params).execute
       unless Gitlab::Utils.to_boolean(group_params['runner_registration_enabled'])
         Ci::Runners::ResetRegistrationTokenService.new(@group, current_user).execute
       end
