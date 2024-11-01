@@ -4,7 +4,7 @@ module Chaos
   class KillWorker # rubocop:disable Scalability/IdempotentWorker
     include ApplicationWorker
 
-    data_consistency :always
+    data_consistency :sticky
     include ChaosQueue
 
     sidekiq_options retry: false

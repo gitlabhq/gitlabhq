@@ -163,7 +163,7 @@ ee/spec/frontend/vue_merge_request_widget/components/mr_widget_pipeline_containe
 ee/spec/frontend/vue_merge_request_widget/components/states/mr_widget_ready_to_merge_spec.js
 ee/spec/frontend/vue_shared/components/groups_list/groups_list_item_spec.js
 ee/spec/frontend/vue_shared/components/projects_list/projects_list_item_spec.js
-ee/spec/frontend/vue_shared/purchase_flow/components/checkout/sprintf_with_links_spec.js
+ee/spec/frontend/subscriptions/shared/components/purchase_flow/components/checkout/sprintf_with_links_spec.js
 ee/spec/frontend/vue_shared/security_reports/components/security_training_promo_spec.js
 ee/spec/frontend/vulnerabilities/generic_report/types/list_graphql_spec.js
 ee/spec/frontend/vulnerabilities/related_issues_spec.js
