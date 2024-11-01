@@ -2907,7 +2907,6 @@ Gitlab/BoundedContexts:
     - 'ee/app/models/elastic/index_setting.rb'
     - 'ee/app/models/elastic/migration_record.rb'
     - 'ee/app/models/elastic/reindexing_slice.rb'
-    - 'ee/app/models/elastic/reindexing_task.rb'
     - 'ee/app/models/elasticsearch_indexed_namespace.rb'
     - 'ee/app/models/elasticsearch_indexed_project.rb'
     - 'ee/app/models/embedding/application_record.rb'

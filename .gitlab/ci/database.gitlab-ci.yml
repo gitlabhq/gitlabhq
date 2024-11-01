@@ -31,6 +31,36 @@ db:backup_and_restore single-db-ci-connection:
     - .single-db-ci-connection
     - .rails:rules:db-backup
 
+db:rollback single-db-sec-connection:
+  extends:
+    - db:rollback
+    - .single-db-sec-connection
+    - .rails:rules:single-db-sec-connection
+
+db:migrate:reset single-db-sec-connection:
+  extends:
+    - db:migrate:reset
+    - .single-db-sec-connection
+    - .rails:rules:single-db-sec-connection
+
+db:check-schema-single-db-sec-connection:
+  extends:
+    - db:check-schema
+    - .single-db-sec-connection
+    - .rails:rules:single-db-sec-connection
+
+db:post_deployment_migrations_validator-single-db-sec-connection:
+  extends:
+    - db:post_deployment_migrations_validator
+    - .single-db-sec-connection
+    - .rails:rules:db:check-migrations-single-db-sec-connection
+
+db:backup_and_restore single-db-sec-connection:
+  extends:
+    - db:backup_and_restore
+    - .single-db-sec-connection
+    - .rails:rules:db-backup
+
 db:rollback:
   extends:
     - .db-job-base

@@ -42,11 +42,19 @@ include:
   variables:
     CI_CONNECTION_DB: "true"
 
+.single-db-sec-connection:
+  extends: .single-db
+  variables:
+    SEC_CONNECTION_DB: "true"
+
 .single-db-rspec:
   extends: .single-db
 
 .single-db-ci-connection-rspec:
   extends: .single-db-ci-connection
+
+.single-db-sec-connection-rspec:
+  extends: .single-db-sec-connection
 
 .praefect-with-db:
   variables:

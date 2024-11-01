@@ -135,6 +135,7 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
     end
 
     it 'can add and remove suggestions from a batch' do
+      # rubocop:disable Style/CombinableLoops -- "Add suggestion to batch" only exists with more than one suggestion
       files.each_with_index do |file, index|
         page.within("[id='#{file[:hash]}']") do
           find('.js-diff-more-actions').click
@@ -166,6 +167,7 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
             expect(page).to have_content("Apply #{index + 1} suggestions")
           end
         end
+        # rubocop:enable Style/CombinableLoops
       end
 
       page.within("[id='#{files[0][:hash]}']") do

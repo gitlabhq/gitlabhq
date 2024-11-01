@@ -27,8 +27,10 @@ const extendConfigs = [
 // Allowing JiHu to add rules on their side since the update from
 // eslintrc.yml to eslint.config.mjs is not allowing subdirectory
 // rewrite.
+let jhConfigs = [];
 if (existsSync(path.resolve(dirname, 'jh'))) {
-  extendConfigs.push('./jh/eslint.config.js');
+  // eslint-disable-next-line import/no-unresolved, import/extensions
+  jhConfigs = (await import('jh/eslint.config.js')).default;
 }
 
 const jestConfig = {
@@ -690,4 +692,5 @@ export default [
       '@gitlab/require-i18n-strings': 'off',
     },
   },
+  ...jhConfigs,
 ];

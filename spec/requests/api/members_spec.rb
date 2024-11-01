@@ -1045,6 +1045,7 @@ RSpec.describe API::Members, feature_category: :groups_and_projects do
     end
   end
 
+  # rubocop:disable Style/CombinableLoops -- new projects and groups must not be created for specs to pass
   [false, true].each do |all|
     it_behaves_like 'GET /:source_type/:id/members/(all)', 'project', all do
       let(:source) { project }
@@ -1064,6 +1065,7 @@ RSpec.describe API::Members, feature_category: :groups_and_projects do
       let(:source) { all ? create(:group, parent: group) : group }
     end
   end
+  # rubocop:enable Style/CombinableLoops
 
   describe 'POST /projects/:id/members' do
     context 'adding owner to project' do

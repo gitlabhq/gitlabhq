@@ -16,7 +16,7 @@ module Types
 
       field :created_at, Types::TimeType, null: false, description: 'Date of creation.'
 
-      field :author, ::Types::UserType, null: false, description: 'User that created the model version.'
+      field :author, ::Types::UserType, null: true, description: 'User that created the model version.'
 
       field :description, ::GraphQL::Types::String,
         null: true,

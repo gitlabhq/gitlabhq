@@ -35353,6 +35353,24 @@ msgstr ""
 msgid "MrList|Review requested from %{name}"
 msgstr ""
 
+msgid "MrReports|All reports"
+msgstr ""
+
+msgid "MrReports|Blockers"
+msgstr ""
+
+msgid "MrReports|Code quality"
+msgstr ""
+
+msgid "MrReports|License Compliance"
+msgstr ""
+
+msgid "MrReports|Reports"
+msgstr ""
+
+msgid "MrReports|Security"
+msgstr ""
+
 msgid "MrSurvey|By continuing, you acknowledge that responses will be used to improve GitLab and in accordance with the %{linkStart}GitLab Privacy Policy%{linkEnd}."
 msgstr ""
 

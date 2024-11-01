@@ -142,8 +142,13 @@ function assets_compile_script() {
 
 function setup_database_yml() {
   if [ "$DECOMPOSED_DB" == "true" ]; then
-    echo "Using decomposed database config (config/database.yml.decomposed-postgresql)"
-    cp config/database.yml.decomposed-postgresql config/database.yml
+    if [ "$SEC_DECOMPOSED_DB" == "true" ]; then
+      echo "Using SEC decomposed database config (config/database.yml.decomposed-sec-postgresql)"
+      cp config/database.yml.decomposed-sec-postgresql config/database.yml
+    else
+      echo "Using decomposed database config (config/database.yml.decomposed-postgresql)"
+      cp config/database.yml.decomposed-postgresql config/database.yml
+    fi
   else
     echo "Using two connections, single database config (config/database.yml.postgresql)"
     cp config/database.yml.postgresql config/database.yml

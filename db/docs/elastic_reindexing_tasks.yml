@@ -1,7 +1,7 @@
 ---
 table_name: elastic_reindexing_tasks
 classes:
-- Elastic::ReindexingTask
+- Search::Elastic::ReindexingTask
 feature_categories:
 - global_search
 description: TODO

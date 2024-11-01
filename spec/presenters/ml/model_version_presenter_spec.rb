@@ -6,6 +6,7 @@ RSpec.describe Ml::ModelVersionPresenter, feature_category: :mlops do
   let_it_be(:project) { build_stubbed(:project) }
   let_it_be(:model) { build_stubbed(:ml_models, name: 'a_model', project: project) }
   let_it_be(:model_version) { build_stubbed(:ml_model_versions, :with_package, model: model, version: '1.1.1') }
+  let_it_be(:model_version_without_package) { build_stubbed(:ml_model_versions, model: model, version: '1.1.1') }
   let_it_be(:presenter) { model_version.present }
 
   describe '.display_name' do
@@ -36,6 +37,14 @@ RSpec.describe Ml::ModelVersionPresenter, feature_category: :mlops do
     subject { presenter.author }
 
     it { is_expected.to eq(model_version.package.creator) }
+  end
+
+  describe 'when author is not present' do
+    let_it_be(:presenter) { model_version_without_package.present }
+
+    subject { presenter.author }
+
+    it { is_expected.to be_nil }
   end
 
   describe '#artifacts_count' do

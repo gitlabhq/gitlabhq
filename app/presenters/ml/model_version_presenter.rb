@@ -11,7 +11,7 @@ module Ml
     end
 
     def author
-      model_version.package.creator
+      model_version.package&.creator
     end
 
     def path

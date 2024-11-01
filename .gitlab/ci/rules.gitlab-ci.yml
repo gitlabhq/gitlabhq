@@ -111,6 +111,9 @@
 .if-merge-request-labels-run-single-db: &if-merge-request-labels-run-single-db
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-single-db/'
 
+.if-merge-request-labels-sec-decomposition: &if-merge-request-labels-sec-decomposition
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /sec-decomposition/'
+
 .if-merge-request-labels-run-review-app: &if-merge-request-labels-run-review-app
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-review-app/'
 
@@ -1962,6 +1965,30 @@
       changes: *db-patterns
     - <<: *if-merge-request
       changes: *decomposed-db-models-patterns
+
+.rails:rules:single-db-sec-connection:
+  rules:
+    - <<: *if-default-branch-schedule-nightly
+    - <<: *if-merge-request-labels-run-single-db
+    - <<: *if-merge-request-labels-sec-decomposition
+    - <<: *if-merge-request-labels-pipeline-expedite
+      when: never
+    - if: '$ENABLE_RSPEC_SINGLE_DB_SEC_CONNECTION == "true"'
+    - <<: *if-merge-request-not-approved
+      when: never
+
+.rails:rules:single-db-sec-connection-ee:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - !reference [".rails:rules:single-db-sec-connection", "rules"]
+
+.rails:rules:db:check-migrations-single-db-sec-connection:
+  rules:
+    - <<: *if-merge-request-labels-run-single-db
+    - <<: *if-merge-request-labels-sec-decomposition
+    - <<: *if-merge-request-labels-pipeline-expedite
+      when: never
 
 .rails:rules:db:migrate:multi-version-upgrade:
   rules:

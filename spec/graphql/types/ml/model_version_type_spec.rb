@@ -149,4 +149,12 @@ RSpec.describe GitlabSchema.types['MlModelVersion'], feature_category: :mlops do
       }
     })
   end
+
+  it 'allows an author to be null' do
+    model_version.package.update!(creator: nil)
+
+    version_data = data.dig('data', 'mlModel', 'latestVersion')
+
+    expect(version_data['author']).to be_nil
+  end
 end

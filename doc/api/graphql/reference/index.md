@@ -28808,7 +28808,7 @@ Version of a machine learning model.
 | ---- | ---- | ----------- |
 | <a id="mlmodelversion_links"></a>`_links` | [`MLModelVersionLinks!`](#mlmodelversionlinks) | Map of links to perform actions on the model version. |
 | <a id="mlmodelversionartifactscount"></a>`artifactsCount` | [`Int`](#int) | Number of files in the package. |
-| <a id="mlmodelversionauthor"></a>`author` | [`UserCore!`](#usercore) | User that created the model version. |
+| <a id="mlmodelversionauthor"></a>`author` | [`UserCore`](#usercore) | User that created the model version. |
 | <a id="mlmodelversioncandidate"></a>`candidate` | [`MlCandidate!`](#mlcandidate) | Metrics, params and metadata for the model version. |
 | <a id="mlmodelversioncreatedat"></a>`createdAt` | [`Time!`](#time) | Date of creation. |
 | <a id="mlmodelversiondescription"></a>`description` | [`String`](#string) | Description of the version. |
