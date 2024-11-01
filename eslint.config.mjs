@@ -5,6 +5,7 @@ import { existsSync } from 'node:fs';
 import localRules from 'eslint-plugin-local-rules';
 import js from '@eslint/js';
 import { FlatCompat } from '@eslint/eslintrc';
+import * as graphqlEslint from '@graphql-eslint/eslint-plugin';
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -87,6 +88,17 @@ export default [
   },
   ...compat.extends(...extendConfigs),
   ...compat.plugins('no-jquery', '@graphql-eslint'),
+  {
+    rules: {
+      'no-unused-vars': [
+        'error',
+        {
+          caughtErrors: 'none',
+          ignoreRestSiblings: true,
+        },
+      ],
+    },
+  },
   {
     files: ['**/*.{js,vue}'],
 
@@ -551,9 +563,11 @@ export default [
       sourceType: 'script',
 
       parserOptions: {
-        parser: '@graphql-eslint/eslint-plugin',
-        operations: '{,ee/,jh/}app/**/*.graphql',
-        schema: './tmp/tests/graphql/gitlab_schema_apollo.graphql',
+        parser: { ...graphqlEslint, meta: { name: '@graphql-eslint' } },
+        graphQLConfig: {
+          documents: '{,ee/,jh/}app/**/*.graphql',
+          schema: './tmp/tests/graphql/gitlab_schema_apollo.graphql',
+        },
       },
     },
 

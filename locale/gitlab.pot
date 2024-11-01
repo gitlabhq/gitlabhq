@@ -20443,18 +20443,6 @@ msgstr ""
 msgid "DuoEnterprise|You now have access to GitLab Duo Enterprise, the only AI solution that supports developers at every stage of the software development lifecycle."
 msgstr ""
 
-msgid "DuoFreeAccessEndingBanner|Buy Duo Pro"
-msgstr ""
-
-msgid "DuoFreeAccessEndingBanner|Dismiss Free Access Ending banner"
-msgstr ""
-
-msgid "DuoFreeAccessEndingBanner|Free access to GitLab Duo is ending on %{date}"
-msgstr ""
-
-msgid "DuoFreeAccessEndingBanner|Starting %{date}, all GitLab Duo features, including Duo Chat, %{link_start}require a paid add-on subscription.%{link_end} To ensure uninterrupted access to Code Suggestions and Chat, buy Duo Pro and assign seats to your users. Or, for Duo Enterprise options, contact Sales."
-msgstr ""
-
 msgid "DuoProDiscover|A single platform integrates the best AI model for each use case across the entire development workflow."
 msgstr ""
 
@@ -34895,19 +34883,10 @@ msgstr ""
 msgid "MlModelRegistry|Delete model"
 msgstr ""
 
-msgid "MlModelRegistry|Delete model version"
-msgstr ""
-
-msgid "MlModelRegistry|Delete model version?"
-msgstr ""
-
 msgid "MlModelRegistry|Delete version"
 msgstr ""
 
 msgid "MlModelRegistry|Delete version %{versionName}"
-msgstr ""
-
-msgid "MlModelRegistry|Deleting this model version will delete the associated artifacts."
 msgstr ""
 
 msgid "MlModelRegistry|Deleting this version also deletes all of its imported or uploaded artifacts and its settings."
@@ -42771,6 +42750,9 @@ msgid "Project:Branches: %{source_project_path}:%{source_branch} → %{target_pr
 msgstr ""
 
 msgid "ProjectActivityRSS|Subscribe"
+msgstr ""
+
+msgid "ProjectCreationLevel|Administrators"
 msgstr ""
 
 msgid "ProjectCreationLevel|Default project creation protection"

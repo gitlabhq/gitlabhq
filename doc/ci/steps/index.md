@@ -40,7 +40,7 @@ system and networking. Steps are hosted locally on the file system, in GitLab.co
 Additionally, steps:
 
 - Run in a Docker container created by the Steps team, you can review the [`Dockerfile`](https://gitlab.com/gitlab-org/step-runner/-/blob/main/Dockerfile).
-  Follow [epic 15073](https://gitlab.com/groups/gitlab-org/-/epics/15073+) to track
+  Follow [epic 15073](https://gitlab.com/groups/gitlab-org/-/epics/15073) to track
   when steps will run inside the environment defined by the CI/CD job.
 - Are specific to Linux. Follow [epic 15074](https://gitlab.com/groups/gitlab-org/-/epics/15074)
   to track when steps supports multiple operating systems.

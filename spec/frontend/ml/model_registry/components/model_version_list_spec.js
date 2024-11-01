@@ -48,6 +48,7 @@ describeSkipVue3(skipReason, () => {
       provide: {
         mlflowTrackingUrl: 'path/to/mlflow',
         createModelVersionPath: 'versions/new',
+        canWriteModelRegistry: true,
       },
       stubs: {
         SearchableTable,

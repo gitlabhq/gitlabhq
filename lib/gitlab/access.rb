@@ -29,6 +29,7 @@ module Gitlab
     NO_ONE_PROJECT_ACCESS = 0
     MAINTAINER_PROJECT_ACCESS = 1
     DEVELOPER_MAINTAINER_PROJECT_ACCESS = 2
+    ADMINISTRATOR_PROJECT_ACCESS = 3
 
     # Default subgroup creation level
     OWNER_SUBGROUP_ACCESS = 0
@@ -140,7 +141,8 @@ module Gitlab
         {
           s_('ProjectCreationLevel|No one') => NO_ONE_PROJECT_ACCESS,
           s_('ProjectCreationLevel|Maintainers') => MAINTAINER_PROJECT_ACCESS,
-          s_('ProjectCreationLevel|Developers + Maintainers') => DEVELOPER_MAINTAINER_PROJECT_ACCESS
+          s_('ProjectCreationLevel|Developers + Maintainers') => DEVELOPER_MAINTAINER_PROJECT_ACCESS,
+          s_('ProjectCreationLevel|Administrators') => ADMINISTRATOR_PROJECT_ACCESS
         }
       end
 
@@ -148,7 +150,8 @@ module Gitlab
         {
           'noone' => NO_ONE_PROJECT_ACCESS,
           'maintainer' => MAINTAINER_PROJECT_ACCESS,
-          'developer' => DEVELOPER_MAINTAINER_PROJECT_ACCESS
+          'developer' => DEVELOPER_MAINTAINER_PROJECT_ACCESS,
+          'administrator' => ADMINISTRATOR_PROJECT_ACCESS
         }
       end
 

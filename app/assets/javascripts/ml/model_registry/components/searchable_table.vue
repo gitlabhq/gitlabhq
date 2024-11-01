@@ -162,7 +162,12 @@ export default {
     />
     <load-or-error-or-show :is-loading="isLoading" :error-message="errorMessage">
       <slot v-if="isListEmpty" name="empty-state"></slot>
-      <model-versions-table v-else-if="!isModelVersionsEmpty" :items="modelVersions" />
+      <model-versions-table
+        v-else-if="!isModelVersionsEmpty"
+        :items="modelVersions"
+        can-write-model-registry
+        @model-versions-update="submitFilters"
+      />
       <models-table v-else-if="!isModelsEmpty" :items="models" />
       <gl-keyset-pagination
         v-if="pageInfo.hasPreviousPage || pageInfo.hasNextPage"

@@ -268,7 +268,10 @@ export default {
           :href="editModelVersionPath"
           >{{ $options.i18n.editModelVersionButtonLabel }}</gl-button
         >
-        <model-version-actions-dropdown @delete-model-version="deleteModelVersion" />
+        <model-version-actions-dropdown
+          :model-version="modelWithModelVersion"
+          @delete-model-version="deleteModelVersion"
+        />
       </div>
     </div>
 

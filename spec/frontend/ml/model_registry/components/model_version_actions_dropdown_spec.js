@@ -8,8 +8,13 @@ describe('ml/model_registry/components/model_version_actions_dropdown', () => {
   const createWrapper = (options = {}) => {
     wrapper = mount(ModelVersionActionsDropdown, {
       provide: {
-        versionName: 'versionName',
         canWriteModelRegistry: true,
+      },
+      propsData: {
+        modelVersion: {
+          version: '1.0.0',
+          id: 1,
+        },
       },
       ...options,
     });

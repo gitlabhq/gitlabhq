@@ -38,5 +38,7 @@ export const UPLOAD_STATUS = {
   SUCCEEDED: 4,
 };
 
+export const TYPENAME_MODEL_VERSION = 'Ml::ModelVersion';
+
 export const ROUTE_DETAILS = 'details';
 export const ROUTE_PERFORMANCE = 'performance';

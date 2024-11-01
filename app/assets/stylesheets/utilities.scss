@@ -40,14 +40,6 @@ $type-scale: (
   }
 }
 
-@for $i from 1 through 12 {
-  #{'.tab-width-#{$i}'} {
-    /* stylelint-disable-next-line property-no-vendor-prefix */
-    -moz-tab-size: $i;
-    tab-size: $i;
-  }
-}
-
 // stylelint-disable-next-line gitlab/no-gl-class
 .gl-top-app-header {
   top: $calc-application-header-height;

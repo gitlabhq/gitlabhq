@@ -158,8 +158,10 @@ export default {
       const yScrollRatio =
         presentationViewport.scrollTop > 0 ? presentationViewport.scrollTop / scrollBarHeight : 0;
       const xScrollOffset =
+        // eslint-disable-next-line no-implicit-coercion
         (presentationViewport.scrollWidth - presentationViewport.offsetWidth - 0) * xScrollRatio;
       const yScrollOffset =
+        // eslint-disable-next-line no-implicit-coercion
         (presentationViewport.scrollHeight - presentationViewport.offsetHeight - 0) * yScrollRatio;
 
       const viewportCenterX = presentationViewport.offsetWidth / 2;

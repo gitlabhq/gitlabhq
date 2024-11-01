@@ -1,0 +1,22 @@
+diff --git a/node_modules/@graphql-eslint/eslint-plugin/cjs/utils.js b/node_modules/@graphql-eslint/eslint-plugin/cjs/utils.js
+index bd7f92a..1ee1ca1 100644
+--- a/node_modules/@graphql-eslint/eslint-plugin/cjs/utils.js
++++ b/node_modules/@graphql-eslint/eslint-plugin/cjs/utils.js
+@@ -52,7 +52,7 @@ var import_chalk = __toESM(require("chalk"));
+ var import_graphql = require("graphql");
+ var import_lodash = __toESM(require("lodash.lowercase"));
+ function requireSiblingsOperations(ruleId, context) {
+-  const { siblingOperations } = context.parserServices;
++  const { siblingOperations } = context.sourceCode.parserServices;
+   if (!siblingOperations.available) {
+     throw new Error(
+       `Rule \`${ruleId}\` requires \`parserOptions.operations\` to be set and loaded. See https://bit.ly/graphql-eslint-operations for more info`
+@@ -61,7 +61,7 @@ function requireSiblingsOperations(ruleId, context) {
+   return siblingOperations;
+ }
+ function requireGraphQLSchemaFromContext(ruleId, context) {
+-  const { schema } = context.parserServices;
++  const { schema } = context.sourceCode.parserServices;
+   if (!schema) {
+     throw new Error(
+       `Rule \`${ruleId}\` requires \`parserOptions.schema\` to be set and loaded. See https://bit.ly/graphql-eslint-schema for more info`

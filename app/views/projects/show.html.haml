@@ -7,7 +7,6 @@
   = auto_discovery_link_tag(:atom, project_path(@project, rss_url_options), title: "#{@project.name} activity")
 
 = render_if_exists 'shared/promotions/promote_mobile_devops', project: @project
-= render_if_exists 'projects/duo_free_access_ending_banner', project: @project
 = render partial: 'flash_messages', locals: { project: @project }
 
 = render 'clusters_deprecation_alert'

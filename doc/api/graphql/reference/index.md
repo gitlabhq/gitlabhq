@@ -39918,7 +39918,6 @@ Name of the feature that the callout is for.
 | <a id="usercalloutfeaturenameenumdeployment_approvals_empty_state"></a>`DEPLOYMENT_APPROVALS_EMPTY_STATE` | Callout feature name for deployment_approvals_empty_state. |
 | <a id="usercalloutfeaturenameenumdeployment_details_feedback"></a>`DEPLOYMENT_DETAILS_FEEDBACK` | Callout feature name for deployment_details_feedback. |
 | <a id="usercalloutfeaturenameenumduo_chat_callout"></a>`DUO_CHAT_CALLOUT` | Callout feature name for duo_chat_callout. |
-| <a id="usercalloutfeaturenameenumduo_free_access_ending_banner"></a>`DUO_FREE_ACCESS_ENDING_BANNER` | Callout feature name for duo_free_access_ending_banner. |
 | <a id="usercalloutfeaturenameenumfeature_flags_new_version"></a>`FEATURE_FLAGS_NEW_VERSION` | Callout feature name for feature_flags_new_version. |
 | <a id="usercalloutfeaturenameenumgcp_signup_offer"></a>`GCP_SIGNUP_OFFER` | Callout feature name for gcp_signup_offer. |
 | <a id="usercalloutfeaturenameenumgeo_enable_hashed_storage"></a>`GEO_ENABLE_HASHED_STORAGE` | Callout feature name for geo_enable_hashed_storage. |

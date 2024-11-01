@@ -9,7 +9,6 @@ const MODAL_NOTE_TITLE = 'Note:';
 const MODAL_TITLE = 'Delete version 1.0.0';
 const MODAL_CANCEL = 'Cancel';
 const MENU_ITEM_TEXT = 'Delete version';
-const VERSION_NAME = '1.0.0';
 
 describe('DeleteModelVersionDisclosureDropdownItem', () => {
   let wrapper;
@@ -22,15 +21,18 @@ describe('DeleteModelVersionDisclosureDropdownItem', () => {
 
   beforeEach(() => {
     wrapper = shallowMountExtended(DeleteModelVersionDisclosureDropdownItem, {
-      provide: {
-        versionName: VERSION_NAME,
+      propsData: {
+        modelVersion: {
+          version: '1.0.0',
+          id: 1,
+        },
       },
     });
   });
 
   it('mounts the modal', () => {
     expect(findModal().props()).toMatchObject({
-      modalId: 'ml-model-version-delete-modal',
+      modalId: 'ml-model-version-delete-modal-1',
       title: MODAL_TITLE,
       actionPrimary: {
         text: MENU_ITEM_TEXT,

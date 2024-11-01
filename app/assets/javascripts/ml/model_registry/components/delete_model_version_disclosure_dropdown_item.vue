@@ -10,13 +10,19 @@ export default {
   directives: {
     GlModalDirective,
   },
-  inject: ['versionName'],
-  data() {
-    return {
-      isDeleteModalVisible: false,
-    };
+  props: {
+    modelVersion: {
+      type: Object,
+      required: true,
+    },
   },
   computed: {
+    versionName() {
+      return this.modelVersion.version;
+    },
+    modalId() {
+      return `ml-model-version-delete-modal-${this.modelVersion.id}`;
+    },
     modalTitle() {
       return sprintf(s__('MlModelRegistry|Delete version %{versionName}'), {
         versionName: this.versionName,
@@ -25,11 +31,10 @@ export default {
   },
   methods: {
     deleteModelVersion() {
-      this.$emit('delete-model-version');
+      this.$emit('delete-model-version', this.modelVersion.id);
     },
   },
   modal: {
-    id: 'ml-model-version-delete-modal',
     actionPrimary: {
       text: s__('MlModelRegistry|Delete version'),
       attributes: { variant: 'danger' },
@@ -51,7 +56,7 @@ export default {
 
 <template>
   <gl-disclosure-dropdown-item
-    v-gl-modal-directive="$options.modal.id"
+    v-gl-modal-directive="modalId"
     :aria-label="$options.modal.actionPrimary.text"
     variant="danger"
   >
@@ -61,7 +66,7 @@ export default {
       </span>
 
       <gl-modal
-        :modal-id="$options.modal.id"
+        :modal-id="modalId"
         :title="modalTitle"
         :action-primary="$options.modal.actionPrimary"
         :action-cancel="$options.modal.actionCancel"
