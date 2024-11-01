@@ -1,4 +1,4 @@
-import { findKey, intersection } from 'lodash';
+import { findKey, intersection, difference } from 'lodash';
 import { languageFilterData } from '~/search/sidebar/components/language_filter/data';
 import {
   LABEL_FILTER_PARAM,
@@ -20,7 +20,7 @@ const appliedSelectedLabelsKeys = (state) =>
   intersection(urlQueryLabelFilters(state), queryLabelFilters(state));
 
 const unselectedLabelsKeys = (state) =>
-  urlQueryLabelFilters(state)?.filter((label) => !queryLabelFilters(state)?.includes(label));
+  difference(urlQueryLabelFilters(state), queryLabelFilters(state));
 
 const unappliedNewLabelKeys = (state) => {
   return state?.query?.[LABEL_FILTER_PARAM]?.filter(
@@ -65,11 +65,10 @@ export const filteredLabels = (state) => {
 export const filteredAppliedSelectedLabels = (state) =>
   filteredLabels(state)?.filter((label) => urlQueryLabelFilters(state)?.includes(label.title));
 
-export const appliedSelectedLabels = (state) => {
-  return labelAggregationBuckets(state)?.filter((label) =>
+export const appliedSelectedLabels = (state) =>
+  labelAggregationBuckets(state)?.filter((label) =>
     appliedSelectedLabelsKeys(state)?.includes(label.title),
   );
-};
 
 export const filteredUnselectedLabels = (state) =>
   filteredLabels(state)?.filter((label) => !urlQueryLabelFilters(state)?.includes(label.title));
