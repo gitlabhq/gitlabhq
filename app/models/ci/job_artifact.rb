@@ -179,9 +179,7 @@ module Ci
 
     def expire_in=(value)
       self.expire_at =
-        if value
-          ::Gitlab::Ci::Build::DurationParser.new(value).seconds_from_now
-        end
+        (::Gitlab::Ci::Build::DurationParser.new(value).seconds_from_now if value)
     end
 
     def stored?

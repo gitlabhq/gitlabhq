@@ -1,8 +1,7 @@
 ---
 data_category: optional
 key_path: redis_hll_counters.user_packages.i_package_container_user_weekly
-description: A weekly count of users that have published a container image to the
-  registry
+description: Count of distinct users that have interacted with container repositories in the container registry in the last 7 days
 product_group: container_registry
 value_type: number
 status: removed

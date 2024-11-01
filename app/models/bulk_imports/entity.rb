@@ -175,9 +175,7 @@ class BulkImports::Entity < ApplicationRecord
     url = File.join(export_relations_url_path_base, 'download')
     params = { relation: relation }
 
-    if batch_number && bulk_import.supports_batched_export?
-      params.merge!(batched: true, batch_number: batch_number)
-    end
+    params.merge!(batched: true, batch_number: batch_number) if batch_number && bulk_import.supports_batched_export?
 
     Gitlab::Utils.add_url_parameters(url, params)
   end
@@ -241,9 +239,7 @@ class BulkImports::Entity < ApplicationRecord
   private
 
   def validate_parent_is_a_group
-    unless parent.group_entity?
-      errors.add(:parent, s_('BulkImport|must be a group'))
-    end
+    errors.add(:parent, s_('BulkImport|must be a group')) unless parent.group_entity?
   end
 
   def validate_imported_entity_type

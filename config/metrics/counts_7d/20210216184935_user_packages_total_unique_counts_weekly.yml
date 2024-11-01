@@ -1,7 +1,7 @@
 ---
 data_category: optional
 key_path: redis_hll_counters.user_packages.user_packages_total_unique_counts_weekly
-description: A weekly count of users that have published a package to the registry
+description: A weekly count of users that have interacted with a package in the package registry
 product_group: package_registry
 value_type: number
 status: active

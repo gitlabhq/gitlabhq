@@ -15002,9 +15002,6 @@ msgstr ""
 msgid "ContainerRegistry|Cleanup pending"
 msgstr ""
 
-msgid "ContainerRegistry|Cleanup policies"
-msgstr ""
-
 msgid "ContainerRegistry|Cleanup policy for tags is disabled"
 msgstr ""
 
@@ -15042,6 +15039,9 @@ msgid "ContainerRegistry|Container protection rule deleted."
 msgstr ""
 
 msgid "ContainerRegistry|Container protection rule updated."
+msgstr ""
+
+msgid "ContainerRegistry|Container registry cleanup policies"
 msgstr ""
 
 msgid "ContainerRegistry|Continuous container scanning runs in the registry when any image or database is updated."
@@ -15226,7 +15226,7 @@ msgstr ""
 msgid "ContainerRegistry|Set cleanup rules"
 msgstr ""
 
-msgid "ContainerRegistry|Set rules to automatically remove unused packages to save storage space."
+msgid "ContainerRegistry|Set rules to automatically remove unused image tags to save storage space."
 msgstr ""
 
 msgid "ContainerRegistry|Set up cleanup"
@@ -30155,7 +30155,10 @@ msgstr ""
 msgid "Issues closed"
 msgstr ""
 
-msgid "Issues exist in projects, so to create an issue, first create a project."
+msgid "Issues exist in projects. Select a project to create an issue, or create a project."
+msgstr ""
+
+msgid "Issues exist in projects. To create an issue, first create a project."
 msgstr ""
 
 msgid "Issues must match this scope to appear in this list."
@@ -38144,6 +38147,9 @@ msgid "Only effective when remote storage is enabled. Set to 0 for no size limit
 msgstr ""
 
 msgid "Only include features new to your current subscription tier."
+msgstr ""
+
+msgid "Only issues can be linked from this form. You can also link this issue from an epic or task."
 msgstr ""
 
 msgid "Only log Akismet verdict, do not prevent issue or snippet creation when spam is detected."

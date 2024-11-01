@@ -645,9 +645,7 @@ module Ci
     end
 
     def valid_commit_sha
-      if Gitlab::Git.blank_ref?(self.sha)
-        self.errors.add(:sha, "can't be 00000000 (branch removal)")
-      end
+      self.errors.add(:sha, "can't be 00000000 (branch removal)") if Gitlab::Git.blank_ref?(self.sha)
     end
 
     def git_author_name
@@ -760,9 +758,7 @@ module Ci
 
     def coverage
       coverage_array = latest_statuses.map(&:coverage).compact
-      if coverage_array.size >= 1
-        coverage_array.sum / coverage_array.size
-      end
+      coverage_array.sum / coverage_array.size if coverage_array.size >= 1
     end
 
     def update_builds_coverage
@@ -1405,9 +1401,7 @@ module Ci
     def age_in_minutes
       return 0 unless persisted?
 
-      unless has_attribute?(:created_at)
-        raise ArgumentError, 'pipeline not fully loaded'
-      end
+      raise ArgumentError, 'pipeline not fully loaded' unless has_attribute?(:created_at)
 
       return 0 unless created_at
 

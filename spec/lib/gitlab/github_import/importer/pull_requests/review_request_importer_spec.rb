@@ -2,10 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::Importer::PullRequests::ReviewRequestImporter, :clean_gitlab_redis_shared_state do
+RSpec.describe Gitlab::GithubImport::Importer::PullRequests::ReviewRequestImporter, :clean_gitlab_redis_shared_state, feature_category: :importers do
   subject(:importer) { described_class.new(review_request, project, client) }
 
-  let(:project) { instance_double('Project') }
+  let_it_be(:project) { create(:project) }
   let(:client) { instance_double('Gitlab::GithubImport::Client') }
   let(:merge_request) { create(:merge_request) }
   let(:reviewer) { create(:user, username: 'alice') }

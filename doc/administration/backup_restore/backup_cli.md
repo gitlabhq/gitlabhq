@@ -144,6 +144,50 @@ For example, if the backup directory name is `1714053314_2024_04_25_17.0.0-pre`,
 }
 ```
 
+## Restore a backup
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/469247) in GitLab 17.6.
+
+Prerequisites:
+
+- You have the backup ID of a backup created using `gitlab-backup-cli`.
+
+To restore a backup of the current GitLab installation:
+
+- Run the following command:
+
+  ```shell
+  sudo gitlab-backup-cli restore all <backup_id>
+  ```
+
+### Restore object storage data
+
+You can restore data from Google Cloud Storage. [Epic 11577](https://gitlab.com/groups/gitlab-org/-/epics/11577) proposes to add support for other vendors.
+
+Prerequisites:
+
+- You have the backup ID of a backup created using `gitlab-backup-cli`.
+- You configured the required permissions for the restore location.
+- You set up the object storage configuration `gitlab.rb` or `gitlab.yml` file, and matches the backup environment.
+- You tested the restore process in a staging environment.
+
+To restore object storage data:
+
+- Run the following command:
+
+  ```shell
+  sudo gitlab-backup restore <backup_id>
+  ```
+
+The restore process:
+
+- Does not clear the destination bucket first.
+- Overwrites existing files with the same filenames in the destination bucket.
+- Might take a significant amount of time, depending on how much data is restored.
+
+Always monitor your system resources during a restore. Keep your original files
+until you verify the restoration was successful.
+
 ## Known issues
 
 When working with `gitlab-backup-cli`, you might encounter the following issues.

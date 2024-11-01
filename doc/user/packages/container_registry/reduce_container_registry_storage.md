@@ -16,7 +16,7 @@ if you add a large number of images or tags:
 - Retrieving the list of available tags or images becomes slower.
 - They take up a large amount of storage space on the server.
 
-You should delete unnecessary images and tags and set up a [cleanup policy](#cleanup-policy)
+You should delete unnecessary images and tags and set up a [container registry cleanup policy](#cleanup-policy)
 to automatically manage your container registry usage.
 
 ## View container registry usage
@@ -180,7 +180,7 @@ To create a cleanup policy in the UI:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Packages and registries**.
-1. In the **Cleanup policies** section, select **Set cleanup rules**.
+1. In the **Container registry cleanup policies** section, select **Set cleanup rules**.
 1. Complete the fields:
 
    | Field                      | Description |

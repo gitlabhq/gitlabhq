@@ -28,7 +28,7 @@ export default {
       </div>
       <div
         v-if="$scopedSlots.description"
-        class="gl-mt-2 gl-w-full gl-text-secondary"
+        class="gl-mt-2 gl-w-full gl-text-subtle"
         data-testid="page-heading-description"
       >
         <slot name="description"></slot>

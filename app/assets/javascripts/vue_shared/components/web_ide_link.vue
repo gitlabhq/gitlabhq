@@ -328,7 +328,7 @@ export default {
                   action.shortcut
                 }}</kbd>
               </span>
-              <span data-testid="action-secondary-text" class="gl-text-sm gl-text-secondary">
+              <span data-testid="action-secondary-text" class="gl-text-sm gl-text-subtle">
                 {{ action.secondaryText }}
               </span>
             </div>

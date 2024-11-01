@@ -1,8 +1,7 @@
 ---
 data_category: optional
 key_path: redis_hll_counters.deploy_token_packages.i_package_conan_deploy_token_monthly
-description: A monthly count of Conan packages published to the registry using a deploy
-  token
+description: Count of distinct deploy tokens that have interacted with Conan packages in the package registry in the last 28 days
 product_group: package_registry
 value_type: number
 status: active

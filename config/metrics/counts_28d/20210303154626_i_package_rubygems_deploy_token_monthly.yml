@@ -1,7 +1,7 @@
 ---
 data_category: optional
 key_path: redis_hll_counters.deploy_token_packages.i_package_rubygems_deploy_token_monthly
-description: Distinct count events for RubyGems packages published using a Deploy token in recent 28 days
+description: Count of distinct deploy tokens that have interacted with Rubygem packages in the package registry in the last 28 days
 product_group: package_registry
 value_type: number
 status: active

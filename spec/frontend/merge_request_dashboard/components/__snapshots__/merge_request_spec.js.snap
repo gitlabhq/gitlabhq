@@ -29,7 +29,7 @@ exports[`Merge request dashboard merge request component renders template 1`] = 
       Merge request title
     </gl-link-stub>
     <div
-      class="gl-mb-2 gl-mt-2 gl-text-secondary gl-text-sm"
+      class="gl-mb-2 gl-mt-2 gl-text-sm gl-text-subtle"
     >
       <gl-sprintf-stub
         message="%{reference} %{divider} created %{createdAt} by %{author} %{milestone}"
@@ -105,7 +105,7 @@ exports[`Merge request dashboard merge request component renders template 1`] = 
       </div>
     </div>
     <div
-      class="gl-mt-1 gl-text-right gl-text-secondary gl-text-sm"
+      class="gl-mt-1 gl-text-right gl-text-sm gl-text-subtle"
     >
       <gl-sprintf-stub
         message="Updated %{updatedAt}"

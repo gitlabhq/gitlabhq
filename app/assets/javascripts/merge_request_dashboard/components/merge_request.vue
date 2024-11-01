@@ -76,7 +76,7 @@ export default {
       >
         {{ mergeRequest.title }}
       </gl-link>
-      <div class="gl-mb-2 gl-mt-2 gl-text-sm gl-text-secondary">
+      <div class="gl-mb-2 gl-mt-2 gl-text-sm gl-text-subtle">
         <gl-sprintf
           :message="__('%{reference} %{divider} created %{createdAt} by %{author} %{milestone}')"
         >
@@ -84,7 +84,7 @@ export default {
           <template #divider>&middot;</template>
           <template #createdAt><time-ago-tooltip :time="mergeRequest.createdAt" /></template>
           <template #author>
-            <gl-link :href="mergeRequest.author.webUrl" class="gl-text-secondary">
+            <gl-link :href="mergeRequest.author.webUrl" class="gl-text-subtle">
               {{ mergeRequest.author.name }}
             </gl-link>
           </template>
@@ -127,7 +127,7 @@ export default {
           <span>{{ mergeRequest.diffStatsSummary.deletions }}</span>
         </div>
       </div>
-      <div class="gl-mt-1 gl-text-right gl-text-sm gl-text-secondary">
+      <div class="gl-mt-1 gl-text-right gl-text-sm gl-text-subtle">
         <gl-sprintf :message="__('Updated %{updatedAt}')">
           <template #updatedAt>
             <time-ago-tooltip :time="mergeRequest.updatedAt" />

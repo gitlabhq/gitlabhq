@@ -288,6 +288,28 @@ Instead, use **assign**. For example:
 
 Use **authenticated user** instead of other variations, like **signed in user** or **logged in user**.
 
+## authenticate
+
+Try to use the most suitable preposition when using **authenticate** as a verb.
+
+Use **authenticate with** when referring to a system or provider that
+performs the authentication, like a token or a service like OAuth. 
+
+For example:
+  
+- Authenticate with a deploy token.
+- Authenticate with your credentials.
+- Authenticate with OAuth.
+- The runner uses an authentication token to authenticate with GitLab.
+
+Use **authenticate against** when referring to a resource that contains
+credentials that are checked for validation. 
+
+For example:
+
+- The client authenticates against the LDAP directory.
+- The script authenticates against the local user database.
+
 ## before you begin
 
 Use **before you begin** when documenting the tasks that must be completed or the conditions that must be met before a user can complete a tutorial. Do not use **requirements** or **prerequisites**.

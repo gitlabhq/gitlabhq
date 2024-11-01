@@ -828,7 +828,9 @@ module Ci
       artifacts_public = options.dig(:artifacts, :public)
       artifacts_access = options.dig(:artifacts, :access)
 
-      raise ArgumentError, 'artifacts:public and artifacts:access are mutually exclusive' if !artifacts_public.nil? && !artifacts_access.nil?
+      if !artifacts_public.nil? && !artifacts_access.nil?
+        raise ArgumentError, 'artifacts:public and artifacts:access are mutually exclusive'
+      end
 
       return :public if artifacts_public == true || artifacts_access == 'all'
       return :private if artifacts_public == false || artifacts_access == 'developer'
@@ -867,9 +869,7 @@ module Ci
 
     def artifacts_expire_in=(value)
       self.artifacts_expire_at =
-        if value
-          ChronicDuration.parse(value)&.seconds&.from_now
-        end
+        (ChronicDuration.parse(value)&.seconds&.from_now if value)
     end
 
     def has_expired_locked_archive_artifacts?
@@ -997,9 +997,7 @@ module Ci
         Gitlab::Ci::MaskSecret.mask!(trace, project.runners_token) if project
         Gitlab::Ci::MaskSecret.mask!(trace, token) if token
 
-        if trace != data
-          metrics.increment_trace_operation(operation: :mutated)
-        end
+        metrics.increment_trace_operation(operation: :mutated) if trace != data
       end
     end
 

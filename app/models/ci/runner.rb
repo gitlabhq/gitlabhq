@@ -582,39 +582,27 @@ module Ci
     end
 
     def no_sharding_key_id
-      if sharding_key_id
-        errors.add(:runner, 'cannot have sharding_key_id assigned')
-      end
+      errors.add(:runner, 'cannot have sharding_key_id assigned') if sharding_key_id
     end
 
     def no_projects
-      if runner_projects.any?
-        errors.add(:runner, 'cannot have projects assigned')
-      end
+      errors.add(:runner, 'cannot have projects assigned') if runner_projects.any?
     end
 
     def no_groups
-      if runner_namespaces.any?
-        errors.add(:runner, 'cannot have groups assigned')
-      end
+      errors.add(:runner, 'cannot have groups assigned') if runner_namespaces.any?
     end
 
     def any_project
-      unless runner_projects.any?
-        errors.add(:runner, 'needs to be assigned to at least one project')
-      end
+      errors.add(:runner, 'needs to be assigned to at least one project') unless runner_projects.any?
     end
 
     def exactly_one_group
-      unless runner_namespaces.size == 1
-        errors.add(:runner, 'needs to be assigned to exactly one group')
-      end
+      errors.add(:runner, 'needs to be assigned to exactly one group') unless runner_namespaces.size == 1
     end
 
     def no_allowed_plan_ids
-      unless allowed_plan_ids.empty?
-        errors.add(:runner, 'cannot have allowed plans assigned')
-      end
+      errors.add(:runner, 'cannot have allowed plans assigned') unless allowed_plan_ids.empty?
     end
 
     def partition_id_prefix_in_16_bit_encode

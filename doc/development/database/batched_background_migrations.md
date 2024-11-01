@@ -307,8 +307,9 @@ migration code should be.
 
 ### Deleting batched background migration code
 
-Once a batched background migration has been finalized, the migration code in `lib/gitlab/background_migration/`
-and its associated tests can be deleted after the next required stop following the finalization.
+Once a batched background migration has completed, is finalized and has not been [re-queued](#re-queue-batched-background-migrations),
+the migration code in `lib/gitlab/background_migration/` and its associated tests can be deleted after the next required stop following
+the finalization.
 
 Here is an example scenario:
 

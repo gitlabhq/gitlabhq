@@ -4,7 +4,7 @@ module AuthorizedProjectUpdate
   class ProjectRecalculateWorker
     include ApplicationWorker
 
-    data_consistency :always
+    data_consistency :sticky
     include Gitlab::ExclusiveLeaseHelpers
 
     feature_category :permissions

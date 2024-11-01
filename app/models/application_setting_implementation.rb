@@ -537,7 +537,9 @@ module ApplicationSettingImplementation
   def usage_ping_features_enabled
     return false unless usage_ping_enabled? && super
 
-    return include_optional_metrics_in_service_ping if Gitlab.ee? && respond_to?(:include_optional_metrics_in_service_ping)
+    if Gitlab.ee? && respond_to?(:include_optional_metrics_in_service_ping)
+      return include_optional_metrics_in_service_ping
+    end
 
     true
   end
@@ -699,14 +701,20 @@ module ApplicationSettingImplementation
     repository_storages_weighted.each do |key, val|
       next unless val.present?
 
-      errors.add(:repository_storages_weighted, _("value for '%{storage}' must be an integer") % { storage: key }) unless val.is_a?(Integer)
-      errors.add(:repository_storages_weighted, _("value for '%{storage}' must be between 0 and 100") % { storage: key }) unless val.between?(0, 100)
+      unless val.is_a?(Integer)
+        errors.add(:repository_storages_weighted, _("value for '%{storage}' must be an integer") % { storage: key })
+      end
+
+      unless val.between?(0, 100)
+        errors.add(:repository_storages_weighted, _("value for '%{storage}' must be between 0 and 100") % { storage: key })
+      end
     end
   end
 
   def check_valid_runner_registrars
-    valid = valid_runner_registrar_combinations.include?(valid_runner_registrars)
-    errors.add(:valid_runner_registrars, _("%{value} is not included in the list") % { value: valid_runner_registrars }) unless valid
+    return if valid_runner_registrar_combinations.include?(valid_runner_registrars)
+
+    errors.add(:valid_runner_registrars, _("%{value} is not included in the list") % { value: valid_runner_registrars })
   end
 
   def valid_runner_registrar_combinations

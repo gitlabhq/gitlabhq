@@ -45,7 +45,7 @@ RSpec.describe 'Project > Settings > Packages and registries > Container registr
       subject
 
       settings_block = find_by_testid('container-expiration-policy-project-settings')
-      expect(settings_block).to have_text 'Cleanup policies'
+      expect(settings_block).to have_text 'Container registry cleanup policies'
     end
 
     it 'contains link to cleanup policies page' do

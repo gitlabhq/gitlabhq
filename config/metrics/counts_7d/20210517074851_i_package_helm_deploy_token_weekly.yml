@@ -1,7 +1,7 @@
 ---
 data_category: optional
 key_path: redis_hll_counters.deploy_token_packages.i_package_helm_deploy_token_weekly
-description: Distinct Helm pakages deployed in recent 7 days
+description: A weekly count of distinct deploy tokens used for Helm chart interactions with the package registry
 product_group: package_registry
 value_type: number
 status: active
