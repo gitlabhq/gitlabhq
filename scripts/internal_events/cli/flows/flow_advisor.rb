@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative '../helpers'
+require_relative '../text/flow_advisor'
 
 # Entrypoint for help flow, which directs the user to the
 # correct flow or documentation based on their goal
@@ -8,6 +9,7 @@ module InternalEventsCli
   module Flows
     class FlowAdvisor
       include Helpers
+      include Text::FlowAdvisor
 
       attr_reader :cli
 
@@ -36,7 +38,7 @@ module InternalEventsCli
         new_page!
 
         cli.say format_info("Excellent! Let's check that this tool will fit your needs.\n")
-        cli.say Text::EVENT_TRACKING_EXAMPLES
+        cli.say EVENT_TRACKING_EXAMPLES
 
         cli.yes?(
           'Can usage for the feature be measured with a count of specific user actions or events? ' \
@@ -49,7 +51,7 @@ module InternalEventsCli
         new_page!
 
         cli.say format_info("Super! Let's figure out if the event is already tracked & usable.\n")
-        cli.say Text::EVENT_EXISTENCE_CHECK_INSTRUCTIONS
+        cli.say EVENT_EXISTENCE_CHECK_INSTRUCTIONS
 
         cli.yes?('Is the event already tracked?', **yes_no_opts)
       end
@@ -58,8 +60,8 @@ module InternalEventsCli
         new_page!
 
         cli.error("Oh no! This probably isn't the tool you need!\n")
-        cli.say Text::ALTERNATE_RESOURCES_NOTICE
-        cli.say Text::FEEDBACK_NOTICE
+        cli.say ALTERNATE_RESOURCES_NOTICE
+        cli.say feedback_notice
       end
 
       def proceed_to_metric_definition
@@ -84,7 +86,7 @@ module InternalEventsCli
 
       def not_ready_error(description)
         cli.say "\nNo problem! When you're ready, run the CLI & select '#{description}'\n"
-        cli.say Text::FEEDBACK_NOTICE
+        cli.say feedback_notice
       end
     end
   end

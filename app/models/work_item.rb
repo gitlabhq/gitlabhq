@@ -22,6 +22,7 @@ class WorkItem < Issue
     foreign_key: 'issue_id',
     inverse_of: :work_item,
     autosave: true
+  has_one :weights_source, class_name: 'WorkItems::WeightsSource'
 
   has_many :child_links, class_name: '::WorkItems::ParentLink', foreign_key: :work_item_parent_id
   has_many :work_item_children, through: :child_links, class_name: 'WorkItem',

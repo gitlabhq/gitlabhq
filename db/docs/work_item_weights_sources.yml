@@ -1,0 +1,12 @@
+---
+table_name: work_item_weights_sources
+classes:
+  - WorkItems::WeightsSource
+feature_categories:
+  - team_planning
+description: Weight data associated to work items.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170371
+milestone: '17.6'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  namespace_id: namespaces

@@ -1,4 +1,4 @@
-import { GlBadge, GlTab, GlTabs, GlIcon, GlSprintf, GlLink } from '@gitlab/ui';
+import { GlAvatar, GlBadge, GlTab, GlTabs, GlIcon, GlSprintf, GlLink } from '@gitlab/ui';
 import VueRouter from 'vue-router';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
@@ -136,6 +136,31 @@ describe('ml/model_registry/apps/show_model_version.vue', () => {
       it('does not display model edit button', () => {
         createWrapper({ canWriteModelRegistry: false });
         expect(findModelVersionEditButton().exists()).toBe(false);
+      });
+    });
+  });
+
+  describe('Sidebar', () => {
+    const findSidebarAuthorLink = () => wrapper.findByTestId('sidebar-author-link');
+    const findAvatar = () => wrapper.findComponent(GlAvatar);
+
+    it('displays sidebar author link', async () => {
+      const resolver = jest.fn().mockResolvedValue(modelVersionQueryWithAuthor);
+
+      createWrapper({ resolver });
+
+      await waitForPromises();
+
+      expect(findSidebarAuthorLink().attributes('href')).toBe('path/to/user');
+      expect(findSidebarAuthorLink().text()).toBe('Root');
+      expect(findAvatar().props('src')).toBe('path/to/avatar');
+    });
+
+    describe('when model does not get loaded', () => {
+      it('does not displays sidebar author link', async () => {
+        createWrapper({ resolver: jest.fn().mockRejectedValue(new Error('Failure!')) });
+        await waitForPromises();
+        expect(findSidebarAuthorLink().exists()).toBe(false);
       });
     });
   });

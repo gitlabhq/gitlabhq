@@ -26,5 +26,18 @@ module InternalEventsCli
       cli.say TTY::Cursor.move_to(0, 0)
       cli.say "#{progress_bar(page, total, steps)}\n" if page && total
     end
+
+    def feedback_notice
+      format_heading <<~TEXT.chomp
+        Thanks for using the Internal Events CLI!
+
+        Please reach out with any feedback!
+          About Internal Events: https://gitlab.com/gitlab-org/analytics-section/analytics-instrumentation/internal/-/issues/687
+          About CLI: https://gitlab.com/gitlab-org/gitlab/-/issues/434038
+          In Slack: #g_analyze_analytics_instrumentation
+
+        Let us know that you used the CLI! React with 👍 on the feedback issue or post in Slack!
+      TEXT
+    end
   end
 end

@@ -96,7 +96,7 @@ module InternalEventsCli
         when :other_event
           self.class.new(cli).run
         when :exit
-          cli.say(Text::FEEDBACK_NOTICE)
+          cli.say(feedback_notice)
         end
       end
 

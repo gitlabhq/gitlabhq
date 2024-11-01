@@ -1,13 +1,14 @@
 # frozen_string_literal: true
 
 require_relative '../helpers'
-require_relative '../text'
+require_relative '../text/metric_definer'
 
 # Entrypoint for flow to create an metric definition file
 module InternalEventsCli
   module Flows
     class MetricDefiner
       include Helpers
+      include Text::MetricDefiner
 
       SCHEMA = ::JSONSchemer.schema(Pathname('config/metrics/schema/base.json'))
       STEPS = [
@@ -22,21 +23,6 @@ module InternalEventsCli
         'Tiers',
         'Save files'
       ].freeze
-
-      NAME_REQUIREMENT_REASONS = {
-        filters: {
-          text: 'Metrics using filters are too complex for default naming.',
-          help: Text::METRIC_NAME_FILTER_HELP
-        },
-        length: {
-          text: 'The default filename will be too long.',
-          help: Text::METRIC_NAME_LENGTH_HELP
-        },
-        conflict: {
-          text: 'The default key path is already in use.',
-          help: Text::METRIC_NAME_CONFLICT_HELP
-        }
-      }.freeze
 
       attr_reader :cli
 
@@ -123,8 +109,8 @@ module InternalEventsCli
             **filter_opts(header_size: 7)
           )
         when :database_metric
-          cli.error Text::DATABASE_METRIC_NOTICE
-          cli.say Text::FEEDBACK_NOTICE
+          cli.error DATABASE_METRIC_NOTICE
+          cli.say feedback_notice
         end
       end
 
@@ -132,8 +118,8 @@ module InternalEventsCli
         eligible_metrics = get_metric_options(selected_events)
 
         if eligible_metrics.all? { |metric| metric[:disabled] }
-          cli.error Text::ALL_METRICS_EXIST_NOTICE
-          cli.say Text::FEEDBACK_NOTICE
+          cli.error ALL_METRICS_EXIST_NOTICE
+          cli.say feedback_notice
 
           return
         end
@@ -206,7 +192,7 @@ module InternalEventsCli
           if idx == 0 || separate_page_per_metric
             new_page!(4, 9, STEPS)
 
-            cli.say Text::METRIC_DESCRIPTION_INTRO
+            cli.say DESCRIPTION_INTRO
             cli.say selected_event_descriptions.join
           end
 
@@ -359,7 +345,7 @@ module InternalEventsCli
         when :view_usage
           UsageViewer.new(cli, @selected_event_paths.first, selected_events.first).run
         when :exit
-          cli.say Text::FEEDBACK_NOTICE
+          cli.say feedback_notice
         end
       end
 
@@ -487,7 +473,7 @@ module InternalEventsCli
         prompt_for_text("  Finish the description: #{description_start}", default, multiline: true) do |q|
           q.required true
           q.modify :trim
-          q.messages[:required?] = Text::METRIC_DESCRIPTION_HELP
+          q.messages[:required?] = DESCRIPTION_HELP
         end
       end
 
@@ -515,7 +501,7 @@ module InternalEventsCli
         prompt_for_text('  Replace with: ', default, multiline: true) do |q|
           q.required true
           q.messages[:required?] = name_reason[:help] % help_tokens
-          q.messages[:valid?] = Text::METRIC_NAME_ERROR % help_tokens
+          q.messages[:valid?] = NAME_ERROR % help_tokens
           q.validate ->(input) do
             input.length <= max_length &&
               input.match?(NAME_REGEX) &&

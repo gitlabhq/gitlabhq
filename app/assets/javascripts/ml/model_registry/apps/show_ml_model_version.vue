@@ -1,6 +1,6 @@
 <script>
 import VueRouter from 'vue-router';
-import { GlTab, GlTabs, GlButton, GlSprintf, GlIcon, GlLink } from '@gitlab/ui';
+import { GlAvatar, GlTab, GlTabs, GlButton, GlSprintf, GlIcon, GlLink } from '@gitlab/ui';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { createAlert, VARIANT_DANGER } from '~/alert';
@@ -35,6 +35,7 @@ const routes = [
 export default {
   name: 'ShowMlModelVersionApp',
   components: {
+    GlAvatar,
     GlButton,
     LoadOrErrorOrShow,
     ModelVersionActionsDropdown,
@@ -166,6 +167,12 @@ export default {
     tabIndex() {
       return routes.findIndex(({ name }) => name === this.$route.name);
     },
+    showAuthor() {
+      return Boolean(this.modelVersion?.author);
+    },
+    author() {
+      return this.modelVersion?.author;
+    },
   },
   methods: {
     handleError(error) {
@@ -216,6 +223,7 @@ export default {
   },
   i18n: {
     editModelVersionButtonLabel: s__('MlModelRegistry|Edit model version'),
+    authorTitle: s__('MlModelRegistry|Publisher'),
   },
   ROUTE_DETAILS,
   ROUTE_PERFORMANCE,
@@ -241,10 +249,10 @@ export default {
                 <template #author>
                   <gl-link
                     class="js-user-link gl-font-bold !gl-text-gray-500"
-                    :href="modelVersion.author.webUrl"
+                    :href="author.webUrl"
                     :data-user-id="authorId"
                   >
-                    <span class="sm:gl-inline">{{ modelVersion.author.name }}</span>
+                    <span class="sm:gl-inline">{{ author.name }}</span>
                   </gl-link>
                 </template>
               </gl-sprintf>
@@ -264,23 +272,41 @@ export default {
       </div>
     </div>
 
-    <load-or-error-or-show :is-loading="isLoading" :error-message="errorMessage">
-      <gl-tabs class="gl-mt-4" :value="tabIndex">
-        <gl-tab
-          :title="s__('MlModelRegistry|Version card')"
-          @click="goTo($options.ROUTE_DETAILS)"
-        />
-        <gl-tab
-          :title="s__('MlModelRegistry|Performance')"
-          @click="goTo($options.ROUTE_PERFORMANCE)"
-        />
-      </gl-tabs>
-      <router-view
-        :model-version="modelVersion"
-        can-write-model-registry
-        import-path
-        allow-artifact-import
-      />
-    </load-or-error-or-show>
+    <div class="gl-grid gl-gap-3 md:gl-grid-cols-4">
+      <div class="md:gl-col-span-3 md:gl-pr-8">
+        <load-or-error-or-show :is-loading="isLoading" :error-message="errorMessage">
+          <gl-tabs class="gl-mt-4" :value="tabIndex">
+            <gl-tab
+              :title="s__('MlModelRegistry|Version card')"
+              @click="goTo($options.ROUTE_DETAILS)"
+            />
+            <gl-tab
+              :title="s__('MlModelRegistry|Performance')"
+              @click="goTo($options.ROUTE_PERFORMANCE)"
+            />
+          </gl-tabs>
+          <router-view
+            :model-version="modelVersion"
+            can-write-model-registry
+            import-path
+            allow-artifact-import
+          />
+        </load-or-error-or-show>
+      </div>
+
+      <div class="gl-pt-6 md:gl-col-span-1">
+        <div class="gl-text-lg gl-font-bold">{{ $options.i18n.authorTitle }}</div>
+        <div v-if="showAuthor" class="gl-mt-3 gl-text-gray-500">
+          <gl-link
+            data-testid="sidebar-author-link"
+            class="js-user-link gl-font-bold !gl-text-gray-500"
+            :href="author.webUrl"
+          >
+            <gl-avatar :label="author.name" :src="author.avatarUrl" :size="24" />
+            {{ author.name }}
+          </gl-link>
+        </div>
+      </div>
+    </div>
   </div>
 </template>

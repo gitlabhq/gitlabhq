@@ -848,8 +848,8 @@ The script does not print job templates that:
 ```shell
 export GL_GROUP_ID=56595735
 
-# Script requires pyyaml too.
-pip3 install python-gitlab pyyaml
+# Install script dependencies
+python3 -m pip install 'python-gitlab[yaml]'
 
 python3 get_all_cicd_config_artifacts_expiry.py
 

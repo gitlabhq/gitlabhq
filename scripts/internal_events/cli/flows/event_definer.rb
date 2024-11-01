@@ -1,12 +1,14 @@
 # frozen_string_literal: true
 
 require_relative '../helpers'
+require_relative '../text/event_definer'
 
 # Entrypoint for flow to create an event definition file
 module InternalEventsCli
   module Flows
     class EventDefiner
       include Helpers
+      include Text::EventDefiner
 
       SCHEMA = ::JSONSchemer.schema(Pathname('config/events/schema.json'))
       STEPS = [
@@ -19,23 +21,6 @@ module InternalEventsCli
         'Tiers',
         'Save files'
       ].freeze
-
-      IDENTIFIER_OPTIONS = {
-        %w[project namespace user] =>
-          'Use case: For project-level user actions (ex - issue_assignee_changed) [MOST COMMON]',
-        %w[namespace user] =>
-          'Use case: For namespace-level user actions (ex - epic_assigned_to_milestone)',
-        %w[user] =>
-          'Use case: For user-only actions (ex - admin_impersonated_user)',
-        %w[project namespace] =>
-          'Use case: For project-level events without user interaction (ex - service_desk_request_received)',
-        %w[namespace] =>
-          'Use case: For namespace-level events without user interaction (ex - stale_runners_cleaned_up)',
-        %w[feature_enabled_by_namespace_ids user] =>
-          'Use case: For user actions attributable to multiple namespaces (ex - Code-Suggestions / Duo Pro)',
-        %w[] =>
-          'Use case: For instance-level events without user interaction [LEAST COMMON]'
-      }.freeze
 
       IDENTIFIER_FORMATTING_BUFFER = "[#{IDENTIFIER_OPTIONS.keys.map { |k| k.join(', ') }.max_by(&:length)}]".length
 
@@ -64,18 +49,18 @@ module InternalEventsCli
 
       def prompt_for_description
         new_page!(1, 7, STEPS)
-        cli.say Text::EVENT_DESCRIPTION_INTRO
+        cli.say DESCRIPTION_INTRO
 
         event.description = cli.ask("Describe what the event tracks: #{input_required_text}", **input_opts) do |q|
           q.required true
           q.modify :trim
-          q.messages[:required?] = Text::EVENT_DESCRIPTION_HELP
+          q.messages[:required?] = DESCRIPTION_HELP
         end
       end
 
       def prompt_for_action
         new_page!(2, 7, STEPS)
-        cli.say Text::EVENT_ACTION_INTRO
+        cli.say ACTION_INTRO
 
         event.action = cli.ask("Define the event name: #{input_required_text}", **input_opts) do |q|
           q.required true
@@ -84,7 +69,7 @@ module InternalEventsCli
           q.messages[:valid?] = format_warning(
             "Invalid event name. Only lowercase/numbers/underscores allowed. " \
               "Ensure %{value} is not an existing event.")
-          q.messages[:required?] = Text::EVENT_ACTION_HELP
+          q.messages[:required?] = ACTION_HELP
         end
       end
 
@@ -99,7 +84,7 @@ module InternalEventsCli
       end
 
       def prompt_for_identifiers
-        cli.say Text::EVENT_IDENTIFIERS_INTRO % event.action
+        cli.say IDENTIFIERS_INTRO % event.action
 
         identifiers = prompt_for_array_selection(
           'Which identifiers are available when the event occurs?',
@@ -118,7 +103,7 @@ module InternalEventsCli
       end
 
       def prompt_for_additional_properties
-        cli.say Text::ADDITIONAL_PROPERTIES_INTRO
+        cli.say ADDITIONAL_PROPERTIES_INTRO
 
         available_props = [:label, :property, :value, :add_extra_prop]
 
@@ -191,7 +176,7 @@ module InternalEventsCli
           q.required true
           q.validate ->(input) { input =~ NAME_REGEX && primary_props.none?(input) }
           q.modify :trim
-          q.messages[:required?] = Text::ADDITIONAL_PROPERTIES_ADD_MORE_HELP
+          q.messages[:required?] = ADDITIONAL_PROPERTIES_ADD_MORE_HELP
           q.messages[:valid?] = format_warning(
             "Invalid property name. Only lowercase/numbers/underscores allowed. " \
               "Ensure %{value} is not one of `property, label, value`.")
@@ -280,7 +265,7 @@ module InternalEventsCli
         when :view_usage
           UsageViewer.new(cli, event.file_path, event).run
         when :exit
-          cli.say Text::FEEDBACK_NOTICE
+          cli.say feedback_notice
         end
       end
     end
