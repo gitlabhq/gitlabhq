@@ -690,6 +690,11 @@ msgid_plural "%{count} contacts"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%{count} event has ocurred"
+msgid_plural "%{count} events have ocurred"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%{count} files touched"
 msgstr ""
 
@@ -10515,6 +10520,12 @@ msgstr ""
 msgid "CICD|Allow Git push requests to the repository"
 msgstr ""
 
+msgid "CICD|Authentication events from the last 30 days. %{linkStart}Learn more.%{linkEnd}"
+msgstr ""
+
+msgid "CICD|Authentication log"
+msgstr ""
+
 msgid "CICD|Authorized groups and projects"
 msgstr ""
 
@@ -10578,6 +10589,9 @@ msgstr ""
 msgid "CICD|Maintainer"
 msgstr ""
 
+msgid "CICD|No authentication events in the last 30 days."
+msgstr ""
+
 msgid "CICD|Only this project and any groups and projects in the allowlist"
 msgstr ""
 
@@ -10603,6 +10617,12 @@ msgid "CICD|The Auto DevOps pipeline runs if no alternative CI configuration fil
 msgstr ""
 
 msgid "CICD|There are several CI/CD limits in place."
+msgstr ""
+
+msgid "CICD|There are too many entries to display. Download the CSV file to view the full log."
+msgstr ""
+
+msgid "CICD|There was a problem fetching authentication logs."
 msgstr ""
 
 msgid "CICD|Unprotected branches will not have access to the cache from protected branches."
@@ -20126,6 +20146,9 @@ msgid "Download (%{fileSizeReadable})"
 msgstr ""
 
 msgid "Download (%{size})"
+msgstr ""
+
+msgid "Download CSV"
 msgstr ""
 
 msgid "Download PDF"
@@ -49444,6 +49467,9 @@ msgid "SecurityOrchestration|%{cadence} on %{branches}%{branchExceptionsString}"
 msgstr ""
 
 msgid "SecurityOrchestration|%{frameworkName} has %{projectLength} %{projects}"
+msgstr ""
+
+msgid "SecurityOrchestration|%{pageSize}+ projects which have compliance framework:"
 msgstr ""
 
 msgid "SecurityOrchestration|%{scanners}"

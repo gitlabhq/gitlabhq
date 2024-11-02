@@ -19,7 +19,7 @@ export const initTokenAccess = (containerId = 'js-ci-token-access-app') => {
     return false;
   }
 
-  const { fullPath, enforceAllowlist } = containerEl.dataset;
+  const { fullPath, csvDownloadPath, enforceAllowlist } = containerEl.dataset;
 
   return new Vue({
     el: containerEl,
@@ -28,6 +28,7 @@ export const initTokenAccess = (containerId = 'js-ci-token-access-app') => {
     provide: {
       enforceAllowlist: JSON.parse(enforceAllowlist),
       fullPath,
+      csvDownloadPath,
     },
     render(createElement) {
       return createElement(TokenAccessApp);

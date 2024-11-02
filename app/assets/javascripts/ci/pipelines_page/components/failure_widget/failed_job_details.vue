@@ -7,6 +7,7 @@ import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { BRIDGE_KIND } from '~/ci/pipeline_details/graph/constants';
 import RetryMrFailedJobMutation from '~/ci/merge_requests/graphql/mutations/retry_mr_failed_job.mutation.graphql';
+import RootCauseAnalysisButton from 'ee_else_ce/ci/job_details/components/root_cause_analysis_button.vue';
 
 export default {
   components: {
@@ -14,6 +15,7 @@ export default {
     GlButton,
     GlLink,
     GlTooltip,
+    RootCauseAnalysisButton,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -22,6 +24,10 @@ export default {
   props: {
     job: {
       type: Object,
+      required: true,
+    },
+    canTroubleshootJob: {
+      type: Boolean,
       required: true,
     },
   },
@@ -34,8 +40,14 @@ export default {
     canRetryJob() {
       return this.job.retryable && this.job.userPermissions.updateBuild && !this.isBridgeJob;
     },
+    detailedStatus() {
+      return this.job?.detailedStatus;
+    },
     detailsPath() {
-      return this.job?.detailedStatus?.detailsPath;
+      return this.detailedStatus?.detailsPath;
+    },
+    statusGroup() {
+      return this.detailedStatus?.group;
     },
     isBridgeJob() {
       return this.job.kind === BRIDGE_KIND;
@@ -100,16 +112,23 @@ export default {
           >{{ job.name }}</gl-link
         >
       </div>
-      <div class="col-3 gl-flex gl-items-center" data-testid="job-stage-name">
+      <div class="col-2 gl-flex gl-items-center" data-testid="job-stage-name">
         {{ job.stage.name }}
       </div>
-      <div class="col-3 gl-flex gl-items-center">
+      <div class="col-2 gl-flex gl-items-center">
         <gl-link :href="detailsPath" data-testid="job-id-link">#{{ parsedJobId }}</gl-link>
       </div>
       <gl-tooltip v-if="!canRetryJob" :target="() => $refs.retryBtn" placement="top">
         {{ tooltipErrorText }}
       </gl-tooltip>
-      <div class="col-2 gl-text-right">
+      <div class="col-4 gl-text-right">
+        <root-cause-analysis-button
+          class="gl-mr-2"
+          :job-gid="job.id"
+          :job-status-group="statusGroup"
+          :can-troubleshoot-job="canTroubleshootJob"
+        />
+
         <span ref="retryBtn">
           <gl-button
             v-gl-tooltip

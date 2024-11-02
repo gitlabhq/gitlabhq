@@ -54,6 +54,7 @@ export default {
       failedJobs: [],
       isActive: false,
       isLoadingMore: false,
+      canTroubleshootJob: false,
     };
   },
   apollo: {
@@ -75,6 +76,7 @@ export default {
       },
       result({ data }) {
         const pipeline = data?.project?.pipeline;
+        this.canTroubleshootJob = pipeline?.troubleshootJobWithAi || false;
 
         if (pipeline?.jobs?.count) {
           this.$emit('failed-jobs-count', pipeline.jobs.count);
@@ -150,8 +152,8 @@ export default {
   },
   columns: [
     { text: JOB_NAME_HEADER, class: 'col-4' },
-    { text: STAGE_HEADER, class: 'col-3' },
-    { text: JOB_ID_HEADER, class: 'col-3' },
+    { text: STAGE_HEADER, class: 'col-2' },
+    { text: JOB_ID_HEADER, class: 'col-2' },
   ],
   i18n: {
     maximumJobLimitAlert: {
@@ -200,6 +202,7 @@ export default {
       v-for="job in failedJobs"
       :key="job.id"
       :job="job"
+      :can-troubleshoot-job="canTroubleshootJob"
       @job-retried="retryJob"
     />
   </div>

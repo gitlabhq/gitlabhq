@@ -324,3 +324,35 @@ export const mockPermissionsMutationResponse = ({
     },
   },
 });
+
+export const mockAuthLogsResponse = (hasNextPage = false) => ({
+  data: {
+    project: {
+      id: 'gid://gitlab/Project/26',
+      __typename: 'Project',
+      ciJobTokenAuthLogs: {
+        __typename: 'CiJobTokenAuthLogConnection',
+        count: 1,
+        nodes: [
+          {
+            __typename: 'CiJobTokenAuthLog',
+            lastAuthorizedAt: '2024-10-25',
+            originProject: {
+              __typename: 'Project',
+              fullPath: 'root/project-that-triggers-external-pipeline',
+              path: 'project-that-triggers-external-pipeline',
+              avatarUrl: null,
+              name: 'project-that-triggers-external-pipeline',
+              id: 'gid://gitlab/Project/26',
+            },
+          },
+        ],
+        pageInfo: {
+          __typename: 'PageInfo',
+          endCursor: 'eyJpZCI6IjEifQ',
+          hasNextPage,
+        },
+      },
+    },
+  },
+});

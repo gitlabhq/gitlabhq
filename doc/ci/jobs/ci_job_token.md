@@ -289,6 +289,22 @@ To configure the job token scope:
 1. Optional. Add existing projects to the token's access scope. The user adding a
    project must have the Maintainer role in both projects.
 
+## Job token authentication log
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467292/) in GitLab 17.6.
+
+You can track which other projects use a CI/CD job token to authenticate with your project
+in an authentication log. To check the log:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > CI/CD**.
+1. Expand **Job token permissions**. The **Authentication log** section displays the
+   the list of other projects that accessed your project by authenticating with a job token.
+1. Optional. Select **Download CSV** to download the full authentication log in CSV format.
+
+The authentication log displays a maximum of 100 authentication events. If the number of events
+is more than 100, download the CSV file to view the log.
+
 ## Troubleshooting
 
 CI job token failures are usually shown as responses like `404 Not Found` or similar:

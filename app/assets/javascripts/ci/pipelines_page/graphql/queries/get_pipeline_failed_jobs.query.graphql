@@ -4,6 +4,7 @@ query getPipelineFailedJobs($fullPath: ID!, $pipelineIid: ID!) {
     pipeline(iid: $pipelineIid) {
       id
       active
+      troubleshootJobWithAi
       jobs(statuses: [FAILED], retried: false) {
         count
         nodes {

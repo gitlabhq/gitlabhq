@@ -1,0 +1,22 @@
+query getAuthLogs($fullPath: ID!, $first: Int, $last: Int, $after: String, $before: String) {
+  project(fullPath: $fullPath) {
+    id
+    ciJobTokenAuthLogs(first: $first, last: $last, after: $after, before: $before) {
+      count
+      nodes {
+        lastAuthorizedAt
+        originProject {
+          fullPath
+          path
+          avatarUrl
+          name
+          id
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+    }
+  }
+}
