@@ -285,7 +285,7 @@
     "eslint-import-resolver-webpack": "0.13.9",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-local-rules": "^3.0.2",
-    "eslint-plugin-no-jquery": "2.7.0",
+    "eslint-plugin-no-jquery": "3.0.2",
     "eslint-plugin-no-unsanitized": "^4.1.2",
     "fake-indexeddb": "^4.0.1",
     "fast-xml-parser": "^3.21.1",
