@@ -1,4 +1,6 @@
-- breadcrumb_title _("Edit snippet")
+- add_to_breadcrumbs _("Snippets"), dashboard_snippets_path
+- add_to_breadcrumbs @snippet.to_reference, snippet_path(@snippet)
+- breadcrumb_title _("Edit")
 - page_title _("Edit"), "#{@snippet.title} (#{@snippet.to_reference})", _("Snippets")
 - content_for :prefetch_asset_tags do
   - webpack_preload_asset_tag('monaco')

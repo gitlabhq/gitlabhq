@@ -7,6 +7,8 @@
 - if @snippet.author != current_user
   -# If current user is not the snippet author, then it renders with the Explore layout which doesn't have this breadcrumb.
   - add_to_breadcrumbs _("Snippets"), explore_snippets_path
+- else
+  - add_to_breadcrumbs _("Snippets"), dashboard_snippets_path
 - breadcrumb_title @snippet.to_reference
 - page_title "#{@snippet.title} (#{@snippet.to_reference})", _("Snippets")
 - content_for :prefetch_asset_tags do
