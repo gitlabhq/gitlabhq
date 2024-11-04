@@ -173,7 +173,6 @@ Layout/LineLength:
     - 'app/helpers/compare_helper.rb'
     - 'app/helpers/diff_helper.rb'
     - 'app/helpers/dropdowns_helper.rb'
-    - 'app/helpers/emails_helper.rb'
     - 'app/helpers/events_helper.rb'
     - 'app/helpers/export_helper.rb'
     - 'app/helpers/external_link_helper.rb'

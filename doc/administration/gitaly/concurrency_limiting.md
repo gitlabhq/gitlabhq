@@ -154,7 +154,7 @@ algorithm. Each adaptive limit:
 
 This mechanism provides some headroom for the machine to "breathe" and speeds up current inflight requests.
 
-![Gitaly Adaptive Concurrency Limit](img/gitaly_adaptive_concurrency_limit_v16_6.png)
+![Graph showing a Gitaly adaptive concurrency limit being adjusted based on the system resource usage by following the AIMD algorithm](img/gitaly_adaptive_concurrency_limit_v16_6.png)
 
 The adaptive limiter calibrates the limits every 30 seconds and:
 
