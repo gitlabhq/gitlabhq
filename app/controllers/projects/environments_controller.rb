@@ -24,7 +24,8 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   before_action :authorize_stop_environment!, only: [:stop]
   before_action :authorize_update_environment!, only: [:edit, :update, :cancel_auto_stop]
   before_action :authorize_admin_environment!, only: [:terminal, :terminal_websocket_authorize]
-  before_action :environment, only: [:show, :edit, :update, :stop, :terminal, :terminal_websocket_authorize, :cancel_auto_stop, :k8s]
+  before_action :environment,
+    only: [:show, :edit, :update, :stop, :terminal, :terminal_websocket_authorize, :cancel_auto_stop, :k8s]
   before_action :verify_api_request!, only: :terminal_websocket_authorize
   before_action :expire_etag_cache, only: [:index], unless: -> { request.format.json? }
   before_action :set_kas_cookie, only: [:edit, :new, :show, :k8s], if: -> { current_user && request.format.html? }
@@ -226,7 +227,12 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   def search_environments(type: nil)
     search = params[:search] if params[:search] && params[:search].length >= MIN_SEARCH_LENGTH
 
-    @search_environments ||= Environments::EnvironmentsFinder.new(project, current_user, type: type, search: search).execute
+    @search_environments ||= Environments::EnvironmentsFinder.new(
+      project,
+      current_user,
+      type: type,
+      search: search
+    ).execute
   end
 
   def include_all_dashboards?

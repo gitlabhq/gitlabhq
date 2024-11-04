@@ -16,7 +16,8 @@ class Projects::CommitController < Projects::ApplicationController
   before_action :authorize_read_code!
   before_action :authorize_read_pipeline!, only: [:pipelines]
   before_action :commit
-  before_action :define_commit_vars, only: [:show, :diff_for_path, :diff_files, :pipelines, :merge_requests, :rapid_diffs]
+  before_action :define_commit_vars,
+    only: [:show, :diff_for_path, :diff_files, :pipelines, :merge_requests, :rapid_diffs]
   before_action :define_commit_box_vars, only: [:show, :pipelines, :rapid_diffs]
   before_action :define_note_vars, only: [:show, :diff_for_path, :diff_files]
   before_action :authorize_edit_tree!, only: [:revert, :cherry_pick]
@@ -54,7 +55,9 @@ class Projects::CommitController < Projects::ApplicationController
   def diff_files
     respond_to do |format|
       format.html do
-        render template: 'projects/commit/diff_files', layout: false, locals: { diffs: @diffs, environment: @environment }
+        render template: 'projects/commit/diff_files',
+          layout: false,
+          locals: { diffs: @diffs, environment: @environment }
       end
     end
   end
@@ -145,7 +148,8 @@ class Projects::CommitController < Projects::ApplicationController
 
     create_commit(
       Commits::CherryPickService,
-      success_notice: "The #{@commit.change_type_title(current_user)} has been successfully cherry-picked into #{@branch_name}.",
+      success_notice: "The #{@commit.change_type_title(current_user)} has been successfully " \
+        "cherry-picked into #{@branch_name}.",
       success_path: -> { successful_change_path(target_project) },
       failure_path: failed_change_path,
       target_project: target_project
@@ -200,7 +204,12 @@ class Projects::CommitController < Projects::ApplicationController
     return git_not_found! unless commit
 
     @diffs = commit.diffs(commit_diff_options)
-    @environment = ::Environments::EnvironmentsByDeploymentsFinder.new(@project, current_user, commit: @commit, find_latest: true).execute.last
+    @environment = ::Environments::EnvironmentsByDeploymentsFinder.new(
+      @project,
+      current_user,
+      commit: @commit,
+      find_latest: true
+    ).execute.last
   end
 
   # rubocop: disable CodeReuse/ActiveRecord
@@ -243,7 +252,10 @@ class Projects::CommitController < Projects::ApplicationController
 
     return unless @commit.last_pipeline
 
-    @last_pipeline_stages = StageSerializer.new(project: @project, current_user: @current_user).represent(@last_pipeline.stages)
+    @last_pipeline_stages = StageSerializer.new(
+      project: @project,
+      current_user: @current_user
+    ).represent(@last_pipeline.stages)
   end
 
   def assign_change_commit_vars

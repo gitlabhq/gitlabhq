@@ -1,0 +1,13 @@
+---
+description: Tracks sorting of items by the last seen timestamp.
+action: sort_by_last_seen
+product_group: platform_insights
+milestone: '16.1'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121259
+distributions:
+  - ce
+  - ee
+tiers:
+  - free
+  - premium
+  - ultimate

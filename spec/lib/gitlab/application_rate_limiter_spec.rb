@@ -77,6 +77,12 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
       let(:project1) { instance_double(Project, id: '1') }
       let(:project2) { instance_double(Project, id: '2') }
 
+      before do
+        if described_class.instance_variable_defined?(:@application_rate_limiter_histogram)
+          described_class.remove_instance_variable(:@application_rate_limiter_histogram)
+        end
+      end
+
       it 'returns true when unique actioned resources count exceeds threshold' do
         travel_to(start_time) do
           expect(subject.throttled?(:test_action, scope: scope, resource: project1)).to eq(false)
@@ -108,15 +114,21 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
       end
     end
 
-    context 'when the emit_application_rate_limiter_histogram feature flag is enabled' do
-      before do
+    describe 'emitting metrics for throttling utilization' do
+      let(:histogram_double) { instance_double(Prometheus::Client::Histogram) }
+
+      around do |example|
+        # check if defined
         if described_class.instance_variable_defined?(:@application_rate_limiter_histogram)
           described_class.remove_instance_variable(:@application_rate_limiter_histogram)
         end
+
+        example.run
+
+        described_class.remove_instance_variable(:@application_rate_limiter_histogram)
       end
 
       it 'observe histogram metrics using a memoized histogram instance' do
-        histogram_double = instance_double(Prometheus::Client::Histogram)
         expect(Gitlab::Metrics).to receive(:histogram)
           .once
           .with(
@@ -128,24 +140,8 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
           .and_return(histogram_double)
         expect(histogram_double).to receive(:observe).twice
 
-        subject.throttled?(:test_action, scope: [])
-        subject.throttled?(:test_action, scope: [])
-      end
-    end
-
-    context 'when the emit_application_rate_limiter_histogram feature flag is disabled' do
-      before do
-        if described_class.instance_variable_defined?(:@application_rate_limiter_histogram)
-          described_class.remove_instance_variable(:@application_rate_limiter_histogram)
-        end
-
-        stub_feature_flags(emit_application_rate_limiter_histogram: false)
-      end
-
-      it 'does not emit metrics' do
-        expect(Gitlab::Metrics).not_to receive(:histogram)
-
-        subject.throttled?(:test_action, scope: [])
+        subject.throttled?(:test_action, scope: [], threshold: 1)
+        subject.throttled?(:test_action, scope: [], threshold: 1)
       end
     end
 

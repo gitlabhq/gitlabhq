@@ -1970,10 +1970,12 @@ class User < ApplicationRecord
   end
 
   # Returns true if the user can be removed, false otherwise.
-  # A user can be removed if they do not own any groups where they are the sole owner
+  # A user can be removed if they do not own any groups or organizations where they are the sole owner
   # Method `none?` is used to ensure faster retrieval, See https://gitlab.com/gitlab-org/gitlab/-/issues/417105
 
   def can_be_removed?
+    return solo_owned_groups.none? && solo_owned_organizations.none? if Feature.enabled?(:ui_for_organizations)
+
     solo_owned_groups.none?
   end
 

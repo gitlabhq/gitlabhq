@@ -1,0 +1,20 @@
+---
+description: Tracks clicks on the End Tutorial button in the Learn GitLab process.
+action: click_end_tutorial_button
+product_group: activation
+milestone: '17.4'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161656
+distributions:
+  - ce
+  - ee
+tiers:
+  - free
+  - premium
+  - ultimate
+additional_properties:
+  label:
+    description: hardcoded value learn_gitlab
+  property:
+    description: hardcoded value progress_percentage_on_end
+  value:
+    description: percentage progress

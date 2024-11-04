@@ -199,7 +199,6 @@ module Gitlab
       end
 
       def report_metrics(key, value, threshold, peek)
-        return if Feature.disabled?(:emit_application_rate_limiter_histogram, Feature.current_request)
         return if threshold == 0 # guard against div-by-zero
 
         label = {

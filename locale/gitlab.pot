@@ -397,6 +397,11 @@ msgid_plural "%d more comments"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d option"
+msgid_plural "%d options"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d package"
 msgid_plural "%d packages"
 msgstr[0] ""
@@ -42529,7 +42534,7 @@ msgstr ""
 msgid "Profiles|You must transfer ownership or delete groups you are an owner of before you can delete your account"
 msgstr ""
 
-msgid "Profiles|You must transfer ownership or delete these groups before you can delete your account."
+msgid "Profiles|You must transfer ownership or delete these before you can delete your account."
 msgstr ""
 
 msgid "Profiles|Your Discord user ID."
@@ -42538,7 +42543,7 @@ msgstr ""
 msgid "Profiles|Your LinkedIn profile name from linkedin.com/in/profilename"
 msgstr ""
 
-msgid "Profiles|Your account is currently an owner in these groups:"
+msgid "Profiles|Your account is currently the sole owner in the following:"
 msgstr ""
 
 msgid "Profiles|Your email address was automatically set based on your %{provider_label} account"
@@ -62403,6 +62408,9 @@ msgstr[1] ""
 msgid "WorkItem|A non-confidential %{workItemType} cannot be assigned to a confidential parent %{parentWorkItemType}."
 msgstr ""
 
+msgid "WorkItem|Active custom fields"
+msgstr ""
+
 msgid "WorkItem|Activity"
 msgstr ""
 
@@ -62502,6 +62510,9 @@ msgstr ""
 msgid "WorkItem|Comments only"
 msgstr ""
 
+msgid "WorkItem|Configure work items such as epics, issues, and tasks to represent how your team works."
+msgstr ""
+
 msgid "WorkItem|Convert to child item"
 msgstr ""
 
@@ -62512,6 +62523,15 @@ msgid "WorkItem|Copy %{workItemType} email address"
 msgstr ""
 
 msgid "WorkItem|Create %{workItemType}"
+msgstr ""
+
+msgid "WorkItem|Created %{timeago}"
+msgstr ""
+
+msgid "WorkItem|Custom fields"
+msgstr ""
+
+msgid "WorkItem|Custom fields extend work items to track additional data. Fields will appear in alphanumeric order. All fields apply to all subgroups and projects."
 msgstr ""
 
 msgid "WorkItem|Dark red"
@@ -62535,6 +62555,9 @@ msgstr ""
 msgid "WorkItem|Due"
 msgstr ""
 
+msgid "WorkItem|Edit field"
+msgstr ""
+
 msgid "WorkItem|Epic"
 msgstr ""
 
@@ -62542,6 +62565,9 @@ msgid "WorkItem|Existing %{workItemName}"
 msgstr ""
 
 msgid "WorkItem|Existing task"
+msgstr ""
+
+msgid "WorkItem|Field"
 msgstr ""
 
 msgid "WorkItem|Fixed"
@@ -62556,6 +62582,9 @@ msgstr ""
 msgid "WorkItem|History only"
 msgstr ""
 
+msgid "WorkItem|How do I use custom fields?"
+msgstr ""
+
 msgid "WorkItem|Incident"
 msgstr ""
 
@@ -62565,6 +62594,9 @@ msgstr ""
 msgid "WorkItem|Issue"
 msgstr ""
 
+msgid "WorkItem|Issues settings"
+msgstr ""
+
 msgid "WorkItem|Iteration"
 msgstr ""
 
@@ -62572,6 +62604,9 @@ msgid "WorkItem|Key Result"
 msgstr ""
 
 msgid "WorkItem|Key result"
+msgstr ""
+
+msgid "WorkItem|Last updated %{timeago}"
 msgstr ""
 
 msgid "WorkItem|Lavender"
@@ -62662,6 +62697,9 @@ msgid "WorkItem|Only %{MAX_WORK_ITEMS} items can be added at a time."
 msgstr ""
 
 msgid "WorkItem|Open"
+msgstr ""
+
+msgid "WorkItem|Options:"
 msgstr ""
 
 msgid "WorkItem|Parent"
@@ -62853,13 +62891,25 @@ msgstr ""
 msgid "WorkItem|This work item is not available. It either doesn't exist or you don't have permission to view it."
 msgstr ""
 
+msgid "WorkItem|Toggle details"
+msgstr ""
+
 msgid "WorkItem|Turn off confidentiality"
 msgstr ""
 
 msgid "WorkItem|Turn on confidentiality"
 msgstr ""
 
+msgid "WorkItem|Type"
+msgstr ""
+
 msgid "WorkItem|Undo"
+msgstr ""
+
+msgid "WorkItem|Usage"
+msgstr ""
+
+msgid "WorkItem|Usage:"
 msgstr ""
 
 msgid "WorkItem|View current version"

@@ -4839,17 +4839,49 @@ RSpec.describe User, feature_category: :user_profile do
   describe '#can_be_removed?' do
     subject { create(:user) }
 
-    context 'no owned groups' do
-      it { expect(subject.can_be_removed?).to be_truthy }
-    end
+    let_it_be(:group) { create(:group) }
+    let_it_be(:organization) { create(:organization) }
 
-    context 'has owned groups' do
-      before do
-        group = create(:group)
-        group.add_owner(subject)
+    context 'when feature flag :ui_for_organizations is enabled' do
+      where(:solo_owned_groups, :solo_owned_organizations, :result) do
+        [
+          [[], [], true],
+          [[ref(:group)], [], false],
+          [[], [ref(:organization)], false],
+          [[ref(:group)], [ref(:organization)], false]
+        ]
       end
 
-      it { expect(subject.can_be_removed?).to be_falsey }
+      with_them do
+        before do
+          stub_feature_flags(ui_for_organizations: true)
+          allow(subject).to receive(:solo_owned_groups).and_return(solo_owned_groups)
+          allow(subject).to receive(:solo_owned_organizations).and_return(solo_owned_organizations)
+        end
+
+        it { expect(subject.can_be_removed?).to be(result) }
+      end
+    end
+
+    context 'when feature flag :ui_for_organizations is disabled' do
+      where(:solo_owned_groups, :solo_owned_organizations, :result) do
+        [
+          [[], [], true],
+          [[ref(:group)], [], false],
+          [[], [ref(:organization)], true],
+          [[ref(:group)], [ref(:organization)], false]
+        ]
+      end
+
+      with_them do
+        before do
+          stub_feature_flags(ui_for_organizations: false)
+          allow(subject).to receive(:solo_owned_groups).and_return(solo_owned_groups)
+          allow(subject).to receive(:solo_owned_organizations).and_return(solo_owned_organizations)
+        end
+
+        it { expect(subject.can_be_removed?).to be(result) }
+      end
     end
   end
 

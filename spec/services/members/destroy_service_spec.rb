@@ -3,7 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Members::DestroyService, feature_category: :groups_and_projects do
-  let(:current_user) { create(:user) }
+  let_it_be(:current_user) { create(:user) }
+
   let(:member_user) { create(:user) }
   let(:group) { create(:group, :public) }
   let(:group_project) { create(:project, :public, group: group) }
@@ -57,6 +58,11 @@ RSpec.describe Members::DestroyService, feature_category: :groups_and_projects d
         .and_call_original
 
       described_class.new(current_user).execute(member, **opts)
+    end
+
+    it 'does not remove user from organization' do
+      expect { described_class.new(current_user).execute(member, **opts) }
+        .not_to change { member.source.organization.organization_users.count }
     end
   end
 
@@ -750,5 +756,23 @@ RSpec.describe Members::DestroyService, feature_category: :groups_and_projects d
 
       expect(service.send(:recursive_call?)).to eq(true)
     end
+  end
+
+  context 'when member leaves their last group' do
+    let_it_be(:group) { create(:group).tap { |g| g.add_owner(current_user) } }
+    let(:member) { group.add_owner(member_user) }
+
+    specify { expect(member.user.groups.count).to eq(1) }
+
+    it_behaves_like 'a service destroying a member'
+  end
+
+  context 'when member leaves their last project' do
+    let_it_be(:project) { create(:project).tap { |g| g.add_owner(current_user) } }
+    let(:member) { project.add_owner(member_user) }
+
+    specify { expect(member.user.projects.count).to eq(1) }
+
+    it_behaves_like 'a service destroying a member'
   end
 end

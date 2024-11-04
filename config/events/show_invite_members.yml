@@ -1,0 +1,16 @@
+---
+description: Tracks when the invite members modal is displayed to users.
+action: show_invite_members
+product_group: analytics_instrumentation
+milestone: '14.3'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56904
+distributions:
+  - ce
+  - ee
+tiers:
+  - free
+  - premium
+  - ultimate
+additional_properties:
+  label:
+    description: hardcoded value edit_reviewer

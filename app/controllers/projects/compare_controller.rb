@@ -167,9 +167,18 @@ class Projects::CompareController < Projects::ApplicationController
 
   def define_environment
     if compare
-      environment_params = source_project.repository.branch_exists?(head_ref) ? { ref: head_ref } : { commit: compare.commit }
+      environment_params = if source_project.repository.branch_exists?(head_ref)
+                             { ref: head_ref }
+                           else
+                             { commit: compare.commit }
+                           end
+
       environment_params[:find_latest] = true
-      @environment = ::Environments::EnvironmentsByDeploymentsFinder.new(source_project, current_user, environment_params).execute.last
+      @environment = ::Environments::EnvironmentsByDeploymentsFinder.new(
+        source_project,
+        current_user,
+        environment_params
+      ).execute.last
     end
   end
 

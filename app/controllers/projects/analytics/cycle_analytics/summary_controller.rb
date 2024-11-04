@@ -31,4 +31,10 @@ class Projects::Analytics::CycleAnalytics::SummaryController < Projects::Applica
   end
 end
 
-Projects::Analytics::CycleAnalytics::SummaryController.prepend_mod_with('Projects::Analytics::CycleAnalytics::SummaryController')
+# rubocop: disable Cop/InjectEnterpriseEditionModule -- Injecting extension modules must be done on the last line
+# of the file. In this case, the line would be too long which would trigger the RuboCop rule Layout/LineLength.
+# Hence, Cop/InjectEnterpriseEditionModule was disabled.
+Projects::Analytics::CycleAnalytics::SummaryController.prepend_mod_with(
+  'Projects::Analytics::CycleAnalytics::SummaryController'
+)
+# rubocop: enable Cop/InjectEnterpriseEditionModule

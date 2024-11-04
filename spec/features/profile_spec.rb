@@ -61,7 +61,20 @@ RSpec.describe 'Profile account page', :js, feature_category: :user_profile do
       visit profile_account_path
 
       expect(page).not_to have_button('Delete account')
-      expect(page).to have_content("Your account is currently an owner in these groups: #{group.name}")
+      expect(page).to have_content("Your account is currently the sole owner in the following:")
+      expect(page).to have_link(group.name, href: group.web_url)
+    end
+
+    it 'does not show delete button when user owns an organization and feature flag ui_for_organizations is enabled' do
+      stub_feature_flags(ui_for_organizations: true)
+      organization = create(:organization)
+      create(:organization_owner, user: user, organization: organization)
+
+      visit profile_account_path
+
+      expect(page).not_to have_button('Delete account')
+      expect(page).to have_content("Your account is currently the sole owner in the following:")
+      expect(page).to have_link(organization.name, href: organization.web_url)
     end
   end
 

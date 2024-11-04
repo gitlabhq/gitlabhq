@@ -1,0 +1,18 @@
+---
+description: Tracks clicks on the todo item in the sidebar.
+action: click_todo
+product_group: project_management
+milestone: '15.0'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86411
+distributions:
+  - ce
+  - ee
+tiers:
+  - free
+  - premium
+  - ultimate
+additional_properties:
+  label:
+    description: hardcoded value right_sidebar
+  property:
+    description: whether any todos present true or false

@@ -11,7 +11,9 @@ module Projects
         result = fetch_latest_event_issue
 
         if result[:status] == :success
-          result_with_syntax_highlight = Gitlab::ErrorTracking::StackTraceHighlightDecorator.decorate(result[:latest_event])
+          result_with_syntax_highlight = Gitlab::ErrorTracking::StackTraceHighlightDecorator.decorate(
+            result[:latest_event]
+          )
 
           render json: { error: serialize_error_event(result_with_syntax_highlight) }
         else

@@ -1,0 +1,16 @@
+---
+description: Tracks clicks on the retry button for failed jobs.
+action: click_retry
+product_group: pipeline_execution
+milestone: '16.3'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128037
+distributions:
+  - ce
+  - ee
+tiers:
+  - free
+  - premium
+  - ultimate
+additional_properties:
+  label:
+    description: hardcoded value pipeline_failed_jobs_tab

@@ -1,0 +1,18 @@
+---
+description: Tracks changes to the display options for pipelines in the application.
+action: pipelines_display_options
+product_group: pipeline_execution
+milestone: '16.6'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134685
+distributions:
+  - ce
+  - ee
+tiers:
+  - free
+  - premium
+  - ultimate
+additional_properties:
+  label:
+    description: hardcoded value pipeline_id_iid_listbox
+  property:
+    description: id of the pipeline

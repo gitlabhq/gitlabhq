@@ -1,0 +1,18 @@
+---
+description: Tracks clicks on the error link that directs users to Sentry for more details.
+action: click_error_link_to_sentry
+product_group: platform_insights
+milestone: '12.4'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18157
+distributions:
+  - ce
+  - ee
+tiers:
+  - free
+  - premium
+  - ultimate
+additional_properties:
+  label:
+    description: hardcoded value Error Link
+  property:
+    description: Error link url

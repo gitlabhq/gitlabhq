@@ -84,14 +84,26 @@
         confirm_with_password: ('true' if current_user.confirm_deletion_with_password?),
         username: current_user.username } }
     - else
-      - if current_user.solo_owned_groups.present?
+      - if !current_user.can_be_removed?
         %p
-          = s_('Profiles|Your account is currently an owner in these groups:')
-          %ul
-            - current_user.solo_owned_groups.each do |group|
-              %li= group.name
+          = s_('Profiles|Your account is currently the sole owner in the following:')
+
+        - if Feature.enabled?(:ui_for_organizations, current_user) && current_user.solo_owned_organizations.present?
+          %p.gl-font-bold
+            = _('Organizations')
+            %ul
+              - current_user.solo_owned_organizations.each do |organization|
+                %li= link_to organization.name, organization.web_url, target: '_blank', rel: 'noopener noreferrer'
+
+        - if current_user.solo_owned_groups.present?
+          %p.gl-font-bold
+            = _('Groups')
+            %ul
+              - current_user.solo_owned_groups.each do |group|
+                %li= link_to group.name, group.web_url, target: '_blank', rel: 'noopener noreferrer'
+
         %p
-          = s_('Profiles|You must transfer ownership or delete these groups before you can delete your account.')
+          = s_('Profiles|You must transfer ownership or delete these before you can delete your account.')
       - elsif !current_user.can_remove_self?
         %p
           = s_('Profiles|GitLab is unable to verify your identity automatically. For security purposes, you must set a password by %{openingTag}resetting your password%{closingTag} to delete your account.').html_safe % { openingTag: "<a href='#{reset_user_settings_password_path}' rel=\"nofollow\" data-method=\"put\">".html_safe, closingTag: '</a>'.html_safe}

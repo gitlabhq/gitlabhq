@@ -1,0 +1,16 @@
+---
+description: Tracks clicks on toggle buttons within the application.
+action: click_toggle
+product_group: authentication
+milestone: '16.0'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118700
+distributions:
+  - ce
+  - ee
+tiers:
+  - free
+  - premium
+  - ultimate
+additional_properties:
+  label:
+    description: either show_help_dropdown or hide_help_dropdown

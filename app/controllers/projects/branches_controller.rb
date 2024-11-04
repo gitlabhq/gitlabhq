@@ -129,7 +129,8 @@ class Projects::BranchesController < Projects::ApplicationController
     ::Branches::DeleteMergedService.new(@project, current_user).async_execute
 
     redirect_to project_branches_path(@project),
-      notice: _('Merged branches are being deleted. This can take some time depending on the number of branches. Please refresh the page to see changes.')
+      notice: _('Merged branches are being deleted. This can take some time depending on the number of branches. ' \
+        'Please refresh the page to see changes.')
   end
 
   private
@@ -191,8 +192,11 @@ class Projects::BranchesController < Projects::ApplicationController
 
   def redirect_for_legacy_index_sort_or_search
     # Normalize a legacy URL with redirect
-    if request.format != :json && !branches_params[:state].presence && [:sort, :search, :page].any? { |key| branches_params[key].presence }
-      redirect_to project_branches_filtered_path(@project, state: 'all'), notice: _('Update your bookmarked URLs as filtered/sorted branches URL has been changed.')
+    if request.format != :json && !branches_params[:state].presence && [:sort, :search, :page].any? do |key|
+      branches_params[key].presence
+    end
+      redirect_to project_branches_filtered_path(@project, state: 'all'),
+        notice: _('Update your bookmarked URLs as filtered/sorted branches URL has been changed.')
     end
   end
 

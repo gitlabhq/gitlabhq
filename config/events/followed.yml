@@ -1,0 +1,13 @@
+---
+description: Tracks when a user follows a project, group, or user.
+action: followed
+product_group: import_and_integrate
+milestone: '17.5'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165885
+distributions:
+  - ce
+  - ee
+tiers:
+  - free
+  - premium
+  - ultimate

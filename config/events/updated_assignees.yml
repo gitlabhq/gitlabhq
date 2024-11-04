@@ -1,0 +1,13 @@
+---
+description: Tracks updates to the assignees of a work item or merge request.
+action: updated_assignees
+product_group: project_management
+milestone: '16.9'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140846
+distributions:
+  - ce
+  - ee
+tiers:
+  - free
+  - premium
+  - ultimate
