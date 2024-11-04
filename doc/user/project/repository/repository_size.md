@@ -11,14 +11,6 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368150) in GitLab 15.3, feature flags `gitaly_revlist_for_repo_size` and `gitaly_catfile_repo_size` for alternative repository size calculations.
-
-FLAG:
-For self-managed instances, GitLab uses the `du -sk` command by default to determine repository size.
-However, administrators can enable alternative calculation methods using feature flags
-`gitaly_revlist_for_repo_size` and `gitaly_catfile_repo_size`. To switch between these methods,
-administrators can [enable or disable](../../../administration/feature_flags.md) the respective feature flags.
-
 The size of a Git repository can significantly impact performance and storage costs.
 It can differ slightly from one instance to another due to compression, housekeeping, and other factors.
 
