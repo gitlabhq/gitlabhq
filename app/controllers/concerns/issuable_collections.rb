@@ -59,37 +59,36 @@ module IssuableCollections
 
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def finder_options
-    strong_memoize(:finder_options) do
-      params[:state] = default_state if params[:state].blank?
+    params[:state] = default_state if params[:state].blank?
 
-      options = {
-        scope: params[:scope],
-        state: params[:state],
-        confidential: Gitlab::Utils.to_boolean(params[:confidential]),
-        sort: set_sort_order
-      }
+    options = {
+      scope: params[:scope],
+      state: params[:state],
+      confidential: Gitlab::Utils.to_boolean(params[:confidential]),
+      sort: set_sort_order
+    }
 
-      # Used by view to highlight active option
-      @sort = options[:sort]
+    # Used by view to highlight active option
+    @sort = options[:sort]
 
-      # When a user looks for an exact iid, we do not filter by search but only by iid
-      if params[:search] =~ /^#(?<iid>\d+)\z/
-        options[:iids] = Regexp.last_match[:iid]
-        params[:search] = nil
-      end
-
-      if @project
-        options[:project_id] = @project.id
-        options[:attempt_project_search_optimizations] = true
-      elsif @group
-        options[:group_id] = @group.id
-        options[:include_subgroups] = true
-        options[:attempt_group_search_optimizations] = true
-      end
-
-      params.permit(finder_type.valid_params).merge(options)
+    # When a user looks for an exact iid, we do not filter by search but only by iid
+    if params[:search] =~ /^#(?<iid>\d+)\z/
+      options[:iids] = Regexp.last_match[:iid]
+      params[:search] = nil
     end
+
+    if @project
+      options[:project_id] = @project.id
+      options[:attempt_project_search_optimizations] = true
+    elsif @group
+      options[:group_id] = @group.id
+      options[:include_subgroups] = true
+      options[:attempt_group_search_optimizations] = true
+    end
+
+    params.permit(finder_type.valid_params).merge(options)
   end
+  strong_memoize_attr :finder_options
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
   def default_state

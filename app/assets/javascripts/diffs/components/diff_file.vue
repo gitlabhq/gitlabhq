@@ -104,6 +104,11 @@ export default {
       required: false,
       default: null,
     },
+    isDiffViewActive: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   idState() {
     return {
@@ -415,6 +420,8 @@ export default {
       'has-body': showBody,
       'is-virtual-scrolling': isVirtualScrollingEnabled,
       'linked-file': isLinkedFile,
+      'gl-border-gray-200': isDiffViewActive && !file.conflict_type,
+      'gl-border-red-700': isDiffViewActive && file.conflict_type,
     }"
     :data-path="file.new_path"
     class="diff-file file-holder gl-mb-5"
@@ -475,6 +482,8 @@ export default {
         hasBodyClasses.header,
         {
           '!gl-rounded-none !gl-bg-red-200': file.conflict_type,
+          '!gl-bg-strong': isDiffViewActive && !file.conflict_type,
+          '!gl-bg-red-300': isDiffViewActive && file.conflict_type,
           '!gl-rounded-tl-none !gl-rounded-tr-none': file.conflict_type && isCollapsed,
           '!gl-border-0': file.conflict_type || isCollapsed,
         },

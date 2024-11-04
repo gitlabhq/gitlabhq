@@ -64271,6 +64271,9 @@ msgid_plural "Your free group is now limited to %d members"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Your instance has %{remaining_user_count} users remaining of the %{total_user_count} in your subscription. When there are no more seats, users cannot be invited or added to the instance."
+msgstr ""
+
 msgid "Your instance has %{remaining_user_count} users remaining of the %{total_user_count} included in your subscription. You can add more users than the number included in your license, and we will include the overage in your next bill."
 msgstr ""
 

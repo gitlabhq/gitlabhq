@@ -24,7 +24,7 @@ merge request, authored by the user who suggested the changes.
 1. Find the lines of code you want to change.
    - To select a single line, hover over the line number and
      select **Add a comment to this line** (**{comment}**).
-   - To select multiple lines:
+   - To select more lines:
      1. Hover over the line number, and select **Add a comment to this line** (**{comment}**):
         ![Comment on any diff file line](img/comment_on_any_diff_line_v16_6.png)
      1. Select and drag your selection to include all desired lines. To
@@ -73,13 +73,13 @@ When applied, the suggestion replaces from 2 lines above to 2 lines below the co
 
 ![Multi-line suggestion preview](img/multi-line-suggestion-preview_v16_6.png)
 
-Suggestions for multiple lines are limited to 100 lines _above_ and 100
+GitLab limits multi-line suggestions to 100 lines _above_ and 100
 lines _below_ the commented diff line. This allows for up to 201 changed lines per
 suggestion.
 
 Multiline comments display the comment's line numbers above the body of the comment:
 
-![Multiline comment selection displayed above comment](img/multiline-comment-saved_v13_3.png)
+![Multiline comment selection displayed above comment](img/multiline-comment-saved_v17_5.png)
 
 #### Using the rich text editor
 
@@ -87,8 +87,7 @@ Multiline comments display the comment's line numbers above the body of the comm
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/375172) in GitLab 16.2.
 > - Feature flag `content_editor_on_issues` removed in GitLab 16.5.
 
-When you insert suggestions, you can use the WYSIWYG
-[rich text editor](../../../rich_text_editor.md) to move
+When you insert suggestions, use the WYSIWYG [rich text editor](../../../rich_text_editor.md) to move
 up and down the source file's line numbers in the UI.
 
 To add or subtract changed lines, next to **From line**, select **+** or **-**.

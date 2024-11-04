@@ -180,14 +180,13 @@ class ApplicationController < BaseActionController
   # (e.g. tokens) to authenticate the user, whereas Devise sets current_user.
   #
   def auth_user
-    strong_memoize(:auth_user) do
-      if user_signed_in?
-        current_user
-      else
-        try(:authenticated_user)
-      end
+    if user_signed_in?
+      current_user
+    else
+      try(:authenticated_user)
     end
   end
+  strong_memoize_attr :auth_user
 
   # Devise defines current_user to be:
   #

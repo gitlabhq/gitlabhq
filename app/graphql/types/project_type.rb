@@ -190,7 +190,8 @@ module Types
 
     field :only_allow_merge_if_all_discussions_are_resolved, GraphQL::Types::Boolean,
       null: true,
-      description: 'Indicates if merge requests of the project can only be merged when all the discussions are resolved.'
+      description: 'Indicates if merge requests of the project can only be merged ' \
+        'when all the discussions are resolved.'
 
     field :only_allow_merge_if_pipeline_succeeds, GraphQL::Types::Boolean,
       null: true,
@@ -658,7 +659,8 @@ module Types
     field :data_transfer, Types::DataTransfer::ProjectDataTransferType,
       null: true, # disallow null once data_transfer_monitoring feature flag is rolled-out! https://gitlab.com/gitlab-org/gitlab/-/issues/391682
       resolver: Resolvers::DataTransfer::ProjectDataTransferResolver,
-      description: 'Data transfer data point for a specific period. This is mocked data under a development feature flag.'
+      description: 'Data transfer data point for a specific period. ' \
+        'This is mocked data under a development feature flag.'
 
     field :visible_forks, Types::ProjectType.connection_type,
       null: true,

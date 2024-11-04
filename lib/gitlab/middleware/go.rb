@@ -31,7 +31,7 @@ module Gitlab
         )
         Rack::Response.new(e.message, 403).finish
       rescue Gitlab::Auth::MissingPersonalAccessTokenError
-        Rack::Response.new('', 401).finish
+        not_found_response
       end
 
       private

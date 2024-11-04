@@ -8,7 +8,7 @@
 #   it_behaves_like 'an idempotent worker' do
 #     it 'checks the side-effects for multiple calls' do
 #       # it'll call the job's perform method 2 times
-#       subject
+#       perform_idempotent_work
 #
 #       expect(model.state).to eq('state')
 #     end
@@ -31,7 +31,7 @@ RSpec.shared_examples 'an idempotent worker' do
   end
 
   it 'performs multiple times sequentially without raising an exception' do
-    expect { subject }.not_to raise_error
+    expect { perform_idempotent_work }.not_to raise_error
   end
 
   def event_worker

@@ -5,8 +5,10 @@ module Types
     module NoteableInterface
       include Types::BaseInterface
 
-      field :notes, resolver: Resolvers::Noteable::NotesResolver, null: false, description: "All notes on this noteable."
-      field :discussions, Types::Notes::DiscussionType.connection_type, null: false, description: "All discussions on this noteable."
+      field :notes, resolver: Resolvers::Noteable::NotesResolver, null: false,
+        description: "All notes on this noteable."
+      field :discussions, Types::Notes::DiscussionType.connection_type, null: false,
+        description: "All discussions on this noteable."
       field :commenters, Types::UserType.connection_type, null: false, description: "All commenters on this noteable."
 
       def self.resolve_type(object, context)

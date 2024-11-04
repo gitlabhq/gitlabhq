@@ -16584,6 +16584,14 @@ CREATE SEQUENCE personal_access_tokens_id_seq
 
 ALTER SEQUENCE personal_access_tokens_id_seq OWNED BY personal_access_tokens.id;
 
+CREATE TABLE pipl_users (
+    user_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    initial_email_sent_at timestamp with time zone,
+    last_access_from_pipl_country_at timestamp with time zone NOT NULL
+);
+
 CREATE TABLE plan_limits (
     id bigint NOT NULL,
     plan_id bigint NOT NULL,
@@ -25820,6 +25828,9 @@ ALTER TABLE ONLY path_locks
 ALTER TABLE ONLY personal_access_tokens
     ADD CONSTRAINT personal_access_tokens_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY pipl_users
+    ADD CONSTRAINT pipl_users_pkey PRIMARY KEY (user_id);
+
 ALTER TABLE ONLY plan_limits
     ADD CONSTRAINT plan_limits_pkey PRIMARY KEY (id);
 
@@ -31071,6 +31082,8 @@ CREATE INDEX index_pipeline_metadata_on_name_text_pattern_pipeline_id ON ci_pipe
 CREATE UNIQUE INDEX p_ci_pipeline_variables_pipeline_id_key_partition_id_idx ON ONLY p_ci_pipeline_variables USING btree (pipeline_id, key, partition_id);
 
 CREATE UNIQUE INDEX index_pipeline_variables_on_pipeline_id_key_partition_id_unique ON ci_pipeline_variables USING btree (pipeline_id, key, partition_id);
+
+CREATE INDEX index_pipl_users_on_initial_email_sent_at ON pipl_users USING btree (initial_email_sent_at);
 
 CREATE UNIQUE INDEX index_plan_limits_on_plan_id ON plan_limits USING btree (plan_id);
 
@@ -37797,6 +37810,9 @@ ALTER TABLE p_ci_build_trace_metadata
 
 ALTER TABLE ONLY bulk_import_trackers
     ADD CONSTRAINT fk_rails_aed566d3f3 FOREIGN KEY (bulk_import_entity_id) REFERENCES bulk_import_entities(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY pipl_users
+    ADD CONSTRAINT fk_rails_af0eb8b205 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY pool_repositories
     ADD CONSTRAINT fk_rails_af3f8c5d62 FOREIGN KEY (shard_id) REFERENCES shards(id) ON DELETE RESTRICT;

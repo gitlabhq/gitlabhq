@@ -82,8 +82,9 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
   end
 
   def doorkeeper_application
-    strong_memoize(:doorkeeper_application) { ::Doorkeeper::OAuth::Client.find(params['client_id'].to_s)&.application }
+    ::Doorkeeper::OAuth::Client.find(params['client_id'].to_s)&.application
   end
+  strong_memoize_attr :doorkeeper_application
 
   def application_has_read_user_scope?
     doorkeeper_application&.includes_scope?(Gitlab::Auth::READ_USER_SCOPE)

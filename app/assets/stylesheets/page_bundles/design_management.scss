@@ -178,7 +178,7 @@ $t-gray-a-16-design-pin: rgba($black, 0.16);
     .design-note {
       padding: $gl-padding-8;
       list-style: none;
-      border-top-left-radius: $gl-border-radius-base; // same border radius used by .bordered-box
+      border-top-left-radius: $gl-border-radius-base;
       border-top-right-radius: $gl-border-radius-base;
       @apply gl-transition-background;
 

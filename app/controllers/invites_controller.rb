@@ -56,17 +56,15 @@ class InvitesController < ApplicationController
   end
 
   def member?
-    strong_memoize(:is_member) do
-      @member.source.has_user?(current_user)
-    end
+    @member.source.has_user?(current_user)
   end
+  strong_memoize_attr :member?
 
   def member
-    strong_memoize(:member) do
-      @token = params[:id].to_s
-      Member.find_by_invite_token(@token)
-    end
+    @token = params[:id].to_s
+    Member.find_by_invite_token(@token)
   end
+  strong_memoize_attr :member
 
   def ensure_member_exists
     return if member

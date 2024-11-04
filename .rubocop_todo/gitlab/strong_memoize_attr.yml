@@ -2,19 +2,7 @@
 # Cop supports --autocorrect.
 Gitlab/StrongMemoizeAttr:
   Exclude:
-    - 'app/components/pajamas/avatar_component.rb'
-    - 'app/controllers/application_controller.rb'
-    - 'app/controllers/concerns/boards_actions.rb'
-    - 'app/controllers/concerns/creates_commit.rb'
-    - 'app/controllers/concerns/find_snippet.rb'
-    - 'app/controllers/concerns/impersonation.rb'
-    - 'app/controllers/concerns/issuable_actions.rb'
-    - 'app/controllers/concerns/issuable_collections.rb'
-    - 'app/controllers/concerns/known_sign_in.rb'
     - 'app/controllers/concerns/wiki_actions.rb'
-    - 'app/controllers/ide_controller.rb'
-    - 'app/controllers/import/github_controller.rb'
-    - 'app/controllers/invites_controller.rb'
     - 'app/controllers/jira_connect/application_controller.rb'
     - 'app/controllers/jwt_controller.rb'
     - 'app/controllers/oauth/authorizations_controller.rb'

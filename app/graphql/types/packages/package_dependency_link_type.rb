@@ -9,7 +9,8 @@ module Types
 
       field :dependency, Types::Packages::PackageDependencyType, null: true, description: 'Dependency.'
       field :dependency_type, Types::Packages::PackageDependencyTypeEnum, null: false, description: 'Dependency type.'
-      field :id, ::Types::GlobalIDType[::Packages::DependencyLink], null: false, description: 'ID of the dependency link.'
+      field :id, ::Types::GlobalIDType[::Packages::DependencyLink], null: false,
+        description: 'ID of the dependency link.'
       field :metadata, Types::Packages::DependencyLinkMetadataType, null: true, description: 'Dependency link metadata.'
 
       # NOTE: This method must be kept in sync with the union

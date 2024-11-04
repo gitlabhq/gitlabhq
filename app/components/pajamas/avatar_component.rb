@@ -43,26 +43,25 @@ module Pajamas
     end
 
     def src
-      strong_memoize(:src) do
-        if @item.is_a?(String)
-          @item
-        elsif @item.is_a?(User)
-          # Users show a gravatar instead of an identicon. Also avatars of
-          # blocked users are only shown if the current_user is an admin.
-          # To not duplicate this logic, we are using existing helpers here.
-          current_user = begin
-            helpers.current_user
-          rescue StandardError
-            nil
-          end
-          helpers.avatar_icon_for_user(@item, @size, current_user: current_user)
-        elsif @item.is_a?(AvatarEmail)
-          helpers.avatar_icon_for_email(@item.email, @size)
-        elsif @item.try(:avatar_url)
-          "#{@item.avatar_url}?width=#{@size}"
+      if @item.is_a?(String)
+        @item
+      elsif @item.is_a?(User)
+        # Users show a gravatar instead of an identicon. Also avatars of
+        # blocked users are only shown if the current_user is an admin.
+        # To not duplicate this logic, we are using existing helpers here.
+        current_user = begin
+          helpers.current_user
+        rescue StandardError
+          nil
         end
+        helpers.avatar_icon_for_user(@item, @size, current_user: current_user)
+      elsif @item.is_a?(AvatarEmail)
+        helpers.avatar_icon_for_email(@item.email, @size)
+      elsif @item.try(:avatar_url)
+        "#{@item.avatar_url}?width=#{@size}"
       end
     end
+    strong_memoize_attr :src
 
     def srcset
       return unless src

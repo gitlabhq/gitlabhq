@@ -37,8 +37,7 @@ To do this:
 1. Select **Code > Merge requests** and find your merge request.
 1. Select the title of the merge request to view it.
 1. Scroll to the [merge request widget](../widgets.md) to see the mergeability and
-   approval status for the merge request. For example, this merge request is blocked
-   because it hasn't received the approvals it needs:
+   approval status for the merge request. For example, the lack of required approvals blocks this merge request:
 
    ![The merge request widget displays 'All required approvals must be given'.](img/reviews_missing_v17_3.png)
 
@@ -134,7 +133,7 @@ To resolve or unresolve a thread when replying to a comment:
 1. Select or clear **Resolve thread**.
 1. Select **Add comment now** or **Add to review**.
 
-Pending comments display information about the actions that are delayed until comment is published:
+Pending comments display information about delayed actions. GitLab does not perform these actions until you publish the comment:
 
 - **{check-circle-filled}** Thread is resolved.
 - **{check-circle}** Thread stays unresolved.
@@ -179,9 +178,8 @@ the reviewer who requested changes should [re-review and approve](#re-request-a-
 
 ### Bypass a request for changes
 
-If the user who requested changes is unable to re-review or provide an approval,
-another user with permission to merge the merge request can override this check in the
-merge request reports area by selecting **Bypass**:
+If the user who requested changes is unavailable to re-review or approve,
+another user with permission to merge the merge request can override this check:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Merge requests** and find your merge request.
@@ -191,8 +189,8 @@ merge request reports area by selecting **Bypass**:
 
    ![A merge request that is blocked because a user requested changes](img/bypass_v17_2.png)
 
-1. The merge reports area shows `Merge with caution: Override added`. To see which check
-   was bypassed, select **Expand merge checks** (**{chevron-lg-down}**) and find the
+1. The merge reports area shows `Merge with caution: Override added`. To see which check a user
+   bypassed, select **Expand merge checks** (**{chevron-lg-down}**) and find the
    check that contains a warning (**{status_warning}**) icon. In this example, the
    author bypassed **The change requests must be completed or resolved**:
 
@@ -209,7 +207,7 @@ subject matter experts for the changes you're making. To decrease the number of
 review cycles for your merge request, consider requesting reviews from users
 listed in the project's approval rules.
 
-When you edit the **Reviewers** field in a new or existing merge request, GitLab shows you
+When you edit the **Reviewers** field in a merge request, GitLab shows you
 the matching [approval rule](../approvals/rules.md) below the name of each reviewer.
 [Code Owners](../../codeowners/index.md) display as `Codeowner` without any group detail.
 
@@ -313,7 +311,7 @@ For more information, see [Data usage in Suggested Reviewers](data_usage.md).
 
 Enabling Suggested Reviewers triggers GitLab to create the machine learning model your
 project uses to generate reviewers. The larger your project, the longer
-this process can take. Usually, the model is ready to generate suggestions
+this process can take. The model is usually ready to generate suggestions
 after a few hours.
 
 Prerequisites:

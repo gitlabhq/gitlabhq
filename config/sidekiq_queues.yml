@@ -233,6 +233,10 @@
   - 1
 - - compliance_management_standards_gitlab_at_least_two_approvals_group
   - 1
+- - compliance_management_standards_gitlab_dast
+  - 1
+- - compliance_management_standards_gitlab_dast_group
+  - 1
 - - compliance_management_standards_gitlab_prevent_approval_by_author
   - 1
 - - compliance_management_standards_gitlab_prevent_approval_by_author_group

@@ -1,6 +1,0 @@
----
-# Cop supports --autocorrect.
-Lint/UselessNumericOperation:
-  Details: grace period
-  Exclude:
-    - 'ee/spec/lib/gitlab/geo_spec.rb'

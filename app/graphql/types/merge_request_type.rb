@@ -119,9 +119,9 @@ module Types
       alpha: { milestone: '16.5' },
       calls_gitaly: true
 
-    field :mergeable_discussions_state, GraphQL::Types::Boolean, null: true,
-      calls_gitaly: true,
-      description: 'Indicates if all discussions in the merge request have been resolved, allowing the merge request to be merged.'
+    field :mergeable_discussions_state, GraphQL::Types::Boolean, null: true, calls_gitaly: true,
+      description: 'Indicates if all discussions in the merge request have been resolved, ' \
+        'allowing the merge request to be merged.'
     field :rebase_commit_sha, GraphQL::Types::String, null: true,
       description: 'Rebase commit SHA of the merge request.'
     field :rebase_in_progress, GraphQL::Types::Boolean, method: :rebase_in_progress?, null: false, calls_gitaly: true,
@@ -163,7 +163,8 @@ module Types
       description: 'Pipeline running on the branch HEAD of the merge request.'
     field :pipelines,
       null: true,
-      description: 'Pipelines for the merge request. Note: for performance reasons, no more than the most recent 500 pipelines will be returned.',
+      description: 'Pipelines for the merge request. Note: for performance reasons, ' \
+        'no more than the most recent 500 pipelines will be returned.',
       resolver: Resolvers::MergeRequestPipelinesResolver
 
     field :assignees,
@@ -193,8 +194,12 @@ module Types
       description: 'Indicates if the merge request has conflicts.'
     field :milestone, Types::MilestoneType, null: true,
       description: 'Milestone of the merge request.'
-    field :participants, Types::MergeRequests::ParticipantType.connection_type, null: true, complexity: 15,
-      description: 'Participants in the merge request. This includes the author, assignees, reviewers, and users mentioned in notes.',
+    field :participants,
+      Types::MergeRequests::ParticipantType.connection_type,
+      null: true,
+      complexity: 15,
+      description: 'Participants in the merge request. This includes the author, ' \
+        'assignees, reviewers, and users mentioned in notes.',
       resolver: Resolvers::Users::ParticipantsResolver
     field :reference, GraphQL::Types::String, null: false, method: :to_reference,
       description: 'Internal reference of the merge request. Returned in shortened format by default.' do
@@ -240,11 +245,22 @@ module Types
       description: 'User who merged this merge request or set it to auto-merge.'
     field :mergeable, GraphQL::Types::Boolean, null: false, method: :mergeable?, calls_gitaly: true,
       description: 'Indicates if the merge request is mergeable.'
-    field :security_auto_fix, GraphQL::Types::Boolean, null: true,
-      description: 'Indicates if the merge request is created by @GitLab-Security-Bot.', deprecated: { reason: 'Security Auto Fix experiment feature was removed. It was always hidden behind `security_auto_fix` feature flag', milestone: '16.11' }
+    field :security_auto_fix,
+      GraphQL::Types::Boolean,
+      null: true,
+      description: 'Indicates if the merge request is created by @GitLab-Security-Bot.',
+      deprecated: {
+        reason: 'Security Auto Fix experiment feature was removed. ' \
+          'It was always hidden behind `security_auto_fix` feature flag',
+        milestone: '16.11'
+      }
 
     field :squash, GraphQL::Types::Boolean, null: false,
-      description: 'Indicates if the merge request is set to be squashed when merged. [Project settings](https://docs.gitlab.com/ee/user/project/merge_requests/squash_and_merge.html#configure-squash-options-for-a-project) may override this value. Use `squash_on_merge` instead to take project squash options into account.'
+      description: <<~HEREDOC.squish
+                   Indicates if the merge request is set to be squashed when merged.
+                   [Project settings](https://docs.gitlab.com/ee/user/project/merge_requests/squash_and_merge.html#configure-squash-options-for-a-project)
+                   may override this value. Use `squash_on_merge` instead to take project squash options into account.
+      HEREDOC
     field :squash_on_merge, GraphQL::Types::Boolean, null: false, method: :squash_on_merge?,
       description: 'Indicates if the merge request will be squashed when merged.'
     field :timelogs, Types::TimelogType.connection_type, null: false,
@@ -296,7 +312,11 @@ module Types
 
     def user_discussions_count
       BatchLoader::GraphQL.for(object.id).batch(key: :merge_request_user_discussions_count) do |ids, loader, args|
-        counts = Note.count_for_collection(ids, 'MergeRequest', 'COUNT(DISTINCT discussion_id) as count').index_by(&:noteable_id)
+        counts = Note.count_for_collection(
+          ids,
+          'MergeRequest',
+          'COUNT(DISTINCT discussion_id) as count'
+        ).index_by(&:noteable_id)
 
         ids.each do |id|
           loader.call(id, counts[id]&.count || 0)

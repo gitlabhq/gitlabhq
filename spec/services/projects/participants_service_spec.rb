@@ -73,6 +73,20 @@ RSpec.describe Projects::ParticipantsService, feature_category: :groups_and_proj
       expect(participants.count { |p| p[:username] == noteable.author.username }).to eq 1
     end
 
+    context 'when noteable.participants contains placeholder or import users' do
+      let(:placeholder_user) { create(:user, :placeholder) }
+      let(:import_user) { create(:user, :import_user) }
+
+      it 'does not return the placeholder and import users' do
+        allow(noteable).to receive(:participants).and_return([user, placeholder_user, import_user])
+
+        participant_usernames = run_service.map { |user| user[:username] }
+
+        expect(participant_usernames).not_to include(placeholder_user.username, import_user.username)
+        expect(participant_usernames).to include(user.username)
+      end
+    end
+
     describe 'group items' do
       subject(:group_items) { run_service.select { |hash| hash[:type].eql?('Group') } }
 

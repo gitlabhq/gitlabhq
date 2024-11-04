@@ -16,16 +16,15 @@ This page explains how an administrator can configure issue closing patterns.
 For user documentation about the feature, see
 [Closing issues automatically](../user/project/issues/managing_issues.md#closing-issues-automatically).
 
-When a commit or merge request resolves one or more issues, it is possible to
-automatically close these issues when the commit or merge request lands
-in the project's default branch.
+When a commit or merge request resolves one or more issues, GitLab can close those issues when the
+commit or merge request lands in the project's default branch.
 
 ## Change the issue closing pattern
 
 The [default issue closing pattern](../user/project/issues/managing_issues.md#default-closing-pattern)
-covers a wide range of words. You can change the pattern to suit your needs.
+covers a wide range of words.
 
-To change the default issue closing pattern:
+To change the default issue closing pattern to suit your needs:
 
 ::Tabs
 
@@ -108,6 +107,6 @@ To change the default issue closing pattern:
 
 ::EndTabs
 
-To test the issue closing pattern, use <https://rubular.com>.
-However, Rubular doesn't understand `%{issue_ref}`. When testing your patterns,
+To test the issue closing pattern, use [Rubular](https://rubular.com).
+Rubular does not understand `%{issue_ref}`. When you test your patterns,
 replace this string with `#\d+`, which matches only local issue references like `#123`.

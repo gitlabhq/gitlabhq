@@ -5025,6 +5025,59 @@ RSpec.describe User, feature_category: :user_profile do
     end
   end
 
+  describe '#search_on_authorized_groups' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:group_1) { create(:group, name: 'test', path: 'blah') }
+    let_it_be(:group_2) { create(:group, name: 'blah', path: 'test') }
+    let(:search_term) { 'test' }
+
+    subject { user.search_on_authorized_groups(search_term) }
+
+    context 'when the user does not have any authorized groups' do
+      before do
+        allow(user).to receive(:authorized_groups).and_return(Group.none)
+      end
+
+      it 'does not return anything' do
+        expect(subject).to be_empty
+      end
+    end
+
+    context 'when the user has two authorized groups with name or path matching the search term' do
+      before do
+        allow(user).to receive(:authorized_groups).and_return(Group.id_in([group_1.id, group_2.id]))
+      end
+
+      it 'returns the groups' do
+        expect(subject).to match_array([group_1, group_2])
+      end
+
+      context 'if the search term does not match on name or path' do
+        let(:search_term) { 'unknown' }
+
+        it 'does not return anything' do
+          expect(subject).to be_empty
+        end
+      end
+
+      context 'if the search term is less than MIN_CHARS_FOR_PARTIAL_MATCHING' do
+        let(:search_term) { 'te' }
+
+        it 'does not return anything' do
+          expect(subject).to be_empty
+        end
+
+        context 'if use_minimum_char_limit is false' do
+          subject { user.search_on_authorized_groups(search_term, use_minimum_char_limit: false) }
+
+          it 'returns the groups' do
+            expect(subject).to match_array([group_1, group_2])
+          end
+        end
+      end
+    end
+  end
+
   describe '#membership_groups' do
     let_it_be(:user) { create(:user) }
 

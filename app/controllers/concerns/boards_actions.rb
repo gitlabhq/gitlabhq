@@ -39,20 +39,18 @@ module BoardsActions
   def push_licensed_features; end
 
   def board
-    strong_memoize(:board) do
-      board_finder.execute.first
-    end
+    board_finder.execute.first
   end
+  strong_memoize_attr :board
 
   def board_visit_service
     Boards::Visits::CreateService
   end
 
   def parent
-    strong_memoize(:parent) do
-      group? ? group : project
-    end
+    group? ? group : project
   end
+  strong_memoize_attr :parent
 
   def board_path(board)
     if group?

@@ -1,7 +1,7 @@
 ---
 table_name: instance_integrations
 classes:
-- Integrations::InstanceIntegration
+- Integrations::Instance::Integration
 feature_categories:
 - integrations
 description: Support 3rd party instance-wide integrations

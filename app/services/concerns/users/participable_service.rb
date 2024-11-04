@@ -15,6 +15,7 @@ module Users
 
     def noteable_owner
       return [] unless noteable && noteable.author.present?
+      return [] if noteable.author.placeholder? || noteable.author.import_user?
 
       [noteable.author].tap do |users|
         preload_status(users)
@@ -25,6 +26,7 @@ module Users
       return [] unless noteable
 
       users = noteable.participants(current_user)
+      users = users.reject { |user| user.placeholder? || user.import_user? }
       sorted(users)
     end
 

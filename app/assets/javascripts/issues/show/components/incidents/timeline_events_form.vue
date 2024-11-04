@@ -232,7 +232,7 @@ export default {
           :restricted-tool-bar-items="$options.restrictedToolBarItems"
           markdown-docs-path=""
           :enable-preview="false"
-          class="bordered-box gl-mt-0"
+          class="gl-border gl-mt-0 gl-rounded-base gl-border-section"
         >
           <template #textarea>
             <gl-form-textarea

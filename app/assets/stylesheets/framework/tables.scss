@@ -41,7 +41,7 @@ table {
       }
 
       th {
-        background-color: $gray-10;
+        @apply gl-bg-subtle;
         border-bottom: 0;
 
         &.wide {
@@ -53,7 +53,7 @@ table {
 
     .thead-white {
       th {
-        color: $gl-text-color-secondary;
+        @apply gl-text-subtle;
         border-top: 0;
       }
     }

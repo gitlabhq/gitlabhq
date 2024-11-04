@@ -127,16 +127,15 @@ module CreatesCommit
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
   # rubocop: disable CodeReuse/ActiveRecord
   def merge_request_exists?
-    strong_memoize(:merge_request) do
-      MergeRequestsFinder.new(current_user, project_id: @project.id)
+    MergeRequestsFinder.new(current_user, project_id: @project.id)
         .execute
         .opened
         .find_by(
           source_project_id: @project_to_commit_into,
           source_branch: @branch_name,
           target_branch: @start_branch)
-    end
   end
+  strong_memoize_attr :merge_request_exists?
   # rubocop: enable CodeReuse/ActiveRecord
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
 

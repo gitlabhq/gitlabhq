@@ -25,9 +25,9 @@ To delete a merge request:
 1. Select **Edit**.
 1. Scroll to the bottom of the page, and select **Delete merge request**.
 
-## Bulk edit merge requests at the project level
+## Bulk edit merge requests in a project
 
-You can update these attributes on multiple merge requests at the same time:
+These attributes are editable when bulk editing merge requests:
 
 - Status (open/closed)
 - Assignee
@@ -48,13 +48,13 @@ To do this:
 1. Select the appropriate fields and their values from the sidebar.
 1. Select **Update selected**.
 
-## Bulk edit merge requests at the group level
+## Bulk edit merge requests in a group
 
 DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-When bulk editing merge requests in a group, you can edit the following attributes:
+These attributes are editable when you bulk edit merge requests for a group:
 
 - Milestone
 - Labels

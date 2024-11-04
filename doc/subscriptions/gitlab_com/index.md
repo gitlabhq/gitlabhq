@@ -158,7 +158,8 @@ Billable users count toward the number of subscription seats purchased in your s
 A user is not counted as a billable user if:
 
 - They are pending approval.
-- They have the [Guest role on an Ultimate subscription](#free-guest-users).
+- They have only the [Guest role on an Ultimate subscription](#free-guest-users).
+- They have only the [Minimal Access role](../../user/permissions.md#users-with-minimal-access) for any GitLab.com subscriptions.
 - They are a [banned member](../../user/group/moderate_users.md#ban-a-user).
 - They are a [blocked user](../../administration/moderate_users.md#block-a-user).
 - The account is a GitLab-created service account:

@@ -205,13 +205,10 @@ RSpec.describe Gitlab::Middleware::Go, feature_category: :source_code_management
                     env['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Basic.encode_credentials(current_user.username, 'dummy_password')
                   end
 
-                  it 'returns unauthorized' do
+                  it 'returns 404' do
                     expect(Gitlab::Auth).to receive(:find_for_git_client).and_raise(Gitlab::Auth::MissingPersonalAccessTokenError)
-                    response = go
 
-                    expect(response[0]).to eq(401)
-                    expect(response[1]['Content-Length']).to be_nil
-                    expect(response[2]).to eq([''])
+                    expect_404_response(go)
                   end
                 end
               end

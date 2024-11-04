@@ -336,7 +336,13 @@ module SearchHelper
 
   # Autocomplete results for the current user's groups
   def groups_autocomplete(term, limit = 5)
-    current_user.authorized_groups.order_id_desc.search(term, use_minimum_char_limit: false).limit(limit).map do |group|
+    scope = if Feature.enabled?(:autocomplete_group_search_optimization, current_user)
+              current_user.search_on_authorized_groups(term, use_minimum_char_limit: false)
+            else
+              current_user.authorized_groups.search(term, use_minimum_char_limit: false)
+            end
+
+    scope.order_id_desc.limit(limit).map do |group|
       {
         category: "Groups",
         id: group.id,

@@ -824,6 +824,7 @@ export default {
                     :can-current-user-fork="canCurrentUserFork"
                     :view-diffs-file-by-file="viewDiffsFileByFile"
                     :active="active"
+                    :is-diff-view-active="currentDiffFileId === item.file_hash"
                   />
                 </dynamic-scroller-item>
               </template>
@@ -844,6 +845,7 @@ export default {
                 :help-page-path="helpPagePath"
                 :can-current-user-fork="canCurrentUserFork"
                 :view-diffs-file-by-file="viewDiffsFileByFile"
+                :is-diff-view-active="currentDiffFileId === file.file_hash"
               />
             </template>
             <div

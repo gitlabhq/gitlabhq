@@ -10,13 +10,15 @@ module Types
 
     field :generic_duplicate_exception_regex, Types::UntrustedRegexp,
       null: true,
-      description: 'When generic_duplicates_allowed is false, you can publish duplicate packages with names that match this regex. Otherwise, this setting has no effect.'
+      description: 'When generic_duplicates_allowed is false, you can publish duplicate packages with names that ' \
+        'match this regex. Otherwise, this setting has no effect.'
     field :generic_duplicates_allowed, GraphQL::Types::Boolean,
       null: false,
       description: 'Indicates whether duplicate generic packages are allowed for this namespace.'
     field :maven_duplicate_exception_regex, Types::UntrustedRegexp,
       null: true,
-      description: 'When maven_duplicates_allowed is false, you can publish duplicate packages with names that match this regex. Otherwise, this setting has no effect.'
+      description: 'When maven_duplicates_allowed is false, you can publish duplicate packages with names that ' \
+        'match this regex. Otherwise, this setting has no effect.'
     field :maven_duplicates_allowed, GraphQL::Types::Boolean,
       null: false,
       description: 'Indicates whether duplicate Maven packages are allowed for this namespace.'
@@ -28,7 +30,8 @@ module Types
       description: 'Indicates whether npm package forwarding is allowed for this namespace.'
     field :nuget_duplicate_exception_regex, Types::UntrustedRegexp,
       null: true,
-      description: 'When nuget_duplicates_allowed is false, you can publish duplicate packages with names that match this regex. Otherwise, this setting has no effect. '
+      description: 'When nuget_duplicates_allowed is false, you can publish duplicate packages with names that ' \
+        'match this regex. Otherwise, this setting has no effect. '
     field :nuget_duplicates_allowed, GraphQL::Types::Boolean,
       null: false,
       description: 'Indicates whether duplicate NuGet packages are allowed for this namespace.'
@@ -37,7 +40,8 @@ module Types
       description: 'Indicates whether PyPI package forwarding is allowed for this namespace.'
     field :terraform_module_duplicate_exception_regex, Types::UntrustedRegexp,
       null: true,
-      description: 'When terraform_module_duplicates_allowed is false, you can publish duplicate packages with names that match this regex. Otherwise, this setting has no effect.'
+      description: 'When terraform_module_duplicates_allowed is false, you can publish duplicate packages with ' \
+        'names that match this regex. Otherwise, this setting has no effect.'
     field :terraform_module_duplicates_allowed, GraphQL::Types::Boolean,
       null: false,
       description: 'Indicates whether duplicate Terraform packages are allowed for this namespace.'

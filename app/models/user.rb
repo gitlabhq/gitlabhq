@@ -29,6 +29,7 @@ class User < ApplicationRecord
   include RestrictedSignup
   include StripAttribute
   include EachBatch
+  include IgnorableColumns
   include CrossDatabaseIgnoredTables
   include UseSqlFunctionForPrimaryKeyLookups
 
@@ -44,6 +45,8 @@ class User < ApplicationRecord
     url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/424285',
     on: :destroy
   )
+
+  ignore_column :last_access_from_pipl_country_at, remove_after: '2024-11-17', remove_with: '17.7'
 
   DEFAULT_NOTIFICATION_LEVEL = :participating
 
@@ -1303,6 +1306,16 @@ class User < ApplicationRecord
           groups_from_shares
         ])
     end
+  end
+
+  # Used to search on the user's authorized_groups effeciently by using a CTE
+  def search_on_authorized_groups(query, use_minimum_char_limit: true)
+    authorized_groups_cte = Gitlab::SQL::CTE.new(:authorized_groups, authorized_groups)
+    authorized_groups_cte_alias = authorized_groups_cte.table.alias(Group.table_name)
+    Group
+      .with(authorized_groups_cte.to_arel)
+      .from(authorized_groups_cte_alias)
+      .search(query, use_minimum_char_limit: use_minimum_char_limit)
   end
 
   # Returns the groups a user is a member of, either directly or through a parent group

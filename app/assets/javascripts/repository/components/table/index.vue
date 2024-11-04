@@ -117,7 +117,7 @@ export default {
 
 <template>
   <div class="tree-content-holder">
-    <div class="table-holder bordered-box">
+    <div class="table-holder gl-border gl-rounded-base gl-border-section">
       <table
         :aria-label="tableCaption"
         class="table tree-table"
