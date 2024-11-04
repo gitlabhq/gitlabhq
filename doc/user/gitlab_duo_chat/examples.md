@@ -110,6 +110,39 @@ Chat is not aware of pipelines or commits. However, you can use
 [root cause analysis](#troubleshoot-failed-cicd-jobs-with-root-cause-analysis)
 to troubleshoot the jobs in your pipeline.
 
+## Ask about a specific commit
+
+DETAILS:
+**Tier:** Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Editors:** GitLab UI
+**LLM:** Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/468460) in GitLab 17.6.
+
+You can ask about a specific GitLab commit. For example:
+
+- `Generate a summary for the commit identified with this link: <link to your commit>`
+- `How can I improve the description of this commit?`
+- When you are viewing a commit in GitLab, you can ask `Generate a summary of the current commit.`
+
+## Ask about a specific pipeline job
+
+DETAILS:
+**Tier:** Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Editors:** GitLab UI
+**LLM:** Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/468461) in GitLab 17.6.
+
+You can ask about a specific GitLab pipeline job. For example:
+
+- `Generate a summary for the pipeline job identified via this link: <link to your pipeline job>`
+- `Can you suggest ways to fix this failed pipeline job?`
+- `What are the main steps executed in this pipeline job?`
+- When you are viewing a pipeline job in GitLab, you can ask `Generate a summary of the current pipeline job.`
+
 ## Explain selected code
 
 DETAILS:

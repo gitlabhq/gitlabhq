@@ -5,8 +5,6 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import { MOCK_QUERY } from 'jest/search/mock_data';
 import RadioFilter from '~/search/sidebar/components/shared/radio_filter.vue';
-import { confidentialFilterData } from '~/search/sidebar/components/confidentiality_filter/data';
-import { statusFilterData } from '~/search/sidebar/components/status_filter/data';
 
 Vue.use(Vuex);
 
@@ -22,10 +20,66 @@ describe('RadioFilter', () => {
   };
 
   const defaultProps = {
-    filterData: statusFilterData,
+    filtersArray: {
+      issues: [
+        {
+          label: 'Any',
+          value: null,
+        },
+        {
+          label: 'Confidential',
+          value: 'yes',
+        },
+        {
+          label: 'Not confidential',
+          value: 'no',
+        },
+      ],
+    },
+    header: 'Confidentiality',
+    filterParam: 'confidential',
   };
 
-  const createComponent = (initialState, props = {}) => {
+  const statusDefaultProps = {
+    filtersArray: {
+      issues: [
+        {
+          label: 'Any',
+          value: null,
+        },
+        {
+          label: 'Open',
+          value: 'opened',
+        },
+        {
+          label: 'Closed',
+          value: 'closed',
+        },
+      ],
+      merge_requests: [
+        {
+          label: 'Any',
+          value: null,
+        },
+        {
+          label: 'Open',
+          value: 'opened',
+        },
+        {
+          label: 'Merged',
+          value: 'merged',
+        },
+        {
+          label: 'Closed',
+          value: 'closed',
+        },
+      ],
+    },
+    header: 'Status',
+    filterParam: 'state',
+  };
+
+  const createComponent = (initialState = {}, props = {}) => {
     const store = new Vuex.Store({
       state: {
         query: MOCK_QUERY,
@@ -59,50 +113,46 @@ describe('RadioFilter', () => {
 
     describe('Radio Buttons', () => {
       describe('Status Filter', () => {
+        beforeEach(() => {
+          createComponent({}, statusDefaultProps);
+        });
         it('renders a radio button for each filterOption', () => {
           expect(findGlRadioButtonsText()).toStrictEqual(
-            statusFilterData.filterByScope[statusFilterData.scopes.ISSUES].map((f) => {
-              return f.value === statusFilterData.filters.ANY.value
-                ? `Any ${statusFilterData.header.toLowerCase()}`
-                : f.label;
+            statusDefaultProps.filtersArray.issues.map((f) => {
+              return f.value === null ? `Any ${'Status'.toLowerCase()}` : f.label;
             }),
           );
         });
 
         it('clicking a radio button item calls setQuery', () => {
-          const filter = statusFilterData.filters[Object.keys(statusFilterData.filters)[0]].value;
-          findGlRadioButtonGroup().vm.$emit('input', filter);
+          findGlRadioButtonGroup().vm.$emit('input', 'opened');
 
           expect(actionSpies.setQuery).toHaveBeenCalledWith(expect.any(Object), {
-            key: statusFilterData.filterParam,
-            value: filter,
+            key: 'state',
+            value: 'opened',
           });
         });
       });
 
       describe('Confidentiality Filter', () => {
         beforeEach(() => {
-          createComponent({}, { filterData: confidentialFilterData });
+          createComponent();
         });
 
         it('renders a radio button for each filterOption', () => {
           expect(findGlRadioButtonsText()).toStrictEqual(
-            confidentialFilterData.filterByScope[confidentialFilterData.scopes.ISSUES].map((f) => {
-              return f.value === confidentialFilterData.filters.ANY.value
-                ? `Any ${confidentialFilterData.header.toLowerCase()}`
-                : f.label;
+            defaultProps.filtersArray.issues.map((f) => {
+              return f.value === null ? `Any ${'Confidentiality'.toLowerCase()}` : f.label;
             }),
           );
         });
 
         it('clicking a radio button item calls setQuery', () => {
-          const filter =
-            confidentialFilterData.filters[Object.keys(confidentialFilterData.filters)[0]].value;
-          findGlRadioButtonGroup().vm.$emit('input', filter);
+          findGlRadioButtonGroup().vm.$emit('input', 'closed');
 
           expect(actionSpies.setQuery).toHaveBeenCalledWith(expect.any(Object), {
-            key: confidentialFilterData.filterParam,
-            value: filter,
+            key: 'confidential',
+            value: 'closed',
           });
         });
       });

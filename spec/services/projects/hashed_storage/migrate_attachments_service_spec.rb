@@ -10,7 +10,7 @@ RSpec.describe Projects::HashedStorage::MigrateAttachmentsService, feature_categ
   let(:hashed_storage) { Storage::Hashed.new(project) }
 
   let!(:upload) { Upload.find_by(path: file_uploader.upload_path) }
-  let(:file_uploader) { build(:file_uploader, project: project) }
+  let(:file_uploader) { build(:file_uploader, container: project) }
   let(:old_disk_path) { File.join(base_path(legacy_storage), upload.path) }
   let(:new_disk_path) { File.join(base_path(hashed_storage), upload.path) }
 

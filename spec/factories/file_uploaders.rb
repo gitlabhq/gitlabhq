@@ -4,7 +4,6 @@ FactoryBot.define do
   factory :file_uploader do
     skip_create
 
-    project
     secret { nil }
 
     transient do
@@ -14,11 +13,12 @@ FactoryBot.define do
     end
 
     after(:build) do |uploader, evaluator|
-      uploader.store!(evaluator.file) if evaluator.project&.persisted?
+      uploader.store!(evaluator.file) if evaluator.model&.persisted?
     end
 
     initialize_with do
-      new(project, secret)
+      klass = container.is_a?(Group) ? NamespaceFileUploader : FileUploader
+      klass.new(container, nil, secret: secret)
     end
   end
 end

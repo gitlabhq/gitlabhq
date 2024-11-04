@@ -1,10 +1,10 @@
 - add_to_breadcrumbs _("Applications"), admin_applications_path
-- breadcrumb_title @application.name
+- add_to_breadcrumbs @application.name, admin_application_path(@application)
+- breadcrumb_title _("Edit")
 - page_title _("Edit"), @application.name, _("Applications")
 
 = render 'web_ide_oauth_application_callout', application: @application
 
-%h1.page-title.gl-text-size-h-display
-  = _('Edit application')
+= render ::Layouts::PageHeadingComponent.new(_('Edit application'))
 - @url = admin_application_path(@application)
 = render 'form', application: @application

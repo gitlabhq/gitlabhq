@@ -41,11 +41,15 @@ const {
   WEBPACK_OUTPUT_PATH,
   WEBPACK_PUBLIC_PATH,
   SOURCEGRAPH_PUBLIC_PATH,
-  PDF_JS_WORKER_PUBLIC_PATH,
-  PDF_JS_CMAPS_PUBLIC_PATH,
   GITLAB_WEB_IDE_PUBLIC_PATH,
   copyFilesPatterns,
 } = require('./webpack.constants');
+const {
+  PDF_JS_WORKER_V3_PUBLIC_PATH,
+  PDF_JS_WORKER_V4_PUBLIC_PATH,
+  PDF_JS_CMAPS_V3_PUBLIC_PATH,
+  PDF_JS_CMAPS_V4_PUBLIC_PATH,
+} = require('./pdfjs.constants');
 const { generateEntries } = require('./webpack.helpers');
 
 const createIncrementalWebpackCompiler = require('./helpers/incremental_webpack_compiler');
@@ -303,7 +307,7 @@ module.exports = {
   },
 
   resolve: {
-    extensions: ['.js'],
+    extensions: ['.mjs', '.js'],
     alias,
   },
 
@@ -312,20 +316,25 @@ module.exports = {
     rules: [
       {
         type: 'javascript/auto',
-        exclude: /pdfjs-dist/,
+        exclude: /pdfjs-dist-v[34]/,
         test: /\.mjs$/,
         use: [],
       },
       {
-        test: /(pdfjs).*\.js?$/,
+        test: /(pdfjs).*\.m?js?$/,
+        type: 'javascript/auto',
         include: /node_modules/,
         use: [
           {
             loader: 'babel-loader',
             options: {
+              presets: [
+                ['@babel/preset-env', { targets: { esmodules: true }, modules: 'commonjs' }],
+              ],
               plugins: [
                 '@babel/plugin-transform-optional-chaining',
                 '@babel/plugin-transform-logical-assignment-operators',
+                '@babel/plugin-transform-classes',
               ],
               ...defaultJsOptions,
             },
@@ -736,6 +745,14 @@ module.exports = {
       });
     }),
 
+    new webpack.ContextReplacementPlugin(/^\.$/, (context) => {
+      if (/\/node_modules\/pdfjs-dist-v[34]/.test(context.context)) {
+        for (const d of context.dependencies) {
+          if (d.critical) d.critical = false;
+        }
+      }
+    }),
+
     !IS_JH &&
       new webpack.NormalModuleReplacementPlugin(/^jh_component\/(.*)\.vue/, (resource) => {
         // eslint-disable-next-line no-param-reassign
@@ -860,10 +877,12 @@ module.exports = {
       // This is used by Sourcegraph because these assets are loaded dnamically
       'process.env.SOURCEGRAPH_PUBLIC_PATH': JSON.stringify(SOURCEGRAPH_PUBLIC_PATH),
       'process.env.GITLAB_WEB_IDE_PUBLIC_PATH': JSON.stringify(GITLAB_WEB_IDE_PUBLIC_PATH),
-      'process.env.PDF_JS_WORKER_PUBLIC_PATH': JSON.stringify(PDF_JS_WORKER_PUBLIC_PATH),
-      'process.env.PDF_JS_CMAPS_PUBLIC_PATH': JSON.stringify(PDF_JS_CMAPS_PUBLIC_PATH),
       'window.IS_VITE': JSON.stringify(false),
       ...(IS_PRODUCTION ? {} : { LIVE_RELOAD: DEV_SERVER_LIVERELOAD }),
+      'process.env.PDF_JS_WORKER_V3_PUBLIC_PATH': JSON.stringify(PDF_JS_WORKER_V3_PUBLIC_PATH),
+      'process.env.PDF_JS_WORKER_V4_PUBLIC_PATH': JSON.stringify(PDF_JS_WORKER_V4_PUBLIC_PATH),
+      'process.env.PDF_JS_CMAPS_V3_PUBLIC_PATH': JSON.stringify(PDF_JS_CMAPS_V3_PUBLIC_PATH),
+      'process.env.PDF_JS_CMAPS_V4_PUBLIC_PATH': JSON.stringify(PDF_JS_CMAPS_V4_PUBLIC_PATH),
     }),
 
     /* Pikaday has a optional dependency to moment.

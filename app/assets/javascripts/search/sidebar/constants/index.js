@@ -24,6 +24,10 @@ export const TRACKING_ACTION_CLICK = 'search:filters:click';
 export const TRACKING_LABEL_APPLY = 'Apply Filters';
 export const TRACKING_LABEL_RESET = 'Reset Filters';
 
+export const ARCHIVED_TRACKING_NAMESPACE = 'search:archived:select';
+export const ARCHIVED_TRACKING_LABEL_CHECKBOX = 'checkbox';
+export const ARCHIVED_TRACKING_LABEL_CHECKBOX_LABEL = 'Include archived';
+
 export const SEARCH_TYPE_BASIC = 'basic';
 export const SEARCH_TYPE_ADVANCED = 'advanced';
 export const SEARCH_TYPE_ZOEKT = 'zoekt';
@@ -57,3 +61,59 @@ export const EVENT_SELECT_SOURCE_BRANCH_FILTER = 'select_source_branch_filter';
 
 export const EVENT_SELECT_SOURCE_BRANCH_FILTER_ON_MERGE_REQUEST_PAGE =
   'select_source_branch_filter_on_merge_request_page';
+
+export const LANGUAGE_DEFAULT_ITEM_LENGTH = 10;
+export const LANGUAGE_MAX_ITEM_LENGTH = 100;
+
+export const INCLUDE_ARCHIVED_FILTER_PARAM = 'include_archived';
+export const CONFIDENTAL_FILTER_PARAM = 'confidential';
+export const LABEL_FILTER_PARAM = 'label_name';
+export const INCLUDE_FORKED_FILTER_PARAM = 'include_forked';
+export const LANGUAGE_FILTER_PARAM = 'language';
+export const SOURCE_BRANCH_PARAM = 'source_branch';
+export const NOT_SOURCE_BRANCH_PARAM = 'not[source_branch]';
+
+// label filter data
+export const FIRST_DROPDOWN_INDEX = 0;
+export const SEARCH_BOX_INDEX = 0;
+export const SEARCH_INPUT_DESCRIPTION = 'label-search-input-description';
+export const SEARCH_RESULTS_DESCRIPTION = 'label-search-results-description';
+export const LABEL_FILTER_HEADER = __('Labels');
+export const LABEL_AGREGATION_NAME = 'labels';
+
+export const SOURCE_BRANCH_ENDPOINT_PATH = '/-/autocomplete/merge_request_source_branches.json';
+
+export const CONFIDENTIAL_FILTERS = {
+  ANY: {
+    label: __('Any'),
+    value: null,
+  },
+  CONFIDENTIAL: {
+    label: __('Confidential'),
+    value: 'yes',
+  },
+  NOT_CONFIDENTIAL: {
+    label: __('Not confidential'),
+    value: 'no',
+  },
+};
+
+export const STATE_FILTER_PARAM = 'state';
+export const STATE_FILTERS = {
+  ANY: {
+    label: __('Any'),
+    value: null,
+  },
+  OPEN: {
+    label: __('Open'),
+    value: 'opened',
+  },
+  CLOSED: {
+    label: __('Closed'),
+    value: 'closed',
+  },
+  MERGED: {
+    label: __('Merged'),
+    value: 'merged',
+  },
+};

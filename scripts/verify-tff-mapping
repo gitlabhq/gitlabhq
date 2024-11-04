@@ -338,7 +338,7 @@ tests = [
   },
   {
     explanation: 'Internal Events test cases map to internal events tooling',
-    changed_file: 'spec/fixtures/scripts/internal_events/new_events.yml',
+    changed_file: 'spec/fixtures/scripts/internal_events/event_definer_examples.yml',
     expected: %w[
       spec/scripts/internal_events/cli_spec.rb
       spec/support_specs/matchers/internal_events_matchers_spec.rb

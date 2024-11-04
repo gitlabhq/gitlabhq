@@ -178,7 +178,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'ee/lib/ee/api/helpers/groups_helpers.rb'
     - 'ee/lib/ee/gitlab/auth/ldap/access.rb'
     - 'ee/lib/ee/gitlab/auth/o_auth/user.rb'
-    - 'ee/lib/ee/gitlab/ci/pipeline/quota/size.rb'
     - 'ee/lib/ee/gitlab/ci/yaml_processor.rb'
     - 'ee/lib/ee/gitlab/git_access.rb'
     - 'ee/lib/ee/gitlab/namespace_storage_size_error_message.rb'

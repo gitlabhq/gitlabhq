@@ -17,7 +17,7 @@
 #
 # Note:
 # To be used with shared context 'when running the Internal Events Cli'.
-# See new_events.yml & new_metrics.yml for examples.
+# See event_definer_examples.yml & metric_definer_examples.yml for examples.
 RSpec.shared_examples 'creates the right definition files' do |description, test_case = {}|
   # For expected keystroke mapping, see https://github.com/piotrmurach/tty-reader/blob/master/lib/tty/reader/keys.rb
   let(:keystrokes) { test_case.dig('inputs', 'keystrokes') || [] }

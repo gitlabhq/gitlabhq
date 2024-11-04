@@ -2,7 +2,6 @@
 - add_to_breadcrumbs @label.name, admin_labels_path
 - breadcrumb_title _("Edit")
 - page_title _("Edit"), @label.name, _("Labels")
-%h1.page-title.gl-text-size-h-display
-  = _('Edit label')
 
+= render ::Layouts::PageHeadingComponent.new(_('Edit label'))
 = render 'shared/labels/form', url: admin_label_path(@label), back_path: admin_labels_path

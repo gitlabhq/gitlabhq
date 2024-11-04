@@ -358,7 +358,6 @@ Gitlab/StrongMemoizeAttr:
     - 'ee/lib/ee/gitlab/checks/diff_check.rb'
     - 'ee/lib/ee/gitlab/ci/matching/runner_matcher.rb'
     - 'ee/lib/ee/gitlab/ci/pipeline/chain/validate/external.rb'
-    - 'ee/lib/ee/gitlab/ci/pipeline/quota/size.rb'
     - 'ee/lib/ee/gitlab/etag_caching/router/rails.rb'
     - 'ee/lib/ee/gitlab/git_access.rb'
     - 'ee/lib/ee/gitlab/gitaly_client/with_feature_flag_actors.rb'

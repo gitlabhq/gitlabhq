@@ -40,12 +40,12 @@
 
     = render "shared/tokens/scopes_list", token: @application
 
-.gl-flex.gl-justify-between
+.gl-flex.gl-gap-3
+  = render 'shared/doorkeeper/applications/delete_form', path: delete_path
   %div
     - if @created
       = link_button_to _('Continue'), index_path, class: 'gl-mr-3', variant: :confirm
     = link_button_to _('Edit'), edit_path
-  = render 'shared/doorkeeper/applications/delete_form', path: delete_path
 
 -# Create a hidden field to save the ID of application created
 = hidden_field_tag(:id_of_application, @application.id, data: { testid: 'id-of-application-field' })

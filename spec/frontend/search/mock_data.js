@@ -459,9 +459,6 @@ export const TEST_RAW_BUCKETS = [
 ];
 
 export const TEST_FILTER_DATA = {
-  header: 'Language',
-  scopes: { BLOBS: 'blobs' },
-  filterParam: 'language',
   filters: {
     GO: { label: 'Go', value: 'Go', count: 350 },
     C: { label: 'C', value: 'C', count: 298 },

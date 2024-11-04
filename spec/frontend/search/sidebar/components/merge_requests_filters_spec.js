@@ -8,7 +8,6 @@ import StatusFilter from '~/search/sidebar/components/status_filter/index.vue';
 import ArchivedFilter from '~/search/sidebar/components/archived_filter/index.vue';
 import SourceBranchFilter from '~/search/sidebar/components/source_branch_filter/index.vue';
 import LabelFilter from '~/search/sidebar/components/label_filter/index.vue';
-import { SEARCH_TYPE_ADVANCED, SEARCH_TYPE_BASIC } from '~/search/sidebar/constants';
 
 Vue.use(Vuex);
 
@@ -29,7 +28,7 @@ describe('GlobalSearch MergeRequestsFilters', () => {
     const store = new Vuex.Store({
       state: {
         urlQuery: MOCK_QUERY,
-        searchType: SEARCH_TYPE_ADVANCED,
+        searchType: 'advanced',
         groupInitialJson: {
           id: 1,
         },
@@ -73,7 +72,7 @@ describe('GlobalSearch MergeRequestsFilters', () => {
 
   describe('Renders correctly with basic search', () => {
     beforeEach(() => {
-      createComponent({ searchType: SEARCH_TYPE_BASIC });
+      createComponent({ searchType: 'basic' });
     });
 
     it('renders StatusFilter', () => {

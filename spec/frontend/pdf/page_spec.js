@@ -2,10 +2,6 @@ import { nextTick } from 'vue';
 import { mount } from '@vue/test-utils';
 import PageComponent from '~/pdf/page/index.vue';
 
-jest.mock('pdfjs-dist/webpack', () => {
-  return { default: jest.requireActual('pdfjs-dist/legacy/build/pdf') };
-});
-
 describe('Page component', () => {
   let wrapper;
 

@@ -11,10 +11,15 @@ import {
   IS_JH,
   SOURCEGRAPH_PUBLIC_PATH,
   GITLAB_WEB_IDE_PUBLIC_PATH,
-  PDF_JS_WORKER_PUBLIC_PATH,
-  PDF_JS_CMAPS_PUBLIC_PATH,
   copyFilesPatterns,
 } from './config/webpack.constants';
+import {
+  PDF_JS_WORKER_V3_PUBLIC_PATH,
+  PDF_JS_WORKER_V4_PUBLIC_PATH,
+  PDF_JS_CMAPS_V3_PUBLIC_PATH,
+  PDF_JS_CMAPS_V4_PUBLIC_PATH,
+} from './config/pdfjs.constants';
+
 /* eslint-disable import/extensions */
 import { viteTailwindCompilerPlugin } from './scripts/frontend/tailwindcss.mjs';
 import { CopyPlugin } from './config/helpers/vite_plugin_copy.mjs';
@@ -128,14 +133,16 @@ export default defineConfig({
     'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
     'process.env.SOURCEGRAPH_PUBLIC_PATH': JSON.stringify(SOURCEGRAPH_PUBLIC_PATH),
     'process.env.GITLAB_WEB_IDE_PUBLIC_PATH': JSON.stringify(GITLAB_WEB_IDE_PUBLIC_PATH),
-    'process.env.PDF_JS_WORKER_PUBLIC_PATH': JSON.stringify(PDF_JS_WORKER_PUBLIC_PATH),
-    'process.env.PDF_JS_CMAPS_PUBLIC_PATH': JSON.stringify(PDF_JS_CMAPS_PUBLIC_PATH),
     'window.IS_VITE': JSON.stringify(true),
     'window.VUE_DEVTOOLS_CONFIG.openInEditorHost': JSON.stringify(
       viteGDKConfig.hmr
         ? `${process.env.VITE_HMR_HTTP_URL}/vite-dev/`
         : `http://${viteGDKConfig.host}:${viteGDKConfig.port}/vite-dev/`,
     ),
+    'process.env.PDF_JS_WORKER_V3_PUBLIC_PATH': JSON.stringify(PDF_JS_WORKER_V3_PUBLIC_PATH),
+    'process.env.PDF_JS_WORKER_V4_PUBLIC_PATH': JSON.stringify(PDF_JS_WORKER_V4_PUBLIC_PATH),
+    'process.env.PDF_JS_CMAPS_V3_PUBLIC_PATH': JSON.stringify(PDF_JS_CMAPS_V3_PUBLIC_PATH),
+    'process.env.PDF_JS_CMAPS_V4_PUBLIC_PATH': JSON.stringify(PDF_JS_CMAPS_V4_PUBLIC_PATH),
   },
   server: {
     warmup: {

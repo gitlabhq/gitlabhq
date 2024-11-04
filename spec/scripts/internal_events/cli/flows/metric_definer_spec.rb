@@ -15,7 +15,7 @@ RSpec.describe 'InternalEventsCli::Flows::MetricDefiner', :aggregate_failures, f
   let_it_be(:event3_content) { internal_event_fixture('events/secondary_event_with_identifiers.yml') }
 
   describe 'end-to-end behavior' do
-    YAML.safe_load(File.read('spec/fixtures/scripts/internal_events/new_metrics.yml')).each do |test_case|
+    YAML.safe_load(File.read('spec/fixtures/scripts/internal_events/metric_definer_examples.yml')).each do |test_case|
       it_behaves_like 'creates the right definition files', test_case['description'], test_case
     end
   end

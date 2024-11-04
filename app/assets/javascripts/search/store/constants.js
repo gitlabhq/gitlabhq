@@ -1,14 +1,14 @@
-import { statusFilterData } from '~/search/sidebar/components/status_filter/data';
-import { confidentialFilterData } from '~/search/sidebar/components/confidentiality_filter/data';
-import { languageFilterData } from '~/search/sidebar/components/language_filter/data';
-import { LABEL_FILTER_PARAM } from '~/search/sidebar/components/label_filter/data';
-import { archivedFilterData } from '~/search/sidebar/components/archived_filter/data';
-import { INCLUDE_FORKED_FILTER_PARAM } from '~/search/sidebar/components/forks_filter/index.vue';
 import { s__ } from '~/locale';
 import {
+  CONFIDENTAL_FILTER_PARAM,
+  INCLUDE_ARCHIVED_FILTER_PARAM,
+  LABEL_FILTER_PARAM,
+  INCLUDE_FORKED_FILTER_PARAM,
+  LANGUAGE_FILTER_PARAM,
   SOURCE_BRANCH_PARAM,
   NOT_SOURCE_BRANCH_PARAM,
-} from '~/search/sidebar/components/source_branch_filter/index.vue';
+  STATE_FILTER_PARAM,
+} from '~/search/sidebar/constants';
 
 export const MAX_FREQUENT_ITEMS = 5;
 
@@ -19,11 +19,11 @@ export const GROUPS_LOCAL_STORAGE_KEY = 'global-search-frequent-groups';
 export const PROJECTS_LOCAL_STORAGE_KEY = 'global-search-frequent-projects';
 
 export const SIDEBAR_PARAMS = [
-  statusFilterData.filterParam,
-  confidentialFilterData.filterParam,
-  languageFilterData.filterParam,
+  STATE_FILTER_PARAM,
+  CONFIDENTAL_FILTER_PARAM,
+  LANGUAGE_FILTER_PARAM,
   LABEL_FILTER_PARAM,
-  archivedFilterData.filterParam,
+  INCLUDE_ARCHIVED_FILTER_PARAM,
   INCLUDE_FORKED_FILTER_PARAM,
   SOURCE_BRANCH_PARAM,
   NOT_SOURCE_BRANCH_PARAM,

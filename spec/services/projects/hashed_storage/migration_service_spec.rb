@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Projects::HashedStorage::MigrationService, feature_category: :groups_and_projects do
   let(:project) { create(:project, :empty_repo, :wiki_repo, :legacy_storage) }
   let(:logger) { double }
-  let!(:project_attachment) { build(:file_uploader, project: project) }
+  let!(:project_attachment) { build(:file_uploader, container: project) }
   let(:project_hashed_path) { Storage::Hashed.new(project).disk_path }
   let(:project_legacy_path) { Storage::LegacyProject.new(project).disk_path }
   let(:wiki_hashed_path) { "#{project_hashed_path}.wiki" }

@@ -5,10 +5,8 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import { MOCK_PROJECT, MOCK_QUERY, CURRENT_SCOPE } from 'jest/search/mock_data';
 import { visitUrl, setUrlParams } from '~/lib/utils/url_utility';
-import { PROJECTS_LOCAL_STORAGE_KEY } from '~/search/store/constants';
 import ProjectFilter from '~/search/sidebar/components/project_filter.vue';
 import SearchableDropdown from '~/search/sidebar/components/shared/searchable_dropdown.vue';
-import { ANY_OPTION, GROUP_DATA, PROJECT_DATA } from '~/search/sidebar/constants';
 
 Vue.use(Vuex);
 
@@ -75,13 +73,17 @@ describe('ProjectFilter', () => {
     describe('when @change is emitted', () => {
       describe('with Any', () => {
         beforeEach(() => {
-          findSearchableDropdown().vm.$emit('change', ANY_OPTION);
+          findSearchableDropdown().vm.$emit('change', {
+            id: null,
+            name: 'Any',
+            name_with_namespace: 'Any',
+          });
         });
 
         it('calls setUrlParams with null, no group id, nav_source null, then calls visitUrl', () => {
           expect(setUrlParams).toHaveBeenCalledWith({
             include_archived: null,
-            [PROJECT_DATA.queryParam]: null,
+            project_id: null,
             nav_source: null,
             scope: CURRENT_SCOPE,
           });
@@ -100,16 +102,16 @@ describe('ProjectFilter', () => {
 
         it('calls setUrlParams with project id, group id, nav_source null, then calls visitUrl', () => {
           expect(setUrlParams).toHaveBeenCalledWith({
-            [GROUP_DATA.queryParam]: MOCK_PROJECT.namespace.id,
+            group_id: MOCK_PROJECT.namespace.id,
             include_archived: null,
-            [PROJECT_DATA.queryParam]: MOCK_PROJECT.id,
+            project_id: MOCK_PROJECT.id,
             nav_source: null,
             scope: CURRENT_SCOPE,
           });
           expect(visitUrl).toHaveBeenCalled();
         });
 
-        it(`calls setFrequentProject with the group and ${PROJECTS_LOCAL_STORAGE_KEY}`, () => {
+        it(`calls setFrequentProject with the group and global-search-frequent-projects`, () => {
           expect(actionSpies.setFrequentProject).toHaveBeenCalledWith(
             expect.any(Object),
             MOCK_PROJECT,
@@ -133,11 +135,24 @@ describe('ProjectFilter', () => {
     describe('selectedProject', () => {
       describe('when initialData is null', () => {
         beforeEach(() => {
-          createComponent({ projectInitialJson: ANY_OPTION }, {});
+          createComponent(
+            {
+              projectInitialJson: {
+                id: null,
+                name: 'Any',
+                name_with_namespace: 'Any',
+              },
+            },
+            {},
+          );
         });
 
         it('sets selectedProject to ANY_OPTION', () => {
-          expect(cloneDeep(wrapper.vm.selectedProject)).toStrictEqual(ANY_OPTION);
+          expect(cloneDeep(wrapper.vm.selectedProject)).toStrictEqual({
+            id: null,
+            name: 'Any',
+            name_with_namespace: 'Any',
+          });
         });
       });
 

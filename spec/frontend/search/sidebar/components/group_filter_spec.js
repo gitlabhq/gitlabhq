@@ -8,7 +8,6 @@ import { visitUrl, setUrlParams } from '~/lib/utils/url_utility';
 import { GROUPS_LOCAL_STORAGE_KEY } from '~/search/store/constants';
 import GroupFilter from '~/search/sidebar/components/group_filter.vue';
 import SearchableDropdown from '~/search/sidebar/components/shared/searchable_dropdown.vue';
-import { ANY_OPTION, GROUP_DATA, PROJECT_DATA } from '~/search/sidebar/constants';
 
 Vue.use(Vuex);
 
@@ -72,13 +71,17 @@ describe('GroupFilter', () => {
 
     describe('when @change is emitted with Any', () => {
       beforeEach(() => {
-        findSearchableDropdown().vm.$emit('change', ANY_OPTION);
+        findSearchableDropdown().vm.$emit('change', {
+          id: null,
+          name: 'Any',
+          name_with_namespace: 'Any',
+        });
       });
 
       it('calls setUrlParams with group null, project id null, nav_source null, and then calls visitUrl', () => {
         expect(setUrlParams).toHaveBeenCalledWith({
-          [GROUP_DATA.queryParam]: null,
-          [PROJECT_DATA.queryParam]: null,
+          group_id: null,
+          project_id: null,
           nav_source: null,
           scope: CURRENT_SCOPE,
         });
@@ -98,8 +101,8 @@ describe('GroupFilter', () => {
 
       it('calls setUrlParams with group id, project id null, nav_source null, and then calls visitUrl', () => {
         expect(setUrlParams).toHaveBeenCalledWith({
-          [GROUP_DATA.queryParam]: MOCK_GROUP.id,
-          [PROJECT_DATA.queryParam]: null,
+          group_id: MOCK_GROUP.id,
+          project_id: null,
           nav_source: null,
           scope: CURRENT_SCOPE,
         });
@@ -131,7 +134,11 @@ describe('GroupFilter', () => {
         });
 
         it('sets selectedGroup to ANY_OPTION', () => {
-          expect(wrapper.vm.selectedGroup).toBe(ANY_OPTION);
+          expect(wrapper.vm.selectedGroup).toStrictEqual({
+            id: null,
+            name: 'Any',
+            name_with_namespace: 'Any',
+          });
         });
       });
 

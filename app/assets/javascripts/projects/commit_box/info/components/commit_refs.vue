@@ -111,7 +111,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-border-t">
+  <div class="gl-border-t gl-border-t-section">
     <div class="well-segment">
       <refs-list
         :has-containing-refs="hasContainingBranches"

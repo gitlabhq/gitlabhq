@@ -1,4 +1,4 @@
-import { GlModal, GlFormTextarea, GlToggle } from '@gitlab/ui';
+import { GlModal, GlFormTextarea, GlFormCheckbox } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import axios from 'axios';
@@ -53,7 +53,7 @@ describe('NewDirectoryModal', () => {
   const findDirName = () => wrapper.find('[name="dir_name"]');
   const findBranchName = () => wrapper.find('[name="branch_name"]');
   const findCommitMessage = () => wrapper.findComponent(GlFormTextarea);
-  const findMrToggle = () => wrapper.findComponent(GlToggle);
+  const findMrCheckbox = () => wrapper.findComponent(GlFormCheckbox);
 
   const fillForm = async (inputValue = {}) => {
     const {
@@ -66,7 +66,7 @@ describe('NewDirectoryModal', () => {
     await findDirName().vm.$emit('input', dirName);
     await findBranchName().vm.$emit('input', branchName);
     await findCommitMessage().vm.$emit('input', commitMessage);
-    await findMrToggle().vm.$emit('change', createNewMr);
+    await findMrCheckbox().vm.$emit('input', createNewMr);
     await nextTick();
   };
 
@@ -95,16 +95,24 @@ describe('NewDirectoryModal', () => {
 
   describe('form', () => {
     it.each`
-      component            | defaultValue                  | canPushCode | targetBranch                 | originalBranch                 | exist
-      ${findDirName}       | ${undefined}                  | ${true}     | ${initialProps.targetBranch} | ${initialProps.originalBranch} | ${true}
-      ${findBranchName}    | ${initialProps.targetBranch}  | ${true}     | ${initialProps.targetBranch} | ${initialProps.originalBranch} | ${true}
-      ${findBranchName}    | ${undefined}                  | ${false}    | ${initialProps.targetBranch} | ${initialProps.originalBranch} | ${false}
-      ${findCommitMessage} | ${initialProps.commitMessage} | ${true}     | ${initialProps.targetBranch} | ${initialProps.originalBranch} | ${true}
-      ${findMrToggle}      | ${'true'}                     | ${true}     | ${'new-target-branch'}       | ${'master'}                    | ${true}
-      ${findMrToggle}      | ${'true'}                     | ${true}     | ${'master'}                  | ${'master'}                    | ${true}
+      component            | defaultValue                  | canPushCode | targetBranch                 | originalBranch                 | exist    | attributes
+      ${findDirName}       | ${undefined}                  | ${true}     | ${initialProps.targetBranch} | ${initialProps.originalBranch} | ${true}  | ${'value'}
+      ${findBranchName}    | ${initialProps.targetBranch}  | ${true}     | ${initialProps.targetBranch} | ${initialProps.originalBranch} | ${true}  | ${'value'}
+      ${findBranchName}    | ${undefined}                  | ${false}    | ${initialProps.targetBranch} | ${initialProps.originalBranch} | ${false} | ${'value'}
+      ${findCommitMessage} | ${initialProps.commitMessage} | ${true}     | ${initialProps.targetBranch} | ${initialProps.originalBranch} | ${true}  | ${'value'}
+      ${findMrCheckbox}    | ${'true'}                     | ${true}     | ${'new-target-branch'}       | ${'master'}                    | ${true}  | ${'checked'}
+      ${findMrCheckbox}    | ${'true'}                     | ${true}     | ${'master'}                  | ${'master'}                    | ${true}  | ${'checked'}
     `(
       'has the correct form fields',
-      ({ component, defaultValue, canPushCode, targetBranch, originalBranch, exist }) => {
+      ({
+        component,
+        defaultValue,
+        canPushCode,
+        targetBranch,
+        originalBranch,
+        exist,
+        attributes,
+      }) => {
         createComponent({
           canPushCode,
           targetBranch,
@@ -118,7 +126,7 @@ describe('NewDirectoryModal', () => {
         }
 
         expect(formField.exists()).toBe(true);
-        expect(formField.attributes('value')).toBe(defaultValue);
+        expect(formField.attributes(attributes)).toBe(defaultValue);
       },
     );
   });

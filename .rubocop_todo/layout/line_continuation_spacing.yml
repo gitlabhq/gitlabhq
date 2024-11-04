@@ -43,7 +43,6 @@ Layout/LineContinuationSpacing:
     - 'ee/lib/api/ldap_group_links.rb'
     - 'ee/lib/api/vulnerability_findings.rb'
     - 'ee/lib/ee/gitlab/auth/ldap/access.rb'
-    - 'ee/lib/ee/gitlab/ci/pipeline/quota/size.rb'
     - 'ee/lib/ee/gitlab/git_access.rb'
     - 'ee/lib/tasks/gitlab/geo.rake'
     - 'ee/spec/controllers/groups/group_members_controller_spec.rb'

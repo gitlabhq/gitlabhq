@@ -18978,6 +18978,7 @@ CREATE TABLE scan_result_policies (
     commits smallint,
     send_bot_message jsonb DEFAULT '{}'::jsonb NOT NULL,
     fallback_behavior jsonb DEFAULT '{}'::jsonb NOT NULL,
+    policy_tuning jsonb DEFAULT '{}'::jsonb NOT NULL,
     CONSTRAINT age_value_null_or_positive CHECK (((age_value IS NULL) OR (age_value >= 0))),
     CONSTRAINT check_scan_result_policies_rule_idx_positive CHECK (((rule_idx IS NULL) OR (rule_idx >= 0)))
 );

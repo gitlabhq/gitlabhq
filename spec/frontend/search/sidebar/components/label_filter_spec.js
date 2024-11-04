@@ -18,23 +18,15 @@ import {
   MOCK_LABEL_AGGREGATIONS,
   MOCK_FILTERED_UNSELECTED_LABELS,
 } from 'jest/search/mock_data';
+
 import LabelFilter from '~/search/sidebar/components/label_filter/index.vue';
+
 import LabelDropdownItems from '~/search/sidebar/components/label_filter/label_dropdown_items.vue';
 
 import * as actions from '~/search/store/actions';
 import * as getters from '~/search/store/getters';
 import mutations from '~/search/store/mutations';
 import createState from '~/search/store/state';
-
-import {
-  TRACKING_LABEL_FILTER,
-  TRACKING_LABEL_DROPDOWN,
-  TRACKING_LABEL_CHECKBOX,
-  TRACKING_ACTION_SELECT,
-  TRACKING_ACTION_SHOW,
-} from '~/search/sidebar/components/label_filter/tracking';
-
-import { LABEL_FILTER_PARAM } from '~/search/sidebar/components/label_filter/data';
 
 import {
   RECEIVE_AGGREGATIONS_SUCCESS,
@@ -216,8 +208,8 @@ describe('GlobalSearchSidebarLabelFilter', () => {
     });
 
     it('sends tracking information when dropdown is opened', () => {
-      expect(trackingSpy).toHaveBeenCalledWith(TRACKING_ACTION_SHOW, TRACKING_LABEL_DROPDOWN, {
-        label: TRACKING_LABEL_DROPDOWN,
+      expect(trackingSpy).toHaveBeenCalledWith('search:agreggations:label:show', 'Dropdown', {
+        label: 'Dropdown',
       });
     });
   });
@@ -352,15 +344,19 @@ describe('GlobalSearchSidebarLabelFilter', () => {
       it('trigger event', () => {
         expect(actionSpies.setQuery).toHaveBeenCalledWith(
           expect.anything(),
-          expect.objectContaining({ key: LABEL_FILTER_PARAM, value: ['Cosche'] }),
+          expect.objectContaining({ key: 'label_name', value: ['Cosche'] }),
         );
       });
 
       it('sends tracking information when checkbox is selected', () => {
-        expect(trackingSpy).toHaveBeenCalledWith(TRACKING_ACTION_SELECT, TRACKING_LABEL_CHECKBOX, {
-          label: TRACKING_LABEL_FILTER,
-          property: [6],
-        });
+        expect(trackingSpy).toHaveBeenCalledWith(
+          'search:agreggations:label:select',
+          'Label Checkbox',
+          {
+            label: 'Label Key',
+            property: [6],
+          },
+        );
       });
     });
 

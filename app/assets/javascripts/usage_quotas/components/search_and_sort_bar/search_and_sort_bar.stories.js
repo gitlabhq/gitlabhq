@@ -2,7 +2,7 @@ import SearchAndSortBar from './search_and_sort_bar.vue';
 
 export default {
   component: SearchAndSortBar,
-  title: 'usage_quotas/components/search_bar',
+  title: 'usage_quotas/search_bar',
 };
 
 const Template = (_, { argTypes }) => ({

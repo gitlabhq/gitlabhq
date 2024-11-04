@@ -69,7 +69,7 @@ RSpec.describe MarkdownContentRewriterService, feature_category: :markdown do
     end
 
     context 'when content contains an upload' do
-      let(:image_uploader) { build(:file_uploader, project: source_parent) }
+      let(:image_uploader) { build(:file_uploader, container: source_parent) }
       let(:content) { "Text and #{image_uploader.markdown_link}" }
 
       it 'rewrites content' do
@@ -96,7 +96,7 @@ RSpec.describe MarkdownContentRewriterService, feature_category: :markdown do
     end
 
     context 'when content has uploaded file references' do
-      let(:image_uploader) { build(:file_uploader, project: source_parent) }
+      let(:image_uploader) { build(:file_uploader, container: source_parent) }
       let(:content) { "Text and #{image_uploader.markdown_link}" }
 
       it { is_expected.to eq(false) }

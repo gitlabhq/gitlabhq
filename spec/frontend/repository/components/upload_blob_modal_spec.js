@@ -1,4 +1,4 @@
-import { GlModal, GlFormInput, GlFormTextarea, GlToggle, GlAlert } from '@gitlab/ui';
+import { GlModal, GlFormInput, GlFormTextarea, GlFormCheckbox, GlAlert } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
@@ -52,7 +52,7 @@ describe('UploadBlobModal', () => {
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findCommitMessage = () => wrapper.findComponent(GlFormTextarea);
   const findBranchName = () => wrapper.findComponent(GlFormInput);
-  const findMrToggle = () => wrapper.findComponent(GlToggle);
+  const findMrCheckbox = () => wrapper.findComponent(GlFormCheckbox);
   const findUploadDropzone = () => wrapper.findComponent(UploadDropzone);
   const actionButtonDisabledState = () => findModal().props('actionPrimary').attributes.disabled;
   const cancelButtonDisabledState = () => findModal().props('actionCancel').attributes.disabled;
@@ -90,8 +90,8 @@ describe('UploadBlobModal', () => {
         expect(cancelButtonDisabledState()).toBe(false);
       });
 
-      it('does not display the MR toggle', () => {
-        expect(findMrToggle().exists()).toBe(false);
+      it('does not display the MR checkbox', () => {
+        expect(findMrCheckbox().exists()).toBe(false);
       });
 
       it(`${
@@ -106,12 +106,12 @@ describe('UploadBlobModal', () => {
 
       if (canPushCode) {
         describe('when changing the branch name', () => {
-          it('displays the MR toggle', async () => {
+          it('displays the MR checkbox', async () => {
             createComponent({ targetBranch: 'Not main' });
 
             await nextTick();
 
-            expect(findMrToggle().exists()).toBe(true);
+            expect(findMrCheckbox().exists()).toBe(true);
           });
         });
       }

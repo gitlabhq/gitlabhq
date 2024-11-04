@@ -24,6 +24,7 @@ const plugins = [
   // See: https://gitlab.com/gitlab-org/gitlab/-/issues/336216
   '@babel/plugin-transform-nullish-coalescing-operator',
   'lodash',
+  '@babel/plugin-transform-class-static-block',
 ];
 
 // Jest is running in node environment

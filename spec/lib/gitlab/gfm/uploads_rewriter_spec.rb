@@ -9,14 +9,8 @@ RSpec.describe Gitlab::Gfm::UploadsRewriter do
   let(:rewriter) { described_class.new(+text, nil, old_project, user) }
 
   context 'text contains links to uploads' do
-    let(:image_uploader) do
-      build(:file_uploader, project: old_project)
-    end
-
-    let(:zip_uploader) do
-      build(:file_uploader, project: old_project,
-        fixture: 'ci_build_artifacts.zip')
-    end
+    let(:image_uploader) { build(:file_uploader, container: old_project) }
+    let(:zip_uploader) { build(:file_uploader, container: old_project, fixture: 'ci_build_artifacts.zip') }
 
     let(:text) do
       "Text and #{image_uploader.markdown_link} and #{zip_uploader.markdown_link}".freeze

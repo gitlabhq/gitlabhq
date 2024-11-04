@@ -19,16 +19,15 @@ import { slugify } from '~/lib/utils/text_utility';
 import DropdownKeyboardNavigation from '~/vue_shared/components/dropdown_keyboard_navigation.vue';
 
 import { I18N } from '~/vue_shared/global_search/constants';
-import LabelDropdownItems from './label_dropdown_items.vue';
-
 import {
   FIRST_DROPDOWN_INDEX,
   SEARCH_BOX_INDEX,
-  SEARCH_RESULTS_DESCRIPTION,
   SEARCH_INPUT_DESCRIPTION,
-  LABEL_FILTER_PARAM,
+  SEARCH_RESULTS_DESCRIPTION,
   LABEL_FILTER_HEADER,
-} from './data';
+  LABEL_FILTER_PARAM,
+} from '../../constants';
+import LabelDropdownItems from './label_dropdown_items.vue';
 
 import { trackSelectCheckbox, trackOpenDropdown } from './tracking';
 

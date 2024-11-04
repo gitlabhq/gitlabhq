@@ -5762,9 +5762,6 @@ msgstr ""
 msgid "Allows projects to track errors using an Opstrace integration."
 msgstr ""
 
-msgid "Almost there"
-msgstr ""
-
 msgid "Almost there..."
 msgstr ""
 
@@ -6746,6 +6743,9 @@ msgid "Application was successfully destroyed."
 msgstr ""
 
 msgid "Application was successfully updated."
+msgstr ""
+
+msgid "Application: %{application_name}"
 msgstr ""
 
 msgid "Application: %{name}"
@@ -8705,9 +8705,6 @@ msgstr ""
 msgid "BillingPlans|Introducing GitLab Duo Enterprise"
 msgstr ""
 
-msgid "BillingPlans|Learn more about each plan by reading our %{faq_link}, or start a free 30-day trial of GitLab.com Ultimate."
-msgstr ""
-
 msgid "BillingPlans|Learn more about each plan by visiting our %{pricing_page_link}."
 msgstr ""
 
@@ -8753,9 +8750,6 @@ msgstr ""
 msgid "BillingPlans|Priority support"
 msgstr ""
 
-msgid "BillingPlans|Ready to explore the value of paid features today?"
-msgstr ""
-
 msgid "BillingPlans|Recommended"
 msgstr ""
 
@@ -8772,12 +8766,6 @@ msgid "BillingPlans|Start a free GitLab Duo Enterprise Trial"
 msgstr ""
 
 msgid "BillingPlans|Start a free GitLab Duo Pro trial"
-msgstr ""
-
-msgid "BillingPlans|Start a free Ultimate trial"
-msgstr ""
-
-msgid "BillingPlans|Start a free Ultimate trial. No credit card required."
 msgstr ""
 
 msgid "BillingPlans|Start an Ultimate trial with GitLab Duo Enterprise to try the complete set of features from GitLab. GitLab Duo Enterprise gives you access to the full product offering from GitLab, including AI-powered features."
@@ -8856,9 +8844,6 @@ msgid "BillingPlans|Your current plan"
 msgstr ""
 
 msgid "BillingPlans|billed annually at %{price_per_year}"
-msgstr ""
-
-msgid "BillingPlans|frequently asked questions"
 msgstr ""
 
 msgid "BillingPlans|group"
@@ -21221,9 +21206,6 @@ msgstr ""
 msgid "Enabled OAuth authentication sources"
 msgstr ""
 
-msgid "Enables a free GitLab Ultimate trial when you create a new project."
-msgstr ""
-
 msgid "Enables a free Ultimate + GitLab Duo Enterprise trial when you create a new project."
 msgstr ""
 
@@ -23972,9 +23954,6 @@ msgstr ""
 msgid "Frameworks"
 msgstr ""
 
-msgid "Free Trial of GitLab.com Ultimate"
-msgstr ""
-
 msgid "Free Ultimate Trial with GitLab Duo Enterprise"
 msgstr ""
 
@@ -24007,7 +23986,7 @@ msgstr ""
 msgid "FreeUserCap|Start a trial:"
 msgstr ""
 
-msgid "FreeUserCap|To remove the %{link_start}read-only%{link_end} state and regain write access, you can reduce the number of users in your top-level group to %{free_user_limit} users or less. You can also %{upgrade_start}upgrade%{upgrade_end} to a paid tier, which do not have user limits. If you need additional time, you can %{trial_start}start a free 30-day trial%{trial_end} which includes unlimited users."
+msgid "FreeUserCap|To remove the %{link_start}read-only%{link_end} state and regain write access, you can reduce the number of users in your top-level group to %{free_user_limit} users or less. You can also %{upgrade_start}upgrade%{upgrade_end} to a paid tier, which do not have user limits. If you need additional time, you can %{trial_start}start a free 60-day trial%{trial_end} which includes unlimited users."
 msgstr ""
 
 msgid "FreeUserCap|Upgrade:"
@@ -28567,25 +28546,13 @@ msgstr ""
 msgid "In use"
 msgstr ""
 
-msgid "InProductMarketing|%{upper_start}Free 30-day trial%{upper_end} %{lower_start}GitLab Ultimate%{lower_end}"
-msgstr ""
-
 msgid "InProductMarketing|%{upper_start}Free 60-day trial%{upper_end} %{lower_start}GitLab Ultimate & GitLab Duo Enterprise%{lower_end} %{last_start}Sign up for a free trial of the most comprehensive AI-powered DevSecOps Platform%{last_end}"
-msgstr ""
-
-msgid "InProductMarketing|Accelerate your digital transformation"
 msgstr ""
 
 msgid "InProductMarketing|Boost efficiency and collaboration"
 msgstr ""
 
-msgid "InProductMarketing|Build in security"
-msgstr ""
-
 msgid "InProductMarketing|Built-in security"
-msgstr ""
-
-msgid "InProductMarketing|Deliver software faster"
 msgstr ""
 
 msgid "InProductMarketing|End-to-end security and compliance"
@@ -28598,9 +28565,6 @@ msgid "InProductMarketing|Free guest users"
 msgstr ""
 
 msgid "InProductMarketing|GitLab Duo Enterprise: AI across the software development lifecycle"
-msgstr ""
-
-msgid "InProductMarketing|Improve collaboration and visibility"
 msgstr ""
 
 msgid "InProductMarketing|Invite unlimited colleagues"
@@ -28619,9 +28583,6 @@ msgid "InProductMarketing|Ship secure software faster"
 msgstr ""
 
 msgid "InProductMarketing|Start a Self-Managed trial"
-msgstr ""
-
-msgid "InProductMarketing|Start your 30-day free trial"
 msgstr ""
 
 msgid "InProductMarketing|Start your 60-day free trial"
@@ -32188,7 +32149,7 @@ msgstr ""
 msgid "LearnGitLab|Try GitLab Ultimate for free"
 msgstr ""
 
-msgid "LearnGitLab|Try all GitLab features for 30 days, no credit card required."
+msgid "LearnGitLab|Try all GitLab features for 60 days, no credit card required."
 msgstr ""
 
 msgid "LearnGitLab|Use GitLab to deploy your application, monitor its health, and keep it secure:"
@@ -53192,9 +53153,6 @@ msgstr ""
 msgid "Start time"
 msgstr ""
 
-msgid "Start your Free Ultimate Trial"
-msgstr ""
-
 msgid "Start your Free Ultimate and GitLab Duo Enterprise Trial"
 msgstr ""
 
@@ -56712,7 +56670,7 @@ msgstr ""
 msgid "TierBadgePopover|This project uses the %{tier} GitLab tier. %{copyEnd}"
 msgstr ""
 
-msgid "TierBadgePopover|Want to enhance team productivity and access advanced features like Merge Approvals, Push rules, Epics, Code Review Analytics, and Container Scanning? Try all GitLab has to offer for free for 30 days. No credit card required."
+msgid "TierBadgePopover|Want to enhance team productivity and access advanced features like Merge Approvals, Push rules, Epics, Code Review Analytics, and Container Scanning? Try all GitLab has to offer for free for 60 days. No credit card required."
 msgstr ""
 
 msgid "TierBadge|Free"
@@ -57217,8 +57175,8 @@ msgstr ""
 msgid "To get started, use the link below to confirm your account."
 msgstr ""
 
-msgid "To invite more users, you can reduce the number of users in your top-level group to %{free_limit} user or less. You can also upgrade to a paid tier which do not have user limits. If you need additional time, you can start a free 30-day trial which includes unlimited users."
-msgid_plural "To invite more users, you can reduce the number of users in your top-level group to %{free_limit} users or less. You can also upgrade to a paid tier which do not have user limits. If you need additional time, you can start a free 30-day trial which includes unlimited users."
+msgid "To invite more users, you can reduce the number of users in your top-level group to %{free_limit} user or less. You can also upgrade to a paid tier which do not have user limits. If you need additional time, you can start a free 60-day trial which includes unlimited users."
+msgid_plural "To invite more users, you can reduce the number of users in your top-level group to %{free_limit} users or less. You can also upgrade to a paid tier which do not have user limits. If you need additional time, you can start a free 60-day trial which includes unlimited users."
 msgstr[0] ""
 msgstr[1] ""
 
@@ -57264,7 +57222,7 @@ msgstr ""
 msgid "To remove the %{link_start}read-only%{link_end} state and regain write access, ask your top-level group owner(s) to reduce the number of users in your top-level group to %{free_limit} users or less, or to upgrade to a paid tier which do not have user limits."
 msgstr ""
 
-msgid "To remove the %{link_start}read-only%{link_end} state and regain write access, you can reduce the number of users in your top-level group to %{free_limit} users or less. You can also upgrade to a paid tier, which do not have user limits. If you need additional time, you can start a free 30-day trial which includes unlimited users."
+msgid "To remove the %{link_start}read-only%{link_end} state and regain write access, you can reduce the number of users in your top-level group to %{free_limit} users or less. You can also upgrade to a paid tier, which do not have user limits. If you need additional time, you can start a free 60-day trial which includes unlimited users."
 msgstr ""
 
 msgid "To resolve the problem, refine your search criteria. Select a group or project or use double quotes for multiple keywords (for example, %{code_open}\"your search\"%{code_close})."
@@ -58245,13 +58203,7 @@ msgstr ""
 msgid "Trials|Create a new group and start your trial of Ultimate with GitLab Duo Enterprise."
 msgstr ""
 
-msgid "Trials|Create a new group to start your GitLab Ultimate trial."
-msgstr ""
-
 msgid "Trials|You can apply your trial of Ultimate with GitLab Duo Enterprise to a group."
-msgstr ""
-
-msgid "Trials|You can apply your trial to a new group or an existing group."
 msgstr ""
 
 msgid "Trial|Activate my trial"
@@ -58287,9 +58239,6 @@ msgstr ""
 msgid "Trial|Select state or province"
 msgstr ""
 
-msgid "Trial|Start free GitLab Ultimate trial"
-msgstr ""
-
 msgid "Trial|Start free Ultimate + GitLab Duo Enterprise trial"
 msgstr ""
 
@@ -58297,12 +58246,6 @@ msgid "Trial|State or province"
 msgstr ""
 
 msgid "Trial|To activate your trial, we need additional details from you."
-msgstr ""
-
-msgid "Trial|You don't need a credit card to start a trial. After the 30-day trial period, your account automatically becomes a GitLab Free account. You can use your GitLab Free account forever, or upgrade to a paid tier."
-msgstr ""
-
-msgid "Trial|Your GitLab Ultimate trial lasts for 30 days, but you can keep your free GitLab account forever. We just need some additional information to activate your trial."
 msgstr ""
 
 msgid "Trial|Your combined Ultimate and GitLab Duo Enterprise trial lasts for 60 days. We just need some additional information to activate it."
@@ -58378,9 +58321,6 @@ msgid "Try again"
 msgstr ""
 
 msgid "Try again?"
-msgstr ""
-
-msgid "Try all GitLab has to offer for 30 days. No credit card required."
 msgstr ""
 
 msgid "Try grouping with different labels"

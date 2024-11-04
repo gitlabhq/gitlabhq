@@ -1,16 +1,16 @@
 import { findKey, intersection, difference } from 'lodash';
-import { languageFilterData } from '~/search/sidebar/components/language_filter/data';
-import {
-  LABEL_FILTER_PARAM,
-  LABEL_AGREGATION_NAME,
-} from '~/search/sidebar/components/label_filter/data';
 import {
   formatSearchResultCount,
   addCountOverLimit,
   injectRegexSearch,
 } from '~/search/store/utils';
 
-import { SCOPE_BLOB } from '~/search/sidebar/constants';
+import {
+  SCOPE_BLOB,
+  LABEL_FILTER_PARAM,
+  LABEL_AGREGATION_NAME,
+  LANGUAGE_FILTER_PARAM,
+} from '~/search/sidebar/constants';
 import { GROUPS_LOCAL_STORAGE_KEY, PROJECTS_LOCAL_STORAGE_KEY, ICON_MAP } from './constants';
 
 const queryLabelFilters = (state) => state?.query?.[LABEL_FILTER_PARAM] || [];
@@ -28,7 +28,7 @@ const unappliedNewLabelKeys = (state) => {
   );
 };
 
-export const queryLanguageFilters = (state) => state.query[languageFilterData.filterParam] || [];
+export const queryLanguageFilters = (state) => state.query[LANGUAGE_FILTER_PARAM] || [];
 
 export const frequentGroups = (state) => {
   return state.frequentItems[GROUPS_LOCAL_STORAGE_KEY];
@@ -40,9 +40,8 @@ export const frequentProjects = (state) => {
 
 export const languageAggregationBuckets = (state) => {
   return (
-    state.aggregations.data.find(
-      (aggregation) => aggregation.name === languageFilterData.filterParam,
-    )?.buckets || []
+    state.aggregations.data.find((aggregation) => aggregation.name === LANGUAGE_FILTER_PARAM)
+      ?.buckets || []
   );
 };
 

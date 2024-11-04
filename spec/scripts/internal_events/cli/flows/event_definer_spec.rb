@@ -8,7 +8,7 @@ RSpec.describe 'InternalEventsCli::Flows::EventDefiner', :aggregate_failures, fe
   include_context 'when running the Internal Events Cli'
 
   describe 'end-to-end behavior' do
-    YAML.safe_load(File.read('spec/fixtures/scripts/internal_events/new_events.yml')).each do |test_case|
+    YAML.safe_load(File.read('spec/fixtures/scripts/internal_events/event_definer_examples.yml')).each do |test_case|
       it_behaves_like 'creates the right definition files', test_case['description'], test_case
     end
   end
