@@ -244,6 +244,6 @@ To migrate your data to GitLab Dedicated:
 
 ## Get started
 
-For more information about GitLab Dedicated or to request a demo, see [GitLab Dedicated](https://about.gitlab.com/solutions/gitlab-dedicated/).
+For more information about GitLab Dedicated or to request a demo, see [GitLab Dedicated](https://about.gitlab.com/dedicated/).
 
 For more information on setting up your GitLab Dedicated instance, see [Create your GitLab Dedicated instance](../../administration/dedicated/create_instance.md).

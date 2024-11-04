@@ -720,7 +720,8 @@ You can increase the default number of 0 required approvers like this:
 curl --request POST \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --header 'Content-Type: application/json' \
-  --data '{"name": "Any name", "rule_type": "any_approver", "approvals_required": 2}'
+  --data '{"name": "Any name", "rule_type": "any_approver", "approvals_required": 2}' \
+  --url "https://gitlab.example.com/api/v4/projects/<project_id>/approval_rules"
 ```
 
 Another example is creating a user-specific rule:

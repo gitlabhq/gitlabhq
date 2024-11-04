@@ -4,6 +4,10 @@ RSpec.shared_examples 'clone quick action' do
   context 'clone the issue to another project' do
     let(:target_project) { create(:project, :public) }
 
+    before do
+      stub_feature_flags(async_sidebar_counts: false)
+    end
+
     context 'when no target is given' do
       it 'clones the issue in the current project' do
         add_note("/clone")

@@ -56,6 +56,8 @@ RSpec.describe Sidebars::Groups::Menus::IssuesMenu, feature_category: :navigatio
     let(:count_service) { ::Groups::OpenIssuesCountService }
 
     before do
+      stub_feature_flags(async_sidebar_counts: false)
+
       allow_next_instance_of(count_service) do |service|
         allow(service).to receive(:count).and_raise(ActiveRecord::QueryCanceled)
       end

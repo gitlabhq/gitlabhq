@@ -139,6 +139,15 @@ export const mockCancelReassignmentMutationResponse = {
     },
   },
 };
+export const mockKeepAllAsPlaceholderMutationResponse = {
+  data: {
+    importSourceUserKeepAllAsPlaceholder: {
+      errors: [],
+      updatedImportSourceUserCount: 1,
+      __typename: 'ImportSourceUserKeepAllAsPlaceholderPayload',
+    },
+  },
+};
 
 export const mockUser1 = {
   __typename: 'UserCore',

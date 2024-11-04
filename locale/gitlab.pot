@@ -59782,6 +59782,9 @@ msgstr ""
 msgid "UserList|created %{timeago}"
 msgstr ""
 
+msgid "UserMapping|%{count} placeholders were kept as placeholders."
+msgstr ""
+
 msgid "UserMapping|%{reassign_to_name} (%{reassign_to_username}) has declined your request to reassign contributions of %{source_name} (%{source_username}) on %{source_hostname} to them on %{destination_group}. To reassign these contributions to another user, visit the Members page of %{destination_group}."
 msgstr ""
 
@@ -59809,6 +59812,9 @@ msgstr ""
 msgid "UserMapping|Drop your file here or %{linkStart}click to upload%{linkEnd}."
 msgstr ""
 
+msgid "UserMapping|If you keep all remaining placeholders, you cannot reassign their contributions to users in the future. Ensure all required reassignments are completed before choosing to keep remaining placeholders."
+msgstr ""
+
 msgid "UserMapping|Import details:"
 msgstr ""
 
@@ -59816,6 +59822,12 @@ msgid "UserMapping|Imported from: %{source_hostname}"
 msgstr ""
 
 msgid "UserMapping|Imported to: %{destination_group}"
+msgstr ""
+
+msgid "UserMapping|Keep all as placeholder"
+msgstr ""
+
+msgid "UserMapping|Keep all as placeholders?"
 msgstr ""
 
 msgid "UserMapping|Kept as placeholder"
@@ -59954,6 +59966,9 @@ msgid "UserMapping|There was a problem cancelling placeholder user reassignment.
 msgstr ""
 
 msgid "UserMapping|There was a problem fetching placeholder users."
+msgstr ""
+
+msgid "UserMapping|There was a problem keeping all placeholder users."
 msgstr ""
 
 msgid "UserMapping|There was a problem reassigning placeholder user."

@@ -3992,7 +3992,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
       it 'enqueues PipelineNotificationWorker' do
         expect(PipelineNotificationWorker)
-          .to receive(:perform_async).with(pipeline.id, ref_status: :success)
+          .to receive(:perform_async).with(pipeline.id, 'ref_status' => 'success')
 
         pipeline.succeed
       end
@@ -4004,7 +4004,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
         it 'does not pass ref_status' do
           expect(PipelineNotificationWorker)
-            .to receive(:perform_async).with(pipeline.id, ref_status: nil)
+            .to receive(:perform_async).with(pipeline.id, 'ref_status' => nil)
 
           pipeline.succeed!
         end
@@ -4037,7 +4037,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
       it 'enqueues PipelineNotificationWorker' do
         expect(PipelineNotificationWorker)
-          .to receive(:perform_async).with(pipeline.id, ref_status: :failed)
+          .to receive(:perform_async).with(pipeline.id, 'ref_status' => 'failed')
 
         pipeline.drop
       end

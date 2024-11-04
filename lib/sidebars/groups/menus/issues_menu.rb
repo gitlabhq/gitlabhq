@@ -34,6 +34,8 @@ module Sidebars
 
         override :pill_count
         def pill_count
+          return if Feature.enabled?(:async_sidebar_counts, context.group.root_ancestor)
+
           strong_memoize(:pill_count) do
             count_service = ::Groups::OpenIssuesCountService
 

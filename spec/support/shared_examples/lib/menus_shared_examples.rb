@@ -5,6 +5,10 @@ RSpec.shared_examples_for 'pill_count formatted results' do
 
   subject(:pill_count) { menu.pill_count }
 
+  before do
+    stub_feature_flags(async_sidebar_counts: false)
+  end
+
   it 'returns all digits for count value under 1000' do
     allow_next_instance_of(count_service) do |service|
       allow(service).to receive(:count).and_return(999)
@@ -35,6 +39,16 @@ RSpec.shared_examples_for 'pill_count formatted results' do
     end
 
     expect(pill_count).to eq('112.6k')
+  end
+
+  context 'when async_sidebar_counts feature flag is enabled' do
+    before do
+      stub_feature_flags(async_sidebar_counts: true)
+    end
+
+    it 'returns nil' do
+      expect(pill_count).to be_nil
+    end
   end
 end
 

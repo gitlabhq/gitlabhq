@@ -12,7 +12,7 @@ RSpec.describe PipelineNotificationWorker, :mailer, feature_category: :continuou
         .with(pipeline, ref_status: 'success', recipients: ['test@gitlab.com'])
       expect(NotificationService).to receive(:new).and_return(notification_service_double)
 
-      subject.perform(pipeline.id, ref_status: 'success', recipients: ['test@gitlab.com'])
+      subject.perform(pipeline.id, 'ref_status' => 'success', 'recipients' => ['test@gitlab.com'])
     end
 
     it 'does nothing when the pipeline does not exist' do

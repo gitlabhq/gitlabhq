@@ -39,6 +39,9 @@ Prerequisites:
   - `flux`
 - You have a local cluster connection that works with `kubectl` and `flux`.
 - You [bootstrapped Flux](https://fluxcd.io/flux/installation/bootstrap/gitlab/) into the cluster with `flux bootstrap`.
+  - Make sure to bootstrap Flux and the agent in compatible directories. If you bootstrapped Flux
+    with the `--path` option, you must pass the same value to the `--manifest-path` option of the
+    `glab cluster agent bootstrap` command.
 
 To install the agent:
 
@@ -58,7 +61,7 @@ By default, the command:
 1. Commits the Flux Helm resources to the Git repository.
 1. Triggers a Flux reconciliation.
 
-For customization options, run `glab cluster agent bootstrap --help`.
+For customization options, run `glab cluster agent bootstrap --help`. You probably want to use at least the `--path <flux_manifests_directory>` option.
 
 ## Install the agent manually
 
@@ -345,3 +348,22 @@ If you [installed the agent with Helm](#install-the-agent-with-helm), then you c
 helm uninstall gitlab-agent \
     --namespace gitlab-agent
 ```
+
+## Troubleshooting
+
+When you install the agent for Kubernetes, you might encounter the following issues.
+
+### Error: `failed to reconcile the GitLab Agent`
+
+If the `glab cluster agent bootstrap` command fails with the message `failed to reconcile the GitLab Agent`,
+it means `glab` couldn't reconcile the agent with Flux.
+
+This error might be because:
+
+- The Flux setup doesn't point to the directory where `glab` put the Flux manifests for the agent.
+  If you bootstrapped Flux with the `--path` option, you must pass the same value to the `--manifest-path` option of the
+  `glab cluster agent bootstrap` command.
+- Flux points to the root directory of a project without a `kustomization.yaml`, which causes Flux to traverse subdirectories looking for YAML files.
+  To use the agent, you must have an agent configuration file at `.gitlab/agents/<agent-name>/config.yaml`,
+  which is not a valid Kubernetes manifest. Flux fails to apply this file, which causes an error.
+  To resolve, you should point Flux at a subdirectory instead of the root.

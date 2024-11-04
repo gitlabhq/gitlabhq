@@ -8,6 +8,8 @@ import {
   GlButton,
   GlModalDirective,
   GlFilteredSearchToken,
+  GlDisclosureDropdown,
+  GlDisclosureDropdownItem,
 } from '@gitlab/ui';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { s__, __, sprintf } from '~/locale';
@@ -34,8 +36,10 @@ import {
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import PlaceholdersTable from './placeholders_table.vue';
 import CsvUploadModal from './csv_upload_modal.vue';
+import KeepAllAsPlaceholderModal from './keep_all_as_placeholder_modal.vue';
 
 const UPLOAD_CSV_PLACEHOLDERS_MODAL_ID = 'upload-placeholders-csv-modal';
+const KEEP_ALL_AS_PLACEHOLDER_MODAL_ID = 'keep-all-as-placeholder-modal';
 
 export default {
   name: 'PlaceholdersTabApp',
@@ -44,9 +48,12 @@ export default {
     GlTab,
     GlTabs,
     GlButton,
+    GlDisclosureDropdown,
+    GlDisclosureDropdownItem,
     FilteredSearchBar,
     PlaceholdersTable,
     CsvUploadModal,
+    KeepAllAsPlaceholderModal,
   },
   directives: {
     GlModal: GlModalDirective,
@@ -231,20 +238,31 @@ export default {
       this.filterParams = { ...filterParams };
     },
     onConfirm(item) {
-      this.$toast.show(
-        sprintf(s__('UserMapping|Placeholder %{name} (@%{username}) kept as placeholder.'), {
-          name: item.placeholderUser.name,
-          username: item.placeholderUser.username,
-        }),
-      );
-      this.reassignedCount += 1;
-      this.unassignedCount -= 1;
+      this.updateTabCount({ item, placeholderCount: 1 });
+    },
+    onConfirmKeepAllAsPlaceholders(placeholderCount) {
+      this.updateTabCount({ placeholderCount });
+    },
+    updateTabCount({ item, placeholderCount }) {
+      const message = item
+        ? sprintf(s__('UserMapping|Placeholder %{name} (@%{username}) kept as placeholder.'), {
+            name: item.placeholderUser.name,
+            username: item.placeholderUser.username,
+          })
+        : sprintf(s__('UserMapping|%{count} placeholders were kept as placeholders.'), {
+            count: placeholderCount,
+          });
+
+      this.$toast.show(message);
+      this.reassignedCount += placeholderCount;
+      this.unassignedCount -= placeholderCount;
     },
     onSort(sort) {
       this.sort = sort;
     },
   },
   uploadCsvModalId: UPLOAD_CSV_PLACEHOLDERS_MODAL_ID,
+  keepAllAsPlaceholderModalId: KEEP_ALL_AS_PLACEHOLDER_MODAL_ID,
   PLACEHOLDER_USER_REASSIGNED_STATUS_OPTIONS,
 };
 </script>
@@ -317,16 +335,40 @@ export default {
       </gl-tab>
 
       <template #tabs-end>
-        <div v-if="isCsvReassignmentEnabled" class="gl-ml-auto">
-          <gl-button
-            v-gl-modal="$options.uploadCsvModalId"
-            variant="link"
-            icon="media"
-            data-testid="reassign-csv-button"
+        <div class="gl-ml-auto gl-flex gl-gap-2">
+          <template v-if="isCsvReassignmentEnabled">
+            <gl-button
+              v-gl-modal="$options.uploadCsvModalId"
+              variant="link"
+              icon="media"
+              data-testid="reassign-csv-button"
+            >
+              {{ s__('UserMapping|Reassign with CSV file') }}
+            </gl-button>
+            <csv-upload-modal :modal-id="$options.uploadCsvModalId" />
+          </template>
+          <gl-disclosure-dropdown
+            icon="ellipsis_v"
+            placement="bottom-end"
+            category="tertiary"
+            no-caret
+            block
+            :auto-close="false"
           >
-            {{ s__('UserMapping|Reassign with CSV file') }}
-          </gl-button>
-          <csv-upload-modal :modal-id="$options.uploadCsvModalId" />
+            <gl-disclosure-dropdown-item
+              v-gl-modal="$options.keepAllAsPlaceholderModalId"
+              data-testid="keep-all-as-placeholder-button"
+            >
+              <template #list-item>
+                {{ s__('UserMapping|Keep all as placeholder') }}
+              </template>
+            </gl-disclosure-dropdown-item>
+          </gl-disclosure-dropdown>
+          <keep-all-as-placeholder-modal
+            :modal-id="$options.keepAllAsPlaceholderModalId"
+            :group-id="group.id"
+            @confirm="onConfirmKeepAllAsPlaceholders"
+          />
         </div>
       </template>
     </gl-tabs>

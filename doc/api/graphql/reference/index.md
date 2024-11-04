@@ -18485,6 +18485,7 @@ Represents the approval policy.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="approvalpolicyactionapprovers"></a>`actionApprovers` | [`[PolicyApproversType!]`](#policyapproverstype) | Multiple approvers action. |
 | <a id="approvalpolicyallgroupapprovers"></a>`allGroupApprovers` | [`[PolicyApprovalGroup!]`](#policyapprovalgroup) | All potential approvers of the group type, including groups inaccessible to the user. |
 | <a id="approvalpolicydeprecatedproperties"></a>`deprecatedProperties` **{warning-solid}** | [`[String!]`](#string) | **Introduced** in GitLab 16.10. **Status**: Experiment. All deprecated properties in the policy. |
 | <a id="approvalpolicydescription"></a>`description` | [`String!`](#string) | Description of the policy. |
@@ -30329,6 +30330,18 @@ Represents policy violation for `any_merge_request` report_type.
 | <a id="policyapprovalgroupid"></a>`id` | [`ID!`](#id) | ID of the namespace. |
 | <a id="policyapprovalgroupweburl"></a>`webUrl` | [`String!`](#string) | Web URL of the group. |
 
+### `PolicyApproversType`
+
+Multiple approvers action.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="policyapproverstypeallgroups"></a>`allGroups` | [`[PolicyApprovalGroup!]`](#policyapprovalgroup) | All potential approvers of the group type, including groups inaccessible to the user. |
+| <a id="policyapproverstyperoles"></a>`roles` | [`[MemberAccessLevelName!]`](#memberaccesslevelname) | Approvers of the role type. Users belonging to these role(s) alone will be approvers. |
+| <a id="policyapproverstypeusers"></a>`users` | [`[UserCore!]`](#usercore) | Approvers of the user type. |
+
 ### `PolicyComparisonPipeline`
 
 Represents the source and target pipelines used for comparison in the policy evaluation.
@@ -33675,6 +33688,7 @@ Represents the scan result policy.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="scanresultpolicyactionapprovers"></a>`actionApprovers` | [`[PolicyApproversType!]`](#policyapproverstype) | Multiple approvers action. |
 | <a id="scanresultpolicyallgroupapprovers"></a>`allGroupApprovers` | [`[PolicyApprovalGroup!]`](#policyapprovalgroup) | All potential approvers of the group type, including groups inaccessible to the user. |
 | <a id="scanresultpolicydeprecatedproperties"></a>`deprecatedProperties` **{warning-solid}** | [`[String!]`](#string) | **Introduced** in GitLab 16.10. **Status**: Experiment. All deprecated properties in the policy. |
 | <a id="scanresultpolicydescription"></a>`description` | [`String!`](#string) | Description of the policy. |

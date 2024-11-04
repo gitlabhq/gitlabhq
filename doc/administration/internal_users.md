@@ -28,6 +28,8 @@ when a snippet's original author wasn't available. For example, when the user wa
 Other examples of internal users:
 
 - [GitLab Automation Bot](../user/group/iterations/index.md#gitlab-automation-bot-user)
+- [GitLab Security Bot](#gitlab-security-bot)
+- [GitLab Security Policy Bot](#gitlab-security-policy-bot)
 - [Alert Bot](../operations/incident_management/alerts.md#trigger-actions-from-alerts)
 - [Ghost User](../user/profile/account/delete_account.md#associated-records)
 - [Support Bot](../user/project/service_desk/configure.md#support-bot-user)
@@ -48,3 +50,14 @@ is an internal user that cannot be accessed or modified by regular users and is 
 - [Automatically deleting unconfirmed users](moderate_users.md#automatically-delete-unconfirmed-users).
 - [Deleting inactive projects](inactive_project_deletion.md).
 - [Locking users](../security/unlock_user.md).
+
+## GitLab Security Bot
+
+GitLab Security Bot is an internal user responsible for commenting on merge requests that violate a
+[security policy](../user/application_security/policies/index.md).
+
+## GitLab Security Policy Bot
+
+GitLab Security Policy Bot is an internal user responsible for triggering scheduled pipelines
+defined in [security policies](../user/application_security/policies/index.md). This account is
+created in every project on which a security policy is enforced.

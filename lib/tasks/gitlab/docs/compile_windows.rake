@@ -5,9 +5,9 @@ DEPRECATIONS_PATH = 'data/deprecations'
 TARGET_MILESTONE = '18.0'
 
 WINDOWS = {
-  '1' => { date: 'April 21 - 23, 2025', time: '09:00 UTC to 22:00 UTC' },
-  '2' => { date: 'April 28 - 30, 2025', time: '09:00 UTC to 22:00 UTC' },
-  '3' => { date: 'May 5 - 7, 2025', time: '09:00 UTC to 22:00 UTC' }
+  1 => { date: 'April 21 - 23, 2025', time: '09:00 UTC to 22:00 UTC' },
+  2 => { date: 'April 28 - 30, 2025', time: '09:00 UTC to 22:00 UTC' },
+  3 => { date: 'May 5 - 7, 2025', time: '09:00 UTC to 22:00 UTC' }
 }.transform_values { |v| v.merge(changes: []) }
 
 def process_deprecations
@@ -18,7 +18,7 @@ def process_deprecations
     deprecations.each do |deprecation|
       next unless deprecation[:removal_milestone] == TARGET_MILESTONE && deprecation[:breaking_change] == true
 
-      window = deprecation[:window]
+      window = deprecation[:window].to_i
       WINDOWS[window][:changes] << deprecation if WINDOWS.key?(window)
     end
   end

@@ -46,8 +46,8 @@ specific to the worker in the shared examples block.
 ```ruby
 it_behaves_like 'an idempotent worker' do
   it 'checks the side-effects for multiple calls' do
-    # `perform_idempotent_work` will call the job's perform method 2 times
-    perform_idempotent_work
+    # `subject` will call the job's perform method 2 times
+    subject
 
     expect(model.state).to eq('state')
   end

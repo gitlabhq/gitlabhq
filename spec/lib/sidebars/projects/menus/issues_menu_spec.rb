@@ -55,6 +55,10 @@ RSpec.describe Sidebars::Projects::Menus::IssuesMenu, feature_category: :navigat
   end
 
   describe '#pill_count' do
+    before do
+      stub_feature_flags(async_sidebar_counts: false)
+    end
+
     it 'returns zero when there are no open issues' do
       expect(subject.pill_count).to eq '0'
     end
@@ -82,6 +86,16 @@ RSpec.describe Sidebars::Projects::Menus::IssuesMenu, feature_category: :navigat
       it 'returns truncated digits for count value over 1000' do
         allow(project).to receive(:open_issues_count).and_return 1001
         expect(subject.pill_count).to eq('1k')
+      end
+    end
+
+    context 'when async_sidebar_counts feature flag is enabled' do
+      before do
+        stub_feature_flags(async_sidebar_counts: true)
+      end
+
+      it 'returns nil' do
+        expect(subject.pill_count).to be_nil
       end
     end
   end

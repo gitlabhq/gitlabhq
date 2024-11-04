@@ -39,6 +39,8 @@ module Sidebars
 
         override :pill_count
         def pill_count
+          return if Feature.enabled?(:async_sidebar_counts, context.project.root_ancestor)
+
           count = @pill_count ||= context.project.open_merge_requests_count
           format_cached_count(1000, count)
         end
