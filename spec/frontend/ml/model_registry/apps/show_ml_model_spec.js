@@ -163,7 +163,7 @@ describe('ml/model_registry/apps/show_ml_model', () => {
     beforeEach(() => createWrapper());
 
     it('displays version creation button', () => {
-      expect(findModelVersionCreateButton().exists()).toBe(true);
+      expect(findModelVersionCreateButton().text()).toBe('Create new version');
     });
 
     describe('when user has no permission to write model registry', () => {

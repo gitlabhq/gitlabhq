@@ -6,7 +6,7 @@ module Gitlab
       def frequency(count, from, to)
         return Summary::Value::None.new if count == 0
 
-        freq = (count / days(from, to)).round(1)
+        freq = (count / days(from, to)).round(2)
 
         Summary::Value::Numeric.new(freq)
       end

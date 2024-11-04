@@ -52,16 +52,20 @@ Example response:
    "username": "raymond_smith",
    "name": "Raymond Smith",
    "state": "active",
-   "created_at": "2012-10-22T14:13:35Z",
-   "requested_at": "2012-10-22T14:13:35Z"
+   "locked": false,
+   "avatar_url": "https://gitlab.com/uploads/-/system/user/avatar/1/avatar.png",
+   "web_url": "https://gitlab.com/raymond_smith",
+   "requested_at": "2024-10-22T14:13:35Z"
  },
  {
    "id": 2,
    "username": "john_doe",
    "name": "John Doe",
    "state": "active",
-   "created_at": "2012-10-22T14:13:35Z",
-   "requested_at": "2012-10-22T14:13:35Z"
+   "locked": false,
+   "avatar_url": "https://gitlab.com/uploads/-/system/user/avatar/2/avatar.png",
+   "web_url": "https://gitlab.com/john_doe",
+   "requested_at": "2024-10-22T14:13:35Z"
  }
 ]
 ```

@@ -311,7 +311,7 @@ jest:
       junit: junit_jest.xml
   parallel: 11
   script:
-    - if [[ -z "${CI_MERGE_REQUEST_IID}" ]]; then export JEST_COVERAGE="--coverage"; fi
+    - if [[ -z "${CI_MERGE_REQUEST_IID}" ]] && ! [[ "$CI_COMMIT_BRANCH" =~ ^as-if-foss/ ]]; then export JEST_COVERAGE="--coverage"; fi
     - run_timed_command "yarn jest:ci:without-fixtures $JEST_COVERAGE"
 
 jest-with-fixtures:
@@ -326,7 +326,7 @@ jest-with-fixtures:
     - !reference [.with-fixtures-needs, needs]
   parallel: 2
   script:
-    - if [[ -z "${CI_MERGE_REQUEST_IID}" ]]; then export JEST_COVERAGE="--coverage"; fi
+    - if [[ -z "${CI_MERGE_REQUEST_IID}" ]] && ! [[ "$CI_COMMIT_BRANCH" =~ ^as-if-foss/ ]]; then export JEST_COVERAGE="--coverage"; fi
     - run_timed_command "yarn jest:ci:with-fixtures $JEST_COVERAGE"
 
 jest vue3:

@@ -136,9 +136,15 @@ module SearchHelper
     # - group
     # - group: nil, project: nil
     if project
-      ERB::Util.html_escape(_("We couldn't find any %{scope} matching %{term} in project %{project}")) % options.merge(
-        project: link_to(project.full_name, project_path(project), target: '_blank', rel: 'noopener noreferrer').html_safe
-      )
+      ERB::Util.html_escape(
+        _("We couldn't find any %{scope} matching %{term} in project %{project}")) % options.merge(
+          project: link_to(
+            project.full_name,
+            project_path(project),
+            target: '_blank',
+            rel: 'noopener noreferrer'
+          ).html_safe
+        )
     elsif group
       ERB::Util.html_escape(_("We couldn't find any %{scope} matching %{term} in group %{group}")) % options.merge(
         group: link_to(group.full_name, group_path(group), target: '_blank', rel: 'noopener noreferrer').html_safe
@@ -215,13 +221,19 @@ module SearchHelper
     {}.tap do |hash|
       if search_has_group?
         hash[:group] = { id: search_group.id, name: search_group.name, full_name: search_group.full_name }
-        hash[:group_metadata] = { issues_path: issues_group_path(search_group), mr_path: merge_requests_group_path(search_group) }
+        hash[:group_metadata] = {
+          issues_path: issues_group_path(search_group),
+          mr_path: merge_requests_group_path(search_group)
+        }
       end
 
       if search_has_project?
         hash[:project] = { id: @project.id, name: @project.name }
         hash[:project_metadata] = { mr_path: project_merge_requests_path(@project) }
-        hash[:project_metadata][:issues_path] = project_issues_path(@project) if @project.feature_available?(:issues, current_user)
+        if @project.feature_available?(:issues, current_user)
+          hash[:project_metadata][:issues_path] =
+            project_issues_path(@project)
+        end
 
         hash[:code_search] = search_scope.nil?
         hash[:ref] = @ref if @ref && can?(current_user, :read_code, @project)
@@ -289,8 +301,16 @@ module SearchHelper
       { category: "Help", label: _("Public Access Help"),           url: help_page_path("user/public_access.md") },
       { category: "Help", label: _("Rake Tasks Help"),              url: help_page_path("raketasks/index.md") },
       { category: "Help", label: _("SSH Keys Help"),                url: help_page_path("user/ssh.md") },
-      { category: "Help", label: s_("Webhooks|System hooks help"),  url: help_page_path("administration/system_hooks.md") },
-      { category: "Help", label: _("Webhooks Help"),                url: help_page_path("user/project/integrations/webhooks.md") }
+      {
+        category: "Help",
+        label: s_("Webhooks|System hooks help"),
+        url: help_page_path("administration/system_hooks.md")
+      },
+      {
+        category: "Help",
+        label: _("Webhooks Help"),
+        url: help_page_path("user/project/integrations/webhooks.md")
+      }
     ]
   end
 
@@ -377,8 +397,11 @@ module SearchHelper
     projects = if Feature.enabled?(:autocomplete_projects_use_search_service, current_user)
                  search_using_search_service(current_user, 'projects', term, limit)
                else
-                 current_user.authorized_projects.order_id_desc.search(term, include_namespace: true, use_minimum_char_limit: false)
-                   .sorted_by_stars_desc.non_archived.limit(limit)
+                 current_user.authorized_projects.order_id_desc.search(
+                   term,
+                   include_namespace: true,
+                   use_minimum_char_limit: false
+                 ).sorted_by_stars_desc.non_archived.limit(limit)
                end
 
     projects.map do |p|
@@ -494,7 +517,12 @@ module SearchHelper
   end
 
   def search_navigation_json
-    search_navigation = Search::Navigation.new(user: current_user, project: @project, group: @group, options: nav_options)
+    search_navigation = Search::Navigation.new(
+      user: current_user,
+      project: @project,
+      group: @group,
+      options: nav_options
+    )
     sorted_navigation = search_navigation.tabs.sort_by { |_, h| h[:sort] }
 
     sorted_navigation.each_with_object({}) do |(key, value), hash|

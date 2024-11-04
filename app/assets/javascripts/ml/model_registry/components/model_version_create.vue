@@ -51,13 +51,13 @@ export default {
     versionDescription() {
       if (this.latestVersion) {
         return sprintf(
-          s__('MlModelRegistry|Enter a semantic version. Latest version is %{latestVersion}'),
+          s__('MlModelRegistry|Must be a semantic version. Latest version is %{latestVersion}'),
           {
             latestVersion: this.latestVersion,
           },
         );
       }
-      return s__('MlModelRegistry|Enter a semantic version.');
+      return s__('MlModelRegistry|Must be a semantic version.');
     },
     autocompleteDataSources() {
       return gl.GfmAutoComplete?.dataSources;
@@ -163,9 +163,13 @@ export default {
     versionInvalid: s__('MlModelRegistry|Version is not a valid semantic version.'),
     versionPlaceholder: s__('MlModelRegistry|For example 1.0.0'),
     descriptionPlaceholder: s__('MlModelRegistry|Enter some description'),
-    buttonTitle: s__('MlModelRegistry|Create model version'),
-    title: s__('MlModelRegistry|Create model version & import artifacts'),
+    title: s__('MlModelRegistry|New version'),
+    description: s__(
+      'MlModelRegistry|Models have different versions. You can deploy and test versions. Complete the following fields to create a new version of the model.',
+    ),
     optionalText: s__('MlModelRegistry|(Optional)'),
+    versionLabelText: s__('MlModelRegistry|Version'),
+    versionDescriptionText: s__('MlModelRegistry|Description'),
   },
 };
 </script>
@@ -173,9 +177,11 @@ export default {
 <template>
   <div>
     <gl-form>
+      <h2 data-testid="title">{{ $options.i18n.title }}</h2>
+      <p data-testid="description" class="gl-text-gray-900">{{ $options.i18n.description }}</p>
       <gl-form-group
         data-testid="versionDescriptionId"
-        label="Version:"
+        :label="$options.i18n.versionLabelText"
         label-for="versionId"
         :state="isSemver"
         :invalid-feedback="!version ? '' : invalidFeedback"
@@ -192,7 +198,7 @@ export default {
         />
       </gl-form-group>
       <gl-form-group
-        label="Description"
+        :label="$options.i18n.versionDescriptionText"
         label-for="descriptionId"
         class="common-note-form gfm-form js-main-target-form new-note gl-grow"
         optional
@@ -229,20 +235,18 @@ export default {
         />
       </gl-form-group>
     </gl-form>
-
     <gl-alert v-if="errorMessage" variant="danger" @dismiss="hideAlert">{{
       errorMessage
     }}</gl-alert>
-    <gl-button data-testid="secondary-button" variant="default" @click="resetForm"
-      >{{ $options.i18n.actionSecondaryText }}
-    </gl-button>
-
     <gl-button
       data-testid="primary-button"
       variant="confirm"
       :disabled="submitButtonDisabled"
       @click="create"
       >{{ $options.i18n.actionPrimaryText }}
+    </gl-button>
+    <gl-button data-testid="secondary-button" variant="default" @click="resetForm"
+      >{{ $options.i18n.actionSecondaryText }}
     </gl-button>
   </div>
 </template>

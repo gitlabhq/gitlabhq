@@ -33,6 +33,7 @@ RSpec.describe 'Organizations (GraphQL fixtures)', feature_category: :cell do
     include JavaScriptFixturesHelpers
 
     let_it_be(:current_user) { create(:user) }
+    let_it_be(:user) { create(:user) }
     let_it_be(:organizations) { create_list(:organization, 3) }
     let_it_be(:organization) { organizations.first }
     let_it_be(:groups) { create_list(:group, 3, organization: organization) }
@@ -46,6 +47,7 @@ RSpec.describe 'Organizations (GraphQL fixtures)', feature_category: :cell do
     let_it_be(:organization_user_1) { create(:organization_user, organization: organization, user: current_user) }
     let_it_be(:organization_user_2) { create(:organization_owner, organization: organizations[1], user: current_user) }
     let_it_be(:organization_user_3) { create(:organization_user, organization: organizations[2], user: current_user) }
+    let_it_be(:organization_user_4) { create(:organization_user, organization: organizations[1], user: user) }
 
     let_it_be(:organization_details) do
       organizations.map do |organization|
@@ -269,6 +271,46 @@ RSpec.describe 'Organizations (GraphQL fixtures)', feature_category: :cell do
               id: organizations[1].to_global_id,
               path: 'f',
               avatar: nil
+            }
+          }
+        )
+
+        expect_graphql_errors_to_be_empty
+      end
+    end
+
+    describe 'organization user update' do
+      base_input_path = 'organizations/users/graphql/mutations/'
+      base_output_path = 'graphql/organizations/'
+      mutation_name = 'organization_user_update.mutation.graphql'
+
+      it "#{base_output_path}#{mutation_name}.json" do
+        mutation = get_graphql_query_as_string("#{base_input_path}#{mutation_name}")
+
+        post_graphql(
+          mutation,
+          current_user: current_user,
+          variables: {
+            input: {
+              id: organization_user_4.to_global_id,
+              access_level: :OWNER
+            }
+          }
+        )
+
+        expect_graphql_errors_to_be_empty
+      end
+
+      it "#{base_output_path}#{mutation_name}_with_errors.json" do
+        mutation = get_graphql_query_as_string("#{base_input_path}#{mutation_name}")
+
+        post_graphql(
+          mutation,
+          current_user: current_user,
+          variables: {
+            input: {
+              id: organization_user_2.to_global_id,
+              access_level: :DEFAULT
             }
           }
         )

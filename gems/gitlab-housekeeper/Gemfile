@@ -10,6 +10,7 @@ gem "rake", "~> 13.0"
 gem "rspec", "~> 3.0"
 gem "pry"
 gem 'webmock'
+gem 'rspec-parameterized', '~> 1.0', '>= 1.0.2', require: false
 
 group :development, :test do
   gem 'gitlab-rspec', path: '../gitlab-rspec'

@@ -202,7 +202,7 @@ export default {
     },
   },
   i18n: {
-    createModelVersionLinkTitle: s__('MlModelRegistry|Create model version'),
+    createModelVersionLinkTitle: s__('MlModelRegistry|Create new version'),
     editModelButtonLabel: s__('MlModelRegistry|Edit model'),
     tabModelCardTitle: s__('MlModelRegistry|Model card'),
     tabVersionsTitle: s__('MlModelRegistry|Versions'),

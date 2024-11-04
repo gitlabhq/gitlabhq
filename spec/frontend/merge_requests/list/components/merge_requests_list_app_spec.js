@@ -417,19 +417,31 @@ describe('Merge requests list app', () => {
             type: 'reviewer',
             value: { data: 'root', operator: OPERATOR_NOT },
           },
+          {
+            type: 'source-branch',
+            value: { data: ['branch_name'], operator: OPERATOR_NOT },
+          },
         ]);
 
         await nextTick();
 
         expect(getQueryResponseMock).toHaveBeenCalledWith(
           expect.objectContaining({
-            not: { assigneeUsernames: ['root'], reviewerUsername: 'root' },
+            not: {
+              assigneeUsernames: ['root'],
+              reviewerUsername: 'root',
+              sourceBranches: ['branch_name'],
+            },
           }),
         );
 
         expect(getCountsQueryResponseMock).toHaveBeenCalledWith(
           expect.objectContaining({
-            not: { assigneeUsernames: ['root'], reviewerUsername: 'root' },
+            not: {
+              assigneeUsernames: ['root'],
+              reviewerUsername: 'root',
+              sourceBranches: ['branch_name'],
+            },
           }),
         );
       });
@@ -446,6 +458,10 @@ describe('Merge requests list app', () => {
             type: 'reviewer',
             value: { data: 'root', operator: OPERATOR_NOT },
           },
+          {
+            type: 'source-branch',
+            value: { data: ['branch_name'], operator: OPERATOR_NOT },
+          },
         ]);
 
         await nextTick();
@@ -454,6 +470,7 @@ describe('Merge requests list app', () => {
           query: expect.objectContaining({
             'not[assignee_username][]': ['root'],
             'not[reviewer_username]': 'root',
+            'not[source_branches][]': ['branch_name'],
           }),
         });
       });

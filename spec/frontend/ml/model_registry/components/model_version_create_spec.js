@@ -67,6 +67,8 @@ describe('ModelVersionCreate', () => {
     });
   };
 
+  const findTitle = () => wrapper.findByTestId('title');
+  const findDescription = () => wrapper.findByTestId('description');
   const findPrimaryButton = () => wrapper.findByTestId('primary-button');
   const findSecondaryButton = () => wrapper.findByTestId('secondary-button');
   const findVersionInput = () => wrapper.findByTestId('versionId');
@@ -87,13 +89,23 @@ describe('ModelVersionCreate', () => {
     });
 
     describe('Form', () => {
+      it('renders the title', () => {
+        expect(findTitle().text()).toBe('New version');
+      });
+
+      it('renders the description', () => {
+        expect(findDescription().text()).toBe(
+          'Models have different versions. You can deploy and test versions. Complete the following fields to create a new version of the model.',
+        );
+      });
+
       it('renders the version input', () => {
         expect(findVersionInput().exists()).toBe(true);
       });
 
       it('renders the version input label for initial state', () => {
         expect(wrapper.findByTestId('versionDescriptionId').attributes().description).toBe(
-          'Enter a semantic version.',
+          'Must be a semantic version.',
         );
         expect(wrapper.findByTestId('versionDescriptionId').attributes('invalid-feedback')).toBe(
           '',
@@ -211,7 +223,7 @@ describe('ModelVersionCreate', () => {
 
     it('renders the version input label', () => {
       expect(wrapper.findByTestId('versionDescriptionId').attributes().description).toBe(
-        'Enter a semantic version. Latest version is 1.2.3',
+        'Must be a semantic version. Latest version is 1.2.3',
       );
     });
   });

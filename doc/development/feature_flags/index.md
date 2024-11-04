@@ -218,11 +218,14 @@ have a performance impact such as Sidekiq worker behavior.
 Remember that using this type should follow a conscious decision not to introduce an
 instance/group/project/user setting.
 
+While `ops` type flags have an unlimited lifespan, every 12 months, they must be evaluated to determine if
+they are still necessary.
+
 #### Constraints
 
 - `default_enabled`: Should be set to `false` in most cases, and only enabled to resolve temporary scalability
   issues or help debug production issues.
-- Maximum Lifespan: 12 months
+- Maximum Lifespan: Unlimited, but must be evaluated every 12 months
 - Documentation: This type of feature flag **must** be documented in the
   [All feature flags in GitLab](../../user/feature_flags.md) page as well as be associated with an operational
   runbook describing the circumstances when it can be used.

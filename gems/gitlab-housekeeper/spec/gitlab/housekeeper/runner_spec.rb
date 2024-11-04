@@ -2,6 +2,7 @@
 
 require 'spec_helper'
 require 'gitlab/housekeeper/runner'
+require 'rspec/parameterized'
 
 # rubocop:disable RSpec/MultipleMemoizedHelpers -- there are lots of parameters at play
 RSpec.describe ::Gitlab::Housekeeper::Runner do
@@ -226,6 +227,33 @@ RSpec.describe ::Gitlab::Housekeeper::Runner do
 
     it 'defaults to HOUSEKEEPER_TARGET_PROJECT_ID env var' do
       expect(described_class.new.housekeeper_fork_project_id).to eq('456')
+    end
+  end
+
+  describe '.should_push_code?' do
+    using RSpec::Parameterized::TableSyntax
+
+    # rubocop:disable Lint/BinaryOperatorWithIdenticalOperands -- false positive rspec table syntax not binary operator
+    where(:already_approved, :push_when_approved, :code_update_required, :expected_result) do
+      true  | false | true  | false
+      true  | false | false | false
+      true  | true  | true  | true
+      true  | true  | false | false
+      false | true  | true  | true
+      false | true  | false | false
+    end
+    # rubocop:enable Lint/BinaryOperatorWithIdenticalOperands
+
+    with_them do
+      it "determines if we should push" do
+        change = instance_double(::Gitlab::Housekeeper::Change)
+
+        allow(change).to receive(:already_approved?).and_return(already_approved)
+        allow(change).to receive(:update_required?).with(:code).and_return(code_update_required)
+
+        result = described_class.should_push_code?(change, push_when_approved)
+        expect(result).to eq(expected_result)
+      end
     end
   end
 end

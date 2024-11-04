@@ -155,41 +155,35 @@ module Resolvers
       argument :approved_by, [GraphQL::Types::String],
         required: false,
         as: :approved_by_usernames,
-        description: 'Usernames of approvers to exclude.'
+        description: 'Filters merge requests to exclude any that are approved by usernames in the given array.'
       argument :assignee_usernames, [GraphQL::Types::String],
         as: :assignee_username,
         required: false,
-        description: 'Usernames of the assignee to exclude.'
+        description: 'Filters merge requests to exclude any that are assigned to the usernames in the given array.'
       argument :labels, [GraphQL::Types::String],
         required: false,
         as: :label_name,
-        description: 'Array of label names. All resolved merge requests will not have these labels.'
+        description: 'Filters merge requests to exclude any that have the labels provided in the given array.'
       argument :milestone_title, GraphQL::Types::String,
         required: false,
-        description: 'Title of the milestone to exclude.'
+        description: 'Filters merge requests to those not in the given milestone.'
       argument :my_reaction_emoji, GraphQL::Types::String,
         required: false,
-        description: 'Filter by reaction emoji to exclude.'
+        description: 'Filters merge requests to those without the given reaction from the authenticated user.'
       argument :release_tag, GraphQL::Types::String,
         required: false,
-        description: 'Filter by release tag to exclude.'
+        description: 'Filters merge requests to those without the given release tag.'
       argument :reviewer_username, GraphQL::Types::String,
         required: false,
-        description: 'Username of the reviewer to exclude.'
+        description: 'Filters merge requests to those not reviewed by the given user.'
       argument :source_branches, [GraphQL::Types::String],
         required: false,
         as: :source_branch,
-        description: <<~DESC
-                Array of source branch names.
-                No resolved merge requests will have one of these branches as their source.
-        DESC
+        description: 'Filters merge requests to exclude the source branch names provided in the given array.'
       argument :target_branches, [GraphQL::Types::String],
         required: false,
         as: :target_branch,
-        description: <<~DESC
-                Array of target branch names.
-                No resolved merge requests will have one of these branches as their target.
-        DESC
+        description: 'Filters merge requests to exclude the target branch names provided in the given array.'
     end
 
     validates mutually_exclusive: [:assignee_username, :assignee_wildcard_id]

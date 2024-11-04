@@ -15,6 +15,7 @@ import {
   WIDGET_TYPE_ITERATION,
   WIDGET_TYPE_WEIGHT,
   NEW_WORK_ITEM_IID,
+  WIDGET_TYPE_MILESTONE,
 } from '../constants';
 import workItemByIidQuery from './work_item_by_iid.query.graphql';
 
@@ -65,6 +66,7 @@ export const updateNewWorkItemCache = (input, cache) => {
     crmContacts,
     iteration,
     weight,
+    milestone,
   } = input;
 
   const query = workItemByIidQuery;
@@ -115,6 +117,11 @@ export const updateNewWorkItemCache = (input, cache) => {
           widgetType: WIDGET_TYPE_WEIGHT,
           newData: weight,
           nodePath: 'weight',
+        },
+        {
+          widgetType: WIDGET_TYPE_MILESTONE,
+          newData: milestone,
+          nodePath: 'milestone',
         },
       ];
 

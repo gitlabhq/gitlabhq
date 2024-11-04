@@ -132,15 +132,31 @@ module TreeHelper
       }
 
       attrs.merge!(
-        fork_new_blob_path: project_forks_path(@project, namespace_key: current_user.namespace.id, continue: continue_param),
-        fork_new_directory_path: project_forks_path(@project, namespace_key: current_user.namespace.id, continue: continue_param.merge({
-          to: request.fullpath,
-          notice: _("%{edit_in_new_fork_notice} Try to create a new directory again.") % { edit_in_new_fork_notice: edit_in_new_fork_notice }
-        })),
-        fork_upload_blob_path: project_forks_path(@project, namespace_key: current_user.namespace.id, continue: continue_param.merge({
-          to: request.fullpath,
-          notice: _("%{edit_in_new_fork_notice} Try to upload a file again.") % { edit_in_new_fork_notice: edit_in_new_fork_notice }
-        }))
+        fork_new_blob_path: project_forks_path(
+          @project,
+          namespace_key: current_user.namespace.id,
+          continue: continue_param
+        ),
+        fork_new_directory_path: project_forks_path(
+          @project,
+          namespace_key: current_user.namespace.id,
+          continue: continue_param.merge({
+            to: request.fullpath,
+            notice: _("%{edit_in_new_fork_notice} Try to create a new directory again.") % {
+              edit_in_new_fork_notice: edit_in_new_fork_notice
+            }
+          })
+        ),
+        fork_upload_blob_path: project_forks_path(
+          @project,
+          namespace_key: current_user.namespace.id,
+          continue: continue_param.merge({
+            to: request.fullpath,
+            notice: _("%{edit_in_new_fork_notice} Try to upload a file again.") % {
+              edit_in_new_fork_notice: edit_in_new_fork_notice
+            }
+          })
+        )
       )
     end
 
@@ -200,7 +216,9 @@ module TreeHelper
     Gitlab::Workhorse::ARCHIVE_FORMATS.map do |fmt|
       {
         text: fmt,
-        path: external_storage_url_or_path(project_archive_path(project, id: tree_join(ref, archive_prefix), format: fmt))
+        path: external_storage_url_or_path(
+          project_archive_path(project, id: tree_join(ref, archive_prefix), format: fmt)
+        )
       }
     end
   end

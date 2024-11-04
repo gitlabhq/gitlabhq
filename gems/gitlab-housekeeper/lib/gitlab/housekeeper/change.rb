@@ -71,6 +71,10 @@ module Gitlab
         !category.in?(non_housekeeper_changes)
       end
 
+      def already_approved?
+        non_housekeeper_changes.include?(:approvals)
+      end
+
       def valid?
         @identifiers && @title && @description && @changed_files
       end

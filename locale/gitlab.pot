@@ -34845,10 +34845,10 @@ msgstr ""
 msgid "MlModelRegistry|Create model version"
 msgstr ""
 
-msgid "MlModelRegistry|Create model version & import artifacts"
+msgid "MlModelRegistry|Create model, version & import artifacts"
 msgstr ""
 
-msgid "MlModelRegistry|Create model, version & import artifacts"
+msgid "MlModelRegistry|Create new version"
 msgstr ""
 
 msgid "MlModelRegistry|Create using MLflow"
@@ -34909,9 +34909,6 @@ msgid "MlModelRegistry|Enter a semantic version"
 msgstr ""
 
 msgid "MlModelRegistry|Enter a semantic version."
-msgstr ""
-
-msgid "MlModelRegistry|Enter a semantic version. Latest version is %{latestVersion}"
 msgstr ""
 
 msgid "MlModelRegistry|Enter a subfolder name to organize your artifacts."
@@ -35004,7 +35001,16 @@ msgstr ""
 msgid "MlModelRegistry|Model version %{versionName} deleted successfully"
 msgstr ""
 
+msgid "MlModelRegistry|Models have different versions. You can deploy and test versions. Complete the following fields to create a new version of the model."
+msgstr ""
+
+msgid "MlModelRegistry|Must be a semantic version."
+msgstr ""
+
 msgid "MlModelRegistry|Must be a semantic version. Example: 1.0.0"
+msgstr ""
+
+msgid "MlModelRegistry|Must be a semantic version. Latest version is %{latestVersion}"
 msgstr ""
 
 msgid "MlModelRegistry|Must be a semantic version. Leave blank to skip version creation."
@@ -35014,6 +35020,9 @@ msgid "MlModelRegistry|Must be unique. May not contain spaces."
 msgstr ""
 
 msgid "MlModelRegistry|New model"
+msgstr ""
+
+msgid "MlModelRegistry|New version"
 msgstr ""
 
 msgid "MlModelRegistry|No description available. To add a description, click \"Edit model version\" above."
@@ -35086,6 +35095,9 @@ msgid "MlModelRegistry|User canceled upload."
 msgstr ""
 
 msgid "MlModelRegistry|Using the MLflow client"
+msgstr ""
+
+msgid "MlModelRegistry|Version"
 msgstr ""
 
 msgid "MlModelRegistry|Version card"
@@ -38338,6 +38350,9 @@ msgstr ""
 msgid "Organization|An error occurred loading user organizations. Please refresh the page to try again."
 msgstr ""
 
+msgid "Organization|An error occurred updating the organization role. Please try again."
+msgstr ""
+
 msgid "Organization|An error occurred updating your organization. Please try again."
 msgstr ""
 
@@ -38435,6 +38450,9 @@ msgid "Organization|Organization overview"
 msgstr ""
 
 msgid "Organization|Organization role"
+msgstr ""
+
+msgid "Organization|Organization role was updated successfully."
 msgstr ""
 
 msgid "Organization|Organization settings"

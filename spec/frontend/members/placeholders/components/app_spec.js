@@ -126,7 +126,7 @@ describe('PlaceholdersTabApp', () => {
         await nextTick();
 
         expect(findUnassignedTable().props('queryStatuses')).toEqual([PLACEHOLDER_STATUS_FAILED]);
-        expect(window.location.search).toBe(`?tab=placeholders&status=failed`);
+        expect(window.location.search).toBe(`?tab=placeholders&subtab=awaiting&status=failed`);
       });
 
       it('updates URL on search', async () => {
@@ -134,7 +134,9 @@ describe('PlaceholdersTabApp', () => {
         await nextTick();
 
         expect(findUnassignedTable().props('querySearch')).toBe(searchTerm);
-        expect(window.location.search).toBe(`?tab=placeholders&search=source+user+1`);
+        expect(window.location.search).toBe(
+          `?tab=placeholders&subtab=awaiting&search=source+user+1`,
+        );
       });
     });
 
@@ -172,7 +174,7 @@ describe('PlaceholdersTabApp', () => {
           queryStatuses: [PLACEHOLDER_STATUS_REASSIGNING],
         });
         expect(window.location.search).toBe(
-          `?tab=placeholders&status=reassignment_in_progress&search=source+user+1&sort=STATUS_ASC`,
+          `?tab=placeholders&subtab=awaiting&status=reassignment_in_progress&search=source+user+1&sort=STATUS_ASC`,
         );
       });
 
@@ -182,7 +184,7 @@ describe('PlaceholdersTabApp', () => {
 
         expect(findUnassignedTable().props('querySort')).toBe(PLACEHOLDER_SORT_SOURCE_NAME_DESC);
         expect(window.location.search).toBe(
-          `?tab=placeholders&status=failed&search=foo&sort=SOURCE_NAME_DESC`,
+          `?tab=placeholders&subtab=awaiting&status=failed&search=foo&sort=SOURCE_NAME_DESC`,
         );
         expect(findFilteredSearchBar().props('initialSortBy')).toBe('SOURCE_NAME_DESC');
       });
@@ -270,6 +272,7 @@ describe('PlaceholdersTabApp', () => {
     });
 
     it('reassigned', () => {
+      setWindowLocation(`?tab=placeholders&subtab=reassigned`);
       createComponent();
 
       const placeholdersTable = findReassignedTable();

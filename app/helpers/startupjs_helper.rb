@@ -8,7 +8,9 @@ module StartupjsHelper
   def page_startup_graphql_headers
     {
       'X-CSRF-Token' => form_authenticity_token,
-      'x-gitlab-feature-category' => ::Gitlab::ApplicationContext.current_context_attribute(:feature_category).presence || ''
+      'x-gitlab-feature-category' => ::Gitlab::ApplicationContext.current_context_attribute(
+        :feature_category
+      ).presence || ''
     }
   end
 

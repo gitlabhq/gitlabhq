@@ -71,6 +71,18 @@ RSpec.describe ::Gitlab::Housekeeper::Change do
     end
   end
 
+  describe '#already_approved?' do
+    it 'is true when changes include approvals' do
+      change.non_housekeeper_changes = [:code, :approvals]
+      expect(change.already_approved?).to eq(true)
+    end
+
+    it 'is false when changes do not approvals' do
+      change.non_housekeeper_changes = [:code, :title]
+      expect(change.already_approved?).to eq(false)
+    end
+  end
+
   describe '#commit_message' do
     it 'includes standard content' do
       expect(change.commit_message).to eq(

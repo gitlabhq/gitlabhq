@@ -12,20 +12,17 @@ export default {
     GlEmptyState,
     PipelinesCiTemplates,
   },
+  inject: ['canCreatePipeline'],
   props: {
     emptyStateSvgPath: {
       type: String,
-      required: true,
-    },
-    canSetCi: {
-      type: Boolean,
       required: true,
     },
   },
 };
 </script>
 <template>
-  <pipelines-ci-templates v-if="canSetCi" />
+  <pipelines-ci-templates v-if="canCreatePipeline" />
   <gl-empty-state
     v-else
     :svg-path="emptyStateSvgPath"

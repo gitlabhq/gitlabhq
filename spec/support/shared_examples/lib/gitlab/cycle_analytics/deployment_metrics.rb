@@ -63,12 +63,10 @@ RSpec.shared_examples 'deployment metrics examples' do
       expect(stage_summary.fourth[:unit]).to eq _('/day')
     end
 
-    it 'returns 0.0 when there were deploys but the frequency was too low' do
-      options[:from] = 30.days.ago
+    it 'returns 2 digits precision for small numbers' do
+      options[:from] = 90.days.ago
 
-      # 1 deployment over 30 days
-      # frequency of 0.03, rounded off to 0.0
-      expect(subject).to eq('0')
+      expect(subject).to eq('0.01')
     end
 
     it 'returns `-` when there were no deploys' do
@@ -84,7 +82,7 @@ RSpec.shared_examples 'deployment metrics examples' do
         options[:to] = nil
 
         # 1 deployment over 7 days
-        expect(subject).to eq('0.1')
+        expect(subject).to eq('0.14')
       end
     end
 

@@ -316,6 +316,9 @@ export const filtersMap = {
       [OPERATOR_IS]: {
         [NORMAL_FILTER]: 'source_branches[]',
       },
+      [OPERATOR_NOT]: {
+        [NORMAL_FILTER]: 'not[source_branches][]',
+      },
     },
   },
   [TOKEN_TYPE_TARGET_BRANCH]: {

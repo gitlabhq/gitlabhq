@@ -48,6 +48,16 @@ input LocalIterationInput {
   iterationCadence: [LocalIterationCadence]
 }
 
+input LocalMilestoneInput {
+  expired: Boolean
+  id: ID!
+  title: String
+  state: String
+  dueDate: String
+  webUrl: String
+  webPath: String
+}
+
 input LocalCrmContactsInput {
   firstName: String
   lastName: String
@@ -83,6 +93,7 @@ input LocalUpdateNewWorkItemInput {
   confidential: Boolean
   labels: [LocalLabelInput]
   iteration: [LocalIterationInput]
+  milestone: [LocalMilestoneInput]
   rolledUpDates: [LocalRolledUpDatesInput]
   crmContacts: [LocalCrmContactsInput]
   weight: Int

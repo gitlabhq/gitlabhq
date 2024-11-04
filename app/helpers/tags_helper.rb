@@ -16,7 +16,8 @@ module TagsHelper
   def tag_description_help_text
     text = s_('TagsPage|Optionally, add a message to the tag. Leaving this blank creates '\
               'a %{link_start}lightweight tag.%{link_end}') % {
-                link_start: '<a href="https://git-scm.com/book/en/v2/Git-Basics-Tagging" target="_blank" rel="noopener noreferrer">',
+                link_start: '<a href="https://git-scm.com/book/en/v2/Git-Basics-Tagging" ' \
+                  'target="_blank" rel="noopener noreferrer">',
                 link_end: '</a>'
               }
 

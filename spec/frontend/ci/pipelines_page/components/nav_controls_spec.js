@@ -4,10 +4,13 @@ import NavControls from '~/ci/pipelines_page/components/nav_controls.vue';
 describe('Pipelines Nav Controls', () => {
   let wrapper;
 
-  const createComponent = (props) => {
+  const createComponent = (props = {}) => {
     wrapper = shallowMountExtended(NavControls, {
       propsData: {
         ...props,
+      },
+      provide: {
+        pipelinesAnalyticsPath: '/pipelines/charts',
       },
     });
   };
@@ -17,17 +20,13 @@ describe('Pipelines Nav Controls', () => {
   const findViewAnalyticsLink = () => wrapper.findByTestId('view-analytics-link');
 
   it('should render link to navigate to CI/CD analytics', () => {
-    const mockData = {
-      pipelinesAnalyticsPath: '/pipelines/charts',
-    };
-
-    createComponent(mockData);
+    createComponent();
 
     const link = findViewAnalyticsLink();
 
     expect(link.exists()).toBe(true);
     expect(link.text()).toContain('View analytics');
-    expect(link.attributes('href')).toBe(mockData.pipelinesAnalyticsPath);
+    expect(link.attributes('href')).toBe('/pipelines/charts');
   });
 
   it('should render link to create a new pipeline', () => {

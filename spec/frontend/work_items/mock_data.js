@@ -5144,6 +5144,11 @@ export const createWorkItemQueryResponse = {
             __typename: 'WorkItemWidgetIteration',
           },
           {
+            type: 'MILESTONE',
+            milestone: null,
+            __typename: 'WorkItemWidgetMilestone',
+          },
+          {
             type: 'CURRENT_USER_TODOS',
             currentUserTodos: {
               nodes: [],

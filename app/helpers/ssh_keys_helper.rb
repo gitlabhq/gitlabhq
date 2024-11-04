@@ -33,7 +33,8 @@ module SshKeysHelper
       aria_label: title,
       modal_attributes: {
         title: _('Are you sure you want to revoke this SSH key?'),
-        message: _('This action cannot be undone, and will permanently delete the %{key} SSH key. All commits signed using this SSH key will be marked as unverified.') % { key: key.title },
+        message: _('This action cannot be undone, and will permanently delete the %{key} SSH key. All commits ' \
+          'signed using this SSH key will be marked as unverified.') % { key: key.title },
         okVariant: 'danger',
         okTitle: _('Revoke')
       },

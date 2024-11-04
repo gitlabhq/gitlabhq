@@ -1,11 +1,11 @@
 import '~/commons';
 import {
   GlButton,
+  GlCollapsibleListbox,
   GlEmptyState,
   GlFilteredSearch,
   GlLoadingIcon,
   GlPagination,
-  GlCollapsibleListbox,
 } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
@@ -44,7 +44,7 @@ import {
 } from 'jest/issues/list/mock_data';
 import { legacyStageReply } from 'jest/ci/pipeline_mini_graph/mock_data';
 import { describeSkipVue3, SkipReason } from 'helpers/vue3_conditional';
-import { users, mockSearch, branches } from '../pipeline_details/mock_data';
+import { branches, mockSearch, users } from '../pipeline_details/mock_data';
 
 Vue.use(VueApollo);
 
@@ -77,14 +77,10 @@ describeSkipVue3(skipReason, () => {
     resetCachePath: `${mockProjectPath}/settings/ci_cd/reset_cache`,
     newPipelinePath: `${mockProjectPath}/pipelines/new`,
     ciRunnerSettingsPath: `${mockProjectPath}/-/settings/ci_cd#js-runners-settings`,
-    canCreatePipeline: true,
   };
 
   const defaultProps = {
     hasGitlabCi: true,
-    canCreatePipeline: false,
-    projectId: mockProjectId,
-    defaultBranchName: mockDefaultBranchName,
     endpoint: mockPipelinesEndpoint,
     params: {},
   };
@@ -111,7 +107,11 @@ describeSkipVue3(skipReason, () => {
     wrapper = extendedWrapper(
       mount(PipelinesComponent, {
         provide: {
+          canCreatePipeline: withPermissions,
+          defaultBranchName: mockDefaultBranchName,
           pipelineEditorPath: '',
+          pipelinesAnalyticsPath: 'pipeline/analytics',
+          projectId: mockProjectId,
           suggestedCiTemplates: [],
           ciRunnerSettingsPath: defaultProps.ciRunnerSettingsPath,
           anyRunnersAvailable: true,

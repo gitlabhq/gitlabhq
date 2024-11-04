@@ -693,6 +693,10 @@ vulnerability_remediations:
   - table: projects
     column: project_id
     on_delete: async_delete
+vulnerability_representation_information:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
 vulnerability_scanners:
   - table: projects
     column: project_id

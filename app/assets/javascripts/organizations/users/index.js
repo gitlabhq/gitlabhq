@@ -1,10 +1,13 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { GlToast } from '@gitlab/ui';
 import createDefaultClient from '~/lib/graphql';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import OrganizationsUsersApp from './components/app.vue';
 
 export const initOrganizationsUsers = () => {
+  Vue.use(GlToast);
+
   const el = document.getElementById('js-organizations-users');
 
   if (!el) return false;

@@ -244,6 +244,7 @@ export default {
     <template v-if="workItemMilestone">
       <work-item-milestone
         class="js-milestone work-item-attributes-item"
+        :is-group="isGroup"
         :full-path="fullPath"
         :work-item-id="workItem.id"
         :work-item-milestone="workItemMilestone.milestone"

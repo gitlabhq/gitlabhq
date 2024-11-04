@@ -15,7 +15,11 @@ import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { s__, __, sprintf } from '~/locale';
 import { queryToObject, setUrlParams, updateHistory } from '~/lib/utils/url_utility';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-import { ACTIVE_TAB_QUERY_PARAM_NAME, TAB_QUERY_PARAM_VALUES } from '~/members/constants';
+import {
+  ACTIVE_SUBTAB_QUERY_PARAM,
+  ACTIVE_TAB_QUERY_PARAM_NAME,
+  TAB_QUERY_PARAM_VALUES,
+} from '~/members/constants';
 
 import {
   PLACEHOLDER_USER_STATUS,
@@ -25,6 +29,8 @@ import {
   PLACEHOLDER_SORT_STATUS_ASC,
   PLACEHOLDER_SORT_SOURCE_NAME_ASC,
   PLACEHOLDER_SORT_SOURCE_NAME_DESC,
+  PLACEHOLDER_TAB_AWAITING,
+  PLACEHOLDER_TAB_REASSIGNED,
 } from '~/import_entities/import_groups/constants';
 
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
@@ -99,6 +105,8 @@ export default {
     urlParams() {
       return {
         [ACTIVE_TAB_QUERY_PARAM_NAME]: TAB_QUERY_PARAM_VALUES.placeholder,
+        [ACTIVE_SUBTAB_QUERY_PARAM]:
+          this.selectedTabIndex === 0 ? PLACEHOLDER_TAB_AWAITING : PLACEHOLDER_TAB_REASSIGNED,
         status: this.filterParams.status,
         search: this.filterParams.search,
         sort: this.sort,
@@ -175,7 +183,7 @@ export default {
   },
   methods: {
     setInitialFilterAndSort() {
-      const { sort, ...queryParams } = convertObjectPropsToCamelCase(
+      const { sort, subtab, ...queryParams } = convertObjectPropsToCamelCase(
         queryToObject(window.location.search.substring(1), { gatherArrays: true }),
         {
           dropKeys: ['scope', 'utf8', 'tab'], // These keys are unsupported/unnecessary
@@ -188,15 +196,17 @@ export default {
         this.sort = sort || PLACEHOLDER_SORT_SOURCE_NAME_ASC;
       }
 
-      if (queryParams.status) {
-        const reassignedStatuses = PLACEHOLDER_USER_REASSIGNED_STATUS_OPTIONS.map(
-          (status) => status.value,
-        );
-        // When status is one of the reassigned statuses, we should open the reassigned tab
-        if (reassignedStatuses.includes(queryParams.status)) {
-          this.skipResettingFilterParams = true;
-          this.selectedTabIndex = 1;
-        }
+      const reassignedStatuses = PLACEHOLDER_USER_REASSIGNED_STATUS_OPTIONS.map(
+        (status) => status.value,
+      );
+
+      if (
+        (queryParams.status && reassignedStatuses.includes(queryParams.status)) ||
+        subtab === PLACEHOLDER_TAB_REASSIGNED
+      ) {
+        // When status param is one of the reassigned statuses, or subtab param is 'reassigned', open the reassigned tab
+        this.skipResettingFilterParams = true;
+        this.selectedTabIndex = 1;
       }
     },
     filteredSearchTokens(options = PLACEHOLDER_USER_UNASSIGNED_STATUS_OPTIONS) {

@@ -12,6 +12,7 @@ import WorkItemDescription from '~/work_items/components/work_item_description.v
 import WorkItemAssignees from '~/work_items/components/work_item_assignees.vue';
 import WorkItemLabels from '~/work_items/components/work_item_labels.vue';
 import WorkItemCrmContacts from '~/work_items/components/work_item_crm_contacts.vue';
+import WorkItemMilestone from '~/work_items/components/work_item_milestone.vue';
 import WorkItemProjectsListbox from '~/work_items/components/work_item_links/work_item_projects_listbox.vue';
 import {
   WORK_ITEM_TYPE_ENUM_EPIC,
@@ -75,6 +76,7 @@ describe('Create work item component', () => {
   const findAssigneesWidget = () => wrapper.findComponent(WorkItemAssignees);
   const findLabelsWidget = () => wrapper.findComponent(WorkItemLabels);
   const findCrmContactsWidget = () => wrapper.findComponent(WorkItemCrmContacts);
+  const findMilestoneWidget = () => wrapper.findComponent(WorkItemMilestone);
   const findProjectsSelector = () => wrapper.findComponent(WorkItemProjectsListbox);
   const findSelect = () => wrapper.findComponent(GlFormSelect);
   const findConfidentialCheckbox = () => wrapper.find('[data-testid="confidential-checkbox"]');
@@ -103,6 +105,7 @@ describe('Create work item component', () => {
     const namespaceWorkItemTypeResponse = singleWorkItemType
       ? namespaceSingleWorkItemTypeQueryResponse(workItemTypeName)
       : namespaceWorkItemTypesQueryResponse;
+
     mockApollo.clients.defaultClient.cache.writeQuery({
       query: namespaceWorkItemTypesQuery,
       variables: { fullPath: 'full-path', name: workItemTypeName },
@@ -471,6 +474,14 @@ describe('Create work item component', () => {
 
       it('renders the work item labels widget', () => {
         expect(findLabelsWidget().exists()).toBe(true);
+      });
+
+      it('renders the work item CRM contacts widget', () => {
+        expect(findCrmContactsWidget().exists()).toBe(true);
+      });
+
+      it('renders the work item milestone widget', () => {
+        expect(findMilestoneWidget().exists()).toBe(true);
       });
     });
   });

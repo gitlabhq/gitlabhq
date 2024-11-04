@@ -15,3 +15,4 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167468
 milestone: '17.5'
 queued_migration_version: 20240927202948
 finalize_after: '2024-10-17' # required upgrade stop due date
+finalized_by: 20241031132007

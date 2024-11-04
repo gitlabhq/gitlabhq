@@ -66,7 +66,11 @@ module Routing
 
       def has_maskable_params?
         request_params = @request.path_parameters.to_h
-        request_params.key?(:namespace_id) || request_params.key?(:group_id) || request_params.key?(:project_id) || request_params.key?(:id) || @request.query_string.present?
+        request_params.key?(:namespace_id) ||
+          request_params.key?(:group_id) ||
+          request_params.key?(:project_id) ||
+          request_params.key?(:id) ||
+          @request.query_string.present?
       end
 
       def masked_query_params
