@@ -64,7 +64,7 @@ RSpec.describe Sidebars::Groups::Menus::IssuesMenu, feature_category: :navigatio
     it 'logs the error and returns a null count' do
       expect(Gitlab::ErrorTracking).to receive(:log_exception).with(
         ActiveRecord::QueryCanceled, group_id: group.id, query: 'group_sidebar_issues_count'
-      )
+      ).and_call_original
 
       expect(menu.pill_count).to be_nil
     end

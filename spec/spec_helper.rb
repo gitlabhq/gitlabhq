@@ -429,7 +429,7 @@ RSpec.configure do |config|
     ::Gitlab::SafeRequestStore.ensure_request_store { example.run }
   end
 
-  config.around(:example, :ci_config_feature_flag_correctness) do |example|
+  config.around do |example|
     ::Gitlab::Ci::Config::FeatureFlags.ensure_correct_usage do
       example.run
     end

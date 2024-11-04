@@ -107,6 +107,13 @@ module Types
       extension(::Gitlab::Graphql::Limit::FieldCallCount, limit: 1)
     end
 
+    field :sidebar,
+      Types::Namespaces::SidebarType,
+      null: true,
+      description: 'Data needed to render the sidebar for the namespace.',
+      method: :itself,
+      alpha: { milestone: '17.6' }
+
     markdown_field :description_html, null: true
 
     def achievements_path

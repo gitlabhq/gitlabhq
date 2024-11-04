@@ -1,7 +1,9 @@
 ---
 migration_job_name: BackfillJiraTrackerDataProjectKeys
-description: Populate project_keys with project_key if project_keys hasn't been copied yet
+description: Populate project_keys with project_key if project_keys hasn't been copied
+  yet
 feature_category: integrations
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148433
 milestone: '17.0'
 queued_migration_version: 20240402143848
+finalized_by: '20241103232044'

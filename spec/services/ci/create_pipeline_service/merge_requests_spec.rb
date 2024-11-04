@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::CreatePipelineService, :ci_config_feature_flag_correctness,
+RSpec.describe Ci::CreatePipelineService,
   feature_category: :continuous_integration do
   context 'merge requests handling' do
     let_it_be(:project)  { create(:project, :repository) }

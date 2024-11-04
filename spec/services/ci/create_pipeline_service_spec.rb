@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::CreatePipelineService, :ci_config_feature_flag_correctness, :clean_gitlab_redis_cache, feature_category: :continuous_integration do
+RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_category: :continuous_integration do
   include ProjectForksHelper
   include Ci::PipelineMessageHelpers
 

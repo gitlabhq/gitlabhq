@@ -44,6 +44,8 @@ module Sidebars
           end
         rescue ActiveRecord::QueryCanceled => e # rubocop:disable Database/RescueQueryCanceled -- used with fast_read_statement_timeout to prevent counts from slowing down the request
           Gitlab::ErrorTracking.log_exception(e, group_id: context.group.id, query: 'group_sidebar_issues_count')
+
+          nil
         end
 
         override :pill_html_options
