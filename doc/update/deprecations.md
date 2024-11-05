@@ -457,6 +457,26 @@ Along with this change we are also deprecating and removing the 2017 GraphQL API
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
+### Guest users can pull packages from private projects on GitLab.com
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.6</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/336622).
+
+</div>
+
+Starting in 18.0, Guest users on GitLab.com will be able to pull packages from private projects. This is the same ability that Guest users already have on self-managed GitLab.
+
+This change streamlines package sharing capabilities within organizations and simplifies access management for package consumers by providing consistent behavior across all GitLab deployments.
+
+Project Owners and Maintainers should review their private projects' lists of members. Users with the Guest role who should not have package pulling capabilities should be removed. If more restrictive package access is required, consider using project access tokens instead of guest access.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
 ### Limited `scan` actions in a scan execution policy
 
 <div class="deprecation-notes">

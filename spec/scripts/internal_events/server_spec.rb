@@ -171,7 +171,7 @@ RSpec.describe Server, feature_category: :service_ping do
     context 'with a non-structured event or an internal event' do
       let(:body) { internal_event_fixture('snowplow_events/non_internal_event_structured.json') }
 
-      it 'ignores the event' do
+      it 'ignores the event', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/498774' do
         expect(response.code).to eq('200')
         expect(events).to be_empty
       end

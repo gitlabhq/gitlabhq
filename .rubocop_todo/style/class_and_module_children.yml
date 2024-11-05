@@ -420,7 +420,6 @@ Style/ClassAndModuleChildren:
     - 'ee/app/models/concerns/geo/selective_sync.rb'
     - 'ee/app/models/dast/profile_schedule.rb'
     - 'ee/app/models/ee/ci/job_artifact.rb'
-    - 'ee/app/models/elastic/reindexing_slice.rb'
     - 'ee/app/models/epic/metrics.rb'
     - 'ee/app/models/epic/related_epic_link.rb'
     - 'ee/app/models/geo/base_registry.rb'

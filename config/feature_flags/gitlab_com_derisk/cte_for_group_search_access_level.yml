@@ -1,0 +1,9 @@
+---
+name: cte_for_group_search_access_level
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/502465
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/171735
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/502657
+milestone: '17.6'
+group: group::tenant scale
+type: gitlab_com_derisk
+default_enabled: false

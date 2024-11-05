@@ -815,7 +815,6 @@ RSpec/FeatureCategory:
     - 'ee/spec/models/ee/users/merge_request_interaction_spec.rb'
     - 'ee/spec/models/ee/users_statistics_spec.rb'
     - 'ee/spec/models/elastic/index_setting_spec.rb'
-    - 'ee/spec/models/elastic/reindexing_slice_spec.rb'
     - 'ee/spec/models/epic_user_mention_spec.rb'
     - 'ee/spec/models/gitlab/seat_link_data_spec.rb'
     - 'ee/spec/models/gitlab_subscriptions/upcoming_reconciliation_spec.rb'

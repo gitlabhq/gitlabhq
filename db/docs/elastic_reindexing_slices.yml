@@ -1,7 +1,7 @@
 ---
 table_name: elastic_reindexing_slices
 classes:
-- Elastic::ReindexingSlice
+- Search::Elastic::ReindexingSlice
 feature_categories:
 - global_search
 description: Used to track status of Zero downtime reindexing tasks in Elasticsearch or OpenSearch

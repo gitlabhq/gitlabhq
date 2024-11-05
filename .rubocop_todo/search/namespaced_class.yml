@@ -30,7 +30,6 @@ Search/NamespacedClass:
     - 'ee/app/models/elastic/group_index_status.rb'
     - 'ee/app/models/elastic/index_setting.rb'
     - 'ee/app/models/elastic/migration_record.rb'
-    - 'ee/app/models/elastic/reindexing_slice.rb'
     - 'ee/app/models/elasticsearch_indexed_namespace.rb'
     - 'ee/app/models/elasticsearch_indexed_project.rb'
     - 'ee/app/presenters/ee/search_service_presenter.rb'

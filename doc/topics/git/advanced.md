@@ -47,6 +47,17 @@ you can rebase to fix it.
 
 For more information, see [Rebase to address merge conflicts](git_rebase.md).
 
+## Cherry-pick changes
+
+The `git cherry-pick` command applies specific commits from one branch to another.
+Use it to:
+
+- Backport bug fixes from the default branch to previous release branches.
+- Copy changes from a fork to the upstream repository.
+- Apply specific changes without merging entire branches.
+
+For more information, see [Cherry-pick changes with Git](cherry_pick.md).
+
 ## Revert and undo changes
 
 The following Git commands help you to revert and undo changes:
@@ -57,6 +68,28 @@ The following Git commands help you to revert and undo changes:
 - `git restore`: Restores changes that are lost or deleted.
 
 For more information, see [Revert changes](undo.md).
+
+## Reduce repository size
+
+The size of a Git repository can impact performance and storage costs.
+It can differ slightly from one instance to another due to compression, housekeeping, and other factors.
+For more information about repository size, see [Repository size](../../user/project/repository/repository_size.md)
+
+You can use Git to purge files from your repository's history and reduce its size. For more information, see [Reduce repository size](repository.md).
+
+## File management
+
+You can use Git to manage files in your repository. It helps you track changes, collaborate with others, and manage large files. The following options are available:
+
+- `git log`: View changes to files in your repository.
+- `git blame`: Identify who last modified a line of code in a file.
+- `git lfs`: Manages, track, and lock files in your repository.
+
+<!-- Include when the relevant MR is merged.
+
+For more information, see [File management](file_management.md).
+
+-->
 
 ## Update Git remote URLs
 
