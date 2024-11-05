@@ -445,11 +445,6 @@ Example response:
 }
 ```
 
-## Migrating Endpoints
-
-These endpoints are going to be [migrated to internal endpoints](https://gitlab.com/gitlab-org/gitlab/-/issues/463741). After that, they will be
-deprecated and then [removed in a future milestone](https://gitlab.com/gitlab-org/gitlab/-/issues/473625).
-
 ### Add-On Purchases
 
 This API is used by CustomersDot to manage add-on purchases, excluding Compute Minutes
@@ -492,7 +487,7 @@ Example request for create/update:
 curl --request POST \
 --header --header "X-CUSTOMERS-DOT-INTERNAL-TOKEN: <json-web-token>" \
 --header "Content-Type: application/json" \
---data '{ "add_on_purchases": { "duo_pro": [{ "quantity": 1, "started_on": "<YYYY-MM-DD>", "expires_on": "<YYYY-MM-DD>", "purchase_xid": "A-S0000001", "trial": false }] } }' \
+--data '{ "add_on_purchases": { "duo_pro": [{ "quantity": 1, "started_on": "<YYYY-MM-DD>", "expires_on": "<YYYY-MM-DD>", "purchase_xid": "C-00123456", "trial": false }] } }' \
 "https://gitlab.com/api/v4/internal/gitlab_subscriptions/namespaces/1234/subscription_add_on_purchases"
 ```
 
@@ -519,84 +514,10 @@ Example response:
     "quantity": 1,
     "started_on": "2024-01-01",
     "expires_on": "2024-12-31",
-    "purchase_xid": "A-S0000001",
+    "purchase_xid": "C-00123456",
     "trial": false
   }
 ]
-```
-
-#### Create a subscription add-on purchase
-
-Use a POST command to create a subscription add-on purchase.
-
-```plaintext
-POST /namespaces/:id/subscription_add_on_purchase/:add_on_name
-```
-
-| Attribute   | Type    | Required | Description |
-|:------------|:--------|:---------|:------------|
-| `quantity` | integer | yes | Amount of units in the subscription add-on purchase (Example: Number of seats for a Code Suggestions add-on) |
-| `started_on` | date | yes | Date the subscription add-on purchase became available |
-| `expires_on` | date | yes | Expiration date of the subscription add-on purchase |
-| `purchase_xid` | string | yes | Identifier for the subscription add-on purchase (Example: Subscription name for a Code Suggestions add-on) |
-| `trial` | boolean | no | Whether the add-on is a trial |
-
-Example request:
-
-```shell
-curl --request POST --header "X-CUSTOMERS-DOT-INTERNAL-TOKEN: <json-web-token>" "https://gitlab.com/api/v4/namespaces/1234/subscription_add_on_purchase/code_suggestions?&quantity=10&started_on="2024-06-15"&expires_on="2024-07-15"&purchase_xid="A-S12345678"&trial=true"
-```
-
-Example response:
-
-```json
-{
-  "namespace_id":1234,
-  "namespace_name":"A Namespace Name",
-  "add_on":"Code Suggestions",
-  "quantity":10,
-  "started_on":"2024-06-15",
-  "expires_on":"2024-07-15",
-  "purchase_xid":"A-S12345678",
-  "trial":true
-}
-```
-
-#### Update a subscription add-on purchase
-
-Use a PUT command to update an existing subscription add-on purchase.
-
-```plaintext
-PUT /namespaces/:id/subscription_add_on_purchase/:add_on_name
-```
-
-| Attribute   | Type    | Required | Description |
-|:------------|:--------|:---------|:------------|
-| `quantity` | integer | no | Amount of units in the subscription add-on purchase (Example: Number of seats for a Code Suggestions add-on) |
-| `started_on` | date | yes | Date the subscription add-on purchase became available |
-| `expires_on` | date | yes | Expiration date of the subscription add-on purchase |
-| `purchase_xid` | string | no | Identifier for the subscription add-on purchase (Example: Subscription name for a Code Suggestions add-on) |
-| `trial` | boolean | no | Whether the add-on is a trial |
-
-Example request:
-
-```shell
-curl --request PUT --header "X-CUSTOMERS-DOT-INTERNAL-TOKEN: <json-web-token>" "https://gitlab.com/api/v4/namespaces/1234/subscription_add_on_purchase/code_suggestions?&quantity=15&started_on="2024-06-15"&expires_on="2024-07-15"&purchase_xid="A-S12345678"&trial=true"
-```
-
-Example response:
-
-```json
-{
-  "namespace_id":1234,
-  "namespace_name":"A Namespace Name",
-  "add_on":"Code Suggestions",
-  "quantity":15,
-  "started_on":"2024-06-15",
-  "expires_on":"2024-07-15",
-  "purchase_xid":"A-S12345678",
-  "trial":true
-}
 ```
 
 #### Fetch a subscription add-on purchases
@@ -604,13 +525,13 @@ Example response:
 Use a GET command to view an existing subscription add-on purchase.
 
 ```plaintext
-GET /namespaces/:id/subscription_add_on_purchase/:add_on_name
+GET /internal/gitlab_subscriptions/namespaces/:id/subscription_add_on_purchases/:add_on_name
 ```
 
 Example request:
 
 ```shell
-curl --header "X-CUSTOMERS-DOT-INTERNAL-TOKEN: <json-web-token>" "https://gitlab.com/api/v4/namespaces/1234/subscription_add_on_purchase/code_suggestions"
+curl --header "X-CUSTOMERS-DOT-INTERNAL-TOKEN: <json-web-token>" "https://gitlab.com/api/v4/internal/gitlab_subscriptions/namespaces/1234/subscription_add_on_purchases/code_suggestions"
 ```
 
 Example response:
@@ -623,7 +544,7 @@ Example response:
   "quantity":15,
   "started_on":"2024-06-15",
   "expires_on":"2024-07-15",
-  "purchase_xid":"A-S12345678",
+  "purchase_xid":"C-00123456",
   "trial":true
 }
 ```
@@ -708,6 +629,119 @@ Example response:
 }
 ```
 
+## Migrating Endpoints
+
+These endpoints are going to be [migrated to internal endpoints](https://gitlab.com/gitlab-org/gitlab/-/issues/463741). After that, they will be
+deprecated and then [removed in a future milestone](https://gitlab.com/gitlab-org/gitlab/-/issues/473625).
+
+### Add-On Purchases (being migrated)
+
+This API is used by CustomersDot to manage add-on purchases, excluding Compute Minutes
+and Storage packs.
+
+#### Create a subscription add-on purchase
+
+Use a POST command to create a subscription add-on purchase.
+
+```plaintext
+POST /namespaces/:id/subscription_add_on_purchase/:add_on_name
+```
+
+| Attribute   | Type    | Required | Description |
+|:------------|:--------|:---------|:------------|
+| `quantity` | integer | yes | Amount of units in the subscription add-on purchase (Example: Number of seats for a Code Suggestions add-on) |
+| `started_on` | date | yes | Date the subscription add-on purchase became available |
+| `expires_on` | date | yes | Expiration date of the subscription add-on purchase |
+| `purchase_xid` | string | yes | Identifier for the subscription add-on purchase (Example: Subscription name for a Code Suggestions add-on) |
+| `trial` | boolean | no | Whether the add-on is a trial |
+
+Example request:
+
+```shell
+curl --request POST --header "X-CUSTOMERS-DOT-INTERNAL-TOKEN: <json-web-token>" "https://gitlab.com/api/v4/namespaces/1234/subscription_add_on_purchase/code_suggestions?&quantity=10&started_on="2024-06-15"&expires_on="2024-07-15"&purchase_xid="C-00123456"&trial=true"
+```
+
+Example response:
+
+```json
+{
+  "namespace_id":1234,
+  "namespace_name":"A Namespace Name",
+  "add_on":"Code Suggestions",
+  "quantity":10,
+  "started_on":"2024-06-15",
+  "expires_on":"2024-07-15",
+  "purchase_xid":"C-00123456",
+  "trial":true
+}
+```
+
+#### Update a subscription add-on purchase
+
+Use a PUT command to update an existing subscription add-on purchase.
+
+```plaintext
+PUT /namespaces/:id/subscription_add_on_purchase/:add_on_name
+```
+
+| Attribute   | Type    | Required | Description |
+|:------------|:--------|:---------|:------------|
+| `quantity` | integer | no | Amount of units in the subscription add-on purchase (Example: Number of seats for a Code Suggestions add-on) |
+| `started_on` | date | yes | Date the subscription add-on purchase became available |
+| `expires_on` | date | yes | Expiration date of the subscription add-on purchase |
+| `purchase_xid` | string | no | Identifier for the subscription add-on purchase (Example: Subscription name for a Code Suggestions add-on) |
+| `trial` | boolean | no | Whether the add-on is a trial |
+
+Example request:
+
+```shell
+curl --request PUT --header "X-CUSTOMERS-DOT-INTERNAL-TOKEN: <json-web-token>" "https://gitlab.com/api/v4/namespaces/1234/subscription_add_on_purchase/code_suggestions?&quantity=15&started_on="2024-06-15"&expires_on="2024-07-15"&purchase_xid="C-00123456"&trial=true"
+```
+
+Example response:
+
+```json
+{
+  "namespace_id":1234,
+  "namespace_name":"A Namespace Name",
+  "add_on":"Code Suggestions",
+  "quantity":15,
+  "started_on":"2024-06-15",
+  "expires_on":"2024-07-15",
+  "purchase_xid":"C-00123456",
+  "trial":true
+}
+```
+
+#### Fetch a subscription add-on purchases
+
+Use a GET command to view an existing subscription add-on purchase.
+
+```plaintext
+GET /namespaces/:id/subscription_add_on_purchase/:add_on_name
+```
+
+Example request:
+
+```shell
+curl --header "X-CUSTOMERS-DOT-INTERNAL-TOKEN: <json-web-token>" "https://gitlab.com/api/v4/namespaces/1234/subscription_add_on_purchase/code_suggestions"
+```
+
+Example response:
+
+```json
+{
+  "namespace_id":1234,
+  "namespace_name":"A Namespace Name",
+  "add_on":"Code Suggestions",
+  "quantity":15,
+  "started_on":"2024-06-15",
+  "expires_on":"2024-07-15",
+  "purchase_xid":"C-00123456",
+  "trial":true
+}
+```
+
 ### Compute quota provisioning (being migrated)
 
 > - [Renamed](https://gitlab.com/groups/gitlab-com/-/epics/2150) from "CI/CD minutes" to "compute quota" and "compute minutes" in GitLab 16.1.
@@ -742,7 +776,7 @@ curl --request POST \
       {
         "number_of_minutes": 10000,
         "expires_at": "2022-01-01",
-        "purchase_xid": "46952fe69bebc1a4de10b2b4ff439d0c"
+        "purchase_xid": "C-00123456"
       }
     ]
   }'
@@ -756,7 +790,7 @@ Example response:
     "namespace_id": 123,
     "expires_at": "2022-01-01",
     "number_of_minutes": 10000,
-    "purchase_xid": "46952fe69bebc1a4de10b2b4ff439d0c"
+    "purchase_xid": "C-00123456"
   }
 ]
 ```

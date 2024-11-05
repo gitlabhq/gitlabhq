@@ -262,7 +262,7 @@ RSpec.describe SearchController, feature_category: :global_search do
               get :show, params: { scope: 'projects', search: '*' }
 
               expect(response).to redirect_to new_user_session_path
-              expect(flash[:alert]).to match(/You must be logged in/)
+              expect(flash[:alert]).to match(/You need to sign in or sign up before continuing/)
             end
           end
         end
@@ -750,6 +750,43 @@ RSpec.describe SearchController, feature_category: :global_search do
   end
 
   context 'unauthorized user' do
+    describe 'redirecting' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:restricted_visibility_levels, :allow_anonymous_searches, :block_anonymous_global_searches, :redirect) do
+        [Gitlab::VisibilityLevel::PUBLIC]   | true  | false | true
+        [Gitlab::VisibilityLevel::PRIVATE]  | true  | false | false
+        nil                                 | true  | false | false
+        nil                                 | false | false | true
+        nil                                 | true  | true  | true
+        nil                                 | false | true  | true
+      end
+
+      with_them do
+        before do
+          stub_application_setting(restricted_visibility_levels: restricted_visibility_levels)
+          stub_feature_flags(allow_anonymous_searches: allow_anonymous_searches)
+          stub_feature_flags(block_anonymous_global_searches: block_anonymous_global_searches)
+        end
+
+        it 'redirects to the sign in/sign up page when it should' do
+          get :show, params: { search: 'hello', scope: 'projects' }
+
+          if redirect
+            expect(response).to redirect_to(new_user_session_path)
+          else
+            expect(response).not_to redirect_to(new_user_session_path)
+          end
+        end
+
+        it 'does not redirect for the opensearch endpoint' do
+          get :opensearch
+
+          expect(response).not_to redirect_to(new_user_session_path)
+        end
+      end
+    end
+
     describe 'search rate limits' do
       using RSpec::Parameterized::TableSyntax
 

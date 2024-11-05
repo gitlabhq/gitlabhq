@@ -227,6 +227,11 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/5/repository/branches/newbranch"
 ```
 
+NOTE:
+Deleting a merged branch does not completely erase all data.
+Some information persists to maintain project history and to support recovery processes.
+For more information, see [Handle sensitive information](../topics/git/undo.md#handle-sensitive-information).
+
 ## Delete merged branches
 
 Deletes all branches that are merged into the project's default branch.

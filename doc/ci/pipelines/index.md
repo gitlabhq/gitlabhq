@@ -478,3 +478,12 @@ project repository. GitLab generates the special ref `refs/pipelines/<id>` durin
 running pipeline job. This ref can be created even after the associated branch or tag has been
 deleted. It's therefore useful in some features such as [automatically stopping an environment](../environments/index.md#stopping-an-environment),
 and [merge trains](../pipelines/merge_trains.md) that might run pipelines after branch deletion.
+
+## Troubleshooting
+
+### Pipeline subscriptions continue after user deletion
+
+When a user [deletes their GitLab.com account](../../user/profile/account/delete_account.md#delete-your-own-account),
+the deletion does not occur for seven days. During this period, any [pipeline subscriptions created by that user](#trigger-a-pipeline-when-an-upstream-project-is-rebuilt)
+continue to run with the user's original permissions. To prevent unauthorized pipeline executions,
+immediately update pipeline subscription settings for the deleted user.

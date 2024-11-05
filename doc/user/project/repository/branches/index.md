@@ -247,6 +247,11 @@ To do this:
 1. Select **Delete merged branches**.
 1. In the dialog, enter the word `delete` to confirm, then select **Delete merged branches**.
 
+NOTE:
+Deleting a merged branch does not completely erase all data.
+Some information persists to maintain project history and to support recovery processes.
+For more information, see [Handle sensitive information](../../../../topics/git/undo.md#handle-sensitive-information).
+
 ## Configure workflows for target branches
 
 DETAILS:

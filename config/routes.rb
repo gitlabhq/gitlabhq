@@ -182,6 +182,7 @@ InitializerConnections.raise_if_new_database_connection do
         draw :subscription
         draw :gitlab_subscriptions
         draw :phone_verification
+        draw :arkose
 
         scope '/push_from_secondary/:geo_node_id' do
           draw :git_http

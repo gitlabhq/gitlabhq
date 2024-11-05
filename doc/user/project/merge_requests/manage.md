@@ -25,6 +25,11 @@ To delete a merge request:
 1. Select **Edit**.
 1. Scroll to the bottom of the page, and select **Delete merge request**.
 
+NOTE:
+Deleting a merge request does not completely erase all data.
+Some information persists to maintain project history and to support recovery processes.
+For more information, see [Handle sensitive information](../../../topics/git/undo.md#handle-sensitive-information).
+
 ## Bulk edit merge requests in a project
 
 These attributes are editable when bulk editing merge requests:

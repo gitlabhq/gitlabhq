@@ -28,11 +28,9 @@ class SearchController < ApplicationController
 
   around_action :allow_gitaly_ref_name_caching
 
-  before_action :block_all_anonymous_searches,
-    :block_anonymous_global_searches,
-    :check_scope_global_search_enabled,
-    except: :opensearch
-  skip_before_action :authenticate_user!
+  skip_before_action :authenticate_user!, unless: :authenticate?
+
+  before_action :check_scope_global_search_enabled, except: :opensearch
 
   requires_cross_project_access if: -> do
     search_term_present = params[:search].present? || params[:term].present?
@@ -130,6 +128,15 @@ class SearchController < ApplicationController
   def opensearch; end
 
   private
+
+  def authenticate?
+    return false if action_name == 'opensearch'
+    return true if public_visibility_restricted?
+    return true if search_service.global_search? && ::Feature.enabled?(:block_anonymous_global_searches, type: :ops)
+    return true if ::Feature.disabled?(:allow_anonymous_searches, type: :ops)
+
+    false
+  end
 
   def multi_match?(search_type:, scope:) # rubocop: disable Lint/UnusedMethodArgument -- This is being overridden in EE
     false
@@ -260,24 +267,6 @@ class SearchController < ApplicationController
       metadata['meta.search.level'] = @search_level if @search_level.present?
       metadata[:global_search_duration_s] = @global_search_duration_s if @global_search_duration_s.present?
     end
-  end
-
-  def block_anonymous_global_searches
-    return unless search_service.global_search?
-    return if current_user
-    return unless ::Feature.enabled?(:block_anonymous_global_searches, type: :ops)
-
-    store_location_for(:user, request.fullpath)
-
-    redirect_to new_user_session_path, alert: _('You must be logged in to search across all of GitLab')
-  end
-
-  def block_all_anonymous_searches
-    return if current_user || ::Feature.enabled?(:allow_anonymous_searches, type: :ops)
-
-    store_location_for(:user, request.fullpath)
-
-    redirect_to new_user_session_path, alert: _('You must be logged in to search')
   end
 
   def check_scope_global_search_enabled

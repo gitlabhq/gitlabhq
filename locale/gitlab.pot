@@ -63844,12 +63844,6 @@ msgstr ""
 msgid "You must be authenticated to access this path."
 msgstr ""
 
-msgid "You must be logged in to search"
-msgstr ""
-
-msgid "You must be logged in to search across all of GitLab"
-msgstr ""
-
 msgid "You must confirm your email within %{cut_off_days} days of signing up. If you do not confirm your email in this timeframe, your account will be deleted and you will need to sign up for GitLab again."
 msgstr ""
 

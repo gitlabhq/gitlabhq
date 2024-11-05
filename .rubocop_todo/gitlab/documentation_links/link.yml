@@ -16,7 +16,6 @@ Gitlab/DocumentationLinks/Link:
     - 'ee/app/helpers/ee/groups/settings_helper.rb'
     - 'ee/app/helpers/ee/import_helper.rb'
     - 'ee/app/helpers/projects/learn_gitlab_helper.rb'
-    - 'ee/app/helpers/vulnerabilities_helper.rb'
     - 'ee/lib/ee/gitlab/namespace_storage_size_error_message.rb'
     - 'ee/lib/gitlab/checks/secrets_check.rb'
     - 'ee/lib/gitlab/llm/chain/tools/tool.rb'

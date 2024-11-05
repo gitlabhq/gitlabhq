@@ -134,7 +134,7 @@ RSpec.describe 'User searches for code', :js, :disable_rate_limiter, feature_cat
       it 'is redirected to login page' do
         visit(search_path)
 
-        expect(page).to have_content('You must be logged in to search across all of GitLab')
+        expect(page).to have_content('You need to sign in or sign up before continuing.')
       end
     end
   end
