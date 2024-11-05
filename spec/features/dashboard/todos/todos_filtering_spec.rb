@@ -4,7 +4,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Dashboard > User filters todos', :js, feature_category: :team_planning do
+RSpec.describe 'Dashboard > User filters todos', :js, feature_category: :notifications do
   let(:user_1)    { create(:user, username: 'user_1', name: 'user_1') }
   let(:user_2)    { create(:user, username: 'user_2', name: 'user_2') }
 

@@ -73,7 +73,9 @@ module Ci
     end
 
     def path_to(route, job, params = {})
-      send("#{route}_path", job.project.namespace, job.project, job, params) # rubocop:disable GitlabSecurity/PublicSend
+      # rubocop:disable GitlabSecurity/PublicSend -- needs send
+      send("#{route}_path", job.project.namespace, job.project, job, params)
+      # rubocop:enable GitlabSecurity/PublicSend
     end
 
     def job_path(job)

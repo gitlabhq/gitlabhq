@@ -16,7 +16,7 @@ DETAILS:
 > - [Enabled on self-managed](https://gitlab.com/groups/gitlab-org/-/epics/15176) in GitLab 17.6.
 > - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
-To deploy self-hosted AI models, you need **GitLab Enterprise Edition**. For more information about licensing, refer to the [licensing documentation](../../administration/license.md).
+To deploy self-hosted AI models, you need GitLab Ultimate and Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial).
 
 ## Offerings
 

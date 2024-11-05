@@ -33,9 +33,9 @@ module Ci
         kwargs = { user: current_user }
         case runner.runner_type
         when 'group_type'
-          kwargs[:namespace] = runner.groups.first
+          kwargs[:namespace] = runner.owner
         when 'project_type'
-          kwargs[:project] = runner.owner_project
+          kwargs[:project] = runner.owner
         end
 
         track_internal_event(

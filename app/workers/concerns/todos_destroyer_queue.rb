@@ -8,6 +8,6 @@ module TodosDestroyerQueue
 
   included do
     queue_namespace :todos_destroyer
-    feature_category :team_planning
+    feature_category :notifications
   end
 end

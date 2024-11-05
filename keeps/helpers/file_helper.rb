@@ -11,6 +11,17 @@ module Keeps
         @rewriter = Parser::Source::TreeRewriter.new(@source.buffer)
       end
 
+      class << self
+        # Define a node matcher method in the +RuboCop::AST::Node+, which all other node types inherits from.
+        def def_node_matcher(method_name, pattern)
+          RuboCop::AST::NodePattern.new(pattern).def_node_matcher(RuboCop::AST::Node, method_name)
+
+          define_method method_name do
+            source.ast.public_send(method_name) # rubocop:disable GitlabSecurity/PublicSend -- it's used to evaluate the node matcher at instance level
+          end
+        end
+      end
+
       def replace_method_content(method_name, content, strip_comments_from_file: false)
         method = source.ast.each_node(:class).first.each_node(:def).find do |child|
           child.method_name == method_name.to_sym
@@ -21,6 +32,12 @@ module Keeps
         strip_comments if strip_comments_from_file
 
         File.write(file, process)
+
+        process
+      end
+
+      def replace_as_string(node, content)
+        rewriter.replace(node.loc.expression, content)
 
         process
       end
@@ -52,7 +69,7 @@ module Keeps
       end
 
       def process
-        @process ||= rewriter.process.lstrip.gsub(/\n{3,}/, "\n\n")
+        rewriter.process.lstrip.gsub(/\n{3,}/, "\n\n")
       end
     end
   end

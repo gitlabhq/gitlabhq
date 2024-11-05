@@ -10,3 +10,8 @@
     [GitLab Runner documentation](https://docs.gitlab.com/runner/)
   stage: verify
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/387937
+  window: "1"
+  impact: low
+  scope: [instance, group, project]
+  resolution_role: admin
+  manual_task: false

@@ -30,8 +30,9 @@ const extendConfigs = [
 // rewrite.
 let jhConfigs = [];
 if (existsSync(path.resolve(dirname, 'jh'))) {
-  // eslint-disable-next-line import/no-unresolved, import/extensions
-  jhConfigs = (await import('jh/eslint.config.js')).default;
+  const pathToJhConfig = path.resolve(dirname, 'jh/eslint.config.js')
+  // eslint-disable-next-line import/no-dynamic-require, no-unsanitized/method
+  jhConfigs = (await import(pathToJhConfig)).default;
 }
 
 const jestConfig = {

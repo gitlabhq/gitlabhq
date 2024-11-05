@@ -8,7 +8,9 @@ default:
 description: Maximum allowable lifetime for access tokens in days. When left blank,
   default value of 365 is applied. When set, value must be 365 or less. When changed,
   existing access tokens with an expiration date beyond the maximum allowable lifetime
-  are revoked. Self-managed, Ultimate only.
+  are revoked. Self-managed, Ultimate only. In GitLab 17.6 or later, the maximum lifetime
+  limit can be [extended to 400 days](https://gitlab.com/gitlab-org/gitlab/-/issues/461901)
+  by enabling a [feature flag](../administration/feature_flags.md) named `buffered_token_expiration_limit`.
 encrypted: false
 gitlab_com_different_than_default: false
 jihu: false

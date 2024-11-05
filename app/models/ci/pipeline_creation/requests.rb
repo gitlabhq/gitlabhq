@@ -48,15 +48,10 @@ module Ci
           request
         end
 
-        def pipeline_creating_for_merge_request?(merge_request, delete_if_all_complete: false)
+        def pipeline_creating_for_merge_request?(merge_request)
           key = merge_request_key(merge_request)
 
-          requests, _del_result = Gitlab::Redis::SharedState.with do |redis|
-            redis.multi do |transaction|
-              transaction.hvals(key)
-              transaction.del(key) if delete_if_all_complete
-            end
-          end
+          requests = Gitlab::Redis::SharedState.with { |redis| redis.hvals(key) }
 
           return false unless requests.present?
 

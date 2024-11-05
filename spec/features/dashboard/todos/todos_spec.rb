@@ -4,7 +4,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Dashboard Todos', :js, feature_category: :team_planning do
+RSpec.describe 'Dashboard Todos', :js, feature_category: :notifications do
   include DesignManagementTestHelpers
 
   let_it_be(:user) { create(:user, username: 'john') }

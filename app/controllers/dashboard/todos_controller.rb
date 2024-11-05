@@ -9,7 +9,7 @@ class Dashboard::TodosController < Dashboard::ApplicationController
   before_action :authorize_read_group!, only: :index
   before_action :find_todos, only: [:index, :destroy_all]
 
-  feature_category :team_planning
+  feature_category :notifications
   urgency :low
 
   def index

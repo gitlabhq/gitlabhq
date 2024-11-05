@@ -57513,6 +57513,12 @@ msgid_plural "Todos|Marked %d to-dos as done"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Todos|Marked as done"
+msgstr ""
+
+msgid "Todos|Marked as undone"
+msgstr ""
+
 msgid "Todos|Member access request"
 msgstr ""
 

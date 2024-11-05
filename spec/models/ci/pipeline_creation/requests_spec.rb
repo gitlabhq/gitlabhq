@@ -77,36 +77,6 @@ RSpec.describe Ci::PipelineCreation::Requests, :clean_gitlab_redis_shared_state,
         expect(described_class.pipeline_creating_for_merge_request?(merge_request)).to be_falsey
       end
     end
-
-    context 'when delete_if_all_complete is true' do
-      context 'when there are only finished creations for the merge request' do
-        it 'deletes the MR pipeline creations key from Redis' do
-          request_1 = described_class.start_for_merge_request(merge_request)
-          request_2 = described_class.start_for_merge_request(merge_request)
-          described_class.succeeded(request_1)
-          described_class.failed(request_2)
-
-          expect(described_class.pipeline_creating_for_merge_request?(merge_request, delete_if_all_complete: true))
-            .to be_falsey
-          expect(read(request_1)).to be_nil
-          expect(read(request_2)).to be_nil
-        end
-      end
-
-      context 'when there are unfinished creations for the merge request' do
-        it 'does not delete the MR pipeline creations key from Redis' do
-          request_1 = described_class.start_for_merge_request(merge_request)
-          request_2 = described_class.start_for_merge_request(merge_request)
-          described_class.start_for_merge_request(merge_request)
-          described_class.succeeded(request_1)
-
-          expect(described_class.pipeline_creating_for_merge_request?(merge_request, delete_if_all_complete: false))
-            .to be_truthy
-          expect(read(request_1)).to eq({ 'status' => 'succeeded' })
-          expect(read(request_2)).to eq({ 'status' => 'in_progress' })
-        end
-      end
-    end
   end
 
   describe '.hset' do

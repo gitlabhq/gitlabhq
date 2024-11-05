@@ -277,6 +277,23 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
     end
   end
 
+  describe '#owner' do
+    subject(:owner) { runner.owner }
+
+    context 'when runner does not have creator_id' do
+      let_it_be(:runner) { create(:ci_runner, :instance) }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when runner has creator' do
+      let_it_be(:creator) { create(:user) }
+      let_it_be(:runner) { create(:ci_runner, :instance, creator: creator) }
+
+      it { is_expected.to eq creator }
+    end
+  end
+
   describe '.instance_type' do
     let!(:group_runner) { create(:ci_runner, :group, groups: [group]) }
     let!(:project_runner) { create(:ci_runner, :project, projects: [project]) }
@@ -1125,8 +1142,8 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
     let_it_be(:project1) { create(:project) }
     let_it_be(:project2) { create(:project) }
 
-    describe '#owner_project' do
-      subject(:owner_project) { project_runner.owner_project }
+    describe '#owner' do
+      subject(:owner) { project_runner.owner }
 
       context 'with project1 as first project associated with runner' do
         let_it_be(:project_runner) { create(:ci_runner, :project, projects: [project1, project2]) }
@@ -1636,6 +1653,22 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
             other_top_level_group_project_runner
           )
         end
+      end
+    end
+
+    describe '#owner' do
+      subject(:owner) { runner.owner }
+
+      context 'with runner assigned to child_group' do
+        let(:runner) { child_group_runner }
+
+        it { is_expected.to eq child_group }
+      end
+
+      context 'with runner assigned to top_level_group_runner' do
+        let(:runner) { top_level_group_runner }
+
+        it { is_expected.to eq top_level_group }
       end
     end
   end

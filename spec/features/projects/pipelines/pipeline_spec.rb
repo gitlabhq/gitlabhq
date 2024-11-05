@@ -1220,25 +1220,6 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
     end
   end
 
-  describe 'GET /:project/-/pipelines/:id/dag' do
-    include_context 'pipeline builds'
-
-    let_it_be(:project) { create(:project, :repository) }
-
-    let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master', sha: project.commit.id) }
-
-    before do
-      visit dag_project_pipeline_path(project, pipeline)
-    end
-
-    context 'page tabs' do
-      it 'shows Pipeline and Jobs tabs with link' do
-        expect(page).to have_link('Pipeline')
-        expect(page).to have_link('Jobs')
-      end
-    end
-  end
-
   context 'when user sees pipeline flags in a pipeline detail page' do
     let_it_be(:project) { create(:project, :repository) }
 

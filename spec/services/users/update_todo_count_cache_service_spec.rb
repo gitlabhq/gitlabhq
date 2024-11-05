@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Users::UpdateTodoCountCacheService, feature_category: :team_planning do
+RSpec.describe Users::UpdateTodoCountCacheService, feature_category: :notifications do
   describe '#execute' do
     let_it_be(:user1) { create(:user) }
     let_it_be(:user2) { create(:user) }

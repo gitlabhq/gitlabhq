@@ -39,7 +39,7 @@ Before setting up a self-hosted model infrastructure, you must have:
 - A [supported model](supported_models_and_hardware_requirements.md) (either cloud-based or on-premises).
 - A [supported serving platform](supported_llm_serving_platforms.md) (either cloud-based or on-premises).
 - A locally hosted or GitLab.com AI Gateway.
-- GitLab [Enterprise Edition license](../../administration/license.md).
+- GitLab Ultimate + [Duo Enterprise license](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?toggle=gitlab-duo-pro).
 
 ## Choose a configuration type
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe TodoService, feature_category: :team_planning do
+RSpec.describe TodoService, feature_category: :notifications do
   include AfterNextHelpers
 
   let_it_be(:group) { create(:group) }

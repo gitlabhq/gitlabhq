@@ -2318,7 +2318,7 @@
   :tags: []
 - :name: todos_destroyer:todos_destroyer_confidential_issue
   :worker_name: TodosDestroyer::ConfidentialIssueWorker
-  :feature_category: :team_planning
+  :feature_category: :notifications
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -2327,7 +2327,7 @@
   :tags: []
 - :name: todos_destroyer:todos_destroyer_destroyed_designs
   :worker_name: TodosDestroyer::DestroyedDesignsWorker
-  :feature_category: :team_planning
+  :feature_category: :notifications
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -2336,7 +2336,7 @@
   :tags: []
 - :name: todos_destroyer:todos_destroyer_destroyed_issuable
   :worker_name: TodosDestroyer::DestroyedIssuableWorker
-  :feature_category: :team_planning
+  :feature_category: :notifications
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -2345,7 +2345,7 @@
   :tags: []
 - :name: todos_destroyer:todos_destroyer_entity_leave
   :worker_name: TodosDestroyer::EntityLeaveWorker
-  :feature_category: :team_planning
+  :feature_category: :notifications
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -2354,7 +2354,7 @@
   :tags: []
 - :name: todos_destroyer:todos_destroyer_group_private
   :worker_name: TodosDestroyer::GroupPrivateWorker
-  :feature_category: :team_planning
+  :feature_category: :notifications
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -2363,7 +2363,7 @@
   :tags: []
 - :name: todos_destroyer:todos_destroyer_private_features
   :worker_name: TodosDestroyer::PrivateFeaturesWorker
-  :feature_category: :team_planning
+  :feature_category: :notifications
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -2372,7 +2372,7 @@
   :tags: []
 - :name: todos_destroyer:todos_destroyer_project_private
   :worker_name: TodosDestroyer::ProjectPrivateWorker
-  :feature_category: :team_planning
+  :feature_category: :notifications
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown

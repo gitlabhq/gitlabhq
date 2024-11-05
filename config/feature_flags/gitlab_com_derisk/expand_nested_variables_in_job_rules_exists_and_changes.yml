@@ -1,0 +1,9 @@
+---
+name: expand_nested_variables_in_job_rules_exists_and_changes
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/327780
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166779
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/483115
+milestone: '17.6'
+group: group::pipeline authoring
+type: gitlab_com_derisk
+default_enabled: false

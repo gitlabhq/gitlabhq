@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Ci::Config::External::Rules, feature_category: :pipeline_composition do
   let(:context) { double(variables_hash: {}) }
   let(:rule_hashes) {}
-  let(:pipeline) { instance_double(Ci::Pipeline, project_id: project.id, sha: 'sha') }
+  let(:pipeline) { instance_double(Ci::Pipeline, project: project, project_id: project.id, sha: 'sha') }
   let_it_be(:project) { create(:project, :custom_repo, files: { 'file.txt' => 'file' }) }
 
   subject(:rules) { described_class.new(rule_hashes) }

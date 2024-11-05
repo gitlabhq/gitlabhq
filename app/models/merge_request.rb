@@ -2440,7 +2440,7 @@ class MergeRequest < ApplicationRecord
   def pipeline_creating?
     return false unless Feature.enabled?(:ci_redis_pipeline_creations, project)
 
-    Ci::PipelineCreation::Requests.pipeline_creating_for_merge_request?(self, delete_if_all_complete: true)
+    Ci::PipelineCreation::Requests.pipeline_creating_for_merge_request?(self)
   end
 
   def merge_base_pipelines

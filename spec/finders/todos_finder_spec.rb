@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe TodosFinder, feature_category: :team_planning do
+RSpec.describe TodosFinder, feature_category: :notifications do
   describe '#execute' do
     let_it_be(:user) { create(:user) }
     let_it_be(:group) { create(:group) }

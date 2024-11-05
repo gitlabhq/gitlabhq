@@ -24,11 +24,6 @@ export default {
       type: Object,
       required: true,
     },
-    fadeDoneTodo: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
   },
   computed: {
     isDone() {
@@ -40,9 +35,6 @@ export default {
     targetUrl() {
       return this.todo.targetUrl;
     },
-    fadeTodo() {
-      return this.fadeDoneTodo && this.isDone;
-    },
     trackingLabel() {
       return this.todo.targetType ?? 'UNKNOWN';
     },
@@ -53,7 +45,6 @@ export default {
 <template>
   <li
     class="gl-border-t gl-border-b gl-relative -gl-mt-px gl-block gl-px-5 gl-py-3 hover:gl-z-1 hover:gl-cursor-pointer hover:gl-border-blue-200 hover:gl-bg-blue-50"
-    :class="{ 'gl-border-gray-50 gl-bg-gray-10': fadeTodo }"
   >
     <gl-link
       :href="targetUrl"
@@ -63,16 +54,18 @@ export default {
     >
       <div
         class="gl-w-64 gl-flex-grow-2 gl-self-center gl-overflow-hidden gl-overflow-x-auto sm:gl-w-auto"
-        :class="{ 'gl-opacity-5': fadeTodo }"
       >
         <todo-item-title :todo="todo" />
         <todo-item-body :todo="todo" :current-user-id="currentUserId" />
       </div>
-      <todo-item-actions :todo="todo" class="sm:gl-order-3" />
+      <todo-item-actions
+        :todo="todo"
+        class="sm:gl-order-3"
+        @change="(id, markedAsDone) => $emit('change', id, markedAsDone)"
+      />
       <todo-item-timestamp
         :todo="todo"
         class="gl-w-full gl-whitespace-nowrap gl-px-2 sm:gl-w-auto"
-        :class="{ 'gl-opacity-5': fadeTodo }"
       />
     </gl-link>
   </li>

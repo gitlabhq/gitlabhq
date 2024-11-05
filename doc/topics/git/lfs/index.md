@@ -81,171 +81,6 @@ It offers both server settings and project-specific settings.
        handling for individual files and file types.
   1. Add the files and file types you want to track with Git LFS.
 
-## Add a file with Git LFS
-
-Prerequisites:
-
-- You have downloaded and installed the appropriate version of the
-  [CLI extension for Git LFS](https://git-lfs.com) for your operating system.
-- Your project is [configured to use Git LFS](#configure-git-lfs-for-a-project).
-
-To add a large file into your Git repository and immediately track it with Git LFS:
-
-1. To track all files of a certain type with Git LFS, rather than a single file,
-   run this command, replacing `iso` with your desired file type:
-
-   ```shell
-   git lfs track "*.iso"
-   ```
-
-   This command creates a `.gitattributes` file with instructions to handle all
-   ISO files with Git LFS. The line in your `.gitattributes` file looks like this:
-
-   ```plaintext
-   *.iso filter=lfs -text
-   ```
-
-1. Add a file of that type (`.iso`) to your repository.
-1. Tell Git to track the changes to both the `.gitattributes` file and the `.iso` file:
-
-   ```shell
-   git add .
-   ```
-
-1. To ensure you've added both files, run `git status`. If the `.gitattributes` file
-   isn't included in your commit, users who clone your repository don't get the
-   files they need.
-1. Commit both files to your local copy of your repository:
-
-   ```shell
-   git commit -am "Add an ISO file and .gitattributes"
-   ```
-
-1. Push your changes back upstream, replacing `main` with the name of your branch:
-
-   ```shell
-   git push origin main
-   ```
-
-   Make sure the files you are changing aren't listed in a `.gitignore` file.
-   If this file (or file type) is in your `.gitignore` file, Git commits
-   the change locally, but does not push it to your upstream repository.
-
-1. Create your merge request.
-
-### Add a file type to Git LFS
-
-When you add a new file type into Git LFS tracking, existing files of this type
-are _not_ converted to Git LFS. Files of this type added _after_ you begin
-tracking are added to Git LFS. To convert existing files of that type to
-use Git LFS, use `git lfs migrate`.
-
-Prerequisites:
-
-- You have downloaded and installed the appropriate version of the
-  [CLI extension for Git LFS](https://git-lfs.com) for your operating system.
-- Your project is [configured to use Git LFS](#configure-git-lfs-for-a-project).
-
-To start tracking a file type in Git LFS:
-
-1. Make sure this file type isn't listed in your project's `.gitignore` file.
-   If this file type is in your `.gitignore` file, Git commits your changes
-   locally, but does not push it to your upstream repository.
-1. Decide what file types to track with Git LFS. For each file type, run this
-   command, replacing `iso` with your desired file type:
-
-   ```shell
-   git lfs track "*.iso"
-   ```
-
-1. Tell Git to track the changes to the `.gitattributes` file. Commit the
-   file to your local copy of your repository, replacing `iso` with your desired file type:
-
-   ```shell
-   git add .
-   git commit -am "Use Git LFS for files of type .iso"
-   ```
-
-1. Push your changes back upstream, replacing `filetype` with the name of your branch:
-
-   ```shell
-   git push origin filetype
-   ```
-
-## Stop tracking a file with Git LFS
-
-When you stop tracking a file with Git LFS, the file remains on disk because it remains part of your repository's
-history. To understand why, see [Delete a Git LFS file from repository history](#delete-a-git-lfs-file-from-repository-history).
-
-Prerequisites:
-
-- You have downloaded and installed the appropriate version of the
-  [CLI extension for Git LFS](https://git-lfs.com) for your operating system.
-- You have installed the Git LFS pre-push hook by running `git lfs install`
-  in the root directory of your repository.
-
-To stop tracking a file with Git LFS:
-
-1. Run the [`git lfs untrack`](https://github.com/git-lfs/git-lfs/blob/main/docs/man/git-lfs-untrack.adoc)
-   command and provide the path to the file:
-
-   ```shell
-   git lfs untrack doc/example.iso
-   ```
-
-1. Use the `touch` command to convert it back to a standard file:
-
-   ```shell
-   touch doc/example.iso
-   ```
-
-1. Tell Git to track the changes to the file:
-
-   ```shell
-   git add .
-   ```
-
-1. Commit and push your changes.
-1. Create a merge request and request a review.
-1. After you get the required approvals, merge the request into the target branch.
-
-If you delete an object (`example.iso`) tracked by Git LFS, but don't use
-the `git lfs untrack` command, `example.iso` shows as `modified` in `git status`.
-
-### Stop tracking all files of a single type
-
-Prerequisites:
-
-- You have downloaded and installed the appropriate version of the
-  [CLI extension for Git LFS](https://git-lfs.com) for your operating system.
-- You have installed the Git LFS pre-push hook by running `git lfs install`
-  in the root directory of your repository.
-
-To stop tracking all files of a particular type in Git LFS:
-
-1. Run the [`git lfs untrack`](https://github.com/git-lfs/git-lfs/blob/main/docs/man/git-lfs-untrack.adoc)
-   command and provide the file type to stop tracking:
-
-   ```shell
-   git lfs untrack "*.iso"
-   ```
-
-1. Use the `touch` command to convert the files back to standard files:
-
-   ```shell
-   touch *.iso
-   ```
-
-1. Tell Git to track the changes to the files:
-
-   ```shell
-   git add .
-   ```
-
-1. Commit and push your changes.
-1. Create a merge request and request a review.
-1. After you get the required approvals, merge the request into the target branch.
-
 ## Enable or disable Git LFS for a project
 
 Git LFS is enabled by default for both self-managed instances and GitLab.com.
@@ -261,6 +96,12 @@ To enable or disable Git LFS at the project level:
 1. Expand the **Visibility, project features, permissions** section.
 1. Select the **Git Large File Storage (LFS)** toggle.
 1. Select **Save changes**.
+
+## Add and track files
+
+You can add large files to Git LFS. This helps you manage files in Git repositories.
+When you track files with Git LFS, they are replaced with text pointers in Git,
+and stored on a remote server. For more information, see [Git LFS](../../../topics/git/file_management.md#git-lfs).
 
 ## Clone a repository that uses Git LFS
 
@@ -308,8 +149,9 @@ the total size of your repository, see
 
 ## Related topics
 
-- Use Git LFS to set up [exclusive file locks](../../../user/project/file_lock.md#exclusive-file-locks).
+- Use Git LFS to set up [exclusive file locks](../file_management.md#configure-file-locks).
 - Blog post: [Getting started with Git LFS](https://about.gitlab.com/blog/2017/01/30/getting-started-with-git-lfs-tutorial/)
+- [Git LFS with Git](../../../topics/git/file_management.md#git-lfs)
 - [Git LFS developer information](../../../development/lfs.md)
 - [GitLab Git Large File Storage (LFS) Administration](../../../administration/lfs/index.md) for self-managed instances
 - [Troubleshooting Git LFS](troubleshooting.md)

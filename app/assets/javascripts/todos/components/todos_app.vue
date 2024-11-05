@@ -1,4 +1,5 @@
 <script>
+import { computed } from 'vue';
 import { GlLoadingIcon, GlKeysetPagination, GlLink, GlBadge, GlTab, GlTabs } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { createAlert } from '~/alert';
@@ -11,6 +12,8 @@ import {
 } from '~/todos/constants';
 import getTodosQuery from './queries/get_todos.query.graphql';
 import getPendingTodosCount from './queries/get_pending_todos_count.query.graphql';
+import markAsDoneMutation from './mutations/mark_as_done.mutation.graphql';
+import markAsPendingMutation from './mutations/mark_as_pending.mutation.graphql';
 import TodoItem from './todo_item.vue';
 import TodosEmptyState from './todos_empty_state.vue';
 import TodosFilterBar, { SORT_OPTIONS } from './todos_filter_bar.vue';
@@ -32,6 +35,11 @@ export default {
     TodosMarkAllDoneButton,
   },
   mixins: [Tracking.mixin()],
+  provide() {
+    return {
+      currentTab: computed(() => this.currentTab),
+    };
+  },
   data() {
     return {
       cursor: {
@@ -54,11 +62,13 @@ export default {
         sort: `${SORT_OPTIONS[0].value}_DESC`,
       },
       alert: null,
+      showSpinnerWhileLoading: true,
     };
   },
   apollo: {
     todos: {
       query: getTodosQuery,
+      fetchPolicy: 'cache-and-network',
       variables() {
         return {
           state: this.statusByTab,
@@ -107,9 +117,6 @@ export default {
     showMarkAllAsDone() {
       return this.currentTab === 0 && !this.showEmptyState;
     },
-    fadeDoneTodo() {
-      return this.currentTab === 0;
-    },
   },
   methods: {
     nextPage(item) {
@@ -144,8 +151,33 @@ export default {
       this.alert?.dismiss();
       this.queryFilterValues = { ...data };
     },
+    async handleItemChanged(id, markedAsDone) {
+      await this.updateAllQueries(false);
+      this.showUndoToast(id, markedAsDone);
+    },
+    showUndoToast(todoId, markedAsDone) {
+      const message = markedAsDone ? s__('Todos|Marked as done') : s__('Todos|Marked as undone');
+      const mutation = markedAsDone ? markAsPendingMutation : markAsDoneMutation;
+
+      const { hide } = this.$toast.show(message, {
+        action: {
+          text: s__('Todos|Undo'),
+          onClick: async () => {
+            hide();
+            await this.$apollo.mutate({ mutation, variables: { todoId } });
+            this.updateAllQueries(false);
+          },
+        },
+      });
+    },
     updateCounts() {
       this.$apollo.queries.pendingTodosCount.refetch();
+    },
+    async updateAllQueries(showLoading = true) {
+      this.showSpinnerWhileLoading = showLoading;
+      this.updateCounts();
+      await this.$apollo.queries.todos.refetch();
+      this.showSpinnerWhileLoading = true;
     },
   },
 };
@@ -184,15 +216,17 @@ export default {
 
     <div>
       <div class="gl-flex gl-flex-col">
-        <gl-loading-icon v-if="isLoading" size="lg" class="gl-mt-5" />
+        <gl-loading-icon v-if="isLoading && showSpinnerWhileLoading" size="lg" class="gl-mt-5" />
         <ul v-else class="gl-m-0 gl-border-collapse gl-list-none gl-p-0">
-          <todo-item
-            v-for="todo in todos"
-            :key="todo.id"
-            :todo="todo"
-            :current-user-id="currentUserId"
-            :fade-done-todo="fadeDoneTodo"
-          />
+          <transition-group name="todos">
+            <todo-item
+              v-for="todo in todos"
+              :key="todo.id"
+              :todo="todo"
+              :current-user-id="currentUserId"
+              @change="handleItemChanged"
+            />
+          </transition-group>
         </ul>
 
         <todos-empty-state v-if="showEmptyState" :is-filtered="isFiltered" />
@@ -214,3 +248,17 @@ export default {
     </div>
   </div>
 </template>
+
+<style>
+.todos-leave-active {
+  transition: transform 0.15s ease-out;
+  position: absolute;
+}
+.todos-leave-to {
+  opacity: 0;
+  transform: translateY(-100px);
+}
+.todos-move {
+  transition: transform 0.15s ease-out;
+}
+</style>

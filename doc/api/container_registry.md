@@ -231,6 +231,9 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
 
 Get a list of tags for given registry repository.
 
+NOTE:
+Offset pagination is deprecated and keyset pagination is now the preferred pagination method.
+
 ```plaintext
 GET /projects/:id/registry/repositories/:repository_id/tags
 ```

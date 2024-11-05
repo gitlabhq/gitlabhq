@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Resolvers::TodosResolver, feature_category: :team_planning do
+RSpec.describe Resolvers::TodosResolver, feature_category: :notifications do
   include GraphqlHelpers
   include DesignManagementTestHelpers
 

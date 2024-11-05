@@ -233,7 +233,6 @@ Rails/Pluck:
     - 'spec/requests/groups/autocomplete_sources_spec.rb'
     - 'spec/requests/groups/milestones_controller_spec.rb'
     - 'spec/requests/lfs_http_spec.rb'
-    - 'spec/serializers/ci/dag_pipeline_entity_spec.rb'
     - 'spec/serializers/ci/pipeline_entity_spec.rb'
     - 'spec/serializers/diff_file_entity_spec.rb'
     - 'spec/serializers/stage_entity_spec.rb'

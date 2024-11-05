@@ -1,4 +1,3 @@
-// write jest specs in this file, for the component in the todo_item_body.vue file
 import { shallowMount } from '@vue/test-utils';
 import { GlLink, GlAvatar, GlAvatarLink } from '@gitlab/ui';
 import TodoItemBody from '~/todos/components/todo_item_body.vue';

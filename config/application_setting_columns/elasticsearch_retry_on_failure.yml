@@ -5,7 +5,8 @@ clusterwide: false
 column: elasticsearch_retry_on_failure
 db_type: integer
 default: '0'
-description: Maximum number of possible retries for Elasticsearch search requests. Premium and Ultimate only.
+description: Maximum number of possible retries for Elasticsearch search requests.
+  Premium and Ultimate only.
 encrypted: false
 gitlab_com_different_than_default: false
 jihu: false

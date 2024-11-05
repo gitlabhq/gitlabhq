@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Todo, feature_category: :team_planning do
+RSpec.describe Todo, feature_category: :notifications do
   let(:issue) { create(:issue) }
 
   describe 'relationships' do

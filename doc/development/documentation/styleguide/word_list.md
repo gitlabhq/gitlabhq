@@ -2073,7 +2073,7 @@ Searching is different from [filtering](#filter).
 
 When referring to the subscription billing model:
 
-- For GitLab SaaS, use **seats**. Customers purchase seats. Users occupy seats when they are invited
+- For GitLab.com, use **seats**. Customers purchase seats. Users occupy seats when they are invited
   to a group, with some [exceptions](../../../subscriptions/gitlab_com/index.md#how-seat-usage-is-determined).
 - For GitLab self-managed, use **users**. Customers purchase subscriptions for a specified number of **users**.
 

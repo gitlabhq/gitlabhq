@@ -500,26 +500,6 @@ You can configure a custom limit on self-managed instances with the `scan_execut
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
-### List container registry repository tags API endpoint pagination
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">16.10</span>
-- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/432470).
-
-</div>
-
-You can use the container registry REST API to [get a list of registry repository tags](https://docs.gitlab.com/ee/api/container_registry.html#list-registry-repository-tags). We plan to improve this endpoint, adding more metadata and new features like improved sorting and filtering.
-
-While offset-based pagination was already available for this endpoint, keyset-based pagination was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/432470) in GitLab 16.10 for GitLab.com only. This is now the preferred pagination method.
-
-Offset-based pagination for the [List registry repository tags](https://docs.gitlab.com/ee/api/container_registry.html#list-registry-repository-tags) endpoint is deprecated in GitLab 16.10 and will be removed in 18.0. Instead, use the keyset-based pagination.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="18.0">
-
 ### OpenTofu CI/CD template
 
 <div class="deprecation-notes">

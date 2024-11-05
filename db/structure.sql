@@ -22005,7 +22005,8 @@ CREATE TABLE zoekt_indices (
     zoekt_replica_id bigint,
     reserved_storage_bytes bigint DEFAULT '10737418240'::bigint,
     used_storage_bytes bigint DEFAULT 0 NOT NULL,
-    watermark_level smallint DEFAULT 0 NOT NULL
+    watermark_level smallint DEFAULT 0 NOT NULL,
+    metadata jsonb DEFAULT '{}'::jsonb NOT NULL
 );
 
 CREATE SEQUENCE zoekt_indices_id_seq

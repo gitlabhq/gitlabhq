@@ -331,19 +331,18 @@ module Ci
     end
 
     def runner_matcher
-      strong_memoize(:runner_matcher) do
-        Gitlab::Ci::Matching::RunnerMatcher.new({
-          runner_ids: [id],
-          runner_type: runner_type,
-          public_projects_minutes_cost_factor: public_projects_minutes_cost_factor,
-          private_projects_minutes_cost_factor: private_projects_minutes_cost_factor,
-          run_untagged: run_untagged,
-          access_level: access_level,
-          tag_list: tag_list,
-          allowed_plan_ids: allowed_plan_ids
-        })
-      end
+      Gitlab::Ci::Matching::RunnerMatcher.new({
+        runner_ids: [id],
+        runner_type: runner_type,
+        public_projects_minutes_cost_factor: public_projects_minutes_cost_factor,
+        private_projects_minutes_cost_factor: private_projects_minutes_cost_factor,
+        run_untagged: run_untagged,
+        access_level: access_level,
+        tag_list: tag_list,
+        allowed_plan_ids: allowed_plan_ids
+      })
     end
+    strong_memoize_attr :runner_matcher
 
     def assign_to(project, current_user = nil)
       if instance_type?
@@ -354,7 +353,11 @@ module Ci
 
       begin
         transaction do
-          self.sharding_key_id = project.id if self.runner_projects.empty?
+          if self.runner_projects.empty?
+            self.sharding_key_id = project.id
+            self.clear_memoization(:owner)
+          end
+
           self.runner_projects << ::Ci::RunnerProject.new(project: project, runner: self)
           self.save!
         end
@@ -384,14 +387,20 @@ module Ci
       end
     end
 
-    def owner_project
-      return unless project_type?
-
-      runner_projects.order(:id).first&.project
+    def owner
+      case runner_type
+      when 'instance_type'
+        ::User.find_by_id(creator_id)
+      when 'group_type'
+        ::Group.find_by_id(sharding_key_id)
+      when 'project_type'
+        ::Project.find_by_id(sharding_key_id)
+      end
     end
+    strong_memoize_attr :owner
 
     def belongs_to_one_project?
-      runner_projects.count == 1
+      runner_projects.limit(2).count(:all) == 1
     end
 
     def belongs_to_more_than_one_project?
@@ -497,10 +506,9 @@ module Ci
     end
 
     def namespace_ids
-      strong_memoize(:namespace_ids) do
-        runner_namespaces.pluck(:namespace_id).compact
-      end
+      runner_namespaces.pluck(:namespace_id).compact
     end
+    strong_memoize_attr :namespace_ids
 
     def compute_token_expiration
       case runner_type

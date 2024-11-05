@@ -17,7 +17,7 @@ module Gitlab
           return true unless modified_paths
           return false if modified_paths.empty?
 
-          expanded_globs = expand_globs(context).uniq
+          expanded_globs = expand_globs(context, pipeline).uniq
           return false if expanded_globs.empty?
 
           cache_key = [
@@ -43,11 +43,17 @@ module Gitlab
           end
         end
 
-        def expand_globs(context)
+        def expand_globs(context, pipeline)
           return paths unless context
 
-          paths.map do |glob|
-            ExpandVariables.expand_existing(glob, -> { context.variables_hash })
+          if Feature.enabled?(:expand_nested_variables_in_job_rules_exists_and_changes, pipeline.project)
+            paths.map do |glob|
+              expand_value_nested(glob, context)
+            end
+          else
+            paths.map do |glob|
+              expand_value(glob, context)
+            end
           end
         end
 
@@ -70,11 +76,24 @@ module Gitlab
         def find_compare_to_sha(pipeline, context)
           return unless @globs.include?(:compare_to)
 
-          compare_to = ExpandVariables.expand(@globs[:compare_to], -> { context.variables_hash })
+          compare_to = if Feature.enabled?(:expand_nested_variables_in_job_rules_exists_and_changes, pipeline.project)
+                         expand_value_nested(@globs[:compare_to], context)
+                       else
+                         expand_value(@globs[:compare_to], context)
+                       end
+
           commit = pipeline.project.commit(compare_to)
           raise Rules::Rule::Clause::ParseError, 'rules:changes:compare_to is not a valid ref' unless commit
 
           commit.sha
+        end
+
+        def expand_value(value, context)
+          ExpandVariables.expand_existing(value, -> { context.variables_hash })
+        end
+
+        def expand_value_nested(value, context)
+          ExpandVariables.expand_existing(value, -> { context.variables_hash_expanded })
         end
       end
     end

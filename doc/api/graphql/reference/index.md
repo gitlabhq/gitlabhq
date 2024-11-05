@@ -12441,6 +12441,30 @@ The edge type for [`CiMinutesProjectMonthlyUsage`](#ciminutesprojectmonthlyusage
 | <a id="ciminutesprojectmonthlyusageedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="ciminutesprojectmonthlyusageedgenode"></a>`node` | [`CiMinutesProjectMonthlyUsage`](#ciminutesprojectmonthlyusage) | The item at the end of the edge. |
 
+#### `CiProjectSubscriptionConnection`
+
+The connection type for [`CiProjectSubscription`](#ciprojectsubscription).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="ciprojectsubscriptionconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
+| <a id="ciprojectsubscriptionconnectionedges"></a>`edges` | [`[CiProjectSubscriptionEdge]`](#ciprojectsubscriptionedge) | A list of edges. |
+| <a id="ciprojectsubscriptionconnectionnodes"></a>`nodes` | [`[CiProjectSubscription]`](#ciprojectsubscription) | A list of nodes. |
+| <a id="ciprojectsubscriptionconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `CiProjectSubscriptionEdge`
+
+The edge type for [`CiProjectSubscription`](#ciprojectsubscription).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="ciprojectsubscriptionedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="ciprojectsubscriptionedgenode"></a>`node` | [`CiProjectSubscription`](#ciprojectsubscription) | The item at the end of the edge. |
+
 #### `CiProjectVariableConnection`
 
 The connection type for [`CiProjectVariable`](#ciprojectvariable).
@@ -19990,6 +20014,17 @@ CI/CD variables given to a manual job.
 | <a id="ciminutesprojectmonthlyusageproject"></a>`project` | [`Project`](#project) | Project having the recorded usage. |
 | <a id="ciminutesprojectmonthlyusagesharedrunnersduration"></a>`sharedRunnersDuration` | [`Int`](#int) | Total duration (in seconds) of shared runners use by the project for the month. |
 
+### `CiProjectSubscription`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="ciprojectsubscriptionauthor"></a>`author` | [`UserCore`](#usercore) | Author of the subscription. |
+| <a id="ciprojectsubscriptiondownstreamproject"></a>`downstreamProject` | [`CiSubscriptionsProjectDetails`](#cisubscriptionsprojectdetails) | Downstream project of the subscription.When an upstream project's pipeline completes, a pipeline is triggered in the downstream project. |
+| <a id="ciprojectsubscriptionid"></a>`id` | [`CiSubscriptionsProjectID`](#cisubscriptionsprojectid) | Global ID of the subscription. |
+| <a id="ciprojectsubscriptionupstreamproject"></a>`upstreamProject` | [`CiSubscriptionsProjectDetails`](#cisubscriptionsprojectdetails) | Upstream project of the subscription.When an upstream project's pipeline completes, a pipeline is triggered in the downstream project. |
+
 ### `CiProjectVariable`
 
 CI/CD variables for a project.
@@ -20289,6 +20324,26 @@ Represents the Geo replication and verification state of a ci_secure_file.
 | <a id="cisubscriptionsprojectdownstreamproject"></a>`downstreamProject` | [`Project`](#project) | Downstream project of the subscription. |
 | <a id="cisubscriptionsprojectid"></a>`id` | [`CiSubscriptionsProjectID`](#cisubscriptionsprojectid) | Global ID of the subscription. |
 | <a id="cisubscriptionsprojectupstreamproject"></a>`upstreamProject` | [`Project`](#project) | Upstream project of the subscription. |
+
+### `CiSubscriptionsProjectDetails`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cisubscriptionsprojectdetailsid"></a>`id` | [`ID!`](#id) | ID of the project. |
+| <a id="cisubscriptionsprojectdetailsname"></a>`name` | [`ID!`](#id) | Full path of the project. |
+| <a id="cisubscriptionsprojectdetailsnamespace"></a>`namespace` | [`CiSubscriptionsProjectNamespaceDetails!`](#cisubscriptionsprojectnamespacedetails) | Namespace of the project. |
+| <a id="cisubscriptionsprojectdetailsweburl"></a>`webUrl` | [`String`](#string) | Web URL of the project. |
+
+### `CiSubscriptionsProjectNamespaceDetails`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cisubscriptionsprojectnamespacedetailsid"></a>`id` | [`ID!`](#id) | ID of the project. |
+| <a id="cisubscriptionsprojectnamespacedetailsname"></a>`name` | [`ID!`](#id) | Full path of the project. |
 
 ### `CiTemplate`
 
@@ -30567,10 +30622,12 @@ Project-level settings for product analytics provider.
 | <a id="projectciaccessauthorizedagents"></a>`ciAccessAuthorizedAgents` | [`ClusterAgentAuthorizationCiAccessConnection`](#clusteragentauthorizationciaccessconnection) | Authorized cluster agents for the project through ci_access keyword. (see [Connections](#connections)) |
 | <a id="projectcicdsettings"></a>`ciCdSettings` | [`ProjectCiCdSetting`](#projectcicdsetting) | CI/CD settings for the project. |
 | <a id="projectciconfigpathordefault"></a>`ciConfigPathOrDefault` | [`String!`](#string) | Path of the CI configuration file. |
+| <a id="projectcidownstreamprojectsubscriptions"></a>`ciDownstreamProjectSubscriptions` **{warning-solid}** | [`CiProjectSubscriptionConnection`](#ciprojectsubscriptionconnection) | **Introduced** in GitLab 17.6. **Status**: Experiment. Pipeline subscriptions where this project is the upstream project.When this project's pipeline completes, a pipeline is triggered in the downstream project. |
 | <a id="projectcijobtokenauthlogs"></a>`ciJobTokenAuthLogs` **{warning-solid}** | [`CiJobTokenAuthLogConnection`](#cijobtokenauthlogconnection) | **Introduced** in GitLab 17.6. **Status**: Experiment. The CI Job Tokens authorization logs. |
 | <a id="projectcijobtokenscope"></a>`ciJobTokenScope` | [`CiJobTokenScopeType`](#cijobtokenscopetype) | The CI Job Tokens scope of access. |
-| <a id="projectcisubscribedprojects"></a>`ciSubscribedProjects` | [`CiSubscriptionsProjectConnection`](#cisubscriptionsprojectconnection) | Pipeline subscriptions for projects subscribed to the project. (see [Connections](#connections)) |
-| <a id="projectcisubscriptionsprojects"></a>`ciSubscriptionsProjects` | [`CiSubscriptionsProjectConnection`](#cisubscriptionsprojectconnection) | Pipeline subscriptions for the project. (see [Connections](#connections)) |
+| <a id="projectcisubscribedprojects"></a>`ciSubscribedProjects` **{warning-solid}** | [`CiSubscriptionsProjectConnection`](#cisubscriptionsprojectconnection) | **Deprecated** in GitLab 17.6. Use `ciDownstreamProjectSubscriptions`. |
+| <a id="projectcisubscriptionsprojects"></a>`ciSubscriptionsProjects` **{warning-solid}** | [`CiSubscriptionsProjectConnection`](#cisubscriptionsprojectconnection) | **Deprecated** in GitLab 17.6. Use `ciUpstreamProjectSubscriptions`. |
+| <a id="projectciupstreamprojectsubscriptions"></a>`ciUpstreamProjectSubscriptions` **{warning-solid}** | [`CiProjectSubscriptionConnection`](#ciprojectsubscriptionconnection) | **Introduced** in GitLab 17.6. **Status**: Experiment. Pipeline subscriptions where this project is the downstream project.When an upstream project's pipeline completes, a pipeline is triggered in the downstream project (this project). |
 | <a id="projectcodecoveragesummary"></a>`codeCoverageSummary` | [`CodeCoverageSummary`](#codecoveragesummary) | Code coverage summary associated with the project. |
 | <a id="projectcomplianceframeworks"></a>`complianceFrameworks` | [`ComplianceFrameworkConnection`](#complianceframeworkconnection) | Compliance frameworks associated with the project. (see [Connections](#connections)) |
 | <a id="projectcontainerexpirationpolicy"></a>`containerExpirationPolicy` **{warning-solid}** | [`ContainerExpirationPolicy`](#containerexpirationpolicy) | **Deprecated** in GitLab 17.5. Use `container_tags_expiration_policy`. |

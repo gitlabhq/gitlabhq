@@ -227,7 +227,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
           script: echo Hello, World!
           rules:
             - exists:
-              - $VAR_NESTED # does not match because of https://gitlab.com/gitlab-org/gitlab/-/issues/411344
+              - $VAR_NESTED
         YAML
       end
 
@@ -247,7 +247,18 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
 
         it 'creates all relevant jobs' do
           expect(pipeline).to be_persisted
-          expect(build_names).to contain_exactly('job1', 'job2')
+          expect(build_names).to contain_exactly('job1', 'job2', 'job4')
+        end
+
+        context 'when expand_nested_variables_in_job_rules_exists_and_changes is disabled' do
+          before do
+            stub_feature_flags(expand_nested_variables_in_job_rules_exists_and_changes: false)
+          end
+
+          it 'creates all relevant jobs' do
+            expect(pipeline).to be_persisted
+            expect(build_names).to contain_exactly('job1', 'job2')
+          end
         end
       end
     end
@@ -808,6 +819,10 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
                 VALID_BRANCH_NAME: feature_1
                 FEATURE_BRANCH_NAME_PREFIX: feature_
                 INVALID_BRANCH_NAME: invalid-branch
+                VALID_FILENAME: file2.txt
+                INVALID_FILENAME: file1.txt
+                VALID_BASENAME: file2
+                VALID_NESTED_VARIABLE: ${VALID_BASENAME}.txt
               job1:
                 script: exit 0
                 rules:
@@ -855,6 +870,52 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
                 expect(pipeline.errors.full_messages).to eq(
                   ['Failed to parse rule for job1: rules:changes:compare_to is not a valid ref']
                 )
+              end
+            end
+
+            context 'when paths is defined by a variable' do
+              let(:compare_to) { '${VALID_BRANCH_NAME}' }
+
+              context 'when the variable does not exist' do
+                let(:changed_file) { '$NON_EXISTENT_VAR' }
+
+                it 'does not create job1' do
+                  expect(build_names).to contain_exactly('job2')
+                end
+              end
+
+              context 'when the variable contains a matching filename' do
+                let(:changed_file) { '$VALID_FILENAME' }
+
+                it 'creates both jobs' do
+                  expect(build_names).to contain_exactly('job1', 'job2')
+                end
+              end
+
+              context 'when the variable does not contain a matching filename' do
+                let(:changed_file) { '$INVALID_FILENAME' }
+
+                it 'does not create job1' do
+                  expect(build_names).to contain_exactly('job2')
+                end
+              end
+
+              context 'when the variable is nested and contains a matching filename' do
+                let(:changed_file) { '$VALID_NESTED_VARIABLE' }
+
+                it 'creates both jobs' do
+                  expect(build_names).to contain_exactly('job1', 'job2')
+                end
+
+                context 'when expand_nested_variables_in_job_rules_exists_and_changes is disabled' do
+                  before do
+                    stub_feature_flags(expand_nested_variables_in_job_rules_exists_and_changes: false)
+                  end
+
+                  it 'does not create job1' do
+                    expect(build_names).to contain_exactly('job2')
+                  end
+                end
               end
             end
           end

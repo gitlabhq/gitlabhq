@@ -168,4 +168,12 @@ RSpec.describe Gitlab::Ci::Build::Context::Build, feature_category: :pipeline_co
 
     it_behaves_like 'variables collection'
   end
+
+  describe '#variables_hash_expanded' do
+    subject { context.variables_hash_expanded }
+
+    it { expect(context.variables_hash_expanded).to be_instance_of(ActiveSupport::HashWithIndifferentAccess) }
+
+    it_behaves_like 'variables collection'
+  end
 end
