@@ -191,7 +191,7 @@ class Namespace < ApplicationRecord
   delegate :math_rendering_limits_enabled?,
     :lock_math_rendering_limits_enabled?,
     to: :namespace_settings
-  delegate :add_creator, :pending_delete, :pending_delete=,
+  delegate :add_creator, :pending_delete, :pending_delete=, :deleted_at, :deleted_at=,
     to: :namespace_details
 
   before_create :sync_share_with_group_lock_with_parent
@@ -210,7 +210,7 @@ class Namespace < ApplicationRecord
       saved_change_to_name?) || saved_change_to_path? || saved_change_to_parent_id?
   }
 
-  scope :without_deleted, -> { joins(:namespace_details).where(namespace_details: { pending_delete: false }) }
+  scope :without_deleted, -> { joins(:namespace_details).where(namespace_details: { deleted_at: nil }) }
   scope :user_namespaces, -> { where(type: Namespaces::UserNamespace.sti_name) }
   scope :group_namespaces, -> { where(type: Group.sti_name) }
   scope :without_project_namespaces, -> { where(Namespace.arel_table[:type].not_eq(Namespaces::ProjectNamespace.sti_name)) }
@@ -748,6 +748,10 @@ class Namespace < ApplicationRecord
   # there is no service desk feature for group level items
   def service_desk_alias_address
     nil
+  end
+
+  def deleted?
+    !!deleted_at
   end
 
   private

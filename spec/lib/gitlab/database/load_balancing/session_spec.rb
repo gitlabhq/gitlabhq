@@ -3,6 +3,47 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::LoadBalancing::Session do
+  after do
+    described_class.clear_session
+  end
+
+  describe '.current' do
+    it 'returns the current session' do
+      expect(described_class.current).to be_an_instance_of(described_class)
+    end
+  end
+
+  describe '.clear_session' do
+    it 'clears the current session' do
+      described_class.current
+      described_class.clear_session
+
+      expect(RequestStore[described_class::CACHE_KEY]).to be_nil
+    end
+  end
+
+  describe '.without_sticky_writes' do
+    it 'ignores sticky write events sent by a connection proxy' do
+      described_class.without_sticky_writes do
+        described_class.current.write!
+      end
+
+      session = described_class.current
+
+      expect(session).not_to be_using_primary
+    end
+
+    it 'still is aware of write that happened' do
+      described_class.without_sticky_writes do
+        described_class.current.write!
+      end
+
+      session = described_class.current
+
+      expect(session.performed_write?).to be true
+    end
+  end
+
   describe '#use_primary?' do
     it 'returns true when the primary should be used' do
       instance = described_class.new

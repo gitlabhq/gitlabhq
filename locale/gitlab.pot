@@ -30824,6 +30824,9 @@ msgstr ""
 msgid "JiraService|If you access Jira issues in GitLab, you might want to %{link_start}disable GitLab issues%{link_end}."
 msgstr ""
 
+msgid "JiraService|Jira"
+msgstr ""
+
 msgid "JiraService|Jira API URL"
 msgstr ""
 

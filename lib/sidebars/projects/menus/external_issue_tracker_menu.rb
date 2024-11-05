@@ -20,6 +20,8 @@ module Sidebars
 
         override :title
         def title
+          return s_('JiraService|Jira') if external_issue_tracker.is_a?(Integrations::Jira)
+
           external_issue_tracker.title
         end
 

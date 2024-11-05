@@ -37,7 +37,7 @@ iterations of the GitLab Jira importer.
 
 - To be able to import issues from a Jira project you must have read access on Jira
   issues and at least the Maintainer role for the GitLab project that you wish to import into.
-- This feature uses the existing GitLab [Jira integration](../../../integration/jira/index.md).
+- This feature uses the existing GitLab [Jira issue integration](../../../integration/jira/index.md).
   Make sure you have the integration set up before trying to import Jira issues.
 
 ## Import Jira issues to GitLab
@@ -56,7 +56,7 @@ To import Jira issues to a GitLab project:
    The **Import from Jira** option is only visible if you have the [correct permissions](#prerequisites).
 
    The following form appears.
-   If you've previously set up the [Jira integration](../../../integration/jira/index.md), you can now see
+   If you've previously set up the [Jira issues integration](../../../integration/jira/index.md), you can now see
    the Jira projects that you have access to in the dropdown list.
 
    ![Import issues from Jira form](img/jira/import_issues_from_jira_form_v13_2.png)

@@ -28,7 +28,6 @@ describe('Merge request merge checks message component', () => {
     ${'approvals_syncing'}          | ${'The merge request approvals are currently syncing.'}
     ${'locked_paths'}               | ${'All paths must be unlocked'}
     ${'locked_lfs_files'}           | ${'All LFS files must be unlocked.'}
-    ${'security_policy_evaluation'} | ${'All security policies must be evaluated.'}
     ${'security_policy_violations'} | ${'All policy rules must be satisfied.'}
   `('renders failure reason text', ({ identifier, expectedText }) => {
     factory({ check: { status: 'success', identifier } });

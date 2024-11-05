@@ -1323,14 +1323,14 @@ Get the JetBrains TeamCity integration settings for a project.
 GET /projects/:id/integrations/teamcity
 ```
 
-## Jira
+## Jira issues
 
 > - `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a flag](../administration/feature_flags.md) named `integration_api_inheritance`. Disabled by default.
 > - `use_inherited_settings` parameter [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/467186) in GitLab 17.3. Feature flag `integration_api_inheritance` removed.
 
-### Set up Jira
+### Set up Jira issues
 
-Set up the Jira integration for a project.
+Set up the [Jira issues integration](../integration/jira/configure.md) for a project.
 
 ```plaintext
 PUT /projects/:id/integrations/jira
@@ -1359,7 +1359,7 @@ Parameters:
 
 ### Disable Jira
 
-Disable the Jira integration for a project. Integration settings are reset.
+Disable the Jira issues integration for a project. Integration settings are reset.
 
 ```plaintext
 DELETE /projects/:id/integrations/jira
@@ -1367,7 +1367,7 @@ DELETE /projects/:id/integrations/jira
 
 ### Get Jira settings
 
-Get the Jira integration settings for a project.
+Get the Jira issues integration settings for a project.
 
 ```plaintext
 GET /projects/:id/integrations/jira

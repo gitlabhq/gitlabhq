@@ -486,7 +486,6 @@ RSpec/BeEq:
     - 'ee/spec/services/merge_requests/mergeability/check_jira_status_service_spec.rb'
     - 'ee/spec/services/merge_requests/mergeability/check_path_locks_service_spec.rb'
     - 'ee/spec/services/merge_requests/mergeability/check_requested_changes_service_spec.rb'
-    - 'ee/spec/services/merge_requests/mergeability/check_security_policy_evaluation_service_spec.rb'
     - 'ee/spec/services/merge_requests/mergeability/check_security_policy_violations_service_spec.rb'
     - 'ee/spec/services/merge_requests/sync_code_owner_approval_rules_spec.rb'
     - 'ee/spec/services/merge_trains/refresh_merge_request_service_spec.rb'

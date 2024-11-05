@@ -4,13 +4,15 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Jira issue integration
+# Jira issues integration
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-The Jira issue integration connects one or more GitLab projects to a Jira instance.
+> - Name [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166555) to Jira issues integration in GitLab 17.6.
+
+The Jira issues integration connects one or more GitLab projects to a Jira instance.
 You can host the Jira instance yourself or in [Jira Cloud](https://www.atlassian.com/migration/assess/why-cloud).
 The supported Jira versions are `6.x`, `7.x`, `8.x`, and `9.x`.
 
@@ -35,7 +37,7 @@ Prerequisites:
   - [Jira username and password](jira_server_configuration.md).
   - Jira personal access token (GitLab 16.0 and later).
 
-You can enable the Jira issue integration by configuring your project settings in GitLab.
+You can enable the Jira issues integration by configuring your project settings in GitLab.
 You can also configure the integration for a specific
 [group](../../user/project/integrations/index.md#manage-group-default-settings-for-a-project-integration) or an entire
 [instance](../../administration/settings/project_integration_management.md#manage-instance-level-default-settings-for-a-project-integration)
@@ -46,7 +48,7 @@ To configure your project settings in GitLab:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Integrations**.
-1. Select **Jira**.
+1. Select **Jira issues**.
 1. Under **Enable integration**, select the **Active** checkbox.
 1. Provide connection details:
    - **Web URL**: Base URL for the Jira instance web interface you're linking
@@ -110,7 +112,7 @@ DETAILS:
 
 Prerequisites:
 
-- Ensure the Jira issue integration is [configured](#configure-the-integration)
+- Ensure the Jira issues integration is [configured](#configure-the-integration)
   and the **View Jira issues** checkbox is selected.
 
 You can enable Jira issues for a specific group or project, but you can view the issues in GitLab projects only.
@@ -140,7 +142,7 @@ DETAILS:
 
 Prerequisites:
 
-- Ensure the Jira issue integration is [configured](#configure-the-integration)
+- Ensure the Jira issues integration is [configured](#configure-the-integration)
   and the **View Jira issues** checkbox is selected.
 
 When you [view Jira issues](#view-jira-issues) in GitLab,
@@ -166,7 +168,7 @@ DETAILS:
 
 Prerequisites:
 
-- Ensure the Jira issue integration is [configured](#configure-the-integration)
+- Ensure the Jira issues integration is [configured](#configure-the-integration)
   and the **Create Jira issues for vulnerabilities** checkbox is selected.
 - You must have a Jira user account with permission to create issues in the target project.
 
@@ -186,7 +188,7 @@ To create a GitLab issue, see [Create a GitLab issue for a vulnerability](../../
 
 ## Create a Jira Cloud API token
 
-To configure the Jira issue integration for Jira Cloud, you must have a Jira Cloud API token.
+To configure the Jira issues integration for Jira Cloud, you must have a Jira Cloud API token.
 To create a Jira Cloud API token:
 
 1. Sign in to [Atlassian](https://id.atlassian.com/manage-profile/security/api-tokens)
@@ -202,11 +204,13 @@ To copy the API token, select **Copy**.
 
 ## Migrate from Jira Server to Jira Cloud
 
-To migrate from Jira Server to Jira Cloud in GitLab and maintain your Jira integration:
+> - Integration name [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166555) to **Jira issues** in GitLab 17.6.
+
+To migrate from Jira Server to Jira Cloud in GitLab and maintain your Jira issues integration:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Integrations**.
-1. Select **Jira**.
+1. Select **Jira issues**.
 1. In **Web URL**, enter the new Jira site URL (for example, `https://myjirasite.atlassian.net`).
 1. In **Email or username**, enter the email registered on your Jira profile.
 1. [Create a Jira Cloud API token](#create-a-jira-cloud-api-token), and copy the token value.

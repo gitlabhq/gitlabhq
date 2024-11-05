@@ -10,7 +10,7 @@ module Gitlab
 
       def self.for_tables(tables)
         Gitlab::Database::LoadBalancing::SessionMap
-          .current(load_balancer)
+          .current(connection.load_balancer)
           .use_primary do
           # calling `.to_a` here to execute the query in the primary's scope
           # and to avoid having the scope chained and re-executed

@@ -532,7 +532,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
 
     describe '.without_deleted' do
       before do
-        namespace1.namespace_details.update!(pending_delete: true)
+        namespace1.namespace_details.update!(deleted_at: Time.current)
       end
 
       it 'does not include namespace marked as deleted' do
@@ -673,6 +673,8 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     it { is_expected.to delegate_method(:add_creator).to(:namespace_details) }
     it { is_expected.to delegate_method(:pending_delete).to(:namespace_details) }
     it { is_expected.to delegate_method(:pending_delete=).to(:namespace_details).with_arguments(:args) }
+    it { is_expected.to delegate_method(:deleted_at).to(:namespace_details) }
+    it { is_expected.to delegate_method(:deleted_at=).to(:namespace_details).with_arguments(:args) }
 
     it do
       is_expected.to delegate_method(:prevent_sharing_groups_outside_hierarchy=).to(:namespace_settings)

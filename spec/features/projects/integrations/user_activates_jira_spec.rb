@@ -20,7 +20,7 @@ RSpec.describe 'User activates Jira', :js, feature_category: :integrations do
       end
 
       it 'activates the Jira integration' do
-        expect(page).to have_content('Jira settings saved and active.')
+        expect(page).to have_content('Jira issues settings saved and active.')
         expect(page).to have_current_path(edit_project_settings_integration_path(project, :jira), ignore_query: true)
       end
 
@@ -58,7 +58,7 @@ RSpec.describe 'User activates Jira', :js, feature_category: :integrations do
         fill_form
         click_test_then_save_integration
 
-        expect(page).to have_content('Jira settings saved and active.')
+        expect(page).to have_content('Jira issues settings saved and active.')
         expect(page).to have_current_path(edit_project_settings_integration_path(project, :jira), ignore_query: true)
       end
     end
@@ -75,7 +75,7 @@ RSpec.describe 'User activates Jira', :js, feature_category: :integrations do
     end
 
     it 'saves but does not activate the Jira integration' do
-      expect(page).to have_content('Jira settings saved, but not active.')
+      expect(page).to have_content('Jira issues settings saved, but not active.')
       expect(page).to have_current_path(edit_project_settings_integration_path(project, :jira), ignore_query: true)
     end
 
@@ -108,7 +108,7 @@ RSpec.describe 'User activates Jira', :js, feature_category: :integrations do
       fill_in 'service[jira_issue_transition_id]', with: '1, 2, 3'
       click_save_integration
 
-      expect(page).to have_content('Jira settings saved and active.')
+      expect(page).to have_content('Jira issues settings saved and active.')
       expect(project.reload.jira_integration.data_fields).to have_attributes(
         jira_issue_transition_automatic: false,
         jira_issue_transition_id: '1, 2, 3'
@@ -126,7 +126,7 @@ RSpec.describe 'User activates Jira', :js, feature_category: :integrations do
       choose 'Move to Done'
       click_save_integration
 
-      expect(page).to have_content('Jira settings saved and active.')
+      expect(page).to have_content('Jira issues settings saved and active.')
       expect(project.reload.jira_integration.data_fields).to have_attributes(
         jira_issue_transition_automatic: true,
         jira_issue_transition_id: ''
@@ -143,7 +143,7 @@ RSpec.describe 'User activates Jira', :js, feature_category: :integrations do
       uncheck 'Enable Jira transitions'
       click_save_integration
 
-      expect(page).to have_content('Jira settings saved and active.')
+      expect(page).to have_content('Jira issues settings saved and active.')
       expect(project.reload.jira_integration.data_fields).to have_attributes(
         jira_issue_transition_automatic: false,
         jira_issue_transition_id: ''
