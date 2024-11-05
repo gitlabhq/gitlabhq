@@ -3967,6 +3967,7 @@ Input type: `CustomFieldCreateInput`
 | <a id="mutationcustomfieldcreatefieldtype"></a>`fieldType` | [`CustomFieldType!`](#customfieldtype) | Type of custom field. |
 | <a id="mutationcustomfieldcreategrouppath"></a>`groupPath` | [`ID!`](#id) | Group path where the custom field is created. |
 | <a id="mutationcustomfieldcreatename"></a>`name` | [`String!`](#string) | Name of the custom field. |
+| <a id="mutationcustomfieldcreateselectoptions"></a>`selectOptions` | [`[CustomFieldSelectOptionInput!]`](#customfieldselectoptioninput) | Available options for a select field. |
 
 #### Fields
 
@@ -3991,6 +3992,7 @@ Input type: `CustomFieldUpdateInput`
 | <a id="mutationcustomfieldupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationcustomfieldupdateid"></a>`id` | [`IssuablesCustomFieldID!`](#issuablescustomfieldid) | Global ID of the custom field. |
 | <a id="mutationcustomfieldupdatename"></a>`name` | [`String!`](#string) | Name of the custom field. |
+| <a id="mutationcustomfieldupdateselectoptions"></a>`selectOptions` | [`[CustomFieldSelectOptionInput!]`](#customfieldselectoptioninput) | Available options for a select field. |
 
 #### Fields
 
@@ -43096,6 +43098,17 @@ Attributes for defining a CI/CD variable.
 | <a id="complianceviolationprojectinputmergedafter"></a>`mergedAfter` | [`Date`](#date) | Merge requests merged after the date (inclusive). |
 | <a id="complianceviolationprojectinputmergedbefore"></a>`mergedBefore` | [`Date`](#date) | Merge requests merged before the date (inclusive). |
 | <a id="complianceviolationprojectinputtargetbranch"></a>`targetBranch` | [`String`](#string) | Filter compliance violations by target branch. |
+
+### `CustomFieldSelectOptionInput`
+
+Attributes for the custom field select option.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="customfieldselectoptioninputid"></a>`id` | [`IssuablesCustomFieldSelectOptionID`](#issuablescustomfieldselectoptionid) | Global ID of the custom field select option to update. Creates a new record if not provided. |
+| <a id="customfieldselectoptioninputvalue"></a>`value` | [`String!`](#string) | Value of the custom field select option. |
 
 ### `DastProfileCadenceInput`
 

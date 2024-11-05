@@ -30,7 +30,7 @@
     %label.col-form-label{ for: 'personal_access_token' }= _('Personal access token')
     = hidden_field_tag(:namespace_id, params[:namespace_id])
     = password_field_tag :personal_access_token, '', class: 'form-control gl-form-input', placeholder: _('e.g. %{token}') % { token: '8d3f016698e...' }, data: { testid: 'personal-access-token-field' }
-    %span.form-text.gl-text-gray-600
+    %span.form-text.gl-text-subtle
       - code_pair = tag_pair(tag.code, :code_start, :code_end)
       - github_link_tag_pair = tag_pair(link_to('', 'https://github.com/settings/tokens', target: '_blank', rel: 'noopener noreferrer'), :link_start, :link_end)
       = safe_format(s_('GithubImport|Create and provide your GitHub %{link_start}personal access token%{link_end}.'), github_link_tag_pair)

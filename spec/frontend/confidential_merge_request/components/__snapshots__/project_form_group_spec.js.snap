@@ -9,7 +9,7 @@ exports[`Confidential merge request project form group component renders empty s
   </label>
   <div>
     <p
-      class="gl-mb-0 gl-mt-1 gl-text-gray-600"
+      class="gl-mb-0 gl-mt-1 gl-text-subtle"
     >
       No forks are available to you.
       <br />
@@ -56,7 +56,7 @@ exports[`Confidential merge request project form group component renders fork dr
       selectedproject="[object Object]"
     />
     <p
-      class="gl-mb-0 gl-mt-1 gl-text-gray-600"
+      class="gl-mb-0 gl-mt-1 gl-text-subtle"
     >
       To protect this issue's confidentiality, a private fork of this project was selected.
       <gl-link-stub

@@ -1,0 +1,26 @@
+query getPackageErrorsCount($fullPath: ID!, $isGroupPage: Boolean!) {
+  project(fullPath: $fullPath) @skip(if: $isGroupPage) {
+    id
+    packages(status: ERROR, sort: CREATED_DESC, last: 1) {
+      count
+      nodes {
+        id
+        name
+        statusMessage
+        version
+      }
+    }
+  }
+  group(fullPath: $fullPath) @include(if: $isGroupPage) {
+    id
+    packages(status: ERROR, sort: CREATED_DESC, last: 1) {
+      count
+      nodes {
+        id
+        name
+        statusMessage
+        version
+      }
+    }
+  }
+}

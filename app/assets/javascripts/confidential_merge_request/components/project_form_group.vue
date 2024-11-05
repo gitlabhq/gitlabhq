@@ -116,7 +116,7 @@ export default {
         :selected-project="selectedProject"
         @select="selectProject"
       />
-      <p class="gl-mb-0 gl-mt-1 gl-text-gray-600">
+      <p class="gl-mb-0 gl-mt-1 gl-text-subtle">
         <template v-if="projects.length">
           {{ $options.i18n.privateForkSelected }}
         </template>

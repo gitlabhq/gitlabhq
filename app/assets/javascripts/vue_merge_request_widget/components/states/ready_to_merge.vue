@@ -781,7 +781,7 @@ export default {
               <p v-if="showMergeDetailsHeader" class="gl-mb-2 gl-text-gray-900">
                 {{ __('Merge details') }}
               </p>
-              <ul class="gl-mb-0 gl-ml-3 gl-pl-4 gl-text-gray-600">
+              <ul class="gl-mb-0 gl-ml-3 gl-pl-4 gl-text-subtle">
                 <li v-if="sourceHasDivergedFromTarget" class="gl-leading-normal">
                   <gl-sprintf :message="$options.i18n.sourceDivergedFromTargetText">
                     <template #link>

@@ -921,19 +921,21 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
       let!(:first_id) { source_model.create!(name: 'Bob', age: 20).id }
       let!(:second_id) { source_model.create!(name: 'Alice', age: 30).id }
       let!(:third_id) { source_model.create!(name: 'Sam', age: 40).id }
+      let(:migration_class_jobs) do
+        ::Gitlab::Database::BackgroundMigration::BatchedMigration.where(job_class_name: migration_class)
+      end
 
       before do
         stub_const("#{described_class.name}::BATCH_SIZE", 2)
         stub_const("#{described_class.name}::SUB_BATCH_SIZE", 1)
+
+        migration.partition_table_by_date(source_table, partition_column, min_date: min_date, max_date: max_date)
       end
 
       it 'enqueues jobs to copy each batch of data' do
-        migration.partition_table_by_date(
-          source_table, partition_column, min_date: min_date, max_date: max_date
-        )
-
         Sidekiq::Testing.fake! do
-          migration.enqueue_partitioning_data_migration(source_table)
+          expect { migration.enqueue_partitioning_data_migration(source_table) }
+            .to change { migration_class_jobs.count }.by(1)
 
           expect(migration_class).to have_scheduled_batched_migration(
             table_name: source_table,
@@ -942,6 +944,29 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
             batch_size: described_class::BATCH_SIZE,
             sub_batch_size: described_class::SUB_BATCH_SIZE
           )
+        end
+      end
+
+      context 'when alternative migration class is specified' do
+        let(:migration_class) { 'TestBackfillPartitionedTable' }
+        let!(:migration_klass) do
+          Gitlab::BackgroundMigration.const_set(
+            migration_class, ::Class.new(Gitlab::Database::PartitioningMigrationHelpers::BackfillPartitionedTable))
+        end
+
+        it 'enqueues jobs to copy each batch of data' do
+          Sidekiq::Testing.fake! do
+            expect { migration.enqueue_partitioning_data_migration(source_table, migration_class) }
+              .to change { migration_class_jobs.count }.by(1)
+
+            expect(migration_class).to have_scheduled_batched_migration(
+              table_name: source_table,
+              column_name: :id,
+              job_arguments: [partitioned_table],
+              batch_size: described_class::BATCH_SIZE,
+              sub_batch_size: described_class::SUB_BATCH_SIZE
+            )
+          end
         end
       end
     end
@@ -962,6 +987,9 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
 
     context 'when tracking records exist in the batched_background_migrations table' do
       let(:migration_class) { described_class::MIGRATION }
+      let(:migration_class_jobs) do
+        ::Gitlab::Database::BackgroundMigration::BatchedMigration.where(job_class_name: migration_class)
+      end
 
       before do
         create(
@@ -981,15 +1009,31 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
         )
       end
 
-      it 'deletes those pertaining to the given table' do
+      it 'deletes those pertaining to the given table and migration class' do
         expect { migration.cleanup_partitioning_data_migration(source_table) }
-          .to change { ::Gitlab::Database::BackgroundMigration::BatchedMigration.count }.by(-1)
+          .to change { migration_class_jobs.count }.by(-1)
 
-        expect(::Gitlab::Database::BackgroundMigration::BatchedMigration.where(table_name: 'other_table').any?)
-          .to be_truthy
+        expect(migration_class_jobs.where(table_name: 'other_table').any?).to be_truthy
 
-        expect(::Gitlab::Database::BackgroundMigration::BatchedMigration.where(table_name: source_table).any?)
-          .to be_falsy
+        expect(migration_class_jobs.where(table_name: source_table).any?).to be_falsy
+      end
+
+      context 'when alternative migration class is specified' do
+        let(:migration_class) { 'TestBackfillPartitionedTable' }
+        let!(:migration_klass) do
+          Gitlab::BackgroundMigration.const_set(
+            migration_class,
+            ::Class.new(Gitlab::Database::PartitioningMigrationHelpers::BackfillPartitionedTable))
+        end
+
+        it 'deletes those pertaining to the given table and migration class' do
+          expect { migration.cleanup_partitioning_data_migration(source_table, migration_class) }
+            .to change { migration_class_jobs.count }.by(-1)
+
+          expect(migration_class_jobs.where(table_name: 'other_table').any?).to be_truthy
+
+          expect(migration_class_jobs.where(table_name: source_table).any?).to be_falsy
+        end
       end
     end
   end

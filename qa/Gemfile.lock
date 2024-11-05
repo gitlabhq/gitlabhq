@@ -264,7 +264,7 @@ GEM
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
     retriable (3.1.2)
-    rexml (3.3.8)
+    rexml (3.3.9)
     rotp (6.3.0)
     rspec (3.13.0)
       rspec-core (~> 3.13.0)

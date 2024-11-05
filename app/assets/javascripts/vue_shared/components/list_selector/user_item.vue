@@ -44,7 +44,7 @@ export default {
     <gl-avatar :alt="name" :entity-name="name" :size="32" :src="avatarUrl" fallback-on-error />
     <span class="gl-flex gl-grow gl-flex-col">
       <span class="gl-font-bold">{{ name }}</span>
-      <span class="gl-text-gray-600">@{{ username }}</span>
+      <span class="gl-text-subtle">@{{ username }}</span>
     </span>
 
     <gl-button

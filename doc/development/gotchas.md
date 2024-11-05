@@ -207,7 +207,7 @@ refresh_service.execute(oldrev, newrev, ref)
 
 See ["Why is it bad style to `rescue Exception => e` in Ruby?"](https://stackoverflow.com/questions/10048173/why-is-it-bad-style-to-rescue-exception-e-in-ruby).
 
-This rule is [enforced automatically by RuboCop](https://gitlab.com/gitlab-org/gitlab-foss/blob/8-4-stable/.rubocop.yml#L911-914)._
+This rule is [enforced automatically by RuboCop](https://gitlab.com/gitlab-org/gitlab-foss/blob/8-4-stable/.rubocop.yml#L911-914).
 
 ## Do not use inline JavaScript in views
 

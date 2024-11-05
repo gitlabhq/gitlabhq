@@ -8,6 +8,7 @@ import Tracking from '~/tracking';
 import {
   INSTRUMENT_TAB_LABELS,
   INSTRUMENT_TODO_FILTER_CHANGE,
+  INSTRUMENT_TODO_ITEM_CLICK,
   STATUS_BY_TAB,
 } from '~/todos/constants';
 import getTodosQuery from './queries/get_todos.query.graphql';
@@ -165,6 +166,9 @@ export default {
           onClick: async () => {
             hide();
             await this.$apollo.mutate({ mutation, variables: { todoId } });
+            this.track(INSTRUMENT_TODO_ITEM_CLICK, {
+              label: markedAsDone ? 'undo_mark_done' : 'undo_mark_pending',
+            });
             this.updateAllQueries(false);
           },
         },

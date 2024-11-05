@@ -215,7 +215,6 @@ Lint/AssignmentInCondition:
     - 'rubocop/cop/rspec/httparty_basic_auth.rb'
     - 'scripts/lint-docs-blueprints.rb'
     - 'spec/factories/ci/processable.rb'
-    - 'spec/lib/gitlab/background_migration/backfill_root_storage_statistics_fork_storage_sizes_spec.rb'
     - 'spec/models/packages/go/module_version_spec.rb'
     - 'spec/models/project_feature_spec.rb'
     - 'spec/requests/api/go_proxy_spec.rb'

@@ -30,7 +30,7 @@ exports[`GroupItemName template matches the snapshot 1`] = `
     </span>
     <div>
       <p
-        class="!gl-mt-2 gl-mb-0 gl-text-gray-600"
+        class="!gl-mt-2 gl-mb-0 gl-text-subtle"
       >
         Open source software to collaborate on code
       </p>

@@ -39,7 +39,7 @@ GEM
     rack (3.1.8)
     rainbow (3.1.1)
     regexp_parser (2.8.1)
-    rexml (3.3.8)
+    rexml (3.3.9)
     rspec (3.12.0)
       rspec-core (~> 3.12.0)
       rspec-expectations (~> 3.12.0)
@@ -102,4 +102,4 @@ DEPENDENCIES
   sqlite3 (~> 1.6)
 
 BUNDLED WITH
-   2.5.21
+   2.5.22

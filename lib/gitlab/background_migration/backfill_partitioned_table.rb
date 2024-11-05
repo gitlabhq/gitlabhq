@@ -9,7 +9,7 @@ module Gitlab
       job_arguments :partitioned_table
 
       def perform
-        validate_paritition_table!
+        validate_partition_table!
 
         bulk_copy = Gitlab::Database::PartitioningMigrationHelpers::BulkCopy.new(
           batch_table,
@@ -19,16 +19,15 @@ module Gitlab
         )
 
         each_sub_batch do |relation|
-          sub_start_id, sub_stop_id = relation.pick(Arel.sql("MIN(#{batch_column}), MAX(#{batch_column})"))
-          bulk_copy.copy_between(sub_start_id, sub_stop_id)
+          bulk_copy.copy_relation(filter_sub_batch_content(relation))
         end
       end
 
       private
 
-      def validate_paritition_table!
+      def validate_partition_table!
         unless connection.table_exists?(partitioned_table)
-          raise "exiting backfill migration because partitioned table #{partitioned_table} does not exist. " \
+          raise "exiting backfill migration because partitioned table '#{partitioned_table}' does not exist. " \
                 "This could be due to rollback of the migration which created the partitioned table."
         end
 
@@ -37,6 +36,10 @@ module Gitlab
           raise "exiting backfill migration because the given destination table is not partitioned."
         end
         # rubocop: enable Style/GuardClause
+      end
+
+      def filter_sub_batch_content(relation)
+        relation
       end
     end
   end

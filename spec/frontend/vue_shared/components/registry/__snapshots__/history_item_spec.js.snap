@@ -8,7 +8,7 @@ exports[`History Item renders the correct markup 1`] = `
     class="timeline-entry-inner"
   >
     <div
-      class="-gl-mt-1 gl-bg-gray-50 gl-flex gl-float-left gl-h-6 gl-items-center gl-justify-center gl-ml-2 gl-rounded-full gl-text-gray-600 gl-w-6"
+      class="-gl-mt-1 gl-bg-gray-50 gl-flex gl-float-left gl-h-6 gl-items-center gl-justify-center gl-ml-2 gl-rounded-full gl-text-subtle gl-w-6"
     >
       <gl-icon-stub
         name="pencil"

@@ -1,9 +1,13 @@
 <script>
 import { GlAlert, GlButton } from '@gitlab/ui';
-import { mergeUrlParams } from '~/lib/utils/url_utility';
+import { setUrlParams } from '~/lib/utils/url_utility';
 import { s__, sprintf } from '~/locale';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { InternalEvents } from '~/tracking';
+import { WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
+import { ERRORED_PACKAGE_TEXT } from '~/packages_and_registries/package_registry/constants';
 import DeleteModal from '~/packages_and_registries/package_registry/components/delete_modal.vue';
+import getPackageErrorsCountQuery from '~/packages_and_registries/package_registry/graphql/queries/get_package_errors_count.query.graphql';
 
 export default {
   name: 'PackageErrorsCount',
@@ -13,19 +17,37 @@ export default {
     DeleteModal,
   },
   mixins: [InternalEvents.mixin()],
-  props: {
+  inject: ['isGroupPage', 'fullPath'],
+  apollo: {
     errorPackages: {
-      type: Array,
-      required: false,
-      default: () => [],
+      query: getPackageErrorsCountQuery,
+      variables() {
+        return {
+          fullPath: this.fullPath,
+          isGroupPage: this.isGroupPage,
+        };
+      },
+      update(data) {
+        if (!data[this.graphqlResource]) {
+          this.reportToSentry();
+        }
+        return data[this.graphqlResource]?.packages ?? {};
+      },
+      error(error) {
+        this.reportToSentry(error);
+      },
     },
   },
   data() {
     return {
+      errorPackages: {},
       itemsToBeDeleted: [],
     };
   },
   computed: {
+    errorPackagesCount() {
+      return this.errorPackages.count;
+    },
     errorTitleAlert() {
       if (this.singleErrorPackage) {
         return sprintf(s__('PackageRegistry|There was an error publishing %{packageName}'), {
@@ -33,12 +55,14 @@ export default {
         });
       }
       return sprintf(s__('PackageRegistry|There was an error publishing %{count} packages'), {
-        count: this.errorPackages.length,
+        count: this.errorPackagesCount,
       });
     },
     errorMessageBodyAlert() {
       if (this.singleErrorPackage) {
-        return this.singleErrorPackage.statusMessage || this.$options.i18n.errorMessageBodyAlert;
+        return sprintf(this.$options.i18n.errorMessageBodyAlert, {
+          message: this.singleErrorPackage.statusMessage || ERRORED_PACKAGE_TEXT,
+        });
       }
 
       return sprintf(
@@ -46,29 +70,30 @@ export default {
           'PackageRegistry|Failed to publish %{count} packages. Delete these packages and try again.',
         ),
         {
-          count: this.errorPackages.length,
+          count: this.errorPackagesCount,
         },
       );
     },
+    graphqlResource() {
+      return this.isGroupPage ? WORKSPACE_GROUP : WORKSPACE_PROJECT;
+    },
     singleErrorPackage() {
-      if (this.errorPackages.length === 1) {
-        const [errorPackage] = this.errorPackages;
+      if (this.errorPackagesCount === 1) {
+        const [errorPackage] = this.errorPackages.nodes;
         return errorPackage;
       }
 
       return null;
     },
     showErrorPackageAlert() {
-      return this.errorPackages.length > 0;
+      return this.errorPackagesCount > 0;
     },
     errorPackagesHref() {
-      // For reactivity we depend on showErrorPackageAlert so we update accordingly
-      if (!this.showErrorPackageAlert) {
+      if (this.singleErrorPackage) {
         return '';
       }
 
-      const pageParams = { after: null, before: null };
-      return mergeUrlParams({ status: 'error', ...pageParams }, window.location.href);
+      return setUrlParams({ status: 'error' }, window.location.href, true);
     },
   },
   methods: {
@@ -79,11 +104,12 @@ export default {
       this.itemsToBeDeleted = [this.singleErrorPackage];
       this.$refs.deletePackagesModal.show();
     },
+    reportToSentry(error) {
+      Sentry.captureException(error);
+    },
   },
   i18n: {
-    errorMessageBodyAlert: s__(
-      'PackageRegistry|There was a timeout and the package was not published. Delete this package and try again.',
-    ),
+    errorMessageBodyAlert: s__('PackageRegistry|%{message}. Delete this package and try again.'),
   },
 };
 </script>
@@ -92,7 +118,7 @@ export default {
   <div>
     <gl-alert
       v-if="showErrorPackageAlert"
-      class="gl-mt-5"
+      class="gl-mb-5 gl-mt-2"
       variant="danger"
       :title="errorTitleAlert"
     >

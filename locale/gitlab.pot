@@ -38814,6 +38814,9 @@ msgstr ""
 msgid "PackageRegistry|%{linkStart}Wildcards%{linkEnd} such as `my-package-*` are supported."
 msgstr ""
 
+msgid "PackageRegistry|%{message}. Delete this package and try again."
+msgstr ""
+
 msgid "PackageRegistry|%{name} version %{version} was first created %{datetime}"
 msgstr ""
 
@@ -39330,9 +39333,6 @@ msgid "PackageRegistry|There are security risks if packages are deleted while re
 msgstr ""
 
 msgid "PackageRegistry|There was a problem fetching the details for this package."
-msgstr ""
-
-msgid "PackageRegistry|There was a timeout and the package was not published. Delete this package and try again."
 msgstr ""
 
 msgid "PackageRegistry|There was an error publishing %{count} packages"
@@ -48371,6 +48371,9 @@ msgstr ""
 msgid "ScanResultPolicy|Attributes are automatically applied by the scanners"
 msgstr ""
 
+msgid "ScanResultPolicy|Automatically make approval rules optional when scan artifacts are missing from the target branch and a scan is required by a scan execution policy. This option only works with an existing scan execution policy that has matching scanners."
+msgstr ""
+
 msgid "ScanResultPolicy|Block the merge request until all criteria are met"
 msgstr ""
 
@@ -48384,6 +48387,9 @@ msgid "ScanResultPolicy|Customized CI Variables"
 msgstr ""
 
 msgid "ScanResultPolicy|Don't show me this again"
+msgstr ""
+
+msgid "ScanResultPolicy|Edge case settings"
 msgstr ""
 
 msgid "ScanResultPolicy|Except"
@@ -48404,7 +48410,10 @@ msgstr ""
 msgid "ScanResultPolicy|Failure cases:"
 msgstr ""
 
-msgid "ScanResultPolicy|Fallback behavior in case of policy failure"
+msgid "ScanResultPolicy|Fallback behavior"
+msgstr ""
+
+msgid "ScanResultPolicy|Fallback behavior and edge case settings"
 msgstr ""
 
 msgid "ScanResultPolicy|False positive"
@@ -48435,6 +48444,9 @@ msgid "ScanResultPolicy|License is:"
 msgstr ""
 
 msgid "ScanResultPolicy|License scanning allows only one criteria: Status"
+msgstr ""
+
+msgid "ScanResultPolicy|Make approval rules optional using scan execution policies"
 msgstr ""
 
 msgid "ScanResultPolicy|Matching"
@@ -49765,9 +49777,6 @@ msgstr ""
 msgid "SecurityOrchestration|Every time a pipeline runs for %{branches}%{branchExceptionsString}"
 msgstr ""
 
-msgid "SecurityOrchestration|Ex: top_level_group"
-msgstr ""
-
 msgid "SecurityOrchestration|Exception branches"
 msgstr ""
 
@@ -50155,6 +50164,9 @@ msgid "SecurityOrchestration|Show more projects"
 msgstr ""
 
 msgid "SecurityOrchestration|Show only linked security policy projects"
+msgstr ""
+
+msgid "SecurityOrchestration|Something went wrong, unable to fetch groups"
 msgstr ""
 
 msgid "SecurityOrchestration|Something went wrong, unable to fetch policies"
@@ -65297,6 +65309,9 @@ msgstr ""
 msgid "does not match dast_site_validation.project"
 msgstr ""
 
+msgid "does not support select options."
+msgstr ""
+
 msgid "download it"
 msgstr ""
 
@@ -65375,6 +65390,9 @@ msgid "exceeds the limit of %{bytes} bytes for directory name \"%{dirname}\""
 msgstr ""
 
 msgid "exceeds the limit of %{count} links"
+msgstr ""
+
+msgid "exceeds the limit of %{count}."
 msgstr ""
 
 msgid "expired on %{timebox_due_date}"

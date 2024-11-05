@@ -287,7 +287,7 @@ export default {
               :disabled="loading"
               required
             />
-            <p v-if="showHint" class="form-text gl-text-gray-600" data-testid="hint">
+            <p v-if="showHint" class="form-text gl-text-subtle" data-testid="hint">
               {{ $options.i18n.COMMIT_MESSAGE_HINT }}
             </p>
           </gl-form-group>

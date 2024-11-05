@@ -232,32 +232,10 @@ describe('PackagesListApp', () => {
     });
 
     it('renders PackageErrorsCount component', async () => {
-      const packagesList = packagesListQuery();
-      const [firstPackage] = packagesList.data.group.packages.nodes;
-
-      const errorPackage = {
-        ...firstPackage,
-        status: 'ERROR',
-      };
-      mountComponent({
-        resolver: jest.fn().mockResolvedValue(
-          packagesListQuery({
-            extend: {
-              packages: {
-                count: 1,
-                nodes: [errorPackage],
-                pageInfo: {},
-              },
-            },
-          }),
-        ),
-      });
       findSearch().vm.$emit('update', searchPayload);
       await waitForPromises();
 
-      expect(findPackageErrorsCount().props('errorPackages')).toStrictEqual(
-        expect.arrayContaining([expect.objectContaining({ id: packageData().id })]),
-      );
+      expect(findPackageErrorsCount().exists()).toBe(true);
     });
 
     describe('when packageStatus filter is set to error', () => {
@@ -470,30 +448,11 @@ describe('PackagesListApp', () => {
     });
 
     it('deletePackages is bound to package-errors-count delete event', async () => {
-      const packagesList = packagesListQuery();
-      const [firstPackage] = packagesList.data.group.packages.nodes;
-
-      const errorPackage = {
-        ...firstPackage,
-        status: 'ERROR',
-      };
-      mountComponent({
-        resolver: jest.fn().mockResolvedValue(
-          packagesListQuery({
-            extend: {
-              packages: {
-                count: 1,
-                nodes: [errorPackage],
-                pageInfo: {},
-              },
-            },
-          }),
-        ),
-      });
+      mountComponent();
 
       await waitForFirstRequest();
 
-      findPackageErrorsCount().vm.$emit('confirm-delete', [errorPackage]);
+      findPackageErrorsCount().vm.$emit('confirm-delete', [{ id: 1 }]);
 
       expect(findDeletePackages().emitted('start')).toHaveLength(1);
     });

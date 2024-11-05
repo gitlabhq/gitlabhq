@@ -163,7 +163,7 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::BackfillPartition
 
     it 'logs a warning message that the job was skipped' do
       expect(mock_connection).to receive(:table_exists?).with(destination_table).and_return(false)
-      expect(mock_logger).to receive(:warn).with(/#{destination_table} does not exist/)
+      expect(mock_logger).to receive(:warn).with(/'#{destination_table}' does not exist/)
 
       subject.perform(1, 100, source_table, destination_table, unique_key)
     end

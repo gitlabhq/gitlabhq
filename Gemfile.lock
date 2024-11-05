@@ -217,7 +217,7 @@ PATH
 PATH
   remote: vendor/gems/sidekiq-reliable-fetch
   specs:
-    gitlab-sidekiq-fetcher (0.11.0)
+    gitlab-sidekiq-fetcher (0.12.0)
       json (>= 2.5)
       sidekiq (~> 7.0)
 
@@ -1404,7 +1404,7 @@ GEM
       activerecord (>= 6.1)
       request_store (~> 1.4)
     parallel (1.24.0)
-    parser (3.3.5.1)
+    parser (3.3.6.0)
       ast (~> 2.4.1)
       racc
     parslet (1.8.2)
@@ -1568,7 +1568,7 @@ GEM
     retriable (3.1.2)
     reverse_markdown (1.4.0)
       nokogiri
-    rexml (3.3.8)
+    rexml (3.3.9)
     rinku (2.0.0)
     rotp (6.3.0)
     rouge (4.4.0)
@@ -2215,7 +2215,7 @@ DEPENDENCIES
   pact (~> 1.64)
   paper_trail (~> 15.0)
   parallel (~> 1.19)
-  parser (= 3.3.5.1)
+  parser (= 3.3.6.0)
   parslet (~> 1.8)
   peek (~> 1.1)
   pg (~> 1.5.6)

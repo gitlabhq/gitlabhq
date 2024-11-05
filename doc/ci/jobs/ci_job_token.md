@@ -32,7 +32,7 @@ This access can also [be restricted](#limit-job-token-scope-for-public-or-intern
 | Feature                                                                                               | Additional details |
 |-------------------------------------------------------------------------------------------------------|--------------------|
 | [Container registry API](../../api/container_registry.md)                                             | The token is scoped to the container registry of the job's project only. |
-| [Container registry](../../user/packages/container_registry/build_and_push_images.md#use-gitlab-cicd) | The `$CI_REGISTRY_PASSWORD` [predefined variable](../variables/predefined_variables.md) is the CI/CD job token. |
+| [Container registry](../../user/packages/container_registry/build_and_push_images.md#use-gitlab-cicd) | The `$CI_REGISTRY_PASSWORD` [predefined variable](../variables/predefined_variables.md) is the CI/CD job token. Both are scoped to the container registry of the job's project only. |
 | [Deployments API](../../api/deployments.md)                                                           | `GET` requests are public by default. |
 | [Environments API](../../api/environments.md)                                                         | `GET` requests are public by default. |
 | [Job artifacts API](../../api/job_artifacts.md#get-job-artifacts)                                     | `GET` requests are public by default. |
@@ -69,7 +69,7 @@ jobs.
 
 ## Control job token access to your project
 
-You can control which groups or projects can use a job token to authenticate and access your project's resources.
+You can control which groups or projects can use a job token to authenticate and access some of your project's resources.
 
 By default, job token access is restricted to only CI/CD jobs that run in pipelines in
 your project. To allow another group or project to authenticate with a job token from the other

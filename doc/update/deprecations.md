@@ -196,28 +196,6 @@ We've deprecated the use of `ref` and `sha` in API calls to `GET /projects/:id/c
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
-### Breaking change to the Maven repository group permissions
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">16.6</span>
-- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/393933).
-
-</div>
-
-The Maven repository exposes an API endpoint at the group level that allows Maven clients to download files from a specific package. The package finder first locates the package within the group, and then finds the file within the package.
-However, there is a limitation that affects duplicate package names hosted in different projects. The Maven package finder always returns the most recent package, but the "most recent" filter depends on user permissions. It is possible for a user with different permissions in different projects to download the wrong Maven package.
-
-In GitLab 18.0, the package finder logic will be fixed so that the "most recent" package is the last updated name and version of a package in a group. User permissions will be checked after the most recent package is found.
-After the change, download requests for users without correct permissions will be rejected. If your workflow depends on the current bugged behavior, this fix will introduce a breaking change.
-
-The change will be introduced in GitLab 16.6 behind a feature flag. If you are interested in enabling the feature flag for your group, leave a comment in [issue 393933](https://gitlab.com/gitlab-org/gitlab/-/issues/393933).
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="18.0">
-
 ### CodeClimate-based Code Quality scanning will be removed
 
 <div class="deprecation-notes">

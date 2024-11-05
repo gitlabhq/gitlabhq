@@ -71,7 +71,7 @@ RSpec.describe UnnestedInFilters::Rewriter, feature_category: :shared do
 
         context 'when there is a partial index coverage for the used columns' do
           before do
-            ApplicationRecord.connection.execute(<<~SQL)
+            Gitlab::Database::SecApplicationRecord.connection.execute(<<~SQL)
               CREATE INDEX on vulnerabilities USING btree(state) WHERE (resolved_on_default_branch = false)
             SQL
           end
@@ -81,7 +81,7 @@ RSpec.describe UnnestedInFilters::Rewriter, feature_category: :shared do
 
         context 'when there is a partial index coverage for the used columns and unused columns at the end' do
           before do
-            ApplicationRecord.connection.execute(<<~SQL)
+            Gitlab::Database::SecApplicationRecord.connection.execute(<<~SQL)
               CREATE INDEX on vulnerabilities USING btree(state, severity, id) WHERE (resolved_on_default_branch = false)
             SQL
           end
@@ -91,7 +91,7 @@ RSpec.describe UnnestedInFilters::Rewriter, feature_category: :shared do
 
         context 'when there is no partial index coverage for the used columns' do
           before do
-            ApplicationRecord.connection.execute(<<~SQL)
+            Gitlab::Database::SecApplicationRecord.connection.execute(<<~SQL)
               CREATE INDEX on vulnerabilities USING btree(state) WHERE (id = 100)
             SQL
           end
@@ -120,7 +120,7 @@ RSpec.describe UnnestedInFilters::Rewriter, feature_category: :shared do
 
         context 'when the unused columns are at the end of the index' do
           before do
-            ApplicationRecord.connection.execute(<<~SQL)
+            Gitlab::Database::SecApplicationRecord.connection.execute(<<~SQL)
               CREATE INDEX on vulnerabilities USING btree(state, resolved_on_default_branch, severity, id)
             SQL
           end
@@ -132,7 +132,7 @@ RSpec.describe UnnestedInFilters::Rewriter, feature_category: :shared do
           let(:relation) { base_relation.order(severity: :DESC, id: :DESC) }
 
           before do
-            ApplicationRecord.connection.execute(<<~SQL)
+            Gitlab::Database::SecApplicationRecord.connection.execute(<<~SQL)
               CREATE INDEX on vulnerabilities USING btree(state, resolved_on_default_branch, severity DESC, id DESC, present_on_default_branch)
             SQL
           end
@@ -159,7 +159,7 @@ RSpec.describe UnnestedInFilters::Rewriter, feature_category: :shared do
 
         context 'when an unused column is in the middle of the index' do
           before do
-            ApplicationRecord.connection.execute(<<~SQL)
+            Gitlab::Database::SecApplicationRecord.connection.execute(<<~SQL)
               CREATE INDEX on vulnerabilities USING btree(state, id, resolved_on_default_branch, severity)
             SQL
           end

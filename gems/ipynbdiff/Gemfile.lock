@@ -53,7 +53,7 @@ GEM
     rainbow (3.1.1)
     rake (13.0.6)
     regexp_parser (2.8.1)
-    rexml (3.3.8)
+    rexml (3.3.9)
     rspec (3.11.0)
       rspec-core (~> 3.11.0)
       rspec-expectations (~> 3.11.0)
@@ -136,4 +136,4 @@ DEPENDENCIES
   simplecov (~> 0.22.0)
 
 BUNDLED WITH
-   2.5.21
+   2.5.22

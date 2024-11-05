@@ -92,9 +92,6 @@ export default {
     },
   },
   computed: {
-    errorPackages() {
-      return this.packages?.nodes?.filter((pkg) => pkg.status === PACKAGE_ERROR_STATUS) ?? [];
-    },
     packages() {
       return this.packagesResource?.packages ?? {};
     },
@@ -150,9 +147,9 @@ export default {
     isLoading() {
       return this.$apollo.queries.packagesResource.loading || this.isDeleteInProgress;
     },
-    isNotFilteredByErrorStatus() {
+    showPackageErrorsCount() {
       const packageStatus = this.filters?.packageStatus?.toUpperCase();
-      return this.errorPackages.length > 0 && packageStatus !== PACKAGE_ERROR_STATUS;
+      return this.packagesCount > 0 && packageStatus !== PACKAGE_ERROR_STATUS;
     },
     refetchQueriesData() {
       return [
@@ -216,7 +213,6 @@ export default {
         />
       </template>
     </package-title>
-    <package-search @update="handleSearchUpdate" />
 
     <delete-packages
       :refetch-queries="refetchQueriesData"
@@ -226,11 +222,8 @@ export default {
     >
       <template #default="{ deletePackages }">
         <div>
-          <package-errors-count
-            v-if="isNotFilteredByErrorStatus"
-            :error-packages="errorPackages"
-            @confirm-delete="deletePackages"
-          />
+          <package-errors-count v-if="showPackageErrorsCount" @confirm-delete="deletePackages" />
+          <package-search @update="handleSearchUpdate" />
           <package-list
             :group-settings="groupSettings"
             :list="packages.nodes"

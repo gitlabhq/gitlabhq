@@ -421,6 +421,10 @@ describe('Merge requests list app', () => {
             type: 'source-branch',
             value: { data: ['branch_name'], operator: OPERATOR_NOT },
           },
+          {
+            type: 'target-branch',
+            value: { data: ['branch_name'], operator: OPERATOR_NOT },
+          },
         ]);
 
         await nextTick();
@@ -431,6 +435,7 @@ describe('Merge requests list app', () => {
               assigneeUsernames: ['root'],
               reviewerUsername: 'root',
               sourceBranches: ['branch_name'],
+              targetBranches: ['branch_name'],
             },
           }),
         );
@@ -441,6 +446,7 @@ describe('Merge requests list app', () => {
               assigneeUsernames: ['root'],
               reviewerUsername: 'root',
               sourceBranches: ['branch_name'],
+              targetBranches: ['branch_name'],
             },
           }),
         );
@@ -462,6 +468,10 @@ describe('Merge requests list app', () => {
             type: 'source-branch',
             value: { data: ['branch_name'], operator: OPERATOR_NOT },
           },
+          {
+            type: 'target-branch',
+            value: { data: ['branch_name'], operator: OPERATOR_NOT },
+          },
         ]);
 
         await nextTick();
@@ -471,6 +481,7 @@ describe('Merge requests list app', () => {
             'not[assignee_username][]': ['root'],
             'not[reviewer_username]': 'root',
             'not[source_branches][]': ['branch_name'],
+            'not[target_branches][]': ['branch_name'],
           }),
         });
       });

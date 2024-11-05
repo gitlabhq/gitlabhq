@@ -253,13 +253,13 @@ export default {
         v-safe-html:[$options.safeHtmlConfig]="commitData.titleHtml"
         :href="commitData.commitPath"
         :title="commitData.message"
-        class="str-truncated-100 tree-commit-link gl-text-gray-600"
+        class="str-truncated-100 tree-commit-link gl-text-subtle"
       />
       <gl-intersection-observer @appear="rowAppeared" @disappear="rowDisappeared">
         <gl-skeleton-loader v-if="showSkeletonLoader" :lines="1" />
       </gl-intersection-observer>
     </td>
-    <td class="tree-time-ago text-right cursor-default gl-text-gray-600">
+    <td class="tree-time-ago text-right cursor-default gl-text-subtle">
       <gl-intersection-observer @appear="rowAppeared" @disappear="rowDisappeared">
         <timeago-tooltip v-if="commitData" :time="commitData.committedDate" />
       </gl-intersection-observer>

@@ -30,7 +30,7 @@ RSpec.describe 'Merge requests > User filters by multiple criteria', :js, featur
 
   describe 'filtering by text, author, assignee, milestone, and label' do
     it 'filters by text, author, assignee, milestone, and label' do
-      select_tokens 'Author', '=', user.username, 'Assignee', '=', user.username, 'Milestone', milestone.title, 'Label', '=', wontfix.title
+      select_tokens 'Author', '=', user.username, 'Assignee', '=', user.username, 'Milestone', '=', milestone.title, 'Label', '=', wontfix.title
       send_keys 'Bug', :enter, :enter
 
       expect(page).to have_issuable_counts(open: 1, closed: 0, all: 1)

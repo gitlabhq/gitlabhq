@@ -125,7 +125,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-inline gl-text-gray-600">
+  <div class="gl-inline gl-text-subtle">
     <div v-if="isBasicSearch" data-testid="basic">
       <div v-if="isFallBacktoBasicSearch" :data-testid="`${searchTypeAvailableTestId}-disabled`">
         <gl-sprintf :message="disabledMessage">
