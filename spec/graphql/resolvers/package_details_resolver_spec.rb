@@ -8,14 +8,19 @@ RSpec.describe Resolvers::PackageDetailsResolver do
   let_it_be_with_reload(:project) { create(:project) }
   let_it_be(:user) { project.first_owner }
   let_it_be(:package) { create(:composer_package, project: project) }
+  let(:args) { { id: global_id_of(package) } }
+
+  subject { force(resolve(described_class, ctx: { current_user: user }, args: args)) }
 
   describe '#resolve' do
-    let(:args) do
-      { id: global_id_of(package) }
+    context 'when package exists' do
+      it { is_expected.to eq(package) }
     end
 
-    subject { force(resolve(described_class, ctx: { current_user: user }, args: args)) }
+    context 'when package does not exist' do
+      let(:args) { { id: global_id_of(id: non_existing_record_id, model_name: 'Packages::Package') } }
 
-    it { is_expected.to eq(package) }
+      it { is_expected.to be_nil }
+    end
   end
 end

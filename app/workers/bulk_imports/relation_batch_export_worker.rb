@@ -3,6 +3,9 @@
 module BulkImports
   class RelationBatchExportWorker
     include ApplicationWorker
+    include Gitlab::Utils::StrongMemoize
+
+    PERFORM_DELAY = 1.minute
 
     idempotent!
     data_consistency :always
@@ -23,10 +26,35 @@ module BulkImports
       @user = User.find(user_id)
       @batch = BulkImports::ExportBatch.find(batch_id)
 
+      return re_enqueue_job(@user, @batch) if max_exports_already_running?
+
       log_extra_metadata_on_done(:relation, @batch.export.relation)
-      log_extra_metadata_on_done(:objects_count, @batch.objects_count)
+      log_extra_metadata_on_done(:batch_number, @batch.batch_number)
 
       RelationBatchExportService.new(@user, @batch).execute
+
+      log_extra_metadata_on_done(:objects_count, @batch.objects_count)
+    end
+
+    def max_exports_already_running?
+      BulkImports::ExportBatch.started_and_not_timed_out.limit(max_exports).count == max_exports
+    end
+
+    strong_memoize_attr def max_exports
+      ::Gitlab::CurrentSettings.concurrent_relation_batch_export_limit
+    end
+
+    def re_enqueue_job(user, batch)
+      reset_cache_timeout(batch)
+      log_extra_metadata_on_done(:re_enqueue, true)
+
+      self.class.perform_in(PERFORM_DELAY, user.id, batch.id)
+    end
+
+    def reset_cache_timeout(batch)
+      cache_service = BulkImports::BatchedRelationExportService
+      cache_key = cache_service.cache_key(batch.export_id, batch.id)
+      Gitlab::Cache::Import::Caching.expire(cache_key, cache_service::CACHE_DURATION.to_i)
     end
   end
 end

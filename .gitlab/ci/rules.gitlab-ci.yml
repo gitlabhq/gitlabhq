@@ -665,7 +665,7 @@
   - "lib/gitlab/ci/templates/**/*.gitlab-ci.yml"
 
 .static-analysis-patterns: &static-analysis-patterns
-  - ".{codeclimate,eslintrc,haml-lint,haml-lint_todo}.yml"
+  - ".{codeclimate,haml-lint,haml-lint_todo}.yml"
 
 .rubocop-patterns: &rubocop-patterns
   - ".{rubocop,rubocop_todo}.yml"

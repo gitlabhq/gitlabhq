@@ -195,6 +195,13 @@ authentication using the [single-step](#configuration-for-a-single-step-login-fo
 DAST supports authentication processes where a user is redirected to an external Identity Provider's site to sign in.
 Check the [known limitations](#known-limitations) of DAST authentication to determine if your SSO authentication process is supported.
 
+### Handling multi-factor authentication or complex authentication flows
+
+DAST doesn't support multi-factor authentication (MFA) or complex authentication as standard. However, you can work around this
+by using a browser automation library such as Playwrite or Selenium. For a demonstration, see
+[this multi-factor-authentication project](https://gitlab.com/gitlab-org/security-products/demos/dast/multi-factor-authentication)
+that generates a one-time password (OTP) to authenticate.
+
 ### Click to go to the login form
 
 Define `DAST_BROWSER_PATH_TO_LOGIN_FORM` to provide a path of elements to click on from the `DAST_AUTH_URL` so that DAST can access the
@@ -401,7 +408,9 @@ dast:
 ## Known limitations
 
 - DAST cannot bypass a CAPTCHA if the authentication flow includes one. Turn these off in the testing environment for the application being scanned.
-- DAST cannot handle multi-factor authentication like one-time passwords (OTP) by using SMS, biometrics, or authenticator apps. Turn these off in the testing environment for the application being scanned.
+- DAST cannot handle multi-factor authentication like one-time passwords (OTP) by using SMS, biometrics, or authenticator apps.
+  - Turn these off in the testing environment for the application being scanned.
+  - Alternatively, MFA can be worked around. See [this demo project](https://gitlab.com/gitlab-org/security-products/demos/dast/multi-factor-authentication) for more details.
 - DAST cannot authenticate to applications that do not set an [authentication token](#authentication-tokens) during login.
 - DAST cannot authenticate to applications that require more than two inputs to be filled out. Two inputs must be supplied, username and password.
 - DAST does not carry the content of IndexedDB into the crawl stage. If your application relies on IndexedDB to maintain authenticated state, [DAST will not be able to authenticate](https://gitlab.com/gitlab-org/gitlab/-/issues/481651) to crawl your application.

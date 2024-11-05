@@ -71,7 +71,7 @@ export const BASE_ROLES = [
     accessLevel: ACCESS_LEVEL_DEVELOPER_INTEGER,
     occupiesSeat: true,
     description: s__(
-      'MemberRole|The Developer role strikes a balance between giving users the necessary access to contribute code while restricting sensitive administrative actions.',
+      'MemberRole|The Developer role gives users access to contribute code while restricting sensitive administrative actions.',
     ),
   },
   {

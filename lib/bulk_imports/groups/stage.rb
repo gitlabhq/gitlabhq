@@ -23,7 +23,7 @@ module BulkImports
       # SubGroup Entities must be imported in later stage than Project Entities to avoid `full_path` naming conflicts.
 
       def config
-        {
+        base_config = {
           group: {
             pipeline: BulkImports::Groups::Pipelines::GroupPipeline,
             stage: 0
@@ -36,10 +36,6 @@ module BulkImports
             pipeline: BulkImports::Groups::Pipelines::NamespaceSettingsPipeline,
             stage: 1,
             minimum_source_version: '15.0.0'
-          },
-          members: {
-            pipeline: BulkImports::Common::Pipelines::MembersPipeline,
-            stage: 1
           },
           labels: {
             pipeline: BulkImports::Common::Pipelines::LabelsPipeline,
@@ -70,7 +66,11 @@ module BulkImports
             pipeline: BulkImports::Common::Pipelines::EntityFinisher,
             stage: 4
           }
-        }.merge(project_entities_pipeline)
+        }
+
+        base_config
+          .merge(project_entities_pipeline)
+          .merge(members_pipeline)
       end
 
       def project_entities_pipeline
@@ -86,8 +86,23 @@ module BulkImports
         end
       end
 
+      def members_pipeline
+        return {} unless migrate_memberships?
+
+        {
+          members: {
+            pipeline: BulkImports::Common::Pipelines::MembersPipeline,
+            stage: 1
+          }
+        }
+      end
+
       def migrate_projects?
         bulk_import_entity.migrate_projects
+      end
+
+      def migrate_memberships?
+        bulk_import_entity.migrate_memberships
       end
 
       def project_pipeline_available?

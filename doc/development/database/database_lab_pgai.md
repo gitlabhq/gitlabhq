@@ -23,41 +23,27 @@ you can follow the steps below to configure the `pgai` Gem:
       A dialog with everything that's needed for configuration appears, using this format:
 
       ```shell
-      dblab init --url "http://127.0.0.1:1234" --token TOKEN --environment-id <environment-id>
+      dblab init --url "http://127.0.0.1:<local-port>" --token TOKEN --environment-id <environment-id>
       ```
 
       ```shell
-      ssh -NTML 1234:localhost:<environment-port> <postgresai-user>@<postgresai-proxy> -i ~/.ssh/id_rsa
+      ssh -NTML <local-port>:localhost:<instance-port> <instance-host> -i ~/.ssh/id_rsa
       ```
 
-1. Add the following snippet to your SSH configuration file at `~/.ssh/config`, replacing the variable values:
-
-   ```plaintext
-   # lab servers
-   Host <postgresai-servers>
-     User <postgresai-user>
-     IdentityFile ~/.ssh/id_ed25519
-
-   # lab boxes
-   Host <postgresai-servers>
-     User <postgresai-user>
-     PreferredAuthentications publickey
-     IdentityFile ~/.ssh/id_ed25519
-     ProxyCommand ssh <postgresai-servers> -W %h:%p
-   ```
+1. To configure `ssh`, follow the instruction at [Access the console with `psql`](database_lab.md#access-the-console-with-psql), replacing `${USER}` with your postgres.ai username.
 
 1. Run the following commands:
 
    ```shell
    gem install pgai
 
-   # Grab an access token: https://console.postgres.ai/gitlab/tokens
-   # GITLAB_USER is your GitLab handle
-   pgai config --prefix=$GITLAB_USER
+   # Before running the following command,
+   # grab an access token from https://console.postgres.ai/gitlab/tokens
+   pgai config --prefix=<postgresai-user>
 
    # Grab the respective port values from https://console.postgres.ai/gitlab/instances
    # for the instances you'll be using (in this case, for the `main` database instance)
-   pgai env add --alias main --id <environment-id> --port <environment-port> -n <database_name>
+   pgai env add --alias main --id <instance-host> --port <instance-port> -n <database_name>
    ```
 
 1. Once this one-time configuration is done, you can use `pgai connect` to connect to a particular database. For

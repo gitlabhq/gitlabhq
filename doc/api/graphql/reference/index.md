@@ -741,7 +741,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 ### `Query.memberRole`
 
-Finds a single custom role.
+Finds a single custom role for the instance. Available only for self-managed.
 
 DETAILS:
 **Introduced** in GitLab 16.6.
@@ -773,7 +773,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 ### `Query.memberRoles`
 
-Member roles available for the instance.
+Custom roles available for the instance. Available only for self-managed.
 
 DETAILS:
 **Introduced** in GitLab 16.7.
@@ -1136,9 +1136,25 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="querysnippetstype"></a>`type` | [`TypeEnum`](#typeenum) | Type of snippet. |
 | <a id="querysnippetsvisibility"></a>`visibility` | [`VisibilityScopesEnum`](#visibilityscopesenum) | Visibility of the snippet. |
 
+### `Query.standardRole`
+
+Finds a single default role for the instance. Available only for self-managed.
+
+DETAILS:
+**Introduced** in GitLab 17.6.
+**Status**: Experiment.
+
+Returns [`StandardRole`](#standardrole).
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="querystandardroleaccesslevel"></a>`accessLevel` | [`[MemberAccessLevel!]`](#memberaccesslevel) | Access level or levels to filter by. |
+
 ### `Query.standardRoles`
 
-Standard roles available for the instance, available only for self-managed.
+Default roles available for the instance. Available only for self-managed.
 
 DETAILS:
 **Introduced** in GitLab 17.3.
@@ -1149,6 +1165,12 @@ Returns [`StandardRoleConnection`](#standardroleconnection).
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="querystandardrolesaccesslevel"></a>`accessLevel` | [`[MemberAccessLevel!]`](#memberaccesslevel) | Access level or levels to filter by. |
 
 ### `Query.subscriptionFutureEntries`
 
@@ -8283,6 +8305,28 @@ Input type: `ProjectSavedReplyUpdateInput`
 | <a id="mutationprojectsavedreplyupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationprojectsavedreplyupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationprojectsavedreplyupdatesavedreply"></a>`savedReply` | [`ProjectSavedReply`](#projectsavedreply) | Saved reply after mutation. |
+
+### `Mutation.projectSecretCreate`
+
+Input type: `ProjectSecretCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationprojectsecretcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprojectsecretcreatedescription"></a>`description` | [`String`](#string) | Description of the project secret. |
+| <a id="mutationprojectsecretcreatename"></a>`name` | [`String!`](#string) | Name of the project secret. |
+| <a id="mutationprojectsecretcreateprojectpath"></a>`projectPath` | [`ID!`](#id) | Project of the secret. |
+| <a id="mutationprojectsecretcreatevalue"></a>`value` | [`String!`](#string) | Value of the project secret. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationprojectsecretcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprojectsecretcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationprojectsecretcreateprojectsecret"></a>`projectSecret` | [`ProjectSecret`](#projectsecret) | Project secret. |
 
 ### `Mutation.projectSecretsManagerInitialize`
 
@@ -23981,7 +24025,6 @@ GPG signature for a signed commit.
 | <a id="groupsharewithgrouplock"></a>`shareWithGroupLock` | [`Boolean`](#boolean) | Indicates if sharing a project with another group within this group is prevented. |
 | <a id="groupsharedrunnerssetting"></a>`sharedRunnersSetting` | [`SharedRunnersSetting`](#sharedrunnerssetting) | Shared runners availability for the namespace and its descendants. |
 | <a id="groupsidebar"></a>`sidebar` **{warning-solid}** | [`NamespaceSidebar`](#namespacesidebar) | **Introduced** in GitLab 17.6. **Status**: Experiment. Data needed to render the sidebar for the namespace. |
-| <a id="groupstandardroles"></a>`standardRoles` **{warning-solid}** | [`StandardRoleConnection`](#standardroleconnection) | **Introduced** in GitLab 17.4. **Status**: Experiment. Standard roles available for the instance, available only for self-managed. |
 | <a id="groupstats"></a>`stats` | [`GroupStats`](#groupstats) | Group statistics. |
 | <a id="groupstoragesizelimit"></a>`storageSizeLimit` | [`Float`](#float) | The storage limit (in bytes) included with the root namespace plan. This limit only applies to namespaces under namespace limit enforcement. |
 | <a id="groupsubgroupcreationlevel"></a>`subgroupCreationLevel` | [`String`](#string) | Permission level required to create subgroups within the group. |
@@ -24783,7 +24826,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Group.memberRoles`
 
-Member roles available for the group.
+Custom roles available for the group.
 
 DETAILS:
 **Introduced** in GitLab 16.5.
@@ -25193,6 +25236,42 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="groupsecuritypolicyprojectsuggestionsonlylinked"></a>`onlyLinked` | [`Boolean`](#boolean) | Whether to suggest only projects already linked as security policy projects. |
 | <a id="groupsecuritypolicyprojectsuggestionssearch"></a>`search` | [`String!`](#string) | Search query for projects' full paths. |
+
+##### `Group.standardRole`
+
+Finds a single default role for the group. Available only for SaaS.
+
+DETAILS:
+**Introduced** in GitLab 17.6.
+**Status**: Experiment.
+
+Returns [`StandardRole`](#standardrole).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupstandardroleaccesslevel"></a>`accessLevel` | [`[MemberAccessLevel!]`](#memberaccesslevel) | Access level or levels to filter by. |
+
+##### `Group.standardRoles`
+
+Default roles available for the group. Available only for SaaS.
+
+DETAILS:
+**Introduced** in GitLab 17.4.
+**Status**: Experiment.
+
+Returns [`StandardRoleConnection`](#standardroleconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupstandardrolesaccesslevel"></a>`accessLevel` | [`[MemberAccessLevel!]`](#memberaccesslevel) | Access level or levels to filter by. |
 
 ##### `Group.timelogs`
 
@@ -26621,11 +26700,11 @@ Represents a member role.
 | ---- | ---- | ----------- |
 | <a id="memberrolebaseaccesslevel"></a>`baseAccessLevel` **{warning-solid}** | [`AccessLevel!`](#accesslevel) | **Introduced** in GitLab 16.5. **Status**: Experiment. Base access level for the custom role. |
 | <a id="memberrolecreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the member role was created. |
-| <a id="memberroledescription"></a>`description` | [`String`](#string) | Description of the member role. |
+| <a id="memberroledescription"></a>`description` | [`String`](#string) | Role description. |
 | <a id="memberroledetailspath"></a>`detailsPath` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.4. **Status**: Experiment. URL path to the role details webpage. |
 | <a id="memberroleeditpath"></a>`editPath` **{warning-solid}** | [`String!`](#string) | **Introduced** in GitLab 16.11. **Status**: Experiment. Web UI path to edit the custom role. |
 | <a id="memberroleenabledpermissions"></a>`enabledPermissions` **{warning-solid}** | [`CustomizablePermissionConnection!`](#customizablepermissionconnection) | **Introduced** in GitLab 16.5. **Status**: Experiment. Array of all permissions enabled for the custom role. |
-| <a id="memberroleid"></a>`id` | [`MemberRoleID!`](#memberroleid) | ID of the member role. |
+| <a id="memberroleid"></a>`id` | [`ID!`](#id) | Role ID. |
 | <a id="memberrolememberscount"></a>`membersCount` **{warning-solid}** | [`Int`](#int) | **Introduced** in GitLab 17.3. **Status**: Experiment. Number of times the role has been directly assigned to a group or project member. |
 | <a id="memberrolename"></a>`name` | [`String`](#string) | Role name. |
 | <a id="memberroleuserscount"></a>`usersCount` **{warning-solid}** | [`Int`](#int) | **Introduced** in GitLab 17.5. **Status**: Experiment. Number of users who have been directly assigned the role in at least one group or project. |
@@ -32732,6 +32811,18 @@ Represents the Geo replication and verification state of a project repository.
 | <a id="projectsavedreplyid"></a>`id` | [`ProjectsSavedReplyID!`](#projectssavedreplyid) | Global ID of the project-level saved reply. |
 | <a id="projectsavedreplyname"></a>`name` | [`String!`](#string) | Name of the saved reply. |
 
+### `ProjectSecret`
+
+Representation of a project secret.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectsecretdescription"></a>`description` | [`String!`](#string) | Description of the project secret. |
+| <a id="projectsecretname"></a>`name` | [`String!`](#string) | Name of the project secret. |
+| <a id="projectsecretproject"></a>`project` | [`Project!`](#project) | Project the secret belong to. |
+
 ### `ProjectSecretsManager`
 
 Representation of a project secrets manager.
@@ -34171,7 +34262,9 @@ Represents a standard role.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="standardroleaccesslevel"></a>`accessLevel` | [`Int!`](#int) | Access level as a number. |
+| <a id="standardroledescription"></a>`description` | [`String`](#string) | Role description. |
 | <a id="standardroledetailspath"></a>`detailsPath` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.4. **Status**: Experiment. URL path to the role details webpage. |
+| <a id="standardroleid"></a>`id` | [`ID!`](#id) | Role ID. |
 | <a id="standardrolememberscount"></a>`membersCount` **{warning-solid}** | [`Int`](#int) | **Introduced** in GitLab 17.3. **Status**: Experiment. Number of times the role has been directly assigned to a group or project member. |
 | <a id="standardrolename"></a>`name` | [`String`](#string) | Role name. |
 | <a id="standardroleuserscount"></a>`usersCount` **{warning-solid}** | [`Int`](#int) | **Introduced** in GitLab 17.5. **Status**: Experiment. Number of users who have been directly assigned the role in at least one group or project. |
@@ -36268,6 +36361,7 @@ Check permissions for the current user on a work item.
 | <a id="workitempermissionsadminworkitemlink"></a>`adminWorkItemLink` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_work_item_link` on this resource. |
 | <a id="workitempermissionscreatenote"></a>`createNote` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_note` on this resource. |
 | <a id="workitempermissionsdeleteworkitem"></a>`deleteWorkItem` | [`Boolean!`](#boolean) | If `true`, the user can perform `delete_work_item` on this resource. |
+| <a id="workitempermissionsmarknoteasinternal"></a>`markNoteAsInternal` | [`Boolean!`](#boolean) | If `true`, the user can perform `mark_note_as_internal` on this resource. |
 | <a id="workitempermissionsreadworkitem"></a>`readWorkItem` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_work_item` on this resource. |
 | <a id="workitempermissionssetworkitemmetadata"></a>`setWorkItemMetadata` | [`Boolean!`](#boolean) | If `true`, the user can perform `set_work_item_metadata` on this resource. |
 | <a id="workitempermissionsupdateworkitem"></a>`updateWorkItem` | [`Boolean!`](#boolean) | If `true`, the user can perform `update_work_item` on this resource. |
@@ -38683,12 +38777,12 @@ Access level of a group or project member.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="memberaccessleveldeveloper"></a>`DEVELOPER` | Developer access. |
-| <a id="memberaccesslevelguest"></a>`GUEST` | Guest access. |
-| <a id="memberaccesslevelmaintainer"></a>`MAINTAINER` | Maintainer access. |
-| <a id="memberaccesslevelminimal_access"></a>`MINIMAL_ACCESS` | Minimal access. |
-| <a id="memberaccesslevelowner"></a>`OWNER` | Owner access. |
-| <a id="memberaccesslevelreporter"></a>`REPORTER` | Reporter access. |
+| <a id="memberaccessleveldeveloper"></a>`DEVELOPER` | The Developer role gives users access to contribute code while restricting sensitive administrative actions. |
+| <a id="memberaccesslevelguest"></a>`GUEST` | The Guest role is for users who need visibility into a project or group but should not have the ability to make changes, such as external stakeholders. |
+| <a id="memberaccesslevelmaintainer"></a>`MAINTAINER` | The Maintainer role is primarily used for managing code reviews, approvals, and administrative settings for projects. This role can also manage project memberships. |
+| <a id="memberaccesslevelminimal_access"></a>`MINIMAL_ACCESS` | The Minimal Access role is for users who need the least amount of access into groups and projects. You can assign this role as a default, before giving a user another role with more permissions. |
+| <a id="memberaccesslevelowner"></a>`OWNER` | The Owner role is normally assigned to the individual or team responsible for managing and maintaining the group or creating the project. This role has the highest level of administrative control, and can manage all aspects of the group or project, including managing other Owners. |
+| <a id="memberaccesslevelreporter"></a>`REPORTER` | The Reporter role is suitable for team members who need to stay informed about a project or group but do not actively contribute code. |
 
 ### `MemberAccessLevelName`
 
@@ -42132,7 +42226,9 @@ Implementations:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="roleinterfacedescription"></a>`description` | [`String`](#string) | Role description. |
 | <a id="roleinterfacedetailspath"></a>`detailsPath` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.4. **Status**: Experiment. URL path to the role details webpage. |
+| <a id="roleinterfaceid"></a>`id` | [`ID!`](#id) | Role ID. |
 | <a id="roleinterfacememberscount"></a>`membersCount` **{warning-solid}** | [`Int`](#int) | **Introduced** in GitLab 17.3. **Status**: Experiment. Number of times the role has been directly assigned to a group or project member. |
 | <a id="roleinterfacename"></a>`name` | [`String`](#string) | Role name. |
 | <a id="roleinterfaceuserscount"></a>`usersCount` **{warning-solid}** | [`Int`](#int) | **Introduced** in GitLab 17.5. **Status**: Experiment. Number of users who have been directly assigned the role in at least one group or project. |
@@ -43136,6 +43232,7 @@ Defines which user roles, users, or groups can merge into a protected branch.
 | ---- | ---- | ----------- |
 | <a id="mergerequestsresolvernegatedparamsapprovedby"></a>`approvedBy` | [`[String!]`](#string) | Filters merge requests to exclude any that are approved by usernames in the given array. |
 | <a id="mergerequestsresolvernegatedparamsassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Filters merge requests to exclude any that are assigned to the usernames in the given array. |
+| <a id="mergerequestsresolvernegatedparamsauthorusername"></a>`authorUsername` | [`String`](#string) | Filters merge requests to exclude any that are authored by the given user. |
 | <a id="mergerequestsresolvernegatedparamslabels"></a>`labels` | [`[String!]`](#string) | Filters merge requests to exclude any that have the labels provided in the given array. |
 | <a id="mergerequestsresolvernegatedparamsmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Filters merge requests to those not in the given milestone. |
 | <a id="mergerequestsresolvernegatedparamsmyreactionemoji"></a>`myReactionEmoji` | [`String`](#string) | Filters merge requests to those without the given reaction from the authenticated user. |

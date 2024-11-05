@@ -105,5 +105,27 @@ RSpec.describe BulkImports::Groups::Stage, feature_category: :importers do
         )
       end
     end
+
+    describe 'migrate memberships flag' do
+      context 'when true' do
+        it 'includes members pipeline' do
+          entity.update!(migrate_memberships: true)
+
+          expect(described_class.new(entity).pipelines).to include(
+            hash_including({ pipeline: BulkImports::Common::Pipelines::MembersPipeline })
+          )
+        end
+      end
+
+      context 'when false' do
+        it 'does not include members pipeline' do
+          entity.update!(migrate_memberships: false)
+
+          expect(described_class.new(entity).pipelines).not_to include(
+            hash_including({ pipeline: BulkImports::Common::Pipelines::MembersPipeline })
+          )
+        end
+      end
+    end
   end
 end

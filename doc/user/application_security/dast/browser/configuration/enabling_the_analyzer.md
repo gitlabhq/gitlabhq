@@ -60,7 +60,7 @@ stages:
   - dast
 
 include:
-  - template: DAST.gitlab-ci.yml
+  - template: Security/DAST.gitlab-ci.yml
 
 dast:
   variables:

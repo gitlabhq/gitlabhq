@@ -86,6 +86,10 @@ module API
             type: Boolean,
             default: true,
             desc: 'Indicates group migration should include nested projects'
+          optional :migrate_memberships,
+            type: Boolean,
+            default: true,
+            desc: 'The option to migrate memberships or not'
 
           mutually_exclusive :destination_slug, :destination_name
           at_least_one_of :destination_slug, :destination_name

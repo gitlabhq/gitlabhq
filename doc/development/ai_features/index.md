@@ -152,7 +152,7 @@ correctly reach to AI Gateway:
    Gitlab::Llm::VertexAi::Client.new(User.first, unit_primitive: 'documentation_search').text_embeddings(content: "How can I create an issue?")
 
    # Test `/v1/chat/agent` endpoint
-   Gitlab::Llm::Chain::Requests::AiGateway.new(User.first).request(prompt: [{role: "user", content: "Hi, how are you?"}])
+   Gitlab::Llm::Chain::Requests::AiGateway.new(User.first).request({prompt: [{role: "user", content: "Hi, how are you?"}]})
    ```
 
 NOTE:
@@ -800,3 +800,114 @@ to make sure we are not logging user input and LLM-generated output.
 ## Security
 
 Refer to the [secure coding guidelines for Artificial Intelligence (AI) features](../secure_coding_guidelines.md#artificial-intelligence-ai-features).
+
+## Model Migration Process
+
+### Introduction
+
+LLM models are constantly evolving, and GitLab needs to regularly update our AI features to support newer models. This guide provides a structured approach for migrating AI features to new models while maintaining stability and reliability.
+
+### Purpose
+
+Provide a comprehensive guide for migrating AI models within GitLab.
+
+### Scope
+
+Applicable to all AI model-related teams at GitLab. We currently only support using Anthropic and Google Vertex models, with plans to support AWS Bedrock models in the [future](https://gitlab.com/gitlab-org/gitlab/-/issues/498119).
+
+### Prerequisites
+
+Before starting a model migration:
+
+- Verify the new model is supported in our current AI-Gateway API specification
+- Document any known behavioral changes or improvements in the new model
+- Ensure you have access to testing environments and monitoring tools
+- Complete model evaluation using the [Prompt Library](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library/-/blob/main/doc/how-to/run_duo_chat_eval.md)
+
+### Migration Tasks
+
+#### Migration Tasks for Anthropic Model
+
+- **Optional** - Investigate if the new model is supported within our current AI-Gateway API specification. This step can usually be skipped. However, sometimes to support a newer model, we may need to accommodate a new API format.
+- Add the new model to our [available models list](https://gitlab.com/gitlab-org/gitlab/-/blob/32fa9eaa3c8589ee7f448ae683710ec7bd82f36c/ee/lib/gitlab/llm/concerns/available_models.rb#L5-10).
+- Change the default model in our [AI-Gateway client](https://gitlab.com/gitlab-org/gitlab/-/blob/41361629b302f2c55e35701d2c0a73cff32f9013/ee/lib/gitlab/llm/chain/requests/ai_gateway.rb#L63-67). Please place the change around a feature flag. We may need to quickly rollback the change.
+- Update the model definitions in AI Gateway following the [agent definition guidelines](#2-create-an-agent-definition-in-the-ai-gateway)
+Note: While we're moving toward AI Gateway holding the prompts, feature flag implementation still requires a GitLab release.
+
+#### Migration Tasks for Vertex Models
+
+**Work in Progress**
+
+### Feature Flag Process
+
+#### Implementation Steps
+
+For implementing feature flags, refer to our [Feature Flags Development Guidelines](../feature_flags/index.md).
+
+NOTE:
+Feature flag implementations will affect self-hosted cloud-connected customers. These customers won't receive the model upgrade until the feature flag is removed from the AI Gateway codebase, as they won't have access to the new GitLab release.
+
+#### Model Selection Implementation
+
+The model selection logic should be implemented in:
+
+- AI Gateway client (`ee/lib/gitlab/llm/chain/requests/ai_gateway.rb`)
+- Model definitions in AI Gateway
+- Any custom implementations in specific features that override the default model
+
+#### Rollout Strategy
+
+- Enable the feature flag for a small percentage of users/groups initially
+- Monitor performance metrics and error rates
+- Gradually increase the rollout percentage
+- If issues arise, quickly disable the feature flag to rollback to the previous model
+- Once stability is confirmed, remove the feature flag and make the migration permanent
+
+### Scope of Work
+
+#### AI Features to Migrate
+
+- **Duo Chat Tools:**
+  - `ci_editor_assistant/prompts/anthropic.rb` - CI Editor
+  - `gitlab_documentation/executor.rb` - GitLab Documentation
+  - `epic_reader/prompts/anthropic.rb` - Epic Reader
+  - `issue_reader/prompts/anthropic.rb` - Issue Reader
+  - `merge_request_reader/prompts/anthropic.rb` - Merge Request Reader
+- **Chat Slash Commands:**
+  - `refactor_code/prompts/anthropic.rb` - Refactor
+  - `write_tests/prompts/anthropic.rb` - Write Tests
+  - `explain_code/prompts/anthropic.rb` - Explain Code
+  - `explain_vulnerability/executor.rb` - Explain Vulnerability
+- **Experimental Tools:**
+  - Summarize Comments Chat
+  - Fill MR Description
+
+### Testing and Validation
+
+#### Model Evaluation
+
+The `ai-model-validation` team created the following library to evaluate the performance of prompt changes as well as model changes. The [Prompt Library README.MD](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library/-/blob/main/doc/how-to/run_duo_chat_eval.md) provides details on how to evaluate the performance of AI features.
+
+> Another use-case for running chat evaluation is during feature development cycle. The purpose is to verify how the changes to the code base and prompts affect the quality of chat responses before the code reaches the production environment.
+
+For evaluation in merge request pipelines, we use:
+
+- One click [Duo Chat evaluation](https://gitlab.com/gitlab-org/gitlab/-/issues/497305)
+- Automated evaluation in [merge request pipelines](https://gitlab.com/gitlab-org/gitlab/-/issues/495410)
+
+#### Local Development
+
+A valuable tool for local development to ensure the changes are correct outside of unit tests is to use [LangSmith](duo_chat.md#tracing-with-langsmith) for tracing. The tool allows you to trace LLM calls within Duo Chat to verify the LLM tool is using the correct model.
+
+To prevent regressions, we also have CI jobs to make sure our tools are working correctly. For more details, see the [Duo Chat testing section](duo_chat.md#gitlab-duo-chat-qa-evaluation-test).
+
+### Monitoring and Metrics
+
+Monitor the following during migration:
+
+- **Performance Metrics:**
+  - Error ratio and response latency apdex for each AI action on [Sidekiq Service dashboard](https://dashboards.gitlab.net/d/sidekiq-main/sidekiq-overview)
+  - Spent tokens, usage of each AI feature and other statistics on [periscope dashboard](https://app.periscopedata.com/app/gitlab/1137231/Ai-Features)
+  - [AI Gateway logs](https://log.gprd.gitlab.net/app/r/s/zKEel)
+  - [AI Gateway metrics](https://dashboards.gitlab.net/d/ai-gateway-main/ai-gateway3a-overview?orgId=1)
+  - [Feature usage dashboard via proxy](https://log.gprd.gitlab.net/app/r/s/egybF)

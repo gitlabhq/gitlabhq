@@ -21,7 +21,7 @@ module BulkImports
       # instance version is 15.2.0, 15.2.1, 16.0.0, etc.
 
       def config
-        {
+        base_config = {
           project: {
             pipeline: BulkImports::Projects::Pipelines::ProjectPipeline,
             stage: 0
@@ -38,10 +38,6 @@ module BulkImports
           },
           project_attributes: {
             pipeline: BulkImports::Projects::Pipelines::ProjectAttributesPipeline,
-            stage: 1
-          },
-          members: {
-            pipeline: BulkImports::Common::Pipelines::MembersPipeline,
             stage: 1
           },
           labels: {
@@ -143,6 +139,23 @@ module BulkImports
             stage: 6
           }
         }
+
+        base_config.merge(members_pipeline)
+      end
+
+      def members_pipeline
+        return {} unless migrate_memberships?
+
+        {
+          members: {
+            pipeline: BulkImports::Common::Pipelines::MembersPipeline,
+            stage: 1
+          }
+        }
+      end
+
+      def migrate_memberships?
+        bulk_import_entity.migrate_memberships
       end
     end
   end

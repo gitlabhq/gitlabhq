@@ -160,6 +160,9 @@ module Resolvers
         as: :assignee_username,
         required: false,
         description: 'Filters merge requests to exclude any that are assigned to the usernames in the given array.'
+      argument :author_username, GraphQL::Types::String,
+        required: false,
+        description: 'Filters merge requests to exclude any that are authored by the given user.'
       argument :labels, [GraphQL::Types::String],
         required: false,
         as: :label_name,

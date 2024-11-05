@@ -24,7 +24,6 @@ RSpec.describe VirtualRegistries::Packages::Maven::Registry, type: :model, featu
   describe 'validations' do
     it { is_expected.to validate_uniqueness_of(:group) }
     it { is_expected.to validate_presence_of(:group) }
-    it { is_expected.to validate_numericality_of(:cache_validity_hours).only_integer.is_greater_than_or_equal_to(0) }
   end
 
   describe '.for_group' do

@@ -43,16 +43,16 @@ describe('~/environments/environment_details/index.vue', () => {
       ${'commit'}             | ${Commit}                                   | ${deployment.commit}
       ${'job'}                | ${DeploymentJob}                            | ${{ job: deployment.job }}
       ${'created date'}       | ${'[data-testid="deployment-created-at"]'}  | ${{ time: deployment.created }}
-      ${'deployed date'}      | ${'[data-testid="deployment-deployed-at"]'} | ${{ time: deployment.deployed }}
+      ${'finished date'}      | ${'[data-testid="deployment-finished-at"]'} | ${{ time: deployment.finished }}
       ${'deployment actions'} | ${DeploymentActions}                        | ${{ actions: deployment.actions, rollback: deployment.rollback, approvalEnvironment: deployment.deploymentApproval, deploymentWebPath: deployment.webPath }}
     `('should show the correct component for $cell', ({ component, props }) => {
       expect(row.findComponent(component).props()).toMatchObject(props);
     });
 
-    it('hides the deployed at timestamp for not-finished deployments', () => {
+    it('hides the finished at timestamp for not-finished deployments', () => {
       row = wrapper.find('tr');
 
-      expect(row.find('[data-testid="deployment-deployed-at"]').exists()).toBe(false);
+      expect(row.find('[data-testid="deployment-finished-at"]').exists()).toBe(false);
     });
   });
 });

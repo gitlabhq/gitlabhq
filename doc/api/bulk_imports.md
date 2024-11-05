@@ -49,6 +49,7 @@ POST /bulk_imports
 | `entities[destination_name]`      | String | no       | Deprecated: Use `destination_slug` instead. Destination slug for the entity. |
 | `entities[destination_namespace]` | String | yes      | Full path of the destination group [namespace](../user/namespace/index.md) for the entity. Must be an existing group in the destination instance. |
 | `entities[migrate_projects]`      | Boolean | no      | Also import all nested projects of the group (if `source_type` is `group_entity`). Defaults to `true`. |
+| `entities[migrate_memberships]`   | Boolean | no      | Import user memberships. Defaults to `true`. |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token_for_destination_gitlab_instance>" "https://destination-gitlab-instance.example.com/api/v4/bulk_imports" \
@@ -171,6 +172,7 @@ curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
         "updated_at": "2021-06-18T09:47:51.867Z",
         "failures": [],
         "migrate_projects": true,
+        "migrate_memberships": true,
         "has_failures": false,
         "stats": {
             "labels": {
@@ -213,6 +215,7 @@ curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
             }
         ],
         "migrate_projects": true,
+        "migrate_memberships": true,
         "has_failures": false,
         "stats": { }
     }
@@ -294,6 +297,7 @@ curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
             }
         ],
         "migrate_projects": true,
+        "migrate_memberships": true,
         "has_failures": true,
         "stats": {
             "labels": {
@@ -350,6 +354,7 @@ curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
         }
     ],
     "migrate_projects": true,
+    "migrate_memberships": true,
     "has_failures": true,
     "stats": {
         "labels": {

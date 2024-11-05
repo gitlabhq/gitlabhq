@@ -39,6 +39,7 @@ RSpec.describe VirtualRegistries::Packages::Maven::Upstream, type: :model, featu
     it { is_expected.to validate_length_of(:url).is_at_most(255) }
     it { is_expected.to validate_length_of(:username).is_at_most(255) }
     it { is_expected.to validate_length_of(:password).is_at_most(255) }
+    it { is_expected.to validate_numericality_of(:cache_validity_hours).only_integer.is_greater_than_or_equal_to(0) }
 
     context 'for url' do
       where(:url, :valid, :error_messages) do

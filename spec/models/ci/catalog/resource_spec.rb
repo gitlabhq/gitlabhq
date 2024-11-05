@@ -36,6 +36,12 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
 
   it do
     is_expected.to(
+      have_many(:component_last_usages).class_name('Ci::Catalog::Resources::Components::LastUsage')
+        .with_foreign_key(:catalog_resource_id))
+  end
+
+  it do
+    is_expected.to(
       have_many(:versions).class_name('Ci::Catalog::Resources::Version').with_foreign_key(:catalog_resource_id))
   end
 

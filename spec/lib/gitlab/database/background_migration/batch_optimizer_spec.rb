@@ -63,7 +63,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchOptimizer do
 
     context 'reaching the upper limit for an increase' do
       it 'caps the batch size multiplier at 20% when increasing' do
-        time_efficiency = 0.1  # this would result in a factor of 10 if not limited
+        time_efficiency = 0.1 # this would result in a factor of 10 if not limited
 
         mock_efficiency(time_efficiency)
 

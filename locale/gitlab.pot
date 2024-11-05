@@ -292,6 +292,11 @@ msgid_plural "%d file deletions"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d finding must be resolved"
+msgid_plural "%d findings must be resolved"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d fork"
 msgid_plural "%d forks"
 msgstr[0] ""
@@ -898,6 +903,9 @@ msgid "%{human_readable_key} exceeds %{max_value_length} characters"
 msgstr ""
 
 msgid "%{human_readable_key} is less than %{min_value_length} characters"
+msgstr ""
+
+msgid "%{icon} %{severity} - %{name}"
 msgstr ""
 
 msgid "%{integrations_link_start}Integrations%{link_end} enable you to make third-party applications part of your GitLab workflow. If the available integrations don't meet your needs, consider using a %{webhooks_link_start}webhook%{link_end}."
@@ -14498,6 +14506,9 @@ msgstr ""
 msgid "ComplianceStandardsAdherence|Group by"
 msgstr ""
 
+msgid "ComplianceStandardsAdherence|Have SAST scanner configured in pipeline configuration"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Have a valid rule that prevents author-approved merge requests from being merged"
 msgstr ""
 
@@ -14559,6 +14570,12 @@ msgid "ComplianceStandardsAdherence|Raw text search is not currently supported. 
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Requirement"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|SAST scan"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|SAST scanner is not configured in the pipeline configuration for the default branch."
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Standard"
@@ -18889,9 +18906,6 @@ msgstr ""
 msgid "DeployTokens|Your new project deploy token has been created."
 msgstr ""
 
-msgid "Deployed"
-msgstr ""
-
 msgid "Deployed %{timeago}"
 msgstr ""
 
@@ -21743,6 +21757,9 @@ msgstr ""
 msgid "Environment|Cluster agent not found."
 msgstr ""
 
+msgid "Environment|Created on"
+msgstr ""
+
 msgid "Environment|Dashboard"
 msgstr ""
 
@@ -21753,6 +21770,9 @@ msgid "Environment|Environment status"
 msgstr ""
 
 msgid "Environment|External IP"
+msgstr ""
+
+msgid "Environment|Finished on"
 msgstr ""
 
 msgid "Environment|Flux Sync"
@@ -33568,7 +33588,7 @@ msgstr ""
 msgid "MemberRole|Select at least one permission."
 msgstr ""
 
-msgid "MemberRole|The Developer role strikes a balance between giving users the necessary access to contribute code while restricting sensitive administrative actions."
+msgid "MemberRole|The Developer role gives users access to contribute code while restricting sensitive administrative actions."
 msgstr ""
 
 msgid "MemberRole|The Guest role is for users who need visibility into a project or group but should not have the ability to make changes, such as external stakeholders."
@@ -36427,6 +36447,9 @@ msgid "No plan"
 msgstr ""
 
 msgid "No policy matches this license"
+msgstr ""
+
+msgid "No policy violations found"
 msgstr ""
 
 msgid "No preview for this file type"
@@ -41317,6 +41340,17 @@ msgid "Policies"
 msgstr ""
 
 msgid "Policy '%{escalation_policy_name}' does not exist."
+msgstr ""
+
+msgid "Policy `%{policyName}` found %{count} violation"
+msgid_plural "Policy `%{policyName}` found %{count} violations"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Policy `%{policyName}` is being evaluated"
+msgstr ""
+
+msgid "Policy `%{policyName}` passed"
 msgstr ""
 
 msgid "Policy management project does not have any policies in %{policy_path}"
@@ -46551,6 +46585,9 @@ msgid "Restricted shift times are not available for hourly shifts"
 msgstr ""
 
 msgid "Results limit reached"
+msgstr ""
+
+msgid "Results pending..."
 msgstr ""
 
 msgid "Resume"

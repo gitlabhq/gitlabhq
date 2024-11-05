@@ -1,0 +1,13 @@
+---
+table_name: catalog_resource_component_last_usages
+classes:
+- Ci::Catalog::Resources::Components::LastUsage
+feature_categories:
+- pipeline_composition
+description: Tracks when a project includes a CI component in a pipeline with revamped
+  table schema.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/168512
+milestone: '17.6'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  component_project_id: projects

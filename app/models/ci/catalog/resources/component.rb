@@ -14,6 +14,7 @@ module Ci
         belongs_to :catalog_resource, class_name: 'Ci::Catalog::Resource', inverse_of: :components
         belongs_to :version, class_name: 'Ci::Catalog::Resources::Version', inverse_of: :components
         has_many :usages, class_name: 'Ci::Catalog::Resources::Components::Usage', inverse_of: :component
+        has_many :last_usages, class_name: 'Ci::Catalog::Resources::Components::LastUsage', inverse_of: :component
 
         # BulkInsertSafe must be included after the `has_many` declaration, otherwise it raises
         # an error about the save callback that is auto generated for this association.

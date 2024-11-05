@@ -68,11 +68,11 @@ $sticky-header-z-index: 98;
 .settings-sticky-header,
 .settings-sticky-footer {
   position: sticky;
-  z-index: $sticky-header-z-index;
   @apply gl-bg-default;
 }
 
 .settings-sticky-header {
+  z-index: $sticky-header-z-index;
   top: $calc-application-header-height;
 
   &::before {
@@ -93,6 +93,7 @@ $sticky-header-z-index: 98;
 }
 
 .settings-sticky-footer {
+  z-index: #{$sticky-header-z-index +1};
   bottom: 0;
   padding: $gl-padding-8 0;
   box-shadow: 0 -1px 0 var(--gl-border-color-default);

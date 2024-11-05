@@ -105,7 +105,8 @@ module BulkImports
             source_full_path: entity_params[:source_full_path],
             destination_slug: entity_params[:destination_slug] || entity_params[:destination_name],
             destination_namespace: entity_params[:destination_namespace],
-            migrate_projects: Gitlab::Utils.to_boolean(entity_params[:migrate_projects], default: true)
+            migrate_projects: Gitlab::Utils.to_boolean(entity_params[:migrate_projects], default: true),
+            migrate_memberships: Gitlab::Utils.to_boolean(entity_params[:migrate_memberships], default: true)
           )
         end
         bulk_import

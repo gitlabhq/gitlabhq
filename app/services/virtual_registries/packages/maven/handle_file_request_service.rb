@@ -64,7 +64,7 @@ module VirtualRegistries
         def cache_response_still_valid?
           return false unless cached_response
 
-          unless cached_response.stale?(registry: registry)
+          unless cached_response.stale?
             cached_response.bump_statistics
             return true
           end

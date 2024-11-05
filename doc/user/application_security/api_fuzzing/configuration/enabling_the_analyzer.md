@@ -129,7 +129,7 @@ Example `.gitlab-ci.yml` file using an OpenAPI Specification:
      - fuzz
 
    include:
-     - template: API-Fuzzing.gitlab-ci.yml
+     - template: Security/API-Fuzzing.gitlab-ci.yml
 
    variables:
      FUZZAPI_PROFILE: Quick-10
@@ -195,7 +195,7 @@ Example `.gitlab-ci.yml` file using a HAR file:
      - fuzz
 
    include:
-     - template: API-Fuzzing.gitlab-ci.yml
+     - template: Security/API-Fuzzing.gitlab-ci.yml
 
    variables:
      FUZZAPI_PROFILE: Quick-10
@@ -253,7 +253,7 @@ stages:
   - fuzz
 
 include:
-  - template: API-Fuzzing.gitlab-ci.yml
+  - template: Security/API-Fuzzing.gitlab-ci.yml
 
 apifuzzer_fuzz:
   variables:
@@ -294,7 +294,7 @@ stages:
   - fuzz
 
 include:
-  - template: API-Fuzzing.gitlab-ci.yml
+  - template: Security/API-Fuzzing.gitlab-ci.yml
 
 apifuzzer_fuzz:
   variables:
@@ -310,7 +310,7 @@ stages:
   - fuzz
 
 include:
-  - template: API-Fuzzing.gitlab-ci.yml
+  - template: Security/API-Fuzzing.gitlab-ci.yml
 
 apifuzzer_fuzz:
   variables:
@@ -380,7 +380,7 @@ Example `.gitlab-ci.yml` file using a Postman Collection file:
      - fuzz
 
    include:
-     - template: API-Fuzzing.gitlab-ci.yml
+     - template: Security/API-Fuzzing.gitlab-ci.yml
 
    variables:
      FUZZAPI_PROFILE: Quick-10
@@ -664,7 +664,7 @@ stages:
      - fuzz
 
 include:
-  - template: API-Fuzzing.gitlab-ci.yml
+  - template: Security/API-Fuzzing.gitlab-ci.yml
 
 variables:
   FUZZAPI_PROFILE: Quick-10
@@ -684,7 +684,7 @@ stages:
   - fuzz
 
 include:
-  - template: API-Fuzzing.gitlab-ci.yml
+  - template: Security/API-Fuzzing.gitlab-ci.yml
 
 variables:
   FUZZAPI_PROFILE: Quick
@@ -704,7 +704,7 @@ stages:
   - fuzz
 
 include:
-  - template: API-Fuzzing.gitlab-ci.yml
+  - template: Security/API-Fuzzing.gitlab-ci.yml
 
 variables:
   FUZZAPI_PROFILE: Quick
@@ -724,7 +724,7 @@ stages:
   - fuzz
 
 include:
-  - template: API-Fuzzing.gitlab-ci.yml
+  - template: Security/API-Fuzzing.gitlab-ci.yml
 
 variables:
   FUZZAPI_PROFILE: Quick
@@ -758,7 +758,7 @@ stages:
   - fuzz
 
 include:
-  - template: API-Fuzzing.gitlab-ci.yml
+  - template: Security/API-Fuzzing.gitlab-ci.yml
 
 variables:
   FUZZAPI_PROFILE: Quick
@@ -790,7 +790,7 @@ stages:
   - fuzz
 
 include:
-  - template: API-Fuzzing.gitlab-ci.yml
+  - template: Security/API-Fuzzing.gitlab-ci.yml
 
 variables:
   FUZZAPI_PROFILE: Quick
@@ -825,7 +825,7 @@ stages:
   - fuzz
 
 include:
-  - template: API-Fuzzing.gitlab-ci.yml
+  - template: Security/API-Fuzzing.gitlab-ci.yml
 
 variables:
   FUZZAPI_PROFILE: Quick

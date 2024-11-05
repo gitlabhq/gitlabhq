@@ -1407,10 +1407,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-3.120.0.tgz#0f26908d4ded2e3f63b6e5028afbe8b59b7fe6dc"
   integrity sha512-lsMKCgg0o3FLbNzvNPahkDtKGOH4U99bHff2aGlyqYFIpPvGFes/DfGr0IXVtWdfavZyoT42zE0/rquG64bANw==
 
-"@gitlab/ui@101.6.2":
-  version "101.6.2"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-101.6.2.tgz#59de2626304814bd841257a3313a5ed6ee24ce73"
-  integrity sha512-ecEW9weQcsZH+nDcewoJF0PK7EOR/Eju7xhHXh6v8gZqBwIQH9F+AW2ye6qTJkkLXN0E4kLJ57/D2anc6gpStg==
+"@gitlab/ui@101.7.1":
+  version "101.7.1"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-101.7.1.tgz#6b61813b9815dfa04b91ad69b89135abdf0cdffd"
+  integrity sha512-0yv1fziG6QfzVChXlzJbwgqqvBzsbSRC+Cy0xxxes+tNKBO0NOIFlZFB3KeCXKeGy6eaX0lq165NQ70AcNgZvA==
   dependencies:
     "@floating-ui/dom" "1.4.3"
     echarts "^5.3.2"
@@ -4321,12 +4321,7 @@ apollo3-cache-persist@^0.14.1:
   resolved "https://registry.yarnpkg.com/apollo3-cache-persist/-/apollo3-cache-persist-0.14.1.tgz#8f4c016b4d413aa28f68429b37c8d12524b5983b"
   integrity sha512-p/jNzN/MmSd0TmY7/ts0B3qi0SdQ3w9yNLQdKqB3GGb9xATUlAum2v4hSrTeWd/DZKK2Z7Xg5kFXTH6nNVnKSQ==
 
-"aproba@^1.0.3 || ^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/aproba/-/aproba-2.0.0.tgz#52520b8ae5b569215b354efc0caa3fe1e45a8adc"
-  integrity sha512-lYe4Gx7QT+MKGbDsA+Z+he/Wtef0BiwDOlK/XkBrdfsh9J/jPPXbX0tE9x9cl27Tmu5gg3QUbUrQYa/y+KOHPQ==
-
-aproba@^1.1.1:
+"aproba@^1.0.3 || ^2.0.0", aproba@^1.1.1:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/aproba/-/aproba-1.2.0.tgz#6802e6264efd18c790a1b0d517f0f2627bf2c94a"
   integrity sha512-Y9J6ZjXtoYh8RnXVCMOU/ttDmk1aBjunq9vO0ta5x85WDQiQfUF9sIPBITdbiiIVcBo03Hi3jMxigBtsddlXRw==

@@ -54,12 +54,12 @@ export default {
         data-testid="deployment-created-at"
       />
     </template>
-    <template #cell(deployed)="{ item }">
+    <template #cell(finished)="{ item }">
       <time-ago-tooltip
-        v-if="item.deployed"
-        :time="item.deployed"
+        v-if="item.finished"
+        :time="item.finished"
         enable-truncation
-        data-testid="deployment-deployed-at"
+        data-testid="deployment-finished-at"
       />
     </template>
     <template #cell(actions)="{ item }">

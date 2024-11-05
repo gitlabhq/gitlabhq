@@ -133,6 +133,17 @@ RSpec.describe Resolvers::MergeRequestsResolver, feature_category: :code_review_
       end
     end
 
+    context 'with negated author argument' do
+      let_it_be(:author) { current_user }
+      let_it_be(:different_author_mr) { create(:merge_request, **common_attrs, author: create(:user)) }
+
+      it 'excludes merge requests with given author from selection' do
+        result = resolve_mr(project, not: { author_username: author.username })
+
+        expect(result).to contain_exactly(different_author_mr)
+      end
+    end
+
     context 'with source branches argument' do
       it 'takes one argument' do
         result = resolve_mr(project, source_branches: [merge_request_3.source_branch])

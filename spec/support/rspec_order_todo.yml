@@ -1911,7 +1911,6 @@
 - './ee/spec/services/ci/compare_license_scanning_reports_collapsed_service_spec.rb'
 - './ee/spec/services/ci/compare_license_scanning_reports_service_spec.rb'
 - './ee/spec/services/ci/compare_metrics_reports_service_spec.rb'
-- './ee/spec/services/ci/compare_security_reports_service_spec.rb'
 - './ee/spec/services/ci/copy_cross_database_associations_service_spec.rb'
 - './ee/spec/services/ci/create_pipeline_service/compliance_spec.rb'
 - './ee/spec/services/ci/create_pipeline_service/cross_needs_artifacts_spec.rb'

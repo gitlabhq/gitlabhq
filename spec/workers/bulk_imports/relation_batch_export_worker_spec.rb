@@ -9,6 +9,8 @@ RSpec.describe BulkImports::RelationBatchExportWorker, feature_category: :import
   let(:job_args) { [user.id, batch.id] }
 
   describe '#perform' do
+    subject(:perform) { described_class.new.perform(user.id, batch.id) }
+
     include_examples 'an idempotent worker' do
       it 'executes RelationBatchExportService' do
         service = instance_double(BulkImports::RelationBatchExportService)
@@ -20,6 +22,51 @@ RSpec.describe BulkImports::RelationBatchExportWorker, feature_category: :import
         expect(service).to receive(:execute).twice
 
         perform_multiple(job_args)
+      end
+    end
+
+    context 'when the max number of exports have already started' do
+      let_it_be(:existing_export) { create(:bulk_import_export_batch, :started) }
+
+      before do
+        stub_application_setting(concurrent_relation_batch_export_limit: 1)
+      end
+
+      it 'does not start the export and schedules it for later' do
+        expect(described_class).to receive(:perform_in).with(described_class::PERFORM_DELAY, user.id, batch.id)
+
+        expect(BulkImports::RelationBatchExportService).not_to receive(:new)
+
+        perform
+      end
+
+      it 'resets the expiration date for the cache key' do
+        cache_key = BulkImports::BatchedRelationExportService.cache_key(batch.export_id, batch.id)
+        Gitlab::Cache::Import::Caching.write(cache_key, "test", timeout: 1.hour.to_i)
+
+        perform
+
+        expires_in_seconds = Gitlab::Cache::Import::Caching.with_redis do |redis|
+          redis.ttl(Gitlab::Cache::Import::Caching.cache_key_for(cache_key))
+        end
+
+        expect(expires_in_seconds).to be_within(10).of(BulkImports::BatchedRelationExportService::CACHE_DURATION.to_i)
+      end
+
+      context 'when the export batch started longer ago than the timeout time' do
+        before do
+          existing_export.update!(updated_at: (BulkImports::ExportBatch::TIMEOUT_AFTER_START + 1.minute).ago)
+        end
+
+        it 'starts the export and does not schedule it for later' do
+          expect(described_class).not_to receive(:perform_in).with(described_class::PERFORM_DELAY, user.id, batch.id)
+
+          expect_next_instance_of(BulkImports::RelationBatchExportService) do |instance|
+            expect(instance).to receive(:execute)
+          end
+
+          perform
+        end
       end
     end
   end

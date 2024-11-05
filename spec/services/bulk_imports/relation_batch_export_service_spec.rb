@@ -42,6 +42,10 @@ RSpec.describe BulkImports::RelationBatchExportService, feature_category: :impor
       service.execute
     end
 
+    it 'updates export updated_at so the timeout resets' do
+      expect { service.execute }.to change { export.reload.updated_at }
+    end
+
     context 'when relation is empty and there is nothing to export' do
       let_it_be(:export) { create(:bulk_import_export, :batched, project: project, relation: 'milestones') }
       let_it_be(:batch) { create(:bulk_import_export_batch, export: export) }

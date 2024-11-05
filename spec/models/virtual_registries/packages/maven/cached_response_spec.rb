@@ -229,10 +229,10 @@ RSpec.describe VirtualRegistries::Packages::Maven::CachedResponse, type: :model,
     end
 
     let(:threshold) do
-      cached_response.upstream_checked_at + cached_response.upstream.registry.cache_validity_hours.hours
+      cached_response.upstream_checked_at + cached_response.upstream.cache_validity_hours.hours
     end
 
-    subject { cached_response.stale?(registry: cached_response.upstream.registry) }
+    subject { cached_response.stale? }
 
     context 'when before the threshold' do
       before do
@@ -258,9 +258,9 @@ RSpec.describe VirtualRegistries::Packages::Maven::CachedResponse, type: :model,
       it { is_expected.to eq(true) }
     end
 
-    context 'with no registry' do
+    context 'with no upstream' do
       before do
-        cached_response.upstream.registry = nil
+        cached_response.upstream = nil
       end
 
       it { is_expected.to eq(true) }
@@ -268,7 +268,7 @@ RSpec.describe VirtualRegistries::Packages::Maven::CachedResponse, type: :model,
 
     context 'with 0 cache validity hours' do
       before do
-        cached_response.upstream.registry.cache_validity_hours = 0
+        cached_response.upstream.cache_validity_hours = 0
       end
 
       it { is_expected.to eq(false) }

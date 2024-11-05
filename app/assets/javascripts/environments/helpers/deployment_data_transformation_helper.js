@@ -132,7 +132,7 @@ export const convertToDeploymentTableRow = (deploymentNode, environment) => {
       label: `${deploymentNode.job.name} (#${getIdFromGraphQLId(deploymentNode.job.id)})`,
     },
     created: deploymentNode.createdAt || '',
-    deployed: deploymentNode.finishedAt || '',
+    finished: deploymentNode.finishedAt || '',
     actions: getActionsFromDeploymentNode(deploymentNode, lastDeployment?.job?.name),
     rollback: getRollbackActionFromDeploymentNode(deploymentNode, environment),
     deploymentApproval: getDeploymentApprovalFromDeploymentNode(deploymentNode, environment),

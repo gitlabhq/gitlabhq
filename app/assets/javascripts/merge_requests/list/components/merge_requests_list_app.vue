@@ -285,7 +285,6 @@ export default {
           token: UserToken,
           dataType: 'user',
           defaultUsers: [],
-          operators: OPERATORS_IS,
           fullPath: this.fullPath,
           isProject: true,
           recentSuggestionsStorageKey: `${this.fullPath}-merge-requests-recent-tokens-author`,

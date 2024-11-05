@@ -24,6 +24,8 @@ module Ci
         inverse_of: :catalog_resource
       has_many :sync_events, class_name: 'Ci::Catalog::Resources::SyncEvent', foreign_key: :catalog_resource_id,
         inverse_of: :catalog_resource
+      has_many :component_last_usages, class_name: 'Ci::Catalog::Resources::Components::LastUsage',
+        foreign_key: :catalog_resource_id, inverse_of: :catalog_resource
 
       enum verification_level: VerifiedNamespace::VERIFICATION_LEVELS
 

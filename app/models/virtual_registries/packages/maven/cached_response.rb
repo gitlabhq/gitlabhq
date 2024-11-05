@@ -79,14 +79,11 @@ module VirtualRegistries
           File.basename(relative_path)
         end
 
-        # The registry parameter is there to counter a bug with has_one :through records that will fire an extra
-        # database query.
-        # See https://github.com/rails/rails/issues/51817.
-        def stale?(registry:)
-          return true unless registry
-          return false if registry.cache_validity_hours == 0
+        def stale?
+          return true unless upstream
+          return false if upstream.cache_validity_hours == 0
 
-          (upstream_checked_at + registry.cache_validity_hours.hours).past?
+          (upstream_checked_at + upstream.cache_validity_hours.hours).past?
         end
 
         def bump_statistics(include_upstream_checked_at: false)

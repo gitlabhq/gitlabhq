@@ -372,6 +372,8 @@ in.
 
 ## Disable two-factor authentication
 
+> - Ability to disable OTP authenticator and WebAuthn devices individually or simultaneously [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393419) in GitLab 17.6.
+
 You can disable the OTP authenticator and WebAuthn devices individually or simultaneously. To disable them simultaneously:
 
 1. Access your [**User settings**](../index.md#access-your-user-settings).

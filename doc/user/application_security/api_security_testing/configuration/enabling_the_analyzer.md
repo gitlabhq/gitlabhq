@@ -75,7 +75,7 @@ stages:
   - dast
 
 include:
-  - template: API-Security.gitlab-ci.yml
+  - template: Security/API-Security.gitlab-ci.yml
 
 variables:
   APISEC_PROFILE: Quick
@@ -139,7 +139,7 @@ stages:
   - dast
 
 include:
-  - template: API-Security.gitlab-ci.yml
+  - template: Security/API-Security.gitlab-ci.yml
 
 variables:
   APISEC_PROFILE: Quick
@@ -196,7 +196,7 @@ stages:
   - dast
 
 include:
-  - template: API-Security.gitlab-ci.yml
+  - template: Security/API-Security.gitlab-ci.yml
 
 api_security:
   variables:
@@ -237,7 +237,7 @@ stages:
   - dast
 
 include:
-  - template: API-Security.gitlab-ci.yml
+  - template: Security/API-Security.gitlab-ci.yml
 
 api_security:
   variables:
@@ -253,7 +253,7 @@ stages:
   - dast
 
 include:
-  - template: API-Security.gitlab-ci.yml
+  - template: Security/API-Security.gitlab-ci.yml
 
 api_security:
   variables:
@@ -316,7 +316,7 @@ stages:
   - dast
 
 include:
-  - template: API-Security.gitlab-ci.yml
+  - template: Security/API-Security.gitlab-ci.yml
 
 variables:
   APISEC_PROFILE: Quick
@@ -598,7 +598,7 @@ stages:
   - dast
 
 include:
-  - template: API-Security.gitlab-ci.yml
+  - template: Security/API-Security.gitlab-ci.yml
 
 variables:
   APISEC_PROFILE: Quick
@@ -618,7 +618,7 @@ stages:
   - dast
 
 include:
-  - template: API-Security.gitlab-ci.yml
+  - template: Security/API-Security.gitlab-ci.yml
 
 variables:
   APISEC_PROFILE: Quick
@@ -638,7 +638,7 @@ stages:
   - dast
 
 include:
-  - template: API-Security.gitlab-ci.yml
+  - template: Security/API-Security.gitlab-ci.yml
 
 variables:
   APISEC_PROFILE: Quick
@@ -657,7 +657,7 @@ stages:
   - dast
 
 include:
-  - template: API-Security.gitlab-ci.yml
+  - template: Security/API-Security.gitlab-ci.yml
 
 variables:
   APISEC_PROFILE: Quick
@@ -691,7 +691,7 @@ stages:
   - dast
 
 include:
-  - template: API-Security.gitlab-ci.yml
+  - template: Security/API-Security.gitlab-ci.yml
 
 variables:
   APISEC_PROFILE: Quick
@@ -723,7 +723,7 @@ stages:
   - dast
 
 include:
-  - template: API-Security.gitlab-ci.yml
+  - template: Security/API-Security.gitlab-ci.yml
 
 variables:
   APISEC_PROFILE: Quick
@@ -758,7 +758,7 @@ stages:
   - dast
 
 include:
-  - template: API-Security.gitlab-ci.yml
+  - template: Security/API-Security.gitlab-ci.yml
 
 variables:
   APISEC_PROFILE: Quick

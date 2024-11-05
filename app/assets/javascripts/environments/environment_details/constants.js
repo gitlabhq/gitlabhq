@@ -47,8 +47,8 @@ export const ENVIRONMENT_DETAILS_TABLE_FIELDS = [
     thClass: '!gl-border-t-0',
   },
   {
-    key: 'deployed',
-    label: __('Deployed'),
+    key: 'finished',
+    label: __('Finished'),
     columnClass: 'gl-w-2/20',
     tdClass: '!gl-align-middle gl-whitespace-nowrap',
     thClass: '!gl-border-t-0',
@@ -74,3 +74,17 @@ export const translations = {
 
 export const environmentsLearnMorePath = helpPagePath('ci/environments/index');
 export const environmentsHelpPagePath = helpPagePath('ci/yaml/index', { anchor: 'environment' });
+
+export const DEPLOYMENTS_SORT_OPTIONS = [
+  {
+    value: 'createdAt',
+    text: s__('Environment|Created on'),
+  },
+  {
+    value: 'finishedAt',
+    text: s__('Environment|Finished on'),
+  },
+];
+
+export const DIRECTION_DESCENDING = 'DESC';
+export const DIRECTION_ASCENDING = 'ASC';
