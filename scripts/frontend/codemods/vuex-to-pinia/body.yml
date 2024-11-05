@@ -1,0 +1,161 @@
+id: state
+language: JavaScript
+severity: error
+rule:
+  pattern: state.$$$REST
+  inside:
+    kind: export_statement
+    stopBy: end
+fix: this.$$$REST
+
+---
+
+id: state-id
+language: JavaScript
+severity: error
+rule:
+  pattern: state
+  kind: identifier
+  inside:
+    any:
+      - kind: call_expression
+        inside:
+          kind: export_statement
+          stopBy: end
+      - kind: variable_declarator
+        inside:
+          kind: export_statement
+          stopBy: end
+    stopBy:
+      kind: formal_parameters
+fix: this
+
+---
+
+id: root-named-state
+language: JavaScript
+severity: error
+rule:
+  pattern: rootState.$STORE_NAME.$$$REST
+transform:
+  PRE:
+    replace:
+      source: $STORE_NAME
+      replace: (?<STORE>.+)
+      by: use-$STORE
+  STORE:
+    convert:
+      source: $PRE
+      toCase: camelCase
+fix: $STORE().$$$REST
+
+---
+
+id: commit
+language: JavaScript
+severity: error
+rule:
+  any:
+    - pattern: commit($KEY, $$$ARGS)
+    - pattern: commit($KEY)
+fix: this[$KEY]($$$ARGS)
+
+---
+
+id: getters
+language: JavaScript
+severity: error
+rule:
+  pattern: getters.$$$REST
+fix: this.$$$REST
+
+---
+
+id: root-getters
+language: JavaScript
+severity: error
+rule:
+  pattern: rootGetters.$$$REST
+fix: useRootStore().$$$REST
+
+---
+
+id: root-named-getters
+language: JavaScript
+severity: error
+rule:
+  pattern: "rootGetters['$NAME']"
+constraints: { NAME: { regex: / } }
+transform:
+  PRE:
+    replace:
+      source: $NAME
+      replace: ^(?<STORE>.+)/.*
+      by: use-$STORE
+  STORE:
+    convert:
+      source: $PRE
+      toCase: camelCase
+  GETTER_NAME:
+    replace:
+      source: $NAME
+      replace: ^.*\/(?<GETTER_NAME>.+)
+      by: $GETTER_NAME
+fix: $STORE().$GETTER_NAME
+
+---
+
+id: getters-destruct
+language: JavaScript
+severity: error
+rule:
+  pattern: const { $$$REST } = getters
+fix: const { $$$REST } = this
+
+---
+
+id: actions
+language: JavaScript
+severity: error
+rule:
+  any:
+    - pattern: dispatch('$ACTION', $$$ARGS)
+      not:
+        regex: 'root:'
+    - pattern: dispatch('$ACTION')
+fix: this.$ACTION($$$ARGS)
+
+---
+
+id: root-named-actions
+language: JavaScript
+severity: error
+rule:
+  pattern: "dispatch('$ACTION', $$$ARGS, { root: true })"
+constraints: { ACTION: { regex: / } }
+transform:
+  STORE_PRE:
+    replace:
+      source: $ACTION
+      replace: ^(?<STORE>.+)/.*
+      by: use-$STORE
+  STORE:
+    convert:
+      source: $STORE_PRE
+      toCase: camelCase
+  ACTION_NAME:
+    replace:
+      source: $ACTION
+      replace: ^.*\/(?<ACTION_NAME>.+)
+      by: $ACTION_NAME
+fix: $STORE().$ACTION_NAME($$$ARGS)
+
+---
+
+id: root-unnamed-actions
+language: JavaScript
+severity: error
+rule:
+  pattern: "dispatch('$ACTION', $$$ARGS, { root: true })"
+constraints: { ACTION: { not: { regex: / } } }
+fix: useRootStore().$ACTION($$$ARGS)

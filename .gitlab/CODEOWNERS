@@ -1512,6 +1512,8 @@ lib/gitlab/checks/**
 /**/lib/**/ci/reports/**/ @gitlab-org/maintainers/rails-backend
 /**/lib/**/ci/parsers/**/ @gitlab-org/maintainers/rails-backend
 /**/app/views/ci/**/ @gitlab-org/maintainers/rails-backend
+/ee/**/models/ai/ai_resource/ci/ @gitlab-org/maintainers/rails-backend
+/ee/**/serializers/ci/*_ai_*.rb @gitlab-org/maintainers/rails-backend
 /ee/lib/gitlab/ci/parsers/license_compliance/ @gitlab-org/secure/composition-analysis-be
 /ee/lib/gitlab/ci/parsers/security/ @gitlab-org/govern/threat-insights-backend-team
 /ee/lib/gitlab/ci/reports/coverage_fuzzing/ @gitlab-org/secure/fuzzing-be

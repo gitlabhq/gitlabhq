@@ -295,6 +295,26 @@ A vulnerability's status can be:
   vulnerability is reintroduced and detected again, its record is reinstated and its status set to
   detected.
 
+A vulnerability typically goes through the following lifecycle:
+
+```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
+stateDiagram
+    accTitle: Vulnerability lifecycle
+    accDescr: Typical lifecycle of a vulnerability
+
+    direction LR
+    Needs_triage: Needs triage
+
+    [*] --> Needs_triage
+    Needs_triage --> Confirmed
+    Needs_triage --> Dismissed
+    Dismissed --> [*]
+    Confirmed --> Resolved
+    Resolved --> Needs_triage: If reintroduced and detected again
+    Resolved --> [*]
+```
+
 ## Vulnerability dismissal reasons
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4942) in GitLab 15.11 [with a flag](../../../administration/feature_flags.md) named `dismissal_reason`.

@@ -284,7 +284,6 @@ export default {
       <template #row-details="{ item }">
         <pipeline-failed-jobs-widget
           v-if="displayFailedJobsWidget(item)"
-          :failed-jobs-count="failedJobsCount(item)"
           :is-pipeline-active="item.active"
           :pipeline-iid="item.iid"
           :pipeline-path="item.path"

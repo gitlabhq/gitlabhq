@@ -1,0 +1,9 @@
+---
+name: update_merge_request_worker_sticky
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/403184
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/171352
+rollout_issue_url:
+milestone: '17.6'
+group: group::code review
+type: worker
+default_enabled: false

@@ -616,6 +616,10 @@ FactoryBot.define do
     empty_repo
   end
 
+  factory :project_with_repo, parent: :project do
+    repository
+  end
+
   factory :forked_project_with_submodules, parent: :project do
     path { 'forked-gitlabhq' }
 

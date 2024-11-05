@@ -1,16 +1,22 @@
 import { GlBadge, GlButton } from '@gitlab/ui';
+import Vue from 'vue';
+import VueApollo from 'vue-apollo';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import PipelineFailedJobsWidget from '~/ci/pipelines_page/components/failure_widget/pipeline_failed_jobs_widget.vue';
 import FailedJobsList from '~/ci/pipelines_page/components/failure_widget/failed_jobs_list.vue';
+import getPipelineFailedJobsCount from '~/ci/pipelines_page/graphql/queries/get_pipeline_failed_jobs_count.query.graphql';
+import { failedJobsCountMock } from './mock';
 
+Vue.use(VueApollo);
 jest.mock('~/alert');
 
 describe('PipelineFailedJobsWidget component', () => {
   let wrapper;
 
   const defaultProps = {
-    failedJobsCount: 4,
     isPipelineActive: false,
     pipelineIid: 1,
     pipelinePath: '/pipelines/1',
@@ -19,9 +25,18 @@ describe('PipelineFailedJobsWidget component', () => {
 
   const defaultProvide = {
     fullPath: 'namespace/project/',
+    graphqlPath: 'api/graphql',
   };
 
-  const createComponent = ({ props = {}, provide = {} } = {}) => {
+  const defaultHandler = jest.fn().mockResolvedValue(failedJobsCountMock);
+
+  const createMockApolloProvider = (handler) => {
+    const requestHandlers = [[getPipelineFailedJobsCount, handler]];
+
+    return createMockApollo(requestHandlers);
+  };
+
+  const createComponent = ({ props = {}, provide = {}, handler = defaultHandler } = {}) => {
     wrapper = shallowMountExtended(PipelineFailedJobsWidget, {
       propsData: {
         ...defaultProps,
@@ -32,22 +47,25 @@ describe('PipelineFailedJobsWidget component', () => {
         ...provide,
       },
       stubs: { CrudComponent },
+      apolloProvider: createMockApolloProvider(handler),
     });
   };
 
   const findFailedJobsButton = () => wrapper.findComponent(GlButton);
-  const findFailedJobsList = () => wrapper.findAllComponents(FailedJobsList);
+  const findFailedJobsList = () => wrapper.findComponent(FailedJobsList);
   const findCrudComponent = () => wrapper.findComponent(CrudComponent);
   const findCount = () => wrapper.findComponent(GlBadge);
 
   describe('when there are failed jobs', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       createComponent();
+
+      await waitForPromises();
     });
 
     it('renders the show failed jobs button with correct count', () => {
       expect(findFailedJobsButton().exists()).toBe(true);
-      expect(findCount().text()).toBe(String(defaultProps.failedJobsCount));
+      expect(findCount().text()).toBe('4');
     });
 
     it('does not render the failed jobs widget', () => {
@@ -60,6 +78,7 @@ describe('PipelineFailedJobsWidget component', () => {
   describe('when the job button is clicked', () => {
     beforeEach(async () => {
       createComponent();
+
       await findFailedJobsButton().vm.$emit('click');
     });
 
@@ -90,40 +109,6 @@ describe('PipelineFailedJobsWidget component', () => {
     });
   });
 
-  describe('when the job count changes', () => {
-    beforeEach(() => {
-      createComponent();
-    });
-
-    describe('from the prop', () => {
-      it('updates the job count', async () => {
-        const newJobCount = 12;
-
-        expect(findCount().text()).toBe(String(defaultProps.failedJobsCount));
-
-        await wrapper.setProps({ failedJobsCount: newJobCount });
-
-        expect(findCount().text()).toBe(String(newJobCount));
-      });
-    });
-
-    describe('from the event', () => {
-      beforeEach(async () => {
-        await findFailedJobsButton().vm.$emit('click');
-      });
-
-      it('updates the job count', async () => {
-        const newJobCount = 12;
-
-        expect(findCount().text()).toBe(String(defaultProps.failedJobsCount));
-
-        await findFailedJobsList().at(0).vm.$emit('failed-jobs-count', newJobCount);
-
-        expect(findCount().text()).toBe(String(newJobCount));
-      });
-    });
-  });
-
   describe('"aria-controls" attribute', () => {
     it('is set and identifies the correct element', () => {
       createComponent();
@@ -132,6 +117,52 @@ describe('PipelineFailedJobsWidget component', () => {
         'pipeline-failed-jobs-widget',
       );
       expect(findCrudComponent().attributes('id')).toBe('pipeline-failed-jobs-widget');
+    });
+  });
+
+  describe('polling', () => {
+    it('does not poll for failed jobs count when pipeline is inactive', async () => {
+      createComponent();
+
+      await waitForPromises();
+
+      expect(defaultHandler).toHaveBeenCalledTimes(1);
+
+      jest.advanceTimersByTime(10000);
+
+      await waitForPromises();
+
+      expect(defaultHandler).toHaveBeenCalledTimes(1);
+    });
+
+    it('polls for failed jobs count when pipeline is active', async () => {
+      createComponent({ props: { isPipelineActive: true } });
+
+      await waitForPromises();
+
+      expect(defaultHandler).toHaveBeenCalledTimes(1);
+
+      jest.advanceTimersByTime(10000);
+
+      await waitForPromises();
+
+      expect(defaultHandler).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  describe('job retry', () => {
+    it('refetches failed jobs count', async () => {
+      createComponent();
+
+      await waitForPromises();
+
+      expect(defaultHandler).toHaveBeenCalledTimes(1);
+
+      await findFailedJobsButton().vm.$emit('click');
+
+      findFailedJobsList().vm.$emit('job-retried');
+
+      expect(defaultHandler).toHaveBeenCalledTimes(2);
     });
   });
 });

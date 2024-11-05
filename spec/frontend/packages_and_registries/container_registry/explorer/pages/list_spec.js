@@ -167,7 +167,7 @@ describe('List Page', () => {
     beforeEach(() => {
       const config = {
         showContainerRegistrySettings: true,
-        cleanupPoliciesSettingsPath: 'bar',
+        settingsPath: 'bar',
       };
       mountComponent({ config });
     });

@@ -539,7 +539,7 @@
           mask-repeat: no-repeat;
           mask-size: cover;
           mask-position: center center;
-          background: $black-normal;
+          background: var(--gl-dropdown-option-indicator-color-selected-default);
         }
       }
     }

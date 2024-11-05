@@ -70,7 +70,7 @@ module MergeRequests
       AutoMergeProcessWorker.bulk_perform_in_with_contexts(
         [1, index * DELAY].max,
         merge_requests,
-        arguments_proc: ->(merge_request) { [merge_request.id] },
+        arguments_proc: ->(merge_request) { [{ 'merge_request_id' => merge_request.id }] },
         context_proc: ->(merge_request) { { project: merge_request.project, user: merge_request.merge_user } }
       )
     end

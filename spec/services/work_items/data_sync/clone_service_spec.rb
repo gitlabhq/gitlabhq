@@ -136,15 +136,24 @@ RSpec.describe WorkItems::DataSync::CloneService, feature_category: :team_planni
       end
     end
 
-    context 'when cloning work item with success' do
+    context 'when cloning work item with success', :freeze_time do
       let(:expected_original_work_item_state) { Issue.available_states[:opened] }
       let!(:original_work_item_attrs) do
         {
+          iid: original_work_item.iid,
+          project: target_namespace.try(:project),
+          namespace: target_namespace,
+          work_item_type: original_work_item.work_item_type,
+          author: current_user,
           title: original_work_item.title,
           description: original_work_item.description,
-          author: current_user,
-          work_item_type: original_work_item.work_item_type,
           state_id: Issue.available_states[:opened],
+          created_at: Time.current,
+          updated_at: Time.current,
+          confidential: original_work_item.confidential,
+          cached_markdown_version: original_work_item.cached_markdown_version,
+          lock_version: original_work_item.lock_version,
+          imported_from: "none",
           updated_by: current_user,
           last_edited_at: nil,
           last_edited_by: nil,
@@ -156,8 +165,7 @@ RSpec.describe WorkItems::DataSync::CloneService, feature_category: :team_planni
           external_key: nil,
           upvotes_count: 0,
           blocking_issues_count: 0,
-          project: target_namespace.try(:project),
-          namespace: target_namespace
+          service_desk_reply_to: target_namespace.service_desk_alias_address
         }
       end
 

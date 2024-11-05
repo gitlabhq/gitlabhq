@@ -40,7 +40,9 @@ upgrade plan, document and share it with the answers to the following questions:
 It's possible that something may go wrong during an upgrade, so it's critical
 that a rollback plan be present for that scenario. A proper rollback plan
 creates a clear path to bring the instance back to its last working state. It is
-comprised of a way to back up the instance and a way to restore it.
+comprised of a way to back up the instance and a way to restore it. You should
+test the rollback plan before you need it. For an overview of the steps required
+for rolling back, see [Downgrade](package/downgrade.md).
 
 ### Back up GitLab
 

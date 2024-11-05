@@ -61,7 +61,7 @@ RSpec.describe 'Container Registry', :js, feature_category: :container_registry 
     it 'does not have link to settings' do
       visit_container_registry
 
-      expect(page).not_to have_link _('Configure in settings')
+      expect(page).not_to have_link(_('Configure in settings'), href: project_settings_packages_and_registries_path(project))
     end
 
     it 'has link to settings when user is maintainer' do
@@ -69,7 +69,7 @@ RSpec.describe 'Container Registry', :js, feature_category: :container_registry 
 
       visit_container_registry
 
-      expect(page).to have_link _('Configure in settings')
+      expect(page).to have_link(_('Configure in settings'), href: project_settings_packages_and_registries_path(project))
     end
 
     context 'when there are no image repositories' do

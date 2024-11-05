@@ -136,18 +136,25 @@ RSpec.describe WorkItems::DataSync::MoveService, feature_category: :team_plannin
       end
     end
 
-    context 'when moving work item with success' do
+    context 'when moving work item with success', :freeze_time do
       let(:expected_original_work_item_state) { Issue.available_states[:closed] }
       let!(:original_work_item_attrs) do
         {
+          iid: original_work_item.iid,
+          project: target_namespace.try(:project),
+          namespace: target_namespace,
+          work_item_type: original_work_item.work_item_type,
+          author: original_work_item.author,
           title: original_work_item.title,
           description: original_work_item.description,
-          author: original_work_item.author,
-          work_item_type: original_work_item.work_item_type,
           state_id: original_work_item.state_id,
           created_at: original_work_item.reload.created_at,
           updated_by: original_work_item.updated_by,
           updated_at: original_work_item.reload.updated_at,
+          confidential: original_work_item.confidential,
+          cached_markdown_version: original_work_item.cached_markdown_version,
+          lock_version: original_work_item.lock_version,
+          imported_from: "none",
           last_edited_at: original_work_item.last_edited_at,
           last_edited_by: original_work_item.last_edited_by,
           closed_at: original_work_item.closed_at,
@@ -158,8 +165,7 @@ RSpec.describe WorkItems::DataSync::MoveService, feature_category: :team_plannin
           external_key: original_work_item.external_key,
           upvotes_count: original_work_item.upvotes_count,
           blocking_issues_count: original_work_item.blocking_issues_count,
-          project: target_namespace.try(:project),
-          namespace: target_namespace
+          service_desk_reply_to: target_namespace.service_desk_alias_address
         }
       end
 

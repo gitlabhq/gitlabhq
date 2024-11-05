@@ -303,7 +303,7 @@ export default {
             v-if="config.showContainerRegistrySettings"
             v-gl-tooltip="$options.i18n.SETTINGS_TEXT"
             icon="settings"
-            :href="config.cleanupPoliciesSettingsPath"
+            :href="config.settingsPath"
             :aria-label="$options.i18n.SETTINGS_TEXT"
           />
         </template>

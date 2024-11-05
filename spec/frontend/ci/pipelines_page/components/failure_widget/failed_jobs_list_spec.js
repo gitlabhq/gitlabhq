@@ -10,7 +10,7 @@ import FailedJobsList from '~/ci/pipelines_page/components/failure_widget/failed
 import FailedJobDetails from '~/ci/pipelines_page/components/failure_widget/failed_job_details.vue';
 import * as utils from '~/ci/pipelines_page/components/failure_widget/utils';
 import getPipelineFailedJobs from '~/ci/pipelines_page/graphql/queries/get_pipeline_failed_jobs.query.graphql';
-import { failedJobsMock, failedJobsMock2, failedJobsMockEmpty, activeFailedJobsMock } from './mock';
+import { failedJobsMock, failedJobsMock2 } from './mock';
 
 Vue.use(VueApollo);
 Vue.use(GlToast);
@@ -23,10 +23,8 @@ describe('FailedJobsList component', () => {
   const showToast = jest.fn();
 
   const defaultProps = {
-    failedJobsCount: 0,
     graphqlResourceEtag: 'api/graphql',
     isMaximumJobLimitReached: false,
-    isPipelineActive: false,
     pipelineIid: 1,
     pipelinePath: 'namespace/project/pipeline',
     projectPath: 'namespace/project/',
@@ -103,7 +101,7 @@ describe('FailedJobsList component', () => {
       await waitForPromises();
     });
 
-    it('does not renders a loading icon', () => {
+    it('does not render a loading icon', () => {
       expect(findLoadingIcon().exists()).toBe(false);
     });
 
@@ -136,88 +134,23 @@ describe('FailedJobsList component', () => {
   });
 
   describe('polling', () => {
-    it.each`
-      isGraphqlActive | text
-      ${true}         | ${'polls'}
-      ${false}        | ${'does not poll'}
-    `(`$text when isGraphqlActive: $isGraphqlActive`, async ({ isGraphqlActive }) => {
-      const defaultCount = 2;
-      const newCount = 1;
-
-      const expectedCount = isGraphqlActive ? newCount : defaultCount;
-      const expectedCallCount = isGraphqlActive ? 2 : 1;
-      const mockResponse = isGraphqlActive ? activeFailedJobsMock : failedJobsMock;
-
-      // Second result is to simulate polling with a different response
-      mockFailedJobsResponse.mockResolvedValueOnce(mockResponse);
+    it('polls for failed jobs', async () => {
+      mockFailedJobsResponse.mockResolvedValueOnce(failedJobsMock);
       mockFailedJobsResponse.mockResolvedValueOnce(failedJobsMock2);
 
       createComponent();
+
       await waitForPromises();
 
-      // Initially, we get the first response which is always the default
       expect(mockFailedJobsResponse).toHaveBeenCalledTimes(1);
-      expect(findFailedJobRows()).toHaveLength(defaultCount);
+      expect(findFailedJobRows()).toHaveLength(2);
 
       jest.advanceTimersByTime(10000);
-      await waitForPromises();
 
-      expect(mockFailedJobsResponse).toHaveBeenCalledTimes(expectedCallCount);
-      expect(findFailedJobRows()).toHaveLength(expectedCount);
-    });
-  });
-
-  describe('when a REST action occurs', () => {
-    beforeEach(() => {
-      // Second result is to simulate polling with a different response
-      mockFailedJobsResponse.mockResolvedValueOnce(failedJobsMock);
-      mockFailedJobsResponse.mockResolvedValueOnce(failedJobsMock2);
-    });
-
-    it.each([true, false])('triggers a refetch of the jobs count', async (isPipelineActive) => {
-      const defaultCount = 2;
-      const newCount = 1;
-
-      createComponent({ props: { isPipelineActive } });
-      await waitForPromises();
-
-      // Initially, we get the first response which is always the default
-      expect(mockFailedJobsResponse).toHaveBeenCalledTimes(1);
-      expect(findFailedJobRows()).toHaveLength(defaultCount);
-
-      wrapper.setProps({ isPipelineActive: !isPipelineActive });
       await waitForPromises();
 
       expect(mockFailedJobsResponse).toHaveBeenCalledTimes(2);
-      expect(findFailedJobRows()).toHaveLength(newCount);
-    });
-  });
-
-  describe('When the job count changes from REST', () => {
-    beforeEach(() => {
-      mockFailedJobsResponse.mockResolvedValue(failedJobsMockEmpty);
-
-      createComponent();
-    });
-
-    describe('and the count is the same', () => {
-      it('does not re-fetch the query', async () => {
-        expect(mockFailedJobsResponse).toHaveBeenCalledTimes(1);
-
-        await wrapper.setProps({ failedJobsCount: 0 });
-
-        expect(mockFailedJobsResponse).toHaveBeenCalledTimes(1);
-      });
-    });
-
-    describe('and the count is different', () => {
-      it('re-fetches the query', async () => {
-        expect(mockFailedJobsResponse).toHaveBeenCalledTimes(1);
-
-        await wrapper.setProps({ failedJobsCount: 10 });
-
-        expect(mockFailedJobsResponse).toHaveBeenCalledTimes(2);
-      });
+      expect(findFailedJobRows()).toHaveLength(1);
     });
   });
 
@@ -250,7 +183,7 @@ describe('FailedJobsList component', () => {
       await waitForPromises();
     });
 
-    it('refetches all failed jobs', async () => {
+    it('refetches all failed jobs and emits event', async () => {
       expect(findFailedJobRows()).not.toHaveLength(
         failedJobsMock2.data.project.pipeline.jobs.nodes.length,
       );
@@ -261,6 +194,7 @@ describe('FailedJobsList component', () => {
       expect(findFailedJobRows()).toHaveLength(
         failedJobsMock2.data.project.pipeline.jobs.nodes.length,
       );
+      expect(wrapper.emitted()).toEqual({ 'job-retried': [[]] });
     });
 
     it('shows a toast message', async () => {

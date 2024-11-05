@@ -5843,6 +5843,9 @@ msgstr ""
 msgid "An error in reporting in which a test result incorrectly indicates the presence of a vulnerability in a system when the vulnerability is not present."
 msgstr ""
 
+msgid "An error occured fetching failed jobs count"
+msgstr ""
+
 msgid "An error occurred creating the new branch."
 msgstr ""
 
@@ -40488,6 +40491,9 @@ msgstr ""
 msgid "Pipelines|%{counterLabel} more downstream pipelines"
 msgstr ""
 
+msgid "Pipelines|Access GitLab University"
+msgstr ""
+
 msgid "Pipelines|Active"
 msgstr ""
 
@@ -40539,10 +40545,19 @@ msgstr ""
 msgid "Pipelines|Description"
 msgstr ""
 
+msgid "Pipelines|Easy configuration with CI/CD Catalog"
+msgstr ""
+
 msgid "Pipelines|Edit"
 msgstr ""
 
 msgid "Pipelines|Editor"
+msgstr ""
+
+msgid "Pipelines|Explore CI components in the CI/CD Catalog to see if they suit your requirements."
+msgstr ""
+
+msgid "Pipelines|Explore CI/CD Catalog"
 msgstr ""
 
 msgid "Pipelines|Failed to update. Please reload page to update the list of artifacts."
@@ -40557,7 +40572,7 @@ msgstr ""
 msgid "Pipelines|Full configuration is view only"
 msgstr ""
 
-msgid "Pipelines|Get familiar with GitLab CI syntax by  setting up a simple pipeline running a  \"Hello world\" script to see how it runs, explore how CI/CD works."
+msgid "Pipelines|Get familiar with GitLab CI syntax by setting up a simple pipeline running a  \"Hello world\" script to see how it runs, explore how CI/CD works."
 msgstr ""
 
 msgid "Pipelines|Get started with GitLab CI/CD"
@@ -40579,6 +40594,12 @@ msgid "Pipelines|It is recommended the code is reviewed thoroughly before runnin
 msgstr ""
 
 msgid "Pipelines|Last Used"
+msgstr ""
+
+msgid "Pipelines|Learn CI/CD with GitLab University"
+msgstr ""
+
+msgid "Pipelines|Learn how to set up and use GitLab CI/CD with guided tutorials, videos, and best practices."
 msgstr ""
 
 msgid "Pipelines|Learn the basics of pipelines and .yml files"
@@ -40743,7 +40764,7 @@ msgstr ""
 msgid "Pipelines|Update Trigger"
 msgstr ""
 
-msgid "Pipelines|Use a sample %{codeStart}.gitlab-ci.yml%{codeEnd} template file to explore how CI/CD works."
+msgid "Pipelines|Use CI/CD pipelines to automatically build, test, and deploy your code."
 msgstr ""
 
 msgid "Pipelines|Use a template based on your project's language or framework to get started with GitLab CI/CD."
@@ -48424,6 +48445,9 @@ msgstr ""
 msgid "ScanResultPolicy|Prevent branch modification"
 msgstr ""
 
+msgid "ScanResultPolicy|Prevent group branch modification"
+msgstr ""
+
 msgid "ScanResultPolicy|Prevent pushing and force pushing"
 msgstr ""
 
@@ -49901,7 +49925,7 @@ msgstr ""
 msgid "SecurityOrchestration|Only owners can update Security Policy Project"
 msgstr ""
 
-msgid "SecurityOrchestration|Override the following project settings"
+msgid "SecurityOrchestration|Override the following project settings:"
 msgstr ""
 
 msgid "SecurityOrchestration|Pipeline execution"
@@ -50361,6 +50385,9 @@ msgid "SecurityOrchestration|except groups"
 msgstr ""
 
 msgid "SecurityOrchestration|except projects"
+msgstr ""
+
+msgid "SecurityOrchestration|exceptions: %{exceptions}"
 msgstr ""
 
 msgid "SecurityOrchestration|group level branch input"
