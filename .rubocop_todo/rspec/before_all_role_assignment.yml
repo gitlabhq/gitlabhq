@@ -930,7 +930,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'spec/graphql/resolvers/user_discussions_count_resolver_spec.rb'
     - 'spec/graphql/resolvers/user_notes_count_resolver_spec.rb'
     - 'spec/graphql/resolvers/users/snippets_resolver_spec.rb'
-    - 'spec/graphql/types/ci/pipeline_counts_type_spec.rb'
     - 'spec/graphql/types/environment_type_spec.rb'
     - 'spec/graphql/types/issue_type_spec.rb'
     - 'spec/graphql/types/project_type_spec.rb'

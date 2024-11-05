@@ -5,7 +5,6 @@ RSpec/FactoryBot/StrategyInCallback:
     - 'ee/spec/factories/ci/pipelines.rb'
     - 'ee/spec/factories/dast_scanner_profiles.rb'
     - 'ee/spec/factories/description_version.rb'
-    - 'ee/spec/factories/elastic/reindexing_tasks.rb'
     - 'ee/spec/factories/epic_issues.rb'
     - 'ee/spec/factories/geo_nodes.rb'
     - 'ee/spec/factories/group_members.rb'

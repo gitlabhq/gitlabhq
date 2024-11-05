@@ -22,6 +22,34 @@ For larger organizations, you can also create [subgroups](subgroups/index.md).
 
 For more information about creating and managing your groups, see [Manage groups](manage.md).
 
+## Group hierarchy
+
+Groups are organized in a tree structure: 
+
+- A **top-level group** is a group created at the "root" of the organization. An organization can have one or more top-level groups. A top-level group can contain one or more subgroups.
+- A **parent group** is a group that contains one or more subgroups.
+- A **subgroup** is a group that is part of another group.
+
+For example, in the following diagram:
+
+- The organization has four groups: one top-level group (T), which contains one subgroup (G), and two subgroups within G (A and B).
+- T is a top-level group and the parent group of G.
+- G is a subgroup (child) of T and the parent group of A and B.
+- A and B are subgroups (children) of G.
+
+```mermaid
+%%{init: { "fontFamily": "GitLab Sans", 'theme':'neutral' }}%%
+flowchart TD
+  accTitle: Group hierarchy
+  accDescr: Example of a group hierarchy in an organization
+
+  subgraph Organization
+    T[Group T] --> G[Group G]
+    G --> A[Group A]
+    G --> B[Group B]  
+end
+```
+
 ## Group structure
 
 The way to set up a group depends on your use cases, team size, and access requirements.

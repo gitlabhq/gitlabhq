@@ -131,7 +131,6 @@ RSpec/ReturnFromStub:
     - 'spec/models/project_statistics_spec.rb'
     - 'spec/models/snippet_statistics_spec.rb'
     - 'spec/models/user_spec.rb'
-    - 'spec/models/wiki_page_spec.rb'
     - 'spec/policies/issue_policy_spec.rb'
     - 'spec/presenters/ci/pipeline_presenter_spec.rb'
     - 'spec/presenters/commit_status_presenter_spec.rb'

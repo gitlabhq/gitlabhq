@@ -87,7 +87,6 @@ Layout/LineBreakAfterFinalMixin:
     - 'ee/app/workers/sync_seat_link_worker.rb'
     - 'ee/app/workers/vulnerabilities/historical_statistics/deletion_worker.rb'
     - 'ee/app/workers/vulnerabilities/statistics/schedule_worker.rb'
-    - 'ee/app/workers/work_items/rolledup_dates/update_rolledup_dates_worker.rb'
     - 'ee/lib/api/dependency_proxy/packages/maven.rb'
     - 'ee/lib/api/resource_iteration_events.rb'
     - 'ee/lib/api/resource_weight_events.rb'

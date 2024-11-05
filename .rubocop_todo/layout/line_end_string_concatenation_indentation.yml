@@ -188,7 +188,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'ee/lib/gitlab/llm/chain/tools/refactor_code/executor.rb'
     - 'ee/lib/gitlab/llm/chain/tools/summarize_comments/executor.rb'
     - 'ee/lib/gitlab/llm/chain/tools/write_tests/executor.rb'
-    - 'ee/lib/gitlab/llm/completions/resolve_vulnerability.rb'
     - 'ee/lib/gitlab/status_page/storage.rb'
     - 'ee/lib/google_cloud/base_client.rb'
     - 'ee/lib/security/scan_result_policies/policy_violation_details.rb'

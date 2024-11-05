@@ -12,6 +12,7 @@ module Integrations
 
     field :project_url,
       title: -> { _('Pipeline URL') },
+      help: -> { _('Pipeline URL (for example, `https://buildkite.com/example/pipeline`).') },
       placeholder: "#{ENDPOINT}/example-org/test-pipeline",
       exposes_secrets: true,
       required: true
@@ -19,15 +20,21 @@ module Integrations
     field :token,
       type: :password,
       title: -> { _('Token') },
-      help: -> do
-        s_('ProjectService|The token you get after you create a Buildkite pipeline with a GitLab repository.')
-      end,
+      help: -> { _('Token you get after you create a Buildkite pipeline with a GitLab repository.') },
       non_empty_password_title: -> { s_('ProjectService|Enter new token') },
       non_empty_password_help: -> { s_('ProjectService|Leave blank to use your current token.') },
       required: true
 
-    validates :project_url, presence: true, public_url: true, if: :activated?
-    validates :token, presence: true, if: :activated?
+    field :enable_ssl_verification,
+      type: :checkbox,
+      required: false,
+      api_only: true,
+      help: -> { _('DEPRECATED: This parameter has no effect because SSL verification is always enabled.') }
+
+    with_options if: :activated? do
+      validates :project_url, presence: true, public_url: true
+      validates :token, presence: true
+    end
 
     def self.supported_events
       %w[push merge_request tag_push]

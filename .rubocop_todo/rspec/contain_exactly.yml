@@ -103,7 +103,6 @@ RSpec/ContainExactly:
     - 'spec/graphql/types/ci/job_status_enum_spec.rb'
     - 'spec/graphql/types/ci/job_token_scope/policies_enum_spec.rb'
     - 'spec/graphql/types/ci/job_token_scope_type_spec.rb'
-    - 'spec/graphql/types/ci/pipeline_creations/status_enum_spec.rb'
     - 'spec/graphql/types/ci/pipeline_schedule_sort_enum_spec.rb'
     - 'spec/graphql/types/ci/pipeline_scope_enum_spec.rb'
     - 'spec/graphql/types/ci/pipeline_status_enum_spec.rb'

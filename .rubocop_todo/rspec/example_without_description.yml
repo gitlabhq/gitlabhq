@@ -464,7 +464,6 @@ RSpec/ExampleWithoutDescription:
     - 'spec/models/packages/npm/metadatum_spec.rb'
     - 'spec/models/packages/protection/rule_spec.rb'
     - 'spec/models/packages/pypi/metadatum_spec.rb'
-    - 'spec/models/packages/terraform_module/metadatum_spec.rb'
     - 'spec/models/packages/terraform_module/package_spec.rb'
     - 'spec/models/pages_domain_spec.rb'
     - 'spec/models/personal_access_token_spec.rb'

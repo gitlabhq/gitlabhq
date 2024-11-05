@@ -163,7 +163,6 @@ RSpec/ScatteredLet:
     - 'spec/models/merge_request_spec.rb'
     - 'spec/models/push_event_spec.rb'
     - 'spec/models/ssh_host_key_spec.rb'
-    - 'spec/models/wiki_page_spec.rb'
     - 'spec/policies/group_member_policy_spec.rb'
     - 'spec/requests/admin/background_migrations_controller_spec.rb'
     - 'spec/requests/api/ci/jobs_spec.rb'

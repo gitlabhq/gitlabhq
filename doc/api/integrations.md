@@ -292,7 +292,7 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `token` | string | yes | Buildkite project GitLab token. |
+| `token` | string | yes | Token you get after you create a Buildkite pipeline with a GitLab repository. |
 | `project_url` | string | yes | Pipeline URL (for example, `https://buildkite.com/example/pipeline`). |
 | `enable_ssl_verification` | boolean | no | **Deprecated:** This parameter has no effect because SSL verification is always enabled. |
 | `push_events` | boolean | no | Enable notifications for push events. |

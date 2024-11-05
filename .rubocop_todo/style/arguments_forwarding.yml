@@ -108,7 +108,6 @@ Style/ArgumentsForwarding:
     - 'lib/gitlab/database/consistency.rb'
     - 'lib/gitlab/database/load_balancing/connection_proxy.rb'
     - 'lib/gitlab/database/load_balancing/load_balancer.rb'
-    - 'lib/gitlab/database/load_balancing/session.rb'
     - 'lib/gitlab/database/load_balancing/sticking.rb'
     - 'lib/gitlab/database/lock_writes_manager.rb'
     - 'lib/gitlab/database/migrations/lock_retry_mixin.rb'

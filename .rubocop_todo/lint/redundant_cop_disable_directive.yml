@@ -1,7 +1,7 @@
 ---
 # Cop supports --autocorrect.
 Lint/RedundantCopDisableDirective:
-  # Offense count: 230
+  # Offense count: 58
   # Temporarily disabled due to too many offenses
   Enabled: false
   Exclude:
@@ -13,6 +13,9 @@ Lint/RedundantCopDisableDirective:
     - 'app/services/work_items/data_sync/move_service.rb'
     - 'app/workers/authorized_project_update/user_refresh_over_user_range_worker.rb'
     - 'config/initializers/warden.rb'
+    - 'db/migrate/20241021082113_create_partitioned_ci_runners.rb'
+    - 'db/migrate/20241024204816_create_partitioned_ci_runner_managers.rb'
+    - 'db/post_migrate/20241021163518_drop_user_canonical_emails_table.rb'
     - 'ee/app/controllers/ee/projects/settings/ci_cd_controller.rb'
     - 'ee/app/services/search/zoekt/routing_service.rb'
     - 'ee/app/services/security/token_revocation_service.rb'
@@ -44,14 +47,13 @@ Lint/RedundantCopDisableDirective:
     - 'spec/models/concerns/encrypted_user_password_spec.rb'
     - 'spec/requests/api/alert_management_alerts_spec.rb'
     - 'spec/requests/projects/releases_controller_spec.rb'
-    - 'spec/scripts/duo_chat/reporter_spec.rb'
-    - 'spec/services/alert_management/metric_images/upload_service_spec.rb'
-    - 'spec/services/boards/lists/list_service_spec.rb'
-    - 'spec/support/finder_collection.rb'
-    - 'spec/support/forgery_protection.rb'
-    - 'spec/support/helpers/database/multiple_databases_helpers.rb'
-    - 'spec/support/helpers/graphql_helpers.rb'
+    - 'spec/scripts/setup/tests-metadata_spec.rb'
+    - 'spec/services/ci/create_pipeline_service/logger_spec.rb'
+    - 'spec/services/packages/pypi/create_package_service_spec.rb'
+    - 'spec/services/pages_domains/create_acme_order_service_spec.rb'
     - 'spec/support/helpers/migrations_helpers/vulnerabilities_findings_helper.rb'
     - 'spec/support/helpers/wait_for_requests.rb'
     - 'spec/support/shared_examples/features/milestone_editing_shared_examples.rb'
     - 'spec/support/shared_examples/models/concerns/protected_ref_access_shared_examples.rb'
+    - 'tooling/danger/sidekiq_queues.rb'
+    - 'tooling/danger/stable_branch.rb'

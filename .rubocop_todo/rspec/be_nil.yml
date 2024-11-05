@@ -113,7 +113,6 @@ RSpec/BeNil:
     - 'spec/migrations/20240212172655_self_hosted_sent_notifications_cleanup_spec.rb'
     - 'spec/models/activity_pub/releases_subscription_spec.rb'
     - 'spec/models/ci/secure_file_spec.rb'
-    - 'spec/models/concerns/token_authenticatable_spec.rb'
     - 'spec/models/diff_note_spec.rb'
     - 'spec/models/grafana_integration_spec.rb'
     - 'spec/models/group_spec.rb'

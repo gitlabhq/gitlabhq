@@ -102,26 +102,7 @@ module API
           'assembla' => ::Integrations::Assembla.api_arguments,
           'bamboo' => ::Integrations::Bamboo.api_arguments,
           'bugzilla' => ::Integrations::Bugzilla.api_arguments,
-          'buildkite' => [
-            {
-              required: true,
-              name: :token,
-              type: String,
-              desc: 'Buildkite project GitLab token'
-            },
-            {
-              required: true,
-              name: :project_url,
-              type: String,
-              desc: 'The Buildkite pipeline URL'
-            },
-            {
-              required: false,
-              name: :enable_ssl_verification,
-              type: ::Grape::API::Boolean,
-              desc: 'DEPRECATED: This parameter has no effect since SSL verification will always be enabled'
-            }
-          ],
+          'buildkite' => ::Integrations::Buildkite.api_arguments,
           'campfire' => ::Integrations::Campfire.api_arguments,
           'confluence' => ::Integrations::Confluence.api_arguments,
           'custom-issue-tracker' => ::Integrations::CustomIssueTracker.api_arguments,

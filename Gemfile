@@ -493,7 +493,7 @@ end
 group :development, :test do
   gem 'deprecation_toolkit', '~> 1.5.1', require: false # rubocop:todo Gemfile/MissingFeatureCategory
   gem 'bullet', '~> 7.1.2' # rubocop:todo Gemfile/MissingFeatureCategory
-  gem 'parser', '= 3.3.5.0', feature_category: :shared
+  gem 'parser', '= 3.3.5.1', feature_category: :shared
   gem 'pry-byebug' # rubocop:todo Gemfile/MissingFeatureCategory
   gem 'pry-rails', '~> 0.3.9' # rubocop:todo Gemfile/MissingFeatureCategory
   gem 'pry-shell', '~> 0.6.4' # rubocop:todo Gemfile/MissingFeatureCategory
