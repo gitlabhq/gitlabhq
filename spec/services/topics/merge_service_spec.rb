@@ -2,16 +2,18 @@
 
 require 'spec_helper'
 
-RSpec.describe Topics::MergeService, feature_category: :shared do
-  let_it_be(:organization) { create(:organization) }
-  let_it_be(:source_topic) { create(:topic, name: 'source_topic', organization: organization) }
-  let_it_be(:target_topic) { create(:topic, name: 'target_topic', organization: organization) }
-  let_it_be(:project_1) { create(:project, :public, topic_list: source_topic.name, organization: organization) }
-  let_it_be(:project_2) { create(:project, :private, topic_list: source_topic.name, organization: organization) }
-  let_it_be(:project_3) { create(:project, :public, topic_list: target_topic.name, organization: organization) }
+RSpec.describe Topics::MergeService, :with_current_organization, feature_category: :shared do
+  let_it_be(:namespace) { create(:namespace, organization: current_organization) }
+
+  let_it_be(:source_topic) { create(:topic, name: 'source_topic', organization: current_organization) }
+  let_it_be(:target_topic) { create(:topic, name: 'target_topic', organization: current_organization) }
+
+  let_it_be(:project_1) { create(:project, :public, topic_list: source_topic.name, namespace: namespace) }
+  let_it_be(:project_2) { create(:project, :private, topic_list: source_topic.name, namespace: namespace) }
+  let_it_be(:project_3) { create(:project, :public, topic_list: target_topic.name, namespace: namespace) }
 
   let_it_be(:project_4) do
-    create(:project, :public, topic_list: [source_topic.name, target_topic.name], organization: organization)
+    create(:project, :public, topic_list: [source_topic.name, target_topic.name], namespace: namespace)
   end
 
   subject { described_class.new(source_topic, target_topic).execute }
@@ -46,13 +48,20 @@ RSpec.describe Topics::MergeService, feature_category: :shared do
     context 'for parameter validation' do
       using RSpec::Parameterized::TableSyntax
 
+      let_it_be(:other_org_topic) do
+        create(:topic, name: 'target_topic_from_other_organization', organization: create(:organization))
+      end
+
       subject { described_class.new(source_topic_parameter, target_topic_parameter).execute }
 
+      # rubocop:disable Layout/LineLength -- to preserve the block format
       where(:source_topic_parameter, :target_topic_parameter, :expected_message) do
-        nil                | ref(:target_topic) | 'The source topic is not a topic.'
-        ref(:source_topic) | nil                | 'The target topic is not a topic.'
-        ref(:target_topic) | ref(:target_topic) | 'The source topic and the target topic are identical.'
+        nil                | ref(:target_topic)    | 'The source topic is not a topic.'
+        ref(:source_topic) | nil                   | 'The target topic is not a topic.'
+        ref(:target_topic) | ref(:target_topic)    | 'The source topic and the target topic are identical.'
+        ref(:source_topic) | ref(:other_org_topic) | 'The source topic and the target topic must belong to the same organization.'
       end
+      # rubocop:enable Layout/LineLength
 
       with_them do
         it 'raises correct error' do

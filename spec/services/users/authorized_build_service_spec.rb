@@ -6,11 +6,12 @@ RSpec.describe Users::AuthorizedBuildService, feature_category: :user_management
   describe '#execute' do
     let_it_be(:current_user) { create(:user) }
     let_it_be(:organization) { create(:organization) }
+    let_it_be(:organization_params) { { organization_id: organization.id } }
 
     let(:base_params) do
       build_stubbed(:user)
         .slice(:first_name, :last_name, :name, :username, :email, :password)
-        .merge(organization_id: organization.id)
+        .merge(organization_params)
     end
 
     let(:params) { base_params }

@@ -32,13 +32,13 @@ GitLab remote URLs require these parameters:
 The parameters are then placed together in this order:
 
 ```plaintext
-gitlab-remote://<INSTANCE_URL>/<LABEL>?project=<PROJECT_ID>&ref=<GIT_REFERENCE>
+gitlab-remote://<instanceUrl>/<label>?project=<projectId>&ref=<gitReference>
 ```
 
 For example, the `projectID` for the main GitLab project is `278964`, so the remote URL for the main GitLab project is:
 
 ```plaintext
-gitlab-remote://gitlab.com/<LABEL>?project=278964&ref=master
+gitlab-remote://gitlab.com/<label>?project=278964&ref=master
 ```
 
 ## Browse a repository in read-only mode

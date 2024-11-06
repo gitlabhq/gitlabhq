@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Explore::ProjectsController, feature_category: :groups_and_projects do
+RSpec.describe Explore::ProjectsController, :with_current_organization, feature_category: :groups_and_projects do
   shared_examples 'explore projects' do
     let(:expected_default_sort) { 'latest_activity_desc' }
 
@@ -104,7 +104,7 @@ RSpec.describe Explore::ProjectsController, feature_category: :groups_and_projec
 
       context 'when topic exists' do
         before do
-          create(:topic, name: 'topic1')
+          create(:topic, name: 'topic1', organization: current_organization)
         end
 
         it 'renders the template' do
@@ -133,14 +133,10 @@ RSpec.describe Explore::ProjectsController, feature_category: :groups_and_projec
       end
 
       context 'when topic exists' do
-        let(:topic) { create(:topic, name: 'topic1') }
-        let_it_be(:older_project) { create(:project, :public, updated_at: 1.day.ago) }
-        let_it_be(:newer_project) { create(:project, :public, updated_at: 2.days.ago) }
+        let_it_be(:topic) { create(:topic, name: 'topic1', organization: current_organization) }
 
-        before do
-          create(:project_topic, project: older_project, topic: topic)
-          create(:project_topic, project: newer_project, topic: topic)
-        end
+        let(:older_project) { create(:project, :public, updated_at: 1.day.ago, namespace: namespace, topic_list: 'topic1') }
+        let(:newer_project) { create(:project, :public, updated_at: 2.days.ago, namespace: namespace, topic_list: 'topic1') }
 
         it 'renders the template' do
           get :topic, format: :atom, params: { topic_name: 'topic1' }
@@ -291,9 +287,10 @@ RSpec.describe Explore::ProjectsController, feature_category: :groups_and_projec
   end
 
   context 'when user is signed in' do
-    let(:user) { create(:user) }
-    let_it_be(:project) { create(:project, name: 'Project 1') }
-    let_it_be(:project2) { create(:project, name: 'Project 2') }
+    let_it_be(:namespace) { create(:namespace, organization: current_organization) }
+    let_it_be(:user) { create(:user, namespace: namespace) }
+    let_it_be(:project) { create(:project, name: 'Project 1', namespace: namespace) }
+    let_it_be(:project2) { create(:project, name: 'Project 2', namespace: namespace) }
 
     before do
       sign_in(user)
@@ -349,6 +346,8 @@ RSpec.describe Explore::ProjectsController, feature_category: :groups_and_projec
   end
 
   context 'when user is not signed in' do
+    let_it_be(:namespace) { create(:namespace, organization: current_organization) }
+
     include_examples 'explore projects'
     include_examples "blocks high page numbers"
     include_examples 'avoids N+1 queries'

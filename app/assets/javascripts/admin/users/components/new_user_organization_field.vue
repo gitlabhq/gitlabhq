@@ -7,6 +7,7 @@ import organizationsQuery from '~/organizations/shared/graphql/queries/organizat
 import OrganizationRoleField from './organization_role_field.vue';
 
 export default {
+  name: 'NewUserOrganizationField',
   AVATAR_SHAPE_OPTION_RECT,
   organizationsQuery,
   inputName: 'user[organization_id]',
@@ -62,6 +63,13 @@ export default {
         :shape="$options.AVATAR_SHAPE_OPTION_RECT"
         :size="48"
         :src="initialOrganization.avatarUrl"
+      />
+      <input
+        :id="$options.inputId"
+        :name="$options.inputName"
+        :value="initialOrganization.id"
+        type="hidden"
+        role="textbox"
       />
     </div>
     <organization-role-field />

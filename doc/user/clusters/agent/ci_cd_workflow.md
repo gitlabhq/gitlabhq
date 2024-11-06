@@ -74,7 +74,7 @@ To authorize the agent to access the GitLab project where you keep Kubernetes ma
        - id: path/to/project
    ```
 
-   - Authorized projects must have the same root group or user namespace as the agent's configuration project.
+   - Authorized projects must have the same top-level group or user namespace as the agent's configuration project.
    - You can install additional agents into the same cluster to accommodate additional hierarchies.
    - You can authorize up to 500 projects.
 
@@ -98,7 +98,7 @@ To authorize the agent to access all of the GitLab projects in a group or subgro
        - id: path/to/group/subgroup
    ```
 
-   - Authorized groups must have the same root group as the agent's configuration project.
+   - Authorized groups must have the same top-level group as the agent's configuration project.
    - You can install additional agents into the same cluster to accommodate additional hierarchies.
    - All of the subgroups of an authorized group also have access to the same agent (without being specified individually).
    - You can authorize up to 500 groups.

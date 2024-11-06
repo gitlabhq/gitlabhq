@@ -259,7 +259,7 @@ For projects in subgroups, GitLab checks that the module name does not already e
 
 For example, if:
 
-- The project is `gitlab.example.com/parent-group/sub-group/my-project`.
+- The project is `gitlab.example.com/parent-group/subgroup/my-project`.
 - The Terraform module is `my-infra-package`.
 
 The module name must be unique in all projects in all groups under `parent-group`.

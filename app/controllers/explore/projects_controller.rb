@@ -118,8 +118,10 @@ class Explore::ProjectsController < Explore::ApplicationController
   end
 
   def load_topics
-    @topics =
-      Projects::TopicsFinder.new(params: params.permit(:search)).execute.page(pagination_params[:page]).without_count
+    @topics = Projects::TopicsFinder.new(
+      params: params.permit(:search),
+      organization_id: organization_id
+    ).execute.page(pagination_params[:page]).without_count
   end
 
   def load_topic
@@ -129,7 +131,7 @@ class Explore::ProjectsController < Explore::ApplicationController
                    params[:topic_name]
                  end
 
-    @topic = Projects::Topic.find_by_name_case_insensitive(topic_name)
+    @topic = Projects::Topic.for_organization(organization_id).find_by_name_case_insensitive(topic_name)
   end
 
   # rubocop: disable CodeReuse/ActiveRecord
@@ -175,6 +177,10 @@ class Explore::ProjectsController < Explore::ApplicationController
     end
 
     flash.now[:notice] = _('You must sign in to search for specific projects.')
+  end
+
+  def organization_id
+    ::Current.organization&.id
   end
 end
 

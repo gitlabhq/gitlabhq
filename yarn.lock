@@ -1386,10 +1386,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/fonts/-/fonts-1.3.0.tgz#df89c1bb6714e4a8a5d3272568aa4de7fb337267"
   integrity sha512-DoMUIN3DqjEn7wvcxBg/b7Ite5fTdF5EmuOZoBRo2j0UBGweDXmNBi+9HrTZs4cBU660dOxcf1hATFcG3npbPg==
 
-"@gitlab/query-language@^0.0.5-a-20241017":
-  version "0.0.5-a-20241017"
-  resolved "https://registry.yarnpkg.com/@gitlab/query-language/-/query-language-0.0.5-a-20241017.tgz#31107a3e92a4c796f33f7862a88915297914c108"
-  integrity sha512-mqI2zbWuYaP/Wtm0D3H0YcPv6sYQ/CdaFBG/UG856h94533CCZ+leZBr5/YkI0vBiws1VcAloLeamCHacaUlDw==
+"@gitlab/query-language@^0.0.5-a-20241105":
+  version "0.0.5-a-20241105"
+  resolved "https://registry.yarnpkg.com/@gitlab/query-language/-/query-language-0.0.5-a-20241105.tgz#6ad77d3278290d16e5fa5c9111f9c87145c1379a"
+  integrity sha512-PCmbdKTnnMpW3GTcIz++YappqPw5xMfcKukeSGgkrwQglIAXtP0tMW+loDe4wKjBeieJTpuuR+YwuNVAwN6rew==
   dependencies:
     "@bjorn3/browser_wasi_shim" "^0.2.19"
 
@@ -15032,10 +15032,10 @@ visibilityjs@^1.2.4:
   resolved "https://registry.yarnpkg.com/visibilityjs/-/visibilityjs-1.2.4.tgz#bff8663da62c8c10ad4ee5ae6a1ae6fac4259d63"
   integrity sha1-v/hmPaYsjBCtTuWuahrm+sQlnWM=
 
-vite-plugin-ruby@^5.1.0:
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/vite-plugin-ruby/-/vite-plugin-ruby-5.1.0.tgz#489f2071ea6d86b5db735ea1fbbbe10e50e8e9bc"
-  integrity sha512-Dgd/dCvb/8GYxZx2NEgxygEoUpHz9vfad7itlO4fXqYwdfAEwFwwOohC630yf/+kxIGBZXI5yk+Y3WkL9VkwcA==
+vite-plugin-ruby@^5.1.1:
+  version "5.1.1"
+  resolved "https://registry.yarnpkg.com/vite-plugin-ruby/-/vite-plugin-ruby-5.1.1.tgz#ecd72591ddb90a23613051005bd70a6410945129"
+  integrity sha512-I1dXJq2ywdvTD2Cz5LYNcYLujqQ3eUxPoCjruRdfm2QBtHBY15NEeb6x5HuPM3T5S+y8S3p9fwRsieQQCjk0gg==
   dependencies:
     debug "^4.3.4"
     fast-glob "^3.3.2"

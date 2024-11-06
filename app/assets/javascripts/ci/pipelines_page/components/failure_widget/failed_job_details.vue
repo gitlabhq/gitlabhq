@@ -5,7 +5,7 @@ import { __, s__, sprintf } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import SafeHtml from '~/vue_shared/directives/safe_html';
-import { BRIDGE_KIND } from '~/ci/pipeline_details/graph/constants';
+import { BRIDGE_KIND, BUILD_KIND } from '~/ci/pipeline_details/graph/constants';
 import RetryMrFailedJobMutation from '~/ci/merge_requests/graphql/mutations/retry_mr_failed_job.mutation.graphql';
 import RootCauseAnalysisButton from 'ee_else_ce/ci/job_details/components/root_cause_analysis_button.vue';
 
@@ -62,6 +62,9 @@ export default {
     },
     tooltipText() {
       return sprintf(this.$options.i18n.jobActionTooltipText, { jobName: this.job.name });
+    },
+    isBuildJob() {
+      return this.job.kind === BUILD_KIND;
     },
   },
   methods: {
@@ -127,6 +130,7 @@ export default {
           :job-gid="job.id"
           :job-status-group="statusGroup"
           :can-troubleshoot-job="canTroubleshootJob"
+          :is-build="isBuildJob"
         />
 
         <span ref="retryBtn">

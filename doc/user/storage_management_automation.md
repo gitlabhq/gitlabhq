@@ -214,7 +214,7 @@ To implement this algorithm:
 ```shell
 export GROUP_NAME="gitlab-da"
 
-# Return sub group IDs
+# Return subgroup IDs
 glab api groups/$GROUP_NAME/subgroups | jq --compact-output '.[]' | jq --compact-output '.id'
 12034712
 67218622

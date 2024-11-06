@@ -32,7 +32,7 @@ RSpec.describe 'Organizations (GraphQL fixtures)', feature_category: :cell do
     include GraphqlHelpers
     include JavaScriptFixturesHelpers
 
-    let_it_be(:current_user) { create(:user) }
+    let_it_be_with_reload(:current_user) { create(:user) }
     let_it_be(:user) { create(:user) }
     let_it_be(:organizations) { create_list(:organization, 3) }
     let_it_be(:organization) { organizations.first }

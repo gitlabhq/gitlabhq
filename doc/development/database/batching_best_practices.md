@@ -516,7 +516,7 @@ Cons:
 
 ### Always batch from the top-level group
 
-This technique can be used when we always have to batch from the top level group (group without parent group). In this case we can leverage the following index in the `namespaces` table:
+This technique can be used when we always have to batch from the top-level group (group without parent group). In this case we can leverage the following index in the `namespaces` table:
 
 ```sql
 "index_on_namespaces_namespaces_by_top_level_namespace" btree ((traversal_ids[1]), type, id) -- traversal_ids[1] is the top-level group id

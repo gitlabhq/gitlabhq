@@ -2,12 +2,11 @@
 
 require 'spec_helper'
 
-RSpec.describe "Topic Feed", feature_category: :groups_and_projects do
-  let_it_be(:organization) { create(:organization) }
-  let_it_be(:topic) { create(:topic, name: 'test-topic', title: 'Test topic', organization: organization) }
-  let_it_be(:empty_topic) { create(:topic, name: 'empty-topic', title: 'Empty topic', organization: organization) }
-  let_it_be(:project1) { create(:project, :public, topic_list: topic.name, organization: organization) }
-  let_it_be(:project2) { create(:project, :public, topic_list: topic.name, organization: organization) }
+RSpec.describe "Topic Feed", :with_current_organization, feature_category: :groups_and_projects do
+  let_it_be(:topic) { create(:topic, name: 'test-topic', title: 'Test topic', organization: current_organization) }
+  let_it_be(:empty_topic) { create(:topic, name: 'empty-topic', organization: current_organization) }
+  let_it_be(:project1) { create(:project, :public, topic_list: topic.name, organization: current_organization) }
+  let_it_be(:project2) { create(:project, :public, topic_list: topic.name, organization: current_organization) }
 
   context 'when topic does not exist' do
     let(:path) { topic_explore_projects_path(topic_name: 'non-existing', format: 'atom') }

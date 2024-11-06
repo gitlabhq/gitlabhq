@@ -320,6 +320,148 @@ Here is an example scenario:
 
 Batched background migration code is routinely deleted when migrations are squashed.
 
+### Re-queue batched background migrations
+
+A batched background migration might need to be re-run for one of several
+reasons:
+
+- The migration contains a bug ([example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93546)).
+- The migration cleaned up data but the data became de-normalized again due to a
+  bypass in application logic ([example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123002)).
+- The batch size of the original migration causes the migration to fail ([example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121404)).
+
+To requeue a batched background migration, you must:
+
+- No-op the contents of the `#up` and `#down` methods of the
+  original migration file. Otherwise, the batched background migration is created,
+  deleted, then created again on systems that are upgrading multiple patch
+  releases at once.
+- Add a new post-deployment migration that re-runs the batched background
+  migration.
+- In the new post-deployment migration, delete the existing batched background
+  migration using the `delete_batched_background_migration` method at the start
+  of the `#up` method to ensure that any existing runs are cleaned up.
+- Update the `db/docs/batched_background_migration/*.yml` file from the original
+  migration to include information about the requeue.
+
+#### Example
+
+**Original Migration:**
+
+```ruby
+# frozen_string_literal: true
+
+class QueueResolveVulnerabilitiesForRemovedAnalyzers < Gitlab::Database::Migration[2.2]
+  milestone '17.3'
+
+  MIGRATION = "ResolveVulnerabilitiesForRemovedAnalyzers"
+
+  def up
+    # no-op because there was a bug in the original migration, which has been
+    # fixed by
+  end
+
+  def down
+    # no-op because there was a bug in the original migration, which has been
+    # fixed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162527
+  end
+end
+```
+
+**Requeued migration:**
+
+```ruby
+# frozen_string_literal: true
+
+class RequeueResolveVulnerabilitiesForRemovedAnalyzers < Gitlab::Database::Migration[2.2]
+  milestone '17.4'
+
+  restrict_gitlab_migration gitlab_schema: :gitlab_main
+
+  MIGRATION = "ResolveVulnerabilitiesForRemovedAnalyzers"
+  DELAY_INTERVAL = 2.minutes
+  BATCH_SIZE = 10_000
+  SUB_BATCH_SIZE = 100
+
+  def up
+    # Clear previous background migration execution from QueueResolveVulnerabilitiesForRemovedAnalyzers
+    delete_batched_background_migration(MIGRATION, :vulnerability_reads, :id, [])
+
+    queue_batched_background_migration(
+      MIGRATION,
+      :vulnerability_reads,
+      :id,
+      job_interval: DELAY_INTERVAL,
+      batch_size: BATCH_SIZE,
+      sub_batch_size: SUB_BATCH_SIZE
+    )
+  end
+
+  def down
+    delete_batched_background_migration(MIGRATION, :vulnerability_reads, :id, [])
+  end
+end
+```
+
+**Batched migration dictionary:**
+
+The `milestone` and `queued_migration_version` should be the ones of requeued migration (in this example: RequeueResolveVulnerabilitiesForRemovedAnalyzers).
+
+```markdown
+---
+migration_job_name: ResolveVulnerabilitiesForRemovedAnalyzers
+description: Resolves all detected vulnerabilities for removed analyzers.
+feature_category: static_application_security_testing
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162691
+milestone: '17.4'
+queued_migration_version: 20240814085540
+finalized_by: # version of the migration that finalized this BBM
+```
+
+### Stop and remove batched background migrations
+
+A batched background migration in running state can be stopped and removed for several reasons:
+
+- When the migration is no longer relevant or required as the product use case changed.
+- The migration has to be superseded with another migration with a different logic.
+
+To stop and remove an inprogress batched background migration, you must:
+
+- In Release N, No-op the contents of the `#up` and `#down` methods of the scheduling database migration.
+
+```ruby
+class BackfillNamespaceType < Gitlab::Database::Migration[2.1]
+  # Reason why we don't need the BBM anymore. E.G: This BBM is no longer needed because it will be superseded by another BBM with different logic.
+  def up; end
+
+  def down; end
+end
+```
+
+- In Release N, add a regular migration, to delete the existing batched migration. Delete the existing batched background migration using the `delete_batched_background_migration` method at the start of the `#up` method to ensure that any existing runs are cleaned up.
+
+```ruby
+class CleanupBackfillNamespaceType < Gitlab::Database::Migration[2.1]
+  MIGRATION = "MyMigrationClass"
+  DELAY_INTERVAL = 2.minutes
+  BATCH_SIZE = 50_000
+
+  restrict_gitlab_migration gitlab_schema: :gitlab_main
+
+  def up
+    delete_batched_background_migration(MIGRATION, :vulnerabilities, :id, [])
+  end
+
+  def down
+    delete_batched_background_migration(MIGRATION, :vulnerabilities, :id, [])
+  end
+end
+```
+
+- In Release N, also delete the migration class file (`lib/gitlab/background_migration/my_batched_migration.rb`) and its specs.
+
+All the above steps can be implemented in a single MR.
+
 ### Use job arguments
 
 `BatchedMigrationJob` provides the `job_arguments` helper method for job classes to define the job arguments they need.
@@ -496,104 +638,6 @@ ApplicationRecord.connection.execute("SELECT * FROM projects")
 
 # bad
 ActiveRecord::Base.connection.execute("SELECT * FROM projects")
-```
-
-### Re-queue batched background migrations
-
-A batched background migration might need to be re-run for one of several
-reasons:
-
-- The migration contains a bug ([example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93546)).
-- The migration cleaned up data but the data became de-normalized again due to a
-  bypass in application logic ([example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123002)).
-- The batch size of the original migration causes the migration to fail ([example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121404)).
-
-To requeue a batched background migration, you must:
-
-- No-op the contents of the `#up` and `#down` methods of the
-  original migration file. Otherwise, the batched background migration is created,
-  deleted, then created again on systems that are upgrading multiple patch
-  releases at once.
-- Add a new post-deployment migration that re-runs the batched background
-  migration.
-- In the new post-deployment migration, delete the existing batched background
-  migration using the `delete_batched_background_migration` method at the start
-  of the `#up` method to ensure that any existing runs are cleaned up.
-- Update the `db/docs/batched_background_migration/*.yml` file from the original
-  migration to include information about the requeue.
-
-#### Example
-
-**Original Migration:**
-
-```ruby
-# frozen_string_literal: true
-
-class QueueResolveVulnerabilitiesForRemovedAnalyzers < Gitlab::Database::Migration[2.2]
-  milestone '17.3'
-
-  MIGRATION = "ResolveVulnerabilitiesForRemovedAnalyzers"
-
-  def up
-    # no-op because there was a bug in the original migration, which has been
-    # fixed by
-  end
-
-  def down
-    # no-op because there was a bug in the original migration, which has been
-    # fixed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162527
-  end
-end
-```
-
-**Requeued migration:**
-
-```ruby
-# frozen_string_literal: true
-
-class RequeueResolveVulnerabilitiesForRemovedAnalyzers < Gitlab::Database::Migration[2.2]
-  milestone '17.4'
-
-  restrict_gitlab_migration gitlab_schema: :gitlab_main
-
-  MIGRATION = "ResolveVulnerabilitiesForRemovedAnalyzers"
-  DELAY_INTERVAL = 2.minutes
-  BATCH_SIZE = 10_000
-  SUB_BATCH_SIZE = 100
-
-  def up
-    # Clear previous background migration execution from QueueResolveVulnerabilitiesForRemovedAnalyzers
-    delete_batched_background_migration(MIGRATION, :vulnerability_reads, :id, [])
-
-    queue_batched_background_migration(
-      MIGRATION,
-      :vulnerability_reads,
-      :id,
-      job_interval: DELAY_INTERVAL,
-      batch_size: BATCH_SIZE,
-      sub_batch_size: SUB_BATCH_SIZE
-    )
-  end
-
-  def down
-    delete_batched_background_migration(MIGRATION, :vulnerability_reads, :id, [])
-  end
-end
-```
-
-**Batched migration dictionary:**
-
-The `milestone` and `queued_migration_version` should be the ones of requeued migration (in this eg: RequeueResolveVulnerabilitiesForRemovedAnalyzers).
-
-```markdown
----
-migration_job_name: ResolveVulnerabilitiesForRemovedAnalyzers
-description: Resolves all detected vulnerabilities for removed analyzers.
-feature_category: static_application_security_testing
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162691
-milestone: '17.4'
-queued_migration_version: 20240814085540
-finalized_by: # version of the migration that finalized this BBM
 ```
 
 ### Batch over non-distinct columns

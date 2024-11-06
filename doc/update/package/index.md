@@ -52,6 +52,10 @@ To upgrade a Linux package instance:
    [Upgrading from a non-package installation to a GitLab package installation](https://docs.gitlab.com/omnibus/update/convert_to_omnibus.html).
 1. Continue the upgrade by following the sections below.
 
+### Required services
+
+You can perform upgrades with the GitLab instance online. When you execute the upgrade command, PostgreSQL, Redis, and Gitaly must be running.
+
 ### By using the official repositories (recommended)
 
 All GitLab packages are posted to the GitLab [package server](https://packages.gitlab.com/gitlab/).

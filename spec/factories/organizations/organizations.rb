@@ -27,5 +27,9 @@ FactoryBot.define do
     trait :public do
       visibility_level { Organizations::Organization::PUBLIC }
     end
+
+    trait :private do
+      visibility_level { Organizations::Organization::PRIVATE }
+    end
   end
 end

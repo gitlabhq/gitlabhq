@@ -1,6 +1,6 @@
 #import "../fragments/job.fragment.graphql"
 
-mutation playPipelineMiniGraphJob($id: CiBuildID!) {
+mutation playPipelineMiniGraphJob($id: CiProcessableID!) {
   jobPlay(input: { id: $id }) {
     job {
       ...Job

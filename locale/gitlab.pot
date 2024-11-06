@@ -14194,6 +14194,12 @@ msgstr ""
 msgid "ComplianceFrameworks|Configuration not found"
 msgstr ""
 
+msgid "ComplianceFrameworks|Configure requirements set forth by laws, regulations, and industry standards."
+msgstr ""
+
+msgid "ComplianceFrameworks|Controls"
+msgstr ""
+
 msgid "ComplianceFrameworks|Create framework"
 msgstr ""
 
@@ -14248,6 +14254,9 @@ msgstr ""
 msgid "ComplianceFrameworks|New framework"
 msgstr ""
 
+msgid "ComplianceFrameworks|New requirement"
+msgstr ""
+
 msgid "ComplianceFrameworks|No framework"
 msgstr ""
 
@@ -14276,6 +14285,12 @@ msgid "ComplianceFrameworks|Required"
 msgstr ""
 
 msgid "ComplianceFrameworks|Required format: %{codeStart}path/file.y[a]ml@group-name/project-name%{codeEnd}. %{linkStart}See some examples%{linkEnd}."
+msgstr ""
+
+msgid "ComplianceFrameworks|Requirement name"
+msgstr ""
+
+msgid "ComplianceFrameworks|Requirements"
 msgstr ""
 
 msgid "ComplianceFrameworks|Requires Ultimate subscription"
@@ -55536,6 +55551,9 @@ msgid "The source project of this merge request has been removed."
 msgstr ""
 
 msgid "The source topic and the target topic are identical."
+msgstr ""
+
+msgid "The source topic and the target topic must belong to the same organization."
 msgstr ""
 
 msgid "The source topic is not a topic."

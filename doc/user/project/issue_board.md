@@ -233,7 +233,7 @@ Prerequisites:
 - You must have at least the Reporter role for the project.
 
 When an issue is created, the system assigns a relative order value that is greater than the maximum value
-of that issue's project or root group. This means the issue is at the bottom of any issue list that
+of that issue's project or top-level group. This means the issue is at the bottom of any issue list that
 it appears in.
 
 When you visit a board, issues appear ordered in any list. You're able to change

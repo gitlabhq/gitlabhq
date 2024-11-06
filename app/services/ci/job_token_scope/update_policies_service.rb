@@ -71,3 +71,5 @@ module Ci
     end
   end
 end
+
+Ci::JobTokenScope::UpdatePoliciesService.prepend_mod_with('Ci::JobTokenScope::UpdatePoliciesService')

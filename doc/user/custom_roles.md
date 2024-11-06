@@ -180,8 +180,8 @@ If you are assigning a custom role to an existing:
 
 ### Use the API to assign a custom role
 
-1. Invite a user as a direct member to the root group or any subgroup or project in the root
-   group's hierarchy as a Guest. At this point, this Guest user cannot see any
+1. Invite a user as a direct member to the top-level group or any subgroup or project in the
+   top-level group's hierarchy as a Guest. At this point, this Guest user cannot see any
    code on the projects in the group or subgroup.
 1. Optional. If you do not know the `id` of the Guest user receiving a custom
    role, find that `id` by making an [API request](../api/member_roles.md).

@@ -417,6 +417,18 @@ RSpec.describe 'Admin::Users', feature_category: :user_management do
       end
     end
 
+    context 'when instance has multiple organizations', :js do
+      let_it_be(:organization) { create(:organization, name: 'New Organization', users: [admin]) }
+
+      it 'creates user in the selected organization' do
+        within_testid 'organization-section' do
+          select_from_listbox 'New Organization', from: 'Default'
+        end
+
+        expect { click_button 'Create user' }.to change { organization.users.count }.by(1)
+      end
+    end
+
     context 'with new users set to external enabled' do
       context 'with regex to match internal user email address set', :js do
         before do

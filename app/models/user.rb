@@ -2775,6 +2775,8 @@ class User < ApplicationRecord
   end
 
   def create_default_organization_user
+    return unless organizations.blank?
+
     Organizations::OrganizationUser.create_default_organization_record_for(id, user_is_admin: admin?)
   end
 

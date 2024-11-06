@@ -531,6 +531,28 @@ The GitLab npm repository supports the following commands for the npm CLI (`npm`
 
 ## Troubleshooting
 
+### npm logs don't display correctly
+
+You might encounter an error that says:
+
+```shell
+npm ERR! A complete log of this run can be found in: .npm/_logs/<date>-debug-0
+```
+
+If the log doesn't appear in the `.npm/_logs/` directory, you can copy the
+log to your root directory and view it there:
+
+```yaml
+script:
+    - npm install --loglevel verbose
+    - cp -r /root/.npm/_logs/ .
+  artifacts:
+      paths:
+        - './_logs
+```
+
+The npm log is copied to `/root/.npm/_logs/` as an artifact.
+
 ### `404 Not Found` errors are happening on `npm install` or `yarn`
 
 Using `CI_JOB_TOKEN` to install npm packages with dependencies in another project gives you 404 Not Found errors. You need to authenticate with a token that has access to the package and all its dependencies.

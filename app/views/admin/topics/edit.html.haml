@@ -3,6 +3,5 @@
 - breadcrumb_title _("Edit")
 - page_title _("Edit"), @topic.name, _("Topics")
 
-%h1.page-title.gl-text-size-h-display= _('Edit topic: %{topic_name}') % { topic_name: @topic.name }
-%hr
+= render ::Layouts::PageHeadingComponent.new(_('Edit topic: %{topic_name}') % { topic_name: @topic.name })
 = render 'form', url: admin_topic_path(@topic)

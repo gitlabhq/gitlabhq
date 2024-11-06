@@ -92,6 +92,12 @@ Audit event types belong to the following product categories.
 | [`updated_group_audit_event_streaming_destination`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148388) | Event triggered when an external audit event destination for a top-level group is updated. | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.11](https://gitlab.com/gitlab-org/gitlab/-/issues/436610) | Group |
 | [`updated_instance_audit_event_streaming_destination`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149104) | Event triggered when an external audit event destination for a GitLab instance is updated. | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.11](https://gitlab.com/gitlab-org/gitlab/-/issues/436615) | Instance |
 
+### Authorization
+
+| Name | Description | Saved to database | Streamed | Introduced in | Scope |
+|:------------|:------------|:------------------|:---------|:--------------|:--------------|
+| [`secure_ci_job_token_policies_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170930) | Event triggered when permissions are updated for a CI_JOB_TOKEN scope | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [17.6](https://gitlab.com/gitlab-org/gitlab/-/issues/495144) | Project |
+
 ### Build artifacts
 
 | Name | Description | Saved to database | Streamed | Introduced in | Scope |

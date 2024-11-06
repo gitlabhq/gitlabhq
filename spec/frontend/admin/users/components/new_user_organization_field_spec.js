@@ -26,6 +26,8 @@ describe('NewUserOrganizationField', () => {
   };
 
   const findAvatar = () => wrapper.findComponent(GlAvatarLabeled);
+  const findHiddenOrganizationField = () =>
+    wrapper.findByRole('textbox', { hidden: true, label: NewUserOrganizationField.inputName });
   const findOrganizationSelect = () => wrapper.findComponent(OrganizationSelect);
   const findOrganizationRoleField = () => wrapper.findComponent(OrganizationRoleField);
 
@@ -42,6 +44,12 @@ describe('NewUserOrganizationField', () => {
         shape: AVATAR_SHAPE_OPTION_RECT,
         src: defaultPropsData.initialOrganization.avatarUrl,
       });
+    });
+
+    it('renders hidden field with initial organization id', () => {
+      expect(findHiddenOrganizationField().element.value).toBe(
+        `${defaultPropsData.initialOrganization.id}`,
+      );
     });
   });
 

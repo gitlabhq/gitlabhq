@@ -143,7 +143,7 @@ Prerequisites:
      can be copied from the IAM integration page when choosing
      manual setup and must exactly match the value. The parameter must include
      the path of the root group. For example, if the project is under
-     `my-root-group/my-sub-group/project-a`, the `issuer-uri` must be set to
+     `my-root-group/my-subgroup/project-a`, the `issuer-uri` must be set to
      `https://auth.gcp.gitlab.com/oidc/my-root-group`.
 
    ```shell

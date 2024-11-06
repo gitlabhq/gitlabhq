@@ -562,13 +562,13 @@ RSpec.describe Admin::UsersController, feature_category: :user_management do
     end
 
     context 'when the confirmation period has expired' do
-      let(:confirmation_sent_at) {  expired_confirmation_sent_at }
+      let(:confirmation_sent_at) { expired_confirmation_sent_at }
 
       it_behaves_like 'confirms the user'
     end
 
     context 'when the confirmation period has not expired' do
-      let(:confirmation_sent_at) {  extant_confirmation_sent_at }
+      let(:confirmation_sent_at) { extant_confirmation_sent_at }
 
       it_behaves_like 'confirms the user'
     end
@@ -617,36 +617,82 @@ RSpec.describe Admin::UsersController, feature_category: :user_management do
   end
 
   describe 'POST create' do
+    let_it_be(:user_params) { attributes_for(:user) }
+
     it 'creates the user' do
-      expect { post :create, params: { user: attributes_for(:user) } }.to change { User.count }.by(1)
+      expect { post :create, params: { user: user_params } }.to change { User.count }.by(1)
     end
 
     it 'shows only one error message for an invalid email' do
-      post :create, params: { user: attributes_for(:user, email: 'bogus') }
+      post :create, params: { user: user_params.merge(email: 'bogus') }
 
       errors = assigns[:user].errors
       expect(errors).to contain_exactly(errors.full_message(:email, I18n.t('errors.messages.invalid')))
     end
 
-    context 'admin notes' do
-      it 'creates the user with note' do
-        note = '2020-05-12 | Note | DCMA | Link'
-        user_params = attributes_for(:user, note: note)
+    it 'creates user with namespace in the Current.organization', :aggregate_failures do
+      post :create, params: { user: user_params }
 
-        expect { post :create, params: { user: user_params } }.to change { User.count }.by(1)
+      created_user = User.find_by(email: user_params[:email])
 
-        new_user = User.last
-        expect(new_user.note).to eq(note)
+      expect(created_user.namespace.organization).to eq(Current.organization)
+      expect(created_user.organizations).to contain_exactly(Current.organization)
+    end
+
+    [%w[admin owner], %w[user default]].each do |user_access_level, organization_access_level|
+      context "when access level is #{user_access_level}" do
+        it "creates organization user with #{organization_access_level} access" do
+          post :create, params: { user: user_params.merge(access_level: user_access_level) }
+
+          access_level = Organizations::OrganizationUser
+           .joins(:user)
+           .where(users: { email: user_params[:email] })
+           .where(organization_id: Current.organization.id)
+           .pick(:access_level)
+
+          expect(access_level).to eq(organization_access_level)
+        end
       end
     end
 
-    context 'when Current.organization is set', :with_current_organization do
-      let(:user_params) { attributes_for(:user) }
+    context 'when organization params is provided' do
+      let(:organization) { create(:organization) }
+      let(:organization_params) { { organization_id: organization.id, organization_access_level: 'owner' } }
 
-      it 'creates user with namespace set to Current.organization' do
-        post :create, params: { user: user_params }
+      it 'creates user record and namespace in the organization', :aggregate_failures do
+        post :create, params: { user: user_params.merge(organization_params) }
 
-        expect(User.find_by(email: user_params[:email]).namespace.organization).to eq(Current.organization)
+        created_user = User.find_by(email: user_params[:email])
+
+        expect(created_user.namespace.organization).to eq(organization)
+        expect(created_user.organizations).to include(organization)
+      end
+
+      context 'when organization param is invalid' do
+        subject(:request) { post :create, params: { user: user_params.merge({ organization_id: non_existing_record_id }) } }
+
+        it 'does not create user' do
+          expect { request }.not_to change { User.count }
+        end
+
+        it 'returns organization error' do
+          request
+
+          errors = assigns[:user].errors
+          expect(errors).to contain_exactly('Organization users is invalid')
+        end
+      end
+    end
+
+    context 'admin notes' do
+      it 'creates the user with note' do
+        note = '2020-05-12 | Note | DCMA | Link'
+        params = { user: user_params.merge(note: note) }
+
+        expect { post :create, params: params }.to change { User.count }.by(1)
+
+        new_user = User.last
+        expect(new_user.note).to eq(note)
       end
     end
   end

@@ -11,14 +11,14 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2256) in GitLab 14.6 [with a flag](../../administration/feature_flags.md) named `customer_relations`. Disabled by default.
-> - In GitLab 14.8 and later, you can [create contacts and organizations only in root groups](https://gitlab.com/gitlab-org/gitlab/-/issues/350634).
+> - In GitLab 14.8 and later, you can [create contacts and organizations only in top-level groups](https://gitlab.com/gitlab-org/gitlab/-/issues/350634).
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/346082) in GitLab 15.0.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/346082) in GitLab 15.1.
 
 With customer relations management (CRM) you can create a record of contacts
 (individuals) and organizations (companies) and relate them to issues.
 
-Contacts and organizations can only be created for root groups.
+Contacts and organizations can only be created for top-level groups.
 
 You can use contacts and organizations to tie work to customers for billing and reporting purposes.
 For more information about what is planned for the future, see [issue 2256](https://gitlab.com/gitlab-org/gitlab/-/issues/2256).
@@ -256,20 +256,20 @@ When you use the `/remove_contacts` quick action, follow it with `[contact:` and
 
 ## Moving objects with CRM entries
 
-The root group is the topmost group in the group hierarchy.
+The top-level group is the topmost group in the group hierarchy.
 
-When you move an issue, project, or group **in the same group hierarchy**,
+When you move an issue, project, or group in the same group hierarchy,
 issues retain their contacts.
 
-When you move an issue or project and the **root group changes**,
+When you move an issue or project and the top-level group changes,
 issues lose their contacts.
 
-When you move a group and its **root group changes**:
+When you move a group and its top-level group changes:
 
-- All unique contacts and organizations are migrated to the new root group.
+- All unique contacts and organizations are migrated to the new top-level group.
 - Contacts that already exist (by email address) are deemed duplicates and deleted.
 - Organizations that already exist (by name) are deemed duplicates and deleted.
 - All issues retain their contacts or are updated to point at contacts with the same email address.
 
 If you do not have permission to create contacts and organizations in the new
-root group, the group transfer fails.
+top-level group, the group transfer fails.

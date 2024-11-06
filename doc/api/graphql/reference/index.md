@@ -6887,7 +6887,7 @@ Input type: `JobPlayInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationjobplayclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationjobplayid"></a>`id` | [`CiBuildID!`](#cibuildid) | ID of the job to mutate. |
+| <a id="mutationjobplayid"></a>`id` | [`CiProcessableID!`](#ciprocessableid) | ID of the job to mutate. |
 | <a id="mutationjobplayvariables"></a>`variables` | [`[CiVariableInput!]`](#civariableinput) | Variables to use when playing a manual job. |
 
 #### Fields
@@ -38893,7 +38893,7 @@ Member role permission.
 | <a id="memberrolepermissionread_dependency"></a>`READ_DEPENDENCY` | Allows read-only access to the dependencies and licenses. |
 | <a id="memberrolepermissionread_runners"></a>`READ_RUNNERS` | Allows read-only access to group or project runners, including the runner fleet dashboard. |
 | <a id="memberrolepermissionread_vulnerability"></a>`READ_VULNERABILITY` | Read vulnerability reports and security dashboards. |
-| <a id="memberrolepermissionremove_group"></a>`REMOVE_GROUP` | Ability to delete or restore a group. This ability does not allow deleting top level groups. Review the Retention period settings to prevent accidental deletion. |
+| <a id="memberrolepermissionremove_group"></a>`REMOVE_GROUP` | Ability to delete or restore a group. This ability does not allow deleting top-level groups. Review the Retention period settings to prevent accidental deletion. |
 | <a id="memberrolepermissionremove_project"></a>`REMOVE_PROJECT` | Allows deletion of projects. |
 
 ### `MemberRolesOrderBy`

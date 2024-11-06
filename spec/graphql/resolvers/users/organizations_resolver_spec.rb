@@ -7,10 +7,10 @@ RSpec.describe Resolvers::Users::OrganizationsResolver, feature_category: :navig
 
   include GraphqlHelpers
 
-  let_it_be(:user) { create(:user) }
+  let_it_be(:organization) { create(:organization) }
+  let_it_be(:organization_2) { create(:organization) }
 
-  let_it_be(:organization) { create(:organization, users: [user]) }
-  let_it_be(:organization_2) { create(:organization, users: [user]) }
+  let_it_be(:user) { create(:user, organizations: [organization, organization_2]) }
 
   context 'with `read_user_organizations` ability' do
     let(:current_user) { user }
