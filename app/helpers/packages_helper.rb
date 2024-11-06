@@ -24,7 +24,12 @@ module PackagesHelper
   end
 
   def pypi_registry_url(project)
-    full_url = expose_url(api_v4_projects_packages_pypi_simple_package_name_path({ id: project.id, package_name: '' }, true))
+    full_url = expose_url(
+      api_v4_projects_packages_pypi_simple_package_name_path(
+        { id: project.id, package_name: '' },
+        true
+      )
+    )
 
     if project.project_feature.public_packages?
       full_url
@@ -86,7 +91,12 @@ module PackagesHelper
       full_path: group.full_path,
       group_list_url: group_packages_path(group),
       page_type: 'groups',
-      settings_path: show_group_package_registry_settings(group) ? group_settings_packages_and_registries_path(group) : ''
+
+      settings_path: if show_group_package_registry_settings(group)
+                       group_settings_packages_and_registries_path(group)
+                     else
+                       ''
+                     end
     })
   end
 
@@ -97,7 +107,12 @@ module PackagesHelper
       full_path: project.full_path,
       page_type: 'projects',
       project_list_url: project_packages_path(project),
-      settings_path: show_package_registry_settings(project) ? project_settings_packages_and_registries_path(project) : ''
+
+      settings_path: if show_package_registry_settings(project)
+                       project_settings_packages_and_registries_path(project)
+                     else
+                       ''
+                     end
     })
   end
 
@@ -112,9 +127,15 @@ module PackagesHelper
       admin_settings_path: ci_cd_admin_application_settings_path(anchor: 'js-registry-settings'),
       project_settings_path: project_settings_packages_and_registries_path(project),
       enable_historic_entries: container_expiration_policies_historic_entry_enabled?.to_s,
-      help_page_path: help_page_path('user/packages/container_registry/reduce_container_registry_storage.md', anchor: 'cleanup-policy'),
+      help_page_path: help_page_path(
+        'user/packages/container_registry/reduce_container_registry_storage.md',
+        anchor: 'cleanup-policy'
+      ),
       show_cleanup_policy_link: show_cleanup_policy_link(project).to_s,
-      tags_regex_help_page_path: help_page_path('user/packages/container_registry/reduce_container_registry_storage.md', anchor: 'regex-pattern-examples')
+      tags_regex_help_page_path: help_page_path(
+        'user/packages/container_registry/reduce_container_registry_storage.md',
+        anchor: 'regex-pattern-examples'
+      )
     }
   end
 
@@ -122,7 +143,10 @@ module PackagesHelper
     cleanup_settings_data(project).merge(
       show_container_registry_settings: show_container_registry_settings(project).to_s,
       show_package_registry_settings: show_package_registry_settings(project).to_s,
-      is_container_registry_metadata_database_enabled: (show_container_registry_settings(project) && ContainerRegistry::GitlabApiClient.supports_gitlab_api?).to_s,
+      is_container_registry_metadata_database_enabled: (
+        show_container_registry_settings(project) &&
+          ContainerRegistry::GitlabApiClient.supports_gitlab_api?
+      ).to_s,
       cleanup_settings_path: cleanup_image_tags_project_settings_packages_and_registries_path(project)
     )
   end

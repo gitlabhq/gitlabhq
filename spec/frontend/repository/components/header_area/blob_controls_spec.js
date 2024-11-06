@@ -3,7 +3,7 @@ import VueApollo from 'vue-apollo';
 
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import BlobControls from '~/repository/components/blob_controls.vue';
+import BlobControls from '~/repository/components/header_area/blob_controls.vue';
 import blobControlsQuery from '~/repository/queries/blob_controls.query.graphql';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
@@ -13,7 +13,7 @@ import { resetShortcutsForTests } from '~/behaviors/shortcuts';
 import ShortcutsBlob from '~/behaviors/shortcuts/shortcuts_blob';
 import Shortcuts from '~/behaviors/shortcuts/shortcuts';
 import BlobLinePermalinkUpdater from '~/blob/blob_line_permalink_updater';
-import { blobControlsDataMock, refMock } from '../mock_data';
+import { blobControlsDataMock, refMock } from '../../mock_data';
 
 jest.mock('~/repository/utils/dom');
 jest.mock('~/behaviors/shortcuts/shortcuts_blob');

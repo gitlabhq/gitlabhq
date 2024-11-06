@@ -49234,9 +49234,6 @@ msgstr ""
 msgid "SecurityConfiguration|Breach and Attack Simulation (BAS)"
 msgstr ""
 
-msgid "SecurityConfiguration|Breach and Attack Simulation is an incubating feature extending existing security testing by simulating adversary activity."
-msgstr ""
-
 msgid "SecurityConfiguration|Configuration guide"
 msgstr ""
 
@@ -49270,9 +49267,6 @@ msgstr ""
 msgid "SecurityConfiguration|Enable Auto DevOps"
 msgstr ""
 
-msgid "SecurityConfiguration|Enable incubating Breach and Attack Simulation focused features such as callback attacks in your DAST scans."
-msgstr ""
-
 msgid "SecurityConfiguration|Enable security training to help your developers learn how to fix vulnerabilities. Developers can view security training from selected educational providers, relevant to the detected vulnerability. Please note that security training is not accessible in an environment that is offline."
 msgstr ""
 
@@ -49283,9 +49277,6 @@ msgid "SecurityConfiguration|High-level vulnerability statistics across projects
 msgstr ""
 
 msgid "SecurityConfiguration|Immediately begin risk analysis and remediation with application security features. Start with SAST and Secret Detection, available to all plans. Upgrade to Ultimate to get all features, including:"
-msgstr ""
-
-msgid "SecurityConfiguration|Incubating feature"
 msgstr ""
 
 msgid "SecurityConfiguration|Learn more about vulnerability training"
@@ -49312,9 +49303,6 @@ msgstr ""
 msgid "SecurityConfiguration|Once you've enabled a scan for the default branch, any subsequent feature branch you create will include the scan. An enabled scanner will not be reflected as such until the pipeline has been successfully executed and it has generated valid artifacts."
 msgstr ""
 
-msgid "SecurityConfiguration|Out-of-Band Application Security Testing (OAST)"
-msgstr ""
-
 msgid "SecurityConfiguration|Quickly enable all continuous testing and compliance tools by enabling %{linkStart}Auto DevOps%{linkEnd}"
 msgstr ""
 
@@ -49334,9 +49322,6 @@ msgid "SecurityConfiguration|Security testing"
 msgstr ""
 
 msgid "SecurityConfiguration|Security training"
-msgstr ""
-
-msgid "SecurityConfiguration|Simulate breach and attack scenarios against your running application by attempting to detect and exploit known vulnerabilities."
 msgstr ""
 
 msgid "SecurityConfiguration|Something went wrong. Please refresh the page, or try again later."
@@ -65056,6 +65041,9 @@ msgid "ciReport|Full report"
 msgstr ""
 
 msgid "ciReport|Generic Report"
+msgstr ""
+
+msgid "ciReport|GitLab Duo Vulnerability Resolution, an AI feature, can suggest a possible fix."
 msgstr ""
 
 msgid "ciReport|License Compliance"

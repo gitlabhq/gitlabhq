@@ -164,26 +164,6 @@ RSpec.describe ::Gitlab::Security::ScanConfiguration do
                      description: "Manage corpus files used as " \
                                   "seed inputs with coverage-guided fuzzing.",
                      configuration_text: "Manage corpus" } }
-      :breach_and_attack_simulation | { anchor: "bas",
-        badge: { always_display: true,
-                 text: "Incubating feature",
-                 tooltip_text: "Breach and Attack Simulation is an incubating feature " \
-                               "extending existing security " \
-                               "testing by simulating adversary activity.",
-                 variant: "neutral" },
-        description: "Simulate breach and attack scenarios against your running " \
-                     "application by attempting to detect " \
-                     "and exploit known vulnerabilities.",
-        name: "Breach and Attack Simulation (BAS)",
-        help_path: "/help/user/application_security/breach_and_attack_simulation/index.md",
-        secondary: { configuration_help_path: "/help/user/application_security/breach_and_attack_simulation/" \
-                                              "index.md#extend-dynamic-application-security-testing-dast",
-                     description: "Enable incubating Breach and " \
-                                  "Attack Simulation focused features " \
-                                  "such as callback attacks in your DAST scans.",
-                     name: "Out-of-Band Application Security Testing (OAST)" },
-        short_name: "BAS",
-        type: "breach_and_attack_simulation" }
       :invalid | {}
     end
 

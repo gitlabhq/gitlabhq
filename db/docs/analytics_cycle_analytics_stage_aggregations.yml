@@ -1,0 +1,15 @@
+---
+table_name: analytics_cycle_analytics_stage_aggregations
+classes:
+- Analytics::CycleAnalytics::StageAggregation
+feature_categories:
+- value_stream_management
+description: Stores Value Stream Analytics stage aggregation related metadata for
+  initial aggregations after stage creation.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170988
+milestone: '17.6'
+gitlab_schema: gitlab_main_cell
+allow_cross_foreign_keys:
+- gitlab_main_clusterwide
+sharding_key:
+  group_id: namespaces

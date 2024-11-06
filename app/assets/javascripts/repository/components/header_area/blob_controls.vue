@@ -18,9 +18,9 @@ import {
 import { sanitize } from '~/lib/dompurify';
 import { InternalEvents } from '~/tracking';
 import { FIND_FILE_BUTTON_CLICK } from '~/tracking/constants';
-import { updateElementsVisibility } from '../utils/dom';
-import blobControlsQuery from '../queries/blob_controls.query.graphql';
-import { getRefType } from '../utils/ref_type';
+import { updateElementsVisibility } from '~/repository/utils/dom';
+import blobControlsQuery from '~/repository/queries/blob_controls.query.graphql';
+import { getRefType } from '~/repository/utils/ref_type';
 
 export default {
   i18n: {

@@ -451,16 +451,24 @@ RSpec.describe API::UsageData, feature_category: :service_ping do
     end
 
     let(:metric1_attributes) do
-      { 'key_path' => 'counter.category.event', 'description' => 'Metric description' }
+      { 'key_path' => 'counter.category.event', 'description' => 'Metric description', 'tier' => ['free'] }
     end
 
     let(:metric2_attributes) do
-      { 'key_path' => 'counter.category.event2', 'description' => 'Metric description2' }
+      { 'key_path' => 'counter.category.event2', 'description' => 'Metric description2', 'tier' => ['free'] }
     end
 
-    let(:metric1) { Gitlab::Usage::MetricDefinition.new('/metrics/test_metric1.yml', metric1_attributes.dup) }
-    let(:metric2) { Gitlab::Usage::MetricDefinition.new('/metrics/test_metric2.yml', metric2_attributes.dup) }
-    let(:metric_yaml) { [metric1_attributes, metric2_attributes].to_yaml }
+    let(:metric1) do
+      Gitlab::Usage::MetricDefinition.new('/metrics/test_metric1.yml', metric1_attributes.dup.symbolize_keys)
+    end
+
+    let(:metric2) do
+      Gitlab::Usage::MetricDefinition.new('/metrics/test_metric2.yml', metric2_attributes.dup.symbolize_keys)
+    end
+
+    let(:metric_yaml) do
+      [metric1_attributes.merge('tiers' => ['free']), metric2_attributes.merge('tiers' => ['free'])].to_yaml
+    end
 
     before do
       allow(Gitlab::Usage::MetricDefinition).to receive(:definitions).and_return(metrics)
@@ -488,6 +496,17 @@ RSpec.describe API::UsageData, feature_category: :service_ping do
 
         expect(response.body).to eq(metric_yaml)
       end
+    end
+
+    it 'returns tiers in the metric attributes', :aggregate_failures do
+      get(api(endpoint))
+
+      payload = YAML.safe_load(response.body)
+      expect(payload.length).to be 2
+      expect(payload[0]).to include(metric1_attributes)
+      expect(payload[0]['tiers']).to eq(payload[0]['tier'])
+      expect(payload[1]).to include(metric2_attributes)
+      expect(payload[1]['tiers']).to eq(payload[1]['tier'])
     end
 
     context "with include_paths being true" do

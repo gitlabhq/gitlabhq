@@ -16,7 +16,11 @@ module OperationsHelper
 
     {
       'prometheus_activated' => prometheus_integration.manual_configuration?.to_s,
-      'prometheus_form_path' => scoped_integration_path(prometheus_integration, project: prometheus_integration.project, group: prometheus_integration.group),
+      'prometheus_form_path' => scoped_integration_path(
+        prometheus_integration,
+        project: prometheus_integration.project,
+        group: prometheus_integration.group
+      ),
       'prometheus_reset_key_path' => reset_alerting_token_project_settings_operations_path(@project),
       'prometheus_authorization_key' => @project.alerting_setting&.token,
       'prometheus_api_url' => prometheus_integration.api_url,

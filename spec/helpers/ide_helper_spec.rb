@@ -68,7 +68,7 @@ RSpec.describe IdeHelper, feature_category: :web_ide do
           'user-preferences-path' => profile_preferences_path,
           'sign-in-path' => 'test-sign-in-path',
           'new-web-ide-help-page-path' =>
-            help_page_path('user/project/web_ide/index.md', anchor: 'vscode-reimplementation'),
+            help_page_path('user/project/web_ide/index.md'),
           'csp-nonce' => 'test-csp-nonce'
         }
       end

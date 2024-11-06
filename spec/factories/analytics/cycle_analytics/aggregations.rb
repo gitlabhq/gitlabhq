@@ -13,5 +13,9 @@ FactoryBot.define do
     trait :enabled do
       enabled { true }
     end
+
+    factory :cycle_analytics_stage_aggregation, class: 'Analytics::CycleAnalytics::StageAggregation' do
+      stage { association(:cycle_analytics_stage, namespace: namespace) }
+    end
   end
 end

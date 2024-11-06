@@ -8,8 +8,11 @@ module Ci
     self.primary_key = :build_id
 
     enum source: {
-      scan_execution_policy: 1
+      scan_execution_policy: 1,
+      pipeline_execution_policy: 2
     }
+
+    enum pipeline_source: Enums::Ci::Pipeline.sources
 
     query_constraints :build_id, :partition_id
     partitionable scope: :build, partitioned: true
@@ -19,6 +22,5 @@ module Ci
       inverse_of: :build_source
 
     validates :build, presence: true
-    validates :source, presence: true
   end
 end

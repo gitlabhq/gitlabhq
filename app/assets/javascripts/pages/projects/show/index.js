@@ -11,6 +11,7 @@ import initAmbiguousRefModal from '~/ref/init_ambiguous_ref_modal';
 import CodeDropdown from '~/vue_shared/components/code_dropdown/code_dropdown.vue';
 import initSourceCodeDropdowns from '~/vue_shared/components/download_dropdown/init_download_dropdowns';
 import EmptyProject from '~/pages/projects/show/empty_project';
+import initHeaderApp from '~/repository/init_header_app';
 import initWebIdeLink from '~/pages/projects/shared/web_ide_link';
 import { initHomePanel } from '../home_panel';
 
@@ -27,6 +28,7 @@ if (document.querySelector('.blob-viewer')) {
   import(/* webpackChunkName: 'blobViewer' */ '~/blob/viewer')
     .then(({ BlobViewer }) => {
       new BlobViewer(); // eslint-disable-line no-new
+      initHeaderApp(true);
     })
     .catch(() => {});
 }

@@ -3117,7 +3117,7 @@ CREATE TABLE p_ci_build_sources (
     build_id bigint NOT NULL,
     partition_id bigint NOT NULL,
     project_id bigint NOT NULL,
-    source smallint NOT NULL,
+    source smallint,
     pipeline_source smallint
 )
 PARTITION BY LIST (partition_id);
@@ -6112,6 +6112,22 @@ CREATE SEQUENCE analytics_cycle_analytics_group_value_streams_id_seq
     CACHE 1;
 
 ALTER SEQUENCE analytics_cycle_analytics_group_value_streams_id_seq OWNED BY analytics_cycle_analytics_group_value_streams.id;
+
+CREATE TABLE analytics_cycle_analytics_stage_aggregations (
+    group_id bigint NOT NULL,
+    stage_id bigint NOT NULL,
+    runtimes_in_seconds integer[] DEFAULT '{}'::integer[] NOT NULL,
+    processed_records integer[] DEFAULT '{}'::integer[] NOT NULL,
+    last_issues_id bigint,
+    last_merge_requests_id bigint,
+    last_run_at timestamp with time zone,
+    last_issues_updated_at timestamp with time zone,
+    last_merge_requests_updated_at timestamp with time zone,
+    last_completed_at timestamp with time zone,
+    enabled boolean DEFAULT true NOT NULL,
+    CONSTRAINT chk_rails_50ee1c451c CHECK ((cardinality(runtimes_in_seconds) <= 10)),
+    CONSTRAINT chk_rails_7586ea045d CHECK ((cardinality(processed_records) <= 10))
+);
 
 CREATE TABLE analytics_cycle_analytics_stage_event_hashes (
     id bigint NOT NULL,
@@ -24351,6 +24367,9 @@ ALTER TABLE ONLY analytics_cycle_analytics_group_stages
 ALTER TABLE ONLY analytics_cycle_analytics_group_value_streams
     ADD CONSTRAINT analytics_cycle_analytics_group_value_streams_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY analytics_cycle_analytics_stage_aggregations
+    ADD CONSTRAINT analytics_cycle_analytics_stage_aggregations_pkey PRIMARY KEY (stage_id);
+
 ALTER TABLE ONLY analytics_cycle_analytics_stage_event_hashes
     ADD CONSTRAINT analytics_cycle_analytics_stage_event_hashes_pkey PRIMARY KEY (id);
 
@@ -28468,6 +28487,8 @@ CREATE INDEX index_analytics_ca_group_stages_on_value_stream_id ON analytics_cyc
 CREATE UNIQUE INDEX index_analytics_ca_group_value_streams_on_group_id_and_name ON analytics_cycle_analytics_group_value_streams USING btree (group_id, name);
 
 CREATE INDEX index_analytics_cycle_analytics_group_stages_custom_only ON analytics_cycle_analytics_group_stages USING btree (id) WHERE (custom = true);
+
+CREATE INDEX index_analytics_cycle_analytics_stage_aggregations_on_group_id ON analytics_cycle_analytics_stage_aggregations USING btree (group_id);
 
 CREATE INDEX index_analytics_cycle_analytics_value_stream_settings_on_namesp ON analytics_cycle_analytics_value_stream_settings USING btree (namespace_id);
 
@@ -37030,6 +37051,9 @@ ALTER TABLE ONLY epic_user_mentions
 ALTER TABLE ONLY issuable_resource_links
     ADD CONSTRAINT fk_rails_3f0ec6b1cf FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY analytics_cycle_analytics_stage_aggregations
+    ADD CONSTRAINT fk_rails_3f409802fc FOREIGN KEY (stage_id) REFERENCES analytics_cycle_analytics_group_stages(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY board_assignees
     ADD CONSTRAINT fk_rails_3f6f926bd5 FOREIGN KEY (board_id) REFERENCES boards(id) ON DELETE CASCADE;
 
@@ -37047,6 +37071,9 @@ ALTER TABLE ONLY geo_node_namespace_links
 
 ALTER TABLE ONLY epic_issues
     ADD CONSTRAINT fk_rails_4209981af6 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY analytics_cycle_analytics_stage_aggregations
+    ADD CONSTRAINT fk_rails_42e6fe37d7 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY ci_resources
     ADD CONSTRAINT fk_rails_430336af2d FOREIGN KEY (resource_group_id) REFERENCES ci_resource_groups(id) ON DELETE CASCADE;

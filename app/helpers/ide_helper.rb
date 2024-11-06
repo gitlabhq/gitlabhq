@@ -5,7 +5,7 @@ module IdeHelper
   def ide_data(project:, fork_info:, params:)
     base_data = {
       'use-new-web-ide' => use_new_web_ide?.to_s,
-      'new-web-ide-help-page-path' => help_page_path('user/project/web_ide/index.md', anchor: 'vscode-reimplementation'),
+      'new-web-ide-help-page-path' => help_page_path('user/project/web_ide/index.md'),
       'sign-in-path' => new_session_path(current_user),
       'sign-out-path' => destroy_user_session_path,
       'user-preferences-path' => profile_preferences_path
@@ -101,9 +101,9 @@ module IdeHelper
       'project' => convert_to_project_entity_json(project),
       'preview-markdown-path' => project && preview_markdown_path(project),
       'web-terminal-svg-path' => image_path('illustrations/empty-state/empty-cloud-md.svg'),
-      'web-terminal-help-path' => help_page_path('user/project/web_ide/index.md', anchor: 'interactive-web-terminals-for-the-web-ide'),
-      'web-terminal-config-help-path' => help_page_path('user/project/web_ide/index.md', anchor: 'web-ide-configuration-file'),
-      'web-terminal-runners-help-path' => help_page_path('user/project/web_ide/index.md', anchor: 'runner-configuration')
+      'web-terminal-help-path' => help_page_path('user/project/web_ide/index.md'),
+      'web-terminal-config-help-path' => help_page_path('user/project/web_ide/index.md'),
+      'web-terminal-runners-help-path' => help_page_path('user/project/web_ide/index.md')
     }
   end
 

@@ -5,11 +5,11 @@ import permissionsQuery from 'shared_queries/repository/permissions.query.graphq
 import { joinPaths, escapeFileUrl, buildURLwithRefType } from '~/lib/utils/url_utility';
 import { BV_SHOW_MODAL } from '~/lib/utils/constants';
 import { __ } from '~/locale';
-import getRefMixin from '../mixins/get_ref';
-import projectPathQuery from '../queries/project_path.query.graphql';
-import projectShortPathQuery from '../queries/project_short_path.query.graphql';
-import UploadBlobModal from './upload_blob_modal.vue';
-import NewDirectoryModal from './new_directory_modal.vue';
+import getRefMixin from '~/repository/mixins/get_ref';
+import projectPathQuery from '~/repository/queries/project_path.query.graphql';
+import projectShortPathQuery from '~/repository/queries/project_short_path.query.graphql';
+import UploadBlobModal from '~/repository/components/upload_blob_modal.vue';
+import NewDirectoryModal from '~/repository/components/new_directory_modal.vue';
 
 const UPLOAD_BLOB_MODAL_ID = 'modal-upload-blob';
 const NEW_DIRECTORY_MODAL_ID = 'modal-new-directory';
@@ -31,7 +31,7 @@ export default {
       query: permissionsQuery,
       variables() {
         return {
-          projectPath: this.projectPath,
+          projectPath: this.projectPath || this.projectRootPath,
         };
       },
       update: (data) => data.project?.userPermissions,
@@ -44,6 +44,11 @@ export default {
     GlModal: GlModalDirective,
   },
   mixins: [getRefMixin],
+  inject: {
+    projectRootPath: {
+      default: '',
+    },
+  },
   props: {
     currentPath: {
       type: String,

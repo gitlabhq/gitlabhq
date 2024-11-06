@@ -4,10 +4,17 @@
 - if readme_path = @project.repository.readme_path
   - add_page_startup_api_call project_blob_path(@project, tree_join(@ref, readme_path), viewer: "rich", format: "json")
 - add_page_specific_style 'page_bundles/commit_description'
+- add_page_specific_style 'page_bundles/projects'
+- unless @ref.blank? ||  @repository&.root_ref == @ref
+  - compare_path = project_compare_index_path(@project, from:  @repository&.root_ref, to: @ref)
 
 #tree-holder.tree-holder.clearfix.js-per-page.gl-mt-5{ data: { blame_per_page: Gitlab::Git::BlamePagination::PAGINATION_PER_PAGE } }
-  .nav-block.gl-flex.gl-flex-col.sm:gl-flex-row.gl-items-stretch
-    = render 'projects/tree/tree_header', tree: @tree
+  - if params[:common_repository_blob_header_app] == 'true'
+    #js-repository-blob-header-app{ data: { project_id: @project.id, ref: ref, ref_type: @ref_type.to_s, history_link: project_commits_path(@project, @ref), breadcrumbs: breadcrumb_data_attributes, project_root_path: project_path(@project), project_path: project.full_path, compare_path: compare_path, escaped_ref: ActionDispatch::Journey::Router::Utils.escape_path(ref) } }
+
+  - else
+    .nav-block.gl-flex.gl-flex-col.sm:gl-flex-row.gl-items-stretch
+      = render 'projects/tree/tree_header', tree: @tree
 
   - if project.forked?
     #js-fork-info{ data: vue_fork_divergence_data(project, ref) }

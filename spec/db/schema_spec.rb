@@ -78,6 +78,7 @@ RSpec.describe 'Database schema',
         project_id stage_event_hash_id state_id],
       analytics_cycle_analytics_issue_stage_events: %w[author_id group_id issue_id milestone_id project_id
         stage_event_hash_id state_id sprint_id],
+      analytics_cycle_analytics_stage_aggregations: %w[last_issues_id last_merge_requests_id],
       analytics_cycle_analytics_stage_event_hashes: %w[organization_id],
       audit_events: %w[author_id entity_id target_id],
       user_audit_events: %w[author_id user_id target_id],

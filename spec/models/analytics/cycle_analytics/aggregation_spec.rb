@@ -12,7 +12,7 @@ RSpec.describe Analytics::CycleAnalytics::Aggregation, type: :model, feature_cat
 
     %i[incremental_runtimes_in_seconds incremental_processed_records full_runtimes_in_seconds full_processed_records].each do |column|
       it "validates the array length of #{column}" do
-        record = described_class.new(column => [1] * 11)
+        record = described_class.new(column => Array.new(11, 1))
 
         expect(record).to be_invalid
         expect(record.errors).to have_key(column)

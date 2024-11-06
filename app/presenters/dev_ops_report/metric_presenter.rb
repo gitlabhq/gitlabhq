@@ -74,8 +74,7 @@ module DevOpsReport
           title: 'Monitoring',
           description: 'fraction of all projects',
           feature: 'projects_prometheus_active',
-          blog: 'https://prometheus.io/docs/introduction/overview/',
-          docs: help_page_path('user/project/integrations/prometheus.md')
+          blog: 'https://prometheus.io/docs/introduction/overview/'
         ),
         Card.new(
           metric: metric,

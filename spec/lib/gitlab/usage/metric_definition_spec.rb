@@ -514,6 +514,7 @@ RSpec.describe Gitlab::Usage::MetricDefinition, feature_category: :service_ping 
         data_source: 'database',
         distribution: %w[ee ce],
         tier: %w[free starter premium ultimate bronze silver gold],
+        tiers: %w[free starter premium ultimate bronze silver gold],
         data_category: 'optional'
       }
     end
@@ -556,13 +557,13 @@ RSpec.describe Gitlab::Usage::MetricDefinition, feature_category: :service_ping 
         # First metric
         serialized_metric = metrics[0]
         expect(serialized_metric).to include(attributes.deep_stringify_keys)
-        expect(serialized_metric.keys - attributes.keys.map(&:to_s)).to eq added_attribute
+        expect(serialized_metric.keys - attributes.keys.map(&:to_s)).to eq(added_attribute)
         expect(serialized_metric['file_path']).to end_with(path)
 
         # Second metric
         serialized_metric = metrics[1]
         expect(serialized_metric).to include(other_attributes.deep_stringify_keys)
-        expect(serialized_metric.keys - other_attributes.keys.map(&:to_s)).to eq added_attribute
+        expect(serialized_metric.keys - other_attributes.keys.map(&:to_s)).to eq(added_attribute)
         expect(serialized_metric['file_path']).to end_with(other_path)
       end
     end

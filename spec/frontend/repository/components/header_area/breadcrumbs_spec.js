@@ -2,7 +2,7 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlDisclosureDropdown, GlDisclosureDropdownGroup } from '@gitlab/ui';
 import { shallowMount, RouterLinkStub } from '@vue/test-utils';
-import Breadcrumbs from '~/repository/components/breadcrumbs.vue';
+import Breadcrumbs from '~/repository/components/header_area/breadcrumbs.vue';
 import UploadBlobModal from '~/repository/components/upload_blob_modal.vue';
 import NewDirectoryModal from '~/repository/components/new_directory_modal.vue';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -55,6 +55,9 @@ describe('Repository breadcrumbs component', () => {
 
     wrapper = shallowMount(Breadcrumbs, {
       apolloProvider,
+      provide: {
+        projectRootPath: TEST_PROJECT_PATH,
+      },
       propsData: {
         currentPath,
         ...extraProps,
