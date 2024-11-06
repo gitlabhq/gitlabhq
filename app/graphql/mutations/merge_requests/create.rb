@@ -42,7 +42,11 @@ module Mutations
         project = authorized_find!(project_path)
         params = attributes.merge(author_id: current_user.id)
 
-        merge_request = ::MergeRequests::CreateService.new(project: project, current_user: current_user, params: params).execute
+        merge_request = ::MergeRequests::CreateService.new(
+          project: project,
+          current_user: current_user,
+          params: params
+        ).execute
 
         {
           merge_request: merge_request.valid? ? merge_request : nil,

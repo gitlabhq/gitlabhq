@@ -10,7 +10,8 @@ module Mutations
       argument :target_id,
                Types::GlobalIDType[Todoable],
                required: true,
-               description: "Global ID of the to-do item's parent. Issues, merge requests, designs, and epics are supported."
+               description: "Global ID of the to-do item's parent. Issues, " \
+                 "merge requests, designs, and epics are supported."
 
       field :todo, Types::TodoType,
             null: true,

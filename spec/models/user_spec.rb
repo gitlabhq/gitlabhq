@@ -164,6 +164,9 @@ RSpec.describe User, feature_category: :user_profile do
 
     it { is_expected.to delegate_method(:project_authorizations_recalculated_at).to(:user_detail).allow_nil }
     it { is_expected.to delegate_method(:project_authorizations_recalculated_at=).to(:user_detail).with_arguments(:args).allow_nil }
+
+    it { is_expected.to delegate_method(:bot_namespace).to(:user_detail).allow_nil }
+    it { is_expected.to delegate_method(:bot_namespace=).to(:user_detail).with_arguments(:args).allow_nil }
   end
 
   describe 'associations' do

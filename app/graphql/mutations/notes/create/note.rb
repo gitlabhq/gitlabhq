@@ -15,7 +15,8 @@ module Mutations
         argument :merge_request_diff_head_sha,
           GraphQL::Types::String,
           required: false,
-          description: 'SHA of the head commit which is used to ensure that the merge request has not been updated since the request was sent.'
+          description: 'SHA of the head commit which is used to ensure that ' \
+            'the merge request has not been updated since the request was sent.'
 
         private
 

@@ -88,7 +88,7 @@ To create a `.gitlab-ci.yml` file:
 
 1. Select **Commit changes**.
 
-Here's a quick explanation of the code we commited:
+Here's a quick explanation of the code we committed:
 
 - `image` - Specifies which Docker image to use.
 - `stages` - Defines the three stages for this pipeline.
@@ -132,5 +132,5 @@ The configuration we added:
 - Uses GitLab CI/CD variables for sensitive information like authentication tokens.
 - Publishes only when a new Git tag is pushed. This ensures only properly versioned releases are published.
 
-Congratulations! You've sucessfully built, tested, and published a package with GitLab CI/CD. You should be able to
+Congratulations! You've successfully built, tested, and published a package with GitLab CI/CD. You should be able to
 use a similar configuration to streamline your own development processes.

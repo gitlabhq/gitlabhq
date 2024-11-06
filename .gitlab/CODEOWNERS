@@ -477,8 +477,8 @@ Dangerfile
 /ee/spec/controllers/ee/registrations_controller_spec.rb
 /ee/app/controllers/ee/registrations/
 /ee/app/controllers/ee/confirmations_controller.rb
-/ee/app/controllers/subscriptions_controller.rb
-/ee/spec/controllers/subscriptions_controller_spec.rb
+/ee/app/controllers/gitlab_subscriptions/subscriptions_controller.rb
+/ee/spec/controllers/gitlab_subscriptions/subscriptions_controller_spec.rb
 /ee/app/controllers/subscriptions/
 /ee/spec/controllers/subscriptions/
 /app/services/users/in_product_marketing_email_records.rb

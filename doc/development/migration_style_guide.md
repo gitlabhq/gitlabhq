@@ -207,7 +207,7 @@ $ echo -n "20241021120146" | sha256sum
 
 The `SHA256` adds unique content to the file so Git rename detection sees them as [separate files](https://gitlab.com/gitlab-org/gitlab/-/issues/218590#note_384712827).
 
-This `migration checksum file` indicates that the migration executed successfuly and the result recorded in `db/structure.sql`. The presence of this file prevents the same migration from being executed twice, and therefore, it's necessary to include this file in the merge request that adds the new migration.
+This `migration checksum file` indicates that the migration executed successfully and the result recorded in `db/structure.sql`. The presence of this file prevents the same migration from being executed twice, and therefore, it's necessary to include this file in the merge request that adds the new migration.
 
 See [Development change: Database schema version handling outside of structure.sql](https://gitlab.com/gitlab-org/gitlab/-/issues/218590) for more details about the `db/schema_migrations` directory.
 

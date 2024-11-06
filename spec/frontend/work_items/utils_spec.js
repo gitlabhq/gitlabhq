@@ -2,6 +2,8 @@ import {
   NEW_WORK_ITEM_IID,
   WORK_ITEM_TYPE_ENUM_ISSUE,
   WORK_ITEM_TYPE_ENUM_EPIC,
+  STATE_OPEN,
+  STATE_CLOSED,
 } from '~/work_items/constants';
 import {
   autocompleteDataSources,
@@ -10,10 +12,11 @@ import {
   isReference,
   getWorkItemIcon,
   workItemRoadmapPath,
-  saveShowLabelsToLocalStorage,
-  getShowLabelsFromLocalStorage,
+  saveToggleToLocalStorage,
+  getToggleFromLocalStorage,
   makeDrawerUrlParam,
   makeDrawerItemFullPath,
+  getItems,
 } from '~/work_items/utils';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import { TYPE_EPIC } from '~/issues/constants';
@@ -189,25 +192,25 @@ describe('utils for remembering user showLabel preferences', () => {
     localStorage.clear();
   });
 
-  describe('saveShowLabelsToLocalStorage', () => {
+  describe('saveToggleToLocalStorage', () => {
     it('saves the value to localStorage', () => {
       const TEST_KEY = `test-key-${new Date().getTime}`;
 
       expect(localStorage.getItem(TEST_KEY)).toBe(null);
 
-      saveShowLabelsToLocalStorage(TEST_KEY, true);
+      saveToggleToLocalStorage(TEST_KEY, true);
       expect(localStorage.setItem).toHaveBeenCalled();
       expect(localStorage.getItem(TEST_KEY)).toBe(true);
     });
   });
 
-  describe('getShowLabelsFromLocalStorage', () => {
+  describe('getToggleFromLocalStorage', () => {
     it('defaults to true when there is no value from localStorage and no default value is passed', () => {
       const TEST_KEY = `test-key-${new Date().getTime}`;
 
       expect(localStorage.getItem(TEST_KEY)).toBe(null);
 
-      const result = getShowLabelsFromLocalStorage(TEST_KEY);
+      const result = getToggleFromLocalStorage(TEST_KEY);
       expect(localStorage.getItem).toHaveBeenCalled();
       expect(result).toBe(true);
     });
@@ -218,7 +221,7 @@ describe('utils for remembering user showLabel preferences', () => {
 
       expect(localStorage.getItem(TEST_KEY)).toBe(null);
 
-      const result = getShowLabelsFromLocalStorage(TEST_KEY, DEFAULT_VALUE);
+      const result = getToggleFromLocalStorage(TEST_KEY, DEFAULT_VALUE);
       expect(localStorage.getItem).toHaveBeenCalled();
       expect(result).toBe(false);
     });
@@ -229,7 +232,7 @@ describe('utils for remembering user showLabel preferences', () => {
 
       localStorage.setItem(TEST_KEY, 'false');
 
-      const newResult = getShowLabelsFromLocalStorage(TEST_KEY, DEFAULT_VALUE);
+      const newResult = getToggleFromLocalStorage(TEST_KEY, DEFAULT_VALUE);
       expect(localStorage.getItem).toHaveBeenCalled();
       expect(newResult).toBe(false);
     });
@@ -276,5 +279,27 @@ describe('`makeDrawerUrlParam`', () => {
     expect(result).toEqual(
       btoa(JSON.stringify({ iid: '123', full_path: 'gitlab-org/gitlab', id: 1 })),
     );
+  });
+});
+
+describe('`getItems`', () => {
+  it('returns all children when showClosed flag is on', () => {
+    const children = [
+      { id: 1, state: STATE_OPEN },
+      { id: 2, state: STATE_CLOSED },
+    ];
+    const result = getItems(true)(children);
+    expect(result).toEqual(children);
+  });
+
+  it('returns only open children when showClosed flag is off', () => {
+    const openChildren = [
+      { id: 1, state: STATE_OPEN },
+      { id: 2, state: STATE_OPEN },
+    ];
+    const closedChildren = [{ id: 3, state: STATE_CLOSED }];
+    const children = openChildren.concat(closedChildren);
+    const result = getItems(false)(children);
+    expect(result).toEqual(openChildren);
   });
 });

@@ -27,6 +27,27 @@ RSpec.describe Users::AuthorizedBuildService, feature_category: :user_management
       end
 
       it { expect(user).to be_external }
+
+      context 'when user_type is provided' do
+        context 'when project_bot' do
+          let_it_be(:group) { create(:group) }
+
+          before do
+            params.merge!({ user_type: :project_bot, bot_namespace: group })
+          end
+
+          it { expect(user.project_bot?).to be true }
+          it { expect(user.bot_namespace).to eq(group) }
+        end
+
+        context 'when not a project_bot' do
+          before do
+            params.merge!({ user_type: :alert_bot })
+          end
+
+          it { expect(user).to be_human }
+        end
+      end
     end
   end
 end

@@ -187,7 +187,6 @@ Layout/ClassStructure:
     - 'app/workers/repository_update_remote_mirror_worker.rb'
     - 'ee/app/components/namespaces/free_user_cap/base_alert_component.rb'
     - 'ee/app/controllers/projects/integrations/jira/issues_controller.rb'
-    - 'ee/app/controllers/subscriptions_controller.rb'
     - 'ee/app/finders/autocomplete/vulnerabilities_autocomplete_finder.rb'
     - 'ee/app/finders/namespaces/billed_users_finder.rb'
     - 'ee/app/finders/namespaces/free_user_cap/users_without_added_members_finder.rb'

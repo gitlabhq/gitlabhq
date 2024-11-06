@@ -14,6 +14,7 @@ import {
   WORK_ITEM_TYPE_ENUM_EPIC,
   CHILD_ITEMS_ANCHOR,
   WORKITEM_TREE_SHOWLABELS_LOCALSTORAGEKEY,
+  WORKITEM_TREE_SHOWCLOSED_LOCALSTORAGEKEY,
   WORK_ITEM_TYPE_VALUE_EPIC,
   WIDGET_TYPE_HIERARCHY,
   INJECTION_LINK_CHILD_PREVENT_ROUTER_NAVIGATION,
@@ -21,8 +22,9 @@ import {
 import {
   findHierarchyWidgets,
   getDefaultHierarchyChildrenCount,
-  saveShowLabelsToLocalStorage,
-  getShowLabelsFromLocalStorage,
+  saveToggleToLocalStorage,
+  getToggleFromLocalStorage,
+  getItems,
 } from '../../utils';
 import getWorkItemTreeQuery from '../../graphql/work_item_tree.query.graphql';
 import namespaceWorkItemTypesQuery from '../../graphql/namespace_work_item_types.query.graphql';
@@ -116,15 +118,16 @@ export default {
       formType: null,
       childType: null,
       widgetName: CHILD_ITEMS_ANCHOR,
-      defaultShowLabels: true,
       showLabels: true,
+      showClosed: true,
       fetchNextPageInProgress: false,
       workItem: {},
       disableContent: false,
-      showLabelsLocalStorageKey: WORKITEM_TREE_SHOWLABELS_LOCALSTORAGEKEY,
       workItemTypes: [],
       hierarchyWidget: null,
       draggedItemType: null,
+      showLabelsLocalStorageKey: WORKITEM_TREE_SHOWLABELS_LOCALSTORAGEKEY,
+      showClosedLocalStorageKey: WORKITEM_TREE_SHOWCLOSED_LOCALSTORAGEKEY,
     };
   },
   apollo: {
@@ -259,12 +262,14 @@ export default {
         return acc;
       }, {});
     },
+    hasAllChildItemsHidden() {
+      const filterClosed = getItems(this.showClosed);
+      return filterClosed(this.children).length === 0;
+    },
   },
   mounted() {
-    this.showLabels = getShowLabelsFromLocalStorage(
-      this.showLabelsLocalStorageKey,
-      this.defaultShowLabels,
-    );
+    this.showLabels = getToggleFromLocalStorage(this.showLabelsLocalStorageKey);
+    this.showClosed = getToggleFromLocalStorage(this.showClosedLocalStorageKey);
   },
   methods: {
     genericActionItems(workItem) {
@@ -297,7 +302,11 @@ export default {
     },
     toggleShowLabels() {
       this.showLabels = !this.showLabels;
-      saveShowLabelsToLocalStorage(this.showLabelsLocalStorageKey, this.showLabels);
+      saveToggleToLocalStorage(this.showLabelsLocalStorageKey, this.showLabels);
+    },
+    toggleShowClosed() {
+      this.showClosed = !this.showClosed;
+      saveToggleToLocalStorage(this.showClosedLocalStorageKey, this.showClosed);
     },
     async fetchNextPage() {
       if (this.hasNextPage && !this.fetchNextPageInProgress) {
@@ -319,6 +328,9 @@ export default {
         }
       }
     },
+  },
+  i18n: {
+    noChildItemsOpen: s__('WorkItem|No child items are currently open.'),
   },
 };
 </script>
@@ -366,8 +378,10 @@ export default {
         :full-path="fullPath"
         :work-item-type="workItemType"
         :show-labels="showLabels"
+        :show-closed="showClosed"
         show-view-roadmap-action
         @toggle-show-labels="toggleShowLabels"
+        @toggle-show-closed="toggleShowClosed"
       />
     </template>
 
@@ -400,7 +414,7 @@ export default {
       <gl-alert v-if="error" variant="danger" @dismiss="error = undefined">
         {{ error }}
       </gl-alert>
-      <div class="!gl-px-3 gl-pb-3 gl-pt-2">
+      <div v-if="!hasAllChildItemsHidden" class="!gl-px-3 gl-pb-3 gl-pt-2">
         <work-item-children-wrapper
           :children="children"
           :parent="workItem"
@@ -410,6 +424,7 @@ export default {
           :work-item-iid="workItemIid"
           :work-item-type="workItemType"
           :show-labels="showLabels"
+          :show-closed="showClosed"
           :disable-content="disableContent"
           :show-task-weight="showTaskWeight"
           :has-indirect-children="hasIndirectChildren"
@@ -428,6 +443,14 @@ export default {
           :fetch-next-page-in-progress="fetchNextPageInProgress"
           @fetch-next-page="fetchNextPage"
         />
+      </div>
+
+      <div
+        v-if="hasAllChildItemsHidden"
+        class="gl-text-subtle"
+        data-testid="work-item-no-child-items-open"
+      >
+        {{ $options.i18n.noChildItemsOpen }}
       </div>
     </template>
   </crud-component>

@@ -323,6 +323,6 @@ Rails/StrongParams:
     - 'ee/app/controllers/security/projects_controller.rb'
     - 'ee/app/controllers/smartcard_controller.rb'
     - 'ee/app/controllers/subscriptions/groups_controller.rb'
-    - 'ee/app/controllers/subscriptions_controller.rb'
+    - 'ee/app/controllers/gitlab_subscriptions/subscriptions_controller.rb'
     - 'ee/app/controllers/users/base_identity_verification_controller.rb'
     - 'ee/app/controllers/users/registrations_identity_verification_controller.rb'

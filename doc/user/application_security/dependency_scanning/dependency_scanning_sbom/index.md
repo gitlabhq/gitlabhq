@@ -106,7 +106,7 @@ include:
 
 ### Language-specific instructions
 
-If your project doesn't have a supported lock file dependency graph commited to its
+If your project doesn't have a supported lock file dependency graph committed to its
 repository, you need to provide one.
 
 The examples below show how to create a file that is supported by the GitLab analyzer for popular

@@ -119,7 +119,7 @@ Custom hostnames for GitLab Pages are not supported. If you use GitLab Pages, th
 
 ### Application
 
-GitLab Dedicated comes with the self-managed [Ultimate feature set](https://about.gitlab.com/pricing/feature-comparison/) with the exception of the [Unavailable features](#unavailable-features) listed below.
+GitLab Dedicated comes with the self-managed [Ultimate feature set](https://about.gitlab.com/pricing/feature-comparison/) with a small number of exceptions. For more information, see [Unavailable features](#unavailable-features).
 
 #### Advanced search
 

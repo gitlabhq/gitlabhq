@@ -1,3 +1,4 @@
+import IterationPresenter from 'ee_else_ce/glql/components/presenters/iteration.vue';
 import BoolPresenter from '../components/presenters/bool.vue';
 import CollectionPresenter from '../components/presenters/collection.vue';
 import HealthPresenter from '../components/presenters/health.vue';
@@ -19,6 +20,7 @@ const presentersByObjectType = {
   Milestone: MilestonePresenter,
   UserCore: UserPresenter,
   Label: LabelPresenter,
+  Iteration: IterationPresenter,
 };
 
 const presentersByFieldName = {

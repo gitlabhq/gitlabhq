@@ -71,7 +71,7 @@ WARNING:
 This is a new technology at GitLab and we might not have all the necessary precautions and best practices in place yet.
 If you're considering using Pinia please drop a message in the `#frontend` internal Slack channel for evaluation.
 
-[Pinia](https://pinia.vuejs.org/) is Vue's recommended client-side state management tool.
+[Pinia](https://pinia.vuejs.org/) is the client-side state management tool Vue recommends.
 [Learn more about Pinia at GitLab](pinia.md).
 
 ### Strengths

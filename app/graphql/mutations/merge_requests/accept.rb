@@ -51,7 +51,11 @@ module Mutations
         merge_request = authorized_find!(project_path: project_path, iid: iid)
         project = merge_request.target_project
         merge_params = args.compact.with_indifferent_access
-        merge_service = ::MergeRequests::MergeService.new(project: project, current_user: current_user, params: merge_params)
+        merge_service = ::MergeRequests::MergeService.new(
+          project: project,
+          current_user: current_user,
+          params: merge_params
+        )
 
         if error = validate(merge_request, merge_service, merge_params)
           return { merge_request: merge_request, errors: [error] }

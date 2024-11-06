@@ -25,6 +25,8 @@ import {
   WORK_ITEM_TYPE_VALUE_EPIC,
   WORK_ITEM_TYPE_VALUE_OBJECTIVE,
   WORK_ITEM_TYPE_VALUE_TASK,
+  WORKITEM_TREE_SHOWLABELS_LOCALSTORAGEKEY,
+  WORKITEM_TREE_SHOWCLOSED_LOCALSTORAGEKEY,
 } from '~/work_items/constants';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import * as utils from '~/work_items/utils';
@@ -33,6 +35,7 @@ import {
   workItemHierarchyPaginatedTreeResponse,
   workItemHierarchyTreeEmptyResponse,
   workItemHierarchyNoUpdatePermissionResponse,
+  workItemHierarchyTreeSingleClosedItemResponse,
   mockRolledUpCountsByType,
 } from '../../mock_data';
 
@@ -97,6 +100,10 @@ describe('WorkItemTree', () => {
       await waitForPromises();
     }
   };
+
+  beforeEach(() => {
+    utils.saveToggleToLocalStorage(WORKITEM_TREE_SHOWCLOSED_LOCALSTORAGEKEY, true);
+  });
 
   it('displays Add button', () => {
     createComponent();
@@ -299,8 +306,8 @@ describe('WorkItemTree', () => {
     useLocalStorageSpy();
 
     beforeEach(async () => {
-      jest.spyOn(utils, 'getShowLabelsFromLocalStorage');
-      jest.spyOn(utils, 'saveShowLabelsToLocalStorage');
+      jest.spyOn(utils, 'getToggleFromLocalStorage');
+      jest.spyOn(utils, 'saveToggleToLocalStorage');
       await createComponent();
     });
 
@@ -324,31 +331,47 @@ describe('WorkItemTree', () => {
       expect(findMoreActions().props('showViewRoadmapAction')).toBe(true);
     });
 
-    it('toggles `showLabels` when `toggle-show-labels` is emitted', async () => {
-      await createComponent();
+    it.each`
+      toggleName      | toggleEvent
+      ${'showLabels'} | ${'toggle-show-labels'}
+      ${'showClosed'} | ${'toggle-show-closed'}
+    `(
+      'toggles `$toggleName` when `$toggleEvent` is emitted',
+      async ({ toggleName, toggleEvent }) => {
+        await createComponent();
 
-      expect(findWorkItemLinkChildrenWrapper().props('showLabels')).toBe(true);
+        expect(findMoreActions().props(toggleName)).toBe(true);
 
+        await findMoreActions().vm.$emit(toggleEvent);
+
+        expect(findMoreActions().props(toggleName)).toBe(false);
+
+        await findMoreActions().vm.$emit(toggleEvent);
+
+        expect(findMoreActions().props(toggleName)).toBe(true);
+      },
+    );
+
+    it('calls saveToggleToLocalStorage on toggle', () => {
       findMoreActions().vm.$emit('toggle-show-labels');
-
-      await nextTick();
-
-      expect(findWorkItemLinkChildrenWrapper().props('showLabels')).toBe(false);
-
-      findMoreActions().vm.$emit('toggle-show-labels');
-
-      await nextTick();
-
-      expect(findWorkItemLinkChildrenWrapper().props('showLabels')).toBe(true);
+      expect(utils.saveToggleToLocalStorage).toHaveBeenCalled();
     });
 
-    it('calls saveShowLabelsToLocalStorage on toggle', () => {
-      findMoreActions().vm.$emit('toggle-show-labels');
-      expect(utils.saveShowLabelsToLocalStorage).toHaveBeenCalled();
+    it('calls saveToggleToLocalStorage on toggle-show-closed', () => {
+      findMoreActions().vm.$emit('toggle-show-closed');
+      expect(utils.saveToggleToLocalStorage).toHaveBeenCalled();
     });
 
-    it('calls getShowLabelsFromLocalStorage on mount', () => {
-      expect(utils.getShowLabelsFromLocalStorage).toHaveBeenCalled();
+    it('calls getToggleFromLocalStorage on mount for showClosed', () => {
+      expect(utils.getToggleFromLocalStorage).toHaveBeenCalledWith(
+        WORKITEM_TREE_SHOWLABELS_LOCALSTORAGEKEY,
+      );
+    });
+
+    it('calls getToggleFromLocalStorage on mount for showLabels', () => {
+      expect(utils.getToggleFromLocalStorage).toHaveBeenCalledWith(
+        WORKITEM_TREE_SHOWCLOSED_LOCALSTORAGEKEY,
+      );
     });
   });
 
@@ -396,5 +419,21 @@ describe('WorkItemTree', () => {
       Objective: ['Key Result', 'Objective'],
       Ticket: ['Task'],
     });
+  });
+
+  it('displays no child items open message', async () => {
+    await createComponent({
+      workItemHierarchyTreeHandler: jest
+        .fn()
+        .mockResolvedValue(workItemHierarchyTreeSingleClosedItemResponse),
+    });
+
+    expect(wrapper.findByTestId('work-item-no-child-items-open').exists()).toBe(false);
+
+    await findMoreActions().vm.$emit('toggle-show-closed');
+
+    expect(wrapper.findByTestId('work-item-no-child-items-open').text()).toBe(
+      'No child items are currently open.',
+    );
   });
 });

@@ -11,13 +11,15 @@ import workItemLinkedItemsQuery from '../../graphql/work_item_linked_items.query
 import removeLinkedItemsMutation from '../../graphql/remove_linked_items.mutation.graphql';
 import {
   findLinkedItemsWidget,
-  saveShowLabelsToLocalStorage,
-  getShowLabelsFromLocalStorage,
+  saveToggleToLocalStorage,
+  getToggleFromLocalStorage,
+  isItemDisplayable,
 } from '../../utils';
 import {
   LINKED_CATEGORIES_MAP,
   LINKED_ITEMS_ANCHOR,
   WORKITEM_RELATIONSHIPS_SHOWLABELS_LOCALSTORAGEKEY,
+  WORKITEM_RELATIONSHIPS_SHOWCLOSED_LOCALSTORAGEKEY,
   sprintfWorkItem,
 } from '../../constants';
 
@@ -114,10 +116,11 @@ export default {
       linksIsBlockedBy: [],
       linksBlocks: [],
       widgetName: LINKED_ITEMS_ANCHOR,
-      defaultShowLabels: true,
       showLabels: true,
+      showClosed: true,
       linkedWorkItems: [],
       showLabelsLocalStorageKey: WORKITEM_RELATIONSHIPS_SHOWLABELS_LOCALSTORAGEKEY,
+      showClosedLocalStorageKey: WORKITEM_RELATIONSHIPS_SHOWCLOSED_LOCALSTORAGEKEY,
     };
   },
   computed: {
@@ -133,6 +136,9 @@ export default {
     isEmptyRelatedWorkItems() {
       return !this.error && this.linkedWorkItems.length === 0;
     },
+    hasAllLinkedItemsHidden() {
+      return this.displayableLinks(this.linkedWorkItems).length === 0;
+    },
     countBadgeAriaLabel() {
       const message = sprintf(
         n__(
@@ -144,12 +150,19 @@ export default {
       );
       return sprintfWorkItem(message, this.workItemType);
     },
+    openRelatesToLinks() {
+      return this.displayableLinks(this.linksRelatesTo);
+    },
+    openIsBlockedByLinks() {
+      return this.displayableLinks(this.linksIsBlockedBy);
+    },
+    openBlocksLinks() {
+      return this.displayableLinks(this.linksBlocks);
+    },
   },
   mounted() {
-    this.showLabels = getShowLabelsFromLocalStorage(
-      this.showLabelsLocalStorageKey,
-      this.defaultShowLabels,
-    );
+    this.showLabels = getToggleFromLocalStorage(this.showLabelsLocalStorageKey);
+    this.showClosed = getToggleFromLocalStorage(this.showClosedLocalStorageKey);
   },
   methods: {
     showLinkItemForm() {
@@ -160,7 +173,11 @@ export default {
     },
     toggleShowLabels() {
       this.showLabels = !this.showLabels;
-      saveShowLabelsToLocalStorage(this.showLabelsLocalStorageKey, this.showLabels);
+      saveToggleToLocalStorage(this.showLabelsLocalStorageKey, this.showLabels);
+    },
+    toggleShowClosed() {
+      this.showClosed = !this.showClosed;
+      saveToggleToLocalStorage(this.showClosedLocalStorageKey, this.showClosed);
     },
     /**
      * We are relying on calling two mutations sequentially to achieve drag and drop
@@ -261,6 +278,9 @@ export default {
         this.error = this.$options.i18n.removeLinkedItemErrorMessage;
       }
     },
+    displayableLinks(items) {
+      return items.filter((item) => isItemDisplayable(item.workItem, this.showClosed));
+    },
   },
   i18n: {
     title: s__('WorkItem|Linked items'),
@@ -268,6 +288,7 @@ export default {
     emptyStateMessage: s__(
       "WorkItem|Link items together to show that they're related or that one is blocking others.",
     ),
+    noLinkedItemsOpen: s__('WorkItem|No linked items are currently open.'),
     removeLinkedItemErrorMessage: s__(
       'WorkItem|Something went wrong when removing item. Please refresh this page.',
     ),
@@ -312,8 +333,10 @@ export default {
         :full-path="workItemFullPath"
         :work-item-type="workItemType"
         :show-labels="showLabels"
+        :show-closed="showClosed"
         :show-view-roadmap-action="false"
         @toggle-show-labels="toggleShowLabels"
+        @toggle-show-closed="toggleShowClosed"
       />
     </template>
 
@@ -343,10 +366,10 @@ export default {
       </gl-alert>
 
       <work-item-relationship-list
-        v-if="linksBlocks.length"
+        v-if="openBlocksLinks.length"
         :parent-work-item-id="workItemId"
         :parent-work-item-iid="workItemIid"
-        :linked-items="linksBlocks"
+        :linked-items="openBlocksLinks"
         :relationship-type="$options.linkedCategories.BLOCKS"
         :heading="$options.i18n.blockingTitle"
         :can-update="canAdminWorkItemLink"
@@ -363,10 +386,10 @@ export default {
         @updateLinkedItem="updateLinkedItem"
       />
       <work-item-relationship-list
-        v-if="linksIsBlockedBy.length"
+        v-if="openIsBlockedByLinks.length"
         :parent-work-item-id="workItemId"
         :parent-work-item-iid="workItemIid"
-        :linked-items="linksIsBlockedBy"
+        :linked-items="openIsBlockedByLinks"
         :relationship-type="$options.linkedCategories.IS_BLOCKED_BY"
         :heading="$options.i18n.blockedByTitle"
         :can-update="canAdminWorkItemLink"
@@ -383,10 +406,10 @@ export default {
         @updateLinkedItem="updateLinkedItem"
       />
       <work-item-relationship-list
-        v-if="linksRelatesTo.length"
+        v-if="openRelatesToLinks.length"
         :parent-work-item-id="workItemId"
         :parent-work-item-iid="workItemIid"
-        :linked-items="linksRelatesTo"
+        :linked-items="openRelatesToLinks"
         :relationship-type="$options.linkedCategories.RELATES_TO"
         :heading="$options.i18n.relatedToTitle"
         :can-update="canAdminWorkItemLink"
@@ -402,6 +425,14 @@ export default {
         @removeLinkedItem="removeLinkedItem"
         @updateLinkedItem="updateLinkedItem"
       />
+
+      <div
+        v-if="hasAllLinkedItemsHidden"
+        class="gl-text-subtle"
+        data-testid="work-item-no-linked-items-open"
+      >
+        {{ $options.i18n.noLinkedItemsOpen }}
+      </div>
     </template>
   </crud-component>
 </template>

@@ -54,7 +54,7 @@ RSpec/BeforeAllRoleAssignment:
     - 'ee/spec/controllers/projects_controller_spec.rb'
     - 'ee/spec/controllers/registrations/groups_controller_spec.rb'
     - 'ee/spec/controllers/security/projects_controller_spec.rb'
-    - 'ee/spec/controllers/subscriptions_controller_spec.rb'
+    - 'ee/spec/controllers/gitlab_subscriptions/subscriptions_controller_spec.rb'
     - 'ee/spec/features/admin/admin_sends_notification_spec.rb'
     - 'ee/spec/features/analytics/code_analytics_spec.rb'
     - 'ee/spec/features/analytics/group_analytics_spec.rb'

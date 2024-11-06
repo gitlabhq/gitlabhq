@@ -76,7 +76,7 @@ To explain the vulnerability:
 
 The response is shown on the right side of the page.
 
-On GitLab.com this feature is available. By default, it is powered by Anthropic's [`claude-3-haiku`](https://docs.anthropic.com/en/docs/about-claude/models#claude-3-a-new-generation-of-ai)
+On GitLab.com this feature is available. By default, it is powered by the Anthropic [`claude-3-haiku`](https://docs.anthropic.com/en/docs/about-claude/models#claude-3-a-new-generation-of-ai)
 model. We cannot guarantee that the large language model produces results that are correct. Use the
 explanation with caution.
 
@@ -100,7 +100,7 @@ DETAILS:
 > - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
 Use GitLab Duo Vulnerability resolution to automatically create a merge request that
-resolves the vulnerability. By default, it is powered by Anthropic's [`claude-3.5-sonnet`](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet) model.
+resolves the vulnerability. By default, it is powered by the Anthropic [`claude-3.5-sonnet`](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet) model.
 
 We can't guarantee that the large language model produces correct results.
 You should always review the proposed change before merging it. When reviewing, check that:
@@ -229,7 +229,7 @@ DETAILS:
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10779) in GitLab 17.6. This is a [beta](../../../policy/experiment-beta-support.md#beta) feature.
 
 Use GitLab Duo Vulnerability resolution to automatically create a merge request suggestion comment that
-resolves the vulnerability finding. By default, it is powered by Anthropic's [`claude-3.5-sonnet`](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet) model.
+resolves the vulnerability finding. By default, it is powered by the Anthropic [`claude-3.5-sonnet`](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet) model.
 
 To resolve the vulnerability finding:
 

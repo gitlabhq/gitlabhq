@@ -48,6 +48,7 @@ class TestsMetadata < Struct.new( # rubocop:disable Style/StructInheritance -- O
   end
 
   def verify_flaky_report
+    # This requires activesupport
     require_relative '../../gems/gitlab-rspec_flaky/lib/gitlab/rspec_flaky/report'
 
     Gitlab::RspecFlaky::Report.load(flaky_report_path).flaky_examples.to_h

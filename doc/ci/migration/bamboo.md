@@ -533,9 +533,7 @@ version: 2
       shared: true
 ```
 
-In this example, artifacts are defined with a name, location, pattern, and the optional
-ability to share the artifacts with other jobs or plans. You canalso define jobs that
-subscribe to the artifact.
+In this example, artifacts are defined with a name, location, and pattern. You can also share the artifacts with other jobs and plans or define jobs that subscribe to the artifact.
 
 `artifact-subscriptions` is used to access artifacts from another job in the same plan,
 for example:

@@ -1,0 +1,9 @@
+---
+name: delete_inactive_project_bot_users
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/471683
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169012
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/499830
+milestone: '17.6'
+group: group::authentication
+type: gitlab_com_derisk
+default_enabled: false

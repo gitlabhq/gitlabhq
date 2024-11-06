@@ -125,6 +125,29 @@ describe('MyComponent', () => {
 })
 ```
 
+### Vue router
+
+If you are testing a Vue Router configuration using a real (not mocked) `VueRouter` object, read the following
+[guidelines](https://test-utils.vuejs.org/guide/advanced/vue-router.html#Using-a-Real-Router). A
+source of failure is that Vue Router 4 handles routing asynchronously, therefore we should
+`await` for the routing operations to be completed. You can use the `waitForPromises` utility to
+wait until all promises are flushed.
+
+In the following example, a test asserts that VueRouter navigated to a page after clicking a button. If
+`waitForPromises` is not invoked after clicking the button, the assertion would fail because the router's
+state hasn't transitioned to the target page.
+
+```javascript
+it('navigates to /create when clicking New workspace button', async () => {
+  expect(findWorkspacesListPage().exists()).toBe(true);
+
+  await findNewWorkspaceButton().trigger('click');
+  await waitForPromises();
+
+  expect(findCreateWorkspacePage().exists()).toBe(true);
+});
+```
+
 ### Vue Apollo troubleshooting
 
 You might encounter some unit test failures on components that execute Apollo mutations and

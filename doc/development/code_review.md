@@ -212,7 +212,7 @@ on merge request rates.
 See the [Verify issue](https://gitlab.com/gitlab-org/gitlab/-/issues/411559) for a good example.
 
 All other cases should not use mandatory sections as we favor
-[responsibility over ridigity](https://handbook.gitlab.com/handbook/values/#freedom-and-responsibility-over-rigidity).
+[responsibility over rigidity](https://handbook.gitlab.com/handbook/values/#freedom-and-responsibility-over-rigidity).
 
 Additionally, the current structure of the monolith means that merge requests
 are likely to touch seemingly unrelated parts.

@@ -50,12 +50,18 @@ module Mutations
         argument :terraform_module_duplicates_allowed,
           GraphQL::Types::Boolean,
           required: false,
-          description: copy_field_description(Types::Namespace::PackageSettingsType, :terraform_module_duplicates_allowed)
+          description: copy_field_description(
+            Types::Namespace::PackageSettingsType,
+            :terraform_module_duplicates_allowed
+          )
 
         argument :terraform_module_duplicate_exception_regex,
           Types::UntrustedRegexp,
           required: false,
-          description: copy_field_description(Types::Namespace::PackageSettingsType, :terraform_module_duplicate_exception_regex)
+          description: copy_field_description(
+            Types::Namespace::PackageSettingsType,
+            :terraform_module_duplicate_exception_regex
+          )
 
         argument :maven_package_requests_forwarding,
           GraphQL::Types::Boolean,
@@ -75,17 +81,26 @@ module Mutations
         argument :lock_maven_package_requests_forwarding,
           GraphQL::Types::Boolean,
           required: false,
-          description: copy_field_description(Types::Namespace::PackageSettingsType, :lock_maven_package_requests_forwarding)
+          description: copy_field_description(
+            Types::Namespace::PackageSettingsType,
+            :lock_maven_package_requests_forwarding
+          )
 
         argument :lock_npm_package_requests_forwarding,
           GraphQL::Types::Boolean,
           required: false,
-          description: copy_field_description(Types::Namespace::PackageSettingsType, :lock_npm_package_requests_forwarding)
+          description: copy_field_description(
+            Types::Namespace::PackageSettingsType,
+            :lock_npm_package_requests_forwarding
+          )
 
         argument :lock_pypi_package_requests_forwarding,
           GraphQL::Types::Boolean,
           required: false,
-          description: copy_field_description(Types::Namespace::PackageSettingsType, :lock_pypi_package_requests_forwarding)
+          description: copy_field_description(
+            Types::Namespace::PackageSettingsType,
+            :lock_pypi_package_requests_forwarding
+          )
 
         argument :nuget_symbol_server_enabled,
           GraphQL::Types::Boolean,

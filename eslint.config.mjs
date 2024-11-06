@@ -554,6 +554,14 @@ export default [
     rules: {
       'filenames/match-regex': 'off',
       '@gitlab/require-i18n-strings': 'off',
+      'import/no-unresolved': [
+        'error',
+        // The test fixtures are dynamically generated in CI during
+        // the `frontend-fixtures` job. They may not be present during linting.
+        {
+          ignore: ['^test_fixtures/'],
+        },
+      ],
     },
   },
   {

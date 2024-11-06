@@ -16,9 +16,9 @@ describe('WorkItemMoreActions', () => {
   const findTooltip = () => getBinding(findDropdown().element, 'gl-tooltip');
   const findDropdownButton = () => findDropdown().find('button');
   const findViewRoadmapLink = () => wrapper.findByTestId('view-roadmap');
-  const findToggle = () => findDropdown().findComponent(GlToggle);
+  const findToggle = (idx) => findDropdown().findAllComponents(GlToggle).at(idx);
   const findDropdownItems = () => findDropdown().findAllComponents(GlDisclosureDropdownItem);
-  const findToggleDropdownItem = () => findDropdownItems().at(0);
+  const findToggleDropdownItem = (idx) => findDropdownItems().at(idx);
 
   const createComponent = ({
     workItemType = 'Task',
@@ -72,11 +72,15 @@ describe('WorkItemMoreActions', () => {
   });
 
   it('renders the show labels toggle', () => {
-    expect(findToggle().props('label')).toBe('Show labels');
+    expect(findToggle(0).props('label')).toBe('Show labels');
+  });
+
+  it('renders the show closed toggle', () => {
+    expect(findToggle(1).props('label')).toBe('Show closed items');
   });
 
   it('show labels toggle emits event when clicked on the dropdown item', () => {
-    findToggleDropdownItem().vm.$emit('action');
+    findToggleDropdownItem(0).vm.$emit('action');
     expect(wrapper.emitted('toggle-show-labels')).toStrictEqual([[]]);
   });
 
@@ -88,12 +92,17 @@ describe('WorkItemMoreActions', () => {
     });
 
     it('View on roadmap button should have tracking', async () => {
-      const { trackEventSpy } = bindInternalEventDocument(findDropdownItems().at(1).element);
+      const { trackEventSpy } = bindInternalEventDocument(findDropdownItems().at(2).element);
 
-      findDropdownItems().at(1).vm.$emit('action');
+      findDropdownItems().at(2).vm.$emit('action');
       await nextTick();
 
       expect(trackEventSpy).toHaveBeenCalledWith('view_epic_on_roadmap', {}, undefined);
     });
+  });
+
+  it('show closed toggle emits event when clicked on the dropdown item', () => {
+    findToggleDropdownItem(1).vm.$emit('action');
+    expect(wrapper.emitted('toggle-show-closed')).toStrictEqual([[]]);
   });
 });

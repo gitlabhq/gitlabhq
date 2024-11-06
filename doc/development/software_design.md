@@ -410,7 +410,7 @@ use cases:
 
 These 2 different use cases support different sets of parameters. It's not likely or expected that
 an instance administrator updates `shared_runners_minutes_limit` and also the group description. Similarly, it's not expected
-for a user to change branch protection rules and shared runners settings at the same time.
+for a user to change branch protection rules and instance runners settings at the same time.
 These represent different use cases, coming from different domains.
 
 ### Solution

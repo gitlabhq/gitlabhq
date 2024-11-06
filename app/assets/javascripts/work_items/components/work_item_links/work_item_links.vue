@@ -21,11 +21,13 @@ import {
   DEFAULT_PAGE_SIZE_CHILD_ITEMS,
   DETAIL_VIEW_QUERY_PARAM_NAME,
   WORKITEM_LINKS_SHOWLABELS_LOCALSTORAGEKEY,
+  WORKITEM_TREE_SHOWCLOSED_LOCALSTORAGEKEY,
 } from '../../constants';
 import {
   findHierarchyWidgets,
-  saveShowLabelsToLocalStorage,
-  getShowLabelsFromLocalStorage,
+  saveToggleToLocalStorage,
+  getToggleFromLocalStorage,
+  getItems,
 } from '../../utils';
 import { removeHierarchyChild } from '../../graphql/cache_utils';
 import getWorkItemTreeQuery from '../../graphql/work_item_tree.query.graphql';
@@ -121,11 +123,12 @@ export default {
       reportedUserId: 0,
       reportedUrl: '',
       widgetName: TASKS_ANCHOR,
-      defaultShowLabels: true,
       showLabels: true,
+      showClosed: true,
       fetchNextPageInProgress: false,
       disableContent: false,
       showLabelsLocalStorageKey: WORKITEM_LINKS_SHOWLABELS_LOCALSTORAGEKEY,
+      showClosedLocalStorageKey: WORKITEM_TREE_SHOWCLOSED_LOCALSTORAGEKEY,
     };
   },
   computed: {
@@ -184,12 +187,14 @@ export default {
     workItemType() {
       return this.workItem?.workItemType?.name || '';
     },
+    hasAllChildItemsHidden() {
+      const filterClosed = getItems(this.showClosed);
+      return filterClosed(this.children).length === 0;
+    },
   },
   mounted() {
-    this.showLabels = getShowLabelsFromLocalStorage(
-      this.showLabelsLocalStorageKey,
-      this.defaultShowLabels,
-    );
+    this.showLabels = getToggleFromLocalStorage(this.showLabelsLocalStorageKey);
+    this.showClosed = getToggleFromLocalStorage(this.showClosedLocalStorageKey);
   },
   methods: {
     showAddForm(formType) {
@@ -237,7 +242,11 @@ export default {
     },
     toggleShowLabels() {
       this.showLabels = !this.showLabels;
-      saveShowLabelsToLocalStorage(this.showLabelsLocalStorageKey, this.showLabels);
+      saveToggleToLocalStorage(this.showLabelsLocalStorageKey, this.showLabels);
+    },
+    toggleShowClosed() {
+      this.showClosed = !this.showClosed;
+      saveToggleToLocalStorage(this.showClosedLocalStorageKey, this.showClosed);
     },
     setShowLabelsFromLocalStorage() {},
     async fetchNextPage() {
@@ -272,6 +281,7 @@ export default {
     addChildButtonLabel: s__('WorkItem|Add'),
     addChildOptionLabel: s__('WorkItem|Existing task'),
     createChildOptionLabel: s__('WorkItem|New task'),
+    noChildItemsOpen: s__('WorkItem|No child items are currently open.'),
   },
   WIDGET_TYPE_TASK_ICON: WIDGET_ICONS.TASK,
   WORK_ITEM_STATUS_TEXT,
@@ -320,8 +330,10 @@ export default {
         :full-path="fullPath"
         :work-item-type="workItemType"
         :show-labels="showLabels"
+        :show-closed="showClosed"
         :show-view-roadmap-action="false"
         @toggle-show-labels="toggleShowLabels"
+        @toggle-show-closed="toggleShowClosed"
       />
     </template>
 
@@ -353,7 +365,7 @@ export default {
       <gl-alert v-if="error" variant="danger" @dismiss="error = undefined">
         {{ error }}
       </gl-alert>
-      <div class="!gl-px-3 gl-pb-3 gl-pt-2">
+      <div v-if="!hasAllChildItemsHidden" class="!gl-px-3 gl-pb-3 gl-pt-2">
         <work-item-children-wrapper
           v-if="workItem"
           :children="children"
@@ -363,6 +375,7 @@ export default {
           :work-item-id="issuableGid"
           :work-item-iid="iid"
           :show-labels="showLabels"
+          :show-closed="showClosed"
           :disable-content="disableContent"
           :has-indirect-children="false"
           @error="error = $event"
@@ -391,6 +404,14 @@ export default {
         :reported-from-url="reportedUrl"
         @close-modal="toggleReportAbuseModal(false)"
       />
+
+      <div
+        v-if="hasAllChildItemsHidden"
+        class="gl-text-subtle"
+        data-testid="work-item-no-child-items-open"
+      >
+        {{ $options.i18n.noChildItemsOpen }}
+      </div>
     </template>
   </crud-component>
 </template>

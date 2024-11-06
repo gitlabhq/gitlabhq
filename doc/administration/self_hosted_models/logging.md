@@ -256,7 +256,7 @@ provider on how to use their logs.
 
 ## Logging behavior in GitLab and AI Gateway environments
 
-GitLab provides logging functionality for AI-related activities through the use of `llm.log`, which captures inputs, outputs, and other relevant information. However, the loggig behavior differs depending on whether the GitLab instance and AI Gateway (AI Gateway) are **self-hosted** or **cloud-connected**.
+GitLab provides logging functionality for AI-related activities through the use of `llm.log`, which captures inputs, outputs, and other relevant information. However, the logging behavior differs depending on whether the GitLab instance and AI Gateway (AI Gateway) are **self-hosted** or **cloud-connected**.
 
 By default, the log does not contain LLM prompt input and response output to support [data retention policies](../../user/gitlab_duo/data_usage.md#data-retention) of AI feature data.
 

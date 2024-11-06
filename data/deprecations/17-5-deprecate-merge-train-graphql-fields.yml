@@ -4,6 +4,7 @@
   announcement_milestone: "17.5"
   # Change breaking_change to false if needed.
   breaking_change: true
+  window: 2 # Can be [1, 2, or 3] - The window when the breaking change will be deployed on GitLab.com
   # The stage and GitLab username of the person reporting the change,
   # and a link to the deprecation issue
   reporter: rutshah

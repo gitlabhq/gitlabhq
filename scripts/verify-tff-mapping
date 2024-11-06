@@ -392,10 +392,10 @@ tests = [
 
   {
     explanation: 'Map EE controllers to controller and request specs',
-    changed_file: 'ee/app/controllers/subscriptions_controller.rb',
+    changed_file: 'ee/app/controllers/gitlab_subscriptions/subscriptions_controller.rb',
     expected: %w[
-      ee/spec/controllers/subscriptions_controller_spec.rb
-      ee/spec/requests/subscriptions_controller_spec.rb
+      ee/spec/controllers/gitlab_subscriptions/subscriptions_controller_spec.rb
+      ee/spec/requests/gitlab_subscriptions/subscriptions_controller_spec.rb
     ]
   },
   {

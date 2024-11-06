@@ -23,7 +23,7 @@ To create event and/or metric definitions, use the `internal_events` generator f
 scripts/internal_events/cli.rb
 ```
 
-This CLI will help you create the correct defintion files based on your specific use-case, then provide code examples for instrumentation and testing.
+This CLI will help you create the correct definition files based on your specific use-case, then provide code examples for instrumentation and testing.
 
 Events should be named in the format of `<action>_<target_of_action>_<where/when>`, valid examples are `create_ci_build` or `click_previous_blame_on_blob_page`.
 

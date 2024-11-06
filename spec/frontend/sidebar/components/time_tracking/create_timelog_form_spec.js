@@ -164,6 +164,27 @@ describe('Create Timelog Form', () => {
       expect(modalCloseMock).toHaveBeenCalled();
     });
 
+    it('calls the mutation passing the spentAt field set to null when not specified by the user', async () => {
+      const timeSpent = '2d';
+
+      mountComponent({}, resolvedMutationWithoutErrorsMock);
+      await findGlFormInput().vm.$emit('input', timeSpent);
+
+      submitForm();
+
+      await waitForPromises();
+      await nextTick();
+
+      expect(resolvedMutationWithoutErrorsMock).toHaveBeenCalledWith({
+        input: {
+          timeSpent,
+          spentAt: null,
+          summary: '',
+          issuableId: convertToGraphQLId(TYPENAME_ISSUE, '1'),
+        },
+      });
+    });
+
     it.each`
       issuableType       | typeConstant
       ${'issue'}         | ${TYPENAME_ISSUE}
@@ -249,7 +270,7 @@ describe('Create Timelog Form', () => {
       expect(wrapper.text()).toContain('Track time spent on this task.');
     });
 
-    it('calls mutation to update work item when adding time entry', async () => {
+    it('calls mutation to update work item when adding time entry when to spent at is not provided', async () => {
       findGlFormInput().vm.$emit('input', '2d');
       submitForm();
       await waitForPromises();
@@ -259,7 +280,27 @@ describe('Create Timelog Form', () => {
           id: 'gid://gitlab/WorkItem/1',
           timeTrackingWidget: {
             timelog: {
-              spentAt: newDate('2020-07-06T00:00:00.000Z'),
+              spentAt: null,
+              summary: '',
+              timeSpent: '2d',
+            },
+          },
+        },
+      });
+    });
+
+    it('calls mutation to update work item when adding time entry when to spent at is provided', async () => {
+      findGlFormInput().vm.$emit('input', '2d');
+      findGlDatepicker().vm.$emit('input', newDate('2020-07-06T00:00:00.000'));
+      submitForm();
+      await waitForPromises();
+
+      expect(updateWorkItemMutationHandler).toHaveBeenCalledWith({
+        input: {
+          id: 'gid://gitlab/WorkItem/1',
+          timeTrackingWidget: {
+            timelog: {
+              spentAt: '2020-07-06',
               summary: '',
               timeSpent: '2d',
             },

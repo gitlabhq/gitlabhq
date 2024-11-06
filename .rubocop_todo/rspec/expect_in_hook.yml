@@ -4,7 +4,7 @@ RSpec/ExpectInHook:
     - 'ee/spec/controllers/ee/projects/merge_requests/content_controller_spec.rb'
     - 'ee/spec/controllers/groups/analytics/productivity_analytics_controller_spec.rb'
     - 'ee/spec/controllers/groups/seat_usage_controller_spec.rb'
-    - 'ee/spec/controllers/subscriptions_controller_spec.rb'
+    - 'ee/spec/controllers/gitlab_subscriptions/subscriptions_controller_spec.rb'
     - 'ee/spec/features/boards/new_issue_spec.rb'
     - 'ee/spec/features/projects/feature_flags/user_creates_feature_flag_spec.rb'
     - 'ee/spec/features/projects/feature_flags/user_deletes_feature_flag_spec.rb'

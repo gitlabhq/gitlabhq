@@ -1193,7 +1193,7 @@ Dependency conflicts can be resolved by:
 This is typically a SSL certificate issue. To resolve:
 
 - Ensure your JDK trusts the GitLab server's SSL certificate.
-- If using a self-signed certificate, add it to your JDK's truststore.
+- If using a self-signed certificate, add it to the truststore of your JDK.
 - As a last resort, you can disable SSL verification in Maven settings. Not recommended for production.
 
 ### "No plugin found for prefix" pipeline errors

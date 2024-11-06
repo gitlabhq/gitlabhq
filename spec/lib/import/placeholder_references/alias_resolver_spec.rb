@@ -246,12 +246,13 @@ RSpec.describe Import::PlaceholderReferences::AliasResolver, feature_category: :
     context "when requesting a model that doesn't exist" do
       let(:model) { "NotARealModel" }
 
-      it "returns nil after reporting a missing alias" do
+      it "raises a MissingAlias error and reports it" do
         expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).with(
           described_class::MissingAlias.new("ALIASES must be extended to include NotARealModel for version 1")
         )
 
-        expect(aliased_model).to be_nil
+        expect { aliased_model }.to raise_exception(described_class::MissingAlias)
+          .with_message("ALIASES must be extended to include NotARealModel for version 1")
       end
     end
   end

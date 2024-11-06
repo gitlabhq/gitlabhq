@@ -18,10 +18,46 @@ module ResourceAccessTokens
 
       runtime_limiter = Gitlab::Metrics::RuntimeLimiter.new(MAX_RUNTIME)
 
-      User.project_bot.where('"users"."id" > ?', cursor || 0).each_batch(of: BATCH_SIZE) do |relation| # rubocop:disable CodeReuse/ActiveRecord -- each_batch
-        initiate_users_deletion(
-          relation.select(:id, :username).left_joins(:personal_access_tokens).where(personal_access_tokens: PersonalAccessToken.expired_before(cut_off).or(PersonalAccessToken.revoked_before(cut_off))).load # rubocop:disable CodeReuse/ActiveRecord -- each_batch
-        )
+      # rubocop:disable CodeReuse/ActiveRecord -- each_batch
+      User.project_bot.where('"users"."id" > ?', cursor || 0).each_batch(of: BATCH_SIZE) do |relation|
+        project_bot_users_whose_all_tokens_became_inactive_before_cut_off_date_or_without_tokens =
+          relation
+            # uncomment this line to optimize SELECT after delete_inactive_project_bot_users FF is removed
+            # .select(:id, :username)
+            .where(
+              'NOT EXISTS (?)',
+              PersonalAccessToken
+                .select(1)
+                .where('"personal_access_tokens"."user_id" = "users"."id"')
+                .and(
+                  PersonalAccessToken.expired_before(cut_off).or(PersonalAccessToken.revoked_before(cut_off))
+                    .invert_where
+                )
+            )
+
+        if Feature.enabled?(:delete_inactive_project_bot_users) # rubocop:disable Gitlab/FeatureFlagWithoutActor -- cron worker without actor
+          initiate_deletion_for(
+            project_bot_users_whose_all_tokens_became_inactive_before_cut_off_date_or_without_tokens
+          )
+        else
+          project_bot_users_whose_all_tokens_became_inactive_before_cut_off_date_or_without_tokens.each do |user|
+            next if user.blocked?
+
+            user.update(
+              note: "This project_bot user was blocked because it has no active token assigned. " \
+                "Related to a feature rollout https://gitlab.com/gitlab-org/gitlab/-/issues/471683. #{user.note}"
+            )
+
+            user.block
+
+            Gitlab::AppLogger.info(
+              class: self.class.name,
+              user_id: user.id,
+              username: user.username,
+              message: "Blocekd the project_bot user because it has no active token assigned"
+            )
+          end
+        end
 
         if runtime_limiter.over_time? # rubocop:disable Style/Next -- we must break iteration
           self.class.perform_in(2.minutes, relation.maximum(:id))
@@ -29,11 +65,12 @@ module ResourceAccessTokens
           break
         end
       end
+      # rubocop:enable CodeReuse/ActiveRecord -- each_batch
     end
 
     private
 
-    def initiate_users_deletion(users)
+    def initiate_deletion_for(users)
       return if users.empty?
 
       DeleteUserWorker.bulk_perform_async_with_contexts(

@@ -1,5 +1,5 @@
-import { WIDGET_TYPE_LINKED_ITEMS, NEW_WORK_ITEM_IID } from '~/work_items/constants';
 import { EMOJI_THUMBS_UP, EMOJI_THUMBS_DOWN } from '~/emoji/constants';
+import { WIDGET_TYPE_LINKED_ITEMS, NEW_WORK_ITEM_IID, STATE_CLOSED } from '~/work_items/constants';
 
 export const mockAssignees = [
   {
@@ -2566,6 +2566,101 @@ export const workItemHierarchyTreeResponse = {
   },
 };
 
+export const workItemHierarchyTreeSingleClosedItemResponse = {
+  data: {
+    workItem: {
+      id: 'gid://gitlab/WorkItem/2',
+      iid: '2',
+      archived: false,
+      workItemType: {
+        id: 'gid://gitlab/WorkItems::Type/2411',
+        name: 'Objective',
+        iconName: 'issue-type-objective',
+        __typename: 'WorkItemType',
+      },
+      title: 'New title',
+      userPermissions: {
+        deleteWorkItem: true,
+        updateWorkItem: true,
+        setWorkItemMetadata: true,
+        adminParentLink: true,
+        createNote: true,
+        adminWorkItemLink: true,
+        __typename: 'WorkItemPermissions',
+      },
+      confidential: false,
+      reference: 'test-project-path#2',
+      namespace: {
+        __typename: 'Project',
+        id: '1',
+        fullPath: 'test-project-path',
+        name: 'Project name',
+        fullName: 'Project name',
+      },
+      widgets: [
+        {
+          type: 'DESCRIPTION',
+          __typename: 'WorkItemWidgetDescription',
+        },
+        {
+          type: 'HIERARCHY',
+          parent: null,
+          hasChildren: true,
+          depthLimitReachedByType: mockDepthLimitReachedByType,
+          rolledUpCountsByType: mockRolledUpCountsByType,
+          children: {
+            pageInfo: {
+              hasNextPage: false,
+              hasPreviousPage: false,
+              startCursor: null,
+              endCursor: null,
+              __typename: 'PageInfo',
+            },
+            count: 1,
+            nodes: [
+              {
+                id: 'gid://gitlab/WorkItem/31',
+                iid: '37',
+                workItemType: {
+                  id: 'gid://gitlab/WorkItems::Type/2411',
+                  name: 'Objective',
+                  iconName: 'issue-type-objective',
+                  __typename: 'WorkItemType',
+                },
+                namespace: {
+                  __typename: 'Project',
+                  id: '1',
+                  fullPath: 'test-objective-project-path',
+                  name: 'Project name',
+                },
+                title: 'Objective 2',
+                state: 'CLOSED',
+                confidential: false,
+                reference: 'test-project-path#13',
+                createdAt: '2022-08-03T12:41:54Z',
+                closedAt: null,
+                webUrl: '/gitlab-org/gitlab-test/-/work_items/13',
+                widgets: [
+                  {
+                    type: 'HIERARCHY',
+                    hasChildren: true,
+                    rolledUpCountsByType: [],
+                    __typename: 'WorkItemWidgetHierarchy',
+                  },
+                ],
+                __typename: 'WorkItem',
+              },
+            ],
+            __typename: 'WorkItemConnection',
+          },
+          __typename: 'WorkItemWidgetHierarchy',
+        },
+      ],
+      __typename: 'WorkItem',
+    },
+  },
+};
+
 export const workItemHierarchyPaginatedTreeResponse = {
   data: {
     workItem: {
@@ -2602,6 +2697,76 @@ export const workItemHierarchyTreeFailureResponse = {
       message: 'Something went wrong',
     },
   ],
+};
+
+export const workItemObjectiveWithClosedChild = {
+  id: 'gid://gitlab/WorkItem/12',
+  iid: '12',
+  archived: false,
+  workItemType: {
+    id: 'gid://gitlab/WorkItems::Type/2411',
+    name: 'Objective',
+    iconName: 'issue-type-objective',
+    __typename: 'WorkItemType',
+  },
+  namespace: {
+    __typename: 'Project',
+    id: '1',
+    fullPath: 'test-project-path',
+    name: 'Project name',
+  },
+  userPermissions: {
+    deleteWorkItem: true,
+    updateWorkItem: true,
+    setWorkItemMetadata: true,
+    adminParentLink: true,
+    createNote: true,
+    adminWorkItemLink: true,
+    __typename: 'WorkItemPermissions',
+  },
+  author: {
+    ...mockAssignees[0],
+  },
+  title: 'Objective',
+  description: 'Objective description',
+  state: 'OPEN',
+  confidential: false,
+  reference: 'test-project-path#12',
+  createdAt: '2022-08-03T12:41:54Z',
+  updatedAt: null,
+  closedAt: null,
+  widgets: [
+    {
+      type: 'HIERARCHY',
+      hasChildren: true,
+      parent: null,
+      rolledUpCountsByType: [
+        {
+          countsByState: {
+            all: 1,
+            closed: 1,
+            __typename: 'WorkItemStateCountsType',
+          },
+          workItemType: {
+            id: 'gid://gitlab/WorkItems::Type/1',
+            name: 'Issue',
+            iconName: 'issue-type-issue',
+            __typename: 'WorkItemType',
+          },
+          __typename: 'WorkItemTypeCountsByState',
+        },
+      ],
+      children: {
+        nodes: mockHierarchyChildren.map((c) => ({ ...c, state: STATE_CLOSED })),
+      },
+      __typename: 'WorkItemWidgetHierarchy',
+    },
+    workItemObjectiveMetadataWidgets.MILESTONE,
+    workItemObjectiveMetadataWidgets.ASSIGNEES,
+    workItemObjectiveMetadataWidgets.LABELS,
+    workItemObjectiveMetadataWidgets.LINKED_ITEMS,
+  ],
+  __typename: 'WorkItem',
 };
 
 export const changeWorkItemParentMutationResponse = {

@@ -241,7 +241,7 @@ As an example, the feature is delivered as a stand-alone service called `new_fea
 To decide if the service is available or visible to the end user, we need to:
 
 - Optional. On self-managed GitLab, if the new feature is introduced as a new [enterprise feature](../ee_features.md#implement-a-new-ee-feature),
-  check to determine if user has access to the feature by following the [EE feature guildeline](../ee_features.md#guard-your-ee-feature).
+  check to determine if user has access to the feature by following the [EE feature guideline](../ee_features.md#guard-your-ee-feature).
 
   ```ruby
     next true if ::Gitlab::Saas.feature_available?(:new_feature_on_saas)

@@ -29,6 +29,10 @@ export const MOCK_MILESTONE = {
   title: 'Milestone 1',
 };
 
+export const MOCK_ITERATION = {
+  __typename: 'Iteration',
+};
+
 export const MOCK_ISSUES = {
   nodes: [
     {

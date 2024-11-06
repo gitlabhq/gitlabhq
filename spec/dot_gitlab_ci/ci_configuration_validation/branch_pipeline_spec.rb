@@ -37,12 +37,6 @@ RSpec.describe 'CI configuration validation - branch pipelines', feature_categor
     end
 
     context 'with gitlab.com gitlab-org/gitlab master pipeline' do
-      context 'with default master pipeline' do
-        let(:expected_job_name) { 'db:migrate:multi-version-upgrade' }
-
-        it_behaves_like 'default branch pipeline'
-      end
-
       context 'with scheduled nightly' do
         let(:ci_pipeline_source) { 'schedule' }
         let(:expected_job_name) { 'db:rollback single-db' }

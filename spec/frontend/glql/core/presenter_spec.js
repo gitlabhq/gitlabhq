@@ -11,7 +11,9 @@ import TablePresenter from '~/glql/components/presenters/table.vue';
 import TextPresenter from '~/glql/components/presenters/text.vue';
 import TimePresenter from '~/glql/components/presenters/time.vue';
 import UserPresenter from '~/glql/components/presenters/user.vue';
+import NullPresenter from '~/glql/components/presenters/null.vue';
 import CollectionPresenter from '~/glql/components/presenters/collection.vue';
+import IterationPresenter from 'ee_else_ce/glql/components/presenters/iteration.vue';
 import Presenter, { componentForField } from '~/glql/core/presenter';
 import {
   MOCK_EPIC,
@@ -22,6 +24,7 @@ import {
   MOCK_MILESTONE,
   MOCK_USER,
   MOCK_ASSIGNEES,
+  MOCK_ITERATION,
 } from '../mock_data';
 
 const MOCK_LINK = { title: 'title', webUrl: 'url' };
@@ -29,6 +32,7 @@ const MOCK_LINK = { title: 'title', webUrl: 'url' };
 describe('componentForField', () => {
   it.each`
     dataType       | field                   | presenter              | presenterName
+    ${'null'}      | ${null}                 | ${NullPresenter}       | ${'NullPresenter'}
     ${'string'}    | ${'text'}               | ${TextPresenter}       | ${'TextPresenter'}
     ${'number'}    | ${100}                  | ${TextPresenter}       | ${'TextPresenter'}
     ${'boolean'}   | ${true}                 | ${BoolPresenter}       | ${'BoolPresenter'}
@@ -41,6 +45,7 @@ describe('componentForField', () => {
     ${'milestone'} | ${MOCK_MILESTONE}       | ${MilestonePresenter}  | ${'MilestonePresenter'}
     ${'issue'}     | ${MOCK_ISSUE}           | ${IssuablePresenter}   | ${'IssuablePresenter'}
     ${'epic'}      | ${MOCK_EPIC}            | ${IssuablePresenter}   | ${'IssuablePresenter'}
+    ${'iteration'} | ${MOCK_ITERATION}       | ${IterationPresenter}  | ${'IterationPresenter'}
   `('returns $presenterName for data type: $dataType', ({ field, presenter }) => {
     expect(componentForField(field)).toBe(presenter);
   });

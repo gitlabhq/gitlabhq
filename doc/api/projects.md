@@ -1432,7 +1432,7 @@ Supported general project attributes:
 | `repository_storage`                               | string  | No                             | Which storage shard the repository is on. _(administrator only)_ |
 | `request_access_enabled`                           | boolean | No                             | Allow users to request member access. |
 | `resolve_outdated_diff_discussions`                | boolean | No                             | Automatically resolve merge request diffs discussions on lines changed with a push. |
-| `shared_runners_enabled`                           | boolean | No                             | Enable shared runners for this project. |
+| `shared_runners_enabled`                           | boolean | No                             | Enable instance runners for this project. |
 | `show_default_award_emojis`                        | boolean | No                             | Show default emoji reactions. |
 | `snippets_enabled`                                 | boolean | No                             | _(Deprecated)_ Enable snippets for this project. Use `snippets_access_level` instead. |
 | `squash_option`                                    | string  | No                             | One of `never`, `always`, `default_on`, or `default_off`. |
@@ -1553,7 +1553,7 @@ Supported general project attributes:
 | `repository_storage`                               | string  | No       | Which storage shard the repository is on. _(administrators only)_ |
 | `request_access_enabled`                           | boolean | No       | Allow users to request member access. |
 | `resolve_outdated_diff_discussions`                | boolean | No       | Automatically resolve merge request diffs discussions on lines changed with a push. |
-| `shared_runners_enabled`                           | boolean | No       | Enable shared runners for this project. |
+| `shared_runners_enabled`                           | boolean | No       | Enable instance runners for this project. |
 | `show_default_award_emojis`                        | boolean | No       | Show default emoji reactions. |
 | `snippets_enabled`                                 | boolean | No       | _(Deprecated)_ Enable snippets for this project. Use `snippets_access_level` instead. |
 | `squash_commit_template`                           | string  | No       | [Template](../user/project/merge_requests/commit_templates.md) used to create squash commit message in merge requests. |
@@ -1679,7 +1679,7 @@ Supported general project attributes:
 | `resolve_outdated_diff_discussions`                | boolean           | No       | Automatically resolve merge request diffs discussions on lines changed with a push. |
 | `restrict_user_defined_variables`                  | boolean           | No       | Allow only users with the Maintainer role to pass user-defined variables when triggering a pipeline. For example when the pipeline is triggered in the UI, with the API, or by a trigger token. |
 | `service_desk_enabled`                             | boolean           | No       | Enable or disable Service Desk feature. |
-| `shared_runners_enabled`                           | boolean           | No       | Enable shared runners for this project. |
+| `shared_runners_enabled`                           | boolean           | No       | Enable instance runners for this project. |
 | `show_default_award_emojis`                        | boolean           | No       | Show default emoji reactions. |
 | `snippets_enabled`                                 | boolean           | No       | _(Deprecated)_ Enable snippets for this project. Use `snippets_access_level` instead. |
 | `issue_branch_template`                            | string            | No       | Template used to suggest names for [branches created from issues](../user/project/merge_requests/creating_merge_requests.md#from-an-issue). _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21243) in GitLab 15.6.)_ |
@@ -1692,7 +1692,7 @@ Supported general project attributes:
 | `warn_about_potentially_unwanted_characters`       | boolean           | No       | Enable warnings about usage of potentially unwanted characters in this project. |
 | `wiki_enabled`                                     | boolean           | No       | _(Deprecated)_ Enable wiki for this project. Use `wiki_access_level` instead. |
 
-For example, to toggle the setting for [shared runners on a GitLab.com project](../ci/runners/index.md):
+For example, to toggle the setting for [instance runners on a GitLab.com project](../ci/runners/index.md):
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your-token>" \

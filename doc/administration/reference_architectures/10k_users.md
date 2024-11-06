@@ -2447,7 +2447,7 @@ pool as given, you can increase the node pool accordingly. Conversely, if the po
 
 ### Example config file
 
-An example for the GitLab Helm Charts targetting the above 200 RPS or 10,000 reference architecture configuration [can be found in the Charts project](https://gitlab.com/gitlab-org/charts/gitlab/-/blob/master/examples/ref/10k.yaml).
+An example for the GitLab Helm Charts targeting the above 200 RPS or 10,000 reference architecture configuration [can be found in the Charts project](https://gitlab.com/gitlab-org/charts/gitlab/-/blob/master/examples/ref/10k.yaml).
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#set-up-components">

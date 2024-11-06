@@ -1359,7 +1359,7 @@ PUT /groups/:id
 | `project_creation_level`                            | string            | no       | Determine if developers can create projects in the group. Can be `noone` (No one), `maintainer` (users with the Maintainer role), or `developer` (users with the Developer or Maintainer role). |
 | `request_access_enabled`                            | boolean           | no       | Allow users to request member access. |
 | `require_two_factor_authentication`                 | boolean           | no       | Require all users in this group to set up two-factor authentication. |
-| `shared_runners_setting`                            | string            | no       | See [Options for `shared_runners_setting`](#options-for-shared_runners_setting). Enable or disable shared runners for a group's subgroups and projects. |
+| `shared_runners_setting`                            | string            | no       | See [Options for `shared_runners_setting`](#options-for-shared_runners_setting). Enable or disable instance runners for a group's subgroups and projects. |
 | `share_with_group_lock`                             | boolean           | no       | Prevent sharing a project with another group within this group. |
 | `subgroup_creation_level`                           | string            | no       | Allowed to [create subgroups](../user/group/subgroups/index.md#create-a-subgroup). Can be `owner` (Owners), or `maintainer` (users with the Maintainer role). |
 | `two_factor_grace_period`                           | integer           | no       | Time before Two-factor authentication is enforced (in hours). |
@@ -1468,14 +1468,14 @@ Users of [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also se
 
 #### Options for `shared_runners_setting`
 
-The `shared_runners_setting` attribute determines whether shared runners are enabled for a group's subgroups and projects.
+The `shared_runners_setting` attribute determines whether instance runners are enabled for a group's subgroups and projects.
 
 | Value                        | Description |
 |------------------------------|-------------|
-| `enabled`                    | Enables shared runners for all projects and subgroups in this group. |
-| `disabled_and_overridable`   | Disables shared runners for all projects and subgroups in this group, but allows subgroups to override this setting. |
-| `disabled_and_unoverridable` | Disables shared runners for all projects and subgroups in this group, and prevents subgroups from overriding this setting. |
-| `disabled_with_override`     | (Deprecated. Use `disabled_and_overridable`) Disables shared runners for all projects and subgroups in this group, but allows subgroups to override this setting. |
+| `enabled`                    | Enables instance runners for all projects and subgroups in this group. |
+| `disabled_and_overridable`   | Disables instance runners for all projects and subgroups in this group, but allows subgroups to override this setting. |
+| `disabled_and_unoverridable` | Disables instance runners for all projects and subgroups in this group, and prevents subgroups from overriding this setting. |
+| `disabled_with_override`     | (Deprecated. Use `disabled_and_overridable`) Disables instance runners for all projects and subgroups in this group, but allows subgroups to override this setting. |
 
 ### Group members
 

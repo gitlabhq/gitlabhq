@@ -49,7 +49,7 @@ Platform as a Service options are a huge portion of the value provided by Cloud 
 - Cloud solution implementations help implementers understand what PaaS options are known to work and how to choose between PaaS solutions when a single platform has more than one PaaS option for the same GitLab role.
 - For instance, where reference architectures do not have a specific recommendation on what technology is leveraged for GitLab outbound email services or what the sizing should be - a Reference Implementation may advise using a cloud providers Email as a Service (PaaS) and possibly even with specific settings.
 
-You can read more at [AWS services are usable to deploy GitLab infrastruture](gitlab_instance_on_aws.md).
+You can read more at [AWS services are usable to deploy GitLab infrastructure](gitlab_instance_on_aws.md).
 
 ## Cost optimizing engineering
 

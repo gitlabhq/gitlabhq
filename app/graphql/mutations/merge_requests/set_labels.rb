@@ -35,8 +35,11 @@ module Mutations
                            :label_ids
                          end
 
-        ::MergeRequests::UpdateService.new(project: project, current_user: current_user, params: { attribute_name => label_ids })
-          .execute(merge_request)
+        ::MergeRequests::UpdateService.new(
+          project: project,
+          current_user: current_user,
+          params: { attribute_name => label_ids }
+        ).execute(merge_request)
 
         {
           merge_request: merge_request,

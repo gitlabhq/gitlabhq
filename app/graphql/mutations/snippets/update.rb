@@ -34,12 +34,18 @@ module Mutations
 
         process_args_for_params!(args)
 
-        service = ::Snippets::UpdateService.new(project: snippet.project, current_user: current_user, params: args, perform_spam_check: true)
+        service = ::Snippets::UpdateService.new(
+          project: snippet.project,
+          current_user: current_user,
+          params: args,
+          perform_spam_check: true
+        )
         service_response = service.execute(snippet)
 
-        # TODO: DRY this up - From here down, this is all duplicated with Mutations::Snippets::Create#resolve, except for
-        #    `snippet.reset`, which is required in order to return the object in its non-dirty, unmodified, database state
-        #    See issue here: https://gitlab.com/gitlab-org/gitlab/-/issues/300250
+        # TODO: DRY this up - From here down, this is all duplicated with Mutations::Snippets::Create#resolve, except
+        # for `snippet.reset`, which is required in order to return the object in its non-dirty, unmodified, database
+        # state.
+        # See issue here: https://gitlab.com/gitlab-org/gitlab/-/issues/300250.
 
         # Only when the user is not an api user and the operation was successful
         if !api_user? && service_response.success?

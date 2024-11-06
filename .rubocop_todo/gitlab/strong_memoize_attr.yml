@@ -228,7 +228,7 @@ Gitlab/StrongMemoizeAttr:
     - 'ee/app/controllers/groups/todos_controller.rb'
     - 'ee/app/controllers/projects/audit_events_controller.rb'
     - 'ee/app/controllers/projects/subscriptions_controller.rb'
-    - 'ee/app/controllers/subscriptions_controller.rb'
+    - 'ee/app/controllers/gitlab_subscriptions/subscriptions_controller.rb'
     - 'ee/app/finders/approval_rules/group_finder.rb'
     - 'ee/app/finders/concerns/epics/with_access_check.rb'
     - 'ee/app/finders/ee/issues_finder.rb'

@@ -32,7 +32,7 @@ Most custom roles are considered [billable users that use a seat](#billing-and-s
 For more information on available permissions, see [custom permissions](custom_roles/abilities.md).
 
 WARNING:
-Depending on the permissions added to a lower base role such as Guest, a user with a custom role might be able to perform actions that are usually restricted to the Maintainer role or higher. For example, if a custom role is Guest plus a permisions to manage CI/CD variables, a user with this role can manage CI/CD variables added by other Maintainers or Owners for that group or project.
+Depending on the permissions added to a lower base role such as Guest, a user with a custom role might be able to perform actions that are usually restricted to the Maintainer role or higher. For example, if a custom role is Guest plus a permissions to manage CI/CD variables, a user with this role can manage CI/CD variables added by other Maintainers or Owners for that group or project.
 
 ## Create a custom role
 

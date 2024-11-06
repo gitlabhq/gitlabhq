@@ -458,6 +458,7 @@ class User < ApplicationRecord
   delegate :discord, :discord=, to: :user_detail, allow_nil: true
   delegate :email_reset_offered_at, :email_reset_offered_at=, to: :user_detail, allow_nil: true
   delegate :project_authorizations_recalculated_at, :project_authorizations_recalculated_at=, to: :user_detail, allow_nil: true
+  delegate :bot_namespace, :bot_namespace=, to: :user_detail, allow_nil: true
 
   accepts_nested_attributes_for :user_preference, update_only: true
   accepts_nested_attributes_for :user_detail, update_only: true

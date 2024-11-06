@@ -237,9 +237,9 @@ module Import
         aliased_model = aliases.dig(model, version, :model)
         return aliased_model if aliased_model.present?
 
-        track_error_for_missing(model: model, version: version)
+        track_error_for_missing(model:, version:)
 
-        model.safe_constantize
+        model.safe_constantize || (raise missing_alias_error(model:, version:))
       end
 
       def aliased_column(model, column, version:)
@@ -257,11 +257,15 @@ module Import
           .map { |data| [data[:model], data] }
       end
 
-      private_class_method def self.track_error_for_missing(model:, column: nil, version: nil)
+      private_class_method def self.missing_alias_error(model:, column: nil, version: nil)
         message = "ALIASES must be extended to include #{model}"
         message += ".#{column}" if column
         message += " for version #{version}" if version
-        Gitlab::ErrorTracking.track_and_raise_for_dev_exception(MissingAlias.new(message))
+        MissingAlias.new(message)
+      end
+
+      private_class_method def self.track_error_for_missing(model:, column: nil, version: nil)
+        Gitlab::ErrorTracking.track_and_raise_for_dev_exception(missing_alias_error(model:, column:, version:))
       end
     end
   end

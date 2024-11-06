@@ -73,7 +73,7 @@ module Tooling
     end
 
     def parse_backend_file(path)
-      source = ::File.read(path)
+      source = ::File.read(path).force_encoding("utf-8").encode("utf-8", replace: nil)
       # Do not bother parsing files not containing `_(`
       # All of our translation helpers, _(, s_(), N_(), etc.
       # contain it. So we can skip parsing files not containing it
