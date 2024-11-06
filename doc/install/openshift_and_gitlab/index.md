@@ -10,7 +10,7 @@ OpenShift - GitLab compatibility can be addressed in three different aspects. Th
 
 ## What is OpenShift
 
-OpenShift helps you to develop, deploy, and manage container-based applications. It provides you with a self-service platform to create, modify, and deploy applications on demand, thus enabling faster development and release life cycles.
+OpenShift helps you to develop, deploy, and manage container-based applications. It provides you with a self-service platform to create, modify, and deploy applications on demand, thus enabling faster development and release lifecycles.
 
 ## Use OpenShift to run GitLab self-managed
 

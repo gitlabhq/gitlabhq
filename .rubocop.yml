@@ -69,6 +69,11 @@ Rails:
     - 'tooling/danger/**/*'
     - 'rubocop/**/*'
 
+Rails/Date:
+  Exclude:
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/502580
+    - danger/database/Dangerfile
+
 RSpec:
   Language:
     Includes:

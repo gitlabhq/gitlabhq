@@ -26,7 +26,7 @@ other security tools cannot detect.
 DAST is completely language agnostic and examines your application from the outside in. With a
 running application in a test environment, DAST scans can be automated in a CI/CD pipeline,
 automated on a schedule, or run independently by using on-demand scans. Using DAST during the
-software development life cycle enables teams to uncover vulnerabilities before their applications
+software development lifecycle enables teams to uncover vulnerabilities before their applications
 are in production. DAST is a foundational component of software security and should be used in
 tandem with SAST, dependency and license scanning, and secret detection, to provide a comprehensive
 security assessment of your applications.

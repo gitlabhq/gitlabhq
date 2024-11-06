@@ -477,7 +477,7 @@ and reduces confidence in our testing suite covering all possible combinations.
 Additionally, a feature flag overwritten in some of the environments can result
 in undefined and untested system behavior.
 
-`development` type feature flags should have a short life-cycle because their purpose
+`development` type feature flags should have a short lifecycle because their purpose
 is for rolling out a persistent change. `development` feature flags that are older
 than 2 milestones are reported to engineering managers. The
 [report tool](https://gitlab.com/gitlab-org/gitlab-feature-flag-alert) runs on a

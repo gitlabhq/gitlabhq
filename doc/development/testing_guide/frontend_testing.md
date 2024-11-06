@@ -1218,7 +1218,7 @@ testAction(
 <!-- vale gitlab_base.Spelling = NO -->
 
 The Axios Utils mock module located in `spec/frontend/__helpers__/mocks/axios_utils.js` contains two helper methods for Jest tests that spawn HTTP requests.
-These are very useful if you don't have a handle to the request's Promise, for example when a Vue component does a request as part of its life cycle.
+These are very useful if you don't have a handle to the request's Promise, for example when a Vue component does a request as part of its lifecycle.
 
 <!-- vale gitlab_base.Spelling = YES -->
 

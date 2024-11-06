@@ -17,7 +17,7 @@ Proxying of Git over HTTP requests is handled by the [`gitlab-workhorse`](../../
 
 Proxying of Git over SSH traffic is handled by the [`gitlab-shell`](../../development/architecture.md#gitlab-shell) component, but the decision to proxy or not is handled by the Rails application, taking into account whether the request is push or pull, and whether the desired Git data is up-to-date.
 
-## Request life cycle
+## Request lifecycle
 
 ### Top-level view
 

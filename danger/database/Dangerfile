@@ -2,7 +2,7 @@
 
 SCHEMA_NOT_UPDATED_MESSAGE_SHORT = "New %<migrations>s added but %<schema>s wasn't updated"
 
-SCHEMA_NOT_UPDATED_MESSAGE_FULL = <<~MSG
+SCHEMA_NOT_UPDATED_MESSAGE_FULL = <<~MSG.freeze
 **#{SCHEMA_NOT_UPDATED_MESSAGE_SHORT}**
 
 Usually, when adding new %<migrations>s, %<schema>s should be
@@ -25,7 +25,7 @@ DB_FILES_MESSAGE = <<~MSG
 The following files require a review from the Database team:
 MSG
 
-DB_REMOVE_MESSAGE = <<~MSG
+DB_REMOVE_MESSAGE = <<~MSG.freeze
 If you no longer require a database review, you can remove this suggestion
 by removing the ~database label and re-running the [`danger-review` job](#{ENV['CI_JOB_URL']}).
 MSG
@@ -91,9 +91,7 @@ if helper.mr_labels.include?('database') || database.changes.any?
     markdown(DB_REMOVE_MESSAGE)
   end
 
-  unless helper.has_scoped_label_with_scope?("database")
-    helper.labels_to_add << 'database::review pending'
-  end
+  helper.labels_to_add << 'database::review pending' unless helper.has_scoped_label_with_scope?("database")
 end
 
 cutoff = Date.today - 21 # Three weeks ago

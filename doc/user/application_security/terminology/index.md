@@ -346,7 +346,7 @@ When a [report finding](#report-finding) is stored to the database, it becomes a
 
 ## Vulnerability tracking
 
-Deals with the responsibility of matching findings across scans so that a finding's life cycle can
+Deals with the responsibility of matching findings across scans so that a finding's lifecycle can
 be understood. Engineers and security teams use this information to decide whether to merge code
 changes, and to see unresolved findings and when they were introduced.
 

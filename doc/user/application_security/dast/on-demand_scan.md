@@ -20,7 +20,7 @@ Only run DAST scans against a test server.
 > - Runner tags selection [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111499) in GitLab 16.3.
 > - Browser based on-demand DAST scans available from GitLab 17.0 since [proxy-based DAST was removed in the same version](../../../update/deprecations.md#proxy-based-dast-deprecated).
 
-An on-demand DAST scan runs outside the DevOps life cycle. Changes in your repository don't trigger
+An on-demand DAST scan runs outside the DevOps lifecycle. Changes in your repository don't trigger
 the scan. You must either start it manually, or schedule it to run. For on-demand DAST scans,
 a [site profile](#site-profile) defines **what** is to be scanned, and a
 [scanner profile](#scanner-profile) defines **how** the application is to be scanned.

@@ -224,7 +224,6 @@ Style/IfUnlessModifier:
     - 'config/initializers/validate_database_config.rb'
     - 'config/initializers_before_autoloader/002_sidekiq.rb'
     - 'config/routes.rb'
-    - 'danger/database/Dangerfile'
     - 'ee/app/controllers/admin/emails_controller.rb'
     - 'ee/app/controllers/admin/geo/application_controller.rb'
     - 'ee/app/controllers/admin/geo/settings_controller.rb'

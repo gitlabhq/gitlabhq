@@ -29,7 +29,7 @@ aspects of inspecting the items your code uses. These items typically include ap
 dependencies that are almost always imported from external sources, rather than sourced from items
 you wrote yourself.
 
-Dependency scanning can run in the development phase of your application's life cycle. Every time a
+Dependency scanning can run in the development phase of your application's lifecycle. Every time a
 pipeline produces an SBOM report, security findings are identified and compared between the source
 and target branches. Findings and their severity are listed in the merge request, enabling you to
 proactively address the risk to your application, before the code change is committed. Security

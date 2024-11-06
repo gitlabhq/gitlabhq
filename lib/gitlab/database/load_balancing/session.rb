@@ -19,8 +19,8 @@ module Gitlab
           RequestStore.delete(CACHE_KEY)
         end
 
-        def self.without_sticky_writes(&block)
-          current.ignore_writes(&block)
+        def self.without_sticky_writes(&)
+          current.ignore_writes(&)
         end
 
         def initialize
@@ -41,7 +41,7 @@ module Gitlab
           @use_primary = true
         end
 
-        def use_primary(&blk)
+        def use_primary
           used_primary = @use_primary
           @use_primary = true
           yield
@@ -49,7 +49,7 @@ module Gitlab
           @use_primary = used_primary || @performed_write
         end
 
-        def ignore_writes(&block)
+        def ignore_writes
           @ignore_writes = true
 
           yield
@@ -67,7 +67,7 @@ module Gitlab
         #
         # Write and ambiguous queries inside this block are still handled by
         # the primary.
-        def use_replicas_for_read_queries(&blk)
+        def use_replicas_for_read_queries
           previous_flag = @use_replicas_for_read_queries
           @use_replicas_for_read_queries = true
           yield
@@ -90,7 +90,7 @@ module Gitlab
         # - If the queries are about to write
         # - The current session already performed writes
         # - It prefers to use primary, aka, use_primary or use_primary! were called
-        def fallback_to_replicas_for_ambiguous_queries(&blk)
+        def fallback_to_replicas_for_ambiguous_queries
           previous_flag = @fallback_to_replicas_for_ambiguous_queries
           @fallback_to_replicas_for_ambiguous_queries = true
           yield

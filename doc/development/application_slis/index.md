@@ -71,7 +71,7 @@ Gitlab::Metrics::Sli::Apdex.initialize_sli(:received_email, [
 ```
 
 Metrics must be initialized before they get scraped for the first time.
-This currently happens during the `on_master_start` [life-cycle event](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/cluster/lifecycle_events.rb).
+This currently happens during the `on_master_start` [lifecycle event](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/cluster/lifecycle_events.rb).
 Since this delays application readiness until metrics initialization returns, make sure the overhead
 this adds is understood and acceptable.
 

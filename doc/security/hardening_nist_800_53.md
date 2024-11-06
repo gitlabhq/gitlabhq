@@ -43,7 +43,7 @@ GitLab is a [DevSecOps platform](../devsecops.md) that
 integrates security throughout the development lifecycle.
 At its core, you can use GitLab to address a wide range of controls within the SA control family.
 
-#### System development life cycle
+#### System development lifecycle
 
 You can use GitLab to meet the core of this requirement. GitLab provides
 a platform where work can be

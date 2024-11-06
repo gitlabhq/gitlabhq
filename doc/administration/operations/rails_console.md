@@ -448,7 +448,7 @@ We also see that the save operation triggered some other action -- in this case
 a background job to deliver an email notification. This is an example of an
 [Active Record callback](https://guides.rubyonrails.org/active_record_callbacks.html)
 -- code which is designated to run in response to events in the Active Record
-object life cycle. This is also why using the Rails console is preferred when
+object lifecycle. This is also why using the Rails console is preferred when
 direct changes to data is necessary as changes made via direct database queries
 do not trigger these callbacks.
 
