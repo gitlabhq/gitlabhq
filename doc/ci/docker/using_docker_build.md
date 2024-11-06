@@ -189,6 +189,46 @@ To use Docker-in-Docker with TLS enabled:
        - docker run my-docker-image /script/to/run/tests
    ```
 
+##### Use a Unix socket on a shared volume between Docker-in-Docker and build container
+
+Directories defined in `volumes = ["/certs/client", "/cache"]` in the
+[Docker-in-Docker with TLS enabled in the Docker executor](#docker-in-docker-with-tls-enabled-in-the-docker-executor)
+approach are [persistent between builds](https://docs.gitlab.com/runner/executors/docker.html#persistent-storage).
+If multiple CI/CD jobs using a Docker executor runner have Docker-in-Docker services enabled, then each job
+writes to the directory path. This approach might result in a conflict.
+
+To address this conflict, use a Unix socket on a volume shared between the Docker-in-Docker service and the build container.
+This approach improves performance and establishes a secure connection between the service and client.
+
+The following is a sample `config.toml` with temporary volume shared between build and service containers:
+
+```toml
+[[runners]]
+  url = "https://gitlab.com/"
+  token = TOKEN
+  executor = "docker"
+  [runners.docker]
+    image = "docker:24.0.5"
+    privileged = true
+    volumes = ["/runner/services/docker"] # Temporary volume shared between build and service containers.
+```
+
+The Docker-in-Docker service creates a `docker.sock`. The Docker client connects to `docker.sock` through a Docker Unix socket volume.
+
+```yaml
+job:
+  variables:
+    # This variable is shared by both the DinD service and Docker client.
+    # For the service, it will instruct DinD to create `docker.sock` here.
+    # For the client, it tells the Docker client which Docker Unix socket to connect to.
+    DOCKER_HOST: "unix:///runner/services/docker/docker.sock"
+  services:
+    - docker:24.0.5-dind
+  image: docker:24.0.5
+  script:
+    - docker version
+```
+
 ##### Docker-in-Docker with TLS disabled in the Docker executor
 
 Sometimes there are legitimate reasons to disable TLS.

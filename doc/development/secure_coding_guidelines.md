@@ -100,6 +100,12 @@ Some example of well implemented access controls and tests:
 
 **NB:** any input from development team is welcome, for example, about RuboCop rules.
 
+## CI/CD development
+
+When developing features that interact with or trigger pipelines, it's essential to consider the broader implications these actions have on the system's security and operational integrity.
+
+The [CI/CD development guidelines](../development/cicd/index.md) are essential reading material. No SAST or RuboCop rules enforce these guidelines.
+
 ## Regular Expressions guidelines
 
 ### Anchors / Multi line
