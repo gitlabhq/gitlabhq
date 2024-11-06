@@ -39359,6 +39359,9 @@ msgstr ""
 msgid "PackageRegistry|This NuGet package has no dependencies."
 msgstr ""
 
+msgid "PackageRegistry|This package version has been deprecated."
+msgstr ""
+
 msgid "PackageRegistry|To widen your search, change or remove the filters above."
 msgstr ""
 
@@ -39411,6 +39414,9 @@ msgid "PackageRegistry|You may also need to setup authentication using an auth t
 msgstr ""
 
 msgid "PackageRegistry|You will need a %{linkStart}personal access token%{linkEnd}."
+msgstr ""
+
+msgid "PackageRegistry|deprecated"
 msgstr ""
 
 msgid "PackageRegistry|npm"
@@ -50017,6 +50023,9 @@ msgid "SecurityOrchestration|Policy editor"
 msgstr ""
 
 msgid "SecurityOrchestration|Policy exceeds the maximum of %{limit} actions"
+msgstr ""
+
+msgid "SecurityOrchestration|Policy exceeds the maximum of %{limit} approver actions"
 msgstr ""
 
 msgid "SecurityOrchestration|Policy has reached the maximum of %{actionsCount} %{actions}"

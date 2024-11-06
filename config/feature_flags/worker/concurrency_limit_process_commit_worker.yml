@@ -1,0 +1,9 @@
+---
+name: concurrency_limit_process_commit_worker
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/472602
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/171786
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/502784
+milestone: '17.6'
+group: group::source code
+type: worker
+default_enabled: false

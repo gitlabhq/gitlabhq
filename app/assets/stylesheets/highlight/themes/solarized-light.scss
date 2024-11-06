@@ -99,6 +99,8 @@ $solarized-light-il: #2aa198;
 :root {
   --default-diff-color-deletion: #dc322f;
   --default-diff-color-addition: #859900;
+  --diff-addition-color: #{$solarized-light-new-bg};
+  --diff-deletion-color: #{$solarized-light-old-bg};
 }
 
 @mixin match-line {

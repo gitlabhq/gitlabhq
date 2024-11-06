@@ -54,3 +54,5 @@ export const SORT_ITEM_UPDATED_AT = {
   value: SORT_UPDATED_AT,
   text: __('Updated'),
 };
+
+export const SOLO_OWNED_ORGANIZATIONS_REQUESTED_COUNT = 10;

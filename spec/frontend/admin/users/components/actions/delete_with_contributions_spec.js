@@ -1,15 +1,21 @@
 import { GlLoadingIcon } from '@gitlab/ui';
+import Vue from 'vue';
+import VueApollo from 'vue-apollo';
 import { mount } from '@vue/test-utils';
 import waitForPromises from 'helpers/wait_for_promises';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import DeleteWithContributions from '~/admin/users/components/actions/delete_with_contributions.vue';
 import eventHub, {
   EVENT_OPEN_DELETE_USER_MODAL,
 } from '~/admin/users/components/modals/delete_user_modal_event_hub';
 import { associationsCount } from '~/api/user_api';
+import { getSoloOwnedOrganizations } from '~/admin/users/utils';
+import { SOLO_OWNED_ORGANIZATIONS_EMPTY } from '~/admin/users/constants';
 import {
   paths,
   associationsCount as associationsCountData,
   userDeletionObstacles,
+  soloOwnedOrganizations,
 } from '../../mock_data';
 
 jest.mock('~/admin/users/components/modals/delete_user_modal_event_hub', () => ({
@@ -24,6 +30,12 @@ jest.mock('~/api/user_api', () => ({
   associationsCount: jest.fn(),
 }));
 
+jest.mock('~/admin/users/utils', () => ({
+  getSoloOwnedOrganizations: jest.fn(),
+}));
+
+Vue.use(VueApollo);
+
 describe('DeleteWithContributions', () => {
   let wrapper;
 
@@ -35,13 +47,16 @@ describe('DeleteWithContributions', () => {
   };
 
   const createComponent = () => {
-    wrapper = mount(DeleteWithContributions, { propsData: defaultPropsData });
+    wrapper = mount(DeleteWithContributions, {
+      propsData: defaultPropsData,
+      apolloProvider: createMockApollo([]),
+    });
   };
 
   describe('when action is clicked', () => {
     describe('when API request is loading', () => {
       beforeEach(() => {
-        associationsCount.mockReturnValueOnce(new Promise(() => {}));
+        getSoloOwnedOrganizations.mockReturnValueOnce(new Promise(() => {}));
 
         createComponent();
       });
@@ -50,31 +65,30 @@ describe('DeleteWithContributions', () => {
         await wrapper.find('button').trigger('click');
 
         expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
-        expect(wrapper.attributes()).toMatchObject({
-          disabled: 'disabled',
-          'aria-busy': 'true',
-        });
+        // Vue 2 specs return 'disabled' while Vue 3 tests return true
+        // eslint-disable-next-line jest/no-restricted-matchers
+        expect(wrapper.attributes('disabled')).toBeTruthy();
+        expect(wrapper.attributes('aria-busy')).toBe('true');
       });
     });
 
-    describe('when API request is successful', () => {
+    describe('when solo organizations API call returns results', () => {
       beforeEach(() => {
-        associationsCount.mockResolvedValueOnce({
-          data: associationsCountData,
-        });
+        getSoloOwnedOrganizations.mockResolvedValueOnce(soloOwnedOrganizations);
 
         createComponent();
       });
 
-      it('emits event with association counts', async () => {
+      it('emits event with organizations and no association counts', async () => {
         await wrapper.find('button').trigger('click');
         await waitForPromises();
 
-        expect(associationsCount).toHaveBeenCalledWith(defaultPropsData.userId);
+        expect(associationsCount).not.toHaveBeenCalledWith();
         expect(eventHub.$emit).toHaveBeenCalledWith(
           EVENT_OPEN_DELETE_USER_MODAL,
           expect.objectContaining({
-            associationsCount: associationsCountData,
+            associationsCount: undefined,
+            organizations: soloOwnedOrganizations,
             username: defaultPropsData.username,
             blockPath: paths.block,
             deletePath: paths.deleteWithContributions,
@@ -84,9 +98,65 @@ describe('DeleteWithContributions', () => {
       });
     });
 
-    describe('when API request is not successful', () => {
+    describe('when solo owned organizations API call returns no results', () => {
       beforeEach(() => {
-        associationsCount.mockRejectedValueOnce();
+        getSoloOwnedOrganizations.mockResolvedValueOnce(SOLO_OWNED_ORGANIZATIONS_EMPTY);
+        associationsCount.mockResolvedValueOnce({
+          data: associationsCountData,
+        });
+
+        createComponent();
+      });
+
+      it('makes association count API call and emits event with association counts', async () => {
+        await wrapper.find('button').trigger('click');
+        await waitForPromises();
+
+        expect(associationsCount).toHaveBeenCalledWith(defaultPropsData.userId);
+        expect(eventHub.$emit).toHaveBeenCalledWith(
+          EVENT_OPEN_DELETE_USER_MODAL,
+          expect.objectContaining({
+            associationsCount: associationsCountData,
+            organizations: SOLO_OWNED_ORGANIZATIONS_EMPTY,
+            username: defaultPropsData.username,
+            blockPath: paths.block,
+            deletePath: paths.deleteWithContributions,
+            userDeletionObstacles,
+          }),
+        );
+      });
+    });
+
+    describe('when solo owned organizations API call is not successful', () => {
+      beforeEach(() => {
+        getSoloOwnedOrganizations.mockRejectedValueOnce(new Error());
+
+        createComponent();
+      });
+
+      it('emits event with empty organizations', async () => {
+        await wrapper.find('button').trigger('click');
+        await waitForPromises();
+
+        expect(associationsCount).not.toHaveBeenCalledWith();
+        expect(eventHub.$emit).toHaveBeenCalledWith(
+          EVENT_OPEN_DELETE_USER_MODAL,
+          expect.objectContaining({
+            associationsCount: undefined,
+            organizations: SOLO_OWNED_ORGANIZATIONS_EMPTY,
+            username: defaultPropsData.username,
+            blockPath: paths.block,
+            deletePath: paths.deleteWithContributions,
+            userDeletionObstacles,
+          }),
+        );
+      });
+    });
+
+    describe('when association count API call is not successful', () => {
+      beforeEach(() => {
+        getSoloOwnedOrganizations.mockResolvedValueOnce(SOLO_OWNED_ORGANIZATIONS_EMPTY);
+        associationsCount.mockRejectedValueOnce(new Error());
 
         createComponent();
       });

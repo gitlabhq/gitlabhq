@@ -40,6 +40,9 @@ For a full list of checks and their API equivalents, see
 
 ![Auto-merge is ready](img/auto_merge_ready_v16_0.png)
 
+After you set auto-merge, you can't change which issues [auto-close](../issues/managing_issues.md#closing-issues-automatically)
+when the merge request merges.
+
 ## Auto-merge a merge request
 
 Prerequisites:

@@ -48,15 +48,23 @@ module Git
       merge_request_branches = merge_request_branches_for(ref_type, changes)
 
       changes.each do |change|
-        push_service_class.new(
-          project,
-          current_user,
+        options = {
           change: change,
           push_options: params[:push_options],
           merge_request_branches: merge_request_branches,
           create_pipelines: under_process_limit?(change),
           execute_project_hooks: execute_project_hooks,
           create_push_event: !create_bulk_push_event
+        }
+
+        if ref_type == :branch && Feature.enabled?(:throttle_with_process_commit_worker_pool, project)
+          options[:process_commit_worker_pool] = process_commit_worker_pool
+        end
+
+        push_service_class.new(
+          project,
+          current_user,
+          **options
         ).execute
       end
 
@@ -131,6 +139,10 @@ module Git
       housekeeping.increment!
       housekeeping.execute if housekeeping.needed?
     rescue Repositories::HousekeepingService::LeaseTaken
+    end
+
+    def process_commit_worker_pool
+      @process_commit_worker_pool ||= Gitlab::Git::ProcessCommitWorkerPool.new
     end
   end
 end

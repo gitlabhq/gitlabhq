@@ -94,6 +94,8 @@ $monokai-gh: #75715e;
 :root {
   --default-diff-color-deletion: #c87872;
   --default-diff-color-addition: #678528;
+  --diff-addition-color: #{$monokai-new-bg};
+  --diff-deletion-color: #{$monokai-old-bg};
 }
 
 .code.monokai {

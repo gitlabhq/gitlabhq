@@ -284,6 +284,14 @@ module ObjectStorage
       end
     end
 
+    def proxy_download_enabled?
+      self.class.proxy_download_enabled?
+    end
+
+    def direct_download_enabled?
+      self.class.direct_download_enabled?
+    end
+
     # allow to configure and overwrite the filename
     def filename
       @filename || super || file&.filename # rubocop:disable Gitlab/ModuleWithInstanceVariables

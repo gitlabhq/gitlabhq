@@ -6,7 +6,7 @@
 - if deletion_color.present?
   - deletion_color_rgb = hex_color_to_rgb_array(deletion_color).join(',')
   :css
-    :root {
+    body {
       --diff-deletion-color: rgba(#{deletion_color_rgb},0.2);
     }
 
@@ -15,6 +15,6 @@
 - if addition_color.present?
   - addition_color_rgb = hex_color_to_rgb_array(addition_color).join(',')
   :css
-    :root {
+    body {
       --diff-addition-color: rgba(#{addition_color_rgb},0.2);
     }

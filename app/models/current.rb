@@ -29,6 +29,8 @@ class Current < ActiveSupport::CurrentAttributes
 
     self.organization_assigned = true
 
+    Gitlab::ApplicationContext.push(organization: value)
+
     super(value)
   end
 

@@ -123,6 +123,8 @@ $dark-il: #de935f;
   --color-hljs-selector-pseudo: #{$dark-nd};
   --default-diff-color-deletion: #ff3333;
   --default-diff-color-addition: #288f2a;
+  --diff-addition-color: #{$dark-new-bg};
+  --diff-deletion-color: #{$dark-old-bg};
 }
 
 .code.dark {

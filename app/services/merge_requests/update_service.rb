@@ -72,7 +72,7 @@ module MergeRequests
     def after_update(merge_request, old_associations)
       super
 
-      merge_request.cache_merge_request_closes_issues!(current_user)
+      merge_request.cache_merge_request_closes_issues!(current_user) unless merge_request.auto_merge_enabled?
       @trigger_work_item_updated = true
     end
 

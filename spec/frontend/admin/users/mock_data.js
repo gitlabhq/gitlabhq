@@ -70,3 +70,14 @@ export const userStatus = {
   message_html: 'test',
   clear_status_at: '2023-01-04T10:00:00.000Z',
 };
+
+export const soloOwnedOrganizations = {
+  count: 1,
+  nodes: [
+    {
+      id: 'gid://gitlab/Organizations::Organization/1013',
+      name: 'Foo',
+      webUrl: 'http://gdk.test:3000/-/organizations/foo',
+    },
+  ],
+};

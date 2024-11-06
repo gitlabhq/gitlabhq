@@ -12,7 +12,7 @@ RSpec.describe Current, feature_category: :cell do
   describe '.organization=' do
     context 'when organization has not been set yet' do
       where(:value) do
-        [nil, '_value_']
+        [nil, ref(:current_organization)]
       end
 
       with_them do
@@ -23,6 +23,13 @@ RSpec.describe Current, feature_category: :cell do
 
           expect(described_class.organization).to eq(value)
         end
+      end
+
+      it 'pushes organization to the application context' do
+        described_class.organization = current_organization
+
+        expect(Gitlab::ApplicationContext.current)
+          .to include('meta.organization_id' => current_organization.id)
       end
     end
 

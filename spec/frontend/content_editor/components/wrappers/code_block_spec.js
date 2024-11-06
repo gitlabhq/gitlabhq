@@ -223,19 +223,37 @@ describe('content/components/wrappers/code_block', () => {
       );
       expect(findCodeSuggestionBoxText()).toContain('Suggested change From line 5 to 5');
       expect(findCodeDeleted()).toMatchInlineSnapshot(`
-        <code
-          data-line-number="5"
-        >
-          ## Usage​
-        </code>
-      `);
+<code
+  class="!gl-border-transparent diff-line-num"
+  data-line-number="5"
+>
+  <span
+    class="line_holder"
+  >
+    <span
+      class="line_content old"
+    >
+      ## Usage​
+    </span>
+  </span>
+</code>
+`);
       expect(findCodeAdded()).toMatchInlineSnapshot(`
-        <code
-          data-line-number="5"
-        >
-          ​
-        </code>
-      `);
+<code
+  class="!gl-border-transparent diff-line-num"
+  data-line-number="5"
+>
+  <span
+    class="line_holder"
+  >
+    <span
+      class="!gl-text-transparent line_content new"
+    >
+      ​
+    </span>
+  </span>
+</code>
+`);
     });
 
     describe('decrement line start button', () => {
@@ -250,12 +268,21 @@ describe('content/components/wrappers/code_block', () => {
 
         expect(findCodeSuggestionBoxText()).toContain('Suggested change From line 4 to 5');
         expect(findCodeDeleted()).toMatchInlineSnapshot(`
-          <code
-            data-line-number="4"
-          >
-            ​
-          </code>
-        `);
+<code
+  class="!gl-border-transparent diff-line-num"
+  data-line-number="4"
+>
+  <span
+    class="line_holder"
+  >
+    <span
+      class="line_content old"
+    >
+      ​
+    </span>
+  </span>
+</code>
+`);
       });
 
       it('is disabled if the start line is already 1', async () => {
@@ -268,12 +295,21 @@ describe('content/components/wrappers/code_block', () => {
 
         expect(findCodeSuggestionBoxText()).toContain('Suggested change From line 1 to 5');
         expect(findCodeDeleted()).toMatchInlineSnapshot(`
-          <code
-            data-line-number="1"
-          >
-            # Sample README​
-          </code>
-        `);
+<code
+  class="!gl-border-transparent diff-line-num"
+  data-line-number="1"
+>
+  <span
+    class="line_holder"
+  >
+    <span
+      class="line_content old"
+    >
+      # Sample README​
+    </span>
+  </span>
+</code>
+`);
 
         expect(button.attributes('disabled')).toBe('disabled');
       });
@@ -307,12 +343,21 @@ describe('content/components/wrappers/code_block', () => {
 
         expect(findCodeSuggestionBoxText()).toContain('Suggested change From line 4 to 5');
         expect(findCodeDeleted()).toMatchInlineSnapshot(`
-          <code
-            data-line-number="4"
-          >
-            ​
-          </code>
-        `);
+<code
+  class="!gl-border-transparent diff-line-num"
+  data-line-number="4"
+>
+  <span
+    class="line_holder"
+  >
+    <span
+      class="line_content old"
+    >
+      ​
+    </span>
+  </span>
+</code>
+`);
       });
     });
 
@@ -344,12 +389,21 @@ describe('content/components/wrappers/code_block', () => {
 
         expect(findCodeSuggestionBoxText()).toContain('Suggested change From line 5 to 6');
         expect(findCodeDeleted()).toMatchInlineSnapshot(`
-          <code
-            data-line-number="5"
-          >
-            ## Usage​
-          </code>
-        `);
+<code
+  class="!gl-border-transparent diff-line-num"
+  data-line-number="5"
+>
+  <span
+    class="line_holder"
+  >
+    <span
+      class="line_content old"
+    >
+      ## Usage​
+    </span>
+  </span>
+</code>
+`);
       });
     });
 
@@ -365,12 +419,21 @@ describe('content/components/wrappers/code_block', () => {
 
         expect(findCodeSuggestionBoxText()).toContain('Suggested change From line 5 to 6');
         expect(findCodeDeleted()).toMatchInlineSnapshot(`
-          <code
-            data-line-number="5"
-          >
-            ## Usage​
-          </code>
-        `);
+<code
+  class="!gl-border-transparent diff-line-num"
+  data-line-number="5"
+>
+  <span
+    class="line_holder"
+  >
+    <span
+      class="line_content old"
+    >
+      ## Usage​
+    </span>
+  </span>
+</code>
+`);
       });
 
       it('is disabled if the end line is EOF', async () => {
@@ -383,12 +446,21 @@ describe('content/components/wrappers/code_block', () => {
 
         expect(findCodeSuggestionBoxText()).toContain('Suggested change From line 5 to 9');
         expect(findCodeDeleted()).toMatchInlineSnapshot(`
-          <code
-            data-line-number="5"
-          >
-            ## Usage​
-          </code>
-        `);
+<code
+  class="!gl-border-transparent diff-line-num"
+  data-line-number="5"
+>
+  <span
+    class="line_holder"
+  >
+    <span
+      class="line_content old"
+    >
+      ## Usage​
+    </span>
+  </span>
+</code>
+`);
 
         expect(button.attributes('disabled')).toBe('disabled');
       });

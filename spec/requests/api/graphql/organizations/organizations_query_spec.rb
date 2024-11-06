@@ -15,6 +15,7 @@ RSpec.describe 'getting organizations information', feature_category: :cell do
       id
       path
     }
+    count
     FIELDS
   end
 

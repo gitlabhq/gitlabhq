@@ -92,6 +92,9 @@ FLAG:
 The availability of this feature is controlled by feature flags.
 For more information, see the history.
 
+NOTE:
+To leave feedback about this feature, add a comment to [issue 502565](https://gitlab.com/gitlab-org/gitlab/-/issues/502565).
+
 This method of user contributions and membership mapping is available for
 [direct transfer migrations](../../group/import/index.md) on:
 

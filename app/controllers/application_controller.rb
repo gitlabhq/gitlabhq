@@ -49,7 +49,7 @@ class ApplicationController < BaseActionController
   # all other before filters that could have set the user.
   before_action :auth_user
 
-  prepend_around_action :set_current_context
+  around_action :set_current_context
 
   around_action :sessionless_bypass_admin_mode!, if: :sessionless_user?
   around_action :set_locale

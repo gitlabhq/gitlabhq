@@ -133,7 +133,8 @@ module Git
         # that is then also pushed to forks when these get synced by users.
         next if upstream_commit_ids.include?(commit.id)
 
-        ProcessCommitWorker.perform_async(
+        ProcessCommitWorker.perform_in(
+          process_commit_worker_delay,
           project.id,
           current_user.id,
           commit.to_hash,
@@ -269,6 +270,10 @@ module Git
           [commit, paths]
         end
       end
+    end
+
+    def process_commit_worker_delay
+      params[:process_commit_worker_pool]&.get_and_increment_delay || 0
     end
   end
 end

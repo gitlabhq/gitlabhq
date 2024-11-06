@@ -58,5 +58,45 @@ RSpec.describe ::PagesDomains::CreateService, feature_category: :pages do
         expect(pages_domain).not_to be_persisted
       end
     end
+
+    context 'when domain already exists' do
+      let_it_be(:existing_project) { create(:project) }
+      let_it_be(:existing_domain) { create(:pages_domain, project: existing_project) }
+      let(:params) { { domain: existing_domain.domain } }
+      let(:service) { described_class.new(project, user, params) }
+
+      subject(:result) { service.execute }
+
+      it "returns generic error message" do
+        expect(result).to be_a(PagesDomain)
+        expect(result).not_to be_persisted
+        expect(result.errors[:domain]).to include("is already in use by another project")
+      end
+
+      context "when the user is a developer on the conflicting project" do
+        before do
+          existing_project.add_member(user, :developer)
+        end
+
+        it "returns generic error message" do
+          expect(result).to be_a(PagesDomain)
+          expect(result).not_to be_persisted
+          expect(result.errors[:domain]).to include("is already in use by another project")
+        end
+      end
+
+      context "when the user is a maintainer on the conflicting project" do
+        before do
+          existing_project.add_member(user, :maintainer)
+        end
+
+        it "returns error message including the conflicting project path" do
+          expect(result).to be_a(PagesDomain)
+          expect(result).not_to be_persisted
+          expect(result.errors[:domain])
+            .to include("is already in use by project #{existing_domain.project.full_path}")
+        end
+      end
+    end
   end
 end

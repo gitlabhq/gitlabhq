@@ -277,26 +277,6 @@ We have gone through a few iterations for the naming of these settings. In 16.3,
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
-### Dependency Proxy: Access tokens to have additional scope checks
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">16.7</span>
-- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/431386).
-
-</div>
-
-When using the Dependency Proxy for containers with a group access token or personal access token, `docker login` and `docker pull` requests with insufficient scopes for Dependency Proxy are not rejected.
-
-GitLab 18.0 adds checks for group or personal access tokens authenticating with the dependency proxy for containers. This is a breaking change, because tokens without the required scopes will fail.
-
-To help avoid being impacted by this breaking change, create new access tokens with the [required scopes](https://docs.gitlab.com/ee/user/packages/dependency_proxy/#authenticate-with-the-dependency-proxy), and update your workflow variables and scripts with those new tokens.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="18.0">
-
 ### Deprecate CI job implementation of Repository X-Ray
 
 <div class="deprecation-notes">

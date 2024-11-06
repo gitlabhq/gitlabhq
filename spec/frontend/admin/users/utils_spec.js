@@ -1,5 +1,12 @@
-import { TOKENS } from '~/admin/users/constants';
-import { initializeValuesFromQuery } from '~/admin/users/utils';
+import { TOKENS, SOLO_OWNED_ORGANIZATIONS_EMPTY } from '~/admin/users/constants';
+import { initializeValuesFromQuery, getSoloOwnedOrganizations } from '~/admin/users/utils';
+import { soloOwnedOrganizations } from './mock_data';
+
+jest.mock('~/admin/users', () => ({
+  apolloClient: {
+    query: jest.fn(),
+  },
+}));
 
 const allFilters = TOKENS.flatMap(({ type, options, operators }) =>
   options.map(({ value }) => ({ value, type, operator: operators[0].value })),
@@ -38,6 +45,44 @@ describe('initializeValuesFromQuery', () => {
     expect(initializeValuesFromQuery('?other=value')).toMatchObject({
       tokens: [],
       sort: undefined,
+    });
+  });
+});
+
+describe('getSoloOwnedOrganizations', () => {
+  const apolloClient = {
+    query: jest.fn(),
+  };
+
+  describe('when uiForOrganizations is disabled', () => {
+    it('returns resolved promise with empty solo owned organizations', async () => {
+      await expect(getSoloOwnedOrganizations(apolloClient, 1)).resolves.toEqual(
+        SOLO_OWNED_ORGANIZATIONS_EMPTY,
+      );
+    });
+  });
+
+  describe('when uiForOrganizations is enabled', () => {
+    beforeEach(() => {
+      window.gon = {
+        features: {
+          uiForOrganizations: true,
+        },
+      };
+
+      apolloClient.query.mockResolvedValueOnce({
+        data: { user: { organizations: soloOwnedOrganizations } },
+      });
+    });
+
+    afterEach(() => {
+      window.gon = {};
+    });
+
+    it('calls API and returns result', async () => {
+      await expect(getSoloOwnedOrganizations(apolloClient, 1)).resolves.toEqual(
+        soloOwnedOrganizations,
+      );
     });
   });
 });

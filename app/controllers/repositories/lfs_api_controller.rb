@@ -92,7 +92,8 @@ module Repositories
     end
 
     def download_actions(object, lfs_object)
-      if lfs_object.file.file_storage? || lfs_object.file.class.proxy_download_enabled?
+      lfs_file = lfs_object.file
+      if lfs_file.file_storage? || lfs_file.proxy_download_enabled?
         proxy_download_actions(object)
       else
         direct_download_actions(lfs_object)

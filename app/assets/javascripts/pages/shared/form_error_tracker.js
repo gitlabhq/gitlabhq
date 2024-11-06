@@ -3,15 +3,7 @@ import { convertToSnakeCase } from '~/lib/utils/text_utility';
 
 export default class FormErrorTracker {
   constructor() {
-    this.elements = [
-      ...document.querySelectorAll('.js-track-error'),
-      // https://gitlab.com/gitlab-org/gitlab/-/issues/494329 to revert this additional
-      // class when blocker is implemented
-      ...Array.from(document.querySelectorAll('.js-track-error-gl-select')).map(
-        (select) => select.firstElementChild,
-      ),
-    ];
-
+    this.elements = document.querySelectorAll('.js-track-error');
     this.trackErrorOnChange = FormErrorTracker.trackErrorOnChange.bind(this);
     this.trackErrorOnEmptyField = FormErrorTracker.trackErrorOnEmptyField.bind(this);
 

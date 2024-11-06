@@ -325,6 +325,9 @@ In public repositories, this check is important, because external users can crea
 and commits that contain closing patterns. When you are the user who merges, it's important
 that you are aware of the effects the merge has on both the code and issues in your project.
 
+When [auto-merge](../merge_requests/auto_merge.md) is enabled for a merge request, no further changes can be made to
+the list of issues that will be automatically closed.
+
 #### Default closing pattern
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/465391) work item (task, objective, or key result) references in GitLab 17.3.

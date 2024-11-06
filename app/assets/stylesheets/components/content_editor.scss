@@ -172,7 +172,7 @@
 
       &[data-inapplicable] * {
         text-decoration: line-through;
-        color: $gl-text-color-disabled;
+        @apply gl-text-disabled;
       }
     }
   }
@@ -199,14 +199,14 @@
 
   .suggestion-added,
   .suggestion-deleted {
-    background-color: $line-added;
     width: 100%;
 
     > code {
-      border-left: 100px solid $line-number-new;
+      @apply gl-text-sm;
+      border-left: 100px solid transparent;
       padding-left: 20px;
       border-radius: 0;
-      background-color: inherit !important;
+      background-color: var(--diff-addition-color) !important;
     }
 
     > code::before {
@@ -217,8 +217,6 @@
       text-align: right;
       padding-right: 10px;
       padding-left: 10px;
-
-      color: $gl-text-color-secondary;
     }
 
     > code::after {
@@ -227,8 +225,6 @@
       margin-left: -20px;
       width: 20px;
       text-align: center;
-
-      color: $gl-text-color-secondary;
     }
   }
 
@@ -237,11 +233,11 @@
   }
 
   .suggestion-deleted {
-    background-color: $line-removed;
     cursor: not-allowed;
+    @apply gl-rounded-none;
 
     > code {
-      border-color: $line-number-old;
+      background-color: var(--diff-deletion-color) !important;
     }
 
     > code::before {
@@ -307,24 +303,6 @@
     &.gl-new-dropdown-item {
       padding-left: $gl-spacing-scale-2;
       padding-right: $gl-spacing-scale-2;
-    }
-  }
-}
-
-// stylelint-disable-next-line gitlab/no-gl-class
-.gl-dark .ProseMirror {
-  .suggestion-added-input,
-  .suggestion-deleted {
-    > code {
-      color: $gray-50;
-    }
-  }
-
-  .suggestion-deleted,
-  .suggestion-added {
-    > code::before,
-    > code::after {
-      color: $gray-400;
     }
   }
 }

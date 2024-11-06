@@ -1,0 +1,13 @@
+query getUserOrganizations($id: UserID, $first: Int) {
+  user(id: $id) {
+    id
+    organizations(soloOwned: true, first: $first) {
+      count
+      nodes {
+        id
+        name
+        webUrl
+      }
+    }
+  }
+}

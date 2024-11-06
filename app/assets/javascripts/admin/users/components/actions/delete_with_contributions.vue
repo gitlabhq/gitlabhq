@@ -2,6 +2,8 @@
 import { GlDisclosureDropdownItem, GlLoadingIcon } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
 import { associationsCount } from '~/api/user_api';
+import { getSoloOwnedOrganizations } from '~/admin/users/utils';
+import { SOLO_OWNED_ORGANIZATIONS_EMPTY } from '~/admin/users/constants';
 import eventHub, { EVENT_OPEN_DELETE_USER_MODAL } from '../modals/delete_user_modal_event_hub';
 
 export default {
@@ -39,16 +41,41 @@ export default {
   methods: {
     async onClick() {
       this.loading = true;
+
+      const associationsCountErrorId = 'associationsCountError';
+
       try {
-        const { data: associationsCountData } = await associationsCount(this.userId);
-        this.openModal(associationsCountData);
+        const organizations = await getSoloOwnedOrganizations(
+          this.$apollo.provider.defaultClient,
+          this.userId,
+        );
+
+        if (organizations.count > 0) {
+          this.openModal({ organizations });
+
+          return;
+        }
+
+        const { data: associationsCountData } = await associationsCount(this.userId).catch(
+          (error) => {
+            // eslint-disable-next-line no-param-reassign
+            error.id = associationsCountErrorId;
+            throw error;
+          },
+        );
+
+        this.openModal({ associationsCountData, organizations });
       } catch (error) {
-        this.openModal(new Error());
+        if (error.id === associationsCountErrorId) {
+          this.openModal({ associationsCountData: new Error() });
+        } else {
+          this.openModal({ organizations: SOLO_OWNED_ORGANIZATIONS_EMPTY });
+        }
       } finally {
         this.loading = false;
       }
     },
-    openModal(associationsCountData) {
+    openModal({ associationsCountData, organizations }) {
       const { username, paths, userDeletionObstacles } = this;
       eventHub.$emit(EVENT_OPEN_DELETE_USER_MODAL, {
         username,
@@ -56,6 +83,7 @@ export default {
         deletePath: paths.deleteWithContributions,
         userDeletionObstacles,
         associationsCount: associationsCountData,
+        organizations,
         i18n: {
           title: s__('AdminUsers|Delete User %{username} and contributions?'),
           primaryButtonLabel: s__('AdminUsers|Delete user and contributions'),

@@ -178,7 +178,6 @@ spec/frontend/add_context_commits_modal/components/add_context_commits_modal_spe
 spec/frontend/admin/abuse_report/components/reported_content_spec.js
 spec/frontend/admin/broadcast_messages/components/base_spec.js
 spec/frontend/admin/signup_restrictions/components/signup_checkbox_spec.js
-spec/frontend/admin/users/components/actions/delete_with_contributions_spec.js
 spec/frontend/alert_management/components/alert_management_table_spec.js
 spec/frontend/alerts_settings/components/alerts_settings_form_spec.js
 spec/frontend/analytics/shared/components/date_ranges_dropdown_spec.js

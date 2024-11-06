@@ -59,6 +59,9 @@ export default {
     };
   },
   computed: {
+    themeClass() {
+      return window.gon?.user_color_scheme;
+    },
     isCodeSuggestion() {
       return (
         this.node.attrs.isCodeSuggestion &&
@@ -257,27 +260,39 @@ export default {
           </div>
         </div>
 
-        <div class="suggestion-deleted" data-testid="suggestion-deleted">
+        <div class="suggestion-deleted code" :class="themeClass" data-testid="suggestion-deleted">
           <code
             v-for="(line, i) in deletedLines"
             :key="i"
             :data-line-number="absoluteLineOffset[0] + i"
-            >{{ line }}</code
+            class="diff-line-num !gl-border-transparent"
+            ><span class="line_holder"
+              ><span class="line_content old">{{ line }}</span></span
+            ></code
           >
         </div>
-        <div class="suggestion-added gl-absolute" data-testid="suggestion-added">
+        <div
+          class="suggestion-added code gl-absolute"
+          :class="themeClass"
+          data-testid="suggestion-added"
+        >
           <code
             v-for="(line, i) in addedLines"
             :key="i"
             :data-line-number="absoluteLineOffset[0] + i"
-            >{{ line }}</code
+            class="diff-line-num !gl-border-transparent"
+            ><span class="line_holder"
+              ><span class="line_content new !gl-text-transparent">{{ line }}</span></span
+            ></code
           >
         </div>
       </div>
       <node-view-content
         ref="nodeViewContent"
         as="code"
-        class="gl-relative gl-z-1 !gl-break-words"
+        class="line_content new code gl-relative gl-z-1 !gl-break-words gl-text-sm"
+        :class="themeClass"
+        spellcheck="false"
         data-testid="suggestion-field"
       />
     </node-view-wrapper>

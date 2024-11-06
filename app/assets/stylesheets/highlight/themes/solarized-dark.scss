@@ -97,6 +97,8 @@ $solarized-dark-il: #2aa198;
 :root {
   --default-diff-color-deletion: #ff362c;
   --default-diff-color-addition: #647e0e;
+  --diff-addition-color: #{$solarized-dark-new-bg};
+  --diff-deletion-color: #{$solarized-dark-old-bg};
 }
 
 .code.solarized-dark {

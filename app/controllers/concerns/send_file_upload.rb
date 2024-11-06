@@ -29,7 +29,7 @@ module SendFileUpload
       head :ok
     elsif file_upload.file_storage?
       send_file file_upload.path, send_params
-    elsif file_upload.class.proxy_download_enabled? || proxy
+    elsif file_upload.proxy_download_enabled? || proxy
       headers.store(*Gitlab::Workhorse.send_url(file_upload.url(**redirect_params)))
       head :ok
     else

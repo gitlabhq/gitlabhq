@@ -238,6 +238,16 @@ RSpec.describe Gitlab::ApplicationContext, feature_category: :shared do
         expect(result(context)).to include(bulk_import_entity_id: 1)
       end
     end
+
+    context 'when using organization context' do
+      let_it_be(:organization) { create(:organization) }
+
+      it 'sets the organization_id value' do
+        context = described_class.new(organization: organization)
+
+        expect(result(context)).to include(organization_id: organization.id)
+      end
+    end
   end
 
   describe '#use' do

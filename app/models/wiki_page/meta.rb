@@ -24,8 +24,6 @@ class WikiPage
     validate :no_two_metarecords_in_same_container_can_have_same_canonical_slug
     validate :project_or_namespace_present?
 
-    alias_method :resource_parent, :project
-
     scope :with_canonical_slug, ->(slug) do
       slug_table_name = klass.reflect_on_association(:slugs).table_name
 
@@ -109,6 +107,10 @@ class WikiPage
     def container=(value)
       self.project = value if value.is_a?(Project)
       self.namespace = value if value.is_a?(Namespace)
+    end
+
+    def resource_parent
+      container
     end
 
     def for_group_wiki?

@@ -33,7 +33,7 @@ responsibly, and integrating security considerations from the beginning of the d
   review process to benefit from their specialized knowledge in identifying vulnerabilities and ensuring compliance with
   security standards.
 - **Determine the pipeline actor:** When building features that trigger pipelines, it's crucial to consider which user
-  initiates the pipeline. You need to determine who should be the actor of the event. It is an intentional pipeline
+  initiates the pipeline. You need to determine who should be the actor of the event. Is it an intentional pipeline
   run where a user directly triggers the pipeline (for example by pushing changes to the repository or clicking the "Run pipeline"
   button), or is it a pipeline run initiated by the GitLab system or a policy?
   Avoid scenarios in which the user creating the pipeline is not the author of the changes. If the users are not the same,

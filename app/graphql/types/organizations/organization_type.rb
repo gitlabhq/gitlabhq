@@ -5,6 +5,8 @@ module Types
     class OrganizationType < BaseObject
       graphql_name 'Organization'
 
+      connection_type_class Types::CountableConnectionType
+
       authorize :read_organization
 
       field :avatar_url,

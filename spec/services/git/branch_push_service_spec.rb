@@ -14,9 +14,10 @@ RSpec.describe Git::BranchPushService, :use_clean_rails_redis_caching, services:
   let(:branch)   { 'master' }
   let(:ref)      { "refs/heads/#{branch}" }
   let(:push_options) { nil }
+  let(:params) { { change: { oldrev: oldrev, newrev: newrev, ref: ref }, push_options: push_options } }
+
   let(:service) do
-    described_class
-      .new(project, user, change: { oldrev: oldrev, newrev: newrev, ref: ref }, push_options: push_options)
+    described_class.new(project, user, **params)
   end
 
   subject(:execute_service) do
@@ -613,6 +614,9 @@ RSpec.describe Git::BranchPushService, :use_clean_rails_redis_caching, services:
 
   describe 'Hooks' do
     context 'run on a branch' do
+      let(:process_commit_worker_pool) { Gitlab::Git::ProcessCommitWorkerPool.new }
+      let(:params) { super().merge(process_commit_worker_pool: process_commit_worker_pool) }
+
       it 'delegates to Git::BranchHooksService' do
         expect_next_instance_of(::Git::BranchHooksService) do |hooks_service|
           expect(hooks_service.project).to eq(project)
@@ -622,7 +626,8 @@ RSpec.describe Git::BranchPushService, :use_clean_rails_redis_caching, services:
               oldrev: oldrev,
               newrev: newrev,
               ref: ref
-            }
+            },
+            process_commit_worker_pool: process_commit_worker_pool
           )
 
           expect(hooks_service).to receive(:execute)
