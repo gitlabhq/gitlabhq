@@ -192,7 +192,6 @@ RSpec.configure do |config|
   config.include Gitlab::Routing, type: :routing
   config.include ApiHelpers, :api
   config.include CookieHelper, :js
-  config.include InputHelper, :js
   config.include SelectionHelper, :js
   config.include InspectRequests, :js
   config.include LiveDebugger, :js

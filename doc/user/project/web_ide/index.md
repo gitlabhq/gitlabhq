@@ -23,8 +23,6 @@ The Web IDE is an advanced editor with commit staging.
 You can use the Web IDE to make changes to multiple files directly from the GitLab UI.
 For a more basic implementation, see [Web Editor](../repository/web_editor.md).
 
-To pair the Web IDE with a remote development environment, see [Remote development](../remote_development/index.md).
-
 Support for [GitLab Flavored Markdown](../../markdown.md) preview in the Web IDE is proposed in
 [issue 645](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues/645).
 
@@ -316,6 +314,19 @@ To update the OAuth callback URL:
 1. For **GitLab Web IDE**, select **Edit**.
 1. Enter the OAuth callback URL.
    You can enter multiple URLs separated by newlines.
+
+### Workhorse dependency
+
+DETAILS:
+**Offering:** Self-managed
+
+On self-managed GitLab, [Workhorse](../../../development/workhorse/index.md) must be installed
+and running in front of the GitLab Rails server.
+Otherwise, you might encounter issues when you open the Web IDE or
+use certain features like Markdown preview.
+
+For more information about this dependency,
+see [features that rely on Workhorse](../../../development/workhorse/gitlab_features.md#5-web-ide).
 
 ### Report a problem
 

@@ -15,7 +15,7 @@ RSpec.shared_examples 'Signup name validation' do |field, max_length, label|
     end
 
     it 'shows an error border if the user\'s fullname contains an emoji' do
-      simulate_input("##{field}", 'Ehsan 🦋')
+      fill_in field, with: 'Ehsan 🦋'
 
       expect(find('.name')).to have_css '.gl-field-error-outline'
     end
@@ -33,7 +33,7 @@ RSpec.shared_examples 'Signup name validation' do |field, max_length, label|
     end
 
     it 'shows an error message if the username contains emojis' do
-      simulate_input("##{field}", 'Ehsan 🦋')
+      fill_in field, with: 'Ehsan 🦋'
 
       expect(page).to have_content("Invalid input, please avoid emoji")
     end
@@ -69,7 +69,7 @@ RSpec.describe 'Signup', :with_current_organization, :js, feature_category: :use
     end
 
     it 'does not show an error border if the username contains dots (.)' do
-      simulate_input('#new_user_username', 'new.user.username')
+      fill_in 'new_user_username', with: 'new.user.username'
       wait_for_requests
 
       expect(find('.username')).not_to have_css '.gl-field-error-outline'
@@ -136,13 +136,13 @@ RSpec.describe 'Signup', :with_current_organization, :js, feature_category: :use
     end
 
     it 'shows an error border if the username contains emojis' do
-      simulate_input('#new_user_username', 'ehsan😀')
+      fill_in 'new_user_username', with: 'ehsan😀'
 
       expect(find('.username')).to have_css '.gl-field-error-outline'
     end
 
     it 'shows an error message if the username contains emojis' do
-      simulate_input('#new_user_username', 'ehsan😀')
+      fill_in 'new_user_username', with: 'ehsan😀'
 
       expect(page).to have_content("Invalid input, please avoid emoji")
     end

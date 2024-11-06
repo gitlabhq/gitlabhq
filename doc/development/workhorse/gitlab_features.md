@@ -49,6 +49,14 @@ not directly accessible from the internet. Dedicating a Rails
 application thread to proxying such a connection would cost much more
 memory than it costs to have Workhorse look after it.
 
+## 5. Web IDE
+
+For security, some parts of the Web IDE must run in a separate origin.
+To support this approach, the Web IDE relies on Workhorse to appropriately
+route and decorate certain requests to and from Web IDE assets.
+Because the Web IDE assets are static frontend assets, it's unnecessary
+overhead to rely on Rails for this effort.
+
 ## Quick facts (how does Workhorse work)
 
 - Workhorse can handle some requests without involving Rails at all:

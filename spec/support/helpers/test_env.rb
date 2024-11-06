@@ -138,11 +138,20 @@ module TestEnv
   }.freeze
 
   TMP_TEST_PATH = Rails.root.join('tmp', 'tests').freeze
-  SETUP_METHODS = %i[setup_gitaly setup_gitlab_shell setup_workhorse setup_factory_repo setup_forked_repo].freeze
+  SETUP_METHODS = %i[setup_go_projects setup_factory_repo setup_forked_repo].freeze
 
   # Can be overriden
   def setup_methods
     SETUP_METHODS
+  end
+
+  # Can be overriden
+  # The Go build cache is not safe for concurrent builds:
+  # https://github.com/golang/go/issues/43645
+  def setup_go_projects
+    setup_gitaly
+    setup_gitlab_shell
+    setup_workhorse
   end
 
   # Test environment

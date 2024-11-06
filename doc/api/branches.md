@@ -228,7 +228,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
 ```
 
 NOTE:
-Deleting a merged branch does not completely erase all data.
+Deleting a branch does not completely erase all related data.
 Some information persists to maintain project history and to support recovery processes.
 For more information, see [Handle sensitive information](../topics/git/undo.md#handle-sensitive-information).
 
