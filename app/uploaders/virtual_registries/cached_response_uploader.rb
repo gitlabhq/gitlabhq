@@ -3,6 +3,7 @@
 module VirtualRegistries
   class CachedResponseUploader < GitlabUploader
     include ObjectStorage::Concern
+    extend ::Gitlab::Utils::Override
 
     storage_location :dependency_proxy
 
@@ -14,6 +15,16 @@ module VirtualRegistries
 
     def store_dir
       dynamic_segment
+    end
+
+    override :check_remote_file_existence_on_upload?
+    def check_remote_file_existence_on_upload?
+      false
+    end
+
+    override :sync_model_object_store?
+    def sync_model_object_store?
+      true
     end
 
     private

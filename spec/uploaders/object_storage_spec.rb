@@ -135,6 +135,30 @@ RSpec.describe ObjectStorage, :clean_gitlab_redis_shared_state, feature_category
         end
       end
     end
+
+    context 'with a model that persist object store' do
+      before do
+        allow(uploader).to receive_messages(sync_model_object_store?: false, persist_object_store?: true)
+      end
+
+      it 'does not sync with the model' do
+        expect(object).not_to receive(:"[]=")
+
+        uploader.object_store = described_class::Store::LOCAL
+      end
+
+      context 'with an uploader that sync with the model' do
+        before do
+          allow(uploader).to receive(:sync_model_object_store?).and_return(true)
+        end
+
+        it 'syncs with the model' do
+          expect(object).to receive(:"[]=").with(:file_store, described_class::Store::LOCAL)
+
+          uploader.object_store = described_class::Store::LOCAL
+        end
+      end
+    end
   end
 
   describe '#object_store' do
@@ -993,6 +1017,16 @@ RSpec.describe ObjectStorage, :clean_gitlab_redis_shared_state, feature_category
 
           it 'raises an error' do
             expect { subject }.to raise_error(uploader_class::RemoteStoreError, /Missing file/)
+          end
+
+          context 'when check_remote_file_existence_on_upload? is set to false' do
+            before do
+              allow(uploader).to receive(:check_remote_file_existence_on_upload?).and_return(false)
+            end
+
+            it 'does not raise an error' do
+              expect { subject }.not_to raise_error
+            end
           end
         end
 

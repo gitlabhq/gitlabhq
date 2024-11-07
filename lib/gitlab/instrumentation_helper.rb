@@ -19,6 +19,7 @@ module Gitlab
       instrument_active_record(payload)
       instrument_external_http(payload)
       instrument_rack_attack(payload)
+      instrument_middleware_path_traversal_check(payload)
       instrument_cpu(payload)
       instrument_thread_memory_allocations(payload)
       instrument_load_balancing(payload)
@@ -146,6 +147,14 @@ module Gitlab
       return if requested_count == 0
 
       payload.merge!(Gitlab::Instrumentation::ExclusiveLock.payload)
+    end
+
+    def instrument_middleware_path_traversal_check(payload)
+      duration = ::Gitlab::Instrumentation::Middleware::PathTraversalCheck.duration
+
+      return if duration == 0
+
+      payload.merge!(::Gitlab::Instrumentation::Middleware::PathTraversalCheck.payload)
     end
 
     # Returns the queuing duration for a Sidekiq job in seconds, as a float, if the

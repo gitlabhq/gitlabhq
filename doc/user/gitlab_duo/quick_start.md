@@ -33,7 +33,7 @@ To ensure your preferred tooling is supported, review the:
 
 ## Step 3: Enable Code Suggestions
 
-First, [purchase seats for GitLab Duo](../../subscriptions/subscription-add-ons.md#purchase-gitlab-duo-seats).
+First, [purchase seats for GitLab Duo](../../subscriptions/subscription-add-ons.md#purchase-gitlab-duo).
 
 Then, assign seats to users to grant access to GitLab Duo for:
 

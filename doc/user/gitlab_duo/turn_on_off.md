@@ -388,7 +388,7 @@ you can also do the following:
 In addition to [turning on GitLab Duo features](turn_on_off.md#prerequisites),
 you can also do the following:
 
-1. Verify that [subscription seats have been purchased](../../subscriptions/subscription-add-ons.md#purchase-gitlab-duo-seats).
+1. Verify that [subscription seats have been purchased](../../subscriptions/subscription-add-ons.md#purchase-gitlab-duo).
 1. Ensure that [seats are assigned to users](../../subscriptions/subscription-add-ons.md#assign-gitlab-duo-seats).
 1. For IDE users with the [GitLab Duo extension](../../user/project/repository/code_suggestions/supported_extensions.md#supported-editor-extensions):
    - Verify that the extension is up-to-date.

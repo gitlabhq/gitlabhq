@@ -431,6 +431,9 @@ export default {
     }
   },
   methods: {
+    handleWorkItemCreated() {
+      this.$apollo.queries.workItem.refetch();
+    },
     enableEditMode() {
       this.editMode = true;
     },
@@ -764,6 +767,7 @@ export default {
                 @promotedToObjective="$emit('promotedToObjective', iid)"
                 @workItemStateUpdated="$emit('workItemStateUpdated')"
                 @toggleReportAbuseModal="toggleReportAbuseModal"
+                @workItemCreated="handleWorkItemCreated"
               />
             </div>
             <gl-button

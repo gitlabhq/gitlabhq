@@ -8,11 +8,11 @@ RSpec.describe ::Gitlab::Middleware::PathTraversalCheck, feature_category: :shar
   let(:fake_response_status) { 200 }
   let(:fake_response) { [fake_response_status, { 'Content-Type' => 'text/plain' }, ['OK']] }
   let(:fake_app) { ->(_) { fake_response } }
-  let(:middleware) { described_class.new(fake_app) }
 
   describe '#call' do
     let(:fullpath) { ::Rack::Request.new(env).fullpath }
     let(:decoded_fullpath) { CGI.unescape(fullpath) }
+
     let(:graphql_query) do
       <<~QUERY
         {
@@ -28,7 +28,7 @@ RSpec.describe ::Gitlab::Middleware::PathTraversalCheck, feature_category: :shar
       Rack::MockRequest.env_for(path_with_query_params, method: method)
     end
 
-    subject { middleware.call(env) }
+    subject { described_class.new(fake_app).call(env) }
 
     shared_examples 'no issue' do
       it 'does not log or reject the request' do
@@ -37,6 +37,14 @@ RSpec.describe ::Gitlab::Middleware::PathTraversalCheck, feature_category: :shar
                 .with(decoded_fullpath, match_new_line: false)
                 .and_call_original
         expect(::Gitlab::AppLogger).not_to receive(:warn)
+        expect(::Gitlab::Instrumentation::Middleware::PathTraversalCheck)
+          .to receive(:duration=).with(an_instance_of(Float))
+        expect(::Gitlab::Metrics::Middleware::PathTraversalCheck)
+          .to receive(:increment).with(
+            labels: { path_traversal_attempt_rejected: false },
+            duration: an_instance_of(Float)
+          )
+
         expect(subject).to eq(fake_response)
       end
     end
@@ -49,13 +57,20 @@ RSpec.describe ::Gitlab::Middleware::PathTraversalCheck, feature_category: :shar
                 .and_call_original
         expect(::Gitlab::AppLogger)
           .to receive(:warn)
-                .with({
+                .with(hash_including(
                   class_name: described_class.name,
                   message: described_class::PATH_TRAVERSAL_MESSAGE,
                   fullpath: fullpath,
                   method: method.upcase,
                   path_traversal_attempt_rejected: true
-                }).and_call_original
+                )).and_call_original
+        expect(::Gitlab::Instrumentation::Middleware::PathTraversalCheck)
+          .to receive(:duration=).with(an_instance_of(Float))
+        expect(::Gitlab::Metrics::Middleware::PathTraversalCheck)
+          .to receive(:increment).with(
+            labels: { path_traversal_attempt_rejected: true },
+            duration: an_instance_of(Float)
+          )
 
         expect(subject).to eq(described_class::REJECT_RESPONSE)
       end
@@ -158,6 +173,8 @@ RSpec.describe ::Gitlab::Middleware::PathTraversalCheck, feature_category: :shar
 
             it 'does not check for path traversals' do
               expect(::Gitlab::PathTraversal).not_to receive(:path_traversal?)
+              expect(::Gitlab::Instrumentation::Middleware::PathTraversalCheck).not_to receive(:duration)
+              expect(::Gitlab::Metrics::Middleware::PathTraversalCheck).not_to receive(:increment)
 
               subject
             end
@@ -179,13 +196,20 @@ RSpec.describe ::Gitlab::Middleware::PathTraversalCheck, feature_category: :shar
                   .and_call_original
           expect(::Gitlab::AppLogger)
             .to receive(:warn)
-                  .with({
+                  .with(hash_including(
                     class_name: described_class.name,
                     message: described_class::PATH_TRAVERSAL_MESSAGE,
                     fullpath: fullpath,
                     method: method.upcase,
                     status: fake_response_status
-                  }).and_call_original
+                  )).and_call_original
+          expect(::Gitlab::Instrumentation::Middleware::PathTraversalCheck)
+            .to receive(:duration=).with(an_instance_of(Float))
+          expect(::Gitlab::Metrics::Middleware::PathTraversalCheck)
+            .to receive(:increment).with(
+              labels: { path_traversal_attempt_rejected: false },
+              duration: an_instance_of(Float)
+            )
 
           expect(subject).to eq(fake_response)
         end

@@ -91,6 +91,28 @@ RSpec.describe CommitSignatures::GpgSignature do
     it 'retrieves the gpg_key user' do
       expect(signature.signed_by_user).to eq(gpg_key.user)
     end
+
+    context 'when signature is verified system and no key is stored' do
+      let(:user) { create(:user) }
+
+      before do
+        signature.update!(gpg_key_id: nil, gpg_key_user_email: user.email, verification_status: :verified_system)
+      end
+
+      it 'retrieves the user from the gpg signature email' do
+        expect(signature.signed_by_user).to eq(user)
+      end
+
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(check_for_mailmapped_commit_emails: false)
+        end
+
+        it 'returns nil' do
+          expect(signature.signed_by_user).to be_nil
+        end
+      end
+    end
   end
 
   describe '#reverified_status' do

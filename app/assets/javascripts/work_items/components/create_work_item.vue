@@ -8,7 +8,7 @@ import {
   GlFormSelect,
 } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import { __, getPreferredLocales, s__, sprintf } from '~/locale';
+import { getPreferredLocales, s__, sprintf } from '~/locale';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import { fetchPolicies } from '~/lib/graphql';
 import { addHierarchyChild, setNewWorkItemCache } from '~/work_items/graphql/cache_utils';
@@ -125,9 +125,11 @@ export default {
       isRelatedToItem: true,
       error: null,
       workItemTypes: [],
-      selectedProjectFullPath: null,
+      selectedProjectFullPath: this.fullPath || null,
       selectedWorkItemTypeId: null,
       loading: false,
+      initialLoadingWorkItem: true,
+      initialLoadingWorkItemTypes: true,
       showWorkItemTypeSelect: false,
     };
   },
@@ -142,10 +144,13 @@ export default {
         };
       },
       skip() {
-        return !this.fullPath || !this.selectedWorkItemTypeName;
+        return this.skipWorkItemQuery;
       },
       update(data) {
         return data?.workspace?.workItem ?? {};
+      },
+      result() {
+        this.initialLoadingWorkItem = false;
       },
       error() {
         this.error = i18n.fetchError;
@@ -168,6 +173,7 @@ export default {
         return data.workspace?.workItemTypes?.nodes;
       },
       async result() {
+        this.initialLoadingWorkItemTypes = false;
         if (!this.workItemTypes?.length) {
           return;
         }
@@ -204,7 +210,12 @@ export default {
       return newWorkItemFullPath(this.fullPath, this.selectedWorkItemTypeName);
     },
     isLoading() {
-      return this.$apollo.queries.workItemTypes.loading || this.$apollo.queries.workItem.loading;
+      return (
+        this.initialLoadingWorkItemTypes || (this.initialLoadingWorkItem && !this.skipWorkItemQuery)
+      );
+    },
+    skipWorkItemQuery() {
+      return !this.fullPath || !this.selectedWorkItemTypeName;
     },
     hasWidgets() {
       return this.workItem?.widgets?.length > 0;
@@ -391,11 +402,6 @@ export default {
       this.validate();
 
       if (!this.isTitleValid) {
-        return;
-      }
-
-      if (this.showProjectSelector && !this.selectedProjectFullPath) {
-        this.error = __('Please select a project.');
         return;
       }
 

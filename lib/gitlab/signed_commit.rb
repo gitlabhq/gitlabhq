@@ -22,9 +22,20 @@ module Gitlab
 
       cached_signature = lazy_signature&.itself
 
+      # We need to update the cache if there is no user for a verified system commit.
+      # This is because of the introduction of mailmap. See https://gitlab.com/gitlab-org/gitlab/-/issues/425042#note_1997022896.
+      if cached_signature.present? && verified_system_user_missing?(cached_signature) && Feature.enabled?(
+        :check_for_mailmapped_commit_emails, @commit.project)
+        return @signature = update_signature!(cached_signature)
+      end
+
       return @signature = cached_signature if cached_signature.present?
 
       @signature = create_cached_signature!
+    end
+
+    def verified_system_user_missing?(cached_signature)
+      cached_signature.verified_system? && cached_signature.user.nil? && author_email.present?
     end
 
     def update_signature!(cached_signature)
@@ -47,6 +58,12 @@ module Gitlab
     def signer
       strong_memoize(:signer) do
         @signature_data.itself ? @signature_data[:signer] : nil
+      end
+    end
+
+    def author_email
+      strong_memoize(:author_email) do
+        @signature_data.itself ? @signature_data[:author_email] : nil
       end
     end
 

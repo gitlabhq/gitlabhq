@@ -1,5 +1,5 @@
 <script>
-import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
+import { GlButton, GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
 import relatedIssuableMixin from '~/issuable/mixins/related_issuable_mixin';
 
@@ -7,6 +7,7 @@ export default {
   name: 'IssueToken',
   components: {
     GlIcon,
+    GlButton,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -101,23 +102,23 @@ export default {
         {{ displayReference }}
       </component>
     </component>
-    <button
+    <gl-button
       v-if="canRemove"
       ref="removeButton"
       v-gl-tooltip
       :class="{
-        'issue-token-remove-button gl-flex gl-items-center gl-rounded-br-small gl-rounded-tr-small gl-border-0 gl-px-3 gl-text-gray-500':
+        'issue-token-remove-button !gl-rounded-l-none !gl-rounded-r-small gl-text-subtle':
           isCondensed,
-        'btn btn-default': !isCondensed,
       }"
       :title="removeButtonLabel"
       :aria-label="removeButtonLabel"
       :disabled="removeDisabled"
       data-testid="removeBtn"
       type="button"
+      category="tertiary"
+      size="small"
+      icon="close"
       @click="onRemoveRequest"
-    >
-      <gl-icon name="close" />
-    </button>
+    />
   </div>
 </template>

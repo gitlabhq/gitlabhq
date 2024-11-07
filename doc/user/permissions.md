@@ -183,9 +183,17 @@ Project permissions for [compliance](compliance/index.md) features including com
 
 ### Machine learning model registry and experiment
 
-Access to the model registry is based on a combination of the user's access level for the project, the model registry, and to experiments.
+Project permissions for [model registry](project/ml/model_registry/index.md) and [model experiments](project/ml/experiment_tracking/index.md).
 
-More updates to this documentation are planned for GitLab 17.6.
+| Action                                                            | Guest | Reporter | Developer | Maintainer | Owner | Notes                                                                                                                                                                                     |
+|-------------------------------------------------------------------|:-----:|:--------:|:---------:|:----------:|:-----:|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
+| View [models and versions](project/ml/model_registry/index.md)    | ✓     | ✓        | ✓         | ✓          | ✓     | Non-members can only view models and versions in public projects with the **Everyone with access** visibility level. Non-members can't view internal projects, even if they're logged in. |
+| View [model experiments](project/ml/experiment_tracking/index.md) | ✓     | ✓        | ✓         | ✓          | ✓     | Non-members can only view model experiments in public projects with the **Everyone with access** visibility level. Non-members can't view internal projects, even if they're logged in.   |
+| Create models, versions, and artifacts                            |       |          | ✓         | ✓          | ✓     | You can also upload and download artifacts with the package registry API, which uses it's own set of permissions.                                                                         |
+| Edit models, versions, and artifacts                              |       |          | ✓         | ✓          | ✓     |                                                                                                                                                                                           |
+| Create experiments and candidates                                 |       |          | ✓         | ✓          | ✓     |                                                                                                                                                                                           |
+| Edit experiments and candidates                                   |       |          | ✓         | ✓          | ✓     |                                                                                                                                                                                           |
+| Delete experiments and candidates                                 |       |          | ✓         | ✓          | ✓     |                                                                                                                                                                                           |
 
 ### Monitoring
 
@@ -221,7 +229,6 @@ Project permissions for [issues](project/issues/index.md):
 | Update metadata on issues                                             |       |    ✓     |     ✓     |     ✓      |   ✓   | Metadata includes labels, assignees, milestones, epics, weight, confidentiality, time tracking, and more.<br /><br />Guest users can only set metadata when creating an issue. They cannot change the metadata on existing issues. |
 | Close / reopen issues                                                 |       |    ✓     |     ✓     |     ✓      |   ✓   | Authors and assignees can close and reopen issues even if they don't have the Reporter role. |
 | Manage [design management](project/issues/design_management.md) files |       |    ✓     |     ✓     |     ✓      |   ✓   |       |
-| View email addresses of [external participants](project/service_desk/external_participants.md) |       |    ✓     |     ✓     |     ✓      |   ✓   | Email addresses of external participants are obfuscated for Guest users and non-members. |
 | Manage [issue boards](project/issue_board.md)                         |       |    ✓     |     ✓     |     ✓      |   ✓   |       |
 | Manage [milestones](project/milestones/index.md)                      |       |    ✓     |     ✓     |     ✓      |   ✓   |       |
 | Archive or reopen [requirements](project/requirements/index.md)       |       |    ✓     |     ✓     |     ✓      |   ✓   | Authors and assignees can archive and re-open even if they don't have the Reporter role. |

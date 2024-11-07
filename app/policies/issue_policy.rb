@@ -60,6 +60,7 @@ class IssuePolicy < IssuablePolicy
   rule { ~notes_widget_enabled }.policy do
     prevent :create_note
     prevent :read_note
+    prevent :admin_note
     prevent :read_internal_note
     prevent :set_note_created_at
     prevent :mark_note_as_internal
@@ -82,6 +83,8 @@ class IssuePolicy < IssuablePolicy
   rule { can?(:read_issue) & notes_widget_enabled }.policy do
     enable :read_note
   end
+
+  rule { can?(:maintainer_access) }.enable :admin_note
 
   rule { ~can?(:read_issue) }.policy do
     prevent :create_note

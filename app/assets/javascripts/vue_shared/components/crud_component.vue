@@ -73,10 +73,17 @@ export default {
       required: false,
       default: null,
     },
+    persistCollapsedState: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
-      collapsed: false,
+      collapsed:
+        this.persistCollapsedState &&
+        localStorage.getItem(this.getLocalStorageKeyName()) === 'true',
       isFormVisible: false,
     };
   },
@@ -109,6 +116,9 @@ export default {
   methods: {
     toggleCollapse() {
       this.collapsed = !this.collapsed;
+      if (this.persistCollapsedState) {
+        localStorage.setItem(this.getLocalStorageKeyName(), this.collapsed);
+      }
     },
     showForm() {
       this.isFormVisible = true;
@@ -125,6 +135,9 @@ export default {
       } else {
         this.showForm();
       }
+    },
+    getLocalStorageKeyName() {
+      return `crud-collapse-${this.anchorId}`;
     },
   },
 };

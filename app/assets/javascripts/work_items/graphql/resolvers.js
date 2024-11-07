@@ -25,8 +25,10 @@ const updateWidget = (draftData, widgetType, newData, nodePath) => {
   /** we have to make sure we do not pass values when custom types are introduced */
   if (newData === undefined) return;
 
-  const widget = findWidget(widgetType, draftData.workspace.workItem);
-  set(widget, nodePath, newData);
+  if (draftData.workspace) {
+    const widget = findWidget(widgetType, draftData.workspace.workItem);
+    set(widget, nodePath, newData);
+  }
 };
 
 const updateRolledUpDatesWidget = (draftData, rolledUpDates) => {

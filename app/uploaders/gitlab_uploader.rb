@@ -156,6 +156,14 @@ class GitlabUploader < CarrierWave::Uploader::Base
     end
   end
 
+  def check_remote_file_existence_on_upload?
+    true
+  end
+
+  def sync_model_object_store?
+    false
+  end
+
   private
 
   # Designed to be overridden by child uploaders that have a dynamic path

@@ -130,8 +130,9 @@ describe('Create work item component', () => {
   const initialiseComponentAndSelectWorkItem = async ({
     props = {},
     mutationHandler = createWorkItemSuccessHandler,
+    workItemTypeName = WORK_ITEM_TYPE_ENUM_EPIC,
   } = {}) => {
-    createComponent({ props, mutationHandler });
+    createComponent({ props, mutationHandler, workItemTypeName });
 
     await waitForPromises();
 
@@ -247,6 +248,14 @@ describe('Create work item component', () => {
         expect(findProjectsSelector().exists()).toBe(showProjectSelector);
       },
     );
+
+    it('defaults the selected project to the injected `fullPath` value', async () => {
+      createComponent({ props: { showProjectSelector: true } });
+
+      await waitForPromises();
+
+      expect(findProjectsSelector().props('selectedProjectFullPath')).toBe('full-path');
+    });
   });
 
   describe('Work item types dropdown', () => {
@@ -382,16 +391,6 @@ describe('Create work item component', () => {
       await updateWorkItemTitle();
 
       expect(findCreateButton().props('disabled')).toBe(false);
-    });
-
-    it('shows an alert when no project is selected', async () => {
-      await initialiseComponentAndSelectWorkItem({ props: { showProjectSelector: true } });
-      await updateWorkItemTitle();
-      wrapper.find('form').trigger('submit');
-      await nextTick();
-
-      expect(findAlert().text()).toBe('Please select a project.');
-      expect(createWorkItemSuccessHandler).not.toHaveBeenCalled();
     });
 
     it('shows an alert on mutation error', async () => {

@@ -119,7 +119,6 @@ export default {
     <template v-if="hasClosingMergeRequest && !isFetchingMergeRequests" #description>
       {{ closingMergeRequestsText }}
     </template>
-
     <ul class="content-list related-items-list !-gl-mx-3 !gl-my-3">
       <li v-for="mr in mergeRequests" :key="mr.id" class="!gl-border-b-0 !gl-py-0">
         <related-issuable-item

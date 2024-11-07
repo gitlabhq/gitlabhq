@@ -323,13 +323,6 @@ RSpec.describe Packages::PackageFile, type: :model, feature_category: :package_r
         .to receive(:update_file_store)
         .and_call_original
 
-      # This expectation uses a stub because we can no longer test a change from
-      # `nil` to `1`, because the field is no longer nullable, and it defaults
-      # to `1`.
-      expect(package_file)
-        .to receive(:update_column)
-        .with('file_store', ::Packages::PackageFileUploader::Store::LOCAL)
-
       expect { subject }.to change { package_file.size }.from(nil).to(3513)
     end
   end

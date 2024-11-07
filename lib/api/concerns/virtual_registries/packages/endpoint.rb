@@ -85,6 +85,12 @@ module API
                 status :ok
                 body ''
               end
+
+              def ok_empty_response
+                status :ok
+                env['api.format'] = :binary # to return data as-is
+                body ''
+              end
             end
 
             after_validation do

@@ -5604,7 +5604,7 @@ Input type: `GroupAuditEventStreamingDestinationsCreateInput`
 | <a id="mutationgroupauditeventstreamingdestinationscreateconfig"></a>`config` | [`JSON!`](#json) | Destination config. |
 | <a id="mutationgroupauditeventstreamingdestinationscreategrouppath"></a>`groupPath` | [`ID!`](#id) | Group path. |
 | <a id="mutationgroupauditeventstreamingdestinationscreatename"></a>`name` | [`String`](#string) | Destination name. |
-| <a id="mutationgroupauditeventstreamingdestinationscreatesecrettoken"></a>`secretToken` | [`String!`](#string) | Secret token. |
+| <a id="mutationgroupauditeventstreamingdestinationscreatesecrettoken"></a>`secretToken` | [`String`](#string) | Secret token. |
 
 #### Fields
 
@@ -6024,7 +6024,7 @@ Input type: `InstanceAuditEventStreamingDestinationsCreateInput`
 | <a id="mutationinstanceauditeventstreamingdestinationscreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationinstanceauditeventstreamingdestinationscreateconfig"></a>`config` | [`JSON!`](#json) | Destination config. |
 | <a id="mutationinstanceauditeventstreamingdestinationscreatename"></a>`name` | [`String`](#string) | Destination name. |
-| <a id="mutationinstanceauditeventstreamingdestinationscreatesecrettoken"></a>`secretToken` | [`String!`](#string) | Secret token. |
+| <a id="mutationinstanceauditeventstreamingdestinationscreatesecrettoken"></a>`secretToken` | [`String`](#string) | Secret token. |
 
 #### Fields
 
@@ -25616,6 +25616,7 @@ Represents an external destination to stream group level audit events.
 | <a id="groupauditeventstreamingdestinationid"></a>`id` | [`ID!`](#id) | ID of the destination. |
 | <a id="groupauditeventstreamingdestinationname"></a>`name` | [`String!`](#string) | Name of the external destination to send audit events to. |
 | <a id="groupauditeventstreamingdestinationnamespacefilters"></a>`namespaceFilters` | [`[GroupAuditEventNamespaceFilter!]`](#groupauditeventnamespacefilter) | List of subgroup or project filters for the destination. |
+| <a id="groupauditeventstreamingdestinationsecrettoken"></a>`secretToken` | [`String!`](#string) | Secret token for the destination, will be non-empty value only for http category. |
 
 ### `GroupDataTransfer`
 
@@ -26056,6 +26057,7 @@ Represents an external destination to stream instance level audit events.
 | <a id="instanceauditeventstreamingdestinationid"></a>`id` | [`ID!`](#id) | ID of the destination. |
 | <a id="instanceauditeventstreamingdestinationname"></a>`name` | [`String!`](#string) | Name of the external destination to send audit events to. |
 | <a id="instanceauditeventstreamingdestinationnamespacefilters"></a>`namespaceFilters` | [`[InstanceAuditEventNamespaceFilter!]`](#instanceauditeventnamespacefilter) | List of subgroup or project filters for the destination. |
+| <a id="instanceauditeventstreamingdestinationsecrettoken"></a>`secretToken` | [`String!`](#string) | Secret token for the destination, will be non-empty value only for http category. |
 
 ### `InstanceExternalAuditEventDestination`
 
@@ -41868,6 +41870,7 @@ Implementations:
 | <a id="auditeventstreamingdestinationinterfaceeventtypefilters"></a>`eventTypeFilters` | [`[String!]!`](#string) | List of event type filters added for streaming. |
 | <a id="auditeventstreamingdestinationinterfaceid"></a>`id` | [`ID!`](#id) | ID of the destination. |
 | <a id="auditeventstreamingdestinationinterfacename"></a>`name` | [`String!`](#string) | Name of the external destination to send audit events to. |
+| <a id="auditeventstreamingdestinationinterfacesecrettoken"></a>`secretToken` | [`String!`](#string) | Secret token for the destination, will be non-empty value only for http category. |
 
 #### `BaseDiscussionInterface`
 

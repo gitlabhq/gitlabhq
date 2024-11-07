@@ -453,8 +453,8 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
 
         it 'does not allow accessing notes' do
           # if notes widget is disabled not even maintainer can access notes
-          expect(permissions(maintainer, issue)).to be_disallowed(:create_note, :read_note, :mark_note_as_internal, :read_internal_note)
-          expect(permissions(admin, issue)).to be_disallowed(:create_note, :read_note, :read_internal_note, :mark_note_as_internal, :set_note_created_at)
+          expect(permissions(maintainer, issue)).to be_disallowed(:create_note, :read_note, :mark_note_as_internal, :read_internal_note, :admin_note)
+          expect(permissions(admin, issue)).to be_disallowed(:create_note, :read_note, :read_internal_note, :mark_note_as_internal, :set_note_created_at, :admin_note)
         end
       end
 
@@ -462,10 +462,11 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
         it 'allows accessing notes' do
           # with notes widget enabled, even guests can access notes
           expect(permissions(guest, issue)).to be_allowed(:create_note, :read_note)
-          expect(permissions(guest, issue)).to be_disallowed(:read_internal_note, :mark_note_as_internal, :set_note_created_at)
+          expect(permissions(guest, issue)).to be_disallowed(:read_internal_note, :mark_note_as_internal, :set_note_created_at, :admin_note)
           expect(permissions(reporter, issue)).to be_allowed(:create_note, :read_note, :read_internal_note, :mark_note_as_internal)
-          expect(permissions(maintainer, issue)).to be_allowed(:create_note, :read_note, :read_internal_note, :mark_note_as_internal)
-          expect(permissions(owner, issue)).to be_allowed(:create_note, :read_note, :read_internal_note, :mark_note_as_internal, :set_note_created_at)
+          expect(permissions(reporter, issue)).to be_disallowed(:admin_note)
+          expect(permissions(maintainer, issue)).to be_allowed(:create_note, :read_note, :read_internal_note, :mark_note_as_internal, :admin_note)
+          expect(permissions(owner, issue)).to be_allowed(:create_note, :read_note, :read_internal_note, :mark_note_as_internal, :set_note_created_at, :admin_note)
         end
       end
     end

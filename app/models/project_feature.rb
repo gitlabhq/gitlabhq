@@ -39,9 +39,7 @@ class ProjectFeature < ApplicationRecord
     metrics_dashboard: Gitlab::Access::REPORTER,
     container_registry: Gitlab::Access::REPORTER,
     package_registry: Gitlab::Access::REPORTER,
-    environments: Gitlab::Access::REPORTER,
-    model_experiments: Gitlab::Access::REPORTER,
-    model_registry: Gitlab::Access::REPORTER
+    environments: Gitlab::Access::REPORTER
   }.freeze
   PRIVATE_FEATURES_MIN_ACCESS_LEVEL_FOR_PRIVATE_PROJECT = { repository: Gitlab::Access::REPORTER }.freeze
 

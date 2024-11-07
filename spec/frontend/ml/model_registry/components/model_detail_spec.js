@@ -71,7 +71,7 @@ describe('ShowMlModel', () => {
       expect(findEmptyState().props()).toMatchObject({
         title: 'Manage versions of your machine learning model',
         description: 'Use versions to track performance, parameters, and metadata',
-        primaryText: 'Create model version',
+        primaryText: 'Create new version',
         primaryLink: 'versions/new',
       });
     });

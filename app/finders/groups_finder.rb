@@ -74,19 +74,12 @@ class GroupsFinder < UnionFinder
 
   # rubocop: disable CodeReuse/ActiveRecord
   def groups_with_min_access_level
-    if Feature.enabled?(:cte_for_group_search_access_level, Feature.current_request)
-      inner_query = current_user
-        .groups
-        .where('members.access_level >= ?', params[:min_access_level])
-        .self_and_descendants
-      cte = Gitlab::SQL::CTE.new(:groups_with_min_access_level_cte, inner_query)
-      cte.apply_to(Group.where({}))
-    else
-      current_user
-        .groups
-        .where('members.access_level >= ?', params[:min_access_level])
-        .self_and_descendants
-    end
+    inner_query = current_user
+      .groups
+      .where('members.access_level >= ?', params[:min_access_level])
+      .self_and_descendants
+    cte = Gitlab::SQL::CTE.new(:groups_with_min_access_level_cte, inner_query)
+    cte.apply_to(Group.where({}))
   end
   # rubocop: enable CodeReuse/ActiveRecord
 

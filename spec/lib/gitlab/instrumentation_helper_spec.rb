@@ -292,6 +292,31 @@ RSpec.describe Gitlab::InstrumentationHelper, :clean_gitlab_redis_repository_cac
         )
       end
     end
+
+    context 'for middleware path traversal check' do
+      let(:duration) { 0.123456789 }
+      let(:expected_logged_duration) { 0.123457 }
+
+      before do
+        ::Gitlab::Instrumentation::Middleware::PathTraversalCheck.duration = duration
+      end
+
+      it 'includes the duration in the payload' do
+        subject
+
+        expect(payload).to include(path_traversal_check_duration_s: expected_logged_duration)
+      end
+
+      context 'with a 0 duration' do
+        let(:duration) { 0 }
+
+        it 'does not include the duration in the payload' do
+          subject
+
+          expect(payload).not_to include(:path_traversal_check_duration_s)
+        end
+      end
+    end
   end
 
   describe '.queue_duration_for_job' do

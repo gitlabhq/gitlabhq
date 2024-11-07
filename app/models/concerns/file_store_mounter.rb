@@ -14,7 +14,10 @@ module FileStoreMounter
 
       define_method("update_#{file_field}_store") do
         # The file.object_store is set during `uploader.store!` and `uploader.migrate!`
-        update_column("#{file_field}_store", public_send(file_field).object_store) # rubocop:disable GitlabSecurity/PublicSend
+        file_field_object_store = public_send(file_field).object_store # rubocop:disable GitlabSecurity/PublicSend
+        return if self["#{file_field}_store"] == file_field_object_store # update only if necessary
+
+        update_column("#{file_field}_store", file_field_object_store)
       end
 
       define_method("store_#{file_field}_now!") do

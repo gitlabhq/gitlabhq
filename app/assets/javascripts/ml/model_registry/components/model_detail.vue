@@ -60,7 +60,7 @@ export default {
       'MlModelRegistry|No description available. To add a description, click "Edit model" above.',
     ),
     description: s__('MlModelRegistry|Use versions to track performance, parameters, and metadata'),
-    primaryText: s__('MlModelRegistry|Create model version'),
+    primaryText: s__('MlModelRegistry|Create new version'),
   },
 };
 </script>

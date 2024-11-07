@@ -317,6 +317,7 @@ module ObjectStorage
     # rubocop:disable Gitlab/ModuleWithInstanceVariables
     def object_store=(value)
       @object_store = value || Store::LOCAL
+      model[store_serialization_column] = @object_store if sync_model_object_store? && persist_object_store?
       @storage = storage_for(object_store)
     end
     # rubocop:enable Gitlab/ModuleWithInstanceVariables
@@ -504,7 +505,7 @@ module ObjectStorage
       # instead of using custom upload directory,
       # using tmp/cache makes this implementation way easier than it is today
       CarrierWave::Storage::Fog::File.new(self, storage_for(Store::REMOTE), file_path).tap do |file|
-        raise RemoteStoreError, 'Missing file' unless file.exists?
+        raise RemoteStoreError, 'Missing file' if check_remote_file_existence_on_upload? && !file.exists?
 
         # Remote stored file, we force to store on remote storage
         self.object_store = Store::REMOTE

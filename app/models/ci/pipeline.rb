@@ -19,6 +19,7 @@ module Ci
     include EachBatch
     include FastDestroyAll::Helpers
 
+    self.table_name = :p_ci_pipelines
     self.primary_key = :id
     self.sequence_name = :ci_pipelines_id_seq
 
@@ -35,15 +36,13 @@ module Ci
     INITIAL_PARTITION_VALUE = 100
     SECOND_PARTITION_VALUE = 101
     NEXT_PARTITION_VALUE = 102
-    ROUTING_FEATURE_FLAG = :pipelines_routing_table
 
     paginates_per 15
 
     sha_attribute :source_sha
     sha_attribute :target_sha
     query_constraints :id, :partition_id
-    partitionable scope: ->(pipeline) { Ci::Pipeline.current_partition_value(pipeline.project) },
-      through: { table: :p_ci_pipelines, flag: ROUTING_FEATURE_FLAG }
+    partitionable scope: ->(pipeline) { Ci::Pipeline.current_partition_value(pipeline.project) }, partitioned: true
 
     # Ci::CreatePipelineService returns Ci::Pipeline so this is the only place
     # where we can pass additional information from the service. This accessor

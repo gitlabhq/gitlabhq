@@ -1334,6 +1334,7 @@ RSpec.describe API::VirtualRegistries::Packages::Maven, :aggregate_failures, fea
         expect { request }.to change { upstream.cached_responses.count }.by(1)
 
         expect(response).to have_gitlab_http_status(:ok)
+        expect(response.body).to eq('')
         expect(upstream.cached_responses.last).to have_attributes(
           relative_path: "/#{path}",
           upstream_etag: nil,

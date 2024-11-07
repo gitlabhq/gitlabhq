@@ -2,7 +2,6 @@
 table_name: p_ci_pipelines
 classes:
 - Ci::Pipeline
-- Ci::Pipeline::Partitioned
 feature_categories:
 - continuous_integration
 description: Routing table for ci_pipelines
