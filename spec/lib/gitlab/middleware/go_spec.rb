@@ -118,12 +118,6 @@ RSpec.describe Gitlab::Middleware::Go, feature_category: :source_code_management
                 project.update_attribute(:visibility_level, Project::PRIVATE)
               end
 
-              shared_examples 'when no authentication header' do
-                it 'returns the 2-segment group path' do
-                  expect_response_with_path(go, enabled_protocol, group.full_path)
-                end
-              end
-
               context 'when invalid authentication header exists' do
                 before do
                   env['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Basic.encode_credentials('invalid', 'invalid')
@@ -166,54 +160,55 @@ RSpec.describe Gitlab::Middleware::Go, feature_category: :source_code_management
                     expect_404_response(go)
                   end
                 end
+              end
 
-                context 'using basic auth' do
-                  context 'using a personal access token' do
-                    let(:personal_access_token) { create(:personal_access_token, user: current_user) }
+              context 'using basic auth' do
+                let(:current_user) { project.creator }
 
+                context 'using a personal access token' do
+                  let(:personal_access_token) { create(:personal_access_token, user: current_user) }
+
+                  before do
+                    env['REMOTE_ADDR'] = "192.168.0.1"
+                    env['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Basic.encode_credentials(current_user.username, personal_access_token.token)
+                  end
+
+                  context 'with api scope' do
+                    it_behaves_like 'when authenticated'
+                  end
+
+                  context 'with read_user scope' do
                     before do
-                      env['REMOTE_ADDR'] = "192.168.0.1"
-                      env['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Basic.encode_credentials(current_user.username, personal_access_token.token)
+                      personal_access_token.update_attribute(:scopes, [:read_user])
                     end
 
-                    context 'with api scope' do
-                      it_behaves_like 'when authenticated'
-                    end
-
-                    context 'with read_user scope' do
-                      before do
-                        personal_access_token.update_attribute(:scopes, [:read_user])
-                      end
-
-                      it_behaves_like 'when invalid authentication header exists'
-                    end
-
-                    context 'with a denylisted ip' do
-                      it 'returns forbidden' do
-                        err = Gitlab::Auth::IpBlocked.new
-                        expect(Gitlab::Auth).to receive(:find_for_git_client).and_raise(err)
-                        response = go
-
-                        expect(response[0]).to eq(403)
-                        expect(response[2]).to eq([err.message])
-                      end
+                    it 'returns 404' do
+                      expect_404_response(go)
                     end
                   end
 
-                  context 'when a personal access token is missing' do
-                    before do
-                      env['REMOTE_ADDR'] = '192.168.0.1'
-                      env['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Basic.encode_credentials(current_user.username, 'dummy_password')
-                    end
-
-                    it 'returns unauthorized' do
-                      expect(Gitlab::Auth).to receive(:find_for_git_client).and_raise(Gitlab::Auth::MissingPersonalAccessTokenError)
+                  context 'with a denylisted ip' do
+                    it 'returns forbidden' do
+                      err = Gitlab::Auth::IpBlocked.new
+                      expect(Gitlab::Auth).to receive(:find_for_git_client).and_raise(err)
                       response = go
 
-                      expect(response[0]).to eq(401)
-                      expect(response[1]['Content-Length']).to be_nil
-                      expect(response[2]).to eq([''])
+                      expect(response[0]).to eq(403)
+                      expect(response[2]).to eq([err.message])
                     end
+                  end
+                end
+
+                context 'when a personal access token is missing' do
+                  before do
+                    env['REMOTE_ADDR'] = '192.168.0.1'
+                    env['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Basic.encode_credentials(current_user.username, 'dummy_password')
+                  end
+
+                  it 'returns 404' do
+                    expect(Gitlab::Auth).to receive(:find_for_git_client).and_raise(Gitlab::Auth::MissingPersonalAccessTokenError)
+
+                    expect_404_response(go)
                   end
                 end
               end
