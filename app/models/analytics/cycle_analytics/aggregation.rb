@@ -36,7 +36,7 @@ class Analytics::CycleAnalytics::Aggregation < ApplicationRecord
     self["last_#{mode}_run_at"] = Time.current
   end
 
-  def reset_full_run_cursors
+  def complete
     self.last_full_issues_id = nil
     self.last_full_issues_updated_at = nil
     self.last_full_merge_requests_id = nil

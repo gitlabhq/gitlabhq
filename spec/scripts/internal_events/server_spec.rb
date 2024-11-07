@@ -183,7 +183,7 @@ RSpec.describe Server, feature_category: :service_ping do
       await { Net::HTTP.new('localhost', port).options('/com.snowplowanalytics.snowplow/tp2') }
     end
 
-    it 'applies the correct headers' do
+    it 'applies the correct headers', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/498779' do
       expect(response.code).to eq('200')
       expect(response.header['Access-Control-Allow-Credentials']).to eq('true')
       expect(response.header['Access-Control-Allow-Headers']).to eq('Content-Type')
@@ -194,7 +194,7 @@ RSpec.describe Server, feature_category: :service_ping do
   describe 'GET /micro/good -> list tracked structured events' do
     subject(:response) { await { Net::HTTP.get_response url_for("/micro/good") } }
 
-    it 'successfully returns tracked events' do
+    it 'successfully returns tracked events', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/498777' do
       expect(response.code).to eq('200')
       expect(response.body).to eq("[]")
     end

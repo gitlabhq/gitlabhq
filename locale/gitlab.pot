@@ -6187,7 +6187,7 @@ msgstr ""
 msgid "An error occurred while trying to follow this user, please try again."
 msgstr ""
 
-msgid "An error occurred while trying to render the content editor. Please try again."
+msgid "An error occurred while trying to render the rich text editor. Please try again."
 msgstr ""
 
 msgid "An error occurred while trying to run a new pipeline for this merge request."

@@ -186,7 +186,7 @@ module ValueStreamsDashboardHelpers
       end
     end
 
-    Analytics::CycleAnalytics::DataLoaderService.new(group: project.group, model: Issue).execute
+    Analytics::CycleAnalytics::DataLoaderService.new(namespace: project.group, model: Issue).execute
   end
 
   def create_mock_merge_request_metrics(project)

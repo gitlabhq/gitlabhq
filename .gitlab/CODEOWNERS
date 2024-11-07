@@ -1145,7 +1145,7 @@ lib/gitlab/checks/**
 /doc/user/project/repository/code_suggestions/ @jglassman1
 /doc/user/project/repository/files/index.md @ashrafkhamis
 /doc/user/project/repository/monorepos/ @eread
-/doc/user/project/repository/web_editor.md @ashrafkhamis
+/doc/user/project/repository/web_editor.md @brendan777
 /doc/user/project/requirements/ @msedlakjakubowski
 /doc/user/project/service_desk/ @msedlakjakubowski
 /doc/user/project/settings/import_export.md @ashrafkhamis

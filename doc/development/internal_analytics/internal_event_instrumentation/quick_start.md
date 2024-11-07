@@ -109,15 +109,18 @@ track_internal_event(
 )
 ```
 
-If you need to pass more than three additional properties, you can use the `additional_properties` hash with your custom keys:
+If you need to pass more than the three built-in additional properties, you can use the `additional_properties` hash with your custom keys:
 
 ```ruby
 track_internal_event(
   "code_suggestion_accepted",
   user: user,
+  additional_properties: {
+    # Built-in properties
     label: editor_name,
     property: suggestion_type,
-    value: suggestion_shown_duration
+    value: suggestion_shown_duration,
+    # Your custom properties
     lang: 'ruby',
     custom_key: 'custom_value'
   }
@@ -369,7 +372,7 @@ Sometimes we want to send internal events when the component is rendered or load
 
 #### Additional properties
 
-Additional properties can be passed when tracking events. They can be used to save additional data related to given event. It is possible to send a maximum of three additional properties with keys `label` (string), `property` (string) and `value`(numeric).
+You can include additional properties with events to save additional data. When included you must define each additional property in the `additional_properties` field. It is possible to send the three built-in additional properties with keys `label` (string), `property` (string) and `value`(numeric) and [custom additional properties](quick_start.md#additional-properties) if the built-in properties are not sufficient.
 
 NOTE:
 Do not pass the page URL or page path as an additional property because we already track the pseudonymized page URL for each event.

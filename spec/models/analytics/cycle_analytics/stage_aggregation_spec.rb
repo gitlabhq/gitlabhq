@@ -64,13 +64,9 @@ RSpec.describe Analytics::CycleAnalytics::StageAggregation, type: :model, featur
     it_behaves_like 'has cursor fields', Issue
     it_behaves_like 'has cursor fields', MergeRequest
 
-    describe '#refresh_last_run' do
-      it 'updates the run_at column' do
-        freeze_time do
-          aggregation.refresh_last_run
-
-          expect(aggregation.last_run_at).to eq(Time.current)
-        end
+    describe '#refresh_last_run', :freeze_time do
+      it 'updates last_run_at column' do
+        expect { aggregation.refresh_last_run }.to change { aggregation.last_run_at }.to(Time.current)
       end
     end
 
@@ -83,6 +79,12 @@ RSpec.describe Analytics::CycleAnalytics::StageAggregation, type: :model, featur
           runtimes_in_seconds: [10, 20],
           processed_records: [20, 30]
         )
+      end
+    end
+
+    describe '#complete', :freeze_time do
+      it 'updates last_completed_at column' do
+        expect { aggregation.complete }.to change { aggregation.last_completed_at }.to(Time.current)
       end
     end
   end

@@ -1419,44 +1419,71 @@ RSpec.describe Member, feature_category: :groups_and_projects do
 
         it_behaves_like 'does not create an organization_user entry'
       end
+
+      context 'when member is an access request' do
+        let(:member) { create(:group_member, :access_request, source: group, user: user) }
+
+        it_behaves_like 'does not create an organization_user entry'
+      end
     end
 
     context 'when updating' do
-      context 'when member is an invite' do
-        let_it_be(:member, reload: true) { create(:group_member, :invited, source: group) }
+      shared_examples 'an action that creates an organization record after commit' do
+        it 'inserts new record on member creation' do
+          expect { commit_member }.to change { Organizations::OrganizationUser.count }.by(1)
+          expect(group.organization.user?(user)).to be(true)
+        end
 
-        context 'when accepting the invite' do
-          let_it_be(:user) { create(:user) }
+        context 'when organization does not exist' do
+          let_it_be(:member) { create(:group_member) }
 
-          subject(:commit_member) { member.accept_invite!(user) }
+          it_behaves_like 'does not create an organization_user entry'
+        end
+      end
 
-          it 'inserts new record on member creation' do
-            expect { commit_member }.to change { Organizations::OrganizationUser.count }.by(1)
-            expect(group.organization.user?(user)).to be(true)
+      context 'when member accept invite' do
+        let_it_be_with_reload(:member, reload: true) { create(:group_member, :invited, source: group) }
+
+        subject(:commit_member) { member.accept_invite!(user) }
+
+        it_behaves_like 'an action that creates an organization record after commit'
+
+        context 'when updating the organization_users is not successful' do
+          before do
+            allow(Organizations::OrganizationUser)
+              .to receive(:create_organization_record_for).once.and_raise(ActiveRecord::StatementTimeout)
           end
 
-          context 'when updating the organization_users is not successful' do
-            before do
-              allow(Organizations::OrganizationUser)
-                .to receive(:create_organization_record_for).once.and_raise(ActiveRecord::StatementTimeout)
-            end
-
-            it 'rolls back the member creation' do
-              expect { commit_member }.to raise_error(ActiveRecord::StatementTimeout)
-              expect(group.organization.user?(user)).to be(false)
-              expect(member.reset.user).to be_nil
-            end
-          end
-
-          context 'when organization does not exist' do
-            let_it_be(:member) { create(:group_member) }
-
-            it_behaves_like 'does not create an organization_user entry'
+          it 'rolls back the member creation', :aggregate_failures do
+            expect { commit_member }.to raise_error(ActiveRecord::StatementTimeout)
+            expect(group.organization.user?(user)).to be(false)
+            expect(member.reset.user).to be_nil
           end
         end
       end
 
-      context 'when updating a non user_id attribute' do
+      context "when member's access request is approved" do
+        let_it_be_with_reload(:member) { create(:group_member, :access_request, source: group, user: user) }
+
+        subject(:commit_member) { member.accept_request(@owner_user) }
+
+        it_behaves_like 'an action that creates an organization record after commit'
+
+        context 'when updating the organization_users is not successful' do
+          before do
+            allow(Organizations::OrganizationUser)
+              .to receive(:create_organization_record_for).once.and_raise(ActiveRecord::StatementTimeout)
+          end
+
+          it 'rolls back the member creation', :aggregate_failures do
+            expect { commit_member }.to raise_error(ActiveRecord::StatementTimeout)
+            expect(group.organization.user?(user)).to be(false)
+            expect(member.reset.requested_at).not_to be_nil
+          end
+        end
+      end
+
+      context 'when updating a non user_id/requested_at attribute' do
         let_it_be(:member) { create(:group_member, :reporter, source: group) }
 
         subject(:commit_member) { member.update!(access_level: GroupMember::DEVELOPER) }

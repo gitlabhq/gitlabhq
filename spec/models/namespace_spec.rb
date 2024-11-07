@@ -671,8 +671,6 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     it { is_expected.to delegate_method(:token_expiry_notify_inherited).to(:namespace_settings) }
     it { is_expected.to delegate_method(:token_expiry_notify_inherited=).to(:namespace_settings).with_arguments(:args) }
     it { is_expected.to delegate_method(:add_creator).to(:namespace_details) }
-    it { is_expected.to delegate_method(:pending_delete).to(:namespace_details) }
-    it { is_expected.to delegate_method(:pending_delete=).to(:namespace_details).with_arguments(:args) }
     it { is_expected.to delegate_method(:deleted_at).to(:namespace_details) }
     it { is_expected.to delegate_method(:deleted_at=).to(:namespace_details).with_arguments(:args) }
 

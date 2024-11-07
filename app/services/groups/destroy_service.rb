@@ -59,12 +59,10 @@ module Groups
     private
 
     def mark_deleted
-      group.update_attribute(:pending_delete, true)
       group.update_attribute(:deleted_at, Time.current)
     end
 
     def unmark_deleted
-      group.update_attribute(:pending_delete, false)
       group.update_attribute(:deleted_at, nil)
     end
 

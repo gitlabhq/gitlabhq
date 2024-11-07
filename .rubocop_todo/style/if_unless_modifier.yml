@@ -287,7 +287,6 @@ Style/IfUnlessModifier:
     - 'ee/app/serializers/ee/blob_entity.rb'
     - 'ee/app/serializers/linked_epic_issue_entity.rb'
     - 'ee/app/serializers/vulnerabilities/finding_serializer.rb'
-    - 'ee/app/services/analytics/cycle_analytics/aggregator_service.rb'
     - 'ee/app/services/analytics/cycle_analytics/validations.rb'
     - 'ee/app/services/app_sec/dast/pipelines/find_latest_service.rb'
     - 'ee/app/services/app_sec/dast/profiles/build_config_service.rb'

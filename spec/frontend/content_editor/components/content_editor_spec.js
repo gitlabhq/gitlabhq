@@ -184,7 +184,7 @@ describe('ContentEditor', () => {
 
       it('displays error alert indicating that the content editor failed to load', () => {
         expect(findContentEditorAlert().text()).toContain(
-          'An error occurred while trying to render the content editor. Please try again.',
+          'An error occurred while trying to render the rich text editor. Please try again.',
         );
       });
 

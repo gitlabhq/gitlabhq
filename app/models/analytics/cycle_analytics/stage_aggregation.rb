@@ -33,6 +33,10 @@ module Analytics
         self.runtimes_in_seconds = (runtimes_in_seconds + [runtime]).last(STATS_SIZE_LIMIT)
         self.processed_records = (self.processed_records + [processed_records]).last(STATS_SIZE_LIMIT)
       end
+
+      def complete
+        self.last_completed_at = Time.current
+      end
     end
   end
 end

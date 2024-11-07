@@ -151,7 +151,6 @@ Layout/EmptyLineAfterMagicComment:
     - 'ee/app/serializers/ee/issue_entity.rb'
     - 'ee/app/serializers/license_compliance/collapsed_comparer_entity.rb'
     - 'ee/app/serializers/license_compliance/comparer_serializer.rb'
-    - 'ee/app/services/analytics/cycle_analytics/aggregator_service.rb'
     - 'ee/app/services/arkose/blocked_users_report_service.rb'
     - 'ee/app/services/audit_events/streaming/headers/base.rb'
     - 'ee/app/services/audit_events/streaming/headers/destroy_service.rb'

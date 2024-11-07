@@ -323,7 +323,7 @@ class Member < ApplicationRecord
   after_create :update_two_factor_requirement, unless: :invite?
   after_create :create_organization_user_record
   after_update :post_update_hook, unless: [:pending?, :importing?], if: :hook_prerequisites_met?
-  after_update :create_organization_user_record, if: :saved_change_to_user_id? # only occurs on invite acceptance
+  after_update :create_organization_user_record, if: :accepted_invite_or_request?
   after_destroy :destroy_notification_setting
   after_destroy :post_destroy_member_hook, unless: :pending?, if: :hook_prerequisites_met?
   after_destroy :post_destroy_access_request_hook, if: [:request?, :hook_prerequisites_met?]
@@ -777,10 +777,16 @@ class Member < ApplicationRecord
   end
 
   def create_organization_user_record
-    return if invite?
+    return if pending?
     return if source.organization.blank?
 
     Organizations::OrganizationUser.create_organization_record_for(user_id, source.organization_id)
+  end
+
+  def accepted_invite_or_request?
+    # `user_id` is nil for member invited through email and will be set once the user has created an account.
+    # `requested_at` is defined only while the membership access request is still pending.
+    saved_change_to_user_id? || saved_change_to_requested_at?
   end
 end
 
