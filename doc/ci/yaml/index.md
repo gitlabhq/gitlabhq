@@ -731,19 +731,19 @@ variables:
 
 workflow:
   rules:
-    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       variables:
         DEPLOY_VARIABLE: "deploy-production"  # Override globally-defined DEPLOY_VARIABLE
-    - if: $CI_COMMIT_REF_NAME =~ /feature/
+    - if: $CI_COMMIT_BRANCH =~ /feature/
       variables:
         IS_A_FEATURE: "true"                  # Define a new variable.
-    - when: always                            # Run the pipeline in other cases
+    - if: $CI_COMMIT_BRANCH                   # Run the pipeline in other cases
 
 job1:
   variables:
     DEPLOY_VARIABLE: "job1-default-deploy"
   rules:
-    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       variables:                                   # Override DEPLOY_VARIABLE defined
         DEPLOY_VARIABLE: "job1-deploy-production"  # at the job level.
     - when: on_success                             # Run the job in other cases

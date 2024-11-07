@@ -237,7 +237,7 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
   }
 
   &[disabled] {
-    color: $gl-text-color-disabled;
+    @apply gl-text-disabled;
     cursor: not-allowed;
   }
 

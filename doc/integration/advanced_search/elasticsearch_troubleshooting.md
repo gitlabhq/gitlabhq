@@ -186,6 +186,50 @@ To fix this, you need
 to [map the roles to users](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/fgac.html#fgac-mapping)
 in the AWS OpenSearch Dashboards.
 
+### Create additional master users in AWS OpenSearch Service
+
+You can set a master user when you create a domain.
+With this user, you can create additional master users.
+For more information, see the
+[AWS documentation](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/fgac.html#fgac-more-masters).
+
+To create users and roles with permissions and map users to roles,
+see the [OpenSearch documentation](https://opensearch.org/docs/latest/security/access-control/users-roles/).
+You must include the following permissions in the role:
+
+```json
+{
+  "cluster_permissions": [
+    "cluster_composite_ops",
+    "cluster_monitor"
+  ],
+  "index_permissions": [
+    {
+      "index_patterns": [
+        "gitlab*"
+      ],
+      "allowed_actions": [
+        "data_access",
+        "manage_aliases",
+        "search",
+        "create_index",
+        "delete",
+        "manage"
+      ]
+    },
+    {
+      "index_patterns": [
+        "*"
+      ],
+      "allowed_actions": [
+        "indices:admin/aliases/get",
+        "indices:monitor/stats"
+      ]
+    }
+  ]
+}
+```
+
 ## Troubleshooting indexing
 
 Troubleshooting indexing issues can be tricky. It can pretty quickly go to either GitLab

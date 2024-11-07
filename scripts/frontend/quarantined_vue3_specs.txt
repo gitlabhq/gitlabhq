@@ -42,7 +42,6 @@ ee/spec/frontend/ci/runner/components/runner_details_spec.js
 ee/spec/frontend/ci/runner/components/runner_form_fields_spec.js
 ee/spec/frontend/ci/runner/components/runner_header_spec.js
 ee/spec/frontend/ci/runner/components/runner_usage_spec.js
-ee/spec/frontend/ci/runner/components/stat/runner_stats_spec.js
 ee/spec/frontend/ci/runner/components/stat/runner_upgrade_status_stats_spec.js
 ee/spec/frontend/ci/runner/group_runners/group_runners_app_spec.js
 ee/spec/frontend/ci/runner/group_runners_dashboard/group_runners_wait_times_spec.js
@@ -226,7 +225,6 @@ spec/frontend/ci/runner/components/runner_form_fields_spec.js
 spec/frontend/ci/runner/components/runner_managers_table_spec.js
 spec/frontend/ci/runner/components/runner_platforms_radio_spec.js
 spec/frontend/ci/runner/components/runner_tags_spec.js
-spec/frontend/ci/runner/components/stat/runner_stats_spec.js
 spec/frontend/ci/runner/group_runner_show/group_runner_show_app_spec.js
 spec/frontend/ci/runner/group_runners/group_runners_app_spec.js
 spec/frontend/ci_settings_pipeline_triggers/components/edit_trigger_modal_spec.js

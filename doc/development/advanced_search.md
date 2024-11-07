@@ -223,7 +223,7 @@ All new indexes must have:
 1. Create a `Search::Elastic::Types::` class in `ee/lib/search/elastic/types/`.
 1. Define the following class methods:
    - `index_name`: in the format `gitlab-<env>-<type>` (for example, `gitlab-production-work_items`).
-   - `mappings`: a hash containing the index schema such as fields, data types, and analyzers.
+   - `mappings`: a hash containing the index schema such as fields, data types, and analyzers. Data types for primary and foreign keys must match the column type in the database. For example, the database column type `integer` maps to `integer` and `bigint` maps to `long` in the mapping.
    - `settings`: a hash containing the index settings such as replicas and tokenizers.
      The default is good enough for most cases.
 1. Add a new [advanced search migration](search/advanced_search_migration_styleguide.md) to create the index

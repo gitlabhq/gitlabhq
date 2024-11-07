@@ -22638,6 +22638,11 @@ msgstr ""
 msgid "Exceptions"
 msgstr ""
 
+msgid "Excluding %d project with no DORA metrics."
+msgid_plural "Excluding %d projects with no DORA metrics."
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Excluding 1 project with no DORA metrics"
 msgid_plural "Excluding %d projects with no DORA metrics"
 msgstr[0] ""
@@ -52075,6 +52080,11 @@ msgstr ""
 
 msgid "Show whitespace changes"
 msgstr ""
+
+msgid "Showing %d project."
+msgid_plural "Showing %d projects."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Showing %{conflict}"
 msgstr ""

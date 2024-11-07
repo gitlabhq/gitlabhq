@@ -408,11 +408,9 @@ module QA
           end
         end
 
-        def try_to_merge!
-          # Revisit after merge page re-architect is done https://gitlab.com/gitlab-org/gitlab/-/issues/300042
-          # To remove page refresh logic if possible
+        def try_to_merge!(wait_for_no_auto_merge: true)
           wait_until_ready_to_merge
-          wait_until { !find_element('merge-button').text.include?('auto-merge') } # rubocop:disable Rails/NegateInclude
+          wait_until { !find_element('merge-button').text.include?('auto-merge') } if wait_for_no_auto_merge # rubocop:disable Rails/NegateInclude -- Wait for text auto-merge to change
 
           click_element('merge-button')
         end

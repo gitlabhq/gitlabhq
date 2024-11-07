@@ -276,6 +276,14 @@ Lifecycle event requests from Jira are [verified](https://developer.atlassian.co
 
 For self-managed instances that use the GitLab for Jira Cloud app from the Atlassian Marketplace, GitLab.com handles lifecycle events and forwards them to the self-managed instance. For more information, see [GitLab.com handling of app lifecycle events](../../administration/settings/jira_cloud_app.md#gitlabcom-handling-of-app-lifecycle-events).
 
+### Data stored by Jira
+
+[Data sent to Jira](#data-sent-from-gitlab-to-jira) is stored by Jira
+and displayed in the [Jira development panel](development_panel.md).
+
+When the GitLab for Jira Cloud app is uninstalled, Jira permanently deletes this data.
+This process happens asynchronously and might take up to several hours.
+
 ### Privacy and security details in the Atlassian Marketplace
 
 For more information, see the [privacy and security details of the Atlassian Marketplace listing](https://marketplace.atlassian.com/apps/1221011/gitlab-for-jira-cloud?tab=privacy-and-security&hosting=cloud).

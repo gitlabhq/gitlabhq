@@ -176,7 +176,7 @@ fieldset[disabled] .btn,
   &:hover {
     background-color: $gray-10;
     border-color: $gray-100;
-    color: $gl-text-color-disabled;
+    @apply gl-text-disabled;
     opacity: 1;
     text-decoration: none;
     cursor: default;
@@ -186,7 +186,7 @@ fieldset[disabled] .btn,
     }
 
     i {
-      color: $gl-text-color-disabled;
+      @apply gl-text-disabled;
     }
   }
 }

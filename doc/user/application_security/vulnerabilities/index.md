@@ -286,14 +286,13 @@ The **Code flow** tab shows:
 
 A vulnerability's status can be:
 
-- **Detected**: The default state for a newly discovered vulnerability. Appears as "Needs triage" in the UI.
+- **Needs triage**: The default state for a newly discovered vulnerability.
 - **Confirmed**: A user has seen this vulnerability and confirmed it to be accurate.
-- **Dismissed**: A user has seen this vulnerability and dismissed it for one of the available
-  [reasons](#vulnerability-dismissal-reasons). Dismissed vulnerabilities are ignored if detected in
-  subsequent scans.
+- **Dismissed**: A user has evaluated this vulnerability and [dismissed it](#vulnerability-dismissal-reasons).
+  Dismissed vulnerabilities are ignored if detected in subsequent scans.
 - **Resolved**: The vulnerability has been fixed or is no longer present. If a resolved
   vulnerability is reintroduced and detected again, its record is reinstated and its status set to
-  detected.
+  **Needs triage**.
 
 A vulnerability typically goes through the following lifecycle:
 

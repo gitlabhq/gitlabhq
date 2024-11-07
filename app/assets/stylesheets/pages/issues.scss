@@ -162,7 +162,7 @@ ul.related-merge-requests > li gl-emoji {
       &.disabled {
         background-color: $gray-10;
         border-color: $gray-100;
-        color: $gl-text-color-disabled;
+        @apply gl-text-disabled;
       }
     }
   }
@@ -182,7 +182,7 @@ ul.related-merge-requests > li gl-emoji {
     color: $gl-text-color-secondary;
 
     &.disabled {
-      color: $gl-text-color-disabled;
+      @apply gl-text-disabled;
     }
   }
 }

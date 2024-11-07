@@ -10,5 +10,4 @@ description: Mapping of widgets for each work item type. Currently one of a pred
   set but in future will support custom types.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107582
 milestone: '15.9'
-gitlab_schema: gitlab_main
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/463411
+gitlab_schema: gitlab_main_clusterwide

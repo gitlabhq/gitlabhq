@@ -471,25 +471,25 @@
   li.inapplicable {
     // for a single line list item, no paragraph (tight list)
     > s {
-      color: $gl-text-color-disabled;
+        @apply gl-text-disabled;
     }
 
     // additional blocks, other than paragraphs
     > div {
       text-decoration: line-through;
-      color: $gl-text-color-disabled;
+      @apply gl-text-disabled;
     }
 
     // because of the embedded checkbox, putting line-through on the entire
     // paragraph causes the space between the checkbox and the text to have the
     // line-through.  Targeting just the `s` fixes this
     > p:first-of-type > s {
-      color: $gl-text-color-disabled;
+      @apply gl-text-disabled;
     }
 
     > p:not(:first-of-type) {
       text-decoration: line-through;
-      color: $gl-text-color-disabled;
+      @apply gl-text-disabled;
     }
 
     .drag-icon {
@@ -500,7 +500,7 @@
     // out as well.
     .gl-label, kbd {
       text-decoration: line-through;
-      text-decoration-color: $gl-text-color-disabled;
+      text-decoration-color: var(--gl-text-color-disabled);
       vertical-align: text-bottom;
     }
   }
