@@ -980,6 +980,10 @@ class Group < Namespace
     feature_flag_enabled_for_self_or_ancestor?(:glql_integration)
   end
 
+  def wiki_comments_feature_flag_enabled?
+    feature_flag_enabled_for_self_or_ancestor?(:wiki_comments, type: :wip)
+  end
+
   # Note: this method is overridden in EE to check the work_item_epics feature flag  which also enables this feature
   def namespace_work_items_enabled?
     ::Feature.enabled?(:namespace_level_work_items, self, type: :development)
