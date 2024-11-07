@@ -16,6 +16,7 @@ query getModel($id: MlModelID!) {
     latestVersion {
       id
       createdAt
+      artifactsCount
       author {
         id
         name

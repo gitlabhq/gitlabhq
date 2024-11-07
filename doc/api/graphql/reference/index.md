@@ -9342,7 +9342,7 @@ Input type: `SecurityPolicyProjectCreateInput`
 
 ### `Mutation.securityPolicyProjectCreateAsync`
 
-**Status:** Alpha. Creates and assigns a security policy project for the given project or group (`full_path`) async.
+**Status:** Experiment. Creates and assigns a security policy project for the given project or group (`full_path`) async.
 
 DETAILS:
 **Introduced** in GitLab 17.3.

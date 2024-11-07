@@ -16,22 +16,22 @@ module Resolvers
       argument :source, Types::PipelineCiSourcesEnum,
         required: false,
         description: 'Source of the pipeline.',
-        alpha: { milestone: '17.5' }
+        experiment: { milestone: '17.5' }
 
       argument :ref, GraphQL::Types::String,
         required: false,
         description: 'Branch that triggered the pipeline.',
-        alpha: { milestone: '17.5' }
+        experiment: { milestone: '17.5' }
 
       argument :from_time, Types::TimeType,
         required: false,
         description: 'Start of the requested time frame. Defaults to the pipelines started in the past week.',
-        alpha: { milestone: '17.5' }
+        experiment: { milestone: '17.5' }
 
       argument :to_time, Types::TimeType,
         required: false,
         description: 'End of the requested time frame. Defaults to pipelines started before the current date.',
-        alpha: { milestone: '17.5' }
+        experiment: { milestone: '17.5' }
 
       def resolve(lookahead:, source: nil, ref: nil, from_time: nil, to_time: nil)
         result = legacy_fields(lookahead)

@@ -11,7 +11,7 @@ module Types
         description: 'Enterprise edition.'
       field :feature_flags, [::Types::AppConfig::GitlabInstanceFeatureFlagType], null: false,
         description: 'Feature flags for the GitLab instance.',
-        alpha: { milestone: '17.4' },
+        experiment: { milestone: '17.4' },
         resolver: ::Resolvers::AppConfig::GitlabInstanceFeatureFlagsResolver
       field :kas, ::Types::AppConfig::KasType, null: false,
         description: 'Metadata about KAS.'

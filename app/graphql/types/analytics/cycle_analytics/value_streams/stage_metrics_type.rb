@@ -25,7 +25,7 @@ module Types
           field :items,
             description: 'Items in the stage.',
             resolver: Resolvers::Analytics::CycleAnalytics::ValueStreams::StageItemsResolver,
-            alpha: { milestone: '17.4' }
+            experiment: { milestone: '17.4' }
 
           def count
             {

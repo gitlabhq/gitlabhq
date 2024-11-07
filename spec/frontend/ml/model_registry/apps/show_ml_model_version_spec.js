@@ -9,6 +9,7 @@ import { createAlert } from '~/alert';
 import { ShowMlModelVersion } from '~/ml/model_registry/apps';
 import ModelVersionDetail from '~/ml/model_registry/components/model_version_detail.vue';
 import ModelVersionPerformance from '~/ml/model_registry/components/model_version_performance.vue';
+import ModelVersionArtifacts from '~/ml/model_registry/components/model_version_artifacts.vue';
 import ModelVersionActionsDropdown from '~/ml/model_registry/components/model_version_actions_dropdown.vue';
 import deleteModelVersionMutation from '~/ml/model_registry/graphql/mutations/delete_model_version.mutation.graphql';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
@@ -37,6 +38,16 @@ jest.mock('~/ml/model_registry/components/model_version_detail.vue', () => {
 jest.mock('~/ml/model_registry/components/model_version_performance.vue', () => {
   const { props } = jest.requireActual(
     '~/ml/model_registry/components/model_version_performance.vue',
+  ).default;
+  return {
+    props,
+    render() {},
+  };
+});
+
+jest.mock('~/ml/model_registry/components/model_version_artifacts.vue', () => {
+  const { props } = jest.requireActual(
+    '~/ml/model_registry/components/model_version_artifacts.vue',
   ).default;
   return {
     props,
@@ -113,8 +124,11 @@ describe('ml/model_registry/apps/show_model_version.vue', () => {
   const findModelVersionEditButton = () => wrapper.findByTestId('edit-model-version-button');
   const findTabs = () => wrapper.findComponent(GlTabs);
   const findDetailTab = () => wrapper.findAllComponents(GlTab).at(0);
-  const findPerformanceTab = () => wrapper.findAllComponents(GlTab).at(1);
+  const findArtifactsTab = () => wrapper.findAllComponents(GlTab).at(1);
+  const findArtifactsCountBadge = () => findArtifactsTab().findComponent(GlBadge);
+  const findPerformanceTab = () => wrapper.findAllComponents(GlTab).at(2);
   const findModelVersionPerformance = () => wrapper.findComponent(ModelVersionPerformance);
+  const findModelVersionArtifacts = () => wrapper.findComponent(ModelVersionArtifacts);
 
   it('renders the title', () => {
     createWrapper();
@@ -187,8 +201,18 @@ describe('ml/model_registry/apps/show_model_version.vue', () => {
       expect(findDetailTab().attributes('title')).toBe('Version card');
     });
 
+    it('shows the number of artifacts in the tab', () => {
+      expect(findArtifactsCountBadge().text()).toBe(
+        modelVersionWithCandidateAndAuthor.artifactsCount.toString(),
+      );
+    });
+
     it('has a performance tab', () => {
       expect(findPerformanceTab().attributes('title')).toBe('Performance');
+    });
+
+    it('has an artifacts tab', () => {
+      expect(findArtifactsTab().text()).toContain('Artifacts');
     });
   });
 
@@ -216,6 +240,7 @@ describe('ml/model_registry/apps/show_model_version.vue', () => {
       expect(findTabs().props('value')).toBe(0);
       expect(findModelVersionDetail().exists()).toBe(true);
       expect(findModelVersionPerformance().exists()).toBe(false);
+      expect(findModelVersionArtifacts().exists()).toBe(false);
     });
 
     it('shows model details when location hash is default', async () => {
@@ -225,6 +250,21 @@ describe('ml/model_registry/apps/show_model_version.vue', () => {
       expect(findModelVersionDetail().props('modelVersion')).toMatchObject(
         modelVersionWithCandidateAndAuthor,
       );
+      expect(findModelVersionArtifacts().exists()).toBe(false);
+      expect(findModelVersionPerformance().exists()).toBe(false);
+    });
+
+    it('shows model artifacts when location hash is `#/artifacts`', async () => {
+      await createWrapper({ mountFn: mountExtended });
+
+      await wrapper.vm.$router.push({ path: '/artifacts' });
+
+      expect(findTabs().props('value')).toBe(1);
+      expect(findModelVersionDetail().exists()).toBe(false);
+      expect(findModelVersionPerformance().exists()).toBe(false);
+      expect(findModelVersionArtifacts().props('modelVersion')).toMatchObject(
+        modelVersionWithCandidateAndAuthor,
+      );
     });
 
     it('shows model performance when location hash is `#/performance`', async () => {
@@ -232,8 +272,9 @@ describe('ml/model_registry/apps/show_model_version.vue', () => {
 
       await wrapper.vm.$router.push({ path: '/performance' });
 
-      expect(findTabs().props('value')).toBe(1);
+      expect(findTabs().props('value')).toBe(2);
       expect(findModelVersionDetail().exists()).toBe(false);
+      expect(findModelVersionArtifacts().exists()).toBe(false);
       expect(findModelVersionPerformance().props('modelVersion')).toMatchObject(
         modelVersionWithCandidateAndAuthor,
       );

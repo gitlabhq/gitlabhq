@@ -93,7 +93,6 @@ Layout/SpaceInsideParens:
     - 'spec/tasks/gitlab/db_rake_spec.rb'
     - 'spec/validators/devise_email_validator_spec.rb'
     - 'spec/views/dashboard/projects/_blank_state_welcome.html.haml_spec.rb'
-    - 'spec/views/search/_results.html.haml_spec.rb'
     - 'spec/workers/concerns/gitlab/github_import/object_importer_spec.rb'
     - 'spec/workers/gitlab/jira_import/stage/import_labels_worker_spec.rb'
     - 'spec/workers/pipeline_schedule_worker_spec.rb'

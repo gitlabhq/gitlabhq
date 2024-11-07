@@ -106,7 +106,7 @@ module Types
     field :merge_after, ::Types::TimeType,
       null: true,
       description: 'Date after which the merge request can be merged.',
-      alpha: { milestone: '17.5' }
+      experiment: { milestone: '17.5' }
 
     field :detailed_merge_status, ::Types::MergeRequests::DetailedMergeStatusEnum, null: true,
       calls_gitaly: true,
@@ -116,7 +116,7 @@ module Types
       null: false,
       description: 'Status of all mergeability checks of the merge request.',
       method: :all_mergeability_checks_results,
-      alpha: { milestone: '16.5' },
+      experiment: { milestone: '16.5' },
       calls_gitaly: true
 
     field :mergeable_discussions_state, GraphQL::Types::Boolean, null: true, calls_gitaly: true,

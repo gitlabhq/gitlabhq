@@ -5,11 +5,11 @@ module Gitlab
     module Deprecations
       class Deprecation
         REASON_RENAMED = :renamed
-        REASON_ALPHA = :alpha
+        REASON_EXPERIMENT = :experiment
 
         REASONS = {
           REASON_RENAMED => 'This was renamed.',
-          REASON_ALPHA => '**Status**: Experiment.'
+          REASON_EXPERIMENT => '**Status**: Experiment.'
         }.freeze
 
         include ActiveModel::Validations
@@ -22,15 +22,15 @@ module Gitlab
         validate :milestone_is_string
         validate :reason_known_or_string
 
-        def self.parse(alpha: nil, deprecated: nil)
-          options = alpha || deprecated
+        def self.parse(experiment: nil, deprecated: nil)
+          options = experiment || deprecated
           return unless options
 
-          if alpha
-            raise ArgumentError, '`alpha` and `deprecated` arguments cannot be passed at the same time' \
+          if experiment
+            raise ArgumentError, '`experiment` and `deprecated` arguments cannot be passed at the same time' \
               if deprecated
 
-            options[:reason] = :alpha
+            options[:reason] = REASON_EXPERIMENT
           end
 
           new(**options)
@@ -95,8 +95,8 @@ module Gitlab
           ].compact.join(' ')
         end
 
-        def alpha?
-          reason == REASON_ALPHA
+        def experiment?
+          reason == REASON_EXPERIMENT
         end
 
         private
@@ -129,10 +129,10 @@ module Gitlab
         end
 
         # Returns 'Deprecated in GitLab <milestone>' for proper deprecations.
-        # Returns 'Introduced in GitLab <milestone>' for :alpha deprecations.
+        # Returns 'Introduced in GitLab <milestone>' for :experiment deprecations.
         # Formatted to markdown or plain format.
         def changed_in_milestone(format: :plain)
-          verb = if alpha?
+          verb = if experiment?
                    'Introduced'
                  else
                    'Deprecated'

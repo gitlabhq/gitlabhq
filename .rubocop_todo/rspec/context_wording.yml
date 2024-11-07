@@ -2850,7 +2850,6 @@ RSpec/ContextWording:
     - 'spec/views/projects/settings/integrations/edit.html.haml_spec.rb'
     - 'spec/views/projects/settings/operations/show.html.haml_spec.rb'
     - 'spec/views/projects/tags/index.html.haml_spec.rb'
-    - 'spec/views/search/_results.html.haml_spec.rb'
     - 'spec/views/search/show.html.haml_spec.rb'
     - 'spec/views/shared/issuable/_sidebar.html.haml_spec.rb'
     - 'spec/views/shared/milestones/_issuable.html.haml_spec.rb'

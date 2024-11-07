@@ -10,7 +10,7 @@ module Types
       resolver: Resolvers::MergeRequests::AssigneeOrReviewerMergeRequestsResolver,
       description: 'Merge requests the current user is an assignee or a reviewer of.' \
         'Ignored if `merge_request_dashboard` feature flag is disabled.',
-      alpha: { milestone: '17.4' }
+      experiment: { milestone: '17.4' }
   end
   # rubocop:enable Graphql/AuthorizeTypes
 end

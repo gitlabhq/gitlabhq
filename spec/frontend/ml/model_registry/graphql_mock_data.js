@@ -128,6 +128,7 @@ export const modelVersionWithCandidate = {
 
 export const modelVersionWithCandidateAndAuthor = {
   id: 'gid://gitlab/Ml::ModelVersion/1',
+  artifactsCount: 1,
   author: {
     id: 'gid://gitlab/User/1',
     name: 'Root',

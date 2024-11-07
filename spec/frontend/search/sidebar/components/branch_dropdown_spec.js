@@ -109,5 +109,18 @@ describe('BranchDropdown', () => {
 
       expect(wrapper.emitted('reset')).toStrictEqual([[]]);
     });
+
+    it('emits hide and selected if there are no results but query contains strings', async () => {
+      findGlCollapsibleListbox().vm.$emit('search', 'ttteeeeessssssttttt');
+      jest.advanceTimersByTime(DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
+      await waitForPromises();
+
+      expect(findGlListboxItems()).toHaveLength(0);
+
+      findGlCollapsibleListbox().vm.$emit('hidden');
+
+      expect(wrapper.emitted('hide')).toStrictEqual([[]]);
+      expect(wrapper.emitted('selected')).toStrictEqual([['ttteeeeessssssttttt']]);
+    });
   });
 });

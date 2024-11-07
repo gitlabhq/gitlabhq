@@ -7,7 +7,7 @@ module Types
       graphql_name 'PipelineAnalytics'
 
       field :aggregate, Types::Ci::AnalyticsPeriodType, null: true,
-        description: 'Pipeline analytics for the specified filter.', alpha: { milestone: '17.5' }
+        description: 'Pipeline analytics for the specified filter.', experiment: { milestone: '17.5' }
 
       field :month_pipelines_labels, [GraphQL::Types::String], null: true,
         description: 'Labels for the monthly pipeline count.'

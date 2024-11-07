@@ -655,12 +655,12 @@ type, or even in a model method, depending on your preference and
 situation.
 
 NOTE:
-It's recommended that you also [mark the item as Alpha](#mark-schema-items-as-alpha) while it is behind a feature flag.
+It's recommended that you also [mark the item as an experiment](#mark-schema-items-as-experiments) while it is behind a feature flag.
 This signals to consumers of the public GraphQL API that the field is not
 meant to be used yet.
 You can also
-[change or remove Alpha items at any time](#breaking-change-exemptions) without needing to deprecate them. When the flag is removed, "release"
-the schema item by removing its Alpha property to make it public.
+[change or remove experimental items at any time](#breaking-change-exemptions) without needing to deprecate them. When the flag is removed, "release"
+the schema item by removing its `experiment` property to make it public.
 
 ### Descriptions for feature-flagged items
 
@@ -680,7 +680,7 @@ A field value is toggled based on the feature flag state. A common use is to ret
 
 ```ruby
 field :foo, GraphQL::Types::String, null: true,
-      alpha: { milestone: '10.0' },
+      experiment: { milestone: '10.0' },
       description: 'Some test field. Returns `null`' \
                    'if `my_feature_flag` feature flag is disabled.'
 
@@ -696,7 +696,7 @@ A common use is to ignore the argument when a feature flag is disabled:
 
 ```ruby
 argument :foo, type: GraphQL::Types::String, required: false,
-         alpha: { milestone: '10.0' },
+         experiment: { milestone: '10.0' },
          description: 'Some test argument. Is ignored if ' \
                       '`my_feature_flag` feature flag is disabled.'
 
@@ -743,7 +743,7 @@ To deprecate a schema item in GraphQL:
 See also:
 
 - [Aliasing and deprecating mutations](#aliasing-and-deprecating-mutations).
-- [Marking schema items as Alpha](#mark-schema-items-as-alpha).
+- [Marking schema items as experiments](#mark-schema-items-as-experiments).
 - [How to filter Kibana for queries that used deprecated fields](graphql_guide/monitoring.md#queries-that-used-a-deprecated-field).
 
 ### Create a deprecation issue
@@ -903,43 +903,43 @@ aware of the support.
 
 The documentation mentions that the old Global ID style is now deprecated.
 
-## Mark schema items as Alpha
+## Mark schema items as experiments
 
 You can mark GraphQL schema items (fields, arguments, enum values, and mutations) as
-[Alpha](../policy/experiment-beta-support.md#experiment).
+[experiments](../policy/experiment-beta-support.md#experiment).
 
-An item marked as Alpha is
+An item marked as an experiment is
 [exempt from the deprecation process](../api/graphql/index.md#breaking-change-exemptions) and can be
-removed at any time without notice. Mark an item as Alpha when it is subject to
+removed at any time without notice. Mark an item as an experiment when it is subject to
 change and not ready for public use.
 
 NOTE:
-Only mark new items as Alpha. Never mark existing items
-as Alpha because they're already public.
+Only mark new items as an experiment. Never mark existing items
+as an experiment because they're already public.
 
-To mark a schema item as Alpha, use the `alpha:` keyword.
-You must provide the `milestone:` that introduced the Alpha item.
+To mark a schema item as an experiment, use the `experiment:` keyword.
+You must provide the `milestone:` that introduced the experimental item.
 
 For example:
 
 ```ruby
 field :token, GraphQL::Types::String, null: true,
-      alpha: { milestone: '10.0' },
+      experiment: { milestone: '10.0' },
       description: 'Token for login.'
 ```
 
-Similarly, you can also mark an entire mutation as Alpha by updating where the mutation is mounted in `app/graphql/types/mutation_type.rb`:
+Similarly, you can also mark an entire mutation as an experiment by updating where the mutation is mounted in `app/graphql/types/mutation_type.rb`:
 
 ```ruby
-mount_mutation Mutations::Ci::JobArtifact::BulkDestroy, alpha: { milestone: '15.10' }
+mount_mutation Mutations::Ci::JobArtifact::BulkDestroy, experiment: { milestone: '15.10' }
 ```
 
-Alpha GraphQL items is a custom GitLab feature that leverages GraphQL deprecations. An Alpha item
+Experimental GraphQL items is a custom GitLab feature that leverages GraphQL deprecations. An experimental item
 appears as deprecated in the GraphQL schema. Like all deprecated schema items, you can test an
-Alpha field in the [interactive GraphQL explorer](../api/graphql/index.md#interactive-graphql-explorer) (GraphiQL).
+experimental field in the [interactive GraphQL explorer](../api/graphql/index.md#interactive-graphql-explorer) (GraphiQL).
 However, be aware that the GraphiQL autocomplete editor doesn't suggest deprecated fields.
 
-The item shows as Alpha in our generated GraphQL documentation and its GraphQL schema description.
+The item shows as `experiment` in our generated GraphQL documentation and its GraphQL schema description.
 
 ## Enums
 

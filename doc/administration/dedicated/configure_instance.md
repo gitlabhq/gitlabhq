@@ -201,9 +201,40 @@ Consider the following:
 - The connection requires the [Availability Zone IDs (AZ IDs)](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#az-ids) for the two Availability Zones (AZs) in the regions that you selected during onboarding.
 - If you did not specify any AZs during onboarding to Dedicated, GitLab randomly selects both AZ IDs.
 
-You can view the `Reverse Private Link IAM Principal` attribute in the **Tenant Details** section of Switchboard.
+### Add an outbound private link with Switchboard
 
-To enable an Outbound Private Link:
+Prerequisites:
+
+- [Create the endpoint service](https://docs.aws.amazon.com/vpc/latest/privatelink/create-endpoint-service.html) for your internal service to be available to GitLab Dedicated.
+- Configure a Network Load Balancer (NLB) for the endpoint service in the Availability Zones (AZs) where your Dedicated instance is deployed. Either:
+  - Use the AZs listed in the Outbound private link configuration in Switchboard.
+  - Enable the NLB in every AZ in the region.
+- Add the ARN of the role that GitLab Dedicated uses to connect to your endpoint service to the Allowed Principals list on the Endpoint Service. You can find this ARN in Switchboard under Outbound private link IAM principal. For more information, see [Manage permissions](https://docs.aws.amazon.com/vpc/latest/privatelink/configure-endpoint-service.html#add-remove-permissions).
+- Recommended. Set **Acceptance required** to **No** to enable GitLab Dedicated to connect in a single operation. If set to **Yes**, you must manually accept the connection after it's initiated.
+
+  NOTE:
+  If you set **Acceptance required** to **Yes**, Switchboard cannot accurately determine when the link is accepted. After you manually accept the link, the status shows as **Pending** instead of **Active** until next scheduled maintenance. After maintenance, the link status refreshes and shows as connected.
+
+- Once the endpoint service is created, note the Service Name and if you have enabled Private DNS or not.
+
+1. Sign in to [Switchboard](https://console.gitlab-dedicated.com/).
+1. At the top of the page, select **Configuration**.
+1. Expand **Outbound private link**.
+1. Complete the fields.
+1. To add endpoint services, select **Add endpoint service**. You can add up to ten endpoint services per region. At least one endpoint service is required to save the region.
+1. Select **Save**.
+1. Optional. To add an outbound private link for a second region, select **Add outbound connection**, then repeat the previous steps.
+
+### Delete an outbound private link with Switchboard
+
+1. Sign in to [Switchboard](https://console.gitlab-dedicated.com/).
+1. At the top of the page, select **Configuration**.
+1. Expand **Outbound private link**.
+1. Go to the outbound private link you want to delete, then select **Delete** (**{remove}**).
+1. Select **Delete**.
+1. Optional. To delete all the links in a region, from the region header, select **Delete** (**{remove}**). This also deletes the region configuration.
+
+### Add an outbound private link with a support request
 
 1. [Create the Endpoint service](https://docs.aws.amazon.com/vpc/latest/privatelink/create-endpoint-service.html) through which your internal service
    will be available to GitLab Dedicated. Provide the associated `Service Endpoint Name` on a new
@@ -222,7 +253,8 @@ To enable an Outbound Private Link:
      required validation, and let GitLab know in the support ticket that you are using this option. If `Acceptance Required` is set to Yes on your
      Endpoint Service, also note this on the support ticket because Dedicated will need to initiate the connection without Private DNS, wait for you
      to confirm it has been accepted, and then update the connection to enable the use of Private DNS.
-   - Dedicated can manage a private hosted zone (PHZ) within the Dedicated AWS account and alias DNS names to the endpoint, directing requests for those names to your endpoint service. These aliases are often referred to as PHZ entries. For more information, see [Private hosted zones](#private-hosted-zones).
+   - Dedicated can manage a Private Hosted Zone (PHZ) within the Dedicated AWS Account and alias any arbitrary DNS names to the endpoint, directing
+     requests for those names to your endpoint service. These aliases are known as PHZ entries. For more information, see [Private hosted zones](#private-hosted-zones).
 
 GitLab then configures the tenant instance to create the necessary Endpoint Interfaces based on the service names you provided. Any matching outbound
 connections made from the tenant instance are directed through the PrivateLink into your VPC.
@@ -234,19 +266,44 @@ You can use a private hosted zone (PHZ) if:
 - You have multiple DNS names or aliases that will be accessed using a single endpoint. For example, if you are running a reverse proxy to connect to more than one service in your environment.
 - The domain you want to use is not public and cannot be validated for use by private DNS.
 
-To use private hosted zones, submit a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650). In the support ticket, provide a list of DNS names that should resolve to the endpoint service for the outbound private link. The list can be updated as needed.
+When using your GitLab Dedicated instance's domain as part of an alias, you must include two subdomains before the main domain, where:
 
-When using your Dedicated instance's domain as part of an alias, you must include two subdomains before the main domain. This is because:
-
-1. The first subdomain becomes the name of the PHZ.
-1. The second subdomain becomes the record entry for the alias.
+- The first subdomain becomes the name of the PHZ.
+- The second subdomain becomes the record entry for the alias.
 
 For example:
 
-- This is a valid PHZ entry: `subdomain2.subdomain1.<your-tenant-id>.gitlab-dedicated.com`.
-- This is an invalid PHZ entry: `subdomain1.<your-tenant-id>.gitlab-dedicated.com`.
+- Valid PHZ entry: `subdomain2.subdomain1.<your-tenant-id>.gitlab-dedicated.com`.
+- Invalid PHZ entry: `subdomain1.<your-tenant-id>.gitlab-dedicated.com`.
 
-If you don't use the Dedicated instance domain, the PHZ name and a PHZ entry in the format `phz-entry.phz-name.com` is still required.
+When not using your GitLab Dedicated instance domain, you must still provide:
+
+- A Private Hosted Zone (PHZ) name
+- A PHZ entry in the format `phz-entry.phz-name.com`
+
+To prevent shadowing of public DNS domains when the domain is created inside the Dedicated tenant, use at least two additional subdomain levels below any public domain for your PHZ entries. For example, if your tenant is hosted at `tenant.gitlab-dedicated.com`, your PHZ entry should be at least `subdomain1.subdomain2.tenant.gitlab-dedicated.com`, or if you own `customer.com` then at least `subdomain1.subdomain2.customer.com`, where `subdomain2` is not a public domain.
+
+#### Add a private hosted zone with Switchboard
+
+To add a private hosted zone:
+
+1. Sign in to [Switchboard](https://console.gitlab-dedicated.com/).
+1. At the top of the page, select **Configuration**.
+1. Expand **Private hosted zones**.
+1. Select **Add private hosted zone entry**.
+1. Complete the fields.
+   - In the **Hostname** field, enter your Private Hosted Zone (PHZ) entry.
+   - For **Link type**, choose one of the following:
+     - For an outbound private link PHZ entry, select the endpoint service from the dropdown list.
+     Only links with the `Available` or `Pending Acceptance` status are shown.
+     - For other PHZ entries, provide a list of DNS aliases.
+1. Select **Save**.
+Your PHZ entry and any aliases should appear in the list.
+1. Scroll to the top of the page, and select whether to apply the changes immediately or during the next maintenance window.
+
+#### Add a private hosted zone with a support request
+
+If you are unable to use Switchboard to add a private hosted zone, you can open a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650) and provide a list of DNS names that should resolve to the endpoint service for the outbound private link. The list can be updated as needed.
 
 ## Custom certificates
 
@@ -491,5 +548,5 @@ If you have trouble establishing a connection after the Outbound Private Link ha
 - Ensure that cross-zone load balancing is turned on in your Network Load Balancer (NLB).
 - Ensure that the Inbound Rules section of the appropriate Security Groups permits traffic from the correct IP ranges.
 - Ensure that the inbound traffic is mapped to the correct port on the Endpoint Service.
-- In Switchboard, expand **Reverse Private Link Config** and confirm that the details appear as you expect.
+- In Switchboard, expand **Outbound private link** and confirm that the details appear as you expect.
 - Ensure that you have [allowed requests to the local network from webhooks and integrations](../../security/webhooks.md#allow-requests-to-the-local-network-from-webhooks-and-integrations).

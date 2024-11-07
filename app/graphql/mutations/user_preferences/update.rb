@@ -31,12 +31,12 @@ module Mutations
       argument :organization_groups_projects_sort, Types::Organizations::GroupsProjectsSortEnum,
         required: false,
         description: 'Sort order for organization groups and projects.',
-        alpha: { milestone: '17.2' }
+        experiment: { milestone: '17.2' }
 
       argument :organization_groups_projects_display, Types::Organizations::GroupsProjectsDisplayEnum,
         required: false,
         description: 'Default list view for organization groups and projects.',
-        alpha: { milestone: '17.2' }
+        experiment: { milestone: '17.2' }
 
       field :user_preferences,
         Types::UserPreferencesType,

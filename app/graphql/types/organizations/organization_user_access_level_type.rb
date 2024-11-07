@@ -9,12 +9,12 @@ module Types
 
       field :integer_value, GraphQL::Types::Int,
         description: 'Integer representation of access level.',
-        alpha: { milestone: '16.11' },
+        experiment: { milestone: '16.11' },
         method: :to_i
 
       field :string_value, Types::Organizations::OrganizationUserAccessLevelEnum,
         description: 'String representation of access level.',
-        alpha: { milestone: '16.11' },
+        experiment: { milestone: '16.11' },
         method: :to_i
     end
     # rubocop:enable Graphql/AuthorizeTypes

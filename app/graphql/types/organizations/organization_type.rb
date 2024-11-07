@@ -13,49 +13,49 @@ module Types
         type: GraphQL::Types::String,
         null: true,
         description: 'Avatar URL of the organization.',
-        alpha: { milestone: '16.7' }
+        experiment: { milestone: '16.7' }
       field :description,
         GraphQL::Types::String,
         null: true,
         description: 'Description of the organization.',
-        alpha: { milestone: '16.7' }
+        experiment: { milestone: '16.7' }
       field :groups,
         Types::GroupType.connection_type,
         null: false,
         description: 'Groups within this organization that the user has access to.',
-        alpha: { milestone: '16.4' },
+        experiment: { milestone: '16.4' },
         resolver: ::Resolvers::Organizations::GroupsResolver
       field :id,
         GraphQL::Types::ID,
         null: false,
         description: 'ID of the organization.',
-        alpha: { milestone: '16.4' }
+        experiment: { milestone: '16.4' }
       field :name,
         GraphQL::Types::String,
         null: false,
         description: 'Name of the organization.',
-        alpha: { milestone: '16.4' }
+        experiment: { milestone: '16.4' }
       field :organization_users,
         null: false,
         description: 'Users with access to the organization.',
-        alpha: { milestone: '16.4' },
+        experiment: { milestone: '16.4' },
         resolver: ::Resolvers::Organizations::OrganizationUsersResolver
       field :path,
         GraphQL::Types::String,
         null: false,
         description: 'Path of the organization.',
-        alpha: { milestone: '16.4' }
+        experiment: { milestone: '16.4' }
       field :projects, Types::ProjectType.connection_type, null: false,
         description: 'Projects within this organization that the user has access to.',
-        alpha: { milestone: '16.8' },
+        experiment: { milestone: '16.8' },
         resolver: ::Resolvers::Organizations::ProjectsResolver
       field :web_url,
         GraphQL::Types::String,
         null: false,
         description: 'Web URL of the organization.',
-        alpha: { milestone: '16.6' }
+        experiment: { milestone: '16.6' }
 
-      markdown_field :description_html, null: true, alpha: { milestone: '16.7' }, &:organization_detail
+      markdown_field :description_html, null: true, experiment: { milestone: '16.7' }, &:organization_detail
 
       def avatar_url
         object.avatar_url(only_path: false)

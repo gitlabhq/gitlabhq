@@ -9,12 +9,12 @@ module Types
 
       field :origin_project, Types::ProjectType,
         null: false,
-        alpha: { milestone: '17.6' },
+        experiment: { milestone: '17.6' },
         description: 'Origin project.'
 
       field :last_authorized_at, Types::TimeType,
         null: false,
-        alpha: { milestone: '17.6' },
+        experiment: { milestone: '17.6' },
         description: 'Last authorization date time.'
     end
   end

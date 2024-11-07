@@ -361,7 +361,7 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
             argument :foo_arg, GraphQL::Types::String,
               required: false,
               description: 'Argument description.',
-              alpha: { milestone: '101.2' }
+              experiment: { milestone: '101.2' }
           end
         end
       end
@@ -394,12 +394,12 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
           field :foo,
             type: GraphQL::Types::String,
             null: false,
-            alpha: { milestone: '1.10' },
+            experiment: { milestone: '1.10' },
             description: 'A description.'
           field :foo_with_args,
             type: GraphQL::Types::String,
             null: false,
-            alpha: { milestone: '1.10' },
+            experiment: { milestone: '1.10' },
             description: 'A description.' do
             argument :arg, GraphQL::Types::Int, required: false, description: 'Argity'
           end
@@ -448,7 +448,7 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
           type: type,
           null: true,
           description: 'A bar',
-          alpha: { milestone: '10.11' }
+          experiment: { milestone: '10.11' }
         )
       end
 

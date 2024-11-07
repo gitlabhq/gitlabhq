@@ -9,7 +9,7 @@
   = @message.reverse_compare? ? "Deleted commits:" : "Commits:"
   - @message.commits.each do |commit|
     #{commit.short_id} by #{commit.author_name} at #{commit.committed_date.to_fs(:iso8601)}
-    #{commit.safe_message}
+    #{commit.safe_message.html_safe}
     \- - - - -
   \
   \

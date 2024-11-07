@@ -606,7 +606,7 @@ The GraphQL API is used by `Admin > Geo > Replication Details` views, and is dir
         resolver: ::Resolvers::Geo::CoolWidgetRegistriesResolver,
         description: 'Find Cool Widget registries on this Geo node. '\
                      'Ignored if `geo_cool_widget_replication` feature flag is disabled.',
-        alpha: { milestone: '15.5' } # Update the milestone
+        experiment: { milestone: '15.5' } # Update the milestone
   ```
 
 - [ ] Add the new `cool_widget_registries` field name to the `expected_fields` array in `ee/spec/graphql/types/geo/geo_node_type_spec.rb`.
@@ -813,7 +813,7 @@ When requesting review from database reviewers:
         resolver: ::Resolvers::Geo::CoolWidgetRegistriesResolver,
         description: 'Find Cool Widget registries on this Geo node. '\
                      'Ignored if `geo_cool_widget_replication` feature flag is disabled.',
-        alpha: { milestone: '15.5' } # Update the milestone
+        experiment: { milestone: '15.5' } # Update the milestone
   ```
 
 - [ ] Run `bundle exec rake gitlab:graphql:compile_docs` after the step above to regenerate the GraphQL docs.

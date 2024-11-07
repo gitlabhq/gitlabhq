@@ -13,7 +13,7 @@ module Types
 
         value 'PYPI',
           value: 'pypi',
-          alpha: { milestone: '17.6' },
+          experiment: { milestone: '17.6' },
           description: "Packages of the PyPI format."
       end
     end

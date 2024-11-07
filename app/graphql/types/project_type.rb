@@ -24,7 +24,7 @@ module Types
       null: true,
       calls_gitaly: true,
       authorize: :create_pipeline,
-      alpha: { milestone: '15.3' },
+      experiment: { milestone: '15.3' },
       description: 'CI/CD config variable.' do
       argument :ref, GraphQL::Types::String,
         required: true,
@@ -42,7 +42,7 @@ module Types
     field :organization_edit_path, GraphQL::Types::String,
       null: true,
       description: 'Path for editing project at the organization level.',
-      alpha: { milestone: '16.11' }
+      experiment: { milestone: '16.11' }
 
     field :incident_management_timeline_event_tags, [Types::IncidentManagement::TimelineEventTagType],
       null: true,
@@ -152,7 +152,7 @@ module Types
       description: 'Indicates if CI/CD pipeline jobs are enabled for the current user.'
 
     field :is_catalog_resource, GraphQL::Types::Boolean,
-      alpha: { milestone: '15.11' },
+      experiment: { milestone: '15.11' },
       null: true,
       description: 'Indicates if a project is a catalog resource.'
 
@@ -265,7 +265,7 @@ module Types
     field :work_items,
       Types::WorkItemType.connection_type,
       null: true,
-      alpha: { milestone: '15.1' },
+      experiment: { milestone: '15.1' },
       description: 'Work items of the project.',
       extras: [:lookahead],
       resolver: Resolvers::WorkItemsResolver
@@ -273,7 +273,7 @@ module Types
     field :work_item_state_counts,
       Types::WorkItemStateCountsType,
       null: true,
-      alpha: { milestone: '16.7' },
+      experiment: { milestone: '16.7' },
       description: 'Counts of work items by state for the project.',
       resolver: Resolvers::WorkItemStateCountsResolver
 
@@ -342,7 +342,7 @@ module Types
       Types::Packages::Protection::RuleType.connection_type,
       null: true,
       description: 'Packages protection rules for the project.',
-      alpha: { milestone: '16.6' },
+      experiment: { milestone: '16.6' },
       resolver: Resolvers::ProjectPackagesProtectionRulesResolver
 
     field :jobs,
@@ -380,7 +380,7 @@ module Types
       null: true,
       description: 'List of pipeline trigger tokens.',
       resolver: Resolvers::Ci::PipelineTriggersResolver,
-      alpha: { milestone: '16.3' }
+      experiment: { milestone: '16.3' }
 
     field :pipeline, Types::Ci::PipelineType,
       null: true,
@@ -521,7 +521,7 @@ module Types
       Types::ContainerRegistry::Protection::RuleType.connection_type,
       null: true,
       description: 'Container protection rules for the project.',
-      alpha: { milestone: '16.10' },
+      experiment: { milestone: '16.10' },
       resolver: Resolvers::ProjectContainerRegistryProtectionRulesResolver
 
     field :container_repositories, Types::ContainerRepositoryType.connection_type,
@@ -568,7 +568,7 @@ module Types
 
     field :ci_job_token_auth_logs, Types::Ci::JobTokenAuthLogType.connection_type,
       null: true,
-      alpha: { milestone: '17.6' },
+      experiment: { milestone: '17.6' },
       description: 'The CI Job Tokens authorization logs.',
       extras: [:lookahead],
       resolver: Resolvers::Ci::JobTokenAuthLogsResolver
@@ -628,7 +628,7 @@ module Types
     field :timelog_categories, Types::TimeTracking::TimelogCategoryType.connection_type,
       null: true,
       description: "Timelog categories for the project.",
-      alpha: { milestone: '15.3' }
+      experiment: { milestone: '15.3' }
 
     field :fork_targets, Types::NamespaceType.connection_type,
       resolver: Resolvers::Projects::ForkTargetsResolver,
@@ -636,7 +636,7 @@ module Types
 
     field :fork_details, Types::Projects::ForkDetailsType,
       calls_gitaly: true,
-      alpha: { milestone: '15.7' },
+      experiment: { milestone: '15.7' },
       authorize: :read_code,
       resolver: Resolvers::Projects::ForkDetailsResolver,
       description: 'Details of the fork project compared to its upstream project.'
@@ -664,7 +664,7 @@ module Types
 
     field :visible_forks, Types::ProjectType.connection_type,
       null: true,
-      alpha: { milestone: '15.10' },
+      experiment: { milestone: '15.10' },
       description: "Visible forks of the project." do
       argument :minimum_access_level,
         type: ::Types::AccessLevelEnum,
@@ -678,12 +678,12 @@ module Types
       description: 'Flow metrics for value stream analytics.',
       method: :project_namespace,
       authorize: :read_cycle_analytics,
-      alpha: { milestone: '15.10' }
+      experiment: { milestone: '15.10' }
 
     field :commit_references, ::Types::CommitReferencesType,
       null: true,
       resolver: Resolvers::Projects::CommitReferencesResolver,
-      alpha: { milestone: '16.0' },
+      experiment: { milestone: '16.0' },
       description: "Get tag names containing a given commit."
 
     field :autocomplete_users,
@@ -704,7 +704,7 @@ module Types
 
     field :ml_models, ::Types::Ml::ModelType.connection_type,
       null: true,
-      alpha: { milestone: '16.8' },
+      experiment: { milestone: '16.8' },
       description: 'Finds machine learning models',
       resolver: Resolvers::Ml::FindModelsResolver
 
@@ -731,12 +731,12 @@ module Types
       description: 'List of unprotected branches, ignoring any wildcard branch rules',
       null: true,
       calls_gitaly: true,
-      alpha: { milestone: '16.9' }
+      experiment: { milestone: '16.9' }
 
     field :project_plan_limits, Types::ProjectPlanLimitsType,
       resolver: Resolvers::Projects::PlanLimitsResolver,
       description: 'Plan limits for the current project.',
-      alpha: { milestone: '16.9' },
+      experiment: { milestone: '16.9' },
       null: true
 
     field :available_deploy_keys, Types::AccessLevels::DeployKeyType.connection_type,

@@ -7,11 +7,11 @@ module Types
       graphql_name 'PipelineAnalyticsPeriod'
 
       field :label, GraphQL::Types::String, null: true,
-        alpha: { milestone: '17.5' },
+        experiment: { milestone: '17.5' },
         description: 'Label for the data point.'
 
       field :count, GraphQL::Types::BigInt, null: true,
-        alpha: { milestone: '17.5' },
+        experiment: { milestone: '17.5' },
         description: 'Pipeline count, optionally filtered by status.' do
           argument :status,
             type: ::Types::Ci::AnalyticsJobStatusEnum,
@@ -23,7 +23,7 @@ module Types
 
       field :duration_statistics, ::Types::Ci::DurationStatisticsType, null: true,
         description: 'Pipeline duration statistics.',
-        alpha: { milestone: '17.5' }
+        experiment: { milestone: '17.5' }
 
       def count(status:)
         object[:count].fetch(status, 0)

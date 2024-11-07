@@ -33,7 +33,7 @@ module Types
       field :creation_method, Types::Ci::RunnerCreationMethodEnum, null: true,
         method: :registration_type,
         description: 'Type of runner registration.',
-        alpha: { milestone: '17.0' }
+        experiment: { milestone: '17.0' }
       field :description, GraphQL::Types::String, null: true,
         description: 'Description of the runner.'
       field :edit_admin_url, GraphQL::Types::String, null: true,
@@ -41,10 +41,10 @@ module Types
       field :ephemeral_authentication_token, GraphQL::Types::String, null: true,
         description: 'Ephemeral authentication token used for runner manager registration. Only available for the creator of the runner for a limited time during registration.',
         authorize: :read_ephemeral_token,
-        alpha: { milestone: '15.9' }
+        experiment: { milestone: '15.9' }
       field :ephemeral_register_url, GraphQL::Types::String, null: true,
         description: 'URL of the registration page of the runner manager. Only available for the creator of the runner for a limited time during registration.',
-        alpha: { milestone: '15.11' }
+        experiment: { milestone: '15.11' }
       field :groups, null: true,
         resolver: ::Resolvers::Ci::RunnerGroupsResolver,
         description: 'Groups the runner is associated with. For group runners only.'
@@ -58,7 +58,7 @@ module Types
         Types::Ci::RunnerJobExecutionStatusEnum,
         null: true,
         description: 'Job execution status of the runner.',
-        alpha: { milestone: '15.7' }
+        experiment: { milestone: '15.7' }
       field :jobs, ::Types::Ci::JobType.connection_type, null: true,
         description: 'Jobs assigned to the runner. This field can only be resolved for one runner in any single request.',
         authorize: :read_builds,

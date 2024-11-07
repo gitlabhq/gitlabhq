@@ -83,7 +83,7 @@ gem 'marginalia', '~> 1.11.1' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'declarative_policy', '~> 1.1.0' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # For source code paths mapping
-gem 'coverband', '6.1.3', require: false, feature_category: :shared
+gem 'coverband', '6.1.4', require: false, feature_category: :shared
 
 # Authentication libraries
 gem 'devise', '~> 4.9.3', feature_category: :system_access

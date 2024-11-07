@@ -21,7 +21,7 @@ module Mutations
             GraphQL::Types::String,
             required: false,
             validates: { allow_blank: false },
-            alpha: { milestone: '16.7' },
+            experiment: { milestone: '16.7' },
             description: copy_field_description(
               Types::ContainerRegistry::Protection::RuleType,
               :repository_path_pattern
@@ -30,7 +30,7 @@ module Mutations
           argument :minimum_access_level_for_delete,
             Types::ContainerRegistry::Protection::RuleAccessLevelEnum,
             required: false,
-            alpha: { milestone: '16.7' },
+            experiment: { milestone: '16.7' },
             description: copy_field_description(
               Types::ContainerRegistry::Protection::RuleType,
               :minimum_access_level_for_delete
@@ -39,7 +39,7 @@ module Mutations
           argument :minimum_access_level_for_push,
             Types::ContainerRegistry::Protection::RuleAccessLevelEnum,
             required: false,
-            alpha: { milestone: '16.7' },
+            experiment: { milestone: '16.7' },
             description: copy_field_description(
               Types::ContainerRegistry::Protection::RuleType,
               :minimum_access_level_for_push
@@ -48,7 +48,7 @@ module Mutations
           field :container_registry_protection_rule,
             Types::ContainerRegistry::Protection::RuleType,
             null: true,
-            alpha: { milestone: '16.7' },
+            experiment: { milestone: '16.7' },
             description: 'Container registry protection rule after mutation.'
 
           def resolve(id:, **kwargs)

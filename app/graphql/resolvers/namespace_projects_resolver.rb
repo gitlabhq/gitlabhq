@@ -11,7 +11,7 @@ module Resolvers
       required: false,
       default_value: false,
       description: 'Include also projects from parent group.',
-      alpha: { milestone: '17.2' }
+      experiment: { milestone: '17.2' }
 
     argument :include_archived, GraphQL::Types::Boolean,
       required: false,

@@ -15,6 +15,7 @@ query getModelVersion($modelId: MlModelID!, $modelVersionId: MlModelVersionID!) 
       packageId
       description
       descriptionHtml
+      artifactsCount
       candidate {
         id
         name

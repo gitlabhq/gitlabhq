@@ -28,7 +28,7 @@ Try running the query in [GraphiQL](../api_graphql_styleguide.md#graphiql) on yo
 
 Check the MR for any [breaking changes](../api_graphql_styleguide.md#breaking-changes).
 
-If a feature is marked as an [experiment](../api_graphql_styleguide.md#mark-schema-items-as-alpha), you can make breaking changes immediately, with no deprecation period.
+If a feature is marked as an [experiment](../api_graphql_styleguide.md#mark-schema-items-as-experiments), you can make breaking changes immediately, with no deprecation period.
 
 For more information, see [deprecation and removal process](../../api/graphql/index.md#deprecation-and-removal-process).
 
@@ -45,7 +45,7 @@ Changes to the generated API docs require a technical writer review.
 
 ### Changelog
 
-Public-facing changes that are not marked as an [experiment](../api_graphql_styleguide.md#mark-schema-items-as-alpha) require a [changelog entry](../changelog.md).
+Public-facing changes that are not marked as an [experiment](../api_graphql_styleguide.md#mark-schema-items-as-experiments) require a [changelog entry](../changelog.md).
 
 ### Use the framework
 

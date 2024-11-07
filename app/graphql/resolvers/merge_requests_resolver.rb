@@ -89,7 +89,7 @@ module Resolvers
     argument :subscribed, Types::Issuables::SubscriptionStatusEnum,
       description: 'Merge requests the current user is subscribed to. Is ignored if ' \
         '`filter_subscriptions` feature flag is disabled.',
-      alpha: { milestone: '17.5' },
+      experiment: { milestone: '17.5' },
       required: false
 
     argument :created_after, Types::TimeType,
@@ -141,11 +141,11 @@ module Resolvers
     argument :review_state, ::Types::MergeRequestReviewStateEnum,
       required: false,
       description: 'Reviewer state of the merge request.',
-      alpha: { milestone: '17.0' }
+      experiment: { milestone: '17.0' }
     argument :review_states, [::Types::MergeRequestReviewStateEnum],
       required: false,
       description: 'Reviewer states of the merge request.',
-      alpha: { milestone: '17.0' }
+      experiment: { milestone: '17.0' }
     argument :sort, Types::MergeRequestSortEnum,
       description: 'Sort merge requests by the criteria.',
       required: false,

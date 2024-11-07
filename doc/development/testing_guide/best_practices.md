@@ -1346,7 +1346,12 @@ You can use the `SEARCH_SPEC_BENCHMARK` environment variable to benchmark test s
 SEARCH_SPEC_BENCHMARK=1 bundle exec rspec ee/spec/lib/elastic/latest/merge_request_class_proxy_spec.rb
 ```
 
-#### Test Snowplow events
+#### Test Legacy Snowplow events
+
+This section describes how to test with events that have yet to convert to
+[internal events](../internal_analytics/internal_event_instrumentation/quick_start.md).
+
+##### Backend
 
 WARNING:
 Snowplow performs **runtime type checks** by using the [contracts gem](https://rubygems.org/gems/contracts).
@@ -1396,6 +1401,39 @@ specify a `category` to avoid flaky tests. For example,
 `Users::ActivityService` may track a Snowplow event after an API
 request, and `expect_no_snowplow_event` will fail if that happens to run
 when no arguments are specified.
+
+##### View layer with data attributes
+
+If you are using the data attributes to register tracking at the Haml layer,
+you can use the `have_tracking` matcher method to assert if expected data attributes are assigned.
+
+For example, if we need to test the below Haml,
+
+```haml
+%div{ data: { testid: '_testid_', track_action: 'render', track_label: '_tracking_label_' } }
+```
+
+- [RSpec view specs](https://rspec.info/features/6-0/rspec-rails/view-specs/view-spec/)
+
+```ruby
+    it 'assigns the tracking items' do
+      render
+
+      expect(rendered).to have_tracking(action: 'render', label: '_tracking_label_', testid: '_testid_')
+    end
+```
+
+- [ViewComponent](https://viewcomponent.org/) specs
+
+```ruby
+  it 'assigns the tracking items' do
+    render_inline(component)
+
+    expect(page).to have_tracking(action: 'render', label: '_tracking_label_', testid: '_testid_')
+  end
+```
+
+When you want to ensure that tracking isn't assigned, you can use `not_to` with the above matchers.
 
 #### Test Snowplow context against the schema
 

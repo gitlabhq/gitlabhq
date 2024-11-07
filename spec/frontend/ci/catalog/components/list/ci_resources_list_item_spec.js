@@ -7,6 +7,7 @@ import { createRouter } from '~/ci/catalog/router/index';
 import CiResourcesListItem from '~/ci/catalog/components/list/ci_resources_list_item.vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import CiVerificationBadge from '~/ci/catalog/components/shared/ci_verification_badge.vue';
+import ProjectVisibilityIcon from '~/ci/catalog/components/shared/project_visibility_icon.vue';
 import Markdown from '~/vue_shared/components/markdown/non_gfm_markdown.vue';
 import { catalogSinglePageResponse } from '../../mock';
 
@@ -45,14 +46,16 @@ describe('CiResourcesListItem', () => {
 
   const findAvatar = () => wrapper.findComponent(GlAvatar);
   const findBadge = () => wrapper.findComponent(GlBadge);
-  const findComponentNames = () => wrapper.findByTestId('ci-resource-component-names');
-  const findResourceName = () => wrapper.findByTestId('ci-resource-link');
-  const findUserLink = () => wrapper.findByTestId('user-link');
-  const findVerificationBadge = () => wrapper.findComponent(CiVerificationBadge);
-  const findTimeAgoMessage = () => wrapper.findComponent(GlSprintf);
-  const findFavorites = () => wrapper.findByTestId('stats-favorites');
-  const findUsage = () => wrapper.findByTestId('stats-usage');
   const findMarkdown = () => wrapper.findComponent(Markdown);
+  const findTimeAgoMessage = () => wrapper.findComponent(GlSprintf);
+  const findVerificationBadge = () => wrapper.findComponent(CiVerificationBadge);
+  const findVisibilityIcon = () => wrapper.findComponent(ProjectVisibilityIcon);
+
+  const findComponentNames = () => wrapper.findByTestId('ci-resource-component-names');
+  const findFavorites = () => wrapper.findByTestId('stats-favorites');
+  const findResourceName = () => wrapper.findByTestId('ci-resource-link');
+  const findUsage = () => wrapper.findByTestId('stats-usage');
+  const findUserLink = () => wrapper.findByTestId('user-link');
 
   beforeEach(() => {
     routerPush = jest.spyOn(router, 'push').mockImplementation(() => {});
@@ -140,6 +143,30 @@ describe('CiResourcesListItem', () => {
         expect(findComponentNames().text()).toMatchInterpolatedText(
           '• Components: test-component, component_two, test-component, component_two, test-component',
         );
+      });
+    });
+  });
+
+  describe('visibility level', () => {
+    describe('when the project is public', () => {
+      beforeEach(() => {
+        createComponent();
+      });
+
+      it('does not render the private icon', () => {
+        expect(findVisibilityIcon().exists()).toBe(false);
+      });
+    });
+
+    describe('when the project is private', () => {
+      beforeEach(() => {
+        createComponent({
+          props: { resource: { ...resource, ...{ visibilityLevel: 'private' } } },
+        });
+      });
+
+      it('renders the private icon', () => {
+        expect(findVisibilityIcon().exists()).toBe(true);
       });
     });
   });

@@ -21,7 +21,7 @@ module Mutations
         argument :job_token_policies, [Types::Ci::JobTokenScope::PoliciesEnum],
           required: false,
           default_value: [],
-          alpha: { milestone: '17.5' },
+          experiment: { milestone: '17.5' },
           description: 'List of policies added to the CI job token scope. Is ignored if ' \
             '`add_policies_to_ci_job_token` feature flag is disabled.'
 

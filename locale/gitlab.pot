@@ -11701,6 +11701,9 @@ msgstr ""
 msgid "CiCatalog|Partner"
 msgstr ""
 
+msgid "CiCatalog|Private - This component project can only be viewed by project members."
+msgstr ""
+
 msgid "CiCatalog|Publish the CI/CD components in this project to the CI/CD Catalog"
 msgstr ""
 
@@ -11747,6 +11750,9 @@ msgid "CiCatalog|There was an error fetching CI/CD Catalog projects."
 msgstr ""
 
 msgid "CiCatalog|There was an error fetching the CI/CD Catalog project count."
+msgstr ""
+
+msgid "CiCatalog|This component project can only be viewed by project members."
 msgstr ""
 
 msgid "CiCatalog|This project is no longer a CI/CD Catalog project."
@@ -14158,6 +14164,9 @@ msgstr ""
 msgid "ComplianceFrameworks|Action"
 msgstr ""
 
+msgid "ComplianceFrameworks|Add a new control"
+msgstr ""
+
 msgid "ComplianceFrameworks|Add framework"
 msgstr ""
 
@@ -14171,6 +14180,9 @@ msgid "ComplianceFrameworks|Basic information"
 msgstr ""
 
 msgid "ComplianceFrameworks|Cancel"
+msgstr ""
+
+msgid "ComplianceFrameworks|Choose a standard control"
 msgstr ""
 
 msgid "ComplianceFrameworks|Compliance framework created"
@@ -14200,7 +14212,16 @@ msgstr ""
 msgid "ComplianceFrameworks|Controls"
 msgstr ""
 
+msgid "ComplianceFrameworks|Controls are pre-defined rules that are configured for GitLab resources."
+msgstr ""
+
 msgid "ComplianceFrameworks|Create framework"
+msgstr ""
+
+msgid "ComplianceFrameworks|Create new requirement"
+msgstr ""
+
+msgid "ComplianceFrameworks|Create requirement"
 msgstr ""
 
 msgid "ComplianceFrameworks|Default framework will be applied automatically to any new project created in the group or sub group."
@@ -14222,6 +14243,9 @@ msgid "ComplianceFrameworks|Edit compliance framework"
 msgstr ""
 
 msgid "ComplianceFrameworks|Edit compliance framework: %{frameworkName}"
+msgstr ""
+
+msgid "ComplianceFrameworks|Edit requirement"
 msgstr ""
 
 msgid "ComplianceFrameworks|Error fetching compliance frameworks data. Please refresh the page or try a different framework"
@@ -14279,6 +14303,9 @@ msgid "ComplianceFrameworks|Project name"
 msgstr ""
 
 msgid "ComplianceFrameworks|Projects"
+msgstr ""
+
+msgid "ComplianceFrameworks|Remove control"
 msgstr ""
 
 msgid "ComplianceFrameworks|Required"
@@ -49855,6 +49882,9 @@ msgstr ""
 msgid "SecurityOrchestration|If %{scanners} of the default branch finds %{severity_level} vulnerabilities are no longer detected."
 msgstr ""
 
+msgid "SecurityOrchestration|If any of the following occur:"
+msgstr ""
+
 msgid "SecurityOrchestration|If any scanner finds a newly detected critical vulnerability in an open merge request targeting the main branch, then require two approvals from any two members of the application security team."
 msgstr ""
 
@@ -50049,7 +50079,7 @@ msgstr ""
 msgid "SecurityOrchestration|Policy type"
 msgstr ""
 
-msgid "SecurityOrchestration|Require %{approvals} %{plural} from %{approvers} if any of the following occur:"
+msgid "SecurityOrchestration|Require %{approvals} %{plural} from %{approvers}"
 msgstr ""
 
 msgid "SecurityOrchestration|Require Approvers"

@@ -56,7 +56,7 @@ module WorkItems
       argument :subscribed, Types::Issuables::SubscriptionStatusEnum,
         description: 'Work items the current user is subscribed to. Is ignored if ' \
           '`filter_subscriptions` feature flag is disabled.',
-        alpha: { milestone: '17.5' },
+        experiment: { milestone: '17.5' },
         required: false
 
       argument :not, Types::WorkItems::NegatedWorkItemFilterInputType,

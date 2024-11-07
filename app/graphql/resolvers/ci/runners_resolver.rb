@@ -48,14 +48,14 @@ module Resolvers
       argument :creator_username, GraphQL::Types::String,
         required: false,
         description: 'Filter runners by creator username.',
-        alpha: { milestone: '16.7' }
+        experiment: { milestone: '16.7' }
 
       argument :version_prefix, GraphQL::Types::String,
         required: false,
         description: "Filter runners by version. Runners that contain runner managers with the version at " \
           "the start of the search term are returned. For example, the search term '14.' returns " \
           "runner managers with versions '14.11.1' and '14.2.3'.",
-        alpha: { milestone: '16.6' }
+        experiment: { milestone: '16.6' }
 
       def resolve_with_lookahead(**args)
         apply_lookahead(

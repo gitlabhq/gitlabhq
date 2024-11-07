@@ -13,7 +13,7 @@ module Resolvers
 
       argument :runner_types, [::Types::Ci::RunnerTypeEnum],
         required: false,
-        alpha: { milestone: '16.4' },
+        experiment: { milestone: '16.4' },
         description: 'Filter jobs by runner type if ' \
           'feature flag `:admin_jobs_filter_runner_type` is enabled.'
 

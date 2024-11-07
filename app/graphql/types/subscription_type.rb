@@ -35,17 +35,17 @@ module Types
     field :work_item_note_created,
       subscription: ::Subscriptions::Notes::Created, null: true,
       description: 'Triggered when a note is created.',
-      alpha: { milestone: '15.9' }
+      experiment: { milestone: '15.9' }
 
     field :work_item_note_deleted,
       subscription: ::Subscriptions::Notes::Deleted, null: true,
       description: 'Triggered when a note is deleted.',
-      alpha: { milestone: '15.9' }
+      experiment: { milestone: '15.9' }
 
     field :work_item_note_updated,
       subscription: ::Subscriptions::Notes::Updated, null: true,
       description: 'Triggered when a note is updated.',
-      alpha: { milestone: '15.9' }
+      experiment: { milestone: '15.9' }
 
     field :work_item_updated,
       subscription: Subscriptions::WorkItemUpdated,
@@ -71,7 +71,7 @@ module Types
     field :issuable_todo_updated,
       subscription: Subscriptions::IssuableUpdated, null: true,
       description: 'Triggered when a todo on an issuable is updated.',
-      alpha: { milestone: '17.5' }
+      experiment: { milestone: '17.5' }
   end
 end
 

@@ -5,21 +5,12 @@ import { s__, __ } from '~/locale';
 export default {
   name: 'ModelVersionDetail',
   components: {
-    PackageFiles: () =>
-      import('~/packages_and_registries/package_registry/components/details/package_files.vue'),
-    ImportArtifactZone: () => import('./import_artifact_zone.vue'),
     IssuableDescription,
   },
-  inject: ['projectPath', 'canWriteModelRegistry', 'importPath'],
   props: {
     modelVersion: {
       type: Object,
       required: true,
-    },
-    allowArtifactImport: {
-      type: Boolean,
-      required: false,
-      default: false,
     },
     taskListUpdatePath: {
       type: String,
@@ -43,15 +34,6 @@ export default {
     },
   },
   computed: {
-    packageType() {
-      return 'ml_model';
-    },
-    packageId() {
-      return this.modelVersion.packageId;
-    },
-    showImportArtifactZone() {
-      return this.canWriteModelRegistry && this.importPath && this.allowArtifactImport;
-    },
     issuable() {
       return {
         titleHtml: this.modelVersion.name,
@@ -91,22 +73,5 @@ export default {
         {{ $options.i18n.EMPTY_VERSION_CARD_DESCRIPTION }}
       </div>
     </div>
-
-    <template v-if="modelVersion.packageId">
-      <package-files
-        :package-id="packageId"
-        :can-delete="canWriteModelRegistry"
-        :delete-all-files="true"
-        :project-path="projectPath"
-        :package-type="packageType"
-      >
-        <template v-if="showImportArtifactZone" #upload="{ refetch }">
-          <h3 data-testid="uploadHeader" class="gl-mt-5 gl-text-lg">
-            {{ __('Upload artifacts') }}
-          </h3>
-          <import-artifact-zone :path="importPath" @change="refetch" />
-        </template>
-      </package-files>
-    </template>
   </div>
 </template>

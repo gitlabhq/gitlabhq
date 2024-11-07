@@ -28,7 +28,7 @@ module Types
         Types::Ci::RunnerJobExecutionStatusEnum,
         null: true,
         description: 'Job execution status of the runner manager.',
-        alpha: { milestone: '16.3' }
+        experiment: { milestone: '16.3' }
       field :platform_name, GraphQL::Types::String, null: true,
         description: 'Platform provided by the runner manager.',
         method: :platform

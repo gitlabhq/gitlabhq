@@ -94,7 +94,7 @@ module Users
       work_item_epic_feedback: 92, # EE-only
       branch_rules_tip_callout: 93,
       openssl_callout: 94,
-      # 95 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152981 https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170868
+      # 95 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170868
       new_mr_dashboard_banner: 96
     }
 

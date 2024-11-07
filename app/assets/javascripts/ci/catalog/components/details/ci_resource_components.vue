@@ -37,7 +37,7 @@ export default {
         };
       },
       update(data) {
-        return data?.ciCatalogResource?.versions?.nodes[0].components?.nodes || [];
+        return data?.ciCatalogResource?.versions?.nodes[0]?.components?.nodes || [];
       },
       error() {
         createAlert({ message: this.$options.i18n.fetchError });

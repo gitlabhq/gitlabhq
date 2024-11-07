@@ -20,7 +20,7 @@ module Resolvers
 
     argument :name, GraphQL::Types::String,
       required: false,
-      alpha: { milestone: '17.1' },
+      experiment: { milestone: '17.1' },
       description: 'Filter jobs by name.'
 
     alias_method :project, :object

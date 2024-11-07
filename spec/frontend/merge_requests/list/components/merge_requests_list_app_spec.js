@@ -283,22 +283,22 @@ describe('Merge requests list app', () => {
 
       it('does not have preloaded users when gon.current_user_id does not exist', () => {
         expect(findIssuableList().props('searchTokens')).toMatchObject([
-          { type: TOKEN_TYPE_APPROVED_BY, preloadedUsers: [] },
-          { type: TOKEN_TYPE_APPROVER, preloadedUsers: [] },
+          { type: TOKEN_TYPE_AUTHOR, preloadedUsers: [] },
           { type: TOKEN_TYPE_ASSIGNEE },
           { type: TOKEN_TYPE_REVIEWER, preloadedUsers: [] },
-          { type: TOKEN_TYPE_AUTHOR, preloadedUsers: [] },
-          { type: TOKEN_TYPE_DRAFT },
           { type: TOKEN_TYPE_MERGE_USER, preloadedUsers: [] },
+          { type: TOKEN_TYPE_APPROVER, preloadedUsers: [] },
+          { type: TOKEN_TYPE_APPROVED_BY, preloadedUsers: [] },
           { type: TOKEN_TYPE_MILESTONE },
-          { type: TOKEN_TYPE_TARGET_BRANCH },
-          { type: TOKEN_TYPE_SOURCE_BRANCH },
           { type: TOKEN_TYPE_LABEL },
           { type: TOKEN_TYPE_RELEASE },
+          { type: TOKEN_TYPE_MY_REACTION },
+          { type: TOKEN_TYPE_DRAFT },
+          { type: TOKEN_TYPE_TARGET_BRANCH },
+          { type: TOKEN_TYPE_SOURCE_BRANCH },
           { type: TOKEN_TYPE_ENVIRONMENT },
           { type: TOKEN_TYPE_DEPLOYED_BEFORE },
           { type: TOKEN_TYPE_DEPLOYED_AFTER },
-          { type: TOKEN_TYPE_MY_REACTION },
         ]);
       });
     });
@@ -343,22 +343,22 @@ describe('Merge requests list app', () => {
         ];
 
         expect(findIssuableList().props('searchTokens')).toMatchObject([
-          { type: TOKEN_TYPE_APPROVED_BY, preloadedUsers },
-          { type: TOKEN_TYPE_APPROVER, preloadedUsers },
+          { type: TOKEN_TYPE_AUTHOR, preloadedUsers },
           { type: TOKEN_TYPE_ASSIGNEE },
           { type: TOKEN_TYPE_REVIEWER, preloadedUsers },
-          { type: TOKEN_TYPE_AUTHOR, preloadedUsers },
-          { type: TOKEN_TYPE_DRAFT },
           { type: TOKEN_TYPE_MERGE_USER, preloadedUsers },
+          { type: TOKEN_TYPE_APPROVER, preloadedUsers },
+          { type: TOKEN_TYPE_APPROVED_BY, preloadedUsers },
           { type: TOKEN_TYPE_MILESTONE },
-          { type: TOKEN_TYPE_TARGET_BRANCH },
-          { type: TOKEN_TYPE_SOURCE_BRANCH },
           { type: TOKEN_TYPE_LABEL },
           { type: TOKEN_TYPE_RELEASE },
+          { type: TOKEN_TYPE_MY_REACTION },
+          { type: TOKEN_TYPE_DRAFT },
+          { type: TOKEN_TYPE_TARGET_BRANCH },
+          { type: TOKEN_TYPE_SOURCE_BRANCH },
           { type: TOKEN_TYPE_ENVIRONMENT },
           { type: TOKEN_TYPE_DEPLOYED_BEFORE },
           { type: TOKEN_TYPE_DEPLOYED_AFTER },
-          { type: TOKEN_TYPE_MY_REACTION },
         ]);
       });
 

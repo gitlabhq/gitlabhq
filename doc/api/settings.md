@@ -26,6 +26,7 @@ For information on how to control the application settings cache for an instance
 > - `in_product_marketing_emails_enabled` attribute [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/418137) in GitLab 16.6.
 > - `repository_storages` attribute [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/429675) in GitLab 16.6.
 > - `user_email_lookup_limit` attribute [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136886) in GitLab 16.7.
+> - `allow_all_integrations` and `allowed_integrations` attributes [added](https://gitlab.com/gitlab-org/gitlab/-/issues/500610) in GitLab 17.6.
 
 List the current [application settings](#list-of-settings-that-can-be-accessed-via-api-calls)
 of the GitLab instance.
@@ -158,6 +159,8 @@ Example response:
 Users on [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) may also see
 these parameters:
 
+- `allow_all_integrations`
+- `allowed_integrations`
 - `group_owners_can_manage_default_branch_protection`
 - `file_template_project_id`
 - `geo_node_allowed_ips`
@@ -185,7 +188,9 @@ these parameters:
   "deletion_adjourned_period": 7,
   "disable_personal_access_tokens": false,
   "duo_features_enabled": true,
-  "lock_duo_features_enabled": false
+  "lock_duo_features_enabled": false,
+  "allow_all_integrations": true,
+  "allowed_integrations": []
   ...
 }
 ```
@@ -196,6 +201,7 @@ these parameters:
 > - `delayed_project_deletion` and `delayed_group_deletion` attributes removed in GitLab 16.0.
 > - `user_email_lookup_limit` attribute [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136886) in GitLab 16.7.
 > - `default_branch_protection` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/408314) in GitLab 17.0. Use `default_branch_protection_defaults` instead.
+> - `allow_all_integrations` and `allowed_integrations` attributes [added](https://gitlab.com/gitlab-org/gitlab/-/issues/500610) in GitLab 17.6.
 
 Use an API call to modify GitLab instance
 [application settings](#list-of-settings-that-can-be-accessed-via-api-calls).
@@ -335,6 +341,8 @@ Example response:
 Users on [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) may also see
 these parameters:
 
+- `allow_all_integrations`
+- `allowed_integrations`
 - `group_owners_can_manage_default_branch_protection`
 - `file_template_project_id`
 - `geo_node_allowed_ips`
@@ -357,6 +365,8 @@ Example responses:
   "geo_node_allowed_ips": "0.0.0.0/0, ::/0",
   "duo_features_enabled": true,
   "lock_duo_features_enabled": false,
+  "allow_all_integrations": true,
+  "allowed_integrations": []
 ```
 
 ## List of settings that can be accessed via API calls
@@ -367,6 +377,7 @@ Example responses:
 > - `silent_admin_exports_enabled` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148918) in GitLab 17.0.
 > - `require_personal_access_token_expiry` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/470192) in GitLab 17.3.
 > - `receptive_cluster_agents_enabled` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/463427) in GitLab 17.4.
+> - `allow_all_integrations` and `allowed_integrations` [added](https://gitlab.com/gitlab-org/gitlab/-/issues/500610) in GitLab 17.6.
 
 In general, all settings are optional. Certain settings though, if enabled,
 require other settings to be set to function properly. These requirements are
@@ -384,6 +395,8 @@ listed in the descriptions of the relevant settings.
 | `after_sign_up_text`                     | string           | no                                   | Text shown to the user after signing up. |
 | `akismet_api_key`                        | string           | required by: `akismet_enabled`       | API key for Akismet spam protection. |
 | `akismet_enabled`                        | boolean          | no                                   | (**If enabled, requires:** `akismet_api_key`) Enable or disable Akismet spam protection. |
+| `allow_all_integrations`                 | boolean          | no                                   | When `false`, only integrations in `allowed_integrations` are allowed on the instance. Premium and Ultimate only. |
+| `allowed_integrations`                   | array of strings | no                                   | When `allow_all_integrations` is `false`, only integrations in this list are allowed on the instance. Premium and Ultimate only. |
 | `allow_account_deletion`                 | boolean          | no                                   | Set to `true` to allow users to delete their accounts. Premium and Ultimate only. |
 | `allow_group_owners_to_manage_ldap`      | boolean          | no                                   | Set to `true` to allow group owners to manage LDAP. Premium and Ultimate only. |
 | `allow_local_requests_from_hooks_and_services` | boolean    | no                                   | (Deprecated: Use `allow_local_requests_from_web_hooks_and_services` instead) Allow requests to the local network from webhooks and integrations. |

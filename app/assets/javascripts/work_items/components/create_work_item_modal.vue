@@ -169,6 +169,7 @@ export default {
     },
     handleCreated(workItem) {
       this.$toast.show(this.workItemCreatedText, {
+        autoHideDelay: 10000,
         action: {
           text: __('View details'),
           onClick: () => {

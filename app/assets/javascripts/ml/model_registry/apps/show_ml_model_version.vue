@@ -1,6 +1,6 @@
 <script>
 import VueRouter from 'vue-router';
-import { GlAvatar, GlTab, GlTabs, GlButton, GlSprintf, GlIcon, GlLink } from '@gitlab/ui';
+import { GlAvatar, GlTab, GlTabs, GlBadge, GlButton, GlSprintf, GlIcon, GlLink } from '@gitlab/ui';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { createAlert, VARIANT_DANGER } from '~/alert';
@@ -16,13 +16,19 @@ import ModelVersionDetail from '../components/model_version_detail.vue';
 import ModelVersionPerformance from '../components/model_version_performance.vue';
 import LoadOrErrorOrShow from '../components/load_or_error_or_show.vue';
 import ModelVersionActionsDropdown from '../components/model_version_actions_dropdown.vue';
-import { ROUTE_DETAILS, ROUTE_PERFORMANCE } from '../constants';
+import ModelVersionArtifacts from '../components/model_version_artifacts.vue';
+import { ROUTE_DETAILS, ROUTE_PERFORMANCE, ROUTE_ARTIFACTS } from '../constants';
 
 const routes = [
   {
     path: '/',
     name: ROUTE_DETAILS,
     component: ModelVersionDetail,
+  },
+  {
+    path: '/artifacts',
+    name: ROUTE_ARTIFACTS,
+    component: ModelVersionArtifacts,
   },
   {
     path: '/performance',
@@ -42,6 +48,7 @@ export default {
     TitleArea,
     GlTabs,
     GlTab,
+    GlBadge,
     GlIcon,
     GlLink,
     GlSprintf,
@@ -173,6 +180,9 @@ export default {
     author() {
       return this.modelVersion?.author;
     },
+    artifactsCount() {
+      return this.modelVersion.artifactsCount;
+    },
   },
   methods: {
     handleError(error) {
@@ -224,8 +234,14 @@ export default {
   i18n: {
     editModelVersionButtonLabel: s__('MlModelRegistry|Edit model version'),
     authorTitle: s__('MlModelRegistry|Publisher'),
+    tabs: {
+      modelVersionCard: s__('MlModelRegistry|Version card'),
+      artifacts: s__('MlModelRegistry|Artifacts'),
+      performance: s__('MlModelRegistry|Performance'),
+    },
   },
   ROUTE_DETAILS,
+  ROUTE_ARTIFACTS,
   ROUTE_PERFORMANCE,
 };
 </script>
@@ -280,11 +296,17 @@ export default {
         <load-or-error-or-show :is-loading="isLoading" :error-message="errorMessage">
           <gl-tabs class="gl-mt-4" :value="tabIndex">
             <gl-tab
-              :title="s__('MlModelRegistry|Version card')"
+              :title="$options.i18n.tabs.modelVersionCard"
               @click="goTo($options.ROUTE_DETAILS)"
             />
+            <gl-tab @click="goTo($options.ROUTE_ARTIFACTS)">
+              <template #title>
+                {{ $options.i18n.tabs.artifacts }}
+                <gl-badge class="gl-tab-counter-badge">{{ artifactsCount }}</gl-badge>
+              </template>
+            </gl-tab>
             <gl-tab
-              :title="s__('MlModelRegistry|Performance')"
+              :title="$options.i18n.tabs.performance"
               @click="goTo($options.ROUTE_PERFORMANCE)"
             />
           </gl-tabs>

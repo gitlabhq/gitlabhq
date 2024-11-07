@@ -416,6 +416,8 @@ For Haml:
 
 #### Frontend testing
 
+##### JavaScript/Vue
+
 If you are using the `trackEvent` method in any of your code, whether it is in raw JavaScript or a Vue component, you can use the `useMockInternalEventsTracking` helper method to assert if `trackEvent` is called.
 
 For example, if we need to test the below Vue component,
@@ -558,6 +560,43 @@ describe('DeleteApplication', () => {
   });
 });
 ```
+
+#### Haml with data attributes
+
+If you are using the data attributes to register tracking at the Haml layer,
+you can use the `have_internal_tracking` matcher method to assert if expected data attributes are assigned.
+
+For example, if we need to test the below Haml,
+
+```haml
+%div{ data: { testid: '_testid_', event_tracking: 'render', event_label: '_tracking_label_' } }
+```
+
+Below would be the test case for above haml.
+
+- [RSpec view specs](https://rspec.info/features/6-0/rspec-rails/view-specs/view-spec/)
+
+```ruby
+  it 'assigns the tracking items' do
+    render
+
+    expect(rendered).to have_internal_tracking(event: 'render', label: '_tracking_label_', testid: '_testid_')
+  end
+```
+
+- [ViewComponent](https://viewcomponent.org/) specs
+
+```ruby
+  it 'assigns the tracking items' do
+    render_inline(component)
+
+    expect(page).to have_internal_tracking(event: 'render', label: '_tracking_label_', testid: '_testid_')
+  end
+```
+
+`event` is required for the matcher and `label`/`testid` are optional.
+It is recommended to use `testid` when possible for exactness.
+When you want to ensure that tracking isn't assigned, you can use `not_to` with the above matchers.
 
 ### Using Internal Events API
 

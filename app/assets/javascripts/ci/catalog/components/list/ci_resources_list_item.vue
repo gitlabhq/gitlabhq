@@ -16,14 +16,15 @@ import { toNounSeriesText } from '~/lib/utils/grammar';
 import { cleanLeadingSeparator } from '~/lib/utils/url_utility';
 import Markdown from '~/vue_shared/components/markdown/non_gfm_markdown.vue';
 import { CI_RESOURCE_DETAILS_PAGE_NAME } from '../../router/constants';
-import { VERIFICATION_LEVEL_UNVERIFIED } from '../../constants';
+import { VERIFICATION_LEVEL_UNVERIFIED, VISIBILITY_LEVEL_PRIVATE } from '../../constants';
 import CiVerificationBadge from '../shared/ci_verification_badge.vue';
+import ProjectVisibilityIcon from '../shared/project_visibility_icon.vue';
 
 export default {
   i18n: {
     components: s__('CiCatalog|Components:'),
-    unreleased: s__('CiCatalog|Unreleased'),
     releasedMessage: s__('CiCatalog|Released %{timeAgo} by %{author}'),
+    unreleased: s__('CiCatalog|Unreleased'),
   },
   components: {
     CiVerificationBadge,
@@ -35,6 +36,7 @@ export default {
     GlSprintf,
     GlTruncate,
     Markdown,
+    ProjectVisibilityIcon,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -59,7 +61,7 @@ export default {
       return this.latestVersion.author.webUrl;
     },
     components() {
-      return this.resource.versions?.nodes[0]?.components?.nodes || [];
+      return this.resource?.versions?.nodes[0]?.components?.nodes || [];
     },
     componentNamesSprintfMessage() {
       return toNounSeriesText(
@@ -83,10 +85,13 @@ export default {
       return formatDate(this.latestVersion?.createdAt);
     },
     hasComponents() {
-      return Boolean(this.components.length);
+      return Boolean(this.components?.length);
     },
     hasReleasedVersion() {
       return Boolean(this.latestVersion?.createdAt);
+    },
+    isPrivate() {
+      return this.resource?.visibilityLevel === VISIBILITY_LEVEL_PRIVATE;
     },
     isVerified() {
       return this.resource?.verificationLevel !== VERIFICATION_LEVEL_UNVERIFIED;
@@ -166,7 +171,7 @@ export default {
           :verification-level="resource.verificationLevel"
         />
       </div>
-      <div class="gl-mb-1 gl-flex gl-flex-wrap gl-gap-2">
+      <div class="gl-mb-1 gl-flex gl-flex-wrap gl-items-center gl-gap-2">
         <gl-link
           class="gl-mr-1 !gl-text-gray-900"
           :href="detailsPageHref"
@@ -175,6 +180,7 @@ export default {
         >
           <b> {{ resource.name }}</b>
         </gl-link>
+        <project-visibility-icon v-if="isPrivate" />
         <div class="gl-flex gl-grow md:gl-justify-between">
           <gl-badge class="gl-h-5 gl-self-center" variant="info">{{ name }}</gl-badge>
           <div class="gl-ml-3 gl-flex gl-items-center">
@@ -201,7 +207,11 @@ export default {
       </div>
       <div class="gl-flex gl-flex-col gl-justify-between gl-gap-2 gl-text-sm md:gl-flex-row">
         <div>
-          <markdown class="gl-flex gl-basis-2/3" :markdown="resource.description" />
+          <markdown
+            v-if="resource.description"
+            class="gl-flex gl-basis-2/3"
+            :markdown="resource.description"
+          />
           <div
             v-if="hasComponents"
             data-testid="ci-resource-component-names"
