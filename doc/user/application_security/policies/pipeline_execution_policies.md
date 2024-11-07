@@ -163,6 +163,11 @@ For projects without a `.gitlab-ci.yml` file, this strategy will create the `.gi
 implicitly. That is, a pipeline containing only the jobs defined in the pipeline execution policy is
 executed.
 
+NOTE:
+When a pipeline execution policy uses workflow rules that prevent policy jobs from running, the only jobs that
+run are the project's CI/CD jobs. If the project uses workflow rules that prevent project CI/CD jobs from running,
+the only jobs that run are the pipeline execution policy jobs.
+
 ### `override_project_ci`
 
 This strategy completely replaces the project's existing CI/CD configuration with a new one defined by the pipeline execution policy. This strategy is ideal when the entire pipeline needs to be standardized or replaced, such as enforcing organization-wide CI/CD standards or compliance requirements.

@@ -22,7 +22,7 @@ import k8sServicesQuery from '../../queries/k8s_services.query.graphql';
 import k8sDeploymentsQuery from '../../queries/k8s_deployments.query.graphql';
 import k8sEventsQuery from '../../queries/k8s_events.query.graphql';
 import { k8sResourceType } from './constants';
-import { k8sLogs } from './k8s_logs';
+import { k8sLogs, k8sPodLogsWatcher, abortK8sPodLogsStream } from './k8s_logs';
 
 const watchServices = ({ configuration, namespace, client }) => {
   const query = k8sServicesQuery;
@@ -185,6 +185,7 @@ export const kubernetesMutations = {
         return buildKubernetesErrors([error]);
       });
   },
+  abortK8sPodLogsStream,
 };
 
 export const kubernetesQueries = {
@@ -284,4 +285,5 @@ export const kubernetesQueries = {
       });
   },
   k8sLogs,
+  k8sPodLogsWatcher,
 };

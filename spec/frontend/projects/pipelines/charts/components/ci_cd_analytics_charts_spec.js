@@ -1,8 +1,8 @@
 import { nextTick } from 'vue';
+import { GlSegmentedControl } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import CiCdAnalyticsAreaChart from '~/vue_shared/components/ci_cd_analytics/ci_cd_analytics_area_chart.vue';
 import CiCdAnalyticsCharts from '~/vue_shared/components/ci_cd_analytics/ci_cd_analytics_charts.vue';
-import SegmentedControlButtonGroup from '~/vue_shared/components/segmented_control_button_group.vue';
 import { transformedAreaChartData, chartOptions } from '../mock_data';
 
 const charts = [
@@ -48,7 +48,7 @@ describe('~/vue_shared/components/ci_cd_analytics/ci_cd_analytics_charts.vue', (
     });
 
   const findMetricsSlot = () => wrapper.findByTestId('metrics-slot');
-  const findSegmentedControl = () => wrapper.findComponent(SegmentedControlButtonGroup);
+  const findSegmentedControl = () => wrapper.findComponent(GlSegmentedControl);
 
   describe('segmented control', () => {
     beforeEach(() => {

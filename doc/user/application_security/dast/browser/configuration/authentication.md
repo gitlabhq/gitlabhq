@@ -240,7 +240,6 @@ Selectors have the format `type`:`search string`. DAST searches for the selector
 | `id`          | `id:element`                       | Searches for an HTML element with the provided element ID.                                                                                                                                            |
 | `name`        | `name:element`                     | Searches for an HTML element with the provided element name.                                                                                                                                          |
 | `xpath`       | `xpath://input[@id="my-button"]/a` | Searches for a HTML element with the provided XPath. XPath searches are expected to be less performant than other searches.                                                                           |
-| None provided | `a.click-me`                       | Defaults to searching using a CSS selector. **{warning}** **[Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/383348)** in GitLab 15.8. Replaced by explicitly declaring the selector type.  |
 
 #### Find selectors with Google Chrome
 

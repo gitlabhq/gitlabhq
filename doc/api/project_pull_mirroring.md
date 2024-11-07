@@ -74,9 +74,55 @@ Example response:
 
 ## Configure pull mirroring for a project
 
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/494294) in GitLab 17.6.
+
+Configure pull mirroring settings.
+
+Supported attributes:
+
+| Attribute                        | Type    | Required | Description |
+|:---------------------------------|:--------|:---------|:------------|
+| `enabled`                        | boolean | No       | Enables pull mirroring on project when set to `true`. |
+| `url`                            | string  | No       | URL of remote repository being mirrored. |
+| `auth_user`                      | string  | No       | Username used for authentication of a project to pull mirror. |
+| `auth_password`                  | string  | No       | Password used for authentication of a project to pull mirror. |
+| `mirror_trigger_builds`          | boolean | No       | Trigger pipelines for mirror updates when set to `true`. |
+| `only_mirror_protected_branches` | boolean | No       | Limits mirroring to only protected branches when set to `true`. |
+| `mirror_branch_regex`            | String  | No       | Contains a regular expression. Only branches with names matching the regex are mirrored. Requires `only_mirror_protected_branches` to be disabled. |
+
+Example request to add pull mirroring:
+
+```shell
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
+ --header "Content-Type: application/json" \
+ --data '{
+  "enabled": true,
+  "url": "https://gitlab.example.com/group/project.git",
+  "auth_user": "user",
+  "auth_password": "password"
+ }' \
+ --url "https://gitlab.example.com/api/v4/projects/:id/mirror/pull"
+```
+
+Example request to remove pull mirroring:
+
+```shell
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
+ --url "https://gitlab.example.com/api/v4/projects/:id/mirror/pull"  \
+ --data "enabled=false"
+```
+
+## Configure pull mirroring for a project (deprecated)
+
 > - Field `mirror_branch_regex` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381667) in GitLab 15.8 [with a flag](../administration/feature_flags.md) named `mirror_only_branches_match_regex`. Disabled by default.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/381667) in GitLab 16.0.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/410354) in GitLab 16.2. Feature flag `mirror_only_branches_match_regex` removed.
+> - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/494294) in GitLab 17.6.
+
+WARNING:
+This configuration option was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/494294) in GitLab 17.6
+and is planned for removal in v5 of the API. Use the [new configuration and endpoint](project_pull_mirroring.md#configure-pull-mirroring-for-a-project) instead.
+This change is a breaking change.
 
 Configure pull mirroring while [creating a new project](projects.md#create-a-project) or
 [updating an existing project](projects.md#edit-a-project) by using the API if the remote repository is accessible publicly or by
@@ -124,49 +170,6 @@ Example removing pull mirroring:
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
  --url "https://gitlab.example.com/api/v4/projects/:id"  \
  --data "mirror=false"
-```
-
-## Configure pull mirroring for a project v2
-
-DETAILS:
-**Status:** Experiment
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/494294) in GitLab 17.5. This feature is an [experiment](../policy/experiment-beta-support.md).
-
-Configure pull mirroring settings.
-
-Supported attributes:
-
-| Attribute                        | Type    | Required | Description |
-|:---------------------------------|:--------|:---------|:------------|
-| `enabled`                        | boolean | No       | Enables pull mirroring on project when set to `true`. |
-| `url`                            | string  | No       | URL of remote repository being mirrored. |
-| `auth_user`                      | string  | No       | Username used for authentication of a project to pull mirror. |
-| `auth_password`                  | string  | No       | Password used for authentication of a project to pull mirror. |
-| `mirror_trigger_builds`          | boolean | No       | Trigger pipelines for mirror updates when set to `true`. |
-| `only_mirror_protected_branches` | boolean | No       | Limits mirroring to only protected branches when set to `true`. |
-| `mirror_branch_regex`            | String  | No       | Contains a regular expression. Only branches with names matching the regex are mirrored. Requires `only_mirror_protected_branches` to be disabled. |
-
-Example request to add pull mirroring:
-
-```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
- --header "Content-Type: application/json" \
- --data '{
-  "enabled": true,
-  "url": "https://gitlab.example.com/group/project.git",
-  "auth_user": "user",
-  "auth_password": "password"
- }' \
- --url "https://gitlab.example.com/api/v4/projects/:id/mirror/pull"
-```
-
-Example request to remove pull mirroring:
-
-```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
- --url "https://gitlab.example.com/api/v4/projects/:id/mirror/pull"  \
- --data "enabled=false"
 ```
 
 ## Start the pull mirroring process for a project

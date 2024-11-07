@@ -217,8 +217,7 @@ module QA
         end
 
         def click_diffs_tab
-          # Do not wait for spinner due to https://gitlab.com/gitlab-org/gitlab/-/issues/398584
-          click_element('diffs-tab', skip_finished_loading_check: true)
+          click_element('diffs-tab')
         end
 
         def click_pipeline_link

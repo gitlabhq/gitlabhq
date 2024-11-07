@@ -146,3 +146,12 @@ The `require_password_to_approve` was deprecated in GitLab 16.9. Use the `requir
 instead. If you supply values to both fields, the `require_reauthentication_to_approve` field takes precedence.
 
 The `require_password_to_approve` field will be removed in v5 of the GitLab REST API.
+
+## Pull mirroring configuration with Project API
+
+Breaking change. [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/494294).
+
+In GitLab 17.6, the [pull mirroring configuration with the Projects API](../project_pull_mirroring.md#configure-pull-mirroring-for-a-project-deprecated) is deprecated.
+It is replaced by a new configuration and endpoint, [`projects/:id/mirror/pull`](../project_pull_mirroring.md#configure-pull-mirroring-for-a-project).
+
+The previous configuration using the Projects API will be removed in v5 of the GitLab REST API.

@@ -1713,14 +1713,18 @@
   PROCESS_TEST_RESULTS: "true"
   QA_SAVE_TEST_METRICS: "true"
 
-.qa:rules:e2e-schedule-blocking:
+.qa:rules:e2e-schedule-nightly:
   rules:
     - <<: *if-default-branch-schedule-nightly
       variables:
         <<: *qa-e2e-test-schedule-variables
         KNAPSACK_GENERATE_REPORT: "true"
         QA_RUN_IN_PARALLEL: "false"
-        COVERBAND_ENABLED: "true"
+        COVERBAND_ENABLED: "false"
+
+.qa:rules:e2e-schedule-blocking:
+  rules:
+    - !reference [".qa:rules:e2e-schedule-nightly", rules]
     - <<: *if-dot-com-gitlab-org-schedule
       variables:
         <<: *qa-e2e-test-schedule-variables
@@ -1854,7 +1858,12 @@
     - !reference [".qa:rules:e2e-blocking-base-before", rules]
     - !reference [".prevent-tier-2-and-below", rules]
     - !reference [".qa:rules:e2e-blocking-base-after", rules]
-    - !reference [".qa:rules:e2e-schedule-blocking", rules]
+    - !reference [".qa:rules:e2e-schedule-nightly", rules]
+    - <<: *if-dot-com-gitlab-org-schedule
+      variables:
+        <<: *qa-e2e-test-schedule-variables
+        KNAPSACK_GENERATE_REPORT: "false"
+        QA_RUN_IN_PARALLEL: "true"
 
 .qa:rules:test-on-omnibus-nightly:
   rules:

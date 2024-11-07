@@ -1,0 +1,12 @@
+---
+table_name: members_deletion_schedules
+classes:
+- Members::DeletionSchedule
+feature_categories:
+- seat_cost_management
+description: Keeps deletion schedules for members
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170268
+milestone: '17.6'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  namespace_id: namespaces

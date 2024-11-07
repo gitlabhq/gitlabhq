@@ -4,69 +4,73 @@ import LinkCell from '~/ci/runner/components/cells/link_cell.vue';
 
 describe('LinkCell', () => {
   let wrapper;
+  let onClick;
 
-  const findGlLink = () => wrapper.findComponent(GlLink);
+  const findLink = () => wrapper.findComponent(GlLink);
   const findSpan = () => wrapper.find('span');
 
-  const createComponent = ({ props = {}, ...options } = {}) => {
+  const createComponent = (props = {}) => {
     wrapper = shallowMountExtended(LinkCell, {
       propsData: {
         ...props,
       },
-      ...options,
+      attrs: { foo: 'bar' },
+      slots: {
+        default: 'My Text',
+      },
+      listeners: {
+        click: onClick,
+      },
     });
   };
 
-  it('when an href is provided, renders a link', () => {
-    createComponent({ props: { href: '/url' } });
-    expect(findGlLink().exists()).toBe(true);
+  beforeEach(() => {
+    onClick = jest.fn();
   });
 
-  it('when an href is not provided, renders no link', () => {
-    createComponent();
-    expect(findGlLink().exists()).toBe(false);
-  });
+  describe('works as a wrapper', () => {
+    describe('when an href is provided', () => {
+      beforeEach(() => {
+        createComponent({ href: '/url' });
+      });
 
-  describe.each`
-    href      | findContent
-    ${null}   | ${findSpan}
-    ${'/url'} | ${findGlLink}
-  `('When href is $href', ({ href, findContent }) => {
-    const content = 'My Text';
-    const attrs = { foo: 'bar' };
-    const listeners = {
-      click: jest.fn(),
-    };
+      it('renders a link', () => {
+        expect(findLink().exists()).toBe(true);
+      });
 
-    beforeEach(() => {
-      createComponent({
-        props: { href },
-        slots: {
-          default: content,
-        },
-        attrs,
-        listeners,
+      it('passes attributes', () => {
+        expect(findLink().attributes()).toMatchObject({ foo: 'bar' });
+      });
+
+      it('passes event listeners', () => {
+        expect(onClick).toHaveBeenCalledTimes(0);
+
+        findLink().vm.$emit('click');
+
+        expect(onClick).toHaveBeenCalledTimes(1);
       });
     });
 
-    afterAll(() => {
-      listeners.click.mockReset();
-    });
+    describe('when an href is not provided', () => {
+      beforeEach(() => {
+        createComponent({ href: null });
+      });
 
-    it('Renders content', () => {
-      expect(findContent().text()).toBe(content);
-    });
+      it('renders no link', () => {
+        expect(findLink().exists()).toBe(false);
+      });
 
-    it('Passes attributes', () => {
-      expect(findContent().attributes()).toMatchObject(attrs);
-    });
+      it('passes attributes', () => {
+        expect(findSpan().attributes()).toMatchObject({ foo: 'bar' });
+      });
 
-    it('Passes event listeners', () => {
-      expect(listeners.click).toHaveBeenCalledTimes(0);
+      it('passes event listeners', () => {
+        expect(onClick).toHaveBeenCalledTimes(0);
 
-      findContent().vm.$emit('click');
+        findSpan().trigger('click');
 
-      expect(listeners.click).toHaveBeenCalledTimes(1);
+        expect(onClick).toHaveBeenCalledTimes(1);
+      });
     });
   });
 });

@@ -143,6 +143,7 @@ the following sections and tables provide an alternative.
 | `approval_settings` | `object`           | false    |                 | Project settings that the policy overrides.              |
 | `fallback_behavior` | `object`           | false    |                 | Settings that affect invalid or unenforceable rules.     |
 | `policy_scope`      | `object` of [`policy_scope`](index.md#scope) | false |  | Defines the scope of the policy based on the projects, groups, or compliance framework labels you specify. |
+| `policy_tuning`     | `object`           | false    |                 | (Experimental) Settings that affect policy comparison logic.     |
 
 ## `scan_finding` rule type
 
@@ -281,6 +282,60 @@ On self-managed GitLab, by default the `fallback_behavior` field is available. T
 | Field  | Type     | Required | Possible values    | Description                                                                                                          |
 |--------|----------|----------|--------------------|----------------------------------------------------------------------------------------------------------------------|
 | `fail` | `string` | false    | `open` or `closed` | `closed` (default): Invalid or unenforceable rules of a policy require approval. `open`: Invalid or unenforceable rules of a policy do not require approval. |
+
+## `policy_tuning`
+
+> - The `policy_tuning` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/490092) in GitLab 17.6 [with a flag](../../../administration/feature_flags.md) named `unblock_rules_using_execution_policies`. Disabled by default.
+
+FLAG:
+The availability of this feature is controlled by a feature flag. For more information, see the history.
+
+| Field  | Type     | Required | Possible values    | Description                                                                                                          |
+|--------|----------|----------|--------------------|----------------------------------------------------------------------------------------------------------------------|
+| `unblock_rules_using_execution_policies` | `boolean` | false    | `true`, `false` | When enabled, approval rules become optional when scan artifacts are missing from the target branch and a scan is required by a scan execution policy. This option only works with an existing scan execution policy that has matching scanners. |
+
+### Example `policy.yml` in a security policy project that uses `policy_tuning`
+
+```yaml
+scan_execution_policy:
+- name: Enforce dependency scanning
+  description: ''
+  enabled: true
+  policy_scope:
+    projects:
+      excluding: []
+  rules:
+  - type: pipeline
+    branch_type: all
+  actions:
+  - scan: dependency_scanning
+approval_policy:
+- name: Dependency scanning approvals
+  description: ''
+  enabled: true
+  policy_scope:
+    projects:
+      excluding: []
+  rules:
+  - type: scan_finding
+    scanners:
+    - dependency_scanning
+    vulnerabilities_allowed: 0
+    severity_levels: []
+    vulnerability_states: []
+    branch_type: protected
+  actions:
+  - type: require_approval
+    approvals_required: 1
+    role_approvers:
+    - developer
+  - type: send_bot_message
+    enabled: true
+  fallback_behavior:
+    fail: closed
+  policy_tuning:
+    unblock_rules_using_execution_policies: true
+```
 
 ## Policy scope schema
 

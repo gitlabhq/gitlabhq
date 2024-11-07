@@ -1,13 +1,13 @@
 <script>
+import { GlSegmentedControl } from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
-import SegmentedControlButtonGroup from '~/vue_shared/components/segmented_control_button_group.vue';
 import CiCdAnalyticsAreaChart from './ci_cd_analytics_area_chart.vue';
 import { DEFAULT_SELECTED_CHART } from './constants';
 
 export default {
   components: {
     CiCdAnalyticsAreaChart,
-    SegmentedControlButtonGroup,
+    GlSegmentedControl,
   },
   props: {
     charts: {
@@ -56,11 +56,7 @@ export default {
 <template>
   <div>
     <div class="gl-flex gl-flex-wrap gl-gap-5">
-      <segmented-control-button-group
-        :options="chartRanges"
-        :value="selectedChart"
-        @input="onInput"
-      />
+      <gl-segmented-control :options="chartRanges" :value="selectedChart" @input="onInput" />
       <slot name="extend-button-group"></slot>
     </div>
     <ci-cd-analytics-area-chart

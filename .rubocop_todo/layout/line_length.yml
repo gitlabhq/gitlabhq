@@ -2174,7 +2174,6 @@ Layout/LineLength:
     - 'lib/gitlab/auth/user_access_denied_reason.rb'
     - 'lib/gitlab/background_migration/backfill_issue_search_data.rb'
     - 'lib/gitlab/background_migration/backfill_iteration_cadence_id_for_boards.rb'
-    - 'lib/gitlab/background_migration/backfill_project_statistics_storage_size_without_pipeline_artifacts_size_job.rb'
     - 'lib/gitlab/background_migration/backfill_snippet_repositories.rb'
     - 'lib/gitlab/background_migration/backfill_workspace_personal_access_token.rb'
     - 'lib/gitlab/background_migration/batching_strategies/backfill_project_namespace_per_group_batching_strategy.rb'

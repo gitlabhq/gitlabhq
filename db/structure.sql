@@ -14014,6 +14014,24 @@ CREATE TABLE members (
     CONSTRAINT check_508774aac0 CHECK ((member_namespace_id IS NOT NULL))
 );
 
+CREATE TABLE members_deletion_schedules (
+    id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    scheduled_by_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL
+);
+
+CREATE SEQUENCE members_deletion_schedules_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE members_deletion_schedules_id_seq OWNED BY members_deletion_schedules.id;
+
 CREATE SEQUENCE members_id_seq
     START WITH 1
     INCREMENT BY 1
@@ -23136,6 +23154,8 @@ ALTER TABLE ONLY member_roles ALTER COLUMN id SET DEFAULT nextval('member_roles_
 
 ALTER TABLE ONLY members ALTER COLUMN id SET DEFAULT nextval('members_id_seq'::regclass);
 
+ALTER TABLE ONLY members_deletion_schedules ALTER COLUMN id SET DEFAULT nextval('members_deletion_schedules_id_seq'::regclass);
+
 ALTER TABLE ONLY merge_request_assignees ALTER COLUMN id SET DEFAULT nextval('merge_request_assignees_id_seq'::regclass);
 
 ALTER TABLE ONLY merge_request_assignment_events ALTER COLUMN id SET DEFAULT nextval('merge_request_assignment_events_id_seq'::regclass);
@@ -25472,6 +25492,9 @@ ALTER TABLE ONLY member_approvals
 
 ALTER TABLE ONLY member_roles
     ADD CONSTRAINT member_roles_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY members_deletion_schedules
+    ADD CONSTRAINT members_deletion_schedules_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY members
     ADD CONSTRAINT members_pkey PRIMARY KEY (id);
@@ -28108,6 +28131,8 @@ CREATE INDEX idx_keys_expires_at_and_before_expiry_notification_undelivered ON k
 
 CREATE INDEX idx_members_created_at_user_id_invite_token ON members USING btree (created_at) WHERE ((invite_token IS NOT NULL) AND (user_id IS NULL));
 
+CREATE UNIQUE INDEX idx_members_deletion_schedules_on_namespace_id_and_user_id ON members_deletion_schedules USING btree (namespace_id, user_id);
+
 CREATE INDEX idx_members_on_user_and_source_and_source_type_and_member_role ON members USING btree (user_id, source_id, source_type, member_role_id);
 
 CREATE INDEX idx_merge_request_metrics_on_merged_by_project_and_mr ON merge_request_metrics USING btree (merged_by_id, target_project_id, merge_request_id);
@@ -30345,6 +30370,10 @@ CREATE UNIQUE INDEX index_member_roles_on_namespace_id_name_unique ON member_rol
 CREATE INDEX index_member_roles_on_occupies_seat ON member_roles USING btree (occupies_seat);
 
 CREATE INDEX index_member_roles_on_permissions ON member_roles USING gin (permissions);
+
+CREATE INDEX index_members_deletion_schedules_on_scheduled_by_id ON members_deletion_schedules USING btree (scheduled_by_id);
+
+CREATE INDEX index_members_deletion_schedules_on_user_id ON members_deletion_schedules USING btree (user_id);
 
 CREATE INDEX index_members_on_access_level ON members USING btree (access_level);
 
@@ -37107,8 +37136,8 @@ ALTER TABLE ONLY merge_request_assignees
 ALTER TABLE ONLY packages_dependency_links
     ADD CONSTRAINT fk_rails_4437bf4070 FOREIGN KEY (dependency_id) REFERENCES packages_dependencies(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY ci_builds
-    ADD CONSTRAINT fk_rails_4540ead625_p FOREIGN KEY (upstream_pipeline_partition_id, upstream_pipeline_id) REFERENCES p_ci_pipelines(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE NOT VALID;
+ALTER TABLE p_ci_builds
+    ADD CONSTRAINT fk_rails_4540ead625_p FOREIGN KEY (upstream_pipeline_partition_id, upstream_pipeline_id) REFERENCES p_ci_pipelines(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY project_auto_devops
     ADD CONSTRAINT fk_rails_45436b12b2 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
@@ -37677,6 +37706,9 @@ ALTER TABLE ONLY project_secrets_managers
 ALTER TABLE ONLY organization_details
     ADD CONSTRAINT fk_rails_8facb04bef FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY members_deletion_schedules
+    ADD CONSTRAINT fk_rails_8fb4cda076 FOREIGN KEY (scheduled_by_id) REFERENCES users(id) ON DELETE CASCADE;
+
 ALTER TABLE p_ci_pipelines_config
     ADD CONSTRAINT fk_rails_906c9a2533_p FOREIGN KEY (partition_id, pipeline_id) REFERENCES p_ci_pipelines(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
 
@@ -37745,6 +37777,9 @@ ALTER TABLE ONLY pages_deployments
 
 ALTER TABLE ONLY dast_pre_scan_verification_steps
     ADD CONSTRAINT fk_rails_9990fc2adf FOREIGN KEY (dast_pre_scan_verification_id) REFERENCES dast_pre_scan_verifications(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY members_deletion_schedules
+    ADD CONSTRAINT fk_rails_9af19961f8 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY users_ops_dashboard_projects
     ADD CONSTRAINT fk_rails_9b4ebf005b FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
@@ -38114,6 +38149,9 @@ ALTER TABLE ONLY namespace_details
 
 ALTER TABLE ONLY operations_strategies_user_lists
     ADD CONSTRAINT fk_rails_ccb7e4bc0b FOREIGN KEY (user_list_id) REFERENCES operations_user_lists(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY members_deletion_schedules
+    ADD CONSTRAINT fk_rails_ce06d97eb2 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY resource_milestone_events
     ADD CONSTRAINT fk_rails_cedf8cce4d FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;

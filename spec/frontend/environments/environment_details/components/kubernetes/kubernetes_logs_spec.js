@@ -32,6 +32,7 @@ describe('kubernetes_logs', () => {
     gitlabAgentId,
   });
   let k8sLogsQueryMock;
+  let abortK8sPodLogsStreamMock;
   let environmentDataMock;
 
   const defaultEnvironmentData = {
@@ -63,6 +64,7 @@ describe('kubernetes_logs', () => {
     k8sLogsQueryMock = jest.fn().mockResolvedValue({
       logs: logsMockData,
     });
+    abortK8sPodLogsStreamMock = jest.fn().mockResolvedValue({ errors: [] });
     environmentDataMock = jest.fn().mockResolvedValue(defaultEnvironmentData);
   };
 
@@ -70,6 +72,9 @@ describe('kubernetes_logs', () => {
     const mockResolvers = {
       Query: {
         k8sLogs: k8sLogsQueryMock,
+      },
+      Mutation: {
+        abortK8sPodLogsStream: abortK8sPodLogsStreamMock,
       },
     };
 
@@ -273,6 +278,28 @@ describe('kubernetes_logs', () => {
           `Agent ID: ${gitlabAgentId}Namespace: ${kubernetesNamespace}Pod: ${defaultProps.podName}Container: my-container`,
         );
       });
+    });
+  });
+
+  describe('beforeDestroy', () => {
+    beforeEach(async () => {
+      mountComponent();
+      await waitForPromises();
+      wrapper.destroy();
+    });
+
+    it('triggers `abortPodLogsStream` mutation to unsubscribe from the stream', () => {
+      expect(abortK8sPodLogsStreamMock).toHaveBeenCalledWith(
+        {},
+        {
+          configuration,
+          namespace: defaultProps.namespace,
+          podName: defaultProps.podName,
+          containerName: '',
+        },
+        expect.anything(),
+        expect.anything(),
+      );
     });
   });
 });

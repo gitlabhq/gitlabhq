@@ -15,7 +15,7 @@ GitLab Dedicated instances receive regular maintenance to ensure security, relia
 
 ## Maintenance windows
 
-GitLab leverages [weekly maintenance windows](../../administration/dedicated/create_instance.md#maintenance-window) to keep your instance up to date, fix security issues, and ensure the overall reliability and performance of your environment.
+GitLab leverages [weekly maintenance windows](../../administration/dedicated/maintenance.md#maintenance-windows) to keep your instance up to date, fix security issues, and ensure the overall reliability and performance of your environment.
 
 ## Upgrades and patches
 
@@ -62,4 +62,4 @@ Implementing a caching proxy in your network further reduces this risk.
 
 ## Emergency maintenance
 
-[Emergency maintenance](../../administration/dedicated/create_instance.md#emergency-maintenance) addresses high-severity issues that affect your instance's security, availability, or reliability. When critical patch releases are available, GitLab Dedicated instances are upgraded as soon as possible using emergency maintenance procedures.
+[Emergency maintenance](../../administration/dedicated/maintenance.md#emergency-maintenance) addresses high-severity issues that affect your instance's security, availability, or reliability. When critical patch releases are available, GitLab Dedicated instances are upgraded as soon as possible using emergency maintenance procedures.

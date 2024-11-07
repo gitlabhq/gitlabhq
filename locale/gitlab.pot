@@ -50216,12 +50216,6 @@ msgstr ""
 msgid "SecurityOrchestration|Status"
 msgstr ""
 
-msgid "SecurityOrchestration|Step 1: Choose a policy type"
-msgstr ""
-
-msgid "SecurityOrchestration|Step 2: Policy details"
-msgstr ""
-
 msgid "SecurityOrchestration|Summary"
 msgstr ""
 
