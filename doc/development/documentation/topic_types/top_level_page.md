@@ -30,6 +30,7 @@ Briefly describe the workflow's key features. Use the active voice, for example,
 
 - For each page, use three to four keywords to describe the page contents.
 - For **Getting started** pages, use `Overview of how features fit together`.
+- List only the pages that are one level below the top-level page.
 
 Update the table when a new page is added, or if the pages are reordered.
 

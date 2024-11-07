@@ -60,6 +60,7 @@ module API
         tags %w[commits]
         is_array true
         failure [
+          { code: 400, message: 'Bad request' },
           { code: 401, message: 'Unauthorized' },
           { code: 404, message: 'Not found' }
         ]
@@ -131,6 +132,9 @@ module API
         paginated_commits = Kaminari.paginate_array(commits, total_count: commit_count)
 
         present paginate(paginated_commits, exclude_total_headers: true, without_count: true), with: serializer
+
+      rescue ArgumentError
+        render_api_error!('ref_name is invalid', 400)
       end
 
       desc 'Commit multiple file changes as one commit' do

@@ -20257,6 +20257,12 @@ msgstr ""
 msgid "Drag your designs here or %{linkStart}click to upload%{linkEnd}."
 msgstr ""
 
+msgid "Drone CI URL (for example, `http://drone.example.com`)."
+msgstr ""
+
+msgid "Drone CI token."
+msgstr ""
+
 msgid "Drop or %{linkStart}upload%{linkEnd} an avatar."
 msgstr ""
 
@@ -28447,6 +28453,9 @@ msgid "ImportProjects|Import repositories"
 msgstr ""
 
 msgid "ImportProjects|Imported files will be kept. You can import this repository again later."
+msgstr ""
+
+msgid "ImportProjects|Importing a project into a personal namespace results in all contributions being mapped to the same bot user. To map contributions to real users, import projects into a group instead."
 msgstr ""
 
 msgid "ImportProjects|Importing the project failed"
@@ -48520,7 +48529,7 @@ msgstr ""
 msgid "ScanResultPolicy|Prevent %{linkStart}group branch%{linkEnd} modification %{exceptSelection}"
 msgstr ""
 
-msgid "ScanResultPolicy|Prevent %{linkStart}group branch%{linkEnd} modification %{exceptSelection} matching the full paths: %{groupSelection}"
+msgid "ScanResultPolicy|Prevent %{linkStart}group branch%{linkEnd} modification %{exceptSelection} %{groupSelection}"
 msgstr ""
 
 msgid "ScanResultPolicy|Prevent approval by commit author"
@@ -49843,6 +49852,9 @@ msgid "SecurityOrchestration|For any merge request on %{branches}%{commitType}%{
 msgstr ""
 
 msgid "SecurityOrchestration|For large groups, there may be a significant delay in applying policy changes to pre-existing merge requests. Policy changes typically apply almost immediately for newly created merge requests."
+msgstr ""
+
+msgid "SecurityOrchestration|Group with id: %{id}"
 msgstr ""
 
 msgid "SecurityOrchestration|Groups"
@@ -66689,9 +66701,6 @@ msgid "severity|Medium"
 msgstr ""
 
 msgid "severity|Minor"
-msgstr ""
-
-msgid "severity|None"
 msgstr ""
 
 msgid "severity|Unknown"

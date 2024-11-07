@@ -170,7 +170,7 @@ The OpenID Connect provider provides you with a client's details and secret for 
      is usually included in requests to the token endpoint.
      However, if your OpenID Connect provider does not accept the `scope` parameter
      in such requests, set this to `false`.
-   - `pkce` (optional): Enable [Proof Key for Code Exchange](https://www.rfc-editor.org/rfc/rfc766). Available in [GitLab 15.9](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/109557).
+   - `pkce` (optional): Enable [Proof Key for Code Exchange](https://www.rfc-editor.org/rfc/rfc7636). Available in [GitLab 15.9](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/109557).
    - `client_options` are the OpenID Connect client-specific options. Specifically:
      - `identifier` is the client identifier as configured in the OpenID Connect service provider.
      - `secret` is the client secret as configured in the OpenID Connect service provider. For example,

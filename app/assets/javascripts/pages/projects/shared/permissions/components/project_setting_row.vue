@@ -28,13 +28,13 @@ export default {
 <template>
   <div class="project-feature-row">
     <div class="gl-flex">
-      <label v-if="label" class="label-bold" :class="{ 'gl-text-gray-400': locked }">
+      <label v-if="label" class="label-bold !gl-mb-0" :class="{ 'gl-text-disabled': locked }">
         {{ label }}
       </label>
       <slot name="label-icon"></slot>
     </div>
     <div>
-      <span v-if="helpText" class="gl-text-gray-400"> {{ helpText }} </span>
+      <span v-if="helpText" class="gl-text-subtle"> {{ helpText }} </span>
       <span v-if="helpPath"
         ><a :href="helpPath" target="_blank">{{ __('Learn more') }}</a
         >.</span

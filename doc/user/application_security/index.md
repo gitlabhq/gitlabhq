@@ -381,35 +381,6 @@ security issues:
 
 - A security vulnerability. For more details, read [Merge request approval policies](policies/merge_request_approval_policies.md).
 
-## Using private Maven repositories
-
-If you have a private Apache Maven repository that requires login credentials,
-you can use the `MAVEN_CLI_OPTS` CI/CD variable
-to pass a username and password. You can set it under your project's settings
-so that your credentials aren't exposed in `.gitlab-ci.yml`.
-
-If the username is `myuser` and the password is `verysecret` then you would
-[set the following variable](../../ci/variables/index.md#for-a-project)
-under your project's settings:
-
-| Type     | Key              | Value |
-| -------- | ---------------- | ----- |
-| Variable | `MAVEN_CLI_OPTS` | `--settings mysettings.xml -Drepository.password=verysecret -Drepository.user=myuser` |
-
-```xml
-<!-- mysettings.xml -->
-<settings>
-    ...
-    <servers>
-        <server>
-            <id>private_server</id>
-            <username>${private.username}</username>
-            <password>${private.password}</password>
-        </server>
-    </servers>
-</settings>
-```
-
 ## Using a custom scanning stage
 
 When security scanning is enabled by including CI/CD templates as described in the

@@ -496,6 +496,24 @@ For information about migrating from the CI/CD template to the component, see th
 
 </div>
 
+<div class="deprecation breaking-change" data-milestone="18.0">
+
+### Pipeline subscriptions
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.6</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/501460).
+
+</div>
+
+The [pipeline subscriptions](https://docs.gitlab.com/ee/ci/pipelines/#trigger-a-pipeline-when-an-upstream-project-is-rebuilt) feature is deprecated in GitLab 17.6 and scheduled for removal in GitLab 18.0. Pipeline subscriptions are used to run downstream pipelines based on tag pipelines in upstream projects.
+
+Instead, use [CI/CD jobs with pipeline trigger tokens](https://docs.gitlab.com/ee/ci/triggers/#use-a-cicd-job) to trigger pipelines when another pipeline runs. This method is more reliable and flexible than pipeline subscriptions.
+
+</div>
+
 <div class="deprecation " data-milestone="18.0">
 
 ### Project page in group settings is deprecated

@@ -342,7 +342,7 @@ Dangerfile
 /lib/gitlab/checks/changed_blobs.rb
 /spec/lib/gitlab/checks/changed_blobs.rb
 
-^[Code Owners] @reprazent @kerrizor @garyh
+^[Code Owners] @reprazent @kerrizor @garyh @jwoodwardgl
 /ee/lib/gitlab/code_owners.rb
 /ee/lib/gitlab/code_owners/
 /ee/spec/lib/gitlab/code_owners/

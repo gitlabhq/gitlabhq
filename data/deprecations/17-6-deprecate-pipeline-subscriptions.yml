@@ -1,0 +1,59 @@
+# Use this template to announce a feature deprecation or other
+# important planned changes at least three releases prior to removal.
+# Breaking changes must happen in a major release.
+#
+# Copy this template into a new file in /data/deprecations, and name the file similar to:
+# `16-9-deprecated-feature.yml`, where `16-9` is the announcement milestone,
+# not the removal milestone.
+#
+# See the deprecation guidelines to confirm your understanding of GitLab's definitions:
+# https://docs.gitlab.com/ee/development/deprecation_guidelines/#terminology
+#
+# If an End of Support period applies, see the OPTIONAL section below.
+#
+# For more information, see the handbook:
+# https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#deprecations-and-other-planned-breaking-change-announcements
+
+# ===================
+# REQUIRED FIELDS
+# ===================
+
+# ----- DELETE EVERYTHING ABOVE THIS LINE -----
+
+- title: "Pipeline subscriptions"
+  # The milestones for the deprecation announcement, and the removal.
+  removal_milestone: "18.0"
+  announcement_milestone: "17.6"
+  # Change breaking_change to false if needed.
+  breaking_change: true
+  window: 2 # Can be [1, 2, or 3] - The window when the breaking change will be deployed on GitLab.com
+  reporter: rutshah # The GitLab username of the person reporting the change
+  stage: verify
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/501460
+  # Use the impact calculator https://gitlab-com.gitlab.io/gl-infra/breaking-change-impact-calculator/?
+  impact: medium  # Can be one of: [critical, high, medium, low]
+  scope: project  # Can be one or a combination of: [instance, group, project]
+  resolution_role: Developer  # Can be one of: [Admin, Owner, Maintainer, Developer]
+  manual_task: true  # Can be true or false. Use this to denote whether a resolution action must be performed manually (true), or if it can be automated by using the API or other automation (false).
+  body: |  # (required) Don't change this line.
+    The [pipeline subscriptions](https://docs.gitlab.com/ee/ci/pipelines/#trigger-a-pipeline-when-an-upstream-project-is-rebuilt) feature is deprecated in GitLab 17.6 and scheduled for removal in GitLab 18.0. Pipeline subscriptions are used to run downstream pipelines based on tag pipelines in upstream projects.
+
+    Instead, use [CI/CD jobs with pipeline trigger tokens](https://docs.gitlab.com/ee/ci/triggers/#use-a-cicd-job) to trigger pipelines when another pipeline runs. This method is more reliable and flexible than pipeline subscriptions.
+# ==============================
+# OPTIONAL END-OF-SUPPORT FIELDS
+# ==============================
+#
+# If an End of Support period applies:
+# 1) Share this announcement in the `#spt_managers` Support channel in Slack
+# 2) Mention `@gitlab-com/support` in this merge request.
+#
+  # When support for this feature ends, in XX.YY milestone format.
+  end_of_support_milestone:
+  # Array of tiers the feature is currently available to,
+  # like [Free, Silver, Gold, Core, Premium, Ultimate]
+  tiers:
+  # Links to documentation and thumbnail image
+  documentation_url:
+  image_url:
+  # Use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg
+  video_url:

@@ -129,7 +129,7 @@ For example, let's consider this simplified development workflow:
 If you have the labels **Backend**, **Frontend**, **Staging**, and
 **Production**, and an issue board with a list for each, you can:
 
-- Visualize the entire flow of implementations since the beginning of the development life cycle
+- Visualize the entire flow of implementations since the beginning of the development lifecycle
   until deployed to production.
 - Prioritize the issues in a list by moving them vertically.
 - Move issues between lists to organize them according to the labels you've set.

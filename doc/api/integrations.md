@@ -629,8 +629,8 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `token` | string | yes | Drone CI project specific token. |
-| `drone_url` | string | yes | `http://drone.example.com`. |
+| `token` | string | yes | Drone CI token. |
+| `drone_url` | string | yes | Drone CI URL (for example, `http://drone.example.com`). |
 | `enable_ssl_verification` | boolean | no | Enable SSL verification. Defaults to `true` (enabled). |
 | `push_events` | boolean | no | Enable notifications for push events. |
 | `merge_requests_events` | boolean | no | Enable notifications for merge request events. |

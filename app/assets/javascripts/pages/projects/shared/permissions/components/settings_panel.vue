@@ -717,7 +717,7 @@ export default {
       </project-setting-row>
     </div>
     <div
-      class="gl-mb-5 gl-border-1 gl-border-t-0 gl-border-solid gl-border-gray-100 gl-bg-gray-10 gl-px-5 gl-py-3"
+      class="gl-mb-5 gl-flex gl-flex-col gl-gap-6 gl-border-1 gl-border-t-0 gl-border-solid gl-border-gray-100 gl-bg-gray-10 gl-px-5 gl-py-3"
     >
       <project-setting-row
         ref="issues-settings"
@@ -737,6 +737,7 @@ export default {
         />
         <project-setting-row
           v-if="requestCveAvailable"
+          class="gl-mt-4 gl-pl-5 md:gl-pl-7"
           :help-path="cveIdRequestHelpPath"
           :help-text="$options.i18n.cve_request_toggle_label"
         >
@@ -763,7 +764,7 @@ export default {
           name="project[project_feature_attributes][repository_access_level]"
         />
       </project-setting-row>
-      <div class="project-feature-setting-group gl-pl-5 md:gl-pl-7">
+      <div class="project-feature-setting-group gl-flex gl-flex-col gl-gap-5 gl-pl-5 md:gl-pl-7">
         <project-setting-row
           ref="merge-request-settings"
           :label="$options.i18n.mergeRequestsLabel"

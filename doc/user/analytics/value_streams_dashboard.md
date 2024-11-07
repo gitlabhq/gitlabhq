@@ -32,7 +32,7 @@ With the Value Streams Dashboard, you can:
 - Identify downward trends early on.
 - Understand security exposure.
 - Drill down into individual projects or metrics to take actions for improvement.
-- Understand the impact of adding AI to the software development life cycle (SDLC) and demonstrate the return on investment (ROI) of investments in GitLab Duo.
+- Understand the impact of adding AI to the software development lifecycle (SDLC) and demonstrate the return on investment (ROI) of investments in GitLab Duo.
 
 For a click-through demo, see [the Value Stream Management product tour](https://gitlab.navattic.com/vsm).
 

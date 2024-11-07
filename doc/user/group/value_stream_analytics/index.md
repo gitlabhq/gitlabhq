@@ -136,7 +136,7 @@ To view when the data was most recently updated, in the right corner next to **E
 Value stream analytics measures each stage from its start event to its end event.
 Only items that have reached their end event are included in the stage time calculation.
 
-By default, blocked issues are not included in the life cycle overview.
+By default, blocked issues are not included in the lifecycle overview.
 However, you can use custom labels (for example `workflow::blocked`) to track them.
 
 You can customize stages in value stream analytics based on pre-defined events.

@@ -230,7 +230,7 @@
 - ee/spec/requests/projects/logs_controller_spec.rb
 - ee/spec/requests/projects/security/policies_controller_spec.rb
 - ee/spec/requests/projects/tracing_controller_spec.rb
-- ee/spec/requests/subscriptions/hand_raise_leads_spec.rb
+- ee/spec/requests/gitlab_subscriptions/hand_raise_leads_spec.rb
 - ee/spec/requests/trial_registrations_controller_spec.rb
 - ee/spec/requests/users_controller_spec.rb
 - ee/spec/serializers/clusters/environment_serializer_spec.rb
