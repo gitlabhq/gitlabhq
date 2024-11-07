@@ -37,6 +37,10 @@ module BitbucketServer
         raw_comment['id']
       end
 
+      def author_name
+        author['displayName']
+      end
+
       def author_username
         author['username'] ||
           author['slug'] ||
@@ -81,6 +85,7 @@ module BitbucketServer
 
         {
           id: id,
+          author_name: author_name,
           author_email: author_email,
           author_username: author_username,
           note: note,

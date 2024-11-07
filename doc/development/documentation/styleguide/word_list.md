@@ -2338,6 +2338,12 @@ You **turn on** or **turn off** a toggle. For example:
 
 - Turn on the **blah** toggle.
 
+## top-level group
+
+Use lowercase for **top-level group** (hyphenated). 
+
+Do not use **root group**.
+
 ## TFA, two-factor authentication
 
 Use [**2FA** and **two-factor authentication**](#2fa-two-factor-authentication) instead.

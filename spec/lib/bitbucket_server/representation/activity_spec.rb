@@ -49,6 +49,8 @@ RSpec.describe BitbucketServer::Representation::Activity, feature_category: :imp
     it { expect(subject.comment?).to be_falsey }
     it { expect(subject.inline_comment?).to be_falsey }
     it { expect(subject.committer_user).to eq('root') }
+    it { expect(subject.committer_name).to eq('root') }
+    it { expect(subject.committer_username).to eq('slug') }
     it { expect(subject.committer_email).to eq('test.user@example.com') }
     it { expect(subject.merge_timestamp).to be_a(Time) }
     it { expect(subject.created_at).to be_a(Time) }
@@ -60,6 +62,8 @@ RSpec.describe BitbucketServer::Representation::Activity, feature_category: :imp
           a_hash_including(
             id: 7,
             committer_user: 'root',
+            committer_name: 'root',
+            committer_username: 'slug',
             committer_email: 'test.user@example.com',
             merge_commit: '839fa9a2d434eb697815b8fcafaecc51accfdbbc'
           )
@@ -76,6 +80,7 @@ RSpec.describe BitbucketServer::Representation::Activity, feature_category: :imp
     it { expect(subject.inline_comment?).to be_falsey }
     it { expect(subject.merge_event?).to be_falsey }
     it { expect(subject.approved_event?).to be_truthy }
+    it { expect(subject.approver_name).to eq('root') }
     it { expect(subject.approver_username).to eq('slug') }
     it { expect(subject.approver_email).to eq('test.user@example.com') }
     it { expect(subject.created_at).to be_a(Time) }
@@ -85,6 +90,7 @@ RSpec.describe BitbucketServer::Representation::Activity, feature_category: :imp
         expect(subject.to_hash).to match(
           a_hash_including(
             id: 15,
+            approver_name: 'root',
             approver_username: 'slug',
             approver_email: 'test.user@example.com'
           )
@@ -101,6 +107,7 @@ RSpec.describe BitbucketServer::Representation::Activity, feature_category: :imp
     it { expect(subject.inline_comment?).to be_falsey }
     it { expect(subject.merge_event?).to be_falsey }
     it { expect(subject.declined_event?).to be_truthy }
+    it { expect(subject.decliner_name).to eq('root') }
     it { expect(subject.decliner_username).to eq('slug') }
     it { expect(subject.decliner_email).to eq('test.user@example.com') }
     it { expect(subject.created_at).to be_a(Time) }
@@ -110,6 +117,7 @@ RSpec.describe BitbucketServer::Representation::Activity, feature_category: :imp
         expect(subject.to_hash).to match(
           a_hash_including(
             id: 18,
+            decliner_name: 'root',
             decliner_username: 'slug',
             decliner_email: 'test.user@example.com'
           )

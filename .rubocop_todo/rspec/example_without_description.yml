@@ -299,7 +299,6 @@ RSpec/ExampleWithoutDescription:
     - 'spec/lib/bitbucket/representation/issue_spec.rb'
     - 'spec/lib/bitbucket/representation/pull_request_spec.rb'
     - 'spec/lib/bitbucket_server/representation/activity_spec.rb'
-    - 'spec/lib/bitbucket_server/representation/comment_spec.rb'
     - 'spec/lib/bitbucket_server/representation/pull_request_comment_spec.rb'
     - 'spec/lib/bitbucket_server/representation/pull_request_spec.rb'
     - 'spec/lib/bulk_imports/groups/pipelines/group_attributes_pipeline_spec.rb'

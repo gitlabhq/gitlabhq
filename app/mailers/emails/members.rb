@@ -91,7 +91,12 @@ module Emails
 
       email_with_layout(
         to: member.user.notification_email_for(notification_group),
-        subject: subject(s_("Your membership will expire in %{days_to_expire} days") % { days_to_expire: @days_to_expire }))
+        subject: subject(
+          s_("Your membership will expire in %{days_to_expire} days") % {
+            days_to_expire: @days_to_expire
+          }
+        )
+      )
     end
 
     # rubocop: disable CodeReuse/ActiveRecord
@@ -115,7 +120,12 @@ module Emails
     private
 
     def member_exists?
-      Gitlab::AppLogger.info("Tried to send an email invitation for a deleted group. Member id: #{@member_id}") if member.blank?
+      if member.blank?
+        Gitlab::AppLogger.info(
+          "Tried to send an email invitation for a deleted group. Member id: #{@member_id}"
+        )
+      end
+
       member.present?
     end
 

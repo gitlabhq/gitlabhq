@@ -11,7 +11,8 @@ module API
     before { authenticate_non_get! }
 
     allow_access_with_scope :ai_workflows, if: ->(request) do
-      request.get? || request.head? || request.put?
+      request.get? || request.head? ||
+        (request.put? && request.path.match?(%r{/api/v\d+/projects/\d+/merge_requests/\d+$})) # Only allow basic MR updates
     end
 
     rescue_from ActiveRecord::QueryCanceled do |_e|
@@ -713,8 +714,7 @@ module API
         merge_request = find_project_merge_request(params[:merge_request_iid])
 
         # Merge request can not be merged because the user doesn't have
-        #   permissions to push into target branch
-        #
+        #   permissions to push into target branch.
         unauthorized! unless merge_request.can_be_merged_by?(current_user)
 
         merge_when_pipeline_succeeds = to_boolean(params[:merge_when_pipeline_succeeds])

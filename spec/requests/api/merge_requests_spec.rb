@@ -2810,6 +2810,19 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
         expect(json_response['reviewers']).to be_empty
       end
     end
+
+    context 'with oauth token that has ai_workflows scope' do
+      let(:token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
+
+      it "allows access" do
+        put api(
+          "/projects/#{project.id}/merge_requests/#{merge_request.iid}?title=new_title",
+          oauth_access_token: token
+        )
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
   end
 
   describe "POST /projects/:id/merge_requests/:merge_request_iid/context_commits" do
@@ -3066,13 +3079,10 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
     context 'with oauth token that has ai_workflows scope' do
       let(:token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
 
-      it "allows access" do
-        put api(
-          "/projects/#{project.id}/merge_requests/#{merge_request.iid}?title=new_title",
-          oauth_access_token: token
-        )
+      it "does not allow access" do
+        put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", oauth_access_token: token)
 
-        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
 
@@ -4003,6 +4013,16 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
   end
 
   describe 'PUT :id/merge_requests/:merge_request_iid/rebase' do
+    context 'with oauth token that has ai_workflows scope' do
+      let(:token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
+
+      it "does not allow access" do
+        put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/rebase", oauth_access_token: token)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
     context 'when rebase can be performed' do
       it 'enqueues a rebase of the merge request against the target branch' do
         Sidekiq::Testing.fake! do

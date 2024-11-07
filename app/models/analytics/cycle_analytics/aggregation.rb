@@ -4,9 +4,16 @@ class Analytics::CycleAnalytics::Aggregation < ApplicationRecord
   include FromUnion
   include Analytics::CycleAnalytics::Parentable
 
-  validates :incremental_runtimes_in_seconds, :incremental_processed_records, :full_runtimes_in_seconds, :full_processed_records, presence: true, length: { maximum: 10 }, allow_blank: true
+  validates :incremental_runtimes_in_seconds,
+    :incremental_processed_records,
+    :full_runtimes_in_seconds,
+    :full_processed_records,
+    presence: true,
+    length: { maximum: 10 },
+    allow_blank: true
 
-  scope :priority_order, ->(column_to_sort = :last_incremental_run_at) { order(arel_table[column_to_sort].asc.nulls_first) }
+  scope :priority_order,
+    ->(column_to_sort = :last_incremental_run_at) { order(arel_table[column_to_sort].asc.nulls_first) }
   scope :enabled, -> { where('enabled IS TRUE') }
 
   def cursor_for(mode, model)

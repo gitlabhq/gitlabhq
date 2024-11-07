@@ -1586,7 +1586,6 @@ RSpec/NamedSubject:
     - 'spec/lib/bitbucket_server/collection_spec.rb'
     - 'spec/lib/bitbucket_server/connection_spec.rb'
     - 'spec/lib/bitbucket_server/representation/activity_spec.rb'
-    - 'spec/lib/bitbucket_server/representation/comment_spec.rb'
     - 'spec/lib/bitbucket_server/representation/pull_request_comment_spec.rb'
     - 'spec/lib/bitbucket_server/representation/pull_request_spec.rb'
     - 'spec/lib/bitbucket_server/representation/repo_spec.rb'

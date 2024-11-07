@@ -46,7 +46,10 @@ module Emails
       @domain = domain
       @project = domain.project
 
-      subject_text = _("ACTION REQUIRED: Something went wrong while obtaining the Let's Encrypt certificate for GitLab Pages domain '%{domain}'") % { domain: domain.domain }
+      subject_text = _(
+        "ACTION REQUIRED: Something went wrong while obtaining the Let's Encrypt certificate for " \
+          "GitLab Pages domain '%{domain}'"
+      ) % { domain: domain.domain }
       mail_with_locale(
         to: recipient.notification_email_for(@project.group),
         subject: subject(subject_text)

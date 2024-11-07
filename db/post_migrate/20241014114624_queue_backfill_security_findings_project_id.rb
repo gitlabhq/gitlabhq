@@ -10,31 +10,12 @@ class QueueBackfillSecurityFindingsProjectId < Gitlab::Database::Migration[2.2]
   SUB_BATCH_SIZE = 100
 
   def up
-    queue_batched_background_migration(
-      MIGRATION,
-      :security_findings,
-      :id,
-      :project_id,
-      :vulnerability_scanners,
-      :project_id,
-      :scanner_id,
-      job_interval: DELAY_INTERVAL,
-      batch_size: BATCH_SIZE,
-      sub_batch_size: SUB_BATCH_SIZE
-    )
+    # no-op because there was a bug in the original migration, which has been
+    # fixed by https://gitlab.com/gitlab-org/gitlab/-/merge_requests/171503
   end
 
   def down
-    delete_batched_background_migration(
-      MIGRATION,
-      :security_findings,
-      :id,
-      [
-        :project_id,
-        :vulnerability_scanners,
-        :project_id,
-        :scanner_id
-      ]
-    )
+    # no-op because there was a bug in the original migration, which has been
+    # fixed by https://gitlab.com/gitlab-org/gitlab/-/merge_requests/171503
   end
 end

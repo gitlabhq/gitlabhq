@@ -632,6 +632,24 @@ This change is a breaking change. You should [create a runner in the UI](https:/
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
+### Removal of `migrationState` field in `ContainerRepository` GraphQL API
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.6</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/459869).
+
+</div>
+
+The `migrationState` field in the `ContainerRepositoryType` of GitLab's GraphQL API will be removed in GitLab 18.0. This deprecation is part of our efforts to streamline and improve our API.
+
+To prepare for this change, we recommend reviewing and updating your GraphQL queries that interact with the `ContainerRepositoryType`. Remove any references to the `migrationState` field and adjust your application logic accordingly.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
 ### Remove `previousStageJobsOrNeeds` from GraphQL
 
 <div class="deprecation-notes">

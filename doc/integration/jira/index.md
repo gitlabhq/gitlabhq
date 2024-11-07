@@ -20,7 +20,7 @@ GitLab offers two Jira integrations. You can use one or both integrations
 
 ### Jira issues integration
 
-> - Name [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166555) to Jira issues integration in GitLab 17.6.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166555) feature name to Jira issues integration in GitLab 17.6.
 
 You can use the [Jira issues integration](configure.md) developed by GitLab with
 Jira Cloud, Jira Data Center, or Jira Server. With this integration, you can:
