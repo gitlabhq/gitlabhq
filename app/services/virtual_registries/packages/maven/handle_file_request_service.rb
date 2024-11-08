@@ -49,6 +49,8 @@ module VirtualRegistries
           end
 
         rescue *::Gitlab::HTTP::HTTP_ERRORS
+          return download_cached_response if cached_response
+
           ERRORS[:upstream_not_available]
         end
 
@@ -71,8 +73,7 @@ module VirtualRegistries
           # cached response with no etag can't be checked
           return false if cached_response.upstream_etag.blank?
 
-          upstream = cached_response.upstream
-          response = head_upstream(url: upstream.url_for(path), headers: upstream.headers)
+          response = head_upstream(upstream: cached_response.upstream)
 
           return false unless cached_response.upstream_etag == response.headers['etag']
 
@@ -81,21 +82,24 @@ module VirtualRegistries
         end
 
         def check_upstream(upstream)
-          url = upstream.url_for(path)
-          headers = upstream.headers
-          response = head_upstream(url: url, headers: headers)
+          response = head_upstream(upstream: upstream)
 
           return ERRORS[:file_not_found_on_upstreams] unless response.success?
 
-          workhorse_upload_url_response(url: url, upstream: upstream)
+          workhorse_upload_url_response(upstream: upstream)
         end
 
-        def head_upstream(url:, headers:)
-          ::Gitlab::HTTP.head(url, headers: headers, follow_redirects: true, timeout: TIMEOUT)
+        def head_upstream(upstream:)
+          strong_memoize_with(:head_upstream, upstream) do
+            url = upstream.url_for(path)
+            headers = upstream.headers
+
+            ::Gitlab::HTTP.head(url, headers: headers, follow_redirects: true, timeout: TIMEOUT)
+          end
         end
 
         def download_cached_response_digest
-          return ERRORS[:digest_not_found] unless cached_response.present?
+          return ERRORS[:digest_not_found] unless cached_response
 
           digest_format = File.extname(path)[1..] # file extension without the leading dot
           return ERRORS[:fips_unsupported_md5] if digest_format == 'md5' && Gitlab::FIPS.enabled?
@@ -138,11 +142,11 @@ module VirtualRegistries
           )
         end
 
-        def workhorse_upload_url_response(url:, upstream:)
+        def workhorse_upload_url_response(upstream:)
           ServiceResponse.success(
             payload: {
               action: :workhorse_upload_url,
-              action_params: { url: url, upstream: upstream }
+              action_params: { url: upstream.url_for(path), upstream: upstream }
             }
           )
         end

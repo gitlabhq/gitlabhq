@@ -3415,6 +3415,15 @@ class Project < ApplicationRecord
     refresh_epoch_cache(lfs_file_locks_changed_epoch_cache_key)
   end
 
+  def placeholder_reference_store
+    return unless import_state
+
+    ::Import::PlaceholderReferences::Store.new(
+      import_source: import_type,
+      import_uid: import_state.id
+    )
+  end
+
   private
 
   def require_organization?

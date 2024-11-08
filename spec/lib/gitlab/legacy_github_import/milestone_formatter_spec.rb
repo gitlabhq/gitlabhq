@@ -115,12 +115,7 @@ RSpec.describe Gitlab::LegacyGithubImport::MilestoneFormatter do
 
   describe '#create!', :aggregate_failures, :clean_gitlab_redis_shared_state do
     let(:raw_data) { base_data }
-    let(:store) do
-      Import::PlaceholderReferences::Store.new(
-        import_source: ::Import::SOURCE_GITEA,
-        import_uid: project.import_state.id
-      )
-    end
+    let(:store) { project.placeholder_reference_store }
 
     it 'creates the milestone' do
       expect { milestone.create! }.to change { project.milestones.count }.from(0).to(1)

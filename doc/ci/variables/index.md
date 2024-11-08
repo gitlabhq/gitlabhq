@@ -753,7 +753,7 @@ The order of precedence for variables is (from highest to lowest):
 
 1. [Pipeline execution policy variables](../../user/application_security/policies/pipeline_execution_policies.md#cicd-variables).
 1. [Scan execution policy variables](../../user/application_security/policies/scan_execution_policies.md).
-1. Pipeline variables. These variables all have the same precedence:
+1. [Pipeline variables](#use-pipeline-variables). These variables all have the same precedence:
    - [Variables passed to downstream pipelines](../pipelines/downstream_pipelines.md#pass-cicd-variables-to-a-downstream-pipeline).
    - [Trigger variables](../triggers/index.md#pass-cicd-variables-in-the-api-call).
    - [Scheduled pipeline variables](../pipelines/schedules.md#add-a-pipeline-schedule).
@@ -788,53 +788,67 @@ job1:
 In this example, `job1` outputs `The variable is 'secure'` because variables defined in jobs in the `.gitlab-ci.yml` file
 have higher precedence than variables defined globally in the `.gitlab-ci.yml` file.
 
-### Override a defined CI/CD variable
+## Use pipeline variables
 
-You can override the value of a variable, including [predefined variables](predefined_variables.md), when you:
+Pipeline variables are variables that are specified when running a new pipeline.
+
+Prerequisites:
+
+- You must have the Developer role in the project.
+
+You can specify a pipeline variable when you:
 
 - [Run a pipeline manually](../pipelines/index.md#run-a-pipeline-manually) in the UI.
 - Create a pipeline by using [the `pipelines` API endpoint](../../api/pipelines.md#create-a-new-pipeline).
+- Create a pipeline by using [the `triggers` API endpoint](../triggers/index.md#pass-cicd-variables-in-the-api-call).
 - Use [push options](../../topics/git/commit.md#push-options-for-gitlab-cicd).
-- Trigger a pipeline by using [the `triggers` API endpoint](../triggers/index.md#pass-cicd-variables-in-the-api-call).
-- Pass variables to a downstream pipeline [by using the `variable` keyword](../pipelines/downstream_pipelines.md#pass-cicd-variables-to-a-downstream-pipeline)
-  or [by using `dotenv` variables](../pipelines/downstream_pipelines.md#pass-dotenv-variables-created-in-a-job).
+- Pass variables to a downstream pipeline by using either the [`variables` keyword](../pipelines/downstream_pipelines.md#pass-cicd-variables-to-a-downstream-pipeline),
+  [`trigger:forward` keyword](../yaml/index.md#triggerforward) or [`dotenv` variables](../pipelines/downstream_pipelines.md#pass-dotenv-variables-created-in-a-job).
+- Specify variables when creating a [pipeline schedule](../pipelines/schedules.md#add-a-pipeline-schedule).
 - Specify variables when [running a manual job](../pipelines/index.md#run-a-pipeline-manually).
 
+These variables have [higher precedence](#cicd-variable-precedence) and can override
+other defined variables, including [predefined variables](predefined_variables.md).
+
+WARNING:
 You should avoid overriding predefined variables in most cases, as it can cause the pipeline to behave unexpectedly.
 
-### Restrict who can override variables
+### Restrict pipeline variables
 
-You can limit the ability to override variables to only users with at least the Maintainer role.
-When other users try to run a pipeline with overridden variables, they receive the
-`Insufficient permissions to set pipeline variables` error message.
+You can limit who can run pipelines with pipeline variables to specific user roles.
+To limit the use of pipeline variables to only the Maintainer role and higher:
 
-Enable this feature by using [the projects API](../../api/projects.md#edit-a-project)
-to enable the `restrict_user_defined_variables` setting. The setting is `disabled` by default.
+- Use [the projects API](../../api/projects.md#edit-a-project) to enable the `restrict_user_defined_variables` setting.
+  The setting is `disabled` by default.
+
+When users with the Developer role or lower try to [use pipeline variables](#use-pipeline-variables),
+they receive the `Insufficient permissions to set pipeline variables` error message.
 
 If you [store your CI/CD configurations in a different repository](../../ci/pipelines/settings.md#specify-a-custom-cicd-configuration-file),
 use this setting for control over the environment the pipeline runs in.
 
-#### By minimum role
+#### Set a minimum role for pipeline variables
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440338) in GitLab 17.1
 
-When the `restrict_user_defined_variables` option is enabled, you can specify which
-[roles](../../user/permissions.md#roles) can override variables with the
-`ci_pipeline_variables_minimum_override_role` setting.
+When [pipeline variables are restricted](#restrict-pipeline-variables), you can also
+set a specific minimum [role](../../user/permissions.md#roles) that can run pipelines
+with pipeline variables.
+
+Prerequisites:
+
+- You must have the Maintainer role in the project. If the minimum role was previously set to `owner`
+  or `no_one_allowed`, then you must have the Owner role in the project.
 
 To change the setting, use [the projects API](../../api/projects.md#edit-a-project)
-to modify `ci_pipeline_variables_minimum_override_role` to one of:
+to set `ci_pipeline_variables_minimum_override_role` to one of:
 
-- `owner`: Only users with the Owner role can override variables. You must have the Owner
-  role for the project to change the setting to this value.
-- `maintainer`: Only users with at least the Maintainer role can override variables.
+- `no_one_allowed`: No pipelines can run with pipeline variables.
+- `owner`: Only users with the Owner role can run pipelines with pipeline variables.
+  You must have the Owner role for the project to change the setting to this value.
+- `maintainer`: Only users with at least the Maintainer role can run pipelines with pipeline variables.
   Default when not specified.
-- `developer`: Only users with at least the Developer role can override variables.
-- `no_one_allowed`: Users cannot override variables.
-
-If you set the minimum role to `owner`, only users with at least the `owner` role
-can update the `ci_pipeline_variables_minimum_override_role` and `restrict_user_defined_variables`
-settings.
+- `developer`: Only users with at least the Developer role can run pipelines with pipeline variables.
 
 ## Exporting variables
 

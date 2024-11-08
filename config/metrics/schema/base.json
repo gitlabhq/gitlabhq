@@ -85,15 +85,6 @@
     "options": {
       "type": "object"
     },
-    "time_frame": {
-      "type": "string",
-      "enum": [
-        "7d",
-        "28d",
-        "all",
-        "none"
-      ]
-    },
     "data_source": {
       "type": "string",
       "enum": [
@@ -172,8 +163,41 @@
       "type": "string"
     },
     "events": {
+    },
+    "time_frame": {
     }
   },
+  "oneOf": [
+    {
+      "properties": {
+        "time_frame": {
+          "type": "string",
+          "enum": [
+            "7d",
+            "28d",
+            "all",
+            "none"
+          ]
+        }
+      }
+    },
+    {
+      "properties": {
+        "time_frame": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": [
+              "7d",
+              "28d",
+              "all"
+            ]
+          }
+        }
+      }
+    }
+  ],
   "allOf": [
     {
       "$ref": "internal_events.json"

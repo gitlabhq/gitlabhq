@@ -352,9 +352,7 @@ RSpec.describe Gitlab::LegacyGithubImport::IssueFormatter, :clean_gitlab_redis_s
 
   describe '#create!', :aggregate_failures do
     let(:raw_data) { base_data.merge(assignee: octocat) }
-    let(:store) do
-      Import::PlaceholderReferences::Store.new(import_source: imported_from, import_uid: project.import_state.id)
-    end
+    let(:store) { project.placeholder_reference_store }
 
     it 'saves the issue and assignees' do
       issue.create!

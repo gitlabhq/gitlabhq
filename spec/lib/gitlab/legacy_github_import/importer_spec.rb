@@ -17,10 +17,7 @@ RSpec.describe Gitlab::LegacyGithubImport::Importer, :clean_gitlab_redis_shared_
 
   let(:octocat) { { id: 123456, login: 'octocat', email: 'octocat@example.com' } }
   let(:credentials) { { user: 'joe' } }
-  let(:store) do
-    Import::PlaceholderReferences::Store.new(import_source: project.import_type, import_uid: project.import_state.id)
-  end
-
+  let(:store) { project.placeholder_reference_store }
   let(:created_at) { DateTime.strptime('2011-01-26T19:01:12Z') }
   let(:updated_at) { DateTime.strptime('2011-01-27T19:01:12Z') }
   let(:repository) { { id: 1, fork: false } }

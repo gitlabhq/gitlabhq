@@ -6,6 +6,11 @@ module Gitlab
       METRIC_SCHEMA_PATH = Rails.root.join('config', 'metrics', 'schema', 'base.json')
       AVAILABLE_STATUSES = %w[active broken].to_set.freeze
       VALID_SERVICE_PING_STATUSES = %w[active broken].to_set.freeze
+      TIME_FRAME_SUFFIX = {
+        '7d' => '_weekly',
+        '28d' => '_monthly',
+        'all' => ''
+      }.freeze
 
       InvalidError = Class.new(RuntimeError)
 
@@ -204,20 +209,32 @@ module Gitlab
           definition = YAML.safe_load(definition)
           definition.deep_symbolize_keys!
 
-          self.new(path, definition)
+          map_time_frames(path, definition, definition[:time_frame])
         rescue StandardError => e
           Gitlab::ErrorTracking.track_and_raise_for_dev_exception(InvalidError.new(e.message))
         end
 
         def load_all_from_path!(definitions, glob_path)
           Dir.glob(glob_path).each do |path|
-            definition = load_from_file(path)
+            load_from_file(path).each do |definition|
+              if previous = definitions[definition.key]
+                Gitlab::ErrorTracking.track_and_raise_for_dev_exception(InvalidError.new("Metric '#{definition.key}' from '#{definition.path}' is already defined in '#{previous.path}'"))
+              end
 
-            if previous = definitions[definition.key]
-              Gitlab::ErrorTracking.track_and_raise_for_dev_exception(InvalidError.new("Metric '#{definition.key}' is already defined in '#{previous.path}'"))
+              definitions[definition.key] = definition
             end
+          end
+        end
 
-            definitions[definition.key] = definition
+        def map_time_frames(path, definition, time_frames)
+          return [self.new(path, definition)] unless time_frames.is_a?(Array)
+
+          time_frames.map do |time_frame|
+            current_definition = definition.dup
+            current_definition[:time_frame] = time_frame
+            current_definition[:key_path] += TIME_FRAME_SUFFIX[time_frame]
+
+            self.new(path, current_definition)
           end
         end
       end

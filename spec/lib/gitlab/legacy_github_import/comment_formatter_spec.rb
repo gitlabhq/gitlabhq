@@ -237,9 +237,7 @@ RSpec.describe Gitlab::LegacyGithubImport::CommentFormatter, :clean_gitlab_redis
   describe '#create!', :aggregate_failures do
     let(:issuable) { create(:issue, project: project) }
     let(:raw) { base }
-    let(:store) do
-      Import::PlaceholderReferences::Store.new(import_source: imported_from, import_uid: project.import_state.id)
-    end
+    let(:store) { project.placeholder_reference_store }
 
     before do
       comment.gitlab_issuable = issuable

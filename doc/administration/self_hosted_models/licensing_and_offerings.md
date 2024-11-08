@@ -24,7 +24,7 @@ To deploy self-hosted AI models, you need GitLab Ultimate and Duo Enterprise - [
 
 These are AI models deployed within your infrastructure, giving you full control over your data and security.
 
-- **Configuration:** Set up an AI Gateway and configure model endpoints within GitLab.
+- **Configuration:** Set up an AI gateway and configure model endpoints within GitLab.
 - **Licensing:** Requires a valid GitLab license. You can request a license through the [Customers Portal](https://customers.gitlab.com).
 
 The following sequence diagram illustrates the process of handling a user request through a self-hosted model:
@@ -33,7 +33,7 @@ The following sequence diagram illustrates the process of handling a user reques
 sequenceDiagram
     participant User
     participant GitLab as GitLab Instance
-    participant Gateway as AI Gateway
+    participant Gateway as AI gateway
     participant Model as Self-Hosted Model Endpoint
 
     User->>GitLab: API Request

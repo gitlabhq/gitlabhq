@@ -12,7 +12,7 @@ DETAILS:
 
 Predefined [CI/CD variables](index.md) are available in every GitLab CI/CD pipeline.
 
-Avoid [overriding](index.md#override-a-defined-cicd-variable) predefined variables,
+Avoid [overriding](index.md#use-pipeline-variables) predefined variables,
 as it can cause the pipeline to behave unexpectedly.
 
 ## Variable availability

@@ -39,6 +39,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillCiRunnersPartitionedTable,
       runners.create!(runner_type: 3, sharding_key_id: nil)
       runners.create!(runner_type: 3, sharding_key_id: 100)
 
+    ensure
       connection.execute <<~SQL
         CREATE TRIGGER table_sync_trigger_61879721b5
         AFTER INSERT OR DELETE OR UPDATE ON ci_runners

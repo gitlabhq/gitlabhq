@@ -5539,7 +5539,7 @@ deploy_review_job:
 - All YAML-defined variables are also set to any linked [Docker service containers](../services/index.md).
 - YAML-defined variables are meant for non-sensitive project configuration. Store sensitive information
   in [protected variables](../variables/index.md#protect-a-cicd-variable) or [CI/CD secrets](../secrets/index.md).
-- [Manual pipeline variables](../variables/index.md#override-a-defined-cicd-variable)
+- [Manual pipeline variables](../variables/index.md#use-pipeline-variables)
   and [scheduled pipeline variables](../pipelines/schedules.md#add-a-pipeline-schedule)
   are not passed to downstream pipelines by default. Use [trigger:forward](#triggerforward)
   to forward these variables to downstream pipelines.

@@ -18,6 +18,6 @@ ease of administration (backups, upgrades, and troubleshooting) with the cost of
 |--|--|--|
 | [**Installation requirements**](requirements.md)<br>Prerequisites for installation. | [**Installation methods**](install_methods.md)<br>Linux, Helm, Docker, Operator, source, or scripts. | [**Install GitLab on a cloud provider**](cloud_providers.md)<br>AWS, Google Cloud Platform, Azure. |
 | [**Offline GitLab**](../topics/offline/index.md)<br>Isolated installation. | [**Reference architectures**](../administration/reference_architectures/index.md)<br>Recommended deployments at scale. | [**Upgrade GitLab**](../update/index.md)<br>Latest version instructions. |
-| [**Install GitLab Runner**](https://docs.gitlab.com/runner/install/)<br>Software for CI/CD jobs. | [**Configure GitLab Runner**](https://docs.gitlab.com/runner/configuration/)<br>`Config.toml`, certificates, autoscaling, proxy setup. | [**Install GitLab AI Gateway**](https://docs.gitlab.com/runner/configuration/)<br>Using Docker image, Using Helm chart. |
+| [**Install GitLab Runner**](https://docs.gitlab.com/runner/install/)<br>Software for CI/CD jobs. | [**Configure GitLab Runner**](https://docs.gitlab.com/runner/configuration/)<br>`Config.toml`, certificates, autoscaling, proxy setup. | [**Install GitLab AI gateway**](https://docs.gitlab.com/runner/configuration/)<br>Using Docker image, Using Helm chart. |
 
 <!-- markdownlint-enable MD044 -->

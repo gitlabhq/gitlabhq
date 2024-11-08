@@ -107,7 +107,7 @@ In manually-triggered pipelines, the **New pipeline** page displays all pipeline
 that have a `description` defined in the `.gitlab-ci.yml` file. The description displays
 below the variable.
 
-You can change the prefilled value, which [overrides the value](../variables/index.md#override-a-defined-cicd-variable) for that single pipeline run.
+You can change the prefilled value, which [overrides the value](../variables/index.md#use-pipeline-variables) for that single pipeline run.
 Any variables overridden by using this process are [expanded](../variables/index.md#prevent-cicd-variable-expansion)
 and not [masked](../variables/index.md#mask-a-cicd-variable).
 If you do not define a `value` for the variable in the configuration file, the variable name is still listed,

@@ -1,10 +1,10 @@
+import { GlDisclosureDropdownItem } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { IndexMlModels } from '~/ml/model_registry/apps';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import EmptyState from '~/ml/model_registry/components/model_list_empty_state.vue';
-import ActionsDropdown from '~/ml/model_registry/components/actions_dropdown.vue';
 import SearchableTable from '~/ml/model_registry/components/searchable_table.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import getModelsQuery from '~/ml/model_registry/graphql/queries/get_models.query.graphql';
@@ -64,7 +64,7 @@ describeSkipVue3(skipReason, () => {
   const findTitleArea = () => wrapper.findComponent(TitleArea);
   const findModelCountMetadataItem = () => wrapper.findByTestId('metadata-item');
   const findModelCreate = () => wrapper.findByTestId('create-model-button');
-  const findActionsDropdown = () => wrapper.findComponent(ActionsDropdown);
+  const findDropdownItems = () => findModelCreate().findAllComponents(GlDisclosureDropdownItem);
 
   describe('header', () => {
     beforeEach(() => {
@@ -73,10 +73,6 @@ describeSkipVue3(skipReason, () => {
 
     it('displays the title', () => {
       expect(findTitleArea().text()).toContain('Model registry');
-    });
-
-    it('renders the extra actions button', () => {
-      expect(findActionsDropdown().exists()).toBe(true);
     });
   });
 
@@ -110,6 +106,17 @@ describeSkipVue3(skipReason, () => {
         });
 
         expect(findModelCreate().exists()).toBe(true);
+      });
+
+      it('has a dropdown with actions', async () => {
+        await createWrapper({
+          props: { canWriteModelRegistry: true },
+          resolver: emptyQueryResolver(),
+        });
+
+        expect(findDropdownItems()).toHaveLength(2);
+        expect(findDropdownItems().at(0).text()).toBe('Create new model');
+        expect(findDropdownItems().at(1).text()).toBe('Import model using MLflow');
       });
     });
   });

@@ -1,11 +1,11 @@
 ---
 stage: AI-Powered
 group: AI Framework
-description: Set up your self-hosted model GitLab AI Gateway
+description: Set up your self-hosted model GitLab AI gateway
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Install the GitLab AI Gateway
+# Install the GitLab AI gateway
 
 The [AI gateway](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/ai_gateway/) is a standalone service that gives access to AI-powered GitLab Duo features.
 
@@ -16,18 +16,18 @@ Prerequisites:
 - Install a Docker container engine, such as [Docker](https://docs.docker.com/engine/install/#server).
 - Use a valid hostname accessible within your network. Do not use `localhost`.
 
-The GitLab AI Gateway Docker image contains all necessary code and dependencies
+The GitLab AI gateway Docker image contains all necessary code and dependencies
 in a single container.
 
-The Docker image for the AI Gateway is around 340 MB (compressed) for the `linux/amd64` architecture and requires a minimum of 512 MB of RAM to operate. A GPU is not needed for the GitLab AI Gateway. To ensure better performance, especially under heavy usage, consider allocating more disk space, memory, and resources than the minimum requirements. Higher RAM and disk capacity can enhance the AI Gateway's efficiency during peak loads.
+The Docker image for the AI gateway is around 340 MB (compressed) for the `linux/amd64` architecture and requires a minimum of 512 MB of RAM to operate. A GPU is not needed for the GitLab AI gateway. To ensure better performance, especially under heavy usage, consider allocating more disk space, memory, and resources than the minimum requirements. Higher RAM and disk capacity can enhance the AI gateway's efficiency during peak loads.
 
-### Find the AI Gateway release
+### Find the AI gateway release
 
 Find the GitLab official Docker image at:
 
-- [AI Gateway Docker image on Container Registry](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/container_registry/).
-- [AI Gateway Docker image on DockerHub](https://hub.docker.com/repository/docker/gitlab/model-gateway/tags).
-- [Release process for self-hosted AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/release.md).
+- [AI gateway Docker image on Container Registry](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/container_registry/).
+- [AI gateway Docker image on DockerHub](https://hub.docker.com/repository/docker/gitlab/model-gateway/tags).
+- [Release process for self-hosted AI gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/release.md).
 
 Use the image tag that corresponds to your GitLab version. For example, if the
 GitLab version is `v17.5.0`, use `self-hosted-v17.5.0-ee` tag.
@@ -43,7 +43,7 @@ GitLab version is `v17.5.0`, use `self-hosted-v17.5.0-ee` tag.
     <image>
    ```
 
-   From the container host, accessing `http://localhost:5052/docs` should open the AI Gateway API documentation.
+   From the container host, accessing `http://localhost:5052/docs` should open the AI gateway API documentation.
 
 1. Ensure that port `5052` is forwarded to the container from the host and is included in the `AI_GATEWAY_URL` environment variable.
 
@@ -66,7 +66,7 @@ If you encounter authentication issues during health checks, bypass the authenti
 
 This can be helpful for troubleshooting, but you should disable this after fixing the issues.
 
-## Install using the AI Gateway Helm chart
+## Install using the AI gateway Helm chart
 
 Prerequisites:
 
@@ -78,16 +78,16 @@ Prerequisites:
 
 For more information, see [Test the GitLab chart on GKE or EKS](https://docs.gitlab.com/charts/quickstart/index.html).
 
-### Add the AI Gateway Helm repository
+### Add the AI gateway Helm repository
 
-Add the AI Gateway Helm repository to Helm’s configuration:
+Add the AI gateway Helm repository to Helm’s configuration:
 
 ```shell
 helm repo add ai-gateway \
 https://gitlab.com/api/v4/projects/gitlab-org%2fcharts%2fai-gateway-helm-chart/packages/helm/devel
 ```
 
-### Install the AI Gateway
+### Install the AI gateway
 
 1. Create the `ai-gateway` namespace:
 
@@ -95,14 +95,14 @@ https://gitlab.com/api/v4/projects/gitlab-org%2fcharts%2fai-gateway-helm-chart/p
    kubectl create namespace ai-gateway
    ```
 
-1. Generate the certificate for the domain where you plan to expose the AI Gateway.
+1. Generate the certificate for the domain where you plan to expose the AI gateway.
 1. Create the TLS secret in the previously created namespace:
 
    ```shell
    kubectl -n ai-gateway create secret tls ai-gateway-tls --cert="<path_to_cert>" --key="<path_to_cert_key>"
    ```
 
-1. For the AI Gateway to access the API, it must know where the GitLab instance
+1. For the AI gateway to access the API, it must know where the GitLab instance
    is located. To do this, set the `gitlab.url` and `gitlab.apiUrl` together with
    the `ingress.hosts` and `ingress.tls` values as follows:
 
@@ -129,9 +129,9 @@ https://gitlab.com/api/v4/projects/gitlab-org%2fcharts%2fai-gateway-helm-chart/p
    ```
 
 This step can take will take a few seconds in order for all resources to be allocated
-and the AI Gateway to start.
+and the AI gateway to start.
 
-You might need to set up your own **Ingress Controller** for the AI Gateway if your existing `nginx` Ingress controller does not serve services in a different namespace. Make sure Ingress is set up correctly for multi-namespace deployments.
+You might need to set up your own **Ingress Controller** for the AI gateway if your existing `nginx` Ingress controller does not serve services in a different namespace. Make sure Ingress is set up correctly for multi-namespace deployments.
 
 For versions of the `ai-gateway` Helm chart, use `helm search repo ai-gateway --versions` to find the appropriate chart version.
 
@@ -147,9 +147,9 @@ kubectl wait pod \
 
 When your pods are up and running, you can set up your IP ingresses and DNS records.
 
-## Upgrade the AI Gateway Docker image
+## Upgrade the AI gateway Docker image
 
-To upgrade the AI Gateway, download the newest Docker image tag.
+To upgrade the AI gateway, download the newest Docker image tag.
 
 1. Stop the running container:
 
@@ -169,7 +169,7 @@ To upgrade the AI Gateway, download the newest Docker image tag.
 
 ## Alternative installation methods
 
-For information on alternative ways to install the AI Gateway, see
+For information on alternative ways to install the AI gateway, see
 [issue 463773](https://gitlab.com/gitlab-org/gitlab/-/issues/463773).
 
 ## Health Check and Debugging

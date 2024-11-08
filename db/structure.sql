@@ -28875,6 +28875,8 @@ CREATE INDEX index_bulk_imports_on_updated_at_and_id_for_stale_status ON bulk_im
 
 CREATE INDEX index_bulk_imports_on_user_id ON bulk_imports USING btree (user_id);
 
+CREATE INDEX index_ca_enabled_incomplete_aggregation_stages_on_last_run_at ON analytics_cycle_analytics_stage_aggregations USING btree (last_run_at NULLS FIRST) WHERE ((last_completed_at IS NULL) AND (enabled = true));
+
 CREATE INDEX index_catalog_resource_components_on_catalog_resource_id ON catalog_resource_components USING btree (catalog_resource_id);
 
 CREATE INDEX index_catalog_resource_components_on_project_id ON catalog_resource_components USING btree (project_id);

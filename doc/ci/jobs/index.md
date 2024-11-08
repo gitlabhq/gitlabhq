@@ -288,7 +288,7 @@ Define CI/CD variables here when you want to alter the execution of a job that u
 [CI/CD variables](../variables/index.md).
 
 If you add a variable that is already defined in the CI/CD settings or `.gitlab-ci.yml` file,
-the [variable is overridden](../variables/index.md#override-a-defined-cicd-variable) with the new value.
+the [variable is overridden](../variables/index.md#use-pipeline-variables) with the new value.
 Any variables overridden by using this process are [expanded](../variables/index.md#prevent-cicd-variable-expansion)
 and not [masked](../variables/index.md#mask-a-cicd-variable).
 

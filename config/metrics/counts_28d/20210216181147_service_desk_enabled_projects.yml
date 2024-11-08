@@ -2,7 +2,7 @@
 data_category: optional
 key_path: usage_activity_by_stage_monthly.plan.service_desk_enabled_projects
 description: Count unique users who created projects (creator_id) with service desk enabled
-product_group: platform_insights
+product_group: project_management
 value_type: number
 status: active
 time_frame: 28d

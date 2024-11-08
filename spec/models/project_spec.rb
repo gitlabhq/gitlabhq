@@ -9711,4 +9711,18 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       end
     end
   end
+
+  describe '#placeholder_reference_store' do
+    context 'when the project has an import state' do
+      let(:project) { build(:project, import_state: build(:import_state)) }
+
+      it { expect(project.placeholder_reference_store).to be_a(::Import::PlaceholderReferences::Store) }
+    end
+
+    context 'when the project has no import state' do
+      let(:project) { build(:project, import_state: nil) }
+
+      it { expect(project.placeholder_reference_store).to be_nil }
+    end
+  end
 end

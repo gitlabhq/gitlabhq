@@ -41,7 +41,7 @@ Variable values:
 
 - Are stored in the GitLab project, group, or instance settings. Users with access
   to the settings have access to the variables.
-- Can be [overridden](../variables/index.md#override-a-defined-cicd-variable),
+- Can be [overridden](../variables/index.md#use-pipeline-variables),
   making it hard to determine which value was used.
 - Can be exposed by accidental pipeline misconfiguration.
 

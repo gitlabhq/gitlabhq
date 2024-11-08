@@ -1,0 +1,20 @@
+---
+data_category: optional
+key_path: counts.slack_app_installations
+description: This is a metric created to test using time_frame as an array for a database metric
+product_group: import_and_integrate
+value_type: number
+status: active
+time_frame: [28d, 7d]
+data_source: database
+instrumentation_class: CountSlackAppInstallationsMetric
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate
+performance_indicator_type: []
+milestone: "17.6"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167201

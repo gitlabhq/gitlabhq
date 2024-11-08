@@ -200,8 +200,8 @@ Use your own language models to power AI features in GitLab. Code Suggestions an
 You can use language model vendors provided by GitLab or fully manage language models in your self-hosted environment.
 
 - Use GitLab model vendors: Connect with default external model providers, like Google Vertex AI or Anthropic, by
-  using the GitLab-managed AI Gateway.
-- Host your own models: Deploy and manage your own AI Gateway and language models in your infrastructure,
+  using the GitLab-managed AI gateway.
+- Host your own models: Deploy and manage your own AI gateway and language models in your infrastructure,
   without depending on GitLab-provided external language providers.
 - [View documentation](../../administration/self_hosted_models/index.md).
 

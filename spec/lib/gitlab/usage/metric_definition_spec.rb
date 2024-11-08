@@ -47,7 +47,7 @@ RSpec.describe Gitlab::Usage::MetricDefinition, feature_category: :service_ping 
     File.write(path, content)
   end
 
-  describe '.instrumentation_class' do
+  describe '#instrumentation_class' do
     context 'for non internal events' do
       let(:attributes) { { key_path: 'metric1', instrumentation_class: 'RedisHLLMetric', data_source: 'redis_hll' } }
 
@@ -75,7 +75,7 @@ RSpec.describe Gitlab::Usage::MetricDefinition, feature_category: :service_ping 
     end
   end
 
-  describe 'not_removed' do
+  describe '.not_removed' do
     let(:all_definitions) do
       metrics_definitions = [
         { key_path: 'metric1', instrumentation_class: 'RedisHLLMetric', status: 'active' },
@@ -107,7 +107,7 @@ RSpec.describe Gitlab::Usage::MetricDefinition, feature_category: :service_ping 
     end
   end
 
-  describe '#with_instrumentation_class' do
+  describe '.with_instrumentation_class' do
     let(:all_definitions) do
       metrics_definitions = [
         { key_path: 'metric1', status: 'active', data_source: 'redis_hll', instrumentation_class: 'RedisHLLMetric' },
@@ -499,6 +499,33 @@ RSpec.describe Gitlab::Usage::MetricDefinition, feature_category: :service_ping 
       expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).with(instance_of(Gitlab::Usage::MetricDefinition::InvalidError))
 
       subject
+    end
+
+    context "with array time_frame definitions" do
+      let(:yaml_content) { attributes.merge(time_frame: %w[7d 28d all]).deep_stringify_keys.to_yaml }
+
+      it "creates a metric for each of the time frames" do
+        write_metric(metric1, path, yaml_content)
+
+        expected_key_paths = %w[uuid_monthly uuid_weekly uuid]
+
+        expect(subject.length).to eq(3)
+        expect(subject.keys).to match_array(expected_key_paths)
+        expect(subject.values.map(&:key_path)).to match_array(expected_key_paths)
+      end
+
+      context "when array time_frame generates an already used key_path" do
+        let(:yaml_content2) { attributes.merge(key_path: 'uuid_monthly').deep_stringify_keys.to_yaml }
+
+        it "raises an exception" do
+          write_metric(metric1, path, yaml_content)
+          write_metric(metric2, path, yaml_content2)
+
+          expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).with(instance_of(Gitlab::Usage::MetricDefinition::InvalidError))
+
+          subject
+        end
+      end
     end
   end
 

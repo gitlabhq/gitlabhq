@@ -151,6 +151,14 @@ RSpec.describe VirtualRegistries::Packages::Maven::HandleFileRequestService, :ag
             it { is_expected.to eq(described_class::ERRORS[:fips_unsupported_md5]) }
           end
         end
+
+        context 'with upstream head raising an error' do
+          before do
+            stub_external_registry_request(raise_error: true)
+          end
+
+          it_behaves_like 'returning a service response success response', action: :download_file
+        end
       end
     end
 

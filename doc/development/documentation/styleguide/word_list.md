@@ -188,6 +188,10 @@ Instead of **agnostic**, use **platform-independent** or **vendor-neutral**.
 
 Use **AI**. Do not spell out **artificial intelligence**.
 
+## AI gateway
+
+Use lowercase for **AI gateway** and do not hyphenate.
+
 ## AI Impact Dashboard
 
 Use title case for **AI Impact Dashboard**.

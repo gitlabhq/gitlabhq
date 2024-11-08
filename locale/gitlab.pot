@@ -34942,6 +34942,9 @@ msgstr ""
 msgid "MlModelRegistry|Create model version"
 msgstr ""
 
+msgid "MlModelRegistry|Create new model"
+msgstr ""
+
 msgid "MlModelRegistry|Create new version"
 msgstr ""
 
@@ -34949,6 +34952,9 @@ msgid "MlModelRegistry|Create using MLflow"
 msgstr ""
 
 msgid "MlModelRegistry|Create your machine learning using GitLab directly or using the MLflow client"
+msgstr ""
+
+msgid "MlModelRegistry|Create/Import"
 msgstr ""
 
 msgid "MlModelRegistry|Creating a model"
@@ -35036,6 +35042,9 @@ msgid "MlModelRegistry|For example 1.0.0"
 msgstr ""
 
 msgid "MlModelRegistry|ID"
+msgstr ""
+
+msgid "MlModelRegistry|Import model using MLflow"
 msgstr ""
 
 msgid "MlModelRegistry|Import your machine learning models"

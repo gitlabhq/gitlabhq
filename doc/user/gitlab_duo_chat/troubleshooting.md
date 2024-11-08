@@ -154,7 +154,7 @@ Some possible reasons:
 
 - A client-side error caused by a bug in the GitLab code.
 - A server-side error caused by a bug in the Anthropic code.
-- An HTTP request that didn't reach the AI Gateway.
+- An HTTP request that didn't reach the AI gateway.
 
 [An issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/479465) to more clearly specify the reason for the error.
 
@@ -168,21 +168,21 @@ If problem continues, please report the issue to the GitLab support team.
 You might get an error that states
 `I'm sorry, I couldn't respond in time. Please try again. Error code: A1002`.
 
-This error occurs when no events are returned from AI Gateway or GitLab failed to parse the events. Please try your request again.
+This error occurs when no events are returned from AI gateway or GitLab failed to parse the events. Please try your request again.
 
 ## `Error A1003`
 
 You might get an error that states
 `I'm sorry, I couldn't respond in time. Please try again. Error code: A1003`.
 
-This error occurs when streaming response from AI Gateway failed. Please try your request again.
+This error occurs when streaming response from AI gateway failed. Please try your request again.
 
 ## `Error A1004`
 
 You might get an error that states
 `I'm sorry, I couldn't respond in time. Please try again. Error code: A1004`.
 
-This error occurs when an error occurred in the AI Gateway process. Please try your request again.
+This error occurs when an error occurred in the AI gateway process. Please try your request again.
 
 ## `Error A1005`
 
