@@ -10378,9 +10378,6 @@ msgstr ""
 msgid "By quarter"
 msgstr ""
 
-msgid "By selecting Continue or registering through a third party, I agree that GitLab can contact me by email or telephone about its product, services, or events."
-msgstr ""
-
 msgid "By using a primary email tied to an Enterprise email address, you acknowledge that this account is an Enterprise User."
 msgstr ""
 
@@ -27729,6 +27726,9 @@ msgstr ""
 msgid "HttpDestinationValidator validates only http external audit event destinations."
 msgstr ""
 
+msgid "I agree that GitLab can contact me by email or telephone about its product, services, or events."
+msgstr ""
+
 msgid "I forgot my password"
 msgstr ""
 
@@ -34970,6 +34970,9 @@ msgid "MlModelRegistry|Creating models, model versions and candidates is also po
 msgstr ""
 
 msgid "MlModelRegistry|Delete model"
+msgstr ""
+
+msgid "MlModelRegistry|Delete model %{modelName}"
 msgstr ""
 
 msgid "MlModelRegistry|Delete version"

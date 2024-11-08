@@ -1,6 +1,7 @@
 import { mount } from '@vue/test-utils';
-import { GlTable, GlLink, GlAvatarLink, GlAvatar } from '@gitlab/ui';
+import { GlTable, GlLink, GlAvatarLink, GlAvatar, GlDisclosureDropdown } from '@gitlab/ui';
 import ModelsTable from '~/ml/model_registry/components/models_table.vue';
+import DeleteModelDisclosureDropdownItem from '~/ml/model_registry/components/delete_model_disclosure_dropdown_item.vue';
 import { modelWithOneVersion, modelWithoutVersion } from '../graphql_mock_data';
 
 describe('ModelsTable', () => {
@@ -8,10 +9,12 @@ describe('ModelsTable', () => {
 
   const items = [modelWithOneVersion];
 
-  const createWrapper = (props = {}) => {
+  const createWrapper = (props = {}, canWriteModelRegistry = true) => {
     wrapper = mount(ModelsTable, {
       propsData: {
         items,
+        canWriteModelRegistry,
+
         ...props,
       },
       stubs: {
@@ -19,12 +22,17 @@ describe('ModelsTable', () => {
         GlLink,
         GlAvatarLink,
         GlAvatar,
+        DeleteModelDisclosureDropdownItem,
+      },
+      provide: {
+        projectPath: 'projectPath',
       },
     });
   };
 
   const findGlTable = () => wrapper.findComponent(GlTable);
   const findTableRows = () => findGlTable().findAll('tbody tr');
+  const findActionsDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
 
   beforeEach(() => {
     createWrapper();
@@ -40,7 +48,17 @@ describe('ModelsTable', () => {
       { key: 'latestVersion', label: 'Latest version', thClass: 'gl-w-1/4' },
       { key: 'author', label: 'Author', thClass: 'gl-w-1/4' },
       { key: 'createdAt', label: 'Created', thClass: 'gl-w-1/4' },
+      {
+        key: 'actions',
+        label: '',
+        tdClass: 'lg:gl-w-px gl-whitespace-nowrap',
+        thClass: 'lg:gl-w-px gl-whitespace-nowrap',
+      },
     ]);
+  });
+
+  it('renders actions dropdown if canWriteModelRegistry is true', () => {
+    expect(findActionsDropdown().exists()).toBe(true);
   });
 
   it('renders the correct number of rows', () => {
@@ -113,6 +131,16 @@ describe('ModelsTable', () => {
     it('renders the created date as "Unknown"', () => {
       const createdAtCell = findTableRows().at(0).findAll('td').at(3);
       expect(createdAtCell.text()).toBe('');
+    });
+  });
+
+  describe('when the user cannot write to the model registry', () => {
+    beforeEach(() => {
+      createWrapper({}, false);
+    });
+
+    it('does not render actions if canWriteModelRegistry is false', () => {
+      expect(findActionsDropdown().exists()).toBe(false);
     });
   });
 });

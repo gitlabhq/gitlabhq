@@ -89,9 +89,10 @@ module Sidebars
         link: link,
         is_active: is_active,
         pill_count: has_pill? ? pill_count : nil,
+        pill_count_field: has_pill? ? pill_count_field : nil,
         items: items,
         separated: separated?
-      }
+      }.compact
     end
 
     # Returns an array of renderable menu entries,

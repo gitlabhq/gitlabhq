@@ -168,7 +168,12 @@ export default {
         can-write-model-registry
         @model-versions-update="submitFilters"
       />
-      <models-table v-else-if="!isModelsEmpty" :items="models" />
+      <models-table
+        v-else-if="!isModelsEmpty"
+        :items="models"
+        can-write-model-registry
+        @models-update="submitFilters"
+      />
       <gl-keyset-pagination
         v-if="pageInfo.hasPreviousPage || pageInfo.hasNextPage"
         v-bind="pageInfo"

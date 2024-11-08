@@ -213,6 +213,9 @@
 .if-ruby-branch: &if-ruby-branch
   if: '$CI_COMMIT_BRANCH =~ /^ruby\d+(_\d)*$/ || (($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby\d+(_\d)*/)'
 
+.if-observability-skip-e2e-jobs: &if-observability-skip-e2e-jobs
+  if: '$SKIP_GITLAB_OBSERVABILITY_BACKEND_TRIGGER || $GITLAB_OBSERVABILITY_BACKEND_PIPELINE_TRIGGER_TOKEN == null || $GITLAB_OBSERVABILITY_BACKEND_TOKEN_FOR_CI_SCRIPTS == null'
+
 ####################
 # Changes patterns #
 ####################
@@ -3384,28 +3387,21 @@
 ###############################
 .observability-backend-main-branch:rules:
   rules:
+    - <<: *if-observability-skip-e2e-jobs
+      when: never
     - <<: *if-merge-request-labels-run-observability-e2e-tests-current-branch
       when: never
     - <<: *if-merge-request-labels-run-observability-e2e-tests-main-branch
-      allow_failure: true
     - <<: *if-merge-request
       changes: *observability-code-patterns
-      allow_failure: true
-    - <<: *if-merge-request
-      changes: *code-patterns
-      when: manual
-      allow_failure: true
 
 .observability-backend-current-branch:rules:
   rules:
+    - <<: *if-observability-skip-e2e-jobs
+      when: never
     - <<: *if-merge-request-labels-run-observability-e2e-tests-main-branch
       when: never
     - <<: *if-merge-request-labels-run-observability-e2e-tests-current-branch
-      allow_failure: true
-    - <<: *if-merge-request
-      changes: *code-patterns
-      when: manual
-      allow_failure: true
 
 ##########################
 # Pre-merge checks rules #

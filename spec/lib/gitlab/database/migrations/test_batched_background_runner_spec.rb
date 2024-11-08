@@ -171,9 +171,9 @@ RSpec.describe Gitlab::Database::Migrations::TestBatchedBackgroundRunner, :freez
 
       it 'does not sample a job if there are zero rows to sample' do
         calls = []
-        define_background_migration(migration_name, with_base_class: true, scoping: ->(relation) {
-                                                                                      relation.none
-                                                                                    }) do |*args|
+        define_background_migration(migration_name, scoping: ->(relation) {
+          relation.none
+        }) do |*args|
           calls << args
         end
 

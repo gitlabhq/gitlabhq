@@ -440,6 +440,20 @@ RSpec.describe Gitlab::Database, feature_category: :database do
     end
   end
 
+  describe '.application_record_for_connection' do
+    it 'returns ApplicationRecord for main database connection' do
+      connection = ApplicationRecord.retrieve_connection
+      expect(described_class.application_record_for_connection(connection)).to eq(ApplicationRecord)
+    end
+
+    it 'returns Ci::ApplicationRecord for ci database connection' do
+      skip_if_multiple_databases_not_setup(:ci)
+
+      connection = Ci::ApplicationRecord.retrieve_connection
+      expect(described_class.application_record_for_connection(connection)).to eq(Ci::ApplicationRecord)
+    end
+  end
+
   describe '#true_value' do
     it 'returns correct value' do
       expect(described_class.true_value).to eq "'t'"

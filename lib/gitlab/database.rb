@@ -114,6 +114,16 @@ module Gitlab
           .compact.with_indifferent_access.freeze
     end
 
+    # Returns the application record that created the given connection.
+    # In single database mode, this always returns ApplicationRecord.
+    def self.application_record_for_connection(connection)
+      @gitlab_base_models ||=
+        database_base_models
+          .transform_values { |v| v == ActiveRecord::Base ? ApplicationRecord : v }
+
+      @gitlab_base_models[db_config_name(connection)]
+    end
+
     # This returns a list of base models with connection associated for a given gitlab_schema
     def self.schemas_to_base_models
       @schemas_to_base_models ||=

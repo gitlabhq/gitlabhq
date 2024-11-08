@@ -52,6 +52,22 @@ RSpec.describe Sidebars::Groups::Menus::IssuesMenu, feature_category: :navigatio
     let(:count_service) { ::Groups::OpenIssuesCountService }
   end
 
+  describe '#pill_count_field' do
+    it 'returns the correct GraphQL field name' do
+      expect(menu.pill_count_field).to eq('openIssuesCount')
+    end
+
+    context 'when async_sidebar_counts feature flag is disabled' do
+      before do
+        stub_feature_flags(async_sidebar_counts: false)
+      end
+
+      it 'returns nil' do
+        expect(menu.pill_count_field).to be_nil
+      end
+    end
+  end
+
   context 'when count query times out' do
     let(:count_service) { ::Groups::OpenIssuesCountService }
 
@@ -78,6 +94,7 @@ RSpec.describe Sidebars::Groups::Menus::IssuesMenu, feature_category: :navigatio
         item_id: :group_issue_list,
         active_routes: { path: 'groups#issues' },
         pill_count: menu.pill_count,
+        pill_count_field: menu.pill_count_field,
         has_pill: menu.has_pill?,
         super_sidebar_parent: Sidebars::Groups::SuperSidebarMenus::PlanMenu
       }

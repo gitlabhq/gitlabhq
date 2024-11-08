@@ -57,6 +57,11 @@ module Sidebars
           end
         end
 
+        override :pill_count_field
+        def pill_count_field
+          'openIssuesCount' if Feature.enabled?(:async_sidebar_counts, context.project.root_ancestor)
+        end
+
         override :pill_html_options
         def pill_html_options
           {
@@ -68,6 +73,7 @@ module Sidebars
         def serialize_as_menu_item_args
           super.merge({
             pill_count: pill_count,
+            pill_count_field: pill_count_field,
             has_pill: has_pill?,
             super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::PlanMenu,
             item_id: :project_issue_list

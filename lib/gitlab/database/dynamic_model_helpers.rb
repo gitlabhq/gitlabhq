@@ -5,8 +5,8 @@ module Gitlab
     module DynamicModelHelpers
       BATCH_SIZE = 1_000
 
-      def define_batchable_model(table_name, connection:, primary_key: nil)
-        klass = Class.new(ActiveRecord::Base) do
+      def define_batchable_model(table_name, connection:, primary_key: nil, base_class: ActiveRecord::Base)
+        klass = Class.new(base_class) do
           include EachBatch
 
           self.table_name = table_name

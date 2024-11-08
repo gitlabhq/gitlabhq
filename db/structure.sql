@@ -7842,14 +7842,18 @@ CREATE TABLE batched_background_migration_jobs (
     started_at timestamp with time zone,
     finished_at timestamp with time zone,
     batched_background_migration_id bigint NOT NULL,
-    min_value bigint NOT NULL,
-    max_value bigint NOT NULL,
+    min_value bigint,
+    max_value bigint,
     batch_size integer NOT NULL,
     sub_batch_size integer NOT NULL,
     status smallint DEFAULT 0 NOT NULL,
     attempts smallint DEFAULT 0 NOT NULL,
     metrics jsonb DEFAULT '{}'::jsonb NOT NULL,
-    pause_ms integer DEFAULT 100 NOT NULL
+    pause_ms integer DEFAULT 100 NOT NULL,
+    min_cursor jsonb,
+    max_cursor jsonb,
+    CONSTRAINT check_18d498ea58 CHECK (((jsonb_typeof(min_cursor) = 'array'::text) AND (jsonb_typeof(max_cursor) = 'array'::text))),
+    CONSTRAINT check_c1ce96fe3b CHECK (((num_nonnulls(min_value, max_value) = 2) OR (num_nonnulls(min_cursor, max_cursor) = 2)))
 );
 
 CREATE SEQUENCE batched_background_migration_jobs_id_seq
@@ -7865,8 +7869,8 @@ CREATE TABLE batched_background_migrations (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    min_value bigint DEFAULT 1 NOT NULL,
-    max_value bigint NOT NULL,
+    min_value bigint DEFAULT 1,
+    max_value bigint,
     batch_size integer NOT NULL,
     sub_batch_size integer NOT NULL,
     "interval" smallint NOT NULL,
@@ -7884,12 +7888,16 @@ CREATE TABLE batched_background_migrations (
     gitlab_schema text NOT NULL,
     finished_at timestamp with time zone,
     queued_migration_version text,
+    min_cursor jsonb,
+    max_cursor jsonb,
     CONSTRAINT check_0406d9776f CHECK ((char_length(gitlab_schema) <= 255)),
+    CONSTRAINT check_122750e705 CHECK (((jsonb_typeof(min_cursor) = 'array'::text) AND (jsonb_typeof(max_cursor) = 'array'::text))),
     CONSTRAINT check_5bb0382d6f CHECK ((char_length(column_name) <= 63)),
     CONSTRAINT check_6b6a06254a CHECK ((char_length(table_name) <= 63)),
     CONSTRAINT check_713f147aea CHECK ((char_length(queued_migration_version) <= 14)),
     CONSTRAINT check_batch_size_in_range CHECK ((batch_size >= sub_batch_size)),
     CONSTRAINT check_e6c75b1e29 CHECK ((char_length(job_class_name) <= 100)),
+    CONSTRAINT check_f5158baa12 CHECK (((num_nonnulls(min_value, max_value) = 2) OR (num_nonnulls(min_cursor, max_cursor) = 2))),
     CONSTRAINT check_fe10674721 CHECK ((char_length(batch_class_name) <= 100)),
     CONSTRAINT check_max_value_in_range CHECK ((max_value >= min_value)),
     CONSTRAINT check_positive_min_value CHECK ((min_value > 0)),
@@ -30672,6 +30680,8 @@ CREATE INDEX index_metrics_dashboard_annotations_on_environment_id_and_3_col ON 
 CREATE INDEX index_metrics_dashboard_annotations_on_timespan_end ON metrics_dashboard_annotations USING btree (COALESCE(ending_at, starting_at));
 
 CREATE INDEX index_metrics_users_starred_dashboards_on_project_id ON metrics_users_starred_dashboards USING btree (project_id);
+
+CREATE INDEX index_migration_jobs_on_migration_id_and_cursor_max_value ON batched_background_migration_jobs USING btree (batched_background_migration_id, max_cursor) WHERE (max_cursor IS NOT NULL);
 
 CREATE INDEX index_migration_jobs_on_migration_id_and_finished_at ON batched_background_migration_jobs USING btree (batched_background_migration_id, finished_at);
 

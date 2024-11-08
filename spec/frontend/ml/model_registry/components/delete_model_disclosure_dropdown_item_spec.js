@@ -12,11 +12,22 @@ describe('DeleteButton', () => {
   const findNote = () => wrapper.findByTestId('confirmation-note');
 
   beforeEach(() => {
-    wrapper = shallowMountExtended(DeleteModelDisclosureDropdownItem, {});
+    wrapper = shallowMountExtended(DeleteModelDisclosureDropdownItem, {
+      propsData: {
+        model: {
+          id: 1,
+          name: 'modelName',
+        },
+      },
+    });
   });
 
   it('mounts the modal', () => {
     expect(findModal().exists()).toBe(true);
+  });
+
+  it('uses unique modal ids', () => {
+    expect(findModal().props('modalId')).toBe('ml-models-delete-modal-1');
   });
 
   it('mounts the button', () => {
@@ -25,7 +36,7 @@ describe('DeleteButton', () => {
 
   describe('when modal is opened', () => {
     it('displays modal title', () => {
-      expect(findModal().props('title')).toBe('Delete model');
+      expect(findModal().props('title')).toBe('Delete model modelName');
     });
 
     it('displays modal body', () => {

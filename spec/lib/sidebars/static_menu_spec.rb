@@ -22,24 +22,14 @@ RSpec.describe Sidebars::StaticMenu, feature_category: :navigation do
           {
             id: 'id1',
             title: "Is active",
-            icon: nil,
-            avatar: nil,
-            entity_id: nil,
             link: "foo2",
-            is_active: true,
-            pill_count: nil,
-            link_classes: nil
+            is_active: true
           },
           {
             id: 'id2',
             title: "Not active",
-            icon: nil,
-            avatar: nil,
-            entity_id: nil,
             link: "foo3",
-            is_active: false,
-            pill_count: nil,
-            link_classes: nil
+            is_active: false
           }
         ]
       )
