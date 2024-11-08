@@ -18,12 +18,6 @@ RSpec.describe Gitlab::InstrumentationHelper, :clean_gitlab_redis_repository_cac
       described_class.init_instrumentation_data
     end
 
-    it 'includes DB counts' do
-      subject
-
-      expect(payload).to include(db_count: 0, db_cached_count: 0, db_write_count: 0)
-    end
-
     context 'when Gitaly calls are made' do
       it 'adds Gitaly and Redis data' do
         project = create(:project)
@@ -182,14 +176,11 @@ RSpec.describe Gitlab::InstrumentationHelper, :clean_gitlab_redis_repository_cac
     it 'includes DB counts' do
       subject
 
-      expect(payload).to include(db_replica_count: 0,
-        db_replica_cached_count: 0,
-        db_primary_count: 0,
-        db_primary_cached_count: 0,
-        db_primary_wal_count: 0,
-        db_replica_wal_count: 0,
-        db_primary_wal_cached_count: 0,
-        db_replica_wal_cached_count: 0)
+      expect(payload).to include(db_main_cached_count: 0,
+        db_main_count: 0,
+        db_main_write_count: 0,
+        db_main_wal_count: 0,
+        db_main_wal_cached_count: 0)
     end
 
     context 'when replica caught up search was made' do

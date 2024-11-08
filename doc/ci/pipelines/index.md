@@ -198,7 +198,7 @@ allow you to require manual interaction before moving forward in the pipeline.
 You can do this straight from the pipeline graph. Select **Run** (**{play}**) to execute that particular job.
 
 For example, your pipeline can start automatically, but require a manual action to
-[deploy to production](../environments/index.md#configure-manual-deployments).
+[deploy to production](../environments/deployments.md#configure-manual-deployments).
 In the example below, the `production` stage has a job with a manual action:
 
 ![Pipelines example](img/manual_pipeline_v14_2.png)

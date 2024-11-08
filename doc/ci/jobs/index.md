@@ -305,7 +305,7 @@ For example, if you start rolling out new code and:
 
 - Users do not experience trouble, GitLab can automatically complete the deployment from 0% to 100%.
 - Users experience trouble with the new code, you can stop the timed incremental rollout by canceling the pipeline
-  and [rolling](../environments/index.md#retry-or-roll-back-a-deployment) back to the last stable version.
+  and [rolling](../environments/deployments.md#retry-or-roll-back-a-deployment) back to the last stable version.
 
 ![A pipeline graph with a delayed job.](img/pipeline_delayed_job_v14_2.png)
 

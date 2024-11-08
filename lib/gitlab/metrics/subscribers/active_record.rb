@@ -76,18 +76,26 @@ module Gitlab
           return {} unless Gitlab::SafeRequestStore.active?
 
           {}.tap do |payload|
-            db_counter_keys.each do |key|
-              payload[key] = Gitlab::SafeRequestStore[key].to_i
-            end
+            if Feature.disabled?(:omit_aggregated_db_log_fields, :current_request, type: :ops)
+              db_counter_keys.each do |key|
+                payload[key] = Gitlab::SafeRequestStore[key].to_i
+              end
 
-            if ::Gitlab::SafeRequestStore.active?
-              load_balancing_metric_counter_keys.each do |counter|
+              load_balancing_roles_metric_counter_keys.each do |counter|
                 payload[counter] = ::Gitlab::SafeRequestStore[counter].to_i
               end
 
-              load_balancing_metric_duration_keys.each do |duration|
+              load_balancing_roles_metric_duration_keys.each do |duration|
                 payload[duration] = ::Gitlab::SafeRequestStore[duration].to_f.round(3)
               end
+            end
+
+            load_balancing_metric_counter_keys.each do |counter|
+              payload[counter] = ::Gitlab::SafeRequestStore[counter].to_i
+            end
+
+            load_balancing_metric_duration_keys.each do |duration|
+              payload[duration] = ::Gitlab::SafeRequestStore[duration].to_f.round(3)
             end
           end
         end
@@ -188,14 +196,34 @@ module Gitlab
           end
         end
 
-        def self.load_balancing_metric_keys(metrics)
+        def self.load_balancing_roles_metric_counter_keys
+          strong_memoize(:load_balancing_roles_metric_counter_keys) do
+            load_balancing_roles_metric_keys(DB_LOAD_BALANCING_COUNTERS)
+          end
+        end
+
+        def self.load_balancing_roles_metric_duration_keys
+          strong_memoize(:load_balancing_roles_metric_duration_keys) do
+            load_balancing_roles_metric_keys(DB_LOAD_BALANCING_DURATIONS)
+          end
+        end
+
+        def self.load_balancing_roles_metric_keys(metrics)
           counters = []
 
           metrics.each do |metric|
             DB_LOAD_BALANCING_ROLES.each do |role|
               counters << compose_metric_key(metric, role)
             end
+          end
 
+          counters
+        end
+
+        def self.load_balancing_metric_keys(metrics)
+          counters = []
+
+          metrics.each do |metric|
             ::Gitlab::Database.database_base_models.keys.each do |config_name|
               counters << compose_metric_key(metric, nil, config_name) # main / ci / geo
             end

@@ -90,11 +90,8 @@ RSpec.describe MergeRequests::Mergeability::Logger, :request_store, feature_cate
       context 'when its a query' do
         let(:extra_data) do
           {
-            'mergeability.expensive_operation.db_count.values' => a_kind_of(Array),
             'mergeability.expensive_operation.db_main_count.values' => a_kind_of(Array),
-            'mergeability.expensive_operation.db_main_duration_s.values' => a_kind_of(Array),
-            'mergeability.expensive_operation.db_primary_count.values' => a_kind_of(Array),
-            'mergeability.expensive_operation.db_primary_duration_s.values' => a_kind_of(Array)
+            'mergeability.expensive_operation.db_main_duration_s.values' => a_kind_of(Array)
           }
         end
 

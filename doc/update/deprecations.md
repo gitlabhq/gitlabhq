@@ -417,6 +417,38 @@ See also how to [prevent your runner registration workflow from breaking](https:
 
 </div>
 
+<div class="deprecation breaking-change" data-milestone="18.0">
+
+### GitLab chart use of NGINX controller image v1.3.1
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.6</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/5794).
+
+</div>
+
+In GitLab 17.6, the GitLab chart updated the default NGINX controller image to v1.11.2. This new version requires new RBAC rules that were added to our Ingress
+NGINX-bundled subchart.
+
+This change is being backported to 17.5.1, 17.4.3, and 17.3.6.
+
+Some users prefer to manage RBAC rules themselves by setting the Helm key `nginx-ingress.rbac.create` to `false`. To give time for users who manage their own RBAC rules to
+add the new required rules before they adopt the new v1.11.2 version, we've implemented a fallback mechanism to detect `nginx-ingress.rbac.create: false` and force the chart
+to keep using NGINX image v1.3.1, which does not need the new RBAC rules.
+
+If you manage your own NGINX RBAC rules, but you also want to take advantage of the new NGINX controller image v1.11.2 immediately:
+
+1. Add the new RBAC rules to your cluster [like we did](https://gitlab.com/gitlab-org/charts/gitlab/-/merge_requests/3901/diffs?commit_id=93a3cbdb5ad83db95e12fa6c2145df0800493d8b).
+1. Set `nginx-ingress.controller.image.disableFallback` to true.
+
+We plan to remove this fallback support and support for NGINX controller image v1.3.1 in GitLab 18.0.
+
+You can read more about it in the [charts release page](https://docs.gitlab.com/charts/releases/8_0.html#upgrade-to-86x-851-843-836).
+
+</div>
+
 <div class="deprecation " data-milestone="18.0">
 
 ### Group vulnerability report by OWASP top 10 2017 is deprecated

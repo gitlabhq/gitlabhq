@@ -49,7 +49,6 @@ RSpec.shared_context 'structured_logger' do
     metrics =
       ::Gitlab::Metrics::Subscribers::ActiveRecord.load_balancing_metric_counter_keys +
       ::Gitlab::Metrics::Subscribers::ActiveRecord.load_balancing_metric_duration_keys +
-      ::Gitlab::Metrics::Subscribers::ActiveRecord.db_counter_keys +
       [:db_duration_s]
 
     metrics.each_with_object({}) do |key, result|

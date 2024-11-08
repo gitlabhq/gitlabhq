@@ -491,7 +491,7 @@ Example responses:
 
 NOTE:
 Not all deployments can be associated with merge requests. See
-[Track what merge requests were deployed to an environment](../ci/environments/index.md#track-newly-included-merge-requests-per-deployment)
+[Track what merge requests were deployed to an environment](../ci/environments/deployments.md#track-newly-included-merge-requests-per-deployment)
 for more information.
 
 This API retrieves the list of merge requests shipped with a given deployment:

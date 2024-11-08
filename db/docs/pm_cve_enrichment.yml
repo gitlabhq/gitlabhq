@@ -8,5 +8,5 @@ feature_categories:
 description: Stores EPSS data (https://www.first.org/epss/).
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/168288
 milestone: '17.6'
-gitlab_schema: gitlab_sec
+gitlab_schema: gitlab_pm
 exempt_from_sharding: true  # See discussion on keys for pm_ tables https://gitlab.com/gitlab-org/gitlab/-/issues/434988#note_1827421068

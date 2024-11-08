@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'store ActiveRecord info in RequestStore' do |db_role|
+RSpec.shared_examples 'store ActiveRecord info in RequestStore' do |db_role, include_aggregated: false|
   let(:db_config_name) do
     db_config_name = ::Gitlab::Database.db_config_names(with_schema: :gitlab_shared).first
     db_config_name += "_replica" if db_role == :secondary
@@ -10,8 +10,16 @@ RSpec.shared_examples 'store ActiveRecord info in RequestStore' do |db_role|
   let(:expected_payload_defaults) do
     result = {}
     metrics =
-      ::Gitlab::Metrics::Subscribers::ActiveRecord.load_balancing_metric_counter_keys +
-      ::Gitlab::Metrics::Subscribers::ActiveRecord.db_counter_keys
+      ::Gitlab::Metrics::Subscribers::ActiveRecord.load_balancing_metric_counter_keys
+
+    if include_aggregated
+      metrics += ::Gitlab::Metrics::Subscribers::ActiveRecord.db_counter_keys +
+        ::Gitlab::Metrics::Subscribers::ActiveRecord.load_balancing_roles_metric_counter_keys
+
+      ::Gitlab::Metrics::Subscribers::ActiveRecord.load_balancing_roles_metric_duration_keys.each do |key|
+        result[key] = 0.0
+      end
+    end
 
     metrics.each do |key|
       result[key] = 0
@@ -37,60 +45,77 @@ RSpec.shared_examples 'store ActiveRecord info in RequestStore' do |db_role|
       Gitlab::SafeRequestStore.ensure_request_store do
         subscriber.sql(event)
 
-        expected = case db_role
-                   when :primary
-                     transform_hash(expected_payload_defaults, {
-                       db_count: record_query ? 1 : 0,
-                       db_write_count: record_write_query ? 1 : 0,
-                       db_cached_count: record_cached_query ? 1 : 0,
-                       db_primary_cached_count: record_cached_query ? 1 : 0,
-                       "db_#{db_config_name}_cached_count": record_cached_query ? 1 : 0,
-                       db_primary_count: record_query ? 1 : 0,
-                       "db_#{db_config_name}_count": record_query ? 1 : 0,
-                       db_primary_write_count: record_write_query ? 1 : 0,
-                       "db_#{db_config_name}_write_count": record_write_query ? 1 : 0,
-                       db_primary_duration_s: record_query ? 0.002 : 0.0,
-                       "db_#{db_config_name}_duration_s": record_query ? 0.002 : 0.0,
-                       db_primary_wal_count: record_wal_query ? 1 : 0,
-                       "db_#{db_config_name}_wal_count": record_wal_query ? 1 : 0,
-                       db_primary_wal_cached_count: record_wal_query && record_cached_query ? 1 : 0,
-                       "db_#{db_config_name}_wal_cached_count": record_wal_query && record_cached_query ? 1 : 0
-                     })
-                   when :replica
-                     transform_hash(expected_payload_defaults, {
-                       db_count: record_query ? 1 : 0,
-                       db_write_count: record_write_query ? 1 : 0,
-                       db_cached_count: record_cached_query ? 1 : 0,
-                       db_replica_cached_count: record_cached_query ? 1 : 0,
-                       "db_#{db_config_name}_cached_count": record_cached_query ? 1 : 0,
-                       db_replica_count: record_query ? 1 : 0,
-                       "db_#{db_config_name}_count": record_query ? 1 : 0,
-                       db_replica_write_count: record_write_query ? 1 : 0,
-                       "db_#{db_config_name}_write_count": record_write_query ? 1 : 0,
-                       db_replica_duration_s: record_query ? 0.002 : 0.0,
-                       "db_#{db_config_name}_duration_s": record_query ? 0.002 : 0.0,
-                       db_replica_wal_count: record_wal_query ? 1 : 0,
-                       "db_#{db_config_name}_wal_count": record_wal_query ? 1 : 0,
-                       db_replica_wal_cached_count: record_wal_query && record_cached_query ? 1 : 0,
-                       "db_#{db_config_name}_wal_cached_count": record_wal_query && record_cached_query ? 1 : 0
-                     })
-                   else
-                     transform_hash(expected_payload_defaults, {
-                       db_count: record_query ? 1 : 0,
-                       db_write_count: record_write_query ? 1 : 0,
-                       db_cached_count: record_cached_query ? 1 : 0,
-                       db_primary_cached_count: 0,
-                       "db_#{db_config_name}_cached_count": 0,
-                       db_primary_count: 0,
-                       "db_#{db_config_name}_count": 0,
-                       db_primary_duration_s: 0.0,
-                       "db_#{db_config_name}_duration_s": 0.0,
-                       db_primary_wal_count: 0,
-                       "db_#{db_config_name}_wal_count": 0,
-                       db_primary_wal_cached_count: 0,
-                       "db_#{db_config_name}_wal_cached_count": 0
-                     })
-                   end
+        case db_role
+        when :primary
+          subscriber_hash = {
+            "db_#{db_config_name}_cached_count": record_cached_query ? 1 : 0,
+            "db_#{db_config_name}_count": record_query ? 1 : 0,
+            "db_#{db_config_name}_write_count": record_write_query ? 1 : 0,
+            "db_#{db_config_name}_duration_s": record_query ? 0.002 : 0.0,
+            "db_#{db_config_name}_wal_count": record_wal_query ? 1 : 0,
+            "db_#{db_config_name}_wal_cached_count": record_wal_query && record_cached_query ? 1 : 0
+          }
+
+          if include_aggregated
+            subscriber_hash = subscriber_hash.merge(
+              db_count: record_query ? 1 : 0,
+              db_write_count: record_write_query ? 1 : 0,
+              db_cached_count: record_cached_query ? 1 : 0,
+              db_primary_cached_count: record_cached_query ? 1 : 0,
+              db_primary_count: record_query ? 1 : 0,
+              db_primary_write_count: record_write_query ? 1 : 0,
+              db_primary_duration_s: record_query ? 0.002 : 0.0,
+              db_primary_wal_count: record_wal_query ? 1 : 0,
+              db_primary_wal_cached_count: record_wal_query && record_cached_query ? 1 : 0
+            )
+          end
+        when :replica
+          subscriber_hash = {
+            "db_#{db_config_name}_cached_count": record_cached_query ? 1 : 0,
+            "db_#{db_config_name}_count": record_query ? 1 : 0,
+            "db_#{db_config_name}_write_count": record_write_query ? 1 : 0,
+            "db_#{db_config_name}_duration_s": record_query ? 0.002 : 0.0,
+            "db_#{db_config_name}_wal_count": record_wal_query ? 1 : 0,
+            "db_#{db_config_name}_wal_cached_count": record_wal_query && record_cached_query ? 1 : 0
+          }
+
+          if include_aggregated
+            subscriber_hash = subscriber_hash.merge({
+              db_count: record_query ? 1 : 0,
+              db_write_count: record_write_query ? 1 : 0,
+              db_cached_count: record_cached_query ? 1 : 0,
+              db_replica_cached_count: record_cached_query ? 1 : 0,
+              db_replica_count: record_query ? 1 : 0,
+              db_replica_write_count: record_write_query ? 1 : 0,
+              db_replica_duration_s: record_query ? 0.002 : 0.0,
+              db_replica_wal_count: record_wal_query ? 1 : 0,
+              db_replica_wal_cached_count: record_wal_query && record_cached_query ? 1 : 0
+            })
+          end
+        else
+          subscriber_hash = {
+            "db_#{db_config_name}_cached_count": 0,
+            "db_#{db_config_name}_count": 0,
+            "db_#{db_config_name}_duration_s": 0.0,
+            "db_#{db_config_name}_wal_count": 0,
+            "db_#{db_config_name}_wal_cached_count": 0
+          }
+
+          if include_aggregated
+            subscriber_hash = subscriber_hash.merge({
+              db_count: record_query ? 1 : 0,
+              db_write_count: record_write_query ? 1 : 0,
+              db_cached_count: record_cached_query ? 1 : 0,
+              db_primary_cached_count: 0,
+              db_primary_count: 0,
+              db_primary_duration_s: 0.0,
+              db_primary_wal_count: 0,
+              db_primary_wal_cached_count: 0
+            })
+          end
+        end
+
+        expected = transform_hash(expected_payload_defaults, subscriber_hash)
 
         expect(described_class.db_counter_payload).to eq(expected)
       end

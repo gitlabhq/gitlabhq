@@ -305,7 +305,7 @@ You can run the rollout jobs in any order. To scale down, rerun a
 lower percentage job.
 
 After you run the `rollout 100%` job, you cannot scale down, and must
-[roll back your deployment](../../ci/environments/index.md#retry-or-roll-back-a-deployment).
+[roll back your deployment](../../ci/environments/deployments.md#retry-or-roll-back-a-deployment).
 
 ### Example incremental rollout configurations
 
