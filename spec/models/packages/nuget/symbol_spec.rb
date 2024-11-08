@@ -10,11 +10,33 @@ RSpec.describe Packages::Nuget::Symbol, type: :model, feature_category: :package
   it { is_expected.to be_a Packages::Destructible }
 
   describe 'relationships' do
-    it { is_expected.to belong_to(:package).inverse_of(:nuget_symbols) }
+    it { is_expected.to belong_to(:package).class_name('Packages::Nuget::Package').inverse_of(:nuget_symbols) }
     it { is_expected.to belong_to(:project) }
+
+    # TODO: Remove with the rollout of the FF nuget_extract_nuget_package_model
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/499602
+    it 'belongs legacy_package' do
+      is_expected.to belong_to(:legacy_package).conditions(package_type: :nuget).class_name('Packages::Package')
+        .inverse_of(:nuget_symbols).with_foreign_key(:package_id)
+    end
   end
 
   describe 'validations' do
+    it { is_expected.to validate_presence_of(:package) }
+
+    # TODO: Remove with the rollout of the FF nuget_extract_nuget_package_model
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/499602
+    it { is_expected.not_to validate_presence_of(:legacy_package) }
+
+    context 'when nuget_extract_nuget_package_model is disabled' do
+      before do
+        stub_feature_flags(nuget_extract_nuget_package_model: false)
+      end
+
+      it { is_expected.to validate_presence_of(:legacy_package) }
+      it { is_expected.not_to validate_presence_of(:package) }
+    end
+
     it { is_expected.to validate_presence_of(:file) }
     it { is_expected.to validate_presence_of(:file_path) }
     it { is_expected.to validate_presence_of(:signature) }
@@ -27,6 +49,15 @@ RSpec.describe Packages::Nuget::Symbol, type: :model, feature_category: :package
   describe 'delegations' do
     it { is_expected.to delegate_method(:project_id).to(:package) }
     it { is_expected.to delegate_method(:project).to(:package) }
+
+    context 'when nuget_extract_nuget_package_model is disabled' do
+      before do
+        stub_feature_flags(nuget_extract_nuget_package_model: false)
+      end
+
+      it { is_expected.to delegate_method(:project_id).to(:legacy_package) }
+      it { is_expected.to delegate_method(:project).to(:legacy_package) }
+    end
   end
 
   describe 'scopes' do

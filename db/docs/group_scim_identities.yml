@@ -1,0 +1,12 @@
+---
+table_name: group_scim_identities
+classes:
+- GroupScimIdentity
+feature_categories:
+- system_access
+description: Table to persisit scim identities of the user in SaaS
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26124
+milestone: '17.6'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  group_id: namespaces

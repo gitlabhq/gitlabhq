@@ -45,15 +45,29 @@ Before setting up a self-hosted model infrastructure, you must have:
 
 There are two configuration options for self-managed customers:
 
-- [**GitLab.com AI Gateway**](configuration_types.md#gitlabcom-ai-gateway):
-  Use the GitLab-hosted AI Gateway with external
-  LLM providers (for example, Google Vertex or Anthropic).
-- [**Self-hosted AI Gateway**](configuration_types.md#self-hosted-ai-gateway):
-  Deploy your own AI Gateway and LLMs within
-  your infrastructure, without relying on external public services.
+- GitLab.com AI gateway with default GitLab external vendor LLMs
+- Self-hosted AI gateway and LLMs
 
 Before setting up a self-hosted model infrastructure, you must decide which
 configuration type to implement.
+
+### GitLab.com AI gateway with default GitLab external vendor LLMs
+
+This is the default Enterprise offering and is not fully self-hosted. In this configuration, you connect your self-managed GitLab instance to the GitLab-hosted AI gateway, which integrates with external vendor LLM providers (such as Google Vertex or Anthropic).
+
+These LLMs communicate through the [GitLab Cloud Connector](../../development/cloud_connector/index.md), offering a ready-to-use AI solution without the need for on-premise infrastructure.
+
+For licensing, you must have a GitLab Premium or Ultimate subscription and [GitLab Duo Enterprise](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial).
+
+For more information, see the [GitLab.com AI gateway configuration diagram](configuration_types.md#gitlabcom-ai-gateway).
+
+### Self-hosted AI gateway and LLMs
+
+In this configuration, you deploy your own AI gateway and LLMs within your infrastructure, without relying on external public services. This gives you full control over your data and security.
+
+For licensing, you must have a valid GitLab license. You can request a license through the [Customers Portal](../../subscriptions/customers_portal.md).
+
+For more information, see the [self-hosted AI gateway configuration diagram](configuration_types.md#self-hosted-ai-gateway).
 
 ## Set up a self-hosted infrastructure
 

@@ -125,9 +125,9 @@ RSpec.describe Resolvers::TodosResolver, feature_category: :notifications do
     context 'when sort is provided' do
       let_it_be(:new_user) { create(:user) }
 
-      let(:todo1) { create(:todo, user: new_user, project: project, created_at: 5.hours.ago) }
-      let(:todo2) { create(:todo, user: new_user, project: project, created_at: 4.hours.ago) }
-      let(:todo3) { create(:todo, user: new_user, project: project, created_at: 3.hours.ago) }
+      let!(:todo1) { create(:todo, user: new_user, project: project, created_at: 5.hours.ago) }
+      let!(:todo2) { create(:todo, user: new_user, project: project, created_at: 4.hours.ago) }
+      let!(:todo3) { create(:todo, user: new_user, project: project, created_at: 3.hours.ago) }
 
       it 'sorts in ascendent order' do
         todos = resolve_todos(args: { sort: 'CREATED_ASC' }, context: { current_user: new_user })

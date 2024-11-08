@@ -111,7 +111,7 @@ db:migrate:reset single-db:
 db:check-schema:
   extends:
     - .db-job-base
-    - .rails:rules:ee-mr-and-default-branch-only
+    - .rails:rules:db:check-schema
   script:
     - run_timed_command "bundle exec rake db:drop db:create db:migrate"
 

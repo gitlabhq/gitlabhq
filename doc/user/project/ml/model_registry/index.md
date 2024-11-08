@@ -9,10 +9,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
-**Status:** Beta
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9423) in GitLab 16.8 as an [experiment](../../../../policy/experiment-beta-support.md#experiment) release [with a flag](../../../../administration/feature_flags.md) named `model_registry`. Disabled by default. To enable the feature, an administrator can [enable the feature flag](../../../../administration/feature_flags.md) named `model_registry`.
 > - [Changed](https://gitlab.com/groups/gitlab-org/-/epics/9423) to beta in GitLab 17.1.
+> - [Changed](https://gitlab.com/groups/gitlab-org/-/epics/14998) to general availability in GitLab 17.6.
 
 Model registry allows data scientists and developers to manage their machine learning
 models, along with all metadata associated with their creation: parameters, performance

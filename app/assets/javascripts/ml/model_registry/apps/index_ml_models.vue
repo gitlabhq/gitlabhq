@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlExperimentBadge, GlIcon } from '@gitlab/ui';
+import { GlButton, GlIcon } from '@gitlab/ui';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
@@ -18,7 +18,6 @@ export default {
     GlIcon,
     TitleArea,
     GlButton,
-    GlExperimentBadge,
     EmptyState,
     ActionsDropdown,
     SearchableTable,
@@ -137,7 +136,6 @@ export default {
       <template #title>
         <div class="gl-flex gl-grow gl-items-center">
           <span>{{ $options.i18n.TITLE_LABEL }}</span>
-          <gl-experiment-badge :help-page-url="$options.docHref" type="beta" />
         </div>
       </template>
       <template #metadata-models-count>

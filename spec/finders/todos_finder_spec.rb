@@ -276,10 +276,14 @@ RSpec.describe TodosFinder, feature_category: :notifications do
       context 'by date' do
         let!(:todo1) { create(:todo, user: user, project: project) }
         let!(:todo2) { create(:todo, user: user, project: project) }
-        let!(:todo3) { create(:todo, user: user, project: project) }
+        # Todos are created sequentially, so id is a reasonable proxy for created_at
+        # We use this fact to optimize the performance of the finder
+        # In this test we are purposefully setting the created_at to be before the todo1
+        # in order to show that we are actually sorting by id
+        let!(:todo3) { create(:todo, user: user, project: project, created_at: 3.hours.ago) }
 
         it 'sorts with oldest created first' do
-          todos = finder.new(user, { sort: 'id_asc' }).execute
+          todos = finder.new(user, { sort: :created_asc }).execute
 
           expect(todos.first).to eq(todo1)
           expect(todos.second).to eq(todo2)
@@ -287,7 +291,7 @@ RSpec.describe TodosFinder, feature_category: :notifications do
         end
 
         it 'sorts with newest created first' do
-          todos = finder.new(user, { sort: 'id_desc' }).execute
+          todos = finder.new(user, { sort: :created_desc }).execute
 
           expect(todos.first).to eq(todo3)
           expect(todos.second).to eq(todo2)
@@ -326,13 +330,13 @@ RSpec.describe TodosFinder, feature_category: :notifications do
 
         project_2.add_developer(user)
 
-        todos_asc_1 = finder.new(user, { sort: 'priority' }).execute
+        todos_asc_1 = finder.new(user, { sort: :priority }).execute
         expect(todos_asc_1).to eq([todo_3, todo_5, todo_4, todo_2, todo_1])
 
-        todos_asc_2 = finder.new(user, { sort: 'label_priority_asc' }).execute
+        todos_asc_2 = finder.new(user, { sort: :label_priority_asc }).execute
         expect(todos_asc_2).to eq([todo_3, todo_5, todo_4, todo_2, todo_1])
 
-        todos_desc = finder.new(user, { sort: 'label_priority_desc' }).execute
+        todos_desc = finder.new(user, { sort: :label_priority_desc }).execute
         expect(todos_desc).to eq([todo_1, todo_2, todo_4, todo_5, todo_3])
       end
     end

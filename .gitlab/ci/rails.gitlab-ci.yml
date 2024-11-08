@@ -448,7 +448,7 @@ rspec:artifact-collector part-a:
   needs:
     - job: rspec system pg14  # 32 jobs
       optional: true
-    - job: rspec background_migration pg14  # 10 jobs
+    - job: rspec background_migration pg14  # 17 jobs
       optional: true
 
 rspec:artifact-collector part-b:

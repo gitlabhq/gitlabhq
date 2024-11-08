@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Changelog::Release do
+RSpec.describe Gitlab::Changelog::Release, feature_category: :source_code_management do
   describe '#to_markdown' do
     let(:config) { Gitlab::Changelog::Config.new(build_stubbed(:project)) }
     let(:commit) { build_stubbed(:commit) }
@@ -179,13 +179,13 @@ RSpec.describe Gitlab::Changelog::Release do
     end
   end
 
-  describe '#header_start_position' do
+  describe '#header_start_pattern' do
     it 'returns a regular expression for finding the start of a release section' do
       config = Gitlab::Changelog::Config.new(build_stubbed(:project))
       release = described_class
         .new(version: '1.0.0', date: Time.utc(2021, 1, 5), config: config)
 
-      expect(release.header_start_pattern).to eq(/^##\s*1\.0\.0/)
+      expect(release.header_start_pattern).to eq(/^##\s*1\.0\.0\s/)
     end
   end
 end

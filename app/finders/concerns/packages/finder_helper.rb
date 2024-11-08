@@ -41,7 +41,7 @@ module Packages
     def packages_visible_to_user_including_public_registries(user, within_group:)
       projects = projects_visible_to_user_including_public_registries(user, within_group: within_group)
 
-      ::Packages::Package.for_projects(projects.select(:id)).installable
+      packages_class.for_projects(projects.select(:id)).installable
     end
 
     def projects_visible_to_user(user, within_group:)

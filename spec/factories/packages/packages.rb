@@ -62,7 +62,9 @@ FactoryBot.define do
       end
     end
 
-    factory :nuget_package do
+    # TODO: Remove with the rollout of the FF nuget_extract_nuget_package_model
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/499602
+    factory :nuget_package_legacy do
       sequence(:name) { |n| "NugetPackage#{n}" }
       sequence(:version) { |n| "1.0.#{n}" }
       package_type { :nuget }

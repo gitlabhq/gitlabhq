@@ -1,4 +1,3 @@
-import { GlExperimentBadge } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
@@ -64,7 +63,6 @@ describeSkipVue3(skipReason, () => {
   const findEmptyState = () => wrapper.findComponent(EmptyState);
   const findTitleArea = () => wrapper.findComponent(TitleArea);
   const findModelCountMetadataItem = () => wrapper.findByTestId('metadata-item');
-  const findBadge = () => wrapper.findComponent(GlExperimentBadge);
   const findModelCreate = () => wrapper.findByTestId('create-model-button');
   const findActionsDropdown = () => wrapper.findComponent(ActionsDropdown);
 
@@ -75,13 +73,6 @@ describeSkipVue3(skipReason, () => {
 
     it('displays the title', () => {
       expect(findTitleArea().text()).toContain('Model registry');
-    });
-
-    it('displays the experiment badge', () => {
-      expect(findBadge().props()).toMatchObject({
-        helpPageUrl: '/help/user/project/ml/model_registry/index.md',
-        type: 'beta',
-      });
     });
 
     it('renders the extra actions button', () => {

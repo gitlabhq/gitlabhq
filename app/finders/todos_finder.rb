@@ -139,7 +139,17 @@ class TodosFinder
 
   def sort(items)
     if params[:sort]
-      items.sort_by_attribute(params[:sort])
+      # For users with a lot of todos, sorting by created_at can be unusably slow.
+      # Given that todos have sequential ids, we can simply sort by them instead
+      sort_by = case params[:sort]
+                when :created_desc
+                  :id_desc
+                when :created_asc
+                  :id_asc
+                else
+                  params[:sort]
+                end
+      items.sort_by_attribute(sort_by)
     else
       items.order_id_desc
     end

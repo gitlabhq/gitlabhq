@@ -8,6 +8,7 @@ classes:
 - Packages::Go::Package
 - Packages::Helm::Package
 - Packages::MlModel::Package
+- Packages::Nuget::Package
 - Packages::Package
 - Packages::Pypi::Package
 - Packages::TerraformModule::Package

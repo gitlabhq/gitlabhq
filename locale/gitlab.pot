@@ -3846,13 +3846,7 @@ msgstr ""
 msgid "AdminSelfHostedModels|Add a new AI model that can be used for GitLab Duo features."
 msgstr ""
 
-msgid "AdminSelfHostedModels|Add and manage models that can be used for GitLab AI features."
-msgstr ""
-
 msgid "AdminSelfHostedModels|Add self-hosted model"
-msgstr ""
-
-msgid "AdminSelfHostedModels|Add self-hosted models"
 msgstr ""
 
 msgid "AdminSelfHostedModels|An error occurred while deleting your self-hosted model. Please try again."
@@ -3885,9 +3879,6 @@ msgstr ""
 msgid "AdminSelfHostedModels|Endpoint"
 msgstr ""
 
-msgid "AdminSelfHostedModels|Get started with Self‑hosted models"
-msgstr ""
-
 msgid "AdminSelfHostedModels|Get started with self-hosted models"
 msgstr ""
 
@@ -3895,9 +3886,6 @@ msgid "AdminSelfHostedModels|If necessary, provide the model identifier in the f
 msgstr ""
 
 msgid "AdminSelfHostedModels|If required, provide the API token that grants access to your self-hosted model deployment."
-msgstr ""
-
-msgid "AdminSelfHostedModels|Manage AI models that can be used for GitLab AI features."
 msgstr ""
 
 msgid "AdminSelfHostedModels|Manage GitLab Duo by configuring and assigning self-hosted models to AI-powered features."

@@ -473,12 +473,13 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
     end
 
     context 'while using OAuth tokens as passwords' do
-      let(:user) { create(:user) }
+      let_it_be(:organization) { create(:organization) }
+      let(:user) { create(:user, organizations: [organization]) }
       let(:application) { Doorkeeper::Application.create!(name: 'MyApp', redirect_uri: 'https://app.com', owner: user) }
 
       shared_examples 'an oauth failure' do
         it 'fails' do
-          access_token = Doorkeeper::AccessToken.create!(application_id: application.id, resource_owner_id: user.id, scopes: 'api')
+          access_token = Doorkeeper::AccessToken.create!(application_id: application.id, resource_owner_id: user.id, scopes: 'api', organization_id: organization.id)
 
           expect(gl_auth.find_for_git_client("oauth2", access_token.token, project: nil, request: request))
             .to have_attributes(auth_failure)
@@ -506,14 +507,14 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
 
         with_them do
           it 'authenticates with correct abilities' do
-            access_token = Doorkeeper::AccessToken.create!(application_id: application.id, resource_owner_id: user.id, scopes: scopes)
+            access_token = Doorkeeper::AccessToken.create!(application_id: application.id, resource_owner_id: user.id, scopes: scopes, organization_id: organization.id)
 
             expect(gl_auth.find_for_git_client("oauth2", access_token.token, project: nil, request: request))
               .to have_attributes(actor: user, project: nil, type: :oauth, authentication_abilities: abilities)
           end
 
           it 'authenticates with correct abilities without special username' do
-            access_token = Doorkeeper::AccessToken.create!(application_id: application.id, resource_owner_id: user.id, scopes: scopes)
+            access_token = Doorkeeper::AccessToken.create!(application_id: application.id, resource_owner_id: user.id, scopes: scopes, organization_id: organization.id)
 
             expect(gl_auth.find_for_git_client(user.username, access_token.token, project: nil, request: request))
               .to have_attributes(actor: user, project: nil, type: :oauth, authentication_abilities: abilities)
@@ -522,7 +523,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
       end
 
       it 'does not try password auth before oauth' do
-        access_token = Doorkeeper::AccessToken.create!(application_id: application.id, resource_owner_id: user.id, scopes: 'api')
+        access_token = Doorkeeper::AccessToken.create!(application_id: application.id, resource_owner_id: user.id, scopes: 'api', organization_id: organization.id)
 
         expect(gl_auth).not_to receive(:find_with_user_password)
 

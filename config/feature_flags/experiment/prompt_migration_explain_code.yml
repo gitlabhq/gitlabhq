@@ -1,9 +1,0 @@
----
-name: prompt_migration_explain_code
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/475050
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160252
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/476589
-milestone: '17.3'
-group: group::custom models
-type: experiment
-default_enabled: false

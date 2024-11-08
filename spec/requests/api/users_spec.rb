@@ -12,6 +12,7 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_manageme
   let_it_be(:key) { create(:key, user: user) }
   let_it_be(:gpg_key) { create(:gpg_key, user: user) }
   let_it_be(:email) { create(:email, user: user) }
+  let_it_be(:organization) { create(:organization) }
 
   let(:blocked_user) { create(:user, :blocked) }
   let(:omniauth_user) { create(:omniauth_user) }

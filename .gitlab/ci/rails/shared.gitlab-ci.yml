@@ -330,6 +330,16 @@ include:
 #
 #     parallel_job_count = ceil(current_job_count * (average_duration / target_duration))
 #
+# Here's an example in Ruby:
+#
+#     current_job_count = 10
+#     average_duration  = 53
+#     target_duration   = 30
+#
+#     parallel_job_count = (current_job_count.to_f * (average_duration.to_f / target_duration.to_f)).ceil
+#
+#     => To reach 30min target duration, we would need 18 parallel jobs instead of 10.
+#
 # At the moment, we set the target to 30 minutes
 #
 # https://app.snowflake.com/ys68254/gitlab/w2woEkSvsfYa/chart
@@ -337,8 +347,10 @@ include:
   parallel: 26
 
 # https://app.snowflake.com/ys68254/gitlab/wpUmrAF0RJL/chart
+#
+# Please set back to around 10 once https://gitlab.com/gitlab-org/gitlab/-/issues/503221 is closed
 .rspec-background-migration-parallel:
-  parallel: 10
+  parallel: 17
 
 # https://app.snowflake.com/ys68254/gitlab/w4cxPH8ySQlP/chart
 .rspec-ee-migration-parallel:

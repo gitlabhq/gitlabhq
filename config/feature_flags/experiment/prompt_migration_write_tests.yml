@@ -1,9 +1,0 @@
----
-name: prompt_migration_write_tests
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/475049
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163449
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/479799
-milestone: '17.4'
-group: group::custom models
-type: experiment
-default_enabled: false

@@ -12483,6 +12483,49 @@ CREATE SEQUENCE group_saved_replies_id_seq
 
 ALTER SEQUENCE group_saved_replies_id_seq OWNED BY group_saved_replies.id;
 
+CREATE TABLE group_scim_auth_access_tokens (
+    id bigint NOT NULL,
+    group_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    temp_source_id bigint,
+    token_encrypted bytea NOT NULL
+);
+
+COMMENT ON COLUMN group_scim_auth_access_tokens.temp_source_id IS 'Temporary column to store scim_tokens id';
+
+CREATE SEQUENCE group_scim_auth_access_tokens_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE group_scim_auth_access_tokens_id_seq OWNED BY group_scim_auth_access_tokens.id;
+
+CREATE TABLE group_scim_identities (
+    id bigint NOT NULL,
+    group_id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    temp_source_id bigint,
+    active boolean DEFAULT false,
+    extern_uid text NOT NULL,
+    CONSTRAINT check_53de3ba272 CHECK ((char_length(extern_uid) <= 255))
+);
+
+COMMENT ON COLUMN group_scim_identities.temp_source_id IS 'Temporary column to store scim_idenity id';
+
+CREATE SEQUENCE group_scim_identities_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE group_scim_identities_id_seq OWNED BY group_scim_identities.id;
+
 CREATE TABLE group_security_exclusions (
     id bigint NOT NULL,
     group_id bigint NOT NULL,
@@ -23055,6 +23098,10 @@ ALTER TABLE ONLY group_repository_storage_moves ALTER COLUMN id SET DEFAULT next
 
 ALTER TABLE ONLY group_saved_replies ALTER COLUMN id SET DEFAULT nextval('group_saved_replies_id_seq'::regclass);
 
+ALTER TABLE ONLY group_scim_auth_access_tokens ALTER COLUMN id SET DEFAULT nextval('group_scim_auth_access_tokens_id_seq'::regclass);
+
+ALTER TABLE ONLY group_scim_identities ALTER COLUMN id SET DEFAULT nextval('group_scim_identities_id_seq'::regclass);
+
 ALTER TABLE ONLY group_security_exclusions ALTER COLUMN id SET DEFAULT nextval('group_security_exclusions_id_seq'::regclass);
 
 ALTER TABLE ONLY group_ssh_certificates ALTER COLUMN id SET DEFAULT nextval('group_ssh_certificates_id_seq'::regclass);
@@ -25307,6 +25354,12 @@ ALTER TABLE ONLY group_repository_storage_moves
 
 ALTER TABLE ONLY group_saved_replies
     ADD CONSTRAINT group_saved_replies_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY group_scim_auth_access_tokens
+    ADD CONSTRAINT group_scim_auth_access_tokens_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY group_scim_identities
+    ADD CONSTRAINT group_scim_identities_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY group_security_exclusions
     ADD CONSTRAINT group_security_exclusions_pkey PRIMARY KEY (id);
@@ -30010,6 +30063,18 @@ CREATE INDEX index_group_import_states_on_user_id ON group_import_states USING b
 CREATE INDEX index_group_repository_storage_moves_on_group_id ON group_repository_storage_moves USING btree (group_id);
 
 CREATE INDEX index_group_saved_replies_on_group_id ON group_saved_replies USING btree (group_id);
+
+CREATE UNIQUE INDEX index_group_scim_access_tokens_on_group_id_and_token ON group_scim_auth_access_tokens USING btree (group_id, token_encrypted);
+
+CREATE UNIQUE INDEX index_group_scim_auth_access_tokens_on_temp_source_id ON group_scim_auth_access_tokens USING btree (temp_source_id);
+
+CREATE INDEX index_group_scim_identities_on_group_id ON group_scim_identities USING btree (group_id);
+
+CREATE UNIQUE INDEX index_group_scim_identities_on_lower_extern_uid_group_id ON group_scim_identities USING btree (lower(extern_uid), group_id);
+
+CREATE UNIQUE INDEX index_group_scim_identities_on_temp_source_id ON group_scim_identities USING btree (temp_source_id);
+
+CREATE UNIQUE INDEX index_group_scim_identities_on_user_id_and_group_id ON group_scim_identities USING btree (user_id, group_id);
 
 CREATE INDEX index_group_security_exclusions_on_group_id ON group_security_exclusions USING btree (group_id);
 
@@ -37099,6 +37164,9 @@ ALTER TABLE ONLY custom_fields
 ALTER TABLE ONLY chat_teams
     ADD CONSTRAINT fk_rails_3b543909cb FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY group_scim_auth_access_tokens
+    ADD CONSTRAINT fk_rails_3caca5d6d0 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY ci_build_needs
     ADD CONSTRAINT fk_rails_3cf221d4ed_p FOREIGN KEY (partition_id, build_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
 
@@ -37113,6 +37181,9 @@ ALTER TABLE ONLY virtual_registries_packages_maven_registry_upstreams
 
 ALTER TABLE ONLY snippet_user_mentions
     ADD CONSTRAINT fk_rails_3e00189191 FOREIGN KEY (snippet_id) REFERENCES snippets(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY group_scim_identities
+    ADD CONSTRAINT fk_rails_3e0678e2d9 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY early_access_program_tracking_events
     ADD CONSTRAINT fk_rails_3e8c32b3dd FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
@@ -37569,6 +37640,9 @@ ALTER TABLE ONLY system_access_instance_microsoft_graph_access_tokens
 
 ALTER TABLE ONLY packages_debian_group_distribution_keys
     ADD CONSTRAINT fk_rails_779438f163 FOREIGN KEY (distribution_id) REFERENCES packages_debian_group_distributions(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY group_scim_identities
+    ADD CONSTRAINT fk_rails_77cb698c8d FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY terraform_states
     ADD CONSTRAINT fk_rails_78f54ca485 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

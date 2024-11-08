@@ -1,0 +1,13 @@
+---
+table_name: group_scim_auth_access_tokens
+milestone: '17.6'
+classes:
+- GroupScimAuthAccessToken
+feature_categories:
+- system_access
+description: Bearer token used  for authenticating SCIM requests. This is table used
+  for Group SCIM
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170565/diffs
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  group_id: namespaces

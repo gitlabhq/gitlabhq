@@ -4,8 +4,8 @@ classes:
 - ScimIdentity
 feature_categories:
 - system_access
-description: TODO
+description: Table to persisit scim identities of the user in instance wide SCIM
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26124
 milestone: '12.9'
-gitlab_schema: gitlab_main
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/463930
+gitlab_schema: gitlab_main_cell
+exempt_from_sharding: true

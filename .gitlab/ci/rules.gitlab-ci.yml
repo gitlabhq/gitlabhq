@@ -2334,13 +2334,15 @@
       when: manual
       allow_failure: true
 
-.rails:rules:ee-mr-and-default-branch-only:
+.rails:rules:db:check-schema:
   rules:
     - <<: *if-not-ee
       when: never
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
     - <<: *if-merge-request-labels-run-all-rspec
+    # Remove the rule below once https://gitlab.com/gitlab-org/gitlab/-/issues/503221 is closed.
+    - !reference [".prevent-tier-1", rules]
     - <<: *if-merge-request
       changes: *code-backstage-patterns
     - <<: *if-default-branch-refs

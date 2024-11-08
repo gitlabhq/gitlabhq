@@ -1,9 +1,0 @@
----
-name: prompt_migration_refactor_code
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/475050
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162716
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/479117
-milestone: '17.4'
-group: group::custom models
-type: experiment
-default_enabled: false
