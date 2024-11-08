@@ -52,6 +52,14 @@ RSpec.describe WikiPage::Meta, feature_category: :wiki do
     end
   end
 
+  describe '#resource_parent' do
+    subject { described_class.new(title: 'some title', project: project) }
+
+    it 'returns container' do
+      expect(subject.resource_parent).to eq(project)
+    end
+  end
+
   describe '#canonical_slug' do
     subject { described_class.find(meta.id) }
 

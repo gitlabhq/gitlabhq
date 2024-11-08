@@ -18,8 +18,6 @@ class WikiPage
 
     validate :project_or_namespace_present?
 
-    alias_method :resource_parent, :project
-
     def container
       project || namespace
     end
@@ -27,6 +25,10 @@ class WikiPage
     def container=(value)
       self.project = value if value.is_a?(Project)
       self.namespace = value if value.is_a?(Namespace)
+    end
+
+    def resource_parent
+      container
     end
 
     def for_group_wiki?

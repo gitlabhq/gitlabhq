@@ -272,7 +272,7 @@ module EventsHelper
   end
 
   def event_wiki_page_target_url(event)
-    project_wiki_url(event.project, event.target&.canonical_slug || Wiki::HOMEPAGE)
+    project_wiki_url(event.project, event.target&.canonical_slug || Wiki::HOMEPAGE) if event.project_id.present?
   end
 
   def event_note_title_html(event)
