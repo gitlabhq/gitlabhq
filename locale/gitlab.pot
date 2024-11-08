@@ -14536,6 +14536,15 @@ msgstr ""
 msgid "ComplianceStandardsAdherence|Checks"
 msgstr ""
 
+msgid "ComplianceStandardsAdherence|DAST scan"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|DAST scanner is configured in the pipeline configuration for the default branch."
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|DAST scanner is not configured in the pipeline configuration for the default branch."
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Date since last status change"
 msgstr ""
 
@@ -14546,6 +14555,9 @@ msgid "ComplianceStandardsAdherence|Filter by"
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Group by"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Have DAST scanner configured in pipeline configuration"
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Have SAST scanner configured in pipeline configuration"
@@ -14615,6 +14627,9 @@ msgid "ComplianceStandardsAdherence|Requirement"
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|SAST scan"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|SAST scanner is configured in the pipeline configuration for the default branch."
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|SAST scanner is not configured in the pipeline configuration for the default branch."

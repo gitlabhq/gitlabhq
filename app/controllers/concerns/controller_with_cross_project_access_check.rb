@@ -16,7 +16,7 @@ module ControllerWithCrossProjectAccessCheck
     return if can?(current_user, :read_cross_project)
 
     rejection_message = _(
-      "This page is unavailable because you are not allowed to read information "\
+      "This page is unavailable because you are not allowed to read information " \
         "across multiple projects."
     )
     access_denied!(rejection_message)
