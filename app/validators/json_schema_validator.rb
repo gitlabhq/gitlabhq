@@ -34,7 +34,7 @@ class JsonSchemaValidator < ActiveModel::EachValidator
         record.errors.add(attribute, message)
       end
     else
-      record.errors.add(attribute, _("must be a valid json schema")) unless valid_schema?(value)
+      record.errors.add(attribute, error_message) unless valid_schema?(value)
     end
   end
 
@@ -86,6 +86,10 @@ class JsonSchemaValidator < ActiveModel::EachValidator
 
   def draft_version
     options[:draft] || JSON_VALIDATOR_MAX_DRAFT_VERSION
+  end
+
+  def error_message
+    options[:message] || _('must be a valid json schema')
   end
 end
 

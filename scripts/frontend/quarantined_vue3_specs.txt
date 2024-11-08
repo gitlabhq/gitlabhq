@@ -113,7 +113,6 @@ ee/spec/frontend/requirements/components/requirements_root_spec.js
 ee/spec/frontend/roadmap/components/roadmap_shell_spec.js
 ee/spec/frontend/roles_and_permissions/components/create_member_role_spec.js
 ee/spec/frontend/roles_and_permissions/components/role_selector_spec.js
-ee/spec/frontend/saml_providers/saml_settings_form_spec.js
 ee/spec/frontend/security_configuration/components/app_spec.js
 ee/spec/frontend/security_configuration/components/dynamic_fields_spec.js
 ee/spec/frontend/security_configuration/components/expandable_section_spec.js
@@ -157,7 +156,6 @@ ee/spec/frontend/users/identity_verification/components/credit_card_verification
 ee/spec/frontend/users/identity_verification/components/international_phone_input_spec.js
 ee/spec/frontend/users/identity_verification/components/phone_verification_spec.js
 ee/spec/frontend/users/identity_verification/components/verify_phone_verification_code_spec.js
-ee/spec/frontend/users_select/index_spec.js
 ee/spec/frontend/vue_merge_request_widget/components/mr_widget_pipeline_container_spec.js
 ee/spec/frontend/vue_merge_request_widget/components/states/mr_widget_ready_to_merge_spec.js
 ee/spec/frontend/vue_shared/components/groups_list/groups_list_item_spec.js
@@ -180,7 +178,6 @@ spec/frontend/alerts_settings/components/alerts_settings_form_spec.js
 spec/frontend/analytics/shared/components/date_ranges_dropdown_spec.js
 spec/frontend/authentication/two_factor_auth/components/recovery_codes_spec.js
 spec/frontend/authentication/two_factor_auth/index_spec.js
-spec/frontend/awards_handler_spec.js
 spec/frontend/boards/board_list_spec.js
 spec/frontend/boards/components/board_content_sidebar_spec.js
 spec/frontend/boards/components/board_content_spec.js
@@ -376,7 +373,6 @@ spec/frontend/repository/components/header_area/breadcrumbs_spec.js
 spec/frontend/repository/components/table/index_spec.js
 spec/frontend/repository/components/table/row_spec.js
 spec/frontend/repository/router_spec.js
-spec/frontend/right_sidebar_spec.js
 spec/frontend/search/results/components/status_bar_spec.js
 spec/frontend/search/sidebar/components/branch_dropdown_spec.js
 spec/frontend/search/sidebar/components/checkbox_filter_spec.js
@@ -413,7 +409,6 @@ spec/frontend/tooltips/components/tooltips_spec.js
 spec/frontend/tooltips/index_spec.js
 spec/frontend/usage_quotas/storage/components/container_registry_usage_spec.js
 spec/frontend/usage_quotas/storage/components/namespace_storage_app_spec.js
-spec/frontend/users_select/index_spec.js
 spec/frontend/vue_alerts_spec.js
 spec/frontend/vue_merge_request_widget/components/mr_widget_pipeline_spec.js
 spec/frontend/vue_merge_request_widget/components/states/merge_failed_pipeline_confirmation_dialog_spec.js

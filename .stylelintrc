@@ -20,8 +20,8 @@
     },
     {
       "files": [
+        "app/assets/stylesheets/application_dark.scss",
         "app/assets/stylesheets/framework/**/*.scss",
-        "app/assets/stylesheets/themes/dark_mode_overrides.scss",
         "app/assets/stylesheets/page_bundles/_ide_theme_overrides.scss"
       ],
       "rules": {

@@ -24,9 +24,6 @@ const tooltipsApp = () => {
       name: 'TooltipsRoot',
       render(h) {
         return h(Tooltips, {
-          props: {
-            elements: this.elements,
-          },
           ref: 'tooltips',
         });
       },

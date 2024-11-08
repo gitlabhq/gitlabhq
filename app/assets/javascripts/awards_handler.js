@@ -280,7 +280,7 @@ export class AwardsHandler {
   }
 
   // eslint-disable-next-line max-params
-  addAward(votesBlock, awardUrl, emoji, checkMutuality, callback) {
+  addAward(votesBlock, awardUrl, emoji, callback) {
     const isMainAwardsBlock = votesBlock.closest('.js-noteable-awards').length;
 
     if (isInVueNoteablePage() && !isMainAwardsBlock) {
@@ -303,7 +303,7 @@ export class AwardsHandler {
     const $emojiButton = this.findEmojiIcon(votesBlock, normalizedEmoji).closest('button');
 
     this.postEmoji($emojiButton, awardUrl, normalizedEmoji, () => {
-      this.addAwardToEmojiBar(votesBlock, normalizedEmoji, checkMutuality);
+      this.addAwardToEmojiBar(votesBlock, normalizedEmoji);
       return typeof callback === 'function' ? callback() : undefined;
     });
 
@@ -312,10 +312,7 @@ export class AwardsHandler {
     return $(`${this.toggleButtonSelector}.is-active`).removeClass('is-active');
   }
 
-  addAwardToEmojiBar(votesBlock, emoji, checkForMutuality) {
-    if (checkForMutuality || checkForMutuality === null) {
-      this.checkMutuality(votesBlock, emoji);
-    }
+  addAwardToEmojiBar(votesBlock, emoji) {
     this.addEmojiToFrequentlyUsedList(emoji);
     const normalizedEmoji = this.emoji.normalizeEmojiName(emoji);
     const $emojiButton = this.findEmojiIcon(votesBlock, normalizedEmoji).closest('button');
@@ -355,18 +352,6 @@ export class AwardsHandler {
 
   getAwardUrl() {
     return this.getVotesBlock().data('awardUrl');
-  }
-
-  checkMutuality(votesBlock, emoji) {
-    const awardUrl = this.getAwardUrl();
-    if (emoji === EMOJI_THUMBS_UP || emoji === EMOJI_THUMBS_DOWN) {
-      const mutualVote = emoji === EMOJI_THUMBS_UP ? EMOJI_THUMBS_DOWN : EMOJI_THUMBS_UP;
-      const $emojiButton = votesBlock.find(`[data-name="${mutualVote}"]`).closest('button');
-      const isAlreadyVoted = $emojiButton.hasClass('active');
-      if (isAlreadyVoted) {
-        this.addAward(votesBlock, awardUrl, mutualVote, false);
-      }
-    }
   }
 
   isActive($emojiButton) {

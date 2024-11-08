@@ -267,9 +267,9 @@ A finding's primary identifier is a value that is unique to each finding. The ex
 of the finding's [first identifier](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/v2.4.0-rc1/dist/sast-report-format.json#L228)
 combine to create the value.
 
-Examples of primary identifiers include `PluginID` for Zed Attack Proxy (ZAP), or `CVE` for
-Trivy. The identifier must be stable. Subsequent scans must return the same value for the
-same finding, even if the location has slightly changed.
+An example primary identifier is `CVE`, which is used for Trivy. The identifier must be stable.
+Subsequent scans must return the same value for the same finding, even if the location has slightly
+changed.
 
 ## Report finding
 
@@ -293,8 +293,8 @@ This list is subject to change as scanners are added.
 
 ## Scanner
 
-Software that can scan for vulnerabilities. The resulting scan report is typically not in the
-[Secure report format](#secure-report-format). Examples include ESLint, Trivy, and ZAP.
+Software that can scan for vulnerabilities (for example, Trivy). The resulting scan report is
+typically not in the [Secure report format](#secure-report-format).
 
 ## Secure product
 

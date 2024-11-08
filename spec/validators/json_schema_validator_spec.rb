@@ -20,13 +20,26 @@ RSpec.describe JsonSchemaValidator, feature_category: :shared do
       end
 
       context 'when data is invalid' do
-        it 'returns json schema is invalid' do
-          build_report_result.data = { invalid: 'data' }
+        context 'when error message is not provided' do
+          it 'returns default set error message i.e `must be a valid json schema`' do
+            build_report_result.data = { invalid: 'data' }
+            validator.validate(build_report_result)
 
+            expect(build_report_result.errors.size).to eq(1)
+            expect(build_report_result.errors.full_messages).to eq(["Data must be a valid json schema"])
+          end
+        end
+      end
+
+      context 'when error message is provided' do
+        let(:validator) { described_class.new(attributes: [:data], filename: "build_report_result_data", message: "error in build-report-json") }
+
+        it 'returns the provided error message' do
+          build_report_result.data = { invalid: 'data' }
           validator.validate(build_report_result)
 
           expect(build_report_result.errors.size).to eq(1)
-          expect(build_report_result.errors.full_messages).to eq(["Data must be a valid json schema"])
+          expect(build_report_result.errors.full_messages).to eq(["Data error in build-report-json"])
         end
       end
     end
