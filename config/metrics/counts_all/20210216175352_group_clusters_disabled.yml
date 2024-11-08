@@ -3,7 +3,8 @@ data_category: optional
 key_path: usage_activity_by_stage.configure.group_clusters_disabled
 description: Total GitLab Managed disabled clusters attached to groups
 product_group: environments
-product_category: deployment_management
+product_categories:
+- deployment_management
 value_type: number
 status: active
 time_frame: all

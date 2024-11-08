@@ -136,6 +136,13 @@
     "product_group": {
       "$ref": "../metrics/schema/product_groups.json"
     },
+    "product_categories": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "known_product_category"
+      }
+    },
     "introduced_by_url": {
       "type": [
         "string",

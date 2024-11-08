@@ -49776,6 +49776,9 @@ msgstr ""
 msgid "SecurityOrchestration|Edit merge request approval policy"
 msgstr ""
 
+msgid "SecurityOrchestration|Edit pipeline execution policy"
+msgstr ""
+
 msgid "SecurityOrchestration|Edit policy"
 msgstr ""
 

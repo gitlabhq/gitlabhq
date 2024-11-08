@@ -8,9 +8,9 @@ RSpec.describe Gitlab::BackgroundMigration::NullifyBuildsAutoCanceledById,
   let(:builds_table) { table(:p_ci_builds, database: :ci, primary_key: :id) }
 
   let(:default_attributes) { { project_id: 600, partition_id: 100 } }
-  let!(:regular_pipeline) { pipelines_table.create!(default_attributes) }
-  let!(:deleted_pipeline) { pipelines_table.create!(default_attributes) }
-  let!(:other_pipeline) { pipelines_table.create!(default_attributes) }
+  let!(:regular_pipeline) { pipelines_table.create!(id: 1, **default_attributes) }
+  let!(:deleted_pipeline) { pipelines_table.create!(id: 2, **default_attributes) }
+  let!(:other_pipeline) { pipelines_table.create!(id: 3, **default_attributes) }
 
   let!(:regular_build) do
     builds_table.create!(commit_id: regular_pipeline.id, **default_attributes)

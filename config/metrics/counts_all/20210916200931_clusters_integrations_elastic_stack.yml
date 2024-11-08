@@ -3,7 +3,8 @@ data_category: optional
 key_path: counts.clusters_integrations_elastic_stack
 description: Total clusters with Clusters::Integrations::ElasticStack enabled
 product_group: environments
-product_category: deployment_management
+product_categories:
+- deployment_management
 value_type: number
 status: removed
 time_frame: all

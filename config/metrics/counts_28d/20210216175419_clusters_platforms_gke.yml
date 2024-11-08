@@ -3,7 +3,8 @@ data_category: optional
 key_path: usage_activity_by_stage_monthly.configure.clusters_platforms_gke
 description: Number of user ids from GitLab Managed clusters provisioned with GitLab on GCE GKE
 product_group: environments
-product_category: deployment_management
+product_categories:
+- deployment_management
 value_type: number
 status: active
 time_frame: 28d

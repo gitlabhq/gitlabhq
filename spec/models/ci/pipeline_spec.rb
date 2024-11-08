@@ -752,8 +752,13 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   describe '.order_id_desc' do
     subject(:pipelines_ordered_by_id) { described_class.order_id_desc }
 
-    let(:older_pipeline) { create(:ci_pipeline, id: 99, project: project) }
-    let(:newest_pipeline) { create(:ci_pipeline, id: 100, project: project) }
+    let_it_be(:older_pipeline) { create(:ci_pipeline, project: project) }
+    let_it_be(:newest_pipeline) { create(:ci_pipeline, project: project) }
+
+    it 'only returns the pipelines ordered by id' do
+      expect(newest_pipeline.id).to be > older_pipeline.id
+      expect(pipelines_ordered_by_id).to eq([newest_pipeline, older_pipeline])
+    end
 
     it 'only returns the pipelines ordered by id' do
       expect(pipelines_ordered_by_id).to eq([newest_pipeline, older_pipeline])
@@ -2822,16 +2827,16 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         let(:refs) { %w[first_ref second_ref third_ref] }
 
         before do
-          create(:ci_empty_pipeline, id: 1001, status: :success, ref: 'first_ref', sha: 'sha')
-          create(:ci_empty_pipeline, id: 1002, status: :success, ref: 'second_ref', sha: 'sha')
+          create(:ci_empty_pipeline, status: :success, ref: 'first_ref', sha: 'sha')
+          create(:ci_empty_pipeline, status: :success, ref: 'second_ref', sha: 'sha')
         end
 
         let!(:latest_successful_pipeline_for_first_ref) do
-          create(:ci_empty_pipeline, id: 2001, status: :success, ref: 'first_ref', sha: 'sha')
+          create(:ci_empty_pipeline, status: :success, ref: 'first_ref', sha: 'sha')
         end
 
         let!(:latest_successful_pipeline_for_second_ref) do
-          create(:ci_empty_pipeline, id: 2002, status: :success, ref: 'second_ref', sha: 'sha')
+          create(:ci_empty_pipeline, status: :success, ref: 'second_ref', sha: 'sha')
         end
 
         it 'returns the latest successful pipeline for both refs' do

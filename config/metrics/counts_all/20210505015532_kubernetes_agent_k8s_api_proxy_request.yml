@@ -3,7 +3,8 @@ data_category: optional
 key_path: counts.kubernetes_agent_k8s_api_proxy_request
 description: Count of Kubernetes API proxy requests
 product_group: environments
-product_category: deployment_management
+product_categories:
+- deployment_management
 value_type: number
 status: active
 milestone: '13.12'

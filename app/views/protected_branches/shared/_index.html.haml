@@ -34,4 +34,4 @@
           = content_for :create_protected_branch
 
       - c.with_pagination do
-        = paginate @protected_branches, theme: 'gitlab'
+        = paginate @protected_branches, theme: 'gitlab', params: { anchor: 'js-protected-branches-settings' }

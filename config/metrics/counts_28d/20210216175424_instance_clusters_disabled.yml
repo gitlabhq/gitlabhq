@@ -3,7 +3,8 @@ data_category: optional
 key_path: usage_activity_by_stage_monthly.configure.instance_clusters_disabled
 description: Number of users from GitLab Managed disabled clusters attached to the instance
 product_group: environments
-product_category: deployment_management
+product_categories:
+- deployment_management
 value_type: number
 status: active
 time_frame: 28d

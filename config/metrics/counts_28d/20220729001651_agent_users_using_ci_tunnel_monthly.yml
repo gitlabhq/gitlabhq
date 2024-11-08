@@ -2,7 +2,8 @@
 key_path: redis_hll_counters.kubernetes_agent.agent_users_using_ci_tunnel_monthly
 description: MAU of the Agent for Kubernetes CI/CD Tunnel
 product_group: environments
-product_category: deployment_management
+product_categories:
+- deployment_management
 value_type: number
 status: active
 milestone: "15.3"

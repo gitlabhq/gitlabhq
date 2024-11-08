@@ -6,9 +6,9 @@ RSpec.describe Gitlab::BackgroundMigration::DeleteOrphanedBuildRecords, feature_
   let(:pipelines_table) { table(:p_ci_pipelines, database: :ci, primary_key: :id) }
   let(:builds_table) { table(:p_ci_builds, database: :ci, primary_key: :id) }
 
-  let!(:regular_pipeline) { pipelines_table.create!(project_id: 600, partition_id: 100) }
-  let!(:deleted_pipeline) { pipelines_table.create!(project_id: 600, partition_id: 100) }
-  let!(:other_pipeline) { pipelines_table.create!(project_id: 600, partition_id: 100) }
+  let!(:regular_pipeline) { pipelines_table.create!(id: 1, project_id: 600, partition_id: 100) }
+  let!(:deleted_pipeline) { pipelines_table.create!(id: 2, project_id: 600, partition_id: 100) }
+  let!(:other_pipeline) { pipelines_table.create!(id: 3, project_id: 600, partition_id: 100) }
 
   let!(:regular_build) do
     builds_table.create!(partition_id: 100, project_id: 600, commit_id: regular_pipeline.id)

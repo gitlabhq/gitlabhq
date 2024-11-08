@@ -3,7 +3,8 @@ data_category: optional
 key_path: counts.clusters_applications_jupyter
 description: Total GitLab Managed clusters with GitLab Managed App:Jupyter installed
 product_group: environments
-product_category: deployment_management
+product_categories:
+- deployment_management
 value_type: number
 status: removed
 time_frame: all

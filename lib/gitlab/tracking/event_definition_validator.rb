@@ -4,7 +4,10 @@ module Gitlab
   module Tracking
     class EventDefinitionValidator
       EVENT_SCHEMA_PATH = Rails.root.join('config/events/schema.json')
-      SCHEMA = ::JSONSchemer.schema(EVENT_SCHEMA_PATH)
+
+      def self.definition_schema
+        @definition_schema ||= ::JSONSchemer.schema(EVENT_SCHEMA_PATH)
+      end
 
       def initialize(definition)
         @attributes = definition.attributes
@@ -12,7 +15,7 @@ module Gitlab
       end
 
       def validation_errors
-        SCHEMA.validate(attributes.deep_stringify_keys).map do |error|
+        self.class.definition_schema.validate(attributes.deep_stringify_keys).map do |error|
           <<~ERROR_MSG
             --------------- VALIDATION ERROR ---------------
             Definition file: #{path}

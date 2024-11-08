@@ -198,6 +198,8 @@ RSpec.describe Gitlab::Usage::MetricDefinition, feature_category: :service_ping 
       :repair_issue_url   | nil
       :removed_by_url     | 1
       :another_attribute  | nil
+      :product_categories   | 'bad_category'
+      :product_categories   | ['bad_category']
 
       :performance_indicator_type | nil
       :instrumentation_class      | 'Metric_Class'

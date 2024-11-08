@@ -145,6 +145,7 @@ describe('WorkItemDetail component', () => {
     modalIsGroup = null,
     workspacePermissionsHandler = workspacePermissionsAllowedHandler,
     uploadDesignMutationHandler = uploadSuccessDesignMutationHandler,
+    hasLinkedItemsEpicsFeature = true,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemDetail, {
       apolloProvider: createMockApollo([
@@ -180,6 +181,7 @@ describe('WorkItemDetail component', () => {
         fullPath: 'group/project',
         groupPath: 'group',
         reportAbusePath: '/report/abuse/path',
+        hasLinkedItemsEpicsFeature,
       },
       stubs: {
         WorkItemAncestors: true,
@@ -439,6 +441,21 @@ describe('WorkItemDetail component', () => {
 
         expect(findAncestors().exists()).toBe(false);
         expect(findWorkItemType().classes()).toEqual(['sm:!gl-block', 'gl-w-full']);
+      });
+    });
+
+    describe('`linked_items_epics` is unavailable', () => {
+      it('does not show linked items widget', async () => {
+        const epicWorkItem = workItemByIidResponseFactory({
+          workItemType: epicType,
+        });
+        const epicHandler = jest.fn().mockResolvedValue(epicWorkItem);
+
+        createComponent({ hasLinkedItemsEpicsFeature: false, handler: epicHandler });
+
+        await waitForPromises();
+
+        expect(findWorkItemRelationships().exists()).toBe(false);
       });
     });
 

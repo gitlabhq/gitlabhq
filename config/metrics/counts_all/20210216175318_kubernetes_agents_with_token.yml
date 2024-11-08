@@ -3,7 +3,8 @@ data_category: optional
 key_path: counts.kubernetes_agents_with_token
 description: Count of Kubernetes agents with at least one token
 product_group: environments
-product_category: deployment_management
+product_categories:
+- deployment_management
 value_type: number
 status: active
 time_frame: all

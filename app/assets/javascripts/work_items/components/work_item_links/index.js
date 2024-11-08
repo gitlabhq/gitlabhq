@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import { GlToast } from '@gitlab/ui';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
+import { parseBoolean } from '~/lib/utils/common_utils';
 import WorkItemLinks from './work_item_links.vue';
 
 Vue.use(GlToast);
@@ -25,6 +26,7 @@ export default function initWorkItemLinks() {
     wiLabelsManagePath,
     wiNewCommentTemplatePaths,
     wiReportAbusePath,
+    hasLinkedItemsEpicsFeature,
   } = workItemLinksRoot.dataset;
 
   return new Vue({
@@ -45,6 +47,7 @@ export default function initWorkItemLinks() {
       labelsManagePath: wiLabelsManagePath,
       newCommentTemplatePaths: JSON.parse(wiNewCommentTemplatePaths),
       reportAbusePath: wiReportAbusePath,
+      hasLinkedItemsEpicsFeature: parseBoolean(hasLinkedItemsEpicsFeature),
     },
     render: (createElement) =>
       createElement(WorkItemLinks, {

@@ -4,7 +4,7 @@ module JiraConnect
   class RetryRequestWorker # rubocop:disable Scalability/IdempotentWorker
     include ApplicationWorker
 
-    data_consistency :always
+    data_consistency :delayed
     queue_namespace :jira_connect
     feature_category :integrations
     urgency :low

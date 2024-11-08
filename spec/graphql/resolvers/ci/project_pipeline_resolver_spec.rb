@@ -6,8 +6,8 @@ RSpec.describe Resolvers::Ci::ProjectPipelineResolver, feature_category: :contin
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project) }
-  let_it_be(:pipeline) { create(:ci_pipeline, project: project, id: '1234', iid: '1234', sha: 'sha') }
-  let_it_be(:other_project_pipeline) { create(:ci_pipeline, project: project, id: '1235', iid: '1235', sha: 'sha2') }
+  let_it_be(:pipeline) { create(:ci_pipeline, project: project, sha: 'sha') }
+  let_it_be(:other_project_pipeline) { create(:ci_pipeline, project: project, sha: 'sha2') }
   let_it_be(:other_pipeline) { create(:ci_pipeline) }
 
   let(:current_user) { create(:user, developer_of: project) }
@@ -23,11 +23,11 @@ RSpec.describe Resolvers::Ci::ProjectPipelineResolver, feature_category: :contin
   it 'resolves pipeline for the passed id' do
     expect(Ci::PipelinesFinder)
       .to receive(:new)
-      .with(project, current_user, ids: ['1234'])
+      .with(project, current_user, ids: [pipeline.id.to_s])
       .and_call_original
 
     result = batch_sync do
-      resolve_pipeline(project, { id: 'gid://gitlab/Ci::Pipeline/1234' })
+      resolve_pipeline(project, { id: "gid://gitlab/Ci::Pipeline/#{pipeline.id}" })
     end
 
     expect(result).to eq(pipeline)
@@ -36,11 +36,11 @@ RSpec.describe Resolvers::Ci::ProjectPipelineResolver, feature_category: :contin
   it 'resolves pipeline for the passed iid' do
     expect(Ci::PipelinesFinder)
       .to receive(:new)
-      .with(project, current_user, iids: ['1234'])
+      .with(project, current_user, iids: [pipeline.iid.to_s])
       .and_call_original
 
     result = batch_sync do
-      resolve_pipeline(project, { iid: '1234' })
+      resolve_pipeline(project, { iid: pipeline.iid.to_s })
     end
 
     expect(result).to eq(pipeline)
@@ -61,26 +61,26 @@ RSpec.describe Resolvers::Ci::ProjectPipelineResolver, feature_category: :contin
 
   it 'keeps the queries under the threshold for id' do
     control = ActiveRecord::QueryRecorder.new do
-      batch_sync { resolve_pipeline(project, { id: 'gid://gitlab/Ci::Pipeline/1234' }) }
+      batch_sync { resolve_pipeline(project, { id: "gid://gitlab/Ci::Pipeline/#{pipeline.id}" }) }
     end
 
     expect do
       batch_sync do
-        resolve_pipeline(project, { id: 'gid://gitlab/Ci::Pipeline/1234' })
-        resolve_pipeline(project, { id: 'gid://gitlab/Ci::Pipeline/1235' })
+        resolve_pipeline(project, { id: "gid://gitlab/Ci::Pipeline/#{pipeline.id}" })
+        resolve_pipeline(project, { id: "gid://gitlab/Ci::Pipeline/#{other_project_pipeline.id}" })
       end
     end.not_to exceed_query_limit(control)
   end
 
   it 'keeps the queries under the threshold for iid' do
     control = ActiveRecord::QueryRecorder.new do
-      batch_sync { resolve_pipeline(project, { iid: '1234' }) }
+      batch_sync { resolve_pipeline(project, { iid: pipeline.iid.to_s }) }
     end
 
     expect do
       batch_sync do
-        resolve_pipeline(project, { iid: '1234' })
-        resolve_pipeline(project, { iid: '1235' })
+        resolve_pipeline(project, { iid: pipeline.iid.to_s })
+        resolve_pipeline(project, { iid: other_pipeline.iid.to_s })
       end
     end.not_to exceed_query_limit(control)
   end
@@ -100,7 +100,7 @@ RSpec.describe Resolvers::Ci::ProjectPipelineResolver, feature_category: :contin
 
   it 'does not resolve a pipeline outside the project' do
     result = batch_sync do
-      resolve_pipeline(other_pipeline.project, { iid: '1234' })
+      resolve_pipeline(other_pipeline.project, { iid: pipeline.iid.to_s })
     end
 
     expect(result).to be_nil
@@ -108,7 +108,7 @@ RSpec.describe Resolvers::Ci::ProjectPipelineResolver, feature_category: :contin
 
   it 'does not resolve a pipeline outside the project' do
     result = batch_sync do
-      resolve_pipeline(other_pipeline.project, { id: 'gid://gitlab/Ci::Pipeline/12349' })
+      resolve_pipeline(other_pipeline.project, { id: "gid://gitlab/Ci::Pipeline/#{pipeline.id}9" })
     end
 
     expect(result).to be_nil
@@ -122,19 +122,20 @@ RSpec.describe Resolvers::Ci::ProjectPipelineResolver, feature_category: :contin
 
   it 'errors when both iid and sha are passed' do
     expect_graphql_error_to_be_created(GraphQL::Schema::Validator::ValidationFailedError) do
-      resolve_pipeline(project, { iid: '1234', sha: 'sha' })
+      resolve_pipeline(project, { iid: pipeline.iid.to_s, sha: 'sha' })
     end
   end
 
   it 'errors when both id and iid are passed' do
     expect_graphql_error_to_be_created(GraphQL::Schema::Validator::ValidationFailedError) do
-      resolve_pipeline(project, { id: 'gid://gitlab/Ci::Pipeline/1234', iid: '1234' })
+      resolve_pipeline(project, { id: "gid://gitlab/Ci::Pipeline/#{pipeline.id}", iid: pipeline.iid.to_s })
     end
   end
 
   it 'errors when id, iid and sha are passed' do
     expect_graphql_error_to_be_created(GraphQL::Schema::Validator::ValidationFailedError) do
-      resolve_pipeline(project, { id: 'gid://gitlab/Ci::Pipeline/1234', iid: '1234', sha: '12345234' })
+      resolve_pipeline(project,
+        { id: "gid://gitlab/Ci::Pipeline/#{pipeline.id}", iid: pipeline.iid.to_s, sha: '12345234' })
     end
   end
 

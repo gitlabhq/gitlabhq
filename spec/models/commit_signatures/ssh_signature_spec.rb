@@ -12,8 +12,11 @@ RSpec.describe CommitSignatures::SshSignature, feature_category: :source_code_ma
   let_it_be(:ssh_key) { create(:ed25519_key_256, user: user) }
   let_it_be(:key_fingerprint) { ssh_key.fingerprint_sha256 }
 
+  let(:verification_status) { :verified }
+
   let(:signature) do
-    create(:ssh_signature, commit_sha: commit_sha, key: ssh_key, key_fingerprint_sha256: key_fingerprint, user: user)
+    create(:ssh_signature, commit_sha: commit_sha, key: ssh_key, key_fingerprint_sha256: key_fingerprint, user: user,
+      verification_status: verification_status)
   end
 
   let(:attributes) do
@@ -107,6 +110,32 @@ RSpec.describe CommitSignatures::SshSignature, feature_category: :source_code_ma
 
       it 'returns the signature verification status' do
         expect(signature.reverified_status).to eq('unverified')
+      end
+    end
+
+    context 'when verification_status is verified_system' do
+      let(:verification_status) { :verified_system }
+
+      it 'returns the signature verification status' do
+        expect(signature.reverified_status).to eq('verified_system')
+      end
+
+      context 'and the author email does not belong to the signed by user' do
+        let(:user) { create(:user) }
+
+        it 'returns unverified_author_email' do
+          expect(signature.reverified_status).to eq('unverified_author_email')
+        end
+
+        context 'when check_for_mailmapped_commit_emails feature flag is disabled' do
+          before do
+            stub_feature_flags(check_for_mailmapped_commit_emails: false)
+          end
+
+          it 'verification status is unmodified' do
+            expect(signature.reverified_status).to eq('verified_system')
+          end
+        end
       end
     end
   end

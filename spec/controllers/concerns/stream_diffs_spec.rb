@@ -42,4 +42,10 @@ RSpec.describe StreamDiffs, type: :controller, feature_category: :source_code_ma
       })
     end
   end
+
+  describe '#request' do
+    it 'forces format as HTML' do
+      expect(controller.new.request.format.to_s).to eq('text/html')
+    end
+  end
 end

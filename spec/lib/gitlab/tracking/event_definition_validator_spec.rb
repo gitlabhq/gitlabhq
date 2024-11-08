@@ -37,6 +37,8 @@ RSpec.describe Gitlab::Tracking::EventDefinitionValidator, feature_category: :se
       :product_group        | nil
       :distributions        | %(be eb)
       :tiers                | %(pro)
+      :product_categories     | 'bad_category'
+      :product_categories     | ['bad_category']
     end
 
     with_them do

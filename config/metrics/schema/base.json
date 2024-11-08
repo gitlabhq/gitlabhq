@@ -25,6 +25,13 @@
     "product_group": {
       "$ref": "product_groups.json"
     },
+    "product_categories": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "known_product_category"
+      }
+    },
     "value_type": {
       "type": "string",
       "enum": [
@@ -159,9 +166,6 @@
       }
     },
     "value_json_schema": {
-      "type": "string"
-    },
-    "product_category": {
       "type": "string"
     },
     "name": {

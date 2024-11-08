@@ -24,4 +24,4 @@
             %th
       %tbody= yield
 
-    = paginate @protected_tags, theme: 'gitlab'
+    = paginate @protected_tags, theme: 'gitlab', params: { anchor: 'js-protected-tags-settings' }

@@ -4,7 +4,6 @@ module Gitlab
   module Usage
     class MetricDefinition
       METRIC_SCHEMA_PATH = Rails.root.join('config', 'metrics', 'schema', 'base.json')
-      SCHEMA = ::JSONSchemer.schema(METRIC_SCHEMA_PATH)
       AVAILABLE_STATUSES = %w[active broken].to_set.freeze
       VALID_SERVICE_PING_STATUSES = %w[active broken].to_set.freeze
 
@@ -91,14 +90,14 @@ module Gitlab
       end
 
       def validation_errors
-        SCHEMA.validate(@attributes.deep_stringify_keys).map do |error|
+        self.class.definition_schema.validate(@attributes.deep_stringify_keys).map do |error|
           <<~ERROR_MSG
             --------------- VALIDATION ERROR ---------------
             Metric file: #{path}
             Error type: #{error['type']}
             Data: #{error['data']}
             Path: #{error['data_pointer']}
-            Details: #{error['details']}
+            Details: #{error['details'] || error['error']}
           ERROR_MSG
         end
       end
@@ -186,6 +185,10 @@ module Gitlab
             end
             metrics.map(&:deep_stringify_keys).to_yaml
           end
+        end
+
+        def definition_schema
+          @definition_schema ||= ::JSONSchemer.schema(METRIC_SCHEMA_PATH)
         end
 
         private

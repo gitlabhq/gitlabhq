@@ -69,7 +69,7 @@ The [`gitmailmap`](https://git-scm.com/docs/gitmailmap) feature allows users to 
 GitLab uses these email addresses to provide links to the commit author.
 When using a `mailmap` author mapping, it's possible to have a verified commit with an unverified author email.
 
-For SSH signatures with `mailmap` author mappings, GitLab displays an orange verified label with a warning sign.
+For SSH and UI signatures with `mailmap` author mappings, GitLab displays an orange verified label with a warning sign.
 To restore the green verified label, verify the mapped email address, or remove the `mailmap` entry.
 
 ## Troubleshooting

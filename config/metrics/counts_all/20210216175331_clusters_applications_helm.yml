@@ -3,7 +3,8 @@ data_category: optional
 key_path: usage_activity_by_stage.configure.clusters_applications_helm
 description: Total GitLab Managed clusters with GitLab Managed App:Helm enabled
 product_group: environments
-product_category: deployment_management
+product_categories:
+- deployment_management
 value_type: number
 status: removed
 time_frame: all
