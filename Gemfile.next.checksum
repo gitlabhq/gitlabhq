@@ -719,7 +719,7 @@
 {"name":"sys-filesystem","version":"1.4.3","platform":"ruby","checksum":"390919de89822ad6d3ba3daf694d720be9d83ed95cdf7adf54d4573c98b17421"},
 {"name":"sysexits","version":"1.2.0","platform":"ruby","checksum":"598241c4ae57baa403c125182dfdcc0d1ac4c0fb606dd47fbed57e4aaf795662"},
 {"name":"table_print","version":"1.5.7","platform":"ruby","checksum":"436664281f93387b882335795e16cfeeb839ad0c785ff7f9110fc0f17c68b5cb"},
-{"name":"tanuki_emoji","version":"0.9.0","platform":"ruby","checksum":"009f0b283f61b7aed5f57d7d1f050225f2a5df8eec121550a67bdd7b95c74056"},
+{"name":"tanuki_emoji","version":"0.13.0","platform":"ruby","checksum":"dee2182a5cad6f88ed91cd4e39088bd2a8f313e24f83ff5d4b5b0fecf29f6d93"},
 {"name":"telesign","version":"2.2.4","platform":"ruby","checksum":"dcc6e96ea7bcb4da1e2ae786bfe7a4d670a4b5f94ae95dfcdde77d547c544c42"},
 {"name":"telesignenterprise","version":"2.2.2","platform":"ruby","checksum":"f147a03263a8c2fe0a0db1a7a9454a6ee37d9e8abd58eaca305bdd8081f9f1b3"},
 {"name":"temple","version":"0.8.2","platform":"ruby","checksum":"c12071214346c606dbd219b4117276d04a9f2c20d65e66a66b2c4ec18efc1f18"},

@@ -81,7 +81,7 @@ RSpec.describe IssuesHelper, feature_category: :team_planning do
   end
 
   describe 'awards_sort' do
-    it 'sorts a hash so thumbs_up and thumbs_down are always on top' do
+    it 'sorts a hash so thumbsup and thumbsdown are always on top' do
       data = { AwardEmoji::THUMBS_DOWN => 'some value', 'lifter' => 'some value', AwardEmoji::THUMBS_UP => 'some value' }
       expect(awards_sort(data).keys).to eq(%W[#{AwardEmoji::THUMBS_UP} #{AwardEmoji::THUMBS_DOWN} lifter])
     end

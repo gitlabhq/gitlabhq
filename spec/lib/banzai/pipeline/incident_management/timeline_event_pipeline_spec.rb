@@ -68,7 +68,7 @@ RSpec.describe Banzai::Pipeline::IncidentManagement::TimelineEventPipeline do
       it 'renders emojis wrapped in <gl-emoji> tag' do
         # rubocop:disable Layout/LineLength
         is_expected.to eq(
-          %(<p><gl-emoji title="thumbs up sign" data-name="#{AwardEmoji::THUMBS_UP}" data-unicode-version="6.0">👍</gl-emoji><gl-emoji title="thumbs up sign" data-name="#{AwardEmoji::THUMBS_UP}" data-unicode-version="6.0">👍</gl-emoji></p>)
+          %(<p><gl-emoji title="thumbs up" data-name="#{AwardEmoji::THUMBS_UP}" data-unicode-version="6.0">👍</gl-emoji><gl-emoji title="thumbs up" data-name="#{AwardEmoji::THUMBS_UP}" data-unicode-version="6.0">👍</gl-emoji></p>)
         )
         # rubocop:enable Layout/LineLength
       end

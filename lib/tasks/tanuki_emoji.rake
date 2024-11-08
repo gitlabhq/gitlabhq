@@ -117,10 +117,10 @@ namespace :tanuki_emoji do
     SIZE   = 20
     RETINA = SIZE * 2
 
-    # Update these values to the width and height of the spritesheet when
+    # Update these values to the width and height of the sprite sheet when
     # new emoji are added.
-    SPRITESHEET_WIDTH = 860
-    SPRITESHEET_HEIGHT = 840
+    SPRITESHEET_WIDTH = 1240
+    SPRITESHEET_HEIGHT = 1220
 
     emoji_dir = Gitlab::Emoji.emoji_public_absolute_path
 
@@ -235,7 +235,7 @@ namespace :tanuki_emoji do
       To enable this task, *temporarily* add the following lines to Gemfile and
       re-bundle:
 
-      gem 'rmagick', '~> 3.2'
+      gem 'rmagick', '~> 6.0'
 
       It depends on ImageMagick 6, which can be installed via HomeBrew with:
 

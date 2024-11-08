@@ -19798,6 +19798,35 @@ CREATE SEQUENCE subscription_seat_assignments_id_seq
 
 ALTER SEQUENCE subscription_seat_assignments_id_seq OWNED BY subscription_seat_assignments.id;
 
+CREATE TABLE subscription_user_add_on_assignment_versions (
+    id bigint NOT NULL,
+    organization_id bigint NOT NULL,
+    item_id bigint,
+    purchase_id bigint,
+    user_id bigint,
+    created_at timestamp with time zone,
+    item_type text NOT NULL,
+    event text NOT NULL,
+    namespace_path text,
+    add_on_name text,
+    whodunnit text,
+    object jsonb,
+    CONSTRAINT check_211bad6d65 CHECK ((char_length(item_type) <= 255)),
+    CONSTRAINT check_34ca72be24 CHECK ((char_length(event) <= 255)),
+    CONSTRAINT check_839913a25d CHECK ((char_length(namespace_path) <= 255)),
+    CONSTRAINT check_9ceaa5668c CHECK ((char_length(add_on_name) <= 255)),
+    CONSTRAINT check_e185bf0c82 CHECK ((char_length(whodunnit) <= 255))
+);
+
+CREATE SEQUENCE subscription_user_add_on_assignment_versions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE subscription_user_add_on_assignment_versions_id_seq OWNED BY subscription_user_add_on_assignment_versions.id;
+
 CREATE TABLE subscription_user_add_on_assignments (
     id bigint NOT NULL,
     add_on_purchase_id bigint NOT NULL,
@@ -23606,6 +23635,8 @@ ALTER TABLE ONLY subscription_add_ons ALTER COLUMN id SET DEFAULT nextval('subsc
 
 ALTER TABLE ONLY subscription_seat_assignments ALTER COLUMN id SET DEFAULT nextval('subscription_seat_assignments_id_seq'::regclass);
 
+ALTER TABLE ONLY subscription_user_add_on_assignment_versions ALTER COLUMN id SET DEFAULT nextval('subscription_user_add_on_assignment_versions_id_seq'::regclass);
+
 ALTER TABLE ONLY subscription_user_add_on_assignments ALTER COLUMN id SET DEFAULT nextval('subscription_user_add_on_assignments_id_seq'::regclass);
 
 ALTER TABLE ONLY subscriptions ALTER COLUMN id SET DEFAULT nextval('subscriptions_id_seq'::regclass);
@@ -26348,6 +26379,9 @@ ALTER TABLE ONLY subscription_add_ons
 ALTER TABLE ONLY subscription_seat_assignments
     ADD CONSTRAINT subscription_seat_assignments_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY subscription_user_add_on_assignment_versions
+    ADD CONSTRAINT subscription_user_add_on_assignment_versions_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY subscription_user_add_on_assignments
     ADD CONSTRAINT subscription_user_add_on_assignments_pkey PRIMARY KEY (id);
 
@@ -28308,6 +28342,10 @@ CREATE INDEX idx_test_reports_on_issue_id_created_at_and_id ON requirements_mana
 CREATE UNIQUE INDEX idx_uniq_analytics_dashboards_pointers_on_project_id ON analytics_dashboards_pointers USING btree (project_id);
 
 CREATE UNIQUE INDEX idx_usages_on_cmpt_used_by_project_cmpt_and_last_used_date ON catalog_resource_component_last_usages USING btree (component_id, used_by_project_id, last_used_date);
+
+CREATE INDEX idx_user_add_on_assignment_versions_on_item_id ON subscription_user_add_on_assignment_versions USING btree (item_id);
+
+CREATE INDEX idx_user_add_on_assignment_versions_on_organization_id ON subscription_user_add_on_assignment_versions USING btree (organization_id);
 
 CREATE INDEX idx_user_add_on_assignments_on_add_on_purchase_id_and_id ON subscription_user_add_on_assignments USING btree (add_on_purchase_id, id);
 
@@ -36685,6 +36723,9 @@ ALTER TABLE ONLY issue_assignment_events
 
 ALTER TABLE ONLY security_policies
     ADD CONSTRAINT fk_rails_08722e8ac7 FOREIGN KEY (security_policy_management_project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY subscription_user_add_on_assignment_versions
+    ADD CONSTRAINT fk_rails_091e013a61 FOREIGN KEY (organization_id) REFERENCES organizations(id);
 
 ALTER TABLE ONLY trending_projects
     ADD CONSTRAINT fk_rails_09feecd872 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

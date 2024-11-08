@@ -243,7 +243,8 @@ RSpec.describe 'Database schema',
       namespace_settings: %w[early_access_program_joined_by_id], # isn't used inside product itself. Only through Snowflake
       workspaces_agent_config_versions: %w[item_id], # polymorphic associations
       work_item_types: %w[correct_id], # temporary column that is not a foreign key
-      instance_integrations: %w[project_id group_id inherit_from_id] # these columns are not used in instance integrations
+      instance_integrations: %w[project_id group_id inherit_from_id], # these columns are not used in instance integrations
+      subscription_user_add_on_assignment_versions: %w[item_id user_id purchase_id] # Managed by paper_trail gem, no need for FK on the historical data
     }.with_indifferent_access.freeze
   end
 
@@ -418,7 +419,8 @@ RSpec.describe 'Database schema',
         "Releases::Evidence" => %w[summary],
         "Vulnerabilities::Finding::Evidence" => %w[data], # Validation work in progress
         "Ai::DuoWorkflows::Checkpoint" => %w[checkpoint metadata], # https://gitlab.com/gitlab-org/gitlab/-/issues/468632
-        "RemoteDevelopment::WorkspacesAgentConfigVersion" => %w[object object_changes] # Managed by paper_trail gem
+        "RemoteDevelopment::WorkspacesAgentConfigVersion" => %w[object object_changes], # Managed by paper_trail gem
+        "GitlabSubscriptions::UserAddOnAssignmentVersion" => %w[object] # Managed by paper_trail gem
       }.freeze
     end
 

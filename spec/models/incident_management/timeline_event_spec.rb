@@ -72,7 +72,7 @@ RSpec.describe IncidentManagement::TimelineEvent do
 
     # rubocop:disable Layout/LineLength
     let(:expected_emoji_html) do
-      %(<gl-emoji title="thumbs up sign" data-name="#{AwardEmoji::THUMBS_UP}" data-unicode-version="6.0">👍</gl-emoji><gl-emoji title="thumbs up sign" data-name="#{AwardEmoji::THUMBS_UP}" data-unicode-version="6.0">👍</gl-emoji>)
+      %(<gl-emoji title="thumbs up" data-name="#{AwardEmoji::THUMBS_UP}" data-unicode-version="6.0">👍</gl-emoji><gl-emoji title="thumbs up" data-name="#{AwardEmoji::THUMBS_UP}" data-unicode-version="6.0">👍</gl-emoji>)
     end
 
     let(:expected_note_html) do

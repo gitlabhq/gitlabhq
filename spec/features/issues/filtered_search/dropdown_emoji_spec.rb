@@ -42,7 +42,7 @@ RSpec.describe 'Dropdown emoji', :js, feature_category: :team_planning do
       it 'loads all the emojis when opened' do
         select_tokens 'My-Reaction', '='
 
-        # Expect None, Any, star, thumbs_up, thumbs_down
+        # Expect None, Any, star, thumbsup, thumbsdown
         expect_suggestion_count 5
       end
 

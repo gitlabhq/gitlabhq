@@ -11,12 +11,12 @@ RSpec.describe Banzai::Filter::EmojiFilter, feature_category: :markdown do
 
   it 'replaces supported name emoji' do
     doc = filter('<p>:heart:</p>')
-    expect(doc.css('gl-emoji').first.text).to eq '❤'
+    expect(doc.css('gl-emoji').first.text).to eq '❤️'
   end
 
   it 'replaces supported unicode emoji' do
     doc = filter('<p>❤️</p>')
-    expect(doc.css('gl-emoji').first.text).to eq '❤'
+    expect(doc.css('gl-emoji').first.text).to eq '❤️'
   end
 
   it 'ignores unicode versions of trademark, copyright, and registered trademark' do
@@ -159,7 +159,7 @@ RSpec.describe Banzai::Filter::EmojiFilter, feature_category: :markdown do
   context 'when using TanukiEmoji' do
     # the regex doesn't find emoji components, and they are not really meant to be used
     # by themselves, so ignore them.
-    let(:exclude_components) { "🏻🏼🏽🏾🏿" }
+    let(:exclude_components) { "🏻🏼🏽🏾🏿🦰🦱🦳🦲" }
 
     it 'finds all unicode emoji codepoints with regex' do
       TanukiEmoji.index.all.each do |emoji| # rubocop:disable Rails/FindEach -- not a Rails model

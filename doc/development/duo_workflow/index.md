@@ -179,7 +179,17 @@ Executor.
 If you would like to start Duo Workflow with the VS Code extension instead,
 follow [these steps](../../user/duo_workflow/index.md#prerequisites).
 
-If you are debugging or making changes to the VSCode extension and need to run the extension in development mode, you can do that following [these instructions](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/blob/main/CONTRIBUTING.md#configuring-development-environment).
+If you would like to start Duo Workflow with a locally running VS Code extension and GitLab Language Server (for debugging or making changes to the extension)
+
+1. Clone [language server](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp).
+1. Clone [VSCode extension](https://gitlab.com/gitlab-org/gitlab-vscode-extension).
+1. Change directory (`cd`) into language server.
+1. Run `npm install`.
+1. Run `npm run watch -- --editor=vscode --packages webview-duo-workflow workflow-api --vscode-path path-to-vscode-extension-from-step-2`.
+1. Open VSCode extension project in VSCode.
+1. Click **Run and Debug**, choose **Run Extension** in the dropdown and select **Play**.
+1. If prompted with **All installed extensions are temporarily disabled**, do not click **Reload and Enable extensions** because that will use native extensions.
+1. In the command palette, run `GitLab: Show Duo Workflow`.
 
 ## Troubleshooting
 

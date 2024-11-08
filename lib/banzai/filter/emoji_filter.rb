@@ -11,6 +11,7 @@ module Banzai
       prepend Concerns::PipelineTimingCheck
 
       IGNORED_ANCESTOR_TAGS = %w[pre code tt].to_set
+      IGNORE_UNICODE_EMOJIS = %w[™ © ®].freeze
 
       def call
         @emoji_count = 0
@@ -42,12 +43,7 @@ module Banzai
           .gsub_with_limit(text, emoji_pattern, limit: Banzai::Filter::FILTER_ITEM_LIMIT) do |match_data|
           emoji = TanukiEmoji.find_by_alpha_code(match_data[0])
 
-          if emoji
-            @emoji_count += 1
-            Gitlab::Emoji.gl_emoji_tag(emoji)
-          else
-            match_data[0]
-          end
+          process_emoji_tag(emoji, match_data[0])
         end
       end
 
@@ -59,15 +55,25 @@ module Banzai
       def emoji_unicode_element_unicode_filter(text)
         Gitlab::Utils::Gsub
           .gsub_with_limit(text, emoji_unicode_pattern, limit: Banzai::Filter::FILTER_ITEM_LIMIT) do |match_data|
-          emoji = TanukiEmoji.find_by_codepoints(match_data[0])
-
-          if emoji
-            @emoji_count += 1
-            Gitlab::Emoji.gl_emoji_tag(emoji)
-          else
+          if ignore_emoji?(match_data[0])
             match_data[0]
+          else
+            emoji = TanukiEmoji.find_by_codepoints(match_data[0])
+
+            process_emoji_tag(emoji, match_data[0])
           end
         end
+      end
+
+      def process_emoji_tag(emoji, fallback)
+        return fallback unless emoji
+
+        @emoji_count += 1
+        Gitlab::Emoji.gl_emoji_tag(emoji)
+      end
+
+      def ignore_emoji?(text)
+        IGNORE_UNICODE_EMOJIS.include?(text)
       end
 
       # Build a regexp that matches all valid :emoji: names.

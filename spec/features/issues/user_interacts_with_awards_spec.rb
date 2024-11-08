@@ -18,7 +18,7 @@ RSpec.describe 'User interacts with awards', feature_category: :team_planning do
       visit(project_issue_path(project, issue))
     end
 
-    it 'toggles the thumbs_up award emoji', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/27959' do
+    it 'toggles the thumbsup award emoji', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/27959' do
       page.within('.awards') do
         thumbsup = page.first('.award-control')
         thumbsup.click
@@ -281,14 +281,14 @@ RSpec.describe 'User interacts with awards', feature_category: :team_planning do
           wait_for_requests
         end
 
-        context 'click the thumbs_down emoji' do
-          it 'increments the thumbs_down emoji', :js do
+        context 'click the thumbsdown emoji' do
+          it 'increments the thumbsdown emoji', :js do
             find(%([data-name="#{AwardEmoji::THUMBS_DOWN}"])).click
             wait_for_requests
             expect(thumbsdown_emoji).to have_text("1")
           end
 
-          it 'decrements the thumbs_up emoji', :js do
+          it 'decrements the thumbsup emoji', :js do
             expect(thumbsup_emoji).to have_text("0")
           end
         end
