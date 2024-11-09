@@ -60,16 +60,14 @@ Changes to make:
 Browser-based DAST version 4 uses proxy-based analyzer checks for active checks not included in the browser-based analyzer.
 Browser-based DAST version 5 does not include the proxy-based analyzer, so there is a gap in check coverage when migrating to version 5.
 
-There are three proxy-based active checks that the browser-based analyzer does not cover. Adding more checks to provide complete coverage
+There is one proxy-based active check that the browser-based analyzer does not cover. Adding more checks to provide complete coverage
 is in active development, you may remain on DAST version 4 until they are complete. See [Continuing to use version 4](#continuing-to-use-version-4).
 
-Remaining checks:
+Remaining check:
 
 - CWE-79: Cross-site Scripting (XSS)
-- CWE-384: Session Fixation
-- CWE-16: TRACE HTTP
 
-Follow the progress of the remaining checks in the epic [Remaining active checks for BBD](https://gitlab.com/groups/gitlab-org/-/epics/13411).
+Follow the progress of the remaining check in the epic [Remaining active checks for BBD](https://gitlab.com/groups/gitlab-org/-/epics/13411).
 
 ## Changes to CI/CD variables
 
