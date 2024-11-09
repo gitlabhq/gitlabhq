@@ -37,6 +37,24 @@ RSpec.describe Packages::Nuget::Symbols::CreateSymbolFilesService, feature_categ
         expect { subject }.to change { package.nuget_symbols.count }.by(1)
         expect(package.nuget_symbols.last.project_id).to eq(package.project_id)
       end
+
+      context 'when nuget_extract_nuget_package_model is disabled' do
+        let_it_be(:package) { create(:nuget_package_legacy) }
+
+        before do
+          stub_feature_flags(nuget_extract_nuget_package_model: false)
+        end
+
+        it 'creates a symbol record and extracts the signature', :aggregate_failures do
+          expect_next_instance_of(Packages::Nuget::Symbols::ExtractSignatureAndChecksumService,
+            instance_of(File)) do |service|
+            expect(service).to receive(:execute).and_call_original
+          end
+
+          expect { subject }.to change { package.nuget_symbols.count }.by(1)
+          expect(package.nuget_symbols.last.project_id).to eq(package.project_id)
+        end
+      end
     end
 
     context 'when symbol files hit the limit' do
