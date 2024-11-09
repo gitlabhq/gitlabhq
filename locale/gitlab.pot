@@ -49785,6 +49785,9 @@ msgstr ""
 msgid "SecurityOrchestration|Don't show the alert anymore"
 msgstr ""
 
+msgid "SecurityOrchestration|Edge case settings"
+msgstr ""
+
 msgid "SecurityOrchestration|Edit merge request approval policy"
 msgstr ""
 
