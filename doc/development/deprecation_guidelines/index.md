@@ -11,6 +11,34 @@ to GitLab features.
 
 For details about the terms used on this page, see [the terminology](../../update/terminology.md).
 
+## Minimize the impact of breaking changes
+
+Minimizing the impact to our customers ahead of a breaking change will ensure that disruptions will be minimized as much as possible. Product and Engineering teams should work closely together to understand 1) who would be most impacted and 2) whether tooling may help our users to migrate.
+
+It is **strongly recommended** that teams create an issue to track the work for each of the following:
+
+1. Measure product usage of the feature impacted by the breaking change.
+1. Assess how many customers will be impacted by the breaking change.
+1. Create tooling for users to manually migrate their own data or workflows.
+1. Allow them to manually enable the breaking change so that they can control when it takes effect.
+1. Automate the migration process **as much as possible** for users who do not take any manual steps to migrate.
+1. (Optional) Create UI controls for instance admins to disable the breaking change, providing flexibility to Self-Managed / Dedicated customers to plan for their migration path. Optional as this depends on the breaking change.
+
+### Planning
+
+Each breaking change should have a:
+
+- Rollout plan **(DRI: Engineering)**
+  - Is there a % roll out on GitLab.com?
+  - During that major milestone, when should the roll out begin?
+- Migration plan **(DRI: Engineering)**
+  - Are we instrumenting usage? If so, how are we using that data to inform what users will be impacted?
+  - How do we quickly and safely migrate them?
+- Communication plan **(DRI: Product)**
+  - Are customers aware of the upcoming changes?
+  - Do they know when the changes will go into effect?
+  - Do they know what actions to take?
+
 ## When can a feature be deprecated?
 
 Deprecations should be announced on the [Deprecated feature removal schedule](../../update/deprecations.md).

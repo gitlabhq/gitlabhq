@@ -261,7 +261,7 @@ gem 'truncato', '~> 0.7.12', feature_category: :team_planning
 gem 'nokogiri', '~> 1.16', feature_category: :shared
 gem 'gitlab-glfm-markdown', '~> 0.0.21', feature_category: :markdown
 gem 'tanuki_emoji', '~> 0.13', feature_category: :markdown
-gem 'unicode-emoji', '~> 3.6', feature_category: :markdown
+gem 'unicode-emoji', '~> 4.0', feature_category: :markdown
 
 # Calendar rendering
 gem 'icalendar', '~> 2.10.1', feature_category: :system_access

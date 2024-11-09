@@ -166,7 +166,7 @@ RSpec.describe Resolvers::MergeRequestsResolver, feature_category: :code_review_
         branches = mrs.map(&:source_branch)
         result = resolve_mr(project, not: { source_branches: branches })
 
-        expect(result).not_to include(merge_request_3, merge_request_4)
+        expect(result).not_to include(*mrs)
       end
     end
 
