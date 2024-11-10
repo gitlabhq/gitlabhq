@@ -16,8 +16,12 @@ module Mutations
         issue = authorized_find!(project_path: project_path, iid: iid)
         project = issue.project
         # Changing confidentiality affects spam checking rules, therefore we need to perform a spam check
-        ::Issues::UpdateService.new(container: project, current_user: current_user, params: { confidential: confidential }, perform_spam_check: true)
-          .execute(issue)
+        ::Issues::UpdateService.new(
+          container: project,
+          current_user: current_user,
+          params: { confidential: confidential },
+          perform_spam_check: true
+        ).execute(issue)
         check_spam_action_response!(issue)
 
         {

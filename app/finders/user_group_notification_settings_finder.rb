@@ -9,7 +9,8 @@ class UserGroupNotificationSettingsFinder
   def execute
     groups_with_ancestors = groups.self_and_ancestors
     @loaded_groups_with_ancestors = groups_with_ancestors.index_by(&:id)
-    @loaded_notification_settings = user.notification_settings_for_groups(groups_with_ancestors).preload_source_route.index_by(&:source_id)
+    @loaded_notification_settings = user.notification_settings_for_groups(groups_with_ancestors)
+                                        .preload_source_route.index_by(&:source_id)
 
     preload_emails_enabled
 

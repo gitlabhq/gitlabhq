@@ -34,4 +34,4 @@ module Mutations
   end
 end
 
-Mutations::AlertManagement::HttpIntegration::Create.prepend_mod_with('Mutations::AlertManagement::HttpIntegration::Create')
+Mutations::AlertManagement::HttpIntegration::Create.prepend_mod

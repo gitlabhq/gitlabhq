@@ -34,7 +34,7 @@ RSpec.describe BulkImports::Groups::Stage, feature_category: :importers do
     end
 
     it 'only has pipelines with valid keys' do
-      pipeline_keys = described_class.new(entity).pipelines.collect(&:keys).flatten.uniq
+      pipeline_keys = described_class.new(entity).pipelines.flat_map(&:keys).uniq
       allowed_keys = %i[pipeline stage minimum_source_version maximum_source_version]
 
       expect(pipeline_keys - allowed_keys).to be_empty

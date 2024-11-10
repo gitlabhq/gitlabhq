@@ -7,12 +7,12 @@ RSpec.shared_examples 'model with Debian distributions' do
   let!(:component_files) { create_list("debian_#{container_type}_component_file", 3, component: components[0]) }
 
   it 'removes distribution files on removal' do
-    distribution_file_paths = distributions.map do |distribution|
+    distribution_file_paths = distributions.flat_map do |distribution|
       [distribution.file.path] +
-        distribution.component_files.map do |component_file|
+        distribution.component_files.flat_map do |component_file|
           component_file.file.path
         end
-    end.flatten
+    end
 
     expect { subject.destroy! }
       .to change {

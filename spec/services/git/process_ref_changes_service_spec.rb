@@ -104,9 +104,9 @@ RSpec.describe Git::ProcessRefChangesService, feature_category: :source_code_man
           { oldrev: Gitlab::Git::SHA1_BLANK_SHA, newrev: '789012', ref: "#{ref_prefix}/create" },
           { oldrev: '123456', newrev: '789012', ref: "#{ref_prefix}/update" },
           { oldrev: '123456', newrev: Gitlab::Git::SHA1_BLANK_SHA, ref: "#{ref_prefix}/delete" }
-        ].map do |change|
+        ].flat_map do |change|
           multiple_changes(change, push_event_activities_limit + 1)
-        end.flatten
+        end
       end
 
       before do

@@ -1902,8 +1902,9 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
 
         context 'user is a guest' do
           let(:json_response_note_ids) do
-            json_response.collect { |discussion| discussion["notes"] }.flatten
-              .collect { |note| note["id"].to_i }
+            json_response
+              .flat_map { |discussion| discussion["notes"] }
+              .map { |note| note["id"].to_i }
           end
 
           before do

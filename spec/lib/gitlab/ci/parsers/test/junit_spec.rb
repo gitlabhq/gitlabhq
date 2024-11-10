@@ -546,11 +546,11 @@ RSpec.describe Gitlab::Ci::Parsers::Test::Junit do
     private
 
     def flattened_test_cases(test_suite)
-      test_suite.test_cases.map do |status, value|
-        value.map do |key, test_case|
+      test_suite.test_cases.flat_map do |status, value|
+        value.flat_map do |key, test_case|
           test_case
         end
-      end.flatten
+      end
     end
   end
 end

@@ -121,7 +121,7 @@ RSpec.describe Ci::CreatePipelineService,
   end
 
   context 'with parallel:matrix config' do
-    let(:tags) { pipeline.builds.map(&:tags).flatten.pluck(:name) }
+    let(:tags) { pipeline.builds.flat_map(&:tags).pluck(:name) }
 
     let(:config) do
       <<~EOS

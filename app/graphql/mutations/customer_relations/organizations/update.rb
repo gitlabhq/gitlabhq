@@ -39,13 +39,20 @@ module Mutations
           description: 'State of the organization.'
 
         def resolve(args)
-          organization = ::Gitlab::Graphql::Lazy.force(GitlabSchema.object_from_id(args.delete(:id), expected_type: ::CustomerRelations::Organization))
+          organization = ::Gitlab::Graphql::Lazy.force(
+            GitlabSchema.object_from_id(args.delete(:id),
+              expected_type: ::CustomerRelations::Organization)
+          )
           raise_resource_not_available_error! unless organization
 
           group = organization.group
           authorize!(group)
 
-          result = ::CustomerRelations::Organizations::UpdateService.new(group: group, current_user: current_user, params: args).execute(organization)
+          result = ::CustomerRelations::Organizations::UpdateService.new(
+            group: group,
+            current_user: current_user,
+            params: args
+          ).execute(organization)
           { organization: result.payload, errors: result.errors }
         end
       end

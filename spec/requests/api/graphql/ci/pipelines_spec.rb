@@ -383,10 +383,10 @@ RSpec.describe 'Query.project(fullPath).pipelines', feature_category: :continuou
 
       pipelines_data = graphql_data.dig('project', 'pipelines', 'nodes')
 
-      job_names = pipelines_data.map do |pipeline_data|
+      job_names = pipelines_data.flat_map do |pipeline_data|
         jobs_data = pipeline_data.dig('jobs', 'nodes')
         jobs_data.map { |job_data| job_data['name'] }
-      end.flatten
+      end
 
       expect(job_names).to contain_exactly('SAST Job 1')
     end
@@ -490,7 +490,7 @@ RSpec.describe 'Query.project(fullPath).pipelines', feature_category: :continuou
     it_behaves_like 'a working graphql query'
 
     it 'returns the downstream pipelines of a pipeline' do
-      downstream_pipelines_graphql_data = pipelines_graphql_data.map { |pip| pip['downstream']['nodes'] }.flatten
+      downstream_pipelines_graphql_data = pipelines_graphql_data.flat_map { |pip| pip['downstream']['nodes'] }
 
       expect(
         downstream_pipelines_graphql_data.map { |pip| pip['iid'].to_i }

@@ -24,7 +24,9 @@ class TodosFinder
 
   NONE = '0'
 
-  TODO_TYPES = Set.new(%w[Commit Issue WorkItem MergeRequest DesignManagement::Design AlertManagement::Alert Namespace Project Key]).freeze
+  TODO_TYPES = Set.new(
+    %w[Commit Issue WorkItem MergeRequest DesignManagement::Design AlertManagement::Alert Namespace Project Key]
+  ).freeze
 
   attr_accessor :current_user, :params
 
@@ -134,7 +136,9 @@ class TodosFinder
   end
 
   def invalid_type_message
-    _("Unsupported todo type passed. Supported todo types are: %{todo_types}") % { todo_types: self.class.todo_types.to_a.join(', ') }
+    _("Unsupported todo type passed. Supported todo types are: %{todo_types}") % {
+      todo_types: self.class.todo_types.to_a.join(', ')
+    }
   end
 
   def sort(items)
