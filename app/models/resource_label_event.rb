@@ -88,7 +88,7 @@ class ResourceLabelEvent < ResourceEvent
     if local_label?
       label.to_reference(format: :id)
     elsif label.is_a?(GroupLabel)
-      label.to_reference(label.group, target_project: resource_parent, format: :id)
+      label.to_reference(label.group, target_container: resource_parent, format: :id)
     else
       label.to_reference(resource_parent, format: :id)
     end

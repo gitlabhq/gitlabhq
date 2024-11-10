@@ -1081,7 +1081,7 @@ class User < ApplicationRecord
     username
   end
 
-  def to_reference(_from = nil, target_project: nil, full: nil)
+  def to_reference(_from = nil, target_container: nil, full: nil)
     "#{self.class.reference_prefix}#{username}"
   end
 

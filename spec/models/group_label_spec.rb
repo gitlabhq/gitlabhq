@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GroupLabel do
+RSpec.describe GroupLabel, feature_category: :team_planning do
   describe 'relationships' do
     it { is_expected.to belong_to(:group) }
   end
@@ -45,8 +45,36 @@ RSpec.describe GroupLabel do
       let(:target_project) { build_stubbed(:project, namespace: namespace) }
 
       it 'returns a String reference to the object' do
-        expect(label.to_reference(source_project, target_project: target_project)).to(
+        expect(label.to_reference(source_project, target_container: target_project)).to(
           eq("#{source_project.path}~#{label.id}")
+        )
+      end
+    end
+
+    context 'cross groups reference' do
+      let(:parent_group) { build_stubbed(:group) }
+      let(:source_group) { build_stubbed(:group, parent: parent_group) }
+      let(:target_group) { build_stubbed(:group, parent: parent_group) }
+
+      it 'returns a String reference to the object' do
+        expect(label.to_reference(source_group, target_container: target_group)).to(
+          eq("#{source_group.full_path}~#{label.id}")
+        )
+      end
+    end
+
+    context 'cross group and project reference' do
+      let(:parent_group) { build_stubbed(:group) }
+      let(:source_group) { build_stubbed(:group, parent: parent_group) }
+      let(:target_project) { build_stubbed(:project, namespace: parent_group) }
+
+      it 'returns a full path label reference' do
+        expect(label.to_reference(source_group, target_container: target_project)).to(
+          eq("#{source_group.full_path}~#{label.id}")
+        )
+
+        expect(label.to_reference(target_project, target_container: source_group)).to(
+          eq("#{target_project.full_path}~#{label.id}")
         )
       end
     end
