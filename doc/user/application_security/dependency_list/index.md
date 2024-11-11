@@ -112,10 +112,24 @@ The dependency path is only displayed for dependencies that have vulnerabilities
 
 Dependency paths are supported for the following package managers:
 
-- [NuGet](https://www.nuget.org/)
-- [Yarn 1.x](https://classic.yarnpkg.com/lang/en/)
-- [sbt](https://www.scala-sbt.org)
 - [Conan](https://conan.io)
+- [Gradle](https://gradle.org/)&nbsp;<sup><strong><a href="#notes-regarding-dependency-path-support">1</a></strong></sup>
+- [Maven](https://maven.apache.org/)&nbsp;<sup><strong><a href="#notes-regarding-dependency-path-support">1</a></strong></sup>
+- [NPM](https://www.npmjs.com/)&nbsp;<sup><strong><a href="#notes-regarding-dependency-path-support">1</a></strong></sup>
+- [NuGet](https://www.nuget.org/)
+- [Pipenv](https://pipenv.pypa.io/en/latest/)&nbsp;<sup><strong><a href="#notes-regarding-dependency-path-support">1</a></strong></sup>
+- [pip-tools](https://pip-tools.readthedocs.io/en/latest/)&nbsp;<sup><strong><a href="#notes-regarding-dependency-path-support">1</a></strong></sup>
+- [pnpm](https://pnpm.io/)&nbsp;<sup><strong><a href="#notes-regarding-dependency-path-support">1</a></strong></sup>
+- [Poetry](https://python-poetry.org/)&nbsp;<sup><strong><a href="#notes-regarding-dependency-path-support">1</a></strong></sup>
+- [sbt](https://www.scala-sbt.org)
+- [Yarn 1.x](https://classic.yarnpkg.com/lang/en/)
+
+<ol>
+  <li>
+    <a id="notes-regarding-dependency-path-support"></a>
+    <p>Supported only when using the <a href="https://gitlab.com/components/dependency-scanning/-/tree/main/templates/main">`dependency-scanning` component</a>.</p>
+  </li>
+</ol>
 
 ### Licenses
 

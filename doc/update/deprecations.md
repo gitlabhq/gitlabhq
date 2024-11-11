@@ -178,22 +178,6 @@ If your pipeline relies on forwarding protected variables, update your configura
 
 </div>
 
-<div class="deprecation " data-milestone="18.0">
-
-### Block usage of ref and sha together in `GET /projects/:id/ci/lint`
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">16.8</span>
-- Removal in GitLab <span class="milestone">18.0</span>
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/430322).
-
-</div>
-
-We've deprecated the use of `ref` and `sha` in API calls to `GET /projects/:id/ci/lint` due to their ambiguity. Make sure your API calls to this endpoint use `content_ref` and `dry_run_ref` instead of `ref` and `sha`.
-
-</div>
-
 <div class="deprecation breaking-change" data-milestone="18.0">
 
 ### CodeClimate-based Code Quality scanning will be removed

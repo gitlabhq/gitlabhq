@@ -157,6 +157,19 @@ if you can't upgrade to 15.11.12 and later.
 
   For more information, see [issue 415724](https://gitlab.com/gitlab-org/gitlab/-/issues/415724).
 
+- A [bug with Terraform configuration](https://gitlab.com/gitlab-org/gitlab/-/issues/348453) caused Terraform state to
+  remain enabled even when `gitlab_rails['terraform_state_enabled']` was set to `false` in the `gitlab.rb` configuration
+  file. Because this bug was fixed in GitLab 15.10, upgrading to GitLab 15.10 could break projects that use the
+  [Terraform state](../../administration/terraform_state.md) feature if it's disabled in the `gitlab.rb` configuration.
+  If you have configured `gitlab_rails['terraform_state_enabled'] = false` in your `gitlab.rb`, check if any projects
+  are using the Terraform state feature. To check:
+  1. Read the [Rails console](../../administration/operations/rails_console.md) warning.
+  1. Start a [Rails console session](../../administration/operations/rails_console.md#starting-a-rails-console-session).
+  1. Run the command `Terraform::State.pluck(:project_id)`. This command returns an array of all projects IDs that have a
+     Terraform state.
+  1. Navigate to each project and work with stakeholders as necessary to determine if the Terraform state feature is
+     actively used. If Terraform state is no longer needed, you can follow the steps to [remove a state file](../../user/infrastructure/iac/terraform_state.md#remove-a-state-file).
+
 ### Geo installations
 
 DETAILS:

@@ -18,6 +18,8 @@ DETAILS:
 > - Standards adherence grouping [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/413735) in GitLab 16.9.
 > - Standards adherence grouping by standards that a check belongs to and grouping by projects that a check belongs to [added](https://gitlab.com/gitlab-org/gitlab/-/issues/413735) in GitLab 16.10.
 > - **Last Scanned** column [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/439545) to **Date since last status change** in GitLab 16.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440721) DAST scanner check to GitLab Standard in GitLab 17.6 [with a flag](../../../administration/feature_flags.md) named `enable_adherence_check_for_scanners`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440722) SAST scanner check to GitLab Standard in GitLab 17.6 [with a flag](../../../administration/feature_flags.md) named `enable_adherence_check_for_scanners`. Disabled by default.
 
 The compliance standards adherence dashboard lists the adherence status of projects complying to the _GitLab standard_.
 
@@ -54,6 +56,8 @@ The GitLab standard consists of three rules:
 - Prevent authors as approvers.
 - Prevent committers as approvers.
 - At least two approvals.
+- Static Application Security Testing (SAST) scanner artifact.
+- Dynamic Application Security Testing (DAST) scanner artifact.
 
 ### Prevent authors as approvers
 
@@ -77,6 +81,16 @@ To update the adherence status for these projects, the group-level or the projec
 
 To comply with the GitLab standard, you must have at least two users approve a merge request to get it merged. For more
 information, see [Merge request approval rules](../../project/merge_requests/approvals/rules.md).
+
+### SAST scanner artifact
+
+To comply with the GitLab standard, you must have the SAST scanner enabled, configured, and producing an artifact in the project's pipeline. For more
+information, see [Static Application Security Testing (SAST)](../../application_security/sast/index.md).
+
+### DAST scanner artifact
+
+To comply with the GitLab standard, you must have the DAST scanner enabled, configured, and producing an artifact in the project's pipeline. For more
+information, see [DAST on-demand scan](../../application_security/dast/on-demand_scan.md).
 
 ## SOC 2 standard
 
