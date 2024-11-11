@@ -80,7 +80,7 @@ module QA
             @output += repository.checkout(branch_name, new_branch: new_branch)
 
             if @tag_name
-              @output += repository.delete_tag(@tag_name)
+              @output += repository.delete_tag(@tag_name, max_attempts: @max_attempts)
             else
               if @directory
                 @directory.each_child do |f|

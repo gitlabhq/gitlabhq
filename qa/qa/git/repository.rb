@@ -110,8 +110,8 @@ module QA
         run_git("git tag #{tag_name}").to_s
       end
 
-      def delete_tag(tag_name)
-        run_git(%(git push origin --delete #{tag_name}), max_attempts: 3).to_s
+      def delete_tag(tag_name, max_attempts: 3)
+        run_git(%(git push origin --delete #{tag_name}), max_attempts: max_attempts).to_s
       end
 
       def commit(message)
