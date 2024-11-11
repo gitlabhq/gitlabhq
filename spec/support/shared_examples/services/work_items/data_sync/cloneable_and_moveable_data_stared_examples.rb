@@ -58,9 +58,8 @@ RSpec.shared_examples 'cloneable and moveable widget data' do
     work_item.reload.award_emoji.pluck(:user_id, :name)
   end
 
-  where(:widget_name, :eval_value, :expected_data, :operations) do
-    :assignees   | :work_item_assignees   | ref(:assignees)     | [ref(:move), ref(:clone)]
-    :award_emoji | :work_item_award_emoji | ref(:award_emojis)  | [ref(:move)]
+  def work_item_emails(work_item)
+    work_item.reload.email_participants.pluck(:email)
   end
 
   let(:move) { WorkItems::DataSync::MoveService }
@@ -70,12 +69,25 @@ RSpec.shared_examples 'cloneable and moveable widget data' do
   let_it_be(:milestone) { create(:milestone) }
   let_it_be(:thumbs_ups) { create_list(:award_emoji, 2, name: 'thumbsup', awardable: original_work_item) }
   let_it_be(:thumbs_downs) { create_list(:award_emoji, 2, name: 'thumbsdown', awardable: original_work_item) }
+  let_it_be(:participant2) { create(:issue_email_participant, issue: original_work_item, email: 'user2@example.com') }
   let_it_be(:award_emojis) { original_work_item.reload.award_emoji.pluck(:user_id, :name) }
+
+  let_it_be(:emails) do
+    create_list(:issue_email_participant, 2, issue: original_work_item)
+    # create email participants on original work item and return emails as `expected_data` for later comparison.
+    original_work_item.reload.email_participants.map(&:email)
+  end
 
   let_it_be(:assignees) do
     original_work_item.assignee_ids = users.map(&:id)
     # set assignees and return assigned users as `expected_data` for later comparison.
     users
+  end
+
+  where(:widget_name, :eval_value, :expected_data, :operations) do
+    :assignees          | :work_item_assignees   | ref(:assignees)    | [ref(:move), ref(:clone)]
+    :award_emoji        | :work_item_award_emoji | ref(:award_emojis) | [ref(:move)]
+    :email_participants | :work_item_emails      | ref(:emails)       | [ref(:move)]
   end
 
   with_them do

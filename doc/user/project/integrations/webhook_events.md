@@ -20,15 +20,15 @@ Event type                                   | Trigger
 ---------------------------------------------|-----------------------------------------------------------------------------
 [Push event](#push-events)                   | A push is made to the repository.
 [Tag event](#tag-events)                     | Tags are created or deleted in the repository.
-[Issue event](#issue-events)                 | A new issue is created or an existing issue is updated, closed, or reopened.
+[Work item event](#work-item-events)         | A new work item is created or an existing one is edited, closed, or reopened.
 [Comment event](#comment-events)             | A new comment is made or edited on commits, merge requests, issues, and code snippets. <sup>1</sup>
-[Merge request event](#merge-request-events) | A merge request is created, updated, merged, or closed, or a commit is added in the source branch.
-[Wiki page event](#wiki-page-events)         | A wiki page is created, updated, or deleted.
+[Merge request event](#merge-request-events) | A merge request is created, edited, merged, or closed, or a commit is added in the source branch.
+[Wiki page event](#wiki-page-events)         | A wiki page is created, edited, or deleted.
 [Pipeline event](#pipeline-events)           | A pipeline status changes.
 [Job event](#job-events)                     | A job status changes.
 [Deployment event](#deployment-events)       | A deployment starts, succeeds, fails, or is canceled.
 [Feature flag event](#feature-flag-events)   | A feature flag is turned on or off.
-[Release event](#release-events)             | A release is created, updated, or deleted.
+[Release event](#release-events)             | A release is created, edited, or deleted.
 [Emoji event](#emoji-events)                 | An emoji reaction is added or removed.
 [Project or group access token event](#project-and-group-access-token-events) | A project or group access token will expire in seven days.
 
@@ -207,13 +207,16 @@ Payload example:
 }
 ```
 
-## Issue events
+## Work item events
 
 > - `type` attribute in `object_attributes` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467415) in GitLab 17.2.
+> - Support for epics [introduced](https://gitlab.com/groups/gitlab-org/-/epics/13056) in GitLab 17.3. Your administrator must have [enabled the new look for epics](../../group/epics/epic_work_items.md).
 
-Issue events are triggered when an issue or work item is created, updated, closed, or reopened.
+Work item events are triggered when a work item is created, edited, closed, or reopened.
 The supported work item types are:
 
+- [Epics](../../group/epics/index.md)
+- [Issue](../../project/issues/index.md)
 - [Tasks](../../tasks.md)
 - [Incidents](../../../operations/incident_management/incidents.md)
 - [Test cases](../../../ci/test_cases/index.md)
@@ -222,6 +225,8 @@ The supported work item types are:
 
 For issues and [Service Desk](../service_desk/index.md) issues, the `object_kind` is `issue`, and the `type` is `Issue`.
 For all other work items, the `object_kind` field is `work_item`, and the `type` is the work item type.
+
+For work item type `Epic`, to get events for changes, the webhook must be registered for the group.
 
 The available values for `object_attributes.action` in the payload are:
 

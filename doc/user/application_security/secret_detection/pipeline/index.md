@@ -843,7 +843,7 @@ Prerequisites:
    [local Docker container registry](../../../packages/container_registry/index.md):
 
    ```plaintext
-   registry.gitlab.com/security-products/secrets:4
+   registry.gitlab.com/security-products/secrets:6
    ```
 
    The pipeline secret detection analyzer's image is [periodically updated](../../index.md#vulnerability-scanner-maintenance)

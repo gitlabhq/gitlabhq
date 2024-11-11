@@ -110,8 +110,8 @@ The following events are supported for integrations:
 | Alert event                                                                                    |         | `alert`              | A a new, unique alert is recorded. |
 | Commit event                                                                                   | ✓       | `commit`             | A commit is created or updated. |
 | [Deployment event](../../user/project/integrations/webhook_events.md#deployment-events)        |         | `deployment`         | A deployment starts or finishes. |
-| [Issue event](../../user/project/integrations/webhook_events.md#issue-events)                  | ✓       | `issue`              | An issue is created, updated, or closed. |
-| [Confidential issue event](../../user/project/integrations/webhook_events.md#issue-events)     | ✓       | `confidential_issue` | A confidential issue is created, updated, or closed. |
+| [Work item event](../../user/project/integrations/webhook_events.md#work-item-events)          | ✓       | `issue`              | An issue is created, updated, or closed. |
+| [Confidential issue event](../../user/project/integrations/webhook_events.md#work-item-events) | ✓       | `confidential_issue` | A confidential issue is created, updated, or closed. |
 | [Job event](../../user/project/integrations/webhook_events.md#job-events)                      |         | `job` | |
 | [Merge request event](../../user/project/integrations/webhook_events.md#merge-request-events)  | ✓       | `merge_request`      | A merge request is created, updated, or merged. |
 | [Comment event](../../user/project/integrations/webhook_events.md#comment-events)              |         | `comment`            | A new comment is added. |
