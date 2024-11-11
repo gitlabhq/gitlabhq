@@ -43,6 +43,7 @@ To determine your upgrade path:
      - [`16.11.z`](https://gitlab.com/gitlab-org/gitlab/-/releases). The latest GitLab 16.11 release.
    - GitLab 17 includes the following required upgrade stops:
      - [`17.3.z`](versions/gitlab_17_changes.md#1730). The latest GitLab 17.3 release.
+     - [`17.5.z`](versions/gitlab_17_changes.md#1750). The latest GitLab 17.5 release.
      - [`17.y.z`](versions/gitlab_17_changes.md). The latest GitLab 17 release.
 
 1. Consult the version-specific upgrade instructions:

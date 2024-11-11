@@ -51,7 +51,7 @@ module Gitlab
         end
 
         def known_event?(event_name)
-          event_for(event_name).present?
+          known_events.include?(event_name.to_s)
         end
 
         def known_events
@@ -65,14 +65,14 @@ module Gitlab
         private
 
         def track(values, event_name, property_name:, time: Time.zone.now)
-          event = event_for(event_name)
-          Gitlab::ErrorTracking.track_and_raise_for_dev_exception(UnknownEvent.new("Unknown event #{event_name}")) unless event.present?
+          unless known_event?(event_name)
+            Gitlab::ErrorTracking.track_and_raise_for_dev_exception(UnknownEvent.new("Unknown event #{event_name}"))
+            return
+          end
 
-          return if event.blank?
           return unless Feature.enabled?(:redis_hll_tracking, type: :ops)
 
-          Gitlab::Redis::HLL.add(key: redis_key(event_with_property_name(event, property_name), time, false), value: values, expiry: KEY_EXPIRY_LENGTH)
-
+          Gitlab::Redis::HLL.add(key: redis_key(event_with_property_name(event_name, property_name), time, false), value: values, expiry: KEY_EXPIRY_LENGTH)
         rescue StandardError => e
           # Ignore any exceptions unless is dev or test env
           # The application flow should not be blocked by errors in tracking
@@ -90,36 +90,34 @@ module Gitlab
         end
 
         def events_with_property_names(event_names, property_name)
-          event_names = Array(event_names).map(&:to_s)
-          known_events.filter_map do |event|
-            next unless event_names.include?(event[:name])
+          Array(event_names).filter_map do |event_name|
+            next unless known_event?(event_name)
 
-            property_name ? event_with_property_name(event, property_name) : event
+            event_with_property_name(event_name, property_name)
           end
         end
 
-        def event_with_property_name(event, property_name)
-          event.merge(property_name: property_name)
+        def event_with_property_name(event_name, property_name)
+          if property_name
+            {
+              name: event_name.to_s,
+              property_name: property_name
+            }
+          else
+            { name: event_name.to_s }
+          end
         end
 
         def load_events
-          events = Gitlab::Usage::MetricDefinition.all.map do |d|
+          events_set = Set.new
+
+          Gitlab::Usage::MetricDefinition.all.each do |d| # rubocop:disable Rails/FindEach -- not an ActiveRecord::Relation
             next unless d.available?
 
-            d.events.keys
-          end.flatten.compact.uniq
-
-          events.map do |e|
-            { name: e }.with_indifferent_access
+            events_set.merge(d.events.keys)
           end
-        end
 
-        def known_events_names
-          @known_events_names ||= known_events.map { |event| event[:name] }
-        end
-
-        def event_for(event_name)
-          known_events.find { |event| event[:name] == event_name.to_s }
+          events_set
         end
 
         def redis_key(event, time, used_in_aggregate_metric)
@@ -145,7 +143,7 @@ module Gitlab
         end
 
         def validate!(event_name, property_name, used_in_aggregate_metric)
-          raise UnknownEvent, "Unknown event #{event_name}" unless known_events_names.include?(event_name.to_s)
+          raise UnknownEvent, "Unknown event #{event_name}" unless known_events.include?(event_name.to_s)
 
           return if used_in_aggregate_metric
 

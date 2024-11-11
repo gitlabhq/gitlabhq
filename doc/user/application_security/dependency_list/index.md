@@ -26,7 +26,7 @@ For an overview, see [Project Dependency](https://www.youtube.com/watch?v=ckqkn9
 
 To list your project's dependencies the SBOM document must:
 
-- Comply with [the CycloneDX specification](https://github.com/CycloneDX/specification) version `1.4` or `1.5`. Online validator available on [CycloneDX Web Tool](https://cyclonedx.github.io/cyclonedx-web-tool/validate).
+- Comply with [the CycloneDX specification](https://github.com/CycloneDX/specification) version `1.4`, `1.5`, or `1.6`. Online validator available on [CycloneDX Web Tool](https://cyclonedx.github.io/cyclonedx-web-tool/validate).
 - Be uploaded as [a CI/CD artifact report](../../../ci/yaml/artifacts_reports.md#artifactsreportscyclonedx) from a successful pipeline on the default branch.
 
 NOTE:
