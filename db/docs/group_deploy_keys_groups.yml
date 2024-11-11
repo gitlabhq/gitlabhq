@@ -8,7 +8,4 @@ description: https://docs.gitlab.com/ee/user/project/deploy_keys/
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/32901
 milestone: '13.2'
 gitlab_schema: gitlab_main_cell
-allow_cross_foreign_keys:
-- gitlab_main_clusterwide
-sharding_key:
-  group_id: namespaces
+exempt_from_sharding: true # Table is empty and will be removed - https://gitlab.com/gitlab-org/gitlab/-/issues/408933

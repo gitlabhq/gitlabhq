@@ -8,6 +8,7 @@ import {
   TRACKING_UNKNOWN_PANEL,
 } from '~/super_sidebar/constants';
 import eventHub from '../event_hub';
+import { formatAsyncCount } from '../utils';
 import NavItemLink from './nav_item_link.vue';
 import NavItemRouterLink from './nav_item_router_link.vue';
 
@@ -65,6 +66,11 @@ export default {
       required: false,
       default: false,
     },
+    asyncCount: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
   },
   data() {
     return {
@@ -74,6 +80,9 @@ export default {
   },
   computed: {
     pillData() {
+      if (this.item.pill_count_field) {
+        return formatAsyncCount(this.asyncCount[this.item.pill_count_field]);
+      }
       return this.item.pill_count;
     },
     hasPill() {
@@ -206,7 +215,7 @@ export default {
     updatePillValue({ value, itemId }) {
       if (this.item.id === itemId) {
         // https://gitlab.com/gitlab-org/gitlab/-/issues/428246
-        // fixing this linting issue is causing the pills not to async update
+        // fixing this linting issue is causing the pills not to async update for learn gitlab nav item
         //
         // eslint-disable-next-line vue/no-mutating-props
         this.item.pill_count = value;

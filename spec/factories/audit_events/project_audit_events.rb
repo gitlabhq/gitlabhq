@@ -23,5 +23,21 @@ FactoryBot.define do
         entity_path: target_project.full_path
       }
     end
+
+    trait :unauthenticated do
+      author_id { -1 }
+      author_name { 'An unauthenticated user' }
+      details do
+        {
+          custom_message: 'Custom action',
+          author_name: 'An unauthenticated user',
+          target_id: target_project.id,
+          target_type: 'Project',
+          target_details: target_project.name,
+          ip_address: '127.0.0.1',
+          entity_path: target_project.full_path
+        }
+      end
+    end
   end
 end

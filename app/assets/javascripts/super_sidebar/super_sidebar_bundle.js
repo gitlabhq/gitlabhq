@@ -57,6 +57,7 @@ export const getSuperSidebarData = () => {
   const searchData = convertObjectPropsToCamelCase(sidebarData.search);
   const { searchPath, issuesPath, mrPath, autocompletePath, settingsPath, searchContext } =
     searchData;
+  const currentPath = sidebarData?.current_context?.item?.fullPath;
   const projectsPath = sidebarData.projects_path;
   const groupsPath = sidebarData.groups_path;
   const commandPaletteData = JSON.parse(commandPalette);
@@ -71,6 +72,7 @@ export const getSuperSidebarData = () => {
   return {
     el,
     rootPath,
+    currentPath,
     forceDesktopExpandedSidebar,
     isSaas,
     sidebarData,
@@ -95,6 +97,7 @@ export const getSuperSidebarData = () => {
 export const initSuperSidebar = ({
   el,
   rootPath,
+  currentPath,
   forceDesktopExpandedSidebar,
   isSaas,
   sidebarData,
@@ -125,6 +128,7 @@ export const initSuperSidebar = ({
     apolloProvider,
     provide: {
       rootPath,
+      currentPath,
       isImpersonating,
       ...getTrialStatusWidgetData(sidebarData),
       commandPaletteCommands,

@@ -1,0 +1,9 @@
+---
+name: read_audit_events_from_new_tables
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/454177
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167430
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/493723
+milestone: '17.6'
+group: group::compliance
+type: gitlab_com_derisk
+default_enabled: false

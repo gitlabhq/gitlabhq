@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Git::WikiPushService, services: true, feature_category: :wiki do
+RSpec.describe Git::WikiPushService, :services, feature_category: :wiki do
   include RepoHelpers
 
   let_it_be(:current_user) { create(:user) }

@@ -158,7 +158,7 @@ export default {
       <gl-collapsible-listbox
         v-model="currentSelectedReviewers"
         :toggle-text="__('Edit')"
-        toggle-class="!gl-text-primary"
+        toggle-class="!gl-text-primary edit-link"
         :header-text="$options.i18n.selectReviewer"
         :reset-button-label="$options.i18n.unassign"
         category="tertiary"

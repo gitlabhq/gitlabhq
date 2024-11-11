@@ -166,7 +166,6 @@ ee/spec/frontend/vulnerabilities/generic_report/types/list_graphql_spec.js
 ee/spec/frontend/vulnerabilities/related_issues_spec.js
 ee/spec/frontend/vulnerabilities/vulnerability_file_content_viewer_spec.js
 ee/spec/frontend/vulnerabilities/vulnerability_file_contents_spec.js
-ee/spec/frontend/workspaces/common/components/workspaces_list/workspaces_table_spec.js
 spec/frontend/__helpers__/vue_test_utils_helper_spec.js
 spec/frontend/access_tokens/index_spec.js
 spec/frontend/add_context_commits_modal/components/add_context_commits_modal_spec.js

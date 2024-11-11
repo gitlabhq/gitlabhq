@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe IncidentManagement::TimelineEventPolicy, models: true do
+RSpec.describe IncidentManagement::TimelineEventPolicy, :models do
   let_it_be(:project) { create(:project) }
   let_it_be(:reporter) { create(:user, reporter_of: project) }
   let_it_be(:developer) { create(:user, developer_of: project) }

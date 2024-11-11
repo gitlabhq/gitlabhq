@@ -95,7 +95,7 @@ RSpec.configure do |config|
   end
 
   # Add :full_backtrace tag to an example if full_backtrace output is desired
-  config.before(:each, full_backtrace: true) do |example|
+  config.before(:each, :full_backtrace) do |example|
     config.full_backtrace = true
   end
 
@@ -335,9 +335,6 @@ RSpec.configure do |config|
 
       # Keep-around refs should only be turned off for specific projects/repositories.
       stub_feature_flags(disable_keep_around_refs: false)
-
-      # Work in progress reviewer sidebar that does not have most of the features yet
-      stub_feature_flags(reviewer_assign_drawer: false)
 
       # Disable suspending ClickHouse data ingestion workers
       stub_feature_flags(suspend_click_house_data_ingestion: false)

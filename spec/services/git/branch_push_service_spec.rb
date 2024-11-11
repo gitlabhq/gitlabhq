@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Git::BranchPushService, :use_clean_rails_redis_caching, services: true, feature_category: :source_code_management do
+RSpec.describe Git::BranchPushService, :use_clean_rails_redis_caching, :services, feature_category: :source_code_management do
   include RepoHelpers
 
   let_it_be(:user) { create(:user) }

@@ -44,6 +44,11 @@ export default {
       required: false,
       default: false,
     },
+    asyncCount: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
   },
   data() {
     return {
@@ -122,6 +127,7 @@ export default {
         v-for="item of draggableItems"
         :key="item.id"
         :item="item"
+        :async-count="asyncCount"
         is-in-pinned-section
         @pin-remove="onPinRemove(item.id, item.title)"
         @nav-link-click="writePinnedClick"

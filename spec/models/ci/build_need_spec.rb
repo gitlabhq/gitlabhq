@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::BuildNeed, model: true, feature_category: :continuous_integration do
+RSpec.describe Ci::BuildNeed, :model, feature_category: :continuous_integration do
   let(:build_need) { build(:ci_build_need) }
 
   it { is_expected.to belong_to(:build).class_name('Ci::Processable') }

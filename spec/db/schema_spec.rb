@@ -242,7 +242,7 @@ RSpec.describe 'Database schema',
       ai_testing_terms_acceptances: %w[user_id], # testing terms only have 1 entry, and if the user is deleted the record should remain
       namespace_settings: %w[early_access_program_joined_by_id], # isn't used inside product itself. Only through Snowflake
       workspaces_agent_config_versions: %w[item_id], # polymorphic associations
-      work_item_types: %w[correct_id], # temporary column that is not a foreign key
+      work_item_types: %w[correct_id old_id], # temporary columns that are not foreign keys
       instance_integrations: %w[project_id group_id inherit_from_id], # these columns are not used in instance integrations
       group_scim_identities: %w[temp_source_id], # temporary column that is not a foreign key
       group_scim_auth_access_tokens: %w[temp_source_id], # temporary column that is not a foreign key

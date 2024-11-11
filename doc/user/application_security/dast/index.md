@@ -31,8 +31,8 @@ are in production. DAST is a foundational component of software security and sho
 tandem with SAST, dependency and license scanning, and secret detection, to provide a comprehensive
 security assessment of your applications.
 
-GitLab’s Browser-based DAST and DAST API are proprietary runtime tools, which provide broad security
-coverage for modern-day web applications and APIs.
+GitLab browser-based DAST and API security testing are proprietary runtime tools which provide
+broad security coverage for modern-day web applications and APIs.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview, see [Dynamic Application Security Testing (DAST)](https://www.youtube.com/watch?v=nbeDUoLZJTo).

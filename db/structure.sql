@@ -21827,6 +21827,7 @@ CREATE TABLE work_item_types (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     correct_id bigint DEFAULT 0 NOT NULL,
+    old_id bigint,
     CONSTRAINT check_104d2410f6 CHECK ((char_length(name) <= 255)),
     CONSTRAINT check_fecb3a98d1 CHECK ((char_length(icon_name) <= 255))
 );

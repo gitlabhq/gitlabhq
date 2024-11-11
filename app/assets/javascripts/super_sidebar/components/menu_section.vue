@@ -38,6 +38,11 @@ export default {
       required: false,
       default: false,
     },
+    asyncCount: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
   },
   data() {
     return {
@@ -149,6 +154,7 @@ export default {
       v-if="hasFlyout && isMouseOver && !isExpanded && !keepFlyoutClosed && item.items.length > 0"
       :target-id="`menu-section-button-${itemId}`"
       :items="item.items"
+      :async-count="asyncCount"
       @mouseover="isMouseOverFlyout = true"
       @mouseleave="isMouseOverFlyout = false"
       @pin-add="(itemId, itemTitle) => $emit('pin-add', itemId, itemTitle)"
@@ -169,6 +175,7 @@ export default {
             v-for="subItem of item.items"
             :key="`${item.title}-${subItem.title}`"
             :item="subItem"
+            :async-count="asyncCount"
             @pin-add="(itemId, itemTitle) => $emit('pin-add', itemId, itemTitle)"
             @pin-remove="(itemId, itemTitle) => $emit('pin-remove', itemId, itemTitle)"
           />

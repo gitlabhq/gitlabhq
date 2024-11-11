@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Auth::OAuth::AuthHash, aggregate_failures: true, feature_category: :user_management do
+RSpec.describe Gitlab::Auth::OAuth::AuthHash, :aggregate_failures, feature_category: :user_management do
   let(:provider) { 'openid_connect' }
   let(:auth_hash) do
     described_class.new(

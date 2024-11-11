@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::MigrationHelpers::RestrictGitlabSchema, query_analyzers: false,
-  stub_feature_flags: false, use_clean_rails_redis_caching: true, feature_category: :cell do
+RSpec.describe Gitlab::Database::MigrationHelpers::RestrictGitlabSchema, :use_clean_rails_redis_caching, query_analyzers: false,
+  stub_feature_flags: false, feature_category: :cell do
   let(:schema_class) { Class.new(Gitlab::Database::Migration[1.0]).include(described_class) }
 
   # We keep only the GitlabSchemasValidateConnection analyzer running

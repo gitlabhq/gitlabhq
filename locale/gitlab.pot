@@ -19511,9 +19511,6 @@ msgstr ""
 msgid "Development widget is not enabled for this work item type"
 msgstr ""
 
-msgid "Devfile"
-msgstr ""
-
 msgid "Device name"
 msgstr ""
 
@@ -63178,6 +63175,9 @@ msgstr ""
 msgid "Workspaces|Create workspace"
 msgstr ""
 
+msgid "Workspaces|Created"
+msgstr ""
+
 msgid "Workspaces|Creating"
 msgstr ""
 
@@ -63232,6 +63232,9 @@ msgstr ""
 msgid "Workspaces|No terminated workspaces"
 msgstr ""
 
+msgid "Workspaces|Open workspace"
+msgstr ""
+
 msgid "Workspaces|Path to devfile"
 msgstr ""
 
@@ -63241,9 +63244,6 @@ msgstr ""
 msgid "Workspaces|Restart"
 msgstr ""
 
-msgid "Workspaces|Restarting"
-msgstr ""
-
 msgid "Workspaces|Running"
 msgstr ""
 
@@ -63251,6 +63251,9 @@ msgid "Workspaces|Start"
 msgstr ""
 
 msgid "Workspaces|Starting"
+msgstr ""
+
+msgid "Workspaces|Starting workspace"
 msgstr ""
 
 msgid "Workspaces|Stop"
@@ -63308,6 +63311,9 @@ msgid "Workspaces|Workspaces"
 msgstr ""
 
 msgid "Workspaces|Workspaces Settings"
+msgstr ""
+
+msgid "Workspaces|You can open the workspace only once it is ready."
 msgstr ""
 
 msgid "Workspaces|You can't create a workspace for this project"
