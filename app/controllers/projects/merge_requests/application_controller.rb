@@ -65,6 +65,7 @@ class Projects::MergeRequests::ApplicationController < Projects::ApplicationCont
       :title,
       :discussion_locked,
       :issue_iid,
+      :merge_after,
       { label_ids: [],
         assignee_ids: [],
         reviewer_ids: [],

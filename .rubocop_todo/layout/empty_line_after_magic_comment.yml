@@ -7,7 +7,6 @@ Layout/EmptyLineAfterMagicComment:
     - 'app/finders/ci/auth_job_finder.rb'
     - 'app/finders/clusters/knative_services_finder.rb'
     - 'app/finders/keys_finder.rb'
-    - 'app/finders/packages/npm/package_finder.rb'
     - 'app/finders/packages/package_file_finder.rb'
     - 'app/finders/packages/package_finder.rb'
     - 'app/finders/packages/tags_finder.rb'

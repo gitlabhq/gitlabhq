@@ -42,6 +42,15 @@
 
       = render_if_exists "shared/issuable/form/merge_request_blocks", issuable: issuable, form: form
 
+      - if issuable.is_a?(MergeRequest)
+        .row
+          = form.label :merge_after, s_('MergeRequests|Merge can start'), class: 'col-12'
+          .js-merge-request-schedule-input{ data: {
+            merge_after: issuable.merge_schedule&.merge_after&.strftime('%Y-%m-%dT%H:%MZ'),
+            param_key: issuable.class.model_name.param_key
+          } }
+          %p.gl-text-gray-500.col-12= s_('MergeRequests|Requires that merge checks pass.')
+
     - if has_due_date
       .col-lg-6
         = render_if_exists "shared/issuable/form/weight", issuable: issuable, form: form

@@ -1,4 +1,4 @@
-import { GlToggle, GlLink, GlIcon, GlPopover, GlButton } from '@gitlab/ui';
+import { GlCard, GlToggle, GlLink, GlIcon, GlPopover, GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import Vue from 'vue';
@@ -60,6 +60,9 @@ describe('PreReceiveSecretDetectionFeatureCard component', () => {
           ...provide,
         },
         apolloProvider,
+        stubs: {
+          GlCard,
+        },
       }),
     );
   };
@@ -85,7 +88,7 @@ describe('PreReceiveSecretDetectionFeatureCard component', () => {
 
   it('shows the help link', () => {
     const link = findLink();
-    expect(link.text()).toBe('Learn more');
+    expect(link.text()).toBe('Learn more.');
     expect(link.attributes('href')).toBe(feature.helpPath);
   });
 

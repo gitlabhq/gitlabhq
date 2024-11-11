@@ -4,7 +4,7 @@ import ThResizable from '~/glql/components/common/th_resizable.vue';
 import IssuablePresenter from '~/glql/components/presenters/issuable.vue';
 import StatePresenter from '~/glql/components/presenters/state.vue';
 import TablePresenter from '~/glql/components/presenters/table.vue';
-import TextPresenter from '~/glql/components/presenters/text.vue';
+import HtmlPresenter from '~/glql/components/presenters/html.vue';
 import UserPresenter from '~/glql/components/presenters/user.vue';
 import Presenter from '~/glql/core/presenter';
 import { MOCK_FIELDS, MOCK_ISSUES } from '../../mock_data';
@@ -45,8 +45,8 @@ describe('TablePresenter', () => {
     const userPresenter2 = tableRow2.findComponent(UserPresenter);
     const statePresenter1 = tableRow1.findComponent(StatePresenter);
     const statePresenter2 = tableRow2.findComponent(StatePresenter);
-    const textPresenter1 = tableRow1.findComponent(TextPresenter);
-    const textPresenter2 = tableRow2.findComponent(TextPresenter);
+    const htmlPresenter1 = tableRow1.findComponent(HtmlPresenter);
+    const htmlPresenter2 = tableRow2.findComponent(HtmlPresenter);
 
     expect(issuePresenter1.props('data')).toBe(MOCK_ISSUES.nodes[0]);
     expect(issuePresenter2.props('data')).toBe(MOCK_ISSUES.nodes[1]);
@@ -54,8 +54,8 @@ describe('TablePresenter', () => {
     expect(userPresenter2.props('data')).toBe(MOCK_ISSUES.nodes[1].author);
     expect(statePresenter1.props('data')).toBe(MOCK_ISSUES.nodes[0].state);
     expect(statePresenter2.props('data')).toBe(MOCK_ISSUES.nodes[1].state);
-    expect(textPresenter1.props('data')).toBe(MOCK_ISSUES.nodes[0].description);
-    expect(textPresenter2.props('data')).toBe(MOCK_ISSUES.nodes[1].description);
+    expect(htmlPresenter1.props('data')).toBe(MOCK_ISSUES.nodes[0].description);
+    expect(htmlPresenter2.props('data')).toBe(MOCK_ISSUES.nodes[1].description);
 
     expect(getCells(tableRow1)).toEqual([
       'Issue 1 (#1)',

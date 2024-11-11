@@ -46,7 +46,7 @@ export default {
       return this.suggestion.state === STATUS_CLOSED;
     },
     stateIconClass() {
-      return this.isClosed ? 'gl-text-blue-500' : 'gl-text-green-500';
+      return this.isClosed ? 'gl-fill-icon-info' : 'gl-fill-icon-success';
     },
     stateIconName() {
       return this.isClosed ? 'issue-close' : 'issue-open-m';

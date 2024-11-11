@@ -450,4 +450,3 @@ spec/frontend/vue_shared/issuable/sidebar/components/issuable_sidebar_root_spec.
 spec/frontend/webhooks/components/form_url_app_spec.js
 spec/frontend/work_items/components/design_management/design_preview/design_overlay_spec.js
 spec/frontend/work_items/components/work_item_description_rendered_spec.js
-spec/frontend/work_items/router_spec.js

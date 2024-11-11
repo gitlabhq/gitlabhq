@@ -8,6 +8,7 @@ import LinkPresenter from '../components/presenters/link.vue';
 import ListPresenter from '../components/presenters/list.vue';
 import MilestonePresenter from '../components/presenters/milestone.vue';
 import NullPresenter from '../components/presenters/null.vue';
+import HtmlPresenter from '../components/presenters/html.vue';
 import StatePresenter from '../components/presenters/state.vue';
 import TablePresenter from '../components/presenters/table.vue';
 import TextPresenter from '../components/presenters/text.vue';
@@ -26,6 +27,8 @@ const presentersByObjectType = {
 const presentersByFieldName = {
   healthStatus: HealthPresenter,
   state: StatePresenter,
+  description: HtmlPresenter,
+  descriptionHtml: HtmlPresenter,
 };
 
 const presentersByDisplayType = {

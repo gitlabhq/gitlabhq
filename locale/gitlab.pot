@@ -39,9 +39,6 @@ msgstr ""
 msgid " Try to %{action} this file again."
 msgstr ""
 
-msgid " You need to do this before %{grace_period_deadline}."
-msgstr ""
-
 msgid " and "
 msgstr ""
 
@@ -5031,6 +5028,9 @@ msgstr ""
 msgid "After it is removed, the fork relationship can only be restored by using the API. This project will no longer be able to receive or send merge requests to the upstream project or other forks."
 msgstr ""
 
+msgid "After scheduled date"
+msgstr ""
+
 msgid "After the export is complete, download the data file from a notification email or from this page. You can then import the data file from the %{strong_text_start}Create new group%{strong_text_end} page of another GitLab instance."
 msgstr ""
 
@@ -6649,6 +6649,9 @@ msgid "Any milestone"
 msgstr ""
 
 msgid "Any user who is added or requests access in excess of the user cap must be approved by an administrator"
+msgstr ""
+
+msgid "Anytime"
 msgstr ""
 
 msgid "App ID"
@@ -10884,6 +10887,9 @@ msgstr ""
 msgid "Cannot merge"
 msgstr ""
 
+msgid "Cannot merge until this date and time."
+msgstr ""
+
 msgid "Cannot modify %{profile_name} referenced in scan"
 msgstr ""
 
@@ -14786,6 +14792,9 @@ msgid "Configure custom rules for Jira issue key matching"
 msgstr ""
 
 msgid "Configure import sources and settings related to import and export features."
+msgstr ""
+
+msgid "Configure it later"
 msgstr ""
 
 msgid "Configure pipeline"
@@ -34213,6 +34222,9 @@ msgstr ""
 msgid "MergeRequests|Mark as draft"
 msgstr ""
 
+msgid "MergeRequests|Merge can start"
+msgstr ""
+
 msgid "MergeRequests|Merge request cherry-pick failed"
 msgstr ""
 
@@ -34220,6 +34232,9 @@ msgid "MergeRequests|Merge request revert failed"
 msgstr ""
 
 msgid "MergeRequests|Reference copied"
+msgstr ""
+
+msgid "MergeRequests|Requires that merge checks pass."
 msgstr ""
 
 msgid "MergeRequests|Squashing failed: Squash the commits locally, resolve any conflicts, then push the branch."
@@ -64023,6 +64038,9 @@ msgstr ""
 msgid "You need permission."
 msgstr ""
 
+msgid "You need to do this before %{grace_period_deadline}."
+msgstr ""
+
 msgid "You need to set terms to be enforced"
 msgstr ""
 
@@ -66058,6 +66076,9 @@ msgid "mrWidget|Can't bypass"
 msgstr ""
 
 msgid "mrWidget|Cancel auto-merge"
+msgstr ""
+
+msgid "mrWidget|Cannot merge until %{mergeAfter}"
 msgstr ""
 
 msgid "mrWidget|Checking if merge request can be merged…"

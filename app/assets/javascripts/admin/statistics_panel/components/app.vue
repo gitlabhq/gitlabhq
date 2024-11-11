@@ -28,13 +28,13 @@ export default {
 </script>
 
 <template>
-  <gl-card class="gl-h-full" footer-class="gl-h-full gl-py-0">
-    <template #default>
+  <gl-card class="gl-h-full" body-class="gl-h-full gl-py-0">
+    <template #header>
       <h3 class="gl-m-0 gl-inline-flex gl-items-center gl-gap-2 gl-self-center gl-text-base">
         {{ __('Statistics') }}
       </h3>
     </template>
-    <template #footer>
+    <template #default>
       <gl-loading-icon v-if="isLoading" size="md" class="my-3" />
       <template v-else>
         <p

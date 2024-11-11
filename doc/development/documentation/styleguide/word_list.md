@@ -580,7 +580,7 @@ For more information, see [epic 2150](https://gitlab.com/groups/gitlab-com/-/epi
 
 ## configuration
 
-When you update a collection of settings, call it a **configuration**.
+When you edit a collection of settings, call it a **configuration**.
 
 ## configure
 
@@ -812,6 +812,17 @@ Instead of:
 
 Do not use **easily**. If the user doesn't find the process to be easy, we lose their trust.
 
+## edit
+
+Use **edit** for UI documentation and user actions.
+
+Use **update** for API documentation and programmatic changes.
+
+For example:
+
+- To edit your profile settings, select **Edit**.
+- Use this endpoint to update user permissions.
+
 ## e.g.
 
 Do not use Latin abbreviations. Use **for example**, **such as**, **for instance**, or **like** instead. ([Vale](../testing/vale.md) rule: [`LatinTerms.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab_base/LatinTerms.yml))
@@ -886,11 +897,11 @@ Try to avoid **etc.**. Be as specific as you can. Do not use
 
 Use:
 
-- You can update objects, like merge requests and issues.
+- You can edit objects, like merge requests and issues.
 
 Instead of:
 
-- You can update objects, like merge requests, issues, etc.
+- You can edit objects, like merge requests, issues, etc.
 
 ## expand
 
@@ -1930,8 +1941,8 @@ Use **resolution** when the troubleshooting solution fixes the issue permanently
 A resolution usually involves file and code changes to correct the problem.
 For example:
 
-- To resolve this issue, update the `.gitlab-ci.yml` file.
-- One resolution is to update the `.gitlab-ci.yml` file.
+- To resolve this issue, edit the `.gitlab-ci.yml` file.
+- One resolution is to edit the `.gitlab-ci.yml` file.
 
 See also [workaround](#workaround).
 
@@ -2389,7 +2400,7 @@ Use **update** for installing a newer **patch** version of the software only. Fo
 
 - Update GitLab from 14.9 to 14.9.1.
 
-Do not use **update** for any other case. Instead, use **upgrade**.
+Do not use **update** for any other case. Instead, use **[upgrade](#upgrade)** or **[edit](#edit)**.
 
 ## upgrade
 

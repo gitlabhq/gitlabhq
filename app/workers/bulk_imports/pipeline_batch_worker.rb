@@ -4,6 +4,7 @@ module BulkImports
   class PipelineBatchWorker
     include ApplicationWorker
     include ExclusiveLeaseGuard
+    include Sidekiq::InterruptionsExhausted
 
     DEFER_ON_HEALTH_DELAY = 5.minutes
 
@@ -15,8 +16,12 @@ module BulkImports
     worker_resource_boundary :memory
     idempotent!
 
-    sidekiq_retries_exhausted do |msg, exception|
-      new.perform_failure(msg['args'].first, exception)
+    sidekiq_retries_exhausted do |job, exception|
+      new.perform_failure(job['args'].first, exception)
+    end
+
+    sidekiq_interruptions_exhausted do |job|
+      new.perform_failure(job['args'].first, Import::Exceptions::SidekiqExhaustedInterruptionsError.new)
     end
 
     defer_on_database_health_signal(:gitlab_main, [], DEFER_ON_HEALTH_DELAY) do |job_args, schema, tables|

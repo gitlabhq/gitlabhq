@@ -229,11 +229,11 @@ export default {
           :submodule="isSubmodule"
           :loading="path === loadingPath"
           css-classes="position-relative file-icon"
-          class="mr-1 position-relative text-secondary"
-        /><span class="position-relative">{{ fullPath }}</span>
+          class="gl-relative gl-mr-2 gl-text-subtle"
+        /><span class="gl-relative">{{ fullPath }}</span>
       </component>
       <!-- eslint-disable @gitlab/vue-require-i18n-strings -->
-      <gl-badge v-if="lfsOid" variant="muted" class="ml-1" data-testid="label-lfs">LFS</gl-badge>
+      <gl-badge v-if="lfsOid" variant="muted" class="gl-ml-2" data-testid="label-lfs">LFS</gl-badge>
       <!-- eslint-enable @gitlab/vue-require-i18n-strings -->
       <template v-if="isSubmodule">
         @ <gl-link :href="submoduleTreeUrl" class="commit-sha">{{ shortSha }}</gl-link>
@@ -244,7 +244,7 @@ export default {
         :title="commitData.lockLabel"
         name="lock"
         :size="12"
-        class="ml-1"
+        class="gl-ml-2"
       />
     </td>
     <td class="tree-commit cursor-default gl-hidden sm:gl-table-cell">
@@ -259,7 +259,7 @@ export default {
         <gl-skeleton-loader v-if="showSkeletonLoader" :lines="1" />
       </gl-intersection-observer>
     </td>
-    <td class="tree-time-ago text-right cursor-default gl-text-subtle">
+    <td class="tree-time-ago cursor-default gl-text-right gl-text-subtle">
       <gl-intersection-observer @appear="rowAppeared" @disappear="rowDisappeared">
         <timeago-tooltip v-if="commitData" :time="commitData.committedDate" />
       </gl-intersection-observer>

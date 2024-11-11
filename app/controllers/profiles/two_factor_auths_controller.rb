@@ -234,32 +234,29 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
     if two_factor_authentication_required? && !current_user.two_factor_enabled?
       two_factor_auth_actions = {
         global: ->(_) do
-          flash.now[:alert] =
-            _('The global settings require you to enable Two-Factor Authentication for your account.')
+          _('The global settings require you to enable Two-Factor Authentication for your account.')
         end,
         admin_2fa: ->(_) do
-          flash.now[:alert] =
-            _('Administrator users are required to enable Two-Factor Authentication for their account.')
+          _('Administrator users are required to enable Two-Factor Authentication for their account.')
         end,
         group: ->(groups) do
-          flash.now[:alert] = groups_notification(groups)
+          groups_notification(groups)
         end
       }
-      execute_action_for_2fa_reason(two_factor_auth_actions)
-
-      unless two_factor_grace_period_expired?
-        grace_period_deadline = current_user.otp_grace_period_started_at + two_factor_grace_period.hours
-        flash.now[:alert] = flash.now[:alert] + (
-          _(" You need to do this before %{grace_period_deadline}.") % {
-            grace_period_deadline: l(grace_period_deadline)
-          }
-        )
-      end
+      message = execute_action_for_2fa_reason(two_factor_auth_actions)
+      message = append_configure_2fa_later(message) unless two_factor_grace_period_expired?
+      flash.now[:alert] = message
     end
 
     @qr_code = build_qr_code
     @account_string = account_string
 
     setup_webauthn_registration
+  end
+
+  def append_configure_2fa_later(message)
+    grace_period_deadline = current_user.otp_grace_period_started_at + two_factor_grace_period.hours
+    render_to_string partial: 'configure_later_button',
+      locals: { message: message, grace_period_deadline: grace_period_deadline }
   end
 end

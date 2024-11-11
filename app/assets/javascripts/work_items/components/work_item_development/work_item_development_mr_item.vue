@@ -33,9 +33,9 @@ export default {
     },
     stateIconClass() {
       return {
-        'gl-text-green-500': this.itemContent.state === STATUS_OPEN,
-        'gl-text-red-500': this.itemContent.state === STATUS_CLOSED,
-        'gl-text-blue-500': this.itemContent.state === STATUS_MERGED,
+        'gl-fill-icon-success': this.itemContent.state === STATUS_OPEN,
+        'gl-fill-icon-danger': this.itemContent.state === STATUS_CLOSED,
+        'gl-fill-icon-info': this.itemContent.state === STATUS_MERGED,
       };
     },
     stateIcon() {

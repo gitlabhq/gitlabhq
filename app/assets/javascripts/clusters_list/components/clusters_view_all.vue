@@ -93,7 +93,7 @@ export default {
     <gl-loading-icon v-if="isLoading" size="lg" />
     <div v-show="!isLoading" data-testid="clusters-cards-container">
       <gl-card
-        header-class="gl-bg-white gl-flex gl-items-center gl-justify-between gl-py-4"
+        header-class="gl-flex gl-items-center gl-justify-between"
         body-class="gl-pb-0 cluster-card-item"
         footer-class="gl-text-right"
       >
@@ -153,7 +153,7 @@ export default {
 
       <gl-card
         class="gl-mt-6"
-        header-class="gl-bg-white gl-flex gl-items-center gl-justify-between"
+        header-class="gl-flex gl-items-center gl-justify-between"
         body-class="gl-pb-0 cluster-card-item"
         footer-class="gl-text-right"
       >

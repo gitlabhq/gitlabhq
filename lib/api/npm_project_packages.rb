@@ -135,7 +135,7 @@ module API
         authenticate_non_public: true
       get '*package_name', format: false, requirements: ::API::Helpers::Packages::Npm::NPM_ENDPOINT_REQUIREMENTS do
         package_name = declared_params[:package_name]
-        packages = ::Packages::Npm::PackageFinder.new(package_name, project: project_or_nil).execute
+        packages = ::Packages::Npm::PackageFinder.new(project: project_or_nil, params: { package_name: package_name }).execute
 
         # In order to redirect a request, packages should not exist (without taking the user into account).
         redirect_request = project_or_nil.blank? || packages.empty?

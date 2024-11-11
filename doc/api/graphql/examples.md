@@ -8,10 +8,11 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 GraphQL examples are available for you to test and modify.
 
-- [Audit event streaming for instances](../../api/graphql/audit_event_streaming_instances.md)
-- [Audit event streaming for groups](../../api/graphql/audit_event_streaming_groups.md)
-- [Set up an audit report](../../api/graphql/audit_report.md)
-- [Identify issue boards](../../api/graphql/sample_issue_boards.md)
-- [List branch rules for a project](../../api/graphql/branch_rules.md)
-- [Query users](../../api/graphql/users_example.md)
-- [Use custom emoji](../../api/graphql/custom_emoji.md)
+- [Audit event streaming for instances](audit_event_streaming_instances.md)
+- [Audit event streaming for groups](audit_event_streaming_groups.md)
+- [Set up an audit report](audit_report.md)
+- [Identify issue boards](sample_issue_boards.md)
+- [List branch rules for a project](branch_rules.md)
+- [Query users](users_example.md)
+- [Use custom emoji](custom_emoji.md)
+- [Migrate epic APIs to work items](epic_work_items_api_migration_guide.md)

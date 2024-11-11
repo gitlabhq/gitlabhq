@@ -14,20 +14,20 @@ exports[`Repository table row component renders a symlink table row 1`] = `
       title="test"
     >
       <file-icon-stub
-        class="mr-1 position-relative text-secondary"
+        class="gl-mr-2 gl-relative gl-text-subtle"
         cssclasses="position-relative file-icon"
         filemode="120000"
         filename="test"
         size="16"
       />
       <span
-        class="position-relative"
+        class="gl-relative"
       >
         test
       </span>
     </a>
     <gl-icon-stub
-      class="ml-1"
+      class="gl-ml-2"
       name="lock"
       size="12"
       title="Locked by Root"
@@ -43,7 +43,7 @@ exports[`Repository table row component renders a symlink table row 1`] = `
     <gl-intersection-observer-stub />
   </td>
   <td
-    class="cursor-default gl-text-subtle text-right tree-time-ago"
+    class="cursor-default gl-text-right gl-text-subtle tree-time-ago"
   >
     <gl-intersection-observer-stub>
       <timeago-tooltip-stub
@@ -71,20 +71,20 @@ exports[`Repository table row component renders table row 1`] = `
       title="test"
     >
       <file-icon-stub
-        class="mr-1 position-relative text-secondary"
+        class="gl-mr-2 gl-relative gl-text-subtle"
         cssclasses="position-relative file-icon"
         filemode=""
         filename="test"
         size="16"
       />
       <span
-        class="position-relative"
+        class="gl-relative"
       >
         test
       </span>
     </a>
     <gl-icon-stub
-      class="ml-1"
+      class="gl-ml-2"
       name="lock"
       size="12"
       title="Locked by Root"
@@ -100,7 +100,7 @@ exports[`Repository table row component renders table row 1`] = `
     <gl-intersection-observer-stub />
   </td>
   <td
-    class="cursor-default gl-text-subtle text-right tree-time-ago"
+    class="cursor-default gl-text-right gl-text-subtle tree-time-ago"
   >
     <gl-intersection-observer-stub>
       <timeago-tooltip-stub
@@ -128,20 +128,20 @@ exports[`Repository table row component renders table row for path with special 
       title="test"
     >
       <file-icon-stub
-        class="mr-1 position-relative text-secondary"
+        class="gl-mr-2 gl-relative gl-text-subtle"
         cssclasses="position-relative file-icon"
         filemode=""
         filename="test"
         size="16"
       />
       <span
-        class="position-relative"
+        class="gl-relative"
       >
         test
       </span>
     </a>
     <gl-icon-stub
-      class="ml-1"
+      class="gl-ml-2"
       name="lock"
       size="12"
       title="Locked by Root"
@@ -157,7 +157,7 @@ exports[`Repository table row component renders table row for path with special 
     <gl-intersection-observer-stub />
   </td>
   <td
-    class="cursor-default gl-text-subtle text-right tree-time-ago"
+    class="cursor-default gl-text-right gl-text-subtle tree-time-ago"
   >
     <gl-intersection-observer-stub>
       <timeago-tooltip-stub

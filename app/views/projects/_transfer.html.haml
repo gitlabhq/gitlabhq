@@ -3,7 +3,7 @@
 - hidden_input_id = "new_namespace_id"
 - initial_data = { button_text: s_('ProjectSettings|Transfer project'), confirm_danger_message: transfer_project_message(@project), confirm_button_text: transfer_project_confirm_button, phrase: @project.name, target_form_id: form_id, target_hidden_input_id: hidden_input_id, project_id: @project.id }
 
-= render Pajamas::CardComponent.new(card_options: { data: { testid: 'transfer-project-content' } }, header_options: { class: 'gl-px-5 gl-py-4 gl-border-b-1 gl-border-b-solid gl-border-gray-100' }, body_options: { class: 'gl-px-5 gl-py-4' }) do |c|
+= render Pajamas::CardComponent.new(card_options: { data: { testid: 'transfer-project-content' } }) do |c|
   - c.with_header do
     .gl-flex.gl-grow
       %h4.gl-text-base.gl-leading-24.gl-m-0= _('Transfer project')

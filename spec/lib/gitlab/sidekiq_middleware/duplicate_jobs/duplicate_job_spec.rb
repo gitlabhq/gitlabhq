@@ -83,7 +83,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob,
     end
 
     let(:cookie_key) { "#{Gitlab::Redis::Queues::SIDEKIQ_NAMESPACE}:#{idempotency_key}:cookie:v2" }
-    let(:cookie) { get_redis_msgpack(cookie_key) }
+    let(:cookie) { duplicate_job.send(:get_cookie) }
 
     describe '#check!' do
       context 'when there was no job in the queue yet' do
@@ -205,7 +205,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob,
       end
 
       context 'when the key exists' do
-        let(:existing_cookie) { { 'offsets' => {}, 'wal_locations' => {} } }
+        let(:existing_cookie) { { 'offsets' => {}, 'wal_locations' => {}, 'existing_wal_locations' => {} } }
         let(:expected_ttl) { 123 }
 
         before do
@@ -217,6 +217,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob,
 
           expect(cookie['wal_locations']).to eq({ 'c1' => 'loc1', 'c2' => 'loc2', 'c3' => 'loc3' })
           expect(cookie['offsets']).to eq({ 'c1' => 1, 'c2' => 2, 'c3' => 3 })
+          expect(cookie['existing_wal_locations']).to eq({})
         end
 
         it 'preserves the ttl' do
@@ -237,7 +238,8 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob,
           let(:existing_cookie) do
             {
               'offsets' => { 'c1' => 0, 'c2' => 2 },
-              'wal_locations' => { 'c1' => 'loc1old', 'c2' => 'loc2old' }
+              'wal_locations' => { 'c1' => 'loc1old', 'c2' => 'loc2old' },
+              'existing_wal_locations' => {}
             }
           end
 
@@ -246,6 +248,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob,
 
             expect(cookie['wal_locations']).to eq({ 'c1' => 'loc1', 'c2' => 'loc2old', 'c3' => 'loc3' })
             expect(cookie['offsets']).to eq({ 'c1' => 1, 'c2' => 2, 'c3' => 3 })
+            expect(cookie['existing_wal_locations']).to eq({})
           end
         end
 
@@ -253,7 +256,8 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob,
           let(:existing_cookie) do
             {
               'offsets' => { 'main' => 8, 'ci' => 5 },
-              'wal_locations' => { 'main' => 'loc1old', 'ci' => 'loc2old' }
+              'wal_locations' => { 'main' => 'loc1old', 'ci' => 'loc2old' },
+              'existing_wal_locations' => {}
             }
           end
 
@@ -264,6 +268,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob,
 
             expect(cookie['wal_locations']).to eq({ 'main' => 'loc1', 'ci' => 'loc2old' })
             expect(cookie['offsets']).to eq({ 'main' => 9, 'ci' => 5 })
+            expect(cookie['existing_wal_locations']).to eq({})
           end
         end
       end

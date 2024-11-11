@@ -261,4 +261,37 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
       )
     end
   end
+
+  describe 'PUT #update' do
+    before do
+      project.add_developer(user)
+      login_as(user)
+    end
+
+    it 'applies correct timezone to merge_after' do
+      put project_merge_request_path(project, merge_request, merge_request: { merge_after: '2024-09-03T21:18' })
+
+      expect(response).to redirect_to(project_merge_request_path(project, merge_request))
+
+      expect(merge_request.reload.merge_schedule.merge_after).to eq(
+        Time.zone.parse('2024-09-03T21:18')
+      )
+    end
+
+    it 'resets merge_schedule if merge_after is not set' do
+      create(:merge_request_merge_schedule, merge_request: merge_request, merge_after: '2024-10-27T21:06')
+
+      expect do
+        put project_merge_request_path(project, merge_request, merge_request: { merge_after: '' })
+      end.to change { merge_request.reload.merge_schedule }.to(nil)
+    end
+
+    it 'does not reset merge_schedule if merge_after is not sent' do
+      create(:merge_request_merge_schedule, merge_request: merge_request, merge_after: '2024-10-27T21:06')
+
+      expect do
+        put project_merge_request_path(project, merge_request, merge_request: { title: 'Something' })
+      end.not_to change { merge_request.reload.merge_schedule.merge_after }
+    end
+  end
 end

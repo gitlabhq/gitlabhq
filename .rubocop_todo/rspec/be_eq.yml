@@ -92,7 +92,6 @@ RSpec/BeEq:
     - 'ee/spec/lib/arkose/verify_response_spec.rb'
     - 'ee/spec/lib/bulk_imports/groups/pipelines/epics_pipeline_spec.rb'
     - 'ee/spec/lib/bulk_imports/groups/pipelines/iterations_cadences_pipeline_spec.rb'
-    - 'ee/spec/lib/code_suggestions/completions_model_details_spec.rb'
     - 'ee/spec/lib/code_suggestions/tasks/base_spec.rb'
     - 'ee/spec/lib/code_suggestions/tasks/code_completion_spec.rb'
     - 'ee/spec/lib/code_suggestions/tasks/code_generation_spec.rb'

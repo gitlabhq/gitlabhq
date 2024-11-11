@@ -126,6 +126,11 @@
           &:last-of-type {
             box-shadow: inset -1px 0 0 0 var(--gl-action-selected-border-color-default);
           }
+
+          &:first-of-type:last-of-type {
+            box-shadow: inset 1px 0 0 0 var(--gl-action-selected-border-color-default),
+              inset -1px 0 0 0 var(--gl-action-selected-border-color-default);
+          }
         }
 
         &:last-of-type td {

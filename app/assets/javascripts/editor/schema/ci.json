@@ -395,7 +395,17 @@
           "description": "Will infer the method based on the value. E.g. `https://...` strings will be of type `include:remote`, and `/templates/...` or `templates/...` will be of type `include:local`.",
           "type": "string",
           "format": "uri-reference",
-          "pattern": "^(https?://|/?.?-?(?!\\w+://)\\w).+\\.ya?ml$"
+          "pattern": "\\w\\.ya?ml$",
+          "anyOf": [
+              {
+                  "pattern": "^https?://"
+              },
+              {
+                  "not": {
+                      "pattern": "^\\w+://"
+                  }
+              }
+          ]
         },
         {
           "type": "object",
@@ -1490,7 +1500,7 @@
           "oneOf": [
             {
               "type": "string",
-              "pattern": "^(?!.*\\/)^(.*[^.]+.*)$"
+              "pattern": "^[^/]*[^./][^/]*$"
             },
             {
               "type": "object",

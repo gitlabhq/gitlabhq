@@ -16,6 +16,7 @@ query getState($projectPath: ID!, $iid: String!) {
       conflicts
       detailedMergeStatus
       diffHeadSha
+      mergeAfter
       mergeError
       mergeStatus
       mergeable

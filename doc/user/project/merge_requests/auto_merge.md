@@ -34,6 +34,7 @@ After you set auto-merge, these checks must all pass before the merge request me
 - If your project
   [requires merge requests to reference a Jira issue](../../../integration/jira/issues.md#require-associated-jira-issue-for-merge-requests-to-be-merged),
   the merge request title or description contains a Jira issue link.
+- If the merge request has a **Merge after** date set, the current time must be after the configured date.
 
 For a full list of checks and their API equivalents, see
 [Merge status](../../../api/merge_requests.md#merge-status).
@@ -174,6 +175,27 @@ To change this behavior:
    - Select **Pipelines must succeed**.
    - Select **Skipped pipelines are considered successful**.
 1. Select **Save**.
+
+## Prevent merge before a specific date
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14380) in GitLab 17.6.
+
+If your merge request should not merge before a specific date and time, set a **Merge after** date.
+This value sets when the merge (or merge train) can start. The exact time of merge can vary,
+however, depending on the satisfaction of other merge checks or the length of your merge train.
+
+Prerequisites:
+
+- You must have at least the Developer role for the project.
+
+To do this:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Code > Merge requests**.
+1. Select the merge request to edit.
+1. Select **Edit**.
+1. Find the **Merge after** input and select a date and time.
+1. Select **Save changes**.
 
 ## Troubleshooting
 

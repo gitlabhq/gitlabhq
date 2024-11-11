@@ -19,7 +19,7 @@ module Gitlab
       def execute
         sequences.each do |sequence|
           with_lock_retries do
-            connection.execute(alter_sequence_query(sequence))
+            connection.execute(alter_sequence_query(sequence.seq_name))
           end
         end
       end
@@ -27,8 +27,7 @@ module Gitlab
       private
 
       def sequences
-        sequences_sql = "SELECT DISTINCT(sequencename) FROM pg_sequences WHERE schemaname = 'public'"
-        connection.select_rows(sequences_sql).flatten
+        Gitlab::Database::PostgresSequence.all
       end
 
       def alter_sequence_query(sequence_name)

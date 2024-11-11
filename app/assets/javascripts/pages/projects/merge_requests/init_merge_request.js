@@ -7,6 +7,7 @@ import { addShortcutsExtension } from '~/behaviors/shortcuts';
 import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
 import LabelsSelect from '~/labels/labels_select';
 import { mountMilestoneDropdown } from '~/sidebar/mount_sidebar';
+import mountMergeScheduleInput from './mount_merge_schedule_input';
 
 export default () => {
   addShortcutsExtension(ShortcutsNavigation);
@@ -14,4 +15,5 @@ export default () => {
   IssuableLabelSelector();
   new LabelsSelect();
   mountMilestoneDropdown('[name="merge_request[milestone_id]"]');
+  mountMergeScheduleInput();
 };

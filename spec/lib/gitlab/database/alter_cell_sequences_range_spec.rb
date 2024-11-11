@@ -28,13 +28,13 @@ RSpec.describe Gitlab::Database::AlterCellSequencesRange, feature_category: :dat
         execute
 
         if minval.present?
-          incorrect_min = "SELECT sequencename FROM pg_sequences WHERE min_value != #{minval}"
-          expect(connection.select_rows(incorrect_min).flatten).to be_empty
+          incorrect_min = Gitlab::Database::PostgresSequence.where.not(seq_min: minval)
+          expect(incorrect_min).to be_empty
         end
 
         if maxval.present?
-          incorrect_max = "SELECT sequencename FROM pg_sequences WHERE max_value != #{maxval}"
-          expect(connection.select_rows(incorrect_max).flatten).to be_empty
+          incorrect_max = Gitlab::Database::PostgresSequence.where.not(seq_max: maxval)
+          expect(incorrect_max).to be_empty
         end
       end
     end

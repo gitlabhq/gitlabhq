@@ -4,6 +4,7 @@ export const COMPONENTS = {
   conflict: () => import('./conflicts.vue'),
   discussions_not_resolved: () => import('./unresolved_discussions.vue'),
   draft_status: () => import('./draft.vue'),
+  merge_time: () => import('./merge_time.vue'),
   need_rebase: () => import('./rebase.vue'),
   default: () => import('./message.vue'),
   requested_changes: () =>
@@ -39,4 +40,12 @@ export const FAILURE_REASONS = {
   // TODO: Remove this in 17.7
   security_policy_evaluation: __('All security policies must be evaluated.'),
   security_policy_violations: __('All policy rules must be satisfied.'),
+  merge_time: __('Cannot merge until this date and time.'),
 };
+
+export const ICON_NAMES = Object.freeze({
+  failed: 'failed',
+  inactive: 'neutral',
+  success: 'success',
+  warning: 'warning',
+});
