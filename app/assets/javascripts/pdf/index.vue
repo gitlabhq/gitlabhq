@@ -4,7 +4,7 @@ import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist/legacy/build/pdf';
 
 import Page from './page/index.vue';
 
-GlobalWorkerOptions.workerSrc = '/assets/webpack/pdfjs/pdf.worker.min.js';
+GlobalWorkerOptions.workerSrc = process.env.PDF_JS_WORKER_PUBLIC_PATH;
 
 export default {
   components: { Page },
