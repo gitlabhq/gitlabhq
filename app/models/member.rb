@@ -69,10 +69,7 @@ class Member < ApplicationRecord
   end
 
   scope :in_hierarchy, ->(source) do
-    for_self_and_descendants(source.root_ancestor)
-  end
-
-  scope :for_self_and_descendants, ->(source) do
+    source = source.root_ancestor
     groups = source.self_and_descendants
     group_members = Member.default_scoped.where(source: groups).select(*Member.cached_column_list)
 
@@ -82,12 +79,28 @@ class Member < ApplicationRecord
     Member.default_scoped.from_union([group_members, project_members]).merge(self)
   end
 
+  scope :for_self_and_descendants, ->(group, columns = Member.cached_column_list) do
+    return self if group.blank?
+
+    group_members = where(source_id: group.self_and_descendant_ids, source_type: GroupMember::SOURCE_TYPE)
+    project_members = where(source_id: group.all_project_ids, source_type: ProjectMember::SOURCE_TYPE)
+
+    Member.unscoped.from_union([
+      group_members.select(*columns),
+      project_members.select(*columns)
+    ], remove_duplicates: false)
+  end
+
   scope :including_user_ids, ->(user_ids) do
     where(user_id: user_ids)
   end
 
   scope :excluding_users, ->(user_ids) do
     where.not(user_id: user_ids)
+  end
+
+  scope :count_by_access_level, ->(column_name = nil) do
+    group(:access_level).count(column_name)
   end
 
   # This scope encapsulates (most of) the conditions a row in the member table

@@ -58,7 +58,6 @@ Layout/LineContinuationSpacing:
     - 'ee/spec/graphql/mutations/requirements_management/export_requirements_spec.rb'
     - 'ee/spec/helpers/ee/labels_helper_spec.rb'
     - 'ee/spec/helpers/push_rules_helper_spec.rb'
-    - 'ee/spec/lib/audit/group_merge_request_approval_setting_changes_auditor_spec.rb'
     - 'ee/spec/lib/ee/gitlab/ci/pipeline/quota/size_spec.rb'
     - 'ee/spec/lib/gitlab/ci/pipeline/chain/limit/size_spec.rb'
     - 'ee/spec/lib/gitlab/git_access_spec.rb'

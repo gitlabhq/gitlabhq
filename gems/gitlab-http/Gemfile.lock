@@ -93,7 +93,7 @@ GEM
     multi_xml (0.6.0)
     net-http (0.4.1)
       uri
-    nokogiri (1.15.4)
+    nokogiri (1.16.7)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     parallel (1.26.3)
@@ -105,7 +105,7 @@ GEM
       rouge
       unparser
     public_suffix (5.0.1)
-    racc (1.7.1)
+    racc (1.8.1)
     rack (2.2.10)
     rack-test (2.1.0)
       rack (>= 1.3)

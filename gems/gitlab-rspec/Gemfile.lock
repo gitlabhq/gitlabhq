@@ -63,9 +63,9 @@ GEM
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
     method_source (1.0.0)
-    mini_portile2 (2.8.2)
+    mini_portile2 (2.8.7)
     minitest (5.18.0)
-    nokogiri (1.15.2)
+    nokogiri (1.16.7)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     parallel (1.23.0)
@@ -75,7 +75,7 @@ GEM
       coderay
       parser
       unparser
-    racc (1.6.2)
+    racc (1.8.1)
     rack (2.2.10)
     rack-test (2.1.0)
       rack (>= 1.3)

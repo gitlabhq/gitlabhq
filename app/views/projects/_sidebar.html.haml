@@ -5,8 +5,8 @@
 - statistics_buttons = @project.statistics_buttons(show_auto_devops_callout: show_auto_devops_callout)
 
 %aside.project-page-sidebar{ data: { testid: 'project-page-sidebar' } }
-  .project-page-sidebar-block.home-panel-home-desc.gl-py-4.gl-border-b.gl-border-gray-50{ class: '!gl-pt-2' }
-    %h2.gl-text-base.gl-font-bold.gl-leading-reset.gl-text-gray-900.gl-m-0.gl-mb-1= s_('ProjectPage|Project information')
+  .project-page-sidebar-block.home-panel-home-desc.gl-py-4.gl-border-b.gl-border-b-subtle{ class: '!gl-pt-2' }
+    %h2.gl-text-base.gl-font-bold.gl-leading-reset.gl-text-strong.gl-m-0.gl-mb-1= s_('ProjectPage|Project information')
     -# Project description
     - if @project.description.present?
       .home-panel-description.gl-break-words
@@ -43,18 +43,18 @@
 
   -# Invite members
   - if @project.empty_repo? && can_admin_project_member?(@project)
-    .project-page-sidebar-block.gl-py-4.gl-border-b.gl-border-gray-50
+    .project-page-sidebar-block.gl-py-4.gl-border-b.gl-border-b-subtle
       = render "invite_members_empty_project"
 
   -# Buttons
   - if can?(current_user, :read_code, @project) && !@project.empty_repo? && anchor_buttons.any?
-    .project-page-sidebar-block.gl-py-4.gl-border-b.gl-border-gray-50
+    .project-page-sidebar-block.gl-py-4.gl-border-b.gl-border-b-subtle
       %nav.project-stats
         = render 'stat_anchor_list', anchors: anchor_buttons
 
   -# Buttons
   - if can?(current_user, :read_code, @project) && has_project_shortcut_buttons && (@project.empty_repo? ? statistics_empty_buttons.any? : statistics_buttons.any?)
-    .project-page-sidebar-block.gl-py-4.gl-border-b.gl-border-gray-50
+    .project-page-sidebar-block.gl-py-4.gl-border-b.gl-border-b-subtle
       .project-buttons.gl-mb-2.js-show-on-project-root{ data: { testid: 'project-buttons' } }
         - if @project.empty_repo?
           = render 'stat_anchor_list', anchors: statistics_empty_buttons, project_buttons: true
@@ -66,5 +66,5 @@
 
   -# Project created
   .project-page-sidebar-block.gl-py-4
-    %p.gl-font-bold.gl-text-gray-900.gl-m-0.gl-mb-1= s_('ProjectPage|Created on')
+    %p.gl-font-bold.gl-text-strong.gl-m-0.gl-mb-1= s_('ProjectPage|Created on')
     %span= @project.created_at.to_date.to_fs(:long)

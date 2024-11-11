@@ -1,13 +1,12 @@
 ---
 # Cop supports --autocorrect.
 RSpec/ChangeByZero:
-  Details: grace period
   Exclude:
     - 'ee/spec/controllers/groups/todos_controller_spec.rb'
-    - 'ee/spec/lib/audit/external_status_check_changes_auditor_spec.rb'
     - 'ee/spec/lib/ee/gitlab/background_migration/migrate_vulnerabilities_feedback_to_vulnerabilities_state_transition_spec.rb'
     - 'ee/spec/lib/ee/gitlab/scim/group/deprovisioning_service_spec.rb'
     - 'ee/spec/lib/gitlab/background_migration/create_vulnerability_links_spec.rb'
+    - 'ee/spec/lib/merge_requests/external_status_check_changes_auditor_spec.rb'
     - 'ee/spec/models/ee/project_member_spec.rb'
     - 'ee/spec/models/search/zoekt/repository_spec.rb'
     - 'ee/spec/requests/api/admin/search/zoekt_spec.rb'

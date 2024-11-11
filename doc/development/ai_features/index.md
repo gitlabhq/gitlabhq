@@ -546,6 +546,19 @@ class AiFeaturesCatalogue
   }.freeze
 ```
 
+## Reuse the existing AI components for multiple models
+
+We thrive optimizing AI components, such as prompt, input/output parser, tools/function-calling, for each LLM,
+however, diverging the components for each model could increase the maintenance overhead.
+Hence, it's generally advised to reuse the existing components for multiple models as long as it doesn't degrade a feature quality.
+Here are the rules of thumbs:
+
+1. Iterate on the existing prompt template for multiple models. Do _NOT_ introduce a new one unless it causes a quality degredation for a particular model.
+1. Iterate on the existing input/output parsers and tools/functions-calling for multiple models. Do _NOT_ introduce a new one unless it causes a quality degredation for a particular model.
+1. If a quality degredation is detected for a particular model, the shared component should be diverged for the particular model.
+
+An [example](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/issues/713) of this case is that we can apply Claude specific CoT optimization to the other models such as Mixtral as long as it doesn't cause a quality degredation.
+
 ## How to migrate an existing action to the AI Gateway
 
 AI actions were initially implemented inside the GitLab monolith. As part of our

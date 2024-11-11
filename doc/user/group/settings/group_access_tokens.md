@@ -122,8 +122,6 @@ If you are an administrator, you can create group access tokens in the Rails con
 
 > - Ability to view revoked tokens [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462217) in GitLab 17.3 [with a flag](../../../administration/feature_flags.md) named `retain_resource_access_token_user_after_revoke`. Disabled by default.
 
-You can use either the UI or the Rails console to revoke a group access token.
-
 In GitLab 17.3 and later, if you enable the `retain_resource_access_token_user_after_revoke`
 feature flag, you can view both active and inactive revoked group access tokens
 on the access tokens page. If you do not enable the feature flag, you can only view
@@ -146,21 +144,6 @@ To revoke a group access token:
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > Access tokens**.
 1. Next to the group access token to revoke, select **Revoke** (**{remove}**).
-
-### Use the Rails console
-
-Prerequisites:
-
-- You must be an administrator.
-
-To revoke a group access token, run the following command in a
-[Rails console](../../../administration/operations/rails_console.md):
-
-```ruby
-bot = User.find_by(username: 'group_109_bot') # the owner of the token you want to revoke
-token = bot.personal_access_tokens.last # the token you want to revoke
-token.revoke!
-```
 
 ## Scopes for a group access token
 

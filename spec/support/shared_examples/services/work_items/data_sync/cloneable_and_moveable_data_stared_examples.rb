@@ -50,38 +50,36 @@ end
 RSpec.shared_examples 'cloneable and moveable widget data' do
   using RSpec::Parameterized::TableSyntax
 
-  def set_assignees
-    original_work_item.assignee_ids = assignees.map(&:id)
-  end
-
   def work_item_assignees(work_item)
     work_item.reload.assignees
   end
 
   def work_item_award_emoji(work_item)
-    work_item.reload.award_emoji.order(user_id: :asc, name: :asc).pluck(:user_id, :name)
+    work_item.reload.award_emoji.pluck(:user_id, :name)
   end
 
-  where(:widget_name, :eval_value, :before_lambda, :expected_data, :operations) do
-    :assignees   | :work_item_assignees   | -> { set_assignees } | ref(:assignees)     | [ref(:move), ref(:clone)]
-    :award_emoji | :work_item_award_emoji | -> {}                | ref(:award_emojis)  | [ref(:move)]
+  where(:widget_name, :eval_value, :expected_data, :operations) do
+    :assignees   | :work_item_assignees   | ref(:assignees)     | [ref(:move), ref(:clone)]
+    :award_emoji | :work_item_award_emoji | ref(:award_emojis)  | [ref(:move)]
+  end
+
+  let(:move) { WorkItems::DataSync::MoveService }
+  let(:clone) { WorkItems::DataSync::CloneService }
+
+  let_it_be(:users) { create_list(:user, 3) }
+  let_it_be(:milestone) { create(:milestone) }
+  let_it_be(:thumbs_ups) { create_list(:award_emoji, 2, name: 'thumbsup', awardable: original_work_item) }
+  let_it_be(:thumbs_downs) { create_list(:award_emoji, 2, name: 'thumbsdown', awardable: original_work_item) }
+  let_it_be(:award_emojis) { original_work_item.reload.award_emoji.pluck(:user_id, :name) }
+
+  let_it_be(:assignees) do
+    original_work_item.assignee_ids = users.map(&:id)
+    # set assignees and return assigned users as `expected_data` for later comparison.
+    users
   end
 
   with_them do
     context "with widget" do
-      let(:move) { WorkItems::DataSync::MoveService }
-      let(:clone) { WorkItems::DataSync::CloneService }
-      let!(:thumbs_ups) { create_list(:award_emoji, 2, name: 'thumbsup', awardable: original_work_item) }
-      let!(:thumbs_downs) { create_list(:award_emoji, 2, name: 'thumbsdown', awardable: original_work_item) }
-
-      let!(:award_emojis) do
-        original_work_item.reload.award_emoji.order(user_id: :asc, name: :asc).pluck(:user_id, :name)
-      end
-
-      before do
-        instance_exec(&before_lambda)
-      end
-
       it 'clones and moves widget data' do
         new_work_item = service.execute[:work_item]
         widget_value = send(eval_value, new_work_item)

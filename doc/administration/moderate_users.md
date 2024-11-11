@@ -77,7 +77,7 @@ Rejecting a user:
 
 ## View users pending role promotion
 
-When [user promotion management](../administration/settings/sign_up_restrictions.md#enable-role-promotion-approval) is enabled, any user added or promoted to a billable role will be pending administrator approval.
+If [administrator approval for role promotions](../administration/settings/sign_up_restrictions.md#turn-on-administrator-approval-for-role-promotions) is turned on, membership requests that promote existing users into a billable role require administrator approval.
 
 To view users pending role promotion:
 

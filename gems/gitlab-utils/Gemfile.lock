@@ -74,9 +74,9 @@ GEM
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
     method_source (1.0.0)
-    mini_portile2 (2.8.2)
+    mini_portile2 (2.8.7)
     minitest (5.18.1)
-    nokogiri (1.16.0)
+    nokogiri (1.16.7)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     parallel (1.23.0)
@@ -88,7 +88,7 @@ GEM
       parser
       unparser
     public_suffix (5.0.0)
-    racc (1.7.1)
+    racc (1.8.1)
     rack (2.2.10)
     rack-test (2.1.0)
       rack (>= 1.3)

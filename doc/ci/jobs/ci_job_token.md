@@ -1,5 +1,5 @@
 ---
-stage: Govern
+stage: Software Supply Chain Security
 group: Pipeline Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -17,7 +17,7 @@ is revoked and you cannot use the token anymore.
 
 Use a CI/CD job token to authenticate with certain GitLab features from running jobs.
 The token receives the same access level as the user that triggered the pipeline,
-but has access to fewer resources than a personal access token. A user can cause a job to run
+but has [access to fewer resources](#job-token-feature-access) than a personal access token. A user can cause a job to run
 with an action like pushing a commit, triggering a manual job, or being the owner of a scheduled pipeline.
 This user must have a [role that has the required privileges](../../user/permissions.md#cicd)
 to access the resources.
@@ -28,6 +28,10 @@ By default, the job token's group or project must be [added to the target projec
 If a project is public or internal, you can access some features without being on the allowlist.
 For example, you can fetch artifacts from the project's public pipelines.
 This access can also [be restricted](#limit-job-token-scope-for-public-or-internal-projects).
+
+## Job token feature access
+
+The CI/CD job token can only access the following features and API endpoints:
 
 | Feature                                                                                               | Additional details |
 |-------------------------------------------------------------------------------------------------------|--------------------|
@@ -40,7 +44,7 @@ This access can also [be restricted](#limit-job-token-scope-for-public-or-intern
 | [Package registry](../../user/packages/package_registry/index.md#to-build-packages)                   |         |
 | [Packages API](../../api/packages.md)                                                                 | `GET` requests are public by default. |
 | [Pipeline triggers](../../api/pipeline_triggers.md)                                                   | Used with the `token=` parameter to [trigger a multi-project pipeline](../pipelines/downstream_pipelines.md#trigger-a-multi-project-pipeline-by-using-the-api). |
-| [Update pipeline metadata API endpoint](../../api/pipelines.md#update-pipeline-metadata)                           | To update pipeline metadata. |
+| [Update pipeline metadata API endpoint](../../api/pipelines.md#update-pipeline-metadata)              | To update pipeline metadata. |
 | [Release links API](../../api/releases/links.md)                                                      |         |
 | [Releases API](../../api/releases/index.md)                                                           | `GET` requests are public by default. |
 | [Secure files](../secure_files/index.md#use-secure-files-in-cicd-jobs)                                | The `download-secure-files` tool authenticates with a CI/CD job token by default. |

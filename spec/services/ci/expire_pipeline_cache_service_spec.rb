@@ -122,6 +122,30 @@ RSpec.describe Ci::ExpirePipelineCacheService, feature_category: :continuous_int
     end
   end
 
+  context 'when pipeline does not have sha' do
+    let(:pipeline_without_sha) { create(:ci_pipeline, project: project) }
+
+    before do
+      pipeline_without_sha.update_column(:sha, nil)
+    end
+
+    it 'does not raise an error' do
+      expect { subject.execute(pipeline_without_sha) }.not_to raise_error
+    end
+  end
+
+  context 'when pipeline does not have commit' do
+    let(:pipeline_without_commit) { create(:ci_pipeline, project: project) }
+
+    before do
+      allow(pipeline_without_commit).to receive(:commit).and_return(nil)
+    end
+
+    it 'does not raise an error' do
+      expect { subject.execute(pipeline_without_commit) }.not_to raise_error
+    end
+  end
+
   def expect_touched_etag_caching_paths(*paths)
     expect_next_instance_of(Gitlab::EtagCaching::Store) do |store|
       expect(store).to receive(:touch).and_wrap_original do |m, *args|

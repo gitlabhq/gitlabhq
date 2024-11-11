@@ -6,13 +6,11 @@ RSpec.describe WorkItems::DataSync::CloneService, feature_category: :team_planni
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, group: group) }
   let_it_be(:target_project) { create(:project, group: group) }
-  let_it_be_with_reload(:issue_work_item) { create(:work_item, :opened, project: project) }
-  let_it_be(:task_work_item) { create(:work_item, :task, project: project) }
+  let_it_be_with_reload(:original_work_item) { create(:work_item, :opened, project: project) }
   let_it_be(:source_project_member) { create(:user, reporter_of: project) }
   let_it_be(:target_project_member) { create(:user, reporter_of: target_project) }
   let_it_be(:projects_member) { create(:user, reporter_of: [project, target_project]) }
 
-  let(:original_work_item) { issue_work_item }
   let(:target_namespace) { target_project.project_namespace.reload }
 
   let(:service) do
@@ -99,7 +97,7 @@ RSpec.describe WorkItems::DataSync::CloneService, feature_category: :team_planni
     end
 
     context 'when cloning unsupported work item type' do
-      let(:original_work_item) { task_work_item }
+      let_it_be(:original_work_item) { create(:work_item, :task, project: project) }
 
       it 'does not raise error' do
         expect { service.execute }.not_to raise_error
@@ -170,12 +168,7 @@ RSpec.describe WorkItems::DataSync::CloneService, feature_category: :team_planni
       end
 
       it_behaves_like 'cloneable and moveable work item'
-
-      context 'with specific widgets' do
-        let!(:assignees) { [source_project_member, target_project_member, projects_member] }
-
-        it_behaves_like 'cloneable and moveable widget data'
-      end
+      it_behaves_like 'cloneable and moveable widget data'
     end
   end
 end

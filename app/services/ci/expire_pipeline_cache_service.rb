@@ -84,7 +84,7 @@ module Ci
         graphql_project_on_demand_scan_counts_path(project)
       ]
 
-      etag_paths << commit_pipelines_path(project, pipeline.commit) unless pipeline.commit.nil?
+      etag_paths << commit_pipelines_path(project, pipeline.commit) if pipeline.sha && pipeline.commit.present?
 
       each_pipelines_merge_request_path(pipeline) do |path|
         etag_paths << path
@@ -93,7 +93,7 @@ module Ci
       pipeline.upstream_and_all_downstreams.includes(project: [:route, { namespace: :route }]).each do |relative_pipeline| # rubocop: disable CodeReuse/ActiveRecord
         etag_paths << project_pipeline_path(relative_pipeline.project, relative_pipeline)
         etag_paths << graphql_pipeline_path(relative_pipeline)
-        etag_paths << graphql_pipeline_sha_path(relative_pipeline.sha)
+        etag_paths << graphql_pipeline_sha_path(relative_pipeline.sha) if relative_pipeline.sha
       end
 
       store.touch(*etag_paths)

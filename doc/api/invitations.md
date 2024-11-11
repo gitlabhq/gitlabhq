@@ -74,7 +74,7 @@ When there was any error sending the email:
 ```
 
 NOTE:
-When the setting **[Manage non-billable promotions](../administration/settings/sign_up_restrictions.md#enable-role-promotion-approval)** is enabled, new invited members with billable roles must be approved by an administrator.
+If [administrator approval for role promotions](../administration/settings/sign_up_restrictions.md#turn-on-administrator-approval-for-role-promotions) is turned on, membership requests that promote existing users into a billable role require administrator approval.
 
 To enable **Manage non-billable promotions**,
 you must first enable the `enable_member_promotion_management` application setting.

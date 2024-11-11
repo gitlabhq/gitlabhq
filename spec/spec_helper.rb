@@ -347,10 +347,6 @@ RSpec.configure do |config|
       # See https://gitlab.com/gitlab-org/gitlab/-/issues/457283
       stub_feature_flags(duo_chat_requires_licensed_seat_sm: false)
 
-      # This flag is for [Selectively disable by actor](https://docs.gitlab.com/ee/development/feature_flags/controls.html#selectively-disable-by-actor).
-      # Hence, it should not enable by default in test.
-      stub_feature_flags(v2_chat_agent_integration_override: false) if Gitlab.ee?
-
       # Experimental merge request dashboard
       stub_feature_flags(merge_request_dashboard: false)
 

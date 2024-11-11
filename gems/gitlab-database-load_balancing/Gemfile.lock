@@ -140,7 +140,7 @@ GEM
     marcel (1.0.2)
     method_source (1.0.0)
     mini_mime (1.1.5)
-    mini_portile2 (2.8.5)
+    mini_portile2 (2.8.7)
     minitest (5.17.0)
     net-imap (0.4.4)
       date
@@ -152,7 +152,7 @@ GEM
     net-smtp (0.4.0)
       net-protocol
     nio4r (2.5.9)
-    nokogiri (1.15.4)
+    nokogiri (1.16.7)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     parallel (1.22.1)
@@ -168,7 +168,7 @@ GEM
       coderay (~> 1.1)
       method_source (~> 1.0)
     public_suffix (5.0.3)
-    racc (1.6.2)
+    racc (1.8.1)
     rack (2.2.10)
     rack-test (2.1.0)
       rack (>= 1.3)

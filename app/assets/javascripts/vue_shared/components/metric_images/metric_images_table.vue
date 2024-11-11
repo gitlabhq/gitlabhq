@@ -83,14 +83,6 @@ export default {
     arrowIconName() {
       return this.isCollapsed ? 'chevron-right' : 'chevron-down';
     },
-    bodyClass() {
-      return [
-        'gl-border-1',
-        'gl-border-t-solid',
-        'gl-border-gray-100',
-        { 'gl-hidden': this.isCollapsed },
-      ];
-    },
   },
   methods: {
     ...mapActions(['deleteImage']),
@@ -112,9 +104,9 @@ export default {
 
 <template>
   <gl-card
-    class="collapsible-card border gl-mb-5 gl-p-0"
-    header-class="gl-flex gl-items-center gl-border-b-0 gl-py-3"
-    :body-class="bodyClass"
+    class="gl-mb-5"
+    :header-class="['gl-flex', 'gl-items-center', { 'gl-border-b-0 gl-rounded-base': isCollapsed }]"
+    :body-class="{ 'gl-hidden': isCollapsed }"
   >
     <gl-modal
       body-class="!gl-pb-0 !gl-min-h-6"
@@ -150,17 +142,15 @@ export default {
 
     <template #header>
       <div class="gl-flex gl-w-full gl-flex-row gl-justify-between">
-        <div class="gl-flex gl-w-full gl-flex-row gl-items-center">
+        <div class="gl-flex gl-w-full gl-flex-row gl-items-center gl-gap-2">
           <gl-button
-            class="collapsible-card-btn gl-flex !gl-text-inherit gl-no-underline !gl-shadow-none hover:!gl-text-blue-800"
             :aria-label="filename"
-            variant="link"
             category="tertiary"
+            :icon="arrowIconName"
+            size="small"
             data-testid="collapse-button"
             @click="toggleCollapsed"
-          >
-            <gl-icon class="gl-mr-2" :name="arrowIconName" />
-          </gl-button>
+          />
           <gl-link v-if="url" :href="url" target="_blank" data-testid="metric-image-label-span">
             {{ urlText == null || urlText == '' ? filename : urlText }}
             <gl-icon name="external-link" class="gl-align-middle" />

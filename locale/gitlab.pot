@@ -49872,7 +49872,7 @@ msgstr ""
 msgid "SecurityOrchestration|For large groups, there may be a significant delay in applying policy changes to pre-existing merge requests. Policy changes typically apply almost immediately for newly created merge requests."
 msgstr ""
 
-msgid "SecurityOrchestration|Group with id: %{id}"
+msgid "SecurityOrchestration|Group ID: %{id}"
 msgstr ""
 
 msgid "SecurityOrchestration|Groups"

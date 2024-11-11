@@ -241,7 +241,7 @@ GEM
       byebug (~> 11.0)
       pry (>= 0.13, < 0.15)
     public_suffix (6.0.0)
-    racc (1.8.0)
+    racc (1.8.1)
     rack (2.2.10)
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
