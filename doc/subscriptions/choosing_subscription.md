@@ -35,24 +35,6 @@ the features that fit your budget.
 
 For more details, see [a comparison of features available in each tier](https://about.gitlab.com/pricing/feature-comparison/).
 
-## Find your subscription
-
-The following chart should help you determine your subscription model. Select
-the list item to go to the respective help page.
-
-```mermaid
-%%{init: { "fontFamily": "GitLab Sans" }}%%
-graph TD
-  accTitle: My subscription
-  accDescr: Determine your subscription model and see its help page
-
-A(Is your user account on GitLab.com?)
-A --> B(Yes)
-A --> C(No)
-B --> D(fa:fa-link View your subscription on GitLab.com)
-C --> E(fa:fa-link View your self-hosted subscription)
-```
-
 ## Contact Support
 
 - See the tiers of [GitLab Support](https://about.gitlab.com/support/).

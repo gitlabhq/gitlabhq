@@ -1,6 +1,6 @@
 import { TOKENS, SOLO_OWNED_ORGANIZATIONS_EMPTY } from '~/admin/users/constants';
 import { initializeValuesFromQuery, getSoloOwnedOrganizations } from '~/admin/users/utils';
-import { soloOwnedOrganizations } from './mock_data';
+import { oneSoloOwnedOrganization } from './mock_data';
 
 jest.mock('~/admin/users', () => ({
   apolloClient: {
@@ -71,7 +71,7 @@ describe('getSoloOwnedOrganizations', () => {
       };
 
       apolloClient.query.mockResolvedValueOnce({
-        data: { user: { organizations: soloOwnedOrganizations } },
+        data: { user: { organizations: oneSoloOwnedOrganization } },
       });
     });
 
@@ -81,7 +81,7 @@ describe('getSoloOwnedOrganizations', () => {
 
     it('calls API and returns result', async () => {
       await expect(getSoloOwnedOrganizations(apolloClient, 1)).resolves.toEqual(
-        soloOwnedOrganizations,
+        oneSoloOwnedOrganization,
       );
     });
   });

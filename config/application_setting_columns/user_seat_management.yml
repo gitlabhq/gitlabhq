@@ -1,0 +1,12 @@
+---
+api_type:
+attr: user_seat_management
+clusterwide: true
+column: user_seat_management
+db_type: jsonb
+default: "'{}'::jsonb"
+description: Holds settings related to user seat cost management features.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

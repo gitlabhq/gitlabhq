@@ -7,6 +7,8 @@ import eventHub, {
 import DeleteUserModal from '~/admin/users/components/modals/delete_user_modal.vue';
 import UserDeletionObstaclesList from '~/vue_shared/components/user_deletion_obstacles/user_deletion_obstacles_list.vue';
 import AssociationsList from '~/admin/users/components/associations/associations_list.vue';
+import SoloOwnedOrganizationsMessage from '~/admin/users/components/solo_owned_organizations_message.vue';
+import { oneSoloOwnedOrganization } from '../../mock_data';
 import ModalStub from './stubs/modal_stub';
 
 const TEST_DELETE_USER_URL = 'delete-url';
@@ -20,8 +22,9 @@ describe('Delete user modal', () => {
   const findButton = (variant, category) =>
     wrapper
       .findAllComponents(GlButton)
-      .filter((w) => w.attributes('variant') === variant && w.attributes('category') === category)
-      .at(0);
+      .wrappers.find(
+        (w) => w.attributes('variant') === variant && w.attributes('category') === category,
+      );
   const findForm = () => wrapper.find('form');
   const findUsernameInput = () => wrapper.findComponent(GlFormInput);
   const findPrimaryButton = () => findButton('danger', 'primary');
@@ -33,6 +36,7 @@ describe('Delete user modal', () => {
   const findUserDeletionObstaclesList = () => wrapper.findComponent(UserDeletionObstaclesList);
   const findMessageUsername = () => wrapper.findByTestId('message-username');
   const findConfirmUsername = () => wrapper.findByTestId('confirm-username');
+  const findAssociationsList = () => wrapper.findComponent(AssociationsList);
 
   const emitOpenModalEvent = (modalData) => {
     return eventHub.$emit(EVENT_OPEN_DELETE_USER_MODAL, modalData);
@@ -213,8 +217,40 @@ describe('Delete user modal', () => {
     });
     await nextTick();
 
-    expect(wrapper.findComponent(AssociationsList).props('associationsCount')).toEqual(
-      associationsCount,
-    );
+    expect(findAssociationsList().props('associationsCount')).toEqual(associationsCount);
+  });
+
+  describe('when user has solo owned organizations', () => {
+    beforeEach(() => {
+      createComponent();
+      emitOpenModalEvent({
+        ...mockModalData,
+        organizations: oneSoloOwnedOrganization,
+      });
+    });
+
+    it('shows only SoloOwnedOrganizationsMessage component', () => {
+      expect(wrapper.findComponent(SoloOwnedOrganizationsMessage).props()).toMatchObject({
+        organizations: oneSoloOwnedOrganization,
+      });
+    });
+
+    it('only shows cancel button', () => {
+      expect(wrapper.findByTestId('cancel-button').exists()).toBe(true);
+      expect(findPrimaryButton()).toBeUndefined();
+      expect(findSecondaryButton()).toBeUndefined();
+    });
+
+    it('does not render `AssociationsList` component', () => {
+      expect(findAssociationsList().exists()).toBe(false);
+    });
+
+    it('does not render `UserDeletionObstaclesList` component', () => {
+      expect(findUserDeletionObstaclesList().exists()).toBe(false);
+    });
+
+    it("does not render user's name", () => {
+      expect(findMessageUsername().exists()).toBe(false);
+    });
   });
 });

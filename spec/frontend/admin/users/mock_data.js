@@ -1,4 +1,6 @@
+import { range } from 'lodash';
 import { OBSTACLE_TYPES } from '~/vue_shared/components/user_deletion_obstacles/constants';
+import { SOLO_OWNED_ORGANIZATIONS_REQUESTED_COUNT } from '~/admin/users/constants';
 
 export const users = [
   {
@@ -71,13 +73,33 @@ export const userStatus = {
   clear_status_at: '2023-01-04T10:00:00.000Z',
 };
 
-export const soloOwnedOrganizations = {
+const organization = (index) => ({
+  id: `gid://gitlab/Organizations::Organization/${index}`,
+  name: `Foo ${index}`,
+  webUrl: `http://gdk.test:3000/-/organizations/foo-${index}`,
+});
+
+export const oneSoloOwnedOrganization = {
   count: 1,
-  nodes: [
-    {
-      id: 'gid://gitlab/Organizations::Organization/1013',
-      name: 'Foo',
-      webUrl: 'http://gdk.test:3000/-/organizations/foo',
-    },
-  ],
+  nodes: [organization(0)],
+};
+
+export const twoSoloOwnedOrganizations = {
+  count: 2,
+  nodes: range(2).map((index) => organization(index)),
+};
+
+export const multipleSoloOwnedOrganizations = {
+  count: 3,
+  nodes: range(3).map((index) => organization(index)),
+};
+
+export const multipleWithOneExtraSoloOwnedOrganizations = {
+  count: 11,
+  nodes: range(SOLO_OWNED_ORGANIZATIONS_REQUESTED_COUNT).map((index) => organization(index)),
+};
+
+export const multipleWithExtrasSoloOwnedOrganizations = {
+  count: 12,
+  nodes: range(SOLO_OWNED_ORGANIZATIONS_REQUESTED_COUNT).map((index) => organization(index)),
 };

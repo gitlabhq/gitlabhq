@@ -12871,6 +12871,29 @@ The edge type for [`ComplianceFramework`](#complianceframework).
 | <a id="complianceframeworkedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="complianceframeworkedgenode"></a>`node` | [`ComplianceFramework`](#complianceframework) | The item at the end of the edge. |
 
+#### `ComplianceRequirementConnection`
+
+The connection type for [`ComplianceRequirement`](#compliancerequirement).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="compliancerequirementconnectionedges"></a>`edges` | [`[ComplianceRequirementEdge]`](#compliancerequirementedge) | A list of edges. |
+| <a id="compliancerequirementconnectionnodes"></a>`nodes` | [`[ComplianceRequirement]`](#compliancerequirement) | A list of nodes. |
+| <a id="compliancerequirementconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `ComplianceRequirementEdge`
+
+The edge type for [`ComplianceRequirement`](#compliancerequirement).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="compliancerequirementedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="compliancerequirementedgenode"></a>`node` | [`ComplianceRequirement`](#compliancerequirement) | The item at the end of the edge. |
+
 #### `ComplianceStandardsAdherenceConnection`
 
 The connection type for [`ComplianceStandardsAdherence`](#compliancestandardsadherence).
@@ -20792,6 +20815,7 @@ Represents a ComplianceFramework associated with a Project.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="complianceframeworkcolor"></a>`color` | [`String!`](#string) | Hexadecimal representation of compliance framework's label color. |
+| <a id="complianceframeworkcompliancerequirements"></a>`complianceRequirements` | [`ComplianceRequirementConnection`](#compliancerequirementconnection) | Compliance requirements of the compliance framework. (see [Connections](#connections)) |
 | <a id="complianceframeworkdefault"></a>`default` | [`Boolean`](#boolean) | Default compliance framework for the group. |
 | <a id="complianceframeworkdescription"></a>`description` | [`String!`](#string) | Description of the compliance framework. |
 | <a id="complianceframeworkid"></a>`id` | [`ID!`](#id) | Compliance framework ID. |

@@ -63,7 +63,7 @@ export default {
           :query="list.query"
           :variables="list.variables"
           :hide-count="list.hideCount"
-          :class="{ 'gl-mb-4': i !== tab.lists.length - 1 }"
+          :class="{ '!gl-mt-3': i === 0 }"
         >
           <template #default="{ mergeRequests, count, hasNextPage, loadMore, loading, error }">
             <collapsible-section
@@ -82,7 +82,7 @@ export default {
                       <col style="width: 120px" />
                       <col style="min-width: 200px" />
                     </colgroup>
-                    <thead class="gl-border-b gl-bg-gray-10">
+                    <thead class="gl-border-b gl-bg-subtle">
                       <tr>
                         <th class="gl-pb-3 gl-pl-5 gl-pr-3" :aria-label="__('Pipeline status')">
                           <gl-icon name="pipeline" />

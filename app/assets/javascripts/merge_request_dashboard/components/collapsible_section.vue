@@ -1,11 +1,13 @@
 <script>
-import { GlButton, GlBadge, GlTooltipDirective } from '@gitlab/ui';
+import { GlBadge, GlButton, GlTooltipDirective } from '@gitlab/ui';
+import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { __, sprintf } from '~/locale';
 
 export default {
   components: {
-    GlButton,
     GlBadge,
+    GlButton,
+    CrudComponent,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -32,9 +34,6 @@ export default {
     };
   },
   computed: {
-    toggleButtonIcon() {
-      return this.open ? 'chevron-down' : 'chevron-right';
-    },
     toggleButtonLabel() {
       return sprintf(
         this.open
@@ -51,57 +50,45 @@ export default {
       handler(newVal) {
         this.open = newVal > 0;
       },
-      immediate: true,
-    },
-  },
-  methods: {
-    toggleOpen() {
-      this.open = !this.open;
     },
   },
 };
 </script>
 
 <template>
-  <div>
-    <section class="gl-border gl-rounded-base">
-      <header
-        :class="{ 'gl-rounded-base': !open }"
-        class="gl-rounded-tl-base gl-rounded-tr-base gl-bg-gray-10 gl-px-5 gl-py-4"
-      >
-        <h2 class="h5 gl-m-0">
-          <gl-button
-            :icon="toggleButtonIcon"
-            size="small"
-            category="tertiary"
-            class="gl-mr-2"
-            :aria-label="toggleButtonLabel"
-            :disabled="count === 0"
-            data-testid="section-toggle-button"
-            @click="toggleOpen"
-          />
-          {{ title }}
-          <gl-badge
-            v-if="count !== null"
-            class="gl-ml-1"
-            variant="neutral"
-            size="sm"
-            data-testid="merge-request-list-count"
-            >{{ count }}</gl-badge
-          >
-          <gl-button
-            v-gl-tooltip
-            :title="helpContent"
-            icon="information-o"
-            variant="link"
-            class="gl-relative gl-top-2 gl-float-right gl-inline-flex"
-          />
-        </h2>
-      </header>
-      <div v-if="open" data-testid="section-content">
+  <crud-component
+    is-collapsible
+    :collapsed="!open"
+    :toggle-aria-label="toggleButtonLabel"
+    :body-class="{ '!gl-mx-0 gl-mb-0': count }"
+  >
+    <template #title>
+      {{ title }}
+      <gl-badge v-if="count" size="sm">{{ count }}</gl-badge>
+    </template>
+
+    <template #actions>
+      <gl-button
+        v-gl-tooltip
+        :title="helpContent"
+        icon="information-o"
+        variant="link"
+        class="gl-mr-2 gl-self-center"
+      />
+    </template>
+
+    <template v-if="!count" #empty>
+      {{ __('No merge requests match this list.') }}
+    </template>
+
+    <template #default>
+      <div class="gl-contents" data-testid="section-content">
         <slot></slot>
       </div>
-    </section>
-    <slot v-if="open" name="pagination"></slot>
-  </div>
+    </template>
+
+    <template v-if="open" #pagination>
+      <slot name="pagination"></slot>
+    </template>
+  </crud-component>
 </template>

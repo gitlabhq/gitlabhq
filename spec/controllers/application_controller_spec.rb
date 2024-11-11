@@ -1101,14 +1101,12 @@ RSpec.describe ApplicationController, feature_category: :shared do
       end
     end
 
-    it 'returns a plaintext error response with 503 status' do
+    it 'returns a error response with 503 status' do
       get :index
 
       expect(response).to have_gitlab_http_status(:service_unavailable)
-      expect(response.body).to include(
-        "Upstream Gitaly has been exhausted: maximum time in concurrency queue reached. Try again later"
-      )
       expect(response.headers['Retry-After']).to eq(50)
+      expect(response).to render_template('errors/service_unavailable')
     end
   end
 

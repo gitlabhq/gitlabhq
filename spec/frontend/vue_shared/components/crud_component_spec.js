@@ -190,4 +190,28 @@ describe('CRUD Component', () => {
       });
     });
   });
+
+  describe('isCollapsible', () => {
+    it('renders collapsible toggle', () => {
+      createComponent({ isCollapsible: true }, { default: '<p>Body slot</p>' });
+
+      expect(findCollapseToggle().exists()).toBe(true);
+    });
+
+    it('click on toggle hides content', async () => {
+      createComponent({ isCollapsible: true }, { default: '<p>Body slot</p>' });
+
+      expect(findBody().exists()).toBe(true);
+
+      await findCollapseToggle().vm.$emit('click');
+
+      expect(findBody().exists()).toBe(false);
+    });
+
+    it('`collapsed` hides content by default', () => {
+      createComponent({ isCollapsible: true, collapsed: true }, { default: '<p>Body slot</p>' });
+
+      expect(findBody().exists()).toBe(false);
+    });
+  });
 });

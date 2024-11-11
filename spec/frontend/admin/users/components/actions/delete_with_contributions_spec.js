@@ -15,7 +15,7 @@ import {
   paths,
   associationsCount as associationsCountData,
   userDeletionObstacles,
-  soloOwnedOrganizations,
+  oneSoloOwnedOrganization,
 } from '../../mock_data';
 
 jest.mock('~/admin/users/components/modals/delete_user_modal_event_hub', () => ({
@@ -74,7 +74,7 @@ describe('DeleteWithContributions', () => {
 
     describe('when solo organizations API call returns results', () => {
       beforeEach(() => {
-        getSoloOwnedOrganizations.mockResolvedValueOnce(soloOwnedOrganizations);
+        getSoloOwnedOrganizations.mockResolvedValueOnce(oneSoloOwnedOrganization);
 
         createComponent();
       });
@@ -88,7 +88,7 @@ describe('DeleteWithContributions', () => {
           EVENT_OPEN_DELETE_USER_MODAL,
           expect.objectContaining({
             associationsCount: undefined,
-            organizations: soloOwnedOrganizations,
+            organizations: oneSoloOwnedOrganization,
             username: defaultPropsData.username,
             blockPath: paths.block,
             deletePath: paths.deleteWithContributions,

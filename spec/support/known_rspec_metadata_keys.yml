@@ -58,6 +58,7 @@
 - :features
 - :file_path
 - :fips_mode
+- :focus
 - :fog_requests
 - :freeze_time
 - :frozen_time

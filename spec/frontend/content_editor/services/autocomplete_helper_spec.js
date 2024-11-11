@@ -235,6 +235,36 @@ describe('AutocompleteHelper', () => {
     },
   );
 
+  it('filters items correctly for the second time, when the first command was different', async () => {
+    let dataSource = autocompleteHelper.getDataSource('label', { command: '/label' });
+    let results = await dataSource.search();
+
+    // all labels listed for the first command
+    expect(results.map(({ title }) => title)).toEqual([
+      'Bronce',
+      'Contour',
+      'Corolla',
+      'Cygsync',
+      'Frontier',
+      'Grand Am',
+      'Onesync',
+      'Phone',
+      'Pynefunc',
+      'Trinix',
+      'Trounswood',
+      'group::knowledge',
+      'scoped label',
+      'type::one',
+      'type::two',
+    ]);
+
+    dataSource = autocompleteHelper.getDataSource('label', { command: '/unlabel' });
+    results = await dataSource.search();
+
+    // only set labels listed for the second command
+    expect(results.map(({ title }) => title)).toEqual(['Amsche', 'Brioffe', 'Bryncefunc', 'Ghost']);
+  });
+
   it('loads default datasources if not passed', () => {
     gl.GfmAutoComplete = {
       dataSources: {

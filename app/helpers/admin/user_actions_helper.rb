@@ -51,7 +51,7 @@ module Admin
     def delete_actions
       return unless can?(current_user, :destroy_user, @user) && !@user.blocked_pending_approval?
 
-      @actions << 'delete' if @user.can_be_removed?
+      @actions << 'delete' if @user.solo_owned_groups.none?
       @actions << 'delete_with_contributions'
     end
 

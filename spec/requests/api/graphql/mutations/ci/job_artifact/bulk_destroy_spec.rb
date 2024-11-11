@@ -105,7 +105,7 @@ RSpec.describe 'BulkDestroy', feature_category: :job_artifacts do
 
         expect(mutation_response).to include(
           "destroyedCount" => 2,
-          "destroyedIds" => [gid_string(first_artifact), gid_string(second_artifact)]
+          "destroyedIds" => match_array([gid_string(first_artifact), gid_string(second_artifact)])
         )
 
         expect(response).to have_gitlab_http_status(:success)

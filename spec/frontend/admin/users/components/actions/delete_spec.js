@@ -10,7 +10,7 @@ import eventHub, {
 } from '~/admin/users/components/modals/delete_user_modal_event_hub';
 import { getSoloOwnedOrganizations } from '~/admin/users/utils';
 import { SOLO_OWNED_ORGANIZATIONS_EMPTY } from '~/admin/users/constants';
-import { paths, soloOwnedOrganizations } from '../../mock_data';
+import { paths, oneSoloOwnedOrganization } from '../../mock_data';
 
 jest.mock('~/admin/users/components/modals/delete_user_modal_event_hub', () => ({
   ...jest.requireActual('~/admin/users/components/modals/delete_user_modal_event_hub'),
@@ -60,7 +60,7 @@ describe('Delete', () => {
 
     describe('when API request is successful', () => {
       beforeEach(() => {
-        getSoloOwnedOrganizations.mockResolvedValueOnce(soloOwnedOrganizations);
+        getSoloOwnedOrganizations.mockResolvedValueOnce(oneSoloOwnedOrganization);
 
         createComponent();
       });
@@ -72,7 +72,7 @@ describe('Delete', () => {
         expect(eventHub.$emit).toHaveBeenCalledWith(
           EVENT_OPEN_DELETE_USER_MODAL,
           expect.objectContaining({
-            organizations: soloOwnedOrganizations,
+            organizations: oneSoloOwnedOrganization,
             username: defaultPropsData.username,
             blockPath: paths.block,
             deletePath: paths.delete,

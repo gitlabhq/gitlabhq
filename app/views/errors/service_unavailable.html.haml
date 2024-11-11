@@ -1,0 +1,14 @@
+- content_for(:title, 'Service unavailable')
+.error-container
+  = image_tag('illustrations/error/error-503-lg.svg', alt: '503', lazy: false)
+  %h1
+    = s_('503|503: Service unavailable')
+  %p
+    = s_('503|Please contact your GitLab administrator if you think this is a mistake.')
+  .action-container
+    = form_tag search_path, method: :get, class: 'form-inline-flex' do |f|
+      .field
+        = search_field_tag :search, '', placeholder: _('Search for projects, issues, etc.'), class: 'form-control'
+      = render Pajamas::ButtonComponent.new(variant: :confirm, type: :submit) do
+        = _('Search')
+  = render 'errors/footer'

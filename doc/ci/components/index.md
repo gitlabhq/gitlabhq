@@ -796,3 +796,19 @@ This GitLab CI configuration is invalid: Component 'gitlab.com/my-namespace/my-p
 
 The `~latest` behavior [was updated](https://gitlab.com/gitlab-org/gitlab/-/issues/442238)
 in GitLab 16.10. It now refers to the latest semantic version of the catalog resource. To resolve this issue, [create a new release](#publish-a-new-release).
+
+### Error: `Build component error: Spec must be a valid json schema`
+
+If a component has invalid formatting, you might not be able to create a release
+and could receive an error like `Build component error: Spec must be a valid json schema`.
+
+This error can be caused by an empty `spec:inputs` section. If your configuration
+does not use any inputs, you can make the `spec` section empty instead. For example:
+
+```yaml
+spec:
+---
+
+my-component:
+  script: echo
+```

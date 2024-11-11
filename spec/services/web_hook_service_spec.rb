@@ -486,6 +486,25 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
           expect { service_instance.execute }.not_to raise_error
         end
       end
+
+      context 'when template tries to access Array property' do
+        let(:data) do
+          { commits: [{ title: 'My commit title' }] }
+        end
+
+        before do
+          project_hook.custom_webhook_template = '{"test":"{{commits.title}}"}'
+        end
+
+        it 'handles the error', :aggregate_failures do
+          expect(service_instance.execute).to have_attributes(
+            status: :error,
+            message: 'Error while parsing rendered custom webhook template: ' \
+              'You may be trying to access an array value, which is not supported.'
+          )
+          expect { service_instance.execute }.not_to raise_error
+        end
+      end
     end
 
     context 'when custom_headers are set' do

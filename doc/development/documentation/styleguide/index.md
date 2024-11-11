@@ -950,18 +950,20 @@ If you must use one of these links:
 
 Examples:
 
-```markdown
-GitLab team members can view more information in this confidential issue:
-`https://gitlab.com/gitlab-org/gitlab/-/issues/<issue_number>`
-```
+- ```markdown
+  GitLab team members can view more information in this confidential issue:
+  `https://gitlab.com/gitlab-org/gitlab/-/issues/<issue_number>`
+  ```
 
-GitLab team members can view more information in this internal handbook page:
-`https://internal.gitlab.com/handbook/<link>`
+- ```markdown
+  GitLab team members can view more information in this internal handbook page:
+  `https://internal.gitlab.com/handbook/<link>`
+  ```
 
-```markdown
-Users with the Maintainer role for the project can use the pipeline editor:
-`https://gitlab.com/gitlab-org/gitlab/-/ci/editor`
-```
+- ```markdown
+  Users with the Maintainer role for the project can use the pipeline editor:
+  `https://gitlab.com/gitlab-org/gitlab/-/ci/editor`
+  ```
 
 ### Link to specific lines of code
 

@@ -1,54 +1,78 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Merge request dashboard collapsible section renders section 1`] = `
-<div>
-  <section
-    class="gl-border gl-rounded-base"
+<section
+  class="crud gl-bg-subtle gl-border gl-border-section gl-mt-5 gl-rounded-base"
+  id=""
+>
+  <header
+    class="crud-header gl-bg-section gl-border-b gl-border-section gl-flex gl-flex-wrap gl-gap-x-5 gl-gap-y-2 gl-justify-between gl-pr-10 gl-px-5 gl-py-4 gl-relative gl-rounded-t-base"
   >
-    <header
-      class="gl-bg-gray-10 gl-px-5 gl-py-4 gl-rounded-tl-base gl-rounded-tr-base"
+    <div
+      class="gl-flex gl-flex-col gl-self-center"
     >
       <h2
-        class="gl-m-0 h5"
+        class="gl-font-bold gl-gap-3 gl-inline-flex gl-items-center gl-leading-normal gl-m-0 gl-text-base"
+        data-testid="crud-title"
       >
-        <gl-button-stub
-          aria-label="Collapse approved merge requests"
-          buttontextclasses=""
-          category="tertiary"
-          class="gl-mr-2"
-          data-testid="section-toggle-button"
-          icon="chevron-down"
-          size="small"
-          variant="default"
-        />
         Approved
         <gl-badge-stub
-          class="gl-ml-1"
-          data-testid="merge-request-list-count"
           iconsize="md"
           size="sm"
           tag="span"
           target="_self"
-          variant="neutral"
+          variant="muted"
         >
           3
         </gl-badge-stub>
-        <gl-button-stub
-          buttontextclasses=""
-          category="primary"
-          class="gl-float-right gl-inline-flex gl-relative gl-top-2"
-          icon="information-o"
-          size="medium"
-          title=""
-          variant="link"
-        />
       </h2>
-    </header>
+    </div>
     <div
+      class="gl-flex gl-gap-3 gl-items-baseline"
+      data-testid="crud-actions"
+    >
+      <gl-button-stub
+        buttontextclasses=""
+        category="primary"
+        class="gl-mr-2 gl-self-center"
+        icon="information-o"
+        size="medium"
+        title=""
+        variant="link"
+      />
+      <div
+        class="gl-absolute gl-border-l gl-border-l-section gl-h-6 gl-pl-3 gl-right-5 gl-top-4"
+      >
+        <gl-button-stub
+          aria-controls=""
+          aria-expanded="true"
+          aria-label="Collapse"
+          buttontextclasses=""
+          category="tertiary"
+          class="-gl-mr-2 gl-self-start"
+          data-testid="crud-collapse-toggle"
+          icon="chevron-lg-up"
+          size="small"
+          title="Collapse"
+          variant="default"
+        />
+      </div>
+    </div>
+  </header>
+  <div
+    class="!gl-mx-0 crud-body gl-mb-0 gl-mx-5 gl-my-4 gl-rounded-b-base"
+    data-testid="crud-body"
+  >
+    <div
+      class="gl-contents"
       data-testid="section-content"
     >
       content
     </div>
-  </section>
-</div>
+    <div
+      class="crud-pagination gl-border-t gl-flex gl-justify-center gl-p-5"
+      data-testid="crud-pagination"
+    />
+  </div>
+</section>
 `;
