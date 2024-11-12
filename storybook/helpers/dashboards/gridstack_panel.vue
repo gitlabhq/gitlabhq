@@ -1,5 +1,5 @@
 <script>
-import PanelsBase from 'ee/vue_shared/components/customizable_dashboard/panels_base.vue';
+import PanelsBase from '~/vue_shared/components/customizable_dashboard/panels_base.vue';
 
 export default {
   name: 'GridstackPanel',

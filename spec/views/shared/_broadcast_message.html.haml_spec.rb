@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'shared/_broadcast_message.html.haml', feature_category: :onboarding do
+RSpec.describe 'shared/_broadcast_message.html.haml', feature_category: :notifications do
   describe 'render' do
     let(:dismissal_data) { "[data-dismissal-path=\"#{broadcast_message_dismissals_path}\"]" }
 

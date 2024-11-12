@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Maven::FindOrCreatePackageService, feature_category: :package_registry do
+RSpec.describe Packages::Maven::FindOrCreatePackageService, :clean_gitlab_redis_shared_state, feature_category: :package_registry do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
 
@@ -14,7 +14,10 @@ RSpec.describe Packages::Maven::FindOrCreatePackageService, feature_category: :p
   let(:params) { { path: param_path, file_name: file_name } }
   let(:service) { described_class.new(project, user, params) }
 
+  it { expect(described_class).to include_module(::Gitlab::ExclusiveLeaseHelpers) }
+
   describe '#execute' do
+    include ExclusiveLeaseHelpers
     using RSpec::Parameterized::TableSyntax
 
     subject(:execute_service) { service.execute }
@@ -218,5 +221,66 @@ RSpec.describe Packages::Maven::FindOrCreatePackageService, feature_category: :p
                       "Maven metadatum app group is invalid, Maven metadatum app name can't be blank, " \
                       "Maven metadatum app name is invalid, Name can't be blank, Name is invalid"
     end
+
+    context 'with exlusive lease guard' do
+      let(:lease_key) { service.send(:lease_key) }
+
+      it 'obtains a lease to find or create a new package' do
+        expect_to_obtain_exclusive_lease(lease_key)
+
+        execute_service
+      end
+
+      context 'when the lease is already taken' do
+        before do
+          stub_exclusive_lease_taken(lease_key)
+        end
+
+        it { is_expected.to be_error.and have_attributes(message: 'Failed to obtain a lock') }
+      end
+
+      context 'when use_exclusive_lease_in_mvn_find_or_create_package feature flag is disabled' do
+        before do
+          stub_feature_flags(use_exclusive_lease_in_mvn_find_or_create_package: false)
+        end
+
+        it 'does not obtain a lease' do
+          expect(stub_exclusive_lease).not_to receive(:try_obtain)
+
+          execute_service
+        end
+      end
+    end
+
+    context 'with parallel execution' do
+      it 'only creates one package' do
+        expect do
+          with_threads do
+            ::Gitlab::ExclusiveLease.skipping_transaction_check do
+              described_class.new(project, user, params).execute
+            end
+          end
+        end.to change { Packages::Package.maven.count }.by(1)
+      end
+    end
+  end
+
+  def with_threads(count: 5, &block)
+    return unless block
+
+    # create a race condition - structure from https://blog.arkency.com/2015/09/testing-race-conditions/
+    wait_for_it = true
+
+    threads = Array.new(count) do
+      Thread.new do
+        # A loop to make threads busy until we `join` them
+        true while wait_for_it
+
+        yield
+      end
+    end
+
+    wait_for_it = false
+    threads.each(&:join)
   end
 end

@@ -10195,6 +10195,9 @@ msgstr ""
 msgid "BulkImport|Import is finished. Pick another name for re-import"
 msgstr ""
 
+msgid "BulkImport|Import user memberships"
+msgstr ""
+
 msgid "BulkImport|Import with projects"
 msgstr ""
 
@@ -10277,6 +10280,9 @@ msgid "BulkImport|Review results"
 msgstr ""
 
 msgid "BulkImport|Select parent group"
+msgstr ""
+
+msgid "BulkImport|Select whether user memberships in groups and projects are imported."
 msgstr ""
 
 msgid "BulkImport|Showing %{start}-%{end} of %{total}"

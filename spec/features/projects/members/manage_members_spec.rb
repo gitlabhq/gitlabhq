@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Members > Manage members', :js, feature_category: :onboarding do
+RSpec.describe 'Projects > Members > Manage members', :js, feature_category: :groups_and_projects do
   include ListboxHelpers
   include Features::MembersHelpers
   include Features::InviteMembersModalHelpers

@@ -139,14 +139,13 @@ Create the group you want to import to and connect the source GitLab instance:
 ## Select the groups and projects to import
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385689) in GitLab 15.8, option to import groups with or without projects.
+> - **Import user memberships** checkbox [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/477734) in GitLab 17.6.
 
-After you have authorized access to the source GitLab instance, you are redirected to the GitLab group
-importer page. Here you can see a list of the top-level groups on the connected source instance where you have the Owner
-role.
+After you have authorized access to the source GitLab instance, you are redirected to the GitLab group importer page. Here you can see a list of the top-level groups on the connected source instance where you have the Owner role.
 
-1. By default, the proposed group namespaces match the names as they exist in source instance, but based on your permissions, you can choose to edit these names before you
-   proceed to import any of them. Group and project paths must conform to naming [limitations](../../reserved_names.md#limitations-on-usernames-project-and-group-names-and-slugs)
-   and are normalized if necessary to avoid import failures.
+If you do not want to import all user memberships from the source instance, ensure the **Import user memberships** checkbox is cleared. For example, the source instance might have 200 members, but you might want to import 50 members only. After the import completes, you can add more members to groups and projects.
+
+1. By default, the proposed group namespaces match the names as they exist in source instance, but based on your permissions, you can choose to edit these names before you proceed to import any of them. Group and project paths must conform to naming [limitations](../../reserved_names.md#limitations-on-usernames-project-and-group-names-and-slugs) and are normalized if necessary to avoid import failures.
 1. Next to the groups you want to import, select either:
    - **Import with projects**. If this is not available, see [prerequisites](#prerequisites).
    - **Import without projects**.
@@ -154,8 +153,7 @@ role.
 1. After a group has been imported, select its GitLab path to open its GitLab URL.
 
 WARNING:
-Importing groups with projects is in [beta](../../../policy/experiment-beta-support.md#beta). This feature is not
-ready for production use.
+Importing groups with projects is in [beta](../../../policy/experiment-beta-support.md#beta). This feature is not ready for production use.
 
 ## Group import history
 

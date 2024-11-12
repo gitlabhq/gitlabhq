@@ -231,29 +231,7 @@ export default {
               internal: isNoteInternal,
             },
           },
-          update(store, createNoteData) {
-            const numErrors = createNoteData.data?.createNote?.errors?.length;
-
-            if (numErrors) {
-              const { errors } = createNoteData.data.createNote;
-
-              // TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/346557
-              // When a note only contains quick actions,
-              // additional "helpful" messages are embedded in the errors field.
-              // For instance, a note solely composed of "/assign @foobar" would
-              // return a message "Commands only Assigned @root." as an error on creation
-              // even though the quick action successfully executed.
-              if (
-                numErrors === 2 &&
-                errors[0].includes('Commands only') &&
-                errors[1].includes('Command names')
-              ) {
-                return;
-              }
-
-              throw new Error(createNoteData.data?.createNote?.errors[0]);
-            }
-          },
+          update: this.onNoteUpdate,
         });
         /**
          * https://gitlab.com/gitlab-org/gitlab/-/issues/388314
@@ -281,6 +259,37 @@ export default {
     showReplyForm() {
       this.isEditing = true;
       this.$emit('startReplying');
+    },
+    onNoteUpdate(store, createNoteData) {
+      const numErrors = createNoteData.data?.createNote?.errors?.length;
+
+      if (numErrors) {
+        const { errors } = createNoteData.data.createNote;
+
+        // TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/503600
+        // Refetching widgets as a temporary solution for dynamic updates
+        // of the sidebar on changing the work item type
+        if (numErrors === 2 && errors[1].includes('"type"')) {
+          this.$apollo.queries.workItem.refetch();
+          return;
+        }
+
+        // TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/346557
+        // When a note only contains quick actions,
+        // additional "helpful" messages are embedded in the errors field.
+        // For instance, a note solely composed of "/assign @foobar" would
+        // return a message "Commands only Assigned @root." as an error on creation
+        // even though the quick action successfully executed.
+        if (
+          numErrors === 2 &&
+          errors[0].includes('Commands only') &&
+          errors[1].includes('Command names')
+        ) {
+          return;
+        }
+
+        throw new Error(createNoteData.data?.createNote?.errors[0]);
+      }
     },
   },
 };

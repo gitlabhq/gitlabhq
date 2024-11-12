@@ -402,6 +402,7 @@ Dangerfile
 /spec/frontend/diffs/store/
 
 ^[Product Analytics] @gitlab-org/analytics-section/product-analytics/engineers/frontend
+/app/assets/javascripts/vue_shared/components/customizable_dashboard/
 /ee/app/assets/javascripts/analytics/analytics_dashboards/components/analytics_dashboard.vue
 /ee/app/assets/javascripts/analytics/analytics_dashboards/components/analytics_visualization_designer.vue
 /ee/app/assets/javascripts/analytics/analytics_dashboards/components/dashboards_list.vue
@@ -415,10 +416,6 @@ Dangerfile
 /ee/app/assets/javascripts/analytics/analytics_dashboards/router.js
 /ee/app/assets/javascripts/analytics/analytics_dashboards/constants.js
 /ee/app/assets/javascripts/analytics/analytics_dashboards/graphql/queries/get_all_customizable_dashboards.query.graphql
-/ee/app/assets/javascripts/analytics/analytics_dashboards/graphql/queries/get_customizable_dashboard.query.graphql
-/ee/app/assets/javascripts/analytics/analytics_dashboards/graphql/queries/get_all_customizable_visualizations.query.graphql
-/ee/app/assets/javascripts/vue_shared/components/customizable_dashboard/customizable_dashboard.vue
-/ee/app/assets/javascripts/vue_shared/components/customizable_dashboard/panels_base.vue
 /ee/app/assets/javascripts/product_analytics/
 
 ^[Analytics Instrumentation] @gitlab-org/analytics-section/analytics-instrumentation/engineers
