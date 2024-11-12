@@ -43,8 +43,9 @@ export default {
       v-show="isCollapsed"
       :aria-label="ariaLabel"
       type="button"
-      class="js-text-expander-prepend text-expander gl-rounded-none gl-border-none !gl-bg-transparent gl-p-0 !gl-shadow-none !gl-outline-none"
+      class="js-text-expander-prepend"
       icon="ellipsis_h"
+      category="tertiary"
       @click="onClick"
     />
     <span v-if="isCollapsed"> <slot name="short"></slot> </span>
@@ -53,8 +54,9 @@ export default {
       v-show="!isCollapsed"
       :aria-label="ariaLabel"
       type="button"
-      class="js-text-expander-append text-expander gl-rounded-none gl-border-none !gl-bg-transparent gl-p-0 !gl-shadow-none !gl-outline-none"
+      class="js-text-expander-append"
       icon="ellipsis_h"
+      category="tertiary"
       @click="onClick"
     />
   </span>

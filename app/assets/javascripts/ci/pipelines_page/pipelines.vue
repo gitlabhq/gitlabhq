@@ -410,7 +410,6 @@ export default {
       <div v-else-if="stateToRender === $options.stateMap.tableList">
         <pipelines-table
           :pipelines="state.pipelines"
-          :update-graph-dropdown="updateGraphDropdown"
           :pipeline-id-type="selectedPipelineKeyOption.value"
           @cancel-pipeline="onCancelPipeline"
           @refresh-pipelines-table="onRefreshPipelinesTable"

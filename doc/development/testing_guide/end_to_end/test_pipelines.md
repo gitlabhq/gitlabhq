@@ -39,7 +39,7 @@ E2E test execution pipeline consists of several stages which all support executi
 
 This stage is responsible for the following tasks:
 
-- Fetching `knapsack` reports that support [parallel test execution](index.md#run-tests-in-parallel).
+- Fetching `knapsack` reports that support [parallel test execution](index.md#test-parallelization).
 - Triggering downstream pipeline which builds the [`omnibus-gitlab`](https://gitlab.com/gitlab-org/omnibus-gitlab) Docker image.
 
 ##### test
@@ -175,7 +175,7 @@ execution of E2E tests.
 
 ##### .pre
 
-This stage is responsible for fetching `knapsack` reports that support [parallel test execution](index.md#run-tests-in-parallel).
+This stage is responsible for fetching `knapsack` reports that support [parallel test execution](index.md#test-parallelization).
 
 ##### test
 

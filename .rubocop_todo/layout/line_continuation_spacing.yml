@@ -15,7 +15,6 @@ Layout/LineContinuationSpacing:
     - 'app/services/feature_flags/update_service.rb'
     - 'app/services/issues/build_service.rb'
     - 'app/services/merge_requests/merge_service.rb'
-    - 'app/services/uploads/destroy_service.rb'
     - 'app/services/users/email_verification/validate_token_service.rb'
     - 'ee/app/controllers/ee/ldap/omniauth_callbacks_controller.rb'
     - 'ee/app/graphql/mutations/requirements_management/export_requirements.rb'

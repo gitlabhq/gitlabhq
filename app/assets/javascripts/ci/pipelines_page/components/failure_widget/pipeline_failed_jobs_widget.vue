@@ -57,7 +57,7 @@ export default {
         return project?.pipeline?.jobs?.count || 0;
       },
       error() {
-        createAlert({ message: this.$options.i18n.fetchError });
+        createAlert({ message: this.$options.fetchError });
       },
     },
   },
@@ -92,7 +92,7 @@ export default {
       try {
         await this.$apollo.queries.failedJobsCount.refetch();
       } catch {
-        createAlert({ message: this.$options.i18n.fetchError });
+        createAlert({ message: this.$options.fetchError });
       }
     },
   },

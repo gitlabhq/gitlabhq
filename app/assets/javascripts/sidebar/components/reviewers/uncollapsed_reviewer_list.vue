@@ -156,7 +156,7 @@ export default {
     },
     showRequestReviewButton(user) {
       if (!user.mergeRequestInteraction.approved) {
-        return !['UNREVIEWED', 'UNAPPROVED'].includes(user.mergeRequestInteraction.reviewState);
+        return !['UNREVIEWED'].includes(user.mergeRequestInteraction.reviewState);
       }
 
       return true;

@@ -1,7 +1,9 @@
+import Vue, { nextTick } from 'vue';
+import VueApollo from 'vue-apollo';
 import { GlLoadingIcon, GlModal, GlTableLite } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
-import { nextTick } from 'vue';
 import fixture from 'test_fixtures/pipelines/pipelines.json';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { stubComponent } from 'helpers/stub_component';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -17,6 +19,8 @@ import {
 import { createAlert } from '~/alert';
 import { TOAST_MESSAGE } from '~/ci/pipeline_details/constants';
 import axios from '~/lib/utils/axios_utils';
+
+Vue.use(VueApollo);
 
 const $toast = {
   show: jest.fn(),
@@ -59,6 +63,7 @@ describe('Pipelines table in Commits and Merge requests', () => {
           methods: { show: showMock },
         }),
       },
+      apolloProvider: createMockApollo(),
     });
   };
 

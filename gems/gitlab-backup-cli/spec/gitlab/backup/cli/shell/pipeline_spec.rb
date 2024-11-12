@@ -6,6 +6,9 @@ RSpec.describe Gitlab::Backup::Cli::Shell::Pipeline do
   let(:sort_command) { command.new('sort') }
   let(:true_command) { command.new('true') }
   let(:false_command) { command.new('false') }
+  let(:envdata) do
+    { 'CUSTOM' => 'data' }
+  end
 
   subject(:pipeline) { described_class }
 
@@ -26,6 +29,18 @@ RSpec.describe Gitlab::Backup::Cli::Shell::Pipeline do
       result = pipeline.new(true_command, true_command).run!
 
       expect(result).to be_a(Gitlab::Backup::Cli::Shell::Pipeline::Result)
+    end
+
+    it 'sets env variables from provided commands as part of pipeline execution' do
+      echo_command = command.new("echo \"variable value ${CUSTOM}\"", env: envdata)
+      read_io, write_io = IO.pipe
+
+      pipeline.new(true_command, echo_command).run!(output: write_io)
+      write_io.close
+      output = read_io.read.chomp
+      read_io.close
+
+      expect(output).to eq('variable value data')
     end
 
     context 'with Pipeline::Status' do

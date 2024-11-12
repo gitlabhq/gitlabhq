@@ -10,14 +10,14 @@ Some tests are designed to be run against specific environments, or in specific 
 
 ## Available switches
 
-| Switch | Function | Type |
-| -------| ------- | ----- |
-| `tld`  | Set the top-level domain matcher | `String` |
-| `subdomain` | Set the subdomain matcher | `Array` or `String` |
-| `domain` | Set the domain matcher | `String` |
-| `production` | Match the production environment | `Static` |
-| `pipeline` | Match a pipeline | `Array` or `Static`|
-| `job` | Match a job | `Array` or `Static`|
+| Switch       | Function                         | Type                |
+| ------------ | -------------------------------- | ------------------- |
+| `tld`        | Set the top-level domain matcher | `String`            |
+| `subdomain`  | Set the subdomain matcher        | `Array` or `String` |
+| `domain`     | Set the domain matcher           | `String`            |
+| `production` | Match the production environment | `Static`            |
+| `pipeline`   | Match a pipeline                 | `Array` or `Static` |
+| `job`        | Match a job                      | `Array` or `Static` |
 
 WARNING:
 You cannot specify `:production` and `{ <switch>: 'value' }` simultaneously.
@@ -37,19 +37,19 @@ Matches use:
 - Regex or string matching for jobs
 - Lambda or truthy/falsey value for generic condition
 
-| Test execution context                   | Key | Matches |
-| ----------------                         | --- | ---------------                                                            |
-| `gitlab.com`                             | `only: :production` | `gitlab.com`                                               |
-| `staging.gitlab.com`                     | `only: { subdomain: :staging }` | `(staging).+.com`                              |
-| `gitlab.com and staging.gitlab.com`      | `only: { subdomain: /(staging.)?/, domain: 'gitlab' }` | `(staging.)?gitlab.com` |
-| `dev.gitlab.org`                         | `only: { tld: '.org', domain: 'gitlab', subdomain: 'dev' }` | `(dev).gitlab.org` |
-| `staging.gitlab.com and domain.gitlab.com` | `only: { subdomain: %i[staging domain] }` | `(staging\|domain).+.com`             |
-| The `nightly` pipeline                     | `only: { pipeline: :nightly }` | ["nightly scheduled pipeline"](https://gitlab.com/gitlab-org/gitlab/-/pipeline_schedules) |
-| The `nightly` and `canary` pipelines | `only: { pipeline: [:nightly, :canary] }` | ["nightly scheduled pipeline"](https://gitlab.com/gitlab-org/gitlab/-/pipeline_schedules) and ["canary"](https://gitlab.com/gitlab-org/quality/canary) |
-| The `ee:instance` job | `only: { job: 'ee:instance' }` | The `ee:instance` job in any pipeline |
-| Any `quarantine` job | `only: { job: '.*quarantine' }` | Any job ending in `quarantine` in any pipeline |
-| Local development environment | `only: :local` | Any environment where `Runtime::Env.running_in_ci?` is false |
-| Any run where condition evaluates to a truthy value | `only: { condition: -> { ENV['TEST_ENV'] == 'true' } }` | Any run where `TEST_ENV` is set to true |
+| Test execution context                              | Key                                                         | Matches                                                                                                                                                |
+| --------------------------------------------------- | ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `gitlab.com`                                        | `only: :production`                                         | `gitlab.com`                                                                                                                                           |
+| `staging.gitlab.com`                                | `only: { subdomain: :staging }`                             | `(staging).+.com`                                                                                                                                      |
+| `gitlab.com and staging.gitlab.com`                 | `only: { subdomain: /(staging.)?/, domain: 'gitlab' }`      | `(staging.)?gitlab.com`                                                                                                                                |
+| `dev.gitlab.org`                                    | `only: { tld: '.org', domain: 'gitlab', subdomain: 'dev' }` | `(dev).gitlab.org`                                                                                                                                     |
+| `staging.gitlab.com and domain.gitlab.com`          | `only: { subdomain: %i[staging domain] }`                   | `(staging\|domain).+.com`                                                                                                                              |
+| The `nightly` pipeline                              | `only: { pipeline: :nightly }`                              | ["nightly scheduled pipeline"](https://gitlab.com/gitlab-org/gitlab/-/pipeline_schedules)                                                              |
+| The `nightly` and `canary` pipelines                | `only: { pipeline: [:nightly, :canary] }`                   | ["nightly scheduled pipeline"](https://gitlab.com/gitlab-org/gitlab/-/pipeline_schedules) and ["canary"](https://gitlab.com/gitlab-org/quality/canary) |
+| The `ee:instance` job                               | `only: { job: 'ee:instance' }`                              | The `ee:instance` job in any pipeline                                                                                                                  |
+| Any `quarantine` job                                | `only: { job: '.*quarantine' }`                             | Any job ending in `quarantine` in any pipeline                                                                                                         |
+| Local development environment                       | `only: :local`                                              | Any environment where `Runtime::Env.running_in_ci?` is false                                                                                           |
+| Any run where condition evaluates to a truthy value | `only: { condition: -> { ENV['TEST_ENV'] == 'true' } }`     | Any run where `TEST_ENV` is set to true                                                                                                                |
 
 ```ruby
 RSpec.describe 'Area' do
@@ -81,18 +81,18 @@ Matches use:
 - Regex or string matching for jobs
 - Lambda or truthy/falsey value for generic condition
 
-| Test execution context                   | Key | Matches |
-| ----------------                         | --- | ---------------                                                            |
-| `gitlab.com`                             | `except: :production` | `gitlab.com`                                               |
-| `staging.gitlab.com`                     | `except: { subdomain: :staging }` | `(staging).+.com`                              |
-| `gitlab.com and staging.gitlab.com`      | `except: { subdomain: /(staging.)?/, domain: 'gitlab' }` | `(staging.)?gitlab.com` |
-| `dev.gitlab.org`                         | `except: { tld: '.org', domain: 'gitlab', subdomain: 'dev' }` | `(dev).gitlab.org` |
-| `staging.gitlab.com and domain.gitlab.com` | `except: { subdomain: %i[staging domain] }` | `(staging\|domain).+.com`             |
-| The `nightly` pipeline                     | `only: { pipeline: :nightly }` | ["nightly scheduled pipeline"](https://gitlab.com/gitlab-org/gitlab/-/pipeline_schedules) |
-| The `nightly` and `canary` pipelines | `only: { pipeline: [:nightly, :canary] }` | ["nightly scheduled pipeline"](https://gitlab.com/gitlab-org/gitlab/-/pipeline_schedules) and ["canary"](https://gitlab.com/gitlab-org/quality/canary) |
-| The `ee:instance` job | `except: { job: 'ee:instance' }` | The `ee:instance` job in any pipeline |
-| Any `quarantine` job | `except: { job: '.*quarantine' }` | Any job ending in `quarantine` in any pipeline |
-| Any run except where condition evaluates to a truthy value | `except: { condition: -> { ENV['TEST_ENV'] == 'true' } }` | Any run where `TEST_ENV` is not set to true |
+| Test execution context                                     | Key                                                           | Matches                                                                                                                                                |
+| ---------------------------------------------------------- | ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `gitlab.com`                                               | `except: :production`                                         | `gitlab.com`                                                                                                                                           |
+| `staging.gitlab.com`                                       | `except: { subdomain: :staging }`                             | `(staging).+.com`                                                                                                                                      |
+| `gitlab.com and staging.gitlab.com`                        | `except: { subdomain: /(staging.)?/, domain: 'gitlab' }`      | `(staging.)?gitlab.com`                                                                                                                                |
+| `dev.gitlab.org`                                           | `except: { tld: '.org', domain: 'gitlab', subdomain: 'dev' }` | `(dev).gitlab.org`                                                                                                                                     |
+| `staging.gitlab.com and domain.gitlab.com`                 | `except: { subdomain: %i[staging domain] }`                   | `(staging\|domain).+.com`                                                                                                                              |
+| The `nightly` pipeline                                     | `only: { pipeline: :nightly }`                                | ["nightly scheduled pipeline"](https://gitlab.com/gitlab-org/gitlab/-/pipeline_schedules)                                                              |
+| The `nightly` and `canary` pipelines                       | `only: { pipeline: [:nightly, :canary] }`                     | ["nightly scheduled pipeline"](https://gitlab.com/gitlab-org/gitlab/-/pipeline_schedules) and ["canary"](https://gitlab.com/gitlab-org/quality/canary) |
+| The `ee:instance` job                                      | `except: { job: 'ee:instance' }`                              | The `ee:instance` job in any pipeline                                                                                                                  |
+| Any `quarantine` job                                       | `except: { job: '.*quarantine' }`                             | Any job ending in `quarantine` in any pipeline                                                                                                         |
+| Any run except where condition evaluates to a truthy value | `except: { condition: -> { ENV['TEST_ENV'] == 'true' } }`     | Any run where `TEST_ENV` is not set to true                                                                                                            |
 
 ```ruby
 RSpec.describe 'Area' do

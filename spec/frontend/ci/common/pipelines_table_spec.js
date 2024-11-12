@@ -1,6 +1,9 @@
+import Vue from 'vue';
+import VueApollo from 'vue-apollo';
 import { GlTableLite, GlSkeletonLoader } from '@gitlab/ui';
 // fixture located in spec/frontend/fixtures/pipelines.rb
 import fixture from 'test_fixtures/pipelines/pipelines.json';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import LegacyPipelineMiniGraph from '~/ci/pipeline_mini_graph/legacy_pipeline_mini_graph/legacy_pipeline_mini_graph.vue';
@@ -18,6 +21,8 @@ import {
 } from '~/ci/constants';
 
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
+
+Vue.use(VueApollo);
 
 describe('Pipelines Table', () => {
   let wrapper;
@@ -56,6 +61,7 @@ describe('Pipelines Table', () => {
         PipelineOperations: true,
         ...stubs,
       },
+      apolloProvider: createMockApollo(),
     });
   };
 

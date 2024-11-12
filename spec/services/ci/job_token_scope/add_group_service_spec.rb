@@ -75,7 +75,7 @@ RSpec.describe Ci::JobTokenScope::AddGroupService, feature_category: :continuous
           service.execute(target_group)
         end
 
-        it_behaves_like 'returns error', 'Target group is already in the job token scope'
+        it_behaves_like 'returns error', 'This group is already in the job token allowlist.'
       end
 
       context 'when create method raises an invalid record exception' do

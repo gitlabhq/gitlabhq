@@ -3,7 +3,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import DownstreamPipelines from '~/ci/pipeline_mini_graph/downstream_pipelines.vue';
 import LegacyPipelineMiniGraph from '~/ci/pipeline_mini_graph/legacy_pipeline_mini_graph/legacy_pipeline_mini_graph.vue';
-import PipelineStages from '~/ci/pipeline_mini_graph/legacy_pipeline_mini_graph/legacy_pipeline_stages.vue';
+import PipelineStages from '~/ci/pipeline_mini_graph/pipeline_stages.vue';
 import mockLinkedPipelines from '../legacy_linked_pipelines_mock_data';
 
 const mockStages = pipelines[0].details.stages;
@@ -43,7 +43,6 @@ describe('Legacy Pipeline Mini Graph', () => {
         isMergeTrain: false,
         pipelinePath: '',
         stages: expect.any(Array),
-        updateDropdown: false,
         upstreamPipeline: undefined,
       });
     });
@@ -72,7 +71,6 @@ describe('Legacy Pipeline Mini Graph', () => {
         isMergeTrain: false,
         pipelinePath: '',
         stages: expect.any(Array),
-        updateDropdown: false,
         upstreamPipeline: expect.any(Object),
       });
     });
@@ -103,7 +101,6 @@ describe('Legacy Pipeline Mini Graph', () => {
         isMergeTrain: false,
         pipelinePath: 'my/pipeline/path',
         stages: expect.any(Array),
-        updateDropdown: false,
         upstreamPipeline: undefined,
       });
     });

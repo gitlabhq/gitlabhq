@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe PreferencesHelper do
+RSpec.describe PreferencesHelper, feature_category: :shared do
   let_it_be(:user) { build(:user) }
 
   before do
@@ -253,8 +253,29 @@ RSpec.describe PreferencesHelper do
     end
 
     context 'on default' do
-      it 'does not include integration views' do
+      it 'includes integration views' do
         expect(helper.integration_views).to be_empty
+      end
+
+      context 'when Web IDE Extension Marketplace feature is enabled' do
+        before do
+          allow(::WebIde::ExtensionsMarketplace).to receive(:feature_enabled?).with(user: user).and_return(true)
+        end
+
+        it 'includes extension marketplace integration' do
+          expect(helper.integration_views).to include(
+            a_hash_including({
+              name: 'extensions_marketplace',
+              message: 'Uses %{linkStart}https://open-vsx.org%{linkEnd} as the extension marketplace ' \
+                'for the Web IDE.',
+              message_url: 'https://open-vsx.org'
+            })
+          )
+        end
+      end
+
+      it 'does not include extensions_marketplace' do
+        expect(helper.integration_views).not_to match(a_hash_including(name: 'extensions_marketplace'))
       end
     end
 
@@ -275,22 +296,6 @@ RSpec.describe PreferencesHelper do
             a_hash_including({ name: 'gitpod', message_url: 'https://gitpod.io/' })
           )
         end
-      end
-    end
-
-    context 'when WebIdeExtensionsMarketplace is enabled' do
-      before do
-        allow(WebIde::ExtensionsMarketplace).to receive(:feature_enabled?).with(user: user).and_return(true)
-      end
-
-      it 'includes extension marketplace integration' do
-        expect(helper.integration_views).to include(
-          a_hash_including({
-            name: 'extensions_marketplace',
-            message: 'Uses %{linkStart}https://open-vsx.org%{linkEnd} as the extension marketplace for the Web IDE.',
-            message_url: 'https://open-vsx.org'
-          })
-        )
       end
     end
   end

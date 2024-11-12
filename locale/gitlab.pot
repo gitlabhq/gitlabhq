@@ -5109,6 +5109,9 @@ msgstr ""
 msgid "AiImpactAnalytics|Value can't be calculated due to insufficient data."
 msgstr ""
 
+msgid "AiPowered|Assign seats"
+msgstr ""
+
 msgid "AiPowered|By turning on self-hosted AI models, you agree to the %{linkStart}GitLab Testing Agreement%{linkEnd}. This action cannot be reversed."
 msgstr ""
 
@@ -5125,6 +5128,9 @@ msgid "AiPowered|Early Access Program banner dismissed. You will not see it agai
 msgstr ""
 
 msgid "AiPowered|Enabling these features is your acceptance of the %{linkStart}GitLab Testing Agreement%{linkEnd}."
+msgstr ""
+
+msgid "AiPowered|End date: %{endDate}"
 msgstr ""
 
 msgid "AiPowered|Enroll in the Early Access Program"
@@ -5151,6 +5157,9 @@ msgstr ""
 msgid "AiPowered|Might result in requests having higher latency."
 msgstr ""
 
+msgid "AiPowered|Monitor, manage, and customize AI features to ensure efficient utilization and alignment."
+msgstr ""
+
 msgid "AiPowered|Never on"
 msgstr ""
 
@@ -5163,6 +5172,9 @@ msgstr ""
 msgid "AiPowered|Participate in the Early Access Program and help make GitLab better"
 msgstr ""
 
+msgid "AiPowered|Purchase seats"
+msgstr ""
+
 msgid "AiPowered|Self-hosted AI models"
 msgstr ""
 
@@ -5170,6 +5182,9 @@ msgid "AiPowered|Setting unavailable"
 msgstr ""
 
 msgid "AiPowered|Specify how code completion requests are sent to the AI gateway."
+msgstr ""
+
+msgid "AiPowered|Start date: %{startDate}"
 msgstr ""
 
 msgid "AiPowered|These features are being developed and might be unstable. %{linkStart}What do experiment and beta mean?%{linkEnd}"
@@ -10609,9 +10624,6 @@ msgid "CICD|Prevent CI/CD job tokens from this project from being used to access
 msgstr ""
 
 msgid "CICD|Select the groups and projects authorized to use a CI/CD job token to authenticate requests to this project. %{linkStart}Learn more%{linkEnd}."
-msgstr ""
-
-msgid "CICD|Target project is already in the job token scope."
 msgstr ""
 
 msgid "CICD|The %{boldStart}Limit access %{boldEnd}%{italicAndBoldStart}from%{italicAndBoldEnd}%{boldStart} this project%{boldEnd} setting is deprecated and scheduled for removal in the 18.0 milestone. Use the %{boldStart}Authorized groups and projects%{boldEnd} setting and allowlist instead. %{linkStart}How do I do this?%{linkEnd}"
@@ -39815,6 +39827,9 @@ msgstr ""
 msgid "Paste a public key here. %{link_start}How do I generate it?%{link_end}"
 msgstr ""
 
+msgid "Paste group or project path. Example: %{codeStart}gitlab-org/gitlab%{codeEnd}."
+msgstr ""
+
 msgid "Paste project path (i.e. gitlab-org/gitlab)"
 msgstr ""
 
@@ -40086,9 +40101,6 @@ msgid "PhoneVerification|You've reached the maximum number of tries. Request a n
 msgstr ""
 
 msgid "PhoneVerification|You've reached the maximum number of tries. Wait %{interval} and try again."
-msgstr ""
-
-msgid "Pick a group or project"
 msgstr ""
 
 msgid "Pipeline"
@@ -41602,7 +41614,13 @@ msgstr ""
 msgid "PreferencesIntegrations|Third-Party Extensions Acknowledgement"
 msgstr ""
 
-msgid "PreferencesIntegrations|Third-party extensions are now available in the Web IDE. While each extension runs in a secure browser sandbox, %{boldStart}third-party extensions%{boldEnd} may have access to the contents of the files opened in the Web IDE, %{boldStart}including any personal data in those files%{boldEnd}, and may communicate with external servers."
+msgid "PreferencesIntegrations|Third-party extensions are now available in the Web IDE and Workspaces. While each extension runs in a secure browser sandbox, %{boldStart}third-party extensions%{boldEnd} may have access to the contents of the files opened in the Web IDE or Workspaces, %{boldStart}including any personal data in those files%{boldEnd}, and may communicate with external servers."
+msgstr ""
+
+msgid "PreferencesIntegrations|Uses %{extensions_marketplace_home} as the extension marketplace for Workspaces."
+msgstr ""
+
+msgid "PreferencesIntegrations|Uses %{extensions_marketplace_home} as the extension marketplace for the Web IDE and Workspaces."
 msgstr ""
 
 msgid "PreferencesIntegrations|Uses %{extensions_marketplace_home} as the extension marketplace for the Web IDE."
@@ -41785,10 +41803,16 @@ msgstr ""
 msgid "Preferences|Web IDE"
 msgstr ""
 
+msgid "Preferences|Web IDE and Workspaces"
+msgstr ""
+
 msgid "Preferences|When you type in a description or comment box, pressing %{kbdOpen}Enter%{kbdClose} in a list adds a new item below."
 msgstr ""
 
 msgid "Preferences|When you type in a description or comment box, selected text is surrounded by the corresponding character after typing one of the following characters: %{supported_characters}."
+msgstr ""
+
+msgid "Preferences|Workspaces"
 msgstr ""
 
 msgid "Premium plan"

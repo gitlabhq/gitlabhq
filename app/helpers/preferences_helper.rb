@@ -164,22 +164,28 @@ module PreferencesHelper
         }
       end
 
-      views << extensions_marketplace_view if WebIde::ExtensionsMarketplace.feature_enabled?(user: current_user)
-    end
+      views << extensions_marketplace_view
+    end.compact
   end
 
   private
 
   def extensions_marketplace_view
-    # We handle the linkStart / linkEnd inside of a Vue sprintf
-    extensions_marketplace_home = "%{linkStart}#{::WebIde::ExtensionsMarketplace.marketplace_home_url}%{linkEnd}"
-    message = format(
-      s_('PreferencesIntegrations|Uses %{extensions_marketplace_home} as the extension marketplace for the Web IDE.'),
-      extensions_marketplace_home: extensions_marketplace_home
+    return unless WebIde::ExtensionsMarketplace.feature_enabled?(user: current_user)
+
+    build_extensions_marketplace_view(
+      title: s_("Preferences|Web IDE"),
+      message: s_(
+        "PreferencesIntegrations|Uses %{extensions_marketplace_home} as the extension marketplace for the Web IDE.")
     )
+  end
+
+  def build_extensions_marketplace_view(title:, message:)
+    extensions_marketplace_home = "%{linkStart}#{::WebIde::ExtensionsMarketplace.marketplace_home_url}%{linkEnd}"
     {
       name: 'extensions_marketplace',
-      message: message,
+      message: format(message, extensions_marketplace_home: extensions_marketplace_home),
+      title: title,
       message_url: WebIde::ExtensionsMarketplace.marketplace_home_url,
       help_link: WebIde::ExtensionsMarketplace.help_preferences_url
     }

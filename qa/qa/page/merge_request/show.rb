@@ -358,8 +358,7 @@ module QA
         # then check again if it's ready to merge. For example, it will refresh if a new change was pushed and the page
         # needs to be refreshed to show the change.
         #
-        # @param [Boolean] transient_test true if the current test is a transient test (default: false)
-        def wait_until_ready_to_merge(transient_test: false)
+        def wait_until_ready_to_merge
           wait_until(message: "Waiting for ready to merge", sleep_interval: 1) do
             # changes in mr are rendered async, because of that mr can sometimes show no changes and there will be no
             # merge button, in such case we must retry loop otherwise find_element will raise ElementNotFound error
@@ -369,10 +368,6 @@ module QA
 
             # If the widget shows "Merge blocked: new changes were just added" we can refresh the page and check again
             next false if has_element?('head-mismatch-content', wait: 1)
-
-            # Stop waiting if we're in a transient test. By this point we're in an unexpected state and should let the
-            # test fail so we can investigate. If we're not in a transient test we keep trying until we reach timeout.
-            next true unless transient_test
 
             QA::Runtime::Logger.debug("MR widget text: #{mr_widget_text}")
 

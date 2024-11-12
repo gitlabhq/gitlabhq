@@ -69,6 +69,32 @@ describe('UncollapsedReviewerList component', () => {
     });
   });
 
+  describe('when reviewer status is unapproved', () => {
+    beforeEach(() => {
+      const user = userDataMock();
+
+      createComponent({
+        users: [
+          {
+            ...user,
+            id: 2,
+            name: 'nonrooty-nonrootersen',
+            username: 'hello-world',
+            mergeRequestInteraction: {
+              ...user.mergeRequestInteraction,
+              approved: false,
+              reviewState: 'UNAPPROVED',
+            },
+          },
+        ],
+      });
+    });
+
+    it('renders re-request review button', () => {
+      expect(findAllRerequestButtons().exists()).toBe(true);
+    });
+  });
+
   describe('multiple reviewers', () => {
     const user = userDataMock();
     const user2 = {

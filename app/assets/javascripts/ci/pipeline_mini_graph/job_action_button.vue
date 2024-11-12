@@ -121,6 +121,7 @@ export default {
       :aria-label="jobAction.title"
       :disabled="isLoading"
       class="gl-h-6 gl-w-6 !gl-rounded-full !gl-p-0"
+      data-testid="ci-action-button"
       @click.prevent="onActionButtonClick"
     >
       <gl-loading-icon v-if="isLoading" size="sm" class="gl-m-2" />

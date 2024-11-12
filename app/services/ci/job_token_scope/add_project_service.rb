@@ -14,7 +14,7 @@ module Ci
         ServiceResponse.success(payload: { project_link: link })
 
       rescue ActiveRecord::RecordNotUnique
-        ServiceResponse.error(message: "Target project is already in the job token scope")
+        ServiceResponse.error(message: 'This project is already in the job token allowlist.')
       rescue ActiveRecord::RecordInvalid => e
         ServiceResponse.error(message: e.message)
       rescue EditScopeValidations::ValidationError => e

@@ -58,7 +58,6 @@ export default {
       page: 1,
       pageInfo: {},
       pipelines: [],
-      updateGraphDropdown: false,
     };
   },
   apollo: {
@@ -345,7 +344,6 @@ export default {
 
       <pipelines-table-component
         :pipelines="pipelines"
-        :update-graph-dropdown="updateGraphDropdown"
         :source-project-full-path="sourceProjectFullPath"
         @cancel-pipeline="cancelPipeline"
         @retry-pipeline="retryPipeline"

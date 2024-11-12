@@ -4,6 +4,7 @@ import {
   GlButton,
   GlForm,
   GlFormGroup,
+  GlFormInput,
   GlLink,
   GlIcon,
   GlLoadingIcon,
@@ -22,7 +23,6 @@ import inboundRemoveGroupCIJobTokenScopeMutation from '../graphql/mutations/inbo
 import inboundUpdateCIJobTokenScopeMutation from '../graphql/mutations/inbound_update_ci_job_token_scope.mutation.graphql';
 import inboundGetCIJobTokenScopeQuery from '../graphql/queries/inbound_get_ci_job_token_scope.query.graphql';
 import inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery from '../graphql/queries/inbound_get_groups_and_projects_with_ci_job_token_scope.query.graphql';
-import GroupsAndProjectsListbox from './groups_and_projects_listbox.vue';
 import TokenAccessTable from './token_access_table.vue';
 
 export default {
@@ -42,10 +42,11 @@ export default {
     addGroupOrProject: __('Add group or project'),
     add: __('Add'),
     cancel: __('Cancel'),
-    addProjectPlaceholder: __('Pick a group or project'),
+    addProjectPlaceholder: __(
+      'Paste group or project path. Example: %{codeStart}gitlab-org/gitlab%{codeEnd}.',
+    ),
     projectsFetchError: __('There was a problem fetching the projects'),
     scopeFetchError: __('There was a problem fetching the job token scope value'),
-    projectInScopeError: s__('CICD|Target project is already in the job token scope.'),
     saveButtonTitle: __('Save Changes'),
   },
   inboundJobTokenScopeOptions: [
@@ -63,12 +64,12 @@ export default {
     GlButton,
     GlForm,
     GlFormGroup,
+    GlFormInput,
     GlLink,
     GlIcon,
     GlLoadingIcon,
     GlSprintf,
     CrudComponent,
-    GroupsAndProjectsListbox,
     TokenAccessTable,
     GlFormRadioGroup,
   },
@@ -117,6 +118,7 @@ export default {
   },
   data() {
     return {
+      errorMessage: null,
       inboundJobTokenScopeEnabled: null,
       isUpdating: false,
       groupsAndProjectsWithAccess: [],
@@ -129,11 +131,6 @@ export default {
   computed: {
     isGroupOrProjectPathEmpty() {
       return this.groupOrProjectPath === '';
-    },
-    isGroupOrProjectPathInScope() {
-      return this.groupsAndProjectsWithAccess.some(
-        (item) => item.fullPath === this.groupOrProjectPath,
-      );
     },
     ciJobTokenHelpPage() {
       return helpPagePath('ci/jobs/ci_job_token#control-job-token-access-to-your-project');
@@ -204,14 +201,14 @@ export default {
           },
         });
 
-        if (errors.length) {
+        if (errors.length > 0) {
           throw new Error(errors[0]);
         }
-      } catch (error) {
-        createAlert({ message: error.message });
-      } finally {
+
         this.clearGroupOrProjectPath();
         this.getGroupsAndProjects();
+      } catch (error) {
+        this.errorMessage = error.message;
       }
     },
     async removeItem(item) {
@@ -252,8 +249,8 @@ export default {
         this.getGroupsAndProjects();
       }
     },
-    setGroupOrProjectPath(path) {
-      this.groupOrProjectPath = path;
+    clearErrorMessage() {
+      this.errorMessage = null;
     },
     clearGroupOrProjectPath() {
       this.groupOrProjectPath = '';
@@ -352,23 +349,31 @@ export default {
               <gl-form-group
                 :label-for="$options.CI_JOB_TOKEN_ALLOWLIST"
                 :label="$options.i18n.addGroupOrProject"
-                :state="!isGroupOrProjectPathInScope"
-                :invalid-feedback="$options.projectInScopeError"
+                :invalid-feedback="errorMessage"
                 data-testid="group-or-project-form-group"
               >
-                <groups-and-projects-listbox
+                <gl-form-input
                   :id="$options.CI_JOB_TOKEN_ALLOWLIST"
-                  :placeholder="$options.i18n.addProjectPlaceholder"
-                  :is-valid="!isGroupOrProjectPathInScope"
-                  :value="groupOrProjectPath"
-                  @select="setGroupOrProjectPath"
+                  v-model="groupOrProjectPath"
+                  autofocus
+                  :state="!errorMessage"
+                  type="text"
+                  data-testid="target-path-field"
+                  @input="clearErrorMessage"
                 />
+                <template #description>
+                  <gl-sprintf :message="$options.i18n.addProjectPlaceholder">
+                    <template #code="{ content }">
+                      <code>{{ content }}</code>
+                    </template>
+                  </gl-sprintf>
+                </template>
               </gl-form-group>
               <div class="gl-mt-5 gl-flex gl-gap-3">
                 <gl-button
                   variant="confirm"
-                  :disabled="isGroupOrProjectPathEmpty || isGroupOrProjectPathInScope"
-                  data-testid="add-project-btn"
+                  :disabled="isGroupOrProjectPathEmpty"
+                  data-testid="add-group-or-project-btn"
                   @click="addGroupOrProject"
                 >
                   {{ $options.i18n.add }}

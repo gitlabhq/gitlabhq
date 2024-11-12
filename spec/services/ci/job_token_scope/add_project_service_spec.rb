@@ -86,6 +86,19 @@ RSpec.describe Ci::JobTokenScope::AddProjectService, feature_category: :continuo
         end
       end
 
+      context 'when project is already in the allowlist' do
+        before_all do
+          project.add_maintainer(current_user)
+          target_project.add_developer(current_user)
+        end
+
+        before do
+          service.execute(target_project)
+        end
+
+        it_behaves_like 'returns error', 'This project is already in the job token allowlist.'
+      end
+
       context 'when target project is same as the source project' do
         before do
           project.add_maintainer(current_user)

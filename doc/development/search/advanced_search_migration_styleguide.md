@@ -232,7 +232,10 @@ end
 Reindexes all documents in the index that stores the specified document type and updates `schema_version`.
 
 Requires the `DOCUMENT_TYPE` and `NEW_SCHEMA_VERSION` constants.
-The index mapping must have a `schema_version` integer field in a `YYMM` format.
+The index mapping must have a `schema_version` integer field in a `YYWW` (year/week) format.
+
+NOTE:
+Previously index mapping `schema_version` used `YYMM` format. New versions should use the `YYWW` format.
 
 ```ruby
 class MigrationName < Elastic::Migration
@@ -243,7 +246,7 @@ class MigrationName < Elastic::Migration
   throttle_delay 1.minute
 
   DOCUMENT_TYPE = WorkItem
-  NEW_SCHEMA_VERSION = 23_08
+  NEW_SCHEMA_VERSION = 24_46
   UPDATE_BATCH_SIZE = 100
 end
 ```
@@ -253,7 +256,10 @@ end
 Deletes all documents in the index that stores the specified document type and has `schema_version` less than the given value.
 
 Requires the `DOCUMENT_TYPE` constant and `schema_version` method.
-The index mapping must have a `schema_version` integer field in a `YYMM` format.
+The index mapping must have a `schema_version` integer field in a `YYWW` (year/week) format.
+
+NOTE:
+Previously index mapping `schema_version` used `YYMM` format. New versions should use the `YYWW` format.
 
 ```ruby
 class MigrationName < Elastic::Migration

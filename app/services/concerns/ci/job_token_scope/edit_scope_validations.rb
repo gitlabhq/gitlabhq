@@ -12,7 +12,7 @@ module Ci
       TARGET_GROUP_UNAUTHORIZED_OR_UNFOUND = "The target_group that you are attempting to access does " \
           "not exist or you don't have permission to perform this action"
 
-      TARGET_DOES_NOT_EXIST = 'The target does not exists'
+      TARGET_DOES_NOT_EXIST = 'The group or project does not exist.'
 
       def validate_source_project_and_target_project_access!(source_project, target_project, current_user)
         unless can?(current_user, :admin_project, source_project)

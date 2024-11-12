@@ -406,6 +406,7 @@ DETAILS:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151352) as a [beta](../../policy/experiment-beta-support.md#beta) in GitLab 17.0 [with flags](../../administration/feature_flags.md) named `web_ide_oauth` and `web_ide_extensions_marketplace`. Disabled by default.
 > - Feature flag `web_ide_oauth` [enabled on GitLab.com, self-managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163181) and feature flag `web_ide_extensions_marketplace` [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/459028) in GitLab 17.4.
 > - Feature flag `web_ide_oauth` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167464) in GitLab 17.5.
+> - Enabled by default for [workspaces](../workspace/index.md) in GitLab 17.6. Workspaces do not require any feature flags for the extension marketplace to be available.
 
 FLAG:
 The availability of this feature is controlled by a feature flag.
@@ -423,6 +424,9 @@ To enable the extension marketplace for the Web IDE and workspaces:
 1. Select the **Enable extension marketplace** checkbox.
 1. In the third-party extension acknowledgement, select **I understand**.
 1. Select **Save changes**.
+
+NOTE:
+This preferences checkbox will always be available, even if the feature flags are disabled.
 
 <!-- ## Troubleshooting
 

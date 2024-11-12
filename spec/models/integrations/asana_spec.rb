@@ -69,9 +69,9 @@ RSpec.describe Integrations::Asana, feature_category: :integrations do
         let(:ref) { 'main' }
 
         it 'calls the Asana integration' do
-          expect(Gitlab::HTTP_V2).to receive(:post)
+          expect(Gitlab::HTTP).to receive(:post)
             .with("https://app.asana.com/api/1.0/tasks/456789/stories", anything).once.and_return(asana_task)
-          expect(Gitlab::HTTP_V2).to receive(:put)
+          expect(Gitlab::HTTP).to receive(:put)
             .with("https://app.asana.com/api/1.0/tasks/456789", completed_message).once.and_return(asana_task)
 
           execute_integration
@@ -82,8 +82,8 @@ RSpec.describe Integrations::Asana, feature_category: :integrations do
         let(:ref) { 'mai' }
 
         it 'does not call the Asana integration' do
-          expect(Gitlab::HTTP_V2).not_to receive(:post)
-          expect(Gitlab::HTTP_V2).not_to receive(:put)
+          expect(Gitlab::HTTP).not_to receive(:post)
+          expect(Gitlab::HTTP).not_to receive(:put)
 
           execute_integration
         end
@@ -102,7 +102,7 @@ RSpec.describe Integrations::Asana, feature_category: :integrations do
       end
 
       it 'calls Asana integration to create a story' do
-        expect(Gitlab::HTTP_V2).to receive(:post)
+        expect(Gitlab::HTTP).to receive(:post)
             .with("https://app.asana.com/api/1.0/tasks/#{gid}/stories", expected_message).once.and_return(asana_task)
 
         execute_integration
@@ -113,9 +113,9 @@ RSpec.describe Integrations::Asana, feature_category: :integrations do
       let(:message) { 'fix #456789' }
 
       it 'calls Asana integration to create a story and close a task' do
-        expect(Gitlab::HTTP_V2).to receive(:post)
+        expect(Gitlab::HTTP).to receive(:post)
           .with("https://app.asana.com/api/1.0/tasks/456789/stories", anything).once.and_return(asana_task)
-        expect(Gitlab::HTTP_V2).to receive(:put)
+        expect(Gitlab::HTTP).to receive(:put)
           .with("https://app.asana.com/api/1.0/tasks/456789", completed_message).once.and_return(asana_task)
 
         execute_integration
@@ -126,9 +126,9 @@ RSpec.describe Integrations::Asana, feature_category: :integrations do
       let(:message) { 'closes https://app.asana.com/19292/956299/42' }
 
       it 'calls Asana integration to close via url' do
-        expect(Gitlab::HTTP_V2).to receive(:post)
+        expect(Gitlab::HTTP).to receive(:post)
           .with("https://app.asana.com/api/1.0/tasks/42/stories", anything).once.and_return(asana_task)
-        expect(Gitlab::HTTP_V2).to receive(:put)
+        expect(Gitlab::HTTP).to receive(:put)
           .with("https://app.asana.com/api/1.0/tasks/42", completed_message).once.and_return(asana_task)
 
         execute_integration
@@ -146,41 +146,41 @@ RSpec.describe Integrations::Asana, feature_category: :integrations do
       end
 
       it 'allows multiple matches per line' do
-        expect(Gitlab::HTTP_V2).to receive(:post)
+        expect(Gitlab::HTTP).to receive(:post)
           .with("https://app.asana.com/api/1.0/tasks/123/stories", anything).once.and_return(asana_task)
-        expect(Gitlab::HTTP_V2).to receive(:put)
+        expect(Gitlab::HTTP).to receive(:put)
           .with("https://app.asana.com/api/1.0/tasks/123", completed_message).once.and_return(asana_task)
 
         asana_task_2 = double(double(data: { gid: 456 }))
-        expect(Gitlab::HTTP_V2).to receive(:post)
+        expect(Gitlab::HTTP).to receive(:post)
           .with("https://app.asana.com/api/1.0/tasks/456/stories", anything).once.and_return(asana_task_2)
-        expect(Gitlab::HTTP_V2).to receive(:put)
+        expect(Gitlab::HTTP).to receive(:put)
           .with("https://app.asana.com/api/1.0/tasks/456", completed_message).once.and_return(asana_task_2)
 
         asana_task_3 = double(double(data: { gid: 789 }))
-        expect(Gitlab::HTTP_V2).to receive(:post)
+        expect(Gitlab::HTTP).to receive(:post)
           .with("https://app.asana.com/api/1.0/tasks/789/stories", anything).once.and_return(asana_task_3)
 
         asana_task_4 = double(double(data: { gid: 42 }))
-        expect(Gitlab::HTTP_V2).to receive(:post)
+        expect(Gitlab::HTTP).to receive(:post)
           .with("https://app.asana.com/api/1.0/tasks/42/stories", anything).once.and_return(asana_task_4)
 
         asana_task_5 = double(double(data: { gid: 12 }))
-        expect(Gitlab::HTTP_V2).to receive(:post)
+        expect(Gitlab::HTTP).to receive(:post)
           .with("https://app.asana.com/api/1.0/tasks/12/stories", anything).once.and_return(asana_task_5)
-        expect(Gitlab::HTTP_V2).to receive(:put)
+        expect(Gitlab::HTTP).to receive(:put)
           .with("https://app.asana.com/api/1.0/tasks/12", completed_message).once.and_return(asana_task_5)
 
         asana_task_5 = double(double(data: { gid: 11 }))
-        expect(Gitlab::HTTP_V2).to receive(:post)
+        expect(Gitlab::HTTP).to receive(:post)
           .with("https://app.asana.com/api/1.0/tasks/11/stories", anything).once.and_return(asana_task_5)
-        expect(Gitlab::HTTP_V2).not_to receive(:put)
+        expect(Gitlab::HTTP).not_to receive(:put)
           .with("https://app.asana.com/api/1.0/tasks/11", completed_message)
 
         asana_task_6 = double(double(data: { gid: 222 }))
-        expect(Gitlab::HTTP_V2).to receive(:post)
+        expect(Gitlab::HTTP).to receive(:post)
           .with("https://app.asana.com/api/1.0/tasks/222/stories", anything).once.and_return(asana_task_6)
-        expect(Gitlab::HTTP_V2).not_to receive(:put)
+        expect(Gitlab::HTTP).not_to receive(:put)
           .with("https://app.asana.com/api/1.0/tasks/222", completed_message)
 
         execute_integration

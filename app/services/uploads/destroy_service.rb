@@ -11,7 +11,7 @@ module Uploads
 
     def execute(upload)
       unless current_user && upload && current_user.can?(:destroy_upload, upload)
-        return error(_("The resource that you are attempting to access does not "\
+        return error(_("The resource that you are attempting to access does not " \
                        "exist or you don't have permission to perform this action."))
       end
 

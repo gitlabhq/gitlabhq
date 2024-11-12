@@ -145,3 +145,7 @@ export const graphqlEtagPipelinePath = (graphqlPath, pipelineId) => {
 export const graphqlEtagMergeRequestPipelines = (graphqlPath, mergeRequestId) => {
   return `${graphqlPath}merge_requests/id/${mergeRequestId}`;
 };
+
+export const graphqlEtagStagePath = (graphqlPath, stageId) => {
+  return `${graphqlPath}/stages/id/${stageId}`;
+};

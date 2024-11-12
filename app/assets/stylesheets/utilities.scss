@@ -43,11 +43,6 @@ $type-scale: (
   }
 }
 
-// stylelint-disable-next-line gitlab/no-gl-class
-.gl-top-app-header {
-  top: $calc-application-header-height;
-}
-
 // This CSS Class definition will be removed in
 // https://gitlab.com/gitlab-org/gitlab/-/issues/479423.
 // More context: https://gitlab.com/gitlab-org/gitlab/-/issues/482689#note_2200591361

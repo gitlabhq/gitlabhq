@@ -39,7 +39,7 @@
         = commit.short_id
       - if commit.description? && collapsible
         = render Pajamas::ButtonComponent.new(icon: 'ellipsis_h',
-          button_options: { class: 'button-ellipsis-horizontal text-expander js-toggle-button', data: { toggle: 'tooltip', container: 'body', collapse_title: toggle_commit_message, expand_title: toggle_commit_message }, title: toggle_commit_message, aria: { label: toggle_commit_message }})
+          button_options: { class: 'button-ellipsis-horizontal js-toggle-button', data: { toggle: 'tooltip', container: 'body', collapse_title: toggle_commit_message, expand_title: toggle_commit_message }, title: toggle_commit_message, aria: { label: toggle_commit_message }})
 
       .committer.gl-text-sm
         - commit_author_link = commit_author_link(commit, avatar: false, size: 24)

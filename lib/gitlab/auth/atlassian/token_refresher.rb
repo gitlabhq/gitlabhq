@@ -19,7 +19,7 @@ module Gitlab
         end
 
         def refresh!
-          response = Gitlab::HTTP_V2.post(REFRESH_TOKEN_URL, body: payload.to_json, headers: headers)
+          response = Gitlab::HTTP.post(REFRESH_TOKEN_URL, body: payload.to_json, headers: headers)
           raise AtlassianTokenRefreshError, response["error"] unless response.success?
 
           identity.update!(
