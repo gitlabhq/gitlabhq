@@ -5,7 +5,7 @@
 # - current_user
 # - error_message # optional
 
-RSpec.shared_examples 'rate limited endpoint' do |rate_limit_key:, graphql: false|
+RSpec.shared_examples 'rate limited endpoint' do |rate_limit_key:, graphql: false, with_redirect: false|
   let(:error_message) { _('This endpoint has been requested too many times. Try again later.') }
 
   context 'when rate limiter enabled', :freeze_time, :clean_gitlab_redis_rate_limiting do
@@ -39,6 +39,9 @@ RSpec.shared_examples 'rate limited endpoint' do |rate_limit_key:, graphql: fals
 
       if graphql
         expect_graphql_errors_to_include(error_message)
+      elsif with_redirect
+        expect(response).to be_redirect
+        expect(flash[:alert]).to eq(error_message)
       else
         expect(response).to have_gitlab_http_status(:too_many_requests)
 
