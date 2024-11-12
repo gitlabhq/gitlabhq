@@ -60,9 +60,9 @@ class Server
         se_category: query['se_ca'],
         se_action: query['se_ac'],
         collector_tstamp: query['dtm'],
-        label: query['se_la'],
-        property: query['se_pr'],
-        value: query['se_va'],
+        se_label: query['se_la'],
+        se_property: query['se_pr'],
+        se_value: query['se_va'],
         contexts: (JSON.parse(Base64.decode64(query['cx'])) if query['cx'])
       },
       rawEvent: { parameters: query }

@@ -13,7 +13,8 @@ RSpec.describe 'keep-around tasks', :silence_stdout, feature_category: :source_c
   describe 'orphaned' do
     subject { run_rake_task('gitlab:keep_around:orphaned') }
 
-    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:original_project) { create(:project, :repository) }
+    let_it_be(:project) { fork_project(original_project, nil, repository: true) }
     let_it_be(:keep_around_shas) do
       # Keep-around references only on branch tips is not necessarily accurate,
       # but this constant gives convenient access to commit IDs that actually
@@ -123,8 +124,41 @@ RSpec.describe 'keep-around tasks', :silence_stdout, feature_category: :source_c
     end
 
     context "for merge request keep-arounds" do
-      let_it_be(:fork) { fork_project(project, nil, repository: true) }
-      let_it_be(:merge_request) { create(:merge_request, target_project: project, source_project: fork) }
+      let_it_be(:merge_request) do
+        create(:merge_request, :skip_diff_creation,
+          target_project: project,
+          source_project: project,
+          merge_commit_sha: TestEnv::BRANCH_SHA['changes-with-only-whitespace'])
+      end
+
+      it_behaves_like 'orphans found',
+        keep_around_count: 3,
+        orphan_count: 2
+    end
+
+    context "for fork merge request keep-arounds" do
+      let_it_be(:merge_request) do
+        create(:merge_request, :skip_diff_creation,
+          target_project: original_project,
+          source_project: project,
+          merge_commit_sha: TestEnv::BRANCH_SHA['changes-with-only-whitespace'])
+      end
+
+      it_behaves_like 'orphans found',
+        keep_around_count: 3,
+        orphan_count: 3
+    end
+
+    context "for merge request diff keep-arounds" do
+      let_it_be(:merge_request) { create(:merge_request, target_project: project, source_project: project) }
+
+      it_behaves_like 'orphans found',
+        keep_around_count: 3,
+        orphan_count: 2
+    end
+
+    context "for fork merge request diff keep-arounds" do
+      let_it_be(:merge_request) { create(:merge_request, target_project: original_project, source_project: project) }
 
       it_behaves_like 'orphans found',
         keep_around_count: 3,

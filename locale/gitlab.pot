@@ -38576,6 +38576,9 @@ msgstr ""
 msgid "Organization|Organizations"
 msgstr ""
 
+msgid "Organization|Organizations must have at least one owner."
+msgstr ""
+
 msgid "Organization|Organizations must have at least one owner. To delete the user, first assign a new owner to %{lastLink}."
 msgid_plural "Organization|Organizations must have at least one owner. To delete the user, first assign a new owner to %{links} %{boldStart}and%{boldEnd} %{lastLink}."
 msgstr[0] ""

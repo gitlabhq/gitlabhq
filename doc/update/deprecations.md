@@ -147,6 +147,24 @@ Omnibus, the Helm chart, and Operator will handle this configuration
 automatically from GitLab 16.0 onwards.
 
 </div>
+
+<div class="deprecation breaking-change" data-milestone="19.0">
+
+### `workflow:rules` templates
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.0</span>
+- Removal in GitLab <span class="milestone">19.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/456394).
+
+</div>
+
+The [`workflow:rules`](https://docs.gitlab.com/ee/ci/yaml/workflow.html#workflowrules-templates) templates are deprecated and no longer recommended for use. Using these templates greatly limits the flexibility of your pipelines and makes it hard to use new `workflow` features.
+
+This is one small step towards moving away from CI/CD templates in preference of [CI/CD components](https://docs.gitlab.com/ee/ci/components/). You can search the [CI/CD Catalog](https://docs.gitlab.com/ee/ci/components/#cicd-catalog) for a replacement, or [add `workflow:rules`](https://docs.gitlab.com/ee/ci/yaml/workflow.html) to your pipeline explicitly.
+
+</div>
 </div>
 
 <div class="milestone-wrapper" data-milestone="18.0">
@@ -1132,24 +1150,6 @@ We encourage GitLab administrators to switch to the webhook delivery method for
 
 [Issue 393157](https://gitlab.com/gitlab-org/gitlab/-/issues/393157) tracks improving email ingestion in general.
 We hope this will simplify infrastructure setup and add several improvements to how you manage GitLab in the near future.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="18.0">
-
-### `workflow:rules` templates
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">17.0</span>
-- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/456394).
-
-</div>
-
-The [`workflow:rules`](https://docs.gitlab.com/ee/ci/yaml/workflow.html#workflowrules-templates) templates are deprecated and no longer recommended for use. Using these templates greatly limits the flexibility of your pipelines and makes it hard to use new `workflow` features.
-
-This is one small step towards moving away from CI/CD templates in preference of [CI/CD components](https://docs.gitlab.com/ee/ci/components/). You can search the [CI/CD Catalog](https://docs.gitlab.com/ee/ci/components/#cicd-catalog) for a replacement, or [add `workflow:rules`](https://docs.gitlab.com/ee/ci/yaml/workflow.html) to your pipeline explicitly.
 
 </div>
 </div>

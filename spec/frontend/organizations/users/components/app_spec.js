@@ -4,15 +4,21 @@ import organizationUsersResponse from 'test_fixtures/graphql/organizations/organ
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import { createAlert } from '~/alert';
 import organizationUsersQuery from '~/organizations/users/graphql/queries/organization_users.query.graphql';
+import organizationUsersIsLastOwnerQuery from '~/organizations/users/graphql/queries/organization_users_is_last_owner.query.graphql';
 import OrganizationsUsersApp from '~/organizations/users/components/app.vue';
 import OrganizationsUsersView from '~/organizations/users/components/users_view.vue';
 import { ORGANIZATION_USERS_PER_PAGE } from '~/organizations/users/constants';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { pageInfoMultiplePages, pageInfoEmpty } from 'jest/organizations/mock_data';
 import { MOCK_USERS_FORMATTED } from '../mock_data';
 
 jest.mock('~/alert');
+jest.mock('~/sentry/sentry_browser_wrapper');
+
+useMockLocationHelper();
 
 Vue.use(VueApollo);
 
@@ -53,12 +59,32 @@ const successfulResponseHandlerNoResults = jest.fn().mockResolvedValue({
 const errorResponseHandler = jest.fn().mockRejectedValue(mockError);
 const loadingResponseHandler = jest.fn().mockReturnValue(new Promise(() => {}));
 
+const successfulIsLastOwnerResponseHandler = jest.fn().mockResolvedValue({
+  data: {
+    organization: {
+      ...organizationUsersResponse.data.organization,
+      organizationUsers: {
+        // eslint-disable-next-line no-underscore-dangle
+        __typename: organizationUsersResponse.data.organization.organizationUsers.__typename,
+        nodes: nodes.map((node) => ({ id: node.id, isLastOwner: node.isLastOwner })),
+      },
+    },
+  },
+});
+
 describe('OrganizationsUsersApp', () => {
   let wrapper;
   let mockApollo;
+  let apolloCache;
 
-  const createComponent = ({ handler = successfulResponseHandler } = {}) => {
-    mockApollo = createMockApollo([[organizationUsersQuery, handler]]);
+  const createComponent = ({
+    handler = successfulResponseHandler,
+    isLastOwnerHandler = successfulIsLastOwnerResponseHandler,
+  } = {}) => {
+    mockApollo = createMockApollo([
+      [organizationUsersQuery, handler],
+      [organizationUsersIsLastOwnerQuery, isLastOwnerHandler],
+    ]);
 
     wrapper = shallowMountExtended(OrganizationsUsersApp, {
       apolloProvider: mockApollo,
@@ -66,10 +92,16 @@ describe('OrganizationsUsersApp', () => {
         organizationGid,
       },
     });
+
+    apolloCache = mockApollo.defaultClient.cache;
+    jest.spyOn(apolloCache, 'identify').mockImplementation((object) => object.id);
+    jest.spyOn(apolloCache, 'evict');
+    jest.spyOn(apolloCache, 'gc');
   };
 
   afterEach(() => {
     mockApollo = null;
+    apolloCache = null;
   });
 
   const findOrganizationUsersView = () => wrapper.findComponent(OrganizationsUsersView);
@@ -138,8 +170,76 @@ describe('OrganizationsUsersApp', () => {
         id: organizationGid,
         before: pageInfoMultiplePages.startCursor,
         after: '',
+        first: null,
+        last: ORGANIZATION_USERS_PER_PAGE,
+      });
+    });
+  });
+
+  describe('when role-change event is emitted', () => {
+    it('calls isLastOwner query with correct variables', async () => {
+      createComponent();
+      await waitForPromises();
+      findOrganizationUsersView().vm.$emit('role-change');
+      await waitForPromises();
+
+      expect(successfulIsLastOwnerResponseHandler).toHaveBeenCalledWith({
+        id: organizationGid,
+        before: '',
+        after: '',
         first: ORGANIZATION_USERS_PER_PAGE,
         last: null,
+      });
+    });
+
+    describe('when isLastOwner query is successful', () => {
+      beforeEach(async () => {
+        createComponent({
+          handler: successfulResponseHandlerMultiplePages,
+        });
+        await waitForPromises();
+        findOrganizationUsersView().vm.$emit('next');
+        await waitForPromises();
+        findOrganizationUsersView().vm.$emit('role-change');
+        await waitForPromises();
+      });
+
+      it('evicts cache for all pages except current one', () => {
+        expect(apolloCache.evict).toHaveBeenCalledWith({
+          id: organizationGid,
+          fieldName: 'organizationUsers',
+          args: {
+            before: '',
+            after: '',
+            first: ORGANIZATION_USERS_PER_PAGE,
+            last: null,
+          },
+        });
+      });
+
+      it('calls gc on apollo cache', () => {
+        expect(apolloCache.gc).toHaveBeenCalled();
+      });
+    });
+
+    describe('when isLastOwner query is not successful', () => {
+      const error = new Error();
+
+      beforeEach(async () => {
+        createComponent({
+          isLastOwnerHandler: jest.fn().mockRejectedValueOnce(error),
+        });
+        await waitForPromises();
+        findOrganizationUsersView().vm.$emit('role-change');
+        await waitForPromises();
+      });
+
+      it('reloads the page to get fresh user list', () => {
+        expect(window.location.reload).toHaveBeenCalled();
+      });
+
+      it('reports error to sentry', () => {
+        expect(Sentry.captureException).toHaveBeenCalledWith(error);
       });
     });
   });

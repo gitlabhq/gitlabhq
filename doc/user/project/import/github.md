@@ -84,6 +84,9 @@ If the above requirements are not met, the importer can't map the particular use
   describing that non-existent users were added as reviewers and approvers. However, the actual reviewer status and
   approval are not applied to the merge request in GitLab.
 
+[In GitLab 17.5 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/477553), GitLab adds backticks to username mentions in issues, merge requests, and notes.
+These backticks prevent linking to an incorrect user with the same username on the GitLab instance.
+
 ## Known issues
 
 - GitHub pull request comments (known as diff notes in GitLab) created before 2017 are imported in separate threads.

@@ -10,6 +10,7 @@ import organizationUserUpdateMutation from '~/organizations/users/graphql/mutati
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { createAlert } from '~/alert';
 import waitForPromises from 'helpers/wait_for_promises';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { pageInfoMultiplePages } from 'jest/organizations/mock_data';
 import { MOCK_PATHS, MOCK_USERS_FORMATTED } from '../mock_data';
 
@@ -42,6 +43,9 @@ describe('UsersView', () => {
         $toast: {
           show: mockToastShow,
         },
+      },
+      directives: {
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
     });
   };
@@ -113,6 +117,45 @@ describe('UsersView', () => {
           },
         ],
         selected: MOCK_USERS_FORMATTED[0].accessLevel.stringValue,
+        disabled: false,
+      });
+    });
+
+    it('does not render tooltip', () => {
+      createComponent();
+
+      const tooltipContainer = findListbox().element.parentNode;
+      const tooltip = getBinding(tooltipContainer, 'gl-tooltip');
+
+      expect(tooltip.value.disabled).toBe(true);
+      expect(tooltipContainer.getAttribute('tabindex')).toBe(null);
+    });
+
+    describe('when user is last owner of organization', () => {
+      const [firstUser] = MOCK_USERS_FORMATTED;
+
+      beforeEach(() => {
+        createComponent({
+          propsData: {
+            loading: false,
+            users: [{ ...firstUser, isLastOwner: true }],
+          },
+        });
+      });
+
+      it('renders listbox as disabled', () => {
+        expect(findListbox().props('disabled')).toBe(true);
+      });
+
+      it('renders tooltip and makes element focusable', () => {
+        const tooltipContainer = findListbox().element.parentNode;
+        const tooltip = getBinding(tooltipContainer, 'gl-tooltip');
+
+        expect(tooltip.value).toEqual({
+          title: 'Organizations must have at least one owner.',
+          disabled: false,
+        });
+        expect(tooltipContainer.getAttribute('tabindex')).toBe('0');
       });
     });
 
@@ -150,6 +193,15 @@ describe('UsersView', () => {
         await waitForPromises();
 
         expect(mockToastShow).toHaveBeenCalledWith('Organization role was updated successfully.');
+      });
+
+      it('emits role-change event when GraphQL mutation is successful', async () => {
+        createComponent();
+        listboxSelectOwner();
+
+        await waitForPromises();
+
+        expect(wrapper.emitted('role-change')).toEqual([[]]);
       });
 
       it('calls createAlert when GraphQL mutation has validation error', async () => {

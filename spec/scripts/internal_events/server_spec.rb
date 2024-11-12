@@ -37,9 +37,9 @@ RSpec.describe Server, feature_category: :service_ping do
             se_category: 'InternalEventTracking',
             se_action: 'g_project_management_issue_created',
             collector_tstamp: '1727475117074',
-            label: nil,
-            property: nil,
-            value: nil,
+            se_label: nil,
+            se_property: nil,
+            se_value: nil,
             contexts: Gitlab::Json.parse(context)
           },
           rawEvent: { parameters: Rack::Utils.parse_query(query_params) }
@@ -62,9 +62,9 @@ RSpec.describe Server, feature_category: :service_ping do
             se_category: 'category',
             se_action: 'super_action_thing',
             collector_tstamp: '1727476712646',
-            label: nil,
-            property: nil,
-            value: nil,
+            se_label: nil,
+            se_property: nil,
+            se_value: nil,
             contexts: nil
           },
           rawEvent: { parameters: Rack::Utils.parse_query(query_params) }
@@ -90,9 +90,9 @@ RSpec.describe Server, feature_category: :service_ping do
             se_category: 'projects:blob:show',
             se_action: 'click_blame_control_on_blob_page',
             collector_tstamp: '1727474524024',
-            label: nil,
-            property: nil,
-            value: nil,
+            se_label: nil,
+            se_property: nil,
+            se_value: nil,
             contexts: Gitlab::Json.parse(context)
           },
           rawEvent: { parameters: Gitlab::Json.parse(body)['data'].first }
@@ -116,9 +116,9 @@ RSpec.describe Server, feature_category: :service_ping do
               se_category: 'admin:dashboard:index',
               se_action: 'view_admin_dashboard_pageload',
               collector_tstamp: '1727473513835',
-              label: nil,
-              property: nil,
-              value: nil,
+              se_label: nil,
+              se_property: nil,
+              se_value: nil,
               contexts: Gitlab::Json.parse(context_1)
             },
             rawEvent: { parameters: Gitlab::Json.parse(body)['data'].first }
@@ -128,9 +128,9 @@ RSpec.describe Server, feature_category: :service_ping do
               se_category: 'admin:dashboard:index',
               se_action: 'render',
               collector_tstamp: '1727473513837',
-              label: 'version_badge',
-              property: 'Up to date',
-              value: nil,
+              se_label: 'version_badge',
+              se_property: 'Up to date',
+              se_value: nil,
               contexts: Gitlab::Json.parse(context_2)
             },
             rawEvent: { parameters: Gitlab::Json.parse(body)['data'].last }
@@ -153,9 +153,9 @@ RSpec.describe Server, feature_category: :service_ping do
             se_category: 'admin:dashboard:index',
             se_action: 'render',
             collector_tstamp: '1727473512782',
-            label: 'version_badge',
-            property: 'Up to date',
-            value: nil,
+            se_label: 'version_badge',
+            se_property: 'Up to date',
+            se_value: nil,
             contexts: Gitlab::Json.parse(context)
           },
           rawEvent: { parameters: Gitlab::Json.parse(body)['data'].first }
@@ -213,9 +213,9 @@ RSpec.describe Server, feature_category: :service_ping do
             se_category: 'category',
             se_action: 'super_action_thing',
             collector_tstamp: '1727476712646',
-            label: nil,
-            property: nil,
-            value: nil,
+            se_label: nil,
+            se_property: nil,
+            se_value: nil,
             contexts: nil
           },
           rawEvent: { parameters: Rack::Utils.parse_query(query_params) }

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::GithubImport::Importer::Events::Reopened, :aggregate_failures, feature_category: :importers do
   subject(:importer) { described_class.new(project, client) }
 
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :repository, :with_import_url) }
   let_it_be(:user) { create(:user) }
 
   let(:client) { instance_double('Gitlab::GithubImport::Client') }
@@ -59,32 +59,124 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::Reopened, :aggregate_fail
     end
   end
 
-  context 'with Issue' do
-    let(:expected_state_event_attrs) do
-      {
-        user_id: user.id,
-        issue_id: issuable.id,
-        state: 'reopened',
-        created_at: issue_event.created_at,
-        imported_from: 'github'
-      }.stringify_keys
-    end
+  shared_examples 'push placeholder references' do
+    it 'pushes the references' do
+      expect(subject)
+      .to receive(:push_with_record)
+      .with(
+        an_instance_of(Event),
+        :author_id,
+        issue_event[:actor].id,
+        an_instance_of(Gitlab::Import::SourceUserMapper)
+      )
 
-    it_behaves_like 'new event'
+      expect(subject)
+      .to receive(:push_with_record)
+      .with(
+        an_instance_of(ResourceStateEvent),
+        :user_id,
+        issue_event[:actor].id,
+        an_instance_of(Gitlab::Import::SourceUserMapper)
+      )
+
+      importer.execute(issue_event)
+    end
   end
 
-  context 'with MergeRequest' do
-    let(:issuable) { create(:merge_request, source_project: project, target_project: project) }
-    let(:expected_state_event_attrs) do
-      {
-        user_id: user.id,
-        merge_request_id: issuable.id,
-        state: 'reopened',
-        created_at: issue_event.created_at,
-        imported_from: 'github'
-      }.stringify_keys
+  shared_examples 'do not push placeholder references' do
+    it 'does not push any reference' do
+      expect(subject)
+      .not_to receive(:push_with_record)
+
+      importer.execute(issue_event)
+    end
+  end
+
+  context 'when user mapping is enabled' do
+    let_it_be(:source_user) do
+      create(
+        :import_source_user,
+        placeholder_user_id: user.id,
+        source_user_identifier: user.id,
+        source_username: user.username,
+        source_hostname: project.import_url,
+        namespace_id: project.root_ancestor.id
+      )
     end
 
-    it_behaves_like 'new event'
+    before do
+      project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: true })
+    end
+
+    context 'with Issue' do
+      let(:expected_state_event_attrs) do
+        {
+          user_id: user.id,
+          issue_id: issuable.id,
+          state: 'reopened',
+          created_at: issue_event.created_at,
+          imported_from: 'github'
+        }.stringify_keys
+      end
+
+      it_behaves_like 'new event'
+      it_behaves_like 'push placeholder references'
+    end
+
+    context 'with MergeRequest' do
+      let(:issuable) { create(:merge_request, source_project: project, target_project: project) }
+      let(:expected_state_event_attrs) do
+        {
+          user_id: user.id,
+          merge_request_id: issuable.id,
+          state: 'reopened',
+          created_at: issue_event.created_at,
+          imported_from: 'github'
+        }.stringify_keys
+      end
+
+      it_behaves_like 'new event'
+      it_behaves_like 'push placeholder references'
+    end
+  end
+
+  context 'when user mapping is disabled' do
+    before do
+      project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: false })
+      allow_next_instance_of(Gitlab::GithubImport::UserFinder) do |finder|
+        allow(finder).to receive(:find).with(user.id, user.username).and_return(user.id)
+      end
+    end
+
+    context 'with Issue' do
+      let(:expected_state_event_attrs) do
+        {
+          user_id: user.id,
+          issue_id: issuable.id,
+          state: 'reopened',
+          created_at: issue_event.created_at,
+          imported_from: 'github'
+        }.stringify_keys
+      end
+
+      it_behaves_like 'new event'
+      it_behaves_like 'do not push placeholder references'
+    end
+
+    context 'with MergeRequest' do
+      let(:issuable) { create(:merge_request, source_project: project, target_project: project) }
+      let(:expected_state_event_attrs) do
+        {
+          user_id: user.id,
+          merge_request_id: issuable.id,
+          state: 'reopened',
+          created_at: issue_event.created_at,
+          imported_from: 'github'
+        }.stringify_keys
+      end
+
+      it_behaves_like 'new event'
+      it_behaves_like 'do not push placeholder references'
+    end
   end
 end

@@ -33,7 +33,7 @@ module Gitlab
           end
 
           def create_note(issue_event, note_body, user_id)
-            Note.create!(
+            created_note = Note.create!(
               importing: true,
               system: true,
               noteable_type: issuable_type(issue_event),
@@ -45,6 +45,12 @@ module Gitlab
               created_at: issue_event.created_at,
               imported_from: imported_from
             )
+
+            return created_note unless mapper.user_mapping_enabled?
+
+            push_with_record(created_note, :author_id, issue_event[:actor].id, mapper.user_mapper)
+
+            created_note
           end
 
           def mentioned_in_type(issue_event)

@@ -6,12 +6,15 @@ module Gitlab
       module Events
         # Base class for importing issue events during project import from GitHub
         class BaseImporter
+          include Gitlab::GithubImport::PushPlaceholderReferences
+
           # project - An instance of `Project`.
           # client - An instance of `Gitlab::GithubImport::Client`.
           def initialize(project, client)
             @project = project
             @client = client
             @user_finder = UserFinder.new(project, client)
+            @mapper = Gitlab::GithubImport::ContributionsMapper.new(project)
           end
 
           # issue_event - An instance of `Gitlab::GithubImport::Representation::IssueEvent`.
@@ -21,7 +24,7 @@ module Gitlab
 
           private
 
-          attr_reader :project, :user_finder, :client
+          attr_reader :project, :user_finder, :client, :mapper
 
           def author_id(issue_event, author_key: :actor)
             user_finder.author_id_for(issue_event, author_key: author_key).first
@@ -45,11 +48,7 @@ module Gitlab
           end
 
           def imported_from
-            ::Import::HasImportSource::IMPORT_SOURCES[:github]
-          end
-
-          def import_settings
-            @import_settings ||= Gitlab::GithubImport::Settings.new(project)
+            ::Import::SOURCE_GITHUB
           end
         end
       end

@@ -6,10 +6,9 @@ module Gitlab
       module Events
         class ChangedReviewer < BaseImporter
           def execute(issue_event)
-            requested_reviewer_id = author_id(issue_event, author_key: :requested_reviewer)
             review_requester_id = author_id(issue_event, author_key: :review_requester)
 
-            note_body = parse_body(issue_event, requested_reviewer_id)
+            note_body = parse_body(issue_event)
 
             create_note(issue_event, note_body, review_requester_id)
           end
@@ -17,7 +16,7 @@ module Gitlab
           private
 
           def create_note(issue_event, note_body, review_requester_id)
-            Note.create!(
+            created_note = Note.create!(
               importing: true,
               system: true,
               noteable_type: issuable_type(issue_event),
@@ -36,17 +35,19 @@ module Gitlab
               updated_at: issue_event.created_at,
               imported_from: imported_from
             )
+
+            return unless mapper.user_mapping_enabled?
+
+            push_with_record(created_note, :author_id, issue_event[:review_requester].id, mapper.user_mapper)
           end
 
-          def parse_body(issue_event, requested_reviewer_id)
-            requested_reviewer = User.find(requested_reviewer_id).to_reference
-
+          def parse_body(issue_event)
             if issue_event.event == 'review_request_removed'
               "#{SystemNotes::IssuablesService.issuable_events[:review_request_removed]} " \
-              "#{requested_reviewer}"
+              "`@#{issue_event[:requested_reviewer].login}`"
             else
               "#{SystemNotes::IssuablesService.issuable_events[:review_requested]} " \
-              "#{requested_reviewer}"
+              "`@#{issue_event[:requested_reviewer].login}`"
             end
           end
         end

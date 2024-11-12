@@ -14,7 +14,7 @@ export const MOCK_PATHS = {
 };
 
 export const MOCK_USERS_FORMATTED = users.map(
-  ({ id, badges, user, accessLevel, userPermissions }) => {
+  ({ id, badges, user, accessLevel, userPermissions, isLastOwner }) => {
     return {
       ...user,
       gid: id,
@@ -23,6 +23,7 @@ export const MOCK_USERS_FORMATTED = users.map(
       accessLevel,
       userPermissions,
       email: user.publicEmail,
+      isLastOwner,
     };
   },
 );

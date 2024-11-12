@@ -4,8 +4,8 @@ query getOrganizationUsers(
   $id: OrganizationsOrganizationID!
   $first: Int
   $last: Int
-  $before: String!
-  $after: String!
+  $before: String
+  $after: String
 ) {
   organization(id: $id) {
     id
@@ -28,6 +28,7 @@ query getOrganizationUsers(
         accessLevel {
           stringValue
         }
+        isLastOwner
       }
       pageInfo {
         ...PageInfo

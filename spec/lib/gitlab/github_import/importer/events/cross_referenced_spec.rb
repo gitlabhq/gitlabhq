@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::GithubImport::Importer::Events::CrossReferenced, :clean_gitlab_redis_shared_state, feature_category: :importers do
   subject(:importer) { described_class.new(project, client) }
 
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :repository, :with_import_url) }
   let_it_be(:user) { create(:user) }
 
   let(:client) { instance_double('Gitlab::GithubImport::Client') }
@@ -56,9 +56,6 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::CrossReferenced, :clean_g
           allow(finder).to receive(:database_id).and_return(referenced_in.iid)
           allow(finder).to receive(:database_id).and_return(issuable.id)
         end
-        allow_next_instance_of(Gitlab::GithubImport::UserFinder) do |finder|
-          allow(finder).to receive(:find).with(user.id, user.username).and_return(user.id)
-        end
       end
 
       it 'creates expected note' do
@@ -92,9 +89,6 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::CrossReferenced, :clean_g
           allow(finder).to receive(:database_id).and_return(referenced_in.iid)
           allow(finder).to receive(:database_id).and_return(issuable.id)
         end
-        allow_next_instance_of(Gitlab::GithubImport::UserFinder) do |finder|
-          allow(finder).to receive(:find).with(user.id, user.username).and_return(user.id)
-        end
       end
 
       it 'creates expected note' do
@@ -121,13 +115,84 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::CrossReferenced, :clean_g
     end
   end
 
-  context 'with Issue' do
-    it_behaves_like 'import cross-referenced event'
+  shared_examples 'push a placeholder reference' do
+    before do
+      allow_next_instance_of(Gitlab::GithubImport::IssuableFinder) do |finder|
+        allow(finder).to receive(:database_id).and_return(referenced_in.iid)
+        allow(finder).to receive(:database_id).and_return(issuable.id)
+      end
+    end
+
+    it 'pushes the reference' do
+      expect(subject)
+      .to receive(:push_with_record)
+      .with(
+        an_instance_of(Note),
+        :author_id,
+        issue_event[:actor].id,
+        an_instance_of(Gitlab::Import::SourceUserMapper)
+      )
+
+      importer.execute(issue_event)
+    end
   end
 
-  context 'with MergeRequest' do
-    let(:issuable) { create(:merge_request, source_project: project, target_project: project) }
+  shared_examples 'do not push placeholder reference' do
+    it 'does not push any reference' do
+      expect(subject)
+      .not_to receive(:push_with_record)
 
-    it_behaves_like 'import cross-referenced event'
+      importer.execute(issue_event)
+    end
+  end
+
+  context 'when user_mapping_is enabled' do
+    let_it_be(:source_user) do
+      create(
+        :import_source_user,
+        placeholder_user_id: user.id,
+        source_user_identifier: user.id,
+        source_username: user.username,
+        source_hostname: project.import_url,
+        namespace_id: project.root_ancestor.id
+      )
+    end
+
+    before do
+      project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: true })
+    end
+
+    context 'with Issue' do
+      it_behaves_like 'import cross-referenced event'
+      it_behaves_like 'push a placeholder reference'
+    end
+
+    context 'with MergeRequest' do
+      let(:issuable) { create(:merge_request, source_project: project, target_project: project) }
+
+      it_behaves_like 'import cross-referenced event'
+      it_behaves_like 'push a placeholder reference'
+    end
+  end
+
+  context 'when user_mapping_is disabled' do
+    before do
+      project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: false })
+      allow_next_instance_of(Gitlab::GithubImport::UserFinder) do |finder|
+        allow(finder).to receive(:find).with(user.id, user.username).and_return(user.id)
+      end
+    end
+
+    context 'with Issue' do
+      it_behaves_like 'import cross-referenced event'
+      it_behaves_like 'do not push placeholder reference'
+    end
+
+    context 'with MergeRequest' do
+      let(:issuable) { create(:merge_request, source_project: project, target_project: project) }
+
+      it_behaves_like 'import cross-referenced event'
+      it_behaves_like 'do not push placeholder reference'
+    end
   end
 end

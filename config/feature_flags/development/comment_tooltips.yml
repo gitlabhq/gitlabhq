@@ -1,8 +1,0 @@
----
-name: comment_tooltips
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158020
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/476395
-milestone: '17.3'
-type: development
-group: group::project management
-default_enabled: false
