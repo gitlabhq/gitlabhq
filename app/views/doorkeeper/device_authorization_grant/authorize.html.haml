@@ -28,5 +28,5 @@
         .div
           = render Pajamas::ButtonComponent.new(type: :submit,
             variant: :confirm,
-            button_options: { id: 'commit-changes', testid: 'authorization-button'}) do
+            button_options: {data: { testid: 'authorization-button'} }) do
             = s_('DeviceAuth|Confirm')

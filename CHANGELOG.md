@@ -2,6 +2,17 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 17.3.7 (2024-11-12)
+
+### Security (6 changes)
+
+- [Use custom adapter for parsing FogBugz XML](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8952776336f65ba2f7a182cb42e6714f4f17b97b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4594))
+- [Removed id from authorize buttons and added specs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5f2a1b9a8cd823901e1184177fa55d43f20a3200) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4575))
+- [HTML injection in vulnerability Code flow leads to XSS on self hosted instances](https://gitlab.com/gitlab-org/security/gitlab/-/commit/59ac206c9475b5713e8aee79dffad95fda802384) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4566))
+- [Remove is-unsafe-link from product analytics tables to prevent XSS](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1420ca36c7c8fa50949d934ee9eb8a1a2dc3d6a5) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4581))
+- [Details of blocking merge request can be exposed via list](https://gitlab.com/gitlab-org/security/gitlab/-/commit/aa81586dd7ca7fa7fc2d5c4b74b8d5971c573df7) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4527))
+- [Prevent agent access via unconfirmed or disallowed group members](https://gitlab.com/gitlab-org/security/gitlab/-/commit/58ddb6195652c2d04fb90db5b53889273090c18c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4561))
+
 ## 17.3.6 (2024-10-22)
 
 ### Security (2 changes)
