@@ -5,6 +5,11 @@
   reporter: trizzi
   stage: Package
   issue_url: https://gitlab.com/gitlab-org/container-registry/-/issues/1243
+  impact: low
+  scope: project
+  resolution_role: maintainer
+  manual_task: true
+  window: "3"
   body: |
     You can configure the container registry to send [webhook notifications](https://docs.gitlab.com/ee/administration/packages/container_registry.html#configure-container-registry-notifications) in response to events happening in the registry. The configuration uses the `threshold` and `backoff` parameters to specify how many failures are allowed before backing off for a period of time before retrying.
 
