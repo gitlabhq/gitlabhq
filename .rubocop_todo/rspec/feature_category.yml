@@ -2141,7 +2141,6 @@ RSpec/FeatureCategory:
     - 'spec/lib/gitlab/changelog/committer_spec.rb'
     - 'spec/lib/gitlab/changelog/generator_spec.rb'
     - 'spec/lib/gitlab/changelog/release_spec.rb'
-    - 'spec/lib/gitlab/chat/command_spec.rb'
     - 'spec/lib/gitlab/chat/output_spec.rb'
     - 'spec/lib/gitlab/chat/responder/base_spec.rb'
     - 'spec/lib/gitlab/chat_name_token_spec.rb'
