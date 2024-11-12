@@ -227,8 +227,10 @@ RSpec.describe Packages::Pypi::CreatePackageService, :aggregate_failures, featur
 
       let_it_be(:project_developer) { create(:user, developer_of: project) }
       let_it_be(:project_maintainer) { create(:user, maintainer_of: project) }
+      let_it_be(:project_owner) { project.owner }
 
-      let(:project_owner) { project.owner }
+      let_it_be(:project_deploy_token) { create(:deploy_token, :all_scopes, projects: [project]) }
+      let_it_be(:unauthorized_deploy_token) { create(:deploy_token, :all_scopes) }
 
       let(:package_name) { params[:name] }
 
@@ -278,17 +280,22 @@ RSpec.describe Packages::Pypi::CreatePackageService, :aggregate_failures, featur
 
       # rubocop:disable Layout/LineLength -- Avoid formatting to keep one-line table syntax
       where(:package_name_pattern, :minimum_access_level_for_push, :user, :shared_examples_name) do
-        ref(:package_name)                  | :maintainer | ref(:project_developer)  | 'an error service response for protected package'
-        ref(:package_name)                  | :maintainer | ref(:project_maintainer) | 'a service response for valid package'
-        ref(:package_name)                  | :maintainer | ref(:project_owner)      | 'a service response for valid package'
-        ref(:package_name)                  | :owner      | ref(:project_maintainer) | 'an error service response for protected package'
-        ref(:package_name)                  | :owner      | ref(:project_owner)      | 'a service response for valid package'
-        ref(:package_name)                  | :admin      | ref(:project_owner)      | 'an error service response for protected package'
+        ref(:package_name)                  | :maintainer | ref(:project_developer)         | 'an error service response for protected package'
+        ref(:package_name)                  | :maintainer | ref(:project_maintainer)        | 'a service response for valid package'
+        ref(:package_name)                  | :maintainer | ref(:project_owner)             | 'a service response for valid package'
+        ref(:package_name)                  | :maintainer | ref(:project_deploy_token)      | 'an error service response for protected package'
+        ref(:package_name)                  | :owner      | ref(:project_maintainer)        | 'an error service response for protected package'
+        ref(:package_name)                  | :owner      | ref(:project_owner)             | 'a service response for valid package'
+        ref(:package_name)                  | :owner      | ref(:project_deploy_token)      | 'an error service response for protected package'
+        ref(:package_name)                  | :admin      | ref(:project_owner)             | 'an error service response for protected package'
+        ref(:package_name)                  | :admin      | ref(:project_deploy_token)      | 'an error service response for protected package'
 
-        ref(:package_name_pattern_no_match) | :maintainer | ref(:project_owner)      | 'a service response for valid package'
-        ref(:package_name_pattern_no_match) | :admin      | ref(:project_owner)      | 'a service response for valid package'
+        ref(:package_name_pattern_no_match) | :maintainer | ref(:project_owner)             | 'a service response for valid package'
+        ref(:package_name_pattern_no_match) | :admin      | ref(:project_owner)             | 'a service response for valid package'
+        ref(:package_name_pattern_no_match) | :admin      | ref(:project_deploy_token)      | 'a service response for valid package'
 
-        ref(:package_name)                  | :maintainer | nil                      | 'an error service response for unauthorized'
+        ref(:package_name)                  | :maintainer | nil                             | 'an error service response for unauthorized'
+        ref(:package_name)                  | :admin      | ref(:unauthorized_deploy_token) | 'an error service response for unauthorized'
       end
       # rubocop:enable Layout/LineLength
 
