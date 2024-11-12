@@ -253,7 +253,7 @@ export default {
     </gl-form>
     <slot v-else-if="hasValue" name="readonly"></slot>
     <slot v-else name="none">
-      <span class="gl-text-secondary">{{ $options.i18n.none }}</span>
+      <span class="gl-text-subtle">{{ $options.i18n.none }}</span>
     </slot>
   </div>
 </template>

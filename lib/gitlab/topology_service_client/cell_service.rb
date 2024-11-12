@@ -13,6 +13,14 @@ module Gitlab
         nil
       end
 
+      def cell_sequence_range
+        cell_info = get_cell_info
+
+        return unless cell_info && cell_info.sequence_range.present?
+
+        [cell_info.sequence_range.minval, cell_info.sequence_range.maxval]
+      end
+
       private
 
       def service_class

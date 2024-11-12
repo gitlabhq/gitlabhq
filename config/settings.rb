@@ -179,6 +179,14 @@ Settings = GitlabSettings.load(file, Rails.env) do
     [[Gitlab::SidekiqConfig::WorkerMatcher::WILDCARD_MATCH, 'default']]
   end
 
+  def topology_service_enabled?
+    topology_service && topology_service.respond_to?(:enabled) && topology_service.enabled
+  end
+
+  def has_configured_cell?
+    cell && cell.respond_to?(:name) && cell.name.present?
+  end
+
   private
 
   def base_url(config)

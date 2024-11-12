@@ -94,7 +94,7 @@ The `References` header is also accepted, however it is used specifically to rel
 In GitLab 14.6 and later, [Service Desk](../user/project/service_desk/index.md)
 also checks accepted headers.
 
-Usually, the "To" field contains the email address of the primary receiver.
+Usually, the `To` field contains the email address of the primary receiver.
 However, it might not include the configured GitLab email address if:
 
 - The address is in the `BCC` field.
@@ -138,9 +138,9 @@ Workspace, and your company's private Slack instance requires a valid `@hooli.co
 email address to sign up.
 
 If you also host a public-facing GitLab instance at `hooli.com` and set your
-incoming email domain to `hooli.com`, an attacker could abuse the "Create new
-issue by email" or
-"[Create new merge request by email](../user/project/merge_requests/creating_merge_requests.md#by-sending-an-email)"
+incoming email domain to `hooli.com`, an attacker could abuse the Create new
+issue by email or
+[Create new merge request by email](../user/project/merge_requests/creating_merge_requests.md#by-sending-an-email)
 features by using a project's unique address as the email when signing up for
 Slack. This would send a confirmation email, which would create a new issue or
 merge request on the project owned by the attacker, allowing them to select the

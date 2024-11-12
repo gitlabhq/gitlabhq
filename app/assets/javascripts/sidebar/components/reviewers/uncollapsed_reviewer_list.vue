@@ -30,7 +30,7 @@ const REVIEW_STATE_ICONS = {
   },
   REVIEW_STARTED: {
     name: 'comment-dots',
-    class: 'gl-text-gray-500',
+    class: 'gl-text-subtle',
     title: s__('MergeRequest|Reviewer started review'),
   },
 };
@@ -195,7 +195,7 @@ export default {
         :title="$options.i18n.reRequestReview"
         :aria-label="$options.i18n.reRequestReview"
         :loading="loadingStates[user.id] === $options.LOADING_STATE"
-        class="gl-float-right gl-mr-2 !gl-text-gray-500"
+        class="gl-float-right gl-mr-2 !gl-text-subtle"
         size="small"
         icon="redo"
         variant="link"

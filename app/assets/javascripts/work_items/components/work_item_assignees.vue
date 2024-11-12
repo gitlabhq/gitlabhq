@@ -358,12 +358,12 @@ export default {
       </gl-button>
     </template>
     <template #none>
-      <div class="gl-flex gl-items-center gl-gap-2 gl-text-gray-500">
+      <div class="gl-flex gl-items-center gl-gap-2 gl-text-subtle">
         <span>{{ __('None') }}</span>
         <template v-if="currentUser && canUpdate">
           <span>-</span>
           <gl-button variant="link" data-testid="assign-self" @click.stop="assignToCurrentUser"
-            ><span class="gl-text-gray-500 hover:gl-text-blue-800">{{
+            ><span class="gl-text-subtle hover:gl-text-blue-800">{{
               __('assign yourself')
             }}</span></gl-button
           >

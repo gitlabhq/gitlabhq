@@ -50,7 +50,7 @@ export default {
 </script>
 <template>
   <div
-    class="hide-collapsed gl-flex gl-items-center gl-gap-2 gl-font-bold gl-leading-20 gl-text-gray-900"
+    class="hide-collapsed gl-flex gl-items-center gl-gap-2 gl-font-bold gl-leading-20 gl-text-default"
   >
     {{ reviewerTitle }}
     <gl-loading-icon v-if="loading" size="sm" inline class="align-bottom" />

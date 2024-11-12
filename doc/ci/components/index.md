@@ -152,8 +152,16 @@ In this example:
   or as a directory `templates/secret-detection/` containing a `template.yml`.
 - `1.0.0` is the [version](#component-versions) of the component.
 
-When GitLab creates a new pipeline, the component's configuration is fetched and added to
-the pipeline's configuration.
+Pipeline configuration and component configuration are not processed independently.
+When a pipeline starts, any included component configuration [merges](../yaml/includes.md#merge-method-for-include)
+into the pipeline's configuration. If your pipeline and the component both contain configuration with the same name,
+they can interact in unexpected ways.
+
+For example, two jobs with the same name would merge together into a single job.
+Similarly, a component using `extends` for configuration with the same name as a job in your pipeline
+could extend the wrong configuration. Make sure your pipeline and the component do not share
+any configuration with the same name, unless you intend to [override](../yaml/includes.md#override-included-configuration-values)
+the component's configuration.
 
 To use GitLab.com components in a self-managed instance, you must
 [mirror the component project](#use-a-gitlabcom-component-in-a-self-managed-instance).

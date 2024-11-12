@@ -27,10 +27,10 @@ Replying by email happens in three steps:
 
 ### GitLab sends a notification email
 
-When GitLab sends a notification and Reply by email is enabled, the `Reply-To`
+When GitLab sends a notification and Reply by email is active, the `Reply-To`
 header is set to the address defined in your GitLab configuration, with the
-`%{key}` placeholder (if present) replaced by a specific "reply key". In
-addition, this "reply key" is also added to the `References` header.
+`%{key}` placeholder (if present) replaced by a specific reply key. In
+addition, this reply key is also added to the `References` header.
 
 ### You reply to the notification email
 
@@ -44,8 +44,15 @@ When you reply to the notification email, your email client:
 
 ### GitLab receives your reply to the notification email
 
-When GitLab receives your reply, it looks for the "reply key" in the
-[list of accepted headers](incoming_email.md#accepted-headers).
+When GitLab receives your reply, it looks for the reply key in the
+following headers, in this order:
+
+1. `To` header
+1. `References` header
+1. `Delivered-To` header
+1. `Envelope-To` header
+1. `X-Envelope-To` header
+1. `Received` header
 
 If it finds a reply key, it leaves your reply as a comment on
 the entity the notification was about (issue, merge request, commit...).

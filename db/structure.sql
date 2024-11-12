@@ -32863,6 +32863,14 @@ CREATE INDEX temp_index_on_users_where_dark_theme ON users USING btree (id) WHER
 
 CREATE UNIQUE INDEX term_agreements_unique_index ON term_agreements USING btree (user_id, term_id);
 
+CREATE INDEX tmp_idx_issues_on_correct_type_project_created_at_state ON issues USING btree (correct_work_item_type_id, project_id, created_at, state_id);
+
+CREATE INDEX tmp_idx_issues_on_project_correct_type_closed_at_where_closed ON issues USING btree (project_id, correct_work_item_type_id, closed_at) WHERE (state_id = 2);
+
+CREATE INDEX tmp_idx_issues_on_project_health_id_asc_state_correct_type ON issues USING btree (project_id, health_status, id DESC, state_id, correct_work_item_type_id);
+
+CREATE INDEX tmp_idx_issues_on_project_health_id_desc_state_correct_type ON issues USING btree (project_id, health_status DESC NULLS LAST, id DESC, state_id, correct_work_item_type_id);
+
 CREATE INDEX tmp_idx_orphaned_approval_merge_request_rules ON approval_merge_request_rules USING btree (id) WHERE ((report_type = ANY (ARRAY[2, 4])) AND (security_orchestration_policy_configuration_id IS NULL));
 
 CREATE INDEX tmp_idx_orphaned_approval_project_rules ON approval_project_rules USING btree (id) WHERE ((report_type = ANY (ARRAY[2, 4])) AND (security_orchestration_policy_configuration_id IS NULL));
@@ -35293,6 +35301,9 @@ ALTER TABLE ONLY analytics_devops_adoption_segments
 
 ALTER TABLE ONLY project_statistics
     ADD CONSTRAINT fk_198ad46fdc FOREIGN KEY (root_namespace_id) REFERENCES namespaces(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY issues
+    ADD CONSTRAINT fk_1adaba52b0 FOREIGN KEY (correct_work_item_type_id) REFERENCES work_item_types(correct_id);
 
 ALTER TABLE ONLY approval_policy_rule_project_links
     ADD CONSTRAINT fk_1c78796d52 FOREIGN KEY (approval_policy_rule_id) REFERENCES approval_policy_rules(id) ON DELETE CASCADE;

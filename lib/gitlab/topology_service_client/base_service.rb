@@ -32,8 +32,7 @@ module Gitlab
       end
 
       def enabled?
-        Gitlab.config.topology_service.respond_to?(:enabled) && Gitlab.config.topology_service.enabled &&
-          Gitlab.config.cell.respond_to?(:name) && cell_name.present?
+        Gitlab.config.topology_service_enabled? && Gitlab.config.has_configured_cell?
       end
     end
   end

@@ -5525,14 +5525,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
         it { expect(matchers).to all be_protected }
       end
-
-      context 'with use_new_queue_tags disabled' do
-        before do
-          stub_feature_flags(use_new_queue_tags: false)
-        end
-
-        it { expect(matchers.map(&:tag_list)).to match_array([[], %w[tag1 tag2]]) }
-      end
     end
   end
 
@@ -6094,13 +6086,5 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
 
     it { expect(build.tags_ids_relation.pluck(:name)).to match_array(tag_list) }
-
-    context 'with use_new_queue_tags disabled' do
-      before do
-        stub_feature_flags(use_new_queue_tags: false)
-      end
-
-      it { expect(build.tags_ids_relation.pluck(:name)).to match_array(tag_list) }
-    end
   end
 end

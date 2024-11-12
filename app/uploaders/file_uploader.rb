@@ -94,7 +94,7 @@ class FileUploader < GitlabUploader
   def initialize(model, mounted_as = nil, **uploader_context)
     super(model, nil, **uploader_context)
 
-    @model = model
+    @model = model.is_a?(Namespaces::ProjectNamespace) ? model.project : model
     apply_context!(uploader_context)
   end
 
@@ -170,9 +170,9 @@ class FileUploader < GitlabUploader
     @secret
   end
 
-  # return a new uploader with a file copy on another project
-  def self.copy_to(uploader, to_project)
-    moved = self.new(to_project)
+  # return a new uploader with a file copy on another container
+  def self.copy_to(uploader, to_container)
+    moved = self.new(to_container)
     moved.object_store = uploader.object_store
     moved.filename = uploader.filename
 

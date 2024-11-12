@@ -105,7 +105,7 @@ export default {
         <template #name>
           <gl-link
             :href="lastReply.author.path || lastReply.author.webUrl"
-            class="gl-mx-2 !gl-text-primary !gl-no-underline"
+            class="gl-mx-2 !gl-text-default !gl-no-underline"
           >
             {{ lastReply.author.name }}
           </gl-link>

@@ -162,11 +162,19 @@
             = _('GitLab Pages')
             %span.gl-float-right.gl-truncate-end.gl-truncate-start.gl-font-monospace{ class: 'gl-max-w-1/2' , data: { toggle: 'tooltip' }, title: Gitlab::Pages::VERSION }
               = Gitlab::Pages::VERSION
-        - if Gitlab::Kas.enabled?
+        - if defined?(@kas_server_info)
           %p.gl-py-4.gl-m-0.gl-border-b
             = _('GitLab KAS')
             %span.gl-float-right.gl-font-monospace
-              = Gitlab::Kas.display_version_info
+              - if @kas_server_info.retrieved_server_info?
+                %span
+                  = @kas_server_info.version
+                  %small
+                    = link_to(@kas_server_info.git_ref_for_display, @kas_server_info.git_ref_url)
+              - else
+                = s_('AdminArea|Unknown')
+                %span.has-tooltip{ title: s_('AdminArea|Failed to fetch version from KAS') }
+                  = sprite_icon('question-o')
 
         = render_if_exists 'admin/dashboard/geo'
 

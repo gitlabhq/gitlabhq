@@ -14,8 +14,7 @@ DETAILS:
 
 An [emoji reaction](../user/emoji_reactions.md) tells a thousand words.
 
-We call GitLab objects on which you can react with an emoji "awardables".
-You can react with emoji on the following:
+We call GitLab objects that accept emoji reactions awardables. You can react with emoji on the following:
 
 - [Epics](../user/group/epics/index.md) ([API](epics.md)).
 - [Issues](../user/project/issues/index.md) ([API](issues.md)).

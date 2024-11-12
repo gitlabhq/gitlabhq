@@ -1,9 +1,0 @@
----
-name: use_new_queue_tags
-feature_issue_url: https://gitlab.com/groups/gitlab-org/-/epics/14167
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166727
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/492356
-milestone: '17.5'
-group: group::ci platform
-type: gitlab_com_derisk
-default_enabled: false

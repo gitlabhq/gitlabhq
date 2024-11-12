@@ -18,7 +18,7 @@ RSpec.describe Onboarding::Status, feature_category: :onboarding do
   describe '#registration_omniauth_params' do
     let(:params) { { glm_source: 'source', glm_content: 'content', extra: 'param' } }
 
-    subject { described_class.new(params, {}, nil).registration_omniauth_params }
+    subject { described_class.new(params, nil, nil).registration_omniauth_params }
 
     it { is_expected.to eq({}) }
   end

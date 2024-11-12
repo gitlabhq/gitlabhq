@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed
 
-GitLab comes with its own application performance measuring system , called "GitLab Performance Monitoring".
+GitLab comes with its own application performance measuring system called GitLab Performance Monitoring.
 GitLab Performance Monitoring is available in both the Community and Enterprise editions.
 
 Apart from this introduction, you are advised to read through the following

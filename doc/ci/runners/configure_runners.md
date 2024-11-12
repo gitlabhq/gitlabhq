@@ -99,7 +99,7 @@ To set the maximum job timeout:
 
 To control the amount of time `script` and `after_script` runs before it terminates, specify a timeout value in the `.gitlab-ci.yml` file.
 
-For example, you can specify a timeout to terminate a long-running `script` early, so that artifacts and caches can still be uploaded
+For example, you can specify a timeout to terminate a long-running `script` early. This ensures artifacts and caches can still be uploaded
 before the job timeout is exceeded.
 
 - To set a timeout for `script`, use the job variable `RUNNER_SCRIPT_TIMEOUT`.
@@ -134,9 +134,9 @@ job-artifact-upload-on-timeout:
 
 ## Protecting sensitive information
 
-The security risks are greater when using instance runners as they are available by default to all groups and projects in a GitLab instance. Depending on the runner executor used and the file system, the code that the runner executes
-and the runner authentication token might get exposed to all users who have access to the runner host environment.
-For example, users with access to the runner authentication token can use it to create a clone of
+The security risks are greater when using instance runners as they are available by default to all groups and projects in a GitLab instance.
+The runner executor and file system configuration affects security. Users with access to the runner host environment can view the code that runner executed and the runner authentication.
+For example, users with access to the runner authentication token can clone
 a runner and submit false jobs in a vector attack. For more information, see [Security Considerations](https://docs.gitlab.com/runner/security/).
 
 ## Configuring long polling
@@ -160,9 +160,10 @@ To work around this issue, ensure that the instance runner settings are consiste
 ## Reset the runner registration token for a project (deprecated)
 
 WARNING:
-The ability to pass a runner registration token, and support for certain configuration arguments was
-[deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) in GitLab 15.6 and will be removed in GitLab 18.0. Authentication tokens
-should be used instead. For more information, see [Migrating to the new runner registration workflow](new_creation_workflow.md).
+The option to pass a runner registration token and support for certain configuration arguments was
+[deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) in GitLab 15.6. They are scheduled for removal
+in GitLab 18.0. Use runner authentication tokens instead. For more information, see
+[Migrating to the new runner registration workflow](new_creation_workflow.md).
 
 If you think that a registration token for a project was revealed, you should
 reset it. A registration token can be used to register another runner for the project.
@@ -506,7 +507,7 @@ to [your `.gitlab-ci.yml` script](../yaml/index.md#script).
 
 It can be used for jobs that operate exclusively on artifacts, like a deployment job.
 Git repository data may be present, but it's likely out of date. You should only
-rely on files brought into the local working copy from cache or artifacts, and be
+rely on files brought into the local working copy from cache or artifacts. Be
 aware that cache and artifact files from previous pipelines might still be present.
 
 Unlike `none`, the `empty` Git strategy deletes and then re-creates
@@ -524,10 +525,10 @@ The `GIT_SUBMODULE_STRATEGY` variable is used to control if / how
 [Git submodules](https://git-scm.com/book/en/v2/Git-Tools-Submodules) are included when fetching the code before a build. You can set them
 globally or per-job in the [`variables`](../yaml/index.md#variables) section.
 
-There are three possible values: `none`, `normal`, and `recursive`:
+The three possible values are `none`, `normal`, and `recursive`:
 
 - `none` means that submodules are not included when fetching the project
-  code. This is the default, which matches the pre-v1.10 behavior.
+  code. This setting matches the default behavior in versions before 1.10.
 
 - `normal` means that only the top-level submodules are included. It's
   equivalent to:
@@ -689,8 +690,8 @@ subcommand. However, `GIT_SUBMODULE_UPDATE_FLAGS` flags are appended after a few
 Git honors the last occurrence of a flag in the list of arguments, so manually
 providing them in `GIT_SUBMODULE_UPDATE_FLAGS` overrides these default flags.
 
-You can use this variable to fetch the latest remote `HEAD` instead of the commit tracked,
-in the repository, or to speed up the checkout by fetching submodules in multiple parallel jobs:
+You can use this variable to fetch the latest remote `HEAD` instead of the tracked commit in the repository.
+You can also use it to speed up the checkout by fetching submodules in multiple parallel jobs.
 
 ```yaml
 variables:
@@ -716,7 +717,7 @@ submodule commits as designed, and update them using an auto-remediation/depende
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3198) in GitLab Runner 15.11.
 
 Use the `GIT_SUBMODULE_FORCE_HTTPS` variable to force a rewrite of all Git and SSH submodule URLs to HTTPS.
-This allows you to clone submodules on the same GitLab instance that use absolute URLs, even if they were
+You can clone submodules that use absolute URLs on the same GitLab instance, even if they were
 configured with a Git or SSH protocol.
 
 ```yaml
@@ -725,8 +726,8 @@ variables:
   GIT_SUBMODULE_FORCE_HTTPS: "true"
 ```
 
-When enabled, GitLab Runner uses a [CI/CD job token](../jobs/ci_job_token.md) to clone the submodules with
-the permissions of the user executing the job, and does not require SSH credentials.
+When enabled, GitLab Runner uses a [CI/CD job token](../jobs/ci_job_token.md) to clone the submodules.
+The token uses the permissions of the user executing the job and does not require SSH credentials.
 
 ### Shallow cloning
 
@@ -743,13 +744,13 @@ jobs, jobs may fail.
 
 Git fetching and cloning is based on a ref, such as a branch name, so runners
 can't clone a specific commit SHA. If multiple jobs are in the queue, or
-you're retrying an old job, the commit to be tested must be within the
-Git history that is cloned. Setting too small a value for `GIT_DEPTH` can make
+you retry an old job, the commit to be tested must be in the cloned
+Git history. Setting too small a value for `GIT_DEPTH` can make
 it impossible to run these old commits and `unresolved reference` is displayed in
 job logs. You should then reconsider changing `GIT_DEPTH` to a higher value.
 
 Jobs that rely on `git describe` may not work correctly when `GIT_DEPTH` is
-set since only part of the Git history is present.
+set because only part of the Git history is present.
 
 To fetch or clone only the last 3 commits:
 
@@ -795,7 +796,7 @@ test:
     - pwd
 ```
 
-The `GIT_CLONE_PATH` must always be within `$CI_BUILDS_DIR`. The directory set in `$CI_BUILDS_DIR`
+The `GIT_CLONE_PATH` must always be inside `$CI_BUILDS_DIR`. The directory set in `$CI_BUILDS_DIR`
 is dependent on executor and configuration of [runners.builds_dir](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section)
 setting.
 
@@ -811,11 +812,11 @@ is shared between jobs.
 The runner does not try to prevent this situation. It's up to the administrator
 and developers to comply with the requirements of runner configuration.
 
-To avoid this scenario, you can use a unique path within `$CI_BUILDS_DIR`, because runner
+To avoid this scenario, you can use a unique path in `$CI_BUILDS_DIR`, because runner
 exposes two additional variables that provide a unique `ID` of concurrency:
 
-- `$CI_CONCURRENT_ID`: Unique ID for all jobs running within the given executor.
-- `$CI_CONCURRENT_PROJECT_ID`: Unique ID for all jobs running within the given executor and project.
+- `$CI_CONCURRENT_ID`: Unique ID for all jobs running in the given executor.
+- `$CI_CONCURRENT_PROJECT_ID`: Unique ID for all jobs running in the given executor and project.
 
 The most stable configuration that should work well in any scenario and on any executor
 is to use `$CI_CONCURRENT_ID` in the `GIT_CLONE_PATH`. For example:
@@ -829,8 +830,9 @@ test:
     - pwd -P
 ```
 
-The `$CI_CONCURRENT_PROJECT_ID` should be used in conjunction with `$CI_PROJECT_PATH`
-as the `$CI_PROJECT_PATH` provides a path of a repository. That is, `group/subgroup/project`. For example:
+The `$CI_CONCURRENT_PROJECT_ID` should be used in conjunction with `$CI_PROJECT_PATH`.
+`$CI_PROJECT_PATH` provides a path of a repository in the `group/subgroup/project` format.
+For example:
 
 ```yaml
 variables:
@@ -843,8 +845,8 @@ test:
 
 #### Nested paths
 
-The value of `GIT_CLONE_PATH` is expanded once and nesting variables
-within is not supported.
+The value of `GIT_CLONE_PATH` expands once. You cannot nest variables
+in this value.
 
 For example, you define both the variables below in your
 `.gitlab-ci.yml` file:
@@ -917,7 +919,7 @@ support this feature.
 A meter can be enabled to provide the rate of transfer for uploads and downloads.
 
 You can set a maximum time for cache upload and download with the `CACHE_REQUEST_TIMEOUT` setting.
-This setting can be useful when slow cache uploads substantially increase the duration of your job.
+Use this setting when slow cache uploads substantially increase the duration of your job.
 
 ```yaml
 variables:
@@ -989,7 +991,7 @@ The following fields are populated by default:
 | `predicate.invocation.environment.architecture` | The architecture on which the CI job is run. |
 | `predicate.invocation.parameters` | The names of any CI/CD or environment variables that were present when the build command was run. The value is always represented as an empty string to avoid leaking any secrets. |
 | `metadata.buildStartedOn` | The time when the build was started. `RFC3339` formatted. |
-| `metadata.buildEndedOn` | The time when the build ended. Since metadata generation happens during the build this moment in time is slightly earlier than the one reported in GitLab. `RFC3339` formatted. |
+| `metadata.buildEndedOn` | The time when the build ended. Because metadata generation happens during the build, this time is slightly earlier than the one reported in GitLab. `RFC3339` formatted. |
 | `metadata.reproducible` | Whether the build is reproducible by gathering all the generated metadata. Always `false`. |
 | `metadata.completeness.parameters` | Whether the parameters are supplied. Always `true`. |
 | `metadata.completeness.environment` | Whether the builder's environment is reported. Always `true`. |
@@ -1209,10 +1211,10 @@ concurrency of 16 allocates 32 MiB. Data that exceeds the buffer size is written
 Therefore, using no buffer, `FASTZIP_ARCHIVER_BUFFER_SIZE: 0`, and only scratch space is a valid option.
 
 `FASTZIP_ARCHIVER_CONCURRENCY` controls how many files are compressed concurrency. As mentioned above, this setting
-therefore can increase how much memory is being used, but also how much temporary data is written to the scratch space.
+therefore can increase how much memory is being used. It can also increase the temporary data written to the scratch space.
 The default is the number of CPUs available, but given the memory ramifications, this may not always be the best
 setting.
 
 `FASTZIP_EXTRACTOR_CONCURRENCY` controls how many files are decompressed at once. Files from a zip archive can natively
-be read from concurrency, so no additional memory is allocated in addition to what the decompressor requires. This
+be read from concurrency, so no additional memory is allocated in addition to what the extractor requires. This
 defaults to the number of CPUs available.

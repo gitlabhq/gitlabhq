@@ -14,8 +14,10 @@ module Packages
       ERROR_REASON_PACKAGE_EXISTS = :package_already_exists
       ERROR_REASON_PACKAGE_LEASE_TAKEN = :package_lease_taken
       ERROR_REASON_PACKAGE_PROTECTED = :package_protected
+      ERROR_REASON_UNAUTHORIZED = :unauthorized
 
       def execute
+        return error('Unauthorized', ERROR_REASON_UNAUTHORIZED) unless can_create_package?
         return error('Version is empty.', ERROR_REASON_INVALID_PARAMETER) if version.blank?
         return error('Attachment data is empty.', ERROR_REASON_INVALID_PARAMETER) if attachment['data'].blank?
         return error('Package already exists.', ERROR_REASON_PACKAGE_EXISTS) if current_package_exists?

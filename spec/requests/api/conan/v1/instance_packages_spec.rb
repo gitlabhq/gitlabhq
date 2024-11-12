@@ -45,14 +45,14 @@ RSpec.describe API::Conan::V1::InstancePackages, feature_category: :package_regi
     let(:project_id) { 9999 }
     let(:url_prefix) { "#{Settings.gitlab.base_url}/api/v4" }
 
-    describe 'GET /api/v4/packages/conan/v1/conans/:package_name/package_version/:package_username/:package_channel' do
+    describe 'GET /api/v4/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel' do
       let(:recipe_path) { package.conan_recipe_path }
       let(:url) { "/packages/conan/v1/conans/#{recipe_path}" }
 
       it_behaves_like 'recipe snapshot endpoint'
     end
 
-    describe "GET /api/v4/packages/conan/v1/conans/:package_name/package_version/:package_username/:package_channel" \
+    describe "GET /api/v4/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel" \
       "/packages/:conan_package_reference" do
       let(:recipe_path) { package.conan_recipe_path }
       let(:url) { "/packages/conan/v1/conans/#{recipe_path}/packages/#{conan_package_reference}" }
@@ -60,14 +60,14 @@ RSpec.describe API::Conan::V1::InstancePackages, feature_category: :package_regi
       it_behaves_like 'package snapshot endpoint'
     end
 
-    describe "GET /api/v4/packages/conan/v1/conans/:package_name/package_version/:package_username/:package_channel" \
+    describe "GET /api/v4/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel" \
       "/digest" do
       subject { get api("/packages/conan/v1/conans/#{recipe_path}/digest"), headers: headers }
 
       it_behaves_like 'recipe download_urls endpoint'
     end
 
-    describe "GET /api/v4/packages/conan/v1/conans/:package_name/package_version/:package_username/:package_channel" \
+    describe "GET /api/v4/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel" \
       "/packages/:conan_package_reference/download_urls" do
       subject do
         get api("/packages/conan/v1/conans/#{recipe_path}/packages/#{conan_package_reference}/download_urls"),
@@ -77,14 +77,14 @@ RSpec.describe API::Conan::V1::InstancePackages, feature_category: :package_regi
       it_behaves_like 'package download_urls endpoint'
     end
 
-    describe "GET /api/v4/packages/conan/v1/conans/:package_name/package_version/:package_username/:package_channel" \
+    describe "GET /api/v4/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel" \
       "/download_urls" do
       subject { get api("/packages/conan/v1/conans/#{recipe_path}/download_urls"), headers: headers }
 
       it_behaves_like 'recipe download_urls endpoint'
     end
 
-    describe "GET /api/v4/packages/conan/v1/conans/:package_name/package_version/:package_username/:package_channel" \
+    describe "GET /api/v4/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel" \
       "/packages/:conan_package_reference/digest" do
       subject do
         get api("/packages/conan/v1/conans/#{recipe_path}/packages/#{conan_package_reference}/digest"), headers: headers
@@ -93,7 +93,7 @@ RSpec.describe API::Conan::V1::InstancePackages, feature_category: :package_regi
       it_behaves_like 'package download_urls endpoint'
     end
 
-    describe "POST /api/v4/packages/conan/v1/conans/:package_name/package_version/:package_username/:package_channel" \
+    describe "POST /api/v4/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel" \
       "/upload_urls" do
       subject do
         post api("/packages/conan/v1/conans/#{recipe_path}/upload_urls"), params: params.to_json, headers: headers
@@ -102,7 +102,7 @@ RSpec.describe API::Conan::V1::InstancePackages, feature_category: :package_regi
       it_behaves_like 'recipe upload_urls endpoint'
     end
 
-    describe "POST /api/v4/packages/conan/v1/conans/:package_name/package_version/:package_username/:package_channel" \
+    describe "POST /api/v4/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel" \
       "/packages/:conan_package_reference/upload_urls" do
       subject do
         post api("/packages/conan/v1/conans/#{recipe_path}/packages/123456789/upload_urls"), params: params.to_json,
@@ -112,7 +112,7 @@ RSpec.describe API::Conan::V1::InstancePackages, feature_category: :package_regi
       it_behaves_like 'package upload_urls endpoint'
     end
 
-    describe "DELETE /api/v4/packages/conan/v1/conans/:package_name/package_version/:package_username" \
+    describe "DELETE /api/v4/packages/conan/v1/conans/:package_name/:package_version/:package_username" \
       "/:package_channel" do
       let_it_be_with_reload(:package) { create(:conan_package, project: project) }
 
@@ -125,7 +125,7 @@ RSpec.describe API::Conan::V1::InstancePackages, feature_category: :package_regi
   context 'with file download endpoints' do
     include_context 'conan file download endpoints'
 
-    describe "GET /api/v4/packages/conan/v1/files/:package_name/package_version/:package_username/:package_channel" \
+    describe "GET /api/v4/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel" \
       "/:recipe_revision/export/:file_name" do
       subject do
         get api("/packages/conan/v1/files/#{recipe_path}/#{metadata.recipe_revision_value}/export/" \
@@ -137,7 +137,7 @@ RSpec.describe API::Conan::V1::InstancePackages, feature_category: :package_regi
       it_behaves_like 'project not found by recipe'
     end
 
-    describe "GET /api/v4/packages/conan/v1/files/:package_name/package_version/:package_username/:package_channel" \
+    describe "GET /api/v4/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel" \
       "/:recipe_revision/package/:conan_package_reference/:package_revision/:file_name" do
       subject do
         get api("/packages/conan/v1/files/#{recipe_path}/#{metadata.recipe_revision_value}/package" \
@@ -153,7 +153,7 @@ RSpec.describe API::Conan::V1::InstancePackages, feature_category: :package_regi
   context 'with file upload endpoints' do
     include_context 'conan file upload endpoints'
 
-    describe "PUT /api/v4/packages/conan/v1/files/:package_name/package_version/:package_username/:package_channel" \
+    describe "PUT /api/v4/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel" \
       "/:recipe_revision/export/:file_name/authorize" do
       let(:file_name) { 'conanfile.py' }
 
@@ -164,7 +164,7 @@ RSpec.describe API::Conan::V1::InstancePackages, feature_category: :package_regi
       it_behaves_like 'workhorse authorize endpoint'
     end
 
-    describe "PUT /api/v4/packages/conan/v1/files/:package_name/package_version/:package_username/:package_channel" \
+    describe "PUT /api/v4/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel" \
       "/:recipe_revision/export/:conan_package_reference/:package_revision/:file_name/authorize" do
       let(:file_name) { 'conaninfo.txt' }
 
@@ -176,14 +176,14 @@ RSpec.describe API::Conan::V1::InstancePackages, feature_category: :package_regi
       it_behaves_like 'workhorse authorize endpoint'
     end
 
-    describe "PUT /api/v4/packages/conan/v1/files/:package_name/package_version/:package_username/:package_channel" \
+    describe "PUT /api/v4/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel" \
       "/:recipe_revision/export/:file_name" do
       let(:url) { "/api/v4/packages/conan/v1/files/#{recipe_path}/0/export/#{file_name}" }
 
       it_behaves_like 'workhorse recipe file upload endpoint'
     end
 
-    describe "PUT /api/v4/packages/conan/v1/files/:package_name/package_version/:package_username/:package_channel" \
+    describe "PUT /api/v4/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel" \
       "/:recipe_revision/export/:conan_package_reference/:package_revision/:file_name" do
       let(:url) { "/api/v4/packages/conan/v1/files/#{recipe_path}/0/package/123456789/0/#{file_name}" }
 

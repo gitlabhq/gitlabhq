@@ -188,8 +188,7 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
     context 'when user is no project member' do
       let_it_be(:user) { create(:user) }
 
-      it_behaves_like 'returning a success service response'
-      it_behaves_like 'valid package'
+      it_behaves_like 'returning an error service response', message: 'Unauthorized'
     end
 
     context 'when scoped package not following the naming convention' do
@@ -422,7 +421,7 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
       end
 
       context 'with deploy token' do
-        let_it_be(:deploy_token) { create(:deploy_token, projects: [project]) }
+        let_it_be(:deploy_token) { create(:deploy_token, :all_scopes, projects: [project]) }
         let_it_be(:user) { nil }
 
         let(:service) { described_class.new(project, deploy_token, params) }

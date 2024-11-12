@@ -403,6 +403,16 @@ export default {
       this.fileDiscussions.forEach((d) => this.toggleFileDiscussion(d));
     },
   },
+  warningClasses: [
+    'collapsed-file-warning',
+    'gl-rounded-b-base',
+    'gl-px-5',
+    'gl-py-4',
+    'gl-flex',
+    'gl-flex-col',
+    'sm:gl-items-start',
+    'gl-gap-3',
+  ],
   CONFLICT_TEXT,
   FILE_DIFF_POSITION_TYPE,
   generatedDiffFileDocsPath: helpPagePath('user/project/merge_requests/changes.html', {
@@ -565,11 +575,8 @@ export default {
           data-testid="loader-icon"
         />
         <div v-else-if="errorMessage" class="diff-viewer">
-          <div
-            v-if="isFileTooLarge"
-            class="collapsed-file-warning gl-rounded-bl-base gl-rounded-br-base gl-bg-orange-50 gl-p-7 gl-text-center"
-          >
-            <p class="gl-mb-5">
+          <div v-if="isFileTooLarge" :class="$options.warningClasses">
+            <p class="!gl-mb-0">
               {{ $options.i18n.tooLarge }}
             </p>
             <gl-button data-testid="blob-button" category="secondary" :href="viewBlobHref">
@@ -581,11 +588,8 @@ export default {
           <div v-else v-safe-html="errorMessage" class="nothing-here-block"></div>
         </div>
         <template v-else>
-          <div
-            v-if="showWarning"
-            class="collapsed-file-warning gl-rounded-bl-base gl-rounded-br-base gl-bg-orange-50 gl-p-7 gl-text-center"
-          >
-            <p class="gl-mb-5">
+          <div v-if="showWarning" :class="$options.warningClasses">
+            <p class="!gl-mb-0">
               <gl-sprintf :message="expandableWarning">
                 <template #tag="{ content }">
                   <code>{{ content }}</code>

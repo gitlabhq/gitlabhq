@@ -233,7 +233,7 @@ export default {
       :time-spent-human-readable="humanTotalTimeSpent"
       :time-estimate-human-readable="humanTimeEstimate"
     />
-    <div class="hide-collapsed gl-flex gl-items-center gl-font-bold gl-leading-20 gl-text-gray-900">
+    <div class="hide-collapsed gl-flex gl-items-center gl-font-bold gl-leading-20 gl-text-default">
       {{ __('Time tracking') }}
       <gl-loading-icon v-if="isTimeTrackingInfoLoading" size="sm" class="gl-ml-2" inline />
       <div v-if="canSetTimeEstimate || canAddTimeEntries" class="gl-ml-auto gl-flex">
@@ -269,7 +269,7 @@ export default {
         :time-spent-human-readable="humanTotalTimeSpent"
       />
       <div v-if="showNoTimeTrackingState" data-testid="noTrackingPane">
-        <span class="gl-text-gray-500">{{ $options.i18n.noTimeTrackingText }}</span>
+        <span class="gl-text-subtle">{{ $options.i18n.noTimeTrackingText }}</span>
       </div>
       <time-tracking-comparison-pane
         v-if="showComparisonState"

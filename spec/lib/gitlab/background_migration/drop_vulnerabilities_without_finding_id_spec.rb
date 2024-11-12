@@ -3,6 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::DropVulnerabilitiesWithoutFindingId, feature_category: :vulnerability_management do
+  before(:all) do
+    # This migration will not work if a sec database is configured. It should be finalized and removed prior to
+    # sec db rollout.
+    # Consult https://gitlab.com/gitlab-org/gitlab/-/merge_requests/171707 for more info.
+    skip_if_multiple_databases_are_setup(:sec)
+  end
+
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }
   let(:users) { table(:users) }

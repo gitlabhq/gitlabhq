@@ -3,6 +3,15 @@
 
 $diff-file-header: 41px;
 
+:root {
+  --diff-warning-text-color: var(--gl-feedback-warning-text-color);
+  --diff-warning-background-color: var(--gl-feedback-warning-background-color);
+}
+
+:root.gl-dark {
+  --diff-warning-background-color: #453522;
+}
+
 // Common
 .diff-file {
   margin-bottom: $gl-padding;
@@ -886,4 +895,9 @@ table.code {
 // This is not inside page_bundles because then it won't receive a proper color value for the dark theme
 .diff-file-row.is-active.is-linked {
   background-color: $blue-50;
+}
+
+.collapsed-file-warning {
+  color: var(--diff-warning-text-color);
+  background-color: var(--diff-warning-background-color);
 }

@@ -74,5 +74,9 @@ RSpec.shared_context 'conan file upload endpoints' do
 
   let(:jwt) { build_jwt(personal_access_token) }
   let(:headers_with_token) { build_token_auth_header(jwt.encoded).merge(workhorse_headers) }
-  let(:recipe_path) { "foo/bar/#{project.full_path.tr('/', '+')}/baz" }
+  let(:recipe_path) { "#{recipe_path_name}/#{recipe_path_version}/#{recipe_path_username}/#{recipe_path_channel}" }
+  let(:recipe_path_name) { "#{package.name}_new" }
+  let(:recipe_path_version) { package.version }
+  let(:recipe_path_username) { project.full_path.tr('/', '+') }
+  let(:recipe_path_channel) { "stable" }
 end

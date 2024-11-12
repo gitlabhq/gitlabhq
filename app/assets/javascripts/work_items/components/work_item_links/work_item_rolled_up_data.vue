@@ -113,9 +113,9 @@ export default {
       ref="weightData"
       tabindex="0"
       data-testid="work-item-rollup-weight"
-      class="gl-flex gl-cursor-help gl-items-center gl-gap-2 gl-font-normal gl-text-secondary sm:gl-ml-3"
+      class="gl-flex gl-cursor-help gl-items-center gl-gap-2 gl-font-normal gl-text-subtle sm:gl-ml-3"
     >
-      <gl-icon name="weight" class="gl-text-secondary" />
+      <gl-icon name="weight" class="gl-text-subtle" />
       <span data-testid="work-item-weight-value" class="gl-text-sm">{{ rolledUpWeight }}</span>
       <gl-tooltip :target="() => $refs.weightData">
         <span class="gl-font-bold">
@@ -131,9 +131,9 @@ export default {
       ref="progressBadge"
       tabindex="0"
       data-testid="work-item-rollup-progress"
-      class="gl-ml-3 gl-flex gl-items-center gl-gap-2 gl-font-normal gl-text-secondary"
+      class="gl-ml-3 gl-flex gl-items-center gl-gap-2 gl-font-normal gl-text-subtle"
     >
-      <gl-icon name="progress" class="gl-text-secondary" />
+      <gl-icon name="progress" class="gl-text-subtle" />
       <span data-testid="work-item-progress-value" class="gl-text-sm"
         >{{ completedWeightPercentage }}%</span
       >

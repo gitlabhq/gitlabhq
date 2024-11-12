@@ -169,7 +169,7 @@ RSpec.describe API::Conan::V1::ProjectPackages, feature_category: :package_regis
 
     subject { get api(url), headers: headers }
 
-    describe "GET /api/v4/projects/:id/packages/conan/v1/files/:package_name/package_version/:package_username" \
+    describe "GET /api/v4/projects/:id/packages/conan/v1/files/:package_name/:package_version/:package_username" \
       "/:package_channel/:recipe_revision/export/:file_name" do
       let(:url) do
         "/projects/#{project_id}/packages/conan/v1/files/#{recipe_path}/#{metadata.recipe_revision_value}" \
@@ -181,7 +181,7 @@ RSpec.describe API::Conan::V1::ProjectPackages, feature_category: :package_regis
       it_behaves_like 'accept get request on private project with access to package registry for everyone'
     end
 
-    describe "GET /api/v4/projects/:id/packages/conan/v1/files/:package_name/package_version/:package_username" \
+    describe "GET /api/v4/projects/:id/packages/conan/v1/files/:package_name/:package_version/:package_username" \
       "/:package_channel/:recipe_revision/package/:conan_package_reference/:package_revision/:file_name" do
       let(:url) do
         "/projects/#{project_id}/packages/conan/v1/files/#{recipe_path}/#{metadata.recipe_revision_value}/package" \
@@ -197,7 +197,7 @@ RSpec.describe API::Conan::V1::ProjectPackages, feature_category: :package_regis
   context 'with file upload endpoints' do
     include_context 'conan file upload endpoints'
 
-    describe "PUT /api/v4/projects/:id/packages/conan/v1/files/:package_name/package_version/:package_username" \
+    describe "PUT /api/v4/projects/:id/packages/conan/v1/files/:package_name/:package_version/:package_username" \
       "/:package_channel/:recipe_revision/export/:file_name/authorize" do
       let(:file_name) { 'conanfile.py' }
 
@@ -209,7 +209,7 @@ RSpec.describe API::Conan::V1::ProjectPackages, feature_category: :package_regis
       it_behaves_like 'workhorse authorize endpoint'
     end
 
-    describe "PUT /api/v4/projects/:id/packages/conan/v1/files/:package_name/package_version/:package_username" \
+    describe "PUT /api/v4/projects/:id/packages/conan/v1/files/:package_name/:package_version/:package_username" \
       "/:package_channel/:recipe_revision/export/:conan_package_reference/:package_revision/:file_name/authorize" do
       let(:file_name) { 'conaninfo.txt' }
 
@@ -222,14 +222,14 @@ RSpec.describe API::Conan::V1::ProjectPackages, feature_category: :package_regis
       it_behaves_like 'workhorse authorize endpoint'
     end
 
-    describe "PUT /api/v4/projects/:id/packages/conan/v1/files/:package_name/package_version/:package_username" \
+    describe "PUT /api/v4/projects/:id/packages/conan/v1/files/:package_name/:package_version/:package_username" \
       "/:package_channel/:recipe_revision/export/:file_name" do
       let(:url) { "/api/v4/projects/#{project_id}/packages/conan/v1/files/#{recipe_path}/0/export/#{file_name}" }
 
       it_behaves_like 'workhorse recipe file upload endpoint'
     end
 
-    describe "PUT /api/v4/projects/:id/packages/conan/v1/files/:package_name/package_version/:package_username" \
+    describe "PUT /api/v4/projects/:id/packages/conan/v1/files/:package_name/:package_version/:package_username" \
       "/:package_channel/:recipe_revision/export/:conan_package_reference/:package_revision/:file_name" do
       let(:url) do
         "/api/v4/projects/#{project_id}/packages/conan/v1/files/#{recipe_path}/0/package/123456789/0/#{file_name}"

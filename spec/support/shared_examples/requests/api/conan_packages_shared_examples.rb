@@ -852,10 +852,10 @@ RSpec.shared_examples 'uploads a package file' do
       end
 
       context 'with existing package' do
-        let!(:existing_package) { create(:conan_package, name: 'foo', version: 'bar', project: project) }
+        let!(:existing_package) { create(:conan_package, name: recipe_path_name, version: recipe_path_version, project: project) }
 
         before do
-          existing_package.conan_metadatum.update!(package_username: project.full_path.tr('/', '+'), package_channel: 'baz')
+          existing_package.conan_metadatum.update!(package_username: recipe_path_username, package_channel: recipe_path_channel)
         end
 
         it 'does not create a new package' do

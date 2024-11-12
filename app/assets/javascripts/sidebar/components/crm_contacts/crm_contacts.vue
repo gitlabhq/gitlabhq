@@ -137,7 +137,7 @@ export default {
     <div
       v-else
       data-testid="crm-empty-message"
-      class="hide-collapsed gl-flex gl-items-center gl-text-gray-500"
+      class="hide-collapsed gl-flex gl-items-center gl-text-subtle"
     >
       {{ __('To add active contacts, use /add_contacts.') }}
     </div>

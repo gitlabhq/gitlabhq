@@ -3,9 +3,10 @@ module API
   class NpmProjectPackages < ::API::Base
     ERROR_REASON_TO_HTTP_STATUS_MAPPTING = {
       ::Packages::Npm::CreatePackageService::ERROR_REASON_INVALID_PARAMETER => 400,
-      ::Packages::Npm::CreatePackageService::ERROR_REASON_PACKAGE_LEASE_TAKEN => 400,
       ::Packages::Npm::CreatePackageService::ERROR_REASON_PACKAGE_EXISTS => 403,
-      ::Packages::Npm::CreatePackageService::ERROR_REASON_PACKAGE_PROTECTED => 403
+      ::Packages::Npm::CreatePackageService::ERROR_REASON_PACKAGE_LEASE_TAKEN => 400,
+      ::Packages::Npm::CreatePackageService::ERROR_REASON_PACKAGE_PROTECTED => 403,
+      ::Packages::Npm::CreatePackageService::ERROR_REASON_UNAUTHORIZED => 403
     }.freeze
 
     helpers ::API::Helpers::Packages::Npm

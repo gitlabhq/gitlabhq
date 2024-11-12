@@ -3,6 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::UpdateSbomOccurrencesComponentNameBasedOnPep503, feature_category: :software_composition_analysis do
+  before(:all) do
+    # This migration will not work if a sec database is configured. It should be finalized and removed prior to
+    # sec db rollout.
+    # Consult https://gitlab.com/gitlab-org/gitlab/-/merge_requests/171707 for more info.
+    skip_if_multiple_databases_are_setup(:sec)
+  end
+
   let(:occurrences) { table(:sbom_occurrences) }
   let(:components) { table(:sbom_components) }
   let(:projects) { table(:projects) }

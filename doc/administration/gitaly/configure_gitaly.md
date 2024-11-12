@@ -138,8 +138,8 @@ To configure Gitaly servers, you must:
 
 The `git` user must be able to read, write, and set permissions on the configured storage path.
 
-To avoid downtime while rotating the Gitaly token, you can temporarily disable authentication using the `gitaly['auth_transitioning']` setting. For more information, see the documentation on
-[enabling "auth transitioning mode"](#enable-auth-transitioning-mode).
+To avoid downtime while rotating the Gitaly token, you can temporarily disable authentication using the `gitaly['auth_transitioning']` setting. For more information, see
+[enable auth transitioning mode](#enable-auth-transitioning-mode).
 
 #### Configure authentication
 
@@ -716,7 +716,7 @@ In the previous example using the new configuration method:
 - The top level memory limit is capped at 60 GB.
 - Each of the 1000 cgroups in the repositories pool is capped at 20 GB.
 
-This configuration leads to "oversubscription". Each cgroup in the pool has a much larger capacity than 1/1000th
+This configuration leads to oversubscription. Each cgroup in the pool has a much larger capacity than 1/1000th
 of the top-level memory limit.
 
 This strategy has two main benefits:
@@ -782,14 +782,14 @@ However, you can rotate Gitaly credentials without a service interruption. Rotat
 authentication token involves:
 
 - [Verifying authentication monitoring](#verify-authentication-monitoring).
-- [Enabling "auth transitioning" mode](#enable-auth-transitioning-mode).
+- [Enabling auth transitioning mode](#enable-auth-transitioning-mode).
 - [Updating Gitaly authentication tokens](#update-gitaly-authentication-token).
 - [Ensuring there are no authentication failures](#ensure-there-are-no-authentication-failures).
-- [Disabling "auth transitioning" mode](#disable-auth-transitioning-mode).
+- [Disabling auth transitioning mode](#disable-auth-transitioning-mode).
 - [Verifying authentication is enforced](#verify-authentication-is-enforced).
 
-This procedure also works if you are running GitLab on a single server. In that case, "Gitaly
-server" and "Gitaly client" refers to the same machine.
+This procedure also works if you are running GitLab on a single server. In that case, the Gitaly
+server and the Gitaly client refer to the same machine.
 
 ### Verify authentication monitoring
 
@@ -799,10 +799,10 @@ Prometheus.
 
 You can then continue the rest of the procedure.
 
-### Enable "auth transitioning" mode
+### Enable auth transitioning mode
 
-Temporarily disable Gitaly authentication on the Gitaly servers by putting them into "auth
-transitioning" mode as follows:
+Temporarily disable Gitaly authentication on the Gitaly servers by putting them into auth
+transitioning mode as follows:
 
 ```ruby
 # in /etc/gitlab/gitlab.rb
@@ -861,9 +861,9 @@ After the new token is set, and all services involved have been restarted, you w
 After the new token is picked up by all Gitaly clients and Gitaly servers, the
 **only non-zero rate** should be `enforced="false",status="would be ok"`.
 
-### Disable "auth transitioning" mode
+### Disable auth transitioning mode
 
-To re-enable Gitaly authentication, disable "auth transitioning" mode. Update the configuration on
+To re-enable Gitaly authentication, disable auth transitioning mode. Update the configuration on
 your Gitaly servers as follows:
 
 ```ruby
@@ -1110,7 +1110,7 @@ A lot of Gitaly RPCs need to look up Git objects from repositories.
 Most of the time we use `git cat-file --batch` processes for that. For
 better performance, Gitaly can re-use these `git cat-file` processes
 across RPC calls. Previously used processes are kept around in a
-["Git cat-file cache"](https://about.gitlab.com/blog/2019/07/08/git-performance-on-nfs/#enter-cat-file-cache).
+[`git cat-file` cache](https://about.gitlab.com/blog/2019/07/08/git-performance-on-nfs/#enter-cat-file-cache).
 To control how much system resources this uses, we have a maximum number of
 cat-file processes that can go into the cache.
 

@@ -3675,6 +3675,9 @@ msgstr ""
 msgid "AdminArea|Edit OAuth configuration"
 msgstr ""
 
+msgid "AdminArea|Failed to fetch version from KAS"
+msgstr ""
+
 msgid "AdminArea|Features"
 msgstr ""
 
@@ -3748,6 +3751,9 @@ msgid "AdminArea|Total users"
 msgstr ""
 
 msgid "AdminArea|Totals"
+msgstr ""
+
+msgid "AdminArea|Unknown"
 msgstr ""
 
 msgid "AdminArea|Updated %{last_update_time}"

@@ -147,7 +147,7 @@ class RegistrationsController < Devise::RegistrationsController
   private
 
   def onboarding_status
-    Onboarding::Status.new(onboarding_status_params, session, resource)
+    Onboarding::Status.new(onboarding_status_params, session['user_return_to'], resource)
   end
   strong_memoize_attr :onboarding_status
 

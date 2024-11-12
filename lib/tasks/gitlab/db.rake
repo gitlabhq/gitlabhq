@@ -115,6 +115,8 @@ namespace :gitlab do
 
       return unless databases_loaded.present? && databases_loaded.all?
 
+      alter_cell_sequences_range
+
       Rake::Task["gitlab:db:lock_writes"].invoke
       Rake::Task['db:seed_fu'].invoke
     end
@@ -139,6 +141,17 @@ namespace :gitlab do
       end
 
       load_database
+    end
+
+    def alter_cell_sequences_range
+      return unless Gitlab.config.topology_service_enabled? && Gitlab.config.has_configured_cell?
+
+      sequence_range = Gitlab::TopologyServiceClient::CellService.new.cell_sequence_range
+
+      return unless sequence_range.present?
+
+      puts "Running gitlab:db:alter_cell_sequences_range rake task with (#{sequence_range.join(', ')})"
+      Rake::Task["gitlab:db:alter_cell_sequences_range"].invoke(*sequence_range)
     end
 
     desc "Clear all connections"
