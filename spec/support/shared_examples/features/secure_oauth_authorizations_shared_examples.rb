@@ -17,34 +17,3 @@ RSpec.shared_examples 'Secure OAuth Authorizations' do
     end
   end
 end
-
-RSpec.shared_examples 'Secure Device OAuth Authorizations' do
-  let(:user) { create(:user) }
-
-  context 'when authorize page is rendered' do
-    it 'asks user to authorize the device' do
-      expect(page).to have_text "Authorize device to access to your GitLab account"
-      within_testid('authorization-button') do
-        expect(page).to have_content(format(_('Authorize')))
-      end
-    end
-
-    it 'does not render authorize button with id' do
-      expect(find_by_testid('authorization-button')[:id].nil?).to be_truthy
-    end
-  end
-
-  context 'when confirmation page is rendered' do
-    before do
-      find_by_testid('authorization-button').click
-    end
-
-    it 'renders confirmatoin button without id' do
-      within_testid('authorization-button') do
-        expect(page).to have_content(format(_('Confirm')))
-      end
-
-      expect(find_by_testid('authorization-button')[:id].nil?).to be_truthy
-    end
-  end
-end
