@@ -199,23 +199,24 @@ module IntegrationsHelper
 
   def integration_webhook_event_human_name(event)
     event_i18n_map = {
-      repository_update_events: _('Repository update events'),
-      push_events: _('Push events'),
-      tag_push_events: s_('Webhooks|Tag push events'),
-      note_events: _('Comments'),
-      confidential_note_events: s_('Webhooks|Confidential comments'),
-      issues_events: s_('Webhooks|Issues events'),
       confidential_issues_events: s_('Webhooks|Confidential issues events'),
-      subgroup_events: s_('Webhooks|Subgroup events'),
-      member_events: s_('Webhooks|Member events'),
-      merge_requests_events: s_('Webhooks|Merge request events'),
-      job_events: s_('Webhooks|Job events'),
-      pipeline_events: s_('Webhooks|Pipeline events'),
-      wiki_page_events: s_('Webhooks|Wiki page events'),
+      confidential_note_events: s_('Webhooks|Confidential comments'),
       deployment_events: s_('Webhooks|Deployment events'),
       feature_flag_events: s_('Webhooks|Feature flag events'),
+      issues_events: s_('Webhooks|Issues events'),
+      job_events: s_('Webhooks|Job events'),
+      member_events: s_('Webhooks|Member events'),
+      merge_requests_events: s_('Webhooks|Merge request events'),
+      note_events: _('Comments'),
+      pipeline_events: s_('Webhooks|Pipeline events'),
+      project_events: s_('Webhooks|Project events'),
+      push_events: _('Push events'),
       releases_events: s_('Webhooks|Releases events'),
-      resource_access_token_events: s_('Webhooks|Project or group access token events')
+      repository_update_events: _('Repository update events'),
+      resource_access_token_events: s_('Webhooks|Project or group access token events'),
+      subgroup_events: s_('Webhooks|Subgroup events'),
+      tag_push_events: s_('Webhooks|Tag push events'),
+      wiki_page_events: s_('Webhooks|Wiki page events')
     }
 
     event_i18n_map[event] || event.to_s.humanize

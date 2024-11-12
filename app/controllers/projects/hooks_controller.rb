@@ -15,7 +15,7 @@ class Projects::HooksController < Projects::ApplicationController
   urgency :low, [:test]
 
   def test
-    trigger = params.fetch(:trigger, ::ProjectHook.triggers.each_value.first.to_s)
+    trigger = params.fetch(:trigger, 'push_events')
     result = TestHooks::ProjectService.new(hook, current_user, trigger).execute
 
     set_hook_execution_notice(result)

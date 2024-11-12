@@ -20508,7 +20508,6 @@ CREATE TABLE user_details (
     pronunciation text,
     registration_objective smallint,
     phone text,
-    requires_credit_card_verification boolean DEFAULT false NOT NULL,
     linkedin text DEFAULT ''::text NOT NULL,
     twitter text DEFAULT ''::text NOT NULL,
     skype text DEFAULT ''::text NOT NULL,
@@ -21598,6 +21597,7 @@ CREATE TABLE web_hooks (
     resource_access_token_events boolean DEFAULT false NOT NULL,
     encrypted_custom_headers bytea,
     encrypted_custom_headers_iv bytea,
+    project_events boolean DEFAULT false NOT NULL,
     CONSTRAINT check_1e4d5cbdc5 CHECK ((char_length(name) <= 255)),
     CONSTRAINT check_23a96ad211 CHECK ((char_length(description) <= 2048)),
     CONSTRAINT check_69ef76ee0c CHECK ((char_length(custom_webhook_template) <= 4096))

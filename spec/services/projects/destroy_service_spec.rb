@@ -659,6 +659,12 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
     end
   end
 
+  it 'builds the project webhook payload' do
+    expect(Gitlab::HookData::ProjectBuilder).to receive(:new).with(project).and_call_original
+
+    destroy_project(project, user)
+  end
+
   context 'when project has project bots' do
     let!(:project_bot) { create(:user, :project_bot, maintainer_of: project) }
 

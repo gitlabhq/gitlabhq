@@ -38,6 +38,8 @@ module TestHooks
           emoji_events_data
         when 'resource_access_token_events'
           access_tokens_events_data
+        when 'project_events'
+          project_events_data
         end
       end
     end

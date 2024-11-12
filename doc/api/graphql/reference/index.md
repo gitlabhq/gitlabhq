@@ -1326,6 +1326,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="queryvulnerabilitieshasmergerequest"></a>`hasMergeRequest` | [`Boolean`](#boolean) | Returns only the vulnerabilities which have linked merge requests. |
 | <a id="queryvulnerabilitieshasremediations"></a>`hasRemediations` | [`Boolean`](#boolean) | Returns only the vulnerabilities which have remediations. |
 | <a id="queryvulnerabilitieshasresolution"></a>`hasResolution` | [`Boolean`](#boolean) | Returns only the vulnerabilities which have been resolved on default branch. |
+| <a id="queryvulnerabilitiesidentifiername"></a>`identifierName` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.6. **Status**: Experiment. Filter vulnerabilities by identifier name. Applicable only on project level when feature flag `vulnerability_identifier_name_filter` is enabled. Ignored when applied on group level or instance securitydashboard queries. |
 | <a id="queryvulnerabilitiesimage"></a>`image` | [`[String!]`](#string) | Filter vulnerabilities by location image. When this filter is present, the response only matches entries for a `reportType` that includes `container_scanning`, `cluster_image_scanning`. |
 | <a id="queryvulnerabilitiesowasptopten"></a>`owaspTopTen` | [`[VulnerabilityOwaspTop10!]`](#vulnerabilityowasptop10) | Filter vulnerabilities by OWASP Top 10 category. Wildcard value "NONE" also supported when feature flag `owasp_top_10_null_filtering` is enabled. "NONE" wildcard cannot be combined with other OWASP top 10 values. |
 | <a id="queryvulnerabilitiesprojectid"></a>`projectId` | [`[ID!]`](#id) | Filter vulnerabilities by project. |
@@ -25434,6 +25435,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="groupvulnerabilitieshasmergerequest"></a>`hasMergeRequest` | [`Boolean`](#boolean) | Returns only the vulnerabilities which have linked merge requests. |
 | <a id="groupvulnerabilitieshasremediations"></a>`hasRemediations` | [`Boolean`](#boolean) | Returns only the vulnerabilities which have remediations. |
 | <a id="groupvulnerabilitieshasresolution"></a>`hasResolution` | [`Boolean`](#boolean) | Returns only the vulnerabilities which have been resolved on default branch. |
+| <a id="groupvulnerabilitiesidentifiername"></a>`identifierName` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.6. **Status**: Experiment. Filter vulnerabilities by identifier name. Applicable only on project level when feature flag `vulnerability_identifier_name_filter` is enabled. Ignored when applied on group level or instance securitydashboard queries. |
 | <a id="groupvulnerabilitiesimage"></a>`image` | [`[String!]`](#string) | Filter vulnerabilities by location image. When this filter is present, the response only matches entries for a `reportType` that includes `container_scanning`, `cluster_image_scanning`. |
 | <a id="groupvulnerabilitiesowasptopten"></a>`owaspTopTen` | [`[VulnerabilityOwaspTop10!]`](#vulnerabilityowasptop10) | Filter vulnerabilities by OWASP Top 10 category. Wildcard value "NONE" also supported when feature flag `owasp_top_10_null_filtering` is enabled. "NONE" wildcard cannot be combined with other OWASP top 10 values. |
 | <a id="groupvulnerabilitiesprojectid"></a>`projectId` | [`[ID!]`](#id) | Filter vulnerabilities by project. |
@@ -32569,6 +32571,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="projectvulnerabilitieshasmergerequest"></a>`hasMergeRequest` | [`Boolean`](#boolean) | Returns only the vulnerabilities which have linked merge requests. |
 | <a id="projectvulnerabilitieshasremediations"></a>`hasRemediations` | [`Boolean`](#boolean) | Returns only the vulnerabilities which have remediations. |
 | <a id="projectvulnerabilitieshasresolution"></a>`hasResolution` | [`Boolean`](#boolean) | Returns only the vulnerabilities which have been resolved on default branch. |
+| <a id="projectvulnerabilitiesidentifiername"></a>`identifierName` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.6. **Status**: Experiment. Filter vulnerabilities by identifier name. Applicable only on project level when feature flag `vulnerability_identifier_name_filter` is enabled. Ignored when applied on group level or instance securitydashboard queries. |
 | <a id="projectvulnerabilitiesimage"></a>`image` | [`[String!]`](#string) | Filter vulnerabilities by location image. When this filter is present, the response only matches entries for a `reportType` that includes `container_scanning`, `cluster_image_scanning`. |
 | <a id="projectvulnerabilitiesowasptopten"></a>`owaspTopTen` | [`[VulnerabilityOwaspTop10!]`](#vulnerabilityowasptop10) | Filter vulnerabilities by OWASP Top 10 category. Wildcard value "NONE" also supported when feature flag `owasp_top_10_null_filtering` is enabled. "NONE" wildcard cannot be combined with other OWASP top 10 values. |
 | <a id="projectvulnerabilitiesprojectid"></a>`projectId` | [`[ID!]`](#id) | Filter vulnerabilities by project. |
@@ -39322,6 +39325,7 @@ Values for package manager.
 | <a id="packagemanagerbundler"></a>`BUNDLER` | Package manager: bundler. |
 | <a id="packagemanagercomposer"></a>`COMPOSER` | Package manager: composer. |
 | <a id="packagemanagerconan"></a>`CONAN` | Package manager: conan. |
+| <a id="packagemanagerconda"></a>`CONDA` | Package manager: conda. |
 | <a id="packagemanagergo"></a>`GO` | Package manager: go. |
 | <a id="packagemanagergradle"></a>`GRADLE` | Package manager: gradle. |
 | <a id="packagemanagermaven"></a>`MAVEN` | Package manager: maven. |

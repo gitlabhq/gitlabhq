@@ -31,6 +31,7 @@ describe('GroupSelect', () => {
 
   // Props
   const label = 'label';
+  const description = 'description';
   const inputName = 'inputName';
   const inputId = 'inputId';
 
@@ -46,6 +47,7 @@ describe('GroupSelect', () => {
     wrapper = shallowMountExtended(GroupSelect, {
       propsData: {
         label,
+        description,
         inputName,
         inputId,
         ...props,
@@ -77,6 +79,7 @@ describe('GroupSelect', () => {
     it.each`
       prop                   | expectedValue
       ${'label'}             | ${label}
+      ${'description'}       | ${description}
       ${'inputName'}         | ${inputName}
       ${'inputId'}           | ${inputId}
       ${'defaultToggleText'} | ${GROUP_TOGGLE_TEXT}

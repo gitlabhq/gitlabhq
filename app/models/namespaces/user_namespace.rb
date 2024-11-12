@@ -55,5 +55,9 @@ module Namespaces
 
       owner == user ? Gitlab::Access::OWNER : Gitlab::Access::NO_ACCESS
     end
+
+    def crm_group
+      nil
+    end
   end
 end

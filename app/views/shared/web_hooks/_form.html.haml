@@ -41,6 +41,7 @@
           help_text: s_('Webhooks|A confidential issue is created, updated, closed, or reopened.')
     - if @group
       = render_if_exists 'groups/hooks/member_events', form: form
+      = render_if_exists 'groups/hooks/project_events', form: form
       = render_if_exists 'groups/hooks/subgroup_events', form: form
     %li.gl-pb-3
       = form.gitlab_ui_checkbox_component :merge_requests_events,

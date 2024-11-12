@@ -13,6 +13,7 @@ DETAILS:
 **Status:** Experiment
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165157) in GitLab 17.5 [with a flag](../../administration/feature_flags.md) named `admin_agnostic_token_finder`. Disabled by default.
+> - [Feed tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169821) in GitLab 17.6.
 
 FLAG:
 The availability of this feature is controlled by a feature flag.
@@ -35,6 +36,7 @@ Supported tokens:
 
 - [Personal access tokens](../../user/profile/personal_access_tokens.md)
 - [Deploy tokens](../../user/project/deploy_tokens/index.md)
+- [Feed tokens](../../security/tokens/index.md#feed-token)
 
 ```plaintext
 POST /api/v4/admin/token

@@ -3477,7 +3477,6 @@ Gitlab/BoundedContexts:
     - 'ee/app/services/vulnerability_issue_links/delete_service.rb'
     - 'ee/app/services/vulnerability_merge_request_links/create_service.rb'
     - 'ee/app/services/vulnerability_scanners/list_service.rb'
-    - 'ee/app/uploaders/ee/object_storage.rb'
     - 'ee/app/validators/ee/json_schema_validator.rb'
     - 'ee/app/validators/ldap_filter_validator.rb'
     - 'ee/app/validators/password/complexity_validator.rb'

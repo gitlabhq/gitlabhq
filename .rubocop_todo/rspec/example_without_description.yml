@@ -20,7 +20,6 @@ RSpec/ExampleWithoutDescription:
     - 'ee/spec/finders/security/related_pipelines_finder_spec.rb'
     - 'ee/spec/finders/security/scan_result_policies/findings_finder_spec.rb'
     - 'ee/spec/finders/security/vulnerability_reads_finder_spec.rb'
-    - 'ee/spec/finders/users/add_on_trial_eligible_namespaces_finder_spec.rb'
     - 'ee/spec/graphql/ee/resolvers/projects_resolver_spec.rb'
     - 'ee/spec/graphql/ee/types/permission_types/deployment_spec.rb'
     - 'ee/spec/graphql/resolvers/security/project_security_exclusion_resolver_spec.rb'

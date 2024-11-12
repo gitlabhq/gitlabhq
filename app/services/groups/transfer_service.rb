@@ -67,8 +67,7 @@ module Groups
           update_group_attributes
           ensure_ownership
           update_integrations
-          remove_issue_contacts(old_root_ancestor_id, was_root_group)
-          update_crm_objects(was_root_group)
+          update_crm_objects
           remove_namespace_commit_emails(was_root_group)
         end
       end
@@ -112,10 +111,11 @@ module Groups
 
     def no_permissions_to_migrate_crm?
       return false unless group && @new_parent_group
-      return false if group.root_ancestor == @new_parent_group.root_ancestor
+      return false if group.crm_settings&.source_group
+      return false if group.crm_group == @new_parent_group.crm_group
 
-      return true if group.contacts.exists? && !current_user.can?(:admin_crm_contact, @new_parent_group.root_ancestor)
-      return true if group.crm_organizations.exists? && !current_user.can?(:admin_crm_organization, @new_parent_group.root_ancestor)
+      return true if group.crm_group.contacts.exists? && !current_user.can?(:admin_crm_contact, @new_parent_group.root_ancestor)
+      return true if group.crm_group.crm_organizations.exists? && !current_user.can?(:admin_crm_organization, @new_parent_group.root_ancestor)
 
       false
     end
@@ -308,18 +308,13 @@ module Groups
       ::Ci::PendingBuild.namespace_transfer_params(group)
     end
 
-    def update_crm_objects(was_root_group)
-      return unless was_root_group
+    def update_crm_objects
+      return unless group && new_parent_group
+      return if group.crm_settings&.source_group
+      return if group.crm_group == new_parent_group.crm_group
 
-      CustomerRelations::Contact.move_to_root_group(group)
-      CustomerRelations::Organization.move_to_root_group(group)
-    end
-
-    def remove_issue_contacts(old_root_ancestor_id, was_root_group)
-      return if was_root_group
-      return if old_root_ancestor_id == @group.root_ancestor.id
-
-      CustomerRelations::IssueContact.delete_for_group(@group)
+      was_crm_source = group.crm_group == group
+      CustomerRelations::GroupMigrationService.new(group.crm_group.id, new_parent_group.crm_group.id, was_crm_source).execute
     end
 
     def publish_event(old_root_ancestor_id)

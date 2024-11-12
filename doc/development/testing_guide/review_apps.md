@@ -203,7 +203,7 @@ subgraph "CNG-mirror pipeline"
 **Additional notes:**
 
 - If the `review-deploy` job keeps failing (and a manual retry didn't help),
-  post a message in the `#g_qe_engineering_productivity` channel and/or create a `~"Engineering Productivity"` `~"ep::review apps"` `~"type::bug"`
+  post a message in the `#g_qe_engineering_productivity` channel and/or create a `~"Engineering Productivity"` `~"dx::review apps"` `~"type::bug"`
   issue with a link to your merge request. The deployment failure can
   reveal an actual problem introduced in your merge request (that is, this isn't
   necessarily a transient failure)!

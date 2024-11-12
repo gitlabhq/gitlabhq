@@ -617,7 +617,7 @@ class Project < ApplicationRecord
 
   validates :project_feature, presence: true
   validates :namespace, presence: true
-  validates :organization, presence: true, if: :require_organization?
+  validates :organization, presence: true
   validates :project_namespace, presence: true, on: :create, if: -> { self.namespace }
   validates :project_namespace, presence: true, on: :update, if: -> { self.project_namespace_id_changed?(to: nil) }
   validates :name, uniqueness: { scope: :namespace_id }
@@ -631,7 +631,7 @@ class Project < ApplicationRecord
   validate :visibility_level_allowed_as_fork, if: :should_validate_visibility_level?
   validate :validate_pages_https_only, if: -> { changes.has_key?(:pages_https_only) }
   validate :changing_shared_runners_enabled_is_allowed
-  validate :parent_organization_match, if: :require_organization?
+  validate :parent_organization_match
   validates :repository_storage, presence: true, inclusion: { in: ->(_) { Gitlab.config.repositories.storages.keys } }
   validates :variables, nested_attributes_duplicates: { scope: :environment_scope }
   validates :bfg_object_map, file_size: { maximum: :max_attachment_size }
@@ -3425,12 +3425,6 @@ class Project < ApplicationRecord
   end
 
   private
-
-  def require_organization?
-    return false unless Feature.enabled?(:require_organization_on_project, Feature.current_request)
-
-    Gitlab::SafeRequestStore.fetch(:require_organization_on_project) { true } # rubocop:disable Style/RedundantFetchBlock -- This fetch has a different interface
-  end
 
   def with_redis(&block)
     Gitlab::Redis::Cache.with(&block)

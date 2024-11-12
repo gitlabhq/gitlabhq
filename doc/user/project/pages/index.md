@@ -81,8 +81,8 @@ To deploy your site, GitLab uses its built-in tool called [GitLab CI/CD](../../.
 to build your site and publish it to the GitLab Pages server. The sequence of
 scripts that GitLab CI/CD runs to accomplish this task is created from a file named
 `.gitlab-ci.yml`, which you can [create and modify](getting_started/pages_from_scratch.md).
-A specific `job` called `pages` in the configuration file makes GitLab aware that you're deploying a
-GitLab Pages website.
+A user-defined `job` with `pages: true` property in the configuration file makes
+GitLab aware that you're deploying a GitLab Pages website.
 
 You can either use the GitLab [default domain for GitLab Pages websites](getting_started_part_one.md#gitlab-pages-default-domain-names),
 `*.gitlab.io`, or your own domain (`example.com`). In that case, you
@@ -190,11 +190,11 @@ You can configure your Pages deployments to be automatically deleted after
 a period of time has passed by specifying a duration at `pages.expire_in`:
 
 ```yaml
-pages:
+deploy-pages:
   stage: deploy
   script:
     - ...
-  pages:
+  pages:  # specifies that this is a Pages job
     expire_in: 1 week
   artifacts:
     paths:
@@ -212,6 +212,8 @@ runs every 10 minutes. To recover it, follow the steps described in
 A stopped or deleted deployment is no longer available on the web. Users will
 see a 404 Not found error page at its URL, until another deployment is created
 with the same URL configuration.
+
+The previous YAML example uses [user-defined job names](#user-defined-job-names).
 
 ### Recover a stopped deployment
 
@@ -327,13 +329,13 @@ Mixing [CI/CD variables](../../../ci/variables/index.md) with other strings can 
 possibility. For example:
 
 ```yaml
-pages:
+deploy-pages:
   stage: deploy
   script:
     - echo "Pages accessible through ${CI_PAGES_URL}/${PAGES_PREFIX}"
   variables:
     PAGES_PREFIX: "" # No prefix by default (master)
-  pages:
+  pages:  # specifies that this is a Pages job
     path_prefix: "$PAGES_PREFIX"
   artifacts:
     paths:
@@ -355,19 +357,21 @@ Some other examples of mixing [variables](../../../ci/variables/index.md) with s
 - `pages.path_prefix: '_${CI_MERGE_REQUEST_IID}_'`: Merge request number
   prefixed ans suffixed with `_`, like `_123_`.
 
+The previous YAML example uses [user-defined job names](#user-defined-job-names).
+
 ### Use parallel deployments to create Pages environments
 
 You can use parallel GitLab Pages deployments to create a new [environment](../../../ci/environments/index.md).
 For example:
 
 ```yaml
-pages:
+deploy-pages:
   stage: deploy
   script:
     - echo "Pages accessible through ${CI_PAGES_URL}/${PAGES_PREFIX}"
   variables:
     PAGES_PREFIX: "" # no prefix by default (master)
-  pages:
+  pages:  # specifies that this is a Pages job
     path_prefix: "$PAGES_PREFIX"
   environment:
     name: "Pages ${PAGES_PREFIX}"
@@ -390,6 +394,8 @@ When using [environments](../../../ci/environments/index.md) for pages, all page
 listed on the project environment list.
 
 You can also [group similar environments](../../../ci/environments/index.md#group-similar-environments) together.
+
+The previous YAML example uses [user-defined job names](#user-defined-job-names).
 
 ### Delete a Deployment
 
@@ -427,7 +433,7 @@ deploy-my-pages-site:
   stage: deploy
   script:
     - npm run build
-  pages: true
+  pages: true  # specifies that this is a Pages job
   artifacts:
     paths:
       - public
@@ -440,7 +446,7 @@ deploy-pages-review-app:
   stage: deploy
   script:
     - npm run build
-  pages:
+  pages:  # specifies that this is a Pages job
     path_prefix: '/_staging'
   artifacts:
     paths:

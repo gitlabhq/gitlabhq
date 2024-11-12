@@ -1,7 +1,6 @@
 // this file is based on https://github.com/apollographql/apollo-cache-persist/blob/master/examples/react-native/src/utils/persistence/persistenceMapper.ts
 // with some heavy refactororing
 
-/* eslint-disable @gitlab/require-i18n-strings */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable no-param-reassign */
 /* eslint-disable dot-notation */

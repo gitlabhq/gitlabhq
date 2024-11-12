@@ -278,7 +278,7 @@ module Projects
     end
 
     def remove_issue_contacts
-      return unless @old_group&.root_ancestor != @new_namespace&.root_ancestor
+      return unless @old_group&.crm_group != @new_namespace&.crm_group
 
       CustomerRelations::IssueContact.delete_for_project(project.id)
     end

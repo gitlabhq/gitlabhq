@@ -56,6 +56,7 @@ You can configure group webhooks to listen for:
 - All events that occur in projects in the group and subgroups.
 - Group-specific events:
   - [Group member events](webhook_events.md#group-member-events).
+  - [Project events](webhook_events.md#project-events)
   - [Subgroup events](webhook_events.md#subgroup-events).
 
 ### Webhooks in both a project and a group

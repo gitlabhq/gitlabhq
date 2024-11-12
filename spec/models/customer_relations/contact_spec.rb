@@ -129,35 +129,6 @@ RSpec.describe CustomerRelations::Contact, type: :model, feature_category: :team
     end
   end
 
-  describe '#self.move_to_root_group' do
-    let!(:old_root_group) { create(:group) }
-    let!(:contacts) { create_list(:contact, 4, group: old_root_group) }
-    let!(:project) { create(:project, group: old_root_group) }
-    let!(:issue) { create(:issue, project: project) }
-    let!(:issue_contact1) { create(:issue_customer_relations_contact, issue: issue, contact: contacts[0]) }
-    let!(:issue_contact2) { create(:issue_customer_relations_contact, issue: issue, contact: contacts[1]) }
-    let!(:new_root_group) { create(:group) }
-    let!(:dupe_contact1) { create(:contact, group: new_root_group, email: contacts[1].email) }
-    let!(:dupe_contact2) { create(:contact, group: new_root_group, email: contacts[3].email.upcase) }
-
-    before do
-      old_root_group.update!(parent: new_root_group)
-      described_class.move_to_root_group(old_root_group)
-    end
-
-    it 'moves contacts with unique emails and deletes the rest' do
-      expect(contacts[0].reload.group_id).to eq(new_root_group.id)
-      expect(contacts[2].reload.group_id).to eq(new_root_group.id)
-      expect { contacts[1].reload }.to raise_error(ActiveRecord::RecordNotFound)
-      expect { contacts[3].reload }.to raise_error(ActiveRecord::RecordNotFound)
-    end
-
-    it 'updates issue_contact.contact_id for dupes and leaves the rest untouched' do
-      expect(issue_contact1.reload.contact_id).to eq(contacts[0].id)
-      expect(issue_contact2.reload.contact_id).to eq(dupe_contact1.id)
-    end
-  end
-
   describe '.search' do
     let_it_be(:contact_a) do
       create(

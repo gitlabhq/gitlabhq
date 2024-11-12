@@ -2,7 +2,7 @@ import Vue, { nextTick } from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import VueApollo from 'vue-apollo';
-import { GlTab, GlTabs, GlModal } from '@gitlab/ui';
+import { GlTab, GlTabs, GlModal, GlAlert } from '@gitlab/ui';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { stubComponent, RENDER_ALL_SLOTS_TEMPLATE } from 'helpers/stub_component';
@@ -97,6 +97,7 @@ describe('PlaceholdersTabApp', () => {
   const findKeepAllAsPlaceholderButton = () =>
     wrapper.findByTestId('keep-all-as-placeholder-button');
   const findKeepAllAsPlaceholderModal = () => wrapper.findComponent(KeepAllAsPlaceholderModal);
+  const findAlert = () => wrapper.findComponent(GlAlert);
 
   describe('filter, search and sort', () => {
     const filterByFailedStatusToken = { type: TOKEN_TYPE_STATUS, value: { data: 'failed' } };
@@ -208,6 +209,12 @@ describe('PlaceholdersTabApp', () => {
         });
       });
     });
+  });
+
+  it('renders an alert', () => {
+    createComponent();
+
+    expect(findAlert().exists()).toBe(true);
   });
 
   it('renders tabs', () => {

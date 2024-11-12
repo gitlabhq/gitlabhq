@@ -573,7 +573,7 @@ export const setNewWorkItemCache = async (
                 id: newWorkItemPath,
                 fullPath,
                 name: newWorkItemPath,
-                __typename: 'Namespace', // eslint-disable-line @gitlab/require-i18n-strings
+                __typename: 'Namespace',
               },
               author: {
                 id: currentUserId,
@@ -602,7 +602,7 @@ export const setNewWorkItemCache = async (
               widgets,
               __typename: 'WorkItem',
             },
-            __typename: 'Namespace', // eslint-disable-line @gitlab/require-i18n-strings
+            __typename: 'Namespace',
           },
         },
   });

@@ -28,7 +28,6 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
     # TODO: Remove with the rollout of the FF nuget_extract_nuget_package_model
     # https://gitlab.com/gitlab-org/gitlab/-/issues/499602
     it { is_expected.to have_many(:nuget_symbols).inverse_of(:package) }
-    it { is_expected.to have_many(:matching_package_protection_rules).through(:project).source(:package_protection_rules) }
   end
 
   describe '.sort_by_attribute' do
@@ -773,26 +772,6 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
 
       it { is_expected.to contain_exactly(pipeline, pipeline2) }
     end
-  end
-
-  describe '#matching_package_protection_rules' do
-    let_it_be(:package) do
-      create(:npm_package, name: 'npm-package')
-    end
-
-    let_it_be(:package_protection_rule) do
-      create(:package_protection_rule, project: package.project, package_name_pattern: package.name, package_type: :npm,
-        minimum_access_level_for_push: :maintainer)
-    end
-
-    let_it_be(:package_protection_rule_no_match) do
-      create(:package_protection_rule, project: package.project, package_name_pattern: "other-#{package.name}", package_type: :npm,
-        minimum_access_level_for_push: :maintainer)
-    end
-
-    subject { package.matching_package_protection_rules }
-
-    it { is_expected.to eq [package_protection_rule] }
   end
 
   describe '#tag_names' do

@@ -114,17 +114,20 @@ directory of the project to the `public/` directory. The `.public` workaround
 is so `cp` doesn't also copy `public/` to itself in an infinite loop:
 
 ```yaml
-pages:
+deploy-pages:
   script:
     - mkdir .public
     - cp -r * .public
     - mv .public public
+  pages: true  # specifies that this is a Pages job
   artifacts:
     paths:
       - public
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
 ```
+
+The previous YAML example uses [user-defined job names](index.md#user-defined-job-names).
 
 ### `.gitlab-ci.yml` for a static site generator
 
@@ -157,10 +160,11 @@ one, specifying to execute everything in the `pages` branch:
 ```yaml
 image: ruby:2.6
 
-pages:
+deploy-pages:
   script:
     - gem install jekyll
     - jekyll build -d public/
+  pages: true  # specifies that this is a Pages job
   artifacts:
     paths:
       - public
@@ -171,6 +175,8 @@ pages:
 See an example that has different files in the [`main` branch](https://gitlab.com/pages/jekyll-branched/tree/main)
 and the source files for Jekyll are in a [`pages` branch](https://gitlab.com/pages/jekyll-branched/tree/pages) which
 also includes `.gitlab-ci.yml`.
+
+The previous YAML example uses [user-defined job names](index.md#user-defined-job-names).
 
 ### Serving compressed assets
 
@@ -205,17 +211,20 @@ This can be achieved by including a `script:` command like this in your
 `.gitlab-ci.yml` pages job:
 
 ```yaml
-pages:
+deploy-pages:
   # Other directives
   script:
     # Build the public/ directory first
     - find public -type f -regex '.*\.\(htm\|html\|xml\|txt\|text\|js\|css\|svg\)$' -exec gzip -f -k {} \;
     - find public -type f -regex '.*\.\(htm\|html\|xml\|txt\|text\|js\|css\|svg\)$' -exec brotli -f -k {} \;
+  pages: true  # specifies that this is a Pages job
 ```
 
 By pre-compressing the files and including both versions in the artifact, Pages
 can serve requests for both compressed and uncompressed content without
 needing to compress files on-demand.
+
+The previous YAML example uses [user-defined job names](index.md#user-defined-job-names).
 
 ### Resolving ambiguous URLs
 
@@ -268,14 +277,15 @@ By default, the [artifact](../../../ci/jobs/job_artifacts.md) folder
 that contains the static files of your site needs to have the name `public`.
 
 To change that folder name to any other value, add a `publish` property to your
-`pages` job configuration in `.gitlab-ci.yml`.
+`deploy-pages` job configuration in `.gitlab-ci.yml`.
 
 The following example publishes a folder named `dist` instead:
 
 ```yaml
-pages:
+deploy-pages:
   script:
     - npm run build
+  pages: true  # specifies that this is a Pages job
   artifacts:
     paths:
       - dist
@@ -286,6 +296,8 @@ If you're using a folder name other than `public`you must specify
 the directory to be deployed with Pages both as an artifact, and under the
 `publish` property. The reason you need both is that you can define multiple paths
 as artifacts, and GitLab doesn't know which one you want to deploy.
+
+The previous YAML example uses [user-defined job names](index.md#user-defined-job-names).
 
 ## Known issues
 
@@ -324,13 +336,14 @@ Safari requires the web server to support the [Range request header](https://dev
 HTTP Range requests, you should use the following two variables in your `.gitlab-ci.yml` file:
 
 ```yaml
-pages:
+deploy-pages:
   stage: deploy
   variables:
     FF_USE_FASTZIP: "true"
     ARTIFACT_COMPRESSION_LEVEL: "fastest"
   script:
     - echo "Deploying pages"
+  pages: true  # specifies that this is a Pages job
   artifacts:
     paths:
       - public
@@ -338,3 +351,5 @@ pages:
 ```
 
 The `FF_USE_FASTZIP` variable enables the [feature flag](https://docs.gitlab.com/runner/configuration/feature-flags.html#available-feature-flags) which is needed for [`ARTIFACT_COMPRESSION_LEVEL`](../../../ci/runners/configure_runners.md#artifact-and-cache-settings).
+
+The previous YAML example uses [user-defined job names](index.md#user-defined-job-names).

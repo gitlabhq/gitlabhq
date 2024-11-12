@@ -73,7 +73,6 @@ Gitlab/NoFindInWorkers:
     - 'ee/app/workers/ci/runners/export_usage_csv_worker.rb'
     - 'ee/app/workers/compliance_management/chain_of_custody_report_worker.rb'
     - 'ee/app/workers/compliance_management/framework_export_mailer_worker.rb'
-    - 'ee/app/workers/compliance_management/pending_status_check_worker.rb'
     - 'ee/app/workers/compliance_management/project_framework_export_mailer_worker.rb'
     - 'ee/app/workers/compliance_management/standards_adherence_export_mailer_worker.rb'
     - 'ee/app/workers/compliance_management/update_default_framework_worker.rb'

@@ -37,16 +37,19 @@ This is useful when developing E2E tests that require GitLab instance with speci
 
 ### Generic command for a typical GDK installation
 
-The following is an example command you can use if you have configured GDK to run on a specific IP address and port, with a username, password, and personal access token that aren't the defaults, and you would like the test framework to show debug logs:
+The following is an example command you can use if you have configured GDK to run on a specific IP address and port, that aren't the defaults, and you would like the test framework to show debug logs:
 
 ```shell
-GITLAB_QA_ACCESS_TOKEN={GDK API PAT} \
-GITLAB_USERNAME={GDK USERNAME} \
-GITLAB_PASSWORD={GDK PASSWORD} \
 QA_LOG_LEVEL=DEBUG \
 QA_GITLAB_URL="http://{GDK IP ADDRESS}:{GDK PORT}" \
 bundle exec rspec <path/to/spec.rb>
 ```
+
+NOTE:
+Passing `GITLAB_USERNAME` or `GITLAB_PASSWORD` does not work as expected.
+Stick with the default values until
+[this issue](https://gitlab.com/gitlab-org/quality/quality-engineering/team-tasks/-/issues/3113)
+is resolved.
 
 For an explanation of the variables see the [additional examples below](#overriding-gitlab-address) and the [list of supported environment variables](https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/what_tests_can_be_run.md#supported-gitlab-environment-variables).
 

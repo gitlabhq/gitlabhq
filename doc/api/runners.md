@@ -742,7 +742,7 @@ List all runners available in the group as well as its ancestor groups, includin
 
 Prerequisites:
 
-- You must be an administrator or have the Maintainer role of the target namespace.
+- You must be an administrator or have the Maintainer role for the target namespace.
 
 ```plaintext
 GET /groups/:id/runners

@@ -10,6 +10,9 @@ import {
   GlFilteredSearchToken,
   GlDisclosureDropdown,
   GlDisclosureDropdownItem,
+  GlAlert,
+  GlLink,
+  GlSprintf,
 } from '@gitlab/ui';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { s__, __, sprintf } from '~/locale';
@@ -32,7 +35,7 @@ import {
   PLACEHOLDER_TAB_AWAITING,
   PLACEHOLDER_TAB_REASSIGNED,
 } from '~/import_entities/import_groups/constants';
-
+import { helpPagePath } from '~/helpers/help_page_helper';
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import {
   FILTERED_SEARCH_TERM,
@@ -56,6 +59,9 @@ export default {
     GlButton,
     GlDisclosureDropdown,
     GlDisclosureDropdownItem,
+    GlAlert,
+    GlLink,
+    GlSprintf,
     FilteredSearchBar,
     PlaceholdersTable,
     CsvUploadModal,
@@ -271,6 +277,9 @@ export default {
       this.sort = sort;
     },
   },
+  helpUrl: helpPagePath('user/project/import/index', {
+    anchor: 'security-considerations',
+  }),
   uploadCsvModalId: UPLOAD_CSV_PLACEHOLDERS_MODAL_ID,
   keepAllAsPlaceholderModalId: KEEP_ALL_AS_PLACEHOLDER_MODAL_ID,
   PLACEHOLDER_USER_REASSIGNED_STATUS_OPTIONS,
@@ -279,6 +288,19 @@ export default {
 
 <template>
   <div>
+    <gl-alert variant="warning" :dismissible="false" class="mt-3">
+      <gl-sprintf
+        :message="
+          s__(
+            'UserMapping|Contribution and membership reassignment cannot be undone. Incorrect reassignment %{linkStart}poses a security risk%{linkEnd}, so check carefully before you reassign.',
+          )
+        "
+      >
+        <template #link="{ content }">
+          <gl-link :href="$options.helpUrl" target="_blank">{{ content }}</gl-link>
+        </template>
+      </gl-sprintf>
+    </gl-alert>
     <gl-tabs
       v-model="selectedTabIndex"
       nav-class="gl-grow gl-items-center gl-mt-3"

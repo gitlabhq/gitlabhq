@@ -164,7 +164,6 @@ ee/spec/frontend/subscriptions/shared/components/purchase_flow/components/checko
 ee/spec/frontend/vue_shared/security_reports/components/security_training_promo_spec.js
 ee/spec/frontend/vulnerabilities/generic_report/types/list_graphql_spec.js
 ee/spec/frontend/vulnerabilities/related_issues_spec.js
-ee/spec/frontend/vulnerabilities/vulnerability_file_content_viewer_spec.js
 ee/spec/frontend/vulnerabilities/vulnerability_file_contents_spec.js
 spec/frontend/__helpers__/vue_test_utils_helper_spec.js
 spec/frontend/access_tokens/index_spec.js

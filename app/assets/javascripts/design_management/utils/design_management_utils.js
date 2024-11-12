@@ -55,8 +55,6 @@ export const extractDesignNoteId = (urlHash) => {
  */
 export const designUploadOptimisticResponse = (files) => {
   const designs = files.map((file) => ({
-    // False positive i18n lint: https://gitlab.com/gitlab-org/frontend/eslint-plugin-i18n/issues/26
-    // eslint-disable-next-line @gitlab/require-i18n-strings
     __typename: 'Design',
     id: -uniqueId(),
     image: '',
@@ -99,8 +97,6 @@ export const designUploadOptimisticResponse = (files) => {
   }));
 
   return {
-    // False positive i18n lint: https://gitlab.com/gitlab-org/frontend/eslint-plugin-i18n/issues/26
-    // eslint-disable-next-line @gitlab/require-i18n-strings
     __typename: 'Mutation',
     designManagementUpload: {
       __typename: 'DesignManagementUploadPayload',
@@ -117,8 +113,6 @@ export const designUploadOptimisticResponse = (files) => {
  *  @param {Object} position
  */
 export const repositionImageDiffNoteOptimisticResponse = (note, { position }) => ({
-  // False positive i18n lint: https://gitlab.com/gitlab-org/frontend/eslint-plugin-i18n/issues/26
-  // eslint-disable-next-line @gitlab/require-i18n-strings
   __typename: 'Mutation',
   repositionImageDiffNote: {
     __typename: 'RepositionImageDiffNotePayload',
@@ -138,8 +132,6 @@ export const repositionImageDiffNoteOptimisticResponse = (note, { position }) =>
  * @param {Array} designs
  */
 export const moveDesignOptimisticResponse = (designs) => ({
-  // False positive i18n lint: https://gitlab.com/gitlab-org/frontend/eslint-plugin-i18n/issues/26
-  // eslint-disable-next-line @gitlab/require-i18n-strings
   __typename: 'Mutation',
   designManagementMove: {
     __typename: 'DesignManagementMovePayload',
@@ -178,7 +170,7 @@ const createTodoGid = (todoId) => {
 
 export const createPendingTodo = (todoId) => {
   return {
-    __typename: 'Todo', // eslint-disable-line @gitlab/require-i18n-strings
+    __typename: 'Todo',
     id: createTodoGid(todoId),
   };
 };

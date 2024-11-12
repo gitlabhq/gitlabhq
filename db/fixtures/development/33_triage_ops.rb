@@ -46,12 +46,13 @@ class Gitlab::Seeder::TriageOps
   OTHER_LABELS = <<~LABELS.split("\n")
     Community contribution
     documentation
-    ep::contributor tooling
-    ep::meta
-    ep::metrics
-    ep::pipeline
-    ep::review-apps
-    ep::triage
+    dx::contributor tooling
+    dx::infrastructure
+    dx::meta
+    dx::metrics
+    dx::pipeline
+    dx::review-apps
+    dx::triage
     master-broken::caching
     master-broken::ci-config
     master-broken::dependency-upgrade

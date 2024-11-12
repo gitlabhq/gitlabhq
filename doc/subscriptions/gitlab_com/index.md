@@ -216,7 +216,7 @@ This setting restricts groups from adding new billable users when there are no s
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348481) in GitLab 15.2 [with a flag](../../administration/feature_flags.md) named `seat_flag_alerts`.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/362041) in GitLab 15.4. Feature flag `seat_flag_alerts` removed.
 
-If you have the Owner role of the top-level group, an alert notifies you
+If you have the Owner role for the top-level group, an alert notifies you
 of your total seat usage.
 
 The alert displays on group, subgroup, and project

@@ -17,7 +17,8 @@ RSpec.shared_examples 'purl_types enum' do
       'cbl-mariner': 12,
       wolfi: 13,
       cargo: 14,
-      swift: 15
+      swift: 15,
+      conda: 16
     }
   end
 

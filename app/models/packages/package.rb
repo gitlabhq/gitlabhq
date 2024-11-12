@@ -57,7 +57,6 @@ class Packages::Package < ApplicationRecord
 
   has_many :build_infos, inverse_of: :package
   has_many :pipelines, through: :build_infos, disable_joins: true
-  has_many :matching_package_protection_rules, ->(package) { where(package_type: package.package_type).for_package_name(package.name) }, through: :project, source: :package_protection_rules
 
   accepts_nested_attributes_for :maven_metadatum
 

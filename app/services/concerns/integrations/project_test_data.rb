@@ -115,5 +115,9 @@ module Integrations
         current_user: current_user
       }
     end
+
+    def project_events_data
+      Gitlab::HookData::ProjectBuilder.new(project).build(:create)
+    end
   end
 end

@@ -32,6 +32,9 @@ $type-scale: (
  */
  $size-scale: (
   's': #{20 * $grid-size},
+  'l': #{40 * $grid-size},
+  'm': #{30 * $grid-size},
+  'xl': #{70 * $grid-size}
 );
 
 @each $index, $size in $size-scale {

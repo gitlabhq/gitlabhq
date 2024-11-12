@@ -20,7 +20,7 @@ import {
   NEW_BRANCH_IN_FORK,
 } from '../constants';
 
-const MODAL_TITLE = __('Create New Directory');
+const MODAL_TITLE = __('Create new directory');
 const PRIMARY_OPTIONS_TEXT = __('Create directory');
 const DIR_LABEL = __('Directory name');
 const ERROR_MESSAGE = __('Error creating new directory. Please try again.');

@@ -2,7 +2,7 @@
 - hidden = @hidden_commit_count
 - commits = Commit.decorate(commits, @project)
 
-= render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5'}, body_options: { class: 'gl-py-0'}) do |c|
+= render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5'}, body_options: { class: 'gl-py-0'}, footer_options: { class: 'gl-bg-orange-50' }) do |c|
   - c.with_header do
     = s_('CompareRevisions|Commits on Source (%{commits_amount})').html_safe % { commits_amount: @total_commit_count }
   - c.with_body do
@@ -10,7 +10,8 @@
       %ul.content-list
         - commits.each do |commit|
           = render "projects/commits/inline_commit", commit: commit, project: @project
-        %li.warning-row.unstyled
-          #{number_with_delimiter(hidden)} additional commits have been omitted to prevent performance issues.
     - else
       %ul.content-list= render commits, project: @project, ref: @ref
+  - if hidden > 0
+    - c.with_footer do
+      #{number_with_delimiter(hidden)} additional commits have been omitted to prevent performance issues.

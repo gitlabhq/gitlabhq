@@ -136,7 +136,7 @@ module Projects
       yield if block_given?
 
       event_service.create_project(@project, current_user)
-      system_hook_service.execute_hooks_for(@project, :create)
+      execute_hooks
 
       setup_authorizations
 
@@ -217,6 +217,10 @@ module Projects
 
     def create_sast_commit
       ::Security::CiConfiguration::SastCreateService.new(@project, current_user, { initialize_with_sast: true }, commit_on_default: true).execute
+    end
+
+    def execute_hooks
+      system_hook_service.execute_hooks_for(@project, :create)
     end
 
     def repository_object_format

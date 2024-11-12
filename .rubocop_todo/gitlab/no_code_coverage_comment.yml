@@ -1,7 +1,6 @@
 ---
 Gitlab/NoCodeCoverageComment:
   Exclude:
-    - 'app/models/integration.rb'
     - 'app/services/ci/job_artifacts/destroy_batch_service.rb'
     - 'app/workers/database/batched_background_migration/single_database_worker.rb'
     - 'ee/app/models/concerns/geo/replicable_model.rb'

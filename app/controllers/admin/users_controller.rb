@@ -410,7 +410,7 @@ class Admin::UsersController < Admin::ApplicationController
     Gitlab::AppLogger.info(format(_("User %{current_user_username} has started impersonating %{username}"), current_user_username: current_user.username, username: user.username))
   end
 
-  # method overriden in EE
+  # method overridden in EE
   def unlock_user
     update_user(&:unlock_access!)
   end
@@ -422,7 +422,7 @@ class Admin::UsersController < Admin::ApplicationController
     @impersonation_error_text = @can_impersonate ? nil : helpers.impersonation_error_text(user, impersonation_in_progress?)
   end
 
-  # method overriden in EE
+  # method overridden in EE
   def prepare_user_for_update(user)
     user.skip_reconfirmation!
     user.send_only_admin_changed_your_password_notification! if admin_making_changes_for_another_user?

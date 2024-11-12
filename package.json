@@ -256,7 +256,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3.1.0",
     "@eslint/js": "^9.13.0",
-    "@gitlab/eslint-plugin": "20.5.0",
+    "@gitlab/eslint-plugin": "20.6.0",
     "@gitlab/stylelint-config": "6.2.2",
     "@graphql-eslint/eslint-plugin": "3.20.1",
     "@originjs/vite-plugin-commonjs": "^1.0.3",

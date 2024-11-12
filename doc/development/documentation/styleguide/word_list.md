@@ -297,17 +297,17 @@ Use **authenticated user** instead of other variations, like **signed in user** 
 Try to use the most suitable preposition when using **authenticate** as a verb.
 
 Use **authenticate with** when referring to a system or provider that
-performs the authentication, like a token or a service like OAuth. 
+performs the authentication, like a token or a service like OAuth.
 
 For example:
-  
+
 - Authenticate with a deploy token.
 - Authenticate with your credentials.
 - Authenticate with OAuth.
 - The runner uses an authentication token to authenticate with GitLab.
 
 Use **authenticate against** when referring to a resource that contains
-credentials that are checked for validation. 
+credentials that are checked for validation.
 
 For example:
 
@@ -1990,7 +1990,7 @@ Use:
 
 Instead of:
 
-- You must have the Owner role for the group.
+- You must have the Owner role of the group.
 
 Do not use **roles** and [**permissions**](#permissions) interchangeably. Each user is assigned a role. Each role includes a set of permissions.
 
@@ -2355,7 +2355,7 @@ You **turn on** or **turn off** a toggle. For example:
 
 ## top-level group
 
-Use lowercase for **top-level group** (hyphenated). 
+Use lowercase for **top-level group** (hyphenated).
 
 Do not use **root group**.
 

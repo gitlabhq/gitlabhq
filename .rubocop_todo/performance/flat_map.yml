@@ -14,5 +14,4 @@ Performance/FlatMap:
     - 'lib/gitlab/diff/file_collection/base.rb'
     - 'lib/gitlab/instrumentation/redis_cluster_validator.rb'
     - 'lib/gitlab/testing/request_inspector_middleware.rb'
-    - 'lib/gitlab/usage_data_counters/hll_redis_counter.rb'
     - 'qa/qa/tools/ci/non_empty_suites.rb'

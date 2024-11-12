@@ -21,6 +21,8 @@ Takes [pagination parameters](rest/index.md#offset-based-pagination) `page` and 
 
 ### As a regular user
 
+> - Keyset pagination [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419556) in GitLab 16.5.
+
 ```plaintext
 GET /users
 ```
@@ -68,7 +70,7 @@ Example response:
 ]
 ```
 
-This endpoint supports [keyset pagination](rest/index.md#keyset-based-pagination). Keyset pagination [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419556) in GitLab 16.5.
+This endpoint supports [keyset pagination](rest/index.md#keyset-based-pagination). In GitLab 17.0 and later, keyset pagination is required for responses of 50,000 and above.
 
 You can also use `?search=` to search for users by name, username, or public email. For example, `/users?search=John`. When you search for a:
 
@@ -1306,7 +1308,7 @@ Create a runner linked to the current user.
 
 Prerequisites:
 
-- You must be an administrator or have the Owner role of the target namespace or project.
+- You must be an administrator or have the Owner role for the target namespace or project.
 - For `instance_type`, you must be an administrator of the GitLab instance.
 - For `group_type` or `project_type` with an Owner role, an administrator must not have enabled [restrict runner registration](../administration/settings/continuous_integration.md#restrict-runner-registration-by-all-users-in-an-instance).
 - An access token with the `create_runner` scope.

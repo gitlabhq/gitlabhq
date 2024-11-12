@@ -16246,9 +16246,6 @@ msgstr ""
 msgid "Create %{workspace} label"
 msgstr ""
 
-msgid "Create New Directory"
-msgstr ""
-
 msgid "Create a Kubernetes cluster"
 msgstr ""
 
@@ -26801,6 +26798,12 @@ msgstr ""
 msgid "GroupSettings|Configure limits on the number of repositories users can download, clone, or fork in a given time."
 msgstr ""
 
+msgid "GroupSettings|Contact source"
+msgstr ""
+
+msgid "GroupSettings|Contact source cannot be changed when issues already have contacts assigned from a different source."
+msgstr ""
+
 msgid "GroupSettings|Custom project templates"
 msgstr ""
 
@@ -26943,6 +26946,9 @@ msgid "GroupSettings|Set the initial name and protections for the default branch
 msgstr ""
 
 msgid "GroupSettings|The Auto DevOps pipeline runs if no alternative CI configuration file is found."
+msgstr ""
+
+msgid "GroupSettings|The group from which to source contacts for issues in this group and it's subgroups."
 msgstr ""
 
 msgid "GroupSettings|There was a problem updating Auto DevOps pipeline: %{error_messages}."
@@ -53306,9 +53312,6 @@ msgstr ""
 msgid "Start a Free Ultimate Trial"
 msgstr ""
 
-msgid "Start a new merge request with these changes"
-msgstr ""
-
 msgid "Start a review"
 msgstr ""
 
@@ -55763,6 +55766,9 @@ msgid "There are no issues with the selected labels"
 msgstr ""
 
 msgid "There are no matching files"
+msgstr ""
+
+msgid "There are no more seats left in your subscription. New users cannot be added to this instance."
 msgstr ""
 
 msgid "There are no open epics"
@@ -60013,6 +60019,9 @@ msgstr ""
 msgid "UserMapping|Awaiting reassignment"
 msgstr ""
 
+msgid "UserMapping|Contribution and membership reassignment cannot be undone. Incorrect reassignment %{linkStart}poses a security risk%{linkEnd}, so check carefully before you reassign."
+msgstr ""
+
 msgid "UserMapping|Don't reassign"
 msgstr ""
 
@@ -61812,6 +61821,9 @@ msgstr ""
 msgid "Webhooks|A pipeline's status changes."
 msgstr ""
 
+msgid "Webhooks|A project is created or removed."
+msgstr ""
+
 msgid "Webhooks|A release is created, updated, or deleted."
 msgstr ""
 
@@ -61939,6 +61951,9 @@ msgid "Webhooks|Only alphanumeric characters, periods, dashes, and underscores a
 msgstr ""
 
 msgid "Webhooks|Pipeline events"
+msgstr ""
+
+msgid "Webhooks|Project events"
 msgstr ""
 
 msgid "Webhooks|Project or group access token events"

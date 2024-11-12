@@ -1,6 +1,21 @@
 # frozen_string_literal: true
 
 RSpec.describe Gitlab::Cng::Kind::Cluster do
+  let(:config_path) { File.join(Gitlab::Cng::Helpers::Utils.config_dir, "kind-config.yml") }
+
+  let(:kind_config_content) do
+    <<~YML
+      apiVersion: kind.x-k8s.io/v1alpha4
+      kind: Cluster
+    YML
+  end
+
+  before do
+    allow(FileUtils).to receive(:mkdir_p).with(File.join(Dir.home, ".gitlab-cng"))
+    allow(File).to receive(:write).with(config_path, kind_config_content)
+    allow(File).to receive(:read).with(config_path).and_return(kind_config_content)
+  end
+
   describe "with setup" do
     subject(:cluster) do
       described_class.new(
@@ -14,7 +29,6 @@ RSpec.describe Gitlab::Cng::Kind::Cluster do
     let(:ci) { false }
     let(:name) { "gitlab" }
     let(:docker_hostname) { nil }
-    let(:tmp_config_path) { File.join("/tmp", "kind-config.yml") }
     let(:command_status) { instance_double(Process::Status, success?: true) }
     let(:clusters) { "kind" }
     let(:helm) { instance_double(Gitlab::Cng::Helm::Client, add_helm_chart: nil, upgrade: nil) }
@@ -22,10 +36,8 @@ RSpec.describe Gitlab::Cng::Kind::Cluster do
     let(:ssh_container_port) { 31022 }
 
     before do
-      allow(Gitlab::Cng::Helpers::Utils).to receive(:tmp_dir).and_return("/tmp")
       allow(Gitlab::Cng::Helpers::Spinner).to receive(:spin).and_yield
       allow(Gitlab::Cng::Helm::Client).to receive(:new).and_return(helm)
-      allow(File).to receive(:write).with(tmp_config_path, kind_config_content)
 
       allow(Open3).to receive(:popen2e).with({}, *%w[
         kind get clusters
@@ -36,7 +48,7 @@ RSpec.describe Gitlab::Cng::Kind::Cluster do
         "cluster",
         "--name", name,
         "--wait", "30s",
-        "--config", tmp_config_path
+        "--config", config_path
       ]).and_return(["", command_status])
 
       allow(cluster).to receive(:rand).with(30000..31000).and_return(http_container_port)
@@ -193,35 +205,33 @@ RSpec.describe Gitlab::Cng::Kind::Cluster do
     let(:http_container_port) { 32080 }
     let(:ssh_container_port) { 32022 }
 
-    before do
-      allow(File).to receive(:read).with(File.join(Gitlab::Cng::Helpers::Utils.tmp_dir, "kind-config.yml")).and_return(
-        <<~YML
-          apiVersion: kind.x-k8s.io/v1alpha4
-          kind: Cluster
-          networking:
-            apiServerAddress: "0.0.0.0"
-          nodes:
-            - role: control-plane
-              kubeadmConfigPatches:
-                - |
-                  kind: InitConfiguration
-                  nodeRegistration:
-                    kubeletExtraArgs:
-                      node-labels: "ingress-ready=true"
-                - |
-                  kind: ClusterConfiguration
-                  apiServer:
-                    certSANs:
-                      - "test"
-              extraPortMappings:
-                - containerPort: #{http_container_port}
-                  hostPort: 80
-                  listenAddress: "0.0.0.0"
-                - containerPort: #{ssh_container_port}
-                  hostPort: 22
-                  listenAddress: "0.0.0.0"
-        YML
-      )
+    let(:kind_config_content) do
+      <<~YML
+        apiVersion: kind.x-k8s.io/v1alpha4
+        kind: Cluster
+        networking:
+          apiServerAddress: "0.0.0.0"
+        nodes:
+          - role: control-plane
+            kubeadmConfigPatches:
+              - |
+                kind: InitConfiguration
+                nodeRegistration:
+                  kubeletExtraArgs:
+                    node-labels: "ingress-ready=true"
+              - |
+                kind: ClusterConfiguration
+                apiServer:
+                  certSANs:
+                    - "test"
+            extraPortMappings:
+              - containerPort: #{http_container_port}
+                hostPort: 80
+                listenAddress: "0.0.0.0"
+              - containerPort: #{ssh_container_port}
+                hostPort: 22
+                listenAddress: "0.0.0.0"
+      YML
     end
 
     it "return correct port mappings" do

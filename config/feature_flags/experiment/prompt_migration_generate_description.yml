@@ -1,9 +1,0 @@
----
-name: prompt_migration_generate_description
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152429
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169982
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/500121
-milestone: '17.6'
-group: group::ai framework
-type: experiment
-default_enabled: false

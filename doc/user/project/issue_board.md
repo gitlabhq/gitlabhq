@@ -322,7 +322,7 @@ Prerequisites:
 
 To add an assignee list:
 
-1. Select **Create list**.
+1. Select **New list**.
 1. Select **Assignee**.
 1. In the dropdown list, select a user.
 1. Select **Add to board**.
@@ -348,7 +348,7 @@ Prerequisites:
 
 To add a milestone list:
 
-1. Select **Create list**.
+1. Select **New list**.
 1. Select **Milestone**.
 1. In the dropdown list, select a milestone.
 1. Select **Add to board**.
@@ -373,7 +373,7 @@ Prerequisites:
 
 To add an iteration list:
 
-1. Select **Create list**.
+1. Select **New list**.
 1. Select **Iteration**.
 1. In the dropdown list, select an iteration.
 1. Select **Add to board**.
@@ -506,18 +506,29 @@ There, you can edit all the fields, including the description, comments, or rela
 
 ### Create a new list
 
-To create a new list:
+> - Creating a list between existing lists [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462515) in GitLab 17.5.
 
-1. Scroll to the right of the board, and then select **New list**.
+You can create a new list between two existing lists or at the right of an issue board.
+
+To create a new list between two lists:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Plan > Issue boards**.
+1. Hover or move keyboard focus between two lists.
+1. Select **New list**.
    The new list panel opens.
 
-   ![creating a new list in an issue board](img/issue_board_add_list_v17_1.png)
+   ![creating a new list between two lists in an issue board](img/issue_board_add_list_between_lists_v17_6.png)
 
 1. Choose the label, user, milestone, or iteration to base the new list on.
 1. Select **Add to board**.
 
-The new list is inserted at the right end of the lists, before **Closed**.
+The new list is inserted in the same position on the board as the new list panel.
+
 To move and reorder lists, drag them around.
+
+Alternatively, you can select the **New list** at the right end of the board.
+The new list is inserted at the right end of the lists, before **Closed**.
 
 ### Remove a list
 

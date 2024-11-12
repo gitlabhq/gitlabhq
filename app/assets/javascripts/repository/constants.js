@@ -9,7 +9,7 @@ export const COMMIT_BATCH_SIZE = 25; // we request commit data in batches of 25
 export const SECONDARY_OPTIONS_TEXT = __('Cancel');
 export const COMMIT_LABEL = __('Commit message');
 export const TARGET_BRANCH_LABEL = __('Target branch');
-export const TOGGLE_CREATE_MR_LABEL = __('Start a new merge request with these changes');
+export const TOGGLE_CREATE_MR_LABEL = __('Create a merge request for this change');
 export const NEW_BRANCH_IN_FORK = __(
   'GitLab will create a branch in your fork and start a merge request.',
 );

@@ -41,6 +41,7 @@ Event type                                   | Trigger
 Event type                                   | Trigger
 ---------------------------------------------|-----------------------------------------------------------------------------
 [Group member event](#group-member-events)   | A user is added or removed from a group, or a user's access level or access expiration date changes.
+[Project event](#project-events)             | A project is created or deleted in a group.
 [Subgroup event](#subgroup-events)           | A subgroup is created or removed from a group.
 
 NOTE:
@@ -1781,6 +1782,76 @@ Payload example:
   "group_plan": null,
   "expires_at": "2020-12-14T00:00:00Z",
   "event_name": "user_access_request_denied_for_group"
+}
+```
+
+## Project events
+
+DETAILS:
+**Tier:** Premium, Ultimate
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/359044) in GitLab 17.6.
+
+These events are triggered for [group webhooks](webhooks.md#group-webhooks) only.
+
+Project events are triggered when:
+
+- A [project is created in a group](#create-a-project-in-a-group).
+- A [project is deleted in a group](#delete-a-project-in-a-group).
+
+### Create a project in a group
+
+Request header:
+
+```plaintext
+X-Gitlab-Event: Project Hook
+```
+
+Payload example:
+
+```json
+{
+  "event_name": "project_create",
+  "created_at": "2024-10-07T10:43:48Z",
+  "updated_at": "2024-10-07T10:43:48Z",
+  "name": "project1",
+  "path": "project1",
+  "path_with_namespace": "group1/project1",
+  "project_id": 22,
+  "project_namespace_id": 32,
+  "owners": [{
+    "name": "John",
+    "email": "user1@example.com"
+  }],
+  "project_visibility": "private"
+}
+```
+
+### Delete a project in a group
+
+Request header:
+
+```plaintext
+X-Gitlab-Event: Project Hook
+```
+
+Payload example:
+
+```json
+{
+  "event_name": "project_destroy",
+  "created_at": "2024-10-07T10:43:48Z",
+  "updated_at": "2024-10-07T10:43:48Z",
+  "name": "project1",
+  "path": "project1",
+  "path_with_namespace": "group1/project1",
+  "project_id": 22,
+  "project_namespace_id": 32,
+  "owners": [{
+    "name": "John",
+    "email": "user1@example.com"
+  }],
+  "project_visibility": "private"
 }
 ```
 

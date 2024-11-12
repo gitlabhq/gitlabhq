@@ -109,9 +109,10 @@ test:  # builds and tests your site
   rules:
     - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
 
-pages:  # a predefined job that builds your pages and saves them to the specified path.
+deploy-pages:  # a user-defined job that builds your pages and saves them to the specified path.
   script:
     - hugo
+  pages: true  # specifies that this is a Pages job
   artifacts:
     paths:
       - public
@@ -123,8 +124,9 @@ pages:  # a predefined job that builds your pages and saves them to the specifie
 - `image` specifies an image from the GitLab Registry that contains Hugo. This image is used to create the environment where your site is built.
 - The `GIT_SUBMODULE_STRATEGY` variable ensures GitLab also looks at your Git submodules, which are sometimes used for Hugo themes.
 - `test` is a job where you can run tests on your Hugo site before it's deployed. The test job runs in all cases, *except* if you're committing a change to your default branch. You place any commands under `script`. The command in this job - `hugo`- builds your site so it can be tested.
-- `pages` is a predefined job for creating pages from Static Site Generators. Again, this job runs the `hugo` command to
-  build your site. Then `artifacts` specifies that those resulting pages are added to a directory called `public`. With
+- `deploy-pages` is a user-defined job for creating pages from Static Site Generators. Again, this job uses
+  [user-defined job names](../../user/project/pages/index.md#user-defined-job-names) and runs the `hugo` command to
+  build your site. Then `pages: true` specifies that this is a Pages job and `artifacts` specifies that those resulting pages are added to a directory called `public`. With
   `rules`, you're checking that this commit was made on the default branch. Typically, you wouldn't want to build and
   deploy the live site from another branch.
 
@@ -138,7 +140,7 @@ If you're quick, you can see GitLab build and deploy your site.
 
 From the left-hand navigation, select **Build > Pipelines**.
 
-You'll see that GitLab has run your `test` and `pages` jobs.
+You'll see that GitLab has run your `test` and `deploy-pages` jobs.
 
 To view your site, on the left-hand navigation, select **Settings > Pages**
 

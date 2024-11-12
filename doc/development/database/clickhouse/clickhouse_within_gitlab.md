@@ -38,8 +38,7 @@ Most of the tooling and APIs are considered unstable.
 1. Copy the example file and configure the credentials:
 
    ```shell
-   cp config/click_house.yml.example
-   config/click_house.yml
+   cp config/click_house.yml.example config/click_house.yml
    ```
 
 1. Create the database using the `clickhouse-client` CLI tool:

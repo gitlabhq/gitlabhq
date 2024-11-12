@@ -2,6 +2,13 @@
 import { GlIcon, GlLink, GlTooltipDirective } from '@gitlab/ui';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 
+const sizeClasses = {
+  s: 'mw-s',
+  m: 'mw-m',
+  l: 'mw-l',
+  xl: 'mw-xl',
+};
+
 export default {
   name: 'MetadataItem',
   components: {
@@ -32,7 +39,7 @@ export default {
       required: false,
       default: 's',
       validator(value) {
-        return !value || ['xs', 's', 'm', 'l', 'xl'].includes(value);
+        return !value || ['s', 'm', 'l', 'xl'].includes(value);
       },
     },
     textTooltip: {
@@ -43,7 +50,7 @@ export default {
   },
   computed: {
     sizeClass() {
-      return `mw-${this.size}`;
+      return sizeClasses[this.size];
     },
   },
 };

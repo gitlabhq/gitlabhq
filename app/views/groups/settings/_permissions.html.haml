@@ -52,6 +52,15 @@
           s_('GroupSettings|Customer relations is enabled'),
           checkbox_options: { checked: @group.crm_enabled? },
           help_text: s_('GroupSettings|Organizations and contacts can be created and associated with issues.')
+    .form-group.gl-mb-3
+      = s_('GroupSettings|Contact source')
+      .js-vue-group-select{ data: {
+        input_name: 'group[crm_source_group_id]',
+        input_id: 'group_crm_source_group_id',
+        selected: @group.crm_settings&.source_group_id,
+        clearable: 'true',
+        description: s_("GroupSettings|The group from which to source contacts for issues in this group and it's subgroups.")
+      } }
 
     - if Feature.enabled?(:group_hierarchy_optimization, @group, type: :beta)
       %h5= _('Performance')
@@ -61,4 +70,4 @@
             checkbox_options: { checked: @group.namespace_descendants.present? },
             help_text: s_('GroupSettings|Building the cache is asynchronous, happens in a background job. The cache invalidation is synchronous with strong consistency guarantees.')
 
-  = f.submit _('Save changes'), pajamas_button: true, class: 'gl-mt-3 js-dirty-submit', data: { testid: 'save-permissions-changes-button' }
+  = f.submit _('Save changes'), pajamas_button: true, class: 'gl-mt-3', data: { testid: 'save-permissions-changes-button' }

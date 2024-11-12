@@ -112,17 +112,20 @@ job:
   - bundle exec jekyll build
 ```
 
-For GitLab Pages, this `job` has a specific name, called `pages`.
+For GitLab Pages, this `job` has to include a property, called `pages`.
 This setting tells the runner you want the job to deploy your website
 with GitLab Pages:
 
 ```yaml
-pages:
+deploy-pages:
   script:
     - gem install bundler
     - bundle install
     - bundle exec jekyll build
+  pages: true  # specifies that this is a Pages job
 ```
+
+The example in this page uses [user-defined job names](../index.md#user-defined-job-names).
 
 ## Specify the `public` directory for output
 
@@ -133,11 +136,12 @@ Jekyll uses a destination flag (`-d`) to specify an output directory for the bui
 Add the destination to your `.gitlab-ci.yml` file:
 
 ```yaml
-pages:
+deploy-pages:
   script:
     - gem install bundler
     - bundle install
     - bundle exec jekyll build -d public
+  pages: true  # specifies that this is a Pages job
 ```
 
 ## Specify the `public` directory for artifacts
@@ -147,11 +151,12 @@ the runner needs to know where to get them. The artifacts are stored
 in the `public` directory:
 
 ```yaml
-pages:
+deploy-pages:
   script:
     - gem install bundler
     - bundle install
     - bundle exec jekyll build -d public
+  pages: true  # specifies that this is a Pages job
   artifacts:
     paths:
       - public
@@ -162,11 +167,12 @@ Your `.gitlab-ci.yml` file should now look like this:
 ```yaml
 image: ruby:3.2
 
-pages:
+deploy-pages:
   script:
     - gem install bundler
     - bundle install
     - bundle exec jekyll build -d public
+  pages: true  # specifies that this is a Pages job
   artifacts:
     paths:
       - public
@@ -208,11 +214,12 @@ workflow:
   rules:
     - if: $CI_COMMIT_BRANCH
 
-pages:
+deploy-pages:
   script:
     - gem install bundler
     - bundle install
     - bundle exec jekyll build -d public
+  pages: true  # specifies that this is a Pages job
   artifacts:
     paths:
       - public
@@ -228,11 +235,12 @@ workflow:
   rules:
     - if: $CI_COMMIT_BRANCH
 
-pages:
+deploy-pages:
   script:
     - gem install bundler
     - bundle install
     - bundle exec jekyll build -d public
+  pages: true  # specifies that this is a Pages job
   artifacts:
     paths:
       - public
@@ -259,12 +267,13 @@ workflow:
   rules:
     - if: $CI_COMMIT_BRANCH
 
-pages:
+deploy-pages:
   stage: deploy
   script:
     - gem install bundler
     - bundle install
     - bundle exec jekyll build -d public
+  pages: true  # specifies that this is a Pages job
   artifacts:
     paths:
       - public
@@ -283,12 +292,13 @@ workflow:
   rules:
     - if: $CI_COMMIT_BRANCH
 
-pages:
+deploy-pages:
   stage: deploy
   script:
     - gem install bundler
     - bundle install
     - bundle exec jekyll build -d public
+  pages: true  # specifies that this is a Pages job
   artifacts:
     paths:
       - public
@@ -339,10 +349,11 @@ before_script:
   - gem install bundler
   - bundle install
 
-pages:
+deploy-pages:
   stage: deploy
   script:
     - bundle exec jekyll build -d public
+  pages: true  # specifies that this is a Pages job
   artifacts:
     paths:
       - public
@@ -384,10 +395,11 @@ before_script:
   - gem install bundler
   - bundle install --path vendor
 
-pages:
+deploy-pages:
   stage: deploy
   script:
     - bundle exec jekyll build -d public
+  pages: true  # specifies that this is a Pages job
   artifacts:
     paths:
       - public
@@ -426,6 +438,8 @@ Now GitLab CI/CD not only builds the website, but also:
 
 To view the HTML and other assets that were created for the site,
 [download the job artifacts](../../../../ci/jobs/job_artifacts.md#download-job-artifacts).
+
+The example in this page uses [user-defined job names](../index.md#user-defined-job-names).
 
 ## Related topics
 

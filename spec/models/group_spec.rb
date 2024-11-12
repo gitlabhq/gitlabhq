@@ -4103,4 +4103,33 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       end
     end
   end
+
+  describe '#has_issues_with_contacts?' do
+    context 'when group has no issues with contacts' do
+      it 'returns false' do
+        expect(group.has_issues_with_contacts?).to be_falsey
+      end
+    end
+
+    context 'when group has issues with contacts' do
+      let!(:issue) { create(:issue, project: create(:project, group: group)) }
+      let!(:contact) { create(:contact, group: group) }
+      let!(:issue_contact) { create(:issue_customer_relations_contact, issue: issue, contact: contact) }
+
+      it 'returns true' do
+        expect(group.has_issues_with_contacts?).to be_truthy
+      end
+    end
+
+    context 'when a subgroup has issues with contacts' do
+      let!(:subgroup) { create(:group, parent: group) }
+      let!(:issue) { create(:issue, project: create(:project, group: subgroup)) }
+      let!(:contact) { create(:contact, group: group) }
+      let!(:issue_contact) { create(:issue_customer_relations_contact, issue: issue, contact: contact) }
+
+      it 'returns true' do
+        expect(group.has_issues_with_contacts?).to be_truthy
+      end
+    end
+  end
 end

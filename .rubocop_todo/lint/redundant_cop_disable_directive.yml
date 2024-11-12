@@ -1,14 +1,16 @@
 ---
 # Cop supports --autocorrect.
 Lint/RedundantCopDisableDirective:
-  # Offense count: 58
+  # Offense count: 62
   # Temporarily disabled due to too many offenses
   Enabled: false
   Exclude:
     - 'app/controllers/concerns/enforces_two_factor_authentication.rb'
     - 'app/controllers/groups/milestones_controller.rb'
+    - 'app/models/concerns/integrations/base/integration.rb'
     - 'app/models/work_items/type.rb'
     - 'app/policies/issue_policy.rb'
+    - 'app/services/ci/runners/set_runner_associated_projects_service.rb'
     - 'app/services/work_items/data_sync/clone_service.rb'
     - 'app/services/work_items/data_sync/move_service.rb'
     - 'app/workers/authorized_project_update/user_refresh_over_user_range_worker.rb'
@@ -17,8 +19,10 @@ Lint/RedundantCopDisableDirective:
     - 'db/migrate/20241024204816_create_partitioned_ci_runner_managers.rb'
     - 'db/post_migrate/20241021163518_drop_user_canonical_emails_table.rb'
     - 'ee/app/controllers/ee/projects/settings/ci_cd_controller.rb'
+    - 'ee/app/models/ee/audit_events/project_audit_event.rb'
     - 'ee/app/services/search/zoekt/routing_service.rb'
     - 'ee/app/services/security/token_revocation_service.rb'
+    - 'ee/app/services/vulnerabilities/statistics/adjustment_service.rb'
     - 'ee/db/geo/migrate/20210504143244_add_verification_to_merge_request_diff_registry.rb'
     - 'ee/spec/features/groups/settings/domain_verification_spec.rb'
     - 'ee/spec/features/projects/mirror_spec.rb'

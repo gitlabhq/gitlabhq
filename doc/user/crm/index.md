@@ -18,7 +18,8 @@ DETAILS:
 With customer relations management (CRM) you can create a record of contacts
 (individuals) and organizations (companies) and relate them to issues.
 
-Contacts and organizations can only be created for top-level groups.
+By default, contacts and organizations can only be created for top-level groups.
+To create contacts and organizations in other groups, [assign the group as a contact source](#configure-the-contact-source).
 
 You can use contacts and organizations to tie work to customers for billing and reporting purposes.
 For more information about what is planned for the future, see [issue 2256](https://gitlab.com/gitlab-org/gitlab/-/issues/2256).
@@ -46,6 +47,24 @@ To enable customer relations management in a group or subgroup:
 1. Select **Settings > General**.
 1. Expand the **Permissions and group features** section.
 1. Select **Customer relations is enabled**.
+1. Select **Save changes**.
+
+## Configure the contact source
+
+> - [Available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164945) in GitLab 17.4.
+
+By default, contacts are sourced from an issue's top-level group.
+
+The contact source for a group will apply to all subgroups,
+unless they have a contact source configured.
+
+To configure the contact source for a group or subgroup:
+
+1. On the left sidebar, select **Search or go to** and find your group or subgroup.
+1. Select **Settings > General**.
+1. Expand the **Permissions and group features** section.
+1. Select **Contact source > Search for a group**.
+1. Select the group from which you wish to source contacts.
 1. Select **Save changes**.
 
 ## Contacts
@@ -256,15 +275,17 @@ When you use the `/remove_contacts` quick action, follow it with `[contact:` and
 
 ## Moving objects with CRM entries
 
-The top-level group is the topmost group in the group hierarchy.
-
-When you move an issue, project, or group in the same group hierarchy,
+When you move an issue or project and the **parent group contact source matches**,
 issues retain their contacts.
 
-When you move an issue or project and the top-level group changes,
+When you move an issue or project and the **parent group contact source changes**,
 issues lose their contacts.
 
-When you move a group and its top-level group changes:
+When you move a group with a [contact source configured](#configure-the-contact-source)
+or it's **contact source remains unchanged**,
+issues retain their contacts.
+
+When you move a group and its **contact source changes**:
 
 - All unique contacts and organizations are migrated to the new top-level group.
 - Contacts that already exist (by email address) are deemed duplicates and deleted.

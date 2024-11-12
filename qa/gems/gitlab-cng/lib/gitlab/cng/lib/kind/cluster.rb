@@ -42,7 +42,7 @@ module Gitlab
           # @param [Integer] port
           # @return [Integer]
           def host_port_mapping(port)
-            yml = YAML.safe_load(File.read(kind_config_file))
+            yml = YAML.safe_load(File.read(kind_config_file_name))
 
             yml["nodes"].first["extraPortMappings"].find { |mapping| mapping["hostPort"] == port }["containerPort"]
           end
@@ -50,8 +50,8 @@ module Gitlab
           # Kind cluster configuration file
           #
           # @return [String]
-          def kind_config_file
-            File.join(Helpers::Utils.tmp_dir, "kind-config.yml")
+          def kind_config_file_name
+            File.join(Helpers::Utils.config_dir, "kind-config.yml")
           end
         end
 
@@ -65,7 +65,7 @@ module Gitlab
 
         def create
           log("Creating cluster '#{name}'", :info, bright: true)
-          return log("  cluster '#{name}' already exists, skipping!", :warn) if cluster_exists?
+          return log("cluster '#{name}' already exists, skipping!", :warn) if cluster_exists?
 
           create_cluster
           update_server_url
@@ -147,12 +147,12 @@ module Gitlab
           execute_shell(%w[kind get clusters]).include?(name)
         end
 
-        # Create kind config file
+        # Create kind config file and return it's path
         #
         # @param [String] config_yml
         # @return [String]
-        def tmp_config_file(config_yml)
-          self.class.kind_config_file.tap { |path| File.write(path, config_yml) }
+        def kind_config_file(config_yml)
+          self.class.kind_config_file_name.tap { |path| File.write(path, config_yml) }
         end
 
         # Temporary ci specific kind configuration file
@@ -186,7 +186,7 @@ module Gitlab
                     listenAddress: "0.0.0.0"
           YML
 
-          tmp_config_file(config_yml)
+          kind_config_file(config_yml)
         end
 
         # Temporary kind configuration file
@@ -220,7 +220,7 @@ module Gitlab
                   listenAddress: "0.0.0.0"
           YML
 
-          tmp_config_file(template.result(binding))
+          kind_config_file(template.result(binding))
         end
 
         # Random http port to expose outside cluster

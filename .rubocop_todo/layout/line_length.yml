@@ -119,7 +119,6 @@ Layout/LineLength:
     - 'app/helpers/gitpod_helper.rb'
     - 'app/helpers/groups/group_members_helper.rb'
     - 'app/helpers/groups_helper.rb'
-    - 'app/helpers/ide_helper.rb'
     - 'app/helpers/import_helper.rb'
     - 'app/helpers/issuables_helper.rb'
     - 'app/helpers/labels_helper.rb'

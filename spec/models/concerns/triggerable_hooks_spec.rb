@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe TriggerableHooks do
+RSpec.describe TriggerableHooks, feature_category: :webhooks do
   before do
     stub_const('TestableHook', Class.new(WebHook))
 
