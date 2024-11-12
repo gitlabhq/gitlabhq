@@ -2,6 +2,29 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 17.5.2 (2024-11-12)
+
+### Fixed (4 changes)
+
+- [Fix group wiki activity events breaking the user feed](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2c10d817d961bf6ae229fb436126713d0199aece)
+- [Add param filtering to avoid error while saving project settings](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7e1bf6aa4087c0789ecff48ca716b30d841a3140) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/171554)) **GitLab Enterprise Edition**
+- [Fix new project group templates pagination](https://gitlab.com/gitlab-org/security/gitlab/-/commit/3fed777c0e1f52816206b546f2063043febedd0b) **GitLab Enterprise Edition**
+- [Update pdf worker file path in pdf viewer](https://gitlab.com/gitlab-org/security/gitlab/-/commit/406b66e9140b4ee4e79edc84e2870e0fbb90d149)
+
+### Security (7 changes)
+
+- [Add missing project_id for build_chat_data](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5a4e1bd3443cc786ab7558b1d6fa77962318c173) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4602))
+- [Use custom adapter for parsing FogBugz XML](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f8c4b8942e6fca667c6a2b975d9fa792b0d559fa) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4592))
+- [Removed id from authorize buttons and added specs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7e9ac80271a0c8a7ed73f1cb4a34f053652f07f6) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4573))
+- [HTML injection in vulnerability Code flow leads to XSS on self hosted instances](https://gitlab.com/gitlab-org/security/gitlab/-/commit/fbff5c445ecc99f438ab56a0c5add0ff5cd1e2aa) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4564))
+- [Remove is-unsafe-link from product analytics tables to prevent XSS](https://gitlab.com/gitlab-org/security/gitlab/-/commit/605d8bf88e03ec6f447141049952b623eab2200c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4579))
+- [Details of blocking merge request can be exposed via list](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0fe3d3020954f79337b6138e7b1ee6baed346c3c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4545))
+- [Prevent agent access via unconfirmed or disallowed group members](https://gitlab.com/gitlab-org/security/gitlab/-/commit/fa41ba0bc926e7b0091e4fb1cb6298b0b86eace5) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4559))
+
+### Performance (1 change)
+
+- [Remove permissions JSONB column from the condition](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a5b902c35e60e36f3e98db2af221976093fe2278)
+
 ## 17.5.1 (2024-10-22)
 
 ### Security (2 changes)
