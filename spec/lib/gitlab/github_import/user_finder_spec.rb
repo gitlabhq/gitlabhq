@@ -12,9 +12,10 @@ RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_shared_stat
   end
 
   let(:client) { instance_double(Gitlab::GithubImport::Client) }
-  let(:finder) { described_class.new(project, client) }
   let(:settings) { Gitlab::GithubImport::Settings.new }
   let(:user_mapping_enabled) { true }
+
+  subject(:finder) { described_class.new(project, client) }
 
   before do
     project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: user_mapping_enabled })
@@ -686,6 +687,37 @@ RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_shared_stat
 
     it 'reads a cache key that does not exist' do
       expect(finder.read_id_from_cache('foo')).to eq([false, nil])
+    end
+  end
+
+  describe '#source_user_accepted?' do
+    let!(:user) { { id: 7, login: 'anything' } }
+    let!(:source_user) do
+      create(
+        :import_source_user, :awaiting_approval,
+        namespace: project.root_ancestor,
+        source_hostname: 'https://github.com',
+        import_type: project.import_type,
+        source_user_identifier: user[:id]
+      )
+    end
+
+    it 'returns true when the associated source user has an accepted status' do
+      source_user.accept!
+
+      expect(finder.source_user_accepted?(user)).to be(true)
+    end
+
+    it 'returns false when the associated source user does not have an accepted status' do
+      expect(finder.source_user_accepted?(user)).to be(false)
+    end
+
+    context 'when user contribution mapping is disabled' do
+      let(:user_mapping_enabled) { false }
+
+      it 'returns true' do
+        expect(finder.source_user_accepted?(user)).to be(true)
+      end
     end
   end
 end

@@ -140,6 +140,13 @@ module QA
         )
       end
 
+      # Get group audit events
+      #
+      # @return [Array]
+      def audit_events
+        api_get_from("#{api_get_path}/audit_events")
+      end
+
       private
 
       # Determine the path up to the root group.

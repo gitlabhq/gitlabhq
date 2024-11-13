@@ -30,27 +30,11 @@ RSpec.shared_examples 'common trace features' do
   end
 
   describe '#read' do
-    context 'gitlab_ci_archived_trace_consistent_reads feature flag enabled' do
-      before do
-        stub_feature_flags(gitlab_ci_archived_trace_consistent_reads: trace.job.project)
-      end
-
+    context 'read archived build logs with database reads consistency' do
       it 'calls ::Ci::Build.sticking.find_caught_up_replica' do
         expect(::Ci::Build.sticking).to receive(:find_caught_up_replica)
           .with(described_class::LOAD_BALANCING_STICKING_NAMESPACE, trace.job.id)
           .and_call_original
-
-        trace.read { |stream| stream }
-      end
-    end
-
-    context 'gitlab_ci_archived_trace_consistent_reads feature flag disabled' do
-      before do
-        stub_feature_flags(gitlab_ci_archived_trace_consistent_reads: false)
-      end
-
-      it 'does not call ::Ci::Build.sticking.find_caught_up_replica' do
-        expect(::Ci::Build.sticking).not_to receive(:find_caught_up_replica)
 
         trace.read { |stream| stream }
       end
@@ -299,30 +283,12 @@ RSpec.shared_examples 'common trace features' do
         expect(trace.job.trace_chunks).to be_present
       end
 
-      context 'gitlab_ci_archived_trace_consistent_reads feature flag enabled' do
-        before do
-          stub_feature_flags(gitlab_ci_archived_trace_consistent_reads: trace.job.project)
-        end
+      it 'calls ::Ci::Build.sticking.stick' do
+        expect(::Ci::Build.sticking).to receive(:stick)
+                                          .with(described_class::LOAD_BALANCING_STICKING_NAMESPACE, trace.job.id)
+                                          .and_call_original
 
-        it 'calls ::Ci::Build.sticking.stick' do
-          expect(::Ci::Build.sticking).to receive(:stick)
-            .with(described_class::LOAD_BALANCING_STICKING_NAMESPACE, trace.job.id)
-            .and_call_original
-
-          subject
-        end
-      end
-
-      context 'gitlab_ci_archived_trace_consistent_reads feature flag disabled' do
-        before do
-          stub_feature_flags(gitlab_ci_archived_trace_consistent_reads: false)
-        end
-
-        it 'does not call ::Ci::Build.sticking.stick' do
-          expect(::Ci::Build.sticking).not_to receive(:stick)
-
-          subject
-        end
+        subject
       end
     end
 

@@ -31,12 +31,6 @@ module QA
           "http://#{host_name}:#{@port}"
         end
 
-        def host_name
-          return 'localhost' unless QA::Runtime::Env.running_in_ci?
-
-          super
-        end
-
         def register!
           authenticate_third_party
 

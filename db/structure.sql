@@ -19648,6 +19648,8 @@ CREATE TABLE software_license_policies (
     scan_result_policy_id bigint,
     custom_software_license_id bigint,
     approval_policy_rule_id bigint,
+    software_license_spdx_identifier text,
+    CONSTRAINT check_986c4e5c59 CHECK ((char_length(software_license_spdx_identifier) <= 255)),
     CONSTRAINT check_9ba23ae4c3 CHECK ((num_nonnulls(custom_software_license_id, software_license_id) = 1))
 );
 

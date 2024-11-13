@@ -71,6 +71,9 @@ you can use the `%{UNSUBSCRIBE_URL}` placeholder to add the unsubscribe link to 
 Your GitLab instance must be reachable (for example, from the public internet) for the external participant to successfully unsubscribe.
 If that's not the case, consider removing the unsubscribe link from your template.
 
+Emails from GitLab also contain special headers that allow supported email clients and other software
+to [unsubscribe external participants automatically](../../profile/notifications.md#using-an-email-client-or-other-software).
+
 ## As a GitLab user
 
 To see the email address of an external participant you must have at least the Reporter role for the project.

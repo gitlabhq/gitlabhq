@@ -16,10 +16,6 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61654
 distribution:
 - ce
 - ee
-tier:
-- free
-- premium
-- ultimate
 tiers:
 - free
 - premium

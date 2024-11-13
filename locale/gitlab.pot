@@ -6786,13 +6786,13 @@ msgstr ""
 msgid "ApplicationSettings|A Metrics Dashboard menu item appears in the Monitoring section of the Admin area."
 msgstr ""
 
+msgid "ApplicationSettings|A user cap that exceeds the current licensed user count (%{licensedUserCount}) might result in %{linkStart}seat overages%{linkEnd}."
+msgstr ""
+
 msgid "ApplicationSettings|Add a link to Grafana"
 msgstr ""
 
 msgid "ApplicationSettings|After sign-up text"
-msgstr ""
-
-msgid "ApplicationSettings|After the instance reaches the user cap, any user who is added or requests access must be approved by an administrator. Leave blank for unlimited."
 msgstr ""
 
 msgid "ApplicationSettings|Allowed domains for sign-ups"
@@ -6935,6 +6935,9 @@ msgid "ApplicationSettings|Upload denylist file"
 msgstr ""
 
 msgid "ApplicationSettings|User cap"
+msgstr ""
+
+msgid "ApplicationSettings|Users added beyond this limit require administrator approval. Leave blank for unlimited."
 msgstr ""
 
 msgid "ApplicationSettings|Users with e-mail addresses that match these domain(s) cannot sign up. Wildcards allowed. Enter multiple entries on separate lines. Example: domain.com, *.domain.com"

@@ -4,6 +4,12 @@ RSpec.describe QA::Resource::User do
   describe "#fabricate_via_api!" do
     response = Struct.new(:code, :body)
 
+    before do
+      allow(QA::Runtime::UserStore).to receive(:admin_api_client).and_return(
+        QA::Runtime::API::Client.new(personal_access_token: 'foo')
+      )
+    end
+
     it 'fetches an existing user' do
       existing_users = [
         {

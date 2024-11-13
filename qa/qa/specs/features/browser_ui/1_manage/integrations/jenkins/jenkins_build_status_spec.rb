@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Manage', :requires_admin, :skip_live_env, except: { job: 'review-qa-*' } do
+  RSpec.describe 'Manage', :requires_admin, :skip_live_env do
     describe 'Jenkins integration', product_group: :import_and_integrate do
       let(:jenkins_server) { Service::DockerRun::Jenkins.new }
 
@@ -16,18 +16,15 @@ module QA
 
       let(:jenkins_project_name) { "gitlab_jenkins_#{SecureRandom.hex(5)}" }
       let(:connection_name) { 'gitlab-connection' }
-      let(:project_name) { "project_with_jenkins_#{SecureRandom.hex(4)}" }
-      let(:project) { create(:project, :with_readme, name: project_name) }
-
-      let(:access_token) do
-        Runtime::Env.personal_access_token ||= fabricate_access_token
-      end
+      let(:user) { create(:user, &:create_personal_access_token!) }
+      let(:project) { create(:project, :with_readme, api_client: user.api_client) }
+      let(:access_token) { user.personal_access_token.token }
 
       before do
         toggle_local_requests(true)
         jenkins_server.register!
 
-        Support::Waiter.wait_until(max_duration: 30, reload_page: false, retry_on_exception: true) do
+        Support::Waiter.wait_until(max_duration: 30, reload_page: false, retry_on_exception: true, sleep_interval: 1) do
           jenkins_client.ready?
         end
 
@@ -44,16 +41,14 @@ module QA
         setup_project_integration
 
         jenkins_integration = project.find_integration('jenkins')
-        expect(jenkins_integration).not_to be(nil), 'Jenkins integration did not save'
+        expect(jenkins_integration).not_to be_nil, 'Jenkins integration did not save'
         expect(jenkins_integration[:active]).to be(true), 'Jenkins integration is not active'
 
         job = create_jenkins_job
 
-        Resource::Repository::ProjectPush.fabricate! do |push|
-          push.project = project
-          push.new_branch = false
-          push.file_name = "file_#{SecureRandom.hex(4)}.txt"
-        end
+        create(:commit, project: project, api_client: user.api_client, actions: [
+          { action: 'create', file_path: 'test_file.txt', content: 'content' }
+        ])
 
         Support::Waiter.wait_until(max_duration: 60, raise_on_failure: false, reload_page: false) do
           job.status == :success
@@ -73,7 +68,7 @@ module QA
       private
 
       def setup_project_integration
-        login_to_gitlab
+        Flow::Login.sign_in(as: user)
 
         project.visit!
 
@@ -89,18 +84,6 @@ module QA
             password: jenkins_server.password
           )
         end
-      end
-
-      def login_to_gitlab
-        Flow::Login.sign_in
-      end
-
-      def fabricate_access_token
-        login_to_gitlab
-
-        token = Resource::PersonalAccessToken.fabricate!.token
-        Page::Main::Menu.perform(&:sign_out)
-        token
       end
 
       def create_jenkins_job

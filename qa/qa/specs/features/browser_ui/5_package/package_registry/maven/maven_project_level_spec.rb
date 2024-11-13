@@ -6,12 +6,13 @@ module QA
       include Runtime::Fixtures
       include Support::Helpers::MaskToken
 
+      let(:api_client) { Runtime::UserStore.default_api_client }
+      let(:personal_access_token) { api_client.personal_access_token }
       let(:group_id) { 'com.gitlab.qa' }
       let(:artifact_id) { "maven-#{SecureRandom.hex(8)}" }
       let(:package_name) { "#{group_id}/#{artifact_id}".tr('.', '/') }
       let(:package_version) { '1.3.7' }
       let(:package_type) { 'maven' }
-      let(:personal_access_token) { Runtime::Env.personal_access_token }
       let(:package_project) { create(:project, :with_readme, :private, name: "#{package_type}_package_project") }
       let(:package) { build(:package, name: package_name, project: package_project) }
 

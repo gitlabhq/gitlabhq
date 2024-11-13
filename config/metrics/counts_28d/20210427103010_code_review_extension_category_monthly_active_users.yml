@@ -26,10 +26,6 @@ events:
 distribution:
   - ce
   - ee
-tier:
-  - free
-  - premium
-  - ultimate
 tiers:
   - free
   - premium

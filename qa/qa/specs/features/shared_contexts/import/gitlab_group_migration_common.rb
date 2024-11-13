@@ -14,8 +14,8 @@ module QA
     let!(:source_admin_api_client) do
       Runtime::API::Client.new(
         source_gitlab_address,
-        personal_access_token: Runtime::Env.admin_personal_access_token || raise("Admin access token missing!"),
-        is_new_session: false
+        # source instance is using same omnibus installation so it should have the same admin token as target
+        personal_access_token: Runtime::UserStore.admin_api_client.personal_access_token
       )
     end
 
@@ -38,7 +38,7 @@ module QA
     end
 
     # target instance objects
-    let!(:admin_api_client) { Runtime::API::Client.as_admin }
+    let!(:admin_api_client) { Runtime::UserStore.admin_api_client }
 
     let!(:target_bulk_import_enabled) do
       Runtime::ApplicationSettings.get_application_settings(api_client: admin_api_client)[:bulk_import_enabled]

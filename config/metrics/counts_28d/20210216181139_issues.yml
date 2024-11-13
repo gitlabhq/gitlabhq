@@ -11,10 +11,6 @@ instrumentation_class: CountUsersCreatingIssuesMetric
 distribution:
 - ce
 - ee
-tier:
-- free
-- premium
-- ultimate
 tiers:
 - free
 - premium

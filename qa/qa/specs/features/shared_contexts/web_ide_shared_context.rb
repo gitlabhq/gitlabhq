@@ -25,12 +25,9 @@ module QA
     def clear_settings_sync_data
       # why: since the same user is used to run QA tests, the Web IDE settings can grow significantly.
       # For example: The Web IDE keeps track of recently opened files with no upper limit set.
-      # https://gitlab.com/gitlab-org/gitlab-web-ide/-/issues/389
-      token = Resource::PersonalAccessToken.fabricate!.token
-      url = "#{Runtime::Scenario.gitlab_address}/api/v4/vscode/settings_sync/v1/collection"
-      Support::API.delete(url, {
-        headers: { Authorization: "Bearer #{token}" }
-      })
+      # https://gitlab.com/gitlab-org/gitlab-web-ide/-/issues/399
+      client = Runtime::UserStore.default_api_client
+      Support::API.delete(Runtime::API::Request.new(client, "vscode/settings_sync/v1/collection").url)
     end
   end
 end

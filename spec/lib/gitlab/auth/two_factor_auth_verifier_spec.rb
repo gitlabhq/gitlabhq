@@ -86,7 +86,7 @@ RSpec.describe Gitlab::Auth::TwoFactorAuthVerifier do
       with_them do
         before do
           allow(request).to receive(:session).and_return(session)
-          stub_feature_flags(bypass_two_factor: false)
+          stub_feature_flags(by_pass_two_factor_for_current_session: false)
           stub_application_setting(require_two_factor_authentication: instance_level_enabled)
           allow(user).to receive(:require_two_factor_authentication_from_group?).and_return(group_level_enabled)
           session[:provider_2FA] = provider_2FA

@@ -1,12 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.describe QA::Runtime::API::Request do
-  let(:client)  { QA::Runtime::API::Client.new('http://example.com') }
+  let(:client)  { QA::Runtime::API::Client.new('http://example.com', personal_access_token: 'a_token') }
   let(:request) { described_class.new(client, '/users') }
-
-  before do
-    allow(client).to receive(:personal_access_token).and_return('a_token')
-  end
 
   describe '#url' do
     it 'returns the full API request url' do

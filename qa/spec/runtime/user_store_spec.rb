@@ -13,15 +13,21 @@ module QA
         error: nil
       })
 
-      described_class.instance_variable_set(:@admin_api_client, nil)
-      described_class.instance_variable_set(:@admin_user, nil)
+      # Clear the global state before each spec execution
+      if described_class.instance_variable_defined?(:@admin_api_client)
+        described_class.send(:remove_instance_variable, :@admin_api_client)
+      end
+
+      if described_class.instance_variable_defined?(:@admin_user)
+        described_class.send(:remove_instance_variable, :@admin_user)
+      end
 
       if described_class.instance_variable_defined?(:@user_api_client)
         described_class.send(:remove_instance_variable, :@user_api_client)
       end
 
-      if described_class.instance_variable_defined?(:@runtime_user)
-        described_class.send(:remove_instance_variable, :@runtime_user)
+      if described_class.instance_variable_defined?(:@test_user)
+        described_class.send(:remove_instance_variable, :@test_user)
       end
     end
 
@@ -33,14 +39,23 @@ module QA
 
     describe "#admin_api_client" do
       let(:admin_token) { nil }
+      let(:no_admin_env) { false }
 
       before do
-        allow(Runtime::Env).to receive(:admin_personal_access_token).and_return(admin_token)
         allow(Runtime::Env).to receive_messages({
           admin_username: nil,
           admin_password: nil,
-          admin_personal_access_token: admin_token
+          admin_personal_access_token: admin_token,
+          no_admin_environment?: no_admin_env
         })
+      end
+
+      context "with no admin env" do
+        let(:no_admin_env) { true }
+
+        it "sets admin api client to nil" do
+          expect(described_class.admin_api_client).to be_nil
+        end
       end
 
       context "when admin token variable is set" do
@@ -98,7 +113,13 @@ module QA
 
         # dummy objects are created with populated id fields to simulate proper fabrication and reload calls
         let(:admin_user) { Resource::User.init { |u| u.id = 1 } }
-        let(:pat) { Resource::PersonalAccessToken.init { |p| p.token = token } }
+
+        let(:pat) do
+          Resource::PersonalAccessToken.init do |p|
+            p.token = token
+            p.user_id = 1
+          end
+        end
 
         before do
           allow(Flow::Login).to receive(:while_signed_in).with(as: admin_user).and_yield
@@ -111,18 +132,31 @@ module QA
 
         it "creates admin api client with token created from UI" do
           expect(described_class.admin_api_client.personal_access_token).to eq(token)
+          expect(pat.username).to eq("root")
+          expect(pat.password).to eq("5iveL!fe")
           expect(admin_user).to have_received(:reload!)
         end
       end
     end
 
     describe "#admin_user" do
+      let(:no_admin_env) { false }
+
       before do
         allow(Runtime::Env).to receive_messages({
           admin_username: nil,
           admin_password: nil,
-          admin_personal_access_token: nil
+          admin_personal_access_token: nil,
+          no_admin_environment?: no_admin_env
         })
+      end
+
+      context "with no admin env" do
+        let(:no_admin_env) { true }
+
+        it "sets admin user to nil" do
+          expect(described_class.admin_user).to be_nil
+        end
       end
 
       context "when admin client has not been initialized" do
@@ -261,10 +295,15 @@ module QA
         let(:api_token) { nil }
         # dummy objects are created with populated id fields to simulate proper fabrication and reload calls
         let(:user_spy) { Resource::User.init { |u| u.id = 1 } }
-        let(:pat) { Resource::PersonalAccessToken.init { |p| p.token = "token" } }
+
+        let(:pat) do
+          Resource::PersonalAccessToken.init do |p|
+            p.token = "token"
+            p.user_id = 1
+          end
+        end
 
         before do
-          allow(Flow::Login).to receive(:while_signed_in).with(as: user_spy).and_yield
           allow(Resource::User).to receive(:init).and_yield(user_spy).and_return(user_spy)
           allow(Resource::PersonalAccessToken).to receive(:fabricate_via_browser_ui!).and_yield(pat).and_return(pat)
           allow(user_spy).to receive(:reload!)
@@ -272,13 +311,15 @@ module QA
 
         it "creates user api client with token created from UI" do
           expect(user_api_client.personal_access_token).to eq(pat.token)
+          expect(pat.username).to eq(username)
+          expect(pat.password).to eq(password)
           expect(user_spy).to have_received(:reload!)
         end
       end
     end
 
-    describe "#runtime_user" do
-      subject(:runtime_user) { described_class.runtime_user }
+    describe "#test_user" do
+      subject(:test_user) { described_class.test_user }
 
       let(:username) { "username" }
       let(:password) { "password" }
@@ -294,8 +335,8 @@ module QA
       context "when api client has not been initialized" do
         context "with user variables set" do
           it "returns user with configured credentials" do
-            expect(runtime_user.username).to eq(username)
-            expect(runtime_user.password).to eq(password)
+            expect(test_user.username).to eq(username)
+            expect(test_user.password).to eq(password)
           end
         end
 
@@ -303,24 +344,24 @@ module QA
           let(:username) { nil }
           let(:password) { nil }
 
-          it "does not return runtime user" do
-            expect(runtime_user).to be_nil
+          it "does not return test user" do
+            expect(test_user).to be_nil
           end
         end
 
         context "with only username set" do
           let(:password) { nil }
 
-          it "does not return runtime user" do
-            expect(runtime_user).to be_nil
+          it "does not return test user" do
+            expect(test_user).to be_nil
           end
         end
 
         context "with only password set" do
           let(:username) { nil }
 
-          it "does not return runtime user" do
-            expect(runtime_user).to be_nil
+          it "does not return test user" do
+            expect(test_user).to be_nil
           end
         end
       end
@@ -342,8 +383,8 @@ module QA
           end
 
           it "sets api client on user and reloads it" do
-            expect(runtime_user.instance_variable_get(:@api_client)).to eq(api_client)
-            expect(runtime_user).to have_received(:reload!)
+            expect(test_user.api_client).to eq(api_client)
+            expect(test_user).to have_received(:reload!)
           end
         end
 
@@ -353,7 +394,7 @@ module QA
           end
 
           it "prints warning message" do
-            described_class.initialize_runtime_user
+            described_class.initialize_test_user
 
             expect(Runtime::Logger).to have_received(:warn).with(<<~WARN)
               Configured global api client does not belong to configured global user
@@ -368,9 +409,9 @@ module QA
           end
 
           it "raises invalid token error" do
-            expect(runtime_user).to be_nil
+            expect(test_user).to be_nil
             expect(Runtime::Logger).to have_received(:warn).with(
-              "Failed to create runtime user: API client validation failed! Code: 403, Err: 'Unauthorized'"
+              "Failed to create test user: API client validation failed! Code: 403, Err: 'Unauthorized'"
             )
           end
         end

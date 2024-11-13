@@ -81,23 +81,33 @@ module QA
 
         private
 
-        AUTHSOURCES_FILENAME = 'simplesamlphp_authsources.php'
-
-        # Creates an authsources file at `qa/qa/fixtures/saml/simplesamlphp_authsources.php`
-        # from a template at `qa/qa/fixtures/saml/simplesamlphp_authsources.php.erb` with group sync permitted by
-        # inserting the value of `@group` as the groups attribute
+        # Creates an authsources file in qa root in `tmp` or `rspec` directory (for ci)
+        #   from a template at `qa/qa/fixtures/saml/simplesamlphp_authsources.php.erb` with group sync permitted by
+        #   inserting the value of `@group` as the groups attribute and `@users` as the users attribute in the template
+        # This allows generating users for saml tests dynamically
         # See: https://docs.gitlab.com/ee/user/group/saml_sso/group_sync.html#configure-saml-group-sync
         def authsources
-          config_path = if ENV['CI_PROJECT_PATH']
-                          Runtime::Logger.info("Current working directory: #{Dir.pwd}")
-                          File.join("#{Dir.pwd}/rspec", AUTHSOURCES_FILENAME)
-                        else
-                          Runtime::Path.fixture('saml', AUTHSOURCES_FILENAME)
-                        end
-
-          config = ERB.new(read_fixture('saml', "#{AUTHSOURCES_FILENAME}.erb")).result(binding)
-          ::File.write(config_path, config)
-          config_path.gsub("/home/gitlab/qa", "/builds/#{File.join(Runtime::Env.ci_project_path, 'qa')}")
+          @authsources ||= begin
+            authsources_filename = "simplesamlphp_authsources.php"
+            authsources_file = ERB.new(read_fixture('saml', "#{authsources_filename}.erb")).result(binding)
+            # On ci when using gitlab-qa gem, tests run in a separate container which uses it's own copy of `qa` code
+            # This makes mounting files with DinD setup impossible because docker commands are running on separate
+            #  docker service container which only has access to the checked out code at `ci_project_dir` location.
+            # Test container started by gitlab-qa shares a common folder with job environment via `rspec` folder so to
+            #  correctly mount it, the mount path needs to be changed to one docker will have access to
+            # This still won't work when running gitlab-qa locally because by default gitlab-qa does not have a volume
+            #  that allows to share files between host and test container yet it will mount docker socket by default
+            if Runtime::Env.running_in_ci? && Runtime::Path.qa_root == "/home/gitlab/qa"
+              ::File.join(Runtime::Path.qa_root, "rspec", authsources_filename).then do |path|
+                ::File.write(path, authsources_file)
+                path.gsub(Runtime::Path.qa_root, "#{Runtime::Env.ci_project_dir}/qa")
+              end
+            else
+              Runtime::Path.qa_tmp(authsources_filename).tap do |path|
+                ::File.write(path, authsources_file)
+              end
+            end
+          end
         end
       end
     end

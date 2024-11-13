@@ -31,6 +31,7 @@ module QA
           instance(api_client).all(**kwargs)
         end
 
+        # TODO: remove, this method is redundant because normal fabricate! performs exactly the same check
         def fabricate_via_api_unless_fips!
           if Runtime::Env.personal_access_tokens_disabled?
             fabricate!
@@ -40,6 +41,7 @@ module QA
         end
 
         def fabricate!(*args, &prepare_block)
+          # TODO: move this check in to `api_support?` method to disable api support if tokens are disabled
           if Runtime::Env.personal_access_tokens_disabled?
             fabricate_via_browser_ui!(*args, &prepare_block)
           else

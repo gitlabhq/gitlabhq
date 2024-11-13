@@ -15,10 +15,6 @@ options:
     - i_code_review_click_diff_view_setting
 distribution:
   - ce
-tier:
-  - free
-  - premium
-  - ultimate
 tiers:
   - free
   - premium

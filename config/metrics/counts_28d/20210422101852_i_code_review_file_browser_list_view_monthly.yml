@@ -15,10 +15,6 @@ options:
     - i_code_review_file_browser_list_view
 distribution:
   - ce
-tier:
-  - free
-  - premium
-  - ultimate
 tiers:
   - free
   - premium

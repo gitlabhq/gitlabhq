@@ -277,27 +277,19 @@ module Gitlab
       end
 
       def destroy_stream(build)
-        if consistent_archived_trace?(build)
-          ::Ci::Build
-            .sticking
-            .stick(LOAD_BALANCING_STICKING_NAMESPACE, build.id)
-        end
+        ::Ci::Build
+          .sticking
+          .stick(LOAD_BALANCING_STICKING_NAMESPACE, build.id)
 
         yield
       end
 
       def read_trace_artifact(build)
-        if consistent_archived_trace?(build)
-          ::Ci::Build
-            .sticking
-            .find_caught_up_replica(LOAD_BALANCING_STICKING_NAMESPACE, build.id)
-        end
+        ::Ci::Build
+          .sticking
+          .find_caught_up_replica(LOAD_BALANCING_STICKING_NAMESPACE, build.id)
 
         yield
-      end
-
-      def consistent_archived_trace?(build)
-        ::Feature.enabled?(:gitlab_ci_archived_trace_consistent_reads, build.project)
       end
 
       def being_watched_cache_key

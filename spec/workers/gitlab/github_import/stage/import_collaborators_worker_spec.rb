@@ -14,74 +14,59 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportCollaboratorsWorker, feature_c
 
   it_behaves_like Gitlab::GithubImport::StageMethods
 
-  context 'when the user mapping feature is enabled' do
-    it 'skips to next stage immediately' do
-      expect(Gitlab::GithubImport::Importer::CollaboratorsImporter)
-        .not_to receive(:new)
+  describe '#import' do
+    let(:push_rights_granted) { true }
 
-      expect(Gitlab::GithubImport::AdvanceStageWorker)
-        .to receive(:perform_async)
-        .with(project.id, {}, 'issues_and_diff_notes')
-
-      worker.import(client, project)
+    before do
+      Feature.disable(:github_user_mapping)
+      settings.write({ optional_stages: { collaborators_import: stage_enabled } })
+      allow(client).to receive(:repository).with(project.import_source)
+        .and_return({ permissions: { push: push_rights_granted } })
     end
-  end
 
-  context 'when the user mapping feature is disabled' do
-    describe '#import' do
-      let(:push_rights_granted) { true }
+    context 'when user has push access for this repo' do
+      it 'imports all collaborators' do
+        waiter = Gitlab::JobWaiter.new(2, '123')
 
-      before do
-        Feature.disable(:github_user_mapping)
-        settings.write({ optional_stages: { collaborators_import: stage_enabled } })
-        allow(client).to receive(:repository).with(project.import_source)
-          .and_return({ permissions: { push: push_rights_granted } })
+        expect(Gitlab::GithubImport::Importer::CollaboratorsImporter)
+          .to receive(:new)
+          .with(project, client)
+          .and_return(importer)
+        expect(importer).to receive(:execute).and_return(waiter)
+
+        expect(Gitlab::GithubImport::AdvanceStageWorker)
+          .to receive(:perform_async)
+          .with(project.id, { '123' => 2 }, 'issues_and_diff_notes')
+
+        worker.import(client, project)
       end
+    end
 
-      context 'when user has push access for this repo' do
-        it 'imports all collaborators' do
-          waiter = Gitlab::JobWaiter.new(2, '123')
+    context 'when user do not have push access for this repo' do
+      let(:push_rights_granted) { false }
 
-          expect(Gitlab::GithubImport::Importer::CollaboratorsImporter)
-            .to receive(:new)
-            .with(project, client)
-            .and_return(importer)
-          expect(importer).to receive(:execute).and_return(waiter)
+      it 'skips stage' do
+        expect(Gitlab::GithubImport::Importer::CollaboratorsImporter).not_to receive(:new)
 
-          expect(Gitlab::GithubImport::AdvanceStageWorker)
-            .to receive(:perform_async)
-            .with(project.id, { '123' => 2 }, 'issues_and_diff_notes')
+        expect(Gitlab::GithubImport::AdvanceStageWorker)
+          .to receive(:perform_async)
+          .with(project.id, {}, 'issues_and_diff_notes')
 
-          worker.import(client, project)
-        end
+        worker.import(client, project)
       end
+    end
 
-      context 'when user do not have push access for this repo' do
-        let(:push_rights_granted) { false }
+    context 'when stage is disabled' do
+      let(:stage_enabled) { false }
 
-        it 'skips stage' do
-          expect(Gitlab::GithubImport::Importer::CollaboratorsImporter).not_to receive(:new)
+      it 'skips collaborators import and calls next stage' do
+        expect(Gitlab::GithubImport::Importer::CollaboratorsImporter).not_to receive(:new)
 
-          expect(Gitlab::GithubImport::AdvanceStageWorker)
-            .to receive(:perform_async)
-            .with(project.id, {}, 'issues_and_diff_notes')
+        expect(Gitlab::GithubImport::AdvanceStageWorker)
+          .to receive(:perform_async)
+          .with(project.id, {}, 'issues_and_diff_notes')
 
-          worker.import(client, project)
-        end
-      end
-
-      context 'when stage is disabled' do
-        let(:stage_enabled) { false }
-
-        it 'skips collaborators import and calls next stage' do
-          expect(Gitlab::GithubImport::Importer::CollaboratorsImporter).not_to receive(:new)
-
-          expect(Gitlab::GithubImport::AdvanceStageWorker)
-            .to receive(:perform_async)
-            .with(project.id, {}, 'issues_and_diff_notes')
-
-          worker.import(client, project)
-        end
+        worker.import(client, project)
       end
     end
   end

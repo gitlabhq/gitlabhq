@@ -19,8 +19,6 @@ options:
   - users_expanding_testing_accessibility_report
 distribution:
 - ce
-tier:
-- free
 tiers:
 - free
 performance_indicator_type: []

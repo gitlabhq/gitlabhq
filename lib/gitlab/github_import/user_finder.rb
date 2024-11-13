@@ -101,6 +101,13 @@ module Gitlab
         )
       end
 
+      # Returns true if GitLab user has accepted their reassignment status or if UCM is not enabled
+      def source_user_accepted?(user)
+        return true unless mapper.user_mapping_enabled?
+
+        source_user(user).accepted_status?
+      end
+
       # Returns the GitLab ID for the given GitHub ID or username.
       #
       # id - The ID of the GitHub user.

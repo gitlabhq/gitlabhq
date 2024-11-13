@@ -68,16 +68,15 @@ RSpec.describe QA::Resource::ApiFabricator do
     end
   end
 
+  let(:api_client_instance) { QA::Runtime::API::Client.new(personal_access_token: 'foo') }
+
   before do
-    allow(subject).to receive(:current_url).and_return('')
+    allow(QA::Runtime::UserStore).to receive(:default_api_client).and_return(api_client_instance)
   end
 
   subject { resource.tap { |f| f.include(described_class) }.new }
 
   describe '#api_support?' do
-    let(:api_client) { spy('Runtime::API::Client') }
-    let(:api_client_instance) { double('API Client') }
-
     context 'when resource does not support fabrication via the API' do
       let(:resource) { resource_without_api_support }
 
@@ -96,21 +95,13 @@ RSpec.describe QA::Resource::ApiFabricator do
   end
 
   describe '#fabricate_via_api!' do
-    let(:api_client) { spy('Runtime::API::Client') }
-    let(:api_client_instance) { double('API Client') }
-
-    before do
-      stub_const('QA::Runtime::API::Client', api_client)
-
-      allow(api_client).to receive(:new).and_return(api_client_instance)
-      allow(api_client_instance).to receive(:personal_access_token).and_return('foo')
-    end
-
     context 'when resource does not support fabrication via the API' do
       let(:resource) { resource_without_api_support }
 
       it 'raises a NotImplementedError exception' do
-        expect { subject.fabricate_via_api! }.to raise_error(NotImplementedError, "Resource FooBarResource does not support fabrication via the API!")
+        expect do
+          subject.fabricate_via_api!
+        end.to raise_error(NotImplementedError, "Resource FooBarResource does not support fabrication via the API!")
       end
     end
 
@@ -134,7 +125,8 @@ RSpec.describe QA::Resource::ApiFabricator do
         end
 
         it 'returns the resource URL' do
-          expect(api_request).to receive(:new).with(api_client_instance, subject.api_post_path).and_return(double(url: resource_web_url))
+          expect(api_request).to receive(:new).with(api_client_instance,
+            subject.api_post_path).and_return(double(url: resource_web_url))
           expect(subject).to receive(:post).with(resource_web_url, subject.api_post_body, {}).and_return(raw_post)
 
           expect(subject.fabricate_via_api!).to eq(resource_web_url)
@@ -151,7 +143,8 @@ RSpec.describe QA::Resource::ApiFabricator do
           let(:raw_post) { double('Raw POST response', code: 400, body: post_response.to_json, headers: {}) }
 
           it 'raises a ResourceFabricationFailedError exception' do
-            expect(api_request).to receive(:new).with(api_client_instance, subject.api_post_path).and_return(double(url: resource_web_url))
+            expect(api_request).to receive(:new).with(api_client_instance,
+              subject.api_post_path).and_return(double(url: resource_web_url))
             expect(subject).to receive(:post).with(resource_web_url, subject.api_post_body, {}).and_return(raw_post)
 
             expect { subject.fabricate_via_api! }.to raise_error do |error|
@@ -164,10 +157,12 @@ RSpec.describe QA::Resource::ApiFabricator do
           end
 
           it 'logs a correlation id' do
-            response = double('Raw POST response', code: 400, body: post_response.to_json, headers: { x_request_id: 'foobar' })
+            response = double('Raw POST response', code: 400, body: post_response.to_json,
+              headers: { x_request_id: 'foobar' })
             allow(QA::Support::Loglinking).to receive(:logging_environment).and_return(nil)
 
-            expect(api_request).to receive(:new).with(api_client_instance, subject.api_post_path).and_return(double(url: resource_web_url))
+            expect(api_request).to receive(:new).with(api_client_instance,
+              subject.api_post_path).and_return(double(url: resource_web_url))
             expect(subject).to receive(:post).with(resource_web_url, subject.api_post_body, {}).and_return(response)
 
             expect { subject.fabricate_via_api! }.to raise_error do |error|
@@ -180,15 +175,18 @@ RSpec.describe QA::Resource::ApiFabricator do
           end
 
           it 'logs Sentry and Kibana URLs from staging' do
-            response = double('Raw POST response', code: 400, body: post_response.to_json, headers: { x_request_id: 'foobar' })
+            response = double('Raw POST response', code: 400, body: post_response.to_json,
+              headers: { x_request_id: 'foobar' })
             cookies = [{ name: 'Foo', value: 'Bar' }, { name: 'gitlab_canary', value: 'true' }]
             time = Time.new(2022, 11, 14, 0, 0, 0, '+00:00')
 
-            allow(Capybara.current_session).to receive_message_chain(:driver, :browser, :manage, :all_cookies).and_return(cookies)
+            allow(Capybara.current_session).to receive_message_chain(:driver, :browser, :manage,
+              :all_cookies).and_return(cookies)
             allow(QA::Runtime::Scenario).to receive(:attributes).and_return({ gitlab_address: 'https://staging.gitlab.com' })
             allow(Time).to receive(:now).and_return(time)
 
-            expect(api_request).to receive(:new).with(api_client_instance, subject.api_post_path).and_return(double(url: resource_web_url))
+            expect(api_request).to receive(:new).with(api_client_instance,
+              subject.api_post_path).and_return(double(url: resource_web_url))
             expect(subject).to receive(:post).with(resource_web_url, subject.api_post_body, {}).and_return(response)
 
             expect { subject.fabricate_via_api! }.to raise_error do |error|
@@ -283,12 +281,15 @@ RSpec.describe QA::Resource::ApiFabricator do
 
       context 'when creating a resource' do
         before do
-          allow(subject).to receive(:post).with(resource_web_url, { query: subject.api_post_body }, {}).and_return(raw_post)
+          allow(subject).to receive(:post).with(resource_web_url, { query: subject.api_post_body }, {})
+            .and_return(raw_post)
         end
 
         it 'returns the resource URL' do
-          expect(api_request).to receive(:new).with(api_client_instance, subject.api_post_path).and_return(double(url: resource_web_url))
-          expect(subject).to receive(:post).with(resource_web_url, { query: subject.api_post_body }, {}).and_return(raw_post)
+          expect(api_request).to receive(:new).with(api_client_instance, subject.api_post_path)
+            .and_return(double(url: resource_web_url))
+          expect(subject).to receive(:post).with(resource_web_url, { query: subject.api_post_body }, {})
+            .and_return(raw_post)
 
           expect(subject.fabricate_via_api!).to eq(resource_web_url)
         end

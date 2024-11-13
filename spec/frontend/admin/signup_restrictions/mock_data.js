@@ -26,6 +26,7 @@ export const rawMockData = {
   enableMemberPromotionManagement: 'true',
   canDisableMemberPromotionManagement: false,
   rolePromotionRequestsPath: '/admin/role_promotion',
+  licensedUserCount: '',
 };
 
 export const mockData = {
@@ -56,4 +57,5 @@ export const mockData = {
   enableMemberPromotionManagement: true,
   canDisableMemberPromotionManagement: false,
   rolePromotionRequestsPath: '/admin/role_promotion',
+  licensedUserCount: '',
 };

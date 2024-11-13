@@ -74,6 +74,13 @@ RSpec.describe CustomEmoji do
 
     it { expect(described_class.for_namespaces([group.id])).to eq([custom_emoji]) }
 
+    it "does not add sql injections in the query" do
+      query = described_class.for_namespaces(
+        ["96 THEN (SELECT 1 FROM pg_sleep(5)  LIMIT 1) ELSE (SELECT 1 FROM pg_sleep(1) LIMIT 1) END  --;"]).to_sql
+
+      expect(query).not_to include("pg_sleep")
+    end
+
     context 'with subgroup' do
       let_it_be(:subgroup) { create(:group, parent: group) }
       let_it_be(:subgroup_emoji) { create(:custom_emoji, namespace: subgroup, name: 'flying_parrot') }

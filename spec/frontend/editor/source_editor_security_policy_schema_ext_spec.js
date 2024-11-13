@@ -52,6 +52,23 @@ const mockScanExecutionPolicyProperties = {
   },
 };
 
+const mockCommonExtendedSchema = (policyType) => ({
+  title: 'mockSchema',
+  description: 'mockDescriptions',
+  type: 'Object',
+  properties: {
+    type: {
+      type: 'string',
+      description: 'Specifies the type of policy to be enforced.',
+      enum: policyType,
+    },
+    scan_execution_policy: { items: { properties: { foo: 'bar' } } },
+    approval_policy: { items: { properties: { fizz: 'buzz' } } },
+    reused_policy: { $ref: '#/$defs/reused_policy' },
+  },
+  $defs,
+});
+
 const mockApprovalPolicyProperties = {
   ...mockCommonData,
   properties: {
@@ -157,6 +174,29 @@ describe('getSinglePolicySchema', () => {
       }),
     ).resolves.toStrictEqual({});
   });
+
+  it.each`
+    policyType
+    ${'scan_execution_policy'}
+    ${'approval_policy'}
+    ${'reused_policy'}
+  `(
+    'returns schema with policy type wrapper when ff is enabled for $policyType',
+    async ({ policyType }) => {
+      mock.onGet().reply(HTTP_STATUS_OK, mockSchema);
+      window.gon.features = {
+        securityPoliciesNewYamlFormat: true,
+      };
+
+      await expect(
+        getSinglePolicySchema({
+          namespacePath: mockNamespacePath,
+          namespaceType: 'project',
+          policyType,
+        }),
+      ).resolves.toStrictEqual(mockCommonExtendedSchema(policyType));
+    },
+  );
 });
 
 describe('SecurityPolicySchemaExtension', () => {
