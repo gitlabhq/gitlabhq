@@ -1091,6 +1091,266 @@ Example response:
 ]
 ```
 
+## Get merge request dependencies
+
+Shows information about the merge request dependencies that must be resolved before merging.
+
+NOTE:
+If the user does not have access to the blocking merge request, no `blocking_merge_request`
+attribute is returned.
+
+```plaintext
+GET /projects/:id/merge_requests/:merge_request_iid/blocks
+```
+
+Supported attributes:
+
+| Attribute           | Type           | Required | Description |
+|---------------------|----------------|----------|-------------|
+| `id`                | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/merge_requests/1/blocks"
+```
+
+Example response:
+
+```json
+[
+  {
+    "id": 1,
+    "blocking_merge_request": {
+      "id": 145,
+      "iid": 12,
+      "project_id": 7,
+      "title": "Interesting MR",
+      "description": "Does interesting things.",
+      "state": "opened",
+      "created_at": "2024-07-05T21:29:11.172Z",
+      "updated_at": "2024-07-05T21:29:11.172Z",
+      "merged_by": null,
+      "merge_user": null,
+      "merged_at": null,
+      "merge_after": "2018-09-07T11:16:00.000Z",
+      "closed_by": null,
+      "closed_at": null,
+      "target_branch": "master",
+      "source_branch": "v2.x",
+      "user_notes_count": 0,
+      "upvotes": 0,
+      "downvotes": 0,
+      "author": {
+        "id": 2,
+        "username": "aiguy123",
+        "name": "AI GUY",
+        "state": "active",
+        "locked": false,
+        "avatar_url": "https://www.gravatar.com/avatar/0?s=80&d=identicon",
+        "web_url": "https://localhost/aiguy123"
+      },
+      "assignees": [
+        {
+          "id": 2,
+          "username": "aiguy123",
+          "name": "AI GUY",
+          "state": "active",
+          "locked": false,
+          "avatar_url": "https://www.gravatar.com/avatar/0?s=80&d=identicon",
+          "web_url": "https://localhost/aiguy123"
+        }
+      ],
+      "assignee": {
+        "id": 2,
+        "username": "aiguy123",
+        "name": "AI GUY",
+        "state": "active",
+        "locked": false,
+        "avatar_url": "https://www.gravatar.com/avatar/0?s=80&d=identicon",
+        "web_url": "https://localhost/aiguy123"
+      },
+      "reviewers": [
+        {
+          "id": 2,
+          "username": "aiguy123",
+          "name": "AI GUY",
+          "state": "active",
+          "locked": false,
+          "avatar_url": "https://www.gravatar.com/avatar/0?s=80&d=identicon",
+          "web_url": "https://localhost/aiguy123"
+        },
+        {
+          "id": 1,
+          "username": "root",
+          "name": "Administrator",
+          "state": "active",
+          "locked": false,
+          "avatar_url": "https://www.gravatar.com/avatar/0?s=80&d=identicon",
+          "web_url": "https://localhost/root"
+        }
+      ],
+      "source_project_id": 7,
+      "target_project_id": 7,
+      "labels": [],
+      "draft": false,
+      "imported": false,
+      "imported_from": "none",
+      "work_in_progress": false,
+      "milestone": null,
+      "merge_when_pipeline_succeeds": false,
+      "merge_status": "unchecked",
+      "detailed_merge_status": "unchecked",
+      "sha": "ce7e4f2d0ce13cb07479bb39dc10ee3b861c08a6",
+      "merge_commit_sha": null,
+      "squash_commit_sha": null,
+      "discussion_locked": null,
+      "should_remove_source_branch": null,
+      "force_remove_source_branch": true,
+      "prepared_at": null,
+      "reference": "!12",
+      "references": {
+        "short": "!12",
+        "relative": "!12",
+        "full": "my-group/my-project!12"
+      },
+      "web_url": "https://localhost/my-group/my-project/-/merge_requests/12",
+      "time_stats": {
+        "time_estimate": 0,
+        "total_time_spent": 0,
+        "human_time_estimate": null,
+        "human_total_time_spent": null
+      },
+      "squash": false,
+      "squash_on_merge": false,
+      "task_completion_status": {
+        "count": 0,
+        "completed_count": 0
+      },
+      "has_conflicts": false,
+      "blocking_discussions_resolved": true,
+      "approvals_before_merge": null
+    },
+    "blocked_merge_request": {
+      "id": 146,
+      "iid": 13,
+      "project_id": 7,
+      "title": "Really cool MR",
+      "description": "Adds some stuff",
+      "state": "opened",
+      "created_at": "2024-07-05T21:31:34.811Z",
+      "updated_at": "2024-07-27T02:57:08.054Z",
+      "merged_by": null,
+      "merge_user": null,
+      "merged_at": null,
+      "merge_after": "2018-09-07T11:16:00.000Z",
+      "closed_by": null,
+      "closed_at": null,
+      "target_branch": "master",
+      "source_branch": "remove-from",
+      "user_notes_count": 0,
+      "upvotes": 1,
+      "downvotes": 0,
+      "author": {
+        "id": 2,
+        "username": "aiguy123",
+        "name": "AI GUY",
+        "state": "active",
+        "locked": false,
+        "avatar_url": "https://www.gravatar.com/avatar/0?s=80&d=identicon",
+        "web_url": "https://localhost/aiguy123"
+      },
+      "assignees": [
+        {
+          "id": 2,
+          "username": "aiguy123",
+          "name": "AI GUY",
+          "state": "active",
+          "locked": false,
+          "avatar_url": "https://www.gravatar.com/avatar/0?s=80&d=identicon",
+          "web_url": "https://localhose/aiguy123"
+        }
+      ],
+      "assignee": {
+        "id": 2,
+        "username": "aiguy123",
+        "name": "AI GUY",
+        "state": "active",
+        "locked": false,
+        "avatar_url": "https://www.gravatar.com/avatar/0?s=80&d=identicon",
+        "web_url": "https://localhost/aiguy123"
+      },
+      "reviewers": [
+        {
+          "id": 1,
+          "username": "root",
+          "name": "Administrator",
+          "state": "active",
+          "locked": false,
+          "avatar_url": "https://www.gravatar.com/avatar/0?s=80&d=identicon",
+          "web_url": "https://localhost/root"
+        }
+      ],
+      "source_project_id": 7,
+      "target_project_id": 7,
+      "labels": [],
+      "draft": false,
+      "imported": false,
+      "imported_from": "none",
+      "work_in_progress": false,
+      "milestone": {
+        "id": 59,
+        "iid": 6,
+        "project_id": 7,
+        "title": "Sprint 1718897375",
+        "description": "Accusantium omnis iusto a animi.",
+        "state": "active",
+        "created_at": "2024-06-20T15:29:35.739Z",
+        "updated_at": "2024-06-20T15:29:35.739Z",
+        "due_date": null,
+        "start_date": null,
+        "expired": false,
+        "web_url": "https://localhost/my-group/my-project/-/milestones/6"
+      },
+      "merge_when_pipeline_succeeds": false,
+      "merge_status": "cannot_be_merged",
+      "detailed_merge_status": "not_approved",
+      "sha": "daa75b9b17918f51f43866ff533987fda71375ea",
+      "merge_commit_sha": null,
+      "squash_commit_sha": null,
+      "discussion_locked": null,
+      "should_remove_source_branch": null,
+      "force_remove_source_branch": true,
+      "prepared_at": "2024-07-11T18:50:46.215Z",
+      "reference": "!13",
+      "references": {
+        "short": "!13",
+        "relative": "!13",
+        "full": "my-group/my-project!12"
+      },
+      "web_url": "https://localhost/my-group/my-project/-/merge_requests/13",
+      "time_stats": {
+        "time_estimate": 0,
+        "total_time_spent": 0,
+        "human_time_estimate": null,
+        "human_total_time_spent": null
+      },
+      "squash": false,
+      "squash_on_merge": false,
+      "task_completion_status": {
+        "count": 0,
+        "completed_count": 0
+      },
+      "has_conflicts": true,
+      "blocking_discussions_resolved": true,
+      "approvals_before_merge": null
+    },
+    "project_id": 7
+  }
+]
+```
+
 ## Get single merge request changes
 
 WARNING:
