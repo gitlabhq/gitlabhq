@@ -762,7 +762,7 @@ timeout after failing to acquire the lock within the specified time period
 and allow other transactions to proceed:
 
 ```sql
--- Transaction 2 (version with with lock timeout)
+-- Transaction 2 (version with lock timeout)
 BEGIN;
 SET LOCAL lock_timeout to '100ms'; -- added by the lock retry helper.
 ALTER TABLE my_notes ADD COLUMN title text;

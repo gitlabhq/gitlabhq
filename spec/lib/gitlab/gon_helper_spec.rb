@@ -81,6 +81,10 @@ RSpec.describe Gitlab::GonHelper, feature_category: :shared do
 
     context 'when ui_for_organizations feature flag is enabled' do
       context 'when current_organization is set', :with_current_organization do
+        before do
+          Current.organization = current_organization
+        end
+
         it 'exposes current_organization' do
           expect(gon).to receive(:current_organization=).with(
             current_organization.slice(:id, :name, :web_url, :avatar_url)

@@ -139,7 +139,7 @@ export default {
                 </div>
               </div>
               <template #pagination>
-                <div v-if="hasNextPage" class="gl-mt-4 gl-flex gl-justify-center">
+                <div v-if="hasNextPage" class="crud-pagination-container gl-flex gl-justify-center">
                   <gl-button :loading="loading" data-testid="load-more" @click="loadMore">{{
                     __('Show more')
                   }}</gl-button>

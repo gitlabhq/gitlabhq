@@ -10,6 +10,7 @@ issues:
 - milestone
 - iteration
 - work_item_type
+- correct_work_item_type
 - notes
 - resource_label_events
 - resource_weight_events
@@ -86,7 +87,6 @@ issues:
 work_item_type:
 - issues
 - namespace
-- work_items
 - widget_definitions
 - enabled_widget_definitions
 - child_restrictions

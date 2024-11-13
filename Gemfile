@@ -247,7 +247,7 @@ gem 'html-pipeline', '~> 2.14.3', feature_category: :markdown
 gem 'deckar01-task_list', '2.3.4', feature_category: :markdown
 gem 'gitlab-markup', '~> 1.9.0', require: 'github/markup', feature_category: :markdown
 gem 'commonmarker', '~> 0.23.10', feature_category: :markdown
-gem 'kramdown', '~> 2.3.1', feature_category: :markdown
+gem 'kramdown', '~> 2.4.0', feature_category: :markdown
 gem 'RedCloth', '~> 4.3.3', feature_category: :markdown
 gem 'org-ruby', '~> 0.9.12', feature_category: :markdown
 gem 'creole', '~> 0.5.0', feature_category: :markdown

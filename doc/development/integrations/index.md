@@ -107,7 +107,7 @@ The following events are supported for integrations:
 
 | Event type                                                                                     | Default | Value                | Trigger |
 |:-----------------------------------------------------------------------------------------------|:--------|:---------------------|:--|
-| Alert event                                                                                    |         | `alert`              | A a new, unique alert is recorded. |
+| Alert event                                                                                    |         | `alert`              | A new, unique alert is recorded. |
 | Commit event                                                                                   | ✓       | `commit`             | A commit is created or updated. |
 | [Deployment event](../../user/project/integrations/webhook_events.md#deployment-events)        |         | `deployment`         | A deployment starts or finishes. |
 | [Work item event](../../user/project/integrations/webhook_events.md#work-item-events)          | ✓       | `issue`              | An issue is created, updated, or closed. |

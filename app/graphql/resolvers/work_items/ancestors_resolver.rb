@@ -57,7 +57,7 @@ module Resolvers
       end
 
       def unconditional_includes
-        [:namespace, :work_item_parent, :work_item_type]
+        [:namespace, :work_item_parent, ::Gitlab::Issues::TypeAssociationGetter.call]
       end
     end
   end

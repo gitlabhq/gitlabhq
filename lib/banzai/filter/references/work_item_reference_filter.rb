@@ -12,7 +12,8 @@ module Banzai
         self.object_class   = WorkItem
 
         def parent_records(parent, ids)
-          parent.work_items.where(iid: ids.to_a).includes(:project, :namespace, :work_item_type)
+          parent.work_items.where(iid: ids.to_a)
+                .includes(:project, :namespace, ::Gitlab::Issues::TypeAssociationGetter.call)
         end
 
         def parent_type

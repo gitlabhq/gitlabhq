@@ -29,7 +29,7 @@ Depending on which limits you have configured, you can see:
 - Size limits
 
 Because this page is visible to everybody, unauthenticated users only see the
-the information that is relevant to them.
+information that is relevant to them.
 
 To visit the instance configuration page:
 

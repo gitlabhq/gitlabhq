@@ -8,9 +8,9 @@ RSpec.shared_context 'with current_organization setting', shared_context: :metad
   end
 
   before do
-    allow(Current).to receive(:organization).and_return(current_organization)
-    allow(Current).to receive(:organization_id).and_return(current_organization.id)
-    allow(Current).to receive(:organization_assigned).and_return(true)
+    allow_next_instance_of(::Gitlab::Current::Organization) do |organization|
+      allow(organization).to receive(:organization).and_return(current_organization)
+    end
   end
 end
 

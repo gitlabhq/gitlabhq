@@ -115,7 +115,7 @@ RSpec.describe 'Creating a Snippet', feature_category: :source_code_management d
         it 'adds an organization_id' do
           expect do
             subject
-          end.to change { Snippet.where(organization_id: Current.organization_id).count }.by(1)
+          end.to change { Snippet.where(organization_id: current_organization.id).count }.by(1)
         end
       end
     end
@@ -133,7 +133,7 @@ RSpec.describe 'Creating a Snippet', feature_category: :source_code_management d
         it 'does not add an organization_id' do
           expect do
             subject
-          end.not_to change { Snippet.where(organization_id: Current.organization_id).count }
+          end.not_to change { Snippet.where(organization_id: current_organization.id).count }
         end
       end
 

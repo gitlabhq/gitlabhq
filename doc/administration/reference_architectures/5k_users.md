@@ -1625,7 +1625,7 @@ To configure the Sidekiq nodes, on each one:
    ```
 
 1. [Download and install](https://about.gitlab.com/install/) the Linux package
-   package of your choice. Be sure to follow _only_ installation steps 1 and 2
+   of your choice. Be sure to follow _only_ installation steps 1 and 2
    on the page.
 1. Create or edit `/etc/gitlab/gitlab.rb` and use the following configuration:
 

@@ -41,7 +41,9 @@ module Gitlab
       def with_type_filter(conditions, cte)
         return conditions unless options[:same_type]
 
-        conditions.and(objects_table[:work_item_type_id].eq(cte.table[:work_item_type_id]))
+        type_column_name = :"#{::Gitlab::Issues::TypeAssociationGetter.call}_id"
+
+        conditions.and(objects_table[type_column_name].eq(cte.table[type_column_name]))
       end
     end
   end

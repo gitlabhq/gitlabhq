@@ -1100,6 +1100,7 @@ module API
     resource :user do
       before do
         authenticate!
+        set_current_organization
       end
 
       # Enabling /user endpoint for the v3 version to allow oauth

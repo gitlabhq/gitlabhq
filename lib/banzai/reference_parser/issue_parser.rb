@@ -68,7 +68,7 @@ module Banzai
 
       def node_includes
         includes = [
-          :work_item_type,
+          ::Gitlab::Issues::TypeAssociationGetter.call,
           :namespace,
           :author,
           :assignees,

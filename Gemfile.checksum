@@ -357,7 +357,7 @@
 {"name":"kaminari-activerecord","version":"1.2.2","platform":"ruby","checksum":"0dd3a67bab356a356f36b3b7236bcb81cef313095365befe8e98057dd2472430"},
 {"name":"kaminari-core","version":"1.2.2","platform":"ruby","checksum":"3bd26fec7370645af40ca73b9426a448d09b8a8ba7afa9ba3c3e0d39cdbb83ff"},
 {"name":"knapsack","version":"4.0.0","platform":"ruby","checksum":"a9422688751989d09a40b4bf7f959a71a3bfe7bc49d3cd610c2fcfb6e45482b8"},
-{"name":"kramdown","version":"2.3.2","platform":"ruby","checksum":"cb4530c2e9d16481591df2c9336723683c354e5416a5dd3e447fa48215a6a71c"},
+{"name":"kramdown","version":"2.4.0","platform":"ruby","checksum":"b62e5bcbd6ea20c7a6730ebbb2a107237856e14f29cebf5b10c876cc1a2481c5"},
 {"name":"kramdown-parser-gfm","version":"1.1.0","platform":"ruby","checksum":"fb39745516427d2988543bf01fc4cf0ab1149476382393e0e9c48592f6581729"},
 {"name":"kubeclient","version":"4.11.0","platform":"ruby","checksum":"4985fcd749fb8c364a668a8350a49821647f03aa52d9ee6cbc582beb8e883fcc"},
 {"name":"language_server-protocol","version":"3.17.0.3","platform":"ruby","checksum":"3d5c58c02f44a20d972957a9febe386d7e7468ab3900ce6bd2b563dd910c6b3f"},

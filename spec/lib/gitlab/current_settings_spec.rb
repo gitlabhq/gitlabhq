@@ -112,9 +112,9 @@ RSpec.describe Gitlab::CurrentSettings, feature_category: :shared do
         allow(Gitlab::ApplicationSettingFetcher).to receive(:current_application_settings).and_return(nil)
       end
 
-      context 'and the current organization is known', :with_current_organization do
+      context 'and the current organization is known' do
         before do
-          allow(Organizations::OrganizationSetting).to receive(:for).and_return(organization_settings)
+          ::Current.organization = organization_settings.organization
         end
 
         it 'retrieves settings using OrganizationSetting' do

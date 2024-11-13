@@ -1381,7 +1381,7 @@ The following IPs will be used as an example:
 On each node:
 
 1. [Download and install](https://about.gitlab.com/install/) the Linux package
-   package of your choice. Be sure to follow _only_ installation steps 1 and 2
+   of your choice. Be sure to follow _only_ installation steps 1 and 2
    on the page, and _do not_ provide the `EXTERNAL_URL` value.
 1. Edit the Gitaly server node's `/etc/gitlab/gitlab.rb` file to configure
    storage paths, enable the network listener, and to configure the token:

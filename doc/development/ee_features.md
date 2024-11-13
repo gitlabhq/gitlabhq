@@ -621,7 +621,7 @@ file located in `ee/config/routes/admin.rb`.
 
 In EE, it should at least load one file, at most two files. If it cannot find
 any files, an error is raised. In CE, since we don't know if an
-an EE route exists, it doesn't raise any errors even if it cannot find anything.
+EE route exists, it doesn't raise any errors even if it cannot find anything.
 
 This means if we want to extend a particular CE route file, just add the same
 file located in `ee/config/routes`. If we want to add an EE only route, we

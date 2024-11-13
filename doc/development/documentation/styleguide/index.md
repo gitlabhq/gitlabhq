@@ -1394,7 +1394,7 @@ To create a diagram, use [Mermaid](https://mermaid.js.org/#/), which has the fol
 - The diagram is rendered as a scalable image, better suited to various output devices and sizes.
 
 To learn how to create diagrams with the [Mermaid syntax](https://mermaid.js.org/intro/syntax-reference.html),
-see the Mermaid [Mermaid user guide](https://mermaid.js.org/intro/getting-started.html)
+see the [Mermaid user guide](https://mermaid.js.org/intro/getting-started.html)
 and the examples on the Mermaid site.
 
 #### Guidelines

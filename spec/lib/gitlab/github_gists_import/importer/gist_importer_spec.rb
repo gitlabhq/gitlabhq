@@ -35,6 +35,10 @@ RSpec.describe Gitlab::GithubGistsImport::Importer::GistImporter, :with_current_
     }.stringify_keys
   end
 
+  before do
+    allow(::Current).to receive(:organization_id).and_return(current_organization.id)
+  end
+
   describe '#execute' do
     context 'when success' do
       let(:validator_result) do

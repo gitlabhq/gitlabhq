@@ -176,6 +176,8 @@ built-in error reporting tool:
 ## Related topics
 
 - [Code Suggestions](../../user/project/repository/code_suggestions/index.md)
+- [JetBrains troubleshooting](jetbrains_troubleshooting.md)
+- [GitLab Language Server documentation](../language_server/index.md)
 - [About the Create:Editor Extensions Group](https://handbook.gitlab.com/handbook/engineering/development/dev/create/editor-extensions/)
 - [Open issues for this plugin](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin/-/issues/)
 - [Plugin documentation](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin/-/blob/main/README.md)

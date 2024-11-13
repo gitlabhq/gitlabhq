@@ -124,7 +124,10 @@ module IssuableCollections
     common_attributes = [:author, :assignees, :labels, :milestone]
     @preload_for_collection ||= case collection_type
                                 when 'Issue'
-                                  common_attributes + [:work_item_type, :project, { project: :namespace }]
+                                  common_attributes + [
+                                    ::Gitlab::Issues::TypeAssociationGetter.call,
+                                    :project, { project: :namespace }
+                                  ]
                                 when 'MergeRequest'
                                   common_attributes + [
                                     :target_project, :latest_merge_request_diff, :approvals, :approved_by_users, :reviewers,

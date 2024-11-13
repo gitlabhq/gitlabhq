@@ -76,7 +76,13 @@ class Issue < ApplicationRecord
 
   belongs_to :duplicated_to, class_name: 'Issue'
   belongs_to :closed_by, class_name: 'User'
-  belongs_to :work_item_type, class_name: 'WorkItems::Type', inverse_of: :work_items
+  belongs_to :work_item_type, class_name: 'WorkItems::Type'
+
+  # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/499911
+  belongs_to :correct_work_item_type, # rubocop:disable Rails/InverseOf -- Temp association to the same record
+    class_name: 'WorkItems::Type',
+    foreign_key: :correct_work_item_type_id,
+    primary_key: :correct_id
 
   belongs_to :moved_to, class_name: 'Issue', inverse_of: :moved_from
   has_one :moved_from, class_name: 'Issue', foreign_key: :moved_to_id, inverse_of: :moved_to
@@ -195,25 +201,38 @@ class Issue < ApplicationRecord
 
   scope :with_alert_management_alerts, -> { joins(:alert_management_alert) }
   scope :with_api_entity_associations, -> {
-    preload(:work_item_type, :timelogs, :closed_by, :assignees, :author, :labels, :issuable_severity,
-      namespace: [{ parent: :route }, :route], milestone: { project: [:route, { namespace: :route }] },
+    preload(::Gitlab::Issues::TypeAssociationGetter.call,
+      :timelogs, :closed_by, :assignees, :author, :issuable_severity,
+      :labels, namespace: [{ parent: :route }, :route], milestone: { project: [:route, { namespace: :route }] },
       project: [:project_namespace, :project_feature, :route, { group: :route }, { namespace: :route }],
-      duplicated_to: { project: [:project_feature] })
+      duplicated_to: { project: [:project_feature] }
+    )
   }
   scope :with_issue_type, ->(types) {
     types = Array(types)
 
-    # Using != 1 since we also want the guard clause to handle empty arrays
-    return joins(:work_item_type).where(work_item_types: { base_type: types }) if types.size != 1
+    if Feature.enabled?(:issues_use_correct_work_item_type_id, :instance)
+      # Using != 1 since we also want the guard clause to handle empty arrays
+      return joins(:correct_work_item_type).where(work_item_types: { base_type: types }) if types.size != 1
 
-    # This optimization helps the planer use the correct indexes when filtering by a single type
-    where(
-      '"issues"."work_item_type_id" = (?)',
-      WorkItems::Type.by_type(types.first).select(:id).limit(1)
-    )
+      # This optimization helps the planer use the correct indexes when filtering by a single type
+      where(
+        '"issues"."correct_work_item_type_id" = (?)',
+        WorkItems::Type.by_type(types.first).select(:correct_id).limit(1)
+      )
+    else
+      # Using != 1 since we also want the guard clause to handle empty arrays
+      return joins(:work_item_type).where(work_item_types: { base_type: types }) if types.size != 1
+
+      # This optimization helps the planer use the correct indexes when filtering by a single type
+      where(
+        '"issues"."work_item_type_id" = (?)',
+        WorkItems::Type.by_type(types.first).select(:id).limit(1)
+      )
+    end
   }
   scope :without_issue_type, ->(types) {
-    joins(:work_item_type).where.not(work_item_types: { base_type: types })
+    joins(::Gitlab::Issues::TypeAssociationGetter.call).where.not(work_item_types: { base_type: types })
   }
 
   scope :public_only, -> { where(confidential: false) }
@@ -255,7 +274,9 @@ class Issue < ApplicationRecord
   scope :with_non_null_relative_position, -> { where.not(relative_position: nil) }
   scope :with_projects_matching_search_data, -> { where('issue_search_data.project_id = issues.project_id') }
 
-  scope :with_work_item_type, -> { joins(:work_item_type) }
+  scope :with_work_item_type, -> {
+    joins(::Gitlab::Issues::TypeAssociationGetter.call)
+  }
 
   before_validation :ensure_namespace_id, :ensure_work_item_type
 
@@ -334,6 +355,25 @@ class Issue < ApplicationRecord
 
   def self.participant_includes
     [:assignees] + super
+  end
+
+  # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/499911
+  def work_item_type
+    return correct_work_item_type if Feature.enabled?(:issues_use_correct_work_item_type_id, :instance)
+
+    super
+  end
+
+  def work_item_type_id=(work_item_type_id)
+    self.correct_work_item_type_id = WorkItems::Type.find_by(id: work_item_type_id)&.correct_id
+
+    super
+  end
+
+  def work_item_type=(work_item_type)
+    self.correct_work_item_type = work_item_type
+
+    super
   end
 
   def next_object_by_relative_position(ignoring: nil, order: :asc)

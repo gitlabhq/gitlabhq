@@ -96,6 +96,10 @@ Specific information applies to Linux package installations:
   Prior to upgrading, you must ensure your installation is using
   [PostgreSQL 14](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server).
 
+- Packages are no longer built for Ubuntu 18.04
+
+  Ensure that your operating system has been upgraded to Ubuntu 20.04 or later before attempting to upgrade GitLab.
+
 ### Non-expiring access tokens
 
 Access tokens that have no expiration date are valid indefinitely, which is a

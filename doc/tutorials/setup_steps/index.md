@@ -360,7 +360,7 @@ The echo step takes a single input `echo`, prints it to the logs, and outputs it
    glab ci status
    ```
 
-1. Follow the job under "View Logs" until the pipeline completes completes. Here's an example of a successful output:
+1. Follow the job under "View Logs" until the pipeline completes. Here's an example of a successful output:
 
    ```shell
    $ /step-runner ci

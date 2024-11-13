@@ -190,6 +190,7 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def check_captcha
+    set_current_organization
     return unless show_recaptcha_sign_up?
     return unless Gitlab::Recaptcha.load_configurations!
 

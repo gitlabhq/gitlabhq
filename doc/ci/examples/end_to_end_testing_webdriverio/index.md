@@ -158,7 +158,7 @@ to interact with your application, so we need to install and run them.
 Furthermore, WebdriverIO uses Selenium as a common interface to control different browsers,
 so we need to install and run Selenium as well. Luckily, the Selenium project provides the Docker images for Firefox
 [standalone-firefox](https://hub.docker.com/r/selenium/standalone-firefox/) and
-and for Chrome [standalone-chrome](https://hub.docker.com/r/selenium/standalone-chrome/).
+for Chrome [standalone-chrome](https://hub.docker.com/r/selenium/standalone-chrome/).
 (Since Safari and Internet Explorer/Edge are not open source and
 not available for Linux, we are unfortunately unable to use those in GitLab CI/CD).
 

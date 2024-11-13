@@ -18,7 +18,14 @@ module Issues
     private
 
     def associations_to_preload
-      [:work_item_type, :author, :assignees, :timelogs, :milestone, { project: { namespace: :route } }]
+      [
+        ::Gitlab::Issues::TypeAssociationGetter.call,
+        :author,
+        :assignees,
+        :timelogs,
+        :milestone,
+        { project: { namespace: :route } }
+      ]
     end
 
     def header_to_value_hash

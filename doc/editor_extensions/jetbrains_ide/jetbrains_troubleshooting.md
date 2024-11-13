@@ -32,6 +32,15 @@ To enable GitLab Language Server debug logs:
 
 The debug logs are available in the `idea.log` log file.
 
+## Use an HTTP proxy
+
+If you experience [certificate errors](#certificate-errors) or other connection errors, and
+use a HTTP proxy to connect to your GitLab instance, you must
+[configure the Language Server to use a proxy](../language_server/index.md#configure-the-language-server-to-use-a-proxy)
+for the GitLab Language Server.
+
+You can also [enable proxy authentication](../language_server/index.md#enable-proxy-authentication).
+
 ## Error: `unable to find valid certification path to requested target`
 
 The GitLab Duo plugin verifies TLS certificate information before connecting to your GitLab instance.

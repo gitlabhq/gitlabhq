@@ -1769,7 +1769,7 @@ was recently created:
 | 15.11                | [15.11](#workaround-instance-created-with-1511) |
 
 Most instances should use the 15.9 procedure. Only very new instances require the
-the 15.10 or 15.11 procedures. If you've migrated GitLab using backup and restore,
+15.10 or 15.11 procedures. If you've migrated GitLab using backup and restore,
 the database schema comes from the original instance. Select the workaround based
 on the source instance.
 

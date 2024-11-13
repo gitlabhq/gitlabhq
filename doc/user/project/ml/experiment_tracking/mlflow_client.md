@@ -71,6 +71,9 @@ candidate metadata. To associate a candidate to a CI/CD job:
 1. In your training code within the run execution context, add the following code snippet:
 
    ```python
+   import os
+   import mlflow
+
    with mlflow.start_run(run_name=f"Candidate {index}"):
      # Your training code
 
@@ -90,6 +93,8 @@ client. Models are registered under `/<your project>/-/ml/models`.
 #### Creating a model
 
 ```python
+from mlflow import MlflowClient
+
 client = MlflowClient()
 model_name = '<your_model_name>'
 description = 'Model description'
@@ -105,6 +110,8 @@ model = client.create_registered_model(model_name, description=description)
 #### Fetching a model
 
 ```python
+from mlflow import MlflowClient
+
 client = MlflowClient()
 model_name = '<your_model_name>'
 model = client.get_registered_model(model_name)
@@ -113,6 +120,8 @@ model = client.get_registered_model(model_name)
 #### Updating a model
 
 ```python
+from mlflow import MlflowClient
+
 client = MlflowClient()
 model_name = '<your_model_name>'
 description = 'New description'
@@ -122,6 +131,8 @@ client.update_registered_model(model_name, description=description)
 #### Deleting a model
 
 ```python
+from mlflow import MlflowClient
+
 client = MlflowClient()
 model_name = '<your_model_name>'
 client.delete_registered_model(model_name)
@@ -133,6 +144,8 @@ Every model has an associated experiment with the same name prefixed by `[model]
 To log a candidate/run to the model, use the experiment passing the correct name:
 
 ```python
+from mlflow import MlflowClient
+
 client = MlflowClient()
 model_name = '<your_model_name>'
 exp = client.get_experiment_by_name(f"[model]{model_name}")
@@ -144,6 +157,8 @@ run = client.create_run(exp.experiment_id)
 #### Creating a model version
 
 ```python
+from mlflow import MlflowClient
+
 client = MlflowClient()
 model_name = '<your_model_name>'
 description = 'Model version description'
@@ -155,6 +170,8 @@ version. You can set the version by passing a tag during model version creation.
 must follow [SemVer](https://semver.org/) format.
 
 ```python
+from mlflow import MlflowClient
+
 client = MlflowClient()
 model_name = '<your_model_name>'
 version = '<your_version>'
@@ -171,7 +188,9 @@ client.create_model_version(model_name, version, description=description, tags=t
 
 #### Updating a model
 
-```python
+```python\
+from mlflow import MlflowClient
+
 client = MlflowClient()
 model_name = '<your_model_name>'
 version = '<your_version>'
@@ -182,6 +201,8 @@ client.update_model_version(model_name, version, description=description)
 #### Fetching a model version
 
 ```python
+from mlflow import MlflowClient
+
 client = MlflowClient()
 model_name = '<your_model_name>'
 version = '<your_version>'
@@ -191,6 +212,8 @@ client.get_model_version(model_name, version)
 #### Getting latest versions of a model
 
 ```python
+from mlflow import MlflowClient
+
 client = MlflowClient()
 model_name = '<your_model_name>'
 client.get_latest_versions(model_name)
@@ -204,6 +227,8 @@ client.get_latest_versions(model_name)
 #### Loading a model version
 
 ```python
+from mlflow import MlflowClient
+
 client = MlflowClient()
 model_name = '<your_model_name>'
 version = '<your_version'  # e.g. '1.0.0'
@@ -224,6 +249,8 @@ and metrics. The run ID can either be found at the Model version page in GitLab,
 or by using the MLflow client:
 
 ```python
+from mlflow import MlflowClient
+
 client = MlflowClient()
 model_name = '<your_model_name>'
 version = '<your_version>'
@@ -242,6 +269,8 @@ client.log_batch(run_id, metric_list, param_list, tag_list)
 GitLab creates a package that can be used by the MLflow client to upload files.
 
 ```python
+from mlflow import MlflowClient
+
 client = MlflowClient()
 model_name = '<your_model_name>'
 version = '<your_version>'
@@ -263,6 +292,9 @@ Artifacts will then be available under `https/<your project>/-/ml/models/<model_
 Similar to candidates, it is also possible to link a model version to a CI/CD job:
 
 ```python
+import os
+from mlflow import MlflowClient
+
 client = MlflowClient()
 model_name = '<your_model_name>'
 version = '<your_version>'

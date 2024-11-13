@@ -338,7 +338,7 @@ Notification email messages include GitLab-specific headers. To better manage yo
 you can filter the notification emails based on the content of these headers.
 
 For example, you could filter all emails from a specific project where you are being assigned a
-a merge request or an issue.
+merge request or an issue.
 
 The following table lists all GitLab-specific email headers:
 

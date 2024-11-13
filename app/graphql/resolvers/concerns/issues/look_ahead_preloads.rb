@@ -16,7 +16,7 @@ module Issues
           project: [:project_feature, :group]
         },
         :author,
-        :work_item_type
+        ::Gitlab::Issues::TypeAssociationGetter.call
       ]
     end
 
@@ -28,7 +28,7 @@ module Issues
         timelogs: [:timelogs],
         customer_relations_contacts: { customer_relations_contacts: [:group] },
         escalation_status: [:incident_management_issuable_escalation_status],
-        type: :work_item_type
+        type: ::Gitlab::Issues::TypeAssociationGetter.call
       }
     end
   end

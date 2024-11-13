@@ -1076,7 +1076,7 @@ GEM
     kaminari-core (1.2.2)
     knapsack (4.0.0)
       rake
-    kramdown (2.3.2)
+    kramdown (2.4.0)
       rexml
     kramdown-parser-gfm (1.1.0)
       kramdown (~> 2.0)
@@ -2169,7 +2169,7 @@ DEPENDENCIES
   jwt (~> 2.9.3)
   kaminari (~> 1.2.2)
   knapsack (~> 4.0.0)
-  kramdown (~> 2.3.1)
+  kramdown (~> 2.4.0)
   kubeclient (~> 4.11.0)
   lefthook (~> 1.7.0)
   letter_opener_web (~> 3.0.0)
