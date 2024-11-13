@@ -13,6 +13,12 @@ RSpec.describe 'OAuth Provider', feature_category: :system_access do
     )
   end
 
+  def visit_oauth_device_authorization_path
+    visit oauth_device_authorizations_index_path(
+      user_code: user_code
+    )
+  end
+
   before do
     sign_in(user)
   end
@@ -25,6 +31,16 @@ RSpec.describe 'OAuth Provider', feature_category: :system_access do
     end
 
     it_behaves_like 'Secure OAuth Authorizations'
+  end
+
+  describe 'Device OAuth authorization' do
+    let(:user_code) { 'valid_user_code' }
+
+    before do
+      visit_oauth_device_authorization_path
+    end
+
+    it_behaves_like 'Secure Device OAuth Authorizations'
   end
 
   context 'when the OAuth application has HTML in the name' do
@@ -40,6 +56,10 @@ RSpec.describe 'OAuth Provider', feature_category: :system_access do
       within_testid('authorization-button') do
         expect(page).to have_content(format(_('Authorize %{client_name}'), client_name: client_name))
       end
+    end
+
+    it 'expects button not to have an id attribute' do
+      expect(find_by_testid('authorization-button')[:id].nil?).to be_truthy
     end
 
     # rubocop:disable Layout/LineLength -- It is a string

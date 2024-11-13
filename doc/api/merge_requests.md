@@ -1107,6 +1107,10 @@ Example response:
 
 Shows information about the merge request dependencies that must be resolved before merging.
 
+NOTE:
+If the user does not have access to the blocking merge request, no `blocking_merge_request`
+attribute is returned.
+
 ```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/blocks
 ```

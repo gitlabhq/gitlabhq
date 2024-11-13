@@ -86,6 +86,14 @@ RSpec.describe Import::FogbugzController, feature_category: :importers do
         include_examples 'denies local request', 'Only allowed schemes are http, https'
       end
     end
+
+    it_behaves_like 'rate limited endpoint', rate_limit_key: :fogbugz_import, with_redirect: true do
+      let(:current_user) { user }
+
+      def request
+        post :callback, params: { uri: uri, email: 'test@example.com', password: 'mypassword' }
+      end
+    end
   end
 
   describe 'POST #create_user_map' do
