@@ -19,10 +19,10 @@ exports[`Design management toolbar component renders design and updated data 1`]
           My precious issue
         </span>
         <gl-icon-stub
-          class="gl-shrink-0 gl-text-gray-200"
+          class="gl-shrink-0"
           name="chevron-right"
           size="16"
-          variant="current"
+          variant="disabled"
         />
         <span
           class="gl-font-normal gl-truncate"

@@ -290,7 +290,7 @@ export default {
             :aria-label="s__('Runners|Remove Node pool label')"
             @click="removeVariable(index)"
           >
-            <gl-icon class="!gl-mr-0 !gl-text-gray-500" name="remove" />
+            <gl-icon class="!gl-mr-0" name="remove" />
             <span class="gl-ml-2 md:gl-hidden">{{ s__('Runners|Remove Node pool label') }}</span>
           </gl-button>
           <gl-button

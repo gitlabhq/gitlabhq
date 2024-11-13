@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com
 
-All projects on GitLab SaaS have 10 GiB of free storage for their Git repository and Large File Storage (LFS).
+All projects on GitLab.com have 10 GiB of free storage for their Git repository and Large File Storage (LFS).
 
 When a project's repository and LFS exceed 10 GiB, the project is set to a read-only state.
 You cannot push changes to a read-only project. To increase storage of the project's repository and LFS to more than 10 GiB,
@@ -26,8 +26,8 @@ DETAILS:
 
 You can view the following statistics for storage usage in projects and namespaces:
 
-- Storage usage that exceeds the GitLab SaaS storage limit or [self-managed storage limits](../administration/settings/account_and_limit_settings.md#repository-size-limit).
-- Available purchased storage for GitLab SaaS.
+- Storage usage that exceeds the GitLab.com storage limit or [self-managed storage limits](../administration/settings/account_and_limit_settings.md#repository-size-limit).
+- Available purchased storage for GitLab.com.
 
 Prerequisites:
 

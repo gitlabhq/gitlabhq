@@ -35,8 +35,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::ComponentUsage, feature_category: :p
 
     it_behaves_like 'internal event tracking' do
       let(:event) { 'ci_catalog_component_included' }
-      let(:label) { component.project.full_path }
-      let(:property) { 'my_component@1.2.0' }
+      let(:label) { component.id.to_s }
       let(:value) { 1 } # Default resource_type
     end
 

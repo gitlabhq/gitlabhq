@@ -52,7 +52,7 @@ export default {
         target="_blank"
         data-testid="job-sidebar-help-link"
       >
-        <gl-icon name="question-o" class="gl-ml-2 gl-text-blue-500" />
+        <gl-icon class="gl-ml-2" name="question-o" variant="info" />
       </gl-link>
     </span>
   </p>

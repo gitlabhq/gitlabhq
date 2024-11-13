@@ -1,5 +1,5 @@
 ---
-stage: Secure
+stage: Application Security Testing
 group: Dynamic Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -22,9 +22,8 @@ Migrate to DAST version 5 by reading the following sections and making the recom
 
 ## DAST analyzer versions
 
-DAST comes in two major versions: 4 and 5. Effective from the third GitLab 17.0 breaking change window,
-2024-05-06 09:00 UTC to 2024-05-08 22:00 UTC, the DAST templates `DAST.gitlab-ci.yml` and `DAST.latest.gitlab-ci.yml`
-use DAST version 5 by default.
+DAST comes in two major versions: 4 and 5. The DAST templates `DAST.gitlab-ci.yml` and
+`DAST.latest.gitlab-ci.yml` use DAST version 5 by default.
 
 You can continue using DAST version 4, but you should do so only as an
 interim measure while migrating to DAST version 5. For details, see
@@ -43,7 +42,7 @@ Changes to make:
 
 ## Continuing to use the proxy-based analyzer
 
-You can use proxy-based DAST until GitLab 18.0. Bugs and vulnerabilities in this legacy analyzer will not be fixed.
+You can use the proxy-based DAST analyzer until GitLab 18.0. Bugs and vulnerabilities in this legacy analyzer will not be fixed.
 
 Changes to make:
 
@@ -119,16 +118,14 @@ DAST version 5 scans provide better coverage of your application, so they may id
 
 ### Coverage
 
-There are three proxy-based active checks that DAST version 5 does not cover. Adding more checks to provide complete coverage
-is in active development, you may remain on `DAST_VERSION: 4` until they are complete. See [Continuing to use the proxy-based analyzer](#continuing-to-use-the-proxy-based-analyzer).
+One proxy-based active check is yet to be implemented in the browser-based DAST analyzer.
+Migration of the remaining active check is proposed in
+[epic 13411](https://gitlab.com/groups/gitlab-org/-/epics/13411). If you prefer to remain on DAST
+version 4 until the last check is migrated, see [Continuing to use the proxy-based analyzer](#continuing-to-use-the-proxy-based-analyzer).
 
-Remaining checks:
+Remaining check:
 
 - CWE-79: Cross-site Scripting (XSS)
-- CWE-384: Session Fixation
-- CWE-16: TRACE HTTP
-
-Follow the progress of the remaining checks in the epic [Remaining active checks for BBD](https://gitlab.com/groups/gitlab-org/-/epics/13411).
 
 ## On-demand scans
 

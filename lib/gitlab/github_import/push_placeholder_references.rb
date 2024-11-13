@@ -23,7 +23,7 @@ module Gitlab
       # Pushes placeholder references for each Note record found via an id look-up using .new
       # This is used as Note records are created using legacy_bulk_insert which
       # can return the ids of records created, but not the records themselves
-      def push_note_refs_with_ids(ids, user_mapper)
+      def push_refs_with_ids(ids, model, user_mapper)
         ids.each do |id|
           source_user = user_mapper.find_source_user(note[:author].id)
 
@@ -34,7 +34,7 @@ module Gitlab
             import_uid: project.import_state.id,
             source_user_id: source_user.id,
             source_user_namespace_id: source_user.namespace_id,
-            model: Note,
+            model: model,
             user_reference_column: :author_id,
             numeric_key: id).execute
         end

@@ -101,7 +101,7 @@ export default {
                 class="disclosure-hierarchy-button"
                 :aria-label="ellipsisTooltipLabel"
               >
-                <gl-icon name="ellipsis_h" class="gl-z-200 gl-ml-3 gl-text-gray-600" />
+                <gl-icon name="ellipsis_h" class="gl-z-200 gl-ml-3" />
               </button>
             </template>
             <template #list-item="{ item }">
@@ -109,7 +109,7 @@ export default {
                 <gl-icon
                   v-if="item.icon"
                   :name="item.icon"
-                  class="gl-mr-3 gl-shrink-0 gl-align-middle gl-text-gray-600"
+                  class="gl-mr-3 gl-shrink-0 gl-align-middle"
                 />
                 {{ item.title }}
               </span>

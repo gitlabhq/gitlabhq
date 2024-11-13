@@ -757,7 +757,7 @@ export default {
         :title="__('Cannot be merged automatically')"
         data-testid="merge-request-cannot-merge"
       >
-        <gl-icon name="warning-solid" class="gl-text-gray-900" />
+        <gl-icon name="warning-solid" variant="strong" />
       </gl-link>
     </template>
 

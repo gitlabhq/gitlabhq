@@ -375,26 +375,48 @@ RSpec.describe 'Internal Events matchers', :clean_gitlab_redis_shared_state, fea
       let(:event) { 'push_package_to_registry' }
       let(:user) { user_1 }
       let(:project) { project_1 }
+      let(:expected_label) { 'Awesome label value' }
 
       subject(:assertion) do
         Gitlab::InternalEvents.track_event(
           event,
           user: user,
           project: project,
-          additional_properties: { label: 'Awesome label value' }
+          additional_properties: { label: expected_label }
         )
       end
 
       it_behaves_like 'internal event tracking' do
-        let(:additional_properties) { { label: 'Awesome label value' } }
+        let(:additional_properties) { { label: expected_label } }
       end
 
       it_behaves_like 'internal event tracking' do
-        let(:label) { 'Awesome label value' }
+        let(:label) { expected_label }
       end
 
       it_behaves_like 'internal event tracking' do
-        let(:event_attribute_overrides) { { label: 'Awesome label value' } }
+        let(:event_attribute_overrides) { { additional_properties: { label: expected_label } } }
+      end
+
+      context 'with incorrect value being provided in additional_properties.' do
+        let(:unexpected_label) { 'BAD label value' }
+
+        before do
+          # Mark examples as pending so that a passing test will raise an error.
+          pending('This example should always fail. Protects against false positives.')
+        end
+
+        it_behaves_like 'internal event tracking' do
+          let(:additional_properties) { { label: unexpected_label } }
+        end
+
+        it_behaves_like 'internal event tracking' do
+          let(:label) { unexpected_label }
+        end
+
+        it_behaves_like 'internal event tracking' do
+          let(:event_attribute_overrides) { { additional_properties: { label: unexpected_label } } }
+        end
       end
     end
   end

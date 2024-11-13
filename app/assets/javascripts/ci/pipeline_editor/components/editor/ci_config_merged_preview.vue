@@ -37,7 +37,7 @@ export default {
 <template>
   <div>
     <div class="gl-flex gl-items-center">
-      <gl-icon :size="16" name="lock" class="gl-mr-3 gl-text-gray-500" />
+      <gl-icon class="gl-mr-3" :size="16" name="lock" variant="subtle" />
       {{ $options.i18n.viewOnlyMessage }}
     </div>
     <div class="gl-mt-3 gl-border-1 gl-border-solid gl-border-gray-100">

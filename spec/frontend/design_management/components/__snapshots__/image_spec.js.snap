@@ -39,10 +39,9 @@ exports[`Design management large image component renders loading state 1`] = `
 
 exports[`Design management large image component renders media broken icon on error 1`] = `
 <gl-icon-stub
-  class="gl-text-gray-200"
   name="media-broken"
   size="48"
-  variant="current"
+  variant="disabled"
 />
 `;
 

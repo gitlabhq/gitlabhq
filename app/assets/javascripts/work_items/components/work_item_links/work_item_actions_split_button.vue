@@ -77,7 +77,7 @@ export default {
           :aria-label="__(`Help`)"
           class="gl-leading-1"
         >
-          <gl-icon name="question-o" class="gl-cursor-help gl-text-blue-500" />
+          <gl-icon name="question-o" class="gl-cursor-help" variant="info" />
         </span>
       </span>
     </template>

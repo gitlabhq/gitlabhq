@@ -10,7 +10,7 @@ data_source: database
 distribution:
 - ee
 - ce
-tier:
+tiers:
 - free
 - premium
 - ultimate

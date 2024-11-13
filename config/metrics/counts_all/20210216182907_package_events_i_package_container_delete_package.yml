@@ -11,7 +11,7 @@ data_source: redis
 distribution:
 - ee
 - ce
-tier:
+tiers:
 - free
 - premium
 - ultimate

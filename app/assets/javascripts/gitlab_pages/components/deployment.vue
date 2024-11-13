@@ -173,7 +173,7 @@ export default {
         </div>
         <div data-testid="deployment-type" class="gl-flex gl-flex-col gl-gap-2 gl-text-nowrap">
           <template v-if="isPrimary">
-            <gl-icon name="home" class="mr-1 gl-text-secondary" />
+            <gl-icon name="home" class="mr-1" variant="subtle" />
             <span class="sr-only">
               {{ $options.i18n.primaryDeploymentTitle }}
             </span>
@@ -181,7 +181,7 @@ export default {
           <template v-else>
             <div class="gl-sr-only">{{ $options.i18n.pathPrefixLabel }}</div>
             <div>
-              <gl-icon name="environment" class="mr-1 gl-text-secondary" />
+              <gl-icon name="environment" class="mr-1" variant="subtle" />
               {{ deployment.pathPrefix }}
             </div>
           </template>
@@ -211,7 +211,7 @@ export default {
           >
             <div class="gl-text-sm gl-text-secondary">{{ $options.i18n.createdLabel }}</div>
             <div>
-              <gl-icon name="play" class="mr-1 gl-text-secondary" />
+              <gl-icon name="play" class="mr-1" variant="subtle" />
               <user-date
                 :date="deployment.createdAt"
                 :date-format="$options.static.SHORT_DATE_FORMAT_WITH_TIME"
@@ -230,7 +230,7 @@ export default {
       <div class="gl-flex gl-flex-col gl-gap-2 gl-text-nowrap" data-testid="deployment-ci-build-id">
         <div class="gl-text-sm gl-text-secondary">{{ $options.i18n.deployJobLabel }}</div>
         <div>
-          <gl-icon name="deployments" class="mr-1 gl-text-secondary" />
+          <gl-icon name="deployments" class="mr-1" variant="subtle" />
           <a :href="ciBuildUrl" @click.stop>
             {{ deployment.ciBuildId }}
           </a>
@@ -242,28 +242,28 @@ export default {
       >
         <div class="gl-text-sm gl-text-secondary">{{ $options.i18n.rootDirLabel }}</div>
         <div>
-          <gl-icon name="folder" class="mr-1 gl-text-secondary" />
+          <gl-icon name="folder" class="mr-1" variant="subtle" />
           /{{ deployment.rootDirectory || 'public' }}
         </div>
       </div>
       <div class="gl-flex gl-flex-col gl-gap-2 gl-text-nowrap" data-testid="deployment-file-count">
         <div class="gl-text-sm gl-text-secondary">{{ $options.i18n.filesLabel }}</div>
         <div>
-          <gl-icon name="documents" class="mr-1 gl-text-secondary" />
+          <gl-icon name="documents" class="mr-1" variant="subtle" />
           {{ deployment.fileCount }}
         </div>
       </div>
       <div class="gl-flex gl-flex-col gl-gap-2 gl-text-nowrap" data-testid="deployment-size">
         <div class="gl-text-sm gl-text-secondary">{{ $options.i18n.sizeLabel }}</div>
         <div>
-          <gl-icon name="disk" class="mr-1 gl-text-secondary" />
+          <gl-icon name="disk" class="mr-1" variant="subtle" />
           <number-to-human-size :value="deployment.size" />
         </div>
       </div>
       <div class="gl-flex gl-flex-col gl-gap-2 gl-text-nowrap" data-testid="deployment-updated-at">
         <div class="gl-text-sm gl-text-secondary">{{ $options.i18n.lastUpdatedLabel }}</div>
         <div>
-          <gl-icon name="clear-all" class="mr-1 gl-text-secondary" />
+          <gl-icon name="clear-all" class="mr-1" variant="subtle" />
           <user-date
             :date="deployment.updatedAt"
             :date-format="$options.static.SHORT_DATE_FORMAT_WITH_TIME"
@@ -279,7 +279,7 @@ export default {
           {{ $options.i18n.expiresAtLabel }}
         </div>
         <div>
-          <gl-icon name="remove" class="gl-mr-2 gl-text-secondary" />
+          <gl-icon name="remove" class="gl-mr-2" variant="subtle" />
           <user-date
             :date="deployment.expiresAt"
             :date-format="$options.static.SHORT_DATE_FORMAT_WITH_TIME"
@@ -291,7 +291,7 @@ export default {
           {{ $options.i18n.deleteScheduledAtLabel }}
         </div>
         <div>
-          <gl-icon name="remove" class="mr-1 gl-text-secondary" />
+          <gl-icon name="remove" class="mr-1" variant="subtle" />
           <user-date
             :date="deployment.deletedAt"
             :date-format="$options.static.SHORT_DATE_FORMAT_WITH_TIME"

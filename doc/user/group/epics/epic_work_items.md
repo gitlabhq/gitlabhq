@@ -11,7 +11,7 @@ DETAILS:
 **Offering:** Self-managed
 **Status:** Experiment
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9290) in GitLab 17.2 with [several feature flags](#feature-flags). Disabled by default. This feature is an [experiment](../../../policy/experiment-beta-support.md#experiment).
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9290) in GitLab 17.2 with [several feature flags](#enable-and-disable-the-new-look-for-epics). Disabled by default. This feature is an [experiment](../../../policy/experiment-beta-support.md#experiment).
 > - Listing epics using the [GraphQL API](../../../api/graphql/reference/index.md) [introduced](https://gitlab.com/groups/gitlab-org/-/epics/12852) in GitLab 17.4.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/470685) in GitLab 17.6.
 
@@ -43,17 +43,34 @@ following blog posts:
 - [First look: The new Agile planning experience in GitLab](https://about.gitlab.com/blog/2024/06/18/first-look-the-new-agile-planning-experience-in-gitlab/) (June 2024)
 - [Unveiling a new epic experience for improved Agile planning](https://about.gitlab.com/blog/2024/07/03/unveiling-a-new-epic-experience-for-improved-agile-planning/) (July 2024)
 
-## Feature flags
+## Enable and disable the new look for epics
 
-To try out this change on GitLab self-managed, enable the following feature flags.
-Because this is an experimental feature,
-**we strongly advise to enable the feature flags on a new group that does not contain any critical data**.
+To try out this change on GitLab self-managed, run the following Rake task.
+The task performs a database verification to ensure data consistency and might take a few minutes.
+If the consistency check passes, the Rake task enables the `work_item_epics` feature flag.
 
-| Flag                                          | Description                                                                                              | Actor | Status | Milestone |
-| --------------------------------------------- | -------------------------------------------------------------------------------------------------------- | ----- | ------ | ------ |
-| `work_item_epics`                             | Consolidated flag that contains all the changes needed to get epic work items to work for a given group. | Group | **Required** | 17.2 |
-| `work_items_rolledup_dates`                   | Calculates the start and due dates in a hierarchy for work items.                                        | Group | **Required** | 17.2 |
-| `epic_and_work_item_associations_unification` | Delegates other epic and work item associations.                                                         | Group | **Required** | 17.2 |
+If the check fails, the feature flag is not enabled. Inconsistencies are logged in the `epic_work_item_sync.log` file.
+Failed background migrations or invalid imports can cause data inconsistencies. These inconsistencies will be resolved when work item epics become generally available.
+
+**To enable:**
+
+```shell
+# omnibus-gitlab
+sudo gitlab-rake gitlab:work_items:epics:enable
+
+# installation from source
+bundle exec rake gitlab:work_items:epics:enable RAILS_ENV=production
+```
+
+**To disable:**
+
+```shell
+# omnibus-gitlab
+sudo gitlab-rake gitlab:work_items:epics:disable
+
+# installation from source
+bundle exec rake gitlab:work_items:epics:disable RAILS_ENV=production
+```
 
 ## Feedback
 

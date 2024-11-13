@@ -206,7 +206,7 @@ export default {
   >
     <template v-if="userCannotMerge" #title>
       <div class="gl-flex gl-items-center gl-pb-3" data-testid="cannot-merge">
-        <gl-icon name="warning-solid" class="gl-mr-2 gl-text-orange-400" />
+        <gl-icon name="warning-solid" class="gl-mr-2" variant="warning" />
         <span class="gl-font-normal">{{ __('Cannot merge') }}</span>
       </div>
     </template>

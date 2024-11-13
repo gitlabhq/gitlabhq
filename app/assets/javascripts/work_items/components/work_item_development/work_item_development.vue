@@ -159,7 +159,7 @@ export default {
           :aria-label="tooltipText"
           data-testid="more-information"
         >
-          <gl-icon name="information-o" class="!gl-text-blue-500" />
+          <gl-icon name="information-o" variant="info" />
         </gl-button>
       </h3>
       <gl-button

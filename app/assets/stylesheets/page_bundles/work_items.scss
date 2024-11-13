@@ -185,6 +185,7 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
   line-height: $gl-line-height-16;
   padding-right: $grid-size;
   background: var(--gl-background-color-default);
+  color: var(--gl-action-neutral-foreground-color-default);
 
   &::before,
   &::after {
@@ -244,7 +245,7 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
   &:not([disabled]):hover {
     border-color: var(--gray-400, $gray-400);
     @include hierarchy-active-item-color;
-    color: var(--gray-900, $gray-900);
+    color: var(--gl-action-neutral-foreground-color-hover);
 
     &::after {
       border-left: 1px solid var(--gray-50, $gray-50);
@@ -264,6 +265,7 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
     @include hierarchy-active-item-color;
     z-index: 2;
     border-radius: $gl-border-radius-small;
+    color: var(--gl-action-neutral-foreground-color-focus);
 
     &::before, &::after {
       box-shadow: 2px -2px 0 1px $blue-400;

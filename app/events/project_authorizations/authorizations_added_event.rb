@@ -5,8 +5,9 @@ module ProjectAuthorizations
     def schema
       {
         'type' => 'object',
-        'required' => %w[project_id user_ids],
+        'required' => %w[user_ids],
         'properties' => {
+          'project_ids' => { 'type' => 'array' },
           'project_id' => { 'type' => 'integer' },
           'user_ids' => { 'type' => 'array' }
         }

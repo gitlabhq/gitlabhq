@@ -56,9 +56,7 @@ To create a Service Desk ticket from the UI:
 1. Optional. Add a comment on the ticket to send an initial Service Desk email to the external participant.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-<!-- vale gitlab_base.LatinTerms = NO -->
-For a walkthrough, see [Create Service Desk tickets via the UI and API (GitLab 16.10)](https://youtu.be/ibUGNc2wifQ).
-<!-- vale gitlab_base.LatinTerms = YES -->
+For a walkthrough, see [Create Service Desk tickets in the UI and API (GitLab 16.10)](https://www.youtube.com/watch?v=ibUGNc2wifQ).
 <!-- Video published on 2024-03-05 -->
 
 ## As a responder to the issue

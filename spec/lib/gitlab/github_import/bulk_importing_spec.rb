@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport::BulkImporting, feature_category: :importers do
-  let(:project) { instance_double(Project, id: 1) }
+  let_it_be(:project) { create(:project, :with_import_url) }
   let(:importer) { MyImporter.new(project, double) }
   let(:importer_class) do
     Class.new do
@@ -50,7 +50,7 @@ RSpec.describe Gitlab::GithubImport::BulkImporting, feature_category: :importers
         expect(Gitlab::GithubImport::Logger)
           .to receive(:info)
           .with(
-            project_id: 1,
+            project_id: project.id,
             importer: 'MyImporter',
             message: '1 object_types fetched'
           )
@@ -84,7 +84,7 @@ RSpec.describe Gitlab::GithubImport::BulkImporting, feature_category: :importers
         expect(Gitlab::GithubImport::Logger)
           .to receive(:info)
           .with(
-            project_id: 1,
+            project_id: project.id,
             importer: 'MyImporter',
             message: '0 object_types fetched'
           )
@@ -146,7 +146,7 @@ RSpec.describe Gitlab::GithubImport::BulkImporting, feature_category: :importers
           expect(Gitlab::GithubImport::Logger)
             .to receive(:error)
             .with(
-              project_id: 1,
+              project_id: project.id,
               importer: 'MyImporter',
               message: ['Title is invalid'],
               external_identifiers: { id: 12345, title: 'bug,bug', object_type: :object_type }
@@ -176,71 +176,153 @@ RSpec.describe Gitlab::GithubImport::BulkImporting, feature_category: :importers
   end
 
   describe '#bulk_insert' do
-    it 'bulk inserts rows into the database' do
-      rows = [{ title: 'Foo' }] * 10
+    context 'when user mapping is enabled' do
+      before do
+        project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: true })
+      end
 
-      expect(Gitlab::GithubImport::Logger)
-        .to receive(:info)
-        .twice
-        .with(
-          project_id: 1,
-          importer: 'MyImporter',
-          message: '5 object_types imported'
-        )
+      it 'bulk inserts rows into the database' do
+        rows = [{ title: 'Foo' }] * 10
 
-      expect(Gitlab::GithubImport::ObjectCounter)
-        .to receive(:increment)
-        .twice
-        .with(
-          project,
-          :object_type,
-          :imported,
-          value: 5
-        )
+        expect(Gitlab::GithubImport::Logger)
+          .to receive(:info)
+          .twice
+          .with(
+            project_id: project.id,
+            importer: 'MyImporter',
+            message: '5 object_types imported'
+          )
 
-      expect(ApplicationRecord)
-        .to receive(:legacy_bulk_insert)
-        .ordered
-        .with('labels', rows.first(5))
+        expect(Gitlab::GithubImport::ObjectCounter)
+          .to receive(:increment)
+          .twice
+          .with(
+            project,
+            :object_type,
+            :imported,
+            value: 5
+          )
 
-      expect(ApplicationRecord)
-        .to receive(:legacy_bulk_insert)
-        .ordered
-        .with('labels', rows.last(5))
+        expect(ApplicationRecord)
+          .to receive(:legacy_bulk_insert)
+          .ordered
+          .with('labels', rows.first(5), return_ids: true)
+          .and_return([1, 2, 3])
 
-      importer.bulk_insert(rows, batch_size: 5)
+        expect(ApplicationRecord)
+          .to receive(:legacy_bulk_insert)
+          .ordered
+          .with('labels', rows.last(5), return_ids: true)
+          .and_return([4, 5, 6])
+
+        importer.bulk_insert(rows, batch_size: 5)
+      end
+
+      describe '#bulk_insert_failures', :timecop do
+        let(:import_failures) { instance_double('ImportFailure::ActiveRecord_Associations_CollectionProxy') }
+        let(:label) { Label.new(title: 'invalid,title') }
+        let(:validation_errors) { ActiveModel::Errors.new(label) }
+        let(:formatted_errors) do
+          [{
+            source: 'MyImporter',
+            exception_class: 'ActiveRecord::RecordInvalid',
+            exception_message: 'Title invalid',
+            correlation_id_value: 'cid',
+            retry_count: nil,
+            created_at: anything,
+            external_identifiers: { id: 123456 }
+          }]
+        end
+
+        it 'bulk inserts validation errors into import_failures' do
+          error = ActiveModel::Errors.new(label)
+          error.add(:base, 'Title invalid')
+
+          expect(project).to receive(:import_failures).and_return(import_failures)
+          expect(import_failures).to receive(:insert_all).with(formatted_errors)
+          expect(Labkit::Correlation::CorrelationId).to receive(:current_or_new_id).and_return('cid')
+
+          importer.bulk_insert_failures([{
+            validation_errors: error,
+            external_identifiers: { id: 123456 }
+          }])
+        end
+      end
     end
-  end
 
-  describe '#bulk_insert_failures', :timecop do
-    let(:import_failures) { instance_double('ImportFailure::ActiveRecord_Associations_CollectionProxy') }
-    let(:label) { Label.new(title: 'invalid,title') }
-    let(:validation_errors) { ActiveModel::Errors.new(label) }
-    let(:formatted_errors) do
-      [{
-        source: 'MyImporter',
-        exception_class: 'ActiveRecord::RecordInvalid',
-        exception_message: 'Title invalid',
-        correlation_id_value: 'cid',
-        retry_count: nil,
-        created_at: Time.zone.now,
-        external_identifiers: { id: 123456 }
-      }]
-    end
+    context 'when user mapping is disabled' do
+      before do
+        project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: false })
+      end
 
-    it 'bulk inserts validation errors into import_failures' do
-      error = ActiveModel::Errors.new(label)
-      error.add(:base, 'Title invalid')
+      it 'bulk inserts rows into the database' do
+        rows = [{ title: 'Foo' }] * 10
 
-      freeze_time do
-        expect(project).to receive(:import_failures).and_return(import_failures)
-        expect(import_failures).to receive(:insert_all).with(formatted_errors)
-        expect(Labkit::Correlation::CorrelationId).to receive(:current_or_new_id).and_return('cid')
+        expect(Gitlab::GithubImport::Logger)
+          .to receive(:info)
+          .twice
+          .with(
+            project_id: project.id,
+            importer: 'MyImporter',
+            message: '5 object_types imported'
+          )
 
-        importer.bulk_insert_failures([{
-          validation_errors: error,
-          external_identifiers: { id: 123456 }
-        }])
+        expect(Gitlab::GithubImport::ObjectCounter)
+          .to receive(:increment)
+          .twice
+          .with(
+            project,
+            :object_type,
+            :imported,
+            value: 5
+          )
+
+        expect(ApplicationRecord)
+          .to receive(:legacy_bulk_insert)
+          .ordered
+          .with('labels', rows.first(5), return_ids: true)
+          .and_return([1, 2, 3])
+
+        expect(ApplicationRecord)
+          .to receive(:legacy_bulk_insert)
+          .ordered
+          .with('labels', rows.last(5), return_ids: true)
+          .and_return([4, 5, 6])
+
+        importer.bulk_insert(rows, batch_size: 5)
+      end
+
+      describe '#bulk_insert_failures', :timecop do
+        let(:import_failures) { instance_double('ImportFailure::ActiveRecord_Associations_CollectionProxy') }
+        let(:label) { Label.new(title: 'invalid,title') }
+        let(:validation_errors) { ActiveModel::Errors.new(label) }
+        let(:formatted_errors) do
+          [{
+            source: 'MyImporter',
+            exception_class: 'ActiveRecord::RecordInvalid',
+            exception_message: 'Title invalid',
+            correlation_id_value: 'cid',
+            retry_count: nil,
+            created_at: Time.zone.now,
+            external_identifiers: { id: 123456 }
+          }]
+        end
+
+        it 'bulk inserts validation errors into import_failures' do
+          error = ActiveModel::Errors.new(label)
+          error.add(:base, 'Title invalid')
+
+          freeze_time do
+            expect(project).to receive(:import_failures).and_return(import_failures)
+            expect(import_failures).to receive(:insert_all).with(formatted_errors)
+            expect(Labkit::Correlation::CorrelationId).to receive(:current_or_new_id).and_return('cid')
+
+            importer.bulk_insert_failures([{
+              validation_errors: error,
+              external_identifiers: { id: 123456 }
+            }])
+          end
+        end
       end
     end
   end

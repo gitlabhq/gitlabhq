@@ -90,7 +90,7 @@ export default {
 
 <template>
   <div>
-    <gl-icon name="container-image" class="gl-text-secondary" />
+    <gl-icon name="container-image" variant="subtle" />
     {{ runnerManagersCountFormatted }}
     <gl-button
       v-if="runnerManagersCount"

@@ -274,7 +274,7 @@ export default {
     <div class="gl-grow md:gl-flex">
       <div class="gl-flex gl-grow gl-items-start">
         <div v-if="showProjectIcon" class="gl-mr-3 gl-flex gl-h-9 gl-shrink-0 gl-items-center">
-          <gl-icon class="gl-text-secondary" name="project" />
+          <gl-icon name="project" variant="subtle" />
         </div>
         <gl-avatar-labeled
           :entity-id="project.id"
@@ -293,7 +293,7 @@ export default {
                     v-if="visibility"
                     v-gl-tooltip="visibilityTooltip"
                     :name="visibilityIcon"
-                    class="gl-text-secondary"
+                    variant="subtle"
                   />
                 </div>
                 <div class="gl-px-2">

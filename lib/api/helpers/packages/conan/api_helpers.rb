@@ -184,7 +184,10 @@ module API
               params.merge(build: current_authenticated_job)
             ).execute
 
-            bad_request!(service_response.message) if service_response.error?
+            if service_response.error?
+              forbidden!(service_response.message) if service_response.cause.package_protected?
+              bad_request!(service_response.message)
+            end
 
             service_response[:package]
           end

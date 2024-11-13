@@ -58,14 +58,14 @@ RSpec.describe Gitlab::GithubImport::PushPlaceholderReferences, feature_category
     end
   end
 
-  describe '#push_note_refs_with_ids' do
+  describe '#push_refs_with_ids' do
     before do
       allow(::Import::PlaceholderReferences::PushService)
         .to receive_message_chain(:new, :execute)
     end
 
     it 'pushes the reference using .new' do
-      importer.push_note_refs_with_ids([gitlab_note.id], user_mapper)
+      importer.push_refs_with_ids([gitlab_note.id], Note, user_mapper)
 
       expect(::Import::PlaceholderReferences::PushService)
         .to have_received(:new)

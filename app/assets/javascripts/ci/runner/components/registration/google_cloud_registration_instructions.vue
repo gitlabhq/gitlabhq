@@ -246,7 +246,7 @@ export default {
   <div>
     <div class="gl-mt-5">
       <p>
-        <gl-icon name="information-o" class="gl-text-blue-600" />
+        <gl-icon name="information-o" variant="info" />
         <gl-sprintf :message="tokenMessage">
           <template #token>
             <code data-testid="runner-token">{{ token }}</code>

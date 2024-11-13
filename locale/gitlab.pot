@@ -5061,6 +5061,9 @@ msgstr ""
 msgid "After you've reviewed these contribution guidelines, you'll be all set to"
 msgstr ""
 
+msgid "Agent Information"
+msgstr ""
+
 msgid "Agent not found for provided id."
 msgstr ""
 
@@ -16721,6 +16724,9 @@ msgid "Created compliance violations if any were found"
 msgstr ""
 
 msgid "Created date"
+msgstr ""
+
+msgid "Created in"
 msgstr ""
 
 msgid "Created issue %{issueLink}"
@@ -36703,6 +36709,9 @@ msgid "Normal text"
 msgstr ""
 
 msgid "Normal view"
+msgstr ""
+
+msgid "Not Connected"
 msgstr ""
 
 msgid "Not adopted"

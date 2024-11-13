@@ -516,7 +516,7 @@ export default {
               :aria-label="$options.i18n.removeVariableLabel"
               @click="removeVariable(index)"
             >
-              <gl-icon class="!gl-mr-0 !gl-text-gray-500" name="remove" />
+              <gl-icon class="!gl-mr-0" name="remove" />
               <span class="gl-ml-2 md:gl-hidden">{{ $options.i18n.removeVariableLabel }}</span>
             </gl-button>
             <gl-button

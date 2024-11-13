@@ -167,6 +167,10 @@ to a protected branch:
    Allowed to push and merge: @group-x/subgroup-y
    ```
 
+NOTE:
+When you assign a group to a protected branch, only direct members of that group are included.
+Members from parent groups are not automatically granted permissions to the protected branch.
+
 #### Group inheritance and eligibility
 
 ```mermaid

@@ -1,5 +1,5 @@
 ---
-stage: Secure
+stage: Application Security Testing
 group: Dynamic Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: reference, howto
@@ -33,10 +33,11 @@ type: reference, howto
 ## Recommendations
 
 - Configure runners to use the [always pull policy](https://docs.gitlab.com/runner/executors/docker.html#using-the-always-pull-policy) to run the latest versions of the analyzers.
-- By default, API Fuzzing downloads all artifacts defined by previous jobs in the pipeline. If
-  your API Fuzzing job does not rely on `environment_url.txt` to define the URL under test or any other files created
-  in previous jobs, we recommend you don't download artifacts. To avoid downloading
-  artifacts, extend the analyzer CI/CD job to specify no dependencies. For example, for the DAST proxy-based analyzer add the following to your `.gitlab-ci.yml` file:
+- By default, API Fuzzing downloads all artifacts defined by previous jobs in the pipeline. If your
+  API Fuzzing job does not rely on `environment_url.txt` to define the URL under test or any other
+  files created in previous jobs, you should not download artifacts. To avoid downloading artifacts,
+  extend the analyzer CI/CD job to specify no dependencies. For example, for the API fuzzing
+  analyzer, add the following to your `.gitlab-ci.yml` file:
 
   ```yaml
   apifuzzer_fuzz:

@@ -22,6 +22,7 @@ describe('Packages Protection Rule Form', () => {
     projectPath: 'path',
     glFeatures: {
       packagesProtectedPackagesPypi: true,
+      packagesProtectedPackagesConan: true,
     },
   };
 
@@ -67,7 +68,7 @@ describe('Packages Protection Rule Form', () => {
         mountComponent();
 
         expect(findPackageTypeSelect().exists()).toBe(true);
-        expect(packageTypeSelectOptions()).toEqual(['NPM', 'PYPI']);
+        expect(packageTypeSelectOptions()).toEqual(['CONAN', 'NPM', 'PYPI']);
       });
 
       describe('when feature flag packagesProtectedPackagesPypi is disabled', () => {
@@ -75,12 +76,32 @@ describe('Packages Protection Rule Form', () => {
           mountComponent({
             provide: {
               ...defaultProvidedValues,
-              glFeatures: { packagesProtectedPackagesPypi: false },
+              glFeatures: {
+                ...defaultProvidedValues.glFeatures,
+                packagesProtectedPackagesPypi: false,
+              },
             },
           });
 
           expect(findPackageTypeSelect().exists()).toBe(true);
-          expect(packageTypeSelectOptions()).toEqual(['NPM']);
+          expect(packageTypeSelectOptions()).toEqual(['CONAN', 'NPM']);
+        });
+      });
+
+      describe('when feature flag packagesProtectedPackagesConan is disabled', () => {
+        it('contains available options without option "CONAN"', () => {
+          mountComponent({
+            provide: {
+              ...defaultProvidedValues,
+              glFeatures: {
+                ...defaultProvidedValues.glFeatures,
+                packagesProtectedPackagesConan: false,
+              },
+            },
+          });
+
+          expect(findPackageTypeSelect().exists()).toBe(true);
+          expect(packageTypeSelectOptions()).toEqual(['NPM', 'PYPI']);
         });
       });
     });

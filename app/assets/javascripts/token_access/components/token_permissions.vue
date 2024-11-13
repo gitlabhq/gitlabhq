@@ -112,7 +112,7 @@ export default {
               'CICD|CI/CD job token can be used to authenticate a Git push to this repository, using the permissions of the user that started the job.',
             )
           }}<gl-link :href="$options.docsLink" target="_blank">
-            <gl-icon name="question-o" class="gl-ml-2 gl-text-blue-500" />
+            <gl-icon name="question-o" class="gl-ml-2" variant="info" />
           </gl-link>
         </p>
       </gl-form-checkbox>

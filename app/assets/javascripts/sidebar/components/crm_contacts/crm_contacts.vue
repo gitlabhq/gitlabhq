@@ -107,7 +107,7 @@ export default {
     </div>
     <div class="hide-collapsed help-button gl-float-right">
       <gl-link :href="$options.crmDocsLink" target="_blank"
-        ><gl-icon name="question-o" class="gl-text-blue-600"
+        ><gl-icon name="question-o" variant="info"
       /></gl-link>
     </div>
     <div class="hide-collapsed gl-font-bold gl-leading-20">

@@ -1,5 +1,5 @@
 ---
-stage: Secure
+stage: Application Security Testing
 group: Dynamic Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -22,10 +22,10 @@ Migrate to DAST version 5 by reading the following sections and making the recom
 
 ## DAST analyzer versions
 
-DAST comes in two major versions: 4 and 5. Effective from the third GitLab 17.0 breaking change window,
-2024-05-06 09:00 UTC to 2024-05-08 22:00 UTC, the DAST templates `DAST.gitlab-ci.yml` and `DAST.latest.gitlab-ci.yml`
-use DAST version 5 by default. You can continue using DAST version 4, but you should do so only as an
-interim measure while migrating to DAST version 5. For details, see [Continuing to use version 4](#continuing-to-use-version-4).
+DAST comes in two major versions: 4 and 5. The DAST templates `DAST.gitlab-ci.yml` and
+`DAST.latest.gitlab-ci.yml` use DAST version 5 by default. You can continue using DAST version 4,
+but you should do so only as an interim measure while migrating to DAST version 5. For details, see
+[Continuing to use version 4](#continuing-to-use-version-4).
 
 Each DAST major version runs different analyzers:
 
@@ -40,7 +40,7 @@ Changes to make:
 
 ## Continuing to use version 4
 
-You can use the DAST version 4 browser-based analyzer until GitLab 18.0. Bugs and vulnerabilities in this legacy analyzer will not be fixed.
+You can use the DAST version 4 proxy-based analyzer until GitLab 18.0. Bugs and vulnerabilities in this legacy analyzer will not be fixed.
 
 Changes to make:
 
@@ -60,8 +60,11 @@ Changes to make:
 Browser-based DAST version 4 uses proxy-based analyzer checks for active checks not included in the browser-based analyzer.
 Browser-based DAST version 5 does not include the proxy-based analyzer, so there is a gap in check coverage when migrating to version 5.
 
-There is one proxy-based active check that the browser-based analyzer does not cover. Adding more checks to provide complete coverage
-is in active development, you may remain on DAST version 4 until they are complete. See [Continuing to use version 4](#continuing-to-use-version-4).
+There is one proxy-based active check that the browser-based analyzer does not cover. Migration of
+the remaining active check is proposed in
+[epic 13411](https://gitlab.com/groups/gitlab-org/-/epics/13411). If you prefer to remain on DAST
+version 4 until the last check is migrated, see
+[Continuing to use version 4](#continuing-to-use-version-4).
 
 Remaining check:
 

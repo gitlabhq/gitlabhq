@@ -86,7 +86,7 @@
   = render_if_exists 'devise/shared/phone_verification', form: f
 
   .form-group
-    - if arkose_labs_enabled?
+    - if arkose_labs_enabled?(user: nil)
       = render_if_exists 'devise/registrations/arkose_labs'
     - elsif show_recaptcha_sign_up?
       = recaptcha_tags nonce: content_security_policy_nonce

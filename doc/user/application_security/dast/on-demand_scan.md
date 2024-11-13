@@ -1,5 +1,5 @@
 ---
-stage: Secure
+stage: Application Security Testing
 group: Dynamic Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -18,7 +18,7 @@ Only run DAST scans against a test server.
 ## On-demand scans
 
 > - Runner tags selection [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111499) in GitLab 16.3.
-> - Browser based on-demand DAST scans available from GitLab 17.0 since [proxy-based DAST was removed in the same version](../../../update/deprecations.md#proxy-based-dast-deprecated).
+> - Browser based on-demand DAST scans available in GitLab 17.0 and later because [proxy-based DAST was removed in the same version](../../../update/deprecations.md#proxy-based-dast-deprecated).
 
 An on-demand DAST scan runs outside the DevOps lifecycle. Changes in your repository don't trigger
 the scan. You must either start it manually, or schedule it to run. For on-demand DAST scans,

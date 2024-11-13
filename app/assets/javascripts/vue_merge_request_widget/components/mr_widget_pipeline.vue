@@ -232,7 +232,7 @@ export default {
 <template>
   <div class="ci-widget media">
     <template v-if="hasCIError">
-      <gl-icon name="status_failed" class="gl-text-red-500" :size="24" />
+      <gl-icon name="status_failed" :size="24" variant="danger" />
       <p class="gl-mb-0 gl-ml-5 gl-grow" data-testid="ci-error-message">
         <gl-sprintf :message="$options.errorText">
           <template #link="{ content }">

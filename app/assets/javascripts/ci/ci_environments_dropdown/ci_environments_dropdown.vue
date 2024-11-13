@@ -1,7 +1,6 @@
 <script>
 import { debounce, uniq } from 'lodash';
 import { GlDropdownDivider, GlDropdownItem, GlCollapsibleListbox } from '@gitlab/ui';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { __, s__, sprintf } from '~/locale';
 import { convertEnvironmentScope } from './utils';
 import {
@@ -30,7 +29,6 @@ export default {
     GlDropdownDivider,
     GlDropdownItem,
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     areEnvironmentsLoading: {
       type: Boolean,

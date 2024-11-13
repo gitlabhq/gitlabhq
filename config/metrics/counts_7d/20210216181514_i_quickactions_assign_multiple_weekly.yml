@@ -14,7 +14,7 @@ options:
 distribution:
 - ce
 - ee
-tier:
+tiers:
 - premium
 - ultimate
 performance_indicator_type: []

@@ -268,10 +268,19 @@ If you clean up the flag in GitLab-Rails repository at first, the feature flag i
 
 **IMPORTANT:** Cleaning up the feature flag in AI Gateway will immediately distribute the change to all GitLab instances, including GitLab.com, Self-managed GitLab, and Dedicated.
 
-Technical details: When `push_feature_flag` runs on an enabled feature flag, the name of flag is cached in the current context,
-which is later attached to `x-gitlab-enabled-feature-flags` HTTP header when GitLab-Sidekiq/Rails requests to AI Gateway.
+**Technical details:**
 
-As a simialr concept, we also have [`push_frontend_feature_flag`](../feature_flags/index.md) to push feature flags to frontend.
+- When `push_feature_flag` runs on an enabled feature flag, the name of the flag is cached in the current context,
+  which is later attached to the `x-gitlab-enabled-feature-flags` HTTP header when `GitLab-Sidekiq/Rails` sends requests to AI Gateway.
+- When frontend clients (for example, VS Code Extension or LSP) request a [User JWT](../cloud_connector/architecture.md#ai-gateway) (UJWT)
+  for direct AI Gateway communication, GitLab returns:
+
+  - Public headers (including `x-gitlab-enabled-feature-flags`).
+  - The generated UJWT (1-hour expiration).
+
+Frontend clients must regenerate UJWT upon expiration. Backend changes such as feature flag updates through [ChatOps](../feature_flags/controls.md) render the header values to become stale. These header values are refreshed at the next UJWT generation.
+
+Similarly, we also have [`push_frontend_feature_flag`](../feature_flags/index.md) to push feature flags to frontend.
 
 ### GraphQL API
 

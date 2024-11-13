@@ -313,7 +313,7 @@ export default {
       >
         <span v-if="updating">{{ selectedTitle }}</span>
         <template v-else-if="!currentAttribute && hasCurrentAttribute">
-          <gl-icon name="warning" class="gl-text-orange-500" />
+          <gl-icon name="warning" variant="warning" />
           <span class="gl-text-subtle">{{ i18n.noPermissionToView }}</span>
         </template>
         <span v-else-if="!currentAttribute" class="gl-text-subtle">

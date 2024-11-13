@@ -145,7 +145,7 @@ export default {
           <span class="gl-truncate gl-text-gray-900 gl-no-underline">
             {{ issueTitle }}
           </span>
-          <gl-icon name="chevron-right" class="gl-shrink-0 gl-text-gray-200" />
+          <gl-icon name="chevron-right" class="gl-shrink-0" variant="disabled" />
           <span class="gl-truncate gl-font-normal">{{ filename }}</span>
           <imported-badge
             v-if="isImported"

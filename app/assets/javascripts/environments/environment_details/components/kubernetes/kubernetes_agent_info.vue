@@ -39,7 +39,7 @@ export default {
 </script>
 <template>
   <div class="gl-text-gray-900">
-    <gl-icon name="kubernetes-agent" class="gl-text-gray-500" />
+    <gl-icon name="kubernetes-agent" variant="subtle" />
     <gl-link :href="clusterAgent.webPath" class="gl-mr-3">
       <gl-sprintf :message="$options.i18n.agentId"
         ><template #agentId>{{ agentId }}</template></gl-sprintf

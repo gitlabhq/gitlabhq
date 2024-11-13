@@ -845,7 +845,7 @@ export default {
           </div>
 
           <span class="gl-leading-20">
-            <gl-icon name="information-o" :size="12" class="gl-text-blue-600" />
+            <gl-icon name="information-o" :size="12" variant="info" />
             <gl-sprintf
               :message="
                 s__(

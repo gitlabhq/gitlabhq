@@ -9,7 +9,7 @@ time_frame: all
 data_source: system
 distribution:
 - ce
-tier:
+tiers:
 - free
 - premium
 - ultimate

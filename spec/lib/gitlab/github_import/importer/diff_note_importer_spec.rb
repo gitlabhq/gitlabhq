@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_failures, feature_category: :importers do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :repository, :with_import_url) }
   let_it_be(:user) { create(:user) }
 
   let(:client) { instance_double(Gitlab::GithubImport::Client) }
@@ -83,147 +83,338 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
   end
 
   describe '#execute' do
-    context 'when the merge request no longer exists' do
-      it 'does not import anything' do
-        expect(ApplicationRecord).not_to receive(:legacy_bulk_insert)
-
-        expect { subject.execute }
-          .to not_change(DiffNote, :count)
-          .and not_change(LegacyDiffNote, :count)
-      end
-    end
-
-    context 'when the merge request exists' do
-      let_it_be(:merge_request) do
-        create(:merge_request, source_project: project, target_project: project)
+    context 'when user mapping is enabled' do
+      let_it_be(:source_user) do
+        create(
+          :import_source_user,
+          placeholder_user_id: user.id,
+          source_user_identifier: user.id,
+          source_username: user.username,
+          source_hostname: project.import_url,
+          namespace_id: project.root_ancestor.id
+        )
       end
 
       before do
-        expect_next_instance_of(Gitlab::GithubImport::IssuableFinder) do |finder|
-          expect(finder)
-            .to receive(:database_id)
-            .and_return(merge_request.id)
+        project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: true })
+      end
+
+      context 'when the merge request no longer exists' do
+        it 'does not import anything' do
+          expect(ApplicationRecord).not_to receive(:legacy_bulk_insert)
+
+          expect { subject.execute }
+            .to not_change(DiffNote, :count)
+            .and not_change(LegacyDiffNote, :count)
         end
       end
 
-      it_behaves_like 'diff notes without suggestion'
-
-      context 'when the note has suggestions' do
-        let(:note_body) do
-          <<~EOB
-          Suggestion:
-          ```suggestion
-          what do you think to do it like this
-          ```
-          EOB
+      context 'when the merge request exists' do
+        let_it_be(:merge_request) do
+          create(:merge_request, source_project: project, target_project: project)
         end
 
         before do
-          stub_user_finder(user.id, true)
+          expect_next_instance_of(Gitlab::GithubImport::IssuableFinder) do |finder|
+            expect(finder)
+              .to receive(:database_id)
+              .and_return(merge_request.id)
+          end
         end
 
-        it 'imports the note as diff note' do
-          expect { subject.execute }
-            .to change(DiffNote, :count)
-            .by(1)
+        it 'pushes placeholder references with ids' do
+          expect(subject)
+            .to receive(:push_refs_with_ids)
+            .with(
+              array_including(be_an(Integer)),
+              LegacyDiffNote,
+              an_instance_of(Gitlab::Import::SourceUserMapper)
+            )
 
-          note = project.notes.diff_notes.take
-          expect(note).to be_valid
-          expect(note.noteable_type).to eq('MergeRequest')
-          expect(note.noteable_id).to eq(merge_request.id)
-          expect(note.project_id).to eq(project.id)
-          expect(note.namespace_id).to eq(project.project_namespace_id)
-          expect(note.author_id).to eq(user.id)
-          expect(note.system).to eq(false)
-          expect(note.discussion_id).to eq(discussion_id)
-          expect(note.commit_id).to eq('original123abc')
-          expect(note.line_code).to eq(note_representation.line_code)
-          expect(note.type).to eq('DiffNote')
-          expect(note.created_at).to eq(created_at)
-          expect(note.updated_at).to eq(updated_at)
-          expect(note.position.to_h).to eq({
-            base_sha: merge_request.diffs.diff_refs.base_sha,
-            head_sha: merge_request.diffs.diff_refs.head_sha,
-            start_sha: merge_request.diffs.diff_refs.start_sha,
-            new_line: 15,
-            old_line: nil,
-            new_path: file_path,
-            old_path: file_path,
-            position_type: 'text',
-            line_range: nil,
-            ignore_whitespace_change: false
-          })
-          expect(note.note)
-            .to eq <<~NOTE
+          subject.execute
+        end
+
+        it_behaves_like 'diff notes without suggestion'
+
+        context 'when the note has suggestions' do
+          let(:note_body) do
+            <<~EOB
             Suggestion:
-            ```suggestion:-0+0
+            ```suggestion
             what do you think to do it like this
             ```
-            NOTE
-        end
-
-        context 'when the note diff file creation fails with DiffNoteCreationError due to outdated suggestion' do
-          let(:end_line) { nil }
-
-          it 'falls back to the LegacyDiffNote' do
-            expect(Gitlab::GithubImport::Logger)
-              .to receive(:warn)
-                    .with(
-                      {
-                        message: "Validation failed: Line code can't be blank, Line code must be a valid line code, Position is incomplete",
-                        'error.class': 'Gitlab::GithubImport::Importer::DiffNoteImporter::DiffNoteCreationError'
-                      }
-                    )
-
-            expect { subject.execute }
-              .to change(LegacyDiffNote, :count)
-                    .and not_change(DiffNote, :count)
+            EOB
           end
-        end
 
-        context 'when the note diff file creation fails with NoteDiffFileCreationError' do
-          it 'falls back to the LegacyDiffNote' do
-            exception = ::DiffNote::NoteDiffFileCreationError.new('Failed to create diff note file')
-
-            expect_next_instance_of(::Import::Github::Notes::CreateService) do |service|
-              expect(service)
-                .to receive(:execute)
-                .and_raise(exception)
-            end
-
-            expect(Gitlab::GithubImport::Logger)
-              .to receive(:warn)
+          it 'pushes placeholder references with record' do
+            expect(subject)
+              .to receive(:push_with_record)
               .with(
-                {
-                  message: 'Failed to create diff note file',
-                  'error.class': 'DiffNote::NoteDiffFileCreationError'
-                }
+                an_instance_of(DiffNote),
+                :author_id,
+                user.id,
+                an_instance_of(Gitlab::Import::SourceUserMapper)
               )
 
+            subject.execute
+          end
+
+          it 'imports the note as diff note' do
             expect { subject.execute }
-              .to change(LegacyDiffNote, :count)
-              .and not_change(DiffNote, :count)
+              .to change(DiffNote, :count)
+              .by(1)
+
+            note = project.notes.diff_notes.take
+            expect(note).to be_valid
+            expect(note.noteable_type).to eq('MergeRequest')
+            expect(note.noteable_id).to eq(merge_request.id)
+            expect(note.project_id).to eq(project.id)
+            expect(note.namespace_id).to eq(project.project_namespace_id)
+            expect(note.author_id).to eq(user.id)
+            expect(note.system).to eq(false)
+            expect(note.discussion_id).to eq(discussion_id)
+            expect(note.commit_id).to eq('original123abc')
+            expect(note.line_code).to eq(note_representation.line_code)
+            expect(note.type).to eq('DiffNote')
+            expect(note.created_at).to eq(created_at)
+            expect(note.updated_at).to eq(updated_at)
+            expect(note.position.to_h).to eq({
+              base_sha: merge_request.diffs.diff_refs.base_sha,
+              head_sha: merge_request.diffs.diff_refs.head_sha,
+              start_sha: merge_request.diffs.diff_refs.start_sha,
+              new_line: 15,
+              old_line: nil,
+              new_path: file_path,
+              old_path: file_path,
+              position_type: 'text',
+              line_range: nil,
+              ignore_whitespace_change: false
+            })
+            expect(note.note)
+              .to eq <<~NOTE
+              Suggestion:
+              ```suggestion:-0+0
+              what do you think to do it like this
+              ```
+              NOTE
+          end
+
+          context 'when the note diff file creation fails with DiffNoteCreationError due to outdated suggestion' do
+            let(:end_line) { nil }
+
+            it 'falls back to the LegacyDiffNote' do
+              expect(Gitlab::GithubImport::Logger)
+                .to receive(:warn)
+                      .with(
+                        {
+                          message: "Validation failed: Line code can't be blank, Line code must be a valid line code, Position is incomplete",
+                          'error.class': 'Gitlab::GithubImport::Importer::DiffNoteImporter::DiffNoteCreationError'
+                        }
+                      )
+
+              expect { subject.execute }
+                .to change(LegacyDiffNote, :count)
+                      .and not_change(DiffNote, :count)
+            end
+          end
+
+          context 'when the note diff file creation fails with NoteDiffFileCreationError' do
+            it 'falls back to the LegacyDiffNote' do
+              exception = ::DiffNote::NoteDiffFileCreationError.new('Failed to create diff note file')
+
+              expect_next_instance_of(::Import::Github::Notes::CreateService) do |service|
+                expect(service)
+                  .to receive(:execute)
+                  .and_raise(exception)
+              end
+
+              expect(Gitlab::GithubImport::Logger)
+                .to receive(:warn)
+                .with(
+                  {
+                    message: 'Failed to create diff note file',
+                    'error.class': 'DiffNote::NoteDiffFileCreationError'
+                  }
+                )
+
+              expect { subject.execute }
+                .to change(LegacyDiffNote, :count)
+                .and not_change(DiffNote, :count)
+            end
           end
         end
-      end
 
-      context 'when diff note is invalid' do
-        it 'fails validation' do
-          stub_user_finder(user.id, true)
+        context 'when diff note is invalid' do
+          it 'fails validation' do
+            expect(note_representation).to receive(:line_code).and_return(nil)
 
-          expect(note_representation).to receive(:line_code).and_return(nil)
-
-          expect { subject.execute }.to raise_error(ActiveRecord::RecordInvalid)
+            expect { subject.execute }.to raise_error(ActiveRecord::RecordInvalid)
+          end
         end
       end
     end
-  end
 
-  def stub_user_finder(user, found)
-    expect_next_instance_of(Gitlab::GithubImport::UserFinder) do |finder|
-      expect(finder)
-        .to receive(:author_id_for)
-        .and_return([user, found])
+    context 'when user mapping is disabled' do
+      before do
+        project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: false })
+      end
+
+      context 'when the merge request no longer exists' do
+        it 'does not import anything' do
+          expect(ApplicationRecord).not_to receive(:legacy_bulk_insert)
+
+          expect { subject.execute }
+            .to not_change(DiffNote, :count)
+            .and not_change(LegacyDiffNote, :count)
+        end
+      end
+
+      context 'when the merge request exists' do
+        let_it_be(:merge_request) do
+          create(:merge_request, source_project: project, target_project: project)
+        end
+
+        before do
+          expect_next_instance_of(Gitlab::GithubImport::IssuableFinder) do |finder|
+            expect(finder)
+              .to receive(:database_id)
+              .and_return(merge_request.id)
+          end
+        end
+
+        it 'does not push placeholder references' do
+          stub_user_finder(user.id, true)
+
+          expect(subject).not_to receive(:push_note_refs_with_ids)
+
+          subject.execute
+        end
+
+        it_behaves_like 'diff notes without suggestion'
+
+        context 'when the note has suggestions' do
+          let(:note_body) do
+            <<~EOB
+            Suggestion:
+            ```suggestion
+            what do you think to do it like this
+            ```
+            EOB
+          end
+
+          before do
+            stub_user_finder(user.id, true)
+          end
+
+          it 'does not push placeholder references' do
+            expect(subject).not_to receive(:push_with_record)
+
+            subject.execute
+          end
+
+          it 'imports the note as diff note' do
+            expect { subject.execute }
+              .to change(DiffNote, :count)
+              .by(1)
+
+            note = project.notes.diff_notes.take
+            expect(note).to be_valid
+            expect(note.noteable_type).to eq('MergeRequest')
+            expect(note.noteable_id).to eq(merge_request.id)
+            expect(note.project_id).to eq(project.id)
+            expect(note.namespace_id).to eq(project.project_namespace_id)
+            expect(note.author_id).to eq(user.id)
+            expect(note.system).to eq(false)
+            expect(note.discussion_id).to eq(discussion_id)
+            expect(note.commit_id).to eq('original123abc')
+            expect(note.line_code).to eq(note_representation.line_code)
+            expect(note.type).to eq('DiffNote')
+            expect(note.created_at).to eq(created_at)
+            expect(note.updated_at).to eq(updated_at)
+            expect(note.position.to_h).to eq({
+              base_sha: merge_request.diffs.diff_refs.base_sha,
+              head_sha: merge_request.diffs.diff_refs.head_sha,
+              start_sha: merge_request.diffs.diff_refs.start_sha,
+              new_line: 15,
+              old_line: nil,
+              new_path: file_path,
+              old_path: file_path,
+              position_type: 'text',
+              line_range: nil,
+              ignore_whitespace_change: false
+            })
+            expect(note.note)
+              .to eq <<~NOTE
+              Suggestion:
+              ```suggestion:-0+0
+              what do you think to do it like this
+              ```
+              NOTE
+          end
+
+          context 'when the note diff file creation fails with DiffNoteCreationError due to outdated suggestion' do
+            let(:end_line) { nil }
+
+            it 'falls back to the LegacyDiffNote' do
+              expect(Gitlab::GithubImport::Logger)
+                .to receive(:warn)
+                      .with(
+                        {
+                          message: "Validation failed: Line code can't be blank, Line code must be a valid line code, Position is incomplete",
+                          'error.class': 'Gitlab::GithubImport::Importer::DiffNoteImporter::DiffNoteCreationError'
+                        }
+                      )
+
+              expect { subject.execute }
+                .to change(LegacyDiffNote, :count)
+                      .and not_change(DiffNote, :count)
+            end
+          end
+
+          context 'when the note diff file creation fails with NoteDiffFileCreationError' do
+            it 'falls back to the LegacyDiffNote' do
+              exception = ::DiffNote::NoteDiffFileCreationError.new('Failed to create diff note file')
+
+              expect_next_instance_of(::Import::Github::Notes::CreateService) do |service|
+                expect(service)
+                  .to receive(:execute)
+                  .and_raise(exception)
+              end
+
+              expect(Gitlab::GithubImport::Logger)
+                .to receive(:warn)
+                .with(
+                  {
+                    message: 'Failed to create diff note file',
+                    'error.class': 'DiffNote::NoteDiffFileCreationError'
+                  }
+                )
+
+              expect { subject.execute }
+                .to change(LegacyDiffNote, :count)
+                .and not_change(DiffNote, :count)
+            end
+          end
+        end
+
+        context 'when diff note is invalid' do
+          it 'fails validation' do
+            stub_user_finder(user.id, true)
+
+            expect(note_representation).to receive(:line_code).and_return(nil)
+
+            expect { subject.execute }.to raise_error(ActiveRecord::RecordInvalid)
+          end
+        end
+      end
+    end
+
+    def stub_user_finder(user, found)
+      expect_next_instance_of(Gitlab::GithubImport::UserFinder) do |finder|
+        expect(finder)
+          .to receive(:author_id_for)
+          .and_return([user, found])
+      end
     end
   end
 end

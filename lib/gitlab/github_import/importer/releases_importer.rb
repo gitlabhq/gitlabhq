@@ -6,6 +6,7 @@ module Gitlab
       class ReleasesImporter
         include BulkImporting
         include Gitlab::Import::UsernameMentionRewriter
+        include Gitlab::GithubImport::PushPlaceholderReferences
 
         # rubocop: disable CodeReuse/ActiveRecord
         def existing_tags
@@ -13,13 +14,31 @@ module Gitlab
         end
         # rubocop: enable CodeReuse/ActiveRecord
 
+        def github_users
+          @github_users ||= []
+        end
+
+        def mapper
+          @mapper ||= Gitlab::GithubImport::ContributionsMapper.new(project)
+        end
+
         # Note: if you're going to replace `legacy_bulk_insert` with something that triggers callback
         # to generate HTML version - you also need to regenerate it in
         # Gitlab::GithubImport::Importer::NoteAttachmentsImporter.
         def execute
           rows, validation_errors = build_releases
 
-          bulk_insert(rows)
+          inserted_ids = bulk_insert(rows)
+
+          if mapper.user_mapping_enabled?
+            inserted_ids.zip(github_users).each do |id, user|
+              # `id` is the GitLab Release ID we just inserted.
+              # `user` is the GitHub user object.
+              release = Release.find_by(id: id, project_id: project.id) # rubocop:disable CodeReuse/ActiveRecord -- required
+              push_with_record(release, :author_id, user[:id], mapper.user_mapper)
+            end
+          end
+
           bulk_insert_failures(validation_errors) if validation_errors.any?
         end
 
@@ -33,6 +52,11 @@ module Gitlab
 
         def build_attributes(release)
           existing_tags.add(release[:tag_name])
+          # when release author is nil (deleted on github) we assign the ghost user
+          github_users.push(
+            id: release.dig(:author, :id) || Gitlab::GithubImport.ghost_user_id,
+            login: release.dig(:author, :login) || 'ghost'
+          )
 
           {
             name: release[:name],

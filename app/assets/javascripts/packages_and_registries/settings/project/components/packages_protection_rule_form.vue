@@ -81,7 +81,11 @@ export default {
         packageTypeOptions.push({ value: 'PYPI', text: s__('PackageRegistry|PyPI') });
       }
 
-      return packageTypeOptions;
+      if (this.glFeatures.packagesProtectedPackagesConan) {
+        packageTypeOptions.push({ value: 'CONAN', text: s__('PackageRegistry|Conan') });
+      }
+
+      return packageTypeOptions.sort((a, b) => a.text.localeCompare(b.text));
     },
     minimumAccessLevelForPushOptions() {
       return [

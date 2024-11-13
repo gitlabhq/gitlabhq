@@ -76,7 +76,7 @@ export default {
                 data-testid="close"
                 @click="dismiss"
               >
-                <gl-icon name="close" class="gl-text-gray-500" />
+                <gl-icon name="close" />
               </button>
             </div>
           </div>

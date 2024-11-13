@@ -107,7 +107,7 @@ export default {
           {{ optionName }}
         </option>
       </select>
-      <gl-icon name="chevron-down" class="gl-absolute gl-right-3 gl-top-3 gl-text-gray-500" />
+      <gl-icon name="chevron-down" class="gl-absolute gl-right-3 gl-top-3" variant="default" />
     </div>
   </div>
 </template>

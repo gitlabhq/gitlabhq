@@ -48,11 +48,7 @@ export default {
       class="disclosure-hierarchy-button gl-text-gray-900 hover:gl-no-underline active:!gl-no-underline"
       :class="{ 'gl-cursor-help': item.ancestorNotAvailable }"
     >
-      <gl-icon
-        v-if="shouldDisplayIcon(item.icon)"
-        :name="item.icon"
-        class="gl-mx-2 gl-shrink-0 gl-text-gray-600"
-      />
+      <gl-icon v-if="shouldDisplayIcon(item.icon)" :name="item.icon" class="gl-mx-2 gl-shrink-0" />
       <span class="gl-z-200 gl-truncate">{{ item.title }}</span>
     </gl-link>
     <!--

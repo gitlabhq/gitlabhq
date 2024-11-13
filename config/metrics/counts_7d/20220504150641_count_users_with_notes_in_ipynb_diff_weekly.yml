@@ -17,7 +17,7 @@ performance_indicator_type: []
 distribution:
   - ce
   - ee
-tier:
+tiers:
   - free
   - premium
   - ultimate

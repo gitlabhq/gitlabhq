@@ -247,7 +247,7 @@ export default {
         <template v-else>
           <cli-command :prompt="commandPrompt" :command="registerCommand" />
           <p>
-            <gl-icon name="information-o" class="!gl-text-blue-600" />
+            <gl-icon name="information-o" variant="info" />
             <gl-sprintf :message="tokenMessage">
               <template #token>
                 <code data-testid="runner-token">{{ token }}</code>

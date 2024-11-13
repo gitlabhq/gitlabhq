@@ -26,7 +26,7 @@ Install one of the following GitLab-approved LLM models:
 
 | Model family | Model                                                                              | Code completion | Code generation | GitLab Duo Chat |
 |--------------|------------------------------------------------------------------------------------|-----------------|-----------------|---------|
-| Mistral      | [Codestral 22B](https://huggingface.co/mistralai/Codestral-22B-v0.1)                                        | **{check-circle}** Yes               | **{check-circle}** Yes               | **{dotted-circle}** No        |
+| Mistral Codestral   | [Codestral 22B](https://huggingface.co/mistralai/Codestral-22B-v0.1)                                        | **{check-circle}** Yes               | **{check-circle}** Yes               | **{dotted-circle}** No        |
 | Mistral      | [Mistral 7B](https://huggingface.co/mistralai/Mistral-7B-v0.1)                     | **{check-circle}** Yes               | **{dotted-circle}** No               | **{dotted-circle}** No        |
 | Mistral      | [Mistral 7B-it](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.3)                     | **{check-circle}** Yes                | **{check-circle}** Yes               | **{check-circle}** Yes        |
 | Mistral      | [Mixtral 8x7B](https://huggingface.co/mistralai/Mixtral-8x7B-v0.1)        | **{check-circle}** Yes                |  **{dotted-circle}** No               |  **{dotted-circle}** No        |
@@ -41,15 +41,15 @@ Install one of the following GitLab-approved LLM models:
 
 The following models are under evaluation, and support is limited:
 
-| Model family  | Model                                                                              | Code completion | Code generation | GitLab Duo Chat |
-|---------------|---------------------------------------------------------------------|-----------------|-----------------|---------|
-| CodeGemma     | [CodeGemma 2b](https://huggingface.co/google/codegemma-2b)                         | **{check-circle}** Yes               | **{dotted-circle}** No               | **{dotted-circle}** No        |
-| CodeGemma     | [CodeGemma 7b-it](https://huggingface.co/google/codegemma-7b-it)                   | **{dotted-circle}** No                | **{check-circle}** Yes               | **{dotted-circle}** No        |
-| CodeGemma     | [CodeGemma 7b-code](https://huggingface.co/google/codegemma-7b)                    | **{check-circle}** Yes               | **{dotted-circle}** No               | **{dotted-circle}** No        |
-| CodeLlama     | [Code-Llama 13b-code](https://huggingface.co/meta-llama/CodeLlama-13b-hf)          | **{check-circle}** Yes               | **{dotted-circle}** No               | **{dotted-circle}** No        |
-| CodeLlama     | [Code-Llama 13b](https://huggingface.co/meta-llama/CodeLlama-13b-Instruct-hf)      | **{dotted-circle}** No                | **{check-circle}** Yes               | **{dotted-circle}** No        |
-| DeepSeekCoder | [DeepSeek Coder 33b Instruct](https://huggingface.co/deepseek-ai/deepseek-coder-33b-instruct)        | **{check-circle}** Yes                | **{check-circle}** Yes               | **{dotted-circle}** No        |
-| DeepSeekCoder | [DeepSeek Coder 33b Base](https://huggingface.co/deepseek-ai/deepseek-coder-33b-base)        | **{check-circle}** Yes                | **{dotted-circle}** No               | **{dotted-circle}** No        |
+| Model family   | Model                                                                              | Code completion | Code generation | GitLab Duo Chat |
+|--------------- |---------------------------------------------------------------------|-----------------|-----------------|---------|
+| CodeGemma      | [CodeGemma 2b](https://huggingface.co/google/codegemma-2b)                         | **{check-circle}** Yes               | **{dotted-circle}** No               | **{dotted-circle}** No        |
+| CodeGemma      | [CodeGemma 7b-it](https://huggingface.co/google/codegemma-7b-it)                   | **{dotted-circle}** No                | **{check-circle}** Yes               | **{dotted-circle}** No        |
+| CodeGemma      | [CodeGemma 7b-code](https://huggingface.co/google/codegemma-7b)                    | **{check-circle}** Yes               | **{dotted-circle}** No               | **{dotted-circle}** No        |
+| Code Llama     | [Code-Llama 13b-code](https://huggingface.co/meta-llama/CodeLlama-13b-hf)          | **{check-circle}** Yes               | **{dotted-circle}** No               | **{dotted-circle}** No        |
+| Code Llama     | [Code-Llama 13b](https://huggingface.co/meta-llama/CodeLlama-13b-Instruct-hf)      | **{dotted-circle}** No                | **{check-circle}** Yes               | **{dotted-circle}** No        |
+| DeepSeek Coder | [DeepSeek Coder 33b Instruct](https://huggingface.co/deepseek-ai/deepseek-coder-33b-instruct)        | **{check-circle}** Yes                | **{check-circle}** Yes               | **{dotted-circle}** No        |
+| DeepSeek Coder | [DeepSeek Coder 33b Base](https://huggingface.co/deepseek-ai/deepseek-coder-33b-base)        | **{check-circle}** Yes                | **{dotted-circle}** No               | **{dotted-circle}** No        |
 
 <!-- vale gitlab_base.Spelling = YES -->
 

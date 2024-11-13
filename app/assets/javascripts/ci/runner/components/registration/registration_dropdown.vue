@@ -132,7 +132,7 @@ export default {
     no-caret
   >
     <div v-if="state == $options.REGISTRATION_TOKEN_DISABLED" class="gl-px-4 gl-py-2">
-      <gl-icon name="error" class="gl-text-red-500" />
+      <gl-icon name="error" variant="danger" />
       <gl-sprintf
         :message="
           s__(
@@ -151,7 +151,7 @@ export default {
       <gl-dropdown-form class="!gl-p-4">
         <registration-token input-id="token-value" :value="currentRegistrationToken" @copy="onCopy">
           <template #label-description>
-            <gl-icon name="warning" class="gl-text-orange-500" />
+            <gl-icon name="warning" variant="warning" />
             <span class="gl-text-secondary">
               {{ s__('Runners|Support for registration tokens is deprecated') }}
             </span>

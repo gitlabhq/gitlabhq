@@ -112,7 +112,7 @@ gem 'openid_connect', '~> 2.3.0' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'omniauth-salesforce', '~> 1.0.5', path: 'vendor/gems/omniauth-salesforce' # See gem README.md # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'omniauth-atlassian-oauth2', '~> 0.2.0' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'rack-oauth2', '~> 2.2.1' # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'jwt', '~> 2.5' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'jwt', '~> 2.9.3' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # Kerberos authentication. EE-only
 gem 'gssapi', '~> 1.3.1', group: :kerberos # rubocop:todo Gemfile/MissingFeatureCategory

@@ -72,7 +72,6 @@ ee/spec/frontend/groups/settings/components/comma_separated_list_token_selector_
 ee/spec/frontend/incidents/components/service_level_agreement_cell_spec.js
 ee/spec/frontend/insights/insights_router_spec.js
 ee/spec/frontend/integrations/edit/components/jira_issue_creation_vulnerabilities_spec.js
-ee/spec/frontend/issuable/components/related_issuable_item_spec.js
 ee/spec/frontend/issues/list/components/issues_list_app_spec.js
 ee/spec/frontend/issues_analytics/components/issues_analytics_table_spec.js
 ee/spec/frontend/iterations/components/iteration_form_spec.js
@@ -446,5 +445,4 @@ spec/frontend/vue_shared/directives/track_event_spec.js
 spec/frontend/vue_shared/issuable/show/components/issuable_header_spec.js
 spec/frontend/vue_shared/issuable/sidebar/components/issuable_sidebar_root_spec.js
 spec/frontend/webhooks/components/form_url_app_spec.js
-spec/frontend/work_items/components/design_management/design_preview/design_overlay_spec.js
 spec/frontend/work_items/components/work_item_description_rendered_spec.js
