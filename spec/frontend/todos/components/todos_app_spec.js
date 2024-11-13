@@ -108,6 +108,29 @@ describe('TodosApp', () => {
     );
   });
 
+  it('refetches todos when page becomes visible again', async () => {
+    createComponent();
+
+    // Wait and account for initial query
+    await waitForPromises();
+    expect(todosQuerySuccessHandler).toHaveBeenCalledTimes(1);
+    expect(todosCountsQuerySuccessHandler).toHaveBeenCalledTimes(1);
+
+    // Make sure we don't refetch when document became hidden
+    jest.spyOn(document, 'hidden', 'get').mockReturnValue(true);
+    document.dispatchEvent(new Event('visibilitychange'));
+    await waitForPromises();
+    expect(todosQuerySuccessHandler).toHaveBeenCalledTimes(1);
+    expect(todosCountsQuerySuccessHandler).toHaveBeenCalledTimes(1);
+
+    // Expect refetch when document becomes visible
+    jest.spyOn(document, 'hidden', 'get').mockReturnValue(false);
+    document.dispatchEvent(new Event('visibilitychange'));
+    await waitForPromises();
+    expect(todosQuerySuccessHandler).toHaveBeenCalledTimes(2);
+    expect(todosCountsQuerySuccessHandler).toHaveBeenCalledTimes(2);
+  });
+
   it('passes the default status to the filter bar', () => {
     createComponent();
 

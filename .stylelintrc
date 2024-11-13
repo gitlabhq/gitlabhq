@@ -27,21 +27,6 @@
       "rules": {
         "gitlab/no-gl-class": null
       }
-    },
-    {
-      "files": [
-        "app/assets/builds/tailwind.css"
-      ],
-      "rules": {
-        "selector-class-pattern": null,
-        "gitlab/no-gl-class": null,
-        "length-zero-no-unit": null,
-        "property-no-vendor-prefix": null,
-        "value-no-vendor-prefix": null,
-        "scss/at-rule-no-unknown": null,
-        "tailwind/disallow-max-width-media-query": true
-      },
-      "reportNeedlessDisables": false
     }
   ]
 }

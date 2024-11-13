@@ -57,10 +57,10 @@ module Clusters
             end
 
             def groups_with_direct_membership_for(user)
-              ::Group.joins("INNER JOIN members ON " \
-                            "members.source_id = namespaces.id AND members.source_type = 'Namespace'")
-                     .where(members: { user_id: user.id, access_level: Gitlab::Access::DEVELOPER.. })
-                     .select('namespaces.id AS id, members.access_level AS access_level')
+              user
+                .groups_with_active_memberships
+                .merge(GroupMember.by_access_level(Gitlab::Access::DEVELOPER..))
+                .select('namespaces.id AS id, members.access_level AS access_level')
             end
           end
         end

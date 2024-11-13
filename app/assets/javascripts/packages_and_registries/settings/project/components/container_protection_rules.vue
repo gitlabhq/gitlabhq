@@ -22,9 +22,6 @@ import { s__, __ } from '~/locale';
 const PAGINATION_DEFAULT_PER_PAGE = 10;
 
 const I18N_MINIMUM_ACCESS_LEVEL_FOR_PUSH = s__('ContainerRegistry|Minimum access level for push');
-const I18N_MINIMUM_ACCESS_LEVEL_FOR_DELETE = s__(
-  'ContainerRegistry|Minimum access level for delete',
-);
 
 export default {
   components: {
@@ -48,7 +45,7 @@ export default {
   i18n: {
     settingBlockTitle: s__('ContainerRegistry|Protected containers'),
     settingBlockDescription: s__(
-      'ContainerRegistry|When a container is protected, only certain user roles can push and delete the protected container image, which helps to avoid tampering with the container image.',
+      'ContainerRegistry|When a container is protected, only certain user roles can push the protected container image, which helps to avoid tampering with the container image.',
     ),
     protectionRuleDeletionConfirmModal: {
       title: s__('ContainerRegistry|Delete container protection rule?'),
@@ -60,7 +57,6 @@ export default {
       ),
     },
     minimumAccessLevelForPush: I18N_MINIMUM_ACCESS_LEVEL_FOR_PUSH,
-    minimumAccessLevelForDelete: I18N_MINIMUM_ACCESS_LEVEL_FOR_DELETE,
   },
   apollo: {
     protectionRulesQueryPayload: {
@@ -94,7 +90,6 @@ export default {
       return this.protectionRulesQueryResult.map((protectionRule) => {
         return {
           id: protectionRule.id,
-          minimumAccessLevelForDelete: protectionRule.minimumAccessLevelForDelete,
           minimumAccessLevelForPush: protectionRule.minimumAccessLevelForPush,
           repositoryPathPattern: protectionRule.repositoryPathPattern,
         };
@@ -210,11 +205,6 @@ export default {
         minimumAccessLevelForPush: protectionRule.minimumAccessLevelForPush,
       });
     },
-    updateProtectionRuleMinimumAccessLevelForDelete(protectionRule) {
-      this.updateProtectionRule(protectionRule, {
-        minimumAccessLevelForDelete: protectionRule.minimumAccessLevelForDelete,
-      });
-    },
     updateProtectionRule(protectionRule, updateData) {
       this.clearAlertMessage();
 
@@ -257,11 +247,6 @@ export default {
     {
       key: 'minimumAccessLevelForPush',
       label: I18N_MINIMUM_ACCESS_LEVEL_FOR_PUSH,
-      tdClass: '!gl-align-middle',
-    },
-    {
-      key: 'minimumAccessLevelForDelete',
-      label: I18N_MINIMUM_ACCESS_LEVEL_FOR_DELETE,
       tdClass: '!gl-align-middle',
     },
     {
@@ -323,18 +308,6 @@ export default {
               :options="minimumAccessLevelOptions"
               :disabled="isProtectionRuleMinimumAccessLevelForPushFormSelectDisabled(item)"
               @change="updateProtectionRuleMinimumAccessLevelForPush(item)"
-            />
-          </template>
-
-          <template #cell(minimumAccessLevelForDelete)="{ item }">
-            <gl-form-select
-              v-model="item.minimumAccessLevelForDelete"
-              class="gl-max-w-34"
-              required
-              :aria-label="$options.i18n.minimumAccessLevelForDelete"
-              :options="minimumAccessLevelOptions"
-              :disabled="isProtectionRuleMinimumAccessLevelForPushFormSelectDisabled(item)"
-              @change="updateProtectionRuleMinimumAccessLevelForDelete(item)"
             />
           </template>
 

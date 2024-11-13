@@ -4,7 +4,6 @@ mutation createContainerProtectionRule($input: CreateContainerRegistryProtection
       id
       repositoryPathPattern
       minimumAccessLevelForPush
-      minimumAccessLevelForDelete
     }
     errors
   }

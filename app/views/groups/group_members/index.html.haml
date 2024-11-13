@@ -2,11 +2,11 @@
 - page_title _('Group members')
 
 - if can_admin_group_member?(@group)
+  = render_if_exists 'groups/group_members/link_to_pending_members'
   = render ::Layouts::PageHeadingComponent.new(_('Group members')) do |c|
     - c.with_description do
       = group_member_header_subtext(@group)
     - c.with_actions do
-      = render_if_exists 'groups/group_members/link_to_pending_members'
       - if current_appearance&.member_guidelines?
         .gl-w-full.order-md-1
         = brand_member_guidelines

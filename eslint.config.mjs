@@ -30,7 +30,7 @@ const extendConfigs = [
 // rewrite.
 let jhConfigs = [];
 if (existsSync(path.resolve(dirname, 'jh'))) {
-  const pathToJhConfig = path.resolve(dirname, 'jh/eslint.config.js')
+  const pathToJhConfig = path.resolve(dirname, 'jh/eslint.config.js');
   // eslint-disable-next-line import/no-dynamic-require, no-unsanitized/method
   jhConfigs = (await import(pathToJhConfig)).default;
 }
@@ -161,6 +161,8 @@ export default [
       '@gitlab/vue-no-undef-apollo-properties': 'error',
       '@gitlab/tailwind-no-interpolation': 'error',
       '@gitlab/vue-tailwind-no-interpolation': 'error',
+      '@gitlab/tailwind-no-max-width-media-queries': 'error',
+      '@gitlab/vue-tailwind-no-max-width-media-queries': 'error',
 
       'no-param-reassign': [
         'error',
@@ -403,6 +405,8 @@ export default [
       '@gitlab/no-runtime-template-compiler': 'off',
       '@gitlab/tailwind-no-interpolation': 'off',
       '@gitlab/vue-tailwind-no-interpolation': 'off',
+      '@gitlab/no-max-width-media-queries': 'off',
+      '@gitlab/vue-tailwind-no-max-width-media-queries': 'off',
       'require-await': 'error',
       'import/no-dynamic-require': 'off',
       'no-import-assign': 'off',

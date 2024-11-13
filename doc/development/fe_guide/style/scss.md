@@ -296,6 +296,62 @@ the entire line, each class that requires it should be applied on its own line. 
 
 This ensures that `!important` applies only where intended without affecting other classes in the same line.
 
+## Responsive design
+
+Our UI should work well on mobile and desktop. To accomplish this we use [CSS media queries](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_media_queries/Using_media_queries). In general we should take a mobile first approach to media queries. This means writing CSS for mobile, then using min-width media queries to override styles on desktop.
+
+### Tailwind CSS classes
+
+```html
+<!-- Bad -->
+<div class="gl-mt-5 max-lg:gl-mt-3"></div>
+
+<!-- Good -->
+<div class="gl-mt-3 md:gl-mt-5"></div>
+
+<!-- Bad -->
+<div class="gl-mt-3 sm:max-lg:gl-mt-5"></div>
+
+<!-- Good -->
+<div class="gl-mt-3 sm:gl-mt-5 lg:gl-mt-3"></div>
+
+<!-- Okay if display property is dynamic (via Vue props or similar) and unknown -->
+<!-- eslint-disable-next-line @gitlab/vue-tailwind-no-max-width-media-queries -->
+<div class="max-lg:gl-hidden"></div>
+```
+
+### Component classes
+
+```scss
+// Bad
+.class-name {
+  @apply gl-mt-5 max-lg:gl-mt-3;
+}
+
+// Good
+.class-name {
+  @apply gl-mt-3 lg:gl-mt-5;
+}
+
+// Bad
+.class-name {
+  display: block;
+
+  @include media-breakpoint-down(lg) {
+    display: flex;
+  }
+}
+
+// Good
+.class-name {
+  display: flex;
+
+  @include media-breakpoint-up(lg) {
+    display: block;
+  }
+}
+```
+
 ## Naming
 
 Filenames should use `snake_case`.

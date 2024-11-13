@@ -25,6 +25,12 @@ RSpec.describe MemberEntity, feature_category: :groups_and_projects do
       expect(entity_hash[:can_remove]).to be(true)
     end
 
+    describe '#access_level' do
+      it 'correctly exposes `string_value`' do
+        expect(entity_hash[:access_level][:string_value]).to eq(member.human_access_with_none)
+      end
+    end
+
     context 'when is_source_accessible_to_current_user is true' do
       before do
         allow(member).to receive(:is_source_accessible_to_current_user).and_return(true)

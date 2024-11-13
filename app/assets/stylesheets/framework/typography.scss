@@ -697,6 +697,12 @@
       color: $gl-text-color-secondary;
     }
   }
+
+  /* Vertically align badges with icons */
+  .gl-badge:has(> svg) {
+    position: relative;
+    bottom: -3px;
+  }
 }
 
 /**

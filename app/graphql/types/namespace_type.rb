@@ -114,6 +114,12 @@ module Types
       method: :itself,
       experiment: { milestone: '17.6' }
 
+    field :work_item_description_templates,
+      Types::WorkItems::DescriptionTemplateType.connection_type,
+      resolver: Resolvers::WorkItems::DescriptionTemplatesResolver,
+      null: true, experiment: { milestone: '17.6' },
+      description: 'Work item description templates available to the namespace.'
+
     markdown_field :description_html, null: true
 
     def achievements_path

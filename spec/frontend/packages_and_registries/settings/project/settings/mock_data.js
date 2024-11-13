@@ -171,13 +171,11 @@ export const containerProtectionRulesData = [
     id: `gid://gitlab/ContainerRegistry::Protection::Rule/${i}`,
     repositoryPathPattern: `@flight/flight/maintainer-${i}-*`,
     minimumAccessLevelForPush: 'MAINTAINER',
-    minimumAccessLevelForDelete: 'MAINTAINER',
   })),
   {
     id: 'gid://gitlab/ContainerRegistry::Protection::Rule/16',
     repositoryPathPattern: '@flight/flight/owner-16-*',
     minimumAccessLevelForPush: 'OWNER',
-    minimumAccessLevelForDelete: 'OWNER',
   },
 ];
 
@@ -218,7 +216,6 @@ export const createContainerProtectionRuleMutationPayload = ({ override, errors 
 export const createContainerProtectionRuleMutationInput = {
   repositoryPathPattern: `@flight/flight-maintainer-14-*`,
   minimumAccessLevelForPush: 'MAINTAINER',
-  minimumAccessLevelForDelete: 'MAINTAINER',
 };
 
 export const createContainerProtectionRuleMutationPayloadErrors = [

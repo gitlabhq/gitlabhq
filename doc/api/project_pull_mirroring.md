@@ -80,15 +80,16 @@ Configure pull mirroring settings.
 
 Supported attributes:
 
-| Attribute                        | Type    | Required | Description |
-|:---------------------------------|:--------|:---------|:------------|
-| `enabled`                        | boolean | No       | Enables pull mirroring on project when set to `true`. |
-| `url`                            | string  | No       | URL of remote repository being mirrored. |
-| `auth_user`                      | string  | No       | Username used for authentication of a project to pull mirror. |
-| `auth_password`                  | string  | No       | Password used for authentication of a project to pull mirror. |
-| `mirror_trigger_builds`          | boolean | No       | Trigger pipelines for mirror updates when set to `true`. |
-| `only_mirror_protected_branches` | boolean | No       | Limits mirroring to only protected branches when set to `true`. |
-| `mirror_branch_regex`            | String  | No       | Contains a regular expression. Only branches with names matching the regex are mirrored. Requires `only_mirror_protected_branches` to be disabled. |
+| Attribute | Type | Required | Description |
+|:----------|:-----|:---------|:------------|
+| `enabled` | boolean | No | Enables pull mirroring on project when set to `true`. |
+| `url` | string | No | URL of remote repository being mirrored. |
+| `auth_user` | string | No | Username used for authentication of a project to pull mirror. |
+| `auth_password` | string | No | Password used for authentication of a project to pull mirror. |
+| `mirror_trigger_builds` | boolean | No | Trigger pipelines for mirror updates when set to `true`. |
+| `only_mirror_protected_branches` | boolean | No | Limits mirroring to only protected branches when set to `true`. |
+| `mirror_overwrites_diverged_branches` | boolean | No | Overwrite diverged branches. |
+| `mirror_branch_regex` | String | No | Contains a regular expression. Only branches with names matching the regex are mirrored. Requires `only_mirror_protected_branches` to be disabled. |
 
 Example request to add pull mirroring:
 

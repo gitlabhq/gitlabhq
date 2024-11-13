@@ -206,6 +206,14 @@ There is a rate limit for notification emails related to a project or group.
 
 The **rate limit** is 1,000 notifications per 24 hours per project or group per user.
 
+### FogBugz import
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/439101) in GitLab 17.6.
+
+There is a rate limit for triggering project imports from FogBugz.
+
+The **rate limit** is 1 triggered import per minute per user.
+
 ## Troubleshooting
 
 ### Rack Attack is denylisting the load balancer

@@ -3,8 +3,12 @@
 module Gitlab
   module Import
     class PlaceholderUserCreator
-      LAMBDA_FOR_UNIQUE_USERNAME = ->(username) { User.username_exists?(username) }.freeze
-      LAMBDA_FOR_UNIQUE_EMAIL = ->(email) { User.find_by_email(email) || ::Email.find_by_email(email) }.freeze
+      LAMBDA_FOR_UNIQUE_USERNAME = ->(username) do
+        ::Namespace.by_path(username) || User.username_exists?(username)
+      end.freeze
+      LAMBDA_FOR_UNIQUE_EMAIL = ->(email) do
+        User.find_by_email(email) || ::Email.find_by_email(email)
+      end.freeze
 
       delegate :import_type, :namespace, :source_user_identifier, :source_name, :source_username, to: :source_user,
         private: true

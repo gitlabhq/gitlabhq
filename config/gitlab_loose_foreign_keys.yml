@@ -290,9 +290,6 @@ group_security_exclusions:
     column: group_id
     on_delete: async_delete
 group_type_ci_runners_e59bb2812d:
-  - table: users
-    column: creator_id
-    on_delete: async_nullify
   - table: namespaces
     column: sharding_key_id
     on_delete: async_delete
@@ -303,10 +300,6 @@ groups_visits:
   - table: users
     column: user_id
     on_delete: async_delete
-instance_type_ci_runners_e59bb2812d:
-  - table: users
-    column: creator_id
-    on_delete: async_nullify
 member_approvals:
   - table: users
     column: requested_by_id
@@ -466,9 +459,6 @@ project_security_statistics:
     column: project_id
     on_delete: async_delete
 project_type_ci_runners_e59bb2812d:
-  - table: users
-    column: creator_id
-    on_delete: async_nullify
   - table: projects
     column: sharding_key_id
     on_delete: async_delete

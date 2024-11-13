@@ -17546,6 +17546,29 @@ The connection type for [`WorkItem`](#workitem).
 | <a id="workitemconnectionnodes"></a>`nodes` | [`[WorkItem]`](#workitem) | A list of nodes. |
 | <a id="workitemconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
 
+#### `WorkItemDescriptionTemplateConnection`
+
+The connection type for [`WorkItemDescriptionTemplate`](#workitemdescriptiontemplate).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemdescriptiontemplateconnectionedges"></a>`edges` | [`[WorkItemDescriptionTemplateEdge]`](#workitemdescriptiontemplateedge) | A list of edges. |
+| <a id="workitemdescriptiontemplateconnectionnodes"></a>`nodes` | [`[WorkItemDescriptionTemplate]`](#workitemdescriptiontemplate) | A list of nodes. |
+| <a id="workitemdescriptiontemplateconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `WorkItemDescriptionTemplateEdge`
+
+The edge type for [`WorkItemDescriptionTemplate`](#workitemdescriptiontemplate).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemdescriptiontemplateedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="workitemdescriptiontemplateedgenode"></a>`node` | [`WorkItemDescriptionTemplate`](#workitemdescriptiontemplate) | The item at the end of the edge. |
+
 #### `WorkItemEdge`
 
 The edge type for [`WorkItem`](#workitem).
@@ -25519,6 +25542,27 @@ Returns [`WorkItem`](#workitem).
 | ---- | ---- | ----------- |
 | <a id="groupworkitemiid"></a>`iid` | [`String!`](#string) | IID of the work item. |
 
+##### `Group.workItemDescriptionTemplates`
+
+Work item description templates available to the namespace.
+
+DETAILS:
+**Introduced** in GitLab 17.6.
+**Status**: Experiment.
+
+Returns [`WorkItemDescriptionTemplateConnection`](#workitemdescriptiontemplateconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupworkitemdescriptiontemplatesname"></a>`name` | [`String`](#string) | Fetches the specific DescriptionTemplate. |
+| <a id="groupworkitemdescriptiontemplatessearch"></a>`search` | [`String`](#string) | Search for DescriptionTemplates by name. |
+
 ##### `Group.workItemStateCounts`
 
 Counts of work items by state for the namespace. Returns `null` if the `namespace_level_work_items` feature flag is disabled.
@@ -29285,6 +29329,27 @@ Returns [`WorkItem`](#workitem).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="namespaceworkitemiid"></a>`iid` | [`String!`](#string) | IID of the work item. |
+
+##### `Namespace.workItemDescriptionTemplates`
+
+Work item description templates available to the namespace.
+
+DETAILS:
+**Introduced** in GitLab 17.6.
+**Status**: Experiment.
+
+Returns [`WorkItemDescriptionTemplateConnection`](#workitemdescriptiontemplateconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="namespaceworkitemdescriptiontemplatesname"></a>`name` | [`String`](#string) | Fetches the specific DescriptionTemplate. |
+| <a id="namespaceworkitemdescriptiontemplatessearch"></a>`search` | [`String`](#string) | Search for DescriptionTemplates by name. |
 
 ##### `Namespace.workItemTypes`
 
@@ -36437,6 +36502,15 @@ Returns [`String!`](#string).
 | <a id="workitemclosingmergerequestfrommrdescription"></a>`fromMrDescription` | [`Boolean!`](#boolean) | Whether this merge request link was created by referencing the work item on the merge request description, using the closing pattern. |
 | <a id="workitemclosingmergerequestid"></a>`id` | [`MergeRequestsClosingIssuesID!`](#mergerequestsclosingissuesid) | Global ID of the closing merge request association. |
 | <a id="workitemclosingmergerequestmergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Related merge request. |
+
+### `WorkItemDescriptionTemplate`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemdescriptiontemplatecontent"></a>`content` | [`String!`](#string) | Content of Description Template. |
+| <a id="workitemdescriptiontemplatename"></a>`name` | [`String!`](#string) | Name of Description Template. |
 
 ### `WorkItemPermissions`
 

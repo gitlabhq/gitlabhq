@@ -43,5 +43,38 @@ RSpec.describe Ci::Catalog::Resources::Components::LastUsage, type: :model, feat
         )
       end.to raise_error(ActiveRecord::RecordInvalid)
     end
+
+    describe '.get_usage_for' do
+      let_it_be(:used_by_project) { create(:project) }
+
+      context 'when no record exists' do
+        it 'initializes a new record' do
+          last_usage = described_class.get_usage_for(component, used_by_project)
+
+          expect(last_usage).to be_a_new_record
+          expect(last_usage.component).to eq(component)
+          expect(last_usage.catalog_resource).to eq(component.catalog_resource)
+          expect(last_usage.component_project).to eq(component.project)
+          expect(last_usage.used_by_project_id).to eq(used_by_project.id)
+        end
+      end
+
+      context 'when a record exists' do
+        let!(:existing_record) do
+          create(:catalog_resource_component_last_usage,
+            component: component,
+            catalog_resource: component.catalog_resource,
+            component_project: component.project,
+            used_by_project_id: used_by_project.id)
+        end
+
+        it 'returns the existing record' do
+          last_usage = described_class.get_usage_for(component, used_by_project)
+
+          expect(last_usage).not_to be_a_new_record
+          expect(last_usage).to eq(existing_record)
+        end
+      end
+    end
   end
 end

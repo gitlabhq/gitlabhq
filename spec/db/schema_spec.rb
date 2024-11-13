@@ -115,14 +115,16 @@ RSpec.describe 'Database schema',
       p_ci_pipelines: %w[partition_id auto_canceled_by_partition_id auto_canceled_by_id],
       p_ci_runner_machine_builds: %w[project_id],
       ci_runners: %w[sharding_key_id], # This value is meant to populate the partitioned table, no other usage
+      ci_runners_e59bb2812d: %w[sharding_key_id], # This field is only used in the partitions, and has the appropriate FKs
+      instance_type_ci_runners_e59bb2812d: %w[creator_id sharding_key_id], # No need for LFKs on partition, already handled on ci_runners_e59bb2812d routing table.
+      group_type_ci_runners_e59bb2812d: %w[creator_id sharding_key_id], # No need for LFKs on partition, already handled on ci_runners_e59bb2812d routing table.
+      project_type_ci_runners_e59bb2812d: %w[creator_id sharding_key_id], # No need for LFKs on partition, already handled on ci_runners_e59bb2812d routing table.
       ci_runner_machines: %w[sharding_key_id], # This value is meant to populate the partitioned table, no other usage
       ci_runner_machines_687967fa8a: %w[runner_id sharding_key_id], # This field is only used in the partitions, and has the appropriate FKs. runner_id temporarily ignored due to incident 18792
       instance_type_ci_runner_machines_687967fa8a: %w[runner_id sharding_key_id], # This field is always NULL in this partition. runner_id temporarily ignored due to incident 18792
       group_type_ci_runner_machines_687967fa8a: %w[runner_id sharding_key_id], # No need for LFK, rows will be deleted by the FK to ci_runners. runner_id temporarily ignored due to incident 18792
       project_type_ci_runner_machines_687967fa8a: %w[runner_id sharding_key_id], # No need for LFK, rows will be deleted by the FK to ci_runners. runner_id temporarily ignored due to incident 18792
       ci_runner_projects: %w[runner_id],
-      ci_runners_e59bb2812d: %w[sharding_key_id], # This field is only used in the partitions, and has the appropriate FKs
-      instance_type_ci_runners_e59bb2812d: %w[sharding_key_id], # This field is always NULL in this partition
       ci_sources_pipelines: %w[partition_id source_partition_id source_job_id],
       ci_sources_projects: %w[partition_id],
       ci_stages: %w[partition_id project_id pipeline_id],

@@ -15269,9 +15269,6 @@ msgstr ""
 msgid "ContainerRegistry|Manifest media type: %{mediaType}"
 msgstr ""
 
-msgid "ContainerRegistry|Minimum access level for delete"
-msgstr ""
-
 msgid "ContainerRegistry|Minimum access level for push"
 msgstr ""
 
@@ -15463,7 +15460,7 @@ msgstr ""
 msgid "ContainerRegistry|We are having trouble connecting to the Container Registry. Please try refreshing the page. If this error persists, please review  %{docLinkStart}the troubleshooting documentation%{docLinkEnd}."
 msgstr ""
 
-msgid "ContainerRegistry|When a container is protected, only certain user roles can push and delete the protected container image, which helps to avoid tampering with the container image."
+msgid "ContainerRegistry|When a container is protected, only certain user roles can push the protected container image, which helps to avoid tampering with the container image."
 msgstr ""
 
 msgid "ContainerRegistry|While the rename is in progress, new uploads to the container registry are blocked. Ongoing uploads may fail and need to be retried."
@@ -33714,6 +33711,9 @@ msgid "MemberRole|The Maintainer role is primarily used for managing code review
 msgstr ""
 
 msgid "MemberRole|The Minimal Access role is for users who need the least amount of access into groups and projects. You can assign this role as a default, before giving a user another role with more permissions."
+msgstr ""
+
+msgid "MemberRole|The None role is assigned to the invited group users of a shared project when project sharing is disabled in group setting."
 msgstr ""
 
 msgid "MemberRole|The Owner role is normally assigned to the individual or team responsible for managing and maintaining the group or creating the project. This role has the highest level of administrative control, and can manage all aspects of the group or project, including managing other Owners."

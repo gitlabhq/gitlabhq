@@ -70,6 +70,18 @@ RSpec.describe Gitlab::Import::PlaceholderUserCreator, feature_category: :import
       end
     end
 
+    context 'when an existing namespace conflicts with the placeholder user namespace' do
+      before do
+        create(:group, path: 'aprycontributor_placeholder_user_1')
+      end
+
+      it 'creates a placeholder with a username that avoids the conflict' do
+        placeholder_user1 = service.execute
+
+        expect(placeholder_user1.username).to eq('aprycontributor_placeholder_user_2')
+      end
+    end
+
     context 'when generating a unique email address' do
       it 'validates against all stored email addresses' do
         allow(Zlib).to receive(:crc32).and_return(123)

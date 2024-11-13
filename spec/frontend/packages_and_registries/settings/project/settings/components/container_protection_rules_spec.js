@@ -113,26 +113,8 @@ describe('Container protection rules project settings', () => {
         (protectionRule, i) => {
           expect(findTableRowCell(i, 0).text()).toBe(protectionRule.repositoryPathPattern);
           expect(findTableRowCellComboboxSelectedOption(i, 1).text).toBe('Maintainer');
-          expect(findTableRowCellComboboxSelectedOption(i, 2).text).toBe('Maintainer');
         },
       );
-    });
-
-    it('renders table with container protection rule with blank minimumAccessLevelForDelete', async () => {
-      const containerProtectionRuleQueryResolver = jest.fn().mockResolvedValue(
-        containerProtectionRuleQueryPayload({
-          nodes: [{ ...containerProtectionRulesData[0], minimumAccessLevelForDelete: null }],
-        }),
-      );
-      createComponent({ containerProtectionRuleQueryResolver });
-
-      await waitForPromises();
-
-      expect(findTableRowCell(0, 0).text()).toBe(
-        containerProtectionRulesData[0].repositoryPathPattern,
-      );
-      expect(findTableRowCellComboboxSelectedOption(0, 1).text).toBe('Maintainer');
-      expect(findTableRowCellComboboxSelectedOption(0, 2).text).toBe('Developer (default)');
     });
 
     it('displays table in busy state and shows loading icon inside table', async () => {
@@ -298,9 +280,8 @@ describe('Container protection rules project settings', () => {
     });
 
     describe.each`
-      comboboxName                         | minimumAccessLevelAttribute
-      ${'Minimum access level for push'}   | ${'minimumAccessLevelForPush'}
-      ${'Minimum access level for delete'} | ${'minimumAccessLevelForDelete'}
+      comboboxName                       | minimumAccessLevelAttribute
+      ${'Minimum access level for push'} | ${'minimumAccessLevelForPush'}
     `(
       'column "$comboboxName" with selectbox (combobox)',
       ({ comboboxName, minimumAccessLevelAttribute }) => {

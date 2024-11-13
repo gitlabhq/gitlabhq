@@ -9,7 +9,6 @@
     "lint-docs": "scripts/lint-doc.sh",
     "internal:eslint": "eslint --cache --max-warnings 0 --report-unused-disable-directives",
     "internal:stylelint": "stylelint -q --rd '{ee/,}app/assets/{stylesheets/**/*.{css,scss},builds/tailwind.css}'",
-    "preinternal:stylelint": "yarn run tailwindcss:build",
     "prejest": "yarn check-dependencies",
     "build:css": "node scripts/frontend/build_css.mjs",
     "tailwindcss:build": "node scripts/frontend/tailwindcss.mjs",

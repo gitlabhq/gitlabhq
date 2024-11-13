@@ -65,11 +65,12 @@ module Gitlab
 
       def option_descriptions
         {
-          guest: s_('MemberRole|The Guest role is for users who need visibility into a project or group but should not have the ability to make changes, such as external stakeholders.'),
-          reporter: s_('MemberRole|The Reporter role is suitable for team members who need to stay informed about a project or group but do not actively contribute code.'),
-          developer: s_('MemberRole|The Developer role gives users access to contribute code while restricting sensitive administrative actions.'),
-          maintainer: s_('MemberRole|The Maintainer role is primarily used for managing code reviews, approvals, and administrative settings for projects. This role can also manage project memberships.'),
-          owner: s_('MemberRole|The Owner role is normally assigned to the individual or team responsible for managing and maintaining the group or creating the project. This role has the highest level of administrative control, and can manage all aspects of the group or project, including managing other Owners.')
+          NO_ACCESS => s_('MemberRole|The None role is assigned to the invited group users of a shared project when project sharing is disabled in group setting.'),
+          GUEST => s_('MemberRole|The Guest role is for users who need visibility into a project or group but should not have the ability to make changes, such as external stakeholders.'),
+          REPORTER => s_('MemberRole|The Reporter role is suitable for team members who need to stay informed about a project or group but do not actively contribute code.'),
+          DEVELOPER => s_('MemberRole|The Developer role gives users access to contribute code while restricting sensitive administrative actions.'),
+          MAINTAINER => s_('MemberRole|The Maintainer role is primarily used for managing code reviews, approvals, and administrative settings for projects. This role can also manage project memberships.'),
+          OWNER => s_('MemberRole|The Owner role is normally assigned to the individual or team responsible for managing and maintaining the group or creating the project. This role has the highest level of administrative control, and can manage all aspects of the group or project, including managing other Owners.')
         }
       end
 
@@ -143,7 +144,11 @@ module Gitlab
         options_with_owner.key(access)
       end
 
-      def human_access_with_none(access)
+      def role_description(access)
+        option_descriptions[access]
+      end
+
+      def human_access_with_none(access, _member_role = nil)
         options_with_none.key(access)
       end
 
@@ -202,6 +207,10 @@ module Gitlab
 
     def human_access
       Gitlab::Access.human_access(access_field)
+    end
+
+    def role_description
+      Gitlab::Access.role_description(access_field)
     end
 
     def human_access_with_none

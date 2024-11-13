@@ -18,7 +18,7 @@ module Types
       description: 'Human-readable display name for the access level.'
 
     def human_access
-      ::Gitlab::Access.human_access(object)
+      ::Gitlab::Access.human_access_with_none(object)
     end
   end
 end

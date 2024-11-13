@@ -57,6 +57,7 @@ First, create a step with:
      inputs:
        who:
          default: world
+         type: string
    ```
 
    - `spec` has one input called `who`.
@@ -69,6 +70,7 @@ First, create a step with:
      inputs:
        who:
          default: world
+         type: string
    ---
    exec:
      command:
@@ -281,20 +283,22 @@ Add an output to your `hello` step.
      inputs:
        who:
          default: world
+         type: string
      outputs:
-       greeting: {}
+       greeting:
+         type: string
    ---
    exec:
      command:
        - bash
        - -c
-       - "echo greeting=hello ${{ inputs.who }} | tee ${{ output_file }}"
+       - "echo greeting=\"hello ${{ inputs.who }}\" | tee ${{ output_file }}"
    ```
 
    - In this `spec`, you've defined a single output `greeting` without a default. Because
      there is no default, the output `greeting` is required.
    - Outputs are written to a file `${{ output_file }}` (provided at run time) in the form `key=value`.
-   - This step runs `echo greeting=hello ${{ inputs.name }}` and sends the output to the logs and the output file (`tee ${{ output_file }}`).
+   - This step runs `echo greeting=\"hello ${{ inputs.name }}\"` and sends the output to the logs and the output file (`tee ${{ output_file }}`).
 
 1. In `step.yml`, add an output to the step:
 
@@ -338,7 +342,7 @@ The echo step takes a single input `echo`, prints it to the logs, and outputs it
            - name: hello_everybody
              step: .
            - name: all_my_greetings
-             step: gitlab.com/gitlab-org/ci-cd/runner-tools/echo-step@master
+             step: gitlab.com/gitlab-org/ci-cd/runner-tools/echo-step@main
              inputs:
                echo: "all my greetings say ${{ steps.hello_everybody.outputs.all_greetings }}"
      image: registry.gitlab.com/gitlab-org/step-runner:v0
