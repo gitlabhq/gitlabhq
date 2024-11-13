@@ -1,9 +1,9 @@
 ---
 table_name: abuse_report_assignees
 classes:
-  - Admin::AbuseReportAssignee
+- Admin::AbuseReportAssignee
 feature_categories:
-  - insider_threat
+- insider_threat
 description: Stores information linking abuse reports and users (assignee)
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134240
 milestone: '16.7'

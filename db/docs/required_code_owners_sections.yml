@@ -27,4 +27,3 @@ desired_sharding_key:
         table: protected_branches
         sharding_key: namespace_id
         belongs_to: protected_branch
-

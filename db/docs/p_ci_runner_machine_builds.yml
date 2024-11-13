@@ -1,3 +1,4 @@
+---
 table_name: p_ci_runner_machine_builds
 classes:
 - Ci::RunnerManagerBuild

@@ -31,4 +31,6 @@ class RspecMetadataValidator
     end
   end
 end
+
+RspecMetadataValidator.prepend_mod
 # rubocop:enable Gitlab/NamespacedClass

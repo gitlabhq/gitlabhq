@@ -4,7 +4,8 @@ classes:
 - Members::MemberApproval
 feature_categories:
 - groups_and_projects
-description: Stores approval requests for Member promotions along with old and new access_levels
+description: Stores approval requests for Member promotions along with old and new
+  access_levels
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140073
 milestone: '16.9'
 gitlab_schema: gitlab_main_cell

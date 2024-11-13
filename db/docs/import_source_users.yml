@@ -4,7 +4,8 @@ classes:
 - Import::SourceUser
 feature_categories:
 - importers
-description: Used to map imported user contributions to internal placeholder users or real users
+description: Used to map imported user contributions to internal placeholder users
+  or real users
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147488
 milestone: '17.0'
 gitlab_schema: gitlab_main_cell

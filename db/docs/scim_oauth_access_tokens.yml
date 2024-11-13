@@ -4,7 +4,8 @@ classes:
 - ScimOauthAccessToken
 feature_categories:
 - system_access
-description: Bearer token used  for authenticating SCIM requests. This is table used for Instance SCIM
+description: Bearer token used  for authenticating SCIM requests. This is table used
+  for Instance SCIM
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/e9b2253fe3538234d1c4d173c4549a955233d836
 milestone: '11.10'
 gitlab_schema: gitlab_main_cell

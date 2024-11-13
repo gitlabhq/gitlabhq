@@ -4,7 +4,8 @@ classes:
 - Security::Training
 feature_categories:
 - vulnerability_management
-description: Stores information about the primary security training provider for a given project
+description: Stores information about the primary security training provider for a
+  given project
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78195
 milestone: '14.7'
 gitlab_schema: gitlab_main_cell

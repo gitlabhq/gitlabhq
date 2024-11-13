@@ -4,7 +4,8 @@ classes:
 - Users::GroupVisit
 feature_categories:
 - navigation
-description: Tracks group visits so we can suggest groups that are recently and frequently visited.
+description: Tracks group visits so we can suggest groups that are recently and frequently
+  visited.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123554
 milestone: '16.4'
 gitlab_schema: gitlab_main_cell

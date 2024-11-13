@@ -4,9 +4,8 @@ classes:
 - Gitlab::Database::Reindexing::ReindexAction
 feature_categories:
 - database
-description: >-
-  Captures details about reindexing operations on a per-index basis.
-  See https://docs.gitlab.com/ee/administration/raketasks/maintenance.html#rebuild-database-indexes
+description: Captures details about reindexing operations on a per-index basis. See
+  https://docs.gitlab.com/ee/administration/raketasks/maintenance.html#rebuild-database-indexes
   for details about reindexing.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/43156
 milestone: '13.5'

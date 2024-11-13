@@ -4,7 +4,8 @@ classes:
 - ActivityPub::ReleasesSubscription
 feature_categories:
 - release_orchestration
-description: Stores subscriptions from external users through ActivityPub for project releases
+description: Stores subscriptions from external users through ActivityPub for project
+  releases
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132889
 milestone: '16.6'
 gitlab_schema: gitlab_main_cell

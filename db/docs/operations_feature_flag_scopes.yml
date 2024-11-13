@@ -7,4 +7,5 @@ description: Deprecated in favor of `operations_scopes`. To be dropped.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/9110
 milestone: '11.8'
 gitlab_schema: gitlab_main
-exempt_from_sharding: true # because this table has no data and is marked to be dropped.
+exempt_from_sharding: true
+notes: Exempted because because this table has no data and is marked to be dropped.

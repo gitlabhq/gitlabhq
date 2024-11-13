@@ -4,7 +4,8 @@ classes:
 - Iteration
 feature_categories:
 - team_planning
-description: Also called iterations, timeboxes to which issues can be assigned. Used to plan and track work.
+description: Also called iterations, timeboxes to which issues can be assigned. Used
+  to plan and track work.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/30125
 milestone: '13.0'
 gitlab_schema: gitlab_main_cell

@@ -4,8 +4,8 @@ classes:
 - Clusters::Agents::UrlConfiguration
 feature_categories:
 - deployment_management
-description: 
-introduced_by_url: 
+description:
+introduced_by_url:
 milestone: '17.4'
 gitlab_schema: gitlab_main_cell
 sharding_key:

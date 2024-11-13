@@ -4,14 +4,9 @@ classes:
 - Postgresql::DetachedPartition
 feature_categories:
 - database
-description: >
-  The detached_partitions table stores information about partitions in the gitlab_partitions_dynamic schema that
-  have been scheduled for drop, but not yet dropped.
-
-  These partitions were created by the Gitlab::Database::Partitioning::PartitionManager, and then detached from their
-  parent tables and added to this table when no longer part of the active partition set. Partitions are scheduled for
-  deletion one week after detachment.
-
+description: |
+  The detached_partitions table stores information about partitions in the gitlab_partitions_dynamic schema that have been scheduled for drop, but not yet dropped.
+  These partitions were created by the Gitlab::Database::Partitioning::PartitionManager, and then detached from their parent tables and added to this table when no longer part of the active partition set. Partitions are scheduled for deletion one week after detachment.
   Rows in this table are processed by Database::DropDetachedPartitionsWorker, which runs once a day.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67056
 milestone: '14.2'

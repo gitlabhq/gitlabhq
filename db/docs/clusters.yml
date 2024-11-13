@@ -8,4 +8,5 @@ description: Persists information about GitLab managed clusters
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/14879
 milestone: '10.1'
 gitlab_schema: gitlab_main
-exempt_from_sharding: true # Table is scheduled for removal
+exempt_from_sharding: true
+notes: Exempted because Table is scheduled for removal

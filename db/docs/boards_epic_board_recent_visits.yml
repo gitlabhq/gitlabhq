@@ -4,7 +4,8 @@ classes:
 - Boards::EpicBoardRecentVisit
 feature_categories:
 - portfolio_management
-description: The epic board most recently visited by users, used to determine where to redirect them by default
+description: The epic board most recently visited by users, used to determine where
+  to redirect them by default
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60720
 milestone: '13.12'
 gitlab_schema: gitlab_main_cell

@@ -8,4 +8,5 @@ description: Contains periodically snapshotted database record counts.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62797
 milestone: '14.0'
 gitlab_schema: gitlab_main_cell
-exempt_from_sharding: true  # Cell local table storing instance level-aggregations
+exempt_from_sharding: true
+notes: Exempted because Cell local table storing instance level-aggregations

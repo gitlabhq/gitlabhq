@@ -1,10 +1,11 @@
 ---
 table_name: security_policy_requirements
 classes:
-  - ComplianceManagement::ComplianceFramework::SecurityPolicyRequirement
+- ComplianceManagement::ComplianceFramework::SecurityPolicyRequirement
 feature_categories:
-  - compliance_management
-description: Stores the mapping of compliance framework security policies and compliance requirements
+- compliance_management
+description: Stores the mapping of compliance framework security policies and compliance
+  requirements
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163535
 milestone: '17.4'
 gitlab_schema: gitlab_main_cell

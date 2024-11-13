@@ -4,9 +4,9 @@ classes:
 - Gitlab::Database::AsyncIndexes::PostgresAsyncIndex
 feature_categories:
 - database
-description: >-
-  Contains a queue-like structure for database indexes scheduled to be created asynchronously.
-  See https://docs.gitlab.com/ee/development/adding_database_indexes.html#create-indexes-asynchronously for more details.
+description: Contains a queue-like structure for database indexes scheduled to be
+  created asynchronously. See https://docs.gitlab.com/ee/development/adding_database_indexes.html#create-indexes-asynchronously
+  for more details.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66478
 milestone: '14.2'
 gitlab_schema: gitlab_shared

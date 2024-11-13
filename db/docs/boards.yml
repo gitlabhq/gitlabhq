@@ -4,7 +4,8 @@ classes:
 - Board
 feature_categories:
 - team_planning
-description: Configuration information for issue boards, including default scope and visibility of open and closed lists
+description: Configuration information for issue boards, including default scope and
+  visibility of open and closed lists
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/611dab2e522e5e59cf09cd459a31686e65616863
 milestone: '8.11'
 gitlab_schema: gitlab_main_cell

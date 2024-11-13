@@ -3,7 +3,7 @@ table_name: cloud_connector_access
 classes:
 - CloudConnector::Access
 feature_categories:
-  - cloud_connector
+- cloud_connector
 description: Information about Cloud Connector features
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140456
 milestone: '16.8'

@@ -43,6 +43,7 @@ gitlab_schema: gitlab_main
 | `introduced_by_url`        | URL           | no       | URL to the merge request or commit which introduced this table. |
 | `milestone`                | String        | yes      | The milestone that introduced this table. |
 | `gitlab_schema`            | String        | yes      | GitLab schema name. |
+| `notes`                    | String        | no       | Use for comments, as Psych cannot parse YAML comments. |
 
 ### Process
 

@@ -4,7 +4,8 @@ classes:
 - DastSiteProfile
 feature_categories:
 - dynamic_application_security_testing
-description: A site profile describes the attributes of a web site to scan on demand with DAST
+description: A site profile describes the attributes of a web site to scan on demand
+  with DAST
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36659
 milestone: '13.2'
 gitlab_schema: gitlab_sec

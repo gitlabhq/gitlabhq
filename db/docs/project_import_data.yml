@@ -10,4 +10,4 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/7d98c8842d6bc9b
 milestone: '7.10'
 gitlab_schema: gitlab_main_cell
 sharding_key:
-   project_id: projects
+  project_id: projects

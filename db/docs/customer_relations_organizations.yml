@@ -4,7 +4,8 @@ classes:
 - CustomerRelations::Organization
 feature_categories:
 - service_desk
-description: Organizations, against which time can be spent by users on issues using the CRM functionality
+description: Organizations, against which time can be spent by users on issues using
+  the CRM functionality
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67551
 milestone: '14.2'
 gitlab_schema: gitlab_main_cell

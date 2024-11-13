@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Group', feature_category: :groups_and_projects do
-  let_it_be(:user) { create(:user) }
+RSpec.describe 'Group', :with_current_organization, feature_category: :groups_and_projects do
+  let_it_be(:user) { create(:user, organizations: [current_organization]) }
 
   before do
     sign_in(user)
@@ -218,10 +218,10 @@ RSpec.describe 'Group', feature_category: :groups_and_projects do
   end
 
   describe 'create a nested group', :js do
-    let_it_be(:group) { create(:group, path: 'foo') }
+    let_it_be(:group) { create(:group, path: 'foo', organization: current_organization) }
 
     context 'as admin' do
-      let(:user) { create(:admin) }
+      let(:user) { create(:admin, organizations: [current_organization]) }
 
       before do
         visit new_group_path(parent_id: group.id, anchor: 'create-group-pane')
@@ -246,7 +246,7 @@ RSpec.describe 'Group', feature_category: :groups_and_projects do
 
     context 'as group owner' do
       it 'creates a nested group' do
-        user = create(:user)
+        user = create(:user, organizations: [current_organization])
 
         group.add_owner(user)
         sign_out(:user)

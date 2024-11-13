@@ -1,10 +1,11 @@
 ---
 table_name: audit_events_streaming_http_group_namespace_filters
 classes:
-  - AuditEvents::Streaming::HTTP::NamespaceFilter
+- AuditEvents::Streaming::HTTP::NamespaceFilter
 feature_categories:
-  - audit_events
-description: Represents a subgroup or project filter for audit event streaming on groups
+- audit_events
+description: Represents a subgroup or project filter for audit event streaming on
+  groups
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135080
 milestone: '16.6'
 gitlab_schema: gitlab_main_cell

@@ -8,4 +8,5 @@ description: "(Deprecated) A Kubernetes namespace in a GitLab managed Kubernetes
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/e3ca493876ab71ed29817a0af436fc563f564bbe
 milestone: '11.5'
 gitlab_schema: gitlab_main
-exempt_from_sharding: true # Table is scheduled for removal
+exempt_from_sharding: true
+notes: Exempted because Table is scheduled for removal

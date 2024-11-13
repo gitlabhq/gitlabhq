@@ -4,7 +4,8 @@ classes:
 - ServiceDesk::CustomEmailVerification
 feature_categories:
 - service_desk
-description: Holds the verification state and additional information for custom email addresses for Service Desk
+description: Holds the verification state and additional information for custom email
+  addresses for Service Desk
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112938
 milestone: '15.10'
 gitlab_schema: gitlab_main_cell

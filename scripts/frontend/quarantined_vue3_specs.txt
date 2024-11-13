@@ -74,7 +74,6 @@ ee/spec/frontend/insights/insights_router_spec.js
 ee/spec/frontend/integrations/edit/components/jira_issue_creation_vulnerabilities_spec.js
 ee/spec/frontend/issuable/components/related_issuable_item_spec.js
 ee/spec/frontend/issues/list/components/issues_list_app_spec.js
-ee/spec/frontend/issues/service_desk/components/service_desk_list_app_spec.js
 ee/spec/frontend/issues_analytics/components/issues_analytics_table_spec.js
 ee/spec/frontend/iterations/components/iteration_form_spec.js
 ee/spec/frontend/iterations/components/iteration_report_issues_spec.js

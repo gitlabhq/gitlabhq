@@ -3,7 +3,7 @@ table_name: pm_licenses
 classes:
 - PackageMetadata::License
 feature_categories:
-  - software_composition_analysis
+- software_composition_analysis
 description: Tracks licenses referenced by public package registries.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102794
 milestone: '15.6'
