@@ -27,6 +27,16 @@ export default {
       required: false,
       default: null,
     },
+    hasMergeRequests: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+    loading: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -46,10 +56,8 @@ export default {
     },
   },
   watch: {
-    count: {
-      handler(newVal) {
-        this.open = newVal > 0;
-      },
+    loading(newVal) {
+      this.open = newVal || this.hasMergeRequests;
     },
   },
 };
@@ -64,7 +72,7 @@ export default {
   >
     <template #title>
       {{ title }}
-      <gl-badge v-if="count" size="sm">{{ count }}</gl-badge>
+      <gl-badge v-if="count !== null" size="sm">{{ count }}</gl-badge>
     </template>
 
     <template #actions>
@@ -77,7 +85,7 @@ export default {
       />
     </template>
 
-    <template v-if="!count" #empty>
+    <template v-if="!hasMergeRequests && !loading" #empty>
       {{ __('No merge requests match this list.') }}
     </template>
 

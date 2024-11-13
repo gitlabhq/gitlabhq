@@ -52,7 +52,7 @@
 
     .author-name {
       a {
-        color: $gl-text-color;
+        @apply gl-text-default;
         font-weight: $gl-font-weight-bold;
       }
     }
@@ -64,17 +64,13 @@
 
   .event-body {
     margin-top: $gl-padding-4;
-    color: $gl-text-color;
+    @apply gl-text-default;
 
     .event-note {
       word-wrap: break-word;
 
       .md {
         font-size: $gl-font-size;
-
-        .badge.badge-pill {
-          color: $gl-text-color;
-        }
       }
 
       code {

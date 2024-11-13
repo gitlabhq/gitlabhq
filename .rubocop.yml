@@ -36,23 +36,16 @@ AllCops:
     - 'vendor/**/*'
     - 'node_modules/**/*'
     - 'db/fixtures/**/*'
-    - 'db/schema.rb'
     - 'tmp/**/*'
     - 'bin/**/*'
     - 'generator_templates/**/*'
     - 'builds/**/*'
-    - 'plugins/**/*'
     - 'file_hooks/**/*'
     - 'workhorse/**/*'
     - 'shared/packages/**/*'
     - 'spec/support/*.git/**/*'  # e.g. spec/support/gitlab-git-test.git
-    - 'db/ci_migrate/*.rb'      # since the `db/ci_migrate` is a symlinked to `db/migrate`
     # projects_controller.rb is used for testing LLM response and is very sensitive to whitespaces.
     - 'ee/spec/fixtures/llm/projects_controller.rb'
-    # Adding this specifically for a large revert: !118368
-    <% File.readlines('.rubocop_revert_ignores.txt').map(&:chomp).each do |f| %>
-    - '<%= f %>'
-    <% end %>
   # Use absolute path to avoid orphan directories with changed workspace root.
   CacheRootDirectory: <%= Dir.getwd %>/tmp
   MaxFilesInCache: 1_000_000
@@ -556,6 +549,7 @@ Gitlab/RSpec/AvoidSetup:
   Include:
     - 'ee/spec/features/registrations/saas/**/*'
     - 'ee/spec/features/gitlab_subscriptions/trials/creation_*'
+    - 'ee/spec/features/gitlab_subscriptions/trials/access_denied_spec.rb'
     - 'ee/spec/features/gitlab_subscriptions/trials/duo_pro/**/*'
     - 'ee/spec/features/gitlab_subscriptions/trials/duo_enterprise/**/*'
 

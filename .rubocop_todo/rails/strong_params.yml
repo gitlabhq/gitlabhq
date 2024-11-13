@@ -264,7 +264,6 @@ Rails/StrongParams:
     - 'ee/app/controllers/ee/sessions_controller.rb'
     - 'ee/app/controllers/ee/users_controller.rb'
     - 'ee/app/controllers/gitlab_subscriptions/subscriptions_controller.rb'
-    - 'ee/app/controllers/gitlab_subscriptions/trials_controller.rb'
     - 'ee/app/controllers/groups/analytics/application_controller.rb'
     - 'ee/app/controllers/groups/analytics/ci_cd_analytics_controller.rb'
     - 'ee/app/controllers/groups/analytics/coverage_reports_controller.rb'

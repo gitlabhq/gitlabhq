@@ -28,7 +28,7 @@ RSpec.describe SandboxController, feature_category: :shared do
 
       context 'when enforce_terms setting is enabled' do
         before do
-          stub_application_setting(enforce_terms: true)
+          stub_application_setting(enforce_terms: true, require_two_factor_authentication: true)
         end
 
         it 'does not enforce terms for rendering Mermaid markdown' do

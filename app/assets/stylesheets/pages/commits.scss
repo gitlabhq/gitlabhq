@@ -53,7 +53,7 @@
     color: $gl-text-color-secondary;
 
     .commit-author-link {
-      color: $gl-text-color;
+      @apply gl-text-default;
     }
 
     // stylelint-disable-next-line gitlab/no-gl-class
@@ -110,7 +110,7 @@
 
   .label-monospace {
     user-select: text;
-    color: $gl-text-color;
+    @apply gl-text-default;
     background-color: $gray-10;
   }
 
@@ -137,7 +137,7 @@
 .commit,
 .generic-commit-status {
   a {
-    color: $gl-text-color;
+    @apply gl-text-default;
   }
 
   .commit-row-description {

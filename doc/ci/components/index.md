@@ -55,7 +55,7 @@ To create a component project, you must:
 
 1. [Create a new project](../../user/project/index.md#create-a-blank-project) with a `README.md` file:
    - Ensure the description gives a clear introduction to the component.
-   - Optional. After the project is created, you can [add a project avatar](../../user/project/working_with_projects.md#edit-project-name-description-and-avatar).
+   - Optional. After the project is created, you can [add a project avatar](../../user/project/working_with_projects.md#add-a-project-avatar).
 
    Components published to the [CI/CD catalog](#cicd-catalog) use both the description and avatar when displaying the component project's summary.
 
@@ -614,7 +614,7 @@ Prerequisites:
 - You must have at least the Maintainer role for the project.
 - The project must:
   - Be set as a [catalog project](#set-a-component-project-as-a-catalog-project).
-  - Have a [project description](../../user/project/working_with_projects.md#edit-project-name-description-and-avatar) defined.
+  - Have a [project description](../../user/project/working_with_projects.md#edit-project-name-and-description) defined.
   - Have a `README.md` file in the root directory for the commit SHA of the tag being released.
   - Have at least one [CI/CD component in the `templates/` directory](#directory-structure)
     for the commit SHA of the tag being released.
@@ -725,7 +725,7 @@ To mirror a GitLab.com component in your self-managed instance:
 1. Make sure that [network outbound requests](../../security/webhooks.md) are allowed for `gitlab.com`.
 1. [Create a group](../../user/group/index.md#create-a-group) to host the component projects (recommended group: `components`).
 1. [Create a mirror of the component project](../../user/project/repository/mirror/pull.md) in the new group.
-1. Write a [project description](../../user/project/working_with_projects.md#edit-project-name-description-and-avatar)
+1. Write a [project description](../../user/project/working_with_projects.md#edit-project-name-and-description)
    for the component project mirror because mirroring repositories does not copy the description.
 1. [Set the self-hosted component project as a catalog resource](#set-a-component-project-as-a-catalog-project).
 1. Publish [a new release](../../user/project/releases/index.md) in the self-hosted component project by

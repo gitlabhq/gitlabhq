@@ -15,7 +15,7 @@
     &.commit-icon {
       svg {
         path {
-          fill: $gl-text-color;
+          @apply gl-fill-icon-default;
         }
       }
     }

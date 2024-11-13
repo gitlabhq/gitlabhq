@@ -20,7 +20,7 @@
 .upload-dropzone-card {
   @apply gl-transition-[background,border];
 
-  color: $gl-text-color;
+  @apply gl-text-default;
 
   &:hover,
   &:focus,
@@ -28,7 +28,7 @@
   &:active {
     outline: none;
     @include dropzone-background($blue-500);
-    color: $gl-text-color;
+    @apply gl-text-default;
   }
 
   &:focus,

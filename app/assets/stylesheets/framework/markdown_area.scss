@@ -47,7 +47,7 @@
 }
 
 .referenced-users {
-  color: $gl-text-color;
+  @apply gl-text-default;
   padding: 0 $gl-padding $gl-padding-8;
 }
 

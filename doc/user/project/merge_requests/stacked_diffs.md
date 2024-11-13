@@ -50,15 +50,15 @@ To do create a stacked diff in the GitLab CLI:
 
 Use these sub-commands with `glab stack`:
 
-- [`amend`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/stack/amend.md)
-- [`create`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/stack/create.md)
-- [`first`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/stack/first.md)
-- [`last`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/stack/last.md)
-- [`move`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/stack/move.md)
-- [`next`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/stack/next.md)
-- [`prev`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/stack/prev.md)
-- [`save`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/stack/save.md)
-- [`sync`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/stack/sync.md)
+- [`amend`](https://gitlab.com/gitlab-org/cli/-/blob/main/docs/source/stack/amend.md)
+- [`create`](https://gitlab.com/gitlab-org/cli/-/blob/main/docs/source/stack/create.md)
+- [`first`](https://gitlab.com/gitlab-org/cli/-/blob/main/docs/source/stack/first.md)
+- [`last`](https://gitlab.com/gitlab-org/cli/-/blob/main/docs/source/stack/last.md)
+- [`move`](https://gitlab.com/gitlab-org/cli/-/blob/main/docs/source/stack/move.md)
+- [`next`](https://gitlab.com/gitlab-org/cli/-/blob/main/docs/source/stack/next.md)
+- [`prev`](https://gitlab.com/gitlab-org/cli/-/blob/main/docs/source/stack/prev.md)
+- [`save`](https://gitlab.com/gitlab-org/cli/-/blob/main/docs/source/stack/save.md)
+- [`sync`](https://gitlab.com/gitlab-org/cli/-/blob/main/docs/source/stack/sync.md)
 
 ## Add changes to a diff in a stack
 

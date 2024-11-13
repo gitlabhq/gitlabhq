@@ -55798,9 +55798,6 @@ msgstr ""
 msgid "There are no matching files"
 msgstr ""
 
-msgid "There are no more seats left in your subscription. New users cannot be added to this instance."
-msgstr ""
-
 msgid "There are no open epics"
 msgstr ""
 

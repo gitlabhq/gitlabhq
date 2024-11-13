@@ -98,10 +98,10 @@
   color: $gray-200;
 }
 
-.light { color: $gl-text-color; }
+.light { @apply gl-text-default; }
 
 .slead {
-  color: $gl-text-color;
+  @apply gl-text-default;
   font-size: 14px;
   margin-bottom: 12px;
   font-weight: $gl-font-weight-normal;
@@ -310,7 +310,7 @@ li.note {
     padding: 0 10px;
     clip: auto;
     text-decoration: none;
-    color: $gl-text-color;
+    @apply gl-text-default;
     background: $gray-10;
     z-index: 1;
   }

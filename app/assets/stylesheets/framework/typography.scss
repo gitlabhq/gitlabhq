@@ -5,7 +5,7 @@
 .md {
   position: relative;
   z-index: 1;
-  color: $gl-text-color;
+  @apply gl-text-default;
   word-wrap: break-word;
 
   [dir='auto'] {
@@ -21,7 +21,7 @@
   }
 
   p {
-    color: $gl-text-color;
+    @apply gl-text-default;
     margin: 0 0 16px;
 
     > code {
@@ -110,7 +110,7 @@
     margin: 24px 0 16px;
     padding-bottom: 0.3em;
     border-bottom: 1px solid $gray-200;
-    color: $gl-text-color;
+    @apply gl-text-heading;
 
     &:first-child {
       margin-top: 0;
@@ -123,7 +123,7 @@
     margin: 24px 0 16px;
     padding-bottom: 0.3em;
     border-bottom: 1px solid $gray-200;
-    color: $gl-text-color;
+    @apply gl-text-heading;
   }
 
   h3 {
@@ -199,7 +199,7 @@
 
   table:not(.code) {
     margin: 16px 0;
-    color: $gl-text-color;
+    @apply gl-text-default;
     border: 0;
     width: auto;
     display: block;
@@ -493,7 +493,7 @@
     }
 
     .drag-icon {
-      color: $gl-text-color;
+      @apply gl-fill-icon-default;
     }
 
     // If an inapplicable task list item contains labels or <kbd>s, strike them
@@ -746,7 +746,7 @@ pre {
   font-size: $gl-font-size;
   word-break: break-all;
   word-wrap: break-word;
-  color: $gl-text-color;
+  @apply gl-text-default;
   background-color: $gray-10;
   border: 1px solid $gray-100;
   border-radius: $border-radius-small;
@@ -791,7 +791,7 @@ h2,
 h3,
 h4 {
   small {
-    color: $gl-text-color;
+    @apply gl-text-heading;
   }
 }
 

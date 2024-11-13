@@ -121,7 +121,7 @@ Or
 1. On the left sidebar, select your avatar and then your username.
 1. On the left sidebar, select **Starred projects**.
 
-## Edit project name, description, and avatar
+## Edit project name and description
 
 Use the project general settings to edit your project details.
 
@@ -134,7 +134,52 @@ Prerequisites:
 1. In the **Project name** text box, enter your project name. See the [limitations on project names](../../user/reserved_names.md).
 1. Optional. In the **Project description** text box, enter your project description. The description is limited to 2,000 characters.
 Components published in the CI/CD catalog require a project description.
-1. Optional. Under **Project avatar**, to change your project avatar, select **Choose file**. The ideal image size is 192 x 192 pixels, and the maximum file size allowed is 200 KB.
+1. Select **Save changes**.
+
+## Add a project avatar
+
+Add a project avatar to help visually identify your project. If you do not add an avatar, GitLab displays the first letter of your project name as the default project avatar.
+
+To add a project avatar, use one of the following methods:
+
+- [Add a logo](#add-a-logo-to-your-repository) to your repository.
+- [Upload an avatar](#upload-an-avatar-in-project-settings) in your project settings.
+
+### Add a logo to your repository
+
+If you haven't uploaded an avatar to your project settings, GitLab looks for a file named `logo` in your repository to use as the default project avatar.
+
+Prerequisites:
+
+- You must have at least the Maintainer role for the project.
+- Your file must be 200 KB or smaller. The ideal image size is 192 x 192 pixels.
+- The file must be named `logo` with the extension `.png`, `.jpg`, or `.gif`. For example, `logo.gif`.
+
+To add a logo file to use as your project avatar:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. In the root of your project repository, upload the logo file.
+
+### Upload an avatar in project settings
+
+Prerequisites:
+
+- You must have at least the Maintainer role for the project.
+- Your file must be 200 KB or smaller. The ideal image size is 192 x 192 pixels.
+- The image must be one of the following file types:
+  - `.bmp`
+  - `.gif`
+  - `.ico`
+  - `.jpeg`
+  - `.png`
+  - `.tiff`
+
+To upload an avatar in your project settings:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > General**.
+1. In the **Project avatar** section, select **Choose file**.
+1. Select your avatar file.
 1. Select **Save changes**.
 
 ## Star a project

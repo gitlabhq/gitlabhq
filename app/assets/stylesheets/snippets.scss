@@ -9,7 +9,7 @@
   font-family: $regular-font;
   font-size: $gl-font-size;
   line-height: $code-line-height;
-  color: $gl-text-color;
+  @apply gl-text-default;
   margin: 20px;
   font-weight: $gl-font-weight-normal;
 
@@ -122,7 +122,7 @@
 
       .gitlab-embedded-snippets-title {
         text-decoration: none;
-        color: $gl-text-color;
+        @apply gl-text-heading;
         word-break: break-word;
 
         &:hover {

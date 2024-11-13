@@ -304,11 +304,13 @@ in an authentication log. To check the log:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > CI/CD**.
 1. Expand **Job token permissions**. The **Authentication log** section displays the
-   the list of other projects that accessed your project by authenticating with a job token.
+   list of other projects that accessed your project by authenticating with a job token.
 1. Optional. Select **Download CSV** to download the full authentication log in CSV format.
 
 The authentication log displays a maximum of 100 authentication events. If the number of events
 is more than 100, download the CSV file to view the log.
+
+New authentications to a project can take up to 5 minutes to appear in the authentication log.
 
 ## Troubleshooting
 

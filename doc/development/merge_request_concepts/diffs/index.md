@@ -31,7 +31,6 @@ codebase in the future:
   [Recording on YouTube](https://www.youtube.com/watch?v=K6G3gMcFyek)
   <!-- Video published on 2019-01-29 -->
 - Slides on [Google Slides](https://docs.google.com/presentation/d/1bGutFH2AT3bxOPZuLMGl1ANWHqFnrxwQwjiwAZkF-TU/edit)
-- [PDF slides](https://gitlab.com/gitlab-org/create-stage/uploads/b5ad2f336e0afcfe0f99db0af0ccc71a/)
 
 Everything covered in this deep dive was accurate as of GitLab 11.7, and while specific details might
 have changed since then, it should still serve as a good introduction.

@@ -86,7 +86,7 @@ ul.content-list {
   li {
     border-color: $gray-50;
     font-size: $gl-font-size;
-    color: $gl-text-color;
+    @apply gl-text-default;
     word-break: break-word;
 
     .title {

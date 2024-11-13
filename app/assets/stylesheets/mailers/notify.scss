@@ -16,18 +16,18 @@
 
 // stylelint-disable-next-line gitlab/no-gl-class
 .gl-label-text-light {
-  color: $white;
+  color: $gl-label-dark-text-color;
 }
 
 // stylelint-disable-next-line gitlab/no-gl-class
 .gl-label-text-dark {
-  color: $gl-text-color;
+  color: $gl-label-light-text-color;
 }
 
 // stylelint-disable-next-line gitlab/no-gl-class
 .gl-label-text-scoped {
   padding: 0 5px;
-  color: $gl-text-color;
+  color: $gl-label-scoped-text-color;
 }
 
 .content {
