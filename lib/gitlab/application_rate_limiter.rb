@@ -82,6 +82,7 @@ module Gitlab
           vertex_embeddings_api: { threshold: 450, interval: 1.minute },
           jobs_index: { threshold: -> { application_settings.project_jobs_api_rate_limit }, interval: 1.minute },
           bulk_import: { threshold: 6, interval: 1.minute },
+          fogbugz_import: { threshold: 1, interval: 1.minute },
           import_source_user_notification: { threshold: 1, interval: 8.hours },
           projects_api_rate_limit_unauthenticated: {
             threshold: -> { application_settings.projects_api_rate_limit_unauthenticated }, interval: 10.minutes
