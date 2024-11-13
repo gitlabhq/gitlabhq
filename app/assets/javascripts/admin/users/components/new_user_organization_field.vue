@@ -10,8 +10,7 @@ export default {
   name: 'NewUserOrganizationField',
   AVATAR_SHAPE_OPTION_RECT,
   organizationsQuery,
-  inputName: 'user[organization_id]',
-  inputId: 'user_organization_id',
+  organizationInputId: 'user_organization_id',
   i18n: {
     organizationSelectLabel: s__('Organization|Select an organization'),
   },
@@ -24,6 +23,21 @@ export default {
     initialOrganization: {
       type: Object,
       required: true,
+    },
+    initialAccessLevel: {
+      type: String,
+      required: false,
+      default: undefined,
+    },
+    organizationInputName: {
+      type: String,
+      required: false,
+      default: 'user[organization_id]',
+    },
+    organizationRoleInputName: {
+      type: String,
+      required: false,
+      default: undefined,
     },
   },
   computed: {
@@ -45,8 +59,8 @@ export default {
       query-path="organizations"
       block
       :initial-selection="initialSelection"
-      :input-name="$options.inputName"
-      :input-id="$options.inputId"
+      :input-name="organizationInputName"
+      :input-id="$options.organizationInputId"
       toggle-class="gl-form-input-xl"
       :searchable="false"
     >
@@ -65,13 +79,15 @@ export default {
         :src="initialOrganization.avatarUrl"
       />
       <input
-        :id="$options.inputId"
-        :name="$options.inputName"
+        :id="$options.organizationInputId"
+        :name="organizationInputName"
         :value="initialOrganization.id"
         type="hidden"
-        role="textbox"
       />
     </div>
-    <organization-role-field />
+    <organization-role-field
+      :initial-access-level="initialAccessLevel"
+      :input-name="organizationRoleInputName"
+    />
   </div>
 </template>

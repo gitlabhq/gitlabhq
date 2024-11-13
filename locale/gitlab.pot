@@ -40178,6 +40178,9 @@ msgstr ""
 msgid "PipelineCharts|An error has occurred when retrieving the pipelines data"
 msgstr ""
 
+msgid "PipelineCharts|An error occurred while loading pipeline analytics."
+msgstr ""
+
 msgid "PipelineCharts|An unknown error occurred while processing CI/CD analytics."
 msgstr ""
 
@@ -40185,6 +40188,21 @@ msgid "PipelineCharts|CI/CD Analytics"
 msgstr ""
 
 msgid "PipelineCharts|Failure rate"
+msgstr ""
+
+msgid "PipelineCharts|Last 180 days"
+msgstr ""
+
+msgid "PipelineCharts|Last 30 days"
+msgstr ""
+
+msgid "PipelineCharts|Last 90 days"
+msgstr ""
+
+msgid "PipelineCharts|Last week"
+msgstr ""
+
+msgid "PipelineCharts|Mean duration"
 msgstr ""
 
 msgid "PipelineCharts|Pipelines"
@@ -58233,7 +58251,13 @@ msgstr ""
 msgid "TransferProject|Please select a new namespace for your project."
 msgstr ""
 
-msgid "TransferProject|Project cannot be transferred, because tags are present in its container registry"
+msgid "TransferProject|Project cannot be transferred because of a container registry error: %{error}"
+msgstr ""
+
+msgid "TransferProject|Project cannot be transferred to a different top-level namespace, because image tags are present in its container registry"
+msgstr ""
+
+msgid "TransferProject|Project cannot be transferred, because image tags are present in its container registry"
 msgstr ""
 
 msgid "TransferProject|Project is already in this namespace."

@@ -284,8 +284,13 @@ configuration option in `gitlab.yml`. These metrics are served from the
 | `geo_terraform_state_versions_verified`        | Gauge   | 13.12  | Number of terraform state versions successfully verified on secondary | `url` |
 | `geo_terraform_state_versions_verification_failed` | Gauge   | 13.12  | Number of terraform state versions that failed verification on secondary | `url` |
 | `geo_terraform_state_versions_verification_total` | Gauge   | 13.12  | Number of terraform state versions to attempt to verify on secondary | `url` |
-| `global_search_bulk_cron_queue_size`           | Gauge   | 12.10 | Number of database records waiting to be synchronized to Elasticsearch | |
-| `global_search_awaiting_indexing_queue_size`   | Gauge   | 13.2  | Number of database updates waiting to be synchronized to Elasticsearch while indexing is paused | |
+| `global_search_bulk_cron_queue_size`           | Gauge   | 12.10 | Deprecated and planned for removal in 18.0. Replaced by `search_advanced_bulk_cron_queue_size`. Number of incremental database updates waiting to be synchronized to Elasticsearch | |
+| `global_search_bulk_cron_initial_queue_size`   | Gauge   | 13.1  | Deprecated and planned for removal in 18.0. Replaced by `search_advanced_bulk_cron_initial_queue_size`. Number of initial database updates waiting to be synchronized to Elasticsearch | |
+| `global_search_awaiting_indexing_queue_size`   | Gauge   | 13.2  | Deprecated and planned for removal in 18.0. Replaced by `search_advanced_awaiting_indexing_queue_size`. Number of database updates waiting to be synchronized to Elasticsearch while indexing is paused | |
+| `search_advanced_bulk_cron_queue_size`           | Gauge   | 17.6  | Number of incremental database updates waiting to be synchronized to Elasticsearch | |
+| `search_advanced_bulk_cron_initial_queue_size`   | Gauge   | 17.6  |  Number of initial database updates waiting to be synchronized to Elasticsearch | |
+| `search_advanced_bulk_cron_embedding_queue_size` | Gauge   | 17.6  | Number of embedding updates waiting to be synchronized to Elasticsearch | |
+| `search_advanced_awaiting_indexing_queue_size`   | Gauge   | 17.6  | Number of database updates waiting to be synchronized to Elasticsearch while indexing is paused | |
 | `geo_merge_request_diffs`                      | Gauge   | 13.4  | Number of merge request diffs on primary | `url` |
 | `geo_merge_request_diffs_checksum_total`       | Gauge   | 13.12 | Number of merge request diffs to checksum on primary | `url` |
 | `geo_merge_request_diffs_checksummed`          | Gauge   | 13.4  | Number of merge request diffs that successfully calculated the checksum on primary | `url` |

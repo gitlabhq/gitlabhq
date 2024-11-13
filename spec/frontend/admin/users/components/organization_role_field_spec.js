@@ -6,8 +6,8 @@ import { ACCESS_LEVEL_DEFAULT, ACCESS_LEVEL_OWNER } from '~/organizations/shared
 describe('OrganizationRoleField', () => {
   let wrapper;
 
-  const createComponent = () => {
-    wrapper = shallowMountExtended(OrganizationRoleField);
+  const createComponent = ({ propsData = {} } = {}) => {
+    wrapper = shallowMountExtended(OrganizationRoleField, { propsData });
   };
 
   const findListbox = () => wrapper.findComponent(GlCollapsibleListbox);
@@ -35,6 +35,7 @@ describe('OrganizationRoleField', () => {
 
   it('renders hidden input', () => {
     expect(findHiddenInput().element.value).toBe(ACCESS_LEVEL_DEFAULT);
+    expect(findHiddenInput().attributes('name')).toBe('user[organization_access_level]');
   });
 
   describe('when listbox is changed', () => {
@@ -43,6 +44,20 @@ describe('OrganizationRoleField', () => {
     });
 
     it('updates hidden input value', () => {
+      expect(findHiddenInput().element.value).toBe(ACCESS_LEVEL_OWNER);
+    });
+  });
+
+  describe('when initialAccessLevel prop is passed', () => {
+    beforeEach(() => {
+      createComponent({ propsData: { initialAccessLevel: ACCESS_LEVEL_OWNER } });
+    });
+
+    it('sets initial value of listbox', () => {
+      expect(findListbox().props('selected')).toBe(ACCESS_LEVEL_OWNER);
+    });
+
+    it('sets hidden input value', () => {
       expect(findHiddenInput().element.value).toBe(ACCESS_LEVEL_OWNER);
     });
   });

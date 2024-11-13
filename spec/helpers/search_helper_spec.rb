@@ -569,36 +569,6 @@ RSpec.describe SearchHelper, feature_category: :global_search do
         end
       end
     end
-
-    context 'with feature flag autocomplete_group_search_optimization disabled' do
-      before do
-        stub_feature_flags(autocomplete_group_search_optimization: false)
-      end
-
-      context 'when the user does not have access to groups' do
-        it 'does not return any results' do
-          expect(groups_autocomplete(search_term)).to eq([])
-        end
-      end
-
-      context 'when the user has access to one group' do
-        before do
-          group_2.add_developer(user)
-        end
-
-        it 'returns the group' do
-          expect(groups_autocomplete(search_term).pluck(:id)).to eq([group_2.id])
-        end
-
-        context 'when the search term is Gitlab::Search::Params::MIN_TERM_LENGTH characters long' do
-          let(:search_term) { 'te' }
-
-          it 'returns the group' do
-            expect(groups_autocomplete(search_term).pluck(:id)).to eq([group_2.id])
-          end
-        end
-      end
-    end
   end
 
   describe 'projects_autocomplete' do

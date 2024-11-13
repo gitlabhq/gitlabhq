@@ -16,7 +16,7 @@ module WebIde
             {
               service_url: "https://open-vsx.org/vscode/gallery",
               item_url: "https://open-vsx.org/vscode/item",
-              resource_url_template: "https://open-vsx.org/vscode/unpkg/{publisher}/{name}/{version}/{path}",
+              resource_url_template: "https://open-vsx.org/vscode/asset/{publisher}/{name}/{version}/Microsoft.VisualStudio.Code.WebResources/{path}",
               control_url: "",
               nls_base_url: "",
               publisher_url: ""

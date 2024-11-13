@@ -1,6 +1,3 @@
--# TODO - remove this when completing https://gitlab.com/gitlab-org/gitlab/-/issues/448811
-- show_organization_section = local_assigns.fetch(:show_organization_section, false)
-
 .user_new
   = gitlab_ui_form_for [:admin, @user], html: { class: 'fieldset-form' } do |f|
     = form_errors(@user)
@@ -44,10 +41,7 @@
 
     = render partial: 'access', locals: { f: f }
 
-    - if show_organization_section && Feature.enabled?(:ui_for_organizations, current_user) && show_new_user_organization_field?
-      = render ::Layouts::SettingsSectionComponent.new(_('Organization'), testid: 'organization-section') do |c|
-        - c.with_body do
-          #js-admin-user-organization-field{ data: { app_data: new_user_organization_field_app_data } }
+    = yield :organization_section
 
     = render_if_exists 'admin/users/namespace_plan_fieldset', f: f
 

@@ -1,0 +1,9 @@
+---
+name: transfer_project_with_tags
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/499163
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/171036
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/500975
+milestone: '17.6'
+group: group::container registry
+type: gitlab_com_derisk
+default_enabled: false

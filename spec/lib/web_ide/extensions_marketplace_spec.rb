@@ -14,7 +14,7 @@ RSpec.describe WebIde::ExtensionsMarketplace, feature_category: :web_ide do
       item_url: 'https://open-vsx.org/vscode/item',
       service_url: 'https://open-vsx.org/vscode/gallery',
       resource_url_template:
-        'https://open-vsx.org/vscode/unpkg/{publisher}/{name}/{version}/{path}'
+        'https://open-vsx.org/vscode/asset/{publisher}/{name}/{version}/Microsoft.VisualStudio.Code.WebResources/{path}'
     }
   end
 

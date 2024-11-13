@@ -1,9 +1,0 @@
----
-name: autocomplete_group_search_optimization
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/472011
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170948
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/501202
-milestone: '17.6'
-group: group::global search
-type: gitlab_com_derisk
-default_enabled: false

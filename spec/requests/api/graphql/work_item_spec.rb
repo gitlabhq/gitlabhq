@@ -1102,6 +1102,49 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
     end
 
     describe 'development widget' do
+      context 'when fetching related merge requests' do
+        let(:work_item_fields) do
+          <<~GRAPHQL
+            id
+            widgets {
+              type
+              ... on WorkItemWidgetDevelopment {
+                relatedMergeRequests {
+                  nodes {
+                    id
+                    iid
+                  }
+                }
+              }
+            }
+          GRAPHQL
+        end
+
+        before do
+          post_graphql(query, current_user: current_user)
+        end
+
+        context 'when user is developer' do
+          let(:current_user) { developer }
+
+          # Adding as empty list first to make the field available in next release
+          # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/503834
+          it 'returns related merge requests in the response' do
+            expect(work_item_data).to include(
+              'id' => work_item.to_global_id.to_s,
+              'widgets' => array_including(
+                hash_including(
+                  'type' => 'DEVELOPMENT',
+                  'relatedMergeRequests' => {
+                    'nodes' => []
+                  }
+                )
+              )
+            )
+          end
+        end
+      end
+
       context 'when fetching closing merge requests' do
         let_it_be(:merge_request1) { create(:merge_request, source_project: project) }
         let_it_be(:merge_request2) { create(:merge_request, source_project: project, target_branch: 'feature2') }

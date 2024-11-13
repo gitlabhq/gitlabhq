@@ -7,10 +7,13 @@ export const X_AXIS_LABEL_ROTATION = 45;
 export const X_AXIS_TITLE_OFFSET = 60;
 
 export const ONE_WEEK_AGO_DAYS = 7;
-
 export const ONE_MONTH_AGO_DAYS = 31;
-
 export const ONE_YEAR_AGO_DAYS = 365;
+
+export const DATE_RANGE_LAST_WEEK = 7;
+export const DATE_RANGE_LAST_30_DAYS = 30;
+export const DATE_RANGE_LAST_90_DAYS = 90;
+export const DATE_RANGE_LAST_180_DAYS = 180;
 
 export const DEFAULT = 'default';
 export const PARSE_FAILURE = 'parse_failure';

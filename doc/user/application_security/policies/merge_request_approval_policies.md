@@ -285,11 +285,6 @@ On self-managed GitLab, by default the `fallback_behavior` field is available. T
 
 ## `policy_tuning`
 
-> - The `policy_tuning` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/490092) in GitLab 17.6 [with a flag](../../../administration/feature_flags.md) named `unblock_rules_using_execution_policies`. Disabled by default.
-
-FLAG:
-The availability of this feature is controlled by a feature flag. For more information, see the history.
-
 | Field  | Type     | Required | Possible values    | Description                                                                                                          |
 |--------|----------|----------|--------------------|----------------------------------------------------------------------------------------------------------------------|
 | `unblock_rules_using_execution_policies` | `boolean` | false    | `true`, `false` | When enabled, approval rules become optional when scan artifacts are missing from the target branch and a scan is required by a scan execution policy. This option only works with an existing scan execution policy that has matching scanners. |

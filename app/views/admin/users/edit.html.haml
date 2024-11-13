@@ -5,4 +5,10 @@
 
 %h1.page-title.gl-text-size-h-display
   = _("Edit user: %{user_name}") % { user_name: @user.name }
+
+- if show_admin_edit_user_organization_field?(@user)
+  - content_for :organization_section do
+    = render ::Layouts::SettingsSectionComponent.new(_('Organization'), testid: 'organization-section') do |c|
+      - c.with_body do
+        #js-admin-edit-user-organization-field{ data: { app_data: admin_edit_user_organization_field_app_data(@user) } }
 = render 'form'
