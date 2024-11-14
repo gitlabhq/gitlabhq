@@ -739,6 +739,9 @@ export default {
       this.toggleTreeList();
       this.adjustView();
     },
+    isDiffViewActive(item) {
+      return this.virtualScrollCurrentIndex >= 0 && this.currentDiffFileId === item.file_hash;
+    },
   },
   howToMergeDocsPath: helpPagePath('user/project/merge_requests/merge_request_troubleshooting.md', {
     anchor: 'check-out-merge-requests-locally-through-the-head-ref',
@@ -812,6 +815,7 @@ export default {
                   :item="item"
                   :active="active"
                   :class="{ active }"
+                  class="gl-mb-5"
                 >
                   <diff-file
                     :file="item"
@@ -824,7 +828,7 @@ export default {
                     :can-current-user-fork="canCurrentUserFork"
                     :view-diffs-file-by-file="viewDiffsFileByFile"
                     :active="active"
-                    :is-diff-view-active="currentDiffFileId === item.file_hash"
+                    :is-diff-view-active="isDiffViewActive(item)"
                   />
                 </dynamic-scroller-item>
               </template>
@@ -846,6 +850,7 @@ export default {
                 :can-current-user-fork="canCurrentUserFork"
                 :view-diffs-file-by-file="viewDiffsFileByFile"
                 :is-diff-view-active="currentDiffFileId === file.file_hash"
+                class="gl-mb-5"
               />
             </template>
             <div

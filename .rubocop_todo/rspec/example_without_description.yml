@@ -1,6 +1,5 @@
 ---
 RSpec/ExampleWithoutDescription:
-  Details: grace period
   Exclude:
     - 'ee/spec/bin/custom_ability_spec.rb'
     - 'ee/spec/components/gitlab_subscriptions/discover_duo_pro_component_spec.rb'

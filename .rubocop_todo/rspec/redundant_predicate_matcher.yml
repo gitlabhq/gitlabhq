@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 RSpec/RedundantPredicateMatcher:
-  Details: grace period
   Exclude:
     - 'ee/spec/lib/gitlab/ci/templates/api_fuzzing_gitlab_ci_yaml_spec.rb'
     - 'ee/spec/lib/gitlab/ci/templates/api_fuzzing_latest_gitlab_ci_yaml_spec.rb'

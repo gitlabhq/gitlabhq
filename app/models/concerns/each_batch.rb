@@ -35,7 +35,8 @@ module EachBatch
     #
     # This will produce SQL queries along the lines of:
     #
-    #     User Load (0.7ms)  SELECT  "users"."id" FROM "users" WHERE ("users"."id" >= 41654)  ORDER BY "users"."id" ASC LIMIT 1 OFFSET 1000
+    #     User Load (0.7ms)  SELECT  "users"."id" FROM "users" WHERE ("users"."id" >= 41654)
+    #                        ORDER BY "users"."id" ASC LIMIT 1 OFFSET 1000
     #       (0.7ms)  SELECT COUNT(*) FROM "users" WHERE ("users"."id" >= 41654) AND ("users"."id" < 42687)
     #
     # of - The number of rows to retrieve per batch.

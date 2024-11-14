@@ -1,6 +1,6 @@
 import { memoize } from 'lodash';
 import AccessorUtilities from '~/lib/utils/accessor';
-import { __ } from '~/locale';
+import { __, s__ } from '~/locale';
 
 /**
  * @param {object} command
@@ -171,6 +171,13 @@ export const OUTDENT_LINE = {
   id: 'editing.outdentLine',
   description: __('Outdent line'),
   defaultKeys: ['mod+['], // eslint-disable-line @gitlab/require-i18n-strings
+  customizable: false,
+};
+
+export const FIND_AND_REPLACE = {
+  id: 'editing.findAndReplace',
+  description: s__('MarkdownEditor|Find and replace'),
+  defaultKeys: ['mod+f'],
   customizable: false,
 };
 
@@ -589,6 +596,7 @@ export const EDITING_SHORTCUTS_GROUP = {
     STRIKETHROUGH_TEXT,
     LINK_TEXT,
     TOGGLE_MARKDOWN_PREVIEW,
+    FIND_AND_REPLACE,
     EDIT_RECENT_COMMENT,
     SAVE_CHANGES,
   ],

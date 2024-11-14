@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 RSpec/Eq:
-  Details: grace period
   Exclude:
     - 'ee/spec/controllers/admin/application_settings_controller_spec.rb'
     - 'spec/controllers/projects/compare_controller_spec.rb'

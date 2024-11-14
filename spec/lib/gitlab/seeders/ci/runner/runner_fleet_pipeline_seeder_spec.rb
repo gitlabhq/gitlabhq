@@ -28,13 +28,14 @@ RSpec.describe ::Gitlab::Seeders::Ci::Runner::RunnerFleetPipelineSeeder, feature
     context 'with job_count specified' do
       let(:job_count) { 20 }
 
-      it 'creates expected jobs', :aggregate_failures,
-        quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/394721' do
+      it 'creates expected jobs', :aggregate_failures do
         expect { seeder.seed }.to change { Ci::Build.count }.by(job_count)
           .and change { Ci::Pipeline.count }.by(4)
 
         expect(Ci::Pipeline.where.not(started_at: nil).map(&:queued_duration)).to all(be <= 5.minutes)
         expect(Ci::Build.where.not(started_at: nil).map(&:queued_duration)).to all(be <= 5.minutes)
+
+        expect(Ci::Build.last(job_count).map(&:trace).map(&:raw)).to all(be_an(String))
 
         projects_to_runners.first(3).each do |project|
           expect(Ci::Build.where(runner_id: project[:runner_ids])).not_to be_empty

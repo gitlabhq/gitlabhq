@@ -1,6 +1,5 @@
 ---
 RSpec/NoExpectationExample:
-  Details: grace period
   Exclude:
     - 'ee/spec/components/gitlab_subscriptions/discover_duo_pro_component_spec.rb'
     - 'ee/spec/features/billings/billing_plans_spec.rb'

@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 Style/SendWithLiteralMethodName:
-  Details: grace period
   Exclude:
     - 'ee/spec/models/ci/build_spec.rb'
     - 'lib/gitlab/database/load_balancing/connection_proxy.rb'

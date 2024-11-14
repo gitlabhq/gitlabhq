@@ -45,7 +45,7 @@ export default {
         {{ pipelineId }}
       </gl-link>
 
-      <span class="gl-text-secondary">
+      <span class="gl-text-subtle">
         <span>{{ __('created by') }}</span>
         <gl-link v-if="showAvatar" :href="userPath" data-testid="pipeline-user-link">
           <gl-avatar :src="pipelineUserAvatar" :size="16" />
@@ -54,7 +54,7 @@ export default {
       </span>
     </div>
 
-    <div v-if="job.stage" class="gl-mt-1 gl-truncate gl-text-sm gl-text-secondary">
+    <div v-if="job.stage" class="gl-mt-1 gl-truncate gl-text-sm gl-text-subtle">
       <span data-testid="job-stage-name">{{ $options.i18n.stageLabel }}: {{ job.stage.name }}</span>
     </div>
   </div>

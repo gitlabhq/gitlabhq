@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 Gitlab/DocumentationLinks/Link:
-  Details: grace period
   Exclude:
     - '**/*.haml'
     - 'app/helpers/releases_helper.rb'

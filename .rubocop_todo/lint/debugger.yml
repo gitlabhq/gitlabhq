@@ -1,5 +1,4 @@
 ---
 Lint/Debugger:
-  Details: grace period
   Exclude:
     - 'spec/support/helpers/docs_screenshot_helpers.rb'

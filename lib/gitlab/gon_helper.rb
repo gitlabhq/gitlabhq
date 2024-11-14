@@ -84,6 +84,7 @@ module Gitlab
       push_frontend_feature_flag(:vscode_web_ide, current_user)
       push_frontend_feature_flag(:ui_for_organizations, current_user)
       push_frontend_feature_flag(:organization_switching, current_user)
+      push_frontend_feature_flag(:find_and_replace, current_user)
       # To be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/399248
       push_frontend_feature_flag(:remove_monitor_metrics)
       push_frontend_feature_flag(:work_items_view_preference, current_user)

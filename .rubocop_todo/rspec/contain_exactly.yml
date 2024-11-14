@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 RSpec/ContainExactly:
-  Details: grace period
   Exclude:
     - 'ee/spec/controllers/operations_controller_spec.rb'
     - 'ee/spec/finders/billed_users_finder_spec.rb'

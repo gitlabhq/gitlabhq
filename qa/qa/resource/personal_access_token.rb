@@ -18,6 +18,8 @@ module QA
       end
 
       def fabricate_via_api!
+        raise Runtime::UserStore::InvalidTokenError, "Admin api client is missing" unless api_client
+
         super
         self.api_client = Runtime::API::Client.new(personal_access_token: token)
       rescue Runtime::UserStore::InvalidTokenError, NoValueError

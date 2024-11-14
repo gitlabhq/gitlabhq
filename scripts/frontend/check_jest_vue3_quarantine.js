@@ -1,7 +1,11 @@
 const { spawnSync } = require('node:child_process');
 const { readFile } = require('node:fs/promises');
 const parser = require('fast-xml-parser');
+const defaultChalk = require('chalk');
 const { getLocalQuarantinedFiles } = require('./jest_vue3_quarantine_utils');
+
+// Always use basic color output
+const chalk = new defaultChalk.constructor({ level: 1 });
 
 async function parseJUnitReport() {
   let junit;
@@ -49,16 +53,40 @@ async function parseJUnitReport() {
   };
 }
 
-function reportPassingSpecsShouldBeUnquarantined(passed) {
-  console.log(' ');
-  console.warn(
-    `Congratulations, the following ${passed.length} spec file(s) now pass(es) under Vue 3!`,
+/**
+ * Wraps the output of `callback` in a collapsible section (for GitLab CI).
+ *
+ * Assumes `callback` is synchronous.
+ *
+ * See https://docs.gitlab.com/ee/ci/jobs/job_logs.html#custom-collapsible-sections
+ */
+function section(header, callback, { showCollapsed = true } = {}) {
+  const ANSI_CLEAR_LINE = '\x1b[0K';
+  const timestamp = () => Math.floor(Date.now() / 1000);
+  const collapsed = showCollapsed ? '[collapsed=true]' : '';
+  const name = header.toLowerCase().replace(/\W+/g, '_');
+
+  console.log(
+    `${ANSI_CLEAR_LINE}section_start:${timestamp()}:${name}${collapsed}\r${ANSI_CLEAR_LINE}${chalk.cyan.bold(header)}`,
   );
-  console.log(' ');
-  console.warn(passed.join('\n'));
-  console.log(' ');
+
+  callback();
+
+  console.log(`${ANSI_CLEAR_LINE}section_end:${timestamp()}:${name}\r${ANSI_CLEAR_LINE}`);
+}
+
+function reportPassingSpecsShouldBeUnquarantined(passed) {
+  console.warn(' ');
   console.warn(
-    'To allow the pipeline to pass, please remove the file(s) from quarantine in scripts/frontend/quarantined_vue3_specs.txt.',
+    `The following ${passed.length} spec file(s) now pass(es) under Vue 3, and so must be removed from quarantine:`,
+  );
+  console.warn(' ');
+  console.warn(passed.join('\n'));
+  console.warn(' ');
+  console.warn(
+    chalk.red(
+      `To fix this job, remove the file(s) listed above from the file ${chalk.underline('scripts/frontend/quarantined_vue3_specs.txt')}.`,
+    ),
   );
 }
 
@@ -75,6 +103,8 @@ async function changedFiles() {
 }
 
 async function main() {
+  const filesThatChanged = await changedFiles();
+
   // Note: we don't care what Jest's exit code is.
   //
   // If it's zero, then either:
@@ -86,28 +116,30 @@ async function main() {
   // If it's non-zero, then either:
   //   - one or more specs failed (which is expected!), or
   //   - there was some unknown error. We shouldn't block MRs in this case.
-  spawnSync(
-    'node_modules/.bin/jest',
-    [
-      '--config',
-      'jest.config.js',
-      '--ci',
-      '--findRelatedTests',
-      ...(await changedFiles()),
-      '--passWithNoTests',
-      // Explicitly have one shard, so that the `shard` method of the sequencer is called.
-      '--shard=1/1',
-      '--testSequencer',
-      './scripts/frontend/check_jest_vue3_quarantine_sequencer.js',
-      '--logHeapUsage',
-    ],
-    {
-      stdio: 'inherit',
-      env: {
-        ...process.env,
-        VUE_VERSION: '3',
+  section('Jest output (only useful for debugging the CI job itself, not the tests)', () =>
+    spawnSync(
+      'node_modules/.bin/jest',
+      [
+        '--config',
+        'jest.config.js',
+        '--ci',
+        '--findRelatedTests',
+        ...filesThatChanged,
+        '--passWithNoTests',
+        // Explicitly have one shard, so that the `shard` method of the sequencer is called.
+        '--shard=1/1',
+        '--testSequencer',
+        './scripts/frontend/check_jest_vue3_quarantine_sequencer.js',
+        '--logHeapUsage',
+      ],
+      {
+        stdio: 'inherit',
+        env: {
+          ...process.env,
+          VUE_VERSION: '3',
+        },
       },
-    },
+    ),
   );
 
   const { passed, total } = await parseJUnitReport();

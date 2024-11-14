@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 RSpec/VerifiedDoubleReference:
-  Details: grace period
   Exclude:
     - 'ee/spec/controllers/groups/analytics/productivity_analytics_controller_spec.rb'
     - 'ee/spec/controllers/groups/security/policies_controller_spec.rb'

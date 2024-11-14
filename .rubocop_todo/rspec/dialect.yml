@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 RSpec/Dialect:
-  Details: grace period
   Exclude:
     - 'ee/spec/controllers/admin/application_settings_controller_spec.rb'
     - 'ee/spec/helpers/ee/personal_access_tokens_helper_spec.rb'

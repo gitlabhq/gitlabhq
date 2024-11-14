@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 Rails/Date:
-  Details: grace period
   Exclude:
     - 'app/controllers/users_controller.rb'
     - 'app/finders/issues_finder.rb'

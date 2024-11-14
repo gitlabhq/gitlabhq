@@ -1,6 +1,5 @@
 ---
 RSpec/IdenticalEqualityAssertion:
-  Details: grace period
   Exclude:
     - 'ee/spec/lib/gitlab/ci/reports/license_scanning/license_spec.rb'
     - 'ee/spec/lib/gitlab/elastic/document_reference_spec.rb'

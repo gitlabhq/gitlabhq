@@ -1,4 +1,0 @@
----
-# Cop supports --autocorrect.
-Style/EmptyLiteral:
-  Details: grace period

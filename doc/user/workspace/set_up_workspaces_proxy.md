@@ -19,6 +19,7 @@ To set up `gitlab-workspaces-proxy`, you're going to:
 1. [Install the Helm chart for the proxy](#install-the-helm-chart-for-the-proxy).
 1. [Verify Kubernetes resources](#verify-kubernetes-resources).
 1. [Update your DNS records](#update-your-dns-records).
+1. [Update the GitLab agent configuration](#update-the-gitlab-agent-configuration).
 
 ## Prerequisites
 
@@ -203,28 +204,11 @@ Let's now verify Kubernetes resources.
 
 ## Verify Kubernetes resources
 
-1. Verify the following Kubernetes resources:
+1. Verify the Ingress class, hosts, address, and port for the `gitlab-workspaces` namespace:
 
-   - The configuration secret:
-
-     ```shell
-     kubectl -n gitlab-workspaces get secret gitlab-workspaces-proxy  -o=go-template='{{index .data "config.yaml"}}' | base64 -d
-     ```
-
-   - The Ingress class for the `gitlab-workspaces` namespace:
-
-     ```shell
-     kubectl -n gitlab-workspaces get ingress
-     ```
-
-     If you deploy the Helm chart for the proxy to any namespace other than `gitlab-workspaces`,
-     update the namespace in the [GitLab agent configuration](gitlab_agent_configuration.md):
-
-     ```yaml
-     remote_development:
-       gitlab_workspaces_proxy:
-         namespace: "<custom-gitlab-workspaces-proxy-namespace>"
-     ```
+   ```shell
+   kubectl -n gitlab-workspaces get ingress
+   ```
 
 1. Verify the pods are running:
 
@@ -255,6 +239,17 @@ To update your DNS records:
    ```
 
    The logs show a `could not find upstream workspace upstream not found` error.
+
+## Update the GitLab agent configuration
+
+If you deploy the Helm chart for the proxy to any namespace other than `gitlab-workspaces`,
+update the namespace in the [GitLab agent configuration](gitlab_agent_configuration.md):
+
+```yaml
+remote_development:
+  gitlab_workspaces_proxy:
+    namespace: "<custom-gitlab-workspaces-proxy-namespace>"
+```
 
 You're all set! You can now use the GitLab workspaces proxy to
 authenticate and authorize [workspaces](index.md) in your cluster.

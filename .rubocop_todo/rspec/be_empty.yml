@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 RSpec/BeEmpty:
-  Details: grace period
   Exclude:
     - 'ee/spec/controllers/subscriptions/groups_controller_spec.rb'
     - 'ee/spec/finders/groups/users_finder_spec.rb'

@@ -1,6 +1,5 @@
 ---
 RSpec/RepeatedSubjectCall:
-  Details: grace period
   Exclude:
     - 'ee/spec/controllers/projects/settings/repository_controller_spec.rb'
     - 'ee/spec/controllers/registrations/groups_controller_spec.rb'

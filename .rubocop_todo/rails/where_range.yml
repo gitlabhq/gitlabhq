@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 Rails/WhereRange:
-  Details: grace period
   Exclude:
     - 'app/finders/events_finder.rb'
     - 'app/finders/groups_finder.rb'

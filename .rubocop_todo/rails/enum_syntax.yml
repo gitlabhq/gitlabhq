@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 Rails/EnumSyntax:
-  Details: grace period
   Exclude:
     - 'app/models/abuse_report.rb'
     - 'app/models/alert_management/alert.rb'

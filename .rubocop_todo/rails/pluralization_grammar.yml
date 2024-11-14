@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 Rails/PluralizationGrammar:
-  Details: grace period
   Exclude:
     - 'app/models/application_setting.rb'
     - 'app/models/application_setting_implementation.rb'

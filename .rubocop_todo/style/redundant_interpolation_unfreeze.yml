@@ -1,4 +1,0 @@
----
-# Cop supports --autocorrect.
-Style/RedundantInterpolationUnfreeze:
-  Details: grace period

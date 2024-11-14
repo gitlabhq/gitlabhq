@@ -1,6 +1,5 @@
 ---
 RSpec/SpecFilePathSuffix:
-  Details: grace period
   Exclude:
     - 'ee/spec/frontend/fixtures/analytics/charts.rb'
     - 'ee/spec/frontend/fixtures/analytics/devops_reports/devops_adoption/enabled_namespaces.rb'

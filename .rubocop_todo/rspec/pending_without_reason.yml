@@ -1,6 +1,5 @@
 ---
 RSpec/PendingWithoutReason:
-  Details: grace period
   Exclude:
     - 'ee/spec/controllers/operations_controller_spec.rb'
     - 'ee/spec/features/merge_request/user_approves_spec.rb'

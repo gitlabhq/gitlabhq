@@ -93,14 +93,24 @@ module BulkInsertSafe
     #
     # @return true if operation succeeded, throws otherwise.
     #
-    def bulk_insert!(items, validate: true, skip_duplicates: false, returns: nil, unique_by: nil, batch_size: DEFAULT_BATCH_SIZE, &handle_attributes)
-      _bulk_insert_all!(items,
+    def bulk_insert!(
+      items,
+      validate: true,
+      skip_duplicates: false,
+      returns: nil,
+      unique_by: nil,
+      batch_size: DEFAULT_BATCH_SIZE,
+      &handle_attributes
+    )
+      _bulk_insert_all!(
+        items,
         validate: validate,
         on_duplicate: skip_duplicates ? :skip : :raise,
         returns: returns,
         unique_by: unique_by,
         batch_size: batch_size,
-        &handle_attributes)
+        &handle_attributes
+      )
     end
 
     # Upserts the given ActiveRecord [items] to the table mapped to this class.
@@ -128,14 +138,23 @@ module BulkInsertSafe
     #
     # @return true if operation succeeded, throws otherwise.
     #
-    def bulk_upsert!(items, unique_by:, returns: nil, validate: true, batch_size: DEFAULT_BATCH_SIZE, &handle_attributes)
-      _bulk_insert_all!(items,
+    def bulk_upsert!(
+      items,
+      unique_by:,
+      returns: nil,
+      validate: true,
+      batch_size: DEFAULT_BATCH_SIZE,
+      &handle_attributes
+    )
+      _bulk_insert_all!(
+        items,
         validate: validate,
         on_duplicate: :update,
         returns: returns,
         unique_by: unique_by,
         batch_size: batch_size,
-        &handle_attributes)
+        &handle_attributes
+      )
     end
 
     private
@@ -161,11 +180,16 @@ module BulkInsertSafe
 
       transaction do
         items.each_slice(batch_size).flat_map do |item_batch|
-          attributes = _bulk_insert_item_attributes(
-            item_batch, validate, &handle_attributes)
+          attributes = _bulk_insert_item_attributes(item_batch, validate, &handle_attributes)
 
           ActiveRecord::InsertAll
-              .new(insert_all_proxy_class, attributes, on_duplicate: on_duplicate, returning: returning, unique_by: unique_by)
+              .new(
+                insert_all_proxy_class,
+                attributes,
+                on_duplicate: on_duplicate,
+                returning: returning,
+                unique_by: unique_by
+              )
               .execute
               .cast_values(insert_all_proxy_class.attribute_types).to_a
         end

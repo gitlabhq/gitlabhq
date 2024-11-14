@@ -1,6 +1,5 @@
 ---
 Gitlab/EeOnlyClass:
-  Details: grace period
   Exclude:
     - 'ee/app/controllers/concerns/ee/routable_actions/sso_enforcement_redirect.rb'
     - 'ee/app/graphql/ee/resolvers/pending_group_members_resolver.rb'

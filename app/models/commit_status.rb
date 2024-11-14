@@ -18,9 +18,18 @@ class CommitStatus < Ci::ApplicationRecord
 
   belongs_to :user
   belongs_to :project
-  belongs_to :pipeline, ->(build) { in_partition(build) }, class_name: 'Ci::Pipeline', foreign_key: :commit_id, inverse_of: :statuses, partition_foreign_key: :partition_id
+  belongs_to :pipeline,
+    ->(build) { in_partition(build) },
+    class_name: 'Ci::Pipeline',
+    foreign_key: :commit_id,
+    inverse_of: :statuses,
+    partition_foreign_key: :partition_id
   belongs_to :auto_canceled_by, class_name: 'Ci::Pipeline', inverse_of: :auto_canceled_jobs
-  belongs_to :ci_stage, ->(build) { in_partition(build) }, class_name: 'Ci::Stage', foreign_key: :stage_id, partition_foreign_key: :partition_id
+  belongs_to :ci_stage,
+    ->(build) { in_partition(build) },
+    class_name: 'Ci::Stage',
+    foreign_key: :stage_id,
+    partition_foreign_key: :partition_id
 
   has_many :needs, class_name: 'Ci::BuildNeed', foreign_key: :build_id, inverse_of: :build
 
@@ -141,7 +150,16 @@ class CommitStatus < Ci::ApplicationRecord
 
     event :drop do
       transition canceling: :canceled # runner returns success/failed
-      transition [:created, :waiting_for_resource, :preparing, :waiting_for_callback, :pending, :running, :manual, :scheduled] => :failed
+      transition [
+        :created,
+        :waiting_for_resource,
+        :preparing,
+        :waiting_for_callback,
+        :pending,
+        :running,
+        :manual,
+        :scheduled
+      ] => :failed
     end
 
     event :success do
@@ -154,7 +172,14 @@ class CommitStatus < Ci::ApplicationRecord
       transition CANCELABLE_STATUSES.map(&:to_sym) + [:manual] => :canceled
     end
 
-    before_transition [:created, :waiting_for_resource, :preparing, :skipped, :manual, :scheduled] => :pending do |commit_status|
+    before_transition [
+      :created,
+      :waiting_for_resource,
+      :preparing,
+      :skipped,
+      :manual,
+      :scheduled
+    ] => :pending do |commit_status|
       commit_status.queued_at = Time.current
     end
 

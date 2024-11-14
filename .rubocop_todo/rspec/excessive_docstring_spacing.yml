@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 RSpec/ExcessiveDocstringSpacing:
-  Details: grace period
   Exclude:
     - 'ee/spec/controllers/ee/groups/usage_quotas_controller_spec.rb'
     - 'ee/spec/features/gitlab_subscriptions/trials/duo_enterprise/creation_with_one_existing_namespace_flow_spec.rb'

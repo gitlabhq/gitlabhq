@@ -17326,6 +17326,9 @@ msgstr ""
 msgid "DORA4Metrics|Failed to load DORA performance scores for Group: %{fullPath}"
 msgstr ""
 
+msgid "DORA4Metrics|Failed to load dashboard panel."
+msgstr ""
+
 msgid "DORA4Metrics|Failed to load labels matching the filter: %{labels}"
 msgstr ""
 
@@ -23710,6 +23713,9 @@ msgid "Filter: %{filter_name}"
 msgstr ""
 
 msgid "Finalizing"
+msgstr ""
+
+msgid "Find"
 msgstr ""
 
 msgid "Find File"
@@ -33060,6 +33066,9 @@ msgid "MarkdownEditor|Add strikethrough text (%{modifier_key}⇧X)"
 msgstr ""
 
 msgid "MarkdownEditor|Click to expand"
+msgstr ""
+
+msgid "MarkdownEditor|Find and replace"
 msgstr ""
 
 msgid "MarkdownEditor|Indent line (%{modifierKey}])"
@@ -45532,6 +45541,9 @@ msgid "Related merge requests"
 msgstr ""
 
 msgid "Relates to"
+msgstr ""
+
+msgid "Relation import could not be created: %{errors}"
 msgstr ""
 
 msgid "Relation import tracker cannot be created for project with ongoing import"

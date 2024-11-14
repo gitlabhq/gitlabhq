@@ -42,7 +42,7 @@
     @include clearfix;
 
     padding: 10px 0;
-    border-bottom: 1px solid $gray-100;
+    @apply gl-border-b gl-border-b-subtle;
     display: block;
     margin: 0;
 
@@ -51,10 +51,10 @@
     }
 
     &.active {
-      background: $gray-10;
+      @apply gl-bg-subtle;
 
       a {
-        font-weight: $gl-font-weight-bold;
+        @apply gl-font-bold;
       }
     }
 

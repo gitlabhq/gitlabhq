@@ -1,6 +1,5 @@
 ---
 FactoryBot/ExcessiveCreateList:
-  Details: grace period
   Exclude:
     - 'ee/spec/controllers/groups/hooks_controller_spec.rb'
     - 'ee/spec/features/search/elastic/global_search_spec.rb'

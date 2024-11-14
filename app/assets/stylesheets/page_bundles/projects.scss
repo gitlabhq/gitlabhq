@@ -286,7 +286,7 @@
     vertical-align: top;
     padding-top: $gl-spacing-scale-4;
     padding-bottom: $gl-spacing-scale-4;
-    border-bottom: 1px solid var(--gray-50, $gray-50);
+    @apply gl-border-b gl-border-b-subtle;
   }
 
   .project-row:last-of-type {
@@ -302,7 +302,7 @@
       .stats {
         float: right;
         line-height: $list-text-height;
-        color: $gl-text-color-secondary;
+        @apply gl-text-subtle;
 
         @include media-breakpoint-down(xs) {
           padding-top: $gl-padding-6;

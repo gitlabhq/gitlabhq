@@ -5,6 +5,8 @@ RSpec.shared_examples 'issues link quick action' do |command|
   let_it_be_with_reload(:other_issue) { create(:issue, project: project) }
   let_it_be_with_reload(:second_issue) { create(:issue, project: project) }
   let_it_be_with_reload(:third_issue) { create(:issue, project: project) }
+  let_it_be_with_reload(:work_item_issue) { create(:work_item, project: project) }
+  let_it_be(:work_item_issue_link) { Issue.find(work_item_issue.id) }
 
   let(:link_type) { command == :relate ? 'relates_to' : 'blocks' }
   let(:links_query) do
@@ -36,8 +38,10 @@ RSpec.shared_examples 'issues link quick action' do |command|
     end
 
     context 'when linking multiple issues at once' do
-      let(:issues_linked) { [second_issue, third_issue] }
-      let(:content) { "/#{command} #{second_issue.to_reference} #{third_issue.to_reference}" }
+      let(:issues_linked) { [second_issue, third_issue, work_item_issue_link] }
+      let(:content) do
+        "/#{command} #{second_issue.to_reference} #{third_issue.to_reference} #{work_item_issue.to_reference}"
+      end
 
       it_behaves_like 'link command'
     end

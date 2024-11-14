@@ -10,6 +10,7 @@ import { initGlobalAlerts } from './global_alerts';
 import './shortcuts';
 import './toggler_behavior';
 import './preview_markdown';
+import './find_and_replace';
 
 installGlEmojiElement();
 initCopyAsGFM();

@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 Style/MapIntoArray:
-  Details: grace period
   Exclude:
     - 'app/finders/projects/members/effective_access_level_finder.rb'
     - 'app/services/packages/nuget/extract_metadata_content_service.rb'

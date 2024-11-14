@@ -176,18 +176,6 @@ RSpec.describe GraphqlTriggers, feature_category: :shared do
   describe '.issuable_todo_updated' do
     let_it_be(:user) { create(:user) }
 
-    context 'when realtime_issuable_todo feature flag is disabled' do
-      before do
-        stub_feature_flags(realtime_issuable_todo: false)
-      end
-
-      it 'does not trigger the issuable_todo_updated subscription' do
-        expect(GitlabSchema.subscriptions).not_to receive(:trigger)
-
-        described_class.issuable_todo_updated(issuable, user)
-      end
-    end
-
     it 'triggers the issuable_todo_updated subscription' do
       expect(GitlabSchema.subscriptions).to receive(:trigger).with(
         :issuable_todo_updated,
@@ -195,7 +183,7 @@ RSpec.describe GraphqlTriggers, feature_category: :shared do
         issuable
       ).and_call_original
 
-      described_class.issuable_todo_updated(issuable, user)
+      described_class.issuable_todo_updated(issuable)
     end
   end
 end

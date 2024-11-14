@@ -133,8 +133,13 @@ This rule enforces the defined actions whenever the pipeline runs for a selected
 
 ## `schedule` rule type
 
-> - The `branch_type` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404774) in GitLab 16.1 [with a flag](../../../administration/feature_flags.md) named `security_policies_branch_type`. Generally available in GitLab 16.2. Feature flag removed.
-> - The `branch_exceptions` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418741) in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`. Generally available in GitLab 16.5. Feature flag removed.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404774) the `branch_type` field in GitLab 16.1 [with a flag](../../../administration/feature_flags.md) named `security_policies_branch_type`. Generally available in GitLab 16.2. Feature flag removed.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418741) the `branch_exceptions` field in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`. Generally available in GitLab 16.5. Feature flag removed.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147691) a new `scan_execution_pipeline_worker` worker to scheduled scans to create pipelines in GitLab 16.11 [with a flag](../../../administration/feature_flags.md).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152855) a new application setting `security_policy_scheduled_scans_max_concurrency` in GitLab 17.1. The concurrency limit applies when both the `scan_execution_pipeline_worker` and `scan_execution_pipeline_concurrency_control` are enabled.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158636) a concurrency limit for scan execution scheduled jobs in GitLab 17.3 [with a flag](../../../administration/feature_flags.md) named  `scan_execution_pipeline_concurrency_control`.
+> - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/451890) the `scan_execution_pipeline_worker` feature flag on GitLab.com in GitLab 17.5.
+> - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/463802) the `scan_execution_pipeline_concurrency_control` feature flag on GitLab.com in GitLab 17.6.
 
 WARNING:
 In GitLab 16.1 and earlier, you should **not** use [direct transfer](../../../administration/settings/import_and_export_settings.md#enable-migration-of-groups-and-projects-by-direct-transfer) with scheduled scan execution policies. If using direct transfer, first upgrade to GitLab 16.2 and ensure security policy bots are enabled in the projects you are enforcing.
@@ -229,6 +234,36 @@ The keys for a schedule rule are:
   run.
 - `agents:<agent-name>` (required): The name of the agent to use for scanning.
 - `agents:<agent-name>:namespaces` (optional): The Kubernetes namespaces to scan. If omitted, all namespaces are scanned.
+
+### Concurrency control
+
+If both the `scan_execution_pipeline_worker` and `scan_execution_pipeline_concurrency_control` feature flags are enabled, concurrency control is applied.
+Concurrency control limits the number of pipeline jobs created by the scan execution policy that can be active for each top-level group on an instance. For GitLab.com, the limit is managed by GitLab administrators.
+The active pipeline job statuses are: 
+
+- `preparing`
+- `pending`
+- `running`
+- `waiting_for_callback`
+- `waiting_for_resource`
+- `canceling`
+- `created`
+
+If the number of active pipeline jobs exceeds the value of the `max_scheduled_scans_concurrency` application setting, pipeline creation is postponed until more capacity is available.
+Due to the concurrency execution of the background jobs responsible for creating the scheduled scans pipeline jobs, the concurrency limit can take some time be enforced.
+
+#### Set the maximum top-level group concurrency for security policy scheduled scans
+
+For GitLab.com, this limit is managed by GitLab administrators. The current limit is 100.
+
+For self-managed instances, the limit has a default value of 10,000 can be changed in the **Admin** area.
+
+To update the **Security policy scheduled scans maximum top-level group concurrency** setting:
+
+1. Go to **Admin** > **Settings** > **CI/CD**.
+1. Expand **Continuous Integration and Deployment**.
+1. Set the **Security policy scheduled scans maximum top-level group concurrency**.
+1. Select **Save changes**.
 
 ## `scan` action type
 

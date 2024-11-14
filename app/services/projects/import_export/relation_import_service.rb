@@ -43,6 +43,16 @@ module Projects
 
         tracker = create_status_tracker
 
+        unless tracker.persisted?
+          return error(
+            format(
+              _('Relation import could not be created: %{errors}'),
+              errors: tracker.errors.full_messages.to_sentence
+            ),
+            :bad_request
+          )
+        end
+
         attach_import_file
 
         Projects::ImportExport::RelationImportWorker.perform_async(

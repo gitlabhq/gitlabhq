@@ -1,4 +1,0 @@
----
-# Cop supports --autocorrect.
-Style/Iso8601Date:
-  Details: grace period

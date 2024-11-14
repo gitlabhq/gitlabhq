@@ -1,6 +1,5 @@
 ---
 RSpec/MissingExpectationTargetMethod:
-  Details: grace period
   Exclude:
     - 'ee/spec/lib/ee/gitlab/ci/pipeline/chain/validate/external_spec.rb'
     - 'spec/config/object_store_settings_spec.rb'

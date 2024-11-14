@@ -430,11 +430,10 @@ export default {
       'has-body': showBody,
       'is-virtual-scrolling': isVirtualScrollingEnabled,
       'linked-file': isLinkedFile,
-      'gl-border-gray-200': isDiffViewActive && !file.conflict_type,
-      'gl-border-red-700': isDiffViewActive && file.conflict_type,
+      'diff-file-is-active': isDiffViewActive,
     }"
     :data-path="file.new_path"
-    class="diff-file file-holder gl-mb-5"
+    class="diff-file file-holder"
   >
     <gl-alert
       v-if="!showLoadingIcon && file.conflict_type"
@@ -492,8 +491,6 @@ export default {
         hasBodyClasses.header,
         {
           '!gl-rounded-none !gl-bg-red-200': file.conflict_type,
-          '!gl-bg-strong': isDiffViewActive && !file.conflict_type,
-          '!gl-bg-red-300': isDiffViewActive && file.conflict_type,
           '!gl-rounded-tl-none !gl-rounded-tr-none': file.conflict_type && isCollapsed,
           '!gl-border-0': file.conflict_type || isCollapsed,
         },
@@ -504,7 +501,7 @@ export default {
 
     <div
       v-if="idState.forkMessageVisible"
-      class="js-file-fork-suggestion-section file-fork-suggestion gl-border-1 gl-border-t-0 gl-border-solid gl-border-gray-100"
+      class="js-file-fork-suggestion-section file-fork-suggestion gl-border-1 gl-border-t-0 gl-border-solid gl-border-default"
     >
       <span v-safe-html="forkMessage" class="file-fork-suggestion-note"></span>
       <gl-button

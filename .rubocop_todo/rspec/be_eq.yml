@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 RSpec/BeEq:
-  Details: grace period
   Exclude:
     - 'ee/spec/bin/custom_ability_spec.rb'
     - 'ee/spec/controllers/admin/application_settings_controller_spec.rb'

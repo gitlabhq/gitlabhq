@@ -1,6 +1,5 @@
 ---
 RSpec/ExpectInLet:
-  Details: grace period
   Exclude:
     - 'ee/spec/models/elasticsearch_indexed_namespace_spec.rb'
     - 'ee/spec/models/elasticsearch_indexed_project_spec.rb'

@@ -1,6 +1,5 @@
 ---
 # Cop supports --autocorrect.
 Lint/Void:
-  Details: grace period
   Exclude:
     - 'spec/lib/gitlab/import_export/json/streaming_serializer_spec.rb'

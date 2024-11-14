@@ -8,9 +8,15 @@
 #   range.exclude_start?  # => false
 #   range.to_s            # => "f3f85602...e86e1013"
 #
-#   range = CommitRange.new('f3f856029bc5f966c5a7ee24cf7efefdd20e6019..e86e1013709735be5bb767e2b228930c543f25ae', project)
+#   range = CommitRange.new(
+#                           'f3f856029bc5f966c5a7ee24cf7efefdd20e6019..e86e1013709735be5bb767e2b228930c543f25ae',
+#                           project
+#                          )
 #   range.exclude_start?  # => true
-#   range.to_param        # => {from: "f3f856029bc5f966c5a7ee24cf7efefdd20e6019^", to: "e86e1013709735be5bb767e2b228930c543f25ae"}
+#   range.to_param        # => {
+#                               from: "f3f856029bc5f966c5a7ee24cf7efefdd20e6019^",
+#                               to: "e86e1013709735be5bb767e2b228930c543f25ae"
+#                              }
 #   range.to_s            # => "f3f85602..e86e1013"
 #
 #   # Assuming the specified project has a repository containing both commits:

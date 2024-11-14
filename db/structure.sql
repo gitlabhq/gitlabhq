@@ -30430,6 +30430,8 @@ CREATE INDEX index_labels_on_title_varchar ON labels USING btree (title varchar_
 
 CREATE INDEX index_labels_on_type_and_project_id ON labels USING btree (type, project_id);
 
+CREATE INDEX index_last_usages_on_last_used_date ON catalog_resource_component_last_usages USING btree (last_used_date);
+
 CREATE INDEX index_ldap_group_links_on_member_role_id ON ldap_group_links USING btree (member_role_id);
 
 CREATE UNIQUE INDEX index_lfs_file_locks_on_project_id_and_path ON lfs_file_locks USING btree (project_id, path);

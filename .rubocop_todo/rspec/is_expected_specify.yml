@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 RSpec/IsExpectedSpecify:
-  Details: grace period
   Exclude:
     - 'ee/spec/controllers/groups/analytics/repository_analytics_controller_spec.rb'
     - 'ee/spec/graphql/ee/types/branch_protection_type_spec.rb'

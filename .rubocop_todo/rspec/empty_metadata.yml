@@ -1,4 +1,0 @@
----
-# Cop supports --autocorrect.
-RSpec/EmptyMetadata:
-  Details: grace period

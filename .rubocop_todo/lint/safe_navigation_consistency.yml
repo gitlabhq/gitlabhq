@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 Lint/SafeNavigationConsistency:
-  Details: grace period
   Exclude:
     - 'app/models/concerns/ci/deployable.rb'
     - 'app/policies/packages/policies/dependency_proxy/group_policy.rb'

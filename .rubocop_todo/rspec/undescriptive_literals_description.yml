@@ -1,5 +1,4 @@
 ---
 RSpec/UndescriptiveLiteralsDescription:
-  Details: grace period
   Exclude:
     - 'spec/services/merge_requests/base_service_spec.rb'

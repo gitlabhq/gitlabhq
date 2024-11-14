@@ -9,20 +9,6 @@ module Gitlab
       # has been completed. Sessions can be used to keep track of what hosts
       # should be used for queries.
       class Session
-        CACHE_KEY = :gitlab_load_balancer_session
-
-        def self.current
-          RequestStore[CACHE_KEY] ||= new
-        end
-
-        def self.clear_session
-          RequestStore.delete(CACHE_KEY)
-        end
-
-        def self.without_sticky_writes(&)
-          current.ignore_writes(&)
-        end
-
         def initialize
           @use_primary = false
           @performed_write = false

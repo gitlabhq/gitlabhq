@@ -1,6 +1,5 @@
 ---
 # Cop supports --autocorrect.
 Rails/EnumHash:
-  Details: grace period
   Exclude:
     - 'app/models/activity_pub/releases_subscription.rb'

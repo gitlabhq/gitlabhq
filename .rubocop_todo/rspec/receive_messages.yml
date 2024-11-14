@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 RSpec/ReceiveMessages:
-  Details: grace period
   Exclude:
     - 'ee/spec/bin/custom_ability_spec.rb'
     - 'ee/spec/components/namespaces/storage/limit_alert_component_spec.rb'

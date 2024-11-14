@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 RSpec/BeNil:
-  Details: grace period
   Exclude:
     - 'ee/spec/controllers/projects_controller_spec.rb'
     - 'ee/spec/graphql/mutations/issues/set_weight_spec.rb'

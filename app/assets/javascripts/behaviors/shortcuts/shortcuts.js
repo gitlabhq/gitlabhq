@@ -18,6 +18,7 @@ import {
   HIDE_APPEARING_CONTENT,
   TOGGLE_CANARY,
   TOGGLE_MARKDOWN_PREVIEW,
+  FIND_AND_REPLACE,
   GO_TO_YOUR_TODO_LIST,
   GO_TO_ACTIVITY_FEED,
   GO_TO_YOUR_ISSUES,
@@ -112,6 +113,14 @@ export default class Shortcuts {
     addStopCallback((e, element, combo) =>
       keysFor(TOGGLE_MARKDOWN_PREVIEW).includes(combo) ? false : undefined,
     );
+
+    if (gon?.features?.findAndReplace) {
+      this.add(FIND_AND_REPLACE, Shortcuts.toggleFindAndReplaceBar);
+
+      addStopCallback((e, element, combo) =>
+        keysFor(FIND_AND_REPLACE).includes(combo) ? false : undefined,
+      );
+    }
 
     $(document).on('click', '.js-shortcuts-modal-trigger', this.onToggleHelp);
 
@@ -253,6 +262,10 @@ export default class Shortcuts {
 
   static toggleMarkdownPreview(e) {
     $(document).triggerHandler('markdown-preview:toggle', [e]);
+  }
+
+  static toggleFindAndReplaceBar(e) {
+    $(document).triggerHandler('markdown-editor:find-and-replace', [e]);
   }
 
   focusFilter(e) {

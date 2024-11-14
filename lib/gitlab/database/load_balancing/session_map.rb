@@ -10,44 +10,23 @@ module Gitlab
 
         # lb - Gitlab::Database::LoadBalancing::LoadBalancer instance
         def self.current(load_balancer)
-          return Session.current unless use_session_map?
-
           cached_instance.lookup(load_balancer)
         end
 
         # models - Array<ActiveRecord::Base>
         def self.with_sessions(models)
-          return Session.current unless use_session_map?
-
           dbs = models.map { |m| m.load_balancer.name }.uniq
           dbs.each { |db| cached_instance.validate_db_name(db) }
           ScopedSessions.new(dbs, cached_instance.session_map)
         end
 
         def self.clear_session
-          return Session.clear_session unless use_session_map?
-
           RequestStore.delete(CACHE_KEY)
         end
 
         def self.without_sticky_writes(&)
-          return Session.without_sticky_writes(&) unless use_session_map?
-
           with_sessions(Gitlab::Database::LoadBalancing.base_models).ignore_writes(&)
         end
-
-        def self.use_session_map?
-          ::Feature.enabled?(:use_load_balancing_session_map, :current_request, type: :gitlab_com_derisk)
-        rescue ActiveRecord::StatementInvalid,
-          Gitlab::Database::QueryAnalyzers::Base::QueryAnalyzerError
-          # If the feature_gates table is missing, we should default to a false.
-          # In a migration scope, we also rescue and default to false.
-          false
-        rescue StandardError => e
-          ::Gitlab::ErrorTracking.track_exception(e)
-          false
-        end
-        private_class_method :use_session_map?
 
         def self.cached_instance
           RequestStore[CACHE_KEY] ||= new
@@ -71,18 +50,26 @@ module Gitlab
         end
 
         def validate_db_name(db)
-          # Allow :primary only for rake task db migrations as ActiveRecord::Tasks::PostgresqlDatabaseTasks calls
-          # .establish_connection using a hash which resets the name from :main/:ci to :primary.
-          # See
-          # https://github.com/rails/rails/blob/v7.0.8.4/activerecord/lib/active_record/tasks/postgresql_database_tasks.rb#L97
-          #
-          # In the case of derailed test in memory-on-boot job, the runtime is unknown.
-          return if db == :primary && (Gitlab::Runtime.rake? || Gitlab::Runtime.safe_identify.nil?)
+          if db == :primary
+            # Allow :primary in general but report the exeception. We should expect primary for:
+            #
+            # 1. rake task db migrations as ActiveRecord::Tasks::PostgresqlDatabaseTasks calls
+            # .establish_connection using a hash which resets the name from :main/:ci to :primary.
+            # See
+            # https://github.com/rails/rails/blob/v7.0.8.4/activerecord/lib/active_record/tasks/postgresql_database_tasks.rb#L97
+            #
+            # 2. In the case of derailed test in memory-on-boot job, the runtime is unknown.
+            # 3. `scripts/regenerate-schema` which runs in RAILS_ENV=test
+            Gitlab::ErrorTracking.track_exception(
+              InvalidLoadBalancerNameError.new("Using #{db} load balancer in #{Gitlab::Runtime.safe_identify}.")
+            )
 
-          # Disallow :primary usage outside of rake or unknown runtimes as the db config should be
-          # main/ci/embedding/ci/geo.
-          return if db != :primary && session_map[db]
+            return
+          end
 
+          return if session_map[db]
+
+          # All other load balancer names are invalid and should raise an error
           raise InvalidLoadBalancerNameError, "Invalid load balancer name #{db} in #{Gitlab::Runtime.safe_identify}."
         end
       end

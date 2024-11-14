@@ -62,11 +62,14 @@ RSpec.shared_examples 'cloneable and moveable widget data' do
     work_item.reload.email_participants.pluck(:email)
   end
 
+  def work_item_milestone(work_item)
+    work_item.reload.milestone&.title
+  end
+
   let(:move) { WorkItems::DataSync::MoveService }
   let(:clone) { WorkItems::DataSync::CloneService }
 
   let_it_be(:users) { create_list(:user, 3) }
-  let_it_be(:milestone) { create(:milestone) }
   let_it_be(:thumbs_ups) { create_list(:award_emoji, 2, name: 'thumbsup', awardable: original_work_item) }
   let_it_be(:thumbs_downs) { create_list(:award_emoji, 2, name: 'thumbsdown', awardable: original_work_item) }
   let_it_be(:participant2) { create(:issue_email_participant, issue: original_work_item, email: 'user2@example.com') }
@@ -84,10 +87,32 @@ RSpec.shared_examples 'cloneable and moveable widget data' do
     users
   end
 
+  let_it_be(:milestone) do
+    milestone = if original_work_item.namespace.is_a?(Group)
+                  create(:milestone, group: original_work_item.namespace)
+                else
+                  create(:project_milestone, project: original_work_item.project)
+                end
+
+    original_work_item.update!(milestone: milestone)
+
+    # create milestone with same title in destination namespace so that it can be assigned to moved work item
+    if target_namespace.is_a?(Group)
+      create(:milestone, group: target_namespace, title: milestone.title)
+    elsif target_namespace.is_a?(Namespaces::ProjectNamespace)
+      create(:project_milestone, project: target_namespace.project, title: milestone.title)
+    else
+      create(:project_milestone, project: target_namespace, title: milestone.title)
+    end
+
+    milestone.title
+  end
+
   where(:widget_name, :eval_value, :expected_data, :operations) do
     :assignees          | :work_item_assignees   | ref(:assignees)    | [ref(:move), ref(:clone)]
     :award_emoji        | :work_item_award_emoji | ref(:award_emojis) | [ref(:move)]
     :email_participants | :work_item_emails      | ref(:emails)       | [ref(:move)]
+    :milestone          | :work_item_milestone   | ref(:milestone)    | [ref(:move), ref(:clone)]
   end
 
   with_them do
@@ -97,14 +122,14 @@ RSpec.shared_examples 'cloneable and moveable widget data' do
         widget_value = send(eval_value, new_work_item)
 
         if operations.include?(described_class)
-          expect(widget_value).not_to be_nil
-          expect(widget_value).not_to be_empty
-          expect(widget_value).to match_array(expected_data)
+          expect(widget_value).not_to be_blank
+          # trick to compare single values and arrays with a single statement
+          expect([widget_value].flatten).to match_array([expected_data].flatten)
         else
-          expect(widget_value).to be_empty
+          expect(widget_value).to be_blank
         end
 
-        expect(original_work_item.reload.public_send(widget_name)).to be_empty if described_class == move
+        expect(original_work_item.reload.public_send(widget_name)).to be_blank if described_class == move
       end
     end
   end

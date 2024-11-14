@@ -16,6 +16,11 @@ $diff-file-header: 41px;
 .diff-file {
   margin-bottom: $gl-padding;
 
+  &.diff-file-is-active,
+  &:has(*:not(textarea):focus-visible) {
+    box-shadow: 0 0 0 2px var(--gl-border-color-strong);
+  }
+
   table.code tr:last-of-type td:last-of-type {
     border-bottom-right-radius: $gl-border-radius-base-inner;
   }
@@ -46,17 +51,6 @@ $diff-file-header: 41px;
 
       +.diff-content .md-header-preview {
         top: calc(#{$calc-application-header-height} + #{$mr-sticky-header-height} + #{$diff-file-header} - #{$gl-border-size-1});
-      }
-
-      &::before {
-        content: '';
-        position: absolute;
-        top: -1px;
-        left: -11px;
-        width: 10px;
-        height: calc(100% + 1px);
-        @apply gl-bg-default;
-        pointer-events: none;
       }
 
       &.is-commit,
@@ -652,12 +646,6 @@ table.code {
     position: absolute;
     top: 5px;
     right: 15px;
-  }
-}
-
-.files {
-  .diff-file:not(.is-virtual-scrolling):last-child {
-    margin-bottom: 0;
   }
 }
 
