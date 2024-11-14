@@ -129,7 +129,7 @@ To resolve the vulnerability:
 1. Select outside the filter field. The vulnerability severity totals and list of matching vulnerabilities are updated.
 1. Select the SAST vulnerability you want resolved.
    - A blue icon is shown next to vulnerabilities that support Vulnerability Resolution.
-1. In the upper-right corner, select **Resolve with AI**. If this project is a public project be aware that creating an MR will publicly expose the vulnerablity and offered resolution. To create the MR privately, please [Create a fork](../../../user/project/repository/forking_workflow.md#create-a-fork) for the project, configure its visibility level to private, and repeat this process. 
+1. In the upper-right corner, select **Resolve with AI**. If this project is a public project be aware that creating an MR will publicly expose the vulnerablity and offered resolution. To create the MR privately, please [create a private fork](../../../user/project/merge_requests/confidential.md), and repeat this process. 
 1. Add an additional commit to the MR. This forces a new pipeline to run.
 1. After the pipeline is complete, on the [pipeline security tab](../vulnerability_report/pipeline.md#view-vulnerabilities-in-a-pipeline), confirm that the vulnerability no longer appears.
 1. On the vulnerability report, [manually update the vulnerability](../vulnerability_report/index.md#change-status-of-vulnerabilities).

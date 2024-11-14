@@ -1,6 +1,15 @@
 <script>
 import { computed } from 'vue';
-import { GlLoadingIcon, GlKeysetPagination, GlLink, GlBadge, GlTab, GlTabs } from '@gitlab/ui';
+import {
+  GlLoadingIcon,
+  GlButton,
+  GlKeysetPagination,
+  GlLink,
+  GlBadge,
+  GlTab,
+  GlTabs,
+  GlTooltipDirective,
+} from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { createAlert } from '~/alert';
 import { s__ } from '~/locale';
@@ -25,6 +34,7 @@ const ENTRIES_PER_PAGE = 20;
 export default {
   components: {
     GlLink,
+    GlButton,
     GlLoadingIcon,
     GlKeysetPagination,
     GlBadge,
@@ -34,6 +44,9 @@ export default {
     TodosFilterBar,
     TodoItem,
     TodosMarkAllDoneButton,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   mixins: [Tracking.mixin()],
   provide() {
@@ -160,7 +173,7 @@ export default {
     },
     handleVisibilityChanged() {
       if (!document.hidden) {
-        this.updateAllQueries();
+        this.updateAllQueries(false);
       }
     },
     async handleItemChanged(id, markedAsDone) {
@@ -186,12 +199,14 @@ export default {
       });
     },
     updateCounts() {
-      this.$apollo.queries.pendingTodosCount.refetch();
+      return this.$apollo.queries.pendingTodosCount.refetch();
     },
     async updateAllQueries(showLoading = true) {
+      this.$root.$emit('bv::hide::tooltip', 'todo-refresh-btn');
       this.showSpinnerWhileLoading = showLoading;
-      this.updateCounts();
-      await this.$apollo.queries.todos.refetch();
+
+      await Promise.all([this.updateCounts(), this.$apollo.queries.todos.refetch()]);
+
       this.showSpinnerWhileLoading = true;
     },
   },
@@ -222,11 +237,23 @@ export default {
         </gl-tab>
       </gl-tabs>
 
-      <div
-        v-show="showMarkAllAsDone"
-        class="gl-my-3 gl-mr-5 gl-flex gl-items-center gl-justify-end"
-      >
-        <todos-mark-all-done-button :filters="queryFilterValues" @change="updateAllQueries" />
+      <div class="gl-my-3 gl-mr-5 gl-flex gl-items-center gl-justify-end gl-gap-3">
+        <todos-mark-all-done-button
+          v-if="showMarkAllAsDone"
+          :filters="queryFilterValues"
+          @change="updateAllQueries"
+        />
+
+        <gl-button
+          id="todo-refresh-btn"
+          v-gl-tooltip.hover
+          data-testid="refresh-todos"
+          icon="retry"
+          :aria-label="__('Refresh')"
+          :title="__('Refresh')"
+          :loading="isLoading && !showSpinnerWhileLoading"
+          @click.prevent="updateAllQueries(false)"
+        />
       </div>
     </div>
 

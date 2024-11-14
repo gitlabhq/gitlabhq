@@ -128,7 +128,6 @@ Lint/UnusedBlockArgument:
     - 'ee/spec/requests/api/related_epic_links_spec.rb'
     - 'ee/spec/services/app_sec/dast/site_validations/revoke_service_spec.rb'
     - 'ee/spec/services/ci/retry_pipeline_service_spec.rb'
-    - 'ee/spec/services/elastic/process_bookkeeping_service_spec.rb'
     - 'ee/spec/services/security/ingestion/ingest_report_slice_service_spec.rb'
     - 'ee/spec/services/security/vulnerability_counting_service_spec.rb'
     - 'ee/spec/services/todo_service_spec.rb'

@@ -39,6 +39,7 @@ describe('TodosApp', () => {
   const findGlTabs = () => wrapper.findComponent(GlTabs);
   const findFilterBar = () => wrapper.findComponent(TodosFilterBar);
   const findMarkAllDoneButton = () => wrapper.findComponent(TodosMarkAllDoneButton);
+  const findRefreshButton = () => wrapper.findByTestId('refresh-todos');
   const findPendingTodosCount = () => wrapper.findByTestId('pending-todos-count');
 
   it('should have a tracking event for each tab', () => {
@@ -94,6 +95,19 @@ describe('TodosApp', () => {
     findMarkAllDoneButton().vm.$emit('change');
 
     expect(todosCountsQuerySuccessHandler).toHaveBeenCalledTimes(2);
+  });
+
+  it('refreshes count and list', async () => {
+    createComponent();
+    await waitForPromises();
+
+    expect(todosCountsQuerySuccessHandler).toHaveBeenCalledTimes(1);
+    expect(todosQuerySuccessHandler).toHaveBeenCalledTimes(1);
+
+    findRefreshButton().vm.$emit('click', new Event('click'));
+
+    expect(todosCountsQuerySuccessHandler).toHaveBeenCalledTimes(2);
+    expect(todosQuerySuccessHandler).toHaveBeenCalledTimes(2);
   });
 
   it('shows the pending todos count once it has been fetched', async () => {

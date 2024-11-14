@@ -96,7 +96,7 @@ RSpec.describe Groups::UpdateSharedRunnersService, '#execute', :sidekiq_inline, 
 
         it 'updates pending builds for the group and descendants' do
           expect(::Ci::PendingBuilds::UpdateGroupWorker).to receive(:perform_async)
-            .with(group.id, { instance_runners_enabled: true })
+            .with(group.id, { 'instance_runners_enabled' => true })
             .and_call_original
 
           execute
@@ -165,7 +165,7 @@ RSpec.describe Groups::UpdateSharedRunnersService, '#execute', :sidekiq_inline, 
 
         it 'updates pending builds for the group and descendants' do
           expect(::Ci::PendingBuilds::UpdateGroupWorker).to receive(:perform_async)
-            .with(group.id, { instance_runners_enabled: false })
+            .with(group.id, { 'instance_runners_enabled' => false })
             .and_call_original
 
           execute

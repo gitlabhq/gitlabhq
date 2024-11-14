@@ -8,8 +8,5 @@ description: Stores information about the security scans that are a part of Ci::
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/23669
 milestone: '12.8'
 gitlab_schema: gitlab_sec
-desired_sharding_key_migration_job_name: BackfillProjectIdToSecurityScans
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/501459
-notes: "`desired_sharding_key` is `project_id`. However, the configuration can't be
-  provided here because the backfill migration was processed manually. This migration
-  is custom due to data consistency issues and cross-DB backfill."
+sharding_key:
+  project_id: projects

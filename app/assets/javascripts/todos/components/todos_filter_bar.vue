@@ -464,7 +464,7 @@ export default {
     >
       {{ $options.i18n.fullTextSearchWarning }}
     </gl-alert>
-    <div class="gl-border-b gl-flex gl-flex-col gl-gap-4 gl-bg-gray-10 gl-p-5 sm:gl-flex-row">
+    <div class="gl-border-b gl-flex gl-flex-col gl-gap-3 gl-bg-gray-10 gl-p-5 sm:gl-flex-row">
       <gl-filtered-search
         v-model="filterTokens"
         class="gl-min-w-0 gl-flex-grow"

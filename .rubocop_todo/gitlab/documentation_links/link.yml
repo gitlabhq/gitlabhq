@@ -4,10 +4,8 @@ Gitlab/DocumentationLinks/Link:
   Exclude:
     - '**/*.haml'
     - 'app/helpers/releases_helper.rb'
-    - 'app/presenters/clusters/cluster_presenter.rb'
     - 'app/presenters/commit_status_presenter.rb'
     - 'app/presenters/key_presenter.rb'
-    - 'ee/app/components/namespaces/combined_storage_users/base_alert_component.rb'
     - 'ee/app/helpers/ee/groups/settings_helper.rb'
     - 'ee/app/helpers/projects/learn_gitlab_helper.rb'
     - 'ee/lib/ee/gitlab/namespace_storage_size_error_message.rb'
@@ -20,5 +18,4 @@ Gitlab/DocumentationLinks/Link:
     - 'lib/backup/tasks/database.rb'
     - 'lib/system_check/helpers.rb'
     - 'spec/mailers/emails/pages_domains_spec.rb'
-    - 'spec/presenters/clusters/cluster_presenter_spec.rb'
     - 'spec/presenters/commit_status_presenter_spec.rb'

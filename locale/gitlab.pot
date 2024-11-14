@@ -45412,6 +45412,9 @@ msgstr ""
 msgid "References should be in the form of path/to/project!merge_request_id"
 msgstr ""
 
+msgid "Refresh"
+msgstr ""
+
 msgid "Refresh the page and try again."
 msgstr ""
 

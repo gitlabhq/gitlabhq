@@ -1177,12 +1177,16 @@ describe('common_utils', () => {
   });
 
   describe('isScopedLabel', () => {
-    it('returns true when `::` is present in title', () => {
+    it('returns true when `::` is present in label title', () => {
       expect(commonUtils.isScopedLabel({ title: 'foo::bar' })).toBe(true);
     });
 
+    it('returns true when `::` is present in label name', () => {
+      expect(commonUtils.isScopedLabel({ name: 'foo::bar' })).toBe(true);
+    });
+
     it('returns false when `::` is not present', () => {
-      expect(commonUtils.isScopedLabel({ title: 'foobar' })).toBe(false);
+      expect(commonUtils.isScopedLabel({ title: 'foobar', name: 'foobar' })).toBe(false);
     });
   });
 
