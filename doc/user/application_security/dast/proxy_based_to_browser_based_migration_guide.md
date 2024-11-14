@@ -22,12 +22,9 @@ Migrate to DAST version 5 by reading the following sections and making the recom
 
 ## DAST analyzer versions
 
-DAST comes in two major versions: 4 and 5. The DAST templates `DAST.gitlab-ci.yml` and
-`DAST.latest.gitlab-ci.yml` use DAST version 5 by default.
-
-You can continue using DAST version 4, but you should do so only as an
-interim measure while migrating to DAST version 5. For details, see
-[Continuing to use the proxy-based analyzer](#continuing-to-use-the-proxy-based-analyzer).
+DAST comes in two major versions: 4 and 5.
+Effective from GitLab 17.0 the DAST templates `DAST.gitlab-ci.yml` and `DAST.latest.gitlab-ci.yml` use DAST version 5 by default.
+You can continue using DAST version 4, but you should do so only as an interim measure while migrating to DAST version 5. For details, see [Continuing to use the proxy-based analyzer](#continuing-to-use-the-proxy-based-analyzer).
 
 Each DAST major version uses different analyzers by default:
 
@@ -170,7 +167,7 @@ See [configuration](browser/configuration/index.md) for more information on conf
 | `DAST_TARGET_AVAILABILITY_TIMEOUT`   | Change                   | To `DAST_TARGET_CHECK_TIMEOUT` using a duration. For example, instead of `60`, use `60s` |
 | `DAST_USE_AJAX_SPIDER`               | Remove                   | Not supported                                                                            |
 | `DAST_XML_REPORT`                    | Remove                   | Not supported                                                                            |
-| `DAST_WEBSITE`                       | Rename                   | To `DAST_TARGET_URL`                                                                     |
+| `DAST_WEBSITE`                              | Rename             | To `DAST_TARGET_URL`<br/>Self-managed: Upgrade your instance to version 17.0 or newer before removing `DAST_WEBSITE`. This variable is required if you use the `DAST.gitlab-ci.yml` file included with pre-17.0 versions of GitLab. |
 | `DAST_ZAP_CLI_OPTIONS`               | Remove                   | Not supported                                                                            |
 | `DAST_ZAP_LOG_CONFIGURATION`         | Remove                   | Not supported                                                                            |
 | `SECURE_ANALYZERS_PREFIX`            | None                     | Supported                                                                                |

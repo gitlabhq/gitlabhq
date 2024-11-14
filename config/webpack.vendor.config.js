@@ -1,6 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const { YarnCheck } = require('yarn-check-webpack-plugin');
+const { resolutions } = require('../package.json');
 const vendorDllHash = require('./helpers/vendor_dll_hash');
 
 const ROOT_PATH = path.resolve(__dirname, '..');
@@ -63,19 +64,12 @@ module.exports = {
       rootDirectory: ROOT_PATH,
       exclude: new RegExp(
         [
-          /*
-          chokidar has a newer version which do not depend on fsevents,
-          is faster and only compatible with newer node versions (>=8)
-
-          Their actual interface remains the same and we can safely _force_
-          newer versions to get performance and security benefits.
-
-          This can be removed once all dependencies are up to date:
-          https://gitlab.com/gitlab-org/gitlab/-/issues/219353
-          */
-          'chokidar',
-          // We are ignoring ts-jest, because we force a newer version, compatible with our current jest version
-          'ts-jest',
+          /**
+           * This Webpack plugin complains when packages have the wrong versions.
+           * It doesn't seem like it considers yarn resolutions, so we just do it
+           * with this manually
+           */
+          ...Object.keys(resolutions).map((name) => name.split('/').reverse()[0]),
         ].join('|'),
       ),
       forceKill: true,

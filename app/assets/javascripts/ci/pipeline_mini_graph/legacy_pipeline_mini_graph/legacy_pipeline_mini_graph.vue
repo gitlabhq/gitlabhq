@@ -1,8 +1,7 @@
 <script>
 import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
-import { convertToGraphQLId } from '~/graphql_shared/utils';
-import { TYPENAME_CI_PIPELINE, TYPENAME_CI_STAGE } from '~/graphql_shared/constants';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
+import { normalizeDownstreamPipelines, normalizeStages } from '../utils';
 import DownstreamPipelines from '../downstream_pipelines.vue';
 import PipelineStages from '../pipeline_stages.vue';
 /**
@@ -54,31 +53,10 @@ export default {
   emits: ['miniGraphStageClick'],
   computed: {
     formattedDownstreamPipelines() {
-      return this.downstreamPipelines.map((p) => {
-        return {
-          detailedStatus: p?.details?.status || p.detailedStatus,
-          id: convertToGraphQLId(TYPENAME_CI_PIPELINE, p.id),
-          path: p.path,
-          project: {
-            fullPath: p.project.full_path,
-            name: p.project.name,
-          },
-        };
-      });
+      return normalizeDownstreamPipelines(this.downstreamPipelines);
     },
     formattedStages() {
-      return this.stages.map((s) => {
-        const { id, name, status } = s;
-        return {
-          id: convertToGraphQLId(TYPENAME_CI_STAGE, id),
-          detailedStatus: {
-            icon: status.icon,
-            label: status.label,
-            tooltip: status.tooltip,
-          },
-          name,
-        };
-      });
+      return normalizeStages(this.stages);
     },
     hasDownstreamPipelines() {
       return Boolean(this.downstreamPipelines.length);

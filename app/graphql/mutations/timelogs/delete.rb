@@ -6,9 +6,9 @@ module Mutations
       graphql_name 'TimelogDelete'
 
       argument :id,
-               ::Types::GlobalIDType[::Timelog],
-               required: true,
-               description: 'Global ID of the timelog.'
+        ::Types::GlobalIDType[::Timelog],
+        required: true,
+        description: 'Global ID of the timelog.'
 
       authorize :admin_timelog
 

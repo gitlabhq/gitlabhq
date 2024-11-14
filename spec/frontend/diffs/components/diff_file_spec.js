@@ -25,6 +25,7 @@ import eventHub from '~/diffs/event_hub';
 
 import { diffViewerModes, diffViewerErrors } from '~/ide/constants';
 import axios from '~/lib/utils/axios_utils';
+import { clearDraft } from '~/lib/utils/autosave';
 import { scrollToElement, isElementStuck } from '~/lib/utils/common_utils';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import createNotesStore from '~/notes/stores/modules';
@@ -36,6 +37,7 @@ import diffFileMockDataUnreadable from '../mock_data/diff_file_unreadable';
 import diffsMockData from '../mock_data/merge_request_diffs';
 
 jest.mock('~/lib/utils/common_utils');
+jest.mock('~/lib/utils/autosave');
 jest.mock('~/alert');
 jest.mock('~/notes/mixins/diff_line_note_form', () => ({
   methods: {
@@ -134,10 +136,12 @@ describe('DiffFile', () => {
     last = false,
     options = {},
     props = {},
+    getters = {},
   } = {}) {
     toggleFileDiscussionMock = jest.fn();
 
     const diffs = diffsModule();
+    const notes = createNotesStore();
     diffs.actions = {
       ...diffs.actions,
       toggleFileDiscussion: toggleFileDiscussionMock,
@@ -149,10 +153,16 @@ describe('DiffFile', () => {
       ...diffs.getters,
       diffCompareDropdownTargetVersions: () => [],
       diffCompareDropdownSourceVersions: () => [],
+      ...getters.diffs,
+    };
+    notes.getters = {
+      ...notes.getters,
+      isLoggedIn: () => false,
+      ...getters.notes,
     };
 
     store = new Vuex.Store({
-      ...createNotesStore(),
+      ...notes,
       modules: { diffs },
     });
 
@@ -830,6 +840,76 @@ describe('DiffFile', () => {
           parentElement,
           errorCallback,
         );
+      });
+    });
+  });
+
+  describe('comments on file', () => {
+    let commentForm;
+    let file;
+
+    beforeEach(() => {
+      file = {
+        ...getReadableFile(),
+        id: 'file_id',
+        hasCommentForm: true,
+      };
+
+      createComponent({
+        file,
+        options: { provide: { glFeatures: { commentOnFiles: true } } },
+      });
+
+      commentForm = findNoteForm(wrapper);
+    });
+
+    it('assigns an empty string as the autosave key to the note form', () => {
+      expect(commentForm.props('autosaveKey')).toBe('');
+    });
+
+    it('clears the autosave value when the note-form emits `cancelForm`', async () => {
+      commentForm.vm.$emit('cancelForm');
+
+      await nextTick();
+
+      expect(clearDraft).toHaveBeenCalled();
+    });
+
+    describe('when the user is logged in', () => {
+      beforeEach(() => {
+        createComponent({
+          file,
+          options: {
+            provide: { glFeatures: { commentOnFiles: true } },
+            data: () => ({
+              noteableData: {
+                id: '1',
+                noteable_type: 'file',
+                noteableType: 'file',
+                diff_head_sha: '123abc',
+              },
+            }),
+          },
+          getters: {
+            notes: {
+              isLoggedIn: () => true,
+            },
+          },
+        });
+
+        commentForm = findNoteForm(wrapper);
+      });
+
+      it('assigns the correct value as the autosave key to the note form', () => {
+        expect(commentForm.props('autosaveKey')).toBe('Autosave|Note/File/1/123abc/file/file_id');
+      });
+
+      it('clears the autosaved value with the correct key', async () => {
+        commentForm.vm.$emit('cancelForm');
+
+        await nextTick();
+
+        expect(clearDraft).toHaveBeenCalledWith('Autosave|Note/File/1/123abc/file/file_id');
       });
     });
   });

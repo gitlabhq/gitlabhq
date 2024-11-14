@@ -87,7 +87,6 @@ RSpec.describe Gitlab::BackgroundMigration::DropVulnerabilitiesWithoutFindingId,
       project_id: project.id,
       scanner_id: create_scanner(project).id,
       severity: 5, # medium
-      confidence: 2, # unknown,
       report_type: 99, # generic
       primary_identifier_id: create_identifier(project).id,
       project_fingerprint: SecureRandom.hex(20),

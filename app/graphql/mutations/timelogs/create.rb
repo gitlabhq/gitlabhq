@@ -6,24 +6,24 @@ module Mutations
       graphql_name 'TimelogCreate'
 
       argument :time_spent,
-               GraphQL::Types::String,
-               required: true,
-               description: 'Amount of time spent.'
+        GraphQL::Types::String,
+        required: true,
+        description: 'Amount of time spent.'
 
       argument :spent_at,
-               Types::TimeType,
-               required: false,
-               description: 'Timestamp of when the time was spent. If empty, defaults to current time.'
+        Types::TimeType,
+        required: false,
+        description: 'Timestamp of when the time was spent. If empty, defaults to current time.'
 
       argument :summary,
-               GraphQL::Types::String,
-               required: true,
-               description: 'Summary of time spent.'
+        GraphQL::Types::String,
+        required: true,
+        description: 'Summary of time spent.'
 
       argument :issuable_id,
-               ::Types::GlobalIDType[::Issuable],
-               required: true,
-               description: 'Global ID of the issuable (Issue, WorkItem or MergeRequest).'
+        ::Types::GlobalIDType[::Issuable],
+        required: true,
+        description: 'Global ID of the issuable (Issue, WorkItem or MergeRequest).'
 
       authorize :create_timelog
 

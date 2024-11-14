@@ -62,8 +62,8 @@ module Mutations
         description: copy_field_description(Types::WorkItemType, :title)
 
       field :work_item, Types::WorkItemType,
-            null: true,
-            description: 'Updated work item.'
+        null: true,
+        description: 'Updated work item.'
 
       def resolve(id:, **attributes)
         Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/408575')

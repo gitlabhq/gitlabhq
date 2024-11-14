@@ -22,10 +22,9 @@ Migrate to DAST version 5 by reading the following sections and making the recom
 
 ## DAST analyzer versions
 
-DAST comes in two major versions: 4 and 5. The DAST templates `DAST.gitlab-ci.yml` and
-`DAST.latest.gitlab-ci.yml` use DAST version 5 by default. You can continue using DAST version 4,
-but you should do so only as an interim measure while migrating to DAST version 5. For details, see
-[Continuing to use version 4](#continuing-to-use-version-4).
+DAST comes in two major versions: 4 and 5.
+Effective from GitLab 17.0 the DAST templates `DAST.gitlab-ci.yml` and `DAST.latest.gitlab-ci.yml` use DAST version 5 by default.
+You can continue using DAST version 4, but you should do so only as an interim measure while migrating to DAST version 5. For details, see [Continuing to use version 4](#continuing-to-use-version-4).
 
 Each DAST major version runs different analyzers:
 
@@ -34,9 +33,15 @@ Each DAST major version runs different analyzers:
 
 DAST version 5 uses a set of new CI/CD variables. Aliases have been created for the DAST version 4 variables' names.
 
-Changes to make:
+Changes to make in GitLab 16.11 and earlier:
 
-- To test your DAST scan using DAST version 5 in GitLab 16.11 and earlier, set the CI/CD variable `DAST_VERSION` to 5.
+- To test DAST version 5, set the CI/CD variable `DAST_VERSION` to 5.
+- To avoid job failures, do not remove or rename `DAST_WEBSITE`. The `DAST.gitlab-ci.yml` template versions 16.11 and earlier [still use the `DAST_WEBSITE`](https://gitlab.com/gitlab-org/gitlab/-/blob/v16.11.5-ee/lib/gitlab/ci/templates/Security/DAST.gitlab-ci.yml?ref_type=tags#L39) variable.
+
+Changes to make in GitLab 17.0 and later:
+
+- After you upgrade to GitLab 17.0, rename `DAST_WEBSITE` to `DAST_TARGET_URL`.
+- When you start using new templates that set `DAST_VERSION` to 5, make sure the CI/CD variable `DAST_VERSION` is not set.
 
 ## Continuing to use version 4
 
@@ -139,4 +144,4 @@ See [configuration](browser/configuration/index.md) for more information on conf
 | `DAST_TARGET_AVAILABILITY_TIMEOUT`          | Rename             | To `DAST_TARGET_CHECK_TIMEOUT`                |
 | `DAST_USERNAME`                             | Rename             | To `DAST_AUTH_USERNAME`                       |
 | `DAST_USERNAME_FIELD`                       | Rename             | To `DAST_AUTH_USERNAME_FIELD`                 |
-| `DAST_WEBSITE`                              | Rename             | To `DAST_TARGET_URL`                          |
+| `DAST_WEBSITE`                              | Rename             | To `DAST_TARGET_URL`<br/>Self-managed: Upgrade your instance to version 17.0 or newer before removing `DAST_WEBSITE`. This variable is required if you use the `DAST.gitlab-ci.yml` file included with pre-17.0 versions of GitLab. |

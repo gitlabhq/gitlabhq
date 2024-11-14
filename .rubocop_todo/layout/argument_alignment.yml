@@ -2,20 +2,6 @@
 # Cop supports --autocorrect.
 Layout/ArgumentAlignment:
   Exclude:
-    - 'app/graphql/mutations/timelogs/base.rb'
-    - 'app/graphql/mutations/timelogs/create.rb'
-    - 'app/graphql/mutations/timelogs/delete.rb'
-    - 'app/graphql/mutations/todos/create.rb'
-    - 'app/graphql/mutations/todos/mark_all_done.rb'
-    - 'app/graphql/mutations/todos/mark_done.rb'
-    - 'app/graphql/mutations/todos/restore.rb'
-    - 'app/graphql/mutations/todos/restore_many.rb'
-    - 'app/graphql/mutations/uploads/delete.rb'
-    - 'app/graphql/mutations/user_callouts/create.rb'
-    - 'app/graphql/mutations/work_items/create_from_task.rb'
-    - 'app/graphql/mutations/work_items/delete.rb'
-    - 'app/graphql/mutations/work_items/update.rb'
-    - 'app/graphql/resolvers/admin/analytics/usage_trends/measurements_resolver.rb'
     - 'ee/app/services/ee/issues/clone_service.rb'
     - 'ee/app/services/ee/keys/create_service.rb'
     - 'ee/app/services/ee/projects/create_from_template_service.rb'

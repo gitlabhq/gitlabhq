@@ -20950,9 +20950,11 @@ CREATE TABLE vs_code_settings (
     content text NOT NULL,
     uuid uuid,
     version integer DEFAULT 0,
+    settings_context_hash text,
     CONSTRAINT check_2082c35541 CHECK ((version IS NOT NULL)),
     CONSTRAINT check_4680ca265d CHECK ((uuid IS NOT NULL)),
     CONSTRAINT check_5da3b2910b CHECK ((char_length(content) <= 524288)),
+    CONSTRAINT check_6d5f15039b CHECK ((char_length(settings_context_hash) <= 255)),
     CONSTRAINT check_994c503fc4 CHECK ((char_length(setting_type) <= 256))
 );
 
@@ -21357,7 +21359,6 @@ CREATE TABLE vulnerability_occurrences (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     severity smallint NOT NULL,
-    confidence smallint,
     report_type smallint NOT NULL,
     project_id bigint NOT NULL,
     scanner_id bigint NOT NULL,
@@ -28130,7 +28131,11 @@ CREATE INDEX idx_approval_merge_request_rules_on_scan_result_policy_id ON approv
 
 CREATE INDEX idx_approval_mr_rules_on_config_id_and_id_and_updated_at ON approval_merge_request_rules USING btree (security_orchestration_policy_configuration_id, id, updated_at);
 
+CREATE INDEX idx_approval_mr_rules_on_config_id_and_policy_rule_id ON approval_merge_request_rules USING btree (security_orchestration_policy_configuration_id, approval_policy_rule_id);
+
 CREATE INDEX idx_approval_policy_rules_security_policy_id_id ON approval_policy_rules USING btree (security_policy_id, id);
+
+CREATE INDEX idx_approval_project_rules_on_config_id_and_policy_rule_id ON approval_project_rules USING btree (security_orchestration_policy_configuration_id, approval_policy_rule_id);
 
 CREATE INDEX idx_approval_project_rules_on_configuration_id_and_id ON approval_project_rules USING btree (security_orchestration_policy_configuration_id, id);
 
@@ -33024,7 +33029,7 @@ CREATE UNIQUE INDEX unique_streaming_event_type_filters_destination_id ON audit_
 
 CREATE UNIQUE INDEX unique_streaming_instance_event_type_filters_destination_id ON audit_events_streaming_instance_event_type_filters USING btree (instance_external_audit_event_destination_id, audit_event_type);
 
-CREATE UNIQUE INDEX unique_user_id_and_setting_type ON vs_code_settings USING btree (user_id, setting_type);
+CREATE UNIQUE INDEX unique_user_id_setting_type_and_settings_context_hash ON vs_code_settings USING btree (user_id, setting_type, settings_context_hash);
 
 CREATE UNIQUE INDEX unique_vuln_merge_request_link_vuln_id_and_mr_id ON vulnerability_merge_request_links USING btree (vulnerability_id, merge_request_id);
 

@@ -305,10 +305,6 @@
   @include media-breakpoint-down(sm) {
     align-items: initial;
     flex-direction: column;
-
-    .dropdown .mini-pipeline-graph-dropdown-menu.dropdown-menu {
-      transform: initial;
-    }
   }
 
   .coverage {

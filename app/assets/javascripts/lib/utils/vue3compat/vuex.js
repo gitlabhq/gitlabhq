@@ -6,7 +6,7 @@ import {
   mapActions,
   mapMutations,
   createNamespacedHelpers,
-} from 'vuex-vue3';
+} from '@gitlab/vuex-vue3';
 
 export { mapState, mapGetters, mapActions, mapMutations, createNamespacedHelpers };
 

@@ -8,13 +8,13 @@ module Mutations
       MAX_UPDATE_AMOUNT = 50
 
       argument :ids,
-               [::Types::GlobalIDType[::Todo]],
-               required: true,
-               description: 'Global IDs of the to-do items to restore (a maximum of 50 is supported at once).'
+        [::Types::GlobalIDType[::Todo]],
+        required: true,
+        description: 'Global IDs of the to-do items to restore (a maximum of 50 is supported at once).'
 
       field :todos, [::Types::TodoType],
-            null: false,
-            description: 'Updated to-do items.'
+        null: false,
+        description: 'Updated to-do items.'
 
       def resolve(ids:)
         check_update_amount_limit!(ids)

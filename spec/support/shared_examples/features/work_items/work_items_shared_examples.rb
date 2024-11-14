@@ -11,29 +11,24 @@ RSpec.shared_context 'with work_items_beta' do |flag|
 end
 
 RSpec.shared_examples 'work items title' do
-  let(:title_selector) { '[data-testid="work-item-title-input"]' }
-
-  it 'successfully shows and changes the title of the work item' do
-    expect(work_item.reload.title).to eq work_item.title
-
+  it 'updates title' do
     click_button 'Edit', match: :first
-    find(title_selector).set("Work item title")
+    fill_in 'Title (required)', with: 'Work item title'
     send_keys([:command, :enter])
-    wait_for_requests
 
-    expect(work_item.reload.title).to eq 'Work item title'
+    expect(page).to have_css('h1', text: 'Work item title')
   end
 end
 
 RSpec.shared_examples 'work items toggle status button' do
-  it 'successfully shows and changes the status of the work item' do
+  it 'updates status', :aggregate_failures do
     within_testid 'work-item-comment-form-actions' do
       # Depending of the context, the button's text could be `Close issue`, `Close key result`, `Close objective`, etc.
       click_button 'Close', match: :first
-
-      expect(page).to have_button 'Reopen'
     end
-    expect(work_item.reload.state).to eq('closed')
+
+    expect(page).to have_button 'Reopen'
+    expect(page).to have_css('.gl-badge', text: 'Closed')
   end
 end
 
@@ -73,7 +68,7 @@ RSpec.shared_examples 'work items comments' do |type|
       project.add_owner(owner)
     end
 
-    it 'shows work item note actions' do
+    it 'shows work item note actions', :aggregate_failures do
       set_comment
       send_keys([modifier_key, :enter])
 
@@ -106,7 +101,7 @@ RSpec.shared_examples 'work items comments' do |type|
     expected_matches = find('ul.main-notes-list').all('li').size + 1
     set_comment
     send_keys([modifier_key, :enter], [modifier_key, :enter], [modifier_key, :enter])
-    wait_for_requests
+
     expect(find('ul.main-notes-list')).to have_selector('li', count: expected_matches)
   end
 
@@ -160,61 +155,45 @@ RSpec.shared_examples 'work items comments' do |type|
 end
 
 RSpec.shared_examples 'work items assignees' do
-  let(:work_item_assignees_selector) { '[data-testid="work-item-assignees"]' }
+  it 'assigns and unassigns user', :aggregate_failures do
+    within_testid 'work-item-assignees' do
+      click_button 'Edit'
+      select_listbox_item(user.username)
+      send_keys :escape
 
-  it 'successfully assigns the current user by searching',
-    quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/413074' do
-    # The button is only when the mouse is over the input
-    find_and_click_edit(work_item_assignees_selector)
+      expect(page).to have_link(user.name)
 
-    select_listbox_item(user.username)
+      click_button 'Edit'
+      click_button 'Clear'
 
-    find("body").click
-    wait_for_all_requests
-
-    expect(work_item.assignees).to include(user)
+      expect(page).not_to have_link(user.name)
+    end
   end
 
-  it 'successfully removes all users on clear all button click' do
-    find_and_click_edit(work_item_assignees_selector)
-
-    select_listbox_item(user.username)
-
-    find("body").click
-    wait_for_requests
-
-    find_and_click_edit(work_item_assignees_selector)
-
-    find_and_click_clear(work_item_assignees_selector)
-    wait_for_all_requests
-
-    expect(work_item.assignees).not_to include(user)
-  end
-
-  it 'updates the assignee in real-time' do
+  it 'updates the assignee in real-time', :aggregate_failures do
     using_session :other_session do
       visit work_items_path
-      expect(work_item.reload.assignees).not_to include(user)
+
+      expect(page).not_to have_link(user.name)
     end
 
     click_button 'assign yourself'
-    wait_for_all_requests
 
-    expect(work_item.reload.assignees).to include(user)
+    expect(page).to have_link(user.name)
     using_session :other_session do
-      expect(work_item.reload.assignees).to include(user)
+      expect(page).to have_link(user.name)
     end
   end
 end
 
 RSpec.shared_examples 'work items labels' do
   it 'shows a label with a link pointing to filtered work items list' do
-    within_testid('work-item-labels') do
+    within_testid 'work-item-labels' do
       expect(page).to have_link(label.title, href: "#{project_issues_path(project)}?label_name[]=#{label.title}")
     end
   end
 
-  it 'adds and removes a label' do
+  it 'adds and removes a label', :aggregate_failures do
     within_testid 'work-item-labels' do
       expect(page).not_to have_css '.gl-label', text: label2.title
 
@@ -231,7 +210,7 @@ RSpec.shared_examples 'work items labels' do
     end
   end
 
-  it 'updates the assigned labels in real-time when another user updates the label' do
+  it 'updates the assigned labels in real-time', :aggregate_failures do
     using_session :other_session do
       visit work_items_path
 
@@ -247,7 +226,6 @@ RSpec.shared_examples 'work items labels' do
     end
 
     expect(page).to have_css '.gl-label', text: label2.title
-
     using_session :other_session do
       expect(page).to have_css '.gl-label', text: label2.title
     end
@@ -267,10 +245,8 @@ RSpec.shared_examples 'work items labels' do
 end
 
 RSpec.shared_examples 'work items description' do
-  let(:edit_button) { 'Edit' }
-
-  it 'shows GFM autocomplete', :aggregate_failures do
-    click_button edit_button, match: :first
+  it 'shows GLFM autocomplete' do
+    click_button 'Edit', match: :first
     fill_in _('Description'), with: "@#{user.username}"
 
     page.within('.atwho-container') do
@@ -279,7 +255,7 @@ RSpec.shared_examples 'work items description' do
   end
 
   it 'autocompletes available quick actions', :aggregate_failures do
-    click_button edit_button, match: :first
+    click_button 'Edit', match: :first
     fill_in _('Description'), with: '/'
 
     page.within('#at-view-commands') do
@@ -301,7 +277,7 @@ RSpec.shared_examples 'work items description' do
     end
 
     it 'shows conflict message when description changes', :aggregate_failures do
-      click_button edit_button, match: :first
+      click_button 'Edit', match: :first
 
       ::WorkItems::UpdateService.new(
         container: work_item.project,
@@ -320,7 +296,9 @@ RSpec.shared_examples 'work items description' do
 
       click_button s_('WorkItem|Save and overwrite')
 
-      expect(page.find('[data-testid="work-item-description"]')).to have_text("oh yeah!")
+      within_testid 'work-item-description' do
+        expect(page).to have_text("oh yeah!")
+      end
     end
   end
 end
@@ -328,14 +306,11 @@ end
 RSpec.shared_examples 'work items invite members' do
   include Features::InviteMembersModalHelpers
 
-  let(:work_item_assignees_selector) { '[data-testid="work-item-assignees"]' }
-
-  it 'successfully assigns the current user by searching' do
-    # The button is only when the mouse is over the input
-    find_and_click_edit(work_item_assignees_selector)
-    wait_for_requests
-
-    click_link('Invite members')
+  it 'shows modal to invite members' do
+    within_testid 'work-item-assignees' do
+      click_button 'Edit'
+      click_link('Invite members')
+    end
 
     page.within invite_modal_selector do
       expect(page).to have_text("You're inviting members to the #{work_item.project.name} project")
@@ -346,10 +321,6 @@ end
 RSpec.shared_examples 'work items milestone' do
   let(:work_item_milestone_selector) { '[data-testid="work-item-milestone"]' }
 
-  it 'has the work item milestone with edit' do
-    expect(page).to have_selector(work_item_milestone_selector)
-  end
-
   it 'passes axe automated accessibility testing in closed state' do
     expect(page).to be_axe_clean.within(work_item_milestone_selector)
   end
@@ -357,46 +328,31 @@ RSpec.shared_examples 'work items milestone' do
   it 'passes axe automated accessibility testing in open state' do
     within(work_item_milestone_selector) do
       click_button _('Edit')
-      wait_for_requests
 
       expect(page).to be_axe_clean.within(work_item_milestone_selector)
     end
   end
 
-  context 'when edit is clicked' do
-    it 'selects and updates the right milestone', :aggregate_failures do
-      find_and_click_edit(work_item_milestone_selector)
+  it 'adds and removes milestone', :aggregate_failures do
+    within_testid 'work-item-milestone' do
+      click_button 'Edit'
+      send_keys "\"#{milestones[11].title}\""
+      select_listbox_item(milestones[11].title)
 
-      select_listbox_item(milestones[10].title)
+      expect(page).to have_link(milestones[11].title)
 
-      wait_for_requests
-      within(work_item_milestone_selector) do
-        expect(page).to have_text(milestones[10].title)
-      end
+      click_button 'Edit'
+      click_button 'Clear'
 
-      find_and_click_edit(work_item_milestone_selector)
-
-      find_and_click_clear(work_item_milestone_selector)
-
-      expect(find(work_item_milestone_selector)).to have_content('None')
-    end
-
-    it 'searches and sets or removes milestone for the work item' do
-      find_and_click_edit(work_item_milestone_selector)
-      within(work_item_milestone_selector) do
-        send_keys "\"#{milestones[11].title}\""
-        wait_for_requests
-
-        select_listbox_item(milestones[11].title)
-        expect(page).to have_text(milestones[11].title)
-      end
+      expect(page).to have_text('None')
+      expect(page).not_to have_link(milestones[11].title)
     end
   end
 end
 
 RSpec.shared_examples 'work items comment actions for guest users' do
   context 'for guest user' do
-    it 'hides other actions other than copy link' do
+    it 'hides other actions other than copy link', :aggregate_failures do
       page.within(".main-notes-list") do
         click_button _('More actions'), match: :first
 
@@ -408,141 +364,119 @@ RSpec.shared_examples 'work items comment actions for guest users' do
 end
 
 RSpec.shared_examples 'work items notifications' do
-  it 'displays toast when notification is toggled' do
-    if Feature.enabled?(:notifications_todos_buttons)
-      def notification_button
-        find('button[data-testid="subscribe-button"]')
-      end
-      notification_button.click
-      expect(page).to have_selector('svg[data-testid="notifications"]')
-    else
-      click_button _('More actions'), match: :first
-      within_testid('notifications-toggle-form') do
-        expect(page).not_to have_button(class: 'gl-toggle is-checked')
+  it 'displays toast when notification is toggled', :aggregate_failures do
+    click_button _('More actions'), match: :first
 
-        click_button(class: 'gl-toggle')
+    within_testid 'notifications-toggle-form' do
+      expect(page).not_to have_css('.gl-toggle.is-checked')
 
-        wait_for_requests
+      click_button(class: 'gl-toggle')
 
-        expect(page).to have_button(class: 'gl-toggle is-checked')
-      end
+      expect(page).to have_css('.gl-toggle.is-checked')
     end
 
     expect(page).to have_css('.gl-toast', text: _('Notifications turned on.'))
   end
 end
 
+RSpec.shared_examples 'work items lock discussion' do
+  it 'locks and unlocks discussion', :aggregate_failures do
+    click_button _('More actions'), match: :first
+    click_button 'Lock discussion'
+    click_button _('More actions'), match: :first # click again to close the dropdown
+
+    expect(page).to have_text 'The discussion in this issue is locked. Only project members can comment.'
+
+    click_button _('More actions'), match: :first
+    click_button 'Unlock discussion'
+
+    expect(page).not_to have_text 'The discussion in this issue is locked. Only project members can comment.'
+  end
+end
+
+RSpec.shared_examples 'work items confidentiality' do
+  it 'turns on and off confidentiality', :aggregate_failures do
+    click_button _('More actions'), match: :first
+    click_button 'Turn on confidentiality'
+
+    expect(page).to have_css('.gl-badge', text: 'Confidential')
+
+    click_button _('More actions'), match: :first
+    click_button 'Turn off confidentiality'
+
+    expect(page).not_to have_css('.gl-badge', text: 'Confidential')
+  end
+end
+
 RSpec.shared_examples 'work items todos' do
-  it 'adds item to the list' do
+  it 'adds item to to-do list', :aggregate_failures do
     expect(page).to have_button s_('WorkItem|Add a to-do item')
 
     click_button s_('WorkItem|Add a to-do item')
 
     expect(page).to have_button s_('WorkItem|Mark as done')
 
-    within_testid('todos-shortcut-button') do
+    within_testid 'todos-shortcut-button' do
       expect(page).to have_content '1'
     end
   end
 
-  it 'marks a todo as done' do
+  it 'marks to-do item as done', :aggregate_failures do
     click_button s_('WorkItem|Add a to-do item')
     click_button s_('WorkItem|Mark as done')
 
     expect(page).to have_button s_('WorkItem|Add a to-do item')
-    within_testid('todos-shortcut-button') do
+    within_testid 'todos-shortcut-button' do
       expect(page).to have_content("")
     end
   end
 end
 
 RSpec.shared_examples 'work items award emoji' do
-  let(:award_section_selector) { '.awards' }
-  let(:award_button_selector) { '[data-testid="award-button"]' }
-  let(:selected_award_button_selector) { '[data-testid="award-button"].selected' }
-  let(:grinning_emoji_selector) { 'gl-emoji[data-name="grinning"]' }
-  let(:tooltip_selector) { '.gl-tooltip' }
-
-  def select_emoji
-    page.within(award_section_selector) do
-      page.first(award_button_selector).click
-    end
-
-    wait_for_requests
-  end
-
   before do
     emoji_upvote
   end
 
-  it 'adds award to the work item for current user' do
-    select_emoji
+  it 'adds and removes award and custom award', :aggregate_failures do
+    # user2 has already awarded the `:thumbsup:` emoji
+    expect(page).to have_button '👍 1'
 
-    within(award_section_selector) do
-      expect(page).to have_selector(selected_award_button_selector)
+    click_button '👍'
 
-      # As the user2 has already awarded the `:thumbsup:` emoji, the emoji count will be 2
-      expect(first(award_button_selector)).to have_content '2'
-    end
-    expect(page.find(tooltip_selector)).to have_content("John and you reacted with :#{AwardEmoji::THUMBS_UP}:")
-  end
+    expect(page).to have_button '👍 2'
+    expect(page).to have_css('.gl-tooltip', text: "John and you reacted with :#{AwardEmoji::THUMBS_UP}:")
 
-  it 'removes award from work item for current user' do
-    select_emoji
+    click_button '👍'
 
-    page.within(award_section_selector) do
-      # As the user2 has already awarded the `:thumbsup:` emoji, the emoji count will be 2
-      expect(first(award_button_selector)).to have_content '2'
-    end
+    expect(page).to have_button '👍 1'
+    expect(page).to have_css('.gl-tooltip', text: "John reacted with :#{AwardEmoji::THUMBS_UP}:")
 
-    select_emoji
+    click_button _('Add reaction'), match: :first
+    click_button '😀'
 
-    page.within(award_section_selector) do
-      # The emoji count will be back to 1
-      expect(first(award_button_selector)).to have_content '1'
-    end
-  end
-
-  it 'add custom award to the work item for current user' do
-    within(award_section_selector) do
-      click_button _('Add reaction')
-      find(grinning_emoji_selector).click
-
-      expect(page).to have_selector(grinning_emoji_selector)
-    end
+    expect(page).to have_button '😀 1'
   end
 end
 
 RSpec.shared_examples 'work items parent' do |type|
-  let(:work_item_parent_selector) { '[data-testid="work-item-parent"]' }
   let(:work_item_parent) { create(:work_item, type, project: project) }
 
-  def set_parent(parent_text)
-    within(work_item_parent_selector) do
-      send_keys(parent_text)
-      wait_for_requests
+  it 'adds and removes parent', :aggregate_failures do
+    within_testid 'work-item-parent' do
+      click_button 'Edit'
+      send_keys(work_item_parent.title)
+      select_listbox_item(work_item_parent.title)
 
-      select_listbox_item(parent_text)
-      wait_for_requests
+      expect(page).to have_link(work_item_parent.title)
+
+      page.refresh
+
+      click_button 'Edit'
+      click_button 'Clear'
+
+      expect(page).to have_content 'None'
+      expect(page).not_to have_link(work_item_parent.title)
     end
-  end
-
-  it 'searches and sets or removes parent for the work item' do
-    find_and_click_edit(work_item_parent_selector)
-
-    set_parent(work_item_parent.title)
-
-    expect(page).to have_text(work_item_parent.title)
-
-    find_and_click_edit(work_item_parent_selector)
-
-    page.refresh
-
-    find_and_click_edit(work_item_parent_selector)
-
-    find_and_click_clear(work_item_parent_selector, 'Clear')
-
-    expect(find(work_item_parent_selector)).to have_content('None')
   end
 end
 
@@ -584,10 +518,6 @@ RSpec.shared_examples 'work items iteration' do
     )
   end
 
-  it 'has the work item iteration with edit' do
-    expect(page).to have_selector(work_item_iteration_selector)
-  end
-
   it 'passes axe automated accessibility testing in closed state' do
     expect(page).to be_axe_clean.within(work_item_iteration_selector)
   end
@@ -601,40 +531,21 @@ RSpec.shared_examples 'work items iteration' do
     end
   end
 
-  context 'when edit is clicked' do
-    it 'selects and updates the right iteration', :aggregate_failures do
-      find_and_click_edit(work_item_iteration_selector)
-
-      within(work_item_iteration_selector) do
-        expect(page).to have_text(iteration_cadence.title)
-        expect(page).to have_text(iteration.period)
-      end
-
+  it 'adds and removes an iteration', :aggregate_failures do
+    within_testid 'work-item-iteration' do
+      click_button 'Edit'
+      send_keys(iteration.title)
       select_listbox_item(iteration.period)
 
-      wait_for_requests
+      expect(page).to have_text(iteration_cadence.title)
+      expect(page).to have_text(iteration_period_display(iteration))
 
-      within(work_item_iteration_selector) do
-        expect(page).to have_text(iteration_cadence.title)
-        expect(page).to have_text(iteration_period_display(iteration))
-      end
+      click_button 'Edit'
+      click_button 'Clear'
 
-      find_and_click_edit(work_item_iteration_selector)
-
-      find_and_click_clear(work_item_iteration_selector)
-
-      expect(find(work_item_iteration_selector)).to have_content('None')
-    end
-
-    it 'searches and sets or removes iteration for the work item' do
-      find_and_click_edit(work_item_iteration_selector)
-      within(work_item_iteration_selector) do
-        send_keys(iteration.title)
-        wait_for_requests
-
-        select_listbox_item(iteration.period)
-        expect(page).to have_text(iteration_period_display(iteration))
-      end
+      expect(page).to have_content('None')
+      expect(page).not_to have_text(iteration_cadence.title)
+      expect(page).not_to have_text(iteration_period_display(iteration))
     end
   end
 end
@@ -715,31 +626,25 @@ RSpec.shared_examples 'work items time tracking' do
 end
 
 RSpec.shared_examples 'work items crm contacts' do
-  it 'searches for, adds and removes a contact' do
+  it 'searches for, adds and removes a contact', :aggregate_failures do
     within_testid 'work-item-crm-contacts' do
-      expect(page).not_to have_css '.gl-link', text: contact_name
-
       click_button 'Edit'
       send_keys(contact.first_name)
-      wait_for_requests
-
       select_listbox_item(contact_name)
       send_keys(:escape)
 
-      expect(page).to have_css '.gl-link', text: contact_name
+      expect(page).to have_link contact_name
 
       click_button 'Edit'
       click_button 'Clear'
 
-      expect(page).not_to have_css '.gl-link', text: contact_name
+      expect(page).not_to have_link contact_name
     end
   end
 
   it 'passes axe automated accessibility testing' do
     within_testid 'work-item-crm-contacts' do
       click_button _('Edit')
-      find('.gl-listbox-search-input').click
-
       wait_for_requests
 
       expect(page).to be_axe_clean.within('[data-testid="work-item-crm-contacts"]')

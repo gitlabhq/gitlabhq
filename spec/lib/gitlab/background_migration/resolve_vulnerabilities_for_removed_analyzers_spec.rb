@@ -331,7 +331,6 @@ RSpec.describe Gitlab::BackgroundMigration::ResolveVulnerabilitiesForRemovedAnal
       project_id: project_id,
       scanner_id: scanner.id,
       severity: severity_level,
-      confidence: 2, # unknown,
       report_type: 99, # generic
       primary_identifier_id: identifier.id,
       project_fingerprint: project_fingerprint,

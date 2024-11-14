@@ -41108,9 +41108,6 @@ msgstr ""
 msgid "Pipeline|Raw text search is not currently supported. Please use the available search tokens."
 msgstr ""
 
-msgid "Pipeline|Run again"
-msgstr ""
-
 msgid "Pipeline|Run for branch name or tag"
 msgstr ""
 
@@ -50551,9 +50548,6 @@ msgid "SecurityOrchestration|You must select one or more projects to which this 
 msgstr ""
 
 msgid "SecurityOrchestration|You've reached the maximum limit of %{max} %{type} policies allowed. Policies are disabled when added."
-msgstr ""
-
-msgid "SecurityOrchestration|You've reached the maximum limit of %{max} %{type} policies allowed. To save this policy, set enabled: false."
 msgstr ""
 
 msgid "SecurityOrchestration|a license scanner found license violations"

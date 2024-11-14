@@ -15,12 +15,6 @@ DETAILS:
 NOTE:
 Model experiment tracking is an [experimental feature](../../../../policy/experiment-beta-support.md). Refer to <https://gitlab.com/gitlab-org/gitlab/-/issues/381660> for feedback and feature requests.
 
-ACCESS LEVEL:
-Model experiments [visibility level](../../../public_access.md) can be set to public, private or disabled. This options can
-be configured under `Settings > General > Visibility, project features, permissions > Model experiments`. Users must have
-at least [Reporter role](../../../permissions.md#roles) to modify or delete experiments
-and candidate data.
-
 When creating machine learning models, data scientists often experiment with different parameters, configurations, and feature
 engineering to improve the performance of the model. Keeping track of all this metadata and the associated
 artifacts so that the data scientist can later replicate the experiment is not trivial. Machine learning experiment

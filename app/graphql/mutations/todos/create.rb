@@ -8,14 +8,14 @@ module Mutations
       authorize :create_todo
 
       argument :target_id,
-               Types::GlobalIDType[Todoable],
-               required: true,
-               description: "Global ID of the to-do item's parent. Issues, " \
-                 "merge requests, designs, and epics are supported."
+        Types::GlobalIDType[Todoable],
+        required: true,
+        description: "Global ID of the to-do item's parent. Issues, " \
+          "merge requests, designs, and epics are supported."
 
       field :todo, Types::TodoType,
-            null: true,
-            description: 'To-do item created.'
+        null: true,
+        description: 'To-do item created.'
 
       def resolve(target_id:)
         target = authorized_find!(id: target_id)

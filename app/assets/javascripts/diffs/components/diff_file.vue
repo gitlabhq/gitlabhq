@@ -10,7 +10,9 @@ import { createAlert } from '~/alert';
 import { hasDiff } from '~/helpers/diffs_helper';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { diffViewerErrors } from '~/ide/constants';
+import { clearDraft } from '~/lib/utils/autosave';
 import { scrollToElement, isElementStuck } from '~/lib/utils/common_utils';
+import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import { sprintf } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import notesEventHub from '~/notes/event_hub';
@@ -124,8 +126,27 @@ export default {
   },
   computed: {
     ...mapState('diffs', ['currentDiffFileId', 'conflictResolutionPath', 'canMerge']),
-    ...mapGetters(['isNotesFetched', 'getNoteableData', 'noteableType']),
+    ...mapGetters(['isLoggedIn', 'isNotesFetched', 'getNoteableData', 'noteableType']),
     ...mapGetters('diffs', ['getDiffFileDiscussions', 'isVirtualScrollingEnabled', 'linkedFile']),
+    autosaveKey() {
+      if (!this.isLoggedIn) return '';
+
+      const {
+        id,
+        noteable_type: noteableTypeUnderscored,
+        noteableType,
+        diff_head_sha: diffHeadSha,
+      } = this.noteableData;
+
+      return [
+        'Autosave|Note', // eslint-disable-line @gitlab/require-i18n-strings
+        capitalizeFirstCharacter(noteableTypeUnderscored || noteableType),
+        id,
+        diffHeadSha,
+        FILE_DIFF_POSITION_TYPE,
+        this.file.id,
+      ].join('/');
+    },
     isLinkedFile() {
       return this.file === this.linkedFile;
     },
@@ -283,6 +304,11 @@ export default {
       'toggleFileCommentForm',
       'toggleFileDiscussion',
     ]),
+    handleFileCommentCancel() {
+      this.toggleFileCommentForm(this.file.file_path);
+
+      clearDraft(this.autosaveKey);
+    },
     manageViewedEffects() {
       if (
         !this.idState.hasToggled &&
@@ -556,12 +582,13 @@ export default {
               v-if="file.hasCommentForm"
               :save-button-title="__('Comment')"
               :diff-file="file"
+              :autosave-key="autosaveKey"
               autofocus
               class="gl-px-5 gl-py-3"
               data-testid="file-note-form"
               @handleFormUpdate="handleSaveNote"
               @handleFormUpdateAddToReview="handleSaveDraftNote"
-              @cancelForm="toggleFileCommentForm(file.file_path)"
+              @cancelForm="handleFileCommentCancel"
             />
           </div>
         </div>

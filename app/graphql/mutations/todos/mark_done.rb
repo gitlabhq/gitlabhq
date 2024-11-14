@@ -8,13 +8,13 @@ module Mutations
       authorize :update_todo
 
       argument :id,
-               ::Types::GlobalIDType[::Todo],
-               required: true,
-               description: 'Global ID of the to-do item to mark as done.'
+        ::Types::GlobalIDType[::Todo],
+        required: true,
+        description: 'Global ID of the to-do item to mark as done.'
 
       field :todo, Types::TodoType,
-            null: false,
-            description: 'Requested to-do item.'
+        null: false,
+        description: 'Requested to-do item.'
 
       def resolve(id:)
         todo = authorized_find!(id: id)

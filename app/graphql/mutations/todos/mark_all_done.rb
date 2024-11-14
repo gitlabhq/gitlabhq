@@ -10,10 +10,10 @@ module Mutations
       TodoableID = Types::GlobalIDType[Todoable]
 
       argument :target_id,
-               TodoableID,
-               required: false,
-               description: "Global ID of the to-do item's parent. Issues, merge requests, designs, and epics are supported. " \
-                 "If argument is omitted, all pending to-do items of the current user are marked as done."
+        TodoableID,
+        required: false,
+        description: "Global ID of the to-do item's parent. Issues, merge requests, designs, and epics are supported. " \
+          "If argument is omitted, all pending to-do items of the current user are marked as done."
 
       argument :author_id, [GraphQL::Types::ID],
         required: false,
@@ -36,8 +36,8 @@ module Mutations
         description: 'Type of the todo.'
 
       field :todos, [::Types::TodoType],
-            null: false,
-            description: 'Updated to-do items.'
+        null: false,
+        description: 'Updated to-do items.'
 
       def resolve(**args)
         authorize!(current_user)

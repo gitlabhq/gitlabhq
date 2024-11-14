@@ -9,20 +9,20 @@ module Mutations
       authorize :delete_work_item
 
       argument :id, ::Types::GlobalIDType[::WorkItem],
-               required: true,
-               description: 'Global ID of the work item.'
+        required: true,
+        description: 'Global ID of the work item.'
 
       field :project, Types::ProjectType,
-            null: true,
-            description: 'Project the deleted work item belonged to.',
-            deprecated: {
-              reason: 'Use `namespace`',
-              milestone: '16.9'
-            }
+        null: true,
+        description: 'Project the deleted work item belonged to.',
+        deprecated: {
+          reason: 'Use `namespace`',
+          milestone: '16.9'
+        }
 
       field :namespace, Types::NamespaceType,
-            null: true,
-            description: 'Namespace the deleted work item belonged to.'
+        null: true,
+        description: 'Namespace the deleted work item belonged to.'
 
       def resolve(id:)
         work_item = authorized_find!(id: id)

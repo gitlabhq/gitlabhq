@@ -206,6 +206,7 @@ module.exports = (path, options = {}) => {
   const transformIgnoreNodeModules = [
     'vue-test-utils-compat',
     '@gitlab/ui',
+    '@gitlab/duo-ui',
     '@gitlab/favicon-overlay',
     '@gitlab/cluster-client',
     '@gitlab/web-ide',

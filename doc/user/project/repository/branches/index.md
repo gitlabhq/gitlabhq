@@ -402,3 +402,13 @@ in a Git repository:
 ```shell
 git for-each-ref --format='%(authoremail)'  | sort | uniq -c | sort -g
 ```
+
+### Error: `Failed to create branch 4:Deadline Exceeded`
+
+This error is caused by a timeout in Gitaly. It occurs when creating a branch
+take longer to complete than the configured timeout period.
+
+To resolve this issue, choose one of the following:
+
+- Disable time-consuming server hooks. See [Git server hooks](../../../../administration/server_hooks.md).
+- Increase Gitaly's timeout settings. See [Gitaly timeouts](../../../../administration/settings/gitaly_timeouts.md).
