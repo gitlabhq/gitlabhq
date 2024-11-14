@@ -77,12 +77,7 @@ export default {
         data-testid="stuck-icon"
       />
 
-      <gl-link
-        v-if="canReadJob"
-        class="!gl-text-blue-600"
-        :href="jobPath"
-        data-testid="job-id-link"
-      >
+      <gl-link v-if="canReadJob" :href="jobPath" data-testid="job-id-link">
         <span class="gl-truncate">
           <span data-testid="job-name">{{ jobId }}: {{ job.name }}</span>
         </span>

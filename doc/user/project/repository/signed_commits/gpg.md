@@ -278,14 +278,30 @@ git config --global gpg.program gpg2
 If your GPG key is password protected and the password entry prompt does not appear,
 add `export GPG_TTY=$(tty)` to your shell's `rc` file (commonly `~/.bashrc` or `~/.zshrc`)
 
-### GPG failed to sign the data
+### GPG fails to sign data
 
-If your GPG key is password protected and you receive the error:
+If your GPG key is password protected, and you receive one of the following errors:
 
-```shell
+```plaintext
 error: gpg failed to sign the data
 fatal: failed to write commit object
+gpg: signing failed: Inappropriate ioctl for device
 ```
 
-If the password entry prompt does not appear, add `export GPG_TTY=$(tty)` to your shell's `rc` file
-(commonly `~/.bashrc` or `~/.zshrc`) and restart your terminal.
+If the password entry prompt doesn't appear:
+
+1. Open your shell's configuration file, commonly `~/.bashrc` or `~/.zshrc`, in a text editor.
+1. Add the following line to the file:
+
+   ```shell
+   export GPG_TTY=$(tty)
+   ```
+
+1. Save the file and exit the text editor.
+1. Apply the changes. Choose one of the following:
+
+   - Restart your terminal.
+   - Run `source ~/.bashrc` or `source ~/.zshrc`.
+
+NOTE:
+The exact steps may vary depending on your operating system and shell configuration.

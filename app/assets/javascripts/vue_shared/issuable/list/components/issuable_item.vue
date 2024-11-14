@@ -443,7 +443,7 @@ export default {
                   :data-avatar-url="author.avatarUrl"
                   :href="author.webPath"
                   data-testid="issuable-author"
-                  class="author-link js-user-link gl-text-sm !gl-text-gray-500"
+                  class="author-link js-user-link gl-text-sm !gl-text-subtle"
                   @click.stop
                 >
                   <span class="author">{{ author.name }}</span>
@@ -530,7 +530,7 @@ export default {
       </ul>
       <div
         v-gl-tooltip.bottom
-        class="gl-hidden gl-text-gray-500 sm:gl-inline-block"
+        class="gl-hidden gl-text-subtle sm:gl-inline-block"
         :title="tooltipTitle(timestamp)"
         data-testid="issuable-timestamp"
       >

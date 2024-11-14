@@ -223,6 +223,8 @@ your instance immediately. If you're using a license file, you receive an update
 To add the seats, [add the license file](../../administration/license_file.md)
 to your instance.
 
+If you purchased your subscription through an [authorized reseller](../customers_portal.md#customers-that-purchased-through-a-reseller) (including GCP and AWS marketplaces), contact the reseller to add more seats.
+
 ## Subscription data synchronization
 
 Prerequisites:

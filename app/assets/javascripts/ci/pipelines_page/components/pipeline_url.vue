@@ -155,12 +155,9 @@ export default {
           :title="pipelineIdentifier.text"
           class="gl-grow gl-truncate gl-text-gray-900"
         >
-          <gl-link
-            :href="pipelineIdentifier.link"
-            class="!gl-text-link"
-            data-testid="pipeline-identifier-link"
-            >{{ pipelineIdentifier.text }}</gl-link
-          >
+          <gl-link :href="pipelineIdentifier.link" data-testid="pipeline-identifier-link">{{
+            pipelineIdentifier.text
+          }}</gl-link>
         </tooltip-on-truncate>
       </span>
     </div>
@@ -177,7 +174,7 @@ export default {
         >
           <gl-link
             :href="commitUrl"
-            class="commit-row-message !gl-text-blue-600"
+            class="commit-row-message"
             data-testid="commit-title"
             @click="trackClick('click_commit_title')"
             >{{ commitTitle }}</gl-link
@@ -192,7 +189,7 @@ export default {
     <div class="gl-mb-2">
       <gl-link
         :href="pipeline.path"
-        class="gl-mr-1 !gl-text-link"
+        class="gl-mr-1"
         data-testid="pipeline-url-link"
         @click="trackClick('click_pipeline_id')"
         >#{{ pipeline[pipelineIdType] }}</gl-link
