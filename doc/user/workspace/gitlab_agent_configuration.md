@@ -112,6 +112,8 @@ you can use any configured agent in `top-level-group` and in any of its subgroup
 | [`allow_privilege_escalation`](#allow_privilege_escalation)                               | No       | `false`                                 | Allow privilege escalation. |
 | [`annotations`](#annotations)                                                             | No       | `{}`                                    | Annotations to apply to Kubernetes objects. |
 | [`labels`](#labels)                                                                       | No       | `{}`                                    | Labels to apply to Kubernetes objects. |
+| [`max_active_hours_before_stop`](#max_active_hours_before_stop) | No | `36` | Maximum number of hours a workspace can be active before it is stopped. |
+| [`max_stopped_hours_before_termination`](#max_stopped_hours_before_termination) | No | `744` | Maximum number of hours a workspace can be stopped before it is terminated. |
 
 NOTE:
 If a setting has an invalid value, it's not possible to update any setting until you fix that value.
@@ -463,6 +465,64 @@ A valid label value:
 
 For more information about `labels`, see
 [Labels](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/).
+
+### `max_active_hours_before_stop`
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14910) in GitLab 17.6.
+
+Use this setting to automatically stop the agent's workspaces after the specified number of hours
+have passed since the workspace last transitioned to an active state.
+An "active state" is defined as any non-stopped or non-terminated state.
+
+The timer for this setting starts when the workspace is created, and is reset every time the
+workspace is restarted.
+It also applies even if the workspace is in an error or failure state.
+
+The default value is `36`, or one and a half days. This avoids stopping the workspace during
+the user's normal working hours.
+
+**Example configuration:**
+
+```yaml
+remote_development:
+  max_active_hours_before_stop: 60
+```
+
+A valid value:
+
+- Is an integer.
+- Is greater than or equal to `1`.
+- Is less than or equal to `8760` (one year).
+- `max_active_hours_before_stop` + `max_stopped_hours_before_termination` must be less than or equal to `8760`.
+
+The automatic stop is only triggered on a full reconciliation, which happens every hour.
+This means that the workspace might be active for up to one hour longer than the configured value.
+
+### `max_stopped_hours_before_termination`
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14910) in GitLab 17.6.
+
+Use this setting to automatically terminate the agent's workspaces after they have been in the stopped
+state for the specified number of hours.
+
+The default value is `722`, or approximately one month.
+
+**Example configuration:**
+
+```yaml
+remote_development:
+  max_stopped_hours_before_termination: 4332
+```
+
+A valid value:
+
+- Is an integer.
+- Is greater than or equal to `1`.
+- Is less than or equal to `8760` (one year).
+- `max_active_hours_before_stop` + `max_stopped_hours_before_termination` must be less than or equal to `8760`.
+
+The automatic termination is only triggered on a full reconciliation, which happens every hour.
+This means that the workspace might be stopped for up to one hour longer than the configured value.
 
 ## Configuring user access with remote development
 

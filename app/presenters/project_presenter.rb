@@ -454,7 +454,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   def pages_anchor_data
     return unless project.pages_deployed? && can?(current_user, :read_pages_content, project)
 
-    pages_url = build_pages_url(project, with_unique_domain: true)
+    pages_url = build_pages_url(project)
     AnchorData.new(false, statistic_icon('external-link') + _('GitLab Pages'), pages_url, 'btn-default', nil)
   end
 

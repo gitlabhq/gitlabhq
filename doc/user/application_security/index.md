@@ -16,9 +16,6 @@ GitLab can check your application for security vulnerabilities including:
 - Data leaks.
 - Denial of Service (DoS) attacks.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an overview of GitLab application security, see [Shifting Security Left](https://www.youtube.com/watch?v=XnYstHObqlA&t).
-
 For a click-through demo, see [Integrating security to the pipeline](https://gitlab.navattic.com/gitlab-scans).
 <!-- Demo published on 2024-01-15 -->
 

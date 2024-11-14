@@ -45,6 +45,7 @@ export default {
 <template>
   <li
     class="gl-border-t gl-border-b gl-relative -gl-mt-px gl-block gl-px-5 gl-py-3 hover:gl-z-1 hover:gl-cursor-pointer hover:gl-border-blue-200 hover:gl-bg-blue-50"
+    :data-testid="`todo-item-${todo.id}`"
   >
     <gl-link
       :href="targetUrl"

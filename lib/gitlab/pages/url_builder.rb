@@ -13,8 +13,8 @@ module Gitlab
         @project_namespace, _, @project_path = project.full_path.partition('/')
       end
 
-      def pages_url(with_unique_domain: false)
-        return unique_url if with_unique_domain && unique_domain_enabled?
+      def pages_url
+        return unique_url if unique_domain_enabled?
 
         return namespace_url if namespace_pages?
 

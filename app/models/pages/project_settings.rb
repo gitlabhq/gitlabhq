@@ -6,7 +6,7 @@ module Pages
       @project = project
     end
 
-    def url = url_builder.pages_url(with_unique_domain: true)
+    def url = url_builder.pages_url
 
     def deployments = project.pages_deployments.active
 

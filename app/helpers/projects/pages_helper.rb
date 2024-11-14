@@ -14,10 +14,10 @@ module Projects
         .project_namespace
     end
 
-    def build_pages_url(project, with_unique_domain:)
+    def build_pages_url(project)
       Gitlab::Pages::UrlBuilder
         .new(project)
-        .pages_url(with_unique_domain: with_unique_domain)
+        .pages_url
     end
   end
 end

@@ -21988,9 +21988,14 @@ CREATE TABLE workspaces_agent_configs (
     annotations jsonb DEFAULT '{}'::jsonb NOT NULL,
     labels jsonb DEFAULT '{}'::jsonb NOT NULL,
     image_pull_secrets jsonb DEFAULT '[]'::jsonb NOT NULL,
+    max_active_hours_before_stop smallint DEFAULT 36 NOT NULL,
+    max_stopped_hours_before_termination smallint DEFAULT 744 NOT NULL,
+    CONSTRAINT check_557e75a230 CHECK ((max_stopped_hours_before_termination > 0)),
     CONSTRAINT check_58759a890a CHECK ((char_length(dns_zone) <= 256)),
+    CONSTRAINT check_6d7baef494 CHECK (((max_active_hours_before_stop + max_stopped_hours_before_termination) <= 8760)),
     CONSTRAINT check_720388a28c CHECK ((char_length(default_runtime_class) <= 253)),
     CONSTRAINT check_dca877fba1 CHECK ((default_max_hours_before_termination <= 8760)),
+    CONSTRAINT check_df26c047a9 CHECK ((max_active_hours_before_stop > 0)),
     CONSTRAINT check_eab6e375ad CHECK ((max_hours_before_termination_limit <= 8760)),
     CONSTRAINT check_ee2464835c CHECK ((char_length(gitlab_workspaces_proxy_namespace) <= 63))
 );
